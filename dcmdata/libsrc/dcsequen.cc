@@ -22,9 +22,9 @@
  *  Purpose: class DcmSequenceOfItems
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-16 15:55:04 $
+ *  Update Date:      $Date: 2002-03-15 13:58:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcsequen.cc,v $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -392,7 +392,7 @@ OFCondition DcmSequenceOfItems::readTagAndLength(DcmStream & inStream,
         swapIfNecessary(gLocalByteOrder, iByteOrder, &valueLength, 4, 4);
         if ((valueLength & 1)&&(valueLength != (Uint32) -1))
         {
-            ofConsole.lockCerr() << "Error: Length of sequence with Tag " << Tag << " is odd" << endl;
+            ofConsole.lockCerr() << "Error: Length of sequence with Tag " << newTag << " is odd" << endl;
             ofConsole.unlockCerr();
         }
         length = valueLength;
@@ -1192,7 +1192,10 @@ OFBool DcmSequenceOfItems::containsUnknownVR() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.43  2001-11-16 15:55:04  meichel
+** Revision 1.44  2002-03-15 13:58:39  meichel
+** Fixed incorrect debug message.
+**
+** Revision 1.43  2001/11/16 15:55:04  meichel
 ** Adapted digital signature code to final text of supplement 41.
 **
 ** Revision 1.42  2001/09/28 14:21:06  joergr
