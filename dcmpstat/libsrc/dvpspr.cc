@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSPrintMessageHandler
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:03:21 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-09-17 12:53:54 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -571,10 +571,14 @@ OFCondition DVPSPrintMessageHandler::negotiateAssociation(
         logstream->unlockCerr();
         ASC_printRejectParameters(stderr, &rej);
       }
-    }else{
+    } else {
       if (cond.bad()) 
       {
-        if (params) ASC_destroyAssociationParameters(&params);
+        // if assoc is non-NULL, then params has already been moved into the
+        // assoc structure. Make sure we only delete once!
+        if (assoc) ASC_destroyAssociation(&assoc);
+        else if (params) ASC_destroyAssociationParameters(&params);
+
         if (net) ASC_dropNetwork(&net);
         assoc = NULL;
         net = NULL;
@@ -632,7 +636,10 @@ void DVPSPrintMessageHandler::setLog(OFConsole *stream, OFBool verbMode, OFBool 
 
 /*
  *  $Log: dvpspr.cc,v $
- *  Revision 1.16  2001-11-09 16:03:21  joergr
+ *  Revision 1.17  2002-09-17 12:53:54  meichel
+ *  Fixed memory leak
+ *
+ *  Revision 1.16  2001/11/09 16:03:21  joergr
  *  Fixed small bug introduced during changeover to new OFCondition mechanism.
  *
  *  Revision 1.15  2001/10/12 13:46:55  meichel
