@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-13 10:27:00 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2001-01-18 15:55:20 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,12 +41,15 @@
 
 DSRDocumentTreeNode::DSRDocumentTreeNode(const E_RelationshipType relationshipType,
                                          const E_ValueType valueType)
- : DSRTreeNode(),
-   ReferenceTarget(OFFalse),
-   RelationshipType(relationshipType),
-   ValueType(valueType),
-   ConceptName(),
-   ObservationDateTime()
+  : DSRTreeNode(),
+    MarkFlag(OFFalse),
+    ReferenceTarget(OFFalse),
+    RelationshipType(relationshipType),
+    ValueType(valueType),
+    ConceptName(),
+    ObservationDateTime(),
+    MACParameters(DCM_MACParametersSequence),
+    DigitalSignatures(DCM_DigitalSignaturesSequence)
 {
 }
 
@@ -58,9 +61,12 @@ DSRDocumentTreeNode::~DSRDocumentTreeNode()
 
 void DSRDocumentTreeNode::clear()
 {
+    MarkFlag = OFFalse;
     ReferenceTarget = OFFalse;
     ConceptName.clear();
     ObservationDateTime.clear();
+    MACParameters.clear();
+    DigitalSignatures.clear();
 }
 
 
@@ -94,16 +100,18 @@ E_Condition DSRDocumentTreeNode::print(ostream &stream,
 
 E_Condition DSRDocumentTreeNode::read(DcmItem &dataset,
                                       const E_DocumentType documentType,
+                                      const OFBool signatures,
                                       OFConsole *logStream)
 {
-    return readSRDocumentContentModule(dataset, documentType, logStream);
+    return readSRDocumentContentModule(dataset, documentType, signatures, logStream);
 }
 
 
 E_Condition DSRDocumentTreeNode::write(DcmItem &dataset,
-                                       OFConsole *logStream) const
+                                       DcmStack *markedItems,
+                                       OFConsole *logStream)
 {
-    return writeSRDocumentContentModule(dataset, logStream);
+    return writeSRDocumentContentModule(dataset, markedItems, logStream);
 }
 
 
@@ -200,6 +208,13 @@ E_Condition DSRDocumentTreeNode::setObservationDateTime(const OFString &observat
 }
 
 
+void DSRDocumentTreeNode::removeSignatures()
+{
+    MACParameters.clear();
+    DigitalSignatures.clear();
+}
+
+
 OFBool DSRDocumentTreeNode::canAddNode(const E_DocumentType /* documentType */,
                                        const E_RelationshipType /* relationshipType */,
                                        const E_ValueType /* valueType */,
@@ -240,11 +255,12 @@ E_Condition DSRDocumentTreeNode::renderHTMLContentItem(ostream & /* docStream */
 
 E_Condition DSRDocumentTreeNode::readSRDocumentContentModule(DcmItem &dataset,
                                                              const E_DocumentType documentType,
+                                                             const OFBool signatures,
                                                              OFConsole *logStream)
 {
     E_Condition result = EC_Normal;
     /* read DocumentRelationshipMacro */
-    result = readDocumentRelationshipMacro(dataset, documentType, logStream);
+    result = readDocumentRelationshipMacro(dataset, documentType, signatures, logStream);
     /* read DocumentContentMacro */
     if (result == EC_Normal)
         result= readDocumentContentMacro(dataset, logStream);
@@ -253,11 +269,12 @@ E_Condition DSRDocumentTreeNode::readSRDocumentContentModule(DcmItem &dataset,
 
 
 E_Condition DSRDocumentTreeNode::writeSRDocumentContentModule(DcmItem &dataset,
-                                                              OFConsole *logStream) const
+                                                              DcmStack *markedItems,
+                                                              OFConsole *logStream)
 {
     E_Condition result = EC_Normal;
     /* write DocumentRelationshipMacro */
-    result = writeDocumentRelationshipMacro(dataset, logStream);
+    result = writeDocumentRelationshipMacro(dataset, markedItems, logStream);
     /* write DocumentContentMacro */
     if (result == EC_Normal)
         result= writeDocumentContentMacro(dataset, logStream);
@@ -267,24 +284,43 @@ E_Condition DSRDocumentTreeNode::writeSRDocumentContentModule(DcmItem &dataset,
 
 E_Condition DSRDocumentTreeNode::readDocumentRelationshipMacro(DcmItem &dataset,
                                                                const E_DocumentType documentType,
+                                                               const OFBool signatures,
                                                                OFConsole *logStream)
 {
     E_Condition result = EC_Normal;
+    /* read digital signatures sequences (optional) */
+    if (signatures)
+    {
+        getSequenceFromDataset(dataset, MACParameters);
+        getSequenceFromDataset(dataset, DigitalSignatures);
+    }
     /* read ObservationDateTime (conditional) */
     getAndCheckStringValueFromDataset(dataset, DCM_ObservationDateTime, ObservationDateTime, "1", "1C", logStream);
     /* tbd: read ContentTemplateSequence */
 
     /* read ContentSequence */
     if (result == EC_Normal)
-        result = readContentSequence(dataset, documentType, logStream);
+        result = readContentSequence(dataset, documentType, signatures, logStream);
     return result;
 }
 
 
 E_Condition DSRDocumentTreeNode::writeDocumentRelationshipMacro(DcmItem &dataset,
-                                                                OFConsole *logStream) const
+                                                                DcmStack *markedItems,
+                                                                OFConsole *logStream)
 {
     E_Condition result = EC_Normal;
+    /* write digital signatures sequences (optional) */
+    if (MACParameters.card() > 0)
+        addElementToDataset(result, dataset, new DcmSequenceOfItems(MACParameters));
+    if (DigitalSignatures.card() > 0)
+    {
+        addElementToDataset(result, dataset, new DcmSequenceOfItems(DigitalSignatures));    
+        printWarningMessage(logStream, "Writing possibly incorrect digital signature - same as read from dataset.");
+    }
+    /* add to mark stack */
+    if (MarkFlag && (markedItems != NULL))
+        markedItems->push(&dataset);
     /* write ObservationDateTime (conditional) */
     if (ObservationDateTime.length() > 0)
         result = putStringValueToDataset(dataset, DCM_ObservationDateTime, ObservationDateTime);
@@ -292,7 +328,7 @@ E_Condition DSRDocumentTreeNode::writeDocumentRelationshipMacro(DcmItem &dataset
 
     /* write ContentSequence */
     if (result == EC_Normal)
-        result = writeContentSequence(dataset, logStream);
+        result = writeContentSequence(dataset, markedItems, logStream);
     return result;
 }
 
@@ -374,6 +410,7 @@ E_Condition DSRDocumentTreeNode::createAndAppendNewNode(DSRDocumentTreeNode *&pr
 
 E_Condition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
                                                      const E_DocumentType documentType,
+                                                     const OFBool signatures,
                                                      OFConsole *logStream)
 {
     E_Condition result = EC_Normal;
@@ -436,7 +473,7 @@ E_Condition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
                                 result = createAndAppendNewNode(node, documentType, relationshipType, valueType);
                                 /* read RelationshipMacro */
                                 if (result == EC_Normal)
-                                    result = node->readDocumentRelationshipMacro(*ditem, documentType, logStream);
+                                    result = node->readDocumentRelationshipMacro(*ditem, documentType, signatures, logStream);
                                 else
                                 {
                                     /* create new node failed */
@@ -469,6 +506,7 @@ E_Condition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
 
 
 E_Condition DSRDocumentTreeNode::writeContentSequence(DcmItem &dataset,
+                                                      DcmStack *markedItems,
                                                       OFConsole *logStream) const
 {
     E_Condition result = EC_Normal;
@@ -500,7 +538,7 @@ E_Condition DSRDocumentTreeNode::writeContentSequence(DcmItem &dataset,
                         } else {    // by-value          
                             /* write RelationshipMacro */
                             if (result == EC_Normal)
-                                result = node->writeDocumentRelationshipMacro(*ditem, logStream);
+                                result = node->writeDocumentRelationshipMacro(*ditem, markedItems, logStream);
                             /* write DocumentContentMacro */
                             if (result == EC_Normal)
                                 node->writeDocumentContentMacro(*ditem, logStream);
@@ -729,7 +767,10 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
- *  Revision 1.10  2000-11-13 10:27:00  joergr
+ *  Revision 1.11  2001-01-18 15:55:20  joergr
+ *  Added support for digital signatures.
+ *
+ *  Revision 1.10  2000/11/13 10:27:00  joergr
  *  dded output of optional observation datetime to rendered HTML page.
  *
  *  Revision 1.9  2000/11/09 20:34:00  joergr

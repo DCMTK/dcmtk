@@ -23,8 +23,8 @@
  *    classes: DSRContentItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-13 14:19:05 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2001-01-18 15:53:32 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -74,6 +74,18 @@ class DSRContentItem
      ** @return OFTrue if current content item is valid, OFFalse otherwise
      */
     OFBool isValid() const;
+
+    /** check for mark flag.
+     *  Applicable to all content items.
+     ** @return OFTrue if current content item is marked, OFFalse otherwise
+     */
+    OFBool isMarked() const;
+
+    /** mark/unmark item.
+     *  Applicable to all content items.
+     ** @param  flag  mark item if OFTrue, unmark otherwise
+     */
+    void setMark(const OFBool flag);
 
     /** get value type.
      *  Applicable to all content items.
@@ -410,7 +422,10 @@ class DSRContentItem
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcitem.h,v $
- *  Revision 1.11  2000-11-13 14:19:05  joergr
+ *  Revision 1.12  2001-01-18 15:53:32  joergr
+ *  Added support for digital signatures.
+ *
+ *  Revision 1.11  2000/11/13 14:19:05  joergr
  *  Updated comments.
  *
  *  Revision 1.10  2000/11/07 18:11:29  joergr

@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTree
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-07 18:14:29 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2001-01-18 15:53:34 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,12 +56,12 @@ class DSRDocumentTree
 
   public:
 
-    /** constructor 
+    /** constructor
      ** @param  documentType  document type of the associated document
      */
     DSRDocumentTree(const E_DocumentType documentType);
 
-    /** destructor 
+    /** destructor
      */
     virtual ~DSRDocumentTree();
 
@@ -98,17 +98,25 @@ class DSRDocumentTree
      *  from the error/warning output.
      ** @param  dataset       reference to DICOM dataset where the tree should be read from
      *  @param  documentType  document type of the SR document from which the tree is read
+     *  @param  signatures    optional flag indicating whether to read the digital signatures
+     *                        from the dataset or not.  If OFTrue the MACParametersSequence and
+     *                        the DigitalSignaturesSequence are read for each content item.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition read(DcmItem &dataset,
-                     const E_DocumentType documentType);
+                     const E_DocumentType documentType,
+                     const OFBool signatures = OFFalse);
 
     /** write current SR document tree to DICOM dataset
-     ** @param  dataset  reference to DICOM dataset where the current tree should be
-     *                   written to
+     ** @param  dataset      reference to DICOM dataset where the current tree should be
+     *                       written to
+     *  @param  markedItems  optional stack where pointers to all 'marked' content items
+     *                       (DICOM datasets/items) are added to during the write process.
+     *                       Can be used to digitally sign parts of the document tree.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition write(DcmItem &dataset);
+    E_Condition write(DcmItem &dataset,
+                      DcmStack *markedItems = NULL);
 
     /** write current SR document tree in XML format
      ** @param  stream  output stream to which the XML document is written
@@ -208,6 +216,20 @@ class DSRDocumentTree
      */
     DSRContentItem &getCurrentContentItem();
 
+    /** unmark all content items in the document tree.
+     *  Use method 'setMark' on node-level to mark and unmark a single content item.
+     *  Pointers to the DICOM dataset/item of marked content items are added to the optional
+     *  stack when calling the 'write' method.  This mechanism can e.g. be used to digitally
+     *  sign particular content items.
+     */
+    void unmarkAllContentItems();
+
+    /** remove digital signatures from the document tree.
+     *  This method clears the MACParametersSequence and the DigitalSignaturesSequence for all
+     *  content items which have been filled during reading.
+     */
+    void removeSignatures();
+
 
   protected:
 
@@ -231,7 +253,7 @@ class DSRDocumentTree
      *          occured or the tree is now empty.
      */
     virtual size_t removeNode();
-    
+
     /**
      */
     E_Condition checkByReferenceRelationships(const OFBool updateString = OFFalse,
@@ -272,7 +294,10 @@ class DSRDocumentTree
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.h,v $
- *  Revision 1.5  2000-11-07 18:14:29  joergr
+ *  Revision 1.6  2001-01-18 15:53:34  joergr
+ *  Added support for digital signatures.
+ *
+ *  Revision 1.5  2000/11/07 18:14:29  joergr
  *  Enhanced support for by-reference relationships.
  *
  *  Revision 1.4  2000/11/01 16:23:20  joergr

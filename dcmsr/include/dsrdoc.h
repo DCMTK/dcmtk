@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-12-08 13:42:40 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2001-01-18 15:53:33 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -103,16 +103,28 @@ class DSRDocument
      *  Please note that the current document is also deleted if the reading fails.
      *  If the log stream is set and valid the reason for any error might be obtained
      *  from the error/warning output.
-     ** @param  dataset  reference to DICOM dataset where the document should be read from
+     ** @param  dataset     reference to DICOM dataset where the document should be read from
+     *  @param  signatures  optional flag indicating whether to read the digital signatures
+     *                      from the dataset or not.  If OFTrue the MACParametersSequence and
+     *                      the DigitalSignaturesSequence are read for the general document
+     *                      header and each content item.
+     *                      If not removed manually (with 'removeSignatures') the signatures are
+     *                      written back to the dataset when the method 'write' is called.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition read(DcmItem &dataset);
+    E_Condition read(DcmItem &dataset,
+                     const OFBool signatures = OFFalse);
 
     /** write current SR document to DICOM dataset
-     ** @param  dataset  reference to DICOM dataset where the current document should be written to
+     ** @param  dataset      reference to DICOM dataset where the current document should be
+     *                       written to
+     *  @param  markedItems  optional stack where pointers to all 'marked' content items
+     *                       (DICOM datasets/items) are added to during the write process.
+     *                       Can be used to digitally sign parts of the document tree.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition write(DcmItem &dataset);
+    E_Condition write(DcmItem &dataset,
+                      DcmStack *markedItems = NULL);
 
     /** write current SR document in XML format
      ** @param  stream  output stream to which the XML document is written
@@ -945,7 +957,6 @@ class DSRDocument
     //  Pertinent Other Evidence Sequence: (SQ, 1, 1C)
         // -- not supported --
 
-
  // --- declaration copy constructor and assignment operator
 
     DSRDocument(const DSRDocument &);
@@ -959,7 +970,10 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
- *  Revision 1.18  2000-12-08 13:42:40  joergr
+ *  Revision 1.19  2001-01-18 15:53:33  joergr
+ *  Added support for digital signatures.
+ *
+ *  Revision 1.18  2000/12/08 13:42:40  joergr
  *  Renamed createNewSeries(studyUID) to createNewSeriesInStudy(studyUID).
  *
  *  Revision 1.17  2000/11/16 13:31:27  joergr

@@ -23,8 +23,8 @@
  *    classes: DSRContentItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-20 13:22:23 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2001-01-18 15:54:12 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -79,6 +79,22 @@ OFBool DSRContentItem::isValid() const
     if (TreeNode != NULL)
         result = TreeNode->isValid();
     return result;
+}
+
+
+OFBool DSRContentItem::isMarked() const
+{
+    OFBool result = OFFalse;
+    if (TreeNode != NULL)
+        result = TreeNode->isMarked();
+    return result;
+}
+
+
+void DSRContentItem::setMark(const OFBool flag)
+{
+    if (TreeNode != NULL)
+        TreeNode->setMark(flag);
 }
 
 
@@ -611,7 +627,10 @@ E_Condition DSRContentItem::setObservationDateTime(const OFString &observationDa
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcitem.cc,v $
- *  Revision 1.8  2000-11-20 13:22:23  joergr
+ *  Revision 1.9  2001-01-18 15:54:12  joergr
+ *  Added support for digital signatures.
+ *
+ *  Revision 1.8  2000/11/20 13:22:23  joergr
  *  Fixed minor bugs (string related memory problems when used with JNI).
  *
  *  Revision 1.7  2000/11/07 18:26:45  joergr

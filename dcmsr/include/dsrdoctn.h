@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-13 10:26:21 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2001-01-18 15:53:34 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -111,22 +111,30 @@ class DSRDocumentTreeNode
      *  possibly nested content items from the dataset.
      ** @param  dataset       DICOM dataset from which the content item should be read
      *  @param  documentType  type of the document to be read (used for checking purposes)
+     *  @param  signatures    optional flag indicating whether to read the digital signatures
+     *                        from the dataset or not.  If OFTrue the MACParametersSequence and
+     *                        the DigitalSignaturesSequence are read for each content item.
      *  @param  logStream     pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual E_Condition read(DcmItem &dataset,
                              const E_DocumentType documentType,
+                             const OFBool signatures = OFFalse,
                              OFConsole *logStream = NULL);
 
     /** write content item to dataset.
      *  A number of write...() methods are called (see "protected" part) in order to write all
      *  possibly nested content items to the dataset.
-     ** @param  dataset       DICOM dataset to which the content item should be written
-     *  @param  logStream     pointer to error/warning output stream (output disabled if NULL)
+     ** @param  dataset      DICOM dataset to which the content item should be written
+     *  @param  markedItems  optional stack where pointers to all 'marked' content items
+     *                       (DICOM datasets/items) are added to during the write process.
+     *                       Can be used to digitally sign parts of the document tree.
+     *  @param  logStream    pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual E_Condition write(DcmItem &dataset,
-                              OFConsole *logStream = NULL) const;
+                              DcmStack *markedItems = NULL,
+                              OFConsole *logStream = NULL);
 
     /** write content item in XML format
      ** @param  stream     output stream to which the XML document is written
@@ -156,6 +164,37 @@ class DSRDocumentTreeNode
                                    size_t &annexNumber,
                                    const size_t flags,
                                    OFConsole *logStream = NULL) const;
+
+    /** check whether content item is digitally signed.
+     *  A content item is signed if the DigitalSignaturesSequence exists.  This sequence is read
+     *  from the dataset if present and the 'signature' flag for the 'read' method is turned on.
+     ** @return OFTrue if content item is signed, OFFalse otherwise
+     */
+    inline OFBool isSigned()
+    {
+        return (DigitalSignatures.card() > 0);
+    }
+
+    /** check whether content item is marked.
+     *  Use method 'setMark' to mark and unmark the current content item.
+     *  Pointers to the DICOM dataset/item of marked content items are added to the optional
+     *  stack when calling the 'write' method.  This mechanism can e.g. be used to digitally
+     *  sign particular content items.
+     ** @return OFTrue if content item is marked, OFFalse otherwise
+     */
+    inline OFBool isMarked() const
+    {
+        return MarkFlag;
+    }
+
+    /** mark/unmark the current content item.
+     *  See explanation for method 'isMarked' for details.
+     *  @param  flag  mark item if OFTrue, unmark otherwise
+     */
+    inline void setMark(const OFBool flag)
+    {
+        MarkFlag = flag;
+    }
 
     /** check whether the current content item is target of an by-reference relationship
      ** @return OFTrue if the content item is target, OFFalse otherwise
@@ -271,6 +310,12 @@ class DSRDocumentTreeNode
                               const E_ValueType valueType,
                               const OFBool byReference = OFFalse) const;
 
+    /** remove digital signatures from content item.
+     *  This method clears the MACParametersSequence and the DigitalSignaturesSequence for the
+     *  current content item which have been filled during reading.
+     */
+    void removeSignatures();
+
 
   protected:
 
@@ -340,38 +385,52 @@ class DSRDocumentTreeNode
     /** read SR document content module
      ** @param  dataset       DICOM dataset from which the data should be read
      *  @param  documentType  type of the document to be read (used for checking purposes)
+     *  @param  signatures    optional flag indicating whether to read the digital signatures
+     *                        from the dataset or not.  If OFTrue the MACParametersSequence and
+     *                        the DigitalSignaturesSequence are read for each content item.
      *  @param  logStream     pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition readSRDocumentContentModule(DcmItem &dataset,
                                             const E_DocumentType documentType,
+                                            const OFBool signatures,
                                             OFConsole *logStream);
 
     /** write SR document content module
-     ** @param  dataset    DICOM dataset to which the data should be written
-     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
+     ** @param  dataset      DICOM dataset to which the data should be written
+     *  @param  markedItems  optional stack where pointers to all 'marked' content items
+     *                       (DICOM datasets/items) are added to during the write process.
+     *  @param  logStream    pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition writeSRDocumentContentModule(DcmItem &dataset,
-                                             OFConsole *logStream) const;
+                                             DcmStack *markedItems,
+                                             OFConsole *logStream);
 
     /** read document relationship macro
      ** @param  dataset       DICOM dataset from which the data should be read
      *  @param  documentType  type of the document to be read (used for checking purposes)
+     *  @param  signatures    optional flag indicating whether to read the digital signatures
+     *                        from the dataset or not.  If OFTrue the MACParametersSequence and
+     *                        the DigitalSignaturesSequence are read for each content item.
      *  @param  logStream     pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition readDocumentRelationshipMacro(DcmItem &dataset,
                                               const E_DocumentType documentType,
+                                              const OFBool signatures,
                                               OFConsole *logStream);
 
     /** write document relationship macro
-     ** @param  dataset    DICOM dataset to which the data should be written
-     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
+     ** @param  dataset      DICOM dataset to which the data should be written
+     *  @param  markedItems  optional stack where pointers to all 'marked' content items
+     *                       (DICOM datasets/items) are added to during the write process.
+     *  @param  logStream    pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition writeDocumentRelationshipMacro(DcmItem &dataset,
-                                               OFConsole *logStream) const;
+                                               DcmStack *markedItems,
+                                               OFConsole *logStream);
 
     /** read document content macro
      ** @param  dataset    DICOM dataset from which the data should be read
@@ -392,20 +451,27 @@ class DSRDocumentTreeNode
     /** read content sequence
      ** @param  dataset       DICOM dataset from which the data should be read
      *  @param  documentType  type of the document to be read (used for checking purposes)
+     *  @param  signatures    optional flag indicating whether to read the digital signatures
+     *                        from the dataset or not.  If OFTrue the MACParametersSequence and
+     *                        the DigitalSignaturesSequence are read for each content item.
      *  @param  logStream     pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition readContentSequence(DcmItem &dataset,
                                     const E_DocumentType documentType,
+                                    const OFBool signatures,
                                     OFConsole *logStream);
 
     /** write content sequence
      ** @param  dataset       DICOM dataset to which the data should be written
      *  @param  documentType  type of the document to be read (used for checking purposes)
+     *  @param  markedItems   optional stack where pointers to all 'marked' content items
+     *                        (DICOM datasets/items) are added to during the write process.
      *  @param  logStream     pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition writeContentSequence(DcmItem &dataset,
+                                     DcmStack *markedItems,
                                      OFConsole *logStream) const;
 
     /** render concept name in HTML format.
@@ -451,6 +517,8 @@ class DSRDocumentTreeNode
 
   private:
 
+    /// flag indicating whether the content item is marked (e.g. used for digital signatures)
+    OFBool                   MarkFlag;
     /// flag indicating whether the content item is referenced (by-reference relationship)
     OFBool                   ReferenceTarget;
 
@@ -463,6 +531,11 @@ class DSRDocumentTreeNode
     DSRCodedEntryValue       ConceptName;
     /// observation date and time (VR=DT, conditional)
     OFString                 ObservationDateTime;
+
+    /// MAC parameters sequence (VR=SQ, optional)
+    DcmSequenceOfItems       MACParameters;
+    /// digital signatures sequence (VR=SQ, optional)
+    DcmSequenceOfItems       DigitalSignatures;
 
 
  // --- declaration of default/copy constructor and assignment operator
@@ -479,7 +552,10 @@ class DSRDocumentTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.h,v $
- *  Revision 1.7  2000-11-13 10:26:21  joergr
+ *  Revision 1.8  2001-01-18 15:53:34  joergr
+ *  Added support for digital signatures.
+ *
+ *  Revision 1.7  2000/11/13 10:26:21  joergr
  *  Added output of optional observation datetime to rendered HTML page.
  *
  *  Revision 1.6  2000/11/07 18:14:28  joergr

@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTree
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-07 18:33:30 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2001-01-18 15:55:48 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -109,7 +109,8 @@ E_Condition DSRDocumentTree::print(ostream &stream,
 
 
 E_Condition DSRDocumentTree::read(DcmItem &dataset,
-                                  const E_DocumentType documentType)
+                                  const E_DocumentType documentType,
+                                  const OFBool signatures)
 {
     E_Condition result = EC_Normal;
     /* clear current document tree */
@@ -134,7 +135,7 @@ E_Condition DSRDocumentTree::read(DcmItem &dataset,
                     if (addNode(node))
                     {
                         /* ... and let the node read the rest of the document */
-                        result = node->read(dataset, DocumentType, LogStream);
+                        result = node->read(dataset, DocumentType, signatures, LogStream);
                         /* check and update by-reference relationships (if applicable) */
                         checkByReferenceRelationships(OFFalse /* updateString */,  OFTrue /* updateNodeID */);
                     } else
@@ -155,7 +156,8 @@ E_Condition DSRDocumentTree::read(DcmItem &dataset,
 }
 
 
-E_Condition DSRDocumentTree::write(DcmItem &dataset)
+E_Condition DSRDocumentTree::write(DcmItem &dataset,
+                                   DcmStack *markedItems)
 {
     E_Condition result = EC_CorruptedData;
     /* check whether root node has correct relationship and value type */
@@ -167,7 +169,7 @@ E_Condition DSRDocumentTree::write(DcmItem &dataset)
             /* check and update by-reference relationships (if applicable) */
             checkByReferenceRelationships(OFTrue /* updateString */,  OFFalse /* updateNodeID */);
             /* start writing from root node */
-            result = node->write(dataset, LogStream);
+            result = node->write(dataset, markedItems, LogStream);
         }
     }
     return result;
@@ -335,6 +337,36 @@ DSRContentItem &DSRDocumentTree::getCurrentContentItem()
 }
 
 
+void DSRDocumentTree::unmarkAllContentItems()
+{
+    DSRTreeNodeCursor cursor(getRoot());
+    if (cursor.isValid())
+    {
+        DSRDocumentTreeNode *node = NULL;
+        do {
+            node = (DSRDocumentTreeNode *)cursor.getNode();
+            if (node != NULL)
+                node->setMark(OFFalse);
+        } while (cursor.iterate());
+    }
+}
+
+
+void DSRDocumentTree::removeSignatures()
+{
+    DSRTreeNodeCursor cursor(getRoot());
+    if (cursor.isValid())
+    {
+        DSRDocumentTreeNode *node = NULL;
+        do {
+            node = (DSRDocumentTreeNode *)cursor.getNode();
+            if (node != NULL)
+                node->removeSignatures();
+        } while (cursor.iterate());
+    }
+}
+
+
 size_t DSRDocumentTree::addNode(DSRTreeNode * /* node */,
                                 const E_AddMode /* addMode */)
 {
@@ -454,7 +486,10 @@ E_Condition DSRDocumentTree::checkByReferenceRelationships(const OFBool updateSt
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.cc,v $
- *  Revision 1.7  2000-11-07 18:33:30  joergr
+ *  Revision 1.8  2001-01-18 15:55:48  joergr
+ *  Added support for digital signatures.
+ *
+ *  Revision 1.7  2000/11/07 18:33:30  joergr
  *  Enhanced support for by-reference relationships.
  *
  *  Revision 1.6  2000/11/01 16:34:12  joergr
