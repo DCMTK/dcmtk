@@ -93,8 +93,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-16 10:33:57 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Update Date:      $Date: 2004-04-16 12:47:53 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -169,7 +169,7 @@ const unsigned int OFStandard::ftoa_leftadj   = 0x10;
 const unsigned int OFStandard::ftoa_zeropad   = 0x20;
 
 #ifndef HAVE_ISINF
-static int isinf(double x)
+static int my_isinf(double x)
 {
 #ifdef HAVE_WINDOWS_H
   return (! _finite(x)) && (! _isnan(x));
@@ -992,7 +992,11 @@ void OFStandard::ftoa(
   }
 
   // check if val is infinity
+#ifdef HAVE_ISINF
   if (isinf(val))
+#else
+  if (my_isinf(val))
+#endif
   {
     if (val < 0)
         OFStandard::strlcpy(dst, "-inf", siz);
@@ -1051,7 +1055,7 @@ public:
   , offset_(0)
   , size_(theSize)
   {
-  	if (size_ > 0) buf_ = new char[size_];
+    if (size_ > 0) buf_ = new char[size_];
   }
 
   /// destructor
@@ -1421,7 +1425,11 @@ void OFStandard::ftoa(
   }
 
   // check if val is infinity
+#ifdef HAVE_ISINF
   if (isinf(val))
+#else
+  if (my_isinf(val))
+#endif
   {
     if (val < 0)
         OFStandard::strlcpy(dst, "-inf", siz);
@@ -1577,7 +1585,10 @@ unsigned int OFStandard::my_sleep(unsigned int seconds)
 
 /*
  *  $Log: ofstd.cc,v $
- *  Revision 1.26  2004-01-16 10:33:57  joergr
+ *  Revision 1.27  2004-04-16 12:47:53  joergr
+ *  Renamed local function "isinf" to "my_isinf" to avoid possible conflicts.
+ *
+ *  Revision 1.26  2004/01/16 10:33:57  joergr
  *  Replaced OFString::resize() by ..reserve() in convertToMarkupString()
  *  because of STL problems with Metrowerks CodeWarrior 8.3 compiler.
  *
