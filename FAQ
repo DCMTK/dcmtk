@@ -1,0 +1,70 @@
+DCMTK FAQ - Frequently Asked Questions
+
+----
+1996.09.24
+
+Q: Does DCMTK compile on Microsoft Windows NT/95 ?
+
+A: Not at the moment.  We want to make this possible, but have no
+   definite time schedule to do so.
+
+----
+1996.09.24
+
+Q: Does DCMTK compile on Apple Macintosh ?
+
+A: Yes.  Parts (dcmdata and dcmnet) compile using the Metrowerks
+   CodeWarrior 6.0 C++ compiler.  We do not currently have access to
+   a newer version of CodeWarrior.
+
+   You will also need an appropriate version of GUSI (Grand Unified 
+   Socket Interface) which is a socket implementation for Macintosh.
+   This is can be obtained via 
+        http://www.iis.ee.ethz.ch/~neeri/macintosh/gusi-qa.html
+
+   Please note, there are no Macintosh applications in DCMTK.  You
+   have to use a simulated Unix command line interface (via the
+   CodeWarrior SIOUX library).
+
+   Example CodeWarrior project files for DCMTK will be made available 
+   via:
+        http://www.offis.uni-oldenburg.de/projekte/dicom/dicom_software_e.html
+
+---
+1996.09.24
+
+Q: Where is rest of the documentation?
+
+A: All of the available DCMTK documentation is distributed in
+   the DCMTK package.  There is documentation about how to configure
+   and run the programs.  What is missing is documentation about
+   how to use the libraries.  Currently, the only way to learn how
+   to use the libraries is to look at the example programs and
+   do things the same way.  Hopefully, some documentation will be
+   written in the future and financial contributions would certainly 
+   reduce the waiting considerably.
+
+---
+1996.09.24
+
+Q: None of the programs do anything, they all crash as soon
+   as they get started!
+
+A: We have received reports of configuration problems relating
+   to a GNU C++ library libiostream.a.  This library was part
+   of older (pre 2.7 ??) releases and is incompatible with newer
+   versions of the GNU C++ library.  It seems that when installing
+   a newer version of the GNU C++ library the old libiostream.a
+   library does not get removed.  If our configuration scripts
+   find this library then it will be used.  
+
+   The problem manifests itself by causing any compiled program
+   to immediately crash as soon as it tries to do any C++ streams
+   based I/O.
+
+   A workaround is to remove or rename the libiostream.a library.  
+   Alternatively, you can edit the file dcmtk/config/Makefile.def 
+   after install Step 2 (running the configure script) and remove 
+   any reference to -liostream.a
+
+---
