@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomGSDFunction (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-04-14 14:27:27 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-08 14:48:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/digsdfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -371,11 +371,11 @@ int DiGSDFunction::calculateGSDF()
         register double ln4;
         for (i = 0; i < GSDFCount; i++)
         {
-            ln = log((double)(i + 1));
+            ln = log(OFstatic_cast(double, i + 1));
             ln2 = ln * ln;
             ln3 = ln2 * ln;
             ln4 = ln3 * ln;
-            GSDFValue[i] = pow((double)10, (a + c*ln + e*ln2 + g*ln3 + m*ln4) / (1 + b*ln + d*ln2 + f*ln3 + h*ln4 + k*(ln4*ln)));
+            GSDFValue[i] = pow(OFstatic_cast(double, 10), (a + c*ln + e*ln2 + g*ln3 + m*ln4) / (1 + b*ln + d*ln2 + f*ln3 + h*ln4 + k*(ln4*ln)));
         }
         return 1;
     }
@@ -413,7 +413,7 @@ int DiGSDFunction::calculateJNDBoundaries()
             /* hardcopy device (printer/scanner), values are in OD */
             if (MaxDensity < 0)
                 JNDMin = getJNDIndex(convertODtoLum(MaxValue));
-            else // max density specified         
+            else // max density specified
                 JNDMin = getJNDIndex(convertODtoLum(MaxDensity));
             if (MinDensity < 0)
                 JNDMax = getJNDIndex(convertODtoLum(MinValue));
@@ -461,7 +461,10 @@ double DiGSDFunction::getJNDIndex(const double lum)
  *
  * CVS/RCS Log:
  * $Log: digsdfn.cc,v $
- * Revision 1.25  2003-04-14 14:27:27  meichel
+ * Revision 1.26  2003-12-08 14:48:26  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ *
+ * Revision 1.25  2003/04/14 14:27:27  meichel
  * Added explicit typecasts in calls to pow(). Needed by Visual C++ .NET 2003.
  *
  * Revision 1.24  2003/03/12 14:54:19  joergr

@@ -22,9 +22,9 @@
  *  Purpose: DicomGSDFLUT (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-02-12 11:37:14 $
+ *  Update Date:      $Date: 2003-12-08 14:49:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/digsdlut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -145,7 +145,8 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
                 double *gsdf = new double[gin_ctn];                     // interpolated GSDF
                 if (gsdf != NULL)
                 {
-                    if (DiCubicSpline<double, double>::Interpolation(jnd_idx, gsdf_tab, gsdf_spl, gsdf_cnt, jidx, gsdf, (unsigned int)gin_ctn))
+                    if (DiCubicSpline<double, double>::Interpolation(jnd_idx, gsdf_tab, gsdf_spl, gsdf_cnt, jidx, gsdf,
+                        OFstatic_cast(unsigned int, gin_ctn)))
                     {
                         DataBuffer = new Uint16[Count];
                         if (DataBuffer != NULL)
@@ -157,11 +158,11 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
                             if (inverse)
                             {
                                 register double v;
-                                const double factor = (double)(ddl_cnt - 1) / (double)(Count - 1);
+                                const double factor = OFstatic_cast(double, ddl_cnt - 1) / OFstatic_cast(double, Count - 1);
                                 /* convert DDL to P-Value */
                                 for (i = 0; i < Count; i++)
                                 {
-                                    v = val_tab[(int)(i * factor)] + amb;                 // need to scale index to range of value table
+                                    v = val_tab[OFstatic_cast(int, i * factor)] + amb;    // need to scale index to range of value table
                                     while ((j + 1 < ddl_cnt) && (gsdf[j] < v))            // search for closest index, assuming monotony
                                         j++;
                                     if ((j > 0) && (fabs(gsdf[j - 1] - v) < fabs(gsdf[j] - v)))
@@ -251,7 +252,10 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
  *
  * CVS/RCS Log:
  * $Log: digsdlut.cc,v $
- * Revision 1.16  2003-02-12 11:37:14  joergr
+ * Revision 1.17  2003-12-08 14:49:18  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ *
+ * Revision 1.16  2003/02/12 11:37:14  joergr
  * Added Dmin/max support to CIELAB calibration routines.
  *
  * Revision 1.15  2003/02/11 10:02:31  joergr

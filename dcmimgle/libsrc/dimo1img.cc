@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochrome1Image (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-09 13:34:50 $
+ *  Update Date:      $Date: 2003-12-08 14:50:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimo1img.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -136,8 +136,9 @@ DiImage *DiMono1Image::createScale(const signed long left_pos,
                                    const int aspect,
                                    const Uint16 pvalue) const
 {
-    DiImage *image = new DiMono1Image(this, (Uint16)left_pos, (Uint16)top_pos, (Uint16)src_cols, (Uint16)src_rows,
-        (Uint16)dest_cols, (Uint16)dest_rows, interpolate, aspect,pvalue);
+    DiImage *image = new DiMono1Image(this, OFstatic_cast(Uint16, left_pos), OFstatic_cast(Uint16, top_pos),
+        OFstatic_cast(Uint16, src_cols), OFstatic_cast(Uint16, src_rows), OFstatic_cast(Uint16, dest_cols),
+        OFstatic_cast(Uint16, dest_rows), interpolate, aspect, pvalue);
     return image;
 }
 
@@ -169,7 +170,10 @@ DiImage *DiMono1Image::createMono(const double,
  *
  * CVS/RCS Log:
  * $Log: dimo1img.cc,v $
- * Revision 1.8  2002-12-09 13:34:50  joergr
+ * Revision 1.9  2003-12-08 14:50:52  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ *
+ * Revision 1.8  2002/12/09 13:34:50  joergr
  * Renamed parameter/local variable to avoid name clashes with global
  * declaration left and/or right (used for as iostream manipulators).
  *

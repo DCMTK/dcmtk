@@ -22,9 +22,9 @@
  *  Purpose: DicomCIELABLUT (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-02-12 11:37:14 $
+ *  Update Date:      $Date: 2003-12-08 14:47:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dicielut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -125,14 +125,14 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
             const double max = (lum_max < 0) ? val_max + amb : lum_max /*includes 'amb'*/;
             const double lmin = min / max;
             const double hmin = (lmin > 0.008856) ? 116.0 * pow(lmin, 1.0 / 3.0) - 16 : 903.3 * lmin;
-            const double lfac = (100.0 - hmin) / ((double)(cin_ctn - 1) * 903.3);
+            const double lfac = (100.0 - hmin) / (OFstatic_cast(double, cin_ctn - 1) * 903.3);
             const double loff = hmin / 903.3;
-            const double cfac = (100.0 - hmin) / ((double)(cin_ctn - 1) * 116.0);
+            const double cfac = (100.0 - hmin) / (OFstatic_cast(double, cin_ctn - 1) * 116.0);
             const double coff = (16.0  + hmin) / 116.0;
             for (i = 0; i < cin_ctn; i++)                   // compute CIELAB function
             {
-                llin = (double)i * lfac + loff;
-                cub = (double)i * cfac + coff;
+                llin = OFstatic_cast(double, i) * lfac + loff;
+                cub = OFstatic_cast(double, i) * cfac + coff;
                 cielab[i] = ((llin > 0.008856) ? cub * cub * cub : llin) * max;
             }
             DataBuffer = new Uint16[Count];
@@ -144,11 +144,11 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
                 if (inverse)
                 {
                     register double v;
-                    const double factor = (double)(ddl_cnt - 1) / (double)(Count - 1);
+                    const double factor = OFstatic_cast(double, ddl_cnt - 1) / OFstatic_cast(double, Count - 1);
                     /* convert from DDL */
                     for (i = 0; i < Count; i++)
                     {
-                        v = val_tab[(int)(i * factor)] + amb;                 // need to scale index to range of value table
+                        v = val_tab[OFstatic_cast(int, i * factor)] + amb;    // need to scale index to range of value table
                         while ((j + 1 < ddl_cnt) && (cielab[j] < v))          // search for closest index, assuming monotony
                             j++;
                         if ((j > 0) && (fabs(cielab[j - 1] - v) < fabs(cielab[j] - v)))
@@ -231,7 +231,10 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
  *
  * CVS/RCS Log:
  * $Log: dicielut.cc,v $
- * Revision 1.17  2003-02-12 11:37:14  joergr
+ * Revision 1.18  2003-12-08 14:47:03  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ *
+ * Revision 1.17  2003/02/12 11:37:14  joergr
  * Added Dmin/max support to CIELAB calibration routines.
  *
  * Revision 1.16  2002/11/27 14:08:11  meichel

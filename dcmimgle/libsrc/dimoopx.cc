@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: DicomMonoOutputPixel (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:58 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoopx.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-08 14:55:04 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -77,11 +76,11 @@ DiMonoOutputPixel::~DiMonoOutputPixel()
 int DiMonoOutputPixel::isUnused(const unsigned long value)
 {
     if (UsedValues == NULL)
-        determineUsedValues();                  // create on demand 
+        determineUsedValues();                  // create on demand
     if (UsedValues != NULL)
     {
         if (value <= MaxValue)
-            return (int)(UsedValues[value] == 0);
+            return OFstatic_cast(int, UsedValues[value] == 0);
         return 2;                               // out of range
     }
     return 0;
@@ -92,7 +91,10 @@ int DiMonoOutputPixel::isUnused(const unsigned long value)
  *
  * CVS/RCS Log:
  * $Log: dimoopx.cc,v $
- * Revision 1.6  2001-06-01 15:49:58  meichel
+ * Revision 1.7  2003-12-08 14:55:04  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ *
+ * Revision 1.6  2001/06/01 15:49:58  meichel
  * Updated copyright header
  *
  * Revision 1.5  2000/03/08 16:24:31  meichel
