@@ -22,9 +22,9 @@
  *  Purpose: Class for connecting to a file-based data source.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2003-08-21 09:33:24 $
+ *  Update Date:      $Date: 2003-08-21 13:40:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wldsfs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -62,8 +62,7 @@ WlmDataSourceFileSystem::WlmDataSourceFileSystem()
 // Task         : Constructor.
 // Parameters   : none.
 // Return Value : none.
-  : WlmDataSource(), fileSystemInteractionManager( NULL ), matchingDatasets( NULL ),
-    numOfMatchingDatasets( 0 ), dfPath( NULL ), handleToReadLockFile( 0 )
+  : fileSystemInteractionManager( NULL ), dfPath( NULL ), handleToReadLockFile( 0 )
 {
   fileSystemInteractionManager = new WlmFileSystemInteractionManager();
 }
@@ -686,7 +685,11 @@ int WlmDataSourceFileSystem::ReleaseReadlock()
 /*
 ** CVS Log
 ** $Log: wldsfs.cc,v $
-** Revision 1.12  2003-08-21 09:33:24  wilkens
+** Revision 1.13  2003-08-21 13:40:01  wilkens
+** Moved declaration and initialization of member variables matchingDatasets and
+** numOfMatchingDatasets to base class.
+**
+** Revision 1.12  2003/08/21 09:33:24  wilkens
 ** Function NextFindResponse() will not any longer return an empty dataset when
 ** status WLM_SUCCESS is reached.
 **
