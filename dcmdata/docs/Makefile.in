@@ -2,6 +2,7 @@
 #	Makefile for dcmdata/docs
 #
 
+
 @SET_MAKE@
 
 SHELL = /bin/sh
@@ -10,7 +11,6 @@ top_srcdir = @top_srcdir@
 configdir = @top_srcdir@/@configdir@
 
 include $(configdir)/@common_makefile@
-
 
 files = datadict.txt
 

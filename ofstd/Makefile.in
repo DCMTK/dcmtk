@@ -2,6 +2,7 @@
 #	Makefile for ofstd
 #
 
+
 @SET_MAKE@
 
 SHELL = /bin/sh

@@ -2,6 +2,7 @@
 #	Makefile for dcmimgle/docs
 #
 
+
 @SET_MAKE@
 
 SHELL = /bin/sh

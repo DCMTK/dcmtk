@@ -2,6 +2,7 @@
 #	Makefile for dcmimgle/etc
 #
 
+
 @SET_MAKE@
 
 SHELL = /bin/sh

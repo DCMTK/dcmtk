@@ -2,6 +2,7 @@
 #	Makefile for dcmimage/tests
 #
 
+
 @SET_MAKE@
 
 SHELL = /bin/sh

@@ -2,6 +2,7 @@
 #	Makefile for dcmdata/etc
 #
 
+
 @SET_MAKE@
 
 SHELL = /bin/sh

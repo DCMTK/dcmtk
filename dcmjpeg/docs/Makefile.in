@@ -2,6 +2,7 @@
 #	Makefile for dcmjpeg/docs
 #
 
+
 @SET_MAKE@
 
 SHELL = /bin/sh
