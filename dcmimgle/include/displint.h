@@ -22,9 +22,9 @@
  *  Purpose: DiCubicSpline Function/Interpolation (Header/Implementation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-01 13:25:35 $
+ *  Update Date:      $Date: 1999-10-14 19:05:17 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/displint.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -32,8 +32,8 @@
  */
 
 
-#ifndef __DISPLINE_H
-#define __DISPLINE_H
+#ifndef __DISPLINT_H
+#define __DISPLINT_H
 
 #include "osconfig.h"
 
@@ -228,7 +228,10 @@ class DiCubicSpline
  *
  * CVS/RCS Log:
  * $Log: displint.h,v $
- * Revision 1.8  1999-10-01 13:25:35  joergr
+ * Revision 1.9  1999-10-14 19:05:17  joergr
+ * Fixed typo.
+ *
+ * Revision 1.8  1999/10/01 13:25:35  joergr
  * Enhanced template class for cubic spline interpolation to support
  * non-floating point classes/types as y-coordinates.
  *
