@@ -22,9 +22,9 @@
  *  Purpose: Provides main interface to the "DICOM image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-06-20 15:12:49 $
+ *  Update Date:      $Date: 2001-09-28 13:00:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dcmimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -323,6 +323,7 @@ class DicomImage
      *  apply VOI/PLUT transformation and (visible) overlay planes.
      *  internal memory buffer will be delete for the next getBitmap/Output operation.
      *  output data is always padded to 8, 16, 32, ... bits (bits allocated).
+     *  Supported output color models: monochrome, RGB (and YCbCr_Full if flag CIF_KeepYCbCrColorModel set).
      *
      ** @param  bits    number of bits per sample (image depth, 1..MAX_BITS)
      *                  (MI_PastelColor = -1 for true color pastel mode, EXPERIMENTAL)
@@ -344,6 +345,7 @@ class DicomImage
     /** render pixel data and output to given memory buffer.
      *  apply VOI/PLUT transformation and (visible) overlay planes
      *  output data is always padded to 8, 16, 32, ... bits (bits allocated).
+     *  Supported output color models: monochrome, RGB (and YCbCr_Full if flag CIF_KeepYCbCrColorModel set).
      *
      ** @param  buffer  pointer to memory buffer (must already be allocated)
      *  @param  size    size of memory buffer (will be checked whether it is sufficient)
@@ -369,6 +371,7 @@ class DicomImage
     /** render pixel data and return pointer to given plane (internal memory buffer).
      *  apply VOI/PLUT transformation and (visible) overlay planes
      *  internal memory buffer will be delete for the next getBitmap/Output operation.
+     *  Supported output color models: monochrome, RGB (and YCbCr_Full if flag CIF_KeepYCbCrColorModel set).
      *
      ** @param  plane  number of plane to be rendered
      *
@@ -502,13 +505,13 @@ class DicomImage
     /** set automatically calculated minimum/maximum window.
      *  possibly active VOI LUT is implicitly disabled.
      *
-     ** @param  idx  ignore global min/max values if false (0)
+     ** @param  idx  ignore global min/max values if true (1)
      *
      ** @return true if sucessful (1 = window has changed,
      *                             2 = new window is the same as previous one),
      *          false otherwise
      */
-    inline int setMinMaxWindow(const int idx = 1)
+    inline int setMinMaxWindow(const int idx = 0)
     {
         return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
             Image->getMonoImagePtr()->setMinMaxWindow(idx) : 0;
@@ -525,6 +528,30 @@ class DicomImage
     {
         return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
             Image->getMonoImagePtr()->setHistogramWindow(thresh) : 0;
+    }
+
+    /** set automatically calculated VOI window for the specified Region of Interest (ROI).
+     *  The ROI is specified by means of a rectangle (left, top, width, height). Only the part
+     *  of the ROI that overlaps with the image is regarded - if the overlapping area is empty
+     *  this method returns false (0).
+     *  Possibly active VOI LUT is implicitly disabled.
+     *
+     ** @param  left    x-coordinate of the top left-hand corner of the ROI (starting from 0)
+     *  @param  top     y-coordinate of the top left-hand corner of the ROI (starting from 0)
+     *  @param  width   width in pixels of the rectangular ROI (minimum: 1)
+     *  @param  height  height in pixels of the rectangular ROI (minimum: 1)
+     *
+     ** @return true if sucessful (1 = window has changed,
+     *                             2 = new window is the same as previous one),
+     *          false otherwise
+     */
+    inline int setRoiWindow(const unsigned long left,
+                            const unsigned long top,
+                            const unsigned long width,
+                            const unsigned long height)
+    {
+        return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
+            Image->getMonoImagePtr()->setRoiWindow(left, top, width, height) : 0;
     }
 
     /** set specified window (given by index to window width/center sequence stored in image file).
@@ -643,6 +670,17 @@ class DicomImage
 
  // --- hardcopy parameters: only applicable for grayscale images
 
+    /** get polarity.
+     *  possible values are EPP_Normal and EPP_Reverse
+     *
+     ** @return currently active polarity mode or EPP_Normal if not applicable
+     */
+    inline EP_Polarity getPolarity() const
+    {
+        return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
+            Image->getMonoImagePtr()->getPolarity() : EPP_Normal;
+    }
+
     /** set polarity.
      *
      ** @param  polarity  polarity (normal or reverse)
@@ -679,10 +717,22 @@ class DicomImage
 
  // --- presentation LUT: only applicable for grayscale images
 
+    /** get shape for presentation transformation.
+     *  possible values are: ESP_Default, ESP_Identity, ESP_Inverse, ESP_LinOD.
+     *  If a presentation LUT is currently active ESP_Default is always returned.
+     *
+     ** @return currently active presentation LUT shape or ESP_Default if not set
+     */
+    inline ES_PresentationLut getPresentationLutShape() const
+    {
+        return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
+            Image->getMonoImagePtr()->getPresentationLutShape() : ESP_Default;
+    }
+
     /** set shape for presentation transformation.
      *  possibly active presentation LUT is implicitly disabled.
      *
-     ** @param  shape  presentation LUT shape (default, identity or inverse).
+     ** @param  shape  presentation LUT shape (default, identity, inverse or lin OD).
      *                 'default' means that the output data is always created with 0 for black
      *                 and maxvalue for white (i.e. monochrome2 data is created for output).
      *
@@ -1051,7 +1101,7 @@ class DicomImage
 
     /** create bitmap for specified overlay plane.
      *  (up to 16 bits per pixel with two values: 'fore' and 'back')
-     *  In contrasttothe previous method the full bitmap data is always returned.
+     *  In contrast to the previous method the full bitmap data is always returned.
      *
      ** @param  plane   number (0..15) or group number (0x60nn) of overlay plane
      *  @param  width   returns width of overlay plane (in pixels)
@@ -1089,6 +1139,33 @@ class DicomImage
     {
         if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
             Image->getMonoImagePtr()->deleteOverlayData();
+    }
+
+    /** create bitmap for specified overlay plane and store it in (6xxx,3000) format.
+     *  (1 bit allocated and stored, foreground color is 1, background color is 0,
+     *   data is 16 bit padded - even length)
+     *  memory is allocated but not handled internally - must be deleted from calling program.
+     *
+     ** @param  buffer  stores pointer to overlay data (memory is allocated internally)
+     *  @param  plane   number (0..15) or group number (0x60nn) of overlay plane
+     *  @param  width   returns width of overlay plane (in pixels)
+     *  @param  height  returns height of overlay plane (in pixels)
+     *  @param  frame   returns number of frames
+     *  @param  idx     index of overlay group (0 = dataset, planes stored in the image dataset;
+     *                                          1 = additional, planes added by addOverlay()),
+     *                  default: 0
+     *
+     ** @return number of bytes allocated for the 'buffer' if successful, 0 otherwise
+     */
+    unsigned long create6xxx3000OverlayData(Uint8 *&buffer,
+                                            const unsigned int plane,
+                                            unsigned int &width,
+                                            unsigned int &height,
+                                            unsigned long &frames,
+                                            const unsigned int idx = 0) const
+    {
+        return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
+            Image->getMonoImagePtr()->create6xxx3000OverlayData(buffer, plane, width, height, frames, idx) : 0;
     }
 
 
@@ -1264,6 +1341,7 @@ class DicomImage
     /** create monochrome copy of the current image.
      *  equal to createDicomImage() for monochrome images.
      *  memory is not handled internally - must be deleted from calling program.
+     *  This method does not work if original YCbCr color model is retained (see CIF_KeepYCbCrColorModel).
      *
      ** @param  red    coefficient by which the red component is weighted (default: NTSC value)
      *  @param  green  coefficient by which the green component is weighted (default: NTSC value)
@@ -1277,6 +1355,7 @@ class DicomImage
 
     /** create true color (24 bit) bitmap for MS Windows.
      *  memory is not handled internally - must be deleted from calling program.
+     *  This method does not work if original YCbCr color model is retained (see CIF_KeepYCbCrColorModel).
      *
      ** @param  frame  index of frame to be converted (default: first frame)
      *
@@ -1290,6 +1369,7 @@ class DicomImage
 
     /** create true color (32 bit) bitmap for Java (AWT default format).
      *  Memory is not handled internally - must be deleted from calling program.
+     *  This method does not work if original YCbCr color model is retained (see CIF_KeepYCbCrColorModel).
      *
      ** @param  frame  index of frame to be converted (default: first frame)
      *  @param  bits   number of bits per pixel used for the output bitmap (default: 32)
@@ -1303,7 +1383,7 @@ class DicomImage
             Image->createAWTBitmap(frame, bits) : NULL;
     }
 
-    /** create 12 bit packed bitmap for DICOM printers.
+    /** create 12 bit packed (monochrome) bitmap for DICOM printers.
      *  Memory is not handled internally - must be deleted from calling program.
      *
      ** @param  buffer  pointer to input memory buffer (16 bits allocated, 12 bits stored)
@@ -1335,6 +1415,7 @@ class DicomImage
 
     /** write pixel data to PPM file (specified by filename).
      *  pixel data is written in ASCII format.
+     *  This method does not work if original YCbCr color model is retained (see CIF_KeepYCbCrColorModel).
      *
      ** @param  filename  name of output file
      *  @param  bits      number of bits used for output of pixel data
@@ -1350,6 +1431,7 @@ class DicomImage
 
     /** write pixel data to PPM file (specified by open C++ stream).
      *  pixel data is written in ASCII format.
+     *  This method does not work if original YCbCr color model is retained (see CIF_KeepYCbCrColorModel).
      *
      ** @param  stream  open C++ output stream
      *  @param  bits    number of bits used for output of pixel data
@@ -1365,6 +1447,7 @@ class DicomImage
 
     /** write pixel data to PPM file (specified by open C stream).
      *  pixel data is written in ASCII format.
+     *  This method does not work if original YCbCr color model is retained (see CIF_KeepYCbCrColorModel).
      *
      ** @param  stream  open C output stream
      *  @param  bits    number of bits used for output of pixel data
@@ -1380,6 +1463,7 @@ class DicomImage
 
     /** write pixel data to raw PPM file (specified by filename).
      *  pixel data is written in binary format.
+     *  This method does not work if original YCbCr color model is retained (see CIF_KeepYCbCrColorModel).
      *
      ** @param  filename  name of output file
      *  @param  bits      number of bits used for output of pixel data
@@ -1395,6 +1479,7 @@ class DicomImage
 
     /** write pixel data to raw PPM file (specified by open C stream).
      *  pixel data is written in binary format.
+     *  This method does not work if original YCbCr color model is retained (see CIF_KeepYCbCrColorModel).
      *
      ** @param  stream  open C output stream
      *  @param  bits    number of bits used for output of pixel data
@@ -1475,7 +1560,17 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.34  2001-06-20 15:12:49  joergr
+ * Revision 1.35  2001-09-28 13:00:55  joergr
+ * Changed default behaviour of setMinMaxWindow().
+ * Added routines to get the currently active Polarity and PresentationLUTShape.
+ * Added method setRoiWindow() which automatically calculates a min-max VOI
+ * window for a specified rectangular region of the image.
+ * Added method to extract embedded overlay planes from pixel data and store
+ * them in group (6xxx,3000) format.
+ * Added new flag (CIF_KeepYCbCrColorModel) which avoids conversion of YCbCr
+ * color models to RGB.
+ *
+ * Revision 1.34  2001/06/20 15:12:49  joergr
  * Enhanced multi-frame support for command line tool 'dcm2pnm': extract all
  * or a range of frames with one call.
  *
