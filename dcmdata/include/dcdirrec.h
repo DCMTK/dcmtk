@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmDirectoryRecord
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 12:49:09 $
+ *  Update Date:      $Date: 2003-08-08 14:04:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdirrec.h,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,55 +80,55 @@ typedef enum {
 class DcmDicomDir;
 
 
-class DcmDirectoryRecord : public DcmItem {
+class DcmDirectoryRecord : public DcmItem
+{
 
     friend class DcmDicomDir;
 
 private:
-    char* recordsOriginFile;
+    char *recordsOriginFile;
 
  // --- declarations to avoid compiler warnings
 
     DcmDirectoryRecord &operator=(const DcmDirectoryRecord &);
 
 protected:
-    DcmSequenceOfItems* lowerLevelList;
+    DcmSequenceOfItems *lowerLevelList;
     E_DirRecType DirRecordType;
-    DcmDirectoryRecord* referencedMRDR;
+    DcmDirectoryRecord *referencedMRDR;
     Uint32 numberOfReferences;
     Uint32 offsetInFile;
 
-    // Seiteneffekt-freie Konversions-Methoden:
-    E_DirRecType recordNameToType(const char *recordTypeName);
-    char *      buildFileName(const char* origName, char* destName );
-    OFCondition checkHierarchy(const E_DirRecType upperRecord,
-                               const E_DirRecType lowerRecord );
+    // side-effect-free conversion routines:
+    E_DirRecType        recordNameToType(const char *recordTypeName);
+    char*               buildFileName(const char *origName, char *destName);
+    OFCondition         checkHierarchy(const E_DirRecType upperRecord,
+                                       const E_DirRecType lowerRecord);
 
-    // Zugriff auf Datenelemente innerhalb des Directory Records:
-    OFCondition         setRecordType(E_DirRecType newType );
+    // access to data elements within the Directory Records:
+    OFCondition         setRecordType(E_DirRecType newType);
     E_DirRecType        lookForRecordType();
-    OFCondition         setReferencedFileID( const char *referencedFileID );
+    OFCondition         setReferencedFileID( const char *referencedFileID);
     const char*         lookForReferencedFileID();
     DcmDirectoryRecord* lookForReferencedMRDR();
-    const char*         getReferencedFileName();      // lokal oder in MRDR
-    OFCondition         setRecordInUseFlag(const Uint16 newFlag );
+    const char*         getReferencedFileName();      // local or in MRDR
+    OFCondition         setRecordInUseFlag(const Uint16 newFlag);
     Uint16              lookForRecordInUseFlag();
     Uint32              getFileOffset();
-    Uint32              setFileOffset(Uint32 position );
+    Uint32              setFileOffset(Uint32 position);
 
 
     // Zugriff auf MRDR-Datenelement:
-    OFCondition         setNumberOfReferences(  Uint32 newRefNum );
+    OFCondition         setNumberOfReferences(Uint32 newRefNum);
     Uint32              lookForNumberOfReferences();
     Uint32              increaseRefNum();
     Uint32              decreaseRefNum();
 
-    // Verschiedenes:
+    // misc:
     OFCondition         fillElementsAndReadSOP(const char *referencedFileID,
-                                               const char * sourceFileName);
-    OFCondition         masterInsertSub(DcmDirectoryRecord* dirRec,
-                                        const unsigned long where
-                                        = DCM_EndOfListIndex);
+                                               const char *sourceFileName);
+    OFCondition         masterInsertSub(DcmDirectoryRecord *dirRec,
+                                        const unsigned long where = DCM_EndOfListIndex);
     OFCondition         purgeReferencedFile();
 
 public:
@@ -136,14 +136,14 @@ public:
     DcmDirectoryRecord(const DcmTag &tag,
                        const Uint32 len);
     DcmDirectoryRecord(const E_DirRecType recordType,
-                       const char *referencedFileID,   // Dicom-Format with '\\'
-                       const char * sourceFileName);   // OS Format
+                       const char *referencedFileID,   // DICOM format with '\\'
+                       const char *sourceFileName);    // OS Format
 
     DcmDirectoryRecord(const char *recordTypeName,
-                       const char *referencedFileID,   // Dicom-Format with '\\'
-                       const char * sourceFileName);   // OS Format
+                       const char *referencedFileID,   // DICOM Format with '\\'
+                       const char *sourceFileName);    // OS Format
 
-    DcmDirectoryRecord(const DcmDirectoryRecord &oldDirRec );
+    DcmDirectoryRecord(const DcmDirectoryRecord &oldDirRec);
     virtual ~DcmDirectoryRecord();
 
     virtual DcmEVR ident() const;
@@ -160,45 +160,68 @@ public:
                              const Uint32 maxReadLength = DCM_MaxReadLength);
 
     virtual OFCondition verify(const OFBool autocorrect = OFFalse);
-    virtual OFCondition search(const DcmTagKey &xtag,       // in
-                               DcmStack &resultStack,       // inout
-                               E_SearchMode mode = ESM_fromHere,// in
-                               OFBool searchIntoSub = OFTrue );     // in
-    virtual OFCondition searchErrors(DcmStack &resultStack );   // inout
+    virtual OFCondition search(const DcmTagKey &xtag,               // in
+                               DcmStack &resultStack,               // inout
+                               E_SearchMode mode = ESM_fromHere,    // in
+                               OFBool searchIntoSub = OFTrue);      // in
+    virtual OFCondition searchErrors(DcmStack &resultStack);        // inout
 
     virtual E_DirRecType getRecordType();
     virtual DcmDirectoryRecord* getReferencedMRDR();
-    virtual OFCondition assignToMRDR( DcmDirectoryRecord *mrdr );// in
+    virtual OFCondition assignToMRDR(DcmDirectoryRecord *mrdr );    // in
     virtual OFCondition assignToSOPFile(const char *referencedFileID,
-                                        const char * sourceFileName);
+                                        const char *sourceFileName);
 
-    // Manipulation of the Lower-Level Directory Entities:
+    // manipulation of the lower-level Directory Entities:
 
     virtual unsigned long cardSub();
+
     virtual OFCondition insertSub(DcmDirectoryRecord* dirRec,
                                   unsigned long where = DCM_EndOfListIndex,
                                   OFBool before = OFFalse);
+
+    /** insert new directory child record at the current position.
+     *  The current position is stored internally in the 'lowerLevelList' member variable.
+     *  @param dirRec new child record to be inserted
+     *  @param before flag indicating whether to insert the record before (OFFalse) or
+     *    after (OFTrue) the current position
+     *  @return status, EC_Normal upon success, an error code otherwise
+     */
+    virtual OFCondition insertSubAtCurrentPos(DcmDirectoryRecord *dirRec,
+                                              OFBool before = OFFalse);
+
     virtual DcmDirectoryRecord* getSub(const unsigned long num);
+
+    /** get next directory child record starting at a given record
+     *  @param dirRec record to start from (goto first record if NULL)
+     *  @return pointer to next record if successful, NULL otherwise
+     */
+    virtual DcmDirectoryRecord* nextSub(const DcmDirectoryRecord *dirRec);
+
     virtual DcmDirectoryRecord* removeSub(const unsigned long num);
-    virtual DcmDirectoryRecord* removeSub( DcmDirectoryRecord* dirRec );
+    virtual DcmDirectoryRecord* removeSub(DcmDirectoryRecord *dirRec);
     virtual OFCondition deleteSubAndPurgeFile(const unsigned long num);
-    virtual OFCondition deleteSubAndPurgeFile( DcmDirectoryRecord* dirRec );
+    virtual OFCondition deleteSubAndPurgeFile(DcmDirectoryRecord *dirRec);
     virtual OFCondition clearSub();
 
     // note the records origin file
-    virtual void setRecordsOriginFile(const char* fname);
+    virtual void setRecordsOriginFile(const char *fname);
     virtual const char* getRecordsOriginFile();
 
 };
 
 
-
 #endif // DCDIRREC_H
+
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcdirrec.h,v $
-** Revision 1.22  2002-12-06 12:49:09  joergr
+** Revision 1.23  2003-08-08 14:04:16  joergr
+** Added two new methods insertSubAtCurrentPos() and nextSub() which allow for
+** a much more efficient insertion (avoids re-searching for correct position).
+**
+** Revision 1.22  2002/12/06 12:49:09  joergr
 ** Enhanced "print()" function by re-working the implementation and replacing
 ** the boolean "showFullData" parameter by a more general integer flag.
 ** Added doc++ documentation.
