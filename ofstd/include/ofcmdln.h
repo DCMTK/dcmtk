@@ -22,9 +22,9 @@
  *  Purpose: Handle command line arguments (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-04 10:02:31 $
+ *  Update Date:      $Date: 2000-03-02 12:39:11 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofcmdln.h,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -477,11 +477,29 @@ class OFCommandLine
     /** gets number of parameters in the parsed command line.
      *  A parameter is an argument which is no option (e.g. a filename).
      *
-     ** @return number of parameter
+     ** @return number of parameters
      */
     int getParamCount() const
     {
         return ParamPosList.size();
+    }
+
+    /** gets minimum number of parameters which should be accepted.
+     *
+     ** @return number of parameters
+     */
+    int getMinParamCount() const
+    {
+        return MinParamCount;
+    }
+
+    /** gets maximum number of parameters which should be accepted.
+     *
+     ** @return number of parameters
+     */
+    int getMaxParamCount() const
+    {
+        return MaxParamCount;
     }
 
 
@@ -972,7 +990,12 @@ class OFCommandLine
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.h,v $
- * Revision 1.19  1999-10-04 10:02:31  joergr
+ * Revision 1.20  2000-03-02 12:39:11  joergr
+ * Fixed inconsistency: console applications with no or only optional
+ * parameters could not be started without any command line argument
+ * because this was always regarded identical with "--help" (print usage).
+ *
+ * Revision 1.19  1999/10/04 10:02:31  joergr
  * Fixed bug in wildcard expansion (concerning "direct option" feature).
  *
  * Revision 1.18  1999/09/13 16:36:54  joergr

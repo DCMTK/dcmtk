@@ -22,9 +22,9 @@
  *  Purpose: Handle console applications (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-13 16:38:00 $
+ *  Update Date:      $Date: 2000-03-02 12:40:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofconapp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -74,7 +74,10 @@ OFBool OFConsoleApplication::parseCommandLine(OFCommandLine &cmd,
     switch (status)    
     {
         case OFCommandLine::PS_NoArguments:
-            printUsage();
+            if (cmd.getMinParamCount() > 0)
+                printUsage();
+            else
+                result = OFTrue;
             break;
         case OFCommandLine::PS_Normal:
             result = OFTrue;
@@ -219,7 +222,12 @@ void OFConsoleApplication::checkConflict(const char *firstOpt,
  *
  * CVS/RCS Log:
  * $Log: ofconapp.cc,v $
- * Revision 1.9  1999-09-13 16:38:00  joergr
+ * Revision 1.10  2000-03-02 12:40:39  joergr
+ * Fixed inconsistency: console applications with no or only optional
+ * parameters could not be started without any command line argument
+ * because this was always regarded identical with "--help" (print usage).
+ *
+ * Revision 1.9  1999/09/13 16:38:00  joergr
  * Added methods for output of warning and other messages.
  * Added method to switch on/off all output messages (quiet mode).
  *

@@ -22,9 +22,9 @@
  *  Purpose: Template class for command line arguments (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-02-02 10:56:43 $
+ *  Update Date:      $Date: 2000-03-02 12:40:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofcmdln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -821,8 +821,6 @@ void OFCommandLine::expandWildcards(const char *param,
                     
 OFCommandLine::E_ParseStatus OFCommandLine::checkParamCount()
 {
-    if ((getArgCount() == 1) && findOption("--help"))
-        return PS_NoArguments;
     MinParamCount = 0;
     MaxParamCount = 0;
     OFListIterator(OFCmdParam *) iter = ValidParamList.begin();
@@ -853,7 +851,9 @@ OFCommandLine::E_ParseStatus OFCommandLine::checkParamCount()
         }
         iter++;
     }
-    if (getParamCount() < MinParamCount)
+    if ((getArgCount() == 0) || ((getArgCount() == 1) && findOption("--help")))
+        return PS_NoArguments;
+    else if (getParamCount() < MinParamCount)
         return PS_MissingParameter;
     else if ((MaxParamCount >= 0) && (getParamCount() > MaxParamCount))
         return PS_TooManyParameters;
@@ -870,11 +870,11 @@ OFCommandLine::E_ParseStatus OFCommandLine::parseLine(int argCount,
 #endif
                                                       const int startPos)
 {
+    ArgumentList.clear();                                                // initialize lists
+    ParamPosList.clear();
+    OptionPosList.clear();
     if (argCount > startPos)                                             // any command line arguments?
     {
-        ArgumentList.clear();                                            // initialize lists
-        ParamPosList.clear();
-        OptionPosList.clear();
         int directOption = 0;                                            // number of direct predecessor
         for (int i = startPos; i < argCount; i++)                        // skip program name (argValue[0])
         {
@@ -905,9 +905,8 @@ OFCommandLine::E_ParseStatus OFCommandLine::parseLine(int argCount,
                 }
             }
         }
-        return checkParamCount();
     }
-    return PS_NoArguments;
+    return checkParamCount();
 }
 
 
@@ -1219,7 +1218,12 @@ void OFCommandLine::getStatusString(const E_ValueStatus status,
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.cc,v $
- * Revision 1.20  2000-02-02 10:56:43  joergr
+ * Revision 1.21  2000-03-02 12:40:39  joergr
+ * Fixed inconsistency: console applications with no or only optional
+ * parameters could not be started without any command line argument
+ * because this was always regarded identical with "--help" (print usage).
+ *
+ * Revision 1.20  2000/02/02 10:56:43  joergr
  * Removed space characters before preprocessor directives.
  *
  * Revision 1.19  1999/10/04 10:02:37  joergr
