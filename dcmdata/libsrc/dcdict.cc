@@ -9,10 +9,10 @@
 ** Loadable DICOM data dictionary
 ** 
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1995-11-23 17:02:39 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-01-05 13:27:34 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdict.cc,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -27,6 +27,7 @@
 #include <string.h>
 
 #include "dcdict.h"
+#include "dcdefine.h"
 
 /*
 ** The separator character between fields in the data dictionary file(s)
@@ -161,7 +162,6 @@ splitFields(char* line, char* fields[], int maxFields, char splitChar)
 	    len = p - line;
 	}
 	fields[foundFields] = (char*)malloc(len+1);
-	memset(fields[foundFields], len+1, '\0');
 	strncpy(fields[foundFields], line, len);
 	fields[foundFields][len] = '\0';
 	
@@ -529,7 +529,12 @@ DcmDataDictionary::findEntry(const DcmTagKey& key)
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.cc,v $
-** Revision 1.1  1995-11-23 17:02:39  hewett
+** Revision 1.2  1996-01-05 13:27:34  andreas
+** - changed to support new streaming facilities
+** - unique read/write methods for file and block transfer
+** - more cleanups
+**
+** Revision 1.1  1995/11/23 17:02:39  hewett
 ** Updated for loadable data dictionary.  Some cleanup (more to do).
 **
 **

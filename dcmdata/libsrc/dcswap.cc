@@ -1,206 +1,64 @@
 /*
- *
- * Author: Andreas Barth    Created:  07-17-95
- *                          Modified: 07-17-95
- *
- * Module: dcswap.cc
- *
- * Purpose:
- * ByteOrder functions
- *
- *
- * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.2 $
- * Status:	  $State: Exp $
- *
- */
+**
+** Author: Andreas Barth    17.07.95 -- Creation
+**                          27.11.95 -- Support for one Byte swapping alg.
+**
+** Module: dcswap.cc
+**
+** Purpose:
+** ByteOrder functions
+**
+**
+** Last Update:   $Author: andreas $
+** Revision:      $Revision: 1.3 $
+** Status:	  $State: Exp $
+**
+*/
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcswap.h"
 #include "dcdebug.h"
-#include "dcxfer.h"
-
-// *****************************************************
-// *** global variables ********************************
-// *****************************************************
 
 
-
-E_ByteOrder ByteOrderFlag = EBO_unknown; // modified by
-					 //FindMachineByteOrder()
-
-
-// *****************************************************
-// *** functions ***************************************
-// *****************************************************
-
-
-E_ByteOrder MachineByteOrder()
+void swapBytes(void * value, const Uint32 byteLength, 
+			   const size_t valWidth)
 {
-    return (ByteOrderFlag != EBO_unknown)
-	? ByteOrderFlag : FindMachineByteOrder();
-}
+	Bdebug((6, "dcswap:swapBytes(value,byteLength=%ld,valWidth=%d)", byteLength, valWidth));
+    
 
-
-
-
-E_ByteOrder FindMachineByteOrder()     // modifies ByteOrderFlag
-{
-Bdebug((2, "dcswap:FindMachineByteOrder()" ));
-
-    E_ByteOrder localByteOrderFlag;
-    union
-    {
-	T_VR_UL ul;
-	char uc[4];
-    } tl;
-    union
-    {
-	T_VR_US us;
-	char uc[2];
-    } ts;
-
-    tl.ul = 1;
-    ts.us = 1;
-
-    if (      tl.uc[0] == 1 && !(tl.uc[1] | tl.uc[2] | tl.uc[3])
-	   && ts.uc[0] == 1 && !(ts.uc[1]) )
-	localByteOrderFlag = EBO_LittleEndian;
-    else if ( tl.uc[3] == 1 && !(tl.uc[0] | tl.uc[1] | tl.uc[2])
-	   && ts.uc[1] == 1 && !(ts.uc[0]) )
-	localByteOrderFlag = EBO_BigEndian;
-    else
-	localByteOrderFlag = EBO_unknown;
-
-    // Achtung Seiteneffekt:
-    ByteOrderFlag = localByteOrderFlag;
-debug(( 1, "detected MachineByteOrder(u,L,B)=(0,1,2)=%d", ByteOrderFlag ));
-Edebug(());
-
-    return localByteOrderFlag;
-}
-
-
-// *****************************************************
-
-
-E_ByteOrder ConvXferToByteOrder( E_TransferSyntax ts )
-{
-Bdebug((6, "dcswap:ConvXferToByteOrder(xfer=%d)", ts ));
-
-    E_ByteOrder order;
-    switch (ts)
-    {
-	case EXS_BigEndianExplicit :
-	case EXS_BigEndianImplicit :
-	    order = EBO_BigEndian;
-	    break;
-	case EXS_LittleEndianExplicit :
-	case EXS_LittleEndianImplicit :
-	    order = EBO_LittleEndian;
-	    break;
-	default:
-        {
-            DcmXfer xferSyn( ts );     // zeitintensiv, da Suche in Tabelle
-            order = xferSyn.isBigEndian() ? EBO_BigEndian : EBO_LittleEndian;
-        }
-            break;
-    }
-Vdebug((6, order==EBO_LittleEndian, "use LittleEndian (%d)", order ));
-Vdebug((6, order==EBO_BigEndian,    "use BigEndian (%d)", order ));
-Edebug(());
-
-    return order;
-}
-
-
-// *****************************************************
-
-
-char* SwapN(char *Psrc, int P_width, int times )
-{
-Bdebug((6, "dcswap:SwapN(Psrc,P_width=%d,times=%d)", P_width, times ));
-
-    int    i, t;
-    char   *Plast;
-    char   *Pstart;
-    char   save;
-
-    for ( t = 0; t<times; t++ )
-    {
-        Pstart = Psrc + P_width * t;
-
-        for ( i = 0; i < P_width/2; i++ )
+	if (valWidth > 1)
 	{
-            Plast = Pstart + P_width - 1 - i;
-	    save = *Plast;
-	    *Plast = *( Pstart + i );
-	    *( Pstart + i ) = save;
+		Uint8 * src = (Uint8 *)value;
+		Uint32 times = byteLength/valWidth;
+		Uint8  *last;
+		Uint8  *start;
+		Uint8  save;
+
+		for (Uint32 t = 0; t<times; t++ )
+		{
+			start = src + valWidth * t;
+
+			for (size_t i = 0; i < valWidth/2; i++ )
+			{
+				last = start + valWidth - 1 - i;
+				save = *last;
+				*last = *(start + i);
+				*(start + i) = save;
+			}
+		}
 	}
-    }
-Edebug(());
-
-    return Psrc;
+	Edebug(());
 }
 
 
-// *****************************************************
-
-
-T_VR_US SwapShort( T_VR_US &sval )
+const Uint16 swapShort(Uint16 toSwap)
 {
-    union
-    {
-	T_VR_US us;
-	unsigned char uc[2];
-    } ts, ts1;
-
-    ts.us = sval;
-    ts1.uc[0] = ts.uc[1];
-    ts1.uc[1] = ts.uc[0];
-    return sval = ts1.us;
+	Uint8 * swapped = (Uint8 *)&toSwap;
+	Uint8 tmp = swapped[0];
+	swapped[0] = swapped[1];
+	swapped[1] = tmp;
+	return * ((Uint16*)swapped);
 }
-
-
-// *****************************************************
-
-
-T_VR_UL SwapLong(T_VR_UL &lval)
-{
-    union
-    {
-	T_VR_UL ul;
-	unsigned char uc[4];
-    } tl, tl1;
-
-    tl.ul = lval;
-    tl1.uc[0] = tl.uc[3];
-    tl1.uc[1] = tl.uc[2];
-    tl1.uc[2] = tl.uc[1];
-    tl1.uc[3] = tl.uc[0];
-    return lval = tl1.ul;
-}
-
-
-// *****************************************************
-
-
-T_VR_FD SwapDouble(T_VR_FD &dval)
-{
-    union
-    {
-	T_VR_FD ud;
-	unsigned char uc[4];
-    } td, td1;
-
-    td.ud = dval;
-    for (int i=0; i<8; i++)
-	td1.uc[i] = td.uc[7-i];
-    return dval = td1.ud;
-}
-
-
-// *****************************************************
 
 

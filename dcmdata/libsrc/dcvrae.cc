@@ -1,20 +1,23 @@
 /*
- * 
- * Author: Gerd Ehlers	    Created:  05-01-94
- *                          Modified: 02-07-95
- *
- * Module: dcvrae.cc
- * 
- * Purpose:
- * Implementation of class DcmApplicationEntity
- * 
- * 
- * Last Update:	  $Author: hewett $
- * Revision:      $Revision: 1.2 $
- * Status:        $State: Exp $
- *
- */
-
+**
+** Author: Gerd Ehlers	    05.05.94 -- Created
+**         Andreas Barth	04.12.95 -- New Stream 
+** Kuratorium OFFIS e.V.
+**
+** Module: dcvrae.cc
+** 
+** Purpose:
+** Implementation of class DcmApplicationEntity
+**
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-01-05 13:27:45 $
+** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrae.cc,v $
+** CVS/RCS Revision:	$Revision: 1.3 $
+** Status:		$State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
@@ -26,17 +29,14 @@
 // ********************************
 
 
-DcmApplicationEntity::DcmApplicationEntity( const DcmTag &tag,
-                                            T_VR_UL len,
-                                            iDicomStream *iDStream )
-    : DcmByteString( tag, len, iDStream )
+DcmApplicationEntity::DcmApplicationEntity(const DcmTag &tag, const Uint32 len)
+: DcmByteString(tag, len)
 {
 Bdebug((5, "dcvrae:DcmApplicationEntity::DcmApplicationEntity"
-           "(DcmTag&,len=%ld,*iDS)", len ));
+           "(DcmTag&,len=%ld)", len ));
 
     maxLength = 16;
 Edebug(());
-
 }
 
 
@@ -44,7 +44,7 @@ Edebug(());
 
 
 DcmApplicationEntity::DcmApplicationEntity( const DcmApplicationEntity &newAE )
-    : DcmByteString( newAE, EVR_AE )
+: DcmByteString( newAE, EVR_AE )
 {
 Bdebug((5, "dcvrae:DcmApplicationEntity::DcmApplicationEntity"
            "(DcmApplicationEntity&)" ));
@@ -69,12 +69,13 @@ Edebug(());
 // ********************************
 
 
-DcmEVR DcmApplicationEntity::ident() const
-{
-    return EVR_AE;
-}
-
-
-// ********************************
-
-
+/*
+** CVS/RCS Log:
+** $Log: dcvrae.cc,v $
+** Revision 1.3  1996-01-05 13:27:45  andreas
+** - changed to support new streaming facilities
+** - unique read/write methods for file and block transfer
+** - more cleanups
+**
+**
+*/

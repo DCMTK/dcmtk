@@ -1,19 +1,24 @@
 /*
- *
- * Author: Gerd Ehlers      Created:  04-26-94
- *                          Modified: 02-07-95
- *
- * Module: dcdatset.cc
- *
- * Purpose:
- * Implementation of the class DcmDataset
- *
- *
- * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.2 $
- * Status:	  $State: Exp $
- *
- */
+**
+** Author: Gerd Ehlers      26.04.94 -- Created
+**         Andreas Barth    02.12.95 -- Modified for new stream classes
+** Kuratorium OFFIS e.V.
+**
+** Module: dcdatset.cc
+**
+** Purpose:
+** Implementation of the class DcmDataset
+**
+**
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-01-05 13:27:33 $
+** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdatset.cc,v $
+** CVS/RCS Revision:	$Revision: 1.3 $
+** Status:		$State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
@@ -24,7 +29,6 @@
 #include <string.h>
 
 #include "dcdatset.h"
-#include "dcitem.h"
 #include "dcxfer.h"
 #include "dcvrus.h"
 #include "dcdebug.h"
@@ -43,42 +47,32 @@
 
 
 DcmDataset::DcmDataset()
-    : DcmItem( ItemTag )
+    : DcmItem(ItemTag, DCM_UndefinedLength)
 {
-Bdebug((5, "dcdatset:DcmDataset::DcmDataset()" ));
-debug(( 8, "Object pointer this=0x%p", this ));
+    Bdebug((5, "dcdatset:DcmDataset::DcmDataset()" ));
+    debug(( 8, "Object pointer this=0x%p", this ));
 
-Edebug(());
+    Xfer = EXS_Unknown;
+
+    Edebug(());
 
 }
+
 
 
 // ********************************
 
 
-DcmDataset::DcmDataset( iDicomStream *iDStream )
-    : DcmItem( ItemTag, UNDEF_LEN, iDStream )
-{
-Bdebug((5, "dcdatset:DcmDataset::DcmDataset(*iDS)" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
-Edebug(());
-
-}
-
-
-// ********************************
-
-
-DcmDataset::DcmDataset( const DcmDataset &old )
+DcmDataset::DcmDataset(const DcmDataset &old)
     : DcmItem( old )
 {
-Bdebug((5, "dcdatset:DcmDataset::DcmDataset(DcmDataset&)" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-debug(( 5, "ident()=%d", old.ident() ));
+    Bdebug((5, "dcdatset:DcmDataset::DcmDataset(DcmDataset&)" ));
+    debug(( 8, "Object pointer this=0x%p", this ));
+    debug(( 5, "ident()=%d", old.ident() ));
 
-Edebug(());
+    Xfer = old.Xfer;
 
+    Edebug(());
 }
 
 
@@ -87,19 +81,10 @@ Edebug(());
 
 DcmDataset::~DcmDataset()
 {
-Bdebug((5, "dcdatset:DcmDataset::~DcmDataset()" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-Edebug(());
+    Bdebug((5, "dcdatset:DcmDataset::~DcmDataset()" ));
+    debug(( 8, "Object pointer this=0x%p", this ));
+    Edebug(());
 
-}
-
-
-// ********************************
-
-
-DcmEVR DcmDataset::ident() const
-{
-    return EVR_dataset;
 }
 
 
@@ -121,7 +106,8 @@ void DcmDataset::print( int level )
     {
 	DcmObject *dO;
 	elementList->seek( ELP_first );
-	do {
+	do 
+	{
 	    dO = elementList->get();
 	    dO->print( level + 1 );
 	} while ( elementList->seek( ELP_next ) );
@@ -132,159 +118,100 @@ void DcmDataset::print( int level )
 // ********************************
 
 
-T_VR_UL DcmDataset::resolveAmbigous()
+void DcmDataset::resolveAmbigous(void)
 {
     E_Condition l_error = EC_Normal;
     DcmStack stack;
     int count = 0;
 
-    while ( (l_error=this->search( DCM_PixelData, stack, ESM_afterStackTop, TRUE ))
-	    == EC_Normal )
+    while((l_error=this->search(DCM_PixelData, stack, ESM_afterStackTop, TRUE))
+	  == EC_Normal )
     {
 	count++;
 	DcmStack localStack;
-	localStack.push( stack.elem(1) );  // Zeiger auf Ebene ueber pixelObj
+	localStack.push(stack.elem(1));  // Zeiger auf Ebene ueber pixelObj
 	DcmObject *pixelObj = stack.top();
 
 #ifdef RESOLVE_AMBIGOUS_VR_OF_PIXELDATA
-	if ( this->search( DCM_BitsAllocated,
-			   localStack,
-			   ESM_fromStackTop,
-			   FALSE )
-	     == EC_Normal )
+	if (this->search(DCM_BitsAllocated,
+			 localStack,
+			 ESM_fromStackTop,
+			 FALSE )
+	    == EC_Normal)
 	{
 	    DcmObject *allocatedObj = localStack.top();
-	    T_VR_US bits = 8;		   // default 8-Bit
-	    if (    allocatedObj->ident() == EVR_US
-		 && allocatedObj->getLength() > 0 )
-		bits = *( ((DcmUnsignedShort*)allocatedObj)->get() );
+	    Uint16 bits = 8;		   // default 8-Bit
+	    if (allocatedObj->ident() == EVR_US &&
+		allocatedObj->getLength() > 0)
+		bits = *(((DcmUnsignedShort*)allocatedObj)->get());
 	    else
                 cerr << "Warning: Valuefield in Element(0028,0100) is empty"
-                     << endl;
-	    if ( bits == 16 )
-		pixelObj->setVR( EVR_OW );
+		     << endl;
+	    if (bits == 16)
+		pixelObj->setVR(EVR_OW);
 	    else
-		pixelObj->setVR( EVR_OB );
+		pixelObj->setVR(EVR_OB);
 	}
 	else
 	{	    // kein allocatedTag vorhanden
             cerr << "Warning: no Tag(0028,0100) Bits Allocated in Dataset found"
-                 << endl;
+		 << endl;
 	}
 #else
-	DcmXfer xferSyn ( Xfer );	     // diese Zeilen koennen auch nach
-	if ( xferSyn.isNotEncapsulated() )   // dcvrobow.cc verlagert werden
+	DcmXfer xferSyn (Xfer);	          
+	if (xferSyn.isNotEncapsulated())  
 	    pixelObj->setVR( EVR_OW );
 	else
 	    pixelObj->setVR( EVR_OB );
 #endif
     }
-    return count;
+    debug(( 1, "Found %d Elements with Pixel Data", count ));
 }
 
 
 // ********************************
 
 
-E_Condition DcmDataset::read( E_TransferSyntax xfer,
-                              E_GrpLenEncoding gltype )
+E_Condition DcmDataset::read(DcmStream & inStream,
+			     const E_TransferSyntax xfer,
+			     const E_GrpLenEncoding gltype,
+			     const Uint32 maxReadLength)
 {
-Bdebug((3, "dcdatset:DcmDataset::read(xfer=%d,gltype=%d)", xfer, gltype ));
+    Bdebug((3, "DcmDataset::read(xfer=%d,gltype=%d)", xfer, gltype ));
 
-    errorFlag = EC_Normal;
-    if ( iDS == (iDicomStream*)NULL )
-        errorFlag = EC_InvalidStream;
-    else if ( iDS->eof() )
-	errorFlag = EC_EndOfFile;
-    else if ( !iDS->good() )
-	errorFlag = EC_InvalidStream;
-    else
+
+    errorFlag = inStream.GetError();
+
+    if (errorFlag == EC_Normal && inStream.EndOfStream())
+	errorFlag = EC_EndOfStream;
+    else if (errorFlag == EC_Normal && fTransferState != ERW_ready )
     {
-	E_TransferSyntax tmpxfer = checkTransferSyntax();
-	DcmXfer tmpxferSyn( tmpxfer );
-	DcmXfer xferSyn( xfer );
-
-	if (	(    tmpxferSyn.isExplicitVR()
-		  &&	xferSyn.isImplicitVR()
-		)
-	     || (    tmpxferSyn.isImplicitVR()
-		  &&	xferSyn.isExplicitVR()
-		)
-	     || xferSyn.getXfer() == EXS_UNKNOWN
-	   )
+	if (fTransferState == ERW_init)
 	{
-            Xfer = tmpxferSyn.getXfer();  // benutze eigene, ermittelte xfer
-	    if ( xferSyn.getXfer() != EXS_UNKNOWN )
-                cerr << "Info: DcmDataset::read(): TransferSyntax of Dataset"
-                        " is different from passed parameter xfer:"
-			" ignoring xfer!"
-		     << endl;
-	}
-	else
-	    Xfer = xferSyn.getXfer();
-                                          // uebergebe Kontrolle an DcmItem
-        errorFlag = DcmItem::read( Xfer, gltype );
-
-	T_VR_UL count = DcmDataset::resolveAmbigous();
-debug(( 1, "Found %d Elements with Pixel Data", count ));
-
-        count++;                          // turn Compiler Warning off
-        if ( gltype == EGL_withoutGL )
-            removeGroupLengthElements();  // entferne alle Group Length Elements
-    } // else errorFlag
-    valueModified = FALSE;
-    if ( errorFlag == EC_EndOfFile )
-	errorFlag = EC_Normal;
-Edebug(());
-
-    return errorFlag;
-}
-
-
-// ********************************
-
-
-E_Condition DcmDataset::readBlock( E_TransferSyntax xfer,
-                                   E_GrpLenEncoding gltype )
-{
-Bdebug((3, "dcdatset:DcmDataset::readBlock(xfer=%d,gltype=%d)", xfer, gltype ));
-
-    errorFlag = EC_Normal;
-    if ( iDS == (iDicomStream*)NULL )
-        errorFlag = EC_InvalidStream;
-    else if ( iDS->eof() || iDS->fromFile() )
-	errorFlag = EC_EndOfFile;
-    else if ( !iDS->good() )
-	errorFlag = EC_InvalidStream;
-    else if ( readState() != ERW_ready )
-    {
-	if ( readState() == ERW_init )
-	{
-	    if ( xfer == EXS_UNKNOWN )
-		Xfer = checkTransferSyntax(); // Notbehelf, falls xfer unbekannt
+	    if (xfer == EXS_Unknown)
+		Xfer = checkTransferSyntax(inStream); // Notbehelf, falls xfer unbek.
 	    else
 		Xfer = xfer;
-	    rdStat = ERW_inWork;
-	}
-                                              // uebergebe Kontrolle an DcmItem
-        errorFlag = DcmItem::readBlock( Xfer, gltype );
 
-    } // else errorFlag
-    valueModified = FALSE;
-    if ( errorFlag == EC_Normal || errorFlag == EC_EndOfFile )
+	    //	This is a problem since DcmItem::read needs the ERW_init state
+	    //				fTransferState = ERW_inWork; 
+	}
+	// uebergebe Kontrolle an DcmItem
+	errorFlag = DcmItem::read(inStream, Xfer, gltype, maxReadLength);
+
+    } 
+
+    if ( errorFlag == EC_Normal || errorFlag == EC_EndOfStream )
     {
 	errorFlag = EC_Normal;
-	T_VR_UL count = DcmDataset::resolveAmbigous();
+	this -> resolveAmbigous();
 
-debug(( 1, "Found %d Elements with Pixel Data", count ));
-
-        count++;                         // turn Compiler Warning off
-        if ( gltype == EGL_withoutGL )
-            removeGroupLengthElements(); // entferne alle Group Length Elements
-        rdStat = ERW_ready;              // Dataset ist komplett
+	if ( gltype == EGL_withoutGL )
+	    removeGroupLengthElements(); // entferne alle Group Length El.
+	fTransferState = ERW_ready;              // Dataset ist komplett
     }
-debug(( 3, "errorFlag=(%d)", errorFlag ));
-Edebug(());
+    debug(( 3, "errorFlag=(%d)", errorFlag ));
+    Edebug(());
 
     return errorFlag;
 }
@@ -293,107 +220,59 @@ Edebug(());
 // ********************************
 
 
-E_Condition DcmDataset::write( oDicomStream &oDS,
-                               E_TransferSyntax oxfer,
-                               E_EncodingType enctype,
-                               E_GrpLenEncoding gltype )
+E_Condition DcmDataset::write(DcmStream & outStream,
+			      const E_TransferSyntax oxfer,
+			      const E_EncodingType enctype,
+			      const E_GrpLenEncoding gltype)
 {
-Bdebug((3, "dcdatset:DcmDataset::write(&oDS,oxfer=%d,enctype=%d,gltype=%d)",
-           oxfer, enctype, gltype ));
+    Bdebug((3, "DcmDataset::writeBlock(oxfer=%d,enctype=%d,gltype=%d)",
+	    oxfer, enctype, gltype ));
 
-    E_TransferSyntax outxfer = oxfer;
-    errorFlag = EC_Normal;
-    if ( oxfer == EXS_UNKNOWN || oxfer == EXS_BigEndianImplicit )
+    if (fTransferState == ERW_notInitialized)
 	errorFlag = EC_IllegalCall;
-    else if ( !oDS.good() )
-	errorFlag = EC_InvalidStream;
     else
     {
-        if ( gltype == EGL_withoutGL )
-            removeGroupLengthElements(); // entferne alle Group Length Elements
-        else if ( gltype == EGL_withGL )
-        {                              // fuege alle Group Length Elements hinzu
-            addGroupLengthElements( oxfer, enctype );
-        }
+	E_TransferSyntax newXfer = oxfer;
+	if (newXfer == EXS_Unknown)
+	    newXfer = Xfer;
 
-	if ( !elementList->empty() )
+	errorFlag = outStream.GetError();
+	if (errorFlag == EC_Normal && fTransferState != ERW_ready)
 	{
-	    DcmObject *dO;
-	    elementList->seek( ELP_first );
-	    do {
-		dO = elementList->get();
-/*
-		if ( dO->getGTag() == 0x0002 )		// jetzt Aufgabe von
-                    outxfer = EXS_LittleEndianExplicit; // DcmMetaset()
-		else
-		    outxfer = oxfer;
-*/
-                errorFlag = dO->write( oDS, outxfer, enctype, gltype );
-	    } while ( elementList->seek( ELP_next ) && errorFlag == EC_Normal );
-	}
-
-	valueModified = FALSE;
-    }
-Edebug(());
-
-    return errorFlag;
-}
-
-
-// ********************************
-
-
-E_Condition DcmDataset::writeBlock( oDicomStream &oDS,
-				    E_TransferSyntax oxfer,
-                                    E_EncodingType enctype,
-                                    E_GrpLenEncoding gltype )
-{
-Bdebug((3, "dcdatset:DcmDataset::writeBlock(&oDS,oxfer=%d,enctype=%d,gltype=%d)",
-           oxfer, enctype, gltype ));
-
-    errorFlag = EC_Normal;
-    E_TransferSyntax outxfer = oxfer;
-    if ( !oDS.good() || oDS.intoFile() )
-	errorFlag = EC_InvalidStream;
-    else
-    {
-	if ( writeState() != ERW_ready )
-	{
-	    if ( writeState() == ERW_init )
+	    if (fTransferState == ERW_init)
 	    {
-		wrStat = ERW_inWork;
-                if ( gltype == EGL_withoutGL )
-                {                      // entferne alle Group Length Elements
-                    removeGroupLengthElements();
-                }
-                else if ( gltype == EGL_withGL )
-                {                      // fuege alle Group Length Elements hinzu
-                    addGroupLengthElements( oxfer, enctype );
-                }
+		if ( gltype == EGL_withoutGL )
+		{                      // entferne alle Group Length Elements
+		    removeGroupLengthElements();
+		}
+		else if ( gltype == EGL_withGL )
+		{                      // fuege alle Group Length Elements hinzu
+		    addGroupLengthElements( newXfer, enctype );
+		}
 		elementList->seek( ELP_first );
-	    }
-	    if ( !elementList->empty() && writeState() != ERW_init )
-	    {
-		DcmObject *dO;
-		do {
-		    dO = elementList->get();
-/*
-		    if ( dO->getGTag() == 0x0002 )	    // jetzt Aufgabe von
-                        outxfer = EXS_LittleEndianExplicit; // DcmMetaset()
-		    else
-			outxfer = oxfer;
-*/
-                    errorFlag = dO->writeBlock( oDS, outxfer, enctype, gltype );
-		} while (    errorFlag == EC_Normal
-			  && elementList->seek( ELP_next ) );
+		fTransferState = ERW_inWork;
 	    }
 
-	    if ( errorFlag == EC_Normal )
-		wrStat = ERW_ready;
-	    valueModified = FALSE;
+	    if (fTransferState == ERW_inWork)
+	    {
+		if (!elementList->empty())
+		{
+		    DcmObject *dO;
+		    do 
+		    {
+			dO = elementList->get();
+			errorFlag = dO->write(outStream, newXfer, 
+					      enctype, gltype);
+		    } while (errorFlag == EC_Normal &&
+			     elementList->seek(ELP_next));
+		}
+
+		if ( errorFlag == EC_Normal )
+		    fTransferState = ERW_ready;
+	    }
 	}
     }
-Edebug(());
+    Edebug(());
 
     return errorFlag;
 }
@@ -401,4 +280,15 @@ Edebug(());
 
 // ********************************
 
+
+/*
+** CVS/RCS Log:
+** $Log: dcdatset.cc,v $
+** Revision 1.3  1996-01-05 13:27:33  andreas
+** - changed to support new streaming facilities
+** - unique read/write methods for file and block transfer
+** - more cleanups
+**
+**
+*/
 

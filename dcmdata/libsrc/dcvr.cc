@@ -1,3 +1,20 @@
+/*
+**
+** Author: Gerd Ehlers      Created:  26.04.94
+**         Andreas Barth    26.11.95 -- support of value width
+**
+** Module: dcvr.cc
+**
+** Purpose:
+** Implementation of the DcmVR class for Value Representation
+**
+**
+** Last Update:   $Author: andreas $
+** Revision:      $Revision: 1.3 $
+** Status:	  $State: Exp $
+**
+*/
+
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
@@ -9,63 +26,67 @@
 #define DCMVR_PROP_INTERNAL		0x02
 
 struct DcmVREntry {
-    DcmEVR vr;
-    const char* vrName;
-    int propertyFlags;
+    DcmEVR vr;				// Enumeration Value of Value representation
+    const char* vrName;		// Name of Value representation
+	size_t fValWidth;		// Length of minimal unit, used for swapping
+    int propertyFlags;		// Normal, internal, non-standard vr
 };
 
 
 
 static DcmVREntry DcmVRDict[] = {
 
-    { EVR_AE, "AE", 0 },
-    { EVR_AS, "AS", 0 },
-    { EVR_AT, "AT", 0 },
-    { EVR_CS, "CS", 0 },
-    { EVR_DA, "DA", 0 },
-    { EVR_DS, "DS", 0 },
-    { EVR_DT, "DT", 0 },
-    { EVR_FL, "FL", 0 },
-    { EVR_FD, "FD", 0 },
-    { EVR_IS, "IS", 0 },
-    { EVR_LO, "LO", 0 },
-    { EVR_LT, "LT", 0 },
-    { EVR_OB, "OB", 0 },
-    { EVR_OW, "OW", 0 },
-    { EVR_PN, "PN", 0 },
-    { EVR_SH, "SH", 0 },
-    { EVR_SL, "SL", 0 },
-    { EVR_SQ, "SQ", 0 },
-    { EVR_SS, "SS", 0 },
-    { EVR_ST, "ST", 0 },
-    { EVR_TM, "TM", 0 },
-    { EVR_UI, "UI", 0 },
-    { EVR_UL, "UL", 0 },
-    { EVR_US, "US", 0 },
+    { EVR_AE, "AE", sizeof(char), 0 },
+    { EVR_AS, "AS", sizeof(char), 0 },
+    { EVR_AT, "AT", sizeof(Uint16), 0 },
+    { EVR_CS, "CS", sizeof(char), 0 },
+    { EVR_DA, "DA", sizeof(char), 0 },
+    { EVR_DS, "DS", sizeof(char), 0 },
+    { EVR_DT, "DT", sizeof(char), 0 },
+    { EVR_FL, "FL", sizeof(Float32), 0 },
+    { EVR_FD, "FD", sizeof(Float64), 0 },
+    { EVR_IS, "IS", sizeof(char), 0 },
+    { EVR_LO, "LO", sizeof(char), 0 },
+    { EVR_LT, "LT", sizeof(char), 0 },
+    { EVR_OB, "OB", sizeof(Uint8), 0 },
+    { EVR_OW, "OW", sizeof(Uint16), 0 },
+    { EVR_PN, "PN", sizeof(char), 0 },
+    { EVR_SH, "SH", sizeof(char), 0 },
+    { EVR_SL, "SL", sizeof(Sint32), 0 },
+    { EVR_SQ, "SQ", 0, 0 },
+    { EVR_SS, "SS", sizeof(Sint16), 0 },
+    { EVR_ST, "ST", sizeof(char), 0 },
+    { EVR_TM, "TM", sizeof(char), 0 },
+    { EVR_UI, "UI", sizeof(char), 0 },
+    { EVR_UL, "UL", sizeof(Uint32), 0 },
+    { EVR_US, "US", sizeof(Uint16), 0 },
 
-    { EVR_ox, "ox", DCMVR_PROP_NONSTANDARD },
-    { EVR_xs, "xs", DCMVR_PROP_NONSTANDARD },
-    { EVR_na, "na", DCMVR_PROP_NONSTANDARD },
-    { EVR_up, "up", DCMVR_PROP_NONSTANDARD },
+    { EVR_ox, "ox", sizeof(Uint8), DCMVR_PROP_NONSTANDARD },
+    { EVR_xs, "xs", sizeof(Uint16), DCMVR_PROP_NONSTANDARD },
+    { EVR_na, "na", 0, DCMVR_PROP_NONSTANDARD },
+    { EVR_up, "up", sizeof(Uint32), DCMVR_PROP_NONSTANDARD },
 
     /* unique prefixes have been "invented" for the following internal VRs */
-    { EVR_item, "it_EVR_item", 
+    { EVR_item, "it_EVR_item", 0, 
       DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL },
-    { EVR_metainfo, "mi_EVR_metainfo", 
+    { EVR_metainfo, "mi_EVR_metainfo", 0, 
       DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL },
-    { EVR_dataset, "ds_EVR_dataset", 
+    { EVR_dataset, "ds_EVR_dataset", 0, 
       DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL },
-    { EVR_fileFormat, "ff_EVR_fileFormat", 
+    { EVR_fileFormat, "ff_EVR_fileFormat", 0, 
       DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL },
-    { EVR_dicomDir, "dd_EVR_dicomDir", 
+    { EVR_dicomDir, "dd_EVR_dicomDir", 0,
       DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL },
-    { EVR_dirRecord, "dr_EVR_dirRecord", 
+    { EVR_dirRecord, "dr_EVR_dirRecord", 0, 
       DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL },
 	    
-    { EVR_pixelSQ, "ps_EVR_pixelSQ", 
+    { EVR_pixelSQ, "ps_EVR_pixelSQ", 0, 
       DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL },
-    { EVR_pixelItem, "pi_EVR_pixelItem", 
-      DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL }
+    { EVR_pixelItem, "pi_EVR_pixelItem", 0, 
+      DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL },
+
+    { EVR_UNKNOWN, "??", 0, 
+      DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL },
 };
 
 static int DcmVRDict_DIM = sizeof(DcmVRDict) / sizeof(DcmVREntry);
@@ -156,14 +177,17 @@ DcmVR::getValidEVR() const
 	return evr;
 }
 
+const size_t
+DcmVR::getValueWidth(void) const
+{
+	return DcmVRDict[vr].fValWidth;
+}
+
+
 const char*
 DcmVR::getVRName() const
 {
-	if (vr == EVR_UNKNOWN) {
-		return DcmVR_ERROR_VRName;
-	} else {
-		return DcmVRDict[vr].vrName;
-	}
+	return DcmVRDict[vr].vrName;
 }
 
 const char*
@@ -176,19 +200,13 @@ DcmVR::getValidVRName() const
 int 
 DcmVR::isStandard() const
 {
-	if (vr == EVR_UNKNOWN) {
-		return FALSE;
-	} else {
-		return !(DcmVRDict[vr].propertyFlags & DCMVR_PROP_NONSTANDARD);
-	}
+	return !(DcmVRDict[vr].propertyFlags & DCMVR_PROP_NONSTANDARD);
 }
 
 int 
 DcmVR::isForInternalUseOnly() const
 {
-	if (vr == EVR_UNKNOWN) {
-		return TRUE;
-	} else {
-		return (DcmVRDict[vr].propertyFlags & DCMVR_PROP_INTERNAL);
-	}
+	return (DcmVRDict[vr].propertyFlags & DCMVR_PROP_INTERNAL);
 }
+
+

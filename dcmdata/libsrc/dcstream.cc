@@ -1,833 +1,731 @@
 /*
- *
- * Author: Gerd Ehlers      Created:  03-26-94
- *                          Modified: 07-17-95
- *
- * Module: dcstream.cc
- *
- * Purpose:
- * Binary streams inherited from the GNU IOSTREAM Library
- *
- *
- * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.2 $
- * Status:	  $State: Exp $
- *
- */
+** Author: Andreas Barth	Created:	12.11.95
+**				Modified:	21.11.95
+** Kuratorium OFFIS e.V.
+**
+** Module: dcstream.cc
+**
+** Purpose:
+**	implements streaming classes for file and buffer input/output
+**
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-01-05 13:27:42 $
+** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dcstream.cc,v $
+** CVS/RCS Revision:	$Revision: 1.3 $
+** Status:		$State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
-
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-
-#include <string.h>
-#include <errno.h>
-#include <iostream.h>
-
+#include "osconfig.h"
 #include "dcstream.h"
-#include "dcswap.h"
-#include "dcxfer.h"
-#include "dcdebug.h"
 
 
+//
+// CLASS DcmStream
+//
 
-// *****************************************************
-// *** input *******************************************
-// *****************************************************
-
-
-iDicomStream::iDicomStream( const char *name,
-			    int mode,
-			    int prot )
+DcmStream::DcmStream(const BOOL readMode, const BOOL randomAccess)
 {
-    Bdebug((6, "dcstream:iDicomStream::iDicomStream(char*,mode=%d,prot=%d)",
-           mode, prot));
-    
-    if (mode & DCM_InFile)
+    fReadMode = readMode;
+    fRandomAccess = randomAccess;
+}
+
+DcmStream::~DcmStream(void)
+{
+}
+
+
+
+//
+// CLASS DcmFileStream
+//
+
+
+Uint32 DcmFileStream::Avail(void)
+{
+    if (fErrorCond == EC_Normal)
     {
-	inFile = fopen(name, "rb");
-	fileOperationOK = inFile != NULL;
+	if (fReadMode)	// no of bytes from postion to eof
+	    return fNumBytes - (Uint32)ftell(fFile);
+	else	// maximum number of bytes in file system
+	    return Uint32(-1);
+    }
+    return 0;
+}
+
+
+E_Condition DcmFileStream::Avail(const Uint32 numBytes)
+{
+    E_Condition l_error = fErrorCond;
+    if (fErrorCond == EC_Normal)
+    {
+	if (fReadMode &&
+	    // Calculate no of bytes from postion to eof
+	    numBytes > fNumBytes - (Uint32)ftell(fFile))
+	    l_error = EC_EndOfStream;
+    }
+    return l_error;
+}
+
+
+void DcmFileStream::Close(void)
+{
+    if (fFile)
+    {
+	fclose(fFile);
+	fFile = NULL;
+    }
+}
+
+
+DcmFileStream::DcmFileStream(const char * filename, 
+			     const BOOL readMode,
+			     const BOOL randomAccess)
+    : DcmStream(readMode, randomAccess)
+
+{
+    fErrorCond = EC_Normal;
+    fFilename = NULL;
+
+    if (filename)
+    {
+	fFilename = new char[strlen(filename)+1];
+	if (fFilename)
+	    strcpy(fFilename, filename);
+
+	if (fReadMode)
+	    fFile = fopen(filename, "rb");		// open read only
+	else
+	    fFile = fopen(filename, "wb");		// open write only
+
+	if (!fFile)
+	    fErrorCond = EC_InvalidStream;
+
+
+    }
+    else
+	fErrorCond = EC_InvalidStream;
+
+    if (fErrorCond != EC_Normal)
+    {
+	if (fFile)
+	    fclose(fFile);
+	fFile = NULL;
     }
     else
     {
-	inFile = NULL;
-	fileOperationOK = FALSE;
+	// Get number of bytes in file
+	fseek(fFile, 0L, SEEK_END);
+	fNumBytes = (Uint32)ftell(fFile);
+	fseek(fFile, 0L, SEEK_SET);
     }
-    if (!fileOperationOK)
-        fileOperationErrno = errno;
-      
-    flagStreamFromFile = TRUE;
-    machineByteOrder   = MachineByteOrder();
-    dataByteOrder      = EBO_LittleEndian;
-    mustSwap = ( machineByteOrder != dataByteOrder );
-    EndOfFile = FALSE;
-    BufLen = MIN_BUFFER_LENGTH;
-    buffer = (char*)NULL;
-    startBuf = endBuf = _gcount = 0;
-    numChars = 0;
-    _gposition = 0;
-    Edebug(());
 
+    fPutbackMode = FALSE;
+    fNumPutbackBytes = 0;
 }
 
 
-// *****************************************************
-
-
-iDicomStream::iDicomStream( T_VR_UL bufferLength )
+DcmFileStream::~DcmFileStream(void)
 {
-    Bdebug((6, "dcstream:iDicomStream::iDicomStream(bufferLength=%d)",
-           bufferLength));
-
-    flagStreamFromFile = FALSE;
-    machineByteOrder   = MachineByteOrder();
-    dataByteOrder      = EBO_LittleEndian;
-    mustSwap = ( machineByteOrder != dataByteOrder );
-    EndOfFile = FALSE;
-    BufLen = bufferLength + MIN_BUFFER_LENGTH;
-    buffer = new char[ BufLen ];
-    startBuf = endBuf = _gcount = 0;
-    numChars = 0;
-    _gposition = 0;
-    Edebug(());
-
+    this -> Close();
+    if (fFilename)
+	delete fFilename;
 }
 
 
-// *****************************************************
 
-
-iDicomStream::iDicomStream( const iDicomStream & /*newiDicom*/ )
+BOOL DcmFileStream::EndOfStream(void)
 {
-    Bdebug((6, "dcstream:iDicomStream::iDicomStream(iDicomStream&)" ));
+    if (!fFile)
+	fErrorCond = EC_IllegalCall;
 
-    flagStreamFromFile = FALSE;
-    machineByteOrder   = MachineByteOrder();
-    dataByteOrder      = EBO_LittleEndian;
-    mustSwap = ( machineByteOrder != dataByteOrder );
-    EndOfFile = FALSE;
-    BufLen = MIN_BUFFER_LENGTH;
-    buffer = (char*)NULL;
-    startBuf = endBuf = _gcount = 0;
-    numChars = 0;
-    _gposition = 0;
-    fprintf(stderr, "Warning: iDicomStream: use of Copy-Constructor not allowed\n");
-    Edebug(());
-
-}
-
-
-// *****************************************************
-
-
-iDicomStream::~iDicomStream()
-{
-    Bdebug((6, "dcstream:iDicomStream::~iDicomStream()" ));
-
-    if (inFile)
-        fclose(inFile);
-
-    if ( buffer != (char*)NULL )
-	delete buffer;
-    Edebug(());
-
-}
-
-
-// *****************************************************
-
-
-void iDicomStream::setDataByteOrder( E_TransferSyntax ts )
-{
-    dataByteOrder = ConvXferToByteOrder( ts );
-    mustSwap = ( machineByteOrder != dataByteOrder );
-}
-
-
-// *****************************************************
-
-
-void iDicomStream::setDataByteOrder( E_ByteOrder bo )
-{
-    dataByteOrder = bo;
-    mustSwap = ( machineByteOrder != dataByteOrder );
-}
-
-
-// *****************************************************
-
-
-E_Condition iDicomStream::fillBuffer( char *buf,
-				      T_VR_UL len )
-{
-    Bdebug((4, "dcstream:iDicomStream::fillBuffer(char*,int len=%d)", len));
-
-    E_Condition l_error = EC_Normal;
-    if ( fromFile() || buf == (char*)NULL )
-        l_error = EC_IllegalCall;
-    else if ( avail() < len )
-        l_error = EC_BufferFull;
-    else if ( len > 0 )
+    if (fErrorCond == EC_Normal)
     {
-	EndOfFile = FALSE;
-	T_VR_UL bufpart = (BufLen - endBuf);
+	BOOL ret = feof(fFile);
+	if (!ret)
+	    ret = fNumBytes <= this -> Tell();
+	return ret;
+    }
+    else
+	return FALSE;
+}
 
-	if ( bufpart < len )		    // Puffer ist zweigeteilt
+BOOL DcmFileStream::Flush(void)
+{
+    if (fErrorCond != EC_InvalidStream && fFile)
+	fflush(fFile); 
+    return TRUE;
+}
+
+
+DcmStreamConstructor * DcmFileStream::NewConstructor(void)
+{
+    DcmFileStreamConstructor * newConstructor = 
+	new DcmFileStreamConstructor(fFilename, fReadMode, fRandomAccess);
+
+    if (newConstructor)
+	return newConstructor;
+    else
+	return NULL;
+}
+
+
+BOOL DcmFileStream::MustFlush(void)
+{
+    return FALSE;
+}
+
+
+BOOL DcmFileStream::Putback(void)
+{
+    return this -> Putback(fNumPutbackBytes);
+}
+
+
+BOOL DcmFileStream::Putback(const Uint32 noBytes)
+{
+    BOOL result = FALSE;
+
+    if (fPutbackMode && fFile)
+    {
+	// If stream has mode read, implement the Putback by setting
+	// the file offset. 
+	if (!fReadMode || noBytes > fNumPutbackBytes)
+	    fErrorCond = EC_WrongStreamMode;
+
+	else if (fErrorCond == EC_Normal)
 	{
-	    memcpy( &buffer[endBuf], buf, (int)bufpart );
-	    memcpy( buffer, &buf[bufpart], (int)(len - bufpart) );
-debug(( 4, "write 1. from val[%d..%d] into mem[%d..%d]",
-	   0, bufpart-1, endBuf, endBuf+bufpart-1  ));
-debug(( 4, "write 2. from val[%d..%d] into mem[%d..%d]",
-	   bufpart, len-1, 0, len-bufpart-1  ));
-
+	    if (fseek(fFile, -noBytes, SEEK_CUR))
+	    {	
+		fErrorCond = EC_InvalidStream;
+	    }
+	    else 
+	    {
+		fPutbackMode = FALSE;
+		fNumPutbackBytes = 0;
+		result = TRUE;
+	    }
 	}
+    }
+    return result;
+}
+
+
+void DcmFileStream::ReadBytes(void * bytes, const Uint32 length)
+{
+    if (length > 0 && fErrorCond == EC_Normal && fFile) 
+    {
+	if (!fReadMode)
+	    fErrorCond = EC_WrongStreamMode;
 	else
 	{
-	    memcpy( &buffer[endBuf], buf, (int)len );
-debug(( 4, "write from val[%d..%d] into mem[%d..%d]",
-	   0, len-1, endBuf, endBuf+len-1 ));
-
+	    if (1 != fread(bytes, length, 1, fFile))
+		fErrorCond = EC_InvalidStream;
+	    else
+	    {
+		fTransferredBytes = length;
+		if (fPutbackMode)
+		    fNumPutbackBytes += length;
+	    }
 	}
-	endBuf = ( endBuf + len ) % BufLen;
-	numChars += len;
-debug(( 4, "number of buffered chars after filling Buffer=%d", buffered() ));
-
     }
-Edebug(());
+}
+
+void DcmFileStream::Seek(Sint32 offset)
+{
+    if (offset < 0 || Uint32(offset) > fNumBytes)
+	fErrorCond = EC_InvalidStream;
+
+    if (fErrorCond == EC_Normal && fFile)
+    {
+	if (fReadMode && fRandomAccess)
+	{
+	    if (fseek(fFile, (long)offset, SEEK_SET) != 0)
+		fErrorCond = EC_InvalidStream;
+	}
+	else
+	    fErrorCond = EC_WrongStreamMode;
+    }
+}
+
+
+void DcmFileStream::SetPutbackMark(void)
+{
+    if (!fReadMode || !fFile)
+	fErrorCond = EC_WrongStreamMode;
+    else
+	fPutbackMode = TRUE;
+}
+
+
+Uint32 DcmFileStream::Tell(void)
+{
+    if (fErrorCond == EC_Normal && fFile)
+    {
+	if (fReadMode)
+	{
+	    long where = ftell(fFile);
+	    if (where == -1L)
+	    {
+		fErrorCond = EC_InvalidStream;
+		return 0;
+	    }
+	    else
+		return (Uint32)where;
+	}
+	else
+	    fErrorCond = EC_WrongStreamMode;
+    }
+    return 0;
+}
+
+
+void DcmFileStream::UnsetPutbackMark(void)
+{
+    if (!fReadMode || !fFile)
+	fErrorCond = EC_WrongStreamMode;
+    else
+    {
+	fPutbackMode = TRUE;
+	fNumPutbackBytes = FALSE;
+    }
+}
+
+
+
+
+void DcmFileStream::WriteBytes(const void * bytes, const Uint32 length)
+{
+    if (length > 0 && fErrorCond == EC_Normal && fFile)
+    {
+	if (fReadMode)
+	    fErrorCond = EC_WrongStreamMode;
+	else
+	{
+	    if (1 != fwrite(bytes, length, 1, fFile))
+		fErrorCond = EC_InvalidStream;
+	    else
+		fTransferredBytes = length;
+	}
+    }
+}
+
+//
+// CLASS DcmBufferStream
+//
+
+Uint32 DcmBufferStream::Avail(void)
+{
+    if (fErrorCond == EC_Normal || fErrorCond == EC_StreamNotifyClient)
+    {
+	if (fReadMode)
+	    return fBuffer->AvailRead();
+	else
+	    return fBuffer->AvailWrite();
+    }
+    else
+	return 0;
+}
+
+
+E_Condition DcmBufferStream::Avail(const Uint32 numBytes)
+{
+    E_Condition l_error = fErrorCond;
+    if (fErrorCond == EC_Normal || fErrorCond == EC_StreamNotifyClient)
+    {
+	if (numBytes > fBuffer->GetLength())
+	    l_error = EC_IllegalCall;
+	else if (fReadMode && numBytes > fBuffer->AvailRead())
+	{
+	    if(fBuffer->EndOfBufferMarkSet())
+		l_error = EC_EndOfStream;
+	    else
+		l_error = EC_StreamNotifyClient;
+	}
+	else if (!fReadMode && numBytes > fBuffer->AvailWrite())
+	{
+	    if (fBuffer->GetLength() == 0)
+		l_error = EC_IllegalCall;
+	    else
+		l_error = EC_StreamNotifyClient;
+	}
+    }
 
     return l_error;
 }
 
 
-// *****************************************************
-
-
-iDicomStream& iDicomStream::readFromBuffer( char* val, int size )
+void DcmBufferStream::Close(void)
 {
+}
 
-    Bdebug((4, "dcstream:iDicomStream::readFromBuffer(char*,int size=%d)",
-	   size));
 
-    if (size > 0)
+void DcmBufferStream::CopyFromBuffer(void * buffer)
+{
+    if (fErrorCond == EC_StreamNotifyClient)
+	fErrorCond = EC_Normal;
+    if (fErrorCond == EC_Normal && !fReadMode)
+	fBuffer -> CopyFromBuffer(buffer);
+    else if (fErrorCond == EC_Normal)
+	fErrorCond = EC_WrongStreamMode;
+}
+
+
+DcmBufferStream::DcmBufferStream(const BOOL readMode) 
+    : DcmStream(readMode, DCM_SequentialAccess)
+{
+    fErrorCond = EC_Normal;
+    fBuffer = new DcmMemoryBuffer();
+    if (!fBuffer)
+	fErrorCond = EC_InvalidStream;
+
+    if (fRandomAccess)
+	fErrorCond = EC_WrongStreamMode;
+}
+
+DcmBufferStream::DcmBufferStream(const Uint32 length, 
+				 const BOOL readMode)
+    : DcmStream(readMode, DCM_SequentialAccess)
+{
+    fErrorCond = EC_Normal;
+    if (length & 1)
     {
-	if ( buffered() > 0 )
+	fErrorCond = EC_InvalidStream;
+	fBuffer = NULL;
+    }
+    else
+    {
+	fBuffer = new DcmMemoryBuffer(length);
+	if (!fBuffer)
+	    fErrorCond = EC_InvalidStream;
+
+	if (fRandomAccess)
+	    fErrorCond = EC_WrongStreamMode;
+    }
+}
+
+
+
+
+DcmBufferStream::DcmBufferStream(void * buffer,
+				 const Uint32 length, 
+				 const BOOL readMode)
+    : DcmStream(readMode, FALSE)
+{
+    fErrorCond = EC_Normal;
+    if (length & 1)
+    {
+	fErrorCond = EC_InvalidStream;
+	fBuffer = NULL;
+    }
+    else
+    {
+	fBuffer = new DcmMemoryBuffer(buffer, length);
+	if (!fBuffer)
+	    fErrorCond = EC_InvalidStream;
+
+	if (fRandomAccess)
+	    fErrorCond = EC_WrongStreamMode;
+    }
+}
+
+
+
+DcmBufferStream::~DcmBufferStream(void)
+{
+    if (fBuffer)
+	delete fBuffer;
+}
+
+
+BOOL DcmBufferStream::EndOfStream(void)
+{
+    if (fReadMode && 
+	(fErrorCond == EC_Normal || fErrorCond == EC_StreamNotifyClient))
+	return fBuffer->EndOfBuffer();
+    else
+	return FALSE;
+}
+
+
+void DcmBufferStream::FillBuffer(void * buffer, Uint32 length)
+{
+    if (fErrorCond == EC_StreamNotifyClient)
+	fErrorCond = EC_Normal;
+    if (fErrorCond == EC_Normal && length & 1)
+	fErrorCond = EC_InvalidStream;
+    else if (fErrorCond == EC_Normal && fReadMode)
+	fBuffer -> CopyIntoBuffer(buffer, length, length);
+    else if (!fReadMode)
+	fErrorCond = EC_WrongStreamMode;
+}
+
+
+BOOL DcmBufferStream::Flush(void)
+{
+    return FALSE;
+}
+
+
+void DcmBufferStream::GetBuffer(void * & buffer, Uint32 & length)
+{
+    if (fErrorCond == EC_StreamNotifyClient)
+	fErrorCond = EC_Normal;
+    if (fErrorCond == EC_Normal  && !fReadMode)
+    {
+	length = fBuffer -> GetFilled();
+	fBuffer -> GetBuffer(buffer);
+    }
+    else
+    {
+	buffer = NULL;
+	length = 0;
+	if (fErrorCond == EC_Normal)
+	    fErrorCond = EC_WrongStreamMode;
+    }
+}
+
+
+Uint32 DcmBufferStream::GetBufferLength(void)
+{
+    if (fErrorCond == EC_Normal || fErrorCond == EC_StreamNotifyClient)
+	return fBuffer -> GetFilled();
+    else
+	return 0;
+}
+
+
+DcmStreamConstructor * DcmBufferStream::NewConstructor(void)
+{
+    return NULL;
+}
+
+
+
+BOOL DcmBufferStream::MustFlush(void)
+{
+    return this -> GetBufferLength() != 0;
+}
+
+
+BOOL DcmBufferStream::Putback(void)
+{
+    if (fErrorCond == EC_Normal)
+    {
+	if (fReadMode)
+	    return fBuffer -> Putback();
+	else
 	{
-	    T_VR_UL len = (T_VR_UL)size <= buffered()
-			  ? (T_VR_UL)size
-			  : buffered();
-	    T_VR_UL bufpart = (BufLen - startBuf);
+	    fErrorCond = EC_WrongStreamMode;
+	    return FALSE;
+	}
+    }
+    return FALSE;
+}
 
-	    if ( bufpart < (T_VR_UL)size )	      // Puffer ist zweigeteilt
+
+
+BOOL DcmBufferStream::Putback(const Uint32 noBytes)
+{
+    if (fErrorCond == EC_Normal)
+    {
+	if (fReadMode)
+	    return fBuffer -> Putback(noBytes);
+	else
+	{
+	    fErrorCond = EC_WrongStreamMode;
+	    return FALSE;
+	}
+    }
+    return FALSE;
+}
+
+void DcmBufferStream::ReadBytes(void * bytes, const Uint32 length)
+{
+    if (length > 0 && fErrorCond == EC_Normal) 
+    {
+	if (!fReadMode)
+	    fErrorCond = EC_WrongStreamMode;
+	else
+	{
+	    if(fBuffer -> Read(bytes, length) == 0)
 	    {
-		memcpy( val, &buffer[startBuf], (int)bufpart );
-		memcpy( &val[bufpart], buffer, (int)(len - bufpart) );
-
-debug(( 4, "read 1. from mem[%d..%d] into val[%d..%d]",
-	   startBuf, startBuf+bufpart-1, 0, bufpart-1 ));
-debug(( 4, "read 2. from mem[%d..%d] into val[%d..%d]",
-	   0, len-bufpart-1, bufpart, len-1 ));
-
+		fErrorCond = EC_StreamNotifyClient;
+		fTransferredBytes = 0;
 	    }
 	    else
+		fTransferredBytes = length;
+	}
+    }
+    else if (length == 0)
+	fTransferredBytes = 0;
+}
+	
+
+void DcmBufferStream::Seek(Sint32 /*offset*/)
+{
+    fErrorCond = EC_WrongStreamMode;
+}
+
+
+void DcmBufferStream::SetEndOfStream(void)
+{
+    if ((fErrorCond == EC_Normal || fErrorCond == EC_StreamNotifyClient) && 
+	fReadMode)
+	fBuffer->SetEndOfBuffer();
+    else if (!fReadMode)
+	fErrorCond = EC_WrongStreamMode;
+}
+		
+
+
+void DcmBufferStream::SetBuffer(void * buffer, const Uint32 length)
+{
+    if (fErrorCond == EC_StreamNotifyClient)
+	fErrorCond = EC_Normal;
+    if (fErrorCond == EC_Normal && length & 1)
+	fErrorCond = EC_InvalidStream;
+    else if (fErrorCond == EC_Normal && !fBuffer -> BufferLocked())
+	fBuffer -> SetBuffer(buffer, length, length);
+    else if (fBuffer -> BufferLocked())
+	fErrorCond = EC_InvalidStream;
+}
+
+
+
+void DcmBufferStream::SetPutbackMark(void)
+{
+    if (fErrorCond == EC_Normal && fReadMode)
+	fBuffer -> SetPutbackMark();
+    else if (!fReadMode)
+	fErrorCond = EC_WrongStreamMode;
+}
+
+
+Uint32 DcmBufferStream::Tell(void)
+{
+    if (fErrorCond == EC_Normal || fErrorCond == EC_StreamNotifyClient)
+    {
+	if (fReadMode)
+	    return fBuffer -> GetPosition();
+	else
+	{
+	    fErrorCond = EC_WrongStreamMode;
+	    return 0;
+	}
+    }
+    return 0;
+}
+
+
+void DcmBufferStream::UnsetPutbackMark(void)
+{
+    if (fErrorCond == EC_Normal && fReadMode)
+	fBuffer -> UnsetPutbackMark();
+    else if (!fReadMode)
+	fErrorCond = EC_Normal;
+}
+		
+
+
+void DcmBufferStream::WriteBytes(const void * bytes, const Uint32 length)
+{
+    fTransferredBytes = 0;
+    if (length > 0 && fErrorCond == EC_Normal)
+    {
+	if (fReadMode)
+	    fErrorCond = EC_WrongStreamMode;
+	else
+	{
+	    fTransferredBytes = fBuffer -> Write(bytes, length);
+	    if (fTransferredBytes != length)
 	    {
-		memcpy( val, &buffer[startBuf], (int)len );
-
-debug(( 4, "read from mem[%d..%d] into val[%d..%d]",
-	   startBuf, startBuf+len-1, 0, len-1 ));
-
+		if (fBuffer -> GetLength() == 0)
+		    fErrorCond = EC_IllegalCall;
+		else
+		    fErrorCond = EC_StreamNotifyClient;
 	    }
-	    startBuf = ( startBuf + len ) % BufLen;
-	    numChars -= len;
-	    _gcount = len;
-	    if ( len < (T_VR_UL)size )
-		memset( &val[len], 0, (int)(size - len) );
-	}
-	else
-	{
-	    memset( val, 0, size );
-	    _gcount = 0;
 	}
     }
-    _gposition += _gcount;
-    debug(( 3, "number of buffered chars after read=%d", buffered() ));
-    Edebug(());
-
-    return *this;
 }
 
 
-// *****************************************************
 
+//
+// CLASS DcmStreamConstructor
+//
 
-iDicomStream& iDicomStream::readFromFile( char* val, int size )
+DcmStreamConstructor::DcmStreamConstructor(const BOOL readMode, 
+					   const BOOL randomAccess)
 {
+    fReadMode = readMode;
+    fRandomAccess = randomAccess;
+}
 
-    Bdebug((5, "dcstream:iDicomStream::readFromFile(char*,int size=%d)", size));
+DcmStreamConstructor::~DcmStreamConstructor(void)
+{
+}
 
-    if (size > 0)
+
+//
+// CLASS DcmFileStreamConstructor
+//
+
+DcmFileStreamConstructor::DcmFileStreamConstructor(const char * filename,
+						   const BOOL readMode,
+						   const BOOL randomAccess)
+    : DcmStreamConstructor(readMode, randomAccess)
+{
+    if (filename)
     {
-	if ( good() )
-	{
-	    fileOperationOK = fread(val, size, 1, inFile) == 1;
-	    if (!fileOperationOK)
-	    {
-		_gcount = 0;
-	        fileOperationErrno = errno;
-	    }
-	    else
-	        _gcount = size;
-	}
-	    
-    }
-    Edebug(());
-
-    return *this;
-}
-
-
-// *****************************************************
-
-
-iDicomStream& iDicomStream::readSw( char* val, int val_width, int times )
-{
-
-    Bdebug((5, "dcstream:iDicomStream::readSw(char*,val_width=%d,times=%d)",
-           val_width, times ));
-
-    if ( val_width > 0  &&  times > 0  &&  val != (char*)NULL )
-    {
-	if ( fromFile() )
-            readFromFile( val, val_width * times );
-	else
-            readFromBuffer( val, val_width * times );
-
-        if ( mustSwap && val_width > 1 )
-	{
-debug(( 5, "must swap value" ));
-
-            SwapN( val, val_width, times );
-        }
-Cdebug( val_width==2, (5, "val=[0x%4.4x]\t size=%d", *((T_VR_US*)val),
-						  gcount()));
-Cdebug( val_width==4, (5, "val=[0x%8.8x]\t size=%d", *((T_VR_UL*)val),
-						  gcount()));
-Cdebug( (val_width!=2)&(val_width!=4), (5, "val='%c'...\t size=%d", *val,
-							  gcount()));
-Cdebug( !good(), (5, "good()=(0x%x)", good() + 2*eof() ));
-
-    }
-Edebug(());
-
-    return *this;
-}
-
-
-// *****************************************************
-
-
-E_Condition iDicomStream::markBufferEOF()
-{
-    EndOfFile = TRUE;
-    return EC_Normal;
-}
-
-
-// *****************************************************
-
-
-T_VR_UL iDicomStream::buffered()
-{
-    return numChars;
-}
-
-
-// *****************************************************
-
-
-T_VR_UL iDicomStream::avail()
-{
-    return (BufLen - numChars);
-}
-
-
-// *****************************************************
-
-
-iDicomStream& iDicomStream::putback( char ch )
-{
-    if ( fromFile() )
-    {
-	/* Many implemenations of ungetc() can only unget 1 char.
-	** Calling unget() seems to be ok for current use within dcmdata (needs more tests)
-	** NOTE: ungetc() will not work if putback(char ch) is used to
-	** put back characters in a different order than they were read !!!
-	** This whole stream/buffer code and its use needs to reevaluated.
-	** The unget()/putback() mechanism for buffers are highly suspect.
-	*/
-#ifdef REALLY_DO_USE_UNGETC_IN_DCSTREAM_PUTBACK
-	fileOperationOK = ungetc((int)ch, inFile) != EOF;
-	if (!fileOperationOK)
-	    fileOperationErrno = errno;
-#else
-	unget();	/* HACK: use unget() instead */
-#endif
-    }
-    else if ( avail() > 0 )
-    {
-	startBuf = ( BufLen + startBuf - 1 ) % BufLen;
-	buffer[startBuf] = ch;
-	numChars += 1;
-    }
-    _gcount -= 1;
-    return *this;
-}
-
-
-
-
-// *****************************************************
-
-
-void iDicomStream::seekg(long offset)
-{
-    fileOperationOK = fseek(inFile, offset, SEEK_SET) == 0;
-    if (!fileOperationOK)
-      fileOperationErrno = errno;
-}
-
-// *****************************************************
-
-
-iDicomStream& iDicomStream::unget()
-{
-    if ( fromFile() )
-    {
-        fileOperationOK = ! fseek(inFile, -1L, SEEK_CUR);
-	if (!fileOperationOK)
-	    fileOperationErrno = errno;
-    }
-    else if ( BufLen - buffered() > 0 )
-    {
-	startBuf = ( BufLen + startBuf - 1 ) % BufLen;
-	numChars += 1;
-    }
-    _gcount -= 1;
-    return *this;
-}
-
-
-// *****************************************************
-
-
-long iDicomStream::tellg()
-{
-    if ( fromFile() )
-    {
-	long val = ftell(inFile);
-	fileOperationOK = val != -1L;
-	if (!fileOperationOK)
-	    fileOperationOK = errno;
-	return val;
+	fFilename = new char[strlen(filename)+1];
+	if (fFilename)
+	    strcpy(fFilename, filename);
     }
     else
-        return _gposition;
+	fFilename = NULL;
 }
 
 
-// *****************************************************
-
-
-int iDicomStream::good()
+DcmFileStreamConstructor::~DcmFileStreamConstructor(void)
 {
-    if ( fromFile() )
-	return fileOperationOK;
-    else return buffered();
+    if (fFilename)
+	delete fFilename;
 }
 
 
-// *****************************************************
-
-
-int iDicomStream::eof()
+DcmStream * DcmFileStreamConstructor::NewDcmStream(void)
 {
-    if ( fromFile() )
-	return feof(inFile);
-    else return ( buffered() == 0 && EndOfFile );
-}
-
-
-// *****************************************************
-// *** output ******************************************
-// *****************************************************
-
-
-
-oDicomStream::oDicomStream( const char *name,
-			    int mode,
-			    int prot )
-{
-    Bdebug((6, "dcstream:oDicomStream::oDicomStream(char*,mode=%d,prot=%d)",
-           mode, prot));
-
-    if (mode & DCM_OutFile)
-    {
-	outFile = fopen(name, "wb");
-	fileOperationOK = outFile != NULL;
-    }
+    DcmFileStream * newStream = new DcmFileStream(fFilename, 
+						  fReadMode, fRandomAccess);
+    if (newStream && newStream -> GetError() == EC_Normal)
+	return newStream;
     else
-    {
-	outFile = NULL;
-	fileOperationOK = FALSE;
-    }
-    if (!fileOperationOK)
-        fileOperationErrno = errno;
-      
-    flagStreamIntoFile	 = TRUE;
-    machineByteOrder   = MachineByteOrder();
-    dataByteOrder      = EBO_LittleEndian;
-    mustSwap = ( machineByteOrder != dataByteOrder );
-    EndOfFile = FALSE;
-    BufLen = MIN_BUFFER_LENGTH;
-    buffer = (char*)NULL;
-    startBuf = endBuf = _pcount = 0;
-    numChars = 0;
-    _pposition = 0;
-    Edebug(());
-
+	return NULL;
 }
 
-
-// *****************************************************
-
-
-oDicomStream::oDicomStream( T_VR_UL bufferLength )
+DcmStreamConstructor * 
+DcmFileStreamConstructor::Copy(void)
 {
-    Bdebug((6, "dcstream:oDicomStream::oDicomStream(bufferLength=%d)",
-           bufferLength));
+    DcmFileStreamConstructor * copy = 
+	new DcmFileStreamConstructor(fFilename, fReadMode, fRandomAccess);
 
-    outFile = NULL;
-    fileOperationOK = FALSE;
-    fileOperationErrno = 0;
-    flagStreamIntoFile = FALSE;
-    machineByteOrder   = MachineByteOrder();
-    dataByteOrder      = EBO_LittleEndian;
-    mustSwap = ( machineByteOrder != dataByteOrder );
-    EndOfFile = FALSE;
-    BufLen = bufferLength + MIN_BUFFER_LENGTH;
-    buffer = new char[ BufLen ];
-    startBuf = endBuf = _pcount = 0;
-    numChars = 0;
-    _pposition = 0;
-Edebug(());
-
+    return copy;
 }
 
 
-// *****************************************************
-
-
-oDicomStream::oDicomStream( const oDicomStream & /*newoDicom*/ )
-{
-    Bdebug((6, "dcstream:oDicomStream::oDicomStream(oDicomStream&)" ));
-
-    outFile = NULL;
-    fileOperationOK = FALSE;
-    fileOperationErrno = 0;
-    flagStreamIntoFile = FALSE;
-    machineByteOrder   = MachineByteOrder();
-    dataByteOrder      = EBO_LittleEndian;
-    mustSwap = ( machineByteOrder != dataByteOrder );
-    EndOfFile = FALSE;
-    BufLen = MIN_BUFFER_LENGTH;
-    buffer = (char*)NULL;
-    startBuf = endBuf = _pcount = 0;
-    numChars = 0;
-    _pposition = 0;
-    fprintf(stderr, "Warning: oDicomStream: use of Copy-Constructor not allowed\n");
-Edebug(());
-
-}
-
-
-// *****************************************************
-
-
-oDicomStream::~oDicomStream()
-{
-    Bdebug((6, "dcstream:oDicomStream::~oDicomStream()" ));
-
-    if (outFile)
-        fclose(outFile);
-
-    if ( buffer != (char*)NULL )
-	delete buffer;
-    Edebug(());
-
-}
-
-
-// *****************************************************
-
-
-void oDicomStream::close()
-{
-    fclose(outFile);
-    fileOperationOK = FALSE;
-}
-
-
-// *****************************************************
-
-
-void oDicomStream::setDataByteOrder( E_TransferSyntax ts )
-{
-    dataByteOrder = ConvXferToByteOrder( ts );
-    mustSwap = ( machineByteOrder != dataByteOrder );
-}
-
-
-// *****************************************************
-
-
-void oDicomStream::setDataByteOrder( E_ByteOrder bo )
-{
-    dataByteOrder = bo;
-    mustSwap = ( machineByteOrder != dataByteOrder );
-}
-
-
-// *****************************************************
-
-
-E_Condition oDicomStream::readBuffer( char* buf,
-				      T_VR_UL size,
-				      T_VR_UL *realsize )
-{
-Bdebug((4, "dcstream:oDicomStream::readBuffer(char*,size=%d)", size ));
-
-    *realsize = 0;
-    E_Condition l_error = EC_Normal;
-
-    if ( intoFile() || buf == (char*)NULL )
-        l_error = EC_IllegalCall;
-    else
-    {
-	if ( buffered() > 0 && size > 0 )
-	{
-	    T_VR_UL len = (size <= buffered())
-			  ? size
-			  : buffered();
-	    T_VR_UL bufpart = (BufLen - startBuf);
-
-	    if ( bufpart < size )		// Puffer ist zweigeteilt
-	    {
-		memcpy( buf, &buffer[startBuf], (int)bufpart );
-		memcpy( &buf[bufpart], buffer, (int)(len - bufpart) );
-debug(( 4, "read 1. from mem[%d..%d] into val[%d..%d]",
-	   startBuf, startBuf+bufpart-1, 0, bufpart-1 ));
-debug(( 4, "read 2. from mem[%d..%d] into val[%d..%d]",
-	   0, len-bufpart-1, bufpart, len-1 ));
-
-	    }
-	    else
-	    {
-		memcpy( buf, &buffer[startBuf], (int)len );
-debug(( 4, "read from mem[%d..%d] into val[%d..%d]",
-	   startBuf, startBuf+len-1, 0, len-1 ));
-
-	    }
-	    startBuf = ( startBuf + len ) % BufLen;
-	    numChars -= len;
-	    if ( len < size )
-		memset( &buf[len], 0, (int)(size - len) );
-	    *realsize = len;
-	}
-	if ( buffered() == 0 && EndOfFile )
-            l_error = EC_EndOfBuffer;
-    }
-debug(( 4, "number of buffered chars after reading Buffer=%d", buffered() ));
-Edebug(());
-
-    return  l_error;
-}
-
-
-// *****************************************************
-
-
-oDicomStream& oDicomStream::writeIntoBuffer( const char* val, int size )
-{
-Bdebug((4, "dcstream:oDicomStream::writeIntoBuffer(char*,size=%d)", size ));
-
-    if ( size > 0 && avail() > 0 )
-    {
-	EndOfFile = FALSE;
-	T_VR_UL len = (T_VR_UL)size <= avail() ? (T_VR_UL)size : avail();
-	T_VR_UL bufpart = (BufLen - endBuf);
-
-	if ( bufpart < len )		    // Puffer ist zweigeteilt
-	{
-	    memcpy( &buffer[endBuf], val, (int)bufpart );
-	    memcpy( buffer, &val[bufpart], (int)(len - bufpart) );
-debug(( 4, "write 1. from val[%d..%d] into mem[%d..%d]",
-	   0, bufpart-1, endBuf, endBuf+bufpart-1  ));
-debug(( 4, "write 2. from val[%d..%d] into mem[%d..%d]",
-	   bufpart, len-1, 0, len-bufpart-1  ));
-
-	}
-	else
-	{
-	    memcpy( &buffer[endBuf], val, (int)len );
-debug(( 4, "write from val[%d..%d] into mem[%d..%d]",
-	   0, len-1, endBuf, endBuf+len-1 ));
-
-	}
-	endBuf = ( endBuf + len ) % BufLen;
-	numChars += len;
-	_pcount = len;
-    }
-    else
-    {
-	_pcount = 0;
-    }
-    _pposition += _pcount;
-debug(( 4, "number of buffered chars after write=%d", buffered() ));
-Edebug(());
-
-    return *this;
-}
-
-
-// *****************************************************
-
-
-oDicomStream& oDicomStream::writeIntoFile( const char* val, int size )
-{
-Bdebug((5, "dcstream:oDicomStream::writeIntoFile(char*,size=%d)", size ));
-
-    if (good())
-    {
-	if ((fileOperationOK = fwrite( val, size, 1, outFile)) == 1)
-	  _pcount = size;
-    }
-    else
-	_pcount = 0;
-    _pposition += _pcount;
-Edebug(());
-
-    return *this;
-}
-
-// *****************************************************
-
-
-oDicomStream& oDicomStream::writeSw( const char* val, int val_width, int times )
-{
-Bdebug((5, "dcstream:oDicomStream::writeSw(char*,val_width=%d,times=%d)",
-           val_width, times ));
-    if ( val_width > 0  &&  times > 0  &&  val != (char*)NULL )
-    {
-Cdebug( val_width==2,
-        (5, "val=[0x%4.4x]\t size=%d", *((T_VR_US*)val), times*val_width));
-Cdebug( val_width==4,
-        (5, "val=[0x%8.8x]\t size=%d", *((T_VR_UL*)val), times*val_width));
-Cdebug( (val_width!=2)&(val_width!=4),
-        (5, "val='%c'...\t size=%d", *val, times*val_width));
-
-	char *tempval = (char*)NULL;
-	const char *cval;
-        if ( mustSwap && val_width > 1 )
-	{
-debug(( 5, "must swap value" ));
-
-            tempval = new char[ val_width*times ];
-            memcpy( tempval, val, val_width*times );
-            SwapN( tempval, val_width, times );
-	    cval = tempval;
-
-Cdebug( val_width==2,
-        (5, "val=[0x%4.4x]\t size=%d", *((T_VR_US*)tempval), times*val_width));
-Cdebug( val_width==4,
-        (5, "val=[0x%8.8x]\t size=%d", *((T_VR_UL*)tempval), times*val_width));
-Cdebug( (val_width!=2)&(val_width!=4),
-        (5, "val='%c'...\t size=%d", *tempval, times*val_width));
-
-	}
-	else
-	    cval = val;
-
-	if ( intoFile() )
-            writeIntoFile( cval, val_width * times );
-	else
-            writeIntoBuffer( cval, val_width * times );
-
-Vdebug((5, rdstate(), "rdstate=(0x%x)",
-	  rdstate() ));
-
-	if ( tempval != (char*)NULL )
-	    delete tempval;
-    }
-Edebug(());
-
-    return *this;
-}
-
-
-// *****************************************************
-
-
-E_Condition oDicomStream::markBufferEOF()
-{
-    EndOfFile = TRUE;
-    return EC_Normal;
-}
-
-
-// *****************************************************
-
-
-T_VR_UL oDicomStream::buffered()
-{
-    return numChars;
-}
-
-
-// *****************************************************
-
-
-T_VR_UL oDicomStream::avail()
-{
-    return (BufLen - numChars);
-}
-
-
-// *****************************************************
-
-
-long oDicomStream::tellp()
-{
-    if ( intoFile() )
-    {
-	long val = ftell(outFile);
-	fileOperationOK = val != -1L;
-	return val;
-    }
-    else
-        return _pposition;
-}
-
-
-// *****************************************************
-
-
-int oDicomStream::good()
-{
-    if ( intoFile() )
-	return fileOperationOK;
-    else return (( BufLen - buffered()) > 0);
-}
+/*
+** CVS/RCS Log:
+** $Log: dcstream.cc,v $
+** Revision 1.3  1996-01-05 13:27:42  andreas
+** - changed to support new streaming facilities
+** - unique read/write methods for file and block transfer
+** - more cleanups
+**
+**
+*/
 
 
 

@@ -1,27 +1,28 @@
 /*
- *
- * Author: Gerd Ehlers      Created:  06-03-94
- *                          Modified: 02-07-95
- *
- * Module: dcvrulup.cc
- *
- * Purpose:
- * Implementation of class DcmUnsignedLongOffset
- *
- *
- * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.2 $
- * Status:	  $State: Exp $
- *
- */
-
-
+**
+** Author: Gerd Ehlers      03.06.94 -- First Creation
+**         Andreas Barth    07.12.95 -- new Stream class, unique value field
+** Kuratorium OFFIS e.V.
+**
+** Module: dcvrulup.cc
+**
+** Purpose:
+** Implementation of class DcmUnsignedLongOffset
+**
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-01-05 13:27:56 $
+** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrulup.cc,v $
+** CVS/RCS Revision:	$Revision: 1.3 $
+** Status:		$State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 #include <stdio.h>
 #include <string.h>
 #include <iostream.h>
 
-#include "dcvrul.h"
 #include "dcvrulup.h"
 #include "dcdebug.h"
 
@@ -29,13 +30,12 @@
 // ********************************
 
 
-DcmUnsignedLongOffset::DcmUnsignedLongOffset( const DcmTag &tag,
-				  T_VR_UL len,
-				  iDicomStream *iDStream )
-    : DcmUnsignedLong( tag, len, iDStream )
+DcmUnsignedLongOffset::DcmUnsignedLongOffset(const DcmTag &tag,
+											 const Uint32 len)
+: DcmUnsignedLong(tag, len)
 {
-Bdebug((5, "dcvrulup:DcmUnsignedLongOffset::DcmUnsignedLongOffset(DcmTag&,"
-           "len=%ld,*iDS)", len ));
+Bdebug((5, "DcmUnsignedLongOffset::DcmUnsignedLongOffset(DcmTag&,"
+           "len=%ld)", len ));
 debug(( 8, "Object pointer this=0x%p", this ));
 
     nextRecord = (DcmObject*)NULL;
@@ -47,22 +47,23 @@ Edebug(());
 // ********************************
 
 
-DcmUnsignedLongOffset::DcmUnsignedLongOffset( const DcmUnsignedLongOffset& old )
-    : DcmUnsignedLong( old )
+DcmUnsignedLongOffset::DcmUnsignedLongOffset(const DcmUnsignedLongOffset& old)
+: DcmUnsignedLong(old)
 {
-Bdebug((5, "dcvrulup:DcmUnsignedLongOffset::DcmUnsignedLongOffset("
-           "DcmUnsignedLongOffset&)" ));
-debug(( 8, "Object pointer this=0x%p", this ));
+	Bdebug((5, "dcvrulup:DcmUnsignedLongOffset::DcmUnsignedLongOffset("
+			"DcmUnsignedLongOffset&)" ));
+	debug(( 8, "Object pointer this=0x%p", this ));
 
-    if ( old.ident() == EVR_up ) {
-	nextRecord = old.nextRecord;
-    } else {
-	nextRecord = (DcmObject*)NULL;
-	errorFlag = EC_IllegalCall;
-        cerr << "Warning: DcmUnsignedLongOffset: wrong use of Copy-Constructor"
-             << endl;
-    }
-Edebug(());
+    if ( old.ident() == EVR_up ) 
+		nextRecord = old.nextRecord;
+	else 
+	{
+		nextRecord = (DcmObject*)NULL;
+		errorFlag = EC_IllegalCall;
+		cerr << "Warning: DcmUnsignedLongOffset: wrong use of Copy-Constructor"
+			<< endl;
+	}
+	Edebug(());
 
 }
 
@@ -75,7 +76,6 @@ DcmUnsignedLongOffset::~DcmUnsignedLongOffset()
 Bdebug((5, "dcvrulup:DcmUnsignedLongOffset::~DcmUnsignedLongOffset()" ));
 debug(( 8, "Object pointer this=0x%p", this ));
 Edebug(());
-
 }
 
 
@@ -93,33 +93,32 @@ DcmEVR DcmUnsignedLongOffset::ident() const
 
 void DcmUnsignedLongOffset::print( int level )
 {
-    if ( UnsigLongValue != (T_VR_UL*)NULL )
-    {
-	char *ch_words;
-	char *tmp = ch_words = new char[ Length*14/sizeof(T_VR_UL) + 4 ];
-	T_VR_UL *tattr = UnsigLongValue;
-	unsigned int i;
-
-	for ( i=0; i<( Length/sizeof(T_VR_UL) ); i++ )
+	if (valueLoaded())
 	{
-	    sprintf( tmp, "$%lu\\", (unsigned long)*tattr );
-	    tmp += strlen(tmp);
-	    tattr++;
-	}
-	if ( Length > 0 )
-	    tmp--;
-	*tmp = '\0';
-	DcmObject::printInfoLine( level, ch_words );
-	delete ch_words;
-    }
-    else if ( valueInMemory == TRUE )
-    {
-	DcmObject::printInfoLine( level, "(no value available)" );
+		Uint32 * uintVals =  this -> get();
+
+		if (!uintVals)
+			printInfoLine( level, "(no value available)" );
+		else
+		{
+			char *ch_words;
+			char *tmp = ch_words = new char[Length*14/sizeof(Uint32)+4];
+
+			for (unsigned long i=0; i<( Length/sizeof(Uint32) ); i++ )
+			{
+				sprintf( tmp, "$%lu\\", *uintVals );
+				tmp += strlen(tmp);
+				uintVals++;
+			}
+			if ( Length > 0 )
+				tmp--;
+			*tmp = '\0';
+			printInfoLine(level, ch_words);
+			delete ch_words;
+		}
     }
     else
-    {
-	DcmObject::printInfoLine( level, "(not loaded)" );
-    }
+		printInfoLine( level, "(not loaded)" );
 }
 
 
@@ -147,14 +146,10 @@ DcmObject* DcmUnsignedLongOffset::setNextRecord( DcmObject* record )
 // ********************************
 
 
-E_Condition DcmUnsignedLongOffset::clear()
+E_Condition DcmUnsignedLongOffset::clear(void)
 {
-    errorFlag = EC_Normal;
-    if ( UnsigLongValue != (T_VR_UL*)NULL )
-	delete UnsigLongValue;
-    UnsigLongValue = (T_VR_UL*)NULL;
-    Length = 0;
-    nextRecord = (DcmObject*)NULL;
+	DcmUnsignedLong::clear();
+    nextRecord = NULL;
     return errorFlag;
 }
 
@@ -162,27 +157,13 @@ E_Condition DcmUnsignedLongOffset::clear()
 // ********************************
 
 
-E_Condition DcmUnsignedLongOffset::verify( BOOL autocorrect )
+E_Condition DcmUnsignedLongOffset::verify(const BOOL autocorrect)
 {
-    errorFlag = EC_Normal;
-    if ( Length % (sizeof(T_VR_UL)) != 0 )
-    {
-	errorFlag = EC_CorruptedData;
-	if ( autocorrect == TRUE )
-	{
-
-	    Length = Length - ( Length % (sizeof(T_VR_UL)) );
-					    // auf gueltige Laenge kuerzen
-            valueModified = TRUE;
-	}
-    }
-    if (    errorFlag == EC_Normal
-	 && Length != 0
-	 && UnsigLongValue != (T_VR_UL*)NULL
-	 && *UnsigLongValue != 0
-	 && nextRecord == (DcmObject*)NULL
-       )
-	errorFlag = EC_CorruptedData;
+	errorFlag = DcmUnsignedLong::verify(autocorrect);
+    if (errorFlag == EC_Normal && 
+		Length != 0 && this->get(0) != 0 && 
+		nextRecord == NULL)
+		errorFlag = EC_CorruptedData;
     return errorFlag;
 }
 
@@ -190,3 +171,14 @@ E_Condition DcmUnsignedLongOffset::verify( BOOL autocorrect )
 // ********************************
 
 
+/*
+** CVS/RCS Log:
+** $Log: dcvrulup.cc,v $
+** Revision 1.3  1996-01-05 13:27:56  andreas
+** - changed to support new streaming facilities
+** - unique read/write methods for file and block transfer
+** - more cleanups
+**
+**
+**
+*/

@@ -1,19 +1,24 @@
 /*
- *
- * Author: Gerd Ehlers      Created:  04-26-94
- *                          Modified: 02-07-95
- *
- * Module: dcsequen.cc
- *
- * Purpose:
- * Implementation of the class DcmSequenceOfItems
- *
- *
- * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.2 $
- * Status:	  $State: Exp $
- *
- */
+**
+** Author: Gerd Ehlers      26.04.94 -- Creation
+**         Andreas Barth    30.11.95 -- Support for new stream classes
+** Kuratorium OFFIS e.V.
+**
+** Module: dcsequen.cc
+**
+** Purpose:
+** Implementation of the class DcmSequenceOfItems
+**
+**
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-01-05 13:27:41 $
+** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcsequen.cc,v $
+** CVS/RCS Revision:	$Revision: 1.3 $
+** Status:		$State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
@@ -35,34 +40,33 @@
 // ********************************
 
 
-DcmSequenceOfItems::DcmSequenceOfItems( const DcmTag &tag,
-					T_VR_UL len,
-					iDicomStream *iDStream )
-    : DcmElement( tag, len, iDStream )
+DcmSequenceOfItems::DcmSequenceOfItems(const DcmTag &tag, const Uint32 len)
+    : DcmElement(tag, len)
 {
-Bdebug((5, "dcsequen:DcmSequenceOfItems::DcmSequenceOfItems(DcmTag&,len=%ld,*iDS)",
-           len ));
-debug(( 8, "Object pointer this=0x%p", this ));
+    Bdebug((5,"DcmSequenceOfItems::DcmSequenceOfItems(DcmTag&,len=%ld)",
+	    len ));
+    debug(( 8, "Object pointer this=0x%p", this ));
 
     itemList = new DcmList;
     lastItemComplete = TRUE;
-Edebug(());
-
+    fStartPosition = 0;
+    Edebug(());
 }
 
 
 // ********************************
 
 
-DcmSequenceOfItems::DcmSequenceOfItems( const DcmSequenceOfItems& old )
-    : DcmElement( old )
+DcmSequenceOfItems::DcmSequenceOfItems(const DcmSequenceOfItems& old)
+    : DcmElement(old)
 {
-Bdebug((5, "dcsequen:DcmSequenceOfItems::DcmSequenceOfItems(DcmSequenceOfItems&)" ));
-debug(( 8, "Object pointer this=0x%p", this ));
+    Bdebug((5, "dcsequen:DcmSequenceOfItems::DcmSequenceOfItems(DcmSequenceOfItems&)" ));
+    debug(( 8, "Object pointer this=0x%p", this ));
 
     lastItemComplete = TRUE;
     itemList = new DcmList;
-debug(( 3, "ident()=%d", old.ident() ));
+    fStartPosition = old.fStartPosition;
+    debug(( 3, "ident()=%d", old.ident() ));
 
     switch ( old.ident() ) {
     case EVR_SQ:
@@ -105,7 +109,7 @@ debug(( 3, "ident()=%d", old.ident() ));
              << endl;
 	break;
     }
-Edebug(());
+    Edebug(());
 
 }
 
@@ -115,8 +119,8 @@ Edebug(());
 
 DcmSequenceOfItems::~DcmSequenceOfItems()
 {
-Bdebug((5, "dcsequen:DcmSequenceOfItems::~DcmSequenceOfItems()"));
-debug(( 8, "Object pointer this=0x%p", this ));
+    Bdebug((5, "dcsequen:DcmSequenceOfItems::~DcmSequenceOfItems()"));
+    debug(( 8, "Object pointer this=0x%p", this ));
 
     DcmObject *dO;
     itemList->seek( ELP_first );
@@ -128,16 +132,7 @@ debug(( 8, "Object pointer this=0x%p", this ));
     }
     delete itemList;
 
-Edebug(());
-}
-
-
-// ********************************
-
-
-DcmEVR DcmSequenceOfItems::ident() const
-{
-    return EVR_SQ;
+    Edebug(());
 }
 
 
@@ -148,7 +143,7 @@ void DcmSequenceOfItems::print( int level )
 {
     char *info = new char[200];
     char *title = (char*)NULL;
-    if ( Length == UNDEF_LEN )
+    if ( Length == DCM_UndefinedLength )
         title = "\"Sequence with undefined length\"";
     else
         title = "\"Sequence with explicit Length\"";
@@ -168,42 +163,34 @@ void DcmSequenceOfItems::print( int level )
     }
     DcmTag delimItemTag( DCM_SequenceDelimitationItem );
 
-    if ( Length == UNDEF_LEN )
+    if ( Length == DCM_UndefinedLength )
         DcmObject::printInfoLine( level, delimItemTag,
 				  0, "\"SequenceDelimitationItem\"" );
     else
         DcmObject::printInfoLine( level, delimItemTag,
-		   0, "\"SequenceDelimitationItem for re-enc.\"" );
+				  0, "\"SequenceDelimitationItem for re-enc.\"" );
 }
+
 
 
 // ********************************
 
 
-T_VR_UL DcmSequenceOfItems::getVM()
+Uint32 DcmSequenceOfItems::getLength(const E_TransferSyntax xfer,
+				     const E_EncodingType enctype )
 {
-    return 1L;
-}
+    Bdebug((4, "dcsequen:DcmSequenceOfItems::getLength(xfer=%d,enctype=%d)",
+	    xfer, enctype ));
 
-
-// ********************************
-
-
-T_VR_UL DcmSequenceOfItems::getLength( E_TransferSyntax xfer,
-                                       E_EncodingType enctype )
-{
-Bdebug((4, "dcsequen:DcmSequenceOfItems::getLength(xfer=%d,enctype=%d)",
-	   xfer, enctype ));
-
-    T_VR_UL templen = 0;
+    Uint32 templen = 0;
     if ( !itemList->empty() )
     {
 	DcmItem *dI;
 	itemList->seek( ELP_first );
 	do {
 	    dI = (DcmItem*)( itemList->get() );
-	    T_VR_UL sublength = dI->getLength( xfer, enctype );
-Vdebug((1, sublength==UNDEF_LEN, "Warning subitem has undefined Length" ));
+	    Uint32 sublength = dI->getLength( xfer, enctype );
+	    Vdebug((1, sublength==DCM_UndefinedLength, "Warning subitem has undefined Length" ));
 
 	    templen += sublength;
 	    templen += 8;		// fuer Tag und Length
@@ -214,8 +201,8 @@ Vdebug((1, sublength==UNDEF_LEN, "Warning subitem has undefined Length" ));
     }
     else
 	templen = 0;
-debug(( 4, "Length of Sequence=%ld", templen ));
-Edebug(());
+    debug(( 4, "Length of Sequence=%ld", templen ));
+    Edebug(());
 
     return templen;
 }
@@ -227,8 +214,8 @@ Edebug(());
 E_Condition DcmSequenceOfItems::addGroupLengthElements( E_TransferSyntax xfer,
                                                         E_EncodingType enctype )
 {
-Bdebug((2, "dcitem:DcmSequenceOfItems::addGroupLengthElements(xfer=%d,enctype=%d)",
-	   xfer, enctype ));
+    Bdebug((2, "dcitem:DcmSequenceOfItems::addGroupLengthElements(xfer=%d,enctype=%d)",
+	    xfer, enctype ));
 
     E_Condition l_error = EC_Normal;
 
@@ -242,7 +229,7 @@ Bdebug((2, "dcitem:DcmSequenceOfItems::addGroupLengthElements(xfer=%d,enctype=%d
                 l_error = err;
 	} while ( itemList->seek( ELP_next ) );
     }
-Edebug(());
+    Edebug(());
 
     return l_error;
 }
@@ -251,9 +238,46 @@ Edebug(());
 // ********************************
 
 
+E_Condition DcmSequenceOfItems::makeSubObject(DcmObject * & subObject, 
+					      const DcmTag & newTag,
+					      const Uint32 newLength)
+{
+    E_Condition l_error = EC_Normal;
+    DcmItem *subItem = NULL;
+
+    switch ( newTag.getEVR() )
+    {
+    case EVR_na:
+	if ( newTag.getXTag() == DCM_Item )
+	{
+	    if ( this->getTag().getXTag() == DCM_DirectoryRecordSequence )
+		subItem = new DcmDirectoryRecord(newTag, newLength);
+	    else
+		subItem = new DcmItem(newTag, newLength);
+	}
+	else if ( newTag.getXTag() == DCM_SequenceDelimitationItem )
+	    l_error = EC_SequEnd;
+	else if ( newTag.getXTag() == DCM_ItemDelimitationItem )
+	    l_error = EC_InvalidTag;
+	else
+	    l_error = EC_InvalidTag;
+	break;
+
+    default:
+	subItem = new DcmItem(newTag, newLength);
+	l_error = EC_CorruptedData;
+	break;
+    }
+    subObject = subItem;
+    return l_error;
+}
+
+// ********************************
+
+
 E_Condition DcmSequenceOfItems::removeGroupLengthElements()
 {
-Bdebug((2, "dcitem:DcmSequenceOfItems::removeGroupLengthElements()" ));
+    Bdebug((2, "dcitem:DcmSequenceOfItems::removeGroupLengthElements()" ));
 
     E_Condition l_error = EC_Normal;
 
@@ -268,7 +292,7 @@ Bdebug((2, "dcitem:DcmSequenceOfItems::removeGroupLengthElements()" ));
         } while ( itemList->seek( ELP_next ) );
     }
 
-Edebug(());
+    Edebug(());
 
     return l_error;
 }
@@ -277,43 +301,46 @@ Edebug(());
 // ********************************
 
 
-E_Condition DcmSequenceOfItems::readTagAndLength( E_TransferSyntax xfer,
-                                                  DcmTag &tag,
-                                                  T_VR_UL *length )
+E_Condition DcmSequenceOfItems::readTagAndLength(DcmStream & inStream,
+						 const E_TransferSyntax xfer,
+                                                 DcmTag &tag,
+                                                 Uint32 & length)
 {
-Bdebug((4, "dcsequen:DcmSequenceOfItems::readTagAndLength(xfer=%d,&tag,"
-           "*length)", xfer ));
+    Bdebug((4, "dcsequen:DcmSequenceOfItems::readTagAndLength(xfer=%d,&tag,"
+	    "length)", xfer ));
 
-    E_Condition l_error = EC_Normal;
-    T_VR_US t1 = 0xffff;
-    T_VR_US t2 = 0xffff;
+    Uint16 groupTag = 0xffff;
+    Uint16 elementTag = 0xffff;
 
-    if ( !iDS->fromFile() && iDS->buffered() < 8 )
+    E_Condition l_error = inStream.Avail(8);
+    if (l_error == EC_Normal)
     {
-        l_error = EC_InvalidStream;
+	DcmXfer iXfer(xfer);
+	const E_ByteOrder iByteOrder = iXfer.getByteOrder();
+	inStream.SetPutbackMark();
+	inStream.ReadBytes(&groupTag, 2);
+	inStream.ReadBytes(&elementTag, 2);
+	this -> swapIfNecessary(gLocalByteOrder, iByteOrder, &groupTag, 2, 2);
+	this -> swapIfNecessary(gLocalByteOrder, iByteOrder, &elementTag, 2, 2);
+	// Tag ist gelesen
+
+	DcmTag newTag(groupTag, elementTag);
+
+	Uint32 valueLength = 0;
+	inStream.ReadBytes(&valueLength, 4);
+	this->swapIfNecessary(gLocalByteOrder, iByteOrder, &valueLength, 4, 4);
+	length = valueLength;
+
+	debug((4, "Tag (0x%4.4x,0x%4.4x) \"%s\" [0x%8.8x] \"%s\"",
+	       newTag.getGTag(), newTag.getETag(),
+	       DcmVR(newTag.getVR()).getVRName(), valueLength, 
+	       newTag.getTagName()));
+
+	tag = newTag;                  // Rueckgabewert: assignment-operator
     }
-    else
-    {
 
-	iDS->setDataByteOrder( xfer );
-	*iDS >> t1;			// Transfer Syntax !!
-	*iDS >> t2;			// Transfer Syntax !!
-					// Tag ist gelesen
-	DcmTag newTag( t1, t2 );
-
-	T_VR_UL len_l = 0;
-	*iDS >> len_l;			// 4 Byte Laenge; Transfer Syntax !!
-	*length = len_l;
-
-debug(( 4, "Tag (0x%4.4x,0x%4.4x) \"%s\" [0x%8.8x] \"%s\"",
-	   newTag.getGTag(), newTag.getETag(),
-	   DcmVR(newTag.getVR()).getVRName(), len_l, newTag.getTagName() ));
-
-        tag = newTag;                  // Rueckgabewert: assignment-operator
-    }
-
-debug(( 4, "errorFlag=(%d) in Sequ.readTag..", l_error ));
-Edebug(());
+    debug(( 4, "errorFlag=(%d) in Sequ.readTag..", l_error ));
+    Edebug(());
 
     return l_error;
 }
@@ -322,72 +349,50 @@ Edebug(());
 // ********************************
 
 
-E_Condition DcmSequenceOfItems::readSubItem( const DcmTag &newTag,
-                                             T_VR_UL newLength,
-                                             E_TransferSyntax xfer,
-                                             E_GrpLenEncoding gltype )
+E_Condition DcmSequenceOfItems::readSubItem(DcmStream & inStream,
+					    const DcmTag &newTag,
+					    const Uint32 newLength,
+					    const E_TransferSyntax xfer,
+					    const E_GrpLenEncoding gltype,
+					    const Uint32 maxReadLength)
 {
-Bdebug((4, "dcsequen:DcmSequenceOfItems::readSubItem(&newTag,newLength=%d,"
-           "xfer=%d,gltype=%d)", newLength, xfer, gltype ));
+    Bdebug((4, "dcsequen:DcmSequenceOfItems::readSubItem(&newTag,newLength=%d,"
+	    "xfer=%d,gltype=%d)", newLength, xfer, gltype ));
 
-    E_Condition l_error = EC_Normal;
-    DcmItem *subItem = (DcmItem*)NULL;
-
-    switch ( newTag.getEVR() )
+    // For DcmSequenceOfItems, subObject is always inherited from DcmItem
+    // For DcmPixelSequence, subObject is always inherited from DcmPixelItem
+    DcmObject * subObject = NULL;
+    E_Condition l_error = this -> makeSubObject(subObject, newTag, newLength);
+    if ( l_error == EC_Normal && subObject != NULL )
     {
-	case EVR_na :
-            if ( newTag.getXTag() == DCM_Item )
-            {
-                if ( this->getTag().getXTag() == DCM_DirectoryRecordSequence )
-                    subItem = new DcmDirectoryRecord( newTag, newLength, iDS );
-                else
-                    subItem = new DcmItem( newTag, newLength, iDS );
-            }
-            else if ( newTag.getXTag() == DCM_SequenceDelimitationItem )
-                l_error = EC_SequEnd;
-            else if ( newTag.getXTag() == DCM_ItemDelimitationItem )
-                l_error = EC_InvalidTag;
-	    else
-                l_error = EC_InvalidTag;
-		break;
-	default :
-	    subItem = new DcmItem( newTag, newLength, iDS );
-            l_error = EC_CorruptedData;
-	    break;
-    }
-
-    if ( l_error == EC_Normal && subItem != (DcmItem*)NULL )
-    {
-	DcmSequenceOfItems::itemList->insert( subItem, ELP_next );
-	if ( !iDS->fromFile() ) 		// && !lastItemComplete )
-            l_error = subItem->readBlock( xfer, gltype );
-	else
-            l_error = subItem->read( xfer, gltype );
-                                                // hier wird Subitem eingelesen
+	inStream.UnsetPutbackMark();
+	itemList->insert(subObject, ELP_next);
+	// hier wird Subitem eingelesen
+        l_error = subObject->read(inStream, xfer, gltype, maxReadLength);
     }
     else if ( l_error == EC_InvalidTag )  // versuche das Parsing wieder
     {                                     // einzurenken
-        for ( T_VR_UL i=0; i<8; i++ )     // Tag and Length sind immer 8 Bytes
-            iDS->unget();                 // schreibe Tag wieder in den Stream
-        fprintf(stderr,
-                "Warning: DcmSequenceOfItems::readSubItem(): parse error occured:"
-                " (0x%4.4hx,0x%4.4hx)", newTag.getGTag(), newTag.getETag() );
-debug(( 1, "Warning: DcmSequenceOfItems::readSubItem(): parse error occured:"
-           " (0x%4.4hx,0x%4.4hx)", newTag.getGTag(), newTag.getETag() ));
+	inStream.Putback();
+	cerr << "Warning: DcmSequenceOfItems::readSubItem(): parse error "
+	    "occured: " << newTag << endl;
+	debug(( 1, "Warning: DcmSequenceOfItems::readSubItem(): parse error occured:"
+		" (0x%4.4hx,0x%4.4hx)", newTag.getGTag(), newTag.getETag() ));
 
     }
     else if ( l_error != EC_SequEnd )
     {
-        fprintf(stderr,
-                "Error: DcmSequenceOfItems::readSubItem(): cannot create SubItem"
-                " (0x%4.4hx,0x%4.4hx)", newTag.getGTag(), newTag.getETag() );
-debug(( 1, "Error: DcmSequenceOfItems::readSubItem(): cannot create SubItem"
-           " (0x%4.4hx,0x%4.4hx)", newTag.getGTag(), newTag.getETag() ));
+	inStream.UnsetPutbackMark();
+        cerr << "Error: DcmSequenceOfItems::readSubItem(): cannot create "
+	     << "SubItem " << newTag << endl;
+	debug(( 1, "Error: DcmSequenceOfItems::readSubItem(): cannot create SubItem"
+		" (0x%4.4hx,0x%4.4hx)", newTag.getGTag(), newTag.getETag() ));
 
     }
+    else
+	inStream.UnsetPutbackMark();
 
-Vdebug((4, l_error!=EC_Normal, "errorFlag(8)=(%d)", l_error ));
-Edebug(());
+    Vdebug((4, l_error!=EC_Normal, "errorFlag(8)=(%d)", l_error ));
+    Edebug(());
 
     return l_error;
 }
@@ -396,185 +401,75 @@ Edebug(());
 // ********************************
 
 
-E_Condition DcmSequenceOfItems::read( E_TransferSyntax xfer,
-                                      E_GrpLenEncoding gltype )
+E_Condition DcmSequenceOfItems::read(DcmStream & inStream,
+				     const E_TransferSyntax xfer,
+                                     const E_GrpLenEncoding gltype,
+				     const Uint32 maxReadLength)
 {
-Bdebug((3, "dcsrquen:DcmSequenceOfItems::read(xfer=%d,gltype=%d)",
-           xfer, gltype ));
+    Bdebug((3, "DcmSequenceOfItems::read(xfer=%d,gltype=%d)",
+	    xfer, gltype ));
 
-    Xfer = xfer;
-    T_VR_UL bytes_read = 0;
-
-    errorFlag = EC_Normal;
-    if ( iDS == (iDicomStream*)NULL )
-        errorFlag = EC_InvalidStream;
-    else if ( iDS->eof() )
-	errorFlag = EC_EndOfFile;
-    else if ( !iDS->good() )
-	errorFlag = EC_InvalidStream;
+    if (fTransferState == ERW_notInitialized)
+	errorFlag = EC_IllegalCall;
     else
     {
-        offsetInFile = iDS->tellg();        // Position von Sequence-Value
-	iDS->setDataByteOrder( xfer );
-	itemList->seek( ELP_last ); // Die neuen Daten werden ans Ende gehaengt
-	while ( iDS->good() && bytes_read < Length )
+	errorFlag = inStream.GetError();
+	if (errorFlag == EC_Normal && inStream.EndOfStream())
+	    errorFlag = EC_EndOfStream;
+	else if (errorFlag == EC_Normal && fTransferState != ERW_ready)
 	{
-	    DcmTag newTag;
-	    T_VR_UL newValueLength = 0;
+	    if (fTransferState == ERW_init)
+		fStartPosition = inStream.Tell();   // Position Sequence-Value
 
-            errorFlag = readTagAndLength( xfer, newTag, &newValueLength );
-	    bytes_read += 8;
-debug(( 3, "Seq: Header_Bytes_read            =[0x%8.8x]", bytes_read ));
-
-	    if ( !iDS->good() ) 	    // evtl. Stream zuende
-		break;			    // beende while-Schleife
-
-            errorFlag = readSubItem( newTag, newValueLength, xfer, gltype );
-            bytes_read = (T_VR_UL)(iDS->tellg() - offsetInFile);
-debug(( 3, "Seq: Bytes_read                   =[0x%8.8x]", bytes_read ));
-
-	    if ( errorFlag != EC_Normal )
-		break;			    // beende while-Schleife
-
-	} //while ( iDS->good()..
-    } // else errorFlag
-    valueModified = FALSE;
-    if (   errorFlag == EC_SequEnd
-        || errorFlag == EC_InvalidTag )
-	errorFlag = EC_Normal;
-Edebug(());
-
-    return errorFlag;
-}
-
-
-// ********************************
-
-
-E_Condition DcmSequenceOfItems::readBlock( E_TransferSyntax xfer,
-                                           E_GrpLenEncoding gltype )
-{
-Bdebug((3, "dcsequen:DcmSequenceOfItems::readBlock(xfer=%d,gltype=%d)",
-           xfer, gltype ));
-
-    Xfer = xfer;
-
-    errorFlag = EC_Normal;
-    if ( iDS == (iDicomStream*)NULL )
-        errorFlag = EC_InvalidStream;
-    else if ( iDS->eof() || iDS->fromFile() )
-	errorFlag = EC_EndOfFile;
-    else if ( !iDS->good() )
-	errorFlag = EC_InvalidStream;
-    else if ( readState() != ERW_ready )
-    {
-        if ( readState() == ERW_init )
-            offsetInFile = iDS->tellg();        // Position von Sequence-Value
-	iDS->setDataByteOrder( xfer );
-	itemList->seek( ELP_last ); // Die neuen Daten werden ans Ende gehaengt
-	while (    iDS->good()
-		&& ( bytesRead < Length || !lastItemComplete ) )
-	{
-	    DcmTag newTag;
-	    T_VR_UL newValueLength = 0;
-
-	    if ( lastItemComplete )
+	    itemList->seek( ELP_last ); // Die Daten werden ans Ende gehaengt
+	    while (!inStream.Fail() && 
+		   (fTransferredBytes < Length || !lastItemComplete ))
 	    {
-                errorFlag = readTagAndLength( xfer, newTag, &newValueLength );
+		DcmTag newTag;
+		Uint32 newValueLength = 0;
 
-                if ( errorFlag != EC_Normal )
-		    break;			// beende while-Schleife
+		if (lastItemComplete)
+		{
+		    errorFlag = this -> readTagAndLength(inStream, xfer, 
+							 newTag, newValueLength );
+
+		    if ( errorFlag != EC_Normal )
+			break;			// beende while-Schleife
+		    else
+			fTransferredBytes += 8;
+
+		    lastItemComplete = FALSE;
+		    errorFlag = readSubItem(inStream, newTag, newValueLength, 
+					    xfer, gltype, maxReadLength);
+		    if ( errorFlag == EC_Normal )
+			lastItemComplete = TRUE;
+		}
 		else
-		    bytesRead += 8;
+		{
+		    errorFlag = itemList->get()->read(inStream, xfer, 
+						      gltype, maxReadLength);
+		    if ( errorFlag == EC_Normal )
+			lastItemComplete = TRUE;
+		}
+		fTransferredBytes = inStream.Tell() - fStartPosition;
+				
+		if ( errorFlag != EC_Normal )
+		    break;				// beende while-Schleife
 
-		lastItemComplete = FALSE;
-                errorFlag = readSubItem( newTag, newValueLength, xfer, gltype );
-		if ( errorFlag == EC_Normal )
-		    lastItemComplete = TRUE;
-	    }
-	    else
-	    {
-                errorFlag = itemList->get()->readBlock( xfer, gltype ) ;
-		if ( errorFlag == EC_Normal )
-		    lastItemComplete = TRUE;
-	    }
-            bytesRead = (T_VR_UL)(iDS->tellg() - offsetInFile);
+	    } //while 
+	    if ((fTransferredBytes < Length || !lastItemComplete) &&
+		errorFlag == EC_Normal)
+		errorFlag = EC_StreamNotifyClient;
+	} // else errorFlag
 
-	    if ( errorFlag != EC_Normal )
-		break;				// beende while-Schleife
-
-	} //while ( iDS->good()..
-	if (	( bytesRead < Length || !lastItemComplete )
-	     && errorFlag != EC_SequEnd )
-	    errorFlag = EC_InvalidStream;
-    } // else errorFlag
-    valueModified = FALSE;
-    if ( errorFlag == EC_SequEnd )
-	errorFlag = EC_Normal;
-    if ( errorFlag == EC_Normal )
-	rdStat = ERW_ready;	     // Sequence ist komplett
-debug(( 3, "errorFlag=(%d)", errorFlag ));
-Edebug(());
-
-    return errorFlag;
-}
-
-
-// ********************************
-
-
-E_Condition DcmSequenceOfItems::write( oDicomStream &oDS,
-				       E_TransferSyntax oxfer,
-                                       E_EncodingType enctype,
-                                       E_GrpLenEncoding gltype )
-{
-Bdebug((3, "dcsequen:DcmSequenceOfItems::write(&oDS,oxfer=%d,enctype=%d,gltype=%d)",
-           oxfer, enctype, gltype ));
-
-    T_VR_UL localLength = 0;
-    errorFlag = EC_Normal;
-    if ( !oDS.good() )
-	errorFlag = EC_InvalidStream;
-    else
-    {
-	localLength = this->getLength( oxfer, enctype );
-				  // getLength kann u.U. auch UNDEF_LEN liefern
-	if ( enctype == EET_ExplicitLength )
-	    Length = localLength;
-	else
-	    Length = UNDEF_LEN;
-
-	T_VR_UL written_bytes = 0;
-	errorFlag = DcmObject::writeTagAndLength( oDS, oxfer, &written_bytes );
-
-debug(( 3, "Header_Bytes_written              =[0x%8.8x]", written_bytes ));
-
-	if ( !itemList->empty() )
-	{
-	    DcmItem *dI;
-	    itemList->seek( ELP_first );
-	    do {
-		dI = (DcmItem*)( itemList->get() );
-                errorFlag = dI->write( oDS, oxfer, enctype, gltype );
-	    } while ( itemList->seek( ELP_next ) && errorFlag == EC_Normal );
-	}
-	written_bytes += localLength;	// ist u.U. ungenau
-
-	if ( Length == UNDEF_LEN )	// schreibe ItemDelimitationItem
-	{
-	    DcmTag delim( DCM_SequenceDelimitationItem );
-            oDS << delim.getGTag();    // 2 Byte Laenge; Transfer Syntax !!
-            oDS << delim.getETag();    // 2 Byte Laenge; Transfer Syntax !!
-	    T_VR_UL delimLen = 0L;
-            oDS << delimLen;           // 4 Byte Laenge; Transfer Syntax !!
-	    written_bytes += 8;
-	}
-debug(( 3, "Bytes_written                     =[0x%8.8x]", written_bytes ));
-
-	valueModified = FALSE;
+	if ( errorFlag == EC_SequEnd )
+	    errorFlag = EC_Normal;
+	if ( errorFlag == EC_Normal )
+	    fTransferState = ERW_ready;	     // Sequence ist komplett
     }
-Edebug(());
-
+    debug(( 3, "errorFlag=(%d)", errorFlag ));
+    Edebug(());
+	
     return errorFlag;
 }
 
@@ -582,72 +477,86 @@ Edebug(());
 // ********************************
 
 
-E_Condition DcmSequenceOfItems::writeBlock( oDicomStream &oDS,
-					    E_TransferSyntax oxfer,
-                                            E_EncodingType enctype,
-                                            E_GrpLenEncoding gltype )
-{
-Bdebug((3, "dcsequen:DcmSequenceOfItems::writeBlock(&oDS,oxfer=%d,enctype=%d)",
-	   oxfer, enctype ));
 
-    errorFlag = EC_Normal;
-    if ( !oDS.good() || oDS.intoFile() )
-	errorFlag = EC_InvalidStream;
+E_Condition DcmSequenceOfItems::write(DcmStream & outStream,
+				      const E_TransferSyntax oxfer,
+				      const E_EncodingType enctype,
+				      const E_GrpLenEncoding gltype)
+{
+    Bdebug((3, "DcmSequenceOfItems::writeBlock(oxfer=%d,enctype=%d)",
+	    oxfer, enctype ));
+
+    if (fTransferState == ERW_notInitialized)
+	errorFlag = EC_IllegalCall;
     else
     {
-	if ( writeState() != ERW_ready )
+	errorFlag = outStream.GetError();
+	if(errorFlag == EC_Normal && fTransferState != ERW_ready)
 	{
-	    if ( writeState() == ERW_init )
+	    if (fTransferState == ERW_init )
 	    {
-                if ( oDS.avail() >= 12 )     // n.B.: Header ist u. U. kleiner
+		if (outStream.Avail() >= DCM_TagInfoLength)  
+		    // n.B.: Header ist u. U. kleiner
 		{
 		    if ( enctype == EET_ExplicitLength )
-			Length = this->getLength( oxfer, enctype );
-				  // getLength kann u.U. auch UNDEF_LEN liefern
+			// getLength kann u.U. auch DCM_UndefinedLength liefern
+			Length = this->getLength(oxfer, enctype);
 		    else
-			Length = UNDEF_LEN;
+			Length = DCM_UndefinedLength;
 
-		    T_VR_UL written_bytes = 0;
-		    errorFlag = DcmObject::writeTagAndLength( oDS,
-							      oxfer,
-							      &written_bytes );
+		    Uint32 written_bytes = 0;
+		    errorFlag = this -> writeTagAndLength(outStream,
+							  oxfer,
+							  written_bytes);
 		    if ( errorFlag == EC_Normal )
 		    {
-			wrStat = ERW_inWork;
-			itemList->seek( ELP_first );
+			fTransferState = ERW_inWork;
+			itemList->seek(ELP_first);
 		    }
 		}
 		else
-		    errorFlag = EC_InvalidStream;
+		    errorFlag = EC_StreamNotifyClient;
 	    }
-	    if ( !itemList->empty() && writeState() != ERW_init )
+			
+	    if (fTransferState == ERW_inWork)
 	    {
-		DcmObject *dO;
-		do {
-		    dO = itemList->get();
-                    errorFlag = dO->writeBlock( oDS, oxfer, enctype, gltype );
-		} while (    errorFlag == EC_Normal
-			  && itemList->seek( ELP_next ) );
-	    }
-
-
-	    if ( errorFlag == EC_Normal && writeState() != ERW_init )
-	    {
-                if ( Length == UNDEF_LEN && oDS.avail() >= 8 )
-					     // schreibe SquenceDelimitationItem
+		if (!itemList->empty())
 		{
-		    DcmTag delim( DCM_SequenceDelimitationItem );
-                    oDS << delim.getGTag(); // 2 Byte Laenge; Transfer Syntax !
-                    oDS << delim.getETag(); // 2 Byte Laenge; Transfer Syntax !
-		    T_VR_UL delimLen = 0L;
-                    oDS << delimLen;        // 4 Byte Laenge; Transfer Syntax !
+		    DcmObject *dO;
+		    do 
+		    {
+			dO = itemList->get();
+			if (dO->transferState() != ERW_ready)
+			    errorFlag = dO->write(outStream, oxfer, 
+						  enctype, gltype);
+		    } while (errorFlag == EC_Normal && itemList->seek(ELP_next));
 		}
-		wrStat = ERW_ready;
+
+
+		if (errorFlag == EC_Normal)
+		{
+		    fTransferState = ERW_ready;
+		    if (Length == DCM_UndefinedLength && outStream.Avail() >= 8 )
+			// schreibe SquenceDelimitationItem
+		    {
+			DcmTag delim( DCM_SequenceDelimitationItem );
+			errorFlag = this -> writeTag(outStream, delim, oxfer);
+			Uint32 delimLen = 0L;
+			outStream.WriteBytes(&delimLen, 4); // 4 Byte Laenge
+		    }
+		    else if (outStream.Avail() < 8)
+		    {
+			// Every subelement of the item was written but it
+			// is not possible to write the delimination item 
+			// into the buffer. 
+			fTransferState = ERW_inWork;
+			errorFlag = EC_StreamNotifyClient;
+		    }
+		}
 	    }
-	    valueModified = FALSE;
 	}
     }
-Edebug(());
+    Edebug(());
 
     return errorFlag;
 }
@@ -656,44 +565,45 @@ Edebug(());
 // ********************************
 
 
-E_Condition DcmSequenceOfItems::readBlockInit()
+void  DcmSequenceOfItems::transferInit(void)
 {
-    rdStat = ERW_init;
+    DcmObject::transferInit();
+    fStartPosition = 0;
     lastItemComplete = TRUE;
-    if ( !itemList->empty() )
+    if (!itemList->empty() )
     {
 	itemList->seek( ELP_first );
-	do {
-	    itemList->get()->readBlockInit();
+	do 
+	{
+	    itemList->get()->transferInit();
 
 	} while ( itemList->seek( ELP_next ) );
     }
-    return EC_Normal;
 }
 
 
 // ********************************
 
 
-E_Condition DcmSequenceOfItems::writeBlockInit()
+void  DcmSequenceOfItems::transferEnd(void)
 {
-    wrStat = ERW_init;
-    if ( !itemList->empty() )
+    DcmObject::transferEnd();
+    if (!itemList->empty() )
     {
 	itemList->seek( ELP_first );
-	do {
-	    itemList->get()->readBlockInit();
+	do 
+	{
+	    itemList->get()->transferEnd();
 
 	} while ( itemList->seek( ELP_next ) );
     }
-    return EC_Normal;
 }
 
 
 // ********************************
 
 
-T_VR_UL DcmSequenceOfItems::card()
+unsigned long DcmSequenceOfItems::card()
 {
     return itemList->card();
 }
@@ -702,25 +612,24 @@ T_VR_UL DcmSequenceOfItems::card()
 // ********************************
 
 
-E_Condition DcmSequenceOfItems::insert( DcmItem* item,
-					T_VR_UL where )
+E_Condition DcmSequenceOfItems::insert(DcmItem* item,
+				       unsigned long where)
 {
-Bdebug((3, "dcsequen:DcmSequenceOfItems::insert(DcmItem*=%p,where=%ld)",
-           item, where ));
+    Bdebug((3, "dcsequen:DcmSequenceOfItems::insert(DcmItem*=%p,where=%ld)",
+	    item, where ));
 
     errorFlag = EC_Normal;
     if ( item != (DcmItem*)NULL )
     {
 	itemList->seek_to( where );
 	itemList->insert( item );
-	valueModified = TRUE;
-Vdebug((3, where< itemList->card(), "item at position %d inserted", where ));
-Vdebug((3, where>=itemList->card(), "item at last position inserted" ));
+	Vdebug((3, where< itemList->card(), "item at position %d inserted", where ));
+	Vdebug((3, where>=itemList->card(), "item at last position inserted" ));
 
     }
     else
 	errorFlag = EC_IllegalCall;
-Edebug(());
+    Edebug(());
 
     return errorFlag;
 }
@@ -729,7 +638,7 @@ Edebug(());
 // ********************************
 
 
-DcmItem* DcmSequenceOfItems::getItem( T_VR_UL num )
+DcmItem* DcmSequenceOfItems::getItem(unsigned long num )
 {
     errorFlag = EC_Normal;
     DcmItem *item;
@@ -743,22 +652,22 @@ DcmItem* DcmSequenceOfItems::getItem( T_VR_UL num )
 // ********************************
 
 
-DcmItem* DcmSequenceOfItems::remove( T_VR_UL num )
+DcmItem* DcmSequenceOfItems::remove( unsigned long num )
 {
-Bdebug((3, "dcsequen:DcmSequenceOfItems::remove(num=%ld)", num ));
+    Bdebug((3, "dcsequen:DcmSequenceOfItems::remove(num=%ld)", num ));
 
     errorFlag = EC_Normal;
     DcmItem *item;
     item = (DcmItem*)( itemList->seek_to(num) );  // liest Item aus Liste
     if ( item != (DcmItem*)NULL )
     {
-debug(( 3, "item p=%p removed, but not deleted", item ));
+	debug(( 3, "item p=%p removed, but not deleted", item ));
 
 	itemList->remove();
     }
     else
 	errorFlag = EC_IllegalCall;
-Edebug(());
+    Edebug(());
 
     return item;
 }
@@ -769,7 +678,7 @@ Edebug(());
 
 DcmItem* DcmSequenceOfItems::remove( DcmItem* item )
 {
-Bdebug((3, "dcsequen:DcmSequenceOfItems::remove(DcmItem*)" ));
+    Bdebug((3, "dcsequen:DcmSequenceOfItems::remove(DcmItem*)" ));
 
     DcmItem *retItem = (DcmItem*)NULL;
     errorFlag = EC_IllegalCall;
@@ -781,10 +690,10 @@ Bdebug((3, "dcsequen:DcmSequenceOfItems::remove(DcmItem*)" ));
 	    dO = itemList->get();
 	    if ( dO == item )
 	    {
-debug(( 3, "item p=%p removed, but not deleted", item ));
+		debug(( 3, "item p=%p removed, but not deleted", item ));
 
 		itemList->remove();	    // entfernt Element aus Liste,
-					    // aber loescht es nicht
+		// aber loescht es nicht
 		errorFlag = EC_Normal;
 		break;
 	    }
@@ -794,7 +703,7 @@ debug(( 3, "item p=%p removed, but not deleted", item ));
         retItem = (DcmItem*)NULL;
     else
         retItem = item;
-Edebug(());
+    Edebug(());
 
     return item;
 }
@@ -805,7 +714,7 @@ Edebug(());
 
 E_Condition DcmSequenceOfItems::clear()
 {
-Bdebug((2, "dcsequen:DcmSequenceOfItems::clear()"));
+    Bdebug((2, "dcsequen:DcmSequenceOfItems::clear()"));
 
     errorFlag = EC_Normal;
     DcmObject *dO;
@@ -820,7 +729,7 @@ Bdebug((2, "dcsequen:DcmSequenceOfItems::clear()"));
         }
     }
     Length = 0;
-Edebug(());
+    Edebug(());
 
     return errorFlag;
 }
@@ -831,11 +740,11 @@ Edebug(());
 
 E_Condition DcmSequenceOfItems::verify( BOOL autocorrect )
 {
-Bdebug((3, "dcsequen:DcmSequenceOfItems::verify(autocorrect=%d)",
-	   autocorrect ));
-debug(( 3, "Tag=(0x%4.4x,0x%4.4x) \"%s\" \"%s\"",
-	   getGTag(), getETag(),
-	   DcmVR(getVR()).getVRName(), Tag->getTagName() ));
+    Bdebug((3, "dcsequen:DcmSequenceOfItems::verify(autocorrect=%d)",
+	    autocorrect ));
+    debug(( 3, "Tag=(0x%4.4x,0x%4.4x) \"%s\" \"%s\"",
+	    getGTag(), getETag(),
+	    DcmVR(getVR()).getVRName(), Tag->getTagName() ));
 
     errorFlag = EC_Normal;
     if ( !itemList->empty() )
@@ -850,7 +759,7 @@ debug(( 3, "Tag=(0x%4.4x,0x%4.4x) \"%s\" \"%s\"",
     }
     if ( autocorrect == TRUE )
 	Length = this->getLength();
-Edebug(());
+    Edebug(());
 
     return errorFlag;
 }
@@ -871,9 +780,9 @@ E_Condition DcmSequenceOfItems::searchSubFromHere( const DcmTag &tag,
 						   DcmStack &resultStack,
 						   BOOL searchIntoSub )
 {
-Bdebug((5, "dcsequen:DcmSequenceOfItems::searchSubFromHere(tag=(%4.4x,%4.4x),"
-           "Stack&(%ld),sub=%d)", tag.getGTag(), tag.getETag(),
-           resultStack.card(), searchIntoSub ));
+    Bdebug((5, "dcsequen:DcmSequenceOfItems::searchSubFromHere(tag=(%4.4x,%4.4x),"
+	    "Stack&(%ld),sub=%d)", tag.getGTag(), tag.getETag(),
+	    resultStack.card(), searchIntoSub ));
 
     DcmObject *dO;
     E_Condition l_error = EC_TagNotFound;
@@ -904,12 +813,12 @@ Bdebug((5, "dcsequen:DcmSequenceOfItems::searchSubFromHere(tag=(%4.4x,%4.4x),"
                 }
             }
         } while ( l_error != EC_Normal && itemList->seek( ELP_next ) );
-Vdebug((4, l_error==EC_Normal && tag==dO->getTag(), "Search-Tag=(%4.4x,%4.4x)"
-           " \"%s\" found!", tag.getGTag(), tag.getETag(),
-           DcmVR(tag.getVR()).getVRName() ));
+	Vdebug((4, l_error==EC_Normal && tag==dO->getTag(), "Search-Tag=(%4.4x,%4.4x)"
+		" \"%s\" found!", tag.getGTag(), tag.getETag(),
+		DcmVR(tag.getVR()).getVRName() ));
 
     }
-Edebug(());
+    Edebug(());
 
     return l_error;
 }
@@ -923,32 +832,32 @@ E_Condition DcmSequenceOfItems::search( const DcmTag &tag,
 					E_SearchMode mode,
 					BOOL searchIntoSub )
 {
-Bdebug((5, "dcsequen:DcmSequenceOfItems::search(tag=(%4.4x,%4.4x),Stack&(%ld),"
-           "mode=%d,sub=%d)", tag.getGTag(), tag.getETag(), resultStack.card(),
-           mode, searchIntoSub ));
-debug(( 5, "local Info: Tag=(%4.4x,%4.4x) \"%s\" p=%p",
-           getGTag(), getETag(), DcmVR(getVR()).getVRName(), this ));
+    Bdebug((5, "dcsequen:DcmSequenceOfItems::search(tag=(%4.4x,%4.4x),Stack&(%ld),"
+	    "mode=%d,sub=%d)", tag.getGTag(), tag.getETag(), resultStack.card(),
+	    mode, searchIntoSub ));
+    debug(( 5, "local Info: Tag=(%4.4x,%4.4x) \"%s\" p=%p",
+	    getGTag(), getETag(), DcmVR(getVR()).getVRName(), this ));
 
     DcmObject *dO = (DcmObject*)NULL;
     E_Condition l_error = EC_TagNotFound;
     if ( mode == ESM_afterStackTop && resultStack.top() == this )
     {
         l_error = searchSubFromHere( tag, resultStack, searchIntoSub );
-debug(( 5, "mode=ESM_afterStackTop && resultStack.top()=this" ));
+	debug(( 5, "mode=ESM_afterStackTop && resultStack.top()=this" ));
 
     }
     else if ( !itemList->empty() )
     {
 	if ( mode == ESM_fromHere || resultStack.empty() )
 	{
-debug(( 5, "mode=ESM_fromHere || resultStack.empty()" ));
+	    debug(( 5, "mode=ESM_fromHere || resultStack.empty()" ));
 
 	    resultStack.clear();
             l_error = searchSubFromHere( tag, resultStack, searchIntoSub );
 	}
 	else if ( mode == ESM_fromStackTop )
 	{
-debug(( 5, "mode=ESM_fromStackTop" ));
+	    debug(( 5, "mode=ESM_fromStackTop" ));
 
 	    dO = resultStack.top();
 	    if ( dO == this )
@@ -962,7 +871,7 @@ debug(( 5, "mode=ESM_fromStackTop" ));
 	}
 	else if ( mode == ESM_afterStackTop && searchIntoSub )
 	{
-debug(( 5, "mode=ESM_afterStackTop && searchIntoSub" ));
+	    debug(( 5, "mode=ESM_afterStackTop && searchIntoSub" ));
 
 	    // resultStack enthaelt Zielinformationen:
 	    // - stelle Zustand der letzen Suche in den einzelnen Suchroutinen
@@ -974,12 +883,12 @@ debug(( 5, "mode=ESM_afterStackTop && searchIntoSub" ));
 	    //	 3. stelle eigene Liste auf Position von dnO
 	    //	 4. starte Suche ab dnO
 
-	    T_VR_UL i = resultStack.card();
-debug(( 5, "resultStack: card()=%d", i ));
+	    unsigned long i = resultStack.card();
+	    debug(( 5, "resultStack: card()=%d", i ));
 
 	    while ( i > 0 && (dO = resultStack.elem(i-1)) != this )
 	    {
-debug(( 5, "--dO=elem(%d)=%p  this=%p", i-1, dO, this ));
+		debug(( 5, "--dO=elem(%d)=%p  this=%p", i-1, dO, this ));
 
 		i--;
 	    }
@@ -990,8 +899,8 @@ debug(( 5, "--dO=elem(%d)=%p  this=%p", i-1, dO, this ));
 	    }
 	    if ( dO == this )
 	    {
-debug(( 5, "--dO=elem(%d)=%p==this=%p", i-1, dO, this ));
-debug(( 5, "currently at resultStack position %d, dO=%p", i-1, dO ));
+		debug(( 5, "--dO=elem(%d)=%p==this=%p", i-1, dO, this ));
+		debug(( 5, "currently at resultStack position %d, dO=%p", i-1, dO ));
 
                 if ( i == 1 )                 // habe resultStack.top() gefunden
                     l_error = EC_TagNotFound; // markiere als kein Treffer, s.o.
@@ -1001,25 +910,25 @@ debug(( 5, "currently at resultStack position %d, dO=%p", i-1, dO ));
 		    BOOL searchNode = TRUE;
 		    DcmObject *dnO;
 		    dnO = resultStack.elem( i-2 ); // Knoten der naechsten Ebene
-debug(( 5, "itemList: dnO=%p", dnO ));
+		    debug(( 5, "itemList: dnO=%p", dnO ));
 
 		    itemList->seek( ELP_first );
 		    do {
 			dO = itemList->get();
 			searchNode = searchNode ? ( dO != dnO ) : FALSE;
-Vdebug((5, searchNode,  "--searching Node dnO=%p, found: dO=%p", dnO, dO ));
-Vdebug((5, !searchNode && submode==ESM_afterStackTop,
-                        "--searching Node dnO=%p found!", dO ));
-Vdebug((5, !searchNode && submode!=ESM_afterStackTop,
-                        "--next Node dO=%p for beeing tested", dO ));
+			Vdebug((5, searchNode,  "--searching Node dnO=%p, found: dO=%p", dnO, dO ));
+			Vdebug((5, !searchNode && submode==ESM_afterStackTop,
+				"--searching Node dnO=%p found!", dO ));
+			Vdebug((5, !searchNode && submode!=ESM_afterStackTop,
+				"--next Node dO=%p for beeing tested", dO ));
 
 			if ( !searchNode )
 			{				// suche jetzt weiter
 			    if ( submode == ESM_fromStackTop )
 				resultStack.push( dO ); // Stack aktualisieren
                             if (    submode == ESM_fromStackTop
-                                 && tag == dO->getTag()
-                               )
+				    && tag == dO->getTag()
+				)
                                 l_error = EC_Normal;
                             else
                                 l_error = dO->search( tag,
@@ -1027,7 +936,7 @@ Vdebug((5, !searchNode && submode!=ESM_afterStackTop,
                                                       submode,
                                                       TRUE );
 			    if ( l_error != EC_Normal )
-                                    resultStack.pop();
+				resultStack.pop();
 			    else
 				break;
                             submode = ESM_fromStackTop; // ab hier normale Suche
@@ -1041,7 +950,7 @@ Vdebug((5, !searchNode && submode!=ESM_afterStackTop,
 	else
             l_error = EC_IllegalCall;
     }
-Edebug(());
+    Edebug(());
 
     return l_error;
 }
@@ -1055,12 +964,12 @@ E_Condition DcmSequenceOfItems::search( const DcmTagKey &xtag,
 					E_SearchMode mode,
 					BOOL searchIntoSub )
 {
-Bdebug((5, "dcsequen:DcmSequenceOfItems::search(xtag=(%x,%x),Stack&,mode=%d,sub=%d)",
-	   xtag.getGroup(), xtag.getElement(), mode, searchIntoSub ));
+    Bdebug((5, "dcsequen:DcmSequenceOfItems::search(xtag=(%x,%x),Stack&,mode=%d,sub=%d)",
+	    xtag.getGroup(), xtag.getElement(), mode, searchIntoSub ));
 
     DcmTag tag( xtag );
     E_Condition l_error = search( tag, resultStack, mode, searchIntoSub );
-Edebug(());
+    Edebug(());
 
     return l_error;
 }
@@ -1071,7 +980,7 @@ Edebug(());
 
 E_Condition DcmSequenceOfItems::searchErrors( DcmStack &resultStack )
 {
-Bdebug((5, "dcsequen:DcmSequenceOfItems::searchErrors(Stack&)" ));
+    Bdebug((5, "dcsequen:DcmSequenceOfItems::searchErrors(Stack&)" ));
 
     E_Condition l_error = errorFlag;
     DcmObject *dO = (DcmObject*)NULL;
@@ -1087,7 +996,7 @@ Bdebug((5, "dcsequen:DcmSequenceOfItems::searchErrors(Stack&)" ));
                 l_error = err;
 	} while ( itemList->seek( ELP_next ) );
     }
-Edebug(());
+    Edebug(());
 
     return l_error;
 }
@@ -1098,20 +1007,21 @@ Edebug(());
 
 E_Condition DcmSequenceOfItems::loadAllDataIntoMemory()
 {
-Bdebug((3, "dcsequen:DcmSequenceOfItems::loadAllDataIntoMemory()"));
+    Bdebug((3, "dcsequen:DcmSequenceOfItems::loadAllDataIntoMemory()"));
 
     E_Condition l_error = EC_Normal;
     if ( !itemList->empty() )
     {
         itemList->seek( ELP_first );
-	do {
+	do 
+	{
 	    E_Condition err;
             DcmObject *dO = itemList->get();
             if ( (err = dO->loadAllDataIntoMemory()) != EC_Normal )
 		l_error = err;
         } while ( itemList->seek( ELP_next ) );
     }
-Edebug(());
+    Edebug(());
 
     return l_error;
 }
@@ -1119,4 +1029,16 @@ Edebug(());
 
 // ********************************
 
+
+
+/*
+** CVS/RCS Log:
+** $Log: dcsequen.cc,v $
+** Revision 1.3  1996-01-05 13:27:41  andreas
+** - changed to support new streaming facilities
+** - unique read/write methods for file and block transfer
+** - more cleanups
+**
+**
+*/
 

@@ -8,10 +8,10 @@
 ** Purpose:
 ** Implementation of the class DcmTag
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1995-11-23 17:02:54 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-01-05 13:27:44 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dctag.cc,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -35,7 +35,9 @@ DcmTag::DcmTag()
 {
     dictRef = NULL;
     errorFlag = EC_InvalidTag;
+#ifdef DEBUG
     testConstructDestruct = 1; // for debugging
+#endif
 }
 
 DcmTag::DcmTag(const DcmTagKey& akey) : DcmTagKey(akey) 
@@ -48,7 +50,9 @@ DcmTag::DcmTag(const DcmTagKey& akey) : DcmTagKey(akey)
     	vr.setVR(EVR_UNKNOWN);
 	errorFlag = EC_InvalidTag;
     }
+#ifdef DEBUG
     testConstructDestruct = 1; // for debugging
+#endif
 }
     
 DcmTag::DcmTag(Uint16 g, Uint16 e) : DcmTagKey(g, e) 
@@ -61,7 +65,9 @@ DcmTag::DcmTag(Uint16 g, Uint16 e) : DcmTagKey(g, e)
     	vr.setVR(EVR_UNKNOWN);
 	errorFlag = EC_InvalidTag;
     }
+#ifdef DEBUG
     testConstructDestruct = 1; // for debugging
+#endif
 }
 
 DcmTag::DcmTag(const DcmTagKey& akey, const DcmVR& avr) : DcmTagKey(akey), vr(avr) 
@@ -72,14 +78,18 @@ DcmTag::DcmTag(const DcmTagKey& akey, const DcmVR& avr) : DcmTagKey(akey), vr(av
     } else {
 	errorFlag = EC_InvalidTag;
     }
+#ifdef DEBUG
     testConstructDestruct = 1; // for debugging
+#endif
 }
 
 DcmTag::DcmTag(const DcmTag& tag) : DcmTagKey(tag), vr(tag.vr) 
 {
     dictRef = tag.dictRef;
     errorFlag = tag.errorFlag;
+#ifdef DEBUG
     testConstructDestruct = 1; // for debugging
+#endif
 }
 
 
@@ -89,6 +99,7 @@ DcmTag::DcmTag(const DcmTag& tag) : DcmTagKey(tag), vr(tag.vr)
 
 DcmTag::~DcmTag()
 {
+#ifdef DEBUG
     if ( testConstructDestruct == 1 ) {			// for debugging
         testConstructDestruct = 2; // for debugging
     } else {
@@ -96,6 +107,7 @@ DcmTag::~DcmTag()
              << testConstructDestruct << ")" << endl;
         testConstructDestruct++;
     }
+#endif
 }
 
 
@@ -152,7 +164,12 @@ DcmVR DcmTag::setVR( const DcmVR& avr )    // nicht-eindeutige VR aufloesen
 /*
 ** CVS/RCS Log:
 ** $Log: dctag.cc,v $
-** Revision 1.2  1995-11-23 17:02:54  hewett
+** Revision 1.3  1996-01-05 13:27:44  andreas
+** - changed to support new streaming facilities
+** - unique read/write methods for file and block transfer
+** - more cleanups
+**
+** Revision 1.2  1995/11/23 17:02:54  hewett
 ** Updated for loadable data dictionary.  Some cleanup (more to do).
 **
 **

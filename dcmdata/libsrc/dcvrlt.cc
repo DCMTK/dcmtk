@@ -1,20 +1,23 @@
 /*
- * 
- * Author: Gerd Ehlers	    Created:  05-01-94
- *                          Modified: 02-07-95
- *
- * Module: dcvrlt.cc
- * 
- * Purpose:
- * Implementation of class DcmLongText
- * 
- * 
- * Last Update:	  $Author: hewett $
- * Revision:      $Revision: 1.2 $
- * Status:        $State: Exp $
- *
- */
-
+**
+** Author: Gerd Ehlers      01.05.94 -- First Creation
+**         Andreas Barth    05.12.95 -- new Stream class, unique value field
+** Kuratorium OFFIS e.V.
+**
+** Module: dcvrlt.cc
+** 
+** Purpose:
+** Implementation of class DcmLongText
+**
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-01-05 13:27:50 $
+** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrlt.cc,v $
+** CVS/RCS Revision:	$Revision: 1.3 $
+** Status:		$State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
@@ -25,12 +28,11 @@
 // ********************************
 
 
-DcmLongText::DcmLongText( const DcmTag &tag,
-                          T_VR_UL len,
-                          iDicomStream *iDStream )
-    : DcmCharString( tag, len, iDStream )
+DcmLongText::DcmLongText(const DcmTag &tag,
+                         const Uint32 len)
+: DcmCharString(tag, len)
 {
-Bdebug((5, "dcvrlt:DcmLongText::DcmLongText(DcmTag&,len=%ld,*iDS)", len ));
+Bdebug((5, "dcvrlt:DcmLongText::DcmLongText(DcmTag&,len=%ld)", len ));
 
     maxLength = 10240;
 Edebug(());
@@ -41,8 +43,8 @@ Edebug(());
 // ********************************
 
 
-DcmLongText::DcmLongText( const DcmLongText& old )
-    : DcmCharString( old, EVR_LT )
+DcmLongText::DcmLongText(const DcmLongText& old)
+: DcmCharString( old, EVR_LT )
 {
 Bdebug((5, "dcvrlt:DcmLongText::DcmLongText(DcmLongText&)" ));
 
@@ -65,22 +67,14 @@ Edebug(());
 
 // ********************************
 
-
-DcmEVR DcmLongText::ident() const
-{
-    return EVR_LT;
-}
-
-
-// ********************************
-
-
-T_VR_UL DcmLongText::getVM()
-{
-    return 1L;
-}
-
-
-// ********************************
-
-
+/*
+** CVS/RCS Log:
+** $Log: dcvrlt.cc,v $
+** Revision 1.3  1996-01-05 13:27:50  andreas
+** - changed to support new streaming facilities
+** - unique read/write methods for file and block transfer
+** - more cleanups
+**
+**
+**
+*/

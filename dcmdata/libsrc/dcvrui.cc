@@ -1,20 +1,23 @@
 /*
- * 
- * Author: Gerd Ehlers	    Created:  05-01-94
- *                          Modified: 02-07-95
- *
- * Module: dcvrui.cc
- * 
- * Purpose:
- * Implementation of class DcmUniqueIdentifier
- * 
- * 
- * Last Update:	  $Author: hewett $
- * Revision:      $Revision: 1.2 $
- * Status:        $State: Exp $
- *
- */
-
+**
+** Author: Gerd Ehlers      01.05.94 -- First Creation
+**         Andreas Barth    07.12.95 -- new Stream class, unique value field
+** Kuratorium OFFIS e.V.
+**
+** Module: dcvrui.cc
+** 
+** Purpose:
+** Implementation of class DcmUniqueIdentifier
+**
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-01-05 13:27:55 $
+** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrui.cc,v $
+** CVS/RCS Revision:	$Revision: 1.3 $
+** Status:		$State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 #include <string.h>
 #include "dcvrui.h"
@@ -25,13 +28,12 @@
 // ********************************
 
 
-DcmUniqueIdentifier::DcmUniqueIdentifier( const DcmTag &tag,
-                                          T_VR_UL len,
-                                          iDicomStream *iDStream )
-    : DcmByteString( tag, len, iDStream )
+DcmUniqueIdentifier::DcmUniqueIdentifier(const DcmTag &tag,
+                                         const Uint32 len)
+: DcmByteString(tag, len)
 {
 Bdebug((5, "dcvrui:DcmUniqueIdentifier::DcmUniqueIdentifier"
-           "(DcmTag&,len=%ld,*iDS)", len ));
+           "(DcmTag&,len=%ld)", len ));
 
     paddingChar = '\0';
     maxLength = 64;
@@ -44,7 +46,7 @@ Edebug(());
 
 
 DcmUniqueIdentifier::DcmUniqueIdentifier( const DcmUniqueIdentifier& old )
-    : DcmByteString( old, EVR_UI )
+: DcmByteString( old, EVR_UI )
 {
 Bdebug((5, "dcvrui:DcmUniqueIdentifier::DcmUniqueIdentifier"
            "(DcmUniqueIdentifier&)" ));
@@ -70,50 +72,40 @@ Edebug(());
 // ********************************
 
 
-DcmEVR DcmUniqueIdentifier::ident() const
+void DcmUniqueIdentifier::print(const int level)
 {
-    return EVR_UI;
-}
+	if (this -> valueLoaded())
+	{
+		const char * uid = this -> get();
+		if (uid)
+		{
+			const char* symbol = dcmFindNameOfUID(uid);
+			char *tmp = NULL;
 
-
-// ********************************
-
-
-void DcmUniqueIdentifier::print( int level )
-{
-    if ( ByteStringValue != (char*)NULL )
-    {
-        const char* symbol = dcmFindNameOfUID(ByteStringValue);
-
-        char *tmp = (char*)NULL;
-
-        if ( symbol != (char*)NULL && *symbol != '\0' )
-        {
-            tmp = new char[ strlen(symbol) + 3 ];
-            tmp[0] = '=';
-            strcpy( tmp+1, symbol );
-        }
-        else
-        {
-            tmp = new char[ realLength + 4 ];
-            tmp[0] = '[';
-            strncpy( tmp+1, ByteStringValue, (int)realLength );
-            tmp[ realLength + 1 ] = '\0';
-            T_VR_UL t_len = strlen( tmp+1 );
-            tmp[ t_len + 1 ] = ']';
-            tmp[ t_len + 2 ] = '\0';
-        }
-	DcmObject::printInfoLine( level, tmp );
-	delete tmp;
-    }
-    else if ( valueInMemory == TRUE )
-    {
-	DcmObject::printInfoLine( level, "(no value available)" );
+			if ( symbol && *symbol != '\0' )
+			{
+				tmp = new char[ strlen(symbol) + 3 ];
+				tmp[0] = '=';
+				strcpy( tmp+1, symbol );
+			}
+			else
+			{
+				tmp = new char[ Length + 4 ];
+				tmp[0] = '[';
+				strncpy( tmp+1, uid, (int)Length );
+				tmp[ Length + 1 ] = '\0';
+				size_t t_len = strlen( tmp+1 );
+				tmp[ t_len + 1 ] = ']';
+				tmp[ t_len + 2 ] = '\0';
+			}
+			printInfoLine( level, tmp );
+			delete tmp;
+		}
+		else
+			printInfoLine( level, "(no value available)" );
     }
     else
-    {
-	DcmObject::printInfoLine( level, "(not loaded)" );
-    }
+		printInfoLine( level, "(not loaded)" );
 }
 
 

@@ -9,8 +9,8 @@
  * Implementation of the list-class
  * 
  * 
- * Last Update:	  $Author: hewett $
- * Revision:      $Revision: 1.2 $
+ * Last Update:	  $Author: andreas $
+ * Revision:      $Revision: 1.3 $
  * Status:        $State: Exp $
  *
  */
@@ -292,15 +292,15 @@ DcmObject *DcmList::seek( E_ListPos pos )
 // ********************************
 
 
-DcmObject *DcmList::seek_to( T_VR_UL absolute_position )
+DcmObject *DcmList::seek_to(unsigned long absolute_position)
 {
 /*  fuer bessere Performance:
 
-    T_VR_UL tmppos = absolute_position < cardinality
+    const unsigned long tmppos = absolute_position < cardinality
                         ? absolute_position
                         : cardinality;
     actualNode = firstNode;
-    for (T_VR_UL i = 0; i < absolute_position; i++)
+    for (unsigned long i = 0; i < absolute_position; i++)
     {
         if ( DcmList::valid() )
             actualNode = actualNode->nextNode;
@@ -308,40 +308,13 @@ DcmObject *DcmList::seek_to( T_VR_UL absolute_position )
     return DcmList::valid() ? actualNode->value() : (DcmObject*)NULL;
 */
 
-    T_VR_UL tmppos = absolute_position < cardinality
+    const unsigned long tmppos = absolute_position < cardinality
                         ? absolute_position
                         : cardinality;
     seek( ELP_first );
-    for (T_VR_UL i = 0; i < tmppos; i++)
+    for (unsigned long i = 0; i < tmppos; i++)
         seek( ELP_next );
     return get( ELP_atpos );
-}
-
-
-// ********************************
-
-
-T_VR_UL DcmList::card()
-{
-    return cardinality;
-}
-
-
-// ********************************
-
-
-BOOL DcmList::empty()
-{
-    return (BOOL)( firstNode == (DcmListNode*)NULL );
-}
-
-
-// ********************************
-
-
-BOOL DcmList::valid()
-{
-    return (BOOL)( actualNode != (DcmListNode*)NULL );
 }
 
 

@@ -9,8 +9,8 @@
  * Implementation of the stack-class
  * 
  * 
- * Last Update:	  $Author: hewett $
- * Revision:      $Revision: 1.2 $
+ * Last Update:	  $Author: andreas $
+ * Revision:      $Revision: 1.3 $
  * Status:        $State: Exp $
  *
  */
@@ -167,9 +167,9 @@ DcmObject* DcmStack::pop()
 // ********************************
 
 
-DcmObject* DcmStack::elem( T_VR_UL number )
+DcmObject* DcmStack::elem(const unsigned long number)
 {
-    T_VR_UL num = number;
+    unsigned long num = number;
     DcmObject *obj;
     DcmStackNode *node = topNode;
     while ( num-- > 0 && node != (DcmStackNode*)NULL )
@@ -200,7 +200,7 @@ DcmObject* DcmStack::top()
 // ********************************
 
 
-T_VR_UL DcmStack::card()
+const unsigned long DcmStack::card()
 {
     return cardinality;
 }

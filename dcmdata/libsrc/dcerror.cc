@@ -9,10 +9,10 @@
 ** Error handling, codes and strings
 ** 
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1995-11-23 17:02:44 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-01-05 13:27:36 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcerror.cc,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -40,13 +40,14 @@ dcmErrorConditionToString(E_Condition cond)
     case EC_TagNotFound: s = "Tag Not Found"; break;
     case EC_InvalidVR: s = "Invalid VR"; break;
     case EC_InvalidStream: s = "Invalid Stream"; break;
-    case EC_EndOfFile: s = "End Of File"; break;
+    case EC_EndOfStream: s = "End Of Stream"; break;
     case EC_CorruptedData: s = "Corrupted Data"; break;
     case EC_IllegalCall: s = "Illegal Call"; break;
     case EC_SequEnd: s = "Sequence End"; break;
     case EC_DoubledTag: s = "Doubled Tag"; break;
-    case EC_BufferFull: s = "Buffer Full"; break;
-    case EC_EndOfBuffer: s = "End Of Buffer"; break;
+    case EC_StreamNotifyClient: s = "Stream must be processed by client"; break;
+    case EC_WrongStreamMode: s = "Mode (R/W, random/sequence) is wrong"; break;
+	case EC_MemoryExhausted: s = "Virtual Memory exhausted"; break;
     default: s = "Unknown Error"; break;
     }
 
@@ -57,7 +58,12 @@ dcmErrorConditionToString(E_Condition cond)
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.cc,v $
-** Revision 1.1  1995-11-23 17:02:44  hewett
+** Revision 1.2  1996-01-05 13:27:36  andreas
+** - changed to support new streaming facilities
+** - unique read/write methods for file and block transfer
+** - more cleanups
+**
+** Revision 1.1  1995/11/23 17:02:44  hewett
 ** Updated for loadable data dictionary.  Some cleanup (more to do).
 **
 **

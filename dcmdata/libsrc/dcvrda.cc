@@ -1,20 +1,23 @@
 /*
- * 
- * Author: Gerd Ehlers	    Created:  05-01-94
- *                          Modified: 02-07-95
- *
- * Module: dcvrda.cc
- * 
- * Purpose:
- * Implementation of class DcmDate
- * 
- * 
- * Last Update:	  $Author: hewett $
- * Revision:      $Revision: 1.2 $
- * Status:        $State: Exp $
- *
- */
-
+**
+** Author: Gerd Ehlers      01.05.94 -- First Creation
+**         Andreas Barth    04.12.95 -- new Stream class, unique value field
+** Kuratorium OFFIS e.V.
+**
+** Module: dcvrda.cc
+** 
+** Purpose:
+** Implementation of class DcmDate
+**
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-01-05 13:27:47 $
+** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrda.cc,v $
+** CVS/RCS Revision:	$Revision: 1.3 $
+** Status:		$State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
@@ -25,12 +28,10 @@
 // ********************************
 
 
-DcmDate::DcmDate( const DcmTag &tag,
-                  T_VR_UL len,
-                  iDicomStream *iDStream )
-    : DcmByteString( tag, len, iDStream )
+DcmDate::DcmDate(const DcmTag &tag, const Uint32 len)
+: DcmByteString(tag, len)
 {
-Bdebug((5, "dcvrda:DcmDate::DcmDate(DcmTag&,len=%ld,*iDS)", len ));
+Bdebug((5, "dcvrda:DcmDate::DcmDate(DcmTag&,len=%ld)", len ));
 
     maxLength = 10;
 Edebug(());
@@ -42,7 +43,7 @@ Edebug(());
 
 
 DcmDate::DcmDate( const DcmDate &newDA )
-    : DcmByteString( newDA, EVR_DA )
+: DcmByteString( newDA, EVR_DA )
 {
 Bdebug((5, "dcvrda:DcmDate::DcmDate(DcmDate&)" ));
 
@@ -66,12 +67,14 @@ Edebug(());
 // ********************************
 
 
-DcmEVR DcmDate::ident() const
-{
-    return EVR_DA;
-}
-
-
-// ********************************
-
-
+/*
+** CVS/RCS Log:
+** $Log: dcvrda.cc,v $
+** Revision 1.3  1996-01-05 13:27:47  andreas
+** - changed to support new streaming facilities
+** - unique read/write methods for file and block transfer
+** - more cleanups
+**
+**
+**
+*/
