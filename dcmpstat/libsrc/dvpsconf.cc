@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSConfig
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-04-30 16:40:48 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-02-02 14:39:35 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -228,7 +228,7 @@ void DVPSConfig::store_char(char c)
        if (oldbuf) 
        {
          strncpy(buffer, oldbuf, bufptr);
-         delete oldbuf;
+         delete[] oldbuf;
        }
        buffer[bufptr++] = c;
      } else {
@@ -462,12 +462,15 @@ DVPSConfig::DVPSConfig(FILE *infile)
 DVPSConfig::~DVPSConfig()
 {
   if (anchor) delete anchor;
-  if (buffer) delete buffer;
+  if (buffer) delete[] buffer;
 }
 
 /*
  *  $Log: dvpsconf.cc,v $
- *  Revision 1.2  1999-04-30 16:40:48  meichel
+ *  Revision 1.3  2000-02-02 14:39:35  joergr
+ *  Replaced 'delete' statements by 'delete[]' for objects created with 'new[]'.
+ *
+ *  Revision 1.2  1999/04/30 16:40:48  meichel
  *  Minor code purifications to keep Sun CC 2.0.1 quiet
  *
  *  Revision 1.1  1999/01/15 17:26:33  meichel

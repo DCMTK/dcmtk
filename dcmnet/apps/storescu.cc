@@ -21,10 +21,10 @@
  *
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-01 10:24:03 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-02-02 14:41:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -574,7 +574,7 @@ addPresentationContext(T_ASC_Parameters *params,
     cond = ASC_addPresentationContext(params, presentationContextId, 
         abstractSyntax.c_str(), transferSyntaxes, transferSyntaxCount, proposedRole);
 
-    delete transferSyntaxes;
+    delete[] transferSyntaxes;
     return cond;
 }
 
@@ -976,7 +976,10 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.26  2000-02-01 10:24:03  meichel
+** Revision 1.27  2000-02-02 14:41:19  joergr
+** Replaced 'delete' statements by 'delete[]' for objects created with 'new[]'.
+**
+** Revision 1.26  2000/02/01 10:24:03  meichel
 ** Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
 **   workaround for bug in compiler header files.
 **
