@@ -229,7 +229,14 @@ dcistrmf.o: dcistrmf.cc ../../config/include/osconfig.h \
   ../include/dcvr.h ../../ofstd/include/ofglobal.h \
   ../../ofstd/include/ofthread.h ../include/dcerror.h
 dcistrmz.o: dcistrmz.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h
+  ../../config/include/cfunix.h ../include/dcistrmz.h \
+  ../include/dcistrma.h ../../ofstd/include/oftypes.h \
+  ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
+  ../../ofstd/include/ofcast.h ../../ofstd/include/ofstdinc.h \
+  ../../ofstd/include/ofstream.h ../include/dcxfer.h ../include/dctypes.h \
+  ../include/dcvr.h ../../ofstd/include/ofglobal.h \
+  ../../ofstd/include/ofthread.h ../include/dcerror.h \
+  ../../ofstd/include/ofconsol.h
 dcitem.o: dcitem.cc ../../config/include/osconfig.h \
   ../../config/include/cfunix.h ../include/dcitem.h \
   ../../ofstd/include/ofconsol.h ../../ofstd/include/ofstream.h \
@@ -314,7 +321,13 @@ dcostrmf.o: dcostrmf.cc ../../config/include/osconfig.h \
   ../../ofstd/include/ofthread.h ../../ofstd/include/ofconsol.h \
   ../include/dcerror.h
 dcostrmz.o: dcostrmz.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h
+  ../../config/include/cfunix.h ../include/dcostrmz.h \
+  ../include/dcostrma.h ../../ofstd/include/oftypes.h \
+  ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
+  ../../ofstd/include/ofcast.h ../../ofstd/include/ofstdinc.h \
+  ../../ofstd/include/ofstream.h ../include/dcxfer.h ../include/dctypes.h \
+  ../include/dcvr.h ../../ofstd/include/ofglobal.h \
+  ../../ofstd/include/ofthread.h ../include/dcerror.h
 dcpcache.o: dcpcache.cc ../../config/include/osconfig.h \
   ../../config/include/cfunix.h ../include/dcpcache.h \
   ../../ofstd/include/oftypes.h ../../ofstd/include/oflist.h \
