@@ -22,9 +22,9 @@
  *  Purpose: class DcmMetaInfo
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-05-03 08:15:22 $
+ *  Update Date:      $Date: 2001-05-10 12:46:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcmetinf.cc,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -465,7 +465,7 @@ void DcmMetaInfo::transferInit(void)
 
 void DcmMetaInfo::transferEnd()
 {
-    DcmItem::transferInit();
+    DcmItem::transferEnd();
     fPreambleTransferState = ERW_notInitialized;
 }
 
@@ -545,7 +545,10 @@ E_Condition DcmMetaInfo::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.cc,v $
-** Revision 1.21  2001-05-03 08:15:22  meichel
+** Revision 1.22  2001-05-10 12:46:52  meichel
+** Fixed minor bug in DcmMetaInfo::transferEnd()
+**
+** Revision 1.21  2001/05/03 08:15:22  meichel
 ** Fixed bug in dcmdata sequence handling code that could lead to application
 **   failure in rare cases during parsing of a correct DICOM dataset.
 **
