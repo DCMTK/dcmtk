@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: vorwerk $
- *  Update Date:      $Date: 1999-02-05 11:33:25 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Update Date:      $Date: 1999-02-05 12:45:12 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -821,7 +821,7 @@ Uint32 DVInterface::getNumberOfSeries()
 {
   Uint32 j;
   if (strcmp(selectedStudy,"")==0) return 0; 
-  if (getAnInstance(OFFalse,OFTrue,OFFalse,&idxRec, selectedStudy, "" ,0,&j)==OFTrue) return 0;
+  if (getAnInstance(OFFalse,OFTrue,OFFalse,&idxRec, selectedStudy, NULL ,0,&j)==OFTrue) return 0;
   return j; 
 }
 
@@ -939,8 +939,11 @@ const char *DVInterface::getImageNumber()
 
 DVIFhierarchyStatus DVInterface::getInstanceStatus() 
 {
-  if (getAnInstance(OFTrue,OFFalse,OFFalse,&idxRec, selectedStudy, selectedSeries,0,0,NULL,0,selectedInstance)==OFFalse) return DVIF_objectIsNew;
-  else return DVIF_objectIsNotNew;
+  if (getAnInstance(OFTrue,OFFalse,OFFalse,&idxRec, selectedStudy, selectedSeries,0,0,NULL,0,selectedInstance)==OFTrue) return DVIF_objectIsNew;
+  if (idxRec.hstat==DVIF_objectIsNew)
+    return DVIF_objectIsNew;
+  else 
+    return DVIF_objectIsNotNew;
 }
 
 
@@ -959,10 +962,12 @@ E_Condition DVInterface::instanceReviewed(const char *studyUID,
   long curpos;
   if ((studyUID==NULL) || ((seriesUID==NULL) || (instanceUID==NULL))) return EC_IllegalCall;
   if (getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec, studyUID, seriesUID,0,0,NULL,0,instanceUID)==OFFalse){  
+    lockExclusive();
     idxRec.hstat=DVIF_objectIsNotNew;
     curpos = lseek(phandle -> pidx, 0, SEEK_CUR);
     lseek(phandle -> pidx,curpos-SIZEOF_IDXRECORD, SEEK_SET);
     write (phandle -> pidx, (char *) &idxRec, SIZEOF_IDXRECORD);
+    unlockExclusive();
     return EC_Normal;
   }
   else {
@@ -986,10 +991,11 @@ E_Condition DVInterface::deleteInstance(const char *studyUID,
 	  cerr << "getanInstance error" << endl;
 	  return EC_IllegalCall;
   }
-  lockDatabaseExclusive();
+  lockExclusive();
   if (DB_IdxRemove (phandle, (counter)-1)==DB_ERROR)
   {
 	  cerr << "db_error" << endl;
+	  unlockExclusive();
 	  return EC_IllegalCall;
   }
   pStudyDesc = (StudyDescRecord *)malloc (SIZEOF_STUDYDESC);
@@ -1004,13 +1010,17 @@ studyidx=s;
   pStudyDesc[studyIdx].NumberofRegistratedImages -= 1;
   pStudyDesc[studyIdx].StudySize -= idxRec. ImageSize;
   DB_StudyDescChange (phandle, pStudyDesc);
+break;
+		  }
+s++;
+     }
   free(pStudyDesc);
   pStudyDesc=NULL;
   DB_Handle *handle;
   handle=(DB_Handle *)phandle;
+  unlockExclusive();
   return EC_Normal;
 }
-
 
 E_Condition DVInterface::deleteSeries(const char *studyUID,
                                       const char *seriesUID)
@@ -1645,10 +1655,8 @@ void DVInterface::cleanChildren()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.25  1999-02-05 11:33:25  vorwerk
- *  series, study selection bug corrected.
- *  getinstancestatus bug corrected
- *  number of series and studies and instances are correct now.
+ *  Revision 1.26  1999-02-05 12:45:12  vorwerk
+ *  actualised version: comments see previous version.
  *
  *  Revision 1.24  1999/01/29 16:01:02  meichel
  *  Reworked index file handle acquisition and locking code.
