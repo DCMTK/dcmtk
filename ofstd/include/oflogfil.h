@@ -21,10 +21,10 @@
  *
  *  Purpose: Define general purpose facility for log file output
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-21 15:47:54 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-12-12 17:19:57 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/oflogfil.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -81,7 +81,7 @@ class OFLogFile
      *  @param filename name of the log file to be created
      *  @param flags file type used to create the file (default: append)
      */
-    OFLogFile(const char *filename, long flags = ios::app);
+    OFLogFile(const char *filename, int flags = ios::app);
 
     /** destructor
      */
@@ -206,7 +206,11 @@ class OFLogFile
  *
  * CVS/RCS Log:
  * $Log: oflogfil.h,v $
- * Revision 1.2  2000-06-21 15:47:54  meichel
+ * Revision 1.3  2000-12-12 17:19:57  joergr
+ * Changed type of stream 'open_mode' from long to int to avoid compiler
+ * warnings reported by SunCC 2.0.1.
+ *
+ * Revision 1.2  2000/06/21 15:47:54  meichel
  * Including stdlib.h, required for Sun CC 4.2
  *
  * Revision 1.1  2000/06/05 16:16:23  joergr

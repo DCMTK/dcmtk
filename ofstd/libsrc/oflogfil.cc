@@ -22,9 +22,9 @@
  *  Purpose: Define general purpose facility for log file output
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-05 16:16:40 $
+ *  Update Date:      $Date: 2000-12-12 17:20:02 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/Attic/oflogfil.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,7 +44,7 @@ BEGIN_EXTERN_C
 END_EXTERN_C
 
 
-OFLogFile::OFLogFile(const char *filename, long flags)
+OFLogFile::OFLogFile(const char *filename, int flags)
   : File(filename, flags)
 #ifdef DEBUG
   , Filter(LL_debug)
@@ -113,7 +113,11 @@ void OFLogFile::writeMessage(const char *message, int indent)
  *
  * CVS/RCS Log:
  * $Log: oflogfil.cc,v $
- * Revision 1.1  2000-06-05 16:16:40  joergr
+ * Revision 1.2  2000-12-12 17:20:02  joergr
+ * Changed type of stream 'open_mode' from long to int to avoid compiler
+ * warnings reported by SunCC 2.0.1.
+ *
+ * Revision 1.1  2000/06/05 16:16:40  joergr
  * Added new class for writing standardized status messages to a log file.
  *
  *
