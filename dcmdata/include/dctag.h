@@ -9,9 +9,9 @@
 ** Definition of the class DcmTag
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-12 15:32:49 $
+** Update Date:		$Date: 1996-03-13 14:48:32 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dctag.h,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -59,9 +59,15 @@ public:
     DcmTag& operator=(const DcmTag& tag);
 
     DcmVR setVR(const DcmVR& avr);	/* set a specific VR */
+
     DcmVR getVR() const { return vr; }
     DcmEVR getEVR() const { return vr.getEVR(); }
     const char* getVRName() const { return vr.getVRName(); }
+
+    DcmEVR getDefaultEVR() const
+	{ return (dictRef)?(dictRef->getEVR()):(EVR_UNKNOWN); }
+    const char* getDefaultVRName() const
+	{ return DcmVR(getDefaultEVR()).getVRName(); } 
 
     Uint16 getGTag() const { return getGroup(); }
     Uint16 getETag() const { return getElement(); }
@@ -90,7 +96,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dctag.h,v $
-** Revision 1.4  1996-03-12 15:32:49  hewett
+** Revision 1.5  1996-03-13 14:48:32  hewett
+** Added useful VR access methods.
+**
+** Revision 1.4  1996/03/12 15:32:49  hewett
 ** Added constructor with parameter to explicity set the VR.
 **
 ** Revision 1.3  1996/01/05 13:23:01  andreas

@@ -46,6 +46,7 @@ public:
     /* access methods */
 
     DcmVR getVR() const;
+    DcmEVR getEVR() const;
     const char* getStandardVersion() const;
     const char* getTagName() const;
     
@@ -93,6 +94,12 @@ inline DcmVR
 DcmDictEntry::getVR() const 
 { 
     return valueRepresentation; 
+}
+
+inline DcmEVR 
+DcmDictEntry::getEVR() const 
+{ 
+    return valueRepresentation.getEVR(); 
 }
 
 inline const char* 

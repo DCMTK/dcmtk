@@ -9,8 +9,8 @@
 ** This file contains the interface to routines which provide
 ** DICOM object encoding/decoding, search and lookup facilities.
 **
-** Last Update:   $Author: andreas $
-** Revision:      $Revision: 1.4 $
+** Last Update:   $Author: hewett $
+** Revision:      $Revision: 1.5 $
 ** Status:	  $State: Exp $
 **
 */
@@ -83,7 +83,9 @@ public:
     virtual Uint16 getGTag();
     virtual Uint16 getETag();
     const DcmTag & getTag(void) const;
+
     DcmEVR getVR(void);
+
     virtual E_Condition setVR(DcmEVR vr);
     virtual unsigned long getVM() = 0;
     virtual Uint32 getLength(const E_TransferSyntax xfer 
