@@ -23,9 +23,9 @@
  *           XML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-04-01 14:58:32 $
+ *  Update Date:      $Date: 2003-08-07 11:53:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/dsr2xml.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,10 +40,10 @@
 #include "cmdlnarg.h"
 #include "ofstream.h"
 #include "ofconapp.h"
-#include "dcuid.h"      /* for dcmtk version name */
+#include "dcuid.h"       /* for dcmtk version name */
 
 #ifdef WITH_ZLIB
-#include <zlib.h>       /* for zlibVersion() */
+#include <zlib.h>        /* for zlibVersion() */
 #endif
 
 #define OFFIS_CONSOLE_APPLICATION "dsr2xml"
@@ -112,7 +112,7 @@ static OFCondition writeFile(ostream &out,
 
 
 #define SHORTCOL 3
-#define LONGCOL 20
+#define LONGCOL 22
 
 
 int main(int argc, char *argv[])
@@ -134,30 +134,31 @@ int main(int argc, char *argv[])
     cmd.addParam("xmlfile-out",  "XML output filename (default: stdout)", OFCmdParam::PM_Optional);
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-      cmd.addOption("--help",                  "-h",        "print this help text and exit");
-      cmd.addOption("--version",                            "print version information and exit", OFTrue /* exclusive */);
-      cmd.addOption("--debug",                 "-d",        "debug mode, print debug information");
-      cmd.addOption("--verbose-debug",         "-dd",       "verbose debug mode, print more details");
+      cmd.addOption("--help",                  "-h",  "print this help text and exit");
+      cmd.addOption("--version",                      "print version information and exit", OFTrue /* exclusive */);
+      cmd.addOption("--debug",                 "-d",  "debug mode, print debug information");
+      cmd.addOption("--verbose-debug",         "-dd", "verbose debug mode, print more details");
 
     cmd.addGroup("input options:");
       cmd.addSubGroup("input file format:");
-        cmd.addOption("--read-file",           "+f",        "read file format or data set (default)");
-        cmd.addOption("--read-dataset",        "-f",        "read data set without file meta information");
+        cmd.addOption("--read-file",            "+f",  "read file format or data set (default)");
+        cmd.addOption("--read-dataset",         "-f",  "read data set without file meta information");
       cmd.addSubGroup("input transfer syntax (only with --read-dataset):");
-        cmd.addOption("--read-xfer-auto",      "-t=",       "use TS recognition (default)");
-        cmd.addOption("--read-xfer-little",    "-te",       "read with explicit VR little endian TS");
-        cmd.addOption("--read-xfer-big",       "-tb",       "read with explicit VR big endian TS");
-        cmd.addOption("--read-xfer-implicit",  "-ti",       "read with implicit VR little endian TS");
-
-    cmd.addGroup("output options:");
-      cmd.addSubGroup("encoding:");
-        cmd.addOption("--attr-code",           "+Ec",       "encode code value, coding scheme designator and\ncoding scheme version as XML attribute");
-        cmd.addOption("--attr-relationship",   "+Er",       "encode relationship type as XML attribute");
-        cmd.addOption("--attr-value-type",     "+Ev",       "encode value type as XML attribute");
-      cmd.addSubGroup("XML structure:");
-        cmd.addOption("--use-xml-namespace",   "+Xn",       "add XML namespace declaration to root element");
+        cmd.addOption("--read-xfer-auto",       "-t=", "use TS recognition (default)");
+        cmd.addOption("--read-xfer-little",     "-te", "read with explicit VR little endian TS");
+        cmd.addOption("--read-xfer-big",        "-tb", "read with explicit VR big endian TS");
+        cmd.addOption("--read-xfer-implicit",   "-ti", "read with implicit VR little endian TS");
+                                                      
+    cmd.addGroup("output options:");                  
+      cmd.addSubGroup("encoding:");                   
+        cmd.addOption("--attr-code",            "+Ec", "encode code value, coding scheme designator\nand coding scheme version as XML attribute");
+        cmd.addOption("--attr-relationship",    "+Er", "encode relationship type as XML attribute");
+        cmd.addOption("--attr-value-type",      "+Ev", "encode value type as XML attribute");
+      cmd.addSubGroup("XML structure:");              
+        cmd.addOption("--add-schema-reference", "+Xs", "add reference to XML Schema \"" DCMSR_XML_XSD_FILE "\"");
+        cmd.addOption("--use-xml-namespace",    "+Xn", "add XML namespace declaration to root element");
       cmd.addSubGroup("writing:");
-        cmd.addOption("--write-empty-tags",    "+We",       "write all tags even if their value is empty");
+        cmd.addOption("--write-empty-tags",     "+We", "write all tags even if their value is empty");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -225,11 +226,23 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--attr-value-type"))
             opt_writeFlags |= DSRTypes::XF_valueTypeAsAttribute;
 
+        if (cmd.findOption("--add-schema-reference"))
+            opt_writeFlags |= DSRTypes::XF_addSchemaReference;
         if (cmd.findOption("--use-xml-namespace"))
             opt_writeFlags |= DSRTypes::XF_useDcmsrNamespace;
 
         if (cmd.findOption("--write-empty-tags"))
             opt_writeFlags |= DSRTypes::XF_writeEmptyTags;
+
+        /* check whether appropriate XML Schema is available */
+        if (opt_writeFlags & DSRTypes::XF_addSchemaReference)
+        {
+            if (opt_writeFlags & DSRTypes::XF_encodeEverythingAsAttribute)
+            {
+                app.printWarning("no Schema support for --attr-xxx yet ... ignoring");
+                opt_writeFlags &= ~DSRTypes::XF_addSchemaReference;
+            }
+        }
     }
 
     SetDebugLevel((opt_debugMode));
@@ -268,7 +281,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2xml.cc,v $
- * Revision 1.15  2003-04-01 14:58:32  joergr
+ * Revision 1.16  2003-08-07 11:53:12  joergr
+ * Added new option --add-schema-reference to command line tool dsr2xml.
+ *
+ * Revision 1.15  2003/04/01 14:58:32  joergr
  * Added support for XML namespaces.
  *
  * Revision 1.14  2002/11/26 08:45:34  meichel
