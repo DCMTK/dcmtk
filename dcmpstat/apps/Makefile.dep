@@ -424,7 +424,8 @@ dcmpsrcv.o: dcmpsrcv.cc ../../config/include/osconfig.h \
  ../../imagectn/include/dbstore.h ../include/dvcache.h \
  ../../dcmnet/include/diutil.h ../../ofstd/include/ofconapp.h \
  ../../ofstd/include/ofcmdln.h ../include/dvpsmsg.h \
- ../../dcmnet/include/dcmlayer.h
+ ../../dcmnet/include/dcmlayer.h ../../dcmtls/include/tlstrans.h \
+ ../../dcmnet/include/dcmtrans.h ../../dcmtls/include/tlslayer.h
 dcmpssnd.o: dcmpssnd.cc ../../config/include/osconfig.h \
  ../include/dvpsdef.h ../include/dviface.h \
  ../../dcmdata/include/dctk.h ../../dcmdata/include/dctypes.h \
@@ -473,5 +474,7 @@ dcmpssnd.o: dcmpssnd.cc ../../config/include/osconfig.h \
  ../../imagectn/include/dbstore.h ../include/dvcache.h \
  ../../dcmnet/include/diutil.h ../../ofstd/include/ofconapp.h \
  ../../ofstd/include/ofcmdln.h ../include/dvpshlp.h \
- ../include/dvpsmsg.h
+ ../include/dvpsmsg.h ../../dcmtls/include/tlstrans.h \
+ ../../dcmnet/include/dcmtrans.h ../../dcmnet/include/dcmlayer.h \
+ ../../dcmtls/include/tlslayer.h
 vrscan.o: vrscan.cc vrscan.h ../../config/include/osconfig.h
