@@ -21,10 +21,10 @@
 #  Purpose: 
 #  This is the global DICOM data dictionary for the dcmtk class library.
 #
-#  Last Update:      $Author: meichel $
-#  Update Date:      $Date: 2002-06-19 15:15:42 $
+#  Last Update:      $Author: wilkens $
+#  Update Date:      $Date: 2002-11-29 08:47:50 $
 #  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dicom.dic,v $
-#  CVS/RCS Revision: $Revision: 1.42 $
+#  CVS/RCS Revision: $Revision: 1.43 $
 #  Status:           $State: Exp $
 #
 #  This dictionary contains
@@ -809,7 +809,8 @@
 (0040,0250)	DA	PerformedProcedureStepEndDate	1	dicom98
 (0040,0251)	TM	PerformedProcedureStepEndTime	1	dicom98
 (0040,0252)	CS	PerformedProcedureStepStatus	1	dicom98
-(0040,0253)	CS	PerformedProcedureStepID	1	dicom98
+(0040,0253)	SH	PerformedProcedureStepID	1	dicom99
+# VR for (0040,0253) PerformedProcedureStepID was CS in DICOM98. Changed in DICOM99.
 (0040,0254)	LO	PerformedProcedureStepDescription	1	dicom98
 (0040,0255)	LO	PerformedProcedureTypeDescription	1	dicom98
 # attribute renamed in CP 201, name was PerformedActionItemSequence before
