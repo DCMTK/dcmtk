@@ -22,9 +22,9 @@
  *  Purpose: Handle command line arguments (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-27 16:23:11 $
+ *  Update Date:      $Date: 1999-04-27 17:46:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofcmdln.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -313,7 +313,7 @@ class OFCommandLine
     void setOptionColumns(const int longCols,
                           const int shortCols);
 
-    /** sets default width of param column
+    /** sets default width of parameter column
      *
      *  @param  column  minimum width of the long option column
      */
@@ -328,7 +328,7 @@ class OFCommandLine
      *  @param  valueDescr  description of optional values
      *  @param  optDescr    description of command line option
      *
-     ** @return true if succesfully added
+     ** @return OFTrue if succesfully added
      */
     OFBool addOption(const char *longOpt,
                      const char *shortOpt,
@@ -343,7 +343,7 @@ class OFCommandLine
      *  @param  shortOpt    short option name
      *  @param  optDescr    description of command line option
      *
-     ** @return true if succesfully added
+     ** @return OFTrue if succesfully added
      */
     OFBool addOption(const char *longOpt,
                      const char *shortOpt,
@@ -357,7 +357,7 @@ class OFCommandLine
      *  @param  valueDescr  description of optional values
      *  @param  optDescr    description of command line option
      *
-     ** @return true if succesfully added
+     ** @return OFTrue if succesfully added
      */
     OFBool addOption(const char *longOpt,
                      const int valueCount,
@@ -370,7 +370,7 @@ class OFCommandLine
      ** @param  longOpt   long option name
      *  @param  optDescr  description of command line option
      *
-     ** @return true if succesfully added
+     ** @return OFTrue if succesfully added
      */
     OFBool addOption(const char *longOpt,
                      const char *optDescr);
@@ -403,6 +403,8 @@ class OFCommandLine
      ** @param  param  parameter name
      *  @param  descr  parameter description
      *  @param  mode   parameter's cardinality (see above)
+     *
+     ** @return OFTrue if successful, OFFalse otherwise
      */
     OFBool addParam(const char *param,
                     const char *descr,
@@ -413,6 +415,8 @@ class OFCommandLine
      *
      ** @param  param  parameter name
      *  @param  mode   parameter's cardinality (see above)
+     *
+     ** @return OFTrue if successful, OFFalse otherwise
      */
     OFBool addParam(const char *param,
                     const OFCmdParam::E_ParamMode mode = OFCmdParam::PM_Mandatory);
@@ -420,19 +424,57 @@ class OFCommandLine
 
  // --- get information
 
+    /** gets number of command line arguments.
+     *  (options and parameters)
+     *
+     ** @return number of command line arguments
+     */
     int getArgCount() const
     {
         return ArgumentList.size();
     }
     
+    /** gets current command line argument as a C string
+     *  This is the argument which is currently parsed.
+     *
+     ** @param  arg  reference to C string where argument should be stored
+     *
+     ** @return OFTrue if successful, OFFalse otherwise
+     */
     OFBool getCurrentArg(const char *&arg);
 
+    /** gets current command line argument as a C++ string.
+     *  This is the argument which is currently parsed.
+     *
+     ** @param  arg  reference to C++ string where argument should be stored
+     *
+     ** @return OFTrue if successful, OFFalse otherwise
+     */
     OFBool getCurrentArg(OFCmdString &arg);
 
+    /** gets last command line argument as a C string
+     *  This is the last entry in the list of all arguments.
+     *
+     ** @param  arg  reference to C string where argument should be stored
+     *
+     ** @return OFTrue if successful, OFFalse otherwise
+     */
     OFBool getLastArg(const char *&arg);
 
+    /** gets last command line argument as a C++ string
+     *  This is the last entry in the list of all arguments.
+     *
+     ** @param  arg  reference to C++ string where argument should be stored
+     *
+     ** @return OFTrue if successful, OFFalse otherwise
+     */
     OFBool getLastArg(OFCmdString &arg);
 
+    /** gets number of parameters in the parsed command line.
+     *  A parameter is an argument which is no option (e.g. a filename).
+     *
+     ** @return number of parameter
+     */
     int getParamCount() const
     {
         return ParamPosList.size();
@@ -441,56 +483,167 @@ class OFCommandLine
 
  // --- find/get parameter
 
+    /** checks whether specified parameter exists in the command line.
+     *
+     ** @param  pos  position of parameter to be checked (1..n)
+     *
+     ** @return OFTrue if parameter exists, false otherwise
+     */
     OFBool findParam(const int pos);
 
+
+    /** gets value of specified parameter as signed integer.
+     *
+     ** @param  pos    position of parameter (1..n)
+     *  @param  value  reference to variable where the value should be stored
+     *
+     ** @return status of get/conversion, PVS_Normal if successful
+     */
     E_ParamValueStatus getParam(const int pos,
                                 OFCmdSignedInt &value);
 
+    /** get value of specified parameter as signed integer.
+     *
+     ** @param  pos    position of parameter (1..n)
+     *  @param  value  reference to variable where the value should be stored
+     *  @param  low    minimum boundary for value (used for range check)
+     *  @param  incl   if OFTrue 'low' value is valid (included), otherwise invalid
+     *
+     ** @return status of get/conversion, PVS_Normal if successful
+     */
     E_ParamValueStatus getParam(const int pos,
                                 OFCmdSignedInt &value,
                                 const OFCmdSignedInt low,
                                 const OFBool incl = OFTrue);
 
+    /** gets value of specified parameter as signed integer.
+     *
+     ** @param  pos    position of parameter (1..n)
+     *  @param  value  reference to variable where the value should be stored
+     *  @param  low    minimum boundary for value (used for range check, boundary included)
+     *  @param  high   maximum boundary for value (dito)
+     *
+     ** @return status of get/conversion, PVS_Normal if successful
+     */
     E_ParamValueStatus getParam(const int pos,
                                 OFCmdSignedInt &value,
                                 const OFCmdSignedInt low,
                                 const OFCmdSignedInt high);
 
+    /** gets value of specified parameter as unsigned integer.
+     *  NB: If command line argument specifies a negative value the result depends on the
+     *  signed->unsigned conversion implemented in sscanf() !!
+     *
+     ** @param  pos    position of parameter (1..n)
+     *  @param  value  reference to variable where the value should be stored
+     *
+     ** @return status of get/conversion, PVS_Normal if successful
+     */
     E_ParamValueStatus getParam(const int pos,
                                 OFCmdUnsignedInt &value);
 
+    /** gets value of specified parameter as unsigned integer.
+     *  NB: If command line argument specifies a negative value the result depends on the
+     *  signed->unsigned conversion implemented in sscanf() !!
+     *
+     ** @param  pos    position of parameter (1..n)
+     *  @param  value  reference to variable where the value should be stored
+     *  @param  low    minimum boundary for value (used for range check)
+     *  @param  incl   if OFTrue 'low' value is valid (included), otherwise invalid
+     *
+     ** @return status of get/conversion, PVS_Normal if successful
+     */
     E_ParamValueStatus getParam(const int pos,
                                 OFCmdUnsignedInt &value,
                                 const OFCmdUnsignedInt low,
                                 const OFBool incl = OFTrue);
 
+    /** gets value of specified parameter as unsigned integer.
+     *  NB: If command line argument specifies a negative value the result depends on the
+     *  signed->unsigned conversion implemented in sscanf() !!
+     *
+     ** @param  pos    position of parameter (1..n)
+     *  @param  value  reference to variable where the value should be stored
+     *  @param  low    minimum boundary for value (used for range check, boundary included)
+     *  @param  high   maximum boundary for value (dito)
+     *
+     ** @return status of get/conversion, PVS_Normal if successful
+     */
     E_ParamValueStatus getParam(const int pos,
                                 OFCmdUnsignedInt &value,
                                 const OFCmdUnsignedInt low,
                                 const OFCmdUnsignedInt high);
 
+    /** gets value of specified parameter as floating point.
+     *
+     ** @param  pos    position of parameter (1..n)
+     *  @param  value  reference to variable where the value should be stored
+     *
+     ** @return status of get/conversion, PVS_Normal if successful
+     */
     E_ParamValueStatus getParam(const int pos,
                                 OFCmdFloat &value);
 
+    /** gets value of specified parameter as floating point.
+     *
+     ** @param  pos    position of parameter (1..n)
+     *  @param  value  reference to variable where the value should be stored
+     *  @param  low    minimum boundary for value (used for range check)
+     *  @param  incl   if OFTrue 'low' value is valid (included), otherwise invalid
+     *
+     ** @return status of get/conversion, PVS_Normal if successful
+     */
     E_ParamValueStatus getParam(const int pos,
                                 OFCmdFloat &value,
                                 const OFCmdFloat low,
                                 const OFBool incl = OFTrue);
 
+    /** gets value of specified parameter as floating point.
+     *
+     ** @param  pos    position of parameter (1..n)
+     *  @param  value  reference to variable where the value should be stored
+     *  @param  low    minimum boundary for value (used for range check, boundary included)
+     *  @param  high   maximum boundary for value (dito)
+     *
+     ** @return status of get/conversion, PVS_Normal if successful
+     */
     E_ParamValueStatus getParam(const int pos,
                                 OFCmdFloat &value,
                                 const OFCmdFloat low,
                                 const OFCmdFloat high);
 
+    /** gets value of specified parameter as C string.
+     *
+     ** @param  pos    position of parameter (1..n)
+     *  @param  param  reference to variable where the value should be stored
+     *
+     ** @return status of get/conversion, PVS_Normal if successful
+     */
     E_ParamValueStatus getParam(const int pos,
                                 const char *&param);
 
+    /** gets value of specified parameter as C++ string.
+     *
+     ** @param  pos    position of parameter (1..n)
+     *  @param  param  reference to variable where the value should be stored
+     *
+     ** @return status of get/conversion, PVS_Normal if successful
+     */
     E_ParamValueStatus getParam(const int pos,
                                 OFCmdString &param);
 
 
  // --- find/get option
 
+    /** checks whether specified option exists in the command line.
+     *  The search process starts from the last command line argument to the first one.
+     *
+     ** @param  longOpt  name of option (in long format) to be checked
+     *  @param  pos      position of parameter (default: all parameters)
+     *  @param  mode     ...
+     *
+     ** @return OFTrue if option exists, OFFalse otherwise
+     */
     OFBool findOption(const char *longOpt,
                       const int pos = 0,
                       const E_FindOptionMode mode = FOM_Normal);
@@ -569,6 +722,7 @@ class OFCommandLine
 
     // flags
 
+    /// parsing flag to expand wildcard under Windows (very similar to Unix)
     static const int ExpandWildcards;
 
 
@@ -636,10 +790,8 @@ class OFCommandLine
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.h,v $
- * Revision 1.11  1999-04-27 16:23:11  joergr
- * Introduced list of valid parameters used for syntax output and error
- * checking.
- * Added some useful debugging checks.
+ * Revision 1.12  1999-04-27 17:46:05  joergr
+ * Added some comments (DOC++ style).
  *
  * Revision 1.10  1999/04/26 16:32:47  joergr
  * Added support to define minimum width of short and long option columns.
