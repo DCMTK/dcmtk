@@ -1,0 +1,40 @@
+Werte der List: 5 2 1 3 4 
+2xa++ :Was ist jetzt a? 1
+Finde 50: gefunden, wie erwartet
+Ausgabe der Liste l
+Werte der List: 5 2 50 100 100 100 100 100 100 100 100 100 100 1 3 4 
+Kopiere Liste l in l1,
+Ausgabe der List l1
+Werte der List: 5 2 50 100 100 100 100 100 100 100 100 100 100 1 3 4 
+Loesche alle 100er (nacheinander) aus l
+Ein 100er Element geloescht
+Werte der List: 5 2 50 100 100 100 100 100 100 100 100 100 1 3 4 
+Ein 100er Element geloescht
+Werte der List: 5 2 50 100 100 100 100 100 100 100 100 1 3 4 
+Ein 100er Element geloescht
+Werte der List: 5 2 50 100 100 100 100 100 100 100 1 3 4 
+Ein 100er Element geloescht
+Werte der List: 5 2 50 100 100 100 100 100 100 1 3 4 
+Ein 100er Element geloescht
+Werte der List: 5 2 50 100 100 100 100 100 1 3 4 
+Ein 100er Element geloescht
+Werte der List: 5 2 50 100 100 100 100 1 3 4 
+Ein 100er Element geloescht
+Werte der List: 5 2 50 100 100 100 1 3 4 
+Ein 100er Element geloescht
+Werte der List: 5 2 50 100 100 1 3 4 
+Ein 100er Element geloescht
+Werte der List: 5 2 50 100 1 3 4 
+Ein 100er Element geloescht
+Werte der List: 5 2 50 1 3 4 
+Anzahl Elemente in l: 6
+Loesche Werte mit pop_front aus l: 5 2 50 1 3 4 
+Loesche letztes Element aus l1: 4 und gebe l aus:
+Werte der List: 5 2 50 100 100 100 100 100 100 100 100 100 100 1 3 
+Suche 1 in l1: 
+1 gefunden (wie erwartet)
+Loesche alle Elemente hinter ab der  1 und gebe Ergebnis aus.
+Werte der List: 5 2 50 100 100 100 100 100 100 100 100 100 100 
+Loesche die 50 und geben restliche List aus
+Werte der List: 5 2 100 100 100 100 100 100 100 100 100 100 
+ Aufruf des Destruktors 
