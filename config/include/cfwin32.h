@@ -544,6 +544,9 @@
 
 #endif
 
+/* Define if we are compiling for built-in private tag dictionary */
+/* #undef WITH_PRIVATE_TAGS */
+
 /* Define if we are compiling with OpenSSL support */
 /* #undef WITH_OPENSSL */
 

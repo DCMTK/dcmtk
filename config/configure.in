@@ -517,6 +517,29 @@ AC_CHECK_FUNCTION_TEMPLATE
 AC_CHECK_EXPLICIT_TEMPLATE_SPECIALIZATION
 
 dnl -------------------------------------------------------
+dnl Check for Private Tag support
+dnl -------------------------------------------------------
+
+INSTALL_PRIVATE_DICTIONARY="NO"
+AC_MSG_CHECKING(whether to install private tag dictionary)
+AC_ARG_WITH(private-tags,
+[  --with-private-tags     install private tag dictionary
+  --without-private-tags  don't install private tag dictionary (default)],
+[ case "$withval" in
+  yes)
+    AC_MSG_RESULT(yes)
+    AC_DEFINE(WITH_PRIVATE_TAGS)
+
+    INSTALL_PRIVATE_DICTIONARY="YES"
+    ;;
+  *)
+    AC_MSG_RESULT(no)
+    ;;
+  esac ],
+  AC_MSG_RESULT(no)
+)
+
+dnl -------------------------------------------------------
 dnl Check for OpenSSL support
 dnl -------------------------------------------------------
 
@@ -615,6 +638,7 @@ AC_SUBST(OPENSSLLIBS)
 AC_SUBST(TIFFLIBS)
 AC_SUBST(MATHLIBS)
 AC_SUBST(DEBUG)
+AC_SUBST(INSTALL_PRIVATE_DICTIONARY)
 
 AC_OUTPUT(Makefile.def Makefile)
 
