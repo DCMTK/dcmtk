@@ -23,8 +23,8 @@
  *    classes: DcmTLSConnection
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-10-10 12:13:36 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-10-11 16:15:35 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -61,6 +61,10 @@ BEGIN_EXTERN_C
 #endif
 #include <signal.h>
 #include <time.h>
+#ifdef _WIN32
+#include <windows.h>
+#include <winbase.h>
+#endif
 #include <openssl/err.h>
 END_EXTERN_C
 
@@ -344,7 +348,10 @@ void tlstrans_dummy_function()
 
 /*
  *  $Log: tlstrans.cc,v $
- *  Revision 1.2  2000-10-10 12:13:36  meichel
+ *  Revision 1.3  2000-10-11 16:15:35  meichel
+ *  Updated includes for Win32 environment
+ *
+ *  Revision 1.2  2000/10/10 12:13:36  meichel
  *  Added routines for printing certificates and connection parameters.
  *
  *  Revision 1.1  2000/08/10 14:50:29  meichel

@@ -23,8 +23,8 @@
  *    classes: DcmTLSTransportLayer
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-10-10 12:13:35 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-10-11 16:15:35 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,16 +32,21 @@
  */
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
+
+BEGIN_EXTERN_C
+#ifdef _WIN32
+#include <windows.h>
+#include <winbase.h>
+#endif
+#include <openssl/rand.h>
+END_EXTERN_C
+
 #include "tlslayer.h"
 #include "tlstrans.h"
 #include "dicom.h"
 #include "ofconsol.h"    /* for ofConsole */
 
 #ifdef WITH_OPENSSL
-
-BEGIN_EXTERN_C
-#include <openssl/rand.h>
-END_EXTERN_C
 
 extern "C" int certificateValidationCallback(int ok, X509_STORE_CTX *storeContext);
 
@@ -440,7 +445,10 @@ void tlslayer_dummy_function()
 
 /*
  *  $Log: tlslayer.cc,v $
- *  Revision 1.2  2000-10-10 12:13:35  meichel
+ *  Revision 1.3  2000-10-11 16:15:35  meichel
+ *  Updated includes for Win32 environment
+ *
+ *  Revision 1.2  2000/10/10 12:13:35  meichel
  *  Added routines for printing certificates and connection parameters.
  *
  *  Revision 1.1  2000/08/10 14:50:29  meichel

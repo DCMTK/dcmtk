@@ -23,8 +23,8 @@
  *    classes: DVPSIPCMessage
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-10-10 12:24:41 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-10-11 16:16:25 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,6 +42,10 @@ BEGIN_EXTERN_C
 #endif
 #ifdef HAVE_NETDB_H
 #include <netdb.h>
+#endif
+#ifdef _WIN32
+#include <windows.h>
+#include <winbase.h>
 #endif
 END_EXTERN_C
 
@@ -401,7 +405,10 @@ void DVPSIPCClient::notifySentDICOMObject()
 
 /*
  *  $Log: dvpsmsg.cc,v $
- *  Revision 1.1  2000-10-10 12:24:41  meichel
+ *  Revision 1.2  2000-10-11 16:16:25  meichel
+ *  Updated includes for Win32 environment
+ *
+ *  Revision 1.1  2000/10/10 12:24:41  meichel
  *  Added extensions for IPC message communication
  *
  *
