@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-01-20 15:03:40 $
+ *  Update Date:      $Date: 1999-02-03 17:27:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoimg.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,6 +42,7 @@
 #include "dimopx.h"
 #include "diovlay.h"
 #include "diluptab.h"
+#include "didispfn.h"
 
 
 /*------------------------*
@@ -85,7 +86,19 @@ class DiMonoImage
                         double &max,
                         const int mode) const;
 
+    int setDisplayFunction(DiDisplayFunction *display);
+
+    int setNoDisplayFunction();
+
     int setNoVoiTransformation();
+
+    inline int deleteBartenLUT(const int bits)
+    {
+        return (DisplayFunction != NULL) ? DisplayFunction->deleteBartenLUT(bits) : 0;
+    }
+
+    int convertPValueToDDL(const Uint16 pvalue,
+                           Uint16 &ddl);
 
     int setMinMaxWindow(const int idx = 1);
 
@@ -258,6 +271,8 @@ class DiMonoImage
     DiLookupTable *PresLutData;                     // points to associated presentation-LUT-object
     DiMonoPixel *InterData;                         // points to intermediate pixel data representation (object)
 
+    DiDisplayFunction *DisplayFunction;             // points to grayscale standard display function (only referenced!)
+
 
  private:
 
@@ -278,7 +293,11 @@ class DiMonoImage
  *
  * CVS/RCS Log:
  * $Log: dimoimg.h,v $
- * Revision 1.9  1999-01-20 15:03:40  joergr
+ * Revision 1.10  1999-02-03 17:27:58  joergr
+ * Added support for calibration according to Barten transformation (incl.
+ * a DISPLAY file describing the monitor characteristic).
+ *
+ * Revision 1.9  1999/01/20 15:03:40  joergr
  * Added new output method to fill external memory buffer with rendered pixel
  * data.
  *
