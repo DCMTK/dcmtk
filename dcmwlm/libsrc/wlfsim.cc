@@ -21,10 +21,10 @@
 *
 *  Purpose: Class for managing file system interaction.
 *
-*  Last Update:      $Author: wilkens $
-*  Update Date:      $Date: 2003-08-20 14:45:15 $
+*  Last Update:      $Author: meichel $
+*  Update Date:      $Date: 2003-10-13 13:28:19 $
 *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlfsim.cc,v $
-*  CVS/RCS Revision: $Revision: 1.9 $
+*  CVS/RCS Revision: $Revision: 1.10 $
 *  Status:           $State: Exp $
 *
 *  CVS/RCS Log at end of file
@@ -890,16 +890,16 @@ OFBool WlmFileSystemInteractionManager::DateTimeRangeMatch( const char *datasetD
     cond = DcmTime::getOFTimeFromString( OFString( dtv ), datasetTimeVal );
     if( cond.good() )
     {
-      cond = DcmDate::getOFDateFromString( ( sdvv1 != NULL ) ? OFString( sdvv1 ) : OFString("19000101"), searchMaskDateVal1 );
+      cond = DcmDate::getOFDateFromString( (( sdvv1 != NULL ) ? OFString( sdvv1 ) : OFString("19000101")), searchMaskDateVal1 );
       if( cond.good() )
       {
-        cond = DcmDate::getOFDateFromString( ( sdvv2 != NULL ) ? OFString( sdvv2 ) : OFString("39991231"), searchMaskDateVal2 );
+        cond = DcmDate::getOFDateFromString( (( sdvv2 != NULL ) ? OFString( sdvv2 ) : OFString("39991231")), searchMaskDateVal2 );
         if( cond.good() )
         {
-          cond = DcmTime::getOFTimeFromString( ( stvv1 != NULL ) ? OFString( stvv1 ) : OFString("000000"), searchMaskTimeVal1 );
+          cond = DcmTime::getOFTimeFromString( (( stvv1 != NULL ) ? OFString( stvv1 ) : OFString("000000")), searchMaskTimeVal1 );
           if( cond.good() )
           {
-            cond = DcmTime::getOFTimeFromString( ( stvv2 != NULL ) ? OFString( stvv2 ) : OFString("235959"), searchMaskTimeVal2 );
+            cond = DcmTime::getOFTimeFromString( (( stvv2 != NULL ) ? OFString( stvv2 ) : OFString("235959")), searchMaskTimeVal2 );
             if( cond.good() )
             {
               // now that we have the date and time objects we can actually
@@ -978,10 +978,10 @@ OFBool WlmFileSystemInteractionManager::DateRangeMatch( const char *datasetDateV
   cond = DcmDate::getOFDateFromString( OFString( ddv ), datasetDateVal );
   if( cond.good() )
   {
-    cond = DcmDate::getOFDateFromString( ( sdvv1 != NULL ) ? OFString( sdvv1 ) : OFString("19000101"), searchMaskDateVal1 );
+    cond = DcmDate::getOFDateFromString( (( sdvv1 != NULL ) ? OFString( sdvv1 ) : OFString("19000101")), searchMaskDateVal1 );
     if( cond.good() )
     {
-      cond = DcmDate::getOFDateFromString( ( sdvv2 != NULL ) ? OFString( sdvv2 ) : OFString("39991231"), searchMaskDateVal2 );
+      cond = DcmDate::getOFDateFromString( (( sdvv2 != NULL ) ? OFString( sdvv2 ) : OFString("39991231")), searchMaskDateVal2 );
       if( cond.good() )
       {
         // now that we have the date objects we can actually
@@ -1051,10 +1051,10 @@ OFBool WlmFileSystemInteractionManager::TimeRangeMatch( const char *datasetTimeV
   cond = DcmTime::getOFTimeFromString( OFString( dtv ), datasetTimeVal );
   if( cond.good() )
   {
-    cond = DcmTime::getOFTimeFromString( ( stvv1 != NULL ) ? OFString( stvv1 ) : OFString("000000"), searchMaskTimeVal1 );
+    cond = DcmTime::getOFTimeFromString( (( stvv1 != NULL ) ? OFString( stvv1 ) : OFString("000000")), searchMaskTimeVal1 );
     if( cond.good() )
     {
-      cond = DcmTime::getOFTimeFromString( ( stvv2 != NULL ) ? OFString( stvv2 ) : OFString("235959"), searchMaskTimeVal2 );
+      cond = DcmTime::getOFTimeFromString( (( stvv2 != NULL ) ? OFString( stvv2 ) : OFString("235959")), searchMaskTimeVal2 );
       if( cond.good() )
       {
         // now that we have the time objects we can actually
@@ -1466,7 +1466,10 @@ void WlmFileSystemInteractionManager::ExtractValuesFromRange( const char *range,
 /*
 ** CVS Log
 ** $Log: wlfsim.cc,v $
-** Revision 1.9  2003-08-20 14:45:15  wilkens
+** Revision 1.10  2003-10-13 13:28:19  meichel
+** Minor code purifications, needed for Borland C++
+**
+** Revision 1.9  2003/08/20 14:45:15  wilkens
 ** Added new class OFSetIterator, an iterator class for OFxxxSet data structures.
 **
 ** Revision 1.8  2002/12/13 12:37:08  wilkens

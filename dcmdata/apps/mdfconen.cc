@@ -21,10 +21,10 @@
  *
  *  Purpose: Class for modifying DICOM-Files from comandline
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2003-09-19 12:43:54 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-10-13 13:28:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/mdfconen.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -531,7 +531,7 @@ int MdfConsoleEngine::delegateTagAction()
     unsigned int elem = 0xffff;
     //key to be changed
     DcmTagKey search_key(group,elem);
-    char *temp;
+    const char *temp;
     char* tag_value = new char[strlen(option_value)+1];
     //parse option_value to get group,elem and new value
     result=sscanf(option_value, "%x,%x", &group, &elem);
@@ -580,7 +580,7 @@ int MdfConsoleEngine::delegateItemTagAction()
 // Return Value : An Integer whether modifying was successfull(0) or not (!=0)
 {
     int error_count = 0;
-    char *temp;
+    const char *temp;
     //tag_value should hold the new value for the tag, tag_path the path
     //they can not be longer than the complete option+1
     char *tag_path = new char[strlen(option_value)+1];
@@ -853,7 +853,10 @@ MdfConsoleEngine::~MdfConsoleEngine()
 /*
 ** CVS/RCS Log:
 ** $Log: mdfconen.cc,v $
-** Revision 1.4  2003-09-19 12:43:54  onken
+** Revision 1.5  2003-10-13 13:28:28  meichel
+** Minor code purifications, needed for Borland C++
+**
+** Revision 1.4  2003/09/19 12:43:54  onken
 ** major bug fixes, corrections for "dcmtk-coding-style", better error-handling
 **
 ** Revision 1.3  2003/07/09 12:13:13  meichel
