@@ -246,6 +246,9 @@
 /* Define if you have the <float.h> header file.  */
 #undef HAVE_FLOAT_H
 
+/* Define if you have the <fnmatch.h> header file.  */
+#undef HAVE_FNMATCH_H
+
 /* Define if you have the <fstream> header file.  */
 #undef HAVE_FSTREAM
 
