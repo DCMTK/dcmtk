@@ -22,9 +22,9 @@
  *  Purpose: DicomLookupTable (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-24 17:20:04 $
+ *  Update Date:      $Date: 1999-05-03 11:09:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diluptab.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -68,14 +68,14 @@ class DiLookupTable
     DiLookupTable(const DiDocument *docu,
                   const DcmTagKey &descriptor,
                   const DcmTagKey &data,
-                  const DcmTagKey &explanation = DcmTagKey(0,0),
+                  const DcmTagKey &explanation,
                   EI_Status *status = NULL);
 
     DiLookupTable(const DiDocument *docu,
                   const DcmTagKey &sequence,
                   const DcmTagKey &decriptor,
                   const DcmTagKey &data,
-                  const DcmTagKey &explanation = DcmTagKey(0,0),
+                  const DcmTagKey &explanation,
                   const unsigned long pos = 0,
                   unsigned long *card = NULL);
 
@@ -115,7 +115,10 @@ class DiLookupTable
  *
  * CVS/RCS Log:
  * $Log: diluptab.h,v $
- * Revision 1.7  1999-03-24 17:20:04  joergr
+ * Revision 1.8  1999-05-03 11:09:28  joergr
+ * Minor code purifications to keep Sun CC 2.0.1 quiet.
+ *
+ * Revision 1.7  1999/03/24 17:20:04  joergr
  * Added/Modified comments and formatting.
  *
  * Revision 1.6  1999/02/03 17:27:23  joergr

@@ -22,9 +22,9 @@
  *  Purpose: Provides main interface to the "dicom image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-28 14:45:54 $
+ *  Update Date:      $Date: 1999-05-03 11:09:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dcmimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -180,7 +180,8 @@ class DicomImage
      */
     inline EI_Status getStatus() const 
     {
-        return (Image != NULL) ? Image->getStatus() : ImageStatus;
+        return (Image != NULL) ?
+            Image->getStatus() : ImageStatus;
     }
             
     /** get number of frames
@@ -189,7 +190,8 @@ class DicomImage
      */
     inline unsigned long getFrameCount() const
     {
-        return (Image != NULL) ? Image->getNumberOfFrames() : 0;
+        return (Image != NULL) ?
+            Image->getNumberOfFrames() : 0;
     }
 
     /** get image width in pixels
@@ -198,7 +200,8 @@ class DicomImage
      */
     inline unsigned long getWidth() const 
     {
-        return (Image != NULL) ? Image->getColumns() : 0;
+        return (Image != NULL) ?
+            Image->getColumns() : 0;
     }
 
     /** get image height in pixels
@@ -207,7 +210,8 @@ class DicomImage
      */
     inline unsigned long getHeight() const 
     {
-        return (Image != NULL) ? Image->getRows() : 0;
+        return (Image != NULL) ?
+            Image->getRows() : 0;
     }
 
     /** get image depth
@@ -216,7 +220,8 @@ class DicomImage
      */
     inline int getDepth() const
     {
-        return (Image != NULL) ? Image->getBits() : 0;
+        return (Image != NULL) ?
+            Image->getBits() : 0;
     }
         
     /** get minimum and maximum pixel values
@@ -234,9 +239,8 @@ class DicomImage
                                double &max,
                                const int mode = 0) const
     {
-        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
-            return Image->getMonoImagePtr()->getMinMaxValues(min, max, mode);
-        return 0;
+        return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
+            Image->getMonoImagePtr()->getMinMaxValues(min, max, mode) : 0;
     }
 
     /** get width height ratio (pixel aspect ratio: x/y)
@@ -245,7 +249,8 @@ class DicomImage
      */
     inline double getWidthHeightRatio() const
     {
-        return (Image != NULL) ? Image->getColumnRowRatio() : 0;
+        return (Image != NULL) ?
+            Image->getColumnRowRatio() : 0;
     }
 
     /** get height width ratio (pixel aspect ratio: y/x)
@@ -254,7 +259,8 @@ class DicomImage
      */
     inline double getHeightWidthRatio() const
     {
-        return (Image != NULL) ? Image->getRowColumnRatio() : 0;
+        return (Image != NULL) ?
+            Image->getRowColumnRatio() : 0;
     }
     
     /** check whether given output value is unused 
@@ -265,9 +271,8 @@ class DicomImage
      */
     inline int isOutputValueUnused(const unsigned long value)
     {
-        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
-            return Image->getMonoImagePtr()->isValueUnused(value);
-        return 0;
+        return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
+            Image->getMonoImagePtr()->isValueUnused(value) : 0;
     }
     
  // --- output: return pointer to output data if successful
@@ -288,7 +293,8 @@ class DicomImage
                                      const unsigned long frame = 0,
                                      const int planar = 0) 
     {
-        return (Image != NULL) ? Image->getOutputData(frame, Image->getBits(bits), planar) : NULL;
+        return (Image != NULL) ?
+            Image->getOutputData(frame, Image->getBits(bits), planar) : NULL;
     }
 
     /** render pixel data and output to given memory buffer.
@@ -311,7 +317,8 @@ class DicomImage
                              const unsigned long frame = 0,
                              const int planar = 0) 
     {
-        return (Image != NULL) ? Image->getOutputData(buffer, size, frame, Image->getBits(bits), planar) : 0;
+        return (Image != NULL) ?
+            Image->getOutputData(buffer, size, frame, Image->getBits(bits), planar) : 0;
     }
 
     /** render pixel data and return pointer to given plane.
@@ -323,7 +330,8 @@ class DicomImage
      */
     inline const void *getOutputPlane(const int plane) const 
     {
-        return (Image != NULL) ? Image->getOutputPlane(plane) : NULL;
+        return (Image != NULL) ?
+            Image->getOutputPlane(plane) : NULL;
     }
 
     /** delete internal memory buffer used for rendered images.
@@ -369,9 +377,8 @@ class DicomImage
      */
     inline int setDisplayFunction(DiDisplayFunction *display)
     {
-        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
-            return Image->getMonoImagePtr()->setDisplayFunction(display);
-        return 0;
+        return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
+            Image->getMonoImagePtr()->setDisplayFunction(display) : 0;
     }
 
     /** set no display function.
@@ -381,9 +388,8 @@ class DicomImage
      */
     inline int setNoDisplayFunction()
     {
-        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
-            return Image->getMonoImagePtr()->setNoDisplayFunction();
-        return 0;
+        return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
+            Image->getMonoImagePtr()->setNoDisplayFunction() : 0;
     }
 
     /** delete specified Barten LUT(s)
@@ -394,9 +400,8 @@ class DicomImage
      */
     inline int deleteBartenLUT(const int bits = 0)
     {
-        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
-            return Image->getMonoImagePtr()->deleteBartenLUT(bits);
-        return 0;
+        return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
+            Image->getMonoImagePtr()->deleteBartenLUT(bits) : 0;
     }
 
     /** convert P-value to DDL.
@@ -414,9 +419,8 @@ class DicomImage
                                   Uint16 &ddl,
                                   const int bits = 8)
     {
-        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
-            return Image->getMonoImagePtr()->convertPValueToDDL(pvalue, ddl, bits);
-        return 0;
+        return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
+            Image->getMonoImagePtr()->convertPValueToDDL(pvalue, ddl, bits) : 0;
     }
 
  // --- windowing (voi): return true if successful (see also 'dimoimg.cc')
@@ -430,9 +434,8 @@ class DicomImage
      */
     inline int setNoVoiTransformation() 
     {
-        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
-            return Image->getMonoImagePtr()->setNoVoiTransformation();
-        return 0;
+        return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
+            Image->getMonoImagePtr()->setNoVoiTransformation() : 0;
     }
 
     /** set automatically calculated minimum/maximum window.
@@ -446,9 +449,8 @@ class DicomImage
      */
     inline int setMinMaxWindow(const int idx = 1) 
     {
-        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
-            return Image->getMonoImagePtr()->setMinMaxWindow(idx);
-        return 0;
+        return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
+            Image->getMonoImagePtr()->setMinMaxWindow(idx) : 0;
     }
 
     /** set automatically calculated histogram window.
@@ -460,9 +462,8 @@ class DicomImage
      */
     inline int setHistogramWindow(const double thresh = 0.05)
     {
-        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
-            return Image->getMonoImagePtr()->setHistogramWindow(thresh);
-        return 0;
+        return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
+            Image->getMonoImagePtr()->setHistogramWindow(thresh) : 0;
     }
 
     /** set specified window (given by index to window width/center sequence stored in image file).
@@ -474,9 +475,8 @@ class DicomImage
      */
     inline int setWindow(const unsigned long window) 
     {
-        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
-            return Image->getMonoImagePtr()->setWindow(window);
-        return 0;
+        return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
+            Image->getMonoImagePtr()->setWindow(window) : 0;
     }
 
     /** set specified window (given by window width and center).
@@ -492,9 +492,8 @@ class DicomImage
     inline int setWindow(const double center,
                          const double width) 
     {
-        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
-            return Image->getMonoImagePtr()->setWindow(center, width);
-        return 0;
+        return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
+            Image->getMonoImagePtr()->setWindow(center, width) : 0;
     }
 
     /** get current window center and width values
@@ -507,9 +506,8 @@ class DicomImage
     inline int getWindow(double &center,
                          double &width) 
     {
-        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
-            return Image->getMonoImagePtr()->getWindow(center, width);
-        return 0;
+        return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
+            Image->getMonoImagePtr()->getWindow(center, width) : 0;
     }
 
     /** get number of VOI windows (stored in image file)
@@ -518,9 +516,8 @@ class DicomImage
      */
     inline unsigned long getWindowCount() const 
     {
-        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
-            return Image->getMonoImagePtr()->getWindowCount();
-        return 0;
+        return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
+            Image->getMonoImagePtr()->getWindowCount() : 0;
     }
     
     /** set VOI LUT (given by dcmdata elements).
@@ -536,9 +533,8 @@ class DicomImage
                          const DcmUnsignedShort &descriptor,
                          const DcmLongString *explanation = NULL)
     {
-        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
-            return Image->getMonoImagePtr()->setVoiLut(data, descriptor, explanation);
-        return 0;
+        return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
+            Image->getMonoImagePtr()->setVoiLut(data, descriptor, explanation) : 0;
     }
 
     /** set VOI LUT (given by index to VOI LUT sequence stored in image file).
@@ -550,9 +546,8 @@ class DicomImage
      */
     inline int setVoiLut(const unsigned long table)
     {
-        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
-            return Image->getMonoImagePtr()->setVoiLut(table);
-        return 0;
+        return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
+            Image->getMonoImagePtr()->setVoiLut(table) : 0;
     }
 
     /** get number of VOI LUTs (stored in image file)
@@ -561,9 +556,8 @@ class DicomImage
      */
     inline unsigned long getVoiLutCount() const
     {
-        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
-            return Image->getMonoImagePtr()->getVoiLutCount();
-        return 0;
+        return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
+            Image->getMonoImagePtr()->getVoiLutCount() : 0;
     }
 
     /** get description of active VOI transformation
@@ -572,9 +566,8 @@ class DicomImage
      */
     inline const char *getVoiTransformationExplanation()
     {
-        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
-            return Image->getMonoImagePtr()->getVoiTransformationExplanation();
-        return NULL;
+        return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
+            Image->getMonoImagePtr()->getVoiTransformationExplanation() : (const char *)NULL;
     }
 
     /** get description of performed modality LUT transformation
@@ -583,9 +576,8 @@ class DicomImage
      */
     inline const char *getModalityLutExplanation()
     {
-        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
-            return Image->getMonoImagePtr()->getModalityLutExplanation();
-        return NULL;
+        return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
+            Image->getMonoImagePtr()->getModalityLutExplanation() : (const char *)NULL;
     }
 
  // --- presentation LUT:
@@ -601,9 +593,8 @@ class DicomImage
      */
     inline int setPresentationLutShape(const ES_PresentationLut shape = ESP_Identity)
     {
-        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
-            return Image->getMonoImagePtr()->setPresentationLutShape(shape);
-        return 0;
+        return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
+            Image->getMonoImagePtr()->setPresentationLutShape(shape) : 0;
     }
 
     /** set LUT for presentation transformation.
@@ -619,9 +610,8 @@ class DicomImage
                                   const DcmUnsignedShort &descriptor,
                                   const DcmLongString *explanation = NULL)
     {
-        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
-            return Image->getMonoImagePtr()->setPresentationLut(data, descriptor, explanation);
-        return 0;
+        return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
+            Image->getMonoImagePtr()->setPresentationLut(data, descriptor, explanation) : 0;
     }
 
     /** get description of active presentation LUT
@@ -630,9 +620,8 @@ class DicomImage
      */
     inline const char *getPresentationLutExplanation() const
     {
-        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
-            return Image->getMonoImagePtr()->getPresentationLutExplanation();
-        return NULL;
+        return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
+            Image->getMonoImagePtr()->getPresentationLutExplanation() : (const char *)NULL;
     }
 
 
@@ -657,16 +646,15 @@ class DicomImage
     inline int addOverlay(const unsigned int group,
                           const signed int left,
                           const signed int top,
-                          const unsigned long width,
-                          const unsigned long height,
+                          const unsigned int width,
+                          const unsigned int height,
                           const DcmOverlayData &data,
                           const DcmLongString &label,
                           const DcmLongString &description,
                           const EM_Overlay mode = EMO_Default)
     {
-        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
-            return Image->getMonoImagePtr()->addOverlay(group, left, top, width, height, data, label, description, mode);
-        return 0;
+        return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
+            Image->getMonoImagePtr()->addOverlay(group, left, top, width, height, data, label, description, mode) : 0;
     }
 
     /** remove specified (additional) overlay plane
@@ -677,9 +665,8 @@ class DicomImage
      */
     inline int removeOverlay(const unsigned int group)
     {
-        if ((Image != NULL) && (Image->getOverlayPtr(1) != NULL)) 
-            return Image->getOverlayPtr(1)->removePlane(group);
-        return 0;
+        return ((Image != NULL) && (Image->getOverlayPtr(1) != NULL)) ?
+            Image->getOverlayPtr(1)->removePlane(group) : 0;
     }
 
     /** remove all additional overlay planes
@@ -689,9 +676,8 @@ class DicomImage
      */
     inline int removeAllOverlays()
     {
-        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
-            return Image->getMonoImagePtr()->removeAllOverlays();
-        return 0;
+        return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
+            Image->getMonoImagePtr()->removeAllOverlays() : 0;
     }
 
     /** check whether specified overlay plane is visible/activated.
@@ -705,9 +691,8 @@ class DicomImage
     inline int isOverlayVisible(const unsigned int plane,
                                 const unsigned int idx = 0)
     {
-        if ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL)) 
-            return Image->getOverlayPtr(idx)->isPlaneVisible(plane);
-        return 0;
+        return ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL)) ?
+            Image->getOverlayPtr(idx)->isPlaneVisible(plane) : 0;
     }
 
     /** activate specified overlay plane
@@ -721,9 +706,8 @@ class DicomImage
     inline int showOverlay(const unsigned int plane,
                            const unsigned int idx = 0)
     {
-        if ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL)) 
-            return Image->getOverlayPtr(idx)->showPlane(plane);
-        return 0;
+        return ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL)) ?
+            Image->getOverlayPtr(idx)->showPlane(plane) : 0;
     }
 
     /** activate specified overlay plane and change some parameters
@@ -742,9 +726,8 @@ class DicomImage
                            const double thresh = 0.5,
                            const unsigned int idx = 0)
     {
-        if ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL))
-            return Image->getOverlayPtr(idx)->showPlane(plane, fore, thresh, mode);
-        return 0;
+        return ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL)) ?
+            Image->getOverlayPtr(idx)->showPlane(plane, fore, thresh, mode) : 0;
     }
 
     /** activate specified overlay plane and change 'pvalue' (only for bitmap shutters)
@@ -757,9 +740,8 @@ class DicomImage
     inline int showOverlay(const unsigned int plane,
                            const Uint16 pvalue)
     {
-        if ((Image != NULL) && (Image->getOverlayPtr(1) != NULL))
-            return Image->getOverlayPtr(1)->showPlane(plane, pvalue);
-        return 0;
+        return ((Image != NULL) && (Image->getOverlayPtr(1) != NULL)) ?
+            Image->getOverlayPtr(1)->showPlane(plane, pvalue) : 0;
     }
 
     /** activate all overlay planes (make them visible)
@@ -771,9 +753,8 @@ class DicomImage
      */
     inline int showAllOverlays(const unsigned int idx = 0)
     {
-        if ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL))
-            return Image->getOverlayPtr(idx)->showAllPlanes();
-        return 0;
+        return ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL)) ?
+            Image->getOverlayPtr(idx)->showAllPlanes() : 0;
     }
 
     /** activate all overlay planes and set specified parameters
@@ -791,9 +772,8 @@ class DicomImage
                                const double thresh = 0.5,
                                const unsigned int idx = 0)
     {
-        if ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL))
-            return Image->getOverlayPtr(idx)->showAllPlanes(fore, thresh, mode);
-        return 0;
+        return ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL)) ?
+            Image->getOverlayPtr(idx)->showAllPlanes(fore, thresh, mode) : 0;
     }
         
     /** deactivate specified overlay plane
@@ -807,9 +787,8 @@ class DicomImage
     inline int hideOverlay(const unsigned int plane,
                            const unsigned int idx = 0)
     {
-        if ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL))
-            return Image->getOverlayPtr(idx)->hidePlane(plane);
-        return 0;
+        return ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL)) ?
+            Image->getOverlayPtr(idx)->hidePlane(plane) : 0;
     }
 
     /** deactivate all overlay planes (make them invisible)
@@ -821,9 +800,8 @@ class DicomImage
      */
     inline int hideAllOverlays(const unsigned int idx = 0)
     {
-        if ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL))
-            return Image->getOverlayPtr(idx)->hideAllPlanes();
-        return 0;
+        return ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL)) ?
+            Image->getOverlayPtr(idx)->hideAllPlanes() : 0;
     }
         
     /** move origin of specified overlay plane to given position
@@ -841,9 +819,8 @@ class DicomImage
                             const signed int top,
                             const unsigned int idx = 0)
     {
-        if ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL))
-            return Image->getOverlayPtr(idx)->placePlane(plane, left, top);
-        return 0;
+        return ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL)) ?
+            Image->getOverlayPtr(idx)->placePlane(plane, left, top) : 0;
     }
 
     /** get number of overlay planes
@@ -854,9 +831,8 @@ class DicomImage
      */
     inline unsigned int getOverlayCount(const unsigned int idx = 0) const
     {
-        if ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL))
-            return Image->getOverlayPtr(idx)->getCount();
-        return 0;
+        return ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL)) ?
+            Image->getOverlayPtr(idx)->getCount() : 0;
     }
 
     /** get group number of specified overlay plane
@@ -869,9 +845,8 @@ class DicomImage
     inline unsigned int getOverlayGroupNumber(const unsigned int plane,
                                               const unsigned int idx = 0) const
     {
-        if ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL))
-            return Image->getOverlayPtr(idx)->getPlaneGroupNumber(plane);
-        return 0;
+        return ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL)) ?
+            Image->getOverlayPtr(idx)->getPlaneGroupNumber(plane) : 0;
     }
 
     /** get label of specified overlay plane
@@ -884,9 +859,8 @@ class DicomImage
     inline const char *getOverlayLabel(const unsigned int plane,
                                        const unsigned int idx = 0) const
     {
-        if ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL))
-            return Image->getOverlayPtr(idx)->getPlaneLabel(plane);
-        return NULL;
+        return ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL)) ?
+            Image->getOverlayPtr(idx)->getPlaneLabel(plane) : (const char *)NULL;
     }
 
     /** get description of specified overlay plane
@@ -899,9 +873,8 @@ class DicomImage
     inline const char *getOverlayDescription(const unsigned int plane,
                                              const unsigned int idx = 0) const
     {
-        if ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL))
-            return Image->getOverlayPtr(idx)->getPlaneDescription(plane);
-        return NULL;
+        return ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL)) ?
+            Image->getOverlayPtr(idx)->getPlaneDescription(plane) : (const char *)NULL;
     }
 
     /** get mode of specified overlay plane
@@ -914,9 +887,8 @@ class DicomImage
     inline EM_Overlay getOverlayMode(const unsigned int plane,
                                      const unsigned int idx = 0) const
     {
-        if ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL))
-            return Image->getOverlayPtr(idx)->getPlaneMode(plane);
-        return EMO_Default;
+        return ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL)) ?
+            Image->getOverlayPtr(idx)->getPlaneMode(plane) : EMO_Default;
     }
 
     /** create bitmap for specified overlay plane.
@@ -946,9 +918,8 @@ class DicomImage
                                        const Uint8 back = 0x0,
                                        const unsigned int idx = 2) const
     {
-        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
-            return Image->getMonoImagePtr()->getOverlayData(frame, plane, left, top, width, height, mode, idx, fore, back);
-        return NULL;
+        return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
+            Image->getMonoImagePtr()->getOverlayData(frame, plane, left, top, width, height, mode, idx, fore, back) : (const Uint8 *)NULL;
     }
     
     /** delete buffer for overlay plane data.
@@ -1144,7 +1115,8 @@ class DicomImage
      */
     void *createTrueColorDIB(const unsigned long frame = 0)
     {
-        return (Image != NULL) ? Image->createDIB(frame) : NULL;
+        return (Image != NULL) ?
+            Image->createDIB(frame) : NULL;
     }
     
     /** create true color (32 bit) bitmap for Java (AWT default format).
@@ -1158,7 +1130,8 @@ class DicomImage
     void *createJavaAWTBitmap(const unsigned long frame = 0,
                               const int bits = 32)
     {
-        return (Image != NULL) ? Image->createAWTBitmap(frame, bits) : NULL;
+        return (Image != NULL) ?
+            Image->createAWTBitmap(frame, bits) : NULL;
     }
 
  // --- output ppm file: return true ('1') if successful
@@ -1305,7 +1278,10 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.16  1999-04-28 14:45:54  joergr
+ * Revision 1.17  1999-05-03 11:09:27  joergr
+ * Minor code purifications to keep Sun CC 2.0.1 quiet.
+ *
+ * Revision 1.16  1999/04/28 14:45:54  joergr
  * Added experimental support to create grayscale images with more than 256
  * shades of gray to be displayed on a consumer monitor (use pastel colors).
  *

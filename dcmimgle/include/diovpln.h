@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomOverlayPlane (Header) - Multiframe Overlays UNTESTED !
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-04-29 16:46:47 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-05-03 11:09:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diovpln.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -202,16 +202,12 @@ class DiOverlayPlane
     
     const char *getLabel() const
     {
-        if (!Label.empty())
-            return Label.c_str();
-        return NULL;
+        return (Label.empty()) ? (const char *)NULL : Label.c_str();
     }
 
     const char *getDescription() const
     {
-        if (!Description.empty())
-            return Description.c_str();
-        return NULL;
+        return (Description.empty()) ? (const char *)NULL : Description.c_str();
     }
 
     Uint16 getGroupNumber() const
@@ -336,7 +332,10 @@ inline void DiOverlayPlane::setStart(const Uint16 x,
  *
  * CVS/RCS Log:
  * $Log: diovpln.h,v $
- * Revision 1.10  1999-04-29 16:46:47  meichel
+ * Revision 1.11  1999-05-03 11:09:31  joergr
+ * Minor code purifications to keep Sun CC 2.0.1 quiet.
+ *
+ * Revision 1.10  1999/04/29 16:46:47  meichel
  * Minor code purifications to keep DEC cxx 6 quiet.
  *
  * Revision 1.9  1999/03/24 17:20:21  joergr

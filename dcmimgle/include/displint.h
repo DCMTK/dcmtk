@@ -22,9 +22,9 @@
  *  Purpose: DiCubicSpline Function/Interpolation (Header/Implementation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-29 13:49:08 $
+ *  Update Date:      $Date: 1999-05-03 11:09:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/displint.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -82,22 +82,22 @@ class DiCubicSpline
                 else
                 {
                     y2[0] = -0.5;
-                    u[0] = (3.0 / (T2)(x[1] - x[0])) * ((y[1] - y[0]) / (T2)(x[1] - x[0]) - yp1);
+                    u[0] = (3.0 / ((T2)x[1] - (T2)x[0])) * ((y[1] - y[0]) / ((T2)x[1] - (T2)x[0]) - yp1);
                 }
                 for (i = 1; i < n - 1; i++)
                 {
-                    sig = (T2)(x[i] - x[i - 1]) / (x[i + 1] - x[i - 1]);
+                    sig = ((T2)x[i] - (T2)x[i - 1]) / ((T2)x[i + 1] - (T2)x[i - 1]);
                     p = sig * y2[i - 1] + 2.0;
                     y2[i] = (sig - 1.0) / p;
-                    u[i] = (y[i + 1] - y[i]) / (T2)(x[i + 1] - x[i]) - (y[i] - y[i - 1]) / (T2)(x[i] - x[i - 1]);
-                    u[i] = (6.0 * u[i] / (T2)(x[i + 1] - x[i - 1]) - sig * u[i - 1]) / p;
+                    u[i] = (y[i + 1] - y[i]) / ((T2)x[i + 1] - (T2)x[i]) - (y[i] - y[i - 1]) / ((T2)x[i] - (T2)x[i - 1]);
+                    u[i] = (6.0 * u[i] / ((T2)x[i + 1] - (T2)x[i - 1]) - sig * u[i - 1]) / p;
                 }
                 if (ypn > 0.99e30)                          // ignore value for first derivative at point 1
                     qn = un = 0.0;
                 else
                 {
                     qn = 0.5;
-                    un = (3.0 / (T2)(x[n - 1] - x[n - 2])) * (ypn - (y[n - 1] - y[n - 2]) / (T2)(x[n - 1] - x[n - 2]));
+                    un = (3.0 / ((T2)x[n - 1] - (T2)x[n - 2])) * (ypn - (y[n - 1] - y[n - 2]) / ((T2)x[n - 1] - (T2)x[n - 2]));
                 }
                 y2[n - 1] = (un - qn * u[n - 2]) / (qn * y2[n - 2] + 1.0);
                 for (i = n - 1; i > 0; i--)
@@ -158,11 +158,11 @@ class DiCubicSpline
                     y[i] = ya[khi];
                 else
                 {
-                    h = (T2)(xa[khi] - xa[klo]);
+                    h = (T2)xa[khi] - (T2)xa[klo];
                     if (h == 0.0)                               // bad xa input, values must be distinct !
                         return 0;
-                    a = (T2)(xa[khi] - x[i]) / h;
-                    b = (T2)(x[i] - xa[klo]) / h;
+                    a = ((T2)xa[khi] - (T2)x[i]) / h;
+                    b = ((T2)x[i] - (T2)xa[klo]) / h;
                     y[i] = a * ya[klo] + b * ya[khi] + ((a * a * a - a) * y2a[klo] + (b * b * b - b) * y2a[khi]) * (h * h) / 6.0;
                 }    
             }
@@ -180,7 +180,10 @@ class DiCubicSpline
  *
  * CVS/RCS Log:
  * $Log: displint.h,v $
- * Revision 1.5  1999-04-29 13:49:08  joergr
+ * Revision 1.6  1999-05-03 11:09:31  joergr
+ * Minor code purifications to keep Sun CC 2.0.1 quiet.
+ *
+ * Revision 1.5  1999/04/29 13:49:08  joergr
  * Renamed class CubicSpline to DiCubicSpline.
  *
  * Revision 1.4  1999/03/24 17:20:26  joergr

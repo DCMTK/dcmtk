@@ -22,9 +22,9 @@
  *  Purpose: DicomFlipTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-28 14:46:54 $
+ *  Update Date:      $Date: 1999-05-03 11:09:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diflipt.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -71,7 +71,7 @@ class DiFlipTemplate
             else if (horz)
                 flipHorz((T **)pixel->getDataPtr());
             else if (vert)
-                flipVert((T **)pixel->getDataPtr());
+                flipVert((T **)(pixel->getDataPtr()));
         }
     }
 
@@ -122,7 +122,7 @@ class DiFlipTemplate
             {
                 p = src[j];
                 r = dest[j];
-                for (unsigned long f = 0; f < Frames; f++)
+                for (Uint32 f = 0; f < Frames; f++)
                 {               
                     for (y = 0; y < Src_Y; y++)
                     {
@@ -151,7 +151,7 @@ class DiFlipTemplate
             {
                 p = src[j];
                 r = dest[j];
-                for (unsigned long f = 0; f < Frames; f++)
+                for (Uint32 f = 0; f < Frames; f++)
                 {          
                     r += count;     
                     for (y = 0; y < Src_Y; y++)
@@ -180,7 +180,7 @@ class DiFlipTemplate
             {
                 p = src[j];
                 q = dest[j];
-                for (unsigned long f = 0; f < Frames; f++)
+                for (Uint32 f = 0; f < Frames; f++)
                 {
                     q += count;
                     for (i = 0; i < count; i++)
@@ -204,14 +204,14 @@ class DiFlipTemplate
         for (int j = 0; j < Planes; j++)
         {
             r = data[j];
-            for (unsigned long f = 0; f < Frames; f++)
+            for (Uint32 f = 0; f < Frames; f++)
             {               
                 for (y = 0; y < Src_Y; y++)
                 {
                     p = r;
                     r += Dest_X;
                     q = r;
-                    for (x = 0; x < Src_X / 2; x++)
+                    for (x = 0; x < (Uint16)(Src_X / 2); x++)
                     {
                         t = *p;
                         *p++ = *--q;
@@ -235,12 +235,12 @@ class DiFlipTemplate
         for (int j = 0; j < Planes; j++)
         {
             s = data[j];
-            for (unsigned long f = 0; f < Frames; f++)
+            for (Uint32 f = 0; f < Frames; f++)
             {              
                 p = s; 
                 s += count;
                 r = s; 
-                for (y = 0; y < Src_Y / 2; y++)
+                for (y = 0; y < (Uint16)(Src_Y / 2); y++)
                 {
                     r -= Dest_X;
                     q = r;
@@ -266,11 +266,11 @@ class DiFlipTemplate
         for (int j = 0; j < Planes; j++)
         {
             s = data[j];
-            for (unsigned long f = 0; f < Frames; f++)
+            for (Uint32 f = 0; f < Frames; f++)
             {               
                 p = s;
                 q = s + count;
-                for (i = 0; i < count / 2; i++)
+                for (i = 0; i < (unsigned long)(count / 2); i++)
                 {
                     t = *p;
                     *p++ = *--q;
@@ -289,7 +289,10 @@ class DiFlipTemplate
  *
  * CVS/RCS Log:
  * $Log: diflipt.h,v $
- * Revision 1.6  1999-04-28 14:46:54  joergr
+ * Revision 1.7  1999-05-03 11:09:28  joergr
+ * Minor code purifications to keep Sun CC 2.0.1 quiet.
+ *
+ * Revision 1.6  1999/04/28 14:46:54  joergr
  * Removed debug code.
  *
  * Revision 1.5  1999/03/24 17:20:00  joergr

@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomMonochromeInputPixelTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-04-29 16:46:45 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-05-03 11:09:29 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoipxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,6 +86,7 @@ class DiMonoInputPixelTemplate
     inline int initOptimizationLUT(T3 *&lut,
                                    const unsigned long ocnt)
     {
+        int result = 0;
         if ((sizeof(T1) <= 2) && (Count > 3 * ocnt))                          // optimization criteria
         {                                                                     // use LUT for optimization
             lut = new T3[ocnt];
@@ -93,14 +94,14 @@ class DiMonoInputPixelTemplate
             {
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
                     cerr << "INFO: using optimized routine with additional LUT" << endl;
-                return 1;
+                result = 1;
             }
         }
-        return 0;
+        return result;
     }
 
     inline void applyOptimizationLUT(register const T1 *p,
-                                     const T3* lut,
+                                     const T3 *lut,
                                      const T2 offset)
     {
         const T3 *lut0 = lut - offset;                                        // points to 'zero' entry
@@ -146,7 +147,7 @@ class DiMonoInputPixelTemplate
                             else
                                 *(q++) = (T3)mlut->getValue(value);
                         }
-                        applyOptimizationLUT(pixel, lut, absmin);
+                        applyOptimizationLUT((const T1 *)pixel, (const T3 *)lut, (const T2)absmin);
                     }
                     if (lut == NULL)                                                      // use "normal" transformation
                     {
@@ -208,7 +209,7 @@ class DiMonoInputPixelTemplate
                                     *(q++) = (T3)(((double)i + absmin) * slope + intercept);
                             }
                         }
-                        applyOptimizationLUT(pixel, lut, (T2)absmin);
+                        applyOptimizationLUT(pixel, (const T3 *)lut, (const T2)absmin);
                     }
                     if (lut == NULL)                                                      // use "normal" transformation
                     {
@@ -243,7 +244,10 @@ class DiMonoInputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoipxt.h,v $
- * Revision 1.10  1999-04-29 16:46:45  meichel
+ * Revision 1.11  1999-05-03 11:09:29  joergr
+ * Minor code purifications to keep Sun CC 2.0.1 quiet.
+ *
+ * Revision 1.10  1999/04/29 16:46:45  meichel
  * Minor code purifications to keep DEC cxx 6 quiet.
  *
  * Revision 1.9  1999/04/28 14:50:35  joergr

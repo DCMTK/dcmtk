@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomOverlay (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-04-29 16:46:46 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-05-03 11:09:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diovlay.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -146,9 +146,7 @@ class DiOverlay
 
     inline unsigned int getCount() const
     {
-        if (Data != NULL)
-            return Data->Count;
-        return 0;
+        return (Data != NULL) ? Data->Count : 0;
     }
         
     inline Uint16 getLeft() const
@@ -179,9 +177,7 @@ class DiOverlay
 */
     inline DiOverlayPlane *getPlane(const unsigned int plane) const
     {
-        if ((Data != NULL) && (Data->Planes != NULL) && (plane < Data->Count))
-            return Data->Planes[plane];
-        return (DiOverlayPlane *)NULL;
+        return ((Data != NULL) && (Data->Planes != NULL) && (plane < Data->Count)) ? Data->Planes[plane] : (DiOverlayPlane *)NULL;
     }
     
     inline int hasPlane(unsigned int plane,
@@ -203,6 +199,7 @@ class DiOverlay
                         const Uint8 back = 0x0);
 
     static const unsigned int MaxOverlayCount;
+
     static const unsigned int FirstOverlayGroup;
 
 
@@ -250,7 +247,10 @@ class DiOverlay
  *
  * CVS/RCS Log:
  * $Log: diovlay.h,v $
- * Revision 1.12  1999-04-29 16:46:46  meichel
+ * Revision 1.13  1999-05-03 11:09:30  joergr
+ * Minor code purifications to keep Sun CC 2.0.1 quiet.
+ *
+ * Revision 1.12  1999/04/29 16:46:46  meichel
  * Minor code purifications to keep DEC cxx 6 quiet.
  *
  * Revision 1.11  1999/03/24 17:20:19  joergr

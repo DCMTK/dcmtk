@@ -22,9 +22,9 @@
  *  Purpose: DicomTransTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-24 17:20:27 $
+ *  Update Date:      $Date: 1999-05-03 11:09:32 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/ditranst.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -78,7 +78,7 @@ class DiTransTemplate
     inline void copyPixel(const T *src[],
                           T *dest[])
     {
-        const unsigned long count = (unsigned long)Dest_X * (unsigned long)Dest_Y * Frames; 
+        const unsigned long count = (unsigned long)Dest_X * (unsigned long)Dest_Y * Frames;
         for (int j = 0; j < Planes; j++)
             OFBitmanipTemplate<T>::copyMem(src[j], dest[j], count);
     }
@@ -100,7 +100,10 @@ class DiTransTemplate
  *
  * CVS/RCS Log:
  * $Log: ditranst.h,v $
- * Revision 1.4  1999-03-24 17:20:27  joergr
+ * Revision 1.5  1999-05-03 11:09:32  joergr
+ * Minor code purifications to keep Sun CC 2.0.1 quiet.
+ *
+ * Revision 1.4  1999/03/24 17:20:27  joergr
  * Added/Modified comments and formatting.
  *
  * Revision 1.3  1999/02/11 16:42:52  joergr
