@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-10 12:46:58 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Last Update:      $Author: thiel $
+ *  Update Date:      $Date: 1999-09-10 13:07:38 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1181,7 +1181,14 @@ E_Condition DVPresentationState::createFromImage(
       presentationLUTShape.getOFString(aString,0);
       if (aString == "IDENTITY") presentationLUT.setType(DVPSP_identity);
       if (aString == "INVERSE") presentationLUT.setType(DVPSP_inverse);     
-      if (aString == "LIN OD") presentationLUT.setType(DVPSP_lin_od);     
+      if (aString == "LIN OD") 
+      {
+#ifdef DEBUG
+	cerr << "Warning LIN OD found in prsentation state; set to IDENTITY" << endl
+#endif
+
+      	presentationLUT.setType(DVPSP_identity);     
+      }
     }
     imageInverse = presentationLUT.isInverse();
   }
@@ -3634,7 +3641,10 @@ E_Condition DVPresentationState::getPrintBitmapRequestedImageSize(OFString& requ
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.34  1999-09-10 12:46:58  meichel
+ *  Revision 1.35  1999-09-10 13:07:38  thiel
+ *  correction of LIN OD in createFromImage
+ *
+ *  Revision 1.34  1999/09/10 12:46:58  meichel
  *  Added implementations for a number of print API methods.
  *
  *  Revision 1.33  1999/09/10 09:16:44  joergr
