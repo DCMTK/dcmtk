@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeCopyTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-28 14:49:19 $
+ *  Update Date:      $Date: 1999-09-17 12:23:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimocpt.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,6 +46,8 @@
  *  class declaration  *
  *---------------------*/
 
+/** Template class to copy monochrome pixel data
+ */
 template<class T>
 class DiMonoCopyTemplate
   : public DiMonoPixelTemplate<T>
@@ -53,6 +55,13 @@ class DiMonoCopyTemplate
 
  public:
 
+    /** constructor
+     *
+     ** @param  pixel   pointer to monochrome intermediate representation of pixel data
+     *  @param  fstart  first frame to be copied
+     *  @param  fcount  number of frames to be copied
+     *  @param  fsize   size of one frame (in bytes)
+     */
     DiMonoCopyTemplate(const DiMonoPixel *pixel,
                        const unsigned long fstart,
                        const unsigned long fcount,
@@ -63,6 +72,8 @@ class DiMonoCopyTemplate
             copy((const T *)pixel->getData() + fstart * fsize);
     }
 
+    /** destructor
+     */
     ~DiMonoCopyTemplate()
     {
     }
@@ -70,6 +81,10 @@ class DiMonoCopyTemplate
 
  private:
  
+    /** copy specified amount of pixel data
+     *
+     ** @param  pixel  array of pixel data to be copied
+     */
     inline void copy(const T *pixel)
     {
         if (pixel != NULL)
@@ -89,7 +104,10 @@ class DiMonoCopyTemplate
  *
  * CVS/RCS Log:
  * $Log: dimocpt.h,v $
- * Revision 1.4  1999-04-28 14:49:19  joergr
+ * Revision 1.5  1999-09-17 12:23:56  joergr
+ * Added/changed/completed DOC++ style comments in the header files.
+ *
+ * Revision 1.4  1999/04/28 14:49:19  joergr
  * Changed comments/formatting.
  *
  * Revision 1.2  1999/02/11 16:01:56  joergr

@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeFlipTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-24 17:20:08 $
+ *  Update Date:      $Date: 1999-09-17 12:24:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoflt.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,6 +57,15 @@ class DiMonoFlipTemplate
 
  public:
 
+    /** constructor
+     *
+     ** @param  pixel    pointer to intermediate pixel representation
+     *  @param  columns  number of columns
+     *  @param  rows     number of rows
+     *  @param  frames   number of frames
+     *  @param  horz     flip horizontally if true
+     *  @param  vert     flip vertically if true
+     */
     DiMonoFlipTemplate(const DiMonoPixel *pixel,
                        const Uint16 columns,
                        const Uint16 rows,
@@ -70,6 +79,8 @@ class DiMonoFlipTemplate
             flip((const T *)pixel->getData(), horz, vert);
     }
 
+    /** destructor
+     */
     ~DiMonoFlipTemplate()
     {
     }
@@ -77,7 +88,15 @@ class DiMonoFlipTemplate
 
  private:
 
-    inline void flip(const T *pixel, const int horz, const int vert)
+    /** choose flipping algorithm depending on given parameters
+     *
+     ** @param  pixel  pointer to pixel data which should be flipped
+     *  @param  horz   flip horizontally if true
+     *  @param  vert   flip vertically if true
+     */
+    inline void flip(const T *pixel,
+                     const int horz,
+                     const int vert)
     {
         if (pixel != NULL)
         {
@@ -103,7 +122,10 @@ class DiMonoFlipTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoflt.h,v $
- * Revision 1.3  1999-03-24 17:20:08  joergr
+ * Revision 1.4  1999-09-17 12:24:46  joergr
+ * Added/changed/completed DOC++ style comments in the header files.
+ *
+ * Revision 1.3  1999/03/24 17:20:08  joergr
  * Added/Modified comments and formatting.
  *
  * Revision 1.2  1999/02/11 16:02:12  joergr
