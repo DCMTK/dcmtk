@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-20 12:53:57 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Update Date:      $Date: 2002-11-27 14:36:18 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,13 +50,11 @@
 #include "dsrwavtn.h"
 #include "dsrcontn.h"
 #include "dsrreftn.h"
-
 #include "ofstd.h"
 
-BEGIN_EXTERN_C
-#include <stdio.h>
-#include <ctype.h>
-END_EXTERN_C
+#define INCLUDE_CSTDIO
+#define INCLUDE_CCTYPE
+#include "ofstdinc.h"
 
 
 /*---------------------------------*
@@ -1346,7 +1344,10 @@ OFCondition DSRTypes::appendStream(ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
- *  Revision 1.29  2002-08-20 12:53:57  meichel
+ *  Revision 1.30  2002-11-27 14:36:18  meichel
+ *  Adapted module dcmsr to use of new header file ofstdinc.h
+ *
+ *  Revision 1.29  2002/08/20 12:53:57  meichel
  *  Added explicit includes for header files included implicitly
  *    via dcstream before.
  *
