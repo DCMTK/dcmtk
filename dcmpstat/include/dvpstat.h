@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:28:57 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-05-30 13:47:03 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -499,8 +499,22 @@ public:
    *  After a call to this method, no VOI transform is active for the current image and frame.
    *  @param applicability defines the applicability of the new VOI transform.
    */
-  void deactivateVOI(DVPSObjectApplicability applicability=DVPSB_currentImage);   
+  void deactivateVOI(DVPSObjectApplicability applicability=DVPSB_currentImage);
    
+  /** stores VOI lookup table with a gamma curve shape in the presentation state.
+   *  If a VOI window is currently active the center and width values are used to specify
+   *  the number of LUT entries and the first value mapped, otherwise the full pixel range
+   *  is used. The output range of the LUT is always 16 bit (data is stored as OW).
+   *  This method stores a VOI lookup table in the presentation state and activates it.
+   *  The LUT is copied to the presentation state. 
+   *  If the method returns an error code, an old LUT is left unchanged.
+   *  The applicability of the VOI LUT is controlled by the applicability parameter.
+   *  @param gamma gamma value used to create the VOI LUT data
+   *  @param applicability defines the applicability of the new VOI transform.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition setGammaVOILUT(double gamma, DVPSObjectApplicability applicability=DVPSB_currentImage);
+  
   /* Displayed Area Interface */
   
   /** gets the presentation size mode for the current image and frame.
@@ -1519,10 +1533,10 @@ public:
                                                 unsigned long height);
 
    /** gets width and height of print bitmap.
-    *  Bitmap size depends on implicit scaling, a heuristic is used for very small images
-    *  The return values depend on the current minimum/maximum print bitmaps width/height values!
-    *  @param width upon success, the image width (in pixels) is returned in this parameter
-    *  @param height upon success, the image height (in pixels) is returned in this parameter
+    *  Bitmap size depends on implicit scaling, a heuristic is used for very small images.
+    *  The return values depend on the current minimum/maximum print bitmap width/height values!
+    *  @param width upon success, the bitmap width (in pixels) is returned in this parameter
+    *  @param height upon success, the bitmap height (in pixels) is returned in this parameter
     *  @return EC_Normal upon success, an error code otherwise
     */
    E_Condition getPrintBitmapWidthHeight(unsigned long &width,
@@ -1670,6 +1684,11 @@ public:
     */   
    E_Condition selectImageFrameNumber(unsigned long frame);
    
+  /** gets the index of the currently selected frame in a multi-frame image.
+   *  @return index of the currently selected frame, 0 if an error occurred
+   */
+   unsigned long getSelectedImageFrameNumber();
+
    /* Display transform */
    
    /** gets the currently selected display transform.
@@ -1686,32 +1705,6 @@ public:
     *  @param transform display transform to be set, DVPSD_none to switch off.
     */
    void setDisplayTransform(DVPSDisplayTransform transform) { displayTransform = transform; }
-
-// --- <BEGIN> ONLY FOR COMPATIBILITY REASONS <BEGIN> ---
-
-   /** checks whether Barten correction is switched on or off.
-    *  Barten transform will only be performed if switched on _and_
-    *  a valid monitor characteristics description exists.
-    *  Default after creation of a presentation state is "on".
-    *  @return OFTrue if Barten transform is on, OFFalse if off.
-    */
-   OFBool getBartenTransform() { return displayTransform == DVPSD_GSDF; }
-   
-   /** activates or deactivates Barten correction.
-    *  Barten transform will only be performed if switched on 
-    *  _and_ a valid display function object exists.
-    *  @param flag OFTrue to switch on, OFFalse to switch off.
-    */
-   void setBartenTransform(OFBool flag) { displayTransform = (flag) ? DVPSD_GSDF : DVPSD_none; }
-   
-   /** changes the display function.
-    *  If NULL is passed, Barten transform is disabled.
-    */
-/*
-   void changeDisplayFunction(DiDisplayFunction *dispFunction=NULL);
-*/
-
-// --- <END> ONLY FOR COMPATIBILITY REASONS <END> ---
 
    /** converts a 16-bit P-Value to an 8-bit DDL value for on-sceen display.
     *  If a display function is set and enabled (see setDisplayTransform()),
@@ -2131,7 +2124,14 @@ private:
 
 /*
  *  $Log: dvpstat.h,v $
- *  Revision 1.31  2000-03-08 16:28:57  meichel
+ *  Revision 1.32  2000-05-30 13:47:03  joergr
+ *  Added support for multi-frame images and multiple references from a single
+ *  presentation to a number of images.
+ *  Removed methods which were already marked as "retired".
+ *  Added new function allowing to set a VOILUT created from a given gamma
+ *  value.
+ *
+ *  Revision 1.31  2000/03/08 16:28:57  meichel
  *  Updated copyright header.
  *
  *  Revision 1.30  2000/02/29 12:16:16  meichel
