@@ -59,6 +59,7 @@ output options:
     +Xn  --use-xml-namespace     add XML namespace declaration to root element
   writing:
     +We  --write-empty-tags      write all tags even if their value is empty
+    +Wt  --write-template-id     write template identification information
 
 
 DICOM CONFORMANCE
