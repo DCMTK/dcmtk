@@ -22,9 +22,9 @@
  *  Purpose: Handle console applications (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-08-17 10:23:10 $
+ *  Update Date:      $Date: 1999-09-13 16:37:15 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofconapp.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -106,11 +106,31 @@ class OFConsoleApplication
      */
     void printUsage(const OFCommandLine *cmd = NULL);
 
-    /** print error message (incl. header)
+    /** print error message (incl. header) and exit with error code
      *
-     ** @param  str  error message to be printed
+     ** @param  str   error message to be printed
+     *  @param  code  error code to be returned (exit)
      */
-    void printError(const char *str);
+    void printError(const char *str,
+    				const int code = 1);
+
+    /** print warning message (w/o header)
+     *
+     ** @param  str  warning message to be printed
+     */
+    void printWarning(const char *str);
+
+    /** print message (w/o header)
+     *
+     ** @param  str  message to be printed
+     */
+    void printMessage(const char *str);
+
+    /** switch on/off quiet mode
+     *
+     ** @param  mode  if OFTrue all error and warning messages will be suppressed
+     */
+    void setQuietMode(const OFBool mode = OFTrue);
 
     /** check value status and print error message if necessary
      *
@@ -158,6 +178,9 @@ class OFConsoleApplication
     /// Identification string (rcsid)
     OFString Identification;
 
+    /// Switch on/off error and warning messages
+    OFBool QuietMode;
+
     /// Pointer to output stream for error messages (default: err)
     ostream  *Output;
     /// Pointer to associated CommandLine class
@@ -178,7 +201,11 @@ class OFConsoleApplication
  *
  * CVS/RCS Log:
  * $Log: ofconapp.h,v $
- * Revision 1.6  1999-08-17 10:23:10  joergr
+ * Revision 1.7  1999-09-13 16:37:15  joergr
+ * Added methods for output of warning and other messages.
+ * Added method to switch on/off all output messages (quiet mode).
+ *
+ * Revision 1.6  1999/08/17 10:23:10  joergr
  * Corrected Doc++ comment.
  *
  * Revision 1.5  1999/04/27 16:24:53  joergr

@@ -22,9 +22,9 @@
  *  Purpose: Handle console applications (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-05-03 11:02:13 $
+ *  Update Date:      $Date: 1999-09-13 16:38:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofconapp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,6 +50,7 @@ OFConsoleApplication::OFConsoleApplication(const char *app,
  : Name(app),
    Description(desc),
    Identification(rcsid),
+   QuietMode(OFFalse),
    Output((output != NULL) ? output : &cerr),
    CmdLine(NULL)
 {
@@ -124,11 +125,35 @@ void OFConsoleApplication::printUsage(const OFCommandLine *cmd)
 }
 
 
-void OFConsoleApplication::printError(const char *str)
+void OFConsoleApplication::printError(const char *str,
+									  const int code)
 {
-    printHeader();
-    (*Output) << "error: " << str << endl;
-    exit(1);
+    if (!QuietMode)
+    {
+        printHeader();
+        (*Output) << "error: " << str << endl;
+    }
+    exit(code);
+}
+
+
+void OFConsoleApplication::printWarning(const char *str)
+{
+    if (!QuietMode)
+        (*Output) << Name << ": warning: " << str << endl;
+}
+
+
+void OFConsoleApplication::printMessage(const char *str)
+{
+    if (!QuietMode)
+        (*Output) << str << endl;
+}
+
+
+void OFConsoleApplication::setQuietMode(const OFBool mode)
+{
+    QuietMode = mode;
 }
 
 
@@ -194,7 +219,11 @@ void OFConsoleApplication::checkConflict(const char *firstOpt,
  *
  * CVS/RCS Log:
  * $Log: ofconapp.cc,v $
- * Revision 1.8  1999-05-03 11:02:13  joergr
+ * Revision 1.9  1999-09-13 16:38:00  joergr
+ * Added methods for output of warning and other messages.
+ * Added method to switch on/off all output messages (quiet mode).
+ *
+ * Revision 1.8  1999/05/03 11:02:13  joergr
  * Minor code purifications to keep Sun CC 2.0.1 quiet.
  *
  * Revision 1.7  1999/04/30 16:41:03  meichel
