@@ -58,9 +58,9 @@
 **
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2002-11-25 18:00:32 $
+** Update Date:		$Date: 2002-11-27 13:04:43 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/diutil.cc,v $
-** CVS/RCS Revision:	$Revision: 1.20 $
+** CVS/RCS Revision:	$Revision: 1.21 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -70,19 +70,12 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
-#ifdef HAVE_STDLIB_H
-#ifndef  _BCB4
-/* workaround for bug in Borland C++ Builder 4 */
-BEGIN_EXTERN_C
-#endif
-#include <stdlib.h>
-#ifndef  _BCB4
-END_EXTERN_C
-#endif
-#endif
+#define INCLUDE_CSTDLIB
+#define INCLUDE_CSTDIO
+#define INCLUDE_CSTRING
+#define INCLUDE_CCTYPE
+#include "ofstdinc.h"
 
-#include <stdio.h>
-#include <string.h>
 #ifdef HAVE_UNIX_H
 #if defined(macintosh) && defined (HAVE_WINSOCK_H)
 /* unix.h defines timeval incompatible with winsock.h */
@@ -101,10 +94,7 @@ END_EXTERN_C
 #include <stat.h>
 #endif
 
-#include <ctype.h>	/* for isspace() */
-
 #include "diutil.h"
-
 #include "dcdatset.h"
 #include "dcfilefo.h"
 #include "dcmetinf.h"
@@ -450,7 +440,10 @@ DU_cgetStatusString(Uint16 statusCode)
 /*
 ** CVS Log
 ** $Log: diutil.cc,v $
-** Revision 1.20  2002-11-25 18:00:32  meichel
+** Revision 1.21  2002-11-27 13:04:43  meichel
+** Adapted module dcmnet to use of new header file ofstdinc.h
+**
+** Revision 1.20  2002/11/25 18:00:32  meichel
 ** Converted compile time option to leniently handle space padded UIDs
 **   in the Storage Service Class into command line / config file option.
 **

@@ -21,10 +21,10 @@
  *
  *  Purpose: network conditions and helper class
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-05-02 14:07:37 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-27 13:04:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/cond.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,12 +33,10 @@
 
 #include "osconfig.h"
 #include "cond.h"
-
-BEGIN_EXTERN_C
-#include <stdio.h>
-END_EXTERN_C
-
 #include "ofstream.h"
+
+#define INCLUDE_CSTDIO
+#include "ofstdinc.h"
 
 const OFConditionConst ASCE_BADPRESENTATIONCONTEXTID(OFM_dcmnet, ASCC_BADPRESENTATIONCONTEXTID, OF_error, "ASC Bad presentation context ID");
 const OFConditionConst ASCE_MISSINGTRANSFERSYNTAX(   OFM_dcmnet, ASCC_MISSINGTRANSFERSYNTAX,    OF_error, "ASC Missing transfer syntax");
@@ -166,7 +164,10 @@ OFCondition DimseCondition::push(
 /*
  * CVS Log
  * $Log: cond.cc,v $
- * Revision 1.10  2002-05-02 14:07:37  joergr
+ * Revision 1.11  2002-11-27 13:04:37  meichel
+ * Adapted module dcmnet to use of new header file ofstdinc.h
+ *
+ * Revision 1.10  2002/05/02 14:07:37  joergr
  * Added support for standard and non-standard string streams (which one is
  * supported is detected automatically via the configure mechanism).
  * Thanks again to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his

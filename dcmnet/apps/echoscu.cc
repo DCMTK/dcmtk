@@ -22,9 +22,9 @@
  *  Purpose: Verification Service Class User (C-ECHO operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-26 08:43:19 $
+ *  Update Date:      $Date: 2002-11-27 13:04:29 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/echoscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,24 +33,11 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
-#ifdef HAVE_STDLIB_H
-#ifndef  _BCB4
-/* workaround for bug in Borland C++ Builder 4 */
-BEGIN_EXTERN_C
-#endif
-#include <stdlib.h>
-#ifndef  _BCB4
-END_EXTERN_C
-#endif
-#endif
-
-BEGIN_EXTERN_C
-#include <stdio.h>
-#include <string.h>
-#ifdef HAVE_STDARG_H
-#include <stdarg.h>
-#endif
-END_EXTERN_C
+#define INCLUDE_CSTDLIB
+#define INCLUDE_CSTDIO
+#define INCLUDE_CSTRING
+#define INCLUDE_CSTDARG
+#include "ofstdinc.h"
 
 #include "dimse.h"
 #include "diutil.h"
@@ -487,7 +474,10 @@ cecho(T_ASC_Association * assoc, unsigned long num_repeat)
 /*
 ** CVS Log
 ** $Log: echoscu.cc,v $
-** Revision 1.28  2002-11-26 08:43:19  meichel
+** Revision 1.29  2002-11-27 13:04:29  meichel
+** Adapted module dcmnet to use of new header file ofstdinc.h
+**
+** Revision 1.28  2002/11/26 08:43:19  meichel
 ** Replaced all includes for "zlib.h" with <zlib.h>
 **   to avoid inclusion of zlib.h in the makefile dependencies.
 **

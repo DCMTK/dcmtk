@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2001-10-12 10:18:26 $
+** Update Date:		$Date: 2002-11-27 13:04:35 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/dicom.h,v $
-** CVS/RCS Revision:	$Revision: 1.9 $
+** CVS/RCS Revision:	$Revision: 1.10 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -82,19 +82,9 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
-/* include some standard stuff */
-#include <stdio.h>
-
-#ifdef HAVE_STDLIB_H
-#ifndef  _BCB4
-/* workaround for bug in Borland C++ Builder 4 */
-BEGIN_EXTERN_C
-#endif
-#include <stdlib.h>
-#ifndef  _BCB4
-END_EXTERN_C
-#endif
-#endif
+#define INCLUDE_CSTDLIB
+#define INCLUDE_CSTDIO
+#include "ofstdinc.h"
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
@@ -183,7 +173,10 @@ typedef char	DIC_NODENAME[DIC_NODENAME_LEN + 1];
 /*
 ** CVS Log
 ** $Log: dicom.h,v $
-** Revision 1.9  2001-10-12 10:18:26  meichel
+** Revision 1.10  2002-11-27 13:04:35  meichel
+** Adapted module dcmnet to use of new header file ofstdinc.h
+**
+** Revision 1.9  2001/10/12 10:18:26  meichel
 ** Replaced the CONDITION types, constants and functions in the dcmnet module
 **   by an OFCondition based implementation which eliminates the global condition
 **   stack.  This is a major change, caveat emptor!

@@ -49,28 +49,19 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-1993
 ** Intent:		This file contains functions for construction of
 **			DICOM Upper Layer (DUL) Protocol Data Units (PDUs).
-** Last Update:		$Author: meichel $, $Date: 2002-11-26 15:37:02 $
+** Last Update:		$Author: meichel $, $Date: 2002-11-27 13:04:44 $
 ** Source File:		$RCSfile: dulconst.cc,v $
-** Revision:		$Revision: 1.11 $
+** Revision:		$Revision: 1.12 $
 ** Status:		$State: Exp $
 */
 
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
-#ifdef HAVE_STDLIB_H
-#ifndef  _BCB4
-/* workaround for bug in Borland C++ Builder 4 */
-BEGIN_EXTERN_C
-#endif
-#include <stdlib.h>
-#ifndef  _BCB4
-END_EXTERN_C
-#endif
-#endif
-
-#include <stdio.h>
-#include <string.h>
+#define INCLUDE_CSTDLIB
+#define INCLUDE_CSTDIO
+#define INCLUDE_CSTRING
+#include "ofstdinc.h"
 
 #include "dicom.h"
 #include "cond.h"
@@ -1487,7 +1478,10 @@ streamExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *b, unsig
 /*
 ** CVS Log
 ** $Log: dulconst.cc,v $
-** Revision 1.11  2002-11-26 15:37:02  meichel
+** Revision 1.12  2002-11-27 13:04:44  meichel
+** Adapted module dcmnet to use of new header file ofstdinc.h
+**
+** Revision 1.11  2002/11/26 15:37:02  meichel
 ** Changed DUL code to always send A-ASSOCIATE user information sub-items
 **   in ascending order.
 **

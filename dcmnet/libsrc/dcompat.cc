@@ -63,10 +63,10 @@
 ** Module Prefix: none 
 ** 
 **
-** Last Update:		$Author: joergr $
-** Update Date:		$Date: 2001-06-05 10:05:46 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 2002-11-27 13:04:38 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dcompat.cc,v $
-** CVS/RCS Revision:	$Revision: 1.25 $
+** CVS/RCS Revision:	$Revision: 1.26 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -79,19 +79,12 @@
 #include "ofbmanip.h"
 #include "ofconsol.h"
 
-#ifdef HAVE_STDLIB_H
-#ifndef  _BCB4
-/* workaround for bug in Borland C++ Builder 4 */
-BEGIN_EXTERN_C
-#endif
-#include <stdlib.h>
-#ifndef  _BCB4
-END_EXTERN_C
-#endif
-#endif
+#define INCLUDE_CSTDLIB
+#define INCLUDE_CSTDIO
+#define INCLUDE_CSTRING
+#define INCLUDE_CERRNO
+#include "ofstdinc.h"
 
-#include <stdio.h>
-#include <string.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
@@ -103,13 +96,11 @@ END_EXTERN_C
 #include <unix.h>	/* for unlink() under Metrowerks C++ (Macintosh) */
 #undef timeval
 #endif
-#include <errno.h>
 #ifdef HAVE_FCNTL_H
 #include <fcntl.h>
 #endif
 
 BEGIN_EXTERN_C
-
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
@@ -473,7 +464,10 @@ tempnam(char *dir, char *pfx)
 /*
 ** CVS Log
 ** $Log: dcompat.cc,v $
-** Revision 1.25  2001-06-05 10:05:46  joergr
+** Revision 1.26  2002-11-27 13:04:38  meichel
+** Adapted module dcmnet to use of new header file ofstdinc.h
+**
+** Revision 1.25  2001/06/05 10:05:46  joergr
 ** Replaced some #ifdef _WIN32 statements by #ifdef HAVE_WINDOWS_H to reflect
 ** the fact that the latest Cygwin/gcc version does not define _WIN32 any more.
 **

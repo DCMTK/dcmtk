@@ -56,10 +56,10 @@
 **
 **      Module Prefix: DIMSE_
 **
-** Last Update:         $Author: wilkens $
-** Update Date:         $Date: 2001-11-01 13:49:05 $
+** Last Update:         $Author: meichel $
+** Update Date:         $Date: 2002-11-27 13:04:40 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimfind.cc,v $
-** CVS/RCS Revision:    $Revision: 1.10 $
+** CVS/RCS Revision:    $Revision: 1.11 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -71,24 +71,14 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
-#ifdef HAVE_STDLIB_H
-#ifndef  _BCB4
-/* workaround for bug in Borland C++ Builder 4 */
-BEGIN_EXTERN_C
-#endif
-#include <stdlib.h>
-#ifndef  _BCB4
-END_EXTERN_C
-#endif
-#endif
+#define INCLUDE_CSTDLIB
+#define INCLUDE_CSTDIO
+#define INCLUDE_CSTRING
+#define INCLUDE_CSTDARG
+#include "ofstdinc.h"
 
-#include <stdio.h>
-#include <string.h>
 #ifdef HAVE_FCNTL_H
 #include <fcntl.h>
-#endif
-#ifdef HAVE_STDARG_H
-#include <stdarg.h>
 #endif
 
 #include "diutil.h"
@@ -468,7 +458,10 @@ DIMSE_findProvider(
 /*
 ** CVS Log
 ** $Log: dimfind.cc,v $
-** Revision 1.10  2001-11-01 13:49:05  wilkens
+** Revision 1.11  2002-11-27 13:04:40  meichel
+** Adapted module dcmnet to use of new header file ofstdinc.h
+**
+** Revision 1.10  2001/11/01 13:49:05  wilkens
 ** Added lots of comments.
 **
 ** Revision 1.9  2001/10/12 10:18:34  meichel

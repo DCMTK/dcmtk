@@ -54,30 +54,24 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: meichel $, $Date: 2002-07-08 07:06:22 $
+** Last Update:		$Author: meichel $, $Date: 2002-11-27 13:04:43 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.47 $
+** Revision:		$Revision: 1.48 $
 ** Status:		$State: Exp $
 */
 
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
-#ifdef HAVE_STDLIB_H
-#ifndef  _BCB4
-/* workaround for bug in Borland C++ Builder 4 */
-BEGIN_EXTERN_C
-#endif
-#include <stdlib.h>
-#ifndef  _BCB4
-END_EXTERN_C
-#endif
-#endif
+#define INCLUDE_CSTDLIB
+#define INCLUDE_CSTDIO
+#define INCLUDE_CSTRING
+#define INCLUDE_CERRNO
+#define INCLUDE_CSIGNAL
+#define INCLUDE_CTIME
+#include "ofstdinc.h"
 
 BEGIN_EXTERN_C
-#include <stdio.h>
-#include <string.h>
-#include <errno.h>
 #ifdef HAVE_SYS_ERRNO_H
 #include <sys/errno.h>
 #endif
@@ -91,8 +85,6 @@ BEGIN_EXTERN_C
 #ifdef HAVE_SYS_SELECT_H
 #include <sys/select.h>
 #endif
-#include <signal.h>
-#include <time.h>
 #ifdef HAVE_NETINET_IN_SYSTM_H
 #include <netinet/in_systm.h>   /* prerequisite for netinet/in.h on NeXT */
 #endif
@@ -2329,7 +2321,10 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, ostream& outs
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.47  2002-07-08 07:06:22  meichel
+** Revision 1.48  2002-11-27 13:04:43  meichel
+** Adapted module dcmnet to use of new header file ofstdinc.h
+**
+** Revision 1.47  2002/07/08 07:06:22  meichel
 ** Fixed bug in network initialization code
 **
 ** Revision 1.46  2002/05/24 14:36:14  meichel

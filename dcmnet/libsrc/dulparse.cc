@@ -45,28 +45,19 @@
 ** Intent:		This file contains functions for parsing Dicom
 **			Upper Layer (DUL) Protocol Data Units (PDUs)
 **			into logical in-memory structures.
-** Last Update:		$Author: joergr $, $Date: 2002-04-16 13:57:34 $
+** Last Update:		$Author: meichel $, $Date: 2002-11-27 13:04:46 $
 ** Source File:		$RCSfile: dulparse.cc,v $
-** Revision:		$Revision: 1.19 $
+** Revision:		$Revision: 1.20 $
 ** Status:		$State: Exp $
 */
 
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
-#ifdef HAVE_STDLIB_H
-#ifndef  _BCB4
-/* workaround for bug in Borland C++ Builder 4 */
-BEGIN_EXTERN_C
-#endif
-#include <stdlib.h>
-#ifndef  _BCB4
-END_EXTERN_C
-#endif
-#endif
-
-#include <stdio.h>
-#include <string.h>
+#define INCLUDE_CSTDLIB
+#define INCLUDE_CSTDIO
+#define INCLUDE_CSTRING
+#include "ofstdinc.h"
 
 #include "ofstream.h"
 #include "dicom.h"
@@ -789,7 +780,10 @@ trim_trailing_spaces(char *s)
 /*
 ** CVS Log
 ** $Log: dulparse.cc,v $
-** Revision 1.19  2002-04-16 13:57:34  joergr
+** Revision 1.20  2002-11-27 13:04:46  meichel
+** Adapted module dcmnet to use of new header file ofstdinc.h
+**
+** Revision 1.19  2002/04/16 13:57:34  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
 ** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
 ** contribution.

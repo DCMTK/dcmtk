@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2002-07-10 11:43:58 $
+** Update Date:         $Date: 2002-11-27 13:04:37 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:    $Revision: 1.37 $
+** CVS/RCS Revision:    $Revision: 1.38 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -84,22 +84,13 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "assoc.h"      /* always include the module header */
 
-#ifdef HAVE_STDLIB_H
-#ifndef  _BCB4
-/* workaround for bug in Borland C++ Builder 4 */
-BEGIN_EXTERN_C
-#endif
-#include <stdlib.h>
-#ifndef  _BCB4
-END_EXTERN_C
-#endif
-#endif
+#define INCLUDE_CSTDLIB
+#define INCLUDE_CSTDIO
+#define INCLUDE_CSTRING
+#define INCLUDE_CSTDARG
+#define INCLUDE_CERRNO
+#include "ofstdinc.h"
 
-#include <stdio.h>
-#include <string.h>
-#ifdef HAVE_STDARG_H
-#include <stdarg.h>
-#endif
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
 #endif
@@ -109,7 +100,6 @@ END_EXTERN_C
 #ifdef HAVE_SYS_SELECT_H
 #include <sys/select.h>
 #endif
-#include <errno.h>
 
 #include "dicom.h"
 #include "cond.h"
@@ -1967,7 +1957,10 @@ unsigned long ASC_getPeerCertificate(T_ASC_Association *assoc, void *buf, unsign
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
-** Revision 1.37  2002-07-10 11:43:58  meichel
+** Revision 1.38  2002-11-27 13:04:37  meichel
+** Adapted module dcmnet to use of new header file ofstdinc.h
+**
+** Revision 1.37  2002/07/10 11:43:58  meichel
 ** Replaced dcmnet specific definitions for implementation class UID and
 **   version name by the constants defined in dcmdata.
 **

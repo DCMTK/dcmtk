@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-26 08:43:22 $
+ *  Update Date:      $Date: 2002-11-27 13:04:32 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.50 $
+ *  CVS/RCS Revision: $Revision: 1.51 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,27 +33,17 @@
 
 #include "osconfig.h" /* make sure OS specific configuration is included first */
 
-#ifdef HAVE_STDLIB_H
-#ifndef  _BCB4
-/* workaround for bug in Borland C++ Builder 4 */
-BEGIN_EXTERN_C
-#endif
-#include <stdlib.h>
-#ifndef  _BCB4
-END_EXTERN_C
-#endif
-#endif
+#define INCLUDE_CSTDLIB
+#define INCLUDE_CSTDIO
+#define INCLUDE_CSTRING
+#define INCLUDE_CERRNO
+#define INCLUDE_CSTDARG
+#include "ofstdinc.h"
 
 BEGIN_EXTERN_C
-#include <stdio.h>
-#include <string.h>
-#ifdef HAVE_STDARG_H
-#include <stdarg.h>
-#endif
 #ifdef HAVE_SYS_FILE_H
 #include <sys/file.h>
 #endif
-#include <errno.h>
 END_EXTERN_C
 
 #ifdef HAVE_GUSI_H
@@ -1361,7 +1351,10 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.50  2002-11-26 08:43:22  meichel
+** Revision 1.51  2002-11-27 13:04:32  meichel
+** Adapted module dcmnet to use of new header file ofstdinc.h
+**
+** Revision 1.50  2002/11/26 08:43:22  meichel
 ** Replaced all includes for "zlib.h" with <zlib.h>
 **   to avoid inclusion of zlib.h in the makefile dependencies.
 **

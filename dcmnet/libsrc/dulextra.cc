@@ -54,9 +54,9 @@
 **      Supplementary DUL functions.
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2001-10-12 10:18:38 $
+** Update Date:         $Date: 2002-11-27 13:04:44 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dulextra.cc,v $
-** CVS/RCS Revision:    $Revision: 1.12 $
+** CVS/RCS Revision:    $Revision: 1.13 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -65,19 +65,12 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
-#ifdef HAVE_STDLIB_H
-#ifndef  _BCB4
-/* workaround for bug in Borland C++ Builder 4 */
-BEGIN_EXTERN_C
-#endif
-#include <stdlib.h>
-#ifndef  _BCB4
-END_EXTERN_C
-#endif
-#endif
+#define INCLUDE_CSTDLIB
+#define INCLUDE_CSTDIO
+#define INCLUDE_CSTRING
+#define INCLUDE_CERRNO
+#include "ofstdinc.h"
 
-#include <stdio.h>
-#include <string.h>
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
 #endif
@@ -87,7 +80,6 @@ END_EXTERN_C
 #ifdef HAVE_SYS_SELECT_H
 #include <sys/select.h>
 #endif
-#include <errno.h>
 
 #include "dicom.h"
 #include "lst.h"
@@ -160,7 +152,10 @@ DUL_associationWaiting(DUL_NETWORKKEY * callerNet, int timeout)
 /*
 ** CVS Log
 ** $Log: dulextra.cc,v $
-** Revision 1.12  2001-10-12 10:18:38  meichel
+** Revision 1.13  2002-11-27 13:04:44  meichel
+** Adapted module dcmnet to use of new header file ofstdinc.h
+**
+** Revision 1.12  2001/10/12 10:18:38  meichel
 ** Replaced the CONDITION types, constants and functions in the dcmnet module
 **   by an OFCondition based implementation which eliminates the global condition
 **   stack.  This is a major change, caveat emptor!

@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2002-08-27 17:00:52 $
+** Update Date:		$Date: 2002-11-27 13:04:42 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimstore.cc,v $
-** CVS/RCS Revision:	$Revision: 1.16 $
+** CVS/RCS Revision:	$Revision: 1.17 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -73,24 +73,14 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
-#ifdef HAVE_STDLIB_H
-#ifndef  _BCB4
-/* workaround for bug in Borland C++ Builder 4 */
-BEGIN_EXTERN_C
-#endif
-#include <stdlib.h>
-#ifndef  _BCB4
-END_EXTERN_C
-#endif
-#endif
+#define INCLUDE_CSTDLIB
+#define INCLUDE_CSTDIO
+#define INCLUDE_CSTRING
+#define INCLUDE_CSTDARG
+#include "ofstdinc.h"
 
-#include <stdio.h>
-#include <string.h>
 #ifdef HAVE_FCNTL_H
 #include <fcntl.h>
-#endif
-#ifdef HAVE_STDARG_H
-#include <stdarg.h>
 #endif
 
 #include "diutil.h"
@@ -513,7 +503,10 @@ DIMSE_storeProvider( T_ASC_Association *assoc,
 /*
 ** CVS Log
 ** $Log: dimstore.cc,v $
-** Revision 1.16  2002-08-27 17:00:52  meichel
+** Revision 1.17  2002-11-27 13:04:42  meichel
+** Adapted module dcmnet to use of new header file ofstdinc.h
+**
+** Revision 1.16  2002/08/27 17:00:52  meichel
 ** Initial release of new DICOM I/O stream classes that add support for stream
 **   compression (deflated little endian explicit VR transfer syntax)
 **

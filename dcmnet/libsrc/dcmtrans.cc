@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DcmTransportConnection, DcmTCPConnection
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:05 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2002-11-27 13:04:38 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,21 +35,15 @@
 #include "dcmtrans.h"
 #include "dcompat.h"     /* compatibility code for certain Unix dialects such as SunOS */
 
-#ifdef HAVE_STDLIB_H
-#ifndef  _BCB4
-/* workaround for bug in Borland C++ Builder 4 */
-BEGIN_EXTERN_C
-#endif
-#include <stdlib.h>
-#ifndef  _BCB4
-END_EXTERN_C
-#endif
-#endif
+#define INCLUDE_CSTDLIB
+#define INCLUDE_CSTDIO
+#define INCLUDE_CSTRING
+#define INCLUDE_CTIME
+#define INCLUDE_CERRNO
+#define INCLUDE_CSIGNAL
+#include "ofstdinc.h"
 
 BEGIN_EXTERN_C
-#include <stdio.h>
-#include <string.h>
-#include <errno.h>
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
 #endif
@@ -59,8 +53,6 @@ BEGIN_EXTERN_C
 #ifdef HAVE_SYS_SELECT_H
 #include <sys/select.h>
 #endif
-#include <signal.h>
-#include <time.h>
 END_EXTERN_C
 
 #ifdef HAVE_WINDOWS_H
@@ -300,7 +292,10 @@ const char *DcmTCPConnection::errorString(DcmTransportLayerStatus code)
 
 /*
  *  $Log: dcmtrans.cc,v $
- *  Revision 1.6  2001-06-01 15:50:05  meichel
+ *  Revision 1.7  2002-11-27 13:04:38  meichel
+ *  Adapted module dcmnet to use of new header file ofstdinc.h
+ *
+ *  Revision 1.6  2001/06/01 15:50:05  meichel
  *  Updated copyright header
  *
  *  Revision 1.5  2000/12/12 16:44:49  meichel

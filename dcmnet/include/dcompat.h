@@ -62,9 +62,9 @@
 ** 
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2000-11-10 16:25:01 $
+** Update Date:		$Date: 2002-11-27 13:04:35 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/dcompat.h,v $
-** CVS/RCS Revision:	$Revision: 1.18 $
+** CVS/RCS Revision:	$Revision: 1.19 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -76,6 +76,12 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "ofbmanip.h"    /* for bzero workaround */
+
+#define INCLUDE_CSTDLIB
+#define INCLUDE_CTIME
+#define INCLUDE_CSTRING
+#define INCLUDE_CERRNO
+#include "ofstdinc.h"
 
 #ifdef HAVE_GUSI_H
 /* Use the Grand Unified Sockets Interface (GUSI) on Macintosh */
@@ -98,17 +104,6 @@ typedef u_short WORD;
 #endif
 #endif
 
-#ifdef HAVE_STDLIB_H
-#ifndef  _BCB4
-/* workaround for bug in Borland C++ Builder 4 */
-BEGIN_EXTERN_C
-#endif
-#include <stdlib.h>
-#ifndef  _BCB4
-END_EXTERN_C
-#endif
-#endif
-
 BEGIN_EXTERN_C
 
 #ifdef HAVE_LIBC_H
@@ -116,15 +111,6 @@ BEGIN_EXTERN_C
 #endif
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
-#endif
-#ifdef HAVE_STRING_H
-#include <string.h>
-#endif
-#ifdef HAVE_STRINGS_H
-#include <strings.h>
-#endif
-#ifdef HAVE_TIME_H
-#include <time.h>
 #endif
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
@@ -163,7 +149,6 @@ BEGIN_EXTERN_C
 #ifdef HAVE_SYS_FILE_H
 #include <sys/file.h>
 #endif
-#include <errno.h>
 
 END_EXTERN_C
 
@@ -440,7 +425,10 @@ char *tempnam(char *dir, char *pfx);
 /*
 ** CVS Log
 ** $Log: dcompat.h,v $
-** Revision 1.18  2000-11-10 16:25:01  meichel
+** Revision 1.19  2002-11-27 13:04:35  meichel
+** Adapted module dcmnet to use of new header file ofstdinc.h
+**
+** Revision 1.18  2000/11/10 16:25:01  meichel
 ** Fixed problem with DIMSE routines which attempted to delete /dev/null
 **   under certain circumstances, which could lead to disastrous results if
 **   tools were run with root permissions (what they shouldn't).
