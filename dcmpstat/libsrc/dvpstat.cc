@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-01-15 17:32:59 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 1999-01-18 17:30:36 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2379,12 +2379,12 @@ E_Condition DVPresentationState::setPresentationLabel(const char *label)
 
 E_Condition DVPresentationState::setPresentationDescription(const char *descr)
 {
-  return presentationLabel.putString(descr);
+  return presentationDescription.putString(descr);
 }
   
 E_Condition DVPresentationState::setPresentationCreatorsName(const char *name)
 {
-  return presentationLabel.putString(name);
+  return presentationCreatorsName.putString(name);
 }
 
 
@@ -2775,6 +2775,8 @@ E_Condition DVPresentationState::setVOIWindowFromImage(size_t idx)
  
 E_Condition DVPresentationState::setVOIWindow(double wCenter, double wWidth, const char *description)
 {
+  if (wWidth <= 0.0) return EC_IllegalCall;
+  
   DcmDecimalString wc(DCM_WindowCenter);
   DcmDecimalString ww(DCM_WindowWidth);
   DcmLongString expl(DCM_WindowCenterWidthExplanation);
@@ -3466,7 +3468,11 @@ E_Condition DVPresentationState::getImageMinMaxPixelValue(double &minValue, doub
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.6  1999-01-15 17:32:59  meichel
+ *  Revision 1.7  1999-01-18 17:30:36  meichel
+ *  Now preventing VOI Windows with a width <= 0.0.  Presentation label and
+ *    creator's name are now correctly set.
+ *
+ *  Revision 1.6  1999/01/15 17:32:59  meichel
  *  added methods to DVPresentationState allowing to access the image
  *    references in the presentation state.  Also added methods allowing to
  *    get the width and height of the attached image.

@@ -1,4 +1,14 @@
 
+**** Changes from 1999.01.18 (eichelberg)
+
+- minor syntax purifications to keep VC++ happy
+  Affects: dcmpstat/libsrc/dviface.cc
+  
+- Now preventing VOI Windows with a width <= 0.0.
+  Presentation label and creator's name are now
+  correctly set.
+  Affects: dcmpstat/libsrc/dvpstat.cc
+  
 **** Changes from 1999.01.15 (eichelberg)
 
 - added methods to DVPresentationState allowing to
