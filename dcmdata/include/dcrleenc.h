@@ -22,9 +22,9 @@
  *  Purpose: RLE compressor
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-06-27 15:15:42 $
+ *  Update Date:      $Date: 2002-07-08 07:02:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcrleenc.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,12 @@
 
 #include "osconfig.h"
 #include "oflist.h"   /* for class OFList<> */
+
+BEGIN_EXTERN_C
+#ifdef HAVE_STRING_H
+#include <string.h>  /* for memcpy on Win32 */
+#endif
+END_EXTERN_C
 
 #define DcmRLEEncoder_BLOCKSIZE 16384
 
@@ -419,7 +425,10 @@ private:
 /*
  * CVS/RCS Log
  * $Log: dcrleenc.h,v $
- * Revision 1.2  2002-06-27 15:15:42  meichel
+ * Revision 1.3  2002-07-08 07:02:50  meichel
+ * RLE codec now includes <string.h>, needed for memcpy on Win32
+ *
+ * Revision 1.2  2002/06/27 15:15:42  meichel
  * Modified RLE encoder to make it usable for other purposes than
  *   DICOM encoding as well (e.g. PostScript, TIFF)
  *
