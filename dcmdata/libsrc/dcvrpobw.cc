@@ -11,10 +11,10 @@
 ** between OB and OW (e.g. Tag PixelData, OverlayData). This class shall 
 ** not be used directly in applications. No identification exists.
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-31 06:59:03 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1997-09-18 07:28:11 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrpobw.cc,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -52,7 +52,7 @@ DcmPolymorphOBOW::getUint8Array(
     Uint8 * & bytes)
 {
     errorFlag = EC_Normal;
-    OFBool changeVR = OFFalse;
+    OFBool bchangeVR = OFFalse;
     if (currentVR == EVR_OW) 
     {
 	if (fByteOrder == EBO_BigEndian)
@@ -62,13 +62,13 @@ DcmPolymorphOBOW::getUint8Array(
 	}
 	if (Tag.getEVR() == EVR_OW)
 	{
-	    changeVR = OFTrue;
+	    bchangeVR = OFTrue;
 	    Tag.setVR(EVR_OB);
 	    currentVR = EVR_OB;
 	}
     }
     bytes = (Uint8 *)this -> getValue();
-    if (changeVR)
+    if (bchangeVR)
 	Tag.setVR(EVR_OW);
 
     return errorFlag;
@@ -80,7 +80,7 @@ DcmPolymorphOBOW::getUint16Array(
     Uint16 * & words)
 {
     errorFlag = EC_Normal;
-    OFBool changeVR = OFFalse;
+    OFBool bchangeVR = OFFalse;
     if (currentVR == EVR_OB) 
     {
 	fByteOrder = EBO_LittleEndian;
@@ -88,11 +88,11 @@ DcmPolymorphOBOW::getUint16Array(
 	if (Tag.getEVR() == EVR_OB)
 	{
 	    Tag.setVR(EVR_OW);
-	    changeVR = OFTrue;
+	    bchangeVR = OFTrue;
 	}
     }
     words = (Uint16 *)this -> getValue();
-    if (changeVR)
+    if (bchangeVR)
 	Tag.setVR(EVR_OB);
 	
     return errorFlag;
@@ -229,7 +229,10 @@ DcmPolymorphOBOW::write(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrpobw.cc,v $
-** Revision 1.2  1997-07-31 06:59:03  andreas
+** Revision 1.3  1997-09-18 07:28:11  meichel
+** Name clash for "changeVR" attribute/local variable removed.
+**
+** Revision 1.2  1997/07/31 06:59:03  andreas
 ** Error correction and additonal functionality for
 ** DcmPolymorphOBOW to support getting and putting of Uint8 and
 ** Uint16 data independent of the VR.
