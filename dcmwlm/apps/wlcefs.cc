@@ -22,10 +22,10 @@
  *  Purpose: Class representing a console engine for basic worklist
  *           management service class providers based on the file system.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-26 08:53:00 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2003-02-17 12:02:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/wlcefs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -236,10 +236,10 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
   dataSource->SetVerbose( opt_verbose );
   dataSource->SetDebug( opt_debug );
   dataSource->SetNoSequenceExpansion( opt_noSequenceExpansion );
+  dataSource->SetReturnedCharacterSet( opt_returnedCharacterSet );
 
   // set specific parameters in data source object
   dataSource->SetDfPath( opt_dfPath );
-  dataSource->SetReturnedCharacterSet( opt_returnedCharacterSet );
 }
 
 // ----------------------------------------------------------------------------
@@ -345,7 +345,11 @@ void WlmConsoleEngineFileSystem::DumpMessage( const char *message )
 /*
 ** CVS Log
 ** $Log: wlcefs.cc,v $
-** Revision 1.4  2002-11-26 08:53:00  meichel
+** Revision 1.5  2003-02-17 12:02:00  wilkens
+** Made some minor modifications to be able to modify a special variant of the
+** worklist SCP implementation (wlmscpki).
+**
+** Revision 1.4  2002/11/26 08:53:00  meichel
 ** Replaced all includes for "zlib.h" with <zlib.h>
 **   to avoid inclusion of zlib.h in the makefile dependencies.
 **

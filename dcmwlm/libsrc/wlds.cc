@@ -22,9 +22,9 @@
  *  Purpose: (Partially) abstract class for connecting to an arbitrary data source.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-12-03 12:15:56 $
+ *  Update Date:      $Date: 2003-02-17 12:02:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlds.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -170,7 +170,7 @@ void WlmDataSource::SetDebug( OFBool value )
 
 // ----------------------------------------------------------------------------
 
-void WlmDataSource::SetNoSequenceExpansion( const OFBool value )
+void WlmDataSource::SetNoSequenceExpansion( OFBool value )
 // Date         : May 8, 2002
 // Author       : Thomas Wilkens
 // Task         : Set member variable.
@@ -1512,7 +1512,11 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
 /*
 ** CVS Log
 ** $Log: wlds.cc,v $
-** Revision 1.9  2002-12-03 12:15:56  wilkens
+** Revision 1.10  2003-02-17 12:02:09  wilkens
+** Made some minor modifications to be able to modify a special variant of the
+** worklist SCP implementation (wlmscpki).
+**
+** Revision 1.9  2002/12/03 12:15:56  wilkens
 ** Added files und functionality from the dcmtk/wlisctn folder to dcmtk/dcmwlm
 ** so that dcmwlm can now completely replace wlistctn in the public domain part
 ** of dcmtk. Pertaining to this replacement requirement, another optional return

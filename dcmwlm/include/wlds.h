@@ -22,9 +22,9 @@
  *  Purpose: (Partially) abstract class for connecting to an arbitrary data source.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-12-16 11:08:33 $
+ *  Update Date:      $Date: 2003-02-17 12:02:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wlds.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -143,10 +143,10 @@ class WlmDataSource
        */
     void SetDebug( OFBool value );
 
-      /** Set value in a member variable in a derived class.
+      /** Set value in a member variable.
        *  @param value The value to set.
        */
-    void SetNoSequenceExpansion( const OFBool value );
+    void SetNoSequenceExpansion( OFBool value );
 
       /** Set value in member variable.
        *  @param value The value to set.
@@ -242,7 +242,17 @@ class WlmDataSource
       /** Set value in a member variable in a derived class.
        *  @param value The value to set.
        */
+    virtual void SetInstitutionId( const unsigned int /*value*/ ) {}
+
+      /** Set value in a member variable in a derived class.
+       *  @param value The value to set.
+       */
     virtual void SetDfPath( const char * /*value*/ ) {}
+
+      /** Set value in a member variable in a derived class.
+       *  @param value The value to set.
+       */
+    virtual void SetCreateNullvalues( OFBool /*value*/ ) {}
 
       /** Set value in a member variable in a derived class.
        *  @param value The value to set.
@@ -255,7 +265,11 @@ class WlmDataSource
 /*
 ** CVS Log
 ** $Log: wlds.h,v $
-** Revision 1.10  2002-12-16 11:08:33  wilkens
+** Revision 1.11  2003-02-17 12:02:03  wilkens
+** Made some minor modifications to be able to modify a special variant of the
+** worklist SCP implementation (wlmscpki).
+**
+** Revision 1.10  2002/12/16 11:08:33  wilkens
 ** Added missing #include "osconfig.h" to certain files.
 **
 ** Revision 1.9  2002/08/12 10:56:07  wilkens

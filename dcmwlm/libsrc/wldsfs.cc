@@ -21,10 +21,10 @@
  *
  *  Purpose: Class for connecting to a file-based data source.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-09 13:42:22 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2003-02-17 12:02:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wldsfs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -178,7 +178,6 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( DcmDataset &f
 //                                      application.
 //                WLM_FAILED_IDENTIFIER_DOES_NOT_MATCH_SOP_CLASS - Error in the search mask encountered.
 {
-  DcmElement *element;
   unsigned long i, j;
   char msg[200];
 
@@ -286,7 +285,7 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( DcmDataset &f
       for( j=0 ; j < numOfElementsInDataset ; j++ )
       {
         // Determine the current element.
-        element = matchingDatasets[i]->getElement(j);
+        DcmElement *element = matchingDatasets[i]->getElement(j);
 
         // Depending on if the current element is a sequence or not, process this element.
         if( element->ident() != EVR_SQ )
@@ -687,7 +686,11 @@ int WlmDataSourceFileSystem::ReleaseReadlock()
 /*
 ** CVS Log
 ** $Log: wldsfs.cc,v $
-** Revision 1.10  2002-12-09 13:42:22  joergr
+** Revision 1.11  2003-02-17 12:02:09  wilkens
+** Made some minor modifications to be able to modify a special variant of the
+** worklist SCP implementation (wlmscpki).
+**
+** Revision 1.10  2002/12/09 13:42:22  joergr
 ** Renamed parameter to avoid name clash with global function index().
 **
 ** Revision 1.9  2002/08/12 10:56:16  wilkens
