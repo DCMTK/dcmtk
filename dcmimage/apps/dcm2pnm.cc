@@ -22,9 +22,9 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-17 13:40:54 $
+ *  Update Date:      $Date: 1999-10-08 15:46:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -154,7 +154,7 @@ int main(int argc, char *argv[])
     SetDebugLevel((0));
     DicomImageClass::DebugLevel = DicomImageClass::DL_Warnings | DicomImageClass::DL_Errors;
 
-    prepareCmdLineArgs(argc, argv, "dcm2pnm");
+    prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
 
     cmd.addParam("dcmfile-in",  "DICOM input filename to be converted");
@@ -531,7 +531,7 @@ int main(int argc, char *argv[])
 //    SetDebugLevel(( (int)opt_debugMode ));
     if (opt_verboseMode < 1)
         DicomImageClass::DebugLevel = 0;
-    if (opt_debugMode > 0)
+    else if (opt_debugMode > 0)
         DicomImageClass::DebugLevel |= DicomImageClass::DL_DebugMessages;
     if (opt_verboseMode > 1)
     {
@@ -994,7 +994,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.34  1999-09-17 13:40:54  joergr
+ * Revision 1.35  1999-10-08 15:46:39  joergr
+ * Corrected typo. Handled 'quiet' mode more restrictive.
+ *
+ * Revision 1.34  1999/09/17 13:40:54  joergr
  * Corrected typos and formatting.
  *
  * Revision 1.33  1999/09/13 17:28:30  joergr
