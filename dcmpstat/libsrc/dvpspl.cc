@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSPresentationLUT
  *
- *  Last Update:      $Author: thiel $
- *  Update Date:      $Date: 1999-09-10 07:32:43 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-09-24 13:22:07 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -233,7 +233,7 @@ E_Condition DVPSPresentationLUT::write(DcmItem &dset)
     }
   } else {
     if (presentationLUT==DVPSP_inverse) presentationLUTShape.putString("INVERSE");
-    if (presentationLUT==DVPSP_lin_od) presentationLUTShape.putString("LIN OD");
+    else if (presentationLUT==DVPSP_lin_od) presentationLUTShape.putString("LIN OD");
     else presentationLUTShape.putString("IDENTITY");
     ADD_TO_DATASET(DcmCodeString, presentationLUTShape)
   }
@@ -391,7 +391,10 @@ OFBool DVPSPresentationLUT::activate(DicomImage *image)
 
 /*
  *  $Log: dvpspl.cc,v $
- *  Revision 1.2  1999-09-10 07:32:43  thiel
+ *  Revision 1.3  1999-09-24 13:22:07  joergr
+ *  Corrected bug writing inverse Presentation LUT Shape.
+ *
+ *  Revision 1.2  1999/09/10 07:32:43  thiel
  *  Added Presentation LUT Shape LIN OD
  *
  *  Revision 1.1  1999/07/30 13:34:57  meichel
