@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2003, OFFIS
+ *  Copyright (C) 1996-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomMonochromeScaleTemplate (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-09 10:04:45 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-04-21 10:00:36 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -91,7 +91,7 @@ class DiMonoScaleTemplate
             if (pixel->getCount() == OFstatic_cast(unsigned long, columns) * OFstatic_cast(unsigned long, rows) * frames)
             {
                 scale(OFstatic_cast(const T *, pixel->getData()), pixel->getBits(), interpolate, pvalue);
-                determineMinMax();
+                this->determineMinMax();
             } else {
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                 {
@@ -125,12 +125,12 @@ class DiMonoScaleTemplate
     {
         if (pixel != NULL)
         {
-            Data = new T[getCount()];
-            if (Data != NULL)
+            this->Data = new T[this->getCount()];
+            if (this->Data != NULL)
             {
                 const T value = OFstatic_cast(T, OFstatic_cast(double, DicomImageClass::maxval(bits)) *
                     OFstatic_cast(double, pvalue) / OFstatic_cast(double, DicomImageClass::maxval(WIDTH_OF_PVALUES)));
-                scaleData(&pixel, &Data, interpolate, value);
+                scaleData(&pixel, &this->Data, interpolate, value);
              }
         }
     }
@@ -144,7 +144,10 @@ class DiMonoScaleTemplate
  *
  * CVS/RCS Log:
  * $Log: dimosct.h,v $
- * Revision 1.12  2003-12-09 10:04:45  joergr
+ * Revision 1.13  2004-04-21 10:00:36  meichel
+ * Minor modifications for compilation with gcc 3.4.0
+ *
+ * Revision 1.12  2003/12/09 10:04:45  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  * Removed leading underscore characters from preprocessor symbols (reserved
  * symbols). Updated copyright header.

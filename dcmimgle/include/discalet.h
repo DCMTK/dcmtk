@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomScaleTemplates (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-05 14:52:20 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-04-21 10:00:36 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -186,12 +186,12 @@ class DiScaleTemplate
             {
                 ofConsole.lockCout() << "C/R: " << Columns << " " << Rows << endl
                                      << "L/T: " << Left << " " << Top << endl
-                                     << "SX/Y: " << Src_X << " " << Src_Y << endl
-                                     << "DX/Y: " << Dest_X << " " << Dest_Y << endl;
+                                     << "SX/Y: " << this->Src_X << " " << this->Src_Y << endl
+                                     << "DX/Y: " << this->Dest_X << " " << this->Dest_Y << endl;
                 ofConsole.unlockCout();
             }
 #endif
-            if ((Left + OFstatic_cast(signed long, Src_X) <= 0) || (Top + OFstatic_cast(signed long, Src_Y) <= 0) ||
+            if ((Left + OFstatic_cast(signed long, this->Src_X) <= 0) || (Top + OFstatic_cast(signed long, this->Src_Y) <= 0) ||
                 (Left >= OFstatic_cast(signed long, Columns)) || (Top >= OFstatic_cast(signed long, Rows)))
             {                                                                   // no image to be displayed
 #ifdef DEBUG
@@ -203,25 +203,25 @@ class DiScaleTemplate
 #endif
                 fillPixel(dest, value);                                         // ... fill bitmap
             }
-            else if ((Src_X == Dest_X) && (Src_Y == Dest_Y))                    // no scaling
+            else if ((this->Src_X == this->Dest_X) && (this->Src_Y == this->Dest_Y))                    // no scaling
             {
-                if ((Left == 0) && (Top == 0) && (Columns == Src_X) && (Rows == Src_Y))
+                if ((Left == 0) && (Top == 0) && (Columns == this->Src_X) && (Rows == this->Src_Y))
                     copyPixel(src, dest);                                       // copying
-                else if ((Left >= 0) && (OFstatic_cast(Uint16, Left + Src_X) <= Columns) &&
-                         (Top >= 0) && (OFstatic_cast(Uint16, Top + Src_Y) <= Rows))
+                else if ((Left >= 0) && (OFstatic_cast(Uint16, Left + this->Src_X) <= Columns) &&
+                         (Top >= 0) && (OFstatic_cast(Uint16, Top + this->Src_Y) <= Rows))
                     clipPixel(src, dest);                                       // clipping
                 else
                     clipBorderPixel(src, dest, value);                          // clipping (with border)
             }
-            else if ((interpolate == 1) && (Bits <= MAX_INTERPOLATION_BITS))    // interpolation (pbmplus)
+            else if ((interpolate == 1) && (this->Bits <= MAX_INTERPOLATION_BITS))    // interpolation (pbmplus)
                 interpolatePixel(src, dest);
-            else if ((interpolate == 2) && (Dest_X >= Src_X) && (Dest_Y >= Src_Y))    // interpolated expansion (c't)
+            else if ((interpolate == 2) && (this->Dest_X >= this->Src_X) && (this->Dest_Y >= this->Src_Y))    // interpolated expansion (c't)
                 expandPixel(src, dest);
-            else if ((interpolate == 2) && (Src_X >= Dest_X) && (Src_Y >= Dest_Y))    // interpolated reduction (c't)
+            else if ((interpolate == 2) && (this->Src_X >= this->Dest_X) && (this->Src_Y >= this->Dest_Y))    // interpolated reduction (c't)
                 reducePixel(src, dest);
-            else if ((Dest_X % Src_X == 0) && (Dest_Y % Src_Y == 0))            // replication
+            else if ((this->Dest_X % this->Src_X == 0) && (this->Dest_Y % this->Src_Y == 0))            // replication
                 replicatePixel(src, dest);
-            else if ((Src_X % Dest_X == 0) && (Src_Y % Dest_Y == 0))            // supression
+            else if ((this->Src_X % this->Dest_X == 0) && (this->Src_Y % this->Dest_Y == 0))            // supression
                 suppressPixel(src, dest);
             else                                                                // general scaling
                 scalePixel(src, dest);
@@ -251,21 +251,21 @@ class DiScaleTemplate
     void clipPixel(const T *src[],
                    T *dest[])
     {
-        const unsigned long x_feed = Columns - Src_X;
-        const unsigned long y_feed = OFstatic_cast(unsigned long, Rows - Src_Y) * OFstatic_cast(unsigned long, Columns);
+        const unsigned long x_feed = Columns - this->Src_X;
+        const unsigned long y_feed = OFstatic_cast(unsigned long, Rows - this->Src_Y) * OFstatic_cast(unsigned long, Columns);
         register Uint16 x;
         register Uint16 y;
         register const T *p;
         register T *q;
-        for (int j = 0; j < Planes; ++j)
+        for (int j = 0; j < this->Planes; ++j)
         {
             p = src[j] + OFstatic_cast(unsigned long, Top) * OFstatic_cast(unsigned long, Columns) + Left;
             q = dest[j];
-            for (unsigned long f = Frames; f != 0; --f)
+            for (unsigned long f = this->Frames; f != 0; --f)
             {
-                for (y = Dest_Y; y != 0; --y)
+                for (y = this->Dest_Y; y != 0; --y)
                 {
-                    for (x = Dest_X; x != 0; --x)
+                    for (x = this->Dest_X; x != 0; --x)
                         *(q++) = *(p++);
                     p += x_feed;
                 }
@@ -289,19 +289,19 @@ class DiScaleTemplate
         const Uint16 s_top = (Top > 0) ? OFstatic_cast(Uint16, Top) : 0;
         const Uint16 d_left = (Left < 0 ? OFstatic_cast(Uint16, -Left) : 0);
         const Uint16 d_top = (Top < 0) ? OFstatic_cast(Uint16, -Top) : 0;
-        const Uint16 d_right = (OFstatic_cast(unsigned long, Src_X) + OFstatic_cast(unsigned long, s_left) <
+        const Uint16 d_right = (OFstatic_cast(unsigned long, this->Src_X) + OFstatic_cast(unsigned long, s_left) <
                                 OFstatic_cast(unsigned long, Columns) + OFstatic_cast(unsigned long, d_left)) ?
-                               (Src_X - 1) : (Columns + d_left - s_left - 1);
-        const Uint16 d_bottom = (OFstatic_cast(unsigned long, Src_Y) + OFstatic_cast(unsigned long, s_top) <
+                               (this->Src_X - 1) : (Columns + d_left - s_left - 1);
+        const Uint16 d_bottom = (OFstatic_cast(unsigned long, this->Src_Y) + OFstatic_cast(unsigned long, s_top) <
                                  OFstatic_cast(unsigned long, Rows) + OFstatic_cast(unsigned long, d_top)) ?
-                                (Src_Y - 1) : (Rows + d_top - s_top - 1);
+                                (this->Src_Y - 1) : (Rows + d_top - s_top - 1);
         const Uint16 x_count = d_right - d_left + 1;
         const Uint16 y_count = d_bottom - d_top + 1;
         const unsigned long s_start = OFstatic_cast(unsigned long, s_top) * OFstatic_cast(unsigned long, Columns) + s_left;
         const unsigned long x_feed = Columns - x_count;
         const unsigned long y_feed = OFstatic_cast(unsigned long, Rows - y_count) * Columns;
-        const unsigned long t_feed = OFstatic_cast(unsigned long, d_top) * OFstatic_cast(unsigned long, Src_X);
-        const unsigned long b_feed = OFstatic_cast(unsigned long, Src_Y - d_bottom - 1) * OFstatic_cast(unsigned long, Src_X);
+        const unsigned long t_feed = OFstatic_cast(unsigned long, d_top) * OFstatic_cast(unsigned long, this->Src_X);
+        const unsigned long b_feed = OFstatic_cast(unsigned long, this->Src_Y - d_bottom - 1) * OFstatic_cast(unsigned long, this->Src_X);
 
         /*
          *  The approach is to divide the destination image in up to four areas outside the source image
@@ -315,11 +315,11 @@ class DiScaleTemplate
         register unsigned long i;
         register const T *p;
         register T *q;
-        for (int j = 0; j < Planes; ++j)
+        for (int j = 0; j < this->Planes; ++j)
         {
             p = src[j] + s_start;
             q = dest[j];
-            for (unsigned long f = Frames; f != 0; --f)
+            for (unsigned long f = this->Frames; f != 0; --f)
             {
                 for (i = t_feed; i != 0; --i)               // top
                     *(q++) = value;
@@ -336,7 +336,7 @@ class DiScaleTemplate
                         *(q++) = *(p++);
                         ++x;
                     }
-                    while (x < Src_X)                       // - right
+                    while (x < this->Src_X)                       // - right
                     {
                         *(q++) = value;
                         ++x;
@@ -359,10 +359,10 @@ class DiScaleTemplate
     void replicatePixel(const T *src[],
                         T *dest[])
     {
-        const Uint16 x_factor = Dest_X / Src_X;
-        const Uint16 y_factor = Dest_Y / Src_Y;
+        const Uint16 x_factor = this->Dest_X / this->Src_X;
+        const Uint16 y_factor = this->Dest_Y / this->Src_Y;
         const unsigned long x_feed = Columns;
-        const unsigned long y_feed = OFstatic_cast(unsigned long, Rows - Src_Y) * OFstatic_cast(unsigned long, Columns);
+        const unsigned long y_feed = OFstatic_cast(unsigned long, Rows - this->Src_Y) * OFstatic_cast(unsigned long, Columns);
         const T *sp;
         register Uint16 x;
         register Uint16 y;
@@ -371,17 +371,17 @@ class DiScaleTemplate
         register const T *p;
         register T *q;
         register T value;
-        for (int j = 0; j < Planes; ++j)
+        for (int j = 0; j < this->Planes; ++j)
         {
             sp = src[j] + OFstatic_cast(unsigned long, Top) * OFstatic_cast(unsigned long, Columns) + Left;
             q = dest[j];
-            for (Uint32 f = Frames; f != 0; --f)
+            for (Uint32 f = this->Frames; f != 0; --f)
             {
-                for (y = Src_Y; y != 0; --y)
+                for (y = this->Src_Y; y != 0; --y)
                 {
                     for (dy = y_factor; dy != 0; --dy)
                     {
-                        for (x = Src_X, p = sp; x != 0; --x)
+                        for (x = this->Src_X, p = sp; x != 0; --x)
                         {
                             value = *(p++);
                             for (dx = x_factor; dx != 0; --dx)
@@ -404,22 +404,22 @@ class DiScaleTemplate
     void suppressPixel(const T *src[],
                        T *dest[])
     {
-        const unsigned int x_divisor = Src_X / Dest_X;
-        const unsigned long x_feed = OFstatic_cast(unsigned long, Src_Y / Dest_Y) * OFstatic_cast(unsigned long, Columns) - Src_X;
-        const unsigned long y_feed = OFstatic_cast(unsigned long, Rows - Src_Y) * OFstatic_cast(unsigned long, Columns);
+        const unsigned int x_divisor = this->Src_X / this->Dest_X;
+        const unsigned long x_feed = OFstatic_cast(unsigned long, this->Src_Y / this->Dest_Y) * OFstatic_cast(unsigned long, Columns) - this->Src_X;
+        const unsigned long y_feed = OFstatic_cast(unsigned long, Rows - this->Src_Y) * OFstatic_cast(unsigned long, Columns);
         register Uint16 x;
         register Uint16 y;
         register const T *p;
         register T *q;
-        for (int j = 0; j < Planes; ++j)
+        for (int j = 0; j < this->Planes; ++j)
         {
             p = src[j] + OFstatic_cast(unsigned long, Top) * OFstatic_cast(unsigned long, Columns) + Left;
             q = dest[j];
-            for (Uint32 f = Frames; f != 0; --f)
+            for (Uint32 f = this->Frames; f != 0; --f)
             {
-                for (y = Dest_Y; y != 0; --y)
+                for (y = this->Dest_Y; y != 0; --y)
                 {
-                    for (x = Dest_X; x != 0; --x)
+                    for (x = this->Dest_X; x != 0; --x)
                     {
                         *(q++) = *p;
                         p += x_divisor;
@@ -440,8 +440,8 @@ class DiScaleTemplate
     void scalePixel(const T *src[],
                     T *dest[])
     {
-        const Uint16 xmin = (Dest_X < Src_X) ? Dest_X : Src_X;      // minimum width
-        const Uint16 ymin = (Dest_Y < Src_Y) ? Dest_Y : Src_Y;      // minimum height
+        const Uint16 xmin = (this->Dest_X < this->Src_X) ? this->Dest_X : this->Src_X;      // minimum width
+        const Uint16 ymin = (this->Dest_Y < this->Src_Y) ? this->Dest_Y : this->Src_Y;      // minimum height
         Uint16 *x_step = new Uint16[xmin];
         Uint16 *y_step = new Uint16[ymin];
         Uint16 *x_fact = new Uint16[xmin];
@@ -456,35 +456,35 @@ class DiScaleTemplate
         {
             register Uint16 x;
             register Uint16 y;
-            if (Dest_X < Src_X)
-                setScaleValues(x_step, Dest_X, Src_X);
-            else if (Dest_X > Src_X)
-                setScaleValues(x_fact, Src_X, Dest_X);
-            if (Dest_X <= Src_X)
+            if (this->Dest_X < this->Src_X)
+                setScaleValues(x_step, this->Dest_X, this->Src_X);
+            else if (this->Dest_X > this->Src_X)
+                setScaleValues(x_fact, this->Src_X, this->Dest_X);
+            if (this->Dest_X <= this->Src_X)
                 OFBitmanipTemplate<Uint16>::setMem(x_fact, 1, xmin);  // initialize with default values
-            if (Dest_X >= Src_X)
+            if (this->Dest_X >= this->Src_X)
                 OFBitmanipTemplate<Uint16>::setMem(x_step, 1, xmin);  // initialize with default values
-            x_step[xmin - 1] += Columns - Src_X;                      // skip to next line
-            if (Dest_Y < Src_Y)
-                setScaleValues(y_step, Dest_Y, Src_Y);
-            else if (Dest_Y > Src_Y)
-                setScaleValues(y_fact, Src_Y, Dest_Y);
-            if (Dest_Y <= Src_Y)
+            x_step[xmin - 1] += Columns - this->Src_X;                      // skip to next line
+            if (this->Dest_Y < this->Src_Y)
+                setScaleValues(y_step, this->Dest_Y, this->Src_Y);
+            else if (this->Dest_Y > this->Src_Y)
+                setScaleValues(y_fact, this->Src_Y, this->Dest_Y);
+            if (this->Dest_Y <= this->Src_Y)
                 OFBitmanipTemplate<Uint16>::setMem(y_fact, 1, ymin);  // initialize with default values
-            if (Dest_Y >= Src_Y)
+            if (this->Dest_Y >= this->Src_Y)
                 OFBitmanipTemplate<Uint16>::setMem(y_step, 1, ymin);  // initialize with default values
-            y_step[ymin - 1] += Rows - Src_Y;                         // skip to next frame
+            y_step[ymin - 1] += Rows - this->Src_Y;                         // skip to next frame
             const T *sp;
             register Uint16 dx;
             register Uint16 dy;
             register const T *p;
             register T *q;
             register T value;
-            for (int j = 0; j < Planes; ++j)
+            for (int j = 0; j < this->Planes; ++j)
             {
                 sp = src[j] + OFstatic_cast(unsigned long, Top) * OFstatic_cast(unsigned long, Columns) + Left;
                 q = dest[j];
-                for (Uint32 f = 0; f < Frames; ++f)
+                for (Uint32 f = 0; f < this->Frames; ++f)
                 {
                     for (y = 0; y < ymin; ++y)
                     {
@@ -518,7 +518,7 @@ class DiScaleTemplate
     void interpolatePixel(const T *src[],
                           T *dest[])
     {
-        if ((Src_X != Columns) || (Src_Y != Rows))
+        if ((this->Src_X != Columns) || (this->Src_Y != Rows))
         {
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
             {
@@ -526,8 +526,8 @@ class DiScaleTemplate
                                     << "       ... ignoring clipping region !" << endl;
                ofConsole.unlockCerr();
             }
-            Src_X = Columns;            // temporarily removed 'const' for 'Src_X' in class 'DiTransTemplate'
-            Src_Y = Rows;               //                             ... 'Src_Y' ...
+            this->Src_X = Columns;            // temporarily removed 'const' for 'Src_X' in class 'DiTransTemplate'
+            this->Src_Y = Rows;               //                             ... 'Src_Y' ...
         }
 
         /*
@@ -543,13 +543,13 @@ class DiScaleTemplate
         T const *fp;
         T *sq;
 
-        const unsigned long sxscale = OFstatic_cast(unsigned long, (OFstatic_cast(double, Dest_X) / OFstatic_cast(double, Src_X)) * SCALE_FACTOR);
-        const unsigned long syscale = OFstatic_cast(unsigned long, (OFstatic_cast(double, Dest_Y) / OFstatic_cast(double, Src_Y)) * SCALE_FACTOR);
+        const unsigned long sxscale = OFstatic_cast(unsigned long, (OFstatic_cast(double, this->Dest_X) / OFstatic_cast(double, this->Src_X)) * SCALE_FACTOR);
+        const unsigned long syscale = OFstatic_cast(unsigned long, (OFstatic_cast(double, this->Dest_Y) / OFstatic_cast(double, this->Src_Y)) * SCALE_FACTOR);
         DiPixelRepresentationTemplate<T> rep;
-        const signed long maxvalue = DicomImageClass::maxval(Bits - rep.isSigned());
+        const signed long maxvalue = DicomImageClass::maxval(this->Bits - rep.isSigned());
 
-        T *xtemp = new T[Src_X];
-        signed long *xvalue = new signed long[Src_X];
+        T *xtemp = new T[this->Src_X];
+        signed long *xvalue = new signed long[this->Src_X];
 
         if ((xtemp == NULL) || (xvalue == NULL))
         {
@@ -559,57 +559,57 @@ class DiScaleTemplate
                 ofConsole.unlockCerr();
             }
 
-            const unsigned long count = OFstatic_cast(unsigned long, Dest_X) * OFstatic_cast(unsigned long, Dest_Y) * Frames;
-            for (int j = 0; j < Planes; ++j)
+            const unsigned long count = OFstatic_cast(unsigned long, this->Dest_X) * OFstatic_cast(unsigned long, this->Dest_Y) * this->Frames;
+            for (int j = 0; j < this->Planes; ++j)
                 OFBitmanipTemplate<T>::zeroMem(dest[j], count);     // delete destination buffer
         }
         else
         {
-            for (int j = 0; j < Planes; ++j)
+            for (int j = 0; j < this->Planes; ++j)
             {
                 fp = src[j];
                 sq = dest[j];
-                for (Uint32 f = Frames; f != 0; --f)
+                for (Uint32 f = this->Frames; f != 0; --f)
                 {
-                    for (x = 0; x < Src_X; ++x)
+                    for (x = 0; x < this->Src_X; ++x)
                         xvalue[x] = HALFSCALE_FACTOR;
                     register unsigned long yfill = SCALE_FACTOR;
                     register unsigned long yleft = syscale;
                     register int yneed = 1;
                     int ysrc = 0;
-                    for (y = 0; y < Dest_Y; ++y)
+                    for (y = 0; y < this->Dest_Y; ++y)
                     {
-                        if (Src_Y == Dest_Y)
+                        if (this->Src_Y == this->Dest_Y)
                         {
                             sp = fp;
-                            for (x = Src_X, p = sp, q = xtemp; x != 0; --x)
+                            for (x = this->Src_X, p = sp, q = xtemp; x != 0; --x)
                                 *(q++) = *(p++);
-                            fp += Src_X;
+                            fp += this->Src_X;
                         }
                         else
                         {
                             while (yleft < yfill)
                             {
-                                if (yneed && (ysrc < OFstatic_cast(int, Src_Y)))
+                                if (yneed && (ysrc < OFstatic_cast(int, this->Src_Y)))
                                 {
                                     sp = fp;
-                                    fp += Src_X;
+                                    fp += this->Src_X;
                                     ++ysrc;
                                 }
-                                for (x = 0, p = sp; x < Src_X; ++x)
+                                for (x = 0, p = sp; x < this->Src_X; ++x)
                                     xvalue[x] += yleft * OFstatic_cast(signed long, *(p++));
                                 yfill -= yleft;
                                 yleft = syscale;
                                 yneed = 1;
                             }
-                            if (yneed && (ysrc < OFstatic_cast(int, Src_Y)))
+                            if (yneed && (ysrc < OFstatic_cast(int, this->Src_Y)))
                             {
                                 sp = fp;
-                                fp += Src_X;
+                                fp += this->Src_X;
                                 ++ysrc;
                                 yneed = 0;
                             }
-                            for (x = 0, p = sp, q = xtemp; x < Src_X; ++x)
+                            for (x = 0, p = sp, q = xtemp; x < this->Src_X; ++x)
                             {
                                 register signed long v = xvalue[x] + yfill * OFstatic_cast(signed long, *(p++));
                                 v /= SCALE_FACTOR;
@@ -624,11 +624,11 @@ class DiScaleTemplate
                             }
                             yfill = SCALE_FACTOR;
                         }
-                        if (Src_X == Dest_X)
+                        if (this->Src_X == this->Dest_X)
                         {
-                            for (x = Dest_X, p = xtemp, q = sq; x != 0; --x)
+                            for (x = this->Dest_X, p = xtemp, q = sq; x != 0; --x)
                                 *(q++) = *(p++);
-                            sq += Dest_X;
+                            sq += this->Dest_X;
                         }
                         else
                         {
@@ -637,7 +637,7 @@ class DiScaleTemplate
                             register unsigned long xleft;
                             register int xneed = 0;
                             q = sq;
-                            for (x = 0, p = xtemp; x < Src_X; ++x, ++p)
+                            for (x = 0, p = xtemp; x < this->Src_X; ++x, ++p)
                             {
                                 xleft = sxscale;
                                 while (xleft >= xfill)
@@ -673,7 +673,7 @@ class DiScaleTemplate
                                 v /= SCALE_FACTOR;
                                 *q = OFstatic_cast(T, (v > maxvalue) ? maxvalue : v);
                             }
-                            sq += Dest_X;
+                            sq += this->Dest_X;
                         }
                     }
                 }
@@ -699,8 +699,8 @@ class DiScaleTemplate
             ofConsole.unlockCerr();
         }
 #endif
-        const double x_factor = OFstatic_cast(double, Src_X) / OFstatic_cast(double, Dest_X);
-        const double y_factor = OFstatic_cast(double, Src_Y) / OFstatic_cast(double, Dest_Y);
+        const double x_factor = OFstatic_cast(double, this->Src_X) / OFstatic_cast(double, this->Dest_X);
+        const double y_factor = OFstatic_cast(double, this->Src_Y) / OFstatic_cast(double, this->Dest_Y);
         const unsigned long f_size = OFstatic_cast(unsigned long, Rows) * OFstatic_cast(unsigned long, Columns);
         const T *sp;
         double bx, ex;
@@ -724,13 +724,13 @@ class DiScaleTemplate
          *   (adapted to be used with signed pixel representation and inverse images - mono1)
          */
 
-        for (int j = 0; j < Planes; ++j)
+        for (int j = 0; j < this->Planes; ++j)
         {
             sp = src[j] + OFstatic_cast(unsigned long, Top) * OFstatic_cast(unsigned long, Columns) + Left;
             q = dest[j];
-            for (Uint32 f = 0; f < Frames; ++f)
+            for (Uint32 f = 0; f < this->Frames; ++f)
             {
-                for (y = 0; y < Dest_Y; ++y)
+                for (y = 0; y < this->Dest_Y; ++y)
                 {
                     by = y_factor * OFstatic_cast(double, y);
                     ey = y_factor * (OFstatic_cast(double, y) + 1.0);
@@ -741,7 +741,7 @@ class DiScaleTemplate
                     y_part = OFstatic_cast(double, eyi) / y_factor;
                     b_factor = y_part - OFstatic_cast(double, y);
                     t_factor = (OFstatic_cast(double, y) + 1.0) - y_part;
-                    for (x = 0; x < Dest_X; ++x)
+                    for (x = 0; x < this->Dest_X; ++x)
                     {
                         value = 0;
                         bx = x_factor * OFstatic_cast(double, x);
@@ -802,8 +802,8 @@ class DiScaleTemplate
             ofConsole.unlockCerr();
         }
 #endif
-        const double x_factor = OFstatic_cast(double, Src_X) / OFstatic_cast(double, Dest_X);
-        const double y_factor = OFstatic_cast(double, Src_Y) / OFstatic_cast(double, Dest_Y);
+        const double x_factor = OFstatic_cast(double, this->Src_X) / OFstatic_cast(double, this->Dest_X);
+        const double y_factor = OFstatic_cast(double, this->Src_Y) / OFstatic_cast(double, this->Dest_Y);
         const double xy_factor = x_factor * y_factor;
         const unsigned long f_size = OFstatic_cast(unsigned long, Rows) * OFstatic_cast(unsigned long, Columns);
         const T *sp;
@@ -827,13 +827,13 @@ class DiScaleTemplate
          *   (adapted to be used with signed pixel representation and inverse images - mono1)
          */
 
-        for (int j = 0; j < Planes; ++j)
+        for (int j = 0; j < this->Planes; ++j)
         {
             sp = src[j] + OFstatic_cast(unsigned long, Top) * OFstatic_cast(unsigned long, Columns) + Left;
             q = dest[j];
-            for (Uint32 f = 0; f < Frames; ++f)
+            for (Uint32 f = 0; f < this->Frames; ++f)
             {
-                for (y = 0; y < Dest_Y; ++y)
+                for (y = 0; y < this->Dest_Y; ++y)
                 {
                     by = y_factor * OFstatic_cast(double, y);
                     ey = y_factor * (OFstatic_cast(double, y) + 1.0);
@@ -843,7 +843,7 @@ class DiScaleTemplate
                         --eyi;
                     b_factor = 1 + OFstatic_cast(double, byi) - by;
                     t_factor = ey - OFstatic_cast(double, eyi);
-                    for (x = 0; x < Dest_X; ++x)
+                    for (x = 0; x < this->Dest_X; ++x)
                     {
                         value = 0;
                         bx = x_factor * OFstatic_cast(double, x);
@@ -889,7 +889,10 @@ class DiScaleTemplate
  *
  * CVS/RCS Log:
  * $Log: discalet.h,v $
- * Revision 1.23  2004-01-05 14:52:20  joergr
+ * Revision 1.24  2004-04-21 10:00:36  meichel
+ * Minor modifications for compilation with gcc 3.4.0
+ *
+ * Revision 1.23  2004/01/05 14:52:20  joergr
  * Removed acknowledgements with e-mail addresses from CVS log.
  *
  * Revision 1.22  2003/12/23 15:53:22  joergr

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2003, OFFIS
+ *  Copyright (C) 1996-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomCMYKPixelTemplate (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-23 16:06:21 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-04-21 10:00:31 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,7 @@
 #include "osconfig.h"
 
 #include "dicopxt.h"
+#include "diinpx.h"  /* gcc 3.4 needs this */
 
 
 /*---------------------*
@@ -67,7 +68,7 @@ class DiCMYKPixelTemplate
                         const int bits)
       : DiColorPixelTemplate<T2>(docu, pixel, 4, status)
     {
-        if ((pixel != NULL) && (Count > 0) && (status == EIS_Normal))
+        if ((pixel != NULL) && (this->Count > 0) && (status == EIS_Normal))
             convert(OFstatic_cast(const T1 *, pixel->getData()) + pixel->getPixelStart(), planeSize, bits);
     }
 
@@ -94,19 +95,19 @@ class DiCMYKPixelTemplate
         {
             // use the number of input pixels derived from the length of the 'PixelData'
             // attribute), but not more than the size of the intermediate buffer
-            const unsigned long count = (InputCount < Count) ? InputCount : Count;
+            const unsigned long count = (this->InputCount < this->Count) ? this->InputCount : this->Count;
             const T2 maxvalue = OFstatic_cast(T2, DicomImageClass::maxval(bits));
             const T1 offset = OFstatic_cast(T1, DicomImageClass::maxval(bits - 1));
             register const T1 *p = pixel;
-            if (PlanarConfiguration)
+            if (this->PlanarConfiguration)
             {
 /*
                 register const T1 *k;
                 register T2 *q;
                 for (int j = 0; j < 3; ++j)
                 {
-                    q = Data[j];
-                    k = pixel + 3 * InputCount;                     // beginning of 'black' plane
+                    q = this->Data[j];
+                    k = pixel + 3 * this->InputCount;                     // beginning of 'black' plane
                     for (i = count; i != 0; --i)
                         *(q++) = maxvalue - removeSign(*(p++), offset) - removeSign(*(k++), offset);
                 }
@@ -124,7 +125,7 @@ class DiCMYKPixelTemplate
                     /* for all planes ... */
                     for (int j = 0; j < 3; ++j)
                     {
-                        q = Data[j] + iStart;
+                        q = this->Data[j] + iStart;
                         /* reset to beginning of 'black' plane */
                         k = kStart;
                         /* convert a single plane */
@@ -144,7 +145,7 @@ class DiCMYKPixelTemplate
                 {
                     k = *(p + 3);
                     for (j = 0; j < 3; ++j)
-                        Data[j][i] = maxvalue - removeSign(*(p++), offset) - removeSign(k, offset);
+                        this->Data[j][i] = maxvalue - removeSign(*(p++), offset) - removeSign(k, offset);
                     ++p;                                            // skip 'black'
                 }
             }
@@ -160,7 +161,10 @@ class DiCMYKPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dicmypxt.h,v $
- * Revision 1.17  2003-12-23 16:06:21  joergr
+ * Revision 1.18  2004-04-21 10:00:31  meichel
+ * Minor modifications for compilation with gcc 3.4.0
+ *
+ * Revision 1.17  2003/12/23 16:06:21  joergr
  * Replaced additional post-increment/decrement operators by pre-increment/
  * decrement operators.
  *

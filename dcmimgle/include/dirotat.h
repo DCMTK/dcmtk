@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2003, OFFIS
+ *  Copyright (C) 1996-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomRotateTemplate (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-06 11:07:50 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-04-21 10:00:36 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -78,8 +78,8 @@ class DiRotateTemplate
     {
         if (pixel != NULL)
         {
-            Planes = pixel->getPlanes();
-            if ((pixel->getCount() > 0) && (Planes > 0) &&
+            this->Planes = pixel->getPlanes();
+            if ((pixel->getCount() > 0) && (this->Planes > 0) &&
                 (pixel->getCount() == OFstatic_cast(unsigned long, src_cols) * OFstatic_cast(unsigned long, src_rows) * frames))
             {
                 if (degree == 90)
@@ -162,21 +162,21 @@ class DiRotateTemplate
             register const T *p;
             register T *q;
             register T *r;
-            const unsigned long count = OFstatic_cast(unsigned long, Dest_X) * OFstatic_cast(unsigned long, Dest_Y);
-            for (int j = 0; j < Planes; ++j)
+            const unsigned long count = OFstatic_cast(unsigned long, this->Dest_X) * OFstatic_cast(unsigned long, this->Dest_Y);
+            for (int j = 0; j < this->Planes; ++j)
             {
                 p = src[j];
                 r = dest[j];
-                for (unsigned long f = Frames; f != 0; --f)
+                for (unsigned long f = this->Frames; f != 0; --f)
                 {
                     r += count;
-                    for (x = Dest_X; x != 0; --x)
+                    for (x = this->Dest_X; x != 0; --x)
                     {
                         q = r - x;
-                        for (y = Dest_Y; y != 0; --y)
+                        for (y = this->Dest_Y; y != 0; --y)
                         {
                             *q = *p++;
-                            q -= Dest_X;
+                            q -= this->Dest_X;
                         }
                     }
                 }
@@ -199,20 +199,20 @@ class DiRotateTemplate
             register const T *p;
             register T *q;
             register T *r;
-            const unsigned long count = OFstatic_cast(unsigned long, Dest_X) * OFstatic_cast(unsigned long, Dest_Y);
-            for (int j = 0; j < Planes; ++j)
+            const unsigned long count = OFstatic_cast(unsigned long, this->Dest_X) * OFstatic_cast(unsigned long, this->Dest_Y);
+            for (int j = 0; j < this->Planes; ++j)
             {
                 p = src[j];
                 r = dest[j];
-                for (unsigned long f = Frames; f != 0; --f)
+                for (unsigned long f = this->Frames; f != 0; --f)
                 {
-                    for (x = Dest_X; x != 0; --x)
+                    for (x = this->Dest_X; x != 0; --x)
                     {
                         q = r + x - 1;
-                        for (y = Dest_Y; y != 0; --y)
+                        for (y = this->Dest_Y; y != 0; --y)
                         {
                             *q = *p++;
-                            q += Dest_X;
+                            q += this->Dest_X;
                         }
                     }
                     r += count;
@@ -234,12 +234,12 @@ class DiRotateTemplate
             register unsigned long i;
             register const T *p;
             register T *q;
-            const unsigned long count = OFstatic_cast(unsigned long, Dest_X) * OFstatic_cast(unsigned long, Dest_Y);
-            for (int j = 0; j < Planes; ++j)
+            const unsigned long count = OFstatic_cast(unsigned long, this->Dest_X) * OFstatic_cast(unsigned long, this->Dest_Y);
+            for (int j = 0; j < this->Planes; ++j)
             {
                 p = src[j];
                 q = dest[j];
-                for (unsigned long f = Frames; f != 0; --f)
+                for (unsigned long f = this->Frames; f != 0; --f)
                 {
                     q += count;
                     for (i = count; i != 0; --i)
@@ -258,7 +258,7 @@ class DiRotateTemplate
     */
     inline void rotateLeft(T *data[])
     {
-        const unsigned long count = OFstatic_cast(unsigned long, Dest_X) * OFstatic_cast(unsigned long, Dest_Y);
+        const unsigned long count = OFstatic_cast(unsigned long, this->Dest_X) * OFstatic_cast(unsigned long, this->Dest_Y);
         T *temp = new T[count];
         if (temp != NULL)
         {
@@ -267,21 +267,21 @@ class DiRotateTemplate
             register const T *p;
             register T *q;
             register T *r;
-            for (int j = 0; j < Planes; ++j)
+            for (int j = 0; j < this->Planes; ++j)
             {
                 r = data[j];
-                for (unsigned long f = Frames; f != 0; --f)
+                for (unsigned long f = this->Frames; f != 0; --f)
                 {
                     OFBitmanipTemplate<T>::copyMem(OFstatic_cast(const T *, r), temp, count);  // create temporary copy of current frame
                     p = temp;
                     r += count;
-                    for (x = Dest_X; x != 0; --x)
+                    for (x = this->Dest_X; x != 0; --x)
                     {
                         q = r - x;
-                        for (y = Dest_Y; y != 0; --y)
+                        for (y = this->Dest_Y; y != 0; --y)
                         {
                             *q = *p++;
-                            q -= Dest_X;
+                            q -= this->Dest_X;
                         }
                     }
                 }
@@ -296,7 +296,7 @@ class DiRotateTemplate
     */
     inline void rotateRight(T *data[])
     {
-        const unsigned long count = OFstatic_cast(unsigned long, Dest_X) * OFstatic_cast(unsigned long, Dest_Y);
+        const unsigned long count = OFstatic_cast(unsigned long, this->Dest_X) * OFstatic_cast(unsigned long, this->Dest_Y);
         T *temp = new T[count];
         if (temp != NULL)
         {
@@ -305,20 +305,20 @@ class DiRotateTemplate
             register const T *p;
             register T *q;
             register T *r;
-            for (int j = 0; j < Planes; ++j)
+            for (int j = 0; j < this->Planes; ++j)
             {
                 r = data[j];
-                for (unsigned long f = Frames; f != 0; --f)
+                for (unsigned long f = this->Frames; f != 0; --f)
                 {
                     OFBitmanipTemplate<T>::copyMem(OFstatic_cast(const T *, r), temp, count);  // create temporary copy of current frame
                     p = temp;
-                    for (x = Dest_X; x != 0; --x)
+                    for (x = this->Dest_X; x != 0; --x)
                     {
                         q = r + x - 1;
-                        for (y = Dest_Y; y != 0; --y)
+                        for (y = this->Dest_Y; y != 0; --y)
                         {
                             *q = *p++;
-                            q += Dest_X;
+                            q += this->Dest_X;
                         }
                     }
                     r += count;
@@ -339,11 +339,11 @@ class DiRotateTemplate
         register T *q;
         register T t;
         T *s;
-        const unsigned long count = OFstatic_cast(unsigned long, Dest_X) * OFstatic_cast(unsigned long, Dest_Y);
-        for (int j = 0; j < Planes; ++j)
+        const unsigned long count = OFstatic_cast(unsigned long, this->Dest_X) * OFstatic_cast(unsigned long, this->Dest_Y);
+        for (int j = 0; j < this->Planes; ++j)
         {
             s = data[j];
-            for (unsigned long f = Frames; f != 0; --f)
+            for (unsigned long f = this->Frames; f != 0; --f)
             {
                 p = s;
                 q = s + count;
@@ -366,7 +366,10 @@ class DiRotateTemplate
  *
  * CVS/RCS Log:
  * $Log: dirotat.h,v $
- * Revision 1.13  2004-02-06 11:07:50  joergr
+ * Revision 1.14  2004-04-21 10:00:36  meichel
+ * Minor modifications for compilation with gcc 3.4.0
+ *
+ * Revision 1.13  2004/02/06 11:07:50  joergr
  * Distinguish more clearly between const and non-const access to pixel data.
  *
  * Revision 1.12  2003/12/23 15:53:22  joergr

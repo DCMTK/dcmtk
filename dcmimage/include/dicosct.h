@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomColorScaleTemplate (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-06 11:18:18 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-04-21 10:00:31 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -117,7 +117,7 @@ class DiColorScaleTemplate
                       const int interpolate)
     {
         if (Init(pixel))
-            scaleData(pixel, Data, interpolate);
+            scaleData(pixel, this->Data, interpolate);
     }
 };
 
@@ -129,7 +129,10 @@ class DiColorScaleTemplate
  *
  * CVS/RCS Log:
  * $Log: dicosct.h,v $
- * Revision 1.14  2004-02-06 11:18:18  joergr
+ * Revision 1.15  2004-04-21 10:00:31  meichel
+ * Minor modifications for compilation with gcc 3.4.0
+ *
+ * Revision 1.14  2004/02/06 11:18:18  joergr
  * Distinguish more clearly between const and non-const access to pixel data.
  *
  * Revision 1.13  2003/12/23 11:45:54  joergr

@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomColorRotateTemplate (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-06 11:18:18 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-04-21 10:00:31 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -110,11 +110,11 @@ class DiColorRotateTemplate
         if (Init(pixel))
         {
             if (degree == 90)
-                rotateRight(pixel, Data);
+                rotateRight(pixel, this->Data);
             else if (degree == 180)
-                rotateTopDown(pixel, Data);
+                rotateTopDown(pixel, this->Data);
             else  if (degree == 270)
-                rotateLeft(pixel, Data);
+                rotateLeft(pixel, this->Data);
         }
     }
 };
@@ -127,7 +127,10 @@ class DiColorRotateTemplate
  *
  * CVS/RCS Log:
  * $Log: dicorot.h,v $
- * Revision 1.8  2004-02-06 11:18:18  joergr
+ * Revision 1.9  2004-04-21 10:00:31  meichel
+ * Minor modifications for compilation with gcc 3.4.0
+ *
+ * Revision 1.8  2004/02/06 11:18:18  joergr
  * Distinguish more clearly between const and non-const access to pixel data.
  *
  * Revision 1.7  2003/12/23 11:44:32  joergr

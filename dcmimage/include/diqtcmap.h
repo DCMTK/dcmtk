@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2003, OFFIS
+ *  Copyright (C) 2002-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmQuantColorMapping
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-23 12:14:38 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-04-21 10:00:31 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,7 +36,11 @@
 
 #include "osconfig.h"
 #include "diqttype.h"  /* for DcmQuantComponent */
-
+#include "dcmimage.h"  /* gcc 3.4 needs this */
+#include "diqtstab.h"  /* gcc 3.4 needs this */
+#include "diqtpix.h"   /* gcc 3.4 needs this */
+#include "diqthash.h"  /* gcc 3.4 needs this */
+#include "diqtctab.h"  /* gcc 3.4 needs this */
 
 class DicomImage;
 class DcmQuantColorHashTable;
@@ -141,7 +145,10 @@ public:
 /*
  * CVS/RCS Log:
  * $Log: diqtcmap.h,v $
- * Revision 1.2  2003-12-23 12:14:38  joergr
+ * Revision 1.3  2004-04-21 10:00:31  meichel
+ * Minor modifications for compilation with gcc 3.4.0
+ *
+ * Revision 1.2  2003/12/23 12:14:38  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  * Updated copyright header.
  *

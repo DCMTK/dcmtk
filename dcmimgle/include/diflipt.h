@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2003, OFFIS
+ *  Copyright (C) 1996-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomFlipTemplate (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-06 11:07:50 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-04-21 10:00:36 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -76,8 +76,8 @@ class DiFlipTemplate
     {
         if (pixel != NULL)
         {
-            Planes = pixel->getPlanes();
-            if ((pixel->getCount() > 0) && (Planes > 0) &&
+            this->Planes = pixel->getPlanes();
+            if ((pixel->getCount() > 0) && (this->Planes > 0) &&
                 (pixel->getCount() == OFstatic_cast(unsigned long, columns) * OFstatic_cast(unsigned long, rows) * frames))
             {
                 if (horz && vert)
@@ -161,18 +161,18 @@ class DiFlipTemplate
             register const T *p;
             register T *q;
             register T *r;
-            for (int j = 0; j < Planes; ++j)
+            for (int j = 0; j < this->Planes; ++j)
             {
                 p = src[j];
                 r = dest[j];
-                for (Uint32 f = Frames; f != 0; --f)
+                for (Uint32 f = this->Frames; f != 0; --f)
                 {
-                    for (y = Src_Y; y != 0; --y)
+                    for (y = this->Src_Y; y != 0; --y)
                     {
-                        q = r + Dest_X;
-                        for (x = Src_X; x != 0; --x)
+                        q = r + this->Dest_X;
+                        for (x = this->Src_X; x != 0; --x)
                             *--q = *p++;
-                        r += Dest_X;
+                        r += this->Dest_X;
                     }
                 }
             }
@@ -194,20 +194,20 @@ class DiFlipTemplate
             register const T *p;
             register T *q;
             register T *r;
-            const unsigned long count = OFstatic_cast(unsigned long, Dest_X) * OFstatic_cast(unsigned long, Dest_Y);
-            for (int j = 0; j < Planes; ++j)
+            const unsigned long count = OFstatic_cast(unsigned long, this->Dest_X) * OFstatic_cast(unsigned long, this->Dest_Y);
+            for (int j = 0; j < this->Planes; ++j)
             {
                 p = src[j];
                 r = dest[j];
-                for (Uint32 f = Frames; f != 0; --f)
+                for (Uint32 f = this->Frames; f != 0; --f)
                 {
                     r += count;
-                    for (y = Src_Y; y != 0; --y)
+                    for (y = this->Src_Y; y != 0; --y)
                     {
-                        q = r - Dest_X;
-                        for (x = Src_X; x != 0; --x)
+                        q = r - this->Dest_X;
+                        for (x = this->Src_X; x != 0; --x)
                             *q++ = *p++;
-                        r -= Dest_X;
+                        r -= this->Dest_X;
                     }
                     r += count;
                 }
@@ -228,12 +228,12 @@ class DiFlipTemplate
             register unsigned long i;
             register const T *p;
             register T *q;
-            const unsigned long count = OFstatic_cast(unsigned long, Dest_X) * OFstatic_cast(unsigned long, Dest_Y);
-            for (int j = 0; j < Planes; ++j)
+            const unsigned long count = OFstatic_cast(unsigned long, this->Dest_X) * OFstatic_cast(unsigned long, this->Dest_Y);
+            for (int j = 0; j < this->Planes; ++j)
             {
                 p = src[j];
                 q = dest[j];
-                for (Uint32 f = Frames; f != 0; --f)
+                for (Uint32 f = this->Frames; f != 0; --f)
                 {
                     q += count;
                     for (i = count; i != 0; --i)
@@ -258,17 +258,17 @@ class DiFlipTemplate
         register T *q;
         register T t;
         T *r;
-        for (int j = 0; j < Planes; ++j)
+        for (int j = 0; j < this->Planes; ++j)
         {
             r = data[j];
-            for (Uint32 f = Frames; f != 0; --f)
+            for (Uint32 f = this->Frames; f != 0; --f)
             {
-                for (y = Src_Y; y != 0; --y)
+                for (y = this->Src_Y; y != 0; --y)
                 {
                     p = r;
-                    r += Dest_X;
+                    r += this->Dest_X;
                     q = r;
-                    for (x = Src_X / 2; x != 0; --x)
+                    for (x = this->Src_X / 2; x != 0; --x)
                     {
                         t = *p;
                         *p++ = *--q;
@@ -292,20 +292,20 @@ class DiFlipTemplate
         register T *r;
         register T t;
         T *s;
-        const unsigned long count = OFstatic_cast(unsigned long, Dest_X) * OFstatic_cast(unsigned long, Dest_Y);
-        for (int j = 0; j < Planes; ++j)
+        const unsigned long count = OFstatic_cast(unsigned long, this->Dest_X) * OFstatic_cast(unsigned long, this->Dest_Y);
+        for (int j = 0; j < this->Planes; ++j)
         {
             s = data[j];
-            for (Uint32 f = Frames; f != 0; --f)
+            for (Uint32 f = this->Frames; f != 0; --f)
             {
                 p = s;
                 s += count;
                 r = s;
-                for (y = Src_Y / 2; y != 0; --y)
+                for (y = this->Src_Y / 2; y != 0; --y)
                 {
-                    r -= Dest_X;
+                    r -= this->Dest_X;
                     q = r;
-                    for (x = Src_X; x != 0; --x)
+                    for (x = this->Src_X; x != 0; --x)
                     {
                         t = *p;
                         *p++ = *q;
@@ -327,11 +327,11 @@ class DiFlipTemplate
         register T *q;
         register T t;
         T *s;
-        const unsigned long count = OFstatic_cast(unsigned long, Dest_X) * OFstatic_cast(unsigned long, Dest_Y);
-        for (int j = 0; j < Planes; ++j)
+        const unsigned long count = OFstatic_cast(unsigned long, this->Dest_X) * OFstatic_cast(unsigned long, this->Dest_Y);
+        for (int j = 0; j < this->Planes; ++j)
         {
             s = data[j];
-            for (Uint32 f = Frames; f != 0; --f)
+            for (Uint32 f = this->Frames; f != 0; --f)
             {
                 p = s;
                 q = s + count;
@@ -354,7 +354,10 @@ class DiFlipTemplate
  *
  * CVS/RCS Log:
  * $Log: diflipt.h,v $
- * Revision 1.15  2004-02-06 11:07:50  joergr
+ * Revision 1.16  2004-04-21 10:00:36  meichel
+ * Minor modifications for compilation with gcc 3.4.0
+ *
+ * Revision 1.15  2004/02/06 11:07:50  joergr
  * Distinguish more clearly between const and non-const access to pixel data.
  *
  * Revision 1.14  2003/12/23 15:53:22  joergr

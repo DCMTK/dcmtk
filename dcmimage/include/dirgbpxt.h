@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2003, OFFIS
+ *  Copyright (C) 1996-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomRGBPixelTemplate (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-23 12:24:23 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-04-21 10:00:31 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,7 @@
 #include "osconfig.h"
 
 #include "dicopxt.h"
+#include "diinpx.h"  /* gcc 3.4 needs this */
 
 
 /*---------------------*
@@ -67,7 +68,7 @@ class DiRGBPixelTemplate
                        const int bits)
       : DiColorPixelTemplate<T2>(docu, pixel, 3, status)
     {
-        if ((pixel != NULL) && (Count > 0) && (status == EIS_Normal))
+        if ((pixel != NULL) && (this->Count > 0) && (status == EIS_Normal))
             convert(OFstatic_cast(const T1 *, pixel->getData()) + pixel->getPixelStart(), planeSize, bits);
     }
 
@@ -94,19 +95,19 @@ class DiRGBPixelTemplate
         {
             // use the number of input pixels derived from the length of the 'PixelData'
             // attribute), but not more than the size of the intermediate buffer
-            const unsigned long count = (InputCount < Count) ? InputCount : Count;
+            const unsigned long count = (this->InputCount < this->Count) ? this->InputCount : this->Count;
             const T1 offset = OFstatic_cast(T1, DicomImageClass::maxval(bits - 1));
             register const T1 *p = pixel;
-            if (PlanarConfiguration)
+            if (this->PlanarConfiguration)
             {
 /*
                 register T2 *q;
                 // number of pixels to be skipped (only applicable if 'PixelData' contains more
                 // pixels than expected)
-                const unsigned long skip = (InputCount > Count) ? (InputCount - Count) : 0;
+                const unsigned long skip = (this->InputCount > this->Count) ? (this->InputCount - this->Count) : 0;
                 for (int j = 0; j < 3; ++j)
                 {
-                    q = Data[j];
+                    q = this->Data[j];
                     for (i = count; i != 0; --i)
                         *(q++) = removeSign(*(p++), offset);
                     // skip to beginning of next plane
@@ -124,7 +125,7 @@ class DiRGBPixelTemplate
                     {
                         /* convert a single plane */
                         for (l = planeSize, i = iStart; (l != 0) && (i < count); --l, ++i)
-                            Data[j][i] = removeSign(*(p++), offset);
+                            this->Data[j][i] = removeSign(*(p++), offset);
                     }
                 }
             }
@@ -134,7 +135,7 @@ class DiRGBPixelTemplate
                 register unsigned long i;
                 for (i = 0; i < count; ++i)                         /* for all pixel ... */
                     for (j = 0; j < 3; ++j)
-                        Data[j][i] = removeSign(*(p++), offset);    /* ... copy planes */
+                        this->Data[j][i] = removeSign(*(p++), offset);    /* ... copy planes */
             }
         }
     }
@@ -148,7 +149,10 @@ class DiRGBPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dirgbpxt.h,v $
- * Revision 1.15  2003-12-23 12:24:23  joergr
+ * Revision 1.16  2004-04-21 10:00:31  meichel
+ * Minor modifications for compilation with gcc 3.4.0
+ *
+ * Revision 1.15  2003/12/23 12:24:23  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  * Removed leading underscore characters from preprocessor symbols (reserved
  * symbols). Updated copyright header.

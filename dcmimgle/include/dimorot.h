@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2003, OFFIS
+ *  Copyright (C) 1996-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomMonochromeRotateTemplate (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-08 18:47:49 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-04-21 10:00:36 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -110,15 +110,15 @@ class DiMonoRotateTemplate
     {
         if (pixel != NULL)
         {
-            Data = new T[getCount()];
-            if (Data != NULL)
+            this->Data = new T[DiMonoPixelTemplate<T>::getCount()];
+            if (this->Data != NULL)
             {
                 if (degree == 90)
-                    rotateRight(&pixel, &Data);
+                    rotateRight(&pixel, &(this->Data));
                 else if (degree == 180)
-                    rotateTopDown(&pixel, &Data);
+                    rotateTopDown(&pixel, &(this->Data));
                 else if (degree == 270)
-                    rotateLeft(&pixel, &Data);
+                    rotateLeft(&pixel, &(this->Data));
             }
         }
     }
@@ -132,7 +132,10 @@ class DiMonoRotateTemplate
  *
  * CVS/RCS Log:
  * $Log: dimorot.h,v $
- * Revision 1.9  2003-12-08 18:47:49  joergr
+ * Revision 1.10  2004-04-21 10:00:36  meichel
+ * Minor modifications for compilation with gcc 3.4.0
+ *
+ * Revision 1.9  2003/12/08 18:47:49  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  * Removed leading underscore characters from preprocessor symbols (reserved
  * symbols). Updated copyright header.

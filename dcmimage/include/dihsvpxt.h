@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2003, OFFIS
+ *  Copyright (C) 1996-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomHSVPixelTemplate (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-23 11:48:23 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-04-21 10:00:31 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +38,7 @@
 
 #include "ofconsol.h"    /* for ofConsole */
 #include "dicopxt.h"
+#include "diinpx.h"  /* gcc 3.4 needs this */
 
 
 /*---------------------*
@@ -68,7 +69,7 @@ class DiHSVPixelTemplate
                        const int bits)
       : DiColorPixelTemplate<T2>(docu, pixel, 3, status)
     {
-        if ((pixel != NULL) && (Count > 0) && (status == EIS_Normal))
+        if ((pixel != NULL) && (this->Count > 0) && (status == EIS_Normal))
             convert(OFstatic_cast(const T1 *, pixel->getData()) + pixel->getPixelStart(), planeSize, bits);
     }
 
@@ -93,20 +94,20 @@ class DiHSVPixelTemplate
     {
         if (Init(pixel))
         {
-            register T2 *r = Data[0];
-            register T2 *g = Data[1];
-            register T2 *b = Data[2];
+            register T2 *r = this->Data[0];
+            register T2 *g = this->Data[1];
+            register T2 *b = this->Data[2];
             const T2 maxvalue = OFstatic_cast(T2, DicomImageClass::maxval(bits));
             const T1 offset = OFstatic_cast(T1, DicomImageClass::maxval(bits - 1));
             // use the number of input pixels derived from the length of the 'PixelData'
             // attribute), but not more than the size of the intermediate buffer
-            const unsigned long count = (InputCount < Count) ? InputCount : Count;
-            if (PlanarConfiguration)
+            const unsigned long count = (this->InputCount < this->Count) ? this->InputCount : this->Count;
+            if (this->PlanarConfiguration)
             {
 /*
                 register const T1 *h = pixel;
-                register const T1 *s = h + InputCount;
-                register const T1 *v = s + InputCount;
+                register const T1 *s = h + this->InputCount;
+                register const T1 *v = s + this->InputCount;
                 for (i = count; i != 0; --i)
                     convertValue(*(r++), *(g++), *(b++), removeSign(*(h++), offset), removeSign(*(s++), offset),
                         removeSign(*(v++), offset), maxvalue);
@@ -229,7 +230,10 @@ class DiHSVPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dihsvpxt.h,v $
- * Revision 1.17  2003-12-23 11:48:23  joergr
+ * Revision 1.18  2004-04-21 10:00:31  meichel
+ * Minor modifications for compilation with gcc 3.4.0
+ *
+ * Revision 1.17  2003/12/23 11:48:23  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  * Removed leading underscore characters from preprocessor symbols (reserved
  * symbols). Updated copyright header.

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002, OFFIS
+ *  Copyright (C) 2002-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,10 +22,10 @@
  *  Purpose: Template class for administrating an ordered set of elements
  *           of an arbitrary type.
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-12-17 17:01:33 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-04-21 10:00:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofoset.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -98,7 +98,7 @@ template <class T> class OFOrderedSet : public OFSet<T>
     const OFOrderedSet<T> &assign( const OFOrderedSet<T> &src )
       {
         if( this != &src )
-          OFSet<T>::operator=( src );
+          this->operator=( src );
 
         return( *this );
       }
@@ -114,18 +114,18 @@ template <class T> class OFOrderedSet : public OFSet<T>
       {
         // check if both sets contain the same
         // amount of items; if not, return OFFalse
-        if( num != other.num )
+        if( this->num != other.num )
           return( OFFalse );
 
         // initialize result with OFTrue
         OFBool result = OFTrue;
 
         // as long as result is OFTrue go through all items in this
-        for( unsigned int i=0 ; i<num && result == OFTrue ; i++ )
+        for( unsigned int i=0 ; i < this->num && result == OFTrue ; i++ )
         {
           // in case the current element does not equal the current
           // element in other, result shall be set to OFFalse
-          if( *items[i] != *other.items[i] )
+          if( *this->items[i] != *other.items[i] )
             result = OFFalse;
         }
 
@@ -150,17 +150,17 @@ template <class T> class OFOrderedSet : public OFSet<T>
     virtual void Insert( const T &item )
       {
         // if size equals num, we need more space
-        if( size == num )
-          Resize( size * 2 );
+        if( this->size == this->num )
+          Resize( this->size * 2 );
 
         // copy item
         T *newItem = new T( item );
 
         // insert copy into array
-        items[num] = newItem;
+        this->items[this->num] = newItem;
 
         // increase counter
-        num++;
+        this->num++;
       }
 
 
@@ -188,41 +188,41 @@ template <class T> class OFOrderedSet : public OFSet<T>
 
         // in case index is greater than the index of the last item,
         // insert the new item right behind the last item of the set
-        if( idx > num - 1 )
+        if( idx > this->num - 1 )
           Insert( item );
         else
         {
           // if size equals num, we need more space
-          if( size == num )
-            Resize( size * 2 );
+          if( this->size == this->num )
+            Resize( this->size * 2 );
 
           // copy item
           T *newItem = new T( item );
 
           // create a new temporary array and assign all pointers correspondingly
-          T **tmp = new T*[size];
+          T **tmp = new T*[this->size];
 
           for( i=0 ; i<idx ; i++ )
-            tmp[i] = items[i];
+            tmp[i] = this->items[i];
 
           tmp[idx] = newItem;
 
-          for( i=idx ; i<size - 1 ; i++ )
+          for( i=idx ; i < this->size - 1 ; i++ )
           {
-            if( i<num )
-              tmp[i+1] = items[i];
+            if( i < this->num )
+              tmp[i+1] = this->items[i];
             else
               tmp[i+1] = NULL;
           }
 
           // delete old array
-          delete items;
+          delete this->items;
 
           // assign new array to member variable
-          items = tmp;
+          this->items = tmp;
 
           // increase counter
-          num++;
+          this->num++;
         }
       }
 
@@ -236,32 +236,32 @@ template <class T> class OFOrderedSet : public OFSet<T>
         OFBool itemDeleted = OFFalse;
 
         // go through all items
-        for( unsigned int i=0 ; i<num && !itemDeleted ; i++ )
+        for( unsigned int i=0 ; i < this->num && !itemDeleted ; i++ )
         {
           // if current item is the one which shall be deleted
-          if( *items[i] == item )
+          if( *this->items[i] == item )
           {
             // delete item
-            delete items[i];
+            delete this->items[i];
 
             // and - so that there are no holes in the array - move all elements
             // behind the current element up one array field; only do so in case
             // we did _not_ delete the last item
-            if( i != num - 1 )
+            if( i != this->num - 1 )
             {
               unsigned int j;
-              for( j=i+1 ; j<num ; j++ )
+              for( j=i+1 ; j < this->num ; j++ )
               {
-                items[j-1] = items[j];
+                this->items[j-1] = this->items[j];
               }
 
-              items[j-1] = NULL;
+              this->items[j-1] = NULL;
             }
             else
-              items[i] = NULL;
+              this->items[i] = NULL;
 
             // reduce counter
-            num--;
+            this->num--;
 
             // remember that an item was deleted (so that always only one item will be deleted)
             itemDeleted = OFTrue;
@@ -276,29 +276,29 @@ template <class T> class OFOrderedSet : public OFSet<T>
     virtual void RemoveByIndex( unsigned int idx )
       {
         // do something only if the given index is not out of range
-        if( idx < num )
+        if( idx < this->num )
         {
           // delete item with given index
-          delete items[idx];
+          delete this->items[idx];
 
           // and - so that there are no holes in the array - move all elements
           // behind the current element up one array field; only do so in case
           // we did _not_ delete the last item
-          if( idx != num - 1 )
+          if( idx != this->num - 1 )
           {
             unsigned int j;
-            for( j=idx+1 ; j<num ; j++ )
+            for( j=idx+1 ; j < this->num ; j++ )
             {
-              items[j-1] = items[j];
+              this->items[j-1] = this->items[j];
             }
 
-            items[j-1] = NULL;
+            this->items[j-1] = NULL;
           }
           else
-            items[idx] = NULL;
+            this->items[idx] = NULL;
 
           // reduce counter
-          num--;
+          this->num--;
         }
       }
 
@@ -314,14 +314,14 @@ template <class T> class OFOrderedSet : public OFSet<T>
         unsigned int i;
         OFBool itemFound = OFFalse;
 
-        for( i=0 ; i<num && !itemFound ; i++ )
+        for( i=0 ; i < this->num && !itemFound ; i++ )
         {
-          if( *items[i] == item )
+          if( *this->items[i] == item )
             itemFound = OFTrue;
         }
 
         if( itemFound )
-          return( items[i-1] );
+          return( this->items[i-1] );
         else
           return( NULL );
       }
@@ -335,9 +335,9 @@ template <class T> class OFOrderedSet : public OFSet<T>
       {
         OFBool itemFound = OFFalse;
 
-        for( unsigned int i=0 ; i<num && !itemFound ; i++ )
+        for( unsigned int i=0 ; i < this->num && !itemFound ; i++ )
         {
-          if( *items[i] == item )
+          if( *this->items[i] == item )
             itemFound = OFTrue;
         }
 
@@ -354,7 +354,7 @@ template <class T> class OFOrderedSet : public OFSet<T>
     virtual OFBool IsSupersetOf( const OFOrderedSet<T> &other ) const
       {
         // if this contains less or the same amount of items than other, return OFFalse
-        if( num <= other.num )
+        if( this->num <= other.num )
           return( OFFalse );
 
         // initialize result with OFTrue
@@ -429,17 +429,17 @@ template <class T> class OFOrderedSet : public OFSet<T>
         OFOrderedSet<T> s = other;
 
         // go through all items in this
-        for( unsigned int i=0 ; i<num ; i++ )
+        for( unsigned int i=0 ; i < this->num ; i++ )
         {
           // if s contains the current item
-          if( s.Contains( *items[i] ) )
+          if( s.Contains( *this->items[i] ) )
           {
             // insert the item into the result set
-            resultSet.Insert( *items[i] );
+            resultSet.Insert( *this->items[i] );
 
             // and remove the item from s so that it will not be
             // considered again in a later call to s.Contains()
-            s.Remove( *items[i] );
+            s.Remove( *this->items[i] );
           }
         }
 
@@ -463,19 +463,19 @@ template <class T> class OFOrderedSet : public OFSet<T>
         OFOrderedSet<T> s = other;
 
         // go through all items in this
-        for( unsigned int i=0 ; i<num ; i++ )
+        for( unsigned int i=0 ; i < this->num ; i++ )
         {
           // if s does not contain the current item
-          if( !s.Contains( *items[i] ) )
+          if( !s.Contains( *this->items[i] ) )
           {
             // insert the item into the result set
-            resultSet.Insert( *items[i] );
+            resultSet.Insert( *this->items[i] );
           }
           else
           {
             // else remove the item from s so that it will not be
             // considered again in a later call to s.Contains()
-            s.Remove( *items[i] );
+            s.Remove( *this->items[i] );
           }
         }
 
@@ -513,7 +513,10 @@ template <class T> class OFOrderedSet : public OFSet<T>
 /*
 ** CVS/RCS Log:
 ** $Log: ofoset.h,v $
-** Revision 1.8  2002-12-17 17:01:33  wilkens
+** Revision 1.9  2004-04-21 10:00:52  meichel
+** Minor modifications for compilation with gcc 3.4.0
+**
+** Revision 1.8  2002/12/17 17:01:33  wilkens
 ** Modified code again to keep Sun CC 2.0.1 happy on Solaris 2.5.1 (template
 ** errors).
 **

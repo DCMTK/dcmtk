@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2003, OFFIS
+ *  Copyright (C) 1996-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomMonochromeFlipTemplate (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-08 18:41:55 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-04-21 10:00:36 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -110,15 +110,15 @@ class DiMonoFlipTemplate
     {
         if (pixel != NULL)
         {
-            Data = new T[getCount()];
-            if (Data != NULL)
+            this->Data = new T[this->getCount()];
+            if (this->Data != NULL)
             {
                 if (horz && vert)
-                    flipHorzVert(&pixel, &Data);
+                    flipHorzVert(&pixel, &this->Data);
                 else if (horz)
-                    flipHorz(&pixel, &Data);
+                    flipHorz(&pixel, &this->Data);
                 else if (vert)
-                    flipVert(&pixel, &Data);
+                    flipVert(&pixel, &this->Data);
             }
         }
     }
@@ -132,7 +132,10 @@ class DiMonoFlipTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoflt.h,v $
- * Revision 1.8  2003-12-08 18:41:55  joergr
+ * Revision 1.9  2004-04-21 10:00:36  meichel
+ * Minor modifications for compilation with gcc 3.4.0
+ *
+ * Revision 1.8  2003/12/08 18:41:55  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  * Removed leading underscore characters from preprocessor symbols (reserved
  * symbols). Updated copyright header.

@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomInputPixelTemplate (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-06 11:07:50 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-04-21 10:00:36 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -150,7 +150,7 @@ class DiInputPixelTemplate
         MinValue[1] = 0;
         MaxValue[0] = 0;
         MaxValue[1] = 0;
-        if (isSigned())
+        if (this->isSigned())
         {
             AbsMinimum = -OFstatic_cast(double, DicomImageClass::maxval(Bits - 1, 0));
             AbsMaximum = OFstatic_cast(double, DicomImageClass::maxval(Bits - 1));
@@ -599,7 +599,10 @@ class DiInputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diinpxt.h,v $
- * Revision 1.28  2004-02-06 11:07:50  joergr
+ * Revision 1.29  2004-04-21 10:00:36  meichel
+ * Minor modifications for compilation with gcc 3.4.0
+ *
+ * Revision 1.28  2004/02/06 11:07:50  joergr
  * Distinguish more clearly between const and non-const access to pixel data.
  *
  * Revision 1.27  2004/01/05 14:52:20  joergr

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2003, OFFIS
+ *  Copyright (C) 1996-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomPalettePixelTemplate (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-23 11:50:30 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-04-21 10:00:31 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,6 +40,7 @@
 
 #include "dicopxt.h"
 #include "diluptab.h"
+#include "diinpx.h"  /* gcc 3.4 needs this */
 
 
 /*---------------------*
@@ -68,15 +69,15 @@ class DiPalettePixelTemplate
                            EI_Status &status)
       : DiColorPixelTemplate<T3>(docu, pixel, 1, status)
     {
-        if ((pixel != NULL) && (Count > 0) && (status == EIS_Normal))
+        if ((pixel != NULL) && (this->Count > 0) && (status == EIS_Normal))
         {
-            if (PlanarConfiguration)
+            if (this->PlanarConfiguration)
             {
                 status = EIS_InvalidValue;
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
                 {
                     ofConsole.lockCerr() << "ERROR: invalid value for 'PlanarConfiguration' ("
-                                         << PlanarConfiguration << ") ! " << endl;
+                                         << this->PlanarConfiguration << ") ! " << endl;
                     ofConsole.unlockCerr();
                 }
             }
@@ -110,18 +111,18 @@ class DiPalettePixelTemplate
             register int j;
             // use the number of input pixels derived from the length of the 'PixelData'
             // attribute), but not more than the size of the intermediate buffer
-            const unsigned long count = (InputCount < Count) ? InputCount : Count;
+            const unsigned long count = (this->InputCount < this->Count) ? this->InputCount : this->Count;
             for (i = 0; i < count; ++i)
             {
                 value = OFstatic_cast(T2, *(p++));
                 for (j = 0; j < 3; ++j)
                 {
                     if (value <= palette[j]->getFirstEntry(value))
-                        Data[j][i] = OFstatic_cast(T3, palette[j]->getFirstValue());
+                        this->Data[j][i] = OFstatic_cast(T3, palette[j]->getFirstValue());
                     else if (value >= palette[j]->getLastEntry(value))
-                        Data[j][i] = OFstatic_cast(T3, palette[j]->getLastValue());
+                        this->Data[j][i] = OFstatic_cast(T3, palette[j]->getLastValue());
                     else
-                        Data[j][i] = OFstatic_cast(T3, palette[j]->getValue(value));
+                        this->Data[j][i] = OFstatic_cast(T3, palette[j]->getValue(value));
                 }
             }
         }
@@ -136,7 +137,10 @@ class DiPalettePixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dipalpxt.h,v $
- * Revision 1.16  2003-12-23 11:50:30  joergr
+ * Revision 1.17  2004-04-21 10:00:31  meichel
+ * Minor modifications for compilation with gcc 3.4.0
+ *
+ * Revision 1.16  2003/12/23 11:50:30  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  * Removed leading underscore characters from preprocessor symbols (reserved
  * symbols). Updated copyright header.

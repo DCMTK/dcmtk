@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2003, OFFIS
+ *  Copyright (C) 1998-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomYBRPart422PixelTemplate (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-23 12:35:00 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-04-21 10:00:31 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +38,7 @@
 
 #include "ofconsol.h"    /* for ofConsole */
 #include "dicopxt.h"
+#include "diinpx.h"  /* gcc 3.4 needs this */
 
 
 /*---------------------*
@@ -66,15 +67,15 @@ class DiYBRPart422PixelTemplate
                               const int bits)
       : DiColorPixelTemplate<T2>(docu, pixel, 3, status, 2)
     {
-        if ((pixel != NULL) && (Count > 0) && (status == EIS_Normal))
+        if ((pixel != NULL) && (this->Count > 0) && (status == EIS_Normal))
         {
-            if (PlanarConfiguration)
+            if (this->PlanarConfiguration)
             {
                 status = EIS_InvalidValue;
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
                 {
                     ofConsole.lockCerr() << "ERROR: invalid value for 'PlanarConfiguration' ("
-                                         << PlanarConfiguration << ") ! " << endl;
+                                         << this->PlanarConfiguration << ") ! " << endl;
                     ofConsole.unlockCerr();
                 }
             }
@@ -102,15 +103,15 @@ class DiYBRPart422PixelTemplate
     {
         if (Init(pixel))
         {
-            register T2 *r = Data[0];
-            register T2 *g = Data[1];
-            register T2 *b = Data[2];
+            register T2 *r = this->Data[0];
+            register T2 *g = this->Data[1];
+            register T2 *b = this->Data[2];
             register unsigned long i;
             const T2 maxvalue = OFstatic_cast(T2, DicomImageClass::maxval(bits));
             const T1 offset = OFstatic_cast(T1, DicomImageClass::maxval(bits - 1));
             // use the number of input pixels derived from the length of the 'PixelData'
             // attribute), but not more than the size of the intermediate buffer
-            const unsigned long count = (InputCount < Count) ? InputCount : Count;
+            const unsigned long count = (this->InputCount < this->Count) ? this->InputCount : this->Count;
 
             register const T1 *p = pixel;
             register T2 y1;
@@ -156,7 +157,10 @@ class DiYBRPart422PixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diyp2pxt.h,v $
- * Revision 1.15  2003-12-23 12:35:00  joergr
+ * Revision 1.16  2004-04-21 10:00:31  meichel
+ * Minor modifications for compilation with gcc 3.4.0
+ *
+ * Revision 1.15  2003/12/23 12:35:00  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  * Removed leading underscore characters from preprocessor symbols (reserved
  * symbols). Updated copyright header. Added missing API documentation.

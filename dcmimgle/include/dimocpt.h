@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2003, OFFIS
+ *  Copyright (C) 1996-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomMonochromeCopyTemplate (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-08 18:26:50 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-04-21 10:00:36 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -92,9 +92,9 @@ class DiMonoCopyTemplate
     {
         if (pixel != NULL)
         {
-            Data = new T[getCount()];
-            if (Data != NULL)
-                OFBitmanipTemplate<T>::copyMem(pixel, Data, getCount());
+            this->Data = new T[this->getCount()];
+            if (this->Data != NULL)
+                OFBitmanipTemplate<T>::copyMem(pixel, this->Data, this->getCount());
         }
     }
 };
@@ -107,7 +107,10 @@ class DiMonoCopyTemplate
  *
  * CVS/RCS Log:
  * $Log: dimocpt.h,v $
- * Revision 1.9  2003-12-08 18:26:50  joergr
+ * Revision 1.10  2004-04-21 10:00:36  meichel
+ * Minor modifications for compilation with gcc 3.4.0
+ *
+ * Revision 1.9  2003/12/08 18:26:50  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  * Removed leading underscore characters from preprocessor symbols (reserved
  * symbols). Updated copyright header.

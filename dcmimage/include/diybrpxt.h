@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomYBRPixelTemplate (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-06 11:16:35 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-04-21 10:00:31 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +38,7 @@
 
 #include "dicopxt.h"
 #include "dipxrept.h"
+#include "diinpx.h"  /* gcc 3.4 needs this */
 
 
 /*---------------------*
@@ -70,7 +71,7 @@ class DiYBRPixelTemplate
                        const OFBool rgb)
       : DiColorPixelTemplate<T2>(docu, pixel, 3, status)
     {
-        if ((pixel != NULL) && (Count > 0) && (status == EIS_Normal))
+        if ((pixel != NULL) && (this->Count > 0) && (status == EIS_Normal))
             convert(OFstatic_cast(const T1 *, pixel->getData()) + pixel->getPixelStart(), planeSize, bits, rgb);
     }
 
@@ -100,12 +101,12 @@ class DiYBRPixelTemplate
             const T1 offset = OFstatic_cast(T1, DicomImageClass::maxval(bits - 1));
             // use the number of input pixels derived from the length of the 'PixelData'
             // attribute), but not more than the size of the intermediate buffer
-            const unsigned long count = (InputCount < Count) ? InputCount : Count;
+            const unsigned long count = (this->InputCount < this->Count) ? this->InputCount : this->Count;
             if (rgb)    /* convert to RGB model */
             {
-                register T2 *r = Data[0];
-                register T2 *g = Data[1];
-                register T2 *b = Data[2];
+                register T2 *r = this->Data[0];
+                register T2 *g = this->Data[1];
+                register T2 *b = this->Data[2];
                 const T2 maxvalue = OFstatic_cast(T2, DicomImageClass::maxval(bits));
                 DiPixelRepresentationTemplate<T1> rep;
                 if (bits == 8 && !rep.isSigned())          // only for unsigned 8 bit
@@ -128,12 +129,12 @@ class DiYBRPixelTemplate
                     register Sint32 sr;
                     register Sint32 sg;
                     register Sint32 sb;
-                    if (PlanarConfiguration)
+                    if (this->PlanarConfiguration)
                     {
 /*
                         register const T1 *y = pixel;
-                        register const T1 *cb = y + InputCount;
-                        register const T1 *cr = cb + InputCount;
+                        register const T1 *cb = y + this->InputCount;
+                        register const T1 *cr = cb + this->InputCount;
                         for (i = count; i != 0; --i, ++y, ++cb, ++cr)
                         {
                          	sr = OFstatic_cast(Sint32, *y) + OFstatic_cast(Sint32, rcr_tab[*cr]);
@@ -189,12 +190,12 @@ class DiYBRPixelTemplate
                 }
                 else
                 {
-                    if (PlanarConfiguration)
+                    if (this->PlanarConfiguration)
                     {
 /*
                         register const T1 *y = pixel;
-                        register const T1 *cb = y + InputCount;
-                        register const T1 *cr = cb + InputCount;
+                        register const T1 *cb = y + this->InputCount;
+                        register const T1 *cr = cb + this->InputCount;
                         for (i = count; i != 0; --i)
                             convertValue(*(r++), *(g++), *(b++), removeSign(*(y++), offset), removeSign(*(cb++), offset),
                                 removeSign(*(cr++), offset), maxvalue);
@@ -236,16 +237,16 @@ class DiYBRPixelTemplate
                 }
             } else {    /* retain YCbCr model */
                 register const T1 *p = pixel;
-                if (PlanarConfiguration)
+                if (this->PlanarConfiguration)
                 {
 /*
                     register T2 *q;
                     // number of pixels to be skipped (only applicable if 'PixelData' contains more
                     // pixels than expected)
-                    const unsigned long skip = (InputCount > Count) ? (InputCount - Count) : 0;
+                    const unsigned long skip = (this->InputCount > this->Count) ? (this->InputCount - this->Count) : 0;
                     for (int j = 0; j < 3; ++j)
                     {
-                        q = Data[j];
+                        q = this->Data[j];
                         for (i = count; i != 0; --i)
                             *(q++) = removeSign(*(p++), offset);
                         // skip to beginning of next plane
@@ -262,7 +263,7 @@ class DiYBRPixelTemplate
                         {
                             /* convert a single plane */
                             for (l = planeSize, i = iStart; (l != 0) && (i < count); --l, ++i)
-                                Data[j][i] = removeSign(*(p++), offset);
+                                this->Data[j][i] = removeSign(*(p++), offset);
                         }
                     }
                 }
@@ -272,7 +273,7 @@ class DiYBRPixelTemplate
                     register unsigned long i;
                     for (i = 0; i < count; ++i)                         /* for all pixel ... */
                         for (j = 0; j < 3; ++j)
-                            Data[j][i] = removeSign(*(p++), offset);    /* ... copy planes */
+                            this->Data[j][i] = removeSign(*(p++), offset);    /* ... copy planes */
                 }
             }
         }
@@ -299,7 +300,10 @@ class DiYBRPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diybrpxt.h,v $
- * Revision 1.15  2004-02-06 11:16:35  joergr
+ * Revision 1.16  2004-04-21 10:00:31  meichel
+ * Minor modifications for compilation with gcc 3.4.0
+ *
+ * Revision 1.15  2004/02/06 11:16:35  joergr
  * Added typecast to array indexes to avoid warning messages on MacOS X 10.3
  * with gcc 3.3.
  *

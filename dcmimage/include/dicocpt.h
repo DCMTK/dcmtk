@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomColorCopyTemplate (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-06 11:18:18 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-04-21 10:00:31 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -93,7 +93,7 @@ class DiColorCopyTemplate
         if (Init(pixel))
         {
             for (int j = 0; j < 3; j++)
-                OFBitmanipTemplate<T>::copyMem(pixel[j] + offset, Data[j], getCount());
+                OFBitmanipTemplate<T>::copyMem(pixel[j] + offset, this->Data[j], this->getCount());
         }
     }
 };
@@ -106,7 +106,10 @@ class DiColorCopyTemplate
  *
  * CVS/RCS Log:
  * $Log: dicocpt.h,v $
- * Revision 1.9  2004-02-06 11:18:18  joergr
+ * Revision 1.10  2004-04-21 10:00:31  meichel
+ * Minor modifications for compilation with gcc 3.4.0
+ *
+ * Revision 1.9  2004/02/06 11:18:18  joergr
  * Distinguish more clearly between const and non-const access to pixel data.
  *
  * Revision 1.8  2003/12/23 11:18:26  joergr

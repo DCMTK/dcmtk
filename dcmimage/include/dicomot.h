@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomColorMonochromeTemplate (Header)
  *
- *  Last Update:         $Author: joergr $
- *  Update Date:         $Date: 2004-02-06 11:18:18 $
- *  CVS/RCS Revision:    $Revision: 1.13 $
+ *  Last Update:         $Author: meichel $
+ *  Update Date:         $Date: 2004-04-21 10:00:31 $
+ *  CVS/RCS Revision:    $Revision: 1.14 $
  *  Status:              $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -72,7 +72,7 @@ class DiColorMonoTemplate
         if ((pixel != NULL) && (pixel->getCount() > 0))
         {
             convert(OFstatic_cast(const T **, OFconst_cast(void *, pixel->getData())), red, green, blue);
-            determineMinMax();
+            this->determineMinMax();
         }
     }
 
@@ -99,15 +99,15 @@ class DiColorMonoTemplate
     {
         if (pixel != NULL)
         {
-            Data = new T[Count];
-            if (Data != NULL)
+            this->Data = new T[this->Count];
+            if (this->Data != NULL)
             {
                 register const T *r = pixel[0];
                 register const T *g = pixel[1];
                 register const T *b = pixel[2];
-                register T *q = Data;
+                register T *q = this->Data;
                 register unsigned long i;
-                for (i = Count; i != 0; i--)
+                for (i = this->Count; i != 0; i--)
                 {
                     *(q++) = OFstatic_cast(T, OFstatic_cast(double, *(r++)) * red +
                                               OFstatic_cast(double, *(g++)) * green +
@@ -126,7 +126,10 @@ class DiColorMonoTemplate
  *
  * CVS/RCS Log:
  * $Log: dicomot.h,v $
- * Revision 1.13  2004-02-06 11:18:18  joergr
+ * Revision 1.14  2004-04-21 10:00:31  meichel
+ * Minor modifications for compilation with gcc 3.4.0
+ *
+ * Revision 1.13  2004/02/06 11:18:18  joergr
  * Distinguish more clearly between const and non-const access to pixel data.
  *
  * Revision 1.12  2003/12/23 11:21:12  joergr
