@@ -23,8 +23,8 @@
  *    classes: DSRCodedEntryValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-19 16:03:20 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2000-11-01 16:29:48 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -148,15 +148,17 @@ void DSRCodedEntryValue::print(ostream &stream,
 {
     if (isValid())
     {
+        OFString printString;
         stream << "(";
         if (printCodeValue)
         {
-            stream << CodeValue << "," << CodingSchemeDesignator << ",";
+            stream << DSRTypes::convertToPrintString(CodeValue, printString) << ",";
+            stream << DSRTypes::convertToPrintString(CodingSchemeDesignator, printString) << ",";
             if (CodingSchemeVersion.length() > 0)
-                stream << CodingSchemeVersion << ",";
+                stream << DSRTypes::convertToPrintString(CodingSchemeVersion, printString) << ",";
         } else
             stream << ",,";
-        stream << "\"" << CodeMeaning << "\")";
+        stream << "\"" << DSRTypes::convertToPrintString(CodeMeaning, printString) << "\")";
     }
     else if (printInvalid)
         stream << "invalid code";
@@ -261,13 +263,42 @@ E_Condition DSRCodedEntryValue::writeSequence(DcmItem &dataset,
 }
 
 
-E_Condition DSRCodedEntryValue::renderHTML(ostream &stream,
-                                           OFConsole * /* logStream */) const
+E_Condition DSRCodedEntryValue::writeXML(ostream &stream,
+                                         const size_t flags,
+                                         OFConsole * /* logStream */) const
 {
-    stream << CodeMeaning << " (" << CodingSchemeDesignator << ", "; 
-    if (CodingSchemeVersion.length() > 0)
-        stream << CodingSchemeVersion << ", ";
-    stream << CodeValue << ")";
+    DSRTypes::writeStringValueToXML(stream, CodeValue, "value", flags & DSRTypes::XF_writeEmptyTags);
+    stream << "<scheme>" << endl;
+    DSRTypes::writeStringValueToXML(stream, CodingSchemeDesignator, "designator", flags & DSRTypes::XF_writeEmptyTags);
+    DSRTypes::writeStringValueToXML(stream, CodingSchemeVersion, "version", flags & DSRTypes::XF_writeEmptyTags);
+    stream << "</scheme>" << endl;
+    DSRTypes::writeStringValueToXML(stream, CodeMeaning, "meaning", flags & DSRTypes::XF_writeEmptyTags);
+    return EC_Normal;
+}
+
+
+E_Condition DSRCodedEntryValue::renderHTML(ostream &stream,
+                                           OFConsole * /* logStream */,
+                                           const OFBool fullCode,
+                                           const OFBool valueFirst) const
+{
+    OFString htmlString;
+    if (valueFirst)
+        stream << DSRTypes::convertToMarkupString(CodeValue, htmlString);
+    else
+        stream << DSRTypes::convertToMarkupString(CodeMeaning, htmlString);
+    if (fullCode)
+    {
+        stream << " (";
+        if (!valueFirst)
+            stream << DSRTypes::convertToMarkupString(CodeValue, htmlString) << ", ";
+        stream << DSRTypes::convertToMarkupString(CodingSchemeDesignator, htmlString); 
+        if (CodingSchemeVersion.length() > 0)
+            stream << ", " << DSRTypes::convertToMarkupString(CodingSchemeVersion, htmlString);
+        if (valueFirst)
+            stream << ", " << DSRTypes::convertToMarkupString(CodeMeaning, htmlString);
+        stream << ")";
+    }
     return EC_Normal;
 }
 
@@ -329,7 +360,11 @@ OFBool DSRCodedEntryValue::checkCode(const OFString &codeValue,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodvl.cc,v $
- *  Revision 1.3  2000-10-19 16:03:20  joergr
+ *  Revision 1.4  2000-11-01 16:29:48  joergr
+ *  Added support for conversion to XML.
+ *  Enhanced support for specific character sets.
+ *
+ *  Revision 1.3  2000/10/19 16:03:20  joergr
  *  Renamed some set methods.
  *  Added optional module name to read method to provide more detailed warning
  *  messages.
