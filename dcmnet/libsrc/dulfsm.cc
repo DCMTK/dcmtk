@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: meichel $, $Date: 2000-09-08 14:27:51 $
+** Last Update:		$Author: meichel $, $Date: 2001-03-28 15:45:03 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.36 $
+** Revision:		$Revision: 1.37 $
 ** Status:		$State: Exp $
 */
 
@@ -1258,7 +1258,8 @@ AE_6_ExamineAssociateRequest(PRIVATE_NETWORKKEY ** /*network*/,
 	if (debug)
 	    dump_pdu("Associate Request", buffer, pduLength + 6);
 	cond = parseAssociate(buffer, pduLength, &assoc);
-        /* free(buffer); */
+        free(buffer);
+        buffer = NULL;
 
 	if (debug) {
 	    DEBUG_DEVICE.flush();
@@ -4024,7 +4025,11 @@ DULPRV_translateAssocReq(unsigned char *buffer,
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.36  2000-09-08 14:27:51  meichel
+** Revision 1.37  2001-03-28 15:45:03  meichel
+** Fixed memory leak: for each accepted connection, an A-ASSOCIATE PDU
+**   could remain in memory under certain circumstances.
+**
+** Revision 1.36  2000/09/08 14:27:51  meichel
 ** Removed use of u_short and u_long types which are not defined in POSIX.
 **   Required when compiling on Solaris with Posix threads.
 **
