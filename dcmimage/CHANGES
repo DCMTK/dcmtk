@@ -1,4 +1,75 @@
 
+**** Changes from 1999.04.28 (riesmeier)
+
+- Merged change log for module dcmimgle into main change log. Removed
+  entries from change file for module dcmimage.
+  Affects: dcmimage/CHANGES
+  
+- Introduced new scheme for the debug level variable: now each level can be
+  set separately (there is no "include" relationship).
+  Affects: dcmimage/include/dihsvpxt.h
+           dcmimage/include/diyf2pxt.h
+           dcmimage/include/diyp2pxt.h
+           dcmimage/libsrc/diargimg.cc
+           dcmimage/libsrc/dicoimg.cc
+           dcmimage/libsrc/dicopx.cc
+           dcmimage/libsrc/dipalimg.cc
+
+- Corrected some typos, comments and formatting.
+  Affects: dcmimage/include/diargimg.h
+           dcmimage/include/diargpxt.h
+           dcmimage/include/dicmyimg.h
+           dcmimage/include/dicmypxt.h
+           dcmimage/include/dicocpt.h
+           dcmimage/include/dicoflt.h
+           dcmimage/include/dicoimg.h
+           dcmimage/include/dicomot.h
+           dcmimage/include/dicopxt.h
+           dcmimage/include/dicorot.h
+           dcmimage/include/dicosct.h
+           dcmimage/include/dihsvimg.h
+           dcmimage/include/dipalimg.h
+           dcmimage/include/dipalpxt.h
+           dcmimage/include/dirgbimg.h
+           dcmimage/include/dirgbpxt.h
+           dcmimage/include/diybrimg.h
+           dcmimage/include/diybrpxt.h
+           dcmimage/include/diyf2img.h
+           dcmimage/include/diyp2img.h
+           dcmimage/libsrc/dicmyimg.cc
+           dcmimage/libsrc/dihsvimg.cc
+           dcmimage/libsrc/dirgbimg.cc
+           dcmimage/libsrc/diyf2img.cc
+           dcmimage/libsrc/diyp2img.cc
+
+- Moved files to dcmimgle module to support new pastel color output format.
+  Affects: dcmimage/libsrc/Makefile.in
+  Removed: dcmimage/include/dicoopx.h
+           dcmimage/include/dicoopxt.h
+           dcmimage/include/dicopx.h
+           dcmimage/libsrc/dicoopx.cc
+
+- Rebuilt Makefile dependencies.
+  Affects: dcmimage/apps/Makefile.dep
+           dcmimage/libsrc/Makefile.dep
+
+- Added some checks to avoid dereferencing null pointers.
+  Affects: dcmimage/libsrc/diregist.cc
+  
+- Added experimental support to create grayscale images with more than 256
+  shades of gray to be display an a consumer monitor (use pastel colors).
+  Affects: dcmimage/libsrc/dcm2pnm.cc
+  
+- Modified some command line options (not yet finished).
+  Affects: dcmimage/libsrc/dcm2pnm.cc
+  
+- Adapted console application to new OFCommandline and OFConsoleApplication
+  features.
+  Affects: dcmimage/libsrc/dcm2pnm.cc
+  
+- Added dcmimgle module to DOC++ search path to create a common HTML document.
+  Affects: dcmimage/Makefile.in
+
 **** Changes from 1999.03.24 (riesmeier)
 
 - Changed optional integer parameter in method findOption to enum type.
@@ -6,259 +77,31 @@
   
 - Removed debug code.
   Affects: dcmimage/apps/dcm2pnm.cc
-           dcmimgle/include/dirotat.h
 
 - Added/Modified comments and formatting.
   Affects: dcmimage/libsrc/diregist.cc
-           dcmimgle/include/dcmimage.h
-           dcmimgle/include/dibarlut.h
-           dcmimgle/include/dibaslut.h
-           dcmimgle/include/didispfn.h
-           dcmimgle/include/didocu.h
-           dcmimgle/include/diflipt.h
-           dcmimgle/include/diimage.h
-           dcmimgle/include/diinpx.h
-           dcmimgle/include/diinpxt.h
-           dcmimgle/include/diluptab.h
-           dcmimgle/include/dimo1img.h
-           dcmimgle/include/dimo2img.h
-           dcmimgle/include/dimocpt.h
-           dcmimgle/include/dimoflt.h
-           dcmimgle/include/dimoimg.h
-           dcmimgle/include/dimoipxt.h
-           dcmimgle/include/dimomod.h
-           dcmimgle/include/dimoopx.h
-           dcmimgle/include/dimoopxt.h
-           dcmimgle/include/dimopx.h
-           dcmimgle/include/dimopxt.h
-           dcmimgle/include/dimorot.h
-           dcmimgle/include/dimosct.h
-           dcmimgle/include/diobjcou.h
-           dcmimgle/include/diovlay.h
-           dcmimgle/include/diovlimg.h
-           dcmimgle/include/diovpln.h
-           dcmimgle/include/dipixel.h
-           dcmimgle/include/dipxrept.h
-           dcmimgle/include/diregbas.h
-           dcmimgle/include/dirotat.h
-           dcmimgle/include/discalet.h
-           dcmimgle/include/displint.h
-           dcmimgle/include/ditranst.h
-           dcmimgle/include/diutils.h
-           dcmimgle/libsrc/dimoimg.cc
-
-- Added support for Barten transformation from 2 to 7 bits input (now: 2-16).
-  Affects: dcmimgle/include/didispfn.h
-           dcmimgle/libsrc/didispfn.cc
-
-- Removed bug in routines rotating and flipping overlay planes in clipped
-  images.
-  Affects: dcmimgle/libsrc/diovlay.cc
-           dcmimgle/libsrc/diovpln.cc
-  
-- Removed bug when scaling and clipping images where the clipping area exceeds
-  the original images.
-  Affects: dcmimgle/libsrc/dcmimage.cc
-
-**** Changes from 1999.03.22 (eichelberg)
-
-- Reworked data dictionary based on the 1998 DICOM edition and the latest
-  supplement versions. Corrected dcmtk applications for minor changes 
-  in attribute name constants.
-  Affects: dcmimgle/libsrc/diovpln.cc
 
 **** Changes from 1999.03.22 (riesmeier)
-
-- Added/Changed comments.
-  Affects: dcmimgle/include/dcmimage.h
-           dcmimgle/include/displint.h
-           dcmimgle/libsrc/didispfn.cc
-
-- Added parameter to specify (transparent) background color for method
-  getOverlayData().
-  Affects: dcmimgle/include/dcmimage.h
-           dcmimgle/include/dimoimg.h
-           dcmimgle/include/diovlay.h
-           dcmimgle/include/diovpln.h
-           dcmimgle/libsrc/dimoimg.cc
-           dcmimgle/libsrc/diovlay.cc
-           dcmimgle/libsrc/diovpln.cc
-
-- Removed bug concerning the rotation and flipping of additional overlay
-  planes (NumberOfFrames has not always been determined correctly).
-  Affects: dcmimgle/libsrc/diovlay.cc
 
 - Rebuilt Makefile dependencies.
   Affects: dcmimage/apps/Makefile.dep
            dcmimage/libsrc/Makefile.dep
-           dcmimgle/libsrc/Makefile.dep
-
-**** Changes from 1999.03.04 (riesmeier)
-
-- Barten LUT is now be re-created when ambient light value has changed.
-  Affects: dcmimgle/include/dibarlut.h
-           dcmimgle/libsrc/dibarlut.cc
-           dcmimgle/libsrc/didispfn.cc
-
-- Removed const specifier (for pointer variable) to avoid warnings on SunCC.
-  Affects: dcmimgle/libsrc/didispfn.cc
-
-**** Changes from 1999.03.03 (riesmeier)
-
-- Added support to specify ambient light value (re: Barten transformation).
-  Affects: dcmimgle/apps/dconvlum.cc
-           dcmimgle/include/dibarlut.h
-           dcmimgle/include/didispfn.h
-           dcmimgle/libsrc/dibarlut.cc
-           dcmimgle/libsrc/didispfn.cc
-
-- Changed comments.
-  Affects: dcmimgle/include/dcmimage.h
-           dcmimgle/libsrc/dimoimg.cc
-
-- Added method to invert lookup table data (used for presentation state LUTs).
-  Affects: dcmimgle/include/dibaslut.h
-           dcmimgle/libsrc/dibaslut.cc
-
-**** Changes from 1999.03.02 (riesmeier)
-
-- Corrected bug: when determine minimum and maximum pixel value (external)
-  modality LUTs were ignored.
-  Affects: dcmimgle/include/dimoipxt.h
-  
-- Corrected bug in output routine of monochrome pixel data (wrong scaling when
-  Barten transformation and windowing are active).
-  Affects: dcmimgle/include/dimoopxt.h
-
-**** Changes from 1999.02.28 (riesmeier)
-
-- Corrected bug: the output bits for bitmaps shutters were inverted (this was
-  done due to an error in the used test images).
-  Affects: dcmimgle/include/dimoopxt.h
-
-- Corrected bug: the bit position for bitmap shutters was 1 instead of 0 (i.e.
-  the first bit was always been skipped and the all following bits were wrong).
-  Affects: dcmimgle/libsrc/diovpln.cc
-
-**** Changes from 1999.02.25 (riesmeier)
-
-- Initialize local variables to avoid compiler warnings (reported by gcc
-  2.7.2.1 on Linux).
-  Affects: dcmimgle/include/displint.h
 
 **** Changes from 1999.02.23 (riesmeier)
 
-- Added tool to export display curves to a text file.
-  Added:   dcmimgle/apps/dcmgsdf.cc
-  Affects: dcmimgle/apps/Makefile.in
-           dcmimgle/include/dibarlut.h
-           dcmimgle/include/didispfn.h
-           dcmimgle/libsrc/dibarlut.cc
-           dcmimgle/libsrc/didispfn.cc
-
-- Rebuilt Makefile dependencies.
-  Affects: dcmimgle/apps/Makefile.dep
-
 - Corrected some typos and formatting.
-  Affects: dcmimgle/apps/dconvlum.cc
-           dcmimage/apps/Makefile.in
+  Affects: dcmimage/apps/Makefile.in
 
 **** Changes from 1999.02.11 (riesmeier)
 
 - Rebuilt Makefile dependencies.
   Affects: dcmimage/apps/Makefile.dep
            dcmimage/libsrc/Makefile.dep
-           dcmimgle/libsrc/Makefile.dep
 
 - Added testing routine for new isOutputValueUnused() method.
   Affects: dcmimage/apps/dcm2pnm.cc
 
-- Added routine to check whether particular grayscale values are unused in
-  the output data.
-  Affects: dcmimgle/include/dcmimage.h
-           dcmimgle/include/dimoimg.h
-           dcmimgle/include/dimoopx.h
-           dcmimgle/include/dimoopxt.h
-           dcmimgle/libsrc/dimoopx.cc
-           
-- Removed unused parameter / member variable.
-  Affects: dcmimgle/include/dibarlut.h
-           dcmimgle/include/didispfn.h
-           dcmimgle/libsrc/dibarlut.cc
-           dcmimgle/libsrc/didispfn.cc
-           dcmimgle/libsrc/dimoopx.cc
-  
-- Removed unnecessary include statement.
-  Affects: dcmimgle/include/dibaslut.h
-
-- Removed inline declarations from several methods.
-  Affects: dcmimgle/include/diinpxt.h
-           dcmimgle/include/dimoipxt.h
-           dcmimgle/include/discalet.h
-
-- Corrected some typos and formatting.
-  Affects: dcmimgle/include/dimocpt.h
-           dcmimgle/include/dimoflt.h
-           dcmimgle/include/dimorot.h
-           dcmimgle/include/dimosct.h
-           dcmimgle/include/dipxrept.h
-           dcmimgle/include/ditranst.h
-
-- Renamed file to indicate the use of templates. Moved global functions for
-  cubic spline interpolation to static methods of a separate template class.
-  Removed: dcmimgle/include/displine.h
-  Added:   dcmimgle/include/displint.h
-  Affects: dcmimgle/libsrc/dibarlut.cc
-           dcmimgle/libsrc/didispfn.cc
-  
-- Removed two small memory leaks reported by dmalloc library.
-  Affects: dcmimgle/include/dimoopxt.h
-           dcmimgle/libsrc/didispfn.cc
-
-- Added mode ios::nocreate when opening file streams for reading to avoid
-  implicit creation of non-existing files.
-  Affects: dcmimgle/apps/dconvlum.cc
-           dcmimgle/libsrc/didispfn.cc
-  
-- Changed method to check suitability of display function for a certain
-  image.
-  Affects: dcmimgle/libsrc/dimoimg.cc
-
-**** Changes from 1999.02.09 (eichelberg)
-
-- Corrected const signatures of some ctor declarations
-  Affects: dcmimgle/include/dcmimage.h
-           dcmimgle/libsrc/dimoimg.cc
-           
-- Removed default parameters from template functions,
-  required for Sun CC 4.2
-  Affects: dcmimgle/include/displine.h
-
-- Removed explicit template parameters from template function calls,
-  required for Sun CC 4.2
-  Affects: dcmimgle/libsrc/dibarlut.cc
-           dcmimgle/libsrc/didispfn.cc
-
 **** Changes from 1999.02.08 (riesmeier)
-
-- Corrected some typos and formatting.
-  Affects: dcmimgle/apps/dconvlum.cc
-           dcmimgle/include/diovlay.h
-           dcmimgle/libsrc/dibarlut.cc
-           dcmimgle/libsrc/diovlay.cc
-  
-- Changed implementation of removeAllOverlays().
-  Affects: dcmimgle/include/dcmimage.h
-           dcmimgle/include/dimoimg.h
-           dcmimgle/libsrc/dimoimg.cc
-  
-- Added parameter 'idx' to some overlay methods to distinguish between
-  built-in and additional overlay planes.
-  Affects: dcmimgle/include/dcmimage.h
-           dcmimgle/include/diimage.h
-           
-- Added (debug) warning message when using invalid DISPLAY file names.
-  Affects: dcmimgle/libsrc/didispfn.cc
 
 - Rebuilt Makefile dependencies.
   Affects: dcmimage/apps/Makefile.dep
@@ -266,32 +109,11 @@
 - Moved output/checking functionality to new OFConsoleApplication class.
   Affects: dcmimage/apps/dcm2pnm.cc 
 
-**** Changes from 1999.02.05 (riesmeier)
-
-- Added conversion P-Value to DDL when display function is absent.
-  Corrected calculation of DDL value for bitmaps shutters (overlays).
-  Affects: dcmimgle/include/dimoopxt.h
-  
-- Added console application to convert VeriLUM LUT files to dcmtk DISPLAY
-  file used for Barten transformation.
-  Affects: dcmimgle/Makefile.in
-  Added:   dcmimgle/apps/Makefile.dep
-           dcmimgle/apps/Makefile.in
-           dcmimgle/apps/dconvlum.cc
-
-- Added optional parameter to method convertPValueToDDL to specify width
-  of output data (number of bits).
-  Affects: dcmimgle/include/dcmimage.h
-           dcmimgle/include/didispfn.h
-           dcmimgle/include/dimoimg.h
-           dcmimgle/libsrc/dimoimg.cc
-
 **** Changes from 1999.02.03 (riesmeier)
 
 - Rebuilt Makefile dependencies.
   Affects: dcmimage/apps/Makefile.dep
            dcmimage/libsrc/Makefile.dep
-           dcmimgle/libsrc/Makefile.dep
 
 - Moved global functions maxval() and determineRepresentation() to class
   DicomImageClass (as static methods).
@@ -303,84 +125,24 @@
            dcmimage/include/diyf2pxt.h
            dcmimage/include/diyp2pxt.h
            dcmimage/libsrc/dicoimg.cc
-           dcmimgle/include/diinpxt.h
-           dcmimgle/include/discalet.h
-           dcmimgle/include/diutils.h
-           dcmimgle/libsrc/diluptab.cc
-           dcmimgle/libsrc/dimoimg.cc
-           dcmimgle/libsrc/dimomod.cc
-           dcmimgle/libsrc/diutils.cc
   
 - Added new option to select a display file (for calibration).
   Affects: dcmimage/apps/dcm2pnm.cc
   
 - Added BEGIN_EXTERN_C and END_EXTERN_C to some C includes.
   Affects: dcmimage/include/dicoopx.h
-           dcmimgle/include/didocu.h
-           dcmimgle/include/diimage.h
-           dcmimgle/include/dimoopx.h
-           dcmimgle/include/diovpln.h
-           dcmimgle/include/diutils.h
-           dcmimgle/libsrc/dcmimage.cc
   
-- Added support for calibration according to Barten transformation (incl.
-  a DISPLAY file describing the monitor characteristic).
-  Affects: dcmimgle/include/dcmimage.h
-           dcmimgle/include/dimoimg.h
-           dcmimgle/include/dimoopxt.h
-           dcmimgle/include/diovlay.h
-           dcmimgle/include/diovpln.h
-           dcmimgle/libsrc/Makefile.in
-           dcmimgle/libsrc/dimoimg.cc
-           dcmimgle/libsrc/diovlay.cc
-           dcmimgle/libsrc/diovpln.cc
-  Added:   dcmimgle/include/dibarlut.h
-           dcmimgle/include/didispfn.h
-           dcmimgle/include/displine.h
-           dcmimgle/libsrc/dibarlut.cc
-           dcmimgle/libsrc/didispfn.cc
-
-- Removed some debug code.
-  Affects: dcmimgle/include/diflipt.h
-  
-- Added member variable and related methods to store number of bits used for
-  pixel data.
-  Affects: dcmimgle/include/diinpx.h
-           dcmimgle/include/dimomod.h
-           dcmimgle/include/dimopx.h
-           dcmimgle/include/diinpx.cc
-           dcmimgle/libsrc/dimomod.cc
-  
-- Added base class for look-up tables (moved main functionality of class
-  DiLookupTable to DiBaseLUT).
-  Affects: dcmimgle/include/diluptab.h
-           dcmimgle/libsrc/Makefile.in
-           dcmimgle/libsrc/diluptab.cc
-  Added:   dcmimgle/include/dibaslut.h
-           dcmimgle/libsrc/dibaslut.cc
-  
-- Added optimization LUT to transform pixel data.
-  Affects: dcmimgle/include/dimoipxt.h
-           dcmimgle/include/dimoopxt.h
-
-- Corrected some typos and formatting.
-  Affects: dcmimgle/libsrc/diovlimg.cc
-
 **** Changes from 1999.01.20 (riesmeier)
 
 - Rebuilt Makefile dependencies.
   Affects: dcmimage/apps/Makefile.dep
            dcmimage/libsrc/Makefile.dep
-           dcmimgle/libsrc/Makefile.dep
 
 - Added debug code to measure time of some routines.
   Affects: dcmimage/apps/dcm2pnm.cc
-           dcmimgle/include/diflipt.h
-           dcmimgle/include/dirotat.h
 
 - Changed default value for compatibility flag.
   Affects: dcmimage/apps/dcm2pnm.cc
-           dcmimgle/libsrc/dcmimage.cc
 
 - Replaced invocation of getCount() by member variable Count where possible.
   Affects: dcmimage/include/diargpxt.h
@@ -395,14 +157,6 @@
            dcmimage/include/diyf2pxt.h
            dcmimage/include/diyp2pxt.h
            dcmimage/libsrc/dicoopx.cc
-           dcmimgle/include/diinpxt.h
-           dcmimgle/include/dimoipxt.h
-           dcmimgle/include/dimoopx.h
-           dcmimgle/include/dimoopxt.h
-           dcmimgle/include/dimopxt.h
-           dcmimgle/include/dipixel.h
-           dcmimgle/libsrc/dimoopx.cc
-           dcmimgle/libsrc/dimopx.cc
 
 - Corrected some typos and formatting.
   Affects: dcmimage/include/dicocpt.h
@@ -414,87 +168,6 @@
   Affects: dcmimage/include/dicoimg.h
            dcmimage/include/dicoopxt.h
            dcmimage/libsrc/dicoimg.cc
-           dcmimgle/include/dcmimage.h
-           dcmimgle/include/diimage.h
-           dcmimgle/include/dimo1img.h
-           dcmimgle/include/dimo2img.h
-           dcmimgle/include/dimoimg.h
-           dcmimgle/include/dimoopxt.h
-           dcmimgle/libsrc/dimo1img.cc
-           dcmimgle/libsrc/dimo2img.cc
-           dcmimgle/libsrc/dimoimg.cc
-
-- Added new overlay plane mode for bitmap shutters.
-  Affects: dcmimgle/libsrc/diovpln.cc
-           dcmimgle/include/dimoopxt.h
-           dcmimgle/include/diutils.h
-
-- Added routine to calculate absolute range of pixel data.
-  Affects: dcmimgle/include/diinpx.h
-
-- Added optimization to modality and VOI transformation (using additional
-  LUTs).
-  Affects: dcmimgle/include/dimoipxt.h
-           dcmimgle/include/dimoopxt.h
-
-**** Changes from 1999.01.11 (riesmeier)
-
-- Added parameter to method 'getMinMaxValues()' to return absolute minimum
-  and maximum values ('possible') in addition to actually 'used' pixel
-  values.
-  Affects: dcmimgle/include/dcmimage.h
-           dcmimgle/include/dimoimg.h
-           dcmimgle/libsrc/dimoimg.cc
-
-- Removed method 'getMinMaxValues()' in class 'DicomImage'.
-  Affects: dcmimgle/include/diimage.h
-
-- Corrected bug in determing 'AbsMaximum' (removed '+ 1').
-  Affects: dcmimgle/include/diinpxt.h
-
-- Corrected some typos and formatting.
-  Affects: dcmimgle/include/dimopx.h
-           dcmimgle/include/dimopxt.h
-
-**** Changes from 1998.12.23 (riesmeier)
-
-- Changed order of parameters for addOverlay() and getOverlayData().
-  Affects: dcmimgle/include/dcmimage.h
-           dcmimgle/include/dimoimg.h
-           dcmimgle/include/diovlay.h
-           dcmimgle/include/diovpln.h
-           dcmimgle/libsrc/dimoimg.cc
-           dcmimgle/libsrc/diovlay.cc
-           dcmimgle/libsrc/diovpln.cc
-
-- Modified (added/removed) comments. Corrected bug concerning additional
-  overlay planes.
-  Affects: dcmimgle/include/diovlay.h
-           dcmimgle/libsrc/diovlay.cc
-
-- Introduced new overlay mode item EMO_Graphic (= EMO_Replace).
-  Affects: dcmimgle/include/diutils.h
-           dcmimgle/libsrc/diovpln.cc
-
-- Corrected bug concerning flipping and rotating overlay planes (same
-  image object).
-  Affects: dcmimgle/libsrc/diovpln.cc
-
-- Corrected some typos and formatting.
-  Affects: dcmimgle/include/diimage.h
-           dcmimgle/include/dimoimg.h
-
-- Changed behaviour of getLabel/Description/Explanation() methods: return
-  NULL if string empty, no empty string "".
-  Affects: dcmimgle/include/diluptab.h
-           dcmimgle/include/diovpln.h
-
-- Removed unused parameter (BitsPerSample).
-  Affects: dcmimgle/include/dimoopxt.h
-           dcmimgle/libsrc/dimoimg.cc
-
-- Changed parameter type (long to int) to avoid warning reported by MSVC5.
-  Affects: dcmimgle/include/
 
 **** Changes from 1998.12.22 (riesmeier)
 
@@ -507,178 +180,27 @@
   question for reducing depth.
   Affects: dcmimage/include/dicoopxt.h
 
-- Corrected some typos and formatting.
-  Affects: dcmimgle/libsrc/dcmimage.cc
-           dcmimgle/libsrc/dimopx.cc
-           dcmimgle/include/dimopxt.h
-
-- Changed parameter type.
-  Affects: dcmimgle/include/diluptab.h
-           dcmimgle/libsrc/diluptab.cc
-
-- Added method getAbsMaxRange.
-  Affects: dcmimgle/include/diluptab.h
-
-- Check descriptor value 'first input value mapped' for presentation LUTs
-  (shall always be 0).
-  Affects: dcmimgle/libsrc/dimoimg.cc
-
-- Added support for 'potentially' signed input ranges for different kinds
-  of grayscale transformations (according to supplement 33 from Cor Loef).
-  Affects: dcmimgle/libsrc/dimoimg.cc
-
-- Changed behaviour of getOverlayData() method (new parameter to choose
-  overlay plane group: dataset, additional, overlap).
-  Affects: dcmimgle/libsrc/dimoimg.cc
-                                                     
-- Changed calculation of AbsMinimum/Maximum.
-  Removed member variable and method for isPotentiallySigned.
-  Affects: dcmimgle/include/dimomod.h
-           dcmimgle/libsrc/dimomod.cc
-
-- Added method to check whether plane is visible, to get plane mode and to
-  remove all planes. Set 'value' used for getOverlay/PlaneData().
-  Changed meaning of return values (differentiate between different value
-  for 'true').
-  Affects: dcmimgle/include/dcmimage.h
-           dcmimgle/include/diovlay.h
-           dcmimgle/include/diovpln.h
-           dcmimgle/libsrc/diovlay.cc
-  
-- Removed variable declaration to avoid compiler warnings (reported by
-  MSVC5). Changed initialization of member variable 'DefaultMode'.
-  Affects: dcmimgle/libsrc/diovpln.cc
-
-- Added index parameter to overlay methods (choose dataset or additional
-  planes).
-  Affects: dcmimgle/include/dcmimage.h
-
-- Changed parameter declaration to avoid compiler warnings (hide parameter
-  name).
-  Affects: dcmimgle/include/diimage.h
-
-- Added implementation of methods to return member variables AbsMinimum/
-  Maximum.
-  Affects: dcmimgle/include/diinpx.h
-           dcmimgle/include/dimopx.h
-
-- Added calculation of member variables AbsMinimum/AbsMaximum.
-  Replaced method copyMem by for-loop copying each item.
-  Removed some '#ifdef DEBUG'.
-  Affects: dcmimgle/include/diinpxt.h
-
-- Added new parameters to method getOverlayData().
-  Affects: dcmimgle/include/dimoimg.h
-
-- Replaced method copyMem by for-loop copying each item.
-  Renamed some variables
-  Affects: dcmimgle/include/dimoipxt.h
-
-- Improved implementation of presentation LUT application (and other gray
-  scale transformations). Tested with ECR test images from David Clunie.
-  Affects: dcmimgle/include/dimoopxt.h
-
 **** Changes from 1998.12.16 (riesmeier)
 
 - Rebuilt Makefile dependencies.
   Affects: dcmimage/apps/Makefile.dep
            dcmimage/libsrc/Makefile.dep
-           dcmimgle/libsrc/Makefile.dep
-
-- Added explanation string to LUT class (retrieved from dataset).
-  Affects: dcmimage/libsrc/diargimg.cc
-           dcmimage/libsrc/dipalimg.cc
-           dcmimgle/include/dcmimage.h
-           dcmimgle/include/diluptab.h
-           dcmimgle/include/dimo2img.h
-           dcmimgle/include/dimoimg.h
-           dcmimgle/include/dimomod.h
-           dcmimgle/include/dimopx.h
-           dcmimgle/libsrc/diluptab.cc
-           dcmimgle/libsrc/dimo2img.cc
-           dcmimgle/libsrc/dimoimg.cc
-           dcmimgle/libsrc/dimomod.cc
-
-- Added explanation string for VOI transformations.
-  Affects: dcmimgle/include/dcmimage.h
-           dcmimgle/include/dimoimg.h
-           dcmimgle/libsrc/dimoimg.cc
-
-- Added method to export overlay planes (create 8-bit bitmap).
-  Affects: dcmimgle/include/dcmimage.h
-           dcmimgle/include/dimoimg.h
-           dcmimgle/include/diovlay.h
-           dcmimgle/include/diovpln.h
-           dcmimgle/libsrc/dimoimg.cc
-           dcmimgle/libsrc/diovlay.cc
-           dcmimgle/libsrc/diovpln.cc
 
 - Added (debug) code to test new explanation strings and export of overlay
   planes.
   Affects: dcmimage/apps/dcm2pnm.cc
-
-- Implemented combined clipping and scaling for pixel replication and
-  suppression.
-  Affects: dcmimgle/include/discalet.h
-           dcmimgle/libsrc/dcmimage.cc
-
-- Added methods to use getOFString from class DcmElement (incl. multi value
-  fields).
-  Affects: dcmimgle/include/didocu.h
-           dcmimgle/libsrc/didocu.cc
-           
-- Renamed 'setNoVoiLutTransformation' method ('Voi' instead of 'VOI').
-  Affects: dcmimgle/include/dcmimage.h
-           dcmimgle/include/dimoimg.h
-           dcmimgle/libsrc/dimoimg.cc
-
-- Implemented flipping and rotation of overlay planes.
-  Affects: dcmimgle/include/diovlay.h
-           dcmimgle/include/diovpln.h
-           dcmimgle/libsrc/diovlay.cc
-           dcmimgle/libsrc/diovpln.cc
-
-- Removed several methods used for monochrome images only in base class
-  'DiImage'. Introduced mechanism to use the methods directly.
-  Affects: dcmimgle/include/dcmimage.h
-           dcmimgle/include/diimage.h
-           dcmimgle/include/dimoimg.h
-
-- Added additional case to copy pixels.
-  Affects: dcmimgle/include/diflipt.h
-           dcmimgle/include/dirotat.h
-
-- Added methods to determine absolute minimum and maximum value for given
-  value representation.
-  Affects: dcmimgle/include/diinpx.h
-           dcmimgle/include/diinpxt.h
-           dcmimgle/include/dipxrept.h
-
-- Removed methods getMinimum/Maximum().
-  Affects: dcmimgle/include/dipxrept.h
-
-- Added some preparation to enhance interpolated scaling (clipping and
-  scaling) in the future.
-  Affects: dcmimgle/include/discalet.h
-
-- Removed const declaration (as long as interpolated scaling isn't completed).
-  Affects: dcmimgle/include/ditranst.h
 
 **** Changes from 1998.12.14 (riesmeier)
 
 - Rebuilt Makefile dependencies.
   Affects: dcmimage/apps/Makefile.dep
            dcmimage/libsrc/Makefile.dep
-           dcmimgle/libsrc/Makefile.dep
 
 - Changed behaviour of debug and verbose mode.
   Affects: dcmimage/apps/dcm2pnm.cc
 
 - Added support for presentation shapes.
   Affects: dcmimage/apps/dcm2pnm.cc
-           dcmimgle/libsrc/dimo1img.cc
-           dcmimgle/libsrc/dimo2img.cc
-           dcmimgle/libsrc/dimoimg.cc
 
 - Added support for signed values as second entry in look-up tables
   (= first value mapped).
@@ -686,57 +208,11 @@
            dcmimage/include/dipalpxt.h
            dcmimage/libsrc/diargimg.cc
            dcmimage/libsrc/dipalimg.cc
-           dcmimgle/include/diluptab.h
-           dcmimgle/include/dimoipxt.h
-           dcmimgle/include/dimoopxt.h
-           dcmimgle/libsrc/diluptab.cc
 
 - Added implementation of method to create rotated color images.
   Affects: dcmimage/libsrc/dicoimg.cc
 
-- Added methods to add and remove additional overlay planes (still untested).
-  Affects: dcmimgle/include/dcmimage.h
-           dcmimgle/include/diimage.h
-           dcmimgle/include/dimoimg.h
-           dcmimgle/include/dimoopxt.h
-           dcmimgle/include/diovlay.h
-           dcmimgle/libsrc/dimoimg.cc
-           dcmimgle/libsrc/diovlay.cc
-           dcmimgle/libsrc/diovlimg.cc
-           dcmimgle/libsrc/diovpln.cc
-
-- Added methods to support overlay labels and descriptions.
-  Affects: dcmimgle/include/dcmimage.h
-           dcmimgle/include/diovlay.h
-           dcmimgle/include/diovpln.h
-           dcmimgle/libsrc/diovpln.cc
-
-- Added (simplified) methods to return values of a given DcmElement object.
-  Affects: dcmimgle/include/didocu.h
-           dcmimgle/libsrc/didocu.cc
-
-- Added support for correct scaling of input/output values for grayscale
-  transformations.
-  Affects: dcmimgle/include/dimomod.h
-           dcmimgle/include/dimoopxt.h
-           dcmimgle/libsrc/dimomod.cc
-
-- Added (missing) implementation of methods to rotate images/frames without
-  creating a new DicomImage.
-  Affects: dcmimgle/include/dirotat.h
-  
-- Added first implementation of method to export overlay plane bitmaps.
-  Affects: dcmimgle/include/dcmimage.h
-           dcmimgle/libsrc/dcmimage.cc
-
 **** Changes from 1998.11.30 (riesmeier)
-
-- Added const type qualifier to some parameters to avoid errors with MSVC5
-  (couldn't create instance of abstract class).
-  Affects: dcmimgle/include/diimage.h
-
-- Removed wrong 'inline' from method declaration (reported by MSVC5).
-  Affects: dcmimgle/include/diovlay.h
 
 - Inserted newlines in the description of command line arguments to avoid
   ugly line breaks.
@@ -755,49 +231,6 @@
            modules/modules
   Added:   dcmimage/include/diregist.h
            dcmimage/libsrc/diregist.cc
-           dcmimgle/include/dcmimage.h
-           dcmimgle/include/didocu.h
-           dcmimgle/include/diimage.h
-           dcmimgle/include/diinpx.h
-           dcmimgle/include/diluptab.h
-           dcmimgle/include/dimo1img.h
-           dcmimgle/include/dimo2img.h
-           dcmimgle/include/dimoimg.h
-           dcmimgle/include/dimoipxt.h
-           dcmimgle/include/dimomod.h
-           dcmimgle/include/dimoopx.h
-           dcmimgle/include/dimoopxt.h
-           dcmimgle/include/dimopx.h
-           dcmimgle/include/dimopxt.h
-           dcmimgle/include/dimosct.h
-           dcmimgle/include/diobjcou.h
-           dcmimgle/include/diovlay.h
-           dcmimgle/include/diovlimg.h
-           dcmimgle/include/diovpln.h
-           dcmimgle/include/dipxrept.h
-           dcmimgle/include/discalet.h
-           dcmimgle/include/ditranst.h
-           dcmimgle/include/diutils.h
-           dcmimgle/include/diregbas.h
-           dcmimgle/include/Makefile.in
-           dcmimgle/libsrc/Makefile.in
-           dcmimgle/libsrc/Makefile.dep
-           dcmimgle/libsrc/dcmimage.cc
-           dcmimgle/libsrc/didocu.cc
-           dcmimgle/libsrc/diimage.cc
-           dcmimgle/libsrc/diinpx.cc
-           dcmimgle/libsrc/diluptab.cc
-           dcmimgle/libsrc/dimo1img.cc
-           dcmimgle/libsrc/dimo2img.cc
-           dcmimgle/libsrc/dimoimg.cc
-           dcmimgle/libsrc/dimomod.cc
-           dcmimgle/libsrc/dimoopx.cc
-           dcmimgle/libsrc/dimopx.cc
-           dcmimgle/libsrc/diovlay.cc
-           dcmimgle/libsrc/diovlimg.cc
-           dcmimgle/libsrc/diovpln.cc
-           dcmimgle/libsrc/diutils.cc
-           dcmimgle/Makefile.in
   Removed: dcmimage/include/dcmimage.h
            dcmimage/include/diclipt.h
            dcmimage/include/dicoclt.h
@@ -805,9 +238,9 @@
            dcmimage/include/diimage.h
            dcmimage/include/diinpx.h
            dcmimage/include/diluptab.h
-           dcmimgle/include/dimo1img.h
-           dcmimgle/include/dimo2img.h
-           dcmimgle/include/dimoimg.h
+           dcmimage/include/dimo1img.h
+           dcmimage/include/dimo2img.h
+           dcmimage/include/dimoimg.h
            dcmimage/include/dimoipxt.h
            dcmimage/include/dimomod.h
            dcmimage/include/dimoopx.h
@@ -839,20 +272,14 @@
            dcmimage/libsrc/diovpln.cc
            dcmimage/libsrc/diutils.cc
            
-- Added module dcmimgle to CVS depot.
-  Affects: modules/modules
-
 - Added copyright message to all source files. Started with documentation
   in Doc++ notation.
   Affects: dcmimage/apps/dcm2pnm.cc
            dcmimage/include/*.h
            dcmimage/libsrc/*.cc
-           dcmimgle/include/*.h
-           dcmimgle/libsrc/*.cc
            
 - Added 'make html' to automatically create a HTML documentation using Doc++.
   Affects: dcmimage/Makefile.in
-           dcmimgle/Makefile.in
            
 - Modified tool dcm2pnm to use new command line class. New dcmimage methods
   supported (flipping, rotating etc.).
@@ -864,45 +291,16 @@
   Affects: dcmimage/include/dicoimg.h
            dcmimage/include/dicoflt.h
            dcmimage/include/dicorot.h
-           dcmimgle/include/dcmimage.h
-           dcmimgle/include/diflipt.h
-           dcmimgle/include/diimage.h
-           dcmimgle/include/dimoflt.h
-           dcmimgle/include/dimo1img.h
-           dcmimgle/include/dimo2img.h
-           dcmimgle/include/dimoimg.h
-           dcmimgle/include/dimorot.h
-           dcmimgle/include/diovlay.h
-           dcmimgle/include/diovpln.h
-           dcmimgle/include/dirotat.h           
-           dcmimgle/libsrc/dcmimage.cc
-           dcmimgle/libsrc/diimage.cc
-           dcmimgle/libsrc/dimo1img.cc
-           dcmimgle/libsrc/dimo2img.cc
-           dcmimgle/libsrc/dimoimg.cc
-           dcmimgle/libsrc/diovlay.cc
-           dcmimgle/libsrc/diovpln.cc
 
 - Replaced delete by delete[] for array types.
   Affects: dcmimage/include/dicoopxt.h
            dcmimage/include/dicopxt.h
-           dcmimgle/include/dimoopxt.h
-           dcmimgle/include/dimopxt.h
-           dcmimgle/include/diovlay.h
-           dcmimgle/libsrc/diovlay.cc
   
 - Added method to directly create java AWT bitmaps.
   Affects: dcmimage/include/dicopx.h
-           dcmimgle/include/dcmimage.h
-           dcmimgle/include/diimage.h
-           dcmimgle/include/dimoimg.h
-           dcmimgle/libsrc/dcmimage.cc
-           dcmimgle/libsrc/diimage.cc
-           dcmimgle/libsrc/dimoimg.cc
 
 - Added method to give direct (non-const) access to internal data buffer.
   Affects: dcmimage/include/dicopxt.h
-           dcmimgle/include/dimopxt.h
 
 - Introduced global debug level for dcmimage module to control error output.
   Affects: dcmimage/apps/dcm2pnm.cc
@@ -911,17 +309,6 @@
            dcmimage/libsrc/diargimg.cc
            dcmimage/libsrc/dicopx.cc
            dcmimage/libsrc/dipalimg.cc
-           dcmimgle/include/diinpxt.h
-           dcmimgle/include/dimoopxt.h
-           dcmimgle/include/diutils.h
-           dcmimgle/libsrc/dcmimage.cc
-           dcmimgle/libsrc/diimage.cc
-           dcmimgle/libsrc/dimoimg.cc
-           dcmimgle/libsrc/dimomod.cc
-           dcmimgle/libsrc/diovlay.cc
-           dcmimgle/libsrc/diovlimg.cc
-           dcmimgle/libsrc/diovpln.cc
-           dcmimgle/libsrc/diutils.cc
 
 - Renamed variable 'Status' to 'ImageStatus' because of possible conflicts
   with X windows systems.
@@ -933,106 +320,20 @@
            dcmimage/libsrc/diybrimg.cc
            dcmimage/libsrc/diyf2img.cc
            dcmimage/libsrc/diyp2img.cc
-           dcmimgle/include/diimage.h
-           dcmimgle/libsrc/diimage.cc
-           dcmimgle/libsrc/dimoimg.cc
-           dcmimgle/libsrc/diovlimg.cc
                       
 - Added method to detach pixel data if it is no longer needed.
   Affects: dcmimage/libsrc/dicoimg.cc
-           dcmimgle/include/diimage.h
-           dcmimgle/include/diovlay.h
-           dcmimgle/include/diovpln.h
-           dcmimgle/libsrc/diimage.cc
-           dcmimgle/libsrc/diovlay.cc
-
-- Moved type definitions to diutils.h.
-  Affects: dcmimgle/include/dcmimage.h  
-           dcmimgle/include/diutils.h
-
-- Added constructors to use external modality transformations.
-  Affects: dcmimgle/include/dcmimage.h
-           dcmimgle/include/diluptab.h
-           dcmimgle/include/dimoimg.h
-           dcmimgle/include/dimomod.h
-           dcmimgle/libsrc/dcmimage.cc
-           dcmimgle/libsrc/diluptab.cc
-           dcmimgle/libsrc/dimoimg.cc
-           dcmimgle/libsrc/dimomod.cc
-           
-- Added methods to support presentation LUTs and shapes.
-  Affects: dcmimgle/include/dcmimage.h
-           dcmimgle/include/diimage.h
-           dcmimgle/include/diluptab.h
-           dcmimgle/include/dimoimg.h
-           dcmimgle/include/diutils.h
-           dcmimgle/libsrc/dcmimage.cc
-           dcmimgle/libsrc/diluptab.cc
-           dcmimgle/libsrc/dimoimg.cc
-           
-- Added methods to convert module defined enum types to strings.
-  Affects: dcmimgle/include/dcmimage.h
-           dcmimgle/libsrc/dcmimage.cc
-
-- Added static methods to return the value of a given element.
-  Affects: dcmimgle/include/didocu.h
-           dcmimgle/libsrc/didocu.cc
-           
-- Added support of frame start and count for future use (will be explained
-  later if it is fully implemented).
-  Affects: dcmimgle/include/dcmimage.h
-           dcmimgle/include/didocu.h
-           dcmimgle/libsrc/dcmimage.cc
-           dcmimgle/libsrc/didocu.cc
-       
-- Added support for new bit manipulation class.
-  Affects: dcmimgle/include/diinpxt.h
-           dcmimgle/include/dimoipxt.h
-           dcmimgle/include/dimopxt.h
-           dcmimgle/include/ditranst.h
-
-- Added support of object counter class.
-  Affects: dcmimgle/include/diluptab.h
 
 - Introduced new method and corresponding classes to create a copy of a
   dcmimage object (optional parameters: frame start and count).
-  Affects: dcmimgle/include/dcmimage.h
-           dcmimgle/libsrc/dcmimage.cc
   Added:   dcmimage/include/dicocpt.h
-           dcmimgle/include/dimocpt.h
-
-- Corrected bug in modality LUT transformation method.
-  Affects: dcmimgle/include/dimoipxt.h
-
-- Added new cases to optimize rescaling.
-  Affects: dcmimgle/include/dimoipxt.h
-
-- Changed behaviour: now window width of 0 is valid and negative width
-  is invalid.
-  Affects: dcmimgle/include/dcmimage.h
-           dcmimgle/include/dimoopxt.h
-           dcmimgle/libsrc/dimoimg.cc
-
-- Corrected bug in VOI LUT transformation method.
-  Affects: dcmimgle/include/dimoopxt.h
 
 - Introduced new pixel base class.
   Affects: dcmimage/include/dicopx.h
            dcmimage/libsrc/dicopx.cc
-           dcmimgle/include/dimopx.h
-           dcmimgle/libsrc/dimopx.cc
-  Added:   dcmimgle/include/dipixel.h  
 
 - Combined clipping and scaling methods.
   Affects: dcmimage/include/dicosct.h
-           dcmimgle/include/dimosct.h
-           dcmimgle/include/discalet.h
-           dcmimgle/libsrc/dcmimage.cc
-
-- Introduced configuration flags to adjust behaviour in different cases.
-  Affects: dcmimgle/include/dcmimage.h
-           dcmimgle/include/diutils.h
-           dcmimgle/libsrc/diutils.cc
 
 **** Changes from 1998.07.24 (eichelberg)
 
