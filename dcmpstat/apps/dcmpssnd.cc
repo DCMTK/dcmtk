@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Network Send Component (Store SCU)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-03 11:50:45 $
+ *  Update Date:      $Date: 2000-02-29 12:13:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpssnd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -402,7 +402,6 @@ int main(int argc, char *argv[])
     {
       dcmEnableUnknownVRGeneration = OFFalse;
       dcmEnableUnlimitedTextVRGeneration = OFFalse;
-      dcmEnableVirtualStringVRGeneration = OFFalse;
     }
     
     if (opt_verbose)
@@ -577,7 +576,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpssnd.cc,v $
- * Revision 1.10  2000-02-03 11:50:45  meichel
+ * Revision 1.11  2000-02-29 12:13:44  meichel
+ * Removed support for VS value representation. This was proposed in CP 101
+ *   but never became part of the standard.
+ *
+ * Revision 1.10  2000/02/03 11:50:45  meichel
  * Moved UID related functions from dcmnet (diutil.h) to dcmdata (dcuid.h)
  *   where they belong. Renamed access functions to dcmSOPClassUIDToModality
  *   and dcmGuessModalityBytes.
