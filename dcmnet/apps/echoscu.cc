@@ -35,9 +35,9 @@
 **		Kuratorium OFFIS e.V., Oldenburg, Germany
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-09-24 16:21:48 $
+** Update Date:		$Date: 1996-09-27 08:24:28 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/echoscu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -45,6 +45,7 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
+BEGIN_EXTERN_C
 #include <stdio.h>
 #include <string.h>
 #ifdef HAVE_STDLIB_H
@@ -53,6 +54,7 @@
 #ifdef HAVE_STDARG_H
 #include <stdarg.h>
 #endif
+END_EXTERN_C
 
 #include "dimse.h"
 #include "diutil.h"
@@ -430,7 +432,10 @@ cecho(T_ASC_Association * assoc)
 /*
 ** CVS Log
 ** $Log: echoscu.cc,v $
-** Revision 1.4  1996-09-24 16:21:48  hewett
+** Revision 1.5  1996-09-27 08:24:28  hewett
+** System header files now enclosed with BEGIN_EXTERN_C/END_EXTERN_C
+**
+** Revision 1.4  1996/09/24 16:21:48  hewett
 ** Added preliminary support for the Macintosh environment (GUSI library).
 **
 ** Revision 1.3  1996/09/03 11:39:01  hewett

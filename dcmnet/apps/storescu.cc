@@ -36,9 +36,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-09-24 16:21:17 $
+** Update Date:		$Date: 1996-09-27 08:24:30 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -47,6 +47,7 @@
 
 #include "osconfig.h" /* make sure OS specific configuration is included first */
 
+BEGIN_EXTERN_C
 #include <stdio.h>
 #include <string.h>
 #ifdef HAVE_STDLIB_H
@@ -59,6 +60,7 @@
 #include <sys/file.h>
 #endif
 #include <errno.h>
+END_EXTERN_C
 
 #ifdef HAVE_GUSI_H
 #include <GUSI.h>
@@ -559,7 +561,10 @@ cstore(T_ASC_Association * assoc, const char *fname)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.5  1996-09-24 16:21:17  hewett
+** Revision 1.6  1996-09-27 08:24:30  hewett
+** System header files now enclosed with BEGIN_EXTERN_C/END_EXTERN_C
+**
+** Revision 1.5  1996/09/24 16:21:17  hewett
 ** Now uses global table of Storage SOP Class UIDs (from dcuid.h).
 ** Added preliminary support for the Macintosh environment (GUSI library).
 **

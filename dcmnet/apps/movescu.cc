@@ -36,9 +36,9 @@
 ** Created:	03/96
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-09-24 16:21:50 $
+** Update Date:		$Date: 1996-09-27 08:24:29 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -47,6 +47,7 @@
 
 #include "osconfig.h" /* make sure OS specific configuration is included first */
 
+BEGIN_EXTERN_C
 #include <stdio.h>
 #include <string.h>
 #ifdef HAVE_STDLIB_H
@@ -56,6 +57,7 @@
 #include <stdarg.h>
 #endif
 #include <errno.h>
+END_EXTERN_C
 
 #ifdef HAVE_GUSI_H
 #include <GUSI.h>
