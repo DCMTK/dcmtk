@@ -22,9 +22,9 @@
  *  Purpose: DicomInputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-07-23 13:54:38 $
+ *  Update Date:      $Date: 1999-09-17 12:21:57 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diinpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +38,7 @@
 #include "osconfig.h"
 #include "dctypes.h"
 #include "dcpixel.h"
+
 #include "ofbmanip.h"
 
 #include "diinpx.h"
@@ -129,6 +130,15 @@ class DiInputPixelTemplate
 
  public:
 
+    /** constructor
+     *
+     ** @param  pixel   pointer to DICOM dataset element containing the pixel data
+     *  @param  alloc   number of bits allocated for each pixel
+     *  @param  stored  number of bits stored for each pixel
+     *  @param  high    position of bigh bit within bits allocated
+     *  @param  start   start position of pixel data to be processed (not yet used)
+     *  @param  count   number of pixels to be processed (not yet used)
+     */
     DiInputPixelTemplate(/*const*/ DcmPixelData *pixel,
                          const Uint16 alloc,
                          const Uint16 stored,
@@ -152,53 +162,112 @@ class DiInputPixelTemplate
             convert(pixel, alloc, stored, high, start, count);
     }
 
+    /** destructor
+     */
     virtual ~DiInputPixelTemplate()
     {
         delete[] Data;
     }
 
+    /** determine minimum and maximum pixel value
+     *
+     ** @return status, true if successful, false otherwise
+     */
     int determineMinMax()
     {
         if (Data != NULL)
         {
             register T2 *p = Data;
-            register T2 value = *p;
             register unsigned long i;
-            MinValue = value;
-            MaxValue = value;
-            for (i = 1; i < Count; i++)
+            const unsigned long ocnt = (unsigned long)getAbsMaxRange();
+            Uint8 *lut = NULL;
+            if ((sizeof(T2) <= 2) && (Count > 3 * ocnt))               // optimization criteria
             {
-                value = *(++p);
-                if (value < MinValue)
-                    MinValue = value;
-                if (value > MaxValue)
-                    MaxValue = value;
+                lut = new Uint8[ocnt];
+                if (lut != NULL)
+                {
+                    OFBitmanipTemplate<Uint8>::zeroMem(lut, ocnt);
+                    register Uint8 *q = lut - (T2)getAbsMinimum();
+                    for (i = Count; i != 0; i--)                        // fill lookup table
+                        *(q + *(p++)) = 1;
+                    q = lut;
+                    for (i = 0; i < ocnt; i++)                         // search for minimum
+                    {
+                        if (*(q++) != 0)
+                        {
+                            MinValue = (T2)((double)i + getAbsMinimum());
+                            break;
+                        }
+                    }
+                    q = lut + ocnt;
+                    for (i = ocnt; i != 0; i--)                         // search for maximum
+                    {
+                        if (*(--q) != 0)
+                        {
+                            MaxValue = (T2)((double)(i - 1) + getAbsMinimum());
+                            break;
+                        }
+                    }
+                }
             }
+            if (lut == NULL)                                           // use conventional method
+            {
+                register T2 value = *p;
+                MinValue = value;
+                MaxValue = value;
+                for (i = Count; i > 1; i--)
+                {
+                    value = *(++p);
+                    if (value < MinValue)
+                        MinValue = value;
+                    if (value > MaxValue)
+                        MaxValue = value;
+                }
+            }
+            delete[] lut;
             return 1;
         }
         return 0;
     }
 
+    /** get pixel representation
+     *
+     ** @return pixel representation
+     */
     inline EP_Representation getRepresentation() const
     {
         return DiPixelRepresentationTemplate<T2>::getRepresentation();
     }
 
+    /** get pointer to input pixel data
+     *
+     ** @return pointer to input pixel data
+     */
     inline void *getData() const
     {
         return (void *)Data;
     }
     
+    /** remove reference to (internally handled) pixel data
+     */
     inline void removeDataReference()
     {
         Data = NULL;
     }
 
+    /** get minimum pixel value
+     *
+     ** @return minimum pixel value
+     */
     inline double getMinValue() const
     {
         return (double)MinValue;
     }
 
+    /** get maximum pixel value
+     *
+     ** @return maximum pixel value
+     */
     inline double getMaxValue() const
     {
         return (double)MaxValue;
@@ -207,10 +276,19 @@ class DiInputPixelTemplate
 
  private:
 
-    void convert(/*const*/ DcmPixelData *PixelData,
-                 const Uint16 BitsAllocated,
-                 const Uint16 BitsStored,
-                 const Uint16 HighBit,
+    /** convert pixel data from DICOM dataset to input representation
+     *
+     ** @param  pixelData      pointer to DICOM dataset element containing the pixel data
+     *  @param  bitsAllocated  number of bits allocated for each pixel
+     *  @param  bitsStored     number of bits stored for each pixel
+     *  @param  highBit        position of bigh bit within bits allocated
+     *  @param  start          start position of pixel data to be processed (not yet used)
+     *  @param  count          number of pixels to be processed (not yet used)
+     */
+    void convert(/*const*/ DcmPixelData *pixelData,
+                 const Uint16 bitsAllocated,
+                 const Uint16 bitsStored,
+                 const Uint16 highBit,
 #ifdef DEBUG
                  const unsigned long start,
                  const unsigned long count)
@@ -222,9 +300,9 @@ class DiInputPixelTemplate
         const Uint16 bitsof_T1 = bitsof(T1);
         const Uint16 bitsof_T2 = bitsof(T2);
         T1 *pixel;
-        const Uint32 length_Bytes = getPixelData(PixelData, pixel);
+        const Uint32 length_Bytes = getPixelData(pixelData, pixel);
         const Uint32 length_T1 = length_Bytes / sizeof(T1);
-        Count = ((length_Bytes * 8) + BitsAllocated - 1) / BitsAllocated;
+        Count = ((length_Bytes * 8) + bitsAllocated - 1) / bitsAllocated;
         register unsigned long i;
 #ifdef DEBUG
         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
@@ -235,76 +313,76 @@ class DiInputPixelTemplate
         {
 #ifdef DEBUG
             if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-                cerr << BitsAllocated << " " << BitsStored << " " << HighBit << " " << isSigned() << endl;
+                cerr << bitsAllocated << " " << bitsStored << " " << highBit << " " << isSigned() << endl;
 #endif
             register const T1 *p = pixel;
             register T2 *q = Data;
-            if (bitsof_T1 == BitsAllocated)                                             // case 1: equal 8/16 bit
+            if (bitsof_T1 == bitsAllocated)                                             // case 1: equal 8/16 bit
             {
-                if (BitsStored == BitsAllocated)
+                if (bitsStored == bitsAllocated)
                 {
                     if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-                        cerr << "convert PixelData: case 1a (single copy)" << endl;
-                    for (i = 0; i < Count; i++)
+                        cerr << "convert pixelData: case 1a (single copy)" << endl;
+                    for (i = Count; i != 0; i--)
                         *(q++) = (T2)*(p++);
                 }
-                else /* BitsStored < BitsAllocated */
+                else /* bitsStored < bitsAllocated */
                 {
                     register T1 mask = 0;
-                    for (i = 0; i < BitsStored; i++)
+                    for (i = 0; i < bitsStored; i++)
                         mask |= (T1)(1 << i);
-                    const T2 sign = 1 << (BitsStored - 1);
+                    const T2 sign = 1 << (bitsStored - 1);
                     T2 smask = 0;
-                    for (i = BitsStored; i < bitsof_T2; i++)
+                    for (i = bitsStored; i < bitsof_T2; i++)
                         smask |= (T2)(1 << i);
-                    const Uint16 shift = HighBit + 1 - BitsStored;
+                    const Uint16 shift = highBit + 1 - bitsStored;
                     if (shift == 0)
                     {
                         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-                            cerr << "convert PixelData: case 1b (mask & sign)" << endl;
-                        for (i = 0; i < length_T1; i++)
+                            cerr << "convert pixelData: case 1b (mask & sign)" << endl;
+                        for (i = length_T1; i != 0; i--)
                             *(q++) = expandSign((T2)(*(p++) & mask), sign, smask);
                     }
                     else /* shift > 0 */
                     {
                         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-                            cerr << "convert PixelData: case 1c (shift & mask & sign)" << endl;
-                        for (i = 0; i < length_T1; i++)
+                            cerr << "convert pixelData: case 1c (shift & mask & sign)" << endl;
+                        for (i = length_T1; i != 0; i--)
                             *(q++) = expandSign((T2)((*(p++) >> shift) & mask), sign, smask);
                     }
                 }
             }
-            else if ((bitsof_T1 > BitsAllocated) && (bitsof_T1 % BitsAllocated == 0))   // case 2: divisor of 8/16 bit
+            else if ((bitsof_T1 > bitsAllocated) && (bitsof_T1 % bitsAllocated == 0))   // case 2: divisor of 8/16 bit
             {
-                const Uint16 times = bitsof_T1 / BitsAllocated;
+                const Uint16 times = bitsof_T1 / bitsAllocated;
                 register T1 mask = 0;
-                for (i = 0; i < BitsStored; i++)
+                for (i = 0; i < bitsStored; i++)
                     mask |= (T1)(1 << i);
                 register Uint16 j;
                 register T1 value;
-                if ((BitsStored == BitsAllocated) && (BitsStored == bitsof_T2))
+                if ((bitsStored == bitsAllocated) && (bitsStored == bitsof_T2))
                 {
                     if (times == 2)
                     {
                         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-                            cerr << "convert PixelData: case 2a (simple mask)" << endl;
-                        for (i = 0; i < length_T1; i++, p++)
+                            cerr << "convert pixelData: case 2a (simple mask)" << endl;
+                        for (i = length_T1; i != 0; i--, p++)
                         {
                             *(q++) = (T2)(*p & mask);
-                            *(q++) = (T2)(*p >> BitsAllocated);
+                            *(q++) = (T2)(*p >> bitsAllocated);
                         }
                     }   
                     else
                     {
                         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-                            cerr << "convert PixelData: case 2b (mask)" << endl;
-                        for (i = 0; i < length_T1; i++)
+                            cerr << "convert pixelData: case 2b (mask)" << endl;
+                        for (i = length_T1; i != 0; i--)
                         {
                             value = *(p++);
-                            for (j = 0; j < times; j++)
+                            for (j = times; j != 0; j--)
                             {
                                 *(q++) = (T2)(value & mask);
-                                value >>= BitsAllocated;
+                                value >>= bitsAllocated;
                             }
                         }
                     }   
@@ -312,37 +390,37 @@ class DiInputPixelTemplate
                 else
                 {
                     if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-                        cerr << "convert PixelData: case 2c (shift & mask & sign)" << endl;
-                    const T2 sign = 1 << (BitsStored - 1);
+                        cerr << "convert pixelData: case 2c (shift & mask & sign)" << endl;
+                    const T2 sign = 1 << (bitsStored - 1);
                     T2 smask = 0;
-                    for (i = BitsStored; i < bitsof_T2; i++)
+                    for (i = bitsStored; i < bitsof_T2; i++)
                         smask |= (T2)(1 << i);
-                    const Uint16 shift = HighBit + 1 - BitsStored;
-                    for (i = 0; i < length_T1; i++)
+                    const Uint16 shift = highBit + 1 - bitsStored;
+                    for (i = length_T1; i != 0; i--)
                     {
                         value = *(p++) >> shift;
-                        for (j = 0; j < times; j++)
+                        for (j = times; j != 0; j--)
                         {
                             *(q++) = expandSign((T2)(value & mask), sign, smask);
-                            value >>= BitsAllocated;
+                            value >>= bitsAllocated;
                         }   
                     }
                 }
             }
-            else if ((bitsof_T1 < BitsAllocated) && (BitsAllocated % bitsof_T1 == 0)    // case 3: multiplicant of 8/16
-                && (BitsStored == BitsAllocated))
+            else if ((bitsof_T1 < bitsAllocated) && (bitsAllocated % bitsof_T1 == 0)    // case 3: multiplicant of 8/16
+                && (bitsStored == bitsAllocated))
             {
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-                    cerr << "convert PixelData: case 3 (multi copy)" << endl;
-                const Uint16 times = BitsAllocated / bitsof_T1;
+                    cerr << "convert pixelData: case 3 (multi copy)" << endl;
+                const Uint16 times = bitsAllocated / bitsof_T1;
                 register Uint16 j;
                 register Uint16 shift;
                 register T2 value;
-                for (i = 0; i < length_T1; i++)
+                for (i = length_T1; i != 0; i--)
                 {
                     shift = 0;
                     value = (T2)*(p++);
-                    for (j = 1; j < times; j++, i++)
+                    for (j = times; j > 1; j--, i--)
                     {
                         shift += bitsof_T1;
                         value |= (T2)*(p++) << shift;
@@ -353,40 +431,40 @@ class DiInputPixelTemplate
             else                                                                        // case 4: anything else
             {
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-                    cerr << "convert PixelData: case 4 (general)" << endl;
+                    cerr << "convert pixelData: case 4 (general)" << endl;
                 register T2 value = 0;
                 register Uint16 bits = 0;
-                register Uint32 skip = HighBit + 1 - BitsStored;
+                register Uint32 skip = highBit + 1 - bitsStored;
                 register Uint32 times;
                 T1 mask[bitsof_T1];
                 mask[0] = 1;
                 for (i = 1; i < bitsof_T1; i++)
                     mask[i] = (mask[i - 1] << 1) | 1;
                 T2 smask = 0;
-                for (i = BitsStored; i < bitsof_T2; i++)
-                smask |= (T2)(1 << i);
-                const T2 sign = 1 << (BitsStored - 1);
-                const Uint32 gap = BitsAllocated - BitsStored;
+                for (i = bitsStored; i < bitsof_T2; i++)
+                    smask |= (T2)(1 << i);
+                const T2 sign = 1 << (bitsStored - 1);
+                const Uint32 gap = bitsAllocated - bitsStored;
                 i = 0;
                 while (i < length_T1)
                 {
                     if (skip < bitsof_T1)
                     {
-                        if (skip + BitsStored - bits < bitsof_T1)       // -++- --++
+                        if (skip + bitsStored - bits < bitsof_T1)       // -++- --++
                         {
-                            value |= ((T2)((*p >> skip) & mask[BitsStored - bits - 1]) << bits);
-                            skip += BitsStored - bits + gap;
-                            bits = BitsStored;
+                            value |= ((T2)((*p >> skip) & mask[bitsStored - bits - 1]) << bits);
+                            skip += bitsStored - bits + gap;
+                            bits = bitsStored;
                         }
                         else                                            // ++-- ++++
                         {
                             value |= ((T2)((*p >> skip) & mask[bitsof_T1 - skip - 1]) << bits);
                             bits += bitsof_T1 - (Uint16)skip;
-                            skip = (bits == BitsStored) ? gap : 0;
+                            skip = (bits == bitsStored) ? gap : 0;
                             i++;
                             p++;
                         }
-                        if (bits == BitsStored)
+                        if (bits == bitsStored)
                         {
                             *(q++) = expandSign(value, sign, smask);
                             value = 0;
@@ -405,8 +483,12 @@ class DiInputPixelTemplate
         }
     }
 
+    /// pointer to pixel data
     T2 *Data;
+
+    /// minimum pixel value
     T2 MinValue;
+    /// maximum pixel value
     T2 MaxValue;
 
  // --- declarations to avoid compiler warnings
@@ -423,7 +505,12 @@ class DiInputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diinpxt.h,v $
- * Revision 1.13  1999-07-23 13:54:38  joergr
+ * Revision 1.14  1999-09-17 12:21:57  joergr
+ * Added/changed/completed DOC++ style comments in the header files.
+ * Enhanced efficiency of some "for" loops and of the implementation to
+ * determine min/max values of the input pixels.
+ *
+ * Revision 1.13  1999/07/23 13:54:38  joergr
  * Optimized memory usage for converting input pixel data (reference instead
  * of copying where possible).
  *
