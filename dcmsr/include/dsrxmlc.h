@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRXMLCursor
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-29 12:52:02 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-09-03 16:00:11 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +38,9 @@
 #include "osconfig.h"   /* make sure OS specific configuration is included first */
 
 #include "oftypes.h"    /* for definition of OFBool */
+
+#define INCLUDE_CSTDLIB
+#include "ofstdinc.h"
 
 #define INCLUDE_CSTDDEF
 #include "ofstdinc.h"
@@ -148,7 +151,10 @@ class DSRXMLCursor
 /*
  *  CVS/RCS Log:
  *  $Log: dsrxmlc.h,v $
- *  Revision 1.2  2003-08-29 12:52:02  joergr
+ *  Revision 1.3  2003-09-03 16:00:11  meichel
+ *  Added standard includes needed on Win32
+ *
+ *  Revision 1.2  2003/08/29 12:52:02  joergr
  *  Replaced inclusion of unistd.h by cstddef/stddef.h to compile under Windows
  *  with libxml support (required for definition of NULL).
  *

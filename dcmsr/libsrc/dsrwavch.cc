@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRWaveformChannelList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 17:29:13 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-09-03 16:00:12 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,8 @@
 #include "dsrwavch.h"
 #include "dsrxmld.h"
 
+#define INCLUDE_CSTDIO
+#include "ofstdinc.h"
 
 /* declared in class DSRListOfItems<T> */
 const DSRWaveformChannelItem DSRListOfItems<DSRWaveformChannelItem>::EmptyItem;
@@ -202,7 +204,10 @@ OFCondition DSRWaveformChannelList::putString(const char *stringValue)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavch.cc,v $
- *  Revision 1.15  2003-08-07 17:29:13  joergr
+ *  Revision 1.16  2003-09-03 16:00:12  meichel
+ *  Added standard includes needed on Win32
+ *
+ *  Revision 1.15  2003/08/07 17:29:13  joergr
  *  Removed libxml dependency from header files. Simplifies linking (MSVC).
  *
  *  Revision 1.14  2003/08/07 14:16:22  joergr
