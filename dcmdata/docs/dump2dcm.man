@@ -72,6 +72,14 @@ output transfer syntax:
   +ti  --write-xfer-implicit
          write with implicit VR little endian TS
 
+error handling:
+
+  -E   --stop-on-error
+         do not write if dump is damaged (default)
+
+  +E   --ignore-errors
+         attempt to write even if dump is damaged
+
 post-1993 value representations:
 
   +u   --enable-new-vr
