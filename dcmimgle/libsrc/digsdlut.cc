@@ -22,9 +22,9 @@
  *  Purpose: DicomGSDFLUT (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-03 13:51:00 $
+ *  Update Date:      $Date: 2002-07-18 12:35:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/digsdlut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,8 +57,9 @@ DiGSDFLUT::DiGSDFLUT(const unsigned long count,
                      const double jnd_max,
                      const double amb,
                      const double illum,
+                     const OFBool inverse,
                      ostream *stream,
-                     const OFBool mode)
+                     const OFBool printMode)
   : DiDisplayLUT(count, max, amb, illum)
 {
     if ((Count > 0) && (Bits > 0))
@@ -71,7 +72,8 @@ DiGSDFLUT::DiGSDFLUT(const unsigned long count,
             ofConsole.unlockCerr();
         }
 #endif
-        Valid = createLUT(ddl_tab, val_tab, ddl_cnt, gsdf_tab, gsdf_spl, gsdf_cnt, jnd_min, jnd_max, stream, mode);
+        Valid = createLUT(ddl_tab, val_tab, ddl_cnt, gsdf_tab, gsdf_spl, gsdf_cnt, jnd_min, jnd_max,
+                          inverse, stream, printMode);
     }
 }
 
@@ -96,8 +98,9 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
                          const unsigned int gsdf_cnt,
                          const double jnd_min,
                          const double jnd_max,
+                         const OFBool inverse,
                          ostream *stream,
-                         const OFBool mode)
+                         const OFBool printMode)
 {
     if ((ddl_tab != NULL) && (val_tab != NULL) && (ddl_cnt > 0) && (gsdf_tab != NULL) && (gsdf_spl != NULL) && (gsdf_cnt > 0))
     {
@@ -107,20 +110,20 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
         {
             const double dist = (jnd_max - jnd_min) / (Count - 1);      // distance between two entries
             register unsigned long i;
-            register double *r = jidx;
-            register double value = jnd_min;                            // first value is static !
+            register double *s = jidx;
+            register double value = jnd_min;                            // first value is fixed !
             for (i = Count; i > 1; i--)                                 // initialize scaled JND index array
             {
-                *(r++) = value;
+                *(s++) = value;
                 value += dist;                                          // add step by step ...
             }
-            *r = jnd_max;                                               // last value is static !
+            *s = jnd_max;                                               // last value is fixed !
             double *jnd_idx = new double[gsdf_cnt];
             if (jnd_idx != NULL)
             {
-                r = jnd_idx;
+                s = jnd_idx;
                 for (i = 0; i < gsdf_cnt; i++)                          // initialize JND index array
-                    *(r++) = i + 1;
+                    *(s++) = i + 1;
                 double *gsdf = new double[Count];                       // interpolated GSDF
                 if (gsdf != NULL)
                 {
@@ -129,17 +132,34 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
                         DataBuffer = new Uint16[Count];
                         if (DataBuffer != NULL)
                         {
-                            r = gsdf;
                             const double amb = getAmbientLightValue();
                             register Uint16 *q = DataBuffer;
                             register unsigned long j = 0;
-                            for (i = Count; i != 0; i--, r++)
+                            if (inverse)
                             {
-                                while ((j + 1 < ddl_cnt) && (val_tab[j] + amb < *r))  // search for closest index, assuming monotony
-                                    j++;
-                                if ((j > 0) && (fabs(val_tab[j - 1] + amb - *r) < fabs(val_tab[j] + amb - *r)))
-                                    j--;
-                                *(q++) = ddl_tab[j];
+                                register double v;
+                                register const double *r = val_tab;
+                                /* convert DDL to P-Value */
+                                for (i = Count; i != 0; i--, r++)
+                                {
+                                    v = *r + amb;
+                                    while ((j + 1 < ddl_cnt) && (gsdf[j] < v))            // search for closest index, assuming monotony
+                                        j++;
+                                    if ((j > 0) && (fabs(gsdf[j - 1] - v) < fabs(gsdf[j] - v)))
+                                        j--;
+                                    *(q++) = ddl_tab[j];
+                                }
+                            } else {
+                                register const double *r = gsdf;
+                                /* convert P-Value to DDL */
+                                for (i = Count; i != 0; i--, r++)
+                                {
+                                    while ((j + 1 < ddl_cnt) && (val_tab[j] + amb < *r))  // search for closest index, assuming monotony
+                                        j++;
+                                    if ((j > 0) && (fabs(val_tab[j - 1] + amb - *r) < fabs(val_tab[j] + amb - *r)))
+                                        j--;
+                                    *(q++) = ddl_tab[j];
+                                }
                             }
                             Data = DataBuffer;
                             if (stream != NULL)                         // write curve data to file
@@ -148,13 +168,18 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
                                 {
                                     for (i = 0; i < ddl_cnt; i++)
                                     {
-                                        (*stream) << ddl_tab[i];                           // DDL
+                                        (*stream) << ddl_tab[i];                               // DDL
                                         stream->setf(ios::fixed, ios::floatfield);
-                                        if (mode)
-                                            (*stream) << "\t" << val_tab[i] + amb;         // CC
-                                        (*stream) << "\t" << gsdf[i];                      // GSDF
-                                        if (mode)
-                                            (*stream) << "\t" << val_tab[Data[i]] + amb;   // PSC
+                                        if (printMode)
+                                            (*stream) << "\t" << val_tab[i] + amb;             // CC
+                                        (*stream) << "\t" << gsdf[i];                          // GSDF
+                                        if (printMode)
+                                        {
+                                            if (inverse)
+                                                (*stream) << "\t" << gsdf[Data[i]];            // PSC'
+                                            else
+                                                (*stream) << "\t" << val_tab[Data[i]] + amb;   // PSC
+                                        }
                                         (*stream) << endl;
                                     }
                                 } else {
@@ -185,7 +210,10 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
  *
  * CVS/RCS Log:
  * $Log: digsdlut.cc,v $
- * Revision 1.11  2002-07-03 13:51:00  joergr
+ * Revision 1.12  2002-07-18 12:35:26  joergr
+ * Added support for hardcopy and softcopy input devices (camera and scanner).
+ *
+ * Revision 1.11  2002/07/03 13:51:00  joergr
  * Fixed inconsistencies regarding the handling of ambient light.
  *
  * Revision 1.10  2002/07/02 16:24:38  joergr
@@ -220,7 +248,6 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
  * Revision 1.1  1999/09/10 08:54:50  joergr
  * Added support for CIELAB display function. Restructured class hierarchy
  * for display functions.
- *
  *
  *
  */

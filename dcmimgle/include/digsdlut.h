@@ -22,9 +22,9 @@
  *  Purpose: DicomGSDFLUT (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-02 16:23:42 $
+ *  Update Date:      $Date: 2002-07-18 12:30:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/digsdlut.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,20 +54,21 @@ class DiGSDFLUT
 
     /** constructor
      *
-     ** @param  count     number of values to be stored
-     *  @param  max       maximum value to be stored
-     *  @param  ddl_tab   array of DDL values
-     *  @param  val_tab   array of values
-     *  @param  ddl_cnt   number of DDL values
-     *  @param  gsdf_tab  array with GSDF
-     *  @param  gsdf_spl  array with helper function used for interpolation
-     *  @param  gsdf_cnt  number of values in GSDF
-     *  @param  jnd_min   minimum JND index value
-     *  @param  jnd_max   maximum JND index value
-     *  @param  amb       (reflected) ambient light value
-     *  @param  illum     illumination value
-     *  @param  stream    output stream (used to write curve data to a file)
-     *  @param  mode      write CC and PSC to stream if OFTrue
+     ** @param  count      number of values to be stored
+     *  @param  max        maximum value to be stored
+     *  @param  ddl_tab    array of DDL values
+     *  @param  val_tab    array of values
+     *  @param  ddl_cnt    number of DDL values
+     *  @param  gsdf_tab   array with GSDF
+     *  @param  gsdf_spl   array with helper function used for interpolation
+     *  @param  gsdf_cnt   number of values in GSDF
+     *  @param  jnd_min    minimum JND index value
+     *  @param  jnd_max    maximum JND index value
+     *  @param  amb        (reflected) ambient light value
+     *  @param  illum      illumination value
+     *  @param  inverse    apply inverse transformation
+     *  @param  stream     output stream (used to write curve data to a file)
+     *  @param  printMode  write CC and PSC to stream if OFTrue
      */
     DiGSDFLUT(const unsigned long count,
               const Uint16 max,
@@ -81,8 +82,9 @@ class DiGSDFLUT
               const double jnd_max,
               const double amb,
               const double illum,
+              const OFBool inverse = OFFalse,
               ostream *stream = NULL,
-              const OFBool mode = OFTrue);
+              const OFBool printMode = OFTrue);
 
     /** destructor
      */
@@ -93,16 +95,17 @@ class DiGSDFLUT
 
     /** create lookup table
      *
-     ** @param  ddl_tab   array of DDL values
-     *  @param  val_tab   array of values
-     *  @param  ddl_cnt   number of DDL values
-     *  @param  gsdf_tab  array with GSDF
-     *  @param  gsdf_spl  array with helper function used for interpolation
-     *  @param  gsdf_cnt  number of values in GSDF
-     *  @param  jnd_min   minimum JND index value
-     *  @param  jnd_max   maximum JND index value
-     *  @param  stream    output stream (used to write curve data to a file)
-     *  @param  mode      write CC and PSC to stream if OFTrue
+     ** @param  ddl_tab    array of DDL values
+     *  @param  val_tab    array of values
+     *  @param  ddl_cnt    number of DDL values
+     *  @param  gsdf_tab   array with GSDF
+     *  @param  gsdf_spl   array with helper function used for interpolation
+     *  @param  gsdf_cnt   number of values in GSDF
+     *  @param  jnd_min    minimum JND index value
+     *  @param  jnd_max    maximum JND index value
+     *  @param  inverse    apply inverse transformation
+     *  @param  stream     output stream (used to write curve data to a file)
+     *  @param  printMode  write CC and PSC to stream if OFTrue
      *
      ** @return status, true if successful, false otherwise
      */
@@ -114,6 +117,7 @@ class DiGSDFLUT
                   const unsigned int gsdf_cnt,
                   const double jnd_min,
                   const double jnd_max,
+                  const OFBool inverse = OFFalse,
                   ostream *stream = NULL,
                   const OFBool mode = OFTrue);
 };
@@ -126,7 +130,10 @@ class DiGSDFLUT
  *
  * CVS/RCS Log:
  * $Log: digsdlut.h,v $
- * Revision 1.6  2002-07-02 16:23:42  joergr
+ * Revision 1.7  2002-07-18 12:30:26  joergr
+ * Added support for hardcopy and softcopy input devices (camera and scanner).
+ *
+ * Revision 1.6  2002/07/02 16:23:42  joergr
  * Added support for hardcopy devices to the calibrated output routines.
  *
  * Revision 1.5  2001/06/01 15:49:41  meichel

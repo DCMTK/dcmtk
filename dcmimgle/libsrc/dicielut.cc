@@ -22,9 +22,9 @@
  *  Purpose: DicomCIELABLUT (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-03 13:50:59 $
+ *  Update Date:      $Date: 2002-07-18 12:33:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dicielut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,8 +52,9 @@ DiCIELABLUT::DiCIELABLUT(const unsigned long count,
                          const double val_min,
                          const double val_max,
                          const double amb,
+                         const OFBool inverse,
                          ostream *stream,
-                         const OFBool mode)
+                         const OFBool printMode)
   : DiDisplayLUT(count, max, amb /*, 'illum' not used*/)
 {
     if ((Count > 0) && (Bits > 0))
@@ -66,7 +67,7 @@ DiCIELABLUT::DiCIELABLUT(const unsigned long count,
             ofConsole.unlockCerr();
         }
 #endif
-        Valid = createLUT(ddl_tab, val_tab, ddl_cnt, val_min, val_max, stream, mode);
+        Valid = createLUT(ddl_tab, val_tab, ddl_cnt, val_min, val_max, inverse, stream, printMode);
     }
 }
 
@@ -88,8 +89,9 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
                            const unsigned long ddl_cnt,
                            const double val_min,
                            const double val_max,
+                           const OFBool inverse,
                            ostream *stream,
-                           const OFBool mode)
+                           const OFBool printMode)
 {
     int status = 0;
     if ((ddl_tab != NULL) && (val_tab != NULL) && (ddl_cnt > 0) && (val_max > 0))
@@ -118,16 +120,33 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
             DataBuffer = new Uint16[Count];
             if (DataBuffer != NULL)                         // create look-up table
             {
-                register double *r = cielab;
                 register Uint16 *q = DataBuffer;
                 register unsigned long j = 0;
-                for (i = Count; i != 0; i--, r++)
+                if (inverse)
                 {
-                    while ((j + 1 < ddl_cnt) && (val_tab[j] + amb < *r))  // search for closest index, assuming monotony
-                        j++;
-                    if ((j > 0) && (fabs(val_tab[j - 1] + amb - *r) < fabs(val_tab[j] + amb - *r)))
-                        j--;
-                    *(q++) = ddl_tab[j];
+                    register const double *r = val_tab;
+                    register double v;
+                    /* convert from DDL */
+                    for (i = Count; i != 0; i--, r++)
+                    {
+                        v = *r + amb;
+                        while ((j + 1 < ddl_cnt) && (cielab[j] < v))          // search for closest index, assuming monotony
+                            j++;
+                        if ((j > 0) && (fabs(cielab[j - 1] - v) < fabs(cielab[j] - v)))
+                            j--;
+                        *(q++) = ddl_tab[j];
+                    }
+                } else {
+                    register const double *r = cielab;
+                    /* convert to DDL */
+                    for (i = Count; i != 0; i--, r++)
+                    {
+                        while ((j + 1 < ddl_cnt) && (val_tab[j] + amb < *r))  // search for closest index, assuming monotony
+                            j++;
+                        if ((j > 0) && (fabs(val_tab[j - 1] + amb - *r) < fabs(val_tab[j] + amb - *r)))
+                            j--;
+                        *(q++) = ddl_tab[j];
+                    }
                 }
                 Data = DataBuffer;
                 if (stream != NULL)                         // write curve data to file
@@ -136,13 +155,18 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
                     {
                         for (i = 0; i < ddl_cnt; i++)
                         {
-                            (*stream) << ddl_tab[i];                           // DDL
+                            (*stream) << ddl_tab[i];                               // DDL
                             stream->setf(ios::fixed, ios::floatfield);
-                            if (mode)
-                                (*stream) << "\t" << val_tab[i] + amb;         // CC
-                            (*stream) << "\t" << cielab[i];                    // CIELAB
-                            if (mode)
-                                (*stream) << "\t" << val_tab[Data[i]] + amb;   // PSC
+                            if (printMode)
+                                (*stream) << "\t" << val_tab[i] + amb;             // CC
+                            (*stream) << "\t" << cielab[i];                        // CIELAB
+                            if (printMode)
+                            {
+                                if (inverse)
+                                    (*stream) << "\t" << cielab[Data[i]];          // PSC'
+                                else
+                                    (*stream) << "\t" << val_tab[Data[i]] + amb;   // PSC
+                            }
                             (*stream) << endl;
                         }
                     } else {
@@ -166,7 +190,10 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
  *
  * CVS/RCS Log:
  * $Log: dicielut.cc,v $
- * Revision 1.13  2002-07-03 13:50:59  joergr
+ * Revision 1.14  2002-07-18 12:33:07  joergr
+ * Added support for hardcopy and softcopy input devices (camera and scanner).
+ *
+ * Revision 1.13  2002/07/03 13:50:59  joergr
  * Fixed inconsistencies regarding the handling of ambient light.
  *
  * Revision 1.12  2002/07/02 16:24:36  joergr
