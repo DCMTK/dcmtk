@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmDate
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-11 12:25:09 $
+ *  Update Date:      $Date: 2002-12-06 12:49:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrda.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,16 +43,49 @@
 
 /** a class representing the DICOM value representation 'Date' (DA)
  */
-class DcmDate : public DcmByteString
+class DcmDate
+  : public DcmByteString
 {
+
   public:
-    DcmDate(const DcmTag &tag, const Uint32 len = 0);
-    DcmDate( const DcmDate &newDA );
+
+    /** constructor.
+     *  Create new element from given tag and length.
+     *  @param tag DICOM tag for the new element
+     *  @param len value length for the new element
+     */
+    DcmDate(const DcmTag &tag,
+            const Uint32 len = 0);
+
+    /** copy constructor
+     *  @param old element to be copied
+     */
+    DcmDate(const DcmDate &old);
+
+    /** destructor
+     */
     virtual ~DcmDate();
 
-    DcmDate &operator=(const DcmDate &obj) { DcmByteString::operator=(obj); return *this; }
+    /** assignment operator
+     *  @param obj element to be assigned/copied
+     *  @return reference to this object
+     */
+    DcmDate &operator=(const DcmDate &obj);
 
-    virtual DcmEVR ident() const { return EVR_DA; }
+    /** get element type identifier
+     *  @return type identifier of this class (EVR_DA)
+     */
+    virtual DcmEVR ident() const;
+
+    /** get a copy of a particular string component
+     *  @param stringVal variable in which the result value is stored
+     *  @param pos index of the value in case of multi-valued elements (0..vm-1)
+     *  @param normalize delete trailing spaces if OFTrue
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getOFString(OFString &stringVal,
+                                    const unsigned long pos,
+                                    OFBool normalize = OFTrue);
 
     /** set the element value to the current system date.
      *  The DICOM DA format supported by this function is "YYYYMMDD". If the current
@@ -77,10 +110,9 @@ class DcmDate : public DcmByteString
      *  @param supportOldFormat if OFTrue support old (prior V3.0) date format (see above)
      *  @return EC_Normal upon success, an error code otherwise
      */
-    OFCondition getOFDate(
-        OFDate &dateValue,
-        const unsigned long pos = 0,
-        const OFBool supportOldFormat = OFTrue);
+    OFCondition getOFDate(OFDate &dateValue,
+                          const unsigned long pos = 0,
+                          const OFBool supportOldFormat = OFTrue);
 
     /** get the current element value in ISO date format.
      *  The ISO date format supported by this function is "YYYY-MM-DD". Please note
@@ -92,10 +124,9 @@ class DcmDate : public DcmByteString
      *  @param supportOldFormat if OFTrue support old (prior V3.0) date format (see above)
      *  @return EC_Normal upon success, an error code otherwise
      */
-    OFCondition getISOFormattedDate(
-        OFString &formattedDate,
-        const unsigned long pos = 0,
-        const OFBool supportOldFormat = OFTrue);
+    OFCondition getISOFormattedDate(OFString &formattedDate,
+                                    const unsigned long pos = 0,
+                                    const OFBool supportOldFormat = OFTrue);
 
     /* --- static helper functions --- */
 
@@ -115,9 +146,8 @@ class DcmDate : public DcmByteString
      *  @param dicomDate reference to string variable where the result is stored
      *  @return EC_Normal upon success, an error code otherwise
      */
-    static OFCondition getDicomDateFromOFDate(
-        const OFDate &dateValue,
-        OFString &dicomDate);
+    static OFCondition getDicomDateFromOFDate(const OFDate &dateValue,
+                                              OFString &dicomDate);
 
     /** get the specified DICOM date value in OFDate format.
      *  Please note that the specified value is expected to be in valid DICOM DA format
@@ -128,10 +158,9 @@ class DcmDate : public DcmByteString
      *  @param supportOldFormat if OFTrue support old (prior V3.0) date format (see above)
      *  @return EC_Normal upon success, an error code otherwise
      */
-    static OFCondition getOFDateFromString(
-        const OFString &dicomDate,
-        OFDate &dateValue,
-        const OFBool supportOldFormat = OFTrue);
+    static OFCondition getOFDateFromString(const OFString &dicomDate,
+                                           OFDate &dateValue,
+                                           const OFBool supportOldFormat = OFTrue);
 
     /** get the specified DICOM date value in ISO format.
      *  The ISO date format supported by this function is "YYYY-MM-DD". Please note
@@ -143,10 +172,9 @@ class DcmDate : public DcmByteString
      *  @param supportOldFormat if OFTrue support old (prior V3.0) date format (see above)
      *  @return EC_Normal upon success, an error code otherwise
      */
-    static OFCondition getISOFormattedDateFromString(
-        const OFString &dicomDate,
-        OFString &formattedDate,
-        const OFBool supportOldFormat = OFTrue);
+    static OFCondition getISOFormattedDateFromString(const OFString &dicomDate,
+                                                     OFString &formattedDate,
+                                                     const OFBool supportOldFormat = OFTrue);
 };
 
 
@@ -156,7 +184,13 @@ class DcmDate : public DcmByteString
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrda.h,v $
-** Revision 1.10  2002-04-11 12:25:09  joergr
+** Revision 1.11  2002-12-06 12:49:14  joergr
+** Enhanced "print()" function by re-working the implementation and replacing
+** the boolean "showFullData" parameter by a more general integer flag.
+** Added doc++ documentation.
+** Made source code formatting more consistent with other modules/files.
+**
+** Revision 1.10  2002/04/11 12:25:09  joergr
 ** Enhanced DICOM date, time and date/time classes. Added support for new
 ** standard date and time functions.
 **

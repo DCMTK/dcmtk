@@ -21,15 +21,16 @@
  *
  *  Purpose: Interface of class DcmMetaInfo
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-27 16:55:35 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-06 12:49:11 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcmetinf.h,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
+
 
 #ifndef DCMETINF_H
 #define DCMETINF_H
@@ -47,54 +48,67 @@
 #define META_HEADER_DEFAULT_TRANSFERSYNTAX EXS_LittleEndianExplicit
 
 
-
-class DcmMetaInfo : public DcmItem 
+/** a class representing the DICOM file meta information header
+ */
+class DcmMetaInfo
+  : public DcmItem
 {
-private:
-    char filePreamble[DCM_PreambleLen+DCM_MagicLen];
-    OFBool preambleUsed;
-    E_TransferState fPreambleTransferState;
-    E_TransferSyntax Xfer;
 
-    void setPreamble(void);
-    OFBool checkAndReadPreamble(DcmInputStream & inStream,
-			      E_TransferSyntax & newxfer);	 // out
-    OFBool nextTagIsMeta(DcmInputStream & inStream);
-    OFCondition readGroupLength(DcmInputStream & inStream,		// inout
-				const E_TransferSyntax xfer,    // in
-                                const DcmTagKey & xtag,         // in
-				const E_GrpLenEncoding glenc,   // in
-				Uint32 & headerLen, 		// out
-				Uint32 & bytesRead,		// out
-				const Uint32 maxReadLength 
-				= DCM_MaxReadLength);     // in
+  public:
 
-public:
+    /** default constructor
+     */
     DcmMetaInfo();
+
+    /** copy constructor
+     *  @param old item to be copied
+     */
     DcmMetaInfo(const DcmMetaInfo &old);
+
+    /** destructor
+     */
     virtual ~DcmMetaInfo();
 
-    virtual DcmEVR ident(void) const { return EVR_metainfo; }
-    virtual void print(ostream & out, const OFBool showFullData = OFTrue,
-		       const int level = 0, const char *pixelFileName = NULL,
-		       size_t *pixelCounter = NULL);
-    virtual	void transferInit(void);
-    virtual void transferEnd(void);
+    /** get type identifier
+     *  @return type identifier of this class (EVR_item)
+     */
+    virtual DcmEVR ident() const;
 
-    inline E_TransferSyntax getOriginalXfer(void) { return Xfer; }
+    E_TransferSyntax getOriginalXfer() const;
+
+    /** print meta information header to a stream
+     *  @param out output stream
+     *  @param flags optional flag used to customize the output (see DCMTypes::PF_xxx)
+     *  @param level current level of nested items. Used for indentation.
+     *  @param pixelFileName not used
+     *  @param pixelCounter not used
+     */
+    virtual void print(ostream &out,
+                       const size_t flags = 0,
+                       const int level = 0,
+                       const char *pixelFileName = NULL,
+                       size_t *pixelCounter = NULL);
+
+    virtual void transferInit();
+    virtual void transferEnd();
 
     virtual Uint32 calcElementLength(const E_TransferSyntax xfer,
-				     const E_EncodingType enctype);
+                                     const E_EncodingType enctype);
 
-    virtual OFCondition read(DcmInputStream & inStream,
-			     const E_TransferSyntax xfer = EXS_Unknown,
-			     const E_GrpLenEncoding glenc = EGL_noChange,
-			     const Uint32 maxReadLength = DCM_MaxReadLength);
+    virtual OFCondition read(DcmInputStream &inStream,
+                             const E_TransferSyntax xfer = EXS_Unknown,
+                             const E_GrpLenEncoding glenc = EGL_noChange,
+                             const Uint32 maxReadLength = DCM_MaxReadLength);
 
-    virtual OFCondition write(DcmOutputStream & outStream,
-			      const E_TransferSyntax oxfer,
-			      const E_EncodingType enctype 
-			      = EET_UndefinedLength);
+    /** write meta information header to a stream
+     *  @param outStream DICOM output stream
+     *  @param oxfer output transfer syntax
+     *  @param enctype encoding types (undefined or explicit length)
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition write(DcmOutputStream &outStream,
+                              const E_TransferSyntax oxfer,
+                              const E_EncodingType enctype = EET_UndefinedLength);
 
     /** write object in XML format
      *  @param out output stream to which the XML document is written
@@ -103,6 +117,29 @@ public:
      */
     virtual OFCondition writeXML(ostream &out,
                                  const size_t flags = 0);
+
+
+  private:
+
+    void setPreamble();
+
+    OFBool checkAndReadPreamble(DcmInputStream &inStream,
+                                E_TransferSyntax &newxfer);  // out
+
+    OFBool nextTagIsMeta(DcmInputStream &inStream);
+
+    OFCondition readGroupLength(DcmInputStream &inStream,       // inout
+                                const E_TransferSyntax xfer,    // in
+                                const DcmTagKey &xtag,          // in
+                                const E_GrpLenEncoding glenc,   // in
+                                Uint32 &headerLen,              // out
+                                Uint32 &bytesRead,              // out
+                                const Uint32 maxReadLength = DCM_MaxReadLength);   // in
+
+    char filePreamble[DCM_PreambleLen + DCM_MagicLen];
+    OFBool preambleUsed;
+    E_TransferState fPreambleTransferState;
+    E_TransferSyntax Xfer;
 };
 
 #endif // DCMETINF_H
@@ -110,7 +147,13 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.h,v $
-** Revision 1.17  2002-08-27 16:55:35  meichel
+** Revision 1.18  2002-12-06 12:49:11  joergr
+** Enhanced "print()" function by re-working the implementation and replacing
+** the boolean "showFullData" parameter by a more general integer flag.
+** Added doc++ documentation.
+** Made source code formatting more consistent with other modules/files.
+**
+** Revision 1.17  2002/08/27 16:55:35  meichel
 ** Initial release of new DICOM I/O stream classes that add support for stream
 **   compression (deflated little endian explicit VR transfer syntax)
 **

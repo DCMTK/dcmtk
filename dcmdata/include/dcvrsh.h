@@ -22,49 +22,85 @@
  *  Purpose: Interface of class DcmShortString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-25 09:56:48 $
+ *  Update Date:      $Date: 2002-12-06 12:49:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrsh.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
+
 #ifndef DCVRSH_H
 #define DCVRSH_H
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dctypes.h"
 #include "dcchrstr.h"
 
 
-
-class DcmShortString : public DcmCharString 
+/** a class representing the DICOM value representation 'Short String' (SH)
+ */
+class DcmShortString
+  : public DcmCharString
 {
+
   public:
-    DcmShortString(const DcmTag &tag, const Uint32 len = 0);
-    DcmShortString(const DcmShortString& old);
-    virtual ~DcmShortString(void);
 
-    DcmShortString &operator=(const DcmShortString &obj) { DcmCharString::operator=(obj); return *this; }
+    /** constructor.
+     *  Create new element from given tag and length.
+     *  @param tag DICOM tag for the new element
+     *  @param len value length for the new element
+     */
+    DcmShortString(const DcmTag &tag,
+                   const Uint32 len = 0);
 
-    virtual DcmEVR ident(void) const { return EVR_SH; }
+    /** copy constructor
+     *  @param old element to be copied
+     */
+    DcmShortString(const DcmShortString &old);
 
-    virtual OFCondition getOFString(
-	OFString & str,
-	const unsigned long pos,
-	OFBool normalize = OFTrue);
+    /** destructor
+     */
+    virtual ~DcmShortString();
+
+    /** assignment operator
+     *  @param obj element to be assigned/copied
+     *  @return reference to this object
+     */
+    DcmShortString &operator=(const DcmShortString &obj);
+
+    /** get element type identifier
+     *  @return type identifier of this class (EVR_SH)
+     */
+    virtual DcmEVR ident() const;
+
+    /** get a copy of a particular string component
+     *  @param stringVal variable in which the result value is stored
+     *  @param pos index of the value in case of multi-valued elements (0..vm-1)
+     *  @param normalize delete leading and trailing spaces if OFTrue
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getOFString(OFString &stringVal,
+                                    const unsigned long pos,
+                                    OFBool normalize = OFTrue);
 };
 
 
 #endif // DCVRSH_H
 
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrsh.h,v $
-** Revision 1.11  2002-04-25 09:56:48  joergr
+** Revision 1.12  2002-12-06 12:49:18  joergr
+** Enhanced "print()" function by re-working the implementation and replacing
+** the boolean "showFullData" parameter by a more general integer flag.
+** Added doc++ documentation.
+** Made source code formatting more consistent with other modules/files.
+**
+** Revision 1.11  2002/04/25 09:56:48  joergr
 ** Removed getOFStringArray() implementation.
 **
 ** Revision 1.10  2001/09/25 17:19:33  meichel

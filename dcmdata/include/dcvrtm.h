@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmTime
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-25 09:58:07 $
+ *  Update Date:      $Date: 2002-12-06 12:49:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrtm.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,21 +43,49 @@
 
 /** a class representing the DICOM value representation 'Time' (TM)
  */
-class DcmTime : public DcmByteString
+class DcmTime
+  : public DcmByteString
 {
+
   public:
-    DcmTime(const DcmTag &tag, const Uint32 len = 0);
-    DcmTime(const DcmTime& old);
-    virtual ~DcmTime(void);
 
-    DcmTime &operator=(const DcmTime &obj) { DcmByteString::operator=(obj); return *this; }
+    /** constructor.
+     *  Create new element from given tag and length.
+     *  @param tag DICOM tag for the new element
+     *  @param len value length for the new element
+     */
+    DcmTime(const DcmTag &tag,
+            const Uint32 len = 0);
 
-    virtual DcmEVR ident(void) const { return EVR_TM; }
+    /** copy constructor
+     *  @param old element to be copied
+     */
+    DcmTime(const DcmTime &old);
 
-    virtual OFCondition getOFString(
-        OFString & str,
-        const unsigned long pos,
-        OFBool normalize = OFTrue);
+    /** destructor
+     */
+    virtual ~DcmTime();
+
+    /** assignment operator
+     *  @param obj element to be assigned/copied
+     *  @return reference to this object
+     */
+    DcmTime &operator=(const DcmTime &obj);
+
+    /** get element type identifier
+     *  @return type identifier of this class (EVR_TM)
+     */
+    virtual DcmEVR ident() const;
+
+    /** get a copy of a particular string component
+     *  @param stringValue variable in which the result value is stored
+     *  @param pos index of the value in case of multi-valued elements (0..vm-1)
+     *  @param normalize delete trailing spaces if OFTrue
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getOFString(OFString &stringValue,
+                                    const unsigned long pos,
+                                    OFBool normalize = OFTrue);
 
     /** set the element value to the current system time.
      *  The DICOM TM format supported by this function is "HHMM[SS[.FFFFFF]]" where
@@ -69,9 +97,8 @@ class DcmTime : public DcmByteString
      *   (requires parameter 'seconds' to be also OFTrue)
      *  @return EC_Normal upon success, an error code otherwise
      */
-    OFCondition setCurrentTime(
-        const OFBool seconds = OFTrue,
-        const OFBool fraction = OFFalse);
+    OFCondition setCurrentTime(const OFBool seconds = OFTrue,
+                               const OFBool fraction = OFFalse);
 
     /** set the element value to the given time
      *  @param timeValue time to be set (should be a valid time)
@@ -90,10 +117,9 @@ class DcmTime : public DcmByteString
      *  @param supportOldFormat if OFTrue support old (prior V3.0) time format (see above)
      *  @return EC_Normal upon success, an error code otherwise
      */
-    OFCondition getOFTime(
-        OFTime &timeValue,
-        const unsigned long pos = 0,
-        const OFBool supportOldFormat = OFTrue);
+    OFCondition getOFTime(OFTime &timeValue,
+                          const unsigned long pos = 0,
+                          const OFBool supportOldFormat = OFTrue);
 
     /** get the current element value in ISO time format.
      *  The ISO time format supported by this function is "HH:MM[:SS[.FFFFFF]]"
@@ -115,13 +141,12 @@ class DcmTime : public DcmByteString
      *  @param supportOldFormat if OFTrue support old (prior V3.0) time format (see above)
      *  @return EC_Normal upon success, an error code otherwise
      */
-    OFCondition getISOFormattedTime(
-        OFString &formattedTime,
-        const unsigned long pos = 0,
-        const OFBool seconds = OFTrue,
-        const OFBool fraction = OFFalse,
-        const OFBool createMissingPart = OFFalse,
-        const OFBool supportOldFormat = OFTrue);
+    OFCondition getISOFormattedTime(OFString &formattedTime,
+                                    const unsigned long pos = 0,
+                                    const OFBool seconds = OFTrue,
+                                    const OFBool fraction = OFFalse,
+                                    const OFBool createMissingPart = OFFalse,
+                                    const OFBool supportOldFormat = OFTrue);
 
     /* --- static helper functions --- */
 
@@ -136,10 +161,9 @@ class DcmTime : public DcmByteString
      *   (requires parameter 'seconds' to be also OFTrue)
      *  @return EC_Normal upon success, an error code otherwise
      */
-    static OFCondition getCurrentTime(
-        OFString &dicomTime,
-        const OFBool seconds = OFTrue,
-        const OFBool fraction = OFFalse);
+    static OFCondition getCurrentTime(OFString &dicomTime,
+                                      const OFBool seconds = OFTrue,
+                                      const OFBool fraction = OFFalse);
 
     /** get the specified OFTime value in DICOM format.
      *  The DICOM TM format supported by this function is "HHMM[SS[.FFFFFF]]" where
@@ -153,11 +177,10 @@ class DcmTime : public DcmByteString
      *   (requires parameter 'seconds' to be also OFTrue)
      *  @return EC_Normal upon success, an error code otherwise
      */
-    static OFCondition getDicomTimeFromOFTime(
-        const OFTime &timeValue,
-        OFString &dicomTime,
-        const OFBool seconds = OFTrue,
-        const OFBool fraction = OFFalse);
+    static OFCondition getDicomTimeFromOFTime(const OFTime &timeValue,
+                                              OFString &dicomTime,
+                                              const OFBool seconds = OFTrue,
+                                              const OFBool fraction = OFFalse);
 
     /** get the specified DICOM time value in OFTime format.
      *  Please note that the element value is expected to be in valid DICOM TM format
@@ -170,10 +193,9 @@ class DcmTime : public DcmByteString
      *  @param supportOldFormat if OFTrue support old (prior V3.0) time format (see above)
      *  @return EC_Normal upon success, an error code otherwise
      */
-    static OFCondition getOFTimeFromString(
-        const OFString &dicomTime,
-        OFTime &timeValue,
-        const OFBool supportOldFormat = OFTrue);
+    static OFCondition getOFTimeFromString(const OFString &dicomTime,
+                                           OFTime &timeValue,
+                                           const OFBool supportOldFormat = OFTrue);
 
     /** get the specified DICOM time value in ISO format.
      *  The ISO time format supported by this function is "HH:MM[:SS[.FFFFFF]]"
@@ -191,13 +213,12 @@ class DcmTime : public DcmByteString
      *  @param supportOldFormat if OFTrue support old (prior V3.0) time format (see above)
      *  @return EC_Normal upon success, an error code otherwise
      */
-    static OFCondition getISOFormattedTimeFromString(
-        const OFString &dicomTime,
-        OFString &formattedTime,
-        const OFBool seconds = OFTrue,
-        const OFBool fraction = OFFalse,
-        const OFBool createMissingPart = OFFalse,
-        const OFBool supportOldFormat = OFTrue);
+    static OFCondition getISOFormattedTimeFromString(const OFString &dicomTime,
+                                                     OFString &formattedTime,
+                                                     const OFBool seconds = OFTrue,
+                                                     const OFBool fraction = OFFalse,
+                                                     const OFBool createMissingPart = OFFalse,
+                                                     const OFBool supportOldFormat = OFTrue);
 
     /** get the specified DICOM time zone in number of hours format
      *  DICOM standard states that if the "Timezone Offset From UTC" attribute (0008,0201) is
@@ -211,9 +232,8 @@ class DcmTime : public DcmByteString
      *  @param timeZone reference to floating point variable where the resulting UTC offset is stored
      *  @return EC_Normal upon success, an error code otherwise
      */
-    static OFCondition getTimeZoneFromString(
-        const OFString &dicomTimeZone,
-        double &timeZone);
+    static OFCondition getTimeZoneFromString(const OFString &dicomTimeZone,
+                                             double &timeZone);
 };
 
 
@@ -223,7 +243,13 @@ class DcmTime : public DcmByteString
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrtm.h,v $
-** Revision 1.14  2002-04-25 09:58:07  joergr
+** Revision 1.15  2002-12-06 12:49:19  joergr
+** Enhanced "print()" function by re-working the implementation and replacing
+** the boolean "showFullData" parameter by a more general integer flag.
+** Added doc++ documentation.
+** Made source code formatting more consistent with other modules/files.
+**
+** Revision 1.14  2002/04/25 09:58:07  joergr
 ** Removed getOFStringArray() implementation.
 **
 ** Revision 1.13  2002/04/11 12:25:10  joergr

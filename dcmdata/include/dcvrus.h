@@ -22,72 +22,149 @@
  *  Purpose: Interface of class DcmUnsignedShort
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-25 10:02:20 $
+ *  Update Date:      $Date: 2002-12-06 12:49:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrus.h,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
+
 #ifndef DCVRUS_H
 #define DCVRUS_H
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "ofconsol.h"
-#include "dcerror.h"
-#include "dctypes.h"
 #include "dcelem.h"
 
 
-
-class DcmUnsignedShort : public DcmElement 
+/** a class representing the DICOM value representation 'Unsigned Short' (US)
+ */
+class DcmUnsignedShort
+  : public DcmElement
 {
-public:
-    DcmUnsignedShort(const DcmTag &tag, const Uint32 len = 0);
-    DcmUnsignedShort(const DcmUnsignedShort& old );
-    virtual ~DcmUnsignedShort(void);
 
-    DcmUnsignedShort &operator=(const DcmUnsignedShort &obj) { DcmElement::operator=(obj); return *this; }
-    virtual DcmEVR ident(void) const { return EVR_US; }
-    virtual void print(ostream & out, const OFBool showFullData = OFTrue,
-		       const int level = 0, const char *pixelFileName = NULL,
-		       size_t *pixelCounter = NULL);
-    virtual unsigned long getVM(void);
+ public:
 
-    virtual OFCondition putUint16Array(const Uint16 * uintVal,
-				       const unsigned long numUints);  
+    /** constructor.
+     *  Create new element from given tag and length.
+     *  @param tag DICOM tag for the new element
+     *  @param len value length for the new element
+     */
+    DcmUnsignedShort(const DcmTag &tag,
+                     const Uint32 len = 0);
 
-    virtual OFCondition putUint16(const Uint16 uintVal,	 // one Uint16 at any
-				  const unsigned long position = 0);  // position
+    /** copy constructor
+     *  @param old element to be copied
+     */
+    DcmUnsignedShort(const DcmUnsignedShort &old);
 
-    virtual OFCondition putString(const char * value);  // Uint16 as Strings
+    /** destructor
+     */
+    virtual ~DcmUnsignedShort();
 
-    virtual OFCondition getUint16Array(Uint16 * & uintVals);
-    virtual OFCondition getUint16(Uint16 & uintVal, const unsigned long pos = 0);
+    /** assignment operator
+     *  @param obj element to be assigned/copied
+     *  @return reference to this object
+     */
+    DcmUnsignedShort &operator=(const DcmUnsignedShort &obj);
 
-    /** get specified value as a character string
-     *  @param value variable in which the result value is stored
+    /** get element type identifier
+     *  @return type identifier of this class (EVR_US)
+     */
+    virtual DcmEVR ident() const;
+
+    /** get value multiplicity
+     *  @return number of currently stored values
+     */
+    virtual unsigned long getVM();
+
+    /** print element to a stream.
+     *  The output format of the value is a backslash separated sequence of numbers.
+     *  @param out output stream
+     *  @param flags optional flag used to customize the output (see DCMTypes::PF_xxx)
+     *  @param level current level of nested items. Used for indentation.
+     *  @param pixelFileName not used
+     *  @param pixelCounter not used
+     */
+    virtual void print(ostream &out,
+                       const size_t flags = 0,
+                       const int level = 0,
+                       const char *pixelFileName = NULL,
+                       size_t *pixelCounter = NULL);
+
+    /** get particular integer value
+     *  @param uintVal reference to result variable (cleared in case of error)
+     *  @param pos index of the value to be retrieved (0..vm-1)
+     *  @return status status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getUint16(Uint16 &uintVal,
+                                  const unsigned long pos = 0);
+
+    /** get reference to stored integer data.
+     *  The number of entries can be determined by "getVM()".
+     *  @param uintVals reference to result variable
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getUint16Array(Uint16 *&uintVals);
+
+    /** get particular value as a character string
+     *  @param stringVal variable in which the result value is stored
      *  @param pos index of the value in case of multi-valued elements (0..vm-1)
      *  @param normalize not used
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition getOFString(OFString &value,
+    virtual OFCondition getOFString(OFString &stringVal,
                                     const unsigned long pos,
                                     OFBool normalize = OFTrue);
 
+    /** set particular element value to given integer
+     *  @param uintVal unsigned integer value to be set
+     *  @param pos index of the value to be set (0 = first position)
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition putUint16(const Uint16 uintVal,
+                                  const unsigned long pos = 0);
+
+    /** set element value to given integer array data
+     *  @param uintVals unsigned integer data to be set
+     *  @param numUints number of integer values to be set
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition putUint16Array(const Uint16 *uintVals,
+                                       const unsigned long numUints);
+
+    /** set element value from the given character string.
+     *  The input string is expected to be a backslash separated sequence of
+     *  numeric characters, e.g. "1\22\333\4444\55555".
+     *  @param stringVal input character string
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition putString(const char *stringVal);
+
+    /** check the currently stored element value
+     *  @param autocorrect correct value length if OFTrue
+     *  @return status, EC_Normal if value length is correct, an error code otherwise
+     */
     virtual OFCondition verify(const OFBool autocorrect = OFFalse);
 };
 
 
 #endif // DCVRUS_H
 
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrus.h,v $
-** Revision 1.16  2002-04-25 10:02:20  joergr
+** Revision 1.17  2002-12-06 12:49:20  joergr
+** Enhanced "print()" function by re-working the implementation and replacing
+** the boolean "showFullData" parameter by a more general integer flag.
+** Added doc++ documentation.
+** Made source code formatting more consistent with other modules/files.
+**
+** Revision 1.16  2002/04/25 10:02:20  joergr
 ** Added getOFString() implementation.
 **
 ** Revision 1.15  2001/09/25 17:19:36  meichel

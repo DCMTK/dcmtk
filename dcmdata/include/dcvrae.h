@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,48 +22,85 @@
  *  Purpose: Interface of class DcmApplicationEntity
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-25 09:50:04 $
+ *  Update Date:      $Date: 2002-12-06 12:49:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrae.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
+
 #ifndef DCVRAE_H
 #define DCVRAE_H
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dctypes.h"
 #include "dcbytstr.h"
 
 
-class DcmApplicationEntity : public DcmByteString 
+/** a class representing the DICOM value representation 'Application Entity' (AE)
+ */
+class DcmApplicationEntity
+  : public DcmByteString
 {
+
   public:
-    DcmApplicationEntity(const DcmTag &tag, const Uint32 len = 0);
-    DcmApplicationEntity(const DcmApplicationEntity &newAE);
+
+    /** constructor.
+     *  Create new element from given tag and length.
+     *  @param tag DICOM tag for the new element
+     *  @param len value length for the new element
+     */
+    DcmApplicationEntity(const DcmTag &tag,
+                         const Uint32 len = 0);
+
+    /** copy constructor
+     *  @param old element to be copied
+     */
+    DcmApplicationEntity(const DcmApplicationEntity &old);
+
+    /** destructor
+     */
     virtual ~DcmApplicationEntity();
 
-    DcmApplicationEntity &operator=(const DcmApplicationEntity &obj) { DcmByteString::operator=(obj); return *this; }
+    /** assignment operator
+     *  @param obj element to be assigned/copied
+     *  @return reference to this object
+     */
+    DcmApplicationEntity &operator=(const DcmApplicationEntity &obj);
 
-    virtual DcmEVR ident() const { return EVR_AE; }
+    /** get element type identifier
+     *  @return type identifier of this class (EVR_AE)
+     */
+    virtual DcmEVR ident() const;
 
-    virtual OFCondition getOFString(
-	OFString & str,
-	const unsigned long pos,
-	OFBool normalize = OFTrue);
+    /** get a copy of a particular string component
+     *  @param stringVal variable in which the result value is stored
+     *  @param pos index of the value in case of multi-valued elements (0..vm-1)
+     *  @param normalize delete leading and trailing spaces if OFTrue
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getOFString(OFString &stringVal,
+	                                const unsigned long pos,
+	                                OFBool normalize = OFTrue);
 };
 
 
 #endif // DCVRAE_H
 
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrae.h,v $
-** Revision 1.11  2002-04-25 09:50:04  joergr
+** Revision 1.12  2002-12-06 12:49:13  joergr
+** Enhanced "print()" function by re-working the implementation and replacing
+** the boolean "showFullData" parameter by a more general integer flag.
+** Added doc++ documentation.
+** Made source code formatting more consistent with other modules/files.
+**
+** Revision 1.11  2002/04/25 09:50:04  joergr
 ** Removed getOFStringArray() implementation.
 **
 ** Revision 1.10  2001/09/25 17:19:30  meichel

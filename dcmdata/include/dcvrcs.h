@@ -22,49 +22,85 @@
  *  Purpose: Interface of class DcmCodeString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-25 09:48:10 $
+ *  Update Date:      $Date: 2002-12-06 12:49:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrcs.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
+
 #ifndef DCVRCS_H
 #define DCVRCS_H
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dctypes.h"
 #include "dcbytstr.h"
 
 
-
-class DcmCodeString : public DcmByteString 
+/** a class representing the DICOM value representation 'Code String' (CS)
+ */
+class DcmCodeString
+  : public DcmByteString
 {
+
   public:
-    DcmCodeString(const DcmTag &tag, const Uint32 len = 0);
-    DcmCodeString( const DcmCodeString &newCS );
+
+    /** constructor.
+     *  Create new element from given tag and length.
+     *  @param tag DICOM tag for the new element
+     *  @param len value length for the new element
+     */
+    DcmCodeString(const DcmTag &tag,
+                  const Uint32 len = 0);
+
+    /** copy constructor
+     *  @param old element to be copied
+     */
+    DcmCodeString(const DcmCodeString &old);
+
+    /** destructor
+     */
     virtual ~DcmCodeString();
 
-    DcmCodeString &operator=(const DcmCodeString &obj) { DcmByteString::operator=(obj); return *this; }
+    /** assignment operator
+     *  @param obj element to be assigned/copied
+     *  @return reference to this object
+     */
+    DcmCodeString &operator=(const DcmCodeString &obj);
 
-    virtual DcmEVR ident(void) const { return EVR_CS; }
-    
-    virtual OFCondition getOFString(
-	OFString & str,
-	const unsigned long pos,
-	OFBool normalize = OFTrue);
+    /** get element type identifier
+     *  @return type identifier of this class (EVR_CS)
+     */
+    virtual DcmEVR ident() const;
+
+    /** get a copy of a particular string component
+     *  @param stringVal variable in which the result value is stored
+     *  @param pos index of the value in case of multi-valued elements (0..vm-1)
+     *  @param normalize delete leading and trailing spaces if OFTrue
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getOFString(OFString &stringVal,
+                                    const unsigned long pos,
+                                    OFBool normalize = OFTrue);
 };
 
 
 #endif // DCVRCS_H
 
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrcs.h,v $
-** Revision 1.12  2002-04-25 09:48:10  joergr
+** Revision 1.13  2002-12-06 12:49:14  joergr
+** Enhanced "print()" function by re-working the implementation and replacing
+** the boolean "showFullData" parameter by a more general integer flag.
+** Added doc++ documentation.
+** Made source code formatting more consistent with other modules/files.
+**
+** Revision 1.12  2002/04/25 09:48:10  joergr
 ** Removed getOFStringArray() implementation.
 **
 ** Revision 1.11  2001/09/25 17:19:30  meichel

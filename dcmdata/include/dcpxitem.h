@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmPixelItem
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-27 16:55:38 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-06 12:49:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpxitem.h,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,8 +41,8 @@
 #include "dcofsetl.h"    /* for class DcmOffsetList */
 
 // CLASS DcmPixelItem
-// This is a pseudo item, that has a value with representation OB 
-// and has no sub elements. Since a DcmOtherByteOtherWord is defined as a 
+// This is a pseudo item, that has a value with representation OB
+// and has no sub elements. Since a DcmOtherByteOtherWord is defined as a
 // Dicom structure with a value of representation OW/OB it is better to
 // derive this class from DcmOtherByteOtherWord.
 
@@ -50,8 +50,8 @@ class DcmPixelItem : public DcmOtherByteOtherWord
 
 {
   protected:
-    virtual OFCondition writeTagAndLength(DcmOutputStream & outStream, 
-					  const E_TransferSyntax oxfer,	
+    virtual OFCondition writeTagAndLength(DcmOutputStream & outStream,
+					  const E_TransferSyntax oxfer,
 					  Uint32 & writtenBytes) const;
   public:
     DcmPixelItem(const DcmTag &tag, const Uint32 len = 0);
@@ -62,17 +62,19 @@ class DcmPixelItem : public DcmOtherByteOtherWord
 
     virtual DcmEVR ident(void) const { return EVR_pixelItem; }
 
-    virtual void print(ostream & out, const OFBool showFullData = OFTrue,
-                       const int level = 0, const char *pixelFileName = NULL,
-		               size_t *pixelCounter = NULL);
+    virtual void print(ostream &out,
+                       const size_t flags = 0,
+                       const int level = 0,
+                       const char *pixelFileName = NULL,
+                       size_t *pixelCounter = NULL);
 
     /** creates in this object an offset table for a compressed pixel sequence.
      *  @param offsetList list of size entries for each individual encoded frame
      *    provided by the compression codec
      *  @return EC_Normal if successful, an error code otherwise
-     */   
+     */
     virtual OFCondition createOffsetTable(const DcmOffsetList& offsetList);
-    
+
     /** write object in XML format
      *  @param out output stream to which the XML document is written
      *  @param flags optional flag used to customize the output (see DCMTypes::XF_xxx)
@@ -89,7 +91,13 @@ class DcmPixelItem : public DcmOtherByteOtherWord
 /*
 ** CVS/RCS Log:
 ** $Log: dcpxitem.h,v $
-** Revision 1.17  2002-08-27 16:55:38  meichel
+** Revision 1.18  2002-12-06 12:49:12  joergr
+** Enhanced "print()" function by re-working the implementation and replacing
+** the boolean "showFullData" parameter by a more general integer flag.
+** Added doc++ documentation.
+** Made source code formatting more consistent with other modules/files.
+**
+** Revision 1.17  2002/08/27 16:55:38  meichel
 ** Initial release of new DICOM I/O stream classes that add support for stream
 **   compression (deflated little endian explicit VR transfer syntax)
 **

@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmDirectoryRecord
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-27 16:55:31 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-06 12:49:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdirrec.h,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -88,7 +88,7 @@ private:
     char* recordsOriginFile;
 
  // --- declarations to avoid compiler warnings
- 
+
     DcmDirectoryRecord &operator=(const DcmDirectoryRecord &);
 
 protected:
@@ -127,7 +127,7 @@ protected:
     OFCondition         fillElementsAndReadSOP(const char *referencedFileID,
                                                const char * sourceFileName);
     OFCondition         masterInsertSub(DcmDirectoryRecord* dirRec,
-                                        const unsigned long where 
+                                        const unsigned long where
                                         = DCM_EndOfListIndex);
     OFCondition         purgeReferencedFile();
 
@@ -138,7 +138,7 @@ public:
     DcmDirectoryRecord(const E_DirRecType recordType,
                        const char *referencedFileID,   // Dicom-Format with '\\'
                        const char * sourceFileName);   // OS Format
-    
+
     DcmDirectoryRecord(const char *recordTypeName,
                        const char *referencedFileID,   // Dicom-Format with '\\'
                        const char * sourceFileName);   // OS Format
@@ -147,8 +147,11 @@ public:
     virtual ~DcmDirectoryRecord();
 
     virtual DcmEVR ident() const;
-    virtual void print(ostream & out, const OFBool showFullData = OFTrue,
-                       const int level = 0, const char *pixelFileName = NULL,
+
+    virtual void print(ostream &out,
+                       const size_t flags = 0,
+                       const int level = 0,
+                       const char *pixelFileName = NULL,
                        size_t *pixelCounter = NULL);
 
     virtual OFCondition read(DcmInputStream & inStream,
@@ -168,7 +171,7 @@ public:
     virtual OFCondition assignToMRDR( DcmDirectoryRecord *mrdr );// in
     virtual OFCondition assignToSOPFile(const char *referencedFileID,
                                         const char * sourceFileName);
-                                                                         
+
     // Manipulation of the Lower-Level Directory Entities:
 
     virtual unsigned long cardSub();
@@ -195,7 +198,13 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdirrec.h,v $
-** Revision 1.21  2002-08-27 16:55:31  meichel
+** Revision 1.22  2002-12-06 12:49:09  joergr
+** Enhanced "print()" function by re-working the implementation and replacing
+** the boolean "showFullData" parameter by a more general integer flag.
+** Added doc++ documentation.
+** Made source code formatting more consistent with other modules/files.
+**
+** Revision 1.21  2002/08/27 16:55:31  meichel
 ** Initial release of new DICOM I/O stream classes that add support for stream
 **   compression (deflated little endian explicit VR transfer syntax)
 **

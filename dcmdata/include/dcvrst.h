@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,46 +21,84 @@
  *
  *  Purpose: Interface of class DcmShortText
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:19:34 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-06 12:49:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrst.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
+
 #ifndef DCVRST_H
 #define DCVRST_H
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dctypes.h"
 #include "dcchrstr.h"
 
 
-
-class DcmShortText : public DcmCharString 
+/** a class representing the DICOM value representation 'Short Text' (ST)
+ */
+class DcmShortText
+  : public DcmCharString
 {
   public:
-    DcmShortText(const DcmTag &tag, const Uint32 len = 0);
-    DcmShortText(const DcmShortText& old );
-    virtual ~DcmShortText(void);
 
-    DcmShortText &operator=(const DcmShortText &obj) { DcmCharString::operator=(obj); return *this; }
+    /** constructor.
+     *  Create new element from given tag and length.
+     *  @param tag DICOM tag for the new element
+     *  @param len value length for the new element
+     */
+    DcmShortText(const DcmTag &tag,
+                 const Uint32 len = 0);
 
-    virtual DcmEVR ident(void) const { return EVR_ST; }
-    virtual unsigned long getVM(void) { return 1L; }
+    /** copy constructor
+     *  @param old element to be copied
+     */
+    DcmShortText(const DcmShortText &old );
 
-    virtual OFCondition getOFString(
-	OFString & str,
-	const unsigned long pos,
-	OFBool normalize = OFTrue);
+    /** destructor
+     */
+    virtual ~DcmShortText();
 
-    virtual OFCondition getOFStringArray(
-	OFString & str, 
-	OFBool normalize = OFTrue);
+    /** assignment operator
+     *  @param obj element to be assigned/copied
+     *  @return reference to this object
+     */
+    DcmShortText &operator=(const DcmShortText &obj);
+
+    /** get element type identifier
+     *  @return type identifier of this class (EVR_ST)
+     */
+    virtual DcmEVR ident() const;
+
+    /** get the value multiplicity.
+     *  Since the backslash "\" is not regarded as a separator the value
+     *  multiplicity is always 1.
+     *  @return value multiplicity of the currently stored value
+     */
+    virtual unsigned long getVM();
+
+    /** get a copy of a particular string component
+     *  @param stringVal variable in which the result value is stored
+     *  @param pos index of the value in case of multi-valued elements (0..vm-1)
+     *  @param normalize delete leading and trailing spaces if OFTrue
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getOFString(OFString &stringVal,
+                                    const unsigned long pos,
+                                    OFBool normalize = OFTrue);
+
+    /** get the string value (all compenents)
+     *  @param stringVal string variable in which the result value is stored
+     *  @param normalize remove trailing spaces if OFTrue
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getOFStringArray(OFString &stringVal,
+                                         OFBool normalize = OFTrue);
 };
 
 
@@ -69,7 +107,13 @@ class DcmShortText : public DcmCharString
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrst.h,v $
-** Revision 1.10  2001-09-25 17:19:34  meichel
+** Revision 1.11  2002-12-06 12:49:19  joergr
+** Enhanced "print()" function by re-working the implementation and replacing
+** the boolean "showFullData" parameter by a more general integer flag.
+** Added doc++ documentation.
+** Made source code formatting more consistent with other modules/files.
+**
+** Revision 1.10  2001/09/25 17:19:34  meichel
 ** Adapted dcmdata to class OFCondition
 **
 ** Revision 1.9  2001/06/01 15:48:53  meichel

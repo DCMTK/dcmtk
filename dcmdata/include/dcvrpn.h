@@ -22,41 +22,69 @@
  *  Purpose: Interface of class DcmPersonName
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-25 09:56:19 $
+ *  Update Date:      $Date: 2002-12-06 12:49:17 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrpn.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
+
 #ifndef DCVRPN_H
 #define DCVRPN_H
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dctypes.h"
 #include "dcchrstr.h"
 
 
-/** a class representing the DICOM value representation 'PersonName' (PN)
+/** a class representing the DICOM value representation 'Person Name' (PN)
  */
-class DcmPersonName : public DcmCharString
+class DcmPersonName
+  : public DcmCharString
 {
+
   public:
-    DcmPersonName(const DcmTag &tag, const Uint32 len = 0);
-    DcmPersonName(const DcmPersonName& old);
-    virtual ~DcmPersonName(void);
 
-    DcmPersonName &operator=(const DcmPersonName &obj) { DcmCharString::operator=(obj); return *this; }
+    /** constructor.
+     *  Create new element from given tag and length.
+     *  @param tag DICOM tag for the new element
+     *  @param len value length for the new element
+     */
+    DcmPersonName(const DcmTag &tag,
+                  const Uint32 len = 0);
 
-    virtual DcmEVR ident(void) const { return EVR_PN; }
+    /** copy constructor
+     *  @param old element to be copied
+     */
+    DcmPersonName(const DcmPersonName &old);
 
-    virtual OFCondition getOFString(
-	    OFString & str,
-	    const unsigned long pos,
-	    OFBool normalize = OFTrue);
+    /** destructor
+     */
+    virtual ~DcmPersonName();
+
+    /** assignment operator
+     *  @param obj element to be assigned/copied
+     *  @return reference to this object
+     */
+    DcmPersonName &operator=(const DcmPersonName &obj);
+
+    /** get element type identifier
+     *  @return type identifier of this class (EVR_PN)
+     */
+    virtual DcmEVR ident() const;
+
+    /** get a copy of a particular string component
+     *  @param stringVal variable in which the result value is stored
+     *  @param pos index of the value in case of multi-valued elements (0..vm-1)
+     *  @param normalize delete leading and trailing spaces if OFTrue
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getOFString(OFString &stringVal,
+                                    const unsigned long pos,
+                                    OFBool normalize = OFTrue);
 
     /** get name components from the element value.
      *  The DICOM PN consists of up to three component groups separated by a "=". The
@@ -74,18 +102,17 @@ class DcmPersonName : public DcmCharString
      *  @param middleName reference to string variable where the "middle name" is stored
      *  @param namePrefix reference to string variable where the "name prefix" is stored
      *  @param nameSuffix reference to string variable where the "name suffix" is stored
-	 *  @param pos index of the element component in case of value multiplicity (0..vm-1)
+     *  @param pos index of the element component in case of value multiplicity (0..vm-1)
      *  @param componentGroup index of the component group (0..2) to be used, see above
      *  @return EC_Normal upon success, an error code otherwise
      */
-    OFCondition getNameComponents(
-        OFString &lastName,
-        OFString &firstName,
-        OFString &middleName,
-        OFString &namePrefix,
-        OFString &nameSuffix,
-        const unsigned long pos = 0,
-        const unsigned int componentGroup = 0);
+    OFCondition getNameComponents(OFString &lastName,
+                                  OFString &firstName,
+                                  OFString &middleName,
+                                  OFString &namePrefix,
+                                  OFString &nameSuffix,
+                                  const unsigned long pos = 0,
+                                  const unsigned int componentGroup = 0);
 
     /** get current element value as a formatted/readable name.
      *  The current element value is expected to be in DICOM PN format as described above.
@@ -93,14 +120,13 @@ class DcmPersonName : public DcmCharString
      *  the delimiters (" " and ", ") are only inserted if required.
      *  If this function fails the result variable 'formattedName' is cleared automatically.
      *  @param formattedName reference to string variable where the result is stored
-	 *  @param pos index of the element component in case of value multiplicity (0..vm-1)
+     *  @param pos index of the element component in case of value multiplicity (0..vm-1)
      *  @param componentGroup index of the component group (0..2) to be used, see above
      *  @return EC_Normal upon success, an error code otherwise
      */
-    OFCondition getFormattedName(
-        OFString &formattedName,
-        const unsigned long pos = 0,
-        const unsigned int componentGroup = 0);
+    OFCondition getFormattedName(OFString &formattedName,
+                                 const unsigned long pos = 0,
+                                 const unsigned int componentGroup = 0);
 
 
     /* --- static helper functions --- */
@@ -125,14 +151,13 @@ class DcmPersonName : public DcmCharString
      *  @param componentGroup index of the component group (0..2) to be used, see above
      *  @return EC_Normal upon success, an error code otherwise
      */
-    static OFCondition getNameComponentsFromString(
-        const OFString &dicomName,
-        OFString &lastName,
-        OFString &firstName,
-        OFString &middleName,
-        OFString &namePrefix,
-        OFString &nameSuffix,
-        const unsigned int componentGroup = 0);
+    static OFCondition getNameComponentsFromString(const OFString &dicomName,
+                                                   OFString &lastName,
+                                                   OFString &firstName,
+                                                   OFString &middleName,
+                                                   OFString &namePrefix,
+                                                   OFString &nameSuffix,
+                                                   const unsigned int componentGroup = 0);
 
     /** get specified DICOM person name as a formatted/readable name.
      *  The specified 'dicomName' is expected to be in DICOM PN format as described above.
@@ -144,10 +169,9 @@ class DcmPersonName : public DcmCharString
      *  @param componentGroup index of the component group (0..2) to be used, see above
      *  @return EC_Normal upon success, an error code otherwise
      */
-    static OFCondition getFormattedNameFromString(
-        const OFString &dicomName,
-        OFString &formattedName,
-        const unsigned int componentGroup = 0);
+    static OFCondition getFormattedNameFromString(const OFString &dicomName,
+                                                  OFString &formattedName,
+                                                  const unsigned int componentGroup = 0);
 
     /** get formatted/readable name from specified name components.
      *  The output format is "[namePrefix][ firstName][ middleName][ lastName][, nameSuffix]";
@@ -161,22 +185,28 @@ class DcmPersonName : public DcmCharString
      *  @param formattedName reference to string variable where the result is stored
      *  @return always returns EC_Normal
      */
-    static OFCondition getFormattedNameFromComponents(
-        const OFString &lastName,
-        const OFString &firstName,
-        const OFString &middleName,
-        const OFString &namePrefix,
-        const OFString &nameSuffix,
-        OFString &formattedName);
+    static OFCondition getFormattedNameFromComponents(const OFString &lastName,
+                                                      const OFString &firstName,
+                                                      const OFString &middleName,
+                                                      const OFString &namePrefix,
+                                                      const OFString &nameSuffix,
+                                                      OFString &formattedName);
 };
 
 
 #endif // DCVRPN_H
 
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrpn.h,v $
-** Revision 1.13  2002-04-25 09:56:19  joergr
+** Revision 1.14  2002-12-06 12:49:17  joergr
+** Enhanced "print()" function by re-working the implementation and replacing
+** the boolean "showFullData" parameter by a more general integer flag.
+** Added doc++ documentation.
+** Made source code formatting more consistent with other modules/files.
+**
+** Revision 1.13  2002/04/25 09:56:19  joergr
 ** Removed getOFStringArray() implementation.
 **
 ** Revision 1.12  2001/10/10 15:17:38  joergr

@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmIntegerString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-25 09:54:28 $
+ *  Update Date:      $Date: 2002-12-06 12:49:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvris.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,32 +40,75 @@
 #include "dcbytstr.h"
 
 
-
-class DcmIntegerString : public DcmByteString 
+/** a class representing the DICOM value representation 'Integer String' (IS)
+ */
+class DcmIntegerString
+  : public DcmByteString
 {
+
   public:
-    DcmIntegerString(const DcmTag &tag, const Uint32 len = 0);
-    DcmIntegerString(const DcmIntegerString& old);
+
+    /** constructor.
+     *  Create new element from given tag and length.
+     *  @param tag DICOM tag for the new element
+     *  @param len value length for the new element
+     */
+    DcmIntegerString(const DcmTag &tag,
+                     const Uint32 len = 0);
+
+    /** copy constructor
+     *  @param old element to be copied
+     */
+    DcmIntegerString(const DcmIntegerString &old);
+
+    /** destructor
+     */
     virtual ~DcmIntegerString();
 
-    DcmIntegerString &operator=(const DcmIntegerString &obj) { DcmByteString::operator=(obj); return *this; }
+    /** assignment operator
+     *  @param obj element to be assigned/copied
+     *  @return reference to this object
+     */
+    DcmIntegerString &operator=(const DcmIntegerString &obj);
 
-    virtual DcmEVR ident() const { return EVR_IS; }
+    /** get element type identifier
+     *  @return type identifier of this class (EVR_IS)
+     */
+    virtual DcmEVR ident() const;
 
-    virtual OFCondition getSint32(Sint32 & val, const unsigned long pos = 0);
-    virtual OFCondition getOFString(
-	OFString & str,
-	const unsigned long pos,
-	OFBool normalize = OFTrue);
+    /** get particular integer value
+     *  @param sintVal reference to result variable
+     *  @param pos index of the value to be retrieved (0..vm-1)
+     *  @return status status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getSint32(Sint32 &sintVal,
+                                  const unsigned long pos = 0);
+
+    /** get a particular value as a character string
+     *  @param stringVal variable in which the result value is stored
+     *  @param pos index of the value in case of multi-valued elements (0..vm-1)
+     *  @param normalize delete leading and trailing spaces if OFTrue
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getOFString(OFString &stringVal,
+                                    const unsigned long pos,
+                                    OFBool normalize = OFTrue);
 };
 
 
 #endif // DCVRIS_H
 
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcvris.h,v $
-** Revision 1.12  2002-04-25 09:54:28  joergr
+** Revision 1.13  2002-12-06 12:49:16  joergr
+** Enhanced "print()" function by re-working the implementation and replacing
+** the boolean "showFullData" parameter by a more general integer flag.
+** Added doc++ documentation.
+** Made source code formatting more consistent with other modules/files.
+**
+** Revision 1.12  2002/04/25 09:54:28  joergr
 ** Removed getOFStringArray() implementation.
 **
 ** Revision 1.11  2001/09/25 17:19:32  meichel

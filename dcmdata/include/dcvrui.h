@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmUniqueIdentifier
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-25 10:01:21 $
+ *  Update Date:      $Date: 2002-12-06 12:49:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrui.h,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,39 +36,99 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "ofconsol.h"
-#include "dctypes.h"
 #include "dcbytstr.h"
 
 
-
-class DcmUniqueIdentifier : public DcmByteString 
+/** a class representing the DICOM value representation 'Unique Identifier' (UI)
+ */
+class DcmUniqueIdentifier
+  : public DcmByteString
 {
-protected:
-    virtual OFCondition makeMachineByteString(void);
 
-public:
-    DcmUniqueIdentifier(const DcmTag &tag, const Uint32 len = 0);
+  public:
+
+    /** constructor.
+     *  Create new element from given tag and length.
+     *  @param tag DICOM tag for the new element
+     *  @param len value length for the new element
+     */
+    DcmUniqueIdentifier(const DcmTag &tag,
+                        const Uint32 len = 0);
+
+    /** copy constructor
+     *  @param old element to be copied
+     */
     DcmUniqueIdentifier(const DcmUniqueIdentifier &old);
-    virtual ~DcmUniqueIdentifier(void);
 
-    DcmUniqueIdentifier &operator=(const DcmUniqueIdentifier &obj) { DcmByteString::operator=(obj); return *this; }
- 
-    virtual DcmEVR ident(void) const { return EVR_UI; }
-    virtual void print(ostream & out, const OFBool showFullData = OFTrue,
-		       const int level = 0, const char *pixelFileName = NULL,
-		       size_t *pixelCounter = NULL);
+    /** destructor
+     */
+    virtual ~DcmUniqueIdentifier();
 
-    virtual OFCondition putString(const char * value);
+    /** assignment operator
+     *  @param obj element to be assigned/copied
+     *  @return reference to this object
+     */
+    DcmUniqueIdentifier &operator=(const DcmUniqueIdentifier &obj);
+
+    /** get element type identifier
+     *  @return type identifier of this class (EVR_UI)
+     */
+    virtual DcmEVR ident() const;
+
+    /** print element to a stream.
+     *  The output format of the value is a backslash separated sequence of string
+     *  components. In case of a single component the UID number is mapped to the
+     *  corresponding UID name (using "dcmFindNameOfUID()") if available. A "=" is
+     *  used as a prefix to distinguish the UID name from the UID number.
+     *  NB: this mapping of UID names only works for single-valued strings.
+     *  @param out output stream
+     *  @param flags optional flag used to customize the output (see DCMTypes::PF_xxx)
+     *  @param level current level of nested items. Used for indentation.
+     *  @param pixelFileName not used
+     *  @param pixelCounter not used
+     */
+    virtual void print(ostream &out,
+                       const size_t flags = 0,
+                       const int level = 0,
+                       const char *pixelFileName = NULL,
+                       size_t *pixelCounter = NULL);
+
+    /** set element value from the given character string.
+     *  If the string starts with a "=" the subsequent characters are interpreted as a
+     *  UID name and mapped to the corresponding UID number (using "dcmFindUIDFromName()")
+     *  if possible. Otherwise the leading "=" is removed.
+     *  NB: this mapping of UID names only works for single-valued input strings.
+     *  @param stringVal input character string (possibly multi-valued)
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition putString(const char *stringVal);
+
+
+  protected:
+
+    /** convert currently stored string value to internal representation.
+     *  It removes any leading, embedded and trailing space character and recomputes
+     *  the string length. This manipulation attempts to correct problems with
+     *  incorrectly encoded UIDs which have been observed in some images.
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition makeMachineByteString();
 };
 
 
 #endif // DCVRUI_H
 
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrui.h,v $
-** Revision 1.17  2002-04-25 10:01:21  joergr
+** Revision 1.18  2002-12-06 12:49:19  joergr
+** Enhanced "print()" function by re-working the implementation and replacing
+** the boolean "showFullData" parameter by a more general integer flag.
+** Added doc++ documentation.
+** Made source code formatting more consistent with other modules/files.
+**
+** Revision 1.17  2002/04/25 10:01:21  joergr
 ** Made makeMachineByteString() virtual to avoid ambiguities.
 **
 ** Revision 1.16  2001/09/25 17:19:35  meichel

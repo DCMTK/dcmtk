@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmDateTime
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-25 09:51:08 $
+ *  Update Date:      $Date: 2002-12-06 12:49:15 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrdt.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,23 +41,51 @@
 #include "ofdatime.h"
 
 
-/** a class representing the DICOM value representation 'DateTime' (DT)
+/** a class representing the DICOM value representation 'Date Time' (DT)
  */
-class DcmDateTime : public DcmByteString 
+class DcmDateTime
+  : public DcmByteString
 {
+
   public:
-    DcmDateTime(const DcmTag &tag, const Uint32 len = 0);
-    DcmDateTime( const DcmDateTime &newDT );
+
+    /** constructor.
+     *  Create new element from given tag and length.
+     *  @param tag DICOM tag for the new element
+     *  @param len value length for the new element
+     */
+    DcmDateTime(const DcmTag &tag,
+                const Uint32 len = 0);
+
+    /** copy constructor
+     *  @param old element to be copied
+     */
+    DcmDateTime(const DcmDateTime &old);
+
+    /** destructor
+     */
     virtual ~DcmDateTime();
 
-    DcmDateTime &operator=(const DcmDateTime &obj) { DcmByteString::operator=(obj); return *this; }
+    /** assignment operator
+     *  @param obj element to be assigned/copied
+     *  @return reference to this object
+     */
+    DcmDateTime &operator=(const DcmDateTime &obj);
 
-    virtual DcmEVR ident() const { return EVR_DT; }
+    /** get element type identifier
+     *  @return type identifier of this class (EVR_DT)
+     */
+    virtual DcmEVR ident() const;
 
-    virtual OFCondition getOFString(
-	OFString & str,
-	const unsigned long pos,
-	OFBool normalize = OFTrue);
+    /** get a copy of a particular string component
+     *  @param stringValue variable in which the result value is stored
+     *  @param pos index of the value in case of multi-valued elements (0..vm-1)
+     *  @param normalize delete trailing spaces if OFTrue
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getOFString(OFString &stringValue,
+	                                const unsigned long pos,
+	                                OFBool normalize = OFTrue);
 
 	/** set the element value to the current system date and time.
 	 *  The DICOM DT format supported by this function is "YYYYMMDDHHMM[SS[.FFFFFF]][&ZZZZ]"
@@ -72,11 +100,10 @@ class DcmDateTime : public DcmByteString
 	 *   Time (UTC).
 	 *  @return EC_Normal upon success, an error code otherwise
 	 */
-    OFCondition setCurrentDateTime(
-        const OFBool seconds = OFTrue,
-        const OFBool fraction = OFFalse,
-        const OFBool timeZone = OFFalse);
-	
+    OFCondition setCurrentDateTime(const OFBool seconds = OFTrue,
+                                   const OFBool fraction = OFFalse,
+                                   const OFBool timeZone = OFFalse);
+
     /** set the element value to the given date and time
      *  @param dateTimeValue date to be set (should be a valid date and time)
      *  @return EC_Normal upon success, an error code otherwise
@@ -92,9 +119,8 @@ class DcmDateTime : public DcmByteString
      *  @param pos index of the element component in case of value multiplicity (0..vm-1)
      *  @return EC_Normal upon success, an error code otherwise
      */
-    OFCondition getOFDateTime(
-        OFDateTime &dateTimeValue,
-        const unsigned long pos = 0);
+    OFCondition getOFDateTime(OFDateTime &dateTimeValue,
+                              const unsigned long pos = 0);
 
 	/** get the current element value in ISO date/time format.
 	 *  The ISO date/time format supported by this function is "YYYY-MM-DD HH:MM[:SS[.FFFFFF]]
@@ -114,14 +140,13 @@ class DcmDateTime : public DcmByteString
 	 *   a seconds and/or time zone) if absent in the element value
 	 *  @return EC_Normal upon success, an error code otherwise
 	 */
-    OFCondition getISOFormattedDateTime(
-        OFString &formattedDateTime,
-        const unsigned long pos = 0,
-        const OFBool seconds = OFTrue,
-        const OFBool fraction = OFFalse,
-        const OFBool timeZone = OFTrue,
-        const OFBool createMissingPart = OFFalse);
-                                    
+    OFCondition getISOFormattedDateTime(OFString &formattedDateTime,
+                                        const unsigned long pos = 0,
+                                        const OFBool seconds = OFTrue,
+                                        const OFBool fraction = OFFalse,
+                                        const OFBool timeZone = OFTrue,
+                                        const OFBool createMissingPart = OFFalse);
+
     /* --- static helper functions --- */
 
 	/** get the current system date and time.
@@ -138,11 +163,10 @@ class DcmDateTime : public DcmByteString
 	 *   Time (UTC).
 	 *  @return EC_Normal upon success, an error code otherwise
 	 */
-    static OFCondition getCurrentDateTime(
-        OFString &dicomDateTime,
-        const OFBool seconds = OFTrue,
-        const OFBool fraction = OFFalse,
-        const OFBool timeZone = OFFalse);
+    static OFCondition getCurrentDateTime(OFString &dicomDateTime,
+                                          const OFBool seconds = OFTrue,
+                                          const OFBool fraction = OFFalse,
+                                          const OFBool timeZone = OFFalse);
 
     /** get the specified OFDateTime value in DICOM format.
      *  The DICOM DT format supported by this function is "YYYYMMDDHHMM[SS[.FFFFFF]][&ZZZZ]"
@@ -159,13 +183,12 @@ class DcmDateTime : public DcmByteString
 	 *   Time (UTC).
      *  @return EC_Normal upon success, an error code otherwise
      */
-    static OFCondition getDicomDateTimeFromOFDateTime(
-        const OFDateTime &dateTimeValue,
-        OFString &dicomDateTime,
-        const OFBool seconds = OFTrue,
-        const OFBool fraction = OFFalse,
-        const OFBool timeZone = OFFalse);
-    
+    static OFCondition getDicomDateTimeFromOFDateTime(const OFDateTime &dateTimeValue,
+                                                      OFString &dicomDateTime,
+                                                      const OFBool seconds = OFTrue,
+                                                      const OFBool fraction = OFFalse,
+                                                      const OFBool timeZone = OFFalse);
+
     /** get the specified DICOM date and time value in OFDateTime format.
      *  Please note that the element value is expected to be in valid DICOM DT format
      *  ("YYYYMMDD[HH[MM[SS[.FFFFFF]]]][&ZZZZ]"). If the optional time zone ("&ZZZZ") is
@@ -175,9 +198,8 @@ class DcmDateTime : public DcmByteString
      *  @param dateTimeValue reference to OFDateTime variable where the result is stored
      *  @return EC_Normal upon success, an error code otherwise
      */
-    static OFCondition getOFDateTimeFromString(
-        const OFString &dicomDateTime,
-        OFDateTime &dateTimeValue);
+    static OFCondition getOFDateTimeFromString(const OFString &dicomDateTime,
+                                               OFDateTime &dateTimeValue);
 
 	/** get the specified DICOM date/time value in ISO format.
 	 *  The ISO date/time format supported by this function is "YYYY-MM-DD HH:MM[:SS[.FFFFFF]]
@@ -197,22 +219,28 @@ class DcmDateTime : public DcmByteString
 	 *   a seconds and/or time zone) if absent in the element value
 	 *  @return EC_Normal upon success, an error code otherwise
 	 */
-    static OFCondition getISOFormattedDateTimeFromString(
-        const OFString &dicomDateTime,
-        OFString &formattedDateTime,
-        const OFBool seconds = OFTrue,
-        const OFBool fraction = OFFalse,
-        const OFBool timeZone = OFTrue,
-        const OFBool createMissingPart = OFFalse);
+    static OFCondition getISOFormattedDateTimeFromString(const OFString &dicomDateTime,
+                                                         OFString &formattedDateTime,
+                                                         const OFBool seconds = OFTrue,
+                                                         const OFBool fraction = OFFalse,
+                                                         const OFBool timeZone = OFTrue,
+                                                         const OFBool createMissingPart = OFFalse);
 };
 
 
 #endif // DCVRDT_H
 
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrdt.h,v $
-** Revision 1.14  2002-04-25 09:51:08  joergr
+** Revision 1.15  2002-12-06 12:49:15  joergr
+** Enhanced "print()" function by re-working the implementation and replacing
+** the boolean "showFullData" parameter by a more general integer flag.
+** Added doc++ documentation.
+** Made source code formatting more consistent with other modules/files.
+**
+** Revision 1.14  2002/04/25 09:51:08  joergr
 ** Removed getOFStringArray() implementation.
 **
 ** Revision 1.13  2002/04/11 12:25:09  joergr

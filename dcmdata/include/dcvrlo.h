@@ -22,49 +22,85 @@
  *  Purpose: Interface of class DcmLongString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-25 09:54:53 $
+ *  Update Date:      $Date: 2002-12-06 12:49:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrlo.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
+
 #ifndef DCVRLO_H
 #define DCVRLO_H
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dctypes.h"
 #include "dcchrstr.h"
 
 
-
-class DcmLongString : public DcmCharString 
+/** a class representing the DICOM value representation 'Long String' (LO)
+ */
+class DcmLongString
+  : public DcmCharString
 {
+
   public:
-    DcmLongString(const DcmTag &tag, const Uint32 len = 0);
-    DcmLongString( const DcmLongString& old );
+
+    /** constructor.
+     *  Create new element from given tag and length.
+     *  @param tag DICOM tag for the new element
+     *  @param len value length for the new element
+     */
+    DcmLongString(const DcmTag &tag,
+                  const Uint32 len = 0);
+
+    /** copy constructor
+     *  @param old element to be copied
+     */
+    DcmLongString(const DcmLongString &old);
+
+    /** destructor
+     */
     virtual ~DcmLongString();
 
-    DcmLongString &operator=(const DcmLongString &obj) { DcmCharString::operator=(obj); return *this; }
+    /** assignment operator
+     *  @param obj element to be assigned/copied
+     *  @return reference to this object
+     */
+    DcmLongString &operator=(const DcmLongString &obj);
 
-    virtual DcmEVR ident() const { return EVR_LO; }
+    /** get element type identifier
+     *  @return type identifier of this class (EVR_LO)
+     */
+    virtual DcmEVR ident() const;
 
-    virtual OFCondition getOFString(
-	OFString & str,
-	const unsigned long pos,
-	OFBool normalize = OFTrue);
+    /** get a copy of a particular string component
+     *  @param stringVal variable in which the result value is stored
+     *  @param pos index of the value in case of multi-valued elements (0..vm-1)
+     *  @param normalize delete leading and trailing spaces if OFTrue
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getOFString(OFString &stringVal,
+                                    const unsigned long pos,
+                                    OFBool normalize = OFTrue);
 };
 
 
 #endif // DCVRLO_H
 
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrlo.h,v $
-** Revision 1.11  2002-04-25 09:54:53  joergr
+** Revision 1.12  2002-12-06 12:49:16  joergr
+** Enhanced "print()" function by re-working the implementation and replacing
+** the boolean "showFullData" parameter by a more general integer flag.
+** Added doc++ documentation.
+** Made source code formatting more consistent with other modules/files.
+**
+** Revision 1.11  2002/04/25 09:54:53  joergr
 ** Removed getOFStringArray() implementation.
 **
 ** Revision 1.10  2001/09/25 17:19:32  meichel

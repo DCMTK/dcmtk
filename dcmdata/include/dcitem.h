@@ -21,15 +21,16 @@
  *
  *  Purpose: Interface of class DcmItem
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-27 16:55:34 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-06 12:49:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcitem.h,v $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
+
 
 #ifndef DCITEM_H
 #define DCITEM_H
@@ -44,47 +45,89 @@
 #include "dcstack.h"
 #include "dcpcache.h"
 
+
 /** a class representing a collection of DICOM elements
  */
-class DcmItem : public DcmObject
+class DcmItem
+  : public DcmObject
 {
-public:
-    DcmItem(); // create with an item tag
+
+  public:
+
+    /** default constructor
+     */
+    DcmItem();
+
+    /** constructor.
+     *  Create new item from given tag and length.
+     *  @param tag DICOM tag for the new element
+     *  @param len value length for the new element
+     */
     DcmItem(const DcmTag &tag,
             const Uint32 len = 0);
-    DcmItem( const DcmItem& old );
+
+    /** copy constructor
+     *  @param old item to be copied
+     */
+    DcmItem(const DcmItem &old);
+
+    /** destructor
+     */
     virtual ~DcmItem();
 
-    virtual DcmEVR ident(void) const;
-    virtual OFBool isLeaf(void) const { return OFFalse; }
-    virtual void print(ostream & out, const OFBool showFullData = OFTrue,
-                       const int level = 0, const char *pixelFileName = NULL,
-                       size_t *pixelCounter = NULL);
+    /** get type identifier
+     *  @return type identifier of this class (EVR_item)
+     */
+    virtual DcmEVR ident() const;
+
+    /** get value multiplicity
+     *  @return always returns 1 (according to the DICOM standard)
+     */
     virtual unsigned long getVM();
+
+    virtual unsigned long card() const;
+
+    virtual OFBool isLeaf() const { return OFFalse; }
+
+    /** print all elements of the item to a stream
+     *  @param out output stream
+     *  @param flags optional flag used to customize the output (see DCMTypes::PF_xxx)
+     *  @param level current level of nested items. Used for indentation.
+     *  @param pixelFileName not used
+     *  @param pixelCounter not used
+     */
+    virtual void print(ostream &out,
+                       const size_t flags = 0,
+                       const int level = 0,
+                       const char *pixelFileName = NULL,
+                       size_t *pixelCounter = NULL);
+
     virtual Uint32 calcElementLength(const E_TransferSyntax xfer,
                                      const E_EncodingType enctype);
 
-    virtual Uint32 getLength(const E_TransferSyntax xfer
-                             = EXS_LittleEndianImplicit,
-                             const E_EncodingType enctype
-                             = EET_UndefinedLength );
+    virtual Uint32 getLength(const E_TransferSyntax xfer = EXS_LittleEndianImplicit,
+                             const E_EncodingType enctype = EET_UndefinedLength);
 
     virtual void transferInit();
     virtual void transferEnd();
 
     virtual OFBool canWriteXfer(const E_TransferSyntax newXfer,
-                              const E_TransferSyntax oldXfer);
+                                const E_TransferSyntax oldXfer);
 
-    virtual OFCondition read(DcmInputStream & inStream,
+    virtual OFCondition read(DcmInputStream &inStream,
                              const E_TransferSyntax ixfer,
                              const E_GrpLenEncoding glenc = EGL_noChange,
-                             const Uint32 maxReadLength
-                             = DCM_MaxReadLength);
+                             const Uint32 maxReadLength = DCM_MaxReadLength);
 
-    virtual OFCondition write(DcmOutputStream & outStream,
+    /** write object to a stream
+     *  @param outStream DICOM output stream
+     *  @param oxfer output transfer syntax
+     *  @param enctype encoding types (undefined or explicit length)
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition write(DcmOutputStream &outStream,
                               const E_TransferSyntax oxfer,
-                              const E_EncodingType enctype
-                              = EET_UndefinedLength);
+                              const E_EncodingType enctype = EET_UndefinedLength);
 
     /** write object in XML format
      *  @param out output stream to which the XML document is written
@@ -95,18 +138,19 @@ public:
                                  const size_t flags = 0);
 
     /** special write method for creation of digital signatures
+     *  @param outStream DICOM output stream
+     *  @param oxfer output transfer syntax
+     *  @param enctype encoding types (undefined or explicit length)
+     *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition writeSignatureFormat(DcmOutputStream & outStream,
-					 const E_TransferSyntax oxfer,
-					 const E_EncodingType enctype
-					 = EET_UndefinedLength);
+    virtual OFCondition writeSignatureFormat(DcmOutputStream &outStream,
+                                             const E_TransferSyntax oxfer,
+                                             const E_EncodingType enctype = EET_UndefinedLength);
 
     /** returns true if the object contains an element with Unknown VR at any nesting level
      *  @return true if the object contains an element with Unknown VR, false otherwise
      */
     virtual OFBool containsUnknownVR() const;
-
-    virtual unsigned long card() const;
 
     /** insert a new element into the list of elements maintained by this item.
      *  The list of elements is always kept in ascending tag order.
@@ -120,43 +164,44 @@ public:
      *    in the read() method to detect datasets with out-of-order elements.
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition insert(
-        DcmElement* elem,
-        OFBool replaceOld = OFFalse,
-        OFBool checkInsertOrder = OFFalse);
+    virtual OFCondition insert(DcmElement *elem,
+                               OFBool replaceOld = OFFalse,
+                               OFBool checkInsertOrder = OFFalse);
 
-    virtual DcmElement* getElement(const unsigned long num);
+    virtual DcmElement *getElement(const unsigned long num);
 
     // get next Object from position in stack. If stack empty
     // get next Object in this item. if intoSub true, scan
     // complete hierarchy, false scan only elements direct in this
     // item (not deeper).
-    virtual OFCondition nextObject(DcmStack & stack, const OFBool intoSub);
-    virtual DcmObject * nextInContainer(const DcmObject * obj);
-    virtual DcmElement* remove(const unsigned long num);
-    virtual DcmElement* remove(DcmObject* elem);
-    virtual DcmElement* remove(const DcmTagKey & tag);
+    virtual OFCondition nextObject(DcmStack &stack,
+                                   const OFBool intoSub);
+    virtual DcmObject  *nextInContainer(const DcmObject *obj);
+    virtual DcmElement *remove(const unsigned long num);
+    virtual DcmElement *remove(DcmObject *elem);
+    virtual DcmElement *remove(const DcmTagKey &tag);
     virtual OFCondition clear();
     virtual OFCondition verify(const OFBool autocorrect = OFFalse );
-    virtual OFCondition search(const DcmTagKey& xtag,              // in
+    virtual OFCondition search(const DcmTagKey &xtag,              // in
                                DcmStack &resultStack,              // inout
                                E_SearchMode mode = ESM_fromHere,   // in
                                OFBool searchIntoSub = OFTrue );    // in
     virtual OFCondition searchErrors( DcmStack &resultStack );     // inout
-    virtual OFCondition loadAllDataIntoMemory(void);
+    virtual OFCondition loadAllDataIntoMemory();
 
-    virtual OFCondition computeGroupLengthAndPadding
-                         (const E_GrpLenEncoding glenc,
-                          const E_PaddingEncoding padenc = EPD_noChange,
-                          const E_TransferSyntax xfer = EXS_Unknown,
-                          const E_EncodingType enctype = EET_ExplicitLength,
-                          const Uint32 padlen = 0,
-                          const Uint32 subPadlen = 0,
-                          Uint32 instanceLength = 0);
+    virtual OFCondition computeGroupLengthAndPadding(const E_GrpLenEncoding glenc,
+                                                     const E_PaddingEncoding padenc = EPD_noChange,
+                                                     const E_TransferSyntax xfer = EXS_Unknown,
+                                                     const E_EncodingType enctype = EET_ExplicitLength,
+                                                     const Uint32 padlen = 0,
+                                                     const Uint32 subPadlen = 0,
+                                                     Uint32 instanceLength = 0);
 
     /* simple tests for existance */
-    OFBool tagExists(const DcmTagKey& key, OFBool searchIntoSub = OFFalse);
-    OFBool tagExistsWithValue(const DcmTagKey& key, OFBool searchIntoSub = OFFalse);
+    OFBool tagExists(const DcmTagKey &key,
+                     OFBool searchIntoSub = OFFalse);
+    OFBool tagExistsWithValue(const DcmTagKey &key,
+                              OFBool searchIntoSub = OFFalse);
 
 
     /* --- findAndGet functions: find an element and get the value --- */
@@ -171,13 +216,13 @@ public:
      *  @param searchIntoSub flag indicating whether to search into sequences or not
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    OFCondition findAndGetString(const DcmTagKey& tagKey,
+    OFCondition findAndGetString(const DcmTagKey &tagKey,
                                  const char *&value,
                                  const OFBool searchIntoSub = OFFalse);
 
     /** find element and get value as a C++ string (only one component).
-     *  Applicable to the following VRs: AE, AS, AT, CS, DA, DS, DT, FL, FD, IS, LO, LT, OB, OW, PN,
-     *  SH, SL, SS, ST, TM, UI, UL, US, UT
+     *  Applicable to the following VRs: AE, AS, AT, CS, DA, DS, DT, FL, FD, IS, LO, LT, OB, OF, OW,
+     *  PN, SH, SL, SS, ST, TM, UI, UL, US, UT
      *  Since the getOFString() routine is called internally the resulting string is normalized, i.e.
      *  leading and/or trailing spaces are removed according to the associated value representation,
      *  or the element value is converted to a character string (for non-string VRs) - see documentation
@@ -191,14 +236,14 @@ public:
      *  @param searchIntoSub flag indicating whether to search into sequences or not
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    OFCondition findAndGetOFString(const DcmTagKey& tagKey,
+    OFCondition findAndGetOFString(const DcmTagKey &tagKey,
                                    OFString &value,
                                    const unsigned long pos = 0,
                                    const OFBool searchIntoSub = OFFalse);
 
     /** find element and get value as a C++ string (all components).
-     *  Applicable to the following VRs: AE, AS, AT, CS, DA, DS, DT, FL, FD, IS, LO, LT, OB, OW, PN,
-     *  SH, SL, SS, ST, TM, UI, UL, US, UT
+     *  Applicable to the following VRs: AE, AS, AT, CS, DA, DS, DT, FL, FD, IS, LO, LT, OB, OF, OW,
+     *  PN, SH, SL, SS, ST, TM, UI, UL, US, UT
      *  Since the getOFStringArray() routine is called internally the resulting string is normalized,
      *  i.e. leading and/or trailing spaces are removed according to the associated value representation
      *  or the element values are converted to character strings (for non-string VRs) - see documentation
@@ -209,7 +254,7 @@ public:
      *  @param searchIntoSub flag indicating whether to search into sequences or not
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    OFCondition findAndGetOFStringArray(const DcmTagKey& tagKey,
+    OFCondition findAndGetOFStringArray(const DcmTagKey &tagKey,
                                         OFString &value,
                                         const OFBool searchIntoSub = OFFalse);
 
@@ -222,7 +267,7 @@ public:
      *  @param searchIntoSub flag indicating whether to search into sequences or not
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    OFCondition findAndGetUint8(const DcmTagKey& tagKey,
+    OFCondition findAndGetUint8(const DcmTagKey &tagKey,
                                 Uint8 &value,
                                 const unsigned long pos = 0,
                                 const OFBool searchIntoSub = OFFalse);
@@ -235,7 +280,7 @@ public:
      *  @param searchIntoSub flag indicating whether to search into sequences or not
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    OFCondition findAndGetUint8Array(const DcmTagKey& tagKey,
+    OFCondition findAndGetUint8Array(const DcmTagKey &tagKey,
                                      Uint8 *&value,
                                      const OFBool searchIntoSub = OFFalse);
 
@@ -248,7 +293,7 @@ public:
      *  @param searchIntoSub flag indicating whether to search into sequences or not
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    OFCondition findAndGetUint16(const DcmTagKey& tagKey,
+    OFCondition findAndGetUint16(const DcmTagKey &tagKey,
                                  Uint16 &value,
                                  const unsigned long pos = 0,
                                  const OFBool searchIntoSub = OFFalse);
@@ -261,7 +306,7 @@ public:
      *  @param searchIntoSub flag indicating whether to search into sequences or not
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    OFCondition findAndGetUint16Array(const DcmTagKey& tagKey,
+    OFCondition findAndGetUint16Array(const DcmTagKey &tagKey,
                                       Uint16 *&value,
                                       const OFBool searchIntoSub = OFFalse);
 
@@ -274,7 +319,7 @@ public:
      *  @param searchIntoSub flag indicating whether to search into sequences or not
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    OFCondition findAndGetSint16(const DcmTagKey& tagKey,
+    OFCondition findAndGetSint16(const DcmTagKey &tagKey,
                                  Sint16 &value,
                                  const unsigned long pos = 0,
                                  const OFBool searchIntoSub = OFFalse);
@@ -287,7 +332,7 @@ public:
      *  @param searchIntoSub flag indicating whether to search into sequences or not
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    OFCondition findAndGetSint16Array(const DcmTagKey& tagKey,
+    OFCondition findAndGetSint16Array(const DcmTagKey &tagKey,
                                       Sint16 *&value,
                                       const OFBool searchIntoSub = OFFalse);
 
@@ -300,7 +345,7 @@ public:
      *  @param searchIntoSub flag indicating whether to search into sequences or not
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    OFCondition findAndGetUint32(const DcmTagKey& tagKey,
+    OFCondition findAndGetUint32(const DcmTagKey &tagKey,
                                  Uint32 &value,
                                  const unsigned long pos = 0,
                                  const OFBool searchIntoSub = OFFalse);
@@ -314,13 +359,13 @@ public:
      *  @param searchIntoSub flag indicating whether to search into sequences or not
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    OFCondition findAndGetSint32(const DcmTagKey& tagKey,
+    OFCondition findAndGetSint32(const DcmTagKey &tagKey,
                                  Sint32 &value,
                                  const unsigned long pos = 0,
                                  const OFBool searchIntoSub = OFFalse);
 
-    /** find element and get value as a 32-bit floating point.
-     *  Applicable to the following VRs: FL
+    /** find element and get value as a (signed) long integer.
+     *  Applicable to the following VRs: IS, SL, SS, UL, US
      *  The result variable 'value' is automatically set to zero if an error occurs.
      *  @param tagKey DICOM tag specifying the attribute to be searched for
      *  @param value variable in which the element value is stored
@@ -328,10 +373,36 @@ public:
      *  @param searchIntoSub flag indicating whether to search into sequences or not
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    OFCondition findAndGetFloat32(const DcmTagKey& tagKey,
+    OFCondition findAndGetLongInt(const DcmTagKey &tagKey,
+                                  long int &value,
+                                  const unsigned long pos = 0,
+                                  const OFBool searchIntoSub = OFFalse);
+
+    /** find element and get value as a 32-bit floating point.
+     *  Applicable to the following VRs: FL, OF
+     *  The result variable 'value' is automatically set to zero if an error occurs.
+     *  @param tagKey DICOM tag specifying the attribute to be searched for
+     *  @param value variable in which the element value is stored
+     *  @param pos index of the value in case of multi-valued elements (0..vm-1)
+     *  @param searchIntoSub flag indicating whether to search into sequences or not
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    OFCondition findAndGetFloat32(const DcmTagKey &tagKey,
                                   Float32 &value,
                                   const unsigned long pos = 0,
                                   const OFBool searchIntoSub = OFFalse);
+
+    /** find element and get value as an array of 32-bit floating point values.
+     *  Applicable to the following VRs: FL, OF
+     *  The result variable 'value' is automatically set to NULL if an error occurs.
+     *  @param tagKey DICOM tag specifying the attribute to be searched for
+     *  @param value variable in which the element value is stored
+     *  @param searchIntoSub flag indicating whether to search into sequences or not
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    OFCondition findAndGetFloat32Array(const DcmTagKey &tagKey,
+                                       Float32 *&value,
+                                       const OFBool searchIntoSub = OFFalse);
 
     /** find element and get value as a 64-bit floating point.
      *  Applicable to the following VRs: DS, FD
@@ -342,7 +413,7 @@ public:
      *  @param searchIntoSub flag indicating whether to search into sequences or not
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    OFCondition findAndGetFloat64(const DcmTagKey& tagKey,
+    OFCondition findAndGetFloat64(const DcmTagKey &tagKey,
                                   Float64 &value,
                                   const unsigned long pos = 0,
                                   const OFBool searchIntoSub = OFFalse);
@@ -374,7 +445,7 @@ public:
      *    -2 for append new)
      *  @return EC_Normal upon success, an error otherwise.
      */
-    OFCondition findOrCreateSequenceItem(const DcmTag& seqTag,
+    OFCondition findOrCreateSequenceItem(const DcmTag &seqTag,
                                          DcmItem *&item,
                                          const signed long itemNum = 0);
 
@@ -382,13 +453,14 @@ public:
     /* --- putAndInsert functions: put value and insert new element --- */
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
-     *  Applicable to the following VRs: AE, AS, CS, DA, DS, DT, FL, FD, IS, LO, LT, PN, SH, ST, TM, UI, UT
+     *  Applicable to the following VRs: AE, AS, CS, DA, DS, DT, FL, FD, IS, LO, LT, OB, OF, OW, PN,
+     *  SH, ST, TM, UI, UT
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element (might be empty or NULL)
      *  @param replaceOld flag indicating whether to replace an existing element or not
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    OFCondition putAndInsertString(const DcmTag& tag,
+    OFCondition putAndInsertString(const DcmTag &tag,
                                    const char *value,
                                    const OFBool replaceOld = OFTrue);
 
@@ -399,7 +471,7 @@ public:
      *  @param replaceOld flag indicating whether to replace an existing element or not
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    OFCondition putAndInsertOFStringArray(const DcmTag& tag,
+    OFCondition putAndInsertOFStringArray(const DcmTag &tag,
                                           const OFString &value,
                                           const OFBool replaceOld = OFTrue);
 
@@ -411,7 +483,7 @@ public:
      *  @param replaceOld flag indicating whether to replace an existing element or not
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    OFCondition putAndInsertUint8Array(const DcmTag& tag,
+    OFCondition putAndInsertUint8Array(const DcmTag &tag,
                                        const Uint8 *value,
                                        const unsigned long count,
                                        const OFBool replaceOld = OFTrue);
@@ -424,7 +496,7 @@ public:
      *  @param replaceOld flag indicating whether to replace an existing element or not
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    OFCondition putAndInsertUint16(const DcmTag& tag,
+    OFCondition putAndInsertUint16(const DcmTag &tag,
                                    const Uint16 value,
                                    const unsigned long pos = 0,
                                    const OFBool replaceOld = OFTrue);
@@ -437,7 +509,7 @@ public:
      *  @param replaceOld flag indicating whether to replace an existing element or not
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    OFCondition putAndInsertUint16Array(const DcmTag& tag,
+    OFCondition putAndInsertUint16Array(const DcmTag &tag,
                                         const Uint16 *value,
                                         const unsigned long count,
                                         const OFBool replaceOld = OFTrue);
@@ -450,7 +522,7 @@ public:
      *  @param replaceOld flag indicating whether to replace an existing element or not
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    OFCondition putAndInsertSint16(const DcmTag& tag,
+    OFCondition putAndInsertSint16(const DcmTag &tag,
                                    const Sint16 value,
                                    const unsigned long pos = 0,
                                    const OFBool replaceOld = OFTrue);
@@ -463,7 +535,7 @@ public:
      *  @param replaceOld flag indicating whether to replace an existing element or not
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    OFCondition putAndInsertSint16Array(const DcmTag& tag,
+    OFCondition putAndInsertSint16Array(const DcmTag &tag,
                                         const Sint16 *value,
                                         const unsigned long count,
                                         const OFBool replaceOld = OFTrue);
@@ -476,7 +548,7 @@ public:
      *  @param replaceOld flag indicating whether to replace an existing element or not
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    OFCondition putAndInsertUint32(const DcmTag& tag,
+    OFCondition putAndInsertUint32(const DcmTag &tag,
                                    const Uint32 value,
                                    const unsigned long pos = 0,
                                    const OFBool replaceOld = OFTrue);
@@ -489,20 +561,20 @@ public:
      *  @param replaceOld flag indicating whether to replace an existing element or not
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    OFCondition putAndInsertSint32(const DcmTag& tag,
+    OFCondition putAndInsertSint32(const DcmTag &tag,
                                    const Sint32 value,
                                    const unsigned long pos = 0,
                                    const OFBool replaceOld = OFTrue);
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
-     *  Applicable to the following VRs: FL
+     *  Applicable to the following VRs: FL, OF
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element
      *  @param pos index of the value to be set (0..vm-1)
      *  @param replaceOld flag indicating whether to replace an existing element or not
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    OFCondition putAndInsertFloat32(const DcmTag& tag,
+    OFCondition putAndInsertFloat32(const DcmTag &tag,
                                     const Float32 value,
                                     const unsigned long pos = 0,
                                     const OFBool replaceOld = OFTrue);
@@ -515,24 +587,26 @@ public:
      *  @param replaceOld flag indicating whether to replace an existing element or not
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    OFCondition putAndInsertFloat64(const DcmTag& tag,
+    OFCondition putAndInsertFloat64(const DcmTag &tag,
                                     const Float64 value,
                                     const unsigned long pos = 0,
                                     const OFBool replaceOld = OFTrue);
 
     /** create a new element (with no value) and insert it into the dataset/item.
-     *  Applicable to the following VRs: AE, AS, AT, CS, DA, DS, DT, FL, FD, IS, LO, OB, OW, LT, PN, SH, SQ, ST, TM, UI, UT
+     *  Applicable to the following VRs: AE, AS, AT, CS, DA, DS, DT, FL, FD, IS, LO, OB, OF, OW, LT,
+     *  PN, SH, SQ, ST, TM, UI, UT
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param replaceOld flag indicating whether to replace an existing element or not
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    OFCondition insertEmptyElement(const DcmTag& tag,
+    OFCondition insertEmptyElement(const DcmTag &tag,
                                    const OFBool replaceOld = OFTrue);
 
-protected:
+
+  protected:
 
     /// the list of elements maintained by this object
-    DcmList * elementList;
+    DcmList *elementList;
 
     /** flag used during suspended I/O. Indicates whether the last element
      *  was completely or only partially read/written during the last call
@@ -546,22 +620,23 @@ protected:
      */
     Uint32 fStartPosition;
 
-    OFCondition readTagAndLength(DcmInputStream & inStream,           // inout
+    OFCondition readTagAndLength(DcmInputStream &inStream,       // inout
                                  const E_TransferSyntax newxfer, // in
-                                 DcmTag   &tag,                  // out
-                                 Uint32 & length,                // out
-                                 Uint32 & bytesRead);            // out
+                                 DcmTag &tag,                    // out
+                                 Uint32 &length,                 // out
+                                 Uint32 &bytesRead);             // out
 
-    OFCondition readSubElement(DcmInputStream & inStream,             // inout
+    OFCondition readSubElement(DcmInputStream &inStream,         // inout
                                DcmTag &newTag,                   // inout
                                const Uint32 newLength,           // in
                                const E_TransferSyntax xfer,      // in
                                const E_GrpLenEncoding glenc,     // in
                                const Uint32 maxReadLength = DCM_MaxReadLength);
 
-    E_TransferSyntax checkTransferSyntax(DcmInputStream & inStream);
+    E_TransferSyntax checkTransferSyntax(DcmInputStream &inStream);
 
-private:
+
+  private:
 
     /// private unimplemented copy assignment operator
     DcmItem &operator=(const DcmItem &);
@@ -576,7 +651,6 @@ private:
 
     /// cache for private creator tags and names
     DcmPrivateTagCache privateCreatorCache;
-
 };
 
 
@@ -603,8 +677,8 @@ private:
 //   EC_SequEnd:    tag describes a sequence delimitation element
 //   EC_ItemEnd:    tag describes an item delmitation element
 //   other: an error
-OFCondition newDicomElement(DcmElement * & newElement,
-                            const DcmTag & tag,
+OFCondition newDicomElement(DcmElement *&newElement,
+                            const DcmTag &tag,
                             const Uint32 length = 0);
 
 
@@ -612,21 +686,27 @@ OFCondition newDicomElement(DcmElement * & newElement,
 // Functions: newDicomElement
 // creates a new DicomElement from a Tag. They differ from the above functions
 // in not returning a condition.
-DcmElement * newDicomElement(const DcmTag & tag,
-                             const Uint32 length = 0);
+DcmElement *newDicomElement(const DcmTag &tag,
+                            const Uint32 length = 0);
 
 // Function: nextUp
 // pop Object from stack and get next Object in top of stack
-
-OFCondition nextUp(DcmStack & stack);
+OFCondition nextUp(DcmStack &stack);
 
 
 #endif // DCITEM_H
 
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
-** Revision 1.39  2002-08-27 16:55:34  meichel
+** Revision 1.40  2002-12-06 12:49:10  joergr
+** Enhanced "print()" function by re-working the implementation and replacing
+** the boolean "showFullData" parameter by a more general integer flag.
+** Added doc++ documentation.
+** Made source code formatting more consistent with other modules/files.
+**
+** Revision 1.39  2002/08/27 16:55:34  meichel
 ** Initial release of new DICOM I/O stream classes that add support for stream
 **   compression (deflated little endian explicit VR transfer syntax)
 **

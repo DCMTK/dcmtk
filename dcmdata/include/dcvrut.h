@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -19,19 +19,19 @@
  *
  *  Author:  Andrew Hewett
  *
- *  Purpose: 
- *  Interface of class DcmUnlimitedText
- *  Value Representation UT is defined in Correction Proposal 101
+ *  Purpose: Interface of class DcmUnlimitedText
+ *           Value Representation UT is defined in Correction Proposal 101
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:19:36 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-06 12:49:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrut.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
+
 
 #ifndef DCVRUT_H
 #define DCVRUT_H
@@ -42,35 +42,65 @@
 #include "dcchrstr.h"
 
 
-
-class DcmUnlimitedText : public DcmCharString 
+/** a class representing the DICOM value representation 'Unlimited Text' (UT)
+ */
+class DcmUnlimitedText
+  : public DcmCharString
 {
+
   public:
-    DcmUnlimitedText(const DcmTag &tag, const Uint32 len = 0);
-    DcmUnlimitedText( const DcmUnlimitedText& old );
+
+    DcmUnlimitedText(const DcmTag &tag,
+                     const Uint32 len = 0);
+
+    DcmUnlimitedText(const DcmUnlimitedText &old);
+
     virtual ~DcmUnlimitedText();
 
-    DcmUnlimitedText &operator=(const DcmUnlimitedText &obj) { DcmCharString::operator=(obj); return *this; }
+    DcmUnlimitedText &operator=(const DcmUnlimitedText &obj);
 
-    virtual DcmEVR ident() const { return EVR_UT; }
+    virtual DcmEVR ident() const;
 
-    virtual OFCondition getOFString(
-	OFString & str,
-	const unsigned long pos,
-	OFBool normalize = OFTrue);
+    /** get the value multiplicity.
+     *  Since the backslash "\" is not regarded as a separator the value
+     *  multiplicity is always 1.
+     *  @return value multiplicity of the currently stored value
+     */
+    virtual unsigned long getVM();
 
-    virtual OFCondition getOFStringArray(
-	OFString & str, 
-	OFBool normalize = OFTrue);
+    /** get a particular components of the string value
+     *  @param stringVal string variable in which the result value is stored
+     *  @param pos not used since value multiplicity is always 1
+     *  @param normalize remove trailing spaces if OFTrue
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getOFString(OFString &stringVal,
+                                    const unsigned long pos,
+                                    OFBool normalize = OFTrue);
+
+    /** get the string value (all compenents)
+     *  @param stringVal string variable in which the result value is stored
+     *  @param normalize remove trailing spaces if OFTrue
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getOFStringArray(OFString &stringVal,
+                                         OFBool normalize = OFTrue);
 };
 
 
 #endif // DCVRUT_H
 
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrut.h,v $
-** Revision 1.6  2001-09-25 17:19:36  meichel
+** Revision 1.7  2002-12-06 12:49:21  joergr
+** Enhanced "print()" function by re-working the implementation and replacing
+** the boolean "showFullData" parameter by a more general integer flag.
+** Added doc++ documentation.
+** Made source code formatting more consistent with other modules/files.
+**
+** Revision 1.6  2001/09/25 17:19:36  meichel
 ** Adapted dcmdata to class OFCondition
 **
 ** Revision 1.5  2001/06/01 15:48:55  meichel

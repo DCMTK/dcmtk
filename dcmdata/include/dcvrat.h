@@ -22,75 +22,159 @@
  *  Purpose: Interface of class DcmAttributeTag
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-25 09:50:38 $
+ *  Update Date:      $Date: 2002-12-06 12:49:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrat.h,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
+
 #ifndef DCVRAT_H
 #define DCVRAT_H
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "ofconsol.h"
-#include "dctypes.h"
 #include "dcelem.h"
 
 
-
-class DcmAttributeTag : public DcmElement 
+/** a class representing the DICOM value representation 'Attribute Tag' (AT)
+ */
+class DcmAttributeTag
+  : public DcmElement
 {
-public:
-    DcmAttributeTag(const DcmTag &tag, const Uint32 len = 0);
-    DcmAttributeTag( const DcmAttributeTag &newAT );
+
+  public:
+
+    /** constructor.
+     *  Create new element from given tag and length.
+     *  @param tag DICOM tag for the new element
+     *  @param len value length for the new element
+     */
+    DcmAttributeTag(const DcmTag &tag,
+                    const Uint32 len = 0);
+
+    /** copy constructor
+     *  @param old element to be copied
+     */
+    DcmAttributeTag(const DcmAttributeTag &old);
+
+    /** destructor
+     */
     virtual ~DcmAttributeTag();
 
-    DcmAttributeTag &operator=(const DcmAttributeTag &obj) { DcmElement::operator=(obj); return *this; }
+    /** assignment operator
+     *  @param obj element to be assigned/copied
+     *  @return reference to this object
+     */
+    DcmAttributeTag &operator=(const DcmAttributeTag &obj);
 
-    virtual DcmEVR ident() const { return EVR_AT; }
-    virtual void print(ostream & out, const OFBool showFullData = OFTrue,
-		       const int level = 0, const char *pixelFileName = NULL,
-		       size_t *pixelCounter = NULL);
+    /** get element type identifier
+     *  @return type identifier of this class (EVR_AT)
+     */
+    virtual DcmEVR ident() const;
+
+    /** get value multiplicity
+     *  @return number of tag value pairs (group,element)
+     */
     virtual unsigned long getVM();
 
-    virtual OFCondition putUint16Array(const Uint16 * attrValue,   // Tags
-                            const unsigned long tagNum);  // number of tags
+    /** print element to a stream.
+     *  The output format of the value is a backslash separated sequence of group and
+     *  element value pairs, e.g. "(0008,0020)\(0008,0030)"
+     *  @param out output stream
+     *  @param flags optional flag used to customize the output (see DCMTypes::PF_xxx)
+     *  @param level current level of nested items. Used for indentation.
+     *  @param pixelFileName not used
+     *  @param pixelCounter not used
+     */
+    virtual void print(ostream &out,
+                       const size_t flags = 0,
+                       const int level = 0,
+                       const char *pixelFileName = NULL,
+                       size_t *pixelCounter = NULL);
 
-    virtual OFCondition putTagVal(const DcmTagKey & attrTag,   // new Tag
-				  const unsigned long position = 0);  // pos. 
+    /** get particular tag value
+     *  @param tagVal reference to result variable (cleared in case of error)
+     *  @param pos index of the value to be retrieved (0..vm-1)
+     *  @return status status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getTagVal(DcmTagKey &tagVal,
+                                  const unsigned long pos = 0);
 
-    virtual OFCondition putString(const char * val);
-
-    virtual OFCondition getTagVal(DcmTagKey & attrTag, 
-				  const unsigned long pos = 0);
-    virtual OFCondition getUint16Array(Uint16 * & attributeTags);
+    /** get reference to stored integer data.
+     *  The array entries with an even-numbered index contain the group numbers
+     *  and the odd entries contain the element numbers (see "putUint16Array()").
+     *  The number of entries is twice as large as the return value of "getVM()".
+     *  @param uintVals reference to result variable
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getUint16Array(Uint16 *&uintVals);
 
     /** get specified value as a character string.
-     *  The output format is "gggg,eeee", i.e. the group number as 4 hexadecimals digits
-     *  followed by a comma and the element number as 4 hexadecimal digits.
+     *  The output format is "(gggg,eeee)" where "gggg" is the hexa-decimal group
+     *  number and "eeee" the hexa-decimal element number of the attribute tag.
      *  @param value variable in which the result value is stored
      *  @param pos index of the value in case of multi-valued elements (0..vm-1)
      *  @param normalize not used
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition getOFString(OFString &value,
+    virtual OFCondition getOFString(OFString &stringVal,
                                     const unsigned long pos,
                                     OFBool normalize = OFTrue);
 
+    /** set particular tag value
+     *  @param tagVal tag value to be set
+     *  @param pos index of the value to be set (0 = first position)
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition putTagVal(const DcmTagKey &tagVal,
+                                  const unsigned long pos = 0);
+
+    /** set element value to given integer array data.
+     *  The array entries with an even-numbered index are expected to contain the
+     *  group numbers and the odd entries to contain the element numbers, e.g.
+     *  {0x0008, 0x0020, 0x0008, 0x0030}. This function uses the same format as
+     *  "getUint16Array()".
+     *  @param uintVals unsigned integer data to be set
+     *  @param numUints number of integer values to be set (should be even)
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition putUint16Array(const Uint16 *uintVals,
+                                       const unsigned long numUints);
+
+    /** set element value from the given character string.
+     *  The input string is expected to be a backslash separated sequence of
+     *  attribute tags, e.g. "(0008,0020)\(0008,0030)". This is the same format
+     *  as used by "print()".
+     *  @param stringVal input character string
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition putString(const char *stringVal);
+
+    /** check the currently stored element value
+     *  @param autocorrect correct value length if OFTrue
+     *  @return status, EC_Normal if value length is correct, an error code otherwise
+     */
     virtual OFCondition verify(const OFBool autocorrect = OFFalse);
 };
 
 
 #endif // DCVRAT_H
 
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrat.h,v $
-** Revision 1.18  2002-04-25 09:50:38  joergr
+** Revision 1.19  2002-12-06 12:49:14  joergr
+** Enhanced "print()" function by re-working the implementation and replacing
+** the boolean "showFullData" parameter by a more general integer flag.
+** Added doc++ documentation.
+** Made source code formatting more consistent with other modules/files.
+**
+** Revision 1.18  2002/04/25 09:50:38  joergr
 ** Added getOFString() implementation.
 **
 ** Revision 1.17  2001/09/25 17:19:30  meichel

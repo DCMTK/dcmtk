@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,59 +21,104 @@
  *
  *  Purpose: Interface of class DcmUnsignedLongOffset
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:19:35 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-06 12:49:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrulup.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
+
 #ifndef DCVRULUP_H
 #define DCVRULUP_H
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "ofconsol.h"
-#include "dctypes.h"
 #include "dcvrul.h"
 
 
-class DcmUnsignedLongOffset : public DcmUnsignedLong 
+/** a class used for DICOMDIR byte offsets
+ */
+class DcmUnsignedLongOffset
+  : public DcmUnsignedLong
 {
-  private:
-
- // --- declarations to avoid compiler warnings
- 
-    DcmUnsignedLongOffset &operator=(const DcmUnsignedLongOffset &);
-
-  protected:
-    DcmObject* nextRecord;
 
   public:
-    DcmUnsignedLongOffset(const DcmTag &tag, const Uint32 len = 0);
-    DcmUnsignedLongOffset(const DcmUnsignedLongOffset& old);
-    virtual ~DcmUnsignedLongOffset(void);
 
-    virtual DcmEVR ident(void) const;
-    virtual void print(ostream & out, const OFBool showFullData = OFTrue,
-                       const int level = 0, const char *pixelFileName = NULL,
-		               size_t *pixelCounter = NULL);
-    virtual DcmObject*  setNextRecord(DcmObject* record);
-    virtual DcmObject*  getNextRecord();
+    /** constructor.
+     *  Create new element from given tag and length.
+     *  @param tag DICOM tag for the new element
+     *  @param len value length for the new element
+     */
+    DcmUnsignedLongOffset(const DcmTag &tag,
+                          const Uint32 len = 0);
+
+    /** copy constructor
+     *  @param old element to be copied
+     */
+    DcmUnsignedLongOffset(const DcmUnsignedLongOffset &old);
+
+    /** destructor
+     */
+    virtual ~DcmUnsignedLongOffset();
+
+    /** get element type identifier
+     *  @return type identifier of this class (internal type: EVR_up)
+     */
+    virtual DcmEVR ident() const;
+
+    /** clear the currently stored value
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
     virtual OFCondition clear();
+
+    /** get stored object reference
+     *  @return pointer to the currently referenced object (might be NULL)
+     */
+    virtual DcmObject *getNextRecord();
+
+    /** set stored object reference
+     *  @param record pointer to the object to be referenced
+     *  @return pointer to the newly referenced object (might be NULL)
+     */
+    virtual DcmObject *setNextRecord(DcmObject *record);
+
+    /** check the currently stored element value
+     *  @param autocorrect correct value length if OFTrue
+     *  @return status, EC_Normal if value length is correct, an error code otherwise
+     */
     virtual OFCondition verify(const OFBool autocorrect = OFFalse);
+
+
+  protected:
+
+    /// pointer to the referenced object. NULL means that no object is referenced.
+    DcmObject *nextRecord;
+
+
+  private:
+
+	/// private undefined copy assignment operator
+    DcmUnsignedLongOffset &operator=(const DcmUnsignedLongOffset &);
 };
 
 
 #endif // DCVRUSUP_H
 
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrulup.h,v $
-** Revision 1.13  2001-09-25 17:19:35  meichel
+** Revision 1.14  2002-12-06 12:49:20  joergr
+** Enhanced "print()" function by re-working the implementation and replacing
+** the boolean "showFullData" parameter by a more general integer flag.
+** Added doc++ documentation.
+** Made source code formatting more consistent with other modules/files.
+**
+** Revision 1.13  2001/09/25 17:19:35  meichel
 ** Adapted dcmdata to class OFCondition
 **
 ** Revision 1.12  2001/06/01 15:48:54  meichel

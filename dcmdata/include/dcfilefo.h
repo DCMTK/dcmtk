@@ -21,15 +21,16 @@
  *
  *  Purpose: Interface of class DcmFileFormat
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-27 16:55:32 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-06 12:49:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcfilefo.h,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
+
 
 #ifndef DCFILEFO_H
 #define DCFILEFO_H
@@ -42,56 +43,89 @@
 #include "dcsequen.h"
 #include "dcdatset.h"
 
+
+// forward declarations
 class DcmMetaInfo;
 class DcmInputStream;
 class DcmOutputStream;
 class DcmRepresentationParameter;
 
 
-/** Class handling the DICOM file format (with meta header)
+/** a class handling the DICOM file format (with meta header)
  */
-class DcmFileFormat : public DcmSequenceOfItems 
+class DcmFileFormat
+  : public DcmSequenceOfItems
 {
-private:
-    OFCondition checkValue(DcmMetaInfo * metainfo,
-                           DcmDataset * dataset,
-                           const DcmTagKey & atagkey,
-                           DcmObject * obj,
-                           const E_TransferSyntax oxfer);
-    E_TransferSyntax lookForXfer(DcmMetaInfo * metainfo );
 
-public:
+ public:
+
+    /** default constructor
+     */
     DcmFileFormat();
-    DcmFileFormat(DcmDataset * dataset);
+
+    DcmFileFormat(DcmDataset *dataset);
+
+    /** copy constructor
+     *  @param old element to be copied
+     */
     DcmFileFormat(const DcmFileFormat &old);
+
+    /** destructor
+     */
     virtual ~DcmFileFormat();
 
-    DcmFileFormat &operator=(const DcmFileFormat &obj) { DcmSequenceOfItems::operator=(obj); return *this; }
+    /** assignment operator
+     *  @param obj fileformat to be assigned/copied
+     *  @return reference to this object
+     */
+    DcmFileFormat &operator=(const DcmFileFormat &obj);
+
+    /** get type identifier
+     *  @return type identifier of this class (EVR_fileFormat)
+     */
+    virtual DcmEVR ident() const;
+
+    /** print meta header and dataset to a stream
+     *  @param out output stream
+     *  @param flags optional flag used to customize the output (see DCMTypes::PF_xxx)
+     *  @param level current level of nested items. Used for indentation.
+     *  @param pixelFileName not used
+     *  @param pixelCounter not used
+     */
+    virtual void print(ostream &out,
+                       const size_t flags = 0,
+                       const int level = 0,
+                       const char *pixelFileName = NULL,
+                       size_t *pixelCounter = NULL);
 
     virtual OFCondition validateMetaInfo(E_TransferSyntax oxfer);
 
-    virtual DcmEVR ident() const { return EVR_fileFormat; }
-    virtual void print(ostream & out, const OFBool showFullData = OFTrue,
-                       const int level = 0, const char *pixelFileName = NULL,
-                       size_t *pixelCounter = NULL);
+    DcmMetaInfo *getMetaInfo();
+    DcmDataset  *getDataset();
+    DcmDataset  *getAndRemoveDataset();
 
-    virtual Uint32  calcElementLength(const E_TransferSyntax xfer,
-                                      const E_EncodingType enctype);
+    virtual Uint32 calcElementLength(const E_TransferSyntax xfer,
+                                     const E_EncodingType enctype);
 
     virtual OFBool canWriteXfer(const E_TransferSyntax newXfer,
-                              const E_TransferSyntax oldXfer = EXS_Unknown);
+                                const E_TransferSyntax oldXfer = EXS_Unknown);
 
-    virtual OFCondition read(DcmInputStream & inStream,
+    virtual OFCondition read(DcmInputStream &inStream,
                              const E_TransferSyntax xfer = EXS_Unknown,
                              const E_GrpLenEncoding glenc = EGL_noChange,
                              const Uint32 maxReadLength = DCM_MaxReadLength);
 
-    virtual OFCondition write(DcmOutputStream & outStream,
+    /** write fileformat to a stream
+     *  @param outStream DICOM output stream
+     *  @param oxfer output transfer syntax
+     *  @param enctype encoding types (undefined or explicit length)
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition write(DcmOutputStream &outStream,
                               const E_TransferSyntax oxfer,
-                              const E_EncodingType enctype 
-                              = EET_UndefinedLength);
+                              const E_EncodingType enctype = EET_UndefinedLength);
 
-    virtual OFCondition write(DcmOutputStream & outStream,
+    virtual OFCondition write(DcmOutputStream &outStream,
                               const E_TransferSyntax oxfer,
                               const E_EncodingType enctype,
                               const E_GrpLenEncoding glenc,
@@ -109,7 +143,7 @@ public:
     virtual OFCondition writeXML(ostream &out,
                                  const size_t flags = 0);
 
-    /** load a DICOM object from file.
+    /** load object from a DICOM file.
      *  This method supports DICOM objects stored as a file (with meta header) or as a
      *  dataset (without meta header). Presence of a meta header is detected automatically.
      *  @param fileName name of the file to load
@@ -126,9 +160,9 @@ public:
                                  const E_TransferSyntax readXfer = EXS_Unknown,
                                  const E_GrpLenEncoding groupLength = EGL_noChange,
                                  const Uint32 maxReadLength = DCM_MaxReadLength,
-                                 OFBool isDataset=OFFalse);
-    
-    /** save a DICOM object to file.
+                                 OFBool isDataset = OFFalse);
+
+    /** save object to a DICOM file.
      *  @param fileName name of the file to save
      *  @param writeXfer transfer syntax used to write the data (EXS_Unknown means use current)
      *  @param encodingType flag, specifying the encoding with undefined or explicit length
@@ -146,69 +180,81 @@ public:
                                  const E_PaddingEncoding padEncoding = EPD_noChange,
                                  const Uint32 padLength = 0,
                                  const Uint32 subPadLength = 0,
-                                 OFBool isDataset=OFFalse);
-
-    DcmMetaInfo* getMetaInfo();
-    DcmDataset*  getDataset();
-    DcmDataset*  getAndRemoveDataset();
+                                 OFBool isDataset = OFFalse);
 
     // methods for different pixel representations
 
     // choose Representation changes the representation of
     // PixelData Elements in the data set to the given representation
     // If the representation does not exists it creates one.
-    OFCondition chooseRepresentation(
-        const E_TransferSyntax repType,
-        const DcmRepresentationParameter * repParam) 
+    OFCondition chooseRepresentation(const E_TransferSyntax repType,
+                                     const DcmRepresentationParameter *repParam)
     {
         return getDataset()->chooseRepresentation(repType, repParam);
     }
 
-    // checks if all PixelData elements have a conforming representation 
+    // checks if all PixelData elements have a conforming representation
     // (for definition of conforming representation see dcpixel.h).
     // if one PixelData element has no conforming representation
     // OFFalse is returned.
-    OFBool hasRepresentation(
-        const E_TransferSyntax repType,
-        const DcmRepresentationParameter * repParam)
+    OFBool hasRepresentation(const E_TransferSyntax repType,
+                             const DcmRepresentationParameter *repParam)
     {
         return getDataset()->hasRepresentation(repType, repParam);
     }
 
-    // removes all but the original representation in all pixel data
-    // elements
+    /** removes all but the original representation in all pixel data elements
+     */
     void removeAllButOriginalRepresentations()
     {
         getDataset()->removeAllButOriginalRepresentations();
     }
 
-    // removes all but the current representation in all pixel data
-    // elements. Makes the current representation original
+    /** removes all but the current representation in all pixel data elements.
+     *  Makes the current representation original.
+     */
     void removeAllButCurrentRepresentations()
     {
         getDataset()->removeAllButCurrentRepresentations();
     }
 
 
-// The following methods have no meaning in DcmFileFormat and shall not be 
+// The following methods have no meaning in DcmFileFormat and shall not be
 // called. Since it is not possible to delete inherited methods from a class
 // stubs are defined that create an error.
 
-    virtual OFCondition  insertItem(DcmItem* item,
-                                    const unsigned long where = DCM_EndOfListIndex);
-    virtual DcmItem*     remove(const unsigned long num);
-    virtual DcmItem*     remove(DcmItem* item);
-    virtual OFCondition  clear();
+    virtual OFCondition insertItem(DcmItem *item,
+                                   const unsigned long where = DCM_EndOfListIndex);
+    virtual DcmItem *remove(const unsigned long num);
+    virtual DcmItem *remove(DcmItem *item);
+    virtual OFCondition clear();
 
+
+  private:
+
+    OFCondition checkValue(DcmMetaInfo *metainfo,
+                           DcmDataset *dataset,
+                           const DcmTagKey &atagkey,
+                           DcmObject *obj,
+                           const E_TransferSyntax oxfer);
+
+    E_TransferSyntax lookForXfer(DcmMetaInfo *metainfo);
 };
 
 
 #endif // DCFILEFO_H
 
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.h,v $
-** Revision 1.21  2002-08-27 16:55:32  meichel
+** Revision 1.22  2002-12-06 12:49:10  joergr
+** Enhanced "print()" function by re-working the implementation and replacing
+** the boolean "showFullData" parameter by a more general integer flag.
+** Added doc++ documentation.
+** Made source code formatting more consistent with other modules/files.
+**
+** Revision 1.21  2002/08/27 16:55:32  meichel
 ** Initial release of new DICOM I/O stream classes that add support for stream
 **   compression (deflated little endian explicit VR transfer syntax)
 **

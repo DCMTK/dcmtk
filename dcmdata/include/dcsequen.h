@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmSequenceOfItems
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-27 16:55:39 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-06 12:49:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcsequen.h,v $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,7 +48,7 @@
 
 //
 // CLASS DcmSequenceOfItems
-// A sequence has no explicit value. Therefore, it should be derived from 
+// A sequence has no explicit value. Therefore, it should be derived from
 // DcmObject. Since a sequence is created in an (pseudo)-item and items collect
 // sequences of elements the sequence Tag is derived from element.
 
@@ -89,9 +89,13 @@ public:
 
     virtual DcmEVR ident() const { return EVR_SQ; }
     virtual OFBool isLeaf(void) const { return OFFalse; }
-    virtual void print(ostream & out, const OFBool showFullData = OFTrue,
-                       const int level = 0, const char *pixelFileName = NULL,
-		               size_t *pixelCounter = NULL);
+
+    virtual void print(ostream &out,
+                       const size_t flags = 0,
+                       const int level = 0,
+                       const char *pixelFileName = NULL,
+                       size_t *pixelCounter = NULL);
+
     virtual unsigned long getVM() { return 1L; }
 
     virtual OFCondition computeGroupLengthAndPadding
@@ -106,9 +110,9 @@ public:
     virtual Uint32 calcElementLength(const E_TransferSyntax xfer,
                                      const E_EncodingType enctype);
 
-    virtual Uint32 getLength(const E_TransferSyntax xfer 
+    virtual Uint32 getLength(const E_TransferSyntax xfer
                              = EXS_LittleEndianImplicit,
-                             const E_EncodingType enctype 
+                             const E_EncodingType enctype
                              = EET_UndefinedLength );
 
     virtual void transferInit(void);
@@ -157,7 +161,7 @@ public:
                                unsigned long where = DCM_EndOfListIndex,
                                OFBool before = OFFalse );
     virtual OFCondition append(DcmItem* item);
-                               
+
     virtual DcmItem* getItem(const unsigned long num);
     virtual OFCondition nextObject(DcmStack & stack, const OFBool intoSub);
     virtual DcmObject * nextInContainer(const DcmObject * obj);
@@ -184,7 +188,7 @@ private:
    * @return EC_Normal if successful, an error code otherwise
    */
   static OFCondition writeTagAndVR(
-    DcmOutputStream & outStream, 
+    DcmOutputStream & outStream,
     const DcmTag & tag,
     DcmEVR vr,
     const E_TransferSyntax oxfer);
@@ -198,7 +202,13 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.h,v $
-** Revision 1.27  2002-08-27 16:55:39  meichel
+** Revision 1.28  2002-12-06 12:49:13  joergr
+** Enhanced "print()" function by re-working the implementation and replacing
+** the boolean "showFullData" parameter by a more general integer flag.
+** Added doc++ documentation.
+** Made source code formatting more consistent with other modules/files.
+**
+** Revision 1.27  2002/08/27 16:55:39  meichel
 ** Initial release of new DICOM I/O stream classes that add support for stream
 **   compression (deflated little endian explicit VR transfer syntax)
 **

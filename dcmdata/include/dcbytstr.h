@@ -21,15 +21,16 @@
  *
  *  Purpose: Interface of class DcmByteString
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-27 16:55:30 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-06 12:49:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcbytstr.h,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
+
 
 #ifndef DCBYTSTR_H
 #define DCBYTSTR_H
@@ -41,115 +42,261 @@
 #include "dctypes.h"
 #include "dcelem.h"
 
+
+// forward declaration
 class OFString;
 
-typedef enum
+
+/** base class for all DICOM value representations storing a character string
+ */
+class DcmByteString
+  : public DcmElement
 {
+
+    // internal type used to specify the current string representation
+    typedef enum E_StringMode
+    {
+        // string has internal representation (no padding)
         DCM_MachineString,
+        // string has DICOM representation (even length)
         DCM_DicomString,
+        // string has unknown representation (maybe multiple padding chars?)
         DCM_UnknownString
-} E_StringMode;
-
-class DcmByteString : public DcmElement 
-{
-private:
-    Uint32 realLength;
-    E_StringMode fStringMode;
-
-protected:
-    char paddingChar;
-    Uint32 maxLength;
-
-    virtual Uint8 * newValueField(void);
-    virtual void postLoadValue(void);
-
-    virtual OFCondition makeMachineByteString(void);
-    OFCondition makeDicomByteString(void);
-
-    OFCondition getStringValue(OFString &stringValue);
+    };
 
 
-public:
+ public:
+
+    /** constructor.
+     *  Create new element from given tag and length.
+     *  @param tag DICOM tag for the new element
+     *  @param len value length for the new element
+     */
     DcmByteString(const DcmTag &tag,
                   const Uint32 len = 0);
-    DcmByteString(const DcmByteString& old);
 
+    /** copy constructor
+     *  @param old element to be copied
+     */
+    DcmByteString(const DcmByteString &old);
+
+    /** destructor
+     */
     virtual ~DcmByteString();
+
+    /** assignment operator
+     *  @param obj element to be assigned/copied
+     *  @return reference to this object
+     */
     DcmByteString& operator=(const DcmByteString& obj);
-    
-    virtual DcmEVR ident(void) const { return EVR_UNKNOWN; } 
-    virtual void print(ostream & out, const OFBool showFullData = OFTrue,
-                       const int level = 0, const char *pixelFileName = NULL,
-                       size_t *pixelCounter = NULL);
+
+    /** get element type identifier
+     *  @return type identifier of this class (EVR_UNKNOWN)
+     */
+    virtual DcmEVR ident() const;
+
+    /** clear the currently stored value
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition clear();
+
+    /** get value multiplicity
+     *  @return number of string components (separated by a backslash)
+     */
     virtual unsigned long getVM();
 
-    Uint32 getRealLength(void);
-
-    virtual Uint32 getLength(
-        const E_TransferSyntax xfer = EXS_LittleEndianImplicit,
-        const E_EncodingType enctype = EET_UndefinedLength);
-
-    virtual OFCondition write(DcmOutputStream & outStream,
-                              const E_TransferSyntax oxfer,
-                              const E_EncodingType enctype 
-                              = EET_UndefinedLength);
-
-    /** special write method for creation of digital signatures
+    /** get length of the stored value.
+     *  Trailing spaces (padding characters) are ignored for the "real" length.
+     *  @return number of characters stored for the string value
      */
-    virtual OFCondition writeSignatureFormat(DcmOutputStream & outStream,
-                                         const E_TransferSyntax oxfer,
-                                         const E_EncodingType enctype 
-                                         = EET_UndefinedLength);
+    Uint32 getRealLength();
 
-    virtual OFCondition putString(const char *byteStringValue);
+    /** get DICOM length of the stored value.
+     *  The string value is padded if required.  Therefore, the returned length
+     *  always has an even value.
+     *  @param xfer not used
+     *  @param enctype not used
+     *  @return number of characters stored in DICOM representation
+     */
+    virtual Uint32 getLength(const E_TransferSyntax xfer = EXS_LittleEndianImplicit,
+                             const E_EncodingType enctype = EET_UndefinedLength);
 
-    // Sets the value of a complete (possibly multi-valued) string attribute.
-    virtual OFCondition putOFStringArray(const OFString& stringValue);
+    /** print element to a stream.
+     *  The output format of the value is a backslash separated sequence of string
+     *  components (if any).
+     *  @param out output stream
+     *  @param flags optional flag used to customize the output (see DCMTypes::PF_xxx)
+     *  @param level current level of nested items. Used for indentation.
+     *  @param pixelFileName not used
+     *  @param pixelCounter not used
+     */
+    virtual void print(ostream &out,
+                       const size_t flags = 0,
+                       const int level = 0,
+                       const char *pixelFileName = NULL,
+                       size_t *pixelCounter = NULL);
 
-    // Gets a copy of one string value component.  For multi-valued 
-    // string attributes (i.e those using \ separators), 
-    // this method extracts the pos component (counting from zero base).
-    // The pos parameter does not have a default value to make explicit
-    // the selective retrieval action of this method.
-    virtual OFCondition getOFString(OFString & str,
+    /** write data element to a stream
+     *  @param outStream output stream
+     *  @param writeXfer transfer syntax used to write the data
+     *  @param encodingType flag, specifying the encoding with undefined or explicit length
+     */
+    virtual OFCondition write(DcmOutputStream &outStream,
+                              const E_TransferSyntax writeXfer,
+                              const E_EncodingType encodingType = EET_UndefinedLength);
+
+    /** write data element to a stream as required for the creation of digital signatures
+     *  @param outStream output stream
+     *  @param writeXfer transfer syntax used to write the data
+     *  @param encodingType flag, specifying the encoding with undefined or explicit length
+     */
+    virtual OFCondition writeSignatureFormat(DcmOutputStream &outStream,
+                                             const E_TransferSyntax writeXfer,
+                                             const E_EncodingType encodingType = EET_UndefinedLength);
+
+    /** get a copy of a particular string component
+     *  @param stringVal variable in which the result value is stored
+     *  @param pos index of the value in case of multi-valued elements (0..vm-1)
+     *  @param normalize not used since string normalization depends on value representation
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getOFString(OFString &stringVal,
                                     const unsigned long pos,
                                     OFBool normalize = OFTrue);
- 
-    // Gets a pointer to the current string value (including 
-    // all components and separators). 
-    virtual OFCondition getString(char * & byteStringValue);
 
-    virtual OFCondition clear();
+    /** get a pointer to the current string value.
+     *  This includes all string components and separators. NB: this method does
+     *  not copy the stored value.
+     *  @param stringVal reference to the pointer variable
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getString(char *&stringVal);
+
+    /** set element value from the given character string
+     *  @param stringVal input character string (possibly multi-valued)
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition putString(const char *stringVal);
+
+    /** set element value from the given character string.
+     *  @param stringVal input character string (possibly multi-valued)
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition putOFStringArray(const OFString &stringVal);
+
+    /** check the currently stored string value.
+     *  Checks every string component for the maximum length specified for the particular
+     *  value representation.
+     *  @param autocorrect correct value and value component length if OFTrue
+     *  @return status, EC_Normal if value length is correct, an error code otherwise
+     */
     virtual OFCondition verify(const OFBool autocorrect = OFFalse);
+
+
+ protected:
+
+    /** create a new value field (string buffer) of the previously defined size
+     *  (member variable 'Length'). Also handles odd value length by allocating
+     *  extra space for the padding character.
+     *  This method is used by derived classes only.
+     *  @return pointer to the newly created value field
+     */
+    virtual Uint8 *newValueField();
+
+    /** method is called after the element value has been loaded.
+     *  Can be used to correct the value before it is used for the first time.
+     */
+    virtual void postLoadValue();
+
+    /** convert currently stored string value to internal representation.
+     *  It removes any trailing space character and recomputes the string length.
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition makeMachineByteString();
+
+    /** convert currently stored string value to DICOM representation.
+     *  It removes trailing spaces apart from a possibly required single padding
+     *  character (in case of odd string length).
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition makeDicomByteString();
+
+    /** get a copy of the current string value.
+     *  This includes all string components and separators.
+     *  @param stringVal variable in which the result is stored
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition getStringValue(OFString &stringVal);
+
+    /// padding character used to adjust odd value length (space)
+    char paddingChar;
+    /// maximum number of characters for each string component
+    Uint32 maxLength;
+
+
+ private:
+
+    /// number of characters of the internal string representation
+    Uint32 realLength;
+    /// current representation of the string value
+    E_StringMode fStringMode;
 };
+
+
+/** @name string normalization flags.
+ *  These flags can be used with normalizeString() to specify the extent of normalization.
+ */
+//@{
+
+/// delete trailing spaces
+const OFBool DELETE_TRAILING = OFTrue;
+/// delete leading spaces
+const OFBool DELETE_LEADING = OFTrue;
+/// handle string as multi-valued (components separated by a backslash)
+const OFBool MULTIPART = OFTrue;
+
+//@}
+
 
 /* Function to get part out of a String for VM > 1 */
 
-OFCondition getStringPart(
-    OFString & result,
-    char * orgStr,
-    const unsigned long which);
+/** extract particular component from a string value.
+ *  String components are expected to be separated by a backslash character ('\').
+ *  @param result reference to the result variable
+ *  @param orgStr input string value
+ *  @param pos index of the string component to be extracted (0..vm-1)
+ *  @return status, EC_Normal if successful, an error code otherwise
+ */
+OFCondition getStringPart(OFString &result,
+                          const char *orgStr,
+                          const unsigned long pos);
 
 
-/* Function for String Normalisation - delete leading and trailing Spaces */
+/** normalize the given string value, i.e. remove leading and/or trailing spaces
+ *  @param string input and output string value to be normalized
+ *  @param multiPart handle string as multi-valued if OFTrue
+ *  @param leading delete leading spaces if OFTrue
+ *  @param trailing delete trailing spaces if OFTrue
+ */
+void normalizeString(OFString &string,
+                     const OFBool multiPart,
+                     const OFBool leading,
+                     const OFBool trailing);
 
-const OFBool DELETE_TRAILING = OFTrue;
-const OFBool DELETE_LEADING = OFTrue;
-const OFBool MULTIPART = OFTrue;
-
-void normalizeString(
-    OFString & str,
-    const OFBool multiPart,    
-    const OFBool leading,
-    const OFBool trailing);
- 
 
 #endif // DCBYTSTR_H
+
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.h,v $
-** Revision 1.24  2002-08-27 16:55:30  meichel
+** Revision 1.25  2002-12-06 12:49:07  joergr
+** Enhanced "print()" function by re-working the implementation and replacing
+** the boolean "showFullData" parameter by a more general integer flag.
+** Added doc++ documentation.
+** Made source code formatting more consistent with other modules/files.
+**
+** Revision 1.24  2002/08/27 16:55:30  meichel
 ** Initial release of new DICOM I/O stream classes that add support for stream
 **   compression (deflated little endian explicit VR transfer syntax)
 **

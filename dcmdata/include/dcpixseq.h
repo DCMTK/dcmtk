@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmPixelSequence
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-27 16:55:38 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-06 12:49:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpixseq.h,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,7 +43,7 @@
 
 class DcmPixelItem;
 
-class DcmPixelSequence : public DcmSequenceOfItems 
+class DcmPixelSequence : public DcmSequenceOfItems
 {
 private:
     E_TransferSyntax Xfer;
@@ -58,15 +58,15 @@ private:
         return EC_IllegalCall;
     }
     virtual DcmItem* getItem(const unsigned long /*num*/)
-    { 
+    {
         return NULL;
     }
     virtual DcmItem* remove(const unsigned long /*num*/)
-    { 
+    {
         return NULL;
     }
     virtual DcmItem* remove(DcmItem* /*item*/)
-    { 
+    {
         return NULL;
     }
 
@@ -83,9 +83,12 @@ public:
     DcmPixelSequence &operator=(const DcmPixelSequence &obj);
 
     virtual DcmEVR ident(void) const { return EVR_pixelSQ; }
-    virtual void print(ostream & out, const OFBool showFullData = OFTrue,
-                       const int level = 0, const char *pixelFileName = NULL,
-		               size_t *pixelCounter = NULL);
+
+    virtual void print(ostream &out,
+                       const size_t flags = 0,
+                       const int level = 0,
+                       const char *pixelFileName = NULL,
+                       size_t *pixelCounter = NULL);
 
     virtual Uint32 calcElementLength(const E_TransferSyntax xfer,
                                      const E_EncodingType enctype);
@@ -106,7 +109,7 @@ public:
     virtual OFCondition read(DcmInputStream & inStream,
                              const E_TransferSyntax ixfer,
                              const E_GrpLenEncoding glenc = EGL_noChange,
-                             const Uint32 maxReadLength 
+                             const Uint32 maxReadLength
                              = DCM_MaxReadLength);
 
     virtual OFCondition write(DcmOutputStream & outStream,
@@ -117,7 +120,7 @@ public:
      */
     virtual OFCondition writeSignatureFormat(DcmOutputStream & outStream,
 					 const E_TransferSyntax oxfer,
-					 const E_EncodingType enctype 
+					 const E_EncodingType enctype
 					 = EET_UndefinedLength);
 
   /** appends a single compressed frame to this DICOM pixel sequence
@@ -127,10 +130,10 @@ public:
    *  @param compressedLen number of bytes of compressed image data
    *  @param fragmentSize maximum fragment size (in kbytes) for compression, 0 for unlimited.
    *  @return EC_Normal if successful, an error code otherwise
-   */  
+   */
   virtual OFCondition storeCompressedFrame(
-        DcmOffsetList& offsetList, 
-        Uint8 *compressedData, 
+        DcmOffsetList& offsetList,
+        Uint8 *compressedData,
         Uint32 compressedLen,
         Uint32 fragmentSize);
 
@@ -141,7 +144,13 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.h,v $
-** Revision 1.24  2002-08-27 16:55:38  meichel
+** Revision 1.25  2002-12-06 12:49:12  joergr
+** Enhanced "print()" function by re-working the implementation and replacing
+** the boolean "showFullData" parameter by a more general integer flag.
+** Added doc++ documentation.
+** Made source code formatting more consistent with other modules/files.
+**
+** Revision 1.24  2002/08/27 16:55:38  meichel
 ** Initial release of new DICOM I/O stream classes that add support for stream
 **   compression (deflated little endian explicit VR transfer syntax)
 **

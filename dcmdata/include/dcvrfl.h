@@ -22,76 +22,152 @@
  *  Purpose: Interface of class DcmFloatingPointSingle
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-25 09:52:08 $
+ *  Update Date:      $Date: 2002-12-06 12:49:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrfl.h,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
+
 #ifndef DCVRFL_H
 #define DCVRFL_H
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "ofconsol.h"
-#include "dcerror.h"
-#include "dctypes.h"
 #include "dcelem.h"
 
 
-
-class DcmFloatingPointSingle : public DcmElement 
+/** a class representing the DICOM value representation 'Floating Point Single' (FL)
+ */
+class DcmFloatingPointSingle
+  : public DcmElement
 {
-public:
-    DcmFloatingPointSingle( const DcmTag &tag, const Uint32 len = 0);
-    DcmFloatingPointSingle( const DcmFloatingPointSingle &newFL );
+
+  public:
+
+    /** constructor.
+     *  Create new element from given tag and length.
+     *  @param tag DICOM tag for the new element
+     *  @param len value length for the new element
+     */
+    DcmFloatingPointSingle(const DcmTag &tag,
+                           const Uint32 len = 0);
+
+    /** copy constructor
+     *  @param old element to be copied
+     */
+    DcmFloatingPointSingle(const DcmFloatingPointSingle &old);
+
+    /** destructor
+     */
     virtual ~DcmFloatingPointSingle();
 
-    DcmFloatingPointSingle &operator=(const DcmFloatingPointSingle &obj) { DcmElement::operator=(obj); return *this; }
+    /** assignment operator
+     *  @param obj element to be assigned/copied
+     *  @return reference to this object
+     */
+    DcmFloatingPointSingle &operator=(const DcmFloatingPointSingle &obj);
 
-    virtual DcmEVR ident(void) const { return EVR_FL; }
-    virtual void print(ostream & out, const OFBool showFullData = OFTrue,
-		       const int level = 0, const char *pixelFileName = NULL,
-		       size_t *pixelCounter = NULL);
-    virtual unsigned long getVM(void);
+    /** get element type identifier
+     *  @return type identifier of this class (EVR_FL)
+     */
+    virtual DcmEVR ident(void) const;
 
-    virtual OFCondition putFloat32Array(const Float32 * floatVal,
-					const unsigned long numFloats);  
+    /** get value multiplicity
+     *  @return number of currently stored values
+     */
+    virtual unsigned long getVM();
 
-    virtual OFCondition putFloat32(const Float32 floatVal, // one float
-				   const unsigned long position = 0);    
-                                                           // at any position
- 
-    virtual OFCondition putString(const char * value);  // float as Strings
+    /** print element to a stream.
+     *  The output format of the value is a backslash separated sequence of numbers.
+     *  This function uses a variable number of digits for the floating point values
+     *  as created by the OFStandard::ftoa() function by default.
+     *  @param out output stream
+     *  @param flags optional flag used to customize the output (see DCMTypes::PF_xxx)
+     *  @param level current level of nested items. Used for indentation.
+     *  @param pixelFileName not used
+     *  @param pixelCounter not used
+     */
+    virtual void print(ostream &out,
+                       const size_t flags = 0,
+		               const int level = 0,
+		               const char *pixelFileName = NULL,
+		               size_t *pixelCounter = NULL);
 
+    /** get particular float value
+     *  @param floatVal reference to result variable (cleared in case of error)
+     *  @param pos index of the value to be retrieved (0..vm-1)
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getFloat32(Float32 &floatVal,
+                                   const unsigned long pos = 0);
 
-    virtual OFCondition getFloat32Array(Float32 * & singleVals);
-    virtual OFCondition getFloat32(Float32 & singleVal, 
-				   const unsigned long pos = 0);
+    /** get reference to stored float data
+     *  @param floatVals reference to result variable
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getFloat32Array(Float32 *&floatVals);
 
-    /** get specified value as a character string
-     *  @param value variable in which the result value is stored
+    /** get a particular value as a character string.
+     *  The resulting string contains a variable number of digits as created by
+     *  the OFStandard::ftoa() function by default.
+     *  @param stringVal variable in which the result value is stored
      *  @param pos index of the value in case of multi-valued elements (0..vm-1)
      *  @param normalize not used
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition getOFString(OFString &value,
+    virtual OFCondition getOFString(OFString &stringVal,
                                     const unsigned long pos,
                                     OFBool normalize = OFTrue);
 
+    /** set particular element value to given float
+     *  @param floatVal floating point value to be set
+     *  @param pos index of the value to be set (0 = first position)
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition putFloat32(const Float32 floatVal,
+				                   const unsigned long pos = 0);
+
+    /** set element value to given float array data
+     *  @param floatVals floating point data to be set
+     *  @param numFloats number of floating point values to be set
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition putFloat32Array(const Float32 *floatVals,
+                    					const unsigned long numFloats);
+
+    /** set element value from the given character string.
+     *  The input string is expected to be a backslash separated sequence of
+     *  numeric characters, e.g. "12.3456\1\-123.456\1234.0".
+     *  @param stringVal input character string
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition putString(const char *stringVal);
+
+    /** check the currently stored element value
+     *  @param autocorrect correct value length if OFTrue
+     *  @return status, EC_Normal if value length is correct, an error code otherwise
+     */
     virtual OFCondition verify(const OFBool autocorrect = OFFalse);
 };
 
 
 #endif // DCVRFL_H
 
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrfl.h,v $
-** Revision 1.16  2002-04-25 09:52:08  joergr
+** Revision 1.17  2002-12-06 12:49:16  joergr
+** Enhanced "print()" function by re-working the implementation and replacing
+** the boolean "showFullData" parameter by a more general integer flag.
+** Added doc++ documentation.
+** Made source code formatting more consistent with other modules/files.
+**
+** Revision 1.16  2002/04/25 09:52:08  joergr
 ** Added getOFString() implementation.
 **
 ** Revision 1.15  2001/09/25 17:19:31  meichel

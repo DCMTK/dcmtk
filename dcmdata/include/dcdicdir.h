@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmDicomDir
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:19:25 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-06 12:49:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdicdir.h,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,21 +49,21 @@
 #define TEMPNAME_TEMPLATE      "DDXXXXXX"
 #define DICOMDIR_BACKUP_SUFFIX ".$$$"
 #define DICOMDIR_DEFAULT_TRANSFERSYNTAX  EXS_LittleEndianExplicit
-                                                   
 
-typedef struct 
+
+typedef struct
 {
     DcmItem *item;
     Uint32  fileOffset;
 } ItemOffset;
 
 
-class DcmDicomDir 
+class DcmDicomDir
 {
   private:
 
  // --- declarations to avoid compiler warnings
- 
+
     DcmDicomDir &operator=(const DcmDicomDir &);
 
   protected:
@@ -139,11 +139,15 @@ public:
     DcmDicomDir( const DcmDicomDir &newDir );
     virtual ~DcmDicomDir();
 
-    virtual void print(ostream & out, const OFBool showFullData = OFTrue,
-                       const int level = 0, const char *pixelFileName = NULL,
+    virtual void print(ostream &out,
+                       const size_t flags = 0,
+                       const int level = 0,
+                       const char *pixelFileName = NULL,
                        size_t *pixelCounter = NULL);
+
     virtual OFCondition         error();
     virtual DcmFileFormat&      getDirFileFormat();
+    virtual const char*         getDirFileName();
     virtual DcmDirectoryRecord& getRootRecord();
     virtual DcmSequenceOfItems& getMRDRSequence();
     virtual DcmDirectoryRecord* matchFilename(     char *filename );
@@ -163,7 +167,13 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.h,v $
-** Revision 1.15  2001-09-25 17:19:25  meichel
+** Revision 1.16  2002-12-06 12:49:09  joergr
+** Enhanced "print()" function by re-working the implementation and replacing
+** the boolean "showFullData" parameter by a more general integer flag.
+** Added doc++ documentation.
+** Made source code formatting more consistent with other modules/files.
+**
+** Revision 1.15  2001/09/25 17:19:25  meichel
 ** Adapted dcmdata to class OFCondition
 **
 ** Revision 1.14  2001/06/01 15:48:36  meichel

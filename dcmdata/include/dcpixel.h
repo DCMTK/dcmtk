@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmPixelData
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-27 16:55:37 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-06 12:49:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpixel.h,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,7 +47,7 @@ class DcmPixelSequence;
 class DcmPixelData;
 class DcmRepresentationEntry;
 
-class DcmRepresentationParameter 
+class DcmRepresentationParameter
 {
 public:
     /// default constructor
@@ -58,7 +58,7 @@ public:
 
     /// destructor
     virtual ~DcmRepresentationParameter() {}
-    
+
     /** this methods creates a copy of type DcmRepresentationParameter *
      *  it must be overweritten in every subclass.
      *  @return copy of this object
@@ -81,15 +81,15 @@ public:
 typedef OFList<DcmRepresentationEntry *> DcmRepresentationList;
 typedef OFListIterator(DcmRepresentationEntry *) DcmRepresentationListIterator;
 
-// The class DcmPixelData stores different pixel representations identified by 
+// The class DcmPixelData stores different pixel representations identified by
 // a type (the transfer syntax) and some representation parameters
 // The three unencapsulated transfer syntaxes belong to the same pixel
-// representation. 
-// A type (or transfer syntax) conforms to a representation if 
+// representation.
+// A type (or transfer syntax) conforms to a representation if
 // the type and the representation type are equal or both are unencapsulated.
 // If this is valid for the representation read or set by chooseRepresentation
 // then this representation is the conforming representation.
-// else a representation with the default parameter set defined in the 
+// else a representation with the default parameter set defined in the
 // codec is the conforming representation.
 
 class DcmPixelData : public DcmPolymorphOBOW
@@ -99,14 +99,14 @@ private:
 
     // List of representations of pixel data
     DcmRepresentationList repList;
-   
+
     // Iterator to the last dummy element in representation lis
     DcmRepresentationListIterator repListEnd;
 
     // Iterator to the original representation. if an uncompressed
     // representation is used the iterator points to repList.end()
     DcmRepresentationListIterator original;
-    
+
     // current list element for some operations
     DcmRepresentationListIterator current;
 
@@ -155,10 +155,10 @@ private:
 
     // encode to encapsulated format
     OFCondition encode(
-        const DcmXfer & fromType, 
-        const DcmRepresentationParameter * fromParam, 
-        DcmPixelSequence * fromPixSeq, 
-        const DcmXfer & toType, 
+        const DcmXfer & fromType,
+        const DcmRepresentationParameter * fromParam,
+        DcmPixelSequence * fromPixSeq,
+        const DcmXfer & toType,
         const DcmRepresentationParameter *toParam,
         DcmStack & pixelStack);
 
@@ -167,7 +167,7 @@ private:
         if (current == repList.end()) Tag.setVR(unencapsulatedVR);
         else Tag.setVR(EVR_OB);
     }
- 
+
 public:
     DcmPixelData(const DcmTag & tag, const Uint32 len = 0);
     DcmPixelData(const DcmPixelData & pixelData);
@@ -178,9 +178,11 @@ public:
     virtual OFCondition setVR(DcmEVR vr);
     virtual DcmEVR ident() const { return EVR_PixelData; }
 
-    virtual void print(ostream & out, const OFBool showFullData = OFTrue,
-                       const int level = 0, const char *pixelFileName = NULL,
-		               size_t *pixelCounter = NULL);
+    virtual void print(ostream &out,
+                       const size_t flags = 0,
+                       const int level = 0,
+                       const char *pixelFileName = NULL,
+                       size_t *pixelCounter = NULL);
 
     // tests if it is possible to write a specific representation
     // Only existing representations are considered, since this
@@ -189,12 +191,12 @@ public:
                                 const E_TransferSyntax oldXfer);
 
     // returns length of representation conforming to the
-    // transfer syntax with tag, vr, ... It does not create a 
-    // representation. If no conforming representation exists an 
+    // transfer syntax with tag, vr, ... It does not create a
+    // representation. If no conforming representation exists an
     // error code is set and 0 returned.
     virtual Uint32 calcElementLength(const E_TransferSyntax xfer,
                                      const E_EncodingType enctype);
-    
+
     // returns length of representation value field conforming to
     // given transfer syntax. It does not create a representation.
     // If no conforming representation exists, an error code is set
@@ -206,18 +208,18 @@ public:
     // Initialize a streaming operation (read, write)
     virtual void transferInit();
 
-    // reads a representation and sets the current and orignal 
+    // reads a representation and sets the current and orignal
     // representation to the new representation
     // it deletes all old representations before reading!
-    virtual OFCondition read(DcmInputStream & inStream, 
+    virtual OFCondition read(DcmInputStream & inStream,
                              const E_TransferSyntax ixfer,
-                             const E_GrpLenEncoding glenc = EGL_noChange, 
+                             const E_GrpLenEncoding glenc = EGL_noChange,
                              const Uint32 maxReadLength = DCM_MaxReadLength);
 
     // writes a representation conforming to the transfer syntax
-    // It does not create a representation. If no conforming 
+    // It does not create a representation. If no conforming
     // representation exists,  an error code is returned.
-    // The written representation is the new current representation 
+    // The written representation is the new current representation
     virtual OFCondition write(
         DcmOutputStream & outStream,
         const E_TransferSyntax oxfer,
@@ -264,8 +266,8 @@ public:
         const DcmRepresentationParameter * repParam,
         DcmPixelSequence * pixSeq);
 
-    // The following two put-methods insert an original unencapsulated 
-    // representation. current and original representations are changed, 
+    // The following two put-methods insert an original unencapsulated
+    // representation. current and original representations are changed,
     // all old representations are deleted
     virtual OFCondition putUint16Array(
         const Uint16 * wordValue,
@@ -300,12 +302,12 @@ public:
     // representation
     OFCondition setCurrentRepresentationParameter(
         const DcmRepresentationParameter * repParam);
-    
-    // returns if a specific conforming  representation exists. 
+
+    // returns if a specific conforming  representation exists.
     OFBool hasRepresentation(
         const E_TransferSyntax repType,
         const DcmRepresentationParameter * repParam = NULL);
-    
+
     // delete a representation. It is not possible to delete the
     // original representation with this method
     OFCondition removeRepresentation(
@@ -315,7 +317,7 @@ public:
     // removes all but the original representation
     void removeAllButOriginalRepresentations();
 
-    // removes all but the current representation 
+    // removes all but the current representation
     // Makes the current representation original
     void removeAllButCurrentRepresentations();
 
@@ -332,7 +334,13 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.h,v $
-** Revision 1.16  2002-08-27 16:55:37  meichel
+** Revision 1.17  2002-12-06 12:49:12  joergr
+** Enhanced "print()" function by re-working the implementation and replacing
+** the boolean "showFullData" parameter by a more general integer flag.
+** Added doc++ documentation.
+** Made source code formatting more consistent with other modules/files.
+**
+** Revision 1.16  2002/08/27 16:55:37  meichel
 ** Initial release of new DICOM I/O stream classes that add support for stream
 **   compression (deflated little endian explicit VR transfer syntax)
 **
@@ -394,7 +402,7 @@ public:
 **   between them. Codecs are derived from the DcmCodec class. New error
 **   codes are introduced for handling of representations. New internal
 **   value representation (only for ident()) for PixelData
-** 
+**
 */
 
 

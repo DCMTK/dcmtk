@@ -19,19 +19,20 @@
  *
  *  Author:  Gerd Ehlers
  *
- *  Purpose: 
+ *  Purpose:
  *  This file contains the interface to routines which provide
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-27 16:55:35 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-06 12:49:11 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcobject.h,v $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
+
 
 #ifndef DCOBJECT_H
 #define DCOBJECT_H
@@ -47,25 +48,33 @@
 #include "dclist.h"
 #include "dcstack.h"
 
+
+// forward declarations
 class DcmOutputStream;
 class DcmInputStream;
+
 
 // Undefined Length Identifier now defined in dctypes.h
 
 // Maxinum number of read bytes for a Value Element
-const Uint32 DCM_MaxReadLength = 4096;  
+const Uint32 DCM_MaxReadLength = 4096;
 
-// Maximum Length of Tag and Length in a DICOM element
-const Uint32 DCM_TagInfoLength = 12;    
+// Maximum length of tag and length in a DICOM element
+const Uint32 DCM_TagInfoLength = 12;
 
-// Optimum Line Length if not all data printed
+// Optimum line length if not all data printed
 const Uint32 DCM_OptPrintLineLength = 70;
+
+// Optimum value length if not all data printed
+const Uint32 DCM_OptPrintValueLength = 40;
+
 
 /*
 ** Should automatic correction be applied to input data (e.g. stripping
 ** of padding blanks, removal of blanks in UIDs, etc).
 */
 extern OFGlobal<OFBool> dcmEnableAutomaticInputDataCorrection; /* default OFTrue */
+
 
 /*
 ** Handling of illegal odd-length attributes: If flag is true, odd lengths
@@ -79,94 +88,106 @@ extern OFGlobal<OFBool> dcmEnableAutomaticInputDataCorrection; /* default OFTrue
 */
 extern OFGlobal<OFBool> dcmAcceptOddAttributeLength; /* default OFTrue */
 
-/** The base DICOM object class
+
+/** base class for all DICOM objects defined in 'dcmdata'
  */
-class DcmObject 
+class DcmObject
 {
-protected:
-    DcmTag Tag;
-    Uint32 Length;
-    E_TransferState fTransferState;
-    OFCondition errorFlag;  // defined after fTransferState to workaround 
-                            // memory layout problem with Borland C++
-    Uint32 fTransferredBytes;
 
-    // The next two functions require that the memory for the info
-    // field is minimum 4 chars longer than strlen(info)
-    virtual void printInfoLine(ostream & out, const OFBool showFullData,
-                               const int level, const char *info );
-    virtual void printInfoLine(ostream & out, const OFBool showFullData,
-                               const int level, DcmTag &tag,
-                               const Uint32 length, const char *info );
+  public:
 
-    static OFCondition writeTag(DcmOutputStream & outStream, const DcmTag & tag,
-                         const E_TransferSyntax oxfer); // in
+    /** constructor.
+     *  Create new object from given tag and length.
+     *  @param tag DICOM tag for the new element
+     *  @param len value length for the new element
+     */
+    DcmObject(const DcmTag &tag,
+              const Uint32 len = 0);
 
-    virtual OFCondition writeTagAndLength(DcmOutputStream & outStream,  
-                                          const E_TransferSyntax oxfer, // in
-                                          Uint32 & writtenBytes ) const; // out
-                                          
-public:
-    DcmObject(const DcmTag & tag, const Uint32 len = 0);
-    DcmObject(const DcmObject & obj);
+    /** copy constructor
+     *  @param old item to be copied
+     */
+    DcmObject(const DcmObject &obj);
 
+    /** destructor
+     */
     virtual ~DcmObject();
 
+    /** assignment operator
+     *  @param obj object to be assigned/copied
+     *  @return reference to this object
+     */
     DcmObject &operator=(const DcmObject &obj);
-    
-    // class identification
-    virtual DcmEVR ident(void) const = 0;
+
+    /** get type identifier (abstract)
+     *  @return type identifier of this class
+     */
+    virtual DcmEVR ident() const = 0;
 
     // current value representation. If object was read from a stream
-    // getVR returns the read value representation. It is possible that 
+    // getVR returns the read value representation. It is possible that
     // this vr is not the same as mentioned in the data dictionary
     // (e.g. private tags, encapsulated data ...)
-    inline DcmEVR getVR(void) const { return Tag.getEVR(); }
+    inline DcmEVR getVR() const { return Tag.getEVR(); }
 
-    inline OFBool isaString(void) const { return Tag.getVR().isaString(); }
+    inline OFBool isaString() const { return Tag.getVR().isaString(); }
 
-    virtual OFBool isLeaf(void) const = 0;
-    virtual DcmObject * nextInContainer(const DcmObject * obj);
-    virtual void print(ostream & out, const OFBool showFullData = OFTrue,
-                       const int level = 0, const char *pixelFileName = NULL,
+    virtual OFBool isLeaf() const = 0;
+
+    /** print object to a stream
+     *  @param out output stream
+     *  @param flags optional flag used to customize the output (see DCMTypes::PF_xxx)
+     *  @param level current level of nested items. Used for indentation.
+     *  @param pixelFileName not used
+     *  @param pixelCounter not used
+     */
+    virtual void print(ostream &out,
+                       const size_t flags = 0,
+                       const int level = 0,
+                       const char *pixelFileName = NULL,
                        size_t *pixelCounter = NULL) = 0;
-    inline OFCondition error(void) const { return errorFlag; }
 
-    inline E_TransferState transferState(void) const { return fTransferState; }
+    inline OFCondition error() const { return errorFlag; }
+
+    inline E_TransferState transferState() const { return fTransferState; }
     virtual void transferInit(void);
     virtual void transferEnd(void);
 
     inline Uint16 getGTag() const { return Tag.getGTag(); }
     inline Uint16 getETag() const { return Tag.getETag(); }
-    inline const DcmTag & getTag() const { return Tag; }
+    inline const DcmTag &getTag() const { return Tag; }
     inline void setGTag(Uint16 gtag) { Tag.setGroup(gtag); }
 
     virtual OFCondition setVR(DcmEVR /*vr*/) { return EC_IllegalCall; }
     virtual unsigned long getVM() = 0;
 
-    // calculate length of Dicom element 
+    // calculate length of Dicom element
     virtual Uint32 calcElementLength(const E_TransferSyntax xfer,
                                      const E_EncodingType enctype) = 0;
 
     // returns value length
-    virtual Uint32 getLength(const E_TransferSyntax xfer 
-                             = EXS_LittleEndianImplicit,
-                             const E_EncodingType enctype 
-                             = EET_UndefinedLength) = 0;
+    virtual Uint32 getLength(const E_TransferSyntax xfer = EXS_LittleEndianImplicit,
+                             const E_EncodingType enctype = EET_UndefinedLength) = 0;
 
     virtual OFBool canWriteXfer(const E_TransferSyntax newXfer,
-                                 const E_TransferSyntax oldXfer) = 0;
+                                const E_TransferSyntax oldXfer) = 0;
 
-    virtual OFCondition read(DcmInputStream & inStream,
+    virtual OFCondition read(DcmInputStream &inStream,
                              const E_TransferSyntax ixfer,
                              const E_GrpLenEncoding glenc = EGL_noChange,
                              const Uint32 maxReadLength = DCM_MaxReadLength) = 0;
 
-    virtual OFCondition write(DcmOutputStream & outStream,
+    /** write object to a stream (abstract)
+     *  @param outStream DICOM output stream
+     *  @param oxfer output transfer syntax
+     *  @param enctype encoding types (undefined or explicit length)
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition write(DcmOutputStream &outStream,
                               const E_TransferSyntax oxfer,
                               const E_EncodingType enctype = EET_UndefinedLength) = 0;
 
-    /** write object in XML format
+    /** write object in XML format to a stream
      *  @param out output stream to which the XML document is written
      *  @param flags optional flag used to customize the output (see DCMTypes::XF_xxx)
      *  @return status, always returns EC_Illegal Call
@@ -174,12 +195,15 @@ public:
     virtual OFCondition writeXML(ostream &out,
                                  const size_t flags = 0);
 
-    /** special write method for creation of digital signatures
+    /** special write method for creation of digital signatures (abstract)
+     *  @param outStream DICOM output stream
+     *  @param oxfer output transfer syntax
+     *  @param enctype encoding types (undefined or explicit length)
+     *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition writeSignatureFormat(DcmOutputStream & outStream,
-					 const E_TransferSyntax oxfer,
-					 const E_EncodingType enctype 
-					 = EET_UndefinedLength) = 0;
+    virtual OFCondition writeSignatureFormat(DcmOutputStream &outStream,
+					                         const E_TransferSyntax oxfer,
+					                         const E_EncodingType enctype = EET_UndefinedLength) = 0;
 
     /** returns true if the current object may be included in a digital signature
      *  @return true if signable, false otherwise
@@ -190,29 +214,110 @@ public:
      *  @return true if the object contains an element with Unknown VR, false otherwise
      */
     virtual OFBool containsUnknownVR() const;
-    
+
     virtual OFCondition clear() = 0;
     virtual OFCondition verify(const OFBool autocorrect = OFFalse) = 0;
 
-    virtual OFCondition nextObject(DcmStack & stack, const OFBool intoSub);
-        
-    virtual OFCondition search(const DcmTagKey &xtag,          // in
-                               DcmStack &resultStack,          // inout
+    virtual DcmObject *nextInContainer(const DcmObject *obj);
+
+    virtual OFCondition nextObject(DcmStack &stack,
+                                   const OFBool intoSub);
+
+    virtual OFCondition search(const DcmTagKey &xtag,             // in
+                               DcmStack &resultStack,             // inout
                                E_SearchMode mode = ESM_fromHere,  // in
-                               OFBool searchIntoSub = OFTrue );       // in
+                               OFBool searchIntoSub = OFTrue);    // in
 
-    virtual OFCondition searchErrors( DcmStack &resultStack );         // inout
+    virtual OFCondition searchErrors(DcmStack &resultStack);      // inout
 
-    virtual OFCondition loadAllDataIntoMemory(void) = 0;
+    virtual OFCondition loadAllDataIntoMemory() = 0;
 
-}; // class DcmObject
+
+ protected:
+
+    /** print line indentation, e.g. a couple of spaces for each nesting level.
+     *  Depending on the value of 'flags' other visualizations are also possible.
+     *  @param out output stream
+     *  @param flags used to customize the output (see DCMTypes::PF_xxx)
+     *  @param level current level of nested items. Used for indentation.
+     */
+    void printNestingLevel(ostream &out,
+                           const size_t flags,
+                           const int level);
+
+    /** print beginning of the info line.
+     *  The default output is tag and value representation, though other
+     *  visualizations are possible depending on the value of 'flags'.
+     *  @param out output stream
+     *  @param flags used to customize the output (see DCMTypes::PF_xxx)
+     *  @param level current level of nested items. Used for indentation.
+     *  @param tag optional tag used to print the data element information
+     */
+    void printInfoLineStart(ostream &out,
+                            const size_t flags,
+                            const int level,
+                            DcmTag *tag = NULL);
+
+    /** print end of the info line.
+     *  The default output is length, value multiplicity and tag name, though
+     *  other visualizations are possible depending on the value of 'flags'.
+     *  @param out output stream
+     *  @param flags used to customize the output (see DCMTypes::PF_xxx)
+     *  @param printedLength number of characters printed after line start.
+     *    Used for padding purposes.
+     *  @param tag optional tag used to print the data element information
+     */
+    void printInfoLineEnd(ostream &out,
+                          const size_t flags,
+                          const unsigned long printedLength = 0xffffffff /*no padding*/,
+                          DcmTag *tag = NULL);
+
+    /** print given text with element information.
+     *  Calls printInfoLineStart() and printInfoLineEnd() to frame the
+     *  'info' text.
+     *  @param out output stream
+     *  @param flags used to customize the output (see DCMTypes::PF_xxx)
+     *  @param level current level of nested items. Used for indentation.
+     *  @param info text to be printed
+     *  @param tag optional tag used to print the data element information
+     */
+    virtual void printInfoLine(ostream &out,
+                               const size_t flags,
+                               const int level = 0,
+                               const char *info = NULL,
+                               DcmTag *tag = NULL);
+
+    static OFCondition writeTag(DcmOutputStream &outStream,
+                                const DcmTag &tag,
+                                const E_TransferSyntax oxfer); // in
+
+    virtual OFCondition writeTagAndLength(DcmOutputStream &outStream,
+                                          const E_TransferSyntax oxfer, // in
+                                          Uint32 &writtenBytes) const;  // out
+
+    /* member variables */
+    DcmTag Tag;
+    Uint32 Length;
+    E_TransferState fTransferState;
+    OFCondition errorFlag;  // defined after fTransferState to workaround
+                            // memory layout problem with Borland C++
+    Uint32 fTransferredBytes;
+ }; // class DcmObject
+
 
 #endif // DCOBJECT_H
+
 
 /*
  * CVS/RCS Log:
  * $Log: dcobject.h,v $
- * Revision 1.33  2002-08-27 16:55:35  meichel
+ * Revision 1.34  2002-12-06 12:49:11  joergr
+ * Enhanced "print()" function by re-working the implementation and replacing
+ * the boolean "showFullData" parameter by a more general integer flag.
+ * Added doc++ documentation.
+ * Made source code formatting more consistent with other modules/files.
+ *
+ * Revision 1.33  2002/08/27 16:55:35  meichel
  * Initial release of new DICOM I/O stream classes that add support for stream
  *   compression (deflated little endian explicit VR transfer syntax)
  *
