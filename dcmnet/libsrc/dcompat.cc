@@ -63,10 +63,10 @@
 ** Module Prefix: none 
 ** 
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-02-06 12:17:11 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-08-06 12:22:18 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dcompat.cc,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -306,7 +306,7 @@ tempnam(char *dir, char *pfx)
 
     mix++;	/* will recycle */    
 
-    sprintf(name, "%s/%s%04x%05d", tmpdir, prefix, 
+    sprintf(name, "%s%c%s%04x%05d", tmpdir, PATH_SEPARATOR, prefix, 
 	(unsigned int)mix, getpid());
 
     return name;    
@@ -318,7 +318,11 @@ tempnam(char *dir, char *pfx)
 /*
 ** CVS Log
 ** $Log: dcompat.cc,v $
-** Revision 1.7  1997-02-06 12:17:11  hewett
+** Revision 1.8  1997-08-06 12:22:18  andreas
+** - Change definition of path to database index now using consistently
+**   the defines PATH_SEPARATOR and DBINDEXFILE
+**
+** Revision 1.7  1997/02/06 12:17:11  hewett
 ** Updated for Macintosh CodeWarrior 11.  Corrected for incompatibilities
 ** in the timeval structure between unix.h and winsock.h
 **
