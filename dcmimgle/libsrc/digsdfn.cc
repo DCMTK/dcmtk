@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomGSDFunction (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:55 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-16 13:53:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/digsdfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,7 +38,7 @@
 #include "digsdfn.h"
 #include "displint.h"
 
-#include <fstream.h>
+#include "ofstream.h"
 
 //BEGIN_EXTERN_C
 #include <math.h>
@@ -314,7 +314,12 @@ double DiGSDFunction::getJNDIndex(const double lum)
  *
  * CVS/RCS Log:
  * $Log: digsdfn.cc,v $
- * Revision 1.13  2001-06-01 15:49:55  meichel
+ * Revision 1.14  2002-04-16 13:53:31  joergr
+ * Added configurable support for C++ ANSI standard includes (e.g. streams).
+ * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+ * contribution.
+ *
+ * Revision 1.13  2001/06/01 15:49:55  meichel
  * Updated copyright header
  *
  * Revision 1.12  2000/07/17 14:37:52  joergr

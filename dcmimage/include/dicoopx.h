@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomColorOutputPixel (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:28 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-16 13:54:42 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicoopx.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,8 +53,7 @@ BEGIN_EXTERN_C
 #include <stdio.h>
 END_EXTERN_C
 
-#include <iostream.h>
-#include <fstream.h>
+#include "ofstream.h"
 
 
 /*------------------------*
@@ -113,7 +112,12 @@ class DiColorOutputPixel
  *
  * CVS/RCS Log:
  * $Log: dicoopx.h,v $
- * Revision 1.13  2001-06-01 15:49:28  meichel
+ * Revision 1.14  2002-04-16 13:54:42  joergr
+ * Added configurable support for C++ ANSI standard includes (e.g. streams).
+ * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+ * contribution.
+ *
+ * Revision 1.13  2001/06/01 15:49:28  meichel
  * Updated copyright header
  *
  * Revision 1.12  2000/03/08 16:21:50  meichel

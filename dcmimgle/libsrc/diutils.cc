@@ -21,10 +21,10 @@
  *
  *  Purpose: Utilities (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:00 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-16 13:53:32 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diutils.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,7 +38,7 @@
 
 #include "diutils.h"
 
-#include <iostream.h>
+#include "ofstream.h"
 
 
 /*-------------------*
@@ -122,7 +122,12 @@ EP_Representation DicomImageClass::determineRepresentation(double minvalue,
  *
  * CVS/RCS Log:
  * $Log: diutils.cc,v $
- * Revision 1.9  2001-06-01 15:50:00  meichel
+ * Revision 1.10  2002-04-16 13:53:32  joergr
+ * Added configurable support for C++ ANSI standard includes (e.g. streams).
+ * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+ * contribution.
+ *
+ * Revision 1.9  2001/06/01 15:50:00  meichel
  * Updated copyright header
  *
  * Revision 1.8  2000/05/03 09:47:24  joergr

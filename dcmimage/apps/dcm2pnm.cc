@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-11 12:44:47 $
+ *  Update Date:      $Date: 2002-04-16 13:54:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.59 $
+ *  CVS/RCS Revision: $Revision: 1.60 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,12 +67,7 @@ END_EXTERN_C
 # include "dipitiff.h"     /* for dcmimage TIFF plugin */
 #endif
 
-#ifdef HAVE_STRSTREA_H
-# include <strstrea.h>     /* for ostrstream */
-#endif
-#ifdef HAVE_STRSTREAM_H
-# include <strstream.h>    /* for ostrstream */
-#endif
+#include "ofstream.h"
 
 #define OFFIS_OUTFILE_DESCRIPTION "output filename to be written (default: stdout)"
 
@@ -1198,7 +1193,12 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.59  2002-04-11 12:44:47  joergr
+ * Revision 1.60  2002-04-16 13:54:28  joergr
+ * Added configurable support for C++ ANSI standard includes (e.g. streams).
+ * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+ * contribution.
+ *
+ * Revision 1.59  2002/04/11 12:44:47  joergr
  * Use the new loadFile() and saveFile() routines from the dcmdata library.
  *
  * Revision 1.58  2001/12/20 10:41:28  meichel

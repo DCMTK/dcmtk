@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomScaleTemplates (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:51 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-16 13:53:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/discalet.h,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,7 +43,7 @@
 #include "dipxrept.h"
 #include "diutils.h"
 
-#include <iostream.h>
+#include "ofstream.h"
 
 
 #define SCALE 4096
@@ -879,7 +879,12 @@ class DiScaleTemplate
  *
  * CVS/RCS Log:
  * $Log: discalet.h,v $
- * Revision 1.18  2001-06-01 15:49:51  meichel
+ * Revision 1.19  2002-04-16 13:53:12  joergr
+ * Added configurable support for C++ ANSI standard includes (e.g. streams).
+ * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+ * contribution.
+ *
+ * Revision 1.18  2001/06/01 15:49:51  meichel
  * Updated copyright header
  *
  * Revision 1.17  2000/05/03 09:46:29  joergr

@@ -21,10 +21,10 @@
  *
  *  Purpose: network conditions and helper class
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-10-12 10:18:30 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-16 13:57:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/cond.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,12 +38,7 @@ BEGIN_EXTERN_C
 #include <stdio.h>
 END_EXTERN_C
 
-#ifdef HAVE_STRSTREA_H
-#include <strstrea.h>
-#else
-#include <strstream.h>
-#endif
-#include <fstream.h>
+#include "ofstream.h"
 
 const OFConditionConst ASCE_BADPRESENTATIONCONTEXTID(OFM_dcmnet, ASCC_BADPRESENTATIONCONTEXTID, OF_error, "ASC Bad presentation context ID");
 const OFConditionConst ASCE_MISSINGTRANSFERSYNTAX(   OFM_dcmnet, ASCC_MISSINGTRANSFERSYNTAX,    OF_error, "ASC Missing transfer syntax");
@@ -169,7 +164,12 @@ OFCondition DimseCondition::push(
 /*
  * CVS Log
  * $Log: cond.cc,v $
- * Revision 1.8  2001-10-12 10:18:30  meichel
+ * Revision 1.9  2002-04-16 13:57:31  joergr
+ * Added configurable support for C++ ANSI standard includes (e.g. streams).
+ * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+ * contribution.
+ *
+ * Revision 1.8  2001/10/12 10:18:30  meichel
  * Replaced the CONDITION types, constants and functions in the dcmnet module
  *   by an OFCondition based implementation which eliminates the global condition
  *   stack.  This is a major change, caveat emptor!

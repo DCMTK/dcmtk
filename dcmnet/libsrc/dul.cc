@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: meichel $, $Date: 2001-12-19 16:37:01 $
+** Last Update:		$Author: joergr $, $Date: 2002-04-16 13:57:32 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.43 $
+** Revision:		$Revision: 1.44 $
 ** Status:		$State: Exp $
 */
 
@@ -113,13 +113,11 @@ typedef void (*mySIG_TYP)(int);
 #endif
 END_EXTERN_C
 
-#include <iostream.h>
-#include <iomanip.h>
-
 #ifdef HAVE_GUSI_H
 #include <GUSI.h>       /* Use the Grand Unified Sockets Interface (GUSI) on Macintosh */
 #endif
 
+#include "ofstream.h"
 #include "dcompat.h"
 #include "dicom.h"
 #include "cond.h"
@@ -2316,7 +2314,12 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, ostream& outs
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.43  2001-12-19 16:37:01  meichel
+** Revision 1.44  2002-04-16 13:57:32  joergr
+** Added configurable support for C++ ANSI standard includes (e.g. streams).
+** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+** contribution.
+**
+** Revision 1.43  2001/12/19 16:37:01  meichel
 ** Introduced function pointer typedef to avoid warning on Sun Workshop 6.
 **
 ** Revision 1.42  2001/11/27 09:54:58  wilkens

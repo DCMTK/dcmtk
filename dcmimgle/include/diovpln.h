@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlayPlane (Header) - Multiframe Overlays UNTESTED !
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-09-28 13:10:32 $
+ *  Update Date:      $Date: 2002-04-16 13:53:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diovpln.h,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,7 +45,7 @@ BEGIN_EXTERN_C
 #include <stddef.h>
 END_EXTERN_C
 
-#include <iostream.h>
+#include "ofstream.h"
 
 
 /*------------------------*
@@ -558,7 +558,12 @@ inline void DiOverlayPlane::setStart(const Uint16 x,
  *
  * CVS/RCS Log:
  * $Log: diovpln.h,v $
- * Revision 1.19  2001-09-28 13:10:32  joergr
+ * Revision 1.20  2002-04-16 13:53:12  joergr
+ * Added configurable support for C++ ANSI standard includes (e.g. streams).
+ * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+ * contribution.
+ *
+ * Revision 1.19  2001/09/28 13:10:32  joergr
  * Added method to extract embedded overlay planes from pixel data and store
  * them in group (6xxx,3000) format.
  *

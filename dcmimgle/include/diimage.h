@@ -22,9 +22,9 @@
  *  Purpose: DicomImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-29 17:05:50 $
+ *  Update Date:      $Date: 2002-04-16 13:53:11 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,9 +49,7 @@ BEGIN_EXTERN_C
 #include <stdio.h>
 END_EXTERN_C
 
-#include <iostream.h>
-#include <fstream.h>
-
+#include "ofstream.h"
 
 /*------------------------*
  *  forward declarations  *
@@ -582,7 +580,12 @@ class DiImage
  *
  * CVS/RCS Log:
  * $Log: diimage.h,v $
- * Revision 1.23  2002-01-29 17:05:50  joergr
+ * Revision 1.24  2002-04-16 13:53:11  joergr
+ * Added configurable support for C++ ANSI standard includes (e.g. streams).
+ * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+ * contribution.
+ *
+ * Revision 1.23  2002/01/29 17:05:50  joergr
  * Added optional flag to the "Windows DIB" methods allowing to switch off the
  * scanline padding.
  *

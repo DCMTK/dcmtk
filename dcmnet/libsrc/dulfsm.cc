@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: joergr $, $Date: 2001-11-09 15:58:53 $
+** Last Update:		$Author: joergr $, $Date: 2002-04-16 13:57:32 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.42 $
+** Revision:		$Revision: 1.43 $
 ** Status:		$State: Exp $
 */
 
@@ -67,8 +67,6 @@ END_EXTERN_C
 #endif
 
 #include <stdio.h>
-#include <iostream.h>
-#include <iomanip.h>
 #include <string.h>
 #include <errno.h>
 #ifdef HAVE_SYS_TIME_H
@@ -99,6 +97,7 @@ END_EXTERN_C
 #include <GUSI.h>       /* Use the Grand Unified Sockets Interface (GUSI) on Macintosh */
 #endif
 
+#include "ofstream.h"
 #include "dicom.h"
 #include "lst.h"
 #include "cond.h"
@@ -3777,7 +3776,12 @@ destroyUserInformationLists(DUL_USERINFO * userInfo)
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.42  2001-11-09 15:58:53  joergr
+** Revision 1.43  2002-04-16 13:57:32  joergr
+** Added configurable support for C++ ANSI standard includes (e.g. streams).
+** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+** contribution.
+**
+** Revision 1.42  2001/11/09 15:58:53  joergr
 ** Added '#include <iostream.h>' to avoid compiler errors reported by Sun CC
 ** 2.0.1 (required before <iomanip.h> is included).
 **

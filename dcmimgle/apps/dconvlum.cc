@@ -22,9 +22,9 @@
  *  Purpose: convert VeriLUM CCx_xx.dat files to DCMTK display files
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-09-28 12:55:53 $
+ *  Update Date:      $Date: 2002-04-16 13:52:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/apps/dconvlum.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,9 +33,6 @@
  
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
-
-#include <iostream.h>
-#include <fstream.h>
 
 #ifdef HAVE_STDLIB_H
 #ifndef  _BCB4
@@ -54,6 +51,7 @@ BEGIN_EXTERN_C
 #endif
 END_EXTERN_C
 
+#include "ofstream.h"
 #include "ofconsol.h"
 
 
@@ -125,7 +123,12 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dconvlum.cc,v $
- * Revision 1.12  2001-09-28 12:55:53  joergr
+ * Revision 1.13  2002-04-16 13:52:55  joergr
+ * Added configurable support for C++ ANSI standard includes (e.g. streams).
+ * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+ * contribution.
+ *
+ * Revision 1.12  2001/09/28 12:55:53  joergr
  * Added check whether ios::nocreate exists.
  *
  * Revision 1.11  2001/06/01 15:49:38  meichel

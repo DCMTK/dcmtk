@@ -22,9 +22,9 @@
  *  Purpose: DicomDisplayFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-09-28 13:12:20 $
+ *  Update Date:      $Date: 2002-04-16 13:53:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/didispfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,7 +39,7 @@
 #include "didispfn.h"
 #include "displint.h"
 
-#include <fstream.h>
+#include "ofstream.h"
 
 BEGIN_EXTERN_C
 #ifdef HAVE_CTYPE_H
@@ -484,7 +484,12 @@ int DiDisplayFunction::calculateMinMax()
  *
  * CVS/RCS Log:
  * $Log: didispfn.cc,v $
- * Revision 1.28  2001-09-28 13:12:20  joergr
+ * Revision 1.29  2002-04-16 13:53:31  joergr
+ * Added configurable support for C++ ANSI standard includes (e.g. streams).
+ * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+ * contribution.
+ *
+ * Revision 1.28  2001/09/28 13:12:20  joergr
  * Added check whether ios::nocreate exists.
  *
  * Revision 1.27  2001/06/01 15:49:54  meichel
