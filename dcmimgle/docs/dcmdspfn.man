@@ -125,7 +125,7 @@ luminance values used for monitors and cameras).  The DDL value 0 always means
 black (darkest value) and the maximum DDL value means white (brightest value,
 clear film).
 
-The \e tests folder contains sample characteristics file for monitors,
+The \e data folder contains sample characteristics file for monitors,
 cameras, printers and scanners.  See DICOM standard part 14 for more details
 on display calibration and Barten's model (including GSDF).
 
@@ -146,16 +146,16 @@ prefix to the filename (e.g. <em>\@command.txt</em>).  Such a command argument
 is replaced by the content of the corresponding text file (multiple
 whitespaces are treated as a single separator) prior to any further
 evaluation.  Please note that a command file cannot contain another command
-file. This simple but effective approach allows to summarize common
+file.  This simple but effective approach allows to summarize common
 combinations of options/parameters and avoids longish and confusing command
-lines (an example is provided in file <em>dcmdata/apps/dumppat.txt</em>).
+lines (an example is provided in file <em>data/dumppat.txt</em>).
 
 \section files FILES
 
-\e camera.lut  sample characteristics file of a camera
-\n\e monitor.lut  sample characteristics file of a monitor
-\n\e printer.lut  sample characteristics file of a printer
-\n\e scanner.lut  sample characteristics file of a scanner
+<em>data/camera.lut</em>  sample characteristics file of a camera
+\n<em>data/monitor.lut</em>  sample characteristics file of a monitor
+\n<em>data/printer.lut</em>  sample characteristics file of a printer
+\n<em>data/scanner.lut</em>  sample characteristics file of a scanner
 
 \section see_also SEE ALSO
 
@@ -163,7 +163,7 @@ lines (an example is provided in file <em>dcmdata/apps/dumppat.txt</em>).
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1999-2003 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
+Copyright (C) 1999-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
 Germany.
 
 */

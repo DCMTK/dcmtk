@@ -25,6 +25,7 @@ RLE compressed DICOM images.
 
 \verbatim
 dcmfile-in   DICOM input filename to be converted
+
 pnmfile-out  output filename to be written (default: stdout)
 \endverbatim
 
@@ -366,18 +367,18 @@ other transformations:
 \section notes NOTES
 
 The \e --write-tiff option is only available when DCMTK has been configured
-and compiled with support for the external "libtiff" TIFF library.  The
-availability of the TIFF compression options depends on the libtiff
+and compiled with support for the external \e libtiff TIFF library.  The
+availability of the TIFF compression options depends on the \e libtiff
 configuration.  In particular, the patented LZW algorithm may not be
 available.
 
 The \e --write-png option is only available when DCMTK has been configured
-and compiled with support for the external "libpng" PNG library.  Interlace
+and compiled with support for the external \e libpng  PNG library.  Interlace
 enables progressive image view while loading the PNG file.  Only a few
 applications take care of the metainfo (TEXT) in a PNG file.
 
-Sample monitor and printer characteristics files are available in the folder
-\e dcmimgle/tests.
+Sample monitor and printer characteristics files are available in the \e data
+folder.
 
 \section command_line COMMAND LINE
 
@@ -396,17 +397,16 @@ prefix to the filename (e.g. <em>\@command.txt</em>).  Such a command argument
 is replaced by the content of the corresponding text file (multiple
 whitespaces are treated as a single separator) prior to any further
 evaluation.  Please note that a command file cannot contain another command
-file. This simple but effective approach allows to summarize common
+file.  This simple but effective approach allows to summarize common
 combinations of options/parameters and avoids longish and confusing command
-lines (an example is provided in file <em>dcmdata/apps/dumppat.txt</em>).
+lines (an example is provided in file <em>data/dumppat.txt</em>).
 
 \section environment ENVIRONMENT
 
 The \b dcmj2pnm utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
 \e DCMDICTPATH environment variable is not set, the file
-<em>/usr/local/dicom/lib/dicom.dic</em> (in fact the \e PREFIX as defined
-during \b configure is used) will be loaded unless the dictionary is built
+<em>\<PREFIX\>/lib/dicom.dic</em> will be loaded unless the dictionary is built
 into the application (default for Windows).
 
 The default behaviour should be preferred and the \e DCMDICTPATH environment
@@ -415,6 +415,13 @@ variable only used when alternative data dictionaries are required.  The
 \e PATH variable in that a colon (":") separates entries.  The data dictionary
 code will attempt to load each file specified in the \e DCMDICTPATH
 environment variable.  It is an error if no data dictionary can be loaded.
+
+\section files FILES
+
+<em>data/camera.lut</em>  sample characteristics file of a camera
+\n<em>data/monitor.lut</em>  sample characteristics file of a monitor
+\n<em>data/printer.lut</em>  sample characteristics file of a printer
+\n<em>data/scanner.lut</em>  sample characteristics file of a scanner
 
 \section see_also SEE ALSO
 

@@ -22,6 +22,7 @@ syntax) and writes the converted image to an output file (\e dicomfile-out).
 
 \verbatim
 dcmfile-in   DICOM input filename to be converted
+
 dcmfile-out  DICOM output filename
 \endverbatim
 
@@ -470,12 +471,13 @@ is required to create Hounsfield units) and the XA/RF/Biplane SOP classes
 with all restrictions of the object's IOD.
 
 A few examples:
-  - MR images are required to have BitsAllocated=16.
-  - NM Images can only be encoded with MONOCHROME2 or PALETTE COLOR
-    photometric interpretation but not with RGB or YBR_FULL (which
-    effectively prevents compression).
-  - Hardcopy Color images must have RGB color model which is a problem if
-    lossy compression is to be performed.
+
+\li MR images are required to have BitsAllocated=16.
+\li NM Images can only be encoded with MONOCHROME2 or PALETTE COLOR photometric
+    interpretation but not with RGB or YBR_FULL (which effectively prevents
+    compression).
+\li Hardcopy Color images must have RGB color model which is a problem if lossy
+    compression is to be performed.
 
 The user is responsible for making sure that the compressed images he creates
 are compliant with the DICOM standard.  If in question, the \b dcmcjpeg utility
@@ -499,17 +501,16 @@ prefix to the filename (e.g. <em>\@command.txt</em>).  Such a command argument
 is replaced by the content of the corresponding text file (multiple
 whitespaces are treated as a single separator) prior to any further
 evaluation.  Please note that a command file cannot contain another command
-file. This simple but effective approach allows to summarize common
+file.  This simple but effective approach allows to summarize common
 combinations of options/parameters and avoids longish and confusing command
-lines (an example is provided in file <em>dcmdata/apps/dumppat.txt</em>).
+lines (an example is provided in file <em>data/dumppat.txt</em>).
 
 \section environment ENVIRONMENT
 
 The \b dcmcjpeg utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
 \e DCMDICTPATH environment variable is not set, the file
-<em>/usr/local/dicom/lib/dicom.dic</em> (in fact the \e PREFIX as defined
-during \b configure is used) will be loaded unless the dictionary is built
+<em>\<PREFIX\>/lib/dicom.dic</em> will be loaded unless the dictionary is built
 into the application (default for Windows).
 
 The default behaviour should be preferred and the \e DCMDICTPATH environment

@@ -23,7 +23,9 @@ VeriLUM is a calibration package from ImageSmiths consisting of a photometer
 
 \verbatim
 in-file   VeriLUM characteristic curve file to be converted
+
 out-file  DCMTK display file to be written
+
 ambient   ambient light (cd/m^2, floating point value)
 \endverbatim
 
@@ -52,7 +54,7 @@ Barten's model (including GSDF).
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1999-2003 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
+Copyright (C) 1999-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
 Germany.
 
 */
