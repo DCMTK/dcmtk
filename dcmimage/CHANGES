@@ -1,3 +1,9 @@
+**** Changes from 1998.05.11 (riesmeier)
+
+- Minor changes to some comments.
+  Affects: dcmimage/Makefile.in
+           dcmimage/apps/dcm2pnm.cc 
+
 **** Changes from 1998.04.23 (riesmeier)
 
 - Added CVS/RCS header to each file.

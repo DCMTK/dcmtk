@@ -1,22 +1,23 @@
 /*
 **
-** Author: Marco Eichelberg    Created:  07-05-97
+** Author:  Marco Eichelberg
+** Created: 07-05-97
 **
-** Module: dcm2pnm.cc
+** Module:  dcm2pnm.cc
 **
-** Purpose:
-** Convert DICOM Images to PPM or PGM using the dcmimage library. 
+** Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
 **
-** Last Update:		$Author: joergr $
-** Update Date:		$Date: 1998-03-09 08:15:50 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
-** CVS/RCS Revision:	$Revision: 1.11 $
-** Status:		$State: Exp $
+** Last Update:      $Author: joergr $
+** Update Date:      $Date: 1998-05-11 15:00:04 $
+** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
+** CVS/RCS Revision: $Revision: 1.12 $
+** Status:           $State: Exp $
 **
 ** CVS/RCS Log at end of file
 **
 */
                         
+
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include <stdio.h>
@@ -1074,7 +1075,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcm2pnm.cc,v $
-** Revision 1.11  1998-03-09 08:15:50  joergr
+** Revision 1.12  1998-05-11 15:00:04  joergr
+** Minor changes to some comments.
+**
+** Revision 1.11  1998/03/09 08:15:50  joergr
 ** Made 'return' last statement in some non-void functions.
 **
 ** Revision 1.10  1998/02/24 13:47:09  meichel
