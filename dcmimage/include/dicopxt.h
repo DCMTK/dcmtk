@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: DicomColorPixelTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-12-10 17:39:50 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-23 11:43:03 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +31,8 @@
  */
 
 
-#ifndef __DICOPXT_H
-#define __DICOPXT_H
+#ifndef DICOPXT_H
+#define DICOPXT_H
 
 #include "osconfig.h"
 #include "dctypes.h"
@@ -66,37 +65,37 @@ inline Uint32 removeSign(const Uint32 value, const Uint32)
 
 inline Uint8 removeSign(const Sint8 value, const Sint8 offset)
 {
-    return (Uint8)((Sint16)value + (Sint16)offset + 1);
+    return OFstatic_cast(Uint8, OFstatic_cast(Sint16, value) + OFstatic_cast(Sint16, offset) + 1);
 }
 
 
 inline Uint16 removeSign(const Sint16 value, const Sint16 offset)
 {
-    return (Uint16)((Sint32)value + (Sint32)offset + 1);
+    return OFstatic_cast(Uint16, OFstatic_cast(Sint32, value) + OFstatic_cast(Sint32, offset) + 1);
 }
 
 /*
 inline Uint32 removeSign(const Sint32 value, const Sint32 offset)
 {
-    return (value < 0) ? (Uint32)(value + offset + 1) : (Uint32)value + (Uint32)offset + 1;
+    return (value < 0) ? OFstatic_cast(Uint32, value + offset + 1) : OFstatic_cast(Uint32, value) + OFstatic_cast(Uint32, offset) + 1;
 }
 
 
 inline Uint8 removeSign(const Sint8 value, const Uint8 mask)
 {
-    return (Uint8)value ^ mask;
+    return OFstatic_cast(Uint8, value) ^ mask;
 }
 
 
 inline Uint16 removeSign(const Sint16 value, const Uint16 mask)
 {
-    return (Uint16)value ^ mask;
+    return OFstatic_cast(Uint16, value) ^ mask;
 }
 */
 
 inline Uint32 removeSign(const Sint32 value, const Uint32 mask)
 {
-    return (Uint32)value ^ mask;
+    return OFstatic_cast(Uint32, value) ^ mask;
 }
 
 
@@ -114,6 +113,14 @@ class DiColorPixelTemplate
 
  public:
 
+    /** constructor
+     *
+     ** @param  docu         pointer to the DICOM document
+     *  @param  pixel        pointer to input pixel data
+     *  @param  samples      number of expected samples per pixel (for checking purposes)
+     *  @param  status       status of the image object (reference variable)
+     *  @param  sample_rate  dummy parameter (used for derived classes only)
+     */
     DiColorPixelTemplate(const DiDocument *docu,
                          const DiInputPixel *pixel,
                          const Uint16 samples,
@@ -126,6 +133,8 @@ class DiColorPixelTemplate
         Data[2] = NULL;
     }
 
+    /** destructor
+     */
     virtual ~DiColorPixelTemplate()
     {
         delete[] Data[0];
@@ -133,21 +142,42 @@ class DiColorPixelTemplate
         delete[] Data[2];
     }
 
+    /** get integer representation
+     *
+     ** @return integer representation
+     */
     inline EP_Representation getRepresentation() const
     {
         return DiPixelRepresentationTemplate<T>::getRepresentation();
     }
 
+    /** get pointer to pixel data
+     *
+     ** @return pointer to pixel data
+     */
     inline void *getData() const
     {
-        return (void *)Data;
+        return OFstatic_cast(void *, Data);
     }
 
+    /** get reference to pointer to pixel data
+     *
+     ** @return reference to pointer to pixel data
+     */
     inline void *getDataPtr()
     {
-        return (void *)Data;
+        return OFstatic_cast(void *, Data);
     }
 
+    /** fill given memory block with pixel data (all three image planes, RGB).
+     *  Currently, the samples are always ordered by plane, thus the DICOM attribute
+     *  'PlanarConfiguration' has to be set to '1'.
+     *
+     ** @param  data   pointer to memory block (array of 8 or 16 bit values, OB/OW)
+     *  @param  count  number of T-size entries allocated in the 'data' array
+     *
+     ** @return OFTrue if successful, OFFalse otherwise
+     */
     OFBool getPixelData(void *data,
                         const size_t count) const
     {
@@ -157,14 +187,29 @@ class DiColorPixelTemplate
             (Data[0] != NULL) && (Data[1] != NULL) && (Data[2] != NULL))
         {
             /* copy all three planes to the given memory block */
-            OFBitmanipTemplate<T>::copyMem(Data[0], (T *)data, Count);
-            OFBitmanipTemplate<T>::copyMem(Data[1], (T *)data + Count, Count);
-            OFBitmanipTemplate<T>::copyMem(Data[2], (T *)data + 2 * Count, Count);
+            OFBitmanipTemplate<T>::copyMem(Data[0], OFstatic_cast(T *, data), Count);
+            OFBitmanipTemplate<T>::copyMem(Data[1], OFstatic_cast(T *, data) + Count, Count);
+            OFBitmanipTemplate<T>::copyMem(Data[2], OFstatic_cast(T *, data) + 2 * Count, Count);
             result = OFTrue;
         }
         return result;
     }
 
+    /** create true color (24/32 bit) bitmap for MS Windows.
+     *
+     ** @param  data        untyped pointer memory buffer (set to NULL if not allocated externally)
+     *  @param  size        size of the memory buffer in bytes (if 0 'data' is set to NULL)
+     *  @param  width       number of columns of the image
+     *  @param  height      number of rows of the image
+     *  @param  frame       index of frame to be converted (starting from 0)
+     *  @param  fromBits    number of bits per sample used for internal representation of the image
+     *  @param  toBits      number of bits per sample used for the output bitmap (<= 8)
+     *  @param  mode        color output mode (24 or 32 bits, see dcmimgle/dcmimage.h for details)
+     *  @param  upsideDown  specifies the order of lines in the images (0 = top-down, bottom-up otherwise)
+     *  @param  padding     align each line to a 32-bit address if true
+     *
+     ** @return number of bytes allocated by the bitmap, or 0 if an error occured
+     */
     unsigned long createDIB(void *&data,
                             const unsigned long size,
                             const Uint16 width,
@@ -179,9 +224,10 @@ class DiColorPixelTemplate
         unsigned long bytes = 0;
         if ((Data[0] != NULL) && (Data[1] != NULL) && (Data[2] != NULL) && (toBits <= 8))
         {
-            const unsigned long count = (unsigned long)width * (unsigned long)height;
-            const unsigned long start = count * frame + ((upsideDown) ? (unsigned long)(height - 1) * (unsigned long)width : 0);
-            const signed long nextRow = (upsideDown) ? -2 * (signed long)width : 0;
+            const unsigned long count = OFstatic_cast(unsigned long, width) * OFstatic_cast(unsigned long, height);
+            const unsigned long start = count * frame + ((upsideDown) ?
+                OFstatic_cast(unsigned long, height - 1) * OFstatic_cast(unsigned long, width) : 0);
+            const signed long nextRow = (upsideDown) ? -2 * OFstatic_cast(signed long, width) : 0;
             register const T *r = Data[0] + start;
             register const T *g = Data[1] + start;
             register const T *b = Data[2] + start;
@@ -189,17 +235,17 @@ class DiColorPixelTemplate
             register Uint16 y;
             if (mode == 24)     // 24 bits per pixel
             {
-                const unsigned long wid3 = (unsigned long)width * 3;
+                const unsigned long wid3 = OFstatic_cast(unsigned long, width) * 3;
                 // each line has to start at 32-bit-address, if 'padding' is true
-                const int gap = (padding) ? (int)((4 - wid3 & 0x3) & 0x3) : 0;
-                unsigned long fsize = (wid3 + gap) * (unsigned long)height;
+                const int gap = (padding) ? OFstatic_cast(int, (4 - wid3 & 0x3) & 0x3) : 0;
+                unsigned long fsize = (wid3 + gap) * OFstatic_cast(unsigned long, height);
                 if ((data == NULL) || (size >= fsize))
                 {
                     if (data == NULL)
                         data = new Uint8[fsize];
                     if (data != NULL)
                     {
-                        register Uint8 *q = (Uint8 *)data;
+                        register Uint8 *q = OFstatic_cast(Uint8 *, data);
                         if (fromBits == toBits)
                         {
                             /* copy pixel data as is */
@@ -208,9 +254,9 @@ class DiColorPixelTemplate
                                 for (x = width; x != 0; x--)
                                 {
                                     /* reverse sample order: B-G-R */
-                                    *(q++) = (Uint8)(*(b++));
-                                    *(q++) = (Uint8)(*(g++));
-                                    *(q++) = (Uint8)(*(r++));
+                                    *(q++) = OFstatic_cast(Uint8, *(b++));
+                                    *(q++) = OFstatic_cast(Uint8, *(g++));
+                                    *(q++) = OFstatic_cast(Uint8, *(r++));
                                 }
                                 r += nextRow; g += nextRow; b += nextRow;           // go backwards if 'upsideDown'
                                 q += gap;                                           // new line: jump to next 32-bit address
@@ -219,18 +265,19 @@ class DiColorPixelTemplate
                         else if (fromBits < toBits)
                         {
                             /* increase color depth: multiply with factor */
-                            const double gradient1 = (double)DicomImageClass::maxval(toBits) / (double)DicomImageClass::maxval(fromBits);
-                            const Uint8 gradient2 = (Uint8)gradient1;
-                            if (gradient1 == (double)gradient2)                     // integer multiplication?
+                            const double gradient1 = OFstatic_cast(double, DicomImageClass::maxval(toBits)) /
+                                                     OFstatic_cast(double, DicomImageClass::maxval(fromBits));
+                            const Uint8 gradient2 = OFstatic_cast(Uint8, gradient1);
+                            if (gradient1 == OFstatic_cast(double, gradient2))      // integer multiplication?
                             {
                                 for (y = height; y != 0; y--)
                                 {
                                     for (x = width; x != 0; x--)
                                     {
                                         /* reverse sample order: B-G-R */
-                                        *(q++) = (Uint8)(*(b++) * gradient2);
-                                        *(q++) = (Uint8)(*(g++) * gradient2);
-                                        *(q++) = (Uint8)(*(r++) * gradient2);
+                                        *(q++) = OFstatic_cast(Uint8, *(b++) * gradient2);
+                                        *(q++) = OFstatic_cast(Uint8, *(g++) * gradient2);
+                                        *(q++) = OFstatic_cast(Uint8, *(r++) * gradient2);
                                     }
                                     r += nextRow; g += nextRow; b += nextRow;       // go backwards if 'upsideDown'
                                     q += gap;                                       // new line: jump to next 32-bit address
@@ -241,9 +288,9 @@ class DiColorPixelTemplate
                                     for (x = width; x != 0; x--)
                                     {
                                         /* reverse sample order: B-G-R */
-                                        *(q++) = (Uint8)((double)(*(b++)) * gradient1);
-                                        *(q++) = (Uint8)((double)(*(g++)) * gradient1);
-                                        *(q++) = (Uint8)((double)(*(r++)) * gradient1);
+                                        *(q++) = OFstatic_cast(Uint8, OFstatic_cast(double, *(b++)) * gradient1);
+                                        *(q++) = OFstatic_cast(Uint8, OFstatic_cast(double, *(g++)) * gradient1);
+                                        *(q++) = OFstatic_cast(Uint8, OFstatic_cast(double, *(r++)) * gradient1);
                                     }
                                     r += nextRow; g += nextRow; b += nextRow;       // go backwards if 'upsideDown'
                                     q += gap;                                       // new line: jump to next 32-bit address
@@ -259,9 +306,9 @@ class DiColorPixelTemplate
                                 for (x = width; x != 0; x--)
                                 {
                                     /* reverse sample order: B-G-R */
-                                    *(q++) = (Uint8)(*(b++) >> shift);
-                                    *(q++) = (Uint8)(*(g++) >> shift);
-                                    *(q++) = (Uint8)(*(r++) >> shift);
+                                    *(q++) = OFstatic_cast(Uint8, *(b++) >> shift);
+                                    *(q++) = OFstatic_cast(Uint8, *(g++) >> shift);
+                                    *(q++) = OFstatic_cast(Uint8, *(r++) >> shift);
                                 }
                                 r += nextRow; g += nextRow; b += nextRow;           // go backwards if 'upsideDown'
                                 q += gap;                                           // new line: jump to next 32-bit address
@@ -280,7 +327,7 @@ class DiColorPixelTemplate
                         data = new Uint32[count];
                     if (data != NULL)
                     {
-                        register Uint32 *q = (Uint32 *)data;
+                        register Uint32 *q = OFstatic_cast(Uint32 *, data);
                         if (fromBits == toBits)
                         {
                             /* copy pixel data as is */
@@ -289,9 +336,9 @@ class DiColorPixelTemplate
                                 for (x = width; x != 0; x--)
                                 {
                                     /* reverse sample order: B-G-R-0 */
-                                    *(q++) = (((Uint32)(*(b++))) << 24) |
-                                             (((Uint32)(*(g++))) << 16) |
-                                             (((Uint32)(*(r++))) << 8);
+                                    *(q++) = (OFstatic_cast(Uint32, *(b++)) << 24) |
+                                             (OFstatic_cast(Uint32, *(g++)) << 16) |
+                                             (OFstatic_cast(Uint32, *(r++)) << 8);
                                 }
                                 r += nextRow; g += nextRow; b += nextRow;           // go backwards if 'upsideDown'
                             }
@@ -299,18 +346,19 @@ class DiColorPixelTemplate
                         else if (fromBits < toBits)
                         {
                             /* increase color depth: multiply with factor */
-                            const double gradient1 = (double)DicomImageClass::maxval(toBits) / (double)DicomImageClass::maxval(fromBits);
-                            const Uint32 gradient2 = (Uint32)gradient1;
-                            if (gradient1 == (double)gradient2)                     // integer multiplication?
+                            const double gradient1 = OFstatic_cast(double, DicomImageClass::maxval(toBits)) /
+                                                     OFstatic_cast(double, DicomImageClass::maxval(fromBits));
+                            const Uint32 gradient2 = OFstatic_cast(Uint32, gradient1);
+                            if (gradient1 == OFstatic_cast(double, gradient2))      // integer multiplication?
                             {
                                 for (y = height; y != 0; y--)
                                 {
                                     for (x = width; x != 0; x--)
                                     {
                                         /* reverse sample order: B-G-R-0 */
-                                        *(q++) = (((Uint32)(*(b++) * gradient2)) << 24) |
-                                                 (((Uint32)(*(g++) * gradient2)) << 16) |
-                                                 (((Uint32)(*(r++) * gradient2)) << 8);
+                                        *(q++) = (OFstatic_cast(Uint32, *(b++) * gradient2) << 24) |
+                                                 (OFstatic_cast(Uint32, *(g++) * gradient2) << 16) |
+                                                 (OFstatic_cast(Uint32, *(r++) * gradient2) << 8);
                                     }
                                     r += nextRow; g += nextRow; b += nextRow;       // go backwards if 'upsideDown'
                                 }
@@ -320,9 +368,9 @@ class DiColorPixelTemplate
                                     for (x = width; x != 0; x--)
                                     {
                                         /* reverse sample order: B-G-R-0 */
-                                        *(q++) = (((Uint32)((double)(*(b++)) * gradient1)) << 24) |
-                                                 (((Uint32)((double)(*(g++)) * gradient1)) << 16) |
-                                                 (((Uint32)((double)(*(r++)) * gradient1)) << 8);
+                                        *(q++) = (OFstatic_cast(Uint32, OFstatic_cast(double, *(b++)) * gradient1) << 24) |
+                                                 (OFstatic_cast(Uint32, OFstatic_cast(double, *(g++)) * gradient1) << 16) |
+                                                 (OFstatic_cast(Uint32, OFstatic_cast(double, *(r++)) * gradient1) << 8);
                                     }
                                     r += nextRow; g += nextRow; b += nextRow;       // go backwards if 'upsideDown'
                                 }
@@ -337,9 +385,9 @@ class DiColorPixelTemplate
                                 for (x = width; x != 0; x--)
                                 {
                                     /* reverse sample order: B-G-R-0 */
-                                    *(q++) = (((Uint32)(*(b++) >> shift)) << 24) |
-                                             (((Uint32)(*(g++) >> shift)) << 16) |
-                                             (((Uint32)(*(r++) >> shift)) << 8);
+                                    *(q++) = (OFstatic_cast(Uint32, *(b++) >> shift) << 24) |
+                                             (OFstatic_cast(Uint32, *(g++) >> shift) << 16) |
+                                             (OFstatic_cast(Uint32, *(r++) >> shift) << 8);
                                 }
                                 r += nextRow; g += nextRow; b += nextRow;           // go backwards if 'upsideDown'
                             }
@@ -352,6 +400,17 @@ class DiColorPixelTemplate
         return bytes;
     }
 
+    /** create true color (32 bit) bitmap for Java (AWT default format).
+     *
+     ** @param  data      resulting pointer to bitmap data (set to NULL if an error occurred)
+     *  @param  width     number of columns of the image
+     *  @param  height    number of rows of the image
+     *  @param  frame     index of frame to be converted (starting from 0)
+     *  @param  fromBits  number of bits per sample used for internal representation of the image
+     *  @param  toBits    number of bits per sample used for the output bitmap (<= 8)
+     *
+     ** @return number of bytes allocated by the bitmap, or 0 if an error occured
+     */
     unsigned long createAWTBitmap(void *&data,
                                   const Uint16 width,
                                   const Uint16 height,
@@ -363,7 +422,7 @@ class DiColorPixelTemplate
         unsigned long bytes = 0;
         if ((Data[0] != NULL) && (Data[1] != NULL) && (Data[2] != NULL) && (toBits <= 8))
         {
-            const unsigned long count = (unsigned long)width * (unsigned long)height;
+            const unsigned long count = OFstatic_cast(unsigned long, width) * OFstatic_cast(unsigned long, height);
             data = new Uint32[count];
             if (data != NULL)
             {
@@ -371,40 +430,41 @@ class DiColorPixelTemplate
                 register const T *r = Data[0] + start;
                 register const T *g = Data[1] + start;
                 register const T *b = Data[2] + start;
-                register Uint32 *q = (Uint32 *)data;
+                register Uint32 *q = OFstatic_cast(Uint32 *, data);
                 register unsigned long i;
                 if (fromBits == toBits)
                 {
                     /* copy pixel data as is */
-                    for (i = count; i != 0; i--)
+                    for (i = count; i != 0; --i)
                     {
                         /* sample order: R-G-B */
-                        *(q++) = (((Uint32)(*(r++))) << 24) |
-                                 (((Uint32)(*(g++))) << 16) |
-                                 (((Uint32)(*(b++))) << 8);
+                        *(q++) = (OFstatic_cast(Uint32, *(r++)) << 24) |
+                                 (OFstatic_cast(Uint32, *(g++)) << 16) |
+                                 (OFstatic_cast(Uint32, *(b++)) << 8);
                     }
                 }
                 else if (fromBits < toBits)
                 {
                     /* increase color depth: multiply with factor */
-                    const double gradient1 = (double)DicomImageClass::maxval(toBits) / (double)DicomImageClass::maxval(fromBits);
-                    const Uint32 gradient2 = (Uint32)gradient1;
-                    if (gradient1 == (double)gradient2)                     // integer multiplication?
+                    const double gradient1 = OFstatic_cast(double, DicomImageClass::maxval(toBits)) /
+                                             OFstatic_cast(double, DicomImageClass::maxval(fromBits));
+                    const Uint32 gradient2 = OFstatic_cast(Uint32, gradient1);
+                    if (gradient1 == OFstatic_cast(double, gradient2))         // integer multiplication?
                     {
-                        for (i = count; i != 0; i--)
+                        for (i = count; i != 0; --i)
                         {
                             /* sample order: R-G-B */
-                            *(q++) = (((Uint32)(*(r++) * gradient2)) << 24) |
-                                     (((Uint32)(*(g++) * gradient2)) << 16) |
-                                     (((Uint32)(*(b++) * gradient2)) << 8);
+                            *(q++) = (OFstatic_cast(Uint32, *(r++) * gradient2) << 24) |
+                                     (OFstatic_cast(Uint32, *(g++) * gradient2) << 16) |
+                                     (OFstatic_cast(Uint32, *(b++) * gradient2) << 8);
                         }
                     } else {
-                        for (i = count; i != 0; i--)
+                        for (i = count; i != 0; --i)
                         {
                             /* sample order: R-G-B */
-                            *(q++) = (((Uint32)((double)(*(r++)) * gradient1)) << 24) |
-                                     (((Uint32)((double)(*(g++)) * gradient1)) << 16) |
-                                     (((Uint32)((double)(*(b++)) * gradient1)) << 8);
+                            *(q++) = (OFstatic_cast(Uint32, OFstatic_cast(double, *(r++)) * gradient1) << 24) |
+                                     (OFstatic_cast(Uint32, OFstatic_cast(double, *(g++)) * gradient1) << 16) |
+                                     (OFstatic_cast(Uint32, OFstatic_cast(double, *(b++)) * gradient1) << 8);
                         }
                     }
                 }
@@ -412,12 +472,12 @@ class DiColorPixelTemplate
                 {
                     /* reduce color depth: right shift */
                     const int shift = fromBits - toBits;
-                    for (i = count; i != 0; i--)
+                    for (i = count; i != 0; --i)
                     {
                         /* sample order: R-G-B */
-                        *(q++) = (((Uint32)(*(r++) >> shift)) << 24) |
-                                 (((Uint32)(*(g++) >> shift)) << 16) |
-                                 (((Uint32)(*(b++) >> shift)) << 8);
+                        *(q++) = (OFstatic_cast(Uint32, *(r++) >> shift) << 24) |
+                                 (OFstatic_cast(Uint32, *(g++) >> shift) << 16) |
+                                 (OFstatic_cast(Uint32, *(b++) >> shift) << 8);
                     }
                 }
                 bytes = count * 4;
@@ -429,6 +489,11 @@ class DiColorPixelTemplate
 
  protected:
 
+    /** constructor
+     *
+     ** @param  pixel  pointer to intermediate color pixel data
+     *  @param  count  number of pixels
+     */
     DiColorPixelTemplate(const DiColorPixel *pixel,
                          const unsigned long count)
       : DiColorPixel(pixel, count)
@@ -438,6 +503,12 @@ class DiColorPixelTemplate
         Data[2] = NULL;
     }
 
+    /** initialize internal memory
+     *
+     ** @param  pixel  pointer to input pixel data
+     *
+     ** @return true (1) if successful, false (0) otherwise
+     */
     inline int Init(const void *pixel)
     {
         int result = 0;
@@ -460,6 +531,8 @@ class DiColorPixelTemplate
         return result;
     }
 
+
+    /// pointer to pixel data (3 components)
     T *Data[3];
 
 
@@ -479,7 +552,14 @@ class DiColorPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dicopxt.h,v $
- * Revision 1.20  2002-12-10 17:39:50  meichel
+ * Revision 1.21  2003-12-23 11:43:03  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated copyright header. Added missing API documentation.
+ * Replaced post-increment/decrement operators by pre-increment/decrement
+ * operators where appropriate (e.g. 'i++' by '++i').
+ *
+ * Revision 1.20  2002/12/10 17:39:50  meichel
  * Added explicit type cast to avoid compilation error on gcc 3.2
  *
  * Revision 1.19  2002/12/09 13:37:24  joergr
