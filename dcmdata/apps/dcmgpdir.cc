@@ -10,10 +10,10 @@
 ** CD-R Image Interchange Profile (Supplement 19).
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-09-12 11:29:20 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1997-09-18 07:35:35 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
-** CVS/RCS Revision:	$Revision: 1.17 $
+** CVS/RCS Revision:	$Revision: 1.18 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -502,7 +502,7 @@ dcmInsertString(DcmItem* d, const DcmTagKey& xtag,
 	cerr << "error: dcmInsertString: cannot create DcmElement" << endl;
 	return OFFalse;
     }
-    if (s != NULL) {
+    if (s != (char *)NULL) {
 	cond = elem->putOFStringArray(s);
 	if (cond != EC_Normal) {
 	    cerr << "error: dcmInsertString: cannot put string" << endl;
@@ -1339,11 +1339,10 @@ recordMatchesDataset(DcmDirectoryRecord *rec, DcmItem* dataset)
 	match = cmp(dcmFindString(rec, DCM_ReferencedSOPInstanceUIDInFile),
 		    dcmFindString(dataset, DCM_SOPInstanceUID));
 	break;
-    default:
-	
+    default:	
 	cerr << "error: record type not yet implemented" << endl;
 	return OFFalse;
-	break;
+	/* break; */  // never reached after return statement
     }
 
     return match;
@@ -1403,7 +1402,7 @@ buildRecord(E_DirRecType dirtype, const OFString& referencedFileName,
     default:
 	cerr << "error: record type not yet implemented" << endl;
 	return OFFalse;
-	break;
+	/* break; */  // never reached after return statement
     }
     return rec;
 }
@@ -1490,7 +1489,7 @@ getISNumber(DcmItem *i, const DcmTagKey& key)
 {
     int num = 0;
     OFString s = dcmFindString(i, key);
-    if (s != NULL) {
+    if (s != (char *)NULL) {
 	sscanf(s.c_str(), "%d", &num);
     }
     return num;
@@ -1509,7 +1508,7 @@ insertWithISCriterion(DcmDirectoryRecord *parent, DcmDirectoryRecord *child,
     E_Condition cond = EC_Normal;
     int number = getISNumber(child, criterionKey);
     int pos = 0;
-    int count = parent->cardSub();
+    int count = (int)(parent->cardSub());
     OFBool found = OFFalse;
     if (count > 0) {
 	for (int i=0; i<count && !found; i++) {
@@ -1842,7 +1841,7 @@ isaValidFileSetID(const OFString& fsid)
     ** Ensure that each component is not too large
     */
     DcmVR cs(EVR_CS);
-    if (isComponentTooLarge(fsid, cs.getMaxValueLength())) {
+    if (isComponentTooLarge(fsid, (int)(cs.getMaxValueLength()))) {
 	cerr << "error: too large: " << fsid << endl;
 	ok = OFFalse;
     }
@@ -1901,7 +1900,7 @@ inventMissingImageLevelAttributes(DcmDirectoryRecord *parent)
     int lutNumber = 0;
     int curveNumber = 0;
 
-    int count = parent->cardSub();
+    int count = (int)(parent->cardSub());
     for (int i=0; i<count; i++) {
 	DcmDirectoryRecord* rec = parent->getSub(i);
 	
@@ -1961,7 +1960,7 @@ static void
 inventMissingSeriesLevelAttributes(DcmDirectoryRecord *parent)
 {
     int seriesNumber = 0;
-    int count = parent->cardSub();
+    int count = (int)(parent->cardSub());
     for (int i=0; i<count; i++) {
 	DcmDirectoryRecord* rec = parent->getSub(i);
 	if (!dcmTagExistsWithValue(rec, DCM_SeriesNumber)) {
@@ -1981,7 +1980,7 @@ inventMissingStudyLevelAttributes(DcmDirectoryRecord *parent)
 {
     static int studyNumber = 0; /* make invented StudyID global */
 
-    int count = parent->cardSub();
+    int count = (int)(parent->cardSub());
     for (int i=0; i<count; i++) {
 	DcmDirectoryRecord* rec = parent->getSub(i);
 	if (!dcmTagExistsWithValue(rec, DCM_StudyID)) {
@@ -2000,7 +1999,7 @@ inventMissingAttributes(DcmDirectoryRecord *root)
 {
     static int patientNumber = 0; /* make invented PatientID global */
 
-    int count = root->cardSub();
+    int count = (int)(root->cardSub());
     for (int i=0; i<count; i++) {
 	DcmDirectoryRecord* rec = root->getSub(i);
 	if (!dcmTagExistsWithValue(rec, DCM_PatientID)) {
@@ -2129,7 +2128,7 @@ createDicomdirFromFiles(OFList<OFString>& fileNames)
     /* 
     ** add optional parts to root record
     */
-    if (fsdfid != NULL) {
+    if (fsdfid != (char *)NULL) {
 	dcmInsertString(dicomdir->getDirFileFormat().getDataset(), 
 			DCM_FileSetDescriptorFileID, fsdfid);
 	dcmInsertString(dicomdir->getDirFileFormat().getDataset(), 
@@ -2267,7 +2266,13 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 /*
 ** CVS/RCS Log:
 ** $Log: dcmgpdir.cc,v $
-** Revision 1.17  1997-09-12 11:29:20  hewett
+** Revision 1.18  1997-09-18 07:35:35  meichel
+** Overloading ambiguity removed. Affects systems on which NULL is defined
+**   as a (typeless) 0. OFString comparisons with a non-casted NULL will
+**   cause compile errors on such systems because 0 is a valid pointer and a
+**   valid char at the same time.
+**
+** Revision 1.17  1997/09/12 11:29:20  hewett
 ** Modified to use the OFString and OFList classes.  Removed program
 ** specific String and StringList classes.
 **
