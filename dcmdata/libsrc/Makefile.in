@@ -11,14 +11,13 @@ srcdir=@srcdir@
 top_srcdir=@top_srcdir@
 configdir=@top_srcdir@/@configdir@
 
-LOCALINCLUDES= -I$(top_srcdir)/../ofstd/include \
-  -I$(includedir)/ofstd
+LOCALINCLUDES= -I$(top_srcdir)/../ofstd/include -I$(includedir)/ofstd
 LIBDIRS = -L$(top_srcdir)/../ofstd/libsrc -L$(libdir)
 LOCALLIBS = -lofstd
 
 # Special defines for the Library, define them in LOCALDEFS
 #   DICOMDIR_WITHOUT_BACKUP
-#	no Backup for DICOMDIR files. default: not defined
+#       no Backup for DICOMDIR files. default: not defined
 #   PRINT_REPLACED_DICTIONARY_ENTRIES
 #       dump duplicate entries in the data dictionary to stderr
 
@@ -26,7 +25,7 @@ ofstddir=$(top_srcdir)/../ofstd
 
 LOCALINCLUDES=-I$(ofstddir)/include -I$(includedir)/ofstd
 
-LOCALDEFS= 
+LOCALDEFS=
 
 DICTFILE=dicom.dic
 PRIVDICTFILE=private.dic
@@ -37,30 +36,30 @@ support_progs= mkdeftag mkdictbi
 
 support_objs= mkdeftag.o mkdictbi.o dcdictzz.o
 
-dictobjs=	dctagkey.o dcdicent.o dcdict.o dcdictbi.o \
+dictobjs= dctagkey.o dcdicent.o dcdict.o dcdictbi.o \
 		dcvr.o dchashdi.o
 
-objs= 	dcpixseq.o dcpxitem.o dcuid.o dcerror.o \
+objs= dcpixseq.o dcpxitem.o dcuid.o dcerror.o \
 	dcstack.o dclist.o dcswap.o dctag.o dcxfer.o \
 	dcdebug.o dcobject.o dcelem.o dcitem.o dcmetinf.o dcdatset.o \
 	dcsequen.o dcfilefo.o dcbytstr.o dcpixel.o dcvrae.o dcvras.o dcvrcs.o \
 	dccodec.o dcvrda.o dcvrds.o dcvrdt.o dcvris.o dcvrtm.o dcvrui.o \
 	dcchrstr.o dcvrlo.o dcvrlt.o dcvrpn.o dcvrsh.o dcvrst.o dcvrobow.o \
 	dcvrat.o dcvrss.o dcvrus.o dcvrsl.o dcvrul.o dcvrulup.o dcvrfl.o \
-	dcvrfd.o dcvrpobw.o dcdirrec.o dcdicdir.o dcvm.o dcutils.o \
+	dcvrfd.o dcvrpobw.o dcvrof.o dcdirrec.o dcdicdir.o dcvm.o dcutils.o \
 	dcrleccd.o dcrlecce.o dcrlecp.o dcrlerp.o dcrledrg.o dcrleerg.o \
 	$(dictobjs) cmdlnarg.o dcvrut.o dctypes.o dcpcache.o \
-        dcistrma.o dcistrmb.o dcistrmf.o dcistrmz.o \
-        dcostrma.o dcostrmb.o dcostrmf.o dcostrmz.o
+	dcistrma.o dcistrmb.o dcistrmf.o dcistrmz.o \
+	dcostrma.o dcostrmb.o dcostrmf.o dcostrmz.o
 
 all: libdcmdata.$(LIBEXT)
 
 
 install: install-bin install-lib install-include install-support
 
-install-bin:	$(libdir)/dicom.dic
+install-bin: $(libdir)/dicom.dic
 
-install-lib:	$(libdir)/libdcmdata.$(LIBEXT)
+install-lib: $(libdir)/libdcmdata.$(LIBEXT)
 
 install-include:
 
@@ -81,13 +80,13 @@ $(libdir)/libdcmdata.$(LIBEXT):	libdcmdata.$(LIBEXT)
 	$(INSTALL_DATA) libdcmdata.$(LIBEXT) $(libdir)/libdcmdata.$(LIBEXT)
 
 clean:
-	rm -f $(support_progs) $(support_objs) 
-	rm -f $(objs) 
-	rm -f libdcmdata.$(LIBEXT) 
+	rm -f $(support_progs) $(support_objs)
+	rm -f $(objs)
+	rm -f libdcmdata.$(LIBEXT)
 	rm -f $(TRASH)
 
 distclean: nobuiltindict clean
-	rm -f $(DISTTRASH) 
+	rm -f $(DISTTRASH)
 
 
 libdcmdata.$(LIBEXT): $(objs)
@@ -118,7 +117,7 @@ builtindict:	nobuiltindict mkdictbi $(DICTFILE) $(PRIVDICTFILE)
 	`pwd`/mkdictbi `pwd`/$(DICTFILE) `pwd`/$(PRIVDICTFILE) > dcdictbi.cc
 
 # Generate an empty builtin data dictionary
- 
+
 nobuiltindict:
 	cp dcdictbi.nul dcdictbi.cc
 
