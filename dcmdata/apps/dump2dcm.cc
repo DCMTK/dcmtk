@@ -51,9 +51,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-03 15:09:40 $
+** Update Date:		$Date: 1997-07-21 07:59:02 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dump2dcm.cc,v $
-** CVS/RCS Revision:	$Revision: 1.15 $
+** CVS/RCS Revision:	$Revision: 1.16 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -143,7 +143,7 @@ stripWhitespace(char* s)
 		
     p = s;
     while (*s != '\0') {
-	if (isspace(*s) == FALSE) {
+	if (isspace(*s) == OFFalse) {
 	    *p++ = *s;
 	}
 	s++;
@@ -177,16 +177,16 @@ stripPrecedingWhitespace(char * s)
     return p;
 }
 
-static BOOL
+static OFBool
 onlyWhitespace(const char* s)
 {
     int len = strlen(s);
-    int charsFound = FALSE;
+    int charsFound = OFFalse;
 
     for (int i=0; (!charsFound) && (i<len); i++) {
 	charsFound = !isspace(s[i]);
     }
-    return (!charsFound)?(TRUE):(FALSE);
+    return (!charsFound)?(OFTrue):(OFFalse);
 }
 
 static char*
@@ -213,10 +213,10 @@ getLine(char* line, int maxLineLen, FILE* f, const unsigned long lineNumber)
 }
 
 
-static BOOL
+static OFBool
 isaCommentLine(const char* s)
 {
-    BOOL isComment = FALSE; /* assumption */
+    OFBool isComment = OFFalse; /* assumption */
     int len = strlen(s);
     int i = 0;
     for (i=0; i<len && isspace(s[i]); i++) /*loop*/;
@@ -224,10 +224,10 @@ isaCommentLine(const char* s)
     return isComment;
 }
 
-static BOOL
+static OFBool
 parseTag(char* & s, DcmTagKey& key)
 {
-    BOOL ok = TRUE;
+    OFBool ok = OFTrue;
     char * p;
     unsigned int g, e;
     
@@ -246,20 +246,20 @@ parseTag(char* & s, DcmTagKey& key)
 	if (sscanf(p, "(%x,%x)", &g, &e) == 2) {
 	    key.set(g, e);
 	} else {
-	    ok = FALSE;
+	    ok = OFFalse;
 	}
 	delete[] p;
     }
-    else ok = FALSE;
+    else ok = OFFalse;
 
     return ok;
 }
 
 
-static BOOL
+static OFBool
 parseVR(char * & s, DcmEVR & vr)
 {
-    BOOL ok = TRUE;
+    OFBool ok = OFTrue;
 
     s = stripPrecedingWhitespace(s);
 
@@ -274,7 +274,7 @@ parseVR(char * & s, DcmEVR & vr)
 	vr = dcmVR.getEVR();
 	s+=2;
     }
-    else ok = FALSE;
+    else ok = OFFalse;
 
     return ok;
 }
@@ -320,10 +320,10 @@ searchCommentOrEol(char *s)
 	
 	
 
-static BOOL
+static OFBool
 parseValue(char * & s, char * & value)
 {
-    BOOL ok = TRUE;
+    OFBool ok = OFTrue;
     int len;
     value = NULL;
 
@@ -334,7 +334,7 @@ parseValue(char * & s, char * & value)
     case DCM_DumpOpenString:
 	len = searchLastClose(s, DCM_DumpCloseString);
 	if (len == 0)
-	    ok = FALSE;
+	    ok = OFFalse;
 	else if (len > 2)
 	{
 	    value = new char[len-1];
@@ -349,7 +349,7 @@ parseValue(char * & s, char * & value)
 	break;
 
     case DCM_DumpOpenFile:
-	ok = FALSE;  // currently not supported
+	ok = OFFalse;  // currently not supported
 	break;
 
     case DCM_DumpCommentChar:
@@ -415,8 +415,7 @@ insertIntoSet(DcmStack & stack, DcmTagKey tagkey, DcmEVR vr, char * value)
 	    else
 	    {
 		// fill value
-		if (value)
-		    l_error = newElement->putString(value);
+		l_error = newElement->putString(value);
 
 		// insert element into hierarchy
 		if (l_error == EC_Normal)
@@ -481,11 +480,6 @@ insertIntoSet(DcmStack & stack, DcmTagKey tagkey, DcmEVR vr, char * value)
 		    ((DcmSequenceOfItems *) topOfStack) -> insert(item);
 		    stack.push(item);
 		}
-		else if (topOfStack->ident() == EVR_pixelSQ)
-		{
-		    // pixel item is a DcmElement, not a DcmItem
-		    ((DcmPixelSequence *) topOfStack) -> insert(new DcmPixelItem(tag));;
-		}
 		else if (topOfStack->ident() == EVR_SQ)
 		{
 		    // an item must be pushed to the stack
@@ -510,14 +504,14 @@ insertIntoSet(DcmStack & stack, DcmTagKey tagkey, DcmEVR vr, char * value)
     return l_error;
 }
 
-static BOOL
+static OFBool
 readDumpFile(DcmMetaInfo * metaheader, DcmDataset * dataset, 
 	     FILE * infile, const char * ifname, 
 	     const unsigned long maxLineLength)
 {
     char * lineBuf = new char[maxLineLength];
     int lineNumber = 0;
-    BOOL errorOnThisLine = FALSE;
+    OFBool errorOnThisLine = OFFalse;
     char * parse = NULL;
     char * value = NULL;
     DcmEVR vr;
@@ -541,7 +535,7 @@ readDumpFile(DcmMetaInfo * metaheader, DcmDataset * dataset,
 	if (isaCommentLine(lineBuf))
 	    continue;
 
-	errorOnThisLine = FALSE;
+	errorOnThisLine = OFFalse;
 	
 	parse = &lineBuf[0];
 
@@ -551,7 +545,7 @@ readDumpFile(DcmMetaInfo * metaheader, DcmDataset * dataset,
 	    cerr << "dump2dcm: "<< ifname << ": "
 		 << "no Tag found (line " 
 		 << lineNumber << ")"<< endl;
-	    errorOnThisLine = TRUE;
+	    errorOnThisLine = OFTrue;
 	}
 
 	// parse optional VR
@@ -564,7 +558,7 @@ readDumpFile(DcmMetaInfo * metaheader, DcmDataset * dataset,
 	    cerr << "dump2dcm: "<< ifname << ": "
 		 << "incorrect value specification (line " 
 		 << lineNumber << ")"<< endl;
-	    errorOnThisLine = TRUE;
+	    errorOnThisLine = OFTrue;
 	}
 	 
 
@@ -587,7 +581,7 @@ readDumpFile(DcmMetaInfo * metaheader, DcmDataset * dataset,
 	    }
 	    if (l_error != EC_Normal)
 	    {
-		errorOnThisLine = TRUE;
+		errorOnThisLine = OFTrue;
 		cerr << "dump2dcm: " << ifname << ": Error in creating Element: "
 		     << dcmErrorConditionToString(l_error) << " (line "
 		     << lineNumber << ")"<< endl;
@@ -620,10 +614,10 @@ readDumpFile(DcmMetaInfo * metaheader, DcmDataset * dataset,
     if (errorsEncountered)
     {
 	cerr << errorsEncountered << " Errors found in " <<  ifname << endl;
-	return FALSE;
+	return OFFalse;
     }
     else
-	return TRUE;
+	return OFTrue;
 }
 
 // ********************************************
@@ -655,8 +649,8 @@ int main(int argc, char *argv[])
     E_PaddingEncoding opadenc = EPD_withoutPadding;
     Uint32 padlen = 0;
     Uint32 subPadlen = 0;
-    BOOL verbosemode = FALSE;
-    BOOL createFileFormat = TRUE;
+    OFBool verbosemode = OFFalse;
+    OFBool createFileFormat = OFTrue;
     int localDebugLevel = 0;
     unsigned long maxLineLength = DCM_DumpMaxLineSize;
 
@@ -670,9 +664,9 @@ int main(int argc, char *argv[])
 	    switch (arg[1]) {
 	    case 'F':
 		if (arg[0] == '-' && arg[2] =='\0') 
-		    createFileFormat = FALSE;
+		    createFileFormat = OFFalse;
 		else if (arg[0] == '+' && arg[2] == '\0')
-		    createFileFormat = TRUE;
+		    createFileFormat = OFTrue;
 		else
 		{
 		    cerr << "unknown argument: "<< arg << endl;
@@ -759,9 +753,9 @@ int main(int argc, char *argv[])
 		break;
 	    case 'u':
 		if (arg[0] == '-' && arg[2] == '\0') 
-		    dcmEnableUnknownVRGeneration = FALSE;
+		    dcmEnableUnknownVRGeneration = OFFalse;
 		else if (arg[0] == '+' && arg[2] == '\0')
-		    dcmEnableUnknownVRGeneration = TRUE;
+		    dcmEnableUnknownVRGeneration = OFTrue;
 		else
 		{
 		    cerr << "unknown option: " << arg << endl;
@@ -782,7 +776,7 @@ int main(int argc, char *argv[])
 		break;
 	    case 'V':
 		if (arg[0] == '+' && arg[2] == '\0') 
-		    verbosemode = TRUE;
+		    verbosemode = OFTrue;
 		else 
 		{
 		    cerr << "unknown option: " << arg << endl;
@@ -848,7 +842,7 @@ int main(int argc, char *argv[])
 
 
     // create dicom metaheader and dataset
-    BOOL memoryError = FALSE;
+    OFBool memoryError = OFFalse;
     if (createFileFormat)
     {
 	fileformat = new DcmFileFormat();
@@ -857,16 +851,16 @@ int main(int argc, char *argv[])
 	    metaheader = fileformat -> getMetaInfo();
 	    dataset = fileformat -> getDataset();
 	    if (!metaheader || !dataset)
-		memoryError = TRUE;
+		memoryError = OFTrue;
 	}
 	else
-	    memoryError = TRUE;
+	    memoryError = OFTrue;
     }
     else
     {
 	dataset = new DcmDataset();
 	if (!dataset)
-	    memoryError = TRUE;
+	    memoryError = OFTrue;
     }
 
     if (memoryError)
@@ -930,7 +924,14 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
-** Revision 1.15  1997-07-03 15:09:40  andreas
+** Revision 1.16  1997-07-21 07:59:02  andreas
+** - Deleted support for DcmPixelItems and DcmPixelSequences in dump2dcm
+**   ToDo: New support should be added in the future compatible to
+**   the new DcmPixel class.
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.15  1997/07/03 15:09:40  andreas
 ** - removed debugging functions Bdebug() and Edebug() since
 **   they write a static array and are not very useful at all.
 **   Cdebug and Vdebug are merged since they have the same semantics.
