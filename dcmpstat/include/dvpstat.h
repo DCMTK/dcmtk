@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPresentationState
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-27 11:23:57 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-05-04 12:28:11 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1724,7 +1724,10 @@ private:
 
 /*
  *  $Log: dvpstat.h,v $
- *  Revision 1.14  1999-04-27 11:23:57  joergr
+ *  Revision 1.15  1999-05-04 12:28:11  meichel
+ *  Removed carriage returns
+ *
+ *  Revision 1.14  1999/04/27 11:23:57  joergr
  *  Added method to check whether current image is inverse or not.
  *
  *  Revision 1.13  1999/03/22 09:05:35  joergr
