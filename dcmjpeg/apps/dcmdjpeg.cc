@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 2001-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Decompress DICOM file
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 15:39:56 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/apps/dcmdjpeg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-01-16 14:28:01 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -333,10 +332,14 @@ int main(int argc, char *argv[])
     return 0;
 }
 
+
 /*
  * CVS/RCS Log:
  * $Log: dcmdjpeg.cc,v $
- * Revision 1.7  2002-11-27 15:39:56  meichel
+ * Revision 1.8  2004-01-16 14:28:01  joergr
+ * Updated copyright header.
+ *
+ * Revision 1.7  2002/11/27 15:39:56  meichel
  * Adapted module dcmjpeg to use of new header file ofstdinc.h
  *
  * Revision 1.6  2002/11/26 08:44:41  meichel
@@ -365,4 +368,3 @@ int main(int argc, char *argv[])
  *
  *
  */
-
