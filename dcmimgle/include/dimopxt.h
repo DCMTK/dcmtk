@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromePixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-06-26 16:05:43 $
+ *  Update Date:      $Date: 2002-10-21 10:13:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -143,7 +143,7 @@ class DiMonoPixelTemplate
     {
         return (void *)(&Data);
     }
-    
+
     /** get minimum and maximum pixel values
      *
      ** @param  min  reference to storage area for minimum pixel value
@@ -156,7 +156,7 @@ class DiMonoPixelTemplate
     {
         min = MinValue[0];
         max = MaxValue[0];
-        return 1; 
+        return 1;
     }
 
     /** get automatically computed min-max window
@@ -171,10 +171,10 @@ class DiMonoPixelTemplate
                                double &center,
                                double &width)
     {
-        int result = 0; 
+        int result = 0;
         if ((idx >= 0) && (idx <= 1))
-        { 
-            if ((idx == 1) && (MinValue[1] == 0) && (MaxValue[1] == 0))            
+        {
+            if ((idx == 1) && (MinValue[1] == 0) && (MaxValue[1] == 0))
                 determineMinMax(0, 0, 0x2);                                     // determine on demand
             /* suppl. 33: "A Window Center of 2^n-1 and a Window Width of 2^n
                            selects the range of input values from 0 to 2^n-1."
@@ -404,7 +404,7 @@ class DiMonoPixelTemplate
 
     /// pointer to pixel data
     T *Data;
-    
+
 
  private:
 
@@ -414,7 +414,7 @@ class DiMonoPixelTemplate
     T MaxValue[2];
 
  // --- declarations to avoid compiler warnings
- 
+
     DiMonoPixelTemplate(const DiMonoPixelTemplate<T> &);
     DiMonoPixelTemplate<T> &operator=(const DiMonoPixelTemplate<T> &);
 };
@@ -427,7 +427,13 @@ class DiMonoPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimopxt.h,v $
- * Revision 1.19  2002-06-26 16:05:43  joergr
+ * Revision 1.20  2002-10-21 10:13:51  joergr
+ * Corrected wrong calculation of min/max pixel value in cases where the
+ * stored pixel data exceeds the expected size.
+ * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for the bug
+ * report.
+ *
+ * Revision 1.19  2002/06/26 16:05:43  joergr
  * Enhanced handling of corrupted pixel data and/or length.
  *
  * Revision 1.18  2001/11/19 12:56:27  joergr

@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeInputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-06-26 16:05:43 $
+ *  Update Date:      $Date: 2002-10-21 10:13:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoipxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -68,13 +68,13 @@ class DiMonoInputPixelTemplate
         if ((Data != NULL) && (InputCount < Count))
             OFBitmanipTemplate<T3>::zeroMem(Data + InputCount, Count - InputCount);
         if ((pixel != NULL) && (Count > 0))
-        {   
+        {
             // check whether to apply any modality transform
             if ((Modality != NULL) && Modality->hasLookupTable() && (bitsof(T1) <= MAX_TABLE_ENTRY_SIZE))
             {
                 modlut(pixel);
                 // ignore modality LUT min/max values since the image does not necessarily have to use all LUT entries
-                determineMinMax(0 /*(T3)Modality->getMinValue()*/, 0 /*(T3)Modality->getMaxValue()*/);
+                determineMinMax();
             }
             else if ((Modality != NULL) && Modality->hasRescaling())
             {
@@ -197,7 +197,7 @@ class DiMonoInputPixelTemplate
                     }
                     delete[] lut;
                 }
-            } 
+            }
         }
     }
 
@@ -299,7 +299,13 @@ class DiMonoInputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoipxt.h,v $
- * Revision 1.24  2002-06-26 16:05:43  joergr
+ * Revision 1.25  2002-10-21 10:13:51  joergr
+ * Corrected wrong calculation of min/max pixel value in cases where the
+ * stored pixel data exceeds the expected size.
+ * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for the bug
+ * report.
+ *
+ * Revision 1.24  2002/06/26 16:05:43  joergr
  * Enhanced handling of corrupted pixel data and/or length.
  *
  * Revision 1.23  2001/11/13 18:10:43  joergr

@@ -22,9 +22,9 @@
  *  Purpose: DicomInputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-13 18:07:36 $
+ *  Update Date:      $Date: 2002-10-21 10:13:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diinpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -256,7 +256,7 @@ class DiInputPixelTemplate
                     else if (value > MaxValue[0])
                         MaxValue[0] = value;
                 }
-                if (Count >= PixelCount)                               // use global min/max value
+                if (Count <= PixelCount)                               // use global min/max value
                 {
                     MinValue[1] = MinValue[0];
                     MaxValue[1] = MaxValue[0];
@@ -298,7 +298,7 @@ class DiInputPixelTemplate
     {
         return (void *)Data;
     }
-    
+
     /** remove reference to (internally handled) pixel data
      */
     inline void removeDataReference()
@@ -438,7 +438,7 @@ class DiInputPixelTemplate
                             *(q++) = (T2)(*p & mask);
                             *(q++) = (T2)(*p >> bitsAllocated);
                         }
-                    }   
+                    }
                     else
                     {
 #ifdef DEBUG
@@ -457,7 +457,7 @@ class DiInputPixelTemplate
                                 value >>= bitsAllocated;
                             }
                         }
-                    }   
+                    }
                 }
                 else
                 {
@@ -480,7 +480,7 @@ class DiInputPixelTemplate
                         {
                             *(q++) = expandSign((T2)(value & mask), sign, smask);
                             value >>= bitsAllocated;
-                        }   
+                        }
                     }
                 }
             }
@@ -507,7 +507,7 @@ class DiInputPixelTemplate
                         shift += bitsof_T1;
                         value |= (T2)*(p++) << shift;
                     }
-                    *(q++) = value; 
+                    *(q++) = value;
                 }
             }
             else                                                                        // case 4: anything else
@@ -573,13 +573,13 @@ class DiInputPixelTemplate
     /// pointer to pixel data
     T2 *Data;
 
-    /// minimum pixel value ([0] = global, [1] = selected pixel range) 
+    /// minimum pixel value ([0] = global, [1] = selected pixel range)
     T2 MinValue[2];
     /// maximum pixel value ([0] = global, [1] = selected pixel range)
     T2 MaxValue[2];
 
  // --- declarations to avoid compiler warnings
- 
+
     DiInputPixelTemplate(const DiInputPixelTemplate<T1,T2> &);
     DiInputPixelTemplate<T1,T2> &operator=(const DiInputPixelTemplate<T1,T2> &);
 };
@@ -592,7 +592,13 @@ class DiInputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diinpxt.h,v $
- * Revision 1.23  2001-11-13 18:07:36  joergr
+ * Revision 1.24  2002-10-21 10:13:50  joergr
+ * Corrected wrong calculation of min/max pixel value in cases where the
+ * stored pixel data exceeds the expected size.
+ * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for the bug
+ * report.
+ *
+ * Revision 1.23  2001/11/13 18:07:36  joergr
  * Fixed bug occurring when processing monochrome images with an odd number of
  * pixels.
  *
