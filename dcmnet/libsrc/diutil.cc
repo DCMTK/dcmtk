@@ -58,9 +58,9 @@
 **
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1998-10-26 13:07:48 $
+** Update Date:		$Date: 1999-03-29 10:13:22 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/diutil.cc,v $
-** CVS/RCS Revision:	$Revision: 1.11 $
+** CVS/RCS Revision:	$Revision: 1.12 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -108,8 +108,8 @@
  */
 
 typedef struct {
-    char *sopClass;
-    char *modality;
+    const char *sopClass;
+    const char *modality;
     unsigned long averageSize;	/* can be way, way out */
 } DU_Modality;
 
@@ -127,56 +127,60 @@ typedef struct {
 ** the size of an image being transmitted).
 */
 static DU_Modality modalities[] = {
-    { UID_ComputedRadiographyImageStorage,        	"CR", 2 * 1024 * 1024 },
-    { UID_CTImageStorage,                         	"CT", 2 * 512 * 512 },
-    { UID_MRImageStorage,                         	"MR", 2 * 256 * 256 },
-    { UID_NuclearMedicineImageStorage,            	"NM", 2 * 64 * 64 },
-    { UID_RETIRED_NuclearMedicineImageStorage,    	"NMr", 2 * 64 * 64 },
-    { UID_UltrasoundImageStorage,         		"US", 1 * 512 * 512 },
-    { UID_RETIRED_UltrasoundImageStorage,         	"USr", 1 * 512 * 512 },
-    { UID_UltrasoundMultiframeImageStorage,      	"US", 1 * 512 * 512 },
+    { UID_BasicAudioWaveformStorage,                    "AU", 4096 },
+    { UID_CTImageStorage,                               "CT", 2 * 512 * 512 },
+    { UID_CardiacElectrophysiologyWaveformStorage,      "WVc", 4096 },
+    { UID_ComputedRadiographyImageStorage,              "CR", 2 * 1024 * 1024 },
+    { UID_DRAFT_VLImageStorage,                         "VLd", 768 * 576 * 3 },
+    { UID_DRAFT_VLMultiFrameImageStorage,               "VMd", 768 * 576 * 3 },
+    { UID_DRAFT_WaveformStorage,                        "WVd", 4096 },
+    { UID_DigitalIntraOralXRayImageStorageForPresentation,   "DXo", 2 * 1024 * 1024 },
+    { UID_DigitalIntraOralXRayImageStorageForProcessing,     "DPo", 2 * 1024 * 1024 },
+    { UID_DigitalMammographyXRayImageStorageForPresentation, "DXm", 2 * 4096 * 4096 },
+    { UID_DigitalMammographyXRayImageStorageForProcessing,   "DPm", 2 * 4096 * 4096 },
+    { UID_DigitalXRayImageStorageForPresentation,            "DX", 2 * 2048 * 2048 },
+    { UID_DigitalXRayImageStorageForProcessing,              "DP", 2 * 2048 * 2048 },
+    { UID_GeneralECGWaveformStorage,                    "ECG", 4096 },
+    { UID_GrayscaleSoftcopyPresentationStateStorage,    "PSg", 4096 },
+    { UID_HardcopyColorImageStorage,                    "HC", 4096 },
+    { UID_HardcopyGrayscaleImageStorage,                "HG", 4096 },
+    { UID_HemodynamicWaveformStorage,                   "WVh", 4096 },
+    { UID_HighResolutionAudioWaveformStorage,           "AUh", 4096 },
+    { UID_MRImageStorage,                               "MR", 2 * 256 * 256 },
+    { UID_NuclearMedicineImageStorage,                  "NM", 2 * 64 * 64 },
+    { UID_PETCurveStorage,                              "PC", 4096 },
+    { UID_PETImageStorage,                              "PI", 512*512*2 },
+    { UID_RETIRED_NuclearMedicineImageStorage,          "NMr", 2 * 64 * 64 },
+    { UID_RETIRED_UltrasoundImageStorage,               "USr", 1 * 512 * 512 },
     { UID_RETIRED_UltrasoundMultiframeImageStorage,     "USr", 1 * 512 * 512 },
-    { UID_XRayAngiographicImageStorage,             	"XA", 2 * 512 * 512 },
+    { UID_RTBeamsTreatmentRecordStorage,                "RTb", 4096 },
+    { UID_RTBrachyTreatmentRecordStorage,               "RTr", 4096 },
+    { UID_RTDoseStorage,                                "RD", 4096 },
+    { UID_RTImageStorage,                               "RI", 4096 },
+    { UID_RTPlanStorage,                                "RP", 4096 },
+    { UID_RTStructureSetStorage,                        "RS", 4096 },
+    { UID_RTTreatmentSummaryRecordStorage,              "RTs", 4096 },
+    { UID_SRAudioStorage,                               "SRa", 4096 },
+    { UID_SRComprehensiveStorage,                       "SRc", 4096 },
+    { UID_SRDetailStorage,                              "SRd", 4096 },
+    { UID_SRTextStorage,                                "SRt", 4096 },
+    { UID_SecondaryCaptureImageStorage,                 "SC", 2 * 512 * 512 },
+    { UID_StandaloneCurveStorage,                       "CV", 4096 },
+    { UID_StandaloneModalityLUTStorage,                 "ML", 4096*2 },
+    { UID_StandaloneOverlayStorage,                     "OV", 512 * 512 },
+    { UID_StandaloneVOILUTStorage,                      "VO", 4096*2 },
+    { UID_StoredPrintStorage,                           "SP", 4096 },
+    { UID_TwelveLeadECGWaveformStorage,                 "TLE", 4096 },
+    { UID_UltrasoundImageStorage,                       "US", 1 * 512 * 512 },
+    { UID_UltrasoundMultiframeImageStorage,             "US", 1 * 512 * 512 },
+    { UID_VLEndoscopicImageStorage,                     "VLe", 768 * 576 * 3 },
+    { UID_VLMicroscopicImageStorage,                    "VLm", 768 * 576 * 3 },
+    { UID_VLPhotographicImageStorage,                   "VLp", 768 * 576 * 3 },
+    { UID_VLSlideCoordinatesMicroscopicImageStorage,    "VMs", 768 * 576 * 3 },
+    { UID_WaveformStorage,                              "WV", 4096 },
     { UID_XRayAngiographicBiPlaneImageStorage,          "XB", 2 * 512 * 512 },
-    { UID_XRayFluoroscopyImageStorage,           	"RF", 2 * 512 * 512 },
-    { UID_SecondaryCaptureImageStorage,             	"SC", 2 * 512 * 512 },
-    { UID_StandaloneOverlayStorage,     		"OV", 512 * 512 },
-    { UID_StandaloneCurveStorage,      			"CV", 4096 },
-    { UID_StandaloneModalityLUTStorage,           	"ML", 4096*2 },
-    { UID_StandaloneVOILUTStorage,                	"VO", 4096*2 },
-    /* I've no idea how large the RadioTherapy objects typically are */
-    { UID_RTImageStorage,				"RI", 4096 },
-    { UID_RTDoseStorage,				"RD", 4096 },
-    { UID_RTStructureSetStorage,			"RS", 4096 },
-    { UID_RTPlanStorage,				"RP", 4096 },
-    /* I've no idea how large PET objects typically are */
-    { UID_PETImageStorage, 				"PI", 512*512*2 },
-    { UID_PETCurveStorage, 				"PC", 4096 },
-    /* I've no idea how large Visible Light objects typically are */
-    { UID_VLImageStorage, 				"VL", 512*512*2 },
-    { UID_VLMultiFrameImageStorage, 			"VM", 512*512*2*5 },
-
-    /* How big can Postscript Print Object be? */
-    { UID_PageDescriptionStorage,		"PD", 4096 },
-
-    /* I've no idea how large Structured Reporting objects typically are */
-    { UID_SRTextStorage, 			"SRt", 4096 },
-    { UID_SRAudioStorage,  			"SRa", 4096 },
-    { UID_SRDetailStorage,  			"SRd", 4096 },
-    { UID_SRComprehensiveStorage,  		"SRc", 4096 },
-
-    /* How big can Print Storage Objects be? */
-    { UID_HardcopyGrayscaleImageStorage, 	"HG", 4096 },
-    { UID_HardcopyColorImageStorage,		"HC", 4096 },
-    { UID_StoredPrintStorage, 			"SP", 4096 },
-
-    /* How big can Wafeform Interchange Objects be? */
-    { UID_WaveformStorage, 	"WV", 4096 },
-    { UID_ECGWaveformStorage, 	"ECG", 4096 },
-    { UID_AudioWaveformStorage, "AU", 4096 },
-    
-    /* Grayscale Softcopy Presentation State Storage */
-    { UID_GrayscaleSoftcopyPresentationStateStorage, "PSg", 4096 }
+    { UID_XRayAngiographicImageStorage,                 "XA", 2 * 512 * 512 },
+    { UID_XRayFluoroscopyImageStorage,                  "RF", 2 * 512 * 512 },
 
 };
 
@@ -578,7 +582,10 @@ DU_cgetStatusString(Uint16 statusCode)
 /*
 ** CVS Log
 ** $Log: diutil.cc,v $
-** Revision 1.11  1998-10-26 13:07:48  meichel
+** Revision 1.12  1999-03-29 10:13:22  meichel
+** Updated list of SOP class name prefixes and estimated sizes
+**
+** Revision 1.11  1998/10/26 13:07:48  meichel
 ** Added Grayscale Softcopy Presentation State to DIMSE helper functions.
 **
 ** Revision 1.10  1998/02/25 14:30:01  hewett
