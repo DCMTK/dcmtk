@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-05-23 10:45:28 $
+** Update Date:		$Date: 1997-05-28 12:04:46 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimse.cc,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
+** CVS/RCS Revision:	$Revision: 1.9 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -567,77 +567,6 @@ sendDcmDataset(T_ASC_Association * assoc, DcmDataset * obj,
     return DIMSE_NORMAL;
 }
 
-static CONDITION
-sendMemoryData(T_ASC_Association * assoc, DcmDataset *dataObject,
-	T_ASC_PresentationContextID presID,
-	E_TransferSyntax xferSyntax,
-	DIMSE_ProgressCallback callback,
-	void *callbackContext)
-
-{
-    CONDITION cond;
-
-    cond = sendDcmDataset(assoc, dataObject, presID, xferSyntax, DUL_DATASETPDV,
-	callback, callbackContext);
-
-    return cond;
-}
-
-static CONDITION
-sendFileData(T_ASC_Association * assoc, const char *dataFileName,
-	T_ASC_PresentationContextID presID,
-	E_TransferSyntax xferSyntax,
-	DIMSE_ProgressCallback callback,
-	void *callbackContext)
-
-{
-    CONDITION cond = DIMSE_NORMAL;;
-
-    DcmFileStream inf(dataFileName, DCM_ReadMode);
-    if ( inf.Fail() ) {
-	DIMSE_warning(assoc, 
-	    "sendStraightFileData: cannot open dicom file (%s): %s\n", 
-	    dataFileName, strerror(errno));
-	cond = DIMSE_SENDFAILED;
-    }
-
-    DcmFileFormat dcmff;
-    dcmff.transferInit();
-    dcmff.read(inf, EXS_Unknown);
-    dcmff.transferEnd();
-
-    cond = sendDcmDataset(assoc, dcmff.getDataset(), presID, xferSyntax, DUL_DATASETPDV,
-	    callback, callbackContext);
-
-    return cond;
-}
-
-static CONDITION 
-sendData(T_ASC_Association *assoc,
-		  T_ASC_PresentationContextID presID,
-		  DcmDataset *dataObject,
-		  const char *dataFileName,
-		  E_TransferSyntax xferSyntax,
-		  DIMSE_ProgressCallback callback,
-		  void *callbackContext)
-
-{
-    CONDITION cond = DIMSE_NORMAL;
-
-    if (dataObject != NULL && dataFileName != NULL) {
-	DIMSE_warning(assoc, "sendData: both object and file specified (sending object only)");
-    }
-    if (dataObject != NULL) {
-	cond = sendMemoryData(assoc, dataObject, presID, xferSyntax,
-		callback, callbackContext);
-    } else if (dataFileName != NULL) {
-	cond = sendFileData(assoc, dataFileName, presID, xferSyntax,
-		callback, callbackContext);
-    }
-    return cond;
-}
-
-
 /*
 ** Public Functions Bodies
 */
@@ -663,53 +592,102 @@ DIMSE_sendMessage(T_ASC_Association *assoc,
     CONDITION cond;
     E_TransferSyntax xferSyntax;
     DcmDataset *cmdObj = NULL;
-
-    if (!isDataDictPresent()) {
-	/* we must have a data dictionary */
-	return COND_PushCondition(
+    DcmFileFormat dcmff;
+    int fromFile = 0;
+    
+    if (!isDataDictPresent())
+    {
+	  /* we must have a data dictionary */
+	  return COND_PushCondition(
 	    DIMSE_BUILDFAILED,
-	        "DIMSE_sendMessage: missing data dictionary");
+        "DIMSE_sendMessage: missing data dictionary");
     }
 
-    cond = validateMessage(assoc, msg);
-    if (cond != DIMSE_NORMAL)
-	return cond;
-
-    cond = checkPresentationContextForMessage(assoc, msg, presID, &xferSyntax);
-    if (cond != DIMSE_NORMAL)
-	return cond;
+    if (DIMSE_NORMAL != (cond = validateMessage(assoc, msg))) return cond;
+    if (DIMSE_NORMAL != (checkPresentationContextForMessage(assoc, msg, presID, &xferSyntax))) return cond;
 
     cond = DIMSE_buildCmdObject(msg, &cmdObj);
 
-    if (SUCCESS(cond) && statusDetail != NULL) {
-        /* move the status detail to the command */
-        DcmElement* e;
-        while ((e = statusDetail->remove((unsigned long)0)) != NULL) {
-            cmdObj->insert(e, TRUE);
-        }
+    if (SUCCESS(cond) && statusDetail != NULL)
+    {
+      /* move the status detail to the command */
+      DcmElement* e;
+      while ((e = statusDetail->remove((unsigned long)0)) != NULL) cmdObj->insert(e, TRUE);
     }
-    if (SUCCESS(cond)) {
+    
+    if (SUCCESS(cond) && DIMSE_isDataSetPresent(msg))
+    {
+      /* read the data from file if necessary */
+      if ((dataObject != NULL)&&(dataFileName != NULL))
+      {
+	    DIMSE_warning(assoc, "sendData: both object and file specified (sending object only)");
+      }
+      else if ((dataObject == NULL)&&(dataFileName != NULL))
+      {
+        DcmFileStream inf(dataFileName, DCM_ReadMode);
+        if (inf.Fail())
+        {
+	       DIMSE_warning(assoc, 
+	       "sendMessage: cannot open dicom file (%s): %s\n", 
+	       dataFileName, strerror(errno));
+	       cond = DIMSE_SENDFAILED;
+        } else {
+          dcmff.transferInit();
+          dcmff.read(inf, EXS_Unknown);
+          dcmff.transferEnd();
+          dataObject = dcmff.getDataset();
+          fromFile = 1;
+	    }      
+      }
+      
+      /* check if we can convert the dataset to the required transfer syntax */
+      if (dataObject)
+      {
+        if (! dataObject->canWriteXfer(xferSyntax))
+        {
+          DcmXfer writeXferSyntax(xferSyntax);
+          DcmXfer originalXferSyntax(dataObject->getOriginalXfer());
+          if (fromFile && dataFileName)
+          {
+	        DIMSE_warning(assoc, 
+	         "sendMessage: unable to convert DICOM file '%s'\nfrom '%s' transfer syntax to '%s'.\n",
+	         dataFileName, originalXferSyntax.getXferName(), writeXferSyntax.getXferName());
+          } else {
+	        DIMSE_warning(assoc, 
+	         "sendMessage: unable to convert dataset\nfrom '%s' transfer syntax to '%s'.\n",
+	         originalXferSyntax.getXferName(), writeXferSyntax.getXferName());
+          }
+	      cond = DIMSE_SENDFAILED;
+        }
+      } else {
+	    DIMSE_warning(assoc, 
+	    "sendMessage: no dataset to send\n");
+	    cond = DIMSE_SENDFAILED;
+      }
+    }
 
-        if (debug) {
+    if (SUCCESS(cond))
+    {
+      if (debug)
+      {
 	    printf("DIMSE Command To Send:\n");
 	    cmdObj->print();
-        }
-
-	/* Send the command.
-	 * Commands are always little endian implicit.
-	 */
-	cond = sendDcmDataset(assoc, cmdObj, presID, 
+      }
+	  /* Send the command.
+	   * Commands are always little endian implicit.
+	   */
+	  cond = sendDcmDataset(assoc, cmdObj, presID, 
 	    EXS_LittleEndianImplicit, DUL_COMMANDPDV,
 	    NULL, NULL);	
     }
-    if (SUCCESS(cond) && DIMSE_isDataSetPresent(msg)) {
-	/* send the data set */
-	cond = sendData(assoc, presID, dataObject, dataFileName, xferSyntax,
-	    callback, callbackContext);
+
+    if (SUCCESS(cond) && DIMSE_isDataSetPresent(msg) &&(dataObject))
+    {
+        cond = sendDcmDataset(assoc, dataObject, presID, xferSyntax,
+          DUL_DATASETPDV, callback, callbackContext);
     }
 
-    if (cond != DIMSE_NORMAL)
-	return COND_PushCondition(cond, DIMSE_Message(cond));
+    if (cond != DIMSE_NORMAL) return COND_PushCondition(cond, DIMSE_Message(cond));
     return DIMSE_NORMAL;
 }
 
@@ -1326,7 +1304,13 @@ void DIMSE_warning(T_ASC_Association *assoc,
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
-** Revision 1.8  1997-05-23 10:45:28  meichel
+** Revision 1.9  1997-05-28 12:04:46  meichel
+** DIMSE_sendMessage() now checks whether the dataset to be sent
+** can be converted to the requested transfer syntax prior to
+** transmitting the message and dataset. If the test fails,
+** DIMSE_SENDFAILED is returned.
+**
+** Revision 1.8  1997/05/23 10:45:28  meichel
 ** Major rewrite of storescp application. See CHANGES for details.
 ** Changes required to interfaces of some DIMSE functions.
 **
