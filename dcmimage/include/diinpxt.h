@@ -42,7 +42,7 @@ static inline Uint32 expandSign(const Uint32 Value, const Uint32, const Uint32)
 }
 
 
-static inline Sint8 expandSign(const Sint8 Value, const Uint8 SignBit, const Sint8 SignMask)
+static inline Sint8 expandSign(const Sint8 Value, const Sint8 SignBit, const Sint8 SignMask)
 {
     return (Value & SignBit) ? (Value | SignMask) : Value;
 }

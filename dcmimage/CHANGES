@@ -1,6 +1,9 @@
 
 **** Changes from 97.10.01 (eichelberg)
 
+- Corrected declaration of expandSign() for Sint8 values.
+  Affects: dcmimage/include/diinpxt.h
+  
 - Removed -DREVERSE_OVERLAY_ORIGIN_ORDER from default
   compile options.
   Affects: dcmimage/libsrc/Makefile.in
