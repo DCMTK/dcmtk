@@ -51,9 +51,9 @@
  *  Caveat 2: The direct use of the COUT and CERR macros is unsafe
  *  in multithread applications. Use ofConsole instead.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-05 10:37:41 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-12-17 17:38:39 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -268,8 +268,8 @@ extern OFOStringStream CERR;
 
 #else /* DCMTK_GUI */
 
-#define COUT cout
-#define CERR cerr
+#define COUT (ofConsole.getCout())
+#define CERR (ofConsole.getCerr())
 
 #endif /* DCMTK_GUI */
 
@@ -280,7 +280,10 @@ extern OFOStringStream CERR;
  *
  * CVS/RCS Log:
  * $Log: ofconsol.h,v $
- * Revision 1.14  2003-12-05 10:37:41  joergr
+ * Revision 1.15  2003-12-17 17:38:39  meichel
+ * Changed definition of COUT and CERR macros to allow redirection to file.
+ *
+ * Revision 1.14  2003/12/05 10:37:41  joergr
  * Removed leading underscore characters from preprocessor symbols (reserved
  * symbols). Updated copyright date where appropriate.
  *
