@@ -9,9 +9,9 @@
 ** Implementation of class DcmPixelData
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-24 13:08:28 $
+** Update Date:		$Date: 1997-07-31 06:59:35 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixel.cc,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 **
 ** CVS/RCS Log at end of file
 **
@@ -724,7 +724,7 @@ DcmPixelData::removeOriginalRepresentation(
     const E_TransferSyntax repType,
     const DcmRepresentationParameter * repParam)
 {
-    E_Condition l_error;
+    E_Condition l_error = EC_Normal;
     DcmXfer repTypeSyn(repType);
 
     if (!repTypeSyn.isEncapsulated())
@@ -901,7 +901,11 @@ DcmPixelData::write(
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.cc,v $
-** Revision 1.2  1997-07-24 13:08:28  andreas
+** Revision 1.3  1997-07-31 06:59:35  andreas
+** Added initialization of error code in
+** DcmPixelData::removeOriginalRepresentation()
+**
+** Revision 1.2  1997/07/24 13:08:28  andreas
 ** - Removed const for method DcmRepresentationParameter::copy
 **
 ** Revision 1.1  1997/07/21 07:55:05  andreas
