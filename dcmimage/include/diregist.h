@@ -37,8 +37,8 @@
 
 #include "osconfig.h"
 
-#define OFFIS_DCMIMAGE_VERSION     "1.0.2"
-#define OFFIS_DCMIMAGE_RELEASEDATE "1998/02/17"
+#define OFFIS_DCMIMAGE_VERSION     "1.1.0"
+#define OFFIS_DCMIMAGE_RELEASEDATE "1999/05/31"
 
 #include "diregbas.h"
 
@@ -47,13 +47,18 @@
  *  class declaration  *
  *---------------------*/
 
-class DiRegister : public DiRegisterBase
+class DiRegister
+  : public DiRegisterBase
 {
-public:
+
+ public:
+
     DiRegister();
+
     virtual ~DiRegister();
 
     virtual DiImage *createImage(const DiDocument *, const EI_Status, const EP_Interpretation);
+
     virtual DiMonoPixel *createMonoImageData(const DiColorImage *, const double, const double, const double);
 };
 
@@ -62,24 +67,26 @@ public:
  *  initialization  *
  *------------------*/
 
-static DiRegister Init_dcmimext;        // registration pointer is initialized in class constructor
+static DiRegister Init_dcmimage_Module;        // registration pointer is initialized in class constructor
 
 
 #endif
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: diregist.h,v $
-** Revision 1.2  1999-05-10 09:32:36  joergr
-** Moved dcm2pnm version definition from module dcmimgle to dcmimage.
-**
-** Revision 1.1  1998/11/27 13:09:54  joergr
-** Added registration class to allow easy combination of both modules.
-** Added copyright message to all source files.
-**
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: diregist.h,v $
+ * Revision 1.3  1999-05-31 13:01:03  joergr
+ * Changed Release version and date.
+ *
+ * Revision 1.2  1999/05/10 09:32:36  joergr
+ * Moved dcm2pnm version definition from module dcmimgle to dcmimage.
+ *
+ * Revision 1.1  1998/11/27 13:09:54  joergr
+ * Added registration class to allow easy combination of both modules.
+ * Added copyright message to all source files.
+ *
+ *
+ */
 
