@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2004, OFFIS
+ *  Copyright (C) 1996-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-09-22 11:35:01 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Update Date:      $Date: 2005-03-09 17:41:16 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,6 +44,7 @@
 
 #define INCLUDE_CSTRING
 #include "ofstdinc.h"
+
 
 /*----------------*
  *  constructors  *
@@ -88,11 +89,9 @@ DiImage::DiImage(const DiDocument *docu,
                     ofConsole.unlockCerr();
                 }
                 NumberOfFrames = 1;
-            }
-            else
+            } else
                 NumberOfFrames = OFstatic_cast(Uint32, sl);
-        }
-        else
+        } else
             NumberOfFrames = 1;
         Uint16 us = 0;
         if (Document->getValue(DCM_RepresentativeFrameNumber, us))
@@ -135,7 +134,16 @@ DiImage::DiImage(const DiDocument *docu,
         {
             ok &= (Document->getValue(DCM_BitsAllocated, BitsAllocated) > 0);
             ok &= (Document->getValue(DCM_BitsStored, BitsStored) > 0);
-            ok &= (Document->getValue(DCM_HighBit, HighBit) > 0);
+            if ((Document->getValue(DCM_HighBit, HighBit) == 0) && ok)
+            {
+                HighBit = BitsStored - 1;
+                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
+                {
+                    ofConsole.lockCerr() << "WARNING: missing value for 'HighBit' "
+                                         << "... assuming " << HighBit << " !" << endl;
+                    ofConsole.unlockCerr();
+                }
+            }
             ok &= (Document->getValue(DCM_PixelRepresentation, us) > 0);
             BitsPerSample = BitsStored;
             hasSignedRepresentation = (us == 1);
@@ -178,9 +186,9 @@ DiImage::DiImage(const DiDocument *docu,
                     } else {
                         Sint32 sl2;
                         hasPixelAspectRatio = (Document->getValue(DCM_PixelAspectRatio, sl2, 0) > 0);
-                        PixelHeight = sl2;
                         if (hasPixelAspectRatio)
                         {
+                            PixelHeight = sl2;
                             if (Document->getValue(DCM_PixelAspectRatio, sl2, 1) < 2)
                             {
                                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
@@ -209,9 +217,7 @@ DiImage::DiImage(const DiDocument *docu,
                     convertPixelData(pixel, spp);
                 else
                     ImageStatus = EIS_InvalidValue;
-            }
-            else
-            {
+            } else {
                 ImageStatus = EIS_MissingAttribute;
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
                 {
@@ -219,9 +225,7 @@ DiImage::DiImage(const DiDocument *docu,
                     ofConsole.unlockCerr();
                 }
             }
-        }
-        else
-        {
+        } else {
             ImageStatus = EIS_InvalidValue;
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
             {
@@ -229,9 +233,7 @@ DiImage::DiImage(const DiDocument *docu,
                 ofConsole.unlockCerr();
             }
         }
-    }
-    else
-    {
+    } else {
         ImageStatus = EIS_InvalidDocument;
         if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
         {
@@ -866,7 +868,11 @@ int DiImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: diimage.cc,v $
- * Revision 1.29  2004-09-22 11:35:01  joergr
+ * Revision 1.30  2005-03-09 17:41:16  joergr
+ * Added heuristics for images where the attribute HighBit is missing.
+ * Fixed possibly uninitialized variable when determining the pixel height.
+ *
+ * Revision 1.29  2004/09/22 11:35:01  joergr
  * Introduced new member variable "TotalNumberOfFrames".
  *
  * Revision 1.28  2004/03/16 08:18:54  joergr
