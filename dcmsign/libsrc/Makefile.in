@@ -25,23 +25,23 @@ objs= 	dcsignat.o sicert.o sidsa.o simd5.o siprivat.o sirsa.o sisprof.o \
 	siautopr.o sicreapr.o simaccon.o sinullpr.o siripemd.o sisha1.o \
         sitypes.o sicertvf.o sibrsapr.o
 
-all: libdcmsign.$(LIBEXT)
+all: libdcmdsig.$(LIBEXT)
 
 install: all
 	$(configdir)/mkinstalldirs $(libdir)
-	$(INSTALL_DATA) libdcmsign.$(LIBEXT) $(libdir)/libdcmsign.$(LIBEXT)
+	$(INSTALL_DATA) libdcmdsig.$(LIBEXT) $(libdir)/libdcmdsig.$(LIBEXT)
 
 
 clean:
 	rm -f $(objs)
-	rm -f libdcmsign.$(LIBEXT)
+	rm -f libdcmdsig.$(LIBEXT)
 	rm -f $(TRASH)
 
 distclean: clean
 	rm -f $(DISTTRASH)
 
 
-libdcmsign.$(LIBEXT): $(objs)
+libdcmdsig.$(LIBEXT): $(objs)
 	$(AR) $(ARFLAGS) $@ $(objs)
 	$(RANLIB) $@
 

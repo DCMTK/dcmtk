@@ -67,7 +67,7 @@ imagectnlib=-limagedb
 dcmsigndir=$(top_srcdir)/../dcmsign
 dcmsigninc=-I$(dcmsigndir)/include -I$(includedir)/dcmsign
 dcmsignlibdir=-L$(dcmsigndir)/libsrc
-dcmsignlib=-ldcmsign
+dcmsignlib=-ldcmdsig
 
 dcmsrdir=$(top_srcdir)/../dcmsr
 dcmsrinc=-I$(dcmsrdir)/include -I$(includedir)/dcmsr
