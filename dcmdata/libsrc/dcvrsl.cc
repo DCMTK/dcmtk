@@ -22,9 +22,9 @@
  *  Purpose: Implementation of class DcmSignedLong
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 13:12:39 $
+ *  Update Date:      $Date: 2002-12-10 20:02:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrsl.cc,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,7 +65,7 @@ DcmSignedLong::~DcmSignedLong()
 
 DcmSignedLong &DcmSignedLong::operator=(const DcmSignedLong &obj)
 {
-    DcmSignedLong::operator=(obj);
+    DcmElement::operator=(obj);
     return *this;
 }
 
@@ -301,7 +301,10 @@ OFCondition DcmSignedLong::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrsl.cc,v $
-** Revision 1.23  2002-12-06 13:12:39  joergr
+** Revision 1.24  2002-12-10 20:02:10  joergr
+** Fixed "cut and paste" error in assignment operator.
+**
+** Revision 1.23  2002/12/06 13:12:39  joergr
 ** Enhanced "print()" function by re-working the implementation and replacing
 ** the boolean "showFullData" parameter by a more general integer flag.
 ** Made source code formatting more consistent with other modules/files.

@@ -22,9 +22,9 @@
  *  Purpose: Implementation of class DcmUnsignedLong
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 13:12:38 $
+ *  Update Date:      $Date: 2002-12-10 20:02:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrul.cc,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,7 +65,7 @@ DcmUnsignedLong::~DcmUnsignedLong()
 
 DcmUnsignedLong &DcmUnsignedLong::operator=(const DcmUnsignedLong &obj)
 {
-    DcmUnsignedLong::operator=(obj);
+    DcmElement::operator=(obj);
     return *this;
 }
 
@@ -300,7 +300,10 @@ OFCondition DcmUnsignedLong::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrul.cc,v $
-** Revision 1.23  2002-12-06 13:12:38  joergr
+** Revision 1.24  2002-12-10 20:02:09  joergr
+** Fixed "cut and paste" error in assignment operator.
+**
+** Revision 1.23  2002/12/06 13:12:38  joergr
 ** Enhanced "print()" function by re-working the implementation and replacing
 ** the boolean "showFullData" parameter by a more general integer flag.
 ** Made source code formatting more consistent with other modules/files.
