@@ -22,9 +22,9 @@
  *  Purpose: Combined class for date and time functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-11 12:12:23 $
+ *  Update Date:      $Date: 2002-05-24 09:43:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofdatime.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -63,11 +63,11 @@ class OFDateTime
     OFDateTime(const OFDateTime &dateTime);
     
     /** copy constructor
-     *  @param date date object to be copied
-     *  @param time time object to be copied
+     *  @param dateVal date object to be copied
+     *  @param timeVal time object to be copied
      */
-    OFDateTime(const OFDate &date,
-               const OFTime &time);
+    OFDateTime(const OFDate &dateVal,
+               const OFTime &timeVal);
                
     /** destructor
      */
@@ -127,17 +127,17 @@ class OFDateTime
 
     /** set the date component to the specified date.
      *  Before the new value is set it is checked using the "isValid()" routine.
-     *  @param date new date value to be set
+     *  @param dateVal new date value to be set
      *  @return OFTrue if the new value is valid and has been set, OFFalse otherwise
      */
-    OFBool setDate(const OFDate &date);
+    OFBool setDate(const OFDate &dateVal);
     
     /** set the time component to the specified time.
      *  Before the new value is set it is checked using the "isValid()" routine.
-     *  @param time new time value to be set
+     *  @param timeVal new time value to be set
      *  @return OFTrue if the new value is valid and has been set, OFFalse otherwise
      */
-    OFBool setTime(const OFTime &time);
+    OFBool setTime(const OFTime &timeVal);
     
     /** set the date and time value to the current system date and time.
      *  This function uses operating system dependent routines. If the date or time function
@@ -211,7 +211,10 @@ ostream& operator<<(ostream& stream, const OFDateTime &dateTime);
  *
  * CVS/RCS Log:
  * $Log: ofdatime.h,v $
- * Revision 1.1  2002-04-11 12:12:23  joergr
+ * Revision 1.2  2002-05-24 09:43:04  joergr
+ * Renamed some parameters/variables to avoid ambiguities.
+ *
+ * Revision 1.1  2002/04/11 12:12:23  joergr
  * Introduced new standard classes providing date and time functions.
  *
  *

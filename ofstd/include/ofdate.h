@@ -22,9 +22,9 @@
  *  Purpose: Class for date functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-15 09:38:58 $
+ *  Update Date:      $Date: 2002-05-24 09:43:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofdate.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,9 +65,9 @@ class OFDate
     OFDate();
 
     /** copy constructor
-     *  @param date date object to be copied
+     *  @param dateVal date object to be copied
      */
-    OFDate(const OFDate &date);
+    OFDate(const OFDate &dateVal);
 
     /** constructor with init values
      *  @param year year value to be set
@@ -83,46 +83,46 @@ class OFDate
     virtual ~OFDate();
 
     /** assignment operator
-     *  @param date date value to be set
+     *  @param dateVal date value to be set
      *  @return reference to this object (with new value)
      */
-    virtual OFDate &operator=(const OFDate &date);
+    virtual OFDate &operator=(const OFDate &dateVal);
 
     /** comparison operator (equal)
-     *  @param date date value compared with the current value
+     *  @param dateVal date value compared with the current value
      *  @return OFTrue if given date is equal, OFFalse otherwise
      */
-    virtual OFBool operator==(const OFDate &date);
+    virtual OFBool operator==(const OFDate &dateVal);
 
     /** comparison operator (unequal)
-     *  @param date date value compared with the current value
+     *  @param dateVal date value compared with the current value
      *  @return OFTrue if given date is unequal, OFFalse otherwise
      */
-    virtual OFBool operator!=(const OFDate &date);
+    virtual OFBool operator!=(const OFDate &dateVal);
 
     /** comparison operator (less than)
-     *  @param date date value compared with the current value
+     *  @param dateVal date value compared with the current value
      *  @return OFTrue if given date is earlier than the current value, OFFalse otherwise
      */
-    virtual OFBool operator<(const OFDate &date);
+    virtual OFBool operator<(const OFDate &dateVal);
 
     /** comparison operator (less than or equal)
-     *  @param date date value compared with the current value
+     *  @param dateVal date value compared with the current value
      *  @return OFTrue if given date is earlier or on the same day, OFFalse otherwise
      */
-    virtual OFBool operator<=(const OFDate &date);
+    virtual OFBool operator<=(const OFDate &dateVal);
 
     /** comparison operator (greater than or equal)
-     *  @param date date value compared with the current value
+     *  @param dateVal date value compared with the current value
      *  @return OFTrue if given date is later or on the same day, OFFalse otherwise
      */
-    virtual OFBool operator>=(const OFDate &date);
+    virtual OFBool operator>=(const OFDate &dateVal);
 
     /** comparison operator (greater than)
-     *  @param date date value compared with the current value
+     *  @param dateVal date value compared with the current value
      *  @return OFTrue if given date is later than the current value, OFFalse otherwise
      */
-    virtual OFBool operator>(const OFDate &date);
+    virtual OFBool operator>(const OFDate &dateVal);
 
     /** reset the date value.
      *  Sets the year, month and day to "0". NB: Date becomes invalid.
@@ -251,10 +251,10 @@ class OFDate
 /** put the given date in ISO format on the output stream.
  *  If an error occurs nothing is printed.
  *  @param stream output stream
- *  @param date OFDate object to print
+ *  @param dateVal OFDate object to print
  *  @return reference to the output stream
  */
-ostream& operator<<(ostream& stream, const OFDate &date);
+ostream& operator<<(ostream& stream, const OFDate &dateVal);
 
 
 #endif
@@ -264,7 +264,10 @@ ostream& operator<<(ostream& stream, const OFDate &date);
  *
  * CVS/RCS Log:
  * $Log: ofdate.h,v $
- * Revision 1.2  2002-04-15 09:38:58  joergr
+ * Revision 1.3  2002-05-24 09:43:04  joergr
+ * Renamed some parameters/variables to avoid ambiguities.
+ *
+ * Revision 1.2  2002/04/15 09:38:58  joergr
  * Added "include <sys/types.h>" for struct time_t (required for MSVC).
  *
  * Revision 1.1  2002/04/11 12:12:23  joergr
