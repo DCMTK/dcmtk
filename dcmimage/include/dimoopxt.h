@@ -4,7 +4,7 @@
 **
 **  author   : Joerg Riesmeier
 **  created  : 19.12.96
-**  modified : 31.05.97
+**  modified : 05.03.98
 **
 *********************************************************************/
 
@@ -39,14 +39,13 @@ class DiMonoOutputPixelTemplate : public DiMonoOutputPixel, public DiPixelRepres
 		if ((pixel != NULL) && (getCount() > 0))
 		{
 			if ((table != NULL) && (table->isValid()))
-				voilut((const T1 *)pixel->getData(), frame * getCount(), table, (const T2)low, (const T2)high);
+				voilut((const T1 *)pixel->getData(), frame * getCount(), table, (T2)low, (T2)high);
 			else
 			{
 				if (width == 0)																	// no valid window
-					window((const T1 *)pixel->getData(), frame * getCount(), bits, (const T2)low, (const T2)high);
+					window((const T1 *)pixel->getData(), frame * getCount(), bits, (T2)low, (T2)high);
 				else
-					window((const T1 *)pixel->getData(), frame * getCount(), center, width, (const T2)low,
-						(const T2)high);
+					window((const T1 *)pixel->getData(), frame * getCount(), center, width, (T2)low, (T2)high);
 			}
 			overlay(overlays, columns, rows, frame);
 		}
@@ -104,10 +103,10 @@ class DiMonoOutputPixelTemplate : public DiMonoOutputPixel, public DiPixelRepres
 			Data = new T2[getCount()];
 			if (Data != NULL)
 			{
-				const T1 min = (const T1)table->getFirstEntry();
-				const T1 max = (const T1)table->getLastEntry();
-				const T2 minvalue = (const T2)table->getMinValue();
-				const T2 maxvalue = (const T2)table->getMaxValue();
+				const T1 min = (T1)table->getFirstEntry();
+				const T1 max = (T1)table->getLastEntry();
+				const T2 minvalue = (T2)table->getMinValue();
+				const T2 maxvalue = (T2)table->getMaxValue();
 				const double gradient = ((double)high - (double)low) / ((double)maxvalue - (double)minvalue);
 				register const T1 *p = pixel + start;
 				register T2 *q = Data;
@@ -137,7 +136,7 @@ class DiMonoOutputPixelTemplate : public DiMonoOutputPixel, public DiPixelRepres
 				register const T1 *p = pixel + start;
 				register T2 *q = Data;
 				const DiPixelRepresentationTemplate<T1> rep;
-				const double offset = (rep.isSigned()) ? (const double)(maxval(bits - 1, 0)) : 0;
+				const double offset = (rep.isSigned()) ? (double)(maxval(bits - 1, 0)) : 0;
 				register unsigned long i;
 				register const double gradient = ((double)high - (double)low + 1) / (double)maxval(bits, 0);
 				for (i = 0; i < getCount(); i++)
@@ -194,12 +193,12 @@ class DiMonoOutputPixelTemplate : public DiMonoOutputPixel, public DiPixelRepres
 					const Uint16 ymin = (plane->getTop(top) > 0) ? plane->getTop(top) : 0;
 					const Uint16 xmax = (plane->getRight(left) < columns) ? plane->getRight(left) : columns;
 					const Uint16 ymax = (plane->getBottom(top) < rows) ? plane->getBottom(top) : rows;
-					const T2 maxvalue = (const T2)maxval(bitsof(T2));
+					const T2 maxvalue = (T2)maxval(bitsof(T2));
 					switch (plane->getMode())
 					{
 						case EMO_Replace:
 						{
-							const T2 fore = (const T2)(plane->getForeground() * maxvalue);
+							const T2 fore = (T2)(plane->getForeground() * maxvalue);
 							for (y = ymin; y < ymax; y++)
 							{
 								plane->setStart(left + xmin, top + y);
@@ -214,8 +213,8 @@ class DiMonoOutputPixelTemplate : public DiMonoOutputPixel, public DiPixelRepres
 						}
 						case EMO_ThresholdReplace:
 						{
-							const T2 fore = (const T2)(plane->getForeground() * maxvalue);
-							const T2 thresh = (const T2)(plane->getThreshold() * maxvalue);
+							const T2 fore = (T2)(plane->getForeground() * maxvalue);
+							const T2 thresh = (T2)(plane->getThreshold() * maxvalue);
 							for (y = ymin; y < ymax; y++)
 							{
 								plane->setStart(left + xmin, top + y);
@@ -230,7 +229,7 @@ class DiMonoOutputPixelTemplate : public DiMonoOutputPixel, public DiPixelRepres
 						}
 						case EMO_Complement:
 						{
-							const T2 thresh = (const T2)maxval(bitsof(T2) / 2);
+							const T2 thresh = (T2)maxval(bitsof(T2) / 2);
 							for (y = ymin; y < ymax; y++)
 							{
 								plane->setStart(left + xmin, top + y);

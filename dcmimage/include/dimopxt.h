@@ -4,7 +4,7 @@
 **
 **  author   : Joerg Riesmeier
 **  created  : 16.12.96
-**  modified : 25.04.97
+**  modified : 05.03.98
 **
 *********************************************************************/
 
@@ -116,17 +116,17 @@ class DiMonoPixelTemplate : public DiMonoPixel, public DiPixelRepresentationTemp
 						cerr << "int DiMonoPixelTemplate<T>::getHistogramWindow() ! " << endl;
 					}
 				}
-				const Uint32 threshvalue = (const Uint32)(thresh * (double)getCount());
+				const Uint32 threshvalue = (Uint32)(thresh * (double)getCount());
 				register Uint32 t = 0;
 				i = 0;
 				while ((i < count) && (t < threshvalue))
 					t += quant[i++];
-				const T minvalue = (i < count) ? (const T)(MinValue[0] + i) : 0;
+				const T minvalue = (i < count) ? (T)(MinValue[0] + i) : 0;
 				t = 0;
 				i = count;
 				while ((i > 0) && (t < threshvalue))
 					t += quant[--i];
-				const T maxvalue = (i > 0) ? (const T)(MinValue[0] + i) : 0;
+				const T maxvalue = (i > 0) ? (T)(MinValue[0] + i) : 0;
 				delete quant;
 				if (minvalue < maxvalue)
 				{

@@ -4,7 +4,7 @@
 **
 **  author   : Joerg Riesmeier
 **  created  : 03.01.97
-**  modified : 25.04.97
+**  modified : 05.03.98
 **
 *********************************************************************/
 
@@ -62,10 +62,10 @@ class DiMonoInputPixelTemplate : public DiMonoPixelTemplate<T2>
 			if (Data != NULL)
 			{
 				const DiLookupTable *table = Modality->getTableData();
-				const T1 min = (const T1)table->getFirstEntry();
-				const T1 max = (const T1)table->getLastEntry();
-				const T2 minvalue = (const T2)table->getFirstValue();
-				const T2 maxvalue = (const T2)table->getLastValue();
+				const T1 min = (T1)table->getFirstEntry();
+				const T1 max = (T1)table->getLastEntry();
+				const T2 minvalue = (T2)table->getFirstValue();
+				const T2 maxvalue = (T2)table->getLastValue();
 				register const T1 *p = pixel;
 				register T2 *q = Data;
 				register T1 value;
@@ -94,8 +94,8 @@ class DiMonoInputPixelTemplate : public DiMonoPixelTemplate<T2>
 				register const T1 *p = pixel;
 				register T2 *q = Data;
 				register unsigned long i;
-				register const double intercept = (const double)Modality->getRescaleIntercept();
-				register const double slope = (const double)Modality->getRescaleSlope();
+				register const double intercept = (double)Modality->getRescaleIntercept();
+				register const double slope = (double)Modality->getRescaleSlope();
 				for (i = 0; i < getCount(); i++)
 					*(q++) = (T2)((double)*(p++) * slope + intercept);
 			}

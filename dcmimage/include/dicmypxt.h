@@ -4,7 +4,7 @@
 **
 **  author   : Joerg Riesmeier
 **  created  : 05.01.97
-**  modified : 30.04.97
+**  modified : 05.03.98
 **
 *********************************************************************/
 
@@ -43,8 +43,8 @@ class DiCMYKPixelTemplate : public DiColorPixelTemplate<T2>
 		{
 			register const T1 *p = pixel;
 			register unsigned long i;
-			const T2 maxvalue = (const T2)maxval(bits);
-			const T1 offset = (const T1)maxval(bits - 1);
+			const T2 maxvalue = (T2)maxval(bits);
+			const T1 offset = (T1)maxval(bits - 1);
 			if (PlanarConfiguration)
 			{
 				register const T1 *k;

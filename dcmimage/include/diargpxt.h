@@ -4,7 +4,7 @@
 **
 **  author   : Joerg Riesmeier
 **  created  : 06.01.97
-**  modified : 30.04.97
+**  modified : 05.03.98
 **
 *********************************************************************/
 
@@ -46,7 +46,7 @@ class DiARGBPixelTemplate : public DiColorPixelTemplate<T2>
 			register unsigned long i;
 			register T1 value;
 			register int j;
-			const T1 offset = (const T1)maxval(bits - 1);
+			const T1 offset = (T1)maxval(bits - 1);
 			if (PlanarConfiguration)
 			{
 				register const T1 *a = pixel;									// points to alpha plane

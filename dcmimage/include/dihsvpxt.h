@@ -4,7 +4,7 @@
 **
 **  author   : Joerg Riesmeier
 **  created  : 12.01.97
-**  modified : 30.04.97
+**  modified : 05.03.98
 **
 *********************************************************************/
 
@@ -45,8 +45,8 @@ class DiHSVPixelTemplate : public DiColorPixelTemplate<T2>
 			register T2 *g = Data[1];
 			register T2 *b = Data[2];
 			register unsigned long i;
-			const T2 maxvalue = (const T2)maxval(bits);
-			const T1 offset = (const T1)maxval(bits - 1);
+			const T2 maxvalue = (T2)maxval(bits);
+			const T1 offset = (T1)maxval(bits - 1);
 			if (PlanarConfiguration)
 			{
 				register const T1 *h = pixel;
@@ -91,11 +91,11 @@ class DiHSVPixelTemplate : public DiColorPixelTemplate<T2>
 			const double h = ((double)hue * 6) / ((double)maxvalue + 1);			// '... + 1' to assert h < 6
 			const double s = (double)saturation / (double)maxvalue;
 			const double v = (double)value / (double)maxvalue;
-			const T2 hi = (const T2)h;
+			const T2 hi = (T2)h;
 			const double hf = h - hi;
-			const T2 p = (const T2)(maxvalue * v * (1 - s));
-			const T2 q = (const T2)(maxvalue * v * (1 - s * hf));
-			const T2 t = (const T2)(maxvalue * v * (1 - s * (1 - hf)));
+			const T2 p = (T2)(maxvalue * v * (1 - s));
+			const T2 q = (T2)(maxvalue * v * (1 - s * hf));
+			const T2 t = (T2)(maxvalue * v * (1 - s * (1 - hf)));
 			switch (hi)
 			{
 				case 0:

@@ -4,7 +4,7 @@
 **
 **  author   : Joerg Riesmeier
 **  created  : 30.12.96
-**  modified : 02.03.98 
+**  modified : 05.03.98 
 **
 *********************************************************************/
 
@@ -59,7 +59,7 @@ void *DiMono1Image::getOutputData(const unsigned long frame, const int bits, con
 
 DiImage *DiMono1Image::scale(const unsigned long width, const unsigned long height, const int interpolate) const
 {
-	DiImage *image = new DiMono1Image(this, (const Uint16)width, (const Uint16)height, interpolate);
+	DiImage *image = new DiMono1Image(this, (Uint16)width, (Uint16)height, interpolate);
 	return image;
 }
 
@@ -67,14 +67,13 @@ DiImage *DiMono1Image::scale(const unsigned long width, const unsigned long heig
 DiImage *DiMono1Image::clip(const unsigned long left, const unsigned long top, const unsigned long width,
 	const unsigned long height) const
 {
-	DiImage *image = new DiMono1Image(this, (const Uint16)left, (const Uint16)top, (const Uint16)width,
-		(const Uint16)height);
+	DiImage *image = new DiMono1Image(this, (Uint16)left, (Uint16)top, (Uint16)width, (Uint16)height);
 	return image;
 }
 
 
 DiImage *DiMono1Image::makeMonochrome(const double, const double, const double) const
 {
-	DiImage *image = new DiMono1Image(this, (const Uint16)Columns, (const Uint16)Rows);
+	DiImage *image = new DiMono1Image(this, (Uint16)Columns, (Uint16)Rows);
 	return image;
 }
