@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-01 16:14:41 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 1999-09-08 16:46:44 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -168,6 +168,22 @@ class DVPSStoredPrint
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition setRequestedDecimateCropBehaviour(DVPSDecimateCropBehaviour value); 
+
+  /** UNIMPLEMENTED - sets the (optional) border density.
+   *  @param value new attribute value, may be NULL.
+   *    The caller is responsible for making sure
+   *    that the value is valid for the selected printer.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition setBorderDensity(const char *value);
+
+  /** UNIMPLEMENTED - sets the (optional) empty image density.
+   *  @param value new attribute value, may be NULL.
+   *    The caller is responsible for making sure
+   *    that the value is valid for the selected printer.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition setEmtpyImageDensity(const char *value);
     
   /** deletes all optional attribute values that might not be
    *  supported by all printers. Film size ID, magnification and smoothing type,
@@ -230,6 +246,16 @@ class DVPSStoredPrint
    *  @return requested resolution ID, may be NULL.
    */
   const char *getResolutionID();
+
+  /** UNIMPLEMENTED - gets the (optional) border density.
+   *  @return border density, may be NULL.
+   */
+  const char *getBorderDensity();
+
+  /** UNIMPLEMENTED - gets the (optional) empty image density.
+   *  @return empty image density, may be NULL.
+   */
+  const char *getEmtpyImageDensity();
      
   /** gets the number of images currently registered in this object.
    *  @return number of images.
@@ -258,6 +284,58 @@ class DVPSStoredPrint
     return imageBoxContentList.deleteMultipleImages(number);
   }
 
+  /** UNIMPLEMENTED - checks if one of the registered images has additional settings that are not
+   *  default values on the image box level.
+   *  @param idx index, must be < getNumberOfImages()
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  OFBool imageHasAdditionalSettings(size_t idx);
+
+  /** UNIMPLEMENTED - sets the (optional) magnification type for the given registered image box.
+   *  @param idx index, must be < getNumberOfImages()
+   *  @param value new attribute value, may be NULL.
+   *    The caller is responsible for making sure
+   *    that the value is valid for the selected printer.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition setImageMagnificationType(size_t idx, const char *value);
+  
+  /** UNIMPLEMENTED - sets the (optional) smoothing type for the given registered image box.
+   *  @param idx index, must be < getNumberOfImages()
+   *  @param value new attribute value, may be NULL.
+   *    The caller is responsible for making sure
+   *    that the value is valid for the selected printer.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition setImageSmoothingType(size_t idx, const char *value);
+  
+  /** UNIMPLEMENTED - sets the (optional) configuration information for the given registered image box.
+   *  @param idx index, must be < getNumberOfImages()
+   *  @param value new attribute value, may be NULL.
+   *    The caller is responsible for making sure
+   *    that the value is valid for the selected printer.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition setImageConfigurationInformation(size_t idx, const char *value);
+
+  /** UNIMPLEMENTED - gets the (optional) magnification type for the given registered image box.
+   *  @param idx index, must be < getNumberOfImages()
+   *  @return magnification type, may be NULL.
+   */
+  const char *getImageMagnificationType(size_t idx);
+
+  /** UNIMPLEMENTED - gets the (optional) smoothing type for the given registered image box.
+   *  @param idx index, must be < getNumberOfImages()
+   *  @return smoothing type, may be NULL.
+   */
+  const char *getImageSmoothingType(size_t idx);
+
+  /** UNIMPLEMENTED - gets the (optional) configuration information for the given registered image box.
+   *  @param idx index, must be < getNumberOfImages()
+   *  @return configuration information, may be NULL.
+   */
+  const char *getImageConfigurationInformation(size_t idx);
+  
   /** writes the general study and series module attributes for a grayscale hardcopy image
    *  that is related to this stored print object to a DICOM dataset.
    *  Copies of the DICOM elements managed by this object are inserted into
@@ -550,7 +628,10 @@ class DVPSStoredPrint
 
 /*
  *  $Log: dvpssp.h,v $
- *  Revision 1.5  1999-09-01 16:14:41  meichel
+ *  Revision 1.6  1999-09-08 16:46:44  meichel
+ *  Added print API method declarations
+ *
+ *  Revision 1.5  1999/09/01 16:14:41  meichel
  *  Added support for requested image size to print routines
  *
  *  Revision 1.4  1999/08/31 14:09:12  meichel

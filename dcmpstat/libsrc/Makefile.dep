@@ -31,22 +31,22 @@ dviface.o: dviface.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dcvrss.h ../../dcmdata/include/dcvrus.h \
  ../../dcmdata/include/dcvrsl.h ../../dcmdata/include/dcvrfl.h \
  ../../dcmdata/include/dcvrfd.h ../../dcmdata/include/cmdlnarg.h \
- ../include/dvpstat.h ../include/dvpstyp.h ../include/dvpsovl.h \
- ../include/dvpsgll.h ../include/dvpsrsl.h ../include/dvpsall.h \
- ../include/dvpsgal.h ../include/dvpscul.h ../include/dvpsvll.h \
- ../include/dvpsvwl.h ../include/dvpsdal.h ../include/dvpssvl.h \
- ../include/dvpspl.h ../../imagectn/include/dbpriv.h \
- ../../imagectn/include/imagedb.h ../../dcmnet/include/dicom.h \
- ../../dcmnet/include/dcompat.h ../../ofstd/include/ofbmanip.h \
- ../../dcmnet/include/cond.h ../../dcmnet/include/dimse.h \
- ../../dcmnet/include/lst.h ../../dcmnet/include/dul.h \
- ../../dcmnet/include/extneg.h ../../dcmnet/include/assoc.h \
- ../../imagectn/include/dbstore.h ../include/dvcache.h \
- ../include/dvpsconf.h ../../ofstd/include/ofstack.h \
- ../../dcmimgle/include/didispfn.h ../../dcmimgle/include/dibarlut.h \
- ../../dcmimgle/include/dibaslut.h ../../dcmimgle/include/diutils.h \
- ../../dcmnet/include/diutil.h ../include/dvpssp.h \
- ../include/dvpsibl.h ../include/dvpspr.h
+ ../include/dvpscf.h ../include/dvpstyp.h ../include/dvpstat.h \
+ ../include/dvpsovl.h ../include/dvpsgll.h ../include/dvpsrsl.h \
+ ../include/dvpsall.h ../include/dvpsgal.h ../include/dvpscul.h \
+ ../include/dvpsvll.h ../include/dvpsvwl.h ../include/dvpsdal.h \
+ ../include/dvpssvl.h ../include/dvpspl.h \
+ ../../imagectn/include/dbpriv.h ../../imagectn/include/imagedb.h \
+ ../../dcmnet/include/dicom.h ../../dcmnet/include/dcompat.h \
+ ../../ofstd/include/ofbmanip.h ../../dcmnet/include/cond.h \
+ ../../dcmnet/include/dimse.h ../../dcmnet/include/lst.h \
+ ../../dcmnet/include/dul.h ../../dcmnet/include/extneg.h \
+ ../../dcmnet/include/assoc.h ../../imagectn/include/dbstore.h \
+ ../include/dvcache.h ../include/dvpsconf.h \
+ ../../ofstd/include/ofstack.h ../../dcmimgle/include/didispfn.h \
+ ../../dcmimgle/include/dibarlut.h ../../dcmimgle/include/dibaslut.h \
+ ../../dcmimgle/include/diutils.h ../../dcmnet/include/diutil.h \
+ ../include/dvpssp.h ../include/dvpsibl.h ../include/dvpspr.h
 dvpsal.o: dvpsal.cc ../../config/include/osconfig.h \
  ../include/dvpsal.h ../../dcmdata/include/dctk.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
@@ -115,6 +115,11 @@ dvpsall.o: dvpsall.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dcvrfd.h ../../dcmdata/include/cmdlnarg.h \
  ../include/dvpstyp.h ../include/dvpsal.h ../include/dvpsovl.h \
  ../include/dvpsgll.h
+dvpscf.o: dvpscf.cc ../../config/include/osconfig.h \
+ ../include/dvpscf.h ../../ofstd/include/ofstring.h \
+ ../../ofstd/include/oftypes.h ../../dcmdata/include/dctypes.h \
+ ../include/dvpstyp.h ../include/dvpsconf.h \
+ ../../ofstd/include/ofstack.h
 dvpsconf.o: dvpsconf.cc ../../config/include/osconfig.h \
  ../include/dvpsconf.h ../../ofstd/include/ofstring.h \
  ../../ofstd/include/oftypes.h ../../ofstd/include/ofstack.h

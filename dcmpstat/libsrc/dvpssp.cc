@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-01 16:15:09 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 1999-09-08 16:46:32 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -830,7 +830,7 @@ E_Condition DVPSStoredPrint::write(DcmItem &dset, OFBool writeRequestedImageSize
   DcmCodeString modality(DCM_Modality);
   if (result==EC_Normal)
   {
-     result = modality.putString("HC");
+     result = modality.putString("STORED_PRINT");  // defined term
   }
   ADD_TO_DATASET(DcmCodeString, modality)
 
@@ -1165,7 +1165,10 @@ const char *DVPSStoredPrint::getCurrentPresentationLUTExplanation()
 
 /*
  *  $Log: dvpssp.cc,v $
- *  Revision 1.7  1999-09-01 16:15:09  meichel
+ *  Revision 1.8  1999-09-08 16:46:32  meichel
+ *  Added print API method declarations
+ *
+ *  Revision 1.7  1999/09/01 16:15:09  meichel
  *  Added support for requested image size to print routines
  *
  *  Revision 1.6  1999/08/31 16:54:47  meichel

@@ -26,9 +26,9 @@
  *    Non-grayscale transformations in the presentation state are ignored. 
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-01 16:14:11 $
+ *  Update Date:      $Date: 1999-09-08 16:49:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsprt.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -424,8 +424,15 @@ void dumpPrinterCharacteristics(DVInterface& dvi, const char *target)
       if (c==NULL) c="(none)";
       cerr << "    [" << c << "]" << endl;
     }
-    c = dvi.getTargetPrinterConfigurationSetting(target);
-    cerr << "configuration information     : " << (c ? c : "(none)") << endl;
+    j = dvi.getTargetPrinterNumberOfConfigurationSettings(target);
+    cerr << "configuration information     : " << j << endl;
+    for (k=0; k<j; k++)
+    {
+      c = dvi.getTargetPrinterConfigurationSetting(target, k);
+      if (c==NULL) c="(none)";
+      cerr << "    [" << c << "]" << endl;
+    }
+
     cerr << "=====================================================" << endl << endl;
     return;  
 }
@@ -433,7 +440,10 @@ void dumpPrinterCharacteristics(DVInterface& dvi, const char *target)
 /*
  * CVS/RCS Log:
  * $Log: dcmpsprt.cc,v $
- * Revision 1.2  1999-09-01 16:14:11  meichel
+ * Revision 1.3  1999-09-08 16:49:22  meichel
+ * Added print API method declarations
+ *
+ * Revision 1.2  1999/09/01 16:14:11  meichel
  * Completed printer characteristics dump routine
  *
  * Revision 1.1  1999/08/31 16:54:40  meichel
