@@ -126,6 +126,10 @@ SOURCE=.\libsrc\dsrcontn.cxx
 # End Source File
 # Begin Source File
 
+SOURCE=.\libsrc\dsrcsidl.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=.\libsrc\dsrdattn.cxx
 # End Source File
 # Begin Source File
