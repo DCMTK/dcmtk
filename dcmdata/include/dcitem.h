@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmItem
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2003-06-26 09:17:25 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-07-16 14:34:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcitem.h,v $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,6 +44,10 @@
 #include "dclist.h"
 #include "dcstack.h"
 #include "dcpcache.h"
+
+
+// forward declaration
+class DcmSequenceOfItems;
 
 
 /** a class representing a collection of DICOM elements
@@ -530,6 +534,19 @@ class DcmItem
                                        unsigned long *count = NULL,
                                        const OFBool searchIntoSub = OFFalse);
 
+    /** looks up and returns a given sequence.
+     *  Applicable to the following VRs: SQ, (pixelSQ)
+     *  The result variable 'sequence' is automatically set to NULL if an error occurs
+     *  (e.g. if 'seqTagKey' does not refer to a sequence attribute).
+     *  @param seqTagKey DICOM tag specifying the sequence attribute to be searched for
+     *  @param sequence variable in which the reference to the sequence element is stored
+     *  @param searchIntoSub flag indicating whether to search into sub-sequences or not
+     *  @return EC_Normal upon success, an error otherwise.
+     */
+    OFCondition findAndGetSequence(const DcmTagKey &seqTagKey,
+                                   DcmSequenceOfItems *&sequence,
+                                   const OFBool searchIntoSub = OFFalse);
+
     /** looks up and returns a given sequence item, if it exists. Otherwise sets 'item'
      *  to NULL and returns EC_TagNotFound (specified sequence does not exist) or
      *  EC_IllegalParameter (specified item does not exist). Only the top-most level of
@@ -884,7 +901,10 @@ OFCondition nextUp(DcmStack &st);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
-** Revision 1.46  2003-06-26 09:17:25  onken
+** Revision 1.47  2003-07-16 14:34:05  joergr
+** Added new function findAndGetSequence().
+**
+** Revision 1.46  2003/06/26 09:17:25  onken
 ** Added commandline-application dcmodify.
 **
 ** Revision 1.45  2003/06/12 13:33:46  joergr
