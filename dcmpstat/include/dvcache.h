@@ -22,9 +22,9 @@
  *  Purpose: Classes for caching of the image database (Header/Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-19 18:56:08 $
+ *  Update Date:      $Date: 1999-02-24 20:14:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/include/Attic/dvcache.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -64,7 +64,10 @@ class DVInstanceCache
             Status(status),
             PState(pstate),
             ImageSize(size),
-            Filename(filename)
+            Filename(filename),
+            Checked(OFFalse),
+            Description(),
+            List()
         {}
     
         OFString UID;
@@ -73,11 +76,14 @@ class DVInstanceCache
         OFBool PState;
         int ImageSize;
         OFString Filename;
+        OFBool Checked;                 // do not check referencing pstates twice
+        OFString Description;
+        OFList<ItemStruct *> List;      // list of referencing pstates
     };
 
     DVInstanceCache()
     {
-        Iterator = List.end();
+        Iterator = OldIterator = List.end();
     }
 
     virtual ~DVInstanceCache()
@@ -95,7 +101,7 @@ class DVInstanceCache
             Iterator = List.erase(Iterator);
         }
         List.clear();
-        Iterator = List.end();
+        Iterator = OldIterator = List.end();
     }
 
     inline OFBool empty() const
@@ -124,6 +130,7 @@ class DVInstanceCache
     
     inline OFBool gotoFirst()
     {
+        OldIterator = Iterator;
         Iterator = List.begin();
         if (Iterator != List.end())
             return OFTrue;
@@ -138,6 +145,18 @@ class DVInstanceCache
             Iterator++;
             if (Iterator != last)
                 return OFTrue;
+        }
+        return OFFalse;
+    }
+    
+    inline OFBool reset()
+    {
+        OFListIterator(ItemStruct *) last = List.end();
+        if (OldIterator != last)
+        {
+            Iterator = OldIterator;
+            OldIterator = last;
+            return OFTrue;
         }
         return OFFalse;
     }
@@ -157,14 +176,6 @@ class DVInstanceCache
             ++Iterator;
         }
         return OFFalse;
-    }
-
-    inline const char *getUID() const
-    {
-        const ItemStruct *item = getItem();
-        if (item != NULL)
-            return item->UID.c_str();
-        return NULL;
     }
 
     inline int getPos() const
@@ -262,6 +273,7 @@ class DVInstanceCache
 
     OFList<ItemStruct *> List;
     OFListIterator(ItemStruct *) Iterator;
+    OFListIterator(ItemStruct *) OldIterator;
 };
 
 
@@ -291,7 +303,7 @@ class DVSeriesCache
 
     DVSeriesCache()
     {
-        Iterator = List.end();
+        Iterator = OldIterator = List.end();
     }
 
     virtual ~DVSeriesCache()
@@ -309,7 +321,7 @@ class DVSeriesCache
             Iterator = List.erase(Iterator);
         }
         List.clear();
-        Iterator = List.end();
+        Iterator = OldIterator = List.end();
     }
 
     inline OFBool empty() const
@@ -338,6 +350,7 @@ class DVSeriesCache
     
     inline OFBool gotoFirst()
     {
+        OldIterator = Iterator;
         Iterator = List.begin();
         if (Iterator != List.end())
             return OFTrue;
@@ -352,6 +365,18 @@ class DVSeriesCache
             Iterator++;
             if (Iterator != last)
                 return OFTrue;
+        }
+        return OFFalse;
+    }
+    
+    inline OFBool reset()
+    {
+        OFListIterator(ItemStruct *) last = List.end();
+        if (OldIterator != last)
+        {
+            Iterator = OldIterator;
+            OldIterator = last;
+            return OFTrue;
         }
         return OFFalse;
     }
@@ -373,14 +398,6 @@ class DVSeriesCache
         return OFFalse;
     }
 
-    inline const char *getUID() const
-    {
-        const ItemStruct *item = getItem();
-        if (item != NULL)
-            return item->UID.c_str();
-        return NULL;
-    }
-
     inline DVIFhierarchyStatus getStatus() const
     {
         const ItemStruct *item = getItem();
@@ -389,12 +406,12 @@ class DVSeriesCache
         return DVIF_objectIsNew;
     }
 
-    inline DVInstanceCache *getList() const
+    inline OFBool getPState() const
     {
-        ItemStruct *item = getItem();
+        const ItemStruct *item = getItem();
         if (item != NULL)
-            return &(item->List);
-        return NULL;
+            return item->PState;
+        return OFFalse;
     }
 
     inline ItemStruct *getItem() const
@@ -451,6 +468,7 @@ class DVSeriesCache
 
     OFList<ItemStruct *> List;
     OFListIterator(ItemStruct *) Iterator;
+    OFListIterator(ItemStruct *) OldIterator;
 };
 
 
@@ -539,28 +557,12 @@ class DVStudyCache
         return OFFalse;
     }
 
-    inline const char *getUID() const
-    {
-        const ItemStruct *item = getItem();
-        if (item != NULL)
-            return item->UID.c_str();
-        return NULL;
-    }
-
     inline DVIFhierarchyStatus getStatus() const
     {
         const ItemStruct *item = getItem();
         if (item != NULL)
             return item->Status;
         return DVIF_objectIsNew;
-    }
-
-    inline DVSeriesCache *getList() const
-    {
-        ItemStruct *item = getItem();
-        if (item != NULL)
-            return &(item->List);
-        return NULL;
     }
 
     inline ItemStruct *getItem() const
@@ -606,7 +608,11 @@ class DVStudyCache
  *
  * CVS/RCS Log:
  * $Log: dvcache.h,v $
- * Revision 1.3  1999-02-19 18:56:08  joergr
+ * Revision 1.4  1999-02-24 20:14:39  joergr
+ * Added support for presentation state caching (e.g. pstate description).
+ * Removed unused methods.
+ *
+ * Revision 1.3  1999/02/19 18:56:08  joergr
  * Added new methods to interate through Caches (getFirst/getNext) - needed
  * for delete routines in Interface class.
  *
