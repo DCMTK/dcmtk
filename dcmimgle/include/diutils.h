@@ -21,10 +21,10 @@
  *
  *  Purpose: Utilities (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:52 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-09-28 13:11:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diutils.h,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,8 +80,8 @@ const unsigned long CIF_MayDetachPixelData        = 0x0000004;
 /// use presentation state instead of 'built-in' LUTs & overlays
 const unsigned long CIF_UsePresentationState      = 0x0000008;
 
-/// don't convert color images to RGB (NOT IMPLEMENTED !)
-const unsigned long CIF_KeepOriginalColorModel    = 0x0000010;
+/// don't convert YCbCr (Full and Full 4:2:2) color images to RGB
+const unsigned long CIF_KeepYCbCrColorModel       = 0x0000010;
 
 //@}
 
@@ -372,7 +372,11 @@ class DicomImageClass
  *
  * CVS/RCS Log:
  * $Log: diutils.h,v $
- * Revision 1.17  2001-06-01 15:49:52  meichel
+ * Revision 1.18  2001-09-28 13:11:00  joergr
+ * Added new flag (CIF_KeepYCbCrColorModel) which avoids conversion of YCbCr
+ * color models to RGB.
+ *
+ * Revision 1.17  2001/06/01 15:49:52  meichel
  * Updated copyright header
  *
  * Revision 1.16  2000/07/07 13:40:31  joergr
