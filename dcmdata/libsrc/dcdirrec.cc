@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmDirectoryRecord
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-27 16:55:45 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-10-10 16:39:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdirrec.cc,v $
- *  CVS/RCS Revision: $Revision: 1.41 $
+ *  CVS/RCS Revision: $Revision: 1.42 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -264,7 +264,7 @@ E_DirRecType DcmDirectoryRecord::recordNameToType(const char * recordTypeName)
             i++;
 
         if (i < DIM_OF_DRTypeNames && strcmp(DRTypeNames[i], recordTypeName) == 0) recType = (E_DirRecType)i;
-        else if (strcmp(recordTypeName,"STRUCT REPORT")) recType = ERT_StructReport; // we recognise the old name as well
+        else if (strcmp(recordTypeName,"STRUCT REPORT") == 0) recType = ERT_StructReport; // we recognise the old name as well
         debug(4, ("DcmDirectoryRecord::recordNameToType() input char*=\"%s\" output enum=%d", recordTypeName, recType));
     }
     return recType;
@@ -883,7 +883,7 @@ OFCondition DcmDirectoryRecord::fillElementsAndReadSOP(
             fileName = new char[strlen(sourceFileName)+1];
             strcpy(fileName, sourceFileName);
         }
-        
+
         if ( DirRecordType != ERT_Mrdr )
         {
             refFile = new DcmFileFormat();
@@ -1477,7 +1477,12 @@ DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
- * Revision 1.41  2002-08-27 16:55:45  meichel
+ * Revision 1.42  2002-10-10 16:39:25  joergr
+ * Fixed bug that prevented old frozen draft SR documents from being recognized
+ * in DICOMDIR files.
+ * Thanks to Judit Verestoy <JVerestoy@tomtec.de> for the bug report and fix.
+ *
+ * Revision 1.41  2002/08/27 16:55:45  meichel
  * Initial release of new DICOM I/O stream classes that add support for stream
  *   compression (deflated little endian explicit VR transfer syntax)
  *
