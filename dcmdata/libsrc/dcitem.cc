@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-07-17 12:39:38 $
+** Update Date:		$Date: 1996-07-31 13:14:30 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.13 $
+** CVS/RCS Revision:	$Revision: 1.14 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -641,6 +641,9 @@ E_Condition DcmItem::readTagAndLength(DcmStream & inStream,
     }
 
     const E_ByteOrder byteOrder = xferSyn.getByteOrder();
+    if (byteOrder == EBO_unknown)
+	return EC_IllegalCall;
+
     inStream.SetPutbackMark();
     inStream.ReadBytes(&groupTag, 2);
     inStream.ReadBytes(&elementTag, 2);
@@ -906,7 +909,10 @@ E_Condition DcmItem::write(DcmStream & outStream,
 		    errorFlag = this -> writeTag(outStream, *Tag, oxfer);
 		    Uint32 valueLength = Length;
 		    DcmXfer outXfer(oxfer);
-		    this -> swapIfNecessary(outXfer.getByteOrder(), 
+		    const E_ByteOrder oByteOrder = outXfer.getByteOrder();
+		    if (oByteOrder == EBO_unknown)
+			return EC_IllegalCall;
+		    this -> swapIfNecessary(oByteOrder, 
 					    gLocalByteOrder, 
 					    &valueLength, 4, 4);
 		    outStream.WriteBytes(&valueLength, 4); // 4 Byte Laenge
@@ -1832,7 +1838,11 @@ DcmItem::findLong(const DcmTagKey& xtag,
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.13  1996-07-17 12:39:38  andreas
+** Revision 1.14  1996-07-31 13:14:30  andreas
+** - Minor corrections: error code for swapping to or from byteorder unknown
+**                      correct read of dataset in fileformat
+**
+** Revision 1.13  1996/07/17 12:39:38  andreas
 ** new nextObject for DcmDataSet, DcmFileFormat, DcmItem, ...
 **
 ** Revision 1.12  1996/04/29 15:08:14  hewett

@@ -10,7 +10,7 @@
 **
 **
 ** Last Update:   $Author: andreas $
-** Revision:      $Revision: 1.9 $
+** Revision:      $Revision: 1.10 $
 ** Status:	  $State: Exp $
 **
 */
@@ -299,8 +299,13 @@ void DcmObject::swapIfNecessary(const E_ByteOrder newByteOrder,
 				void * value, const Uint32 byteLength,
 				const size_t valWidth)
 {
-  if (oldByteOrder != newByteOrder)
-    swapBytes(value, byteLength, valWidth);
+    if(oldByteOrder != EBO_unknown && newByteOrder != EBO_unknown)
+    {
+	if (oldByteOrder != newByteOrder)
+	    swapBytes(value, byteLength, valWidth);
+    }
+    else
+	errorFlag = EC_IllegalCall;
 }
 
 
@@ -311,6 +316,9 @@ E_Condition DcmObject::writeTag(DcmStream & outStream, const DcmTag & tag,
 {
   DcmXfer outXfer(oxfer);
   const E_ByteOrder outByteOrder = outXfer.getByteOrder();
+  if (outByteOrder == EBO_unknown)
+      return EC_IllegalCall;
+
   Uint16 groupTag = tag.getGTag();		// 2 Byte Laenge; 
   swapIfNecessary(outByteOrder, gLocalByteOrder, &groupTag, 2, 2);
   outStream.WriteBytes(&groupTag, 2);
@@ -348,6 +356,9 @@ E_Condition DcmObject::writeTagAndLength(DcmStream & outStream,
 
       DcmXfer oxferSyn(oxfer);
       const E_ByteOrder oByteOrder = oxferSyn.getByteOrder();
+      if (oByteOrder == EBO_unknown)
+	  return EC_IllegalCall;
+
       if (oxferSyn.isExplicitVR())
 	{
 	  // Umwandlung in gueltige VR

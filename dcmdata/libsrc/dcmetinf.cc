@@ -10,10 +10,10 @@
 ** Implementation of class DcmMetaInfo
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-04-27 14:04:56 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-07-31 13:14:31 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcmetinf.cc,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 */
@@ -414,7 +414,7 @@ E_Condition DcmMetaInfo::read(DcmStream & inStream,
 		} //while 
 	    } 
 
-	    if ( errorFlag == EC_TagNotFound )
+	    if (errorFlag == EC_TagNotFound || errorFlag == EC_EndOfStream)
 	    {
 		errorFlag = EC_Normal;      // es existiert kein Meta-Header
 		Xfer = EXS_Unknown;
@@ -548,7 +548,11 @@ E_Condition DcmMetaInfo::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.cc,v $
-** Revision 1.6  1996-04-27 14:04:56  hewett
+** Revision 1.7  1996-07-31 13:14:31  andreas
+** - Minor corrections: error code for swapping to or from byteorder unknown
+**                      correct read of dataset in fileformat
+**
+** Revision 1.6  1996/04/27 14:04:56  hewett
 ** Eliminated compiler warnings when compiling without -DDEBUG.  Very
 ** minor corrections, mostly unused parameters and uninitialized variables.
 **

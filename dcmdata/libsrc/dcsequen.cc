@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-07-17 12:39:40 $
+** Update Date:		$Date: 1996-07-31 13:14:32 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcsequen.cc,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -316,6 +316,8 @@ E_Condition DcmSequenceOfItems::readTagAndLength(DcmStream & inStream,
     {
 	DcmXfer iXfer(xfer);
 	const E_ByteOrder iByteOrder = iXfer.getByteOrder();
+	if (iByteOrder == EBO_unknown)
+	    return EC_IllegalCall;
 	inStream.SetPutbackMark();
 	inStream.ReadBytes(&groupTag, 2);
 	inStream.ReadBytes(&elementTag, 2);
@@ -1097,7 +1099,11 @@ E_Condition DcmSequenceOfItems::loadAllDataIntoMemory()
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.7  1996-07-17 12:39:40  andreas
+** Revision 1.8  1996-07-31 13:14:32  andreas
+** - Minor corrections: error code for swapping to or from byteorder unknown
+**                      correct read of dataset in fileformat
+**
+** Revision 1.7  1996/07/17 12:39:40  andreas
 ** new nextObject for DcmDataSet, DcmFileFormat, DcmItem, ...
 **
 ** Revision 1.6  1996/06/19 13:54:10  andreas
