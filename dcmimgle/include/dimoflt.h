@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomMonochromeFlipTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:24:18 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-09-12 10:04:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoflt.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -76,7 +76,17 @@ class DiMonoFlipTemplate
         DiFlipTemplate<T>(1, columns, rows, frames)
     {
         if ((pixel != NULL) && (pixel->getCount() > 0))
-            flip((const T *)pixel->getData(), horz, vert);
+        {
+            if (pixel->getCount() == (unsigned long)columns * (unsigned long)rows * frames)
+                flip((const T *)pixel->getData(), horz, vert);
+            else {
+                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
+                {
+                   ofConsole.lockCerr() << "WARNING: could not flip image ... corrupted data." << endl;
+                   ofConsole.unlockCerr();
+                }
+            }
+        }
     }
 
     /** destructor
@@ -122,7 +132,13 @@ class DiMonoFlipTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoflt.h,v $
- * Revision 1.5  2000-03-08 16:24:18  meichel
+ * Revision 1.6  2000-09-12 10:04:44  joergr
+ * Corrected bug: wrong parameter for attribute search routine led to crashes
+ * when multiple pixel data attributes were contained in the dataset (e.g.
+ * IconImageSequence). Added new checking routines to avoid crashes when
+ * processing corrupted image data.
+ *
+ * Revision 1.5  2000/03/08 16:24:18  meichel
  * Updated copyright header.
  *
  * Revision 1.4  1999/09/17 12:24:46  joergr

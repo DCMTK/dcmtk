@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomMonochromeCopyTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:24:18 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-09-12 10:04:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimocpt.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -69,7 +69,10 @@ class DiMonoCopyTemplate
       : DiMonoPixelTemplate<T>(pixel, fcount * fsize)
     {
         if ((pixel != NULL) && (pixel->getCount() > 0))
-            copy((const T *)pixel->getData() + fstart * fsize);
+        {
+            if ((pixel->getCount() > fstart * fsize) && (pixel->getCount() >= (fstart + fcount) * fsize))
+                copy((const T *)pixel->getData() + fstart * fsize);
+        }
     }
 
     /** destructor
@@ -104,7 +107,13 @@ class DiMonoCopyTemplate
  *
  * CVS/RCS Log:
  * $Log: dimocpt.h,v $
- * Revision 1.6  2000-03-08 16:24:18  meichel
+ * Revision 1.7  2000-09-12 10:04:44  joergr
+ * Corrected bug: wrong parameter for attribute search routine led to crashes
+ * when multiple pixel data attributes were contained in the dataset (e.g.
+ * IconImageSequence). Added new checking routines to avoid crashes when
+ * processing corrupted image data.
+ *
+ * Revision 1.6  2000/03/08 16:24:18  meichel
  * Updated copyright header.
  *
  * Revision 1.5  1999/09/17 12:23:56  joergr

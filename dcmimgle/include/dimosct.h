@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomMonochromeScaleTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:24:21 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-09-12 10:04:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimosct.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -88,8 +88,17 @@ class DiMonoScaleTemplate
     {
         if ((pixel != NULL) && (pixel->getCount() > 0))
         {
-            scale((const T *)pixel->getData(), pixel->getBits(), interpolate, pvalue);
-            determineMinMax();
+            if (pixel->getCount() == (unsigned long)columns * (unsigned long)rows * frames)
+            {
+                scale((const T *)pixel->getData(), pixel->getBits(), interpolate, pvalue);
+                determineMinMax();
+            } else {
+                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
+                {
+                   ofConsole.lockCerr() << "WARNING: could not scale image ... corrupted data." << endl;
+                   ofConsole.unlockCerr();
+                }
+            }
         }
     }
 
@@ -135,7 +144,13 @@ class DiMonoScaleTemplate
  *
  * CVS/RCS Log:
  * $Log: dimosct.h,v $
- * Revision 1.8  2000-03-08 16:24:21  meichel
+ * Revision 1.9  2000-09-12 10:04:45  joergr
+ * Corrected bug: wrong parameter for attribute search routine led to crashes
+ * when multiple pixel data attributes were contained in the dataset (e.g.
+ * IconImageSequence). Added new checking routines to avoid crashes when
+ * processing corrupted image data.
+ *
+ * Revision 1.8  2000/03/08 16:24:21  meichel
  * Updated copyright header.
  *
  * Revision 1.7  1999/09/17 12:43:24  joergr

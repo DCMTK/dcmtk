@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomMonochromeRotateTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:24:21 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-09-12 10:04:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimorot.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -78,7 +78,17 @@ class DiMonoRotateTemplate
         DiRotateTemplate<T>(1, src_cols, src_rows, dest_cols, dest_rows, frames)
     {
         if ((pixel != NULL) && (pixel->getCount() > 0))
-            rotate((const T *)pixel->getData(), degree);
+        {
+            if (pixel->getCount() == (unsigned long)src_cols * (unsigned long)src_rows * frames)
+                rotate((const T *)pixel->getData(), degree);
+            else {
+                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
+                {
+                   ofConsole.lockCerr() << "WARNING: could not rotate image ... corrupted data." << endl;
+                   ofConsole.unlockCerr();
+                }
+            }
+        }
     }
 
     /** destructor
@@ -122,7 +132,13 @@ class DiMonoRotateTemplate
  *
  * CVS/RCS Log:
  * $Log: dimorot.h,v $
- * Revision 1.6  2000-03-08 16:24:21  meichel
+ * Revision 1.7  2000-09-12 10:04:45  joergr
+ * Corrected bug: wrong parameter for attribute search routine led to crashes
+ * when multiple pixel data attributes were contained in the dataset (e.g.
+ * IconImageSequence). Added new checking routines to avoid crashes when
+ * processing corrupted image data.
+ *
+ * Revision 1.6  2000/03/08 16:24:21  meichel
  * Updated copyright header.
  *
  * Revision 1.5  1999/09/17 12:43:23  joergr

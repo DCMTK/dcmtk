@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomFlipTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:24:15 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-09-12 10:04:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diflipt.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -77,7 +77,8 @@ class DiFlipTemplate
         if (pixel != NULL)
         {
             Planes = pixel->getPlanes();
-            if ((pixel->getCount() > 0) && (Planes > 0))
+            if ((pixel->getCount() > 0) && (Planes > 0) &&
+                (pixel->getCount() == (unsigned long)columns * (unsigned long)rows * frames))
             {
                 if (horz && vert)
                     flipHorzVert((T **)pixel->getDataPtr());
@@ -85,6 +86,12 @@ class DiFlipTemplate
                     flipHorz((T **)pixel->getDataPtr());
                 else if (vert)
                     flipVert((T **)(pixel->getDataPtr()));
+            } else {
+                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
+                {
+                   ofConsole.lockCerr() << "WARNING: could not flip image ... corrupted data." << endl;
+                   ofConsole.unlockCerr();
+                }
             }
         }
     }
@@ -347,7 +354,13 @@ class DiFlipTemplate
  *
  * CVS/RCS Log:
  * $Log: diflipt.h,v $
- * Revision 1.10  2000-03-08 16:24:15  meichel
+ * Revision 1.11  2000-09-12 10:04:44  joergr
+ * Corrected bug: wrong parameter for attribute search routine led to crashes
+ * when multiple pixel data attributes were contained in the dataset (e.g.
+ * IconImageSequence). Added new checking routines to avoid crashes when
+ * processing corrupted image data.
+ *
+ * Revision 1.10  2000/03/08 16:24:15  meichel
  * Updated copyright header.
  *
  * Revision 1.9  2000/03/02 12:51:36  joergr

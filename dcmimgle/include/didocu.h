@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomDocument (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:24:15 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-09-12 10:04:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/didocu.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,7 @@
 
 #include "osconfig.h"
 #include "dctypes.h"
+#include "dcfilefo.h"
 #include "dcxfer.h"
 
 #include "diobjcou.h"
@@ -341,6 +342,8 @@ class DiDocument
 
     /// reference to DICOM dataset (in memory)
     DcmObject *Object;
+    /// reference to DICOM fileformat (read from file, maybe NULL)
+    DcmFileFormat *FileFormat;
     /// transfer syntax used for reading the dataset
     E_TransferSyntax Xfer;
 
@@ -351,8 +354,6 @@ class DiDocument
 
     /// configuration flags
     unsigned long Flags;
-    /// status flag indicating whether to delete the DcmObject reference or not
-    int DeleteObject;
 
  // --- declarations to avoid compiler warnings
 
@@ -368,7 +369,13 @@ class DiDocument
  *
  * CVS/RCS Log:
  * $Log: didocu.h,v $
- * Revision 1.8  2000-03-08 16:24:15  meichel
+ * Revision 1.9  2000-09-12 10:04:43  joergr
+ * Corrected bug: wrong parameter for attribute search routine led to crashes
+ * when multiple pixel data attributes were contained in the dataset (e.g.
+ * IconImageSequence). Added new checking routines to avoid crashes when
+ * processing corrupted image data.
+ *
+ * Revision 1.8  2000/03/08 16:24:15  meichel
  * Updated copyright header.
  *
  * Revision 1.7  2000/02/02 11:02:37  joergr
