@@ -344,8 +344,11 @@ the section on PROBLEMS below.
 Step 4:
     make install
 
-Step 4 will install the executables and data dictionary.  If you also wish to
-install the libraries and include files then use the "make install-lib".
+Step 4 will install the executables and some support files (data dictionary,
+configuration and documentation files).  If you also wish to install the
+libraries and include files then use the "make install-lib".  For the HTML
+documentation (see below) use "make install-html", for man pages of all command
+line tools use "make install-man" (requires Doxygen to be installed).
 
 Step 5:
     make distclean
@@ -581,4 +584,4 @@ Have fun.
 Marco Eichelberg, Joerg Riesmeier, Thomas Wilkens
 Kuratorium OFFIS e.V., Oldenburg, Germany.
 
-Last revised: 2003-12-23 (Riesmeier).
+Last revised: 2004-02-10 (Riesmeier).
