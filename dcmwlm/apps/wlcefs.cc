@@ -22,10 +22,10 @@
  *  Purpose: Class representing a console engine for basic worklist
  *           management service class providers based on the file system.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-09-23 18:36:58 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-26 08:53:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/wlcefs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,7 +54,7 @@
 #include "wlcefs.h"
 
 #ifdef WITH_ZLIB
-#include "zlib.h"        /* for zlibVersion() */
+#include <zlib.h>        /* for zlibVersion() */
 #endif
 
 // ----------------------------------------------------------------------------
@@ -345,7 +345,11 @@ void WlmConsoleEngineFileSystem::DumpMessage( const char *message )
 /*
 ** CVS Log
 ** $Log: wlcefs.cc,v $
-** Revision 1.3  2002-09-23 18:36:58  joergr
+** Revision 1.4  2002-11-26 08:53:00  meichel
+** Replaced all includes for "zlib.h" with <zlib.h>
+**   to avoid inclusion of zlib.h in the makefile dependencies.
+**
+** Revision 1.3  2002/09/23 18:36:58  joergr
 ** Added new command line option "--version" which prints the name and version
 ** number of external libraries used (incl. preparation for future support of
 ** 'config.guess' host identifiers).
