@@ -22,9 +22,9 @@
  *  Purpose: Provides main interface to the "dicom image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-03 11:43:39 $
+ *  Update Date:      $Date: 1999-03-22 08:51:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dcmimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -63,7 +63,7 @@ class DiDocument;
  *  class declaration  *
  *---------------------*/
 
-/** Interface class for dcmimage module
+/** Interface class for dcmimgle/dcmimage module
  */
 class DicomImage
 {
@@ -72,12 +72,14 @@ class DicomImage
 
  // --- constructors and destructor
  
-    /** constructor, open a dicom file
+    /** constructor, open a dicom file.
+     *  opens specified file and reads image related data, creates internal representation of image data.
+     *  use getStatus() to obtain detailed information about any errors.
      *
      ** @param  filename  the dicom file
      *  @param  flags     configuration flags (see diutils.h, CIF_MayDetachPixelData is automatically set)
-     *  @param  fstart    first frame to be processed (not implemented!)
-     *  @param  fcount    number of frames (not implemented!)
+     *  @param  fstart    first frame to be processed (not fully implemented!)
+     *  @param  fcount    number of frames (not fully implemented!)
      */
     DicomImage(const char *filename,
                const unsigned long flags = 0,
@@ -88,21 +90,22 @@ class DicomImage
      *
      ** @param  stream  open dicom file stream
      *  @param  flags   configuration flags (see diutils.h, CIF_MayDetachPixelData is automatically set)
-     *  @param  fstart  first frame to be processed (not implemented!)
-     *  @param  fcount  number of frames (not implemented!)
+     *  @param  fstart  first frame to be processed (not fully implemented!)
+     *  @param  fcount  number of frames (not fully implemented!)
      */
     DicomImage(DcmFileStream &stream,
                const unsigned long flags = 0,
                const unsigned long fstart = 0,
                const unsigned long fcount = 0);
 
+#ifndef STARVIEW
     /** constructor, use a given DcmObject
      *
      ** @param  object  pointer to dicom data structures (do not delete while referenced, not deleted within dcmimage)
      *  @param  xfer    transfer syntax
      *  @param  flags   configuration flags (see diutils.h)
-     *  @param  fstart  first frame to be processed (not implemented!)
-     *  @param  fcount  number of frames (not implemented!)
+     *  @param  fstart  first frame to be processed (not fully implemented!)
+     *  @param  fcount  number of frames (not fully implemented!)
      */
     DicomImage(DcmObject *object,
                const E_TransferSyntax xfer,
@@ -117,8 +120,8 @@ class DicomImage
      *  @param  slope      rescale slope (modality transformation)
      *  @param  intercept  rescale intercept (modality transformation)
      *  @param  flags      configuration flags (see diutils.h)
-     *  @param  fstart     first frame to be processed (not implemented!)
-     *  @param  fcount     number of frames (not implemented!)
+     *  @param  fstart     first frame to be processed (not fully implemented!)
+     *  @param  fcount     number of frames (not fully implemented!)
      */
     DicomImage(DcmObject *object,
                const E_TransferSyntax xfer,
@@ -135,8 +138,8 @@ class DicomImage
      *  @param  data        dataset element containing modality LUT data
      *  @param  descriptor  dataset element containing modality LUT descriptor
      *  @param  flags       configuration flags (see diutils.h)
-     *  @param  fstart      first frame to be processed (not implemented!)
-     *  @param  fcount      number of frames (not implemented!)
+     *  @param  fstart      first frame to be processed (not fully implemented!)
+     *  @param  fcount      number of frames (not fully implemented!)
      */
     DicomImage(DcmObject *object,
                E_TransferSyntax xfer,
@@ -146,6 +149,7 @@ class DicomImage
                const unsigned long flags = 0,
                const unsigned long fstart = 0,
                const unsigned long fcount = 0);
+#endif
 
     /** destructor
      */
@@ -365,7 +369,8 @@ class DicomImage
         return 0;
     }
 
-    /** set no display function
+    /** set no display function.
+     *  disables Barten transformation.
      *
      ** @return true if successful, false otherwise
      */
@@ -376,7 +381,7 @@ class DicomImage
         return 0;
     }
 
-    /** delete Barten LUT
+    /** delete specified Barten LUT(s)
      *
      ** @param  bits  parameter of LUT to be deleted (0 = all)
      *
@@ -389,13 +394,16 @@ class DicomImage
         return 0;
     }
 
-    /** convert P-value to DDL
+    /** convert P-value to DDL.
+     *  conversion uses Barten LUT if present, linear scaling otherwise.
      *
      ** @param  pvalue  P-value to be converted (0..65535)
      *  @param  ddl     reference to resulting DDL
      *  @param  bits    number of bits for output
      *
-     ** @return true if successful (1 = Barten transformation, 2 = linear scaling), false otherwise
+     ** @return true if successful (1 = Barten transformation,
+     *                              2 = linear scaling),
+     *          false otherwise
      */
     inline int convertPValueToDDL(const Uint16 pvalue,
                                   Uint16 &ddl,
@@ -411,7 +419,8 @@ class DicomImage
     /** unset all VOI transformations (windows and LUTs).
      *  only applicable for monochrome images
      *
-     ** @return true if successful (1 = previous window/LUT has been valid, 2 = otherwise),
+     ** @return true if successful (1 = previous window/LUT has been valid,
+     *                              2 = otherwise),
      *          false otherwise (image is invalid or not monochrome)
      */
     inline int setNoVoiTransformation() 
@@ -422,10 +431,12 @@ class DicomImage
     }
 
     /** set automatically calculated minimum/maximum window.
+     *  possibly active VOI LUT is implicitly disabled.
      *
      ** @param  idx  ignore global min/max values if false (0)
      *
-     ** @return true if sucessful (1 = window has changed, 2 = new window is the same as previous one),
+     ** @return true if sucessful (1 = window has changed,
+     *                             2 = new window is the same as previous one),
      *          false otherwise
      */
     inline int setMinMaxWindow(const int idx = 1) 
@@ -436,6 +447,7 @@ class DicomImage
     }
 
     /** set automatically calculated histogram window.
+     *  possibly active VOI LUT is implicitly disabled.
      *
      ** @param  thresh  threshhold value specifying percentage of histogram border which shall be ignored (defaut: 5%).
      *
@@ -448,11 +460,12 @@ class DicomImage
         return 0;
     }
 
-    /** .
+    /** set specified window (given by index to window width/center sequence stored in image file).
+     *  possibly active VOI LUT is implicitly disabled.
      *
-     ** @param
+     ** @param  window  index to window width/center sequence
      *
-     ** @return
+     ** @return true if successful, false otherwise (none monochrome or invalid index)
      */
     inline int setWindow(const unsigned long window) 
     {
@@ -461,11 +474,15 @@ class DicomImage
         return 0;
     }
 
-    /** .
+    /** set specified window (given by window width and center).
+     *  possibly active VOI LUT is implicitly disabled.
      *
-     ** @param
+     ** @param  center  center of specified window
+     *  @param  width   width of specified window (> 0.0)
      *
-     ** @return
+     ** @return true if sucessful (1 = window has changed,
+     *                             2 = new window is the same as previous one),
+     *          false otherwise
      */
     inline int setWindow(const double center,
                          const double width) 
@@ -475,11 +492,12 @@ class DicomImage
         return 0;
     }
 
-    /** .
+    /** get current window center and width values
      *
-     ** @param
+     ** @param  center  return current window center value
+     *  @param  width   return current window width value
      *
-     ** @return
+     ** @return true if successful, false otherwise
      */
     inline int getWindow(double &center,
                          double &width) 
@@ -489,11 +507,9 @@ class DicomImage
         return 0;
     }
 
-    /** .
+    /** get number of VOI windows (stored in image file)
      *
-     ** @param
-     *
-     ** @return
+     ** @return number of VOI windows
      */
     inline unsigned long getWindowCount() const 
     {
@@ -502,11 +518,14 @@ class DicomImage
         return 0;
     }
     
-    /** .
+    /** set VOI LUT (given by dcmdata elements).
+     *  possibly active window/center is implicitly disabled.
      *
-     ** @param
+     ** @param  data         contains LUT data
+     *  @param  descriptor   describes LUT structure
+     *  @param  explanation  free form description of VOI LUT (optional)
      *
-     ** @return
+     ** @return true if successful, false otherwise
      */
     inline int setVoiLut(const DcmUnsignedShort &data,
                          const DcmUnsignedShort &descriptor,
@@ -517,11 +536,12 @@ class DicomImage
         return 0;
     }
 
-    /** .
+    /** set VOI LUT (given by index to VOI LUT sequence stored in image file).
+     *  possibly active window/center is implicitly disabled.
      *
-     ** @param
+     ** @param  table  index to VOI LUT sequence
      *
-     ** @return
+     ** @return true if successful, false otherwise (none monochrome or invalid index)
      */
     inline int setVoiLut(const unsigned long table)
     {
@@ -530,9 +550,9 @@ class DicomImage
         return 0;
     }
 
-    /** .
+    /** get number of VOI LUTs (stored in image file)
      *
-     ** @return
+     ** @return number of VOI LUTs
      */
     inline unsigned long getVoiLutCount() const
     {
@@ -541,9 +561,9 @@ class DicomImage
         return 0;
     }
 
-    /** !! UNTESTED !!
+    /** get description of active VOI transformation
      *
-     ** @return
+     ** @return pointer to description text (NULL if absent)
      */
     inline const char *getVoiTransformationExplanation()
     {
@@ -552,9 +572,9 @@ class DicomImage
         return NULL;
     }
 
-    /** !! UNTESTED !!
+    /** get description of performed modality LUT transformation
      *
-     ** @return
+     ** @return pointer to description text (NULL if absent)
      */
     inline const char *getModalityLutExplanation()
     {
@@ -565,11 +585,14 @@ class DicomImage
 
  // --- presentation LUT:
 
-    /** .
+    /** set shape for presentation transformation.
+     *  possibly active presentation LUT is implicitly disabled.
      *
-     ** @param
+     ** @param  shape  presentation LUT shape (identity or inverse)
      *
-     ** @return
+     ** @return true if successful (1 = shape has changed,
+     *                              2 = shape has not changed)
+     *          false otherwise
      */
     inline int setPresentationLutShape(const ES_PresentationLut shape = ESP_Identity)
     {
@@ -578,11 +601,14 @@ class DicomImage
         return 0;
     }
 
-    /** !! UNTESTED !!
+    /** set LUT for presentation transformation.
+     *  possibly active presentation LUT is implicitly disabled.
      *
-     ** @param
+     ** @param  data         contains LUT data
+     *  @param  descriptor   describes LUT structure
+     *  @param  explanation  free form description of presentation LUT (optional)
      *
-     ** @return
+     ** @return true if successful, false otherwise
      */
     inline int setPresentationLut(const DcmUnsignedShort &data,
                                   const DcmUnsignedShort &descriptor,
@@ -593,9 +619,9 @@ class DicomImage
         return 0;
     }
 
-    /** !! UNTESTED !!
+    /** get description of active presentation LUT
      *
-     ** @return
+     ** @return pointer to description text (NULL if absent)
      */
     inline const char *getPresentationLutExplanation() const
     {
@@ -607,17 +633,18 @@ class DicomImage
 
  // --- overlays: return true (!0) if successful (see also 'diovlay.cc')
 
-    /** add specified plane to group of additional overlay planes (UNTESTED!)
+    /** add specified plane to group of additional overlay planes.
+     *  replaces old overlay plane if group number already exists.
      *
      ** @param  group        group number (0x60nn) of overlay plane
-     *  @param  width        .
-     *  @param  height       .
-     *  @param  left         .
-     *  @param  top          .
-     *  @param  data         .
-     *  @param  label        .
-     *  @param  description  .
-     *  @param  mode         .
+     *  @param  width        width of overlay plane (in pixels)
+     *  @param  height       height of overlay plane (in pixels)
+     *  @param  left         x coordinate of plane orgin (referring to image origin)
+     *  @param  top          y coordinate of plane origin
+     *  @param  data         overlay plane data (dcmdata element)
+     *  @param  label        overlay plane label
+     *  @param  description  overlay plane description
+     *  @param  mode         display mode (see 'diutils.h')
      *
      ** @return false (0) if an error occurred, true otherwise (1 = added new plane,
      *                                                          2 = replaced existing plane)
@@ -637,7 +664,7 @@ class DicomImage
         return 0;
     }
 
-    /** remove specified (additional) overlay plane (UNTESTED!)
+    /** remove specified (additional) overlay plane
      *
      ** @param  group  group number (0x60nn) of overlay plane
      *
@@ -650,7 +677,7 @@ class DicomImage
         return 0;
     }
 
-    /** remove all additional overlay planes (UNTESTED!)
+    /** remove all additional overlay planes
      *
      ** @return false (0) if an error occurred, true otherwise (1 = all planes deleted,
      *                                                          2 = no planes to be deleted)
@@ -662,8 +689,8 @@ class DicomImage
         return 0;
     }
 
-    /** check whether specified overlay plane is visible/activated
-     *  See show/hideOverlay() to modifiy the visibility status.
+    /** check whether specified overlay plane is visible/activated.
+     *  see show/hideOverlay() to modifiy the visibility status.
      *
      ** @param  plane  number (0..15) or group number (0x60nn) of overlay plane
      *  @param  idx    index of overlay group (0 = dataset, 1 = additional), default: 0
@@ -697,9 +724,9 @@ class DicomImage
     /** activate specified overlay plane and change some parameters
      *
      ** @param  plane   number (0..15) or group number (0x60nn) of overlay plane
-     *  @param  mode    .
-     *  @param  fore    ..., default: 1.0
-     *  @param  thresh  ..., default: 0.5
+     *  @param  mode    display mode (see 'diutils.h')
+     *  @param  fore    plane's foreground color (in percent, default: 1.0)
+     *  @param  thresh  treshhold value (in percent, default: 0.5), only for EMO_TreshholdReplace
      *  @param  idx     index of overlay group (0 = dataset, 1 = additional), default: 0
      *
      ** @return false (0) if an error occurred, true otherwise
@@ -746,9 +773,9 @@ class DicomImage
 
     /** activate all overlay planes and set specified parameters
      *
-     ** @param  mode    .
-     *  @param  fore    .
-     *  @param  thresh  .
+     ** @param  mode    display mode (see 'diutils.h')
+     *  @param  fore    plane's foreground color (in percent, default: 1.0)
+     *  @param  thresh  treshhold value (in percent, default: 0.5), only for EMO_TreshholdReplace
      *  @param  idx     index of overlay group (0 = dataset, 1 = additional), default: 0
      *
      ** @return false (0) if an error occurred, true otherwise (1 = planes have been successfully activated,
@@ -814,9 +841,9 @@ class DicomImage
         return 0;
     }
 
-    /** .
+    /** get number of overlay planes
      *
-     ** @param  idx    index of overlay group (0 = dataset, 1 = additional), default: 0
+     ** @param  idx  index of overlay group (0 = dataset, 1 = additional), default: 0
      *
      ** @return number of overlay planes stored in the image
      */
@@ -827,7 +854,7 @@ class DicomImage
         return 0;
     }
 
-    /** get group number of specified overlay plane (UNTESTED!)
+    /** get group number of specified overlay plane
      *
      ** @param  plane  number (0..15) or group number (0x60nn) of overlay plane
      *  @param  idx    index of overlay group (0 = dataset, 1 = additional), default: 0
@@ -842,7 +869,7 @@ class DicomImage
         return 0;
     }
 
-    /** get label of specified overlay plane (UNTESTED!)
+    /** get label of specified overlay plane
      *
      ** @param  plane  number (0..15) or group number (0x60nn) of overlay plane
      *  @param  idx    index of overlay group (0 = dataset, 1 = additional), default: 0
@@ -857,7 +884,7 @@ class DicomImage
         return NULL;
     }
 
-    /** get description of specified overlay plane (UNTESTED!)
+    /** get description of specified overlay plane
      *
      ** @param  plane  number (0..15) or group number (0x60nn) of overlay plane
      *  @param  idx    index of overlay group (0 = dataset, 1 = additional), default: 0
@@ -872,7 +899,7 @@ class DicomImage
         return NULL;
     }
 
-    /** get mode of specified overlay plane (UNTESTED!)
+    /** get mode of specified overlay plane
      *
      ** @param  plane  number (0..15) or group number (0x60nn) of overlay plane
      *  @param  idx    index of overlay group (0 = dataset, 1 = additional), default: 0
@@ -887,17 +914,19 @@ class DicomImage
         return EMO_Default;
     }
 
-    /** create 8 bits per pixel ...
+    /** create bitmap for specified overlay plane.
+     *  (8 bits per pixel with two values: fore and back)
      *
      ** @param  plane   number (0..15) or group number (0x60nn) of overlay plane
-     *  @param  width   .
-     *  @param  height  .
-     *  @param  left    .
-     *  @param  top     .
-     *  @param  mode    .
-     *  @param  frame   ..., default: 0
+     *  @param  width   returns width of overlay plane (in pixels)
+     *  @param  height  returns height of overlay plane (in pixels)
+     *  @param  left    returns x coordinate of plane's origin 
+     *  @param  top     returns y coordinate of plane's origin
+     *  @param  mode    return display mode (see 'diutils.h')
+     *  @param  frame   index of frame used for output, default: 0
+     *  @param  fore    foreground color to be set in bitmap, default: 255
+     *  @param  back    background color to be set in bitmap (transparent), default: 0
      *  @param  idx     index of overlay group (0 = dataset, 1 = additional, 2 = '1' plane hides '0' plane), default: 2
-     *  @param  value   ..., default: 255
      *
      ** @return pointer to overlay plane data (internal memory buffer)
      */
@@ -908,15 +937,16 @@ class DicomImage
                                        unsigned int &height,
                                        EM_Overlay &mode,
                                        const unsigned long frame = 0,
-                                       const unsigned int idx = 2,
-                                       const Uint8 value = 0xff) const
+                                       const Uint8 fore = 0xff,
+                                       const Uint8 back = 0x0,
+                                       const unsigned int idx = 2) const
     {
         if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
-            return Image->getMonoImagePtr()->getOverlayData(frame, plane, left, top, width, height, mode, idx, value);
+            return Image->getMonoImagePtr()->getOverlayData(frame, plane, left, top, width, height, mode, idx, fore, back);
         return NULL;
     }
     
-    /** delete buffer for overlay plane data
+    /** delete buffer for overlay plane data.
      *  Save memory if data is no longer needed.
      */
     inline void deleteOverlayData() const 
@@ -928,41 +958,70 @@ class DicomImage
 
  // --- create...Image: return pointer to new 'DicomImage' object, memory isn't handled internally !
     
-    /** Method:
+    /** create copy of current image object.
+     *  memory is not handled internally - must be deleted from calling program.
      *
-     ** @param fstart
-     *  @param fcount
+     ** @param  fstart  first frame to be processed (not fully implemented!)
+     *  @param  fcount  number of frames (not fully implemented!)
+     *
+     ** @return pointer to new DicomImage object (NULL if an error occurred)
      */
     DicomImage *createDicomImage(unsigned long fstart = 0,
                                  unsigned long fcount = 0) const;
 
-    /** .
+    /** create scaled copy of current image object (given by exact size).
+     *  memory is not handled internally - must be deleted from calling program.
      *
-     ** @param
+     ** @param  width        width of new image (in pixels)
+     *  @param  height       height of new image (in pixels)
+     *  @param  interpolate  specifies whether scaling algorithm should use interpolation (if necessary)
+     *                       default: no interpolation
+     *  @param  aspect       specifies whether pixel aspect ratio should be taken into consideration
+     *                       (if true, width OR height should be 0, i.e. this component will be calculated
+     *                        automatically)
      *
-     ** @return
+     ** @return pointer to new DicomImage object (NULL if an error occurred)
      */
     DicomImage *createScaledImage(const unsigned long width,
                                   const unsigned long height = 0,
                                   const int interpolate = 0,
                                   int aspect = 0) const;
 
-    /** .
+    /** create scaled copy of current image object (given by scaling factors).
+     *  memory is not handled internally - must be deleted from calling program.
      *
-     ** @param
+     ** @param  xfactor      width of new image is multiplied with this factor (> 0)
+     *  @param  yfactor      height of new image is multiplied with this factor (> 0)
+     *  @param  interpolate  specifies whether scaling algorithm should use interpolation (if necessary)
+     *                       default: no interpolation
+     *  @param  aspect       specifies whether pixel aspect ratio should be taken into consideration
+     *                       (if true, width OR height should be 0, i.e. this component will be calculated
+     *                        automatically)
      *
-     ** @return
+     ** @return pointer to new DicomImage object (NULL if an error occurred)
      */
     DicomImage *createScaledImage(const double xfactor,
                                   const double yfactor = 0,
                                   const int interpolate = 0,
                                   const int aspect = 0) const;
 
-    /** !! NOT FULLY IMPLEMENTED !!
+    /** create scaled copy of specified (clipping) area of the current image object.
+     *  memory is not handled internally - must be deleted from calling program.
+     *  NB: clipping and interpolated scaling at the same moment is not yet implemented!
      *
-     ** @param
+     ** @param  left          x coordinate of top left corner of area to be scaled (referring to image orgin)
+     *  @param  top           y coordinate of top left corner of area to be scaled
+     *  @param  clip_width    width of area to be scaled
+     *  @param  clip_height   height of area to be scaled
+     *  @param  scale_width   width of scaled image (in pixels)
+     *  @param  scale_height  height of scaled image (in pixels)
+     *  @param  interpolate   specifies whether scaling algorithm should use interpolation (if necessary)
+     *                        default: no interpolation
+     *  @param  aspect        specifies whether pixel aspect ratio should be taken into consideration
+     *                        (if true, width OR height should be 0, i.e. this component will be calculated
+     *                         automatically)
      *
-     ** @return
+     ** @return pointer to new DicomImage object (NULL if an error occurred)
      */
     DicomImage *createScaledImage(const unsigned long left,
                                   const unsigned long top,
@@ -973,11 +1032,23 @@ class DicomImage
                                   const int interpolate = 0,
                                   int aspect = 0) const;
 
-    /** .
+    /** create scaled copy of specified (clipping) area of the current image object.
+     *  memory is not handled internally - must be deleted from calling program.
+     *  NB: clipping and interpolated scaling at the same moment is not yet implemented!
      *
-     ** @param
+     ** @param  left         x coordinate of top left corner of area to be scaled (referring to image orgin)
+     *  @param  top          y coordinate of top left corner of area to be scaled
+     *  @param  width        width of area to be scaled
+     *  @param  height       height of area to be scaled
+     *  @param  xfactor      width of new image is multiplied with this factor (> 0)
+     *  @param  yfactor      height of new image is multiplied with this factor (> 0)
+     *  @param  interpolate  specifies whether scaling algorithm should use interpolation (if necessary)
+     *                       default: no interpolation
+     *  @param  aspect       specifies whether pixel aspect ratio should be taken into consideration
+     *                       (if true, width OR height should be 0, i.e. this component will be calculated
+     *                        automatically)
      *
-     ** @return
+     ** @return pointer to new DicomImage object (NULL if an error occurred)
      */
     DicomImage *createScaledImage(const unsigned long left,
                                   const unsigned long top,
@@ -988,85 +1059,96 @@ class DicomImage
                                   const int interpolate = 0,
                                   const int aspect = 0) const;
 
-    /** .
+    /** create copy of specified area of the current image object (clipping).
+     *  memory is not handled internally - must be deleted from calling program.
      *
-     ** @param
+     ** @param  left    x coordinate of top left corner of area to be copied (referring to image orgin)
+     *  @param  top     y coordinate of top left corner of area to be copied
+     *  @param  width   width of area to be copied
+     *  @param  height  height of area to be copied
      *
-     ** @return
+     ** @return pointer to new DicomImage object (NULL if an error occurred)
      */
     DicomImage *createClippedImage(const unsigned long left,
                                    const unsigned long top,
                                    unsigned long width = 0,
                                    unsigned long height = 0) const;
 
-    /** Flip image
+    /** flip current image (horizontally and/or vertically)
      *
-     ** @param  horz
-     *  @param  vert
+     ** @param  horz  flip horizontally if true
+     *  @param  vert  flip vertically if true
      *
-     ** @return
+     ** @return true if successful (1 = flipped at least direction,
+     *                              2 = not flipped, because of image resolution - width and/or height equal to 1),
+     *          false otherwise
      */
     int flipImage(int horz = 1,
                   int vert = 0) const;
 
-    /** Create flipped image
+    /** create a flipped copy of the current image.
+     *  memory is not handled internally - must be deleted from calling program.
      *
-     ** @param  horz
-     *  @param  vert
-     *  @param  fstart
-     *  @param  fcount
+     ** @param  horz  flip horizontally if true
+     *  @param  vert  flip vertically if true
      *
-     ** @return
+     ** @return pointer to new DicomImage object (NULL if an error occurred)
      */
     DicomImage *createFlippedImage(int horz = 1,
                                    int vert = 0) const;
 
-    /** Rotate  image
+    /** rotate current image (by steps of 90 degrees)
      *
-     ** @param  degree
+     ** @param  degree  angle by which the image shall be rotated (-360, -270, -180, -90, 0, 90, 180, 270, 360)
      *
-     ** @return 
+     ** @return true if successful (1 = rotated by at least 90 degrees,
+     *                              2 = not rotated, because of image resolution or angle),
+     *          false otherwise
      */
     int rotateImage(signed int degree) const;
 
-    /** Create rotated image
+    /** create a rotated copy of the current image.
+     *  memory is not handled internally - must be deleted from calling program.
      *
-     ** @param  degree
-     *  @param  fstart
-     *  @param  fcount
+     ** @param  degree  angle by which the image shall be rotated (-360, -270, -180, -90, 0, 90, 180, 270, 360)
      *
-     ** @return image
+     ** @return pointer to new DicomImage object (NULL if an error occurred)
      */
     DicomImage *createRotatedImage(signed int degree) const;
 
-    /** Create monochrome image
+    /** create monochrome copy of the current image.
+     *  equal to createDicomImage() for monochrome images.
+     *  memory is not handled internally - must be deleted from calling program.
      *
-     ** @param  degree
-     *  @param  fstart
-     *  @param  fcount
+     ** @param  red    coefficient by which the red component is weighted (default: NTSC value)
+     *  @param  green  coefficient by which the green component is weighted (default: NTSC value)
+     *  @param  blue   coefficient by which the blue component is weighted (default: NTSC value)
      *
-     ** @return image
+     ** @return pointer to new DicomImage object (NULL if an error occurred)
      */
     DicomImage *createMonochromeImage(const double red = 0.299,
                                       const double green = 0.587,
                                       const double blue = 0.114) const;
 
-    /** .
+    /** create true color (24 bit) bitmap for MS Windows.
+     *  memory is not handled internally - must be deleted from calling program.
      *
-     ** @param
+     ** @param  frame  index of frame to be converted (default: first frame)
      *
-     ** @return
+     ** @return pointer to memory buffer containing the bitmap data
      */
     void *createTrueColorDIB(const unsigned long frame = 0)
     {
         return (Image != NULL) ? Image->createDIB(frame) : NULL;
     }
     
-    /** .
+    /** create true color (32 bit) bitmap for Java (AWT default format).
+     *  Memory is not handled internally - must be deleted from calling program.
      *
-     ** @param
+     ** @param  frame  index of frame to be converted (default: first frame)
+     *  @param  bits   number of bits per pixel used for the output bitmap (default: 32)
      *
-     ** @return
+     ** @return pointer to memory buffer containing the bitmap data
      */
     void *createJavaAWTBitmap(const unsigned long frame = 0,
                               const int bits = 32)
@@ -1074,53 +1156,68 @@ class DicomImage
         return (Image != NULL) ? Image->createAWTBitmap(frame, bits) : NULL;
     }
 
- // --- ppm: return true ('1') if successful
+ // --- output ppm file: return true ('1') if successful
 
-    /** .
+    /** write pixel data to PPM file (specified by filename).
+     *  pixel data is written in ASCII format.
      *
-     ** @param
+     ** @param  filename  name of output file
+     *  @param  bits      number of bits used for output of pixel data (default: full resolution, max: 32)
+     *  @param  frame     index of frame used for output (default: first frame)
      *
-     ** @return
+     ** @return true if successful, false otherwise
      */
     int writePPM(const char *filename,
                  const int bits = 0,
                  const unsigned long frame = 0);
                  
-    /** .
+    /** write pixel data to PPM file (specified by open C++ stream).
+     *  pixel data is written in ASCII format.
      *
-     ** @param
+     ** @param  stream  open C++ output stream
+     *  @param  bits    number of bits used for output of pixel data (default: full resolution, max: 32)
+     *  @param  frame   index of frame used for output (default: first frame)
      *
-     ** @return
+     ** @return true if successful, false otherwise
      */
     int writePPM(ostream &stream,
                  const int bits = 0,
                  const unsigned long frame = 0);
                  
-    /** .
+    /** write pixel data to PPM file (specified by open C stream).
+     *  pixel data is written in ASCII format.
      *
-     ** @param
+     ** @param  stream  open C output stream
+     *  @param  bits    number of bits used for output of pixel data (default: full resolution, max: 32)
+     *  @param  frame   index of frame used for output (default: first frame)
      *
-     ** @return
+     ** @return true if successful, false otherwise
      */
     int writePPM(FILE *stream,
                  const int bits = 0,
                  const unsigned long frame = 0);
 
-    /** .
+    /** write pixel data to raw PPM file (specified by filename).
+     *  pixel data is written in binary format.
      *
-     ** @param
+     ** @param  filename  name of output file
+     *  @param  bits      number of bits used for output of pixel data (default: full resolution, max: 8)
+     *  @param  frame     index of frame used for output (default: first frame)
      *
-     ** @return
+     ** @return true if successful, false otherwise
      */
     int writeRawPPM(const char *filename,
                     const int bits = 0,
                     const unsigned long frame= 0);
 
-    /** .
+    /** write pixel data to raw PPM file (specified by open C stream).
+     *  pixel data is written in binary format.
      *
-     ** @param
+     ** @param  stream  open C output stream
+     *  @param  bits    number of bits used for output of pixel data (default: full resolution, max: 8)
+     *  @param  frame   index of frame used for output (default: first frame)
      *
-     ** @return
+     ** @return true if successful, false otherwise
      */
     int writeRawPPM(FILE *stream,
                     const int bits = 0,
@@ -1129,43 +1226,40 @@ class DicomImage
 
  protected:
 
-    /** Constructor: 
+    /** constructor, create copy of given image object with different image data and photometric interpretation
      *
-     ** @param dicom
-     *  @param image
-     *  @param interpret
+     ** @param  dicom      source object to be copied
+     *  @param  image      new image data
+     *  @param  interpret  new photometric interpretation
      */
     DicomImage(const DicomImage *dicom,
                DiImage *image,
                const EP_Interpretation interpret = EPI_Unknown);
     
-    /** .
-     *
-     ** @param
+    /** initialize object.
+     *  create internal image object depending on color model. is used for all 'real' constructors.
      */
     void Init();
 
-    /** .
+    /** check whether data dictionary is present
      *
-     ** @param
-     *
-     ** @return
+     ** @return true if dictionary is present, false otherwise
      */
     int checkDataDictionary();
 
-    /** .
+    /** get SOP class UID of current image object
      *
-     ** @param
-     *
-     ** @return
+     ** @return SOP class UID (or NULL if an error occurred)
      */
     const char *getSOPclassUID() const;
     
-    /** .
+    /** normalize given degree value (for internal use).
+     *  negative value are mapped to positive range (-360 -> 0, -270 -> 90, -180 -> 180, -90 -> 270),
+     *  360 is set to 0, all other value are rejected
      *
-     ** @param
+     ** @param  degree  value to be normalized, valid values are: 0, 90, 180, 270
      *
-     ** @return
+     ** @return true if successfull, false otherwise (invalid value)
      */
     int normalizeDegreeValue(signed int &degree) const;
     
@@ -1196,7 +1290,12 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.13  1999-03-03 11:43:39  joergr
+ * Revision 1.14  1999-03-22 08:51:06  joergr
+ * Added parameter to specify (transparent) background color for method
+ * getOverlayData().
+ * Added/Changed comments.
+ *
+ * Revision 1.13  1999/03/03 11:43:39  joergr
  * Changed comments.
  *
  * Revision 1.12  1999/02/11 15:35:04  joergr
