@@ -21,10 +21,10 @@
  *
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:25 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-06-20 15:11:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,24 +65,10 @@ END_EXTERN_C
 #include <strstream.h>     /* for ostrstream */
 #endif
 
-#undef  USE_LICENSE
-#define LICENSE_TYPE       ""
-#define LICENSE_CONTRACTOR ""
-#define LICENSE_EXPIRY     ""
-
 #define OFFIS_CONSOLE_APPLICATION "dcm2pnm"
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
-#ifdef OFFIS_DCMIMAGE_VERSION
-  OFFIS_DCMIMAGE_VERSION " " OFFIS_DCMIMAGE_RELEASEDATE " using dcmtk v" OFFIS_DCMTK_VERSION " $"
-#else
-  OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $"
-#endif
-#ifdef USE_LICENSE
-  "\n$dcmtk: " LICENSE_TYPE " for '" LICENSE_CONTRACTOR "' $\n"
-  "$dcmtk: " LICENSE_EXPIRY " $"
-#endif
-  ;
+  OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
 #define SHORTCOL 4
 #define LONGCOL 20
@@ -200,12 +186,12 @@ int main(int argc, char *argv[])
       cmd.addOption("--flip-both-axes",     "+Lhv",    "flip image horizontally and vertically");
 
      cmd.addSubGroup("scaling:");
-      cmd.addOption("--recognize-aspect",   "+a",      "recognize pixel aspect ratio when scaling\n(default)");
+      cmd.addOption("--recognize-aspect",   "+a",      "recognize pixel aspect ratio (default)");
       cmd.addOption("--ignore-aspect",      "-a",      "ignore pixel aspect ratio when scaling");
       cmd.addOption("--interpolate",        "+i",   1, "[n]umber of algorithm : integer",
                                                        "use interpolation when scaling (1..2, def: 1)");
       cmd.addOption("--no-interpolation",   "-i",      "no interpolation when scaling");
-      cmd.addOption("--no-scaling",         "-S",      "no scaling, ignore pixel aspect ratio (def.)");
+      cmd.addOption("--no-scaling",         "-S",      "no scaling, ignore pixel aspect ratio (default)");
       cmd.addOption("--scale-x-factor",     "+Sxf", 1, "[f]actor : float",
                                                        "scale x axis by factor, auto-compute y axis");
       cmd.addOption("--scale-y-factor",     "+Syf", 1, "[f]actor : float",
@@ -630,7 +616,7 @@ int main(int argc, char *argv[])
 
         char aspectRatio[30];
         sprintf(aspectRatio, "%.2f", di->getHeightWidthRatio());
-        
+
         CERR << "filename            : " << opt_ifname << endl
              << "SOP class           : " << SOPClassText << endl
              << "SOP instance UID    : " << SOPInstanceUID << endl << endl
@@ -642,27 +628,26 @@ int main(int argc, char *argv[])
              << "VOI windows in file : " << di->getWindowCount() << endl
              << "VOI LUTs in file    : " << di->getVoiLutCount() << endl
              << "Overlays in file    : " << di->getOverlayCount() << endl << endl;
-                
+
         if (minmaxValid)
         {
           char minmaxText[30];
           sprintf(minmaxText, "%.0f", maxVal);
           CERR << "maximum pixel value : " << minmaxText << endl;
           sprintf(minmaxText, "%.0f", minVal);
-          CERR << "minimum pixel value : " << minmaxText << endl;          
+          CERR << "minimum pixel value : " << minmaxText << endl;
         }
     }
 
     if (opt_suppressOutput) return 0;
 
-    /* select frame */
-/*
-    if (opt_frame > di->getFrameCount())
+    /* try to select frame */
+    if (opt_frame != di->getFirstFrame() + 1)
     {
-        oss << "cannot select frame no. " << opt_frame << ", only " << di->getFrameCount() << " frame(s) in file." << ends;
+        oss << "cannot select frame no. " << opt_frame << ", invalid frame no." << ends;
         app.printError(oss.str());
     }
-*/
+
     /* convert to grayscale if necessary */
     if ((opt_convertToGrayscale)  &&  (!di->isMonochrome()))
     {
@@ -941,45 +926,72 @@ int main(int argc, char *argv[])
         }
     }
 
-    if (opt_verboseMode > 1)
-         OUTPUT << "writing PPM/PGM file to " << ((opt_ofname)? opt_ofname : "stderr") << endl;
-    FILE *ofile = stdout;
-    if (opt_ofname)
+    /* write selected frame(s) to file */
+    
+    int status = 0;    
+    FILE *ofile = NULL;
+    char ofname[255];
+    unsigned int fcount = (unsigned int)(((opt_frameCount > 0) && (opt_frameCount <= di->getFrameCount())) ? opt_frameCount : di->getFrameCount());
+    const char *ofext = di->isMonochrome() ? "pgm" : "ppm";
+    
+    if (fcount < opt_frameCount)
     {
-        ofile = fopen(opt_ofname, "wb");
-        if (ofile==NULL)
+        oss << "cannot select " << opt_frameCount << " frames, limiting to " << fcount << " frames" << ends;
+        app.printWarning(oss.str());
+    }
+
+    for (unsigned int frame = 0; frame < fcount; frame++)
+    {
+        if (opt_ofname)
         {
-            oss << "cannot create file " << opt_ofname << ends;
-            app.printError(oss.str());
+            if (opt_multiFrame)
+                sprintf(ofname, "%s.%d.%s", opt_ofname, frame, ofext);
+            else
+                strcpy(ofname, opt_ofname);
+            if (opt_verboseMode > 1)
+                 OUTPUT << "writing frame " << (opt_frame + frame) << " to " << ofname << endl;
+            ofile = fopen(ofname, "wb");
+            if (ofile == NULL)
+            {
+                oss << "cannot create file " << ofname << ends;
+                app.printError(oss.str());
+            }
+        } else {
+            ofile = stdout;
+            if (opt_verboseMode > 1)
+                 OUTPUT << "writing frame " << (opt_frame + frame) << " to stderr" << endl;
         }
+
+        /* finally create PPM/PGM file */
+
+        switch (opt_fileType)
+        {
+            case 2:
+                status = di->writePPM(ofile, 8, frame);
+                break;
+            case 3:
+                status = di->writePPM(ofile, 16, frame);
+                break;
+            case 4:
+                status = di->writePPM(ofile, (int)opt_fileBits, frame);
+                break;
+    #ifdef PASTEL_COLOR_OUTPUT
+            case 5:
+                status = di->writePPM(ofile, MI_PastelColor, frame);
+                break;
+    #endif
+            case 1:
+            default:
+                status = di->writeRawPPM(ofile, 8, frame);
+                break;
+        }
+
+        if (opt_ofname)
+            fclose(ofile);
+            
+        if (!status)
+            app.printError("cannot write frame");
     }
-
-    /* finally create PPM/PGM file */
-
-    switch (opt_fileType)
-    {
-        case 2:
-            di->writePPM(ofile, 8 /*, opt_frame - 1*/);
-            break;
-        case 3:
-            di->writePPM(ofile, 16 /*, opt_frame - 1*/);
-            break;
-        case 4:
-            di->writePPM(ofile, (int)opt_fileBits /*, opt_frame - 1*/);
-            break;
-#ifdef PASTEL_COLOR_OUTPUT
-        case 5:
-            di->writePPM(ofile, MI_PastelColor /*, opt_frame - 1*/);
-            break;
-#endif
-        case 1:
-        default:
-            di->writeRawPPM(ofile, 8 /*, opt_frame - 1*/);
-            break;
-    }
-
-    if (opt_ofname)
-        fclose(ofile);
 
     /* done, now cleanup. */
     if (opt_verboseMode > 1)
@@ -994,7 +1006,12 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.46  2001-06-01 15:49:25  meichel
+ * Revision 1.47  2001-06-20 15:11:09  joergr
+ * Enhanced multi-frame support for command line tool 'dcm2pnm': extract all
+ * or a range of frames with one call.
+ * Removed old dcmimage license information.
+ *
+ * Revision 1.46  2001/06/01 15:49:25  meichel
  * Updated copyright header
  *
  * Revision 1.45  2000/07/07 14:17:23  joergr
