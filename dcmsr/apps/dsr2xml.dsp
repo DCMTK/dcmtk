@@ -55,7 +55,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 netapi32.lib wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib ..\..\..\zlib-1.1.4\release\zlib.lib /nologo /subsystem:console /machine:I386
+# ADD LINK32 netapi32.lib wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib ..\..\..\zlib-1.1.4\release\zlib.lib ..\..\..\libxml2-2.5.7\release\libxml2.lib ..\..\..\libxml2-2.5.7\release\iconv.lib /nologo /subsystem:console /machine:I386
 
 !ELSEIF  "$(CFG)" == "dsr2xml - Win32 Debug"
 
@@ -79,7 +79,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 netapi32.lib wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib ..\..\..\zlib-1.1.4\debug\zlib.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
+# ADD LINK32 netapi32.lib wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib ..\..\..\zlib-1.1.4\debug\zlib.lib ..\..\..\libxml2-2.5.7\debug\libxml2.lib ..\..\..\libxml2-2.5.7\debug\iconv.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
 
 !ELSEIF  "$(CFG)" == "dsr2xml - Win32 Release OpenSSL"
 
@@ -104,7 +104,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 netapi32.lib wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib ..\..\..\zlib-1.1.4\release\zlib.lib /nologo /subsystem:console /machine:I386
+# ADD LINK32 netapi32.lib wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib ..\..\..\zlib-1.1.4\release\zlib.lib ..\..\..\libxml2-2.5.7\release\libxml2.lib ..\..\..\libxml2-2.5.7\release\iconv.lib /nologo /subsystem:console /machine:I386
 
 !ENDIF 
 
