@@ -44,9 +44,9 @@
 ** Intent:		This file defines the public structures and constants
 **			and the function prototypes for the DUL (DICOM Upper
 **			Layer) facility.
-** Last Update:		$Author: meichel $, $Date: 2001-10-12 10:18:27 $
+** Last Update:		$Author: wilkens $, $Date: 2001-11-27 09:54:33 $
 ** Source File:		$RCSfile: dul.h,v $
-** Revision:		$Revision: 1.12 $
+** Revision:		$Revision: 1.13 $
 ** Status:		$State: Exp $
 */
 
@@ -306,6 +306,7 @@ OFCondition
 DUL_ReceiveAssociationRQ(
   DUL_NETWORKKEY ** net,
   DUL_BLOCKOPTIONS blk, 
+  int timeout,
   DUL_ASSOCIATESERVICEPARAMETERS * parameters,
   DUL_ASSOCIATIONKEY ** association, 
   int activatePDUStorage);
@@ -403,7 +404,12 @@ unsigned long DUL_getPeerCertificate(DUL_ASSOCIATIONKEY *dulassoc, void *buf, un
 /*
 ** CVS Log
 ** $Log: dul.h,v $
-** Revision 1.12  2001-10-12 10:18:27  meichel
+** Revision 1.13  2001-11-27 09:54:33  wilkens
+** Updated storescp. 6 new options (--output-directory, --sort-conc-studies,
+** --exec-on-reception, --exec-on-eostudy, --rename-on-eostudy, and
+** --eostudy-timeout) implemented (requirements from GO-Kard).
+**
+** Revision 1.12  2001/10/12 10:18:27  meichel
 ** Replaced the CONDITION types, constants and functions in the dcmnet module
 **   by an OFCondition based implementation which eliminates the global condition
 **   stack.  This is a major change, caveat emptor!

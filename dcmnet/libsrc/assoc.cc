@@ -67,10 +67,10 @@
 **      Module Prefix: ASC_
 **
 **
-** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2001-10-12 10:18:29 $
+** Last Update:         $Author: wilkens $
+** Update Date:         $Date: 2001-11-27 09:54:56 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:    $Revision: 1.34 $
+** CVS/RCS Revision:    $Revision: 1.35 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1535,7 +1535,9 @@ ASC_receiveAssociation(T_ASC_Network * network,
                        long maxReceivePDUSize,
                        void **associatePDU,
                        unsigned long *associatePDUlength,
-                       OFBool useSecureLayer)
+                       OFBool useSecureLayer,
+                       DUL_BLOCKOPTIONS block,
+                       int timeout)
 {
     T_ASC_Parameters *params;
     DUL_ASSOCIATIONKEY *DULassociation;
@@ -1558,7 +1560,7 @@ ASC_receiveAssociation(T_ASC_Network * network,
     (*assoc)->params = params;
     (*assoc)->nextMsgID = 1;
 
-    cond = DUL_ReceiveAssociationRQ(&network->network, DUL_BLOCK,
+    cond = DUL_ReceiveAssociationRQ(&network->network, block, timeout,
                                     &(params->DULparams), &DULassociation, retrieveRawPDU);
 
     (*assoc)->DULassociation = DULassociation;
@@ -1965,7 +1967,12 @@ unsigned long ASC_getPeerCertificate(T_ASC_Association *assoc, void *buf, unsign
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
-** Revision 1.34  2001-10-12 10:18:29  meichel
+** Revision 1.35  2001-11-27 09:54:56  wilkens
+** Updated storescp. 6 new options (--output-directory, --sort-conc-studies,
+** --exec-on-reception, --exec-on-eostudy, --rename-on-eostudy, and
+** --eostudy-timeout) implemented (requirements from GO-Kard).
+**
+** Revision 1.34  2001/10/12 10:18:29  meichel
 ** Replaced the CONDITION types, constants and functions in the dcmnet module
 **   by an OFCondition based implementation which eliminates the global condition
 **   stack.  This is a major change, caveat emptor!

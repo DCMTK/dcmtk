@@ -67,10 +67,10 @@
 **	Module Prefix: ASC_
 **
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2001-10-12 10:18:25 $
+** Last Update:		$Author: wilkens $
+** Update Date:		$Date: 2001-11-27 09:54:33 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/assoc.h,v $
-** CVS/RCS Revision:	$Revision: 1.17 $
+** CVS/RCS Revision:	$Revision: 1.18 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -447,7 +447,9 @@ ASC_receiveAssociation(
     long maxReceivePDUSize,
     void **associatePDU=NULL,
     unsigned long *associatePDUlength=NULL,
-    OFBool useSecureLayer=OFFalse);
+    OFBool useSecureLayer=OFFalse,
+    DUL_BLOCKOPTIONS block=DUL_BLOCK,
+    int timeout=0);
 
 OFCondition
 ASC_acknowledgeAssociation(
@@ -486,7 +488,12 @@ ASC_destroyAssociation(T_ASC_Association ** association);
 /*
 ** CVS Log
 ** $Log: assoc.h,v $
-** Revision 1.17  2001-10-12 10:18:25  meichel
+** Revision 1.18  2001-11-27 09:54:33  wilkens
+** Updated storescp. 6 new options (--output-directory, --sort-conc-studies,
+** --exec-on-reception, --exec-on-eostudy, --rename-on-eostudy, and
+** --eostudy-timeout) implemented (requirements from GO-Kard).
+**
+** Revision 1.17  2001/10/12 10:18:25  meichel
 ** Replaced the CONDITION types, constants and functions in the dcmnet module
 **   by an OFCondition based implementation which eliminates the global condition
 **   stack.  This is a major change, caveat emptor!

@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: joergr $, $Date: 2001-11-09 15:58:51 $
+** Last Update:		$Author: wilkens $, $Date: 2001-11-27 09:54:58 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.41 $
+** Revision:		$Revision: 1.42 $
 ** Status:		$State: Exp $
 */
 
@@ -140,11 +140,13 @@ static OFCondition initializeNetworkTCP(PRIVATE_NETWORKKEY ** k, void *p);
 static OFCondition
 receiveTransportConnection(PRIVATE_NETWORKKEY ** network,
                            DUL_BLOCKOPTIONS block,
+                           int timeout,
                            DUL_ASSOCIATESERVICEPARAMETERS * params,
                            PRIVATE_ASSOCIATIONKEY ** association);
 static OFCondition
 receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
                               DUL_BLOCKOPTIONS block,
+                              int timeout,
                               DUL_ASSOCIATESERVICEPARAMETERS * params,
                               PRIVATE_ASSOCIATIONKEY ** association);
 
@@ -467,6 +469,7 @@ DUL_RequestAssociation(
 ** Parameter Dictionary:
 **      network         Caller's handle to the network environment.
 **      block           Flag indicating blocking/non blocking mode
+**      timeout         When blocking mode is non blocking, the timeout in seconds
 **      params          Pointer to a structure holding parameters which
 **                      describe this Association.
 **      association     Caller handle for thsi association that is created
@@ -483,6 +486,7 @@ OFCondition
 DUL_ReceiveAssociationRQ(
   DUL_NETWORKKEY ** callerNetworkKey,
   DUL_BLOCKOPTIONS block, 
+  int timeout,
   DUL_ASSOCIATESERVICEPARAMETERS * params,
   DUL_ASSOCIATIONKEY ** callerAssociation, 
   int activatePDUStorage)
@@ -517,7 +521,7 @@ DUL_ReceiveAssociationRQ(
     if (activatePDUStorage) DUL_activateAssociatePDUStorage(*association);
     clearRequestorsParams(params);
 
-    cond = receiveTransportConnection(network, block, params, association);
+    cond = receiveTransportConnection(network, block, timeout, params, association);
     if (cond.bad())
         return cond;
 
@@ -1356,6 +1360,7 @@ DUL_DefaultServiceParameters(DUL_ASSOCIATESERVICEPARAMETERS * params)
 **      network         Pointer to a structure maintaining information about
 **                      the network environment.
 **      block           Option indicating blocking/non-blocking mode
+**      timeout         When blocking mode is non blocking, the timeout in seconds
 **      params          Pointer to structure describing the services for the
 **                      Association.
 **      association     Handle to the association
@@ -1371,10 +1376,11 @@ DUL_DefaultServiceParameters(DUL_ASSOCIATESERVICEPARAMETERS * params)
 static OFCondition
 receiveTransportConnection(PRIVATE_NETWORKKEY ** network,
                            DUL_BLOCKOPTIONS block,
+                           int timeout,
                            DUL_ASSOCIATESERVICEPARAMETERS * params,
                            PRIVATE_ASSOCIATIONKEY ** association)
 {
-  return receiveTransportConnectionTCP(network, block, params, association);
+  return receiveTransportConnectionTCP(network, block, timeout, params, association);
 }
 
 
@@ -1388,6 +1394,7 @@ receiveTransportConnection(PRIVATE_NETWORKKEY ** network,
 **      network         Pointer to a structure maintaining information about
 **                      the network environment.
 **      block           Option indicating blocking/non-blocking mode
+**      timeout         When blocking mode is non blocking, the timeout in seconds
 **      params          Pointer to structure describing the services for the
 **                      Association.
 **      association     Handle to the association
@@ -1402,13 +1409,14 @@ receiveTransportConnection(PRIVATE_NETWORKKEY ** network,
 static OFCondition
 receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
                               DUL_BLOCKOPTIONS block,
+                              int timeout,
                               DUL_ASSOCIATESERVICEPARAMETERS * params,
                               PRIVATE_ASSOCIATIONKEY ** association)
 {
     fd_set
     fdset;
     struct timeval
-        timeout;
+        timeout_val;
 #ifdef HAVE_DECLARATION_SOCKLEN_T
     socklen_t len;
 #elif !defined(HAVE_PROTOTYPE_ACCEPT) || defined(HAVE_INTP_ACCEPT)
@@ -1431,14 +1439,14 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
         connected = 0;
         FD_ZERO(&fdset);
         FD_SET((*network)->networkSpecific.TCP.listenSocket, &fdset);
-        timeout.tv_sec = 0;
-        timeout.tv_usec = 0;
+        timeout_val.tv_sec = timeout;
+        timeout_val.tv_usec = 0;
 #ifdef HAVE_INTP_SELECT
         nfound = select((*network)->networkSpecific.TCP.listenSocket + 1,
-                        (int *)(&fdset), NULL, NULL, &timeout);
+                        (int *)(&fdset), NULL, NULL, &timeout_val);
 #else
         nfound = select((*network)->networkSpecific.TCP.listenSocket + 1,
-                        &fdset, NULL, NULL, &timeout);
+                        &fdset, NULL, NULL, &timeout_val);
 #endif
         if (nfound != 0) {
             if (FD_ISSET((*network)->networkSpecific.TCP.listenSocket, &fdset))
@@ -1451,14 +1459,14 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
             FD_ZERO(&fdset);
             FD_SET((*network)->networkSpecific.TCP.listenSocket, &fdset);
 
-            timeout.tv_sec = 5;
-            timeout.tv_usec = 0;
+            timeout_val.tv_sec = 5;
+            timeout_val.tv_usec = 0;
 #ifdef HAVE_INTP_SELECT
             nfound = select((*network)->networkSpecific.TCP.listenSocket + 1,
-                            (int *)(&fdset), NULL, NULL, &timeout);
+                            (int *)(&fdset), NULL, NULL, &timeout_val);
 #else
             nfound = select((*network)->networkSpecific.TCP.listenSocket + 1,
-                            &fdset, NULL, NULL, &timeout);
+                            &fdset, NULL, NULL, &timeout_val);
 #endif
             if (nfound != 0) {
                 if (FD_ISSET((*network)->networkSpecific.TCP.listenSocket,
@@ -2303,7 +2311,12 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, ostream& outs
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.41  2001-11-09 15:58:51  joergr
+** Revision 1.42  2001-11-27 09:54:58  wilkens
+** Updated storescp. 6 new options (--output-directory, --sort-conc-studies,
+** --exec-on-reception, --exec-on-eostudy, --rename-on-eostudy, and
+** --eostudy-timeout) implemented (requirements from GO-Kard).
+**
+** Revision 1.41  2001/11/09 15:58:51  joergr
 ** Added '#include <iostream.h>' to avoid compiler errors reported by Sun CC
 ** 2.0.1 (required before <iomanip.h> is included).
 **
