@@ -57,10 +57,10 @@
 ** Module Prefix: DU_
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1998-02-25 14:30:01 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-10-26 13:07:48 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/diutil.cc,v $
-** CVS/RCS Revision:	$Revision: 1.10 $
+** CVS/RCS Revision:	$Revision: 1.11 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -173,7 +173,10 @@ static DU_Modality modalities[] = {
     /* How big can Wafeform Interchange Objects be? */
     { UID_WaveformStorage, 	"WV", 4096 },
     { UID_ECGWaveformStorage, 	"ECG", 4096 },
-    { UID_AudioWaveformStorage, "AU", 4096 }
+    { UID_AudioWaveformStorage, "AU", 4096 },
+    
+    /* Grayscale Softcopy Presentation State Storage */
+    { UID_GrayscaleSoftcopyPresentationStateStorage, "PSg", 4096 }
 
 };
 
@@ -575,7 +578,10 @@ DU_cgetStatusString(Uint16 statusCode)
 /*
 ** CVS Log
 ** $Log: diutil.cc,v $
-** Revision 1.10  1998-02-25 14:30:01  hewett
+** Revision 1.11  1998-10-26 13:07:48  meichel
+** Added Grayscale Softcopy Presentation State to DIMSE helper functions.
+**
+** Revision 1.10  1998/02/25 14:30:01  hewett
 ** Updated UID information to reflect changes in
 ** Supplement 24 (Stored Print Related SOP Classes).  Some UIDs have
 ** changed between the Letter Ballot version and the Final Text version.
