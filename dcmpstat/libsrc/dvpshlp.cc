@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPSHelper
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-02 16:01:02 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-10-16 11:46:15 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -82,7 +82,7 @@ void DVPSHelper::currentTime(OFString &str)
 }
 
 E_Condition DVPSHelper::loadFileFormat(const char *filename,
-                                        DcmFileFormat *&fileformat)
+                                       DcmFileFormat *&fileformat)
 {
     DcmFileStream stream(filename, DCM_ReadMode);
     if (!stream.Fail())
@@ -102,7 +102,7 @@ E_Condition DVPSHelper::loadFileFormat(const char *filename,
 }
 
 E_Condition DVPSHelper::saveFileFormat(const char *filename,
-                                        DcmFileFormat *fileformat, OFBool explicitVR)
+                                       DcmFileFormat *fileformat, OFBool explicitVR)
 {
     E_TransferSyntax xfer = EXS_LittleEndianImplicit;
     if (explicitVR) xfer = EXS_LittleEndianExplicit;
@@ -197,7 +197,7 @@ void DVPSHelper::cleanChildren(OFConsole *logconsole)
 #endif
         if (child < 0)
         {
-          if (errno != ECHILD) 
+          if ((errno != ECHILD) && (errno != 0))
           {
             if (logconsole) 
             {
@@ -268,5 +268,10 @@ E_Condition DVPSHelper::addReferencedUIDItem(DcmSequenceOfItems& seq, const char
 
 /*
  *  CVS/RCS Log:
+ *  $Log: dvpshlp.cc,v $
+ *  Revision 1.6  2000-10-16 11:46:15  joergr
+ *  Added check to avoid wrong warning messages when shutting down application
+ *  externally.
+ *
  *
  */
