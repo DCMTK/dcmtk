@@ -22,9 +22,9 @@
  *  Purpose: DicomColorImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 14:27:25 $
+ *  Update Date:      $Date: 1998-12-14 17:11:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dicoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -383,7 +383,8 @@ int DiColorImage::rotate(const int degree)
 
 DiImage *DiColorImage::createRotate(const int degree) const
 {
-    return NULL;
+    DiImage *image = new DiColorImage(this, degree);
+    return image;
 }
 
 
@@ -472,7 +473,10 @@ int DiColorImage::writeRawPPM(FILE *stream,
 **
 ** CVS/RCS Log:
 ** $Log: dicoimg.cc,v $
-** Revision 1.4  1998-11-27 14:27:25  joergr
+** Revision 1.5  1998-12-14 17:11:12  joergr
+** Added implementation of method to create rotated color images.
+**
+** Revision 1.4  1998/11/27 14:27:25  joergr
 ** Added copyright message.
 ** Added method to detach pixel data if it is no longer needed.
 **
