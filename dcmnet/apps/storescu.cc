@@ -53,9 +53,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-26 18:38:44 $
+** Update Date:		$Date: 1996-04-22 09:56:20 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -92,18 +92,6 @@
 /* default application titles */
 #define APPLICATIONTITLE	"STORESCU"
 #define PEERAPPLICATIONTITLE	"ANY-SCP"
-
-#define APP_NORMAL		/* normal operation */\
-	FORM_COND(FAC_APP, SEV_SUCC, 0)
-#define APP_BADIMAGE		/* bad image data */\
-	FORM_COND(FAC_APP, SEV_ERROR, 1)
-#define APP_NOCONTEXT		/* no presentation context for SOP Class */\
-	FORM_COND(FAC_APP, SEV_ERROR, 2)
-#define APP_STOREFAILED		/* store operation failed */\
-	FORM_COND(FAC_APP, SEV_ERROR, 3)
-#define APP_MESSAGEFAILED	/* store operation failed */\
-	FORM_COND(FAC_APP, SEV_ERROR, 4)
-
 
 static char *progname = NULL;
 static BOOLEAN verbose = FALSE;
@@ -176,7 +164,7 @@ main(int argc, char *argv[])
     T_ASC_Network *net;
     T_ASC_Parameters *params;
     char *peer;
-    int port;
+    int port = 104;
     DIC_NODENAME localHost;
     DIC_NODENAME peerHost;
     int i, j;
@@ -265,7 +253,7 @@ main(int argc, char *argv[])
     peer = argv[i];
     i++;
 
-    /* get port number to listen on */
+    /* get port number to call */
     if (sscanf(argv[i], "%d", &port) != 1) {
 	errmsg("bad port number: %s", argv[i]);
 	usage();
@@ -601,8 +589,11 @@ cstore(T_ASC_Association * assoc, const char *fname)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.1  1996-03-26 18:38:44  hewett
-** Initial revision
+** Revision 1.2  1996-04-22 09:56:20  hewett
+** Delete unused application conditions.
+**
+** Revision 1.1.1.1  1996/03/26 18:38:44  hewett
+** Initial Release.
 **
 **
 */
