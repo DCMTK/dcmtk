@@ -21,10 +21,10 @@
  *
  *  Purpose: Provides main interface to the "DICOM image toolkit"
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-08-02 15:02:34 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-08-21 09:51:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dcmimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,7 +48,6 @@
 
 class DcmXfer;
 class DcmObject;
-class DcmFileStream;
 class DcmOverlayData;
 class DcmLongString;
 class DcmUnsignedShort;
@@ -81,19 +80,6 @@ class DicomImage
      *  @param  fcount    number of frames (optional, 0 = all frames)
      */
     DicomImage(const char *filename,
-               const unsigned long flags = 0,
-               const unsigned long fstart = 0,
-               const unsigned long fcount = 0);
-
-    /** constructor, use a given DcmFileStream
-     *
-     ** @param  stream  open DICOM file stream
-     *  @param  flags   configuration flags (see diutils.h, CIF_MayDetachPixelData is set automatically)
-     *  @param  fstart  first frame to be processed (optional, 0 = 1st frame), all subsequent use
-     *                  of parameters labeled 'frame' in this class refers to this start frame.
-     *  @param  fcount  number of frames (optional, 0 = all frames)
-     */
-    DicomImage(DcmFileStream &stream,
                const unsigned long flags = 0,
                const unsigned long fstart = 0,
                const unsigned long fcount = 0);
@@ -1780,7 +1766,11 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.43  2002-08-02 15:02:34  joergr
+ * Revision 1.44  2002-08-21 09:51:43  meichel
+ * Removed DicomImage and DiDocument constructors that take a DcmStream
+ *   parameter
+ *
+ * Revision 1.43  2002/08/02 15:02:34  joergr
  * Enhanced writeFrameToDataset() routine (remove out-data DICOM attributes
  * from the dataset).
  * Added function to write the current image (not only a selected frame) to a

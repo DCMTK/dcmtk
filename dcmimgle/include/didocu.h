@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomDocument (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-06-26 16:01:07 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-08-21 09:51:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/didocu.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,7 +52,6 @@ END_EXTERN_C
  *------------------------*/
 
 class OFString;
-class DcmStream;
 class DcmStack;
 class DcmObject;
 class DcmTagKey;
@@ -80,18 +79,6 @@ class DiDocument
      *  @param  fcount    number of frames (only stored for later use)
      */
     DiDocument(const char *filename,
-               const unsigned long flags = 0,
-               const unsigned long fstart = 0,
-               const unsigned long fcount = 0);
-
-    /** constructor, use a given DcmFileStream
-     *
-     ** @param  stream  open dicom file stream
-     *  @param  flags   configuration flags (only stored for later use)
-     *  @param  fstart  first frame to be processed (only stored for later use)
-     *  @param  fcount  number of frames (only stored for later use)
-     */
-    DiDocument(DcmStream &stream,
                const unsigned long flags = 0,
                const unsigned long fstart = 0,
                const unsigned long fcount = 0);
@@ -353,12 +340,6 @@ class DiDocument
 
  protected:
 
-    /** initialize object (e.g. read dataset)
-     *
-     ** @param  stream  open dicom file stream
-     */
-    void Init(DcmStream &stream);
-
     /** convert pixel data to uncompressed representation (if required)
      */
     void convertPixelData();
@@ -395,7 +376,11 @@ class DiDocument
  *
  * CVS/RCS Log:
  * $Log: didocu.h,v $
- * Revision 1.13  2002-06-26 16:01:07  joergr
+ * Revision 1.14  2002-08-21 09:51:44  meichel
+ * Removed DicomImage and DiDocument constructors that take a DcmStream
+ *   parameter
+ *
+ * Revision 1.13  2002/06/26 16:01:07  joergr
  * Added new methods to get the explanation string of stored VOI windows and
  * LUTs (not only of the currently selected VOI transformation).
  *

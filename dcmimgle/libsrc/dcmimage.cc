@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomImage-Interface (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-27 18:21:37 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-08-21 09:51:47 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dcmimage.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -83,25 +83,6 @@ DicomImage::DicomImage(const char *filename,
     if (checkDataDictionary())                  // valid 'dicom.dic' found ?
     {
         Document = new DiDocument(filename, flags | CIF_MayDetachPixelData, fstart, fcount);
-        Init();
-    }
-}
-
-
-// --- create 'DicomImage' from valid 'DicomFileStream', for valid 'flags' see 'diutils.h'
- 
-DicomImage::DicomImage(DcmFileStream &stream,
-                       const unsigned long flags,
-                       const unsigned long fstart,
-                       const unsigned long fcount)
-  : ImageStatus(EIS_Normal),
-    PhotometricInterpretation(EPI_Unknown),
-    Document(NULL),
-    Image(NULL)
-{
-    if (checkDataDictionary())                  // valid 'dicom.dic' found ?
-    {
-        Document = new DiDocument(stream, flags | CIF_MayDetachPixelData, fstart, fcount);
         Init();
     }
 }
@@ -840,7 +821,11 @@ int DicomImage::writePluginFormat(const DiPluginFormat *plugin,
  *
  * CVS/RCS Log:
  * $Log: dcmimage.cc,v $
- * Revision 1.18  2001-11-27 18:21:37  joergr
+ * Revision 1.19  2002-08-21 09:51:47  meichel
+ * Removed DicomImage and DiDocument constructors that take a DcmStream
+ *   parameter
+ *
+ * Revision 1.18  2001/11/27 18:21:37  joergr
  * Added support for plugable output formats in class DicomImage. First
  * implementation is JPEG.
  *

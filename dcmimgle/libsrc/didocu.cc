@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomDocument (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-06-26 16:10:15 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-08-21 09:51:47 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/didocu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,45 +49,33 @@ DiDocument::DiDocument(const char *filename,
                        const unsigned long fstart,
                        const unsigned long fcount)
   : Object(NULL),
-    FileFormat(NULL),
+    FileFormat(new DcmFileFormat()),
     Xfer(EXS_Unknown),
     FrameStart(fstart),
     FrameCount(fcount),
     Flags(flags)
 {
-    DcmFileStream stream(filename, DCM_ReadMode);
-    if (stream.Fail())
+    if (FileFormat)
     {
-        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
+        
+        if (FileFormat->loadFile(filename).bad())
         {
-            ofConsole.lockCerr() << "ERROR: can't open file '" << filename << "' !" << endl;
-            ofConsole.unlockCerr();
+            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
+            {
+                ofConsole.lockCerr() << "ERROR: can't read file '" << filename << "' !" << endl;
+                ofConsole.unlockCerr();
+            }
+            delete FileFormat;
+            FileFormat = NULL;
+        } else {
+            Object = FileFormat->getDataset();
+            if (Object != NULL)
+            {
+                Xfer = ((DcmDataset *)Object)->getOriginalXfer();
+                convertPixelData();
+            }
         }
-    } else
-        Init(stream);
-}
-
-
-DiDocument::DiDocument(DcmStream &stream,
-                       const unsigned long flags,
-                       const unsigned long fstart,
-                       const unsigned long fcount)
-  : Object(NULL),
-    FileFormat(NULL),
-    Xfer(EXS_Unknown),
-    FrameStart(fstart),
-    FrameCount(fcount),
-    Flags(flags)
-{
-    if (stream.Fail())
-    {
-        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
-        {
-            ofConsole.lockCerr() << "ERROR: invalid file stream !" << endl;
-            ofConsole.unlockCerr();
-        }
-    } else
-        Init(stream);
+    }
 }
 
 
@@ -123,32 +111,6 @@ DiDocument::DiDocument(DcmObject *object,
 }
 
 
-void DiDocument::Init(DcmStream &stream)
-{
-    FileFormat = new DcmFileFormat();
-    if (FileFormat != NULL)
-    {
-        FileFormat->transferInit();
-        if (FileFormat->read(stream) != EC_Normal)
-        {
-            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
-            {
-                ofConsole.lockCerr() << "ERROR: can't read DICOM stream !" << endl;
-                ofConsole.unlockCerr();
-            }
-            delete FileFormat;
-            FileFormat = NULL;
-        } else {
-            FileFormat->transferEnd();
-            Object = FileFormat->getDataset();
-            if (Object != NULL)
-            {
-                Xfer = ((DcmDataset *)Object)->getOriginalXfer();
-                convertPixelData();
-            }
-        }
-    }
-}
 
 
 void DiDocument::convertPixelData()
@@ -411,7 +373,11 @@ unsigned long DiDocument::getElemValue(const DcmElement *elem,
  *
  * CVS/RCS Log:
  * $Log: didocu.cc,v $
- * Revision 1.13  2002-06-26 16:10:15  joergr
+ * Revision 1.14  2002-08-21 09:51:47  meichel
+ * Removed DicomImage and DiDocument constructors that take a DcmStream
+ *   parameter
+ *
+ * Revision 1.13  2002/06/26 16:10:15  joergr
  * Added new methods to get the explanation string of stored VOI windows and
  * LUTs (not only of the currently selected VOI transformation).
  * Added configuration flag that enables the DicomImage class to take the
