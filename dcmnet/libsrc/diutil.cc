@@ -58,9 +58,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1998-02-06 09:09:15 $
+** Update Date:		$Date: 1998-02-25 14:30:01 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/diutil.cc,v $
-** CVS/RCS Revision:	$Revision: 1.9 $
+** CVS/RCS Revision:	$Revision: 1.10 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -166,14 +166,13 @@ static DU_Modality modalities[] = {
     { UID_SRComprehensiveStorage,  		"SRc", 4096 },
 
     /* How big can Print Storage Objects be? */
-    { UID_BasicGrayscalePrintStorage, 		"PBG", 4096 },
-    { UID_BasicColorPrintStorage,		"PBC", 4096 },
-    { UID_ReferencedGrayscalePrintStorage, 	"PRG", 4096 },
-    { UID_ReferencedColorPrintStorage, 		"PRC", 4096 },
+    { UID_HardcopyGrayscaleImageStorage, 	"HG", 4096 },
+    { UID_HardcopyColorImageStorage,		"HC", 4096 },
+    { UID_StoredPrintStorage, 			"SP", 4096 },
 
     /* How big can Wafeform Interchange Objects be? */
-    { UID_WaveformStorage, "WV", 4096 },
-    { UID_ECGWaveformStorage, "ECG", 4096 },
+    { UID_WaveformStorage, 	"WV", 4096 },
+    { UID_ECGWaveformStorage, 	"ECG", 4096 },
     { UID_AudioWaveformStorage, "AU", 4096 }
 
 };
@@ -576,7 +575,12 @@ DU_cgetStatusString(Uint16 statusCode)
 /*
 ** CVS Log
 ** $Log: diutil.cc,v $
-** Revision 1.9  1998-02-06 09:09:15  hewett
+** Revision 1.10  1998-02-25 14:30:01  hewett
+** Updated UID information to reflect changes in
+** Supplement 24 (Stored Print Related SOP Classes).  Some UIDs have
+** changed between the Letter Ballot version and the Final Text version.
+**
+** Revision 1.9  1998/02/06 09:09:15  hewett
 ** Updated support for Supplements 15 (Visible Light),
 ** 16 (Postscript Print Management), 17 (Modality Performed Procedure Step),
 ** 22 (Presentation Look Up Table (LUT)), 23 (Structured Reporting),
