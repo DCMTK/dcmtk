@@ -49,6 +49,7 @@ clean:
 	(cd libsrc; $(MAKE) clean)
 	(cd apps; $(MAKE) clean)
 	(cd tests; $(MAKE) clean)
+	(cd htmldocs; $(MAKE) clean)
 	rm -f $(TRASH)
 
 distclean:
@@ -56,6 +57,7 @@ distclean:
 	(cd libsrc; $(MAKE) distclean)
 	(cd apps; $(MAKE) distclean)
 	(cd tests; $(MAKE) distclean)
+	(cd htmldocs; $(MAKE) distclean)
 	rm -f $(DISTTRASH)
 
 dependencies:
