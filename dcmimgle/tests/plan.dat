@@ -1,0 +1,408 @@
+#
+# SERIES 1: UNUSUAL IMAGE SIZES
+# ser  img      pI      rows    cols    bA      bS      hB     pRep    pConf   aRatio
+#
+1       1       MONO2   1       1       8       8       7       0       0       -
+1       2       MONO2   32      1024    8       8       7       0       0       -
+1       3       MONO2   1024    32      8       8       7       0       0       -
+1       4       MONO2   199     113     8       8       7       0       0       -
+1       5       MONO2   8192    8192    1       1       0       0       0       -
+1       6       MONO2   2048    4096    8       8       7       0       0       -
+1       7       MONO2   0       0       8       8       7       0       0       -
+1       8       MONO2   0       256     8       8       7       0       0       -
+1       9       MONO2   256     0       8       8       7       0       0       -
+
+#
+# SERIES 2: UNUSUAL BITS ALLOCATED VALUES
+# ser  img      pI      rows    cols    bA      bS      hB     pRep    pConf   aRatio
+#
+2       1       MONO2   512     512     1       1       0       0       0       -
+2       2       MONO2   512     512     2       2       1       0       0       -
+2       3       MONO2   512     512     3       3       2       0       0       -
+2       4       MONO2   512     512     4       4       3       0       0       -
+2       5       MONO2   512     512     5       5       4       0       0       -
+2       6       MONO2   512     512     6       6       5       0       0       -
+2       7       MONO2   512     512     7       7       6       0       0       -
+2       8       MONO2   512     512     8       8       7       0       0       -
+2       9       MONO2   512     512     9       9       8       0       0       -
+2       10      MONO2   512     512     10      10      9       0       0       -
+2       11      MONO2   512     512     11      11      10      0       0       -
+2       12      MONO2   512     512     12      12      11      0       0       -
+2       13      MONO2   512     512     13      13      12      0       0       -
+2       14      MONO2   512     512     14      14      13      0       0       -
+2       15      MONO2   512     512     15      15      14      0       0       -
+2       16      MONO2   512     512     17      17      16      0       0       -
+2       17      MONO2   512     512     24      24      23      0       0       -
+2       18      MONO2   512     512     31      31      30      0       0       -
+2       19      MONO2   512     512     64      64      63      0       0       -
+2       20      MONO2   512     512     73      73      72      0       0       -
+2       21      MONO2   512     512     113     113     112     0       0       -
+2       22      MONO2   512     512     128     128     127     0       0       -
+2       23      MONO2   512     512     199     199     198     0       0       -
+2       24      MONO2   512     512     251     251     250     0       0       -
+2       25      MONO2   512     512     256     256     255     0       0       -
+2       26      MONO2   32      32      65535   65535   65534   0       0       -
+2       27      MONO2   512     512     0       0       0       0       0       -
+2       28      MONO2   512     512     32      32      31      0       0       -
+2       29      MONO2   512     512     48      32      39      0       0       -
+2       30      MONO2   512     512     64      32      63      0       0       -
+
+#
+# SERIES 3: UNUSUAL BITS STORED / HIGH BIT VALUES
+# ser  img      pI      rows    cols    bA      bS      hB     pRep    pConf   aRatio
+#
+3       1       MONO2   512     512     16      1       9       0       0       -
+3       2       MONO2   512     512     16      2       3       0       0       -
+3       3       MONO2   512     512     16      3       5       0       0       -
+3       4       MONO2   512     512     16      4       4       0       0       -
+3       5       MONO2   512     512     16      5       13      0       0       -
+3       6       MONO2   512     512     16      6       6       0       0       -
+3       7       MONO2   512     512     16      7       10      0       0       -
+3       8       MONO2   512     512     16      8       14      0       0       -
+3       9       MONO2   512     512     16      9       12      0       0       -
+3       10      MONO2   512     512     16      10      14      0       0       -
+3       11      MONO2   512     512     16      11      15      0       0       -
+3       12      MONO2   512     512     16      12      12      0       0       -
+3       13      MONO2   512     512     16      13      14      0       0       -
+3       14      MONO2   512     512     16      14      14      0       0       -
+3       15      MONO2   512     512     16      15      15      0       0       -
+3       16      MONO2   512     512     15      7       11      0       0       -
+3       17      MONO2   512     512     17      11      15      0       0       -
+3       18      MONO2   512     512     16      0       0       0       0       -
+
+#
+# SERIES 4: SIGN EXTENDED PIXEL REPRESENTATION SAMPLES
+# ser  img      pI      rows    cols    bA      bS      hB     pRep    pConf   aRatio
+#
+4       1       MONO2   512     512     16      1       12      1       0       -
+4       2       MONO2   512     512     16      5       12      1       0       -
+4       3       MONO2   512     512     16      8       13      1       0       -
+4       4       MONO2   512     512     16      13      15      1       0       -
+4       5       MONO2   512     512     16      16      15      1       0       -
+4       6       MONO2   512     512     32      32      31      1       0       -
+4       7       MONO2   512     512     40      33      38      1       0       -
+4       8       MONO2   512     512     16      0       0       1       0       -
+
+#
+# SERIES 5: UNUSUAL PIXEL ASPECT RATIO
+# ser  img      pI      rows    cols    bA      bS      hB     pRep    pConf   aRatio
+#
+5       1       MONO2   128     512     16      16      15      0       0       4\1
+5       2       MONO2   512     128     16      16      15      0       0       1\4
+5       3       MONO2   512     512     16      16      15      0       0       1\0
+5       4       MONO2   512     512     16      16      15      0       0       0\1
+5       5       MONO2   512     512     16      16      15      0       0       0\0
+
+#
+# SERIES 6: PHOTOMETRIC INTERPRETATION AND PLANAR CONFIGURATION
+# ser  img      pI      rows    cols    bA      bS      hB     pRep    pConf   aRatio
+#
+6       1       HSV     512     512     8       8       7       0       0       -
+6       2       HSV     512     512     8       8       7       1       0       -
+6       3       HSV     512     512     16      13      12      0       0       -
+6       4       HSV     512     512     16      13      12      1       0       -
+6       5       HSV     512     512     13      13      12      0       0       -
+6       6       HSV     512     512     13      13      12      1       0       -
+6       7       HSV     512     512     8       8       7       0       1       -
+6       8       HSV     512     512     8       8       7       1       1       -
+6       9       HSV     512     512     16      13      12      0       1       -
+6       10      HSV     512     512     16      13      12      1       1       -
+6       11      HSV     512     512     13      13      12      0       1       -
+6       12      HSV     512     512     13      13      12      1       1       -
+6       13      RGB     512     512     8       8       7       0       0       -
+6       14      RGB     512     512     8       8       7       1       0       -
+6       15      RGB     512     512     16      13      12      0       0       -
+6       16      RGB     512     512     16      13      12      1       0       -
+6       17      RGB     512     512     13      13      12      0       0       -
+6       18      RGB     512     512     13      13      12      1       0       -
+6       19      RGB     512     512     8       8       7       0       1       -
+6       20      RGB     512     512     8       8       7       1       1       -
+6       21      RGB     512     512     16      13      12      0       1       -
+6       22      RGB     512     512     16      13      12      1       1       -
+6       23      RGB     512     512     13      13      12      0       1       -
+6       24      RGB     512     512     13      13      12      1       1       -
+6       25      ARGB    512     512     8       8       7       0       0       -
+6       26      ARGB    512     512     8       8       7       1       0       -
+6       27      ARGB    512     512     16      13      12      0       0       -
+6       28      ARGB    512     512     16      13      12      1       0       -
+6       29      ARGB    512     512     13      13      12      0       0       -
+6       30      ARGB    512     512     13      13      12      1       0       -
+6       31      ARGB    512     512     8       8       7       0       1       -
+6       32      ARGB    512     512     8       8       7       1       1       -
+6       33      ARGB    512     512     16      13      12      0       1       -
+6       34      ARGB    512     512     16      13      12      1       1       -
+6       35      ARGB    512     512     13      13      12      0       1       -
+6       36      ARGB    512     512     13      13      12      1       1       -
+6       37      CMYK    512     512     8       8       7       0       0       -
+6       38      CMYK    512     512     8       8       7       1       0       -
+6       39      CMYK    512     512     16      13      12      0       0       -
+6       40      CMYK    512     512     16      13      12      1       0       -
+6       41      CMYK    512     512     13      13      12      0       0       -
+6       42      CMYK    512     512     13      13      12      1       0       -
+6       43      CMYK    512     512     8       8       7       0       1       -
+6       44      CMYK    512     512     8       8       7       1       1       -
+6       45      CMYK    512     512     16      13      12      0       1       -
+6       46      CMYK    512     512     16      13      12      1       1       -
+6       47      CMYK    512     512     13      13      12      0       1       -
+6       48      CMYK    512     512     13      13      12      1       1       -
+6       49      PALETTE 512     512     8       8       7       0       0       -
+6       50      PALETTE 512     512     8       8       7       1       0       -
+6       51      PALETTE 512     512     16      13      12      0       0       -
+6       52      PALETTE 512     512     16      13      12      1       0       -
+6       53      PALETTE 512     512     13      13      12      0       0       -
+6       54      PALETTE 512     512     13      13      12      1       0       -
+6       55      MONO2   512     512     8       8       7       0       0       -
+6       56      MONO2   512     512     8       8       7       1       0       -
+6       57      MONO2   512     512     16      13      12      0       0       -
+6       58      MONO2   512     512     16      13      12      1       0       -
+6       59      MONO2   512     512     13      13      12      0       0       -
+6       60      MONO2   512     512     13      13      12      1       0       -
+6       61      MONO1   512     512     8       8       7       0       0       -
+6       62      MONO1   512     512     8       8       7       1       0       -
+6       63      MONO1   512     512     16      13      12      0       0       -
+6       64      MONO1   512     512     16      13      12      1       0       -
+6       65      MONO1   512     512     13      13      12      0       0       -
+6       66      MONO1   512     512     13      13      12      1       0       -
+6       67      YBR     512     512     8       8       7       0       0       -
+6       68      YBR     512     512     8       8       7       1       0       -
+6       69      YBR     512     512     16      13      12      0       0       -
+6       70      YBR     512     512     16      13      12      1       0       -
+6       71      YBR     512     512     13      13      12      0       0       -
+6       72      YBR     512     512     13      13      12      1       0       -
+6       73      YBR     512     512     8       8       7       0       1       -
+6       74      YBR     512     512     8       8       7       1       1       -
+6       75      YBR     512     512     16      13      12      0       1       -
+6       76      YBR     512     512     16      13      12      1       1       -
+6       77      YBR     512     512     13      13      12      0       1       -
+6       78      YBR     512     512     13      13      12      1       1       -
+# YBR422 and PARTIAL422 require planarConfiguration=0
+6       79      YBR422  512     512     8       8       7       0       0       -
+6       80      YBR422  512     512     8       8       7       1       0       -
+6       81      YBR422  512     512     16      13      12      0       0       -
+6       82      YBR422  512     512     16      13      12      1       0       -
+6       83      YBR422  512     512     13      13      12      0       0       -
+6       84      YBR422  512     512     13      13      12      1       0       -
+6       85   PARTIAL422 512     512     8       8       7       0       0       -
+6       86   PARTIAL422 512     512     8       8       7       1       0       -
+6       87   PARTIAL422 512     512     16      13      12      0       0       -
+6       88   PARTIAL422 512     512     16      13      12      1       0       -
+6       89   PARTIAL422 512     512     13      13      12      0       0       -
+6       90   PARTIAL422 512     512     13      13      12      1       0       -
+6       91      YBR     2048    1280    8       8       7       0       0       -
+6       92      YBR422  2048    2048    8       8       7       0       0       -
+6       93   PARTIAL422 2048    2048    8       8       7       0       0       -
+
+#
+# SERIES 7: VOI LUT - these images are modified later with "dcmmklut"
+#
+# ser  img      pI      rows    cols    bA      bS      hB     pRep    pConf   aRatio
+#
+# unsigned pixel data, VOI LUTs with word alignment, 8-16 bit (9-15 illegal for images!)
+7       1       MONO2   512     512     8       8       7       0       0       -
+7       2       MONO2   512     512     8       8       7       0       0       -
+7       3       MONO2   512     512     8       8       7       0       0       -
+7       4       MONO2   512     512     8       8       7       0       0       -
+7       5       MONO2   512     512     8       8       7       0       0       -
+7       6       MONO2   512     512     8       8       7       0       0       -
+7       7       MONO2   512     512     8       8       7       0       0       -
+7       8       MONO2   512     512     8       8       7       0       0       -
+7       9       MONO2   512     512     8       8       7       0       0       -
+# signed pixel data, VOI LUTs with word alignment, 8-16 bit (9-15 illegal for images!)
+7       10      MONO2   512     512     8       8       7       1       0       -
+7       11      MONO2   512     512     8       8       7       1       0       -
+7       12      MONO2   512     512     8       8       7       1       0       -
+7       13      MONO2   512     512     8       8       7       1       0       -
+7       14      MONO2   512     512     8       8       7       1       0       -
+7       15      MONO2   512     512     8       8       7       1       0       -
+7       16      MONO2   512     512     8       8       7       1       0       -
+7       17      MONO2   512     512     8       8       7       1       0       -
+7       18      MONO2   512     512     8       8       7       1       0       -
+# unsigned pixel data, VOI LUTs with different numbers of entries (0, 1, 2, 3, 4, 16, 64, 128)
+7       19      MONO2   512     512     8       8       7       0       0       -
+7       20      MONO2   512     512     8       8       7       0       0       -
+7       21      MONO2   512     512     8       8       7       0       0       -
+7       22      MONO2   512     512     8       8       7       0       0       -
+7       23      MONO2   512     512     8       8       7       0       0       -
+7       24      MONO2   512     512     8       8       7       0       0       -
+7       25      MONO2   512     512     8       8       7       0       0       -
+7       26      MONO2   512     512     8       8       7       0       0       -
+7       27      MONO2   512     512     8       8       7       0       0       -
+# unsigned pixel data, VOI LUTs with entries exceeding the image area (257, 512, 1024)
+7       28      MONO2   512     512     8       8       7       0       0       -
+7       29      MONO2   512     512     8       8       7       0       0       -
+7       30      MONO2   512     512     8       8       7       0       0       -
+7       31      MONO2   512     512     8       8       7       0       0       -
+7       32      MONO2   512     512     8       8       7       0       0       -
+# unsigned pixel data, large VOI LUTs (matching bits allocated)
+7       33      MONO2   512     512     16      16      15      0       0       -
+7       34      MONO2   512     512     16      15      14      0       0       -
+7       35      MONO2   512     512     16      14      13      0       0       -
+7       36      MONO2   512     512     16      13      12      0       0       -
+7       37      MONO2   512     512     16      12      11      0       0       -
+7       38      MONO2   512     512     16      10      9       0       0       -
+# VOI LUTs with byte alignment
+7       39      MONO2   512     512     8       8       7       0       0       -
+7       40      MONO2   512     512     8       8       7       1       0       -
+7       41      MONO2   512     512     16      12      11      0       0       -
+7       42      MONO2   512     512     16      12      11      1       0       -
+# signed pixel data, VOI LUTs with entries underflowing the image area
+7       43      MONO2   512     512     8       8       7       1       0       -
+7       44      MONO2   512     512     8       8       7       1       0       -
+7       45      MONO2   512     512     8       8       7       1       0       -
+7       46      MONO2   512     512     8       8       7       1       0       -
+7       47      MONO2   512     512     8       8       7       1       0       -
+
+#
+# SERIES 8: Modality LUT - these images are modified later with "dcmmklut"
+#
+# ser  img      pI      rows    cols    bA      bS      hB     pRep    pConf   aRatio
+#
+# unsigned pixel data, Modality LUTs with word alignment, 8-16 bit 
+8       1       MONO2   512     512     8       8       7       0       0       -
+8       2       MONO2   512     512     8       8       7       0       0       -
+# signed pixel data, Modality LUTs with word alignment, 8-16 bit 
+8       3       MONO2   512     512     8       8       7       1       0       -
+8       4       MONO2   512     512     8       8       7       1       0       -
+# unsigned pixel data, Modality LUTs with different numbers of entries (0, 1, 2, 3, 4, 16, 64, 128)
+8       5       MONO2   512     512     8       8       7       0       0       -
+8       6       MONO2   512     512     8       8       7       0       0       -
+8       7       MONO2   512     512     8       8       7       0       0       -
+8       8       MONO2   512     512     8       8       7       0       0       -
+8       9       MONO2   512     512     8       8       7       0       0       -
+8       10      MONO2   512     512     8       8       7       0       0       -
+8       11      MONO2   512     512     8       8       7       0       0       -
+8       12      MONO2   512     512     8       8       7       0       0       -
+8       13      MONO2   512     512     8       8       7       0       0       -
+# unsigned pixel data, Modality LUTs with entries exceeding the image area (257, 512, 1024)
+8       14      MONO2   512     512     8       8       7       0       0       -
+8       15      MONO2   512     512     8       8       7       0       0       -
+8       16      MONO2   512     512     8       8       7       0       0       -
+8       17      MONO2   512     512     8       8       7       0       0       -
+8       18      MONO2   512     512     8       8       7       0       0       -
+# unsigned pixel data, large Modality LUTs (matching bits allocated)
+8       19      MONO2   512     512     16      16      15      0       0       -
+8       20      MONO2   512     512     16      15      14      0       0       -
+8       21      MONO2   512     512     16      14      13      0       0       -
+8       22      MONO2   512     512     16      13      12      0       0       -
+8       23      MONO2   512     512     16      12      11      0       0       -
+8       24      MONO2   512     512     16      10      9       0       0       -
+# Modality LUTs with byte alignment
+8       25      MONO2   512     512     8       8       7       0       0       -
+8       26      MONO2   512     512     8       8       7       1       0       -
+8       27      MONO2   512     512     16      12      11      0       0       -
+8       28      MONO2   512     512     16      12      11      1       0       -
+# signed pixel data, Modality LUTs with entries underflowing the image area
+8       29      MONO2   512     512     8       8       7       1       0       -
+8       30      MONO2   512     512     8       8       7       1       0       -
+8       31      MONO2   512     512     8       8       7       1       0       -
+8       32      MONO2   512     512     8       8       7       1       0       -
+8       33      MONO2   512     512     8       8       7       1       0       -
+
+-----------------------------------------------------------------------------------------
+
+#
+# SERIES 7: VOI LUT - these images are modified later with "dcmmklut"
+#
+# ser   img     wcenter wwidth  bits    gamma   options
+#
+# unsigned pixel data, VOI LUTs with word alignment, 8-16 bit (9-15 illegal for images!)
+7       1       128     256     8       2.5     --replace
+7       2       128     256     9       2.5     --replace
+7       3       128     256     10      2.5     --replace
+7       4       128     256     11      2.5     --replace
+7       5       128     256     12      2.5     --replace
+7       6       128     256     13      2.5     --replace
+7       7       128     256     14      2.5     --replace
+7       8       128     256     15      2.5     --replace
+7       9       128     256     16      2.5     --replace
+# signed pixel data, VOI LUTs with word alignment, 8-16 bit (9-15 illegal for images!)
+7       10      0       256     8       2.5     --replace
+7       11      0       256     9       2.5     --replace
+7       12      0       256     10      2.5     --replace
+7       13      0       256     11      2.5     --replace
+7       14      0       256     12      2.5     --replace
+7       15      0       256     13      2.5     --replace
+7       16      0       256     14      2.5     --replace
+7       17      0       256     15      2.5     --replace
+7       18      0       256     16      2.5     --replace
+# unsigned pixel data, VOI LUTs with different numbers of entries (0, 1, 2, 3, 4, 16, 64, 128)
+7       19      128     0       16      2.5     --replace
+7       20      128     1       16      2.5     --replace
+7       21      128     2       16      2.5     --replace
+7       22      128     3       16      2.5     --replace
+7       23      128     4       16      2.5     --replace
+7       24      128     16      16      2.5     --replace
+7       25      128     64      16      2.5     --replace
+7       26      128     128     16      2.5     --replace
+7       27      128     192     16      2.5     --replace
+# unsigned pixel data, VOI LUTs with entries exceeding the image area (257, 512, 1024)
+7       28      192     256     16      2.5     --replace
+7       29      255     256     16      2.5     --replace
+7       30      128     257     16      2.5     --replace
+7       31      256     512     16      2.5     --replace
+7       32      512     1024    16      2.5     --replace
+# unsigned pixel data, large VOI LUTs (matching bits allocated)
+7       33      32768   65535   16      2.5     --replace
+7       34      16384   32768   16      2.5     --replace
+7       35      8192    16384   16      2.5     --replace
+7       36      4096    8192    16      2.5     --replace
+7       37      2048    4096    16      2.5     --replace
+7       38      512     1024    16      2.5     --replace
+# VOI LUTs with byte alignment
+7       39      128     256     8       2.5     --byte-align --replace
+7       40      0       256     8       2.5     --byte-align --replace
+7       41      2048    4096    8       2.5     --byte-align --replace
+7       42      0       4096    8       2.5     --byte-align --replace
+# signed pixel data, VOI LUTs with entries underflowing the image area
+7       43      -64     256     16      2.5     --replace
+7       44      -32640  256     16      2.5     --replace
+7       45      -1      257     16      2.5     --replace
+7       46      0       512     16      2.5     --replace
+7       47      0       1024    16      2.5     --replace
+
+#
+#
+# SERIES 8: Modality LUT - these images are modified later with "dcmmklut"
+#
+# ser   img     wcenter wwidth  bits    gamma   options
+#
+# unsigned pixel data, Modality LUTs with word alignment, 8-16 bit 
+8       1       128     256     8       0.4     --modality
+8       2       128     256     16      0.4     --modality
+# signed pixel data, Modality LUTs with word alignment, 8-16 bit 
+8       3       0       256     8       0.4     --modality
+8       4       0       256     16      0.4     --modality
+# unsigned pixel data, Modality LUTs with different numbers of entries (0, 1, 2, 3, 4, 16, 64, 128)
+8       5       128     0       16      0.4     --modality
+8       6       128     1       16      0.4     --modality
+8       7       128     2       16      0.4     --modality
+8       8       128     3       16      0.4     --modality
+8       9       128     4       16      0.4     --modality
+8       10      128     16      16      0.4     --modality
+8       11      128     64      16      0.4     --modality
+8       12      128     128     16      0.4     --modality
+8       13      128     192     16      0.4     --modality
+# unsigned pixel data, Modality LUTs with entries exceeding the image area (257, 512, 1024)
+8       14      192     256     16      0.4     --modality
+8       15      255     256     16      0.4     --modality
+8       16      128     257     16      0.4     --modality
+8       17      256     512     16      0.4     --modality
+8       18      512     1024    16      0.4     --modality
+# unsigned pixel data, large Modality LUTs (matching bits allocated)
+8       19      32768   65535   16      0.4     --modality
+8       20      16384   32768   16      0.4     --modality
+8       21      8192    16384   16      0.4     --modality
+8       22      4096    8192    16      0.4     --modality
+8       23      2048    4096    16      0.4     --modality
+8       24      512     1024    16      0.4     --modality
+# Modality LUTs with byte alignment
+8       25      128     256     8       0.4     --byte-align --modality
+8       26      0       256     8       0.4     --byte-align --modality
+8       27      2048    4096    8       0.4     --byte-align --modality
+8       28      0       4096    8       0.4     --byte-align --modality
+# signed pixel data, Modality LUTs with entries underflowing the image area
+8       29      -64     256     16      0.4     --modality
+8       30      -32640  256     16      0.4     --modality
+8       31      -1      257     16      0.4     --modality
+8       32      0       512     16      0.4     --modality
+8       33      0       1024    16      0.4     --modality
