@@ -22,9 +22,9 @@
  *  Purpose: Class for modifying DICOM-Files from comandline
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2003-11-11 10:55:51 $
+ *  Update Date:      $Date: 2003-12-10 16:19:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/mdfconen.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,7 +52,8 @@ public:
     /** Constructor
      *  @param argc Number of commandline-arguments
      *  @param argv Array holding the Commandline-arguments
-     *  @param appl_name Name of calling applic., that instantiates this class
+     *  @param appl_name Name of calling application, that instantiates
+     *                   this class
      */
     MdfConsoleEngine(int argc, char *argv[],
                      const char* appl_name);
@@ -63,116 +64,76 @@ public:
 
     /** This function looks at commandline options and decides what to do.
      *  It evaluates option-values from commandline and prepares them for
-     *  starting the corresponding private functions that
-     *  @return An Integer value denoting how many errors occured while
-     *          providing the service
+     *  starting the corresponding private functions.
+     *  @return Returns 0 if successful, another value if errors occurreds
      */
     int startProvidingService();
 
 protected:
-
     ///helper class for console-applications
     OFConsoleApplication *app;
     ///helper class for command-line-parsing
     OFCommandLine *cmd;
-    ///name of calling application
-    OFString *app_name;
     ///ds_man holds DatasetManager, that is used for modify operations
-    MdfDataSetManager *ds_man;
-    ///set, if -m option was chosen from command-line
-    OFBool modify_tag_option;
-    ///set, if -mi option was chosen from command-line
-    OFBool modify_item_tag_option;
-    ///set, if -ma option was chosen from command-line
-    OFBool modify_all_tags_option;
-    ///set, if -ii option was chosen from command-line
-    OFBool insert_item_tag_option;
-    ///set, if -b option was chosen from command-line
-    OFBool batch_mode_option;
-    ///set, if -a option was chosen from command-line
-    OFBool ask_option;
-    ///set, if -i option was chosen from command-line
-    OFBool insert_tag_option;
-    ///set, if -e option was chosen from command-line
-    OFBool erase_tag_option;
-    ///set, if -ei option was chosen from command-line
-    OFBool erase_item_tag_option;
-    ///set, if -ea option was chosen from command-line
-    OFBool erase_all_tags_option;
+    MdfDatasetManager *ds_man;
     ///verbose mode
     OFBool verbose_option;
     ///debug mode
     OFBool debug_option;
-    ///most options need a value to work
-    const char *option_value;
+    ///ignore errors option
+    OFBool ignore_errors_option;
+    ///struct reflecting a modify operation (called Job in this context)
+    struct Job {
+            OFString option;
+            OFString path;
+            OFString value;
+    };
+    ///list of jobs to be executed
+    OFList<Job> *jobs;
     ///list of files to be modified
     OFList<const char*> *files;
-    ///number of "real" options like -m, -i exclusive -v and -d
-    int option_count;
 
-    /** This function reads the next line (until '\\n' or '\r') from the open
-     *   filestream fp and returns this line (excluding '\n' and '\r') in str.
-     *@param  fp Filepointer (must have been previously opened for reading with fopen())
-     *@param  str Line which was read, excluding '\\n' and '\r'.
-     *@return case a string could be read and is returned, this function
-     *        will always return the number of characters in that string.
-     *        In case no string could be read (i.e. if an error occurred or
-     *        EOF was encountered), -1 is returned.
+    /** This function splits a modify-option (inclusive value) as
+     *  found on commandline into to parts (path and value)
+     *  e.g. "(0010,0010)=value" into path "(0010,0010)" and "value"
+     *  @param string to be splitted
+     *  @param path returns part containing the path
+     *  @param value returns part containing the value(if theres one)
      */
-    int readLine( FILE *fp, OFString &str );
+    void splitPathAndValue(const OFString &whole,
+                                 OFString &path,
+                                 OFString &value);
 
-    /** This function is responsible for delegating all actions on simple
-     *  tags, that does not contain a "path" to be searched for.
-     *  It uses the other member-variables to decide which action to perform
-     *  @param search_key tag to be worked on
-     *  @param tag_value new value of tag
-     *  @return An Integer value denoting how many errors occured while
-     *           providing the service
+    /** Executes given modify-job
+     *  @param job job to be executed
+     *  @return returns 0 if no error occured, else the number of errors
      */
-    int startTagAction(DcmTagKey search_key, char *tag_value);
+    int executeJob(const Job &job);
 
-    /** This function is responsible for delegating all actions on simple
-     *  tags, that does not contain a "path" to be searched for.
-     *  It uses the other member-variables to decide which action to perform
-     *  @param tag_path path to tag, that should be worked on
-     *  @param tag_value new value of tag
-     *  @return An Integer value denoting how many errors occured while
-     *           providing the service
+    /** Parses commandline options into corresponding file- and job-lists and
+     *  enables debug/verbose mode. The joblist is built in order of modify
+     *  options on commandline
      */
-    int startItemTagAction(char *tag_path, char *tag_value);
+    void parseCommandLine();
 
-    /** This function organizes data for starting a tag-modification and then
-     *  starts specific modification.
-     *  @return An Integer value denoting how many errors occured while
-     *  modifying
+    /** Backup and load file into internal MdfDatasetManager
+     *  @param filename name of file to load
+     *  @return OFCondition, whether loading/backuping was successful including
+     *          error description
      */
-    int delegateTagAction();
+    OFCondition loadFile(const char* filename);
 
-    /** This function organizes data for starting a item-tag-modification and
-     *  then starts specific modification.
-     *  @return An Integer value denoting how many errors occured while
-     *  modifying
-     */
-    int delegateItemTagAction();
-
-    /** This function organizes reads the lines from the batchfile and performs
-     *  specific modify-operations depending on the options found there
-     *  @return An Integer value denoting how many errors occured while
-     *  modifying
-     */
-    int delegateBatchMode();
-
-    /**backup given file from file to file.bak
-     *@param file_name filename of file, that should be backuped
-     *@return OFCondition OFCondition, whether backup was successful
+    /** Backup given file from file to file.bak
+     *  @param file_name filename of file, that should be backuped
+     *  @return OFCondition, whether backup was successful or not
      */
     OFCondition backupFile(const char *file_name);
 
-    /**restore given file from file.bak to original (without .bak)
-     *@param file_name filename of file, that should be restored
-     *@return OFCondition OFCondition, whether restoring was successful
+    /** Restore given file from file.bak to original (without .bak)
+     *  @param restore "filename".bak to original without .bak
+     *  @return OFCondition, whether restoring was successful
      */
-    OFCondition restoreFile(const char *file_name);
+    OFCondition restoreFile(const char *filename);
 
 private:
 
@@ -186,13 +147,20 @@ private:
 
 };
 
-
 #endif //MDFCONEN_H
 
 /*
 ** CVS/RCS Log:
 ** $Log: mdfconen.h,v $
-** Revision 1.6  2003-11-11 10:55:51  onken
+** Revision 1.7  2003-12-10 16:19:20  onken
+** Changed API of MdfDatasetManager, so that its transparent for user, whether
+** he wants to modify itemtags or tags at 1. level.
+**
+** Complete rewrite of MdfConsoleEngine. It doesn't support a batchfile any more,
+** but now a user can give different modify-options at the same time on
+** commandline. Other purifications and simplifications were made.
+**
+** Revision 1.6  2003/11/11 10:55:51  onken
 ** - debug-mechanism doesn't use debug(..) any more
 ** - comments purified
 ** - headers adjustet to debug-modifications

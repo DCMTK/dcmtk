@@ -22,9 +22,9 @@
  *  Purpose: Class for modifying DICOM-Files and Datasets
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2003-11-11 10:55:51 $
+ *  Update Date:      $Date: 2003-12-10 16:19:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/mdfdsman.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,133 +46,97 @@
  *  Dicom-files. Therefore it allows the process of load->modify->save to
  *  provide this service.
  */
-class MdfDataSetManager
+class MdfDatasetManager
 {
 public:
-    /** Constructor, just initializes member-variables
-     *@param debug enables/disables debug-messages (off per default)
+    /** Constructor, initializes member-variables
+     *  @param debug enables/disables debug-messages (off per default)
      */
-    MdfDataSetManager(OFBool debug);
+    MdfDatasetManager(const OFBool &debug=OFFalse);
 
     /** Destructor
      */
-    ~MdfDataSetManager();
+    ~MdfDatasetManager();
 
-    /** Loads a file into Datasetmanager (this class)
-     *@param file_name file to be loaded
-     *@return returns EC_normal if everything is ok, else an error
+    /** Loads a file into Datasetmanager
+     *  @param file_name file to be loaded
+     *  @return returns EC_normal if everything is ok, else an error
      */
     OFCondition loadFile(const char *file_name);
 
-    /** Modifies a tag to a specific value, works only at 1. level!
-     * It does not insert non-existing tag
-     *@param tag_key holds tag-key to be modified
-     *@param value denotes new value of tag
-     *@return returns EC_normal if everything is ok, else an error
+    /** Modifies/Inserts a tag with a specific value
+     *  @param tag_path holds complete path to tag
+     *  @param value denotes new value of tag
+     *  @param only_modify if true, only existing tags are processed. If false,
+     *                     not existing tag is inserted
+     *  @return returns EC_normal if everything is ok, else an error
      */
-    OFCondition modifyTag(DcmTagKey tag_key,
-                          const char *value);
+    OFCondition modifyOrInsertTag(OFString tag_path,
+                                  const OFString &value,
+                                  const OFBool &only_modify);
 
-    /** Modifies a tag to a specific value, works only at 1. level!
-     * Inserts new tag, if tag does not exist so far
-     *@param tag_key holds tag-key to be modified
-     *@param value denotes new value of tag
-     *@param only_modify if true, only existing tags are processed.
-     * if false, a tag with specified value is inserted
-     *@return returns EC_normal if everything is ok, else an error
+    /** Modifies all matching tags in Dataset to a new value
+     *  @param tag_path denotes, which tag to modify
+     *  @param value denotes new value of tag
+     *  @param count returns holds the number of tags, that were affected
+     *  @return returns EC_normal if everything is ok, else an error
      */
-    OFCondition modifyOrInsertTag(DcmTagKey tag_key,
-                                  const char *value,
-                                  OFBool only_modify);
-
-    /** Deletes tag in dataset
-     *@param tag_key holds tag-key to be modified
-     *@param all_tags If true, tag is deletet at all levels of dataset,
-     * else only 1. level is accessed
-     *@return returns EC_normal if everything is ok, else an error
-     */
-    OFCondition deleteTag(DcmTagKey tag_key,
-                          OFBool all_tags);
-
-    /** Deletes tag stored in a sequence/item
-     *@param tag_path path to item
-     *@return returns EC_normal if everything is ok, else an error
-     */
-    OFCondition deleteItemTag(char *tag_path);
-
-    /** Modifies a tag in an item to a specific value
-     *@param tag_path holds path to item-tag. The path should look like this:
-     * gggg,eeee[0].gggg,eeee[3].gggg,eeee
-     *@param value denotes new value of tag
-     *@param only_modify if true, only existing tags are modified. If
-     * its false, a non existing tag is inserted with specified value
-
-     *@return returns EC_normal if everything is ok, else an error
-     */
-    OFCondition modifyOrInsertItemTag(char *tag_path,
-                                      const char *value,
-                                      OFBool only_modify);
-
-    /** Modifies all matching tags in dataset to a new value
-     *@param tag_key denotes, which tag to modify
-     *@param value denotes new value of tag
-     *@param count holds the number of tags, that were affected from this
-     * function
-     *@return returns EC_normal if everything is ok, else an error
-     */
-    OFCondition modifyAllTags(DcmTagKey tag_key,
-                              const char *value,
+    OFCondition modifyAllTags(OFString tag_path,
+                              const OFString &value,
                               int &count);
 
-    /** Saves current dataset back to a file
-     *@param file file is saved to this filename
-     *@return returns EC_normal if everything is ok, else an error
+    /** Deletes tag in Dataset
+     *  @param tag_path holds complete path to tag
+     *  @param all_tags If true, tag is deleted at all levels of Dataset,
+     *                  else only 1. level is accessed
+     *  @return returns EC_normal if everything is ok, else an error
+     */
+    OFCondition deleteTag(OFString tag_path,
+                          const OFBool &all_tags);
+
+    /** Saves current Dataset back to a file
+     *  @param file filename to save to
+     *  @return returns EC_normal if everything is ok, else an error
      */
     OFCondition saveFile(const char *file);
 
-    /** get next Object from internal dataset. if intoSub true, scan
-     * complete hierarchy, false scan only elements direct in this
-     * item (not deeper).
-     *@param result_stack the result of nextObject is stored here
-     *@param intoSub dive into sub
-     *@return returns EC_normal if everything is ok, else an error
-     */
-    OFCondition getElements(DcmStack &result_stack, OFBool intoSub=OFTrue);
-
-    /** Returns the dataset, that this MdfDataSetManager handles.
-     * You should use the returned dataset readonly to avoid
-     * sideeffects with other class-methods, that modify this dataset.
-     *@return returns the dataset, this MdfDataSetManager manages and NULL, if
-     * no dataset is loaded
+    /** Returns the Dataset, that this MdfDatasetManager handles.
+     *  You should use the returned Dataset readonly to avoid
+     *  sideeffects with other class-methods, that modify this Dataset.
+     *  @return returns the Dataset, this MdfDatasetManager manages and NULL, if
+     *          no Dataset is loaded
      */
     DcmDataset* getDataset();
 
+    /** prints error message to console using global locking mechanism.
+     *  The function handles two strings for more flexibility. The second is
+     *  printed directly after the first. The whole message is terminated by
+     *  newline.
+     *  @param s1 first message string
+     *  @param s2 second message string (default = "")
+     *  @param s2 third message string (default = "")
+     */
+    static void debugMsg(const OFString &s1,
+                         const OFString &s2="",
+                         const OFString &s3="");
+
 protected:
 
-    /** modifies element a specific value
-     *@param elem element, that should be changed
-     *@param value this is the value, the element should be changed to
-     *@return returns an error-code as OFCondition, if an error occurs
+    /** modifies element to a specific value
+     *  @param elem element, that should be changed
+     *  @param value the value, the element should be changed to
+     *  @return OFCondition, which returns an error-code if an error occurs
      */
-    OFCondition startModify(DcmElement *elem, const char *value);
+    OFCondition startModify(DcmElement *elem, const OFString &value);
 
     /** inserts tag into item with a specific value
-     *@param item - item, where tag is inserted
-     *@param search_key specifies tag to be inserted
-     *@param value value that should be inserted in item
-     *@return returns an error-code as OFCondition, if an error occurs
+     *  @param item - item, where tag is inserted
+     *  @param search_key specifies tag to be inserted
+     *  @param value value that should be inserted in item
+     *  @return returns an error-code as OFCondition, if an error occurs
      */
-    OFCondition startInsert(DcmItem *item, const DcmTagKey &search_key,
-                            const char *value);
-
-    /** walks along a tag path like gggg,eeee[0].gggg,eeee=gggg,eeee
-     *@param result_item pointer to item, thats the last in path
-     *@param tag_path complete path to tag, after returning,
-     *                  tag_path only consists of the last tag! This is the
-     *                  "destination tag"!
-     *@return returns OFCondition containing an error-code if error occurs
-     */
-    OFCondition getItemFromPath(DcmItem *&result_item, char *&tag_path);
+    OFCondition startInsert(DcmItem *item, DcmTagKey &search_key,
+                            const OFString &value);
 
     ///file to modify
     DcmFileFormat *dfile;
@@ -185,11 +149,11 @@ private:
 
     /** private undefined assignment operator
      */
-    MdfDataSetManager &operator=(const MdfDataSetManager &);
+    MdfDatasetManager &operator=(const MdfDatasetManager &);
 
     /** private undefined copy constructor
      */
-    MdfDataSetManager(const MdfDataSetManager &);
+    MdfDatasetManager(const MdfDatasetManager &);
 
 };
 
@@ -198,7 +162,15 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: mdfdsman.h,v $
-** Revision 1.6  2003-11-11 10:55:51  onken
+** Revision 1.7  2003-12-10 16:19:20  onken
+** Changed API of MdfDatasetManager, so that its transparent for user, whether
+** he wants to modify itemtags or tags at 1. level.
+**
+** Complete rewrite of MdfConsoleEngine. It doesn't support a batchfile any more,
+** but now a user can give different modify-options at the same time on
+** commandline. Other purifications and simplifications were made.
+**
+** Revision 1.6  2003/11/11 10:55:51  onken
 ** - debug-mechanism doesn't use debug(..) any more
 ** - comments purified
 ** - headers adjustet to debug-modifications
