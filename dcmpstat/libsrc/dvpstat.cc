@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-07-22 16:40:04 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 1999-07-28 07:57:26 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2259,7 +2259,8 @@ E_Condition DVPresentationState::setGraphicLayerRecommendedDisplayValueRGB(size_
 
 void DVPresentationState::removeGraphicLayerRecommendedDisplayValue(size_t idx, OFBool rgb, OFBool monochrome)
 {
-  return graphicLayerList.removeGraphicLayerRecommendedDisplayValue(idx, rgb, monochrome);
+  graphicLayerList.removeGraphicLayerRecommendedDisplayValue(idx, rgb, monochrome);
+  return;
 }
 
 E_Condition DVPresentationState::setGraphicLayerName(size_t idx, const char *name)  
@@ -3510,7 +3511,10 @@ DVPSSoftcopyVOI *DVPresentationState::getCurrentSoftcopyVOI()
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.24  1999-07-22 16:40:04  meichel
+ *  Revision 1.25  1999-07-28 07:57:26  meichel
+ *  Minor correction for VC++ 5.
+ *
+ *  Revision 1.24  1999/07/22 16:40:04  meichel
  *  Adapted dcmpstat data structures and API to supplement 33 letter ballot text.
  *
  *  Revision 1.23  1999/07/14 12:03:44  meichel
