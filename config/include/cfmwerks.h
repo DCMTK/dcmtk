@@ -13,7 +13,9 @@
 #ifdef __MWERKS__
 
 /* Compiling for Macintosh */
+#ifndef macintosh
 #define macintosh 1
+#endif
 
 /* This set of defines assume that the GUSI socket library is available */
 #define HAVE_GUSI_H 1	/* use the GUSI include file */
