@@ -49,9 +49,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-1993
 ** Intent:		This file contains functions for construction of
 **			DICOM Upper Layer (DUL) Protocol Data Units (PDUs).
-** Last Update:		$Author: meichel $, $Date: 2004-02-25 12:31:17 $
+** Last Update:		$Author: meichel $, $Date: 2004-06-16 12:51:34 $
 ** Source File:		$RCSfile: dulconst.cc,v $
-** Revision:		$Revision: 1.14 $
+** Revision:		$Revision: 1.15 $
 ** Status:		$State: Exp $
 */
 
@@ -923,7 +923,7 @@ constructMaxLength(unsigned long maxPDU, DUL_MAXLENGTH * max,
     max->type = DUL_TYPEMAXLENGTH;
     max->rsv1 = 0;
     max->length = 4;
-    if (compatMode) max->maxLength = DUL_DULCOMPAT | DUL_DIMSECOMPAT | compatMode;
+    if (compatMode & 0x8000) max->maxLength = DUL_DULCOMPAT | DUL_DIMSECOMPAT | compatMode;
     else max->maxLength = maxPDU;
     *rtnLen = 8;
 
@@ -1495,7 +1495,10 @@ streamExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *b, unsig
 /*
 ** CVS Log
 ** $Log: dulconst.cc,v $
-** Revision 1.14  2004-02-25 12:31:17  meichel
+** Revision 1.15  2004-06-16 12:51:34  meichel
+** Fixed minor bug in DUL backward compatibility code
+**
+** Revision 1.14  2004/02/25 12:31:17  meichel
 ** Added global option flag for compatibility with very old DCMTK releases in the
 **   DICOM upper layer and ACSE code. Default is automatic handling, which should
 **   work in most cases.
