@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-04-24 12:10:47 $
+** Update Date:		$Date: 1997-05-06 09:32:10 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdicdir.cc,v $
-** CVS/RCS Revision:	$Revision: 1.11 $
+** CVS/RCS Revision:	$Revision: 1.12 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1120,12 +1120,23 @@ E_Condition DcmDicomDir::write(const E_TransferSyntax oxfer,
 	     << endl;
     errorFlag = EC_Normal;
     E_TransferSyntax outxfer = DICOMDIR_DEFAULT_TRANSFERSYNTAX;
+#if defined(HAVE_TEMPNAM)
+    char *tmpFileName = tempnam("/tmp", "DICOMDIR");
+    char *newname = new char[strlen(tmpFileName)+1];
+    strcpy(newname, tmpFileName);
+    free(tmpFileName); /* tempnam allocates space with malloc */
+#elif define(HAVE_TMPNAM)
+    char *tmpFileName = tmpnam(NULL); /* returns pointer to static area */
+    char *newname = new char[strlen(tmpFileName)+1];
+    strcpy(newname, tmpFileName);
+#elif defined(HAVE_MKTEMP)
     char *newname = new char[ strlen( TEMPNAME_TEMPLATE ) + 1 ];
     strcpy( newname, TEMPNAME_TEMPLATE );
-#ifdef HAVE_MKTEMP
     mktemp( newname );
 #else
-    /* DANGER - just use the name as it is - DANGER */
+    /* DANGER - just use a non-unique name as it is - DANGER */
+    char *newname = new char[ strlen( TEMPNAME_TEMPLATE ) + 1 ];
+    strcpy( newname, TEMPNAME_TEMPLATE );
 #endif
     debug(( 1, "use tempory filename \"%s\"", newname ));
 
@@ -1141,6 +1152,11 @@ E_Condition DcmDicomDir::write(const E_TransferSyntax oxfer,
 
     this->getDirFileFormat().validateMetaInfo( outxfer );
     DcmFileStream outStream(newname, DCM_WriteMode);
+    if (outStream.Fail()) {
+	cerr << "ERROR: cannot create DICOMDIR temporary file: " 
+	     << newname << endl;
+    }
+
     metainfo.transferInit();
     metainfo.write(outStream, META_HEADER_DEFAULT_TRANSFERSYNTAX, enctype);
     metainfo.transferEnd();
@@ -1400,7 +1416,12 @@ Edebug(());
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
-** Revision 1.11  1997-04-24 12:10:47  hewett
+** Revision 1.12  1997-05-06 09:32:10  hewett
+** Temporary DICOMDIR files are now located in the tmp directory using
+** the tmpnam() function (if available).  Previously, temporary files
+** were being created in the current working directory.
+**
+** Revision 1.11  1997/04/24 12:10:47  hewett
 ** Fixed DICOMDIR generation bug affecting inclusion of Group Length
 ** attributes (file offsets were not being computed correctly).
 ** Fixed DICOMDIR generation bug affecting ordering of
