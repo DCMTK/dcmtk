@@ -119,6 +119,18 @@ OFCONDITION_STRICT_MODE
     typedefs for E_Condition, CONDITION, no macros for SUCCESS and 
     condition aliases.
 
+OLD_USER_INFO_SUB_ITEM_ORDER
+  Affected: dcmnet
+  Type of modification: Activates experimental or rarely used feature
+  Explanation: prior DCMTK releases did not encode A-ASSOCIATE user 
+    information sub-items in ascending order, i.e. they sent 55H 
+    followed by 54H and 56H. This behaviour has been "legalized" by 
+    DICOM CP 280 but is known to create problems with some other 
+    toolkits. The current DCMTK release always sends the user 
+    information sub-items in ascending order, but can be "forced" with 
+    this macro to revert to the old behaviour. It should be re-activated 
+    for testing purposes only.
+
 PASTEL_COLOR_OUTPUT
   Affected: dcmimgle, dcmimage
   Type of modification: Activates experimental or rarely used feature

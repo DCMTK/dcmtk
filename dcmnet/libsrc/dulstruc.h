@@ -50,9 +50,9 @@
 **  get the public definitions and function prototypes.  I have omitted
 **  the public definitions and prototypes on purpose so that they
 **  exist in only one location.
-** Last Update:		$Author: meichel $, $Date: 2001-10-12 10:18:41 $
+** Last Update:		$Author: meichel $, $Date: 2002-11-26 15:37:03 $
 ** Source File:		$RCSfile: dulstruc.h,v $
-** Revision:		$Revision: 1.6 $
+** Revision:		$Revision: 1.7 $
 ** Status:		$State: Exp $
 */
 
@@ -228,12 +228,12 @@ typedef struct user_info {
     unsigned char type;
     unsigned char rsv1;
     unsigned short length;
-    DUL_MAXLENGTH maxLength;
-    PRV_ASYNCOPERATIONS asyncOperations;
-    DUL_SUBITEM implementationClassUID;
-    DUL_SUBITEM implementationVersionName;
-    LST_HEAD *SCUSCPRoleList;
-    SOPClassExtendedNegotiationSubItemList *extNegList;
+    DUL_MAXLENGTH maxLength;                             // 51H: maximum length
+    PRV_ASYNCOPERATIONS asyncOperations;                 // 53H: async operations (not yet implemented!)
+    DUL_SUBITEM implementationClassUID;                  // 52H: implementation class UID
+    DUL_SUBITEM implementationVersionName;               // 55H: implementation version name
+    LST_HEAD *SCUSCPRoleList;                            // 54H: SCP/SCU role selection
+    SOPClassExtendedNegotiationSubItemList *extNegList;  // 56H: extended negotiation
 }   DUL_USERINFO;
 
 typedef struct dul_associatepdu {
@@ -314,7 +314,11 @@ typedef struct dul_datapdu {
 /*
 ** CVS Log
 ** $Log: dulstruc.h,v $
-** Revision 1.6  2001-10-12 10:18:41  meichel
+** Revision 1.7  2002-11-26 15:37:03  meichel
+** Changed DUL code to always send A-ASSOCIATE user information sub-items
+**   in ascending order.
+**
+** Revision 1.6  2001/10/12 10:18:41  meichel
 ** Replaced the CONDITION types, constants and functions in the dcmnet module
 **   by an OFCondition based implementation which eliminates the global condition
 **   stack.  This is a major change, caveat emptor!

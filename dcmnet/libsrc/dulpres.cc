@@ -43,9 +43,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		This module contains routines for the user to
 **			build and manipulate the public DUL structures.
-** Last Update:		$Author: meichel $, $Date: 2001-10-12 10:18:40 $
+** Last Update:		$Author: meichel $, $Date: 2002-11-26 15:37:02 $
 ** Source File:		$RCSfile: dulpres.cc,v $
-** Revision:		$Revision: 1.9 $
+** Revision:		$Revision: 1.10 $
 ** Status:		$State: Exp $
 */
 
@@ -122,9 +122,6 @@ DUL_MakePresentationCtx(DUL_PRESENTATIONCONTEXT ** ctx,
 	* lst;
     DUL_TRANSFERSYNTAX
 	* transfer;
-#ifdef lint
-    char __builtin_va_alist;
-#endif
 
     *ctx = (DUL_PRESENTATIONCONTEXT *) malloc(sizeof(**ctx));
     if (*ctx == NULL) return EC_MemoryExhausted;
@@ -160,7 +157,11 @@ DUL_MakePresentationCtx(DUL_PRESENTATIONCONTEXT ** ctx,
 /*
 ** CVS Log
 ** $Log: dulpres.cc,v $
-** Revision 1.9  2001-10-12 10:18:40  meichel
+** Revision 1.10  2002-11-26 15:37:02  meichel
+** Changed DUL code to always send A-ASSOCIATE user information sub-items
+**   in ascending order.
+**
+** Revision 1.9  2001/10/12 10:18:40  meichel
 ** Replaced the CONDITION types, constants and functions in the dcmnet module
 **   by an OFCondition based implementation which eliminates the global condition
 **   stack.  This is a major change, caveat emptor!

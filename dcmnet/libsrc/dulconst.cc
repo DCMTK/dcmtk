@@ -49,9 +49,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-1993
 ** Intent:		This file contains functions for construction of
 **			DICOM Upper Layer (DUL) Protocol Data Units (PDUs).
-** Last Update:		$Author: wilkens $, $Date: 2001-11-01 13:49:09 $
+** Last Update:		$Author: meichel $, $Date: 2002-11-26 15:37:02 $
 ** Source File:		$RCSfile: dulconst.cc,v $
-** Revision:		$Revision: 1.10 $
+** Revision:		$Revision: 1.11 $
 ** Status:		$State: Exp $
 */
 
@@ -824,41 +824,44 @@ static OFCondition
 constructUserInfo(unsigned char type, DUL_ASSOCIATESERVICEPARAMETERS * params,
 		  DUL_USERINFO * userInfo, unsigned long *rtnLen)
 {
-    unsigned long
-        length;
+    // the order in which the user info sub-items are constructed in this
+    // function is not significant. The final transmission order is determined
+    // by streamUserInfo().
+
+    unsigned long length;
 
     userInfo->type = DUL_TYPEUSERINFO;
     userInfo->rsv1 = 0;
     userInfo->length = 0;
     *rtnLen = 4;
 
+    // construct user info sub-item 51H: maximum length
     OFCondition cond = constructMaxLength(params->maxPDU, &userInfo->maxLength, &length);
-    if (cond.bad())
-	return cond;
+    if (cond.bad()) return cond;
     userInfo->length += (unsigned short) length;
     *rtnLen += length;
 
+    // construct user info sub-item 52H: implementation class UID
     if (type == DUL_TYPEASSOCIATERQ)
 	cond = constructSubItem(params->callingImplementationClassUID,
-	  DUL_TYPEIMPLEMENTATIONCLASSUID, &userInfo->implementationClassUID,
-				&length);
+	  DUL_TYPEIMPLEMENTATIONCLASSUID, &userInfo->implementationClassUID, &length);
     else
 	cond = constructSubItem(params->calledImplementationClassUID,
-	  DUL_TYPEIMPLEMENTATIONCLASSUID, &userInfo->implementationClassUID,
-				&length);
-    if (cond.bad())
-	return cond;
+	  DUL_TYPEIMPLEMENTATIONCLASSUID, &userInfo->implementationClassUID, &length);
+    if (cond.bad()) return cond;
     userInfo->length += (unsigned short) length;
     *rtnLen += length;
 
+    // user info sub-item 53H (async operations) is not yet implemented!
+
+    // construct user info sub-item 55H: implementation version name
     if (type == DUL_TYPEASSOCIATERQ) {
 	if (strlen(params->callingImplementationVersionName) != 0) {
 	    cond = constructSubItem(params->callingImplementationVersionName,
 				    DUL_TYPEIMPLEMENTATIONVERSIONNAME,
 				    &userInfo->implementationVersionName,
 				    &length);
-	    if (cond.bad())
-		return cond;
+	    if (cond.bad()) return cond;
 	    userInfo->length += (unsigned short) length;
 	    *rtnLen += length;
 	}
@@ -868,19 +871,19 @@ constructUserInfo(unsigned char type, DUL_ASSOCIATESERVICEPARAMETERS * params,
 				    DUL_TYPEIMPLEMENTATIONVERSIONNAME,
 				    &userInfo->implementationVersionName,
 				    &length);
-	    if (cond.bad())
-		return cond;
+	    if (cond.bad()) return cond;
 	    userInfo->length += (unsigned short) length;
 	    *rtnLen += length;
 	}
     }
-    cond = constructSCUSCPRoles(type, params, &userInfo->SCUSCPRoleList,
-				&length);
+
+    // construct one or more user info sub-items 54H: SCP/SCU role selection
+    cond = constructSCUSCPRoles(type, params, &userInfo->SCUSCPRoleList, &length);
     if (cond.bad()) return cond;
     userInfo->length += (unsigned short) length;
     *rtnLen += length;
 
-    /* extended negotiation */
+    // construct one or more user info sub-items 56H: extended negotiation
     cond = constructExtNeg(type, params, &userInfo->extNegList, &length);
     if (cond.bad()) return cond;
     userInfo->length += (unsigned short) length;
@@ -1242,18 +1245,31 @@ streamUserInfo(DUL_USERINFO * userInfo, unsigned char *b,
     b += 2;
     *length += 4;
 
+    // stream user info sub-item 51H: maximum length
     OFCondition cond = streamMaxLength(&userInfo->maxLength, b, &subLength);
     if (cond.bad())
 	return cond;
     b += subLength;
     *length += subLength;
 
+    // stream user info sub-item 52H: implementation class UID
     cond = streamSubItem(&userInfo->implementationClassUID, b, &subLength);
     if (cond.bad())
 	return cond;
     b += subLength;
     *length += subLength;
 
+    // user info sub-item 53H (async operations) is not yet implemented!
+
+#ifdef OLD_USER_INFO_SUB_ITEM_ORDER
+    /* prior DCMTK releases did not encode user information sub items
+     * in ascending order, i.e. they sent 55H followed by 54H and 56H.
+     * This behaviour has been "legalized" by DICOM CP 280 but is known
+     * to create problems with some other toolkits.
+     * Should be re-activated for testing purposes only.
+     */
+
+    // stream user info sub-item 55H: implementation version name
     if (userInfo->implementationVersionName.length != 0) {
 	cond = streamSubItem(&userInfo->implementationVersionName, b, &subLength);
 	if (cond.bad())
@@ -1261,6 +1277,9 @@ streamUserInfo(DUL_USERINFO * userInfo, unsigned char *b,
 	b += subLength;
 	*length += subLength;
     }
+#endif
+
+    // stream one or more user info sub-items 54H: SCP/SCU role selection
     if (LST_Count(&userInfo->SCUSCPRoleList) != 0) {
 	cond = streamSCUSCPList(&userInfo->SCUSCPRoleList, b, &subLength);
 	if (cond.bad())
@@ -1269,7 +1288,18 @@ streamUserInfo(DUL_USERINFO * userInfo, unsigned char *b,
 	*length += subLength;
     }
 
-    /* extended negotiation */
+#ifndef OLD_USER_INFO_SUB_ITEM_ORDER
+    // stream user info sub-item 55H: implementation version name
+    if (userInfo->implementationVersionName.length != 0) {
+	cond = streamSubItem(&userInfo->implementationVersionName, b, &subLength);
+	if (cond.bad())
+	    return cond;
+	b += subLength;
+	*length += subLength;
+    }
+#endif
+
+    // stream one or more user info sub-items 56H: extended negotiation
     if (userInfo->extNegList != NULL) {
 	cond = streamExtNegList(userInfo->extNegList, b, &subLength);
 	if (cond.bad())
@@ -1457,7 +1487,11 @@ streamExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *b, unsig
 /*
 ** CVS Log
 ** $Log: dulconst.cc,v $
-** Revision 1.10  2001-11-01 13:49:09  wilkens
+** Revision 1.11  2002-11-26 15:37:02  meichel
+** Changed DUL code to always send A-ASSOCIATE user information sub-items
+**   in ascending order.
+**
+** Revision 1.10  2001/11/01 13:49:09  wilkens
 ** Added lots of comments.
 **
 ** Revision 1.9  2001/10/12 10:18:38  meichel
