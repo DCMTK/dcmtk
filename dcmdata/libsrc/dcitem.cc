@@ -10,9 +10,9 @@
 **
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1998-01-14 08:42:32 $
+** Update Date:		$Date: 1998-01-14 09:13:53 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.38 $
+** CVS/RCS Revision:	$Revision: 1.39 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1571,7 +1571,7 @@ E_Condition newDicomElement(DcmElement * & newElement,
     case EVR_ox :
 	if (tag == DCM_PixelData)
 	    newElement = new DcmPixelData(tag, length);
-	else if (tag == DCM_OverlayData)
+	else if (((tag.getGTag() & 0xffe1) == 0x6000)&&(tag.getETag() == 0x3000)) // DCM_OverlayData
 	    newElement = new DcmOverlayData(tag, length);
         else
             /* we don't know this element's real transfer syntax, so we just
@@ -1585,7 +1585,7 @@ E_Condition newDicomElement(DcmElement * & newElement,
     case EVR_OW :
 	if (tag == DCM_PixelData)
 	    newElement = new DcmPixelData(tag, length);
-	else if (tag == DCM_OverlayData)
+	else if (((tag.getGTag() & 0xffe1) == 0x6000)&&(tag.getETag() == 0x3000)) // DCM_OverlayData
 	    newElement = new DcmOverlayData(tag, length);
 	else
 	    if (length == DCM_UndefinedLength) {
@@ -1860,7 +1860,12 @@ DcmItem::findRealNumber(
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.38  1998-01-14 08:42:32  meichel
+** Revision 1.39  1998-01-14 09:13:53  meichel
+** Corrected bug: Overlay Data elements in the groups
+**   6002-601f were handled by DcmOtherByteOtherWord
+**   instead of the "polymorphous" DcmOverlayData class.
+**
+** Revision 1.38  1998/01/14 08:42:32  meichel
 ** Improved algorithm for auto-detection of transfer syntax
 **   used when opening a DICOM file without metaheader.
 **   Big endian datasets are now detected much more reliably.
