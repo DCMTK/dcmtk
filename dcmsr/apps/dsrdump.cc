@@ -22,9 +22,9 @@
  *  Purpose: List the contents of a dicom structured reporting file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-22 14:20:27 $
+ *  Update Date:      $Date: 2002-08-02 12:37:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/dsrdump.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -148,6 +148,8 @@ int main(int argc, char *argv[])
         cmd.addOption("--read-xfer-implicit",   "-ti", "read with implicit VR little endian TS");
 
     cmd.addGroup("parsing options:");
+      cmd.addSubGroup("additional information:");
+        cmd.addOption("--processing-details",   "-Ip", "show currently processed content item");
       cmd.addSubGroup("error handling:");
         cmd.addOption("--ignore-constraints",   "-Ec", "ignore relationship content constraints");
         cmd.addOption("--skip-invalid-items",   "-Ei", "skip invalid content items (incl. sub-tree)");
@@ -205,6 +207,8 @@ int main(int argc, char *argv[])
         }
         cmd.endOptionBlock();
 
+        if (cmd.findOption("--processing-details"))
+            opt_readFlags |= DSRTypes::RF_showCurrentlyProcessedItem;
         if (cmd.findOption("--ignore-constraints"))
             opt_readFlags |= DSRTypes::RF_ignoreRelationshipConstraints;
         if (cmd.findOption("--skip-invalid-items"))
@@ -271,7 +275,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsrdump.cc,v $
- * Revision 1.15  2002-07-22 14:20:27  joergr
+ * Revision 1.16  2002-08-02 12:37:16  joergr
+ * Enhanced debug output of dcmsr command line tools (e.g. add position string
+ * of invalid content items to error messages).
+ *
+ * Revision 1.15  2002/07/22 14:20:27  joergr
  * Added new command line option to suppress the output of general document
  * information.
  *

@@ -23,9 +23,9 @@
  *           HTML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-05-07 12:47:58 $
+ *  Update Date:      $Date: 2002-08-02 12:37:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/dsr2html.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -148,6 +148,8 @@ int main(int argc, char *argv[])
         cmd.addOption("--read-xfer-implicit",  "-ti",    "read with implicit VR little endian TS");
 
     cmd.addGroup("parsing options:");
+      cmd.addSubGroup("additional information:");
+        cmd.addOption("--processing-details",  "-Ip",    "show currently processed content item");
       cmd.addSubGroup("error handling:");
         cmd.addOption("--ignore-constraints",  "-Ec",    "ignore relationship content constraints");
         cmd.addOption("--skip-invalid-items",  "-Ei",    "skip invalid content items (incl. sub-tree)");
@@ -176,7 +178,7 @@ int main(int argc, char *argv[])
         cmd.addOption("--numeric-unit-codes",  "+Cu",    "render code of numeric measurement units");
         cmd.addOption("--code-value-unit",     "+Cv",    "use code value as measurement unit (default)");
         cmd.addOption("--code-meaning-unit",   "+Cm",    "use code meaning as measurement unit");
-        cmd.addOption("--render-all-codes",    "+Ca",    "render all codes (+Ci, +Cn, +Cu)");
+        cmd.addOption("--render-all-codes",    "+Ca",    "render all codes (implies +Ci, +Cn and +Cu)");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -222,10 +224,12 @@ int main(int argc, char *argv[])
         }
         cmd.endOptionBlock();
 
+        if (cmd.findOption("--processing-details"))
+            opt_readFlags |= DSRTypes::RF_showCurrentlyProcessedItem;
         if (cmd.findOption("--ignore-constraints"))
-            opt_readFlags |= DSRTypes::RF_ignoreRelationshipConstraints;                    
+            opt_readFlags |= DSRTypes::RF_ignoreRelationshipConstraints;
         if (cmd.findOption("--skip-invalid-items"))
-            opt_readFlags |= DSRTypes::RF_skipInvalidContentItems;                    
+            opt_readFlags |= DSRTypes::RF_skipInvalidContentItems;
 
         /* HTML compatibility */
         cmd.beginOptionBlock();
@@ -246,13 +250,13 @@ int main(int argc, char *argv[])
         {
           	app.checkDependence("--css-reference", "--html-4.0", !(opt_renderFlags & DSRTypes::HF_version32Compatibility));
             opt_renderFlags &= ~DSRTypes::HF_copyStyleSheetContent;
-            app.checkValue(cmd.getValue(opt_cssName));           
+            app.checkValue(cmd.getValue(opt_cssName));
         }
         if (cmd.findOption("--css-file"))
         {
           	app.checkDependence("--css-file", "--html-4.0", !(opt_renderFlags & DSRTypes::HF_version32Compatibility));
             opt_renderFlags |= DSRTypes::HF_copyStyleSheetContent;
-            app.checkValue(cmd.getValue(opt_cssName));           
+            app.checkValue(cmd.getValue(opt_cssName));
         }
         cmd.endOptionBlock();
 
@@ -333,7 +337,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2html.cc,v $
- * Revision 1.15  2002-05-07 12:47:58  joergr
+ * Revision 1.16  2002-08-02 12:37:16  joergr
+ * Enhanced debug output of dcmsr command line tools (e.g. add position string
+ * of invalid content items to error messages).
+ *
+ * Revision 1.15  2002/05/07 12:47:58  joergr
  * Fixed bug in an error message.
  *
  * Revision 1.14  2002/04/16 13:49:52  joergr

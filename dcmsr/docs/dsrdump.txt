@@ -45,6 +45,8 @@ input options:
     -tb  --read-xfer-big        read with explicit VR big endian TS
     -ti  --read-xfer-implicit   read with implicit VR little endian TS
 parsing options:
+  additional information:
+    -Ip  --processing-details   show currently processed content item
   error handling:
     -Ec  --ignore-constraints   ignore relationship content constraints
     -Ei  --skip-invalid-items   skip invalid content items (incl. sub-tree)
