@@ -1,6 +1,36 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2002.07.17 (wilkens)
+
+- Corrected some minor logical errors in the wlmscpdb sources and completely
+  updated the wlmscpfs so that it does not use the original wlistctn sources
+  any more but standard wlm sources which are now used by all three variants
+  of wlmscps.
+  Added:   dcmwlm/apps/wlfsim.h
+           dcmwlm/apps/wlfsim.cc
+  Affects: dcmwlm/apps/Makefile.dep
+           dcmwlm/apps/Makefile.in
+           dcmwlm/apps/wldbim.cc
+           dcmwlm/apps/wldbim.h
+           dcmwlm/apps/wldsdb.cc
+           dcmwlm/apps/wldsdb.h
+           dcmwlm/apps/wldsfs.cc
+           dcmwlm/apps/wldsfs.h
+           dcmwlm/apps/wldspf.cc
+           dcmwlm/apps/wldspf.h
+           dcmwlm/apps/wlfsim.cc
+           dcmwlm/apps/wlfsim.h
+           dcmwlm/apps/wlmceng.cc
+           dcmwlm/apps/wlmceng.h
+           dcmwlm/apps/wlpfim.cc
+           dcmwlm/apps/wlpfim.h
+           dcmwlm/include/wlds.h
+           dcmwlm/include/wlmactmg.h
+           dcmwlm/include/wltypdef.h
+           dcmwlm/libsrc/wlds.cc
+           dcmwlm/libsrc/wlmactmg.cc
+
 **** Changes from 2002.07.01 (wilkens)
 
 - Some more corrections to get rid of msvc6's warnings.
