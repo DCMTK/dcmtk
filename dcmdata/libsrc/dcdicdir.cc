@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-09-27 08:23:07 $
+** Update Date:		$Date: 1997-02-06 12:11:20 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdicdir.cc,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -37,7 +37,12 @@ char * mktemp(char *);
 #endif
 
 #ifdef HAVE_UNIX_H
+#if defined(macintosh) && defined (HAVE_WINSOCK_H)
+/* unix.h defines timeval incompatible with winsock.h */
+#define timeval _UNWANTED_timeval
+#endif
 #include <unix.h>	/* for unlink() under Metrowerks C++ (Macintosh) */
+#undef timeval
 #endif
 
 #ifdef HAVE_UNISTD_H
@@ -1401,7 +1406,11 @@ Edebug(());
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
-** Revision 1.6  1996-09-27 08:23:07  hewett
+** Revision 1.7  1997-02-06 12:11:20  hewett
+** Updated for Macintosh CodeWarrior 11.  Corrected for incompatibilities
+** in the timeval structure between unix.h and winsock.h
+**
+** Revision 1.6  1996/09/27 08:23:07  hewett
 ** Preliminary support for IBM AIX systems using the IBM C Set++ compiler.
 ** Corrected mismatch between method definition in .h and .cc files.
 **
