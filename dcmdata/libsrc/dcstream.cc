@@ -8,10 +8,10 @@
 ** Purpose:
 **	implements streaming classes for file and buffer input/output
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-24 13:10:53 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-03-25 16:16:06 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dcstream.cc,v $
-** CVS/RCS Revision:	$Revision: 1.10 $
+** CVS/RCS Revision:	$Revision: 1.11 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -25,6 +25,7 @@
 #include <unistd.h>
 #endif
 
+#include <iostream.h>
 #include <string.h>
 
 #include "dcstream.h"
@@ -265,6 +266,12 @@ void DcmFileStream::SetPutbackMark(void)
 	fErrorCond = EC_WrongStreamMode;
     else
 	fPutbackMode = OFTrue;
+#ifdef DEBUG
+    if (fNumPutbackBytes >0)
+    {
+      cerr << "dcmdata warning: putback mark set twice in DcmFileStream, ignored.\n";
+    }
+#endif
 }
 
 
@@ -290,8 +297,8 @@ void DcmFileStream::UnsetPutbackMark(void)
 	fErrorCond = EC_WrongStreamMode;
     else
     {
-	fPutbackMode = OFTrue;
-	fNumPutbackBytes = OFFalse;
+	fPutbackMode = OFFalse;
+	fNumPutbackBytes = 0;
     }
 }
 
@@ -727,7 +734,13 @@ DcmFileStreamConstructor::Copy(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcstream.cc,v $
-** Revision 1.10  1997-07-24 13:10:53  andreas
+** Revision 1.11  1998-03-25 16:16:06  meichel
+** Corrected bug in DcmFileStream::UnsetPutbackMark. This bug caused
+**   dcmdata to choke on files with metaheader where the value of
+**   (0002,0010) TransferSyntaxUID was none of the supported UIDs,
+**   because interpretation of the dataset started in the wrong file position.
+**
+** Revision 1.10  1997/07/24 13:10:53  andreas
 ** - Removed Warnings from SUN CC 2.0.1
 **
 ** Revision 1.9  1997/07/21 08:25:30  andreas
