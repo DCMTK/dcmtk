@@ -23,8 +23,8 @@ ofdate.o: ofdate.cc ../../config/include/osconfig.h \
  ../include/ofstring.h ../include/ofstdinc.h ../include/ofstream.h \
  ../include/oftypes.h
 ofdatime.o: ofdatime.cc ../../config/include/osconfig.h \
- ../../config/include/cfunix.h ../include/ofdatime.h \
- ../include/ofstring.h ../include/ofstdinc.h ../include/ofstream.h \
+ ../../config/include/cfunix.h ../include/ofstdinc.h \
+ ../include/ofdatime.h ../include/ofstring.h ../include/ofstream.h \
  ../include/oftypes.h ../include/ofdate.h ../include/oftime.h
 offname.o: offname.cc ../../config/include/osconfig.h \
  ../../config/include/cfunix.h ../include/offname.h \

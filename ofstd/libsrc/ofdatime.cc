@@ -21,10 +21,10 @@
  *
  *  Purpose: Class for date and time functions (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-05-24 09:44:26 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-27 15:09:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofdatime.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,12 +34,12 @@
 
 #include "osconfig.h"
 
+#define INCLUDE_CTIME
+#include "ofstdinc.h"
+
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_TYPES_H
-# include <sys/types.h>    /* for struct time_t */
-#endif
-#ifdef HAVE_TIME_H
-# include <time.h>         /* for time() */
+#include <sys/types.h>    /* for struct time_t */
 #endif
 END_EXTERN_C
 
@@ -224,7 +224,10 @@ ostream& operator<<(ostream& stream, const OFDateTime &dateTime)
  *
  * CVS/RCS Log:
  * $Log: ofdatime.cc,v $
- * Revision 1.2  2002-05-24 09:44:26  joergr
+ * Revision 1.3  2002-11-27 15:09:39  meichel
+ * Adapted module ofstd to use of new header file ofstdinc.h
+ *
+ * Revision 1.2  2002/05/24 09:44:26  joergr
  * Renamed some parameters/variables to avoid ambiguities.
  *
  * Revision 1.1  2002/04/11 12:14:33  joergr
