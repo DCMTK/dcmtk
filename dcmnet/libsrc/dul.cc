@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: meichel $, $Date: 2000-08-10 14:50:57 $
+** Last Update:		$Author: meichel $, $Date: 2000-09-08 14:27:50 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.29 $
+** Revision:		$Revision: 1.30 $
 ** Status:		$State: Exp $
 */
 
@@ -1813,7 +1813,7 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
 /* Name socket using wildcards */
 	server.sin_family = AF_INET;
 	server.sin_addr.s_addr = INADDR_ANY;
-	server.sin_port = (u_short) htons((*key)->networkSpecific.TCP.port);
+	server.sin_port = (unsigned short) htons((*key)->networkSpecific.TCP.port);
 	if (bind((*key)->networkSpecific.TCP.listenSocket,
 		 (struct sockaddr *) & server, sizeof(server))) {
 	    return COND_PushCondition(DUL_TCPINITERROR,
@@ -2418,7 +2418,11 @@ CONDITION DUL_setTransportLayer(DUL_NETWORKKEY *callerNetworkKey, DcmTransportLa
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.29  2000-08-10 14:50:57  meichel
+** Revision 1.30  2000-09-08 14:27:50  meichel
+** Removed use of u_short and u_long types which are not defined in POSIX.
+**   Required when compiling on Solaris with Posix threads.
+**
+** Revision 1.29  2000/08/10 14:50:57  meichel
 ** Added initial OpenSSL support.
 **
 ** Revision 1.28  2000/06/07 08:57:26  meichel

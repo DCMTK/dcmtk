@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: meichel $, $Date: 2000-08-10 14:50:58 $
+** Last Update:		$Author: meichel $, $Date: 2000-09-08 14:27:51 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.35 $
+** Revision:		$Revision: 1.36 $
 ** Status:		$State: Exp $
 */
 
@@ -2372,7 +2372,7 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
      * and several Unix variants.
      * Workaround is to explicitly handle the IP address case.
      */
-    u_long addr = 0;
+    unsigned long addr = 0;
     if ((int)(addr = inet_addr(node)) != -1) {
 	// it is an IP address
 	(void) memcpy(&server.sin_addr, &addr, (size_t) sizeof(addr));
@@ -2388,7 +2388,7 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
     }
 #endif
 
-    server.sin_port = (u_short) htons(port);
+    server.sin_port = (unsigned short) htons(port);
 
     if (connect(s, (struct sockaddr *) & server, sizeof(server)) < 0)
     {
@@ -4024,7 +4024,11 @@ DULPRV_translateAssocReq(unsigned char *buffer,
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.35  2000-08-10 14:50:58  meichel
+** Revision 1.36  2000-09-08 14:27:51  meichel
+** Removed use of u_short and u_long types which are not defined in POSIX.
+**   Required when compiling on Solaris with Posix threads.
+**
+** Revision 1.35  2000/08/10 14:50:58  meichel
 ** Added initial OpenSSL support.
 **
 ** Revision 1.34  2000/06/07 08:57:26  meichel
