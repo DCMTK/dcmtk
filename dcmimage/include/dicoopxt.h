@@ -22,9 +22,9 @@
  *  Purpose: DicomColorOutputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-06-26 16:17:16 $
+ *  Update Date:      $Date: 2002-06-26 17:20:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicoopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -185,7 +185,7 @@ class DiColorOutputPixelTemplate
             {
                 register T2 *q = Data;
                 register unsigned long i;
-                const T2 max2 = DicomImageClass::maxval(bits2);
+                const T2 max2 = (T2)DicomImageClass::maxval(bits2);
                 if (planar)
                 {
                     register const T1 *p;
@@ -357,7 +357,10 @@ class DiColorOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dicoopxt.h,v $
- * Revision 1.19  2002-06-26 16:17:16  joergr
+ * Revision 1.20  2002-06-26 17:20:31  joergr
+ * Added type cast to keep MSVC6 quiet.
+ *
+ * Revision 1.19  2002/06/26 16:17:16  joergr
  * Added support for polarity flag to color images.
  *
  * Revision 1.18  2001/11/09 16:42:04  joergr

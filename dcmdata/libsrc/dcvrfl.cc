@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmFloatingPointSingle
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-06-20 12:06:18 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-06-26 17:19:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrfl.cc,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -179,7 +179,7 @@ OFCondition DcmFloatingPointSingle::putString(const char * val)
             value = getFirstValueFromString(s);
             if (value)
             {
-              field[i] = OFStandard::atof(value, &success);
+              field[i] = (Float32)OFStandard::atof(value, &success);
               if (!success) errorFlag = EC_CorruptedData;             
               delete[] value;
             } else errorFlag = EC_CorruptedData;
@@ -270,7 +270,10 @@ OFCondition DcmFloatingPointSingle::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrfl.cc,v $
-** Revision 1.23  2002-06-20 12:06:18  meichel
+** Revision 1.24  2002-06-26 17:19:34  joergr
+** Added type cast to keep MSVC6 quiet.
+**
+** Revision 1.23  2002/06/20 12:06:18  meichel
 ** Changed toolkit to use OFStandard::atof instead of atof, strtod or
 **   sscanf for all string to double conversions that are supposed to
 **   be locale independent
