@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-12-08 13:46:00 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2000-12-12 17:21:21 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1003,8 +1003,8 @@ const char *DSRTypes::numberToString(const size_t number,
 {
     if (string != NULL)
     {
-        /* unsigned integer */
-        sprintf(string, "%u", number);
+        /* unsigned long */
+        sprintf(string, "%lu", (unsigned long)number);
     }
     return string;
 }
@@ -1015,9 +1015,10 @@ size_t DSRTypes::stringToNumber(const char *string)
     size_t result = 0;
     if (string != NULL)
     {
-        /* unsigned integer */
-        if (sscanf(string, "%u", &result) != 1)
-            result = 0;
+        unsigned long lu_value = 0;
+        /* unsigned long */
+        if (sscanf(string, "%lu", &lu_value) == 1)
+            result = (size_t)lu_value;
     }
     return result;
 }
@@ -1378,7 +1379,10 @@ E_Condition DSRTypes::appendStream(ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
- *  Revision 1.11  2000-12-08 13:46:00  joergr
+ *  Revision 1.12  2000-12-12 17:21:21  joergr
+ *  Added explicit typecast to keep gcc 2.7 quiet.
+ *
+ *  Revision 1.11  2000/12/08 13:46:00  joergr
  *  Removed optional fractional second part from time value.
  *
  *  Revision 1.10  2000/11/16 13:32:11  joergr
