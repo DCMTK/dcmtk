@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-23 11:35:06 $
+ *  Update Date:      $Date: 1998-12-23 12:38:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoimg.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -265,40 +265,39 @@ class DiMonoImage
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: dimoimg.h,v $
-** Revision 1.5  1998-12-23 11:35:06  joergr
-** Changed order of parameters for addOverlay() and getOverlayData().
-**
-** Revision 1.4  1998/12/22 14:26:19  joergr
-** Added new parameters to method addOverlay().
-**
-** Revision 1.3  1998/12/16 16:34:06  joergr
-** Added explanation string to LUT class (retrieved from dataset).
-** Added explanation string for VOI transformations.
-** Renamed 'setNoVoiLutTransformation' method ('Voi' instead of 'VOI').
-** Removed several methods used for monochrome images only in base class
-** 'DiImage'. Introduced mechanism to use the methods directly.
-**
-** Revision 1.2  1998/12/14 17:20:03  joergr
-** Added methods to add and remove additional overlay planes (still untested).
-**
-** Revision 1.1  1998/11/27 15:20:57  joergr
-** Added copyright message.
-** Added methods and constructors for flipping and rotating, changed for
-** scaling and clipping.
-** Added method to directly create java AWT bitmaps.
-** Added constructors to use external modality transformations.
-** Added methods to support presentation LUTs and shapes.
-**
-** Revision 1.6  1998/07/01 08:39:22  joergr
-** Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
-** options), e.g. add copy constructors.
-**
-** Revision 1.5  1998/05/11 14:53:20  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
-
+ *
+ * CVS/RCS Log:
+ * $Log: dimoimg.h,v $
+ * Revision 1.6  1998-12-23 12:38:16  joergr
+ * Corrected some typos and formatting.
+ *
+ * Revision 1.4  1998/12/22 14:26:19  joergr
+ * Added new parameters to method addOverlay().
+ *
+ * Revision 1.3  1998/12/16 16:34:06  joergr
+ * Added explanation string to LUT class (retrieved from dataset).
+ * Added explanation string for VOI transformations.
+ * Renamed 'setNoVoiLutTransformation' method ('Voi' instead of 'VOI').
+ * Removed several methods used for monochrome images only in base class
+ * 'DiImage'. Introduced mechanism to use the methods directly.
+ *
+ * Revision 1.2  1998/12/14 17:20:03  joergr
+ * Added methods to add and remove additional overlay planes (still untested).
+ *
+ * Revision 1.1  1998/11/27 15:20:57  joergr
+ * Added copyright message.
+ * Added methods and constructors for flipping and rotating, changed for
+ * scaling and clipping.
+ * Added method to directly create java AWT bitmaps.
+ * Added constructors to use external modality transformations.
+ * Added methods to support presentation LUTs and shapes.
+ *
+ * Revision 1.6  1998/07/01 08:39:22  joergr
+ * Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
+ * options), e.g. add copy constructors.
+ *
+ * Revision 1.5  1998/05/11 14:53:20  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */
