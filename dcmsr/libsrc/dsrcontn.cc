@@ -23,8 +23,8 @@
  *    classes: DSRContainerTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-07 18:33:29 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2000-11-09 11:32:12 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -128,9 +128,10 @@ E_Condition DSRContainerTreeNode::renderHTMLContentItem(ostream &docStream,
         /* render ConceptName & Code (if valid) */
         if (getConceptName().getCodeMeaning().length() > 0)
         {
-            docStream << "<h" << nestingLevel << ">";
+            const size_t section = (nestingLevel > 6) ? 6 : nestingLevel;
+            docStream << "<h" << section << ">";
             getConceptName().renderHTML(docStream, logStream, (flags & HF_renderConceptNameCodes) && getConceptName().isValid() /* fullCode */);
-            docStream << "</h" << nestingLevel << ">" << endl;
+            docStream << "</h" << section << ">" << endl;
         }
     }
     return EC_Normal;
@@ -264,7 +265,10 @@ E_Condition DSRContainerTreeNode::setContinuityOfContent(const E_ContinuityOfCon
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcontn.cc,v $
- *  Revision 1.8  2000-11-07 18:33:29  joergr
+ *  Revision 1.9  2000-11-09 11:32:12  joergr
+ *  Minor HTML code purifications.
+ *
+ *  Revision 1.8  2000/11/07 18:33:29  joergr
  *  Enhanced support for by-reference relationships.
  *
  *  Revision 1.7  2000/11/01 16:31:17  joergr

@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-07 18:33:29 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2000-11-09 11:32:45 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -592,7 +592,7 @@ E_Condition DSRDocumentTreeNode::renderHTMLChildNodes(ostream &docStream,
                         docStream << "<br>" << endl;
                     } else {
                         /* open paragraph */
-                        docStream << "<small><p>" << endl;
+                        docStream << "<p><small>" << endl;
                         paragraphFlag = OFTrue;
                     }
                     docStream << "<u>" << relationshipText << "</u>: ";
@@ -630,7 +630,7 @@ E_Condition DSRDocumentTreeNode::renderHTMLChildNodes(ostream &docStream,
                     /* close paragraph */
                     if (paragraphFlag)
                     {
-                        docStream << "</p></small>" << endl;
+                        docStream << "</small></p>" << endl;
                         paragraphFlag = OFFalse;
                     }                    
                     /* begin new paragraph */
@@ -645,7 +645,7 @@ E_Condition DSRDocumentTreeNode::renderHTMLChildNodes(ostream &docStream,
                         if (result == EC_Normal)
                         {
                             /* tags are closed automatically in 'node->renderHTMLChildNodes()' */
-                            tempDocStream << "<small><p>" << endl;
+                            tempDocStream << "<p><small>" << endl;
                             /* render footnote text and reference */
                             createHTMLFootnote(docStream, tempDocStream, footnoteNumber, node->getNodeID());
                             /* render child nodes to temporary stream */
@@ -664,7 +664,7 @@ E_Condition DSRDocumentTreeNode::renderHTMLChildNodes(ostream &docStream,
         } while ((result == EC_Normal) && (cursor.gotoNext()));
         /* close last open paragraph (if any) */
         if (paragraphFlag)
-            docStream << "</p></small>" << endl;
+            docStream << "</small></p>" << endl;
         /* append temporary stream to main stream */
         if (result == EC_Normal)
             result = appendStream(docStream, tempDocStream);
@@ -714,7 +714,10 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
- *  Revision 1.7  2000-11-07 18:33:29  joergr
+ *  Revision 1.8  2000-11-09 11:32:45  joergr
+ *  Minor HTML code purifications.
+ *
+ *  Revision 1.7  2000/11/07 18:33:29  joergr
  *  Enhanced support for by-reference relationships.
  *
  *  Revision 1.6  2000/11/01 16:33:38  joergr
