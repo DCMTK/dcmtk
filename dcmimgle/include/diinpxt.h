@@ -22,9 +22,9 @@
  *  Purpose: DicomInputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-22 14:23:16 $
+ *  Update Date:      $Date: 1999-01-11 09:34:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diinpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -144,7 +144,7 @@ class DiInputPixelTemplate
             AbsMaximum = (double)maxval(stored - 1);
         } else {
             AbsMinimum = 0;
-            AbsMaximum = (double)maxval(stored) + 1;
+            AbsMaximum = (double)maxval(stored);
         }
         if (pixel != NULL)
             convert(pixel, alloc, stored, high, start, count);
@@ -416,7 +416,10 @@ class DiInputPixelTemplate
 **
 ** CVS/RCS Log:
 ** $Log: diinpxt.h,v $
-** Revision 1.4  1998-12-22 14:23:16  joergr
+** Revision 1.5  1999-01-11 09:34:28  joergr
+** Corrected bug in determing 'AbsMaximum' (removed '+ 1').
+**
+** Revision 1.4  1998/12/22 14:23:16  joergr
 ** Added calculation of member variables AbsMinimum/AbsMaximum.
 ** Replaced method copyMem by for-loop copying each item.
 ** Removed some '#ifdef DEBUG'.
