@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochrome1Image (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 16:07:33 $
+ *  Update Date:      $Date: 1998-12-14 17:35:57 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimo1img.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -103,7 +103,7 @@ void *DiMono1Image::getOutputData(const unsigned long frame,
                                   const int bits,
                                   const int)
 {
-    return DiMonoImage::getData(frame, bits, maxval(bits), 0); 
+    return DiMonoImage::getData(frame, bits, 1);
 }
 
 
@@ -158,7 +158,10 @@ DiImage *DiMono1Image::createMono(const double,
 **
 ** CVS/RCS Log:
 ** $Log: dimo1img.cc,v $
-** Revision 1.1  1998-11-27 16:07:33  joergr
+** Revision 1.2  1998-12-14 17:35:57  joergr
+** Added support for presentation shapes.
+**
+** Revision 1.1  1998/11/27 16:07:33  joergr
 ** Added copyright message.
 ** Added methods and constructors for flipping and rotating, changed for
 ** scaling and clipping.

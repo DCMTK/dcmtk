@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochrome2Image (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 16:07:34 $
+ *  Update Date:      $Date: 1998-12-14 17:35:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimo2img.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -138,7 +138,7 @@ void *DiMono2Image::getOutputData(const unsigned long frame,
                                   const int bits,
                                   const int)
 {
-    return DiMonoImage::getData(frame, bits, 0, maxval(bits)); 
+    return DiMonoImage::getData(frame, bits, 0); 
 }
 
 
@@ -193,7 +193,10 @@ DiImage *DiMono2Image::createMono(const double,
 **
 ** CVS/RCS Log:
 ** $Log: dimo2img.cc,v $
-** Revision 1.1  1998-11-27 16:07:34  joergr
+** Revision 1.2  1998-12-14 17:35:58  joergr
+** Added support for presentation shapes.
+**
+** Revision 1.1  1998/11/27 16:07:34  joergr
 ** Added copyright message.
 ** Added methods and constructors for flipping and rotating, changed for
 ** scaling and clipping.
