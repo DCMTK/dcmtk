@@ -31,8 +31,8 @@ and test programs (tests).
 To build and install the DCMTK package see the \ref file_install "INSTALL"
 file.  For copyright information see the \ref file_copyright "COPYRIGHT" file.
 For information about the history of this software see the
-\ref file_history "HISTORY" file.  For answers to some frequently asked
-questions see the \ref file_faq "FAQ" file.
+\ref file_history "HISTORY" file.  For answers to frequently asked questions
+(FAQ) see: http://forum.dcmtk.org/faq
 
 If you find bugs or other problems with this software we would appreciate
 hearing about them.  Please send electronic mail to \b dicom-bugs@offis.de.
@@ -56,8 +56,4 @@ fix.
 /*!
     \page file_history HISTORY file
     \verbinclude HISTORY
-*/
-/*!
-    \page file_faq FAQ file
-    \verbinclude FAQ
 */
