@@ -23,9 +23,9 @@
  *    converts it into a Presentation LUT Sequence that is written to file.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-01 13:31:46 $
+ *  Update Date:      $Date: 1999-10-01 14:53:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/Attic/dconvmap.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -76,7 +76,7 @@ E_Condition interpolateValues(
         register double gradient = ((srcCount < destCount) && (srcCount > 1)) ? (double)(destCount - 1) / (double)(srcCount - 1) : 1;
         for (i = 0; i < srcCount - 1; i++)
           srcIndex[i] = (unsigned short)((double)i * gradient);
-        srcIndex[i] = (srcCount < destCount) ? destCount - 1 : srcCount - 1;
+        srcIndex[i] = (srcCount < destCount) ? (unsigned short)(destCount - 1) : (unsigned short)(srcCount - 1);
         double *spline = new double[srcCount];
         if (spline != NULL)
         {
@@ -88,7 +88,7 @@ E_Condition interpolateValues(
               gradient = ((destCount < srcCount) && (destCount > 1)) ? (double)(srcCount - 1) / (double)(destCount - 1) : 1;
               for (i = 0; i < destCount - 1; i++)
                 destIndex[i] = (unsigned short)((double)i * gradient);
-              destIndex[i] = (destCount < srcCount) ? srcCount - 1 : destCount - 1;
+              destIndex[i] = (destCount < srcCount) ? (unsigned short)(srcCount - 1) : (unsigned short)(destCount - 1);
               if (DiCubicSpline<unsigned short, unsigned short>::Interpolation(srcIndex, srcData, spline, srcCount, destIndex, destData, destCount))
                 result = EC_Normal;
             } else result = EC_MemoryExhausted;
@@ -117,7 +117,7 @@ E_Condition createLUT(
   if (numberOfEntries < 1) return EC_IllegalCall;
   if (numberOfEntries > 65536) return EC_IllegalCall;
 
-  Uint16 entries = (numberOfEntries == 65536) ? 0 : numberOfEntries;
+  Uint16 entries = (numberOfEntries == 65536) ? 0 : (Uint16)numberOfEntries;
 
   E_Condition result = EC_Normal;
   DcmElement *descriptor = new DcmUnsignedShort(DcmTag(DCM_LUTDescriptor, EVR_US));
@@ -342,7 +342,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dconvmap.cc,v $
-** Revision 1.2  1999-10-01 13:31:46  joergr
+** Revision 1.3  1999-10-01 14:53:58  joergr
+** Fixed type conversion problems reported by MSVC5.
+**
+** Revision 1.2  1999/10/01 13:31:46  joergr
 ** Added new command line option specifying the number of LUT entries to
 ** MAP file conversion tool.
 **
