@@ -23,10 +23,10 @@
  *  Definitions of "well known" DICOM Unique Indentifiers,
  *  routines for finding and creating UIDs.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-12-20 11:16:53 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-01-08 10:43:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
- *  CVS/RCS Revision: $Revision: 1.48 $
+ *  CVS/RCS Revision: $Revision: 1.49 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -104,7 +104,7 @@ extern const int numberOfDcmImageSOPClassUIDs;
 
 
 /*              
-** char* generateUniqueIdentifer(char* uid)
+** char* generateUniqueIdentifier(char* uid)
 ** Creates a Unique Identifer in uid and returns uid.
 ** uid must be at least 65 bytes. Care is taken to make sure
 ** that the generated UID is 64 characters or less.
@@ -120,7 +120,7 @@ extern const int numberOfDcmImageSOPClassUIDs;
 **      the system calendar time
 **      an accumulating counter for this process
 */
-char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
+char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix=NULL);
 
 /* 
  * dcmSOPClassUIDToModality
@@ -145,7 +145,8 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 
 /* 
 ** OFFIS UID is: 1.2.276.0.7230010
-** UID Root for dcmtk DICOM project: 1.2.276.0.7230010.3
+** UID Root for dcmtk DICOM project:   1.2.276.0.7230010.3
+**          for OFFIS GO-Kard project: 1.2.276.0.7230010.8
 */
 
 /* NOTE: Implementation version name VR=SH may not be longer than 16 chars
@@ -190,7 +191,7 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 ** A private SOP Class UID which can be used in a file meta-header when
 ** no real SOP Class is stored in the file. -- NON-STANDARD
 */
-#define UID_PrivateGenericFileSOPClass  SITE_UID_ROOT ".1.0.1"
+#define UID_PrivateGenericFileSOPClass          SITE_UID_ROOT ".1.0.1"
 
 
 /*
@@ -433,7 +434,11 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.48  2001-12-20 11:16:53  meichel
+** Revision 1.49  2002-01-08 10:43:00  joergr
+** Corrected spelling of function dcmGenerateUniqueIdentifier().
+** Added comment about another reserved UID root (for OFFIS GO-Kard project).
+**
+** Revision 1.48  2001/12/20 11:16:53  meichel
 ** Updated Version Number and Implementation Version Name to reflect the
 **   current public release (3.5.1)
 **
