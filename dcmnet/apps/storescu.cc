@@ -36,9 +36,9 @@
 **
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-05-23 10:43:04 $
+** Update Date:		$Date: 1997-05-28 12:03:26 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.13 $
+** CVS/RCS Revision:	$Revision: 1.14 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -104,18 +104,18 @@ fullusage()
     shortusage();
     fprintf(stderr, "\
 parameters:\n\
-    peer	hostname of dicom peer\n\
-    port	tcp/ip port number of peer\n\
-    file	dicom image data set\n\
+    peer      hostname of dicom peer\n\
+    port      tcp/ip port number of peer\n\
+    file      dicom image data set\n\
 options:\n\
-    -u          disable generation of unknown VR (UN)\n\
-    -r n	repeat n times\n\
-    -v		verbose mode\n\
-    -d		debug mode\n\
-    -a		abort association\n\
-    -b n	set max receive pdu to n bytes (default: %d)\n\
-    -t title	my calling AE title (default: %s)\n\
-    -c title	called AE title of peer (default: %s)\n",
+    -u        disable generation of unknown VR (UN)\n\
+    -r n      repeat n times\n\
+    -v        verbose mode\n\
+    -d        debug mode\n\
+    -a        abort association\n\
+    -b n      set max receive pdu to n bytes (default: %d)\n\
+    -t title  my calling AE title (default: %s)\n\
+    -c title  called AE title of peer (default: %s)\n",
     maxReceivePDULength, APPLICATIONTITLE, PEERAPPLICATIONTITLE);
     exit(1);
 }
@@ -579,7 +579,10 @@ cstore(T_ASC_Association * assoc, const char *fname)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.13  1997-05-23 10:43:04  meichel
+** Revision 1.14  1997-05-28 12:03:26  meichel
+** Corrected spacing in usage message.
+**
+** Revision 1.13  1997/05/23 10:43:04  meichel
 ** Fixed a bug in storescu application: -u option did not work correctly.
 **
 ** Revision 1.12  1997/05/22 13:30:00  hewett
