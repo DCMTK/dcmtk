@@ -23,8 +23,8 @@
  *    classes: DSRTreeNodeCursor
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-26 14:20:49 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2000-11-07 18:14:31 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -106,6 +106,12 @@ class DSRTreeNodeCursor
         return NodeCursor;
     }
 
+    /** get pointer to parent node.
+     *  Used to have a lookup to the parent node without changing the cursor.
+     ** @return pointer to parent node (if any), NULL otherwise
+     */
+    const DSRTreeNode *getParentNode();
+
     /** get pointer to next node.
      *  Used to have a lookup to the next node without changing the cursor.
      ** @return pointer to next node (if any), NULL otherwise
@@ -186,12 +192,6 @@ class DSRTreeNodeCursor
      */
     void clearNodeCursorStack();
 
-    /** get pointer to parent node.
-     *  Used to have a lookup to the parent node without changing the cursor.
-     ** @return pointer to parent node (if any), NULL otherwise
-     */
-    const DSRTreeNode *getParentNode();
-
     /// pointer current node
     DSRTreeNode *NodeCursor;
     /// stack of node pointers. Used to store the cursor position of upper levels.
@@ -210,7 +210,10 @@ class DSRTreeNodeCursor
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtncsr.h,v $
- *  Revision 1.5  2000-10-26 14:20:49  joergr
+ *  Revision 1.6  2000-11-07 18:14:31  joergr
+ *  Enhanced support for by-reference relationships.
+ *
+ *  Revision 1.5  2000/10/26 14:20:49  joergr
  *  Generalized routine to get and search for position strings ("1.2.3").
  *
  *  Revision 1.4  2000/10/18 17:09:06  joergr

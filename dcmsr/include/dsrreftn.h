@@ -23,8 +23,8 @@
  *    classes: DSRByReferenceTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-01 16:23:23 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-11-07 18:14:30 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,8 +37,8 @@
 
 #include "osconfig.h"   /* make sure OS specific configuration is included first */
 
+#include "dsrdoctr.h"
 #include "dsrdoctn.h"
-#include "dsrstrvl.h"
 
 
 /*---------------------*
@@ -48,9 +48,10 @@
 /** Class for by-reference relationships
  */
 class DSRByReferenceTreeNode
-  : public DSRDocumentTreeNode,
-    public DSRStringValue
+  : public DSRDocumentTreeNode
 {
+
+    friend DSRDocumentTree;
 
   public:
  
@@ -63,10 +64,10 @@ class DSRByReferenceTreeNode
     /** constructor.
      ** @param  relationshipType  type of relationship to the parent/source tree node.
      *                            Should not be RT_invalid or RT_isRoot.
-     *  @param  stringValue       initial string value to be set
+     *  @param  referencedNodeID  ID of the node to be referenced
      */
     DSRByReferenceTreeNode(const E_RelationshipType relationshipType,
-                           const OFString &stringValue);
+                           const size_t referencedNodeID);
 
     /** destructor
      */
@@ -78,8 +79,8 @@ class DSRByReferenceTreeNode
     virtual void clear();
 
     /** check whether the content item is valid.
-     *  The content item is valid if the two base classes are valid and the concept
-     *  name is empty.
+     *  The content item is valid if the base class is valid, the concept name is
+     *  empty and the reference (checked from outside this class) is valid.
      ** @return OFTrue if tree node is valid, OFFalse otherwise
      */
     virtual OFBool isValid() const;
@@ -120,12 +121,22 @@ class DSRByReferenceTreeNode
      ** @param  documentType      dummy parameter 
      *  @param  relationshipType  dummy parameter
      *  @param  valueType         dummy parameter
-     ** @return always returns OFFalse, since this content item is a leaf (has no children)
+     *  @param  byReference       dummy parameter
+     ** @return always OFFalse
      */
     virtual OFBool canAddNode(const E_DocumentType documentType,
                               const E_RelationshipType relationshipType,
-                              const E_ValueType valueType) const;
+                              const E_ValueType valueType,
+                              const OFBool byReference = OFFalse) const;
     
+    /** get ID of the referenced node
+     ** @return ID of the referenced node if valid, 0 otherwise
+     */
+    size_t getReferencedNodeID() const
+    {
+        return ReferencedNodeID;
+    }
+
 
   protected:
   
@@ -162,15 +173,16 @@ class DSRByReferenceTreeNode
                                               const size_t flags,
                                               OFConsole *logStream) const;
 
-    /** check the specified string value for validity.
-     *  A valid format consists of '.' separated interger number, e.g. "1", "1.2" or "1.2.3".
-     ** @param  stringValue  string value to be checked
-     ** @return OFTrue if code is valid, OFFalse otherwise
-     */
-    virtual OFBool checkValue(const OFString &stringValue) const;
 
-      
   private:
+
+    /// flag indicating whether the reference is valid or not (i.e. checked)
+    OFBool   ValidReference;
+    /// position string of the referenced content item (target)
+    OFString ReferencedContentItem;
+    /// node ID of the referenced content item (target)
+    size_t   ReferencedNodeID;
+
 
  // --- declaration of default/copy constructor and assignment operator
 
@@ -186,7 +198,10 @@ class DSRByReferenceTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrreftn.h,v $
- *  Revision 1.2  2000-11-01 16:23:23  joergr
+ *  Revision 1.3  2000-11-07 18:14:30  joergr
+ *  Enhanced support for by-reference relationships.
+ *
+ *  Revision 1.2  2000/11/01 16:23:23  joergr
  *  Added support for conversion to XML.
  *
  *  Revision 1.1  2000/10/26 14:22:42  joergr

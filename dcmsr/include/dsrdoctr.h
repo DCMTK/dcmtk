@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTree
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-01 16:23:20 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-11-07 18:14:29 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -90,7 +90,7 @@ class DSRDocumentTree
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition print(ostream &stream,
-                      const size_t flags = 0) const;
+                      const size_t flags = 0);
 
     /** read SR document tree from DICOM dataset.
      *  Please note that the current document tree is also deleted if the reading fails.
@@ -108,7 +108,7 @@ class DSRDocumentTree
      *                   written to
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition write(DcmItem &dataset) const;
+    E_Condition write(DcmItem &dataset);
 
     /** write current SR document tree in XML format
      ** @param  stream  output stream to which the XML document is written
@@ -116,7 +116,7 @@ class DSRDocumentTree
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition writeXML(ostream &stream,
-                         const size_t flags) const;
+                         const size_t flags);
 
     /** render current SR document tree in HTML format
      ** @param  stream  output stream to which the HTML document is written
@@ -125,7 +125,7 @@ class DSRDocumentTree
      */
     E_Condition renderHTML(ostream &docStream,
                            ostream &annexStream,
-                           const size_t flags = 0) const;
+                           const size_t flags = 0);
 
     /** get document type
      ** return current document type (might be DT_invalid)
@@ -159,6 +159,15 @@ class DSRDocumentTree
                              const E_ValueType valueType,
                              const E_AddMode addMode = AM_afterCurrent);
 
+    /** check whether specified by-reference relationship can be added to the current
+     *  content item.  This method is only applicable to Comprehensive SR documents.
+     ** @param  relationshipType  type of relationship between current and target node
+     *  @param  valueType         value type of the referenced target node
+     ** @return OFTrue if specified by-reference relationship can be added, OFFalse otherwise
+     */
+    OFBool canAddByReferenceRelationship(const E_RelationshipType relationshipType,
+                                         const E_ValueType valueType);
+
     /** add specified content item to the current one.
      *  If possible this method creates a new node as specified and adds it to the current
      *  one.  The method canAddContentItem() is called internally to check parameters first.
@@ -172,6 +181,17 @@ class DSRDocumentTree
     size_t addContentItem(const E_RelationshipType relationshipType,
                           const E_ValueType valueType,
                           const E_AddMode addMode = AM_afterCurrent);
+
+    /** add specified by-reference relationship to the current content item.
+     *  If possible this method creates a new pseudo-node (relationship) and adds it to the
+     *  current one.  The method canByReferenceRelationship() is called internally to check
+     *  parameters first.  The internal cursor is automatically re-set to the current node.
+     ** @param  relationshipType  relationship type between current and referenced node
+     *  @param  referencedNodeID  node ID of the referenced content item
+     ** @return ID of new pseudo-node if successful, 0 otherwise
+     */
+    size_t addByReferenceRelationship(const E_RelationshipType relationshipType,
+                                      const size_t referencedNodeID);
 
     /** remove current content item from tree.
      *  Please note that not only the specified node but also all of his child nodes are
@@ -211,6 +231,11 @@ class DSRDocumentTree
      *          occured or the tree is now empty.
      */
     virtual size_t removeNode();
+    
+    /**
+     */
+    E_Condition checkByReferenceRelationships(const OFBool updateString = OFFalse,
+                                              const OFBool updateNodeID = OFFalse);
 
 
   private:
@@ -247,7 +272,10 @@ class DSRDocumentTree
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.h,v $
- *  Revision 1.4  2000-11-01 16:23:20  joergr
+ *  Revision 1.5  2000-11-07 18:14:29  joergr
+ *  Enhanced support for by-reference relationships.
+ *
+ *  Revision 1.4  2000/11/01 16:23:20  joergr
  *  Added support for conversion to XML.
  *
  *  Revision 1.3  2000/10/18 17:02:57  joergr

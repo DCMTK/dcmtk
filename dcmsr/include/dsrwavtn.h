@@ -23,8 +23,8 @@
  *    classes: DSRWaveformTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-01 16:23:28 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2000-11-07 18:14:32 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -111,11 +111,15 @@ class DSRWaveformTreeNode
      *  @param  relationshipType  relationship type of the new node with regard to the
      *                            current one
      *  @param  valueType         value type of node to be checked/added
+     *  @param  byReference       optional flag indicating whether the node/relationship
+     *                            should be added by-value (default) or by-reference
+     *                            (only for Comprehensive SR)
      ** @return OFTrue if specified node can be added, OFFalse otherwise
      */
     virtual OFBool canAddNode(const E_DocumentType documentType,
                               const E_RelationshipType relationshipType,
-                              const E_ValueType valueType) const;
+                              const E_ValueType valueType,
+                              const OFBool byReference = OFFalse) const;
 
 
   protected:
@@ -170,7 +174,10 @@ class DSRWaveformTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavtn.h,v $
- *  Revision 1.3  2000-11-01 16:23:28  joergr
+ *  Revision 1.4  2000-11-07 18:14:32  joergr
+ *  Enhanced support for by-reference relationships.
+ *
+ *  Revision 1.3  2000/11/01 16:23:28  joergr
  *  Added support for conversion to XML.
  *
  *  Revision 1.2  2000/10/23 15:13:42  joergr

@@ -23,8 +23,8 @@
  *    classes: DSRContentItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-01 16:11:26 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2000-11-07 18:11:29 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -87,15 +87,21 @@ class DSRContentItem
      */
     E_RelationshipType getRelationshipType() const;
 
+    /** get ID of the referenced node.
+     *  Applicable to: byReference relationships
+     ** @return ID of the referenced node if valid, 0 otherwise
+     */
+    size_t getReferencedNodeID() const;
+
     /** get string value.
-     *  Applicable to: TEXT, DATETIME, DATE, TIME, UIDREF, PNAME, (byReference)
+     *  Applicable to: TEXT, DATETIME, DATE, TIME, UIDREF, PNAME
      ** @return string value of current content item if valid, EmptyString otherwise
      */
     const OFString &getStringValue() const;
     
     /** set string value.  Please use the correct format for the string value depending on
      *  the corresponding content item (value type).
-     *  Applicable to: TEXT, DATETIME, DATE, TIME, UIDREF, PNAME, (byReference)
+     *  Applicable to: TEXT, DATETIME, DATE, TIME, UIDREF, PNAME
      ** @param  stringValue  value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
@@ -404,7 +410,10 @@ class DSRContentItem
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcitem.h,v $
- *  Revision 1.9  2000-11-01 16:11:26  joergr
+ *  Revision 1.10  2000-11-07 18:11:29  joergr
+ *  Enhanced support for by-reference relationships.
+ *
+ *  Revision 1.9  2000/11/01 16:11:26  joergr
  *  Now derive "protected" from base class DSRTypes instead of "public".
  *
  *  Revision 1.8  2000/10/26 14:16:18  joergr

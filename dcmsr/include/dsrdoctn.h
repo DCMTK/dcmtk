@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-01 16:23:19 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2000-11-07 18:14:28 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -157,6 +157,22 @@ class DSRDocumentTreeNode
                                    const size_t flags,
                                    OFConsole *logStream = NULL) const;
 
+    /** check whether the current content item is target of an by-reference relationship
+     ** @return OFTrue if the content item is target, OFFalse otherwise
+     */
+    inline OFBool isReferenceTarget() const
+    {
+        return ReferenceTarget;
+    }
+
+    /** specify whether the current content item is target of an by-reference relationship
+     ** @param  isTarget  OFTrue if the content item is target (default), OFFalse otherwise
+     */
+    inline void setReferenceTarget(const OFBool isTarget = OFTrue)
+    {
+        ReferenceTarget = isTarget;
+    }
+
     /** check whether the current content item has any children
      ** @return OFTrue if there are any child nodes, OFFalse otherwise
      */
@@ -241,16 +257,20 @@ class DSRDocumentTreeNode
      *  return value is always OFTrue, derived classes typically overwrite this method.
      ** @param  documentType      type of document to which the content item belongs.
      *                            The document type has an impact on the relationship
-     *                            contraints. 
+     *                            contraints.
      *  @param  relationshipType  relationship type of the new node with regard to the
      *                            current one
      *  @param  valueType         value type of node to be checked/added
+     *  @param  byReference       optional flag indicating whether the node/relationship
+     *                            should be added by-value (default) or by-reference
+     *                            (only for Comprehensive SR)
      ** @return OFTrue if specified node can be added, OFFalse otherwise
      */
     virtual OFBool canAddNode(const E_DocumentType documentType,
                               const E_RelationshipType relationshipType,
-                              const E_ValueType valueType) const;
-    
+                              const E_ValueType valueType,
+                              const OFBool byReference = OFFalse) const;
+
 
   protected:
 
@@ -265,7 +285,7 @@ class DSRDocumentTreeNode
     /** create a new node and append it to the current one
      ** @param  previousNode      reference to the pointer to the previous node (sibling).
      *                            Used to decide whether the new node is a child (value=NULL)
-     *                            or a sibling (!=NULL).  NB: The value might be modified 
+     *                            or a sibling (!=NULL).  NB: The value might be modified
      *                            inside this method (to store a reference to the previous node).
      *  @param  documentType      type of document to which this and the new content item belong
      *  @param  relationshipType  relationship type of the new node with regard to the
@@ -430,6 +450,9 @@ class DSRDocumentTreeNode
 
   private:
 
+    /// flag indicating whether the content item is referenced (by-reference relationship)
+    OFBool                   ReferenceTarget;
+
     /// relationship type to the parent node (VR=CS, mandatory)
     const E_RelationshipType RelationshipType;
     /// value type (VR=CS, mandatory)
@@ -455,7 +478,10 @@ class DSRDocumentTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.h,v $
- *  Revision 1.5  2000-11-01 16:23:19  joergr
+ *  Revision 1.6  2000-11-07 18:14:28  joergr
+ *  Enhanced support for by-reference relationships.
+ *
+ *  Revision 1.5  2000/11/01 16:23:19  joergr
  *  Added support for conversion to XML.
  *
  *  Revision 1.4  2000/10/26 14:17:38  joergr

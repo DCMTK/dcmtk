@@ -23,8 +23,8 @@
  *    classes: DSRTCoordTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-01 16:23:26 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-11-07 18:14:31 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -110,11 +110,15 @@ class DSRTCoordTreeNode
      *  @param  relationshipType  relationship type of the new node with regard to the
      *                            current one
      *  @param  valueType         value type of node to be checked/added
+     *  @param  byReference       optional flag indicating whether the node/relationship
+     *                            should be added by-value (default) or by-reference
+     *                            (only for Comprehensive SR)
      ** @return OFTrue if specified node can be added, OFFalse otherwise
      */
     virtual OFBool canAddNode(const E_DocumentType documentType,
                               const E_RelationshipType relationshipType,
-                              const E_ValueType valueType) const;
+                              const E_ValueType valueType,
+                              const OFBool byReference = OFFalse) const;
 
 
   protected:
@@ -169,7 +173,10 @@ class DSRTCoordTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcotn.h,v $
- *  Revision 1.2  2000-11-01 16:23:26  joergr
+ *  Revision 1.3  2000-11-07 18:14:31  joergr
+ *  Enhanced support for by-reference relationships.
+ *
+ *  Revision 1.2  2000/11/01 16:23:26  joergr
  *  Added support for conversion to XML.
  *
  *  Revision 1.1  2000/10/26 14:23:25  joergr
