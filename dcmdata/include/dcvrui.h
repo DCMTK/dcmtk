@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmUniqueIdentifier
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:19:35 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-25 10:01:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrui.h,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,7 +45,7 @@
 class DcmUniqueIdentifier : public DcmByteString 
 {
 protected:
-    OFCondition makeMachineByteString(void);
+    virtual OFCondition makeMachineByteString(void);
 
 public:
     DcmUniqueIdentifier(const DcmTag &tag, const Uint32 len = 0);
@@ -68,7 +68,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrui.h,v $
-** Revision 1.16  2001-09-25 17:19:35  meichel
+** Revision 1.17  2002-04-25 10:01:21  joergr
+** Made makeMachineByteString() virtual to avoid ambiguities.
+**
+** Revision 1.16  2001/09/25 17:19:35  meichel
 ** Adapted dcmdata to class OFCondition
 **
 ** Revision 1.15  2001/06/01 15:48:53  meichel
