@@ -35,7 +35,7 @@ OFCondition status = fileformat.loadFile("test.dcm");
 if (status.good())
 {
   OFString patientsName;
-  if (fileformat.getDataset().findAndGetOFString(DCM_PatientsName, patientsName).good())
+  if (fileformat.getDataset()->findAndGetOFString(DCM_PatientsName, patientsName).good())
   {
     cout << "Patient's Name: " << patientsName << endl;
   } else
