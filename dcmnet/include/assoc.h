@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1999-04-21 13:01:23 $
+** Update Date:		$Date: 1999-04-26 17:20:55 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/assoc.h,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
+** CVS/RCS Revision:	$Revision: 1.9 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -366,6 +366,12 @@ ASC_findAcceptedPresentationContextID(
     T_ASC_Association *assoc,
     const char* abstractSyntax);
 
+T_ASC_PresentationContextID
+ASC_findAcceptedPresentationContextID(
+    T_ASC_Association *assoc,
+    const char* abstractSyntax,
+    const char * transferSyntax);
+
 /* extended negotiation */
 void ASC_getRequestedExtNegList(T_ASC_Parameters* params, SOPClassExtendedNegotiationSubItemList** extNegList);
 void ASC_getAcceptedExtNegList(T_ASC_Parameters* params, SOPClassExtendedNegotiationSubItemList** extNegList);
@@ -494,7 +500,12 @@ ASC_destroyAssociation(T_ASC_Association ** association);
 /*
 ** CVS Log
 ** $Log: assoc.h,v $
-** Revision 1.8  1999-04-21 13:01:23  meichel
+** Revision 1.9  1999-04-26 17:20:55  meichel
+** Added new "transfer syntax aware" variant of the dcmnet function
+**   ASC_findAcceptedPresentationContextID. This variant tries to find an
+**   accepted presentation context that matches both abstract and transfer syntax.
+**
+** Revision 1.8  1999/04/21 13:01:23  meichel
 ** Increased max. number of transfer syntaxes that
 **   can be managed in an A-ASSOCIATE packet from 25 to 50.
 **
