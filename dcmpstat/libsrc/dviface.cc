@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-12-19 13:49:57 $
- *  CVS/RCS Revision: $Revision: 1.146 $
+ *  Update Date:      $Date: 2003-12-19 14:57:04 $
+ *  CVS/RCS Revision: $Revision: 1.147 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -3811,7 +3811,7 @@ OFCondition DVInterface::terminatePrintServer()
           tlsCertificateFile += PATH_SEPARATOR;
           current = getTargetCertificate(target);
           if (current) tlsCertificateFile += current; else tlsCertificateFile += "sitecert.pem";
-          
+
           /* private key file */
           OFString tlsPrivateKeyFile(tlsFolder);
           tlsPrivateKeyFile += PATH_SEPARATOR;
@@ -3836,11 +3836,11 @@ OFCondition DVInterface::terminatePrintServer()
           tlsRandomSeedFile += PATH_SEPARATOR;
           current = getTargetRandomSeed(target);
           if (current) tlsRandomSeedFile += current; else tlsRandomSeedFile += "siteseed.bin";
-          
+         
           /* CA certificate directory */
           const char *tlsCACertificateFolder = getTLSCACertificateFolder();
           if (tlsCACertificateFolder==NULL) tlsCACertificateFolder = ".";
-          
+
           /* ciphersuites */
           OFString tlsCiphersuites(SSL3_TXT_RSA_DES_192_CBC3_SHA);
           Uint32 tlsNumberOfCiphersuites = getTargetNumberOfCipherSuites(target);
@@ -3859,6 +3859,7 @@ OFCondition DVInterface::terminatePrintServer()
               }
             }
           }
+
           DcmTLSTransportLayer *tLayer = new DcmTLSTransportLayer(DICOM_APPLICATION_REQUESTOR, tlsRandomSeedFile.c_str());
           if (tLayer)
           {
@@ -3881,6 +3882,8 @@ OFCondition DVInterface::terminatePrintServer()
         gethostname(localHost, sizeof(localHost) - 1);
         sprintf(peerHost, "%s:%d", getTargetHostname(target), OFstatic_cast(int, getTargetPort(target)));
         ASC_setPresentationAddresses(params, localHost, peerHost);
+
+        if (cond.good()) cond = ASC_setTransportLayerType(params, useTLS);
 
         const char* transferSyntaxes[] = { UID_LittleEndianImplicitTransferSyntax };
         if (cond.good()) cond = ASC_addPresentationContext(params, 1, UID_PrivateShutdownSOPClass, transferSyntaxes, 1);
@@ -4412,7 +4415,10 @@ void DVInterface::disableImageAndPState()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.146  2003-12-19 13:49:57  meichel
+ *  Revision 1.147  2003-12-19 14:57:04  meichel
+ *  Completed support for terminating TLS-based print server processes
+ *
+ *  Revision 1.146  2003/12/19 13:49:57  meichel
  *  DVInterface::terminatePrintServer now also correctly terminates
  *    TLS-based print server processes.
  *
