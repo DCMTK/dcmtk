@@ -21,10 +21,10 @@
  *
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2004-02-12 14:05:17 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-02-13 14:17:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.67 $
+ *  CVS/RCS Revision: $Revision: 1.68 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2296,10 +2296,12 @@ static OFCondition acceptUnknownContextsWithPreferredTransferSyntaxes(
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.67  2004-02-12 14:05:17  wilkens
+** Revision 1.68  2004-02-13 14:17:39  joergr
+** Removed acknowledgements with e-mail addresses from CVS log.
+**
+** Revision 1.67  2004/02/12 14:05:17  wilkens
 ** Corrected bug in storescp that options "-xcr" and "+B" (or "--ignore") could
-** not be used together. Now they can. Thanks to Philippe Puech
-** <puech@inviweb.com> for the bug report.
+** not be used together. Now they can.
 **
 ** Revision 1.66  2003/08/14 10:58:47  meichel
 ** Added check if association configuration profile is valid for SCP use
