@@ -93,8 +93,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-04-30 15:52:33 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Update Date:      $Date: 2004-05-03 17:19:50 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -186,6 +186,16 @@ extern "C"
 extern "C"
 {
   int finite(double value);
+}
+#endif
+#endif
+
+// some systems don't properly define isnan()
+#ifdef HAVE_ISNAN
+#ifndef HAVE_PROTOTYPE_ISNAN
+extern "C"
+{
+  int isnan(double value);
 }
 #endif
 #endif
@@ -1606,7 +1616,11 @@ unsigned int OFStandard::my_sleep(unsigned int seconds)
 
 /*
  *  $Log: ofstd.cc,v $
- *  Revision 1.28  2004-04-30 15:52:33  meichel
+ *  Revision 1.29  2004-05-03 17:19:50  meichel
+ *  my_isinf() now also works on systems where finite() or isinf()
+ *    are defined but not properly declared in <math.h> or <cmath>.
+ *
+ *  Revision 1.28  2004/04/30 15:52:33  meichel
  *  my_isinf() now also works on systems where finite() or isinf()
  *    are defined but not properly declared in <math.h> or <cmath>.
  *
