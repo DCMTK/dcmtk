@@ -35,9 +35,9 @@
 **		Kuratorium OFFIS e.V., Oldenburg, Germany
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1999-03-29 11:19:52 $
+** Update Date:		$Date: 1999-04-21 15:54:22 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/echoscu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.12 $
+** CVS/RCS Revision:	$Revision: 1.13 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -63,91 +63,79 @@ END_EXTERN_C
 #include "dcdict.h"
 #include "dcuid.h"
 #include "cmdlnarg.h"
+#include "ofconapp.h"
 #include "dcuid.h"    /* for dcmtk version name */
 
-static char rcsid[] = "$dcmtk: echoscu v"
-  OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
+#define OFFIS_CONSOLE_APPLICATION "echoscu"
 
-#define PATHSEPARATOR PATH_SEPARATOR	/* via osconfig.h" */
+static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
+  OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
 /* default application titles */
 #define APPLICATIONTITLE	"ECHOSCU"
 #define PEERAPPLICATIONTITLE	"ANY-SCP"
 
-static char *progname = NULL;
-static OFBool verbose = OFFalse;
-static OFBool debug = OFFalse;
-static OFBool abortAssociation = OFFalse;
-static int maxReceivePDULength = ASC_DEFAULTMAXPDU;
-static int repeatCount = 1;
+static OFBool opt_verbose = OFFalse;
+static OFBool opt_debug = OFFalse;
 
-static void
-shortusage()
+static void errmsg(const char *msg)
 {
-    fprintf(stderr, "usage: %s [-r n][-v][-d][-a][-b n][-t ourAETitle]"
-	    "[-c theirAETitle] peer port\n",
-	    progname);
+  if (msg) fprintf(stderr, "%s: %s\n", OFFIS_CONSOLE_APPLICATION, msg);
 }
 
-static void
-fullusage()
-{
-    fprintf(stderr, "%s\n\n", rcsid);
-    shortusage();
-    fprintf(stderr, "\
-parameters:\n\
-    peer	hostname of dicom peer\n\
-    port	tcp/ip port number of peer\n\
-options:\n\
-    -r n	repeat n times\n\
-    -v		verbose mode\n\
-    -d		debug mode\n\
-    -a		abort association\n\
-    -b n	set max receive pdu to n bytes (default: %d)\n\
-    -t title	my calling AE title (default: %s)\n\
-    -c title	called AE title of peer (default: %s)\n",
-    maxReceivePDULength, APPLICATIONTITLE, PEERAPPLICATIONTITLE);
-    exit(1);
-}
+static CONDITION cecho(T_ASC_Association * assoc, unsigned long num_repeat);
 
-static void 
-usage()
-{
-    shortusage();
-    exit(1);
-}
-
-static void 
-errmsg(const char *msg,...)
-{
-    va_list args;
-
-    fprintf(stderr, "%s: ", progname);
-    va_start(args, msg);
-    vfprintf(stderr, msg, args);
-    va_end(args);
-    fprintf(stderr, "\n");
-}
-
-static CONDITION cecho(T_ASC_Association *assoc);
-
+/* DICOM standard transfer syntaxes */
+static const char* transferSyntaxes[] = {
+      UID_LittleEndianImplicitTransferSyntax, /* default xfer syntax first */
+      UID_LittleEndianExplicitTransferSyntax,
+      UID_BigEndianExplicitTransferSyntax,
+      UID_JPEGProcess1TransferSyntax,
+      UID_JPEGProcess2_4TransferSyntax,
+      UID_JPEGProcess3_5TransferSyntax,
+      UID_JPEGProcess6_8TransferSyntax,
+      UID_JPEGProcess7_9TransferSyntax,
+      UID_JPEGProcess10_12TransferSyntax,
+      UID_JPEGProcess11_13TransferSyntax,
+      UID_JPEGProcess14TransferSyntax,
+      UID_JPEGProcess15TransferSyntax,
+      UID_JPEGProcess16_18TransferSyntax,
+      UID_JPEGProcess17_19TransferSyntax,
+      UID_JPEGProcess20_22TransferSyntax,
+      UID_JPEGProcess21_23TransferSyntax,
+      UID_JPEGProcess24_26TransferSyntax,
+      UID_JPEGProcess25_27TransferSyntax,
+      UID_JPEGProcess28TransferSyntax,
+      UID_JPEGProcess29TransferSyntax,
+      UID_JPEGProcess14SV1TransferSyntax,
+      UID_RLELossless};
 
 // ********************************************
 
+#define SHORTCOL 4
+#define LONGCOL 12
+
 int
 main(int argc, char *argv[])
-{
+{    
+    const char *     opt_peer                = NULL;
+    OFCmdUnsignedInt opt_port                = 104;
+    const char *     opt_peerTitle           = PEERAPPLICATIONTITLE;
+    const char *     opt_ourTitle            = APPLICATIONTITLE;
+    OFCmdUnsignedInt opt_maxReceivePDULength = ASC_DEFAULTMAXPDU;
+    OFCmdUnsignedInt opt_repeatCount         = 1;
+    OFBool           opt_abortAssociation    = OFFalse;
+    OFCmdUnsignedInt opt_numXferSyntaxes     = 1;
+    OFCmdUnsignedInt opt_numPresentationCtx  = 1;
+    OFCmdUnsignedInt maxXferSyntaxes         = (OFCmdUnsignedInt)(DIM_OF(transferSyntaxes));
+    
+    
     CONDITION cond;
     T_ASC_Network *net;
     T_ASC_Parameters *params;
-    char *peer;
-    int port = 104;
     DIC_NODENAME localHost;
     DIC_NODENAME peerHost;
-    int i;
     T_ASC_Association *assoc;
-    const char *peerTitle = PEERAPPLICATIONTITLE;
-    const char *ourTitle = APPLICATIONTITLE;
 
 #ifdef HAVE_GUSI_H
     /* needed for Macintosh */
@@ -162,88 +150,76 @@ main(int argc, char *argv[])
     WSAStartup(winSockVersionNeeded, &winSockData);
 #endif
 
-    prepareCmdLineArgs(argc, argv, "echoscu");
+  char tempstr[20];
+  OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "DICOM verification (C-ECHO) SCU", rcsid);
+  OFCommandLine cmd;
 
-    /* strip any leading path from program name */
-    if ((progname = (char*)strrchr(argv[0], PATHSEPARATOR)) != NULL) {
-	progname++;
-    } else {
-	progname = argv[0];
-    }
+  cmd.addGroup("general options:", LONGCOL, SHORTCOL+2);
+   cmd.addOption("--help",                      "-h",        "print this help text and exit");
+   cmd.addOption("--verbose",                   "-v",        "verbose mode, print processing details");
+   cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
+ 
+  cmd.addGroup("network options:");
+    cmd.addSubGroup("application entity titles:", LONGCOL, SHORTCOL);
+      OFString opt1 = "set my calling AE title (default: ";
+      opt1 += APPLICATIONTITLE;
+      opt1 += ")";
+      cmd.addOption("--aetitle",                "-aet",   1, "aetitle: string", opt1.c_str());
+      OFString opt2 = "set called AE title of peer (default: ";
+      opt2 += PEERAPPLICATIONTITLE;
+      opt2 += ")";
+      cmd.addOption("--call",                   "-aec",   1, "aetitle: string", opt2.c_str());
+    cmd.addSubGroup("association negotiation debugging:", LONGCOL, SHORTCOL);
+      OFString opt5 = "[n]umber: integer (1..";
+      sprintf(tempstr, "%ld", (long)maxXferSyntaxes);
+      opt5 += tempstr;
+      opt5 += ")";
+      cmd.addOption("--propose-ts",                   "-pts",   1, opt5.c_str(), "propose n transfer syntaxes");
+      cmd.addOption("--propose-pc",                   "-ppc",   1, "[n]umber: integer (1..128)", "propose n presentation contexts");
+      
+    cmd.addSubGroup("other network options:", LONGCOL, SHORTCOL);
+      OFString opt3 = "set max receive pdu to n bytes (default: ";
+      sprintf(tempstr, "%ld", (long)ASC_DEFAULTMAXPDU);
+      opt3 += tempstr;
+      opt3 += ")";
+      OFString opt4 = "[n]umber of bytes: integer [";
+      sprintf(tempstr, "%ld", (long)ASC_MINIMUMPDUSIZE);
+      opt4 += tempstr;
+      opt4 += "..";
+      sprintf(tempstr, "%ld", (long)ASC_MAXIMUMPDUSIZE);
+      opt4 += tempstr;
+      opt4 += "]";
+      cmd.addOption("--max-pdu",                "-pdu",   1,  opt4.c_str(), opt3.c_str());
+      cmd.addOption("--repeat",                           1,  "[n]umber: integer", "repeat n times");
+      cmd.addOption("--abort",                                "abort association instead of releasing it");
 
-    if (argc < 3) {
-	fullusage();
-    }
-    /* parse program arguments */
-    for (i = 1; i < argc && argv[i][0] == '-'; i++) {
-	switch (argv[i][1]) {
-	case 'v':
-	    verbose = OFTrue;
-	    break;
-	case 'd':
-	    debug = OFTrue;
-	    verbose = OFTrue;
-	    break;
-	case 'a':
-	    abortAssociation = OFTrue;
-	    break;
-	case 'r':
-	    if (((i + 1) < argc) && (argv[i + 1][0] != '-') &&
-		(sscanf(argv[i + 1], "%d", &repeatCount) == 1)) {
-		i++;		/* repeat count parsed */
-	    } else {
-		repeatCount = 1;
-	    }
-	    break;
-	case 'b':
-	    if (((i + 1) < argc) && 
-		(sscanf(argv[i + 1], "%d", &maxReceivePDULength) == 1)) {
-		i++;		/* Maximum Receive PDU Length parsed */
-		if (maxReceivePDULength < ASC_MINIMUMPDUSIZE) {
-		    errmsg("Maximum receive PDU length (%d) too small",
-			maxReceivePDULength);
-		    usage();
-		} else if (maxReceivePDULength > ASC_MAXIMUMPDUSIZE) {
-		    errmsg("Maximum receive PDU length (%d) too big",
-			maxReceivePDULength);
-		    usage();
-		}
-	    } else {
-		usage();
-	    }
-	    break;
-	case 'c':
-	    if (i++ < argc)
-		peerTitle = argv[i];
-	    else
-		usage();
-	    break;
-	case 't':
-	    if (i++ < argc)
-		ourTitle = argv[i];
-	    else
-		usage();
-	    break;
-	default:
-	    usage();
-	}
-    }
+    /* evaluate command line */                           
+    prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
+    if (app.parseCommandLine(cmd, argc, argv, "peer port", 2, 2, OFCommandLine::ExpandWildcards))
+    {
+      /* check for --help first */
+      if (cmd.findOption("--help")) app.printUsage(OFFIS_CONSOLE_APPLICATION);
 
-    if (argc - i < 2)
-	usage();
+      cmd.getParam(1, opt_peer);
+      app.checkParam(cmd.getParam(2, opt_port, 1, (OFCmdUnsignedInt)65535));
 
-    /* peer to call */
-    peer = argv[i];
-    i++;
+      if (cmd.findOption("--verbose")) opt_verbose=OFTrue;
+      if (cmd.findOption("--debug")) 
+      {
+      	opt_debug = OFTrue;
+        DUL_Debug(OFTrue);
+        DIMSE_debug(OFTrue);
+      	SetDebugLevel(5);
+      }
 
-    /* get port number to call */
-    if (sscanf(argv[i], "%d", &port) != 1) {
-	errmsg("bad port number: %s", argv[i]);
-	usage();
-    }
-    DUL_Debug(debug);
-    DIMSE_debug(debug);
-    SetDebugLevel(((debug)?3:0));	/* dcmdata debugging */
+      if (cmd.findOption("--aetitle")) app.checkValue(cmd.getValue(opt_ourTitle));
+      if (cmd.findOption("--call")) app.checkValue(cmd.getValue(opt_peerTitle));
+      if (cmd.findOption("--max-pdu")) app.checkValue(cmd.getValue(opt_maxReceivePDULength, ASC_MINIMUMPDUSIZE, (OFCmdUnsignedInt)ASC_MAXIMUMPDUSIZE));
+      if (cmd.findOption("--repeat")) app.checkValue(cmd.getValue(opt_repeatCount, (OFCmdUnsignedInt)1));
+      if (cmd.findOption("--abort")) opt_abortAssociation=OFTrue;
+      if (cmd.findOption("--propose-ts")) app.checkValue(cmd.getValue(opt_numXferSyntaxes, 1, maxXferSyntaxes));
+      if (cmd.findOption("--propose-pc")) app.checkValue(cmd.getValue(opt_numPresentationCtx, 1, (OFCmdUnsignedInt)128));      
+   }
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded()) {
@@ -256,35 +232,37 @@ main(int argc, char *argv[])
 	COND_DumpConditions();
 	exit(1);
     }
-    cond = ASC_createAssociationParameters(&params, maxReceivePDULength);
+    cond = ASC_createAssociationParameters(&params, opt_maxReceivePDULength);
     if (!SUCCESS(cond)) {
 	COND_DumpConditions();
 	exit(1);
     }
-    ASC_setAPTitles(params, ourTitle, peerTitle, NULL);
+    ASC_setAPTitles(params, opt_ourTitle, opt_peerTitle, NULL);
 
     gethostname(localHost, sizeof(localHost) - 1);
-    sprintf(peerHost, "%s:%d", peer, port);
+    sprintf(peerHost, "%s:%d", opt_peer, (int)opt_port);
     ASC_setPresentationAddresses(params, localHost, peerHost);
 
-    const char* transferSyntaxes[] = {UID_LittleEndianImplicitTransferSyntax};
-
-    cond = ASC_addPresentationContext(
-	params,
-	1, UID_VerificationSOPClass,
-	transferSyntaxes, DIM_OF(transferSyntaxes));
-
-    if (!SUCCESS(cond)) {
-	COND_DumpConditions();
-	exit(1);
+    int presentationContextID = 1; /* odd byte value 1, 3, 5, .. 255 */
+    for (unsigned long ii=0; ii<opt_numPresentationCtx; ii++)
+    {
+      cond = ASC_addPresentationContext(params, presentationContextID, UID_VerificationSOPClass,
+	         transferSyntaxes, opt_numXferSyntaxes);
+      presentationContextID += 2;
+      if (!SUCCESS(cond))
+      {
+	    COND_DumpConditions();
+	    exit(1);
+      }
     }
-    if (debug) {
+
+    if (opt_debug) {
 	printf("Request Parameters:\n");
 	ASC_dumpParameters(params);
     }
 
     /* create association */
-    if (verbose)
+    if (opt_verbose)
 	printf("Requesting Association\n");
     cond = ASC_requestAssociation(net, params, &assoc);
     if (cond != ASC_NORMAL) {
@@ -302,7 +280,7 @@ main(int argc, char *argv[])
 	}
     }
     /* what has been accepted/refused ? */
-    if (debug) {
+    if (opt_debug) {
 	printf("Association Parameters Negotiated:\n");
 	ASC_dumpParameters(params);
     }
@@ -312,20 +290,20 @@ main(int argc, char *argv[])
 	exit(1);
     }
 
-    if (verbose) {
+    if (opt_verbose) {
 	printf("Association Accepted (Max Send PDV: %lu)\n",
 		assoc->sendPDVLength);
     }
 
 
     /* do the real work */
-    cond = cecho(assoc);
+    cond = cecho(assoc, opt_repeatCount);
 
     /* tear down association */
     switch (cond) {
     case DIMSE_NORMAL:
-	if (abortAssociation) {
-	    if (verbose)
+	if (opt_abortAssociation) {
+	    if (opt_verbose)
 		printf("Aborting Association\n");
 	    cond = ASC_abortAssociation(assoc);
 	    if (!SUCCESS(cond)) {
@@ -335,7 +313,7 @@ main(int argc, char *argv[])
 	    }
 	} else {
 	    /* release association */
-	    if (verbose)
+	    if (opt_verbose)
 		printf("Releasing Association\n");
 	    cond = ASC_releaseAssociation(assoc);
 	    if (cond != ASC_NORMAL && cond != ASC_RELEASECONFIRMED) {
@@ -347,7 +325,7 @@ main(int argc, char *argv[])
 	break;
     case DIMSE_PEERREQUESTEDRELEASE:
 	errmsg("Protocol Error: peer requested release (Aborting)");
-	if (verbose)
+	if (opt_verbose)
 	    printf("Aborting Association\n");
 	cond = ASC_abortAssociation(assoc);
 	if (!SUCCESS(cond)) {
@@ -357,12 +335,12 @@ main(int argc, char *argv[])
 	}
 	break;
     case DIMSE_PEERABORTEDASSOCIATION:
-	if (verbose) printf("Peer Aborted Association\n");
+	if (opt_verbose) printf("Peer Aborted Association\n");
 	break;
     default:
 	errmsg("SCU Failed:");
 	COND_DumpConditions();
-	if (verbose)
+	if (opt_verbose)
 	    printf("Aborting Association\n");
 	cond = ASC_abortAssociation(assoc);
 	if (!SUCCESS(cond)) {
@@ -383,7 +361,7 @@ main(int argc, char *argv[])
 	COND_DumpConditions();
 	exit(1);
     }
-    if (debug) {
+    if (opt_debug) {
 	/* are there any conditions sitting on the condition stack? */
 	char buf[BUFSIZ];
 	CONDITION c;
@@ -409,7 +387,7 @@ echoSCU(T_ASC_Association * assoc)
     DIC_US status;
     DcmDataset *statusDetail = NULL;
 
-    if (verbose) {
+    if (opt_verbose) {
 	printf("Echo [%d], ", msgId);
 	fflush(stdout);
     }
@@ -418,7 +396,7 @@ echoSCU(T_ASC_Association * assoc)
     	&status, &statusDetail);
 
     if (cond == DIMSE_NORMAL) {
-        if (verbose) {
+        if (opt_verbose) {
 	    printf("Complete [Status: %s]\n",
 	        DU_cstoreStatusString(status));
         }
@@ -435,21 +413,22 @@ echoSCU(T_ASC_Association * assoc)
 }
 
 static CONDITION
-cecho(T_ASC_Association * assoc)
+cecho(T_ASC_Association * assoc, unsigned long num_repeat)
 {
     CONDITION cond = DIMSE_NORMAL;
-    int n = repeatCount;
-
-    while (cond == DIMSE_NORMAL && n--) {
-	cond = echoSCU(assoc);
-    }
+    unsigned long n = num_repeat;
+    while (cond == DIMSE_NORMAL && n--) cond = echoSCU(assoc);
     return cond;
 }
 
 /*
 ** CVS Log
 ** $Log: echoscu.cc,v $
-** Revision 1.12  1999-03-29 11:19:52  meichel
+** Revision 1.13  1999-04-21 15:54:22  meichel
+** Adapted echoscu command line options to new scheme.  Merged assctest
+**   functionality into echoscu (--propose-ts and --propose-pc).
+**
+** Revision 1.12  1999/03/29 11:19:52  meichel
 ** Cleaned up dcmnet code for char* to const char* assignments.
 **
 ** Revision 1.11  1997/08/05 07:46:19  andreas
