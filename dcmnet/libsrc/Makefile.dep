@@ -4,15 +4,16 @@ asccond.o: asccond.cc ../../config/include/osconfig.h \
  ../../ofstd/include/oftypes.h ../../dcmdata/include/dcuid.h \
  ../include/lst.h ../include/dul.h ../include/extneg.h \
  ../../ofstd/include/ofstring.h ../../ofstd/include/oflist.h asccond.h \
- ../include/cond.h
+ ../include/cond.h ../../ofstd/include/ofconsol.h \
+ ../../ofstd/include/ofthread.h
 assoc.o: assoc.cc ../../config/include/osconfig.h ../include/dicom.h \
  ../include/dcompat.h ../../ofstd/include/ofbmanip.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
- ../../dcmdata/include/dcuid.h ../include/cond.h asccond.h \
- ../include/assoc.h ../include/lst.h ../include/dul.h \
+ ../../dcmdata/include/dcuid.h ../include/cond.h \
+ ../../ofstd/include/ofconsol.h ../../ofstd/include/ofthread.h \
+ asccond.h ../include/assoc.h ../include/lst.h ../include/dul.h \
  ../include/extneg.h ../../ofstd/include/ofstring.h \
- ../../ofstd/include/oflist.h ../../ofstd/include/ofconsol.h \
- ../../ofstd/include/ofthread.h ../../ofstd/include/ofstd.h \
+ ../../ofstd/include/oflist.h ../../ofstd/include/ofstd.h \
  ../include/dcmtrans.h ../include/dcmlayer.h
 cond.o: cond.cc ../../config/include/osconfig.h ../include/dicom.h \
  ../include/dcompat.h ../../ofstd/include/ofbmanip.h \
@@ -24,7 +25,8 @@ dcmlayer.o: dcmlayer.cc ../../config/include/osconfig.h \
  ../../ofstd/include/ofstring.h ../include/dcmtrans.h
 dcmtrans.o: dcmtrans.cc ../../config/include/osconfig.h \
  ../include/dcmtrans.h ../../ofstd/include/oftypes.h \
- ../include/dcmlayer.h ../../ofstd/include/ofstring.h
+ ../include/dcmlayer.h ../../ofstd/include/ofstring.h \
+ ../include/dcompat.h ../../ofstd/include/ofbmanip.h
 dcompat.o: dcompat.cc ../../config/include/osconfig.h \
  ../include/dcompat.h ../../ofstd/include/ofbmanip.h \
  ../include/dicom.h ../../dcmdata/include/dctypes.h \
@@ -67,19 +69,18 @@ dimcond.o: dimcond.cc ../../config/include/osconfig.h \
  ../include/dimse.h ../include/dicom.h ../include/dcompat.h \
  ../../ofstd/include/ofbmanip.h ../../dcmdata/include/dctypes.h \
  ../../ofstd/include/oftypes.h ../../dcmdata/include/dcuid.h \
- ../include/lst.h ../include/cond.h ../include/dul.h \
- ../include/extneg.h ../../ofstd/include/ofstring.h \
- ../../ofstd/include/oflist.h ../include/assoc.h \
- ../../dcmdata/include/dcdatset.h ../../ofstd/include/ofconsol.h \
- ../../ofstd/include/ofthread.h ../../dcmdata/include/dcerror.h \
- ../../dcmdata/include/dcitem.h ../../dcmdata/include/dcobject.h \
- ../../ofstd/include/ofglobal.h ../../dcmdata/include/dcxfer.h \
- ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
- ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
- ../../dcmdata/include/dcdicent.h ../../dcmdata/include/dclist.h \
- ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
- ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
- dimcond.h
+ ../include/lst.h ../include/cond.h ../../ofstd/include/ofconsol.h \
+ ../../ofstd/include/ofthread.h ../include/dul.h ../include/extneg.h \
+ ../../ofstd/include/ofstring.h ../../ofstd/include/oflist.h \
+ ../include/assoc.h ../../dcmdata/include/dcdatset.h \
+ ../../dcmdata/include/dcerror.h ../../dcmdata/include/dcitem.h \
+ ../../dcmdata/include/dcobject.h ../../ofstd/include/ofglobal.h \
+ ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
+ ../../dcmdata/include/dcstream.h ../../dcmdata/include/dctag.h \
+ ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dcdicent.h \
+ ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
+ ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
+ ../../dcmdata/include/dcelem.h dimcond.h
 dimdump.o: dimdump.cc ../../config/include/osconfig.h \
  ../include/diutil.h ../include/dicom.h ../include/dcompat.h \
  ../../ofstd/include/ofbmanip.h ../../dcmdata/include/dctypes.h \
@@ -234,11 +235,12 @@ diutil.o: diutil.cc ../../config/include/osconfig.h \
 dul.o: dul.cc ../../config/include/osconfig.h ../include/dcompat.h \
  ../../ofstd/include/ofbmanip.h ../include/dicom.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
- ../../dcmdata/include/dcuid.h ../include/cond.h ../include/lst.h \
+ ../../dcmdata/include/dcuid.h ../include/cond.h \
  ../../ofstd/include/ofconsol.h ../../ofstd/include/ofthread.h \
- ../include/dul.h ../include/extneg.h ../../ofstd/include/ofstring.h \
- ../../ofstd/include/oflist.h dulstruc.h dulpriv.h dulfsm.h \
- ../include/dcmtrans.h ../include/dcmlayer.h
+ ../include/lst.h ../include/dul.h ../include/extneg.h \
+ ../../ofstd/include/ofstring.h ../../ofstd/include/oflist.h \
+ dulstruc.h dulpriv.h dulfsm.h ../include/dcmtrans.h \
+ ../include/dcmlayer.h
 dulcond.o: dulcond.cc ../../config/include/osconfig.h \
  ../include/dicom.h ../include/dcompat.h \
  ../../ofstd/include/ofbmanip.h ../../dcmdata/include/dctypes.h \
@@ -250,39 +252,40 @@ dulconst.o: dulconst.cc ../../config/include/osconfig.h \
  ../include/dicom.h ../include/dcompat.h \
  ../../ofstd/include/ofbmanip.h ../../dcmdata/include/dctypes.h \
  ../../ofstd/include/oftypes.h ../../dcmdata/include/dcuid.h \
- ../include/cond.h ../include/lst.h ../include/dul.h \
+ ../include/cond.h ../../ofstd/include/ofconsol.h \
+ ../../ofstd/include/ofthread.h ../include/lst.h ../include/dul.h \
  ../include/extneg.h ../../ofstd/include/ofstring.h \
- ../../ofstd/include/oflist.h dulstruc.h dulpriv.h \
- ../../ofstd/include/ofconsol.h ../../ofstd/include/ofthread.h
+ ../../ofstd/include/oflist.h dulstruc.h dulpriv.h
 dulextra.o: dulextra.cc ../../config/include/osconfig.h \
  ../include/dicom.h ../include/dcompat.h \
  ../../ofstd/include/ofbmanip.h ../../dcmdata/include/dctypes.h \
  ../../ofstd/include/oftypes.h ../../dcmdata/include/dcuid.h \
- ../include/lst.h ../include/cond.h ../include/dul.h \
- ../include/extneg.h ../../ofstd/include/ofstring.h \
- ../../ofstd/include/oflist.h dulstruc.h dulpriv.h \
- ../include/dcmtrans.h ../include/dcmlayer.h
+ ../include/lst.h ../include/cond.h ../../ofstd/include/ofconsol.h \
+ ../../ofstd/include/ofthread.h ../include/dul.h ../include/extneg.h \
+ ../../ofstd/include/ofstring.h ../../ofstd/include/oflist.h \
+ dulstruc.h dulpriv.h ../include/dcmtrans.h ../include/dcmlayer.h
 dulfsm.o: dulfsm.cc ../../config/include/osconfig.h ../include/dicom.h \
  ../include/dcompat.h ../../ofstd/include/ofbmanip.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
  ../../dcmdata/include/dcuid.h ../include/lst.h ../include/cond.h \
+ ../../ofstd/include/ofconsol.h ../../ofstd/include/ofthread.h \
  ../include/dul.h ../include/extneg.h ../../ofstd/include/ofstring.h \
  ../../ofstd/include/oflist.h dulstruc.h dulpriv.h dulfsm.h \
- ../../ofstd/include/ofconsol.h ../../ofstd/include/ofthread.h \
  ../include/assoc.h ../include/dcmtrans.h ../include/dcmlayer.h
 dulparse.o: dulparse.cc ../../config/include/osconfig.h \
  ../include/dicom.h ../include/dcompat.h \
  ../../ofstd/include/ofbmanip.h ../../dcmdata/include/dctypes.h \
  ../../ofstd/include/oftypes.h ../../dcmdata/include/dcuid.h \
- ../include/cond.h ../include/lst.h ../include/dul.h \
+ ../include/cond.h ../../ofstd/include/ofconsol.h \
+ ../../ofstd/include/ofthread.h ../include/lst.h ../include/dul.h \
  ../include/extneg.h ../../ofstd/include/ofstring.h \
- ../../ofstd/include/oflist.h dulstruc.h dulpriv.h \
- ../../ofstd/include/ofconsol.h ../../ofstd/include/ofthread.h
+ ../../ofstd/include/oflist.h dulstruc.h dulpriv.h
 dulpres.o: dulpres.cc ../../config/include/osconfig.h \
  ../include/dicom.h ../include/dcompat.h \
  ../../ofstd/include/ofbmanip.h ../../dcmdata/include/dctypes.h \
  ../../ofstd/include/oftypes.h ../../dcmdata/include/dcuid.h \
- ../include/cond.h ../include/lst.h ../include/dul.h \
+ ../include/cond.h ../../ofstd/include/ofconsol.h \
+ ../../ofstd/include/ofthread.h ../include/lst.h ../include/dul.h \
  ../include/extneg.h ../../ofstd/include/ofstring.h \
  ../../ofstd/include/oflist.h dulstruc.h dulpriv.h dulfsm.h
 extneg.o: extneg.cc ../../config/include/osconfig.h \

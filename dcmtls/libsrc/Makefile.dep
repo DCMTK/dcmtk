@@ -9,5 +9,5 @@ tlslayer.o: tlslayer.cc ../../config/include/osconfig.h \
 tlstrans.o: tlstrans.cc ../../config/include/osconfig.h \
  ../include/tlstrans.h ../../dcmnet/include/dcmtrans.h \
  ../../ofstd/include/oftypes.h ../../dcmnet/include/dcmlayer.h \
- ../../ofstd/include/ofstring.h ../../ofstd/include/ofconsol.h \
- ../../ofstd/include/ofthread.h
+ ../../ofstd/include/ofstring.h ../include/tlslayer.h \
+ ../../ofstd/include/ofconsol.h ../../ofstd/include/ofthread.h
