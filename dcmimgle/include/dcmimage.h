@@ -22,9 +22,9 @@
  *  Purpose: Provides main interface to the "DICOM image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-20 10:32:05 $
+ *  Update Date:      $Date: 1999-11-19 12:36:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dcmimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -411,7 +411,7 @@ class DicomImage
     inline DiDisplayFunction *getDisplayFunction() const
     {
         return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
-            Image->getMonoImagePtr()->getDisplayFunction() : NULL;
+            Image->getMonoImagePtr()->getDisplayFunction() : (DiDisplayFunction *)NULL;
     }
 
     /** set display function
@@ -1379,7 +1379,11 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.25  1999-10-20 10:32:05  joergr
+ * Revision 1.26  1999-11-19 12:36:55  joergr
+ * Added explicit type cast to avoid compiler warnings (reported by gcc
+ * 2.7.2.1 on Linux).
+ *
+ * Revision 1.25  1999/10/20 10:32:05  joergr
  * Enhanced method getOverlayData to support 12 bit data for print.
  *
  * Revision 1.24  1999/10/06 13:26:08  joergr
