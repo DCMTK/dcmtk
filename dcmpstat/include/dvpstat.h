@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-02-18 11:36:38 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-02-25 18:40:08 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1277,6 +1277,17 @@ public:
      unsigned long &width,
      unsigned long &height);
   
+  /** same as method above apart from the fact that the storage area is handled
+   *  externally.
+   *  @param pixelData pointer to storage area where the pixel data is copied to.
+   *    The storage area must be allocated and deleted from the calling method.
+   *  @param size specifies size of the storage area in bytes.
+   *  @return EC_Normal upon success, an error code otherwise.
+   */
+   E_Condition getPixelData(
+     void *pixelData,
+     unsigned long size);
+
    /** gets the pixel aspect ratio of the attached image.
     *  Pixel aspect ratio is defined here as the width of a pixel divided
     *  by the height of a pixel (x/y).
@@ -1689,7 +1700,10 @@ private:
 
 /*
  *  $Log: dvpstat.h,v $
- *  Revision 1.9  1999-02-18 11:36:38  meichel
+ *  Revision 1.10  1999-02-25 18:40:08  joergr
+ *  Added method to fill pixel data into an externally handled storage area.
+ *
+ *  Revision 1.9  1999/02/18 11:36:38  meichel
  *  Added new method convertPValueToDDL() to DVPresentationState
  *    that maps P-Values to DDLs.
  *
