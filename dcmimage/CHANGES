@@ -1,3 +1,11 @@
+**** Changes from 1998.06.25 (riesmeier)
+
+- Minor changes to syntax description of dcm2pnm.
+  Affects: dcmimage/apps/dcm2pnm.cc
+
+- Added description of new compatibility options.
+  Affects: dcmimage/docs/dcm2pnm.txt
+
 **** Changes from 1998.06.23 (riesmeier)
 
 - Print 'maximum/minimum pixel value' (verbose mode) only for
