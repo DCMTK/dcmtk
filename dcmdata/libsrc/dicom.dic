@@ -612,7 +612,7 @@
 (0040,1004)	LO	PatientTransportArrangements	1	DICOM3
 (0040,1005)	LO	RequestedProcedureLocation	1	DICOM3
 (0040,1006)	SH	PlacerOrderNumberProcedure	1	DICOM3
-(0040,1007)	SH	FillerOrderNumber/Procedure	1	DICOM3
+(0040,1007)	SH	FillerOrderNumberProcedure	1	DICOM3
 (0040,1008)	LO	ConfidentialityCode	1	DICOM3
 (0040,1009)	SH	ReportingPriority	1	DICOM3
 (0040,1010)	PN	NamesOfIntendedRecipientsOfResults	1-n	DICOM3
