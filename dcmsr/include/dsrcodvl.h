@@ -23,8 +23,8 @@
  *    classes: DSRCodedEntryValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-01 16:12:55 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2000-11-06 11:14:55 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -61,8 +61,8 @@ class DSRCodedEntryValue
 
     /** constructor.
      *  The code triple is only set if it passed the validity check (see setCode()).
-     ** @param  codeValue               computer readable and computer searchable identifier
-     *                                  of the code to be set. (VR=SH, mandatory)
+     ** @param  codeValue               identifier of the code to be set that is unambiguous
+     *                                  within the coding scheme. (VR=SH, mandatory)
      *  @param  codingSchemeDesignator  textual identifier of the table where the 'codeValue'
      *                                  is linked to its 'codeMeaning'. (VR=SH, mandatory)
      *  @param  codeMeaning             human-readable translation of the 'codeValue'.  Used
@@ -75,8 +75,8 @@ class DSRCodedEntryValue
 
     /** constructor.
      *  The code 4-tuple is only set if it passed the validity check (see setCode()).
-     ** @param  codeValue               computer readable and computer searchable identifier
-     *                                  of the code to be set. (VR=SH, mandatory)
+     ** @param  codeValue               identifier of the code to be set that is unambiguous
+     *                                  within the coding scheme. (VR=SH, mandatory)
      *  @param  codingSchemeDesignator  textual identifier of the table where the 'codeValue'
      *                                  is linked to its 'codeMeaning'. (VR=SH, mandatory)
      *  @param  codingSchemeVersion     version of the coding scheme.  Used when a coding
@@ -217,7 +217,7 @@ class DSRCodedEntryValue
     E_Condition getValue(DSRCodedEntryValue &codedEntryValue) const;
 
     /** get code value.
-     *  This is a computer readable and computer searchable identifier of the code.
+     *  This is a identifier of the code that is unambiguous within the coding scheme.
      ** @return current code value (might be invalid or an empty string)
      */
     inline const OFString &getCodeValue() const
@@ -266,8 +266,8 @@ class DSRCodedEntryValue
     /** set code value.
      *  Before setting the code it is checked (see checkCode()).  If the code is invalid
      *  the current code is not replaced and remains unchanged.
-     ** @param  codeValue               computer readable and computer searchable identifier
-     *                                  of the code to be set. (VR=SH, mandatory)
+     ** @param  codeValue               identifier of the code to be set that is unambiguous
+     *                                  within the coding scheme. (VR=SH, mandatory)
      *  @param  codingSchemeDesignator  textual identifier of the table where the 'codeValue'
      *                                  is linked to its 'codeMeaning'. (VR=SH, mandatory)
      *  @param  codeMeaning             human-readable translation of the 'codeValue'.  Used
@@ -282,8 +282,8 @@ class DSRCodedEntryValue
     /** set code value.
      *  Before setting the specified code it is checked (see checkCode()).  If the code is
      *  invalid the current code is not replaced and remains unchanged.
-     ** @param  codeValue               computer readable and computer searchable identifier
-     *                                  of the code to be set. (VR=SH, mandatory)
+     ** @param  codeValue               identifier of the code to be set that is unambiguous
+     *                                  within the coding scheme. (VR=SH, mandatory)
      *  @param  codingSchemeDesignator  textual identifier of the table where the 'codeValue'
      *                                  is linked to its 'codeMeaning'. (VR=SH, mandatory)
      *  @param  codingSchemeVersion     version of the coding scheme.  Used when a coding
@@ -364,7 +364,10 @@ class DSRCodedEntryValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodvl.h,v $
- *  Revision 1.5  2000-11-01 16:12:55  joergr
+ *  Revision 1.6  2000-11-06 11:14:55  joergr
+ *  Updated comments/formatting.
+ *
+ *  Revision 1.5  2000/11/01 16:12:55  joergr
  *  Added support for conversion to XML.
  *
  *  Revision 1.4  2000/10/23 15:08:33  joergr
