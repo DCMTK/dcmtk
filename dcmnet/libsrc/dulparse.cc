@@ -34,21 +34,21 @@
 ** @$=@$=@$=
 */
 /*
-**				DICOM 93
-**		     Electronic Radiology Laboratory
-**		   Mallinckrodt Institute of Radiology
-**		Washington University School of Medicine
+**                              DICOM 93
+**                   Electronic Radiology Laboratory
+**                 Mallinckrodt Institute of Radiology
+**              Washington University School of Medicine
 **
-** Module Name(s):	parseAssociate
-**			parseDebug
-** Author, Date:	Stephen M. Moore, 15-Apr-93
-** Intent:		This file contains functions for parsing Dicom
-**			Upper Layer (DUL) Protocol Data Units (PDUs)
-**			into logical in-memory structures.
-** Last Update:		$Author: wilkens $, $Date: 2002-11-29 12:15:25 $
-** Source File:		$RCSfile: dulparse.cc,v $
-** Revision:		$Revision: 1.21 $
-** Status:		$State: Exp $
+** Module Name(s):      parseAssociate
+**                      parseDebug
+** Author, Date:        Stephen M. Moore, 15-Apr-93
+** Intent:              This file contains functions for parsing Dicom
+**                      Upper Layer (DUL) Protocol Data Units (PDUs)
+**                      into logical in-memory structures.
+** Last Update:         $Author: joergr $, $Date: 2002-12-09 13:20:29 $
+** Source File:         $RCSfile: dulparse.cc,v $
+** Revision:            $Revision: 1.22 $
+** Status:              $State: Exp $
 */
 
 
@@ -70,27 +70,27 @@
 
 static OFCondition
 parseSubItem(DUL_SUBITEM * subItem, unsigned char *buf,
-	     unsigned long *itemLength);
+             unsigned long *itemLength);
 static OFCondition
 parsePresentationContext(unsigned char type,
-			 PRV_PRESENTATIONCONTEXTITEM * context,
-			 unsigned char *buf, unsigned long *itemLength);
+                         PRV_PRESENTATIONCONTEXTITEM * context,
+                         unsigned char *buf, unsigned long *itemLength);
 static OFCondition
 parseUserInfo(DUL_USERINFO * userInfo,
-	      unsigned char *buf, unsigned long *itemLength);
+              unsigned char *buf, unsigned long *itemLength);
 static OFCondition
 parseMaxPDU(DUL_MAXLENGTH * max, unsigned char *buf,
-	    unsigned long *itemLength);
+            unsigned long *itemLength);
 static OFCondition
     parseDummy(unsigned char *buf, unsigned long *itemLength);
 static OFCondition
 parseSCUSCPRole(PRV_SCUSCPROLE * role, unsigned char *buf,
-		unsigned long *length);
+                unsigned long *length);
 static void trim_trailing_spaces(char *s);
 
 static OFCondition
 parseExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *buf,
-	    unsigned long *length);
+            unsigned long *length);
 
 #ifdef DEBUG
 static OFBool debug = OFFalse;
@@ -99,27 +99,27 @@ static OFBool debug = OFFalse;
 /* parseAssociate
 **
 ** Purpose:
-**	Parse the buffer (read from the socket) and extract an Associate
-**	PDU from it.
+**      Parse the buffer (read from the socket) and extract an Associate
+**      PDU from it.
 **
 ** Parameter Dictionary:
-**	buf		Buffer holding the PDU in the stream format
-**	pduLength	Length of the buffer
-**	assoc		The Associate PDU to be extracted
-**			(returend to the caller)
+**      buf             Buffer holding the PDU in the stream format
+**      pduLength       Length of the buffer
+**      assoc           The Associate PDU to be extracted
+**                      (returend to the caller)
 **
 ** Return Values:
 **
-**	DUL_ILLEGALPDU
-**	DUL_LISTERROR
+**      DUL_ILLEGALPDU
+**      DUL_LISTERROR
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
 OFCondition
 parseAssociate(unsigned char *buf, unsigned long pduLength,
-	       PRV_ASSOCIATEPDU * assoc)
+               PRV_ASSOCIATEPDU * assoc)
 {
     OFCondition cond = EC_Normal;
     unsigned char
@@ -127,7 +127,7 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
     unsigned long
         itemLength;
     PRV_PRESENTATIONCONTEXTITEM
-	* context;
+        * context;
 
     (void) memset(assoc, 0, sizeof(*assoc));
     if ((assoc->presentationContextList = LST_Create()) == NULL) return EC_MemoryExhausted;
@@ -143,9 +143,9 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
     pduLength -= 2;
     if ((assoc->protocol & DUL_PROTOCOL) == 0)
     {
-        char buf[256];
-        sprintf(buf, "DUL Unsupported peer protocol %04x; expected %04x in %s", assoc->protocol, DUL_PROTOCOL, "parseAssociate");
-        return makeDcmnetCondition(DULC_UNSUPPORTEDPEERPROTOCOL, OF_error, buf);
+        char buffer[256];
+        sprintf(buffer, "DUL Unsupported peer protocol %04x; expected %04x in %s", assoc->protocol, DUL_PROTOCOL, "parseAssociate");
+        return makeDcmnetCondition(DULC_UNSUPPORTEDPEERPROTOCOL, OF_error, buffer);
     }
     assoc->rsv2[0] = *buf++;
     pduLength--;
@@ -166,84 +166,84 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
 
 #ifdef DEBUG
     if (debug) {
-	const char *s;
-	DEBUG_DEVICE << "Parsing an A-ASSOCIATE PDU" << endl;
-	if (assoc->type == DUL_TYPEASSOCIATERQ)
-	    s = "A-ASSOCIATE RQ";
-	else if (assoc->type == DUL_TYPEASSOCIATEAC)
-	    s = "A-ASSOCIATE AC";
-	else
-	    s = "Unknown: Programming bug in parseAssociate";
+        const char *s;
+        DEBUG_DEVICE << "Parsing an A-ASSOCIATE PDU" << endl;
+        if (assoc->type == DUL_TYPEASSOCIATERQ)
+            s = "A-ASSOCIATE RQ";
+        else if (assoc->type == DUL_TYPEASSOCIATEAC)
+            s = "A-ASSOCIATE AC";
+        else
+            s = "Unknown: Programming bug in parseAssociate";
 
-/*	If we hit the "Unknown type", there is a programming bug somewhere.
-**	This function is only supposed to parse A-ASSOCIATE PDUs and
-**	expects its input to have been properly screened.
+/*      If we hit the "Unknown type", there is a programming bug somewhere.
+**      This function is only supposed to parse A-ASSOCIATE PDUs and
+**      expects its input to have been properly screened.
 */
-	DEBUG_DEVICE << "PDU type: " << hex << ((unsigned int)assoc->type) << dec
+        DEBUG_DEVICE << "PDU type: " << hex << ((unsigned int)assoc->type) << dec
         << " (" << s << "), PDU Length: " << assoc->length << endl
-	    << "DICOM Protocol: " << hex << assoc->protocol << dec << endl
-	    << "Called AP Title:  " << assoc->calledAPTitle << endl
-	    << "Calling AP Title: " << assoc->callingAPTitle << endl;
+            << "DICOM Protocol: " << hex << assoc->protocol << dec << endl
+            << "Called AP Title:  " << assoc->calledAPTitle << endl
+            << "Calling AP Title: " << assoc->callingAPTitle << endl;
     }
 #endif
     while ((cond.good()) && (pduLength > 0))
     {
-	type = *buf;
+        type = *buf;
 #ifdef DEBUG
-	if (debug) {
-	    DEBUG_DEVICE << "Parsing remaining " << pduLength
+        if (debug) {
+            DEBUG_DEVICE << "Parsing remaining " << pduLength
             << " bytes of A-ASSOCIATE PDU" << endl
             << "Next item type: ";
         DEBUG_DEVICE << hex << setfill('0') << setw(2) << ((unsigned int)type) << dec << endl;
-	}
+        }
 #endif
-	switch (type) {
-	case DUL_TYPEAPPLICATIONCONTEXT:
-	    cond = parseSubItem(&assoc->applicationContext,
-				buf, &itemLength);
-	    if (cond.good())
-	    {
-		buf += itemLength;
-		pduLength -= itemLength;
+        switch (type) {
+        case DUL_TYPEAPPLICATIONCONTEXT:
+            cond = parseSubItem(&assoc->applicationContext,
+                                buf, &itemLength);
+            if (cond.good())
+            {
+                buf += itemLength;
+                pduLength -= itemLength;
 #ifdef DEBUG
-		if (debug)
-		    COUT << "Successfully parsed Application Context" << endl;
+                if (debug)
+                    COUT << "Successfully parsed Application Context" << endl;
 #endif
-	    }
-	    break;
-	case DUL_TYPEPRESENTATIONCONTEXTRQ:
-	case DUL_TYPEPRESENTATIONCONTEXTAC:
-	    context = (PRV_PRESENTATIONCONTEXTITEM*)malloc(sizeof(PRV_PRESENTATIONCONTEXTITEM));
-	    if (context == NULL) return EC_MemoryExhausted;
-	    (void) memset(context, 0, sizeof(*context));
-	    cond = parsePresentationContext(type, context, buf, &itemLength);
-	    if (cond.bad()) return cond;
-	    buf += itemLength;
-	    pduLength -= itemLength;
-	    cond = LST_Enqueue(&assoc->presentationContextList, (LST_NODE*)context);
+            }
+            break;
+        case DUL_TYPEPRESENTATIONCONTEXTRQ:
+        case DUL_TYPEPRESENTATIONCONTEXTAC:
+            context = (PRV_PRESENTATIONCONTEXTITEM*)malloc(sizeof(PRV_PRESENTATIONCONTEXTITEM));
+            if (context == NULL) return EC_MemoryExhausted;
+            (void) memset(context, 0, sizeof(*context));
+            cond = parsePresentationContext(type, context, buf, &itemLength);
+            if (cond.bad()) return cond;
+            buf += itemLength;
+            pduLength -= itemLength;
+            cond = LST_Enqueue(&assoc->presentationContextList, (LST_NODE*)context);
             if (cond.bad()) return cond;
 #ifdef DEBUG
-	    if (debug)
-		    DEBUG_DEVICE << "Successfully parsed Presentation Context " << endl;
+            if (debug)
+                    DEBUG_DEVICE << "Successfully parsed Presentation Context " << endl;
 #endif
-	    break;
-	case DUL_TYPEUSERINFO:
-	    cond = parseUserInfo(&assoc->userInfo, buf, &itemLength);
-	    if (cond.bad())
-		return cond;
-	    buf += itemLength;
-	    pduLength -= itemLength;
+            break;
+        case DUL_TYPEUSERINFO:
+            cond = parseUserInfo(&assoc->userInfo, buf, &itemLength);
+            if (cond.bad())
+                return cond;
+            buf += itemLength;
+            pduLength -= itemLength;
 #ifdef DEBUG
-	    if (debug)
-		    DEBUG_DEVICE << "Successfully parsed User Information" << endl;
+            if (debug)
+                    DEBUG_DEVICE << "Successfully parsed User Information" << endl;
 #endif
-	    break;
-	default:
-	    cond = parseDummy(buf, &itemLength);
-	    buf += itemLength;
-	    pduLength -= itemLength;
-	    break;
-	}
+            break;
+        default:
+            cond = parseDummy(buf, &itemLength);
+            buf += itemLength;
+            pduLength -= itemLength;
+            break;
+        }
     }
     return cond;
 }
@@ -251,13 +251,13 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
 /* parseDebug
 **
 ** Purpose:
-**	Set global 'debug' flag for this module (OFTrue or OFFalse).
+**      Set global 'debug' flag for this module (OFTrue or OFFalse).
 **
 ** Parameter Dictionary:
-**	flag	OFBool flag to be copied to global 'debug'
+**      flag    OFBool flag to be copied to global 'debug'
 **
 ** Return Values:
-**	None
+**      None
 **
 ** Algorithm:
 */
@@ -282,22 +282,22 @@ parseDebug(OFBool /*flag*/)
 /* parseSubItem
 **
 ** Purpose:
-**	Parse the buffer and extract the subitem structure
+**      Parse the buffer and extract the subitem structure
 **
 ** Parameter Dictionary:
-**	subItem		The subitem structure to be extracted
-**	buf		Buffer to be parsed
-**	itemLength	Length of the subitem extracted
+**      subItem         The subitem structure to be extracted
+**      buf             Buffer to be parsed
+**      itemLength      Length of the subitem extracted
 **
 ** Return Values:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
 static OFCondition
 parseSubItem(DUL_SUBITEM * subItem, unsigned char *buf,
-	     unsigned long *itemLength)
+             unsigned long *itemLength)
 {
     subItem->type = *buf++;
     subItem->rsv1 = *buf++;
@@ -321,27 +321,27 @@ parseSubItem(DUL_SUBITEM * subItem, unsigned char *buf,
 /* parsePresentationContext
 **
 ** Purpose:
-**	Parse the buffer and extract the presentation context.
+**      Parse the buffer and extract the presentation context.
 **
 ** Parameter Dictionary:
-**	context		The presentation context that is to be extracted
-**	buf		The buffer to be parsed
-**	itemLength	Total length of the presentation context that is
-**			extracted
+**      context         The presentation context that is to be extracted
+**      buf             The buffer to be parsed
+**      itemLength      Total length of the presentation context that is
+**                      extracted
 **
 ** Return Values:
 **
-**	DUL_ILLEGALPDU
-**	DUL_LISTERROR
+**      DUL_ILLEGALPDU
+**      DUL_LISTERROR
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
 static OFCondition
 parsePresentationContext(unsigned char type,
-		  PRV_PRESENTATIONCONTEXTITEM * context, unsigned char *buf,
-			 unsigned long *itemLength)
+                  PRV_PRESENTATIONCONTEXTITEM * context, unsigned char *buf,
+                         unsigned long *itemLength)
 {
     unsigned long
         length;
@@ -349,7 +349,7 @@ parsePresentationContext(unsigned char type,
         presentationLength;
     OFCondition cond = EC_Normal;
     DUL_SUBITEM
-	* subItem;
+        * subItem;
 
     if ((context->transferSyntaxList = LST_Create()) == NULL) return EC_MemoryExhausted;
 
@@ -368,7 +368,7 @@ parsePresentationContext(unsigned char type,
 
 #ifdef DEBUG
     if (debug) {
-	DEBUG_DEVICE << "Parsing Presentation Context: ("
+        DEBUG_DEVICE << "Parsing Presentation Context: ("
             << hex << setfill('0') << setw(2) << (unsigned int)context->type << dec
             << "), Length: " << (unsigned long)context->length << endl
             << "Presentation Context ID: ";
@@ -377,51 +377,51 @@ parsePresentationContext(unsigned char type,
 #endif
     presentationLength = length - 4;
     if (!((type == DUL_TYPEPRESENTATIONCONTEXTAC) &&
-	  (context->result != DUL_PRESENTATION_ACCEPT))) {
-	while (presentationLength > 0) {
+          (context->result != DUL_PRESENTATION_ACCEPT))) {
+        while (presentationLength > 0) {
 #ifdef DEBUG
-	    if (debug) {
+            if (debug) {
               DEBUG_DEVICE << "Parsing remaining " << presentationLength
                 << " bytes of Presentation Ctx" << endl;
-	      DEBUG_DEVICE << "Next item type: " << hex << setfill('0') << setw(2) << (unsigned int)*buf << dec << endl;
-	    }
+              DEBUG_DEVICE << "Next item type: " << hex << setfill('0') << setw(2) << (unsigned int)*buf << dec << endl;
+            }
 #endif
-	    switch (*buf) {
-	    case DUL_TYPEABSTRACTSYNTAX:
-		cond = parseSubItem(&context->abstractSyntax, buf, &length);
-		if (cond.bad())
-		    return cond;
+            switch (*buf) {
+            case DUL_TYPEABSTRACTSYNTAX:
+                cond = parseSubItem(&context->abstractSyntax, buf, &length);
+                if (cond.bad())
+                    return cond;
 
-		buf += length;
-		presentationLength -= length;
+                buf += length;
+                presentationLength -= length;
 #ifdef DEBUG
-		if (debug) {
-		    DEBUG_DEVICE << "Successfully parsed Abstract Syntax" << endl;
-		}
+                if (debug) {
+                    DEBUG_DEVICE << "Successfully parsed Abstract Syntax" << endl;
+                }
 #endif
-		break;
-	    case DUL_TYPETRANSFERSYNTAX:
-		subItem = (DUL_SUBITEM*)malloc(sizeof(DUL_SUBITEM));
-		if (subItem == NULL) return EC_MemoryExhausted;
-		cond = parseSubItem(subItem, buf, &length);
-		if (cond.bad()) return cond;
-		cond = LST_Enqueue(&context->transferSyntaxList, (LST_NODE*)subItem);
-		if (cond.bad()) return cond;
-		buf += length;
-		presentationLength -= length;
+                break;
+            case DUL_TYPETRANSFERSYNTAX:
+                subItem = (DUL_SUBITEM*)malloc(sizeof(DUL_SUBITEM));
+                if (subItem == NULL) return EC_MemoryExhausted;
+                cond = parseSubItem(subItem, buf, &length);
+                if (cond.bad()) return cond;
+                cond = LST_Enqueue(&context->transferSyntaxList, (LST_NODE*)subItem);
+                if (cond.bad()) return cond;
+                buf += length;
+                presentationLength -= length;
 #ifdef DEBUG
-		if (debug) {
-		    DEBUG_DEVICE << "Successfully parsed Transfer Syntax" << endl;
-		}
+                if (debug) {
+                    DEBUG_DEVICE << "Successfully parsed Transfer Syntax" << endl;
+                }
 #endif
-		break;
-	    default:
-		cond = parseDummy(buf, &length);
-		buf += length;
-		presentationLength -= length;
-		break;
-	    }
-	}
+                break;
+            default:
+                cond = parseDummy(buf, &length);
+                buf += length;
+                presentationLength -= length;
+                break;
+            }
+        }
     }
     return EC_Normal;
 }
@@ -431,26 +431,26 @@ parsePresentationContext(unsigned char type,
 /* parseUserInfo
 **
 ** Purpose:
-**	Parse the buffer and extract the user info structure
+**      Parse the buffer and extract the user info structure
 **
 ** Parameter Dictionary:
-**	userInfo	Structure to hold the extracted user info information
-**	buf		The buffer that is to be parsed
-**	itemLength	Length of structure extracted.
+**      userInfo        Structure to hold the extracted user info information
+**      buf             The buffer that is to be parsed
+**      itemLength      Length of structure extracted.
 **
 ** Return Values:
 **
-**	DUL_ILLEGALPDU
+**      DUL_ILLEGALPDU
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
 static OFCondition
 parseUserInfo(DUL_USERINFO * userInfo,
-	      unsigned char *buf, unsigned long *itemLength)
+              unsigned char *buf, unsigned long *itemLength)
 {
     unsigned short userLength;
     unsigned long length;
@@ -468,86 +468,86 @@ parseUserInfo(DUL_USERINFO * userInfo,
 
 #ifdef DEBUG
     if (debug) {
-	DEBUG_DEVICE << "Parsing user info field ("
+        DEBUG_DEVICE << "Parsing user info field ("
             << hex << setfill('0') << setw(2) << (unsigned int)userInfo->type << dec << "), Length: "
             << (unsigned long)userInfo->length << endl;
     }
 #endif
     while (userLength > 0) {
 #ifdef DEBUG
-	if (debug) {
-	    DEBUG_DEVICE << "Parsing remaining " << (long)userLength
+        if (debug) {
+            DEBUG_DEVICE << "Parsing remaining " << (long)userLength
             << " bytes of User Information" << endl;
-	    DEBUG_DEVICE << "Next item type: " << hex << setfill('0') << setw(2) << (unsigned int)*buf << dec << endl;
-	}
+            DEBUG_DEVICE << "Next item type: " << hex << setfill('0') << setw(2) << (unsigned int)*buf << dec << endl;
+        }
 #endif
-	switch (*buf) {
-	case DUL_TYPEMAXLENGTH:
-	    cond = parseMaxPDU(&userInfo->maxLength, buf, &length);
-	    if (cond.bad())
-		return cond;
-	    buf += length;
-	    userLength -= (unsigned short) length;
+        switch (*buf) {
+        case DUL_TYPEMAXLENGTH:
+            cond = parseMaxPDU(&userInfo->maxLength, buf, &length);
+            if (cond.bad())
+                return cond;
+            buf += length;
+            userLength -= (unsigned short) length;
 #ifdef DEBUG
-	    if (debug) {
-		    DEBUG_DEVICE << "Successfully parsed Maximum PDU Length" << endl;
-	    }
+            if (debug) {
+                    DEBUG_DEVICE << "Successfully parsed Maximum PDU Length" << endl;
+            }
 #endif
-	    break;
-	case DUL_TYPEIMPLEMENTATIONCLASSUID:
-	    cond = parseSubItem(&userInfo->implementationClassUID,
-				buf, &length);
-	    if (cond.bad())
-		return cond;
-	    buf += length;
-	    userLength -= (unsigned short) length;
-	    break;
+            break;
+        case DUL_TYPEIMPLEMENTATIONCLASSUID:
+            cond = parseSubItem(&userInfo->implementationClassUID,
+                                buf, &length);
+            if (cond.bad())
+                return cond;
+            buf += length;
+            userLength -= (unsigned short) length;
+            break;
 
-	case DUL_TYPEASYNCOPERATIONS:
-	    cond = parseDummy(buf, &length);
-	    buf += length;
-	    userLength -= (unsigned short) length;
-	    break;
-	case DUL_TYPESCUSCPROLE:
-	    role = (PRV_SCUSCPROLE*)malloc(sizeof(PRV_SCUSCPROLE));
-	    if (role == NULL) return EC_MemoryExhausted;
-	    cond = parseSCUSCPRole(role, buf, &length);
-	    if (cond.bad()) return cond;
-	    cond = LST_Enqueue(&userInfo->SCUSCPRoleList, (LST_NODE*)role);
-	    if (cond.bad()) return cond;
-	    buf += length;
-	    userLength -= (unsigned short) length;
-	    break;
-	case DUL_TYPEIMPLEMENTATIONVERSIONNAME:
-	    cond = parseSubItem(&userInfo->implementationVersionName,
-				buf, &length);
-	    if (cond.bad()) return cond;
-	    buf += length;
-	    userLength -= (unsigned short) length;
-	    break;
+        case DUL_TYPEASYNCOPERATIONS:
+            cond = parseDummy(buf, &length);
+            buf += length;
+            userLength -= (unsigned short) length;
+            break;
+        case DUL_TYPESCUSCPROLE:
+            role = (PRV_SCUSCPROLE*)malloc(sizeof(PRV_SCUSCPROLE));
+            if (role == NULL) return EC_MemoryExhausted;
+            cond = parseSCUSCPRole(role, buf, &length);
+            if (cond.bad()) return cond;
+            cond = LST_Enqueue(&userInfo->SCUSCPRoleList, (LST_NODE*)role);
+            if (cond.bad()) return cond;
+            buf += length;
+            userLength -= (unsigned short) length;
+            break;
+        case DUL_TYPEIMPLEMENTATIONVERSIONNAME:
+            cond = parseSubItem(&userInfo->implementationVersionName,
+                                buf, &length);
+            if (cond.bad()) return cond;
+            buf += length;
+            userLength -= (unsigned short) length;
+            break;
 
-        case DUL_TYPESOPCLASSEXTENDEDNEGOTIATION: 
+        case DUL_TYPESOPCLASSEXTENDEDNEGOTIATION:
             /* parse an extended negotiation sub-item */
             extNeg = new SOPClassExtendedNegotiationSubItem;
             if (extNeg == NULL)  return EC_MemoryExhausted;
-	    cond = parseExtNeg(extNeg, buf, &length);
-	    if (cond.bad()) return cond;
+            cond = parseExtNeg(extNeg, buf, &length);
+            if (cond.bad()) return cond;
             if (userInfo->extNegList == NULL)
             {
                 userInfo->extNegList = new SOPClassExtendedNegotiationSubItemList;
                 if (userInfo->extNegList == NULL)  return EC_MemoryExhausted;
             }
             userInfo->extNegList->push_back(extNeg);
-	    buf += length;
-	    userLength -= (unsigned short) length;
-	    break;
+            buf += length;
+            userLength -= (unsigned short) length;
+            break;
 
-	default:
-	    cond = parseDummy(buf, &length);
-	    buf += length;
-	    userLength -= (unsigned short) length;
-	    break;
-	}
+        default:
+            cond = parseDummy(buf, &length);
+            buf += length;
+            userLength -= (unsigned short) length;
+            break;
+        }
     }
 
     return EC_Normal;
@@ -558,23 +558,23 @@ parseUserInfo(DUL_USERINFO * userInfo,
 /* parseMaxPDU
 **
 ** Purpose:
-**	Parse the buffer and extract the Max PDU structure.
+**      Parse the buffer and extract the Max PDU structure.
 **
 ** Parameter Dictionary:
-**	max		The structure to hold the Max PDU
-**	buf		The buffer that is to be parsed
-**	itemLength	Length of structure extracted.
+**      max             The structure to hold the Max PDU
+**      buf             The buffer that is to be parsed
+**      itemLength      Length of structure extracted.
 **
 ** Return Values:
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 static OFCondition
 parseMaxPDU(DUL_MAXLENGTH * max, unsigned char *buf,
-	    unsigned long *itemLength)
+            unsigned long *itemLength)
 {
     max->type = *buf++;
     max->rsv1 = *buf++;
@@ -585,7 +585,7 @@ parseMaxPDU(DUL_MAXLENGTH * max, unsigned char *buf,
 
 #ifdef DEBUG
     if (debug) {
-	    DEBUG_DEVICE << "Maximum PDU Length: " << (unsigned long)max->maxLength << endl;
+            DEBUG_DEVICE << "Maximum PDU Length: " << (unsigned long)max->maxLength << endl;
     }
 #endif
 
@@ -595,19 +595,19 @@ parseMaxPDU(DUL_MAXLENGTH * max, unsigned char *buf,
 /* parseDummy
 **
 ** Purpose:
-**	Parse the buffer to extract just a dummy structure of length
-**	User Length
+**      Parse the buffer to extract just a dummy structure of length
+**      User Length
 **
 ** Parameter Dictionary:
-**	buf		The buffer that is to be parsed
-**	itemLength	Length of structure extracted.
+**      buf             The buffer that is to be parsed
+**      itemLength      Length of structure extracted.
 **
 ** Return Values:
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 static OFCondition
 parseDummy(unsigned char *buf, unsigned long *itemLength)
@@ -627,23 +627,23 @@ parseDummy(unsigned char *buf, unsigned long *itemLength)
 /* parseSCUSCPRole
 **
 ** Purpose:
-**	Parse the buffer and extract the SCU-SCP role list
+**      Parse the buffer and extract the SCU-SCP role list
 **
 ** Parameter Dictionary:
-**	role		The structure to hold the SCU-SCP role list
-**	buf		The buffer that is to be parsed
-**	itemLength	Length of structure extracted.
+**      role            The structure to hold the SCU-SCP role list
+**      buf             The buffer that is to be parsed
+**      itemLength      Length of structure extracted.
 **
 ** Return Values:
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 static OFCondition
 parseSCUSCPRole(PRV_SCUSCPROLE * role, unsigned char *buf,
-		unsigned long *length)
+                unsigned long *length)
 {
     unsigned short
         UIDLength;
@@ -678,7 +678,7 @@ parseSCUSCPRole(PRV_SCUSCPROLE * role, unsigned char *buf,
 /* parseExtNeg
 **
 ** Purpose:
-**	Parse the buffer and extract the extended negotiation item
+**      Parse the buffer and extract the extended negotiation item
 **
 ** Return Values:
 **
@@ -686,7 +686,7 @@ parseSCUSCPRole(PRV_SCUSCPROLE * role, unsigned char *buf,
 
 static OFCondition
 parseExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *buf,
-		unsigned long *length)
+                unsigned long *length)
 {
     unsigned char *bufStart = buf;
     extNeg->itemType = *buf++;
@@ -712,16 +712,16 @@ parseExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *buf,
 
 #ifdef DEBUG
     if (debug) {
-	DEBUG_DEVICE << "ExtNeg Subitem parse: Type "
+        DEBUG_DEVICE << "ExtNeg Subitem parse: Type "
             << hex << setfill('0') << setw(2) << (unsigned int)extNeg->itemType << dec << ", Length ";
         DEBUG_DEVICE << setw(4) << (int)extNeg->itemLength << ", SOP Class: "
             << extNeg->sopClassUID.c_str() << endl;
 
-	DEBUG_DEVICE << "   values: ";
+        DEBUG_DEVICE << "   values: ";
         for (int j=0; j<extNeg->serviceClassAppInfoLength; j++) {
-    	    DEBUG_DEVICE << hex << setfill('0') << setw(2) << extNeg->serviceClassAppInfo[j] << dec << " ";
+            DEBUG_DEVICE << hex << setfill('0') << setw(2) << extNeg->serviceClassAppInfo[j] << dec << " ";
         }
-	DEBUG_DEVICE << endl;
+        DEBUG_DEVICE << endl;
     }
 #endif
 
@@ -731,19 +731,19 @@ parseExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *buf,
 /* trim_trailing_spaces
 **
 ** Purpose:
-**	trim trailing spaces
+**      trim trailing spaces
 **
 ** Parameter Dictionary:
-**	s	The character string from which the trailing spaces are to be
-**		removed.
+**      s       The character string from which the trailing spaces are to be
+**              removed.
 **
 ** Return Values:
-**	None
+**      None
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
 static void
@@ -754,20 +754,23 @@ trim_trailing_spaces(char *s)
 
     p = s;
     while (*p != '\0')
-	p++;
+        p++;
 
     if (p == s)
-	return;
+        return;
 
     p--;
     while (p >= s && *p == ' ')
-	*p-- = '\0';
+        *p-- = '\0';
 }
 
 /*
 ** CVS Log
 ** $Log: dulparse.cc,v $
-** Revision 1.21  2002-11-29 12:15:25  wilkens
+** Revision 1.22  2002-12-09 13:20:29  joergr
+** Renamed local variable to avoid name clash with function parameter "buf".
+**
+** Revision 1.21  2002/11/29 12:15:25  wilkens
 ** Modified call to getsockopt() in order to avoid compiler warning.
 ** Modified variable initialization in order to avoid compiler warning.
 ** Corrected dumping of hex values.
