@@ -21,9 +21,9 @@
  *
  *  Purpose: Create and Verify DICOM Digital Signatures
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-07 18:06:20 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-11-08 11:20:13 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,7 +31,6 @@
  */
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
-
 
 #ifdef HAVE_STDLIB_H
 #ifndef  _BCB4
@@ -44,32 +43,19 @@ END_EXTERN_C
 #endif
 #endif
 
-#include <stdio.h>
-#include <string.h>
-
 BEGIN_EXTERN_C
 #include <ctype.h>
+#include <stdio.h>
+#include <string.h>
 END_EXTERN_C
 
 #ifdef HAVE_GUSI_H
 #include <GUSI.h>
 #endif
 
-#include "dctk.h"
-#include "dcdebug.h"
 #include "cmdlnarg.h"
 #include "ofconapp.h"
 #include "dcuid.h"    /* for dcmtk version name */
-#include "dcmsign.h"
-#include "sinullpr.h"
-#include "siautopr.h"
-#include "sicreapr.h"
-#include "simac.h"
-#include "simd5.h"
-#include "sisha1.h"
-#include "siripemd.h"
-#include "siprivat.h"
-#include "sicert.h"
 
 #define OFFIS_CONSOLE_APPLICATION "dcmsign"
 
@@ -80,6 +66,20 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 
 
 #ifdef WITH_OPENSSL
+
+#include "dcmsign.h"
+#include "sinullpr.h"
+#include "siautopr.h"
+#include "sicreapr.h"
+#include "simac.h"
+#include "simd5.h"
+#include "sisha1.h"
+#include "siripemd.h"
+#include "siprivat.h"
+#include "sicert.h"
+#include "dctk.h"
+#include "dcdebug.h"
+
 
 BEGIN_EXTERN_C
 #include <openssl/x509.h>
@@ -966,9 +966,9 @@ int main(int argc, char *argv[])
       if ((opt_operation != DSO_sign)&&(opt_operation != DSO_signItem)) app.printError("--profile-creator only with --sign or --sign-item");
       opt_profile = new SiCreatorProfile();
     }
-    if (cmd.findOption("--profile-authorization")) 
+    if (cmd.findOption("--profile-auth")) 
     {
-      if ((opt_operation != DSO_sign)&&(opt_operation != DSO_signItem)) app.printError("--profile-authorization only with --sign or --sign-item");
+      if ((opt_operation != DSO_sign)&&(opt_operation != DSO_signItem)) app.printError("--profile-auth only with --sign or --sign-item");
       opt_profile = new SiAuthorizationProfile();
     }
     cmd.endOptionBlock();
@@ -1214,7 +1214,10 @@ int main(int, char *[])
 
 /*
  *  $Log: dcmsign.cc,v $
- *  Revision 1.2  2000-11-07 18:06:20  joergr
+ *  Revision 1.3  2000-11-08 11:20:13  meichel
+ *  Fixed dcmsign command line options
+ *
+ *  Revision 1.2  2000/11/07 18:06:20  joergr
  *  Minor code purifications to keep Sun CC 2.0.1 quiet.
  *  Moved #ifdef WITH_OPENSSL statement to avoid compiler errors.
  *
