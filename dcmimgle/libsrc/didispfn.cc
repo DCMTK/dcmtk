@@ -22,9 +22,9 @@
  *  Purpose: DicomDisplayFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-04 09:43:28 $
+ *  Update Date:      $Date: 1999-03-04 16:07:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/didispfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -227,7 +227,7 @@ int DiDisplayFunction::writeCurveData(const char *filename)
             file << "# Ambient light  : " << AmbientLight << endl;
             file << "# JND index range: " << JNDMin << " - " << JNDMax << endl << endl;
             file << "DDL\tCC\tGSDF\tPSC" << endl;
-            const DiBartenLUT *blut = new DiBartenLUT(ValueCount, MaxDDLValue, DDLValue, LumValue, ValueCount,
+            DiBartenLUT *blut = new DiBartenLUT(ValueCount, MaxDDLValue, DDLValue, LumValue, ValueCount,
                 GSDFValue, GSDFSpline, GSDFCount, JNDMin, JNDMax, AmbientLight, &file);       // write curve data to file
             int status = (blut !=NULL);
             delete blut;
@@ -537,7 +537,10 @@ double DiDisplayFunction::getJNDIndex(const double lum) const
  *
  * CVS/RCS Log:
  * $Log: didispfn.cc,v $
- * Revision 1.7  1999-03-04 09:43:28  joergr
+ * Revision 1.8  1999-03-04 16:07:05  joergr
+ * Removed const specifier (for pointer variable) to avoid warnings on SunCC.
+ *
+ * Revision 1.7  1999/03/04 09:43:28  joergr
  * Barten LUT is now be re-created when ambient light value has changed.
  *
  * Revision 1.6  1999/03/03 12:06:24  joergr
