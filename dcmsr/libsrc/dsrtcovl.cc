@@ -23,8 +23,8 @@
  *    classes: DSRTemporalCoordinatesValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 14:08:24 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2003-10-08 11:39:57 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -166,7 +166,7 @@ OFCondition DSRTemporalCoordinatesValue::writeXML(ostream &stream,
     if ((flags & DSRTypes::XF_writeEmptyTags) || !SamplePositionList.isEmpty() ||
          !TimeOffsetList.isEmpty() || !DatetimeList.isEmpty())
     {
-        stream << "<data type =\"";
+        stream << "<data type=\"";
         /* print only one list */
         if (!SamplePositionList.isEmpty())
         {
@@ -353,7 +353,10 @@ OFBool DSRTemporalCoordinatesValue::checkData(const DSRTypes::E_TemporalRangeTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcovl.cc,v $
- *  Revision 1.9  2003-08-07 14:08:24  joergr
+ *  Revision 1.10  2003-10-08 11:39:57  joergr
+ *  Fixed incorrect output format in writeXML().
+ *
+ *  Revision 1.9  2003/08/07 14:08:24  joergr
  *  Added readXML functionality.
  *  Renamed parameters/variables "string" to avoid name clash with STL class.
  *
