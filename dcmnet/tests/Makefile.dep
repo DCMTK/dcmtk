@@ -12,7 +12,5 @@ assctest.o: assctest.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
  ../include/diutil.h ../../dcmdata/include/dcfilefo.h \
  ../../dcmdata/include/dcsequen.h ../../dcmdata/include/dcdebug.h \
- ../../dcmdata/include/dcdict.h ../../dcmdata/include/dcentbst.h \
- ../../dcmdata/include/dcentset.h ../../dcmdata/include/pix.h \
- ../../dcmdata/include/dcentdef.h ../../dcmdata/include/dcentlst.h \
- ../../dcmdata/include/cmdlnarg.h
+ ../../dcmdata/include/dcdict.h ../../dcmdata/include/dchashdi.h \
+ ../../ofstd/include/oflist.h ../../dcmdata/include/cmdlnarg.h

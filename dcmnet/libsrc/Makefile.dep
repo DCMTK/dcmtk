@@ -122,23 +122,21 @@ dimse.o: dimse.cc ../../config/include/osconfig.h ../include/diutil.h \
  ../include/dul.h ../include/assoc.h dimcond.h dimcmd.h \
  ../../dcmdata/include/dctk.h ../../dcmdata/include/dcswap.h \
  ../../dcmdata/include/dcvm.h ../../dcmdata/include/dcdefine.h \
- ../../dcmdata/include/dcdebug.h ../../dcmdata/include/pix.h \
- ../../dcmdata/include/dcentdef.h ../../dcmdata/include/dcentlst.h \
- ../../dcmdata/include/dcentbst.h ../../dcmdata/include/dcentset.h \
- ../../dcmdata/include/dcdict.h ../../dcmdata/include/dcdeftag.h \
- ../../dcmdata/include/dcmetinf.h ../../dcmdata/include/dcsequen.h \
- ../../dcmdata/include/dcfilefo.h ../../dcmdata/include/dcdicdir.h \
- ../../dcmdata/include/dcdirrec.h ../../dcmdata/include/dcvrulup.h \
- ../../dcmdata/include/dcvrul.h ../../dcmdata/include/dcpixseq.h \
- ../../dcmdata/include/dcvrae.h ../../dcmdata/include/dcvras.h \
- ../../dcmdata/include/dcvrcs.h ../../dcmdata/include/dcvrda.h \
- ../../dcmdata/include/dcvrds.h ../../dcmdata/include/dcvrdt.h \
- ../../dcmdata/include/dcvris.h ../../dcmdata/include/dcvrtm.h \
- ../../dcmdata/include/dcchrstr.h ../../dcmdata/include/dcvrlo.h \
- ../../dcmdata/include/dcvrlt.h ../../dcmdata/include/dcvrpn.h \
- ../../dcmdata/include/dcvrsh.h ../../dcmdata/include/dcvrst.h \
- ../../dcmdata/include/dcvrobow.h ../../dcmdata/include/dcpixel.h \
- ../../dcmdata/include/dcvrpobw.h ../../ofstd/include/oflist.h \
+ ../../dcmdata/include/dcdebug.h ../../dcmdata/include/dchashdi.h \
+ ../../ofstd/include/oflist.h ../../dcmdata/include/dcdict.h \
+ ../../dcmdata/include/dcdeftag.h ../../dcmdata/include/dcmetinf.h \
+ ../../dcmdata/include/dcsequen.h ../../dcmdata/include/dcfilefo.h \
+ ../../dcmdata/include/dcdicdir.h ../../dcmdata/include/dcdirrec.h \
+ ../../dcmdata/include/dcvrulup.h ../../dcmdata/include/dcvrul.h \
+ ../../dcmdata/include/dcpixseq.h ../../dcmdata/include/dcvrae.h \
+ ../../dcmdata/include/dcvras.h ../../dcmdata/include/dcvrcs.h \
+ ../../dcmdata/include/dcvrda.h ../../dcmdata/include/dcvrds.h \
+ ../../dcmdata/include/dcvrdt.h ../../dcmdata/include/dcvris.h \
+ ../../dcmdata/include/dcvrtm.h ../../dcmdata/include/dcchrstr.h \
+ ../../dcmdata/include/dcvrlo.h ../../dcmdata/include/dcvrlt.h \
+ ../../dcmdata/include/dcvrpn.h ../../dcmdata/include/dcvrsh.h \
+ ../../dcmdata/include/dcvrst.h ../../dcmdata/include/dcvrobow.h \
+ ../../dcmdata/include/dcpixel.h ../../dcmdata/include/dcvrpobw.h \
  ../../dcmdata/include/dcovlay.h ../../dcmdata/include/dcvrat.h \
  ../../dcmdata/include/dcvrss.h ../../dcmdata/include/dcvrus.h \
  ../../dcmdata/include/dcvrsl.h ../../dcmdata/include/dcvrfl.h \
