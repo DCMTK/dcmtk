@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-27 13:49:03 $
+** Update Date:		$Date: 1997-06-13 13:07:31 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrobow.cc,v $
-** CVS/RCS Revision:	$Revision: 1.14 $
+** CVS/RCS Revision:	$Revision: 1.15 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -130,15 +130,18 @@ void DcmOtherByteOtherWord::print(ostream & out, const BOOL showFullData,
 	    char *ch_words = NULL;;
 	    char *tmp = NULL;
 	    Uint32 maxCount = 0; 
+	    Uint32 vrLength = 0;
 	    if (evr == EVR_OW)
 	    {
+		vrLength = Length/sizeof(Uint16);
 		maxCount = 
-		    !showFullData && DCM_OptPrintLineLength/5 < Length/sizeof(Uint16) ? 
-		    DCM_OptPrintLineLength/5 : Length/sizeof(Uint8);
+		    !showFullData && DCM_OptPrintLineLength/5 < vrLength ? 
+		    DCM_OptPrintLineLength/5 : vrLength;
 		tmp = ch_words = new char[maxCount*5+6];
 	    }
 	    else
 	    {
+		vrLength = Length;
 		maxCount = 
 		    !showFullData && DCM_OptPrintLineLength/3 < Length ? 
 		    DCM_OptPrintLineLength/3 : Length;
@@ -166,7 +169,7 @@ void DcmOtherByteOtherWord::print(ostream & out, const BOOL showFullData,
 		if (maxCount > 0 )
 		    tmp--;
 		*tmp = '\0';
-		if (maxCount < Length)
+		if (maxCount < vrLength)
 		    strcat(tmp, "...");
 		    
 		printInfoLine(out, showFullData, level, ch_words );
@@ -399,7 +402,11 @@ E_Condition DcmOtherByteOtherWord::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
-** Revision 1.14  1997-05-27 13:49:03  andreas
+** Revision 1.15  1997-06-13 13:07:31  andreas
+** - Corrected printing of OW values. The length of the output array was
+**   computed incorrectly.
+**
+** Revision 1.14  1997/05/27 13:49:03  andreas
 ** - Add method canWriteXfer to class DcmObject and all derived classes.
 **   This method checks whether it is possible to convert the original
 **   transfer syntax to an new transfer syntax. The check is used in the
