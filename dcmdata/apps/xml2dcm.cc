@@ -22,9 +22,9 @@
  *  Purpose: Convert XML document to DICOM file or data set
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-04-22 08:25:48 $
+ *  Update Date:      $Date: 2003-05-20 08:52:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/xml2dcm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -567,7 +567,7 @@ static OFCondition readXmlFile(const char *ifname,
 
 int main(int argc, char *argv[])
 {
-    int opt_debug = OFFalse;
+    int opt_debug = 0;
     OFBool opt_verbose = OFFalse;
     OFBool opt_dataset = OFFalse;
     OFBool opt_namespace = OFFalse;
@@ -637,18 +637,11 @@ int main(int argc, char *argv[])
           if (cmd.findOption("--version"))
           {
               app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-              CERR << endl << "External libraries used:";
-#if !defined(WITH_ZLIB) && !defined(WITH_LIBXML)
-                CERR << " none" << endl;
-#else
-                CERR << endl;
-#endif
+              CERR << endl << "External libraries used:" << endl;
 #ifdef WITH_ZLIB
               CERR << "- ZLIB, Version " << zlibVersion() << endl;
 #endif
-#ifdef WITH_LIBXML
               CERR << "- LIBXML, Version " << LIBXML_DOTTED_VERSION << endl;
-#endif
               return 0;
            }
         }
@@ -661,6 +654,7 @@ int main(int argc, char *argv[])
             opt_debug = 5;
 
         /* processing options */
+
         if (cmd.findOption("--validate-document"))
             opt_validate = OFTrue;
         if (cmd.findOption("--check-namespace"))
@@ -832,14 +826,16 @@ int main(int, char *[])
 /*
  * CVS/RCS Log:
  * $Log: xml2dcm.cc,v $
- * Revision 1.2  2003-04-22 08:25:48  joergr
+ * Revision 1.3  2003-05-20 08:52:56  joergr
+ * iMinor code corrections.
+ *
+ * Revision 1.2  2003/04/22 08:25:48  joergr
  * Adapted code to also compile trouble-free without libxml support (report a
  * message that libxml library is required).
  *
  * Revision 1.1  2003/04/17 18:57:08  joergr
  * Added new command line tool that allows to convert an XML document to DICOM
  * file or dataset.
- *
  *
  *
  */
