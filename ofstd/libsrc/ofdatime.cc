@@ -22,8 +22,8 @@
  *  Purpose: Class for date and time functions (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-16 10:35:18 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2004-04-16 12:44:20 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -206,6 +206,17 @@ OFBool OFDateTime::getISOFormattedDateTime(OFString &formattedDateTime,
                                            const OFBool showSeconds,
                                            const OFBool showFraction,
                                            const OFBool showTimeZone,
+                                           const OFBool showDelimiter) const
+{
+    /* call the real function, required to make Sun CC 2.0.1 happy (see header file) */
+    return getISOFormattedDateTime(formattedDateTime, showSeconds, showFraction, showTimeZone, showDelimiter, "" /*showDelimiter*/);
+}
+
+
+OFBool OFDateTime::getISOFormattedDateTime(OFString &formattedDateTime,
+                                           const OFBool showSeconds,
+                                           const OFBool showFraction,
+                                           const OFBool showTimeZone,
                                            const OFBool showDelimiter,
                                            const OFString &dateTimeSeparator) const
 {
@@ -254,7 +265,11 @@ ostream& operator<<(ostream& stream, const OFDateTime &dateTime)
  *
  * CVS/RCS Log:
  * $Log: ofdatime.cc,v $
- * Revision 1.6  2004-01-16 10:35:18  joergr
+ * Revision 1.7  2004-04-16 12:44:20  joergr
+ * Restructured code to avoid default parameter values for "complex types" like
+ * OFString. Required for Sun CC 2.0.1.
+ *
+ * Revision 1.6  2004/01/16 10:35:18  joergr
  * Added setISOFormattedXXX() methods for Date, Time and DateTime.
  *
  * Revision 1.5  2003/12/17 15:27:21  joergr

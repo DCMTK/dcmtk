@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2003, OFFIS
+ *  Copyright (C) 2000-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-05 10:37:41 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Update Date:      $Date: 2004-04-16 12:43:26 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -205,8 +205,8 @@ class OFStandard
      */
     static size_t searchDirectoryRecursively(const OFString &directory,
                                              OFList<OFString> &fileList,
-                                             const OFString &pattern = "",
-                                             const OFString &dirPrefix = "");
+                                             const OFString &pattern /*= ""*/,		// default parameter value not
+                                             const OFString &dirPrefix /*= ""*/);   // supported by Sun CC 2.0.1 :-/
 
     // --- other functions ---
 
@@ -427,7 +427,11 @@ class OFStandard
  *
  * CVS/RCS Log:
  * $Log: ofstd.h,v $
- * Revision 1.20  2003-12-05 10:37:41  joergr
+ * Revision 1.21  2004-04-16 12:43:26  joergr
+ * Restructured code to avoid default parameter values for "complex types" like
+ * OFString. Required for Sun CC 2.0.1.
+ *
+ * Revision 1.20  2003/12/05 10:37:41  joergr
  * Removed leading underscore characters from preprocessor symbols (reserved
  * symbols). Updated copyright date where appropriate.
  *
