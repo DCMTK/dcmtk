@@ -22,9 +22,9 @@
  *  Purpose: Convert the contents of a DICOM file to XML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-25 10:08:35 $
+ *  Update Date:      $Date: 2002-04-25 14:56:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcm2xml.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,7 +55,6 @@ static OFCondition writeFile(ostream &out,
                              const char *ifname,
                              const OFBool isDataset,
                              const E_TransferSyntax xfer,
-                             const size_t readFlags,
                              const OFBool loadIntoMemory,
                              const size_t writeFlags)
 {
@@ -149,7 +148,6 @@ static OFCondition writeFile(ostream &out,
 int main(int argc, char *argv[])
 {
     int opt_debugMode = 0;
-    size_t opt_readFlags = 0;
     size_t opt_writeFlags = 0;
     OFBool isDataset = OFFalse;
     OFBool loadIntoMemory = OFFalse;
@@ -259,12 +257,12 @@ int main(int argc, char *argv[])
         ofstream stream(ofname);
         if (stream.good())
         {
-            if (writeFile(stream, ifname, isDataset, xfer, opt_readFlags, loadIntoMemory, opt_writeFlags).bad())
+            if (writeFile(stream, ifname, isDataset, xfer, loadIntoMemory, opt_writeFlags).bad())
                 result = 2;
         } else
             result = 1;
     } else {
-        if (writeFile(COUT, ifname, isDataset, xfer, opt_readFlags, loadIntoMemory, opt_writeFlags).bad())
+        if (writeFile(COUT, ifname, isDataset, xfer, loadIntoMemory, opt_writeFlags).bad())
             result = 3;
     }
 
@@ -275,7 +273,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2xml.cc,v $
- * Revision 1.1  2002-04-25 10:08:35  joergr
+ * Revision 1.2  2002-04-25 14:56:35  joergr
+ * Removed unused function parameter to keep Sun CC 2.0.1 quiet.
+ *
+ * Revision 1.1  2002/04/25 10:08:35  joergr
  * Added new command line tool to convert DICOM files to XML.
  *
  *
