@@ -54,7 +54,7 @@
 
 typedef struct vector {
   CONDITION	cond;
-  char		*message;
+  const char	*message;
   } VECTOR;
 
 static VECTOR messageVector[] = {
@@ -64,7 +64,7 @@ static VECTOR messageVector[] = {
     { LST_NOCURRENT,		"No current node in LST routine" }
   };
 
-char *LST_Message(CONDITION condition)
+const char *LST_Message(CONDITION condition)
 {
   int
     l_index;

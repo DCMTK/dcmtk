@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: meichel $, $Date: 1999-02-05 14:35:10 $
+** Last Update:		$Author: meichel $, $Date: 1999-03-29 11:20:05 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.23 $
+** Revision:		$Revision: 1.24 $
 ** Status:		$State: Exp $
 */
 
@@ -249,7 +249,7 @@ static OFBool networkDataAvailable(int s, int timeout);
 #ifdef DEBUG
 static void recordOutGoing(void *buf, unsigned long length);
 #endif
-static void dump_pdu(char *type, void *buffer, unsigned long length);
+static void dump_pdu(const char *type, void *buffer, unsigned long length);
 #ifdef DUMP_DATA_PDU
 static void dump_data(void *buffer, unsigned long length);
 #endif
@@ -3789,7 +3789,7 @@ recordOutGoing(
 */
 
 static void
-dump_pdu(char *type, void *buffer, unsigned long length)
+dump_pdu(const char *type, void *buffer, unsigned long length)
 {
     unsigned char
        *p;
@@ -4161,7 +4161,10 @@ DULPRV_translateAssocReq(unsigned char *buffer,
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.23  1999-02-05 14:35:10  meichel
+** Revision 1.24  1999-03-29 11:20:05  meichel
+** Cleaned up dcmnet code for char* to const char* assignments.
+**
+** Revision 1.23  1999/02/05 14:35:10  meichel
 ** Added a call to shutdown() immediately before closesocket() on Win32.
 **   This causes any pending data to be sent before the socket is destroyed.
 **   Fixes a problem causing A-RELEASE-RSP messages to get lost under certain

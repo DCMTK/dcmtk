@@ -34,10 +34,10 @@
 ** Author: 	Andrew Hewett
 **		Kuratorium OFFIS e.V., Oldenburg, Germany
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-08-05 07:46:19 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1999-03-29 11:19:52 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/echoscu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.11 $
+** CVS/RCS Revision:	$Revision: 1.12 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -146,8 +146,8 @@ main(int argc, char *argv[])
     DIC_NODENAME peerHost;
     int i;
     T_ASC_Association *assoc;
-    char *peerTitle = PEERAPPLICATIONTITLE;
-    char *ourTitle = APPLICATIONTITLE;
+    const char *peerTitle = PEERAPPLICATIONTITLE;
+    const char *ourTitle = APPLICATIONTITLE;
 
 #ifdef HAVE_GUSI_H
     /* needed for Macintosh */
@@ -449,7 +449,10 @@ cecho(T_ASC_Association * assoc)
 /*
 ** CVS Log
 ** $Log: echoscu.cc,v $
-** Revision 1.11  1997-08-05 07:46:19  andreas
+** Revision 1.12  1999-03-29 11:19:52  meichel
+** Cleaned up dcmnet code for char* to const char* assignments.
+**
+** Revision 1.11  1997/08/05 07:46:19  andreas
 ** - Change needed version number of WINSOCK to 1.1
 **   to support WINDOWS 95
 **

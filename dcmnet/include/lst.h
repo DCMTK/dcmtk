@@ -68,7 +68,7 @@ LST_NODE *LST_Remove(LST_HEAD **list, LST_END dir);
 LST_NODE *LST_Next(LST_HEAD **list);
 LST_NODE *LST_Previous(LST_HEAD **list);
 LST_NODE *LST_Position(LST_HEAD **list, LST_NODE *node);
-char *LST_Message(CONDITION cond);
+const char *LST_Message(CONDITION cond);
 
 #define LST_Top(x) LST_Head((x))
 #define LST_Front(x) LST_Head((x))
@@ -87,8 +87,11 @@ char *LST_Message(CONDITION cond);
 /*
 ** CVS Log
 ** $Log: lst.h,v $
-** Revision 1.1  1996-03-26 18:38:45  hewett
-** Initial revision
+** Revision 1.2  1999-03-29 11:20:00  meichel
+** Cleaned up dcmnet code for char* to const char* assignments.
+**
+** Revision 1.1.1.1  1996/03/26 18:38:45  hewett
+** Initial Release.
 **
 **
 */

@@ -43,9 +43,9 @@
 ** Author, Date:	Stephen M. Moore, 11-May-92
 ** Intent:		This module defines structures and constants needed
 **			to implement the DICOM Upper Layer state machine.
-** Last Update:		$Author: hewett $, $Date: 1996-03-26 18:38:46 $
+** Last Update:		$Author: meichel $, $Date: 1999-03-29 11:20:07 $
 ** Source File:		$RCSfile: dulfsm.h,v $
-** Revision:		$Revision: 1.1 $
+** Revision:		$Revision: 1.2 $
 ** Status:		$State: Exp $
 */
 
@@ -101,7 +101,7 @@ typedef enum {
 
 typedef struct {
     int event;
-    char *eventName;
+    const char *eventName;
 }   FSM_Event_Description;
 
 typedef struct {
@@ -130,8 +130,11 @@ typedef struct {
 /*
 ** CVS Log
 ** $Log: dulfsm.h,v $
-** Revision 1.1  1996-03-26 18:38:46  hewett
-** Initial revision
+** Revision 1.2  1999-03-29 11:20:07  meichel
+** Cleaned up dcmnet code for char* to const char* assignments.
+**
+** Revision 1.1.1.1  1996/03/26 18:38:46  hewett
+** Initial Release.
 **
 **
 */

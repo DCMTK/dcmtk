@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1999-01-07 14:25:01 $
+** Update Date:		$Date: 1999-03-29 11:20:02 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:	$Revision: 1.18 $
+** CVS/RCS Revision:	$Revision: 1.19 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -268,7 +268,7 @@ ASC_initializeNetwork(T_ASC_NetworkRole role,
 		      T_ASC_Network ** network)
 {
     CONDITION cond;
-    char *mode;
+    const char *mode;
 
     DUL_NETWORKKEY * netkey;
 
@@ -1835,7 +1835,10 @@ ASC_dropAssociation(T_ASC_Association * association)
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
-** Revision 1.18  1999-01-07 14:25:01  meichel
+** Revision 1.19  1999-03-29 11:20:02  meichel
+** Cleaned up dcmnet code for char* to const char* assignments.
+**
+** Revision 1.18  1999/01/07 14:25:01  meichel
 ** Changed sequence of include files in some dcmnet modules
 **   to keep the Unixware compiler happy.
 **

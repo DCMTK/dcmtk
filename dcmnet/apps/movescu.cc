@@ -36,9 +36,9 @@
 ** Created:	03/96
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1998-08-10 08:53:35 $
+** Update Date:		$Date: 1999-03-29 11:19:54 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.21 $
+** CVS/RCS Revision:	$Revision: 1.22 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -87,8 +87,8 @@ typedef enum {
 } QueryModel;
 
 typedef struct {
-    char *findSyntax;
-    char *moveSyntax;
+    const char *findSyntax;
+    const char *moveSyntax;
 } QuerySyntax;
 
 typedef struct {
@@ -247,8 +247,8 @@ main(int argc, char *argv[])
     DIC_NODENAME peerHost;
     int i, j;
     T_ASC_Association *assoc = NULL;
-    char *peerTitle = PEERAPPLICATIONTITLE;
-    char *ourTitle = APPLICATIONTITLE;
+    const char *peerTitle = PEERAPPLICATIONTITLE;
+    const char *ourTitle = APPLICATIONTITLE;
 
 
 #ifdef HAVE_GUSI_H
@@ -963,7 +963,7 @@ moveSCU(T_ASC_Association * assoc, const char *fname)
     T_DIMSE_C_MoveRSP   rsp;
     DIC_US      	msgId = assoc->nextMsgID++;
     DcmDataset		*rspIds = NULL;
-    char                *sopClass;
+    const char          *sopClass;
     DcmDataset		*statusDetail = NULL;
     MyCallbackInfo	callbackData;
 
@@ -1068,7 +1068,10 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.21  1998-08-10 08:53:35  meichel
+** Revision 1.22  1999-03-29 11:19:54  meichel
+** Cleaned up dcmnet code for char* to const char* assignments.
+**
+** Revision 1.21  1998/08/10 08:53:35  meichel
 ** renamed member variable in DIMSE structures from "Status" to
 **   "DimseStatus". This is required if dcmnet is used together with
 **   <X11/Xlib.h> where Status is #define'd as int.

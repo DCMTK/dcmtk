@@ -43,9 +43,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		This module contains routines for the user to
 **			build and manipulate the public DUL structures.
-** Last Update:		$Author: meichel $, $Date: 1997-07-04 09:24:57 $
+** Last Update:		$Author: meichel $, $Date: 1999-03-29 11:20:08 $
 ** Source File:		$RCSfile: dulpres.cc,v $
-** Revision:		$Revision: 1.5 $
+** Revision:		$Revision: 1.6 $
 ** Status:		$State: Exp $
 */
 
@@ -108,7 +108,7 @@ CONDITION
 DUL_MakePresentationCtx(DUL_PRESENTATIONCONTEXT ** ctx,
 		     DUL_SC_ROLE proposedSCRole, DUL_SC_ROLE acceptedSCRole,
 		      DUL_PRESENTATIONCONTEXTID ctxID, unsigned char result,
-			char *abstractSyntax, char *transferSyntax,...)
+			const char *abstractSyntax, const char *transferSyntax,...)
 {
     va_list
 	args;
@@ -159,7 +159,10 @@ DUL_MakePresentationCtx(DUL_PRESENTATIONCONTEXT ** ctx,
 /*
 ** CVS Log
 ** $Log: dulpres.cc,v $
-** Revision 1.5  1997-07-04 09:24:57  meichel
+** Revision 1.6  1999-03-29 11:20:08  meichel
+** Cleaned up dcmnet code for char* to const char* assignments.
+**
+** Revision 1.5  1997/07/04 09:24:57  meichel
 ** Simplified some sizeof() constructs to avoid compiler warnings
 **   on the IBM xlC compiler (AIX 3.x).
 **

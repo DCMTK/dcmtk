@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1998-08-10 08:53:43 $
+** Update Date:		$Date: 1999-03-29 11:20:03 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimecho.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -95,7 +95,7 @@ DIMSE_echoUser(
     CONDITION cond;
     T_DIMSE_Message req, rsp;
     T_ASC_PresentationContextID presID;
-    char *sopClass;
+    const char *sopClass;
 
     /* which SOP class  */
     sopClass = UID_VerificationSOPClass;
@@ -176,7 +176,10 @@ DIMSE_sendEchoResponse(T_ASC_Association * assoc,
 /*
 ** CVS Log
 ** $Log: dimecho.cc,v $
-** Revision 1.3  1998-08-10 08:53:43  meichel
+** Revision 1.4  1999-03-29 11:20:03  meichel
+** Cleaned up dcmnet code for char* to const char* assignments.
+**
+** Revision 1.3  1998/08/10 08:53:43  meichel
 ** renamed member variable in DIMSE structures from "Status" to
 **   "DimseStatus". This is required if dcmnet is used together with
 **   <X11/Xlib.h> where Status is #define'd as int.

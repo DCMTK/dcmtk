@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: meichel $, $Date: 1999-02-05 14:35:09 $
+** Last Update:		$Author: meichel $, $Date: 1999-03-29 11:20:04 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.16 $
+** Revision:		$Revision: 1.17 $
 ** Status:		$State: Exp $
 */
 
@@ -107,10 +107,10 @@ static OFBool blog = 0;
 #endif
 
 static CONDITION
-createNetworkKey(char *type, char *mode, int timeout, unsigned long opt,
+createNetworkKey(const char *type, const char *mode, int timeout, unsigned long opt,
 		 PRIVATE_NETWORKKEY ** k);
 static CONDITION
-createAssociationKey(PRIVATE_NETWORKKEY ** net, char *node,
+createAssociationKey(PRIVATE_NETWORKKEY ** net, const char *node,
 		     unsigned long maxPDU,
 		     PRIVATE_ASSOCIATIONKEY ** assoc);
 static CONDITION initializeNetworkTCP(PRIVATE_NETWORKKEY ** k, void *p);
@@ -133,18 +133,15 @@ static CONDITION dropPDU(PRIVATE_ASSOCIATIONKEY ** association, unsigned long l)
 #endif
 static CONDITION
 get_association_parameter(void *paramAddress,
-			  DUL_DATA_TYPE paramType, size_t paramLength,
-	DUL_DATA_TYPE outputType, void *outputAddress, size_t outputLength);
+  DUL_DATA_TYPE paramType, size_t paramLength,
+  DUL_DATA_TYPE outputType, void *outputAddress, size_t outputLength);
 static void setTCPBufferLength(int sock);
-static CONDITION checkNetwork(PRIVATE_NETWORKKEY ** networkKey, char *caller);
-static CONDITION
-checkAssociation(PRIVATE_ASSOCIATIONKEY ** association,
-		 char *caller);
+static CONDITION checkNetwork(PRIVATE_NETWORKKEY ** networkKey, const char *caller);
+static CONDITION checkAssociation(PRIVATE_ASSOCIATIONKEY ** association, const char *caller);
 static void dump_presentation_ctx(LST_HEAD ** l);
 static void dump_uid(const char *UID, const char *indent);
 static void clearRequestorsParams(DUL_ASSOCIATESERVICEPARAMETERS * params);
-static void
-    clearPresentationContext(LST_HEAD ** l);
+static void clearPresentationContext(LST_HEAD ** l);
 
 #define	MIN_PDU_LENGTH	4*1024
 #define	MAX_PDU_LENGTH	128*1024
@@ -187,7 +184,7 @@ static void
 */
 
 CONDITION
-DUL_InitializeNetwork(char *networkType, char *mode,
+DUL_InitializeNetwork(const char *networkType, const char *mode,
 		      void *networkParameter, int timeout, unsigned long opt,
 		      DUL_NETWORKKEY ** networkKey)
 {
@@ -1624,7 +1621,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
 **	Description of the algorithm (optional) and any other notes.
 */
 static CONDITION
-createNetworkKey(char *networkType, char *mode,
+createNetworkKey(const char *networkType, const char *mode,
 		 int timeout, unsigned long opt, PRIVATE_NETWORKKEY ** key)
 {
     if (strcmp(networkType, DUL_NETWORK_TCP) == 0) {
@@ -1781,7 +1778,7 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
 */
 static CONDITION
 createAssociationKey(PRIVATE_NETWORKKEY ** networkKey,
-		     char *remoteNode, unsigned long maxPDU,
+		     const char *remoteNode, unsigned long maxPDU,
 		     PRIVATE_ASSOCIATIONKEY ** associationKey)
 {
     PRIVATE_ASSOCIATIONKEY
@@ -2139,7 +2136,7 @@ dump_uid(const char *UID, const char *indent)
 **	Description of the algorithm (optional) and any other notes.
 */
 static CONDITION
-checkNetwork(PRIVATE_NETWORKKEY ** networkKey, char *caller)
+checkNetwork(PRIVATE_NETWORKKEY ** networkKey, const char *caller)
 {
     if (networkKey == NULL)
 	return COND_PushCondition(DUL_NULLKEY,
@@ -2176,7 +2173,7 @@ checkNetwork(PRIVATE_NETWORKKEY ** networkKey, char *caller)
 
 static CONDITION
 checkAssociation(PRIVATE_ASSOCIATIONKEY ** association,
-		 char *caller)
+		 const char *caller)
 {
     if (association == NULL)
 	return COND_PushCondition(DUL_NULLKEY,
@@ -2267,7 +2264,10 @@ clearPresentationContext(LST_HEAD ** l)
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.16  1999-02-05 14:35:09  meichel
+** Revision 1.17  1999-03-29 11:20:04  meichel
+** Cleaned up dcmnet code for char* to const char* assignments.
+**
+** Revision 1.16  1999/02/05 14:35:09  meichel
 ** Added a call to shutdown() immediately before closesocket() on Win32.
 **   This causes any pending data to be sent before the socket is destroyed.
 **   Fixes a problem causing A-RELEASE-RSP messages to get lost under certain

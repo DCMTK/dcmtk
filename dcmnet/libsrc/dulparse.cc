@@ -45,9 +45,9 @@
 ** Intent:		This file contains functions for parsing Dicom
 **			Upper Layer (DUL) Protocol Data Units (PDUs)
 **			into logical in-memory structures.
-** Last Update:		$Author: andreas $, $Date: 1997-07-21 08:47:24 $
+** Last Update:		$Author: meichel $, $Date: 1999-03-29 11:20:07 $
 ** Source File:		$RCSfile: dulparse.cc,v $
-** Revision:		$Revision: 1.5 $
+** Revision:		$Revision: 1.6 $
 ** Status:		$State: Exp $
 */
 
@@ -166,7 +166,7 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
 
 #ifdef DEBUG
     if (debug) {
-	char *s;
+	const char *s;
 	(void) fprintf(DEBUG_DEVICE, "Parsing an A-ASSOCIATE PDU\n");
 	if (assoc->type == DUL_TYPEASSOCIATERQ)
 	    s = "A-ASSOCIATE RQ";
@@ -763,7 +763,10 @@ trim_trailing_spaces(char *s)
 /*
 ** CVS Log
 ** $Log: dulparse.cc,v $
-** Revision 1.5  1997-07-21 08:47:24  andreas
+** Revision 1.6  1999-03-29 11:20:07  meichel
+** Cleaned up dcmnet code for char* to const char* assignments.
+**
+** Revision 1.5  1997/07/21 08:47:24  andreas
 ** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
 **   with one unique boolean type OFBool.
 **

@@ -44,9 +44,9 @@
 ** Intent:		This file defines the public structures and constants
 **			and the function prototypes for the DUL (DICOM Upper
 **			Layer) facility.
-** Last Update:		$Author: meichel $, $Date: 1998-06-29 12:14:27 $
+** Last Update:		$Author: meichel $, $Date: 1999-03-29 11:19:59 $
 ** Source File:		$RCSfile: dul.h,v $
-** Revision:		$Revision: 1.4 $
+** Revision:		$Revision: 1.5 $
 ** Status:		$State: Exp $
 */
 
@@ -296,7 +296,7 @@ CONDITION
 DUL_AcknowledgeAssociationRQ(DUL_ASSOCIATIONKEY ** association,
 			     DUL_ASSOCIATESERVICEPARAMETERS * params);
 CONDITION
-DUL_InitializeNetwork(char *type, char *mode, void *param,
+DUL_InitializeNetwork(const char *type, const char *mode, void *param,
 	     int timeout, unsigned long options, DUL_NETWORKKEY ** network);
 CONDITION
 DUL_ReceiveAssociationRQ(DUL_NETWORKKEY ** net,
@@ -352,8 +352,8 @@ DUL_AssociationParameter(DUL_ASSOCIATIONKEY ** association,
 CONDITION
 DUL_MakePresentationCtx(DUL_PRESENTATIONCONTEXT ** ctx,
 		     DUL_SC_ROLE proposedSCRole, DUL_SC_ROLE acceptedSCRole,
-DUL_PRESENTATIONCONTEXTID ctxID, unsigned char reason, char *abstractSyntax,
-			char *transferSyntax,...);
+DUL_PRESENTATIONCONTEXTID ctxID, unsigned char reason, const char *abstractSyntax,
+			const char *transferSyntax,...);
 void DUL_DumpParams(DUL_ASSOCIATESERVICEPARAMETERS * params);
 CONDITION DUL_ClearServiceParameters(DUL_ASSOCIATESERVICEPARAMETERS * params);
 void DUL_DefaultServiceParameters(DUL_ASSOCIATESERVICEPARAMETERS * params);
@@ -449,7 +449,10 @@ DUL_associationWaiting(DUL_NETWORKKEY * callerNet, int timeout);
 /*
 ** CVS Log
 ** $Log: dul.h,v $
-** Revision 1.4  1998-06-29 12:14:27  meichel
+** Revision 1.5  1999-03-29 11:19:59  meichel
+** Cleaned up dcmnet code for char* to const char* assignments.
+**
+** Revision 1.4  1998/06/29 12:14:27  meichel
 ** Removed some name clashes (e.g. local variable with same
 **   name as class member) to improve maintainability.
 **   Applied some code purifications proposed by the gcc 2.8.1 -Weffc++ option.

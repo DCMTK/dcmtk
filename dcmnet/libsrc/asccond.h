@@ -56,10 +56,10 @@
 **	Module Prefix: ASC_
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-26 18:38:45 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1999-03-29 11:20:01 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/Attic/asccond.h,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -75,7 +75,7 @@
 #include "dicom.h"
 #include "cond.h"
 
-char *
+const char *
 ASC_Message(CONDITION condition);
 
 
@@ -84,8 +84,11 @@ ASC_Message(CONDITION condition);
 /*
 ** CVS Log
 ** $Log: asccond.h,v $
-** Revision 1.1  1996-03-26 18:38:45  hewett
-** Initial revision
+** Revision 1.2  1999-03-29 11:20:01  meichel
+** Cleaned up dcmnet code for char* to const char* assignments.
+**
+** Revision 1.1.1.1  1996/03/26 18:38:45  hewett
+** Initial Release.
 **
 **
 */

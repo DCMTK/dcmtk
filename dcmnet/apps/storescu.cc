@@ -36,9 +36,9 @@
 **
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1998-10-20 08:20:22 $
+** Update Date:		$Date: 1999-03-29 11:19:56 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.20 $
+** CVS/RCS Revision:	$Revision: 1.21 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -165,8 +165,8 @@ main(int argc, char *argv[])
     DIC_NODENAME peerHost;
     int i, j;
     T_ASC_Association *assoc;
-    char *peerTitle = PEERAPPLICATIONTITLE;
-    char *ourTitle = APPLICATIONTITLE;
+    const char *peerTitle = PEERAPPLICATIONTITLE;
+    const char *ourTitle = APPLICATIONTITLE;
 
 #ifdef HAVE_GUSI_H
     GUSISetup(GUSIwithSIOUXSockets);
@@ -602,7 +602,10 @@ cstore(T_ASC_Association * assoc, const char *fname)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.20  1998-10-20 08:20:22  meichel
+** Revision 1.21  1999-03-29 11:19:56  meichel
+** Cleaned up dcmnet code for char* to const char* assignments.
+**
+** Revision 1.20  1998/10/20 08:20:22  meichel
 ** Closed some memory leaks in dcmdata and dcmnet libraries.
 **
 ** Revision 1.19  1998/04/02 14:46:46  joergr

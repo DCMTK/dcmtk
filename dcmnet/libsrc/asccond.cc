@@ -56,9 +56,9 @@
 **	Module Prefix: ASC_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1998-06-29 12:14:30 $
+** Update Date:		$Date: 1999-03-29 11:20:00 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/Attic/asccond.cc,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -75,7 +75,7 @@
 
 typedef struct vector {
     CONDITION cond;
-    char *message;
+    const char *message;
 } VECTOR;
 
 static VECTOR messageVector[] = {
@@ -93,7 +93,7 @@ static VECTOR messageVector[] = {
 				 {ASC_NORMAL, NULL}
 };
 
-char *
+const char *
 ASC_Message(CONDITION condition)
 {
     int
@@ -109,7 +109,10 @@ ASC_Message(CONDITION condition)
 /*
 ** CVS Log
 ** $Log: asccond.cc,v $
-** Revision 1.2  1998-06-29 12:14:30  meichel
+** Revision 1.3  1999-03-29 11:20:00  meichel
+** Cleaned up dcmnet code for char* to const char* assignments.
+**
+** Revision 1.2  1998/06/29 12:14:30  meichel
 ** Removed some name clashes (e.g. local variable with same
 **   name as class member) to improve maintainability.
 **   Applied some code purifications proposed by the gcc 2.8.1 -Weffc++ option.

@@ -34,10 +34,10 @@
 ** Author: 	Marco Eichelberg
 **		Kuratorium OFFIS e.V., Oldenburg, Germany
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-08-05 07:46:31 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1999-03-29 11:20:10 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/tests/Attic/assctest.cc,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -223,8 +223,8 @@ main(int argc, char *argv[])
     DIC_NODENAME peerHost;
     int i;
     T_ASC_Association *assoc;
-    char *peerTitle = PEERAPPLICATIONTITLE;
-    char *ourTitle = APPLICATIONTITLE;
+    const char *peerTitle = PEERAPPLICATIONTITLE;
+    const char *ourTitle = APPLICATIONTITLE;
 
     /* malloc_debug(14); */ /* used malloc_debug to track down buffer overrun problems in DICOM upper layer. */
 
@@ -573,7 +573,10 @@ cecho(T_ASC_Association * assoc)
 /*
 ** CVS Log
 ** $Log: assctest.cc,v $
-** Revision 1.7  1997-08-05 07:46:31  andreas
+** Revision 1.8  1999-03-29 11:20:10  meichel
+** Cleaned up dcmnet code for char* to const char* assignments.
+**
+** Revision 1.7  1997/08/05 07:46:31  andreas
 ** - Change needed version number of WINSOCK to 1.1
 **   to support WINDOWS 95
 **

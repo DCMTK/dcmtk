@@ -35,9 +35,9 @@
 **		Kuratorium OFFIS e.V., Oldenburg, Germany
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1998-08-10 08:53:36 $
+** Update Date:		$Date: 1999-03-29 11:19:55 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
-** CVS/RCS Revision:	$Revision: 1.19 $
+** CVS/RCS Revision:	$Revision: 1.20 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -127,12 +127,12 @@ static void usage()
   (unsigned long)ASC_DEFAULTMAXPDU);
 }
 
-int extract_unsigned_long(unsigned long& result, int argc, char *argv[], int index)
+int extract_unsigned_long(unsigned long& result, int argc, char *argv[], int idx)
 {
   unsigned long l;
   
-  if (index >= argc ) return 0;
-  if (1 == sscanf(argv[index], "%lu", &l))
+  if (idx >= argc ) return 0;
+  if (1 == sscanf(argv[idx], "%lu", &l))
   {
     result = l;
     return 1;
@@ -1091,7 +1091,10 @@ static CONDITION storeSCP(
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.19  1998-08-10 08:53:36  meichel
+** Revision 1.20  1999-03-29 11:19:55  meichel
+** Cleaned up dcmnet code for char* to const char* assignments.
+**
+** Revision 1.19  1998/08/10 08:53:36  meichel
 ** renamed member variable in DIMSE structures from "Status" to
 **   "DimseStatus". This is required if dcmnet is used together with
 **   <X11/Xlib.h> where Status is #define'd as int.
