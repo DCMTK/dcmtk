@@ -29,10 +29,10 @@ application source code (apps), library source code (libsrc), library
 include files (include), documentation (docs) and optional test programs
 (tests).
 
-To build and install the DCMTK package see the \ref install.  For copyright
-information see the \ref copyright.  For information about the history of
-this software see the \ref history.  For answers to some frequently asked
-questions see the \ref faq.
+To build and install the DCMTK package see the \ref install file.  For
+copyright information see the \ref copyright file.  For information about the
+history of this software see the \ref history.  For answers to some frequently
+asked questions see the \ref faq file.
 
 If you find bugs or other problems with this software we would appreciate
 hearing about them.  Please send electronic mail to \b dicom-bugs@offis.de.
@@ -41,24 +41,23 @@ fix.
 
 */
 
-
 /*!
-    \page readme README file
+    \page readme README
     \verbinclude README
 */
 /*!
-    \page install INSTALL file
+    \page install INSTALL
     \verbinclude INSTALL
 */
 /*!
-    \page copyright COPYRIGHT file
+    \page copyright COPYRIGHT
     \verbinclude COPYRIGHT
 */
 /*!
-    \page history HISTORY file
+    \page history HISTORY
     \verbinclude HISTORY
 */
 /*!
-    \page faq FAQ file
+    \page faq FAQ
     \verbinclude FAQ
 */
