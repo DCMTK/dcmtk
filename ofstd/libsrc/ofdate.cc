@@ -22,9 +22,9 @@
  *  Purpose: Class for date functions (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-11 12:14:33 $
+ *  Update Date:      $Date: 2002-04-15 09:40:47 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofdate.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,9 +36,6 @@
 
 BEGIN_EXTERN_C
 #include <stdio.h>         /* for sprintf() */
-#ifdef HAVE_SYS_TYPES_H
-# include <sys/types.h>    /* for struct time_t */
-#endif
 #ifdef HAVE_TIME_H
 # include <time.h>         /* for time() */
 #endif
@@ -306,7 +303,10 @@ ostream& operator<<(ostream& stream, const OFDate &date)
  *
  * CVS/RCS Log:
  * $Log: ofdate.cc,v $
- * Revision 1.1  2002-04-11 12:14:33  joergr
+ * Revision 1.2  2002-04-15 09:40:47  joergr
+ * Removed "include <sys/types.h>" from implementation file.
+ *
+ * Revision 1.1  2002/04/11 12:14:33  joergr
  * Introduced new standard classes providing date and time functions.
  *
  *
