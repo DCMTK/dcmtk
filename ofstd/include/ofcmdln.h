@@ -22,9 +22,9 @@
  *  Purpose: Handle command line arguments (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-05 13:48:21 $
+ *  Update Date:      $Date: 2002-12-09 13:04:41 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofcmdln.h,v $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -130,8 +130,8 @@ struct OFCmdOption
     OFBool Checked;
 
 private:
-	/// private undefined copy assignment operator
-	OFCmdOption& operator=(const OFCmdOption& arg);
+    /// private undefined copy assignment operator
+    OFCmdOption& operator=(const OFCmdOption& arg);
 
 };
 
@@ -179,8 +179,8 @@ struct OFCmdParam
     const E_ParamMode ParamMode;
 
 private:
-	/// private undefined copy assignment operator
-	OFCmdParam& operator=(const OFCmdParam& arg);
+    /// private undefined copy assignment operator
+    OFCmdParam& operator=(const OFCmdParam& arg);
 
 };
 
@@ -219,8 +219,8 @@ struct OFCmdParamPos
     const int DirectOption;
 
 private:
-	/// private undefined copy assignment operator
-	OFCmdParamPos& operator=(const OFCmdParamPos& arg);
+    /// private undefined copy assignment operator
+    OFCmdParamPos& operator=(const OFCmdParamPos& arg);
 
 };
 
@@ -1031,10 +1031,11 @@ class OFCommandLine
     /// mode of last added parameter (used for debug checking)
     OFCmdParam::E_ParamMode LastParamMode;
 
-private:
-	/// private undefined copy assignment operator
-	OFCommandLine& operator=(const OFCommandLine& arg);
 
+ private:
+
+    /// private undefined assignment operator
+    OFCommandLine &operator=(const OFCommandLine &obj);
 };
 
 
@@ -1045,7 +1046,10 @@ private:
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.h,v $
- * Revision 1.31  2002-12-05 13:48:21  joergr
+ * Revision 1.32  2002-12-09 13:04:41  joergr
+ * Replaced tab characters by spaces.
+ *
+ * Revision 1.31  2002/12/05 13:48:21  joergr
  * Make sure that no warning on "unchecked command line options" is reported in
  * debug mode when an exclusive option is used.
  *
