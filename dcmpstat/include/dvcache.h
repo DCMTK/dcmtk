@@ -21,10 +21,10 @@
  *
  *  Purpose: Classes for caching of the image database (Header/Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:28:47 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-05-30 13:37:15 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/include/Attic/dvcache.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,8 +56,8 @@ enum DVPSInstanceType
     DVPSI_presentationState,
     /// stored print object
     DVPSI_storedPrint,
-    /// grayscale hardcopy object
-    DVPSI_grayscaleHardcopy
+    /// hardcopy grayscale object
+    DVPSI_hardcopyGrayscale
 };
 
 
@@ -885,7 +885,11 @@ class DVStudyCache
  *
  * CVS/RCS Log:
  * $Log: dvcache.h,v $
- * Revision 1.10  2000-03-08 16:28:47  meichel
+ * Revision 1.11  2000-05-30 13:37:15  joergr
+ * Renamed GrayscaleHardcopy to HardcopyGrayscale (which is the correct term
+ * according to the DICOM standard).
+ *
+ * Revision 1.10  2000/03/08 16:28:47  meichel
  * Updated copyright header.
  *
  * Revision 1.9  1999/09/08 17:03:00  joergr
