@@ -22,9 +22,9 @@
  *  Purpose: Handle command line arguments (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-30 12:30:18 $
+ *  Update Date:      $Date: 1998-12-02 15:19:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofcmdln.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -183,7 +183,7 @@ class OFCommandLine
         VS_Normal,
         /// argument contains invalid char(s)
         VS_Invalid,
-        /// no more arguments to be converted
+        /// no more arguments to be converted / specified parameter doesn't exist
         VS_NoMore,
         /// empty string argument
         VS_Empty,
@@ -299,11 +299,50 @@ class OFCommandLine
 
     OFBool findParam(const int pos);
 
-    OFBool getParam(const int pos,
-                    const char *&param);
+    E_ValueStatus getParam(const int pos,
+                           OFCmdSignedInt &value);
 
-    OFBool getParam(const int pos,
-                    OFCmdString &param);
+    E_ValueStatus getParam(const int pos,
+                           OFCmdSignedInt &value,
+                           const OFCmdSignedInt low,
+                           const OFBool incl = OFTrue);
+
+    E_ValueStatus getParam(const int pos,
+                           OFCmdSignedInt &value,
+                           const OFCmdSignedInt low,
+                           const OFCmdSignedInt high);
+
+    E_ValueStatus getParam(const int pos,
+                           OFCmdUnsignedInt &value);
+
+    E_ValueStatus getParam(const int pos,
+                           OFCmdUnsignedInt &value,
+                           const OFCmdUnsignedInt low,
+                           const OFBool incl = OFTrue);
+
+    E_ValueStatus getParam(const int pos,
+                           OFCmdUnsignedInt &value,
+                           const OFCmdUnsignedInt low,
+                           const OFCmdUnsignedInt high);
+
+    E_ValueStatus getParam(const int pos,
+                           OFCmdFloat &value);
+
+    E_ValueStatus getParam(const int pos,
+                           OFCmdFloat &value,
+                           const OFCmdFloat low,
+                           const OFBool incl = OFTrue);
+
+    E_ValueStatus getParam(const int pos,
+                           OFCmdFloat &value,
+                           const OFCmdFloat low,
+                           const OFCmdFloat high);
+
+    E_ValueStatus getParam(const int pos,
+                           const char *&param);
+
+    E_ValueStatus getParam(const int pos,
+                           OFCmdString &param);
 
 
  // --- find/get option
@@ -408,7 +447,11 @@ class OFCommandLine
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.h,v $
- * Revision 1.3  1998-11-30 12:30:18  joergr
+ * Revision 1.4  1998-12-02 15:19:49  joergr
+ * Added methods to convert parameters to signed/unsigned integers and
+ * floats. Changed return value of existing getParam() methods.
+ *
+ * Revision 1.3  1998/11/30 12:30:18  joergr
  * Use lists of pointers (!) to internal data structures to avoid errors with
  * MSVC5 (operator '==' was not defined to compare structures).
  *

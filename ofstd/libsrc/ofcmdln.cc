@@ -22,9 +22,9 @@
  *  Purpose: Template class for command line arguments (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-30 12:31:16 $
+ *  Update Date:      $Date: 1998-12-02 15:20:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofcmdln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -185,27 +185,152 @@ OFBool OFCommandLine::findParam(int pos,
 }
 
 
-OFBool OFCommandLine::getParam(const int pos,
-                               const char *&param)
+OFCommandLine::E_ValueStatus OFCommandLine::getParam(const int pos,
+                                                     OFCmdSignedInt &value)
+{
+    if (findParam(pos))
+    {
+        if (sscanf((*ArgumentIterator).c_str(), "%li", &value) == 1)
+            return VS_Normal;
+        return VS_Invalid;
+    }
+    return VS_NoMore;
+}
+
+
+OFCommandLine::E_ValueStatus OFCommandLine::getParam(const int pos,
+                                                     OFCmdSignedInt &value,
+                                                     const OFCmdSignedInt low,
+                                                     const OFCmdSignedInt high)
+{
+    E_ValueStatus status = getParam(pos, value);
+    if (status == VS_Normal)
+    {
+        if (value < low)
+            return VS_Underflow;
+        else if (value > high)
+            return VS_Overflow;
+    }
+    return status;
+}
+
+
+OFCommandLine::E_ValueStatus OFCommandLine::getParam(const int pos,
+                                                     OFCmdUnsignedInt &value)
+{
+    if (findParam(pos))
+    {
+        if (sscanf((*ArgumentIterator).c_str(), "%lu", &value) == 1)
+            return VS_Normal;
+        return VS_Invalid;
+    }
+    return VS_NoMore;
+}
+
+
+OFCommandLine::E_ValueStatus OFCommandLine::getParam(const int pos,
+                                                     OFCmdUnsignedInt &value,
+                                                     const OFCmdUnsignedInt low,
+                                                     const OFBool incl)
+{
+    E_ValueStatus status = getParam(pos, value);
+    if (status == VS_Normal)
+    {
+        if ((value < low) || (!incl && (value == low)))
+            return VS_Underflow;
+    }
+    return status;
+}
+
+
+OFCommandLine::E_ValueStatus OFCommandLine::getParam(const int pos,
+                                                     OFCmdUnsignedInt &value,
+                                                     const OFCmdUnsignedInt low,
+                                                     const OFCmdUnsignedInt high)
+{
+    E_ValueStatus status = getParam(pos, value);
+    if (status == VS_Normal)
+    {
+        if (value < low)
+            return VS_Underflow;
+        else if (value > high)
+            return VS_Overflow;
+    }
+    return status;
+}
+
+
+OFCommandLine::E_ValueStatus OFCommandLine::getParam(const int pos,
+                                                     OFCmdFloat &value)
+{
+    if (findParam(pos))
+    {
+        if (sscanf((*ArgumentIterator).c_str(), "%lf", &value) == 1)
+            return VS_Normal;
+        return VS_Invalid;
+    }
+    return VS_NoMore;
+}
+
+
+OFCommandLine::E_ValueStatus OFCommandLine::getParam(const int pos,
+                                                     OFCmdFloat &value,
+                                                     const OFCmdFloat low,
+                                                     const OFBool incl)
+{
+    E_ValueStatus status = getParam(pos, value);
+    if (status == VS_Normal)
+    {
+        if ((value < low) || (!incl && (value == low)))
+            return VS_Underflow;
+    }
+    return status;
+}
+
+
+OFCommandLine::E_ValueStatus OFCommandLine::getParam(const int pos,
+                                                     OFCmdFloat &value,
+                                                     const OFCmdFloat low,
+                                                     const OFCmdFloat high)
+{
+    E_ValueStatus status = getParam(pos, value);
+    if (status == VS_Normal)
+    {
+        if (value < low)
+            return VS_Underflow;
+        else if (value > high)
+            return VS_Overflow;
+    }
+    return status;
+}
+
+
+OFCommandLine::E_ValueStatus OFCommandLine::getParam(const int pos,
+                                                     const char *&param)
 {
     if (findParam(pos))
     {
         param = (*ArgumentIterator).c_str();
-        return OFTrue;
+        if (strlen(param) > 0)
+            return VS_Normal;
+        return VS_Empty;
     }
-    return OFFalse;
+    return VS_NoMore;
 }
 
 
-OFBool OFCommandLine::getParam(const int pos,
-                               OFCmdString &param)
+OFCommandLine::E_ValueStatus OFCommandLine::getParam(const int pos,
+                                                     OFCmdString &param)
 {
     if (findParam(pos))
     {
         param = *ArgumentIterator;
-        return OFTrue;
+        
+        if (param.length() > 0)
+            return VS_Normal;
+        return VS_Empty;
     }
-    return OFFalse;
+    return VS_NoMore;
 }
 
 
@@ -640,7 +765,11 @@ void OFCommandLine::getStatusString(const E_ValueStatus status,
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.cc,v $
- * Revision 1.3  1998-11-30 12:31:16  joergr
+ * Revision 1.4  1998-12-02 15:20:05  joergr
+ * Added methods to convert parameters to signed/unsigned integers and
+ * floats. Changed return value of existing getParam() methods.
+ *
+ * Revision 1.3  1998/11/30 12:31:16  joergr
  * Use lists of pointers (!) to internal data structures to avoid errors with
  * MSVC5 (operator '==' was not defined to compare structures).
  *
