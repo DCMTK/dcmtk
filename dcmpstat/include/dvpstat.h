@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-25 18:40:08 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 1999-03-02 13:01:02 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1359,6 +1359,13 @@ public:
     */
    void setBartenTransform(OFBool flag) { useBartenTransform=flag; }
    
+   /** checks whether Barten correction is possible, i.e.
+    *  a valid monitor characteristics description exists
+    *  and current system is a low-cost system (without built-in
+    *  calibration).
+    */
+   OFBool isBartenTransformPossible() { return displayFunction!=NULL; }
+   
    /** changes the display function.
     *  If NULL is passed, Barten transform is disabled.
     */
@@ -1700,7 +1707,11 @@ private:
 
 /*
  *  $Log: dvpstat.h,v $
- *  Revision 1.10  1999-02-25 18:40:08  joergr
+ *  Revision 1.11  1999-03-02 13:01:02  joergr
+ *  Added method to presentation state class that checks whether Barten
+ *  transformation is possible or not.
+ *
+ *  Revision 1.10  1999/02/25 18:40:08  joergr
  *  Added method to fill pixel data into an externally handled storage area.
  *
  *  Revision 1.9  1999/02/18 11:36:38  meichel
