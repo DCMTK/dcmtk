@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-08-05 08:46:12 $
+** Update Date:		$Date: 1996-08-08 10:06:23 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.15 $
+** CVS/RCS Revision:	$Revision: 1.16 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1158,7 +1158,7 @@ E_Condition DcmItem::nextObject(DcmStack & stack, const BOOL intoSub)
     }
 
     obj = stack.top();
-    if (obj->isLeaf())
+    if (obj->isLeaf() || !intoSub)
     {
 	stack.pop();
 	container = stack.top();
@@ -1840,7 +1840,10 @@ DcmItem::findLong(const DcmTagKey& xtag,
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.15  1996-08-05 08:46:12  andreas
+** Revision 1.16  1996-08-08 10:06:23  andreas
+** Correct error for intoSub=FALSE
+**
+** Revision 1.15  1996/08/05 08:46:12  andreas
 ** new print routine with additional parameters:
 **         - print into files
 **         - fix output length for elements

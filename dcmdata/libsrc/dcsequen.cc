@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-08-05 08:46:17 $
+** Update Date:		$Date: 1996-08-08 10:06:24 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcsequen.cc,v $
-** CVS/RCS Revision:	$Revision: 1.9 $
+** CVS/RCS Revision:	$Revision: 1.10 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -692,7 +692,7 @@ E_Condition DcmSequenceOfItems::nextObject(DcmStack & stack, const BOOL intoSub)
     }
 
     obj = stack.top();
-    if (obj->isLeaf())
+    if (obj->isLeaf() || !intoSub)
     {
 	stack.pop();
 	container = stack.top();
@@ -1101,7 +1101,10 @@ E_Condition DcmSequenceOfItems::loadAllDataIntoMemory()
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.9  1996-08-05 08:46:17  andreas
+** Revision 1.10  1996-08-08 10:06:24  andreas
+** Correct error for intoSub=FALSE
+**
+** Revision 1.9  1996/08/05 08:46:17  andreas
 ** new print routine with additional parameters:
 **         - print into files
 **         - fix output length for elements
