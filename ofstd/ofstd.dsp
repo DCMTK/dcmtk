@@ -21,7 +21,8 @@ CFG=ofstd - Win32 Debug
 !MESSAGE 
 !MESSAGE "ofstd - Win32 Release" (basierend auf  "Win32 (x86) Static Library")
 !MESSAGE "ofstd - Win32 Debug" (basierend auf  "Win32 (x86) Static Library")
-!MESSAGE "ofstd - Win32 Release OpenSSL" (basierend auf  "Win32 (x86) Static Library")
+!MESSAGE "ofstd - Win32 Release OpenSSL" (basierend auf\
+  "Win32 (x86) Static Library")
 !MESSAGE 
 
 # Begin Project
@@ -110,6 +111,10 @@ SOURCE=.\libsrc\ofconapp.cxx
 # Begin Source File
 
 SOURCE=.\libsrc\ofcond.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=.\libsrc\ofconfig.cxx
 # End Source File
 # Begin Source File
 
