@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: DicomPalettePixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-06-26 16:19:13 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dipalpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2003-12-23 11:50:30 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +31,8 @@
  */
 
 
-#ifndef __DIPALPXT_H
-#define __DIPALPXT_H
+#ifndef DIPALPXT_H
+#define DIPALPXT_H
 
 #include "osconfig.h"
 
@@ -82,10 +81,10 @@ class DiPalettePixelTemplate
                 }
             }
             else
-                convert((const T1 *)pixel->getData() + pixel->getPixelStart(), palette);
+                convert(OFstatic_cast(const T1 *, pixel->getData()) + pixel->getPixelStart(), palette);
         }
     }
-    
+
     /** destructor
      */
     virtual ~DiPalettePixelTemplate()
@@ -112,17 +111,17 @@ class DiPalettePixelTemplate
             // use the number of input pixels derived from the length of the 'PixelData'
             // attribute), but not more than the size of the intermediate buffer
             const unsigned long count = (InputCount < Count) ? InputCount : Count;
-            for (i = 0; i < count; i++)
+            for (i = 0; i < count; ++i)
             {
-                value = (T2)(*(p++));
-                for (j = 0; j < 3; j++)
+                value = OFstatic_cast(T2, *(p++));
+                for (j = 0; j < 3; ++j)
                 {
                     if (value <= palette[j]->getFirstEntry(value))
-                        Data[j][i] = (T3)palette[j]->getFirstValue();
+                        Data[j][i] = OFstatic_cast(T3, palette[j]->getFirstValue());
                     else if (value >= palette[j]->getLastEntry(value))
-                        Data[j][i] = (T3)palette[j]->getLastValue();
+                        Data[j][i] = OFstatic_cast(T3, palette[j]->getLastValue());
                     else
-                        Data[j][i] = (T3)palette[j]->getValue(value);
+                        Data[j][i] = OFstatic_cast(T3, palette[j]->getValue(value));
                 }
             }
         }
@@ -137,7 +136,14 @@ class DiPalettePixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dipalpxt.h,v $
- * Revision 1.15  2002-06-26 16:19:13  joergr
+ * Revision 1.16  2003-12-23 11:50:30  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated copyright header.
+ * Replaced post-increment/decrement operators by pre-increment/decrement
+ * operators where appropriate (e.g. 'i++' by '++i').
+ *
+ * Revision 1.15  2002/06/26 16:19:13  joergr
  * Enhanced handling of corrupted pixel data and/or length.
  * Corrected decoding of multi-frame, planar images.
  *

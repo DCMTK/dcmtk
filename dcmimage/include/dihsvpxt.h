@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: DicomHSVPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-06-26 16:18:10 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dihsvpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2003-12-23 11:48:23 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +31,8 @@
  */
 
 
-#ifndef __DIHSVPXT_H
-#define __DIHSVPXT_H
+#ifndef DIHSVPXT_H
+#define DIHSVPXT_H
 
 #include "osconfig.h"
 
@@ -70,7 +69,7 @@ class DiHSVPixelTemplate
       : DiColorPixelTemplate<T2>(docu, pixel, 3, status)
     {
         if ((pixel != NULL) && (Count > 0) && (status == EIS_Normal))
-            convert((const T1 *)pixel->getData() + pixel->getPixelStart(), planeSize, bits);
+            convert(OFstatic_cast(const T1 *, pixel->getData()) + pixel->getPixelStart(), planeSize, bits);
     }
 
     /** destructor
@@ -97,8 +96,8 @@ class DiHSVPixelTemplate
             register T2 *r = Data[0];
             register T2 *g = Data[1];
             register T2 *b = Data[2];
-            const T2 maxvalue = (T2)DicomImageClass::maxval(bits);
-            const T1 offset = (T1)DicomImageClass::maxval(bits - 1);
+            const T2 maxvalue = OFstatic_cast(T2, DicomImageClass::maxval(bits));
+            const T1 offset = OFstatic_cast(T1, DicomImageClass::maxval(bits - 1));
             // use the number of input pixels derived from the length of the 'PixelData'
             // attribute), but not more than the size of the intermediate buffer
             const unsigned long count = (InputCount < Count) ? InputCount : Count;
@@ -108,7 +107,7 @@ class DiHSVPixelTemplate
                 register const T1 *h = pixel;
                 register const T1 *s = h + InputCount;
                 register const T1 *v = s + InputCount;
-                for (i = count; i != 0; i--)
+                for (i = count; i != 0; --i)
                     convertValue(*(r++), *(g++), *(b++), removeSign(*(h++), offset), removeSign(*(s++), offset),
                         removeSign(*(v++), offset), maxvalue);
 */
@@ -120,7 +119,7 @@ class DiHSVPixelTemplate
                 while (i != 0)
                 {
                     /* convert a single frame */
-                    for (l = planeSize; (l != 0) && (i != 0); l--, i--)
+                    for (l = planeSize; (l != 0) && (i != 0); --l, --i)
                     {
                         convertValue(*(r++), *(g++), *(b++), removeSign(*(h++), offset), removeSign(*(s++), offset),
                             removeSign(*(v++), offset), maxvalue);
@@ -130,7 +129,7 @@ class DiHSVPixelTemplate
                     s += 2 * planeSize;
                     v += 2 * planeSize;
                 }
-            } 
+            }
             else
             {
                 register const T1 *p = pixel;
@@ -138,9 +137,9 @@ class DiHSVPixelTemplate
                 register T2 s;
                 register T2 v;
                 register unsigned long i;
-                for (i = count; i != 0; i--)
+                for (i = count; i != 0; --i)
                 {
-                    h = removeSign(*(p++), offset); 
+                    h = removeSign(*(p++), offset);
                     s = removeSign(*(p++), offset);
                     v = removeSign(*(p++), offset);
                     convertValue(*(r++), *(g++), *(b++), h, s, v, maxvalue);
@@ -171,14 +170,14 @@ class DiHSVPixelTemplate
         }
         else
         {
-            const double h = ((double)hue * 6) / ((double)maxvalue + 1);            // '... + 1' to assert h < 6
-            const double s = (double)saturation / (double)maxvalue;
-            const double v = (double)value / (double)maxvalue;
-            const T2 hi = (T2)h;
+            const double h = (OFstatic_cast(double, hue) * 6) / (OFstatic_cast(double, maxvalue) + 1);  // '... + 1' to assert h < 6
+            const double s = OFstatic_cast(double, saturation) / OFstatic_cast(double, maxvalue);
+            const double v = OFstatic_cast(double, value) / OFstatic_cast(double, maxvalue);
+            const T2 hi = OFstatic_cast(T2, h);
             const double hf = h - hi;
-            const T2 p = (T2)(maxvalue * v * (1 - s));
-            const T2 q = (T2)(maxvalue * v * (1 - s * hf));
-            const T2 t = (T2)(maxvalue * v * (1 - s * (1 - hf)));
+            const T2 p = OFstatic_cast(T2, maxvalue * v * (1 - s));
+            const T2 q = OFstatic_cast(T2, maxvalue * v * (1 - s * hf));
+            const T2 t = OFstatic_cast(T2, maxvalue * v * (1 - s * (1 - hf)));
             switch (hi)
             {
                 case 0:
@@ -230,7 +229,14 @@ class DiHSVPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dihsvpxt.h,v $
- * Revision 1.16  2002-06-26 16:18:10  joergr
+ * Revision 1.17  2003-12-23 11:48:23  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated copyright header.
+ * Replaced post-increment/decrement operators by pre-increment/decrement
+ * operators where appropriate (e.g. 'i++' by '++i').
+ *
+ * Revision 1.16  2002/06/26 16:18:10  joergr
  * Enhanced handling of corrupted pixel data and/or length.
  * Corrected decoding of multi-frame, planar images.
  *
