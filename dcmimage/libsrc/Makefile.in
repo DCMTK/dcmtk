@@ -15,7 +15,7 @@ configdir=@top_srcdir@/@configdir@
 #	swap order of overlay origin coordinates
 
 LOCALDEFS = -DREVERSE_OVERLAY_ORIGIN_ORDER
-LOCALINCLUDES = -I../../dcmdata/include
+LOCALINCLUDES = -I../../ofstd/include -I../../dcmdata/include
 
 include $(configdir)/@common_makefile@
 
