@@ -21,10 +21,10 @@
  *
  *  Purpose: Provides main interface to the "dicom image toolkit"
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-02-09 14:21:08 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-02-11 15:35:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dcmimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -248,6 +248,19 @@ class DicomImage
     inline double getHeightWidthRatio() const
     {
         return (Image != NULL) ? Image->getRowColumnRatio() : 0;
+    }
+    
+    /** check whether given output value is unused 
+     *
+     ** @param  value  output value to be checked
+     *
+     ** @return status, true if unused (1 = within output range, 2 = out of range), false otherwise
+     */
+    inline int isOutputValueUnused(const unsigned long value)
+    {
+        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
+            return Image->getMonoImagePtr()->isValueUnused(value);
+        return 0;
     }
     
  // --- output: return pointer to output data if successful
@@ -1183,7 +1196,11 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.11  1999-02-09 14:21:08  meichel
+ * Revision 1.12  1999-02-11 15:35:04  joergr
+ * Added routine to check whether particular grayscale values are unused in
+ * the output data.
+ *
+ * Revision 1.11  1999/02/09 14:21:08  meichel
  * Corrected const signatures of some ctor declarations
  *
  * Revision 1.10  1999/02/08 12:37:35  joergr
