@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-03 13:29:33 $
- *  CVS/RCS Revision: $Revision: 1.47 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-03-22 09:52:40 $
+ *  CVS/RCS Revision: $Revision: 1.48 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1949,10 +1949,10 @@ E_Condition DVInterface::saveDICOMImage(
     
     if (dataset)
     {
-      if (EC_Normal==status) status = putStringValue(dataset, DCM_PatientName);
+      if (EC_Normal==status) status = putStringValue(dataset, DCM_PatientsName);
       if (EC_Normal==status) status = putStringValue(dataset, DCM_PatientID);
-      if (EC_Normal==status) status = putStringValue(dataset, DCM_PatientBirthDate);
-      if (EC_Normal==status) status = putStringValue(dataset, DCM_PatientSex);
+      if (EC_Normal==status) status = putStringValue(dataset, DCM_PatientsBirthDate);
+      if (EC_Normal==status) status = putStringValue(dataset, DCM_PatientsSex);
       if (EC_Normal==status) status = putStringValue(dataset, DCM_StudyDate);
       if (EC_Normal==status) status = putStringValue(dataset, DCM_StudyTime);
       if (EC_Normal==status) status = putStringValue(dataset, DCM_ReferringPhysiciansName);
@@ -2085,7 +2085,12 @@ void DVInterface::cleanChildren()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.47  1999-03-03 13:29:33  joergr
+ *  Revision 1.48  1999-03-22 09:52:40  meichel
+ *  Reworked data dictionary based on the 1998 DICOM edition and the latest
+ *    supplement versions. Corrected dcmtk applications for minor changes
+ *    in attribute name constants.
+ *
+ *  Revision 1.47  1999/03/03 13:29:33  joergr
  *  Added methods to get and set ambient light value (re: Barten transformation).
  *  Moved method 'isBartenTransformPossible()' from presentation state class to
  *  interface class.

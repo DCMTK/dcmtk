@@ -1,3 +1,12 @@
+
+**** Changes from 1999.03.22 (eichelberg)
+
+- Reworked data dictionary based on the 1998 DICOM edition and the latest
+  supplement versions. Corrected dcmtk applications for minor changes 
+  in attribute name constants.
+  Affects: dcmpstat/libsrc/dviface.cc
+           dcmpstat/libsrc/dvpstat.cc
+
 **** Changes from 1999.03.22 (riesmeier)
 
 - Added parameter to get value of (transparent) background color for method

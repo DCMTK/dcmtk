@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPresentationState
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-22 09:06:48 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-03-22 09:52:42 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -125,10 +125,10 @@ static void currentTime(OFString &str)
 /* --------------- class DVPresentationState --------------- */
 
 DVPresentationState::DVPresentationState(DiDisplayFunction *dispFunction)
-: patientName(DCM_PatientName)
+: patientName(DCM_PatientsName)
 , patientID(DCM_PatientID)
-, patientBirthDate(DCM_PatientBirthDate)
-, patientSex(DCM_PatientSex)
+, patientBirthDate(DCM_PatientsBirthDate)
+, patientSex(DCM_PatientsSex)
 , studyInstanceUID(DCM_StudyInstanceUID)
 , studyDate(DCM_StudyDate)
 , studyTime(DCM_StudyTime)
@@ -3616,7 +3616,12 @@ void DVPresentationState::changeDisplayFunction(DiDisplayFunction *dispFunction)
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.17  1999-03-22 09:06:48  joergr
+ *  Revision 1.18  1999-03-22 09:52:42  meichel
+ *  Reworked data dictionary based on the 1998 DICOM edition and the latest
+ *    supplement versions. Corrected dcmtk applications for minor changes
+ *    in attribute name constants.
+ *
+ *  Revision 1.17  1999/03/22 09:06:48  joergr
  *  Added parameter to get value of (transparent) background color for method
  *  getOverlayData.
  *
