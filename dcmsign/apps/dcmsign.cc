@@ -21,9 +21,9 @@
  *
  *  Purpose: Create and Verify DICOM Digital Signatures
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-11-07 16:48:48 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-11-07 18:06:20 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,7 +32,6 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
-#ifdef WITH_OPENSSL
 
 #ifdef HAVE_STDLIB_H
 #ifndef  _BCB4
@@ -72,16 +71,19 @@ END_EXTERN_C
 #include "siprivat.h"
 #include "sicert.h"
 
-BEGIN_EXTERN_C
-#include <openssl/x509.h>
-END_EXTERN_C
-
 #define OFFIS_CONSOLE_APPLICATION "dcmsign"
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
 #define APPLICATION_ABSTRACT "Sign and Verify DICOM Files"
+
+
+#ifdef WITH_OPENSSL
+
+BEGIN_EXTERN_C
+#include <openssl/x509.h>
+END_EXTERN_C
 
 // ********************************************
 
@@ -187,7 +189,7 @@ static int readNextToken(const char *c, int& pos, DcmTagKey& key, Uint32& idx)
  * @param filename file to be read
  * @return pointer to memory block if successful, NULL otherwise.
  */
-static const char *readTextFile(const char *filename)
+static char *readTextFile(const char *filename)
 {
   char *result = NULL;
   FILE *file = fopen(filename, "rb");
@@ -204,7 +206,7 @@ static const char *readTextFile(const char *filename)
     result = new char[numBytes];
     if (result)
     {
-      if ((size_t)numBytes != fread(result, 1, numBytes, file))
+      if ((size_t)numBytes != fread(result, 1, (size_t)numBytes, file))
       {
         CERR << "warning: read error in file " << filename << endl;
         delete[] result;
@@ -227,7 +229,7 @@ static const char *readTextFile(const char *filename)
  */
 static int parseTextFile(const char *filename, DcmAttributeTag& tagList)
 {
-  const char *c=readTextFile(filename);
+  char *c=readTextFile(filename);
   if (c==NULL) return 10; // bail out
   int position = 0;
   int token = 0;
@@ -1212,7 +1214,11 @@ int main(int, char *[])
 
 /*
  *  $Log: dcmsign.cc,v $
- *  Revision 1.1  2000-11-07 16:48:48  meichel
+ *  Revision 1.2  2000-11-07 18:06:20  joergr
+ *  Minor code purifications to keep Sun CC 2.0.1 quiet.
+ *  Moved #ifdef WITH_OPENSSL statement to avoid compiler errors.
+ *
+ *  Revision 1.1  2000/11/07 16:48:48  meichel
  *  Initial release of dcmsign module for DICOM Digital Signatures
  *
  *
