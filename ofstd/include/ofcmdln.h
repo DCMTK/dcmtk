@@ -22,9 +22,9 @@
  *  Purpose: Handle command line arguments (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-02 15:19:49 $
+ *  Update Date:      $Date: 1998-12-02 17:38:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofcmdln.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -175,7 +175,7 @@ class OFCommandLine
     };
 
 
-    /** status of converting string argument to value field
+    /** status of converting string option value to value field
      */
     enum E_ValueStatus
     {
@@ -183,7 +183,7 @@ class OFCommandLine
         VS_Normal,
         /// argument contains invalid char(s)
         VS_Invalid,
-        /// no more arguments to be converted / specified parameter doesn't exist
+        /// no more arguments to be converted
         VS_NoMore,
         /// empty string argument
         VS_Empty,
@@ -191,6 +191,25 @@ class OFCommandLine
         VS_Underflow,
         /// converted value exceeds maximum
         VS_Overflow
+    };
+
+
+    /** status of converting string parameter to value field
+     */
+    enum E_ParamValueStatus
+    {
+        /// normal, no errors
+        PVS_Normal,
+        /// argument contains invalid char(s)
+        PVS_Invalid,
+        /// specified parameter doesn't exist
+        PVS_CantFind,
+        /// empty string argument
+        PVS_Empty,
+        /// converted value falls below minimum
+        PVS_Underflow,
+        /// converted value exceeds maximum
+        PVS_Overflow
     };
 
 
@@ -299,50 +318,50 @@ class OFCommandLine
 
     OFBool findParam(const int pos);
 
-    E_ValueStatus getParam(const int pos,
-                           OFCmdSignedInt &value);
+    E_ParamValueStatus getParam(const int pos,
+                                OFCmdSignedInt &value);
 
-    E_ValueStatus getParam(const int pos,
-                           OFCmdSignedInt &value,
-                           const OFCmdSignedInt low,
-                           const OFBool incl = OFTrue);
+    E_ParamValueStatus getParam(const int pos,
+                                OFCmdSignedInt &value,
+                                const OFCmdSignedInt low,
+                                const OFBool incl = OFTrue);
 
-    E_ValueStatus getParam(const int pos,
-                           OFCmdSignedInt &value,
-                           const OFCmdSignedInt low,
-                           const OFCmdSignedInt high);
+    E_ParamValueStatus getParam(const int pos,
+                                OFCmdSignedInt &value,
+                                const OFCmdSignedInt low,
+                                const OFCmdSignedInt high);
 
-    E_ValueStatus getParam(const int pos,
-                           OFCmdUnsignedInt &value);
+    E_ParamValueStatus getParam(const int pos,
+                                OFCmdUnsignedInt &value);
 
-    E_ValueStatus getParam(const int pos,
-                           OFCmdUnsignedInt &value,
-                           const OFCmdUnsignedInt low,
-                           const OFBool incl = OFTrue);
+    E_ParamValueStatus getParam(const int pos,
+                                OFCmdUnsignedInt &value,
+                                const OFCmdUnsignedInt low,
+                                const OFBool incl = OFTrue);
 
-    E_ValueStatus getParam(const int pos,
-                           OFCmdUnsignedInt &value,
-                           const OFCmdUnsignedInt low,
-                           const OFCmdUnsignedInt high);
+    E_ParamValueStatus getParam(const int pos,
+                                OFCmdUnsignedInt &value,
+                                const OFCmdUnsignedInt low,
+                                const OFCmdUnsignedInt high);
 
-    E_ValueStatus getParam(const int pos,
-                           OFCmdFloat &value);
+    E_ParamValueStatus getParam(const int pos,
+                                OFCmdFloat &value);
 
-    E_ValueStatus getParam(const int pos,
-                           OFCmdFloat &value,
-                           const OFCmdFloat low,
-                           const OFBool incl = OFTrue);
+    E_ParamValueStatus getParam(const int pos,
+                                OFCmdFloat &value,
+                                const OFCmdFloat low,
+                                const OFBool incl = OFTrue);
 
-    E_ValueStatus getParam(const int pos,
-                           OFCmdFloat &value,
-                           const OFCmdFloat low,
-                           const OFCmdFloat high);
+    E_ParamValueStatus getParam(const int pos,
+                                OFCmdFloat &value,
+                                const OFCmdFloat low,
+                                const OFCmdFloat high);
 
-    E_ValueStatus getParam(const int pos,
-                           const char *&param);
+    E_ParamValueStatus getParam(const int pos,
+                                const char *&param);
 
-    E_ValueStatus getParam(const int pos,
-                           OFCmdString &param);
+    E_ParamValueStatus getParam(const int pos,
+                                OFCmdString &param);
 
 
  // --- find/get option
@@ -411,6 +430,9 @@ class OFCommandLine
     void getStatusString(const E_ParseStatus status,
                          OFString &string);
 
+    void getStatusString(const E_ParamValueStatus status,
+                         OFString &string);
+
     void getStatusString(const E_ValueStatus status,
                          OFString &string);
 
@@ -447,7 +469,13 @@ class OFCommandLine
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.h,v $
- * Revision 1.4  1998-12-02 15:19:49  joergr
+ * Revision 1.5  1998-12-02 17:38:53  joergr
+ * Introduced new enum type used to indicate the status when converting
+ * parameter values (similar to option values). Changed return value of
+ * getParam() methods to this type. Added corresponding getStatusString()
+ * method to convert status code to strings.
+ *
+ * Revision 1.4  1998/12/02 15:19:49  joergr
  * Added methods to convert parameters to signed/unsigned integers and
  * floats. Changed return value of existing getParam() methods.
  *
