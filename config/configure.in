@@ -140,9 +140,17 @@ AC_CHECK_FUNCS(sleep fork)
 dnl Checks for prototypes
 
 if test $ac_cv_header_stdc = yes ; then
+if test $ac_cv_header_libc_h = yes ; then
+AC_CHECK_PROTOTYPE(bzero, string.h libc.h)
+else
 AC_CHECK_PROTOTYPE(bzero, string.h)
+fi
+else
+if test $ac_cv_header_libc_h = yes ; then
+AC_CHECK_PROTOTYPE(bzero, libc.h)
 else
 AC_CHECK_PROTOTYPE(bzero)
+fi
 fi
 AC_CHECK_PROTOTYPE(accept, sys/types.h sys/socket.h)
 AC_CHECK_PROTOTYPE(bind, sys/types.h sys/socket.h)
