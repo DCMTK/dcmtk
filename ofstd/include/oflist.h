@@ -10,9 +10,9 @@
 **      C++ Standard
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-02 11:51:14 $
+** Update Date:		$Date: 1997-07-07 07:34:18 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/oflist.h,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -84,18 +84,10 @@ class OFListBase
 protected:
     OFListLinkBase * afterLast;
     size_t listSize;
-    void recalcListSize()
-    {
-	OFListLinkBase * elem;
-	for (listSize = 0, elem = afterLast->next; 
-	     elem != afterLast;
-	     elem = elem->next, ++listSize)
-	    ;
-    }
-
+    void recalcListSize();
 public:
     OFListBase();
-    ~OFListBase() { clear(); }
+    ~OFListBase();
     OFListLinkBase * begin() const { return afterLast->next; }
     OFListLinkBase * end() const { return afterLast; }
     OFBool empty() const { return afterLast == afterLast->next; }
@@ -405,7 +397,11 @@ void OF_ListRemoveIf(OFList<T> & c, Predicate pred)
 /*
 ** CVS/RCS Log:
 ** $Log: oflist.h,v $
-** Revision 1.1  1997-07-02 11:51:14  andreas
+** Revision 1.2  1997-07-07 07:34:18  andreas
+** - Corrected destructor for OFListBase, now the dummy element is
+**   deleted.
+**
+** Revision 1.1  1997/07/02 11:51:14  andreas
 ** - Preliminary release of the OFFIS Standard Library.
 **   In the future this library shall contain a subset of the
 **   ANSI C++ Library (Version 3) that works on a lot of different

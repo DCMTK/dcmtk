@@ -9,9 +9,9 @@
 **	Implementation of supplementary methods for a template list class 
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-02 11:52:20 $
+** Update Date:		$Date: 1997-07-07 07:34:23 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/oflist.cc,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -22,6 +22,9 @@
 
 #if defined(HAVE_STL) || defined (HAVE_STL_LIST) 
 // We do not need to make this library
+void OF__DUMMY()    // to make the linker happy!
+{
+}
 #else
 
 #include "oflist.h"
@@ -32,6 +35,14 @@ OFListBase::OFListBase()
     afterLast = new OFListLinkBase();
     afterLast->prev = afterLast->next = afterLast;
     afterLast->dummy = OFTrue;
+}
+
+
+OFListBase::~OFListBase()
+{
+    clear();
+    if (afterLast)
+	delete afterLast;
 }
 
 OFListLinkBase * OFListBase::insert(OFListLinkBase * pos, 
@@ -87,13 +98,27 @@ void OFListBase::clear()
 	erase(afterLast->next);
 }
 
+void OFListBase::recalcListSize()
+{
+    OFListLinkBase * elem;
+    for (listSize = 0, elem = afterLast->next; 
+	 elem != afterLast;
+	 elem = elem->next, ++listSize)
+	;
+}
+
+
 
 #endif
 
 /*
 ** CVS/RCS Log:
 ** $Log: oflist.cc,v $
-** Revision 1.1  1997-07-02 11:52:20  andreas
+** Revision 1.2  1997-07-07 07:34:23  andreas
+** - Corrected destructor for OFListBase, now the dummy element is
+**   deleted.
+**
+** Revision 1.1  1997/07/02 11:52:20  andreas
 ** - Preliminary release of the OFFIS Standard Library.
 **   In the future this library shall contain a subset of the
 **   ANSI C++ Library (Version 3) that works on a lot of different
