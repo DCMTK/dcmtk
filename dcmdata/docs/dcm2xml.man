@@ -12,7 +12,7 @@
 
 The \b dcm2xml utility converts the contents of a DICOM file (file format or
 raw data set) to XML (Extensible Markup Language).  The DTD (Document Type
-Definition) is described in the file <e>apps/dcm2xml.dtd</e>.
+Definition) is described in the file <em>apps/dcm2xml.dtd</em>.
 
 If \b dcm2xml reads a raw data set (DICOM data without a file format
 meta-header) it will attempt to guess the transfer syntax by examining the
@@ -210,7 +210,7 @@ lines (an example is provided in file <em>dcmdata/apps/dumppat.txt</em>).
 
 The dcm2xml utility will attempt to load DICOM data dictionaries specified in
 the \e DCMDICTPATH environment variable.  By default, if the \e DCMDICTPATH
-environment variable is not set, the file <e>/usr/local/dicom/lib/dicom.dic</e>
+environment variable is not set, the file <em>/usr/local/dicom/lib/dicom.dic</em>
 will be loaded.  The default behaviour should be preferred and the
 \e DCMDICTPATH environment variable only used when alternative data
 dictionaries are required.  The \e DCMDICTPATH environment variable has the
