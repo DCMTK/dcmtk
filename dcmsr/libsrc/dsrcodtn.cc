@@ -23,8 +23,8 @@
  *    classes: DSRCodeTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-10 15:29:48 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2001-11-09 16:12:45 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -83,7 +83,13 @@ OFCondition DSRCodeTreeNode::writeXML(ostream &stream,
     OFCondition result = EC_Normal;
     writeXMLItemStart(stream, flags);
     result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
-    DSRCodedEntryValue::writeXML(stream, flags, logStream);
+    if (flags & DSRTypes::XF_codeComponentsAsAttribute)
+    {
+        stream << "<value";     // bracket ">" is closed in next the writeXML() routine
+        DSRCodedEntryValue::writeXML(stream, flags, logStream);
+        stream << "</value>" << endl;
+    } else
+        DSRCodedEntryValue::writeXML(stream, flags, logStream);
     writeXMLItemEnd(stream, flags);
     return result;
 }
@@ -135,7 +141,7 @@ OFBool DSRCodeTreeNode::canAddNode(const E_DocumentType documentType,
                                    const OFBool byReference) const
 {
     OFBool result = OFFalse;
-    if (!byReference || (documentType == DT_ComprehensiveSR))
+    if ((!byReference && (documentType != DT_KeyObjectDoc)) || (documentType == DT_ComprehensiveSR))
     {
         switch (relationshipType)
         {
@@ -196,7 +202,12 @@ OFBool DSRCodeTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodtn.cc,v $
- *  Revision 1.12  2001-10-10 15:29:48  joergr
+ *  Revision 1.13  2001-11-09 16:12:45  joergr
+ *  Added new command line option allowing to encode codes as XML attributes
+ *  (instead of tags).
+ *  Added preliminary support for Mammography CAD SR.
+ *
+ *  Revision 1.12  2001/10/10 15:29:48  joergr
  *  Additonal adjustments for new OFCondition class.
  *
  *  Revision 1.11  2001/09/26 13:04:17  meichel
