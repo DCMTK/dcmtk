@@ -7963,6 +7963,54 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
+echo $ac_n "checking for C++ explicit template specialization syntax""... $ac_c" 1>&6
+echo "configure:7968: checking for C++ explicit template specialization syntax" >&5
+if eval "test \"`echo '$''{'ac_cv_check_explicit_template_specialization'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  cat > conftest.$ac_ext <<EOF
+#line 7973 "configure"
+#include "confdefs.h"
+
+template<class T>
+class X
+{
+  public:
+    int fn();
+};
+
+template<>
+int X<int>::fn()
+{
+    return 0;
+}
+
+int main() {
+X<int> x
+; return 0; }
+EOF
+if { (eval echo configure:7993: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+  rm -rf conftest*
+  eval "ac_cv_check_explicit_template_specialization=yes"
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -rf conftest*
+  eval "ac_cv_check_explicit_template_specialization=no"
+fi
+rm -f conftest*
+fi
+if eval "test \"`echo '$ac_cv_check_explicit_template_specialization'`\" = yes"; then
+  echo "$ac_t""yes" 1>&6
+  ac_tr_explicit_template_specialization=HAVE_EXPLICIT_TEMPLATE_SPECIALIZATION
+  cat >> confdefs.h <<EOF
+#define $ac_tr_explicit_template_specialization 1
+EOF
+
+else
+  echo "$ac_t""no" 1>&6
+fi
+
 
 if test "$no_x" = "yes" ; then
 X_STD_LIBS=

@@ -6,14 +6,18 @@ dnl Purpose: additional M4 macros for GNU autoconf
 dnl
 dnl Authors: Andreas Barth, Marco Eichelberg
 dnl
-dnl Last Update:  $Author: hewett $
-dnl Revision:     $Revision: 1.7 $
+dnl Last Update:  $Author: meichel $
+dnl Revision:     $Revision: 1.8 $
 dnl Status:       $State: Exp $
 dnl
-dnl $Id: aclocal.m4,v 1.7 1997-09-11 15:53:17 hewett Exp $
+dnl $Id: aclocal.m4,v 1.8 1999-04-28 16:49:47 meichel Exp $
 dnl
 dnl $Log: aclocal.m4,v $
-dnl Revision 1.7  1997-09-11 15:53:17  hewett
+dnl Revision 1.8  1999-04-28 16:49:47  meichel
+dnl Added test whether the compiler supports the new explicit template
+dnl   specialization syntax, e.g. template<> int a_class<int>::a_method()
+dnl
+dnl Revision 1.7  1997/09/11 15:53:17  hewett
 dnl Enhanced the configure macro AC_CHECK_PROTOTYPE to check the
 dnl include files passed as aruments before searching for a
 dnl prototype.  This makes the configure.in file considerably
@@ -452,14 +456,48 @@ else
 fi
 ])
 
- 
 
+dnl AC_CHECK_EXPLICIT_TEMPLATE_SPECIALIZATION checks if the C++-Compiler
+dnl   supports the explicit template specialization syntax, i.e.
+dnl     template<> int classname<int>::functionname()
+dnl Note:
+dnl   Since GNU autoheader does not support this macro, you must
+dnl   create the entry 
+dnl     #undef HAVE_EXPLICIT_TEMPLATE_SPECIALIZATION
+dnl   in your acconfig.h 
+dnl Examples:
+dnl   in configure.in: 
+dnl     AC_CHECK_EXPLICIT_TEMPLATE_SPECIALIZATION
+dnl   in acconfig.h:
+dnl     #undef HAVE_EXPLICIT_TEMPLATE_SPECIALIZATION
 
+dnl AC_CHECK_EXPLICIT_TEMPLATE_SPECIALIZATION
+AC_DEFUN(AC_CHECK_EXPLICIT_TEMPLATE_SPECIALIZATION,
+[AC_MSG_CHECKING([for C++ explicit template specialization syntax])
+AC_CACHE_VAL(ac_cv_check_explicit_template_specialization,
+[AC_TRY_COMPILE([
+template<class T>
+class X
+{
+  public:
+    int fn();
+};
 
-
-
-
-
-
-
+template<>
+int X<int>::fn()
+{
+    return 0;
+}
+],[X<int> x], eval "ac_cv_check_explicit_template_specialization=yes", eval "ac_cv_check_explicit_template_specialization=no")dnl
+])dnl
+if eval "test \"`echo '$ac_cv_check_explicit_template_specialization'`\" = yes"; then
+  AC_MSG_RESULT(yes)
+changequote(, )dnl
+  ac_tr_explicit_template_specialization=HAVE_EXPLICIT_TEMPLATE_SPECIALIZATION
+changequote([, ])dnl
+  AC_DEFINE_UNQUOTED($ac_tr_explicit_template_specialization)
+else
+  AC_MSG_RESULT(no)
+fi
+])
 

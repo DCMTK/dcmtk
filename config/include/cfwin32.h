@@ -522,6 +522,9 @@
 /* Define if your C++ compiler can work with static methods in class templates */
 #define HAVE_STATIC_TEMPLATE_METHOD 1
 
+/* Define if your C++ compiler supports the explicit template specialization syntax */
+#define HAVE_EXPLICIT_TEMPLATE_SPECIALIZATION 1
+
 
 #endif /* _WIN32 */
 
