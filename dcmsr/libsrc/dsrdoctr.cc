@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTree
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-16 12:04:14 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-10-16 16:32:56 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -205,7 +205,7 @@ OFBool DSRDocumentTree::canAddContentItem(const E_RelationshipType relationshipT
                                           const E_AddMode addMode)
 {
     OFBool result = OFFalse;
-    const DSRDocumentTreeNode *node = (DSRDocumentTreeNode *)getNode();
+    const DSRDocumentTreeNode *node = (const DSRDocumentTreeNode *)getNode();
     if (node != NULL)
     {
         if ((addMode == AM_beforeCurrent) || (addMode == AM_afterCurrent))
@@ -275,7 +275,10 @@ size_t DSRDocumentTree::removeNode()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.cc,v $
- *  Revision 1.2  2000-10-16 12:04:14  joergr
+ *  Revision 1.3  2000-10-16 16:32:56  joergr
+ *  Added const type specifier.
+ *
+ *  Revision 1.2  2000/10/16 12:04:14  joergr
  *  Added new options: number nested items instead of indenting them, print SOP
  *  instance UID of referenced composite objects.
  *
