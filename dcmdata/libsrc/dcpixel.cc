@@ -22,9 +22,9 @@
  *  Purpose: class DcmPixelData
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:07 $
+ *  Update Date:      $Date: 2001-09-25 17:18:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixel.cc,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -76,7 +76,7 @@ DcmRepresentationEntry::DcmRepresentationEntry(
     pixSeq(ps)
 {
     if (rp)
-        repParam = rp->copy();
+        repParam = rp->clone();
 }
 
 DcmRepresentationEntry::DcmRepresentationEntry(
@@ -86,7 +86,7 @@ DcmRepresentationEntry::DcmRepresentationEntry(
     pixSeq(NULL)
 {
     if (oldEntry.repParam)
-        repParam = oldEntry.repParam->copy();
+        repParam = oldEntry.repParam->clone();
     pixSeq = new DcmPixelSequence(*(oldEntry.pixSeq));
 }
 
@@ -306,13 +306,13 @@ DcmPixelData::canWriteXfer(
     return result;
 }
 
-E_Condition 
+OFCondition 
 DcmPixelData::chooseRepresentation(
         const E_TransferSyntax repType,
         const DcmRepresentationParameter * repParam,
         DcmStack & pixelStack)
 {
-    E_Condition l_error = EC_CannotChangeRepresentation;
+    OFCondition l_error = EC_CannotChangeRepresentation;
     DcmXfer toType(repType);
 
     const DcmRepresentationEntry findEntry(repType, repParam, NULL);
@@ -361,7 +361,7 @@ DcmPixelData::clearRepresentationList(
     }
 }
 
-E_Condition
+OFCondition
 DcmPixelData::decode(
     const DcmXfer & fromType,
     const DcmRepresentationParameter * fromParam,
@@ -369,7 +369,7 @@ DcmPixelData::decode(
     DcmStack & pixelStack)
 {
     if (existUnencapsulated) return EC_Normal;
-    E_Condition l_error = EC_CannotChangeRepresentation;
+    OFCondition l_error = EC_CannotChangeRepresentation;
     
     const DcmCodecStruct * codecStruct = searchGlobalCodec(fromType.getXfer());
     if (codecStruct)
@@ -398,7 +398,7 @@ DcmPixelData::decode(
             
 
 
-E_Condition 
+OFCondition 
 DcmPixelData::encode(
     const DcmXfer & fromType, 
     const DcmRepresentationParameter * fromParam, 
@@ -407,7 +407,7 @@ DcmPixelData::encode(
     const DcmRepresentationParameter *toParam,
     DcmStack & pixelStack)
 {
-    E_Condition l_error = EC_CannotChangeRepresentation;
+    OFCondition l_error = EC_CannotChangeRepresentation;
     if (toType.isEncapsulated())
     {
         const DcmCodecStruct * codecStruct = searchGlobalCodec(toType.getXfer());
@@ -461,7 +461,7 @@ DcmPixelData::encode(
     return l_error;
 }
 
-E_Condition
+OFCondition
 DcmPixelData::findRepresentationEntry(
     const DcmRepresentationEntry & findEntry,
     DcmRepresentationListIterator & result)
@@ -485,7 +485,7 @@ DcmPixelData::findRepresentationEntry(
 }
 
 
-E_Condition
+OFCondition
 DcmPixelData::findConformingEncapsulatedRepresentation(
     const DcmXfer & repTypeSyn,
     const DcmRepresentationParameter * repParam,
@@ -493,7 +493,7 @@ DcmPixelData::findConformingEncapsulatedRepresentation(
 {
     E_TransferSyntax repType = repTypeSyn.getXfer();
     result = repListEnd;
-    E_Condition l_error = EC_RepresentationNotFound;
+    OFCondition l_error = EC_RepresentationNotFound;
     // we are looking for an encapsulated representation
     // of this pixel data element which meets both
     // the transfer syntax and (if given) the representation
@@ -530,7 +530,7 @@ DcmPixelData::findConformingEncapsulatedRepresentation(
 }
 
 
-E_Condition
+OFCondition
 DcmPixelData::getEncapsulatedRepresentation(
     const E_TransferSyntax repType,
     const DcmRepresentationParameter * repParam,
@@ -656,28 +656,28 @@ DcmPixelData::print(
         (*current)->pixSeq->print(out, showFullData, level, pixelFileName, pixelCounter);
 }
 
-E_Condition
+OFCondition
 DcmPixelData::putUint16Array(
     const Uint16 * wordValue,
     const unsigned long length)
 {
     // clear RepresentationList
     clearRepresentationList(repListEnd);
-    E_Condition l_error = DcmPolymorphOBOW::putUint16Array(wordValue, length);
+    OFCondition l_error = DcmPolymorphOBOW::putUint16Array(wordValue, length);
     original = current = repListEnd;
     recalcVR();
     existUnencapsulated = OFTrue;
     return l_error;
 }
 
-E_Condition
+OFCondition
 DcmPixelData::putUint8Array(
     const Uint8 * byteValue,
     const unsigned long length)
 {
     // clear RepresentationList
     clearRepresentationList(repListEnd);
-    E_Condition l_error = DcmPolymorphOBOW::putUint8Array(byteValue, length);
+    OFCondition l_error = DcmPolymorphOBOW::putUint8Array(byteValue, length);
     original = current = repListEnd;
     recalcVR();
     existUnencapsulated = OFTrue;
@@ -701,7 +701,7 @@ DcmPixelData::putOriginalRepresentation(
     recalcVR();
 }
 
-E_Condition
+OFCondition
 DcmPixelData::read(
     DcmStream & inStream,
     const E_TransferSyntax ixfer,
@@ -777,12 +777,12 @@ DcmPixelData::removeAllButOriginalRepresentations()
     recalcVR();
 }
     
-E_Condition
+OFCondition
 DcmPixelData::removeOriginalRepresentation(
     const E_TransferSyntax repType,
     const DcmRepresentationParameter * repParam)
 {
-    E_Condition l_error = EC_Normal;
+    OFCondition l_error = EC_Normal;
     DcmXfer repTypeSyn(repType);
 
     if (!repTypeSyn.isEncapsulated())
@@ -831,12 +831,12 @@ DcmPixelData::removeOriginalRepresentation(
     return l_error;
 }
 
-E_Condition
+OFCondition
 DcmPixelData::removeRepresentation(
     const E_TransferSyntax repType,
     const DcmRepresentationParameter * repParam)
 {
-    E_Condition l_error = EC_Normal;
+    OFCondition l_error = EC_Normal;
     DcmXfer repTypeSyn(repType);
    
     if (!repTypeSyn.isEncapsulated())
@@ -866,7 +866,7 @@ DcmPixelData::removeRepresentation(
 }
 
 
-E_Condition 
+OFCondition 
 DcmPixelData::setCurrentRepresentationParameter(
     const DcmRepresentationParameter * repParam)
 {
@@ -875,13 +875,13 @@ DcmPixelData::setCurrentRepresentationParameter(
         if (repParam == NULL)
             (*current)->repParam = NULL;
         else
-            (*current)->repParam = repParam->copy();
+            (*current)->repParam = repParam->clone();
         return EC_Normal;
     }
     return EC_RepresentationNotFound;
 }
 
-E_Condition
+OFCondition
 DcmPixelData::setVR(DcmEVR vr)
 {
     unencapsulatedVR = vr;
@@ -908,7 +908,7 @@ DcmPixelData::transferInit()
         (*it)->pixSeq->transferInit();
 }
 
-E_Condition DcmPixelData::write(
+OFCondition DcmPixelData::write(
     DcmStream & outStream,
     const E_TransferSyntax oxfer,
     const E_EncodingType enctype)
@@ -949,7 +949,7 @@ E_Condition DcmPixelData::write(
   return errorFlag;
 }
 
-E_Condition DcmPixelData::writeSignatureFormat(
+OFCondition DcmPixelData::writeSignatureFormat(
     DcmStream & outStream,
     const E_TransferSyntax oxfer,
     const E_EncodingType enctype)
@@ -990,7 +990,7 @@ E_Condition DcmPixelData::writeSignatureFormat(
   return errorFlag;
 }
 
-E_Condition DcmPixelData::loadAllDataIntoMemory(void)
+OFCondition DcmPixelData::loadAllDataIntoMemory(void)
 {
     if (current == repListEnd)
         return DcmElement::loadAllDataIntoMemory();
@@ -1001,7 +1001,10 @@ E_Condition DcmPixelData::loadAllDataIntoMemory(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.cc,v $
-** Revision 1.17  2001-06-01 15:49:07  meichel
+** Revision 1.18  2001-09-25 17:18:36  meichel
+** Updated abstract class DcmRepresentationParameter for use with dcmjpeg
+**
+** Revision 1.17  2001/06/01 15:49:07  meichel
 ** Updated copyright header
 **
 ** Revision 1.16  2001/05/25 09:53:54  meichel

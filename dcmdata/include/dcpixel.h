@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmPixelData
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:48:42 $
+ *  Update Date:      $Date: 2001-09-25 17:18:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpixel.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,20 +50,32 @@ class DcmRepresentationEntry;
 class DcmRepresentationParameter 
 {
 public:
+    /// default constructor
     DcmRepresentationParameter() {}
+
+    /// copy constructor
+    DcmRepresentationParameter(const DcmRepresentationParameter&) {}
+
+    /// destructor
     virtual ~DcmRepresentationParameter() {}
     
-    // this methods creates a copy of type DcmRepresentationParameter *
-    // it must be overweritten in every subclass.
-    virtual DcmRepresentationParameter * copy() const
-    { 
-        return new DcmRepresentationParameter(*this); 
-    }
+    /** this methods creates a copy of type DcmRepresentationParameter *
+     *  it must be overweritten in every subclass.
+     *  @return copy of this object
+     */
+    virtual DcmRepresentationParameter *clone() const = 0;
 
-    virtual OFBool operator==(const DcmRepresentationParameter & /*x*/) const
-    {
-        return OFTrue;
-    }
+    /** returns the class name as string.
+     *  can be used in operator== as poor man's RTTI replacement.
+     */
+    virtual const char *className() const = 0;
+
+    /** compares an object to another DcmRepresentationParameter.
+     *  Implementation must make sure that classes are comparable.
+     *  @param arg representation parameter to compare with
+     *  @return true if equal, false otherwise.
+     */
+    virtual OFBool operator==(const DcmRepresentationParameter &arg) const = 0;
 };
 
 typedef OFList<DcmRepresentationEntry *> DcmRepresentationList;
@@ -114,7 +126,7 @@ private:
 
     // find a conforming representation in the list of
     // encapsulated representations
-    E_Condition findConformingEncapsulatedRepresentation(
+    OFCondition findConformingEncapsulatedRepresentation(
         const DcmXfer & repType,
         const DcmRepresentationParameter * repParam,
         DcmRepresentationListIterator & result);
@@ -125,7 +137,7 @@ private:
     // if such an entry is found or EC_RepresentationNotFound. The pixSeq
     // attribute in findEntry can be NULL, it is not needed for the find
     // operation!
-    E_Condition findRepresentationEntry(
+    OFCondition findRepresentationEntry(
         const DcmRepresentationEntry & findEntry,
         DcmRepresentationListIterator & result);
 
@@ -134,7 +146,7 @@ private:
         DcmRepresentationEntry * repEntry);
 
     // decode representation to unencapsulated format
-    E_Condition decode(
+    OFCondition decode(
         const DcmXfer & fromType,
         const DcmRepresentationParameter * fromParam,
         DcmPixelSequence * fromPixSeq,
@@ -142,7 +154,7 @@ private:
 
 
     // encode to encapsulated format
-    E_Condition encode(
+    OFCondition encode(
         const DcmXfer & fromType, 
         const DcmRepresentationParameter * fromParam, 
         DcmPixelSequence * fromPixSeq, 
@@ -163,7 +175,7 @@ public:
 
     DcmPixelData &operator=(const DcmPixelData &obj);
 
-    virtual E_Condition setVR(DcmEVR vr);
+    virtual OFCondition setVR(DcmEVR vr);
     virtual DcmEVR ident() const { return EVR_PixelData; }
 
     virtual void print(ostream & out, const OFBool showFullData = OFTrue,
@@ -197,7 +209,7 @@ public:
     // reads a representation and sets the current and orignal 
     // representation to the new representation
     // it deletes all old representations before reading!
-    virtual E_Condition read(DcmStream & inStream, 
+    virtual OFCondition read(DcmStream & inStream, 
                              const E_TransferSyntax ixfer,
                              const E_GrpLenEncoding glenc = EGL_noChange, 
                              const Uint32 maxReadLength = DCM_MaxReadLength);
@@ -206,19 +218,19 @@ public:
     // It does not create a representation. If no conforming 
     // representation exists,  an error code is returned.
     // The written representation is the new current representation 
-    virtual E_Condition write(
+    virtual OFCondition write(
         DcmStream & outStream,
         const E_TransferSyntax oxfer,
         const E_EncodingType enctype = EET_UndefinedLength);
 
     /** special write method for creation of digital signatures
      */
-    virtual E_Condition writeSignatureFormat(
+    virtual OFCondition writeSignatureFormat(
         DcmStream & outStream,
 	const E_TransferSyntax oxfer,
 	const E_EncodingType enctype = EET_UndefinedLength);
 
-    virtual E_Condition loadAllDataIntoMemory(void);
+    virtual OFCondition loadAllDataIntoMemory(void);
 
     // Finalize a streaming operation (read, write)
     virtual void transferEnd();
@@ -232,7 +244,7 @@ public:
     // it is created (if possible).
     // if repParam is zero, a representation is chosen or created that
     // is equal to the default representation parameters
-    E_Condition chooseRepresentation(
+    OFCondition chooseRepresentation(
         const E_TransferSyntax repType,
         const DcmRepresentationParameter * repParam,
         DcmStack & stack);
@@ -247,11 +259,11 @@ public:
     // The following two put-methods insert an original unencapsulated 
     // representation. current and original representations are changed, 
     // all old representations are deleted
-    virtual E_Condition putUint16Array(
+    virtual OFCondition putUint16Array(
         const Uint16 * wordValue,
         const unsigned long length);
 
-    virtual E_Condition putUint8Array(
+    virtual OFCondition putUint8Array(
         const Uint8 * byteValue,
         const unsigned long length);
 
@@ -259,7 +271,7 @@ public:
     // get a specific exisiting Representation, creates no representation
     // if repParam is NULL, then the representation conforming to the default
     // presentationParameters (defined with the codec) is returned.
-    E_Condition getEncapsulatedRepresentation(
+    OFCondition getEncapsulatedRepresentation(
         const E_TransferSyntax repType,
         const DcmRepresentationParameter * repParam,
         DcmPixelSequence * & pixSeq);
@@ -278,7 +290,7 @@ public:
 
     // sets the representation identification parameter of the current
     // representation
-    E_Condition setCurrentRepresentationParameter(
+    OFCondition setCurrentRepresentationParameter(
         const DcmRepresentationParameter * repParam);
     
     // returns if a specific conforming  representation exists. 
@@ -288,7 +300,7 @@ public:
     
     // delete a representation. It is not possible to delete the
     // original representation with this method
-    E_Condition removeRepresentation(
+    OFCondition removeRepresentation(
         const E_TransferSyntax repType,
         const DcmRepresentationParameter * repParam);
 
@@ -302,7 +314,7 @@ public:
     // delete original representation and set new original representation.
     // If the new representation does not exist, the original one is not
     // deleted and an error code returns
-    E_Condition removeOriginalRepresentation(
+    OFCondition removeOriginalRepresentation(
         const E_TransferSyntax repType,
         const DcmRepresentationParameter * repParam);
 };
@@ -312,7 +324,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.h,v $
-** Revision 1.13  2001-06-01 15:48:42  meichel
+** Revision 1.14  2001-09-25 17:18:34  meichel
+** Updated abstract class DcmRepresentationParameter for use with dcmjpeg
+**
+** Revision 1.13  2001/06/01 15:48:42  meichel
 ** Updated copyright header
 **
 ** Revision 1.12  2000/11/07 16:56:08  meichel
