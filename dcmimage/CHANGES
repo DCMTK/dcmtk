@@ -1,4 +1,10 @@
 
+**** Changes from 1998.02.07 (eichelberg)
+
+- Removed many name clashes reported by Sun CC4.
+  Affects: dcmimage/include/discalet.h
+           dcmimage/libsrc/diimage.cc
+
 **** Changes from 97.10.01 (eichelberg)
 
 - Introduced separate version number and date for dcmimage.

@@ -279,9 +279,9 @@ class DiScaleTemplate : public DiTransTemplate<T>
 			register unsigned long i;
 			for (int j = 0; j < Planes; j++)
 			{
-				register T *q = dest[j];
+				register T *qq = dest[j];
 				for (i = 0; i < count; i++)					// delete destination buffer
-					*(q++) = 0;
+					*(qq++) = 0;
 			}
 		}
 		else

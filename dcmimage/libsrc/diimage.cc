@@ -76,11 +76,11 @@ DiImage::DiImage(const DiDocument *docu, const EI_Status status)
 	    hasPixelSpacing &= (Document->getValue(DCM_PixelSpacing, PixelWidth, 1) > 0);
 	    if (!hasPixelSpacing)
 	    {
-		Sint32 sl;
-		hasPixelAspectRatio = (Document->getValue(DCM_PixelAspectRatio, sl, 0) > 0);
-		PixelHeight = sl;
-		hasPixelAspectRatio &= (Document->getValue(DCM_PixelAspectRatio, sl, 1) > 0);
-		PixelWidth = sl;
+		Sint32 sl2;
+		hasPixelAspectRatio = (Document->getValue(DCM_PixelAspectRatio, sl2, 0) > 0);
+		PixelHeight = sl2;
+		hasPixelAspectRatio &= (Document->getValue(DCM_PixelAspectRatio, sl2, 1) > 0);
+		PixelWidth = sl2;
 		if (!hasPixelAspectRatio)
 		{
 		    PixelWidth = 1;
