@@ -22,9 +22,9 @@
  *  Purpose: DicomMonoOutputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-05-03 11:09:29 $
+ *  Update Date:      $Date: 1999-05-03 15:43:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -225,18 +225,6 @@ class DiMonoOutputPixelTemplate
     }
 
 
-    inline void applyOptimizationLUT(register const T1 *p,
-                                     const T3 *lut,
-                                     const T2 offset)
-    {
-        const T3 *lut0 = lut - offset;                                        // points to 'zero' entry
-        register T3 *q = Data;
-        register unsigned long i;
-        for (i = 0; i < Count; i++)                                           // apply LUT
-            *(q++) = *(lut0 + (*(p++)));
-    }
-    
-
 #ifdef PASTEL_COLOR_OUTPUT
     void color(void *buffer,                               // create true color pastel image
                const DiMonoPixel *inter,
@@ -369,7 +357,10 @@ class DiMonoOutputPixelTemplate
                                     *(q++) = (T3)((double)low + (double)plut->getValue(value2) * gradient2);
                                 }
                             }
-                            applyOptimizationLUT(p, (const T3 *)lut, (const T2)inter->getAbsMinimum());
+                            const T3 *lut0 = lut - (T2)inter->getAbsMinimum();            // points to 'zero' entry
+                            q = Data;
+                            for (i = 0; i < Count; i++)                                   // apply LUT
+                                *(q++) = *(lut0 + (*(p++)));
                         }
                         if (lut == NULL)                                                  // use "normal" transformation
                         {
@@ -462,7 +453,10 @@ class DiMonoOutputPixelTemplate
                                         *(q++) = (T3)((double)low + (double)vlut->getValue(value) * gradient);
                                 }
                             }
-                            applyOptimizationLUT(p, (const T3 *)lut, (const T2)inter->getAbsMinimum());
+                            const T3 *lut0 = lut - (T2)inter->getAbsMinimum();            // points to 'zero' entry
+                            q = Data;
+                            for (i = 0; i < Count; i++)                                   // apply LUT
+                                *(q++) = *(lut0 + (*(p++)));
                         }
                         if (lut == NULL)                                                  // use "normal" transformation
                         {
@@ -572,7 +566,10 @@ class DiMonoOutputPixelTemplate
                                 *(q++) = (T3)((double)low + (double)plut->getValue(value) * gradient2);
                             }
                         }
-                        applyOptimizationLUT(p, (const T3 *)lut, (const T2)inter->getAbsMinimum());
+                        const T3 *lut0 = lut - (T2)inter->getAbsMinimum();            // points to 'zero' entry
+                        q = Data;
+                        for (i = 0; i < Count; i++)                                   // apply LUT
+                            *(q++) = *(lut0 + (*(p++)));
                     }
                     if (lut == NULL)                                                  // use "normal" transformation
                     {
@@ -621,7 +618,10 @@ class DiMonoOutputPixelTemplate
                             for (i = 0; i < ocnt; i++)                                // calculating LUT entries
                                 *(q++) = (T3)((double)low + (double)i * gradient);
                         }
-                        applyOptimizationLUT(p, (const T3 *)lut, (const T2)inter->getAbsMinimum());
+                        const T3 *lut0 = lut - (T2)inter->getAbsMinimum();            // points to 'zero' entry
+                        q = Data;
+                        for (i = 0; i < Count; i++)                                   // apply LUT
+                            *(q++) = *(lut0 + (*(p++)));
                     }
                     if (lut == NULL)                                                  // use "normal" transformation
                     {
@@ -719,7 +719,10 @@ class DiMonoOutputPixelTemplate
                                 *(q++) = (T3)((double)low + (double)plut->getValue(value2) * gradient2);
                             }
                         }
-                        applyOptimizationLUT(p, (const T3 *)lut, (const T2)absmin);
+                        const T3 *lut0 = lut - (T2)absmin;                            // points to 'zero' entry
+                        q = Data;
+                        for (i = 0; i < Count; i++)                                   // apply LUT
+                            *(q++) = *(lut0 + (*(p++)));
                     }
                     if (lut == NULL)                                                  // use "normal" transformation
                     {
@@ -787,7 +790,10 @@ class DiMonoOutputPixelTemplate
                                     *(q++) = (T3)((double)low + (value - left) * gradient);  // gray value
                             }
                         }
-                        applyOptimizationLUT(p, (const T3 *)lut, (const T2)absmin);
+                        const T3 *lut0 = lut - (T2)absmin;                            // points to 'zero' entry
+                        q = Data;
+                        for (i = 0; i < Count; i++)                                   // apply LUT
+                            *(q++) = *(lut0 + (*(p++)));
                     }
                     if (lut == NULL)                                                  // use "normal" transformation
                     {
@@ -973,8 +979,9 @@ class DiMonoOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoopxt.h,v $
- * Revision 1.19  1999-05-03 11:09:29  joergr
- * Minor code purifications to keep Sun CC 2.0.1 quiet.
+ * Revision 1.20  1999-05-03 15:43:21  joergr
+ * Replaced method applyOptimizationLUT by its contents (method body) to avoid
+ * warnings (and possible errors) on Sun CC 2.0.1 :-/
  *
  * Revision 1.18  1999/04/30 16:10:50  meichel
  * Minor code purifications to keep IBM xlC quiet

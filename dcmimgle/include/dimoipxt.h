@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeInputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-05-03 11:09:29 $
+ *  Update Date:      $Date: 1999-05-03 15:43:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoipxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -104,7 +104,7 @@ class DiMonoInputPixelTemplate
                                      const T3 *lut,
                                      const T2 offset)
     {
-        const T3 *lut0 = lut - offset;                                        // points to 'zero' entry
+        const T3 *lut0 = (const T3 *)(lut - offset);                          // points to 'zero' entry
         register T3 *q = Data;
         register unsigned long i;
         for (i = 0; i < Count; i++)                                           // apply LUT
@@ -129,6 +129,7 @@ class DiMonoInputPixelTemplate
                     const T2 lastentry = mlut->getLastEntry(value);
                     const T3 firstvalue = (T3)mlut->getFirstValue();
                     const T3 lastvalue = (T3)mlut->getLastValue();
+                    register const T1 *p = pixel;
                     register T3 *q = Data;
                     register unsigned long i;
                     T3 *lut = NULL;
@@ -147,11 +148,13 @@ class DiMonoInputPixelTemplate
                             else
                                 *(q++) = (T3)mlut->getValue(value);
                         }
-                        applyOptimizationLUT((const T1 *)pixel, (const T3 *)lut, (const T2)absmin);
+                        const T3 *lut0 = lut - (T2)absmin;                                // points to 'zero' entry
+                        q = Data;
+                        for (i = 0; i < Count; i++)                                       // apply LUT
+                            *(q++) = *(lut0 + (*(p++)));
                     }
                     if (lut == NULL)                                                      // use "normal" transformation
                     {
-                        register const T1 *p = pixel;
                         for (i = 0; i < Count; i++)
                         {
                             value = (T2)(*(p++));
@@ -190,6 +193,7 @@ class DiMonoInputPixelTemplate
                     if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
                         cerr << "INFO: using modality routine 'rescale()'" << endl;
                     T3 *lut = NULL;
+                    register const T1 *p = pixel;
                     const unsigned long ocnt = (unsigned long)input->getAbsMaxRange();    // number of LUT entries
                     if (initOptimizationLUT(lut, ocnt))
                     {                                                                     // use LUT for optimization
@@ -209,11 +213,13 @@ class DiMonoInputPixelTemplate
                                     *(q++) = (T3)(((double)i + absmin) * slope + intercept);
                             }
                         }
-                        applyOptimizationLUT(pixel, (const T3 *)lut, (const T2)absmin);
+                        const T3 *lut0 = lut - (T2)absmin;                                // points to 'zero' entry
+                        q = Data;
+                        for (i = 0; i < Count; i++)                                       // apply LUT
+                            *(q++) = *(lut0 + (*(p++)));
                     }
                     if (lut == NULL)                                                      // use "normal" transformation
                     {
-                        register const T1 *p = pixel;
                         if (slope == 1.0)
                         {
                             for (i = 0; i < Count; i++)
@@ -244,7 +250,11 @@ class DiMonoInputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoipxt.h,v $
- * Revision 1.11  1999-05-03 11:09:29  joergr
+ * Revision 1.12  1999-05-03 15:43:20  joergr
+ * Replaced method applyOptimizationLUT by its contents (method body) to avoid
+ * warnings (and possible errors) on Sun CC 2.0.1 :-/
+ *
+ * Revision 1.11  1999/05/03 11:09:29  joergr
  * Minor code purifications to keep Sun CC 2.0.1 quiet.
  *
  * Revision 1.10  1999/04/29 16:46:45  meichel
