@@ -1,0 +1,46 @@
+#
+#	Makefile for doxygen
+#
+
+@SET_MAKE@
+
+SHELL = /bin/sh
+DOXYGEN = doxygen
+srcdir= @srcdir@
+top_srcdir= @top_srcdir@
+configdir=@top_srcdir@/@configdir@
+
+include $(configdir)/@common_makefile@
+
+
+all: html man
+
+html:
+	$(DOXYGEN) htmldocs.cfg
+
+man:
+	$(DOXYGEN) manpages.cfg
+	rm -f manpages/man1/*.man.1
+	./patchman.sh
+
+
+install: install-man install-html
+
+install-man:
+	$(configdir)/mkinstalldirs $(mandir)/man1
+	for file in "manpages/man1/*.1"; do \
+		$(INSTALL_DATA) $$file $(mandir)/man1 ;\
+	done
+
+install-html:
+	$(configdir)/mkinstalldirs $(docdir)/html
+	for file in "htmldocs/*"; do \
+		$(INSTALL_DATA) $$file $(docdir)/html ;\
+	done
+
+
+clean:
+	rm -f *.log $(TRASH)
+
+distclean:
+	rm -rf *.log htmldocs $(DISTTRASH)
