@@ -22,9 +22,9 @@
  *  Purpose: DicomMonoOutputPixel (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-17 12:26:52 $
+ *  Update Date:      $Date: 1999-10-06 13:41:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoopx.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -93,6 +93,10 @@ class DiMonoOutputPixel
      ** @return pointer to pixel data if sucessful, NULL otherwise
      */
     virtual void *getData() const = 0;
+
+    /** remove reference to (internally handled) pixel data (abstract)
+     */
+    virtual void removeDataReference() = 0;
 
     /** get size of one pixel / item in the pixel array (abstract)
      *
@@ -170,7 +174,10 @@ class DiMonoOutputPixel
  *
  * CVS/RCS Log:
  * $Log: dimoopx.h,v $
- * Revision 1.7  1999-09-17 12:26:52  joergr
+ * Revision 1.8  1999-10-06 13:41:21  joergr
+ * Added method to renmoved reference to (internally handles) pixel data.
+ *
+ * Revision 1.7  1999/09/17 12:26:52  joergr
  * Added/changed/completed DOC++ style comments in the header files.
  *
  * Revision 1.6  1999/07/23 14:05:55  joergr
