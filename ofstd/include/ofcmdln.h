@@ -22,9 +22,8 @@
  *  Purpose: Handle command line arguments (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-06-12 13:19:58 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofcmdln.h,v $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Update Date:      $Date: 2003-12-05 10:36:03 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +31,8 @@
  */
 
 
-#ifndef __OFCMDLN_H
-#define __OFCMDLN_H
+#ifndef OFCMDLN_H
+#define OFCMDLN_H
 
 #include "osconfig.h"
 #include "oftypes.h"
@@ -43,6 +42,7 @@
 
 #define INCLUDE_CSTDIO
 #include "ofstdinc.h"
+
 
 /*--------------------*
  *  type declaration  *
@@ -372,9 +372,23 @@ class OFCommandLine
         return ArgumentList.size();
     }
 
-    /** gets current command line argument as a C string
-     *  This is the argument which is currently parsed.
+    /** sets first command line argument as the current one.
+     *  Useful for iterating over all arguments.
      *
+     ** @return OFTrue if successful, OFFalse otherwise
+     */
+    OFBool gotoFirstArg();
+
+    /** sets next command line argument as the current one.
+     *  Useful for iterating over all arguments.
+     *
+     ** @return OFTrue if successful, OFFalse otherwise
+     */
+    OFBool gotoNextArg();
+
+    /** gets current command line argument as a C string
+     *  This is the argument which is currently parsed or has been selected as
+     *  the current one by gotoXXXArg().
      ** @param  arg  reference to C string where argument should be stored
      *
      ** @return OFTrue if successful, OFFalse otherwise
@@ -382,31 +396,14 @@ class OFCommandLine
     OFBool getCurrentArg(const char *&arg);
 
     /** gets current command line argument as a C++ string.
-     *  This is the argument which is currently parsed.
+     *  This is the argument which is currently parsed or has been selected as
+     *  the current one by gotoXXXArg().
      *
      ** @param  arg  reference to C++ string where argument should be stored
      *
      ** @return OFTrue if successful, OFFalse otherwise
      */
     OFBool getCurrentArg(OFCmdString &arg);
-
-    /** gets last command line argument as a C string
-     *  This is the last entry in the list of all arguments.
-     *
-     ** @param  arg  reference to C string where argument should be stored
-     *
-     ** @return OFTrue if successful, OFFalse otherwise
-     */
-    OFBool getLastArg(const char *&arg);
-
-    /** gets last command line argument as a C++ string
-     *  This is the last entry in the list of all arguments.
-     *
-     ** @param  arg  reference to C++ string where argument should be stored
-     *
-     ** @return OFTrue if successful, OFFalse otherwise
-     */
-    OFBool getLastArg(OFCmdString &arg);
 
     /** gets number of parameters in the parsed command line.
      *  A parameter is an argument which is no option (e.g. a filename).
@@ -620,8 +617,23 @@ class OFCommandLine
                       const signed int pos = 0,
                       const E_FindOptionMode mode = FOM_Normal);
 
+    /** sets first command line option as the current one.
+     *  Useful for iterating over all options.
+     *
+     ** @return OFTrue if successful, OFFalse otherwise
+     */
+    OFBool gotoFirstOption();
+
+    /** sets next command line option as the current one.
+     *  Useful for iterating over all options.
+     *
+     ** @return OFTrue if successful, OFFalse otherwise
+     */
+    OFBool gotoNextOption();
+
     /** returns current option as a C string.
-     *  This is the option which has currently been parsed (used for error output).
+     *  This is the option which has currently been parsed (e.g. used for error
+     *  output) or which has been selected as the current one by gotoXXXOption().
      *
      ** @param  opt  reference to C string where option should be stored
      *
@@ -630,7 +642,8 @@ class OFCommandLine
     OFBool getCurrentOption(const char *&opt);
 
     /** returns current option as a C++ string.
-     *  This is the option which has currently been parsed (used for error output).
+     *  This is the option which has currently been parsed (e.g. used for error
+     *  output) or which has been selected as the current one by gotoXXXOption().
      *
      ** @param  opt  reference to C++ string where option should be stored
      *
@@ -888,6 +901,10 @@ class OFCommandLine
      */
     E_ParseStatus checkParamCount();
 
+    /** returns last command line argument as a C++ string
+     */
+    OFBool getLastArg(OFString &arg);
+
     /** returns name of parameter which is missed in the parsed command line (used for error output)
      */
     OFBool getMissingParam(OFString &param);
@@ -952,7 +969,12 @@ class OFCommandLine
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.h,v $
- * Revision 1.34  2003-06-12 13:19:58  joergr
+ * Revision 1.35  2003-12-05 10:36:03  joergr
+ * Added support for iterating over command line arguments and options.
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated copyright date where appropriate.
+ *
+ * Revision 1.34  2003/06/12 13:19:58  joergr
  * Added support for so-called command files ("@filename") which can be used to
  * summarize command line options and parameter
  *
