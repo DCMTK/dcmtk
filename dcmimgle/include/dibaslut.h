@@ -22,9 +22,8 @@
  *  Purpose: DicomBaseLUT (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-06-12 15:08:34 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dibaslut.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2003-12-08 18:40:32 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,11 +31,12 @@
  */
 
 
-#ifndef __DIBASLUT_H
-#define __DIBASLUT_H
+#ifndef DIBASLUT_H
+#define DIBASLUT_H
 
 #include "osconfig.h"
 #include "ofstring.h"
+#include "ofcast.h"
 
 #include "diutils.h"
 
@@ -114,7 +114,7 @@ class DiBaseLUT
      */
     inline Sint32 getFirstEntry(const Sint32) const
     {
-        return (Sint16)FirstEntry;
+        return OFstatic_cast(Sint16, FirstEntry);
     }
 
     /** get index of last LUT entry.
@@ -140,7 +140,7 @@ class DiBaseLUT
      */
     inline Sint32 getLastEntry(const Sint32) const
     {
-        return (Sint32)((Sint16)FirstEntry) + Count - 1;
+        return OFstatic_cast(Sint32, OFstatic_cast(Sint16, FirstEntry)) + Count - 1;
     }
 
     /** get value of specified LUT entry
@@ -177,7 +177,7 @@ class DiBaseLUT
      */
     inline Uint16 getValue(const Sint32 pos) const
     {
-        return Data[pos - (Sint32)((Sint16)FirstEntry)];
+        return Data[pos - OFstatic_cast(Sint32, OFstatic_cast(Sint16, FirstEntry))];
     }
 
     /** get value of first LUT entry.
@@ -250,7 +250,7 @@ class DiBaseLUT
      */
     inline const char *getExplanation() const
     {
-        return (Explanation.empty()) ? (const char *)NULL : Explanation.c_str();
+        return (Explanation.empty()) ? OFstatic_cast(const char *, NULL) : Explanation.c_str();
     }
 
     /** compares current LUT with specified LUT
@@ -325,7 +325,12 @@ class DiBaseLUT
  *
  * CVS/RCS Log:
  * $Log: dibaslut.h,v $
- * Revision 1.14  2003-06-12 15:08:34  joergr
+ * Revision 1.15  2003-12-08 18:40:32  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated CVS header.
+ *
+ * Revision 1.14  2003/06/12 15:08:34  joergr
  * Fixed inconsistent API documentation reported by Doxygen.
  *
  * Revision 1.13  2001/06/01 15:49:39  meichel

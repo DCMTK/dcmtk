@@ -22,9 +22,8 @@
  *  Purpose: Provides main interface to the "DICOM image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-06-12 15:08:34 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dcmimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.48 $
+ *  Update Date:      $Date: 2003-12-08 18:39:00 $
+ *  CVS/RCS Revision: $Revision: 1.49 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,10 +31,12 @@
  */
 
 
-#ifndef __DCMIMAGE_H
-#define __DCMIMAGE_H
+#ifndef DCMIMAGE_H
+#define DCMIMAGE_H
 
 #include "osconfig.h"
+
+#include "ofcast.h"
 
 #include "dimoimg.h"
 #include "didispfn.h"
@@ -335,7 +336,7 @@ class DicomImage
     /** get number of bytes required for the rendered output of a single frame.
      *  This function determines the size of a rendered frame as created by getOutputData().
      *  Therefore, it can be used to allocate a sufficiently large memory buffer and pass
-     *  its size to the second variant of getOutputData(). 
+     *  its size to the second variant of getOutputData().
      *
      ** @param  bits  number of bits per sample used to render the pixel data
      *                (image depth, 1..MAX_BITS, 0 means 'bits stored' in the image)
@@ -465,7 +466,7 @@ class DicomImage
     inline DiDisplayFunction *getDisplayFunction() const
     {
         return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
-            Image->getMonoImagePtr()->getDisplayFunction() : (DiDisplayFunction *)NULL;
+            Image->getMonoImagePtr()->getDisplayFunction() : OFstatic_cast(DiDisplayFunction *, NULL);
     }
 
     /** set display function
@@ -703,7 +704,7 @@ class DicomImage
     inline const char *getVoiTransformationExplanation() const
     {
         return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
-            Image->getMonoImagePtr()->getVoiTransformationExplanation() : (const char *)NULL;
+            Image->getMonoImagePtr()->getVoiTransformationExplanation() : OFstatic_cast(const char *, NULL);
     }
 
     /** get description of specified VOI window (stored in the image file)
@@ -717,7 +718,7 @@ class DicomImage
                                                OFString &explanation) const
     {
         return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
-            Image->getMonoImagePtr()->getVoiWindowExplanation(window, explanation) : (const char *)NULL;
+            Image->getMonoImagePtr()->getVoiWindowExplanation(window, explanation) : OFstatic_cast(const char *, NULL);
     }
 
     /** get description of specified VOI LUT (stored in the image file)
@@ -731,7 +732,7 @@ class DicomImage
                                             OFString &explanation) const
     {
         return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
-            Image->getMonoImagePtr()->getVoiLutExplanation(table, explanation) : (const char *)NULL;
+            Image->getMonoImagePtr()->getVoiLutExplanation(table, explanation) : OFstatic_cast(const char *, NULL);
     }
 
     /** get description of performed modality LUT transformation
@@ -741,7 +742,7 @@ class DicomImage
     inline const char *getModalityLutExplanation() const
     {
         return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
-            Image->getMonoImagePtr()->getModalityLutExplanation() : (const char *)NULL;
+            Image->getMonoImagePtr()->getModalityLutExplanation() : OFstatic_cast(const char *, NULL);
     }
 
  // --- hardcopy parameters
@@ -849,7 +850,7 @@ class DicomImage
     inline const char *getPresentationLutExplanation() const
     {
         return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
-            Image->getMonoImagePtr()->getPresentationLutExplanation() : (const char *)NULL;
+            Image->getMonoImagePtr()->getPresentationLutExplanation() : OFstatic_cast(const char *, NULL);
     }
 
     /** set inverse LUT for presentation transformation.
@@ -1104,7 +1105,7 @@ class DicomImage
                                        const unsigned int idx = 0) const
     {
         return ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL)) ?
-            Image->getOverlayPtr(idx)->getPlaneLabel(plane) : (const char *)NULL;
+            Image->getOverlayPtr(idx)->getPlaneLabel(plane) : OFstatic_cast(const char *, NULL);
     }
 
     /** get description of specified overlay plane
@@ -1118,7 +1119,7 @@ class DicomImage
                                              const unsigned int idx = 0) const
     {
         return ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL)) ?
-            Image->getOverlayPtr(idx)->getPlaneDescription(plane) : (const char *)NULL;
+            Image->getOverlayPtr(idx)->getPlaneDescription(plane) : OFstatic_cast(const char *, NULL);
     }
 
     /** get mode of specified overlay plane
@@ -1790,7 +1791,12 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.48  2003-06-12 15:08:34  joergr
+ * Revision 1.49  2003-12-08 18:39:00  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated CVS header.
+ *
+ * Revision 1.48  2003/06/12 15:08:34  joergr
  * Fixed inconsistent API documentation reported by Doxygen.
  *
  * Revision 1.47  2003/05/20 09:24:31  joergr
