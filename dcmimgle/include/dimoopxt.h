@@ -22,9 +22,9 @@
  *  Purpose: DicomMonoOutputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-02 12:03:52 $
+ *  Update Date:      $Date: 1999-03-24 17:20:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,6 +55,8 @@
  *  class declaration  *
  *---------------------*/
 
+/** Template class to create monochrome output data
+ */
 template<class T1, class T2, class T3>
 class DiMonoOutputPixelTemplate
   : public DiMonoOutputPixel,
@@ -929,7 +931,10 @@ class DiMonoOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoopxt.h,v $
- * Revision 1.11  1999-03-02 12:03:52  joergr
+ * Revision 1.12  1999-03-24 17:20:14  joergr
+ * Added/Modified comments and formatting.
+ *
+ * Revision 1.11  1999/03/02 12:03:52  joergr
  * Corrected bug in output routine of monochrome pixel data (wrong scaling when
  * Barten transformation and windowing are active).
  *

@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromePixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-01-20 15:11:38 $
+ *  Update Date:      $Date: 1999-03-24 17:20:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,6 +50,8 @@
  *  class declaration  *
  *---------------------*/
 
+/** Template class to handle monochrome pixel data
+ */
 template<class T>
 class DiMonoPixelTemplate
   : public DiMonoPixel,
@@ -260,7 +262,10 @@ class DiMonoPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimopxt.h,v $
- * Revision 1.4  1999-01-20 15:11:38  joergr
+ * Revision 1.5  1999-03-24 17:20:16  joergr
+ * Added/Modified comments and formatting.
+ *
+ * Revision 1.4  1999/01/20 15:11:38  joergr
  * Replaced invocation of getCount() by member variable Count where possible.
  *
  * Revision 1.3  1999/01/11 09:36:13  joergr

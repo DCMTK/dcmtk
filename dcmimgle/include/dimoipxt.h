@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeInputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-02 12:02:27 $
+ *  Update Date:      $Date: 1999-03-24 17:20:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoipxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,6 +45,8 @@
  *  class declaration  *
  *---------------------*/
 
+/** Template class to convert monochrome pixel data to intermediate representation
+ */
 template<class T1, class T2, class T3>
 class DiMonoInputPixelTemplate
   : public DiMonoPixelTemplate<T3>
@@ -241,7 +243,10 @@ class DiMonoInputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoipxt.h,v $
- * Revision 1.7  1999-03-02 12:02:27  joergr
+ * Revision 1.8  1999-03-24 17:20:10  joergr
+ * Added/Modified comments and formatting.
+ *
+ * Revision 1.7  1999/03/02 12:02:27  joergr
  * Corrected bug: when determining minimum and maximum pixel value (external)
  * modality LUTs were ignored.
  *

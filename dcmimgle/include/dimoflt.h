@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeFlipTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-11 16:02:12 $
+ *  Update Date:      $Date: 1999-03-24 17:20:08 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoflt.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,6 +46,9 @@
  *  class declaration  *
  *---------------------*/
 
+/** Template class to flip monochrome images (on pixel data level)
+ *  horizontally and vertically
+ */
 template<class T>
 class DiMonoFlipTemplate
   : public DiMonoPixelTemplate<T>,
@@ -100,7 +103,10 @@ class DiMonoFlipTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoflt.h,v $
- * Revision 1.2  1999-02-11 16:02:12  joergr
+ * Revision 1.3  1999-03-24 17:20:08  joergr
+ * Added/Modified comments and formatting.
+ *
+ * Revision 1.2  1999/02/11 16:02:12  joergr
  * Corrected some typos and formatting.
  *
  * Revision 1.1  1998/11/27 14:57:47  joergr

@@ -55,16 +55,31 @@ class DiRegisterBase;
  *  class declaration  *
  *---------------------*/
 
+/** Abstract base class to register additional libraries
+ */
 class DiRegisterBase
 {
-public:
-    DiRegisterBase() { }
-    virtual ~DiRegisterBase() { }
-    
-    virtual DiImage *createImage(const DiDocument *, const EI_Status, const EP_Interpretation) = 0;
-    virtual DiMonoPixel *createMonoImageData(const DiColorImage *, const double, const double, const double) = 0;
 
-    static DiRegisterBase *Pointer;       // global pointer to registered 'dcmimext' library
+ public:
+
+    DiRegisterBase()
+    {
+    }
+
+    virtual ~DiRegisterBase()
+    {
+    }
+    
+    virtual DiImage *createImage(const DiDocument *docu,
+                                 const EI_Status status,
+                                 const EP_Interpretation photo) = 0;
+
+    virtual DiMonoPixel *createMonoImageData(const DiColorImage *image,
+                                             const double red,
+                                             const double green,
+                                             const double blue) = 0;
+
+    static DiRegisterBase *Pointer;       // global pointer to registered 'dcmimage' library
 };
 
 
@@ -72,14 +87,15 @@ public:
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: diregbas.h,v $
-** Revision 1.1  1998-11-27 13:08:07  joergr
-** Added registration class to allow easy combination of both modules.
-** Added copyright message to all source files.
-**
-**
-**
-*/
-
+ *
+ * CVS/RCS Log:
+ * $Log: diregbas.h,v $
+ * Revision 1.2  1999-03-24 17:20:24  joergr
+ * Added/Modified comments and formatting.
+ *
+ * Revision 1.1  1998/11/27 13:08:07  joergr
+ * Added registration class to allow easy combination of both modules.
+ * Added copyright message to all source files.
+ *
+ *
+ */

@@ -22,9 +22,9 @@
  *  Purpose: DicomDocument (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-03 17:00:33 $
+ *  Update Date:      $Date: 1999-03-24 17:19:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/didocu.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -63,6 +63,8 @@ class DcmSequenceOfItems;
  *  class declaration  *
  *---------------------*/
 
+/** Interface class to DICOM data management (dcmdata)
+ */
 class DiDocument
   : public DiObjectCounter
 {
@@ -194,7 +196,10 @@ class DiDocument
  *
  * CVS/RCS Log:
  * $Log: didocu.h,v $
- * Revision 1.4  1999-02-03 17:00:33  joergr
+ * Revision 1.5  1999-03-24 17:19:59  joergr
+ * Added/Modified comments and formatting.
+ *
+ * Revision 1.4  1999/02/03 17:00:33  joergr
  * Added BEGIN_EXTERN_C and END_EXTERN_C to some C includes.
  *
  * Revision 1.3  1998/12/16 16:26:52  joergr

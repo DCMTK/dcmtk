@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochrome2Image (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-01-20 15:03:20 $
+ *  Update Date:      $Date: 1999-03-24 17:20:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimo2img.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,7 +46,6 @@
  *---------------------*/
 
 /** Class for MONOCHROME2 images
- *
  */
 class DiMono2Image
   : public DiMonoImage
@@ -85,10 +84,6 @@ class DiMono2Image
                               const int bits,
                               const int planar = 0);
 
-    /** Method: 
-     *  @param fstart
-     *  @param fcount
-     */
     DiImage *createImage(const unsigned long fstart,
                          const unsigned long fcount) const;
 
@@ -147,7 +142,10 @@ class DiMono2Image
 **
 ** CVS/RCS Log:
 ** $Log: dimo2img.h,v $
-** Revision 1.3  1999-01-20 15:03:20  joergr
+** Revision 1.4  1999-03-24 17:20:06  joergr
+** Added/Modified comments and formatting.
+**
+** Revision 1.3  1999/01/20 15:03:20  joergr
 ** Added new output method to fill external memory buffer with rendered pixel
 ** data.
 **

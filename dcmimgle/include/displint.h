@@ -22,9 +22,9 @@
  *  Purpose: CubicSplineFunction/Interpolation (Header/Implementation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-22 08:52:43 $
+ *  Update Date:      $Date: 1999-03-24 17:20:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/displint.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -42,7 +42,7 @@
  *  template class  *
  *------------------*/
 
-/** Class for cubic spline interpolation
+/** Template class for cubic spline interpolation 
  */
 template <class T1, class T2>
 class CubicSpline
@@ -180,7 +180,10 @@ class CubicSpline
  *
  * CVS/RCS Log:
  * $Log: displint.h,v $
- * Revision 1.3  1999-03-22 08:52:43  joergr
+ * Revision 1.4  1999-03-24 17:20:26  joergr
+ * Added/Modified comments and formatting.
+ *
+ * Revision 1.3  1999/03/22 08:52:43  joergr
  * Added/Changed comments.
  *
  * Revision 1.2  1999/02/25 16:17:16  joergr

@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-22 08:55:02 $
+ *  Update Date:      $Date: 1999-03-24 17:23:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1300,7 +1300,8 @@ void *DiMonoImage::createDIB(const unsigned long frame)
  *   create 8-bit palette/monochrome or 24/32-bit true color bitmap as needed for Java/AWT
  */
 
-void *DiMonoImage::createAWTBitmap(const unsigned long frame, const int bits)
+void *DiMonoImage::createAWTBitmap(const unsigned long frame,
+                                   const int bits)
 {
     if (bits == 8)                                      // for idx color model (byte)
     {
@@ -1352,7 +1353,9 @@ void *DiMonoImage::createAWTBitmap(const unsigned long frame, const int bits)
  *   write output data of 'frame' with depth of 'bits' to C++-output 'stream' (format is PGM - portable gray map)
  */
 
-int DiMonoImage::writePPM(ostream &stream, const unsigned long frame, const int bits)
+int DiMonoImage::writePPM(ostream &stream,
+                          const unsigned long frame,
+                          const int bits)
 {
     getOutputData(frame, bits);
     if (OutputData != NULL)
@@ -1372,7 +1375,9 @@ int DiMonoImage::writePPM(ostream &stream, const unsigned long frame, const int 
  *   write output data of 'frame' with depth of 'bits' to C-file 'stream' (format is PGM - portable gray map)
  */
 
-int DiMonoImage::writePPM(FILE *stream, const unsigned long frame, const int bits)
+int DiMonoImage::writePPM(FILE *stream,
+                          const unsigned long frame,
+                          const int bits)
 {
     if (stream != NULL)
     {
@@ -1393,7 +1398,9 @@ int DiMonoImage::writePPM(FILE *stream, const unsigned long frame, const int bit
  *   write output data of 'frame' with depth of 'bits' (max. 8) to C-file 'stream' (format is RAW-PGM - binary PGM)
  */
 
-int DiMonoImage::writeRawPPM(FILE *stream, const unsigned long frame, const int bits)
+int DiMonoImage::writeRawPPM(FILE *stream,
+                             const unsigned long frame,
+                             const int bits)
 {
     if (stream != NULL)
     {
@@ -1414,7 +1421,10 @@ int DiMonoImage::writeRawPPM(FILE *stream, const unsigned long frame, const int 
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.16  1999-03-22 08:55:02  joergr
+ * Revision 1.17  1999-03-24 17:23:14  joergr
+ * Added/Modified comments and formatting.
+ *
+ * Revision 1.16  1999/03/22 08:55:02  joergr
  * Added parameter to specify (transparent) background color for method
  * getOverlayData().
  *

@@ -22,9 +22,9 @@
  *  Purpose: DicomLookupTable (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-03 17:27:23 $
+ *  Update Date:      $Date: 1999-03-24 17:20:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diluptab.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -56,6 +56,8 @@ class DiDocument;
  *  class declaration  *
  *---------------------*/
 
+/** Class to handle color palette look-up tables
+ */
 class DiLookupTable
   : public DiBaseLUT,
     public DiObjectCounter
@@ -113,7 +115,10 @@ class DiLookupTable
  *
  * CVS/RCS Log:
  * $Log: diluptab.h,v $
- * Revision 1.6  1999-02-03 17:27:23  joergr
+ * Revision 1.7  1999-03-24 17:20:04  joergr
+ * Added/Modified comments and formatting.
+ *
+ * Revision 1.6  1999/02/03 17:27:23  joergr
  * Added base class for look-up tables (moved main functionality of class
  * DiLookupTable to DiBaseLUT).
  *

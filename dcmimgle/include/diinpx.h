@@ -22,9 +22,9 @@
  *  Purpose: DicomInputPixel (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-03 17:03:47 $
+ *  Update Date:      $Date: 1999-03-24 17:20:02 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diinpx.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  * 
  *   CVS/RCS Log at end of file
@@ -45,6 +45,8 @@
  *  class declaration  *
  *---------------------*/
 
+/** Abstract base class to convert DICOM pixel stream to intermediate representation
+ */
 class DiInputPixel 
 {
 
@@ -107,7 +109,10 @@ class DiInputPixel
  *
  * CVS/RCS Log:
  * $Log: diinpx.h,v $
- * Revision 1.5  1999-02-03 17:03:47  joergr
+ * Revision 1.6  1999-03-24 17:20:02  joergr
+ * Added/Modified comments and formatting.
+ *
+ * Revision 1.5  1999/02/03 17:03:47  joergr
  * Added member variable and related methods to store number of bits used for
  * pixel data.
  *

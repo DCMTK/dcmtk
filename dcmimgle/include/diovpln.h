@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlayPlane (Header) - Multiframe Overlays UNTESTED !
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-22 08:52:18 $
+ *  Update Date:      $Date: 1999-03-24 17:20:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diovpln.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -62,6 +62,8 @@ class DiDocument;
  *  class declaration  *
  *---------------------*/
 
+/** Class to handle a single overlay plane
+ */
 class DiOverlayPlane
 {
 
@@ -157,6 +159,8 @@ class DiOverlayPlane
                      const Uint16 rows);
                     
     void setRotation(const int degree,
+                     const Uint16 left,
+                     const Uint16 top,
                      const Uint16 columns,
                      const Uint16 rows);
 
@@ -332,7 +336,10 @@ inline void DiOverlayPlane::setStart(const Uint16 x,
  *
  * CVS/RCS Log:
  * $Log: diovpln.h,v $
- * Revision 1.8  1999-03-22 08:52:18  joergr
+ * Revision 1.9  1999-03-24 17:20:21  joergr
+ * Added/Modified comments and formatting.
+ *
+ * Revision 1.8  1999/03/22 08:52:18  joergr
  * Added parameter to specify (transparent) background color for method
  * getOverlayData().
  *

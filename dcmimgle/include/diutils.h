@@ -22,9 +22,9 @@
  *  Purpose: Utilities (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-03 17:36:06 $
+ *  Update Date:      $Date: 1999-03-24 17:20:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diutils.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -75,7 +75,7 @@ const unsigned long CIF_UsePresentationState      = 0x0000008;
  *  type definitions  *
  *--------------------*/
 
-/** photometric interpretation
+/** constants for photometric interpretation
  */
 enum EP_Interpretation
 {
@@ -93,7 +93,7 @@ enum EP_Interpretation
 };
 
 
-/** photometric string and related constant
+/** structure for photometric string and related constant
  */
 struct SP_Interpretation
 {
@@ -158,6 +158,8 @@ enum ES_PresentationLut
  *  constant initializations  *
  *----------------------------*/
 
+/** definition of photometric strings and related constants
+ */
 const SP_Interpretation PhotometricInterpretationNames[] =
 {
     {"MONOCHROME1",   EPI_Monochrome1},
@@ -192,6 +194,9 @@ const SP_Interpretation PhotometricInterpretationNames[] =
  *  class declarations  *
  *----------------------*/
 
+/** Class comprising several global functions and constants.
+ *  introduced to avoid problems with naming convention
+ */
 class DicomImageClass
 {
 
@@ -237,7 +242,10 @@ class DicomImageClass
  *
  * CVS/RCS Log:
  * $Log: diutils.h,v $
- * Revision 1.5  1999-02-03 17:36:06  joergr
+ * Revision 1.6  1999-03-24 17:20:28  joergr
+ * Added/Modified comments and formatting.
+ *
+ * Revision 1.5  1999/02/03 17:36:06  joergr
  * Moved global functions maxval() and determineRepresentation() to class
  * DicomImageClass (as static methods).
  * Added BEGIN_EXTERN_C and END_EXTERN_C to some C includes.

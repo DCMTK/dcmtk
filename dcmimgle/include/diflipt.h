@@ -22,9 +22,9 @@
  *  Purpose: DicomFlipTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-03 17:01:16 $
+ *  Update Date:      $Date: 1999-03-24 17:20:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diflipt.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,6 +50,9 @@
  *  class declaration  *
  *---------------------*/
 
+/** Template class to flip images (on pixel data level).
+ *  horizontally and vertically
+ */
 template<class T>
 class DiFlipTemplate
   : public DiTransTemplate<T>
@@ -290,7 +293,10 @@ class DiFlipTemplate
  *
  * CVS/RCS Log:
  * $Log: diflipt.h,v $
- * Revision 1.4  1999-02-03 17:01:16  joergr
+ * Revision 1.5  1999-03-24 17:20:00  joergr
+ * Added/Modified comments and formatting.
+ *
+ * Revision 1.4  1999/02/03 17:01:16  joergr
  * Removed some debug code.
  *
  * Revision 1.3  1999/01/20 14:59:05  joergr

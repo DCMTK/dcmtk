@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlayImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 15:43:13 $
+ *  Update Date:      $Date: 1999-03-24 17:20:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diovlimg.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,10 +46,14 @@
 
 /** Class for standalone overlay images
  */
-class DiOverlayImage : public DiMono2Image
+class DiOverlayImage
+  : public DiMono2Image
 {
+
  public:
+
     DiOverlayImage(const DiDocument *, const EI_Status);
+
     virtual ~DiOverlayImage();
 };
 
@@ -58,14 +62,17 @@ class DiOverlayImage : public DiMono2Image
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: diovlimg.h,v $
-** Revision 1.1  1998-11-27 15:43:13  joergr
-** Added copyright message.
-**
-** Revision 1.2  1998/05/11 14:53:25  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: diovlimg.h,v $
+ * Revision 1.2  1999-03-24 17:20:20  joergr
+ * Added/Modified comments and formatting.
+ *
+ * Revision 1.1  1998/11/27 15:43:13  joergr
+ * Added copyright message.
+ *
+ * Revision 1.2  1998/05/11 14:53:25  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */

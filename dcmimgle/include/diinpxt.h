@@ -22,9 +22,9 @@
  *  Purpose: DicomInputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-11 16:00:54 $
+ *  Update Date:      $Date: 1999-03-24 17:20:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diinpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -119,6 +119,8 @@ static Uint32 getPixelData(DcmPixelData *PixelData,
  *  class declaration  *
  *---------------------*/
 
+/** Template class to convert DICOM pixel stream to intermediate representation
+ */
 template<class T1, class T2>
 class DiInputPixelTemplate
   : public DiInputPixel,
@@ -416,7 +418,10 @@ class DiInputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diinpxt.h,v $
- * Revision 1.8  1999-02-11 16:00:54  joergr
+ * Revision 1.9  1999-03-24 17:20:03  joergr
+ * Added/Modified comments and formatting.
+ *
+ * Revision 1.8  1999/02/11 16:00:54  joergr
  * Removed inline declarations from several methods.
  *
  * Revision 1.7  1999/02/03 17:04:37  joergr

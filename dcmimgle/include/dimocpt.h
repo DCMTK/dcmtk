@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeCopyTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-11 16:01:56 $
+ *  Update Date:      $Date: 1999-03-24 17:20:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimocpt.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,6 +46,8 @@
  *  class declaration  *
  *---------------------*/
 
+/** Template class to copy monochrome pixel data
+ */
 template<class T>
 class DiMonoCopyTemplate
   : public DiMonoPixelTemplate<T>
@@ -89,7 +91,10 @@ class DiMonoCopyTemplate
  *
  * CVS/RCS Log:
  * $Log: dimocpt.h,v $
- * Revision 1.2  1999-02-11 16:01:56  joergr
+ * Revision 1.3  1999-03-24 17:20:07  joergr
+ * Added/Modified comments and formatting.
+ *
+ * Revision 1.2  1999/02/11 16:01:56  joergr
  * Corrected some typos and formatting.
  *
  * Revision 1.1  1998/11/27 15:15:50  joergr

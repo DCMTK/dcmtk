@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlay (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-22 08:52:17 $
+ *  Update Date:      $Date: 1999-03-24 17:20:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diovlay.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,9 +46,12 @@
  *  declaration of helper class  *
  *-------------------------------*/
 
+/** Class to handle overlay pxiel data
+ */
 class DiOverlayData
   : public DiObjectCounter
 {
+
     friend class DiOverlay;
 
  public:
@@ -77,6 +80,8 @@ class DiOverlayData
 /********************************************************************/
 
 
+/** Class to handle a set of overlay planes
+ */
 class DiOverlay
   : public DiObjectCounter
 {
@@ -245,7 +250,10 @@ class DiOverlay
  *
  * CVS/RCS Log:
  * $Log: diovlay.h,v $
- * Revision 1.10  1999-03-22 08:52:17  joergr
+ * Revision 1.11  1999-03-24 17:20:19  joergr
+ * Added/Modified comments and formatting.
+ *
+ * Revision 1.10  1999/03/22 08:52:17  joergr
  * Added parameter to specify (transparent) background color for method
  * getOverlayData().
  *

@@ -22,9 +22,9 @@
  *  Purpose: Provides main interface to the "dicom image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-22 08:51:06 $
+ *  Update Date:      $Date: 1999-03-24 17:19:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dcmimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1027,7 +1027,7 @@ class DicomImage
                                   const unsigned long top,
                                   unsigned long clip_width,
                                   unsigned long clip_height,
-                                  unsigned long scale_width,
+                                  unsigned long scale_width = 0,
                                   unsigned long scale_height = 0,
                                   const int interpolate = 0,
                                   int aspect = 0) const;
@@ -1290,7 +1290,10 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.14  1999-03-22 08:51:06  joergr
+ * Revision 1.15  1999-03-24 17:19:56  joergr
+ * Added/Modified comments and formatting.
+ *
+ * Revision 1.14  1999/03/22 08:51:06  joergr
  * Added parameter to specify (transparent) background color for method
  * getOverlayData().
  * Added/Changed comments.

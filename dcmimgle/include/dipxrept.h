@@ -22,9 +22,9 @@
  *  Purpose: DicomPixelRepresentationTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-11 16:41:39 $
+ *  Update Date:      $Date: 1999-03-24 17:20:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dipxrept.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,6 +44,9 @@
  *  class declaration  *
  *---------------------*/
 
+/** Template class to determine pixel representation.
+ *  size of basic structure, sign-extension
+ */
 template<class T>
 class DiPixelRepresentationTemplate
 {
@@ -141,7 +144,10 @@ inline int DiPixelRepresentationTemplate<Sint32>::isSigned() const
  *
  * CVS/RCS Log:
  * $Log: dipxrept.h,v $
- * Revision 1.5  1999-02-11 16:41:39  joergr
+ * Revision 1.6  1999-03-24 17:20:23  joergr
+ * Added/Modified comments and formatting.
+ *
+ * Revision 1.5  1999/02/11 16:41:39  joergr
  * Corrected some typos and formatting.
  *
  * Revision 1.4  1998/12/22 14:37:22  joergr

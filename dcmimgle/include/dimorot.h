@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeRotateTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-11 16:40:46 $
+ *  Update Date:      $Date: 1999-03-24 17:20:17 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimorot.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,6 +46,9 @@
  *  class declaration  *
  *---------------------*/
 
+/** Template class to rotate monochrome images (on pixel data level).
+ *  by steps of 90 degrees
+ */
 template<class T>
 class DiMonoRotateTemplate
   : public DiMonoPixelTemplate<T>,
@@ -101,7 +104,10 @@ class DiMonoRotateTemplate
  *
  * CVS/RCS Log:
  * $Log: dimorot.h,v $
- * Revision 1.3  1999-02-11 16:40:46  joergr
+ * Revision 1.4  1999-03-24 17:20:17  joergr
+ * Added/Modified comments and formatting.
+ *
+ * Revision 1.3  1999/02/11 16:40:46  joergr
  * Corrected some typos and formatting.
  *
  * Revision 1.2  1998/12/14 17:26:26  joergr

@@ -22,9 +22,9 @@
  *  Purpose: DicomMonoOutputPixel (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-11 16:37:56 $
+ *  Update Date:      $Date: 1999-03-24 17:20:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoopx.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,6 +59,8 @@ class DiMonoPixel;
  *  class declaration  *
  *---------------------*/
 
+/** Abstract base class to create monochrome output data
+ */
 class DiMonoOutputPixel 
 {
 
@@ -115,7 +117,10 @@ class DiMonoOutputPixel
  *
  * CVS/RCS Log:
  * $Log: dimoopx.h,v $
- * Revision 1.4  1999-02-11 16:37:56  joergr
+ * Revision 1.5  1999-03-24 17:20:13  joergr
+ * Added/Modified comments and formatting.
+ *
+ * Revision 1.4  1999/02/11 16:37:56  joergr
  * Added routine to check whether particular grayscale values are unused in
  * the output data.
  *

@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeModality (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-03 17:30:00 $
+ *  Update Date:      $Date: 1999-03-24 17:20:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimomod.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,7 +55,10 @@ class DiInputPixel;
  *  class declaration  *
  *---------------------*/
 
-class DiMonoModality : public DiObjectCounter
+/** Class to handle modality specific transformations (incl. modality LUT)
+ */
+class DiMonoModality
+  : public DiObjectCounter
 {
 
  public:
@@ -180,7 +183,10 @@ class DiMonoModality : public DiObjectCounter
  *
  * CVS/RCS Log:
  * $Log: dimomod.h,v $
- * Revision 1.5  1999-02-03 17:30:00  joergr
+ * Revision 1.6  1999-03-24 17:20:12  joergr
+ * Added/Modified comments and formatting.
+ *
+ * Revision 1.5  1999/02/03 17:30:00  joergr
  * Added member variable and related methods to store number of bits used for
  * pixel data.
  *
@@ -208,4 +214,3 @@ class DiMonoModality : public DiObjectCounter
  *
  * 
  */
-

@@ -22,9 +22,9 @@
  *  Purpose: DicomBaseLUT (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-03 11:46:26 $
+ *  Update Date:      $Date: 1999-03-24 17:19:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dibaslut.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -54,6 +54,8 @@
  *  class declaration  *
  *---------------------*/
 
+/** Base class to handle look-up tables
+ */
 class DiBaseLUT
 {
 
@@ -149,7 +151,10 @@ class DiBaseLUT
  *
  * CVS/RCS Log:
  * $Log: dibaslut.h,v $
- * Revision 1.3  1999-03-03 11:46:26  joergr
+ * Revision 1.4  1999-03-24 17:19:58  joergr
+ * Added/Modified comments and formatting.
+ *
+ * Revision 1.3  1999/03/03 11:46:26  joergr
  * Added method to invert lookup table data (used for presentation state LUTs).
  *
  * Revision 1.2  1999/02/11 15:42:49  joergr
@@ -158,7 +163,6 @@ class DiBaseLUT
  * Revision 1.1  1999/02/03 17:45:38  joergr
  * Added base class for look-up tables (moved main functionality of class
  * DiLookupTable to DiBaseLUT).
- *
  *
  *
  */

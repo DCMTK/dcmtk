@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-22 08:51:39 $
+ *  Update Date:      $Date: 1999-03-24 17:20:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoimg.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,7 +58,6 @@ class DiColorImage;
  *---------------------*/
 
 /** Base class for monochrome images
- *
  */
 class DiMonoImage
   : public DiImage
@@ -213,12 +212,23 @@ class DiMonoImage
         return InterData;
     }
 
-    void *createDIB(const unsigned long);
-    void *createAWTBitmap(const unsigned long, const int);
+    void *createDIB(const unsigned long frame);
+    
+    void *createAWTBitmap(const unsigned long frame,
+                          const int bits);
 
-    int writePPM(ostream &, const unsigned long, const int); 
-    int writePPM(FILE *, const unsigned long, const int); 
-    int writeRawPPM(FILE *, const unsigned long, const int); 
+    int writePPM(ostream &stream,
+                 const unsigned long frame,
+                 const int bits);
+
+    int writePPM(FILE * stream,
+                 const unsigned long frame,
+                 const int bits);
+
+    int writeRawPPM(FILE *stream,
+                    const unsigned long frame,
+                    const int bits);
+
 
  protected:
 
@@ -300,7 +310,10 @@ class DiMonoImage
  *
  * CVS/RCS Log:
  * $Log: dimoimg.h,v $
- * Revision 1.14  1999-03-22 08:51:39  joergr
+ * Revision 1.15  1999-03-24 17:20:09  joergr
+ * Added/Modified comments and formatting.
+ *
+ * Revision 1.14  1999/03/22 08:51:39  joergr
  * Added parameter to specify (transparent) background color for method
  * getOverlayData().
  *

@@ -22,9 +22,9 @@
  *  Purpose: DicomTransTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-11 16:42:52 $
+ *  Update Date:      $Date: 1999-03-24 17:20:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/ditranst.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,6 +45,9 @@
  *  class declaration  *
  *---------------------*/
 
+/** Template class building the base for other transformations.
+ *  (e.g. scaling, flipping)
+ */
 template<class T>
 class DiTransTemplate
 {
@@ -82,7 +85,7 @@ class DiTransTemplate
 
     const int Planes;
     /*const*/ Uint16 Src_X;                     // add 'const' when interpolated scaling with clipping is fully implemented
-    /*const*/ Uint16 Src_Y;                     // ...
+    /*const*/ Uint16 Src_Y;                     // ... dito ...
     const Uint16 Dest_X;
     const Uint16 Dest_Y;
     const Uint32 Frames;
@@ -97,7 +100,10 @@ class DiTransTemplate
  *
  * CVS/RCS Log:
  * $Log: ditranst.h,v $
- * Revision 1.3  1999-02-11 16:42:52  joergr
+ * Revision 1.4  1999-03-24 17:20:27  joergr
+ * Added/Modified comments and formatting.
+ *
+ * Revision 1.3  1999/02/11 16:42:52  joergr
  * Corrected some typos and formatting.
  *
  * Revision 1.2  1998/12/22 14:42:23  joergr

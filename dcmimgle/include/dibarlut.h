@@ -22,9 +22,9 @@
  *  Purpose: DicomBartenLUT (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-04 09:35:07 $
+ *  Update Date:      $Date: 1999-03-24 17:19:57 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dibarlut.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -44,6 +44,8 @@
  *  class declaration  *
  *---------------------*/
 
+/** Class to compute and store the Barten look-up table
+ */
 class DiBartenLUT
   : public DiBaseLUT
 {
@@ -102,7 +104,10 @@ class DiBartenLUT
  *
  * CVS/RCS Log:
  * $Log: dibarlut.h,v $
- * Revision 1.5  1999-03-04 09:35:07  joergr
+ * Revision 1.6  1999-03-24 17:19:57  joergr
+ * Added/Modified comments and formatting.
+ *
+ * Revision 1.5  1999/03/04 09:35:07  joergr
  * Barten LUT is now be re-created when ambient light value has changed.
  *
  * Revision 1.4  1999/03/03 11:45:01  joergr

@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeScaleTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-11 16:41:10 $
+ *  Update Date:      $Date: 1999-03-24 17:20:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimosct.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,6 +46,8 @@
  *  class declaration  *
  *---------------------*/
 
+/** Template class to scale monochrome images (on pixel data level).
+ */
 template<class T>
 class DiMonoScaleTemplate
   : public DiMonoPixelTemplate<T>,
@@ -102,7 +104,10 @@ class DiMonoScaleTemplate
  *
  * CVS/RCS Log:
  * $Log: dimosct.h,v $
- * Revision 1.3  1999-02-11 16:41:10  joergr
+ * Revision 1.4  1999-03-24 17:20:18  joergr
+ * Added/Modified comments and formatting.
+ *
+ * Revision 1.3  1999/02/11 16:41:10  joergr
  * Corrected some typos and formatting.
  *
  * Revision 1.2  1998/12/16 16:36:11  joergr

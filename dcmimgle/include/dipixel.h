@@ -22,9 +22,9 @@
  *  Purpose: DicomPixel (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-01-20 15:12:10 $
+ *  Update Date:      $Date: 1999-03-24 17:20:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dipixel.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $ 
+ *  CVS/RCS Revision: $Revision: 1.3 $ 
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,6 +45,8 @@
  *  class declaration  *
  *---------------------*/
 
+/** Abstract base class to handle pixel data
+ */
 class DiPixel 
 {
 
@@ -86,7 +88,10 @@ class DiPixel
  *
  * CVS/RCS Log:
  * $Log: dipixel.h,v $
- * Revision 1.2  1999-01-20 15:12:10  joergr
+ * Revision 1.3  1999-03-24 17:20:22  joergr
+ * Added/Modified comments and formatting.
+ *
+ * Revision 1.2  1999/01/20 15:12:10  joergr
  * Replaced invocation of getCount() by member variable Count where possible.
  *
  * Revision 1.1  1998/11/27 15:32:37  joergr
@@ -94,6 +99,4 @@ class DiPixel
  * Introduced new pixel base class.
  *
  *
- *
  */
-

@@ -22,9 +22,9 @@
  *  Purpose: DicomObjectCounter (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 15:40:30 $
+ *  Update Date:      $Date: 1999-03-24 17:20:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diobjcou.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,23 +42,38 @@
  *  class declaration  *
  *---------------------*/
 
+/** Class to count number of instances (objects created from a certain class).
+ *  used to manage more than one reference to an object in a secure way.
+ */
 class DiObjectCounter
 {
+
  public:
+
     inline void addReference()
-        { Counter++; }
+    {
+        Counter++;
+    }
+
     inline void removeReference()
-        { if (--Counter == 0) delete this; }
+    {
+        if (--Counter == 0)
+            delete this;
+    }
 
     unsigned long Counter;
 
+
  protected:
-    DiObjectCounter() : Counter(1)
-        { }
+
+    DiObjectCounter()
+      : Counter(1)
+    {
+    }
+
     virtual ~DiObjectCounter()
-        { }
-    
- private:
+    {
+    }
 };
 
 
@@ -66,14 +81,17 @@ class DiObjectCounter
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: diobjcou.h,v $
-** Revision 1.1  1998-11-27 15:40:30  joergr
-** Added copyright message.
-**
-** Revision 1.3  1998/05/11 14:53:24  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: diobjcou.h,v $
+ * Revision 1.2  1999-03-24 17:20:18  joergr
+ * Added/Modified comments and formatting.
+ *
+ * Revision 1.1  1998/11/27 15:40:30  joergr
+ * Added copyright message.
+ *
+ * Revision 1.3  1998/05/11 14:53:24  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */

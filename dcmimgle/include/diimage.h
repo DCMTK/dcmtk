@@ -22,9 +22,9 @@
  *  Purpose: DicomImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-08 12:38:12 $
+ *  Update Date:      $Date: 1999-03-24 17:20:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,19 +73,12 @@ class DiInputPixel;
  *---------------------*/
 
 /** Base class for images
- *
  */
 class DiImage
 {
  
  public:
  
-    /** constructor
-     *
-     ** @param  docu
-     *  @param  status
-     *  @param  spp
-     */
     DiImage(const DiDocument *docu,
             const EI_Status status,
             const int spp);
@@ -160,12 +153,6 @@ class DiImage
         return NULL;
     }
 
-
-    /** Method: 
-     *  @param  fstart
-     *  @param  fcount
-     *  @return image
-     */
     virtual DiImage *createImage(const unsigned long fstart,
                                  const unsigned long fcount) const = 0;
 
@@ -215,11 +202,6 @@ class DiImage
     DiImage(const DiDocument *docu,
             const EI_Status status);
             
-    /** Constructor: 
-     *  @param image
-     *  @param fstart
-     *  @param fcount
-     */
     DiImage(const DiImage *image,
             const unsigned long fstart,
             const unsigned long fcount);
@@ -276,7 +258,10 @@ class DiImage
  *
  * CVS/RCS Log:
  * $Log: diimage.h,v $
- * Revision 1.10  1999-02-08 12:38:12  joergr
+ * Revision 1.11  1999-03-24 17:20:01  joergr
+ * Added/Modified comments and formatting.
+ *
+ * Revision 1.10  1999/02/08 12:38:12  joergr
  * Added parameter 'idx' to some overlay methods to distinguish between
  * built-in and additional overlay planes.
  *
