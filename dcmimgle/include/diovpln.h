@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlayPlane (Header) - Multiframe Overlays UNTESTED !
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-16 16:37:51 $
+ *  Update Date:      $Date: 1998-12-22 14:36:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diovpln.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -204,7 +204,7 @@ class DiOverlayPlane
                    const Uint16 ymin,
                    const Uint16 xmax,
                    const Uint16 ymax,
-                   const Uint8 value = 0xff);
+                   const Uint8 value);
 
     inline int reset(const unsigned long);
 
@@ -311,7 +311,11 @@ inline void DiOverlayPlane::setStart(const Uint16 x,
 **
 ** CVS/RCS Log:
 ** $Log: diovpln.h,v $
-** Revision 1.3  1998-12-16 16:37:51  joergr
+** Revision 1.4  1998-12-22 14:36:30  joergr
+** Added method to check whether plane is visible, to get plane mode and to
+** remove all planes. Set 'value' used for getOverlay/PlaneData().
+**
+** Revision 1.3  1998/12/16 16:37:51  joergr
 ** Added method to export overlay planes (create 8-bit bitmap).
 ** Implemented flipping and rotation of overlay planes.
 **
