@@ -11,8 +11,8 @@
 ** Author: Andrew Hewett, Kuratorium OFFIS e.V., Oldenburg, Germany
 **
 ** 
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-07-07 14:05:24 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1997-07-14 13:37:31 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstring.h,v $
 ** CVS/RCS Revision:	$Revision
 ** Status:		$State: Exp $
@@ -253,10 +253,12 @@ public:
     */
     char operator[] (size_t pos) const
     {
-	if (pos == this->size())
-	    return '\0';
-	OFSTRING_OUTOFRANGE (pos > this->size());
-	return this->theCString[pos];
+	if (pos == this->size()) return '\0';
+	else 
+	{
+	  OFSTRING_OUTOFRANGE (pos > this->size());
+	  return this->theCString[pos];
+	}
     }
     char& operator[] (size_t pos)
     {
@@ -566,7 +568,10 @@ OFBool operator>= (const OFString& lhs, char rhs);
 /*
 ** CVS/RCS Log:
 ** $Log: ofstring.h,v $
-** Revision 1.2  1997-07-07 14:05:24  hewett
+** Revision 1.3  1997-07-14 13:37:31  meichel
+** Simplified OFString code to allow compilation with Sun CC 2.0.1
+**
+** Revision 1.2  1997/07/07 14:05:24  hewett
 ** Renamed the constant OFnpos to OFString_npos to look more like
 ** the real ANSI constant string::npos.
 **
