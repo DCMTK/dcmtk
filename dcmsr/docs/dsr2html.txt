@@ -90,6 +90,7 @@ DICOM 2003):
     BasicTextSR                 "1.2.840.10008.5.1.4.1.1.88.11"
     EnhancedSR                  "1.2.840.10008.5.1.4.1.1.88.22"
     ComprehensiveSR             "1.2.840.10008.5.1.4.1.1.88.33"
+    ProcedureLog                "1.2.840.10008.5.1.4.1.1.88.40"
     MammographyCADSR            "1.2.840.10008.5.1.4.1.1.88.50"
     KeyObjectSelectionDocument  "1.2.840.10008.5.1.4.1.1.88.59"
     ChestCADSR                  "1.2.840.10008.5.1.4.1.1.88.65"

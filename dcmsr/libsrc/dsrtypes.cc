@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-10-06 09:55:35 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Update Date:      $Date: 2003-10-09 12:58:19 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,6 +56,7 @@
 #include "dsrkeycc.h"
 #include "dsrmamcc.h"
 #include "dsrchecc.h"
+#include "dsrprocc.h"
 
 #include "ofstd.h"
 
@@ -248,7 +249,8 @@ static const S_DocumentTypeNameMap DocumentTypeNameMap[] =
     {DSRTypes::DT_ComprehensiveSR,  UID_ComprehensiveSR,             "SR", "Comprehensive SR"},
     {DSRTypes::DT_KeyObjectDoc,     UID_KeyObjectSelectionDocument,  "KO", "Key Object Selection Document"},
     {DSRTypes::DT_MammographyCadSR, UID_MammographyCADSR,            "SR", "Mammography CAD SR"},
-    {DSRTypes::DT_ChestCadSR,       UID_ChestCADSR,                  "SR", "Chest CAD SR"}
+    {DSRTypes::DT_ChestCadSR,       UID_ChestCADSR,                  "SR", "Chest CAD SR"},
+    {DSRTypes::DT_ProcedureLog,     UID_ProcedureLog,                "SR", "Procedure Log"}
 };
 
 
@@ -1154,6 +1156,9 @@ DSRIODConstraintChecker *DSRTypes::createIODConstraintChecker(const E_DocumentTy
         case DT_ChestCadSR:
             checker = new DSRChestCadSRConstraintChecker();
             break;
+        case DT_ProcedureLog:
+            checker = new DSRProcedureLogConstraintChecker();
+            break;
         default:
             break;
     }
@@ -1444,7 +1449,10 @@ OFCondition DSRTypes::appendStream(ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
- *  Revision 1.35  2003-10-06 09:55:35  joergr
+ *  Revision 1.36  2003-10-09 12:58:19  joergr
+ *  Added support for Procedure Log.
+ *
+ *  Revision 1.35  2003/10/06 09:55:35  joergr
  *  Added new flag which allows to ignore content item errors when reading an SR
  *  document (e.g. missing value type specific attributes).
  *
