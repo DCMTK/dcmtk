@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: DicomDisplayLUT (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-02 16:23:41 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/didislut.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2003-12-08 18:17:41 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +31,8 @@
  */
 
 
-#ifndef __DIDISLUT_H
-#define __DIDISLUT_H
+#ifndef DIDISLUT_H
+#define DIDISLUT_H
 
 #include "osconfig.h"
 
@@ -103,7 +102,11 @@ class DiDisplayLUT
  *
  * CVS/RCS Log:
  * $Log: didislut.h,v $
- * Revision 1.6  2002-07-02 16:23:41  joergr
+ * Revision 1.7  2003-12-08 18:17:41  joergr
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated copyright header.
+ *
+ * Revision 1.6  2002/07/02 16:23:41  joergr
  * Added support for hardcopy devices to the calibrated output routines.
  *
  * Revision 1.5  2001/06/01 15:49:40  meichel

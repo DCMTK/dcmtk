@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: DicomCIELABFunction (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-19 08:24:21 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diciefn.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2003-12-08 18:15:58 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +31,8 @@
  */
 
 
-#ifndef __DICIEFN_H
-#define __DICIEFN_H
+#ifndef DICIEFN_H
+#define DICIEFN_H
 
 #include "osconfig.h"
 
@@ -161,7 +160,11 @@ class DiCIELABFunction
  *
  * CVS/RCS Log:
  * $Log: diciefn.h,v $
- * Revision 1.10  2002-07-19 08:24:21  joergr
+ * Revision 1.11  2003-12-08 18:15:58  joergr
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated copyright header.
+ *
+ * Revision 1.10  2002/07/19 08:24:21  joergr
  * Enhanced/corrected comments.
  *
  * Revision 1.9  2002/07/18 12:26:30  joergr
