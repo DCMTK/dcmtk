@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,10 +23,10 @@
  *  This file contains the interface to routines which provide
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-16 15:54:39 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-11 12:23:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcobject.h,v $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,7 +54,7 @@
 // Maxinum number of read bytes for a Value Element
 const Uint32 DCM_MaxReadLength = 4096;  
 
-// Maximun Length of Tag and Length in a DICOM element
+// Maximum Length of Tag and Length in a DICOM element
 const Uint32 DCM_TagInfoLength = 12;    
 
 // Optimum Line Length if not all data printed
@@ -66,10 +66,9 @@ const Uint32 DCM_OptPrintLineLength = 70;
 */
 extern OFGlobal<OFBool> dcmEnableAutomaticInputDataCorrection; /* default OFTrue */
 
-/*
-** The base dicom object class
-*/
 
+/** The base DICOM object class
+ */
 class DcmObject 
 {
 protected:
@@ -155,6 +154,39 @@ public:
                               const E_TransferSyntax oxfer,
                               const E_EncodingType enctype = EET_UndefinedLength) = 0;
 
+    /** load a DICOM object from file.
+     *  The only classes having a "real" implementation of this method are DcmDataset and
+     *  DcmFileFormat.
+     *  @param fileName not used
+     *  @param readXfer not used
+     *  @param groupLength not used
+     *  @return status, always returns EC_IllegalCall
+     */
+    virtual OFCondition loadFile(const char *fileName,
+                                 const E_TransferSyntax readXfer = EXS_Unknown,
+                                 const E_GrpLenEncoding groupLength = EGL_noChange,
+                                 const Uint32 maxReadLength = DCM_MaxReadLength);
+    
+    /** save a DICOM object to file.
+     *  The only classes having a "real" implementation of this method are DcmDataset and
+     *  DcmFileFormat.
+     *  @param fileName not used
+     *  @param writeXfer not used
+     *  @param encodingType not used
+     *  @param groupLength not used
+     *  @param padEncoding not used
+     *  @param padLength not used
+     *  @param subPadLength not used
+     *  @return status, always returns EC_IllegalCall
+     */
+    virtual OFCondition saveFile(const char *fileName,
+                                 const E_TransferSyntax writeXfer = EXS_Unknown,
+                                 const E_EncodingType encodingType = EET_UndefinedLength,
+                                 const E_GrpLenEncoding groupLength = EGL_recalcGL,
+			                     const E_PaddingEncoding padEncoding = EPD_noChange,
+			                     const Uint32 padLength = 0,
+			                     const Uint32 subPadLength = 0);
+
     /** special write method for creation of digital signatures
      */
     virtual OFCondition writeSignatureFormat(DcmStream & outStream,
@@ -193,7 +225,10 @@ public:
 /*
  * CVS/RCS Log:
  * $Log: dcobject.h,v $
- * Revision 1.28  2001-11-16 15:54:39  meichel
+ * Revision 1.29  2002-04-11 12:23:46  joergr
+ * Added new methods for loading and saving DICOM files.
+ *
+ * Revision 1.28  2001/11/16 15:54:39  meichel
  * Adapted digital signature code to final text of supplement 41.
  *
  * Revision 1.27  2001/09/25 17:19:27  meichel

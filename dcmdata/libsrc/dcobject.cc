@@ -23,10 +23,10 @@
  *  This file contains the interface to routines which provide
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-16 15:55:03 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-11 12:27:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcobject.cc,v $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -138,15 +138,35 @@ OFCondition DcmObject::search( const DcmTagKey &/*tag*/,
   return EC_TagNotFound;
 }
 
-
 // ********************************
-
 
 OFCondition DcmObject::searchErrors( DcmStack &resultStack )
 {
   if ( errorFlag != EC_Normal )
     resultStack.push( this );
   return errorFlag;
+}
+
+// ********************************
+
+OFCondition DcmObject::loadFile(const char * /*fileName*/,
+                                const E_TransferSyntax /*readXfer*/,
+                                const E_GrpLenEncoding /*groupLength*/,
+                                const Uint32 /*maxReadLength*/)
+{
+    return EC_IllegalCall;
+}
+    
+
+OFCondition DcmObject::saveFile(const char * /*fileName*/,
+                                const E_TransferSyntax /*writeXfer*/,
+                                const E_EncodingType /*encodingType*/,
+                                const E_GrpLenEncoding /*groupLength*/,
+			                    const E_PaddingEncoding /*padEncoding*/,
+			                    const Uint32 /*padLength*/,
+			                    const Uint32 /*subPadLength*/)
+{
+    return EC_IllegalCall;
 }
 
 
@@ -362,7 +382,10 @@ OFBool DcmObject::containsUnknownVR() const
 /*
  * CVS/RCS Log:
  * $Log: dcobject.cc,v $
- * Revision 1.31  2001-11-16 15:55:03  meichel
+ * Revision 1.32  2002-04-11 12:27:10  joergr
+ * Added new methods for loading and saving DICOM files.
+ *
+ * Revision 1.31  2001/11/16 15:55:03  meichel
  * Adapted digital signature code to final text of supplement 41.
  *
  * Revision 1.30  2001/11/01 14:55:41  wilkens

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of the class DcmDataset
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:19:24 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-11 12:22:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdatset.h,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,6 +44,9 @@
 class DcmStream;
 class DcmRepresentationParameter;
 
+
+/** Class handling the DICOM dataset format (files without meta header)
+ */
 class DcmDataset : public DcmItem 
 {
 private:
@@ -80,6 +83,42 @@ public:
 			      const Uint32 padlen = 0,
 			      const Uint32 subPadlen = 0,
 			      Uint32 instanceLength = 0);
+
+    /** load a DICOM object from file.
+     *  This method only supports DICOM objects stored as a dataset, i.e. without meta header.
+     *  Use DcmFileFormat::loadFile() to load files with meta header.
+     *  @param fileName name of the file to load
+     *  @param readXfer transfer syntax used to read the data (auto detection if EXS_Unknown)
+     *  @param groupLength flag, specifying how to handle the group length tags
+     *  @param maxReadLength maximum number of bytes to be read for an element value.
+     *    Element values with a larger size are not loaded until their value is retrieved
+     *    (with getXXX()) or loadAllDataElements() is called.
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition loadFile(const char *fileName,
+                                 const E_TransferSyntax readXfer = EXS_Unknown,
+                                 const E_GrpLenEncoding groupLength = EGL_noChange,
+                                 const Uint32 maxReadLength = DCM_MaxReadLength);
+    
+    /** save a DICOM object to file.
+     *  This method only supports DICOM objects stored as a dataset, i.e. without meta header.
+     *  Use DcmFileFormat::saveFile() to save files with meta header.
+     *  @param fileName name of the file to save
+     *  @param writeXfer transfer syntax used to write the data (EXS_Unknown means use current)
+     *  @param encodingType flag, specifying the encoding with undefined or explicit length
+     *  @param groupLength flag, specifying how to handle the group length tags
+     *  @param padEncoding flag, specifying how to handle the padding tags
+     *  @param padLength number of bytes used for the dataset padding (has to be an even number)
+     *  @param subPadLength number of bytes used for the item padding (has to be an even number)
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition saveFile(const char *fileName,
+                                 const E_TransferSyntax writeXfer = EXS_Unknown,
+                                 const E_EncodingType encodingType = EET_UndefinedLength,
+                                 const E_GrpLenEncoding groupLength = EGL_recalcGL,
+			                     const E_PaddingEncoding padEncoding = EPD_noChange,
+			                     const Uint32 padLength = 0,
+			                     const Uint32 subPadLength = 0);
 
     /** special write method for creation of digital signatures
      */
@@ -127,7 +166,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.h,v $
-** Revision 1.16  2001-09-25 17:19:24  meichel
+** Revision 1.17  2002-04-11 12:22:52  joergr
+** Added new methods for loading and saving DICOM files.
+**
+** Revision 1.16  2001/09/25 17:19:24  meichel
 ** Adapted dcmdata to class OFCondition
 **
 ** Revision 1.15  2001/06/01 15:48:34  meichel

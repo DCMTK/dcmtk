@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmDataset
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2001-11-01 14:55:35 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-11 12:27:11 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdatset.cc,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -132,9 +132,7 @@ void DcmDataset::print(ostream & out, const OFBool showFullData,
     }
 }
 
-
 // ********************************
-
 
 OFCondition DcmDataset::read(DcmStream & inStream,
                              const E_TransferSyntax xfer,
@@ -210,7 +208,6 @@ OFCondition DcmDataset::read(DcmStream & inStream,
     return errorFlag;
 }
 
-
 // ********************************
 
 OFCondition DcmDataset::write(DcmStream & outStream,
@@ -244,9 +241,12 @@ OFCondition DcmDataset::write(DcmStream & outStream,
      *   enctype        - [in] Encoding type for sequences. Specifies how sequences will be handled.
      *   glenc          - [in] Encoding type for group length. Specifies what will be done with group length tags.
      *   padenc         - [in] Encoding type for padding. Specifies what will be done with padding tags.
-     *   padlen         - [in] [optional parameter, default = 0]. 
-     *   subPadlen      - [in] [optional parameter, default = 0]. 
-     *   instanceLength - [in] [optional parameter, default = 0]. 
+     *   padlen         - [in] The length up to which the dataset shall be padded, if padding is desired.
+     *   subPadlen      - [in] For sequences (i.e. sub elements), the length up to which item shall be padded,
+     *                         if padding is desired.
+     *   instanceLength - [in] Number of extra bytes added to the item/dataset length used when computing the
+     *                         padding. This parameter is for instance used to pass the length of the file meta
+     *                         header from the DcmFileFormat to the DcmDataset object.
      */
 {
   /* if the transfer state of this is not initialized, this is an illegal call */
@@ -304,6 +304,61 @@ OFCondition DcmDataset::write(DcmStream & outStream,
 
     /* return the corresponding result value */
   return errorFlag;
+}
+
+// ********************************
+
+OFCondition DcmDataset::loadFile(const char *filename,
+                                 const E_TransferSyntax readXfer,
+                                 const E_GrpLenEncoding groupLength,
+                                 const Uint32 maxReadLength)
+{
+    OFCondition l_error = EC_IllegalParameter;
+    /* check parameters first */
+    if ((filename != NULL) && (strlen(filename) > 0))
+    {
+        /* open file for input */
+        DcmFileStream fileStream(filename, DCM_ReadMode);
+        /* check stream status */
+        l_error = fileStream.GetError();
+        if (l_error.good())
+        {
+            /* read data from file */
+            transferInit();
+            l_error = read(fileStream, readXfer, groupLength, maxReadLength);
+            transferEnd();
+        }
+    }
+    return l_error;
+}  
+
+// ********************************
+
+OFCondition DcmDataset::saveFile(const char *fileName,
+                                 const E_TransferSyntax writeXfer,
+                                 const E_EncodingType encodingType,
+                                 const E_GrpLenEncoding groupLength,
+			                     const E_PaddingEncoding padEncoding,
+			                     const Uint32 padLength,
+			                     const Uint32 subPadLength)
+{
+    OFCondition l_error = EC_IllegalParameter;
+    /* check parameters first */
+    if ((fileName != NULL) && (strlen(fileName) > 0))
+    {
+        /* open file for output */
+        DcmFileStream fileStream(fileName, DCM_WriteMode);
+        /* check stream status */
+        l_error = fileStream.GetError();
+        if (l_error.good())
+        {
+            /* write data to file */
+            transferInit();
+            l_error = write(fileStream, writeXfer, encodingType, groupLength, padEncoding, padLength, subPadLength);
+            transferEnd();
+        }
+    }
+    return l_error;
 }
 
 // ********************************
@@ -441,7 +496,10 @@ DcmDataset::removeAllButOriginalRepresentations()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.cc,v $
-** Revision 1.23  2001-11-01 14:55:35  wilkens
+** Revision 1.24  2002-04-11 12:27:11  joergr
+** Added new methods for loading and saving DICOM files.
+**
+** Revision 1.23  2001/11/01 14:55:35  wilkens
 ** Added lots of comments.
 **
 ** Revision 1.22  2001/09/26 15:49:29  meichel
