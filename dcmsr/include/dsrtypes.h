@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-02-02 14:37:33 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2001-02-13 16:36:05 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -705,12 +705,16 @@ class DSRTypes
      *  @param  newlineAllowed   optional flag indicating whether newlines are allowed or not.
      *                           If they are allowed the text "<br>" is used, "&para;" otherwise.
      *                           The following combinations are accepted: LF, CR, LF CR, CF LF.
+     *  @param  xmlMode          convert to XML markup string if OFTrue, HTML string otherwise.
+     *                           Newlines are always encoded as "&#182;" in XML mode, the flag
+     *                           'newlineAllowed' has no meaning in this case.
      ** @return reference to resulting 'markupString' (might be empty if 'sourceString' was empty)
      */
     static const OFString &convertToMarkupString(const OFString &sourceString,
                                                  OFString &markupString,
                                                  const OFBool convertNonASCII = OFFalse,
-                                                 const OFBool newlineAllowed = OFFalse);
+                                                 const OFBool newlineAllowed = OFFalse,
+                                                 const OFBool xmlMode = OFFalse);
 
     /** check string for valid UID format.
      *  The string should be non-empty and consist only of interger numbers separated by "." where
@@ -1006,7 +1010,10 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
- *  Revision 1.14  2001-02-02 14:37:33  joergr
+ *  Revision 1.15  2001-02-13 16:36:05  joergr
+ *  Allow newline characters (encoded as &#182;) in XML documents.
+ *
+ *  Revision 1.14  2001/02/02 14:37:33  joergr
  *  Added new option to dsr2xml allowing to specify whether value and/or
  *  relationship type are to be encoded as XML attributes or elements.
  *

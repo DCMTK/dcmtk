@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-02-02 14:41:51 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2001-02-13 16:34:09 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1190,7 +1190,8 @@ const OFString &DSRTypes::convertToPrintString(const OFString &sourceString,
 const OFString &DSRTypes::convertToMarkupString(const OFString &sourceString,
                                                 OFString &markupString,
                                                 const OFBool convertNonASCII,
-                                                const OFBool newlineAllowed)
+                                                const OFBool newlineAllowed,
+                                                const OFBool xmlMode)
 {
     /* char ptr allows fastest access to the string */
     const char *str = sourceString.c_str();
@@ -1218,10 +1219,16 @@ const OFString &DSRTypes::convertToMarkupString(const OFString &sourceString,
             /* skip next character if it belongs to the newline sequence */
             if (((*str == '\012') && (*(str + 1) == '\015')) || ((*str == '\015') && (*(str + 1) == '\012')))
                 str++;
-            if (newlineAllowed)
-                markupString += "<br>\n";
-            else
-                markupString += "&para;";
+            if (xmlMode)
+            {
+                /* "<br>" and "&param;" not defined in XML - requires DTD definition */
+                markupString += "&#182;";
+            } else {
+                if (newlineAllowed)
+                    markupString += "<br>\n";
+                else
+                    markupString += "&para;";
+            }
         }
         else {
             /* other character: ... */
@@ -1426,7 +1433,9 @@ OFBool DSRTypes::writeStringValueToXML(ostream &stream,
     if ((stringValue.length() > 0) || writeEmptyValue)
     {
         OFString string;
-        stream << "<" << tagName << ">" << convertToMarkupString(stringValue, string) << "</" << tagName << ">" << endl;
+        stream << "<" << tagName << ">";
+        stream << convertToMarkupString(stringValue, string, OFFalse /* convertNonASCII */, OFFalse /* newlineAllowed */, OFTrue /* xmlMode */);
+        stream << "</" << tagName << ">" << endl;
         result = OFTrue;
     }
     return result;
@@ -1519,7 +1528,10 @@ E_Condition DSRTypes::appendStream(ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
- *  Revision 1.15  2001-02-02 14:41:51  joergr
+ *  Revision 1.16  2001-02-13 16:34:09  joergr
+ *  Allow newline characters (encoded as &#182;) in XML documents.
+ *
+ *  Revision 1.15  2001/02/02 14:41:51  joergr
  *  Added new option to dsr2xml allowing to specify whether value and/or
  *  relationship type are to be encoded as XML attributes or elements.
  *
