@@ -10,7 +10,7 @@
  * 
  * 
  * Last Update:	  $Author: andreas $
- * Revision:      $Revision: 1.5 $
+ * Revision:      $Revision: 1.6 $
  * Status:        $State: Exp $
  *
  */
@@ -70,13 +70,22 @@ DcmStack::DcmStack()
 // ************************************************
 
 
-DcmStack::DcmStack( const DcmStack & /*newStack*/ )
+DcmStack::DcmStack( const DcmStack & oldStack)
 {
     topNode = (DcmStackNode*)NULL;
-    cardinality = 0;
-    cerr << "Warning: DcmStack: use of Copy-Constructor not allowed"
-         << endl;
-    abort();
+    cardinality = oldStack.cardinality;
+    if (cardinality)
+    {
+	topNode = new DcmStackNode(oldStack.topNode->objNodeValue);
+	DcmStackNode * oldPtr = oldStack.topNode->link;
+	DcmStackNode * newPtr = topNode;
+	while (oldPtr)
+	{
+	    newPtr->link = new DcmStackNode(oldPtr->objNodeValue);
+	    oldPtr = oldPtr->link;
+	    newPtr = newPtr->link;
+	}
+    }
 }
 
 
@@ -187,9 +196,9 @@ const unsigned long DcmStack::card()
 // ********************************
 
 
-BOOL DcmStack::empty()
+OFBool DcmStack::empty()
 {
-    return (BOOL)( topNode == (DcmStackNode*)NULL );
+    return (OFBool)( topNode == (DcmStackNode*)NULL );
 }
 
 
