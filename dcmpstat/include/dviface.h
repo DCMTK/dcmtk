@@ -23,8 +23,8 @@
  *    classes: DVInterface
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-22 14:20:20 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Update Date:      $Date: 1999-02-24 20:17:48 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -114,13 +114,14 @@ class DVInterface
     E_Condition loadPState(const char *studyUID, const char *seriesUID, const char *instanceUID);
 
     /** loads a presentation state and an image (which need not be contained in the database)
-     *  and attaches the image to the presentation state.
+     *  and attaches the image to the presentation state (if specified, otherwise the current
+     *  image will be used).
      *  This method does not acquire a database lock.
      *  @param pstName path and filename of the presentation state to be loaded
      *  @param imgName path and filename of the image to be loaded
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition loadPState(const char *pstName, const char *imgName);
+    E_Condition loadPState(const char *pstName, const char *imgName = NULL);
     
     /** saves the current presentation state in the same directory
      *  in which the database index file resides. The filename is generated automatically.
@@ -169,7 +170,7 @@ class DVInterface
      *  @return EC_Normal upon success, an error code otherwise.
      */
     E_Condition resetPresentationState();
-      
+
     /** removes any shared or exclusive lock on the database.
      *  This method should be called when a database transaction
      *  (i.e. reading all studies, series, instances etc.) is finished.
@@ -877,6 +878,27 @@ class DVInterface
      */
     E_Condition enablePresentationState();
     
+    /** returns number of presentation states referencing the currently selected image.
+     *  If no instance is currently selected or the selected instance is a presentation
+     *  state, returns an error.
+     *  @return number of presentation states, 0 if none available or an error occurred
+     */
+    Uint32 getNumberOfPStates();
+
+    /** selects and loads specified presentation state referencing the currently selected
+     *  image.
+     *  @param idx index to be selected, must be < getNumberOfPStates()
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    E_Condition selectPState(Uint32 idx);
+
+    /** returns description of specified presentation state  referencing the currently
+     *  selected image.
+     *  @param idx index to be selected, must be < getNumberOfPStates()
+     *  @return presentation state description or NULL idx is invalid
+     */
+    const char *getPStateDescription(Uint32 idx);
+
 private:
 
     /** private undefined copy constructor
@@ -1026,6 +1048,10 @@ private:
      */
     OFBool createIndexCache();
 
+    /** creates cache of referencing pstates for the current image
+     */
+    OFBool createPStateCache();
+
     /** clears index cache
      */
     void clearIndexCache();
@@ -1045,16 +1071,22 @@ private:
      */
     void updateStatusCache();
     
-    /** returns pointer to study struct specified by given UIDs
+    /** returns pointer to study struct specified by given UIDs or to current study
      */
-    DVStudyCache::ItemStruct *getStudyStruct(const char *studyUID,
+    DVStudyCache::ItemStruct *getStudyStruct(const char *studyUID = NULL,
                                              const char *seriesUID = NULL);
 
-    /** returns pointer to series struct specified by given UIDs
+    /** returns pointer to series struct specified by given UIDs or to current series
      */
-    DVSeriesCache::ItemStruct *getSeriesStruct(const char *studyUID,
-                                               const char *seriesUID,
+    DVSeriesCache::ItemStruct *getSeriesStruct(const char *studyUID = NULL,
+                                               const char *seriesUID = NULL,
                                                const char *instanceUID = NULL);
+
+    /** returns pointer to instance struct specified by given UIDs or to current instance
+     */
+    DVInstanceCache::ItemStruct *getInstanceStruct(const char *studyUID = NULL,
+                                                   const char *seriesUID = NULL,
+                                                   const char *instanceUID = NULL);
 
     /** returns index of specified study within study description record
      */
@@ -1077,7 +1109,13 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.29  1999-02-22 14:20:20  joergr
+ *  Revision 1.30  1999-02-24 20:17:48  joergr
+ *  Added methods to get a list of presentation states referencing the
+ *  currently selected image.
+ *  Added support for exchanging current presentation state (load from file)
+ *  without deleting the current image.
+ *
+ *  Revision 1.29  1999/02/22 14:20:20  joergr
  *  Added deletion of image files (depending on directory where the file is
  *  stored).
  *  Modified comments for getGUIConfig... methods to indicate that the
