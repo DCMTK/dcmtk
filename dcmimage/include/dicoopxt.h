@@ -22,8 +22,8 @@
  *  Purpose: DicomColorOutputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-23 11:36:24 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Update Date:      $Date: 2003-12-23 16:06:21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -185,7 +185,7 @@ class DiColorOutputPixelTemplate
             register unsigned long i;
             register int j;
             for (i = FrameSize; i != 0; --i)
-                for (j = 3; j != 0; j--)
+                for (j = 3; j != 0; --j)
                     stream << OFstatic_cast(unsigned long, *(p++)) << " ";     // typecast to resolve problems with 'char'
             return 1;
         }
@@ -206,7 +206,7 @@ class DiColorOutputPixelTemplate
             register unsigned long i;
             register int j;
             for (i = FrameSize; i != 0; --i)
-                for (j = 3; j != 0; j--)
+                for (j = 3; j != 0; --j)
                     fprintf(stream, "%lu ", OFstatic_cast(unsigned long, *(p++)));
             return 1;
         }
@@ -252,7 +252,7 @@ class DiColorOutputPixelTemplate
                     register const T1 *p;
                     if (bits1 == bits2)
                     {
-                        for (int j = 0; j < 3; j++)
+                        for (int j = 0; j < 3; ++j)
                         {
                             p = pixel[j] + start;
                             /* invert output data */
@@ -276,7 +276,7 @@ class DiColorOutputPixelTemplate
                         const double gradient1 = OFstatic_cast(double, DicomImageClass::maxval(bits2)) /
                                                  OFstatic_cast(double, DicomImageClass::maxval(bits1));
                         const T2 gradient2 = OFstatic_cast(T2, gradient1);
-                        for (int j = 0; j < 3; j++)
+                        for (int j = 0; j < 3; ++j)
                         {
                             p = pixel[j] + start;
                             if (gradient1 == OFstatic_cast(double, gradient2))  // integer multiplication?
@@ -311,7 +311,7 @@ class DiColorOutputPixelTemplate
                     else /* bits1 > bits2 */
                     {
                         const int shift = bits1 - bits2;
-                        for (int j = 0; j < 3; j++)
+                        for (int j = 0; j < 3; ++j)
                         {
                             p = pixel[j] + start;
                             /* invert output data */
@@ -340,11 +340,11 @@ class DiColorOutputPixelTemplate
                         if (inverse)
                         {
                             for (i = start; i < start + Count; ++i)
-                                for (j = 0; j < 3; j++)                         // copy inverted data
+                                for (j = 0; j < 3; ++j)                         // copy inverted data
                                     *(q++) = max2 - OFstatic_cast(T2, pixel[j][i]);
                         } else {
                             for (i = start; i < start + Count; ++i)
-                                for (j = 0; j < 3; j++)                         // copy
+                                for (j = 0; j < 3; ++j)                         // copy
                                     *(q++) = OFstatic_cast(T2, pixel[j][i]);
                         }
                     }
@@ -359,11 +359,11 @@ class DiColorOutputPixelTemplate
                             if (inverse)
                             {
                                 for (i = start; i < start + Count; ++i)                 // expand depth & invert
-                                    for (j = 0; j < 3; j++)
+                                    for (j = 0; j < 3; ++j)
                                         *(q++) = max2 - OFstatic_cast(T2, pixel[j][i]) * gradient2;
                             } else {
                                 for (i = start; i < start + Count; ++i)
-                                    for (j = 0; j < 3; j++)                             // expand depth
+                                    for (j = 0; j < 3; ++j)                             // expand depth
                                         *(q++) = OFstatic_cast(T2, pixel[j][i]) * gradient2;
                             }
                         } else {
@@ -371,11 +371,11 @@ class DiColorOutputPixelTemplate
                             if (inverse)
                             {
                                 for (i = start; i < start + Count; ++i)
-                                    for (j = 0; j < 3; j++)                             // expand depth & invert
+                                    for (j = 0; j < 3; ++j)                             // expand depth & invert
                                         *(q++) = max2 - OFstatic_cast(T2, OFstatic_cast(double, pixel[j][i]) * gradient1);
                             } else {
                                 for (i = start; i < start + Count; ++i)
-                                    for (j = 0; j < 3; j++)                             // expand depth
+                                    for (j = 0; j < 3; ++j)                             // expand depth
                                         *(q++) = OFstatic_cast(T2, OFstatic_cast(double, pixel[j][i]) * gradient1);
                             }
                         }
@@ -387,11 +387,11 @@ class DiColorOutputPixelTemplate
                         if (inverse)
                         {
                             for (i = start; i < start + Count; ++i)
-                                for (j = 0; j < 3; j++)                                 // reduce depth & invert
+                                for (j = 0; j < 3; ++j)                                 // reduce depth & invert
                                     *(q++) = max2 - OFstatic_cast(T2, pixel[j][i] >> shift);
                         } else {
                             for (i = start; i < start + Count; ++i)
-                                for (j = 0; j < 3; j++)                                 // reduce depth
+                                for (j = 0; j < 3; ++j)                                 // reduce depth
                                     *(q++) = OFstatic_cast(T2, pixel[j][i] >> shift);
                         }
                     }
@@ -422,7 +422,11 @@ class DiColorOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dicoopxt.h,v $
- * Revision 1.21  2003-12-23 11:36:24  joergr
+ * Revision 1.22  2003-12-23 16:06:21  joergr
+ * Replaced additional post-increment/decrement operators by pre-increment/
+ * decrement operators.
+ *
+ * Revision 1.21  2003/12/23 11:36:24  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  * Removed leading underscore characters from preprocessor symbols (reserved
  * symbols). Updated copyright header.

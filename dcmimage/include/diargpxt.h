@@ -22,8 +22,8 @@
  *  Purpose: DicomARGBPixelTemplate (Header) - UNTESTED !!!
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-23 12:38:51 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2003-12-23 16:06:21 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -123,7 +123,7 @@ class DiARGBPixelTemplate
                                 Data[j][i] = OFstatic_cast(T3, palette[j]->getLastValue());
                             else
                                 Data[j][i] = OFstatic_cast(T3, palette[j]->getValue(value));
-                            rgb[j]++;                                           // skip RGB values
+                            ++rgb[j];                                           // skip RGB values
                         }
                     }
                     else
@@ -156,7 +156,7 @@ class DiARGBPixelTemplate
                                     Data[j][i] = OFstatic_cast(T3, palette[j]->getLastValue());
                                 else
                                     Data[j][i] = OFstatic_cast(T3, palette[j]->getValue(value));
-                                rgb[j]++;                                           // skip RGB values
+                                ++rgb[j];                                           // skip RGB values
                             }
                         }
                         else
@@ -208,7 +208,11 @@ class DiARGBPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diargpxt.h,v $
- * Revision 1.17  2003-12-23 12:38:51  joergr
+ * Revision 1.18  2003-12-23 16:06:21  joergr
+ * Replaced additional post-increment/decrement operators by pre-increment/
+ * decrement operators.
+ *
+ * Revision 1.17  2003/12/23 12:38:51  joergr
  * Replaced post-increment/decrement operators by pre-increment/decrement
  * operators where appropriate (e.g. 'i++' by '++i').
  *

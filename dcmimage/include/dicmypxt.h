@@ -22,8 +22,8 @@
  *  Purpose: DicomCMYKPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-23 12:38:51 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2003-12-23 16:06:21 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -145,7 +145,7 @@ class DiCMYKPixelTemplate
                     k = *(p + 3);
                     for (j = 0; j < 3; ++j)
                         Data[j][i] = maxvalue - removeSign(*(p++), offset) - removeSign(k, offset);
-                    p++;                                            // skip 'black'
+                    ++p;                                            // skip 'black'
                 }
             }
         }
@@ -160,7 +160,11 @@ class DiCMYKPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dicmypxt.h,v $
- * Revision 1.16  2003-12-23 12:38:51  joergr
+ * Revision 1.17  2003-12-23 16:06:21  joergr
+ * Replaced additional post-increment/decrement operators by pre-increment/
+ * decrement operators.
+ *
+ * Revision 1.16  2003/12/23 12:38:51  joergr
  * Replaced post-increment/decrement operators by pre-increment/decrement
  * operators where appropriate (e.g. 'i++' by '++i').
  *
