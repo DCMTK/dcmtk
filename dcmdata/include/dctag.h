@@ -22,9 +22,9 @@
  *  Purpose: Definition of the class DcmTag
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-30 13:12:12 $
+ *  Update Date:      $Date: 2002-05-24 09:49:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dctag.h,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -97,18 +97,18 @@ public:
     // --- static helper functions ---
 
     /** convert the given string to a DICOM tag value
-     *  @param tagName name or tag of the attribute to be searched for.
+     *  @param name name or tag of the attribute to be searched for.
      *    If the name of the attribute is given the spelling has to be consistent
      *    with the spelling used in the data dictionary (e.g. "PatientsName").
      *    If the tag values are used the format is "gggg,eeee" (i.e. two hexa-
      *    decimal numbers separated by a comma).
-     *  @param tagValue variable in which the resulting tag value is stored.
+     *  @param value variable in which the resulting tag value is stored.
      *    If this functions fails to find the specified tag, this variable
      *    remains unchanged.
      *  @return status, EC_Normal upon success, an error code otherwise
      */
-    static OFCondition findTagFromName(const char *tagName,
-                                       DcmTag &tagValue);
+    static OFCondition findTagFromName(const char *name,
+                                       DcmTag &value);
 };
 
 
@@ -124,7 +124,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dctag.h,v $
-** Revision 1.17  2002-04-30 13:12:12  joergr
+** Revision 1.18  2002-05-24 09:49:13  joergr
+** Renamed some parameters/variables to avoid ambiguities.
+**
+** Revision 1.17  2002/04/30 13:12:12  joergr
 ** Added static helper function to convert strings (tag names or group/element
 ** numbers) to DICOM tag objects.
 **

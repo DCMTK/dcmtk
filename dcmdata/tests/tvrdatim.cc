@@ -22,9 +22,9 @@
  *  Purpose: test program for classes DcmDate, DcmTime and DcmDateTime
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:46:10 $
+ *  Update Date:      $Date: 2002-05-24 09:50:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/tests/tvrdatim.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,8 +44,8 @@
 int main()
 {
     double timeZone;
-    OFDate date;
-    OFTime time;
+    OFDate dateVal;
+    OFTime timeVal;
     OFDateTime dateTime;
     OFString string;
     DcmDate dcmDate(DCM_StudyDate);
@@ -54,42 +54,42 @@ int main()
     
     dcmDate.setCurrentDate();
     dcmDate.print(COUT);
-    if (dcmDate.getOFDate(date).good())
-        COUT << "current date: " << date << endl;
+    if (dcmDate.getOFDate(dateVal).good())
+        COUT << "current date: " << dateVal << endl;
     else
         COUT << "current date: <invalid>" << endl;
     
     dcmTime.setCurrentTime();
     dcmTime.print(COUT);
-    if (dcmTime.getOFTime(time).good())
-        COUT << "current time: " << time << endl;
+    if (dcmTime.getOFTime(timeVal).good())
+        COUT << "current time: " << timeVal << endl;
     else
         COUT << "current time: <invalid>" << endl;
 
     dcmTime.putString("12");
     dcmTime.print(COUT);
-    if (dcmTime.getOFTime(time).good())
-        COUT << "valid time: " << time << endl;
+    if (dcmTime.getOFTime(timeVal).good())
+        COUT << "valid time: " << timeVal << endl;
     dcmTime.putString("1203");
     dcmTime.print(COUT);
-    if (dcmTime.getOFTime(time).good())
-        COUT << "valid time: " << time << endl;
+    if (dcmTime.getOFTime(timeVal).good())
+        COUT << "valid time: " << timeVal << endl;
     dcmTime.putString("120315");
     dcmTime.print(COUT);
-    if (dcmTime.getOFTime(time).good())
-        COUT << "valid time: " << time << endl;
+    if (dcmTime.getOFTime(timeVal).good())
+        COUT << "valid time: " << timeVal << endl;
     dcmTime.putString("120301.99");
     dcmTime.print(COUT);
-    if (dcmTime.getOFTime(time).good())
+    if (dcmTime.getOFTime(timeVal).good())
     {
-        time.getISOFormattedTime(string, OFTrue /*seconds*/, OFTrue /*fraction*/, OFTrue /*timeZone*/);        
+        timeVal.getISOFormattedTime(string, OFTrue /*seconds*/, OFTrue /*fraction*/, OFTrue /*timeZone*/);        
         COUT << "valid local time: " << string << endl;
     }
 
     dcmTime.putString("12:03:15");
     dcmTime.print(COUT);
-    if (dcmTime.getOFTime(time).good())
-        COUT << "valid time: " << time << endl;
+    if (dcmTime.getOFTime(timeVal).good())
+        COUT << "valid time: " << timeVal << endl;
 
     if (DcmTime::getTimeZoneFromString("+1130", timeZone).good())
         COUT << "time zone: " << timeZone << endl;
@@ -123,7 +123,10 @@ int main()
  *
  * CVS/RCS Log:
  * $Log: tvrdatim.cc,v $
- * Revision 1.2  2002-04-16 13:46:10  joergr
+ * Revision 1.3  2002-05-24 09:50:13  joergr
+ * Renamed some parameters/variables to avoid ambiguities.
+ *
+ * Revision 1.2  2002/04/16 13:46:10  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
  * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
  * contribution.

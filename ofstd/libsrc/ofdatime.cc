@@ -22,9 +22,9 @@
  *  Purpose: Class for date and time functions (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-11 12:14:33 $
+ *  Update Date:      $Date: 2002-05-24 09:44:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofdatime.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -64,10 +64,10 @@ OFDateTime::OFDateTime(const OFDateTime &dateTime)
 }
 
 
-OFDateTime::OFDateTime(const OFDate &date,
-                      const OFTime &time)
-  : Date(date),
-    Time(time)
+OFDateTime::OFDateTime(const OFDate &dateVal,
+                      const OFTime &timeVal)
+  : Date(dateVal),
+    Time(timeVal)
 {
 }
 
@@ -127,26 +127,26 @@ OFBool OFDateTime::setDateTime(const unsigned int year,
 }
 
 
-OFBool OFDateTime::setDate(const OFDate &date)
+OFBool OFDateTime::setDate(const OFDate &dateVal)
 {
     OFBool result = OFFalse;
     /* check whether new date is valid */
-    if (date.isValid())
+    if (dateVal.isValid())
     {
-       Date = date;
+       Date = dateVal;
        result = OFTrue;
     }
     return result;
 }
 
 
-OFBool OFDateTime::setTime(const OFTime &time)
+OFBool OFDateTime::setTime(const OFTime &timeVal)
 {
     OFBool result = OFFalse;
     /* check whether new time is valid */
-    if (time.isValid())
+    if (timeVal.isValid())
     {
-       Time = time;
+       Time = timeVal;
        result = OFTrue;
     }
     return result;
@@ -224,7 +224,10 @@ ostream& operator<<(ostream& stream, const OFDateTime &dateTime)
  *
  * CVS/RCS Log:
  * $Log: ofdatime.cc,v $
- * Revision 1.1  2002-04-11 12:14:33  joergr
+ * Revision 1.2  2002-05-24 09:44:26  joergr
+ * Renamed some parameters/variables to avoid ambiguities.
+ *
+ * Revision 1.1  2002/04/11 12:14:33  joergr
  * Introduced new standard classes providing date and time functions.
  *
  *

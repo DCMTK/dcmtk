@@ -22,9 +22,9 @@
  *  Purpose: test program for classes OFDate, OFTime and OFDateTime
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-19 10:42:58 $
+ *  Update Date:      $Date: 2002-05-24 09:45:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/tests/tofdatim.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,73 +42,73 @@
 
 int main()
 {
-    OFDate date, date2;
-    OFTime time, time2;
+    OFDate date1, date2;
+    OFTime time1, time2;
     OFDateTime dateTime;
     OFString string;
 
-    COUT << "init date: " << date << endl;
-    date.setCurrentDate();
-    COUT << "current date: " << date << endl;
-    date.setDate(1972, 5, 17);
-    COUT << "birth date: " << date << endl;
-    if (!date.setDate(2000, 13, 1))
+    COUT << "init date: " << date1 << endl;
+    date1.setCurrentDate();
+    COUT << "current date: " << date1 << endl;
+    date1.setDate(1972, 5, 17);
+    COUT << "birth date: " << date1 << endl;
+    if (!date1.setDate(2000, 13, 1))
         COUT << "invalid date" << endl;
     else
-        COUT << "valid date:" << date << endl;
-    date.setCurrentDate();
-    date.getISOFormattedDate(string, OFFalse /*delimiter*/);
+        COUT << "valid date:" << date1 << endl;
+    date1.setCurrentDate();
+    date1.getISOFormattedDate(string, OFFalse /*delimiter*/);
     COUT << "current date: " << string << endl;
     
-    COUT << "init time: " << time << endl;
-    time.setCurrentTime();
-    COUT << "current time: " << time << endl;
-    time.setTime(0, 50, 01);
-    COUT << "birth date: " << time << endl;
-    if (!time.setTime(24, 00, 00))
+    COUT << "init time: " << time1 << endl;
+    time1.setCurrentTime();
+    COUT << "current time: " << time1 << endl;
+    time1.setTime(0, 50, 01);
+    COUT << "birth date: " << time1 << endl;
+    if (!time1.setTime(24, 00, 00))
         COUT << "invalid time" << endl;
     else
-        COUT << "valid time:" << time << endl;
-    time.setTime(0, 50, 01.99);
-    time.getISOFormattedTime(string, OFFalse /*seconds*/);
+        COUT << "valid time:" << time1 << endl;
+    time1.setTime(0, 50, 01.99);
+    time1.getISOFormattedTime(string, OFFalse /*seconds*/);
     COUT << "current time: " << string << endl;
-    time.getISOFormattedTime(string, OFTrue /*seconds*/, OFTrue /*fraction*/);
+    time1.getISOFormattedTime(string, OFTrue /*seconds*/, OFTrue /*fraction*/);
     COUT << "current time: " << string << endl;
-    time.getISOFormattedTime(string, OFTrue /*seconds*/, OFTrue /*fraction*/, OFFalse /*timeZone*/, OFFalse /*delimiter*/);
+    time1.getISOFormattedTime(string, OFTrue /*seconds*/, OFTrue /*fraction*/, OFFalse /*timeZone*/, OFFalse /*delimiter*/);
     COUT << "current time: " << string << endl;
 
-    date2 = date;
+    date2 = date1;
     date2.setDay(date2.getDay() + 1);
-    COUT << "compare date: " << date << " > " << date2 << " = " << (date > date2) << endl;
-    time2 = time;
+    COUT << "compare date: " << date1 << " > " << date2 << " = " << (date1 > date2) << endl;
+    time2 = time1;
     time2.setMinute(time2.getMinute() + 1);
-    COUT << "compare time: " << time << " < " << time2 << " = " << (time < time2) << endl;
+    COUT << "compare time: " << time1 << " < " << time2 << " = " << (time1 < time2) << endl;
     
     COUT << "current date/time: " << OFDate::getCurrentDate() << " " << OFTime::getCurrentTime() << endl;
     
-    time.getISOFormattedTime(string, OFTrue /*seconds*/, OFTrue /*fraction*/, OFTrue /*timeZone*/, OFFalse /*delimiter*/);
+    time1.getISOFormattedTime(string, OFTrue /*seconds*/, OFTrue /*fraction*/, OFTrue /*timeZone*/, OFFalse /*delimiter*/);
     COUT << "time zone: " << string << endl;    
-    time.setCurrentTime();
-    time.getISOFormattedTime(string, OFTrue /*seconds*/, OFFalse /*fraction*/, OFTrue /*timeZone*/, OFTrue /*delimiter*/);
+    time1.setCurrentTime();
+    time1.getISOFormattedTime(string, OFTrue /*seconds*/, OFFalse /*fraction*/, OFTrue /*timeZone*/, OFTrue /*delimiter*/);
     COUT << "current time: " << string << endl;    
-    time.setTimeZone(-11, 30);
-    time.getISOFormattedTime(string, OFTrue /*seconds*/, OFFalse /*fraction*/, OFTrue /*timeZone*/, OFTrue /*delimiter*/);
+    time1.setTimeZone(-11, 30);
+    time1.getISOFormattedTime(string, OFTrue /*seconds*/, OFFalse /*fraction*/, OFTrue /*timeZone*/, OFTrue /*delimiter*/);
     COUT << "new time zone: " << string << endl;    
-    COUT << "UTC time: " << time.getCoordinatedUniversalTime() << endl;    
-    COUT << "local time: " << time.getLocalTime() << endl;    
-    time.setTimeZone(OFTime::getLocalTimeZone());
-    time.getISOFormattedTime(string, OFTrue /*seconds*/, OFFalse /*fraction*/, OFTrue /*timeZone*/, OFTrue /*delimiter*/);
+    COUT << "UTC time: " << time1.getCoordinatedUniversalTime() << endl;    
+    COUT << "local time: " << time1.getLocalTime() << endl;    
+    time1.setTimeZone(OFTime::getLocalTimeZone());
+    time1.getISOFormattedTime(string, OFTrue /*seconds*/, OFFalse /*fraction*/, OFTrue /*timeZone*/, OFTrue /*delimiter*/);
     COUT << "new time zone: " << string << endl;    
-    COUT << "UTC time: " << time.getCoordinatedUniversalTime() << endl;    
-    COUT << "local time: " << time.getLocalTime() << endl;    
+    COUT << "UTC time: " << time1.getCoordinatedUniversalTime() << endl;    
+    COUT << "local time: " << time1.getLocalTime() << endl;    
     
     COUT << "current date/time with time zone: " << OFDate::getCurrentDate() << " " << OFTime::getCurrentTime().getCoordinatedUniversalTime() << endl;
     
-    time.setTimeInSeconds(12 * 3600 + 15 * 60 + 45.99);
-    time.getISOFormattedTime(string, OFTrue /*seconds*/, OFTrue /*fraction*/);
+    time1.setTimeInSeconds(12 * 3600 + 15 * 60 + 45.99);
+    time1.getISOFormattedTime(string, OFTrue /*seconds*/, OFTrue /*fraction*/);
     COUT << "time in seconds: " << string << endl;    
-    time.getISOFormattedTime(string, OFTrue /*seconds*/, OFTrue /*fraction*/);
-    time.setTimeInHours(12 + 15 / 60 + 45.99 / 3600);
+    time1.getISOFormattedTime(string, OFTrue /*seconds*/, OFTrue /*fraction*/);
+    time1.setTimeInHours(12 + 15 / 60 + 45.99 / 3600);
     COUT << "time in hours: " << string << endl;    
 
     dateTime.setCurrentDateTime();
@@ -128,7 +128,10 @@ int main()
  *
  * CVS/RCS Log:
  * $Log: tofdatim.cc,v $
- * Revision 1.3  2002-04-19 10:42:58  joergr
+ * Revision 1.4  2002-05-24 09:45:13  joergr
+ * Renamed some parameters/variables to avoid ambiguities.
+ *
+ * Revision 1.3  2002/04/19 10:42:58  joergr
  * Added new helper routines to get the milli and micro seconds part as well as
  * the integral value of seconds.
  *

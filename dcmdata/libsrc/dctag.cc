@@ -22,9 +22,9 @@
  *  Purpose: class DcmTag
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-30 13:12:58 $
+ *  Update Date:      $Date: 2002-05-24 09:49:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dctag.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -228,28 +228,28 @@ OFBool DcmTag::isUnknownVR() const
 }
 
 
-OFCondition DcmTag::findTagFromName(const char *tagName,
-                                    DcmTag &tagValue)
+OFCondition DcmTag::findTagFromName(const char *name,
+                                    DcmTag &value)
 {
     OFCondition result = EC_IllegalParameter;
     /* check parameters first */
-    if ((tagName != NULL) && (strlen(tagName) > 0))
+    if ((name != NULL) && (strlen(name) > 0))
     {
         result = EC_Normal;
-        unsigned int group = 0xffff;
-        unsigned int elem = 0xffff;
+        unsigned int grp = 0xffff;
+        unsigned int elm = 0xffff;
         /* check whether tag name has format 'xxxx,xxxx' */
-        if (sscanf(tagName, "%x,%x", &group, &elem) == 2)
+        if (sscanf(name, "%x,%x", &grp, &elm) == 2)
         {
             /* store resulting tag value */
-            tagValue.set(group, elem);
+            value.set(grp, elm);
         } else {
             /* it is a name: look up in the dictionary */
             const DcmDataDictionary &globalDataDict = dcmDataDict.rdlock();
-            const DcmDictEntry *dicent = globalDataDict.findEntry(tagName);
+            const DcmDictEntry *dicent = globalDataDict.findEntry(name);
             /* store resulting tag value */
             if (dicent != NULL)
-                tagValue.set(dicent->getKey());
+                value.set(dicent->getKey());
             else
                 result = EC_TagNotFound;
             dcmDataDict.unlock();
@@ -262,7 +262,10 @@ OFCondition DcmTag::findTagFromName(const char *tagName,
 /*
 ** CVS/RCS Log:
 ** $Log: dctag.cc,v $
-** Revision 1.15  2002-04-30 13:12:58  joergr
+** Revision 1.16  2002-05-24 09:49:44  joergr
+** Renamed some parameters/variables to avoid ambiguities.
+**
+** Revision 1.15  2002/04/30 13:12:58  joergr
 ** Added static helper function to convert strings (tag names or group/element
 ** numbers) to DICOM tag objects.
 **

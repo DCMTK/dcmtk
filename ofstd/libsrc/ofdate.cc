@@ -22,9 +22,9 @@
  *  Purpose: Class for date functions (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-15 09:40:47 $
+ *  Update Date:      $Date: 2002-05-24 09:44:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofdate.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,10 +56,10 @@ OFDate::OFDate()
 }
 
 
-OFDate::OFDate(const OFDate &date)
-  : Year(date.Year),
-    Month(date.Month),
-    Day(date.Day)
+OFDate::OFDate(const OFDate &dateVal)
+  : Year(dateVal.Year),
+    Month(dateVal.Month),
+    Day(dateVal.Day)
 {
 }
 
@@ -79,48 +79,48 @@ OFDate::~OFDate()
 }
 
 
-OFDate &OFDate::operator=(const OFDate &date)
+OFDate &OFDate::operator=(const OFDate &dateVal)
 {
-    Year = date.Year;
-    Month = date.Month;
-    Day = date.Day;
+    Year = dateVal.Year;
+    Month = dateVal.Month;
+    Day = dateVal.Day;
     return *this;
 }
 
 
-OFBool OFDate::operator==(const OFDate &date)
+OFBool OFDate::operator==(const OFDate &dateVal)
 {
-    return (Year == date.Year) && (Month == date.Month) && (Day == date.Day);
+    return (Year == dateVal.Year) && (Month == dateVal.Month) && (Day == dateVal.Day);
 }
 
 
-OFBool OFDate::operator!=(const OFDate &date)
+OFBool OFDate::operator!=(const OFDate &dateVal)
 {
-    return (Year != date.Year) || (Month != date.Month) || (Day != date.Day);
+    return (Year != dateVal.Year) || (Month != dateVal.Month) || (Day != dateVal.Day);
 }
 
 
-OFBool OFDate::operator<(const OFDate &date)
+OFBool OFDate::operator<(const OFDate &dateVal)
 {
-    return (Year < date.Year) || ((Year == date.Year) && ((Month < date.Month) || ((Month == date.Month) && (Day < date.Day))));
+    return (Year < dateVal.Year) || ((Year == dateVal.Year) && ((Month < dateVal.Month) || ((Month == dateVal.Month) && (Day < dateVal.Day))));
 }
 
 
-OFBool OFDate::operator<=(const OFDate &date)
+OFBool OFDate::operator<=(const OFDate &dateVal)
 {
-    return (Year < date.Year) || ((Year == date.Year) && ((Month < date.Month) || ((Month == date.Month) && (Day <= date.Day))));
+    return (Year < dateVal.Year) || ((Year == dateVal.Year) && ((Month < dateVal.Month) || ((Month == dateVal.Month) && (Day <= dateVal.Day))));
 }
 
 
-OFBool OFDate::operator>=(const OFDate &date)
+OFBool OFDate::operator>=(const OFDate &dateVal)
 {
-    return (Year > date.Year) || ((Year == date.Year) && ((Month > date.Month) || ((Month == date.Month) && (Day >= date.Day))));
+    return (Year > dateVal.Year) || ((Year == dateVal.Year) && ((Month > dateVal.Month) || ((Month == dateVal.Month) && (Day >= dateVal.Day))));
 }
 
 
-OFBool OFDate::operator>(const OFDate &date)
+OFBool OFDate::operator>(const OFDate &dateVal)
 {
-    return (Year > date.Year) || ((Year == date.Year) && ((Month > date.Month) || ((Month == date.Month) && (Day > date.Day))));
+    return (Year > dateVal.Year) || ((Year == dateVal.Year) && ((Month > dateVal.Month) || ((Month == dateVal.Month) && (Day > dateVal.Day))));
 }
 
 
@@ -281,19 +281,19 @@ OFBool OFDate::getISOFormattedDate(OFString &formattedDate,
 OFDate OFDate::getCurrentDate()
 {
     /* create a date object with the current system date set */
-    OFDate date;
+    OFDate dateVal;
     /* this call might fail! */
-    date.setCurrentDate();
+    dateVal.setCurrentDate();
     /* return by-value */
-    return date;
+    return dateVal;
 }
 
 
-ostream& operator<<(ostream& stream, const OFDate &date)
+ostream& operator<<(ostream& stream, const OFDate &dateVal)
 {
     OFString string;
     /* print the given date in ISO format to the stream */
-    if (date.getISOFormattedDate(string))
+    if (dateVal.getISOFormattedDate(string))
         stream << string;
     return stream;
 }
@@ -303,7 +303,10 @@ ostream& operator<<(ostream& stream, const OFDate &date)
  *
  * CVS/RCS Log:
  * $Log: ofdate.cc,v $
- * Revision 1.2  2002-04-15 09:40:47  joergr
+ * Revision 1.3  2002-05-24 09:44:26  joergr
+ * Renamed some parameters/variables to avoid ambiguities.
+ *
+ * Revision 1.2  2002/04/15 09:40:47  joergr
  * Removed "include <sys/types.h>" from implementation file.
  *
  * Revision 1.1  2002/04/11 12:14:33  joergr

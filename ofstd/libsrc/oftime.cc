@@ -24,7 +24,7 @@
  *  Last Update:      $Author: joergr $
  *  Update Time:      $Time: $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/oftime.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -71,11 +71,11 @@ OFTime::OFTime()
 }
 
 
-OFTime::OFTime(const OFTime &time)
-  : Hour(time.Hour),
-    Minute(time.Minute),
-    Second(time.Second),
-    TimeZone(time.TimeZone)
+OFTime::OFTime(const OFTime &timeVal)
+  : Hour(timeVal.Hour),
+    Minute(timeVal.Minute),
+    Second(timeVal.Second),
+    TimeZone(timeVal.TimeZone)
 {
 }
 
@@ -97,49 +97,49 @@ OFTime::~OFTime()
 }
 
 
-OFTime &OFTime::operator=(const OFTime &time)
+OFTime &OFTime::operator=(const OFTime &timeVal)
 {
-    Hour = time.Hour;
-    Minute = time.Minute;
-    Second = time.Second;
-    TimeZone = time.TimeZone;
+    Hour = timeVal.Hour;
+    Minute = timeVal.Minute;
+    Second = timeVal.Second;
+    TimeZone = timeVal.TimeZone;
     return *this;
 }
 
 
-OFBool OFTime::operator==(const OFTime &time)
+OFBool OFTime::operator==(const OFTime &timeVal)
 {
-    return (getTimeInSeconds(OFTrue /*useTimeZone*/) == getTimeInSeconds(time.Hour, time.Minute, time.Second, time.TimeZone));
+    return (getTimeInSeconds(OFTrue /*useTimeZone*/) == timeVal.getTimeInSeconds(OFTrue /*useTimeZone*/));
 }
 
 
-OFBool OFTime::operator!=(const OFTime &time)
+OFBool OFTime::operator!=(const OFTime &timeVal)
 {
-    return (getTimeInSeconds(OFTrue /*useTimeZone*/) != getTimeInSeconds(time.Hour, time.Minute, time.Second, time.TimeZone));
+    return (getTimeInSeconds(OFTrue /*useTimeZone*/) != timeVal.getTimeInSeconds(OFTrue /*useTimeZone*/));
 }
 
 
-OFBool OFTime::operator<(const OFTime &time)
+OFBool OFTime::operator<(const OFTime &timeVal)
 {
-    return (getTimeInSeconds(OFTrue /*useTimeZone*/) < getTimeInSeconds(time.Hour, time.Minute, time.Second, time.TimeZone));
+    return (getTimeInSeconds(OFTrue /*useTimeZone*/) < timeVal.getTimeInSeconds(OFTrue /*useTimeZone*/));
 }
 
 
-OFBool OFTime::operator<=(const OFTime &time)
+OFBool OFTime::operator<=(const OFTime &timeVal)
 {
-    return (getTimeInSeconds(OFTrue /*useTimeZone*/) <= getTimeInSeconds(time.Hour, time.Minute, time.Second, time.TimeZone));
+    return (getTimeInSeconds(OFTrue /*useTimeZone*/) <= timeVal.getTimeInSeconds(OFTrue /*useTimeZone*/));
 }
 
 
-OFBool OFTime::operator>=(const OFTime &time)
+OFBool OFTime::operator>=(const OFTime &timeVal)
 {
-    return (getTimeInSeconds(OFTrue /*useTimeZone*/) >= getTimeInSeconds(time.Hour, time.Minute, time.Second, time.TimeZone));
+    return (getTimeInSeconds(OFTrue /*useTimeZone*/) >= timeVal.getTimeInSeconds(OFTrue /*useTimeZone*/));
 }
 
 
-OFBool OFTime::operator>(const OFTime &time)
+OFBool OFTime::operator>(const OFTime &timeVal)
 {
-    return (getTimeInSeconds(OFTrue /*useTimeZone*/) > getTimeInSeconds(time.Hour, time.Minute, time.Second, time.TimeZone));
+    return (getTimeInSeconds(OFTrue /*useTimeZone*/) > timeVal.getTimeInSeconds(OFTrue /*useTimeZone*/));
 }
 
 
@@ -443,29 +443,29 @@ double OFTime::getTimeInHours(const unsigned int hour,
 OFTime OFTime::getCoordinatedUniversalTime() const
 {
     /* create a new time object */
-    OFTime time;
+    OFTime timeVal;
     /* convert time to UTC */
-    time.setTimeInHours(getTimeInHours(OFTrue /*useTimeZone*/), 0 /*timeZone*/);
+    timeVal.setTimeInHours(getTimeInHours(OFTrue /*useTimeZone*/), 0 /*timeZone*/);
     /* return by-value */
-    return time;
+    return timeVal;
 }
 
 
 OFTime OFTime::getLocalTime() const
 {
     /* create a new time object */
-    OFTime time;
+    OFTime timeVal;
     const double localTimeZone = getLocalTimeZone();
     /* convert time to local time */
     if (TimeZone != localTimeZone)
-        time.setTimeInHours(getTimeInHours(OFTrue /*useTimeZone*/) + localTimeZone, localTimeZone);
+        timeVal.setTimeInHours(getTimeInHours(OFTrue /*useTimeZone*/) + localTimeZone, localTimeZone);
     else
     {
         /* same time zone, return currently stored time */
-        time = *this;
+        timeVal = *this;
     }
     /* return by-value */
-    return time;
+    return timeVal;
 }
 
 
@@ -529,11 +529,11 @@ OFBool OFTime::getISOFormattedTime(OFString &formattedTime,
 OFTime OFTime::getCurrentTime()
 {
     /* create a time object with the current system time set */
-    OFTime time;
+    OFTime timeVal;
     /* this call might fail! */
-    time.setCurrentTime();
+    timeVal.setCurrentTime();
     /* return by-value */
-    return time;
+    return timeVal;
 }
 
 
@@ -541,18 +541,18 @@ double OFTime::getLocalTimeZone()
 {
     double result = 0;
     /* determine local time zone */
-    OFTime time;
-    if (time.setCurrentTime())
-        result = time.getTimeZone();
+    OFTime timeVal;
+    if (timeVal.setCurrentTime())
+        result = timeVal.getTimeZone();
     return result;
 }
 
 
-ostream& operator<<(ostream& stream, const OFTime &time)
+ostream& operator<<(ostream& stream, const OFTime &timeVal)
 {
     OFString string;
     /* print the given time in ISO format to the stream */
-    if (time.getISOFormattedTime(string))
+    if (timeVal.getISOFormattedTime(string))
         stream << string;
     return stream;
 }
@@ -562,7 +562,10 @@ ostream& operator<<(ostream& stream, const OFTime &time)
  *
  * CVS/RCS Log:
  * $Log: oftime.cc,v $
- * Revision 1.3  2002-04-19 10:42:55  joergr
+ * Revision 1.4  2002-05-24 09:44:27  joergr
+ * Renamed some parameters/variables to avoid ambiguities.
+ *
+ * Revision 1.3  2002/04/19 10:42:55  joergr
  * Added new helper routines to get the milli and micro seconds part as well as
  * the integral value of seconds.
  *
