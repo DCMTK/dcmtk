@@ -21,10 +21,10 @@
  *
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-12-06 10:10:56 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-12-06 14:08:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.56 $
+ *  CVS/RCS Revision: $Revision: 1.57 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,19 +59,19 @@ END_EXTERN_C
 #include "diregist.h"      /* include to support color images */
 
 #ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
-#include "djdecode.h"     /* for dcmjpeg decoders */
-#include "dipijpeg.h"     /* for dcmimage JPEG plugin */
+# include "djdecode.h"     /* for dcmjpeg decoders */
+# include "dipijpeg.h"     /* for dcmimage JPEG plugin */
 #endif
 
 #ifdef WITH_LIBTIFF
-#include "dipitiff.h"     /* for dcmimage TIFF plugin */
+# include "dipitiff.h"     /* for dcmimage TIFF plugin */
 #endif
 
 #ifdef HAVE_STRSTREA_H
-#include <strstrea.h>     /* for ostrstream */
+# include <strstrea.h>     /* for ostrstream */
 #endif
 #ifdef HAVE_STRSTREAM_H
-#include <strstream.h>    /* for ostrstream */
+# include <strstream.h>    /* for ostrstream */
 #endif
 
 #define OFFIS_OUTFILE_DESCRIPTION "output filename to be written (default: stdout)"
@@ -330,7 +330,7 @@ int main(int argc, char *argv[])
      cmd.addOption("--write-8-bit-bmp",     "+obp",    "write 8-bit palette BMP (monochrome only)");
      cmd.addOption("--write-24-bit-bmp",    "+obt",    "write 24-bit truecolor BMP");
 #ifdef WITH_LIBTIFF
-     cmd.addOption("--write-tiff",          "+ot",     "write 8-bit TIFF");
+     cmd.addOption("--write-tiff",          "+ot",     "write 8-bit (monochrome) or 24-bit (color) TIFF");
 #endif
 #ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
      cmd.addOption("--write-jpeg",          "+oj",     "write 8-bit lossy JPEG (baseline)");
@@ -596,7 +596,7 @@ int main(int argc, char *argv[])
         cmd.endOptionBlock();
 
         if (cmd.findOption("--rows-per-strip"))
-            app.checkValue(cmd.getValueAndCheckMinMax(opt_rowsPerStrip,0,65535));
+            app.checkValue(cmd.getValueAndCheckMinMax(opt_rowsPerStrip, 0, 65535));
 #endif
 
 #ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
@@ -1085,6 +1085,7 @@ int main(int argc, char *argv[])
         char ofname[255];
         unsigned int fcount = (unsigned int)(((opt_frameCount > 0) && (opt_frameCount <= di->getFrameCount())) ? opt_frameCount : di->getFrameCount());
         const char *ofext = NULL;
+        /* determine default file extension */
         switch (opt_fileType)
         {
           case 5:
@@ -1219,7 +1220,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.56  2001-12-06 10:10:56  meichel
+ * Revision 1.57  2001-12-06 14:08:55  joergr
+ * Changed description of new command line option "--write-tiff".
+ *
+ * Revision 1.56  2001/12/06 10:10:56  meichel
  * Removed references to tiffconf.h which does not exist on all installations
  *
  * Revision 1.55  2001/11/30 16:47:53  meichel
