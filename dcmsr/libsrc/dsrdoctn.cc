@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-10-09 17:48:16 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Update Date:      $Date: 2003-10-30 17:58:58 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,6 +51,8 @@ DSRDocumentTreeNode::DSRDocumentTreeNode(const E_RelationshipType relationshipTy
     ValueType(valueType),
     ConceptName(),
     ObservationDateTime(),
+    TemplateIdentifier(),
+    MappingResource(),
     MACParameters(DCM_MACParametersSequence),
     DigitalSignatures(DCM_DigitalSignaturesSequence)
 {
@@ -68,6 +70,8 @@ void DSRDocumentTreeNode::clear()
     ReferenceTarget = OFFalse;
     ConceptName.clear();
     ObservationDateTime.clear();
+    TemplateIdentifier.clear();
+    MappingResource.clear();
     MACParameters.clear();
     DigitalSignatures.clear();
 }
@@ -150,6 +154,15 @@ OFCondition DSRDocumentTreeNode::readXML(const DSRXMLDocument &doc,
         /* iterate over all child content items */
         while (cursor.valid() && result.good())
         {
+            OFString templateIdentifier, mappingResource;
+            /* check for optional template identification */
+            if (doc.matchNode(cursor, "template"))
+            {
+                doc.getStringFromAttribute(cursor, templateIdentifier, "tid");
+                doc.getStringFromAttribute(cursor, mappingResource, "resource");
+                /* goto first child of the "template" element */
+                cursor.gotoChild();
+            }
             /* get SR value type from current XML node (optional) */
             E_ValueType valueType = doc.getValueTypeFromNode(cursor);
             /* invalid types are silently ignored */
@@ -161,6 +174,12 @@ OFCondition DSRDocumentTreeNode::readXML(const DSRXMLDocument &doc,
                 {
                     /* create new node (by-value), do not check constraints */
                     result = createAndAppendNewNode(node, relationshipType, valueType);
+                    if (result.good())
+                    {
+                        /* set template identification (if any) */
+                        if (node->setTemplateIdentification(templateIdentifier, mappingResource).bad())
+                            printWarningMessage(doc.getLogStream(), "Content item has invalid/incomplete template identification");
+                    }
                 } else {
                     /* create new node (by-reference), constraints are checked later */
                     result = createAndAppendNewNode(node, relationshipType, VT_byReference);
@@ -251,6 +270,13 @@ void DSRDocumentTreeNode::writeXMLItemStart(ostream &stream,
                                             const size_t flags,
                                             const OFBool closingBracket) const
 {
+    /* write optional template identification */
+    if (flags & DSRTypes::XF_writeTemplateIdentification)
+    {
+        if (!TemplateIdentifier.empty() && !MappingResource.empty())
+            stream << "<template resource=\"" << MappingResource << "\" tid=\"" << TemplateIdentifier << "\">" << endl;
+    }
+    /* write content item */
     if (flags & XF_valueTypeAsAttribute)
         stream << "<item valType=\"" << valueTypeToDefinedTerm(ValueType) << "\"";
     else
@@ -267,10 +293,17 @@ void DSRDocumentTreeNode::writeXMLItemStart(ostream &stream,
 void DSRDocumentTreeNode::writeXMLItemEnd(ostream &stream,
                                           const size_t flags) const
 {
+    /* close content item */
     if (flags & XF_valueTypeAsAttribute)
         stream << "</item>" << endl;
     else
         stream << "</" << valueTypeToXMLTagName(ValueType) <<  ">" << endl;
+    /* close optional template identification */
+    if (flags & DSRTypes::XF_writeTemplateIdentification)
+    {
+        if (!TemplateIdentifier.empty() && !MappingResource.empty())
+            stream << "</template>" << endl;
+    }
 }
 
 
@@ -312,7 +345,10 @@ OFCondition DSRDocumentTreeNode::setConceptName(const DSRCodedEntryValue &concep
     OFCondition result = EC_IllegalParameter;
     /* check for valid code */
     if (conceptName.isValid() || conceptName.isEmpty())
+    {
         ConceptName = conceptName;
+        result = EC_Normal;
+    }
     return result;
 }
 
@@ -322,6 +358,38 @@ OFCondition DSRDocumentTreeNode::setObservationDateTime(const OFString &observat
     /* might add a check for proper DateTime format */
     ObservationDateTime = observationDateTime;
     return EC_Normal;
+}
+
+
+OFCondition DSRDocumentTreeNode::getTemplateIdentification(OFString &templateIdentifier,
+                                                           OFString &mappingResource) const
+{
+    OFCondition result = SR_EC_InvalidValue;
+    /* check for valid value pair */
+    if ((TemplateIdentifier.empty() && MappingResource.empty()) ||
+        (!TemplateIdentifier.empty() && !MappingResource.empty()))
+    {
+        templateIdentifier = TemplateIdentifier;
+        mappingResource = MappingResource;
+        result = EC_Normal;
+    }
+    return result;
+}
+
+    
+OFCondition DSRDocumentTreeNode::setTemplateIdentification(const OFString &templateIdentifier,
+                                                           const OFString &mappingResource)
+{
+    OFCondition result = EC_IllegalParameter;
+    /* check for valid value pair */
+    if ((templateIdentifier.empty() && mappingResource.empty()) ||
+        (!templateIdentifier.empty() && !mappingResource.empty()))
+    {
+        TemplateIdentifier = templateIdentifier;
+        MappingResource = mappingResource;
+        result = EC_Normal;
+    }
+    return result;
 }
 
 
@@ -406,40 +474,39 @@ OFCondition DSRDocumentTreeNode::readDocumentRelationshipMacro(DcmItem &dataset,
     getAndCheckStringValueFromDataset(dataset, DCM_ObservationDateTime, ObservationDateTime, "1", "1C", logStream);
     /* determine template identifier expected for this document */
     const OFString expectedTemplateIdentifier = (constraintChecker != NULL) ? constraintChecker->getRootTemplateIdentifier() : "";
-    /* only check template identifier on dataset level (root node) */
-    if ((dataset.ident() == EVR_dataset) && !expectedTemplateIdentifier.empty())
+    /* read ContentTemplateSequence (conditional) */
+    DcmItem *ditem = NULL;
+    if (dataset.findAndGetSequenceItem(DCM_ContentTemplateSequence, ditem, 0 /*itemNum*/).good())
     {
-        /* read ContentTemplateSequence */
-        DcmItem *ditem = NULL;
-        if (dataset.findAndGetSequenceItem(DCM_ContentTemplateSequence, ditem, 0 /*itemNum*/).good())
+        getAndCheckStringValueFromDataset(*ditem, DCM_MappingResource, MappingResource, "1", "1", logStream, "ContentTemplateSequence");
+        getAndCheckStringValueFromDataset(*ditem, DCM_TemplateIdentifier, TemplateIdentifier, "1", "1", logStream, "ContentTemplateSequence");
+        /* check for DICOM Content Mapping Resource */
+        if (MappingResource == "DCMR")
         {
-            OFString templateIdentifier, mappingResource;
-            getAndCheckStringValueFromDataset(*ditem, DCM_MappingResource, mappingResource, "1", "1", logStream, "ContentTemplateSequence");
-            getAndCheckStringValueFromDataset(*ditem, DCM_TemplateIdentifier, templateIdentifier, "1", "1", logStream, "ContentTemplateSequence");
-            /* check for DICOM Content Mapping Resource */
-            if (mappingResource == "DCMR")
+            /* compare with expected TID */
+            if (TemplateIdentifier != expectedTemplateIdentifier)
             {
-                /* compare with expected TID */
-                if (templateIdentifier != expectedTemplateIdentifier)
-                {
-                    OFString message = "Incorrect value for TemplateIdentifier (";
-                    if (templateIdentifier.empty())
-                        message += "<empty>";
-                    else
-                        message += templateIdentifier;
-                    message += "), ";
-                    message += expectedTemplateIdentifier;
-                    message += " expected";
-                    printWarningMessage(logStream, message.c_str());
-                }
-            } else
-                printUnknownValueWarningMessage(logStream, "MappingResource", mappingResource.c_str());
-        } else {
-            OFString message = "ContentTemplateSequence missing or empty, TemplateIdentifier ";
-            message += expectedTemplateIdentifier;
-            message += " expected";
-            printWarningMessage(logStream, message.c_str());
-        }
+                OFString message = "Incorrect value for TemplateIdentifier (";
+                if (TemplateIdentifier.empty())
+                    message += "<empty>";
+                else
+                    message += TemplateIdentifier;
+                message += "), ";
+                message += expectedTemplateIdentifier;
+                message += " expected";
+                printWarningMessage(logStream, message.c_str());
+            }
+        } else if (!MappingResource.empty())
+            printUnknownValueWarningMessage(logStream, "MappingResource", MappingResource.c_str());
+    }
+    /* only check template identifier on dataset level (root node) */
+    else if ((dataset.ident() == EVR_dataset) && !expectedTemplateIdentifier.empty())
+    {
+        OFString message = "ContentTemplateSequence missing or empty, TemplateIdentifier ";
+        message += expectedTemplateIdentifier;
+        /* DICOM Content Mapping Resource is currently hard-coded (see above) */
+        message += " (DCMR) expected";
+        printWarningMessage(logStream, message.c_str());       
     }
     /* read ContentSequence */
     if (result.good())
@@ -466,14 +533,22 @@ OFCondition DSRDocumentTreeNode::writeDocumentRelationshipMacro(DcmItem &dataset
         markedItems->push(&dataset);
     /* write ObservationDateTime (conditional) */
     result = putStringValueToDataset(dataset, DCM_ObservationDateTime, ObservationDateTime, OFFalse /*allowEmpty*/);
-
-    /* tbd: write ContentTemplateSequence - requires, however, template constraint checking!
-    
-       PS 3.3 Table C.17.3-4 states: "Required if a template was used to define the content of
-       this Item, and the template consists of a single CONTAINER with nested content, and it is
-       the outermost invocation of a set of nested templates that start with the same CONTAINER."
-    */
-    
+    /* write ContentTemplateSequence (conditional) */
+    if (result.good())
+    {
+        if (!TemplateIdentifier.empty() && !MappingResource.empty())
+        {
+            DcmItem *ditem = NULL;
+            /* create sequence with a single item */
+            result = dataset.findOrCreateSequenceItem(DCM_ContentTemplateSequence, ditem, 0 /*position*/);
+            if (result.good())
+            {
+                /* write item data */
+                putStringValueToDataset(*ditem, DCM_TemplateIdentifier, TemplateIdentifier);
+                putStringValueToDataset(*ditem, DCM_MappingResource, MappingResource);
+            }
+        }
+    }
     /* write ContentSequence */
     if (result.good())
         result = writeContentSequence(dataset, markedItems, logStream);
@@ -964,7 +1039,13 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
- *  Revision 1.32  2003-10-09 17:48:16  joergr
+ *  Revision 1.33  2003-10-30 17:58:58  joergr
+ *  Added full support for the ContentTemplateSequence (read/write, get/set
+ *  template identification). Template constraints are not checked yet.
+ *  Fixed bug in setConceptName() that caused to return EC_IllegalParameter
+ *  even for valid parameters.
+ *
+ *  Revision 1.32  2003/10/09 17:48:16  joergr
  *  Slightly modified warning message text in readDocumentRelationshipMacro().
  *
  *  Revision 1.31  2003/10/09 14:17:59  joergr
