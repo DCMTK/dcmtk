@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-05-06 11:52:30 $
+** Update Date:		$Date: 1997-05-06 16:43:47 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -110,13 +110,6 @@ BOOL recurseFilesystem = FALSE;
 
 E_EncodingType lengthEncoding = EET_ExplicitLength;
 E_GrpLenEncoding groupLengthEncoding = EGL_withoutGL;
-
-static int studyNumber = 0;
-static int seriesNumber = 0;
-static int imageNumber = 0;
-static int overlayNumber = 0;
-static int lutNumber = 0;
-static int curveNumber = 0;
 
 
 // ********************************************
@@ -655,18 +648,20 @@ dcmCopyOptString(DcmItem* sink, const DcmTagKey& xtag, DcmItem* source)
     return ok;
 }
 
+#ifdef UNUSED_FUNCTION
 static BOOL 
 dcmCopyStringWithDefault(DcmItem* sink, const DcmTagKey& xtag, 
 			 DcmItem* source, const char* defaultString)
 {
     BOOL ok = TRUE;
-    if (dcmTagExists(source, xtag)) {
+    if (dcmTagExistsWithValue(source, xtag)) {
 	ok = dcmInsertString(sink, xtag, dcmFindString(source, xtag));
     } else {
 	ok = dcmInsertString(sink, xtag, defaultString);
     }
     return ok;
 }
+#endif
 
 static BOOL 
 dcmCopyOptSequence(DcmItem* sink, const DcmTagKey& xtag, DcmItem* source)
@@ -753,7 +748,7 @@ static const char*
 alternativeStudyTime(DcmItem* d)
 {
     /* use another time if present */
-    const char* time = dcmFindString(d, DCM_SeriesDate);
+    const char* time = dcmFindString(d, DCM_SeriesTime);
     if (time != NULL) return time;
     time = dcmFindString(d, DCM_AcquisitionTime);
     if (time != NULL) return time;
@@ -769,7 +764,10 @@ defaultID(const char* prefix, int number)
 {
     static char idbuf[128];
     unsigned long ul = (unsigned long)number;
-    sprintf(idbuf, "%s%06lu", prefix, ul);
+    char cappedPrefix[11];
+    memset(cappedPrefix, 0, 11);
+    strncpy(cappedPrefix, prefix, 10); /* use a most 10 chars from prefix */
+    sprintf(idbuf, "%s%06lu", cappedPrefix, ul);
     return idbuf;
 }
 
@@ -1014,10 +1012,10 @@ checkImage(const char* fname, DcmFileFormat *ff)
     ** are mandatory attributes for DICOMDIR available and valued?
     */
 
-    /* PatientID is type 1 in DICOMDIR and type 2 in images.
-    ** However, PatientID is a key attribute and we cannot invent it
-    */
-    if (!checkExistsWithValue(d, DCM_PatientID, fname)) ok = FALSE;
+    /* PatientID is type 1 in DICOMDIR and type 2 in images. */
+    if (!inventAttributes) {
+	if (!checkExistsWithValue(d, DCM_PatientID, fname)) ok = FALSE;
+    }
     /* PatientName is type 2 in DICOMDIR and images */
     if (!checkExists(d, DCM_PatientName, fname)) ok = FALSE;
     /* StudyDate is type 1 in DICOMDIR and type 2 in images */
@@ -1112,12 +1110,25 @@ buildStudyRecord(const char* fname, DcmItem* d)
     }
     
     dcmCopyOptString(rec, DCM_SpecificCharacterSet, d);
-    dcmCopyStringWithDefault(rec, DCM_StudyDate, d, alternativeStudyDate(d));
-    dcmCopyStringWithDefault(rec, DCM_StudyTime, d, alternativeStudyTime(d));
+    if (dcmTagExistsWithValue(d, DCM_StudyDate)) {
+	dcmCopyString(rec, DCM_StudyDate, d);
+    } else {
+	const char* altDate = alternativeStudyDate(d);
+	cerr << "warning: StudyDate missing: using alternative: "
+	     << altDate << endl;
+	dcmInsertString(rec, DCM_StudyDate, altDate);
+    }
+    if (dcmTagExistsWithValue(d, DCM_StudyTime)) {
+	dcmCopyString(rec, DCM_StudyTime, d);
+    } else {
+	const char* altTime = alternativeStudyTime(d);
+	cerr << "warning: StudyTime missing: using alternative: "
+	     << altTime << endl;
+	dcmInsertString(rec, DCM_StudyTime, altTime);
+    }
     dcmCopyString(rec, DCM_StudyDescription, d);
     dcmCopyString(rec, DCM_StudyInstanceUID, d);
-    dcmCopyStringWithDefault(rec, DCM_StudyID, d, 
-			     defaultID("STUDY", studyNumber++));
+    dcmCopyString(rec, DCM_StudyID, d);
     dcmCopyString(rec, DCM_AccessionNumber, d);
 
     return rec;
@@ -1135,8 +1146,7 @@ buildSeriesRecord(const char* fname, DcmItem* d)
     dcmCopyOptString(rec, DCM_SpecificCharacterSet, d);
     dcmCopyString(rec, DCM_Modality, d);
     dcmCopyString(rec, DCM_SeriesInstanceUID, d);
-    dcmCopyStringWithDefault(rec, DCM_SeriesNumber, d, 
-			     defaultNumber(seriesNumber++));
+    dcmCopyString(rec, DCM_SeriesNumber, d);
 
     return rec;
 }
@@ -1151,8 +1161,8 @@ buildImageRecord(const char* fname, DcmItem* d)
     }
     
     dcmCopyOptString(rec, DCM_SpecificCharacterSet, d);
-    dcmCopyStringWithDefault(rec, DCM_ImageNumber, d,
-			     defaultNumber(imageNumber++));
+    dcmCopyString(rec, DCM_ImageNumber, d);
+
     /* addition type 1C keys specified by STD-GEN-CD profile */
     dcmCopyOptString(rec, DCM_ImageType, d);
     dcmCopyOptSequence(rec, DCM_ReferencedImageSequence, d);
@@ -1170,8 +1180,7 @@ buildOverlayRecord(const char* fname, DcmItem* d)
     }
     
     dcmCopyOptString(rec, DCM_SpecificCharacterSet, d);
-    dcmCopyStringWithDefault(rec, DCM_OverlayNumber, d,
-			     defaultNumber(overlayNumber++));
+    dcmCopyString(rec, DCM_OverlayNumber, d);
 
     return rec;
 }
@@ -1186,8 +1195,7 @@ buildModalityLutRecord(const char* fname, DcmItem* d)
     }
     
     dcmCopyOptString(rec, DCM_SpecificCharacterSet, d);
-    dcmCopyStringWithDefault(rec, DCM_LUTNumber, d,
-			     defaultNumber(lutNumber++));
+    dcmCopyString(rec, DCM_LUTNumber, d);
 
     return rec;
 }
@@ -1202,8 +1210,7 @@ buildVoiLutRecord(const char* fname, DcmItem* d)
     }
     
     dcmCopyOptString(rec, DCM_SpecificCharacterSet, d);
-    dcmCopyStringWithDefault(rec, DCM_LUTNumber, d,
-			     defaultNumber(lutNumber++));
+    dcmCopyString(rec, DCM_LUTNumber, d);
 
     return rec;
 }
@@ -1218,9 +1225,7 @@ buildCurveRecord(const char* fname, DcmItem* d)
     }
     
     dcmCopyOptString(rec, DCM_SpecificCharacterSet, d);
-    dcmCopyStringWithDefault(rec, DCM_CurveNumber, d,
-			     defaultNumber(curveNumber));
-
+    dcmCopyString(rec, DCM_CurveNumber, d);
 
     return rec;
 }
@@ -1265,8 +1270,17 @@ recordMatchesDataset(DcmDirectoryRecord *rec, DcmItem* dataset)
 
     switch (rec->getRecordType()) {
     case ERT_Patient:
-	match = cmp(dcmFindString(rec, DCM_PatientID),
-		    dcmFindString(dataset, DCM_PatientID));
+	if (dcmTagExistsWithValue(dataset, DCM_PatientID)) {
+	    /* PatientID is the primary key */
+	    match = cmp(dcmFindString(rec, DCM_PatientID),
+			dcmFindString(dataset, DCM_PatientID));
+	} else {
+	    /* if there is no value for PatientID in the dataset
+	    ** try using the PatientName
+	    */
+	    match = cmp(dcmFindString(rec, DCM_PatientName),
+			dcmFindString(dataset, DCM_PatientName));
+	}
 	break;
     case ERT_Study:
 	if (dcmTagExists(rec, DCM_StudyInstanceUID)) {
@@ -1892,6 +1906,116 @@ checkFileCanBeUsed(const char* fname)
     return ok;
 }
 
+static void
+inventMissingImageLevelAttributes(DcmDirectoryRecord *parent)
+{
+    int imageNumber = 0;
+    int overlayNumber = 0;
+    int lutNumber = 0;
+    int curveNumber = 0;
+
+    int count = parent->cardSub();
+    for (int i=0; i<count; i++) {
+	DcmDirectoryRecord* rec = parent->getSub(i);
+	
+	switch (rec->getRecordType()) {
+	case ERT_Image:
+	    if (!dcmTagExistsWithValue(rec, DCM_ImageNumber)) {
+		const char* defNum = defaultNumber(imageNumber++);
+		cerr << "warning: inventing ImageNumber: "
+		     << defNum << endl;
+		dcmInsertString(rec, DCM_ImageNumber, defNum);
+	    }
+	    break;
+	case ERT_Overlay:
+	    if (!dcmTagExistsWithValue(rec, DCM_OverlayNumber)) {
+		const char* defNum = defaultNumber(overlayNumber++);
+		cerr << "warning: inventing OverlayNumber: "
+		     << defNum << endl;
+		dcmInsertString(rec, DCM_OverlayNumber, defNum);
+	    }
+	    break;
+	case ERT_ModalityLut:
+	case ERT_VoiLut:
+	    if (!dcmTagExistsWithValue(rec, DCM_LUTNumber)) {
+		const char* defNum = defaultNumber(lutNumber++);
+		cerr << "warning: inventing LUTNumber: "
+		     << defNum << endl;
+		dcmInsertString(rec, DCM_LUTNumber, defNum);
+	    }
+	    break;
+	case ERT_Curve:
+	    if (!dcmTagExistsWithValue(rec, DCM_CurveNumber)) {
+		const char* defNum = defaultNumber(curveNumber++);
+		cerr << "warning: inventing CurveNumber: "
+		     << defNum << endl;
+		dcmInsertString(rec, DCM_CurveNumber, defNum);
+	    }
+	    break;
+	default:
+	    cerr << "error: (INTERNAL): inventMissingImageLevelAttributes: "
+		 << "encountered unexpected record: " 
+		 << recordTypeToName(rec->getRecordType())
+		 << endl;
+	    break;
+	}
+    }
+}
+
+static void
+inventMissingSeriesLevelAttributes(DcmDirectoryRecord *parent)
+{
+    int seriesNumber = 0;
+    int count = parent->cardSub();
+    for (int i=0; i<count; i++) {
+	DcmDirectoryRecord* rec = parent->getSub(i);
+	if (!dcmTagExistsWithValue(rec, DCM_SeriesNumber)) {
+	    const char* defNum = defaultNumber(seriesNumber++);
+	    cerr << "warning: inventing SeriesNumber: "
+		 << defNum << endl;
+	    dcmInsertString(rec, DCM_SeriesNumber, defNum);
+	}
+	inventMissingImageLevelAttributes(rec);
+    }
+    
+}
+
+static void
+inventMissingStudyLevelAttributes(DcmDirectoryRecord *parent)
+{
+    static int studyNumber = 0; /* make invented StudyID global */
+
+    int count = parent->cardSub();
+    for (int i=0; i<count; i++) {
+	DcmDirectoryRecord* rec = parent->getSub(i);
+	if (!dcmTagExistsWithValue(rec, DCM_StudyID)) {
+	    const char* defId = defaultID("DCMTKSTUDY", studyNumber++);
+	    cerr << "warning: inventing StudyID: "
+		 << defId << endl;
+	    dcmInsertString(rec, DCM_StudyID, defId);
+	}
+	inventMissingSeriesLevelAttributes(rec);
+    }
+}
+
+static void
+inventMissingAttributes(DcmDirectoryRecord *root)
+{
+    static int patientNumber = 0; /* make invented PatientID global */
+
+    int count = root->cardSub();
+    for (int i=0; i<count; i++) {
+	DcmDirectoryRecord* rec = root->getSub(i);
+	if (!dcmTagExistsWithValue(rec, DCM_PatientID)) {
+	    const char* defId = defaultID("DCMTKPAT", patientNumber++);
+	    cerr << "warning: inventing PatientID: "
+		 << defId << endl;
+	    dcmInsertString(rec, DCM_PatientID, defId);
+	}
+	inventMissingStudyLevelAttributes(rec);
+    }
+}
+
 static BOOL
 createDicomdirFromFiles(StrList& fileNames)
 {
@@ -1972,6 +2096,10 @@ createDicomdirFromFiles(StrList& fileNames)
 	}
     }
 
+    if (inventAttributes) {
+	inventMissingAttributes(&rootRecord);
+    }
+
     if (writeDicomdir) {
 	if (verbosemode) {
 	    cout << "writing: " << ofname << endl;
@@ -2034,7 +2162,13 @@ expandFileNames(StrList& fileNames, StrList& expandedNames)
 /*
 ** CVS/RCS Log:
 ** $Log: dcmgpdir.cc,v $
-** Revision 1.7  1997-05-06 11:52:30  hewett
+** Revision 1.8  1997-05-06 16:43:47  hewett
+** Now possible to invent a value for the PatientID attribute.
+** Invention of missing attributes is now delayed when possible until
+** after all directory records have been constructed.  This allows
+** numbering to be local to the sub-branches of the directory tree.
+**
+** Revision 1.7  1997/05/06 11:52:30  hewett
 ** corrected spelling in usage output
 **
 ** Revision 1.6  1997/05/06 09:15:57  hewett
