@@ -62,9 +62,9 @@
 ** 
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-09-27 08:27:59 $
+** Update Date:		$Date: 1996-09-27 14:03:03 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/dcompat.h,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -130,6 +130,19 @@ BEGIN_EXTERN_C
 #endif
 
 END_EXTERN_C
+
+#ifndef HAVE_SLEEP
+
+#ifdef windows
+/* Windows defines a Sleep(x) function which sleeps for x milliseconds */
+#define sleep(secs) Sleep(secs*1000)
+/* now we have a version of sleep */
+#define HAVE_SLEEP 1
+#else
+/* don't know how to define sleep */
+#endif
+
+#endif /* HAVE_SLEEP */
 
 #ifndef HAVE_PROTOTYPE_FLOCK
 #ifdef HAVE_FLOCK
@@ -351,7 +364,10 @@ char *tempnam(char *dir, char *pfx);
 /*
 ** CVS Log
 ** $Log: dcompat.h,v $
-** Revision 1.6  1996-09-27 08:27:59  hewett
+** Revision 1.7  1996-09-27 14:03:03  hewett
+** Added emulation of sleep() for Win32.
+**
+** Revision 1.6  1996/09/27 08:27:59  hewett
 ** Move the defines for BEGIN_EXTERN_C/END_EXTERN_C to config/include/osconfig.h
 ** Added support for Win32 by conditionally including <WINSOCK.h>.
 **
