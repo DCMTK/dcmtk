@@ -67,10 +67,10 @@
 **	Module Prefix: ASC_
 **
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1996-12-03 15:29:46 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1997-04-15 16:18:50 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:	$Revision: 1.10 $
+** CVS/RCS Revision:	$Revision: 1.11 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1445,15 +1445,14 @@ ASC_destroyAssociation(T_ASC_Association ** association)
 
     if ((*association)->DULassociation != NULL) {
 	ASC_dropAssociation(*association);
-/***
-	free((*association)->DULassociation);
-	(*association)->DULassociation = NULL;
-***/
     }
 
-    cond = ASC_destroyAssociationParameters(&(*association)->params);
-    if (cond != ASC_NORMAL)
-	return cond;
+    if ((*association)->params != NULL) {
+        cond = ASC_destroyAssociationParameters(&(*association)->params);
+        if (cond != ASC_NORMAL) {
+	    return cond;
+	}
+    }
 
     if ((*association)->sendPDVBuffer != NULL)
 	free((*association)->sendPDVBuffer);
@@ -1806,7 +1805,11 @@ ASC_dropAssociation(T_ASC_Association * association)
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
-** Revision 1.10  1996-12-03 15:29:46  meichel
+** Revision 1.11  1997-04-15 16:18:50  hewett
+** The network function ASC_destroyAssociation now only destroys the
+** association parameters if they are non-NULL.
+**
+** Revision 1.10  1996/12/03 15:29:46  meichel
 ** Added support for HP-UX 9.05 systems using GCC 2.7.2.1
 **
 ** Revision 1.9  1996/09/27 08:36:14  hewett
