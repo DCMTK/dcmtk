@@ -23,8 +23,8 @@
  *    classes: DSRContainerTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-09 20:34:00 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2000-11-14 11:18:59 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -132,6 +132,12 @@ E_Condition DSRContainerTreeNode::renderHTMLContentItem(ostream &docStream,
             docStream << "<h" << section << ">";
             getConceptName().renderHTML(docStream, flags, logStream, (flags & HF_renderConceptNameCodes) && getConceptName().isValid() /* fullCode */);
             docStream << "</h" << section << ">" << endl;
+        }
+        /* render optional observation datetime */
+        if (getObservationDateTime().length() > 0)
+        {
+            OFString string;
+            docStream << "<small>(observed: " << dicomToReadableDateTime(getObservationDateTime(), string) << ")</small>" << endl;
         }
     }
     return EC_Normal;
@@ -265,7 +271,10 @@ E_Condition DSRContainerTreeNode::setContinuityOfContent(const E_ContinuityOfCon
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcontn.cc,v $
- *  Revision 1.10  2000-11-09 20:34:00  joergr
+ *  Revision 1.11  2000-11-14 11:18:59  joergr
+ *  Added output of optional observation datetime to rendered HTML page.
+ *
+ *  Revision 1.10  2000/11/09 20:34:00  joergr
  *  Added support for non-ASCII characters in HTML 3.2 (use numeric value).
  *
  *  Revision 1.9  2000/11/09 11:32:12  joergr
