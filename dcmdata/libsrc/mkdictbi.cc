@@ -23,10 +23,10 @@
  *  Generate a builtin data dictionary which can be compiled into
  *  the dcmdata library.  
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-11 12:31:04 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-07-23 14:21:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/mkdictbi.cc,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,7 +73,9 @@ END_EXTERN_C
 #include "cmdlnarg.h"
 #include "ofstring.h"
 #include "ofdatime.h"
+#include "dcdicent.h"
 
+#define PRIVATE_TAGS_IFNAME "WITH_PRIVATE_TAGS"
 
 static const char*
 rr2s(DcmDictRangeRestriction rr)
@@ -97,9 +99,29 @@ rr2s(DcmDictRangeRestriction rr)
 }
 
 static void 
-printSimpleEntry(FILE* fout, const DcmDictEntry* e, int lastEntry)
+printSimpleEntry(FILE* fout, const DcmDictEntry* e, OFBool& isFirst, OFBool& isPrivate)
 {
-    fprintf(fout, "    { 0x%04x, 0x%04x, 0x%04x, 0x%04x,\n",
+
+    const char *c = e->getPrivateCreator();
+
+    if (c && !isPrivate)
+    {
+       fprintf(fout, "#ifdef %s\n", PRIVATE_TAGS_IFNAME);
+       isPrivate = OFTrue;
+    }
+    else if (isPrivate && !c)
+    {
+       fprintf(fout, "#endif\n");
+       isPrivate = OFFalse;
+    }
+
+    if (isFirst)
+    {
+      fprintf(fout, "    ");
+      isFirst = OFFalse;
+    } else fprintf(fout, "  , ");
+
+    fprintf(fout, "{ 0x%04x, 0x%04x, 0x%04x, 0x%04x,\n",
             e->getGroup(), e->getElement(), 
             e->getUpperGroup(), e->getUpperElement());
     fprintf(fout, "      EVR_%s, \"%s\", %d, %d, \"%s\",\n",
@@ -107,18 +129,18 @@ printSimpleEntry(FILE* fout, const DcmDictEntry* e, int lastEntry)
             e->getTagName(), 
             e->getVMMin(), e->getVMMax(),
             e->getStandardVersion());
-    fprintf(fout, "      %s, %s }", rr2s(e->getGroupRangeRestriction()),
+    fprintf(fout, "      %s, %s,\n", rr2s(e->getGroupRangeRestriction()),
             rr2s(e->getElementRangeRestriction()));
-    if (!lastEntry) {
-        fprintf(fout, ",\n");
-    } else {
-        fprintf(fout, "\n");
-    } 
+
+    if (c)
+      fprintf(fout, "      \"%s\" }\n", c);
+    else
+      fprintf(fout, "      NULL }\n");
 }
 
 #ifdef HAVE_CUSERID
 static char*
-getUserName(char* userString, int maxLen)
+getUserName(char* userString, int /* maxLen */)
 {
     return cuserid(userString); // thread safe, maxLen >= L_cuserid ?
 }
@@ -258,6 +280,7 @@ main(int argc, char* argv[])
     fprintf(fout, "*/\n");
     fprintf(fout, "\n");
     fprintf(fout, "#include \"dcdict.h\"\n");
+    fprintf(fout, "#include \"dcdicent.h\"\n");
     fprintf(fout, "\n");
     fprintf(fout, "const char* dcmBuiltinDictBuildDate = \"%s\";\n", dateString.c_str());
     fprintf(fout, "\n");
@@ -273,11 +296,13 @@ main(int argc, char* argv[])
     fprintf(fout, "    const char* standardVersion;\n");
     fprintf(fout, "    DcmDictRangeRestriction groupRestriction;\n");
     fprintf(fout, "    DcmDictRangeRestriction elementRestriction;\n");
+    fprintf(fout, "    const char* privateCreator;\n");
     fprintf(fout, "};\n");
     fprintf(fout, "\n");
     fprintf(fout, "static const DBI_SimpleEntry simpleBuiltinDict[] = {\n");
     
-    int lastEntry = OFFalse;
+    OFBool isFirst = OFTrue;
+    OFBool isPrivate = OFFalse;
 
     /* 
     ** the hash table does not maintain ordering so we must put
@@ -291,26 +316,24 @@ main(int argc, char* argv[])
         list.insertAndReplace(e);
     }
     /* output the list contents */
+
+    /* non-repeating standard elements */
     DcmDictEntryListIterator listIter(list.begin());
     DcmDictEntryListIterator listLast(list.end());
-    for (; listIter != listLast; ++listIter) {
-        printSimpleEntry(fout, *listIter, lastEntry);
+    for (; listIter != listLast; ++listIter)
+    {
+        printSimpleEntry(fout, *listIter, isFirst, isPrivate);
     }
 
+    /* repeating standard elements */
     DcmDictEntryListIterator repIter(globalDataDict.repeatingBegin());
     DcmDictEntryListIterator repLast(globalDataDict.repeatingEnd());
-    DcmDictEntryListIterator nextIter;
-    for (; repIter != repLast; ++repIter) {
-        e = *repIter;
-        nextIter = repIter;
-        ++nextIter;
-        if (nextIter == repLast) {
-            lastEntry = OFTrue;
-        }
-        printSimpleEntry(fout, e, lastEntry);
+    for (; repIter != repLast; ++repIter)
+    {
+        printSimpleEntry(fout, *repIter, isFirst, isPrivate);
     }
 
-    fprintf(fout, "};\n");
+    fprintf(fout, "\n};\n");
     fprintf(fout, "\n");
     fprintf(fout, "static const int simpleBuiltinDict_count = \n");
     fprintf(fout, "    sizeof(simpleBuiltinDict)/sizeof(DBI_SimpleEntry);\n");
@@ -327,7 +350,7 @@ main(int argc, char* argv[])
     fprintf(fout, "        e = new DcmDictEntry(b->group, b->element,\n");
     fprintf(fout, "            b->upperGroup, b->upperElement, b->evr,\n");
     fprintf(fout, "            b->tagName, b->vmMin, b->vmMax,\n");
-    fprintf(fout, "            b->standardVersion, OFFalse);\n");
+    fprintf(fout, "            b->standardVersion, OFFalse, b->privateCreator);\n");
     fprintf(fout, "        e->setGroupRangeRestriction(b->groupRestriction);\n");
     fprintf(fout, "        e->setElementRangeRestriction(b->elementRestriction);\n");
     fprintf(fout, "        addEntry(e);\n");
@@ -343,7 +366,10 @@ main(int argc, char* argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: mkdictbi.cc,v $
-** Revision 1.21  2002-04-11 12:31:04  joergr
+** Revision 1.22  2002-07-23 14:21:35  meichel
+** Added support for private tag data dictionaries to dcmdata
+**
+** Revision 1.21  2002/04/11 12:31:04  joergr
 ** Added support for MT-safe system routines (cuserid, getlogin, etc.).
 ** Replaced direct call of system routines by new standard date and time
 ** functions.

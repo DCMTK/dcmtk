@@ -21,10 +21,10 @@
  *
  *  Purpose: Definition of the class DcmTag
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-05-24 09:49:13 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-07-23 14:21:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dctag.h,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,53 +35,127 @@
 #define DCTAG_H
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
-
-#include "dctypes.h"
-#include "dcerror.h"
+#include "ofcond.h"
 #include "dctagkey.h"
 #include "dcvr.h"
-#include "dcdicent.h"
 
+/// default attribute name for unknown attributes
 #define DcmTag_ERROR_TagName    "Unknown Tag & Data"
 
 
-// *** class definition ********************************
-
-
-/** a class for DICOM tags
+/** this class encapsulates an attribute tag (group, element) and a VR.
+ *  It maintains a private creator name for private tags and caches
+ *  the attribute name, once it is looked up in the data dictionary.
+ *  This class maintains the interface to the DICOM data dictionary,
+ *  i.e. performs look-ups of attribute VR and name in the background.
+ *  Therefore, creation of DcmTag element is significantly more expensive
+ *  than creation of simple DcmTagKey objects unless the VR is passed
+ *  in the constructor.
  */
-class DcmTag : public DcmTagKey {
-private:
-    DcmVR vr;
-    char *tagName;                      /* remains empty unless getTagName() is called */
-    OFCondition errorFlag;              /* the current error code */
-
+class DcmTag: public DcmTagKey
+{
 public:
+    /// default constructor
     DcmTag();
+
+    /** constructor.
+     *  Initializes group/element from given tag key and performs
+     *  a dictionary lookup for the VR.  The lookup only considers
+     *  standard tags, tags with private creator are ignored.
+     *  @param akey tag key
+     */
     DcmTag(const DcmTagKey& akey);
+
+    /** constructor.
+     *  Initializes group/element from given parameters and performs
+     *  a dictionary lookup for the VR.  The lookup only considers
+     *  standard tags, tags with private creator are ignored.
+     *  @param g tag group
+     *  @param e tag element
+     */
     DcmTag(Uint16 g, Uint16 e);
+
+    /** constructor.
+     *  Initializes group/element and VR from given parameters.
+     *  No dictionary lookup needed/performed.
+     *  @param akey tag key
+     *  @param avr VR
+     */
     DcmTag(const DcmTagKey& akey, const DcmVR& avr);
+
+    /** constructor.
+     *  Initializes group/element and VR from given parameters.
+     *  No dictionary lookup needed/performed.
+     *  @param g tag group
+     *  @param e tag element
+     *  @param avr VR
+     */
     DcmTag(Uint16 g, Uint16 e, const DcmVR& avr);
+
+    /// copy constructor
     DcmTag(const DcmTag& tag);
 
+    /// destructor
     ~DcmTag();
 
-    DcmTag& operator=(const DcmTagKey& key);
+    /// copy assignment operator
     DcmTag& operator=(const DcmTag& tag);
 
-    DcmVR setVR(const DcmVR& avr);      /* set a specific VR */
+    /// set specific VR
+    DcmVR setVR(const DcmVR& avr);
 
+    /// returns VR object by value
     DcmVR getVR() const { return vr; }
+
+    /// returns VR code
     DcmEVR getEVR() const { return vr.getEVR(); }
+
+    /// returns name of VR
     const char* getVRName() const { return vr.getVRName(); }
 
+    /** returns tag group
+     *  @return tag group
+     */
     Uint16 getGTag() const { return getGroup(); }
+
+    /** returns tag element
+     *  @return tag element
+     */
     Uint16 getETag() const { return getElement(); }
+
+    /** returns a copy of the tag key by value
+     *  @return copy of tag key, by value
+     */
     DcmTagKey getXTag() const { return *((DcmTagKey*)(this)); }
     
+    /** returns name of attribute tag.
+     *  If name has not been accessed before, a dictionary lookup
+     *  under consideration of the current private creator code
+     *  is performed.  If no attribute name is found, a default
+     *  name is used.  Never returns NULL.
+     *  @return attribute tag name, never NULL.
+     */
     const char* getTagName();
 
-    OFCondition error() const { return errorFlag; }
+    /** returns the current private creator string for this object
+     *  if any, NULL otherwise.
+     *  @return creator code if present, NULL otherwise
+     */
+    const char* getPrivateCreator() const;
+
+    /** assigns a private creator code and deletes a possibly
+     *  cached attribute name since the attribute name could
+     *  change if a different private creator code is used.
+     *  @param privCreator private creator code, may be NULL
+     */
+    void setPrivateCreator(const char *privCreator);
+
+    /** performs a look-up of the VR for the current tag key in the dictionary,
+     *  under consideration of the private creator (if defined).
+     *  If a dictionary entry is found, the VR of this object is copied
+     *  from the dictionary entry, otherwise the VR remains unmodified.
+     */
+    void lookupVRinDictionary();
 
     /** returns true if a data element with the given tag and VR
      *  can be digitally signed, false otherwise
@@ -93,6 +167,8 @@ public:
      */
     OFBool isUnknownVR() const;
 
+    /// returns current status flag
+    OFCondition error() const { return errorFlag; }
 
     // --- static helper functions ---
 
@@ -109,6 +185,30 @@ public:
      */
     static OFCondition findTagFromName(const char *name,
                                        DcmTag &value);
+private:
+
+    /** replace tagName with copy of given string
+     *  @param c new tag name
+     */
+    void updateTagName(const char *c);
+
+    /** replace privateCreator with copy of given string
+     *  @param c new private creator
+     */
+    void updatePrivateCreator(const char *c);
+
+    /// VR of this attribute tag
+    DcmVR vr;
+
+    /// name of this attribute tag, remains NULL unless getTagName() is called
+    char *tagName;
+
+    /// private creator code, remains NULL unless setPrivateCreator() is called
+    char *privateCreator;
+
+    /// current error code, EC_Normal if a valid VR for the tag is known
+    OFCondition errorFlag;
+
 };
 
 
@@ -124,7 +224,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dctag.h,v $
-** Revision 1.18  2002-05-24 09:49:13  joergr
+** Revision 1.19  2002-07-23 14:21:27  meichel
+** Added support for private tag data dictionaries to dcmdata
+**
+** Revision 1.18  2002/05/24 09:49:13  joergr
 ** Renamed some parameters/variables to avoid ambiguities.
 **
 ** Revision 1.17  2002/04/30 13:12:12  joergr

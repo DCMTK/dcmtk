@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmTag
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-05-24 09:49:44 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-07-23 14:21:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dctag.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,22 +32,21 @@
  */
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dctag.h"
+#include "dcerror.h"     /* for dcmdata error constants */
+#include "dcdict.h"
+#include "dcdicent.h"
 
+BEGIN_EXTERN_C
 #include <stdio.h>       /* for sscanf() */
 #include <string.h>
+END_EXTERN_C
 
-#include "ofstream.h"
-#include "ofconsol.h"
-#include "dcdict.h"
-#include "dctag.h"
-#include "dcdeftag.h"
-
-
-// ********************************
 
 DcmTag::DcmTag()
   : vr(EVR_UNKNOWN),
     tagName(NULL),
+    privateCreator(NULL),
     errorFlag(EC_InvalidTag)
 {
 }
@@ -56,38 +55,27 @@ DcmTag::DcmTag(const DcmTagKey& akey)
   : DcmTagKey(akey),
     vr(EVR_UNKNOWN),
     tagName(NULL),
+    privateCreator(NULL),
     errorFlag(EC_InvalidTag)
 {
-    const DcmDataDictionary& globalDataDict = dcmDataDict.rdlock();
-    const DcmDictEntry *dictRef = globalDataDict.findEntry(akey);
-    if (dictRef)
-    {
-        vr = dictRef->getVR();
-        errorFlag = EC_Normal;
-    }
-    dcmDataDict.unlock();
+    lookupVRinDictionary();
 }
     
 DcmTag::DcmTag(Uint16 g, Uint16 e)
   : DcmTagKey(g, e), 
     vr(EVR_UNKNOWN),
     tagName(NULL),
+    privateCreator(NULL),
     errorFlag(EC_InvalidTag)
 {
-    const DcmDataDictionary& globalDataDict = dcmDataDict.rdlock();
-    const DcmDictEntry *dictRef = globalDataDict.findEntry(DcmTagKey(g, e));
-    if (dictRef)
-    {
-        vr = dictRef->getVR();
-        errorFlag = EC_Normal;
-    }
-    dcmDataDict.unlock();
+    lookupVRinDictionary();
 }
 
 DcmTag::DcmTag(Uint16 g, Uint16 e, const DcmVR& avr)
   : DcmTagKey(g, e),
     vr(avr),
     tagName(NULL),
+    privateCreator(NULL),
     errorFlag(EC_Normal)
 {
 }
@@ -96,6 +84,7 @@ DcmTag::DcmTag(const DcmTagKey& akey, const DcmVR& avr)
   : DcmTagKey(akey),
     vr(avr),
     tagName(NULL),
+    privateCreator(NULL),
     errorFlag(EC_Normal)
 {
 }
@@ -104,15 +93,12 @@ DcmTag::DcmTag(const DcmTag& tag)
   : DcmTagKey(tag),
     vr(tag.vr),
     tagName(NULL),
+    privateCreator(NULL),
     errorFlag(tag.errorFlag)
 {
-  if (tag.tagName)
-  {
-    tagName = new char[strlen(tag.tagName)+1];
-    if (tagName) strcpy(tagName,tag.tagName);
-  }
+  updateTagName(tag.tagName);
+  updatePrivateCreator(tag.privateCreator);
 }
-
 
 
 // ********************************
@@ -121,6 +107,7 @@ DcmTag::DcmTag(const DcmTag& tag)
 DcmTag::~DcmTag()
 {
   delete[] tagName;
+  delete[] privateCreator;
 }
 
 
@@ -131,13 +118,8 @@ DcmTag& DcmTag::operator= ( const DcmTag& tag )
 {
     if (this != &tag)
     {
-      delete[] tagName;
-      if (tag.tagName)
-      {
-        tagName = new char[strlen(tag.tagName)+1];
-        if (tagName) strcpy(tagName,tag.tagName);
-      } else tagName = NULL;
-      
+      updateTagName(tag.tagName);
+      updatePrivateCreator(tag.privateCreator);      
       DcmTagKey::set(tag);
       vr = tag.vr;
       errorFlag = tag.errorFlag;
@@ -147,24 +129,16 @@ DcmTag& DcmTag::operator= ( const DcmTag& tag )
 
 // ********************************
 
-DcmTag& DcmTag::operator= ( const DcmTagKey& key )
+void DcmTag::lookupVRinDictionary()
 {
-    DcmTagKey::set(key);
-    delete[] tagName;
-    tagName = NULL;
-
     const DcmDataDictionary& globalDataDict = dcmDataDict.rdlock();
-    const DcmDictEntry *dictRef = globalDataDict.findEntry(key);
+    const DcmDictEntry *dictRef = globalDataDict.findEntry(*this, privateCreator);
     if (dictRef)
     {
         vr = dictRef->getVR();
         errorFlag = EC_Normal;
-    } else {
-        vr.setVR(EVR_UNKNOWN);
-        errorFlag = EC_InvalidTag;
     }
     dcmDataDict.unlock();
-    return *this;
 }
 
 // ********************************
@@ -189,17 +163,13 @@ const char *DcmTag::getTagName()
   
   const char *newTagName = NULL;
   const DcmDataDictionary& globalDataDict = dcmDataDict.rdlock();
-  const DcmDictEntry *dictRef = globalDataDict.findEntry(*this);
+  const DcmDictEntry *dictRef = globalDataDict.findEntry(*this, privateCreator);
   if (dictRef) newTagName=dictRef->getTagName();
   if (newTagName==NULL) newTagName = DcmTag_ERROR_TagName;
-  tagName = new char[strlen(newTagName)+1];
-  if (tagName) 
-  {  
-    strcpy(tagName,newTagName);
-    dcmDataDict.unlock();
-    return tagName;
-  }
+  updateTagName(newTagName);
   dcmDataDict.unlock();
+
+  if (tagName) return tagName;
   return DcmTag_ERROR_TagName;
 }
 
@@ -259,10 +229,47 @@ OFCondition DcmTag::findTagFromName(const char *name,
 }
 
 
+const char* DcmTag::getPrivateCreator() const
+{
+  return privateCreator;
+}
+
+void DcmTag::setPrivateCreator(const char *privCreator)
+{
+    // a new private creator code probably changes the name
+    // of the tag. Enforce new dictionary lookup the next time
+    // getTagName() is called.
+    updateTagName(NULL);
+    updatePrivateCreator(privCreator);
+}
+
+void DcmTag::updateTagName(const char *c)
+{
+    delete[] tagName;
+    if (c)
+    {
+      tagName = new char[strlen(c)+1];
+      if (tagName) strcpy(tagName,c);
+    } else tagName = NULL;
+}
+
+void DcmTag::updatePrivateCreator(const char *c)
+{
+    delete[] privateCreator;
+    if (c)
+    {
+      privateCreator = new char[strlen(c)+1];
+      if (privateCreator) strcpy(privateCreator,c);
+    } else privateCreator = NULL;
+}
+
 /*
 ** CVS/RCS Log:
 ** $Log: dctag.cc,v $
-** Revision 1.16  2002-05-24 09:49:44  joergr
+** Revision 1.17  2002-07-23 14:21:34  meichel
+** Added support for private tag data dictionaries to dcmdata
+**
+** Revision 1.16  2002/05/24 09:49:44  joergr
 ** Renamed some parameters/variables to avoid ambiguities.
 **
 ** Revision 1.15  2002/04/30 13:12:58  joergr

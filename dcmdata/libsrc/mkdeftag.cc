@@ -21,10 +21,10 @@
  *
  *  Purpose: Generate a C++ header defining symbolic names for DICOM Tags.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-11 12:31:03 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-07-23 14:21:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/mkdeftag.cc,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -70,7 +70,7 @@ END_EXTERN_C
 #include "cmdlnarg.h"
 #include "ofstring.h"
 #include "ofdatime.h"
-
+#include "dcdicent.h"
 
 static char*
 convertToIdentifier(char* s)
@@ -156,7 +156,7 @@ printDefined(FILE* fout, const DcmDictEntry* e)
 
 #ifdef HAVE_CUSERID
 static char*
-getUserName(char* userString, int maxLen)
+getUserName(char* userString, int /* maxLen */)
 {
     return cuserid(userString); // thread safe, maxLen >= L_cuserid ?
 }
@@ -300,13 +300,6 @@ int main(int argc, char* argv[])
     fprintf(fout, "#define DCM_DICT_DEFTAG_BUILD_DATE \"%s\"\n", dateString.c_str());
     fputs("\n", fout);
 #endif
-    /* generate the entries themselves */
-    fputs("\n/*\n", fout);
-    fputs("** Fixed Tags in ascending (gggg,eeee) order.\n", fout);
-    fprintf(fout, "** Number of entries: %d\n", 
-           globalDataDict.numberOfNormalTagEntries());
-    fputs("** Tags with a repeating component (repeating tags) are listed later.\n", fout);
-    fputs("*/\n", fout);
 
     /* 
     ** the hash table does not maintain ordering so we must put
@@ -315,28 +308,53 @@ int main(int argc, char* argv[])
     DcmDictEntryList list;
     DcmHashDictIterator iter(globalDataDict.normalBegin());
     DcmHashDictIterator end(globalDataDict.normalEnd());
-    for (; iter != end; ++iter) {
-        e = new DcmDictEntry(*(*iter));
-        list.insertAndReplace(e);
+    for (; iter != end; ++iter)
+    {
+        if ((*iter)->getPrivateCreator() == NULL) // exclude private tags
+        {
+          e = new DcmDictEntry(*(*iter));
+          list.insertAndReplace(e);
+        }
     }
+
+    /* generate the entries themselves */
+    fputs("\n/*\n", fout);
+    fputs("** Fixed Tags in ascending (gggg,eeee) order.\n", fout);
+    fprintf(fout, "** Number of entries: %d\n", 
+           list.size());
+    fputs("** Tags with a repeating component (repeating tags) are listed later.\n", fout);
+    fputs("*/\n", fout);
+
     /* output the list contents */
     DcmDictEntryListIterator listIter(list.begin());
     DcmDictEntryListIterator listLast(list.end());
-    for (; listIter != listLast; ++listIter) {
+    for (; listIter != listLast; ++listIter)
+    {
         printDefined(fout, *listIter);
+    }
+
+    // count non-private repeating tags in dictionary
+    int repCount = 0;
+    DcmDictEntryListIterator repIter(globalDataDict.repeatingBegin());
+    DcmDictEntryListIterator repLast(globalDataDict.repeatingEnd());
+    for (; repIter != repLast; ++repIter)
+    {
+        if ((*repIter)->getPrivateCreator() == NULL) ++repCount;
     }
 
     fputs("\n/*\n", fout);
     fputs("** Tags where the group/element can vary (repeating tags).\n", 
           fout);
-    fprintf(fout, "** Number of entries: %d\n", 
-           globalDataDict.numberOfRepeatingTagEntries());
+    fprintf(fout, "** Number of entries: %d\n", repCount);
     fputs("*/\n", fout);
 
-    DcmDictEntryListIterator repIter(globalDataDict.repeatingBegin());
-    DcmDictEntryListIterator repLast(globalDataDict.repeatingEnd());
-    for (; repIter != repLast; ++repIter) {
-        printDefined(fout, *repIter);
+    repIter = globalDataDict.repeatingBegin();
+    for (; repIter != repLast; ++repIter)
+    {
+        if ((*repIter)->getPrivateCreator() == NULL) // exclude private tags
+        {
+            printDefined(fout, *repIter);
+        }
     }
     fputs("\n#endif /* !DCDEFTAG_H */\n", fout);
 
@@ -347,7 +365,10 @@ int main(int argc, char* argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: mkdeftag.cc,v $
-** Revision 1.19  2002-04-11 12:31:03  joergr
+** Revision 1.20  2002-07-23 14:21:35  meichel
+** Added support for private tag data dictionaries to dcmdata
+**
+** Revision 1.19  2002/04/11 12:31:03  joergr
 ** Added support for MT-safe system routines (cuserid, getlogin, etc.).
 ** Replaced direct call of system routines by new standard date and time
 ** functions.

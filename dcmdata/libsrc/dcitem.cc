@@ -22,9 +22,9 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-07-08 16:15:40 $
+ *  Update Date:      $Date: 2002-07-23 14:21:33 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.73 $
+ *  CVS/RCS Revision: $Revision: 1.74 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,7 +66,8 @@ DcmItem::DcmItem()
   : DcmObject(ItemTag),
     elementList(NULL),
     lastElementComplete(OFTrue),
-    fStartPosition(0)
+    fStartPosition(0),
+    privateCreatorCache()
 {
     elementList = new DcmList;
 }
@@ -79,7 +80,8 @@ DcmItem::DcmItem(const DcmTag &tag, const Uint32 len)
   : DcmObject(tag, len),
     elementList(NULL),
     lastElementComplete(OFTrue),
-    fStartPosition(0)
+    fStartPosition(0),
+    privateCreatorCache()
 {
     elementList = new DcmList;
 }
@@ -92,7 +94,8 @@ DcmItem::DcmItem( const DcmItem& old )
   : DcmObject(old),
     elementList(NULL),
     lastElementComplete(OFTrue),
-    fStartPosition(old.fStartPosition)
+    fStartPosition(old.fStartPosition),
+    privateCreatorCache()
 {
     elementList = new DcmList;
 
@@ -438,7 +441,7 @@ void DcmItem::print(ostream & out, const OFBool showFullData,
         } while ( elementList->seek( ELP_next ) );
     }
 
-    DcmTag delimItemTag( DCM_ItemDelimitationItem );
+    DcmTag delimItemTag(DCM_ItemDelimitationItem);
     if ( Length == DCM_UndefinedLength)
         printInfoLine(out, showFullData, level, delimItemTag,
                       0, "(ItemDelimitationItem)" );
@@ -860,9 +863,9 @@ OFCondition DcmItem::readTagAndLength(DcmStream & inStream,
     inStream.ReadBytes(&elementTag, 2);
     swapIfNecessary(gLocalByteOrder, byteOrder, &groupTag, 2, 2);
     swapIfNecessary(gLocalByteOrder, byteOrder, &elementTag, 2, 2);
-    // Tag ist gelesen
+    // tag has been read
     bytesRead = 4;
-    DcmTag newTag(groupTag, elementTag );
+    DcmTag newTag(groupTag, elementTag);
 
     /* if the transfer syntax which was passed is an explicit VR syntax and if the current */
     /* item is not a delimitation item (note that delimitation items do not have a VR), go */
@@ -896,6 +899,23 @@ OFCondition DcmItem::readTagAndLength(DcmStream & inStream,
 
         /* increase counter by 2 */
         bytesRead += 2;
+    }
+
+    /* special handling for private elements */
+    if ((newTag.getGroup() & 1) && (newTag.getElement() >= 0x1000))
+    {
+      const char *pc = privateCreatorCache.findPrivateCreator(newTag);
+      if (pc)
+      {
+        // we have a private creator for this element
+        newTag.setPrivateCreator(pc);
+
+        if (xferSyn.isImplicitVR())
+        {
+          // try to update VR from dictionary now that private creator is known
+          newTag.lookupVRinDictionary();
+        }
+      }
     }
 
     /* determine this item's VR */
@@ -943,11 +963,6 @@ OFCondition DcmItem::readTagAndLength(DcmStream & inStream,
             valueLength = tmpValueLength;
         }
     }
-
-    /* dump information if required */
-    debug(3, ( "TagAndLength read of: (0x%4.4x,0x%4.4x) \"%s\" [0x%8.8x] \"%s\"",
-            newTag.getGTag(), newTag.getETag(),
-            newTag.getVRName(), valueLength, newTag.getTagName() ));
 
     /* if the value in length is odd, print an error message */
     if ((valueLength & 1)&&(valueLength != (Uint32) -1))
@@ -1156,10 +1171,14 @@ OFCondition DcmItem::read(DcmStream & inStream,
 
                 /* remember how many bytes were read */
                 fTransferredBytes = inStream.Tell() - fStartPosition;
-
-                /* if some error was encountered terminate the while-loop */
-                if ( errorFlag != EC_Normal )
-                    break;
+                
+                if (errorFlag.good())
+                {
+                  // If we completed one element, update the private tag cache.
+                  if (lastElementComplete) 
+                    privateCreatorCache.updateCache(elementList->get());
+                } 
+                else break; // if some error was encountered terminate the while-loop
             } //while
 
             /* determine an appropriate result value; note that if the above called read function */
@@ -1239,7 +1258,7 @@ OFCondition DcmItem::write(DcmStream & outStream,
           if (Length == DCM_UndefinedLength && (errorFlag = outStream.Avail(8)) == EC_Normal)
           {
               // write Item delimitation
-              DcmTag delim( DCM_ItemDelimitationItem );
+              DcmTag delim(DCM_ItemDelimitationItem);
               errorFlag = this -> writeTag(outStream, delim, oxfer);
               Uint32 delimLen = 0L;
               outStream.WriteBytes(&delimLen, 4); // 4 bytes length
@@ -1314,6 +1333,7 @@ void DcmItem::transferInit(void)
     DcmObject::transferInit();
     fStartPosition = 0;
     lastElementComplete = OFTrue;
+    privateCreatorCache.clear();
     if ( !elementList->empty() )
     {
         elementList->seek( ELP_first );
@@ -1332,6 +1352,7 @@ void DcmItem::transferInit(void)
 void DcmItem::transferEnd(void)
 {
     DcmObject::transferEnd();
+    privateCreatorCache.clear();
     if ( !elementList->empty() )
     {
         elementList->seek( ELP_first );
@@ -1347,7 +1368,7 @@ void DcmItem::transferEnd(void)
 // ********************************
 
 
-unsigned long DcmItem::card()
+unsigned long DcmItem::card() const
 {
     return elementList->card();
 }
@@ -3127,7 +3148,10 @@ OFBool DcmItem::containsUnknownVR() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.73  2002-07-08 16:15:40  meichel
+** Revision 1.74  2002-07-23 14:21:33  meichel
+** Added support for private tag data dictionaries to dcmdata
+**
+** Revision 1.73  2002/07/08 16:15:40  meichel
 ** Unknown undefined length attributes are now converted into SQ instead of UN.
 **
 ** Revision 1.72  2002/07/08 14:44:39  meichel

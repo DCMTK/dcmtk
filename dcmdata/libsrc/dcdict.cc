@@ -21,10 +21,10 @@
  *
  *  Purpose: loadable DICOM data dictionary
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-06-12 16:57:52 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-07-23 14:21:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdict.cc,v $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,6 +32,12 @@
  */
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcdict.h"
+
+#include "ofconsol.h"
+#include "ofstd.h"
+#include "dcdefine.h"
+#include "dcdicent.h"
 
 #ifdef HAVE_STDLIB_H
 #ifndef  _BCB4
@@ -44,14 +50,12 @@ END_EXTERN_C
 #endif
 #endif
 
+BEGIN_EXTERN_C
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
+END_EXTERN_C
 
-#include "ofconsol.h"
-#include "ofstd.h"
-#include "dcdict.h"
-#include "dcdefine.h"
 
 /*
 ** The separator character between fields in the data dictionary file(s)
@@ -80,11 +84,12 @@ makeSkelEntry(Uint16 group, Uint16 element,
              DcmEVR evr, const char* tagName, int vmMin, int vmMax,
              const char* standardVersion,
              DcmDictRangeRestriction groupRestriction,
-             DcmDictRangeRestriction elementRestriction)
+             DcmDictRangeRestriction elementRestriction,
+             const char* privCreator)
 {
     DcmDictEntry* e = NULL;
     e = new DcmDictEntry(group, element, upperGroup, upperElement, evr,
-                         tagName, vmMin, vmMax, standardVersion, OFFalse);
+                         tagName, vmMin, vmMax, standardVersion, OFFalse, privCreator);
     if (e != NULL) {
         e->setGroupRangeRestriction(groupRestriction);
         e->setElementRangeRestriction(elementRestriction);
@@ -101,11 +106,11 @@ OFBool DcmDataDictionary::loadSkeletonDictionary()
     DcmDictEntry* e = NULL;
     e = makeSkelEntry(0x0000, 0x0000, 0xffff, 0x0000,
                       EVR_UL, "GenericGroupLength", 1, 1, "GENERIC",
-                      DcmDictRange_Unspecified, DcmDictRange_Unspecified);
+                      DcmDictRange_Unspecified, DcmDictRange_Unspecified, NULL);
     addEntry(e);
     e = makeSkelEntry(0x0000, 0x0001, 0xffff, 0x0001,
                       EVR_UL, "GenericGroupLengthToEnd", 1, 1, "GENERIC",
-                      DcmDictRange_Unspecified, DcmDictRange_Unspecified);
+                      DcmDictRange_Unspecified, DcmDictRange_Unspecified, NULL);
     addEntry(e);
     /*
     ** We need to know about Items and Delimitation Items to parse
@@ -113,15 +118,15 @@ OFBool DcmDataDictionary::loadSkeletonDictionary()
     */
     e = makeSkelEntry(0xfffe, 0xe000, 0xfffe, 0xe000,
                       EVR_na, "Item", 1, 1, "DICOM3",
-                      DcmDictRange_Unspecified, DcmDictRange_Unspecified);
+                      DcmDictRange_Unspecified, DcmDictRange_Unspecified, NULL);
     addEntry(e);
     e = makeSkelEntry(0xfffe, 0xe00d, 0xfffe, 0xe00d,
                       EVR_na, "ItemDelimitationItem", 1, 1, "DICOM3",
-                      DcmDictRange_Unspecified, DcmDictRange_Unspecified);
+                      DcmDictRange_Unspecified, DcmDictRange_Unspecified, NULL);
     addEntry(e);
     e = makeSkelEntry(0xfffe, 0xe0dd, 0xfffe, 0xe0dd,
                       EVR_na, "SequenceDelimitationItem", 1, 1, "DICOM3",
-                      DcmDictRange_Unspecified, DcmDictRange_Unspecified);
+                      DcmDictRange_Unspecified, DcmDictRange_Unspecified, NULL);
     addEntry(e);
 
     skeletonCount = numberOfEntries();
@@ -168,7 +173,6 @@ stripWhitespace(char* s)
     register char *t;
     register char *p;
     t=p=s;
-    /* while (((c = *t))&&(isspace(c))) t++; */
     while ((c = *t++)) if (!isspace(c)) *p++ = c;
     *p = '\0';
   }
@@ -185,6 +189,20 @@ stripTrailingWhitespace(char* s)
     for (i = n - 1; i >= 0 && isspace(s[i]); i--)
         s[i] = '\0';
     return s;
+}
+
+static void
+stripLeadingWhitespace(char* s)
+{
+  if (s)
+  {
+    register char c;
+    register char *t=s;
+    register char *p=s;
+    while (isspace(*t)) t++;
+    while ((c = *t++)) *p++ = c;
+    *p = '\0';
+  }
 }
 
 static OFBool
@@ -253,8 +271,6 @@ splitFields(const char* line, char* fields[], int maxFields, char splitChar)
         fields[foundFields] = (char*)malloc(len+1);
         strncpy(fields[foundFields], line, len);
         fields[foundFields][len] = '\0';
-        stripWhitespace(fields[foundFields]);
-
         foundFields++;
         line = p + 1;
     } while ((foundFields < maxFields) && (p != NULL));
@@ -305,15 +321,19 @@ static OFBool
 parseWholeTagField(char* s, DcmTagKey& key,
                    DcmTagKey& upperKey,
                    DcmDictRangeRestriction& groupRestriction,
-                   DcmDictRangeRestriction& elementRestriction)
+                   DcmDictRangeRestriction& elementRestriction,
+                   char *&privCreator)
 {
     unsigned int gl, gh, el, eh;
     groupRestriction = DcmDictRange_Unspecified;
     elementRestriction = DcmDictRange_Unspecified;
 
-    stripWhitespace(s);
+    stripLeadingWhitespace(s);
+    stripTrailingWhitespace(s);
+
     char gs[64];
     char es[64];
+    char pc[64];
     int slen = strlen(s);
 
     if (s[0] != '(') return OFFalse;
@@ -323,15 +343,31 @@ parseWholeTagField(char* s, DcmTagKey& key,
     /* separate the group and element parts */
     int i = 1; /* after the '(' */
     int gi = 0;
-    for (; s[i] != ',' && s[i] != '\0'; i++) {
+    for (; s[i] != ',' && s[i] != '\0'; i++)
+    {
         gs[gi] = s[i];
         gi++;
     }
     gs[gi] = '\0';
 
     if (s[i] == '\0') return OFFalse; /* element part missing */
-
     i++; /* after the ',' */
+
+    stripLeadingWhitespace(s+i);
+
+    int pi = 0;
+    if (s[i] == '\"') /* private creator */
+    {
+        i++;  // skip opening quotation mark
+        for (; s[i] != '\"' && s[i] != '\0'; i++) pc[pi++] = s[i];
+        pc[pi] = '\0';
+        if (s[i] == '\0') return OFFalse; /* closing quotation mark missing */
+        i++; 
+        stripLeadingWhitespace(s+i);
+        if (s[i] != ',') return OFFalse; /* element part missing */
+        i++; /* after the ',' */
+    }
+
     int ei = 0;
     for (; s[i] != ')' && s[i] != '\0'; i++) {
         es[ei] = s[i];
@@ -340,11 +376,20 @@ parseWholeTagField(char* s, DcmTagKey& key,
     es[ei] = '\0';
 
     /* parse the tag parts into their components */
+    stripWhitespace(gs);
     if (parseTagPart(gs, gl, gh, groupRestriction) == OFFalse)
         return OFFalse;
 
+    stripWhitespace(es);
     if (parseTagPart(es, el, eh, elementRestriction) == OFFalse)
         return OFFalse;
+
+    if (pi > 0)
+    {
+      // copy private creator name
+      privCreator = new char[strlen(pc)+1]; // deleted by caller
+      if (privCreator) strcpy(privCreator,pc);
+    }
 
     key.set(gl,el);
     upperKey.set(gh,eh);
@@ -408,6 +453,7 @@ DcmDataDictionary::loadDictionary(const char* fileName, OFBool errorIfAbsent)
     DcmVR vr;
     char* vrName;
     char* tagName;
+    char* privCreator;
     int vmMin, vmMax = 1;
     const char* standardVersion;
 
@@ -440,6 +486,7 @@ DcmDataDictionary::loadDictionary(const char* fileName, OFBool errorIfAbsent)
         /* initialize dict entry fields */
         vrName = NULL;
         tagName = NULL;
+        privCreator = NULL;
         vmMin = vmMax = 1;
         standardVersion = "DICOM";
 
@@ -461,6 +508,7 @@ DcmDataDictionary::loadDictionary(const char* fileName, OFBool errorIfAbsent)
             errorOnThisLine = OFTrue;
             break;
         case 5:
+            stripWhitespace(lineFields[4]);
             standardVersion = lineFields[4];
             /* drop through to next case label */
         case 4:
@@ -475,7 +523,8 @@ DcmDataDictionary::loadDictionary(const char* fileName, OFBool errorIfAbsent)
             /* drop through to next case label */
         case 3:
             if (!parseWholeTagField(lineFields[0], key, upperKey,
-                                    groupRestriction, elementRestriction)) {
+                 groupRestriction, elementRestriction, privCreator))
+            {
                 ofConsole.lockCerr() << "DcmDataDictionary: " << fileName << ": "
                      << "bad Tag field (line "
                      << lineNumber << "): " << lineFields[0] << endl;
@@ -484,7 +533,11 @@ DcmDataDictionary::loadDictionary(const char* fileName, OFBool errorIfAbsent)
             } else {
                 /* all is OK */
                 vrName = lineFields[1];
+                stripWhitespace(vrName);
+
                 tagName = lineFields[2];
+                stripWhitespace(tagName);
+
             }
         }
 
@@ -501,9 +554,12 @@ DcmDataDictionary::loadDictionary(const char* fileName, OFBool errorIfAbsent)
         }
 
         if (!errorOnThisLine) {
-            e = new DcmDictEntry(key.getGroup(), key.getElement(),
-                                 upperKey.getGroup(), upperKey.getElement(),
-                                 vr, tagName, vmMin, vmMax, standardVersion);
+            e = new DcmDictEntry(
+                key.getGroup(), key.getElement(),
+                upperKey.getGroup(), upperKey.getElement(),
+                vr, tagName, vmMin, vmMax, standardVersion, OFTrue,
+                privCreator);
+
             e->setGroupRangeRestriction(groupRestriction);
             e->setElementRangeRestriction(elementRestriction);
             addEntry(e);
@@ -513,6 +569,8 @@ DcmDataDictionary::loadDictionary(const char* fileName, OFBool errorIfAbsent)
             free(lineFields[i]);
             lineFields[i] = NULL;
         }
+
+        delete[] privCreator;
 
         if (errorOnThisLine) {
             errorsEncountered++;
@@ -641,7 +699,7 @@ DcmDataDictionary::deleteEntry(const DcmDictEntry& entry)
             repDict.remove(e);
             delete e;
         } else {
-            hashDict.del(entry.getKey());
+            hashDict.del(entry.getKey(), entry.getPrivateCreator());
         }
     }
 }
@@ -662,27 +720,27 @@ DcmDataDictionary::findEntry(const DcmDictEntry& entry) const
             }
         }
     } else {
-        e = hashDict.get(entry);
+        e = hashDict.get(entry, entry.getPrivateCreator());
     }
     return e;
 }
 
 const DcmDictEntry*
-DcmDataDictionary::findEntry(const DcmTagKey& key) const
+DcmDataDictionary::findEntry(const DcmTagKey& key, const char *privCreator) const
 {
     /* search first in the normal tags dictionary and if not found
      * then search in the repeating tags list.
      */
     const DcmDictEntry* e = NULL;
 
-    e = hashDict.get(key);
+    e = hashDict.get(key, privCreator);
     if (e == NULL) {
         /* search in the repeating tags dictionary */
         OFBool found = OFFalse;
         DcmDictEntryListIterator iter(repDict.begin());
         DcmDictEntryListIterator last(repDict.end());
         for (; !found && iter != last; ++iter) {
-            if ((*iter)->contains(key)) {
+            if ((*iter)->contains(key, privCreator)) {
                 found = OFTrue;
                 e = *iter;
             }
@@ -775,7 +833,10 @@ void GlobalDcmDataDictionary::clear()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.cc,v $
-** Revision 1.26  2002-06-12 16:57:52  joergr
+** Revision 1.27  2002-07-23 14:21:30  meichel
+** Added support for private tag data dictionaries to dcmdata
+**
+** Revision 1.26  2002/06/12 16:57:52  joergr
 ** Added test to "load data dictionary" routine checking whether given filename
 ** really points to a file and not to a directory or the like.
 **

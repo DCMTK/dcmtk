@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface for a dictionary entry in the loadable DICOM data dictionary
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:41:44 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-07-23 14:21:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdicent.h,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,312 +32,392 @@
  */
 
 #ifndef DCDICENT_H
-#define DCDICENT_H 1
+#define DCDICENT_H
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
+BEGIN_EXTERN_C
 #include <string.h>
+END_EXTERN_C
 
-#include "ofstream.h"
 #include "dctagkey.h"
 #include "dcvr.h"
 
-
+/// constant describing an unlimited VM
 #define DcmVariableVM   -1
 
 #define DCM_INRANGE(x,a,b) (((x) >= (a)) && ((x) <= (b)))
 #define DCM_IS_ODD(x) (((x) % 2) == 1)
 #define DCM_IS_EVEN(x) (((x) % 2) == 0)
 
-/*
- * DcmDictEntry is an entry in the DICOM Data Dictionary
- */ 
 
-enum DcmDictRangeRestriction {
+/** attribute tag group/element range restrictions
+ */
+enum DcmDictRangeRestriction
+{
+    /// integer range
     DcmDictRange_Unspecified,
+
+    /// odd range
     DcmDictRange_Odd,
+
+    /// even range
     DcmDictRange_Even
 };
 
-class DcmDictEntry : public DcmTagKey {
-private:
-    DcmTagKey   upperKey;       /* upper limit of repeating group/element */
-    DcmVR       valueRepresentation;
-    const char* tagName;
-    int         valueMultiplicityMin;
-    int         valueMultiplicityMax;
-    const char* standardVersion;
-    OFBool      stringsAreCopies;
-    DcmDictRangeRestriction groupRangeRestriction;
-    DcmDictRangeRestriction elementRangeRestriction;
 
- // --- declarations to avoid compiler warnings
- 
-    DcmDictEntry &operator=(const DcmDictEntry &);
-
+/** each object of this class manages one entry of the 
+ *  global DICOM data dictionary.
+ */
+class DcmDictEntry: public DcmTagKey
+{
 public:
-    /* constructors */
-    DcmDictEntry();
-    DcmDictEntry(const DcmTagKey& k);
+
+    /** constructor
+     *  @param g attribute tag group
+     *  @param e attribute tag element
+     *  @param vr value representation
+     *  @param nam attribute name
+     *  @param vmMin lower limit for value multiplicity
+     *  @param vmMax upper limit for value multiplicity, DcmVariableVM for unlimited
+     *  @param vers standard version name, may be NULL
+     *  @param doCopyStrings true if strings should be copied, false if only referenced
+     *  @param pcreator private creator name, may be NULL (for standard tags)
+     */
     DcmDictEntry(Uint16 g, Uint16 e, DcmVR vr, 
-        const char* nam=NULL, int vmMin=1, int vmMax=1,
-        const char* vers="DICOM3", OFBool doCopyStrings=OFTrue);        
+        const char* nam, int vmMin, int vmMax,
+        const char* vers, OFBool doCopyStrings, 
+        const char* pcreator);        
+
+    /** constructor for repeating tags
+     *  @param g attribute tag group lower limit
+     *  @param e attribute tag element lower limit
+     *  @param ug attribute tag group upper limit
+     *  @param ue attribute tag element upper limit
+     *  @param vr value representation
+     *  @param nam attribute name
+     *  @param vmMin lower limit for value multiplicity
+     *  @param vmMax upper limit for value multiplicity, DcmVariableVM for unlimited
+     *  @param vers standard version name, may be NULL
+     *  @param doCopyStrings true if strings should be copied, false if only referenced
+     *  @param pcreator private creator name, may be NULL (for standard tags)
+     */
     DcmDictEntry(Uint16 g, Uint16 e, Uint16 ug, Uint16 ue, DcmVR vr,
-        const char* nam=NULL, int vmMin=1, int vmMax=1,
-        const char* vers="DICOM3", OFBool doCopyStrings=OFTrue);        
+        const char* nam, int vmMin, int vmMax,
+        const char* vers, OFBool doCopyStrings, 
+        const char* pcreator);        
+
+    /// copy constructor
     DcmDictEntry(const DcmDictEntry& e);
     
-    /* destructor */
+    /// destructor
     ~DcmDictEntry();
 
     /* access methods */
 
-    DcmVR getVR() const;
-    DcmEVR getEVR() const;
-    const char* getStandardVersion() const;
-    const char* getTagName() const;
-    
-    int getVMMin() const;
-    int getVMMax() const;
-    OFBool isFixedSingleVM() const;
-    OFBool isFixedRangeVM() const;
-    OFBool isVariableRangeVM() const;
+    /// returns VR object by value
+    DcmVR getVR() const
+    { 
+        return valueRepresentation; 
+    }
 
-    void setUpper(const DcmTagKey& key);
-    void setUpperGroup(Uint16 ug);
-    void setUpperElement(Uint16 ue);
-    Uint16 getUpperGroup() const;
-    Uint16 getUpperElement() const;
+    /// returns VR code
+    DcmEVR getEVR() const
+    {
+        return valueRepresentation.getEVR();
+    }
 
-    DcmTagKey getKey() const;
-    DcmTagKey getUpperKey() const;
-    
-    int isRepeatingGroup() const;
-    int isRepeatingElement() const;
-    int isRepeating() const;
+    /// returns standard version string, may be NULL
+    const char* getStandardVersion() const
+    {
+        return standardVersion;
+    }
 
-    DcmDictRangeRestriction getGroupRangeRestriction() const;
-    void setGroupRangeRestriction(DcmDictRangeRestriction rr);
-    DcmDictRangeRestriction getElementRangeRestriction() const;
-    void setElementRangeRestriction(DcmDictRangeRestriction rr);
+    /// returns tag name
+    const char* getTagName() const
+    {
+        return tagName;
+    }
+
+    /// returns private creator code, may be NULL
+    const char* getPrivateCreator() const
+    {
+        return privateCreator;
+    }
+
+    /** checks if the private creator code equals the given string
+     *  @param c string to compare with, may be NULL
+     *  @return true if equal, false otherwise
+     */
+    int privateCreatorMatch(const char *c) const
+    {
+      return 
+      (
+        ((privateCreator == NULL) && (c == NULL)) ||
+        (privateCreator && c && (0 == strcmp(privateCreator, c)))
+      );
+    }
+
+    /** checks if the private creator code of this object matches
+     *  the one of the given object.
+     *  @param arg dictionary entry to compare with
+     *  @return true if private creators are equal, false otherwise
+     */
+    int privateCreatorMatch(const DcmDictEntry& arg) const
+    {
+      return privateCreatorMatch(arg.privateCreator);
+    }
+
+    /// returns lower limit for VM (value multiplicity)
+    int getVMMin() const
+    {
+        return valueMultiplicityMin;
+    }
+
+    /// returns upper limit for VM (value multiplicity), DcmVariableVM for unlimited
+    int getVMMax() const
+    {
+        return valueMultiplicityMax;
+    }
+
+    /// returns true if element has a single valid VM value
+    OFBool isFixedSingleVM() const
+    {
+        return (OFBool)((valueMultiplicityMin != DcmVariableVM) &&
+                      (valueMultiplicityMin == valueMultiplicityMax));
+    }
+
+    /// returns true if element has a fixed VM range
+    OFBool isFixedRangeVM() const
+    {
+        return (OFBool)((valueMultiplicityMin != DcmVariableVM) &&
+                      (valueMultiplicityMax != DcmVariableVM));
+    }
+
+    /// returns true if element has a variable VM range (no upper limit)
+    OFBool isVariableRangeVM() const
+    {
+        return (OFBool)((valueMultiplicityMin != DcmVariableVM) &&
+                      (valueMultiplicityMax == DcmVariableVM));
+    }
+
+    /** converts entry into repeating tag entry by defining an upper limit
+     *  for group and element, taken from the given tag key.
+     *  @param key tag key containing upper limit for group and element
+     */
+    void setUpper(const DcmTagKey& key)
+    {
+        upperKey = key;
+    }
+
+    /** converts entry into repeating tag entry by defining an upper limit
+     *  for tag group
+     *  @param ug upper limit for tag group
+     */
+    void setUpperGroup(Uint16 ug)
+    {
+        upperKey.setGroup(ug);
+    }
+
+    /** converts entry into repeating tag entry by defining an upper limit
+     *  for tag element
+     *  @param ue upper limit for tag element
+     */
+    void setUpperElement(Uint16 ue)
+    {
+        upperKey.setElement(ue);
+    }
+
+    /// returns upper limit for tag group
+    Uint16 getUpperGroup() const
+    {
+        return upperKey.getGroup();
+    }
+
+    /// returns upper limit for tag element
+    Uint16 getUpperElement() const
+    {
+        return upperKey.getElement();
+    }
+
+    /// returns attribute tag as DcmTagKey object by value
+    DcmTagKey getKey() const
+    {
+        return *(DcmTagKey*)(this);
+    }
+
+    /// returns upper limits for attribute tag as DcmTagKey object by value
+    DcmTagKey getUpperKey() const
+    {
+        return upperKey;
+    }
+
+    /// returns true if entry is has a repeating group
+    int isRepeatingGroup() const
+    {
+        return (getGroup() != getUpperGroup());
+    }
+
+    /// returns true if entry is has a repeating element
+    int isRepeatingElement() const
+    {
+        return (getElement() != getUpperElement());
+    }
+
+    /// returns true if entry is repeating (group or element)
+    int isRepeating() const
+    {
+        return (isRepeatingGroup() || isRepeatingElement());
+    }
+
+    /// returns group range restriction
+    DcmDictRangeRestriction getGroupRangeRestriction() const
+    {
+        return groupRangeRestriction;
+    }
+
+    /// sets group range restriction
+    void setGroupRangeRestriction(DcmDictRangeRestriction rr)
+    {
+        groupRangeRestriction = rr;
+    }
+
+    /// returns element range restriction
+    DcmDictRangeRestriction getElementRangeRestriction() const
+    {
+        return elementRangeRestriction;
+    }
+
+    /// sets element range restriction
+    void setElementRangeRestriction(DcmDictRangeRestriction rr)
+    {
+        elementRangeRestriction = rr;
+    }
 
     /* containment */
-    int contains(const DcmTagKey& key) const; /* this contains key */
-    int contains(const char *name) const; /* this contains named key */
+
+    /** checks if the given tag key and private creator code are covered
+     *  by this object.
+     *  @param key tag key
+     *  @param privCreator private creator, may be NULL
+     *  @return true if this entry contains the given tag for the given private creator
+     */
+    int contains(const DcmTagKey& key, const char *privCreator) const /* this contains key */
+    {
+        if ((getGroupRangeRestriction() == DcmDictRange_Even) &&
+            DCM_IS_ODD(key.getGroup()))
+            return OFFalse;
+        else if ((getGroupRangeRestriction() == DcmDictRange_Odd) &&
+            DCM_IS_EVEN(key.getGroup()))
+            return OFFalse;
+        else if ((getElementRangeRestriction() == DcmDictRange_Even) &&
+            DCM_IS_ODD(key.getElement()))
+            return OFFalse;
+        else if ((getElementRangeRestriction() == DcmDictRange_Odd) &&
+            DCM_IS_EVEN(key.getElement()))
+            return OFFalse;
+        else if (! privateCreatorMatch(privCreator))
+            return OFFalse;
+        else
+        {
+            return
+                DCM_INRANGE(key.getGroup(), getGroup(), getUpperGroup()) &&
+                DCM_INRANGE(key.getElement(), getElement(), getUpperElement());
+        }
+    }
+
+    /** checks if this entry contains the given name
+     *  @param name attribute name, must not be NULL
+     *  @return true if tagName matches the given string
+     */
+    int contains(const char *name) const /* this contains named key */
+    {
+        return !strcmp( tagName, name );
+    }
 
     /* set relations */
-    int subset(const DcmDictEntry& e) const; /* this is a subset of key */
-    int setEQ(const DcmDictEntry& e) const; /* this is set equal to key */
 
-    friend  ostream& operator<<(ostream& s, const DcmDictEntry& e);
-};
-
-
-/*
-** Inline member functions
-*/
-
-inline DcmVR 
-DcmDictEntry::getVR() const 
-{ 
-    return valueRepresentation; 
-}
-
-inline DcmEVR 
-DcmDictEntry::getEVR() const 
-{ 
-    return valueRepresentation.getEVR(); 
-}
-
-inline const char* 
-DcmDictEntry::getStandardVersion() const 
-{ 
-    return standardVersion; 
-}
-
-inline const char* 
-DcmDictEntry::getTagName() const 
-{ 
-    return tagName; 
-}
-    
-inline int 
-DcmDictEntry::getVMMin() const 
-{ 
-    return valueMultiplicityMin; 
-}
-
-inline int 
-DcmDictEntry::getVMMax() const 
-{ 
-    return valueMultiplicityMax; 
-}
-
-inline OFBool 
-DcmDictEntry::isFixedSingleVM() const 
-{ 
-    return (OFBool)((valueMultiplicityMin != DcmVariableVM) &&
-                  (valueMultiplicityMin == valueMultiplicityMax));
-}
-
-inline OFBool 
-DcmDictEntry::isFixedRangeVM() const 
-{ 
-    return (OFBool)((valueMultiplicityMin != DcmVariableVM) &&
-                  (valueMultiplicityMax != DcmVariableVM));
-}
-
-inline OFBool 
-DcmDictEntry::isVariableRangeVM() const 
-{
-    return (OFBool)((valueMultiplicityMin != DcmVariableVM) &&
-                  (valueMultiplicityMax == DcmVariableVM));
-}
-
-inline void 
-DcmDictEntry::setUpper(const DcmTagKey& key) 
-{ 
-    upperKey = key; 
-}    
-
-inline void 
-DcmDictEntry::setUpperGroup(Uint16 ug) 
-{ 
-    upperKey.setGroup(ug); 
-}
-
-inline void 
-DcmDictEntry::setUpperElement(Uint16 ue) 
-{ 
-    upperKey.setElement(ue); 
-}
-
-inline Uint16 
-DcmDictEntry::getUpperGroup() const 
-{ 
-    return upperKey.getGroup(); 
-}
-
-inline Uint16 
-DcmDictEntry::getUpperElement() const 
-{ 
-    return upperKey.getElement(); 
-}
-
-inline DcmTagKey 
-DcmDictEntry::getKey() const
-{
-    return *(DcmTagKey*)(this);
-}
-
-inline DcmTagKey 
-DcmDictEntry::getUpperKey() const
-{
-    return upperKey;
-}
-
-inline int 
-DcmDictEntry::isRepeatingGroup() const 
-{ 
-    return (getGroup() != getUpperGroup()); 
-}
-
-inline int 
-DcmDictEntry::isRepeatingElement() const 
-{ 
-    return (getElement() != getUpperElement()); 
-}
-
-inline int 
-DcmDictEntry::isRepeating() const 
-{ 
-    return (isRepeatingGroup() || isRepeatingElement()); 
-}
-
-inline DcmDictRangeRestriction 
-DcmDictEntry::getGroupRangeRestriction() const
-{
-    return groupRangeRestriction;
-}
-
-inline void 
-DcmDictEntry::setGroupRangeRestriction(DcmDictRangeRestriction rr)
-{
-    groupRangeRestriction = rr;
-}
-
-inline DcmDictRangeRestriction 
-DcmDictEntry::getElementRangeRestriction() const
-{
-    return elementRangeRestriction;
-}
-
-inline void 
-DcmDictEntry::setElementRangeRestriction(DcmDictRangeRestriction rr)
-{
-    elementRangeRestriction = rr;
-}
-
-/* containment */
-inline int 
-DcmDictEntry::contains(const DcmTagKey& key) const
-{
-    if ((getGroupRangeRestriction() == DcmDictRange_Even) && 
-        DCM_IS_ODD(key.getGroup()))
-        return OFFalse;
-    else if ((getGroupRangeRestriction() == DcmDictRange_Odd) &&
-        DCM_IS_EVEN(key.getGroup())) 
-        return OFFalse;
-    else if ((getElementRangeRestriction() == DcmDictRange_Even) &&
-        DCM_IS_ODD(key.getElement()))
-        return OFFalse;
-    else if ((getElementRangeRestriction() == DcmDictRange_Odd) &&
-        DCM_IS_EVEN(key.getElement()))
-        return OFFalse;
-    else
+    /** checks if this entry describes a true subset of tag range 
+     *  described by the given entry.
+     *  @param e entry to compare with
+     *  @return true if this object is subset of e
+     */
+    int subset(const DcmDictEntry& e) const /* this is a subset of key */
     {
-        return 
-            DCM_INRANGE(key.getGroup(), getGroup(), getUpperGroup()) &&
-            DCM_INRANGE(key.getElement(), getElement(), getUpperElement());
+        return ( (getGroup() >= e.getGroup()) &&
+                 (getUpperGroup() <= e.getUpperGroup()) &&
+                 (getElement() >= e.getElement()) &&
+                 (getUpperElement() <= e.getUpperElement()) &&
+                 privateCreatorMatch(e.privateCreator)
+            );
     }
-}
 
-inline int 
-DcmDictEntry::contains(const char *name) const
-{
-    return !strcmp( tagName, name );
-}
+    /** checks if this entry describes the same tag range as the given entry.
+     *  @param e entry to compare with
+     *  @return true if objects describe the same tag range
+     */
+    int setEQ(const DcmDictEntry& e) const /* this is set equal to key */
+    {
+        return ( (getGroup() == e.getGroup()) &&
+                 (getUpperGroup() == e.getUpperGroup()) &&
+                 (getElement() == e.getElement()) &&
+                 (getUpperElement() == e.getUpperElement()) &&
+                 (getGroupRangeRestriction() == e.getGroupRangeRestriction()) &&
+                 (getElementRangeRestriction() == e.getElementRangeRestriction()) &&
+                 privateCreatorMatch(e.privateCreator)
+            );
+    }
 
-/* set relations */
-inline int 
-DcmDictEntry::subset(const DcmDictEntry& e) const
-{
-    return ( (getGroup() >= e.getGroup()) &&
-             (getUpperGroup() <= e.getUpperGroup()) &&
-             (getElement() >= e.getElement()) &&
-             (getUpperElement() <= e.getUpperElement())
-        ); 
-}
+    /// friend operator<<
+    friend ostream& operator<<(ostream& s, const DcmDictEntry& e);
 
-inline int
-DcmDictEntry::setEQ(const DcmDictEntry& e) const
-{
-    return ( (getGroup() == e.getGroup()) &&
-             (getUpperGroup() == e.getUpperGroup()) &&
-             (getElement() == e.getElement()) &&
-             (getUpperElement() == e.getUpperElement()) &&
-             (getGroupRangeRestriction() == e.getGroupRangeRestriction()) &&
-             (getElementRangeRestriction() == e.getElementRangeRestriction())
-        ); 
-}
+private:
 
+    /// private undefined copy assignment operator 
+    DcmDictEntry &operator=(const DcmDictEntry &);
+
+    /** upper limit of repeating group and element (lower limit is inherited 
+     *   from DcmTagKey)
+     */
+    DcmTagKey upperKey;
+
+    /// value representation
+    DcmVR valueRepresentation;
+
+    /// attribute name
+    const char *tagName;
+
+    /// lower limit for VM
+    int valueMultiplicityMin;
+
+    /// upper limit for VM
+    int valueMultiplicityMax;
+
+    /// standard version name, may be NULL
+    const char *standardVersion;
+
+    /// true if strings are copies (i.e. should be deleted upon destruction)
+    OFBool stringsAreCopies;
+
+    /// restriction (even, odd, unrestricted) for group range
+    DcmDictRangeRestriction groupRangeRestriction;
+
+    /// restriction (even, odd, unrestricted) for element range
+    DcmDictRangeRestriction elementRangeRestriction;
+
+    /// private creator name, may be NULL
+    const char *privateCreator;
+};
 
 #endif /* !DCDICENT_H */
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicent.h,v $
-** Revision 1.15  2002-04-16 13:41:44  joergr
+** Revision 1.16  2002-07-23 14:21:25  meichel
+** Added support for private tag data dictionaries to dcmdata
+**
+** Revision 1.15  2002/04/16 13:41:44  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
 ** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
 ** contribution.

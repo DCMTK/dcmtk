@@ -29,6 +29,7 @@ LOCALINCLUDES=-I$(ofstddir)/include -I$(includedir)/ofstd
 LOCALDEFS= 
 
 DICTFILE=dicom.dic
+PRIVDICTFILE=private.dic
 
 include $(configdir)/@common_makefile@
 
@@ -48,7 +49,7 @@ objs= 	dcpixseq.o dcpxitem.o dcuid.o dcerror.o dcbuf.o \
 	dcvrat.o dcvrss.o dcvrus.o dcvrsl.o dcvrul.o dcvrulup.o dcvrfl.o \
 	dcvrfd.o dcvrpobw.o dcdirrec.o dcdicdir.o dcvm.o dcutils.o \
 	dcrleccd.o dcrlecce.o dcrlecp.o dcrlerp.o dcrledrg.o dcrleerg.o \
-	$(dictobjs) cmdlnarg.o dcvrut.o dctypes.o
+	$(dictobjs) cmdlnarg.o dcvrut.o dctypes.o dcpcache.o
 
 all: libdcmdata.$(LIBEXT)
 
@@ -63,9 +64,16 @@ install-include:
 
 install-support: install-bin
 
-$(libdir)/dicom.dic:	dicom.dic
-	$(configdir)/mkinstalldirs $(libdir)
-	$(INSTALL_DATA) dicom.dic $(libdir)/dicom.dic
+
+$(libdir)/dicom.dic: $(DICTFILE) $(PRIVDICTFILE)
+	$(configdir)/mkinstalldirs $(libdir)       
+ifeq ($(INSTALL_PRIVATE_DICTIONARY),YES)
+	cat $(DICTFILE) $(PRIVDICTFILE) >dicom.tmp
+	$(INSTALL_DATA) dicom.tmp $(libdir)/dicom.dic
+else
+	$(INSTALL_DATA) $(DICTFILE) $(libdir)/dicom.dic
+endif
+
 
 $(libdir)/libdcmdata.$(LIBEXT):	libdcmdata.$(LIBEXT)
 	$(configdir)/mkinstalldirs $(libdir)
@@ -95,18 +103,18 @@ mkdictbi:	mkdictbi.o $(dictobjs) cmdlnarg.o
 
 # Generate a new include file of defined tags
 
-gendeftag:	mkdeftag $(DICTFILE)
-	`pwd`/mkdeftag `pwd`/$(DICTFILE) > $(top_srcdir)/include/dcdeftag.h
+gendeftag:	mkdeftag $(DICTFILE) $(PRIVDICTFILE)
+	`pwd`/mkdeftag `pwd`/$(DICTFILE) `pwd`/$(PRIVDICTFILE) > $(top_srcdir)/include/dcdeftag.h
 
 # Generate a file which can be used as a builtin dictionary
 
-dcdictzz.cc:	mkdictbi $(DICTFILE)
-	`pwd`/mkdictbi `pwd`/$(DICTFILE) > dcdictzz.cc
+dcdictzz.cc:	mkdictbi $(DICTFILE) $(PRIVDICTFILE)
+	`pwd`/mkdictbi `pwd`/$(DICTFILE) `pwd`/$(PRIVDICTFILE) > dcdictzz.cc
 
-# Generate a builtin data dictionary from $(DICTFILE)
+# Generate a builtin data dictionary from $(DICTFILE) and $(PRIVDICTFILE)
 
-builtindict:	nobuiltindict mkdictbi $(DICTFILE)
-	`pwd`/mkdictbi `pwd`/$(DICTFILE) > dcdictbi.cc
+builtindict:	nobuiltindict mkdictbi $(DICTFILE) $(PRIVDICTFILE)
+	`pwd`/mkdictbi `pwd`/$(DICTFILE) `pwd`/$(PRIVDICTFILE) > dcdictbi.cc
 
 # Generate an empty builtin data dictionary
  

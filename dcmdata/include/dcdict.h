@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Interface for loadable DICOM data dictionary
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-02-27 14:21:20 $
+ *  Update Date:      $Date: 2002-07-23 14:21:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdict.h,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,19 +32,19 @@
  */
 
 #ifndef DCMDICT_H
-#define DCMDICT_H 1
+#define DCMDICT_H
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
-
 #include "dchashdi.h"
+#include "ofthread.h"
 
-/*
- * The DICOM Data Dictionary
- */
-
+/// maximum length of a line in the loadable DICOM dictionary
 #define DCM_MAXDICTLINESIZE     2048
+
+/// maximum number of fields per entry in the loadable DICOM dictionary
 #define DCM_MAXDICTFIELDS       6
 
+/// environment variable pointing to the data dictionary file
 #define DCM_DICT_ENVIRONMENT_VARIABLE   "DCMDICTPATH"
 
 #ifndef DCM_DICT_DEFAULT_PATH
@@ -60,101 +60,151 @@
 #endif
 
 
-class DcmDataDictionary {
+/** this class implements a loadable DICOM Data Dictionary
+ */
+class DcmDataDictionary
+{
 public:
-    /* constructor/destructor */
-    DcmDataDictionary(OFBool loadBuiltin=OFFalse, OFBool loadExternal=OFFalse);
+
+    /** constructor
+     *  @param loadBuiltin flag indicating if a built-in data dictionary
+     *    (if any) should be loaded.
+     *  @param loadExternal flag indicating if an external data dictionary
+     *    should be read from file.
+     */
+    DcmDataDictionary(OFBool loadBuiltin, OFBool loadExternal);
+
+    /// destructor
     ~DcmDataDictionary();
 
-    /* is a data dictionary loaded (excluding the skeleton dictionary) */
+    /** checks if a data dictionary is loaded (excluding the skeleton dictionary)
+     *  @return true if loaded, false if no dictionary is present
+     */
     OFBool isDictionaryLoaded() const { return dictionaryLoaded; }
 
-    /* the number of normal/repeating tag entries  */
+    /// returns the number of normal (non-repeating) tag entries
     int numberOfNormalTagEntries() const { return hashDict.size(); }
+
+    /// returns the number of repeating tag entries
     int numberOfRepeatingTagEntries() const { return repDict.size(); }
 
-    /* total number of dictionary entries  */
+    /** returns the number of dictionary entries that were loaded
+     *  either from file or from a built-in dictionary or both.
+     */
     int numberOfEntries() const
         { return numberOfNormalTagEntries() 
               + numberOfRepeatingTagEntries() - skeletonCount; }
 
-    /* the number of skeleton entries */
+    /** returns the number of skeleton entries. The skeleton is a collection
+     *  of dictionary entries which are always present, even if neither internal
+     *  nor external dictionary have been loaded. It contains very basic 
+     *  things like item delimitation and sequence delimitation.
+     */
     int numberOfSkeletonEntries() const { return skeletonCount; }
 
-    /*
-     * Load a particular dictionary from file.
-     * Returns OFFalse if file cannot be opened (only if errorIfAbsent==OFTrue)
-     * Returns OFFalse if formatting error encountered in file
+    /** load a particular dictionary from file.
+     *  @param fileName filename
+     *  @param errorIfAbsent causes the method to return false 
+     *     if the file cannot be opened
+     *  @return false if the file contains a parse error or if the file could
+     *     not be opened and errorIfAbsent was set, true otherwise.
      */
     OFBool loadDictionary(const char* fileName, OFBool errorIfAbsent=OFTrue);
     
-    /* 
-     * Dictionary lookups are performed by looking for a key. 
-     * First the normal tag dictionary is searched.  If not found
-     * then the repeating tag dictionary is searched.
+    /** dictionary lookup for the given tag key and private creator name.
+     *  First the normal tag dictionary is searched.  If not found
+     *  then the repeating tag dictionary is searched.
+     *  @param key tag key
+     *  @param privCreator private creator name, may be NULL
      */
-    const DcmDictEntry* findEntry(const DcmTagKey& key) const;
-    const DcmDictEntry* findEntry(const char *name) const; /* by name also */
+    const DcmDictEntry* findEntry(const DcmTagKey& key, const char *privCreator) const;
 
-    void clear(); /* delete all entries */
+    /** dictionary lookup for the given attribute name.
+     *  First the normal tag dictionary is searched.  If not found
+     *  then the repeating tag dictionary is searched.
+     *  Only considers standard attributes (i. e. without private creator)
+     *  @param name attribute name
+     */
+    const DcmDictEntry* findEntry(const char *name) const;
 
-    /*
-     * Add an entry to the dictionary.  Must be allocated via new.
-     * The entry becomes the property of the dictionary and will be
-     * deallocated (via delete) upon clear() or dictionary destruction.
-     * If an equivalent entry already exists it will be replaced by
-     * the new entry and the old entry deallocated (via delete).
+    /// deletes all dictionary entries
+    void clear();
+
+    /** adds an entry to the dictionary.  Must be allocated via new.    
+     *  The entry becomes the property of the dictionary and will be   
+     *  deallocated (via delete) upon clear() or dictionary destruction.
+     *  If an equivalent entry already exists it will be replaced by   
+     *  the new entry and the old entry deallocated (via delete).      
+     *  @param entry pointer to new entry
      */
     void addEntry(DcmDictEntry* entry);
 
     /* Iterators to access the normal and the repeating entries */ 
+
+    /// returns an iterator to the start of the normal (non-repeating) dictionary
     DcmHashDictIterator normalBegin() { return hashDict.begin(); }
+
+    /// returns an iterator to the end of the normal (non-repeating) dictionary
     DcmHashDictIterator normalEnd() { return hashDict.end(); }
+
+    /// returns an iterator to the start of the repeating tag dictionary
     DcmDictEntryListIterator repeatingBegin() { return repDict.begin(); }
+
+    /// returns an iterator to the end of the repeating tag dictionary
     DcmDictEntryListIterator repeatingEnd() { return repDict.end(); }
 
-protected:
-    /* Load external dictionaries defined via environment variables */
+private:
+
+    /** private undefined assignment operator
+     */ 
+    DcmDataDictionary &operator=(const DcmDataDictionary &);
+    
+    /** private undefined copy constructor
+     */
+    DcmDataDictionary(const DcmDataDictionary &);
+
+    /** loads external dictionaries defined via environment variables
+     *  @return true if successful
+     */
     OFBool loadExternalDictionaries();
 
-    /* Load a builtin (compiled) data dictionary.
-    ** Depending on which code is in use, this function may not
-    ** do anything.
-    */
+    /** loads a builtin (compiled) data dictionary.
+     *  Depending on which code is in use, this function may not
+     *  do anything.
+     */
     void loadBuiltinDictionary();
 
-    /* Load skeleton dictionary (the bare minimum needed to run) */
+    /** loads the skeleton dictionary (the bare minimum needed to run)
+     *  @return true if successful
+     */
     OFBool loadSkeletonDictionary();
 
-
+    /** looks up the given directory entry in the two dictionaries.
+     *  @return pointer to entry if found, NULL otherwise
+     */
     const DcmDictEntry* findEntry(const DcmDictEntry& entry) const;
+
+    /** deletes the given entry from either dictionary
+     */    
     void deleteEntry(const DcmDictEntry& entry);
 
-private:
-  /** dictionary of normal tags
-   */
-  DcmHashDict hashDict;
 
-  /** dictionary of repeating tags
-   */
-  DcmDictEntryList repDict;
-
-  /** the number of skeleton entries
-   */
-  int skeletonCount;
-
-  /** is a dictionary loaded (more than skeleton)
-   */
-  OFBool dictionaryLoaded;
-
-  /** private undefined assignment operator
-   */ 
-  DcmDataDictionary &operator=(const DcmDataDictionary &);
-
-  /** private undefined copy constructor
-   */
-  DcmDataDictionary(const DcmDataDictionary &);
-
+    /** dictionary of normal tags
+     */
+    DcmHashDict hashDict;
+    
+    /** dictionary of repeating tags
+     */
+    DcmDictEntryList repDict;
+    
+    /** the number of skeleton entries
+     */
+    int skeletonCount;
+    
+    /** is a dictionary loaded (more than skeleton)
+     */
+    OFBool dictionaryLoaded;
+    
 };
 
 
@@ -247,7 +297,10 @@ extern GlobalDcmDataDictionary dcmDataDict;
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.h,v $
-** Revision 1.17  2002-02-27 14:21:20  meichel
+** Revision 1.18  2002-07-23 14:21:25  meichel
+** Added support for private tag data dictionaries to dcmdata
+**
+** Revision 1.17  2002/02/27 14:21:20  meichel
 ** Declare dcmdata read/write locks only when compiled in multi-thread mode
 **
 ** Revision 1.16  2001/06/01 15:48:38  meichel

@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmItem
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-06-26 15:47:40 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-07-23 14:21:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcitem.h,v $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,46 +42,12 @@
 #include "dcvrui.h"
 #include "dclist.h"
 #include "dcstack.h"
-
+#include "dcpcache.h"
 
 /** a class representing a collection of DICOM elements
  */
 class DcmItem : public DcmObject
 {
-private:
-
- // --- declarations to avoid compiler warnings
-
-    DcmItem &operator=(const DcmItem &);
-
-protected:
-    DcmList * elementList;
-    OFBool lastElementComplete;
-    Uint32 fStartPosition;
-
-    DcmObject*  copyDcmObject(DcmObject *oldObj);
-
-    OFCondition readTagAndLength(DcmStream & inStream,           // inout
-                                 const E_TransferSyntax newxfer, // in
-                                 DcmTag   &tag,                  // out
-                                 Uint32 & length,                // out
-                                 Uint32 & bytesRead);            // out
-
-    OFCondition readSubElement(DcmStream & inStream,             // inout
-                               DcmTag &newTag,                   // inout
-                               const Uint32 newLength,           // in
-                               const E_TransferSyntax xfer,      // in
-                               const E_GrpLenEncoding glenc,     // in
-                               const Uint32 maxReadLength = DCM_MaxReadLength);
-
-    OFCondition searchSubFromHere(const DcmTagKey &tag,          // in
-                                  DcmStack &resultStack,         // inout
-                                  OFBool searchIntoSub );        // in
-    DcmObject * iterObject(const DcmObject * obj,
-                           const E_ListPos pos);
-    OFBool foundVR(char* atposition );
-    E_TransferSyntax checkTransferSyntax(DcmStream & inStream);
-
 public:
     DcmItem(); // create with an item tag
     DcmItem(const DcmTag &tag,
@@ -140,7 +106,7 @@ public:
      */
     virtual OFBool containsUnknownVR() const;
 
-    virtual unsigned long card();
+    virtual unsigned long card() const;
 
     /** insert a new element into the list of elements maintained by this item.
      *  The list of elements is always kept in ascending tag order.
@@ -550,6 +516,55 @@ public:
      */
     OFCondition insertEmptyElement(const DcmTag& tag,
                                    const OFBool replaceOld = OFTrue);
+
+protected:
+
+    /// the list of elements maintained by this object
+    DcmList * elementList;
+
+    /** flag used during suspended I/O. Indicates whether the last element
+     *  was completely or only partially read/written during the last call
+     *  to read/write.
+     */
+    OFBool lastElementComplete;
+
+    /** used during reading. Contains the position in the stream where
+     *  the item started (needed for calculating the remaining number of
+     *  bytes available for a fixed-length item).
+     */
+    Uint32 fStartPosition;
+
+    OFCondition readTagAndLength(DcmStream & inStream,           // inout
+                                 const E_TransferSyntax newxfer, // in
+                                 DcmTag   &tag,                  // out
+                                 Uint32 & length,                // out
+                                 Uint32 & bytesRead);            // out
+
+    OFCondition readSubElement(DcmStream & inStream,             // inout
+                               DcmTag &newTag,                   // inout
+                               const Uint32 newLength,           // in
+                               const E_TransferSyntax xfer,      // in
+                               const E_GrpLenEncoding glenc,     // in
+                               const Uint32 maxReadLength = DCM_MaxReadLength);
+
+    E_TransferSyntax checkTransferSyntax(DcmStream & inStream);
+
+private:
+
+    /// private unimplemented copy assignment operator
+    DcmItem &operator=(const DcmItem &);
+
+    DcmObject*  copyDcmObject(DcmObject *oldObj);
+
+    OFCondition searchSubFromHere(const DcmTagKey &tag,          // in
+                                  DcmStack &resultStack,         // inout
+                                  OFBool searchIntoSub );        // in
+
+    OFBool foundVR(char *atposition);
+
+    /// cache for private creator tags and names
+    DcmPrivateTagCache privateCreatorCache;
+
 };
 
 
@@ -599,7 +614,10 @@ OFCondition nextUp(DcmStack & stack);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
-** Revision 1.36  2002-06-26 15:47:40  joergr
+** Revision 1.37  2002-07-23 14:21:26  meichel
+** Added support for private tag data dictionaries to dcmdata
+**
+** Revision 1.36  2002/06/26 15:47:40  joergr
 ** Added support for polymorp OB/OW value representation (e.g. pixel data) to
 ** putAndInsertUint8/16Array() methods.
 **

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Hash table interface for DICOM data dictionary
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:48:40 $
+ *  Update Date:      $Date: 2002-07-23 14:21:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dchashdi.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,24 +35,31 @@
 #define DCHASHDI_H
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
-
 #include "oflist.h"
-#include "dcdicent.h"
+#include "ofstream.h"
+
+class DcmDictEntry;
+class DcmTagKey;
+class DcmHashDict;
 
 /** the default size for a data dictionary hash table */
 const int DCMHASHDICT_DEFAULT_HASHSIZE = 2047;
 
-class DcmHashDict;
-
-/**
-** DcmDictEntryListIterator
-**     An iterator for traversing a DcmDictEntryList
-*/
-class DcmDictEntryListIterator : public OFListIterator(DcmDictEntry*) {
+/** iterator class for traversing a DcmDictEntryList
+ */
+class DcmDictEntryListIterator: public OFListIterator(DcmDictEntry *)
+{
 public:
+    /// default constructor
     DcmDictEntryListIterator() {}
-    DcmDictEntryListIterator(OFListIterator(DcmDictEntry*) iter) 
-        : OFListIterator(DcmDictEntry*)(iter) {}
+
+    /** constructor
+     *  @param iter reference to an object of the base class
+     */
+    DcmDictEntryListIterator(const OFListIterator(DcmDictEntry*)& iter) 
+    : OFListIterator(DcmDictEntry*)(iter) {}
+
+    /// copy assignment operator
     DcmDictEntryListIterator& operator=(const DcmDictEntryListIterator& i)
     {
       OFListIterator(DcmDictEntry*)::operator=(i);
@@ -60,127 +67,217 @@ public:
     }
 };
 
-/**
-** DcmDictEntryList
-**     An ordered list of DcmDictEntry*
-*/
-class DcmDictEntryList : public OFList<DcmDictEntry*> {
+
+/** an ordered list of pointers to DcmDictEntry objects
+ */
+class DcmDictEntryList : public OFList<DcmDictEntry *>
+{
 public:
+    /// constructor
     DcmDictEntryList() {}
-    /** destructor deletes all members */
+
+    /// destructor
     ~DcmDictEntryList();
-    /** clear list and delete all entries */
+
+    /// clears list and deletes all entries
     void clear();
-    /** insert an entry into the list and return any replaced entry */
+
+    /** inserts an entry into the list and returns any replaced entry
+     *  @param e new list entry
+     *  @return replaced list entry or NULL
+     */
     DcmDictEntry* insertAndReplace(DcmDictEntry* e);
+
     /* find an entry in the set */
-    DcmDictEntry* find(const DcmTagKey& k);
+    DcmDictEntry *find(const DcmTagKey& k, const char *privCreator);
 };
 
 
-/**
-** DcmHashDictIterator
-**     An iterator for traversing a DcmHashDict
-*/
-class DcmHashDictIterator {
-private:
-    const DcmHashDict* dict;
-    int hindex;
-    OFBool iterating;
-    DcmDictEntryListIterator iter;
-    
-    void init(const DcmHashDict *d, OFBool atEnd = OFFalse);
-    void stepUp();
-
+/** iterator class for traversing a DcmHashDict
+ */
+class DcmHashDictIterator
+{
 public:
+    /// default constructor
     DcmHashDictIterator()
       : dict(NULL), hindex(0), iterating(OFFalse), iter()
           { init(NULL); }
+
+    /** constructor, creates iterator to existing hash dictionary
+     *  @param d pointer to dictionary 
+     *  @param atEnd if true, iterator points after last element
+     *   of hash dictionary, otherwise iterator points to first element.
+     */
     DcmHashDictIterator(const DcmHashDict* d, OFBool atEnd = OFFalse)
       : dict(NULL), hindex(0), iterating(OFFalse), iter()
           { init(d, atEnd); }
+
+    /// copy constructor
     DcmHashDictIterator(const DcmHashDictIterator& i) 
       : dict(i.dict), hindex(i.hindex), iterating(i.iterating), iter(i.iter)
           { }
 
+    /// copy assignment operator
     DcmHashDictIterator& operator=(const DcmHashDictIterator& i) 
         { dict = i.dict; hindex = i.hindex; 
         iterating = i.iterating; iter = i.iter; return *this; }
 
+    /// comparison equality
     OFBool operator==(const DcmHashDictIterator& x) const 
         { return (hindex == x.hindex) && (iter == x.iter); }
+
+    /// comparison non-equality
     OFBool operator!=(const DcmHashDictIterator& x) const 
         { return (hindex != hindex) || (iter != x.iter); }
 
+    /// dereferencing of iterator
     const DcmDictEntry* operator*() const
         { return (*iter); }
 
+    /// pre-increment operator
     DcmHashDictIterator& operator++()
         { stepUp(); return *this; }
+
+    /// post-increment operator
     DcmHashDictIterator operator++(int)
         { DcmHashDictIterator tmp(*this); stepUp(); return tmp; }
 
+private:
+    /** initializes the iterator
+     *  @param d pointer to hash dictionary, may be NULL
+     *  @param atEnd if true, iterator points after last element
+     *   of hash dictionary, otherwise iterator points to first element.
+     */
+    void init(const DcmHashDict *d, OFBool atEnd = OFFalse);
+
+    /** implements increment operator on hash dictionary 
+     */
+    void stepUp();
+
+    /// pointer to the hash dictionary this iterator traverses
+    const DcmHashDict* dict;
+
+    /// index of current bucket
+    int hindex;
+
+    /// flag indicating if iter is currently valid
+    OFBool iterating;
+
+    /// iterator for traversing a bucket in the hash table
+    DcmDictEntryListIterator iter;    
 };
 
-/**
-** DcmHashDict
-**     A hash table of DcmDictEntry*
-*/
-class DcmHashDict {
-private:
-    DcmDictEntryList** hashTab;
-    int hashTabLength;
-    int lowestBucket;
-    int highestBucket;
-    int entryCount;
 
-    void _init(int hashSize);
-
- // --- declarations to avoid compiler warnings
- 
-    DcmHashDict &operator=(const DcmHashDict &);
-    DcmHashDict(const DcmHashDict &);
-
-protected:
-    // calculate the hash function
-    int hash(const DcmTagKey* k) const;
-    // bucket access
-    DcmDictEntry* insertInList(DcmDictEntryList& list, DcmDictEntry* e);
-    DcmDictEntry* findInList(DcmDictEntryList& list, const DcmTagKey& k) const;
-    DcmDictEntry* removeInList(DcmDictEntryList& list, const DcmTagKey& k);
+/** a hash table of pointers to DcmDictEntry objects
+ */
+class DcmHashDict
+{
 
 public:
+    /** constructor
+     *  @param hashTabLen number of buckets in hash table
+     */
     DcmHashDict(int hashTabLen = DCMHASHDICT_DEFAULT_HASHSIZE)
      : hashTab(NULL), hashTabLength(0), lowestBucket(0), highestBucket(0), entryCount(0)
         { _init(hashTabLen); }
 
-
+    /// destructor
     ~DcmHashDict();
 
-    // count total number of entries
+    /// counts total number of entries
     int size() const { return entryCount; }
 
-    // clear the hash table of all entries
+    /// clears the hash table of all entries
     void clear();
 
-    // insert an entry into hash table (deletes old entry if present)
+    /** inserts an entry into hash table (deletes old entry if present)
+     *  @param e pointer to new entry
+     */
     void put(DcmDictEntry* e);
 
-    // lookup a key
-    const DcmDictEntry* get(const DcmTagKey& k) const;
+    /** hash table lookup for the given tag key and private creator name.
+     *  @param key tag key
+     *  @param privCreator private creator name, may be NULL
+     */
+    const DcmDictEntry* get(const DcmTagKey& k, const char *privCreator) const;
 
-    // delete a key's entry
-    void del(const DcmTagKey& k);
+    /** deletes the entry for the given tag and private creator
+     *  @param k tag key
+     *  @param privCreator private creator name, may be NULL
+     */
+    void del(const DcmTagKey& k, const char *privCreator);
 
     // iterator over the contents of the hash table
     friend class DcmHashDictIterator;
+
+    /// returns iterator to start of hash table
     DcmHashDictIterator begin() const
         { DcmHashDictIterator iter(this); return iter; }
+
+    /// returns iterator to end of hash table
     DcmHashDictIterator end() const
         { DcmHashDictIterator iter(this, OFTrue); return iter; }
 
-    // print some information about hash table bucket utilization
+    /// prints some information about hash table bucket utilization
     ostream& loadSummary(ostream& out);
+
+private:
+
+    /// private unimplemented copy constructor
+    DcmHashDict(const DcmHashDict &);
+
+    /// private unimplemented copy assignment operator
+    DcmHashDict &operator=(const DcmHashDict &);
+
+    /// performs initialization for given hash table size, called from constructor
+    void _init(int hashSize);
+
+    /** compute hash value for given tag key
+     *  @param k pointer to tag key
+     *  @return hash value
+     */    
+    int hash(const DcmTagKey* k) const;
+    
+    /** inserts new entry into given list
+     *  @param list list to add to
+     *  @param e new element to add, will be deleted upon destruction of the hash table
+     *  @return pointer to replaced element, if any
+     */
+    DcmDictEntry* insertInList(DcmDictEntryList& list, DcmDictEntry* e);
+
+    /** removes the entry for the given tag and private creator
+     *  @param list list to remove from
+     *  @param k tag key
+     *  @param privCreator private creator name, may be NULL
+     *  @return pointer to removed element, if any
+     */
+    DcmDictEntry* removeInList(DcmDictEntryList& list, const DcmTagKey& k, const char *privCreator);
+
+    /** searcjes entry for the given tag and private creator
+     *  @param list list to search in
+     *  @param k tag key
+     *  @param privCreator private creator name, may be NULL
+     *  @return pointer to found element, NULL if not found
+     */
+    DcmDictEntry* findInList(DcmDictEntryList& list, const DcmTagKey& k, const char *privCreator) const;
+
+    /** array of (hash table size) pointers to DcmDictEntryList elements 
+     *  implementing the different buckets of the hash table
+     */
+    DcmDictEntryList** hashTab;
+
+    /// number of buckets in hash table
+    int hashTabLength;
+
+    /// index of lowest bucket for which the DcmDictEntryList has been initialized
+    int lowestBucket;
+
+    /// index of highest bucket for which the DcmDictEntryList has been initialized
+    int highestBucket;
+
+    /// number of entries in hash table
+    int entryCount;
+
 };
 
 #endif /* DCHASHDI_H */
@@ -188,7 +285,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dchashdi.h,v $
-** Revision 1.10  2001-06-01 15:48:40  meichel
+** Revision 1.11  2002-07-23 14:21:26  meichel
+** Added support for private tag data dictionaries to dcmdata
+**
+** Revision 1.10  2001/06/01 15:48:40  meichel
 ** Updated copyright header
 **
 ** Revision 1.9  2000/05/03 14:19:08  meichel

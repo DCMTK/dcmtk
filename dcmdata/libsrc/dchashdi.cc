@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Hash table interface for DICOM data dictionary
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:04 $
+ *  Update Date:      $Date: 2002-07-23 14:21:33 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dchashdi.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,9 +32,14 @@
  */
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dchashdi.h"
+#include "dcdicent.h"
+
+BEGIN_EXTERN_C
 #include <stdio.h>
 #include <assert.h>
-#include "dchashdi.h"
+END_EXTERN_C
+
 
 #ifdef PRINT_REPLACED_DICTIONARY_ENTRIES
 #include "ofconsol.h"   /* for ofConsole */
@@ -71,12 +76,24 @@ DcmDictEntryList::insertAndReplace(DcmDictEntry* e)
         // insert smallest first
         for (iter = begin(); iter != last; ++iter) {
             iterHash = (*iter)->hash();
-            if (eHash == iterHash) {
-                // entry is already there so replace it 
-                DcmDictEntry* oldEntry = *iter;
-                *iter = e;
-                return oldEntry;
-            } else if (eHash < iterHash) {
+            if (eHash == iterHash)
+            {
+                if (e->privateCreatorMatch(**iter))
+                {
+                    // entry is already there so replace it 
+                    DcmDictEntry* oldEntry = *iter;
+                    *iter = e;
+                    return oldEntry;
+                }
+                else 
+                {
+                    // insert before listEntry
+                    insert(iter, e);
+                    return NULL;
+                }
+            } 
+            else if (eHash < iterHash)
+            {
                 // insert before listEntry
                 insert(iter, e);
                 return NULL;
@@ -88,8 +105,8 @@ DcmDictEntryList::insertAndReplace(DcmDictEntry* e)
     return NULL;
 }
 
-DcmDictEntry*
-DcmDictEntryList::find(const DcmTagKey& k)
+
+DcmDictEntry *DcmDictEntryList::find(const DcmTagKey& k, const char *privCreator)
 {
     if (!empty()) {
         DcmDictEntryListIterator iter;
@@ -98,7 +115,8 @@ DcmDictEntryList::find(const DcmTagKey& k)
         Uint32 iterHash = 0;
         for (iter = begin(); iter != last; ++iter) {
             iterHash = (*iter)->hash();
-            if (iterHash == kHash) {
+            if ((iterHash == kHash) && (*iter)->privateCreatorMatch(privCreator))
+            {
                 return *iter;
             } else if (iterHash > kHash) {
                 return NULL; // not there 
@@ -425,41 +443,49 @@ DcmHashDict::put(DcmDictEntry* e)
     highestBucket = (highestBucket>idx)?(highestBucket):(idx);
 }
 
-DcmDictEntry* 
-DcmHashDict::findInList(DcmDictEntryList& list, const DcmTagKey& k) const
+DcmDictEntry *DcmHashDict::findInList(DcmDictEntryList& list, const DcmTagKey& k, const char *privCreator) const
 {
-    return list.find(k);
+    return list.find(k, privCreator);
 }
 
 const DcmDictEntry* 
-DcmHashDict::get(const DcmTagKey& k) const
+DcmHashDict::get(const DcmTagKey& k, const char *privCreator) const
 {
     const DcmDictEntry* entry = NULL;
-    Uint32 idx = hash(&k);
 
+    // first we look for an entry that exactly matches the given tag key
+    Uint32 idx = hash(&k);
     DcmDictEntryList* bucket = hashTab[idx];
-    if (bucket != NULL) {
-        entry = findInList(*bucket, k);
+    if (bucket) entry = findInList(*bucket, k, privCreator);
+
+    if ((entry == NULL) && privCreator)
+    {
+      // As a second guess, we look for a private tag with flexible element number.
+      DcmTagKey tk(k.getGroup(), k.getElement() & 0xff);
+      idx = hash(&tk);
+      bucket = hashTab[idx];
+      if (bucket) entry = findInList(*bucket, tk, privCreator);
     }
+
     return entry;
 }
 
 DcmDictEntry*
-DcmHashDict::removeInList(DcmDictEntryList& list, const DcmTagKey& k)
+DcmHashDict::removeInList(DcmDictEntryList& list, const DcmTagKey& k, const char *privCreator)
 {
-    DcmDictEntry* entry = findInList(list, k);
+    DcmDictEntry* entry = findInList(list, k, privCreator);
     list.remove(entry); // does not delete entry
     return entry;
 }
 
 void
-DcmHashDict::del(const DcmTagKey& k) 
+DcmHashDict::del(const DcmTagKey& k, const char *privCreator) 
 {
     Uint32 idx = hash(&k);
 
     DcmDictEntryList* bucket = hashTab[idx];
     if (bucket != NULL) {
-        DcmDictEntry* entry = removeInList(*bucket, k);
+        DcmDictEntry* entry = removeInList(*bucket, k, privCreator);
         delete entry;
     }
 }
@@ -512,7 +538,10 @@ DcmHashDict::loadSummary(ostream& out)
 /*
 ** CVS/RCS Log:
 ** $Log: dchashdi.cc,v $
-** Revision 1.14  2001-06-01 15:49:04  meichel
+** Revision 1.15  2002-07-23 14:21:33  meichel
+** Added support for private tag data dictionaries to dcmdata
+**
+** Revision 1.14  2001/06/01 15:49:04  meichel
 ** Updated copyright header
 **
 ** Revision 1.13  2000/10/12 10:26:52  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: a dictionary entry in the loadable DICOM data dictionary
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:01 $
+ *  Update Date:      $Date: 2002-07-23 14:21:29 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdicent.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,39 +38,9 @@
 
 #include "dcdicent.h"
 
-
-
 /*
 ** DcmDictEntry member functions
 */
-
-DcmDictEntry::DcmDictEntry() 
-  : upperKey(),
-    valueRepresentation(EVR_UNKNOWN),
-    tagName(NULL),
-    valueMultiplicityMin(0),
-    valueMultiplicityMax(0),
-    standardVersion(NULL),
-    stringsAreCopies(OFFalse),
-    groupRangeRestriction(DcmDictRange_Unspecified),
-    elementRangeRestriction(DcmDictRange_Unspecified)
-{ 
-}
-
-DcmDictEntry::DcmDictEntry(const DcmTagKey& k) 
-  : DcmTagKey(k),
-    upperKey(),
-    valueRepresentation(EVR_UNKNOWN),
-    tagName(NULL),
-    valueMultiplicityMin(0),
-    valueMultiplicityMax(0),
-    standardVersion(NULL),
-    stringsAreCopies(OFFalse),
-    groupRangeRestriction(DcmDictRange_Unspecified),
-    elementRangeRestriction(DcmDictRange_Unspecified)
-{
-    upperKey.set(k);
-}
 
 static
 char* strdup_new(const char* str)
@@ -85,7 +55,8 @@ char* strdup_new(const char* str)
 
 DcmDictEntry::DcmDictEntry(Uint16 g, Uint16 e, DcmVR vr, 
         const char* nam, int vmMin, int vmMax,
-        const char* vers, OFBool doCopyStrings)
+        const char* vers, OFBool doCopyStrings, 
+        const char* pcreator)
   : DcmTagKey(g,e),
     upperKey(),
     valueRepresentation(EVR_UNKNOWN),
@@ -95,19 +66,22 @@ DcmDictEntry::DcmDictEntry(Uint16 g, Uint16 e, DcmVR vr,
     standardVersion(vers),
     stringsAreCopies(doCopyStrings),
     groupRangeRestriction(DcmDictRange_Unspecified),
-    elementRangeRestriction(DcmDictRange_Unspecified)
+    elementRangeRestriction(DcmDictRange_Unspecified),
+    privateCreator(pcreator)
 {
     upperKey.set(g,e);  /* default: make upper key same as normal key */
     valueRepresentation.setVR(vr);
     if (doCopyStrings) {
         tagName = strdup_new(nam);
         standardVersion = strdup_new(vers);
+        privateCreator = strdup_new(pcreator);
     }
 }
 
 DcmDictEntry::DcmDictEntry(Uint16 g, Uint16 e, Uint16 ug, Uint16 ue, DcmVR vr, 
         const char* nam, int vmMin, int vmMax,
-        const char* vers, OFBool doCopyStrings)
+        const char* vers, OFBool doCopyStrings, 
+        const char* pcreator)
   : DcmTagKey(g,e),
     upperKey(),
     valueRepresentation(EVR_UNKNOWN),
@@ -117,13 +91,15 @@ DcmDictEntry::DcmDictEntry(Uint16 g, Uint16 e, Uint16 ug, Uint16 ue, DcmVR vr,
     standardVersion(vers),
     stringsAreCopies(doCopyStrings),
     groupRangeRestriction(DcmDictRange_Unspecified),
-    elementRangeRestriction(DcmDictRange_Unspecified)
+    elementRangeRestriction(DcmDictRange_Unspecified),
+    privateCreator(pcreator)
 {
     upperKey.set(ug, ue);
     valueRepresentation.setVR(vr);
     if (doCopyStrings) {
         tagName = strdup_new(nam);
         standardVersion = strdup_new(vers);
+        privateCreator = strdup_new(pcreator);
     }
 }
 
@@ -137,12 +113,14 @@ DcmDictEntry::DcmDictEntry(const DcmDictEntry& e)
     standardVersion(e.standardVersion),
     stringsAreCopies(e.stringsAreCopies),
     groupRangeRestriction(e.groupRangeRestriction),
-    elementRangeRestriction(e.elementRangeRestriction)
+    elementRangeRestriction(e.elementRangeRestriction),
+    privateCreator(e.privateCreator)
 {
     if (stringsAreCopies)
     {
         tagName = strdup_new(e.tagName);
         standardVersion = strdup_new(e.standardVersion);
+        privateCreator = strdup_new(e.privateCreator);
     }
 }
 
@@ -151,8 +129,9 @@ DcmDictEntry::~DcmDictEntry()
 {
     if (stringsAreCopies) {
         /* we have allocated them so it is ok to deallocate them */
-        if (tagName) delete[] (char*)tagName;
-        if (standardVersion) delete[] (char*)standardVersion;
+        delete[] (char*)tagName;
+        delete[] (char*)standardVersion;
+        delete[] (char*)privateCreator;
     }
 }
 
@@ -198,13 +177,20 @@ ostream& operator<<(ostream& s, const DcmDictEntry& e) {
     if (e.getStandardVersion() != NULL) {
         s << " Version=\"" << e.getStandardVersion() << "\" ";
     }
+    if (e.getPrivateCreator() != NULL) {
+        s << " priv=\"" << e.getPrivateCreator() << "\" ";
+    }
+
     return s;
 }
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicent.cc,v $
-** Revision 1.10  2001-06-01 15:49:01  meichel
+** Revision 1.11  2002-07-23 14:21:29  meichel
+** Added support for private tag data dictionaries to dcmdata
+**
+** Revision 1.10  2001/06/01 15:49:01  meichel
 ** Updated copyright header
 **
 ** Revision 1.9  2000/03/08 16:26:32  meichel
