@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: meichel $, $Date: 2000-02-23 15:12:48 $
+** Last Update:		$Author: meichel $, $Date: 2000-02-29 12:21:27 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.30 $
+** Revision:		$Revision: 1.31 $
 ** Status:		$State: Exp $
 */
 
@@ -3024,35 +3024,40 @@ static CONDITION
 sendPDataTCP(PRIVATE_ASSOCIATIONKEY ** association,
 	     DUL_PDVLIST * pdvList)
 {
-    DUL_PDV
-    * pdv;
+    DUL_PDV *pdv;
     unsigned long
         count,
         length,
-        pdvLength;
-    int
-        localLast;
-    CONDITION
-	cond;
-    unsigned char
-       *p;
-    DUL_DATAPDU
-	dataPDU;
-    OFBool
-	firstTrip;
+        pdvLength,
+        maxLength;
+
+    int localLast;
+    CONDITION cond;
+    unsigned char *p;
+    DUL_DATAPDU dataPDU;
+    OFBool firstTrip;
 
     count = pdvList->count;
     pdv = pdvList->pdv;
-
+    
+    // The name "maxPDV" is misleading. This field contains the maxPDU size which is max PDV size +6
+    // or max PDV data field + 12.
+    maxLength = (*association)->maxPDV;
     cond = DUL_NORMAL;
+
+    if (maxLength < 14)
+    {
+      cond = COND_PushCondition(DUL_ILLEGALPDULENGTH, "DUL Cannot send P-DATA PDU because receiver's max PDU size of %lu is illegal (must be > 12)", maxLength);
+    } 
+    else maxLength -= 12;
+
     while (cond == DUL_NORMAL && count-- > 0) {
 	length = pdv->fragmentLength;
 	p = (unsigned char *) pdv->data;
 	firstTrip = OFTrue;
 	while ((firstTrip || (length > 0)) && (cond == DUL_NORMAL)) {
 	    firstTrip = OFFalse;
-	    pdvLength = (length <= (*association)->maxPDV - 6) ?
-		length : (*association)->maxPDV - 6;
+	    pdvLength = (length <= maxLength) ? length : maxLength;
 	    localLast = ((pdvLength == length) && pdv->lastPDV);
 	    cond = constructDataPDU(p, pdvLength, pdv->pdvType,
 			   pdv->presentationContextID, localLast, &dataPDU);
@@ -4224,7 +4229,12 @@ DULPRV_translateAssocReq(unsigned char *buffer,
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.30  2000-02-23 15:12:48  meichel
+** Revision 1.31  2000-02-29 12:21:27  meichel
+** Dcmtk now supports transmission with very small max PDU size
+**   (less than 24 bytes). In this case dcmdata uses a larger block size
+**   than dcmnet because it requires at least 12 bytes of buffer space.
+**
+** Revision 1.30  2000/02/23 15:12:48  meichel
 ** Corrected macro for Borland C++ Builder 4 workaround.
 **
 ** Revision 1.29  2000/02/07 13:27:04  meichel

@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2000-02-23 15:12:27 $
+** Update Date:         $Date: 2000-02-29 12:21:27 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:    $Revision: 1.25 $
+** CVS/RCS Revision:    $Revision: 1.26 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1804,6 +1804,16 @@ ASC_requestAssociation(T_ASC_Network * network,
                 sendLen);
             sendLen = ASC_MINIMUMPDUSIZE - 12;
         }
+        if (sendLen < 12) {
+            /* if sendLen is < 12, dcmdata will fail because it needs to put
+             * up to 12 bytes into the send PDV buffer at once (tag header).
+             * We use a larger value on this level and let the Upper Layer FSM
+             * split the buffer for us into many small PDVs.
+             */
+            fprintf(stderr,
+                "ASSOC: Warning: PDV send length too small, using DUL to split larger PDVs.\n");
+            sendLen = ASC_MINIMUMPDUSIZE - 12;
+        }
         (*assoc)->sendPDVLength = sendLen;
         (*assoc)->sendPDVBuffer = (unsigned char*)malloc(size_t(sendLen));
         if ((*assoc)->sendPDVBuffer == NULL) {
@@ -1862,6 +1872,16 @@ ASC_acknowledgeAssociation(T_ASC_Association * assoc)
             fprintf(stderr,
                 "ASSOC: Warning: PDV send length %ld (using default)\n",
                 sendLen);
+            sendLen = ASC_MINIMUMPDUSIZE - 12;
+        }
+        if (sendLen < 12) {
+            /* if sendLen is < 12, dcmdata will fail because it needs to put
+             * up to 12 bytes into the send PDV buffer at once (tag header).
+             * We use a larger value on this level and let the Upper Layer FSM
+             * split the buffer for us into many small PDVs.
+             */
+            fprintf(stderr,
+                "ASSOC: Warning: PDV send length too small, using DUL to split larger PDVs.\n");
             sendLen = ASC_MINIMUMPDUSIZE - 12;
         }
         assoc->sendPDVLength = sendLen;
@@ -1987,7 +2007,12 @@ ASC_dropAssociation(T_ASC_Association * association)
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
-** Revision 1.25  2000-02-23 15:12:27  meichel
+** Revision 1.26  2000-02-29 12:21:27  meichel
+** Dcmtk now supports transmission with very small max PDU size
+**   (less than 24 bytes). In this case dcmdata uses a larger block size
+**   than dcmnet because it requires at least 12 bytes of buffer space.
+**
+** Revision 1.25  2000/02/23 15:12:27  meichel
 ** Corrected macro for Borland C++ Builder 4 workaround.
 **
 ** Revision 1.24  2000/02/02 13:34:29  meichel
