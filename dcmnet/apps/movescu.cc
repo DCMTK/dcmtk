@@ -1,15 +1,44 @@
+/*
+**
+**  Copyright (C) 1996, OFFIS
+**
+**  This software and supporting documentation were developed by
+**
+**    Kuratorium OFFIS e.V.
+**    Forschungsbereich 2: Kommunikationssysteme
+**    Escherweg 2
+**    D-26121 Oldenburg, Germany
+**
+**  for CEN/TC251/WG4 as a contribution to the Computer Assisted Radiology
+**  (CAR) 1996 DICOM Demonstration.
+**
+**  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+**  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+**  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+**  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+**  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+**
+**  Copyright of the software  and  supporting  documentation  is,  unless
+**  otherwise stated, owned by OFFIS, and free access is hereby granted as
+**  a license to  use  this  software,  copy  this  software  and  prepare
+**  derivative works based upon this software.  However, any  distribution
+**  of this software source code or supporting documentation or derivative
+**  works  (source code and  supporting documentation)  must  include  the
+**  three paragraphs of this copyright notice.
+**
+*/
 
 /*
-** Test program for Query (DIMSE C-FIND operation)
+** Test program for Retrieve (DIMSE C-MOVE operation)
 **
 ** Author: 	Andrew Hewett
 **		Kuratorium OFFIS e.V., Oldenburg, Germany
 ** Created:	03/96
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-06-20 07:22:59 $
+** Update Date:		$Date: 1996-09-03 11:39:02 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
