@@ -22,9 +22,9 @@
  *  Purpose: DicomMonoOutputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-24 17:20:14 $
+ *  Update Date:      $Date: 1999-04-28 14:51:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,6 +39,7 @@
 #include "dctypes.h"
 
 #include "dimoopx.h"
+#include "dimcopxt.h"
 #include "diluptab.h"
 #include "diovlay.h"
 #include "dipxrept.h"
@@ -78,24 +79,30 @@ class DiMonoOutputPixelTemplate
                               const Uint16 columns,
                               const Uint16 rows,
                               const unsigned long frame,
-                              const unsigned long frames)
+                              const unsigned long frames,
+                              const int pastel = 0)
       : DiMonoOutputPixel(pixel, frames, (unsigned long)fabs(high - low)),
         Data(NULL),
-        DeleteData(buffer == NULL)
+        DeleteData(buffer == NULL),
+        ColorData(NULL)
     {
         if ((pixel != NULL) && (Count > 0))
         {
-            Data = (T3 *)buffer;
-            if ((vlut != NULL) && (vlut->isValid()))            // valid VOI LUT ?
-                voilut(pixel, frame * Count, vlut, plut, disp, (T3)low, (T3)high);
-            else
-            {
-                if (width <= 0)                                 // no valid window according to Cor Loef (author of suppl. 33)
-                    nowindow(pixel, frame * Count, plut, disp, (T3)low, (T3)high);
+            if (pastel)
+                color(buffer, pixel, frame, frames);
+            else {
+                Data = (T3 *)buffer;
+                if ((vlut != NULL) && (vlut->isValid()))            // valid VOI LUT ?
+                    voilut(pixel, frame * Count, vlut, plut, disp, (T3)low, (T3)high);
                 else
-                    window(pixel, frame * Count, plut, disp, center, width, (T3)low, (T3)high);
+                {
+                    if (width <= 0)                                 // no valid window according to Cor Loef (author of suppl. 33)
+                        nowindow(pixel, frame * Count, plut, disp, (T3)low, (T3)high);
+                    else
+                        window(pixel, frame * Count, plut, disp, center, width, (T3)low, (T3)high);
+                }
+                overlay(overlays, disp, columns, rows, frame);      // add (visible) overlay planes to output bitmap
             }
-            overlay(overlays, disp, columns, rows, frame);      // add (visible) overlay planes to output bitmap
         }
     }
 
@@ -103,6 +110,7 @@ class DiMonoOutputPixelTemplate
     {
         if (DeleteData)
             delete[] Data;
+        delete ColorData;
     }
 
     inline EP_Representation getRepresentation() const
@@ -112,11 +120,15 @@ class DiMonoOutputPixelTemplate
 
     inline size_t getItemSize() const
     {
+        if (ColorData != NULL)
+            return ColorData->getItemSize();
         return sizeof(T3);
     }
 
     inline void *getData() const
     {
+        if (ColorData != NULL)
+            return ColorData->getData();
         return (void *)Data;
     }
 
@@ -129,6 +141,8 @@ class DiMonoOutputPixelTemplate
                 stream << (unsigned long)Data[i] << " ";        // typecast to resolve problems with 'char'
             return 1;
         }
+        if (ColorData != NULL)
+            return ColorData->writePPM(stream);
         return 0;
     }
 
@@ -141,6 +155,8 @@ class DiMonoOutputPixelTemplate
                 fprintf(stream, "%lu ", (unsigned long)Data[i]);
             return 1;
         }
+        if (ColorData != NULL)
+            return ColorData->writePPM(stream);
         return 0;
     }
 
@@ -176,10 +192,10 @@ class DiMonoOutputPixelTemplate
             blut = disp->getBartenLUT(bits);
             if ((blut != NULL) && (blut->isValid()))                          // LUT is invalid
             {
-                if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Informationals)
+                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
                     cerr << "INFO: using Barten transformation" << endl;
             } else {
-                if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
                     cerr << "WARNING: can't create Barten LUT ... ignoring Barten transformation !" << endl;
                 blut = NULL;
             }
@@ -195,7 +211,7 @@ class DiMonoOutputPixelTemplate
             lut = new T3[ocnt];
             if (lut != NULL)
             {
-                if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Informationals)
+                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
                     cerr << "INFO: using optimized routine with additional LUT" << endl;
                 return 1;
             }
@@ -214,6 +230,19 @@ class DiMonoOutputPixelTemplate
         for (i = 0; i < Count; i++)                                           // apply LUT
             *(q++) = *(lut0 + (*(p++)));
     }
+    
+
+    void color(void *buffer,                               // create true color pastel image
+               const DiMonoPixel *inter,
+               const unsigned long frame,
+               const unsigned long frames)
+    {
+        ColorData = new DiMonoColorOutputPixelTemplate<T1, T3>(buffer, inter, frame, frames);
+        if (ColorData != NULL)
+        {
+cout << "COLOR" << endl;                
+        }
+    }
 
 
     void voilut(const DiMonoPixel *inter,                  // apply VOI LUT
@@ -231,7 +260,7 @@ class DiMonoOutputPixelTemplate
                 Data = new T3[Count];
             if (Data != NULL)
             {
-                if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Informationals)
+                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
                     cerr << "INFO: using VOI routine 'voilut()'" << endl;
                 const DiBartenLUT *blut = NULL;
                 const double minvalue = vlut->getMinValue();
@@ -242,7 +271,7 @@ class DiMonoOutputPixelTemplate
                     T3 value;
                     if ((plut != NULL) && (plut->isValid()))                            // has presentation LUT
                     {
-                        if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Informationals)
+                        if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
                             cerr << "INFO: using presentation LUT transformation" << endl;
                         createBartenLUT(blut, disp, plut->getBits());
                         const Uint32 value2 = (Uint32)((minvalue / (double)vlut->getAbsMaxRange()) * plut->getCount());
@@ -280,7 +309,7 @@ class DiMonoOutputPixelTemplate
                     T3 *lut = NULL;
                     if ((plut != NULL) && (plut->isValid()))                            // has presentation LUT
                     {
-                        if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Informationals)
+                        if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
                             cerr << "INFO: using presentation LUT transformation" << endl;
                         createBartenLUT(blut, disp, plut->getBits());
                         register Uint32 value2;                                         // presentation LUT is always unsigned
@@ -492,7 +521,7 @@ class DiMonoOutputPixelTemplate
                 Data = new T3[Count];
             if (Data != NULL)
             {
-                if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Informationals)
+                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
                     cerr << "INFO: using VOI routine 'nowindow()'" << endl;
                 const double absmin = inter->getAbsMinimum();
                 const double absmax = inter->getAbsMaximum();
@@ -504,7 +533,7 @@ class DiMonoOutputPixelTemplate
                 T3 *lut = NULL;
                 if ((plut != NULL) && (plut->isValid()))                              // has presentation LUT
                 {
-                    if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Informationals)
+                    if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
                         cerr << "INFO: using presentation LUT transformation" << endl;
                     createBartenLUT(blut, disp, plut->getBits());                    
                     register Uint32 value;                                            // presentation LUT is always unsigned
@@ -629,7 +658,7 @@ class DiMonoOutputPixelTemplate
                 Data = new T3[Count];                                                 // create new output buffer
             if (Data != NULL)
             {
-                if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Informationals)
+                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
                     cerr << "INFO: using VOI routine 'window()'" << endl;
                 const DiBartenLUT *blut = NULL;
                 const double absmin = inter->getAbsMinimum();
@@ -644,7 +673,7 @@ class DiMonoOutputPixelTemplate
                 T3 *lut = NULL;
                 if ((plut != NULL) && (plut->isValid()))                              // has presentation LUT
                 {
-                    if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Informationals)
+                    if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
                         cerr << "INFO: using presentation LUT transformation" << endl;
                     createBartenLUT(blut, disp, plut->getBits());
                     register Uint32 value2;                                           // presentation LUT is always unsigned
@@ -790,6 +819,7 @@ class DiMonoOutputPixelTemplate
             Data = NULL;
     }
 
+
     void overlay(DiOverlay *overlays[2],                   // apply overlay planes to output data
                  DiDisplayFunction *disp,
                  const Uint16 columns,
@@ -903,7 +933,7 @@ class DiMonoOutputPixelTemplate
                                     break;
                                 }
                                 default: /* e.g. EMO_Default */
-                                    if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+                                    if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
                                         cerr << "WARNING: unhandled overlay mode (" << (int)plane->getMode() << ") !" << endl;
                             }
                         }
@@ -916,6 +946,8 @@ class DiMonoOutputPixelTemplate
 
     T3 *Data;
     int DeleteData;
+    
+    DiMonoColorOutputPixelTemplate<T1,T3> *ColorData;
 
  // --- declarations to avoid compiler warnings
  
@@ -931,7 +963,13 @@ class DiMonoOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoopxt.h,v $
- * Revision 1.12  1999-03-24 17:20:14  joergr
+ * Revision 1.13  1999-04-28 14:51:44  joergr
+ * Added experimental support to create grayscale images with more than 256
+ * shades of gray to be displayed on a consumer monitor (use pastel colors).
+ * Introduced new scheme for the debug level variable: now each level can be
+ * set separately (there is no "include" relationship).
+ *
+ * Revision 1.12  1999/03/24 17:20:14  joergr
  * Added/Modified comments and formatting.
  *
  * Revision 1.11  1999/03/02 12:03:52  joergr
