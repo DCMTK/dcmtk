@@ -22,9 +22,9 @@
  *  Purpose: (Partially) abstract class for connecting to an arbitrary data source.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2004-01-07 09:52:18 $
+ *  Update Date:      $Date: 2004-01-15 12:01:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wlds.h,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -530,6 +530,14 @@ class WlmDataSource
       /** Set value in a member variable in a derived class.
        */
     virtual void SetModalityToReturn( const char * /*value*/ ) {}
+
+      /** Set value in a member variable in a derived class.
+       */
+    virtual void SetCommaSeparatePatientName( OFBool /*value*/ ) {}
+
+      /** Set value in a member variable in a derived class.
+       */
+    virtual void SetReturnPatientUidInAccessionNumber( OFBool /*value*/ ) {}
 };
 
 #endif
@@ -537,7 +545,11 @@ class WlmDataSource
 /*
 ** CVS Log
 ** $Log: wlds.h,v $
-** Revision 1.18  2004-01-07 09:52:18  wilkens
+** Revision 1.19  2004-01-15 12:01:24  wilkens
+** Added function to Worklist Management Data Source Base Class. This function
+** is needed in the private part of this toolkit.
+**
+** Revision 1.18  2004/01/07 09:52:18  wilkens
 ** Fixed typo in comment.
 **
 ** Revision 1.17  2004/01/07 08:32:28  wilkens
