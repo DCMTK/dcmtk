@@ -22,8 +22,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-04-14 11:52:57 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2004-04-16 12:55:53 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2875,23 +2875,23 @@ DcmDirectoryRecord *DicomDirInterface::buildImageRecord(DcmItem *dataset,
             {
                 case AP_BasicCardiac:
                 case AP_XrayAngiographic:
-                {
-                    OFString tmpString;
-                    OFBool xaImage = compare(getStringFromDataset(dataset, DCM_SOPClassUID, tmpString), UID_XRayAngiographicImageStorage);
-                    /* type 1C: required for XA images (type 1 for Basic Cardiac Profile) */
-                    copyElement(dataset, DCM_ImageType, record, !xaImage /*optional*/);
-                    /* additional type 2 keys specified by specific profiles */
-                    copyStringWithDefault(dataset, DCM_CalibrationImage, record);
-                    /* type 1C: required if ImageType is "BIPLANE A" or "BIPLANE B" */
-                    getStringFromDataset(dataset, DCM_ImageType, tmpString);
-                    OFBool bpImage = compare(tmpString, "BIPLANE A") || compare(tmpString, "BIPLANE B");
-                    copyElement(dataset, DCM_ReferencedImageSequence, record, !bpImage /*optional*/);
-                    /* icon images */
-                    iconImage = OFTrue;
-                    iconRequired = OFTrue;
-                    iconSize = 128;
+                    {
+                        OFString tmpString;
+                        OFBool xaImage = compare(getStringFromDataset(dataset, DCM_SOPClassUID, tmpString), UID_XRayAngiographicImageStorage);
+                        /* type 1C: required for XA images (type 1 for Basic Cardiac Profile) */
+                        copyElement(dataset, DCM_ImageType, record, !xaImage /*optional*/);
+                        /* additional type 2 keys specified by specific profiles */
+                        copyStringWithDefault(dataset, DCM_CalibrationImage, record);
+                        /* type 1C: required if ImageType is "BIPLANE A" or "BIPLANE B" */
+                        getStringFromDataset(dataset, DCM_ImageType, tmpString);
+                        OFBool bpImage = compare(tmpString, "BIPLANE A") || compare(tmpString, "BIPLANE B");
+                        copyElement(dataset, DCM_ReferencedImageSequence, record, !bpImage /*optional*/);
+                        /* icon images */
+                        iconImage = OFTrue;
+                        iconRequired = OFTrue;
+                        iconSize = 128;
+                    }
                     break;
-                }
                 case AP_CTandMR:
                     /* type 1 */
                     copyElement(dataset, DCM_Rows, record);
@@ -3854,7 +3854,7 @@ OFBool DicomDirInterface::copyFile(const char *fromFilename,
                 result = OFTrue;
                 int c = 0;
                 /* for all input file characters */
-                while ((c = getc(fromFile)) != EOF)
+                while (result && ((c = getc(fromFile)) != EOF))
                 {
                     /* copy character to the output file */
                     if (putc(c, toFile) == EOF)
@@ -3868,7 +3868,6 @@ OFBool DicomDirInterface::copyFile(const char *fromFilename,
                         OFSTRINGSTREAM_FREESTR(tmpString)
                         /* abort loop */
                         result = OFFalse;
-                        break;
                     }
                 }
                 /* close output file */
@@ -4296,7 +4295,10 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
- *  Revision 1.8  2004-04-14 11:52:57  joergr
+ *  Revision 1.9  2004-04-16 12:55:53  joergr
+ *  Minor modifications to keep Sun CC 2.0.1 happy.
+ *
+ *  Revision 1.8  2004/04/14 11:52:57  joergr
  *  Changed type of integer variable, added explicit type cast and introduced
  *  default case to switch statement to keep Sun CC 2.0.1 quiet.
  *
