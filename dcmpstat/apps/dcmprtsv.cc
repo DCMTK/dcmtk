@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Print Spooler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-10-19 14:44:27 $
+ *  Update Date:      $Date: 1999-10-22 13:05:48 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/Attic/dcmprtsv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -229,7 +229,7 @@ static E_Condition spoolStoredPrintFile(const char *filename, DVInterface &dvi)
   {
     // we have successfully read the Stored Print, now open connection to printer
     DVPSPrintMessageHandler printHandler;
-    if (opt_dumpMode) printHandler.setDumpStream(&cout);
+    if (opt_dumpMode) printHandler.setDumpStream(logstream);
     if (!SUCCESS(printHandler.negotiateAssociation(dvi.getNetworkAETitle(),
       targetAETitle, targetHostname, targetPort, targetMaxPDU, targetImplicitOnly, opt_verbose)))
     {
@@ -958,7 +958,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprtsv.cc,v $
- * Revision 1.9  1999-10-19 14:44:27  meichel
+ * Revision 1.10  1999-10-22 13:05:48  meichel
+ * Print spooler now correctly dumping DIMSE communication to log file.
+ *
+ * Revision 1.9  1999/10/19 14:44:27  meichel
  * dcmprtsv now correctly writes DIMSE dump to log file
  *   and deletes log file upon termination if no print job was processed.
  *
