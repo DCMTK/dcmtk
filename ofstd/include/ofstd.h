@@ -21,10 +21,10 @@
  *
  *  Purpose: Class for various helper functions
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-05-14 08:12:51 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-06-20 12:02:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstd.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -248,6 +248,41 @@ class OFStandard
     static const size_t decodeBase64(const OFString &data,
                                      unsigned char *&result);
 
+    /** converts a floating-point number from an ASCII
+     *  decimal representation to internal double-precision format.
+     *  Unlike the atof() function defined in Posix, this implementation
+     *  is not affected by a locale setting, the radix character is always
+     *  assumed to be '.'
+     *  This implementation does not set errno if the input cannot be parsed
+     *  and it does not implement special handling for overflow/underflow
+     *  or NaN values.  However, a return code indicates whether or not
+     *  a successful conversion could be performed.
+     *  The precision of this implementation is limited to approx. 9 
+     *  decimal digits. 
+     *  The use of this implementation can be disabled by defining
+     *  the macro DISABLE_OFSTD_ATOF at compile time; in this case,
+     *  the locale dependent Posix implementation of sscanf is used and 
+     *  the application is responsible for making sure that the Posix locale 
+     *  is activate at all times.
+     *
+     *  @param s
+     *    A decimal ASCII floating-point number, optionally preceded by white
+     *    space. Must have form "-I.FE-X", where I is the integer part of the
+     *    mantissa, F is the fractional part of the mantissa, and X is the
+     *    exponent.  Either of the signs may be "+", "-", or omitted.  Either I
+     *    or F may be omitted, or both.  The decimal point isn't necessary
+     *    unless F is present. The "E" may actually be an "e".  E and X may both
+     *    be omitted (but not just one).
+     *  @param success pointer to return status code, may be NULL.
+     *    if present, a status code is stored in the variable pointed to by this
+     *    parameter.  The status is OFTrue if a conversion could be performed
+     *    and OFFalse if the string does not have the expected format.
+     *  @return
+     *    floating-point equivalent of string.
+     *    If a terminating character is found before any floating-point
+     *    digits, then zero is returned.
+     */
+     static double atof(const char *s, OFBool *success=NULL);
 
  private:
 
@@ -281,7 +316,11 @@ class OFStandard
  *
  * CVS/RCS Log:
  * $Log: ofstd.h,v $
- * Revision 1.6  2002-05-14 08:12:51  joergr
+ * Revision 1.7  2002-06-20 12:02:38  meichel
+ * Implemented a locale independent function OFStandard::atof() that
+ *   converts strings to double and optionally returns a status code
+ *
+ * Revision 1.6  2002/05/14 08:12:51  joergr
  * Added support for Base64 (MIME) encoding and decoding.
  *
  * Revision 1.5  2002/04/25 09:13:52  joergr

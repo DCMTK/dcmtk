@@ -46,6 +46,18 @@
  *  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
+ *  The code for OFStandard::atof has been derived
+ *  from an implementation which carries the following copyright notice:
+ *
+ *  Copyright 1988 Regents of the University of California
+ *  Permission to use, copy, modify, and distribute this software and
+ *  its documentation for any purpose and without fee is hereby granted,
+ *  provided that the above copyright notice appear in all copies.  The
+ *  University of California makes no representations about the
+ *  suitability of this software for any purpose.  It is provided "as
+ *  is" without express or implied warranty.
+ *
+ *
  *  Furthermore, the "Base64" encoder/decoder has been derived from an
  *  implementation with the following copyright notice:
  *
@@ -62,8 +74,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-05-16 15:56:20 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2002-06-20 12:02:39 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -102,6 +114,9 @@ BEGIN_EXTERN_C
 #ifdef HAVE_NDIR_H
 #include <ndir.h>
 #endif
+#endif
+#ifdef HAVE_CTYPE_H
+#include <ctype.h>
 #endif
 END_EXTERN_C
 
@@ -554,10 +569,223 @@ const size_t OFStandard::decodeBase64(const OFString &data,
     return count;
 }
 
+#ifdef DISABLE_OFSTD_ATOF
+
+// we use sscanf instead of atof because atof doesn't return a status flag
+
+double OFStandard::atof(const char *s, OFBool *success)
+{
+  double result;
+  if (success)
+  {
+    *success = (1 == sscanf(s,"%lf",&result));
+  }
+  else 
+  {
+    (void) sscanf(s,"%lf",&result);
+  }
+  return result;  
+}
+
+#else 
+
+// --- definitions and constants for atof() ---
+
+/* Largest possible base 10 exponent.  Any exponent larger than this will
+ * already produce underflow or overflow, so there's no need to worry    
+ * about additional digits.                                              
+ */
+#define ATOF_MAXEXPONENT 511
+
+/* Table giving binary powers of 10.  Entry is 10^2^i.  
+ * Used to convert decimal exponents into floating-point numbers.
+ */
+static const double atof_powersOf10[] =
+{
+    10.,
+    100.,
+    1.0e4,
+    1.0e8,
+    1.0e16,
+    1.0e32,
+    1.0e64,
+    1.0e128,
+    1.0e256
+};
+
+double OFStandard::atof(const char *s, OFBool *success)
+{
+    if (success) *success = OFFalse;
+    register const char *p = string;
+    register char c;
+    int sign = 0;
+    int expSign = 0;
+    double fraction;
+    int exp = 0;      // Exponent read from "EX" field. 
+    const char *pExp; // Temporarily holds location of exponent in string.
+
+    /* Exponent that derives from the fractional part.  Under normal 
+     * circumstatnces, it is the negative of the number of digits in F. 
+     * However, if I is very long, the last digits of I get dropped 
+     * (otherwise a long I with a large negative exponent could cause an 
+     * unnecessary overflow on I alone).  In this case, fracExp is 
+     * incremented one for each dropped digit.
+     */
+    int fracExp = 0;
+
+    // Strip off leading blanks and check for a sign.
+    while (isspace((int)(*p))) ++p;
+
+    if (*p == '-')
+    {
+        sign = 1;
+        ++p;
+    }
+    else
+    {
+        if (*p == '+') ++p;
+    }
+
+    // Count the number of digits in the mantissa (including the decimal
+    // point), and also locate the decimal point.
+    
+    int decPt = -1; // Number of mantissa digits BEFORE decimal point.
+    int mantSize;     // Number of digits in mantissa.
+    for (mantSize = 0; ; ++mantSize)
+    {
+        c = *p;
+        if (!isdigit((int)c))
+        {
+            if ((c != '.') || (decPt >= 0)) break;
+            decPt = mantSize;
+        }
+        ++p;
+    }
+
+    /*
+     * Now suck up the digits in the mantissa.  Use two integers to
+     * collect 9 digits each (this is faster than using floating-point).
+     * If the mantissa has more than 18 digits, ignore the extras, since
+     * they can't affect the value anyway.
+     */
+
+    pExp = p;
+    p -= mantSize;
+    if (decPt < 0) 
+      decPt = mantSize;
+      else mantSize -= 1; // One of the digits was the point
+
+    if (mantSize > 18)
+    {
+        fracExp = decPt - 18;
+        mantSize = 18;
+    }
+    else
+    {
+        fracExp = decPt - mantSize;
+    }
+
+    if (mantSize == 0) 
+    {
+      // subject sequence does not have expected form.
+      // return 0 and leave success flag set to false
+      return 0.0;
+    }
+    else
+    {
+        int frac1 = 0;
+        for ( ; mantSize > 9; mantSize -= 1)
+        {
+            c = *p;
+            ++p;
+            if (c == '.')
+            {
+                c = *p;
+                ++p;
+            }
+            frac1 = 10*frac1 + (c - '0');
+        }
+        int frac2 = 0;
+        for (; mantSize > 0; mantSize -= 1)
+        {
+            c = *p;
+            ++p;
+            if (c == '.')
+            {
+                c = *p;
+                ++p;
+            }
+            frac2 = 10*frac2 + (c - '0');
+        }
+        fraction = (1.0e9 * frac1) + frac2;
+    }
+
+    // Skim off the exponent.
+    p = pExp;
+    if ((*p == 'E') || (*p == 'e'))
+    {
+        ++p;
+        if (*p == '-')
+        {
+            expSign = 1;
+            ++p;
+        }
+        else
+        {
+            if (*p == '+') ++p;
+            expSign = 0;
+        }
+        while (isdigit((int)(*p)))
+        {
+            exp = exp * 10 + (*p - '0');
+            ++p;
+        }
+    }
+
+    if (expSign)
+       exp = fracExp - exp;
+       else exp = fracExp + exp;
+
+    /*
+     * Generate a floating-point number that represents the exponent.
+     * Do this by processing the exponent one bit at a time to combine
+     * many powers of 2 of 10. Then combine the exponent with the
+     * fraction.
+     */
+
+    if (exp < 0)
+    {
+        expSign = 1;
+        exp = -exp;
+    }
+    else expSign = 0;
+
+    if (exp > ATOF_MAXEXPONENT) exp = ATOF_MAXEXPONENT;
+    double dblExp = 1.0;
+    for (const double *d = atof_powersOf10; exp != 0; exp >>= 1, ++d)
+    {
+        if (exp & 01) dblExp *= *d;
+    }
+
+    if (expSign)
+      fraction /= dblExp;
+      else fraction *= dblExp;
+
+    if (success) *success = OFTrue;
+    if (sign) return -fraction;
+    return fraction;
+}
+
+#endif /* DISABLE_OFSTD_ATOF */
+
 
 /*
  *  $Log: ofstd.cc,v $
- *  Revision 1.5  2002-05-16 15:56:20  meichel
+ *  Revision 1.6  2002-06-20 12:02:39  meichel
+ *  Implemented a locale independent function OFStandard::atof() that
+ *    converts strings to double and optionally returns a status code
+ *
+ *  Revision 1.5  2002/05/16 15:56:20  meichel
  *  Minor fixes to make ofstd compile on NeXTStep 3.3
  *
  *  Revision 1.4  2002/05/14 08:13:27  joergr
