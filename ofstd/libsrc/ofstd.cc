@@ -74,8 +74,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-06-20 12:02:39 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2002-06-20 12:06:47 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -616,7 +616,7 @@ static const double atof_powersOf10[] =
 double OFStandard::atof(const char *s, OFBool *success)
 {
     if (success) *success = OFFalse;
-    register const char *p = string;
+    register const char *p = s;
     register char c;
     int sign = 0;
     int expSign = 0;
@@ -781,7 +781,10 @@ double OFStandard::atof(const char *s, OFBool *success)
 
 /*
  *  $Log: ofstd.cc,v $
- *  Revision 1.6  2002-06-20 12:02:39  meichel
+ *  Revision 1.7  2002-06-20 12:06:47  meichel
+ *  Fixed typo in ofstd.cc
+ *
+ *  Revision 1.6  2002/06/20 12:02:39  meichel
  *  Implemented a locale independent function OFStandard::atof() that
  *    converts strings to double and optionally returns a status code
  *
