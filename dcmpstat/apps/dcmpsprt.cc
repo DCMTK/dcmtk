@@ -25,10 +25,10 @@
  *    stored print and hardcopy grayscale images.
  *    Non-grayscale transformations in the presentation state are ignored. 
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-05-03 14:27:27 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-05-30 14:01:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsprt.cc,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -484,7 +484,7 @@ int main(int argc, char *argv[])
             pixelAspectRatio = dvi.getCurrentPState().getPrintBitmapPixelAspectRatio();
             
             if (opt_verbose) CERR << "writing DICOM grayscale hardcopy image to database." << endl;
-            if (EC_Normal != dvi.saveGrayscaleHardcopyImage(pixelData, width, height, pixelAspectRatio))
+            if (EC_Normal != dvi.saveHardcopyGrayscaleImage(pixelData, width, height, pixelAspectRatio))
             {
               CERR << "error during creation of DICOM grayscale hardcopy image file" << endl;
               return 10;
@@ -570,7 +570,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsprt.cc,v $
- * Revision 1.17  2000-05-03 14:27:27  meichel
+ * Revision 1.18  2000-05-30 14:01:59  joergr
+ * Renamed GrayscaleHardcopy to HardcopyGrayscale (which is the correct term
+ * according to the DICOM standard).
+ *
+ * Revision 1.17  2000/05/03 14:27:27  meichel
  * Updated dcmpstat apps for changes in dcmimgle.
  *
  * Revision 1.16  2000/03/08 16:28:42  meichel
