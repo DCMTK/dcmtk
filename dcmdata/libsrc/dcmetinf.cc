@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-04-18 08:17:18 $
+** Update Date:		$Date: 1997-05-16 08:23:54 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcmetinf.cc,v $
-** CVS/RCS Revision:	$Revision: 1.9 $
+** CVS/RCS Revision:	$Revision: 1.10 $
 ** Status:		$State: Exp $
 **
 */
@@ -238,10 +238,22 @@ BOOL DcmMetaInfo::nextTagIsMeta(DcmStream & inStream)
 // ********************************
 
 
+Uint32 DcmMetaInfo::calcElementLength(const E_TransferSyntax /*xfer*/,
+				      const E_EncodingType enctype)
+{
+    Uint32 metaLength = DcmItem::getLength(META_HEADER_DEFAULT_TRANSFERSYNTAX, enctype);
+    metaLength += DCM_PreambleLen + DCM_MagicLen;
+    return metaLength;
+}
+
+    
+// ********************************
+
+
 E_Condition DcmMetaInfo::readGroupLength(DcmStream & inStream,
 					 const E_TransferSyntax xfer,
 					 const DcmTagKey &xtag,
-					 const E_GrpLenEncoding gltype,
+					 const E_GrpLenEncoding glenc,
 					 Uint32 & headerLen,
 					 Uint32 & bytesRead,
 					 const Uint32 maxReadLength)
@@ -272,7 +284,7 @@ E_Condition DcmMetaInfo::readGroupLength(DcmStream & inStream,
 					      newTag,
 					      newValueLength,
 					      newxfer,
-					      gltype,
+					      glenc,
 					      maxReadLength);
 	    bytesRead += newValueLength;
 
@@ -307,11 +319,11 @@ E_Condition DcmMetaInfo::readGroupLength(DcmStream & inStream,
 
 E_Condition DcmMetaInfo::read(DcmStream & inStream,
 			      const E_TransferSyntax xfer,
-			      const E_GrpLenEncoding gltype,
+			      const E_GrpLenEncoding glenc,
 			      const Uint32 maxReadLength)
 {
-    Bdebug((3, "dcmetinf:DcmMetaInfo::readBlock(xfer=%d,gltype=%d)",
-	    xfer, gltype ));
+    Bdebug((3, "dcmetinf:DcmMetaInfo::readBlock(xfer=%d)",
+	    xfer ));
 
     if (fPreambleTransferState == ERW_notInitialized || 
 	fTransferState == ERW_notInitialized)
@@ -333,7 +345,6 @@ E_Condition DcmMetaInfo::read(DcmStream & inStream,
 		if ( xfer == EXS_Unknown )
 		{
 		    preambleUsed = checkAndReadPreamble(inStream, newxfer);
-		    // ueberspringe gegebenenfalls 132 Byte
 		    Vdebug((3, inStream.Tell() != 0, "found %ld bytes preamble", 
 			    inStream.Tell()));
 		}
@@ -342,7 +353,7 @@ E_Condition DcmMetaInfo::read(DcmStream & inStream,
 
 		if (fPreambleTransferState == ERW_ready)
 		{
-		    Xfer = newxfer;	// speichere intern Parameter-TSyntax xfer
+		    Xfer = newxfer;   // store parameter transfer syntax
 		    fTransferState = ERW_inWork;
 		    fTransferredBytes = 0;
 		    fStartPosition = inStream.Tell(); 
@@ -355,8 +366,8 @@ E_Condition DcmMetaInfo::read(DcmStream & inStream,
 		== EC_Normal)
 	    {
 		Uint32 headerLength = 0;
-		errorFlag = readGroupLength(inStream, newxfer, 
-					    DCM_MetaElementGroupLength, gltype,
+		errorFlag = readGroupLength(inStream, newxfer,  
+					    DCM_MetaElementGroupLength, glenc, 
 					    headerLength, fTransferredBytes, 
 					    maxReadLength);
 		if (errorFlag == EC_Normal)
@@ -392,7 +403,8 @@ E_Condition DcmMetaInfo::read(DcmStream & inStream,
 			lastElementComplete = FALSE;
 			errorFlag = DcmItem::readSubElement(inStream, newTag,
 							    newValueLength,
-							    newxfer, gltype,
+							    newxfer,
+							    glenc,
 							    maxReadLength);
 			if ( errorFlag == EC_Normal )
 			    lastElementComplete = TRUE;
@@ -400,7 +412,7 @@ E_Condition DcmMetaInfo::read(DcmStream & inStream,
 		    else
 		    {
 			errorFlag = elementList->get()->read(inStream, xfer, 
-							     gltype, 
+							     glenc,
 							     maxReadLength);
 			if ( errorFlag == EC_Normal )
 			    lastElementComplete = TRUE;
@@ -465,17 +477,15 @@ void DcmMetaInfo::transferEnd()
 #ifdef DEBUG
 E_Condition DcmMetaInfo::write(DcmStream & outStream,
 			       const E_TransferSyntax oxfer,
-			       const E_EncodingType enctype,
-			       const E_GrpLenEncoding gltype)
+			       const E_EncodingType enctype)
 #else
 E_Condition DcmMetaInfo::write(DcmStream & outStream,
 			       const E_TransferSyntax /*oxfer*/,
-			       const E_EncodingType enctype,
-			       const E_GrpLenEncoding gltype)
+			       const E_EncodingType enctype)
 #endif
 {
-    Bdebug((3, "DcmMetaInfo::writeBlock(oxfer=%d,enctype=%d,gltype=%d)",
-	    oxfer, enctype, gltype ));
+    Bdebug((3, "DcmMetaInfo::writeBlock(oxfer=%d,enctype=%d)",
+	    oxfer, enctype ));
 
     if (fTransferState == ERW_notInitialized)
 	errorFlag = EC_IllegalCall;
@@ -527,7 +537,7 @@ E_Condition DcmMetaInfo::write(DcmStream & outStream,
 		do 
 		{
 		    dO = elementList->get();
-		    errorFlag = dO->write(outStream, outxfer, enctype, gltype);
+		    errorFlag = dO->write(outStream, outxfer, enctype);
 		} while (errorFlag == EC_Normal && elementList->seek(ELP_next));
 	    }
 
@@ -547,7 +557,21 @@ E_Condition DcmMetaInfo::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.cc,v $
-** Revision 1.9  1997-04-18 08:17:18  andreas
+** Revision 1.10  1997-05-16 08:23:54  andreas
+** - Revised handling of GroupLength elements and support of
+**   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
+**   got additional enumeration values (for a description see dctypes.h).
+**   addGroupLength and removeGroupLength methods are replaced by
+**   computeGroupLengthAndPadding. To support Padding, the parameters of
+**   element and sequence write functions changed.
+** - Added a new method calcElementLength to calculate the length of an
+**   element, item or sequence. For elements it returns the length of
+**   tag, length field, vr field, and value length, for item and
+**   sequences it returns the length of the whole item. sequence including
+**   the Delimitation tag (if appropriate).  It can never return
+**   UndefinedLength.
+**
+** Revision 1.9  1997/04/18 08:17:18  andreas
 ** - The put/get-methods for all VRs did not conform to the C++-Standard
 **   draft. Some Compilers (e.g. SUN-C++ Compiler, Metroworks
 **   CodeWarrier, etc.) create many warnings concerning the hiding of

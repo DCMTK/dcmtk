@@ -10,10 +10,10 @@
 ** Interface of class DcmSequenceOfItems
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-04-24 12:09:02 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-05-16 08:23:48 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcsequen.h,v $
-** CVS/RCS Revision:	$Revision: 1.9 $
+** CVS/RCS Revision:	$Revision: 1.10 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -47,7 +47,7 @@ protected:
     BOOL lastItemComplete;
     Uint32 fStartPosition;
 
-    virtual E_Condition readTagAndLength(DcmStream & inStream,		   // inout
+    virtual E_Condition readTagAndLength(DcmStream & inStream,	 // inout
 					 const E_TransferSyntax xfer,  // in
 					 DcmTag &tag,                  // out
 					 Uint32 & length );	   // out
@@ -56,11 +56,11 @@ protected:
 				      const DcmTag & mewTag,
 				      const Uint32 newLength);
 
-    E_Condition readSubItem(DcmStream & inStream,			// inout
+    E_Condition readSubItem(DcmStream & inStream,		// inout
 			    const DcmTag &newTag,       	// in
 			    const Uint32 newLength, 		// in
-			    const E_TransferSyntax xfer,    // in
-			    const E_GrpLenEncoding gltype,	// in
+			    const E_TransferSyntax xfer,        // in
+			    const E_GrpLenEncoding glenc,       // in
 			    const Uint32 maxReadLength 		// in
 			    = DCM_MaxReadLength);
 
@@ -78,6 +78,19 @@ public:
     virtual void print(ostream & out = cout, const BOOL showFullData = TRUE,
 		       const int level = 0);
     virtual unsigned long getVM() { return 1L; }
+
+   virtual E_Condition computeGroupLengthAndPadding
+                            (const E_GrpLenEncoding glenc,
+			     const E_PaddingEncoding padenc = EPD_noChange,
+			     const E_TransferSyntax xfer = EXS_Unknown,
+			     const E_EncodingType enctype = EET_ExplicitLength,
+			     const Uint32 padlen = 0,
+			     const Uint32 subPadlen = 0,
+			     Uint32 instanceLength = 0);
+
+    virtual Uint32 calcElementLength(const E_TransferSyntax xfer,
+				     const E_EncodingType enctype);
+
     virtual Uint32 getLength(const E_TransferSyntax xfer 
 			     = EXS_LittleEndianImplicit,
 			     const E_EncodingType enctype 
@@ -88,13 +101,13 @@ public:
 
     virtual E_Condition read(DcmStream & inStream,
 			     const E_TransferSyntax xfer,
-			     const E_GrpLenEncoding gltype = EGL_withoutGL,
+			     const E_GrpLenEncoding glenc = EGL_noChange,
 			     const Uint32 maxReadLength = DCM_MaxReadLength);
 
     virtual E_Condition write(DcmStream & outStream,
 			      const E_TransferSyntax oxfer,
-			      const E_EncodingType enctype = EET_UndefinedLength,
-			      const E_GrpLenEncoding gltype = EGL_withoutGL);
+			      const E_EncodingType enctype = EET_UndefinedLength);
+
 
     virtual unsigned long card();
 
@@ -122,9 +135,6 @@ public:
     virtual E_Condition searchErrors( DcmStack &resultStack );	  // inout
     virtual E_Condition loadAllDataIntoMemory(void);
 
-    virtual E_Condition addGroupLengthElements( E_TransferSyntax xfer,
-						E_EncodingType enctype );
-    virtual E_Condition removeGroupLengthElements();
 };
 
 
@@ -134,7 +144,21 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.h,v $
-** Revision 1.9  1997-04-24 12:09:02  hewett
+** Revision 1.10  1997-05-16 08:23:48  andreas
+** - Revised handling of GroupLength elements and support of
+**   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
+**   got additional enumeration values (for a description see dctypes.h).
+**   addGroupLength and removeGroupLength methods are replaced by
+**   computeGroupLengthAndPadding. To support Padding, the parameters of
+**   element and sequence write functions changed.
+** - Added a new method calcElementLength to calculate the length of an
+**   element, item or sequence. For elements it returns the length of
+**   tag, length field, vr field, and value length, for item and
+**   sequences it returns the length of the whole item. sequence including
+**   the Delimitation tag (if appropriate).  It can never return
+**   UndefinedLength.
+**
+** Revision 1.9  1997/04/24 12:09:02  hewett
 ** Fixed DICOMDIR generation bug affecting ordering of
 ** patient/study/series/image records (item insertion into a sequence
 ** did produce the expected ordering).

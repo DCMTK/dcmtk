@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-04-18 08:13:28 $
+** Update Date:		$Date: 1997-05-16 08:23:46 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcelem.h,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -64,7 +64,11 @@ public:
     DcmElement(const DcmElement & elem);
     virtual ~DcmElement();
 
+    // returns length of element with tag, vr, ...
+    virtual Uint32 calcElementLength(const E_TransferSyntax xfer,
+				     const E_EncodingType enctype);
 
+    // returns length of value
     virtual Uint32 getLength(const E_TransferSyntax /*xfer*/ 
 			     = EXS_LittleEndianImplicit,
 			     const E_EncodingType /*enctype*/ 
@@ -80,13 +84,14 @@ public:
 
     virtual E_Condition read(DcmStream & inStream, 
 			     const E_TransferSyntax ixfer,
-			     const E_GrpLenEncoding gltype = EGL_withoutGL,
+			     const E_GrpLenEncoding glenc = EGL_noChange, 
 			     const Uint32 maxReadLength = DCM_MaxReadLength);
 
     virtual E_Condition write(DcmStream & outStream,
 			      const E_TransferSyntax oxfer,
-			      const E_EncodingType enctype = EET_UndefinedLength,
-			      const E_GrpLenEncoding gltype = EGL_withoutGL);
+			      const E_EncodingType enctype 
+			      = EET_UndefinedLength);
+
 
     virtual E_Condition clear(void);
 
@@ -149,7 +154,21 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.h,v $
-** Revision 1.7  1997-04-18 08:13:28  andreas
+** Revision 1.8  1997-05-16 08:23:46  andreas
+** - Revised handling of GroupLength elements and support of
+**   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
+**   got additional enumeration values (for a description see dctypes.h).
+**   addGroupLength and removeGroupLength methods are replaced by
+**   computeGroupLengthAndPadding. To support Padding, the parameters of
+**   element and sequence write functions changed.
+** - Added a new method calcElementLength to calculate the length of an
+**   element, item or sequence. For elements it returns the length of
+**   tag, length field, vr field, and value length, for item and
+**   sequences it returns the length of the whole item. sequence including
+**   the Delimitation tag (if appropriate).  It can never return
+**   UndefinedLength.
+**
+** Revision 1.7  1997/04/18 08:13:28  andreas
 ** - The put/get-methods for all VRs did not conform to the C++-Standard
 **   draft. Some Compilers (e.g. SUN-C++ Compiler, Metroworks
 **   CodeWarrier, etc.) create many warnings concerning the hiding of

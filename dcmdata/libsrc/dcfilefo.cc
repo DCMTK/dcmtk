@@ -10,9 +10,9 @@
 ** Implementation of class DcmFileFormat
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-04-18 08:17:17 $
+** Update Date:		$Date: 1997-05-16 08:23:54 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcfilefo.cc,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
+** CVS/RCS Revision:	$Revision: 1.9 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -391,8 +391,9 @@ E_Condition DcmFileFormat::validateMetaInfo(E_TransferSyntax oxfer)
 		metinf->card() ));
 
 	// berechne neue GroupLength
-        if ( metinf->addGroupLengthElements( META_HEADER_DEFAULT_TRANSFERSYNTAX,
-					     EET_UndefinedLength ) != EC_Normal ) {
+        if (metinf->computeGroupLengthAndPadding
+	     (EGL_withGL, EPD_noChange, META_HEADER_DEFAULT_TRANSFERSYNTAX, 
+	      EET_UndefinedLength) != EC_Normal ) {
             cerr << "Error: DcmFileFormat::validateMetaInfo(): group length"
 		" of Meta Information Header not adapted."
 		 << endl;
@@ -441,13 +442,24 @@ E_TransferSyntax DcmFileFormat::lookForXfer(DcmMetaInfo* metainfo)
 // ********************************
 
 
+Uint32 DcmFileFormat::calcElementLength(const E_TransferSyntax xfer,
+				      const E_EncodingType enctype)
+{
+    return getMetaInfo() -> calcElementLength(xfer, enctype) + 
+	getDataset() -> calcElementLength(xfer, enctype);
+}
+
+// ********************************
+
+
 E_Condition DcmFileFormat::read(DcmStream & inStream,
 				const E_TransferSyntax xfer,
-				const E_GrpLenEncoding gltype,
+				const E_GrpLenEncoding glenc,
 				const Uint32 maxReadLength)
+
 {
-    Bdebug((3, "DcmFileFormat::read(xfer=%d,gltype=%d)",
-	    xfer, gltype ));
+    Bdebug((3, "DcmFileFormat::read(xfer=%d,glenc=%d)",
+	    xfer, glenc ));
 
     if (fTransferState == ERW_notInitialized)
 	errorFlag = EC_IllegalCall;
@@ -473,8 +485,8 @@ E_Condition DcmFileFormat::read(DcmStream & inStream,
 			
 	    if (metaInfo && metaInfo->transferState() != ERW_ready)
 	    {
-		errorFlag = metaInfo->read(inStream, xfer, 
-					   gltype, maxReadLength );
+		errorFlag = metaInfo->read(inStream, xfer, glenc,
+					   maxReadLength );
 		debug(( 3, "MetaInfo has been read." ));
 	    }
 
@@ -495,8 +507,8 @@ E_Condition DcmFileFormat::read(DcmStream & inStream,
 
 		if (dataset && dataset->transferState() != ERW_ready)
 		{
-		    errorFlag = dataset->read(inStream, newxfer, 
-					      gltype, maxReadLength);
+		    errorFlag = dataset->read(inStream, newxfer, glenc,
+					      maxReadLength);
 		    debug(( 3, "Dataset has been read." ));
 		}
 	    }
@@ -517,22 +529,35 @@ Edebug(());
 
 E_Condition DcmFileFormat::write(DcmStream & outStream,
 				 const E_TransferSyntax oxfer,
+				 const E_EncodingType enctype)
+{
+    return write(outStream, oxfer, enctype, EGL_recalcGL, EPD_noChange);
+}
+
+
+// ********************************
+
+E_Condition DcmFileFormat::write(DcmStream & outStream,
+				 const E_TransferSyntax oxfer,
 				 const E_EncodingType enctype,
-				 const E_GrpLenEncoding gltype )
+				 const E_GrpLenEncoding glenc,
+				 const E_PaddingEncoding padenc,
+				 const Uint32 padlen,
+				 const Uint32 subPadlen,
+				 Uint32 instanceLength)
 {
     Bdebug((3, "DcmFileFormat::write(oxfer=%d,enctype=%d,"
-	    "gltype=%d)", oxfer, enctype, gltype ));
+	    "glenc=%d)", oxfer, enctype, glenc ));
     if (fTransferState == ERW_notInitialized)
 	errorFlag = EC_IllegalCall;
     else
     {
+	DcmDataset * dataset = this -> getDataset();
+	DcmMetaInfo * metainfo = this -> getMetaInfo();
+
 	E_TransferSyntax outxfer = oxfer;
-	if (outxfer == EXS_Unknown)
-	{
-	    DcmDataset * dataset = this -> getDataset();
-	    if (dataset)
-		outxfer = dataset->getOriginalXfer();
-	}
+	if (outxfer == EXS_Unknown && dataset)
+	    outxfer = dataset->getOriginalXfer();
 
 	errorFlag = outStream.GetError();
 	if (outxfer == EXS_Unknown || outxfer == EXS_BigEndianImplicit)
@@ -550,15 +575,15 @@ E_Condition DcmFileFormat::write(DcmStream & outStream,
 
 	    if (fTransferState == ERW_inWork)
 	    {
-		DcmObject * dO;
-		do 
-		{
-		    dO = itemList->get();
-		    if (dO -> transferState() != ERW_ready)
-			errorFlag = dO->write(outStream, outxfer, 
-					      enctype, gltype);
-		} while (errorFlag == EC_Normal && itemList->seek(ELP_next));
+		errorFlag = 
+		    metainfo -> write(outStream, outxfer, enctype);
+		instanceLength += 
+		    metainfo -> calcElementLength(outxfer, enctype);
 
+		if (errorFlag == EC_Normal)
+		    errorFlag = dataset -> write(outStream, outxfer, enctype, 
+						 glenc, padenc, padlen, 
+						 subPadlen, instanceLength);
 		if (errorFlag == EC_Normal)
 		    fTransferState = ERW_ready;
 	    }
@@ -688,7 +713,21 @@ DcmDataset* DcmFileFormat::getAndRemoveDataset()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
-** Revision 1.8  1997-04-18 08:17:17  andreas
+** Revision 1.9  1997-05-16 08:23:54  andreas
+** - Revised handling of GroupLength elements and support of
+**   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
+**   got additional enumeration values (for a description see dctypes.h).
+**   addGroupLength and removeGroupLength methods are replaced by
+**   computeGroupLengthAndPadding. To support Padding, the parameters of
+**   element and sequence write functions changed.
+** - Added a new method calcElementLength to calculate the length of an
+**   element, item or sequence. For elements it returns the length of
+**   tag, length field, vr field, and value length, for item and
+**   sequences it returns the length of the whole item. sequence including
+**   the Delimitation tag (if appropriate).  It can never return
+**   UndefinedLength.
+**
+** Revision 1.8  1997/04/18 08:17:17  andreas
 ** - The put/get-methods for all VRs did not conform to the C++-Standard
 **   draft. Some Compilers (e.g. SUN-C++ Compiler, Metroworks
 **   CodeWarrier, etc.) create many warnings concerning the hiding of

@@ -10,9 +10,9 @@
 ** Interface of class DcmFileFormat
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-08-05 08:45:21 $
+** Update Date:		$Date: 1997-05-16 08:23:47 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcfilefo.h,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -53,14 +53,29 @@ public:
     virtual DcmEVR ident() const { return EVR_fileFormat; }
     virtual void print(ostream & out = cout, const BOOL showFullData = TRUE,
 		       const int level = 0);
+
+    virtual Uint32  calcElementLength(const E_TransferSyntax xfer,
+				      const E_EncodingType enctype);
+
     virtual E_Condition read(DcmStream & inStream,
 			     const E_TransferSyntax xfer = EXS_Unknown,
-			     const E_GrpLenEncoding gltype = EGL_withoutGL,
+			     const E_GrpLenEncoding glenc = EGL_noChange,
 			     const Uint32 maxReadLength = DCM_MaxReadLength);
+
     virtual E_Condition write(DcmStream & outStream,
 			      const E_TransferSyntax oxfer,
-			      const E_EncodingType enctype = EET_UndefinedLength,
-			      const E_GrpLenEncoding gltype = EGL_withoutGL );
+			      const E_EncodingType enctype 
+			      = EET_UndefinedLength);
+
+    virtual E_Condition write(DcmStream & outStream,
+			      const E_TransferSyntax oxfer,
+			      const E_EncodingType enctype,
+			      const E_GrpLenEncoding glenc,
+			      const E_PaddingEncoding padenc = EPD_noChange,
+			      const Uint32 padlen = 0,
+			      const Uint32 subPadlen = 0,
+			      Uint32 instanceLength = 0);
+
     virtual DcmMetaInfo* getMetaInfo();
     virtual DcmDataset*  getDataset();
     virtual DcmDataset*  getAndRemoveDataset();
@@ -83,7 +98,21 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.h,v $
-** Revision 1.6  1996-08-05 08:45:21  andreas
+** Revision 1.7  1997-05-16 08:23:47  andreas
+** - Revised handling of GroupLength elements and support of
+**   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
+**   got additional enumeration values (for a description see dctypes.h).
+**   addGroupLength and removeGroupLength methods are replaced by
+**   computeGroupLengthAndPadding. To support Padding, the parameters of
+**   element and sequence write functions changed.
+** - Added a new method calcElementLength to calculate the length of an
+**   element, item or sequence. For elements it returns the length of
+**   tag, length field, vr field, and value length, for item and
+**   sequences it returns the length of the whole item. sequence including
+**   the Delimitation tag (if appropriate).  It can never return
+**   UndefinedLength.
+**
+** Revision 1.6  1996/08/05 08:45:21  andreas
 ** new print routine with additional parameters:
 **         - print into files
 **         - fix output length for elements

@@ -9,8 +9,8 @@
 ** This file contains the interface to routines which provide
 ** DICOM object encoding/decoding, search and lookup facilities.
 **
-** Last Update:   $Author: hewett $
-** Revision:      $Revision: 1.9 $
+** Last Update:   $Author: andreas $
+** Revision:      $Revision: 1.10 $
 ** Status:	  $State: Exp $
 **
 */
@@ -106,20 +106,25 @@ public:
 
     virtual E_Condition setVR(DcmEVR vr);
     virtual unsigned long getVM() = 0;
+
+    // calculate length of Dicom element 
+    virtual Uint32 calcElementLength(const E_TransferSyntax xfer,
+				     const E_EncodingType enctype) = 0;
+
+    // returns value length
     virtual Uint32 getLength(const E_TransferSyntax xfer 
 			     = EXS_LittleEndianImplicit,
 			     const E_EncodingType enctype 
 			     = EET_UndefinedLength) = 0;
 
-    virtual E_Condition read(DcmStream & inStream,
+     virtual E_Condition read(DcmStream & inStream,
 			     const E_TransferSyntax ixfer,
-                             const E_GrpLenEncoding gltype = EGL_withoutGL,
+			     const E_GrpLenEncoding glenc = EGL_noChange,
 			     const Uint32 maxReadLength = DCM_MaxReadLength) = 0;
 
     virtual E_Condition write(DcmStream & outStream,
 			      const E_TransferSyntax oxfer,
-			      const E_EncodingType enctype = EET_UndefinedLength,
-			      const E_GrpLenEncoding gltype = EGL_withoutGL) = 0;
+			      const E_EncodingType enctype = EET_UndefinedLength) = 0;
 
     virtual E_Condition clear() = 0;
     virtual E_Condition verify(const BOOL autocorrect = FALSE) = 0;

@@ -10,10 +10,10 @@
 ** Implementation of the class DcmSequenceOfItems
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-04-24 12:11:49 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-05-16 08:23:55 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcsequen.cc,v $
-** CVS/RCS Revision:	$Revision: 1.14 $
+** CVS/RCS Revision:	$Revision: 1.15 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -176,47 +176,52 @@ void DcmSequenceOfItems::print(ostream & out, const BOOL showFullData,
 // ********************************
 
 
+Uint32 DcmSequenceOfItems::calcElementLength(const E_TransferSyntax xfer,
+					     const E_EncodingType enctype)
+{
+    Uint32 seqlen = DcmElement::calcElementLength(xfer, enctype);
+    if (enctype == EET_UndefinedLength)
+	seqlen += 8;     // for Sequence Delimitation Tag
+    return seqlen;
+}
+    
+// ********************************
+
+
 Uint32 DcmSequenceOfItems::getLength(const E_TransferSyntax xfer,
-				     const E_EncodingType enctype )
+				     const E_EncodingType enctype)
 {
     Bdebug((4, "dcsequen:DcmSequenceOfItems::getLength(xfer=%d,enctype=%d)",
 	    xfer, enctype ));
 
-    Uint32 templen = 0;
+    Uint32 seqlen = 0;
     if ( !itemList->empty() )
     {
 	DcmItem *dI;
 	itemList->seek( ELP_first );
 	do {
 	    dI = (DcmItem*)( itemList->get() );
-	    Uint32 sublength = dI->getLength( xfer, enctype );
-	    Vdebug((1, sublength==DCM_UndefinedLength, "Warning subitem has undefined Length" ));
-
-	    templen += sublength;
-	    templen += 8;		// fuer Tag und Length
-
-	    if ( enctype == EET_UndefinedLength )
-                templen += 8;           // fuer ItemDelimitationItem
+	    seqlen += dI->calcElementLength( xfer, enctype );
 	} while ( itemList->seek( ELP_next ) );
     }
-    else
-	templen = 0;
-    debug(( 4, "Length of Sequence=%ld", templen ));
     Edebug(());
 
-    return templen;
+    return seqlen;
 }
 
 
 // ********************************
 
 
-E_Condition DcmSequenceOfItems::addGroupLengthElements( E_TransferSyntax xfer,
-                                                        E_EncodingType enctype )
+E_Condition DcmSequenceOfItems::computeGroupLengthAndPadding
+                                   (const E_GrpLenEncoding glenc,
+				    const E_PaddingEncoding padenc,
+				    E_TransferSyntax xfer,
+				    E_EncodingType enctype,
+				    const Uint32 padlen,
+				    const Uint32 subPadlen,
+				    Uint32 instanceLength)
 {
-    Bdebug((2, "dcitem:DcmSequenceOfItems::addGroupLengthElements(xfer=%d,enctype=%d)",
-	    xfer, enctype ));
-
     E_Condition l_error = EC_Normal;
 
     if ( !itemList->empty() )
@@ -224,13 +229,11 @@ E_Condition DcmSequenceOfItems::addGroupLengthElements( E_TransferSyntax xfer,
 	itemList->seek( ELP_first );
 	do {
             DcmItem *dO = (DcmItem*)itemList->get();
-            E_Condition err = dO->addGroupLengthElements( xfer, enctype );
-            if ( err != EC_Normal )
-                l_error = err;
+            l_error = dO->computeGroupLengthAndPadding
+		(glenc, padenc, xfer, enctype, padlen, 
+		 subPadlen, instanceLength);
 	} while ( itemList->seek( ELP_next ) );
     }
-    Edebug(());
-
     return l_error;
 }
 
@@ -271,32 +274,6 @@ E_Condition DcmSequenceOfItems::makeSubObject(DcmObject * & subObject,
     subObject = subItem;
     return l_error;
 }
-
-// ********************************
-
-
-E_Condition DcmSequenceOfItems::removeGroupLengthElements()
-{
-    Bdebug((2, "dcitem:DcmSequenceOfItems::removeGroupLengthElements()" ));
-
-    E_Condition l_error = EC_Normal;
-
-    if ( !itemList->empty() )
-    {
-        itemList->seek( ELP_first );
-	do {
-            DcmItem *dO = (DcmItem*)itemList->get();
-            E_Condition err = dO->removeGroupLengthElements();
-            if ( err != EC_Normal )
-                l_error = err;
-        } while ( itemList->seek( ELP_next ) );
-    }
-
-    Edebug(());
-
-    return l_error;
-}
-
 
 // ********************************
 
@@ -360,11 +337,11 @@ E_Condition DcmSequenceOfItems::readSubItem(DcmStream & inStream,
 					    const DcmTag &newTag,
 					    const Uint32 newLength,
 					    const E_TransferSyntax xfer,
-					    const E_GrpLenEncoding gltype,
+					    const E_GrpLenEncoding glenc,
 					    const Uint32 maxReadLength)
 {
     Bdebug((4, "dcsequen:DcmSequenceOfItems::readSubItem(&newTag,newLength=%d,"
-	    "xfer=%d,gltype=%d)", newLength, xfer, gltype ));
+	    "xfer=%d)", newLength, xfer ));
 
     // For DcmSequenceOfItems, subObject is always inherited from DcmItem
     // For DcmPixelSequence, subObject is always inherited from DcmPixelItem
@@ -375,7 +352,7 @@ E_Condition DcmSequenceOfItems::readSubItem(DcmStream & inStream,
 	inStream.UnsetPutbackMark();
 	itemList->insert(subObject, ELP_next);
 	// hier wird Subitem eingelesen
-        l_error = subObject->read(inStream, xfer, gltype, maxReadLength);
+        l_error = subObject->read(inStream, xfer, glenc, maxReadLength);
     }
     else if ( l_error == EC_InvalidTag )  // versuche das Parsing wieder
     {                                     // einzurenken
@@ -410,11 +387,11 @@ E_Condition DcmSequenceOfItems::readSubItem(DcmStream & inStream,
 
 E_Condition DcmSequenceOfItems::read(DcmStream & inStream,
 				     const E_TransferSyntax xfer,
-                                     const E_GrpLenEncoding gltype,
+				     const E_GrpLenEncoding glenc,
 				     const Uint32 maxReadLength)
 {
-    Bdebug((3, "DcmSequenceOfItems::read(xfer=%d,gltype=%d)",
-	    xfer, gltype ));
+    Bdebug((3, "DcmSequenceOfItems::read(xfer=%d)",
+	    xfer));
 
     if (fTransferState == ERW_notInitialized)
 	errorFlag = EC_IllegalCall;
@@ -450,21 +427,21 @@ E_Condition DcmSequenceOfItems::read(DcmStream & inStream,
 
 		    lastItemComplete = FALSE;
 		    errorFlag = readSubItem(inStream, newTag, newValueLength, 
-					    xfer, gltype, maxReadLength);
+					    xfer, glenc, maxReadLength);
 		    if ( errorFlag == EC_Normal )
 			lastItemComplete = TRUE;
 		}
 		else
 		{
-		    errorFlag = itemList->get()->read(inStream, xfer, 
-						      gltype, maxReadLength);
+		    errorFlag = itemList->get()->read(inStream, xfer, glenc,
+						      maxReadLength);
 		    if ( errorFlag == EC_Normal )
 			lastItemComplete = TRUE;
 		}
 		fTransferredBytes = inStream.Tell() - fStartPosition;
 				
 		if ( errorFlag != EC_Normal )
-		    break;				// beende while-Schleife
+		    break;			
 
 	    } //while 
 	    if ((fTransferredBytes < Length || !lastItemComplete) &&
@@ -490,8 +467,7 @@ E_Condition DcmSequenceOfItems::read(DcmStream & inStream,
 
 E_Condition DcmSequenceOfItems::write(DcmStream & outStream,
 				      const E_TransferSyntax oxfer,
-				      const E_EncodingType enctype,
-				      const E_GrpLenEncoding gltype)
+				      const E_EncodingType enctype)
 {
     Bdebug((3, "DcmSequenceOfItems::writeBlock(oxfer=%d,enctype=%d)",
 	    oxfer, enctype ));
@@ -509,7 +485,6 @@ E_Condition DcmSequenceOfItems::write(DcmStream & outStream,
 		    // n.B.: Header ist u. U. kleiner
 		{
 		    if ( enctype == EET_ExplicitLength )
-			// getLength kann u.U. auch DCM_UndefinedLength liefern
 			Length = this->getLength(oxfer, enctype);
 		    else
 			Length = DCM_UndefinedLength;
@@ -538,7 +513,7 @@ E_Condition DcmSequenceOfItems::write(DcmStream & outStream,
 			dO = itemList->get();
 			if (dO->transferState() != ERW_ready)
 			    errorFlag = dO->write(outStream, oxfer, 
-						  enctype, gltype);
+						  enctype);
 		    } while (errorFlag == EC_Normal && itemList->seek(ELP_next));
 		}
 
@@ -1150,7 +1125,21 @@ E_Condition DcmSequenceOfItems::loadAllDataIntoMemory()
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.14  1997-04-24 12:11:49  hewett
+** Revision 1.15  1997-05-16 08:23:55  andreas
+** - Revised handling of GroupLength elements and support of
+**   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
+**   got additional enumeration values (for a description see dctypes.h).
+**   addGroupLength and removeGroupLength methods are replaced by
+**   computeGroupLengthAndPadding. To support Padding, the parameters of
+**   element and sequence write functions changed.
+** - Added a new method calcElementLength to calculate the length of an
+**   element, item or sequence. For elements it returns the length of
+**   tag, length field, vr field, and value length, for item and
+**   sequences it returns the length of the whole item. sequence including
+**   the Delimitation tag (if appropriate).  It can never return
+**   UndefinedLength.
+**
+** Revision 1.14  1997/04/24 12:11:49  hewett
 ** Fixed DICOMDIR generation bug affecting ordering of
 ** patient/study/series/image records (item insertion into a sequence
 ** did produce the expected ordering).

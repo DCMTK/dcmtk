@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-08-05 08:46:08 $
+** Update Date:		$Date: 1997-05-16 08:23:52 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdatset.cc,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -84,6 +84,15 @@ DcmDataset::~DcmDataset()
 // ********************************
 
 
+Uint32 DcmDataset::calcElementLength(const E_TransferSyntax xfer,
+				     const E_EncodingType enctype)
+{
+    return DcmItem::getLength(xfer, enctype);
+}
+
+// ********************************
+
+
 void DcmDataset::print(ostream & out, const BOOL showFullData,
 		       const int level)
 {
@@ -127,10 +136,10 @@ void DcmDataset::resolveAmbigous(void)
 
 E_Condition DcmDataset::read(DcmStream & inStream,
 			     const E_TransferSyntax xfer,
-			     const E_GrpLenEncoding gltype,
+			     const E_GrpLenEncoding glenc,
 			     const Uint32 maxReadLength)
 {
-    Bdebug((3, "DcmDataset::read(xfer=%d,gltype=%d)", xfer, gltype ));
+    Bdebug((3, "DcmDataset::read(xfer=%d,glenc=%d)", xfer, glenc ));
 
 
     errorFlag = inStream.GetError();
@@ -142,7 +151,7 @@ E_Condition DcmDataset::read(DcmStream & inStream,
 	if (fTransferState == ERW_init)
 	{
 	    if (xfer == EXS_Unknown)
-		Xfer = checkTransferSyntax(inStream); // Notbehelf, falls xfer unbek.
+		Xfer = checkTransferSyntax(inStream); 
 	    else
 		Xfer = xfer;
 
@@ -150,7 +159,7 @@ E_Condition DcmDataset::read(DcmStream & inStream,
 	    //				fTransferState = ERW_inWork; 
 	}
 	// uebergebe Kontrolle an DcmItem
-	errorFlag = DcmItem::read(inStream, Xfer, gltype, maxReadLength);
+	errorFlag = DcmItem::read(inStream, Xfer, glenc, maxReadLength);
 
     } 
 
@@ -159,8 +168,7 @@ E_Condition DcmDataset::read(DcmStream & inStream,
 	errorFlag = EC_Normal;
 	this -> resolveAmbigous();
 
-	if ( gltype == EGL_withoutGL )
-	    removeGroupLengthElements(); // entferne alle Group Length El.
+ 	computeGroupLengthAndPadding(glenc, EPD_noChange, Xfer);
 	fTransferState = ERW_ready;              // Dataset ist komplett
     }
     debug(( 3, "errorFlag=(%d)", errorFlag ));
@@ -172,14 +180,26 @@ E_Condition DcmDataset::read(DcmStream & inStream,
 
 // ********************************
 
+E_Condition DcmDataset::write(DcmStream & outStream,
+			      const E_TransferSyntax oxfer,
+			      const E_EncodingType enctype)
+{
+    return write(outStream, oxfer, enctype, EGL_recalcGL);
+}
+
+// ********************************
 
 E_Condition DcmDataset::write(DcmStream & outStream,
 			      const E_TransferSyntax oxfer,
 			      const E_EncodingType enctype,
-			      const E_GrpLenEncoding gltype)
+			      const E_GrpLenEncoding glenc,
+			      const E_PaddingEncoding padenc,
+			      const Uint32 padlen,
+			      const Uint32 subPadlen,
+			      Uint32 instanceLength)
 {
-    Bdebug((3, "DcmDataset::writeBlock(oxfer=%d,enctype=%d,gltype=%d)",
-	    oxfer, enctype, gltype ));
+    Bdebug((3, "DcmDataset::writeBlock(oxfer=%d,enctype=%d,glenc=%d)",
+	    oxfer, enctype, glenc ));
 
     if (fTransferState == ERW_notInitialized)
 	errorFlag = EC_IllegalCall;
@@ -194,14 +214,8 @@ E_Condition DcmDataset::write(DcmStream & outStream,
 	{
 	    if (fTransferState == ERW_init)
 	    {
-		if ( gltype == EGL_withoutGL )
-		{                      // entferne alle Group Length Elements
-		    removeGroupLengthElements();
-		}
-		else if ( gltype == EGL_withGL )
-		{                      // fuege alle Group Length Elements hinzu
-		    addGroupLengthElements( newXfer, enctype );
-		}
+  		computeGroupLengthAndPadding(glenc, padenc, newXfer, enctype,  
+					     padlen, subPadlen, instanceLength);
 		elementList->seek( ELP_first );
 		fTransferState = ERW_inWork;
 	    }
@@ -214,8 +228,7 @@ E_Condition DcmDataset::write(DcmStream & outStream,
 		    do 
 		    {
 			dO = elementList->get();
-			errorFlag = dO->write(outStream, newXfer, 
-					      enctype, gltype);
+			errorFlag = dO->write(outStream, newXfer, enctype);
 		    } while (errorFlag == EC_Normal &&
 			     elementList->seek(ELP_next));
 		}
@@ -237,7 +250,21 @@ E_Condition DcmDataset::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.cc,v $
-** Revision 1.7  1996-08-05 08:46:08  andreas
+** Revision 1.8  1997-05-16 08:23:52  andreas
+** - Revised handling of GroupLength elements and support of
+**   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
+**   got additional enumeration values (for a description see dctypes.h).
+**   addGroupLength and removeGroupLength methods are replaced by
+**   computeGroupLengthAndPadding. To support Padding, the parameters of
+**   element and sequence write functions changed.
+** - Added a new method calcElementLength to calculate the length of an
+**   element, item or sequence. For elements it returns the length of
+**   tag, length field, vr field, and value length, for item and
+**   sequences it returns the length of the whole item. sequence including
+**   the Delimitation tag (if appropriate).  It can never return
+**   UndefinedLength.
+**
+** Revision 1.7  1996/08/05 08:46:08  andreas
 ** new print routine with additional parameters:
 **         - print into files
 **         - fix output length for elements

@@ -10,9 +10,9 @@
 ** Implementation of class DcmElement
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-15 12:29:02 $
+** Update Date:		$Date: 1997-05-16 08:23:53 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcelem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.12 $
+** CVS/RCS Revision:	$Revision: 1.13 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -195,6 +195,13 @@ DcmElement::~DcmElement()
 	delete fLoadValue;
 
     Edebug(());
+}
+
+Uint32 DcmElement::calcElementLength(const E_TransferSyntax xfer,
+				     const E_EncodingType enctype)
+{
+    DcmXfer xferSyn(xfer);
+    return getLength(xfer, enctype) + xferSyn.sizeofTagHeader(getVR());
 }
 
 
@@ -646,7 +653,7 @@ E_Condition DcmElement::putValue(const void * newValue,
 
 E_Condition DcmElement::read(DcmStream & inStream,
 			     const E_TransferSyntax ixfer,
-			     const E_GrpLenEncoding /*gltype*/,
+			     const E_GrpLenEncoding /*glenc*/,
 			     const Uint32 maxReadLength)
 {
     if (fTransferState == ERW_notInitialized)
@@ -709,8 +716,7 @@ void DcmElement::transferInit(void)
 
 E_Condition DcmElement::write(DcmStream & outStream,
 			      const E_TransferSyntax oxfer,
-			      const E_EncodingType /*enctype*/,
-			      const E_GrpLenEncoding /*glttype*/)
+			      const E_EncodingType /*enctype*/)
 {
     if (fTransferState == ERW_notInitialized)
 	errorFlag = EC_IllegalCall;
@@ -771,7 +777,21 @@ E_Condition DcmElement::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
-** Revision 1.12  1997-05-15 12:29:02  andreas
+** Revision 1.13  1997-05-16 08:23:53  andreas
+** - Revised handling of GroupLength elements and support of
+**   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
+**   got additional enumeration values (for a description see dctypes.h).
+**   addGroupLength and removeGroupLength methods are replaced by
+**   computeGroupLengthAndPadding. To support Padding, the parameters of
+**   element and sequence write functions changed.
+** - Added a new method calcElementLength to calculate the length of an
+**   element, item or sequence. For elements it returns the length of
+**   tag, length field, vr field, and value length, for item and
+**   sequences it returns the length of the whole item. sequence including
+**   the Delimitation tag (if appropriate).  It can never return
+**   UndefinedLength.
+**
+** Revision 1.12  1997/05/15 12:29:02  andreas
 ** - Bug fix for changing binary element values. If a binary existing element
 **   value changed, byte order was somtimes wrong.
 **
