@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 1999.10.20 (riesmeier)
+
+- Added missing generic makefile.
+  Added:   dcmimage/docs/Makefile.in
+
 **** Changes from 1999.10.08 (riesmeier)
 
 - Corrected typo. Handled 'quiet' mode more restrictive.
