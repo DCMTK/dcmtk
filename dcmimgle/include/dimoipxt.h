@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomMonochromeInputPixelTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:45 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-09-28 13:07:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoipxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,6 +66,7 @@ class DiMonoInputPixelTemplate
     {
         if ((pixel != NULL) && (Count > 0))
         {   
+            // check whether to apply any modality transform
             if ((Modality != NULL) && Modality->hasLookupTable() && (bitsof(T1) <= MAX_TABLE_ENTRY_SIZE))
             {
                 modlut(pixel);
@@ -77,7 +78,7 @@ class DiMonoInputPixelTemplate
                 determineMinMax((T3)Modality->getMinValue(), (T3)Modality->getMaxValue());
             } else {
                 rescale(pixel);                     // "copy" or reference pixel data
-                determineMinMax((T3)pixel->getMinValue(), (T3)pixel->getMaxValue());
+                determineMinMax((T3)Modality->getMinValue(), (T3)Modality->getMaxValue());
             }
         }
     }
@@ -208,8 +209,8 @@ class DiMonoInputPixelTemplate
         const T1 *pixel = (const T1 *)input->getData();
         if (pixel != NULL)
         {
-            if (sizeof(T1) == sizeof(T3))                  // do not copy pixel data, reference them!
-            {
+            if ((sizeof(T1) == sizeof(T3)) && (Count == input->getCount()))
+            {                                              // do not copy pixel data, reference them!
                 Data = (T3 *)input->getData();
                 input->removeDataReference();              // avoid double deletion
             } else
@@ -292,7 +293,10 @@ class DiMonoInputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoipxt.h,v $
- * Revision 1.21  2001-06-01 15:49:45  meichel
+ * Revision 1.22  2001-09-28 13:07:12  joergr
+ * Added further robustness checks.
+ *
+ * Revision 1.21  2001/06/01 15:49:45  meichel
  * Updated copyright header
  *
  * Revision 1.20  2000/06/02 12:40:50  joergr
