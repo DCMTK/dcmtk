@@ -23,8 +23,8 @@
  *    classes: DcmTLSConnection
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-10-11 16:15:35 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2000-10-19 08:12:29 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -348,7 +348,11 @@ void tlstrans_dummy_function()
 
 /*
  *  $Log: tlstrans.cc,v $
- *  Revision 1.3  2000-10-11 16:15:35  meichel
+ *  Revision 1.4  2000-10-19 08:12:29  meichel
+ *  Fixed dcmtls module so that openssl headers are includes only
+ *    if the symbol WITH_OPENSSL is defined.
+ *
+ *  Revision 1.3  2000/10/11 16:15:35  meichel
  *  Updated includes for Win32 environment
  *
  *  Revision 1.2  2000/10/10 12:13:36  meichel
