@@ -22,9 +22,9 @@
  *  Purpose: DiCurveFitting (Header/Implementation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-15 09:38:31 $
+ *  Update Date:      $Date: 1999-10-18 10:15:15 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dicrvfit.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -297,12 +297,14 @@ class DiCurveFitting
  *
  * CVS/RCS Log:
  * $Log: dicrvfit.h,v $
- * Revision 1.2  1999-10-15 09:38:31  joergr
+ * Revision 1.3  1999-10-18 10:15:15  joergr
+ * Fixed typos.
+ *
+ * Revision 1.2  1999/10/15 09:38:31  joergr
  * Fixed typos.
  *
  * Revision 1.1  1999/10/14 19:04:09  joergr
  * Added new template class that supports polynomial curve fitting algorithm.
- *
  *
  *
  */
