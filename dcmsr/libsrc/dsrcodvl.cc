@@ -23,8 +23,8 @@
  *    classes: DSRCodedEntryValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-18 17:13:36 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-10-19 16:03:20 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,7 +57,7 @@ DSRCodedEntryValue::DSRCodedEntryValue(const OFString &codeValue,
     PrivateCodingSchemeCreatorUID()
 {
     /* check code */
-    setValue(codeValue, codingSchemeDesignator, codeMeaning);
+    setCode(codeValue, codingSchemeDesignator, codeMeaning);
 }
 
 
@@ -72,7 +72,7 @@ DSRCodedEntryValue::DSRCodedEntryValue(const OFString &codeValue,
     PrivateCodingSchemeCreatorUID()
 {
     /* check code */
-    setValue(codeValue, codingSchemeDesignator, codingSchemeVersion, codeMeaning);
+    setCode(codeValue, codingSchemeDesignator, codingSchemeVersion, codeMeaning);
 }
 
 
@@ -164,19 +164,20 @@ void DSRCodedEntryValue::print(ostream &stream,
 
 
 E_Condition DSRCodedEntryValue::readItem(DcmItem &dataset,
-                                         OFConsole *logStream)
+                                         OFConsole *logStream,
+                                         const char *moduleName)
 {
     /* read BasicCodedEntryAttributes only */
-    E_Condition result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_CodeValue, CodeValue, "1", "1", logStream);
+    E_Condition result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_CodeValue, CodeValue, "1", "1", logStream, moduleName);
     if (result == EC_Normal)
-        result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_CodingSchemeDesignator, CodingSchemeDesignator, "1", "1", logStream);
+        result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_CodingSchemeDesignator, CodingSchemeDesignator, "1", "1", logStream, moduleName);
     if (result == EC_Normal)                                             /* conditional (type 1C) */
-        DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_CodingSchemeVersion, CodingSchemeVersion, "1", "1C", logStream);
+        DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_CodingSchemeVersion, CodingSchemeVersion, "1", "1C", logStream, moduleName);
     if (result == EC_Normal)
     {
-        result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_CodeMeaning, CodeMeaning, "1", "1", logStream);
+        result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_CodeMeaning, CodeMeaning, "1", "1", logStream, moduleName);
         /* optional (type 3) */
-        DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_PrivateCodingSchemeCreatorUID, PrivateCodingSchemeCreatorUID, "1", "3", logStream);
+        DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_PrivateCodingSchemeCreatorUID, PrivateCodingSchemeCreatorUID, "1", "3", logStream, moduleName);
     }
     /* tbd: might add check for correct code */
         
@@ -209,14 +210,14 @@ E_Condition DSRCodedEntryValue::readSequence(DcmItem &dataset,
     /* read CodeSequence */
     DcmSequenceOfItems dseq(tagKey);
     E_Condition result = DSRTypes::getSequenceFromDataset(dataset, dseq);
-    DSRTypes::checkElementValue(dseq, "1", type, logStream, result);
+    DSRTypes::checkElementValue(dseq, "1", type, logStream, result, "content item");
     if (result == EC_Normal)
     {
         DcmItem *ditem = dseq.getItem(0);
         if (ditem != NULL)
-        {
+        {            
             /* read Code */
-            result = readItem(*ditem, logStream);
+            result = readItem(*ditem, logStream, DcmTag(tagKey).getTagName());
         } else
             result = EC_CorruptedData;
     }
@@ -280,23 +281,23 @@ E_Condition DSRCodedEntryValue::getValue(DSRCodedEntryValue &codedEntryValue) co
 
 E_Condition DSRCodedEntryValue::setValue(const DSRCodedEntryValue &codedEntryValue)
 {
-    return setValue(codedEntryValue.CodeValue, codedEntryValue.CodingSchemeDesignator,
+    return setCode(codedEntryValue.CodeValue, codedEntryValue.CodingSchemeDesignator,
         codedEntryValue.CodingSchemeVersion, codedEntryValue.CodeMeaning);
 }
 
 
-E_Condition DSRCodedEntryValue::setValue(const OFString &codeValue,
-                                         const OFString &codingSchemeDesignator,
-                                         const OFString &codeMeaning)
+E_Condition DSRCodedEntryValue::setCode(const OFString &codeValue,
+                                        const OFString &codingSchemeDesignator,
+                                        const OFString &codeMeaning)
 {
-    return setValue(codeValue, codingSchemeDesignator, "", codeMeaning);
+    return setCode(codeValue, codingSchemeDesignator, "", codeMeaning);
 }
 
 
-E_Condition DSRCodedEntryValue::setValue(const OFString &codeValue,
-                                         const OFString &codingSchemeDesignator,
-                                         const OFString &codingSchemeVersion,
-                                         const OFString &codeMeaning)
+E_Condition DSRCodedEntryValue::setCode(const OFString &codeValue,
+                                        const OFString &codingSchemeDesignator,
+                                        const OFString &codingSchemeVersion,
+                                        const OFString &codeMeaning)
 {
     E_Condition result = EC_Normal;
     if (checkCode(codeValue, codingSchemeDesignator, codeMeaning))
@@ -328,7 +329,12 @@ OFBool DSRCodedEntryValue::checkCode(const OFString &codeValue,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodvl.cc,v $
- *  Revision 1.2  2000-10-18 17:13:36  joergr
+ *  Revision 1.3  2000-10-19 16:03:20  joergr
+ *  Renamed some set methods.
+ *  Added optional module name to read method to provide more detailed warning
+ *  messages.
+ *
+ *  Revision 1.2  2000/10/18 17:13:36  joergr
  *  Added check for read methods (VM and type).
  *
  *  Revision 1.1  2000/10/13 07:52:17  joergr

@@ -23,8 +23,8 @@
  *    classes: DSRCodedEntryValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-18 17:00:29 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-10-19 16:02:13 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -259,9 +259,9 @@ class DSRCodedEntryValue
      *                                  (VR=LO, mandatory)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setValue(const OFString &codeValue,
-                         const OFString &codingSchemeDesignator,
-                         const OFString &codeMeaning);
+    E_Condition setCode(const OFString &codeValue,
+                        const OFString &codingSchemeDesignator,
+                        const OFString &codeMeaning);
 
     /** set code value.
      *  Before setting the specified code it is checked (see checkCode()).  If the code is
@@ -279,10 +279,10 @@ class DSRCodedEntryValue
      *                                  (VR=LO, mandatory)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setValue(const OFString &codeValue,
-                         const OFString &codingSchemeDesignator,
-                         const OFString &codingSchemeVersion,
-                         const OFString &codeMeaning);
+    E_Condition setCode(const OFString &codeValue,
+                        const OFString &codingSchemeDesignator,
+                        const OFString &codingSchemeVersion,
+                        const OFString &codeMeaning);
 
 
   protected:
@@ -296,12 +296,14 @@ class DSRCodedEntryValue
     }
 
     /** read code from dataset
-     ** @param  dataset    DICOM dataset from which the code should be read
-     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
+     ** @param  dataset     DICOM dataset from which the code should be read
+     *  @param  logStream   pointer to error/warning output stream (output disabled if NULL)
+     *  @param  moduleName  optional module name (sequence) from which the item is read
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition readItem(DcmItem &dataset,
-                         OFConsole *logStream);
+                         OFConsole *logStream,
+                         const char *moduleName = NULL);
 
     /** write code to dataset
      ** @param  dataset    DICOM dataset to which the code should be written
@@ -346,7 +348,12 @@ class DSRCodedEntryValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodvl.h,v $
- *  Revision 1.2  2000-10-18 17:00:29  joergr
+ *  Revision 1.3  2000-10-19 16:02:13  joergr
+ *  Renamed some set methods.
+ *  Added optional module name to read method to provide more detailed warning
+ *  messages.
+ *
+ *  Revision 1.2  2000/10/18 17:00:29  joergr
  *  Added methods allowing direct access to certain content item values.
  *  Added doc++ comments.
  *
