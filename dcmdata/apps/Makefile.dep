@@ -40,6 +40,13 @@ dcmdump.o: dcmdump.cc ../../config/include/osconfig.h \
  ../include/dcvrobow.h ../include/dcpxitem.h ../include/dcvrat.h \
  ../include/dcvrss.h ../include/dcvrus.h ../include/dcvrsl.h \
  ../include/dcvrfl.h ../include/dcvrfd.h ../include/cmdlnarg.h
+dcmftest.o: dcmftest.cc ../../config/include/osconfig.h \
+ ../include/dcmetinf.h ../include/dctypes.h ../include/dcitem.h \
+ ../include/dcobject.h ../include/dcerror.h ../include/dcxfer.h \
+ ../include/dcvr.h ../include/dcstream.h ../include/dctag.h \
+ ../include/dctagkey.h ../include/dcdicent.h ../include/dclist.h \
+ ../include/dcstack.h ../include/dcvrui.h ../include/dcbytstr.h \
+ ../include/dcelem.h
 dcmgpdir.o: dcmgpdir.cc ../../config/include/osconfig.h \
  ../include/dctk.h ../include/dctypes.h ../include/dcswap.h \
  ../include/dcstream.h ../include/dcerror.h ../include/dcvr.h \
@@ -124,10 +131,3 @@ file2ds.o: file2ds.cc ../../config/include/osconfig.h \
  ../include/dcvrobow.h ../include/dcpxitem.h ../include/dcvrat.h \
  ../include/dcvrss.h ../include/dcvrus.h ../include/dcvrsl.h \
  ../include/dcvrfl.h ../include/dcvrfd.h ../include/cmdlnarg.h
-isadicmf.o: isadicmf.cc ../../config/include/osconfig.h \
- ../include/dcmetinf.h ../include/dctypes.h ../include/dcitem.h \
- ../include/dcobject.h ../include/dcerror.h ../include/dcxfer.h \
- ../include/dcvr.h ../include/dcstream.h ../include/dctag.h \
- ../include/dctagkey.h ../include/dcdicent.h ../include/dclist.h \
- ../include/dcstack.h ../include/dcvrui.h ../include/dcbytstr.h \
- ../include/dcelem.h

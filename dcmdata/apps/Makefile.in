@@ -16,16 +16,16 @@ include $(configdir)/@common_makefile@
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(libdir)
 LOCALLIBS = -ldcmdata
 
-objs= dcmgpdir.o isadicmf.o dcmconv.o dcmdump.o ds2file.o dump2dcm.o file2ds.o
+objs= dcmgpdir.o dcmftest.o dcmconv.o dcmdump.o ds2file.o dump2dcm.o file2ds.o
 
-progs= dcmgpdir isadicmf dcmconv dcmdump ds2file dump2dcm file2ds 
+progs= dcmgpdir dcmftest dcmconv dcmdump ds2file dump2dcm file2ds 
 
 all: $(progs)
 
 dcmgpdir: dcmgpdir.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
 
-isadicmf: isadicmf.o
+dcmftest: dcmftest.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
 
 dcmconv: dcmconv.o
