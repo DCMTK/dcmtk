@@ -1,7 +1,7 @@
 /*
 **
-** Author: Gerd Ehlers      01.05.94 -- First Creation
-**         Andreas Barth    04.12.95 -- new Stream class, unique value field
+** Author: Gerd Ehlers      01.05.94 
+**         Andreas Barth    12.05.97 
 ** Kuratorium OFFIS e.V.
 **
 ** Module: dcvrds.h
@@ -10,9 +10,9 @@
 ** Interface of class DcmDecimalString
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:23:04 $
+** Update Date:		$Date: 1997-05-12 07:37:44 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrds.h,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -37,6 +37,7 @@ class DcmDecimalString : public DcmByteString
     virtual ~DcmDecimalString();
 
     virtual DcmEVR ident() const { return EVR_DS; }
+    virtual E_Condition getFloat64(Float64 & val, const unsigned long pos = 0);
 };
 
 
@@ -45,7 +46,11 @@ class DcmDecimalString : public DcmByteString
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrds.h,v $
-** Revision 1.3  1996-01-05 13:23:04  andreas
+** Revision 1.4  1997-05-12 07:37:44  andreas
+** - new get-Methods for DcmDecimalString: getFloat64 and
+**   DcmIntegerString: getSint32
+**
+** Revision 1.3  1996/01/05 13:23:04  andreas
 ** - changed to support new streaming facilities
 ** - more cleanups
 ** - merged read / write methods for block and file transfer

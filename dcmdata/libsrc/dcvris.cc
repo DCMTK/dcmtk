@@ -10,9 +10,9 @@
 ** Implementation of class DcmIntegerString
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:27:49 $
+** Update Date:		$Date: 1997-05-12 07:38:27 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvris.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -60,18 +60,56 @@ Edebug(());
 
 DcmIntegerString::~DcmIntegerString()
 {
-Bdebug((5, "dcvris:DcmIntegerString::~DcmIntegerString()" ));
-Edebug(());
+  Bdebug((5, "dcvris:DcmIntegerString::~DcmIntegerString()" ));
+  Edebug(());
 
 }
 
 
 // ********************************
 
+E_Condition DcmIntegerString::getSint32(Sint32 &val,
+					const unsigned long pos = 0)
+{
+  char *p;
+  char *str = NULL;
+  BOOL ok = FALSE;
+  register unsigned long counter = pos;
+  E_Condition l_error = getString(str);
+  if (l_error == EC_Normal)
+    {
+      while (((p = strchr(str, '\\')) != NULL) && (counter > 0))
+	{
+	  str = p + 1;
+	  counter--;
+	}
+      if (counter == 0)
+	{
+	  if (p == NULL)
+	    {
+	      if (sscanf(str, "%ld", &val) != 1)
+		l_error = EC_CorruptedData;
+	    }
+	  else
+	    {
+	      if (sscanf(str, "%ld\\", &val) != 1)
+		l_error = EC_CorruptedData;
+	    }
+	}
+    }
+  return l_error;
+}
+
+// ********************************
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcvris.cc,v $
-** Revision 1.3  1996-01-05 13:27:49  andreas
+** Revision 1.4  1997-05-12 07:38:27  andreas
+** - new get-Methods for DcmDecimalString: getFloat64 and
+**   DcmIntegerString: getSint32
+**
+** Revision 1.3  1996/01/05 13:27:49  andreas
 ** - changed to support new streaming facilities
 ** - unique read/write methods for file and block transfer
 ** - more cleanups

@@ -1,7 +1,7 @@
 /*
 **
 ** Author: Gerd Ehlers      01.05.94 -- First Creation
-**         Andreas Barth    05.12.95 -- new Stream class, unique value field
+**         Andreas Barth    12.05.97 -- new Stream class, unique value field
 ** Kuratorium OFFIS e.V.
 **
 ** Module: dcvris.h
@@ -10,9 +10,9 @@
 ** Interface of class DcmIntegerString
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:23:06 $
+** Update Date:		$Date: 1997-05-12 07:37:45 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvris.h,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -37,6 +37,8 @@ class DcmIntegerString : public DcmByteString
     virtual ~DcmIntegerString();
 
     virtual DcmEVR ident() const { return EVR_IS; }
+
+    virtual E_Condition getSint32(Sint32 & val, const unsigned long pos = 0);
 };
 
 
@@ -45,7 +47,11 @@ class DcmIntegerString : public DcmByteString
 /*
 ** CVS/RCS Log:
 ** $Log: dcvris.h,v $
-** Revision 1.3  1996-01-05 13:23:06  andreas
+** Revision 1.4  1997-05-12 07:37:45  andreas
+** - new get-Methods for DcmDecimalString: getFloat64 and
+**   DcmIntegerString: getSint32
+**
+** Revision 1.3  1996/01/05 13:23:06  andreas
 ** - changed to support new streaming facilities
 ** - more cleanups
 ** - merged read / write methods for block and file transfer
@@ -53,3 +59,4 @@ class DcmIntegerString : public DcmByteString
 **
 **
 */
+
