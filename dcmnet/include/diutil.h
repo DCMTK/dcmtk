@@ -57,10 +57,10 @@
 ** Module Prefix: DU_
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1998-01-14 14:37:06 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1999-06-10 10:56:35 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/diutil.h,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -99,7 +99,7 @@ OFBool
 DU_getStringDOElement(DcmItem *obj, DcmTagKey t, char *s);
 
 OFBool
-DU_putStringDOElement(DcmItem *obj, DcmTagKey t, char *s);
+DU_putStringDOElement(DcmItem *obj, DcmTagKey t, const char *s);
 
 OFBool
 DU_getShortDOElement(DcmItem *obj, DcmTagKey t, Uint16 *us);
@@ -135,7 +135,11 @@ DU_cgetStatusString(Uint16 statusCode);
 /*
 ** CVS Log
 ** $Log: diutil.h,v $
-** Revision 1.3  1998-01-14 14:37:06  hewett
+** Revision 1.4  1999-06-10 10:56:35  meichel
+** Adapted imagectn to new command line option scheme.
+**   Added support for Patient/Study Only Q/R model and C-GET (experimental).
+**
+** Revision 1.3  1998/01/14 14:37:06  hewett
 ** Added basic support for the Structured Reporting (SR) SOP Classes.
 **
 ** Revision 1.2  1997/07/21 08:40:11  andreas

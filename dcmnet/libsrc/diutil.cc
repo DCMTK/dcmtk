@@ -58,9 +58,9 @@
 **
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1999-03-29 10:13:22 $
+** Update Date:		$Date: 1999-06-10 10:56:37 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/diutil.cc,v $
-** CVS/RCS Revision:	$Revision: 1.12 $
+** CVS/RCS Revision:	$Revision: 1.13 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -312,7 +312,7 @@ DU_getStringDOElement(DcmItem *obj, DcmTagKey t, char *s)
 }
 
 OFBool
-DU_putStringDOElement(DcmItem *obj, DcmTagKey t, char *s)
+DU_putStringDOElement(DcmItem *obj, DcmTagKey t, const char *s)
 {
     E_Condition ec = EC_Normal;
     DcmElement *e = NULL;
@@ -582,7 +582,11 @@ DU_cgetStatusString(Uint16 statusCode)
 /*
 ** CVS Log
 ** $Log: diutil.cc,v $
-** Revision 1.12  1999-03-29 10:13:22  meichel
+** Revision 1.13  1999-06-10 10:56:37  meichel
+** Adapted imagectn to new command line option scheme.
+**   Added support for Patient/Study Only Q/R model and C-GET (experimental).
+**
+** Revision 1.12  1999/03/29 10:13:22  meichel
 ** Updated list of SOP class name prefixes and estimated sizes
 **
 ** Revision 1.11  1998/10/26 13:07:48  meichel
