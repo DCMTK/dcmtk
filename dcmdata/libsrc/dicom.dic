@@ -1454,20 +1454,30 @@
 #
 # SUPPLEMENT 15
 # Visible Light Image for Endoscopy, Microscopy, and Photography
-# DRAFT STANDARD FOR TRIAL USE
-# Sponsors: 
+#   DRAFT STANDARD FOR TRIAL USE
+#   Sponsors: 
 #     American Academy of Ophthalmology
 #     American College of Radiology
 #     American Society for Gastrointestinal Endoscopy
 #     College of American Pathologists
 #     American Dental Association
 #     National Electrical Manufacturers Association
-# Version: 1.0
+# Version: 1.1a
 # Filename: sup15_fz.doc
-# Date: May 1, 1997
+# Date: December 23, 1997
 #
+#---
+# This data dictionary segment was converted from the original VL document
+# by Andrew Hewett (Medigration GmbH, Erlangen) on 1998.05.29 and
+# submitted for inclusion in the DCMTK software package.
+#---
+#
+(0008,0103)	CS	CodingSchemeVersion	1
 (0008,0105)	CS	MappingResource	1
-(0008,0106)	DA	MappingResourceVersion	1
+(0008,0106)	DT	ContextGroupVersion	1
+(0008,010B)	CS	CodeSetExtensionFlag	1
+(0008,010C)	UI	PrivateCodingSchemeCreatorUID	1
+(0008,010D)	UI	CodeSetExtensionCreatorUID	1
 (0008,010F)	CS	ContextIdentifier	1
 (0040,050A)	LO	SpecimenAccessionNumber	1
 (0040,0550)	SQ	SpecimenSequence	1
@@ -1490,12 +1500,11 @@
 (0040,A121)	DA	Date	1
 (0040,A122)	TM	Time	1
 (0040,A123)	PN	PersonName	1
+(0040,A136)	US	ReferencedFrameNumbers	1-n
 (0040,A168)	SQ	ConceptCodeSequence	1
 (0040,A16A)	ST	BibliographicCitation	1
 (0040,A195)	SQ	ConceptNameCodeSequenceModifier	1
 (0040,A30A)	DS	NumericValue	1-n
-(0040,A353)	ST	Address	1
-(0040,A354)	LO	TelephoneNumber	1
 (0040,A992)	ST	UniformResourceLocator	1
 #
 #---------------------------------------------------------------------------
