@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000, OFFIS
+ *  Copyright (C) 2000-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRTreeNodeCursor
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-09 20:32:08 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2001-03-28 09:06:56 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -138,19 +138,19 @@ class DSRTreeNodeCursor
      */
     size_t goDown();
 
-    /** iterate over all nodes.
+    /** iterate over all nodes. Starts from current position!
      *  This method visits first the children (if any) and then the siblings ("deep search").
      ** @return ID of the next node if successful, 0 otherwise
      */
     size_t iterate();
 
-    /** set cursor to specified node
+    /** set cursor to specified node. Starts from current position!
      ** @param  searchID  ID of the node to set the cursor to
      ** @return ID of the new current node if successful, 0 otherwise
      */
     size_t gotoNode(const size_t searchID);
 
-    /** set cursor to specified node
+    /** set cursor to specified node. Starts from current position!
      ** @param  reference  position string of the node to set the cursor to.
      *                     (the format is e.g. "1.2.3" for the third child of the
      *                     second child of the first node - see getPosition()).
@@ -194,6 +194,13 @@ class DSRTreeNodeCursor
      */
     void clearNodeCursorStack();
 
+    /** set cursor to specified node.
+     *  Clears the internal position list/stack and sets the position counter to 1.
+     ** @param  node  node to which the cursor should be set
+     ** @return ID of the new current node if successful, 0 otherwise
+     */
+    size_t setCursor(DSRTreeNode *node);
+
     /// pointer current node
     DSRTreeNode *NodeCursor;
     /// stack of node pointers. Used to store the cursor position of upper levels.
@@ -212,7 +219,10 @@ class DSRTreeNodeCursor
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtncsr.h,v $
- *  Revision 1.7  2000-11-09 20:32:08  joergr
+ *  Revision 1.8  2001-03-28 09:06:56  joergr
+ *  Fixed bug in cycle/loop detection "algorithm".
+ *
+ *  Revision 1.7  2000/11/09 20:32:08  joergr
  *  Added support for non-ASCII characters in HTML 3.2 (use numeric value).
  *
  *  Revision 1.6  2000/11/07 18:14:31  joergr

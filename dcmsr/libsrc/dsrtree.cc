@@ -23,8 +23,8 @@
  *    classes: DSRTree
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-02-16 16:58:50 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2001-03-28 09:07:42 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -68,12 +68,7 @@ void DSRTree::clear()
 
 size_t DSRTree::gotoRoot()
 {
-    size_t nodeID = 0;
-    NodeCursor = RootNode;
-    clearNodeCursorStack();
-    if (NodeCursor != NULL)
-        nodeID = NodeCursor->Ident;
-    return nodeID;
+    return setCursor(RootNode);
 }
 
 
@@ -259,7 +254,10 @@ size_t DSRTree::removeNode()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtree.cc,v $
- *  Revision 1.4  2001-02-16 16:58:50  joergr
+ *  Revision 1.5  2001-03-28 09:07:42  joergr
+ *  Fixed bug in cycle/loop detection "algorithm".
+ *
+ *  Revision 1.4  2001/02/16 16:58:50  joergr
  *  Fixed another small bug in method removeNode().
  *
  *  Revision 1.3  2001/01/25 18:46:37  joergr

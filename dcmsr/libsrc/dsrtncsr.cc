@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000, OFFIS
+ *  Copyright (C) 2000-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRTreeNodeCursor
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-02-13 16:34:35 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2001-03-28 09:07:42 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -90,10 +90,7 @@ DSRTreeNodeCursor &DSRTreeNodeCursor::operator=(const DSRTreeNodeCursor &cursor)
 
 DSRTreeNodeCursor &DSRTreeNodeCursor::operator=(DSRTreeNode *node)
 {
-    NodeCursor = node;
-    clearNodeCursorStack();
-    Position = (node != NULL) ? 1 : 0;
-    PositionList.clear();
+    setCursor(node);
     return *this;
 }
 
@@ -116,7 +113,7 @@ OFBool DSRTreeNodeCursor::isValid() const
 void DSRTreeNodeCursor::clearNodeCursorStack()
 {
     while (!NodeCursorStack.empty())
-        NodeCursorStack.pop();
+        NodeCursorStack.pop();        
 }
 
 
@@ -135,6 +132,22 @@ const DSRTreeNode *DSRTreeNodeCursor::getNextNode() const
     if (NodeCursor != NULL)
         return NodeCursor->Next;
     return node;
+}
+
+
+size_t DSRTreeNodeCursor::setCursor(DSRTreeNode *node)
+{
+    size_t nodeID = 0;
+    NodeCursor = node;
+    clearNodeCursorStack();
+    PositionList.clear();
+    if (NodeCursor != NULL)
+    {
+        nodeID = NodeCursor->Ident;
+        Position = 1;
+    } else
+        Position = 0;
+    return nodeID;
 }
 
 
@@ -231,7 +244,8 @@ size_t DSRTreeNodeCursor::iterate()
                 PositionList.push_back(Position);
                 Position = 1;
             }
-        } else if (NodeCursor->Next != NULL)
+        }
+        else if (NodeCursor->Next != NULL)
         {
             NodeCursor = NodeCursor->Next;
             nodeID = NodeCursor->Ident;
@@ -374,7 +388,10 @@ const OFString &DSRTreeNodeCursor::getPosition(OFString &position,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtncsr.cc,v $
- *  Revision 1.5  2001-02-13 16:34:35  joergr
+ *  Revision 1.6  2001-03-28 09:07:42  joergr
+ *  Fixed bug in cycle/loop detection "algorithm".
+ *
+ *  Revision 1.5  2001/02/13 16:34:35  joergr
  *  Corrected wrong implementation of getLevel() - started from 0 instead of 1.
  *
  *  Revision 1.4  2000/11/07 18:29:45  joergr
