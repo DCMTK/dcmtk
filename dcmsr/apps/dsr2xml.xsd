@@ -10,7 +10,7 @@
   <xsd:annotation>
     <xsd:documentation xml:lang="en">
       XML Schema for DCMTK tools dsr2xml and xml2dsr.
-      Copyright (C) 2003-2004 OFFIS. See COPYRIGHT file for details.
+      Copyright (C) 2003-2005 OFFIS. See COPYRIGHT file for details.
     </xsd:documentation>
   </xsd:annotation>
 
@@ -115,12 +115,12 @@
       <xsd:element name="scheme" minOccurs="0" maxOccurs="unbounded">
         <xsd:complexType>
           <xsd:sequence>
-            <xsd:element name="registry" type="dsr:LongString"/>
-            <xsd:element name="uid" type="dsr:UniqueIdentifier"/>
-            <xsd:element name="id" type="dsr:ShortText"/>
-            <xsd:element name="name" type="dsr:ShortText"/>
-            <xsd:element name="version" type="dsr:ShortString"/>
-            <xsd:element name="organization" type="dsr:ShortText"/>
+            <xsd:element name="registry" type="dsr:LongString" minOccurs="0"/>
+            <xsd:element name="uid" type="dsr:UniqueIdentifier" minOccurs="0"/>
+            <xsd:element name="id" type="dsr:ShortText" minOccurs="0"/>
+            <xsd:element name="name" type="dsr:ShortText" minOccurs="0"/>
+            <xsd:element name="version" type="dsr:ShortString" minOccurs="0"/>
+            <xsd:element name="organization" type="dsr:ShortText" minOccurs="0"/>
           </xsd:sequence>
           <xsd:attribute name="designator" type="dsr:ShortString" use="required"/>
         </xsd:complexType>
@@ -581,6 +581,7 @@
           <xsd:sequence>
             <xsd:element name="relationship" type="dsr:RelationshipType"/>
           </xsd:sequence>
+          <xsd:attribute name="id" type="xsd:nonNegativeInteger"/>
           <xsd:attribute name="ref" type="xsd:nonNegativeInteger" use="required"/>
         </xsd:complexType>
       </xsd:element>
@@ -717,40 +718,47 @@
 
   <xsd:simpleType name="ShortString">
     <xsd:restriction base="xsd:string">
+      <xsd:minLength value="1"/>
       <xsd:maxLength value="16"/>
     </xsd:restriction>
   </xsd:simpleType>
 
   <xsd:simpleType name="LongString">
     <xsd:restriction base="xsd:string">
+      <xsd:minLength value="1"/>
       <xsd:maxLength value="64"/>
     </xsd:restriction>
   </xsd:simpleType>
 
   <xsd:simpleType name="ShortText">
     <xsd:restriction base="xsd:string">
+      <xsd:minLength value="1"/>
       <xsd:maxLength value="1024"/>
     </xsd:restriction>
   </xsd:simpleType>
 
   <xsd:simpleType name="UnlimitedText">
-    <xsd:restriction base="xsd:string"/>
+    <xsd:restriction base="xsd:string">
+      <xsd:minLength value="1"/>
+    </xsd:restriction>
   </xsd:simpleType>
 
   <xsd:simpleType name="CodeString">
     <xsd:restriction base="xsd:string">
-      <xsd:pattern value="[A-Za-z0-9_ ]{0,16}"/>
+      <xsd:pattern value="[A-Za-z0-9_ ]{1,16}"/>
     </xsd:restriction>
   </xsd:simpleType>
 
   <xsd:simpleType name="ApplicationEntity">
     <xsd:restriction base="xsd:string">
+      <xsd:minLength value="1"/>
       <xsd:maxLength value="16"/>
     </xsd:restriction>
   </xsd:simpleType>
 
   <xsd:simpleType name="UniqueIdentifier">
     <xsd:restriction base="xsd:string">
+      <xsd:minLength value="1"/>
       <xsd:maxLength value="64"/>
       <xsd:pattern value="\d+(\.\d+)*"/>
     </xsd:restriction>
@@ -775,6 +783,7 @@
   </xsd:simpleType>
 
   <xsd:complexType name="PersonName">
+    <!-- minLength? -->
     <xsd:sequence>
       <xsd:element name="prefix" type="xsd:string" minOccurs="0"/>
       <xsd:element name="first" type="xsd:string" minOccurs="0"/>
