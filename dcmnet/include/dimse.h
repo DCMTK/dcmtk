@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1998-08-10 08:53:40 $
+** Update Date:		$Date: 1999-04-19 08:36:48 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/dimse.h,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -130,6 +130,14 @@
 #define STATUS_MOVE_Cancel_SubOperationsTerminatedDueToCancelIndication	0xfe00
 #define STATUS_MOVE_Warning_SubOperationsCompleteOneOrMoreFailures	0xb000
 
+/* Get Specific Codes */
+#define STATUS_GET_Refused_OutOfResourcesNumberOfMatches		0xa701
+#define STATUS_GET_Refused_OutOfResourcesSubOperations			0xa702
+#define STATUS_GET_Failed_SOPClassNotSupported 			        0xa800
+#define STATUS_GET_Failed_IdentifierDoesNotMatchSOPClass 		0xa900
+#define STATUS_GET_Failed_UnableToProcess 	 /* high nibble */      0xc000 
+#define STATUS_GET_Cancel_SubOperationsTerminatedDueToCancelIndication	0xfe00
+#define STATUS_GET_Warning_SubOperationsCompleteOneOrMoreFailures	0xb000
 
 /*
  * Type Definitions
@@ -517,6 +525,19 @@ typedef struct {
 
 
 /*
+ * Globale Variables
+ */
+
+/*
+ * Define global defaults for data encoding when sending out data-sets.
+ * These can be adjusted to allow variants to be tested.
+ */
+
+extern E_GrpLenEncoding  g_dimse_send_groupLength_encoding;    /* default: EGL_recalcGL */
+extern E_EncodingType    g_dimse_send_sequenceType_encoding;   /* default: EET_ExplicitLength */
+
+
+/*
  * Public Function Prototypes
  */
 
@@ -586,6 +607,12 @@ typedef void (*DIMSE_StoreUserCallback)(
     T_DIMSE_C_StoreRQ *request	/* original store request */
    );
 
+typedef struct {
+    OFBool cancelEncountered;
+    T_ASC_PresentationContextID presId;
+    T_DIMSE_C_CancelRQ req;
+} T_DIMSE_DetectedCancelParameters;
+
 CONDITION
 DIMSE_storeUser(
 	/* in */ 
@@ -597,7 +624,8 @@ DIMSE_storeUser(
 	T_DIMSE_BlockingMode blockMode, int timeout,
 	/* out */
 	T_DIMSE_C_StoreRSP *response,
-	DcmDataset **statusDetail);
+	DcmDataset **statusDetail,
+        T_DIMSE_DetectedCancelParameters *checkForCancelParams = NULL);
 
 typedef void (*DIMSE_StoreProviderCallback)(
     /* in */
@@ -734,6 +762,61 @@ CONDITION
 DIMSE_sendMoveResponse(T_ASC_Association * assoc, 
 	T_ASC_PresentationContextID presID, T_DIMSE_C_MoveRQ *request, 
 	T_DIMSE_C_MoveRSP *response, DcmDataset *rspIds, 
+	DcmDataset *statusDetail);
+
+/*
+ * Query/Retrieve Service Class (GET)
+ */
+
+typedef void (*DIMSE_GetUserCallback)(
+	/* in */ 
+	void *callbackData,  
+	T_DIMSE_C_GetRQ *request, 
+	int responseCount, T_DIMSE_C_GetRSP *response);
+
+typedef void (*DIMSE_SubOpProviderCallback)(void *subOpCallbackData,
+	T_ASC_Network *net, T_ASC_Association **subOpAssoc);
+
+CONDITION
+DIMSE_getUser(
+	/* in */
+	T_ASC_Association *assoc, 
+        T_ASC_PresentationContextID presID,
+	T_DIMSE_C_GetRQ *request,
+	DcmDataset *requestIdentifiers,
+	DIMSE_GetUserCallback callback, void *callbackData,
+	/* blocking info for response */
+	T_DIMSE_BlockingMode blockMode, int timeout,
+	/* sub-operation provider callback */
+	T_ASC_Network *net,
+	DIMSE_SubOpProviderCallback subOpCallback, void *subOpCallbackData,
+	/* out */
+	T_DIMSE_C_GetRSP *response, DcmDataset **statusDetail,
+        DcmDataset **responseIdentifers);
+	
+typedef void (*DIMSE_GetProviderCallback)(
+	/* in */ 
+	void *callbackData,  
+	OFBool cancelled, T_DIMSE_C_GetRQ *request, 
+	DcmDataset *requestIdentifiers, int responseCount,
+	/* out */
+	T_DIMSE_C_GetRSP *response, DcmDataset **statusDetail,	
+	DcmDataset **responseIdentifiers);
+
+CONDITION
+DIMSE_getProvider(
+	/* in */ 
+	T_ASC_Association *assoc, 
+	T_ASC_PresentationContextID presIdCmd,
+	T_DIMSE_C_GetRQ *request,
+	DIMSE_GetProviderCallback callback, void *callbackData,
+	/* blocking info for data set */
+	T_DIMSE_BlockingMode blockMode, int timeout);
+
+CONDITION
+DIMSE_sendGetResponse(T_ASC_Association * assoc, 
+	T_ASC_PresentationContextID presID, T_DIMSE_C_GetRQ *request, 
+	T_DIMSE_C_GetRSP *response, DcmDataset *rspIds, 
 	DcmDataset *statusDetail);
 
 /*
@@ -927,7 +1010,10 @@ void DIMSE_printNDeleteRSP(FILE * f, T_DIMSE_N_DeleteRSP * rsp);
 /*
 ** CVS Log
 ** $Log: dimse.h,v $
-** Revision 1.6  1998-08-10 08:53:40  meichel
+** Revision 1.7  1999-04-19 08:36:48  meichel
+** Added support for C-FIND-CANCEL/C-MOVE-CANCEL in DIMSE_storeUser().
+**
+** Revision 1.6  1998/08/10 08:53:40  meichel
 ** renamed member variable in DIMSE structures from "Status" to
 **   "DimseStatus". This is required if dcmnet is used together with
 **   <X11/Xlib.h> where Status is #define'd as int.

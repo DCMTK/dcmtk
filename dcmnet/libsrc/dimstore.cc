@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1998-08-10 08:53:46 $
+** Update Date:		$Date: 1999-04-19 08:36:31 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimstore.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -126,7 +126,8 @@ DIMSE_storeUser(
 	T_DIMSE_BlockingMode blockMode, int timeout,
 	/* out */
 	T_DIMSE_C_StoreRSP *response,
-	DcmDataset **statusDetail)
+	DcmDataset **statusDetail,
+        T_DIMSE_DetectedCancelParameters *checkForCancelParams)
 {
     CONDITION cond;
     T_DIMSE_Message req, rsp;
@@ -191,25 +192,38 @@ DIMSE_storeUser(
     }
 
     /* receive response */
-    cond = DIMSE_receiveCommand(assoc, blockMode, timeout, 
-        &presId, &rsp, statusDetail);
-    if (cond != DIMSE_NORMAL) {
-	return cond;
+    if (checkForCancelParams != NULL) {
+        checkForCancelParams->cancelEncountered = OFTrue;
     }
 
-    if (rsp.CommandField != DIMSE_C_STORE_RSP) {
-	return COND_PushCondition(DIMSE_UNEXPECTEDRESPONSE, 
-		"DIMSE: Unexpected Response Command Field: 0x%x",
-		(unsigned)rsp.CommandField);
-    }
+    do
+    {
+        T_ASC_PresentationContextID thisPresId = presId;
+        cond = DIMSE_receiveCommand(assoc, blockMode, timeout, 
+            &thisPresId, &rsp, statusDetail);
+        if (cond != DIMSE_NORMAL) return cond;
+
+        if (checkForCancelParams != NULL && rsp.CommandField == DIMSE_C_CANCEL_RQ)
+        {
+            checkForCancelParams->cancelEncountered = OFTrue;
+            checkForCancelParams->req = rsp.msg.CCancelRQ;
+            checkForCancelParams->presId = thisPresId;
+        } else {
+            if (rsp.CommandField != DIMSE_C_STORE_RSP) {
+	        return COND_PushCondition(DIMSE_UNEXPECTEDRESPONSE, 
+	        	"DIMSE: Unexpected Response Command Field: 0x%x",
+	    	    (unsigned)rsp.CommandField);
+            }
     
-    *response = rsp.msg.CStoreRSP;
+            *response = rsp.msg.CStoreRSP;
 	
-    if (response->MessageIDBeingRespondedTo != request->MessageID) {
-	return COND_PushCondition(DIMSE_UNEXPECTEDRESPONSE, 
-		"DIMSE: Unexpected Response MsgId: %d (expected: %d)",
-		response->MessageIDBeingRespondedTo, request->MessageID);
-    }
+            if (response->MessageIDBeingRespondedTo != request->MessageID) {
+	        return COND_PushCondition(DIMSE_UNEXPECTEDRESPONSE, 
+	    	    "DIMSE: Unexpected Response MsgId: %d (expected: %d)",
+	    	    response->MessageIDBeingRespondedTo, request->MessageID);
+            }
+        }
+    } while (checkForCancelParams != NULL && rsp.CommandField == DIMSE_C_CANCEL_RQ);
     
     return DIMSE_NORMAL;
 }
@@ -284,13 +298,19 @@ DIMSE_storeProvider(/* in */
     CONDITION cond = DIMSE_NORMAL;
     DIMSE_PrivateProviderContext callbackCtx;
     DIMSE_ProgressCallback privCallback = NULL;
-    T_ASC_PresentationContextID presIdData;
+    T_ASC_PresentationContextID presIdData = 0;
     T_DIMSE_C_StoreRSP response;
     DcmDataset *statusDetail = NULL;
     T_DIMSE_StoreProgress progress;
 
     bzero((char*)&response, sizeof(response));
     response.DimseStatus = STATUS_Success;	/* assume */
+    response.MessageIDBeingRespondedTo = request->MessageID;
+    response.DataSetType = DIMSE_DATASET_NULL;	/* always for C-STORE-RSP */
+    strcpy(response.AffectedSOPClassUID, request->AffectedSOPClassUID);
+    strcpy(response.AffectedSOPInstanceUID, request->AffectedSOPInstanceUID);
+    response.opts = (O_STORE_AFFECTEDSOPCLASSUID | 
+        O_STORE_AFFECTEDSOPINSTANCEUID);
 
     /* set up callback routine */
     if (callback != NULL) {
@@ -340,16 +360,20 @@ DIMSE_storeProvider(/* in */
 		"DIMSE_storeProvider: No filename or DcmDataset provided");
     }
 
-    if (cond != DIMSE_NORMAL) {
-        return cond;
-    }
-
     if (presIdData != presIdCmd) {
 	cond = COND_PushCondition(DIMSE_INVALIDPRESENTATIONCONTEXTID, 
 		"DIMSE: Presentation Contexts of Command and Data Differ");
     }
-    
-    /* execute final callback */
+
+    if (cond == DIMSE_NORMAL) {
+        response.DimseStatus = STATUS_Success;
+    } else if (cond == DIMSE_OUTOFRESOURCES) {
+        response.DimseStatus = STATUS_STORE_Refused_OutOfResources;
+    } else {
+        return cond;
+    }
+   
+    /* execute final callback (user does not have to provide callback) */
     if (callback) {
         progress.state = DIMSE_StoreEnd;
 	progress.callbackCount++;
@@ -357,15 +381,10 @@ DIMSE_storeProvider(/* in */
 	callback(callbackData, &progress, request, 
 	    (char*)imageFileName, imageDataSet,
 	    &response, &statusDetail);
-    } else {
-        /* user does not have to provide callback */
-        response.DimseStatus = STATUS_Success;
     }
     
-    if (cond == DIMSE_NORMAL) {
-        cond = DIMSE_sendStoreResponse(assoc, presIdCmd, request, 
-            &response, statusDetail);
-    }
+    cond = DIMSE_sendStoreResponse(assoc, presIdCmd, request, 
+        &response, statusDetail);
     
     return cond;
 }
@@ -373,7 +392,10 @@ DIMSE_storeProvider(/* in */
 /*
 ** CVS Log
 ** $Log: dimstore.cc,v $
-** Revision 1.4  1998-08-10 08:53:46  meichel
+** Revision 1.5  1999-04-19 08:36:31  meichel
+** Added support for C-FIND-CANCEL/C-MOVE-CANCEL in DIMSE_storeUser().
+**
+** Revision 1.4  1998/08/10 08:53:46  meichel
 ** renamed member variable in DIMSE structures from "Status" to
 **   "DimseStatus". This is required if dcmnet is used together with
 **   <X11/Xlib.h> where Status is #define'd as int.
