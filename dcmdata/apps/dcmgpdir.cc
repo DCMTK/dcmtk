@@ -10,10 +10,10 @@
 ** CD-R Image Interchange Profile (Supplement 19).
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1998-01-14 14:40:33 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-01-27 10:49:23 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
-** CVS/RCS Revision:	$Revision: 1.22 $
+** CVS/RCS Revision:	$Revision: 1.23 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -2187,7 +2187,7 @@ createDicomdirFromFiles(OFList<OFString>& fileNames)
 
     delete dicomdir;
 
-    return OFTrue;
+    return ok;
 }
 
 
@@ -2285,7 +2285,11 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 /*
 ** CVS/RCS Log:
 ** $Log: dcmgpdir.cc,v $
-** Revision 1.22  1998-01-14 14:40:33  hewett
+** Revision 1.23  1998-01-27 10:49:23  meichel
+** Minor bug corrections (string too short, incorrect return value).
+**   Thanks to Andreas Barth <anba@bruker.de> for the report.
+**
+** Revision 1.22  1998/01/14 14:40:33  hewett
 ** Added support for the VRs UT (Unlimited Text) and VS (Virtual String).
 ** Modified existing -u command line option to also disable generation
 ** of UT and VS (previously just disabled generation of UN).

@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-09-12 13:44:54 $
+** Update Date:		$Date: 1998-01-27 10:49:26 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcsequen.cc,v $
-** CVS/RCS Revision:	$Revision: 1.23 $
+** CVS/RCS Revision:	$Revision: 1.24 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -741,7 +741,7 @@ DcmItem* DcmSequenceOfItems::remove( DcmItem* item )
         retItem = (DcmItem*)NULL;
     else
         retItem = item;
-    return item;
+    return retItem;
 }
 
 
@@ -1014,7 +1014,11 @@ E_Condition DcmSequenceOfItems::loadAllDataIntoMemory()
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.23  1997-09-12 13:44:54  meichel
+** Revision 1.24  1998-01-27 10:49:26  meichel
+** Minor bug corrections (string too short, incorrect return value).
+**   Thanks to Andreas Barth <anba@bruker.de> for the report.
+**
+** Revision 1.23  1997/09/12 13:44:54  meichel
 ** The algorithm introduced on 97.08.28 to detect incorrect odd-length
 **   value fields falsely reported undefined length sequences and items
 **   to be wrong. Corrected.
