@@ -22,8 +22,8 @@
  *  Purpose: DVConfiguration
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-05 16:25:30 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Update Date:      $Date: 2000-06-06 09:43:26 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -377,6 +377,11 @@ DVPSPeerType DVConfiguration::getTargetType(const char *targetID)
   return getConfigTargetType(getConfigEntry(L2_COMMUNICATION, targetID, L0_TYPE), logstream, verboseMode);
 }
 
+const char *DVConfiguration::getLogFolder()
+{
+  return getConfigEntry(L2_GENERAL, L1_APPLICATION, L0_LOGDIRECTORY);
+}
+
 const char *DVConfiguration::getLogFile()
 {
   return getConfigEntry(L2_GENERAL, L1_APPLICATION, L0_LOGFILE);
@@ -483,13 +488,6 @@ const char *DVConfiguration::getSpoolFolder()
 {
   const char *result = getConfigEntry(L2_GENERAL, L1_PRINT, L0_DIRECTORY);
   if (result==NULL) result = PSTAT_SPOOLFOLDER;
-  return result;
-}
-
-const char *DVConfiguration::getLogFolder()
-{
-  const char *result = getConfigEntry(L2_GENERAL, L1_PRINT, L0_LOGDIRECTORY);
-  if (result==NULL) result = getSpoolFolder();
   return result;
 }
 
@@ -1119,7 +1117,11 @@ void DVConfiguration::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.cc,v $
- *  Revision 1.26  2000-06-05 16:25:30  joergr
+ *  Revision 1.27  2000-06-06 09:43:26  joergr
+ *  Moved configuration file entry "LogDirectory" from "[PRINT]" to new
+ *  (more general) section "[APPLICATION]".
+ *
+ *  Revision 1.26  2000/06/05 16:25:30  joergr
  *  Implemented log message methods.
  *
  *  Revision 1.25  2000/06/02 16:00:58  meichel

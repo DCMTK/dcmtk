@@ -23,8 +23,8 @@
  *    classes: DVConfiguration
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-05 16:22:27 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2000-06-06 09:42:48 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -489,9 +489,16 @@ class DVConfiguration
 
   /* general settings */
 
+  /** returns the directory used to store log files.
+   *  Value is taken from the section GENERAL/APPLICATION/LOGDIRECTORY
+   *  in the config file.
+   *  @return log directory path, NULL if absent.
+   */
+  const char *getLogFolder();
+
   /** returns the name of the log file to be used for general application messages.
    *  Value is taken from the section GENERAL/APPLICATION/LOGFILE
-   *  in the config file. If absent, a default value is returned.
+   *  in the config file.
    *  @return name of the log file, NULL if absent.
    */
   const char *getLogFile();
@@ -577,13 +584,6 @@ class DVConfiguration
    *  @return spool folder path. Never returns NULL.
    */
   const char *getSpoolFolder();
-
-  /** returns the log folder to be used by detached print processes.
-   *  Value is taken from the section GENERAL/PRINT/LOGDIRECTORY
-   *  in the config file. If absent, a default value is returned.
-   *  @return log folder path. Never returns NULL.
-   */
-  const char *getLogFolder();
 
   /** returns the DETAILEDLOG entry
    *  from the section GENERAL/PRINT in the config file.
@@ -863,7 +863,11 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.h,v $
- *  Revision 1.19  2000-06-05 16:22:27  joergr
+ *  Revision 1.20  2000-06-06 09:42:48  joergr
+ *  Moved configuration file entry "LogDirectory" from "[PRINT]" to new
+ *  (more general) section "[APPLICATION]".
+ *
+ *  Revision 1.19  2000/06/05 16:22:27  joergr
  *  Implemented log message methods.
  *
  *  Revision 1.18  2000/06/02 16:00:43  meichel

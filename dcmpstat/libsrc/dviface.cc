@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-05 16:24:27 $
- *  CVS/RCS Revision: $Revision: 1.92 $
+ *  Update Date:      $Date: 2000-06-06 09:43:25 $
+ *  CVS/RCS Revision: $Revision: 1.93 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -184,7 +184,17 @@ DVInterface::DVInterface(const char *config_file)
     
     const char *filename = getLogFile();
     if (filename != NULL)
-        logFile = new OFLogFile(filename);
+    {
+        const char *directory = getLogFolder();
+        if (directory != NULL)
+        {
+            OFString filepath = directory;
+            filepath += PATH_SEPARATOR;
+            filepath += filename;
+            logFile = new OFLogFile(filepath.c_str());
+        } else
+            logFile = new OFLogFile(filename);
+    }
 }
 
 
@@ -3414,7 +3424,11 @@ E_Condition DVInterface::checkIOD(const char *studyUID, const char *seriesUID, c
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.92  2000-06-05 16:24:27  joergr
+ *  Revision 1.93  2000-06-06 09:43:25  joergr
+ *  Moved configuration file entry "LogDirectory" from "[PRINT]" to new
+ *  (more general) section "[APPLICATION]".
+ *
+ *  Revision 1.92  2000/06/05 16:24:27  joergr
  *  Implemented log message methods.
  *  Added method allowing to specify the current presentation state to be used
  *  for resetting the pstate.

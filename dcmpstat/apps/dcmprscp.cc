@@ -21,10 +21,10 @@
  *
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-02 16:00:38 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-06-06 09:44:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmprscp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -215,7 +215,10 @@ int main(int argc, char *argv[])
 
     OFString logfilename;    
     time_t now = time(NULL);
-    logfilename = dvi.getLogFolder();
+    if (dvi.getLogFolder() != NULL)
+        logfilename = dvi.getLogFolder();
+    else
+        logfilename = dvi.getSpoolFolder();
     logfilename += PATH_SEPARATOR;
     logfilename += "PrintSCP_";
 //    logfilename += opt_spoolPrefix;
@@ -352,7 +355,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprscp.cc,v $
- * Revision 1.2  2000-06-02 16:00:38  meichel
+ * Revision 1.3  2000-06-06 09:44:07  joergr
+ * Moved configuration file entry "LogDirectory" from "[PRINT]" to new
+ * (more general) section "[APPLICATION]".
+ *
+ * Revision 1.2  2000/06/02 16:00:38  meichel
  * Adapted all dcmpstat classes to use OFConsole for log and error output
  *
  * Revision 1.1  2000/05/31 12:59:28  meichel
