@@ -24,15 +24,14 @@ dcmdspfn.o: dcmdspfn.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dcchrstr.h ../../dcmdata/include/dcvrlo.h \
  ../../dcmdata/include/dcvrlt.h ../../dcmdata/include/dcvrpn.h \
  ../../dcmdata/include/dcvrsh.h ../../dcmdata/include/dcvrst.h \
- ../../dcmdata/include/dcvrut.h ../../dcmdata/include/dcvrvs.h \
- ../../dcmdata/include/dcvrobow.h ../../dcmdata/include/dcpixel.h \
- ../../dcmdata/include/dcvrpobw.h ../../dcmdata/include/dcovlay.h \
- ../../dcmdata/include/dcvrat.h ../../dcmdata/include/dcvrss.h \
- ../../dcmdata/include/dcvrus.h ../../dcmdata/include/dcvrsl.h \
- ../../dcmdata/include/dcvrfl.h ../../dcmdata/include/dcvrfd.h \
- ../../dcmdata/include/cmdlnarg.h ../../ofstd/include/ofconapp.h \
- ../../ofstd/include/ofcmdln.h ../include/digsdfn.h \
- ../include/didispfn.h ../include/didislut.h ../include/dibaslut.h \
- ../include/diutils.h ../include/digsdlut.h ../include/diciefn.h \
- ../include/dicielut.h
+ ../../dcmdata/include/dcvrut.h ../../dcmdata/include/dcvrobow.h \
+ ../../dcmdata/include/dcpixel.h ../../dcmdata/include/dcvrpobw.h \
+ ../../dcmdata/include/dcovlay.h ../../dcmdata/include/dcvrat.h \
+ ../../dcmdata/include/dcvrss.h ../../dcmdata/include/dcvrus.h \
+ ../../dcmdata/include/dcvrsl.h ../../dcmdata/include/dcvrfl.h \
+ ../../dcmdata/include/dcvrfd.h ../../dcmdata/include/cmdlnarg.h \
+ ../../ofstd/include/ofconapp.h ../../ofstd/include/ofcmdln.h \
+ ../include/digsdfn.h ../include/didispfn.h ../include/didislut.h \
+ ../include/dibaslut.h ../include/diutils.h ../include/digsdlut.h \
+ ../include/diciefn.h ../include/dicielut.h
 dconvlum.o: dconvlum.cc ../../config/include/osconfig.h
