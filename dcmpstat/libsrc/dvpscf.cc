@@ -22,8 +22,8 @@
  *  Purpose: DVConfiguration
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-11-13 11:52:45 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Update Date:      $Date: 2000-12-19 12:13:04 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,10 +35,22 @@
 #include "dvpscf.h"      /* for DVConfiguration */
 #include "dvpsconf.h"    /* for class DVPSConfig */
 #include "ofconsol.h"    /* for OFConsole */
-#include <stdio.h>
-#include <ctype.h>       /* for toupper() */
 #include "dvpsdef.h"     /* for constants */
 
+BEGIN_EXTERN_C
+#include <stdio.h>
+#include <ctype.h>       /* for toupper() */
+#include <string.h>
+END_EXTERN_C
+
+#ifndef HAVE_WINDOWS_H
+/* some Unix operating systems do not define a prototype for strncasecmp
+ * although the function is known.
+ */
+#ifndef HAVE_PROTOTYPE_STRNCASECMP
+extern "C" int strncasecmp(const char *s1, const char *s2, size_t n);
+#endif
+#endif
 
 /* keywords for configuration file */
 
@@ -1419,7 +1431,11 @@ const char *DVConfiguration::getUserCodeMeaning(const char *userID, OFString& va
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.cc,v $
- *  Revision 1.34  2000-11-13 11:52:45  meichel
+ *  Revision 1.35  2000-12-19 12:13:04  meichel
+ *  Added test for a strncasecmp prototype in <string.h>, missing on Ultrix
+ *    and SunOS 4.1.x.
+ *
+ *  Revision 1.34  2000/11/13 11:52:45  meichel
  *  Added support for user logins and certificates.
  *
  *  Revision 1.33  2000/11/13 10:43:21  joergr
