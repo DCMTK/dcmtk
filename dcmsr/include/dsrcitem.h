@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2001, OFFIS
+ *  Copyright (C) 2000-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRContentItem
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 13:04:04 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-08-07 12:18:57 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,7 +60,7 @@
 class DSRContentItem
   : protected DSRTypes
 {
-    // allow access to setTreeNode()
+    // allow DSRDocumentTree to access protected method setTreeNode()
     friend class DSRDocumentTree;
 
   public:
@@ -110,7 +110,7 @@ class DSRContentItem
      ** @return string value of current content item if valid, EmptyString otherwise
      */
     const OFString &getStringValue() const;
-    
+
     /** set string value.  Please use the correct format for the string value depending on
      *  the corresponding content item (value type).
      *  Applicable to: TEXT, DATETIME, DATE, TIME, UIDREF, PNAME
@@ -130,7 +130,7 @@ class DSRContentItem
      ** @return coded entry value of current content item if valid, EmptyCodedEntry otherwise
      */
     const DSRCodedEntryValue &getCodeValue() const;
-    
+
     /** get copy of code value.
      *  Applicable to: CODE
      ** @param  codeValue  variable where the copy should be stored
@@ -338,7 +338,7 @@ class DSRContentItem
      *  Code describing the concept represented by this content item.  Also conveys the value
      *  of document title and section headings in documents.
      *  Applicable to all content items (by-value only).
-     ** @param  codeValue  variable where the copy should be stored (cleared if an error occurs)
+     ** @param  conceptName  variable where the copy should be stored (cleared if an error occurs)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition getConceptName(DSRCodedEntryValue &conceptName) const;
@@ -377,7 +377,7 @@ class DSRContentItem
      */
     DSRContentItem();
 
-    /** set internal tree node pointer
+    /** set internal tree node pointer (protected)
      *  @param  node  pointer to the document tree node (content item)
      */
     inline void setTreeNode(DSRDocumentTreeNode *node)
@@ -392,21 +392,21 @@ class DSRContentItem
     DSRDocumentTreeNode *TreeNode;
 
     /// empty string value. Used as default return value for getStringValue()
-    static const OFString                   EmptyString;
+    static const OFString                    EmptyString;
     /// empty coded entry value. Used as default return value for getCodeValue() and getConceptName()
-    static const DSRCodedEntryValue         EmptyCodedEntry;
+    static const DSRCodedEntryValue          EmptyCodedEntry;
     /// empty numberic measurement value. Used as default return value for getNumericValue()
-    static const DSRNumericMeasurementValue EmptyNumericMeasurement;
+    static const DSRNumericMeasurementValue  EmptyNumericMeasurement;
     /// empty spatial coordinates value. Used as default return value for getSpatialCoordinates()
-    static const DSRSpatialCoordinatesValue EmptySpatialCoordinates;
+    static const DSRSpatialCoordinatesValue  EmptySpatialCoordinates;
     /// empty temporal coordinates value. Used as default return value for getTemporalCoordinates()
     static const DSRTemporalCoordinatesValue EmptyTemporalCoordinates;
     /// empty composite reference value. Used as default return value for getCompositeReference()
-    static const DSRCompositeReferenceValue EmptyCompositeReference;
+    static const DSRCompositeReferenceValue  EmptyCompositeReference;
     /// empty image reference value. Used as default return value for getImageReference()
-    static const DSRImageReferenceValue     EmptyImageReference;
+    static const DSRImageReferenceValue      EmptyImageReference;
     /// empty waveform reference value. Used as default return value for getWaveformReference()
-    static const DSRWaveformReferenceValue  EmptyWaveformReference;
+    static const DSRWaveformReferenceValue   EmptyWaveformReference;
 
 
  // --- declaration of copy constructor and assignment operator
@@ -422,7 +422,10 @@ class DSRContentItem
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcitem.h,v $
- *  Revision 1.14  2001-09-26 13:04:04  meichel
+ *  Revision 1.15  2003-08-07 12:18:57  joergr
+ *  Updated documentation to get rid of doxygen warnings.
+ *
+ *  Revision 1.14  2001/09/26 13:04:04  meichel
  *  Adapted dcmsr to class OFCondition
  *
  *  Revision 1.13  2001/05/07 16:13:23  joergr
