@@ -5,53 +5,80 @@ NAME
 
 SYNOPSIS
 
-   dcmmklut [options] window-center window-width dcmimg-in dcmimg-out
+   dcmmklut [options] dcmimg-out
 
 SUMMARY
 
-The dcmmklut utility allows to create a variety of DICOM Modality LUT and 
-VOI LUT look up tables and is intended for the creation of test images. The 
-utility reads an existing DICOM image file, creates a look up table 
-according to the command line options, and writes the new object back to 
-file. The output file is encoded with the same transfer syntax used for the 
-input file. The boundaries for the look up table are specified as if it was 
-a DICOM VOI window center/width operation. From the window center and 
-width, the LUT descriptor is automatically derived. The LUT data has always 
-the shape of a gamma curve. The gamma factor can be specified by a command 
-line option and defaults to 1. The utility does not currently support the 
-creation of LUTs with 2^16 entries. No precautions are taken to prevent the 
-creation of LUTs that are larger than the size limit of US values in 
-explicit VR transfer syntaxes (65534 bytes).
+The dcmmklut utility allows to create a variety of DICOM Modality,
+Presentation and VOI look-up tables (LUT) and is intended for the creation
+of test images.  The utility is able to read an existing DICOM image file,
+create a look up table according to the command line options, and write
+the new object back to file.  It is also possible to create a new object
+containing the specified LUT without reading an existing DICOM image file.
+This is e.g. useful to simply store different look-up tables in a DICOM-like
+structure.
+As a default the output file is encoded with the same transfer syntax used
+for the input file, but the transfer syntax can also be specified as a
+command line option.
+The LUT data can be derived from the shape of a gamma curve (default for the
+gamma factor is 1) or imported from a file (currently the MAP format from
+Ulead's PhotoImpact and a simple text format are supported).  The input and
+output width of the LUT can also be specified in the range allowed by the
+DICOM standard.  The interpolation of the input range is done by a polynomial
+curve fitting algorithm.
+In addition to the DICOM output file the LUT data can also be exported to a
+tabbed text file which allows the easy visualization of the curves with a
+common spread sheet application (e.g. Microsoft Excel).
 
 USAGE
 
-dcmmklut: Add modality or VOI LUT to image
-usage: dcmmklut [options] window-center window-width dcmimg-in dcmimg-out
+dcmmklut: Create DICOM look-up tables
+usage: dcmmklut [options] dcmimg-out
 
 parameters:
-  window-center        window center equivalent of LUT to be created
-  window-width         window width equivalent of LUT to be created
-  dcmimg-in            DICOM input image file
-  dcmimg-out           DICOM output filename
+  dcmimg-out             DICOM output filename
 
 general options:
-  -h     --help        print this help text and exit
-  -v     --verbose     verbose mode, print processing details
-  -d     --debug       debug mode, print debug information
+  -h     --help          print this help text and exit
+  -v     --verbose       verbose mode, print processing details
+  -d     --debug         debug mode, print debug information
 LUT creation options:
   LUT type:
-    +Tm  --modality    create as Modality LUT
-    +Tv  --voi         create as VOI LUT (default)
+    +Tm  --modality      create as Modality LUT
+    +Tp  --presentation  create as Presentation LUT
+    +Tv  --voi           create as VOI LUT (default)
   LUT placement:
-    +Pa  --add         add to existing transform
-                       (default for +Tv, only with +Tv)
-    +Pr  --replace     replace existing transform (default for +Tm)
+    +Pa  --add           add to existing transform (def. for and only with +Tv)
+    +Pr  --replace       replace existing transform (default for +Tm and +Tp)
   LUT content:
-    -g   --gamma       gamma: float
-                       use gamma value (default: 1.0)
-    -b   --bits        [n]umber : integer
-                       create LUT with n bit values (8..16, default: 16)
-    -a   --byte-align  create byte-aligned LUT (implies -b 8)
+    +Cg  --gamma         [g]amma : float
+                         use gamma value (default: 1.0)
+    +Cm  --map-file      [f]ilename : string
+                         read input data from MAP file
+    +Ct  --text-file     [f]ilename : string
+                         read input data from text file
+  LUT structure:
+    -b   --bits          [n]umber : integer
+                         create LUT with n bit values (8..16, default: 16)
+    -e   --entries       [n]umber : integer
+                         create LUT with n entries (1..65536, default: 256)
+    -f   --first-mapped  [n]umber : integer
+                         first input value mapped (-31768..65535, default: 0)
+    -o   --order         [n]umber : integer
+                         use polynomial curve fitting algorithm with order n
+                         (0..99, default: 5)
+    -E   --explanation   [n]ame : string
+                         LUT explanation (default: automatically created)
+    -a   --byte-align    create byte-aligned LUT (implies -b 8)
+  LUT data VR:
+    +Dw  --data-ow       write LUT Data as OW (default)
+    +Du  --data-us       write LUT Data as US
+    +Ds  --data-ss       write LUT Data as SS (minimal support)
+file options:
+  +Fi    --dicom-input   [f]ilename : string
+                         read dataset from DICOM file f
+  +Fo    --text-output   [f]ilename : string
+                         write LUT data to tabbed text file f
 
 ENVIRONMENT
 
@@ -60,10 +87,8 @@ specified in the DCMDICTPATH environment variable.  By default, if
 the DCMDICTPATH environment variable is not set, the file
 /usr/local/dicom/lib/dicom.dic will be loaded.  The default behaviour
 should be preferred and the DCMDICTPATH environment variable only used
-when alternative data dictionaries are required.  The DCMDICTPATH 
+when alternative data dictionaries are required.  The DCMDICTPATH
 environment variable has the same format as the shell PATH variable in
 that a colon (":") separates entries.  The data dictionary code will
-attempt to load each file specified in the DCMDICTPATH environment 
+attempt to load each file specified in the DCMDICTPATH environment
 variable.  It is an error if no data dictionary can be loaded.
-
-
