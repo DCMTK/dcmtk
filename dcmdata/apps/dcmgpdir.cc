@@ -10,10 +10,10 @@
 ** CD-R Image Interchange Profile (Supplement 19).
 **
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-05-29 15:52:52 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-06-26 12:50:03 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
-** CVS/RCS Revision:	$Revision: 1.12 $
+** CVS/RCS Revision:	$Revision: 1.13 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -68,6 +68,9 @@ BEGIN_EXTERN_C
 # if HAVE_NDIR_H
 #  include <ndir.h>
 # endif
+#endif
+#if HAVE_IO_H
+#  include <io.h>
 #endif
 END_EXTERN_C
 
@@ -2280,6 +2283,55 @@ createDicomdirFromFiles(StrList& fileNames)
 
 
 
+#if HAVE__FINDFIRST
+static BOOL
+expandFileNames(StrList & fileNames, StrList & expandedNames)
+{
+    BOOL ok = TRUE;
+    struct _finddata_t fileData;
+	long hFile;
+
+    StrListIterator iter(fileNames);
+    while (iter.hasMore()) {
+	const char* fname = iter.next();
+	if (hFile = _findfirst(fname, &fileData) == -1L) {
+	    cerr << "error: cannot access: " << fname << endl;
+		_findclose(hFile);
+	    ok = FALSE;
+	} else if (fileData.attrib & _A_SUBDIR) {
+	    /* it is a directory */
+	    StrList subList;
+		char * newSearchname = new char[strlen(fname)+3];
+		strcpy(newSearchname, fname);
+		strcat(newSearchname, "\\*");
+	    _findclose(hFile);
+		int ret = 0;
+	    for (hFile = _findfirst(newSearchname, &fileData); 
+			 hFile != -1L && ret == 0; ret = _findnext(hFile, &fileData)) {
+		/* filter out current and parent directory */
+		if (!cmp(fileData.name, ".") && !cmp(fileData.name, "..")) {
+		    char* subname = 
+			new char[strlen(fname)+strlen(fileData.name)+2];
+		    sprintf(subname, "%s%c%s", fname, PATH_SEPARATOR, 
+			    fileData.name);
+		    subList.append(subname);
+		    delete subname;
+		}
+	    }
+		delete newSearchname;
+		_findclose(hFile);
+		/* recurse */
+	    expandFileNames(subList, expandedNames);
+	} else {
+	    /* add to expanded list  */
+		_findclose(hFile);
+	    expandedNames.append(fname);
+	}
+    }
+    return ok;
+}
+#else
+
 static BOOL
 expandFileNames(StrList& fileNames, StrList& expandedNames)
 {
@@ -2318,12 +2370,16 @@ expandFileNames(StrList& fileNames, StrList& expandedNames)
     return ok;
 }
 
-
+#endif
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcmgpdir.cc,v $
-** Revision 1.12  1997-05-29 15:52:52  meichel
+** Revision 1.13  1997-06-26 12:50:03  andreas
+** - Added function version expandFileNames for Windows NT/95
+** - Include Additional headers (winsock.h, io.h) for Windows NT/95
+**
+** Revision 1.12  1997/05/29 15:52:52  meichel
 ** Added constant for dcmtk release date in dcuid.h.
 ** All dcmtk applications now contain a version string
 ** which is displayed with the command line options ("usage" message)
