@@ -14,7 +14,7 @@ The dsr2html utility renders the contents of a DICOM Structured Reporting
 (SR) document (file format or raw data set) to HTML (Hyper Text Markup
 Language) which is compatible with version 3.2 or 4.0.
 
-If dsr2html reads a raw data set (dicom data without a file format
+If dsr2html reads a raw data set (DICOM data without a file format
 meta-header) it will attempt to guess the transfer syntax by examining
 the first few bytes of the file.  It is not always possible to correctly
 guess the transfer syntax and it is better to convert a data set to
@@ -44,6 +44,9 @@ input options:
     -te  --read-xfer-little     read with explicit VR little endian TS
     -tb  --read-xfer-big        read with explicit VR big endian TS
     -ti  --read-xfer-implicit   read with implicit VR little endian TS
+parsing options:
+  error handling:
+    -Ec  --ignore-constraints   ignore relationship content constraints
 output options:
   HTML compatibility:
     +H3  --html-3.2             use only HTML version 3.2 compatible features

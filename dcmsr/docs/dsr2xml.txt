@@ -14,9 +14,9 @@ The dsr2xml utility converts the contents of a DICOM Structured Reporting (SR)
 document (file format or raw data set) to XML (Extensible Markup Language).
 The DTD (Document Type Definition) does not yet follow any standard format.
 The dsr2xml application might be enhanced in this aspect in the future (e. g.
-by supporting CDA - Clinical Document Architecture).
+by supporting HL7 CDA - Clinical Document Architecture).
 
-If dsr2xml reads a raw data set (dicom data without a file format
+If dsr2xml reads a raw data set (DICOM data without a file format
 meta-header) it will attempt to guess the transfer syntax by examining
 the first few bytes of the file.  It is not always possible to correctly
 guess the transfer syntax and it is better to convert a data set to
@@ -47,6 +47,9 @@ input options:
     -tb  --read-xfer-big       read with explicit VR big endian TS
     -ti  --read-xfer-implicit  read with implicit VR little endian TS
 output options:
+  encoding:
+    +Ev  --attr-value-type     encode value type as XML attribute
+    +Er  --attr-relationship   encode relationship type as XML attribute
   writing:
     +We  --write-empty-tags    write all tags even if their value is empty
 

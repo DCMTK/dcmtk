@@ -16,7 +16,7 @@ of the document content follows the format proposed in David Clunie's book
 "DICOM Structured Reporting" (which follows the format proposed in earlier
 versions of DICOM Supplement 23).
 
-If dsrdump reads a raw data set (dicom data without a file format
+If dsrdump reads a raw data set (DICOM data without a file format
 meta-header) it will attempt to guess the transfer syntax by examining
 the first few bytes of the file.  It is not always possible to correctly
 guess the transfer syntax and it is better to convert a data set to
