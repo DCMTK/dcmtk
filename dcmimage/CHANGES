@@ -1,3 +1,11 @@
+**** Changes from 1998.11.30 (riesmeier)
+
+- Added const type qualifier to some parameters to avoid errors with MSVC5
+  (couldn't create instance of abstract class).
+  Affects: dcmimgle/include/diimage.h
+
+- Removed wrong 'inline' from method declaration (reported by MSVC5).
+  Affects: dcmimgle/include/diovlay.h
 
 **** Changes from 1998.11.27 (riesmeier)
 
@@ -96,6 +104,9 @@
            dcmimage/libsrc/diovpln.cc
            dcmimage/libsrc/diutils.cc
            
+- Added module dcmimgle to CVS depot.
+  Affects: modules/modules
+
 - Added copyright message to all source files. Started with documentation
   in Doc++ notation.
   Affects: dcmimage/apps/dcm2pnm.cc
