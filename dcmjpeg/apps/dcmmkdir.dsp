@@ -9,23 +9,23 @@ CFG=dcmmkdir - Win32 Debug
  NMAKE
 !MESSAGE verwenden Sie den Befehl "Makefile exportieren" und führen Sie den\
  Befehl
-!MESSAGE 
+!MESSAGE
 !MESSAGE NMAKE /f "dcmmkdir.mak".
-!MESSAGE 
+!MESSAGE
 !MESSAGE Sie können beim Ausführen von NMAKE eine Konfiguration angeben
 !MESSAGE durch Definieren des Makros CFG in der Befehlszeile. Zum Beispiel:
-!MESSAGE 
+!MESSAGE
 !MESSAGE NMAKE /f "dcmmkdir.mak" CFG="dcmmkdir - Win32 Debug"
-!MESSAGE 
+!MESSAGE
 !MESSAGE Für die Konfiguration stehen zur Auswahl:
-!MESSAGE 
+!MESSAGE
 !MESSAGE "dcmmkdir - Win32 Release" (basierend auf\
   "Win32 (x86) Console Application")
 !MESSAGE "dcmmkdir - Win32 Debug" (basierend auf\
   "Win32 (x86) Console Application")
 !MESSAGE "dcmmkdir - Win32 Release OpenSSL" (basierend auf\
   "Win32 (x86) Console Application")
-!MESSAGE 
+!MESSAGE
 
 # Begin Project
 # PROP Scc_ProjName ""
@@ -47,7 +47,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GX /O2 /I "..\include" /I "..\..\config\include" /I "..\..\ofstd\include" /I "..\..\dcmdata\include" /I "..\..\dcmimgle\include" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "_REENTRANT" /YX /FD /c
+# ADD CPP /nologo /MT /W3 /GX /O2 /I "..\include" /I "..\..\config\include" /I "..\..\ofstd\include" /I "..\..\dcmdata\include" /I "..\..\dcmimgle\include" /I "..\..\dcmimage\include" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "_REENTRANT" /YX /FD /c
 # ADD BASE RSC /l 0x407 /d "NDEBUG"
 # ADD RSC /l 0x407 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -71,7 +71,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MTd /W3 /Gm /GX /Zi /Od /I "..\include" /I "..\..\config\include" /I "..\..\ofstd\include" /I "..\..\dcmdata\include" /I "..\..\dcmimgle\include" /D "_DEBUG" /D "DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "_REENTRANT" /YX /FD /c
+# ADD CPP /nologo /MTd /W3 /Gm /GX /Zi /Od /I "..\include" /I "..\..\config\include" /I "..\..\ofstd\include" /I "..\..\dcmdata\include" /I "..\..\dcmimgle\include" /I "..\..\dcmimage\include" /D "_DEBUG" /D "DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "_REENTRANT" /YX /FD /c
 # ADD BASE RSC /l 0x407 /d "_DEBUG"
 # ADD RSC /l 0x407 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -94,8 +94,8 @@ LINK32=link.exe
 # PROP Intermediate_Dir "OpenSSL"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MT /W3 /GX /O2 /I "..\include" /I "..\..\config\include" /I "..\..\ofstd\include" /I "..\..\dcmdata\include" /I "..\..\dcmimgle\include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GX /O2 /I "..\include" /I "..\..\config\include" /I "..\..\ofstd\include" /I "..\..\dcmdata\include" /I "..\..\dcmimgle\include" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "_REENTRANT" /YX /FD /c
+# ADD BASE CPP /nologo /MT /W3 /GX /O2 /I "..\include" /I "..\..\config\include" /I "..\..\ofstd\include" /I "..\..\dcmdata\include" /I "..\..\dcmimgle\include" /I "..\..\dcmimage\include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
+# ADD CPP /nologo /MT /W3 /GX /O2 /I "..\include" /I "..\..\config\include" /I "..\..\ofstd\include" /I "..\..\dcmdata\include" /I "..\..\dcmimgle\include" /I "..\..\dcmimage\include" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "_REENTRANT" /YX /FD /c
 # ADD BASE RSC /l 0x407 /d "NDEBUG"
 # ADD RSC /l 0x407 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -105,7 +105,7 @@ LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
 # ADD LINK32 netapi32.lib wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
 
-!ENDIF 
+!ENDIF
 
 # Begin Target
 
