@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSSoftcopyVOI
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-07-22 16:40:03 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-10-05 12:10:59 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -325,7 +325,7 @@ E_Condition DVPSSoftcopyVOI::getCurrentWindowCenter(double &c)
 
 E_Condition DVPSSoftcopyVOI::setVOIWindow(double wCenter, double wWidth, const char *description)
 {
-  if (wWidth <= 1.0) 
+  if (wWidth < 1.0) 
   {
 #ifdef DEBUG
         cerr << "Error: Window Width < 1 not allowed." << endl;
@@ -374,7 +374,11 @@ E_Condition DVPSSoftcopyVOI::setVOILUT(
 
 /*
  *  $Log: dvpssv.cc,v $
- *  Revision 1.1  1999-07-22 16:40:03  meichel
+ *  Revision 1.2  1999-10-05 12:10:59  joergr
+ *  Fixed bug in DVPSSoftcopyVOI::setVOIWindow(). Window width = 1 was
+ *  rejected.
+ *
+ *  Revision 1.1  1999/07/22 16:40:03  meichel
  *  Adapted dcmpstat data structures and API to supplement 33 letter ballot text.
  *
  *
