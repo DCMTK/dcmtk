@@ -1,0 +1,110 @@
+/*
+ *
+ *  Copyright (C) 1998-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  ofstd
+ *
+ *  Author:  Joerg Riesmeier
+ *
+ *  Purpose: Class for measurement of time (Header)
+ *
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-01-20 14:27:02 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/oftimer.h,v $
+ *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
+
+
+#ifndef __OFTIMER_H
+#define __OFTIMER_H
+
+#include "osconfig.h"
+
+#ifdef WIN32
+ #include "windows.h"
+ #include "winbase.h"
+#else /* UNIX */
+ #include <sys/time.h>
+#endif
+
+
+/*---------------------*
+ *  class declaration  *
+ *---------------------*/
+
+/** A class for measurement of time.
+ *  Timer intervalls are represented as floating point values of seconds.
+ */
+class OFTimer
+{
+
+ public:
+
+    OFTimer()
+    {
+        reset();
+    }
+    
+    inline void reset()
+    {
+        Start = getTime();
+    }
+    
+    inline double getDiff() const
+    {
+        return getTime() - Start;
+    }
+
+    inline static double getDiff(double start)
+    {
+        return getTime() - start;
+    }
+
+    inline static double getTime()
+    {
+#ifdef WIN32
+        return (double)GetTickCount() / 1000;
+#else /* tested on solaris */
+        timeval time;
+        gettimeofday(&time, NULL);
+        return (double)time.tv_sec + (double)time.tv_usec / 1000000.0;
+#endif
+    }
+
+
+ private:
+
+    double Start; 
+};
+
+
+#endif
+
+
+/*
+ *
+ * CVS/RCS Log:
+ * $Log: oftimer.h,v $
+ * Revision 1.1  1999-01-20 14:27:02  joergr
+ * Added class for measurement of time.
+ *
+ *
+ *
+ */
