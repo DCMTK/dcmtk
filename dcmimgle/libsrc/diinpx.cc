@@ -22,9 +22,9 @@
  *  Purpose: DicomInputPixel (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 16:02:13 $
+ *  Update Date:      $Date: 1999-02-03 17:39:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diinpx.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,8 +41,11 @@
  *  constructors  *
  *----------------*/
 
-DiInputPixel::DiInputPixel()
-  : Count(0)
+DiInputPixel::DiInputPixel(const unsigned int bits)
+  : Count(0),
+    Bits(bits),
+    AbsMinimum(0),
+    AbsMaximum(0)
 {
 }
 
@@ -57,14 +60,18 @@ DiInputPixel::~DiInputPixel()
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: diinpx.cc,v $
-** Revision 1.1  1998-11-27 16:02:13  joergr
-** Added copyright message.
-**
-** Revision 1.2  1998/05/11 14:52:29  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: diinpx.cc,v $
+ * Revision 1.2  1999-02-03 17:39:20  joergr
+ * Added member variable and related methods to store number of bits used for
+ * pixel data.
+ *
+ * Revision 1.1  1998/11/27 16:02:13  joergr
+ * Added copyright message.
+ *
+ * Revision 1.2  1998/05/11 14:52:29  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */
