@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-19 13:51:18 $
+ *  Update Date:      $Date: 2001-11-09 16:29:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1598,59 +1598,142 @@ unsigned long DiMonoImage::create6xxx3000OverlayData(Uint8 *&buffer,
 
 
 /*
- *   create 24-bit true color device independent bitmap (DIB) as needed by MS-Windows
+ *   create 8-bit palette/monochrome or 24/32-bit true color device independent bitmap (DIB) as needed by MS-Windows
  */
 
-void *DiMonoImage::createDIB(const unsigned long frame)
+unsigned long DiMonoImage::createDIB(void *&data,
+                                     const unsigned long size,
+                                     const unsigned long frame,
+                                     const int bits,
+                                     const int upsideDown)
 {
-    getOutputData(frame, 8);                        // create output data with 8 bit depth
-    Uint8 *data = NULL;
-    if ((OutputData != NULL) && (OutputData->getData() != NULL))
+    unsigned long bytes = 0;
+    if (size == 0)
+        data = NULL;
+    if ((bits == 8) || (bits == 24) || (bits == 32))
     {
-        const int gap = Columns & 0x3;              // each line has to start at 32-bit-address!
-        data = new Uint8[(unsigned long)(Columns + gap) * (unsigned long)Rows * 3];
-        if (data != NULL)
+        getOutputData(frame, 8);                            // create output data with 8 bit depth
+        if ((OutputData != NULL) && (OutputData->getData() != NULL))
         {
-            register const Uint8 *p = (const Uint8 *)(OutputData->getData());
-            register Uint8 *q = data;
-            register Uint8 value;
-            register Uint16 x;
-            register Uint16 y;
-            register int j;
-            for (y = Rows; y != 0; y--)
+            const signed long nextRow = (upsideDown) ? -2 * (signed long)Columns : 0;
+            register const Uint8 *p = (const Uint8 *)(OutputData->getData()) + ((upsideDown) ? (unsigned long)(Rows - 1) * (unsigned long)Columns : 0);
+            if (bits == 8)                                  // -- for idx color model (byte)
             {
-                for (x = Columns; x != 0; x--)
+                const int gap = (4 - Columns & 0x3) & 0x3;      // each line has to start at 32-bit-address!
+                const unsigned long count = (unsigned long)(Columns + gap) * (unsigned long)Rows;
+                if ((gap > 0) || (nextRow != 0) || (data != NULL))
                 {
-                    value = *(p++);                 // store gray value
-                    for (j = 3; j != 0; j--)
-                        *(q++) = value;             // copy to the three RGB-planes
+                    if ((data == NULL) || (size >= count))
+                    {
+                        if (data == NULL)
+                            data = new Uint8[count];            // allocated memory buffer
+                        if (data != NULL)
+                        {
+                            register Uint8 *q = (Uint8 *)data;
+                            register Uint16 x;
+                            register Uint16 y;
+                            for (y = Rows; y != 0; y--)
+                            {
+                                for (x = Columns; x != 0; x--)
+                                    *(q++) = *(p++);            // store gray value
+                                p += nextRow;                   // jump (backwards) to next row
+                                q += gap;                       // skip gap at the end of each line (32-bit boundary)
+                            }
+                            bytes = count;
+                        }
+                    }
+                } else {                                    // data already aligned and correctly oriented
+                    data = OutputData->getData();
+                    OutputData = NULL;                      // remove reference to internal memory
+                    bytes = count;
                 }
-                q += gap;
+            }
+            else if (bits == 24)                            // -- for direct color model (24 bits/pixel)
+            {
+                const unsigned long col3 = (unsigned long)Columns * 3;
+                const int gap = (4 - col3 & 0x3) & 0x3;        // each line has to start at 32-bit-address!
+                const unsigned long count = (col3 + gap) * (unsigned long)Rows;
+                if ((data == NULL) || (size >= count))
+                {
+                    if (data == NULL)
+                        data = new Uint8[count];               // allocated memory buffer
+                    if (data != NULL)
+                    {
+                        register Uint8 *q = (Uint8 *)data;
+                        register Uint8 value;
+                        register Uint16 x;
+                        register Uint16 y;
+                        register int j;
+                        for (y = Rows; y != 0; y--)
+                        {
+                            for (x = Columns; x != 0; x--)
+                            {
+                                value = *(p++);                 // store gray value
+                                for (j = 3; j != 0; j--)
+                                    *(q++) = value;             // copy to the three RGB-planes
+                            }
+                            p += nextRow;                       // jump (backwards) to next row
+                            q += gap;                           // skip gap at the end of each line (32-bit boundary)
+                        }
+                        bytes = count;
+                    }
+                }
+            }
+            else if (bits == 32)                            // -- for direct color model (32 bits/pixel)
+            {
+                const unsigned long count = (unsigned long)Columns * (unsigned long)Rows;
+                if ((data == NULL) || (size >= count * 4))
+                {
+                    if (data == NULL)
+                        data = new Uint32[count];               // allocated memory buffer
+                    if (data != NULL)
+                    {
+                        register Uint32 *q = (Uint32 *)data;
+                        register Uint32 value;
+                        register Uint16 x;
+                        register Uint16 y;
+                        for (y = Rows; y != 0; y--)
+                        {
+                            for (x = Columns; x != 0; x--)
+                            {
+                                value = *(p++);                 // store gray value
+                                *(q++) = (value << 24) |
+                                         (value << 16) |
+                                         (value << 8);          // copy to the three RGB-planes
+                            }
+                            p += nextRow;                       // jump (backwards) to next row
+                        }
+                        bytes = count * 4;
+                    }
+                }
             }
         }
+        deleteOutputData();                                 // output data is no longer needed
     }
-    deleteOutputData();                             // output data is no longer needed
-    return (void *)data;
+    return bytes;
 }
 
 
 /*
- *   create 8-bit palette/monochrome or 24/32-bit true color bitmap as needed for Java/AWT
+ *   create 8-bit palette/monochrome or 32-bit true color bitmap as needed for Java/AWT
  */
 
-void *DiMonoImage::createAWTBitmap(const unsigned long frame,
-                                   const int bits)
+unsigned long DiMonoImage::createAWTBitmap(void *&data,
+                                           const unsigned long frame,
+                                           const int bits)
 {
+    data = NULL;
+    unsigned long bytes = 0;
     if (bits == 8)                                      // for idx color model (byte)
     {
         getOutputData(frame, 8);                        // create output data with 8 bit depth
         void *data = NULL;
         if ((OutputData != NULL) && (OutputData->getData() != NULL))
         {
+            bytes = (unsigned long)Columns * (unsigned long)Rows;
             data = OutputData->getData();
             OutputData = NULL;                          // remove reference to internal memory
         }
-        return data;
     }
     else if (bits == 32)                                // for direct color model (long int)
     {
@@ -1658,29 +1741,27 @@ void *DiMonoImage::createAWTBitmap(const unsigned long frame,
         Uint32 *data = NULL;
         if ((OutputData != NULL) && (OutputData->getData() != NULL))
         {
-            data = new Uint32[(unsigned long)Columns * (unsigned long)Rows];
+            const unsigned long count = (unsigned long)Columns * (unsigned long)Rows;
+            data = new Uint32[count];
             if (data != NULL)
             {
                 register const Uint8 *p = (const Uint8 *)(OutputData->getData());
                 register Uint32 *q = data;
                 register Uint32 value;
-                register Uint16 x;
-                register Uint16 y;
-                for (y = Rows; y != 0; y--)
+                register unsigned long i;
+                for (i = count; i != 0; i--)
                 {
-                    for (x = Columns; x != 0; x--)
-                    {
-                        value = *(p++);                 // store gray value
-                        *(q++) = (value << 24) | (value << 16) | (value << 8);
-                                                        // copy to the three RGB-planes
-                    }
+                    value = *(p++);                 // store gray value
+                    *(q++) = (value << 24) |
+                             (value << 16) |
+                             (value << 8);          // copy to the three RGB-planes
                 }
+                bytes = count;
             }
         }
         deleteOutputData();                             // output data is no longer needed
-        return (void *)data;
     }
-    return NULL;
+    return bytes;
 }
 
 
@@ -1859,7 +1940,7 @@ int DiMonoImage::writeRawPPM(FILE *stream,
                              const unsigned long frame,
                              const int bits)
 {
-    if (stream != NULL)
+    if ((stream != NULL) && (bits <= MAX_RAWPPM_BITS))
     {
         getOutputData(frame, bits);
         if ((OutputData != NULL) && (OutputData->getData() != NULL))
@@ -1878,10 +1959,28 @@ int DiMonoImage::writeRawPPM(FILE *stream,
 
 
 /*
+ *   write output data of 'frame' with depth of 'bits' (8 or 24) to C-file 'stream' (format is BMP)
+ */
+
+int DiMonoImage::writeBMP(FILE *stream,
+                          const unsigned long frame,
+                          const int bits)
+{
+    if ((bits == 0) || (bits == 8) || (bits == 24))
+        return DiImage::writeBMP(stream, frame, (bits == 0) ? 8 : bits);
+    return 0;
+}
+
+
+/*
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.42  2001-10-19 13:51:18  joergr
+ * Revision 1.43  2001-11-09 16:29:37  joergr
+ * Added support for Windows BMP file format.
+ * Enhanced and renamed createTrueColorDIB() method.
+ *
+ * Revision 1.42  2001/10/19 13:51:18  joergr
  * Fixed bug in DiMonoImage::setWindow(pos) - WindowCenterWidthExplanation was
  * always cleared and never extracted from the dataset as actually intended.
  *
