@@ -22,9 +22,9 @@
  *  Purpose: DicomImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-01-11 09:32:32 $
+ *  Update Date:      $Date: 1999-01-20 14:59:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -136,6 +136,12 @@ class DiImage
     virtual void *getOutputData(const unsigned long frame,
                                 const int bits,
                                 const int planar) = 0;
+
+    virtual int getOutputData(void *buffer,
+                              const unsigned long size,
+                              const unsigned long frame,
+                              const int bits,
+                              const int planar) = 0;
 
     virtual void *getOutputPlane(const int plane) const = 0;
 
@@ -267,7 +273,11 @@ class DiImage
  *
  * CVS/RCS Log:
  * $Log: diimage.h,v $
- * Revision 1.7  1999-01-11 09:32:32  joergr
+ * Revision 1.8  1999-01-20 14:59:37  joergr
+ * Added new output method to fill external memory buffer with rendered pixel
+ * data.
+ *
+ * Revision 1.7  1999/01/11 09:32:32  joergr
  * Removed method 'getMinMaxValues()' in class 'DicomImage'.
  *
  * Revision 1.6  1998/12/23 11:33:08  joergr

@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochrome2Image (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-16 16:32:02 $
+ *  Update Date:      $Date: 1999-01-20 15:03:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimo2img.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -75,9 +75,15 @@ class DiMono2Image
                  
     virtual ~DiMono2Image();
 
-    void *getOutputData(const unsigned long,
-                        const int,
-                        const int = 0);
+    virtual void *getOutputData(const unsigned long frame,
+                                const int bits,
+                                const int planar = 0);
+
+    virtual int getOutputData(void *buffer,
+                              const unsigned long size,
+                              const unsigned long frame,
+                              const int bits,
+                              const int planar = 0);
 
     /** Method: 
      *  @param fstart
@@ -141,7 +147,11 @@ class DiMono2Image
 **
 ** CVS/RCS Log:
 ** $Log: dimo2img.h,v $
-** Revision 1.2  1998-12-16 16:32:02  joergr
+** Revision 1.3  1999-01-20 15:03:20  joergr
+** Added new output method to fill external memory buffer with rendered pixel
+** data.
+**
+** Revision 1.2  1998/12/16 16:32:02  joergr
 ** Added explanation string to LUT class (retrieved from dataset).
 **
 ** Revision 1.1  1998/11/27 15:12:18  joergr

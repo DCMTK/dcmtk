@@ -22,9 +22,9 @@
  *  Purpose: Provides main interface to the "dicom image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-01-11 09:31:20 $
+ *  Update Date:      $Date: 1999-01-20 14:58:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dcmimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -74,7 +74,7 @@ class DicomImage
     /** constructor, open a dicom file
      *
      ** @param  filename  the dicom file
-     *  @param  flags     configuration flags
+     *  @param  flags     configuration flags (see diutils.h, CIF_MayDetachPixelData is automatically set)
      *  @param  fstart    first frame to be processed (not implemented!)
      *  @param  fcount    number of frames (not implemented!)
      */
@@ -86,7 +86,7 @@ class DicomImage
     /** constructor, use a given DcmFileStream
      *
      ** @param  stream  open dicom file stream
-     *  @param  flags   configuration flags
+     *  @param  flags   configuration flags (see diutils.h, CIF_MayDetachPixelData is automatically set)
      *  @param  fstart  first frame to be processed (not implemented!)
      *  @param  fcount  number of frames (not implemented!)
      */
@@ -99,7 +99,7 @@ class DicomImage
      *
      ** @param  object  pointer to dicom data structures (do not delete while referenced, not deleted within dcmimage)
      *  @param  xfer    transfer syntax
-     *  @param  flags   configuration flags
+     *  @param  flags   configuration flags (see diutils.h)
      *  @param  fstart  first frame to be processed (not implemented!)
      *  @param  fcount  number of frames (not implemented!)
      */
@@ -115,7 +115,7 @@ class DicomImage
      *  @param  xfer       transfer syntax
      *  @param  slope      rescale slope (modality transformation)
      *  @param  intercept  rescale intercept (modality transformation)
-     *  @param  flags      configuration flags (CIF_UsePresentationState is automatically set)
+     *  @param  flags      configuration flags (see diutils.h)
      *  @param  fstart     first frame to be processed (not implemented!)
      *  @param  fcount     number of frames (not implemented!)
      */
@@ -133,7 +133,7 @@ class DicomImage
      *  @param  xfer        transfer syntax
      *  @param  data        dataset element containing modality LUT data
      *  @param  descriptor  dataset element containing modality LUT descriptor
-     *  @param  flags       configuration flags (CIF_UsePresentationState is automatically set)
+     *  @param  flags       configuration flags (see diutils.h)
      *  @param  fstart      first frame to be processed (not implemented!)
      *  @param  fcount      number of frames (not implemented!)
      */
@@ -251,11 +251,16 @@ class DicomImage
     
  // --- output: return pointer to output data if successful
     
-    /** .
+    /** render pixel data and return pointer to internal memory buffer.
+     *  apply VOI/PLUT transformation and (visible) overlay planes
      *
-     ** @param
+     ** @param  bits    number of bits per sample (image depth)
+     *  @param  frame   number of frame to be rendered
+     *  @param  planar  0 = color-by-pixel (R1G1B1...R2G2B2...R3G2B2...)
+     *                  1 = color-by-plane (R1R2R3...G1G2G3...B1B2B3...)
+     *                  (only applicable for multi-planar/color images, otherwise ignored)
      *
-     ** @return
+     ** @return pointer to internal memory buffer containing rendered pixel data (if successful, NULL otherwise)
      */
     inline const void *getOutputData(const int bits = 0,
                                      const unsigned long frame = 0,
@@ -264,20 +269,41 @@ class DicomImage
         return (Image != NULL) ? Image->getOutputData(frame, Image->getBits(bits), planar) : NULL;
     }
 
-    /** .
+    /** render pixel data and output to given memory buffer.
+     *  apply VOI/PLUT transformation and (visible) overlay planes
      *
-     ** @param
+     ** @param  buffer  pointer to memory buffer (must already be allocated)
+     *  @param  size    size of memory buffer (will be checked whether it is sufficient)
+     *  @param  bits    number of bits per sample (image depth)
+     *  @param  frame   number of frame to be rendered
+     *  @param  planar  0 = color-by-pixel (R1G1B1...R2G2B2...R3G2B2...)
+     *                  1 = color-by-plane (R1R2R3...G1G2G3...B1B2B3...)
+     *                  (only applicable for multi-planar/color images, otherwise ignored)
      *
-     ** @return
+     ** @return status code (true if successful)
+     */
+    inline int getOutputData(void *buffer,
+                             const unsigned long size,
+                             const int bits = 0,
+                             const unsigned long frame = 0,
+                             const int planar = 0) 
+    {
+        return (Image != NULL) ? Image->getOutputData(buffer, size, frame, Image->getBits(bits), planar) : 0;
+    }
+
+    /** render pixel data and return pointer to given plane.
+     *  apply VOI/PLUT transformation and (visible) overlay planes
+     *
+     ** @param  plane  number of plane to be rendered
+     *
+     ** @return pointer to internal memory buffer containing rendered pixel data (if successful, NULL otherwise)
      */
     inline const void *getOutputPlane(const int plane) const 
     {
         return (Image != NULL) ? Image->getOutputPlane(plane) : NULL;
     }
 
-    /** .
-     *
-     ** @param
+    /** delete internal memory buffer used for rendered images.
      */
     inline void deleteOutputData() const 
     {
@@ -286,43 +312,37 @@ class DicomImage
     
   // --- misc
   
-    /** .
+    /** check whether image is monochrome or not.
      *
-     ** @param
-     *
-     ** @return
+     ** @return true if image is monochrome, false otherwise (i.e. color image)
      */
     inline int isMonochrome() const 
     {
         return (PhotometricInterpretation == EPI_Monochrome1) || (PhotometricInterpretation == EPI_Monochrome2);
     }
 
-    /** .
+    /** get code for photometric interpretation (color model).
      *
-     ** @param
-     *
-     ** @return
+     ** @return code for photometric interpretation of the image
      */
     inline EP_Interpretation getPhotometricInterpretation() const 
     {
         return PhotometricInterpretation;
     }
 
-    /** .
+    /** check whether image has given SOP class UID.
      *
-     ** @param
-     *
-     ** @return
+     ** @return true if image has given SOP class UID, false otherwise
      */
-    int hasSOPclassUID(const char *) const;
+    int hasSOPclassUID(const char *uid) const;
 
- // --- windowing (voi): return true ('1') if successful (see also 'dimoimg.cc')
+ // --- windowing (voi): return true if successful (see also 'dimoimg.cc')
     
-    /** .
+    /** unset all VOI transformations (windows and LUTs).
+     *  only applicable for monochrome images
      *
-     ** @param
-     *
-     ** @return
+     ** @return true if successful (1 = previous window/LUT has been valid, 2 = otherwise),
+     *          false otherwise (image is invalid or not monochrome)
      */
     inline int setNoVoiTransformation() 
     {
@@ -331,11 +351,12 @@ class DicomImage
         return 0;
     }
 
-    /** .
+    /** set automatically calculated minimum/maximum window.
      *
-     ** @param
+     ** @param  idx  ignore global min/max values if false (0)
      *
-     ** @return
+     ** @return true if sucessful (1 = window has changed, 2 = new window is the same as previous one),
+     *          false otherwise
      */
     inline int setMinMaxWindow(const int idx = 1) 
     {
@@ -344,11 +365,11 @@ class DicomImage
         return 0;
     }
 
-    /** .
+    /** set automatically calculated histogram window.
      *
-     ** @param
+     ** @param  thresh  threshhold value specifying percentage of histogram border which shall be ignored (defaut: 5%).
      *
-     ** @return
+     ** @return true if successful, false otherwise
      */
     inline int setHistogramWindow(const double thresh = 0.05)
     {
@@ -1090,7 +1111,11 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.6  1999-01-11 09:31:20  joergr
+ * Revision 1.7  1999-01-20 14:58:26  joergr
+ * Added new output method to fill external memory buffer with rendered pixel
+ * data.
+ *
+ * Revision 1.6  1999/01/11 09:31:20  joergr
  * Added parameter to method 'getMinMaxValues()' to return absolute minimum
  * and maximum values ('possible') in addition to actually 'used' pixel
  * values.
@@ -1133,4 +1158,3 @@ class DicomImage
  *
  *
  */
-

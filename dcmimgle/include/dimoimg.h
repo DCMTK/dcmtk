@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-01-11 09:35:10 $
+ *  Update Date:      $Date: 1999-01-20 15:03:40 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoimg.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -162,8 +162,18 @@ class DiMonoImage
     int flip(const int, const int);
     int rotate(const int);
 
-    virtual void *getOutputData(const unsigned long, const int, const int = 0) = 0;
+    virtual void *getOutputData(const unsigned long frame,
+                                const int bits,
+                                const int planar = 0) = 0;
+
+    virtual int getOutputData(void *buffer,
+                              const unsigned long size,
+                              const unsigned long frame,
+                              const int bits,
+                              const int planar = 0) = 0;
+
     void *getOutputPlane(const int) const;
+
     void deleteOutputData();
 
     const Uint8 *getOverlayData(const unsigned long frame,
@@ -226,7 +236,9 @@ class DiMonoImage
 
     int checkInterData(const int mode = 1);
 
-    void *getData(const unsigned long frame,
+    void *getData(void *buffer,
+                  const unsigned long size,
+                  const unsigned long frame,
                   const int bits,
                   const int negative);
 
@@ -266,7 +278,11 @@ class DiMonoImage
  *
  * CVS/RCS Log:
  * $Log: dimoimg.h,v $
- * Revision 1.8  1999-01-11 09:35:10  joergr
+ * Revision 1.9  1999-01-20 15:03:40  joergr
+ * Added new output method to fill external memory buffer with rendered pixel
+ * data.
+ *
+ * Revision 1.8  1999/01/11 09:35:10  joergr
  * Added parameter to method 'getMinMaxValues()' to return absolute minimum
  * and maximum values ('possible') in addition to actually 'used' pixel
  * values.

@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochrome1Image (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 15:12:17 $
+ *  Update Date:      $Date: 1999-01-20 15:03:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimo1img.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,9 +59,15 @@ class DiMono1Image
 
     virtual ~DiMono1Image();
 
-    void *getOutputData(const unsigned long,
-                        const int,
-                        const int = 0);
+    virtual void *getOutputData(const unsigned long frame,
+                                const int bits,
+                                const int planar = 0);
+
+    virtual int getOutputData(void *buffer,
+                              const unsigned long size,
+                              const unsigned long frame,
+                              const int bits,
+                              const int planar = 0);
 
     /** Method: 
      *  @param fstart
@@ -121,7 +127,11 @@ class DiMono1Image
 **
 ** CVS/RCS Log:
 ** $Log: dimo1img.h,v $
-** Revision 1.1  1998-11-27 15:12:17  joergr
+** Revision 1.2  1999-01-20 15:03:19  joergr
+** Added new output method to fill external memory buffer with rendered pixel
+** data.
+**
+** Revision 1.1  1998/11/27 15:12:17  joergr
 ** Added copyright message.
 ** Added methods and constructors for flipping and rotating, changed for
 ** scaling and clipping.
