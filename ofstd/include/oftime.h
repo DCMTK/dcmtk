@@ -22,9 +22,8 @@
  *  Purpose: Class for time functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-09-15 12:12:56 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/oftime.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2003-12-17 15:18:48 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,7 +59,7 @@ class OFTime
 
  public:
 
-    /** default constructor. 
+    /** default constructor.
      *  Initializes Hour, Minute, Second and TimeZone to 0.
      */
     OFTime();
@@ -109,9 +108,7 @@ class OFTime
 
     /** comparison operator (less than)
      *  Please note that the time values are first transformed to the Coordinated Universal
-     *  Time (UTC) before they are compared. Unexpected results might occur when two time
-     *  values with different time zones are compared and the UTC transformation causes a
-     *  time overflow (> 23:59:59...) for one time value only.
+     *  Time (UTC) before they are compared.
      *  @param timeVal time value compared with the current value
      *  @return OFTrue if current time is earlier than the given value, OFFalse otherwise
      */
@@ -119,9 +116,7 @@ class OFTime
 
     /** comparison operator (less than or equal)
      *  Please note that the time values are first transformed to the Coordinated Universal
-     *  Time (UTC) before they are compared. Unexpected results might occur when two time
-     *  values with different time zones are compared and the UTC transformation causes a
-     *  time overflow (> 23:59:59...) for one time value only.
+     *  Time (UTC) before they are compared.
      *  @param timeVal time value compared with the current value
      *  @return OFTrue if current time is earlier than or identical to the given value,
      *    OFFalse otherwise
@@ -130,9 +125,7 @@ class OFTime
 
     /** comparison operator (greater than or equal)
      *  Please note that the time values are first transformed to the Coordinated Universal
-     *  Time (UTC) before they are compared. Unexpected results might occur when two time
-     *  values with different time zones are compared and the UTC transformation causes a
-     *  time overflow (> 23:59:59...) for one time value only.
+     *  Time (UTC) before they are compared.
      *  @param timeVal time value compared with the current value
      *  @return OFTrue if current time is later than or identical to the given value,
      *    OFFalse otherwise
@@ -141,9 +134,7 @@ class OFTime
 
     /** comparison operator (greater than)
      *  Please note that the time values are first transformed to the Coordinated Universal
-     *  Time (UTC) before they are compared. Unexpected results might occur when two time
-     *  values with different time zones are compared and the UTC transformation causes a
-     *  time overflow (> 23:59:59...) for one time value only.
+     *  Time (UTC) before they are compared.
      *  @param timeVal time value compared with the current value
      *  @return OFTrue if current time is later than the given value, OFFalse otherwise
      */
@@ -215,7 +206,7 @@ class OFTime
      */
     OFBool setTimeZone(const signed int hour,
                        const unsigned int minute);
-                       
+
     /** set the time to the specified number of seconds
      *  @param seconds number of seconds since "00:00:00" specifying time to set
      *  @param timeZone optional offset to Coordinated Universal Time (UTC) in hours
@@ -278,30 +269,36 @@ class OFTime
     /** get the currently stored time zone value.
      *  The time zone is given as the offset (in hours) to the Coordinated Universal
      *  Time (UTC). Valid values are for instance "+1.0" (plus one hour) and "-2.5"
-     *  (minus two and a half hour, i.e. 2 hours and 30 minutes). 
+     *  (minus two and a half hour, i.e. 2 hours and 30 minutes).
      *  @return time zone value (might be invalid, i.e. out of range)
      */
     double getTimeZone() const;
 
     /** get the currently stored time in seconds
-     *  @param useTimeZone use the current set time zone to correct the result
+     *  @param useTimeZone use the currently set time zone to correct the result
+     *  @param normalize if OFTrue results larger than or equal 86400.0 (seconds)
+     *    are normalized to a valid range
      *  @return number of seconds since "00:00:00"
      */
-    double getTimeInSeconds(const OFBool useTimeZone = OFFalse) const;
+    double getTimeInSeconds(const OFBool useTimeZone = OFFalse,
+                            const OFBool normalize = OFTrue) const;
 
     /** get the currently stored time in hours.
-     *  @param useTimeZone use the current set time zone to correct the result
+     *  @param useTimeZone use the currently set time zone to correct the result
+     *  @param normalize if OFTrue results larger than or equal 24.0 (hours)
+     *    are normalized to a valid range
      *  @return number of hours since "00:00:00" (incl. fraction of hours)
      */
-    double getTimeInHours(const OFBool useTimeZone = OFFalse) const;
-    
+    double getTimeInHours(const OFBool useTimeZone = OFFalse,
+                          const OFBool normalize = OFTrue) const;
+
     /** get the currently stored time as Coordinated Universal Time.
      *  The resulting time object always has a time zone of "+00:00" since the time is
      *  corrected regarding the Coordinated Universal Time (UTC).
      *  @return time object with the UTC corrected time set
      */
     OFTime getCoordinatedUniversalTime() const;
-    
+
     /** get the currently stored time in local time.
      *  The resulting time object always has the local time zone.
      *  @return time object with the corrected time set
@@ -410,7 +407,7 @@ class OFTime
 
     /// currently stored second value (incl. fraction of seconds)
     double Second;
-    
+
     /// currently stored time zone value
     double TimeZone;
 };
@@ -432,7 +429,11 @@ ostream& operator<<(ostream& stream, const OFTime &timeVal);
  *
  * CVS/RCS Log:
  * $Log: oftime.h,v $
- * Revision 1.5  2003-09-15 12:12:56  joergr
+ * Revision 1.6  2003-12-17 15:18:48  joergr
+ * Fixed bug/inconsistency in comparison operators of class OFTime. Now the
+ * "time overflow" is handled correctly.
+ *
+ * Revision 1.5  2003/09/15 12:12:56  joergr
  * Fixed incorrect/improper comments of the comparision operators. Enhanced
  * comment of the default constructor. Made comparison operators const.
  *

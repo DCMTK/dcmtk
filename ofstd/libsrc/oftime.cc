@@ -22,8 +22,8 @@
  *  Purpose: Class for time functions (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-09-17 17:01:11 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2003-12-17 15:23:18 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -109,37 +109,37 @@ OFTime &OFTime::operator=(const OFTime &timeVal)
 
 OFBool OFTime::operator==(const OFTime &timeVal) const
 {
-    return (getTimeInSeconds(OFTrue /*useTimeZone*/) == timeVal.getTimeInSeconds(OFTrue /*useTimeZone*/));
+    return (getTimeInSeconds(OFTrue /*useTimeZone*/, OFFalse /*normalize*/) == timeVal.getTimeInSeconds(OFTrue /*useTimeZone*/, OFFalse /*normalize*/));
 }
 
 
 OFBool OFTime::operator!=(const OFTime &timeVal) const
 {
-    return (getTimeInSeconds(OFTrue /*useTimeZone*/) != timeVal.getTimeInSeconds(OFTrue /*useTimeZone*/));
+    return (getTimeInSeconds(OFTrue /*useTimeZone*/, OFFalse /*normalize*/) != timeVal.getTimeInSeconds(OFTrue /*useTimeZone*/, OFFalse /*normalize*/));
 }
 
 
 OFBool OFTime::operator<(const OFTime &timeVal) const
 {
-    return (getTimeInSeconds(OFTrue /*useTimeZone*/) < timeVal.getTimeInSeconds(OFTrue /*useTimeZone*/));
+    return (getTimeInSeconds(OFTrue /*useTimeZone*/, OFFalse /*normalize*/) < timeVal.getTimeInSeconds(OFTrue /*useTimeZone*/, OFFalse /*normalize*/));
 }
 
 
 OFBool OFTime::operator<=(const OFTime &timeVal) const
 {
-    return (getTimeInSeconds(OFTrue /*useTimeZone*/) <= timeVal.getTimeInSeconds(OFTrue /*useTimeZone*/));
+    return (getTimeInSeconds(OFTrue /*useTimeZone*/, OFFalse /*normalize*/) <= timeVal.getTimeInSeconds(OFTrue /*useTimeZone*/, OFFalse /*normalize*/));
 }
 
 
 OFBool OFTime::operator>=(const OFTime &timeVal) const
 {
-    return (getTimeInSeconds(OFTrue /*useTimeZone*/) >= timeVal.getTimeInSeconds(OFTrue /*useTimeZone*/));
+    return (getTimeInSeconds(OFTrue /*useTimeZone*/, OFFalse /*normalize*/) >= timeVal.getTimeInSeconds(OFTrue /*useTimeZone*/, OFFalse /*normalize*/));
 }
 
 
 OFBool OFTime::operator>(const OFTime &timeVal) const
 {
-    return (getTimeInSeconds(OFTrue /*useTimeZone*/) > timeVal.getTimeInSeconds(OFTrue /*useTimeZone*/));
+    return (getTimeInSeconds(OFTrue /*useTimeZone*/, OFFalse /*normalize*/) > timeVal.getTimeInSeconds(OFTrue /*useTimeZone*/, OFFalse /*normalize*/));
 }
 
 
@@ -398,15 +398,17 @@ double OFTime::getTimeZone() const
 }
 
 
-double OFTime::getTimeInSeconds(const OFBool useTimeZone) const
+double OFTime::getTimeInSeconds(const OFBool useTimeZone,
+                                const OFBool normalize) const
 {
-    return getTimeInSeconds(Hour, Minute, Second, (useTimeZone) ? TimeZone : 0);
+    return getTimeInSeconds(Hour, Minute, Second, (useTimeZone) ? TimeZone : 0, normalize);
 }
 
 
-double OFTime::getTimeInHours(const OFBool useTimeZone) const
+double OFTime::getTimeInHours(const OFBool useTimeZone,
+                              const OFBool normalize) const
 {
-    return getTimeInHours(Hour, Minute, Second, (useTimeZone) ? TimeZone : 0);
+    return getTimeInHours(Hour, Minute, Second, (useTimeZone) ? TimeZone : 0, normalize);
 }
 
 
@@ -417,7 +419,7 @@ double OFTime::getTimeInSeconds(const unsigned int hour,
                                 const OFBool normalize)
 {
     /* compute number of seconds since 00:00:00 */
-    double result = (OFstatic_cast(double, hour - timeZone) * 60 + OFstatic_cast(double, minute)) * 60 + second;
+    double result = ((OFstatic_cast(double, hour) - timeZone) * 60 + OFstatic_cast(double, minute)) * 60 + second;
     /* normalize the result to the range [0.0,86400.0[ */
     if (normalize)
         result -= OFstatic_cast(unsigned long, result / 86400) * 86400;
@@ -563,7 +565,11 @@ ostream& operator<<(ostream& stream, const OFTime &timeVal)
  *
  * CVS/RCS Log:
  * $Log: oftime.cc,v $
- * Revision 1.10  2003-09-17 17:01:11  joergr
+ * Revision 1.11  2003-12-17 15:23:18  joergr
+ * Fixed bug/inconsistency in comparison operators of class OFTime. Now the
+ * "time overflow" is handled correctly.
+ *
+ * Revision 1.10  2003/09/17 17:01:11  joergr
  * Renamed variable "string" to avoid name clash with STL class.
  *
  * Revision 1.9  2003/09/15 12:15:07  joergr
