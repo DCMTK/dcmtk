@@ -22,9 +22,9 @@
  *  Purpose: DicomLookupTable (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-22 14:24:36 $
+ *  Update Date:      $Date: 1998-12-23 11:34:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diluptab.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -140,7 +140,9 @@ class DiLookupTable : public DiObjectCounter
 
     inline const char *getExplanation() const
     {
-        return Explanation.c_str();
+        if (!Explanation.empty())
+            return Explanation.c_str();
+        return NULL;
     }
 
 
@@ -193,7 +195,11 @@ class DiLookupTable : public DiObjectCounter
  *
  * CVS/RCS Log:
  * $Log: diluptab.h,v $
- * Revision 1.4  1998-12-22 14:24:36  joergr
+ * Revision 1.5  1998-12-23 11:34:34  joergr
+ * Changed behaviour of getLabel/Description/Explanation() methods: return
+ * NULL if string empty, no empty string "".
+ *
+ * Revision 1.4  1998/12/22 14:24:36  joergr
  * Changed parameter type.
  * Added method getAbsMaxRange.
  *
