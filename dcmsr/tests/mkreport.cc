@@ -22,8 +22,8 @@
  *  Purpose: Create sample structured reports using the dcmsr API
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-05-14 08:17:47 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Update Date:      $Date: 2003-08-07 14:19:12 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -121,7 +121,7 @@ int main(int argc, char *argv[])
             OFBool writeFile = OFTrue;
             /* check whether to create all reports or only selected ones */
             const int count = (strcmp(argv[1], "all") == 0) ? num_reports : argc;
-            const char **array = (strcmp(argv[1], "all") == 0) ? (const char **)all_reports : (const char **)argv;
+            const char **array = (strcmp(argv[1], "all") == 0) ? all_reports : OFconst_cast(const char **, argv);
             doc->setLogStream(&ofConsole);
             for (int i = 1; i < count; i++)
             {
@@ -252,7 +252,7 @@ static void generate_si(DSRDocument *doc,
                         OFString & studyUID_ki)
 {
     doc->createNewDocument(DSRTypes::DT_BasicTextSR);
-    if (studyUID_ki.length() > 0)
+    if (!studyUID_ki.empty())
         doc->createNewSeriesInStudy(studyUID_ki);
     doc->setStudyDescription("OFFIS Structured Reporting Templates");
     doc->setSeriesDescription("IHE Year 2 - Simple Image Report");
@@ -449,7 +449,7 @@ static void generate_01(DSRDocument *doc, OFString &studyUID_01)
 static void generate_02(DSRDocument *doc, OFString &studyUID_01)
 {
     doc->createNewDocument(DSRTypes::DT_EnhancedSR);
-    if (studyUID_01.length() > 0)
+    if (!studyUID_01.empty())
         doc->createNewSeriesInStudy(studyUID_01);
     doc->setStudyDescription("OFFIS Structured Reporting Samples");
     doc->setSeriesDescription("Text Report with CODE, NUM and PNAME content items");
@@ -1265,7 +1265,10 @@ static void generate_19(DSRDocument *doc)
 /*
  *  CVS/RCS Log:
  *  $Log: mkreport.cc,v $
- *  Revision 1.20  2002-05-14 08:17:47  joergr
+ *  Revision 1.21  2003-08-07 14:19:12  joergr
+ *  Adapted for use of OFListConstIterator, needed for compiling with HAVE_STL.
+ *
+ *  Revision 1.20  2002/05/14 08:17:47  joergr
  *  Added new command line option to create "all" reports with one call.
  *
  *  Revision 1.19  2002/05/07 13:02:12  joergr
