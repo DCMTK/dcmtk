@@ -22,9 +22,9 @@
  *  Purpose: DiCurveFitting (Header/Implementation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-18 10:15:15 $
+ *  Update Date:      $Date: 1999-10-20 10:32:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dicrvfit.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -43,25 +43,36 @@
 /********************************************************************/
 
 
-static inline void convertValue(const double input,
+template <class T1, class T2>
+static inline void convertValue(const T1 input,
+                                T2 &output)
+{
+    output = (T2)input;
+}
+
+template <class T1>
+static inline void convertValue(const T1 input,
                                 Uint8 &output)
 {
     output = (input <= 0) ? 0 : ((input >= 255) ? 255 : (Uint8)input);
 }
 
-static inline void convertValue(const double input,
+template <class T1>
+static inline void convertValue(const T1 input,
                                 Sint8 &output)
 {
     output = (input <= -128) ? -128 : ((input >= 127) ? 127 : (Sint8)input);
 }
 
-static inline void convertValue(const double input,
+template <class T1>
+static inline void convertValue(const T1 input,
                                 Uint16 &output)
 {
     output = (input <= 0) ? 0 : ((input >= 65535) ? 65535 : (Uint16)input);
 }
 
-static inline void convertValue(const double input,
+template <class T1>
+static inline void convertValue(const T1 input,
                                 Sint16 &output)
 {
     output = (input <= -32768) ? -32768 : ((input >= 32767) ? 32767 : (Sint16)input);
@@ -297,7 +308,11 @@ class DiCurveFitting
  *
  * CVS/RCS Log:
  * $Log: dicrvfit.h,v $
- * Revision 1.3  1999-10-18 10:15:15  joergr
+ * Revision 1.4  1999-10-20 10:32:44  joergr
+ * Added generic specification for template function convertValue to avoid
+ * compiler warnings reported by MSVC (with additional options?).
+ *
+ * Revision 1.3  1999/10/18 10:15:15  joergr
  * Fixed typos.
  *
  * Revision 1.2  1999/10/15 09:38:31  joergr
