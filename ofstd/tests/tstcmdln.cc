@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-99, OFFIS
+ *  Copyright (C) 1997-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: test programm for class OfCommandLine
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-03 14:02:52 $
+ *  Update Date:      $Date: 2000-03-08 16:36:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/tests/Attic/tstcmdln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -113,7 +113,10 @@ int main(int argc, char *argv[])
 **
 ** CVS/RCS Log:
 ** $Log: tstcmdln.cc,v $
-** Revision 1.2  2000-03-03 14:02:52  meichel
+** Revision 1.3  2000-03-08 16:36:07  meichel
+** Updated copyright header.
+**
+** Revision 1.2  2000/03/03 14:02:52  meichel
 ** Implemented library support for redirecting error messages into memory
 **   instead of printing them to stdout/stderr for GUI applications.
 **

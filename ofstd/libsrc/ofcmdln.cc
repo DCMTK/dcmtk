@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-99, OFFIS
+ *  Copyright (C) 1997-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Template class for command line arguments (Source)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-03 14:02:50 $
+ *  Update Date:      $Date: 2000-03-08 16:36:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofcmdln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1218,7 +1218,10 @@ void OFCommandLine::getStatusString(const E_ValueStatus status,
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.cc,v $
- * Revision 1.22  2000-03-03 14:02:50  meichel
+ * Revision 1.23  2000-03-08 16:36:05  meichel
+ * Updated copyright header.
+ *
+ * Revision 1.22  2000/03/03 14:02:50  meichel
  * Implemented library support for redirecting error messages into memory
  *   instead of printing them to stdout/stderr for GUI applications.
  *

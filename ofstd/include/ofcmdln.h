@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-99, OFFIS
+ *  Copyright (C) 1997-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Handle command line arguments (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-03-07 15:38:49 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-08 16:36:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofcmdln.h,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -991,7 +991,10 @@ class OFCommandLine
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.h,v $
- * Revision 1.22  2000-03-07 15:38:49  joergr
+ * Revision 1.23  2000-03-08 16:36:01  meichel
+ * Updated copyright header.
+ *
+ * Revision 1.22  2000/03/07 15:38:49  joergr
  * Changed behaviour of class OFConsoleApplication to support automatic
  * evaluation of "--help" option for command line application with no
  * mandatory parameter.

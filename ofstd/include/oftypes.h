@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-99, OFFIS
+ *  Copyright (C) 1997-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,10 +23,10 @@
  *      Defines some C++ standard types that are not consistently 
  *      supported by all C++ Compilers
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 12:42:53 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-08 16:36:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/oftypes.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,7 +59,10 @@ typedef int OFBool;
 /*
 ** CVS/RCS Log:
 ** $Log: oftypes.h,v $
-** Revision 1.2  1998-11-27 12:42:53  joergr
+** Revision 1.3  2000-03-08 16:36:03  meichel
+** Updated copyright header.
+**
+** Revision 1.2  1998/11/27 12:42:53  joergr
 ** Added copyright message to source files and changed CVS header.
 **
 ** Revision 1.1  1997/07/02 11:51:16  andreas

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999, OFFIS
+ *  Copyright (C) 1997-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Handle console applications (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-03-07 15:38:50 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-08 16:36:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofconapp.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -204,7 +204,10 @@ class OFConsoleApplication
  *
  * CVS/RCS Log:
  * $Log: ofconapp.h,v $
- * Revision 1.8  2000-03-07 15:38:50  joergr
+ * Revision 1.9  2000-03-08 16:36:01  meichel
+ * Updated copyright header.
+ *
+ * Revision 1.8  2000/03/07 15:38:50  joergr
  * Changed behaviour of class OFConsoleApplication to support automatic
  * evaluation of "--help" option for command line application with no
  * mandatory parameter.

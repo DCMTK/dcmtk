@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-99, OFFIS
+ *  Copyright (C) 1997-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,10 +22,10 @@
  *  Purpose:
  *	    Defines a template stack class with interfaces similar to the C++ Standard
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 12:42:52 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-08 16:36:02 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstack.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -203,7 +203,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: ofstack.h,v $
-** Revision 1.6  1998-11-27 12:42:52  joergr
+** Revision 1.7  2000-03-08 16:36:02  meichel
+** Updated copyright header.
+**
+** Revision 1.6  1998/11/27 12:42:52  joergr
 ** Added copyright message to source files and changed CVS header.
 **
 ** Revision 1.5  1998/07/02 10:11:31  joergr

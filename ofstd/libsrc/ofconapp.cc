@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999, OFFIS
+ *  Copyright (C) 1997-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Handle console applications (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-03-07 15:38:54 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-08 16:36:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofconapp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -222,7 +222,10 @@ void OFConsoleApplication::checkConflict(const char *firstOpt,
  *
  * CVS/RCS Log:
  * $Log: ofconapp.cc,v $
- * Revision 1.12  2000-03-07 15:38:54  joergr
+ * Revision 1.13  2000-03-08 16:36:06  meichel
+ * Updated copyright header.
+ *
+ * Revision 1.12  2000/03/07 15:38:54  joergr
  * Changed behaviour of class OFConsoleApplication to support automatic
  * evaluation of "--help" option for command line application with no
  * mandatory parameter.

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-99, OFFIS
+ *  Copyright (C) 1997-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,10 +22,10 @@
  *  Purpose:
  *	    Implementation of supplementary methods for a template list class 
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 12:43:53 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-08 16:36:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/oflist.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -129,7 +129,10 @@ void OFListBase::base_recalcListSize()
 /*
 ** CVS/RCS Log:
 ** $Log: oflist.cc,v $
-** Revision 1.5  1998-11-27 12:43:53  joergr
+** Revision 1.6  2000-03-08 16:36:06  meichel
+** Updated copyright header.
+**
+** Revision 1.5  1998/11/27 12:43:53  joergr
 ** Added copyright message to source files and changed CVS header.
 **
 ** Revision 1.4  1998/07/02 07:47:05  meichel

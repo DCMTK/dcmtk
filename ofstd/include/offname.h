@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999, OFFIS
+ *  Copyright (C) 1997-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: OFFilenameCreator
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-22 09:00:50 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-08 16:36:01 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -82,7 +82,10 @@ private:
 
 /*
  *  $Log: offname.h,v $
- *  Revision 1.2  1999-03-22 09:00:50  joergr
+ *  Revision 1.3  2000-03-08 16:36:01  meichel
+ *  Updated copyright header.
+ *
+ *  Revision 1.2  1999/03/22 09:00:50  joergr
  *  Added/Changed comments.
  *
  *  Revision 1.1  1999/03/03 13:58:04  meichel
