@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSIPCMessage
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:18 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2003-07-04 13:27:38 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,8 +36,8 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dctypes.h"     /* for Uint32 */
+#include "ofstring.h"   /* for class OFString */
 
-class OFString;
 class DcmTransportConnection;
 
 /** class for IPC message exchange between different processes of the 
@@ -284,7 +284,11 @@ private:
 
 /*
  *  $Log: dvpsmsg.h,v $
- *  Revision 1.3  2001-06-01 15:50:18  meichel
+ *  Revision 1.4  2003-07-04 13:27:38  meichel
+ *  Replaced forward declarations for OFString with explicit includes,
+ *    needed when compiling with HAVE_STD_STRING
+ *
+ *  Revision 1.3  2001/06/01 15:50:18  meichel
  *  Updated copyright header
  *
  *  Revision 1.2  2000/11/08 18:38:15  meichel

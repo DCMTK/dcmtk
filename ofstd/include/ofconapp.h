@@ -21,10 +21,10 @@
  *
  *  Purpose: Handle console applications (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-06-12 13:17:51 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-07-04 13:29:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofconapp.h,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,14 +39,7 @@
 
 #include "oftypes.h"
 #include "ofcmdln.h"
-
-
-/*------------------------*
- *  forward declerations  *
- *------------------------*/
-
-class OFString;
-
+#include "ofstring.h" /* for class OFString */
 
 /*---------------------*
  *  class declaration  *
@@ -212,7 +205,11 @@ class OFConsoleApplication
  *
  * CVS/RCS Log:
  * $Log: ofconapp.h,v $
- * Revision 1.16  2003-06-12 13:17:51  joergr
+ * Revision 1.17  2003-07-04 13:29:51  meichel
+ * Replaced forward declarations for OFString with explicit includes,
+ *   needed when compiling with HAVE_STD_STRING
+ *
+ * Revision 1.16  2003/06/12 13:17:51  joergr
  * Enhanced method printWarning(). Added method quietMode().
  *
  * Revision 1.15  2002/11/26 12:55:02  joergr

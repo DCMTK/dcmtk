@@ -23,8 +23,8 @@
  *    classes: SiCertificate
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-04 14:21:03 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2003-07-04 13:28:13 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,10 +40,10 @@
 #ifdef WITH_OPENSSL
 
 #include "dcerror.h"
+#include "ofstring.h"   /* for class OFString */
 
 class DcmItem;
 class SiAlgorithm;
-class OFString;
 struct x509_st;
 typedef struct x509_st X509;
 
@@ -157,7 +157,11 @@ private:
 
 /*
  *  $Log: sicert.h,v $
- *  Revision 1.4  2003-06-04 14:21:03  meichel
+ *  Revision 1.5  2003-07-04 13:28:13  meichel
+ *  Replaced forward declarations for OFString with explicit includes,
+ *    needed when compiling with HAVE_STD_STRING
+ *
+ *  Revision 1.4  2003/06/04 14:21:03  meichel
  *  Simplified include structure to avoid preprocessor limitation
  *    (max 32 #if levels) on MSVC5 with STL.
  *

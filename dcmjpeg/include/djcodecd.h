@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2001, OFFIS
+ *  Copyright (C) 1997-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: abstract codec class for JPEG decoders.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-05-24 14:58:03 $
+ *  Update Date:      $Date: 2003-07-04 13:26:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/include/Attic/djcodecd.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,11 +36,11 @@
 
 #include "osconfig.h"
 #include "oftypes.h"
-#include "dccodec.h"  /* for class DcmCodec */
-#include "djutils.h"  /* for enums */
+#include "dccodec.h"    /* for class DcmCodec */
+#include "djutils.h"    /* for enums */
+#include "ofstring.h"   /* for class OFString */
 
 
-class OFString;
 class DataInterface;
 class DJEncoder;
 class DcmDataset;
@@ -225,7 +225,11 @@ private:
 /*
  * CVS/RCS Log
  * $Log: djcodecd.h,v $
- * Revision 1.2  2002-05-24 14:58:03  meichel
+ * Revision 1.3  2003-07-04 13:26:22  meichel
+ * Replaced forward declarations for OFString with explicit includes,
+ *   needed when compiling with HAVE_STD_STRING
+ *
+ * Revision 1.2  2002/05/24 14:58:03  meichel
  * Moved helper methods that are useful for different compression techniques
  *   from module dcmjpeg to module dcmdata
  *

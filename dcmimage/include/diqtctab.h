@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmQuantColorTable
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-06-12 15:09:41 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-07-04 13:25:40 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diqtctab.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,10 +39,10 @@
 #include "ofcond.h"    /* for OFCondition */
 #include "diqtpix.h"   /* for DcmQuantPixel */
 #include "diqthash.h"  /* for DcmQuantHistogramItem */
+#include "ofstring.h"   /* for class OFString */
 
 class DicomImage;
 class DcmItem;
-class OFString;
 
 /** this class implements a color table that can either be 
  *  a look-up table or an image color histogram.
@@ -242,7 +242,11 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: diqtctab.h,v $
- * Revision 1.3  2003-06-12 15:09:41  joergr
+ * Revision 1.4  2003-07-04 13:25:40  meichel
+ * Replaced forward declarations for OFString with explicit includes,
+ *   needed when compiling with HAVE_STD_STRING
+ *
+ * Revision 1.3  2003/06/12 15:09:41  joergr
  * Fixed inconsistent API documentation reported by Doxygen.
  *
  * Revision 1.2  2002/05/15 09:53:29  meichel

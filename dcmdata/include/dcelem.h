@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmElement
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-12-09 09:31:14 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-07-04 13:25:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcelem.h,v $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,10 +40,9 @@
 #include "dcerror.h"
 #include "dctypes.h"
 #include "dcobject.h"
-
+#include "ofstring.h"
 
 // forward declarations
-class OFString;
 class DcmInputStreamFactory;
 
 
@@ -326,7 +325,11 @@ class DcmElement
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.h,v $
-** Revision 1.26  2002-12-09 09:31:14  wilkens
+** Revision 1.27  2003-07-04 13:25:35  meichel
+** Replaced forward declarations for OFString with explicit includes,
+**   needed when compiling with HAVE_STD_STRING
+**
+** Revision 1.26  2002/12/09 09:31:14  wilkens
 ** Modified/Added doc++ documentation.
 **
 ** Revision 1.25  2002/12/06 12:49:09  joergr

@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomDocument (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-06-12 15:08:34 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-07-04 13:25:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/didocu.h,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,6 +40,7 @@
 #include "dcfilefo.h"
 #include "dcxfer.h"
 #include "diobjcou.h"
+#include "ofstring.h"   /* for class OFString */
 
 #define INCLUDE_CSTDDEF
 #include "ofstdinc.h"
@@ -49,7 +50,6 @@
  *  forward declarations  *
  *------------------------*/
 
-class OFString;
 class DcmStack;
 class DcmObject;
 class DcmTagKey;
@@ -374,7 +374,11 @@ class DiDocument
  *
  * CVS/RCS Log:
  * $Log: didocu.h,v $
- * Revision 1.16  2003-06-12 15:08:34  joergr
+ * Revision 1.17  2003-07-04 13:25:54  meichel
+ * Replaced forward declarations for OFString with explicit includes,
+ *   needed when compiling with HAVE_STD_STRING
+ *
+ * Revision 1.16  2003/06/12 15:08:34  joergr
  * Fixed inconsistent API documentation reported by Doxygen.
  *
  * Revision 1.15  2002/11/27 14:08:03  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: class DcmQuantFloydSteinberg
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-01-25 13:32:08 $
+ *  Update Date:      $Date: 2003-07-04 13:25:40 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diquant.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,11 +38,11 @@
 #include "ofcond.h"    /* for OFCondition */
 #include "dctypes.h"   /* for Uint32 etc. */
 #include "diqttype.h"  /* for enums */
+#include "ofstring.h"   /* for class OFString */
 
 class DicomImage;
 class DcmItem;
 class DcmTagKey;
-class OFString;
 
 class DcmQuant
 {
@@ -131,7 +131,11 @@ public:
 /*
  * CVS/RCS Log:
  * $Log: diquant.h,v $
- * Revision 1.1  2002-01-25 13:32:08  meichel
+ * Revision 1.2  2003-07-04 13:25:40  meichel
+ * Replaced forward declarations for OFString with explicit includes,
+ *   needed when compiling with HAVE_STD_STRING
+ *
+ * Revision 1.1  2002/01/25 13:32:08  meichel
  * Initial release of new color quantization classes and
  *   the dcmquant tool in module dcmimage.
  *

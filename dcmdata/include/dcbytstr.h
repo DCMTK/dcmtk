@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmByteString
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-06-12 13:35:54 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-07-04 13:25:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcbytstr.h,v $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,10 +41,7 @@
 #include "dcerror.h"
 #include "dctypes.h"
 #include "dcelem.h"
-
-
-// forward declaration
-class OFString;
+#include "ofstring.h"
 
 
 /** base class for all DICOM value representations storing a character string
@@ -290,7 +287,11 @@ void normalizeString(OFString &string,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.h,v $
-** Revision 1.27  2003-06-12 13:35:54  joergr
+** Revision 1.28  2003-07-04 13:25:35  meichel
+** Replaced forward declarations for OFString with explicit includes,
+**   needed when compiling with HAVE_STD_STRING
+**
+** Revision 1.27  2003/06/12 13:35:54  joergr
 ** Fixed inconsistent API documentation reported by Doxygen.
 **
 ** Revision 1.26  2002/12/10 17:41:22  meichel

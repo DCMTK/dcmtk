@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2001, OFFIS
+ *  Copyright (C) 1997-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -26,9 +26,9 @@
  *           multi-thread APIs.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-06 10:31:04 $
+ *  Update Date:      $Date: 2003-07-04 13:29:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofthread.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,8 +41,7 @@
 
 #include "osconfig.h"
 #include "oftypes.h"  /* for class OFBool */
-
-class OFString;
+#include "ofstring.h" /* for class OFString */
 
 /** Stub function with extern "C" linkage that is passed as a function pointer
  *  to the system function that creates the thread.
@@ -505,7 +504,11 @@ private:
  *
  * CVS/RCS Log:
  * $Log: ofthread.h,v $
- * Revision 1.5  2003-06-06 10:31:04  meichel
+ * Revision 1.6  2003-07-04 13:29:51  meichel
+ * Replaced forward declarations for OFString with explicit includes,
+ *   needed when compiling with HAVE_STD_STRING
+ *
+ * Revision 1.5  2003/06/06 10:31:04  meichel
  * Added volatile keyword to data pointers in multi-thread wrapper classes
  *
  * Revision 1.4  2002/02/27 14:13:19  meichel
