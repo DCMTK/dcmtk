@@ -1,4 +1,4 @@
-.TH "dsr2xml" 1 "27 May 2004" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dsr2xml" 1 "3 Sep 2004" "Version Version 3.5.3" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dsr2xml \- Convert DICOM SR file and data set to XML
@@ -8,6 +8,7 @@ dsr2xml \- Convert DICOM SR file and data set to XML
 .nf
 
 dsr2xml [options] dsrfile-in [xmlfile-out]
+.fi
 .PP
 .SH "DESCRIPTION"
 .PP
@@ -22,6 +23,7 @@ If \fBdsr2xml\fP reads a raw data set (DICOM data without a file format meta-hea
 dsrfile-in   DICOM SR input filename to be converted
 
 xmlfile-out  XML output filename (default: stdout)
+.fi
 .PP
 .SH "OPTIONS"
 .PP
@@ -40,6 +42,7 @@ xmlfile-out  XML output filename (default: stdout)
 
   -dd  --verbose-debug
          verbose debug mode, print more details
+.fi
 .PP
 .SS "input options"
 .PP
@@ -66,6 +69,7 @@ input transfer syntax (only with --read-dataset):
 
   -ti  --read-xfer-implicit
          read with implicit VR little endian TS
+.fi
 .PP
 .SS "output options"
 .PP
@@ -91,6 +95,7 @@ XML structure:
 
   +Xs  --add-schema-reference
          add reference to XML Schema "dsr2xml.xsd"
+         (not with +Ea, +Ec, +Er, +Ev, +We and +Wt)
 
   +Xn  --use-xml-namespace
          add XML namespace declaration to root element
@@ -105,6 +110,7 @@ writing:
 
   +Wt  --write-template-id
          write template identification information
+.fi
 .PP
 .SH "NOTES"
 .PP
@@ -121,6 +127,7 @@ ProcedureLog                1.2.840.10008.5.1.4.1.1.88.40
 MammographyCADSR            1.2.840.10008.5.1.4.1.1.88.50
 KeyObjectSelectionDocument  1.2.840.10008.5.1.4.1.1.88.59
 ChestCADSR                  1.2.840.10008.5.1.4.1.1.88.65
+.fi
 .PP
 .SH "COMMAND LINE"
 .PP

@@ -100,6 +100,7 @@ XML structure:
 
   +Xs  --add-schema-reference
          add reference to XML Schema "dsr2xml.xsd"
+         (not with +Ea, +Ec, +Er, +Ev, +We and +Wt)
 
   +Xn  --use-xml-namespace
          add XML namespace declaration to root element

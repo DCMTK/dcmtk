@@ -23,8 +23,8 @@
  *           XML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-20 15:37:51 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Update Date:      $Date: 2004-09-03 09:20:49 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -155,7 +155,7 @@ int main(int argc, char *argv[])
         cmd.addOption("--attr-relationship",    "+Er", "encode relationship type as XML attribute");
         cmd.addOption("--attr-value-type",      "+Ev", "encode value type as XML attribute");
       cmd.addSubGroup("XML structure:");
-        cmd.addOption("--add-schema-reference", "+Xs", "add reference to XML Schema \"" DCMSR_XML_XSD_FILE "\"");
+        cmd.addOption("--add-schema-reference", "+Xs", "add reference to XML Schema \"" DCMSR_XML_XSD_FILE "\"\n(not with +Ea, +Ec, +Er, +Ev, +We and +Wt)");
         cmd.addOption("--use-xml-namespace",    "+Xn", "add XML namespace declaration to root element");
       cmd.addSubGroup("writing:");
         cmd.addOption("--write-empty-tags",     "+We", "write all tags even if their value is empty");
@@ -242,14 +242,14 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--write-template-id"))
             opt_writeFlags |= DSRTypes::XF_writeTemplateIdentification;
 
-        /* check whether appropriate XML Schema is available */
         if (opt_writeFlags & DSRTypes::XF_addSchemaReference)
         {
-            if (opt_writeFlags & DSRTypes::XF_encodeEverythingAsAttribute)
-            {
-                app.printWarning("no Schema support for --attr-xxx yet ... ignoring");
-                opt_writeFlags &= ~DSRTypes::XF_addSchemaReference;
-            }
+            app.checkConflict("--add-schema-reference", "--attr-all", (opt_writeFlags & DSRTypes::XF_encodeEverythingAsAttribute) > 0);
+            app.checkConflict("--add-schema-reference", "--attr-code", (opt_writeFlags & DSRTypes::XF_codeComponentsAsAttribute) > 0);
+            app.checkConflict("--add-schema-reference", "--attr-relationship", (opt_writeFlags & DSRTypes::XF_relationshipTypeAsAttribute) > 0);
+            app.checkConflict("--add-schema-reference", "--attr-value-type", (opt_writeFlags & DSRTypes::XF_valueTypeAsAttribute) > 0);
+            app.checkConflict("--add-schema-reference", "--write-empty-tags", (opt_writeFlags & DSRTypes::XF_writeEmptyTags) > 0);
+            app.checkConflict("--add-schema-reference", "--write-template-id", (opt_writeFlags & DSRTypes::XF_writeTemplateIdentification) > 0);
         }
     }
 
@@ -289,7 +289,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2xml.cc,v $
- * Revision 1.21  2004-01-20 15:37:51  joergr
+ * Revision 1.22  2004-09-03 09:20:49  joergr
+ * Added check for conflicting command line options.
+ *
+ * Revision 1.21  2004/01/20 15:37:51  joergr
  * Fixed typo.
  *
  * Revision 1.20  2004/01/20 15:33:26  joergr
