@@ -9,10 +9,10 @@
 ** Implementation of class DcmDirectoryRecord
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-04-18 08:17:15 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1997-04-24 12:11:14 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdirrec.cc,v $
-** CVS/RCS Revision:	$Revision: 1.10 $
+** CVS/RCS Revision:	$Revision: 1.11 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -535,7 +535,7 @@ Bdebug((4, "dcdirrec:DcmDirectoryRecord::lookForReferencedFileID()" ));
 	    }
 	}
     }
-debug(( 4, "ReferencedFileID = [%s]", localFile ));
+debug(( 4, "ReferencedFileID = [%s]", ((localFile)?(localFile):("")) ));
 Edebug(());
 
     return localFile;
@@ -592,7 +592,7 @@ Bdebug((4, "dcdirrec:DcmDirectoryRecord::getReferencedFileName()" ));
     else
 	localFile = this->lookForReferencedFileID();
 
-debug(( 4, "ReferencedFileName = [%s]", localFile ));
+debug(( 4, "ReferencedFileName = [%s]", ((localFile)?(localFile):("")) ));
 Edebug(());
 
     return localFile;
