@@ -10,9 +10,9 @@
 ** Implementation of class DcmByteString
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-03 15:09:52 $
+** Update Date:		$Date: 1997-07-21 07:56:39 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcbytstr.cc,v $
-** CVS/RCS Revision:	$Revision: 1.13 $
+** CVS/RCS Revision:	$Revision: 1.14 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -74,7 +74,7 @@ DcmByteString::~DcmByteString(void)
 // ********************************
 
 
-void DcmByteString::print(ostream & out, const BOOL showFullData,
+void DcmByteString::print(ostream & out, const OFBool showFullData,
 			  const int level)
 {
     if (this -> valueLoaded())
@@ -114,6 +114,17 @@ void DcmByteString::print(ostream & out, const BOOL showFullData,
 	printInfoLine(out, showFullData, level, "(not loaded)" );
 }
 
+
+// ********************************
+
+Uint32 
+DcmByteString::getLength(
+    const E_TransferSyntax /*xfer*/,
+    const E_EncodingType /*enctype*/)
+{
+    makeDicomByteString();
+    return Length;
+}
 
 // ********************************
 
@@ -277,7 +288,7 @@ DcmByteString::putString(const char * byteStringValue)
 
 // ********************************
 
-E_Condition DcmByteString::verify(const BOOL autocorrect)
+E_Condition DcmByteString::verify(const OFBool autocorrect)
 {
     char * value = NULL;
     errorFlag = this -> getString(value);
@@ -352,7 +363,13 @@ E_Condition DcmByteString::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
-** Revision 1.13  1997-07-03 15:09:52  andreas
+** Revision 1.14  1997-07-21 07:56:39  andreas
+** - Corrected error in length computation of DcmItem for strings in
+**   items.
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.13  1997/07/03 15:09:52  andreas
 ** - removed debugging functions Bdebug() and Edebug() since
 **   they write a static array and are not very useful at all.
 **   Cdebug and Vdebug are merged since they have the same semantics.
