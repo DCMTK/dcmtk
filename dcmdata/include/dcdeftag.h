@@ -3,8 +3,8 @@
 ** It was generated automatically by:
 **
 **   User: hewett
-**   Host: livius
-**   Date: Wed Jun  4 11:50:30 1997
+**   Host: caesar
+**   Date: Tue Aug 26 15:50:11 1997
 **   Prog: /home/hewett/dicom/dcmtk/dcmdata/libsrc/mkdeftag
 **
 ** From: /home/hewett/dicom/dcmtk/dcmdata/libsrc/dicom.dic
@@ -16,7 +16,7 @@
 
 #include "dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "Wed Jun  4 11:50:30 1997"
+#define DCM_DICT_DEFTAG_BUILD_DATE "Tue Aug 26 15:50:11 1997"
 
 
 /*
