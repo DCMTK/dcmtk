@@ -1,386 +1,1027 @@
-dcbuf.o: dcbuf.cc ../../config/include/osconfig.h ../include/dcbuf.h \
- ../include/dctypes.h ../include/dcdefine.h
-dcbytstr.o: dcbytstr.cc ../../config/include/osconfig.h \
- ../include/dcbytstr.h ../include/dcerror.h ../include/dctypes.h \
- ../include/dcelem.h ../include/dcobject.h ../include/dcxfer.h \
- ../include/dcstream.h ../include/dcbuf.h ../include/dcdefine.h \
- ../include/dctag.h ../include/dctagkey.h ../include/dcvr.h \
- ../include/dcdicent.h ../include/dcstack.h ../include/dcdebug.h
-dcchrstr.o: dcchrstr.cc ../../config/include/osconfig.h \
- ../include/dcchrstr.h ../include/dcbytstr.h ../include/dcerror.h \
- ../include/dctypes.h ../include/dcelem.h ../include/dcobject.h \
- ../include/dcxfer.h ../include/dcstream.h ../include/dcbuf.h \
- ../include/dcdefine.h ../include/dctag.h ../include/dctagkey.h \
- ../include/dcvr.h ../include/dcdicent.h ../include/dcstack.h
-dcdatset.o: dcdatset.cc ../../config/include/osconfig.h \
- ../include/dcdatset.h ../include/dcerror.h ../include/dctypes.h \
- ../include/dcitem.h ../include/dcobject.h ../include/dcxfer.h \
- ../include/dcstream.h ../include/dcbuf.h ../include/dcdefine.h \
- ../include/dctag.h ../include/dctagkey.h ../include/dcvr.h \
- ../include/dcdicent.h ../include/dcstack.h ../include/dcvrui.h \
- ../include/dcbytstr.h ../include/dcelem.h ../include/dclist.h \
- ../include/dcvrus.h ../include/dcdebug.h ../include/dcdeftag.h
-dcdebug.o: dcdebug.cc ../../config/include/osconfig.h \
- ../include/dcdebug.h
-dcdicdir.o: dcdicdir.cc ../../config/include/osconfig.h \
- ../include/dcdefine.h ../include/dcdicdir.h ../include/dctypes.h \
- ../include/dcitem.h ../include/dcobject.h ../include/dcerror.h \
- ../include/dcxfer.h ../include/dcstream.h ../include/dcbuf.h \
- ../include/dctag.h ../include/dctagkey.h ../include/dcvr.h \
- ../include/dcdicent.h ../include/dcstack.h ../include/dcvrui.h \
- ../include/dcbytstr.h ../include/dcelem.h ../include/dclist.h \
- ../include/dcfilefo.h ../include/dcsequen.h ../include/dcmetinf.h \
- ../include/dcdatset.h ../include/dcdirrec.h ../include/dcvrulup.h \
- ../include/dcvrul.h ../include/dctk.h ../include/dcswap.h \
- ../include/dcuid.h ../include/dcdict.h ../include/dcentbst.h \
- ../include/dcentset.h ../include/pix.h ../include/dcentdef.h \
- ../include/dcentlst.h ../include/dcdeftag.h ../include/dcpixseq.h \
- ../include/dcvrae.h ../include/dcvras.h ../include/dcvrcs.h \
- ../include/dcvrda.h ../include/dcvrds.h ../include/dcvrdt.h \
- ../include/dcvris.h ../include/dcvrtm.h ../include/dcchrstr.h \
- ../include/dcvrlo.h ../include/dcvrlt.h ../include/dcvrpn.h \
- ../include/dcvrsh.h ../include/dcvrst.h ../include/dcvrobow.h \
- ../include/dcpxitem.h ../include/dcvrat.h ../include/dcvrss.h \
- ../include/dcvrus.h ../include/dcvrsl.h ../include/dcvrfl.h \
- ../include/dcvrfd.h ../include/dcdebug.h
-dcdicent.o: dcdicent.cc ../../config/include/osconfig.h \
- ../include/dcdicent.h ../include/dctagkey.h ../include/dctypes.h \
- ../include/dcvr.h
-dcdict.o: dcdict.cc ../../config/include/osconfig.h \
- ../include/dcdict.h ../include/dcdicent.h ../include/dctagkey.h \
- ../include/dctypes.h ../include/dcvr.h ../include/dcentbst.h \
- ../include/dcentset.h ../include/pix.h ../include/dcentdef.h \
- ../include/dcentlst.h ../include/dcdefine.h
-dcdictbi.o: dcdictbi.cc ../include/dcdict.h \
- ../../config/include/osconfig.h ../include/dcdicent.h \
- ../include/dctagkey.h ../include/dctypes.h ../include/dcvr.h \
- ../include/dcentbst.h ../include/dcentset.h ../include/pix.h \
- ../include/dcentdef.h ../include/dcentlst.h
-dcdirrcf.o: dcdirrcf.cc ../../config/include/osconfig.h \
- ../include/dcdirrec.h ../include/dcerror.h ../include/dctypes.h \
- ../include/dcitem.h ../include/dcobject.h ../include/dcxfer.h \
- ../include/dcstream.h ../include/dcbuf.h ../include/dcdefine.h \
- ../include/dctag.h ../include/dctagkey.h ../include/dcvr.h \
- ../include/dcdicent.h ../include/dcstack.h ../include/dcvrui.h \
- ../include/dcbytstr.h ../include/dcelem.h ../include/dclist.h \
- ../include/dcsequen.h ../include/dcfilefo.h ../include/dcmetinf.h \
- ../include/dcdatset.h ../include/dctk.h ../include/dcswap.h \
- ../include/dcuid.h ../include/dcdict.h ../include/dcentbst.h \
- ../include/dcentset.h ../include/pix.h ../include/dcentdef.h \
- ../include/dcentlst.h ../include/dcdeftag.h ../include/dcdicdir.h \
- ../include/dcvrulup.h ../include/dcvrul.h ../include/dcpixseq.h \
- ../include/dcvrae.h ../include/dcvras.h ../include/dcvrcs.h \
- ../include/dcvrda.h ../include/dcvrds.h ../include/dcvrdt.h \
- ../include/dcvris.h ../include/dcvrtm.h ../include/dcchrstr.h \
- ../include/dcvrlo.h ../include/dcvrlt.h ../include/dcvrpn.h \
- ../include/dcvrsh.h ../include/dcvrst.h ../include/dcvrobow.h \
- ../include/dcpxitem.h ../include/dcvrat.h ../include/dcvrss.h \
- ../include/dcvrus.h ../include/dcvrsl.h ../include/dcvrfl.h \
- ../include/dcvrfd.h ../include/dcdebug.h
-dcdirrec.o: dcdirrec.cc ../../config/include/osconfig.h \
- ../include/dcdirrec.h ../include/dcerror.h ../include/dctypes.h \
- ../include/dcitem.h ../include/dcobject.h ../include/dcxfer.h \
- ../include/dcstream.h ../include/dcbuf.h ../include/dcdefine.h \
- ../include/dctag.h ../include/dctagkey.h ../include/dcvr.h \
- ../include/dcdicent.h ../include/dcstack.h ../include/dcvrui.h \
- ../include/dcbytstr.h ../include/dcelem.h ../include/dclist.h \
- ../include/dcsequen.h ../include/dcfilefo.h ../include/dcmetinf.h \
- ../include/dcdatset.h ../include/dctk.h ../include/dcswap.h \
- ../include/dcuid.h ../include/dcdict.h ../include/dcentbst.h \
- ../include/dcentset.h ../include/pix.h ../include/dcentdef.h \
- ../include/dcentlst.h ../include/dcdeftag.h ../include/dcdicdir.h \
- ../include/dcvrulup.h ../include/dcvrul.h ../include/dcpixseq.h \
- ../include/dcvrae.h ../include/dcvras.h ../include/dcvrcs.h \
- ../include/dcvrda.h ../include/dcvrds.h ../include/dcvrdt.h \
- ../include/dcvris.h ../include/dcvrtm.h ../include/dcchrstr.h \
- ../include/dcvrlo.h ../include/dcvrlt.h ../include/dcvrpn.h \
- ../include/dcvrsh.h ../include/dcvrst.h ../include/dcvrobow.h \
- ../include/dcpxitem.h ../include/dcvrat.h ../include/dcvrss.h \
- ../include/dcvrus.h ../include/dcvrsl.h ../include/dcvrfl.h \
- ../include/dcvrfd.h ../include/dcdebug.h
-dcelem.o: dcelem.cc ../../config/include/osconfig.h \
- ../include/dcelem.h ../include/dcerror.h ../include/dctypes.h \
- ../include/dcobject.h ../include/dcxfer.h ../include/dcstream.h \
- ../include/dcbuf.h ../include/dcdefine.h ../include/dctag.h \
- ../include/dctagkey.h ../include/dcvr.h ../include/dcdicent.h \
- ../include/dcstack.h ../include/dcdebug.h
-dcentbst.o: dcentbst.cc ../../config/include/osconfig.h \
- ../include/dcentbst.h ../include/dcentset.h ../include/pix.h \
- ../include/dcentdef.h ../include/dcdicent.h ../include/dctagkey.h \
- ../include/dctypes.h ../include/dcvr.h
-dcentlst.o: dcentlst.cc ../../config/include/osconfig.h \
- ../include/dcentlst.h ../include/dcdicent.h ../include/dctagkey.h \
- ../include/dctypes.h ../include/dcvr.h ../include/pix.h
-dcentset.o: dcentset.cc ../../config/include/osconfig.h \
- ../include/dcentset.h ../include/pix.h ../include/dcentdef.h \
- ../include/dcdicent.h ../include/dctagkey.h ../include/dctypes.h \
- ../include/dcvr.h
-dcerror.o: dcerror.cc ../../config/include/osconfig.h \
- ../include/dctypes.h ../include/dcerror.h
-dcfilefo.o: dcfilefo.cc ../../config/include/osconfig.h \
- ../include/dcfilefo.h ../include/dctypes.h ../include/dcsequen.h \
- ../include/dcerror.h ../include/dcobject.h ../include/dcxfer.h \
- ../include/dcstream.h ../include/dcbuf.h ../include/dcdefine.h \
- ../include/dctag.h ../include/dctagkey.h ../include/dcvr.h \
- ../include/dcdicent.h ../include/dcstack.h ../include/dcitem.h \
- ../include/dcvrui.h ../include/dcbytstr.h ../include/dcelem.h \
- ../include/dclist.h ../include/dcmetinf.h ../include/dcdatset.h \
- ../include/dcvrobow.h ../include/dcvrul.h ../include/dcvrus.h \
- ../include/dcvrae.h ../include/dcvrsh.h ../include/dcchrstr.h \
- ../include/dcdebug.h ../include/dcdeftag.h ../include/dcuid.h
-dcitem.o: dcitem.cc ../../config/include/osconfig.h ../include/dctk.h \
- ../include/dctypes.h ../include/dcswap.h ../include/dcstream.h \
- ../include/dcerror.h ../include/dcbuf.h ../include/dcdefine.h \
- ../include/dcvr.h ../include/dcxfer.h ../include/dcuid.h \
- ../include/dctagkey.h ../include/dcdict.h ../include/dcdicent.h \
- ../include/dcentbst.h ../include/dcentset.h ../include/pix.h \
- ../include/dcentdef.h ../include/dcentlst.h ../include/dctag.h \
- ../include/dcdeftag.h ../include/dcobject.h ../include/dcstack.h \
- ../include/dcelem.h ../include/dcitem.h ../include/dcvrui.h \
- ../include/dcbytstr.h ../include/dclist.h ../include/dcmetinf.h \
- ../include/dcdatset.h ../include/dcsequen.h ../include/dcfilefo.h \
- ../include/dcdicdir.h ../include/dcdirrec.h ../include/dcvrulup.h \
- ../include/dcvrul.h ../include/dcpixseq.h ../include/dcvrae.h \
- ../include/dcvras.h ../include/dcvrcs.h ../include/dcvrda.h \
- ../include/dcvrds.h ../include/dcvrdt.h ../include/dcvris.h \
- ../include/dcvrtm.h ../include/dcchrstr.h ../include/dcvrlo.h \
- ../include/dcvrlt.h ../include/dcvrpn.h ../include/dcvrsh.h \
- ../include/dcvrst.h ../include/dcvrobow.h ../include/dcpxitem.h \
- ../include/dcvrat.h ../include/dcvrss.h ../include/dcvrus.h \
- ../include/dcvrsl.h ../include/dcvrfl.h ../include/dcvrfd.h \
- ../include/dcdebug.h
-dclist.o: dclist.cc ../../config/include/osconfig.h \
- ../include/dclist.h ../include/dcerror.h ../include/dctypes.h \
- ../include/dcdebug.h
-dcmetinf.o: dcmetinf.cc ../../config/include/osconfig.h \
- ../include/dcmetinf.h ../include/dctypes.h ../include/dcitem.h \
- ../include/dcobject.h ../include/dcerror.h ../include/dcxfer.h \
- ../include/dcstream.h ../include/dcbuf.h ../include/dcdefine.h \
- ../include/dctag.h ../include/dctagkey.h ../include/dcvr.h \
- ../include/dcdicent.h ../include/dcstack.h ../include/dcvrui.h \
- ../include/dcbytstr.h ../include/dcelem.h ../include/dclist.h \
- ../include/dcvrul.h ../include/dcdebug.h ../include/dcdeftag.h
-dcobject.o: dcobject.cc ../../config/include/osconfig.h \
- ../include/dcobject.h ../include/dcerror.h ../include/dctypes.h \
- ../include/dcxfer.h ../include/dcstream.h ../include/dcbuf.h \
- ../include/dcdefine.h ../include/dctag.h ../include/dctagkey.h \
- ../include/dcvr.h ../include/dcdicent.h ../include/dcstack.h \
- ../include/dcswap.h ../include/dcdebug.h
-dcpixseq.o: dcpixseq.cc ../../config/include/osconfig.h \
- ../include/dcpixseq.h ../include/dctypes.h ../include/dcsequen.h \
- ../include/dcerror.h ../include/dcobject.h ../include/dcxfer.h \
- ../include/dcstream.h ../include/dcbuf.h ../include/dcdefine.h \
- ../include/dctag.h ../include/dctagkey.h ../include/dcvr.h \
- ../include/dcdicent.h ../include/dcstack.h ../include/dcitem.h \
- ../include/dcvrui.h ../include/dcbytstr.h ../include/dcelem.h \
- ../include/dclist.h ../include/dcpxitem.h ../include/dcvrobow.h \
- ../include/dcdebug.h ../include/dcdeftag.h
-dcpxitem.o: dcpxitem.cc ../../config/include/osconfig.h \
- ../include/dcpxitem.h ../include/dctypes.h ../include/dcvrobow.h \
- ../include/dcerror.h ../include/dcelem.h ../include/dcobject.h \
- ../include/dcxfer.h ../include/dcstream.h ../include/dcbuf.h \
- ../include/dcdefine.h ../include/dctag.h ../include/dctagkey.h \
- ../include/dcvr.h ../include/dcdicent.h ../include/dcstack.h \
- ../include/dcdebug.h
-dcsequen.o: dcsequen.cc ../../config/include/osconfig.h \
- ../include/dcsequen.h ../include/dcerror.h ../include/dctypes.h \
- ../include/dcobject.h ../include/dcxfer.h ../include/dcstream.h \
- ../include/dcbuf.h ../include/dcdefine.h ../include/dctag.h \
- ../include/dctagkey.h ../include/dcvr.h ../include/dcdicent.h \
- ../include/dcstack.h ../include/dcitem.h ../include/dcvrui.h \
- ../include/dcbytstr.h ../include/dcelem.h ../include/dclist.h \
- ../include/dcdirrec.h ../include/dcfilefo.h ../include/dcmetinf.h \
- ../include/dcdatset.h ../include/dcpxitem.h ../include/dcvrobow.h \
- ../include/dcdebug.h ../include/dcdeftag.h
-dcstack.o: dcstack.cc ../../config/include/osconfig.h \
- ../include/dcstack.h ../include/dctypes.h ../include/dcdebug.h
-dcstream.o: dcstream.cc ../../config/include/osconfig.h \
- ../include/dcstream.h ../include/dcerror.h ../include/dctypes.h \
- ../include/dcbuf.h ../include/dcdefine.h
-dcswap.o: dcswap.cc ../../config/include/osconfig.h \
- ../include/dcswap.h ../include/dctypes.h ../include/dcdebug.h
-dctag.o: dctag.cc ../../config/include/osconfig.h ../include/dcdict.h \
- ../include/dcdicent.h ../include/dctagkey.h ../include/dctypes.h \
- ../include/dcvr.h ../include/dcentbst.h ../include/dcentset.h \
- ../include/pix.h ../include/dcentdef.h ../include/dcentlst.h \
- ../include/dctag.h ../include/dcerror.h ../include/dcdeftag.h
-dctagkey.o: dctagkey.cc ../../config/include/osconfig.h \
- ../include/dctagkey.h ../include/dctypes.h
-dcuid.o: dcuid.cc ../../config/include/osconfig.h ../include/dcuid.h
-dcvm.o: dcvm.cc ../../config/include/osconfig.h ../include/dcvm.h
-dcvr.o: dcvr.cc ../../config/include/osconfig.h ../include/dcvr.h \
- ../include/dctypes.h
-dcvrae.o: dcvrae.cc ../../config/include/osconfig.h \
- ../include/dcvrae.h ../include/dctypes.h ../include/dcbytstr.h \
- ../include/dcerror.h ../include/dcelem.h ../include/dcobject.h \
- ../include/dcxfer.h ../include/dcstream.h ../include/dcbuf.h \
- ../include/dcdefine.h ../include/dctag.h ../include/dctagkey.h \
- ../include/dcvr.h ../include/dcdicent.h ../include/dcstack.h \
- ../include/dcdebug.h
-dcvras.o: dcvras.cc ../../config/include/osconfig.h \
- ../include/dcvras.h ../include/dctypes.h ../include/dcbytstr.h \
- ../include/dcerror.h ../include/dcelem.h ../include/dcobject.h \
- ../include/dcxfer.h ../include/dcstream.h ../include/dcbuf.h \
- ../include/dcdefine.h ../include/dctag.h ../include/dctagkey.h \
- ../include/dcvr.h ../include/dcdicent.h ../include/dcstack.h \
- ../include/dcdebug.h
-dcvrat.o: dcvrat.cc ../../config/include/osconfig.h \
- ../include/dcvrat.h ../include/dctypes.h ../include/dcelem.h \
- ../include/dcerror.h ../include/dcobject.h ../include/dcxfer.h \
- ../include/dcstream.h ../include/dcbuf.h ../include/dcdefine.h \
- ../include/dctag.h ../include/dctagkey.h ../include/dcvr.h \
- ../include/dcdicent.h ../include/dcstack.h ../include/dcvm.h \
- ../include/dcdebug.h
-dcvrcs.o: dcvrcs.cc ../../config/include/osconfig.h \
- ../include/dcvrcs.h ../include/dctypes.h ../include/dcbytstr.h \
- ../include/dcerror.h ../include/dcelem.h ../include/dcobject.h \
- ../include/dcxfer.h ../include/dcstream.h ../include/dcbuf.h \
- ../include/dcdefine.h ../include/dctag.h ../include/dctagkey.h \
- ../include/dcvr.h ../include/dcdicent.h ../include/dcstack.h \
- ../include/dcdebug.h
-dcvrda.o: dcvrda.cc ../../config/include/osconfig.h \
- ../include/dcvrda.h ../include/dctypes.h ../include/dcbytstr.h \
- ../include/dcerror.h ../include/dcelem.h ../include/dcobject.h \
- ../include/dcxfer.h ../include/dcstream.h ../include/dcbuf.h \
- ../include/dcdefine.h ../include/dctag.h ../include/dctagkey.h \
- ../include/dcvr.h ../include/dcdicent.h ../include/dcstack.h \
- ../include/dcdebug.h
-dcvrds.o: dcvrds.cc ../../config/include/osconfig.h \
- ../include/dcvrds.h ../include/dctypes.h ../include/dcbytstr.h \
- ../include/dcerror.h ../include/dcelem.h ../include/dcobject.h \
- ../include/dcxfer.h ../include/dcstream.h ../include/dcbuf.h \
- ../include/dcdefine.h ../include/dctag.h ../include/dctagkey.h \
- ../include/dcvr.h ../include/dcdicent.h ../include/dcstack.h \
- ../include/dcdebug.h
-dcvrdt.o: dcvrdt.cc ../../config/include/osconfig.h \
- ../include/dcvrdt.h ../include/dctypes.h ../include/dcbytstr.h \
- ../include/dcerror.h ../include/dcelem.h ../include/dcobject.h \
- ../include/dcxfer.h ../include/dcstream.h ../include/dcbuf.h \
- ../include/dcdefine.h ../include/dctag.h ../include/dctagkey.h \
- ../include/dcvr.h ../include/dcdicent.h ../include/dcstack.h \
- ../include/dcdebug.h
-dcvrfd.o: dcvrfd.cc ../../config/include/osconfig.h \
- ../include/dcvrfd.h ../include/dcerror.h ../include/dctypes.h \
- ../include/dcelem.h ../include/dcobject.h ../include/dcxfer.h \
- ../include/dcstream.h ../include/dcbuf.h ../include/dcdefine.h \
- ../include/dctag.h ../include/dctagkey.h ../include/dcvr.h \
- ../include/dcdicent.h ../include/dcstack.h ../include/dcvm.h \
- ../include/dcdebug.h
-dcvrfl.o: dcvrfl.cc ../../config/include/osconfig.h \
- ../include/dcvrfl.h ../include/dcerror.h ../include/dctypes.h \
- ../include/dcelem.h ../include/dcobject.h ../include/dcxfer.h \
- ../include/dcstream.h ../include/dcbuf.h ../include/dcdefine.h \
- ../include/dctag.h ../include/dctagkey.h ../include/dcvr.h \
- ../include/dcdicent.h ../include/dcstack.h ../include/dcvm.h \
- ../include/dcdebug.h
-dcvris.o: dcvris.cc ../../config/include/osconfig.h \
- ../include/dcvris.h ../include/dctypes.h ../include/dcbytstr.h \
- ../include/dcerror.h ../include/dcelem.h ../include/dcobject.h \
- ../include/dcxfer.h ../include/dcstream.h ../include/dcbuf.h \
- ../include/dcdefine.h ../include/dctag.h ../include/dctagkey.h \
- ../include/dcvr.h ../include/dcdicent.h ../include/dcstack.h \
- ../include/dcdebug.h
-dcvrlo.o: dcvrlo.cc ../../config/include/osconfig.h \
- ../include/dcvrlo.h ../include/dctypes.h ../include/dcchrstr.h \
- ../include/dcbytstr.h ../include/dcerror.h ../include/dcelem.h \
- ../include/dcobject.h ../include/dcxfer.h ../include/dcstream.h \
- ../include/dcbuf.h ../include/dcdefine.h ../include/dctag.h \
- ../include/dctagkey.h ../include/dcvr.h ../include/dcdicent.h \
- ../include/dcstack.h ../include/dcdebug.h
-dcvrlt.o: dcvrlt.cc ../../config/include/osconfig.h \
- ../include/dcvrlt.h ../include/dctypes.h ../include/dcchrstr.h \
- ../include/dcbytstr.h ../include/dcerror.h ../include/dcelem.h \
- ../include/dcobject.h ../include/dcxfer.h ../include/dcstream.h \
- ../include/dcbuf.h ../include/dcdefine.h ../include/dctag.h \
- ../include/dctagkey.h ../include/dcvr.h ../include/dcdicent.h \
- ../include/dcstack.h ../include/dcdebug.h
-dcvrobow.o: dcvrobow.cc ../../config/include/osconfig.h \
- ../include/dcvrobow.h ../include/dcerror.h ../include/dctypes.h \
- ../include/dcelem.h ../include/dcobject.h ../include/dcxfer.h \
- ../include/dcstream.h ../include/dcbuf.h ../include/dcdefine.h \
- ../include/dctag.h ../include/dctagkey.h ../include/dcvr.h \
- ../include/dcdicent.h ../include/dcstack.h ../include/dcswap.h \
- ../include/dcvm.h ../include/dcdebug.h
-dcvrpn.o: dcvrpn.cc ../include/dcvrpn.h \
- ../../config/include/osconfig.h ../include/dctypes.h \
- ../include/dcchrstr.h ../include/dcbytstr.h ../include/dcerror.h \
- ../include/dcelem.h ../include/dcobject.h ../include/dcxfer.h \
- ../include/dcstream.h ../include/dcbuf.h ../include/dcdefine.h \
- ../include/dctag.h ../include/dctagkey.h ../include/dcvr.h \
- ../include/dcdicent.h ../include/dcstack.h ../include/dcdebug.h
-dcvrsh.o: dcvrsh.cc ../include/dcvrsh.h \
- ../../config/include/osconfig.h ../include/dctypes.h \
- ../include/dcchrstr.h ../include/dcbytstr.h ../include/dcerror.h \
- ../include/dcelem.h ../include/dcobject.h ../include/dcxfer.h \
- ../include/dcstream.h ../include/dcbuf.h ../include/dcdefine.h \
- ../include/dctag.h ../include/dctagkey.h ../include/dcvr.h \
- ../include/dcdicent.h ../include/dcstack.h ../include/dcdebug.h
-dcvrsl.o: dcvrsl.cc ../include/dcvrsl.h \
- ../../config/include/osconfig.h ../include/dcerror.h \
- ../include/dctypes.h ../include/dcelem.h ../include/dcobject.h \
- ../include/dcxfer.h ../include/dcstream.h ../include/dcbuf.h \
- ../include/dcdefine.h ../include/dctag.h ../include/dctagkey.h \
- ../include/dcvr.h ../include/dcdicent.h ../include/dcstack.h \
- ../include/dcvm.h ../include/dcdebug.h
-dcvrss.o: dcvrss.cc ../include/dcvrss.h \
- ../../config/include/osconfig.h ../include/dcerror.h \
- ../include/dctypes.h ../include/dcelem.h ../include/dcobject.h \
- ../include/dcxfer.h ../include/dcstream.h ../include/dcbuf.h \
- ../include/dcdefine.h ../include/dctag.h ../include/dctagkey.h \
- ../include/dcvr.h ../include/dcdicent.h ../include/dcstack.h \
- ../include/dcvm.h ../include/dcdebug.h
-dcvrst.o: dcvrst.cc ../include/dcvrst.h \
- ../../config/include/osconfig.h ../include/dctypes.h \
- ../include/dcchrstr.h ../include/dcbytstr.h ../include/dcerror.h \
- ../include/dcelem.h ../include/dcobject.h ../include/dcxfer.h \
- ../include/dcstream.h ../include/dcbuf.h ../include/dcdefine.h \
- ../include/dctag.h ../include/dctagkey.h ../include/dcvr.h \
- ../include/dcdicent.h ../include/dcstack.h ../include/dcdebug.h
-dcvrtm.o: dcvrtm.cc ../include/dcvrtm.h \
- ../../config/include/osconfig.h ../include/dctypes.h \
- ../include/dcbytstr.h ../include/dcerror.h ../include/dcelem.h \
- ../include/dcobject.h ../include/dcxfer.h ../include/dcstream.h \
- ../include/dcbuf.h ../include/dcdefine.h ../include/dctag.h \
- ../include/dctagkey.h ../include/dcvr.h ../include/dcdicent.h \
- ../include/dcstack.h ../include/dcdebug.h
-dcvrui.o: dcvrui.cc ../include/dcvrui.h \
- ../../config/include/osconfig.h ../include/dctypes.h \
- ../include/dcbytstr.h ../include/dcerror.h ../include/dcelem.h \
- ../include/dcobject.h ../include/dcxfer.h ../include/dcstream.h \
- ../include/dcbuf.h ../include/dcdefine.h ../include/dctag.h \
- ../include/dctagkey.h ../include/dcvr.h ../include/dcdicent.h \
- ../include/dcstack.h ../include/dcuid.h ../include/dcdebug.h
-dcvrul.o: dcvrul.cc ../include/dcvrul.h \
- ../../config/include/osconfig.h ../include/dctypes.h \
- ../include/dcelem.h ../include/dcerror.h ../include/dcobject.h \
- ../include/dcxfer.h ../include/dcstream.h ../include/dcbuf.h \
- ../include/dcdefine.h ../include/dctag.h ../include/dctagkey.h \
- ../include/dcvr.h ../include/dcdicent.h ../include/dcstack.h \
- ../include/dcvm.h ../include/dcdebug.h
-dcvrulup.o: dcvrulup.cc ../include/dcvrulup.h \
- ../../config/include/osconfig.h ../include/dctypes.h \
- ../include/dcvrul.h ../include/dcelem.h ../include/dcerror.h \
- ../include/dcobject.h ../include/dcxfer.h ../include/dcstream.h \
- ../include/dcbuf.h ../include/dcdefine.h ../include/dctag.h \
- ../include/dctagkey.h ../include/dcvr.h ../include/dcdicent.h \
- ../include/dcstack.h ../include/dcdebug.h
-dcvrus.o: dcvrus.cc ../include/dcvrus.h \
- ../../config/include/osconfig.h ../include/dcerror.h \
- ../include/dctypes.h ../include/dcelem.h ../include/dcobject.h \
- ../include/dcxfer.h ../include/dcstream.h ../include/dcbuf.h \
- ../include/dcdefine.h ../include/dctag.h ../include/dctagkey.h \
- ../include/dcvr.h ../include/dcdicent.h ../include/dcstack.h \
- ../include/dcdebug.h ../include/dcvm.h
-dcxfer.o: dcxfer.cc ../include/dcxfer.h \
- ../../config/include/osconfig.h ../include/dctypes.h \
- ../include/dcuid.h ../include/dcdebug.h
-mkdeftag.o: mkdeftag.cc ../../config/include/osconfig.h \
- ../include/dcdict.h ../include/dcdicent.h ../include/dctagkey.h \
- ../include/dctypes.h ../include/dcvr.h ../include/dcentbst.h \
- ../include/dcentset.h ../include/pix.h ../include/dcentdef.h \
- ../include/dcentlst.h
-mkdictbi.o: mkdictbi.cc ../../config/include/osconfig.h \
- ../include/dcdict.h ../include/dcdicent.h ../include/dctagkey.h \
- ../include/dctypes.h ../include/dcvr.h ../include/dcentbst.h \
- ../include/dcentset.h ../include/pix.h ../include/dcentdef.h \
- ../include/dcentlst.h
+dcbuf.o: dcbuf.cc /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbuf.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdefine.h
+dcbytstr.o: dcbytstr.cc \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbytstr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcerror.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcelem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcobject.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcxfer.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstream.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbuf.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdefine.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctag.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctagkey.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdicent.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstack.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdebug.h
+dcchrstr.o: dcchrstr.cc \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcchrstr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbytstr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcerror.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcelem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcobject.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcxfer.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstream.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbuf.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdefine.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctag.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctagkey.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdicent.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstack.h
+dcdatset.o: dcdatset.cc \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdatset.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcerror.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcitem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcobject.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcxfer.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstream.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbuf.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdefine.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctag.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctagkey.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdicent.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstack.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrui.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbytstr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcelem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dclist.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrus.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdebug.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdeftag.h
+dcdebug.o: dcdebug.cc \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdebug.h
+dcdicdir.o: dcdicdir.cc \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdefine.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdicdir.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcitem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcobject.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcerror.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcxfer.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstream.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbuf.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctag.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctagkey.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdicent.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstack.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrui.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbytstr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcelem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dclist.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcfilefo.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcsequen.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcmetinf.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdatset.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdirrec.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrulup.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrul.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctk.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcswap.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcuid.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdict.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcentbst.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcentset.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/pix.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcentdef.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcentlst.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdeftag.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcpixseq.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrae.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvras.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrcs.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrda.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrds.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrdt.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvris.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrtm.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcchrstr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrlo.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrlt.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrpn.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrsh.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrst.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrobow.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcpxitem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrat.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrss.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrus.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrsl.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrfl.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrfd.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdebug.h
+dcdicent.o: dcdicent.cc \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdicent.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctagkey.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvr.h
+dcdict.o: dcdict.cc \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdict.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdicent.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctagkey.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcentbst.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcentset.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/pix.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcentdef.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcentlst.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdefine.h
+dcdictbi.o: dcdictbi.cc \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdict.h \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdicent.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctagkey.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcentbst.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcentset.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/pix.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcentdef.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcentlst.h
+dcdirrcf.o: dcdirrcf.cc \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdirrec.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcerror.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcitem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcobject.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcxfer.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstream.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbuf.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdefine.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctag.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctagkey.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdicent.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstack.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrui.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbytstr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcelem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dclist.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcsequen.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcfilefo.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcmetinf.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdatset.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctk.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcswap.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcuid.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdict.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcentbst.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcentset.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/pix.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcentdef.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcentlst.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdeftag.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdicdir.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrulup.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrul.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcpixseq.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrae.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvras.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrcs.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrda.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrds.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrdt.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvris.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrtm.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcchrstr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrlo.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrlt.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrpn.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrsh.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrst.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrobow.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcpxitem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrat.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrss.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrus.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrsl.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrfl.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrfd.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdebug.h
+dcdirrec.o: dcdirrec.cc \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdirrec.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcerror.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcitem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcobject.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcxfer.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstream.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbuf.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdefine.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctag.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctagkey.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdicent.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstack.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrui.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbytstr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcelem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dclist.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcsequen.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcfilefo.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcmetinf.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdatset.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctk.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcswap.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcuid.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdict.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcentbst.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcentset.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/pix.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcentdef.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcentlst.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdeftag.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdicdir.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrulup.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrul.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcpixseq.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrae.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvras.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrcs.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrda.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrds.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrdt.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvris.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrtm.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcchrstr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrlo.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrlt.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrpn.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrsh.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrst.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrobow.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcpxitem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrat.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrss.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrus.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrsl.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrfl.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrfd.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdebug.h
+dcelem.o: dcelem.cc \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcelem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcerror.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcobject.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcxfer.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstream.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbuf.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdefine.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctag.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctagkey.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdicent.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstack.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdebug.h
+dcentbst.o: dcentbst.cc \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcentbst.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcentset.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/pix.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcentdef.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdicent.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctagkey.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvr.h
+dcentlst.o: dcentlst.cc \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcentlst.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdicent.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctagkey.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/pix.h
+dcentset.o: dcentset.cc \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcentset.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/pix.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcentdef.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdicent.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctagkey.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvr.h
+dcerror.o: dcerror.cc \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcerror.h
+dcfilefo.o: dcfilefo.cc \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcfilefo.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcsequen.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcerror.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcobject.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcxfer.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstream.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbuf.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdefine.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctag.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctagkey.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdicent.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstack.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcitem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrui.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbytstr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcelem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dclist.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcmetinf.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdatset.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrobow.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrul.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrus.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrae.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrsh.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcchrstr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdebug.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdeftag.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcuid.h
+dcitem.o: dcitem.cc \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctk.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcswap.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstream.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcerror.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbuf.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdefine.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcxfer.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcuid.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctagkey.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdict.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdicent.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcentbst.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcentset.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/pix.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcentdef.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcentlst.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctag.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdeftag.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcobject.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstack.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcelem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcitem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrui.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbytstr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dclist.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcmetinf.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdatset.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcsequen.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcfilefo.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdicdir.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdirrec.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrulup.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrul.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcpixseq.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrae.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvras.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrcs.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrda.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrds.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrdt.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvris.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrtm.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcchrstr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrlo.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrlt.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrpn.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrsh.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrst.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrobow.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcpxitem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrat.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrss.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrus.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrsl.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrfl.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrfd.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdebug.h
+dclist.o: dclist.cc \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dclist.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcerror.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdebug.h
+dcmetinf.o: dcmetinf.cc \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcmetinf.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcitem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcobject.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcerror.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcxfer.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstream.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbuf.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdefine.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctag.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctagkey.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdicent.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstack.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrui.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbytstr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcelem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dclist.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrul.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdebug.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdeftag.h
+dcobject.o: dcobject.cc \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcobject.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcerror.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcxfer.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstream.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbuf.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdefine.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctag.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctagkey.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdicent.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstack.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcswap.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdebug.h
+dcpixseq.o: dcpixseq.cc \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcpixseq.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcsequen.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcerror.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcobject.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcxfer.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstream.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbuf.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdefine.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctag.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctagkey.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdicent.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstack.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcitem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrui.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbytstr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcelem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dclist.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcpxitem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrobow.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdebug.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdeftag.h
+dcpxitem.o: dcpxitem.cc \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcpxitem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrobow.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcerror.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcelem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcobject.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcxfer.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstream.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbuf.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdefine.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctag.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctagkey.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdicent.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstack.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdebug.h
+dcsequen.o: dcsequen.cc \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcsequen.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcerror.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcobject.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcxfer.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstream.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbuf.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdefine.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctag.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctagkey.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdicent.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstack.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcitem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrui.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbytstr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcelem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dclist.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdirrec.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcfilefo.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcmetinf.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdatset.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcpxitem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrobow.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdebug.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdeftag.h
+dcstack.o: dcstack.cc \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstack.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdebug.h
+dcstream.o: dcstream.cc \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstream.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcerror.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbuf.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdefine.h
+dcswap.o: dcswap.cc \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcswap.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdebug.h
+dctag.o: dctag.cc /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdict.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdicent.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctagkey.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcentbst.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcentset.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/pix.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcentdef.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcentlst.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctag.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcerror.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdeftag.h
+dctagkey.o: dctagkey.cc \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctagkey.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h
+dcuid.o: dcuid.cc /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcuid.h
+dcvm.o: dcvm.cc /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvm.h
+dcvr.o: dcvr.cc /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h
+dcvrae.o: dcvrae.cc \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrae.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbytstr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcerror.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcelem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcobject.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcxfer.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstream.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbuf.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdefine.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctag.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctagkey.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdicent.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstack.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdebug.h
+dcvras.o: dcvras.cc \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvras.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbytstr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcerror.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcelem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcobject.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcxfer.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstream.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbuf.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdefine.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctag.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctagkey.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdicent.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstack.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdebug.h
+dcvrat.o: dcvrat.cc \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrat.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcelem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcerror.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcobject.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcxfer.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstream.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbuf.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdefine.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctag.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctagkey.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdicent.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstack.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvm.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdebug.h
+dcvrcs.o: dcvrcs.cc \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrcs.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbytstr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcerror.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcelem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcobject.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcxfer.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstream.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbuf.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdefine.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctag.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctagkey.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdicent.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstack.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdebug.h
+dcvrda.o: dcvrda.cc \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrda.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbytstr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcerror.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcelem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcobject.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcxfer.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstream.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbuf.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdefine.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctag.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctagkey.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdicent.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstack.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdebug.h
+dcvrds.o: dcvrds.cc \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrds.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbytstr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcerror.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcelem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcobject.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcxfer.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstream.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbuf.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdefine.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctag.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctagkey.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdicent.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstack.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdebug.h
+dcvrdt.o: dcvrdt.cc \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrdt.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbytstr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcerror.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcelem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcobject.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcxfer.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstream.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbuf.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdefine.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctag.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctagkey.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdicent.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstack.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdebug.h
+dcvrfd.o: dcvrfd.cc \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrfd.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcerror.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcelem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcobject.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcxfer.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstream.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbuf.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdefine.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctag.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctagkey.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdicent.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstack.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvm.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdebug.h
+dcvrfl.o: dcvrfl.cc \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrfl.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcerror.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcelem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcobject.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcxfer.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstream.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbuf.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdefine.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctag.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctagkey.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdicent.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstack.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvm.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdebug.h
+dcvris.o: dcvris.cc \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvris.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbytstr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcerror.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcelem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcobject.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcxfer.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstream.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbuf.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdefine.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctag.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctagkey.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdicent.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstack.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdebug.h
+dcvrlo.o: dcvrlo.cc \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrlo.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcchrstr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbytstr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcerror.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcelem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcobject.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcxfer.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstream.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbuf.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdefine.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctag.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctagkey.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdicent.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstack.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdebug.h
+dcvrlt.o: dcvrlt.cc \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrlt.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcchrstr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbytstr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcerror.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcelem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcobject.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcxfer.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstream.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbuf.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdefine.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctag.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctagkey.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdicent.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstack.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdebug.h
+dcvrobow.o: dcvrobow.cc \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrobow.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcerror.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcelem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcobject.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcxfer.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstream.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbuf.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdefine.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctag.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctagkey.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdicent.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstack.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcswap.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvm.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdebug.h
+dcvrpn.o: dcvrpn.cc \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrpn.h \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcchrstr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbytstr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcerror.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcelem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcobject.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcxfer.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstream.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbuf.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdefine.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctag.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctagkey.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdicent.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstack.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdebug.h
+dcvrsh.o: dcvrsh.cc \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrsh.h \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcchrstr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbytstr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcerror.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcelem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcobject.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcxfer.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstream.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbuf.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdefine.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctag.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctagkey.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdicent.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstack.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdebug.h
+dcvrsl.o: dcvrsl.cc \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrsl.h \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcerror.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcelem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcobject.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcxfer.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstream.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbuf.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdefine.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctag.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctagkey.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdicent.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstack.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvm.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdebug.h
+dcvrss.o: dcvrss.cc \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrss.h \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcerror.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcelem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcobject.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcxfer.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstream.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbuf.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdefine.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctag.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctagkey.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdicent.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstack.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvm.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdebug.h
+dcvrst.o: dcvrst.cc \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrst.h \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcchrstr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbytstr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcerror.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcelem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcobject.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcxfer.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstream.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbuf.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdefine.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctag.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctagkey.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdicent.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstack.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdebug.h
+dcvrtm.o: dcvrtm.cc \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrtm.h \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbytstr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcerror.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcelem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcobject.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcxfer.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstream.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbuf.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdefine.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctag.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctagkey.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdicent.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstack.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdebug.h
+dcvrui.o: dcvrui.cc \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrui.h \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbytstr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcerror.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcelem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcobject.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcxfer.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstream.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbuf.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdefine.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctag.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctagkey.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdicent.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstack.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcuid.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdebug.h
+dcvrul.o: dcvrul.cc \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrul.h \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcelem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcerror.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcobject.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcxfer.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstream.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbuf.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdefine.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctag.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctagkey.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdicent.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstack.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvm.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdebug.h
+dcvrulup.o: dcvrulup.cc \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrulup.h \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrul.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcelem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcerror.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcobject.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcxfer.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstream.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbuf.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdefine.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctag.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctagkey.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdicent.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstack.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdebug.h
+dcvrus.o: dcvrus.cc \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvrus.h \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcerror.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcelem.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcobject.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcxfer.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstream.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcbuf.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdefine.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctag.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctagkey.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdicent.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcstack.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdebug.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvm.h
+dcxfer.o: dcxfer.cc \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcxfer.h \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcuid.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdebug.h
+mkdeftag.o: mkdeftag.cc \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdict.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdicent.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctagkey.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcentbst.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcentset.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/pix.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcentdef.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcentlst.h
+mkdictbi.o: mkdictbi.cc \
+ /home/andreas/Source/dcmtk/config/include/osconfig.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdict.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcdicent.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctagkey.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dctypes.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcvr.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcentbst.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcentset.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/pix.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcentdef.h \
+ /home/andreas/Source/dcmtk/dcmdata/include/dcentlst.h

@@ -6,10 +6,10 @@
 @SET_MAKE@
 
 SHELL = /bin/sh
-VPATH= @srcdir@:@top_srcdir@/include:@top_srcdir@/@configdir@/include
+VPATH= @srcdir@:@top_srcdir@/include:@configdir@/include
 srcdir= @srcdir@
 top_srcdir=@top_srcdir@
-configdir=@top_srcdir@/@configdir@
+configdir=@configdir@
 include $(configdir)/@common_makefile@
 
 
@@ -58,14 +58,17 @@ distclean:
 	(cd apps; $(MAKE) distclean)
 	(cd docs; $(MAKE) distclean)
 	(cd tests; $(MAKE) distclean)
-	-(cd $(configdir); $(MAKE) distclean)
 	rm -f $(DISTTRASH)
+
+distconfigclean: distclean
+	-(cd $(configdir); $(MAKE) distclean)
 
 
 dependencies:
 	(cd libsrc; touch $(DEP); $(MAKE) dependencies)
 	(cd apps; touch $(DEP); $(MAKE) dependencies)
 	(cd tests; touch $(DEP); $(MAKE) dependencies)
+
 
 
 

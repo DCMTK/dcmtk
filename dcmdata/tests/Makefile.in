@@ -6,10 +6,10 @@
 @SET_MAKE@
 
 SHELL = /bin/sh
-VPATH= @srcdir@:@srcdir@/../include:@top_srcdir@/@configdir@/include
+VPATH= @srcdir@:@srcdir@/../include:@configdir@/include
 srcdir= @srcdir@
 top_srcdir= @top_srcdir@
-configdir=@top_srcdir@/@configdir@
+configdir=@configdir@
 
 include $(configdir)/@common_makefile@
 
@@ -67,7 +67,6 @@ tsttag: tsttag.o
 
 install: 
 	echo Nothing to for tests install
-	
 
 clean:
 	rm -f $(objs) $(progs) $(TRASH)

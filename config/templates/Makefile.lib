@@ -6,10 +6,10 @@
 @SET_MAKE@
 
 SHELL = /bin/sh
-VPATH=@srcdir@:@top_srcdir@/include:@top_srcdir@/@configdir@/include
+VPATH=@srcdir@:@top_srcdir@/include:@configdir@/include
 srcdir=@srcdir@
 top_srcdir=@top_srcdir@
-configdir=@top_srcdir@/@configdir@
+configdir=@configdir@
 
 # Special defines for the Library, define them in LOCALDEFS
 
@@ -49,4 +49,8 @@ dependencies:
 $(objs): config.h
 
 include $(DEP)
+
+
+
+
 

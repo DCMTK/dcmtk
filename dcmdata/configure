@@ -1,11 +1,51 @@
 #! /bin/sh
 
-if test -d config ; then
-	configdir=config
-elif test -d ../config ; then
-	configdir=../config
-else
-	echo "Cannot find configure directory (config or ../config)"
+parentdir=`pwd`
+configdir="configdir"
+
+while test $parentdir != "/" -a $configdir = "configdir"; do
+	if test -d $parentdir/config ; then
+		configdir=$parentdir/config
+	else
+		parentdir=`echo $parentdir | sed 's/\/[^\/]*$//'`
+	fi
+done
+
+if test $configdir = "configdir" ; then
+	echo "Cannot find configure directory"
 	exit 1
 fi
-$configdir/configure -srcdir=. --cache-file=$configdir/config.cache $*
+
+src_dir=`pwd`
+
+if test $# != 0;  then
+	case $1 in
+	-a)
+		shift
+		cd $configdir
+		echo "run configure in config-direktory"
+		configure $*
+		echo "run configure for this module"
+		sh confmod -srcdir=$src_dir --cache-file=$src_dir/config.cache $* 
+		;;
+	-c)
+		shift
+		cd $configdir
+		echo "run configure in config-direktory"
+		configure $*
+		;;
+	*)
+		cd $configdir
+		echo "run configure for this module"
+		sh confmod -srcdir=$src_dir --cache-file=$src_dir/config.cache $* 
+		;;
+	esac
+else
+	cd $configdir
+	echo "run configure for this module"
+	sh confmod -srcdir=$src_dir --cache-file=$src_dir/config.cache $* 
+fi	
+
+
+
+
