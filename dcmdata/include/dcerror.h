@@ -21,10 +21,10 @@
  *
  *  Purpose: Error handling, codes and strings
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-10-12 10:42:28 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-19 12:44:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcerror.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,15 +45,16 @@
 const unsigned short OFM_dcmdata  =  1;
 const unsigned short OFM_ctndisp  =  2;
 const unsigned short OFM_dcmimgle =  3;
-const unsigned short OFM_dcmjpeg  =  4;
-const unsigned short OFM_dcmnet   =  5;
-const unsigned short OFM_dcmprint =  6;
-const unsigned short OFM_dcmpstat =  7;
-const unsigned short OFM_dcmsign  =  8;
-const unsigned short OFM_dcmsr    =  9;
-const unsigned short OFM_dcmtls   = 10;
-const unsigned short OFM_imagectn = 11;
-const unsigned short OFM_wlistctn = 12;
+const unsigned short OFM_dcmimage =  4;
+const unsigned short OFM_dcmjpeg  =  5;
+const unsigned short OFM_dcmnet   =  6;
+const unsigned short OFM_dcmprint =  7;
+const unsigned short OFM_dcmpstat =  8;
+const unsigned short OFM_dcmsign  =  9;
+const unsigned short OFM_dcmsr    = 10;
+const unsigned short OFM_dcmtls   = 11;
+const unsigned short OFM_imagectn = 12;
+const unsigned short OFM_wlistctn = 13;
 
 
 // condition constants
@@ -91,7 +92,10 @@ extern const char *dcmErrorConditionToString(OFCondition cond);
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.h,v $
-** Revision 1.11  2001-10-12 10:42:28  meichel
+** Revision 1.12  2001-11-19 12:44:50  joergr
+** Added dcmimage to list of modules.
+**
+** Revision 1.11  2001/10/12 10:42:28  meichel
 ** Introduced conditional define OFCONDITION_STRICT_MODE in which the
 **   compatibility options related to the transition to OFCondition are disabled:
 **   No OFCondition default constructor, no typedefs for E_Condition, CONDITION,
