@@ -148,6 +148,9 @@
 /* Define if you have the <limits.h> header file.  */
 #undef HAVE_LIMITS_H
 
+/* Define if you have the <malloc.h> header file.  */
+#undef HAVE_MALLOC_H
+
 /* Define if you have the <netdb.h> header file.  */
 #undef HAVE_NETDB_H
 
@@ -168,6 +171,9 @@
 
 /* Define if you have the <sys/file.h> header file.  */
 #undef HAVE_SYS_FILE_H
+
+/* Define if you have the <sys/select.h> header file.  */
+#undef HAVE_SYS_SELECT_H
 
 /* Define if you have the <sys/socket.h> header file.  */
 #undef HAVE_SYS_SOCKET_H
