@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-10 12:46:47 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 1999-09-13 15:19:10 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -185,7 +185,7 @@ class DVPSStoredPrint
    */
   E_Condition setEmtpyImageDensity(const char *value);
     
-  /** UNIMPLEMENTED NEEDS UPDATE - deletes all optional attribute values that might not be
+  /** deletes all optional attribute values that might not be
    *  supported by all printers. Film size ID, magnification and smoothing type,
    *  configuration information, requested resolution ID,
    *  trim and requested decimate/crop behaviour, border and empty image density
@@ -367,8 +367,30 @@ class DVPSStoredPrint
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition writeHardcopyImageAttributes(DcmItem &dset);
+
+  /** creates a new image box object and sets the content of this image box object.
+   *  @param retrieveaetitle retrieve AETITLE of the referenced image
+   *  @param refstudyuid Study instance UID of the referenced image
+   *  @param refseriesuid Series instance UID of the referenced image
+   *  @param refsopclassuid SOP Class UID of the referenced image
+   *  @param refsopinstanceuid SOP instance UID of the referenced image
+   *  @param requestedimagesize requested images size for this image, may be NULL (absent)
+   *  @param patientid patient ID for the referenced image, may be NULL (absent)
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition addImageBox(
+    const char *retrieveaetitle,
+    const char *refstudyuid,
+    const char *refseriesuid,
+    const char *refsopclassuid,
+    const char *refsopinstanceuid,
+    const char *requestedimagesize,
+    const char *patientid);
   
   /** creates a new image box object and sets the content of this image box object.
+   *  This is a specialized version of the method with the same name and more parameters.
+   *  SOP Class is assumed to be Grayscale Hardcopy, Study and Series are derived from
+   *  the Stored Print internal defaults.
    *  @param retrieveaetitle retrieve AETITLE of the referenced image
    *  @param refsopinstanceuid SOP instance UID of the referenced image
    *  @param requestedimagesize requested images size for this image, default: absent
@@ -442,6 +464,16 @@ class DVPSStoredPrint
     DcmUnsignedShort& lutDescriptor,
     DcmUnsignedShort& lutData,
     DcmLongString& lutExplanation);
+
+  /** stores a presentation lookup table in the presentation state.
+   *  This method stores a presentation lookup table in the
+   *  presentation state and activates it. The LUT is copied to
+   *  the presentation state. Overwrites old LUT. If unsuccessful,
+   *  LUT is set to DVPSQ_none.
+   *  @param dset dataset from which the Presentation LUT SQ or Shape is read.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */ 
+  E_Condition setPresentationLookupTable(DcmItem &dset);
     
   /** gets a description of the current presentation LUT.
    *  For well-known presentation LUT shapes, a standard text
@@ -648,24 +680,21 @@ class DVPSStoredPrint
   DVPSDecimateCropBehaviour decimateCropBehaviour;
 
   /// connection to a printer
-//  DVPSPrintMessageHandler printHandler;
-    
   DVPSPrintMessageHandler *currentPrintHandler;
-
 	  
   /// the current filmsessioninstance
   OFString filmSessionInstanceUID;
 			
   /// the current filmboxinstance
-  OFString		filmBoxInstanceUID;
+  OFString filmBoxInstanceUID;
 
   /// the list of imagebox instances
-  char 		**imageBoxInstanceUID;
+  char **imageBoxInstanceUID;
 
   OFListIterator(DVPSImageBoxContent *) currentImageBox ;
 
   /// next wanted image
-  int  nextImage;
+  int nextImage;
 
 };
 
@@ -673,7 +702,10 @@ class DVPSStoredPrint
 
 /*
  *  $Log: dvpssp.h,v $
- *  Revision 1.9  1999-09-10 12:46:47  meichel
+ *  Revision 1.10  1999-09-13 15:19:10  meichel
+ *  Added implementations for a number of further print API methods.
+ *
+ *  Revision 1.9  1999/09/10 12:46:47  meichel
  *  Added implementations for a number of print API methods.
  *
  *  Revision 1.8  1999/09/09 14:57:33  thiel

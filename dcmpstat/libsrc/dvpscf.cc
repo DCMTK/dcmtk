@@ -22,8 +22,8 @@
  *  Purpose: DVConfiguration
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-10 12:46:54 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 1999-09-13 15:19:15 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,6 +41,8 @@
 #define PSTAT_AETITLE "DCMPSTAT"
 /* default path for database folder */
 #define PSTAT_DBFOLDER "."
+/* default path for LUT folder */
+#define PSTAT_LUTFOLDER "."
 
 #define PSTAT_DEFAULT_ILLUMINATION 2000
 #define PSTAT_DEFAULT_REFLECTION 10
@@ -82,6 +84,7 @@
 #define L0_TYPE              "TYPE"
 #define L1_DATABASE          "DATABASE"
 #define L1_GUI               "GUI"
+#define L1_LUT               "LUT"
 #define L1_MONITOR           "MONITOR"
 #define L1_NETWORK           "NETWORK"
 #define L1_PRINT             "PRINT"
@@ -373,11 +376,17 @@ unsigned long DVConfiguration::getNetworkMaxPDU()
   return result;
 }
 
-
 const char *DVConfiguration::getDatabaseFolder()
 {
   const char *result = getConfigEntry(L2_GENERAL, L1_DATABASE, L0_DIRECTORY);
   if (result==NULL) result = PSTAT_DBFOLDER;
+  return result;
+}
+
+const char *DVConfiguration::getLUTFolder()
+{
+  const char *result = getConfigEntry(L2_GENERAL, L1_LUT, L0_DIRECTORY);
+  if (result==NULL) result = PSTAT_LUTFOLDER;
   return result;
 }
 
@@ -725,7 +734,10 @@ Uint16 DVConfiguration::getDefaultPrintReflection()
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.cc,v $
- *  Revision 1.3  1999-09-10 12:46:54  meichel
+ *  Revision 1.4  1999-09-13 15:19:15  meichel
+ *  Added implementations for a number of further print API methods.
+ *
+ *  Revision 1.3  1999/09/10 12:46:54  meichel
  *  Added implementations for a number of print API methods.
  *
  *  Revision 1.2  1999/09/09 12:20:52  meichel

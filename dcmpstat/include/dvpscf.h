@@ -23,8 +23,8 @@
  *    classes: DVConfiguration
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-10 12:46:45 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 1999-09-13 15:19:09 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -449,6 +449,13 @@ class DVConfiguration
      */
     OFBool getGUIConfigEntryBool(const char *key, OFBool dfl);
 
+    /** returns the folder to be used for Print Presentation LUTs.
+     *  Value is taken from the section GENERAL/LUT/DIRECTORY
+     *  in the config file. If absent, a default value is returned.
+     *  @return database folder path. Never returns NULL.
+     */
+    const char *getLUTFolder();
+    
     /* Presentation Look Up Tables (LUTs) */
     
     /** returns the number of Presentation LUTs in the configuration file. 
@@ -556,7 +563,10 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.h,v $
- *  Revision 1.2  1999-09-10 12:46:45  meichel
+ *  Revision 1.3  1999-09-13 15:19:09  meichel
+ *  Added implementations for a number of further print API methods.
+ *
+ *  Revision 1.2  1999/09/10 12:46:45  meichel
  *  Added implementations for a number of print API methods.
  *
  *  Revision 1.1  1999/09/08 16:42:02  meichel

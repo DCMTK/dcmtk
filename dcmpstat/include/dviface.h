@@ -23,8 +23,8 @@
  *    classes: DVInterface
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-10 12:46:44 $
- *  CVS/RCS Revision: $Revision: 1.47 $
+ *  Update Date:      $Date: 1999-09-13 15:19:08 $
+ *  CVS/RCS Revision: $Revision: 1.48 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -967,14 +967,14 @@ class DVInterface: public DVConfiguration
      */
     Uint16 getPrintReflectedAmbientLight();
 
-    /** UNIMPLEMENTED - sets the LUT with the given identifier
+    /** sets the LUT with the given identifier
      *  in the Stored Print object as current Presentation LUT.
      *  @param lutID LUT identifier, as returned by getLUTID().
      *  @return EC_Normal if successful, an error code otherwise.
      */
     E_Condition selectPrintPresentationLUT(const char *lutID);
     
-    /** UNIMPLEMENTED - if the Stored Print object contains an active
+    /** if the Stored Print object contains an active
      *  Presentation LUT that was set with selectPrintPresentationLUT(),
      *  return the corresponding LUT identifier.
      *  @return lutID if found, NULL otherwise.
@@ -1008,7 +1008,7 @@ class DVInterface: public DVConfiguration
      */
     E_Condition terminatePrintSpooler();
 
-    /** UNIMPLEMENTED - adds an existing Grayscale Hardcopy image that is already present
+    /** adds an existing Grayscale Hardcopy image that is already present
      *  in the image database to the current print image queue without rendering it again.
      *  The "requested image size" option is not used - the bitmap is treated as if the
      *  presentation mode was "SCALE TO FIT". The image must be a Grayscale Hardcopy image
@@ -1243,6 +1243,10 @@ private:
      */
     const char *printerMediumType;
 
+    /** config file identifier of LUT currently selected as Print Presentation LUT
+     */
+    const char *printCurrentLUTID;
+    
     /** printer illumination setting for Presentation LUT, cd/m2
      */
     Uint16 printIllumination;
@@ -1259,7 +1263,10 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.47  1999-09-10 12:46:44  meichel
+ *  Revision 1.48  1999-09-13 15:19:08  meichel
+ *  Added implementations for a number of further print API methods.
+ *
+ *  Revision 1.47  1999/09/10 12:46:44  meichel
  *  Added implementations for a number of print API methods.
  *
  *  Revision 1.46  1999/09/10 09:37:29  joergr

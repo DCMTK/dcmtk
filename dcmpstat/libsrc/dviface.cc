@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-10 12:46:53 $
- *  CVS/RCS Revision: $Revision: 1.67 $
+ *  Update Date:      $Date: 1999-09-13 15:19:13 $
+ *  CVS/RCS Revision: $Revision: 1.68 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -168,6 +168,7 @@ DVInterface::DVInterface(const char *config_file)
 , maximumPrintBitmapHeight(0)
 , currentPrinter(NULL)
 , printerMediumType(NULL)
+, printCurrentLUTID(NULL)
 , printIllumination(0)
 , printReflectedAmbientLight(0)
 {
@@ -2370,12 +2371,33 @@ Uint16 DVInterface::getPrintReflectedAmbientLight()
 
 E_Condition DVInterface::selectPrintPresentationLUT(const char *lutID)
 {
-  return EC_IllegalCall; // UNIMPLEMENTED
+  E_Condition result = EC_IllegalCall;
+  if (lutID && pPrint)
+  {
+     const char *lutfile = getLUTFilename(lutID);
+     if (lutfile)
+     {    
+       OFString filename = getLUTFolder(); // never NULL.
+       filename += PATH_SEPARATOR; 
+       filename += lutfile;
+       DcmFileFormat *ff = NULL;
+       result = loadFileFormat(filename.c_str(), ff);
+       if ((EC_Normal == result) && ff)
+       {
+         DcmDataset *dataset = ff->getDataset();
+         if (dataset) result = pPrint->setPresentationLookupTable(*dataset);
+         else result = EC_IllegalCall;
+         if (EC_Normal == result) printCurrentLUTID = lutID; else printCurrentLUTID = NULL;
+       }
+       if (ff) delete ff;
+     }
+  }
+  return result;
 }
 
 const char *DVInterface::getPrintPresentationLUTID()
 {
-  return NULL; // UNIMPLEMENTED
+  return printCurrentLUTID; 
 }
 
 E_Condition DVInterface::spoolPrintJob(OFBool deletePrintedImages)
@@ -2395,7 +2417,12 @@ E_Condition DVInterface::terminatePrintSpooler()
 
 E_Condition DVInterface::addToPrintHardcopyFromDB(const char *studyUID, const char *seriesUID, const char *instanceUID)
 {
-  return EC_IllegalCall; // UNIMPLEMENTED
+  E_Condition result = EC_IllegalCall;
+  if (studyUID && seriesUID && instanceUID && pPrint)
+  {
+    result = pPrint->addImageBox(getNetworkAETitle(), studyUID, seriesUID, UID_HardcopyGrayscaleImageStorage, instanceUID, NULL, NULL);
+  }
+  return result;  
 }
 
 E_Condition DVInterface::spoolStoredPrintFromDB(const char *studyUID, const char *seriesUID, const char *instanceUID)
@@ -2407,7 +2434,10 @@ E_Condition DVInterface::spoolStoredPrintFromDB(const char *studyUID, const char
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.67  1999-09-10 12:46:53  meichel
+ *  Revision 1.68  1999-09-13 15:19:13  meichel
+ *  Added implementations for a number of further print API methods.
+ *
+ *  Revision 1.67  1999/09/10 12:46:53  meichel
  *  Added implementations for a number of print API methods.
  *
  *  Revision 1.66  1999/09/10 09:36:28  joergr
