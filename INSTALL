@@ -5,30 +5,36 @@ PRE-REQUISITES
 
 The DICOM ToolKit (DCMTK) needs to be compiled with a C++ compiler.
 We recommend using the GNU-C++ compiler in versions higher than 2.7
-(most of the development was done using GNU-C++ 2.7.2.1 on Solaris 2.5.1).
+(most of the development was done using GNU-C++ 2.7.2.2 on Solaris 2.5.1).
 The software is also known to compile using the SUNPro C++ compiler and the
 IBM C Set++ compiler.
 Compatibility with other C++ compilers is unknown, however, we have
 tried to keep language demands to a minimum (newer C++ features such
-as Templates, ANSI C++ Library, Exceptions and RTTI have been avoided).
+as ANSI C++ Library, Exceptions and RTTI have been avoided).
 
 You will need around 70Mb of disk space to compile the software.
 
 SUPPORTED SYSTEMS
 
-The DCMTK software has, at one time or another, sucessfully compiled under 
-the following hardware / operating system combinations:
+The current release 3.2.0 of the DCMTK software successfully compiles
+under the following operating system / hardware / compiler combinations:
 
-    SUN Sparc 10 / Solaris 2.3, 2.4 or 2.5.1
-    SUN Sparc 10 / SunOS 4.1.3
-    DEC Alpha / OSF 2.1
-    DEC Decstation (Mips) / Ultrix 4.4
-    Intel Pentium PC / NEXTSTEP 3.3
-    Intel Pentium PC / Linux 2.0
-    IBM 7011/220 / AIX 2
-    SGI Indy / IRIX
-    HP 9000 / HP-UX 9.05
+    Solaris 2.5.1 / Sun Sparc / Gnu gcc 2.7.2.2
+    Solaris 2.5.1 / Sun Sparc / Sun SC 2.0.1 (SunPro C++ 3.0.1)
+    SunOS 4.1.3   / Sun Sparc / Gnu gcc 2.7.2
+    Linux 2.0.25  / Intel x86 / Gnu gcc 2.7.2.1
+    NeXTStep 3.3  / Intel x86 / NeXT/Gnu gcc 2.5.8 
+    OSF/1 3.2     / DEC Alpha / Gnu gcc 2.7.2
+    Ultrix 4.4    / DECstation MIPS / Gnu gcc 2.7.2
+    HP-UX 9.05    / HP PA 1.1 / Gnu gcc 2.7.2.1
 
+Furthermore, the DCMTK software has, at one time or another, 
+sucessfully compiled on the following systems which are not
+available to us for testing:
+
+    AIX 2.x       / IBM 7011/220
+    IRIX          / SGI Indy
+ 
 Currently, the imagectn and wlistctn applications assume a Unix
 environment (they are servers).  The ctndisp application requires
 the X-Window System.  The Worklist WWW Scripts require an http server
@@ -120,4 +126,4 @@ Have fun.
 Andrew Hewett, Andreas Barth, Marco Eichelberg
 Kuratorium OFFIS e.V., Oldenburg, Germany.
 
-Last revised: 97.02.06 (ajh).
+Last revised: 97.05.30 (eichelberg).
