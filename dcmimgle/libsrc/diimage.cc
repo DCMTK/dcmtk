@@ -22,9 +22,9 @@
  *  Purpose: DicomImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-06-26 16:11:12 $
+ *  Update Date:      $Date: 2002-08-02 15:04:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diimage.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -290,6 +290,8 @@ DiImage::DiImage(const DiImage *image,
 }
 
 
+/* constructor: image scaled */
+
 DiImage::DiImage(const DiImage *image,
                  const Uint16 columns,
                  const Uint16 rows,
@@ -301,20 +303,44 @@ DiImage::DiImage(const DiImage *image,
     RepresentativeFrame(image->RepresentativeFrame),
     Rows(rows),
     Columns(columns),
-    PixelWidth((aspect) ? 1 : image->PixelWidth),
-    PixelHeight((aspect) ? 1 : image->PixelHeight),
+    PixelWidth(1),
+    PixelHeight(1),
     BitsAllocated(image->BitsAllocated),
     BitsStored(image->BitsStored),
     HighBit(image->HighBit),
     BitsPerSample(image->BitsPerSample),
     Polarity(image->Polarity),
     hasSignedRepresentation(image->hasSignedRepresentation),
-    hasPixelSpacing(image->hasPixelSpacing),
-    hasImagerPixelSpacing(image->hasImagerPixelSpacing),
-    hasPixelAspectRatio((aspect) ? 0 : image->hasPixelAspectRatio),
+    hasPixelSpacing(0),
+    hasImagerPixelSpacing(0),
+    hasPixelAspectRatio(0),
     isOriginal(0),
     InputData(NULL)
 {
+    const double xfactor = (double)Columns / (double)image->Columns;
+    const double yfactor = (double)Rows / (double)image->Rows;
+    /* re-compute pixel width and height */
+    if (image->hasPixelSpacing)
+    {
+        hasPixelSpacing = image->hasPixelSpacing;
+        PixelWidth = image->PixelWidth * xfactor;
+        PixelHeight = image->PixelHeight * yfactor;
+    }
+    else if (image->hasImagerPixelSpacing)
+    {
+        hasImagerPixelSpacing = image->hasImagerPixelSpacing;
+        PixelWidth = image->PixelWidth * xfactor;
+        PixelHeight = image->PixelHeight * yfactor;
+    }
+    else if (image->hasPixelAspectRatio && !aspect)
+    {
+        hasPixelAspectRatio = image->hasPixelAspectRatio;
+        PixelWidth = image->PixelWidth * xfactor;
+        PixelHeight = image->PixelHeight * yfactor;
+        /* do not store pixel aspect ratio for square pixels */
+        if (PixelWidth == PixelHeight)
+            hasPixelAspectRatio = 0;
+    }
 }
 
 
@@ -552,12 +578,14 @@ void DiImage::convertPixelData(/*const*/ DcmPixelData *pixel,
 
 int DiImage::detachPixelData()
 {
-    DcmStack pstack;
-    if ((Document != NULL) && (Document->getFlags() & CIF_MayDetachPixelData) && Document->search(DCM_PixelData, pstack))
+    if ((Document != NULL) && (Document->getFlags() & CIF_MayDetachPixelData))
     {
-        DcmPixelData *pixel = (DcmPixelData *)pstack.top();
-        if (pixel != NULL)
+        /* get DICOM dataset */
+        DcmDataset *dataset = (DcmDataset *)(Document->getDicomObject());
+        if (dataset != NULL)
         {
+            /* insert new, empty PixelData element */
+            dataset->putAndInsertUint16Array(DCM_PixelData, NULL, 0, OFTrue /*replaceOld*/);
 #ifdef DEBUG
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
             {
@@ -565,7 +593,6 @@ int DiImage::detachPixelData()
                 ofConsole.unlockCerr();
             }
 #endif
-            pixel->putUint16Array(NULL, 0);                       // remove pixel data from memory/dataset
             return 1;
         }
     }
@@ -576,6 +603,7 @@ int DiImage::detachPixelData()
 int DiImage::setColumnRowRatio(const double ratio)
 {
     hasPixelAspectRatio = 1;
+    hasPixelSpacing = hasImagerPixelSpacing = 0;
     PixelWidth = ratio;
     PixelHeight = 1;
     checkPixelExtension();
@@ -586,6 +614,7 @@ int DiImage::setColumnRowRatio(const double ratio)
 int DiImage::setRowColumnRatio(const double ratio)
 {
     hasPixelAspectRatio = 1;
+    hasPixelSpacing = hasImagerPixelSpacing = 0;
     PixelWidth = 1;
     PixelHeight = ratio;
     checkPixelExtension();
@@ -604,12 +633,38 @@ int DiImage::setPolarity(const EP_Polarity polarity)
 }
 
 
-// --- write current image to DICOM dataset
+void DiImage::updateImagePixelModuleAttributes(DcmItem &dataset)
+{
+    /* update PixelAspectRatio & Co. */
+    char buffer[32];
+    sprintf(buffer, "%f\\%f", PixelHeight, PixelWidth);
+    if (hasPixelSpacing)
+    {
+        dataset.putAndInsertString(DCM_PixelSpacing, buffer);
+        dataset.putAndInsertString(DCM_PixelSpacing, buffer);
+    } else
+        delete dataset.remove(DCM_PixelSpacing);
+    if (hasImagerPixelSpacing)
+    {
+        dataset.putAndInsertString(DCM_ImagerPixelSpacing, buffer);
+        dataset.putAndInsertString(DCM_ImagerPixelSpacing, buffer);
+    } else
+        delete dataset.remove(DCM_ImagerPixelSpacing);
+    if (hasPixelAspectRatio)
+    {
+        dataset.putAndInsertString(DCM_PixelAspectRatio, buffer);
+        dataset.putAndInsertString(DCM_PixelAspectRatio, buffer);
+    } else
+        delete dataset.remove(DCM_PixelAspectRatio);
+}
 
-int DiImage::writeToDataset(DcmItem &dataset,
-                            const unsigned long frame,
-                            const int bits,
-                            const int planar)
+
+// --- write given frame of the current image to DICOM dataset
+
+int DiImage::writeFrameToDataset(DcmItem &dataset,
+                                 const unsigned long frame,
+                                 const int bits,
+                                 const int planar)
 {
     int result = 0;
     const int bitsStored = getBits(bits);
@@ -617,6 +672,7 @@ int DiImage::writeToDataset(DcmItem &dataset,
     const void *pixel = getOutputData(frame, bitsStored, planar);
     if (pixel != NULL)
     {
+        char buffer[32];
         unsigned long count;
         /* write color model dependent attributes */
         if ((getInternalColorModel() == EPI_Monochrome1) || (getInternalColorModel() == EPI_Monochrome2))
@@ -648,17 +704,25 @@ int DiImage::writeToDataset(DcmItem &dataset,
         dataset.putAndInsertUint16(DCM_BitsStored, bitsStored);
         dataset.putAndInsertUint16(DCM_HighBit, bitsStored - 1);
         dataset.putAndInsertUint16(DCM_PixelRepresentation, 0);
-       if ((PixelWidth != 1) || (PixelHeight != 1))
+        /* handle VOI transformations */
+        if (dataset.tagExists(DCM_WindowCenter) ||
+            dataset.tagExists(DCM_WindowWidth) ||
+            dataset.tagExists(DCM_VOILUTSequence))
         {
-            char buffer[32];
-            sprintf(buffer, "%f\\%f", PixelHeight, PixelWidth);
-            dataset.putAndInsertString(DCM_PixelAspectRatio, buffer);
+            delete dataset.remove(DCM_VOILUTSequence);
+            sprintf(buffer, "%lu", DicomImageClass::maxval(bitsStored, 0) / 2);
+            dataset.putAndInsertString(DCM_WindowCenter, buffer);
+            sprintf(buffer, "%lu", DicomImageClass::maxval(bitsStored, 0));
+            dataset.putAndInsertString(DCM_WindowWidth, buffer);
         }
+        delete dataset.remove(DCM_WindowCenterWidthExplanation);
         /* write pixel data (OB or OW) */
         if (bitsStored <= 8)
             dataset.putAndInsertUint8Array(DCM_PixelData, (Uint8 *)pixel, count);
         else
             dataset.putAndInsertUint16Array(DCM_PixelData, (Uint16 *)pixel, count);
+        /* update other DICOM attributes */
+        updateImagePixelModuleAttributes(dataset);
         result = 1;
     }
     return result;
@@ -762,7 +826,12 @@ int DiImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: diimage.cc,v $
- * Revision 1.20  2002-06-26 16:11:12  joergr
+ * Revision 1.21  2002-08-02 15:04:53  joergr
+ * Enhanced writeFrameToDataset() routine (remove out-data DICOM attributes
+ * from the dataset).
+ * Re-compute Imager/Pixel Spacing and Pixel Aspect Ratio for scaled images.
+ *
+ * Revision 1.20  2002/06/26 16:11:12  joergr
  * Added support for polarity flag to color images.
  * Added new method to write a selected frame to a DICOM dataset (incl. required
  * attributes from the "Image Pixel Module").
