@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-05-04 10:53:08 $
- *  CVS/RCS Revision: $Revision: 1.54 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-05-04 16:05:49 $
+ *  CVS/RCS Revision: $Revision: 1.55 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -375,6 +375,7 @@ E_Condition DVInterface::savePState()
 	            DU_getStringDOElement(dset, DCM_StudyInstanceUID, studyUID) &&
                 ((!imageInDatabase) || (getSeriesStruct(studyUID, seriesUID, instanceUID) == NULL)))
             {
+                releaseDatabase();   /* avoid deadlocks */
                 if (DB_NORMAL == DB_makeNewStoreFileName(handle, sopClass, instanceUID, imageFileName))
                 {
                     // now store presentation state as filename
@@ -388,6 +389,8 @@ E_Condition DVInterface::savePState()
                             cerr << "unable to register image '" << imageFileName << "' in database." << endl;
                             COND_DumpConditions();
 #endif
+                        } else {
+                            imageInDatabase = OFTrue;
                         }
                     }
                 }
@@ -2191,7 +2194,12 @@ void DVInterface::cleanChildren()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.54  1999-05-04 10:53:08  meichel
+ *  Revision 1.55  1999-05-04 16:05:49  joergr
+ *  Added releaseDatabase to savePState to avoid deadlocks.
+ *  Change status of variable imageInDatabase in savePState to avoid unnecessary
+ *  saving of (probabaly large) image files.
+ *
+ *  Revision 1.54  1999/05/04 10:53:08  meichel
  *  Added test for struct utimbuf declaration, absent on some platforms
  *
  *  Revision 1.53  1999/05/03 14:15:58  joergr
