@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 1999.09.30 (riesmeier)
+
+- Added missing directory entries to make file.
+  Affects: dcmimage/Makefile.in
+
 **** Changes from 1999.09.17 (riesmeier)
 
 - Enhanced efficiency of some "for" loops.
