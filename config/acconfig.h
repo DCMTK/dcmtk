@@ -54,5 +54,8 @@
 /* Define if your system has a prototype for wait3 */
 #undef HAVE_PROTOTYPE_WAIT3
 
+/* Define if your system has a prototype for mktemp */
+#undef HAVE_PROTOTYPE_MKTEMP
+
 #endif
 
