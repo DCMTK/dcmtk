@@ -3,8 +3,8 @@
 ** It was generated automatically by:
 **
 **   User: hewett
-**   Host: caesar
-**   Date: Tue Aug 26 15:50:11 1997
+**   Host: livius
+**   Date: Wed Oct  1 13:30:34 1997
 **   Prog: /home/hewett/dicom/dcmtk/dcmdata/libsrc/mkdeftag
 **
 ** From: /home/hewett/dicom/dcmtk/dcmdata/libsrc/dicom.dic
@@ -16,7 +16,7 @@
 
 #include "dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "Tue Aug 26 15:50:11 1997"
+#define DCM_DICT_DEFTAG_BUILD_DATE "Wed Oct  1 13:30:34 1997"
 
 
 /*
@@ -136,9 +136,9 @@
 #define DCM_InstitutionName                      DcmTagKey(0x0008, 0x0080)
 #define DCM_InstitutionAddress                   DcmTagKey(0x0008, 0x0081)
 #define DCM_InstitutionCodeSequence              DcmTagKey(0x0008, 0x0082)
-#define DCM_ReferringPhysicianName               DcmTagKey(0x0008, 0x0090)
-#define DCM_ReferringPhysicianAddress            DcmTagKey(0x0008, 0x0092)
-#define DCM_ReferringPhysicianTelephoneNumber    DcmTagKey(0x0008, 0x0094)
+#define DCM_ReferringPhysiciansName              DcmTagKey(0x0008, 0x0090)
+#define DCM_ReferringPhysiciansAddress           DcmTagKey(0x0008, 0x0092)
+#define DCM_ReferringPhysiciansTelephoneNumber   DcmTagKey(0x0008, 0x0094)
 #define DCM_CodeValue                            DcmTagKey(0x0008, 0x0100)
 #define DCM_CodingSchemeDesignator               DcmTagKey(0x0008, 0x0102)
 #define DCM_CodeMeaning                          DcmTagKey(0x0008, 0x0104)
@@ -152,9 +152,9 @@
 #define DCM_SeriesDescription                    DcmTagKey(0x0008, 0x103e)
 #define DCM_InstitutionalDepartmentName          DcmTagKey(0x0008, 0x1040)
 #define DCM_PhysiciansOfRecord                   DcmTagKey(0x0008, 0x1048)
-#define DCM_PerformingPhysicianName              DcmTagKey(0x0008, 0x1050)
-#define DCM_PhysicianReadingStudy                DcmTagKey(0x0008, 0x1060)
-#define DCM_OperatorName                         DcmTagKey(0x0008, 0x1070)
+#define DCM_PerformingPhysiciansName             DcmTagKey(0x0008, 0x1050)
+#define DCM_NameOfPhysiciansReadingStudy         DcmTagKey(0x0008, 0x1060)
+#define DCM_OperatorsName                        DcmTagKey(0x0008, 0x1070)
 #define DCM_AdmittingDiagnosisDescription        DcmTagKey(0x0008, 0x1080)
 #define DCM_AdmittingDiagnosisCodeSequence       DcmTagKey(0x0008, 0x1084)
 #define DCM_ManufacturerModelName                DcmTagKey(0x0008, 0x1090)
@@ -208,7 +208,7 @@
 #define DCM_PatientSex                           DcmTagKey(0x0010, 0x0040)
 #define DCM_PatientInsurancePlanCodeSequence     DcmTagKey(0x0010, 0x0050)
 #define DCM_OtherPatientID                       DcmTagKey(0x0010, 0x1000)
-#define DCM_OtherPatientName                     DcmTagKey(0x0010, 0x1001)
+#define DCM_OtherPatientNames                    DcmTagKey(0x0010, 0x1001)
 #define DCM_PatientBirthName                     DcmTagKey(0x0010, 0x1005)
 #define DCM_PatientAge                           DcmTagKey(0x0010, 0x1010)
 #define DCM_PatientSize                          DcmTagKey(0x0010, 0x1020)
@@ -246,7 +246,7 @@
 #define DCM_InterventionDrugInformationSequence  DcmTagKey(0x0018, 0x0026)
 #define DCM_InterventionDrugStopTime             DcmTagKey(0x0018, 0x0027)
 #define DCM_InterventionDrugDose                 DcmTagKey(0x0018, 0x0028)
-#define DCM_InterventionalDrugSequence           DcmTagKey(0x0018, 0x0029)
+#define DCM_InterventionDrugCodeSequence         DcmTagKey(0x0018, 0x0029)
 #define DCM_AdditionalDrugSequence               DcmTagKey(0x0018, 0x002a)
 #define DCM_Radionuclide                         DcmTagKey(0x0018, 0x0030)
 #define DCM_Radiopharmaceutical                  DcmTagKey(0x0018, 0x0031)
@@ -263,7 +263,7 @@
 #define DCM_KVP                                  DcmTagKey(0x0018, 0x0060)
 #define DCM_CountsAccumulated                    DcmTagKey(0x0018, 0x0070)
 #define DCM_AcquisitionTerminationCondition      DcmTagKey(0x0018, 0x0071)
-#define DCM_EffectiveSeriesDuration              DcmTagKey(0x0018, 0x0072)
+#define DCM_EffectiveDuration                    DcmTagKey(0x0018, 0x0072)
 #define DCM_AcquisitionStartCondition            DcmTagKey(0x0018, 0x0073)
 #define DCM_AcquisitionStartConditionData        DcmTagKey(0x0018, 0x0074)
 #define DCM_AcquisitionTerminationConditionData  DcmTagKey(0x0018, 0x0075)
@@ -353,7 +353,7 @@
 #define DCM_FieldOfViewShape                     DcmTagKey(0x0018, 0x1147)
 #define DCM_FieldOfViewDimension                 DcmTagKey(0x0018, 0x1149)
 #define DCM_ExposureTime                         DcmTagKey(0x0018, 0x1150)
-#define DCM_XrayTubeCurrent                      DcmTagKey(0x0018, 0x1151)
+#define DCM_XRayTubeCurrent                      DcmTagKey(0x0018, 0x1151)
 #define DCM_Exposure                             DcmTagKey(0x0018, 0x1152)
 #define DCM_AveragePulseWidth                    DcmTagKey(0x0018, 0x1154)
 #define DCM_RadiationSetting                     DcmTagKey(0x0018, 0x1155)
@@ -428,10 +428,10 @@
 #define DCM_OutputPower                          DcmTagKey(0x0018, 0x5000)
 #define DCM_TransducerData                       DcmTagKey(0x0018, 0x5010)
 #define DCM_FocusDepth                           DcmTagKey(0x0018, 0x5012)
-#define DCM_ProcessingFunction                   DcmTagKey(0x0018, 0x5020)
+#define DCM_PreprocessingFunction                DcmTagKey(0x0018, 0x5020)
 #define DCM_PostprocessingFunction               DcmTagKey(0x0018, 0x5021)
 #define DCM_MechanicalIndex                      DcmTagKey(0x0018, 0x5022)
-#define DCM_ThermalIndex                         DcmTagKey(0x0018, 0x5024)
+#define DCM_BoneThermalIndex                     DcmTagKey(0x0018, 0x5024)
 #define DCM_CranialThermalIndex                  DcmTagKey(0x0018, 0x5026)
 #define DCM_SoftTissueThermalIndex               DcmTagKey(0x0018, 0x5027)
 #define DCM_SoftTissueFocusThermalIndex          DcmTagKey(0x0018, 0x5028)
@@ -1078,8 +1078,8 @@
 #define DCM_ROIObservationDescription            DcmTagKey(0x3006, 0x0088)
 #define DCM_RelatedRTROIObservationsSequence     DcmTagKey(0x3006, 0x00a0)
 #define DCM_RTROIInterpretedType                 DcmTagKey(0x3006, 0x00a4)
-#define DCM_ROIInterpreterPN                     DcmTagKey(0x3006, 0x00a6)
-#define DCM_ROIPhysicalPropertiesSequenceSQ      DcmTagKey(0x3006, 0x00b0)
+#define DCM_ROIInterpreter                       DcmTagKey(0x3006, 0x00a6)
+#define DCM_ROIPhysicalPropertiesSequence        DcmTagKey(0x3006, 0x00b0)
 #define DCM_ROIPhysicalProperty                  DcmTagKey(0x3006, 0x00b2)
 #define DCM_ROIPhysicalPropertyValue             DcmTagKey(0x3006, 0x00b4)
 #define DCM_FrameOfReferenceRelationshipSequence DcmTagKey(0x3006, 0x00c0)
@@ -1148,7 +1148,7 @@
 #define DCM_BeamLimitingDeviceSequence           DcmTagKey(0x300a, 0x00b6)
 #define DCM_RTBeamLimitingDeviceType             DcmTagKey(0x300a, 0x00b8)
 #define DCM_SourceToBeamLimitingDeviceDistance   DcmTagKey(0x300a, 0x00ba)
-#define DCM_NumberOfLeaf_JawPairs                DcmTagKey(0x300a, 0x00bc)
+#define DCM_NumberOfLeafJawPairs                 DcmTagKey(0x300a, 0x00bc)
 #define DCM_LeafPositionBoundaries               DcmTagKey(0x300a, 0x00be)
 #define DCM_BeamNumber                           DcmTagKey(0x300a, 0x00c0)
 #define DCM_BeamName                             DcmTagKey(0x300a, 0x00c2)
