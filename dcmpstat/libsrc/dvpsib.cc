@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSImageBoxContent
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-07 13:17:06 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-06-07 14:26:45 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -590,6 +590,12 @@ DVPSDecimateCropBehaviour DVPSImageBoxContent::getRequestedDecimateCropBehaviour
     else if (aString == "FAIL") result = DVPSI_fail;
   }
   return result;
+}
+
+const char *DVPSImageBoxContent::getPolarity()
+{
+  char *c = NULL;
+  if (EC_Normal == polarity.getString(c)) return c; else return NULL;
 }
 
 const char *DVPSImageBoxContent::getMagnificationType()
@@ -1499,7 +1505,10 @@ void DVPSImageBoxContent::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgM
 
 /*
  *  $Log: dvpsib.cc,v $
- *  Revision 1.18  2000-06-07 13:17:06  meichel
+ *  Revision 1.19  2000-06-07 14:26:45  joergr
+ *  Added methods to access the image polarity attribute.
+ *
+ *  Revision 1.18  2000/06/07 13:17:06  meichel
  *  now using DIMSE status constants and log facilities defined in dcmnet
  *
  *  Revision 1.17  2000/06/02 16:01:02  meichel

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSImageBoxContent_PList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-02 16:01:02 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-06-07 14:26:46 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -293,6 +293,13 @@ E_Condition DVPSImageBoxContent_PList::setImageSOPInstanceUID(size_t idx, const 
   DVPSImageBoxContent *box = getImageBox(idx);
   if (box) return box->setSOPInstanceUID(value);
   return EC_IllegalCall; 
+}
+
+const char *DVPSImageBoxContent_PList::getImagePolarity(size_t idx)
+{
+  DVPSImageBoxContent *box = getImageBox(idx);
+  if (box) return box->getPolarity();
+  return NULL; 
 }
 
 const char *DVPSImageBoxContent_PList::getImageMagnificationType(size_t idx)
@@ -566,7 +573,10 @@ void DVPSImageBoxContent_PList::replace(DVPSImageBoxContent *newImageBox)
 
 /*
  *  $Log: dvpsibl.cc,v $
- *  Revision 1.16  2000-06-02 16:01:02  meichel
+ *  Revision 1.17  2000-06-07 14:26:46  joergr
+ *  Added methods to access the image polarity attribute.
+ *
+ *  Revision 1.16  2000/06/02 16:01:02  meichel
  *  Adapted all dcmpstat classes to use OFConsole for log and error output
  *
  *  Revision 1.15  2000/05/31 12:58:15  meichel
