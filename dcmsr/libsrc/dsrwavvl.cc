@@ -23,8 +23,8 @@
  *    classes: DSRWaveformReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-06 11:32:52 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2001-02-13 16:33:40 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -118,7 +118,7 @@ E_Condition DSRWaveformReferenceValue::writeXML(ostream &stream,
     E_Condition result = DSRCompositeReferenceValue::writeXML(stream, flags, logStream);
     if ((flags & DSRTypes::XF_writeEmptyTags) || !ChannelList.isEmpty())
     {
-        stream << "<channels>" << endl;
+        stream << "<channels>";
         ChannelList.print(stream);        
         stream << "</channels>" << endl;        
     }
@@ -246,7 +246,10 @@ OFBool DSRWaveformReferenceValue::checkSOPClassUID(const OFString &sopClassUID) 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavvl.cc,v $
- *  Revision 1.10  2000-11-06 11:32:52  joergr
+ *  Revision 1.11  2001-02-13 16:33:40  joergr
+ *  Minor corrections in XML output (newlines, etc.).
+ *
+ *  Revision 1.10  2000/11/06 11:32:52  joergr
  *  Changes structure of HTML hyperlinks to composite objects (now using pseudo
  *  CGI script).
  *

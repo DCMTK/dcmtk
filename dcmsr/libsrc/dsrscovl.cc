@@ -23,8 +23,8 @@
  *    classes: DSRSpatialCoordinatesValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-06 11:33:45 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2001-02-13 16:35:28 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -113,7 +113,7 @@ E_Condition DSRSpatialCoordinatesValue::writeXML(ostream &stream,
     /* GraphicType is written in TreeNode class */
     if ((flags & DSRTypes::XF_writeEmptyTags) || !GraphicDataList.isEmpty())
     {
-        stream << "<data>" << endl;
+        stream << "<data>";
         GraphicDataList.print(stream);        
         stream << "</data>" << endl;        
     }
@@ -282,7 +282,10 @@ OFBool DSRSpatialCoordinatesValue::checkData(const DSRTypes::E_GraphicType graph
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscovl.cc,v $
- *  Revision 1.7  2000-11-06 11:33:45  joergr
+ *  Revision 1.8  2001-02-13 16:35:28  joergr
+ *  Minor corrections in XML output (newlines, etc.).
+ *
+ *  Revision 1.7  2000/11/06 11:33:45  joergr
  *  Removed additional check (according to CP).
  *
  *  Revision 1.6  2000/11/01 16:37:03  joergr
