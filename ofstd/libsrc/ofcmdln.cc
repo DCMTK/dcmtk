@@ -22,9 +22,9 @@
  *  Purpose: Template class for command line arguments (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-27 16:26:30 $
+ *  Update Date:      $Date: 1999-04-27 17:46:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofcmdln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -786,6 +786,8 @@ void OFCommandLine::expandWildcards(const char *param)
                     
 OFCommandLine::E_ParseStatus OFCommandLine::checkParamCount()
 {
+    if ((getArgCount() == 1) && findOption("--help"))
+        return PS_NoArguments;
     MinParamCount = 0;
     MaxParamCount = 0;
     OFListIterator(OFCmdParam *) iter = ValidParamList.begin();
@@ -1179,10 +1181,9 @@ void OFCommandLine::getStatusString(const E_ValueStatus status,
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.cc,v $
- * Revision 1.12  1999-04-27 16:26:30  joergr
- * Introduced list of valid parameters used for syntax output and error
- * checking.
- * Added some useful debugging checks.
+ * Revision 1.13  1999-04-27 17:46:50  joergr
+ * Corrected bug: option '--help' could not be used when mandatory parameters
+ * were missing.
  *
  * Revision 1.11  1999/04/26 16:36:00  joergr
  * Added support to define minimum width of short and long option columns.
