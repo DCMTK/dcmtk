@@ -5535,21 +5535,23 @@ done
 
 
 
-if test $ac_cv_header_stdc = yes ; then
-if test $ac_cv_header_libc_h = yes ; then
-echo $ac_n "checking prototype for bzero (in string.h libc.h)""... $ac_c" 1>&6
-echo "configure:5542: checking prototype for bzero (in string.h libc.h)" >&5
+
+echo $ac_n "checking prototype for bzero (in string.h strings.h libc.h unistd.h stdlib.h)""... $ac_c" 1>&6
+echo "configure:5541: checking prototype for bzero (in string.h strings.h libc.h unistd.h stdlib.h)" >&5
 ac_includes=""
-for ac_header in string.h libc.h
+for ac_header in string.h strings.h libc.h unistd.h stdlib.h
 do
-  ac_includes="$ac_includes
+  ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
+  if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
+    ac_includes="$ac_includes 
 #include<$ac_header>"
+  fi
 done
 if eval "test \"`echo '$''{'ac_cv_prototype_bzero'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 5553 "configure"
+#line 5555 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
@@ -5573,7 +5575,7 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:5577: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:5579: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_prototype_bzero=no"
 else
@@ -5596,199 +5598,22 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-else
-echo $ac_n "checking prototype for bzero (in string.h)""... $ac_c" 1>&6
-echo "configure:5602: checking prototype for bzero (in string.h)" >&5
-ac_includes=""
-for ac_header in string.h
-do
-  ac_includes="$ac_includes
-#include<$ac_header>"
-done
-if eval "test \"`echo '$''{'ac_cv_prototype_bzero'+set}'`\" = set"; then
-  echo $ac_n "(cached) $ac_c" 1>&6
-else
-  cat > conftest.$ac_ext <<EOF
-#line 5613 "configure"
-#include "confdefs.h"
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-$ac_includes
-
-#ifdef __cplusplus
-}
-#endif
-
-typedef union { int member; } dummyStruct;
-#ifdef __cplusplus
-extern "C"
-#endif
-
-dummyStruct bzero(dummyStruct);
-
-
-int main() {
-
-; return 0; }
-EOF
-if { (eval echo configure:5637: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
-  rm -rf conftest*
-  eval "ac_cv_prototype_bzero=no"
-else
-  echo "configure: failed program was:" >&5
-  cat conftest.$ac_ext >&5
-  rm -rf conftest*
-  eval "ac_cv_prototype_bzero=yes"
-fi
-rm -f conftest*
-fi
-if eval "test \"`echo '$ac_cv_prototype_'bzero`\" = yes"; then
-  echo "$ac_t""yes" 1>&6
-  ac_tr_prototype=HAVE_PROTOTYPE_`echo bzero | tr '[a-z]' '[A-Z]'`
-  cat >> confdefs.h <<EOF
-#define $ac_tr_prototype 1
-EOF
-
-  :
-else
-  echo "$ac_t""no" 1>&6
-fi
-
-fi
-else
-if test $ac_cv_header_libc_h = yes ; then
-echo $ac_n "checking prototype for bzero (in libc.h)""... $ac_c" 1>&6
-echo "configure:5664: checking prototype for bzero (in libc.h)" >&5
-ac_includes=""
-for ac_header in libc.h
-do
-  ac_includes="$ac_includes
-#include<$ac_header>"
-done
-if eval "test \"`echo '$''{'ac_cv_prototype_bzero'+set}'`\" = set"; then
-  echo $ac_n "(cached) $ac_c" 1>&6
-else
-  cat > conftest.$ac_ext <<EOF
-#line 5675 "configure"
-#include "confdefs.h"
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-$ac_includes
-
-#ifdef __cplusplus
-}
-#endif
-
-typedef union { int member; } dummyStruct;
-#ifdef __cplusplus
-extern "C"
-#endif
-
-dummyStruct bzero(dummyStruct);
-
-
-int main() {
-
-; return 0; }
-EOF
-if { (eval echo configure:5699: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
-  rm -rf conftest*
-  eval "ac_cv_prototype_bzero=no"
-else
-  echo "configure: failed program was:" >&5
-  cat conftest.$ac_ext >&5
-  rm -rf conftest*
-  eval "ac_cv_prototype_bzero=yes"
-fi
-rm -f conftest*
-fi
-if eval "test \"`echo '$ac_cv_prototype_'bzero`\" = yes"; then
-  echo "$ac_t""yes" 1>&6
-  ac_tr_prototype=HAVE_PROTOTYPE_`echo bzero | tr '[a-z]' '[A-Z]'`
-  cat >> confdefs.h <<EOF
-#define $ac_tr_prototype 1
-EOF
-
-  :
-else
-  echo "$ac_t""no" 1>&6
-fi
-
-else
-echo $ac_n "checking predefined prototype for bzero""... $ac_c" 1>&6
-echo "configure:5724: checking predefined prototype for bzero" >&5
-ac_includes=""
-
-if eval "test \"`echo '$''{'ac_cv_prototype_bzero'+set}'`\" = set"; then
-  echo $ac_n "(cached) $ac_c" 1>&6
-else
-  cat > conftest.$ac_ext <<EOF
-#line 5731 "configure"
-#include "confdefs.h"
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-$ac_includes
-
-#ifdef __cplusplus
-}
-#endif
-
-typedef union { int member; } dummyStruct;
-#ifdef __cplusplus
-extern "C"
-#endif
-
-dummyStruct bzero(dummyStruct);
-
-
-int main() {
-
-; return 0; }
-EOF
-if { (eval echo configure:5755: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
-  rm -rf conftest*
-  eval "ac_cv_prototype_bzero=no"
-else
-  echo "configure: failed program was:" >&5
-  cat conftest.$ac_ext >&5
-  rm -rf conftest*
-  eval "ac_cv_prototype_bzero=yes"
-fi
-rm -f conftest*
-fi
-if eval "test \"`echo '$ac_cv_prototype_'bzero`\" = yes"; then
-  echo "$ac_t""yes" 1>&6
-  ac_tr_prototype=HAVE_PROTOTYPE_`echo bzero | tr '[a-z]' '[A-Z]'`
-  cat >> confdefs.h <<EOF
-#define $ac_tr_prototype 1
-EOF
-
-  :
-else
-  echo "$ac_t""no" 1>&6
-fi
-
-fi
-fi
 echo $ac_n "checking prototype for accept (in sys/types.h sys/socket.h)""... $ac_c" 1>&6
-echo "configure:5781: checking prototype for accept (in sys/types.h sys/socket.h)" >&5
+echo "configure:5603: checking prototype for accept (in sys/types.h sys/socket.h)" >&5
 ac_includes=""
 for ac_header in sys/types.h sys/socket.h
 do
-  ac_includes="$ac_includes
+  ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
+  if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
+    ac_includes="$ac_includes 
 #include<$ac_header>"
+  fi
 done
 if eval "test \"`echo '$''{'ac_cv_prototype_accept'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 5792 "configure"
+#line 5617 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
@@ -5812,7 +5637,7 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:5816: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:5641: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_prototype_accept=no"
 else
@@ -5836,18 +5661,21 @@ else
 fi
 
 echo $ac_n "checking prototype for bind (in sys/types.h sys/socket.h)""... $ac_c" 1>&6
-echo "configure:5840: checking prototype for bind (in sys/types.h sys/socket.h)" >&5
+echo "configure:5665: checking prototype for bind (in sys/types.h sys/socket.h)" >&5
 ac_includes=""
 for ac_header in sys/types.h sys/socket.h
 do
-  ac_includes="$ac_includes
+  ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
+  if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
+    ac_includes="$ac_includes 
 #include<$ac_header>"
+  fi
 done
 if eval "test \"`echo '$''{'ac_cv_prototype_bind'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 5851 "configure"
+#line 5679 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
@@ -5871,7 +5699,7 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:5875: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:5703: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_prototype_bind=no"
 else
@@ -5894,19 +5722,22 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-echo $ac_n "checking prototype for gethostbyname (in netdb.h)""... $ac_c" 1>&6
-echo "configure:5899: checking prototype for gethostbyname (in netdb.h)" >&5
+echo $ac_n "checking prototype for gethostbyname (in libc.h unistd.h stdlib.h netdb.h)""... $ac_c" 1>&6
+echo "configure:5727: checking prototype for gethostbyname (in libc.h unistd.h stdlib.h netdb.h)" >&5
 ac_includes=""
-for ac_header in netdb.h
+for ac_header in libc.h unistd.h stdlib.h netdb.h
 do
-  ac_includes="$ac_includes
+  ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
+  if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
+    ac_includes="$ac_includes 
 #include<$ac_header>"
+  fi
 done
 if eval "test \"`echo '$''{'ac_cv_prototype_gethostbyname'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 5910 "configure"
+#line 5741 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
@@ -5930,7 +5761,7 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:5934: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:5765: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_prototype_gethostbyname=no"
 else
@@ -5954,18 +5785,21 @@ else
 fi
 
 echo $ac_n "checking prototype for flock (in sys/file.h)""... $ac_c" 1>&6
-echo "configure:5958: checking prototype for flock (in sys/file.h)" >&5
+echo "configure:5789: checking prototype for flock (in sys/file.h)" >&5
 ac_includes=""
 for ac_header in sys/file.h
 do
-  ac_includes="$ac_includes
+  ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
+  if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
+    ac_includes="$ac_includes 
 #include<$ac_header>"
+  fi
 done
 if eval "test \"`echo '$''{'ac_cv_prototype_flock'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 5969 "configure"
+#line 5803 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
@@ -5989,7 +5823,7 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:5993: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:5827: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_prototype_flock=no"
 else
@@ -6013,18 +5847,21 @@ else
 fi
 
 echo $ac_n "checking prototype for listen (in sys/types.h sys/socket.h)""... $ac_c" 1>&6
-echo "configure:6017: checking prototype for listen (in sys/types.h sys/socket.h)" >&5
+echo "configure:5851: checking prototype for listen (in sys/types.h sys/socket.h)" >&5
 ac_includes=""
 for ac_header in sys/types.h sys/socket.h
 do
-  ac_includes="$ac_includes
+  ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
+  if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
+    ac_includes="$ac_includes 
 #include<$ac_header>"
+  fi
 done
 if eval "test \"`echo '$''{'ac_cv_prototype_listen'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 6028 "configure"
+#line 5865 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
@@ -6048,7 +5885,7 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:6052: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:5889: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_prototype_listen=no"
 else
@@ -6072,18 +5909,21 @@ else
 fi
 
 echo $ac_n "checking prototype for socket (in sys/types.h sys/socket.h)""... $ac_c" 1>&6
-echo "configure:6076: checking prototype for socket (in sys/types.h sys/socket.h)" >&5
+echo "configure:5913: checking prototype for socket (in sys/types.h sys/socket.h)" >&5
 ac_includes=""
 for ac_header in sys/types.h sys/socket.h
 do
-  ac_includes="$ac_includes
+  ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
+  if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
+    ac_includes="$ac_includes 
 #include<$ac_header>"
+  fi
 done
 if eval "test \"`echo '$''{'ac_cv_prototype_socket'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 6087 "configure"
+#line 5927 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
@@ -6107,7 +5947,7 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:6111: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:5951: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_prototype_socket=no"
 else
@@ -6131,18 +5971,21 @@ else
 fi
 
 echo $ac_n "checking prototype for connect (in sys/types.h sys/socket.h)""... $ac_c" 1>&6
-echo "configure:6135: checking prototype for connect (in sys/types.h sys/socket.h)" >&5
+echo "configure:5975: checking prototype for connect (in sys/types.h sys/socket.h)" >&5
 ac_includes=""
 for ac_header in sys/types.h sys/socket.h
 do
-  ac_includes="$ac_includes
+  ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
+  if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
+    ac_includes="$ac_includes 
 #include<$ac_header>"
+  fi
 done
 if eval "test \"`echo '$''{'ac_cv_prototype_connect'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 6146 "configure"
+#line 5989 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
@@ -6166,7 +6009,7 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:6170: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:6013: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_prototype_connect=no"
 else
@@ -6189,20 +6032,22 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-if test $ac_cv_header_sys_select_h = yes ; then
 echo $ac_n "checking prototype for select (in sys/select.h sys/types.h sys/socket.h sys/time.h)""... $ac_c" 1>&6
-echo "configure:6195: checking prototype for select (in sys/select.h sys/types.h sys/socket.h sys/time.h)" >&5
+echo "configure:6037: checking prototype for select (in sys/select.h sys/types.h sys/socket.h sys/time.h)" >&5
 ac_includes=""
 for ac_header in sys/select.h sys/types.h sys/socket.h sys/time.h
 do
-  ac_includes="$ac_includes
+  ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
+  if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
+    ac_includes="$ac_includes 
 #include<$ac_header>"
+  fi
 done
 if eval "test \"`echo '$''{'ac_cv_prototype_select'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 6206 "configure"
+#line 6051 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
@@ -6226,7 +6071,7 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:6230: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:6075: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_prototype_select=no"
 else
@@ -6249,70 +6094,9 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-else
-echo $ac_n "checking prototype for select (in sys/types.h sys/socket.h sys/time.h)""... $ac_c" 1>&6
-echo "configure:6255: checking prototype for select (in sys/types.h sys/socket.h sys/time.h)" >&5
-ac_includes=""
-for ac_header in sys/types.h sys/socket.h sys/time.h
-do
-  ac_includes="$ac_includes
-#include<$ac_header>"
-done
-if eval "test \"`echo '$''{'ac_cv_prototype_select'+set}'`\" = set"; then
-  echo $ac_n "(cached) $ac_c" 1>&6
-else
-  cat > conftest.$ac_ext <<EOF
-#line 6266 "configure"
-#include "confdefs.h"
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-$ac_includes
-
-#ifdef __cplusplus
-}
-#endif
-
-typedef union { int member; } dummyStruct;
-#ifdef __cplusplus
-extern "C"
-#endif
-
-dummyStruct select(dummyStruct);
-
-
-int main() {
-
-; return 0; }
-EOF
-if { (eval echo configure:6290: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
-  rm -rf conftest*
-  eval "ac_cv_prototype_select=no"
-else
-  echo "configure: failed program was:" >&5
-  cat conftest.$ac_ext >&5
-  rm -rf conftest*
-  eval "ac_cv_prototype_select=yes"
-fi
-rm -f conftest*
-fi
-if eval "test \"`echo '$ac_cv_prototype_'select`\" = yes"; then
-  echo "$ac_t""yes" 1>&6
-  ac_tr_prototype=HAVE_PROTOTYPE_`echo select | tr '[a-z]' '[A-Z]'`
-  cat >> confdefs.h <<EOF
-#define $ac_tr_prototype 1
-EOF
-
-  :
-else
-  echo "$ac_t""no" 1>&6
-fi
-
-fi
 if test $ac_cv_prototype_select = yes ; then
 echo $ac_n "checking if select() needs int* parameters (in sys/types.h sys/socket.h sys/time.h)""... $ac_c" 1>&6
-echo "configure:6316: checking if select() needs int* parameters (in sys/types.h sys/socket.h sys/time.h)" >&5
+echo "configure:6100: checking if select() needs int* parameters (in sys/types.h sys/socket.h sys/time.h)" >&5
 ac_includes=""
 for ac_header in sys/types.h sys/socket.h sys/time.h
 do
@@ -6323,7 +6107,7 @@ if eval "test \"`echo '$''{'ac_cv_prototype_intp_select'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 6327 "configure"
+#line 6111 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
@@ -6343,7 +6127,7 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:6347: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:6131: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_prototype_intp_select=no"
 else
@@ -6351,7 +6135,7 @@ else
   cat conftest.$ac_ext >&5
   rm -rf conftest*
   cat > conftest.$ac_ext <<EOF
-#line 6355 "configure"
+#line 6139 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
@@ -6371,7 +6155,7 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:6375: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:6159: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_prototype_intp_select=yes"
 else
@@ -6400,18 +6184,21 @@ fi
 
 fi
 echo $ac_n "checking prototype for setsockopt (in sys/types.h sys/socket.h)""... $ac_c" 1>&6
-echo "configure:6404: checking prototype for setsockopt (in sys/types.h sys/socket.h)" >&5
+echo "configure:6188: checking prototype for setsockopt (in sys/types.h sys/socket.h)" >&5
 ac_includes=""
 for ac_header in sys/types.h sys/socket.h
 do
-  ac_includes="$ac_includes
+  ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
+  if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
+    ac_includes="$ac_includes 
 #include<$ac_header>"
+  fi
 done
 if eval "test \"`echo '$''{'ac_cv_prototype_setsockopt'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 6415 "configure"
+#line 6202 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
@@ -6435,7 +6222,7 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:6439: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:6226: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_prototype_setsockopt=no"
 else
@@ -6459,18 +6246,21 @@ else
 fi
 
 echo $ac_n "checking prototype for getsockopt (in sys/types.h sys/socket.h)""... $ac_c" 1>&6
-echo "configure:6463: checking prototype for getsockopt (in sys/types.h sys/socket.h)" >&5
+echo "configure:6250: checking prototype for getsockopt (in sys/types.h sys/socket.h)" >&5
 ac_includes=""
 for ac_header in sys/types.h sys/socket.h
 do
-  ac_includes="$ac_includes
+  ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
+  if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
+    ac_includes="$ac_includes 
 #include<$ac_header>"
+  fi
 done
 if eval "test \"`echo '$''{'ac_cv_prototype_getsockopt'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 6474 "configure"
+#line 6264 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
@@ -6494,7 +6284,7 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:6498: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:6288: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_prototype_getsockopt=no"
 else
@@ -6518,18 +6308,21 @@ else
 fi
 
 echo $ac_n "checking prototype for getsockname (in sys/types.h sys/socket.h)""... $ac_c" 1>&6
-echo "configure:6522: checking prototype for getsockname (in sys/types.h sys/socket.h)" >&5
+echo "configure:6312: checking prototype for getsockname (in sys/types.h sys/socket.h)" >&5
 ac_includes=""
 for ac_header in sys/types.h sys/socket.h
 do
-  ac_includes="$ac_includes
+  ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
+  if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
+    ac_includes="$ac_includes 
 #include<$ac_header>"
+  fi
 done
 if eval "test \"`echo '$''{'ac_cv_prototype_getsockname'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 6533 "configure"
+#line 6326 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
@@ -6553,7 +6346,7 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:6557: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:6350: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_prototype_getsockname=no"
 else
@@ -6577,18 +6370,21 @@ else
 fi
 
 echo $ac_n "checking prototype for wait3 (in sys/wait.h sys/time.h sys/resource.h)""... $ac_c" 1>&6
-echo "configure:6581: checking prototype for wait3 (in sys/wait.h sys/time.h sys/resource.h)" >&5
+echo "configure:6374: checking prototype for wait3 (in sys/wait.h sys/time.h sys/resource.h)" >&5
 ac_includes=""
 for ac_header in sys/wait.h sys/time.h sys/resource.h
 do
-  ac_includes="$ac_includes
+  ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
+  if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
+    ac_includes="$ac_includes 
 #include<$ac_header>"
+  fi
 done
 if eval "test \"`echo '$''{'ac_cv_prototype_wait3'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 6592 "configure"
+#line 6388 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
@@ -6612,7 +6408,7 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:6616: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:6412: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_prototype_wait3=no"
 else
@@ -6636,18 +6432,21 @@ else
 fi
 
 echo $ac_n "checking prototype for waitpid (in sys/wait.h sys/time.h sys/resource.h)""... $ac_c" 1>&6
-echo "configure:6640: checking prototype for waitpid (in sys/wait.h sys/time.h sys/resource.h)" >&5
+echo "configure:6436: checking prototype for waitpid (in sys/wait.h sys/time.h sys/resource.h)" >&5
 ac_includes=""
 for ac_header in sys/wait.h sys/time.h sys/resource.h
 do
-  ac_includes="$ac_includes
+  ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
+  if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
+    ac_includes="$ac_includes 
 #include<$ac_header>"
+  fi
 done
 if eval "test \"`echo '$''{'ac_cv_prototype_waitpid'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 6651 "configure"
+#line 6450 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
@@ -6671,7 +6470,7 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:6675: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:6474: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_prototype_waitpid=no"
 else
@@ -6694,20 +6493,22 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-if test $ac_cv_header_unistd_h = yes ; then
-echo $ac_n "checking prototype for gethostname (in unistd.h)""... $ac_c" 1>&6
-echo "configure:6700: checking prototype for gethostname (in unistd.h)" >&5
+echo $ac_n "checking prototype for gethostname (in unistd.h libc.h stdlib.h netdb.h)""... $ac_c" 1>&6
+echo "configure:6498: checking prototype for gethostname (in unistd.h libc.h stdlib.h netdb.h)" >&5
 ac_includes=""
-for ac_header in unistd.h
+for ac_header in unistd.h libc.h stdlib.h netdb.h
 do
-  ac_includes="$ac_includes
+  ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
+  if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
+    ac_includes="$ac_includes 
 #include<$ac_header>"
+  fi
 done
 if eval "test \"`echo '$''{'ac_cv_prototype_gethostname'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 6711 "configure"
+#line 6512 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
@@ -6731,7 +6532,7 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:6735: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:6536: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_prototype_gethostname=no"
 else
@@ -6754,76 +6555,22 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-else
-echo $ac_n "checking predefined prototype for gethostname""... $ac_c" 1>&6
-echo "configure:6760: checking predefined prototype for gethostname" >&5
-ac_includes=""
-
-if eval "test \"`echo '$''{'ac_cv_prototype_gethostname'+set}'`\" = set"; then
-  echo $ac_n "(cached) $ac_c" 1>&6
-else
-  cat > conftest.$ac_ext <<EOF
-#line 6767 "configure"
-#include "confdefs.h"
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-$ac_includes
-
-#ifdef __cplusplus
-}
-#endif
-
-typedef union { int member; } dummyStruct;
-#ifdef __cplusplus
-extern "C"
-#endif
-
-dummyStruct gethostname(dummyStruct);
-
-
-int main() {
-
-; return 0; }
-EOF
-if { (eval echo configure:6791: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
-  rm -rf conftest*
-  eval "ac_cv_prototype_gethostname=no"
-else
-  echo "configure: failed program was:" >&5
-  cat conftest.$ac_ext >&5
-  rm -rf conftest*
-  eval "ac_cv_prototype_gethostname=yes"
-fi
-rm -f conftest*
-fi
-if eval "test \"`echo '$ac_cv_prototype_'gethostname`\" = yes"; then
-  echo "$ac_t""yes" 1>&6
-  ac_tr_prototype=HAVE_PROTOTYPE_`echo gethostname | tr '[a-z]' '[A-Z]'`
-  cat >> confdefs.h <<EOF
-#define $ac_tr_prototype 1
-EOF
-
-  :
-else
-  echo "$ac_t""no" 1>&6
-fi
-
-fi
 echo $ac_n "checking prototype for semctl (in sys/types.h sys/ipc.h sys/sem.h)""... $ac_c" 1>&6
-echo "configure:6816: checking prototype for semctl (in sys/types.h sys/ipc.h sys/sem.h)" >&5
+echo "configure:6560: checking prototype for semctl (in sys/types.h sys/ipc.h sys/sem.h)" >&5
 ac_includes=""
 for ac_header in sys/types.h sys/ipc.h sys/sem.h
 do
-  ac_includes="$ac_includes
+  ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
+  if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
+    ac_includes="$ac_includes 
 #include<$ac_header>"
+  fi
 done
 if eval "test \"`echo '$''{'ac_cv_prototype_semctl'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 6827 "configure"
+#line 6574 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
@@ -6847,7 +6594,7 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:6851: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:6598: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_prototype_semctl=no"
 else
@@ -6871,18 +6618,21 @@ else
 fi
 
 echo $ac_n "checking prototype for semget (in sys/types.h sys/ipc.h sys/sem.h)""... $ac_c" 1>&6
-echo "configure:6875: checking prototype for semget (in sys/types.h sys/ipc.h sys/sem.h)" >&5
+echo "configure:6622: checking prototype for semget (in sys/types.h sys/ipc.h sys/sem.h)" >&5
 ac_includes=""
 for ac_header in sys/types.h sys/ipc.h sys/sem.h
 do
-  ac_includes="$ac_includes
+  ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
+  if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
+    ac_includes="$ac_includes 
 #include<$ac_header>"
+  fi
 done
 if eval "test \"`echo '$''{'ac_cv_prototype_semget'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 6886 "configure"
+#line 6636 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
@@ -6906,7 +6656,7 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:6910: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:6660: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_prototype_semget=no"
 else
@@ -6930,18 +6680,21 @@ else
 fi
 
 echo $ac_n "checking prototype for semop (in sys/types.h sys/ipc.h sys/sem.h)""... $ac_c" 1>&6
-echo "configure:6934: checking prototype for semop (in sys/types.h sys/ipc.h sys/sem.h)" >&5
+echo "configure:6684: checking prototype for semop (in sys/types.h sys/ipc.h sys/sem.h)" >&5
 ac_includes=""
 for ac_header in sys/types.h sys/ipc.h sys/sem.h
 do
-  ac_includes="$ac_includes
+  ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
+  if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
+    ac_includes="$ac_includes 
 #include<$ac_header>"
+  fi
 done
 if eval "test \"`echo '$''{'ac_cv_prototype_semop'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 6945 "configure"
+#line 6698 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
@@ -6965,7 +6718,7 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:6969: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:6722: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_prototype_semop=no"
 else
@@ -6989,18 +6742,21 @@ else
 fi
 
 echo $ac_n "checking prototype for shmat (in sys/types.h sys/ipc.h sys/shm.h)""... $ac_c" 1>&6
-echo "configure:6993: checking prototype for shmat (in sys/types.h sys/ipc.h sys/shm.h)" >&5
+echo "configure:6746: checking prototype for shmat (in sys/types.h sys/ipc.h sys/shm.h)" >&5
 ac_includes=""
 for ac_header in sys/types.h sys/ipc.h sys/shm.h
 do
-  ac_includes="$ac_includes
+  ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
+  if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
+    ac_includes="$ac_includes 
 #include<$ac_header>"
+  fi
 done
 if eval "test \"`echo '$''{'ac_cv_prototype_shmat'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 7004 "configure"
+#line 6760 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
@@ -7024,7 +6780,7 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:7028: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:6784: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_prototype_shmat=no"
 else
@@ -7048,18 +6804,21 @@ else
 fi
 
 echo $ac_n "checking prototype for shmdt (in sys/types.h sys/ipc.h sys/shm.h)""... $ac_c" 1>&6
-echo "configure:7052: checking prototype for shmdt (in sys/types.h sys/ipc.h sys/shm.h)" >&5
+echo "configure:6808: checking prototype for shmdt (in sys/types.h sys/ipc.h sys/shm.h)" >&5
 ac_includes=""
 for ac_header in sys/types.h sys/ipc.h sys/shm.h
 do
-  ac_includes="$ac_includes
+  ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
+  if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
+    ac_includes="$ac_includes 
 #include<$ac_header>"
+  fi
 done
 if eval "test \"`echo '$''{'ac_cv_prototype_shmdt'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 7063 "configure"
+#line 6822 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
@@ -7083,7 +6842,7 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:7087: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:6846: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_prototype_shmdt=no"
 else
@@ -7107,18 +6866,21 @@ else
 fi
 
 echo $ac_n "checking prototype for shmctl (in sys/types.h sys/ipc.h sys/shm.h)""... $ac_c" 1>&6
-echo "configure:7111: checking prototype for shmctl (in sys/types.h sys/ipc.h sys/shm.h)" >&5
+echo "configure:6870: checking prototype for shmctl (in sys/types.h sys/ipc.h sys/shm.h)" >&5
 ac_includes=""
 for ac_header in sys/types.h sys/ipc.h sys/shm.h
 do
-  ac_includes="$ac_includes
+  ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
+  if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
+    ac_includes="$ac_includes 
 #include<$ac_header>"
+  fi
 done
 if eval "test \"`echo '$''{'ac_cv_prototype_shmctl'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 7122 "configure"
+#line 6884 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
@@ -7142,7 +6904,7 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:7146: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:6908: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_prototype_shmctl=no"
 else
@@ -7166,18 +6928,21 @@ else
 fi
 
 echo $ac_n "checking prototype for shmget (in sys/types.h sys/ipc.h sys/shm.h)""... $ac_c" 1>&6
-echo "configure:7170: checking prototype for shmget (in sys/types.h sys/ipc.h sys/shm.h)" >&5
+echo "configure:6932: checking prototype for shmget (in sys/types.h sys/ipc.h sys/shm.h)" >&5
 ac_includes=""
 for ac_header in sys/types.h sys/ipc.h sys/shm.h
 do
-  ac_includes="$ac_includes
+  ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
+  if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
+    ac_includes="$ac_includes 
 #include<$ac_header>"
+  fi
 done
 if eval "test \"`echo '$''{'ac_cv_prototype_shmget'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 7181 "configure"
+#line 6946 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
@@ -7201,7 +6966,7 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:7205: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:6970: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_prototype_shmget=no"
 else
@@ -7224,21 +6989,22 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-if test $ac_cv_header_libc_h = yes ; then
-if test $ac_cv_header_unistd_h = yes ; then
-echo $ac_n "checking prototype for usleep (in libc.h unistd.h)""... $ac_c" 1>&6
-echo "configure:7231: checking prototype for usleep (in libc.h unistd.h)" >&5
+echo $ac_n "checking prototype for usleep (in libc.h unistd.h stdlib.h)""... $ac_c" 1>&6
+echo "configure:6994: checking prototype for usleep (in libc.h unistd.h stdlib.h)" >&5
 ac_includes=""
-for ac_header in libc.h unistd.h
+for ac_header in libc.h unistd.h stdlib.h
 do
-  ac_includes="$ac_includes
+  ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
+  if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
+    ac_includes="$ac_includes 
 #include<$ac_header>"
+  fi
 done
 if eval "test \"`echo '$''{'ac_cv_prototype_usleep'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 7242 "configure"
+#line 7008 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
@@ -7262,7 +7028,7 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:7266: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:7032: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_prototype_usleep=no"
 else
@@ -7285,19 +7051,22 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-echo $ac_n "checking prototype for gethostid (in libc.h unistd.h)""... $ac_c" 1>&6
-echo "configure:7290: checking prototype for gethostid (in libc.h unistd.h)" >&5
+echo $ac_n "checking prototype for gethostid (in libc.h unistd.h stdlib.h)""... $ac_c" 1>&6
+echo "configure:7056: checking prototype for gethostid (in libc.h unistd.h stdlib.h)" >&5
 ac_includes=""
-for ac_header in libc.h unistd.h
+for ac_header in libc.h unistd.h stdlib.h
 do
-  ac_includes="$ac_includes
+  ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
+  if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
+    ac_includes="$ac_includes 
 #include<$ac_header>"
+  fi
 done
 if eval "test \"`echo '$''{'ac_cv_prototype_gethostid'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 7301 "configure"
+#line 7070 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
@@ -7321,7 +7090,7 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:7325: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:7094: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_prototype_gethostid=no"
 else
@@ -7344,139 +7113,22 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-else
-echo $ac_n "checking prototype for usleep (in libc.h)""... $ac_c" 1>&6
-echo "configure:7350: checking prototype for usleep (in libc.h)" >&5
+echo $ac_n "checking prototype for mktemp (in libc.h unistd.h stdlib.h)""... $ac_c" 1>&6
+echo "configure:7118: checking prototype for mktemp (in libc.h unistd.h stdlib.h)" >&5
 ac_includes=""
-for ac_header in libc.h
+for ac_header in libc.h unistd.h stdlib.h
 do
-  ac_includes="$ac_includes
+  ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
+  if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
+    ac_includes="$ac_includes 
 #include<$ac_header>"
-done
-if eval "test \"`echo '$''{'ac_cv_prototype_usleep'+set}'`\" = set"; then
-  echo $ac_n "(cached) $ac_c" 1>&6
-else
-  cat > conftest.$ac_ext <<EOF
-#line 7361 "configure"
-#include "confdefs.h"
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-$ac_includes
-
-#ifdef __cplusplus
-}
-#endif
-
-typedef union { int member; } dummyStruct;
-#ifdef __cplusplus
-extern "C"
-#endif
-
-dummyStruct usleep(dummyStruct);
-
-
-int main() {
-
-; return 0; }
-EOF
-if { (eval echo configure:7385: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
-  rm -rf conftest*
-  eval "ac_cv_prototype_usleep=no"
-else
-  echo "configure: failed program was:" >&5
-  cat conftest.$ac_ext >&5
-  rm -rf conftest*
-  eval "ac_cv_prototype_usleep=yes"
-fi
-rm -f conftest*
-fi
-if eval "test \"`echo '$ac_cv_prototype_'usleep`\" = yes"; then
-  echo "$ac_t""yes" 1>&6
-  ac_tr_prototype=HAVE_PROTOTYPE_`echo usleep | tr '[a-z]' '[A-Z]'`
-  cat >> confdefs.h <<EOF
-#define $ac_tr_prototype 1
-EOF
-
-  :
-else
-  echo "$ac_t""no" 1>&6
-fi
-
-echo $ac_n "checking prototype for gethostid (in libc.h)""... $ac_c" 1>&6
-echo "configure:7409: checking prototype for gethostid (in libc.h)" >&5
-ac_includes=""
-for ac_header in libc.h
-do
-  ac_includes="$ac_includes
-#include<$ac_header>"
-done
-if eval "test \"`echo '$''{'ac_cv_prototype_gethostid'+set}'`\" = set"; then
-  echo $ac_n "(cached) $ac_c" 1>&6
-else
-  cat > conftest.$ac_ext <<EOF
-#line 7420 "configure"
-#include "confdefs.h"
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-$ac_includes
-
-#ifdef __cplusplus
-}
-#endif
-
-typedef union { int member; } dummyStruct;
-#ifdef __cplusplus
-extern "C"
-#endif
-
-dummyStruct gethostid(dummyStruct);
-
-
-int main() {
-
-; return 0; }
-EOF
-if { (eval echo configure:7444: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
-  rm -rf conftest*
-  eval "ac_cv_prototype_gethostid=no"
-else
-  echo "configure: failed program was:" >&5
-  cat conftest.$ac_ext >&5
-  rm -rf conftest*
-  eval "ac_cv_prototype_gethostid=yes"
-fi
-rm -f conftest*
-fi
-if eval "test \"`echo '$ac_cv_prototype_'gethostid`\" = yes"; then
-  echo "$ac_t""yes" 1>&6
-  ac_tr_prototype=HAVE_PROTOTYPE_`echo gethostid | tr '[a-z]' '[A-Z]'`
-  cat >> confdefs.h <<EOF
-#define $ac_tr_prototype 1
-EOF
-
-  :
-else
-  echo "$ac_t""no" 1>&6
-fi
-
-fi
-echo $ac_n "checking prototype for mktemp (in stdlib.h libc.h)""... $ac_c" 1>&6
-echo "configure:7469: checking prototype for mktemp (in stdlib.h libc.h)" >&5
-ac_includes=""
-for ac_header in stdlib.h libc.h
-do
-  ac_includes="$ac_includes
-#include<$ac_header>"
+  fi
 done
 if eval "test \"`echo '$''{'ac_cv_prototype_mktemp'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 7480 "configure"
+#line 7132 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
@@ -7500,7 +7152,7 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:7504: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:7156: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_prototype_mktemp=no"
 else
@@ -7523,314 +7175,22 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-else
-if test $ac_cv_header_unistd_h = yes ; then
-echo $ac_n "checking prototype for usleep (in unistd.h)""... $ac_c" 1>&6
-echo "configure:7530: checking prototype for usleep (in unistd.h)" >&5
+echo $ac_n "checking prototype for getcwd (in libc.h unistd.h stdlib.h)""... $ac_c" 1>&6
+echo "configure:7180: checking prototype for getcwd (in libc.h unistd.h stdlib.h)" >&5
 ac_includes=""
-for ac_header in unistd.h
+for ac_header in libc.h unistd.h stdlib.h
 do
-  ac_includes="$ac_includes
+  ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
+  if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
+    ac_includes="$ac_includes 
 #include<$ac_header>"
-done
-if eval "test \"`echo '$''{'ac_cv_prototype_usleep'+set}'`\" = set"; then
-  echo $ac_n "(cached) $ac_c" 1>&6
-else
-  cat > conftest.$ac_ext <<EOF
-#line 7541 "configure"
-#include "confdefs.h"
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-$ac_includes
-
-#ifdef __cplusplus
-}
-#endif
-
-typedef union { int member; } dummyStruct;
-#ifdef __cplusplus
-extern "C"
-#endif
-
-dummyStruct usleep(dummyStruct);
-
-
-int main() {
-
-; return 0; }
-EOF
-if { (eval echo configure:7565: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
-  rm -rf conftest*
-  eval "ac_cv_prototype_usleep=no"
-else
-  echo "configure: failed program was:" >&5
-  cat conftest.$ac_ext >&5
-  rm -rf conftest*
-  eval "ac_cv_prototype_usleep=yes"
-fi
-rm -f conftest*
-fi
-if eval "test \"`echo '$ac_cv_prototype_'usleep`\" = yes"; then
-  echo "$ac_t""yes" 1>&6
-  ac_tr_prototype=HAVE_PROTOTYPE_`echo usleep | tr '[a-z]' '[A-Z]'`
-  cat >> confdefs.h <<EOF
-#define $ac_tr_prototype 1
-EOF
-
-  :
-else
-  echo "$ac_t""no" 1>&6
-fi
-
-echo $ac_n "checking prototype for gethostid (in unistd.h)""... $ac_c" 1>&6
-echo "configure:7589: checking prototype for gethostid (in unistd.h)" >&5
-ac_includes=""
-for ac_header in unistd.h
-do
-  ac_includes="$ac_includes
-#include<$ac_header>"
-done
-if eval "test \"`echo '$''{'ac_cv_prototype_gethostid'+set}'`\" = set"; then
-  echo $ac_n "(cached) $ac_c" 1>&6
-else
-  cat > conftest.$ac_ext <<EOF
-#line 7600 "configure"
-#include "confdefs.h"
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-$ac_includes
-
-#ifdef __cplusplus
-}
-#endif
-
-typedef union { int member; } dummyStruct;
-#ifdef __cplusplus
-extern "C"
-#endif
-
-dummyStruct gethostid(dummyStruct);
-
-
-int main() {
-
-; return 0; }
-EOF
-if { (eval echo configure:7624: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
-  rm -rf conftest*
-  eval "ac_cv_prototype_gethostid=no"
-else
-  echo "configure: failed program was:" >&5
-  cat conftest.$ac_ext >&5
-  rm -rf conftest*
-  eval "ac_cv_prototype_gethostid=yes"
-fi
-rm -f conftest*
-fi
-if eval "test \"`echo '$ac_cv_prototype_'gethostid`\" = yes"; then
-  echo "$ac_t""yes" 1>&6
-  ac_tr_prototype=HAVE_PROTOTYPE_`echo gethostid | tr '[a-z]' '[A-Z]'`
-  cat >> confdefs.h <<EOF
-#define $ac_tr_prototype 1
-EOF
-
-  :
-else
-  echo "$ac_t""no" 1>&6
-fi
-
-else
-echo $ac_n "checking predefined prototype for usleep""... $ac_c" 1>&6
-echo "configure:7649: checking predefined prototype for usleep" >&5
-ac_includes=""
-
-if eval "test \"`echo '$''{'ac_cv_prototype_usleep'+set}'`\" = set"; then
-  echo $ac_n "(cached) $ac_c" 1>&6
-else
-  cat > conftest.$ac_ext <<EOF
-#line 7656 "configure"
-#include "confdefs.h"
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-$ac_includes
-
-#ifdef __cplusplus
-}
-#endif
-
-typedef union { int member; } dummyStruct;
-#ifdef __cplusplus
-extern "C"
-#endif
-
-dummyStruct usleep(dummyStruct);
-
-
-int main() {
-
-; return 0; }
-EOF
-if { (eval echo configure:7680: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
-  rm -rf conftest*
-  eval "ac_cv_prototype_usleep=no"
-else
-  echo "configure: failed program was:" >&5
-  cat conftest.$ac_ext >&5
-  rm -rf conftest*
-  eval "ac_cv_prototype_usleep=yes"
-fi
-rm -f conftest*
-fi
-if eval "test \"`echo '$ac_cv_prototype_'usleep`\" = yes"; then
-  echo "$ac_t""yes" 1>&6
-  ac_tr_prototype=HAVE_PROTOTYPE_`echo usleep | tr '[a-z]' '[A-Z]'`
-  cat >> confdefs.h <<EOF
-#define $ac_tr_prototype 1
-EOF
-
-  :
-else
-  echo "$ac_t""no" 1>&6
-fi
-
-echo $ac_n "checking predefined prototype for gethostid""... $ac_c" 1>&6
-echo "configure:7704: checking predefined prototype for gethostid" >&5
-ac_includes=""
-
-if eval "test \"`echo '$''{'ac_cv_prototype_gethostid'+set}'`\" = set"; then
-  echo $ac_n "(cached) $ac_c" 1>&6
-else
-  cat > conftest.$ac_ext <<EOF
-#line 7711 "configure"
-#include "confdefs.h"
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-$ac_includes
-
-#ifdef __cplusplus
-}
-#endif
-
-typedef union { int member; } dummyStruct;
-#ifdef __cplusplus
-extern "C"
-#endif
-
-dummyStruct gethostid(dummyStruct);
-
-
-int main() {
-
-; return 0; }
-EOF
-if { (eval echo configure:7735: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
-  rm -rf conftest*
-  eval "ac_cv_prototype_gethostid=no"
-else
-  echo "configure: failed program was:" >&5
-  cat conftest.$ac_ext >&5
-  rm -rf conftest*
-  eval "ac_cv_prototype_gethostid=yes"
-fi
-rm -f conftest*
-fi
-if eval "test \"`echo '$ac_cv_prototype_'gethostid`\" = yes"; then
-  echo "$ac_t""yes" 1>&6
-  ac_tr_prototype=HAVE_PROTOTYPE_`echo gethostid | tr '[a-z]' '[A-Z]'`
-  cat >> confdefs.h <<EOF
-#define $ac_tr_prototype 1
-EOF
-
-  :
-else
-  echo "$ac_t""no" 1>&6
-fi
-
-fi
-echo $ac_n "checking prototype for mktemp (in stdlib.h)""... $ac_c" 1>&6
-echo "configure:7760: checking prototype for mktemp (in stdlib.h)" >&5
-ac_includes=""
-for ac_header in stdlib.h
-do
-  ac_includes="$ac_includes
-#include<$ac_header>"
-done
-if eval "test \"`echo '$''{'ac_cv_prototype_mktemp'+set}'`\" = set"; then
-  echo $ac_n "(cached) $ac_c" 1>&6
-else
-  cat > conftest.$ac_ext <<EOF
-#line 7771 "configure"
-#include "confdefs.h"
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-$ac_includes
-
-#ifdef __cplusplus
-}
-#endif
-
-typedef union { int member; } dummyStruct;
-#ifdef __cplusplus
-extern "C"
-#endif
-
-dummyStruct mktemp(dummyStruct);
-
-
-int main() {
-
-; return 0; }
-EOF
-if { (eval echo configure:7795: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
-  rm -rf conftest*
-  eval "ac_cv_prototype_mktemp=no"
-else
-  echo "configure: failed program was:" >&5
-  cat conftest.$ac_ext >&5
-  rm -rf conftest*
-  eval "ac_cv_prototype_mktemp=yes"
-fi
-rm -f conftest*
-fi
-if eval "test \"`echo '$ac_cv_prototype_'mktemp`\" = yes"; then
-  echo "$ac_t""yes" 1>&6
-  ac_tr_prototype=HAVE_PROTOTYPE_`echo mktemp | tr '[a-z]' '[A-Z]'`
-  cat >> confdefs.h <<EOF
-#define $ac_tr_prototype 1
-EOF
-
-  :
-else
-  echo "$ac_t""no" 1>&6
-fi
-
-fi
-
-if test $ac_cv_header_libc_h = yes ; then
-if test $ac_cv_header_unistd_h = yes ; then
-echo $ac_n "checking prototype for getcwd (in libc.h unistd.h)""... $ac_c" 1>&6
-echo "configure:7823: checking prototype for getcwd (in libc.h unistd.h)" >&5
-ac_includes=""
-for ac_header in libc.h unistd.h
-do
-  ac_includes="$ac_includes
-#include<$ac_header>"
+  fi
 done
 if eval "test \"`echo '$''{'ac_cv_prototype_getcwd'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 7834 "configure"
+#line 7194 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
@@ -7854,7 +7214,7 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:7858: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:7218: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_prototype_getcwd=no"
 else
@@ -7877,19 +7237,22 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-echo $ac_n "checking prototype for getwd (in libc.h unistd.h)""... $ac_c" 1>&6
-echo "configure:7882: checking prototype for getwd (in libc.h unistd.h)" >&5
+echo $ac_n "checking prototype for getwd (in libc.h unistd.h stdlib.h)""... $ac_c" 1>&6
+echo "configure:7242: checking prototype for getwd (in libc.h unistd.h stdlib.h)" >&5
 ac_includes=""
-for ac_header in libc.h unistd.h
+for ac_header in libc.h unistd.h stdlib.h
 do
-  ac_includes="$ac_includes
+  ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
+  if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
+    ac_includes="$ac_includes 
 #include<$ac_header>"
+  fi
 done
 if eval "test \"`echo '$''{'ac_cv_prototype_getwd'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 7893 "configure"
+#line 7256 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
@@ -7913,7 +7276,7 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:7917: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:7280: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_prototype_getwd=no"
 else
@@ -7936,362 +7299,9 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-else
-echo $ac_n "checking prototype for getcwd (in libc.h)""... $ac_c" 1>&6
-echo "configure:7942: checking prototype for getcwd (in libc.h)" >&5
-ac_includes=""
-for ac_header in libc.h
-do
-  ac_includes="$ac_includes
-#include<$ac_header>"
-done
-if eval "test \"`echo '$''{'ac_cv_prototype_getcwd'+set}'`\" = set"; then
-  echo $ac_n "(cached) $ac_c" 1>&6
-else
-  cat > conftest.$ac_ext <<EOF
-#line 7953 "configure"
-#include "confdefs.h"
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-$ac_includes
-
-#ifdef __cplusplus
-}
-#endif
-
-typedef union { int member; } dummyStruct;
-#ifdef __cplusplus
-extern "C"
-#endif
-
-dummyStruct getcwd(dummyStruct);
-
-
-int main() {
-
-; return 0; }
-EOF
-if { (eval echo configure:7977: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
-  rm -rf conftest*
-  eval "ac_cv_prototype_getcwd=no"
-else
-  echo "configure: failed program was:" >&5
-  cat conftest.$ac_ext >&5
-  rm -rf conftest*
-  eval "ac_cv_prototype_getcwd=yes"
-fi
-rm -f conftest*
-fi
-if eval "test \"`echo '$ac_cv_prototype_'getcwd`\" = yes"; then
-  echo "$ac_t""yes" 1>&6
-  ac_tr_prototype=HAVE_PROTOTYPE_`echo getcwd | tr '[a-z]' '[A-Z]'`
-  cat >> confdefs.h <<EOF
-#define $ac_tr_prototype 1
-EOF
-
-  :
-else
-  echo "$ac_t""no" 1>&6
-fi
-
-echo $ac_n "checking prototype for getwd (in libc.h)""... $ac_c" 1>&6
-echo "configure:8001: checking prototype for getwd (in libc.h)" >&5
-ac_includes=""
-for ac_header in libc.h
-do
-  ac_includes="$ac_includes
-#include<$ac_header>"
-done
-if eval "test \"`echo '$''{'ac_cv_prototype_getwd'+set}'`\" = set"; then
-  echo $ac_n "(cached) $ac_c" 1>&6
-else
-  cat > conftest.$ac_ext <<EOF
-#line 8012 "configure"
-#include "confdefs.h"
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-$ac_includes
-
-#ifdef __cplusplus
-}
-#endif
-
-typedef union { int member; } dummyStruct;
-#ifdef __cplusplus
-extern "C"
-#endif
-
-dummyStruct getwd(dummyStruct);
-
-
-int main() {
-
-; return 0; }
-EOF
-if { (eval echo configure:8036: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
-  rm -rf conftest*
-  eval "ac_cv_prototype_getwd=no"
-else
-  echo "configure: failed program was:" >&5
-  cat conftest.$ac_ext >&5
-  rm -rf conftest*
-  eval "ac_cv_prototype_getwd=yes"
-fi
-rm -f conftest*
-fi
-if eval "test \"`echo '$ac_cv_prototype_'getwd`\" = yes"; then
-  echo "$ac_t""yes" 1>&6
-  ac_tr_prototype=HAVE_PROTOTYPE_`echo getwd | tr '[a-z]' '[A-Z]'`
-  cat >> confdefs.h <<EOF
-#define $ac_tr_prototype 1
-EOF
-
-  :
-else
-  echo "$ac_t""no" 1>&6
-fi
-
-fi
-else
-if test $ac_cv_header_unistd_h = yes ; then
-echo $ac_n "checking prototype for getcwd (in unistd.h)""... $ac_c" 1>&6
-echo "configure:8063: checking prototype for getcwd (in unistd.h)" >&5
-ac_includes=""
-for ac_header in unistd.h
-do
-  ac_includes="$ac_includes
-#include<$ac_header>"
-done
-if eval "test \"`echo '$''{'ac_cv_prototype_getcwd'+set}'`\" = set"; then
-  echo $ac_n "(cached) $ac_c" 1>&6
-else
-  cat > conftest.$ac_ext <<EOF
-#line 8074 "configure"
-#include "confdefs.h"
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-$ac_includes
-
-#ifdef __cplusplus
-}
-#endif
-
-typedef union { int member; } dummyStruct;
-#ifdef __cplusplus
-extern "C"
-#endif
-
-dummyStruct getcwd(dummyStruct);
-
-
-int main() {
-
-; return 0; }
-EOF
-if { (eval echo configure:8098: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
-  rm -rf conftest*
-  eval "ac_cv_prototype_getcwd=no"
-else
-  echo "configure: failed program was:" >&5
-  cat conftest.$ac_ext >&5
-  rm -rf conftest*
-  eval "ac_cv_prototype_getcwd=yes"
-fi
-rm -f conftest*
-fi
-if eval "test \"`echo '$ac_cv_prototype_'getcwd`\" = yes"; then
-  echo "$ac_t""yes" 1>&6
-  ac_tr_prototype=HAVE_PROTOTYPE_`echo getcwd | tr '[a-z]' '[A-Z]'`
-  cat >> confdefs.h <<EOF
-#define $ac_tr_prototype 1
-EOF
-
-  :
-else
-  echo "$ac_t""no" 1>&6
-fi
-
-echo $ac_n "checking prototype for getwd (in unistd.h)""... $ac_c" 1>&6
-echo "configure:8122: checking prototype for getwd (in unistd.h)" >&5
-ac_includes=""
-for ac_header in unistd.h
-do
-  ac_includes="$ac_includes
-#include<$ac_header>"
-done
-if eval "test \"`echo '$''{'ac_cv_prototype_getwd'+set}'`\" = set"; then
-  echo $ac_n "(cached) $ac_c" 1>&6
-else
-  cat > conftest.$ac_ext <<EOF
-#line 8133 "configure"
-#include "confdefs.h"
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-$ac_includes
-
-#ifdef __cplusplus
-}
-#endif
-
-typedef union { int member; } dummyStruct;
-#ifdef __cplusplus
-extern "C"
-#endif
-
-dummyStruct getwd(dummyStruct);
-
-
-int main() {
-
-; return 0; }
-EOF
-if { (eval echo configure:8157: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
-  rm -rf conftest*
-  eval "ac_cv_prototype_getwd=no"
-else
-  echo "configure: failed program was:" >&5
-  cat conftest.$ac_ext >&5
-  rm -rf conftest*
-  eval "ac_cv_prototype_getwd=yes"
-fi
-rm -f conftest*
-fi
-if eval "test \"`echo '$ac_cv_prototype_'getwd`\" = yes"; then
-  echo "$ac_t""yes" 1>&6
-  ac_tr_prototype=HAVE_PROTOTYPE_`echo getwd | tr '[a-z]' '[A-Z]'`
-  cat >> confdefs.h <<EOF
-#define $ac_tr_prototype 1
-EOF
-
-  :
-else
-  echo "$ac_t""no" 1>&6
-fi
-
-else
-echo $ac_n "checking predefined prototype for getcwd""... $ac_c" 1>&6
-echo "configure:8182: checking predefined prototype for getcwd" >&5
-ac_includes=""
-
-if eval "test \"`echo '$''{'ac_cv_prototype_getcwd'+set}'`\" = set"; then
-  echo $ac_n "(cached) $ac_c" 1>&6
-else
-  cat > conftest.$ac_ext <<EOF
-#line 8189 "configure"
-#include "confdefs.h"
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-$ac_includes
-
-#ifdef __cplusplus
-}
-#endif
-
-typedef union { int member; } dummyStruct;
-#ifdef __cplusplus
-extern "C"
-#endif
-
-dummyStruct getcwd(dummyStruct);
-
-
-int main() {
-
-; return 0; }
-EOF
-if { (eval echo configure:8213: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
-  rm -rf conftest*
-  eval "ac_cv_prototype_getcwd=no"
-else
-  echo "configure: failed program was:" >&5
-  cat conftest.$ac_ext >&5
-  rm -rf conftest*
-  eval "ac_cv_prototype_getcwd=yes"
-fi
-rm -f conftest*
-fi
-if eval "test \"`echo '$ac_cv_prototype_'getcwd`\" = yes"; then
-  echo "$ac_t""yes" 1>&6
-  ac_tr_prototype=HAVE_PROTOTYPE_`echo getcwd | tr '[a-z]' '[A-Z]'`
-  cat >> confdefs.h <<EOF
-#define $ac_tr_prototype 1
-EOF
-
-  :
-else
-  echo "$ac_t""no" 1>&6
-fi
-
-echo $ac_n "checking predefined prototype for getwd""... $ac_c" 1>&6
-echo "configure:8237: checking predefined prototype for getwd" >&5
-ac_includes=""
-
-if eval "test \"`echo '$''{'ac_cv_prototype_getwd'+set}'`\" = set"; then
-  echo $ac_n "(cached) $ac_c" 1>&6
-else
-  cat > conftest.$ac_ext <<EOF
-#line 8244 "configure"
-#include "confdefs.h"
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-$ac_includes
-
-#ifdef __cplusplus
-}
-#endif
-
-typedef union { int member; } dummyStruct;
-#ifdef __cplusplus
-extern "C"
-#endif
-
-dummyStruct getwd(dummyStruct);
-
-
-int main() {
-
-; return 0; }
-EOF
-if { (eval echo configure:8268: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
-  rm -rf conftest*
-  eval "ac_cv_prototype_getwd=no"
-else
-  echo "configure: failed program was:" >&5
-  cat conftest.$ac_ext >&5
-  rm -rf conftest*
-  eval "ac_cv_prototype_getwd=yes"
-fi
-rm -f conftest*
-fi
-if eval "test \"`echo '$ac_cv_prototype_'getwd`\" = yes"; then
-  echo "$ac_t""yes" 1>&6
-  ac_tr_prototype=HAVE_PROTOTYPE_`echo getwd | tr '[a-z]' '[A-Z]'`
-  cat >> confdefs.h <<EOF
-#define $ac_tr_prototype 1
-EOF
-
-  :
-else
-  echo "$ac_t""no" 1>&6
-fi
-
-fi
-fi
 
 echo $ac_n "checking declaration for union semun (in sys/types.h sys/ipc.h sys/sem.h)""... $ac_c" 1>&6
-echo "configure:8295: checking declaration for union semun (in sys/types.h sys/ipc.h sys/sem.h)" >&5
+echo "configure:7305: checking declaration for union semun (in sys/types.h sys/ipc.h sys/sem.h)" >&5
 ac_includes=""
 for ac_header in sys/types.h sys/ipc.h sys/sem.h
 do
@@ -8303,7 +7313,7 @@ if eval "test \"`echo '$''{'$ac_cv_declaration'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 8307 "configure"
+#line 7317 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
@@ -8322,7 +7332,7 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:8326: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:7336: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   eval "$ac_cv_declaration=yes"
 else
@@ -8347,7 +7357,7 @@ fi
 unset ac_cv_declaration
 
 echo $ac_n "checking declaration for struct sembuf (in sys/types.h sys/ipc.h sys/sem.h)""... $ac_c" 1>&6
-echo "configure:8351: checking declaration for struct sembuf (in sys/types.h sys/ipc.h sys/sem.h)" >&5
+echo "configure:7361: checking declaration for struct sembuf (in sys/types.h sys/ipc.h sys/sem.h)" >&5
 ac_includes=""
 for ac_header in sys/types.h sys/ipc.h sys/sem.h
 do
@@ -8359,7 +7369,7 @@ if eval "test \"`echo '$''{'$ac_cv_declaration'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 8363 "configure"
+#line 7373 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
@@ -8378,7 +7388,7 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:8382: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:7392: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   eval "$ac_cv_declaration=yes"
 else
@@ -8404,13 +7414,13 @@ unset ac_cv_declaration
 
 
 echo $ac_n "checking for C++ class template""... $ac_c" 1>&6
-echo "configure:8408: checking for C++ class template" >&5
+echo "configure:7418: checking for C++ class template" >&5
 if eval "test \"`echo '$''{'ac_cv_check_class_template'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 8414 "configure"
+#line 7424 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -8435,8 +7445,8 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:8439: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
-  if { (eval echo configure:8440: \"$ac_link_o\") 1>&5; (eval $ac_link_o) 2>&5; }; then
+if { (eval echo configure:7449: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+  if { (eval echo configure:7450: \"$ac_link_o\") 1>&5; (eval $ac_link_o) 2>&5; }; then
     rm -rf conftest*
     eval "ac_cv_check_class_template=yes"
   else
@@ -8465,13 +7475,13 @@ else
 fi
 
 echo $ac_n "checking for C++ static methods in class templates""... $ac_c" 1>&6
-echo "configure:8469: checking for C++ static methods in class templates" >&5
+echo "configure:7479: checking for C++ static methods in class templates" >&5
 if eval "test \"`echo '$''{'ac_cv_check_static_template_method'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 8475 "configure"
+#line 7485 "configure"
 #include "confdefs.h"
 
 void additive(int & i)
@@ -8496,8 +7506,8 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:8500: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
-  if { (eval echo configure:8501: \"$ac_link_o\") 1>&5; (eval $ac_link_o) 2>&5; }; then
+if { (eval echo configure:7510: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+  if { (eval echo configure:7511: \"$ac_link_o\") 1>&5; (eval $ac_link_o) 2>&5; }; then
     rm -rf conftest*
     eval "ac_cv_check_static_template_method=yes"
   else
@@ -8526,13 +7536,13 @@ else
 fi
 
 echo $ac_n "checking for C++ function template""... $ac_c" 1>&6
-echo "configure:8530: checking for C++ function template" >&5
+echo "configure:7540: checking for C++ function template" >&5
 if eval "test \"`echo '$''{'ac_cv_check_function_template'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 8536 "configure"
+#line 7546 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -8549,8 +7559,8 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:8553: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
-  if { (eval echo configure:8554: \"$ac_link_o\") 1>&5; (eval $ac_link_o) 2>&5; }; then
+if { (eval echo configure:7563: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+  if { (eval echo configure:7564: \"$ac_link_o\") 1>&5; (eval $ac_link_o) 2>&5; }; then
     rm -rf conftest*
     eval "ac_cv_check_function_template=yes"
   else

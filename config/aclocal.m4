@@ -6,14 +6,23 @@ dnl Purpose: additional M4 macros for GNU autoconf
 dnl
 dnl Authors: Andreas Barth, Marco Eichelberg
 dnl
-dnl Last Update:  $Author: meichel $
-dnl Revision:     $Revision: 1.6 $
+dnl Last Update:  $Author: hewett $
+dnl Revision:     $Revision: 1.7 $
 dnl Status:       $State: Exp $
 dnl
-dnl $Id: aclocal.m4,v 1.6 1997-07-03 09:38:17 meichel Exp $
+dnl $Id: aclocal.m4,v 1.7 1997-09-11 15:53:17 hewett Exp $
 dnl
 dnl $Log: aclocal.m4,v $
-dnl Revision 1.6  1997-07-03 09:38:17  meichel
+dnl Revision 1.7  1997-09-11 15:53:17  hewett
+dnl Enhanced the configure macro AC_CHECK_PROTOTYPE to check the
+dnl include files passed as aruments before searching for a
+dnl prototype.  This makes the configure.in file considerably
+dnl simpler.  The include files passed as aruments to the
+dnl AC_CHECL_PROTOTYPE macro must have already been tested for
+dnl using the AC_CHECK_HEADERS macro.  If not, the include files
+dnl are assumed not to exist.
+dnl
+dnl Revision 1.6  1997/07/03 09:38:17  meichel
 dnl Corrected bug in configure module - all tests trying to link or run
 dnl   a test program could fail (and, therefore, report an incorrect result)
 dnl   if libg++.a was not found in the default link path.
@@ -74,7 +83,8 @@ fi
 dnl AC_CHECK_PROTOTYPE checks if there is a prototype declaration
 dnl   for the given function. If header file(s) are given as argument 2, they
 dnl   are #included in the search. Otherwise only predefined functions will
-dnl   be found.
+dnl   be found.  The header files are only included in the search if they 
+dnl   have already been found using the AC_CHECK_HEADERS(header) macro.  
 dnl Note:
 dnl   Since GNU autoheader does not support this macro, you must create entries
 dnl   in your acconfig.h for each function which is tested.
@@ -94,8 +104,11 @@ ifelse([$2], , [ac_includes=""
 [ac_includes=""
 for ac_header in $2
 do
-  ac_includes="$ac_includes
+  ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
+  if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
+    ac_includes="$ac_includes 
 #include<$ac_header>"
+  fi
 done])
 AC_CACHE_VAL(ac_cv_prototype_$1,
 [AC_TRY_COMPILE(

@@ -153,33 +153,21 @@ AC_CHECK_FUNCS(getuid geteuid setuid)
 AC_CHECK_FUNCS(sleep fork)
 AC_CHECK_FUNCS(_findfirst)
 
+dnl The following AC_CHECK_* macros _must_ have corresponding entries in 
+dnl the acconfig.h file.  This is because the macros are specific to the
+dnl DCMTK project and are not supported by GNU autoheader.
+
 dnl Checks for prototypes
 
-if test $ac_cv_header_stdc = yes ; then
-if test $ac_cv_header_libc_h = yes ; then
-AC_CHECK_PROTOTYPE(bzero, string.h libc.h)
-else
-AC_CHECK_PROTOTYPE(bzero, string.h)
-fi
-else
-if test $ac_cv_header_libc_h = yes ; then
-AC_CHECK_PROTOTYPE(bzero, libc.h)
-else
-AC_CHECK_PROTOTYPE(bzero)
-fi
-fi
+AC_CHECK_PROTOTYPE(bzero, string.h strings.h libc.h unistd.h stdlib.h)
 AC_CHECK_PROTOTYPE(accept, sys/types.h sys/socket.h)
 AC_CHECK_PROTOTYPE(bind, sys/types.h sys/socket.h)
-AC_CHECK_PROTOTYPE(gethostbyname, netdb.h)
+AC_CHECK_PROTOTYPE(gethostbyname, libc.h unistd.h stdlib.h netdb.h)
 AC_CHECK_PROTOTYPE(flock, sys/file.h)
 AC_CHECK_PROTOTYPE(listen, sys/types.h sys/socket.h)
 AC_CHECK_PROTOTYPE(socket, sys/types.h sys/socket.h)
 AC_CHECK_PROTOTYPE(connect, sys/types.h sys/socket.h)
-if test $ac_cv_header_sys_select_h = yes ; then
 AC_CHECK_PROTOTYPE(select, sys/select.h sys/types.h sys/socket.h sys/time.h)
-else
-AC_CHECK_PROTOTYPE(select, sys/types.h sys/socket.h sys/time.h)
-fi
 if test $ac_cv_prototype_select = yes ; then
 AC_CHECK_INTP_SELECT(sys/types.h sys/socket.h sys/time.h)
 fi
@@ -188,11 +176,7 @@ AC_CHECK_PROTOTYPE(getsockopt, sys/types.h sys/socket.h)
 AC_CHECK_PROTOTYPE(getsockname, sys/types.h sys/socket.h)
 AC_CHECK_PROTOTYPE(wait3, sys/wait.h sys/time.h sys/resource.h)
 AC_CHECK_PROTOTYPE(waitpid, sys/wait.h sys/time.h sys/resource.h)
-if test $ac_cv_header_unistd_h = yes ; then
-AC_CHECK_PROTOTYPE(gethostname, unistd.h)
-else
-AC_CHECK_PROTOTYPE(gethostname)
-fi
+AC_CHECK_PROTOTYPE(gethostname, unistd.h libc.h stdlib.h netdb.h)
 AC_CHECK_PROTOTYPE(semctl, sys/types.h sys/ipc.h sys/sem.h)
 AC_CHECK_PROTOTYPE(semget, sys/types.h sys/ipc.h sys/sem.h)
 AC_CHECK_PROTOTYPE(semop, sys/types.h sys/ipc.h sys/sem.h)
@@ -200,43 +184,11 @@ AC_CHECK_PROTOTYPE(shmat, sys/types.h sys/ipc.h sys/shm.h)
 AC_CHECK_PROTOTYPE(shmdt, sys/types.h sys/ipc.h sys/shm.h)
 AC_CHECK_PROTOTYPE(shmctl, sys/types.h sys/ipc.h sys/shm.h)
 AC_CHECK_PROTOTYPE(shmget, sys/types.h sys/ipc.h sys/shm.h)
-if test $ac_cv_header_libc_h = yes ; then
-if test $ac_cv_header_unistd_h = yes ; then
-AC_CHECK_PROTOTYPE(usleep, libc.h unistd.h)
-AC_CHECK_PROTOTYPE(gethostid, libc.h unistd.h)
-else
-AC_CHECK_PROTOTYPE(usleep, libc.h)
-AC_CHECK_PROTOTYPE(gethostid, libc.h)
-fi
-AC_CHECK_PROTOTYPE(mktemp, stdlib.h libc.h)
-else
-if test $ac_cv_header_unistd_h = yes ; then
-AC_CHECK_PROTOTYPE(usleep, unistd.h)
-AC_CHECK_PROTOTYPE(gethostid, unistd.h)
-else
-AC_CHECK_PROTOTYPE(usleep)
-AC_CHECK_PROTOTYPE(gethostid)
-fi
-AC_CHECK_PROTOTYPE(mktemp, stdlib.h)
-fi
-
-if test $ac_cv_header_libc_h = yes ; then
-if test $ac_cv_header_unistd_h = yes ; then
-AC_CHECK_PROTOTYPE(getcwd, libc.h unistd.h)
-AC_CHECK_PROTOTYPE(getwd, libc.h unistd.h)
-else
-AC_CHECK_PROTOTYPE(getcwd, libc.h)
-AC_CHECK_PROTOTYPE(getwd, libc.h)
-fi
-else
-if test $ac_cv_header_unistd_h = yes ; then
-AC_CHECK_PROTOTYPE(getcwd, unistd.h)
-AC_CHECK_PROTOTYPE(getwd, unistd.h)
-else
-AC_CHECK_PROTOTYPE(getcwd)
-AC_CHECK_PROTOTYPE(getwd)
-fi
-fi
+AC_CHECK_PROTOTYPE(usleep, libc.h unistd.h stdlib.h)
+AC_CHECK_PROTOTYPE(gethostid, libc.h unistd.h stdlib.h)
+AC_CHECK_PROTOTYPE(mktemp, libc.h unistd.h stdlib.h)
+AC_CHECK_PROTOTYPE(getcwd, libc.h unistd.h stdlib.h)
+AC_CHECK_PROTOTYPE(getwd, libc.h unistd.h stdlib.h)
 
 AC_CHECK_DECLARATION(union semun, sys/types.h sys/ipc.h sys/sem.h)
 AC_CHECK_DECLARATION(struct sembuf, sys/types.h sys/ipc.h sys/sem.h)
