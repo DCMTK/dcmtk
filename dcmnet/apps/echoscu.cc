@@ -21,10 +21,10 @@
  *
  *  Purpose: Verification Service Class User (C-ECHO operation)
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2001-11-06 14:19:21 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-09 15:56:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/echoscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -201,7 +201,7 @@ main(int argc, char *argv[])
       if (cmd.findOption("--help")) app.printUsage();
 
       cmd.getParam(1, opt_peer);
-      app.checkParam(cmd.getParam(2, opt_port, 1, (OFCmdUnsignedInt)65535));
+      app.checkParam(cmd.getParamAndCheckMinMax(2, opt_port, 1, 65535));
 
       if (cmd.findOption("--verbose")) opt_verbose=OFTrue;
       if (cmd.findOption("--debug")) 
@@ -214,11 +214,11 @@ main(int argc, char *argv[])
 
       if (cmd.findOption("--aetitle")) app.checkValue(cmd.getValue(opt_ourTitle));
       if (cmd.findOption("--call")) app.checkValue(cmd.getValue(opt_peerTitle));
-      if (cmd.findOption("--max-pdu")) app.checkValue(cmd.getValue(opt_maxReceivePDULength, ASC_MINIMUMPDUSIZE, (OFCmdUnsignedInt)ASC_MAXIMUMPDUSIZE));
-      if (cmd.findOption("--repeat")) app.checkValue(cmd.getValue(opt_repeatCount, (OFCmdUnsignedInt)1));
+      if (cmd.findOption("--max-pdu")) app.checkValue(cmd.getValueAndCheckMinMax(opt_maxReceivePDULength, ASC_MINIMUMPDUSIZE, ASC_MAXIMUMPDUSIZE));
+      if (cmd.findOption("--repeat")) app.checkValue(cmd.getValueAndCheckMin(opt_repeatCount, 1));
       if (cmd.findOption("--abort")) opt_abortAssociation=OFTrue;
-      if (cmd.findOption("--propose-ts")) app.checkValue(cmd.getValue(opt_numXferSyntaxes, 1, maxXferSyntaxes));
-      if (cmd.findOption("--propose-pc")) app.checkValue(cmd.getValue(opt_numPresentationCtx, 1, (OFCmdUnsignedInt)128));      
+      if (cmd.findOption("--propose-ts")) app.checkValue(cmd.getValueAndCheckMinMax(opt_numXferSyntaxes, 1, maxXferSyntaxes));
+      if (cmd.findOption("--propose-pc")) app.checkValue(cmd.getValueAndCheckMinMax(opt_numPresentationCtx, 1, 128));
    }
 
     /* make sure data dictionary is loaded */
@@ -466,7 +466,11 @@ cecho(T_ASC_Association * assoc, unsigned long num_repeat)
 /*
 ** CVS Log
 ** $Log: echoscu.cc,v $
-** Revision 1.25  2001-11-06 14:19:21  wilkens
+** Revision 1.26  2001-11-09 15:56:22  joergr
+** Renamed some of the getValue/getParam methods to avoid ambiguities reported
+** by certain compilers.
+**
+** Revision 1.25  2001/11/06 14:19:21  wilkens
 ** Added more comments.
 **
 ** Revision 1.24  2001/11/01 14:38:57  wilkens

@@ -21,10 +21,10 @@
  *
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-10-12 10:18:21 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-09 15:56:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -349,7 +349,7 @@ main(int argc, char *argv[])
       if (cmd.findOption("--help")) app.printUsage();
 
       cmd.getParam(1, opt_peer);
-      app.checkParam(cmd.getParam(2, opt_port, 1, (OFCmdUnsignedInt)65535));
+      app.checkParam(cmd.getParamAndCheckMinMax(2, opt_port, 1, 65535));
 
       if (cmd.findOption("--verbose")) opt_verbose=OFTrue;
       if (cmd.findOption("--debug")) 
@@ -393,13 +393,13 @@ main(int argc, char *argv[])
       if (cmd.findOption("--propose-implicit")) opt_out_networkTransferSyntax = EXS_LittleEndianImplicit;
       cmd.endOptionBlock();
 
-      if (cmd.findOption("--port"))    app.checkValue(cmd.getValue(opt_retrievePort, 1, (OFCmdUnsignedInt)65535));
-      if (cmd.findOption("--max-pdu")) app.checkValue(cmd.getValue(opt_maxPDU, ASC_MINIMUMPDUSIZE, (OFCmdUnsignedInt)ASC_MAXIMUMPDUSIZE));
+      if (cmd.findOption("--port"))    app.checkValue(cmd.getValueAndCheckMinMax(opt_retrievePort, 1, 65535));
+      if (cmd.findOption("--max-pdu")) app.checkValue(cmd.getValueAndCheckMinMax(opt_maxPDU, ASC_MINIMUMPDUSIZE, ASC_MAXIMUMPDUSIZE));
       if (cmd.findOption("--disable-host-lookup")) dcmDisableGethostbyaddr.set(OFTrue);
-      if (cmd.findOption("--repeat"))  app.checkValue(cmd.getValue(opt_repeatCount, (OFCmdUnsignedInt)1));
+      if (cmd.findOption("--repeat"))  app.checkValue(cmd.getValueAndCheckMin(opt_repeatCount, 1));
       if (cmd.findOption("--abort"))   opt_abortAssociation = OFTrue;
       if (cmd.findOption("--ignore"))  opt_ignore = OFTrue;
-      if (cmd.findOption("--cancel"))  app.checkValue(cmd.getValue(opt_cancelAfterNResponses, (OFCmdSignedInt)0));
+      if (cmd.findOption("--cancel"))  app.checkValue(cmd.getValueAndCheckMin(opt_cancelAfterNResponses, 0));
       
       cmd.beginOptionBlock();
       if (cmd.findOption("--normal")) opt_bitPreserving = OFFalse;
@@ -494,8 +494,8 @@ main(int argc, char *argv[])
       {
       	app.checkConflict("--padding-create", "--write-dataset", ! opt_useMetaheader);
       	app.checkConflict("--padding-create", "--bit-preserving", opt_bitPreserving);
-        app.checkValue(cmd.getValue(opt_filepad, 0));
-        app.checkValue(cmd.getValue(opt_itempad, 0));
+        app.checkValue(cmd.getValueAndCheckMin(opt_filepad, 0));
+        app.checkValue(cmd.getValueAndCheckMin(opt_itempad, 0));
         opt_paddingType = EPD_withPadding;
       }
       cmd.endOptionBlock();
@@ -1336,7 +1336,11 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.38  2001-10-12 10:18:21  meichel
+** Revision 1.39  2001-11-09 15:56:24  joergr
+** Renamed some of the getValue/getParam methods to avoid ambiguities reported
+** by certain compilers.
+**
+** Revision 1.38  2001/10/12 10:18:21  meichel
 ** Replaced the CONDITION types, constants and functions in the dcmnet module
 **   by an OFCondition based implementation which eliminates the global condition
 **   stack.  This is a major change, caveat emptor!

@@ -21,10 +21,10 @@
  *
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2001-11-01 14:39:01 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-09 15:56:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -261,7 +261,7 @@ int main(int argc, char *argv[])
       /* check for --help first */
       if (cmd.findOption("--help")) app.printUsage();
 
-      app.checkParam(cmd.getParam(1, opt_port, 1, (OFCmdUnsignedInt)65535));
+      app.checkParam(cmd.getParamAndCheckMinMax(1, opt_port, 1, 65535));
 
       if (cmd.findOption("--verbose")) opt_verbose=OFTrue;
       if (cmd.findOption("--debug")) 
@@ -283,13 +283,13 @@ int main(int argc, char *argv[])
       cmd.endOptionBlock();
 
       if (cmd.findOption("--aetitle")) app.checkValue(cmd.getValue(opt_respondingaetitle));
-      if (cmd.findOption("--max-pdu")) app.checkValue(cmd.getValue(opt_maxPDU, ASC_MINIMUMPDUSIZE, (OFCmdUnsignedInt)ASC_MAXIMUMPDUSIZE));
+      if (cmd.findOption("--max-pdu")) app.checkValue(cmd.getValueAndCheckMin(opt_maxPDU, ASC_MINIMUMPDUSIZE, ASC_MAXIMUMPDUSIZE));
       if (cmd.findOption("--disable-host-lookup")) dcmDisableGethostbyaddr.set(OFTrue);
       if (cmd.findOption("--refuse")) opt_refuseAssociation = OFTrue;
       if (cmd.findOption("--reject")) opt_rejectWithoutImplementationUID = OFTrue;
       if (cmd.findOption("--ignore")) opt_ignore = OFTrue;
-      if (cmd.findOption("--sleep-after")) app.checkValue(cmd.getValue(opt_sleepAfter, 0));
-      if (cmd.findOption("--sleep-during")) app.checkValue(cmd.getValue(opt_sleepDuring, 0));
+      if (cmd.findOption("--sleep-after")) app.checkValue(cmd.getValueAndCheckMin(opt_sleepAfter, 0));
+      if (cmd.findOption("--sleep-during")) app.checkValue(cmd.getValueAndCheckMin(opt_sleepDuring, 0));
       if (cmd.findOption("--abort-after")) opt_abortAfterStore = OFTrue;
       if (cmd.findOption("--abort-during")) opt_abortDuringStore = OFTrue;
 
@@ -386,8 +386,8 @@ int main(int argc, char *argv[])
       {
       	app.checkConflict("--padding-create", "--write-dataset", ! opt_useMetaheader);
       	app.checkConflict("--padding-create", "--bit-preserving", opt_bitPreserving);
-        app.checkValue(cmd.getValue(opt_filepad, 0));
-        app.checkValue(cmd.getValue(opt_itempad, 0));
+        app.checkValue(cmd.getValueAndCheckMin(opt_filepad, 0));
+        app.checkValue(cmd.getValueAndCheckMin(opt_itempad, 0));
         opt_paddingType = EPD_withPadding;
       }
       cmd.endOptionBlock();
@@ -1235,7 +1235,11 @@ static OFCondition storeSCP(
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.40  2001-11-01 14:39:01  wilkens
+** Revision 1.41  2001-11-09 15:56:25  joergr
+** Renamed some of the getValue/getParam methods to avoid ambiguities reported
+** by certain compilers.
+**
+** Revision 1.40  2001/11/01 14:39:01  wilkens
 ** Added lots of comments.
 **
 ** Revision 1.39  2001/10/12 10:18:21  meichel

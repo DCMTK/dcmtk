@@ -21,10 +21,10 @@
  *
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2001-11-01 14:38:59 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-09 15:56:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.41 $
+ *  CVS/RCS Revision: $Revision: 1.42 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -296,7 +296,7 @@ main(int argc, char *argv[])
       if (cmd.findOption("--help")) app.printUsage();
 
       cmd.getParam(1, opt_peer);
-      app.checkParam(cmd.getParam(2, opt_port, 1, (OFCmdUnsignedInt)65535));
+      app.checkParam(cmd.getParamAndCheckMinMax(2, opt_port, 1, 65535));
 
       if (cmd.findOption("--verbose")) opt_verbose=OFTrue;
       if (cmd.findOption("--verbose-pc")) 
@@ -341,25 +341,25 @@ main(int argc, char *argv[])
       }
       cmd.endOptionBlock();
 
-      if (cmd.findOption("--max-pdu")) app.checkValue(cmd.getValue(opt_maxReceivePDULength, ASC_MINIMUMPDUSIZE, (OFCmdUnsignedInt)ASC_MAXIMUMPDUSIZE));
-      if (cmd.findOption("--repeat"))  app.checkValue(cmd.getValue(opt_repeatCount, (OFCmdUnsignedInt)1));
+      if (cmd.findOption("--max-pdu")) app.checkValue(cmd.getValueAndCheckMinMax(opt_maxReceivePDULength, ASC_MINIMUMPDUSIZE, ASC_MAXIMUMPDUSIZE));
+      if (cmd.findOption("--repeat"))  app.checkValue(cmd.getValueAndCheckMin(opt_repeatCount, 1));
       if (cmd.findOption("--abort"))   opt_abortAssociation = OFTrue;
       if (cmd.findOption("--no-halt")) opt_haltOnUnsuccessfulStore = OFFalse;
       if (cmd.findOption("--invent-instance")) opt_inventSOPInstanceInformation = OFTrue;
       if (cmd.findOption("--invent-series")) 
       {
       	opt_inventSOPInstanceInformation = OFTrue;
-      	app.checkValue(cmd.getValue(opt_inventSeriesCount, (OFCmdUnsignedInt)1));
+      	app.checkValue(cmd.getValueAndCheckMin(opt_inventSeriesCount, 1));
       }
       if (cmd.findOption("--invent-study")) 
       {
       	opt_inventSOPInstanceInformation = OFTrue;
-      	app.checkValue(cmd.getValue(opt_inventStudyCount, (OFCmdUnsignedInt)1));
+      	app.checkValue(cmd.getValueAndCheckMin(opt_inventStudyCount, 1));
       }
       if (cmd.findOption("--invent-patient")) 
       {
       	opt_inventSOPInstanceInformation = OFTrue;
-      	app.checkValue(cmd.getValue(opt_inventPatientCount, (OFCmdUnsignedInt)1));
+      	app.checkValue(cmd.getValueAndCheckMin(opt_inventPatientCount, 1));
       }
 
 #ifdef WITH_OPENSSL
@@ -1289,7 +1289,11 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.41  2001-11-01 14:38:59  wilkens
+** Revision 1.42  2001-11-09 15:56:25  joergr
+** Renamed some of the getValue/getParam methods to avoid ambiguities reported
+** by certain compilers.
+**
+** Revision 1.41  2001/11/01 14:38:59  wilkens
 ** Added lots of comments.
 **
 ** Revision 1.40  2001/10/12 10:18:22  meichel
