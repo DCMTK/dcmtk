@@ -9,10 +9,10 @@
 ** Implementation of class DcmDirectoryRecord
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-05-09 13:12:11 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-05-16 08:12:12 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdirrec.cc,v $
-** CVS/RCS Revision:	$Revision: 1.13 $
+** CVS/RCS Revision:	$Revision: 1.14 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1147,7 +1147,7 @@ void DcmDirectoryRecord::print(ostream & out, const BOOL showFullData,
 
 E_Condition DcmDirectoryRecord::read(DcmStream & inStream,
 				     const E_TransferSyntax xfer,
-				     const E_GrpLenEncoding gltype,
+				     const E_GrpLenEncoding glenc,
 				     const Uint32 maxReadLength)
 {
     if (fTransferState == ERW_notInitialized)
@@ -1155,7 +1155,8 @@ E_Condition DcmDirectoryRecord::read(DcmStream & inStream,
     else {
 
 	if(fTransferState != ERW_ready) {
-	    errorFlag = DcmItem::read(inStream, xfer, gltype, maxReadLength);
+	    DcmXfer xferSyn(xfer);
+	    errorFlag = DcmItem::read(inStream, xfer, glenc, maxReadLength);
 	    /*
 	    ** Remember the actual file offset for this Directory Record.  
 	    ** Compute by subtracting the Item header (tag & length fields)
@@ -1163,7 +1164,7 @@ E_Condition DcmDirectoryRecord::read(DcmStream & inStream,
 	    ** fStartPosition is set in DcmItem::read(...)
 	    ** offsetInFile is used in the print(...) method.
 	    */
-	    offsetInFile = fStartPosition - calcHeaderLength(ident(), xfer);
+	    offsetInFile = fStartPosition - xferSyn.sizeofTagHeader(ident());
 	}
 	
 	if (fTransferState == ERW_ready &&
@@ -1183,8 +1184,7 @@ E_Condition DcmDirectoryRecord::read(DcmStream & inStream,
 
 E_Condition DcmDirectoryRecord::write(DcmStream & outStream,
 				      const E_TransferSyntax oxfer,
-				      const E_EncodingType enctype,
-				      const E_GrpLenEncoding gltype )
+				      const E_EncodingType enctype)
 {
     if (fTransferState == ERW_notInitialized)
 	errorFlag = EC_IllegalCall;
@@ -1194,7 +1194,7 @@ E_Condition DcmDirectoryRecord::write(DcmStream & outStream,
 	{
 	    this->setRecordType( DirRecordType );
 	}
-	errorFlag = DcmItem::write(outStream, oxfer, enctype, gltype);
+	errorFlag = DcmItem::write(outStream, oxfer, enctype);
     }
     return errorFlag;
 }
