@@ -1,3 +1,9 @@
+**** Changes from 1999.02.25 (riesmeier)
+
+- Initialize local variables to avoid compiler warnings (reported by gcc
+  2.7.2.1 on Linux).
+  Affects: dcmimgle/include/displint.h
+
 **** Changes from 1999.02.23 (riesmeier)
 
 - Added tool to export display curves to a text file.
