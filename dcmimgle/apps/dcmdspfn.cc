@@ -21,10 +21,10 @@
  *
  *  Purpose: export display curves to a text file
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:38 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-09 16:22:29 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/apps/dcmdspfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -123,19 +123,19 @@ int main(int argc, char *argv[])
             app.checkValue(cmd.getValue(opt_ifname));
         if (cmd.findOption("--lum-range"))
         {
-            app.checkValue(cmd.getValue(opt_minLum, 0));
-            app.checkValue(cmd.getValue(opt_maxLum, opt_minLum, OFFalse));
+            app.checkValue(cmd.getValueAndCheckMin(opt_minLum, 0));
+            app.checkValue(cmd.getValueAndCheckMin(opt_maxLum, opt_minLum, OFFalse));
         }
         cmd.endOptionBlock();
 
         if (cmd.findOption("--amb-light"))
-            app.checkValue(cmd.getValue(opt_ambLight, 0));
+            app.checkValue(cmd.getValueAndCheckMin(opt_ambLight, 0));
         if (cmd.findOption("--ddl-count"))
         {
             if (opt_ifname != NULL)
                 app.checkConflict("--ddl-count", "--lut-file", OFTrue);
             else
-                app.checkValue(cmd.getValue(opt_ddlCount, (OFCmdUnsignedInt)2, (OFCmdUnsignedInt)65536));
+                app.checkValue(cmd.getValueAndCheckMinMax(opt_ddlCount, 2, 65536));
         }
         
         if (cmd.findOption("--gsdf"))
@@ -219,7 +219,11 @@ int main(int argc, char *argv[])
  *
  * CVS/RCS Log:
  * $Log: dcmdspfn.cc,v $
- * Revision 1.7  2001-06-01 15:49:38  meichel
+ * Revision 1.8  2001-11-09 16:22:29  joergr
+ * Renamed some of the getValue/getParam methods to avoid ambiguities reported
+ * by certain compilers.
+ *
+ * Revision 1.7  2001/06/01 15:49:38  meichel
  * Updated copyright header
  *
  * Revision 1.6  2000/04/28 12:31:32  joergr
