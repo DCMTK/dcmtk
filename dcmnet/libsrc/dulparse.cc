@@ -45,9 +45,9 @@
 ** Intent:		This file contains functions for parsing Dicom
 **			Upper Layer (DUL) Protocol Data Units (PDUs)
 **			into logical in-memory structures.
-** Last Update:		$Author: meichel $, $Date: 2002-11-27 13:04:46 $
+** Last Update:		$Author: wilkens $, $Date: 2002-11-29 12:15:25 $
 ** Source File:		$RCSfile: dulparse.cc,v $
-** Revision:		$Revision: 1.20 $
+** Revision:		$Revision: 1.21 $
 ** Status:		$State: Exp $
 */
 
@@ -194,8 +194,7 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
 	    DEBUG_DEVICE << "Parsing remaining " << pduLength
             << " bytes of A-ASSOCIATE PDU" << endl
             << "Next item type: ";
-        DEBUG_DEVICE.width(2); DEBUG_DEVICE.fill('0');
-        DEBUG_DEVICE << hex << ((unsigned int)type) << dec << endl;
+        DEBUG_DEVICE << hex << setfill('0') << setw(2) << ((unsigned int)type) << dec << endl;
 	}
 #endif
 	switch (type) {
@@ -311,10 +310,8 @@ parseSubItem(DUL_SUBITEM * subItem, unsigned char *buf,
 
 #ifdef DEBUG
     if (debug) {
-        DEBUG_DEVICE.width(2); DEBUG_DEVICE.fill('0');
-        DEBUG_DEVICE << "Subitem parse: Type " << hex << ((unsigned int)subItem->type) << dec << ", Length ";
-        DEBUG_DEVICE.width(4);
-        DEBUG_DEVICE << (int)subItem->length << ", Content: " << subItem->data << endl;
+        DEBUG_DEVICE << "Subitem parse: Type " << hex << setfill('0') << setw(2) << ((unsigned int)subItem->type) << dec << ", Length ";
+        DEBUG_DEVICE << setw(4) << (int)subItem->length << ", Content: " << subItem->data << endl;
     }
 #endif
     return EC_Normal;
@@ -371,13 +368,11 @@ parsePresentationContext(unsigned char type,
 
 #ifdef DEBUG
     if (debug) {
-        DEBUG_DEVICE.width(2);
 	DEBUG_DEVICE << "Parsing Presentation Context: ("
-            << hex << (unsigned int)context->type << dec
+            << hex << setfill('0') << setw(2) << (unsigned int)context->type << dec
             << "), Length: " << (unsigned long)context->length << endl
             << "Presentation Context ID: ";
-        DEBUG_DEVICE.width(2);
-        DEBUG_DEVICE << hex << (unsigned int)context->contextID << dec << endl;
+        DEBUG_DEVICE << hex << setfill('0') << setw(2) << (unsigned int)context->contextID << dec << endl;
     }
 #endif
     presentationLength = length - 4;
@@ -388,8 +383,7 @@ parsePresentationContext(unsigned char type,
 	    if (debug) {
               DEBUG_DEVICE << "Parsing remaining " << presentationLength
                 << " bytes of Presentation Ctx" << endl;
-              DEBUG_DEVICE.width(2); DEBUG_DEVICE.fill('0');
-	      DEBUG_DEVICE << "Next item type: " << hex << (unsigned int)*buf << dec << endl;
+	      DEBUG_DEVICE << "Next item type: " << hex << setfill('0') << setw(2) << (unsigned int)*buf << dec << endl;
 	    }
 #endif
 	    switch (*buf) {
@@ -474,9 +468,8 @@ parseUserInfo(DUL_USERINFO * userInfo,
 
 #ifdef DEBUG
     if (debug) {
-        DEBUG_DEVICE.width(2); DEBUG_DEVICE.fill('0');
 	DEBUG_DEVICE << "Parsing user info field ("
-            << hex << (unsigned int)userInfo->type << dec << "), Length: "
+            << hex << setfill('0') << setw(2) << (unsigned int)userInfo->type << dec << "), Length: "
             << (unsigned long)userInfo->length << endl;
     }
 #endif
@@ -485,8 +478,7 @@ parseUserInfo(DUL_USERINFO * userInfo,
 	if (debug) {
 	    DEBUG_DEVICE << "Parsing remaining " << (long)userLength
             << " bytes of User Information" << endl;
-            DEBUG_DEVICE.width(2); DEBUG_DEVICE.fill('0');
-	    DEBUG_DEVICE << "Next item type: " << hex << (unsigned int)*buf << dec << endl;
+	    DEBUG_DEVICE << "Next item type: " << hex << setfill('0') << setw(2) << (unsigned int)*buf << dec << endl;
 	}
 #endif
 	switch (*buf) {
@@ -674,11 +666,9 @@ parseSCUSCPRole(PRV_SCUSCPROLE * role, unsigned char *buf,
 
 #ifdef DEBUG
     if (debug) {
-      DEBUG_DEVICE.width(2); DEBUG_DEVICE.fill('0');
       DEBUG_DEVICE << "Subitem parse: Type "
-        << hex << (unsigned int)role->type << dec << ", Length ";
-      DEBUG_DEVICE.width(4);
-      DEBUG_DEVICE << (int)role->length << ", Content: " << role->SOPClassUID
+        << hex << setfill('0') << setw(2) << (unsigned int)role->type << dec << ", Length ";
+      DEBUG_DEVICE << setw(4) << (int)role->length << ", Content: " << role->SOPClassUID
         << " " << (int)role->SCURole << " " << (int)role->SCPRole << endl;
     }
 #endif
@@ -722,17 +712,14 @@ parseExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *buf,
 
 #ifdef DEBUG
     if (debug) {
-        DEBUG_DEVICE.width(2); DEBUG_DEVICE.fill('0');
 	DEBUG_DEVICE << "ExtNeg Subitem parse: Type "
-            << hex << (unsigned int)extNeg->itemType << dec << ", Length ";
-        DEBUG_DEVICE.width(4);
-        DEBUG_DEVICE << (int)extNeg->itemLength << ", SOP Class: "
+            << hex << setfill('0') << setw(2) << (unsigned int)extNeg->itemType << dec << ", Length ";
+        DEBUG_DEVICE << setw(4) << (int)extNeg->itemLength << ", SOP Class: "
             << extNeg->sopClassUID.c_str() << endl;
 
 	DEBUG_DEVICE << "   values: ";
         for (int j=0; j<extNeg->serviceClassAppInfoLength; j++) {
-            DEBUG_DEVICE.width(2); DEBUG_DEVICE.fill('0');
-    	    DEBUG_DEVICE << hex << extNeg->serviceClassAppInfo[j] << dec << " ";
+    	    DEBUG_DEVICE << hex << setfill('0') << setw(2) << extNeg->serviceClassAppInfo[j] << dec << " ";
         }
 	DEBUG_DEVICE << endl;
     }
@@ -780,7 +767,12 @@ trim_trailing_spaces(char *s)
 /*
 ** CVS Log
 ** $Log: dulparse.cc,v $
-** Revision 1.20  2002-11-27 13:04:46  meichel
+** Revision 1.21  2002-11-29 12:15:25  wilkens
+** Modified call to getsockopt() in order to avoid compiler warning.
+** Modified variable initialization in order to avoid compiler warning.
+** Corrected dumping of hex values.
+**
+** Revision 1.20  2002/11/27 13:04:46  meichel
 ** Adapted module dcmnet to use of new header file ofstdinc.h
 **
 ** Revision 1.19  2002/04/16 13:57:34  joergr

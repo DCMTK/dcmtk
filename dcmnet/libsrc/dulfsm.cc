@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: meichel $, $Date: 2002-11-28 16:57:41 $
+** Last Update:		$Author: wilkens $, $Date: 2002-11-29 12:15:24 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.46 $
+** Revision:		$Revision: 1.47 $
 ** Status:		$State: Exp $
 */
 
@@ -2212,16 +2212,15 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
     Sint32 connectTimeout = dcmConnectionTimeout.get();
 
 #ifdef HAVE_WINSOCK_H
-      u_long arg;
+      u_long arg = TRUE;
 #else
-      int flags;
+      int flags = 0;
 #endif
 
     if (connectTimeout >= 0)
     {
       // user has specified a timeout, switch socket to non-blocking mode
-#ifdef HAVE_WINSOCK_H
-      arg = TRUE;
+#ifdef HAVE_WINSOCK_H      
       ioctlsocket(s, FIONBIO, (u_long FAR *) &arg);
 #else
       flags = fcntl(s, F_GETFL, 0);
@@ -2280,8 +2279,17 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
             // This could either mean success or an asynchronous error condition.
             // use getsockopt to check the socket status.
             int socketError = 0;
+
+#ifdef HAVE_DECLARATION_SOCKLEN_T
+            // some platforms (e.g. Solaris 7) declare socklen_t
             socklen_t socketErrorLen = sizeof(socketError);
-            getsockopt(s, SOL_SOCKET, SO_ERROR, &socketError, &socketErrorLen);
+#else
+            // some platforms (e.g. Solaris 2.5.1) prefer int
+            int socketErrorLen = (int) sizeof(socketError);
+#endif
+            // Solaris 2.5.1 expects a char * as argument 4 of getsockopt. Most other
+            // platforms expect void *, so casting to a char * should be safe.
+            getsockopt(s, SOL_SOCKET, SO_ERROR, (char *)(&socketError), &socketErrorLen);
             if (socketError)
             {
                 // asynchronous error on our socket, bail out.
@@ -3344,10 +3352,9 @@ readPDUHeadTCP(PRIVATE_ASSOCIATIONKEY ** association,
     /* dump some information if required */
     if (debug) {
         DEBUG_DEVICE << "Read PDU HEAD TCP: ";
-        DEBUG_DEVICE.width(2); DEBUG_DEVICE.fill('0');
         for (idx = 0; idx < 6; idx++)
         {
-            DEBUG_DEVICE << hex << " " <<  (unsigned short)(buffer[idx]);
+            DEBUG_DEVICE << hex << " " << setfill('0') << setw(2) << (unsigned short)(buffer[idx]);
         }
         DEBUG_DEVICE << dec << endl;
     }
@@ -3382,9 +3389,9 @@ readPDUHeadTCP(PRIVATE_ASSOCIATIONKEY ** association,
 #ifdef DEBUG
     /* dump some information if required */
     if (debug) {
-            DEBUG_DEVICE << "Read PDU HEAD TCP: type: " << hex << (unsigned short)(*type)
+            DEBUG_DEVICE << "Read PDU HEAD TCP: type: " << hex << setfill('0') << setw(2) << (unsigned short)(*type)
             << ", length: " << dec << (*pduLength)
-            << " (" << hex << (unsigned int)*pduLength << ")" << dec << endl;
+            << " (" << hex << setfill('0') << setw(2) << (unsigned int)*pduLength << ")" << dec << endl;
         }
 #endif
 
@@ -3595,8 +3602,7 @@ dump_pdu(const char *type, void *buffer, unsigned long length)
     p = (unsigned char*)buffer;
 
     while (length-- > 0) {
-        DEBUG_DEVICE.width(2); DEBUG_DEVICE.fill('0');
-        DEBUG_DEVICE << "  " << hex << ((unsigned int)(*p++)) << dec;
+        DEBUG_DEVICE << "  " << hex << setfill('0') << setw(2) << ((unsigned int)(*p++)) << dec;
         if ((++position) % 16 == 0) DEBUG_DEVICE << endl;
     }
     DEBUG_DEVICE << endl;
@@ -3862,7 +3868,12 @@ destroyUserInformationLists(DUL_USERINFO * userInfo)
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.46  2002-11-28 16:57:41  meichel
+** Revision 1.47  2002-11-29 12:15:24  wilkens
+** Modified call to getsockopt() in order to avoid compiler warning.
+** Modified variable initialization in order to avoid compiler warning.
+** Corrected dumping of hex values.
+**
+** Revision 1.46  2002/11/28 16:57:41  meichel
 ** Added global flag dcmConnectionTimeout that defines a timeout for
 **   outgoing association requests in the DICOM upper layer.
 **

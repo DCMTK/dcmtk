@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: meichel $, $Date: 2002-11-28 16:57:40 $
+** Last Update:		$Author: wilkens $, $Date: 2002-11-29 12:15:22 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.49 $
+** Revision:		$Revision: 1.50 $
 ** Status:		$State: Exp $
 */
 
@@ -2122,7 +2122,7 @@ void dumpExtNegList(SOPClassExtendedNegotiationSubItemList& list)
             << "    [";
         for (int k=0; k<(int)extNeg->serviceClassAppInfoLength; k++) {
             COUT << "0x";
-            COUT.width(2); COUT.fill('0'); COUT << hex << extNeg->serviceClassAppInfo[k];
+            COUT << hex << setfill('0') << setw(2) << extNeg->serviceClassAppInfo[k];
             if (k < (int)(extNeg->serviceClassAppInfoLength-1)) COUT << ", ";
         }
         COUT << "]" << dec << endl;
@@ -2322,7 +2322,12 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, ostream& outs
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.49  2002-11-28 16:57:40  meichel
+** Revision 1.50  2002-11-29 12:15:22  wilkens
+** Modified call to getsockopt() in order to avoid compiler warning.
+** Modified variable initialization in order to avoid compiler warning.
+** Corrected dumping of hex values.
+**
+** Revision 1.49  2002/11/28 16:57:40  meichel
 ** Added global flag dcmConnectionTimeout that defines a timeout for
 **   outgoing association requests in the DICOM upper layer.
 **
