@@ -68,4 +68,4 @@ ENDIF(WITH_ZLIB)
 INCLUDE_DIRECTORIES(${dcmtk_SOURCE_DIR}/config/include)
 
 # recurse into subdirectories
-SUBDIRS(ofstd dcmdata dcmtls dcmnet imagectn dcmimgle dcmimage dcmjpeg dcmsign dcmsr dcmpstat dcmwlm)
+SUBDIRS(ofstd dcmdata dcmtls dcmnet dcmqrdb dcmimgle dcmimage dcmjpeg dcmsign dcmsr dcmpstat dcmwlm)
