@@ -1,3 +1,68 @@
+**** Changes from 1998.12.14 (riesmeier)
+
+- Rebuilt Makefile dependencies.
+  Affects: dcmimage/apps/Makefile.dep
+           dcmimage/libsrc/Makefile.dep
+           dcmimgle/libsrc/Makefile.dep
+
+- Changed behaviour of debug and verbose mode.
+  Affects: dcmimage/apps/dcm2pnm.cc
+
+- Added support for presentation shapes.
+  Affects: dcmimage/apps/dcm2pnm.cc
+           dcmimgle/libsrc/dimo1img.cc
+           dcmimgle/libsrc/dimo2img.cc
+           dcmimgle/libsrc/dimoimg.cc
+
+- Added support for signed values as second entry in look-up tables
+  (= first value mapped).
+  Affects: dcmimage/include/diargpxt.h
+           dcmimage/include/dipalpxt.h
+           dcmimage/libsrc/diargimg.cc
+           dcmimage/libsrc/dipalimg.cc
+           dcmimgle/include/diluptab.h
+           dcmimgle/include/dimoipxt.h
+           dcmimgle/include/dimoopxt.h
+           dcmimgle/libsrc/diluptab.cc
+
+- Added implementation of method to create rotated color images.
+  Affects: dcmimage/libsrc/dicoimg.cc
+
+- Added methods to add and remove additional overlay planes (still untested).
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/include/diimage.h
+           dcmimgle/include/dimoimg.h
+           dcmimgle/include/dimoopxt.h
+           dcmimgle/include/diovlay.h
+           dcmimgle/libsrc/dimoimg.cc
+           dcmimgle/libsrc/diovlay.cc
+           dcmimgle/libsrc/diovlimg.cc
+           dcmimgle/libsrc/diovpln.cc
+
+- Added methods to support overlay labels and descriptions.
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/include/diovlay.h
+           dcmimgle/include/diovpln.h
+           dcmimgle/libsrc/diovpln.cc
+
+- Added (simplified) methods to return values of a given DcmElement object.
+  Affects: dcmimgle/include/didocu.h
+           dcmimgle/libsrc/didocu.cc
+
+- Added support for correct scaling of input/output values for grayscale
+  transformations.
+  Affects: dcmimgle/include/dimomod.h
+           dcmimgle/include/dimoopxt.h
+           dcmimgle/libsrc/dimomod.cc
+
+- Added (missing) implementation of methods to rotate images/frames without
+  creating a new DicomImage.
+  Affects: dcmimgle/include/dirotat.h
+  
+- Added first implementation of method to export overlay plane bitmaps.
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/libsrc/dcmimage.cc
+
 **** Changes from 1998.11.30 (riesmeier)
 
 - Added const type qualifier to some parameters to avoid errors with MSVC5
