@@ -28,12 +28,6 @@ ADD_EXECUTABLE(dcmdjpeg dcmdjpeg)
 ADD_EXECUTABLE(dcmj2pnm dcmj2pnm)
 ADD_EXECUTABLE(dcmmkdir dcmmkdir)
 
-# declare link flags
-SET_TARGET_PROPERTIES(dcmcjpeg PROPERTIES LINK_FLAGS "/incremental:no")
-SET_TARGET_PROPERTIES(dcmdjpeg PROPERTIES LINK_FLAGS "/incremental:no")
-SET_TARGET_PROPERTIES(dcmj2pnm PROPERTIES LINK_FLAGS "/incremental:no")
-SET_TARGET_PROPERTIES(dcmmkdir PROPERTIES LINK_FLAGS "/incremental:no")
-
 # make sure executables are linked to the corresponding libraries
 # dcmcjpeg
 IF(WITH_ZLIB)

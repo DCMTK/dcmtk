@@ -28,18 +28,6 @@ ADD_EXECUTABLE(dcmpsprt dcmpsprt)
 ADD_EXECUTABLE(dcmpsrcv dcmpsrcv)
 ADD_EXECUTABLE(dcmpssnd dcmpssnd)
 
-# declare link flags
-SET_TARGET_PROPERTIES(dcmmkcrv PROPERTIES LINK_FLAGS "/incremental:no")
-SET_TARGET_PROPERTIES(dcmmklut PROPERTIES LINK_FLAGS "/incremental:no")
-SET_TARGET_PROPERTIES(dcmp2pgm PROPERTIES LINK_FLAGS "/incremental:no")
-SET_TARGET_PROPERTIES(dcmprscp PROPERTIES LINK_FLAGS "/incremental:no")
-SET_TARGET_PROPERTIES(dcmprscu PROPERTIES LINK_FLAGS "/incremental:no")
-SET_TARGET_PROPERTIES(dcmpschk PROPERTIES LINK_FLAGS "/incremental:no")
-SET_TARGET_PROPERTIES(dcmpsmk PROPERTIES LINK_FLAGS "/incremental:no")
-SET_TARGET_PROPERTIES(dcmpsprt PROPERTIES LINK_FLAGS "/incremental:no")
-SET_TARGET_PROPERTIES(dcmpsrcv PROPERTIES LINK_FLAGS "/incremental:no")
-SET_TARGET_PROPERTIES(dcmpssnd PROPERTIES LINK_FLAGS "/incremental:no")
-
 # make sure executables are linked to the corresponding libraries
 # dcmmkcrv
 IF(WITH_ZLIB)

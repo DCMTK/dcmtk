@@ -15,11 +15,6 @@ ADD_EXECUTABLE(dcm2pnm dcm2pnm)
 ADD_EXECUTABLE(dcmquant dcmquant)
 ADD_EXECUTABLE(dcmscale dcmscale)
 
-# declare link flags
-SET_TARGET_PROPERTIES(dcm2pnm PROPERTIES LINK_FLAGS "/incremental:no")
-SET_TARGET_PROPERTIES(dcmquant PROPERTIES LINK_FLAGS "/incremental:no")
-SET_TARGET_PROPERTIES(dcmscale PROPERTIES LINK_FLAGS "/incremental:no")
-
 # make sure executables are linked to the corresponding libraries
 # dcm2pnm
 IF(WITH_ZLIB)

@@ -10,9 +10,6 @@ ENDIF(WITH_OPENSSL)
 # declare executables
 ADD_EXECUTABLE(dcmsign dcmsign)
 
-# declare link flags
-SET_TARGET_PROPERTIES(dcmsign PROPERTIES LINK_FLAGS "/incremental:no")
-
 # make sure executables are linked to the corresponding libraries
 # dcmsign
 IF(WITH_ZLIB)
