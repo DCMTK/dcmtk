@@ -21,10 +21,10 @@
  *
  *  Purpose: List the contents of a dicom file
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:20:59 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-09-28 14:18:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmdump.cc,v $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -64,14 +64,14 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 #endif
 
 static int dumpFile(ostream & out,
-		    const char *ifname,
-		    const OFBool isDataset, 
-		    const E_TransferSyntax xfer,
-		    const OFBool showFullData,
-		    const OFBool loadIntoMemory,
-		    const OFBool stopOnErrors,
-		    const OFBool writePixelData,
-		    const char *pixelDirectory);
+            const char *ifname,
+            const OFBool isDataset,
+            const E_TransferSyntax xfer,
+            const OFBool showFullData,
+            const OFBool loadIntoMemory,
+            const OFBool stopOnErrors,
+            const OFBool writePixelData,
+            const char *pixelDirectory);
 
 // ********************************************
 
@@ -85,31 +85,31 @@ static const DcmTagKey* printTagKeys[MAX_PRINT_TAG_NAMES];
 static OFBool addPrintTagName(const char* tagName)
 {
     if (printTagCount >= MAX_PRINT_TAG_NAMES) {
-	CERR << "error: too many print Tag options (max: " << 
-	    MAX_PRINT_TAG_NAMES << ")\n";
-	return OFFalse;
+        CERR << "error: too many print Tag options (max: " <<
+                MAX_PRINT_TAG_NAMES << ")\n";
+    return OFFalse;
     }
 
-    int group = 0xffff;
-    int elem = 0xffff;
+    unsigned int group = 0xffff;
+    unsigned int elem = 0xffff;
     if (sscanf( tagName, "%x,%x", &group, &elem ) != 2 )
     {
-	/* it is a name */
+    /* it is a name */
         const DcmDataDictionary& globalDataDict = dcmDataDict.rdlock();
-	const DcmDictEntry *dicent = globalDataDict.findEntry(tagName);
-	if( dicent == NULL ) {
-	    CERR << "error: unrecognised tag name: '" << tagName << "'\n";
- 	    dcmDataDict.unlock();
-	    return OFFalse;
-	} else {
-	    /* note for later */
-	    printTagKeys[printTagCount] = new DcmTagKey(dicent->getKey());
-	}
-	dcmDataDict.unlock();
+    const DcmDictEntry *dicent = globalDataDict.findEntry(tagName);
+    if( dicent == NULL ) {
+        CERR << "error: unrecognised tag name: '" << tagName << "'\n";
+        dcmDataDict.unlock();
+        return OFFalse;
     } else {
-	/* tag name has format xxxx,xxxx */
-	/* do not lookup in dictionary, tag could be private */
-	printTagKeys[printTagCount] = NULL;
+        /* note for later */
+        printTagKeys[printTagCount] = new DcmTagKey(dicent->getKey());
+    }
+    dcmDataDict.unlock();
+    } else {
+    /* tag name has format xxxx,xxxx */
+    /* do not lookup in dictionary, tag could be private */
+    printTagKeys[printTagCount] = NULL;
     }
 
     printTagNames[printTagCount] = strcpy((char*)malloc(strlen(tagName)+1),tagName);
@@ -131,7 +131,7 @@ int main(int argc, char *argv[])
     OFBool stopOnErrors = OFTrue;
     const char *current = NULL;
     const char *pixelDirectory = NULL;
-    
+
 #ifdef HAVE_GUSI_H
     /* needed for Macintosh */
     /* set options for the Metrowerks CodeWarrior SIOUX console */
@@ -150,13 +150,13 @@ int main(int argc, char *argv[])
     OFCommandLine cmd;
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
     cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
-    
+
     cmd.addParam("dcmfile-in", "DICOM input filename to be dumped", OFCmdParam::PM_MultiMandatory);
-    
+
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
       cmd.addOption("--help",                 "-h",        "print this help text and exit");
       cmd.addOption("--debug",                "-d",        "debug mode, print debug information");
-   
+
     cmd.addGroup("input options:");
       cmd.addSubGroup("input file format:");
         cmd.addOption("--read-file",          "+f",        "read file format or data set (default)");
@@ -166,38 +166,38 @@ int main(int argc, char *argv[])
         cmd.addOption("--read-xfer-little",   "-te",       "read with explicit VR little endian TS");
         cmd.addOption("--read-xfer-big",      "-tb",       "read with explicit VR big endian TS");
         cmd.addOption("--read-xfer-implicit", "-ti",       "read with implicit VR little endian TS");
-  
+
     cmd.addGroup("output options:");
       cmd.addSubGroup("printing:");
         cmd.addOption("--load-all",           "+M",        "load very long tag values (default)");
         cmd.addOption("--load-short",         "-M",        "do not load very long values (e.g. pixel data)");
         cmd.addOption("--print-all",          "+L",        "print long tag values completely");
         cmd.addOption("--print-short",        "-L",        "print long tag values shortened (default)");
-  
+
       cmd.addSubGroup("error handling:");
         cmd.addOption("--stop-on-error",      "-E",        "do not print if file is damaged (default)");
         cmd.addOption("--ignore-errors",      "+E",        "attempt to print even if file is damaged");
-  
+
       cmd.addSubGroup("searching:");
         cmd.addOption("--search",             "+P",    1,  "[t]ag: \"xxxx,xxxx\" or a data dictionary name",
                                                            "print the value of tag t\nthis option can be specified multiple times\n(default: the complete file is printed)");
-  
+
         cmd.addOption("--search-all",         "+s",        "print all instances of searched tags (default)");
         cmd.addOption("--search-first",       "-s",        "only print first instance of searched tags");
-   
+
         cmd.addOption("--prepend",            "+p",        "prepend sequence hierarchy to printed tag,\ndenoted by: (xxxx,xxxx).(xxxx,xxxx).*\n(only with --search-all or --search-first)");
         cmd.addOption("--no-prepend",         "-p",        "do not prepend hierarchy to tag (default)");
-  
+
       cmd.addSubGroup("writing:");
         cmd.addOption("--write-pixel",        "+W",    1,  "[d]irectory : string",
                                                            "write pixel data to a .raw file stored in d\n(little endian, filename created automatically)");
 
-    /* evaluate command line */                           
+    /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
     {
       if (cmd.findOption("--debug")) opt_debugMode = 5;
-      
+
       cmd.beginOptionBlock();
       if (cmd.findOption("--read-file")) isDataset = OFFalse;
       if (cmd.findOption("--read-dataset")) isDataset = OFTrue;
@@ -206,23 +206,23 @@ int main(int argc, char *argv[])
       cmd.beginOptionBlock();
       if (cmd.findOption("--read-xfer-auto"))
       {
-      	app.checkDependence("--read-xfer-auto", "--read-dataset", isDataset);
-      	xfer = EXS_Unknown;
+        app.checkDependence("--read-xfer-auto", "--read-dataset", isDataset);
+        xfer = EXS_Unknown;
       }
       if (cmd.findOption("--read-xfer-little"))
       {
         app.checkDependence("--read-xfer-little", "--read-dataset", isDataset);
-      	xfer = EXS_LittleEndianExplicit;
+        xfer = EXS_LittleEndianExplicit;
       }
       if (cmd.findOption("--read-xfer-big"))
       {
         app.checkDependence("--read-xfer-big", "--read-dataset", isDataset);
-      	xfer = EXS_BigEndianExplicit;
+        xfer = EXS_BigEndianExplicit;
       }
       if (cmd.findOption("--read-xfer-implicit"))
       {
         app.checkDependence("--read-xfer-implicit", "--read-dataset", isDataset);
-      	xfer = EXS_LittleEndianImplicit;
+        xfer = EXS_LittleEndianImplicit;
       }
       cmd.endOptionBlock();
 
@@ -254,12 +254,12 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--search-all"))
       {
         app.checkDependence("--search-all", "--search", printTagCount>0);
-      	printAllInstances = OFTrue;
+        printAllInstances = OFTrue;
       }
       if (cmd.findOption("--search-first"))
       {
         app.checkDependence("--search-first", "--search", printTagCount>0);
-      	printAllInstances = OFFalse;
+        printAllInstances = OFFalse;
       }
       cmd.endOptionBlock();
 
@@ -267,12 +267,12 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--prepend"))
       {
         app.checkDependence("--prepend", "--search", printTagCount>0);
-      	printAllInstances = OFTrue;
+        printAllInstances = OFTrue;
       }
       if (cmd.findOption("--no-prepend"))
       {
         app.checkDependence("--no-prepend", "--search", printTagCount>0);
-      	printAllInstances = OFFalse;
+        printAllInstances = OFFalse;
       }
       cmd.endOptionBlock();
 
@@ -288,20 +288,20 @@ int main(int argc, char *argv[])
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
-	CERR << "Warning: no data dictionary loaded, "
-	     << "check environment variable: "
-	     << DCM_DICT_ENVIRONMENT_VARIABLE;
+    CERR << "Warning: no data dictionary loaded, "
+         << "check environment variable: "
+         << DCM_DICT_ENVIRONMENT_VARIABLE;
     }
-    
+
     int errorCount = 0;
     int count = cmd.getParamCount();
-    for (int i=1; i<=count; i++) 
+    for (int i=1; i<=count; i++)
     {
       cmd.getParam(i, current);
       errorCount += dumpFile(COUT, current, isDataset, xfer, showFullData, loadIntoMemory, stopOnErrors,
         writePixelData, pixelDirectory);
     }
-        
+
     return errorCount;
 }
 
@@ -309,24 +309,24 @@ static void printResult(ostream& out, DcmStack& stack, OFBool showFullData)
 {
     unsigned long n = stack.card();
     if (n == 0) {
-	return;
+    return;
     }
 
     if (prependSequenceHierarchy) {
-	/* print the path leading up to the top stack elem */
-	for (unsigned long i=n-1; i>=1; i--) {
-	    DcmObject *dobj = stack.elem(i);
-	    /* do not print if a DCM_Item as this is not 
-	     * very helpful to distinguish instances.
-	     */
-	    if (dobj != NULL && dobj->getTag().getXTag() != DCM_Item) {
-		char buf[128];
-		sprintf(buf, "(%x,%x).", 
-			(unsigned)dobj->getGTag(), 
-			(unsigned)dobj->getETag());
-		out << buf;
-	    }
-	}
+    /* print the path leading up to the top stack elem */
+    for (unsigned long i=n-1; i>=1; i--) {
+        DcmObject *dobj = stack.elem(i);
+        /* do not print if a DCM_Item as this is not
+         * very helpful to distinguish instances.
+         */
+        if (dobj != NULL && dobj->getTag().getXTag() != DCM_Item) {
+        char buf[128];
+        sprintf(buf, "(%x,%x).",
+            (unsigned)dobj->getGTag(),
+            (unsigned)dobj->getETag());
+        out << buf;
+        }
+    }
     }
 
     /* print the tag and its value */
@@ -335,17 +335,17 @@ static void printResult(ostream& out, DcmStack& stack, OFBool showFullData)
 }
 
 static int dumpFile(ostream & out,
-		    const char *ifname,
-		    const OFBool isDataset, 
-		    const E_TransferSyntax xfer,
-		    const OFBool showFullData,
-		    const OFBool loadIntoMemory,
-		    const OFBool stopOnErrors,
-		    const OFBool writePixelData,
-		    const char *pixelDirectory)
+            const char *ifname,
+            const OFBool isDataset,
+            const E_TransferSyntax xfer,
+            const OFBool showFullData,
+            const OFBool loadIntoMemory,
+            const OFBool stopOnErrors,
+            const OFBool writePixelData,
+            const char *pixelDirectory)
 {
     int result = 0;
-    
+
     if ((ifname == NULL) || (strlen(ifname) == 0))
     {
         CERR << OFFIS_CONSOLE_APPLICATION << ": invalid filename: <empty string>" << endl;
@@ -367,11 +367,11 @@ static int dumpFile(ostream & out,
 
     if (dfile->error() != EC_Normal)
     {
-    	CERR << OFFIS_CONSOLE_APPLICATION << ": error: " << dfile->error().text()
-	         << ": reading file: "<< ifname << endl;
-	
-	    result = 1;
-	    if (stopOnErrors) return result;
+        CERR << OFFIS_CONSOLE_APPLICATION << ": error: " << dfile->error().text()
+             << ": reading file: "<< ifname << endl;
+
+        result = 1;
+        if (stopOnErrors) return result;
     }
 
     if (loadIntoMemory) dfile->loadAllDataIntoMemory();
@@ -383,44 +383,44 @@ static int dumpFile(ostream & out,
             OFString str = ifname;
             OFString rname = pixelDirectory;
             if ((rname.length() > 0) && (rname[rname.length() - 1] != PATH_SEPARATOR))
-             	rname += PATH_SEPARATOR;
+                rname += PATH_SEPARATOR;
             size_t pos = str.find_last_of(PATH_SEPARATOR);
             if (pos == OFString_npos)
-            	rname += str;
+                rname += str;
             else
-            	rname += str.substr(pos + 1);
+                rname += str.substr(pos + 1);
             size_t counter = 0;
             dfile->print(out, showFullData, 0 /*level*/, rname.c_str(), &counter);
         } else
             dfile->print(out, showFullData);
     } else {
-    	/* only print specified tags */
-    	for (int i=0; i<printTagCount; i++)
-    	{
-	        int group = 0xffff;
-    	    int elem = 0xffff;
-    	    DcmTagKey searchKey;
-    	    const char* tagName = printTagNames[i];
-    	    if (printTagKeys[i]) searchKey = *printTagKeys[i];
+        /* only print specified tags */
+        for (int i=0; i<printTagCount; i++)
+        {
+            unsigned int group = 0xffff;
+            unsigned int elem = 0xffff;
+            DcmTagKey searchKey;
+            const char* tagName = printTagNames[i];
+            if (printTagKeys[i]) searchKey = *printTagKeys[i];
             else if (sscanf( tagName, "%x,%x", &group, &elem ) == 2 ) searchKey.set(group, elem);
             else {
-        		CERR << "Internal ERROR in File " << __FILE__ << ", Line "
-        		     << __LINE__ << endl 
-		            << "-- Named tag inconsistency\n";
-		        abort();
-	        }
+                CERR << "Internal ERROR in File " << __FILE__ << ", Line "
+                     << __LINE__ << endl
+                    << "-- Named tag inconsistency\n";
+                abort();
+            }
 
-	        DcmStack stack;
-	        if (dfile->search(searchKey, stack, ESM_fromHere, OFTrue) == EC_Normal)
-	        {
-    		    printResult(out, stack, showFullData);
-	    	    if (printAllInstances)
-		        {
-        		    while (dfile->search(searchKey, stack, ESM_afterStackTop, OFTrue)  == EC_Normal) 
-	        	      printResult(out, stack, showFullData);
-		        }
-	        }
-	    }
+            DcmStack stack;
+            if (dfile->search(searchKey, stack, ESM_fromHere, OFTrue) == EC_Normal)
+            {
+                printResult(out, stack, showFullData);
+                if (printAllInstances)
+                {
+                    while (dfile->search(searchKey, stack, ESM_afterStackTop, OFTrue)  == EC_Normal)
+                      printResult(out, stack, showFullData);
+                }
+            }
+        }
     }
 
     delete dfile;
@@ -431,7 +431,10 @@ static int dumpFile(ostream & out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
- * Revision 1.33  2001-09-25 17:20:59  meichel
+ * Revision 1.34  2001-09-28 14:18:45  joergr
+ * Changed formatting.
+ *
+ * Revision 1.33  2001/09/25 17:20:59  meichel
  * Adapted dcmdata to class OFCondition
  *
  * Revision 1.32  2001/06/01 15:48:28  meichel
@@ -544,8 +547,8 @@ static int dumpFile(ostream & out,
  *
  * Revision 1.5  1996/08/05 08:43:36  andreas
  * new print routine with additional parameters:
- * 	- print into files
- * 	- fix output length for elements
+ *  - print into files
+ *  - fix output length for elements
  *
  * Revision 1.4  1996/03/12 15:11:38  hewett
  * Added call to prepareCmdLineArgs to enable command line arguments
