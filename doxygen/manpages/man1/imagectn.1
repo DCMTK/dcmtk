@@ -476,9 +476,7 @@ The \fBimagectn\fP application does not support extended negotiation.
 .SS "Configuration"
 The \fBimagectn\fP program uses the same configuration file as the \fBti\fP program. See the documentation on configuration for more information.
 .SS "Access Control"
-When compiled on Unix platforms with TCP wrapper support, host-based access control can be enabled with the \fI--access-control\fP command line option. In this case the access control rules defined in the system's host access control tables for \fBimagectn\fP are enforced. The default locations of the host access control tables are \fI/etc/hosts.allow\fP and \fI/etc/hosts.deny\fP.
-.PP
-Further details are described in hosts_access(5).
+When compiled on Unix platforms with TCP wrapper support, host-based access control can be enabled with the \fI--access-control\fP command line option. In this case the access control rules defined in the system's host access control tables for \fBimagectn\fP are enforced. The default locations of the host access control tables are \fI/etc/hosts.allow\fP and \fI/etc/hosts.deny\fP. Further details are described in \fBhosts_access\fP(5).
 .SH "COMMAND LINE"
 .PP
 All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values.

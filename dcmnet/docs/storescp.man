@@ -498,12 +498,11 @@ The \b storescp application does not support extended negotiation.
 \subsection access_control Access Control
 
 When compiled on Unix platforms with TCP wrapper support, host-based access
-control can be enabled with the \e --access-control command line option. In
-this case the access control rules defined in the system's host access
-control tables for \b storescp are enforced.  The default locations of the
-host access control tables are <em>/etc/hosts.allow</em> and
-<em>/etc/hosts.deny</em>. Further details are described in
-<b>hosts_access</b>(5).
+control can be enabled with the \e --access-control command line option.  In
+this case the access control rules defined in the system's host access control
+tables for \b storescp are enforced.  The default locations of the host access
+control tables are <em>/etc/hosts.allow</em> and <em>/etc/hosts.deny</em>.
+Further details are described in <b>hosts_access</b>(5).
 
 \subsection profiles Association Negotiation Profiles and Configuration Files
 
