@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomTransTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:52 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-06-02 17:08:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/ditranst.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +38,7 @@
 #include "osconfig.h"
 #include "dctypes.h"
 
+#include "diutils.h"
 #include "ofbmanip.h"
 
 
@@ -140,7 +141,10 @@ class DiTransTemplate
  *
  * CVS/RCS Log:
  * $Log: ditranst.h,v $
- * Revision 1.10  2001-06-01 15:49:52  meichel
+ * Revision 1.11  2003-06-02 17:08:07  joergr
+ * Added include statement for "diutils.h".
+ *
+ * Revision 1.10  2001/06/01 15:49:52  meichel
  * Updated copyright header
  *
  * Revision 1.9  2000/03/08 16:24:25  meichel
