@@ -10,10 +10,10 @@
 ** Implementation of class DcmDicomDir
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-04-18 08:17:14 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1997-04-24 12:10:47 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdicdir.cc,v $
-** CVS/RCS Revision:	$Revision: 1.10 $
+** CVS/RCS Revision:	$Revision: 1.11 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -551,13 +551,9 @@ Edebug(());
 // ********************************
 // ********************************
 
-/*
-   siehe auch DcmItem::calcHeaderLength()
-*/
-
 Uint32 DcmDicomDir::lengthUntilSQ(DcmDataset &dset,
-								  E_TransferSyntax oxfer,
-								  E_EncodingType enctype )
+				  E_TransferSyntax oxfer,
+				  E_EncodingType enctype )
 {
 Bdebug((4, "dcdicdir:DcmDicomDir::lengthUntilSQ(&dset,oxfer=%d,enctype=%d)",
 	   oxfer, enctype ));
@@ -568,28 +564,8 @@ Bdebug((4, "dcdicdir:DcmDicomDir::lengthUntilSQ(&dset,oxfer=%d,enctype=%d)",
     {
 	DcmObject *dO = dset.getElement( i );
 
-	// Die folgende Methode ist leider protected:
-	// templen += DcmItem::calcHeaderLength( dO->getVR(), oxfer );
-
-	// deshalb ist deren Rumpf hier her kopiert worden
-	DcmXfer xferSyn( oxfer );
-	if ( xferSyn.isExplicitVR() )
-	{
-	    switch ( dO->getVR() )
-	    {
-		case EVR_ox :
-		case EVR_OB :
-		case EVR_OW :
-		case EVR_SQ :
-		    templen += 12;  // fuer Tag, Length, VR und reserved
-		    break;
-		default:
-		    templen += 8;   // fuer Tag, Length und VR
-		    break;
-	    }
-	}
-	else
-	    templen += 8;	    // fuer Tag und Length
+	DcmXfer xf(oxfer);
+	templen += xf.sizeofTagHeader(dO->getVR());
 
 	if ( dO->getTag().getXTag() == DCM_DirectoryRecordSequence )
 	    break;
@@ -761,19 +737,18 @@ Bdebug((2, "dcdicdir:DcmDicomDir::copyRecordPtrToSQ(*record,&toDirSQ,"
     {
 	unsigned long lastIndex = record->cardSub();
 	unsigned long lastDirIndex = toDirSQ.card();
-debug(( 3, "there are %ld subRecords and %ld toDirItems ",
-	   lastIndex, lastDirIndex ));
+	debug(( 3, "there are %ld subRecords and %ld toDirItems ",
+		lastIndex, lastDirIndex ));
 
 	for (unsigned long i = lastIndex; i > 0; i-- )
 	{
-debug(( 3, "testing subRecord no %ld of %ld:", i, lastIndex ));
+	    debug(( 3, "testing subRecord no %ld of %ld:", i, lastIndex ));
 
 	    DcmDirectoryRecord *subRecord = record->getSub( i-1 );
 
 	    if ( subRecord != (DcmDirectoryRecord*)NULL )
 	    {
 		DcmUnsignedLongOffset *uloP;
-		toDirSQ.insert( subRecord, lastDirIndex );
 		if ( i == lastIndex )
 		    lastReturnItem = subRecord; 	// letztes Item merken
 							// nextPointer anpassen
@@ -784,7 +759,7 @@ debug(( 3, "testing subRecord no %ld of %ld:", i, lastIndex ));
 		subRecord->insert( uloP, TRUE );
 #ifdef DEBUG
 Uint32 uint = 0;
-uint = uloP->getUint32(uint);
+uloP->getUint32(uint);
 debug(( 2, "Next Offset-Element(0x%4.4hx,0x%4.4hx) offs=0x%8.8lx p=%p next=%p",
 	   uloP->getGTag(), uloP->getETag(),
 	   uint, uloP, nextRec ));
@@ -798,11 +773,15 @@ debug(( 2, "Next Offset-Element(0x%4.4hx,0x%4.4hx) offs=0x%8.8lx p=%p next=%p",
 		uloP->setNextRecord( *firstRec );
 		subRecord->insert( uloP, TRUE );
 #ifdef DEBUG
-uint = uloP->getUint32(uint);
+uloP->getUint32(uint);
 debug(( 2, "Lower Offset-Element(0x%4.4hx,0x%4.4hx) offs=0x%8.8lx p=%p lower=%p",
 	   uloP->getGTag(), uloP->getETag(),
 	   uint, uloP, *firstRec ));
 #endif
+
+                /* insert a begining */
+		toDirSQ.prepend( subRecord );
+
 		nextRec = subRecord;
 	    }
 	}  // for ( i ...
@@ -822,9 +801,10 @@ Edebug(());
 
 
 E_Condition DcmDicomDir::convertTreeToLinear(Uint32 beginOfDataSet,
-					      E_TransferSyntax oxfer,
-					      E_EncodingType enctype,
-					      DcmSequenceOfItems &unresRecs )
+					     E_TransferSyntax oxfer,
+					     E_EncodingType enctype,
+					     E_GrpLenEncoding gltype,
+					     DcmSequenceOfItems &unresRecs )
 {
 Bdebug((1, "dcdicdir:DcmDicomDir::convertTreeToLinear(beginOfDataSet=%ld)",
 	   beginOfDataSet  ));
@@ -871,6 +851,11 @@ debug(( 2, "copy pointer of MRDR no %ld of %ld to localDirRecSeq:",
 	   j, numUnresItems ));
 
 	localDirRecSeq.insert( this->getMRDRSequence().getItem(j-1), 0 );
+    }
+
+    if (gltype == EGL_withGL) {
+	// add group lengths before computing byte offsets
+	dset.addGroupLengthElements(oxfer, enctype);
     }
 
     // konvertiere im Fehlerfall ein zweites Mal:
@@ -1165,7 +1150,7 @@ E_Condition DcmDicomDir::write(const E_TransferSyntax oxfer,
 
     // in schreibbares Format umwandeln
     errorFlag = convertTreeToLinear(bODset, outxfer, 
-				    enctype, localUnresRecs);
+				    enctype, gltype, localUnresRecs);
 
     dset.transferInit();
     dset.write(outStream, outxfer, enctype, gltype);
@@ -1415,7 +1400,16 @@ Edebug(());
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
-** Revision 1.10  1997-04-18 08:17:14  andreas
+** Revision 1.11  1997-04-24 12:10:47  hewett
+** Fixed DICOMDIR generation bug affecting inclusion of Group Length
+** attributes (file offsets were not being computed correctly).
+** Fixed DICOMDIR generation bug affecting ordering of
+** patient/study/series/image records (item insertion into a sequence
+** did produce the expected ordering).
+** Fixed DICOMDIR generation bug affecting the use of Unknown VR
+** attributes (the file offsets were not being computed correctly).
+**
+** Revision 1.10  1997/04/18 08:17:14  andreas
 ** - The put/get-methods for all VRs did not conform to the C++-Standard
 **   draft. Some Compilers (e.g. SUN-C++ Compiler, Metroworks
 **   CodeWarrier, etc.) create many warnings concerning the hiding of
