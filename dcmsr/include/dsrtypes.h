@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-07 18:14:05 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2000-11-09 11:31:46 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -90,18 +90,6 @@ class DSRTypes
      */
     //@{
 
-    /// internal: render items separately (for container with SEPARATE flag)
-    static const size_t HF_renderItemsSeparately;
-
-    /// internal: expand items inline when they are short and have no child nodes
-    static const size_t HF_renderItemInline;
-
-    ///internal: content item is rendered fully inside the annex
-    static const size_t HF_currentlyInsideAnnex;
-
-    /// internal: create footnote references
-    static const size_t HF_createFootnoteReferences;
-
     /// external: never expand child nodes inline
     static const size_t HF_neverExpandChildrenInline;
 
@@ -131,6 +119,18 @@ class DSRTypes
 
     /// external: copy Cascading Style Sheet (CSS) content to HTML file
     static const size_t HF_copyStyleSheetContent;
+
+    /// internal: render items separately (for container with SEPARATE flag)
+    static const size_t HF_renderItemsSeparately;
+
+    /// internal: expand items inline when they are short and have no child nodes
+    static const size_t HF_renderItemInline;
+
+    /// internal: content item is rendered fully inside the annex
+    static const size_t HF_currentlyInsideAnnex;
+
+    /// internal: create footnote references
+    static const size_t HF_createFootnoteReferences;
 
     /// shortcut: render all codes
     static const size_t HF_renderAllCodes;
@@ -951,7 +951,10 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
- *  Revision 1.8  2000-11-07 18:14:05  joergr
+ *  Revision 1.9  2000-11-09 11:31:46  joergr
+ *  Reordered renderHTML flags (internal flags to the end).
+ *
+ *  Revision 1.8  2000/11/07 18:14:05  joergr
  *  Added new command line option allowing to choose code value or meaning to be
  *  rendered as the numeric measurement unit.
  *  Enhanced rendered HTML output of date, time, datetime and pname.
