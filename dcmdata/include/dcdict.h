@@ -10,9 +10,9 @@
 ** 
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-09-18 16:37:10 $
+** Update Date:		$Date: 1997-05-13 13:58:41 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdict.h,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -65,6 +65,10 @@ protected:
     ** do anything.
     */
     void loadBuiltinDictionary();
+
+    /* Load skeleton dictionary (the bare minimum needed to run) */
+    BOOL loadSkeletonDictionary();
+
 
     const DcmDictEntry* findEntry(const DcmDictEntry& entry);
     void deleteEntry(const DcmDictEntry& entry);
@@ -155,7 +159,12 @@ extern DcmDataDictionary dcmDataDict;
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.h,v $
-** Revision 1.7  1996-09-18 16:37:10  hewett
+** Revision 1.8  1997-05-13 13:58:41  hewett
+** Added member function (loadSkeletomDictionary) to preload of a few
+** essential attribute descriptions into the data dictionary (e.g. Item
+** and ItemDelimitation tags).
+**
+** Revision 1.7  1996/09/18 16:37:10  hewett
 ** Added capability to search data dictionary by tag name.  The
 ** source code for these changes was contributed by Larry V. Streepy,
 ** Jr., Chief Technical Officer,  Healthcare Communications, Inc.,
