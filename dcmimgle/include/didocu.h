@@ -22,9 +22,9 @@
  *  Purpose: DicomDocument (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-14 17:16:32 $
+ *  Update Date:      $Date: 1998-12-16 16:26:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/didocu.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,6 +48,7 @@
  *  forward declarations  *
  *------------------------*/
 
+class OFString;
 class DcmStream;
 class DcmStack;
 class DcmObject;
@@ -140,12 +141,16 @@ class DiDocument
     unsigned long getValue(const DcmTagKey &tag,
                            const char *&returnVal) const;
 
+    unsigned long getValue(const DcmTagKey &tag,
+                           OFString &returnVal,
+                           const unsigned long pos = 0) const;
+
     unsigned long getSequence(const DcmTagKey &tag,
                               DcmSequenceOfItems *&seq) const;
 
     static unsigned long getElemValue(const DcmElement *elem,
                                       Uint16 &returnVal,
-                                      const unsigned long pos);
+                                      const unsigned long pos = 0);
 
     static unsigned long getElemValue(const DcmElement *elem,
                                       const Uint16 *&returnVal);
@@ -153,6 +158,9 @@ class DiDocument
     static unsigned long getElemValue(const DcmElement *elem,
                                       const char *&returnVal);
 
+    static unsigned long getElemValue(const DcmElement *elem,
+                                      OFString &returnVal,
+                                      const unsigned long pos = 0);
 
  protected:
 
@@ -184,7 +192,11 @@ class DiDocument
  *
  * CVS/RCS Log:
  * $Log: didocu.h,v $
- * Revision 1.2  1998-12-14 17:16:32  joergr
+ * Revision 1.3  1998-12-16 16:26:52  joergr
+ * Added methods to use getOFString from class DcmElement (incl. multi value
+ * fields).
+ *
+ * Revision 1.2  1998/12/14 17:16:32  joergr
  * Added (simplified) methods to return values of a given DcmElement object.
  *
  * Revision 1.1  1998/11/27 14:53:59  joergr
