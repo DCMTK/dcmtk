@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeScaleTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-08-25 16:41:54 $
+ *  Update Date:      $Date: 1999-09-07 09:49:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimosct.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -95,7 +95,7 @@ class DiMonoScaleTemplate
             Data = new T[getCount()];
             if (Data != NULL)
             {
-                const register T value = (T)((double)DicomImageClass::maxval(bits) * (double)pvalue /
+                const T value = (T)((double)DicomImageClass::maxval(bits) * (double)pvalue /
                     (double)DicomImageClass::maxval(WIDTH_OF_PVALUES));
                 scaleData(&pixel, &Data, interpolate, value);
              }
@@ -111,7 +111,10 @@ class DiMonoScaleTemplate
  *
  * CVS/RCS Log:
  * $Log: dimosct.h,v $
- * Revision 1.5  1999-08-25 16:41:54  joergr
+ * Revision 1.6  1999-09-07 09:49:39  joergr
+ * Removed register variable declaration to avoid compiler warnings.
+ *
+ * Revision 1.5  1999/08/25 16:41:54  joergr
  * Added new feature: Allow clipping region to be outside the image
  * (overlapping).
  *
