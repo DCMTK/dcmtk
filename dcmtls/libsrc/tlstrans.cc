@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DcmTLSConnection
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-06-05 10:32:56 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-12-19 10:00:04 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -76,6 +76,7 @@ END_EXTERN_C
 #include "tlstrans.h"
 #include "tlslayer.h"
 #include "ofconsol.h"
+#include "dcompat.h"    /* to make sure we have a select prototype */
 
 
 DcmTLSConnection::DcmTLSConnection(int openSocket, SSL *newTLSConnection)
@@ -349,7 +350,10 @@ void tlstrans_dummy_function()
 
 /*
  *  $Log: tlstrans.cc,v $
- *  Revision 1.7  2001-06-05 10:32:56  joergr
+ *  Revision 1.8  2001-12-19 10:00:04  meichel
+ *  Added include to avoid warning on Ultrix.
+ *
+ *  Revision 1.7  2001/06/05 10:32:56  joergr
  *  Replaced some #ifdef _WIN32 statements by #ifdef HAVE_WINDOWS_H or #ifdef
  *  __CYGWIN__ respectively to reflect the fact that the latest Cygwin/gcc
  *  version does not define _WIN32 any more.
