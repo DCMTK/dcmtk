@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVInterface
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-02 16:00:41 $
- *  CVS/RCS Revision: $Revision: 1.65 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-06-05 16:21:30 $
+ *  CVS/RCS Revision: $Revision: 1.66 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,6 +48,7 @@
 #include "imagedb.h"    /* for DB_UpperMaxBytesPerStudy */
 #include "dvcache.h"    /* for index file caching */
 
+class OFLogFile;
 class DVPSConfig;
 class DicomImage;
 class DiDisplayFunction;
@@ -194,13 +195,21 @@ class DVInterface: public DVConfiguration
       return *pPrint;
     }
 
-    /** resets the presentation state object to the status
-     *  it had immediately after the last successful operation of "loadImage" or "loadPState".
+    /** resets the presentation state object to the status it had immediately after the
+     *  last successful operation of "loadImage" or "loadPState". A state can also explicitly
+     *  specified as such a "reset state" by using the method saveCurrentPStateForReset().
      *  Attention: The last reference returned by getCurrentPState() becomes invalid
      *  when this method is called.
      *  @return EC_Normal upon success, an error code otherwise.
      */
     E_Condition resetPresentationState();
+
+    /** saves the current state of the presentation state object to be used for
+     *  resetPresentationState(). This is e.g. useful after registration of additional images
+     *  directly after a new images has been loaded.
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    E_Condition saveCurrentPStateForReset();
 
     /** removes any shared or exclusive lock on the database.
      *  This method should be called when a database transaction
@@ -1316,7 +1325,7 @@ class DVInterface: public DVConfiguration
      */
     virtual void setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode);
 
-    /** NOT YET IMPLEMENTED - sets a filter to specify which messages are actually written to the application
+    /** sets a filter to specify which messages are actually written to the application
      *  wide log file.
      *  There are five different levels (in ascending order): none, informational, warning,
      *  error, debug. All messages which belong to a 'lower' level are included in the
@@ -1325,12 +1334,12 @@ class DVInterface: public DVConfiguration
      */
     void setLogFilter(DVPSLogMessageLevel level);
 
-    /** NOT YET IMPLEMENTED - writes a message into the application wide log file.
+    /** writes a message into the application wide log file.
      *  @param level status level of the message (also used to filter the messages),
      *    DVPSM_none should only be used for setLogFilter() and not to write a log message
      *    since it has no meaning for this method.
      *  @param module name of the module which writes the message
-     *  @param message (free) text of the log message
+     *  @param message (free) text of the log message ('\n' for newline)
      *  @return EC_Normal upon success, an error code otherwise.
      */
     E_Condition writeLogMessage(
@@ -1621,6 +1630,10 @@ private:
     /** annotation text (if any)
      */
     OFString annotationText;
+    
+    /** general application log file
+     */
+    OFLogFile *logFile;
 };
 
 
@@ -1630,7 +1643,12 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.65  2000-06-02 16:00:41  meichel
+ *  Revision 1.66  2000-06-05 16:21:30  joergr
+ *  Implemented log message methods.
+ *  Added method allowing to specify the current presentation state to be used
+ *  for resetting the pstate.
+ *
+ *  Revision 1.65  2000/06/02 16:00:41  meichel
  *  Adapted all dcmpstat classes to use OFConsole for log and error output
  *
  *  Revision 1.64  2000/06/02 13:53:53  joergr

@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-02 16:00:55 $
- *  CVS/RCS Revision: $Revision: 1.91 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-06-05 16:24:27 $
+ *  CVS/RCS Revision: $Revision: 1.92 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +38,7 @@
 #include "dvpsconf.h"    /* for class DVPSConfig */
 #include "ofbmanip.h"    /* for OFBitmanipTemplate */
 #include "oflist.h"      /* for class OFList */
+#include "oflogfil.h"    /* for class OFLogFile */
 #include "digsdfn.h"     /* for DiGSDFunction */
 #include "diciefn.h"     /* for DiCIELABFunction */
 #include "diutil.h"      /* for DU_getStringDOElement */
@@ -125,6 +126,7 @@ DVInterface::DVInterface(const char *config_file)
 , prependPrinterName(OFTrue)
 , prependLighting(OFTrue)
 , annotationText()
+, logFile(NULL)
 {
     clearIndexRecord(idxRec, idxRecPos);
     if (config_file) configPath = config_file;
@@ -179,6 +181,10 @@ DVInterface::DVInterface(const char *config_file)
     /* initialize reference time with "yesterday" */
     if (referenceTime >= 86400) referenceTime -= 86400; // subtract one day
     setCurrentPrinter(getTargetID(0, DVPSE_printAny));
+    
+    const char *filename = getLogFile();
+    if (filename != NULL)
+        logFile = new OFLogFile(filename);
 }
 
 
@@ -190,6 +196,7 @@ DVInterface::~DVInterface()
     delete pDicomImage;
     delete pDicomPState;
     delete pHardcopyImage;
+    delete logFile;
     for (int i = DVPSD_first; i < DVPSD_max; i++)
       delete displayFunction[i];
     if (pHandle) releaseDatabase();
@@ -636,6 +643,32 @@ E_Condition DVInterface::resetPresentationState()
         } else status = EC_IllegalCall;
     }
     if (EC_Normal != status) delete newState;
+    return status;
+}
+
+
+E_Condition DVInterface::saveCurrentPStateForReset()
+{
+    E_Condition status = EC_IllegalCall;
+    if (pState != NULL)
+    {
+        DcmFileFormat *fileformat = new DcmFileFormat();
+        if (fileformat != NULL)
+        {
+            DcmDataset *dataset = fileformat->getDataset();
+            if (dataset)
+            {
+                status = pState->write(*dataset);           // write current state to 'reset' dataset
+                if (status == EC_Normal)
+                {
+                    delete pDicomPState;
+                    pDicomPState = fileformat;
+                    fileformat = NULL;                      // avoid deletion of pDicomPState a few lines later
+                }
+            } else status = EC_MemoryExhausted;
+        } else status = EC_MemoryExhausted;
+        delete fileformat;
+    }
     return status;
 }
 
@@ -3273,14 +3306,22 @@ void DVInterface::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
 
 void DVInterface::setLogFilter(DVPSLogMessageLevel level)
 {
-  // to be implemented ...
+  if (logFile != NULL)
+    logFile->setFilter((OFLogFile::LF_Level)level);
 }
 
 E_Condition DVInterface::writeLogMessage(DVPSLogMessageLevel level, const char *module, const char *message)
 {
-
-  // to be implemented ...
-
+  if ((logFile != NULL) && (logFile->good()))
+  {
+    if (logFile->checkFilter((OFLogFile::LF_Level)level))
+    {
+      logFile->lockFile((OFLogFile::LF_Level)level, module);
+      logFile->writeMessage(message);
+      logFile->unlockFile();
+    }
+    return EC_Normal;
+  }
   return EC_IllegalCall;
 }
 
@@ -3373,7 +3414,12 @@ E_Condition DVInterface::checkIOD(const char *studyUID, const char *seriesUID, c
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.91  2000-06-02 16:00:55  meichel
+ *  Revision 1.92  2000-06-05 16:24:27  joergr
+ *  Implemented log message methods.
+ *  Added method allowing to specify the current presentation state to be used
+ *  for resetting the pstate.
+ *
+ *  Revision 1.91  2000/06/02 16:00:55  meichel
  *  Adapted all dcmpstat classes to use OFConsole for log and error output
  *
  *  Revision 1.90  2000/06/02 13:54:35  joergr
