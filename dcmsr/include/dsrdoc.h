@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-26 14:17:06 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2000-11-01 16:16:33 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,7 +51,7 @@
  *  DICOM SR documents (according to supplement 23 final text).
  */
 class DSRDocument
-  : public DSRTypes
+  : protected DSRTypes
 {
 
   public:
@@ -93,7 +93,7 @@ class DSRDocument
 
     /** print current SR document to specified output stream
      ** @param  stream  output stream
-     *  @param  flags   flag used to customize the output (see DSRTypes::PF_xxx)
+     *  @param  flags   optional flag used to customize the output (see DSRTypes::PF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition print(ostream &stream,
@@ -114,23 +114,26 @@ class DSRDocument
      */
     E_Condition write(DcmItem &dataset);
 
-    /** write current SR document in XML format.
-     *  ! NOT YET IMPLEMENTED !
+    /** write current SR document in XML format
      ** @param  stream  output stream to which the XML document is written
+     *  @param  flags   optional flag used to customize the output (see DSRTypes::XF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition writeXML(ostream &stream);
+    E_Condition writeXML(ostream &stream,
+                         const size_t flags = 0);
 
     /** render current SR document in HTML format
-     ** @param  stream  output stream to which the HTML document is written
-     *  @param  flags   flag used to customize the output (see DSRTypes::HF_xxx)
+     ** @param  stream      output stream to which the HTML document is written
+     *  @param  flags       optional flag used to customize the output (see DSRTypes::HF_xxx)
+     *  @param  styleSheet  optional filename/URL of a Cascading Style Sheet (CSS)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition renderHTML(ostream &stream,
-                           const size_t flags = 0);
+                           const size_t flags = 0,
+                           const char *styleSheet = NULL);
 
 
-  // --- get misc attributes ---
+  // --- get/set misc attributes ---
 
     /** get the current SR document type
      ** @return document type (might be DT_invalid if read from dataset)
@@ -144,6 +147,19 @@ class DSRDocument
     {
         return DocumentTree;
     }
+
+    /** get specific character set type.
+     *  If the type is unknown the original DICOM defined term can be retrieved
+     *  with the method getSpecificCharacterSet().
+     ** @return character set (might be CS_invalid/unknown if not supported)
+     */
+    E_CharacterSet getSpecificCharacterSetType() const;
+
+    /** set specific character set type.
+     *  The DICOM defined term (see SpecificCharacterSet) is set accordingly.
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    E_Condition setSpecificCharacterSetType(const E_CharacterSet characterSet);
 
     /** get document completion flag
      ** @return completion flag (might be CF_invalid if read from dataset)
@@ -522,7 +538,8 @@ class DSRDocument
   // --- set DICOM string attributes ---
 
     /** set specific character set.
-     *  The passed string must be a valid DICOM Code String (CS).
+     *  The passed string must be a valid DICOM Code String (CS).  The
+     *  internal enumerated value is set accordingly.
      ** @param  string  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
@@ -720,6 +737,8 @@ class DSRDocument
     E_CompletionFlag   CompletionFlagEnum;
     /// enumerated value: unverified, verified
     E_VerificationFlag VerificationFlagEnum;
+    /// defined term: see DSRTypes
+    E_CharacterSet     SpecificCharacterSetEnum;
 
     // DICOM attributes are listed here ordered by module.
     // The comments for each attribute describe the Name: (VR, VM, Type).
@@ -830,7 +849,13 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
- *  Revision 1.6  2000-10-26 14:17:06  joergr
+ *  Revision 1.7  2000-11-01 16:16:33  joergr
+ *  dded support for conversion to XML.
+ *  Added support for Cascading Style Sheet (CSS) used optionally for HTML
+ *  rendering.
+ *  Enhanced support for specific character sets.
+ *
+ *  Revision 1.6  2000/10/26 14:17:06  joergr
  *  Added support for "Comprehensive SR".
  *
  *  Revision 1.5  2000/10/18 17:01:47  joergr
