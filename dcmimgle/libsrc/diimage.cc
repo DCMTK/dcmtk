@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DicomImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-29 16:59:53 $
+ *  Update Date:      $Date: 2002-06-26 16:11:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diimage.cc,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -63,6 +63,7 @@ DiImage::DiImage(const DiDocument *docu,
     BitsStored(0),
     HighBit(0),
     BitsPerSample(0),
+    Polarity(EPP_Normal),
     hasSignedRepresentation(0),
     hasPixelSpacing(0),
     hasImagerPixelSpacing(0),
@@ -251,6 +252,7 @@ DiImage::DiImage(const DiDocument *docu,
     BitsStored(0),
     HighBit(0),
     BitsPerSample(0),
+    Polarity(EPP_Normal),
     hasSignedRepresentation(0),
     hasPixelSpacing(0),
     hasImagerPixelSpacing(0),
@@ -277,6 +279,7 @@ DiImage::DiImage(const DiImage *image,
     BitsStored(image->BitsStored),
     HighBit(image->HighBit),
     BitsPerSample(image->BitsPerSample),
+    Polarity(image->Polarity),
     hasSignedRepresentation(image->hasSignedRepresentation),
     hasPixelSpacing(image->hasPixelSpacing),
     hasImagerPixelSpacing(image->hasImagerPixelSpacing),
@@ -304,6 +307,7 @@ DiImage::DiImage(const DiImage *image,
     BitsStored(image->BitsStored),
     HighBit(image->HighBit),
     BitsPerSample(image->BitsPerSample),
+    Polarity(image->Polarity),
     hasSignedRepresentation(image->hasSignedRepresentation),
     hasPixelSpacing(image->hasPixelSpacing),
     hasImagerPixelSpacing(image->hasImagerPixelSpacing),
@@ -329,6 +333,7 @@ DiImage::DiImage(const DiImage *image,
     BitsStored(image->BitsStored),
     HighBit(image->HighBit),
     BitsPerSample(image->BitsPerSample),
+    Polarity(image->Polarity),
     hasSignedRepresentation(image->hasSignedRepresentation),
     hasPixelSpacing(image->hasPixelSpacing),
     hasImagerPixelSpacing(image->hasImagerPixelSpacing),
@@ -356,6 +361,7 @@ DiImage::DiImage(const DiImage *image,
     BitsStored(stored),
     HighBit(stored - 1),
     BitsPerSample(image->BitsPerSample),
+    Polarity(image->Polarity),
     hasSignedRepresentation(0),
     hasPixelSpacing(image->hasPixelSpacing),
     hasImagerPixelSpacing(image->hasImagerPixelSpacing),
@@ -454,12 +460,12 @@ void DiImage::checkPixelExtension()
 
 
 void DiImage::convertPixelData(/*const*/ DcmPixelData *pixel,
-                               const int /*spp*/)
+                               const int spp /*samplePerPixel*/)
 {
     if ((pixel->getVR() == EVR_OW) || ((pixel->getVR() == EVR_OB) && (BitsAllocated <= 8)))
     {
-        const unsigned long start = FirstFrame * (unsigned long)Rows * (unsigned long)Columns;
-        const unsigned long count = NumberOfFrames * (unsigned long)Rows * (unsigned long)Columns;
+        const unsigned long start = FirstFrame * (unsigned long)Rows * (unsigned long)Columns * (unsigned long)spp;
+        const unsigned long count = NumberOfFrames * (unsigned long)Rows * (unsigned long)Columns * (unsigned long)spp;
         if ((BitsAllocated < 1) || (BitsStored < 1) || (BitsAllocated < BitsStored) ||
             (BitsStored > (Uint16)(HighBit + 1)))
         {
@@ -520,6 +526,16 @@ void DiImage::convertPixelData(/*const*/ DcmPixelData *pixel,
                 ofConsole.unlockCerr();
             }
         }
+        else if (InputData->getPixelStart() >= InputData->getCount())
+        {
+            ImageStatus = EIS_InvalidValue;
+            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
+            {
+                ofConsole.lockCerr() << "ERROR: start offset (" << InputData->getPixelStart()
+                                     << ") exceeds number of pixels stored (" << InputData->getCount() << ") " << endl;
+                ofConsole.unlockCerr();
+            }
+        }
     }
     else
     {
@@ -574,6 +590,78 @@ int DiImage::setRowColumnRatio(const double ratio)
     PixelHeight = ratio;
     checkPixelExtension();
     return 1;
+}
+
+
+int DiImage::setPolarity(const EP_Polarity polarity)
+{
+    if (polarity != Polarity)
+    {
+        Polarity = polarity;
+        return 1;
+    }
+    return 2;
+}
+
+
+// --- write current image to DICOM dataset
+
+int DiImage::writeToDataset(DcmItem &dataset,
+                            const unsigned long frame,
+                            const int bits,
+                            const int planar)
+{
+    int result = 0;
+    const int bitsStored = getBits(bits);
+    /* get output pixel data */
+    const void *pixel = getOutputData(frame, bitsStored, planar);
+    if (pixel != NULL)
+    {
+        unsigned long count;
+        /* write color model dependent attributes */
+        if ((getInternalColorModel() == EPI_Monochrome1) || (getInternalColorModel() == EPI_Monochrome2))
+        {
+            /* monochrome image */
+            count = (unsigned long)Columns * (unsigned long)Rows;
+            dataset.putAndInsertString(DCM_PhotometricInterpretation, "MONOCHROME2");
+            dataset.putAndInsertUint16(DCM_SamplesPerPixel, 1);
+        } else {
+            /* color image */
+            count = (unsigned long)Columns * (unsigned long)Rows * 3 /*samples per pixel*/;
+            if (getInternalColorModel() == EPI_YBR_Full)
+                dataset.putAndInsertString(DCM_PhotometricInterpretation, "YBR_FULL");
+            else
+                dataset.putAndInsertString(DCM_PhotometricInterpretation, "RGB");
+            dataset.putAndInsertUint16(DCM_PlanarConfiguration, planar != 0);
+            dataset.putAndInsertUint16(DCM_SamplesPerPixel, 3);
+        }
+        /* write remaining attributes */
+        dataset.putAndInsertUint16(DCM_Columns, Columns);
+        dataset.putAndInsertUint16(DCM_Rows, Rows);
+        dataset.putAndInsertString(DCM_NumberOfFrames, "1");
+        if (bitsStored <= 8)
+            dataset.putAndInsertUint16(DCM_BitsAllocated, 8);
+        else if (bitsStored <= 16)
+            dataset.putAndInsertUint16(DCM_BitsAllocated, 16);
+        else
+            dataset.putAndInsertUint16(DCM_BitsAllocated, 32);
+        dataset.putAndInsertUint16(DCM_BitsStored, bitsStored);
+        dataset.putAndInsertUint16(DCM_HighBit, bitsStored - 1);
+        dataset.putAndInsertUint16(DCM_PixelRepresentation, 0);
+       if ((PixelWidth != 1) || (PixelHeight != 1))
+        {
+            char buffer[32];
+            sprintf(buffer, "%f\\%f", PixelHeight, PixelWidth);
+            dataset.putAndInsertString(DCM_PixelAspectRatio, buffer);
+        }
+        /* write pixel data (OB or OW) */
+        if (bitsStored <= 8)
+            dataset.putAndInsertUint8Array(DCM_PixelData, (Uint8 *)pixel, count);
+        else
+            dataset.putAndInsertUint16Array(DCM_PixelData, (Uint16 *)pixel, count);
+        result = 1;
+    }
+    return result;
 }
 
 
@@ -674,7 +762,12 @@ int DiImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: diimage.cc,v $
- * Revision 1.19  2001-11-29 16:59:53  joergr
+ * Revision 1.20  2002-06-26 16:11:12  joergr
+ * Added support for polarity flag to color images.
+ * Added new method to write a selected frame to a DICOM dataset (incl. required
+ * attributes from the "Image Pixel Module").
+ *
+ * Revision 1.19  2001/11/29 16:59:53  joergr
  * Fixed bug in dcmimgle that caused incorrect decoding of some JPEG compressed
  * images (certain DICOM attributes, e.g. photometric interpretation, might
  * change during decompression process).
