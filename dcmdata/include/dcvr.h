@@ -9,8 +9,8 @@
 ** Definition of the DcmVR class for Value Representation
 **
 **
-** Last Update:   $Author: andreas $
-** Revision:      $Revision: 1.3 $
+** Last Update:   $Author: hewett $
+** Revision:      $Revision: 1.4 $
 ** Status:	  $State: Exp $
 **
 */
@@ -24,6 +24,16 @@
 #include <stdlib.h>
 #endif
 #include "dctypes.h"
+
+
+/*
+** Global flag to enable/disable the generation of VR=UN
+*/
+extern BOOL dcmEnableUnknownVRGeneration; /* default TRUE */
+
+/*
+** VR Enumerations
+*/
 
 enum DcmEVR 
 {
@@ -67,7 +77,8 @@ enum DcmEVR
     EVR_pixelSQ=34,	/* used internally */
     EVR_pixelItem=35,	/* used internally */
 
-    EVR_UNKNOWN=36	/* used internally */
+    EVR_UNKNOWN=36,	/* used internally */
+    EVR_UN=37		/* Unknown Value Representation - defined in supplement 14 */
 };
 
 
@@ -94,6 +105,15 @@ public:
     int isStandard() const;
     /* returns true if VR is for internal use only */
     int isForInternalUseOnly() const;
+
+    /* returns true if the vr is equivalent */
+    int isEquivalent(const DcmVR& avr) const;
+    
+    /* minimum and maximum length of a value with this VR 
+    ** (in bytes assuming single byte characters) 
+    */
+    Uint32 getMinValueLength() const;
+    Uint32 getMaxValueLength() const;
 
 };
 
