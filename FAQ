@@ -1,6 +1,45 @@
 DCMTK FAQ - Frequently Asked Questions
 
 ----
+2002.07.15
+
+Q: Using dcm2pnm to convert a DICOM image I get the following error message:
+   "invalid value for 'PhotometricInterpretation' (LittleEndianExplicit)".
+
+A: [This only applies to systems where the data dictionary is not built-in
+   but loaded from file (typical for Unix systems).]  Most likely the
+   environment variable DCMDICTPATH is not set-up properly.  Please note
+   that it needs to point to the data dictionary file, not to a directory
+   (see also older entries below).
+
+----
+2002.07.15
+
+Q: Using the "DicomImage" class to handle DICOM images I get the following
+   error message when accesing the pixel data: "ERROR: cannot change to
+   unencapsulated representation for pixel data".
+
+A: It seems that the image is compressed.  If it uses a JPEG compression
+   scheme you need to register the JPEG decompressor code:
+   - add '#include "djdecode.h"' to your source file
+   - call 'DJDecoderRegistration::registerCodecs();' at program init
+   - call 'DJDecoderRegistration::cleanup();' before program exit
+   That should be all you need to do.  See doc++ documentation for details.
+
+----
+2002.07.15
+
+Q: The transmission of DICOM objects to the storescp or imagectn application
+   works but is incredibly slow - about one 512k image per 15-20 seconds.
+
+A: The problem is most likely related to reverse DNS lookup.  When accepting
+   an association, DCMTK attempts to find out the remote system's hostname.
+   This can take some time if the remote system is not known to the local
+   DNS, in particular in Windows systems.  Try to start the application with
+   the additional command line option "--disable-host-lookup" (short: -dhl)
+   which was introduced with DCMTK 3.5.0.  The problem should disappear then.
+
+----
 2002.04.07
 
 Q: I am using Visual C++.net and the compilation of nearly every source
