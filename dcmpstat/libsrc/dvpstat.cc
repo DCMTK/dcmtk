@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-17 14:29:46 $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-09-20 13:22:23 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1673,7 +1673,7 @@ E_Condition DVPresentationState::getPrintBitmap(void *bitmap,
             (renderedImageTop != 1) || (renderedImageBottom != (signed long)renderedImageHeight))
         {
           image = currentImage->createClippedImage(renderedImageLeft - 1, renderedImageTop - 1,
-            renderedImageRight - renderedImageLeft + 1, renderedImageBottom - renderedImageTop + 1);
+            renderedImageRight - renderedImageLeft + 1, renderedImageBottom - renderedImageTop + 1 /*, background pvalue */);
         }
         /* scale up to minimum size or down to maximum size if necessary */
         if (((signed long)width != renderedImageRight - renderedImageLeft + 1) ||
@@ -3258,10 +3258,10 @@ void DVPresentationState::renderPixelData(OFBool display)
       renderedImageRight = brhcX;
       break;
     case DVPSR_90_deg:
-      renderedImageTop = (signed long)currentImageWidth - brhcX + 1;
-      renderedImageLeft = tlhcY;
-      renderedImageBottom = (signed long)currentImageWidth - tlhcX + 1;
-      renderedImageRight = brhcY;
+      renderedImageTop = tlhcX;
+      renderedImageLeft = (signed long)currentImageHeight - brhcY + 1;
+      renderedImageBottom = brhcX;
+      renderedImageRight = (signed long)currentImageHeight - tlhcY + 1;
       break;
     case DVPSR_180_deg:
       renderedImageTop = (signed long)currentImageHeight - brhcY + 1;
@@ -3270,10 +3270,10 @@ void DVPresentationState::renderPixelData(OFBool display)
       renderedImageRight = (signed long)currentImageWidth - tlhcX + 1;
       break;
     case DVPSR_270_deg:
-      renderedImageTop = tlhcX;
-      renderedImageLeft = (signed long)currentImageHeight - brhcY + 1;
-      renderedImageBottom = brhcX;
-      renderedImageRight = (signed long)currentImageHeight - tlhcY + 1;
+      renderedImageTop = (signed long)currentImageWidth - brhcX + 1;
+      renderedImageLeft = tlhcY;
+      renderedImageBottom = (signed long)currentImageWidth - tlhcX + 1;
+      renderedImageRight = brhcY;
       break;
   }
 
@@ -3606,7 +3606,11 @@ E_Condition DVPresentationState::getPrintBitmapRequestedImageSize(OFString& requ
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.37  1999-09-17 14:29:46  meichel
+ *  Revision 1.38  1999-09-20 13:22:23  joergr
+ *  Corrected bug with clipping of rotated print bitmaps (removed inconsistency
+ *  with 90 and 270 degree rotation).
+ *
+ *  Revision 1.37  1999/09/17 14:29:46  meichel
  *  Moved static helper functions to new class DVPSHelper, removed some unused code.
  *
  *  Revision 1.36  1999/09/13 14:01:23  thiel
