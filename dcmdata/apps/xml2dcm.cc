@@ -22,8 +22,8 @@
  *  Purpose: Convert XML document to DICOM file or data set
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-03-25 17:27:36 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2004-08-03 10:06:18 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -376,11 +376,12 @@ static OFCondition parsePixelSequence(DcmPixelSequence *sequence,
 
 
 static OFCondition parseMetaHeader(DcmMetaInfo *metainfo,
-                                   xmlNodePtr current)
+                                   xmlNodePtr current,
+                                   const OFBool parse)
 {
     /* check for valid node and correct name */
     OFCondition result = checkNode(current, "meta-header");
-    if (result.good())
+    if (result.good() && parse)
     {
         /* get child nodes */
         current = current->xmlChildrenNode;
@@ -491,6 +492,7 @@ static OFCondition validateXmlDocument(xmlDocPtr doc,
 static OFCondition readXmlFile(const char *ifname,
                                DcmFileFormat &fileformat,
                                E_TransferSyntax &xfer,
+                               const OFBool metaInfo,
                                const OFBool checkNamespace,
                                const OFBool validateDocument,
                                const OFBool verbose,
@@ -516,19 +518,23 @@ static OFCondition readXmlFile(const char *ifname,
                 /* check namespace declaration (if required) */
                 if (!checkNamespace || (xmlSearchNsByHref(doc, current, OFreinterpret_cast(const xmlChar *, DCMTK_XML_NAMESPACE_URI)) != NULL))
                 {
-                    if (verbose)
-                        COUT << "parsing file-format ..." << endl;
                     /* check whether to parse a "file-format" or "data-set" */
                     if (xmlStrcmp(current->name, OFreinterpret_cast(const xmlChar *, "file-format")) == 0)
                     {
                         if (verbose)
-                            COUT << "parsing meta-header ..." << endl;
+                        {
+                            COUT << "parsing file-format ..." << endl;
+                            if (metaInfo)
+                                COUT << "parsing meta-header ..." << endl;
+                            else
+                                COUT << "skipping meta-header ..." << endl;
+                        }
                         current = current->xmlChildrenNode;
                         /* ignore blank (empty or whitespace only) nodes */
                         while ((current != NULL) && xmlIsBlankNode(current))
                             current = current->next;
-                        /* parse "meta-header" */
-                        result = parseMetaHeader(fileformat.getMetaInfo(), current);
+                        /* parse/skip "meta-header" */
+                        result = parseMetaHeader(fileformat.getMetaInfo(), current, metaInfo /*parse*/);
                         if (result.good())
                         {
                             current = current->next;
@@ -589,6 +595,7 @@ int main(int argc, char *argv[])
 {
     int opt_debug = 0;
     OFBool opt_verbose = OFFalse;
+    OFBool opt_metaInfo = OFTrue;
     OFBool opt_dataset = OFFalse;
     OFBool opt_namespace = OFFalse;
     OFBool opt_validate = OFFalse;
@@ -615,6 +622,11 @@ int main(int argc, char *argv[])
       cmd.addOption("--version",                        "print version information and exit", OFTrue /* exclusive */);
       cmd.addOption("--verbose",               "-v",    "verbose mode, print processing details");
       cmd.addOption("--debug",                 "-d",    "debug mode, print debug information");
+
+    cmd.addGroup("input options:");
+      cmd.addSubGroup("input file format:");
+        cmd.addOption("--read-meta-info",      "+f",    "read meta information if present (default)");
+        cmd.addOption("--ignore-meta-info",    "-f",    "ignore file meta information");
 
     cmd.addGroup("processing options:");
       cmd.addSubGroup("validation:");
@@ -672,6 +684,15 @@ int main(int argc, char *argv[])
             opt_verbose = OFTrue;
         if (cmd.findOption("--debug"))
             opt_debug = 5;
+
+        /* input options */
+
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--read-meta-info"))
+            opt_metaInfo = OFTrue;
+        if (cmd.findOption("--ignore-meta-info"))
+            opt_metaInfo = OFFalse;
+        cmd.endOptionBlock();
 
         /* processing options */
 
@@ -797,7 +818,8 @@ int main(int argc, char *argv[])
         if (opt_verbose)
             COUT << "reading XML input file: " << opt_ifname << endl;
         /* read XML file and feed data into DICOM fileformat */
-        result = readXmlFile(opt_ifname, fileformat, xfer, opt_namespace, opt_validate, opt_verbose, opt_debug != 0);
+        result = readXmlFile(opt_ifname, fileformat, xfer, opt_metaInfo, opt_namespace,
+                             opt_validate, opt_verbose, opt_debug != 0);
         if (result.good())
         {
             if (opt_verbose)
@@ -850,7 +872,10 @@ int main(int, char *[])
 /*
  * CVS/RCS Log:
  * $Log: xml2dcm.cc,v $
- * Revision 1.9  2004-03-25 17:27:36  joergr
+ * Revision 1.10  2004-08-03 10:06:18  joergr
+ * Added new option that allows to ignore the file meta information.
+ *
+ * Revision 1.9  2004/03/25 17:27:36  joergr
  * Solved issue with function pointer to std::fprintf or fprintf, respectively.
  *
  * Revision 1.8  2004/03/22 16:55:11  joergr

@@ -45,6 +45,17 @@ dcmfile-out  DICOM output filename
          debug mode, print debug information
 \endverbatim
 
+\subsection input_options input options
+\verbatim
+input file format:
+
+  +f   --read-meta-info
+         read meta information if present (default)
+
+  -f   --ignore-meta-info
+         ignore file meta information
+\endverbatim
+
 \subsection processing_options processing options
 \verbatim
 validation:
