@@ -70,6 +70,6 @@ dependencies:
 	(cd tests; touch $(DEP); $(MAKE) dependencies)
 
 html:
-	(doc++ -d htmldocs -p -B /dev/null include/*.h libsrc/*.cc apps/*.h apps/*.cc)
+	(doc++ -d htmldocs -p -i -B /dev/null include/*.h libsrc/*.cc apps/*.h apps/*.cc)
 
 
