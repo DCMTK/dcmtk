@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmItem
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2003-06-26 09:17:29 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-07-16 14:33:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.84 $
+ *  CVS/RCS Revision: $Revision: 1.85 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,6 +80,7 @@
 #include "dcxfer.h"
 #include "ofstream.h"
 #include "ofstring.h"
+#include "ofcast.h"
 
 
 // ********************************
@@ -148,8 +149,7 @@ DcmItem::~DcmItem()
     while (!elementList->empty())
     {
         dO = elementList->remove();
-        if (dO != (DcmObject*)NULL)
-            delete dO;
+        delete dO;
     }
     delete elementList;
 }
@@ -201,8 +201,8 @@ E_TransferSyntax DcmItem::checkTransferSyntax(DcmInputStream & inStream)
     char c2 = tagAndVR[1];
     char c3 = tagAndVR[2];
     char c4 = tagAndVR[3];
-    Uint16 t1 = (unsigned short)((c1 & 0xff) + ((c2 & 0xff) << 8));  // explicit little endian
-    Uint16 t2 = (unsigned short)((c3 & 0xff) + ((c4 & 0xff) << 8));  // conversion
+    Uint16 t1 = OFstatic_cast(unsigned short, (c1 & 0xff) + ((c2 & 0xff) << 8));  // explicit little endian
+    Uint16 t2 = OFstatic_cast(unsigned short, (c3 & 0xff) + ((c4 & 0xff) << 8));  // conversion
     DcmTag taglittle(t1, t2);
     DcmTag tagbig(swapShort(t1), swapShort(t2));
 
@@ -287,91 +287,91 @@ E_TransferSyntax DcmItem::checkTransferSyntax(DcmInputStream & inStream)
 
 DcmObject* DcmItem::copyDcmObject(DcmObject *oldObj)
 {
-    DcmObject *newObj = (DcmObject*)NULL;
+    DcmObject *newObj = NULL;
     switch (oldObj->ident())
     {
          // byte strings:
         case EVR_AE :
-            newObj = new DcmApplicationEntity(*(DcmApplicationEntity*)(oldObj));
+            newObj = new DcmApplicationEntity(*OFstatic_cast(DcmApplicationEntity *, oldObj));
             break;
         case EVR_AS :
-            newObj = new DcmAgeString(*(DcmAgeString*)oldObj);
+            newObj = new DcmAgeString(*OFstatic_cast(DcmAgeString *, oldObj));
             break;
         case EVR_CS :
-            newObj = new DcmCodeString(*(DcmCodeString*)oldObj);
+            newObj = new DcmCodeString(*OFstatic_cast(DcmCodeString *, oldObj));
             break;
         case EVR_DA :
-            newObj = new DcmDate(*(DcmDate*)oldObj);
+            newObj = new DcmDate(*OFstatic_cast(DcmDate *, oldObj));
             break;
         case EVR_DS :
-            newObj = new DcmDecimalString(*(DcmDecimalString*)oldObj);
+            newObj = new DcmDecimalString(*OFstatic_cast(DcmDecimalString *, oldObj));
             break;
         case EVR_DT :
-            newObj = new DcmDateTime(*(DcmDateTime*)oldObj);
+            newObj = new DcmDateTime(*OFstatic_cast(DcmDateTime *, oldObj));
             break;
         case EVR_IS :
-            newObj = new DcmIntegerString(*(DcmIntegerString*)oldObj);
+            newObj = new DcmIntegerString(*OFstatic_cast(DcmIntegerString *, oldObj));
             break;
         case EVR_TM :
-            newObj = new DcmTime(*(DcmTime*)oldObj);
+            newObj = new DcmTime(*OFstatic_cast(DcmTime *, oldObj));
             break;
         case EVR_UI :
-            newObj = new DcmUniqueIdentifier(*(DcmUniqueIdentifier*)oldObj);
+            newObj = new DcmUniqueIdentifier(*OFstatic_cast(DcmUniqueIdentifier *, oldObj));
             break;
 
         // character strings:
         case EVR_LO :
-            newObj = new DcmLongString(*(DcmLongString*)oldObj);
+            newObj = new DcmLongString(*OFstatic_cast(DcmLongString *, oldObj));
             break;
         case EVR_LT :
-            newObj = new DcmLongText(*(DcmLongText*)oldObj);
+            newObj = new DcmLongText(*OFstatic_cast(DcmLongText *, oldObj));
             break;
         case EVR_PN :
-            newObj = new DcmPersonName(*(DcmPersonName*)oldObj);
+            newObj = new DcmPersonName(*OFstatic_cast(DcmPersonName *, oldObj));
             break;
         case EVR_SH :
-            newObj = new DcmShortString(*(DcmShortString*)oldObj);
+            newObj = new DcmShortString(*OFstatic_cast(DcmShortString *, oldObj));
             break;
         case EVR_ST :
-            newObj = new DcmShortText(*(DcmShortText*)oldObj);
+            newObj = new DcmShortText(*OFstatic_cast(DcmShortText *, oldObj));
             break;
         case EVR_UT:
-            newObj = new DcmUnlimitedText(*(DcmUnlimitedText*)oldObj);
+            newObj = new DcmUnlimitedText(*OFstatic_cast(DcmUnlimitedText *, oldObj));
             break;
 
         // depending on byte order:
         case EVR_AT :
-            newObj = new DcmAttributeTag(*(DcmAttributeTag*)oldObj);
+            newObj = new DcmAttributeTag(*OFstatic_cast(DcmAttributeTag *, oldObj));
             break;
         case EVR_SS :
-            newObj = new DcmSignedShort(*(DcmSignedShort*)oldObj);
+            newObj = new DcmSignedShort(*OFstatic_cast(DcmSignedShort *, oldObj));
             break;
         case EVR_xs :
         case EVR_US :
-            newObj = new DcmUnsignedShort(*(DcmUnsignedShort*)oldObj);
+            newObj = new DcmUnsignedShort(*OFstatic_cast(DcmUnsignedShort *, oldObj));
             break;
         case EVR_SL :
-            newObj = new DcmSignedLong(*(DcmSignedLong*)oldObj);
+            newObj = new DcmSignedLong(*OFstatic_cast(DcmSignedLong *, oldObj));
             break;
         case EVR_up : // for (0004,eeee)
-            newObj = new DcmUnsignedLongOffset(*(DcmUnsignedLongOffset*)oldObj);
+            newObj = new DcmUnsignedLongOffset(*OFstatic_cast(DcmUnsignedLongOffset *, oldObj));
             break;
         case EVR_UL :
-            newObj = new DcmUnsignedLong(*(DcmUnsignedLong*)oldObj);
+            newObj = new DcmUnsignedLong(*OFstatic_cast(DcmUnsignedLong *, oldObj));
             break;
         case EVR_FL :
-            newObj = new DcmFloatingPointSingle(*(DcmFloatingPointSingle*)oldObj);
+            newObj = new DcmFloatingPointSingle(*OFstatic_cast(DcmFloatingPointSingle *, oldObj));
             break;
         case EVR_FD :
-            newObj = new DcmFloatingPointDouble(*(DcmFloatingPointDouble*)oldObj);
+            newObj = new DcmFloatingPointDouble(*OFstatic_cast(DcmFloatingPointDouble *, oldObj));
             break;
         case EVR_OF :
-            newObj = new DcmOtherFloat(*(DcmOtherFloat*)oldObj);
+            newObj = new DcmOtherFloat(*OFstatic_cast(DcmOtherFloat *, oldObj));
             break;
 
         // sequence:
         case EVR_SQ :
-            newObj = new DcmSequenceOfItems(*(DcmSequenceOfItems*)oldObj);
+            newObj = new DcmSequenceOfItems(*OFstatic_cast(DcmSequenceOfItems *, oldObj));
             break;
 
         // 8 or 16 bit data:
@@ -381,17 +381,17 @@ DcmObject* DcmItem::copyDcmObject(DcmObject *oldObj)
         case EVR_UN :
         case EVR_UNKNOWN :   // treat unknown elements as OB
         case EVR_UNKNOWN2B : // treat unknown elements as OB
-            newObj = new DcmOtherByteOtherWord(*(DcmOtherByteOtherWord*)oldObj);
+            newObj = new DcmOtherByteOtherWord(*OFstatic_cast(DcmOtherByteOtherWord *, oldObj));
             break;
 
         // pixel data
         case EVR_PixelData:
-            newObj = new DcmPixelData(*(DcmPixelData *)oldObj);
+            newObj = new DcmPixelData(*OFstatic_cast(DcmPixelData *, oldObj));
             break;
 
         // overlay data
         case EVR_OverlayData:
-            newObj = new DcmOverlayData(*(DcmOverlayData *)oldObj);
+            newObj = new DcmOverlayData(*OFstatic_cast(DcmOverlayData *, oldObj));
             break;
 
         case EVR_na :
@@ -632,7 +632,7 @@ OFCondition DcmItem::computeGroupLengthAndPadding(const E_GrpLenEncoding glenc,
             {
                 Uint32 templen = instanceLength + xferSyn.sizeofTagHeader(EVR_SQ);
                 l_error =
-                    ((DcmSequenceOfItems*)dO)->computeGroupLengthAndPadding
+                    OFstatic_cast(DcmSequenceOfItems *, dO)->computeGroupLengthAndPadding
                     (glenc, padenc, xfer, enctype, subPadlen, subPadlen,
                      templen);
             }
@@ -698,12 +698,12 @@ OFCondition DcmItem::computeGroupLengthAndPadding(const E_GrpLenEncoding glenc,
                         /* padding element we want to remember the padding element so that the */
                         /* group length of this element can be stored later */
                         if (padenc == EPD_withPadding && actGrp == 0xfffc)
-                            paddingGL = (DcmUnsignedLong *)dO;
+                            paddingGL = OFstatic_cast(DcmUnsignedLong *, dO);
 
                         /* if actGLElem conatins a valid pointer it was set in one of the last iterations */
                         /* to the group lenght element of the last group. We need to write the current computed */
                         /* group length value to this element. */
-                        if (actGLElem != (DcmUnsignedLong*)NULL)
+                        if (actGLElem != NULL)
                         {
                             actGLElem->putUint32(grplen);
                             debug(2, ("DcmItem::computeGroupLengthAndPadding() Length of Group 0x%4.4x len=%lu", actGLElem->getGTag(), grplen));
@@ -717,7 +717,7 @@ OFCondition DcmItem::computeGroupLengthAndPadding(const E_GrpLenEncoding glenc,
                         /* in case the current element (at the beginning of the group) is not a group length */
                         /* element, set the actGLElem pointer to NULL. */
                         if (dO->getETag() == 0x0000)
-                            actGLElem = (DcmUnsignedLong*)dO;
+                            actGLElem = OFstatic_cast(DcmUnsignedLong *, dO);
                         else
                             actGLElem = NULL;
                     }
@@ -939,7 +939,7 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
         }
     }
     /* if the value in length is odd, print an error message */
-    if ((valueLength & 1)&&(valueLength != (Uint32)-1))
+    if ((valueLength & 1)&&(valueLength != OFstatic_cast(Uint32, -1)))
     {
         ofConsole.lockCerr() << "Warning: parse error in DICOM object: length of tag " << newTag << " is odd" << endl;
         ofConsole.unlockCerr();
@@ -970,7 +970,7 @@ OFCondition DcmItem::readSubElement(DcmInputStream &inStream,
     OFCondition l_error = newDicomElement(subElem, newTag, newLength);
 
     /* if no error occured and subElem does not equal NULL, go ahead */
-    if (l_error.good() && subElem != (DcmElement*)NULL)
+    if (l_error.good() && subElem != NULL)
     {
         // inStream.UnsetPutbackMark(); // not needed anymore with new stream architecture
 
@@ -1312,23 +1312,23 @@ OFCondition DcmItem::insert(DcmElement *elem,
     /* intialize error flag with ok */
     errorFlag = EC_Normal;
     /* do something only if the pointer which was passed does not equal NULL */
-    if (elem != (DcmElement*)NULL)
+    if (elem != NULL)
     {
         DcmElement *dE;
         E_ListPos seekmode = ELP_last;
         /* iterate through elementList (from the last element to the first) */
         do {
             /* get current element from elementList */
-            dE = (DcmElement*)(elementList->seek(seekmode));
+            dE = OFstatic_cast(DcmElement *, elementList->seek(seekmode));
             /* if there is no element, i.e. elementList is empty */
-            if (dE == (DcmElement*)NULL)
+            if (dE == NULL)
             {
                 /* insert new element at the beginning of elementList */
                 elementList->insert(elem, ELP_first);
                 if (checkInsertOrder)
                 {
                   // check if we have inserted at the end of the list
-                  if (elem != (DcmElement*)(elementList->seek(ELP_last)))
+                  if (elem != OFstatic_cast(DcmElement *, elementList->seek(ELP_last)))
                   {
                     // produce diagnostics
                     ofConsole.lockCerr()
@@ -1352,7 +1352,7 @@ OFCondition DcmItem::insert(DcmElement *elem,
                 if (checkInsertOrder)
                 {
                   // check if we have inserted at the end of the list
-                  if (elem != (DcmElement*)(elementList->seek(ELP_last)))
+                  if (elem != OFstatic_cast(DcmElement *, elementList->seek(ELP_last)))
                   {
                     // produce diagnostics
                     ofConsole.lockCerr()
@@ -1391,7 +1391,7 @@ OFCondition DcmItem::insert(DcmElement *elem,
                         /* if the pointer to the removed object does not */
                         /* equal NULL (the usual case), delete this object */
                         /* and dump some information if required */
-                        if (remObj != (DcmObject*)NULL)
+                        if (remObj != NULL)
                         {
                             delete remObj;
                             debug(3, ("DcmItem::insert:element p=%p deleted", remObj));
@@ -1438,9 +1438,9 @@ DcmElement *DcmItem::getElement(const unsigned long num)
 {
     errorFlag = EC_Normal;
     DcmElement *elem;
-    elem = (DcmElement*)(elementList->seek_to(num));
+    elem = OFstatic_cast(DcmElement *, elementList->seek_to(num));
     // liest Element aus Liste
-    if (elem == (DcmElement*)NULL)
+    if (elem == NULL)
         errorFlag = EC_IllegalCall;
     return elem;
 }
@@ -1517,9 +1517,9 @@ DcmElement *DcmItem::remove(const unsigned long num)
 {
     errorFlag = EC_Normal;
     DcmElement *elem;
-    elem = (DcmElement*)(elementList->seek_to(num));
+    elem = OFstatic_cast(DcmElement *, elementList->seek_to(num));
     // read element from list
-    if (elem != (DcmElement*)NULL)
+    if (elem != NULL)
         elementList->remove();          // removes element from list but does not delete it
     else
         errorFlag = EC_IllegalCall;
@@ -1533,7 +1533,7 @@ DcmElement *DcmItem::remove(const unsigned long num)
 DcmElement *DcmItem::remove(DcmObject *elem)
 {
     errorFlag = EC_IllegalCall;
-    if (!elementList->empty() && elem != (DcmObject*)NULL)
+    if (!elementList->empty() && elem != NULL)
     {
         DcmObject *dO;
         elementList->seek(ELP_first);
@@ -1548,9 +1548,9 @@ DcmElement *DcmItem::remove(DcmObject *elem)
         } while (elementList->seek(ELP_next));
     }
     if (errorFlag == EC_IllegalCall)
-        return (DcmElement*)NULL;
+        return NULL;
     else
-        return (DcmElement*)elem;
+        return OFstatic_cast(DcmElement *, elem);
 }
 
 
@@ -1560,7 +1560,7 @@ DcmElement *DcmItem::remove(DcmObject *elem)
 DcmElement *DcmItem::remove(const DcmTagKey &tag)
 {
     errorFlag = EC_TagNotFound;
-    DcmObject *dO = (DcmObject*)NULL;
+    DcmObject *dO = NULL;
     if (!elementList->empty())
     {
         elementList->seek(ELP_first);
@@ -1576,9 +1576,9 @@ DcmElement *DcmItem::remove(const DcmTagKey &tag)
     }
 
     if (errorFlag == EC_TagNotFound)
-        return (DcmElement*)NULL;
+        return NULL;
     else
-        return (DcmElement*)dO;
+        return OFstatic_cast(DcmElement *, dO);
 }
 
 
@@ -1593,8 +1593,7 @@ OFCondition DcmItem::clear()
     while (!elementList->empty())
     {
         dO = elementList->remove();
-        if (dO != (DcmObject*)NULL)
-            delete dO;                          // also delete sub elements
+        delete dO;                          // also delete sub elements
     }
     Length = 0;
 
@@ -1681,7 +1680,7 @@ OFCondition DcmItem::search(const DcmTagKey &tag,
                             E_SearchMode mode,
                             OFBool searchIntoSub)
 {
-    DcmObject *dO = (DcmObject*)NULL;
+    DcmObject *dO = NULL;
     OFCondition l_error = EC_TagNotFound;
     if (mode == ESM_afterStackTop && resultStack.top() == this)
     {
@@ -1775,7 +1774,7 @@ OFCondition DcmItem::search(const DcmTagKey &tag,
 OFCondition DcmItem::searchErrors(DcmStack &resultStack)
 {
     OFCondition l_error = errorFlag;
-    DcmObject *dO = (DcmObject*)NULL;
+    DcmObject *dO = NULL;
     if (errorFlag.bad())
         resultStack.push(this);
     if (!elementList->empty())
@@ -1820,7 +1819,7 @@ OFCondition DcmItem::loadAllDataIntoMemory()
 // Support functions
 
 DcmElement *newDicomElement(const DcmTag &tag,
-                             const Uint32 length)
+                            const Uint32 length)
 {
     DcmElement *newElement = NULL;
     newDicomElement(newElement, tag, length);
@@ -2039,7 +2038,7 @@ OFBool DcmItem::tagExistsWithValue(const DcmTagKey &key,
     DcmStack stack;
 
     OFCondition ec = search(key, stack, ESM_fromHere, searchIntoSub);
-    elem = (DcmElement*) stack.top();
+    elem = OFstatic_cast(DcmElement *, stack.top());
     if (ec.good() && elem != NULL)
         len = elem->getLength();
 
@@ -2060,7 +2059,7 @@ OFCondition DcmItem::findAndGetElement(const DcmTagKey &tagKey,
     OFCondition status = search(tagKey, stack, ESM_fromHere, searchIntoSub);
     if (status.good())
     {
-        element = (DcmElement *)stack.top();
+        element = OFstatic_cast(DcmElement *, stack.top());
         /* should never happen but ... */
         if (element == NULL)
             status = EC_CorruptedData;
@@ -2078,7 +2077,6 @@ OFCondition DcmItem::findAndGetElements(const DcmTagKey& tagKey,
     OFCondition status = EC_TagNotFound;
     DcmStack stack;
     DcmObject *object = NULL;
-
     /* iterate over all elements */
     while (nextObject(stack, OFTrue).good())
     {
@@ -2086,13 +2084,11 @@ OFCondition DcmItem::findAndGetElements(const DcmTagKey& tagKey,
         object = stack.top();
         if (object->getTag() == tagKey)
         {
-			//add to result_stack
+			/* add to result_stack */
             result_stack->push(object);
             status = EC_Normal;
-            /* delete only the first element? */
         }
     }
-
     return status;
 }
 
@@ -2107,7 +2103,7 @@ OFCondition DcmItem::findAndGetString(const DcmTagKey& tagKey,
     if (status.good())
     {
         /* get the value */
-        status = elem->getString((char *&)value);
+        status = elem->getString(OFconst_cast(char *&, value));
     }
     /* reset value */
     if (status.bad())
@@ -2422,24 +2418,24 @@ OFCondition DcmItem::findAndGetLongInt(const DcmTagKey& tagKey,
             case EVR_up:
                 Uint32 ul;
                 status = elem->getUint32(ul, pos);
-                value = (long int)ul;
+                value = OFstatic_cast(long int, ul);
                 break;
             case EVR_SL:
             case EVR_IS:
                 Sint32 sl;
                 status = elem->getSint32(sl, pos);
-                value = (long int)sl;
+                value = OFstatic_cast(long int, sl);
                 break;
             case EVR_US:
             case EVR_xs:
                 Uint16 us;
                 status = elem->getUint16(us, pos);
-                value = (long int)us;
+                value = OFstatic_cast(long int, us);
                 break;
             case EVR_SS:
                 Sint16 ss;
                 status = elem->getSint16(ss, pos);
-                value = (long int)ss;
+                value = OFstatic_cast(long int, ss);
                 break;
             default:
                 status = EC_IllegalCall;
@@ -2553,6 +2549,34 @@ OFCondition DcmItem::findAndGetFloat64Array(const DcmTagKey& tagKey,
 }
 
 
+OFCondition DcmItem::findAndGetSequence(const DcmTagKey &seqTagKey,
+                                        DcmSequenceOfItems *&sequence,
+                                        const OFBool searchIntoSub)
+{
+    DcmStack stack;
+    /* find the element */
+    OFCondition status = search(seqTagKey, stack, ESM_fromHere, searchIntoSub);
+    if (status.good())
+    {
+        DcmElement *delem = OFstatic_cast(DcmElement *, stack.top());
+        /* should never happen but ... */
+        if (delem == NULL)
+            status = EC_CorruptedData;
+        /* check for correct VR */
+        else if ((delem->ident() == EVR_SQ) || (delem->ident() == EVR_pixelSQ))
+            sequence = OFstatic_cast(DcmSequenceOfItems *, delem);
+        else
+            status = EC_InvalidVR;
+    }
+    if (status.bad())
+    {
+        /* reset sequence pointer */
+        sequence = NULL;
+    }
+    return status;
+}
+
+
 OFCondition DcmItem::findAndGetSequenceItem(const DcmTagKey &seqTagKey,
                                             DcmItem *&item,
                                             const signed long itemNum)
@@ -2563,13 +2587,13 @@ OFCondition DcmItem::findAndGetSequenceItem(const DcmTagKey &seqTagKey,
     if (status.good())
     {
         /* get element */
-        DcmElement *delem = (DcmElement *)stack.top();
+        DcmElement *delem = OFstatic_cast(DcmElement *, stack.top());
         if (delem != NULL)
         {
             /* check VR */
             if ((delem->ident() == EVR_SQ) || (delem->ident() == EVR_pixelSQ))
             {
-                DcmSequenceOfItems *seq = (DcmSequenceOfItems *)delem;
+                DcmSequenceOfItems *seq = OFstatic_cast(DcmSequenceOfItems *, delem);
                 const unsigned long count = seq->card();
                 /* empty sequence? */
                 if (count > 0)
@@ -2578,8 +2602,8 @@ OFCondition DcmItem::findAndGetSequenceItem(const DcmTagKey &seqTagKey,
                     if (itemNum == -1)
                         item = seq->getItem(count - 1);
                     /* get specified item */
-                    else if ((itemNum >= 0) && ((unsigned long)itemNum < count))
-                        item = seq->getItem((unsigned long)itemNum);
+                    else if ((itemNum >= 0) && (OFstatic_cast(unsigned long, itemNum) < count))
+                        item = seq->getItem(OFstatic_cast(unsigned long, itemNum));
                     /* invalid item number */
                     else
                         status = EC_IllegalParameter;
@@ -2615,12 +2639,12 @@ OFCondition DcmItem::findOrCreateSequenceItem(const DcmTag& seqTag,
     if (status.good())
     {
         /* get element */
-        DcmElement *delem = (DcmElement *)stack.top();
+        DcmElement *delem = OFstatic_cast(DcmElement *, stack.top());
         if (delem != NULL)
         {
             /* check VR */
             if ((delem->ident() == EVR_SQ) || (delem->ident() == EVR_pixelSQ))
-                seq = (DcmSequenceOfItems *)delem;
+                seq = OFstatic_cast(DcmSequenceOfItems *, delem);
             else
                 status = EC_InvalidVR;
         } else
@@ -2643,7 +2667,7 @@ OFCondition DcmItem::findOrCreateSequenceItem(const DcmTag& seqTag,
         {
             const unsigned long count = seq->card();
             /* existing item? */
-            if ((count > 0) && (itemNum >= -1) && (itemNum < (signed long)count))
+            if ((count > 0) && (itemNum >= -1) && (itemNum < OFstatic_cast(signed long, count)))
             {
                 if (itemNum == -1)
                 {
@@ -2651,13 +2675,13 @@ OFCondition DcmItem::findOrCreateSequenceItem(const DcmTag& seqTag,
                     item = seq->getItem(count - 1);
                 } else {
                     /* get specified item */
-                    item = seq->getItem((unsigned long)itemNum);
+                    item = seq->getItem(OFstatic_cast(unsigned long, itemNum));
                 }
             /* create new item(s) */
             } else {
                 unsigned long i = 0;
                 /* create empty trailing items if required */
-                const unsigned long itemCount = (itemNum > (signed long)count) ? (itemNum - count + 1) : 1;
+                const unsigned long itemCount = (itemNum > OFstatic_cast(signed long, count)) ? (itemNum - count + 1) : 1;
                 while ((i < itemCount) && (status.good()))
                 {
                     item = new DcmItem();
@@ -2705,7 +2729,7 @@ OFCondition DcmItem::findAndDeleteElement(const DcmTagKey &tagKey,
         {
             stack.pop();
             /* remove element from dataset and free memory */
-            delete ((DcmItem *)(stack.top()))->remove(object);
+            delete OFstatic_cast(DcmItem *, stack.top())->remove(object);
             status = EC_Normal;
             /* delete only the first element? */
             if (!allOccurrences)
@@ -2727,7 +2751,7 @@ OFCondition DcmItem::findAndCopyElement(const DcmTagKey &tagKey,
     if (status.good())
     {
         /* create copy of element */
-        newElement = (DcmElement *)copyDcmObject(elem);
+        newElement = OFstatic_cast(DcmElement *, copyDcmObject(elem));
         if (newElement == NULL)
             status = EC_MemoryExhausted;
     } else
@@ -3294,7 +3318,11 @@ OFBool DcmItem::containsUnknownVR() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.84  2003-06-26 09:17:29  onken
+** Revision 1.85  2003-07-16 14:33:43  joergr
+** Added new function findAndGetSequence().
+** Adapted type casts to new-style typecast operators defined in ofcast.h.
+**
+** Revision 1.84  2003/06/26 09:17:29  onken
 ** Added commandline-application dcmodify.
 **
 ** Revision 1.83  2003/06/02 17:25:28  joergr
