@@ -23,8 +23,8 @@
  *    classes: DSRWaveformChannelList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-10-13 13:28:56 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2003-10-14 10:23:33 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,7 +47,7 @@
 #endif
 
 /* declared in class DSRListOfItems<T> */
-EXPLICIT_SPECIALIZATION const DSRWaveformChannelItem DSRListOfItems<DSRWaveformChannelItem>::EmptyItem;
+EXPLICIT_SPECIALIZATION const DSRWaveformChannelItem DSRListOfItems<DSRWaveformChannelItem>::EmptyItem(0,0);
 
 
 DSRWaveformChannelList::DSRWaveformChannelList()
@@ -210,7 +210,11 @@ OFCondition DSRWaveformChannelList::putString(const char *stringValue)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavch.cc,v $
- *  Revision 1.18  2003-10-13 13:28:56  meichel
+ *  Revision 1.19  2003-10-14 10:23:33  meichel
+ *  Explicitly spelled out constructor parameters in const instance declaration.
+ *    Avoids incompatibility between gcc 3.2 and Borland C++.
+ *
+ *  Revision 1.18  2003/10/13 13:28:56  meichel
  *  Added code for explicit template specialization, needed for Borland C++
  *
  *  Revision 1.17  2003/10/09 14:43:02  joergr

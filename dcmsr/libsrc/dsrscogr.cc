@@ -23,8 +23,8 @@
  *    classes: DSRGraphicDataList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-10-13 13:28:56 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2003-10-14 10:23:33 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,7 +42,7 @@
 #define EXPLICIT_SPECIALIZATION
 #endif
 
-EXPLICIT_SPECIALIZATION const DSRGraphicDataItem DSRListOfItems<DSRGraphicDataItem>::EmptyItem;
+EXPLICIT_SPECIALIZATION const DSRGraphicDataItem DSRListOfItems<DSRGraphicDataItem>::EmptyItem(0,0);
 
 
 DSRGraphicDataList::DSRGraphicDataList()
@@ -224,7 +224,11 @@ OFCondition DSRGraphicDataList::putString(const char *stringValue)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscogr.cc,v $
- *  Revision 1.14  2003-10-13 13:28:56  meichel
+ *  Revision 1.15  2003-10-14 10:23:33  meichel
+ *  Explicitly spelled out constructor parameters in const instance declaration.
+ *    Avoids incompatibility between gcc 3.2 and Borland C++.
+ *
+ *  Revision 1.14  2003/10/13 13:28:56  meichel
  *  Added code for explicit template specialization, needed for Borland C++
  *
  *  Revision 1.13  2003/08/07 13:43:18  joergr
