@@ -1,0 +1,240 @@
+
+ASSOCIATION NEGOTIATION PROFILES AND CONFIGURATION FILES
+
+  Beginning with release 3.5.3, DCMTK provides a flexible mechanism for 
+  specifying the DICOM network association negotiation behaviour of an 
+  application, based on so-called "association negotiation profiles"
+  which may be read from a configuration file.
+
+  This mechanism is currently enabled in the storescu and storescp 
+  applications.
+
+
+1. CONFIGURATION FILE FORMAT
+
+  The configuration file is a simple text file resembling well-known 
+  "INI" files on the Windows platform. Lines consisting only of 
+  whitespace characters and comment lines starting with a '#' character 
+  in the first column are ignored. Configuration file entries use the 
+  following syntax:
+  Key = Value
+
+  The key must start in the first column of the line. The case is not 
+  significant for the key, however, it is for the value.  Whitespace 
+  characters before and after the '=' separating key and value are 
+  ignored.
+
+  Entries are grouped into sections using section headings, which are 
+  also insensitive to case and whitespace characters:
+  [Section]
+
+  The well-known "INI" syntax is extended by the definition of 
+  supersections which define a grouping for sections, using the 
+  following syntax:
+  [[Supersection]]
+
+  The content of the configuration file needs to establish a true tree 
+  structure, i. e. each setting must be part of a section and each 
+  section must be part of one supersection.
+
+
+2. CONFIGURATION FILE STRUCTURE
+
+  A configuration file for association negotiation profiles may contain
+  the following supersections:
+  [[TransferSyntaxes]]
+  [[PresentationContexts]]
+  [[Profiles]]
+  [[SCPSCURoleSelection]]
+  [[ExtendedNegotiation]]
+  The first three supersections are mandatory, the others are optional.  
+
+
+2.1 TRANSFER SYNTAXES
+
+This supersection contains one or more sections with arbitrary 
+user-defined but unique section names that are used as symbolic labels. 
+Within each section, one or more key/value pairs are contained. The key 
+names are "TransferSyntax1", "TransferSyntax2" etc. (without leading 
+zeroes before the number!), in increasing order.
+
+The values may either be DICOM Unique Identifiers (UIDs) in the form 
+defined by the DICOM standard, or symbolic UID names as used throughout 
+DCMTK and defined in the "UID Name Map" in file dcmdata/libsrc/dcuid.cc. 
+Each value must denote a standard or private DICOM transfer syntax. 
+Within each section (transfer syntax list), no transfer syntax should be 
+repeated.
+
+The following example shows two sections (transfer syntax lists), one
+using symbolic transfer syntax names, another using a numeric UID.
+
+[Uncompressed]
+TransferSyntax1 = LittleEndianExplicit
+TransferSyntax2 = BigEndianExplicit
+TransferSyntax3 = LittleEndianImplicit
+
+[JPEGBaseline]
+TransferSyntax1 = 1.2.840.10008.1.2.4.50
+
+There are two special symbolic transfer syntax names that are recognized
+by the parser: "LocalEndianExplicit" and "OppositeEndianExplicit". These
+are interpreted at runtime depending on the byte order of the machine
+on which the application is executed:
+
+On a little endian machine (e.g. x86)
+  - "LocalEndianExplicit" is interpreted as "LittleEndianExplicit"
+  - "OppositeEndianExplicit" is interpreted as "BigEndianExplicit"
+
+On a big endian machine (Sparc, M68K, MIPS)
+  - "LocalEndianExplicit" is interpreted as "BigEndianExplicit"
+  - "OppositeEndianExplicit" is interpreted as "LittleEndianExplicit"
+
+
+2.2 PRESENTATION CONTEXTS
+
+This supersection contains one or more sections with arbitrary 
+user-defined but unique section names that are used as symbolic labels. 
+Within each section, one or more key/value pairs are contained. The key 
+names are "PresentationContext1", "PresentationContext1" etc., in 
+increasing order.  Each list must not contain more than 128 entries,
+due to the limitation of the DICOM network protocol to 128 presentation
+contexts per association.
+
+Each value consists of two parts, separated by a single backslash 
+character ('\'). The first value denotes a DICOM SOP Class UID or
+Meta SOP Class UID, standard or private. Again either a numeric UID
+or a symbolic value as defined in DCMTK can be used.
+
+The second part denotes a list of transfer syntaxes defined in the 
+[[TransferSyntaxes]] supersection. The list is referenced by it's 
+section header, which is used as a symbolic label here.
+
+The following example shows one presentation context list that could
+be used by an association requestor (StoreSCU) to negotiate both
+lossy-compressed and uncompressed transmission of DICOM ultrasound
+images.
+
+[StorageSCUJPEGBaselineAndUncompressed]
+PresentationContext1  = UltrasoundImageStorage\JPEGBaseline
+PresentationContext2  = UltrasoundImageStorage\Uncompressed
+PresentationContext3  = UltrasoundMultiframeImageStorage\JPEGBaseline
+PresentationContext4  = UltrasoundMultiframeImageStorage\Uncompressed
+
+In the case of an association acceptor (SCP), each SOP class must appear 
+only once in the list.  The following example would be a valid transfer 
+syntax list for an SCP, accepting only uncompressed ultrasound images:
+
+[StorageSCPJPEGBaselineAndUncompressed]
+PresentationContext1  = UltrasoundImageStorage\Uncompressed
+PresentationContext2  = UltrasoundMultiframeImageStorage\Uncompressed
+
+It should be noted that it is the user's responsibility to enforce the 
+rules defined in the DICOM standard on default transfer syntaxes, i. e. 
+LittleEndianImplicit has to be offered/accepted for each SOP class in at 
+least one presentation context unless the image is only available in 
+lossy compressed form.
+
+
+2.3 SCP/SCU ROLE SELECTION
+
+This optional supersection contains one or more sections with arbitrary 
+user-defined but unique section names that are used as symbolic labels. 
+Within each section, one or more key/value pairs are contained. The key 
+names are "Role1", "Role2" etc., in increasing order.  
+
+Each value consists of two parts, separated by a single backslash 
+character ('\'). The first value denotes a DICOM SOP Class UID or
+Meta SOP Class UID, standard or private. Again either a numeric UID
+or a symbolic value as defined in DCMTK can be used. Each SOP class
+should only appear once in the list.
+
+The second part denotes the roles the application is going to negotiate 
+for this SOP class. Possible keywords are "SCU", "SCP", or "BOTH", 
+indicating that the application supports the SCU role, the SCP role or 
+both roles. Any SOP class that is negotiated but not contained in the
+SCP/SCU role selection list will be negotiated with default roles,
+i. e. association requestor is SCU and association acceptor is SCP.
+
+The following example shows a list for SCP/SCU role selection where
+an application supports both SCU and SCP roles for transmission
+of ultrasound images.
+
+[USStorageBothRoles]
+Role1   = UltrasoundImageStorage\BOTH
+Role2   = UltrasoundMultiframeImageStorage\BOTH
+
+It should be noted that neither StoreSCU nore StoreSCP currently support 
+SCP/SCU role negotiation, so this functionality should not be used with 
+these two tools.
+
+
+2.4 EXTENDED NEGOTIATION
+
+This optional supersection contains one or more sections with arbitrary 
+user-defined but unique section names that are used as symbolic labels. 
+Within each section, one or more key/value pairs are contained. The key 
+names are "ExtendedNegotiation1", "ExtendedNegotiation2" etc., in 
+increasing order.  
+
+Each value consists of two parts, separated by a single backslash 
+character ('\'). The first value denotes a DICOM SOP Class UID or
+Meta SOP Class UID, standard or private. Again either a numeric UID
+or a symbolic value as defined in DCMTK can be used. Each SOP class
+should only appear once in the list.
+
+The second part denotes the SOP class extended negotiation to be 
+performed for this SOP class. This part contains raw data in hexadecimal 
+encoding. Any SOP class that is negotiated but not contained in the 
+extended negotiation list will be negotiated without extended 
+negotiation.
+
+In the current (2003) edition of the DICOM standard, extended 
+negotiation is only defined for the SOP classes of the Storage and 
+Query/Retrieve Service Classes.
+
+The following example shows an extended negotiation list for a
+storage SCP that accepts Structured Reporting documents as a
+"Level 2 SCP", with "Signature Level 3" and no element coercion
+(see DICOM part 4, section B.3.1 for details).
+
+[USSignaturePreservingSCP]
+ExtendedNegotiation1   = UltrasoundImageStorage\020003000000
+ExtendedNegotiation2   = UltrasoundMultiframeImageStorage\020003000000
+
+
+2.5 PROFILES
+
+This supersection contains one or more sections with arbitrary 
+user-defined but unique section names that are used as symbolic labels
+identifying complete "profiles" for association negotiation that
+can be selected by a user or application.
+
+Each profile consists at least of a reference to one list of 
+presentation contexts.  It may also reference one list of SCP/SCU role 
+selection items and one list of extended negotiation items, but both of 
+these are optional.  The references use the symbolic section names
+defined in the supersections for presentation contexts, role selection
+and extended negotiation.
+
+The following example shows a profile of a hypothetical Storage SCP that 
+supports the DICOM ultrasound image storage SOP classes both in lossy 
+JPEG and uncompressed form, supports both SCP and SCU roles for these 
+SOP classes and also guarantees signature preserving behaviour using 
+extended negotiation.
+
+[UltrasoundProfile]
+PresentationContexts = StorageSCPJPEGBaselineAndUncompressed
+SCPSCURoleSelection  = USStorageBothRoles
+ExtendedNegotiation  = USSignaturePreservingSCP
+
+A configuration file may contain one or more association negotiation
+profiles, but each association request or association negotiation
+procedure can use exactly one of these profiles.
+
+
+3. EXAMPLES
+
+Examples for association negotiation profiles that can be used
+with the StoreSCU and StoreSCP tools are provided with DCMTK, as
+"storescp.cfg" and "storescu.cfg" in the dcmnet/docs directory.
+
