@@ -131,9 +131,9 @@
 (0008,0080)	LO	InstitutionName	1	DICOM3
 (0008,0081)	ST	InstitutionAddress	1	DICOM3
 (0008,0082)	SQ	InstitutionCodeSequence	1	DICOM3
-(0008,0090)	PN	ReferringPhysicianName	1	DICOM3
-(0008,0092)	ST	ReferringPhysicianAddress	1	DICOM3
-(0008,0094)	SH	ReferringPhysicianTelephoneNumber	1-n	DICOM3
+(0008,0090)	PN	ReferringPhysiciansName	1	DICOM3
+(0008,0092)	ST	ReferringPhysiciansAddress	1	DICOM3
+(0008,0094)	SH	ReferringPhysiciansTelephoneNumber	1-n	DICOM3
 (0008,0100)	SH	CodeValue	1	DICOM3
 (0008,0102)	SH	CodingSchemeDesignator	1	DICOM3
 (0008,0104)	LO	CodeMeaning	1	DICOM3
@@ -143,9 +143,9 @@
 (0008,1032)	SQ	ProcedureCodeSequence	1	DICOM3
 (0008,103E)	LO	SeriesDescription	1	DICOM3
 (0008,1040)	LO	InstitutionalDepartmentName	1	DICOM3
-(0008,1050)	PN	PerformingPhysicianName	1-n	DICOM3
-(0008,1060)	PN	PhysicianReadingStudy	1-n	DICOM3
-(0008,1070)	PN	OperatorName	1-n	DICOM3
+(0008,1050)	PN	PerformingPhysiciansName	1-n	DICOM3
+(0008,1060)	PN	NameOfPhysiciansReadingStudy	1-n	DICOM3
+(0008,1070)	PN	OperatorsName	1-n	DICOM3
 (0008,1080)	LO	AdmittingDiagnosisDescription	1-n	DICOM3
 (0008,1084)	SQ	AdmittingDiagnosisCodeSequence	1	DICOM3
 (0008,1090)	LO	ManufacturerModelName	1	DICOM3
@@ -191,7 +191,7 @@
 (0010,0040)	CS	PatientSex	1	DICOM3
 (0010,0050)	SQ	PatientInsurancePlanCodeSequence	1	DICOM3
 (0010,1000)	LO	OtherPatientID	1-n	DICOM3
-(0010,1001)	PN	OtherPatientName	1-n	DICOM3
+(0010,1001)	PN	OtherPatientNames	1-n	DICOM3
 (0010,1005)	PN	PatientBirthName	1	DICOM3
 (0010,1010)	AS	PatientAge	1	DICOM3
 (0010,1020)	DS	PatientSize	1	DICOM3
@@ -235,7 +235,7 @@
 (0018,0060)	DS	KVP	1	DICOM3
 (0018,0070)	IS	CountsAccumulated	1	DICOM3
 (0018,0071)	CS	AcquisitionTerminationCondition	1	DICOM3
-(0018,0072)	DS	EffectiveSeriesDuration	1	DICOM3
+(0018,0072)	DS	EffectiveDuration	1	DICOM3
 (0018,0080)	DS	RepetitionTime	1	DICOM3
 (0018,0081)	DS	EchoTime	1	DICOM3
 (0018,0082)	DS	InversionTime	1	DICOM3
@@ -308,7 +308,7 @@
 (0018,1147)	CS	FieldOfViewShape	1	DICOM3
 (0018,1149)	IS	FieldOfViewDimension	1-2	DICOM3
 (0018,1150)	IS	ExposureTime	1	DICOM3
-(0018,1151)	IS	XrayTubeCurrent	1	DICOM3
+(0018,1151)	IS	XRayTubeCurrent	1	DICOM3
 (0018,1152)	IS	Exposure	1	DICOM3
 (0018,1160)	SH	FilterType	1	DICOM3
 (0018,1170)	IS	GeneratorPower	1	DICOM3
@@ -350,7 +350,7 @@
 (0018,5020)	LO	PreprocessingFunction	1	DICOM3
 (0018,5021)	LO	PostprocessingFunction	1	DICOM3
 (0018,5022)	DS	MechanicalIndex	1	DICOM3
-(0018,5024)	DS	ThermalIndex	1	DICOM3
+(0018,5024)	DS	BoneThermalIndex	1	DICOM3
 (0018,5026)	DS	CranialThermalIndex	1	DICOM3
 (0018,5027)	DS	SoftTissueThermalIndex	1	DICOM3
 (0018,5028)	DS	SoftTissueFocusThermalIndex	1	DICOM3
@@ -945,7 +945,7 @@
 (0018,1183)	DS	XFocusCenter	1-2	DICOM3
 (0018,1184)	DS	YFocusCenter	1-2	DICOM3
 (0018,1300)	DS	ScanVelocity	1	DICOM3
-(0018,5020)	LO	ProcessingFunction	1	DICOM3
+(0018,5020)	LO	PreprocessingFunction	1	DICOM3
 (0028,0009)	AT	FrameIncrementPointer	1-n	DICOM3
 (0028,0051)	CS	CorrectedImage	1-n	DICOM3
 #
@@ -961,7 +961,8 @@
 (0008,2230)	SQ	PrimaryAnatomicStructureModifierSequence	1	DICOM3
 (0018,0012)	SQ	ContrastBolusAgentSequence	1	DICOM3
 (0018,002A)	SQ	AdditionalDrugSequence	1	DICOM3
-(0018,0029)	SQ	InterventionalDrugSequence	1	DICOM3
+# (0018,0029) is also defined by supplement 7 (NM)
+#(0018,0029)	SQ	InterventionDrugCodeSequence	1	DICOM3
 (0018,0014)	SQ	ContrastBolusAdministrationRouteSequence	1	DICOM3
 (0018,0036)	SQ	InterventionalTherapySequence	1	DICOM3
 (0018,0037)	CS	TherapyType	1	DICOM3
@@ -1130,8 +1131,8 @@
 (3006,0088)	ST	ROIObservationDescription	1	DICOM3
 (3006,00A0)	SQ	RelatedRTROIObservationsSequence	1	DICOM3
 (3006,00A4)	CS	RTROIInterpretedType	1	DICOM3
-(3006,00A6)	PN	ROIInterpreterPN	1	DICOM3
-(3006,00B0)	SQ	ROIPhysicalPropertiesSequenceSQ	1	DICOM3
+(3006,00A6)	PN	ROIInterpreter	1	DICOM3
+(3006,00B0)	SQ	ROIPhysicalPropertiesSequence	1	DICOM3
 (3006,00B2)	CS	ROIPhysicalProperty	1	DICOM3
 (3006,00B4)	DS	ROIPhysicalPropertyValue	1	DICOM3
 (3006,00C0)	SQ	FrameOfReferenceRelationshipSequence	1	DICOM3
@@ -1200,7 +1201,7 @@
 (300A,00B6)	SQ	BeamLimitingDeviceSequence	1	DICOM3
 (300A,00B8)	CS	RTBeamLimitingDeviceType	1	DICOM3
 (300A,00BA)	DS	SourceToBeamLimitingDeviceDistance	1	DICOM3
-(300A,00BC)	IS	NumberOfLeaf/JawPairs	1	DICOM3
+(300A,00BC)	IS	NumberOfLeafJawPairs	1	DICOM3
 (300A,00BE)	DS	LeafPositionBoundaries	3-n	DICOM3
 (300A,00C0)	IS	BeamNumber	1	DICOM3
 (300A,00C2)	LO	BeamName	1	DICOM3

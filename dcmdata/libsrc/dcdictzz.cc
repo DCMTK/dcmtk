@@ -3,8 +3,8 @@
 ** It was generated automatically by:
 **
 **   User: hewett
-**   Host: caesar
-**   Date: Tue Aug 26 15:50:42 1997
+**   Host: livius
+**   Date: Wed Oct  1 13:31:29 1997
 **   Prog: /home/hewett/dicom/dcmtk/dcmdata/libsrc/mkdictbi
 **
 ** From: /home/hewett/dicom/dcmtk/dcmdata/libsrc/dicom.dic
@@ -13,7 +13,7 @@
 
 #include "dcdict.h"
 
-char* dcmBuiltinDictBuildDate = "Tue Aug 26 15:50:42 1997";
+char* dcmBuiltinDictBuildDate = "Wed Oct  1 13:31:29 1997";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -367,13 +367,13 @@ static DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SQ, "InstitutionCodeSequence", 1, 1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0008, 0x0090, 0x0008, 0x0090,
-      EVR_PN, "ReferringPhysicianName", 1, 1, "DICOM3",
+      EVR_PN, "ReferringPhysiciansName", 1, 1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0008, 0x0092, 0x0008, 0x0092,
-      EVR_ST, "ReferringPhysicianAddress", 1, 1, "DICOM3",
+      EVR_ST, "ReferringPhysiciansAddress", 1, 1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0008, 0x0094, 0x0008, 0x0094,
-      EVR_SH, "ReferringPhysicianTelephoneNumber", 1, -1, "DICOM3",
+      EVR_SH, "ReferringPhysiciansTelephoneNumber", 1, -1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0008, 0x0100, 0x0008, 0x0100,
       EVR_SH, "CodeValue", 1, 1, "DICOM3",
@@ -415,13 +415,13 @@ static DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_PN, "PhysiciansOfRecord", 1, -1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0008, 0x1050, 0x0008, 0x1050,
-      EVR_PN, "PerformingPhysicianName", 1, -1, "DICOM3",
+      EVR_PN, "PerformingPhysiciansName", 1, -1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0008, 0x1060, 0x0008, 0x1060,
-      EVR_PN, "PhysicianReadingStudy", 1, -1, "DICOM3",
+      EVR_PN, "NameOfPhysiciansReadingStudy", 1, -1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0008, 0x1070, 0x0008, 0x1070,
-      EVR_PN, "OperatorName", 1, -1, "DICOM3",
+      EVR_PN, "OperatorsName", 1, -1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0008, 0x1080, 0x0008, 0x1080,
       EVR_LO, "AdmittingDiagnosisDescription", 1, -1, "DICOM3",
@@ -583,7 +583,7 @@ static DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_LO, "OtherPatientID", 1, -1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0010, 0x1001, 0x0010, 0x1001,
-      EVR_PN, "OtherPatientName", 1, -1, "DICOM3",
+      EVR_PN, "OtherPatientNames", 1, -1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0010, 0x1005, 0x0010, 0x1005,
       EVR_PN, "PatientBirthName", 1, 1, "DICOM3",
@@ -697,7 +697,7 @@ static DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_DS, "InterventionDrugDose", 1, 1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0018, 0x0029, 0x0018, 0x0029,
-      EVR_SQ, "InterventionalDrugSequence", 1, 1, "DICOM3",
+      EVR_SQ, "InterventionDrugCodeSequence", 1, 1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0018, 0x002a, 0x0018, 0x002a,
       EVR_SQ, "AdditionalDrugSequence", 1, 1, "DICOM3",
@@ -748,7 +748,7 @@ static DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_CS, "AcquisitionTerminationCondition", 1, 1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0018, 0x0072, 0x0018, 0x0072,
-      EVR_DS, "EffectiveSeriesDuration", 1, 1, "DICOM3",
+      EVR_DS, "EffectiveDuration", 1, 1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0018, 0x0073, 0x0018, 0x0073,
       EVR_CS, "AcquisitionStartCondition", 1, 1, "DICOM3",
@@ -1018,7 +1018,7 @@ static DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_IS, "ExposureTime", 1, 1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0018, 0x1151, 0x0018, 0x1151,
-      EVR_IS, "XrayTubeCurrent", 1, 1, "DICOM3",
+      EVR_IS, "XRayTubeCurrent", 1, 1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0018, 0x1152, 0x0018, 0x1152,
       EVR_IS, "Exposure", 1, 1, "DICOM3",
@@ -1243,7 +1243,7 @@ static DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_DS, "FocusDepth", 1, 1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0018, 0x5020, 0x0018, 0x5020,
-      EVR_LO, "ProcessingFunction", 1, 1, "DICOM3",
+      EVR_LO, "PreprocessingFunction", 1, 1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0018, 0x5021, 0x0018, 0x5021,
       EVR_LO, "PostprocessingFunction", 1, 1, "DICOM3",
@@ -1252,7 +1252,7 @@ static DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_DS, "MechanicalIndex", 1, 1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0018, 0x5024, 0x0018, 0x5024,
-      EVR_DS, "ThermalIndex", 1, 1, "DICOM3",
+      EVR_DS, "BoneThermalIndex", 1, 1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0018, 0x5026, 0x0018, 0x5026,
       EVR_DS, "CranialThermalIndex", 1, 1, "DICOM3",
@@ -3193,10 +3193,10 @@ static DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_CS, "RTROIInterpretedType", 1, 1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x3006, 0x00a6, 0x3006, 0x00a6,
-      EVR_PN, "ROIInterpreterPN", 1, 1, "DICOM3",
+      EVR_PN, "ROIInterpreter", 1, 1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x3006, 0x00b0, 0x3006, 0x00b0,
-      EVR_SQ, "ROIPhysicalPropertiesSequenceSQ", 1, 1, "DICOM3",
+      EVR_SQ, "ROIPhysicalPropertiesSequence", 1, 1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x3006, 0x00b2, 0x3006, 0x00b2,
       EVR_CS, "ROIPhysicalProperty", 1, 1, "DICOM3",
@@ -3403,7 +3403,7 @@ static DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_DS, "SourceToBeamLimitingDeviceDistance", 1, 1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x300a, 0x00bc, 0x300a, 0x00bc,
-      EVR_IS, "NumberOfLeaf/JawPairs", 1, 1, "DICOM3",
+      EVR_IS, "NumberOfLeafJawPairs", 1, 1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x300a, 0x00be, 0x300a, 0x00be,
       EVR_DS, "LeafPositionBoundaries", 3, -1, "DICOM3",
