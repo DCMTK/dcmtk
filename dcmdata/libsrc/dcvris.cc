@@ -10,9 +10,9 @@
 ** Implementation of class DcmIntegerString
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-12 07:38:27 $
+** Update Date:		$Date: 1997-05-12 09:57:02 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvris.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -69,11 +69,10 @@ DcmIntegerString::~DcmIntegerString()
 // ********************************
 
 E_Condition DcmIntegerString::getSint32(Sint32 &val,
-					const unsigned long pos = 0)
+					const unsigned long pos)
 {
   char *p;
   char *str = NULL;
-  BOOL ok = FALSE;
   register unsigned long counter = pos;
   E_Condition l_error = getString(str);
   if (l_error == EC_Normal)
@@ -105,7 +104,10 @@ E_Condition DcmIntegerString::getSint32(Sint32 &val,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvris.cc,v $
-** Revision 1.4  1997-05-12 07:38:27  andreas
+** Revision 1.5  1997-05-12 09:57:02  andreas
+** - warnings deletetd
+**
+** Revision 1.4  1997/05/12 07:38:27  andreas
 ** - new get-Methods for DcmDecimalString: getFloat64 and
 **   DcmIntegerString: getSint32
 **
