@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmByteString
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 12:49:07 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-12-10 17:41:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcbytstr.h,v $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,7 +54,7 @@ class DcmByteString
 {
 
     // internal type used to specify the current string representation
-    typedef enum E_StringMode
+    enum E_StringMode
     {
         // string has internal representation (no padding)
         DCM_MachineString,
@@ -290,7 +290,10 @@ void normalizeString(OFString &string,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.h,v $
-** Revision 1.25  2002-12-06 12:49:07  joergr
+** Revision 1.26  2002-12-10 17:41:22  meichel
+** Removed typedef to avoid warnings on various compilers
+**
+** Revision 1.25  2002/12/06 12:49:07  joergr
 ** Enhanced "print()" function by re-working the implementation and replacing
 ** the boolean "showFullData" parameter by a more general integer flag.
 ** Added doc++ documentation.
