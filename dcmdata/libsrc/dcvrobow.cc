@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmOtherByteOtherWord for data VR OB or OW
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-01 10:12:11 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-02-03 16:35:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrobow.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -228,7 +228,7 @@ E_Condition DcmOtherByteOtherWord::putUint8Array(const Uint8 * byteValue,
     errorFlag = EC_Normal;
     if (numBytes)
     {
-	if (byteValue && Tag.getEVR() == EVR_OB)
+	if (byteValue && ((Tag.getEVR() == EVR_OB) || (Tag.getEVR() == EVR_pixelItem)))
 	{
 	    errorFlag = putValue(byteValue, sizeof(Uint8)*Uint32(numBytes));
 	    this -> alignValue();
@@ -333,7 +333,7 @@ E_Condition DcmOtherByteOtherWord::putString(const char * val)
 E_Condition DcmOtherByteOtherWord::getUint8Array(Uint8 * & bytes)
 {
     errorFlag = EC_Normal;
-    if ( Tag.getEVR() != EVR_OW )
+    if ((Tag.getEVR() != EVR_OB) || (Tag.getEVR() != EVR_pixelItem))
         bytes = (Uint8 *)this -> getValue();
     else
         errorFlag = EC_IllegalCall;
@@ -398,7 +398,11 @@ E_Condition DcmOtherByteOtherWord::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
-** Revision 1.20  2000-02-01 10:12:11  meichel
+** Revision 1.21  2000-02-03 16:35:58  joergr
+** Corrected bug that caused wrong calculation of group length for sequence
+** of items (e.g. encapsulated pixel data).
+**
+** Revision 1.20  2000/02/01 10:12:11  meichel
 ** Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
 **   workaround for bug in compiler header files.
 **
