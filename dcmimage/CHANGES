@@ -5,6 +5,9 @@
            dcmimgle/libsrc/dibarlut.cc
            dcmimgle/libsrc/didispfn.cc
 
+- Removed const specifier (for pointer variable) to avoid warnings on SunCC.
+  Affects: dcmimgle/libsrc/didispfn.cc
+
 **** Changes from 1999.03.03 (riesmeier)
 
 - Added support to specify ambient light value (re: Barten transformation).
