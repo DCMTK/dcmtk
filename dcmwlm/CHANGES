@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2002.04.16 (riesmeier)
+
+- Added missing target "install-support" to make files.
+  Affects: dcmwlm/Makefile.in
+
 **** Changes from 2002.01.08 (riesmeier)
 
 - Added new module "dcmwlm" developed by Thomas Wilkens (initial release for
