@@ -1,12 +1,15 @@
 DCMTK FAQ - Frequently Asked Questions
 
 ----
-1996.09.24
+1996.09.27
 
 Q: Does DCMTK compile on Microsoft Windows NT/95 ?
 
-A: Not at the moment.  We want to make this possible, but have no
-   definite time schedule to do so.
+A: Yes, partly.  We have added preliminary support for Win32 environments.
+   We have compiled the dcmdata library and apps (as console programs)
+   using the Microsoft Visual C++ 2.0 compiler on Windows NT 4.0.  The 
+   dcmnet library and apps compile (as console programs) and link against 
+   the WINSOCK sockets library but the apps do not yet function correctly.
 
 ----
 1996.09.24
@@ -25,10 +28,6 @@ A: Yes.  Parts (dcmdata and dcmnet) compile using the Metrowerks
    Please note, there are no Macintosh applications in DCMTK.  You
    have to use a simulated Unix command line interface (via the
    CodeWarrior SIOUX library).
-
-   Example CodeWarrior project files for DCMTK will be made available 
-   via:
-        http://www.offis.uni-oldenburg.de/projekte/dicom/dicom_software_e.html
 
 ---
 1996.09.24

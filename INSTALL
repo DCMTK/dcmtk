@@ -25,14 +25,6 @@ system combinations:
     Intel Pentium PC / NEXTSTEP 3.3
     Intel Pentium PC / Linux 2.0
 
-Some parts of the software have been compiled and superficially tested
-under the following environments:
-
-    dcmdata & dcmnet libraries and test programs:
-
-	Apple Macintosh PowerPC / MacOS 7.5.3 / 
-		CodeWarrior 6.0 + GUSI 1.6
-
 Currently, the imagectn and wlistctn applications assume a Unix
 environment (they are servers).  The ctndisp application requires
 the X-Window System.  The Worklist WWW Scripts require an http server
