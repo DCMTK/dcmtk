@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-14 16:36:21 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2000-11-14 17:27:25 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -189,7 +189,7 @@ class DSRDocument
      ** @return number of verifying observers (if any), 0 otherwise
      */
     size_t getNumberOfVerifyingObservers();
-    
+
     /** get information about a verifying observer.
      *  All reference variables are cleared before the information is retrieved, i.e. if an error
      *  occurs (return value != EC_Normal) non-empty variables do contain correct data.
@@ -232,12 +232,12 @@ class DSRDocument
     /** get number of predecessor documents.
      *  A document can have more than one (direct) predecessor document.  This is the case
      *  when two or more documents have been merged to created it.  The corresponding method
-     *  createRevisedVersion() creates only one reference to the current document (and 
+     *  createRevisedVersion() creates only one reference to the current document (and
      *  replaces any existing referenced).
      ** @return number of predecessor documents (if any), 0 otherwise
      */
     size_t getNumberOfPredecessorDocuments();
-    
+
     /** get information about a predecessor document.
      *  All reference variables are cleared before the information is retrieved, i.e. if an error
      *  occurs (return value != EC_Normal) non-empty variables do contain correct data.
@@ -707,7 +707,7 @@ class DSRDocument
      *  SR Document Content Module, see DICOM Supplement 23).
      *  This method also updates the other DICOM header attributes (calling updateAttributes()).
      */
-    void createNewSOPInstance();    
+    void createNewSOPInstance();
 
     /** create a new document.
      *  A new SOP instance is only created if the current document type was valid/supported.
@@ -728,7 +728,7 @@ class DSRDocument
      *  A revised version can only be created if the current document is already completed
      *  (see completion flag).  If so a reference to the current document is included in the
      *  predecessor documents sequence (possible existing references are automatically
-     *  replaced, i.e. there is never more than one reference in this sequence).  If all 
+     *  replaced, i.e. there is never more than one reference in this sequence).  If all
      *  revised versions of a SR document are stored (written to datasets/files) it is
      *  possible to track back the full chain of previous versions.
      *  A new SOP instance is created and the content date/time are set automatically.
@@ -782,6 +782,14 @@ class DSRDocument
     E_Condition verifyDocument(const OFString &observerName,
                                const DSRCodedEntryValue &observerCode,
                                const OFString &organization);
+
+    /** remove verification information.
+     *  The list of verifying observers is cleared and the verification flag is set to UNVERIFIED.
+     *  Normally, there should be no need to use this method.  On the other hand it is useful to
+     *  guarantee a consistent state when processing documents which have not been created with this
+     *  toolkit.
+     */
+    void removeVerification();
 
 
   protected:
@@ -933,7 +941,10 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
- *  Revision 1.15  2000-11-14 16:36:21  joergr
+ *  Revision 1.16  2000-11-14 17:27:25  joergr
+ *  Added method to remove verification information.
+ *
+ *  Revision 1.15  2000/11/14 16:36:21  joergr
  *  Added methods to set the content date/time.
  *
  *  Revision 1.14  2000/11/14 11:45:50  joergr

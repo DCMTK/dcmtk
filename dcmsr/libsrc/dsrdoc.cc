@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-14 16:36:24 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2000-11-14 17:27:29 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1590,8 +1590,7 @@ E_Condition DSRDocument::createRevisedVersion()
                     ContentDate.clear();
                     ContentTime.clear();
                     /* clear list of verifying observers and set flag to UNVERIFIED */
-                    VerifyingObserver.clear();
-                    VerificationFlagEnum = VF_Unverified;
+                    removeVerification();
                     /* insert item into sequence (replace old ones) */
                     PredecessorDocuments.clear();
                     PredecessorDocuments.insert(ditem);
@@ -1678,6 +1677,14 @@ E_Condition DSRDocument::verifyDocument(const OFString &observerName,
 }
 
 
+void DSRDocument::removeVerification()
+{
+    /* clear list of verifying observers and set flag to UNVERIFIED */
+    VerifyingObserver.clear();
+    VerificationFlagEnum = VF_Unverified;    
+}
+
+
 void DSRDocument::setLogStream(OFConsole *stream)
 {
     /* store log stream */
@@ -1740,7 +1747,10 @@ void DSRDocument::updateAttributes()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.16  2000-11-14 16:36:24  joergr
+ *  Revision 1.17  2000-11-14 17:27:29  joergr
+ *  Added method to remove verification information.
+ *
+ *  Revision 1.16  2000/11/14 16:36:24  joergr
  *  Added methods to set the content date/time.
  *
  *  Revision 1.15  2000/11/14 11:45:55  joergr
