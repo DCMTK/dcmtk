@@ -22,8 +22,8 @@
  *  Purpose: Utilities (Header)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-08-03 11:41:50 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Update Date:      $Date: 2004-11-25 09:38:43 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -321,7 +321,9 @@ class DicomImageClass
     static inline unsigned long maxval(const int mv_bits,
                                        const unsigned long mv_pos = 1)
     {
-        return (mv_bits < MAX_BITS) ? (OFstatic_cast(unsigned long, 1) << mv_bits) - mv_pos : OFstatic_cast(unsigned long, -1);
+        return (mv_bits < MAX_BITS) ? 
+          (OFstatic_cast(unsigned long, 1) << mv_bits) - mv_pos :              
+          OFstatic_cast(Uint32, -1);  // the int type used here must have exactly MAX_BITS bits 
     }
 
     /** calculate number of bits which are necessary to store the specified value
@@ -411,7 +413,11 @@ class DicomImageClass
  *
  * CVS/RCS Log:
  * $Log: diutils.h,v $
- * Revision 1.26  2004-08-03 11:41:50  meichel
+ * Revision 1.27  2004-11-25 09:38:43  meichel
+ * Fixed bug in DicomImageClass::maxval affecting 64-bit platforms.
+ *   Thanks to Daniel Patel <daniel@cmr.no> for the bug report and fix.
+ *
+ * Revision 1.26  2004/08/03 11:41:50  meichel
  * Headers libc.h and unistd.h are now included via ofstdinc.h
  *
  * Revision 1.25  2003/12/23 15:53:22  joergr
