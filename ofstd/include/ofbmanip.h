@@ -21,10 +21,10 @@
  *
  *  Purpose: Template class for bit manipulations (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-08-14 09:01:18 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-08-29 07:54:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofbmanip.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -63,7 +63,7 @@ class OFBitmanipTemplate
 {
 
  public:
- 
+
     /** copies specified number of elements from source to destination
      *
      ** @param  src    pointer to source memory
@@ -82,7 +82,7 @@ class OFBitmanipTemplate
         register unsigned long i;
         register const T *p = src;
         register T *q = dest;
-        for (i = count; i != 0; i--)
+        for (i = count; i != 0; --i)
             *q++ = *p++;
 #endif
     }
@@ -106,7 +106,7 @@ class OFBitmanipTemplate
         {
             register unsigned long i;
             register T *q = dest;
-            for (i = count; i != 0; i--)
+            for (i = count; i != 0; --i)
                 *q++ = value;
         }
     }
@@ -123,9 +123,16 @@ class OFBitmanipTemplate
 #ifdef HAVE_BZERO
         // some platforms, e.g. OSF1, require the first parameter to be char *.
         bzero(OFreinterpret_cast(char *, dest), OFstatic_cast(size_t, count) * sizeof(T));
-#else        
-        setMem(dest, 0, count);
-#endif        
+#else
+#ifdef HAVE_MEMSET
+        memset(OFstatic_cast(void *, dest), 0, OFstatic_cast(size_t, count) * sizeof(T));
+#else
+        register unsigned long i;
+        register T *q = dest;
+        for (i = count; i != 0; --i)
+            *q++ = 0;
+#endif
+#endif
     }
 };
 
@@ -137,7 +144,11 @@ class OFBitmanipTemplate
  *
  * CVS/RCS Log:
  * $Log: ofbmanip.h,v $
- * Revision 1.13  2003-08-14 09:01:18  meichel
+ * Revision 1.14  2003-08-29 07:54:52  joergr
+ * Modified function zeroMem() to compile with MSVC again where bzero() is not
+ * available.
+ *
+ * Revision 1.13  2003/08/14 09:01:18  meichel
  * Adapted type casts to new-style typecast operators defined in ofcast.h
  *
  * Revision 1.12  2002/11/27 11:23:04  meichel
