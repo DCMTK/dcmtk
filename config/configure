@@ -8987,8 +8987,8 @@ else
 fi
 
    
-echo $ac_n "checking declaration for std::_Ios_Openmode (in iostream)""... $ac_c" 1>&6
-echo "configure:8992: checking declaration for std::_Ios_Openmode (in iostream)" >&5
+echo $ac_n "checking declaration for std::ios_base::openmode (in iostream)""... $ac_c" 1>&6
+echo "configure:8992: checking declaration for std::ios_base::openmode (in iostream)" >&5
 ac_includes=""
 
 ac_cpp_includes=""
@@ -8998,7 +8998,7 @@ do
 #include<$ac_header>"
 done
 
-ac_cv_declaration=`echo 'ac_cv_declaration_std::_Ios_Openmode' | tr ' :' '__'`
+ac_cv_declaration=`echo 'ac_cv_declaration_std::ios_base::openmode' | tr ' :' '__'`
 
 if eval "test \"`echo '$''{'$ac_cv_declaration'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
@@ -9018,7 +9018,7 @@ $ac_includes
 
 $ac_cpp_includes
 
-std::_Ios_Openmode dummy;
+std::ios_base::openmode dummy;
 
 
 int main() {
@@ -9038,7 +9038,7 @@ rm -f conftest*
 fi
 if eval "test \"\$$ac_cv_declaration\" = yes"; then
   echo "$ac_t""yes" 1>&6
-  ac_tr_declaration=HAVE_DECLARATION_`echo std::_Ios_Openmode | tr ' :[a-z]' '__[A-Z]'`
+  ac_tr_declaration=HAVE_DECLARATION_`echo std::ios_base::openmode | tr ' :[a-z]' '__[A-Z]'`
   cat >> confdefs.h <<EOF
 #define $ac_tr_declaration 1
 EOF
@@ -9092,8 +9092,8 @@ unset ac_cv_declaration
 
 else
    
-echo $ac_n "checking declaration for std::_Ios_Openmode (in iostream.h)""... $ac_c" 1>&6
-echo "configure:9097: checking declaration for std::_Ios_Openmode (in iostream.h)" >&5
+echo $ac_n "checking declaration for std::ios_base::openmode (in iostream.h)""... $ac_c" 1>&6
+echo "configure:9097: checking declaration for std::ios_base::openmode (in iostream.h)" >&5
 ac_includes=""
 
 ac_cpp_includes=""
@@ -9103,7 +9103,7 @@ do
 #include<$ac_header>"
 done
 
-ac_cv_declaration=`echo 'ac_cv_declaration_std::_Ios_Openmode' | tr ' :' '__'`
+ac_cv_declaration=`echo 'ac_cv_declaration_std::ios_base::openmode' | tr ' :' '__'`
 
 if eval "test \"`echo '$''{'$ac_cv_declaration'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
@@ -9123,7 +9123,7 @@ $ac_includes
 
 $ac_cpp_includes
 
-std::_Ios_Openmode dummy;
+std::ios_base::openmode dummy;
 
 
 int main() {
@@ -9143,7 +9143,7 @@ rm -f conftest*
 fi
 if eval "test \"\$$ac_cv_declaration\" = yes"; then
   echo "$ac_t""yes" 1>&6
-  ac_tr_declaration=HAVE_DECLARATION_`echo std::_Ios_Openmode | tr ' :[a-z]' '__[A-Z]'`
+  ac_tr_declaration=HAVE_DECLARATION_`echo std::ios_base::openmode | tr ' :[a-z]' '__[A-Z]'`
   cat >> confdefs.h <<EOF
 #define $ac_tr_declaration 1
 EOF
