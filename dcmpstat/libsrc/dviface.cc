@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-02-10 16:01:40 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Last Update:      $Author: vorwerk $
+ *  Update Date:      $Date: 1999-02-12 10:04:13 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -93,6 +93,7 @@ DVInterface::DVInterface(const char *config_file)
 , pConfig(NULL)
 , configPath()
 , studyidx(0)
+, seriesidx(0)
 , SeriesNumber(0)
 , StudyNumber(0)
 , phandle(NULL)
@@ -458,7 +459,8 @@ Uint32 DVInterface::getNumberOfStudies()
   if (lockDatabase() != EC_Normal) return 0;
   if (phandle==NULL) return 0;
   if (idxfiletest()==OFTrue) return 0;
-  pStudyDesc = (StudyDescRecord *)malloc (SIZEOF_STUDYDESC) ;
+  if (pStudyDesc==NULL)
+    pStudyDesc = (StudyDescRecord *)malloc (SIZEOF_STUDYDESC) ;
   DB_GetStudyDesc(phandle, pStudyDesc );
   for (i=0; i<phandle->maxStudiesAllowed; i++) {
     if (pStudyDesc[i].NumberofRegistratedImages != 0 ) {  
@@ -479,14 +481,14 @@ OFBool DVInterface::idxfiletest()
  }
 E_Condition DVInterface::selectStudy(Uint32 idx)
 {
-
- if (idx >= getNumberOfStudies()) return EC_IllegalCall;
-
- if (pStudyDesc==NULL) return EC_IllegalCall;
- if (lockDatabase()!=EC_Normal) return EC_IllegalCall;
- if (phandle==NULL) return EC_IllegalCall;
- if (idxfiletest()==OFTrue) return EC_IllegalCall;
- 
+  seriesuidlist.clear();
+  instanceuidlist.clear();
+  
+  if (idx >= getNumberOfStudies()) return EC_IllegalCall;
+  if (pStudyDesc==NULL) return EC_IllegalCall;
+  if (lockDatabase()!=EC_Normal) return EC_IllegalCall;
+  if (phandle==NULL) return EC_IllegalCall;
+  if (idxfiletest()==OFTrue) return EC_IllegalCall;
 
   while ((pStudyDesc[idx].StudySize==0) && ( idx < PSTAT_MAXSTUDYCOUNT)) idx++;
   if (idx==PSTAT_MAXSTUDYCOUNT) return EC_IllegalCall;
@@ -497,6 +499,7 @@ E_Condition DVInterface::selectStudy(Uint32 idx)
   }
   else return EC_IllegalCall;
   studyidx=idx;
+  if (getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec, selectedStudy)==OFTrue) return EC_IllegalCall;
   return EC_Normal;
 }
 
@@ -510,8 +513,7 @@ const char *DVInterface::getStudyUID()
 
 const char *DVInterface::getStudyDescription()
 { 
-  if (strcmp(selectedStudy,"")==0) return NULL; 
-  if (getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec,selectedStudy)!=EC_Normal) return NULL;
+  if (strcmp(selectedStudy,"")==0) return NULL;
   return idxRec.StudyDescription;
 }
 
@@ -520,8 +522,9 @@ DVIFhierarchyStatus DVInterface::getStudyStatus()
 {
   OFBool isNew=OFFalse;
   Uint32 counter=0;
+  IdxRecord idxRec1;
   if (strcmp(selectedStudy,"")==0) return DVIF_objectIsNew; 
-  if(getAnInstance(OFTrue,OFTrue,OFFalse,&idxRec, selectedStudy,NULL,0,&counter,&isNew)==OFFalse)
+  if(getAnInstance(OFTrue,OFTrue,OFFalse,&idxRec1, selectedStudy,NULL,0,&counter,&isNew)==OFFalse)
   {
     if (isNew==OFTrue) return DVIF_objectIsNew;
     else if (counter!=getNumberOfInstances()) return DVIF_objectContainsNewSubobjects;
@@ -537,91 +540,76 @@ DVIFhierarchyStatus DVInterface::getStudyStatus()
 const char *
 DVInterface::getStudyDate(){
   if (strcmp(selectedStudy,"")==0) return NULL; 
-  if (getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec,selectedStudy)==OFTrue) return NULL;
   return idxRec.StudyDate;
 }
 
 const char *
 DVInterface::getStudyTime(){
   if (strcmp(selectedStudy,"")==0) return NULL;
-  if (getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec,selectedStudy)==OFTrue) return NULL;
   return idxRec.StudyTime;
 }
 
 const char *
 DVInterface::getReferringPhysiciansName(){
   if (strcmp(selectedStudy,"")==0) return NULL; 
-
-  if (getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec,selectedStudy)==OFTrue) return NULL;
   return idxRec.ReferringPhysiciansName;
 }
 
 const char *
 DVInterface::getAccessionNumber(){
   if (strcmp(selectedStudy,"")==0) return NULL; 
-  if (getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec,selectedStudy)==OFTrue) return NULL;
   return idxRec.AccessionNumber;
 }
 
 const char *
 DVInterface::getNameOfPhysiciansReadingStudy(){
   if (strcmp(selectedStudy,"")==0) return NULL; 
-  if (getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec, selectedStudy)==OFTrue) return NULL;
   return idxRec.NameOfPhysiciansReadingStudy;
 }
 
 const char *DVInterface::getPatientName(){
   if (strcmp(selectedStudy,"")==0) return NULL; 
-  if (getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec, selectedStudy)==OFTrue) return NULL;
   return idxRec.PatientsName;
 }
 
 const char *DVInterface::getPatientID(){
 if (strcmp(selectedStudy,"")==0) return NULL; 
-  if (getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec, selectedStudy)==OFTrue) return NULL;
   return idxRec.PatientID;
 }
 
 const char *DVInterface::getPatientBirthDate(){
   if (strcmp(selectedStudy,"")==0) return NULL; 
-  if (getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec, selectedStudy)==OFTrue) return NULL;
   return idxRec.PatientsBirthDate;
 }
 
 const char *DVInterface::getPatientSex(){
   if (strcmp(selectedStudy,"")==0) return NULL; 
-  if (getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec, selectedStudy)==OFTrue) return NULL;
   return idxRec.PatientsSex;
 }
 
 const char *DVInterface::getPatientBirthTime(){
   if (strcmp(selectedStudy,"")==0) return NULL; 
-  if (getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec, selectedStudy)==OFTrue) return NULL;
   return idxRec.PatientsBirthTime;
 }
 
 const char *DVInterface::getOtherPatientNames(){
   if (strcmp(selectedStudy,"")==0) return NULL; 
-  if (getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec, selectedStudy)==OFTrue) return NULL;
   return idxRec.OtherPatientNames;
 }
 
 const char *DVInterface::getOtherPatientID(){
   if (strcmp(selectedStudy,"")==0) return NULL; 
-  if (getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec, selectedStudy)==OFTrue) return NULL;
   return idxRec.OtherPatientIDs;
 }
 
 const char *DVInterface::getEthnicGroup(){
   if (strcmp(selectedStudy,"")==0) return NULL; 
-  if (getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec, selectedStudy)==OFTrue) return NULL;
   return idxRec.EthnicGroup;
 }
 
 const char *DVInterface::getSeriesDescription()
 { 
-  if (strcmp(selectedSeries,"")==0) return NULL; 
-  if (getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec,selectedSeries)==OFTrue) return NULL;
+  if (strcmp(selectedSeries,"")==0) return NULL;
   return idxRec.SeriesDescription;
 }
 
@@ -629,21 +617,20 @@ const char *DVInterface::getSeriesDescription()
 const char *
 DVInterface::getSeriesNumber(){
   if ((strcmp(selectedSeries,"")==0) || (strcmp(selectedStudy,"")==0)) return NULL; 
-  if (getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec, selectedStudy, selectedSeries)==OFTrue) return NULL;
   return idxRec.SeriesNumber;
 }
 
 const char *
 DVInterface::getSeriesDate(){
   if ((strcmp(selectedSeries,"")==0) || (strcmp(selectedStudy,"")==0)) return NULL; 
-  if (getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec, selectedStudy, selectedSeries)==OFTrue) return NULL;
+ 
   return idxRec.SeriesDate;
 }
 
 const char *
 DVInterface::getSeriesTime(){
   if ((strcmp(selectedSeries,"")==0) || (strcmp(selectedStudy,"")==0)) return NULL; 
-  if (getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec, selectedStudy, selectedSeries)==OFTrue) return NULL;
+ 
   return idxRec.SeriesTime;
 }
 
@@ -651,21 +638,18 @@ DVInterface::getSeriesTime(){
 const char *
 DVInterface::getSeriesPerformingPhysiciansName(){
   if ((strcmp(selectedSeries,"")==0) || (strcmp(selectedStudy,"")==0)) return NULL; 
-  if (getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec, selectedStudy, selectedSeries)==OFTrue) return NULL;
   return idxRec.PerformingPhysiciansName;
 }
 
 const char *
 DVInterface::getSeriesProtocolName(){
   if ((strcmp(selectedSeries,"")==0) || (strcmp(selectedStudy,"")==0)) return NULL; 
-  if (getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec, selectedStudy, selectedSeries)==OFTrue) return NULL;
   return idxRec.ProtocolName;
 }
 
 const char *
 DVInterface::getSeriesOperatorsName(){
   if ((strcmp(selectedSeries,"")==0) || (strcmp(selectedStudy,"")==0)) return NULL; 
-  if (getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec, selectedStudy, selectedSeries)==OFTrue) return NULL;
   return idxRec.OperatorsName;
 }
 
@@ -693,25 +677,27 @@ DVInterface::getAnInstance(OFBool dvistatus, // indicates search for reviewed in
 			   const char *InstanceUID // InstanceUID as string, if used
 			   )  {
   if (lockDatabase() != EC_Normal) return OFTrue;  
-  int recordCounter ; // required for IdxInitLoop, contains index of indexFile
+  int recordCounter=0 ; // required for IdxInitLoop, contains index of indexFile
   OFBool study,series,instance; // compareresults
   unsigned int idxlength;// length of positive results array
   int *elems; // positive results array
   Uint32 posResCounter; // index of positive results array
   if (idxfiletest()==OFTrue) return OFTrue;
   if (colser!=NULL)  (*colser)=0; // used counter, if definied 
-  pStudyDesc = (StudyDescRecord *)malloc (SIZEOF_STUDYDESC) ;
-  if (pStudyDesc == NULL) {
-    fprintf(stderr, "DB_PrintIndexFile: out of memory\n");
-    return OFTrue;
-  }
+  if (pStudyDesc == NULL){
+    pStudyDesc = (StudyDescRecord *)malloc (SIZEOF_STUDYDESC) ;
+    if (pStudyDesc == NULL) {
+      fprintf(stderr, "DB_PrintIndexFile: out of memory\n");
+      return OFTrue;
+    }
   
-  if (DB_GetStudyDesc(phandle, pStudyDesc )==DB_ERROR){
-	  cerr << "study descriptor not available !" << endl;
-	  free (pStudyDesc);
-	  pStudyDesc=NULL;
-	  return OFTrue;
-  ;
+    if (DB_GetStudyDesc(phandle, pStudyDesc )==DB_ERROR){
+      cerr << "study descriptor not available !" << endl;
+      free (pStudyDesc);
+      pStudyDesc=NULL;
+      return OFTrue;
+  
+    }
   }
   
   // number of registrated images
@@ -719,9 +705,13 @@ DVInterface::getAnInstance(OFBool dvistatus, // indicates search for reviewed in
   if (idxlength==0) return OFTrue;
   elems=new int[idxlength+3]; 
   DB_IdxInitLoop (phandle, &recordCounter); 
-  free (pStudyDesc);
-  pStudyDesc=NULL;
+  
   posResCounter=0;
+  OFIterator<dbCache> listelem;
+  if (SeriesUID==NULL)
+    listelem = seriesuidlist.begin();
+  else
+    listelem = instanceuidlist.begin();
 
   while (1) {
     study=OFFalse;
@@ -730,7 +720,25 @@ DVInterface::getAnInstance(OFBool dvistatus, // indicates search for reviewed in
 
 	// idxCounter defined ?
     if (idxCounter!=NULL) (*idxCounter)++;
+       
+    if ((seriesuidlist.size()!=0) && (SeriesUID==NULL)){
+      if (listelem==seriesuidlist.end()) break;
+      dbCache entry=*(listelem);
+      recordCounter=entry.pos;
+    }  
 
+    
+     
+
+      if ((instanceuidlist.size()!=0) && (SeriesUID!=NULL)){
+  if (listelem==instanceuidlist.end()) break;
+  dbCache entry=*(listelem);
+  if (idxCounter!=NULL)
+    (*idxCounter)=entry.pos;
+ 
+  recordCounter=entry.pos;   
+      }
+    
 	// end of indexfile reached ?
 	if (DB_IdxGetNext (phandle, &recordCounter, anIdxRec) != DB_NORMAL)
 	{
@@ -747,7 +755,7 @@ DVInterface::getAnInstance(OFBool dvistatus, // indicates search for reviewed in
 		  if ((SeriesUID==NULL))
 			(*colser)=stripidxarray(elems,OFTrue); // removes duplicate series
 		else  
-(*colser)=stripidxarray(elems,OFFalse); // removes duplicate instances		
+		  (*colser)=stripidxarray(elems,OFFalse); // removes duplicate instances		
 	delete []elems;
 			return OFFalse;
 		}	
@@ -833,7 +841,7 @@ DVInterface::getAnInstance(OFBool dvistatus, // indicates search for reviewed in
 		return OFFalse;
       }
     }
-      
+    listelem++;      
   } // end of while
 		
 delete []elems;
@@ -847,7 +855,7 @@ Uint32 DVInterface::stripidxarray(int *elemarray, OFBool si)
 	int arrsize=0;
 	int recordCounter=0;
 	int idx=0;
-	OFList<OFString> seriesuidlist;
+	dbCache serCache;
 	IdxRecord idxentry;
 	for (idx=0; (elemarray[idx] > -2); idx++) arrsize++;	
 	for (idx=0; idx<arrsize; idx++){
@@ -855,20 +863,49 @@ Uint32 DVInterface::stripidxarray(int *elemarray, OFBool si)
 		if (DB_IdxGetNext (phandle, &recordCounter, &idxentry) != DB_NORMAL){ 
 			cerr << "seek not sucessful !" << endl;
 		} // fi
-	        if (si==OFTrue)
-		  seriesuidlist.push_back(idxentry.SeriesInstanceUID);
-		else 
-		  seriesuidlist.push_back(idxentry.SOPInstanceUID);
-
+	        
+     
+	        if (si==OFTrue){
+		  serCache.uid=idxentry.SeriesInstanceUID;
+		  serCache.pos=elemarray[idx];
+		  seriesuidlist.push_back(serCache);
+		  
+		}
+		else {
+		  serCache.uid=idxentry.SOPInstanceUID;
+		  serCache.pos=elemarray[idx];
+		  instanceuidlist.push_back(serCache);
+		  
+		}
 
 	} // for	
+	if (si==OFFalse) return arrsize;
+        if (seriesuidlist.size()==1) return 1;
 	arrsize=0;
-	OFString lientry;
-	while (seriesuidlist.size()!=0){
-		lientry = *(seriesuidlist.begin());
-	        seriesuidlist.remove(lientry);
-		arrsize++;
-		if (seriesuidlist.size()==0) break;
+	dbCache lientry, bufentry;
+	OFList<dbCache> buflist;
+	OFIterator<dbCache> firstelem = seriesuidlist.begin();
+	while ((seriesuidlist.size()!=0) && (firstelem!=seriesuidlist.end())){
+
+		lientry = *firstelem;
+		OFIterator<dbCache> first = firstelem;
+		OFIterator<dbCache> last = seriesuidlist.end();
+		while(first != last)
+		  {
+		    bufentry=*first;
+		    if (seriesuidlist.size()==1) return 0;
+		    if (first==firstelem) first++;
+		    if (bufentry.uid == lientry.uid)
+		      first = seriesuidlist.erase(first);
+		    
+		    else
+		      ++first;
+		  }
+	      arrsize++;
+	      if ((seriesuidlist.size()<=1) || (firstelem==seriesuidlist.end())) break;
+	      firstelem = seriesuidlist.begin();
+	      for (int z=0 ; z< arrsize; z++)
+	        firstelem++;
 	}
 	return arrsize;
 }
@@ -876,18 +913,24 @@ Uint32 DVInterface::stripidxarray(int *elemarray, OFBool si)
 Uint32 DVInterface::getNumberOfSeries()
 {
   Uint32 j;
-  if (strcmp(selectedStudy,"")==0) return 0; 
-  if (getAnInstance(OFFalse,OFTrue,OFFalse,&idxRec, selectedStudy, NULL ,0,&j)==OFTrue) return 0;
+IdxRecord idxRec1;
+  if (strcmp(selectedStudy,"")==0) return 0;
+  if (seriesuidlist.size()!=0) return seriesuidlist.size();
+  else
+    if (getAnInstance(OFFalse,OFTrue,OFFalse,&idxRec1, selectedStudy, NULL ,0,&j)==OFTrue) return 0;
   return j; 
 }
 
 
 E_Condition DVInterface::selectSeries(Uint32 idx)
 {
-Uint32 j=0;
-  if (idx>getNumberOfSeries()-1) return EC_IllegalCall;
-  if (getAnInstance(OFFalse,OFTrue,OFTrue,&idxRec, selectedStudy, NULL,idx+1,&j)==OFFalse) 
- strcpy(selectedSeries,idxRec.SeriesInstanceUID);   
+  Uint32 j=0;
+  
+  if (idx>getNumberOfSeries()) return EC_IllegalCall;
+  seriesidx=idx;
+  instanceuidlist.clear();	
+    if (getAnInstance(OFFalse,OFTrue,OFTrue,&idxRec, selectedStudy, NULL,idx,&j)==OFFalse) 
+      strcpy(selectedSeries,idxRec.SeriesInstanceUID);   
    
   else 
     return EC_IllegalCall;
@@ -900,17 +943,17 @@ Uint32 j=0;
 const char *DVInterface::getSeriesUID()
 {
     if ((strcmp(selectedSeries,"")==0) || (strcmp(selectedStudy,"")==0)) return NULL; 
-    if (getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec, selectedStudy, selectedSeries)==OFTrue) return NULL;
     return idxRec.SeriesInstanceUID;
 }
 
 
 DVIFhierarchyStatus DVInterface::getSeriesStatus()
 {
+  IdxRecord idxRec1;
   OFBool isNew=OFFalse;
   Uint32 counter=0;
   if ((strcmp(selectedSeries,"")==0) || (strcmp(selectedStudy,"")==0)) return DVIF_objectIsNew;   
-  if (getAnInstance(OFTrue,OFTrue,OFFalse,&idxRec, selectedStudy, selectedSeries,0,&counter,&isNew)==OFFalse)
+  if (getAnInstance(OFTrue,OFTrue,OFFalse,&idxRec1, selectedStudy, selectedSeries,0,&counter,&isNew)==OFFalse)
   {
     if (isNew==OFTrue) return DVIF_objectIsNew;
     else if (counter!=getNumberOfInstances())
@@ -929,33 +972,47 @@ OFBool DVInterface::isPresentationStateSeries()
   Uint32 numi,nums;
   numi=getNumberOfInstances();
   nums=getNumberOfSeries();
+  Uint32 buf=seriesidx;
   for (Uint32 si=0; si<nums; si++){
-    if (selectSeries(si)!=EC_Normal) return OFFalse;
+    if (selectSeries(si)!=EC_Normal){
+      selectSeries(buf);
+      return OFFalse;
+    }
+    
     for (Uint32 ii=0; ii<numi; ii++){
 	  if (selectInstance(ii)==EC_Normal) {
-		  if ((strcmp(getSeriesUID(),selectedSeries)==0) && (strcmp(getModality(),"PR")!=0))
-			  return OFFalse;
+	    if ((strcmp(getSeriesUID(),selectedSeries)==0) && (strcmp(getModality(),"PR")!=0)){      
+	      selectSeries(buf);
+	      return OFFalse;
+	    }
 	  }
-else return OFFalse;
-	}
+	  else {
+	    
+	    selectSeries(buf);
+	    return OFFalse;
+	  }
+    }
+    }
+   
+    selectSeries(buf);
+    return OFTrue;
   }
-  return OFTrue;
- 
-}
 
 const char *DVInterface::getModality()
 { 
   if ((strcmp(selectedSeries,"")==0) || (strcmp(selectedStudy,"")==0)) return NULL; 
-  if(getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec, selectedStudy, selectedSeries)==OFFalse) return idxRec.Modality;
-  return NULL;
+  return idxRec.Modality;
 }
 
 
 Uint32 DVInterface::getNumberOfInstances()
 {
+IdxRecord idxRec1;
  Uint32 j;
   if ((strcmp(selectedStudy,"")==0) && (strcmp(selectedSeries,"")==0)) return 0; 
-  if (getAnInstance(OFFalse,OFTrue,OFFalse,&idxRec, selectedStudy, selectedSeries ,0,&j)==OFTrue){
+if (instanceuidlist.size()!=0) return instanceuidlist.size();
+else 
+  if (getAnInstance(OFFalse,OFTrue,OFFalse,&idxRec1, selectedStudy, selectedSeries ,0,&j)==OFTrue){
     return 0;
   }
   return j; 
@@ -965,12 +1022,14 @@ Uint32 DVInterface::getNumberOfInstances()
 
 E_Condition DVInterface::selectInstance(Uint32 idx)
 {
-Uint32 j=0;
-  if (idx > getNumberOfInstances()-1) return EC_IllegalCall;
-  if  (getAnInstance(OFFalse,OFTrue,OFTrue,&idxRec, selectedStudy, selectedSeries,idx+1,&j)==OFFalse) {
-    strcpy(selectedInstance,idxRec.SOPInstanceUID);
-  }
-  else return EC_IllegalCall;
+  Uint32 j=0;
+  
+  if (idx > getNumberOfInstances()) return EC_IllegalCall;
+  
+    if  (getAnInstance(OFFalse,OFTrue,OFTrue,&idxRec, selectedStudy, selectedSeries,idx+1,&j)==OFFalse) {
+      strcpy(selectedInstance,idxRec.SOPInstanceUID);
+    }
+    else return EC_IllegalCall;
   return EC_Normal;
 }
 
@@ -978,16 +1037,14 @@ Uint32 j=0;
 const char *DVInterface::getInstanceUID()
 {
   if ((strcmp(selectedSeries,"")==0) || (strcmp(selectedStudy,"")==0) || (strcmp(selectedInstance,"")==0)) return NULL; 
-  if (getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec, selectedStudy, selectedSeries,0,0,NULL,0,selectedInstance)==OFFalse) return selectedInstance;
-  else return NULL;
+  return selectedInstance;
 }
 
 
 const char *DVInterface::getImageNumber()
 {
   if ((strcmp(selectedSeries,"")==0) || (strcmp(selectedStudy,"")==0) || (strcmp(selectedInstance,"")==0)) return NULL; 
-  if (getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec, selectedStudy, selectedSeries,0,0,NULL,0,selectedInstance)==OFFalse) return idxRec.ImageNumber;
-  else return NULL;
+   return idxRec.ImageNumber;
 }
 
 
@@ -995,7 +1052,7 @@ const char *DVInterface::getImageNumber()
 
 DVIFhierarchyStatus DVInterface::getInstanceStatus() 
 {
-  if (getAnInstance(OFTrue,OFFalse,OFFalse,&idxRec, selectedStudy, selectedSeries,0,0,NULL,0,selectedInstance)==OFTrue) return DVIF_objectIsNew;
+ if ((strcmp(selectedSeries,"")==0) || (strcmp(selectedStudy,"")==0) || (strcmp(selectedInstance,"")==0)) return DVIF_objectIsNew; 
   if (idxRec.hstat==DVIF_objectIsNew)
     return DVIF_objectIsNew;
   else 
@@ -1005,8 +1062,9 @@ DVIFhierarchyStatus DVInterface::getInstanceStatus()
 
 OFBool DVInterface::isPresentationState()
 {
-  const char *mod = getModality();
-  if (mod && (strcmp(mod, "PR")==0)) return OFTrue; else return OFFalse;
+  if (strcmp(getModality(),"PR")==0) return OFTrue;
+  else
+    return OFFalse;
 }
 
 
@@ -1015,7 +1073,10 @@ E_Condition DVInterface::instanceReviewed(const char *studyUID,
                                           const char *instanceUID)
 {
   long curpos;
+  if ((strcmp(studyUID,"")==0) || ((strcmp(seriesUID,"")==0) || (strcmp(instanceUID,"")==0))) return EC_IllegalCall;
   if ((studyUID==NULL) || ((seriesUID==NULL) || (instanceUID==NULL))) return EC_IllegalCall;
+  if ((strcmp(selectedStudy,"")==0) || ((strcmp(selectedSeries,"")==0) || (strcmp(selectedInstance,"")==0))) return EC_IllegalCall;
+  
   if (getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec, studyUID, seriesUID,0,0,NULL,0,instanceUID)==OFFalse){  
     lockExclusive();
     idxRec.hstat=DVIF_objectIsNotNew;
@@ -1032,14 +1093,15 @@ E_Condition DVInterface::instanceReviewed(const char *studyUID,
 
 E_Condition DVInterface::deleteInstance(const char *studyUID,
                                         const char *seriesUID,
-                                        const char *instanceUID)
+                                        const char *instanceUID,
+					OFBool deletefile
+					)
 {
-  if ((studyUID==NULL) || ((seriesUID==NULL) || (instanceUID==NULL))) return EC_IllegalCall;
-  if ( getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec, studyUID, seriesUID,0,0,NULL,0,instanceUID)==OFTrue) return EC_IllegalCall;
-
   Uint32 counter;
-  int studyIdx = 0;
-  (counter)=0;
+  
+  counter=0;
+  if ((strcmp(studyUID,"")==0) || ((strcmp(seriesUID,"")==0) || (strcmp(instanceUID,"")==0))) return EC_IllegalCall;
+  if ((studyUID==NULL) || ((seriesUID==NULL) || (instanceUID==NULL))) return EC_IllegalCall;
   if ((strcmp(selectedStudy,"")==0) || ((strcmp(selectedSeries,"")==0) || (strcmp(selectedInstance,"")==0))) return EC_IllegalCall;
 
   if (getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec, selectedStudy, selectedSeries,0,0,NULL,&counter,selectedInstance)==OFTrue) {
@@ -1047,7 +1109,13 @@ E_Condition DVInterface::deleteInstance(const char *studyUID,
 	  return EC_IllegalCall;
   }
   lockExclusive();
-  if (DB_IdxRemove (phandle, (counter)-1)==DB_ERROR)
+  if (deletefile==OFTrue)
+    if (DB_deleteImageFile((char*)getFilename(selectedStudy,selectedSeries,selectedInstance))!=DB_NORMAL) {
+      unlockExclusive();
+      return EC_IllegalCall;
+    }
+
+  if (DB_IdxRemove (phandle, (counter+1))==DB_ERROR)
   {
 	  cerr << "db_error" << endl;
 	  unlockExclusive();
@@ -1062,8 +1130,8 @@ E_Condition DVInterface::deleteInstance(const char *studyUID,
     		if ( pStudyDesc[s]. NumberofRegistratedImages != 0 ) // new 
 		  if ( ! ( strncmp(pStudyDesc[s]. StudyInstanceUID, (char*)selectedStudy, n) ) ){
 studyidx=s;
-  pStudyDesc[studyIdx].NumberofRegistratedImages -= 1;
-  pStudyDesc[studyIdx].StudySize -= idxRec. ImageSize;
+  pStudyDesc[studyidx].NumberofRegistratedImages -= 1;
+  pStudyDesc[studyidx].StudySize -= idxRec. ImageSize;
   DB_StudyDescChange (phandle, pStudyDesc);
 break;
 		  }
@@ -1078,7 +1146,9 @@ s++;
 }
 
 E_Condition DVInterface::deleteSeries(const char *studyUID,
-                                      const char *seriesUID)
+                                      const char *seriesUID,
+				      OFBool deletefile
+					)
 {
  if ((studyUID==NULL) || (seriesUID==NULL)) return EC_IllegalCall;
  if (getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec, studyUID, seriesUID)==OFFalse){ 
@@ -1091,7 +1161,7 @@ E_Condition DVInterface::deleteSeries(const char *studyUID,
     cerr << "cannot select instance" << endl;
 		return EC_IllegalCall;
 	}
-    if (deleteInstance(selectedStudy, selectedSeries,selectedInstance)!=EC_Normal){
+    if (deleteInstance(selectedStudy, selectedSeries,selectedInstance, deletefile)!=EC_Normal){
 	cerr << "cannot delete instance" << endl;	
 		return EC_IllegalCall;
 	}
@@ -1102,7 +1172,9 @@ E_Condition DVInterface::deleteSeries(const char *studyUID,
 }
 
 
-E_Condition DVInterface::deleteStudy(const char *studyUID)
+E_Condition DVInterface::deleteStudy(const char *studyUID,
+				     OFBool deletefile
+					)
 {
 	
   if (studyUID==NULL) return EC_IllegalCall;
@@ -1111,7 +1183,7 @@ E_Condition DVInterface::deleteStudy(const char *studyUID)
   for (Uint32 i=0;i<number;i++)
   {
     if (selectSeries(0)==EC_IllegalCall) return EC_IllegalCall;
-    if (deleteSeries(selectedStudy, selectedSeries)==EC_IllegalCall) return EC_IllegalCall;
+    if (deleteSeries(selectedStudy, selectedSeries, deletefile)==EC_IllegalCall) return EC_IllegalCall;
 	getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec, studyUID);
   }
   return EC_Normal;
@@ -1741,7 +1813,10 @@ void DVInterface::cleanChildren()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.30  1999-02-10 16:01:40  meichel
+ *  Revision 1.31  1999-02-12 10:04:13  vorwerk
+ *  added cache , changed delete methods.
+ *
+ *  Revision 1.30  1999/02/10 16:01:40  meichel
  *  Fixed memory leak in dviface.cc - Config file contents were never deleted.
  *
  *  Revision 1.29  1999/02/09 15:58:10  meichel
