@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-05-06 09:15:57 $
+** Update Date:		$Date: 1997-05-06 11:52:30 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -235,7 +235,7 @@ usage()
 "dcmgpdir: create a general purpose dicomdir\n"
 "usage: dcmgpdir [options] referenced-dicom-file ...\n"
 "options are:\n"
-"  output option\n"
+"  output options\n"
 "    +D<dicomdir-path>  generate specific DICOMDIR file (default: DICOMDIR\n"
 "                       in current directory)\n"
 "    +F<file-set-id>    use specific file set ID (default: " << fsid << ")\n"
@@ -2034,7 +2034,10 @@ expandFileNames(StrList& fileNames, StrList& expandedNames)
 /*
 ** CVS/RCS Log:
 ** $Log: dcmgpdir.cc,v $
-** Revision 1.6  1997-05-06 09:15:57  hewett
+** Revision 1.7  1997-05-06 11:52:30  hewett
+** corrected spelling in usage output
+**
+** Revision 1.6  1997/05/06 09:15:57  hewett
 ** Added several new capabilities:
 ** 1. the +r option now enables resursion of a directory tree searching for
 **    image files to add to the directory.
