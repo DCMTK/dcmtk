@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: meichel $, $Date: 2000-09-08 14:27:50 $
+** Last Update:		$Author: meichel $, $Date: 2000-09-08 14:28:44 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.30 $
+** Revision:		$Revision: 1.31 $
 ** Status:		$State: Exp $
 */
 
@@ -1514,8 +1514,10 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
         timeout;
 #ifdef HAVE_DECLARATION_SOCKLEN_T
     socklen_t len;
-#else
+#elif HAVE_INTP_ACCEPT
     int len;
+#else
+    size_t len;
 #endif        
     int nfound,
         connected,
@@ -1786,12 +1788,16 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
         reuse = 1;
 
     if ((*key)->applicationFunction & DICOM_APPLICATION_ACCEPTOR) {
+
 #ifdef HAVE_DECLARATION_SOCKLEN_T
-        socklen_t length;
+    socklen_t length;
+#elif HAVE_INTP_ACCEPT
+    int length;
 #else
-	int length;
+    size_t length;
 #endif        
-	struct sockaddr_in server;
+
+    struct sockaddr_in server;
 
 /* Create socket for internet type communication */
 	(*key)->networkSpecific.TCP.port = *(int *) parameter;
@@ -2418,7 +2424,10 @@ CONDITION DUL_setTransportLayer(DUL_NETWORKKEY *callerNetworkKey, DcmTransportLa
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.30  2000-09-08 14:27:50  meichel
+** Revision 1.31  2000-09-08 14:28:44  meichel
+** Adapted calls to accept() to new flag HAVE_INTP_ACCEPT, required on OSF/1.
+**
+** Revision 1.30  2000/09/08 14:27:50  meichel
 ** Removed use of u_short and u_long types which are not defined in POSIX.
 **   Required when compiling on Solaris with Posix threads.
 **
