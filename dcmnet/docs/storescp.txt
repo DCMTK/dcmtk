@@ -41,7 +41,7 @@ network options:
   other network options:
     -aet  --aetitle              aetitle: string
                                  set my AE title (default: STORESCP)
-    -pdu  --max-pdu              [n]umber of bytes: integer [8192..65536]
+    -pdu  --max-pdu              [n]umber of bytes: integer [4096..131072]
                                  set max receive pdu to n bytes (default: 16384)
           --refuse               refuse association
           --reject               reject association if no implement. class UID

@@ -46,7 +46,7 @@ network options:
     +u    --enable-new-vr   enable support for new VRs (UN/UT/VS) (default)
     -u    --disable-new-vr  disable support for new VRs, convert to OB
   other network options:
-    -pdu  --max-pdu         [n]umber of bytes: integer [8192..65536]
+    -pdu  --max-pdu         [n]umber of bytes: integer [4096..131072]
                             set max receive pdu to n bytes (default: 16384)
           --repeat          [n]umber: integer
                             repeat n times

@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1999-04-26 17:20:55 $
+** Update Date:		$Date: 1999-09-06 13:28:31 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/assoc.h,v $
-** CVS/RCS Revision:	$Revision: 1.9 $
+** CVS/RCS Revision:	$Revision: 1.10 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -93,9 +93,14 @@
 ** Constant Definitions
 */
 
-#define ASC_DEFAULTMAXPDU	16384	/* default if nothing else specified */
-#define ASC_MINIMUMPDUSIZE	 8192
-#define ASC_MAXIMUMPDUSIZE	65536	/* we only handle this big */
+/* 
+ * There have been reports that smaller PDUs work better in some environments. 
+ * Allow a 4K minimum and a 128K maximum. Any further extension requires
+ * modifications in the DUL code.
+ */
+#define ASC_DEFAULTMAXPDU       16384	/* 16K is default if nothing else specified */
+#define ASC_MINIMUMPDUSIZE       4096
+#define ASC_MAXIMUMPDUSIZE     131072	/* 128K - we only handle this big */
 
 
 #define DIC_EURO_UIDROOT			OFFIS_UID_ROOT
@@ -500,7 +505,10 @@ ASC_destroyAssociation(T_ASC_Association ** association);
 /*
 ** CVS Log
 ** $Log: assoc.h,v $
-** Revision 1.9  1999-04-26 17:20:55  meichel
+** Revision 1.10  1999-09-06 13:28:31  meichel
+** Enhanced max receive PDU range to 4-128K.
+**
+** Revision 1.9  1999/04/26 17:20:55  meichel
 ** Added new "transfer syntax aware" variant of the dcmnet function
 **   ASC_findAcceptedPresentationContextID. This variant tries to find an
 **   accepted presentation context that matches both abstract and transfer syntax.

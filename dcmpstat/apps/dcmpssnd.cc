@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Network Send Component (Store SCU)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-04-30 16:36:56 $
+ *  Update Date:      $Date: 1999-09-06 13:29:48 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpssnd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -385,7 +385,7 @@ int main(int argc, char *argv[])
     }
 
     if (targetMaxPDU==0) targetMaxPDU = DEFAULT_MAXPDU;
-    else if (targetMaxPDU > 65536)
+    else if (targetMaxPDU > ASC_MAXIMUMPDUSIZE)
     {
         cerr << "warning: max PDU size " << targetMaxPDU << " too big for send target '" 
              << opt_target << "', using default: " << DEFAULT_MAXPDU << endl;
@@ -571,7 +571,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpssnd.cc,v $
- * Revision 1.6  1999-04-30 16:36:56  meichel
+ * Revision 1.7  1999-09-06 13:29:48  meichel
+ * Enhanced max receive PDU range to 4-128K.
+ *
+ * Revision 1.6  1999/04/30 16:36:56  meichel
  * Renamed all flock calls to dcmtk_flock to avoid name clash between flock()
  * emulation based on fcntl() and a constructor for struct flock.
  *

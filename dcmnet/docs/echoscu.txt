@@ -38,7 +38,7 @@ network options:
     -ppc  --propose-pc  [n]umber: integer (1..128)
                         propose n presentation contexts
   other network options:
-    -pdu  --max-pdu     [n]umber of bytes: integer [8192..65536]
+    -pdu  --max-pdu     [n]umber of bytes: integer [4096..131072]
                         set max receive pdu to n bytes (default: 16384)
           --repeat      [n]umber: integer
                         repeat n times

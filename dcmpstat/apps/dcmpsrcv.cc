@@ -21,10 +21,10 @@
  *
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-05-05 14:23:56 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-09-06 13:29:48 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsrcv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -728,7 +728,7 @@ int main(int argc, char *argv[])
 #endif
 
     if (networkMaxPDU==0) networkMaxPDU = DEFAULT_MAXPDU;
-    else if (networkMaxPDU > 65536)
+    else if (networkMaxPDU > ASC_MAXIMUMPDUSIZE)
     {
         cerr << "warning: max PDU size " << networkMaxPDU << " too big, using default: " << DEFAULT_MAXPDU << endl;
         networkMaxPDU = DEFAULT_MAXPDU;
@@ -900,7 +900,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsrcv.cc,v $
- * Revision 1.9  1999-05-05 14:23:56  joergr
+ * Revision 1.10  1999-09-06 13:29:48  meichel
+ * Enhanced max receive PDU range to 4-128K.
+ *
+ * Revision 1.9  1999/05/05 14:23:56  joergr
  * Modified parameter of CreateProcess call to avoid creation of new command
  * line window under Windows.
  *

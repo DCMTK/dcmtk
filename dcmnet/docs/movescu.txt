@@ -68,7 +68,7 @@ network options:
   other network options:
     +P    --port                 [n]umber: integer (default: 104)
                                  port number for incoming associations
-    -pdu  --max-pdu              [n]umber of bytes: integer [8192..65536]
+    -pdu  --max-pdu              [n]umber of bytes: integer [4096..131072]
                                  set max receive pdu to n bytes (default: 16384)
           --repeat               [n]umber: integer
                                  repeat n times
