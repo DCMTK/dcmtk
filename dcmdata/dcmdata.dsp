@@ -9,22 +9,22 @@ CFG=dcmdata - Win32 Debug
  NMAKE
 !MESSAGE verwenden Sie den Befehl "Makefile exportieren" und führen Sie den\
  Befehl
-!MESSAGE
+!MESSAGE 
 !MESSAGE NMAKE /f "dcmdata.mak".
-!MESSAGE
+!MESSAGE 
 !MESSAGE Sie können beim Ausführen von NMAKE eine Konfiguration angeben
 !MESSAGE durch Definieren des Makros CFG in der Befehlszeile. Zum Beispiel:
-!MESSAGE
+!MESSAGE 
 !MESSAGE NMAKE /f "dcmdata.mak" CFG="dcmdata - Win32 Debug"
-!MESSAGE
+!MESSAGE 
 !MESSAGE Für die Konfiguration stehen zur Auswahl:
-!MESSAGE
+!MESSAGE 
 !MESSAGE "dcmdata - Win32 Release" (basierend auf\
   "Win32 (x86) Static Library")
 !MESSAGE "dcmdata - Win32 Debug" (basierend auf  "Win32 (x86) Static Library")
 !MESSAGE "dcmdata - Win32 Release OpenSSL" (basierend auf\
   "Win32 (x86) Static Library")
-!MESSAGE
+!MESSAGE 
 
 # Begin Project
 # PROP Scc_ProjName ""
@@ -44,7 +44,7 @@ CPP=cl.exe
 # PROP Intermediate_Dir "Release"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GX /O2 /I "include" /I "..\ofstd\include" /I "..\config\include" /D "_WINDOWS" /D "WIN32" /D "NDEBUG" /D "_REENTRANT" /YX /FD /c
+# ADD CPP /nologo /MT /W3 /GX /O2 /I "include" /I "..\ofstd\include" /I "..\config\include" /I "..\..\zlib-1.1.4\include" /D "_WINDOWS" /D "WIN32" /D "NDEBUG" /D "_REENTRANT" /YX /FD /c
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -65,7 +65,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "Debug"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /Z7 /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /FD /c
-# ADD CPP /nologo /MTd /W3 /GX /Z7 /Od /I "include" /I "..\ofstd\include" /I "..\config\include" /D "_WINDOWS" /D "WIN32" /D "_DEBUG" /D "DEBUG" /D "_REENTRANT" /YX /FD /c
+# ADD CPP /nologo /MTd /W3 /GX /Z7 /Od /I "include" /I "..\ofstd\include" /I "..\config\include" /I "..\..\zlib-1.1.4\include" /D "_WINDOWS" /D "WIN32" /D "_DEBUG" /D "DEBUG" /D "_REENTRANT" /YX /FD /c
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -85,8 +85,8 @@ LIB32=link.exe -lib
 # PROP Output_Dir "OpenSSL"
 # PROP Intermediate_Dir "OpenSSL"
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MT /W3 /GX /O2 /I "include" /I "..\ofstd\include" /I "..\config\include" /D "_WINDOWS" /D "WIN32" /D "NDEBUG" /D "_REENTRANT" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GX /O2 /I "include" /I "..\ofstd\include" /I "..\config\include" /D "_WINDOWS" /D "WIN32" /D "NDEBUG" /D "_REENTRANT" /D "WITH_OPENSSL" /YX /FD /c
+# ADD BASE CPP /nologo /MT /W3 /GX /O2 /I "include" /I "..\ofstd\include" /I "..\config\include" /I "..\..\zlib-1.1.4\include" /D "_WINDOWS" /D "WIN32" /D "NDEBUG" /D "_REENTRANT" /YX /FD /c
+# ADD CPP /nologo /MT /W3 /GX /O2 /I "include" /I "..\ofstd\include" /I "..\config\include" /I "..\..\zlib-1.1.4\include" /D "_WINDOWS" /D "WIN32" /D "NDEBUG" /D "_REENTRANT" /D "WITH_OPENSSL" /YX /FD /c
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -94,7 +94,7 @@ LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
 # ADD LIB32 /nologo
 
-!ENDIF
+!ENDIF 
 
 # Begin Target
 
@@ -104,10 +104,6 @@ LIB32=link.exe -lib
 # Begin Source File
 
 SOURCE=.\libsrc\cmdlnarg.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=.\libsrc\dcbuf.cxx
 # End Source File
 # Begin Source File
 
@@ -167,6 +163,22 @@ SOURCE=.\libsrc\dchashdi.cxx
 # End Source File
 # Begin Source File
 
+SOURCE=.\libsrc\dcistrma.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=.\libsrc\dcistrmb.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=.\libsrc\dcistrmf.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=.\libsrc\dcistrmz.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=.\libsrc\dcitem.cxx
 # End Source File
 # Begin Source File
@@ -180,6 +192,22 @@ SOURCE=.\libsrc\dcmetinf.cxx
 # Begin Source File
 
 SOURCE=.\libsrc\dcobject.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=.\libsrc\dcostrma.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=.\libsrc\dcostrmb.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=.\libsrc\dcostrmf.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=.\libsrc\dcostrmz.cxx
 # End Source File
 # Begin Source File
 
@@ -228,10 +256,6 @@ SOURCE=.\libsrc\dcsequen.cxx
 # Begin Source File
 
 SOURCE=.\libsrc\dcstack.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=.\libsrc\dcstream.cxx
 # End Source File
 # Begin Source File
 
