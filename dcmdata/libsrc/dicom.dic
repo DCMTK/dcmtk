@@ -2,9 +2,18 @@
 # This is the global DICOM data dictionary for the dcm toolkit dcmdata
 # class library.
 #
+# Last update: $Date: 1998-07-28 15:52:11 $
+#
+# Status: The dictionary contains
+#   - the complete dictionary from the 1996 DICOM publication
+#     which already includes supplements 1-10
+#   - the final texts (if any) of supplement 11-14, 16-22, 24-28, 34
+#   - the letter ballot texts of supplement 32, 35-39
+#   - working drafts of supplement 15, 23, 29-30
+#
 # Each line represents an entry in the data dictionary.  Each line
 # has 5 fields (Tag, VR, Name, VM, Version).  Entries need not be
-# in assending tag order.
+# in ascending tag order.
 #
 # Entries may override existing entries.
 #
@@ -98,6 +107,7 @@
 (0004,1600)	UL	NumberOfReferences	1	DICOM3
 (0008,0000)	UL	IdentifyingGroupLength	1	DICOM3
 (0008,0001)	UL	IdentifyingGroupLengthToEnd	1	ACR/NEMA2
+# VM of SpecificCharacterSet was 1 in DICOM93. Changed in Supplement 9.
 (0008,0005)	CS	SpecificCharacterSet	1-n	DICOM3
 (0008,0008)	CS	ImageType	1-n	DICOM3
 (0008,0010)	CS	RecognitionCode	1	ACR/NEMA2
@@ -143,10 +153,11 @@
 (0008,1032)	SQ	ProcedureCodeSequence	1	DICOM3
 (0008,103E)	LO	SeriesDescription	1	DICOM3
 (0008,1040)	LO	InstitutionalDepartmentName	1	DICOM3
+(0008,1048)	PN	PhysiciansOfRecord	1-n	DICOM3
 (0008,1050)	PN	PerformingPhysiciansName	1-n	DICOM3
 (0008,1060)	PN	NameOfPhysiciansReadingStudy	1-n	DICOM3
 (0008,1070)	PN	OperatorsName	1-n	DICOM3
-(0008,1080)	LO	AdmittingDiagnosisDescription	1-n	DICOM3
+(0008,1080)	LO	AdmittingDiagnosesDescription	1-n	DICOM3
 (0008,1084)	SQ	AdmittingDiagnosisCodeSequence	1	DICOM3
 (0008,1090)	LO	ManufacturerModelName	1	DICOM3
 (0008,1100)	SQ	ReferencedResultsSequence	1	DICOM3
@@ -165,6 +176,7 @@
 (0008,1197)	US	FailureReason	1	DICOM3
 (0008,1198)	SQ	FailedSOPSequence	1	DICOM3
 (0008,1199)	SQ	ReferencedSOPSequence	1	DICOM3
+(0008,2110)	CS	RetiredLossyImageCompression	1	DICOM3
 (0008,2111)	ST	DerivationDescription	1	DICOM3
 (0008,2112)	SQ	SourceImageSequence	1	DICOM3
 (0008,2120)	SH	StageName	1	DICOM3
@@ -178,9 +190,17 @@
 (0008,2142)	IS	StartTrim	1	DICOM3
 (0008,2143)	IS	StopTrim	1	DICOM3
 (0008,2144)	IS	RecommendedDisplayFrameRate	1	DICOM3
-(0008,2200)	CS	TransducerPosition	1	DICOM3
-(0008,2204)	CS	TransducerOrientation	1	DICOM3
-(0008,2208)	CS	AnatomicStructure	1	DICOM3
+(0008,2200)	CS	TransducerPosition	1	DICOM93
+(0008,2204)	CS	TransducerOrientation	1	DICOM93
+(0008,2208)	CS	AnatomicStructure	1	DICOM93
+(0008,2218)	SQ	AnatomicRegionSequence	1	DICOM3
+(0008,2220)	SQ	AnatomicRegionModifierSequence	1	DICOM3
+(0008,2228)	SQ	PrimaryAnatomicStructureSequence	1	DICOM3
+(0008,2230)	SQ	PrimaryAnatomicStructureModifierSequence	1	DICOM3
+(0008,2240)	SQ	TransducerPositionSequence	1	DICOM3
+(0008,2242)	SQ	TransducerPositionModifierSequence	1	DICOM3
+(0008,2244)	SQ	TransducerOrientationSequence	1	DICOM3
+(0008,2246)	SQ	TransducerOrientationModifierSequence	1	DICOM3
 (0008,4000)	LT	IdentifyingComments	1-n	ACR/NEMA2
 (0010,0000)	UL	PatientGroupLength	1	DICOM3
 (0010,0010)	PN	PatientName	1	DICOM3
@@ -217,6 +237,8 @@
 (0010,4000)	LT	PatientComments	1	DICOM3
 (0018,0000)	UL	AcquisitionGroupLength	1	DICOM3
 (0018,0010)	LO	ContrastBolusAgent	1	DICOM3
+(0018,0012)	SQ	ContrastBolusAgentSequence	1	DICOM3
+(0018,0014)	SQ	ContrastBolusAdministrationRouteSequence	1	DICOM3
 (0018,0015)	CS	BodyPartExamined	1	DICOM3
 (0018,0020)	CS	ScanningSequence	1-n	DICOM3
 (0018,0021)	CS	SequenceVariant	1-n	DICOM3
@@ -224,18 +246,28 @@
 (0018,0023)	CS	MRAcquisitionType	1	DICOM3
 (0018,0024)	SH	SequenceName	1	DICOM3
 (0018,0025)	CS	AngioFlag	1	DICOM3
-(0018,0030)	LO	Radionuclide	1-n	DICOM3
-(0018,0031)	LO	Radiopharmaceutical	1-n	DICOM3
-(0018,0032)	DS	EnergyWindowCenterline	1	DICOM3
-(0018,0033)	DS	EnergyWindowTotalWidth	1-n	DICOM3
+(0018,0026)	SQ	InterventionDrugInformationSequence	1	DICOM3
+(0018,0027)	TM	InterventionDrugStopTime	1	DICOM3
+(0018,0028)	DS	InterventionDrugDose	1	DICOM3
+(0018,0029)	SQ	InterventionDrugCodeSequence	1	DICOM3
+(0018,002A)	SQ	AdditionalDrugSequence	1	DICOM3
+(0018,0030)	LO	Radionuclide	1-n	DICOM93
+# VM of Radiopharmaceutical was 1-n in DICOM93. Changed in Supplement 7.
+(0018,0031)	LO	Radiopharmaceutical	1	DICOM3
+(0018,0032)	DS	EnergyWindowCenterline	1	DICOM93
+(0018,0033)	DS	EnergyWindowTotalWidth	1-n	DICOM93
 (0018,0034)	LO	InterventionDrugName	1	DICOM3
 (0018,0035)	TM	InterventionDrugStartTime	1	DICOM3
+(0018,0036)	SQ	InterventionalTherapySequence	1	DICOM3
+(0018,0037)	CS	TherapyType	1	DICOM3
+(0018,0038)	CS	InterventionalStatus	1	DICOM3
+(0018,0039)	CS	TherapyDescription	1	DICOM3
 (0018,0040)	IS	CineRate	1	DICOM3
 (0018,0050)	DS	SliceThickness	1	DICOM3
 (0018,0060)	DS	KVP	1	DICOM3
 (0018,0070)	IS	CountsAccumulated	1	DICOM3
 (0018,0071)	CS	AcquisitionTerminationCondition	1	DICOM3
-(0018,0072)	DS	EffectiveDuration	1	DICOM3
+(0018,0072)	DS	EffectiveSeriesDuration	1	DICOM3
 (0018,0080)	DS	RepetitionTime	1	DICOM3
 (0018,0081)	DS	EchoTime	1	DICOM3
 (0018,0082)	DS	InversionTime	1	DICOM3
@@ -268,7 +300,12 @@
 (0018,1042)	TM	ContrastBolusStartTime	1	DICOM3
 (0018,1043)	TM	ContrastBolusStopTime	1	DICOM3
 (0018,1044)	DS	ContrastBolusTotalDose	1	DICOM3
-(0018,1045)	IS	SyringeCounts	1-n	DICOM3
+# VM of SyringeCounts was 1-n in DICOM93. Changed in Supplement 7.
+(0018,1045)	IS	SyringeCounts	1	DICOM3
+(0018,1046)	DS	ContrastFlowRate	1-n	DICOM3
+(0018,1047)	DS	ContrastFlowDuration	1-n	DICOM3
+(0018,1048)	CS	ContrastBolusIngredient	1	DICOM3
+(0018,1049)	DS	ContrastBolusIngredientConcentration	1	DICOM3
 (0018,1050)	DS	SpatialResolution	1	DICOM3
 (0018,1060)	DS	TriggerTime	1	DICOM3
 (0018,1061)	LO	TriggerSourceOrType	1	DICOM3
@@ -277,11 +314,13 @@
 (0018,1064)	LO	FramingType	1	DICOM3
 (0018,1065)	DS	FrameTimeVector	1-n	DICOM3
 (0018,1066)	DS	FrameDelay	1	DICOM3
-(0018,1070)	LO	RadionuclideRoute	1-n	DICOM3
-(0018,1071)	DS	RadionuclideVolume	1-n	DICOM3
-(0018,1072)	TM	RadionuclideStartTime	1-n	DICOM3
-(0018,1073)	TM	RadionuclideStopTime	1-n	DICOM3
-(0018,1074)	DS	RadionuclideTotalDose	1-n	DICOM3
+# VM for (0018,1070-1074) was 1-n in DICOM93. Changed in Supplement 7.
+(0018,1070)	LO	RadiopharmaceuticalRoute	1	DICOM3
+(0018,1071)	DS	RadiopharmaceuticalVolume	1	DICOM3
+(0018,1072)	TM	RadiopharmaceuticalStartTime	1	DICOM3
+(0018,1073)	TM	RadiopharmaceuticalStopTime	1	DICOM3
+# VM of RadionuclideTotalDose was 1-n in DICOM93. Changed in Supplement 7.
+(0018,1074)	DS	RadionuclideTotalDose	1	DICOM3
 (0018,1080)	CS	BeatRejectionFlag	1	DICOM3
 (0018,1081)	IS	LowRRValue	1	DICOM3
 (0018,1082)	IS	HighRRValue	1	DICOM3
@@ -295,28 +334,43 @@
 (0018,1100)	DS	ReconstructionDiameter	1	DICOM3
 (0018,1110)	DS	DistanceSourceToDetector	1	DICOM3
 (0018,1111)	DS	DistanceSourceToPatient	1	DICOM3
+(0018,1114)	DS	EstimatedRadiographicMagnificationFactor	1	DICOM3
 (0018,1120)	DS	GantryDetectorTilt	1	DICOM3
 (0018,1130)	DS	TableHeight	1	DICOM3
 (0018,1131)	DS	TableTraverse	1	DICOM3
+(0018,1134)	CS	TableMotion	1	DICOM3
+(0018,1135)	DS	TableVerticalIncrement	1-n	DICOM3
+(0018,1136)	DS	TableLateralIncrement	1-n	DICOM3
+(0018,1137)	DS	TableLongitudinalIncrement	1-n	DICOM3
+(0018,1138)	DS	TableAngle	1	DICOM3
 (0018,1140)	CS	RotationDirection	1	DICOM3
 (0018,1141)	DS	AngularPosition	1	DICOM3
 (0018,1142)	DS	RadialPosition	1-n	DICOM3
 (0018,1143)	DS	ScanArc	1	DICOM3
 (0018,1144)	DS	AngularStep	1	DICOM3
 (0018,1145)	DS	CenterOfRotationOffset	1	DICOM3
-(0018,1146)	DS	RotationOffset	1-n	DICOM3
+(0018,1146)	DS	RotationOffset	1-n	DICOM93
 (0018,1147)	CS	FieldOfViewShape	1	DICOM3
 (0018,1149)	IS	FieldOfViewDimension	1-2	DICOM3
 (0018,1150)	IS	ExposureTime	1	DICOM3
 (0018,1151)	IS	XRayTubeCurrent	1	DICOM3
 (0018,1152)	IS	Exposure	1	DICOM3
+(0018,1154)	DS	AveragePulseWidth	1	DICOM3
+(0018,1155)	CS	RadiationSetting	1	DICOM3
+(0018,115A)	CS	RadiationMode	1	DICOM3
+(0018,115E)	DS	ImageAreaDoseProduct	1	DICOM3
 (0018,1160)	SH	FilterType	1	DICOM3
+(0018,1161)	LO	TypeOfFilters	1-n	DICOM3
+(0018,1162)	DS	IntensifierSize	1	DICOM3
+(0018,1164)	DS	ImagerPixelSpacing	2	DICOM3
+(0018,1166)	CS	Grid	1	DICOM3
 (0018,1170)	IS	GeneratorPower	1	DICOM3
 (0018,1180)	SH	CollimatorGridName	1	DICOM3
 (0018,1181)	CS	CollimatorType	1	DICOM3
-(0018,1182)	IS	FocalDistance	1	DICOM3
-(0018,1183)	DS	XFocusCenter	1	DICOM3
-(0018,1184)	DS	YFocusCenter	1	DICOM3
+# VM for (0018,1182-1184) was 1 in DICOM93. Changed in Supplement 7.
+(0018,1182)	IS	FocalDistance	1-2	DICOM3
+(0018,1183)	DS	XFocusCenter	1-2	DICOM3
+(0018,1184)	DS	YFocusCenter	1-2	DICOM3
 (0018,1190)	DS	FocalSpot	1-n	DICOM3
 (0018,1200)	DA	DateOfLastCalibration	1-n	DICOM3
 (0018,1201)	TM	TimeOfLastCalibration	1-n	DICOM3
@@ -324,11 +378,13 @@
 (0018,1240)	IS	UpperLowerPixelValues	1-n	ACR/NEMA2
 (0018,1242)	IS	ActualFrameDuration	1	DICOM3
 (0018,1243)	IS	CountRate	1	DICOM3
+(0018,1244)	US	PreferredPlaybackSequencing	1	DICOM3
 (0018,1250)	SH	ReceivingCoil	1	DICOM3
 (0018,1251)	SH	TransmittingCoil	1	DICOM3
 (0018,1260)	SH	PlateType	1	DICOM3
 (0018,1261)	LO	PhosphorType	1	DICOM3
-(0018,1300)	IS	ScanVelocity	1	DICOM3
+# VR for ScanVelocity was IS in DICOM93. Changed in Supplement 7.
+(0018,1300)	DS	ScanVelocity	1	DICOM3
 (0018,1301)	CS	WholeBodyTechnique	1-n	DICOM3
 (0018,1302)	IS	ScanLength	1	DICOM3
 (0018,1310)	US	AcquisitionMatrix	4	DICOM3
@@ -343,18 +399,48 @@
 (0018,1403)	CS	CassetteSize	1	DICOM3
 (0018,1404)	US	ExposuresOnPlate	1	DICOM3
 (0018,1405)	IS	RelativeXrayExposure	1	DICOM3
+(0018,1450)	CS	ColumnAngulation	1	DICOM3
+(0018,1460)	DS	TomoLayerHeight	1	DICOM3
+(0018,1470)	DS	TomoAngle	1	DICOM3
+(0018,1480)	DS	TomoTime	1	DICOM3
+(0018,1500)	CS	PositionerMotion	1	DICOM3
+(0018,1510)	DS	PositionerPrimaryAngle	1	DICOM3
+(0018,1511)	DS	PositionerSecondaryAngle	1	DICOM3
+(0018,1520)	DS	PositionerPrimaryAngleIncrement	1-n	DICOM3
+(0018,1521)	DS	PositionerSecondaryAngleIncrement	1-n	DICOM3
+(0018,1530)	DS	DetectorPrimaryAngle	1	DICOM3
+(0018,1531)	DS	DetectorSecondaryAngle	1	DICOM3
+# VM for ShutterShape was 1 in DICOM93. Changed in Supplement 7.
+(0018,1600)	CS	ShutterShape	1-3	DICOM3
+(0018,1602)	IS	ShutterLeftVerticalEdge	1	DICOM3
+(0018,1604)	IS	ShutterRightVerticalEdge	1	DICOM3
+(0018,1606)	IS	ShutterUpperHorizontalEdge	1	DICOM3
+(0018,1608)	IS	ShutterLowerHorizontalEdge	1	DICOM3
+(0018,1610)	IS	CenterOfCircularShutter	2	DICOM3
+(0018,1612)	IS	RadiusOfCircularShutter	1	DICOM3
+(0018,1620)	IS	VerticesOfThePolygonalShutter	2-2n	DICOM3
+(0018,1700)	CS	CollimatorShape	1-3	DICOM3
+(0018,1702)	IS	CollimatorLeftVerticalEdge	1	DICOM3
+(0018,1704)	IS	CollimatorRightVerticalEdge	1	DICOM3
+(0018,1706)	IS	CollimatorUpperHorizontalEdge	1	DICOM3
+(0018,1708)	IS	CollimatorLowerHorizontalEdge	1	DICOM3
+(0018,1710)	IS	CenterOfCircularCollimator	2	DICOM3
+(0018,1712)	IS	RadiusOfCircularCollimator	1	DICOM3
+(0018,1720)	IS	VerticesOfThePolygonalCollimator	2-2n	DICOM3
 (0018,4000)	LT	AcquisitionComments	1-n	ACR/NEMA2
 (0018,5000)	SH	OutputPower	1-n	DICOM3
 (0018,5010)	LO	TransducerData	3	DICOM3
 (0018,5012)	DS	FocusDepth	1	DICOM3
-(0018,5020)	LO	PreprocessingFunction	1	DICOM3
+(0018,5020)	LO	ProcessingFunction	1	DICOM3
 (0018,5021)	LO	PostprocessingFunction	1	DICOM3
 (0018,5022)	DS	MechanicalIndex	1	DICOM3
-(0018,5024)	DS	BoneThermalIndex	1	DICOM3
+(0018,5024)	DS	ThermalIndex	1	DICOM3
 (0018,5026)	DS	CranialThermalIndex	1	DICOM3
 (0018,5027)	DS	SoftTissueThermalIndex	1	DICOM3
 (0018,5028)	DS	SoftTissueFocusThermalIndex	1	DICOM3
 (0018,5029)	DS	SoftTissueSurfaceThermalIndex	1	DICOM3
+(0018,5030)	IS	DynamicRange	1	DICOM93
+(0018,5040)	IS	TotalGain	1	DICOM93
 (0018,5050)	IS	DepthOfScanField	1	DICOM3
 (0018,5100)	CS	PatientPosition	1	DICOM3
 (0018,5101)	CS	ViewPosition	1	DICOM3
@@ -397,6 +483,9 @@
 (0018,6050)	UL	NumberOfTableBreakPoints	1	DICOM3
 (0018,6052)	UL	TableOfXBreakPoints	1-n	DICOM3
 (0018,6054)	FD	TableOfYBreakPoints	1-n	DICOM3
+(0018,6056)	UL	NumberOfTableEntries	1	DICOM3
+(0018,6058)	UL	TableOfPixelValues	1-n	DICOM3
+(0018,605A)	FL	TableOfParameterValues	1-n	DICOM3
 (0020,0000)	UL	ImageGroupLength	1	DICOM3
 (0020,000D)	UI	StudyInstanceUID	1	DICOM3
 (0020,000E)	UI	SeriesInstanceUID	1	DICOM3
@@ -404,11 +493,11 @@
 (0020,0011)	IS	SeriesNumber	1	DICOM3
 (0020,0012)	IS	AcquisitionNumber	1	DICOM3
 (0020,0013)	IS	ImageNumber	1	DICOM3
-(0020,0014)	IS	IsotopeNumber	1	DICOM3
-(0020,0015)	IS	PhaseNumber	1	DICOM3
-(0020,0016)	IS	IntervalNumber	1	DICOM3
-(0020,0017)	IS	TimeSlotNumber	1	DICOM3
-(0020,0018)	IS	AngleNumber	1	DICOM3
+(0020,0014)	IS	IsotopeNumber	1	DICOM93
+(0020,0015)	IS	PhaseNumber	1	DICOM93
+(0020,0016)	IS	IntervalNumber	1	DICOM93
+(0020,0017)	IS	TimeSlotNumber	1	DICOM93
+(0020,0018)	IS	AngleNumber	1	DICOM93
 (0020,0020)	CS	PatientOrientation	2	DICOM3
 (0020,0022)	IS	OverlayNumber	1	DICOM3
 (0020,0024)	IS	CurveNumber	1	DICOM3
@@ -440,7 +529,7 @@
 (0020,1204)	IS	NumberOfPatientRelatedImages	1	DICOM3
 (0020,1206)	IS	NumberOfStudyRelatedSeries	1	DICOM3
 (0020,1208)	IS	NumberOfStudyRelatedImages	1	DICOM3
-(0020,3100)	CS	SourceImageID	1-n	ACR/NEMA2
+(0020,3100-31FF)	CS	SourceImageID	1-n	ACR/NEMA2
 (0020,3401)	CS	ModifyingDeviceID	1	ACR/NEMA2
 (0020,3402)	CS	ModifiedImageID	1	ACR/NEMA2
 (0020,3403)	DA	ModifiedImageDate	1	ACR/NEMA2
@@ -456,16 +545,20 @@
 (0028,0005)	US	ImageDimensions	1	ACR/NEMA2
 (0028,0006)	US	PlanarConfiguration	1	DICOM3
 (0028,0008)	IS	NumberOfFrames	1	DICOM3
-(0028,0009)	AT	FrameIncrementPointer	1	DICOM3
+# VM of FrameIncrementPointer was 1 in DICOM93. Changed in Supplement 7.
+(0028,0009)	AT	FrameIncrementPointer	1-n	DICOM3
 (0028,0010)	US	Rows	1	DICOM3
 (0028,0011)	US	Columns	1	DICOM3
+(0028,0012)	US	Planes	1	DICOM3
+(0028,0014)	US	UltrasoundColorDataPresent	1	DICOM3
 (0028,0030)	DS	PixelSpacing	2	DICOM3
 (0028,0031)	DS	ZoomFactor	2	DICOM3
 (0028,0032)	DS	ZoomCenter	2	DICOM3
 (0028,0034)	IS	PixelAspectRatio	2	DICOM3
 (0028,0040)	CS	ImageFormat	1	ACR/NEMA2
 (0028,0050)	LT	ManipulatedImage	1-n	ACR/NEMA2
-(0028,0051)	CS	CorrectedImage	1	DICOM3
+# VM of CorrectedImage was 1 in DICOM93. Changed in Supplement 7.
+(0028,0051)	CS	CorrectedImage	1-n	DICOM3
 (0028,005F)	CS	CompressionRecognitionCode	1	ACR/NEMA2C
 (0028,0060)	CS	CompressionCode	1	ACR/NEMA2
 (0028,0061)	SH	CompressionOriginator	1	ACR/NEMA2C
@@ -495,6 +588,8 @@
 (0028,0107)	xs	LargestImagePixelValue	1	DICOM3
 (0028,0108)	xs	SmallestPixelValueInSeries	1	DICOM3
 (0028,0109)	xs	LargestPixelValueInSeries	1	DICOM3
+(0028,0110)	xs	SmallestImagePixelValueInPlane	1	DICOM3
+(0028,0111)	xs	LargestImagePixelValueInPlane	1	DICOM3
 (0028,0120)	xs	PixelPaddingValue	1	DICOM3
 (0028,0200)	US	ImageLocation	1	ACR/NEMA2
 (0028,0400)	CS	TransformLabel	1	ACR/NEMA2C
@@ -520,6 +615,7 @@
 (0028,0803)	AT	CodeTableLocation	1-n	ACR/NEMA2C
 (0028,0804)	US	BitsForCodeWord	1	ACR/NEMA2C
 (0028,0808)	AT	ImageDataLocation	1-n	ACR/NEMA2C
+(0028,1040)	CS	PixelIntensityRelationship	1	DICOM3
 (0028,1050)	DS	WindowCenter	1-n	DICOM3
 (0028,1051)	DS	WindowWidth	1-n	DICOM3
 (0028,1052)	DS	RescaleIntercept	1	DICOM3
@@ -527,14 +623,21 @@
 (0028,1054)	LO	RescaleType	1	DICOM3
 (0028,1055)	LO	WindowCenterWidthExplanation	1-n	DICOM3
 (0028,1080)	CS	GrayScale	1	ACR/NEMA2
+(0028,1090)	CS	RecommendedViewingMode	1	DICOM3
 (0028,1100)	xs	GrayLookupTableDescriptor	3	ACR/NEMA2
 (0028,1101)	xs	RedPaletteColorLookupTableDescriptor	3	DICOM3
 (0028,1102)	xs	GreenPaletteColorLookupTableDescriptor	3	DICOM3
 (0028,1103)	xs	BluePaletteColorLookupTableDescriptor	3	DICOM3
+(0028,1199)	UI	PaletteColorLookupTableUID	1	DICOM3
 (0028,1200)	xs	GrayLookupTableData	1-n	ACR/NEMA2
-(0028,1201)	xs	RedPaletteColorLookupTableData	1-n	DICOM3
-(0028,1202)	xs	GreenPaletteColorLookupTableData	1-n	DICOM3
-(0028,1203)	xs	BluePaletteColorLookupTableData	1-n	DICOM3
+# VR for (0028,1201-1203) was "US or SS" with VM=1-n in DICOM93. Changed in Supplement 5.
+(0028,1201)	OW	RedPaletteColorLookupTableData	1	DICOM3
+(0028,1202)	OW	GreenPaletteColorLookupTableData	1	DICOM3
+(0028,1203)	OW	BluePaletteColorLookupTableData	1	DICOM3
+(0028,1221)	OW	SegmentedRedPaletteColorLookupTableData	1	DICOM3
+(0028,1222)	OW	SegmentedGreenPaletteColorLookupTableData	1	DICOM3
+(0028,1223)	OW	SegmentedBluePaletteColorLookupTableData	1	DICOM3
+(0028,2110)	CS	LossyImageCompression	1	DICOM3
 (0028,3000)	SQ	ModalityLUTSequence	1	DICOM3
 (0028,3002)	xs	LUTDescriptor	3	DICOM3
 (0028,3003)	LO	LUTExplanation	1	DICOM3
@@ -542,6 +645,20 @@
 (0028,3006)	xs	LUTData	1-n	DICOM3
 (0028,3010)	SQ	VOILUTSequence	1	DICOM3
 (0028,4000)	LT	ImagePresentationComments	1-n	ACR/NEMA2
+(0028,5000)	SQ	BiPlaneAcquisitionSequence	1	DICOM3
+(0028,6010)	US	RepresentativeFrameNumber	1	DICOM3
+(0028,6020)	US	FrameNumbersOfInterestFOI	1-n	DICOM3
+(0028,6022)	LO	FrameOfInterestDescription	1-n	DICOM3
+(0028,6030)	US	MaskPointers	1-n	DICOM3
+(0028,6040)	US	RWavePointer	1-n	DICOM3
+(0028,6100)	SQ	MaskSubtractionSequence	1	DICOM3
+(0028,6101)	CS	MaskOperation	1	DICOM3
+(0028,6102)	US	ApplicableFrameRange	2-2n	DICOM3
+(0028,6110)	US	MaskFrameNumbers	1-n	DICOM3
+(0028,6112)	US	ContrastFrameAveraging	1	DICOM3
+(0028,6114)	FL	MaskSubPixelShift	2	DICOM3
+(0028,6120)	SS	TIDOffset	1	DICOM3
+(0028,6190)	ST	MaskOperationExplanation	1	DICOM3
 (0032,0000)	UL	StudyGroupLength	1	DICOM3
 (0032,000A)	CS	StudyStatusID	1	DICOM3
 (0032,000C)	CS	StudyPriorityID	1	DICOM3
@@ -626,6 +743,67 @@
 (0040,2010)	SH	OrderCallbackPhoneNumber	1	DICOM3
 (0040,2400)	LT	ImagingServiceRequestComments	1	DICOM3
 (0040,3001)	LO	ConfidentialityConstraintOnPatientData	1	DICOM3
+(0050,0000)	UL	XRayAngioDeviceGroupLength	1	DICOM3
+(0050,0004)	CS	CalibrationObject	1	DICOM3
+(0050,0010)	SQ	DeviceSequence	1	DICOM3
+(0050,0014)	DS	DeviceLength	1	DICOM3
+(0050,0016)	DS	DeviceDiameter	1	DICOM3
+(0050,0017)	CS	DeviceDiameterUnits	1	DICOM3
+(0050,0018)	DS	DeviceVolume	1	DICOM3
+(0050,0019)	DS	InterMarkerDistance	1	DICOM3
+(0050,0020)	LO	DeviceDescription	1	DICOM3
+(0054,0000)	UL	GroupLength	1	DICOM3
+(0054,0010)	US	EnergyWindowVector	1-n	DICOM3
+(0054,0011)	US	NumberOfEnergyWindows	1	DICOM3
+(0054,0012)	SQ	EnergyWindowInformationSequence	1	DICOM3
+(0054,0013)	SQ	EnergyWindowRangeSequence	1	DICOM3
+(0054,0014)	DS	EnergyWindowLowerLimit	1	DICOM3
+(0054,0015)	DS	EnergyWindowUpperLimit	1	DICOM3
+(0054,0016)	SQ	RadiopharmaceuticalInformationSequence	1	DICOM3
+(0054,0017)	IS	ResidualSyringeCounts	1	DICOM3
+(0054,0018)	SH	EnergyWindowName	1	DICOM3
+(0054,0020)	US	DetectorVector	1-n	DICOM3
+(0054,0021)	US	NumberOfDetectors	1	DICOM3
+(0054,0022)	SQ	DetectorInformationSequence	1	DICOM3
+(0054,0030)	US	PhaseVector	1-n	DICOM3
+(0054,0031)	US	NumberOfPhases	1	DICOM3
+(0054,0032)	SQ	PhaseInformationSequence	1	DICOM3
+(0054,0033)	US	NumberOfFramesInPhase	1	DICOM3
+(0054,0036)	IS	PhaseDelay	1	DICOM3
+(0054,0038)	IS	PauseBetweenFrames	1	DICOM3
+(0054,0050)	US	RotationVector	1-n	DICOM3
+(0054,0051)	US	NumberOfRotations	1	DICOM3
+(0054,0052)	SQ	RotationInformationSequence	1	DICOM3
+(0054,0053)	US	NumberOfFramesInRotation	1	DICOM3
+(0054,0060)	US	RRIntervalVector	1-n	DICOM3
+(0054,0061)	US	NumberOfRRIntervals	1	DICOM3
+(0054,0062)	SQ	GatedInformationSequence	1	DICOM3
+(0054,0063)	SQ	DataInformationSequence	1	DICOM3
+(0054,0070)	US	TimeSlotVector	1-n	DICOM3
+(0054,0071)	US	NumberOfTimeSlots	1	DICOM3
+(0054,0072)	SQ	TimeSlotInformationSequence	1	DICOM3
+(0054,0073)	DS	TimeSlotTime	1	DICOM3
+(0054,0080)	US	SliceVector	1-n	DICOM3
+(0054,0081)	US	NumberOfSlices	1	DICOM3
+(0054,0090)	US	AngularViewVector	1-n	DICOM3
+(0054,0100)	US	TimeSliceVector	1-n	DICOM3
+(0054,0200)	DS	StartAngle	1	DICOM3
+(0054,0202)	CS	TypeOfDetectorMotion	1	DICOM3
+(0054,0210)	IS	TriggerVector	1-n	DICOM3
+(0054,0211)	US	NumberOfTriggersInPhase	1	DICOM3
+(0054,0220)	SQ	ViewCodeSequence	1	DICOM3
+# renamed from "ViewAngulationModifierCodeSequence" 
+# to "ViewModifierSequence" in Supplement 32.
+(0054,0222)	SQ	ViewModifierSequence	1	DICOM3
+(0054,0300)	SQ	RadionuclideCodeSequence	1	DICOM3
+(0054,0302)	SQ	RadiopharmaceuticalRouteCodeSequence	1	DICOM3
+(0054,0304)	SQ	RadiopharmaceuticalCodeSequence	1	DICOM3
+(0054,0306)	SQ	CalibrationDataSequence	1	DICOM3
+(0054,0308)	US	EnergyWindowNumber	1	DICOM3
+(0054,0400)	SH	ImageID	1	DICOM3
+(0054,0410)	SQ	PatientOrientationCodeSequence	1	DICOM3
+(0054,0412)	SQ	PatientOrientationModifierCodeSequence	1	DICOM3
+(0054,0414)	SQ	PatientGantryRelationshipCodeSequence	1	DICOM3
 (0088,0000)	UL	StorageGroupLength	1	DICOM3
 (0088,0130)	SH	StorageMediaFilesetID	1	DICOM3
 (0088,0140)	UI	StorageMediaFilesetUID	1	DICOM3
@@ -671,8 +849,10 @@
 (2020,0010)	US	ImageBoxPosition	1	DICOM3
 (2020,0020)	CS	Polarity	1	DICOM3
 (2020,0030)	DS	RequestedImageSize	1	DICOM3
-(2020,0110)	SQ	PreformattedGrayscaleImageSequence	1	DICOM3
-(2020,0111)	SQ	PreformattedColorImageSequence	1	DICOM3
+# (2020,0110) and (2020,0111) were renamed from "Preformatted.." to "Basic.."
+# in Supplement 24.
+(2020,0110)	SQ	BasicGrayscaleImageSequence	1	DICOM3
+(2020,0111)	SQ	BasicColorImageSequence	1	DICOM3
 (2020,0130)	SQ	ReferencedImageOverlayBoxSequence	1	DICOM3
 (2020,0140)	SQ	ReferencedVOILUTBoxSequence	1	DICOM3
 (2030,0000)	UL	AnnotationGroupLength	1	DICOM3
@@ -688,7 +868,7 @@
 (2040,0100)	CS	ThresholdDensity	1	DICOM3
 # Attribute (2040,0500) is retired by Correction Proposal 53.
 # It is a duplicate of (2010,0510).
-(2040,0500)	SQ	RETIRED_ReferencedImageBoxSequence	1	DICOM3
+#(2040,0500)	SQ	ReferencedImageBoxSequence	1	DICOM3
 (2100,0000)	UL	PrintJobGroupLength	1	DICOM3
 (2100,0020)	CS	ExecutionStatus	1	DICOM3
 (2100,0030)	CS	ExecutionStatusInfo	1	DICOM3
@@ -722,7 +902,7 @@
 (4008,0113)	TM	InterpretationApprovalTime	1	DICOM3
 (4008,0114)	PN	PhysicianApprovingInterpretation	1	DICOM3
 (4008,0115)	LT	InterpretationDiagnosisDescription	1	DICOM3
-(4008,0117)	SQ	DiagnosisCodeSequence	1	DICOM3
+(4008,0117)	SQ	InterpretationDiagnosisCodeSequence	1	DICOM3
 (4008,0118)	SQ	ResultsDistributionListSequence	1	DICOM3
 (4008,0119)	PN	DistributionName	1	DICOM3
 (4008,011A)	LO	DistributionAddress	1	DICOM3
@@ -743,7 +923,8 @@
 (5000-50ff,0104)	US	MinimumCoordinateValue	1-n	DICOM3
 (5000-50ff,0105)	US	MaximumCoordinateValue	1-n	DICOM3
 (5000-50ff,0106)	SH	CurveRange	1-n	DICOM3
-(5000-50ff,0110)	US	CurveDataDescriptor	1	DICOM3
+# VM for CurveDataDescriptor was 1 in DICOM93.
+(5000-50ff,0110)	US	CurveDataDescriptor	1-n	DICOM3
 (5000-50ff,0112)	US	CoordinateStartValue	1	DICOM3
 (5000-50ff,0114)	US	CoordinateStepValue	1	DICOM3
 (5000-50ff,2000)	US	AudioType	1	DICOM3
@@ -754,18 +935,21 @@
 (5000-50ff,200A)	UL	TotalTime	1	DICOM3
 (5000-50ff,200C)	ox	AudioSampleData	1	DICOM3
 (5000-50ff,200E)	LT	AudioComments	1	DICOM3
-# (50xx,3000) CurveData can have the VR of US, SS, FL, FD or SL as 
-# specified by (50xx,0103) DataValueRepresentation.
-# However, Part 6 defines (50xx,3000) CurveData to have VR=OW/OB.
-# We use the Part 6 defintion here and let the application decide how 
-# to demangle to data.
+(5000-50ff,2500)	LO	CurveLabel	1	DICOM3
+(5000-50ff,2600)	SQ	CurveReferencedOverlaySequence	1	DICOM3
+(5000-50ff,2610)	US	CurveReferencedOverlayGroup	1	DICOM3
 (5000-50ff,3000)	ox	CurveData	1	DICOM3
 (6000-60ff,0000)	UL	OverlayGroupLength	1	DICOM3
 (6000-60ff,0010)	US	OverlayRows	1	DICOM3
 (6000-60ff,0011)	US	OverlayColumns	1	DICOM3
+(6000-60ff,0012)	US	OverlayPlanes	1	DICOM3
 (6000-60ff,0015)	IS	OverlayNumberOfFrames	1	DICOM3
+(6000-60ff,0022)	LO	OverlayDescription	1	DICOM3
 (6000-60ff,0040)	CS	OverlayType	1	DICOM3
+(6000-60ff,0045)	LO	OverlaySubtype	1	DICOM3
 (6000-60ff,0050)	SS	OverlayOrigin	2	DICOM3
+(6000-60ff,0051)	US	ImageFrameOrigin	1	DICOM3
+(6000-60ff,0052)	US	OverlayPlaneOrigin	1	DICOM3
 (6000-60ff,0060)	CS	OverlayCompressionCode	1	ACR/NEMA2
 (6000-60ff,0061)	SH	OverlayCompressionOriginator	1	ACR/NEMA2C
 (6000-60ff,0062)	SH	OverlayCompressionLabel	1	ACR/NEMA2C
@@ -792,6 +976,7 @@
 (6000-60ff,1301)	IS	ROIArea	1	DICOM3
 (6000-60ff,1302)	DS	ROIMean	1	DICOM3
 (6000-60ff,1303)	DS	ROIStandardDeviation	1	DICOM3
+(6000-60ff,1500)	LO	OverlayLabel	1	DICOM3
 (6000-60ff,3000)	OW	OverlayData	1	DICOM3
 (6000-60ff,4000)	LT	OverlayComments	1-n	ACR/NEMA2
 (7F00-7fff,0000)	UL	VariablePixelDataGroupLength	1	ACR/NEMA2C
@@ -827,230 +1012,7 @@
 #
 (0000-u-ffff,0000)	UL	GenericGroupLength	1	GENERIC
 (0000-u-ffff,0001)	UL	GenericGroupLengthToEnd	1	GENERIC
-#
-#
-#---------------------------------------------------------------------------
-#
-#
-# Data Dictionary for new Ultrasound Image Object
-# Source document:
-#    DICOM Supplement 5, 
-#    Ultrasound Application Profile, IOD and Transfer Syntax Extensions,
-#    Final Text, October 27, 1995
-#
-(0018,6056)	UL	NumberOfTableEntries	1	DICOM3
-(0018,6058)	UL	TableOfPixelValues	1-n	DICOM3
-(0018,605A)	FL	TableOfParameterValues	1-n	DICOM3
-(0028,0014)	US	UltrasoundColorDataPresent	1	DICOM3
-(0018,1244)	US	PreferredPlaybackSequencing	1	DICOM3
-(0028,1199)	UI	PaletteColorLookupTableUID	1	DICOM3
-# The retired Ultrasound object uses (0028,1201) with VR = US or SS
-(0028,1201)	OW	RedPaletteColorLookupTableData	1	DICOM3
-# The retired Ultrasound object uses (0028,1202) with VR = US or SS
-(0028,1202)	OW	GreenPaletteColorLookupTableData	1	DICOM3
-# The retired Ultrasound object uses (0028,1203) with VR = US or SS
-(0028,1203)	OW	BluePaletteColorLookupTableData	1	DICOM3
-(0028,1221)	OW	SegmentedRedPaletteColorLookupTableData	1	DICOM3
-(0028,1222)	OW	SegmentedGreenPaletteColorLookupTableData	1	DICOM3
-(0028,1223)	OW	SegmentedBluePaletteColorLookupTableData	1	DICOM3
-(6000-60ff,0045)	LO	OverlaySubtype	1	DICOM3
-(0008,2218)	SQ	AnatomicRegionSequence	1	DICOM3
-(0008,2220)	SQ	AnatomicRegionModifierSequence	1	DICOM3
-(0008,2228)	SQ	PrimaryAnatomicStructureSequence	1	DICOM3
-(0008,2230)	SQ	PrimaryAnatomicStructureModifierSequence	1	DICOM3
-(0008,2240)	SQ	TransducerPositionSequence	1	DICOM3
-(0008,2242)	SQ	TransducerPositionModifierSequence	1	DICOM3
-(0008,2244)	SQ	TransducerOrientationSequence	1	DICOM3
-(0008,2246)	SQ	TransducerOrientationModifierSequence	1	DICOM3
-#
-#---------------------------------------------------------------------------
-#
-#
-# Data Dictionary for new Nuclear Medicine Image Object
-# Source Document:
-#     DICOM Supplement 7, Nuclear Medicine Image Object
-#     Final Text, October 27, 1995
-#
-(0018,0026)	SQ	InterventionDrugInformationSequence	1	DICOM3
-(0018,0027)	TM	InterventionDrugStopTime	1	DICOM3
-(0018,0028)	DS	InterventionDrugDose	1	DICOM3
-(0018,0029)	SQ	InterventionDrugCodeSequence	1	DICOM3
-(0054,0000)	UL	GroupLength	1	DICOM3
-(0054,0010)	US	EnergyWindowVector	1-n	DICOM3
-(0054,0011)	US	NumberOfEnergyWindows	1	DICOM3
-(0054,0012)	SQ	EnergyWindowInformationSequence	1	DICOM3
-(0054,0013)	SQ	EnergyWindowRangeSequence	1	DICOM3
-(0054,0014)	DS	EnergyWindowLowerLimit	1	DICOM3
-(0054,0015)	DS	EnergyWindowUpperLimit	1	DICOM3
-(0054,0016)	SQ	RadiopharmaceuticalInformationSequence	1	DICOM3
-(0054,0017)	IS	ResidualSyringeCounts	1	DICOM3
-(0054,0018)	SH	EnergyWindowName	1	DICOM3
-(0054,0020)	US	DetectorVector	1-n	DICOM3
-(0054,0021)	US	NumberOfDetectors	1	DICOM3
-(0054,0022)	SQ	DetectorInformationSequence	1	DICOM3
-(0054,0030)	US	PhaseVector	1-n	DICOM3
-(0054,0031)	US	NumberOfPhases	1	DICOM3
-(0054,0032)	SQ	PhaseInformationSequence	1	DICOM3
-(0054,0033)	US	NumberOfFramesInPhase	1	DICOM3
-(0054,0036)	IS	PhaseDelay	1	DICOM3
-(0054,0038)	IS	PauseBetweenFrames	1	DICOM3
-(0054,0050)	US	RotationVector	1-n	DICOM3
-(0054,0051)	US	NumberOfRotations	1	DICOM3
-(0054,0052)	SQ	RotationInformationSequence	1	DICOM3
-(0054,0053)	US	NumberOfFramesInRotation	1	DICOM3
-(0054,0060)	US	RRIntervalVector	1-n	DICOM3
-(0054,0061)	US	NumberOfRRIntervals	1	DICOM3
-(0054,0062)	SQ	GatedInformationSequence	1	DICOM3
-(0054,0063)	SQ	DataInformationSequence	1	DICOM3
-(0054,0070)	US	TimeSlotVector	1-n	DICOM3
-(0054,0071)	US	NumberOfTimeSlots	1	DICOM3
-(0054,0072)	SQ	TimeSlotInformationSequence	1	DICOM3
-(0054,0073)	DS	TimeSlotTime	1	DICOM3
-(0054,0080)	US	SliceVector	1-n	DICOM3
-(0054,0081)	US	NumberOfSlices	1	DICOM3
-(0054,0090)	US	AngularViewVector	1-n	DICOM3
-(0054,0100)	US	TimeSliceVector	1-n	DICOM3
-(0054,0200)	DS	StartAngle	1	DICOM3
-(0054,0202)	CS	TypeOfDetectorMotion	1	DICOM3
-(0054,0210)	IS	TriggerVector	1-n	DICOM3
-(0054,0211)	US	NumberOfTriggersInPhase	1	DICOM3
-(0054,0220)	SQ	ViewCodeSequence	1	DICOM3
-(0054,0222)	SQ	ViewAngulationModifierCodeSequence	1	DICOM3
-(0054,0300)	SQ	RadionuclideCodeSequence	1	DICOM3
-(0054,0302)	SQ	AdministrationRouteCodeSequence	1	DICOM3
-(0054,0304)	SQ	RadiopharmaceuticalCodeSequence	1	DICOM3
-(0054,0306)	SQ	CalibrationDataSequence	1	DICOM3
-(0054,0308)	US	EnergyWindowNumber	1	DICOM3
-(0054,0400)	SH	ImageID	1	DICOM3
-(0054,0410)	SQ	PatientOrientationCodeSequence	1	DICOM3
-(0054,0412)	SQ	PatientOrientationModifierCodeSequence	1	DICOM3
-(0054,0414)	SQ	PatientGantryRelationshipCodeSequence	1	DICOM3
-(5000-50ff,2500)	LO	CurveLabel	1	DICOM3
-(5000-50ff,2600)	SQ	CurveReferencedOverlaySequence	1	DICOM3
-(5000-50ff,2610)	US	CurveReferencedOverlayGroup	1	DICOM3
-(6000-60ff,0022)	LO	OverlayDescription	1	DICOM3
-(6000-60ff,1500)	LO	OverlayLabel	1	DICOM3
-#
-# The following attributes revise the definitions in 
-# the retired Nuclear Medicine Image Object
-#
-(0018,0031)	LO	Radiopharmaceutical	1	DICOM3
-(0018,1045)	IS	SyringeCounts	1	DICOM3
-(0018,1070)	LO	RadiopharmaceuticalRoute	1	DICOM3
-(0018,1071)	DS	RadiopharmaceuticalVolume	1	DICOM3
-(0018,1072)	TM	RadiopharmaceuticalStartTime	1	DICOM3
-(0018,1073)	TM	RadiopharmaceuticalStopTime	1	DICOM3
-(0018,1074)	DS	RadionuclideTotalDose	1	DICOM3
-(0018,1182)	IS	FocalDistance	1-2	DICOM3
-(0018,1183)	DS	XFocusCenter	1-2	DICOM3
-(0018,1184)	DS	YFocusCenter	1-2	DICOM3
-(0018,1300)	DS	ScanVelocity	1	DICOM3
-(0018,5020)	LO	PreprocessingFunction	1	DICOM3
-(0028,0009)	AT	FrameIncrementPointer	1-n	DICOM3
-(0028,0051)	CS	CorrectedImage	1-n	DICOM3
-#
-#---------------------------------------------------------------------------
-#
-# DICOM X-Ray Angiographic Image Objects (Supplement 4)
-# Final Text - October 9, 1996
-#
-(0008,1048)	PN	PhysiciansOfRecord	1-n	DICOM3
-(0008,2218)	SQ	AnatomicRegionSequence	1	DICOM3
-(0008,2220)	SQ	AnatomicRegionModifierSequence	1	DICOM3
-(0008,2228)	SQ	PrimaryAnatomicStructureSequence	1	DICOM3
-(0008,2230)	SQ	PrimaryAnatomicStructureModifierSequence	1	DICOM3
-(0018,0012)	SQ	ContrastBolusAgentSequence	1	DICOM3
-(0018,002A)	SQ	AdditionalDrugSequence	1	DICOM3
-# (0018,0029) is also defined by supplement 7 (NM)
-#(0018,0029)	SQ	InterventionDrugCodeSequence	1	DICOM3
-(0018,0014)	SQ	ContrastBolusAdministrationRouteSequence	1	DICOM3
-(0018,0036)	SQ	InterventionalTherapySequence	1	DICOM3
-(0018,0037)	CS	TherapyType	1	DICOM3
-(0018,0038)	CS	InterventionalStatus	1	DICOM3
-(0018,0039)	CS	TherapyDescription	1	DICOM3
-(0018,1046)	DS	ContrastFlowRates	1-n	DICOM3
-(0018,1047)	DS	ContrastFlowDurations	1-n	DICOM3
-(0018,1048)	CS	ContrastBolusIngredient	1	DICOM3
-(0018,1049)	DS	ContrastBolusIngredientConcentration	1	DICOM3
-(0018,1114)	DS	EstimatedRadiographicMagnificationFactor	1	DICOM3
-(0018,1134)	CS	TableMotion	1	DICOM3
-(0018,1135)	DS	TableVerticalIncrement	1-n	DICOM3
-(0018,1136)	DS	TableLateralIncrement	1-n	DICOM3
-(0018,1137)	DS	TableLongitudinalIncrement	1-n	DICOM3
-(0018,1138)	DS	TableAngle	1	DICOM3
-(0018,1154)	DS	AveragePulseWidth	1	DICOM3
-(0018,1155)	CS	RadiationSetting	1	DICOM3
-(0018,115A)	CS	RadiationMode	1	DICOM3
-(0018,115E)	DS	ImageAreaDoseProduct	1	DICOM3
-(0018,1161)	LO	TypeOfFilters	1-n	DICOM3
-(0018,1162)	DS	IntensifierSize	1	DICOM3
-(0018,1164)	DS	ImagerPixelSpacing	2	DICOM3
-(0018,1166)	CS	Grid	1	DICOM3
-(0018,1600)	CS	ShutterShape	1	DICOM3
-(0018,1500)	CS	PositionerMotion	1	DICOM3
-(0018,1510)	DS	PositionerPrimaryAngle	1	DICOM3
-(0018,1511)	DS	PositionerSecondaryAngle	1	DICOM3
-(0018,1520)	DS	PositionerPrimaryAngleIncrement	1-n	DICOM3
-(0018,1521)	DS	PositionerSecondaryAngleIncrement	1-n	DICOM3
-(0018,1530)	DS	DetectorPrimaryAngle	1	DICOM3
-(0018,1531)	DS	DetectorSecondaryAngle	1	DICOM3
-(0018,1600)	CS	ShutterShape	1-3	DICOM3
-(0018,1602)	IS	ShutterLeftVerticalEdge	1	DICOM3
-(0018,1604)	IS	ShutterRightVerticalEdge	1	DICOM3
-(0018,1606)	IS	ShutterUpperHorizontalEdge	1	DICOM3
-(0018,1608)	IS	ShutterLowerHorizontalEdge	1	DICOM3
-(0018,1610)	IS	CenterOfCircularShutter	2	DICOM3
-(0018,1612)	IS	RadiusOfCircularShutter	1	DICOM3
-(0018,1620)	IS	VerticesOfThePolygonalShutter	2-2n	DICOM3
-(0018,1700)	CS	CollimatorShape	1-3	DICOM3
-(0018,1702)	IS	CollimatorLeftVerticalEdge	1	DICOM3
-(0018,1704)	IS	CollimatorRightVerticalEdge	1	DICOM3
-(0018,1706)	IS	CollimatorUpperHorizontalEdge	1	DICOM3
-(0018,1708)	IS	CollimatorLowerHorizontalEdge	1	DICOM3
-(0018,1710)	IS	CenterOfCircularCollimator	2	DICOM3
-(0018,1712)	IS	RadiusOfCircularCollimator	1	DICOM3
-(0018,1720)	IS	VerticesOfThePolygonalCollimator	2-2n	DICOM3
-(0028,0012)	US	Planes	1	DICOM3
-(0028,0110)	xs	SmallestImagePixelValueInPlane	1	DICOM3
-(0028,0111)	xs	LargestImagePixelValueInPlane	1	DICOM3
-(0028,1040)	CS	PixelIntensityRelationship	1	DICOM3
-(0028,1090)	CS	RecommendedViewingMode	1	DICOM3
-(0028,2110)	CS	LossyImageCompression	1	DICOM3
-(0028,5000)	SQ	BiPlaneAcquisitionSequence	1	DICOM3
-(0028,6010)	US	RepresentativeFrameNumber	1	DICOM3
-(0028,6020)	US	FrameNumbersOfInterestFOI	1-n	DICOM3
-(0028,6022)	LO	FrameOfInterestDescription	1-n	DICOM3
-(0028,6030)	US	MaskPointers	1-n	DICOM3
-(0028,6040)	US	RWavePointer	1-n	DICOM3
-(0028,6100)	SQ	MaskSubtractionSequence	1	DICOM3
-(0028,6101)	CS	MaskOperation	1	DICOM3
-(0028,6102)	US	ApplicableFrameRange	2-2n	DICOM3
-(0028,6110)	US	MaskFrameNumbers	1-n	DICOM3
-(0028,6112)	US	ContrastFrameAveraging	1	DICOM3
-(0028,6114)	FL	MaskSubPixelShift	2	DICOM3
-(0028,6120)	SS	TIDOffset	1	DICOM3
-(0028,6190)	ST	MaskOperationExplanation	1	DICOM3
-(0050,0004)	CS	CalibrationObject	1	DICOM3
-(0050,0010)	SQ	DeviceSequence	1	DICOM3
-(0050,0014)	DS	DeviceLength	1	DICOM3
-(0050,0016)	DS	DeviceDiameter	1	DICOM3
-(0050,0017)	CS	DeviceDiameterUnits	1	DICOM3
-(0050,0018)	DS	DeviceVolume	1	DICOM3
-(0050,0019)	DS	InterMarkerDistance	1	DICOM3
-(0050,0020)	LO	DeviceDescription	1	DICOM3
-(6000-60ff,0012)	US	OverlayPlanes	1	DICOM3
-(6000-60ff,0051)	US	ImageFrameOrigin	1	DICOM3
-(6000-60ff,0052)	US	OverlayPlaneOrigin	1	DICOM3
-#
-#---------------------------------------------------------------------------
-#
-# DICOM X-Ray Radiofluoroscopic (RF) Image Object (Supplement 6)
-# Final Text - July 3, 1995 13
-#
-(0018,1450)	CS	Column Angulation	1	DICOM3
-(0018,1460)	DS	TomoLayerHeight	1	DICOM3
-(0018,1470)	DS	TomoAngle	1	DICOM3
-(0018,1480)	DS	TomoTime	1	DICOM3
+
 #
 #---------------------------------------------------------------------------
 #
@@ -1452,6 +1414,10 @@
 #
 #---------------------------------------------------------------------------
 #
+# Supplement 14 (Unknown VR) does not define any new dictionary entries.
+#
+#---------------------------------------------------------------------------
+#
 # SUPPLEMENT 15
 # Visible Light Image for Endoscopy, Microscopy, and Photography
 #   DRAFT STANDARD FOR TRIAL USE
@@ -1472,101 +1438,100 @@
 # submitted for inclusion in the DCMTK software package.
 #---
 #
-(0008,0103)	CS	CodingSchemeVersion	1
-(0008,0105)	CS	MappingResource	1
-(0008,0106)	DT	ContextGroupVersion	1
-(0008,010B)	CS	CodeSetExtensionFlag	1
-(0008,010C)	UI	PrivateCodingSchemeCreatorUID	1
-(0008,010D)	UI	CodeSetExtensionCreatorUID	1
-(0008,010F)	CS	ContextIdentifier	1
-(0040,050A)	LO	SpecimenAccessionNumber	1
-(0040,0550)	SQ	SpecimenSequence	1
-(0040,0551)	LO	SpecimenIdentifier	1
-(0040,0552)	SQ	SpecimenDescriptionSequence	1
-(0040,0553)	ST	SpecimenDescription	1
-(0040,0555)	SQ	AcquisitionContextSequence	1
-(0040,0556)	ST	AcquisitionContextDescription	1
-(0040,059A)	SQ	SpecimenTypeCodeSequence	1
-(0040,06FA)	LO	SlideIdentifier	1
-(0040,071A)	SQ	ImageCenterPointCoordinatesSequence	1
-(0040,072A)	DS	XOffsetInSlideCoordinateSystem	1
-(0040,073A)	DS	YOffsetInSlideCoordinateSystem	1
-(0040,074A)	DS	ZOffsetInSlideCoordinateSystem	1
-(0040,08D8)	SQ	PixelSpacingSequence	1
-(0040,08DA)	SQ	CoordinateSystemAxisCodeSequence	1
-(0040,08EA)	SQ	MeasurementUnitsCodeSequence	1
-(0040,09F8)	SQ	VitalStainCodeSequence	1
-(0040,A043)	SQ	ConceptNameCodeSequence	1
-(0040,A121)	DA	Date	1
-(0040,A122)	TM	Time	1
-(0040,A123)	PN	PersonName	1
-(0040,A136)	US	ReferencedFrameNumbers	1-n
-(0040,A168)	SQ	ConceptCodeSequence	1
-(0040,A16A)	ST	BibliographicCitation	1
-(0040,A195)	SQ	ConceptNameCodeSequenceModifier	1
-(0040,A30A)	DS	NumericValue	1-n
-(0040,A992)	ST	UniformResourceLocator	1
+# CodingSchemeVersion is defined as SH in Supplement 36
+#(0008,0103)	CS	CodingSchemeVersion	1	DICOM3
+# MappingResource..ContextIdentifier are defined in Supplement 36
+#(0008,0105)	CS	MappingResource	1	DICOM3
+#(0008,0106)	DT	ContextGroupVersion	1	DICOM3
+#(0008,010B)	CS	CodeSetExtensionFlag	1	DICOM3
+#(0008,010C)	UI	PrivateCodingSchemeCreatorUID	1	DICOM3
+#(0008,010D)	UI	CodeSetExtensionCreatorUID	1	DICOM3
+#(0008,010F)	CS	ContextIdentifier	1	DICOM3
+(0040,050A)	LO	SpecimenAccessionNumber	1	DICOM3
+(0040,0550)	SQ	SpecimenSequence	1	DICOM3
+(0040,0551)	LO	SpecimenIdentifier	1	DICOM3
+(0040,0552)	SQ	SpecimenDescriptionSequence	1	DICOM3
+(0040,0553)	ST	SpecimenDescription	1	DICOM3
+(0040,0555)	SQ	AcquisitionContextSequence	1	DICOM3
+(0040,0556)	ST	AcquisitionContextDescription	1	DICOM3
+(0040,059A)	SQ	SpecimenTypeCodeSequence	1	DICOM3
+(0040,06FA)	LO	SlideIdentifier	1	DICOM3
+(0040,071A)	SQ	ImageCenterPointCoordinatesSequence	1	DICOM3
+(0040,072A)	DS	XOffsetInSlideCoordinateSystem	1	DICOM3
+(0040,073A)	DS	YOffsetInSlideCoordinateSystem	1	DICOM3
+(0040,074A)	DS	ZOffsetInSlideCoordinateSystem	1	DICOM3
+(0040,08D8)	SQ	PixelSpacingSequence	1	DICOM3
+(0040,08DA)	SQ	CoordinateSystemAxisCodeSequence	1	DICOM3
+(0040,08EA)	SQ	MeasurementUnitsCodeSequence	1	DICOM3
+(0040,09F8)	SQ	VitalStainCodeSequence	1	DICOM3
+(0040,A043)	SQ	ConceptNameCodeSequence	1	DICOM3
+(0040,A121)	DA	Date	1	DICOM3
+(0040,A122)	TM	Time	1	DICOM3
+(0040,A123)	PN	PersonName	1	DICOM3
+(0040,A136)	US	ReferencedFrameNumbers	1-n	DICOM3
+(0040,A168)	SQ	ConceptCodeSequence	1	DICOM3
+(0040,A16A)	ST	BibliographicCitation	1	DICOM3
+(0040,A195)	SQ	ConceptNameCodeSequenceModifier	1	DICOM3
+(0040,A30A)	DS	NumericValue	1-n	DICOM3
+(0040,A992)	ST	UniformResourceLocator	1	DICOM3
 #
 #---------------------------------------------------------------------------
 #
-# PostScript Print Management (Supplement 16)
-# Status: Working Draft Version 5.0 - 26-Sep-97
-#
-# WARNING: These data dictionary attributes come from a DRAFT 
-# document and are likely to change.  Included for experimental
-# purposes only.
-#
-(2000,0200)	CS	PageDescriptionLanguage	1
-(2000,0210)	OB	PageDescription	1
+# Supplement 16 (Postscript Print) is cancelled.
 #
 #---------------------------------------------------------------------------
 #
 # Supplement 17: Modality Performed Procedure Step
 # Status: Final Text, 30 January 1998
 #
-(0008,2229)	SQ	AnatomicStructureSpaceOrRegionSequence	1
-(0040,0220)	SQ	ReferencedStandaloneSOPInstanceSequence	1
-(0040,0241)	AE	PerformedStationAETitle	1
-(0040,0242)	SH	PerformedStationName	1
-(0040,0243)	SH	PerformedLocation	1
-(0040,0244)	DA	PerformedProcedureStepStartDate	1
-(0040,0245)	TM	PerformedProcedureStepStartTime	1
-(0040,0250)	DA	PerformedProcedureStepEndDate	1
-(0040,0251)	TM	PerformedProcedureStepEndTime	1
-(0040,0252)	CS	PerformedProcedureStepStatus	1
-(0040,0253)	CS	PerformedProcedureStepID	1
-(0040,0254)	LO	PerformedProcedureStepDescription	1
-(0040,0255)	LO	PerformedProcedureTypeDescription	1
-(0040,0260)	SQ	PerformedActionItemSequence	1
-(0040,0270)	SQ	ScheduledStepAttributesSequence	1
-(0040,0275)	SQ	RequestAttributesSequence	1
-(0040,0280)	ST	CommentsOnThePerformedProcedureSteps	1
-(0040,0293)	SQ	QuantitySequence	1
-(0040,0294)	DS	Quantity	1
-(0040,0295)	SQ	MeasuringUnitsSequence	1
-(0040,0296)	SQ	BillingItemSequence	1
-(0040,0300)	US	TotalTimeOfFluoroscopy	1
-(0040,0301)	US	TotalNumberOfExposures	1
-(0040,0302)	US	EntranceDose	1
-(0040,0303)	US	ExposedArea	1-2
-(0040,0306)	DS	DistanceSourceToEntrance	1
-(0040,0310)	ST	CommentsOnRadiationDose	1
-(0040,0320)	SQ	BillingProcedureStepSequence	1
-(0040,0321)	SQ	FilmConsumptionSequence	1
-(0040,0324)	SQ	BillingSuppliesAndDevicesSequence	1
-(0040,0330)	SQ	ReferencedProcedureStepSequence	1
-(0040,0340)	SQ	PerformedSeriesSequence	1
+(0008,2229)	SQ	AnatomicStructureSpaceOrRegionSequence	1	DICOM3
+(0040,0220)	SQ	ReferencedStandaloneSOPInstanceSequence	1	DICOM3
+(0040,0241)	AE	PerformedStationAETitle	1	DICOM3
+(0040,0242)	SH	PerformedStationName	1	DICOM3
+(0040,0243)	SH	PerformedLocation	1	DICOM3
+(0040,0244)	DA	PerformedProcedureStepStartDate	1	DICOM3
+(0040,0245)	TM	PerformedProcedureStepStartTime	1	DICOM3
+(0040,0250)	DA	PerformedProcedureStepEndDate	1	DICOM3
+(0040,0251)	TM	PerformedProcedureStepEndTime	1	DICOM3
+(0040,0252)	CS	PerformedProcedureStepStatus	1	DICOM3
+(0040,0253)	CS	PerformedProcedureStepID	1	DICOM3
+(0040,0254)	LO	PerformedProcedureStepDescription	1	DICOM3
+(0040,0255)	LO	PerformedProcedureTypeDescription	1	DICOM3
+(0040,0260)	SQ	PerformedActionItemSequence	1	DICOM3
+(0040,0270)	SQ	ScheduledStepAttributesSequence	1	DICOM3
+(0040,0275)	SQ	RequestAttributesSequence	1	DICOM3
+(0040,0280)	ST	CommentsOnThePerformedProcedureSteps	1	DICOM3
+(0040,0293)	SQ	QuantitySequence	1	DICOM3
+(0040,0294)	DS	Quantity	1	DICOM3
+(0040,0295)	SQ	MeasuringUnitsSequence	1	DICOM3
+(0040,0296)	SQ	BillingItemSequence	1	DICOM3
+(0040,0300)	US	TotalTimeOfFluoroscopy	1	DICOM3
+(0040,0301)	US	TotalNumberOfExposures	1	DICOM3
+(0040,0302)	US	EntranceDose	1	DICOM3
+(0040,0303)	US	ExposedArea	1-2	DICOM3
+(0040,0306)	DS	DistanceSourceToEntrance	1	DICOM3
+(0040,0310)	ST	CommentsOnRadiationDose	1	DICOM3
+(0040,0320)	SQ	BillingProcedureStepSequence	1	DICOM3
+(0040,0321)	SQ	FilmConsumptionSequence	1	DICOM3
+(0040,0324)	SQ	BillingSuppliesAndDevicesSequence	1	DICOM3
+(0040,0330)	SQ	ReferencedProcedureStepSequence	1	DICOM3
+(0040,0340)	SQ	PerformedSeriesSequence	1	DICOM3
+#
+#---------------------------------------------------------------------------
+#
+# Supplements 18-20 do not define any new dictionary entries.
+# Supplement 21 is cancelled.
 #
 #---------------------------------------------------------------------------
 #
 # Supplement 22: Presentation Look Up Table (LUT)
 # Status: Final Text, 30 January 1998
 #
-(2050,0010)	SQ	PresentationLUTSequence	1
-(2050,0020)	CS	PresentationLUTShape	1
-(2050,0500)	SQ	ReferencedPresentationLUTSequence	1
-(2010,015E)	US	Illumination	1
-(2010,0160)	US	ReflectedAmbientLight	1
+(2050,0010)	SQ	PresentationLUTSequence	1	DICOM3
+(2050,0020)	CS	PresentationLUTShape	1	DICOM3
+(2050,0500)	SQ	ReferencedPresentationLUTSequence	1	DICOM3
+(2010,015E)	US	Illumination	1	DICOM3
+(2010,0160)	US	ReflectedAmbientLight	1	DICOM3
 #
 #---------------------------------------------------------------------------
 #
@@ -1576,238 +1541,485 @@
 # Supplement to NEMA PS 3.3, PS 3.4, and PS 3.6, providing Structured Report
 # (SR) Information Object Definitions for Interpretation Data Interchange.
 #
-# * This is a Frozen Draft specification. It has undergone extensive 
-# public review and is a  mature draft. However, it is possible that 
-# changes may be approved prior to letter ballot.  Please note that the 
-# SOPC UIDs may change if substantial change occurs in the content 
-# of the document. A formal revision-control process has been instituted.
-# Proposed changes must be submitted as written change-requests to the 
-# Structured Reporting Working Group of the DICOM Standards 
-# Committee. After a formal review procedure, if changes are approved 
-# by the Committee, they will be documented in a revisions log and will 
-# be published on the NEMA WWW Server. Any and all approved and 
-# documented changes to this Draft Standard for Trial Use will be 
-# incorporated in the final text for letter ballot.
+# Version: 0.97, Frozen Draft, November 20, 1997
 #
-# Negotiation of this SOP Class does not imply the ability to display the 
-# contents of referenced objects.  Draft Supplement 36: Codes and 
-# Controlled Terminology specifies the 'Code Sequence Macro' 
-# contained in the Code Sequence Data Elements of this Supplement.
-#
-# Refer to: Version: 0.97
-# Status: Frozen Draft
-# Filename: sup23_fz.doc
-# Date: November 20, 1997
-#
-(0040,A007)	CS	FindingsFlag	1
-(0040,A020)	SQ	FindingsSequence	1
-(0040,A021)	UI	FindingsGroupUID	1
-(0040,A022)	UI	ReferencedFindingsGroupUID	1
-(0040,A023)	DA	FindingsGroupRecordingDate	1
-(0040,A024)	TM	FindingsGroupRecordingTime	1
-(0040,A026)	SQ	FindingsSourceCategoryCodeSequence	1
-(0040,A027)	LO	DocumentingOrganization	1
-(0040,A028)	SQ	DocumentingOrganizationIdentifierCodeSequence	1
-(0040,A032)	LO	HistoryReliabilityQualifierDescription	1
-(0040,A043)	SQ	ConceptNameCodeSequence	1
-(0040,A047)	LO	MeasurementPrecisionDescription	1
-(0040,A057)	CS	UrgencyOrPriorityAlerts	1-n
-(0040,A060)	LO	SequencingIndicator	1
-(0040,A066)	SQ	DocumentIdentifierCodeSequence	1
-(0040,A067)	PN	DocumentAuthor	1
-(0040,A068)	SQ	DocumentAuthorIdentifierCodeSequence	1
-(0040,A070)	SQ	IdentifierCodeSequence	1
-(0040,A073)	LO	ObjectStringIdentifier	1-n
-(0040,A074)	OB	ObjectBinaryIdentifier	1
-(0040,A075)	PN	DocumentingObserver	1
-(0040,A076)	SQ	DocumentingObserverIdentifierCodeSequence	1
-(0040,A078)	SQ	ObservationSubjectIdentifierCodeSequence	1
-(0040,A080)	SQ	PersonIdentifierCodeSequence	1
-(0040,A085)	SQ	ProcedureIdentifierCodeSequence	1
-(0040,A088)	LO	ObjectDirectoryStringIdentifier	1
-(0040,A089)	OB	ObjectDirectoryBinaryIdentifier	1
-(0040,A090)	CS	HistoryReliabilityQualifier	1
-(0040,A110)	DA	DateOfDocumentOrVerbalTransaction	1
-(0040,A112)	TM	TimeOfDocumentCreationOrVerbalTransaction	1
-(0040,A121)	DA	Date	1
-(0040,A122)	TM	Time	1
-(0040,A123)	PN	PersonName	1
-(0040,A124)	SQ	ReferencedPersonSequence	1
-(0040,A125)	CS	ReportStatusID	2
-(0040,A136)	US	ReferencedFrameNumbers	1-n
-(0040,A160)	UT	TextValue	1
-(0040,A167)	SQ	ObservationCategoryCodeSequence	1
-(0040,A168)	SQ	ConceptCodeSequence	1
-(0040,A16A)	ST	BibliographicCitation	1
-(0040,A170)	CS	ObservationClass	1
-(0040,A171)	UI	ObservationUID	1
-(0040,A172)	UI	ReferencedObservationUID	1
-(0040,A173)	CS	ReferencedObservationClass	1
-(0040,A174)	CS	ReferencedObjectObservationClass	1
-(0040,A192)	DA	ObservationDate	1
-(0040,A193)	TM	ObservationTime	1
-(0040,A194)	CS	MeasurementAutomation	1
-(0040,A195)	SQ	ConceptNameCodeSequenceModifier	1
-(0040,A224)	ST	IdentificationDescription	1
-(0040,A290)	CS	CoordinatesSetGeometricType	1
-(0040,A296)	SQ	AlgorithmCodeSequence	1
-(0040,A297)	ST	AlgorithmDescription	1
-(0040,A29A)	SL	PixelCoordinatesSet	2-2n
-(0040,A300)	SQ	MeasuredValueSequence	1
-(0040,A307)	PN	CurrentObserver	1
-(0040,A30A)	DS	NumericValue	1-n
-(0040,A313)	SQ	ReferencedAccessionSequence	1
-(0040,A33A)	ST	ReportStatusComment	1
-(0040,A340)	SQ	ProcedureContextSequence	1
-(0040,A352)	PN	VerbalSource	1
-(0040,A358)	SQ	VerbalSourceIdentifierCodeSequence	1
-(0040,A380)	SQ	RequestDetailSequence	1
-(0040,A402)	UI	ObservationSubjectUID	1
-(0040,A403)	CS	ObservationSubjectClass	1
-(0040,A404)	SQ	ObservationSubjectTypeCodeSequence	1
-(0040,A600)	CS	ObservationSubjectContextFlag	1
-(0040,A601)	CS	ObserverContextFlag	1
-(0040,A603)	CS	ProcedureContextFlag	1
-(0040,A730)	SQ	ObservationsSequence	1
-(0040,A731)	SQ	RelationshipSequence	1
-(0040,A732)	SQ	RelationshipTypeCodeSequence	1
-(0040,A744)	SQ	LanguageCodeSequence	1
-(0040,A992)	ST	UniformResourceLocator	1
-(0040,DB73)	SQ	RelationshipTypeCodeSequenceModifier	1
-(4008,00FF)	CS	ReportProductionStatus	1
+(0040,A007)	CS	FindingsFlag	1	DICOM3
+(0040,A020)	SQ	FindingsSequence	1	DICOM3
+(0040,A021)	UI	FindingsGroupUID	1	DICOM3
+(0040,A022)	UI	ReferencedFindingsGroupUID	1	DICOM3
+(0040,A023)	DA	FindingsGroupRecordingDate	1	DICOM3
+(0040,A024)	TM	FindingsGroupRecordingTime	1	DICOM3
+(0040,A026)	SQ	FindingsSourceCategoryCodeSequence	1	DICOM3
+(0040,A027)	LO	DocumentingOrganization	1	DICOM3
+(0040,A028)	SQ	DocumentingOrganizationIdentifierCodeSequence	1	DICOM3
+(0040,A032)	LO	HistoryReliabilityQualifierDescription	1	DICOM3
+# ConceptNameCodeSequence is also defined in Supplement 15.
+#(0040,A043)	SQ	ConceptNameCodeSequence	1	DICOM3
+(0040,A047)	LO	MeasurementPrecisionDescription	1	DICOM3
+(0040,A057)	CS	UrgencyOrPriorityAlerts	1-n	DICOM3
+(0040,A060)	LO	SequencingIndicator	1	DICOM3
+(0040,A066)	SQ	DocumentIdentifierCodeSequence	1	DICOM3
+(0040,A067)	PN	DocumentAuthor	1	DICOM3
+(0040,A068)	SQ	DocumentAuthorIdentifierCodeSequence	1	DICOM3
+(0040,A070)	SQ	IdentifierCodeSequence	1	DICOM3
+(0040,A073)	LO	ObjectStringIdentifier	1-n	DICOM3
+(0040,A074)	OB	ObjectBinaryIdentifier	1	DICOM3
+(0040,A075)	PN	DocumentingObserver	1	DICOM3
+(0040,A076)	SQ	DocumentingObserverIdentifierCodeSequence	1	DICOM3
+(0040,A078)	SQ	ObservationSubjectIdentifierCodeSequence	1	DICOM3
+(0040,A080)	SQ	PersonIdentifierCodeSequence	1	DICOM3
+(0040,A085)	SQ	ProcedureIdentifierCodeSequence	1	DICOM3
+(0040,A088)	LO	ObjectDirectoryStringIdentifier	1	DICOM3
+(0040,A089)	OB	ObjectDirectoryBinaryIdentifier	1	DICOM3
+(0040,A090)	CS	HistoryReliabilityQualifier	1	DICOM3
+(0040,A110)	DA	DateOfDocumentOrVerbalTransaction	1	DICOM3
+(0040,A112)	TM	TimeOfDocumentCreationOrVerbalTransaction	1	DICOM3
+# Date, Time, PersonName are also defined in Supplement 15.
+#(0040,A121)	DA	Date	1	DICOM3
+#(0040,A122)	TM	Time	1	DICOM3
+#(0040,A123)	PN	PersonName	1	DICOM3
+(0040,A124)	SQ	ReferencedPersonSequence	1	DICOM3
+(0040,A125)	CS	ReportStatusID	2	DICOM3
+# ReferencedFrameNumbers is also defined in Supplement 15.
+#(0040,A136)	US	ReferencedFrameNumbers	1-n	DICOM3
+(0040,A160)	UT	TextValue	1	DICOM3
+(0040,A167)	SQ	ObservationCategoryCodeSequence	1	DICOM3
+# ConceptCodeSequence and BibliographicCitation are also defined in Supplement 15.
+#(0040,A168)	SQ	ConceptCodeSequence	1	DICOM3
+#(0040,A16A)	ST	BibliographicCitation	1	DICOM3
+(0040,A170)	CS	ObservationClass	1	DICOM3
+(0040,A171)	UI	ObservationUID	1	DICOM3
+(0040,A172)	UI	ReferencedObservationUID	1	DICOM3
+(0040,A173)	CS	ReferencedObservationClass	1	DICOM3
+(0040,A174)	CS	ReferencedObjectObservationClass	1	DICOM3
+(0040,A192)	DA	ObservationDate	1	DICOM3
+(0040,A193)	TM	ObservationTime	1	DICOM3
+(0040,A194)	CS	MeasurementAutomation	1	DICOM3
+# ConceptNameCodeSequenceModifier is also defined in Supplement 15.
+#(0040,A195)	SQ	ConceptNameCodeSequenceModifier	1	DICOM3
+(0040,A224)	ST	IdentificationDescription	1	DICOM3
+(0040,A290)	CS	CoordinatesSetGeometricType	1	DICOM3
+(0040,A296)	SQ	AlgorithmCodeSequence	1	DICOM3
+(0040,A297)	ST	AlgorithmDescription	1	DICOM3
+(0040,A29A)	SL	PixelCoordinatesSet	2-2n	DICOM3
+(0040,A300)	SQ	MeasuredValueSequence	1	DICOM3
+(0040,A307)	PN	CurrentObserver	1	DICOM3
+# NumericValue is also defined in Supplement 15.
+#(0040,A30A)	DS	NumericValue	1-n	DICOM3
+(0040,A313)	SQ	ReferencedAccessionSequence	1	DICOM3
+(0040,A33A)	ST	ReportStatusComment	1	DICOM3
+(0040,A340)	SQ	ProcedureContextSequence	1	DICOM3
+(0040,A352)	PN	VerbalSource	1	DICOM3
+(0040,A358)	SQ	VerbalSourceIdentifierCodeSequence	1	DICOM3
+(0040,A380)	SQ	RequestDetailSequence	1	DICOM3
+(0040,A402)	UI	ObservationSubjectUID	1	DICOM3
+(0040,A403)	CS	ObservationSubjectClass	1	DICOM3
+(0040,A404)	SQ	ObservationSubjectTypeCodeSequence	1	DICOM3
+(0040,A600)	CS	ObservationSubjectContextFlag	1	DICOM3
+(0040,A601)	CS	ObserverContextFlag	1	DICOM3
+(0040,A603)	CS	ProcedureContextFlag	1	DICOM3
+(0040,A730)	SQ	ObservationsSequence	1	DICOM3
+(0040,A731)	SQ	RelationshipSequence	1	DICOM3
+(0040,A732)	SQ	RelationshipTypeCodeSequence	1	DICOM3
+(0040,A744)	SQ	LanguageCodeSequence	1	DICOM3
+# UniformResourceLocator is also defined in Supplement 15.
+#(0040,A992)	ST	UniformResourceLocator	1	DICOM3
+(0040,DB73)	SQ	RelationshipTypeCodeSequenceModifier	1	DICOM3
+(4008,00FF)	CS	ReportProductionStatus	1	DICOM3
 #
 #---------------------------------------------------------------------------
 #
 # Supplement 24: Stored Print Related SOP Classes
-# VERSION: Final Text, February 12, 1998
+# VERSION: Revised Final Text, March 31, 1998
 #
-(0018,1011)	LO	HardcopyCreationDeviceID	1
-(0018,1017)	LO	HardcopyDeviceManufacturer	1
-(0018,101B)	LO	HardcopyDeviceManfuacturersModelName	1
-(0018,101A)	LO	HardcopyDeviceSoftwareVersion	1-n
-(2000,0062)	CS	ColorImagePrintingFlag	1
-(2000,0063)	CS	CollationFlag	1
-(2000,0065)	CS	AnnotationFlag	1
-(2000,0067)	CS	ImageOverlayFlag	1
-(2000,0069)	CS	PresentationsLUTFlag	1
-(2000,006A)	CS	ImageBoxPresentationLUTFlag	1
-(2000,0510)	SQ	ReferencedStoredPrintSequence	1
-(2130,0010)	SQ	PrintManagementCapabilitiesSequence	1
-(2130,0015)	SQ	PrinterCharacteristicsSequence	1
-(2130,0030)	SQ	FilmBoxContentSequence	1
-(2130,0040)	SQ	ImageBoxContentSequence	1
-(2130,0050)	SQ	AnnotationContentSequence	1
-(2130,0060)	SQ	ImageOverlayBoxContentSequence	1
-(2130,0080)	SQ	PresentationLUTContentSequence	1
-(2130,00A0)	SQ	ProposedStudySequence	1
-(2130,00C0)	SQ	OriginalImageSequence	1
+(0018,1011)	LO	HardcopyCreationDeviceID	1	DICOM3
+(0018,1017)	LO	HardcopyDeviceManufacturer	1	DICOM3
+(0018,101B)	LO	HardcopyDeviceManfuacturersModelName	1	DICOM3
+(0018,101A)	LO	HardcopyDeviceSoftwareVersion	1-n	DICOM3
+(2000,0062)	CS	ColorImagePrintingFlag	1	DICOM3
+(2000,0063)	CS	CollationFlag	1	DICOM3
+(2000,0065)	CS	AnnotationFlag	1	DICOM3
+(2000,0067)	CS	ImageOverlayFlag	1	DICOM3
+(2000,0069)	CS	PresentationsLUTFlag	1	DICOM3
+(2000,006A)	CS	ImageBoxPresentationLUTFlag	1	DICOM3
+(2000,0510)	SQ	ReferencedStoredPrintSequence	1	DICOM3
+(2130,0010)	SQ	PrintManagementCapabilitiesSequence	1	DICOM3
+(2130,0015)	SQ	PrinterCharacteristicsSequence	1	DICOM3
+(2130,0030)	SQ	FilmBoxContentSequence	1	DICOM3
+(2130,0040)	SQ	ImageBoxContentSequence	1	DICOM3
+(2130,0050)	SQ	AnnotationContentSequence	1	DICOM3
+(2130,0060)	SQ	ImageOverlayBoxContentSequence	1	DICOM3
+(2130,0080)	SQ	PresentationLUTContentSequence	1	DICOM3
+(2130,00A0)	SQ	ProposedStudySequence	1	DICOM3
+(2130,00C0)	SQ	OriginalImageSequence	1	DICOM3
 #
 #---------------------------------------------------------------------------
 #
-# Supplement 30: Waveform Interchange
-# Status: Revision 0.8 (frozen), 6 October 1997, Frozen draft for demonstration
+# Supplements 25-28 do not define any new dictionary entries.
+#
+#---------------------------------------------------------------------------
+#
+# Supplement 29: Radiotherapy Treatment Records
+#  Draft Version 02 - February 12, 1998
 #
 # WARNING: These data dictionary attributes come from a DRAFT 
 # document and are likely to change.  Included for experimental
 # purposes only.
 #
-(0008,0062)	SQ	ModalitySubtype	1
-(0008,1148)	SQ	ReferencedPreviousWaveform	1
-(0008,114A)	SQ	ReferencedSimultaneousWaveforms	1-n
-(0008,114C)	SQ	ReferencedSubsequentWaveform	1
-(0018,1067)	DS	ImageTriggerDelay	1
-(0018,1068)	DS	GroupTimeOffset	1
-(0018,1069)	DS	TriggerTimeOffset	1
-(0018,106A)	CS	SynchronizationTrigger	1-2
-(0018,106B)	UI	SynchronizationFrameOfReference	1
-(0018,106E)	UL	TriggerSamplePosition	1
-(0018,1800)	CS	AcquisitionTimeSynchronized	1
-(0018,1801)	SH	TimeSource	1
-(0018,1802)	CS	TimeDistributionProtocol	1
-(003A,0002)	SQ	WaveformSequence	1-n
-# The Curve module also defines an attribute NumberOfChannels (5000-50ff,2004)
-(003A,0005)	US	WaveformNumberOfChannels	1
-# The Curve module also defines an attribute NumberOfSamples (5000-50ff,2006)
-(003A,0010)	UL	WaveformNumberOfSamples	1
-(003A,001A)	DS	SamplingFrequency	1-2
-(003A,0020)	SH	GroupLabel	1
-(003A,0103)	CS	WaveformSampleValueRepresentation	1
-(003A,0122)	OB	WaveformPaddingValue	1
-(003A,0200)	SQ	ChannelDefinition	1-n
+(3008,0010)	SQ	MeasuredDoseReferenceSequence	1	DICOM3
+(3008,0012)	ST	MeasuredDoseDescription	1	DICOM3
+(3008,0014)	CS	MeasuredDoseType	1	DICOM3
+(3008,0016)	DS	MeasuredDoseValue	1	DICOM3
+(3008,0020)	SQ	TreatmentSessionBeamSequence	1	DICOM3
+(3008,0022)	IS	CurrentFractionNumber	1	DICOM3
+(3008,0024)	DA	TreatmentControlPointDate	1	DICOM3
+(3008,0025)	TM	TreatmentControlPointTime	1	DICOM3
+# TreatmentDeliveryType is defined as (300A,00CE) in Supplement 11.
+(3008,0028)	CS	RTTR_TreatmentDeliveryType	1	DICOM3
+(3008,002A)	CS	TreatmentTerminationStatus	1	DICOM3
+(3008,002B)	SH	TreatmentTerminationCode	1	DICOM3
+(3008,002C)	CS	TreatmentVerificationStatus	1	DICOM3
+(3008,0030)	SQ	ReferencedTreatmentRecordSequence	1	DICOM3
+(3008,0032)	DS	SpecifiedPrimaryMeterset	1	DICOM3
+(3008,0033)	DS	SpecifiedSecondaryMeterset	1	DICOM3
+(3008,0036)	DS	DeliveredPrimaryMeterset	1	DICOM3
+(3008,0037)	DS	DeliveredSecondaryMeterset	1	DICOM3
+(3008,003A)	DS	SpecifiedTreatmentTime	1	DICOM3
+(3008,003B)	DS	DeliveredTreatmentTime	1	DICOM3
+(3008,0040)	SQ	ControlPointDeliverySequence	1	DICOM3
+(3008,0042)	DS	SpecifiedMeterset	1	DICOM3
+(3008,0044)	DS	DeliveredMeterset	1	DICOM3
+(3008,0048)	DS	DoseRateDelivered	1	DICOM3
+(3008,0050)	SQ	TreatmentSummaryCalculatedDoseReferenceSequence	1	DICOM3
+(3008,0052)	DS	CumulativeDosetoDoseReference	1	DICOM3
+(3008,0054)	DA	FirstTreatmentDate	1	DICOM3
+(3008,0056)	DA	MostRecentTreatmentDate	1	DICOM3
+(3008,0058)	IS	NumberofFractionsPlanned	1	DICOM3
+(3008,005A)	IS	NumberofFractionsDelivered	1	DICOM3
+(3008,0060)	SQ	OverrideSequence	1	DICOM3
+(3008,0062)	AT	OverrideParameterPointer	1	DICOM3
+(3008,0064)	IS	MeasuredDoseReferenceNumber	1	DICOM3
+(3008,0066)	ST	OverrideReason	1	DICOM3
+(3008,0070)	SQ	CalculatedDoseReferenceSequence	1	DICOM3
+(3008,0072)	IS	CalculatedDoseReferenceNumber	1	DICOM3
+(3008,0074)	ST	CalculatedDoseReferenceDescription	1	DICOM3
+(3008,0076)	DS	CalculatedDoseReferenceDoseValue	1	DICOM3
+(3008,0078)	DS	StartMeterset	1	DICOM3
+(3008,007A)	DS	EndMeterset	1	DICOM3
+(3008,0080)	SQ	ReferencedMeasuredDoseReferenceSequence	1	DICOM3
+(3008,0082)	IS	ReferencedMeasuredDoseReferenceNumber	1	DICOM3
+(3008,0090)	SQ	ReferencedCalculatedDoseReferenceSequence	1	DICOM3
+(3008,0092)	IS	ReferencedCalculatedDoseReferenceNumber	1	DICOM3
+(3008,00A0)	SQ	BeamLimitingDeviceLeafPairsSequence	1	DICOM3
+(3008,00B0)	SQ	RecordedWedgeSequence	1	DICOM3
+(3008,00C0)	SQ	RecordedCompensatorSequence	1	DICOM3
+(3008,00E0)	SQ	TreatmentSummaryMeasuredDoseReferenceSequence	1	DICOM3
+(3008,0100)	SQ	RecordedSourceSequence	1	DICOM3
+# SourceManufacturer is defined as (300A,0216) in Supplement 11.
+(3008,0105)	LO	RTTR_SourceManufacturer	1	DICOM3
+(3008,0110)	SQ	TreatmentSessionApplicationSetupSequence	1	DICOM3
+(3008,0112)	IS	ReferencedApplicationSetupNumber	1	DICOM3
+(3008,0116)	CS	ApplicationSetupCheck	1	DICOM3
+(3008,0120)	SQ	RecordedBrachyAccessoryDeviceSequence	1	DICOM3
+(3008,0122)	IS	ReferencedBrachyAccessoryDeviceNumber	1	DICOM3
+(3008,0130)	SQ	RecordedChannelSequence	1	DICOM3
+(3008,0132)	DS	SpecifiedChannelTotalTime	1	DICOM3
+(3008,0134)	DS	DeliveredChannelTotalTime	1	DICOM3
+(3008,0136)	IS	SpecifiedNumberofPulses	1	DICOM3
+(3008,0138)	IS	DeliveredNumberofPulses	1	DICOM3
+(3008,013A)	DS	SpecifiedPulseRepititionInterval	1	DICOM3
+(3008,013C)	DS	DeliveredPulseRepititionInterval	1	DICOM3
+(3008,0140)	SQ	RecordedSourceApplicatorSequence	1	DICOM3
+(3008,0142)	IS	ReferencedSourceApplicatorNumber	1	DICOM3
+(3008,0150)	SQ	RecordedChannelShieldSequence	1	DICOM3
+(3008,0152)	IS	ReferencedChannelShieldNumber	1	DICOM3
+(3008,0160)	SQ	BrachyControlPointDeliveredSequence	1	DICOM3
+(3008,0162)	DA	SafePositionExitDate	1	DICOM3
+(3008,0164)	TM	SafePositionExitTime	1	DICOM3
+(3008,0166)	DA	SafePositionReturnDate	1	DICOM3
+(3008,0168)	TM	SafePositionReturnTime	1	DICOM3
+(3008,0200)	CS	CurrentTreatmentStatus	1	DICOM3
+(3008,0202)	ST	TreatmentStatusComment	1	DICOM3
+(3008,0220)	SQ	FractionGroupSummarySequence	1	DICOM3
+# ReferencedFractionGroupNumber is defined as (300C,0022) in Supplement 11.
+(3008,0222)	IS	RTTR_ReferencedFractionGroupNumber	1	DICOM3
+(3008,0223)	IS	ReferencedFractionNumber	1	DICOM3
+(3008,0224)	CS	FractionGroupType	1	DICOM3
+(3008,0230)	CS	BeamStopperPosition	1	DICOM3
+(3008,0240)	SQ	FractionStatusSummarySequence	1	DICOM3
+(3008,0250)	DA	FractionDate	1	DICOM3
+(3008,0251)	TM	FractionTime	1	DICOM3
+(300A,00B9)	SH	RTBeamLimitingDeviceID	1	DICOM3
+(300A,00EE)	CS	CompensatorType	1	DICOM3
+#
+#---------------------------------------------------------------------------
+#
+# Supplement 30: Waveform Interchange
+# Frozen draft for demonstration, Version 0.8 (frozen) - 6 October 1997
+#
+# WARNING: These data dictionary attributes come from a DRAFT 
+# document and are likely to change.  Included for experimental
+# purposes only.
+#
+(0008,0062)	SQ	ModalitySubtype	1	DICOM3
+(0008,1148)	SQ	ReferencedPreviousWaveform	1	DICOM3
+(0008,114A)	SQ	ReferencedSimultaneousWaveforms	1-n	DICOM3
+(0008,114C)	SQ	ReferencedSubsequentWaveform	1	DICOM3
+(0018,1067)	DS	ImageTriggerDelay	1	DICOM3
+(0018,1068)	DS	GroupTimeOffset	1	DICOM3
+(0018,1069)	DS	TriggerTimeOffset	1	DICOM3
+(0018,106A)	CS	SynchronizationTrigger	1-2	DICOM3
+(0018,106B)	UI	SynchronizationFrameofReference	1	DICOM3
+(0018,106E)	UL	TriggerSamplePosition	1	DICOM3
+(0018,1800)	CS	AcquisitionTimeSynchronized	1	DICOM3
+(0018,1801)	SH	TimeSource	1	DICOM3
+(0018,1802)	CS	TimeDistributionProtocol	1	DICOM3
+(003A,0002)	SQ	WaveformSequence	1-n	DICOM3
+(003A,0005)	US	NumberofChannels	1	DICOM3
+(003A,0010)	UL	NumberofSamples	1	DICOM3
+(003A,001A)	DS	SamplingFrequency	1-2	DICOM3
+(003A,0020)	SH	GroupLabel	1	DICOM3
+(003A,0103)	CS	WaveformSampleValueRepresentation	1	DICOM3
+(003A,0122)	OB	WaveformPaddingValue	1	DICOM3
+(003A,0200)	SQ	ChannelDefinition	1-n	DICOM3
 # Radiotherapy also defines an attribute ChannelNumber (300A,0282)
-(003A,0202)	IS	WaveformChannelNumber	1
-(003A,0203)	SH	ChannelLabel	1
-(003A,0205)	CS	ChannelStatus	1-n
-(003A,0208)	SQ	WaveformSource	1
-(003A,0209)	SQ	WaveformSourceModifiers	1-n
-(003A,020A)	SQ	DifferentialWaveformSource	1
-(003A,020B)	SQ	DifferentialWaveformSourceModifiers	1-n
-(003A,0210)	DS	ChannelSensitivity	1
-(003A,0211)	SQ	ChannelSensitivityUnits	1
-(003A,0212)	DS	ChannelSensitivityCorrectionFactor	1
-(003A,0213)	DS	ChannelBaseline	1
-(003A,0214)	DS	ChannelTimeSkew	1
-(003A,0215)	DS	ChannelOffset	1
-(003A,021A)	US	BitsPerSample	1
-(003A,0216)	OB	ChannelMinimumValue	1
-(003A,0217)	OB	ChannelMaximumValue	1
-(003A,0220)	DS	FilterLowFrequency	1
-(003A,0221)	DS	FilterHighFrequency	1
-(003A,0222)	DS	NotchFilterFrequency	1
-(003A,0223)	DS	NotchFilterBandwidth	1
-(003A,1000)	OB	WaveformData	1
-(0040,A0A0)	CS	ReferencedTypeOfData	1
-(0040,A0B0)	US	ReferencedWaveformChannels	2-2n
-(0040,A130)	CS	TemporalRangeType	1
-(0040,A132)	UL	ReferencedSampleOffsets	1-n
-(0040,A138)	DS	ReferencedTimeOffsets	1-n
-(0040,A13A)	DT	ReferencedDatetime	1-n
-(0040,A168)	SQ	ConceptCodeSequence	1-n
-(0040,A180)	US	AnnotationGroupNumber	1
-(0040,B020)	SQ	AnnotationSequence	1-n
+(003A,0202)	IS	WaveformChannelNumber	1	DICOM3
+(003A,0203)	SH	ChannelLabel	1	DICOM3
+(003A,0205)	CS	ChannelStatus	1-n	DICOM3
+(003A,0208)	SQ	WaveformSource	1	DICOM3
+(003A,0209)	SQ	WaveformSourceModifiers	1-n	DICOM3
+(003A,020A)	SQ	DifferentialWaveformSource	1	DICOM3
+(003A,020B)	SQ	DifferentialWaveformSourceModifiers	1-n	DICOM3
+(003A,0210)	DS	ChannelSensitivity	1	DICOM3
+(003A,0211)	SQ	ChannelSensitivityUnits	1	DICOM3
+(003A,0212)	DS	ChannelSensitivityCorrectionFactor	1	DICOM3
+(003A,0213)	DS	ChannelBaseline	1	DICOM3
+(003A,0214)	DS	ChannelTimeSkew	1	DICOM3
+(003A,0215)	DS	ChannelOffset	1	DICOM3
+(003A,021A)	US	BitsPerSample	1	DICOM3
+(003A,0216)	OB	ChannelMinimumValue	1	DICOM3
+(003A,0217)	OB	ChannelMaximumValue	1	DICOM3
+(003A,0220)	DS	FilterLowFrequency	1	DICOM3
+(003A,0221)	DS	FilterHighFrequency	1	DICOM3
+(003A,0222)	DS	NotchFilterFrequency	1	DICOM3
+(003A,0223)	DS	NotchFilterBandwidth	1	DICOM3
+(003A,1000)	OB	WaveformData	1	DICOM3
+(0040,A0A0)	CS	ReferencedTypeofData	1	DICOM3
+(0040,A0B0)	US	ReferencedWaveformChannels	2-2n	DICOM3
+(0040,A130)	CS	TemporalRangeType	1	DICOM3
+(0040,A132)	UL	ReferencedSampleOffsets	1-n	DICOM3
+(0040,A138)	DS	ReferencedTimeOffsets	1-n	DICOM3
+(0040,A13A)	DT	ReferencedDatetime	1-n	DICOM3
+# ConceptCodeSequence is also defined in Supplement 15.
+#(0040,A168)	SQ	ConceptCodeSequence	1-n	DICOM3
+(0040,A180)	US	AnnotationGroupNumber	1	DICOM3
+(0040,B020)	SQ	AnnotationSequence	1-n	DICOM3
+#
+#---------------------------------------------------------------------------
+#
+# Supplement 31: Security Enhancements One
+# Working Draft 0.20 - 4 May 1998
+#
+(7FE0,0001)	SQ	MACParametersSequence	1-n	DICOM3
+(FFFA,FFFA)	SQ	DigitalSignaturesSequence	1-n	DICOM3
+(FFFA,FFFC)	SQ	ChangeHistorySequence	1-n	DICOM3
+#
+#---------------------------------------------------------------------------
+#
+# Supplement 32: Digital X-Ray Supplement
+# Letter Ballot Text - 11 June 1998
+#
+(0008,0068)	CS	PresentationIntentType	1	DICOM3
+(0018,113A)	CS	TableType	1	DICOM3
+(0018,1156)	CS	RectificationType	1	DICOM3
+(0018,11A0)	DS	BodyPartThickness	1	DICOM3
+(0018,11A2)	DS	CompressionForce	1	DICOM3
+(0018,1490)	CS	TomoType	1	DICOM3
+(0018,1491)	CS	TomoClass	1	DICOM3
+(0018,1495)	IS	NumberofTomosynthesisSourceImages	1	DICOM3
+(0018,1508)	CS	PositionerType	1	DICOM3
+(0018,5104)	SQ	ProjectionEponymousNameCodeSequence	1	DICOM3
+(0018,7000)	CS	DetectorConditionsNominalFlag	1	DICOM3
+(0018,7001)	DS	DetectorTemperature	1	DICOM3
+(0018,7004)	CS	DetectorType	1	DICOM3
+(0018,7005)	CS	DetectorConfiguration	1	DICOM3
+(0018,7006)	LT	DetectorDescription	1	DICOM3
+(0018,7008)	LT	DetectorMode	1	DICOM3
+(0018,700A)	SH	DetectorID	1	DICOM3
+(0018,700C)	DA	DateofLastDetectorCalibration	1	DICOM3
+(0018,700E)	TM	TimeofLastDetectorCalibration	1	DICOM3
+(0018,7010)	IS	ExposuresonDetectorSinceLastCalibration	1	DICOM3
+(0018,7011)	IS	ExposuresonDetectorSinceManufactured	1	DICOM3
+(0018,7012)	DS	DetectorTimeSinceLastExposure	1	DICOM3
+(0018,7014)	DS	DetectorActiveTime	1	DICOM3
+(0018,7016)	DS	DetectorActivationOffsetFromExposure	1	DICOM3
+(0018,701A)	DS	DetectorBinning	2	DICOM3
+(0018,7020)	DS	DetectorElementPhysicalSize	2	DICOM3
+(0018,7022)	DS	DetectorElementSpacing	2	DICOM3
+(0018,7024)	CS	DetectorActiveShape	1	DICOM3
+(0018,7026)	DS	DetectorActiveDimension(s)	1-2	DICOM3
+(0018,7028)	DS	DetectorActiveOrigin	2	DICOM3
+(0018,7030)	DS	FieldofViewOrigin	2	DICOM3
+(0018,7032)	DS	FieldofViewRotation	1	DICOM3
+(0018,7034)	CS	FieldofViewHorizontalFlip	1	DICOM3
+(0018,7040)	LT	GridAbsorbingMaterial	1	DICOM3
+(0018,7041)	LT	GridSpacingMaterial	1	DICOM3
+(0018,7042)	DS	GridThickness	1	DICOM3
+(0018,7044)	DS	GridPitch	1	DICOM3
+(0018,7046)	IS	GridAspectRatio	2	DICOM3
+(0018,7048)	DS	GridPeriod	1	DICOM3
+(0018,704C)	DS	GridFocalDistance	1	DICOM3
+(0018,7050)	LT	FilterMaterial	1-n	DICOM3
+(0018,7052)	DS	FilterThicknessMinimum	1-n	DICOM3
+(0018,7054)	DS	FilterThicknessMaximum	1-n	DICOM3
+(0018,7060)	CS	ExposureControlMode	1	DICOM3
+(0018,7062)	LT	ExposureControlModeDescription	1	DICOM3
+(0018,7064)	CS	ExposureStatus	1	DICOM3
+(0018,7065)	DS	PhototimerSetting	1	DICOM3
+(0020,0062)	CS	ImageLaterality	1	DICOM3
+(0028,0300)	CS	QualityControlImage	1	DICOM3
+(0028,0301)	CS	BurnedInAnnotation	1	DICOM3
+(0028,1041)	SS	PixelIntensityRelationshipSign	1	DICOM3
+(0028,1300)	CS	ImplantPresent	1	DICOM3
+(0028,2112)	DS	LossyImageCompressionRatio	1-n	DICOM3
+# DistanceSourcetoEntrance is also defined in Supplement 17.
+#(0040,0306)	DS	DistanceSourcetoEntrance	1	DICOM3
+(0040,0307)	DS	DistanceSourcetoSupport	1	DICOM3
+(0040,0312)	DS	X-RayOutput	1	DICOM3
+(0040,0314)	DS	HalfValueLayer	1	DICOM3
+(0040,0316)	DS	OrganDose	1	DICOM3
+(0040,0318)	CS	OrganExposed	1	DICOM3
+(0060,3000)	SQ	HistogramSequence	1	DICOM3
+(0060,3002)	US	HistogramNumberofBins	1	DICOM3
+(0060,3004)	SS	HistogramFirstBinValueUSor	1	DICOM3
+(0060,3006)	SS	HistogramLastBinValueUSor	1	DICOM3
+(0060,3008)	US	HistogramBinWidth	1	DICOM3
+(0060,3010)	LO	HistogramExplanation	1	DICOM3
+(0060,3020)	UL	HistogramData	1-n	DICOM3
+#
+#---------------------------------------------------------------------------
+#
+# Supplement 33 is still unstable.
+#
+#---------------------------------------------------------------------------
+#
+# Supplement 34 was cancelled.
+#
+#---------------------------------------------------------------------------
+#
+# Supplement 35: Retire Referenced Print
+# Letter Ballot Text - April 17, 1998
+#
+# retires (2020,0130) ReferencedOverlayBoxSequence
+# retires (2020,0140) ReferencedVOILUTSequence
+#
+#---------------------------------------------------------------------------
+#
+# Supplement 36: Codes and Controlled Terminology
+# Letter Ballot Text - June 11, 1998
+#
+(0008,0103)	SH	CodingSchemeVersion	1	DICOM3
+(0008,0105)	CS	MappingResource	1	DICOM3
+(0008,0106)	DT	ContextGroupVersion	1	DICOM3
+(0008,0107)	DT	ContextGroupLocalVersion	1	DICOM3
+(0008,010B)	CS	CodeSetExtensionFlag	1	DICOM3
+(0008,010C)	UI	PrivateCodingSchemeCreatorUID	1	DICOM3
+(0008,010D)	UI	CodeSetExtensionCreatorUID	1	DICOM3
+(0008,010F)	CS	ContextIdentifier	1	DICOM3
+#
+#---------------------------------------------------------------------------
+#
+# Supplement 37: Printer Configuration Retrieval SOP Class
+#                and New Optional Attributes for Basic Print
+# Letter Ballot Text - June 11, 1998
+#
+(0008,115A)	UI	SOPClassesSupported	1-n	DICOM3
+(0020,0019)	IS	ItemNumber	1	DICOM3
+# MaximumMemoryAllocation conflicts with ColorImagePrintingFlag
+# defined in Supplement 24 (revised final text).
+#(2000,0062)	IS	MaximumMemoryAllocation	1	DICOM3
+(2000,001E)	SQ	PrinterConfigurationSequence	1	DICOM3
+(2000,00A0)	US	MemoryBitDepth	1	DICOM3
+(2000,00A1)	US	PrintingBitDepth	1	DICOM3
+(2000,00A2)	SQ	MediaInstalledSequence	1	DICOM3
+(2000,00A4)	SQ	OtherMediaAvailableSequence	1	DICOM3
+(2000,00A8)	SQ	SupportedImageDisplayFormatsSequence	1	DICOM3
+(2010,0052)	CS	PrinterResolutionID	1	DICOM3
+(2010,0054)	CS	DefaultPrinterResolutionID	1	DICOM3
+(2010,00A6)	CS	DefaultMagnificationType	1	DICOM3
+(2010,00A7)	CS	OtherMagnificationTypesAvailable	1-n	DICOM3
+(2010,00A8)	CS	DefaultSmoothingType	1	DICOM3
+(2010,00A9)	CS	OtherSmoothingTypesAvailable	1-n	DICOM3
+(2010,0152)	LT	ConfigurationInformationDescription	1	DICOM3
+(2010,0154)	IS	MaximumCollatedFilms	1	DICOM3
+(2010,0376)	DS	PrinterPixelSpacing	2	DICOM3
+(2020,0040)	CS	RequestedDecimateCropBehavior	1	DICOM3
+(2020,0050)	CS	RequestedResolutionID	1	DICOM3
+(2020,00A0)	CS	RequestedImageSizeFlag	1	DICOM3
+(2020,00A2)	CS	DecimateCropResult	1	DICOM3
+#
+#---------------------------------------------------------------------------
+#
+# Supplement 38: Basic Print Image Overlay Box SOP Class
+#                and Retire Print Image Overlay Box SOP Class
+# Letter Ballot Text - June 11, 1998
+#
+(2040,0020)	SQ	OverlayPixelDataSequence	1	DICOM3
+(2020,0132)	SQ	ReferencedBasicPrintImageOverlayBoxSequence	1	DICOM3
+#
+# retires (2010,0510) ReferencedImageBoxSequence 
+# retires (2020,0130) ReferencedImageOverlayBoxSequence 
+# retires (2040,0090) OverlayMode 
+# retires (2040,0100) ThresholdDensity 
+#
+#---------------------------------------------------------------------------
+#
+# Supplement 39 does not define any new dictionary entries.
 #
 #---------------------------------------------------------------------------
 #
 # Papyrus 3.0 Attributes
+# - disabled to prevent problems with other private tags in this range -
 #
-(0041,0000)	UL	Pap3GroupLength	1	PAPYRUS3
-(0041,0080)	LO	Pap3OwnerComments	1	PAPYRUS3
-(0041,8000)	LT	Pap3Comments	1	PAPYRUS3
-(0041,8010)	SQ	Pap3PointerSequence	1	PAPYRUS3
-(0041,8011)	up	Pap3ImagePointer	1	PAPYRUS3
-(0041,8012)	up	Pap3PixelOffset	1	PAPYRUS3
-(0041,8013)	SQ	Pap3ImageIdentifierSequence	1	PAPYRUS3
-(0041,8014)	SQ	Pap3ExternalPAPYRUSFileReferenceSequence	1	PAPYRUS3
-(0041,8015)	US	Pap3NumberOfImages	1	PAPYRUS3
-(0041,8021)	UI	Pap3ReferencedSOPClassUID	1	PAPYRUS3
-(0041,8022)	UI	Pap3ReferencedSOPInstanceUID	1	PAPYRUS3
-(0041,8031)	LO	Pap3ReferencedFileName	1	PAPYRUS3
-(0041,8032)	LO	Pap3ReferencedFilePath	1-n	PAPYRUS3
-(0041,8041)	UI	Pap3ReferencedImageSOPClassUID	1	PAPYRUS3
-(0041,8042)	UI	Pap3ReferencedImageSOPInstanceUID	1	PAPYRUS3
-(0041,8050)	SQ	Pap3ImageSequence	1	PAPYRUS3
+#(0041,0000)	UL	Pap3GroupLength	1	PAPYRUS3
+#(0041,0080)	LO	Pap3OwnerComments	1	PAPYRUS3
+#(0041,8000)	LT	Pap3Comments	1	PAPYRUS3
+#(0041,8010)	SQ	Pap3PointerSequence	1	PAPYRUS3
+#(0041,8011)	up	Pap3ImagePointer	1	PAPYRUS3
+#(0041,8012)	up	Pap3PixelOffset	1	PAPYRUS3
+#(0041,8013)	SQ	Pap3ImageIdentifierSequence	1	PAPYRUS3
+#(0041,8014)	SQ	Pap3ExternalPAPYRUSFileReferenceSequence	1	PAPYRUS3
+#(0041,8015)	US	Pap3NumberOfImages	1	PAPYRUS3
+#(0041,8021)	UI	Pap3ReferencedSOPClassUID	1	PAPYRUS3
+#(0041,8022)	UI	Pap3ReferencedSOPInstanceUID	1	PAPYRUS3
+#(0041,8031)	LO	Pap3ReferencedFileName	1	PAPYRUS3
+#(0041,8032)	LO	Pap3ReferencedFilePath	1-n	PAPYRUS3
+#(0041,8041)	UI	Pap3ReferencedImageSOPClassUID	1	PAPYRUS3
+#(0041,8042)	UI	Pap3ReferencedImageSOPInstanceUID	1	PAPYRUS3
+#(0041,8050)	SQ	Pap3ImageSequence	1	PAPYRUS3
 #
 #---------------------------------------------------------------------------
 #
 # Papyrus 3.1 Attributes
 # Working Draft 0.1 - February 1996
+# - disabled to prevent problems with other private tags in this range -
 #
-(0041,0000)	UL	Pap31GroupLength	1	PAPYRUS31
-(0041,0010)	LO	Pap31OwnerID	1	PAPYRUS31
-(0041,1000)	LT	Pap31Comments	1	PAPYRUS31
-(0041,1010)	SQ	Pap31PointerSequence	1	PAPYRUS31
-(0041,1011)	UL	Pap31ImagePointer	1	PAPYRUS31
-(0041,1012)	UL	Pap31PixelOffset	1	PAPYRUS31
-(0041,1013)	SQ	Pap31ImageIdentifierSequence	1	PAPYRUS31
-(0041,1014)	SQ	Pap31ExternalPAPYRUSFileReferenceSequence	1	PAPYRUS31
-(0041,1015)	US	Pap31NumberOfImages	1	PAPYRUS31
-(0041,1021)	UI	Pap31ReferencedSOPClassUID	1	PAPYRUS31
-(0041,1022)	UI	Pap31ReferencedSOPInstanceUID	1	PAPYRUS31
-(0041,1031)	LO	Pap31ReferencedFileName	1	PAPYRUS31
-(0041,1032)	LO	Pap31ReferencedFilePath	1-n	PAPYRUS31
-(0041,1041)	UI	Pap31ReferencedImageSOPClassUID	1	PAPYRUS31
-(0041,1042)	UI	Pap31ReferencedImageSOPInstanceUID	1	PAPYRUS31
-(0041,1050)	SQ	Pap31ImageSequence	1	PAPYRUS31
+#(0041,0000)	UL	Pap31GroupLength	1	PAPYRUS31
+#(0041,0010)	LO	Pap31OwnerID	1	PAPYRUS31
+#(0041,1000)	LT	Pap31Comments	1	PAPYRUS31
+#(0041,1010)	SQ	Pap31PointerSequence	1	PAPYRUS31
+#(0041,1011)	UL	Pap31ImagePointer	1	PAPYRUS31
+#(0041,1012)	UL	Pap31PixelOffset	1	PAPYRUS31
+#(0041,1013)	SQ	Pap31ImageIdentifierSequence	1	PAPYRUS31
+#(0041,1014)	SQ	Pap31ExternalPAPYRUSFileReferenceSequence	1	PAPYRUS31
+#(0041,1015)	US	Pap31NumberOfImages	1	PAPYRUS31
+#(0041,1021)	UI	Pap31ReferencedSOPClassUID	1	PAPYRUS31
+#(0041,1022)	UI	Pap31ReferencedSOPInstanceUID	1	PAPYRUS31
+#(0041,1031)	LO	Pap31ReferencedFileName	1	PAPYRUS31
+#(0041,1032)	LO	Pap31ReferencedFilePath	1-n	PAPYRUS31
+#(0041,1041)	UI	Pap31ReferencedImageSOPClassUID	1	PAPYRUS31
+#(0041,1042)	UI	Pap31ReferencedImageSOPInstanceUID	1	PAPYRUS31
+#(0041,1050)	SQ	Pap31ImageSequence	1	PAPYRUS31
 #
 #---------------------------------------------------------------------------
 #
@@ -1840,21 +2052,21 @@
 # Correction Number CP-101
 # Log Summary: Standard Text VR too short for Information Systems
 #
-(0008,0051)	LO	AccessionNumberLong	1
-(0008,0095)	LO	ReferringPhysiciansTelephoneNumbersLong	1-n
-(0010,1041)	ST	PatientsAddressLong	1
-(0010,2001)	VS	MedicalAlertsLong	1-n
-(0010,2111)	VS	ContrastAllergiesLong	1-n
-(0010,2155)	LO	PatientsTelephoneNumbersLong	1-n
-(0010,2161)	LO	EthnicGroupLong	1
-(0010,2181)	LO	OccupationLong	1
-(0040,1013)	UT	ReasonForTheRequestedProcedureLong	1
-(0040,2002)	UT	ReasonForTheImagingServiceRequestLong	1
-(0032,1031)	UT	ReasonForStudyLong	1
-(4008,010D)	UT	InterpretationTextLong	1
-(4008,0116)	UT	InterpretationDiagnosisDescriptionLong	1
-(4008,011B)	ST	DistributionAddressLong	1
-(4008,0301)	UT	ImpressionsLong	1
+(0008,0051)	LO	AccessionNumberLong	1	DICOM3
+(0008,0095)	LO	ReferringPhysiciansTelephoneNumbersLong	1-n	DICOM3
+(0010,1041)	ST	PatientsAddressLong	1	DICOM3
+(0010,2001)	VS	MedicalAlertsLong	1-n	DICOM3
+(0010,2111)	VS	ContrastAllergiesLong	1-n	DICOM3
+(0010,2155)	LO	PatientsTelephoneNumbersLong	1-n	DICOM3
+(0010,2161)	LO	EthnicGroupLong	1	DICOM3
+(0010,2181)	LO	OccupationLong	1	DICOM3
+(0040,1013)	UT	ReasonForTheRequestedProcedureLong	1	DICOM3
+(0040,2002)	UT	ReasonForTheImagingServiceRequestLong	1	DICOM3
+(0032,1031)	UT	ReasonForStudyLong	1	DICOM3
+(4008,010D)	UT	InterpretationTextLong	1	DICOM3
+(4008,0116)	UT	InterpretationDiagnosisDescriptionLong	1	DICOM3
+(4008,011B)	ST	DistributionAddressLong	1	DICOM3
+(4008,0301)	UT	ImpressionsLong	1	DICOM3
 #
 #---------------------------------------------------------------------------
 #
