@@ -291,6 +291,11 @@ SOURCE=../../dcmsr\libsrc\dsrpnmtn.cxx
 # End Source File
 # Begin Source File
 
+SOURCE=../../dcmsr\libsrc\dsrprocc.cxx
+
+# End Source File
+# Begin Source File
+
 SOURCE=../../dcmsr\libsrc\dsrreftn.cxx
 
 # End Source File
