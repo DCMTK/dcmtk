@@ -1,18 +1,18 @@
-Recommended project directory structure for the dcmtk-Project
+Recommended project directory structure for the dcmtk project
 =============================================================
 
 dcmtk
     config
+        docs
         include
         templates
-	docs
     module1
-        libsrc          # Library sources
-        include         # include Directory
-        apps            # Application programs
-        tests           # Test programs
+        apps            # application programs
         docs            # documentation
-        html            # optional HTML documentation
+        htmldocs        # optional HTML documentation
+        include         # include directory
+        libsrc          # library sources
+        tests           # test programs
     module2
     ...
 
@@ -27,4 +27,3 @@ There are more files in the template directory:
     Makefile.src:   Sample Makefile.in for applications in apps, tests
 
 More information about configure.mod can be found in modules.txt
-
