@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 1999.08.17 (riesmeier)
+
+- Commented unused parameter name to avoid compiler warnings.
+  Affects: dcmimage/include/dicoopxt.h
+
+- Removed unused parameter.
+  Affects: dcmimage/include/dicoopxt.h
+           dcmimage/libsrc/dicoimg.cc
+  
 **** Changes from 1999.07.23 (riesmeier)
 
 - Added new interpolation algorithm for scaling.
