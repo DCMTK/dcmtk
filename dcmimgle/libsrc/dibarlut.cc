@@ -22,9 +22,9 @@
  *  Purpose: DicomBartenLUT (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-28 15:01:42 $
+ *  Update Date:      $Date: 1999-04-29 13:49:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/Attic/dibarlut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -119,7 +119,7 @@ int DiBartenLUT::createLUT(const Uint16 *ddl_tab,
                 double *gsdf = new double[Count];                       // interpolated GSDF
                 if (gsdf != NULL)
                 {     
-                    if (CubicSpline<double, double>::Interpolation(jnd_idx, gsdf_tab, gsdf_spl, gsdf_cnt, jidx, gsdf, Count))
+                    if (DiCubicSpline<double, double>::Interpolation(jnd_idx, gsdf_tab, gsdf_spl, gsdf_cnt, jidx, gsdf, Count))
                     {
                         DataBuffer = new Uint16[Count];
                         if (DataBuffer != NULL)
@@ -172,7 +172,10 @@ int DiBartenLUT::createLUT(const Uint16 *ddl_tab,
  *
  * CVS/RCS Log:
  * $Log: dibarlut.cc,v $
- * Revision 1.8  1999-04-28 15:01:42  joergr
+ * Revision 1.9  1999-04-29 13:49:36  joergr
+ * Renamed class CubicSpline to DiCubicSpline.
+ *
+ * Revision 1.8  1999/04/28 15:01:42  joergr
  * Introduced new scheme for the debug level variable: now each level can be
  * set separately (there is no "include" relationship).
  *

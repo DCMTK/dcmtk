@@ -22,9 +22,9 @@
  *  Purpose: DicomDisplayFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-28 15:01:44 $
+ *  Update Date:      $Date: 1999-04-29 13:49:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/didispfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -407,7 +407,7 @@ int DiDisplayFunction::interpolateValues()
     {
         int status = 0;
         double *spline = new double[ValueCount];
-        if ((spline != NULL) && (CubicSpline<Uint16, double>::Function(DDLValue, LumValue, ValueCount, spline)))
+        if ((spline != NULL) && (DiCubicSpline<Uint16, double>::Function(DDLValue, LumValue, ValueCount, spline)))
         {
             const Uint16 count = ValueCount;
             Uint16 *old_ddl = DDLValue;
@@ -420,7 +420,7 @@ int DiDisplayFunction::interpolateValues()
                 register Uint16 i;
                 for (i = 0; i < ValueCount; i++)                          // set all DDL values, from 0 to max
                     DDLValue[i] = i;
-                status = CubicSpline<Uint16, double>::Interpolation(old_ddl, old_lum, spline, count, DDLValue, LumValue, ValueCount);
+                status = DiCubicSpline<Uint16, double>::Interpolation(old_ddl, old_lum, spline, count, DDLValue, LumValue, ValueCount);
             }
             delete[] old_ddl;
             delete[] old_lum;
@@ -484,7 +484,7 @@ int DiDisplayFunction::calculateGSDFSpline()
             register unsigned int *p = jidx;
             for (i = 1; i <= GSDFCount; i++)
                 *(p++) = i;
-            status = CubicSpline<unsigned int, double>::Function(jidx, GSDFValue, GSDFCount, GSDFSpline);
+            status = DiCubicSpline<unsigned int, double>::Function(jidx, GSDFValue, GSDFCount, GSDFSpline);
         }
         delete[] jidx;
     }
@@ -537,7 +537,10 @@ double DiDisplayFunction::getJNDIndex(const double lum) const
  *
  * CVS/RCS Log:
  * $Log: didispfn.cc,v $
- * Revision 1.11  1999-04-28 15:01:44  joergr
+ * Revision 1.12  1999-04-29 13:49:37  joergr
+ * Renamed class CubicSpline to DiCubicSpline.
+ *
+ * Revision 1.11  1999/04/28 15:01:44  joergr
  * Introduced new scheme for the debug level variable: now each level can be
  * set separately (there is no "include" relationship).
  *

@@ -19,12 +19,12 @@
  *
  *  Author:  Joerg Riesmeier
  *
- *  Purpose: CubicSplineFunction/Interpolation (Header/Implementation)
+ *  Purpose: DiCubicSpline Function/Interpolation (Header/Implementation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-24 17:20:26 $
+ *  Update Date:      $Date: 1999-04-29 13:49:08 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/displint.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -45,7 +45,7 @@
 /** Template class for cubic spline interpolation 
  */
 template <class T1, class T2>
-class CubicSpline
+class DiCubicSpline
 {
 
  public:
@@ -61,7 +61,7 @@ class CubicSpline
      *  @param  yp1  first derivative of the interpolating function at point 1
      *  @param  ypn  first derivative of the interpolating function at point n
      *
-     ** @result true if successful, false otherwise
+     ** @return true if successful, false otherwise
      */
     static int Function(const T1 *x,
                         const T2 *y,
@@ -123,7 +123,7 @@ class CubicSpline
      *  @param  y    array used to store interpolated values
      *  @param  n    number of entries in above array (x and y)
      *
-     ** @result true if successful, false otherwise
+     ** @return true if successful, false otherwise
      */
     static int Interpolation(const T1 *xa,
                              const T2 *ya,
@@ -180,7 +180,10 @@ class CubicSpline
  *
  * CVS/RCS Log:
  * $Log: displint.h,v $
- * Revision 1.4  1999-03-24 17:20:26  joergr
+ * Revision 1.5  1999-04-29 13:49:08  joergr
+ * Renamed class CubicSpline to DiCubicSpline.
+ *
+ * Revision 1.4  1999/03/24 17:20:26  joergr
  * Added/Modified comments and formatting.
  *
  * Revision 1.3  1999/03/22 08:52:43  joergr
