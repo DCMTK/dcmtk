@@ -23,8 +23,8 @@
  *    classes: DSRXMLDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-03-25 17:32:41 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2004-04-07 12:04:48 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,8 +41,6 @@
 
 #ifdef WITH_LIBXML
 #include <libxml/xmlschemas.h>
-#endif
-
 
 #ifdef HAVE_VPRINTF
 // function required to avoid issue with 'std' namespace
@@ -64,6 +62,8 @@ static void noErrorFunction(void * /*ctx*/, const char * /*msg*/, ...)
 {
     /* do nothing */
 }
+
+#endif /* WITH_LIBXML */
 
 
 /* ------------------------ */
@@ -113,10 +113,10 @@ void DSRXMLDocument::setLogStream(OFConsole *stream)
 }
 
 
+#ifdef WITH_LIBXML
 OFCondition DSRXMLDocument::read(const OFString &filename,
                                  const size_t flags)
 {
-#ifdef WITH_LIBXML
     OFCondition result = SR_EC_InvalidDocument;
     /* first remove any possibly existing document from memory */
     clear();
@@ -221,10 +221,14 @@ OFCondition DSRXMLDocument::read(const OFString &filename,
         printErrorMessage(LogStream, "Could not parse document");
     }
     return result;
-#else
-    return EC_IllegalCall;
-#endif
 }
+#else /* WITH_LIBXML */
+OFCondition DSRXMLDocument::read(const OFString &,
+                                 const size_t)
+{
+    return EC_IllegalCall;
+}
+#endif
 
 
 OFBool DSRXMLDocument::encodingHandlerValid() const
@@ -233,21 +237,25 @@ OFBool DSRXMLDocument::encodingHandlerValid() const
 }
 
 
+#ifdef WITH_LIBXML
 OFCondition DSRXMLDocument::setEncodingHandler(const char *charset)
 {
-    OFCondition result = EC_IllegalCall;
-#ifdef WITH_LIBXML
+    OFCondition result = EC_IllegalParameter;
     if ((charset != NULL) && (strlen(charset) > 0))
     {
         /* find appropriate encoding handler */
         EncodingHandler = xmlFindCharEncodingHandler(charset);
         if (EncodingHandler != NULL)
             result = EC_Normal;
-    } else
-        result = EC_IllegalParameter;
-#endif
+    }
     return result;
 }
+#else /* WITH_LIBXML */
+OFCondition DSRXMLDocument::setEncodingHandler(const char *)
+{
+	return EC_IllegalCall;
+}
+#endif
 
 
 DSRXMLCursor DSRXMLDocument::getRootNode() const
@@ -261,12 +269,12 @@ DSRXMLCursor DSRXMLDocument::getRootNode() const
 }
 
 
+#ifdef WITH_LIBXML
 DSRXMLCursor DSRXMLDocument::getNamedNode(const DSRXMLCursor &cursor,
                                           const char *name,
                                           const OFBool required) const
 {
     DSRXMLCursor result;
-#ifdef WITH_LIBXML
     /* check whether given name is valid */
     if ((name != NULL) && (strlen(name) > 0))
     {
@@ -303,31 +311,45 @@ DSRXMLCursor DSRXMLDocument::getNamedNode(const DSRXMLCursor &cursor,
             result.Node = current;
         }
     }
-#endif
     return result;
 }
+#else /* WITH_LIBXML */
+DSRXMLCursor DSRXMLDocument::getNamedNode(const DSRXMLCursor &,
+                                          const char *,
+                                          const OFBool) const
+{
+    DSRXMLCursor result;
+    return result;
+}
+#endif
 
 
+#ifdef WITH_LIBXML
 OFBool DSRXMLDocument::matchNode(const DSRXMLCursor &cursor,
                                  const char *name) const
 {
     OFBool result = OFFalse;
-#ifdef WITH_LIBXML
     if (cursor.Node != NULL)
     {
         /* check whether node name matches */
         if ((name != NULL) && (strlen(name) > 0))
             result = (xmlStrcmp(cursor.Node->name, OFreinterpret_cast(const xmlChar *, name)) == 0);
     }
-#endif
     return result;
 }
+#else /* WITH_LIBXML */
+OFBool DSRXMLDocument::matchNode(const DSRXMLCursor &,
+                                 const char *) const
+{
+	return OFFalse;
+}
+#endif
 
 
+#ifdef WITH_LIBXML
 OFCondition DSRXMLDocument::checkNode(const DSRXMLCursor &cursor,
                                       const char *name) const
 {
-#ifdef WITH_LIBXML
     OFCondition result = EC_IllegalParameter;
     /* check whether parameters are valid */
     if ((name != NULL) && (strlen(name) > 0))
@@ -356,17 +378,21 @@ OFCondition DSRXMLDocument::checkNode(const DSRXMLCursor &cursor,
         }
     }
     return result;
-#else
-    return EC_IllegalCall;
-#endif
 }
+#else /* WITH_LIBXML */
+OFCondition DSRXMLDocument::checkNode(const DSRXMLCursor &,
+                                      const char *) const
+{
+    return EC_IllegalCall;
+}
+#endif
 
 
+#ifdef WITH_LIBXML
 OFBool DSRXMLDocument::convertUtf8ToCharset(const xmlChar *fromString,
                                             OFString &toString) const
 {
     OFBool result = OFFalse;
-#ifdef WITH_LIBXML
     if (EncodingHandler != NULL)
     {
         /* prepare input/output buffers */
@@ -381,27 +407,40 @@ OFBool DSRXMLDocument::convertUtf8ToCharset(const xmlChar *fromString,
         xmlBufferFree(toBuffer);
         xmlBufferFree(fromBuffer);
     }
-#endif
     return result;
 }
+#else /* WITH_LIBXML */
+OFBool DSRXMLDocument::convertUtf8ToCharset(const xmlChar *,
+                                            OFString &) const
+{
+	return OFFalse;
+}
+#endif
 
 
+#ifdef WITH_LIBXML
 OFBool DSRXMLDocument::hasAttribute(const DSRXMLCursor &cursor,
                                     const char *name) const
 {
     OFBool result = OFFalse;
-#ifdef WITH_LIBXML
     if (cursor.Node != NULL)
     {
         /* check whether attribute exists */
         if ((name != NULL) && (strlen(name) > 0))
             result = (xmlHasProp(cursor.Node, OFreinterpret_cast(const xmlChar *, name)) != NULL);
     }
-#endif
     return result;
 }
+#else /* WITH_LIBXML */
+OFBool DSRXMLDocument::hasAttribute(const DSRXMLCursor &,
+                                    const char *) const
+{
+	return OFFalse;
+}
+#endif
 
 
+#ifdef WITH_LIBXML
 OFString &DSRXMLDocument::getStringFromAttribute(const DSRXMLCursor &cursor,
                                                  OFString &stringValue,
                                                  const char *name,
@@ -410,7 +449,6 @@ OFString &DSRXMLDocument::getStringFromAttribute(const DSRXMLCursor &cursor,
 {
     /* always clear result string */
     stringValue.clear();
-#ifdef WITH_LIBXML
     /* check whether parameters are valid */
     if ((cursor.Node != NULL) && (name != NULL) && (strlen(name) > 0))
     {
@@ -426,18 +464,28 @@ OFString &DSRXMLDocument::getStringFromAttribute(const DSRXMLCursor &cursor,
         /* free allocated memory */
         xmlFree(attrVal);
     }
-#endif
     return stringValue;
 }
+#else /* WITH_LIBXML */
+OFString &DSRXMLDocument::getStringFromAttribute(const DSRXMLCursor &,
+                                                 OFString &stringValue,
+                                                 const char *,
+                                                 const OFBool,
+                                                 const OFBool) const
+{
+    stringValue.clear();
+    return stringValue;
+}
+#endif
 
 
+#ifdef WITH_LIBXML
 OFCondition DSRXMLDocument::getElementFromAttribute(const DSRXMLCursor &cursor,
                                                     DcmElement &delem,
                                                     const char *name,
                                                     const OFBool encoding,
                                                     const OFBool required) const
 {
-#ifdef WITH_LIBXML
     OFCondition result = SR_EC_InvalidDocument;
     /* check whether parameters are valid */
     if ((cursor.Node != NULL) && (name != NULL) && (strlen(name) > 0))
@@ -458,12 +506,20 @@ OFCondition DSRXMLDocument::getElementFromAttribute(const DSRXMLCursor &cursor,
         xmlFree(attrVal);
     }
     return result;
-#else
-    return EC_IllegalCall;
-#endif
 }
+#else /* WITH_LIBXML */
+OFCondition DSRXMLDocument::getElementFromAttribute(const DSRXMLCursor &,
+                                                    DcmElement &,
+                                                    const char *,
+                                                    const OFBool,
+                                                    const OFBool) const
+{
+    return EC_IllegalCall;
+}
+#endif
 
 
+#ifdef WITH_LIBXML
 OFString &DSRXMLDocument::getStringFromNodeContent(const DSRXMLCursor &cursor,
                                                    OFString &stringValue,
                                                    const char *name,
@@ -472,7 +528,6 @@ OFString &DSRXMLDocument::getStringFromNodeContent(const DSRXMLCursor &cursor,
 {
     if (clearString)
         stringValue.clear();
-#ifdef WITH_LIBXML
     if (cursor.Node != NULL)
     {
         /* compare element name if required */
@@ -488,17 +543,27 @@ OFString &DSRXMLDocument::getStringFromNodeContent(const DSRXMLCursor &cursor,
             xmlFree(elemVal);
         }
     }
-#endif
     return stringValue;
 }
+#else /* WITH_LIBXML */
+OFString &DSRXMLDocument::getStringFromNodeContent(const DSRXMLCursor &,
+                                                   OFString &stringValue,
+                                                   const char *,
+                                                   const OFBool,
+                                                   const OFBool) const
+{
+    stringValue.clear();
+    return stringValue;
+}
+#endif
 
 
+#ifdef WITH_LIBXML
 OFCondition DSRXMLDocument::getElementFromNodeContent(const DSRXMLCursor &cursor,
                                                       DcmElement &delem,
                                                       const char *name,
                                                       const OFBool encoding) const
 {
-#ifdef WITH_LIBXML
     OFCondition result = SR_EC_InvalidDocument;
     if (cursor.Node != NULL)
     {
@@ -518,18 +583,24 @@ OFCondition DSRXMLDocument::getElementFromNodeContent(const DSRXMLCursor &cursor
         }
     }
     return result;
-#else
-    return EC_IllegalCall;
-#endif
 }
+#else /* WITH_LIBXML */
+OFCondition DSRXMLDocument::getElementFromNodeContent(const DSRXMLCursor &,
+                                                      DcmElement &,
+                                                      const char *,
+                                                      const OFBool) const
+{
+    return EC_IllegalCall;
+}
+#endif
 
 
+#ifdef WITH_LIBXML
 OFString &DSRXMLDocument::getFullNodePath(const DSRXMLCursor &cursor,
                                           OFString &stringValue,
                                           const OFBool omitCurrent)
 {
     stringValue.clear();
-#ifdef WITH_LIBXML
     if (cursor.Node != NULL)
     {
         OFString tmpString;
@@ -553,15 +624,23 @@ OFString &DSRXMLDocument::getFullNodePath(const DSRXMLCursor &cursor,
             stringValue = '.';
     } else
         stringValue = "<invalid>";
-#endif
     return stringValue;
 }
+#else /* WITH_LIBXML */
+OFString &DSRXMLDocument::getFullNodePath(const DSRXMLCursor &,
+                                          OFString &stringValue,
+                                          const OFBool)
+{
+    stringValue.clear();
+    return stringValue;
+}
+#endif
 
 
+#ifdef WITH_LIBXML
 DSRTypes::E_ValueType DSRXMLDocument::getValueTypeFromNode(const DSRXMLCursor &cursor) const
 {
     E_ValueType valueType = VT_invalid;
-#ifdef WITH_LIBXML
     if (cursor.valid())
     {
         if (xmlStrcmp(cursor.Node->name, OFreinterpret_cast(const xmlChar *, "item")) == 0)
@@ -582,9 +661,14 @@ DSRTypes::E_ValueType DSRXMLDocument::getValueTypeFromNode(const DSRXMLCursor &c
             valueType = xmlTagNameToValueType(OFreinterpret_cast(const char *, cursor.Node->name));
         }
     }
-#endif
     return valueType;
 }
+#else /* WITH_LIBXML */
+DSRTypes::E_ValueType DSRXMLDocument::getValueTypeFromNode(const DSRXMLCursor &) const
+{
+    return VT_invalid;
+}
+#endif
 
 
 DSRTypes::E_RelationshipType DSRXMLDocument::getRelationshipTypeFromNode(const DSRXMLCursor &cursor) const
@@ -657,7 +741,11 @@ void DSRXMLDocument::printGeneralNodeError(const DSRXMLCursor &cursor,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrxmld.cc,v $
- *  Revision 1.6  2004-03-25 17:32:41  joergr
+ *  Revision 1.7  2004-04-07 12:04:48  joergr
+ *  Adapted code to avoid warnings reported by gcc when compiling without libxml
+ *  support.
+ *
+ *  Revision 1.6  2004/03/25 17:32:41  joergr
  *  Solved issue with function pointer to std::fprintf or fprintf, respectively.
  *
  *  Revision 1.5  2004/01/21 11:56:20  meichel
