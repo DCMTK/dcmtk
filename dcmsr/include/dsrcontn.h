@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2001, OFFIS
+ *  Copyright (C) 2000-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRContainerTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:10:47 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2003-08-07 12:23:17 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,9 +52,11 @@ class DSRContainerTreeNode
 
   public:
 
-    /** constructor.
-     ** @param  relationshipType  type of relationship to the parent tree node.
-     *                            Should not be RT_invalid or RT_isRoot.
+    /** constructor
+     ** @param  relationshipType     type of relationship to the parent tree node.
+     *                               Should not be RT_invalid or RT_isRoot.
+     *  @param  continuityOfContent  Continuity of content flag (default: separate).
+     *                               Should be different from COC_invalid.
      */
     DSRContainerTreeNode(const E_RelationshipType relationshipType,
                          const E_ContinuityOfContent continuityOfContent = COC_Separate);
@@ -107,12 +109,13 @@ class DSRContainerTreeNode
      *  renderHTMLChildNodes() for details).  This method overwrites the one specified in base class
      *  DSRDocumentTree since the rendering of the child nodes depends on the value of the flag
      *  'ContinuityOfContent'.
-     ** @param  docStream    output stream to which the main HTML document is written
-     *  @param  annexStream  output stream to which the HTML document annex is written
-     *  @param  annexNumber  reference to the variable where the current annex number is stored.
-     *                       Value is increased automatically by 1 after a new entry has been added.
-     *  @param  flags        flag used to customize the output (see DSRTypes::HF_xxx)
-     *  @param  logStream    pointer to error/warning output stream (output disabled if NULL)
+     ** @param  docStream     output stream to which the main HTML document is written
+     *  @param  annexStream   output stream to which the HTML document annex is written
+     *  @param  nestingLevel  current nesting level.  Used to render section headings.
+     *  @param  annexNumber   reference to the variable where the current annex number is stored.
+     *                        Value is increased automatically by 1 after a new entry has been added.
+     *  @param  flags         flag used to customize the output (see DSRTypes::HF_xxx)
+     *  @param  logStream     pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition renderHTML(ostream &docStream,
@@ -127,13 +130,13 @@ class DSRContainerTreeNode
      *  node to the current one (without really adding the node).
      ** @param  documentType      type of document to which the content item belongs.
      *                            The document type has an impact on the relationship
-     *                            contraints. 
+     *                            contraints.
      *  @param  relationshipType  relationship type of the new node with regard to the
      *                            current one
      *  @param  valueType         value type of node to be checked/added
      *  @param  byReference       optional flag indicating whether the node/relationship
-     *                            should be added by-value (default) or by-reference
-     *                            (only for Comprehensive SR and Mammography CAD SR)
+     *                            should be added by-value (default) or by-reference.
+     *                            (only for Comprehensive SR, Mammography and Chest CAD SR)
      ** @return OFTrue if specified node can be added, OFFalse otherwise
      */
     virtual OFBool canAddNode(const E_DocumentType documentType,
@@ -161,7 +164,7 @@ class DSRContainerTreeNode
 
 
   protected:
-  
+
     /** read content item (value) from dataset
      ** @param  dataset    DICOM dataset from which the content item should be read
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
@@ -177,6 +180,14 @@ class DSRContainerTreeNode
      */
     virtual OFCondition writeContentItem(DcmItem &dataset,
                                          OFConsole *logStream) const;
+
+    /** read content item specific XML data
+     ** @param  doc     document containing the XML file content
+     *  @param  cursor  cursor pointing to the starting node
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition readXMLContentItem(const DSRXMLDocument &doc,
+                                           DSRXMLCursor cursor);
 
     /** render content item (value) in HTML format
      ** @param  docStream     output stream to which the main HTML document is written
@@ -195,10 +206,10 @@ class DSRContainerTreeNode
                                               const size_t flags,
                                               OFConsole *logStream) const;
 
-  
+
   private:
 
-    /// continuity of content flag (VR=CS, mandatory)
+    /// continuity of content flag (associated DICOM VR=CS, mandatory)
     E_ContinuityOfContent ContinuityOfContent;
 
 
@@ -216,7 +227,11 @@ class DSRContainerTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcontn.h,v $
- *  Revision 1.8  2001-11-09 16:10:47  joergr
+ *  Revision 1.9  2003-08-07 12:23:17  joergr
+ *  Added readXML functionality.
+ *  Updated documentation to get rid of doxygen warnings.
+ *
+ *  Revision 1.8  2001/11/09 16:10:47  joergr
  *  Added preliminary support for Mammography CAD SR.
  *
  *  Revision 1.7  2001/09/26 13:04:05  meichel
