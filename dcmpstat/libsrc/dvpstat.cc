@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPresentationState
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-07-12 12:49:05 $
- *  CVS/RCS Revision: $Revision: 1.64 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-11-13 15:50:46 $
+ *  CVS/RCS Revision: $Revision: 1.65 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -102,7 +102,6 @@ DVPresentationState::DVPresentationState(
 , presentationCreatorsName(DCM_PresentationCreatorsName)
 , referencedSeriesList()
 , sOPInstanceUID(DCM_SOPInstanceUID)
-, replaceInstanceUIDOnWrite(OFTrue)
 , specificCharacterSet(DCM_SpecificCharacterSet)
 , instanceCreationDate(DCM_InstanceCreationDate)
 , instanceCreationTime(DCM_InstanceCreationTime)
@@ -176,6 +175,7 @@ DVPresentationState::DVPresentationState(
 , verboseMode(OFFalse)
 , debugMode(OFFalse)
 {
+  createInstanceUID();
 }
 
 
@@ -248,7 +248,6 @@ void DVPresentationState::clear()
   presentationCreatorsName.clear();
   referencedSeriesList.clear();
   sOPInstanceUID.clear();
-  replaceInstanceUIDOnWrite = OFTrue;
   specificCharacterSet.clear();
   instanceCreationDate.clear();
   instanceCreationTime.clear();
@@ -289,12 +288,11 @@ void DVPresentationState::clear()
 
 const char *DVPresentationState::createInstanceUID()
 {
-  E_Condition result = EC_Normal;
   char uid[100];
   OFString aString;
   char *puid = NULL;
 
-  sOPInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
+  E_Condition result = sOPInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
   DVPSHelper::currentDate(aString);
   DVPSHelper::setDefault(result, instanceCreationDate, aString.c_str());
   DVPSHelper::currentTime(aString);
@@ -302,9 +300,22 @@ const char *DVPresentationState::createInstanceUID()
   if (EC_Normal == result)
   {
     if (EC_Normal != sOPInstanceUID.getString(puid)) puid=NULL;
-    else replaceInstanceUIDOnWrite = OFFalse;
   }
   return puid;
+}
+
+
+const char *DVPresentationState::getInstanceUID()
+{
+  char *puid = NULL;
+  if (EC_Normal != sOPInstanceUID.getString(puid)) puid=NULL;
+  return puid;
+}
+
+
+const char *DVPresentationState::getSOPClassUID()
+{
+  return UID_GrayscaleSoftcopyPresentationStateStorage;
 }
 
 
@@ -322,7 +333,7 @@ const char *DVPresentationState::getStudyUID()
 }
 
 
-E_Condition DVPresentationState::createDummyValues()
+E_Condition DVPresentationState::createDummyValues(OFBool replaceSOPInstanceUID)
 {
   E_Condition result = EC_Normal;
   char uid[100];
@@ -339,7 +350,7 @@ E_Condition DVPresentationState::createDummyValues()
   DVPSHelper::currentTime(aString);
   DVPSHelper::setDefault(result, presentationCreationTime, aString.c_str() );
 
-  if ((result==EC_Normal)&&(replaceInstanceUIDOnWrite ||(sOPInstanceUID.getLength()==0)))
+  if ((result==EC_Normal)&&(replaceSOPInstanceUID ||(sOPInstanceUID.getLength()==0)))
   {
     sOPInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
     DVPSHelper::currentDate(aString);
@@ -347,7 +358,6 @@ E_Condition DVPresentationState::createDummyValues()
     DVPSHelper::currentTime(aString);
     DVPSHelper::setDefault(result, instanceCreationTime, aString.c_str() );
   }
-  replaceInstanceUIDOnWrite = OFTrue; // reset flag for next write
 
   // default for specific character set is -absent-.
   // DVPSHelper::setDefault(result, specificCharacterSet, DEFAULT_specificCharacterSet );
@@ -1362,7 +1372,7 @@ E_Condition DVPresentationState::createFromImage(
 }
 
 
-E_Condition DVPresentationState::write(DcmItem &dset)
+E_Condition DVPresentationState::write(DcmItem &dset, OFBool replaceSOPInstanceUID)
 {
   E_Condition result = EC_Normal;
   DcmElement *delem=NULL;
@@ -1370,7 +1380,7 @@ E_Condition DVPresentationState::write(DcmItem &dset)
   DcmItem *ditem=NULL;
 
   cleanupLayers(); /* remove unused layers */
-  createDummyValues();
+  createDummyValues(replaceSOPInstanceUID);
 
   /* add SOP Class UID */
   DcmUniqueIdentifier sopclassuid(DCM_SOPClassUID);
@@ -4118,10 +4128,25 @@ void DVPresentationState::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgM
 }
 
 
+const char *DVPresentationState::getAttachedImageSOPClassUID()
+{
+  return currentImageSOPClassUID;
+}
+
+
+const char *DVPresentationState::getAttachedImageSOPInstanceUID()
+{
+  return currentImageSOPInstanceUID;
+}
+
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.64  2000-07-12 12:49:05  joergr
+ *  Revision 1.65  2000-11-13 15:50:46  meichel
+ *  Added dcmpstat support methods for creating image references
+ *    in SR documents.
+ *
+ *  Revision 1.64  2000/07/12 12:49:05  joergr
  *  Added comment.
  *
  *  Revision 1.63  2000/07/03 14:04:01  joergr

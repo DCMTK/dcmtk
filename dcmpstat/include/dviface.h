@@ -23,8 +23,8 @@
  *    classes: DVInterface
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-11-13 11:52:40 $
- *  CVS/RCS Revision: $Revision: 1.79 $
+ *  Update Date:      $Date: 2000-11-13 15:50:42 $
+ *  CVS/RCS Revision: $Revision: 1.80 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -169,20 +169,28 @@ class DVInterface: public DVConfiguration
      *  After successfully storing the presentation state, the database index is updated
      *  to include the new object.
      *  This method releases under any circumstances the database lock if it exists.
+     *  @param replaceSOPInstanceUID flag indicating whether the 
+     *    SOP Instance UID should be replaced by a new UID.
+     *    If true, a new UID is always generated. If false, a new
+     *    UID is generated only if no UID has been assigned before.
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition savePState();
+    E_Condition savePState(OFBool replaceSOPInstanceUID);
 
     /** saves the current presentation state in a file with the given path and filename.
      *  A new SOP Instance UID is assigned whenever a presentation state is saved.
      *  This method does not acquire a database lock and does not register
      *  the saved presentation state in the database.
      *  @param filename path and filename under which the presentation state is to be saved
+     *  @param replaceSOPInstanceUID flag indicating whether the 
+     *    SOP Instance UID should be replaced by a new UID.
+     *    If true, a new UID is always generated. If false, a new
+     *    UID is generated only if no UID has been assigned before.
      *  @param explicitVR selects the transfer syntax to be written. True (the default) selects
      *    Explicit VR Little Endian, False selects Implicit VR Little Endian.
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition savePState(const char *filename, OFBool explicitVR=OFTrue);
+    E_Condition savePState(const char *filename, OFBool replaceSOPInstanceUID, OFBool explicitVR=OFTrue);
 
     /** saves the DICOM image that is currently attached to the presentation state
      *  in a file with the given path and filename.
@@ -1799,7 +1807,11 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.79  2000-11-13 11:52:40  meichel
+ *  Revision 1.80  2000-11-13 15:50:42  meichel
+ *  Added dcmpstat support methods for creating image references
+ *    in SR documents.
+ *
+ *  Revision 1.79  2000/11/13 11:52:40  meichel
  *  Added support for user logins and certificates.
  *
  *  Revision 1.78  2000/11/13 10:42:38  joergr

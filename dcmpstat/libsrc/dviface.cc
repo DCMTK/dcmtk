@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-11-13 11:52:43 $
- *  CVS/RCS Revision: $Revision: 1.116 $
+ *  Update Date:      $Date: 2000-11-13 15:50:45 $
+ *  CVS/RCS Revision: $Revision: 1.117 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -607,13 +607,14 @@ E_Condition DVInterface::loadSRTemplate(const char *reportID)
 }
 
 
-E_Condition DVInterface::savePState()
+E_Condition DVInterface::savePState(OFBool replaceSOPInstanceUID)
 {
     // release database lock since we are using the DB module directly
     releaseDatabase();
 
     if (pState==NULL) return EC_IllegalCall;
-    const char *instanceUID = pState->createInstanceUID();
+    const char *instanceUID = NULL;
+    if (replaceSOPInstanceUID) instanceUID=pState->createInstanceUID(); else instanceUID=pState->getInstanceUID();
     if (instanceUID==NULL) return EC_IllegalCall;
 
     DB_Status dbStatus;
@@ -631,7 +632,7 @@ E_Condition DVInterface::savePState()
     if (DB_NORMAL == DB_makeNewStoreFileName(handle, UID_GrayscaleSoftcopyPresentationStateStorage, instanceUID, imageFileName))
     {
         // now store presentation state as filename
-        result = savePState(imageFileName);
+        result = savePState(imageFileName, OFFalse);
         if (EC_Normal==result)
         {
             if (DB_NORMAL != DB_storeRequest(handle, UID_GrayscaleSoftcopyPresentationStateStorage,
@@ -696,7 +697,7 @@ E_Condition DVInterface::savePState()
 }
 
 
-E_Condition DVInterface::savePState(const char *filename, OFBool explicitVR)
+E_Condition DVInterface::savePState(const char *filename, OFBool replaceSOPInstanceUID, OFBool explicitVR)
 {
     if (pState==NULL) return EC_IllegalCall;
     if (filename==NULL) return EC_IllegalCall;
@@ -708,7 +709,7 @@ E_Condition DVInterface::savePState(const char *filename, OFBool explicitVR)
 
     if (dataset)
     {
-        if ((status = pState->write(*dataset)) == EC_Normal)
+        if ((status = pState->write(*dataset, replaceSOPInstanceUID)) == EC_Normal)
         {
           status = DVPSHelper::saveFileFormat(filename, fileformat, explicitVR);
 
@@ -942,7 +943,7 @@ E_Condition DVInterface::saveCurrentPStateForReset()
             DcmDataset *dataset = fileformat->getDataset();
             if (dataset)
             {
-                status = pState->write(*dataset);           // write current state to 'reset' dataset
+                status = pState->write(*dataset, OFFalse);  // write current state to 'reset' dataset
                 if (status == EC_Normal)
                 {
                     delete pDicomPState;
@@ -4127,7 +4128,11 @@ OFBool DVInterface::verifyUserPassword(const char *userID, const char *passwd)
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.116  2000-11-13 11:52:43  meichel
+ *  Revision 1.117  2000-11-13 15:50:45  meichel
+ *  Added dcmpstat support methods for creating image references
+ *    in SR documents.
+ *
+ *  Revision 1.116  2000/11/13 11:52:43  meichel
  *  Added support for user logins and certificates.
  *
  *  Revision 1.115  2000/11/13 10:43:20  joergr

@@ -23,9 +23,9 @@
  *    sample application that reads a DICOM image and creates 
  *    a matching presentation state.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-02 12:49:51 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-11-13 15:50:39 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -385,7 +385,7 @@ int main(int argc, char *argv[])
     }
     
     DcmDataset *dataset2 = new DcmDataset();
-    error = state.write(*dataset2);
+    error = state.write(*dataset2, OFTrue);
     if (error != EC_Normal) 
     {
         CERR << "Error: "  
@@ -473,7 +473,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmpsmk.cc,v $
-** Revision 1.10  2000-06-02 12:49:51  joergr
+** Revision 1.11  2000-11-13 15:50:39  meichel
+** Added dcmpstat support methods for creating image references
+**   in SR documents.
+**
+** Revision 1.10  2000/06/02 12:49:51  joergr
 ** Added support for multiple image references.
 **
 ** Revision 1.9  2000/03/08 16:28:42  meichel

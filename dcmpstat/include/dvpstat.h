@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPresentationState
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-07-04 15:58:03 $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-11-13 15:50:43 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -107,15 +107,28 @@ public:
    *  Copies of the DICOM elements managed by this object are inserted into
    *  the DICOM dataset.
    *  @param dset the dataset to which the presentation state is written
+   *  @param replaceSOPInstanceUID flag indicating whether the 
+   *    SOP Instance UID should be replaced by a new UID.
+   *    If true, a new UID is always generated. If false, a new
+   *    UID is generated only if no UID has been assigned before.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition write(DcmItem &dset);
+  E_Condition write(DcmItem &dset, OFBool replaceSOPInstanceUID);
 
-  /** generates a new SOP Instance UID which is used when writing the
-   *  Presentation State to file. Internal use only.
+  /** generates a new SOP Instance UID for the Presentation State.
    *  @return new SOP Instance UID if successfully set, NULL otherwise.
    */
   const char *createInstanceUID();
+
+  /** returns the current SOP Instance UID for the Presentation State.
+   *  @return SOP Instance UID if present, NULL otherwise.
+   */
+  const char *getInstanceUID();
+
+  /** returns the (currently hard-coded) SOP Class UID of the Presentation State.
+   *  @return SOP Class UID of the presentation state
+   */
+  const char *getSOPClassUID();
 
   /** returns the patient ID of the presentation state
    */
@@ -1492,6 +1505,16 @@ public:
      void *pixelData,
      unsigned long size);
    
+   /** returns the SOP Class UID of the currently attached image.
+    *  @return SOP class UID of current image, NULL if absent
+    */
+   const char *getAttachedImageSOPClassUID();
+
+   /** returns the SOP Instance UID of the currently attached image.
+    *  @return SOP instance UID of current image, NULL if absent
+    */
+   const char *getAttachedImageSOPInstanceUID();
+   
    /** gets the width of the attached image. 
     *  The rotation status of the presentation state is not taken
     *  into account, i.e. the width of an unrotated image is returned.
@@ -1761,9 +1784,13 @@ private:
   /** create dummy values for all missing type 1 elements.
    *  Called before a presentation state is written to make sure
    *  that the presentation state is complete.
+   *  @param replaceSOPInstanceUID flag indicating whether the 
+   *    SOP Instance UID should be replaced by a new UID.
+   *    If true, a new UID is always generated. If false, a new
+   *    UID is generated only if no UID has been assigned before.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition createDummyValues();
+  E_Condition createDummyValues(OFBool replaceSOPInstanceUID);
 
   /** removes and deletes all graphic layer for which
    *  no matching text, graphic, curve or overlay object exists.
@@ -1888,8 +1915,6 @@ private:
    */
   /// Module=SOP_Common, VR=UI, VM=1, Type 1 
   DcmUniqueIdentifier      sOPInstanceUID;
-  /// flag indicating whether SOP instance UID should be replaced on write
-  OFBool replaceInstanceUIDOnWrite;
   /// Module=SOP_Common, VR=CS, VM=1-n, Type 1C 
   DcmCodeString            specificCharacterSet;
   /// Module=SOP_Common, VR=DA, VM=1, Type 3 
@@ -2152,7 +2177,11 @@ private:
 
 /*
  *  $Log: dvpstat.h,v $
- *  Revision 1.37  2000-07-04 15:58:03  joergr
+ *  Revision 1.38  2000-11-13 15:50:43  meichel
+ *  Added dcmpstat support methods for creating image references
+ *    in SR documents.
+ *
+ *  Revision 1.37  2000/07/04 15:58:03  joergr
  *  Added support for overriding the presentation LUT settings made for the
  *  image boxes.
  *

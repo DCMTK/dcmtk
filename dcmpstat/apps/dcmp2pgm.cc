@@ -25,10 +25,10 @@
  *    of the presentation state. Non-grayscale transformations are
  *    ignored. If no presentation state is loaded, a default is created.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-02 12:49:03 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-11-13 15:50:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmp2pgm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -190,7 +190,7 @@ int main(int argc, char *argv[])
         {
             if (opt_debugMode > 0)
                 CERR << "writing pstate file: " << opt_savName << endl;
-            if (dvi.savePState(opt_savName) != EC_Normal)
+            if (dvi.savePState(opt_savName, OFFalse) != EC_Normal)
                 app.printError("Can't write pstate file.");
         }
     } else
@@ -576,7 +576,11 @@ void dumpPresentationState(DVInterface& dvi)
 /*
  * CVS/RCS Log:
  * $Log: dcmp2pgm.cc,v $
- * Revision 1.22  2000-06-02 12:49:03  joergr
+ * Revision 1.23  2000-11-13 15:50:39  meichel
+ * Added dcmpstat support methods for creating image references
+ *   in SR documents.
+ *
+ * Revision 1.22  2000/06/02 12:49:03  joergr
  * Added frame selection option to support multi-frame images.
  *
  * Revision 1.21  2000/05/03 14:27:26  meichel
