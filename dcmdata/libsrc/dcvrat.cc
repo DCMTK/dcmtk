@@ -22,9 +22,9 @@
  *  Purpose: Implementation of class DcmAttributeTag
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-03-25 17:11:34 $
+ *  Update Date:      $Date: 2003-10-09 13:51:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrat.cc,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -115,10 +115,14 @@ void DcmAttributeTag::print(ostream &out,
             if (printCount > 0)
             {
                 out << hex << setfill('0');
-                /* print tag values in hex mode */
-                out << '(' << setw(4) << (*(uintVals++)) << ',' << setw(4) << (*(uintVals++)) << ')';
+                /* print tag values (group,element) in hex mode */
+                out << '(' << setw(4) << (*(uintVals++));
+                out << ',' << setw(4) << (*(uintVals++)) << ')';
                 for (unsigned long i = 1; i < printCount; i++)
-                    out << "\\" << '(' << setw(4) << (*(uintVals++)) << ',' << setw(4) << (*(uintVals++)) << ')';
+                {
+                    out << "\\" << '(' << setw(4) << (*(uintVals++));
+                    out << ',' << setw(4) << (*(uintVals++)) << ')';
+                }
                 /* reset i/o manipulators */
                 out << dec << setfill(' ');
             }
@@ -285,7 +289,10 @@ OFCondition DcmAttributeTag::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrat.cc,v $
-** Revision 1.24  2003-03-25 17:11:34  joergr
+** Revision 1.25  2003-10-09 13:51:52  joergr
+** Fixed issue with the order of group and element number in print method.
+**
+** Revision 1.24  2003/03/25 17:11:34  joergr
 ** Fixed bug in print method: wrong position of setw() operators.
 ** Thanks to Syam Gadde <gadde@biac.duke.edu> for the bug report and fix.
 **
