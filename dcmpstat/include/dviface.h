@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVInterface
  *
- *  Last Update:      $Author: vorwerk $
- *  Update Date:      $Date: 1999-02-12 10:02:46 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-02-16 16:36:10 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -543,8 +543,15 @@ class DVInterface
      */
     E_Condition terminateReceiver();
 
-    /** UNIMPLEMENTED - tests whether new DICOM objects have been received and
-     *  added to the database since the last call to this method.
+    /** tests whether the database has been modified in any way since the last
+     *  call to this method. Any write access to the database (adding, deleting, changing)
+     *  is reported. This method works by modifying and checking the "modification date/time"
+     *  of the database index file. This method is not affected by database locks and can be
+     *  called at any time.
+     *  Always returns OFTrue for the first call after construction of the interface.
+     *  Also returns OFTrue if something goes wrong (i.e. if the method cannot make sure
+     *  that nothing has changed).
+     *  @return OFTrue if the database has been modified since the last call to this method.
      */
     OFBool newInstancesReceived();
     
@@ -927,6 +934,17 @@ private:
     /** string containing the path name of the config file as passed to the ctor.
      */
     OFString configPath;
+    
+    /** string containing the path name of the database index file
+     *  after a database lock has been acquired for the first time
+     */
+    OFString databaseIndexFile;
+    
+    /** initialized with construction time of the interface object
+     *  minus one day. Used to check modifications of the database index file.
+     */
+    unsigned long referenceTime;
+    
   /* Struct for databasecache */
     struct dbCache {
       OFString uid;
@@ -981,7 +999,10 @@ private:
 
 /*
  *  $Log: dviface.h,v $
- *  Revision 1.22  1999-02-12 10:02:46  vorwerk
+ *  Revision 1.23  1999-02-16 16:36:10  meichel
+ *  Added method newInstancesReceived() to DVInterface class.
+ *
+ *  Revision 1.22  1999/02/12 10:02:46  vorwerk
  *  added cache , changed deletemethods.
  *
  *  Revision 1.21  1999/02/09 15:58:07  meichel

@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: vorwerk $
- *  Update Date:      $Date: 1999-02-12 10:04:13 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-02-16 16:36:08 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,6 +55,18 @@ BEGIN_EXTERN_C
 #endif
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>      /* for execl, fork */
+#endif
+#ifdef HAVE_SYS_STAT_H
+#include <sys/stat.h>    /* for stat, fstat */
+#endif
+#ifdef HAVE_SYS_UTIME_H
+#include <sys/utime.h>   /* for utime */
+#endif
+#ifdef HAVE_UTIME_H
+#include <utime.h>   /* for utime */
+#endif
+#ifdef HAVE_TIME_H
+#include <time.h>
 #endif
 END_EXTERN_C
 
@@ -92,6 +104,8 @@ DVInterface::DVInterface(const char *config_file)
 , pDicomPState(NULL)
 , pConfig(NULL)
 , configPath()
+, databaseIndexFile()
+, referenceTime(0)
 , studyidx(0)
 , seriesidx(0)
 , SeriesNumber(0)
@@ -115,6 +129,10 @@ DVInterface::DVInterface(const char *config_file)
   }
   if (config_file) configPath = config_file;
   pState = new DVPresentationState(getMonitorCharacteristicsFile());
+  
+  // initialize reference time with "yesterday".
+  referenceTime = (unsigned long)time(NULL);
+  if (referenceTime >= 86400) referenceTime -= 86400; // subtract one day
 }
 
 
@@ -125,6 +143,8 @@ DVInterface::~DVInterface()
   if (pState) delete pState;
   if (pConfig) delete pConfig;
   if (phandle) releaseDatabase();
+  // refresh database index file access time
+  if (databaseIndexFile.length() > 0) utime(databaseIndexFile.c_str(), NULL);
 }
 
 
@@ -410,6 +430,9 @@ E_Condition DVInterface::lockDatabase()
   phandle = (DB_Private_Handle *) handle;
   lockingMode = OFFalse;
   if (DB_lock(phandle, OFFalse) != DB_NORMAL) return EC_IllegalCall;
+  
+  if (databaseIndexFile.length() == 0) databaseIndexFile = phandle->indexFilename;
+  
   return EC_Normal;
 }
 
@@ -448,7 +471,48 @@ E_Condition DVInterface::releaseDatabase()
   if (DB_NORMAL != DB_unlock(phandle)) result=EC_IllegalCall;
   DB_destroyHandle((DB_Handle **)(&phandle));
   phandle=NULL;
+
   return result;
+}
+
+OFBool DVInterface::newInstancesReceived()
+{
+  if (databaseIndexFile.length() == 0)
+  {
+    if (phandle == NULL)
+    {
+      lockDatabase(); // derives databaseIndexFile
+      releaseDatabase();
+    }
+  }
+  
+  if (databaseIndexFile.length() > 0)
+  {
+    struct stat stat_buf;
+    if (0== stat(databaseIndexFile.c_str(), &stat_buf))
+    {
+      if (((unsigned long)stat_buf.st_mtime) == referenceTime) return OFFalse;
+    }
+    
+    // set index file modification time to "yesterday" to make sure
+    // we notice any change even if different processes have minor
+    // date/time differences (i.e. over NFS)
+    struct utimbuf utime_buf;
+    utime_buf.actime  = (time_t) referenceTime; 
+    utime_buf.modtime = (time_t) referenceTime;
+    if (0 != utime(databaseIndexFile.c_str(), &utime_buf))
+    {
+#ifdef DEBUG
+      cerr << "warning: cannot set database index file modification time" << endl;
+#endif
+    } else {
+      if (0 == stat(databaseIndexFile.c_str(), &stat_buf))
+      {
+        referenceTime = (unsigned long) stat_buf.st_mtime;
+      }
+    }
+  }
+  return OFTrue; // default
 }
 
 
@@ -1813,7 +1877,10 @@ void DVInterface::cleanChildren()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.31  1999-02-12 10:04:13  vorwerk
+ *  Revision 1.32  1999-02-16 16:36:08  meichel
+ *  Added method newInstancesReceived() to DVInterface class.
+ *
+ *  Revision 1.31  1999/02/12 10:04:13  vorwerk
  *  added cache , changed delete methods.
  *
  *  Revision 1.30  1999/02/10 16:01:40  meichel

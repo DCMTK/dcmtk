@@ -1,4 +1,10 @@
 
+**** Changes from 1999.02.16 (eichelberg)
+
+- Added method newInstancesReceived() to DVInterface class.
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+           
 **** Changes from 1999.02.12 (riesmeier)
 
 - Rebuilt Makefile dependencies.
