@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlayPlane (Source) - Multiframe Overlays UNTESTED !
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-03 17:44:05 $
+ *  Update Date:      $Date: 1999-02-28 16:42:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diovpln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -156,7 +156,7 @@ DiOverlayPlane::DiOverlayPlane(const unsigned int group,
     Rows(rows),
     Columns(columns),
     BitsAllocated(1),
-    BitPosition(1),
+    BitPosition(0),
     Foreground(1),
     Threshold(1),
     PValue(0),
@@ -387,7 +387,12 @@ void DiOverlayPlane::setRotation(const int degree,
  *
  * CVS/RCS Log:
  * $Log: diovpln.cc,v $
- * Revision 1.8  1999-02-03 17:44:05  joergr
+ * Revision 1.9  1999-02-28 16:42:21  joergr
+ * Corrected bug: the bit position for bitmap shutters was 1 instead of 0
+ * (i.e. the first bit was always been skipped and the all following bits were
+ * wrong).
+ *
+ * Revision 1.8  1999/02/03 17:44:05  joergr
  * Added support for calibration according to Barten transformation (incl.
  * a DISPLAY file describing the monitor characteristic).
  *
