@@ -22,9 +22,9 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-05-24 10:00:14 $
+ *  Update Date:      $Date: 2002-06-26 16:33:11 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.62 $
+ *  CVS/RCS Revision: $Revision: 1.63 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,6 +48,7 @@ END_EXTERN_C
 #include "dcdebug.h"       /* for SetDebugLevel */
 #include "cmdlnarg.h"      /* for prepareCmdLineArgs */
 #include "dcuid.h"         /* for dcmtk version name */
+#include "dcrledrg.h"      /* for DcmRLEDecoderRegistration */
 
 #include "dcmimage.h"      /* for DicomImage */
 #include "digsdfn.h"       /* for DiGSDFunction */
@@ -106,7 +107,7 @@ int main(int argc, char *argv[])
     int                 opt_readAsDataset = 0;            /* default: fileformat or dataset */
     E_TransferSyntax    opt_transferSyntax = EXS_Unknown; /* default: xfer syntax recognition */
 
-    unsigned long       opt_compatibilityMode = CIF_MayDetachPixelData;
+    unsigned long       opt_compatibilityMode = CIF_MayDetachPixelData | CIF_TakeOverExternalDataset;
                                                           /* default: pixel data may detached if no longer needed */
     OFCmdUnsignedInt    opt_frame = 1;                    /* default: first frame */
     OFCmdUnsignedInt    opt_frameCount = 1;               /* default: one frame */
@@ -135,7 +136,7 @@ int main(int argc, char *argv[])
     int                 opt_displayFunction = 0;          /* default: GSDF */
 
 #ifdef WITH_LIBTIFF
-    // TIFF parameters  
+    // TIFF parameters
     DiTIFFCompression   opt_tiffCompression = E_tiffLZWCompression;
     DiTIFFLZWPredictor  opt_lzwPredictor = E_tiffLZWPredictorDefault;
     OFCmdUnsignedInt    opt_rowsPerStrip = 0;
@@ -661,22 +662,37 @@ int main(int argc, char *argv[])
         OUTPUT << "reading DICOM file: " << opt_ifname << endl;
     }
 
+    // register RLE decompression codec
+    DcmRLEDecoderRegistration::registerCodecs(OFFalse /*pCreateSOPInstanceUID*/, opt_debugMode);
 #ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
-    // register global decompression codecs
+    // register JPEG decompression codecs
     DJDecoderRegistration::registerCodecs(opt_decompCSconversion, EUC_default, EPC_default, opt_debugMode);
 #endif
 
-    OFCondition status = EC_Normal;
-    DcmFileFormat *dfile = new DcmFileFormat();
-    if (opt_readAsDataset)
-        status = dfile->getDataset()->loadFile(opt_ifname, opt_transferSyntax, EGL_withoutGL);
-    else
-        status = dfile->loadFile(opt_ifname, opt_transferSyntax, EGL_withoutGL);
-
-    if (status.bad())
+    DcmFileStream myin(opt_ifname, DCM_ReadMode);
+    if (myin.GetError() != EC_Normal)
     {
         OFOStringStream oss;
-        oss << status.text() << ": reading file: " << opt_ifname << OFStringStream_ends;
+        oss << "cannot open DICOM file: " << opt_ifname << OFStringStream_ends;
+        OFSTRINGSTREAM_GETSTR(oss, tmpString)
+        app.printError(tmpString);
+        OFSTRINGSTREAM_FREESTR(tmpString)
+    }
+
+    DcmObject * dfile = NULL;
+    if (opt_readAsDataset)
+        dfile = new DcmDataset();
+    else
+        dfile = new DcmFileFormat();
+
+    dfile->transferInit();
+    dfile->read(myin, opt_transferSyntax, EGL_withoutGL);
+    dfile->transferEnd();
+
+    if (dfile->error() != EC_Normal)
+    {
+        OFOStringStream oss;
+        oss << dfile->error().text() << ": reading file: " << opt_ifname << OFStringStream_ends;
         OFSTRINGSTREAM_GETSTR(oss, tmpString)
         app.printError(tmpString);
         OFSTRINGSTREAM_FREESTR(tmpString)
@@ -685,7 +701,12 @@ int main(int argc, char *argv[])
     if (opt_verboseMode > 1)
         OUTPUT << "preparing pixel data." << endl;
 
-    E_TransferSyntax xfer = dfile->getDataset()->getOriginalXfer();
+    E_TransferSyntax xfer;
+    if (opt_readAsDataset)
+        xfer = ((DcmDataset *)dfile)->getOriginalXfer();
+    else
+        xfer = ((DcmFileFormat *)dfile)->getDataset()->getOriginalXfer();
+
     DicomImage *di = new DicomImage(dfile, xfer, opt_compatibilityMode, opt_frame - 1, opt_frameCount);
     if (di == NULL)
         app.printError("Out of memory");
@@ -725,8 +746,14 @@ int main(int argc, char *argv[])
         if (colorModel == NULL)
             colorModel = "unknown";
 
-        getSingleValue(dfile->getDataset(), DCM_SOPClassUID, SOPClassUID);
-        getSingleValue(dfile->getDataset(), DCM_SOPInstanceUID, SOPInstanceUID);
+        if (opt_readAsDataset)
+        {
+            getSingleValue(dfile, DCM_SOPClassUID, SOPClassUID);
+            getSingleValue(dfile, DCM_SOPInstanceUID, SOPInstanceUID);
+        } else {
+            getSingleValue(((DcmFileFormat *)dfile)->getDataset(), DCM_SOPClassUID, SOPClassUID);
+            getSingleValue(((DcmFileFormat *)dfile)->getDataset(), DCM_SOPInstanceUID, SOPInstanceUID);
+        }
         if (SOPInstanceUID == NULL)
             SOPInstanceUID = (char *)"not present";
         if (SOPClassUID == NULL)
@@ -747,10 +774,37 @@ int main(int argc, char *argv[])
              << "bits per sample     : " << di->getDepth() << endl
              << "color model         : " << colorModel << endl;
         CERR << "pixel aspect ratio  : " << aspectRatio << endl
-             << "number of frames    : " << di->getFrameCount() << endl << endl
-             << "VOI windows in file : " << di->getWindowCount() << endl
-             << "VOI LUTs in file    : " << di->getVoiLutCount() << endl
-             << "Overlays in file    : " << di->getOverlayCount() << endl << endl;
+             << "number of frames    : " << di->getFrameCount() << endl << endl;
+
+        /* dump VOI windows */
+        unsigned long i, count;
+        OFString explStr;
+        count = di->getWindowCount();
+        CERR << "VOI windows in file : " << di->getWindowCount() << endl;
+        for (i = 0; i < count; i++)
+        {
+            CERR << " - ";
+            if (di->getVoiWindowExplanation(i, explStr) == NULL)
+                CERR << "<no explanation>";
+            else
+                CERR << explStr;
+            CERR << endl;
+        }
+
+        /* dump VOI LUTs */
+        count = di->getVoiLutCount();
+        CERR << "VOI LUTs in file    : " << count << endl;
+        for (i = 0; i < count; i++)
+        {
+            CERR << " - ";
+            if (di->getVoiLutExplanation(i, explStr) == NULL)
+                 CERR << "<no explanation>";
+            else
+                CERR << explStr;
+            CERR << endl;
+        }
+
+        CERR << "Overlays in file    : " << di->getOverlayCount() << endl << endl;
 
         if (minmaxValid)
         {
@@ -1221,8 +1275,10 @@ int main(int argc, char *argv[])
     delete di;
     delete disp;
 
+    // deregister RLE decompression codec
+    DcmRLEDecoderRegistration::cleanup();
 #ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
-    // deregister global decompression codecs
+    // deregister JPEG decompression codecs
     DJDecoderRegistration::cleanup();
 #endif
 
@@ -1233,7 +1289,14 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.62  2002-05-24 10:00:14  joergr
+ * Revision 1.63  2002-06-26 16:33:11  joergr
+ * Added new methods to get the explanation string of stored VOI windows and
+ * LUTs (not only of the currently selected VOI transformation).
+ * Added configuration flag that enables the DicomImage class to take the
+ * responsibility of an external DICOM dataset (i.e. delete it on destruction).
+ * Added support for RLE decompression.
+ *
+ * Revision 1.62  2002/05/24 10:00:14  joergr
  * Renamed some parameters/variables to avoid ambiguities.
  *
  * Revision 1.61  2002/05/02 14:09:19  joergr
