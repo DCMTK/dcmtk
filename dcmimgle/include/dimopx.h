@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromePixel (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-22 14:33:45 $
+ *  Update Date:      $Date: 1999-01-11 09:35:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimopx.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $ 
+ *  CVS/RCS Revision: $Revision: 1.4 $ 
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -132,27 +132,29 @@ class DiMonoPixel
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: dimopx.h,v $
-** Revision 1.3  1998-12-22 14:33:45  joergr
-** Added implementation of methods to return member variables AbsMinimum/
-** Maximum.
-**
-** Revision 1.2  1998/12/16 16:35:39  joergr
-** Added explanation string to LUT class (retrieved from dataset).
-**
-** Revision 1.1  1998/11/27 15:33:16  joergr
-** Added copyright message.
-** Introduced new pixel base class.
-**
-** Revision 1.4  1998/07/01 08:39:24  joergr
-** Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
-** options), e.g. add copy constructors.
-**
-** Revision 1.3  1998/05/11 14:53:23  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
-
+ *
+ * CVS/RCS Log:
+ * $Log: dimopx.h,v $
+ * Revision 1.4  1999-01-11 09:35:56  joergr
+ * Corrected some typos and formatting.
+ *
+ * Revision 1.3  1998/12/22 14:33:45  joergr
+ * Added implementation of methods to return member variables AbsMinimum/
+ * Maximum.
+ *
+ * Revision 1.2  1998/12/16 16:35:39  joergr
+ * Added explanation string to LUT class (retrieved from dataset).
+ *
+ * Revision 1.1  1998/11/27 15:33:16  joergr
+ * Added copyright message.
+ * Introduced new pixel base class.
+ *
+ * Revision 1.4  1998/07/01 08:39:24  joergr
+ * Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
+ * options), e.g. add copy constructors.
+ *
+ * Revision 1.3  1998/05/11 14:53:23  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */

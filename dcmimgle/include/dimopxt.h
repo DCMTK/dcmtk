@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromePixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-22 14:34:30 $
+ *  Update Date:      $Date: 1999-01-11 09:36:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -104,7 +104,7 @@ class DiMonoPixelTemplate
     
     inline int getMinMaxValues(double &min,
                                double &max) const
-    { 
+    {
         min = MinValue[0];
         max = MaxValue[0];
         return 1; 
@@ -260,7 +260,10 @@ class DiMonoPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimopxt.h,v $
- * Revision 1.2  1998-12-22 14:34:30  joergr
+ * Revision 1.3  1999-01-11 09:36:13  joergr
+ * Corrected some typos and formatting.
+ *
+ * Revision 1.2  1998/12/22 14:34:30  joergr
  * Corrected some typos and formatting.
  *
  * Revision 1.1  1998/11/27 15:36:43  joergr
