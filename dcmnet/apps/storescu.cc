@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-04-27 12:27:00 $
+ *  Update Date:      $Date: 1999-04-27 17:24:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -156,13 +156,19 @@ main(int argc, char *argv[])
   OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "DICOM storage (C-STORE) SCU", rcsid);
   OFCommandLine cmd;
 
+  cmd.setParamColumn(LONGCOL+SHORTCOL+4);
+  cmd.addParam("peer", "hostname of DICOM peer");
+  cmd.addParam("port", "tcp/ip port number of peer");
+  cmd.addParam("dcmfile_in", "DICOM file(s) to be transmitted", OFCmdParam::PM_MultiMandatory);
+
+  cmd.setOptionColumns(LONGCOL, SHORTCOL);
   cmd.addGroup("general options:", LONGCOL, SHORTCOL+2);
    cmd.addOption("--help",                      "-h",        "print this help text and exit");
    cmd.addOption("--verbose",                   "-v",        "verbose mode, print processing details");
    cmd.addOption("--verbose-pc",                "+v",        "verbose mode and show presentation contexts");
    cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
   cmd.addGroup("network options:");
-    cmd.addSubGroup("application entity titles:", LONGCOL, SHORTCOL);
+    cmd.addSubGroup("application entity titles:");
       OFString opt1 = "set my calling AE title (default: ";
       opt1 += APPLICATIONTITLE;
       opt1 += ")";
@@ -171,7 +177,7 @@ main(int argc, char *argv[])
       opt2 += PEERAPPLICATIONTITLE;
       opt2 += ")";
       cmd.addOption("--call",                   "-aec",   1, "aetitle: string", opt2.c_str());
-    cmd.addSubGroup("proposed transmission transfer syntaxes:", LONGCOL, SHORTCOL);
+    cmd.addSubGroup("proposed transmission transfer syntaxes:");
       cmd.addOption("--propose-uncompr",        "-x=",       "propose all uncompressed TS, explicit VR\nwith local byte ordering first (default)");
       cmd.addOption("--propose-little",         "-xe",       "propose all uncompressed TS, explicit VR\nlittle endian first");
       cmd.addOption("--propose-big",            "-xb",       "propose all uncompressed TS, explicit VR\nbig endian first");
@@ -182,10 +188,10 @@ main(int argc, char *argv[])
       cmd.addOption("--propose-rle",            "-xr",       "propose RLE lossless TS\nand all uncompressed transfer syntaxes");
       cmd.addOption("--required",               "-R",        "propose only required presentation contexts\n(default: propose all supported)");
       cmd.addOption("--combine",                "+C",        "combine proposed transfer syntaxes\n(default: separate pres. context for each TS)");
-    cmd.addSubGroup("post-1993 value representations:", LONGCOL, SHORTCOL);
+    cmd.addSubGroup("post-1993 value representations:");
       cmd.addOption("--enable-new-vr",          "+u",        "enable support for new VRs (UN/UT/VS) (default)");
       cmd.addOption("--disable-new-vr",         "-u",        "disable support for new VRs, convert to OB");
-    cmd.addSubGroup("other network options:", LONGCOL, SHORTCOL);
+    cmd.addSubGroup("other network options:");
       OFString opt3 = "set max receive pdu to n bytes (default: ";
       sprintf(tempstr, "%ld", (long)ASC_DEFAULTMAXPDU);
       opt3 += tempstr;
@@ -220,10 +226,10 @@ main(int argc, char *argv[])
 
     /* evaluate command line */                           
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
-    if (app.parseCommandLine(cmd, argc, argv, "peer port dicom-file...", 3, -1, OFCommandLine::ExpandWildcards))
+    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
     {
       /* check for --help first */
-      if (cmd.findOption("--help")) app.printUsage(OFFIS_CONSOLE_APPLICATION);
+      if (cmd.findOption("--help")) app.printUsage();
 
       cmd.getParam(1, opt_peer);
       app.checkParam(cmd.getParam(2, opt_port, 1, (OFCmdUnsignedInt)65535));
@@ -955,7 +961,10 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.22  1999-04-27 12:27:00  meichel
+** Revision 1.23  1999-04-27 17:24:24  meichel
+** Updated storescu and storescp for minor changes is command line class.
+**
+** Revision 1.22  1999/04/27 12:27:00  meichel
 ** Adapted storescu to new command line option scheme. Added support for
 **   transmission of compressed images and on-the-fly creation of new UIDs.
 **

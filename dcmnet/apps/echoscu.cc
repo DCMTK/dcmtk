@@ -22,9 +22,9 @@
  *  Purpose: Verification Service Class User (C-ECHO operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-04-27 12:25:42 $
+ *  Update Date:      $Date: 1999-04-27 17:24:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/echoscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -142,13 +142,18 @@ main(int argc, char *argv[])
   OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "DICOM verification (C-ECHO) SCU", rcsid);
   OFCommandLine cmd;
 
+  cmd.setParamColumn(LONGCOL+SHORTCOL+4);
+  cmd.addParam("peer", "hostname of DICOM peer");
+  cmd.addParam("port", "tcp/ip port number of peer");
+
+  cmd.setOptionColumns(LONGCOL, SHORTCOL);
   cmd.addGroup("general options:", LONGCOL, SHORTCOL+2);
    cmd.addOption("--help",                      "-h",        "print this help text and exit");
    cmd.addOption("--verbose",                   "-v",        "verbose mode, print processing details");
    cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
  
   cmd.addGroup("network options:");
-    cmd.addSubGroup("application entity titles:", LONGCOL, SHORTCOL);
+    cmd.addSubGroup("application entity titles:");
       OFString opt1 = "set my calling AE title (default: ";
       opt1 += APPLICATIONTITLE;
       opt1 += ")";
@@ -157,7 +162,7 @@ main(int argc, char *argv[])
       opt2 += PEERAPPLICATIONTITLE;
       opt2 += ")";
       cmd.addOption("--call",                   "-aec",   1, "aetitle: string", opt2.c_str());
-    cmd.addSubGroup("association negotiation debugging:", LONGCOL, SHORTCOL);
+    cmd.addSubGroup("association negotiation debugging:");
       OFString opt5 = "[n]umber: integer (1..";
       sprintf(tempstr, "%ld", (long)maxXferSyntaxes);
       opt5 += tempstr;
@@ -165,7 +170,7 @@ main(int argc, char *argv[])
       cmd.addOption("--propose-ts",                   "-pts",   1, opt5.c_str(), "propose n transfer syntaxes");
       cmd.addOption("--propose-pc",                   "-ppc",   1, "[n]umber: integer (1..128)", "propose n presentation contexts");
       
-    cmd.addSubGroup("other network options:", LONGCOL, SHORTCOL);
+    cmd.addSubGroup("other network options:");
       OFString opt3 = "set max receive pdu to n bytes (default: ";
       sprintf(tempstr, "%ld", (long)ASC_DEFAULTMAXPDU);
       opt3 += tempstr;
@@ -183,10 +188,10 @@ main(int argc, char *argv[])
 
     /* evaluate command line */                           
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
-    if (app.parseCommandLine(cmd, argc, argv, "peer port", 2, 2, OFCommandLine::ExpandWildcards))
+    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
     {
       /* check for --help first */
-      if (cmd.findOption("--help")) app.printUsage(OFFIS_CONSOLE_APPLICATION);
+      if (cmd.findOption("--help")) app.printUsage();
 
       cmd.getParam(1, opt_peer);
       app.checkParam(cmd.getParam(2, opt_port, 1, (OFCmdUnsignedInt)65535));
@@ -412,7 +417,10 @@ cecho(T_ASC_Association * assoc, unsigned long num_repeat)
 /*
 ** CVS Log
 ** $Log: echoscu.cc,v $
-** Revision 1.14  1999-04-27 12:25:42  meichel
+** Revision 1.15  1999-04-27 17:24:25  meichel
+** Updated storescu and storescp for minor changes is command line class.
+**
+** Revision 1.14  1999/04/27 12:25:42  meichel
 ** Updated echoscu copyright header
 **
 ** Revision 1.13  1999/04/21 15:54:22  meichel
