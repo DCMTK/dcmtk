@@ -19,14 +19,14 @@
  *
  *  Author:  Marco Eichelberg
  *
- *  Purpose: 
+ *  Purpose:
  *    class DcmExtendedNegotiationItem
  *    class DcmExtendedNegotiationMap
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-05-05 12:57:58 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-05-06 16:36:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dccfenmp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -74,7 +74,7 @@ DcmExtendedNegotiationItem::~DcmExtendedNegotiationItem()
 
 OFBool DcmExtendedNegotiationItem::operator==(const DcmExtendedNegotiationItem& arg) const
 {
-  return (uid_ == arg.uid_) 
+  return (uid_ == arg.uid_)
       && (length_ == arg.length_)
       && ((length_ == 0) || (memcmp(raw_, arg.raw_, OFstatic_cast(size_t, length_)) == 0));
 }
@@ -94,7 +94,7 @@ DcmExtendedNegotiationMap::~DcmExtendedNegotiationMap()
   {
     delete (*first)->value();
     ++first;
-  }  
+  }
 }
 
 OFCondition DcmExtendedNegotiationMap::add(
@@ -115,11 +115,11 @@ OFCondition DcmExtendedNegotiationMap::add(
   }
 
   OFString skey(key);
-  DcmExtendedNegotiationList * const *value = map_.lookup(skey);
+  DcmExtendedNegotiationList * const *value = OFconst_cast(DcmExtendedNegotiationList * const *, map_.lookup(skey));
   if (value == NULL)
   {
     DcmExtendedNegotiationList *newentry = new DcmExtendedNegotiationList();
-    map_.add(key, newentry);
+    map_.add(skey, OFstatic_cast(DcmExtendedNegotiationList *, newentry));
     value = &newentry;
   }
   else
@@ -137,12 +137,12 @@ OFCondition DcmExtendedNegotiationMap::add(
         return makeOFCondition(OFM_dcmnet, 1029, OF_error, s.c_str());
       }
       ++first;
-    }  
+    }
   }
 
   // insert values into list.
   (*value)->push_back(DcmExtendedNegotiationItem(uid, rawData, length));
-  return EC_Normal;  
+  return EC_Normal;
 }
 
 OFBool DcmExtendedNegotiationMap::isKnownKey(const char *key) const
@@ -153,13 +153,13 @@ OFBool DcmExtendedNegotiationMap::isKnownKey(const char *key) const
 }
 
 OFCondition DcmExtendedNegotiationMap::checkConsistency(
-  const char *key, 
+  const char *key,
   const DcmPresentationContextMap& pclist,
   const char *pckey) const
 {
   if ((!key)||(!pckey)) return EC_IllegalCall;
 
-  DcmExtendedNegotiationList * const *entry = map_.lookup(OFString(key));
+  DcmExtendedNegotiationList * const *entry = OFconst_cast(DcmExtendedNegotiationList * const *, map_.lookup(OFString(key)));
   if (!entry)
   {
     // error: key undefined
@@ -202,7 +202,7 @@ const DcmExtendedNegotiationList *DcmExtendedNegotiationMap::getExtendedNegotiat
   const DcmExtendedNegotiationList *result = NULL;
   if (key)
   {
-    DcmExtendedNegotiationList * const *value = map_.lookup(OFString(key));
+    DcmExtendedNegotiationList * const *value = OFconst_cast(DcmExtendedNegotiationList * const *, map_.lookup(OFString(key)));
     if (value) result = *value;
   }
   return result;
@@ -212,7 +212,10 @@ const DcmExtendedNegotiationList *DcmExtendedNegotiationMap::getExtendedNegotiat
 /*
  * CVS/RCS Log
  * $Log: dccfenmp.cc,v $
- * Revision 1.4  2004-05-05 12:57:58  meichel
+ * Revision 1.5  2004-05-06 16:36:30  joergr
+ * Added typecasts to keep Sun CC 2.0.1 quiet.
+ *
+ * Revision 1.4  2004/05/05 12:57:58  meichel
  * Simplified template class DcmSimpleMap<T>, needed for Sun CC 2.0.1
  *
  * Revision 1.3  2004/04/14 11:59:50  joergr

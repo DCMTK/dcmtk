@@ -41,8 +41,8 @@
  *  dcmjpeg/apps/dcmmkdir.cc.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-16 10:52:58 $
- *  CVS/RCS Revision: $Revision: 1.76 $
+ *  Update Date:      $Date: 2004-05-06 16:37:47 $
+ *  CVS/RCS Revision: $Revision: 1.77 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -316,7 +316,7 @@ int main(int argc, char *argv[])
         {
             OFCmdUnsignedInt iconSize = 0;
             app.checkValue(cmd.getValueAndCheckMinMax(iconSize, 1, 128));
-            ddir.setIconSize(iconSize);
+            ddir.setIconSize(OFstatic_cast(unsigned int, iconSize));
         }
         if (cmd.findOption("--icon-file-prefix"))
         {
@@ -554,7 +554,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmgpdir.cc,v $
- * Revision 1.76  2004-01-16 10:52:58  joergr
+ * Revision 1.77  2004-05-06 16:37:47  joergr
+ * Added typecasts to keep Sun CC 2.0.1 quiet.
+ *
+ * Revision 1.76  2004/01/16 10:52:58  joergr
  * Removed acknowledgements with e-mail addresses from CVS log.
  *
  * Revision 1.75  2003/08/12 15:22:05  joergr

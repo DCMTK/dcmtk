@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2004, OFFIS
+ *  Copyright (C) 2003-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,10 +22,10 @@
  *  Purpose: 
  *    class DcmTransferSyntaxMap
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-05-05 12:57:58 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-05-06 16:36:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dccftsmp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -68,11 +68,11 @@ OFCondition DcmTransferSyntaxMap::add(
   }
 
   OFString skey(key);
-  DcmTransferSyntaxList * const *value = map_.lookup(skey);
+  DcmTransferSyntaxList * const *value = OFconst_cast(DcmTransferSyntaxList * const *, map_.lookup(skey));
   if (value == NULL)
   {
     DcmTransferSyntaxList *newentry = new DcmTransferSyntaxList();
-    map_.add(key, newentry);
+    map_.add(skey, OFstatic_cast(DcmTransferSyntaxList *, newentry));
     value = &newentry;
   }
 
@@ -93,7 +93,7 @@ const DcmTransferSyntaxList *DcmTransferSyntaxMap::getTransferSyntaxList(const c
   const DcmTransferSyntaxList *result = NULL;
   if (key)
   {
-    DcmTransferSyntaxList * const *value = map_.lookup(OFString(key));
+    DcmTransferSyntaxList * const *value = OFconst_cast(DcmTransferSyntaxList * const *, map_.lookup(OFString(key)));
     if (value) result = *value;
   }
   return result;
@@ -103,7 +103,10 @@ const DcmTransferSyntaxList *DcmTransferSyntaxMap::getTransferSyntaxList(const c
 /*
  * CVS/RCS Log
  * $Log: dccftsmp.cc,v $
- * Revision 1.2  2004-05-05 12:57:58  meichel
+ * Revision 1.3  2004-05-06 16:36:30  joergr
+ * Added typecasts to keep Sun CC 2.0.1 quiet.
+ *
+ * Revision 1.2  2004/05/05 12:57:58  meichel
  * Simplified template class DcmSimpleMap<T>, needed for Sun CC 2.0.1
  *
  * Revision 1.1  2003/06/10 14:30:15  meichel

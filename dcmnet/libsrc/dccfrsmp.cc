@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2004, OFFIS
+ *  Copyright (C) 2003-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -19,14 +19,14 @@
  *
  *  Author:  Marco Eichelberg
  *
- *  Purpose: 
+ *  Purpose:
  *    class DcmRoleSelectionItem
  *    class DcmRoleSelectionMap
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-05-05 12:57:58 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-05-06 16:36:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dccfrsmp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -71,7 +71,7 @@ DcmRoleSelectionMap::~DcmRoleSelectionMap()
   {
     delete (*first)->value();
     ++first;
-  }  
+  }
 }
 
 OFCondition DcmRoleSelectionMap::add(
@@ -91,11 +91,11 @@ OFCondition DcmRoleSelectionMap::add(
   }
 
   OFString skey(key);
-  DcmRoleSelectionList * const *value = map_.lookup(skey);
+  DcmRoleSelectionList * const *value = OFconst_cast(DcmRoleSelectionList * const *, map_.lookup(skey));
   if (value == NULL)
   {
     DcmRoleSelectionList *newentry = new DcmRoleSelectionList();
-    map_.add(key, newentry);
+    map_.add(skey, OFstatic_cast(DcmRoleSelectionList *, newentry));
     value = &newentry;
   }
   else
@@ -113,12 +113,12 @@ OFCondition DcmRoleSelectionMap::add(
         return makeOFCondition(OFM_dcmnet, 1027, OF_error, s.c_str());
       }
       ++first;
-    }  
+    }
   }
 
   // insert values into list.
   (*value)->push_back(DcmRoleSelectionItem(role, uid));
-  return EC_Normal;  
+  return EC_Normal;
 }
 
 OFBool DcmRoleSelectionMap::isKnownKey(const char *key) const
@@ -129,13 +129,13 @@ OFBool DcmRoleSelectionMap::isKnownKey(const char *key) const
 }
 
 OFCondition DcmRoleSelectionMap::checkConsistency(
-  const char *key, 
+  const char *key,
   const DcmPresentationContextMap& pclist,
   const char *pckey) const
 {
   if ((!key)||(!pckey)) return EC_IllegalCall;
 
-  DcmRoleSelectionList * const *entry = map_.lookup(OFString(key));
+  DcmRoleSelectionList * const *entry = OFconst_cast(DcmRoleSelectionList * const *, map_.lookup(OFString(key)));
   if (!entry)
   {
     // error: key undefined
@@ -178,7 +178,7 @@ const DcmRoleSelectionList *DcmRoleSelectionMap::getRoleSelectionList(const char
   const DcmRoleSelectionList *result = NULL;
   if (key)
   {
-    DcmRoleSelectionList * const *value = map_.lookup(OFString(key));
+    DcmRoleSelectionList * const *value = OFconst_cast(DcmRoleSelectionList * const *, map_.lookup(OFString(key)));
     if (value) result = *value;
   }
   return result;
@@ -188,7 +188,10 @@ const DcmRoleSelectionList *DcmRoleSelectionMap::getRoleSelectionList(const char
 /*
  * CVS/RCS Log
  * $Log: dccfrsmp.cc,v $
- * Revision 1.2  2004-05-05 12:57:58  meichel
+ * Revision 1.3  2004-05-06 16:36:30  joergr
+ * Added typecasts to keep Sun CC 2.0.1 quiet.
+ *
+ * Revision 1.2  2004/05/05 12:57:58  meichel
  * Simplified template class DcmSimpleMap<T>, needed for Sun CC 2.0.1
  *
  * Revision 1.1  2003/06/10 14:30:15  meichel

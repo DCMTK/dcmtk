@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2004, OFFIS
+ *  Copyright (C) 2003-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -19,14 +19,14 @@
  *
  *  Author:  Marco Eichelberg
  *
- *  Purpose: 
+ *  Purpose:
  *    class DcmProfileEntry
  *    class DcmProfileMap
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-05-05 12:57:58 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-05-06 16:36:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dccfprmp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -89,7 +89,7 @@ DcmProfileMap::~DcmProfileMap()
   {
     delete (*first)->value();
     ++first;
-  }  
+  }
 }
 
 OFCondition DcmProfileMap::add(
@@ -105,13 +105,13 @@ OFCondition DcmProfileMap::add(
   if (roleSelectionKey) roleKey = roleSelectionKey;
   OFString extnegKey;
   if (extendedNegotiationKey) extnegKey = extendedNegotiationKey;
-  
+
   OFString skey(key);
-  DcmProfileEntry * const *value = map_.lookup(skey);
+  DcmProfileEntry * const *value = OFconst_cast(DcmProfileEntry * const *, map_.lookup(skey));
   if (value == NULL)
   {
     DcmProfileEntry *newentry = new DcmProfileEntry(presKey, roleKey, extnegKey);
-    map_.add(key, newentry);
+    map_.add(skey, OFstatic_cast(DcmProfileEntry *, newentry));
   }
   else
   {
@@ -121,7 +121,7 @@ OFCondition DcmProfileMap::add(
     return makeOFCondition(OFM_dcmnet, 1030, OF_error, s.c_str());
   }
 
-  return EC_Normal;  
+  return EC_Normal;
 }
 
 OFBool DcmProfileMap::isKnownKey(const char *key) const
@@ -136,7 +136,7 @@ const char *DcmProfileMap::getPresentationContextKey(const char *key) const
 {
   if (key)
   {
-    DcmProfileEntry * const *entry = map_.lookup(OFString(key));
+    DcmProfileEntry * const *entry = OFconst_cast(DcmProfileEntry * const *, map_.lookup(OFString(key)));
     if (entry)
     {
       return (*entry)->getPresentationContextKey();
@@ -150,7 +150,7 @@ const char *DcmProfileMap::getRoleSelectionKey(const char *key) const
 {
   if (key)
   {
-    DcmProfileEntry * const *entry = map_.lookup(OFString(key));
+    DcmProfileEntry * const *entry = OFconst_cast(DcmProfileEntry * const *, map_.lookup(OFString(key)));
     if (entry)
     {
       return (*entry)->getRoleSelectionKey();
@@ -164,7 +164,7 @@ const char *DcmProfileMap::getExtendedNegotiationKey(const char *key) const
 {
   if (key)
   {
-    DcmProfileEntry * const *entry = map_.lookup(OFString(key));
+    DcmProfileEntry * const *entry = OFconst_cast(DcmProfileEntry * const *, map_.lookup(OFString(key)));
     if (entry)
     {
       return (*entry)->getExtendedNegotiationKey();
@@ -177,7 +177,10 @@ const char *DcmProfileMap::getExtendedNegotiationKey(const char *key) const
 /*
  * CVS/RCS Log
  * $Log: dccfprmp.cc,v $
- * Revision 1.2  2004-05-05 12:57:58  meichel
+ * Revision 1.3  2004-05-06 16:36:30  joergr
+ * Added typecasts to keep Sun CC 2.0.1 quiet.
+ *
+ * Revision 1.2  2004/05/05 12:57:58  meichel
  * Simplified template class DcmSimpleMap<T>, needed for Sun CC 2.0.1
  *
  * Revision 1.1  2003/06/10 14:30:15  meichel
