@@ -67,10 +67,10 @@ be created with the dump2dcm utility from a script like the following example:
 Individual attributes of each file sent can be modified or supplemented 
 using the "-k key" option.  For example the command:
 
-    findscu -k '0010,0010=HEWETT*' caesar 5678 patqry.dcm
+    findscu -k 0010,0010="HEWETT*" caesar 5678 patqry.dcm
 
 will, when sent to the SCP caesar at TCP/IP port 5678, cause any 
-PatientsName attribute in patqry.dcm to have the value 'HEWETT*'. If such 
+PatientsName attribute in patqry.dcm to have the value "HEWETT*". If such 
 an attribute is present it will be replaced, if absent it will be inserted.  
 The -k option can be present more than once.  The value part (after the =) 
 may be absent causing the attribute to be sent with zero length.  It is not 
