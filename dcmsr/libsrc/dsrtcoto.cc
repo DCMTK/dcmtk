@@ -23,8 +23,8 @@
  *    classes: DSRReferencedTimeOffsetList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-07-11 14:41:38 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2003-08-07 14:07:04 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +38,7 @@
 
 #define INCLUDE_CSTDIO
 #include "ofstdinc.h"
+
 
 /* declared in class DSRListOfItems<T> */
 //const Float64 DSRListOfItems<Float64>::EmptyItem;
@@ -71,19 +72,25 @@ OFCondition DSRReferencedTimeOffsetList::print(ostream &stream,
                                                const size_t flags,
                                                const char separator) const
 {
-    const OFListIterator(Float64) endPos = ItemList.end();
-    OFListIterator(Float64) iterator = ItemList.begin();
+    char buffer[64];
+    const OFListConstIterator(Float64) endPos = ItemList.end();
+    OFListConstIterator(Float64) iterator = ItemList.begin();
     while (iterator != endPos)
     {
-        stream << (*iterator);
+        /* need to convert float to avoid problems with decimal point ('.' or ',') */
+        OFStandard::ftoa(buffer, sizeof(buffer), *iterator);
+        stream << buffer;
         iterator++;
-        if (flags & DSRTypes::PF_shortenLongItemValues)
+        if (iterator != endPos)
         {
-            stream << separator << "...";
-            /* goto last item */
-            iterator = endPos;
-        } else if (iterator != endPos)
-            stream << separator;
+            if (flags & DSRTypes::PF_shortenLongItemValues)
+            {
+                stream << separator << "...";
+                /* goto last item */
+                iterator = endPos;
+            } else
+                stream << separator;
+        }
     }
     return EC_Normal;
 }
@@ -113,26 +120,25 @@ OFCondition DSRReferencedTimeOffsetList::read(DcmItem &dataset,
 
 
 OFCondition DSRReferencedTimeOffsetList::write(DcmItem &dataset,
-                                               OFConsole * /* logStream */) const
+                                               OFConsole * /*logStream*/) const
 {
     OFCondition result = EC_Normal;
     /* fill string with values from list */
-    OFString string;
+    OFString tmpString;
     char buffer[32];
-    const OFListIterator(Float64) endPos = ItemList.end();
-    OFListIterator(Float64) iterator = ItemList.begin();
+    const OFListConstIterator(Float64) endPos = ItemList.end();
+    OFListConstIterator(Float64) iterator = ItemList.begin();
     while (iterator != endPos)
     {
-        if (string.length() > 0)
-            string += '\\';
-
+        if (!tmpString.empty())
+            tmpString += '\\';
         OFStandard::ftoa(buffer, sizeof(buffer), *iterator, OFStandard::ftoa_format_f);
-        string += buffer;
+        tmpString += buffer;
         iterator++;
     }
     /* set decimal string */
     DcmDecimalString delem(DCM_ReferencedTimeOffsets);
-    result = delem.putOFStringArray(string);
+    result = delem.putOFStringArray(tmpString);
     /* add to dataset */
     if (result.good())
         result = DSRTypes::addElementToDataset(result, dataset, new DcmDecimalString(delem));
@@ -140,10 +146,45 @@ OFCondition DSRReferencedTimeOffsetList::write(DcmItem &dataset,
 }
 
 
+OFCondition DSRReferencedTimeOffsetList::putString(const char *stringValue)
+{
+    OFCondition result = EC_Normal;
+    /* clear internal list */
+    clear();
+    /* check input string */
+    if ((stringValue != NULL) && (strlen(stringValue) > 0))
+    {
+        Float64 value = 0;
+        OFBool success = OFFalse;
+        const char *ptr = stringValue;
+        /* retrieve time offsets from string */
+        while (result.good() && (ptr != NULL))
+        {
+            value = OFStandard::atof(ptr, &success);
+            if (success)
+            {
+                addItem(value);
+                /* jump to next time offset */
+                ptr = strchr(ptr, ',');
+                if (ptr != NULL)
+                    ptr++;
+            } else
+                result = EC_CorruptedData;
+        }
+    }
+    return result;
+}
+
+
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcoto.cc,v $
- *  Revision 1.12  2003-07-11 14:41:38  joergr
+ *  Revision 1.13  2003-08-07 14:07:04  joergr
+ *  Added new putString() method.
+ *  Renamed parameters/variables "string" to avoid name clash with STL class.
+ *  Adapted for use of OFListConstIterator, needed for compiling with HAVE_STL.
+ *
+ *  Revision 1.12  2003/07/11 14:41:38  joergr
  *  Renamed member variable.
  *
  *  Revision 1.11  2003/06/04 14:26:54  meichel
