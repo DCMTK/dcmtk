@@ -15,6 +15,7 @@ own sub-directory:
     dcmimgle - an image processing library and utility apps
     dcmnet   - a networking library and utility apps
     dcmpstat - a presentation state library and utility apps
+    dcmtls   - security extensions for the network library
     imagectn - an image database server
     ofstd    - a library of general purpose classes
     wlistctn - a modality worklist database server
