@@ -23,8 +23,8 @@
  *    classes: DcmTLSTransportLayer
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-10-19 08:12:29 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-11-08 11:21:13 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -384,6 +384,7 @@ void DcmTLSTransportLayer::printX509Certificate(ostream &out, X509 *peerCertific
     if (certValidNotBeforeBIO)
     {
       ASN1_UTCTIME_print(certValidNotBeforeBIO, X509_get_notBefore(peerCertificate));
+      BIO_write(certValidNotBeforeBIO,"\0",1);
       BIO_get_mem_data(certValidNotBeforeBIO, (char *)(&bufptr));
       if (bufptr) certValidNotBefore = bufptr;
       BIO_free(certValidNotBeforeBIO);
@@ -393,6 +394,7 @@ void DcmTLSTransportLayer::printX509Certificate(ostream &out, X509 *peerCertific
     if (certValidNotAfterBIO)
     {
       ASN1_UTCTIME_print(certValidNotAfterBIO, X509_get_notAfter(peerCertificate));
+      BIO_write(certValidNotAfterBIO,"\0",1);
       BIO_get_mem_data(certValidNotAfterBIO, (char *)(&bufptr));
       if (bufptr) certValidNotAfter = bufptr;
       BIO_free(certValidNotAfterBIO);
@@ -445,7 +447,11 @@ void tlslayer_dummy_function()
 
 /*
  *  $Log: tlslayer.cc,v $
- *  Revision 1.4  2000-10-19 08:12:29  meichel
+ *  Revision 1.5  2000-11-08 11:21:13  meichel
+ *  iFixed trailing garbage characters problem in extracting validity
+ *    information from a X.509 certificate.
+ *
+ *  Revision 1.4  2000/10/19 08:12:29  meichel
  *  Fixed dcmtls module so that openssl headers are includes only
  *    if the symbol WITH_OPENSSL is defined.
  *
