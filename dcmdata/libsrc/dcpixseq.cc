@@ -22,9 +22,9 @@
  *  Purpose: class DcmPixelSequence
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-03-03 15:02:10 $
+ *  Update Date:      $Date: 2000-03-06 18:13:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixseq.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -62,7 +62,7 @@ END_EXTERN_C
 DcmPixelSequence::DcmPixelSequence(const DcmTag &tag,
                                    const Uint32 len)
   : DcmSequenceOfItems(tag, len),
-    xfer(EXS_Unknown)
+    Xfer(EXS_Unknown)
 {
     Tag.setVR(EVR_OB);
 }
@@ -73,7 +73,7 @@ DcmPixelSequence::DcmPixelSequence(const DcmTag &tag,
 
 DcmPixelSequence::DcmPixelSequence(const DcmPixelSequence &old)
   : DcmSequenceOfItems(old),
-    xfer(old.xfer)
+    Xfer(old.Xfer)
 {
     /* everything gets handled in DcmSequenceOfItems constructor */
 }
@@ -92,7 +92,7 @@ DcmPixelSequence::~DcmPixelSequence()
 DcmPixelSequence &DcmPixelSequence::operator=(const DcmPixelSequence &obj)
 {
   DcmSequenceOfItems::operator=(obj);
-  xfer = obj.xfer;
+  Xfer = obj.Xfer;
   return *this;
 }
 
@@ -261,9 +261,9 @@ E_Condition DcmPixelSequence::remove(DcmPixelItem* item)
 
 E_Condition DcmPixelSequence::changeXfer(const E_TransferSyntax newXfer)
 {
-    if (xfer == EXS_Unknown || canWriteXfer(newXfer, xfer))
+    if (Xfer == EXS_Unknown || canWriteXfer(newXfer, Xfer))
     {
-        xfer = newXfer;
+        Xfer = newXfer;
         return EC_Normal;
     }
     else
@@ -279,7 +279,7 @@ OFBool DcmPixelSequence::canWriteXfer(const E_TransferSyntax newXfer,
     DcmXfer newXferSyn(newXfer);
 
     return newXferSyn.isEncapsulated() && 
-        newXfer == oldXfer && oldXfer == xfer;
+        newXfer == oldXfer && oldXfer == Xfer;
 }
 
 // ********************************
@@ -313,7 +313,10 @@ E_Condition DcmPixelSequence::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.cc,v $
-** Revision 1.20  2000-03-03 15:02:10  joergr
+** Revision 1.21  2000-03-06 18:13:44  joergr
+** Local variable hided member variable (reported by Sun CC 4.2).
+**
+** Revision 1.20  2000/03/03 15:02:10  joergr
 ** Corrected bug related to padding of file and item size.
 **
 ** Revision 1.19  2000/02/23 15:11:58  meichel

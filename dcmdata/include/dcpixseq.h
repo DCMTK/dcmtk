@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmPixelSequence
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-03-03 14:41:56 $
+ *  Update Date:      $Date: 2000-03-06 18:11:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpixseq.h,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,7 +46,7 @@ class DcmPixelItem;
 class DcmPixelSequence : public DcmSequenceOfItems 
 {
 private:
-    E_TransferSyntax xfer;
+    E_TransferSyntax Xfer;
 
 
 // These methods are not sensible for a pix-sequence
@@ -120,7 +120,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.h,v $
-** Revision 1.16  2000-03-03 14:41:56  joergr
+** Revision 1.17  2000-03-06 18:11:30  joergr
+** Local variable hided member variable (reported by Sun CC 4.2).
+**
+** Revision 1.16  2000/03/03 14:41:56  joergr
 ** Corrected bug related to padding of file and item size.
 **
 ** Revision 1.15  2000/03/03 14:05:25  meichel
