@@ -22,9 +22,9 @@
  *  Purpose: DicomDisplayFunction (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-11 15:44:22 $
+ *  Update Date:      $Date: 1999-02-23 16:55:32 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/didispfn.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -84,6 +84,8 @@ class DiDisplayFunction
                                     unsigned long count = 0);
     
     int deleteBartenLUT(const int bits);
+    
+    int writeCurveData(const char *filename);
 
 
  protected:
@@ -140,7 +142,10 @@ class DiDisplayFunction
  *
  * CVS/RCS Log:
  * $Log: didispfn.h,v $
- * Revision 1.3  1999-02-11 15:44:22  joergr
+ * Revision 1.4  1999-02-23 16:55:32  joergr
+ * Added tool to export display curves to a text file.
+ *
+ * Revision 1.3  1999/02/11 15:44:22  joergr
  * Removed unused parameter / member variable.
  *
  * Revision 1.2  1999/02/05 16:43:12  joergr

@@ -22,9 +22,9 @@
  *  Purpose: DicomDisplayFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-11 16:50:34 $
+ *  Update Date:      $Date: 1999-02-23 16:56:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/didispfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -172,8 +172,11 @@ const DiBartenLUT *DiDisplayFunction::getBartenLUT(const int bits,
         }
         if (BartenLUT[idx] == NULL)                             // first calculation of this LUT
         {
-			if (count <= MAX_TABLE_ENTRY_COUNT)
-				BartenLUT[idx] = new DiBartenLUT(count, MaxDDLValue, DDLValue, LumValue, ValueCount, GSDFValue, GSDFSpline, GSDFCount, JNDMin, JNDMax);
+            if (count <= MAX_TABLE_ENTRY_COUNT)
+            {
+                BartenLUT[idx] = new DiBartenLUT(count, MaxDDLValue, DDLValue, LumValue, ValueCount,
+                    GSDFValue, GSDFSpline, GSDFCount, JNDMin, JNDMax);
+            }
         }
         return BartenLUT[idx];
     }
@@ -203,6 +206,28 @@ int DiDisplayFunction::deleteBartenLUT(const int bits)
             return 1;
         }
         return 2;
+    }
+    return 0;
+}
+
+
+int DiDisplayFunction::writeCurveData(const char *filename)
+{
+    if ((filename != NULL) && (strlen(filename) > 0))
+    {
+        ofstream file(filename);
+        if (file)
+        {
+            file << "# Number of DDLs : " << ValueCount << endl;
+            file << "# Luminance range: " << LumValue[0] << " - " << LumValue[ValueCount - 1] << endl;
+            file << "# JND index range: " << JNDMin << " - " << JNDMax << endl << endl;
+            file << "DDL\tCC\tGSDF\tPSC" << endl;
+            const DiBartenLUT *blut = new DiBartenLUT(ValueCount, MaxDDLValue, DDLValue, LumValue, ValueCount,
+                GSDFValue, GSDFSpline, GSDFCount, JNDMin, JNDMax, &file);               // write curve data to file
+            int status = (blut !=NULL);
+            delete blut;
+            return status;
+        }
     }
     return 0;
 }
@@ -477,7 +502,10 @@ double DiDisplayFunction::getJNDIndex(const double lum) const
  *
  * CVS/RCS Log:
  * $Log: didispfn.cc,v $
- * Revision 1.4  1999-02-11 16:50:34  joergr
+ * Revision 1.5  1999-02-23 16:56:06  joergr
+ * Added tool to export display curves to a text file.
+ *
+ * Revision 1.4  1999/02/11 16:50:34  joergr
  * Removed unused parameter / member variable.
  * Renamed file to indicate the use of templates. Moved global functions for
  * cubic spline interpolation to static methods of a separate template class.

@@ -22,9 +22,9 @@
  *  Purpose: DicomBartenLUT (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-11 15:37:02 $
+ *  Update Date:      $Date: 1999-02-23 16:55:32 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dibarlut.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -59,7 +59,8 @@ class DiBartenLUT
                 const double *gsdf_spl,
                 const unsigned int gsdf_cnt,
                 const double jnd_min,
-                const double jnd_max);
+                const double jnd_max,
+                ostream *stream = NULL);
 
     virtual ~DiBartenLUT();
 
@@ -78,7 +79,8 @@ class DiBartenLUT
                   const double *gsdf_spl,
                   const unsigned int gsdf_cnt,
                   const double jnd_min,
-                  const double jnd_max);
+                  const double jnd_max,
+                  ostream *stream = NULL);
 };
 
 
@@ -89,13 +91,15 @@ class DiBartenLUT
  *
  * CVS/RCS Log:
  * $Log: dibarlut.h,v $
- * Revision 1.2  1999-02-11 15:37:02  joergr
+ * Revision 1.3  1999-02-23 16:55:32  joergr
+ * Added tool to export display curves to a text file.
+ *
+ * Revision 1.2  1999/02/11 15:37:02  joergr
  * Removed unused parameter.
  *
  * Revision 1.1  1999/02/03 17:46:15  joergr
  * Added support for calibration according to Barten transformation (incl.
  * a DISPLAY file describing the monitor characteristic).
- *
  *
  *
  */

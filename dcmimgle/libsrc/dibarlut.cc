@@ -22,9 +22,9 @@
  *  Purpose: DicomBartenLUT (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-11 16:46:40 $
+ *  Update Date:      $Date: 1999-02-23 16:56:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/Attic/dibarlut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,14 +55,15 @@ DiBartenLUT::DiBartenLUT(const unsigned long count,
                          const double *gsdf_spl,
                          const unsigned int gsdf_cnt,
                          const double jnd_min,
-                         const double jnd_max)
+                         const double jnd_max,
+                         ostream *stream)
   : DiBaseLUT(count, DicomImageClass::tobits(max, 0))
 {
     if ((Count > 0) && (Bits > 0))
     {
         if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Informationals)
             cerr << "INFO: new Barten LUT with " << Bits << " bits output and " << Count << " entries created !" << endl;
-        Valid = createLUT(ddl_tab, lum_tab, ddl_cnt, gsdf_tab, gsdf_spl, gsdf_cnt, jnd_min, jnd_max);
+        Valid = createLUT(ddl_tab, lum_tab, ddl_cnt, gsdf_tab, gsdf_spl, gsdf_cnt, jnd_min, jnd_max, stream);
     }
 } 
 
@@ -86,7 +87,8 @@ int DiBartenLUT::createLUT(const Uint16 *ddl_tab,
                            const double *gsdf_spl,
                            const unsigned int gsdf_cnt,
                            const double jnd_min,
-                           const double jnd_max)
+                           const double jnd_max,
+                           ostream *stream)
 {
     if ((ddl_tab != NULL) && (lum_tab != NULL) && (ddl_cnt > 0) && (gsdf_tab != NULL) && (gsdf_spl != NULL) && (gsdf_cnt > 0))
     {
@@ -129,10 +131,26 @@ int DiBartenLUT::createLUT(const Uint16 *ddl_tab,
                                     j++;
                                 if ((j > 0) && (fabs(lum_tab[j - 1] - *r) < fabs(lum_tab[j] - *r)))
                                     j--;
-// cerr << "lut[" << i << "] = " << ddl_tab[j] << "  " << "lum: " << *r << "  " << lum_tab[j] << "  " << fabs(lum_tab[j] - *r) << endl;
                                 *(q++) = ddl_tab[j];
                             }
                             Data = DataBuffer;
+                            if (stream != NULL)                         // write curve data to file
+                            {
+                                if (Count == ddl_cnt)                   // check whether Barten LUT fits exactly to DISPLAY file
+                                {
+                                    for (i = 0; i < ddl_cnt; i++)
+                                    {
+                                        (*stream) << ddl_tab[i] << "\t"; 
+                                        stream->setf(ios::fixed, ios::floatfield);
+                                        (*stream) << lum_tab[i] << "\t";
+                                        (*stream) << gsdf[i] << "\t";
+                                        (*stream) << lum_tab[Data[i]] << endl;
+                                    }
+                                } else {
+                                    if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+                                        cerr << "WARNING: can't write CurveData, wrong DISPLAY file or Barten LUT !" << endl;
+                                }
+                            }
                             status = 1;
                         }
                     }
@@ -152,7 +170,10 @@ int DiBartenLUT::createLUT(const Uint16 *ddl_tab,
  *
  * CVS/RCS Log:
  * $Log: dibarlut.cc,v $
- * Revision 1.4  1999-02-11 16:46:40  joergr
+ * Revision 1.5  1999-02-23 16:56:06  joergr
+ * Added tool to export display curves to a text file.
+ *
+ * Revision 1.4  1999/02/11 16:46:40  joergr
  * Removed unused parameter / member variable.
  * Renamed file to indicate the use of templates. Moved global functions for
  * cubic spline interpolation to static methods of a separate template class.
