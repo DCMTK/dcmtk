@@ -68,6 +68,16 @@ AC_CHECK_HEADERS(unix.h)
 AC_CHECK_HEADERS(stdlib.h)
 AC_CHECK_HEADERS(sys/types.h)
 AC_CHECK_HEADERS(sys/stat.h)
+AC_CHECK_HEADERS(stat.h)
+AC_CHECK_HEADERS(fcntl.h)
+AC_CHECK_HEADERS(stdarg.h)
+AC_CHECK_HEADERS(sys/file.h)
+AC_CHECK_HEADERS(sys/socket.h)
+AC_CHECK_HEADERS(sys/time.h)
+AC_CHECK_HEADERS(netinet/in.h)
+AC_CHECK_HEADERS(netdb.h)
+AC_CHECK_HEADERS(stddef.h)
+AC_CHECK_HEADERS(sys/utsname.h)
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_INLINE
@@ -92,9 +102,12 @@ AC_CHECK_FUNCS(memcpy)
 AC_CHECK_FUNCS(getpid mktemp getenv)
 AC_CHECK_FUNCS(stat)
 AC_CHECK_FUNCS(malloc_debug)
+AC_CHECK_FUNCS(strerror strdup tempnam bzero index rindex access)
+AC_CHECK_FUNCS(uname)
 
 dnl Checks for prototypes
 
+AC_CHECK_PROTOTYPE(bzero)
 AC_CHECK_PROTOTYPE(accept, sys/types.h sys/socket.h)
 AC_CHECK_PROTOTYPE(bind, sys/types.h sys/socket.h)
 AC_CHECK_PROTOTYPE(gethostbyname, netdb.h)

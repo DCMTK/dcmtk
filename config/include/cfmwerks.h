@@ -56,6 +56,19 @@
 /* Define if you have the strtoul function.  */
 #define HAVE_STRTOUL 1
 
+/* Define if you have the memcpy function */
+#define HAVE_MEMCPY 1
+
+/* Define if you have the strerror function */
+#define HAVE_STRERROR 1
+
+/* Define if you have the getpid function */
+/* Metrowerks on Mac defines a getpid() in <unistd.h> which
+** simply returns a constant value
+*/
+/* if GUSI is being used then this does not work */
+/* #define HAVE_GETPID 1 */
+
 /* Define if you have a working getenv function */
 /* The Macintosh has no concept of environment variables */
 /* Metrowerks on Macintosh has genenv, but it always returns NULL */
@@ -67,10 +80,37 @@
 /* Define if you have a <unix.h> include file */
 #define HAVE_UNIX_H 1
 
+/* Define if you gave a <fcntl.h> include file */
+#define HAVE_FCNTL_H 1
+
+/* Define if you gave a <stat.h> include file */
+#define HAVE_STAT_H 1
+
+/* Define if you gave a <stdlib.h> include file */
+#define HAVE_STDLIB_H 1
+
+/* Define if you gave a <stdarg.h> include file */
+#define HAVE_STDARG_H 1
+
+/* Define if you gave a <stddef.h> include file */
+#define HAVE_STDDEF_H 1
+
+/* This set of include files are available in the GUSI socket library */
+#define HAVE_GUSI_H 1	/* use the GUSI include file */
+#define HAVE_FLOCK 1	/* GUSI defines a version */
+#define HAVE_ACCESS 1	/* GUSI defines a version */
+/***
+#define HAVE_SYS_TYPES_H 1
+#define HAVE_SYS_TIME_H 1
+#define HAVE_SYS_SOCKET_H 1
+#define HAVE_NETINET_IN_H 1
+#define HAVE_NETDB_H 1
+***/
+
 /* User definable section */
 
 /* Define the file system path separator */
-#define PATH_SEPERATOR ':'
+#define PATH_SEPARATOR ':'
 
 /* Define the environment variable path separator */
 /* #undef ENVIRONMENT_PATH_SEPARATOR ':' */

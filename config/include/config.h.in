@@ -64,6 +64,12 @@
 /* The number of bytes in a short.  */
 #undef SIZEOF_SHORT
 
+/* Define if you have the access function.  */
+#undef HAVE_ACCESS
+
+/* Define if you have the bzero function.  */
+#undef HAVE_BZERO
+
 /* Define if you have the getenv function.  */
 #undef HAVE_GETENV
 
@@ -75,6 +81,9 @@
 
 /* Define if you have the getpid function.  */
 #undef HAVE_GETPID
+
+/* Define if you have the index function.  */
+#undef HAVE_INDEX
 
 /* Define if you have the itoa function.  */
 #undef HAVE_ITOA
@@ -88,6 +97,9 @@
 /* Define if you have the mktemp function.  */
 #undef HAVE_MKTEMP
 
+/* Define if you have the rindex function.  */
+#undef HAVE_RINDEX
+
 /* Define if you have the socket function.  */
 #undef HAVE_SOCKET
 
@@ -96,6 +108,12 @@
 
 /* Define if you have the strchr function.  */
 #undef HAVE_STRCHR
+
+/* Define if you have the strdup function.  */
+#undef HAVE_STRDUP
+
+/* Define if you have the strerror function.  */
+#undef HAVE_STRERROR
 
 /* Define if you have the strstr function.  */
 #undef HAVE_STRSTR
@@ -106,14 +124,44 @@
 /* Define if you have the sysinfo function.  */
 #undef HAVE_SYSINFO
 
+/* Define if you have the tempnam function.  */
+#undef HAVE_TEMPNAM
+
+/* Define if you have the <fcntl.h> header file.  */
+#undef HAVE_FCNTL_H
+
 /* Define if you have the <libc.h> header file.  */
 #undef HAVE_LIBC_H
+
+/* Define if you have the <netdb.h> header file.  */
+#undef HAVE_NETDB_H
+
+/* Define if you have the <netinet/in.h> header file.  */
+#undef HAVE_NETINET_IN_H
+
+/* Define if you have the <stat.h> header file.  */
+#undef HAVE_STAT_H
+
+/* Define if you have the <stdarg.h> header file.  */
+#undef HAVE_STDARG_H
+
+/* Define if you have the <stddef.h> header file.  */
+#undef HAVE_STDDEF_H
 
 /* Define if you have the <stdlib.h> header file.  */
 #undef HAVE_STDLIB_H
 
+/* Define if you have the <sys/file.h> header file.  */
+#undef HAVE_SYS_FILE_H
+
+/* Define if you have the <sys/socket.h> header file.  */
+#undef HAVE_SYS_SOCKET_H
+
 /* Define if you have the <sys/stat.h> header file.  */
 #undef HAVE_SYS_STAT_H
+
+/* Define if you have the <sys/time.h> header file.  */
+#undef HAVE_SYS_TIME_H
 
 /* Define if you have the <sys/types.h> header file.  */
 #undef HAVE_SYS_TYPES_H
@@ -134,8 +182,8 @@
 #undef HAVE_LIBSOCKET
 /* User definable section */
 
-/* Define path seperator */
-#define PATH_SEPERATOR '/'
+/* Define path separator */
+#define PATH_SEPARATOR '/'
 
 /* Define the environment variable path separator */
 #define ENVIRONMENT_PATH_SEPARATOR ':'

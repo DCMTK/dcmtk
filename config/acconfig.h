@@ -6,8 +6,8 @@
 @BOTTOM@
 /* User definable section */
 
-/* Define path seperator */
-#define PATH_SEPERATOR '/'
+/* Define path separator */
+#define PATH_SEPARATOR '/'
 
 /* Define the environment variable path separator */
 #define ENVIRONMENT_PATH_SEPARATOR ':'
