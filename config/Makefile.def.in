@@ -76,7 +76,7 @@ defines= $(GLOBALDEFS) $(LOCALDEFS) $(DEBUG) $(LOCALDEBUG)
 		$(CPPFLAGS) $(CXXFLAGS) $< 
 
 .c.o:
-	$(CC) $($defines) -c $(includes) $(ARCH) \
+	$(CC) $(defines) -c $(includes) $(ARCH) \
 		$(CPPFLAGS) $(CFLAGS) $<
 
 
