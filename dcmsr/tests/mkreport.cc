@@ -35,6 +35,7 @@ int main(int argc, char *argv[])
         cout << "----------------------------------------------------" << endl;
         cout << "ki = IHE Year 2 key image note (empty)" << endl;
         cout << "si = IHE Year 2 simple image report (empty)" << endl;
+        cout << "fk = Fake Report, C. Iulius Caesar: De bello Gallico" << endl;
         cout << endl;
         cout << "01 = Consultation Report (text only)" << endl;
         cout << "02 = Same as 01 but with NUM and PNAME items" << endl;
@@ -61,7 +62,7 @@ int main(int argc, char *argv[])
         DSRDocument *doc = new DSRDocument();
         if (doc != NULL)
         {
-            OFString studyUID_ki, studyUID_01, studyUID_06;
+            OFString studyUID_ki, studyUID_01;
             OFBool writeFile = OFTrue;
             doc->setLogStream(&ofConsole);
             for (int i = 1; i < argc; i++)
@@ -151,6 +152,86 @@ int main(int argc, char *argv[])
                     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1200", OFFIS_CODING_SCHEME_DESIGNATOR, "Image Reference"));
                     doc->getTree().getCurrentContentItem().setImageReference(DSRImageReferenceValue("0", "0"));
 
+                } else if (strcmp(argv[i], "fk") == 0)
+                {
+                    doc->createNewDocument(DSRTypes::DT_BasicTextSR);
+                    doc->createNewSeries("1.2.276.0.7230010.3.4.1915765545.18030.917282194.11");
+                    doc->setStudyDescription("OFFIS Structured Reporting Templates");
+                    doc->setSeriesDescription("Fake Report, C. Iulius Caesar: De bello Gallico");
+
+                    doc->setPatientsName("Caesar^Gaius Iulius");
+                    doc->setPatientsSex("M");
+                    doc->setReferringPhysiciansName("Augustus Caesar^Gaius Iulius Octavianus");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("0.1", OFFIS_CODING_SCHEME_DESIGNATOR, "De bello Gallico"));
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image, DSRTypes::AM_belowCurrent);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1.1", OFFIS_CODING_SCHEME_DESIGNATOR, "Author"));
+                    doc->getTree().getCurrentContentItem().setImageReference(DSRImageReferenceValue(UID_SecondaryCaptureImageStorage, "1.2.276.0.7230010.3.4.1915765545.18030.917282194.11.1.1", UID_GrayscaleSoftcopyPresentationStateStorage, "1.2.276.0.7230010.3.1.4.1707840890.221.974385531.18"));
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Container);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("2.1", OFFIS_CODING_SCHEME_DESIGNATOR, "Liber primus"));
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Container, DSRTypes::AM_belowCurrent);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("3.1", OFFIS_CODING_SCHEME_DESIGNATOR, "I"));
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text, DSRTypes::AM_belowCurrent);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("4.1", OFFIS_CODING_SCHEME_DESIGNATOR, "1"));
+                    doc->getTree().getCurrentContentItem().setStringValue("Gallia est omnis divisa in partes tres, quarum unam incolunt Belgae, aliam Aquitani, tertiam, qui ipsorum lingua Celtae, nostra Galli appellantur.");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("4.2", OFFIS_CODING_SCHEME_DESIGNATOR, "2"));
+                    doc->getTree().getCurrentContentItem().setStringValue("Hi omnes lingua, institutis, legibus inter se differunt. Gallos ab Aquitanis Garunna flumen, a Belgis Matrona et Sequana dividit.");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("4.3", OFFIS_CODING_SCHEME_DESIGNATOR, "3"));
+                    doc->getTree().getCurrentContentItem().setStringValue("Horum omnium fortissimi sunt Belgae, propterea quod a cultu atque humanitate provinciae longissime absunt minimeque ad eos mercatores saepe commeant atque ea, quae ad effeminandos animos pertinent, important proximique sunt Germanis, qui trans Rhenum incolunt, quibuscum continenter bellum gerunt.");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("4.4", OFFIS_CODING_SCHEME_DESIGNATOR, "4"));
+                    doc->getTree().getCurrentContentItem().setStringValue("Qua de causa Helvetii quoque reliquos Gallos virtute praecedunt, quod fere cotidianis proeliis cum Germanis contendunt, cum aut suis finibus eos prohibent aut ipsi in eorum finibus bellum gerunt.");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("4.5", OFFIS_CODING_SCHEME_DESIGNATOR, "5"));
+                    doc->getTree().getCurrentContentItem().setStringValue("[Eorum una, pars, quam Gallos obtinere dictum est, initium capit a flumine Rhodano, continetur Garumna flumine, Oceano, finibus Belgarum, attingit etiam ab Sequanis et Helvetiis flumen Rhenum, vergit ad septentriones.");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("4.6", OFFIS_CODING_SCHEME_DESIGNATOR, "6"));
+                    doc->getTree().getCurrentContentItem().setStringValue("Belgae ab extremis Galliae finibus oriuntur, pertinent ad inferiorem partem fluminis Rheni, spectant in septentrionem et orientem solem.");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("4.7", OFFIS_CODING_SCHEME_DESIGNATOR, "7"));
+                    doc->getTree().getCurrentContentItem().setStringValue("Aquitania a Garumna flumine ad Pyrenaeos montes et eam partem Oceani quae est ad Hispaniam pertinet; spectat inter occasum solis et septentriones.]");
+
+                    doc->getTree().goUp();
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Container);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("3.2", OFFIS_CODING_SCHEME_DESIGNATOR, "II"));
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text, DSRTypes::AM_belowCurrent);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("4.1", OFFIS_CODING_SCHEME_DESIGNATOR, "1"));
+                    doc->getTree().getCurrentContentItem().setStringValue("Apud Helvetios longe nobilissimus fuit et ditissimus Orgetorix. Is M. Messalla M. Pisone consulibus regni cupiditate inductus coniurationem nobilitatis fecit et civitati persuasit, ut de finibus suis cum omnibus copiis exirent:");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("4.2", OFFIS_CODING_SCHEME_DESIGNATOR, "2"));
+                    doc->getTree().getCurrentContentItem().setStringValue("Perfacile esse, cum virtute omnibus praestarent, totius Galliae imperio potiri.");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("4.3", OFFIS_CODING_SCHEME_DESIGNATOR, "3"));
+                    doc->getTree().getCurrentContentItem().setStringValue("Id hoc facilius iis persuasit, quod undique loci natura Helvetii continentur: una ex parte flumine Rheno latissimo atque altissimo, qui agrum Helvetium a Germanis dividit, altera ex parte monte Iura altissimo, qui est inter Sequanos et Helvetios, tertia lacu Lemanno et flumine Rhodano, qui provinciam nostram ab Helvetiis dividit.");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("4.4", OFFIS_CODING_SCHEME_DESIGNATOR, "4"));
+                    doc->getTree().getCurrentContentItem().setStringValue("His rebus fiebat, ut et minus late vagarentur et minus facile finitimis bellum inferre possent; qua ex parte homines bellandi cupidi magno dolore afficiebantur. 5 Pro multitudine autem hominum et pro gloria belli atque fortitudinis angustos se fines habere arbitrabantur, qui in longitudinem milia passuum ducenta quadraginta, in latitudinem centum octoginta patebant.");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("4.5", OFFIS_CODING_SCHEME_DESIGNATOR, "5"));
+                    doc->getTree().getCurrentContentItem().setStringValue("Pro multitudine autem hominum et pro gloria belli atque fortitudinis angustos se fines habere arbitrabantur, qui in longitudinem milia passuum ducenta quadraginta, in latitudinem centum octoginta patebant.");
+
+                    doc->completeDocument();
+                    doc->verifyDocument("Augustus Caesar^Gaius Iulius Octavianus", "SPQR");
+                    
                 } else if (strcmp(argv[i], "01") == 0)
                 {
                     doc->createNewDocument(DSRTypes::DT_BasicTextSR);
@@ -434,7 +515,7 @@ int main(int argc, char *argv[])
                 } else if (strcmp(argv[i], "06") == 0)
                 {
                     doc->createNewDocument(DSRTypes::DT_BasicTextSR);
-                    doc->getStudyInstanceUID(studyUID_06);
+                    doc->createNewSeries("1.2.276.0.7230010.3.1.4.123456");
                     doc->setStudyDescription("OFFIS Structured Reporting Samples");
                     doc->setSeriesDescription("Report with Image Reference");
 
@@ -471,8 +552,7 @@ int main(int argc, char *argv[])
                 } else if (strcmp(argv[i], "07") == 0)
                 {
                     doc->createNewDocument(DSRTypes::DT_BasicTextSR);
-                    if (studyUID_06.length() > 0)
-                        doc->createNewSeries(studyUID_06);
+                    doc->createNewSeries("1.2.276.0.7230010.3.1.4.123456");
                     doc->setStudyDescription("OFFIS Structured Reporting Samples");
                     doc->setSeriesDescription("Report with Image and Presentation State Reference");
 
@@ -509,8 +589,7 @@ int main(int argc, char *argv[])
                 } else if (strcmp(argv[i], "08") == 0)
                 {
                     doc->createNewDocument(DSRTypes::DT_BasicTextSR);
-                    if (studyUID_06.length() > 0)
-                        doc->createNewSeries(studyUID_06);
+                    doc->createNewSeries("1.2.276.0.7230010.3.1.4.123456");
                     doc->setStudyDescription("OFFIS Structured Reporting Samples");
                     doc->setSeriesDescription("Report with Presentation State Reference");
 
@@ -547,6 +626,7 @@ int main(int argc, char *argv[])
                 } else if (strcmp(argv[i], "09") == 0)
                 {
                     doc->createNewDocument(DSRTypes::DT_BasicTextSR);
+                    doc->createNewSeries("2.16.840.1.113662.2.1.53544936282433.12345.336.16650");
                     doc->setStudyDescription("OFFIS Structured Reporting Samples");
                     doc->setSeriesDescription("RSNA '95, Picker, CT");
 
@@ -580,6 +660,7 @@ int main(int argc, char *argv[])
                 } else if (strcmp(argv[i], "10") == 0)
                 {
                     doc->createNewDocument(DSRTypes::DT_BasicTextSR);
+                    doc->createNewSeries("2.16.840.1.113662.4.8796818069641.798806497.93296077602350.10");
                     doc->setStudyDescription("OFFIS Structured Reporting Samples");
                     doc->setSeriesDescription("RSNA '95, Picker, MR");
 
@@ -623,12 +704,13 @@ int main(int argc, char *argv[])
                 } else if (strcmp(argv[i], "11") == 0)
                 {
                     doc->createNewDocument(DSRTypes::DT_BasicTextSR);
+                    doc->createNewSeries("1.2.840.113654.2.4.4.3.4.119950730134200");
                     doc->setStudyDescription("OFFIS Structured Reporting Samples");
                     doc->setSeriesDescription("RSNA '95, Kodak, CR");
 
                     doc->setPatientsName("Gamage^Mary");
                     doc->setPatientsSex("F");
-                    doc->setPatientsBirthDate("19950210");                    
+                    doc->setPatientsBirthDate("19950210");
                     doc->setPatientID("KHIS001");
 
                     doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
@@ -658,6 +740,7 @@ int main(int argc, char *argv[])
                 } else if (strcmp(argv[i], "12") == 0)
                 {
                     doc->createNewDocument(DSRTypes::DT_BasicTextSR);
+                    doc->createNewSeries("1.2.840.113680.3.103.775.2873347909.282313");
                     doc->setStudyDescription("OFFIS Structured Reporting Samples");
                     doc->setSeriesDescription("RSNA '95, Acuson, US");
 
@@ -701,6 +784,7 @@ int main(int argc, char *argv[])
                 } else if (strcmp(argv[i], "13") == 0)
                 {
                     doc->createNewDocument(DSRTypes::DT_BasicTextSR);
+                    doc->createNewSeries("1.2.840.113674.514.212.200");
                     doc->setStudyDescription("OFFIS Structured Reporting Samples");
                     doc->setSeriesDescription("RSNA '95, GE, CT");
 
@@ -734,6 +818,7 @@ int main(int argc, char *argv[])
                 } else if (strcmp(argv[i], "14") == 0)
                 {
                     doc->createNewDocument(DSRTypes::DT_BasicTextSR);
+                    doc->createNewSeries("1.2.840.113674.1140.196.200");
                     doc->setStudyDescription("OFFIS Structured Reporting Samples");
                     doc->setSeriesDescription("RSNA '95, GE, MR");
 
@@ -767,6 +852,7 @@ int main(int argc, char *argv[])
                 } else if (strcmp(argv[i], "15") == 0)
                 {
                     doc->createNewDocument(DSRTypes::DT_BasicTextSR);
+                    doc->createNewSeries("1.3.12.2.1107.5.8.1.123456789.199507271758050705910");
                     doc->setStudyDescription("OFFIS Structured Reporting Samples");
                     doc->setSeriesDescription("RSNA '95, Siemens, MR");
 
@@ -793,6 +879,7 @@ int main(int argc, char *argv[])
                 } else if (strcmp(argv[i], "16") == 0)
                 {
                     doc->createNewDocument(DSRTypes::DT_BasicTextSR);
+                    doc->createNewSeries("1.3.12.2.1107.5.8.1.123456789.199507271807160007134");
                     doc->setStudyDescription("OFFIS Structured Reporting Samples");
                     doc->setSeriesDescription("RSNA '95, Siemens, DS");
 
@@ -828,6 +915,7 @@ int main(int argc, char *argv[])
                 {
                     doc->createNewDocument(DSRTypes::DT_BasicTextSR);
                     doc->setSpecificCharacterSetType(DSRTypes::CS_Latin1);
+                    doc->createNewSeries("1.3.12.2.1107.5.8.1.123456789.199507271803030520282");
                     doc->setStudyDescription("OFFIS Structured Reporting Samples");
                     doc->setSeriesDescription("RSNA '95, Siemens, DR");
 
@@ -871,6 +959,7 @@ int main(int argc, char *argv[])
                 } else if (strcmp(argv[i], "18") == 0)
                 {
                     doc->createNewDocument(DSRTypes::DT_BasicTextSR);
+                    doc->createNewSeries("1.2.392.200036.9125.0.198811291108.7");
                     doc->setStudyDescription("OFFIS Structured Reporting Samples");
                     doc->setSeriesDescription("RSNA '95, Fuji, CR");
 
@@ -914,6 +1003,7 @@ int main(int argc, char *argv[])
                 } else if (strcmp(argv[i], "19") == 0)
                 {
                     doc->createNewDocument(DSRTypes::DT_BasicTextSR);
+                    doc->createNewSeries("1.2.840.113663.19950725.1.0");
                     doc->setStudyDescription("OFFIS Structured Reporting Samples");
                     doc->setSeriesDescription("RSNA '95, ATL, US");
 
