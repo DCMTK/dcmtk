@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmDateTime
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-16 13:55:40 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2004-04-16 12:50:45 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -106,6 +106,19 @@ OFCondition DcmDateTime::getOFDateTime(OFDateTime &dateTimeValue,
     else
         dateTimeValue.clear();
     return l_error;
+}
+
+
+OFCondition DcmDateTime::getISOFormattedDateTime(OFString &formattedDateTime,
+                                                 const unsigned long pos,
+                                                 const OFBool seconds,
+                                                 const OFBool fraction,
+                                                 const OFBool timeZone,
+                                                 const OFBool createMissingPart)
+{
+    /* call the real function, required to make Sun CC 2.0.1 happy (see header file) */
+    return getISOFormattedDateTime(formattedDateTime, pos, seconds, fraction, timeZone,
+                                   createMissingPart, " " /*dateTimeSeparator*/);
 }
 
 
@@ -233,19 +246,31 @@ OFCondition DcmDateTime::getOFDateTimeFromString(const OFString &dicomDateTime,
             timeZone = OFTime::getLocalTimeZone();
         }
         /* extract remaining components from date/time string: YYYYMMDDHHMM[SS[.FFFFFF]] */
-       	/* scan seconds using OFStandard::atof to avoid locale issues */
+        /* scan seconds using OFStandard::atof to avoid locale issues */
         if (sscanf(string.c_str(), "%04u%02u%02u%02u%02u", &year, &month, &day, &hour, &minute) >= 3)
         {
             if (string.length() > 12)
             {
-            	string.erase(0, 12);
-            	second = OFStandard::atof(string.c_str());
+                string.erase(0, 12);
+                second = OFStandard::atof(string.c_str());
             }
             if (dateTimeValue.setDateTime(year, month, day, hour, minute, second, timeZone))
                 l_error = EC_Normal;
         }
     }
     return l_error;
+}
+
+
+OFCondition DcmDateTime::getISOFormattedDateTimeFromString(const OFString &dicomDateTime,
+                                                           OFString &formattedDateTime,
+                                                           const OFBool seconds,
+                                                           const OFBool fraction,
+                                                           const OFBool timeZone,
+                                                           const OFBool createMissingPart)
+{
+    return getISOFormattedDateTimeFromString(dicomDateTime, formattedDateTime, seconds, fraction, timeZone,
+                                             createMissingPart, " " /*dateTimeSeparator*/);
 }
 
 
@@ -304,7 +329,11 @@ OFCondition DcmDateTime::getISOFormattedDateTimeFromString(const OFString &dicom
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrdt.cc,v $
-** Revision 1.24  2004-01-16 13:55:40  joergr
+** Revision 1.25  2004-04-16 12:50:45  joergr
+** Restructured code to avoid default parameter values for "complex types" like
+** OFString. Required for Sun CC 2.0.1.
+**
+** Revision 1.24  2004/01/16 13:55:40  joergr
 ** Introduced new parameter "dateTimeSeparator" in getISOFormattedXXX() methods
 ** to support ISO 8601 as format required by XML Schema type "dateTime".
 **

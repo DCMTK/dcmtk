@@ -22,8 +22,8 @@
  *  Purpose: Interface of class DcmDateTime
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-16 14:04:11 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2004-04-16 12:49:25 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -83,22 +83,22 @@ class DcmDateTime
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition getOFString(OFString &stringValue,
-	                                const unsigned long pos,
-	                                OFBool normalize = OFTrue);
+                                    const unsigned long pos,
+                                    OFBool normalize = OFTrue);
 
-	/** set the element value to the current system date and time.
-	 *  The DICOM DT format supported by this function is "YYYYMMDDHHMM[SS[.FFFFFF]][&ZZZZ]"
-	 *  where the brackets enclose optional parts. If the current system date/time or parts
-	 *  of it are unavailable the corresponding values are set to "0" and an error code is
-	 *  returned - in fact, the date is set to "19000101" if unavailable.
-	 *  @param seconds add optional seconds ("SS") if OFTrue
-	 *  @param fraction add optional fractional part of a second (".FFFFFF") if OFTrue
-	 *   (requires parameter 'seconds' to be also OFTrue)
-	 *  @param timeZone add optional time zone ("&ZZZZ" where "&" is "+" or "-") if OFTrue.
-	 *   The time zone is given as the offset (hours and minutes) from Coordinated Universal
-	 *   Time (UTC).
-	 *  @return EC_Normal upon success, an error code otherwise
-	 */
+    /** set the element value to the current system date and time.
+     *  The DICOM DT format supported by this function is "YYYYMMDDHHMM[SS[.FFFFFF]][&ZZZZ]"
+     *  where the brackets enclose optional parts. If the current system date/time or parts
+     *  of it are unavailable the corresponding values are set to "0" and an error code is
+     *  returned - in fact, the date is set to "19000101" if unavailable.
+     *  @param seconds add optional seconds ("SS") if OFTrue
+     *  @param fraction add optional fractional part of a second (".FFFFFF") if OFTrue
+     *   (requires parameter 'seconds' to be also OFTrue)
+     *  @param timeZone add optional time zone ("&ZZZZ" where "&" is "+" or "-") if OFTrue.
+     *   The time zone is given as the offset (hours and minutes) from Coordinated Universal
+     *   Time (UTC).
+     *  @return EC_Normal upon success, an error code otherwise
+     */
     OFCondition setCurrentDateTime(const OFBool seconds = OFTrue,
                                    const OFBool fraction = OFFalse,
                                    const OFBool timeZone = OFFalse);
@@ -121,49 +121,73 @@ class DcmDateTime
     OFCondition getOFDateTime(OFDateTime &dateTimeValue,
                               const unsigned long pos = 0);
 
-	/** get the current element value in ISO date/time format.
-	 *  The ISO date/time format supported by this function is "YYYY-MM-DD HH:MM[:SS[.FFFFFF]]
-	 *  [&HH:MM]" where the brackets enclose optional parts. Please note that the element value
-	 *  is expected to be in valid DICOM DT format ("YYYYMMDD[HH[MM[SS[.FFFFFF]]]][&ZZZZ]"). If
-	 *  this function fails the result variable 'formattedDateTime' is cleared automatically.
-	 *  @param formattedDateTime reference to string variable where the result is stored
-	 *  @param pos index of the element component in case of value multiplicity (0..vm-1)
-	 *  @param seconds add optional seconds (":SS") if OFTrue
-	 *  @param fraction add optional fractional part of a second (".FFFFFF") if OFTrue
-	 *   (requires parameter 'seconds' to be also OFTrue)
-	 *  @param timeZone add optional time zone ("&HH:MM" where "&" is "+" or "-") if OFTrue.
-	 *   The time zone is given as the offset (hours and minutes) from Coordinated Universal
-	 *   Time (UTC). Please note that the formatted time output is not adapted to the local
-	 *   time if the time zone is omitted.
-	 *  @param createMissingPart if OFTrue create optional parts (seconds, fractional part of
-	 *   a seconds and/or time zone) if absent in the element value
-	 *  @param dateTimeSeparator separator between ISO date and time value (default: " ")
-	 *  @return EC_Normal upon success, an error code otherwise
-	 */
+    /** get the current element value in ISO date/time format.
+     *  The ISO date/time format supported by this function is "YYYY-MM-DD HH:MM[:SS[.FFFFFF]]
+     *  [&HH:MM]" where the brackets enclose optional parts. Please note that the element value
+     *  is expected to be in valid DICOM DT format ("YYYYMMDD[HH[MM[SS[.FFFFFF]]]][&ZZZZ]"). If
+     *  this function fails the result variable 'formattedDateTime' is cleared automatically.
+     *  @param formattedDateTime reference to string variable where the result is stored
+     *  @param pos index of the element component in case of value multiplicity (0..vm-1)
+     *  @param seconds add optional seconds (":SS") if OFTrue
+     *  @param fraction add optional fractional part of a second (".FFFFFF") if OFTrue
+     *   (requires parameter 'seconds' to be also OFTrue)
+     *  @param timeZone add optional time zone ("&HH:MM" where "&" is "+" or "-") if OFTrue.
+     *   The time zone is given as the offset (hours and minutes) from Coordinated Universal
+     *   Time (UTC). Please note that the formatted time output is not adapted to the local
+     *   time if the time zone is omitted.
+     *  @param createMissingPart if OFTrue create optional parts (seconds, fractional part of
+     *   a seconds and/or time zone) if absent in the element value
+     *  @return EC_Normal upon success, an error code otherwise
+     */
     OFCondition getISOFormattedDateTime(OFString &formattedDateTime,
                                         const unsigned long pos = 0,
                                         const OFBool seconds = OFTrue,
                                         const OFBool fraction = OFFalse,
                                         const OFBool timeZone = OFTrue,
-                                        const OFBool createMissingPart = OFFalse,
-                                        const OFString &dateTimeSeparator = " ");
+                                        const OFBool createMissingPart = OFFalse);
+
+    /** get the current element value in ISO date/time format.
+     *  Same as above but allows to specify the separator between date and time value.
+     *  Only required since Sun CC 2.0.1 compiler does not support default parameter values for
+     *  "complex types" like OFString.  Reports the error message: "Sorry not implemented" :-/
+     *  @param formattedDateTime reference to string variable where the result is stored
+     *  @param pos index of the element component in case of value multiplicity (0..vm-1)
+     *  @param seconds add optional seconds (":SS") if OFTrue
+     *  @param fraction add optional fractional part of a second (".FFFFFF") if OFTrue
+     *   (requires parameter 'seconds' to be also OFTrue)
+     *  @param timeZone add optional time zone ("&HH:MM" where "&" is "+" or "-") if OFTrue.
+     *   The time zone is given as the offset (hours and minutes) from Coordinated Universal
+     *   Time (UTC). Please note that the formatted time output is not adapted to the local
+     *   time if the time zone is omitted.
+     *  @param createMissingPart if OFTrue create optional parts (seconds, fractional part of
+     *   a seconds and/or time zone) if absent in the element value
+     *  @param dateTimeSeparator separator between ISO date and time value (default: " ")
+     *  @return EC_Normal upon success, an error code otherwise
+     */
+    OFCondition getISOFormattedDateTime(OFString &formattedDateTime,
+                                        const unsigned long pos /*= 0*/,
+                                        const OFBool seconds /*= OFTrue*/,
+                                        const OFBool fraction /*= OFFalse*/,
+                                        const OFBool timeZone /*= OFTrue*/,
+                                        const OFBool createMissingPart /*= OFFalse*/,
+                                        const OFString &dateTimeSeparator /*= " "*/);
 
     /* --- static helper functions --- */
 
-	/** get the current system date and time.
-	 *  The DICOM DT format supported by this function is "YYYYMMDDHHMM[SS[.FFFFFF]][&ZZZZ]"
-	 *  where the brackets enclose optional parts. If the current system date/time or parts
-	 *  of it are unavailable the corresponding values are set to "0" and an error code is
-	 *  returned - in fact, the date is set to "19000101" if unavailable.
-	 *  @param dicomDateTime reference to string variable where the result is stored
-	 *  @param seconds add optional seconds ("SS") if OFTrue
-	 *  @param fraction add optional fractional part of a second (".FFFFFF") if OFTrue
-	 *   (requires parameter 'seconds' to be also OFTrue)
-	 *  @param timeZone add optional time zone ("&ZZZZ" where "&" is "+" or "-") if OFTrue.
-	 *   The time zone is given as the offset (hours and minutes) from Coordinated Universal
-	 *   Time (UTC).
-	 *  @return EC_Normal upon success, an error code otherwise
-	 */
+    /** get the current system date and time.
+     *  The DICOM DT format supported by this function is "YYYYMMDDHHMM[SS[.FFFFFF]][&ZZZZ]"
+     *  where the brackets enclose optional parts. If the current system date/time or parts
+     *  of it are unavailable the corresponding values are set to "0" and an error code is
+     *  returned - in fact, the date is set to "19000101" if unavailable.
+     *  @param dicomDateTime reference to string variable where the result is stored
+     *  @param seconds add optional seconds ("SS") if OFTrue
+     *  @param fraction add optional fractional part of a second (".FFFFFF") if OFTrue
+     *   (requires parameter 'seconds' to be also OFTrue)
+     *  @param timeZone add optional time zone ("&ZZZZ" where "&" is "+" or "-") if OFTrue.
+     *   The time zone is given as the offset (hours and minutes) from Coordinated Universal
+     *   Time (UTC).
+     *  @return EC_Normal upon success, an error code otherwise
+     */
     static OFCondition getCurrentDateTime(OFString &dicomDateTime,
                                           const OFBool seconds = OFTrue,
                                           const OFBool fraction = OFFalse,
@@ -179,9 +203,9 @@ class DcmDateTime
      *  @param seconds add optional seconds ("SS") if OFTrue
      *  @param fraction add optional fractional part of a second (".FFFFFF") if OFTrue
      *   (requires parameter 'seconds' to be also OFTrue)
-	 *  @param timeZone add optional time zone ("&ZZZZ" where "&" is "+" or "-") if OFTrue.
-	 *   The time zone is given as the offset (hours and minutes) from Coordinated Universal
-	 *   Time (UTC).
+     *  @param timeZone add optional time zone ("&ZZZZ" where "&" is "+" or "-") if OFTrue.
+     *   The time zone is given as the offset (hours and minutes) from Coordinated Universal
+     *   Time (UTC).
      *  @return EC_Normal upon success, an error code otherwise
      */
     static OFCondition getDicomDateTimeFromOFDateTime(const OFDateTime &dateTimeValue,
@@ -202,32 +226,56 @@ class DcmDateTime
     static OFCondition getOFDateTimeFromString(const OFString &dicomDateTime,
                                                OFDateTime &dateTimeValue);
 
-	/** get the specified DICOM datetime value in ISO format.
-	 *  The ISO date/time format supported by this function is "YYYY-MM-DD HH:MM[:SS[.FFFFFF]]
-	 *  [&HH:MM]" where the brackets enclose optional parts. Please note that the specified
-	 *  value is expected to be in valid DICOM DT format ("YYYYMMDD[HH[MM[SS[.FFFFFF]]]][&ZZZZ]").
+    /** get the specified DICOM datetime value in ISO format.
+     *  The ISO date/time format supported by this function is "YYYY-MM-DD HH:MM[:SS[.FFFFFF]]
+     *  [&HH:MM]" where the brackets enclose optional parts. Please note that the specified
+     *  value is expected to be in valid DICOM DT format ("YYYYMMDD[HH[MM[SS[.FFFFFF]]]][&ZZZZ]").
      *  If this function fails the result variable 'formattedDateTime' is cleared automatically.
-	 *  @param dicomDateTime string value in DICOM DT format to be converted to ISO format
-	 *  @param formattedDateTime reference to string variable where the result is stored
-	 *  @param seconds add optional seconds (":SS") if OFTrue
-	 *  @param fraction add optional fractional part of a second (".FFFFFF") if OFTrue
-	 *   (requires parameter 'seconds' to be also OFTrue)
-	 *  @param timeZone add optional time zone ("&HH:MM" where "&" is "+" or "-") if OFTrue.
-	 *   The time zone is given as the offset (hours and minutes) from the Coordinated Universal
-	 *   Time (UTC). Please note that the formatted time output is not adapted to the local time
-	 *   if the time zone is omitted.
-	 *  @param createMissingPart if OFTrue create optional parts (seconds, fractional part of
-	 *   a seconds and/or time zone) if absent in the element value
-	 *  @param dateTimeSeparator separator between ISO date and time value (default: " ")
-	 *  @return EC_Normal upon success, an error code otherwise
-	 */
+     *  @param dicomDateTime string value in DICOM DT format to be converted to ISO format
+     *  @param formattedDateTime reference to string variable where the result is stored
+     *  @param seconds add optional seconds (":SS") if OFTrue
+     *  @param fraction add optional fractional part of a second (".FFFFFF") if OFTrue
+     *   (requires parameter 'seconds' to be also OFTrue)
+     *  @param timeZone add optional time zone ("&HH:MM" where "&" is "+" or "-") if OFTrue.
+     *   The time zone is given as the offset (hours and minutes) from the Coordinated Universal
+     *   Time (UTC). Please note that the formatted time output is not adapted to the local time
+     *   if the time zone is omitted.
+     *  @param createMissingPart if OFTrue create optional parts (seconds, fractional part of
+     *   a seconds and/or time zone) if absent in the element value
+     *  @return EC_Normal upon success, an error code otherwise
+     */
     static OFCondition getISOFormattedDateTimeFromString(const OFString &dicomDateTime,
                                                          OFString &formattedDateTime,
                                                          const OFBool seconds = OFTrue,
                                                          const OFBool fraction = OFFalse,
                                                          const OFBool timeZone = OFTrue,
-                                                         const OFBool createMissingPart = OFFalse,
-                                                         const OFString &dateTimeSeparator = " ");
+                                                         const OFBool createMissingPart = OFFalse);
+
+    /** get the specified DICOM datetime value in ISO format.
+     *  Same as above but allows to specify the separator between date and time value.
+     *  Only required since Sun CC 2.0.1 compiler does not support default parameter values for
+     *  "complex types" like OFString.  Reports the error message: "Sorry not implemented" :-/
+     *  @param dicomDateTime string value in DICOM DT format to be converted to ISO format
+     *  @param formattedDateTime reference to string variable where the result is stored
+     *  @param seconds add optional seconds (":SS") if OFTrue
+     *  @param fraction add optional fractional part of a second (".FFFFFF") if OFTrue
+     *   (requires parameter 'seconds' to be also OFTrue)
+     *  @param timeZone add optional time zone ("&HH:MM" where "&" is "+" or "-") if OFTrue.
+     *   The time zone is given as the offset (hours and minutes) from the Coordinated Universal
+     *   Time (UTC). Please note that the formatted time output is not adapted to the local time
+     *   if the time zone is omitted.
+     *  @param createMissingPart if OFTrue create optional parts (seconds, fractional part of
+     *   a seconds and/or time zone) if absent in the element value
+     *  @param dateTimeSeparator separator between ISO date and time value (default: " ")
+     *  @return EC_Normal upon success, an error code otherwise
+     */
+    static OFCondition getISOFormattedDateTimeFromString(const OFString &dicomDateTime,
+                                                         OFString &formattedDateTime,
+                                                         const OFBool seconds /*= OFTrue*/,
+                                                         const OFBool fraction /*= OFFalse*/,
+                                                         const OFBool timeZone /*= OFTrue*/,
+                                                         const OFBool createMissingPart /*= OFFalse*/,
+                                                         const OFString &dateTimeSeparator /*= " "*/);
 };
 
 
@@ -237,7 +285,11 @@ class DcmDateTime
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrdt.h,v $
-** Revision 1.16  2004-01-16 14:04:11  joergr
+** Revision 1.17  2004-04-16 12:49:25  joergr
+** Restructured code to avoid default parameter values for "complex types" like
+** OFString. Required for Sun CC 2.0.1.
+**
+** Revision 1.16  2004/01/16 14:04:11  joergr
 ** Introduced new parameter "dateTimeSeparator" in getISOFormattedXXX() methods
 ** to support ISO 8601 format as required by XML Schema type "dateTime".
 **
