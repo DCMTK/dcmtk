@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-05-03 10:31:52 $
+** Update Date:		$Date: 1996-05-06 07:32:05 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1052,6 +1052,12 @@ ASC_findAcceptedPresentationContext(
     LST_HEAD **l;
     int count = 0;
 
+    /*
+    ** We look in the requestedPresentationContexts since this
+    ** has all the proposed information.   The result field will
+    ** have been set to ASC_P_ACCEPTANCE in the ASC_requestAssociation
+    ** function.
+    */
     pc = findPresentationContextID(
 			     params->DULparams.requestedPresentationContext,
 				   presentationContextID);
@@ -1542,7 +1548,7 @@ updateRequestedPCListFromAcceptedPCList(
     acceptedList = &dulParams->acceptedPresentationContext;
     if (*acceptedList != NULL) {
 	acceptedPc =(DUL_PRESENTATIONCONTEXT*)  LST_Head(acceptedList);
-	if (requestedPc != NULL)
+	if (acceptedPc != NULL)
 	    (void)LST_Position(acceptedList, (LST_NODE*)acceptedPc);
 
 	while (acceptedPc) {
@@ -1551,6 +1557,8 @@ updateRequestedPCListFromAcceptedPCList(
 		acceptedPc->presentationContextID);
 	    updateRequestedPCFromAcceptedPC(acceptedPc, requestedPc);
 	    acceptedPc = (DUL_PRESENTATIONCONTEXT*) LST_Next(acceptedList);
+	    if (acceptedPc != NULL)
+		(void)LST_Position(acceptedList, (LST_NODE*)acceptedPc);
 	}
     }
 
@@ -1774,7 +1782,11 @@ ASC_dropAssociation(T_ASC_Association * association)
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
-** Revision 1.5  1996-05-03 10:31:52  hewett
+** Revision 1.6  1996-05-06 07:32:05  hewett
+** Fixed problem whereby only the first presentation context was being
+** recognised as having been accepted.
+**
+** Revision 1.5  1996/05/03 10:31:52  hewett
 ** Move some common system include files out to include/dcompat.h which were
 ** causing problems due to multiple inclusion on some machines.
 **
