@@ -1513,11 +1513,7 @@
 #---------------------------------------------------------------------------
 #
 # Supplement 17: Modality Performed Procedure Step
-# Status: Letter Ballot Text - November 11,1997
-#
-# WARNING: These data dictionary attributes come from a DRAFT 
-# document and are likely to change.  Included for experimental
-# purposes only.
+# Status: Final Text, 30 January 1998
 #
 (0008,2229)	SQ	AnatomicStructureSpaceOrRegionSequence	1
 (0040,0220)	SQ	ReferencedStandaloneSOPInstanceSequence	1
@@ -1554,11 +1550,7 @@
 #---------------------------------------------------------------------------
 #
 # Supplement 22: Presentation Look Up Table (LUT)
-# Status: Letter Ballot Text, September 24, 1997
-#
-# WARNING: These data dictionary attributes come from a DRAFT 
-# document and are likely to change.  Included for experimental
-# purposes only.
+# Status: Final Text, 30 January 1998
 #
 (2050,0010)	SQ	PresentationLUTSequence	1
 (2050,0020)	CS	PresentationLUTShape	1
@@ -1677,16 +1669,12 @@
 #---------------------------------------------------------------------------
 #
 # Supplement 24: Stored Print Related SOP Classes
-# VERSION: Letter Ballot Text, November 18, 1997
+# VERSION: Final Text, February 12, 1998
 #
-# WARNING: These data dictionary attributes come from a DRAFT 
-# document and are likely to change.  Included for experimental
-# purposes only.
-#
-(0018,1011)	LO	CreationDeviceID	1
-(0018,1017)	LO	DeviceManufacturer	1
-(0018,1019)	LO	DeviceManfuacturersModelName	1
-(0018,101A)	LO	DeviceSoftwareVersion	1-n
+(0018,1011)	LO	HardcopyCreationDeviceID	1
+(0018,1017)	LO	HardcopyDeviceManufacturer	1
+(0018,101B)	LO	HardcopyDeviceManfuacturersModelName	1
+(0018,101A)	LO	HardcopyDeviceSoftwareVersion	1-n
 (2000,0062)	CS	ColorImagePrintingFlag	1
 (2000,0063)	CS	CollationFlag	1
 (2000,0065)	CS	AnnotationFlag	1

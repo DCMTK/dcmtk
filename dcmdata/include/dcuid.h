@@ -9,10 +9,10 @@
 ** Definitions of "well known" DICOM Unique Indentifiers,
 ** routines for finding and creating UIDs.
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1998-02-17 12:33:58 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1998-02-25 14:26:29 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
-** CVS/RCS Revision:	$Revision: 1.24 $
+** CVS/RCS Revision:	$Revision: 1.25 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -285,12 +285,12 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
 /* DRAFT Supplement 16 (Postscript Print Management) */
 #define UID_PageDescriptionStorage	"1.2.840.10008.5.1.1.50"
 
-/* LETTER BALLOT Supplement 17 (Performed Procedure Step) */
+/* Supplement 17 (Modality Performed Procedure Step) - Final Text, 30 Jan 1998 */
 #define UID_ModalityPerformedProcedureStepSOPClass	"1.2.840.10008.3.1.2.3.3"
 #define UID_ModalityPerformedProcedureStepRetrieveSOPClass "1.2.840.10008.3.1.2.3.4"
 #define UID_ModalityPerformedProcedureStepNotificationSOPClass "1.2.840.10008.3.1.2.3.5"
 
-/* LETTER BALLOT Supplement 22 (Presentation Look Up Table (LUT)) */
+/* Supplement 22 (Presentation Look Up Table (LUT)) - Final Text, 30 Jan 1998 */
 #define UID_PresentationLUTSOPClass	"1.2.840.10008.5.1.1.23"
 
 /* DRAFT Supplement 23 (Structured Reporting) - frozen draft - version 0.79 */
@@ -299,11 +299,11 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
 #define UID_SRDetailStorage "1.2.840.10008.5.1.4.1.1.88.3" 
 #define UID_SRComprehensiveStorage "1.2.840.10008.5.1.4.1.1.88.4"
 
-/* DRAFT Supplement 24 (Print Storage) */
-#define UID_BasicGrayscalePrintStorage	"1.2.840.10008.5.1.4.1.1.27"
-#define UID_BasicColorPrintStorage	"1.2.840.10008.5.1.4.1.1.28"
-#define UID_ReferencedGrayscalePrintStorage "1.2.840.10008.5.1.4.1.1.29"
-#define UID_ReferencedColorPrintStorage "1.2.840.10008.5.1.4.1.1.30"
+/* Supplement 24 (Stored Print Related SOP Classes) - Final Text, 12 Feb 1998 */
+#define UID_PullPrintRequestSOPClass	"1.2.840.10008.5.1.1.31"
+#define UID_HardcopyGrayscaleImageStorage "1.2.840.10008.5.1.1.29"
+#define UID_HardcopyColorImageStorage 	"1.2.840.10008.5.1.1.30"
+#define UID_StoredPrintStorage 		"1.2.840.10008.5.1.1.27"
 
 /* DRAFT Supplement 30 (Waveform Interchange) - frozen draft */
 	/* Waveform IOD with WV Modality */
@@ -319,7 +319,14 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.24  1998-02-17 12:33:58  meichel
+** Revision 1.25  1998-02-25 14:26:29  hewett
+** Updated status of supplements 17 & 22 to reflect their Final Text status
+** Updated data dictionary and UID information to reflect changes in
+** Supplement 24 (Stored Print Related SOP Classes).  Some data dictionary
+** attibutes and UIDs have changed between the Letter Ballot version and
+** the Final Text version.
+**
+** Revision 1.24  1998/02/17 12:33:58  meichel
 ** Updated Version Number and Implementation Version Name to reflect the
 **   current public release (3.3.1). Updated documentation to reflect changes in 3.3.1.
 **
