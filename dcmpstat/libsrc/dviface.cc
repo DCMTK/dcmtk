@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-19 19:15:21 $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  Update Date:      $Date: 1999-02-22 14:21:59 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -616,6 +616,29 @@ E_Condition DVInterface::releaseDatabase()
 }
 
 
+void DVInterface::resetDatabaseReferenceTime()
+{
+    // set index file modification time to "yesterday" to make sure
+    // we notice any change even if different processes have minor
+    // date/time differences (i.e. over NFS)
+    struct utimbuf utime_buf;
+    utime_buf.actime  = (time_t) referenceTime; 
+    utime_buf.modtime = (time_t) referenceTime;
+    if (0 != utime(databaseIndexFile.c_str(), &utime_buf))
+    {
+#ifdef DEBUG
+      cerr << "warning: cannot set database index file modification time" << endl;
+#endif
+    } else {
+      struct stat stat_buf;
+      if (0 == stat(databaseIndexFile.c_str(), &stat_buf))
+      {
+        referenceTime = (unsigned long) stat_buf.st_mtime;
+      }
+    }
+}
+
+
 OFBool DVInterface::newInstancesReceived()
 {
   if (databaseIndexFile.length() == 0)
@@ -634,24 +657,8 @@ OFBool DVInterface::newInstancesReceived()
     {
       if (((unsigned long)stat_buf.st_mtime) == referenceTime) return OFFalse;
     }
-    
-    // set index file modification time to "yesterday" to make sure
-    // we notice any change even if different processes have minor
-    // date/time differences (i.e. over NFS)
-    struct utimbuf utime_buf;
-    utime_buf.actime  = (time_t) referenceTime; 
-    utime_buf.modtime = (time_t) referenceTime;
-    if (0 != utime(databaseIndexFile.c_str(), &utime_buf))
-    {
-#ifdef DEBUG
-      cerr << "warning: cannot set database index file modification time" << endl;
-#endif
-    } else {
-      if (0 == stat(databaseIndexFile.c_str(), &stat_buf))
-      {
-        referenceTime = (unsigned long) stat_buf.st_mtime;
-      }
-    }
+
+    resetDatabaseReferenceTime();
   }
   return OFTrue; // default
 }
@@ -659,7 +666,6 @@ OFBool DVInterface::newInstancesReceived()
 
 void DVInterface::clearIndexCache()
 {
-cerr << "IDX: clearing index cache ... " << endl;
     idxCache.clear();
     clearIndexRecord(idxRec, idxRecPos);
 }
@@ -671,7 +677,6 @@ OFBool DVInterface::createIndexCache()
     {
         if (idxCache.empty())
         {
-cerr << "IDX: creating index cache ... " << endl;
             int counter = 0;
             DB_IdxInitLoop(pHandle, &counter);
             IdxRecord record;
@@ -1063,6 +1068,7 @@ E_Condition DVInterface::instanceReviewed(const char *studyUID,
                 write(pHandle->pidx, (char *)&record, SIZEOF_IDXRECORD);
                 lseek(pHandle->pidx, 0L, SEEK_SET);
             }
+            resetDatabaseReferenceTime();
             unlockExclusive();
             return EC_Normal;
         }
@@ -1087,6 +1093,23 @@ int DVInterface::findStudyIdx(StudyDescRecord *study,
         }
     }
     return -1;
+}
+
+
+int DVInterface::deleteImageFile(const char *filename)
+{
+    if ((filename != NULL) && (pHandle != NULL))
+    {
+        const char *pos;
+        if (((pos = strrchr(filename, (int)PATH_SEPARATOR)) == NULL) ||   // check whether image file resides in index.dat directory
+            (strncmp(filename, pHandle->storageArea, pos - filename) == 0))
+        {
+            DB_deleteImageFile((/*const */char *)filename);
+            return 1;                                                     // image file has been deleted
+        }
+        return 2;                                                         // image file has not been deleted
+    }
+    return 0;                                                             // given filename is invalid
 }
 
 
@@ -1118,9 +1141,7 @@ E_Condition DVInterface::deleteStudy(const char *studyUID)
                                         do /* for all instances */
                                         {
                                             DB_IdxRemove(pHandle, series->List.getPos());
-    
-                                            /* deleteImageFile ? */
-
+                                            deleteImageFile(series->List.getFilename());
                                         } while (series->List.gotoNext());
                                     }
                                 }
@@ -1134,6 +1155,7 @@ E_Condition DVInterface::deleteStudy(const char *studyUID)
                 }
             }
         }
+        resetDatabaseReferenceTime();
         unlockExclusive();
         return result;
     }
@@ -1168,9 +1190,7 @@ E_Condition DVInterface::deleteSeries(const char *studyUID,
                                     study_desc[idx].NumberofRegistratedImages--;
                                     study_desc[idx].StudySize -= series->List.getImageSize();
                                 }    
-
-                                /* deleteImageFile ? */
-
+                                deleteImageFile(series->List.getFilename());
                             } while (series->List.gotoNext());
                             DB_StudyDescChange(pHandle, study_desc);
                         }
@@ -1179,6 +1199,7 @@ E_Condition DVInterface::deleteSeries(const char *studyUID,
                 }
             }
         }
+        resetDatabaseReferenceTime();
         unlockExclusive();
         return result;
     }
@@ -1221,15 +1242,10 @@ E_Condition DVInterface::deleteInstance(const char *studyUID,
                     free(study_desc);
                     result = EC_Normal;
                 }
-/*
-                const char *filename = series->List.getFilename();
-                if ((filename != NULL) && (strchr(filename, (int)PATH_SEPARATOR) == 0))
-                {
-                    DB_deleteImageFile(series->List.getFilename());
-                }
-*/
+                deleteImageFile(series->List.getFilename());
             }
         }
+        resetDatabaseReferenceTime();
         unlockExclusive();
         return result;
     }
@@ -1611,7 +1627,7 @@ const char *DVInterface::getGUIConfigEntry(const char *key)
 
 OFBool DVInterface::getGUIConfigEntryBool(const char *key, OFBool dfl)
 {
-    return getConfigBoolEntry(L2_GENERAL, L1_GUI, key, dfl);
+  return getConfigBoolEntry(L2_GENERAL, L1_GUI, key, dfl);
 }
 
 
@@ -1867,7 +1883,14 @@ void DVInterface::cleanChildren()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.39  1999-02-19 19:15:21  joergr
+ *  Revision 1.40  1999-02-22 14:21:59  joergr
+ *  Added deletion of image files (depending on directory where the file is
+ *  stored).
+ *  Reset reference time for file modification checking after the index file
+ *  has been changed internally (delete and change status methods).
+ *  Removed debug messages when creating and clearing index cache.
+ *
+ *  Revision 1.39  1999/02/19 19:15:21  joergr
  *  Corrected bug in disablePresentationState().
  *
  *  Revision 1.38  1999/02/19 19:03:04  joergr
