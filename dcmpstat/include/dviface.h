@@ -23,8 +23,8 @@
  *    classes: DVInterface
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-02 12:52:51 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Update Date:      $Date: 1999-03-03 13:24:32 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -900,6 +900,26 @@ class DVInterface
      */
     const char *getPStateDescription(Uint32 idx);
 
+    /** checks whether Barten correction is possible, i.e.
+     *  a valid monitor characteristics description exists
+     *  and current system is a low-cost system (without built-in
+     *  calibration).
+     */
+    OFBool isBartenTransformPossible();
+
+    /** sets ambient light value for the Barten transformation.
+     *  @param value ambient light value to be set
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    E_Condition setAmbientLightValue(double value);
+    
+    /** returns ambient light value for the Barten transformation.
+     *  @param value returned ambient light value 
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    E_Condition getAmbientLightValue(double &value);
+
+
 private:
 
     /** private undefined copy constructor
@@ -1118,7 +1138,12 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.32  1999-03-02 12:52:51  joergr
+ *  Revision 1.33  1999-03-03 13:24:32  joergr
+ *  Added methods to get and set ambient light value (re: Barten transformation).
+ *  Moved method 'isBartenTransformPossible()' from presentation state class to
+ *  interface class.
+ *
+ *  Revision 1.32  1999/03/02 12:52:51  joergr
  *  Added parameter to selectPState() specifying whether to change the review
  *  status of the loaded presentation state.
  *
