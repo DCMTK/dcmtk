@@ -573,7 +573,8 @@ dsrdoctn.o: dsrdoctn.cc ../../config/include/osconfig.h \
   ../../dcmdata/include/dcvrfd.h ../../dcmdata/include/dcvrof.h \
   ../../dcmdata/include/cmdlnarg.h ../include/dsrtncsr.h \
   ../../ofstd/include/ofstack.h ../include/dsrcodvl.h \
-  ../include/dsrxmld.h ../include/dsrxmlc.h ../include/dsriodcc.h
+  ../include/dsrdtitn.h ../include/dsrstrvl.h ../include/dsrxmld.h \
+  ../include/dsrxmlc.h ../include/dsriodcc.h
 dsrdoctr.o: dsrdoctr.cc ../../config/include/osconfig.h \
   ../../config/include/cfunix.h ../include/dsrdoctr.h \
   ../include/dsrtree.h ../include/dsrtypes.h ../../dcmdata/include/dctk.h \
