@@ -22,9 +22,9 @@
  *  Purpose: Handle console applications (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-09-19 08:30:33 $
+ *  Update Date:      $Date: 2002-09-23 14:57:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofconapp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -93,7 +93,7 @@ OFBool OFConsoleApplication::parseCommandLine(OFCommandLine &cmd,
 }
 
 
-void OFConsoleApplication::printHeader()
+void OFConsoleApplication::printHeader(const OFBool /*hostInfo*/)
 {
     ostream &Output = ofConsole.lockCerr();
     if (!Identification.empty())
@@ -232,7 +232,10 @@ void OFConsoleApplication::checkConflict(const char *firstOpt,
  *
  * CVS/RCS Log:
  * $Log: ofconapp.cc,v $
- * Revision 1.16  2002-09-19 08:30:33  joergr
+ * Revision 1.17  2002-09-23 14:57:00  joergr
+ * Prepared code for future support of 'config.guess' host identifiers.
+ *
+ * Revision 1.16  2002/09/19 08:30:33  joergr
  * Added general support for "exclusive" command line options besides "--help",
  * e.g. "--version".
  *

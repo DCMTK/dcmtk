@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2001, OFFIS
+ *  Copyright (C) 1997-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Handle console applications (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:36:02 $
+ *  Update Date:      $Date: 2002-09-23 14:56:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofconapp.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,12 +56,12 @@ class OFString;
  *  Builds an envelope for the OFCommandLine class to provide a consistent
  *  behaviour for all DCMTK console applications.
  *  Performs console output operations and error checking.
- */  
+ */
 class OFConsoleApplication
 {
 
  public:
- 
+
     /** constructor
      *
      ** @param  app     application name
@@ -71,11 +71,11 @@ class OFConsoleApplication
     OFConsoleApplication(const char *app,
                          const char *desc = NULL,
                          const char *rcsid = NULL);
-    
+
     /** destructor
      */
     ~OFConsoleApplication();
-    
+
     /** parse command line.
      *  If the command line has no argument (in case at least one argument is required) and
      *  if the command line has only one argument, namely "--help" or the specified shortcut,
@@ -83,7 +83,7 @@ class OFConsoleApplication
      *
      ** @param  cmd       application name
      *  @param  argCount  number of arguments (argc)
-     *  @param  argValue  pointer to argument arry (argv[])
+     *  @param  argValue  pointer to argument array (argv[])
      *  @param  flags     flags to be used for parsing (e.g. OFCommandLine::ExpandWildcards)
      *  @param  startPos  first argument to be parsed (default: 1, omit program name)
      *
@@ -96,8 +96,10 @@ class OFConsoleApplication
                             const int startPos = 1);
 
     /** print header of console application (consisting of identifier, name and description)
+     *
+     ** @param  hostInfo  print host information as reported by 'config.guess' if OFTrue
      */
-    void printHeader();
+    void printHeader(const OFBool hostInfo = OFFalse);
 
     /** print usage (syntax of command line options)
      *
@@ -185,7 +187,7 @@ class OFConsoleApplication
 
 
  // --- declarations to avoid compiler warnings
- 
+
     OFConsoleApplication(const OFConsoleApplication &);
     OFConsoleApplication &operator=(const OFConsoleApplication &);
 };
@@ -198,7 +200,10 @@ class OFConsoleApplication
  *
  * CVS/RCS Log:
  * $Log: ofconapp.h,v $
- * Revision 1.13  2002-04-16 13:36:02  joergr
+ * Revision 1.14  2002-09-23 14:56:55  joergr
+ * Prepared code for future support of 'config.guess' host identifiers.
+ *
+ * Revision 1.13  2002/04/16 13:36:02  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
  * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
  * contribution.
