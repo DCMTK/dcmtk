@@ -23,8 +23,8 @@
  *    classes: DVPSDisplayedArea_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-04 10:18:07 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2003-06-04 12:30:28 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,6 +34,7 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dvpsdal.h"
 #include "dvpsda.h"      /* for DVPSDisplayedArea */
+#include "dvpsri.h"      /* for DVPSReferencedImage, needed by MSVC5 with STL */
 
 
 DVPSDisplayedArea_PList::DVPSDisplayedArea_PList()
@@ -219,7 +220,10 @@ void DVPSDisplayedArea_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool 
 
 /*
  *  $Log: dvpsdal.cc,v $
- *  Revision 1.7  2003-06-04 10:18:07  meichel
+ *  Revision 1.8  2003-06-04 12:30:28  meichel
+ *  Added various includes needed by MSVC5 with STL
+ *
+ *  Revision 1.7  2003/06/04 10:18:07  meichel
  *  Replaced private inheritance from template with aggregation
  *
  *  Revision 1.6  2001/11/28 13:56:52  joergr

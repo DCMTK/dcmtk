@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2002, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSPrintSCP
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 14:02:22 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-06-04 12:30:28 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,7 +42,21 @@
 #include "dvpshlp.h"
 #include "ofdatime.h"
 
-
+#include "dvpsov.h"      /* for DVPSOverlay, needed by MSVC5 with STL */
+#include "dvpsgl.h"      /* for DVPSGraphicLayer, needed by MSVC5 with STL */
+#include "dvpsrs.h"      /* for DVPSReferencedSeries, needed by MSVC5 with STL */
+#include "dvpsal.h"      /* for DVPSOverlayCurveActivationLayer, needed by MSVC5 with STL */
+#include "dvpsga.h"      /* for DVPSGraphicAnnotation, needed by MSVC5 with STL */
+#include "dvpscu.h"      /* for DVPSCurve, needed by MSVC5 with STL */
+#include "dvpsvl.h"      /* for DVPSVOILUT, needed by MSVC5 with STL */
+#include "dvpsvw.h"      /* for DVPSVOIWindow, needed by MSVC5 with STL */
+#include "dvpsda.h"      /* for DVPSDisplayedArea, needed by MSVC5 with STL */
+#include "dvpssv.h"      /* for DVPSSoftcopyVOI, needed by MSVC5 with STL */
+#include "dvpsib.h"      /* for DVPSImageBoxContent, needed by MSVC5 with STL */
+#include "dvpsab.h"      /* for DVPSAnnotationContent, needed by MSVC5 with STL */
+#include "dvpstx.h"      /* for DVPSTextObject, needed by MSVC5 with STL */
+#include "dvpsgr.h"      /* for DVPSGraphicObject, needed by MSVC5 with STL */
+#include "dvpsri.h"      /* for DVPSReferencedImage, needed by MSVC5 with STL */
 
 DVPSPrintSCP::DVPSPrintSCP(DVInterface &iface, const char *cfname)
 : dviface(iface)
@@ -1238,7 +1252,10 @@ void DVPSPrintSCP::dumpNMessage(T_DIMSE_Message &msg, DcmItem *dataset, OFBool o
 
 /*
  *  $Log: dvpsprt.cc,v $
- *  Revision 1.15  2002-04-16 14:02:22  joergr
+ *  Revision 1.16  2003-06-04 12:30:28  meichel
+ *  Added various includes needed by MSVC5 with STL
+ *
+ *  Revision 1.15  2002/04/16 14:02:22  joergr
  *  Added configurable support for C++ ANSI standard includes (e.g. streams).
  *  Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
  *  contribution.

@@ -23,8 +23,8 @@
  *    classes: DVPSSoftcopyVOI_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-04 10:18:07 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2003-06-04 12:30:29 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +35,8 @@
 #include "dvpssvl.h"
 #include "dvpssv.h"      /* for DVPSSoftcopyVOI */
 #include "dvpsdef.h"     /* for constants and macros */
+
+#include "dvpsri.h"      /* for DVPSReferencedImage, needed by MSVC5 with STL */
 
 /* --------------- class DVPSSoftcopyVOI_PList --------------- */
 
@@ -342,7 +344,10 @@ void DVPSSoftcopyVOI_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool db
 
 /*
  *  $Log: dvpssvl.cc,v $
- *  Revision 1.9  2003-06-04 10:18:07  meichel
+ *  Revision 1.10  2003-06-04 12:30:29  meichel
+ *  Added various includes needed by MSVC5 with STL
+ *
+ *  Revision 1.9  2003/06/04 10:18:07  meichel
  *  Replaced private inheritance from template with aggregation
  *
  *  Revision 1.8  2002/10/18 08:34:52  meichel

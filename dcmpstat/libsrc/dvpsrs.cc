@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSReferencedSeries
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:31 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2003-06-04 12:30:28 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +35,7 @@
 #include "ofstring.h"
 #include "dvpsrs.h"
 #include "dvpsdef.h"     /* for constants and macros */
+#include "dvpsri.h"      /* for DVPSReferencedImage, needed by MSVC5 with STL */
 
 /* --------------- class DVPSReferencedSeries --------------- */
 
@@ -245,7 +246,10 @@ void DVPSReferencedSeries::setLog(OFConsole *stream, OFBool verbMode, OFBool dbg
 
 /*
  *  $Log: dvpsrs.cc,v $
- *  Revision 1.11  2001-09-26 15:36:31  meichel
+ *  Revision 1.12  2003-06-04 12:30:28  meichel
+ *  Added various includes needed by MSVC5 with STL
+ *
+ *  Revision 1.11  2001/09/26 15:36:31  meichel
  *  Adapted dcmpstat to class OFCondition
  *
  *  Revision 1.10  2001/06/01 15:50:36  meichel

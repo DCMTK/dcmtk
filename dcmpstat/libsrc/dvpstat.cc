@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2002, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-04-14 14:28:05 $
- *  CVS/RCS Revision: $Revision: 1.75 $
+ *  Update Date:      $Date: 2003-06-04 12:30:29 $
+ *  CVS/RCS Revision: $Revision: 1.76 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,6 +46,14 @@
 #include "dvpssv.h"      /* for DVPSSoftcopyVOI */
 #include "dvpshlp.h"     /* for class DVPSHelper */
 #include "ofstd.h"       /* for class OFStandard */
+
+#include "dvpsgl.h"      /* for DVPSGraphicLayer, needed by MSVC5 with STL */
+#include "dvpsrs.h"      /* for DVPSReferencedSeries, needed by MSVC5 with STL */
+#include "dvpsal.h"      /* for DVPSOverlayCurveActivationLayer, needed by MSVC5 with STL */
+#include "dvpsga.h"      /* for DVPSGraphicAnnotation, needed by MSVC5 with STL */
+#include "dvpsri.h"      /* for DVPSReferencedImage, needed by MSVC5 with STL */
+#include "dvpstx.h"      /* for DVPSTextObject, needed by MSVC5 with STL */
+#include "dvpsgr.h"      /* for DVPSGraphicObject, needed by MSVC5 with STL */
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
@@ -4141,7 +4149,10 @@ const char *DVPresentationState::getAttachedImageSOPInstanceUID()
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.75  2003-04-14 14:28:05  meichel
+ *  Revision 1.76  2003-06-04 12:30:29  meichel
+ *  Added various includes needed by MSVC5 with STL
+ *
+ *  Revision 1.75  2003/04/14 14:28:05  meichel
  *  Added explicit typecasts in calls to pow(). Needed by Visual C++ .NET 2003.
  *
  *  Revision 1.74  2002/12/09 13:28:16  joergr

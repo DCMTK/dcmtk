@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-04 10:18:07 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2003-06-04 12:30:28 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +38,7 @@
 #include "dvpsibl.h"     /* for class DVPSImageBoxContent_PList */
 #include "diluptab.h"    /* for class DiLookupTable */
 #include "dvpsdef.h"
+#include "dvpsib.h"      /* for DVPSImageBoxContent, needed by MSVC5 with STL */
 
 /* --------------- class DVPSImageBoxContent_PList --------------- */
 
@@ -286,7 +287,10 @@ void DVPSPresentationLUT_PList::printSCPDelete(T_DIMSE_Message& rq, T_DIMSE_Mess
 
 /*
  *  $Log: dvpspll.cc,v $
- *  Revision 1.13  2003-06-04 10:18:07  meichel
+ *  Revision 1.14  2003-06-04 12:30:28  meichel
+ *  Added various includes needed by MSVC5 with STL
+ *
+ *  Revision 1.13  2003/06/04 10:18:07  meichel
  *  Replaced private inheritance from template with aggregation
  *
  *  Revision 1.12  2002/01/08 10:35:46  joergr

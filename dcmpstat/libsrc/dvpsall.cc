@@ -23,8 +23,8 @@
  *    classes: DVPSOverlayCurveActivationLayer_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-04 10:18:07 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2003-06-04 12:30:28 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,10 +36,11 @@
 
 #include "dvpsall.h"
 #include "dvpsal.h"      /* for DVPSOverlayCurveActivationLayer */
-#include "dvpsovl.h"      /* for DVPSOverlay_PList */
-#include "dvpsgll.h"      /* for DVPSGraphicLayer_PList */
+#include "dvpsovl.h"     /* for DVPSOverlay_PList */
+#include "dvpsgll.h"     /* for DVPSGraphicLayer_PList */
 #include "dvpsdef.h"     /* for constants and macros */
-
+#include "dvpsov.h"      /* for DVPSOverlay, needed by MSVC5 with STL */
+#include "dvpsgl.h"      /* for DVPSGraphicLayer, needed by MSVC5 with STL */
 
 DVPSOverlayCurveActivationLayer_PList::DVPSOverlayCurveActivationLayer_PList()
 : list_()
@@ -487,7 +488,10 @@ void DVPSOverlayCurveActivationLayer_PList::setLog(OFConsole *stream, OFBool ver
 
 /*
  *  $Log: dvpsall.cc,v $
- *  Revision 1.9  2003-06-04 10:18:07  meichel
+ *  Revision 1.10  2003-06-04 12:30:28  meichel
+ *  Added various includes needed by MSVC5 with STL
+ *
+ *  Revision 1.9  2003/06/04 10:18:07  meichel
  *  Replaced private inheritance from template with aggregation
  *
  *  Revision 1.8  2001/09/26 15:36:23  meichel

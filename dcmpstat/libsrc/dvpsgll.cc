@@ -23,8 +23,8 @@
  *    classes: DVPSGraphicLayer_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-04 10:18:07 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2003-06-04 12:30:28 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +38,12 @@
 #include "dvpsdef.h"     /* for DVPS_IDX_NONE */
 #include "dvpsgal.h"     /* for DVPSOverlayCurveActivationLayer_PList */
 #include "dvpsall.h"     /* for DVPSGraphicAnnotation_PList& annotations */
+
+#include "dvpsal.h"      /* for DVPSOverlayCurveActivationLayer, needed by MSVC5 with STL */
+#include "dvpsga.h"      /* for DVPSGraphicAnnotation, needed by MSVC5 with STL */
+#include "dvpstx.h"      /* for DVPSTextObject, needed by MSVC5 with STL */
+#include "dvpsgr.h"      /* for DVPSGraphicObject, needed by MSVC5 with STL */
+#include "dvpsri.h"      /* for DVPSReferencedImage, needed by MSVC5 with STL */
 
 DVPSGraphicLayer_PList::DVPSGraphicLayer_PList()
 : list_()
@@ -450,7 +456,10 @@ void DVPSGraphicLayer_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool d
 
 /*
  *  $Log: dvpsgll.cc,v $
- *  Revision 1.12  2003-06-04 10:18:07  meichel
+ *  Revision 1.13  2003-06-04 12:30:28  meichel
+ *  Added various includes needed by MSVC5 with STL
+ *
+ *  Revision 1.12  2003/06/04 10:18:07  meichel
  *  Replaced private inheritance from template with aggregation
  *
  *  Revision 1.11  2001/11/28 13:56:54  joergr

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:25 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2003-06-04 12:30:28 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,8 @@
 #include "dvpsri.h"
 #include "dvpstyp.h"
 #include "dvpsdef.h"     /* for constants and macros */
+#include "dvpstx.h"      /* for DVPSTextObject, needed by MSVC5 with STL */
+#include "dvpsgr.h"      /* for DVPSGraphicObject, needed by MSVC5 with STL */
 
 /* --------------- class DVPSGraphicAnnotation --------------- */
 
@@ -234,7 +236,10 @@ void DVPSGraphicAnnotation::setLog(OFConsole *stream, OFBool verbMode, OFBool db
 
 /*
  *  $Log: dvpsga.cc,v $
- *  Revision 1.9  2001-09-26 15:36:25  meichel
+ *  Revision 1.10  2003-06-04 12:30:28  meichel
+ *  Added various includes needed by MSVC5 with STL
+ *
+ *  Revision 1.9  2001/09/26 15:36:25  meichel
  *  Adapted dcmpstat to class OFCondition
  *
  *  Revision 1.8  2001/06/01 15:50:30  meichel

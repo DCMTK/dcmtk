@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSSoftcopyVOI
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-12-04 10:41:37 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2003-06-04 12:30:29 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +38,7 @@
 #include "dvpsrsl.h"     /* DVPSReferencedSeries_PList */
 #include "dvpsdef.h"     /* for constants and macros */
 #include "ofstd.h"
+#include "dvpsrs.h"      /* for DVPSReferencedSeries, needed by MSVC5 with STL */
 
 /* --------------- class DVPSSoftcopyVOI --------------- */
 
@@ -391,7 +392,10 @@ void DVPSSoftcopyVOI::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
 
 /*
  *  $Log: dvpssv.cc,v $
- *  Revision 1.10  2002-12-04 10:41:37  meichel
+ *  Revision 1.11  2003-06-04 12:30:29  meichel
+ *  Added various includes needed by MSVC5 with STL
+ *
+ *  Revision 1.10  2002/12/04 10:41:37  meichel
  *  Changed toolkit to use OFStandard::ftoa instead of sprintf for all
  *    double to string conversions that are supposed to be locale independent
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2002, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSFilmSession
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-03-12 17:34:22 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2003-06-04 12:30:28 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,6 +41,23 @@
 #include "dvpspll.h"
 #include "dvpssp.h"
 #include "dvpsspl.h"
+
+#include "dvpsib.h"      /* for DVPSImageBoxContent, needed by MSVC5 with STL */
+#include "dvpsab.h"      /* for DVPSAnnotationContent, needed by MSVC5 with STL */
+#include "dvpsov.h"      /* for DVPSOverlay, needed by MSVC5 with STL */
+#include "dvpsgl.h"      /* for DVPSGraphicLayer, needed by MSVC5 with STL */
+#include "dvpsal.h"      /* for DVPSOverlayCurveActivationLayer, needed by MSVC5 with STL */
+#include "dvpsga.h"      /* for DVPSGraphicAnnotation, needed by MSVC5 with STL */
+#include "dvpscu.h"      /* for DVPSCurve, needed by MSVC5 with STL */
+#include "dvpsvl.h"      /* for DVPSVOILUT, needed by MSVC5 with STL */
+#include "dvpsvw.h"      /* for DVPSVOIWindow, needed by MSVC5 with STL */
+#include "dvpsda.h"      /* for DVPSDisplayedArea, needed by MSVC5 with STL */
+#include "dvpssv.h"      /* for DVPSSoftcopyVOI, needed by MSVC5 with STL */
+#include "dvpsrs.h"      /* for DVPSReferencedSeries, needed by MSVC5 with STL */
+#include "dvpstx.h"      /* for DVPSTextObject, needed by MSVC5 with STL */
+#include "dvpsgr.h"      /* for DVPSGraphicObject, needed by MSVC5 with STL */
+#include "dvpsri.h"      /* for DVPSReferencedImage, needed by MSVC5 with STL */
+
 
 #define INCLUDE_CSTRING
 #include "ofstdinc.h"
@@ -970,7 +987,10 @@ void DVPSFilmSession::copyPresentationLUTSettings(DVPSStoredPrint& sp)
 
 /*
  *  $Log: dvpsfs.cc,v $
- *  Revision 1.12  2003-03-12 17:34:22  meichel
+ *  Revision 1.13  2003-06-04 12:30:28  meichel
+ *  Added various includes needed by MSVC5 with STL
+ *
+ *  Revision 1.12  2003/03/12 17:34:22  meichel
  *  Updated DcmObject::print() flags
  *
  *  Revision 1.11  2002/11/27 15:48:09  meichel

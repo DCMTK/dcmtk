@@ -23,8 +23,8 @@
  *    classes: DVPSGraphicAnnotation_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-04 10:18:07 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2003-06-04 12:30:28 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,7 @@
 #include "ofstring.h"    /* for OFString */
 #include "dvpstx.h"      /* for DVPSTextObject */
 #include "dvpsgr.h"      /* for DVPSGraphicObject */
+#include "dvpsri.h"      /* for DVPSReferencedImage, needed by MSVC5 with STL */
 
 DVPSGraphicAnnotation_PList::DVPSGraphicAnnotation_PList()
 : list_()
@@ -535,7 +536,10 @@ void DVPSGraphicAnnotation_PList::setLog(OFConsole *stream, OFBool verbMode, OFB
 
 /*
  *  $Log: dvpsgal.cc,v $
- *  Revision 1.10  2003-06-04 10:18:07  meichel
+ *  Revision 1.11  2003-06-04 12:30:28  meichel
+ *  Added various includes needed by MSVC5 with STL
+ *
+ *  Revision 1.10  2003/06/04 10:18:07  meichel
  *  Replaced private inheritance from template with aggregation
  *
  *  Revision 1.9  2001/11/28 13:56:54  joergr

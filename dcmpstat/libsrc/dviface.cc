@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2002, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-04-29 10:13:56 $
- *  CVS/RCS Revision: $Revision: 1.142 $
+ *  Update Date:      $Date: 2003-06-04 12:30:28 $
+ *  CVS/RCS Revision: $Revision: 1.143 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,6 +51,22 @@
 #include "ofstream.h"
 #include "dsrdoc.h"      /* for class DSRDocument */
 #include "dsrcodvl.h"
+
+#include "dvpsib.h"      /* for DVPSImageBoxContent, needed by MSVC5 with STL */
+#include "dvpsab.h"      /* for DVPSAnnotationContent, needed by MSVC5 with STL */
+#include "dvpsov.h"      /* for DVPSOverlay, needed by MSVC5 with STL */
+#include "dvpsgl.h"      /* for DVPSGraphicLayer, needed by MSVC5 with STL */
+#include "dvpsal.h"      /* for DVPSOverlayCurveActivationLayer, needed by MSVC5 with STL */
+#include "dvpsga.h"      /* for DVPSGraphicAnnotation, needed by MSVC5 with STL */
+#include "dvpscu.h"      /* for DVPSCurve, needed by MSVC5 with STL */
+#include "dvpsvl.h"      /* for DVPSVOILUT, needed by MSVC5 with STL */
+#include "dvpsvw.h"      /* for DVPSVOIWindow, needed by MSVC5 with STL */
+#include "dvpsda.h"      /* for DVPSDisplayedArea, needed by MSVC5 with STL */
+#include "dvpssv.h"      /* for DVPSSoftcopyVOI, needed by MSVC5 with STL */
+#include "dvpsrs.h"      /* for DVPSReferencedSeries, needed by MSVC5 with STL */
+#include "dvpstx.h"      /* for DVPSTextObject, needed by MSVC5 with STL */
+#include "dvpsgr.h"      /* for DVPSGraphicObject, needed by MSVC5 with STL */
+#include "dvpsri.h"      /* for DVPSReferencedImage, needed by MSVC5 with STL */
 
 #define INCLUDE_CSTDIO
 #define INCLUDE_CCTYPE
@@ -4299,7 +4315,10 @@ void DVInterface::disableImageAndPState()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.142  2003-04-29 10:13:56  meichel
+ *  Revision 1.143  2003-06-04 12:30:28  meichel
+ *  Added various includes needed by MSVC5 with STL
+ *
+ *  Revision 1.142  2003/04/29 10:13:56  meichel
  *  Moved configuration file parser from module dcmpstat to ofstd and renamed
  *    class to OFConfigFile. Cleaned up implementation (no more friend declarations).
  *
