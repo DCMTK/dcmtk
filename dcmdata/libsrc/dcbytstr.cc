@@ -9,10 +9,10 @@
 ** Purpose:
 ** Implementation of class DcmByteString
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-04-16 16:05:22 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1996-05-30 17:17:49 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcbytstr.cc,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -208,17 +208,26 @@ E_Condition DcmByteString::makeMachineByteString(void)
     else
     	realLength = 0;
 
+#ifdef INCORRECT_REMOVAL_OF_TRAILING_WHITESPACE
+    /* 
+    ** DISABLED CODE
+    **
+    ** This code removes extra padding chars and whitespace at the end of
+    ** a ByteString.  Such behaviour is incorrect.  Trailing whitespace is 
+    ** allowed for most value representations.
+    */
     if (realLength)
     {
 	size_t i = 0;
 	for(i = realLength;
 	    i > 0 && 
-		(value[i-1] == paddingChar || value[i-1] <= ' ');
+		(value[i-1] == paddingChar || isspace(value[i-1]));
 	    i--)
 	    value[i-1] = '\0';
 
 	realLength = (Uint32)i;
     }
+#endif
     fStringMode = DCM_MachineString;
     return errorFlag;
 }
@@ -313,6 +322,7 @@ E_Condition DcmByteString::verify(const BOOL autocorrect)
 	}
 	if (autocorrect)
 	    this -> put(tempstr);
+	delete tempstr;
     }
 
     Vdebug((3, errorFlag!=EC_Normal,
@@ -356,7 +366,10 @@ E_Condition DcmByteString::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
-** Revision 1.6  1996-04-16 16:05:22  andreas
+** Revision 1.7  1996-05-30 17:17:49  hewett
+** Disabled erroneous code to strip trailing padding characters.
+**
+** Revision 1.6  1996/04/16 16:05:22  andreas
 ** - better support und bug fixes for NULL element value
 **
 ** Revision 1.5  1996/03/11 13:17:23  hewett
