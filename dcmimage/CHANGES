@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 1999.09.10 (riesmeier)
+
+- Added support for CIELAB display function.
+  Affects: dcmimage/apps/Makefile.dep
+           dcmimage/apps/dcm2pnm.cc
+           dcmimage/libsrc/Makefile.dep
+
 **** Changes from 1999.08.25 (riesmeier)
 
 - Added new feature: Allow clipping region to be outside the image
