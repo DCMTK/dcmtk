@@ -23,9 +23,9 @@
  *           HTML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-07 18:09:48 $
+ *  Update Date:      $Date: 2000-11-09 20:31:08 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/dsr2html.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -162,6 +162,19 @@ int main(int argc, char *argv[])
         cmd.addOption("--read-xfer-implicit",  "-ti",    "read with implicit VR little endian TS");
 
     cmd.addGroup("output options:");
+      cmd.addSubGroup("HTML compatibility:");
+        cmd.addOption("--html-3.2",            "+H3",    "use only HTML version 3.2 compatible features");
+        cmd.addOption("--html-4.0",            "+H4",    "allow all HTML version 4.0 features (default)");
+        cmd.addOption("--add-document-type",   "+Hd",    "add reference to SGML document type definition");
+      cmd.addSubGroup("cascading style sheet (CSS), only with HTML 4.0:");
+        cmd.addOption("--css-reference",       "+Sr", 1, "URL : string",
+                                                         "add reference to specified CSS to HTML page");
+        cmd.addOption("--css-file",            "+Sf", 1, "filename : string",
+                                                         "embed content of specified CSS into HTML page");
+      cmd.addSubGroup("general rendering:");
+        cmd.addOption("--expand-inline",       "+Ri",    "expand short content items inline (default)");
+        cmd.addOption("--never-expand-inline", "-Ri",    "never expand content items inline");
+        cmd.addOption("--render-full-data",    "+Rd",    "render full data of content items");
       cmd.addSubGroup("document rendering:");
         cmd.addOption("--document-type-title", "+Dt",    "use document type as document title (default)");
         cmd.addOption("--patient-info-title",  "+Dp",    "use patient information as document title");
@@ -173,23 +186,16 @@ int main(int argc, char *argv[])
         cmd.addOption("--code-value-unit",     "+Cv",    "use code value as measurement unit (default)");
         cmd.addOption("--code-meaning-unit",   "+Cm",    "use code meaning as measurement unit");
         cmd.addOption("--render-all-codes",    "+Ca",    "render all codes (+Ci, +Cn, +Cu)");
-      cmd.addSubGroup("general rendering:");
-        cmd.addOption("--expand-inline",       "+Ri",    "expand short content items inline (default)");
-        cmd.addOption("--never-expand-inline", "-Ri",    "never expand content items inline");
-        cmd.addOption("--render-full-data",    "+Rd",    "render full data of content items");
-      cmd.addSubGroup("cascading style sheet (CSS):");
-        cmd.addOption("--css-reference",       "+Sr", 1, "URL : string",
-                                                         "add reference to specified CSS to HTML page");
-        cmd.addOption("--css-file",            "+Sf", 1, "filename : string",
-                                                         "embed content of specified CSS into HTML page");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
     {
+        /* general options */
         if (cmd.findOption("--debug"))
             opt_debugMode = 5;
 
+        /* input options */
         cmd.beginOptionBlock();
         if (cmd.findOption("--read-file"))
             isDataset = OFFalse;
@@ -220,6 +226,45 @@ int main(int argc, char *argv[])
         }
         cmd.endOptionBlock();
 
+        /* HTML compatibility */
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--html-3.2"))
+            opt_renderFlags |= DSRTypes::HF_version32Compatibility;
+        if (cmd.findOption("--html-4.0"))
+            /* default */;
+        cmd.endOptionBlock();
+
+        if (cmd.findOption("--add-document-type"))
+            opt_renderFlags |= DSRTypes::HF_addDocumentTypeReference;
+
+        /* cascading style sheet */
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--css-reference"))
+        {
+          	app.checkDependence("--css-reference", "--html-4.0", !(opt_renderFlags & DSRTypes::HF_version32Compatibility));
+            opt_renderFlags &= ~DSRTypes::HF_copyStyleSheetContent;
+            app.checkValue(cmd.getValue(opt_cssName));           
+        }
+        if (cmd.findOption("--css-file"))
+        {
+          	app.checkDependence("--css-file", "--html-4.0", !(opt_renderFlags & DSRTypes::HF_version32Compatibility));
+            opt_renderFlags |= DSRTypes::HF_copyStyleSheetContent;
+            app.checkValue(cmd.getValue(opt_cssName));           
+        }
+        cmd.endOptionBlock();
+
+        /* general rendering */
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--expand-inline"))
+            /* default */;
+        if (cmd.findOption("--never-expand-inline"))
+            opt_renderFlags |= DSRTypes::HF_neverExpandChildrenInline;
+        cmd.endOptionBlock();
+
+        if (cmd.findOption("--render-full-data"))
+            opt_renderFlags |= DSRTypes::HF_renderFullData;
+
+        /* document rendering */
         cmd.beginOptionBlock();
         if (cmd.findOption("--document-type-title"))
             /* default */;
@@ -230,6 +275,7 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--no-document-header"))
             opt_renderFlags |= DSRTypes::HF_renderNoDocumentHeader;
 
+        /* code rendering */
         if (cmd.findOption("--render-inline-codes"))
             opt_renderFlags |= DSRTypes::HF_renderInlineCodes;
         if (cmd.findOption("--concept-name-codes"))
@@ -242,29 +288,6 @@ int main(int argc, char *argv[])
             opt_renderFlags |= DSRTypes::HF_useCodeMeaningAsUnit;
         if (cmd.findOption("--render-all-codes"))
             opt_renderFlags |= DSRTypes::HF_renderAllCodes;
-
-        cmd.beginOptionBlock();
-        if (cmd.findOption("--expand-inline"))
-            /* default */;
-        if (cmd.findOption("--never-expand-inline"))
-            opt_renderFlags |= DSRTypes::HF_neverExpandChildrenInline;
-        cmd.endOptionBlock();
-
-        if (cmd.findOption("--render-full-data"))
-            opt_renderFlags |= DSRTypes::HF_renderFullData;
-            
-        cmd.beginOptionBlock();
-        if (cmd.findOption("--css-reference"))
-        {
-            opt_renderFlags &= ~DSRTypes::HF_copyStyleSheetContent;
-            app.checkValue(cmd.getValue(opt_cssName));           
-        }
-        if (cmd.findOption("--css-file"))
-        {
-            opt_renderFlags |= DSRTypes::HF_copyStyleSheetContent;
-            app.checkValue(cmd.getValue(opt_cssName));           
-        }
-        cmd.endOptionBlock();
     }
 
     SetDebugLevel((opt_debugMode));
@@ -303,7 +326,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2html.cc,v $
- * Revision 1.4  2000-11-07 18:09:48  joergr
+ * Revision 1.5  2000-11-09 20:31:08  joergr
+ * Added new command line options (document type and HTML version).
+ *
+ * Revision 1.4  2000/11/07 18:09:48  joergr
  * Added new command line option allowing to choose code value or meaning to be
  * rendered as the numeric measurement unit.
  *
