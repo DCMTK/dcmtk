@@ -1,6 +1,42 @@
 DCMTK FAQ - Frequently Asked Questions
 
 ----
+1997.09.12
+
+Q: All of the programs print the message 
+   "Warning: no data dictionary loaded, check environment variable: 
+   DCMDICTPATH" then seem to produce strange results.  
+
+A: The DICOM data dictionary could not be loaded.  It has probably
+   not been properly installed.  The default location for this file 
+   (under Unix) is /usr/local/dicom/lib/dicom.dic but an
+   alternive location can be specified by using the DCMDICTPATH
+   environment variable.  
+   See the documentation file dcmtk/dcmdata/doc/datadict.txt for more
+   details about using DICOM data dictionaries.
+
+----
+1997.09.12
+
+Q: All of the programs load a data dictionary from the text file
+   /usr/local/dicom/lib/dicom.dic before they can do anything.  The 
+   overhead for this flexibility is very high.  I want my programs
+   to start much faster.
+
+A: You can use a built-in in data dictionary instead.
+   The code for this already exists (dcmtk/dcmdata/libsrc/dcdictzz.cc)
+   and can be regenerated at any time by (see the dcmdata library Makefile:
+   dcmtk/dcmdata/libsrc/Makefile.in).  You can even have the best of both
+   worlds and have the main data dictionary built-in with additions loaded
+   from text files (via the DCMDICTPATH environment variable).  
+
+   See the documentation file dcmtk/dcmdata/doc/datadict.txt for more
+   details about using DICOM data dictionaries.
+
+   The example Visual C++ project makefiles for the Windows95/NT 
+   platform already use the built-in data dictionary code.  
+
+----
 1997.08.26
 
 Q: Does DCMTK compile on Microsoft Windows NT/95 ?
@@ -11,7 +47,7 @@ A: Yes.  We have added support for Win32 environments.
    how to compile under Windows NT/95.
 
    Please note, there are no normal Windows applications in DCMTK.  The
-   apps programs only run in a Windows console.
+   apps programs only run in a Windows DOS box.
 
 ----
 1997.05.30
