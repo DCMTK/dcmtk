@@ -22,9 +22,9 @@
  *  Purpose: DicomLookupTable (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-05-03 11:05:29 $
+ *  Update Date:      $Date: 1999-07-23 13:42:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diluptab.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -89,23 +89,29 @@ DiLookupTable::DiLookupTable(const DcmUnsignedShort &data,
   : DiBaseLUT()
 {
     Uint16 us = 0;
-    int ok = (DiDocument::getElemValue((const DcmElement *)&descriptor, us, 0) > 0);
-    Count = (ok && (us == 0)) ? MAX_TABLE_ENTRY_COUNT : us;                                 // see DICOM supplement 5
-    ok &= (DiDocument::getElemValue((const DcmElement *)&descriptor, FirstEntry, 1) > 0);   // can be SS or US (will be type casted later) !?
-    if (ok && (first >= 0) && (FirstEntry != (Uint16)first))
+    if (DiDocument::getElemValue((const DcmElement *)&descriptor, us, 0) >= 3)           // number of LUT entries
     {
-        if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
+        Count = (us == 0) ? MAX_TABLE_ENTRY_COUNT : us;                                  // see DICOM supplement 5: "0" => 65536
+        DiDocument::getElemValue((const DcmElement *)&descriptor, FirstEntry, 1);        // can be SS or US (will be type casted later)
+        if ((first >= 0) && (FirstEntry != (Uint16)first))
         {
-            cerr << "WARNING: invalid value for 'First input value mapped' (" << FirstEntry << ") ";
-            cerr << "... assuming " << first << " !" << endl;
+            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
+            {
+                cerr << "WARNING: invalid value for 'First input value mapped' (" << FirstEntry << ") ";
+                cerr << "... assuming " << first << " !" << endl;
+            }
+            FirstEntry = (Uint16)first;
         }
-        FirstEntry = (Uint16)first;
-    }
-    ok &= (DiDocument::getElemValue((const DcmElement *)&descriptor, us, 2) > 0);           // bits per entry (only informational)
-    unsigned long count = DiDocument::getElemValue((const DcmElement *)&data, Data);
-    if (explanation != NULL)
-        DiDocument::getElemValue((const DcmElement *)explanation, Explanation);             // explanation (free form text)
-    checkTable(ok, count, us, status);
+        DiDocument::getElemValue((const DcmElement *)&descriptor, us, 2);                // bits per entry (only informational)
+        unsigned long count = DiDocument::getElemValue((const DcmElement *)&data, Data);
+        if (explanation != NULL)
+            DiDocument::getElemValue((const DcmElement *)explanation, Explanation);      // explanation (free form text)
+        checkTable(count, us, status);
+     } else {
+        *status = EIS_MissingAttribute;
+        if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
+            cerr << "ERROR: lookup table descriptor is incomplete (VM < 3) !" << endl;
+     }
 }
 
 
@@ -129,24 +135,29 @@ void DiLookupTable::Init(const DiDocument *docu,
                          EI_Status *status)
 {
     Uint16 us = 0;
-    int ok = (docu->getValue(descriptor, us, 0, obj) > 0);
-    Count = (ok && (us == 0)) ? MAX_TABLE_ENTRY_COUNT : us;                 // see DICOM supplement 5
-    ok &= (docu->getValue(descriptor, FirstEntry, 1, obj) > 0);             // can be SS or US (will be type casted later) !?
-    ok &= (docu->getValue(descriptor, us, 2, obj) > 0);                     // bits per entry (only informational)
-    unsigned long count = docu->getValue(data, Data, obj);
-    if (explanation != DcmTagKey(0, 0))
-        docu->getValue(explanation, Explanation);                           // explanation (free form text)
-    checkTable(ok, count, us, status);
+    if (docu->getValue(descriptor, us, 0, obj) >= 3)                         // number of LUT entries
+    {
+        Count = (us == 0) ? MAX_TABLE_ENTRY_COUNT : us;                      // see DICOM supplement 5: "0" => 65536
+        docu->getValue(descriptor, FirstEntry, 1, obj);                      // can be SS or US (will be type casted later)
+        docu->getValue(descriptor, us, 2, obj);                              // bits per entry (only informational)
+        unsigned long count = docu->getValue(data, Data, obj);
+        if (explanation != DcmTagKey(0, 0))
+            docu->getValue(explanation, Explanation);                        // explanation (free form text)
+        checkTable(count, us, status);
+    } else {
+        *status = EIS_MissingAttribute;
+        if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
+            cerr << "ERROR: lookup table descriptor is incomplete (VM < 3) !" << endl;
+    }
 }
     
     
     
-void DiLookupTable::checkTable(const int ok,
-                               unsigned long count,
+void DiLookupTable::checkTable(unsigned long count,
                                Uint16 bits,
                                EI_Status *status)
 {
-    if (ok && (count > 0))                                                    // valid LUT
+    if (count > 0)                                                            // valid LUT
     {
         register Uint16 i;
         if (count > MAX_TABLE_ENTRY_COUNT)                                    // cut LUT length to maximum
@@ -238,9 +249,9 @@ void DiLookupTable::checkTable(const int ok,
     }
     else if (status != NULL)
     {
-        *status = EIS_MissingAttribute;
+        *status = EIS_InvalidValue;
         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-            cerr << "ERROR: one or more mandatory table attributes are missing !" << endl;
+            cerr << "ERROR: empty 'LUT Data' attribute  !" << endl;
     }       
 }
 
@@ -282,11 +293,21 @@ void DiLookupTable::checkBits(const Uint16 bits,
 }
 
 
+DiLookupTable *DiLookupTable::createInverseLUT() const
+{
+    return NULL;
+}
+
+
 /*
  *
  * CVS/RCS Log:
  * $Log: diluptab.cc,v $
- * Revision 1.7  1999-05-03 11:05:29  joergr
+ * Revision 1.8  1999-07-23 13:42:20  joergr
+ * Corrected bug occurred when reading corrupted LUT descriptors.
+ * Added dummy method (no implementation yet) to create inverse LUTs.
+ *
+ * Revision 1.7  1999/05/03 11:05:29  joergr
  * Minor code purifications to keep Sun CC 2.0.1 quiet.
  *
  * Revision 1.6  1999/04/28 15:01:42  joergr
