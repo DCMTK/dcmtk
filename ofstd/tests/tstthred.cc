@@ -23,10 +23,10 @@
  *           as used by most multithread implementations
  *
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:51:42 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-06-05 10:32:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/tests/tstthred.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,7 +38,7 @@
 #include "ofthread.h"
 #include "ofstring.h"
 
-#ifdef _WIN32
+#ifdef HAVE_WINDOWS_H
 #include <windows.h>
 #endif
 
@@ -476,7 +476,12 @@ int main()
  *
  * CVS/RCS Log:
  * $Log: tstthred.cc,v $
- * Revision 1.2  2001-06-01 15:51:42  meichel
+ * Revision 1.3  2001-06-05 10:32:21  joergr
+ * Replaced some #ifdef _WIN32 statements by #ifdef HAVE_WINDOWS_H or #ifdef
+ * __CYGWIN__ respectively to reflect the fact that the latest Cygwin/gcc
+ * version does not define _WIN32 any more.
+ *
+ * Revision 1.2  2001/06/01 15:51:42  meichel
  * Updated copyright header
  *
  * Revision 1.1  2000/03/29 16:41:27  meichel

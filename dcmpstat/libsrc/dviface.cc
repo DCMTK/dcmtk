@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-05-10 16:44:53 $
- *  CVS/RCS Revision: $Revision: 1.131 $
+ *  Update Date:      $Date: 2001-06-05 10:30:55 $
+ *  CVS/RCS Revision: $Revision: 1.132 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -96,7 +96,7 @@ BEGIN_EXTERN_C
 #endif
 END_EXTERN_C
 
-#ifdef _WIN32
+#ifdef HAVE_WINDOWS_H
 #include <windows.h>
 #include <winbase.h>     /* for CreateProcess */
 #endif
@@ -4179,7 +4179,11 @@ OFBool DVInterface::verifyUserPassword(const char * /*userID*/, const char * /*p
   return result;
 }
 
+#ifdef WITH_OPENSSL
 E_Condition DVInterface::verifyAndSignStructuredReport(const char *userID, const char *passwd, DVPSVerifyAndSignMode mode)
+#else
+E_Condition DVInterface::verifyAndSignStructuredReport(const char *userID, const char * /*passwd*/, DVPSVerifyAndSignMode mode)
+#endif
 {
   E_Condition result = EC_IllegalCall;
   if ((pReport != NULL) && (userID != NULL))
@@ -4295,7 +4299,12 @@ void DVInterface::disableImageAndPState()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.131  2001-05-10 16:44:53  joergr
+ *  Revision 1.132  2001-06-05 10:30:55  joergr
+ *  Replaced some #ifdef _WIN32 statements by #ifdef HAVE_WINDOWS_H or #ifdef
+ *  __CYGWIN__ respectively to reflect the fact that the latest Cygwin/gcc
+ *  version does not define _WIN32 any more.
+ *
+ *  Revision 1.131  2001/05/10 16:44:53  joergr
  *  Added dcmsr as a standard library to dcmpstat (removed preprecessor #ifdef).
  *
  *  Revision 1.130  2001/05/07 16:04:47  joergr

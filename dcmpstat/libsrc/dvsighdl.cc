@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVSignatureHandler
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-05-25 10:07:35 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-06-05 10:30:56 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -213,7 +213,11 @@ void DVSignatureHandler::printSignatureItemPosition(DcmStack& stack, ostream& os
   }
 }
 
+#ifdef WITH_OPENSSL
 void DVSignatureHandler::updateDigitalSignatureInformation(DcmItem& dataset, DVPSObjectType objtype, OFBool /* onRead */)
+#else
+void DVSignatureHandler::updateDigitalSignatureInformation(DcmItem& /*dataset*/, DVPSObjectType objtype, OFBool /* onRead */)
+#endif
 {
   ostrstream os;
   unsigned long counter = 0;
@@ -879,7 +883,12 @@ E_Condition DVSignatureHandler::createSignature(
 
 /*
  *  $Log: dvsighdl.cc,v $
- *  Revision 1.6  2001-05-25 10:07:35  meichel
+ *  Revision 1.7  2001-06-05 10:30:56  joergr
+ *  Replaced some #ifdef _WIN32 statements by #ifdef HAVE_WINDOWS_H or #ifdef
+ *  __CYGWIN__ respectively to reflect the fact that the latest Cygwin/gcc
+ *  version does not define _WIN32 any more.
+ *
+ *  Revision 1.6  2001/05/25 10:07:35  meichel
  *  Modified dcmpstat signature handler to also compile without OpenSSL
  *
  *  Revision 1.5  2001/02/13 09:55:45  joergr

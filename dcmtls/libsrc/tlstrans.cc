@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DcmTLSConnection
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:51:13 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-06-05 10:32:56 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -61,7 +61,7 @@ BEGIN_EXTERN_C
 #endif
 #include <signal.h>
 #include <time.h>
-#ifdef _WIN32
+#ifdef HAVE_WINDOWS_H
 #include <windows.h>
 #include <winbase.h>
 #endif
@@ -349,7 +349,12 @@ void tlstrans_dummy_function()
 
 /*
  *  $Log: tlstrans.cc,v $
- *  Revision 1.6  2001-06-01 15:51:13  meichel
+ *  Revision 1.7  2001-06-05 10:32:56  joergr
+ *  Replaced some #ifdef _WIN32 statements by #ifdef HAVE_WINDOWS_H or #ifdef
+ *  __CYGWIN__ respectively to reflect the fact that the latest Cygwin/gcc
+ *  version does not define _WIN32 any more.
+ *
+ *  Revision 1.6  2001/06/01 15:51:13  meichel
  *  Updated copyright header
  *
  *  Revision 1.5  2000/12/19 12:24:27  meichel

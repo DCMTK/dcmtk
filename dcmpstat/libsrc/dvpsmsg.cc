@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSIPCMessage
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:33 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-06-05 10:30:56 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,7 +36,7 @@
 #include "dcompat.h"
 
 BEGIN_EXTERN_C
-#ifdef _WIN32
+#ifdef HAVE_WINDOWS_H
 #include <windows.h>
 #include <winbase.h>
 #endif
@@ -426,7 +426,12 @@ void DVPSIPCClient::notifySentDICOMObject(Uint32 status, const char *txt)
 
 /*
  *  $Log: dvpsmsg.cc,v $
- *  Revision 1.9  2001-06-01 15:50:33  meichel
+ *  Revision 1.10  2001-06-05 10:30:56  joergr
+ *  Replaced some #ifdef _WIN32 statements by #ifdef HAVE_WINDOWS_H or #ifdef
+ *  __CYGWIN__ respectively to reflect the fact that the latest Cygwin/gcc
+ *  version does not define _WIN32 any more.
+ *
+ *  Revision 1.9  2001/06/01 15:50:33  meichel
  *  Updated copyright header
  *
  *  Revision 1.8  2000/12/19 12:12:53  meichel
