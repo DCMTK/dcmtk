@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-27 13:49:02 $
+** Update Date:		$Date: 1997-05-30 06:45:45 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcsequen.cc,v $
-** CVS/RCS Revision:	$Revision: 1.16 $
+** CVS/RCS Revision:	$Revision: 1.17 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -239,8 +239,8 @@ Uint32 DcmSequenceOfItems::getLength(const E_TransferSyntax xfer,
 E_Condition DcmSequenceOfItems::computeGroupLengthAndPadding
                                    (const E_GrpLenEncoding glenc,
 				    const E_PaddingEncoding padenc,
-				    E_TransferSyntax xfer,
-				    E_EncodingType enctype,
+				    const E_TransferSyntax xfer,
+				    const E_EncodingType enctype,
 				    const Uint32 padlen,
 				    const Uint32 subPadlen,
 				    Uint32 instanceLength)
@@ -1148,7 +1148,11 @@ E_Condition DcmSequenceOfItems::loadAllDataIntoMemory()
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.16  1997-05-27 13:49:02  andreas
+** Revision 1.17  1997-05-30 06:45:45  andreas
+** - fixed problem of inconsistent interfaces and implementation that the
+**   syntax check of GNU C++ does not find.
+**
+** Revision 1.16  1997/05/27 13:49:02  andreas
 ** - Add method canWriteXfer to class DcmObject and all derived classes.
 **   This method checks whether it is possible to convert the original
 **   transfer syntax to an new transfer syntax. The check is used in the

@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-27 13:48:28 $
+** Update Date:		$Date: 1997-05-30 06:45:42 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcitem.h,v $
-** CVS/RCS Revision:	$Revision: 1.12 $
+** CVS/RCS Revision:	$Revision: 1.13 $
 ** Status:		$State: Exp $
 **
 */
@@ -134,7 +134,7 @@ public:
 			  const E_EncodingType enctype = EET_ExplicitLength,
 			  const Uint32 padlen = 0,
 			  const Uint32 subPadlen = 0,
-			  const Uint32 instanceLength = 0);
+			  Uint32 instanceLength = 0);
 
     /* simplified search&get functions */
     virtual E_Condition findString(const DcmTagKey& xtag,
@@ -196,7 +196,11 @@ E_Condition nextUp(DcmStack & stack);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
-** Revision 1.12  1997-05-27 13:48:28  andreas
+** Revision 1.13  1997-05-30 06:45:42  andreas
+** - fixed problem of inconsistent interfaces and implementation that the
+**   syntax check of GNU C++ does not find.
+**
+** Revision 1.12  1997/05/27 13:48:28  andreas
 ** - Add method canWriteXfer to class DcmObject and all derived classes.
 **   This method checks whether it is possible to convert the original
 **   transfer syntax to an new transfer syntax. The check is used in the
