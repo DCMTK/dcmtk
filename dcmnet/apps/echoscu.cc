@@ -35,9 +35,9 @@
 **		Kuratorium OFFIS e.V., Oldenburg, Germany
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-09-27 08:24:28 $
+** Update Date:		$Date: 1996-09-27 14:05:02 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/echoscu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -148,6 +148,12 @@ main(int argc, char *argv[])
     /* needed for Macintosh */
     GUSISetup(GUSIwithSIOUXSockets);
     GUSISetup(GUSIwithInternetSockets);
+#endif
+
+#ifdef HAVE_WINSOCK_H
+    WSAData winSockData;
+    WORD winSockVersionNeeded = 1;
+    WSAStartup(winSockVersionNeeded, &winSockData);
 #endif
 
     prepareCmdLineArgs(argc, argv, "echoscu");
@@ -381,6 +387,11 @@ main(int argc, char *argv[])
 	    COND_DumpConditions();
 	}
     }
+
+#ifdef HAVE_WINSOCK_H
+    WSACleanup();
+#endif
+
     return 0;
 }
 
@@ -432,7 +443,11 @@ cecho(T_ASC_Association * assoc)
 /*
 ** CVS Log
 ** $Log: echoscu.cc,v $
-** Revision 1.5  1996-09-27 08:24:28  hewett
+** Revision 1.6  1996-09-27 14:05:02  hewett
+** Added calls to initialise WINSOCK library for Win32 environment.  Only
+** compiled in if HAVE_WINSOCK_H
+**
+** Revision 1.5  1996/09/27 08:24:28  hewett
 ** System header files now enclosed with BEGIN_EXTERN_C/END_EXTERN_C
 **
 ** Revision 1.4  1996/09/24 16:21:48  hewett

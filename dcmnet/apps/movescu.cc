@@ -36,9 +36,9 @@
 ** Created:	03/96
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-09-27 08:24:29 $
+** Update Date:		$Date: 1996-09-27 14:05:04 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -249,6 +249,12 @@ main(int argc, char *argv[])
 #ifdef HAVE_GUSI_H
     GUSISetup(GUSIwithSIOUXSockets);
     GUSISetup(GUSIwithInternetSockets);
+#endif
+
+#ifdef HAVE_WINSOCK_H
+    WSAData winSockData;
+    WORD winSockVersionNeeded = 1;
+    WSAStartup(winSockVersionNeeded, &winSockData);
 #endif
 
     prepareCmdLineArgs(argc, argv, "movescu");
@@ -561,6 +567,11 @@ main(int argc, char *argv[])
 	    COND_DumpConditions();
 	}
     }
+
+#ifdef HAVE_WINSOCK_H
+    WSACleanup();
+#endif
+
     return 0;
 }
 

@@ -35,9 +35,9 @@
 **		Kuratorium OFFIS e.V., Oldenburg, Germany
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-09-27 08:24:30 $
+** Update Date:		$Date: 1996-09-27 14:05:05 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -145,6 +145,12 @@ main(int argc, char *argv[])
     /* needed for Macintosh */
     GUSISetup(GUSIwithSIOUXSockets);
     GUSISetup(GUSIwithInternetSockets);
+#endif
+
+#ifdef HAVE_WINSOCK_H
+    WSAData winSockData;
+    WORD winSockVersionNeeded = 1;
+    WSAStartup(winSockVersionNeeded, &winSockData);
 #endif
 
     prepareCmdLineArgs(argc, argv, "storescp");
@@ -267,6 +273,11 @@ main(int argc, char *argv[])
 	COND_DumpConditions();
 	exit(1);
     }
+
+#ifdef HAVE_WINSOCK_H
+    WSACleanup();
+#endif
+
     return 0;
 }
 
@@ -681,7 +692,11 @@ storeSCP(T_ASC_Association * assoc, T_DIMSE_Message * msg,
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.4  1996-09-27 08:24:30  hewett
+** Revision 1.5  1996-09-27 14:05:05  hewett
+** Added calls to initialise WINSOCK library for Win32 environment.  Only
+** compiled in if HAVE_WINSOCK_H
+**
+** Revision 1.4  1996/09/27 08:24:30  hewett
 ** System header files now enclosed with BEGIN_EXTERN_C/END_EXTERN_C
 **
 ** Revision 1.3  1996/09/24 16:20:32  hewett
