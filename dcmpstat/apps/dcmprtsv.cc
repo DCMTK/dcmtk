@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Print Spooler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:28:42 $
+ *  Update Date:      $Date: 2000-04-14 16:34:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/Attic/dcmprtsv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -841,8 +841,8 @@ int main(int argc, char *argv[])
     }
     if (targetDisableNewVRs)
     {
-        dcmEnableUnknownVRGeneration = OFFalse;
-        dcmEnableUnlimitedTextVRGeneration = OFFalse;
+        dcmEnableUnknownVRGeneration.set(OFFalse);
+        dcmEnableUnlimitedTextVRGeneration.set(OFFalse);
     }
 
     if (opt_verbose)
@@ -965,7 +965,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprtsv.cc,v $
- * Revision 1.18  2000-03-08 16:28:42  meichel
+ * Revision 1.19  2000-04-14 16:34:37  meichel
+ * Global VR generation flags are now derived from OFGlobal and, thus,
+ *   safe for use in multi-thread applications.
+ *
+ * Revision 1.18  2000/03/08 16:28:42  meichel
  * Updated copyright header.
  *
  * Revision 1.17  2000/03/06 18:21:45  joergr

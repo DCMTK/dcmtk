@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Network Send Component (Store SCU)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:28:43 $
+ *  Update Date:      $Date: 2000-04-14 16:34:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpssnd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -402,8 +402,8 @@ int main(int argc, char *argv[])
     
     if (targetDisableNewVRs)
     {
-      dcmEnableUnknownVRGeneration = OFFalse;
-      dcmEnableUnlimitedTextVRGeneration = OFFalse;
+      dcmEnableUnknownVRGeneration.set(OFFalse);
+      dcmEnableUnlimitedTextVRGeneration.set(OFFalse);
     }
     
     if (opt_verbose)
@@ -578,7 +578,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpssnd.cc,v $
- * Revision 1.14  2000-03-08 16:28:43  meichel
+ * Revision 1.15  2000-04-14 16:34:38  meichel
+ * Global VR generation flags are now derived from OFGlobal and, thus,
+ *   safe for use in multi-thread applications.
+ *
+ * Revision 1.14  2000/03/08 16:28:43  meichel
  * Updated copyright header.
  *
  * Revision 1.13  2000/03/06 18:21:47  joergr
