@@ -22,7 +22,7 @@ LOCALINCLUDES = -I$(dcmnetdir)/include -I$(dcmdatadir)/include \
 	-I$(includedir)/ofstd
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(dcmnetdir)/libsrc \
 	-L$(dcmdatadir)/libsrc -L$(ofstddir)/libsrc -L$(libdir)
-	LOCALLIBS = -ldcmwlm -ldcmnet -ldcmdata -lofstd $(ZLIBLIBS)
+LOCALLIBS = -ldcmwlm -ldcmnet -ldcmdata -lofstd $(ZLIBLIBS)
 
 objs = wltest.o
 progs = wltest
