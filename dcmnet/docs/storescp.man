@@ -139,7 +139,7 @@ bit preserving mode:
           allow implicit format conversions (default)
 
   +B    --bit-preserving
-          write data exactly as read
+          write data exactly as read (not with -ss)
 
 output file format:
 
@@ -348,8 +348,9 @@ this option as a parameter. The specified command line may contain a
 number of placeholders which will be replaced at run time:
 
 \li \b #p: complete path to the output directory into which the last DICOM
-           object was stored
-\li \b #f: filename of the current output file
+           object was stored (not available with option \e --ignore though)
+\li \b #f: filename of the current output file (not available with option
+           \e --ignore though)
 \li \b #a: calling application entity title of the peer Storage SCU
 \li \b #c: called application entity title used by the peer Storage SCU to
            address storescp.
