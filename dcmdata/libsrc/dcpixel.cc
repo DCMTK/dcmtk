@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2003, OFFIS
+ *  Copyright (C) 1997-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: class DcmPixelData
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-06-12 18:22:23 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixel.cc,v $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Update Date:      $Date: 2004-01-16 13:49:53 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1029,9 +1028,11 @@ OFCondition DcmPixelData::loadAllDataIntoMemory(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.cc,v $
-** Revision 1.32  2003-06-12 18:22:23  joergr
+** Revision 1.33  2004-01-16 13:49:53  joergr
+** Removed acknowledgements with e-mail addresses from CVS log.
+**
+** Revision 1.32  2003/06/12 18:22:23  joergr
 ** Modified code to use const_iterators where appropriate (required for STL).
-** Thanks to Henning Meyer <Henning-Meyer@web.de> for the report.
 **
 ** Revision 1.31  2003/06/02 16:55:41  meichel
 ** Cleaned up implementation of DcmRepresentationEntry, added doc++ comments
@@ -1042,7 +1043,6 @@ OFCondition DcmPixelData::loadAllDataIntoMemory(void)
 ** Revision 1.29  2003/04/01 12:35:17  joergr
 ** Added implementation of createUint8/16Array() methods to DcmPixelData.
 ** Required to work properly with chooseRepresentation() for pixel compression.
-** Thanks to Rick H. <rickh_2003@hotmail.com> for the original problem report.
 **
 ** Revision 1.28  2003/03/21 13:08:04  meichel
 ** Minor code purifications for warnings reported by MSVC in Level 4

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1998-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,8 @@
  *           Value Representation UT is defined in Correction Proposal 101
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 13:01:52 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2004-01-16 13:45:06 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -110,10 +109,12 @@ OFCondition DcmUnlimitedText::getOFStringArray(OFString &strValue,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrut.cc,v $
-** Revision 1.8  2002-12-06 13:01:52  joergr
+** Revision 1.9  2004-01-16 13:45:06  joergr
+** Removed acknowledgements with e-mail addresses from CVS log.
+**
+** Revision 1.8  2002/12/06 13:01:52  joergr
 ** Fixed bug in Unlimited Text (UT) class: the backslash character was treated
 ** as a component separator which is wrong according to the DICOM standard.
-** Thanks to Razvan Costea-B. <cbrazvan@laitek.com> for the bug report.
 ** Enhanced "print()" function by re-working the implementation and replacing
 ** the boolean "showFullData" parameter by a more general integer flag.
 ** Made source code formatting more consistent with other modules/files.
@@ -140,4 +141,3 @@ OFCondition DcmUnlimitedText::getOFStringArray(OFString &strValue,
 ** Initial version.
 **
 */
-

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2003, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: Implementation of class DcmDirectoryRecord
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-08 14:17:26 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdirrec.cc,v $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  Update Date:      $Date: 2004-01-16 13:50:53 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1443,7 +1442,10 @@ const char* DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
- * Revision 1.46  2003-08-08 14:17:26  joergr
+ * Revision 1.47  2004-01-16 13:50:53  joergr
+ * Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ * Revision 1.46  2003/08/08 14:17:26  joergr
  * Added two new methods insertSubAtCurrentPos() and nextSub() which allow for
  * a much more efficient insertion (avoids re-searching for correct position).
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
@@ -1464,7 +1466,6 @@ const char* DcmDirectoryRecord::getRecordsOriginFile()
  * Revision 1.42  2002/10/10 16:39:25  joergr
  * Fixed bug that prevented old frozen draft SR documents from being recognized
  * in DICOMDIR files.
- * Thanks to Judit Verestoy <JVerestoy@tomtec.de> for the bug report and fix.
  *
  * Revision 1.41  2002/08/27 16:55:45  meichel
  * Initial release of new DICOM I/O stream classes that add support for stream
@@ -1476,8 +1477,6 @@ const char* DcmDirectoryRecord::getRecordsOriginFile()
  *
  * Revision 1.39  2002/04/16 13:43:16  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
- * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- * contribution.
  *
  * Revision 1.38  2001/09/25 17:19:48  meichel
  * Adapted dcmdata to class OFCondition

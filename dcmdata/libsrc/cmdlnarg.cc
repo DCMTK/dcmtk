@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1996-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,10 +22,9 @@
  *  Purpose: Provide prototype of command line argument gathering routine
  *  for OS environments which cannot pass arguments on the command line.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-10-13 13:32:15 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/cmdlnarg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-01-16 13:51:38 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -151,7 +150,10 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
 /*
 ** CVS/RCS Log:
 ** $Log: cmdlnarg.cc,v $
-** Revision 1.16  2003-10-13 13:32:15  meichel
+** Revision 1.17  2004-01-16 13:51:38  joergr
+** Removed acknowledgements with e-mail addresses from CVS log.
+**
+** Revision 1.16  2003/10/13 13:32:15  meichel
 ** Disabled setvbuf calls on stdout/stderr on Win32/Borland C++.
 **
 ** Revision 1.15  2002/11/27 12:06:42  meichel
@@ -159,8 +161,6 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
 **
 ** Revision 1.14  2002/04/16 13:43:14  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
-** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
-** contribution.
 **
 ** Revision 1.13  2001/06/01 15:48:57  meichel
 ** Updated copyright header

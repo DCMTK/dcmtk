@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2003, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Implementation of class DcmSequenceOfItems
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-10-15 16:55:43 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcsequen.cc,v $
- *  CVS/RCS Revision: $Revision: 1.54 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-01-16 13:49:31 $
+ *  CVS/RCS Revision: $Revision: 1.55 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1271,7 +1270,10 @@ OFBool DcmSequenceOfItems::containsUnknownVR() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.54  2003-10-15 16:55:43  meichel
+** Revision 1.55  2004-01-16 13:49:31  joergr
+** Removed acknowledgements with e-mail addresses from CVS log.
+**
+** Revision 1.54  2003/10/15 16:55:43  meichel
 ** Updated error messages for parse errors
 **
 ** Revision 1.53  2003/08/08 13:32:18  joergr
@@ -1310,8 +1312,6 @@ OFBool DcmSequenceOfItems::containsUnknownVR() const
 **
 ** Revision 1.45  2002/04/16 13:43:20  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
-** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
-** contribution.
 **
 ** Revision 1.44  2002/03/15 13:58:39  meichel
 ** Fixed incorrect debug message.
@@ -1385,7 +1385,6 @@ OFBool DcmSequenceOfItems::containsUnknownVR() const
 **
 ** Revision 1.24  1998/01/27 10:49:26  meichel
 ** Minor bug corrections (string too short, incorrect return value).
-**   Thanks to Andreas Barth <anba@bruker.de> for the report.
 **
 ** Revision 1.23  1997/09/12 13:44:54  meichel
 ** The algorithm introduced on 97.08.28 to detect incorrect odd-length
@@ -1493,4 +1492,3 @@ OFBool DcmSequenceOfItems::containsUnknownVR() const
 ** - more cleanups
 **
 */
-

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: Implementation of class DcmDecimalString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 13:20:49 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrds.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2004-01-16 13:49:00 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -117,7 +116,10 @@ OFCondition DcmDecimalString::getOFString(OFString &stringVal,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrds.cc,v $
-** Revision 1.16  2002-12-06 13:20:49  joergr
+** Revision 1.17  2004-01-16 13:49:00  joergr
+** Removed acknowledgements with e-mail addresses from CVS log.
+**
+** Revision 1.16  2002/12/06 13:20:49  joergr
 ** Enhanced "print()" function by re-working the implementation and replacing
 ** the boolean "showFullData" parameter by a more general integer flag.
 ** Made source code formatting more consistent with other modules/files.
@@ -174,8 +176,7 @@ OFCondition DcmDecimalString::getOFString(OFString &stringVal,
 **   (see dcmdata/include/dcdebug.h)
 **
 ** Revision 1.5  1997/07/03 10:22:45  andreas
-** - corrected Bug in DcmDecimalString::getFloat64 (Thanks to
-**   Phil Liao <phil@eggroll.eeg.com>)
+** - corrected Bug in DcmDecimalString::getFloat64
 **
 ** Revision 1.4  1997/05/12 07:38:26  andreas
 ** - new get-Methods for DcmDecimalString: getFloat64 and
@@ -187,5 +188,3 @@ OFCondition DcmDecimalString::getOFString(OFString &stringVal,
 ** - more cleanups
 **
 */
-
-

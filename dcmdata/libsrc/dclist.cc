@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2003, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: generic list class
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-08 12:55:12 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dclist.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2004-01-16 13:50:22 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -278,15 +277,16 @@ DcmObject *DcmList::seek_to(unsigned long absolute_position)
 /*
  * CVS/RCS Log:
  * $Log: dclist.cc,v $
- * Revision 1.12  2003-08-08 12:55:12  joergr
+ * Revision 1.13  2004-01-16 13:50:22  joergr
+ * Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ * Revision 1.12  2003/08/08 12:55:12  joergr
  * Made DcmListNode::value() inline. Translated German comments.
  * Renamed member variable "actualNode" to "currentNode".
  * Removed needless type casts (e.g. on the NULL constant).
  *
  * Revision 1.11  2002/04/16 13:43:18  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
- * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- * contribution.
  *
  * Revision 1.10  2001/06/01 15:49:06  meichel
  * Updated copyright header

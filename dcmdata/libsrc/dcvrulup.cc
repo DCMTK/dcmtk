@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,14 +22,14 @@
  *  Purpose: Implementation of class DcmUnsignedLongOffset
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 13:19:27 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrulup.cc,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2004-01-16 13:45:34 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
+
 
 #include "osconfig.h"
 #include "dcvrulup.h"
@@ -121,7 +121,10 @@ OFCondition DcmUnsignedLongOffset::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrulup.cc,v $
-** Revision 1.24  2002-12-06 13:19:27  joergr
+** Revision 1.25  2004-01-16 13:45:34  joergr
+** Removed acknowledgements with e-mail addresses from CVS log.
+**
+** Revision 1.24  2002/12/06 13:19:27  joergr
 ** Enhanced "print()" function by re-working the implementation and replacing
 ** the boolean "showFullData" parameter by a more general integer flag.
 ** Made source code formatting more consistent with other modules/files.
@@ -131,8 +134,6 @@ OFCondition DcmUnsignedLongOffset::verify(const OFBool autocorrect)
 **
 ** Revision 1.22  2002/04/16 13:43:27  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
-** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
-** contribution.
 **
 ** Revision 1.21  2001/09/25 17:20:02  meichel
 ** Adapted dcmdata to class OFCondition
