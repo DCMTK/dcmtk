@@ -22,9 +22,9 @@
  *  Purpose: DicomScaleTemplates (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-24 17:20:24 $
+ *  Update Date:      $Date: 1999-04-28 14:55:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/discalet.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -143,7 +143,7 @@ class DiScaleTemplate
         if ((src != NULL) && (dest != NULL))
         {
 #ifdef DEBUG
-            if (DicomImageClass::DebugLevel >= DicomImageClass::DL_DebugMessages)
+            if (DicomImageClass::DebugLevel & DicomImageClass::DL_DebugMessages)
             {
                 cout << "C/R: " << Columns << " " << Rows << endl;
                 cout << "L/T: " << Left << " " << Top << endl;
@@ -377,7 +377,7 @@ class DiScaleTemplate
     {
         if ((Src_X != Columns) || (Src_Y != Rows))
         {
-            if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
+            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
             {
                cerr << "ERROR: interpolated scaling and clipping at the same time not implemented" << endl;
                cerr << "       ... ignoring clipping region !" << endl;
@@ -409,7 +409,7 @@ class DiScaleTemplate
 
         if ((xtemp == NULL) || (xvalue == NULL))
         {
-            if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
+            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
                 cerr << "ERROR: can't allocate temporary buffers for interpolation scaling !" << endl;
     
             const unsigned long count = (unsigned long)Dest_X * (unsigned long)Dest_Y * Frames; 
@@ -551,7 +551,11 @@ class DiScaleTemplate
  *
  * CVS/RCS Log:
  * $Log: discalet.h,v $
- * Revision 1.6  1999-03-24 17:20:24  joergr
+ * Revision 1.7  1999-04-28 14:55:05  joergr
+ * Introduced new scheme for the debug level variable: now each level can be
+ * set separately (there is no "include" relationship).
+ *
+ * Revision 1.6  1999/03/24 17:20:24  joergr
  * Added/Modified comments and formatting.
  *
  * Revision 1.5  1999/02/11 16:42:10  joergr

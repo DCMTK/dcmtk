@@ -22,9 +22,9 @@
  *  Purpose: DicomDisplayFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-24 17:22:38 $
+ *  Update Date:      $Date: 1999-04-28 15:01:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/didispfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -284,12 +284,12 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                                 if ((DDLValue == NULL) || (LumValue == NULL))
                                     return 0;
                             } else {
-                                if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
+                                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
                                     cerr << "ERROR: invalid or missing value for maximum DDL value in DISPLAY file !" << endl;
                                 return 0;                                   // abort
                             }
                         } else {
-                            if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
+                            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
                                 cerr << "ERROR: missing keyword 'max' for maximum DDL value in DISPLAY file !" << endl;
                             return 0;                                       // abort
                         }
@@ -302,12 +302,12 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                             file >> AmbientLight;
                             if (AmbientLight < 0)
                             {
-                                if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+                                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
                                     cerr << "WARNING: invalid value for ambient light in DISPLAY file ...ignoring !" << endl;
                                 AmbientLight = 0;
                             }
                         } else {
-                            if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
+                            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
                                 cerr << "ERROR: invalid DISPLAY file ... ignoring !" << endl;
                             return 0;                                       // abort
                         }
@@ -318,12 +318,12 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                             file >> LumValue[ValueCount];                   // read luminance value
                             if (file.fail())
                             {
-                                if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+                                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
                                     cerr << "WARNING: missing luminance value in DISPLAY file ... ignoring last entry !" << endl;
                             }
                             else if (DDLValue[ValueCount] > MaxDDLValue)
                             {
-                                if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+                                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
                                 {
                                     cerr << "WARNING: DDL value (" << DDLValue[ValueCount] << ") exceeds maximum value (";
                                     cerr << MaxDDLValue << ") in DISPLAY file ..." << endl << "         ... ignoring value !" << endl;
@@ -331,7 +331,7 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                             } else
                                 ValueCount++;
                         } else {
-                            if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+                            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
                                 cerr << "WARNING: too many values in DISPLAY file ... ignoring last line(s) !" << endl;
                             return 2;
                         }
@@ -341,11 +341,11 @@ int DiDisplayFunction::readConfigFile(const char *filename)
             if ((MaxDDLValue > 0) && (ValueCount > 0))
                 return ((DDLValue != NULL) && (LumValue != NULL));
             else {
-                if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
                     cerr << "WARNING: invalid DISPLAY file ... ignoring !" << endl;
             }
         } else {
-            if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
                 cerr << "WARNING: can't open DISPLAY file ... ignoring !" << endl;
         }
     }
@@ -388,7 +388,7 @@ int DiDisplayFunction::createSortedTable(const Uint16 *ddl_tab,
                 i++;
             if (i < ValueCount)                                                     // invalid luminance value(s)
             {
-                if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
                     cerr << "WARNING: luminance values (ordered by DDLs) don't ascend monotonous !" << endl;
             }
             status = (ValueCount > 0);
@@ -537,7 +537,11 @@ double DiDisplayFunction::getJNDIndex(const double lum) const
  *
  * CVS/RCS Log:
  * $Log: didispfn.cc,v $
- * Revision 1.10  1999-03-24 17:22:38  joergr
+ * Revision 1.11  1999-04-28 15:01:44  joergr
+ * Introduced new scheme for the debug level variable: now each level can be
+ * set separately (there is no "include" relationship).
+ *
+ * Revision 1.10  1999/03/24 17:22:38  joergr
  * Added support for Barten transformation from 2 to 7 bits input (now: 2-16).
  *
  * Revision 1.9  1999/03/22 08:54:10  joergr

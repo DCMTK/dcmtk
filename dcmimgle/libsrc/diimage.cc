@@ -22,9 +22,9 @@
  *  Purpose: DicomImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 16:01:43 $
+ *  Update Date:      $Date: 1999-04-28 15:01:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diimage.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -74,7 +74,7 @@ DiImage::DiImage(const DiDocument *docu,
         {
             if (sl < 1)
             {
-                if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
                 {
                     cerr << "WARNING: invalid value for 'NumberOfFrames' (" << sl << ") ";
                     cerr << "... assuming 1 !" << endl;
@@ -102,7 +102,7 @@ DiImage::DiImage(const DiDocument *docu,
             hasSignedRepresentation = (us == 1);
             if ((us != 0) && (us != 1))
             {
-                if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
                 {
                     cerr << "WARNING: invalid value for 'PixelRepresentation' (" << us << ") ";
                     cerr << "... assuming 'unsigned' (0) !" << endl;
@@ -133,28 +133,28 @@ DiImage::DiImage(const DiDocument *docu,
                 else
                 {
                     ImageStatus = EIS_NotSupportedValue;
-                    if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
+                    if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
                         cerr << "ERROR: cannot change to unencapsulated representation for pixel data !" << endl;
                 }
             }
             else
             {
                 ImageStatus = EIS_MissingAttribute;
-                if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
+                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
                     cerr << "ERROR: one or more mandatory attributes are missing in image pixel module !" << endl;
             }
         }
         else
         {
             ImageStatus = EIS_InvalidValue;
-            if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
+            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
                 cerr << "ERROR: invalid value for 'Rows' (" << Rows << ") and/or 'Columns' (" << Columns << ") !" << endl;
         }
     }
     else
     {
         ImageStatus = EIS_InvalidDocument;
-        if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
+        if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
             cerr << "ERROR: this DICOM document is invalid !" << endl;
     }
 }
@@ -300,7 +300,7 @@ void DiImage::checkPixelExtension()
     {
         if (PixelHeight == 0)
         {
-            if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
             {
                 cerr << "WARNING: invalid value for 'PixelHeight' (" << PixelHeight << ") ";
                 cerr << "... assuming 1 !" << endl;
@@ -309,7 +309,7 @@ void DiImage::checkPixelExtension()
         }
         else if (PixelHeight < 0)
         {
-            if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
             {
                 cerr << "WARNING: negative value for 'PixelHeight' (" << PixelHeight << ") ";
                 cerr << "... assuming " << -PixelHeight << " !" << endl;
@@ -318,7 +318,7 @@ void DiImage::checkPixelExtension()
         }
         if (PixelWidth == 0)
         {
-            if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
             {
                 cerr << "WARNING: invalid value for 'PixelWidth' (" << PixelWidth << ") ";
                 cerr << "... assuming 1 !" << endl;
@@ -327,7 +327,7 @@ void DiImage::checkPixelExtension()
         }
         else if (PixelWidth < 0)
         {
-            if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
             {
                 cerr << "WARNING: negative value for 'PixelWidth' (" << PixelWidth << ") ";
                 cerr << "... assuming " << -PixelWidth << " !" << endl;
@@ -348,7 +348,7 @@ void DiImage::convertPixelData(/*const*/ DcmPixelData *pixel, const int spp)
             (BitsStored > (Uint16)(HighBit + 1)))
         {
             ImageStatus = EIS_InvalidValue;
-            if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
+            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
             {
                 cerr << "ERROR: invalid values for 'BitsAllocated' (" << BitsAllocated << "), ";
                 cerr << "'BitsStored' (" << BitsStored << ") and/or 'HighBit' (" << HighBit << ") !" << endl;
@@ -386,7 +386,7 @@ void DiImage::convertPixelData(/*const*/ DcmPixelData *pixel, const int spp)
         else    /* BitsStored > 32 !! */
         {
             ImageStatus = EIS_NotSupportedValue;
-            if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
+            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
             {
                 cerr << "ERROR: invalid value for 'BitsStored' (" << BitsStored << ") ";
                 cerr << "... exceeds " << MAX_BITS << " bit !" << endl;
@@ -396,14 +396,14 @@ void DiImage::convertPixelData(/*const*/ DcmPixelData *pixel, const int spp)
         if (InputData == NULL)
         {
             ImageStatus = EIS_MemoryFailure;
-            if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
+            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
                 cerr << "ERROR: can't allocate memory for input-representation !" << endl;
         }
     }
     else
     {
         ImageStatus = EIS_NotSupportedValue;
-        if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
+        if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
             cerr << "ERROR: 'PixelData' has an other value representation than OB (with 'BitsAllocated' <= 8) or OW !" << endl;
     }
 }
@@ -417,7 +417,7 @@ int DiImage::detachPixelData()
         DcmPixelData *pixel = (DcmPixelData *)pstack.top();
         if (pixel != NULL)
         {
-            if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Informationals)
+            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
                 cerr << "INFO: detach pixel data" << endl;
             pixel->detachValueField();
             return 1;
@@ -428,24 +428,28 @@ int DiImage::detachPixelData()
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: diimage.cc,v $
-** Revision 1.1  1998-11-27 16:01:43  joergr
-** Added copyright message.
-** Added methods and constructors for flipping and rotating, changed for
-** scaling and clipping.
-** Added method to directly create java AWT bitmaps.
-** Introduced global debug level for dcmimage module to control error output.
-** Renamed variable 'Status' to 'ImageStatus' because of possible conflicts
-** with X windows systems.
-** Added method to detach pixel data if it is no longer needed.
-**
-** Revision 1.7  1998/06/25 08:51:41  joergr
-** Removed some wrong newline characters.
-**
-** Revision 1.6  1998/05/11 14:52:29  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: diimage.cc,v $
+ * Revision 1.2  1999-04-28 15:01:44  joergr
+ * Introduced new scheme for the debug level variable: now each level can be
+ * set separately (there is no "include" relationship).
+ *
+ * Revision 1.1  1998/11/27 16:01:43  joergr
+ * Added copyright message.
+ * Added methods and constructors for flipping and rotating, changed for
+ * scaling and clipping.
+ * Added method to directly create java AWT bitmaps.
+ * Introduced global debug level for dcmimage module to control error output.
+ * Renamed variable 'Status' to 'ImageStatus' because of possible conflicts
+ * with X windows systems.
+ * Added method to detach pixel data if it is no longer needed.
+ *
+ * Revision 1.7  1998/06/25 08:51:41  joergr
+ * Removed some wrong newline characters.
+ *
+ * Revision 1.6  1998/05/11 14:52:29  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */

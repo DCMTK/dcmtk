@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlay (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-24 17:24:07 $
+ *  Update Date:      $Date: 1999-04-28 15:04:48 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diovlay.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -260,7 +260,7 @@ Uint16 *DiOverlay::Init(const DiOverlay *overlay)
                 }
                 if (Data->Count != overlay->Data->Count)            // assertion!
                 {
-                    if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+                    if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
                         cerr << "WARNING: different number of overlay planes for scaled and unscaled image !" << endl;
                 }
                 if (overlay->Data->DataBuffer != NULL)              // existing data buffer
@@ -609,7 +609,11 @@ Uint8 *DiOverlay::getPlaneData(const unsigned long frame,
 F *
  * CVS/RCS Log:
  * $Log: diovlay.cc,v $
- * Revision 1.10  1999-03-24 17:24:07  joergr
+ * Revision 1.11  1999-04-28 15:04:48  joergr
+ * Introduced new scheme for the debug level variable: now each level can be
+ * set separately (there is no "include" relationship).
+ *
+ * Revision 1.10  1999/03/24 17:24:07  joergr
  * Removed bug in routines rotating and flipping overlay planes in clipped
  * images.
  *

@@ -22,9 +22,9 @@
  *  Purpose: Utilities (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-03 17:44:33 $
+ *  Update Date:      $Date: 1999-04-28 15:04:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diutils.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,11 +44,11 @@
  *  constant initializations  *
  *----------------------------*/
 
-const int DicomImageClass::DL_NoMessages     = 0;
-const int DicomImageClass::DL_Errors         = 1;
-const int DicomImageClass::DL_Warnings       = 2;
-const int DicomImageClass::DL_Informationals = 3;
-const int DicomImageClass::DL_DebugMessages  = 4;
+const int DicomImageClass::DL_NoMessages     = 0x0;
+const int DicomImageClass::DL_Errors         = 0x1;
+const int DicomImageClass::DL_Warnings       = 0x2;
+const int DicomImageClass::DL_Informationals = 0x4;
+const int DicomImageClass::DL_DebugMessages  = 0x8;
 
 #ifdef DEBUG
  int DicomImageClass::DebugLevel = DicomImageClass::DL_DebugMessages;
@@ -114,7 +114,11 @@ EP_Representation DicomImageClass::determineRepresentation(double minvalue,
  *
  * CVS/RCS Log:
  * $Log: diutils.cc,v $
- * Revision 1.2  1999-02-03 17:44:33  joergr
+ * Revision 1.3  1999-04-28 15:04:50  joergr
+ * Introduced new scheme for the debug level variable: now each level can be
+ * set separately (there is no "include" relationship).
+ *
+ * Revision 1.2  1999/02/03 17:44:33  joergr
  * Moved global functions maxval() and determineRepresentation() to class
  * DicomImageClass (as static methods).
  *

@@ -22,9 +22,9 @@
  *  Purpose: DicomDocument (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-16 16:11:14 $
+ *  Update Date:      $Date: 1999-04-28 15:01:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/didocu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,7 +58,7 @@ DiDocument::DiDocument(const char *filename,
     DcmFileStream stream(filename, DCM_ReadMode);
     if (stream.Fail())
     { 
-        if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
+        if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
             cerr << "ERROR: can't open file '" << filename << "' !" << endl;
     } else
         Init(stream);
@@ -78,7 +78,7 @@ DiDocument::DiDocument(DcmStream &stream,
 {
     if (stream.Fail())
     {
-        if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
+        if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
             cerr << "ERROR: invalid file stream !" << endl;
     } else
         Init(stream);
@@ -108,7 +108,7 @@ void DiDocument::Init(DcmStream &stream)
         Object->transferInit();
         if (((DcmFileFormat *)Object)->read(stream) != EC_Normal)
         {
-            if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
+            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
                 cerr << "ERROR: can't read DICOM stream !" << endl;
             delete Object;
             Object = NULL;
@@ -343,7 +343,11 @@ unsigned long DiDocument::getElemValue(const DcmElement *elem,
  *
  * CVS/RCS Log:
  * $Log: didocu.cc,v $
- * Revision 1.3  1998-12-16 16:11:14  joergr
+ * Revision 1.4  1999-04-28 15:01:43  joergr
+ * Introduced new scheme for the debug level variable: now each level can be
+ * set separately (there is no "include" relationship).
+ *
+ * Revision 1.3  1998/12/16 16:11:14  joergr
  * Added methods to use getOFString from class DcmElement (incl. multi value
  * fields).
  *

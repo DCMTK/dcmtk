@@ -22,9 +22,9 @@
  *  Purpose: DicomLookupTable (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-03 17:40:08 $
+ *  Update Date:      $Date: 1999-04-28 15:01:42 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diluptab.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -94,7 +94,7 @@ DiLookupTable::DiLookupTable(const DcmUnsignedShort &data,
     ok &= (DiDocument::getElemValue((const DcmElement *)&descriptor, FirstEntry, 1) > 0);   // can be SS or US (will be type casted later) !?
     if (ok && (first >= 0) && (FirstEntry != (Uint16)first))
     {
-        if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+        if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
         {
             cerr << "WARNING: invalid value for 'First input value mapped' (" << FirstEntry << ") ";
             cerr << "... assuming " << first << " !" << endl;
@@ -155,7 +155,7 @@ void DiLookupTable::checkTable(const int ok,
         {
             if (count == ((Count + 1) >> 1))                                  // bits allocated 8, ignore padding
             {
-                if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Informationals)
+                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
                     cerr << "INFO: lookup table uses 8 bits allocated ... converting to 16 bits." << endl;
                 DataBuffer = new Uint16[Count];                               // create new LUT
                 if (DataBuffer != NULL)
@@ -164,7 +164,7 @@ void DiLookupTable::checkTable(const int ok,
                     register Uint16 *q = DataBuffer;
                     if (gLocalByteOrder == EBO_BigEndian)                     // local machine has big endian byte ordering 
                     {
-                        if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Informationals)
+                        if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
                             cerr << "INFO: local machine has big endian byte ordering ... swapping 8 bit LUT entries." << endl;
                         for (i = 0; i < count; i++)                           // copy 8 bit entries to new 16 bit LUT (swap hi/lo byte)
                         {
@@ -179,7 +179,7 @@ void DiLookupTable::checkTable(const int ok,
                 }
                 Data = DataBuffer;
             } else {
-                if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
                 {
                     cerr << "WARNING: invalid value for 'NumberOfTableEntries' (" << Count << ") ";
                     cerr << "... assuming " << count << " !" << endl;
@@ -239,7 +239,7 @@ void DiLookupTable::checkTable(const int ok,
     else if (status != NULL)
     {
         *status = EIS_MissingAttribute;
-        if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
+        if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
             cerr << "ERROR: one or more mandatory table attributes are missing !" << endl;
     }       
 }
@@ -255,7 +255,7 @@ void DiLookupTable::checkBits(const Uint16 bits,
 {
     if ((bits < MIN_TABLE_ENTRY_SIZE) || (bits > MAX_TABLE_ENTRY_SIZE))
     {
-        if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+        if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
         {
             cerr << "WARNING: unsuitable value for 'BitsPerTableEntry' (" << bits << ") ... should be between ";
             cerr << MIN_TABLE_ENTRY_SIZE << " and " << MAX_TABLE_ENTRY_SIZE << " inclusive !" << endl;
@@ -267,7 +267,7 @@ void DiLookupTable::checkBits(const Uint16 bits,
     }
     else if (bits == wrong)
     {
-        if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+        if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
         {
             cerr << "WARNING: unsuitable value for 'BitsPerTableEntry' (" << bits << ") ";
             cerr << "... assuming " << right << " !" << endl;
@@ -286,7 +286,11 @@ void DiLookupTable::checkBits(const Uint16 bits,
  *
  * CVS/RCS Log:
  * $Log: diluptab.cc,v $
- * Revision 1.5  1999-02-03 17:40:08  joergr
+ * Revision 1.6  1999-04-28 15:01:42  joergr
+ * Introduced new scheme for the debug level variable: now each level can be
+ * set separately (there is no "include" relationship).
+ *
+ * Revision 1.5  1999/02/03 17:40:08  joergr
  * Added base class for look-up tables (moved main functionality of class
  * DiLookupTable to DiBaseLUT).
  * Moved global functions maxval() and determineRepresentation() to class

@@ -22,9 +22,9 @@
  *  Purpose: DicomImage-Interface (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-24 17:22:03 $
+ *  Update Date:      $Date: 1999-04-28 14:59:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dcmimage.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -267,11 +267,11 @@ void DicomImage::Init()
                         if (PhotometricInterpretation == EPI_Unknown)
                         {
                             ImageStatus = EIS_InvalidValue;
-                            if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
+                            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
                                 cerr << "ERROR: invalid value for 'PhotometricInterpretation' (" << str << ") !" << endl;
                         } else {
                             ImageStatus = EIS_NotSupportedValue;
-                            if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
+                            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
                             {
                                 cerr << "ERROR: unsupported value for 'PhotometricInterpretation' (" << str << ") !" << endl;
                                 cerr << "       library 'dcmimage' required to handle color images !" << endl;
@@ -288,7 +288,7 @@ void DicomImage::Init()
         else
         {
             ImageStatus = EIS_MissingAttribute;  
-            if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
+            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
                 cerr << "ERROR: mandatory attribute 'PhotometricInterpretation' is missing !" << endl;
         }
     }
@@ -304,7 +304,7 @@ int DicomImage::checkDataDictionary()
     if (!dcmDataDict.isDictionaryLoaded()) 
     {
         ImageStatus = EIS_NoDataDictionary;
-        if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
+        if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
             cerr << "ERROR: can't load data dictionary !" << endl;
     }
     return ImageStatus == EIS_Normal;
@@ -726,7 +726,11 @@ int DicomImage::writeRawPPM(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dcmimage.cc,v $
- * Revision 1.7  1999-03-24 17:22:03  joergr
+ * Revision 1.8  1999-04-28 14:59:45  joergr
+ * Introduced new scheme for the debug level variable: now each level can be
+ * set separately (there is no "include" relationship).
+ *
+ * Revision 1.7  1999/03/24 17:22:03  joergr
  * Removed bug when scaling and clipping images where the clipping area exceeds
  * the original images.
  *

@@ -22,9 +22,9 @@
  *  Purpose: DicomBartenLUT (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-04 09:43:28 $
+ *  Update Date:      $Date: 1999-04-28 15:01:42 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/Attic/dibarlut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -63,7 +63,7 @@ DiBartenLUT::DiBartenLUT(const unsigned long count,
 {
     if ((Count > 0) && (Bits > 0))
     {
-        if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Informationals)
+        if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
             cerr << "INFO: new Barten LUT with " << Bits << " bits output and " << Count << " entries created !" << endl;
         Valid = createLUT(ddl_tab, lum_tab, ddl_cnt, gsdf_tab, gsdf_spl, gsdf_cnt, jnd_min, jnd_max, stream);
     }
@@ -149,7 +149,7 @@ int DiBartenLUT::createLUT(const Uint16 *ddl_tab,
                                         (*stream) << lum_tab[Data[i]] + AmbientLight << endl;
                                     }
                                 } else {
-                                    if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+                                    if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
                                         cerr << "WARNING: can't write CurveData, wrong DISPLAY file or Barten LUT !" << endl;
                                 }
                             }
@@ -172,7 +172,11 @@ int DiBartenLUT::createLUT(const Uint16 *ddl_tab,
  *
  * CVS/RCS Log:
  * $Log: dibarlut.cc,v $
- * Revision 1.7  1999-03-04 09:43:28  joergr
+ * Revision 1.8  1999-04-28 15:01:42  joergr
+ * Introduced new scheme for the debug level variable: now each level can be
+ * set separately (there is no "include" relationship).
+ *
+ * Revision 1.7  1999/03/04 09:43:28  joergr
  * Barten LUT is now be re-created when ambient light value has changed.
  *
  * Revision 1.6  1999/03/03 12:05:14  joergr

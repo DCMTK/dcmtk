@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromePixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-24 17:20:16 $
+ *  Update Date:      $Date: 1999-04-28 14:52:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -142,7 +142,7 @@ class DiMonoPixelTemplate
                 {
                     if ((Data[i] >= MinValue[0]) && (Data[i] <= MaxValue[0]))       // only for stability !
                         quant[(Uint32)(Data[i] - MinValue[0])]++;                   // count values
-                    else if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+                    else if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
                     {
                         cerr << "WARNING: invalid value (" << Data[i] << ") in ";
                         cerr << "int DiMonoPixelTemplate<T>::getHistogramWindow() ! " << endl;
@@ -262,7 +262,11 @@ class DiMonoPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimopxt.h,v $
- * Revision 1.5  1999-03-24 17:20:16  joergr
+ * Revision 1.6  1999-04-28 14:52:12  joergr
+ * Introduced new scheme for the debug level variable: now each level can be
+ * set separately (there is no "include" relationship).
+ *
+ * Revision 1.5  1999/03/24 17:20:16  joergr
  * Added/Modified comments and formatting.
  *
  * Revision 1.4  1999/01/20 15:11:38  joergr

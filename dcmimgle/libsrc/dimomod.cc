@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeModality (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-03 17:41:45 $
+ *  Update Date:      $Date: 1999-04-28 15:04:48 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimomod.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -151,7 +151,7 @@ int DiMonoModality::Init(const DiDocument *docu,
         Uint16 us;
         if (docu->getValue(DCM_SamplesPerPixel, us) && (us != 1))
         {
-            if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
                 cerr << "WARNING: invalid value for 'SamplesPerPixel' (" << us << ") ... assuming 1 !" << endl;
         }
         return 1;
@@ -182,7 +182,7 @@ void DiMonoModality::checkRescaling(const DiInputPixel *pixel)
     if (Rescaling)
     {
         if (LookupTable) {
-            if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
             {
                 cerr << "WARNING: redundant values for 'RescaleSlope/Intercept'";
                 cerr << " ... using modality LUT transformation !" << endl;
@@ -191,7 +191,7 @@ void DiMonoModality::checkRescaling(const DiInputPixel *pixel)
         } else {
             if (RescaleSlope == 0)
             {
-                if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
                 {
                     cerr << "WARNING: invalid value for 'RescaleSlope' (" << RescaleSlope;
                     cerr << ") ... ignoring modality transformation !" << endl;
@@ -222,7 +222,11 @@ void DiMonoModality::checkRescaling(const DiInputPixel *pixel)
  *
  * CVS/RCS Log:
  * $Log: dimomod.cc,v $
- * Revision 1.5  1999-02-03 17:41:45  joergr
+ * Revision 1.6  1999-04-28 15:04:48  joergr
+ * Introduced new scheme for the debug level variable: now each level can be
+ * set separately (there is no "include" relationship).
+ *
+ * Revision 1.5  1999/02/03 17:41:45  joergr
  * Moved global functions maxval() and determineRepresentation() to class
  * DicomImageClass (as static methods).
  * Added member variable and related methods to store number of bits used for

@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlayPlane (Source) - Multiframe Overlays UNTESTED !
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-24 17:24:07 $
+ *  Update Date:      $Date: 1999-04-28 15:04:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diovpln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -123,7 +123,7 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
             ImageFrameOrigin = 0;                                   // see supplement 4
             if (BitsAllocated != alloc)                             // see correction proposal 87
             {
-                if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
                 {
                     cerr << "WARNING: invalid value for 'OverlayBitsAllocated' (" << BitsAllocated << ") ";
                     cerr << "... assuming " << alloc << " !" << endl; 
@@ -390,7 +390,11 @@ void DiOverlayPlane::setRotation(const int degree,
  *
  * CVS/RCS Log:
  * $Log: diovpln.cc,v $
- * Revision 1.12  1999-03-24 17:24:07  joergr
+ * Revision 1.13  1999-04-28 15:04:49  joergr
+ * Introduced new scheme for the debug level variable: now each level can be
+ * set separately (there is no "include" relationship).
+ *
+ * Revision 1.12  1999/03/24 17:24:07  joergr
  * Removed bug in routines rotating and flipping overlay planes in clipped
  * images.
  *
