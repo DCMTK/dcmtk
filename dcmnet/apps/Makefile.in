@@ -1,0 +1,63 @@
+#
+#	Makefile for dcmnet apps
+#
+
+
+@SET_MAKE@
+
+SHELL = /bin/sh
+VPATH= @srcdir@:@top_srcdir@/include:@top_srcdir@/@configdir@/include
+srcdir= @srcdir@
+top_srcdir= @top_srcdir@
+configdir=@top_srcdir@/@configdir@
+
+include $(configdir)/@common_makefile@
+
+dcmdatadir=$(top_srcdir)/../dcmdata
+
+LOCALINCLUDES=-I$(dcmdatadir)/include -I$(includedir)/dcmdata
+
+LIBDIRS = -L$(top_srcdir)/libsrc -L$(dcmdatadir)/libsrc -L$(libdir)
+LOCALLIBS = -ldcmnet -ldcmdata
+
+objs= echoscu.o storescu.o storescp.o cmdlnarg.o
+
+progs= echoscu storescu storescp
+
+all: $(progs)
+
+echoscu: echoscu.o cmdlnarg.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $^ $(LOCALLIBS) $(LIBS)  
+
+storescu: storescu.o cmdlnarg.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $^ $(LOCALLIBS) $(LIBS)  
+
+storescp: storescp.o cmdlnarg.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $^ $(LOCALLIBS) $(LIBS)  
+
+install: all
+	$(configdir)/mkinstalldirs $(bindir)
+	for prog in $(progs); do \
+		$(INSTALL_PROGRAM) $$prog $(bindir); strip $(bindir)/$$prog ;\
+	done
+
+
+clean:
+	rm -f $(objs) $(progs) $(TRASH)
+
+distclean: 
+	rm -f $(objs) $(progs) $(DISTTRASH)
+
+
+dependencies:
+	$(CXX) -MM $(defines) $(includes) $(CPPFLAGS) $(CXXFLAGS) *.cc  > $(DEP)
+
+$(objs): config.h
+
+
+include $(DEP)
+
+
+
+
+
