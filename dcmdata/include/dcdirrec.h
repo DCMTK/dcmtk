@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmDirectoryRecord
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-08 14:04:16 $
+ *  Update Date:      $Date: 2003-08-08 14:14:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdirrec.h,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -118,7 +118,7 @@ protected:
     Uint32              setFileOffset(Uint32 position);
 
 
-    // Zugriff auf MRDR-Datenelement:
+    // access to MRDR data element:
     OFCondition         setNumberOfReferences(Uint32 newRefNum);
     Uint32              lookForNumberOfReferences();
     Uint32              increaseRefNum();
@@ -173,7 +173,6 @@ public:
                                         const char *sourceFileName);
 
     // manipulation of the lower-level Directory Entities:
-
     virtual unsigned long cardSub();
 
     virtual OFCondition insertSub(DcmDirectoryRecord* dirRec,
@@ -217,7 +216,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdirrec.h,v $
-** Revision 1.23  2003-08-08 14:04:16  joergr
+** Revision 1.24  2003-08-08 14:14:04  joergr
+** Translated remaining German comments.
+**
+** Revision 1.23  2003/08/08 14:04:16  joergr
 ** Added two new methods insertSubAtCurrentPos() and nextSub() which allow for
 ** a much more efficient insertion (avoids re-searching for correct position).
 **
