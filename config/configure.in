@@ -41,7 +41,6 @@ if test "${CXXFLAGS}set" = set ; then
 		CC) CXXFLAGS='-g' ;;
 	esac
 fi
-AC_SUBST(CXXFLAGS)
 
 AC_PROG_CXXCPP
 dnl The next test is equivalent to AC_PROG_RANLIB
@@ -117,6 +116,9 @@ AC_CHECK_HEADERS(libc.h)
 AC_CHECK_HEADERS(limits.h)
 AC_CHECK_HEADERS(malloc.h)
 AC_CHECK_HEADERS(netdb.h)
+AC_CHECK_HEADERS(pthread.h)
+AC_CHECK_HEADERS(semaphore.h)
+AC_CHECK_HEADERS(sstream.h)
 AC_CHECK_HEADERS(stat.h)
 AC_CHECK_HEADERS(stdarg.h)
 AC_CHECK_HEADERS(stddef.h)
@@ -125,7 +127,7 @@ AC_CHECK_HEADERS(string.h)
 AC_CHECK_HEADERS(strings.h)
 AC_CHECK_HEADERS(strstrea.h)
 AC_CHECK_HEADERS(strstream.h)
-AC_CHECK_HEADERS(sstream.h)
+AC_CHECK_HEADERS(synch.h)
 AC_CHECK_HEADERS(sys/errno.h)
 AC_CHECK_HEADERS(sys/file.h)
 AC_CHECK_HEADERS(sys/ipc.h)
@@ -140,10 +142,59 @@ AC_CHECK_HEADERS(sys/time.h)
 AC_CHECK_HEADERS(sys/types.h)
 AC_CHECK_HEADERS(sys/utime.h)
 AC_CHECK_HEADERS(sys/utsname.h)
+AC_CHECK_HEADERS(thread.h)
 AC_CHECK_HEADERS(time.h)
 AC_CHECK_HEADERS(unistd.h)
 AC_CHECK_HEADERS(unix.h)
 AC_CHECK_HEADERS(utime.h)
+
+if test $ac_cv_header_synch_h = yes ; then
+  dnl
+  dnl check Solaris MT libraries
+  dnl
+  AC_CHECK_LIB(thread, sema_init, [
+  ac_tr_lib=HAVE_LIBTHREAD
+  AC_DEFINE_UNQUOTED($ac_tr_lib)
+  MTLIBS="-lthread $MTLIBS"
+  ])
+else
+  dnl
+  dnl check Posix MT libraries
+  dnl OSF/1 re-#defines most of the pthread function names. 
+  dnl This is why we use pthread_key_create for the test.
+  dnl 
+  if test $ac_cv_header_pthread_h = yes ; then
+    AC_CHECK_LIB(pthread, pthread_key_create, [
+    ac_tr_lib=HAVE_LIBPTHREAD
+    AC_DEFINE_UNQUOTED($ac_tr_lib)
+    MTLIBS="-lpthread $MTLIBS"
+    ])
+
+    AC_CHECK_LIB(rt, sem_init, [
+    ac_tr_lib=HAVE_LIBRT
+    AC_DEFINE_UNQUOTED($ac_tr_lib)
+    MTLIBS="-lrt $MTLIBS"
+    ], , $MTLIBS )
+  fi
+fi
+
+dnl
+dnl if POSIX threads are there, check for read/write locks
+dnl
+if test $ac_cv_header_pthread_h = yes ; then
+  AC_CHECK_LIB(pthread, pthread_rwlock_init, [
+  ac_tr_lib=HAVE_PTHREAD_RWLOCK
+  AC_DEFINE_UNQUOTED($ac_tr_lib)
+  ])
+fi
+
+dnl
+dnl if Posix or Solaris threads are present, define _REENTRANT
+dnl
+if test $ac_cv_header_synch_h = yes -o $ac_cv_header_pthread_h = yes ; then
+  CXXFLAGS="-D_REENTRANT $CXXFLAGS"
+  CFLAGS="-D_REENTRANT $CFLAGS"
+fi
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_TYPE_SIZE_T
@@ -242,7 +293,9 @@ X_STD_LIBS=-lX11
 fi
 
 dnl Special Definitions for output
+AC_SUBST(CXXFLAGS)
 AC_SUBST(X_STD_LIBS)
+AC_SUBST(MTLIBS)
 
 AC_OUTPUT(Makefile.def Makefile.x Makefile)
 

@@ -143,4 +143,7 @@
 /* Define if your C++ compiler supports the explicit template specialization syntax */
 #undef HAVE_EXPLICIT_TEMPLATE_SPECIALIZATION
 
+/* Define if your system supports POSIX read/write locks */
+#undef HAVE_PTHREAD_RWLOCK
+
 #endif

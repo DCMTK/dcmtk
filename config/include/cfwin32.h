@@ -311,6 +311,12 @@
 /* Define if you have the <netinet/tcp.h> header file.  */
 #undef HAVE_NETINET_TCP_H
 
+/* Define if you have the <pthread.h> header file.  */
+#undef HAVE_PTHREAD_H
+
+/* Define if you have the <semaphore.h> header file.  */
+#undef HAVE_SEMAPHORE_H
+
 /* Define if you have the <sstream.h> header file.  */
 #undef HAVE_SSTREAM_H
 
@@ -337,6 +343,9 @@
 
 /* Define if you have the <strstream.h> header file.  */
 #undef HAVE_STRSTREAM_H
+
+/* Define if you have the <synch.h> header file.  */
+#undef HAVE_SYNCH_H
 
 /* Define if you have the <sys/dir.h> header file.  */
 #undef HAVE_SYS_DIR_H
@@ -385,6 +394,9 @@
 
 /* Define if you have the <sys/utsname.h> header file.  */
 #undef HAVE_SYS_UTSNAME_H
+
+/* Define if you have the <thread.h> header file.  */
+#undef HAVE_THREAD_H
 
 /* Define if you have the <time.h> header file.  */
 #define HAVE_TIME_H 1
@@ -544,6 +556,9 @@
 
 /* Define if your C++ compiler supports the explicit template specialization syntax */
 #define HAVE_EXPLICIT_TEMPLATE_SPECIALIZATION 1
+
+/* Define if your system supports POSIX read/write locks */
+#undef HAVE_PTHREAD_RWLOCK
 
 
 #endif /* _WIN32 */
