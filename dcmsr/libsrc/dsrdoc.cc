@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-05 14:37:23 $
- *  CVS/RCS Revision: $Revision: 1.50 $
+ *  Update Date:      $Date: 2004-01-16 10:05:01 $
+ *  CVS/RCS Revision: $Revision: 1.51 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,9 @@
 #include "dsrdoc.h"
 #include "dsrxmld.h"
 #include "dsrpnmtn.h"
+#include "dsrdattn.h"
+#include "dsrdtitn.h"
+#include "dsrtimtn.h"
 
 
 DSRDocument::DSRDocument(const E_DocumentType documentType)
@@ -604,7 +607,11 @@ OFCondition DSRDocument::readXMLDocumentHeader(DSRXMLDocument &doc,
             else if (doc.matchNode(cursor, "instance"))
                 result = readXMLInstanceData(doc, cursor, flags);
             else if (doc.matchNode(cursor, "coding"))
-                result = CodingSchemeIdentification.readXML(doc, cursor.getChild(), flags);
+            {
+                const DSRXMLCursor childNode = cursor.getChild();
+                if (childNode.valid())
+                    result = CodingSchemeIdentification.readXML(doc, childNode, flags);
+            }
             else if (doc.matchNode(cursor, "evidence"))
             {
                 OFString typeString;
@@ -641,6 +648,7 @@ OFCondition DSRDocument::readXMLPatientData(const DSRXMLDocument &doc,
     OFCondition result = SR_EC_InvalidDocument;
     if (cursor.valid())
     {
+        OFString tmpString;
         result = EC_Normal;
         /* iterate over all nodes */
         while (cursor.valid())
@@ -649,14 +657,14 @@ OFCondition DSRDocument::readXMLPatientData(const DSRXMLDocument &doc,
             if (doc.matchNode(cursor, "name"))
             {
                 /* Patient's Name */
-                OFString tmpString;
                 DSRPNameTreeNode::getValueFromXMLNodeContent(doc, cursor.getChild(), tmpString);
                 PatientsName.putString(tmpString.c_str());
             }
             else if (doc.matchNode(cursor, "birthday"))
             {
-                /* Patient's Birth Date, DcmDateString::checkVR() would be nice */
-                doc.getElementFromNodeContent(doc.getNamedNode(cursor.getChild(), "date"), PatientsBirthDate);
+                /* Patient's Birth Date */
+                DSRDateTreeNode::getValueFromXMLNodeContent(doc, doc.getNamedNode(cursor.getChild(), "date"), tmpString);
+                PatientsBirthDate.putString(tmpString.c_str());
             }
             else if (doc.getElementFromNodeContent(cursor, PatientID, "id").bad() &&
                      doc.getElementFromNodeContent(cursor, PatientsSex, "sex").bad())
@@ -678,6 +686,7 @@ OFCondition DSRDocument::readXMLStudyData(const DSRXMLDocument &doc,
     OFCondition result = SR_EC_InvalidDocument;
     if (cursor.valid())
     {
+        OFString tmpString;
         /* get Study Instance UID from XML attribute */
         result = doc.getElementFromAttribute(cursor, StudyInstanceUID, "uid");
         /* goto first sub-element */
@@ -691,10 +700,18 @@ OFCondition DSRDocument::readXMLStudyData(const DSRXMLDocument &doc,
                 /* goto sub-element "number" */
                 doc.getElementFromNodeContent(doc.getNamedNode(cursor.getChild(), "number"), AccessionNumber);
             }
+            else if (doc.matchNode(cursor, "date"))
+            {
+                DSRDateTreeNode::getValueFromXMLNodeContent(doc, cursor, tmpString);
+                StudyDate.putString(tmpString.c_str());
+            }
+            else if (doc.matchNode(cursor, "time"))
+            {
+                DSRTimeTreeNode::getValueFromXMLNodeContent(doc, cursor, tmpString);
+                StudyTime.putString(tmpString.c_str());
+            }
             else if (doc.getElementFromNodeContent(cursor, StudyID, "id").bad() &&
-                     doc.getElementFromNodeContent(cursor, StudyDescription, "description", OFTrue /*encoding*/).bad() &&
-                     doc.getElementFromNodeContent(cursor, StudyDate, "date").bad() &&
-                     doc.getElementFromNodeContent(cursor, StudyTime, "time").bad())
+                     doc.getElementFromNodeContent(cursor, StudyDescription, "description", OFTrue /*encoding*/).bad())
             {
                 doc.printUnexpectedNodeWarning(cursor);
             }
@@ -746,6 +763,7 @@ OFCondition DSRDocument::readXMLInstanceData(const DSRXMLDocument &doc,
     OFCondition result = SR_EC_InvalidDocument;
     if (cursor.valid())
     {
+        OFString tmpString;
         /* get SOP Instance UID from XML attribute */
         result = doc.getElementFromAttribute(cursor, SOPInstanceUID, "uid");
         /* goto first sub-element */
@@ -756,9 +774,12 @@ OFCondition DSRDocument::readXMLInstanceData(const DSRXMLDocument &doc,
             /* check for known element tags */
             if (doc.matchNode(cursor, "creation"))
             {
-                /* Instance Creation Date & Time */
-                doc.getElementFromNodeContent(doc.getNamedNode(cursor.getChild(), "date"), InstanceCreationDate);
-                doc.getElementFromNodeContent(doc.getNamedNode(cursor.getChild(), "time"), InstanceCreationTime);
+                /* Instance Creation Date */
+                DSRDateTreeNode::getValueFromXMLNodeContent(doc, doc.getNamedNode(cursor.getChild(), "date"), tmpString);
+                InstanceCreationDate.putString(tmpString.c_str());
+                /* Instance Creation Time */
+                DSRTimeTreeNode::getValueFromXMLNodeContent(doc, doc.getNamedNode(cursor.getChild(), "time"), tmpString);
+                InstanceCreationTime.putString(tmpString.c_str());
             }
             else if (doc.getElementFromNodeContent(cursor, InstanceNumber, "number").bad())
                 doc.printUnexpectedNodeWarning(cursor);
@@ -827,9 +848,12 @@ OFCondition DSRDocument::readXMLDocumentData(const DSRXMLDocument &doc,
             else if (doc.matchNode(cursor, "content"))
             {
                 const DSRXMLCursor childCursor = cursor.getChild();
-                /* Content Date & Time */
-                doc.getElementFromNodeContent(doc.getNamedNode(childCursor, "date"), ContentDate);
-                doc.getElementFromNodeContent(doc.getNamedNode(childCursor, "time"), ContentTime);
+                /* Content Date */
+                DSRDateTreeNode::getValueFromXMLNodeContent(doc, doc.getNamedNode(childCursor, "date"), tmpString);
+                ContentDate.putString(tmpString.c_str());
+                /* Content Time */
+                DSRTimeTreeNode::getValueFromXMLNodeContent(doc, doc.getNamedNode(childCursor, "time"), tmpString);
+                ContentTime.putString(tmpString.c_str());
                 /* proceed with document tree */
                 result = DocumentTree.readXML(doc, childCursor, flags);
             } else
@@ -877,9 +901,13 @@ OFCondition DSRDocument::readXMLVerifyingObserverData(const DSRXMLDocument &doc,
                         {
                             /* Verifying Observer Name */
                             DSRPNameTreeNode::getValueFromXMLNodeContent(doc, childCursor.getChild(), nameString);
+                        }
+                        else if (doc.matchNode(childCursor, "datetime"))
+                        {
+                            /* Verification Datetime */
+                            DSRDateTimeTreeNode::getValueFromXMLNodeContent(doc, childCursor, datetimeString);
                         } else {
-                            /* Verification Datetime, Verifying Observer Organization */
-                            doc.getStringFromNodeContent(childCursor, datetimeString, "datetime", OFFalse /*encoding*/, OFFalse /*clearString*/);
+                            /* Verifying Observer Organization */
                             doc.getStringFromNodeContent(childCursor, orgaString, "organization", OFTrue /*encoding*/, OFFalse /*clearString*/);
                         }
                         /* proceed with next node */
@@ -964,7 +992,8 @@ OFCondition DSRDocument::writeXML(ostream &stream,
         if ((flags & XF_writeEmptyTags) || (PatientsBirthDate.getLength() > 0))
         {
             stream << "<birthday>" << endl;
-            writeStringFromElementToXML(stream, PatientsBirthDate, "date", (flags & XF_writeEmptyTags) > 0);
+            PatientsBirthDate.getISOFormattedDate(tmpString);
+            writeStringValueToXML(stream, tmpString, "date", (flags & XF_writeEmptyTags) > 0);
             stream << "</birthday>" << endl;
         }
         writeStringFromElementToXML(stream, PatientsSex, "sex", (flags & XF_writeEmptyTags) > 0);
@@ -972,8 +1001,10 @@ OFCondition DSRDocument::writeXML(ostream &stream,
 
         stream << "<study uid=\"" << getMarkupStringFromElement(StudyInstanceUID, tmpString) << "\">" << endl;
         writeStringFromElementToXML(stream, StudyID, "id", (flags & XF_writeEmptyTags) > 0);
-        writeStringFromElementToXML(stream, StudyDate, "date", (flags & XF_writeEmptyTags) > 0);
-        writeStringFromElementToXML(stream, StudyTime, "time", (flags & XF_writeEmptyTags) > 0);
+        StudyDate.getISOFormattedDate(tmpString);
+        writeStringValueToXML(stream, tmpString, "date", (flags & XF_writeEmptyTags) > 0);
+        StudyTime.getISOFormattedTime(tmpString);
+        writeStringValueToXML(stream, tmpString, "time", (flags & XF_writeEmptyTags) > 0);
         if ((flags & XF_writeEmptyTags) || (AccessionNumber.getLength() > 0))
         {
             stream << "<accession>" << endl;
@@ -997,8 +1028,10 @@ OFCondition DSRDocument::writeXML(ostream &stream,
             if (InstanceCreatorUID.getLength() > 0)
                 stream << " uid=\"" << getMarkupStringFromElement(InstanceCreatorUID, tmpString) << "\"";
             stream << ">" << endl;
-            writeStringFromElementToXML(stream, InstanceCreationDate, "date", (flags & XF_writeEmptyTags) > 0);
-            writeStringFromElementToXML(stream, InstanceCreationTime, "time", (flags & XF_writeEmptyTags) > 0);
+            InstanceCreationDate.getISOFormattedDate(tmpString);
+            writeStringValueToXML(stream, tmpString, "date", (flags & XF_writeEmptyTags) > 0);
+            InstanceCreationTime.getISOFormattedTime(tmpString);
+            writeStringValueToXML(stream, tmpString, "time", (flags & XF_writeEmptyTags) > 0);
             stream << "</creation>" << endl;
         }
         stream << "</instance>" << endl;
@@ -1041,7 +1074,9 @@ OFCondition DSRDocument::writeXML(ostream &stream,
                 OFString dateTime, obsName, organization;
                 if (getVerifyingObserver(i, dateTime, obsName, obsCode, organization).good())
                 {
-                    writeStringValueToXML(stream, dateTime, "datetime", (flags & XF_writeEmptyTags) > 0);
+                    DcmDateTime::getISOFormattedDateTimeFromString(dateTime, tmpString, OFTrue /*seconds*/, OFFalse /*fraction*/,
+                        OFFalse /*timeZone*/, OFFalse /*createMissingPart*/, "T" /*dateTimeSeparator*/);
+                    writeStringValueToXML(stream, tmpString, "datetime", (flags & XF_writeEmptyTags) > 0);
                     if (!obsName.empty() || (flags & XF_writeEmptyTags))
                         stream << "<name>" << endl << dicomToXMLPersonName(obsName, tmpString) << endl << "</name>" << endl;
                     if (obsCode.isValid())
@@ -1076,8 +1111,10 @@ OFCondition DSRDocument::writeXML(ostream &stream,
         // --- write document content/tree to stream ---
 
         stream << "<content>" << endl;
-        writeStringFromElementToXML(stream, ContentDate, "date", (flags & XF_writeEmptyTags) > 0);
-        writeStringFromElementToXML(stream, ContentTime, "time", (flags & XF_writeEmptyTags) > 0);
+        ContentDate.getISOFormattedDate(tmpString);
+        writeStringValueToXML(stream, tmpString, "date", (flags & XF_writeEmptyTags) > 0);
+        ContentTime.getISOFormattedTime(tmpString);
+        writeStringValueToXML(stream, tmpString, "time", (flags & XF_writeEmptyTags) > 0);
         result = DocumentTree.writeXML(stream, flags);
         stream << "</content>" << endl;
         stream << "</document>" << endl;
@@ -2222,7 +2259,11 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.50  2004-01-05 14:37:23  joergr
+ *  Revision 1.51  2004-01-16 10:05:01  joergr
+ *  Adapted XML output format of Date, Time and Datetime to XML Schema (ISO)
+ *  requirements. Made readXML() more robust with regard to expected XML structure.
+ *
+ *  Revision 1.50  2004/01/05 14:37:23  joergr
  *  Removed acknowledgements with e-mail addresses from CVS log.
  *
  *  Revision 1.49  2003/11/28 16:51:44  joergr
