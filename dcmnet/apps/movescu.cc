@@ -36,9 +36,9 @@
 ** Created:	03/96
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-05-29 15:52:57 $
+** Update Date:		$Date: 1997-05-30 07:33:22 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.14 $
+** CVS/RCS Revision:	$Revision: 1.15 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -884,7 +884,7 @@ subOpSCP(T_ASC_Association **subAssoc)
 }
 
 static void
-subOpCallback(void */*subOpCallbackData*/, 
+subOpCallback(void * /*subOpCallbackData*/ , 
 	T_ASC_Network *net, T_ASC_Association **subAssoc)
 {
 
@@ -939,8 +939,8 @@ substituteOverrideKeys(DcmDataset *dset)
     DcmDataset keys(*overrideKeys);
 
     /* put the override keys into dset replacing existing tags */
-    int elemCount = keys.card();
-    for (int i=0; i<elemCount; i++) {
+    unsigned long elemCount = keys.card();
+    for (unsigned long i=0; i<elemCount; i++) {
 	DcmElement *elem = keys.remove((unsigned long)0);
 
 	dset->insert(elem, TRUE);
@@ -1062,7 +1062,11 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.14  1997-05-29 15:52:57  meichel
+** Revision 1.15  1997-05-30 07:33:22  meichel
+** Added space characters around comments and simplified
+** some inlining code (needed for SunCC 2.0.1).
+**
+** Revision 1.14  1997/05/29 15:52:57  meichel
 ** Added constant for dcmtk release date in dcuid.h.
 ** All dcmtk applications now contain a version string
 ** which is displayed with the command line options ("usage" message)

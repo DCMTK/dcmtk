@@ -36,9 +36,9 @@
 ** Created:	03/96
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-05-29 15:52:56 $
+** Update Date:		$Date: 1997-05-30 07:33:21 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/findscu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.12 $
+** CVS/RCS Revision:	$Revision: 1.13 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -554,8 +554,8 @@ substituteOverrideKeys(DcmDataset *dset)
     DcmDataset keys(*overrideKeys);
 
     /* put the override keys into dset replacing existing tags */
-    int elemCount = keys.card();
-    for (int i=0; i<elemCount; i++) {
+    unsigned long elemCount = keys.card();
+    for (unsigned long i=0; i<elemCount; i++) {
 	DcmElement *elem = keys.remove((unsigned long)0);
 
 	dset->insert(elem, TRUE);
@@ -565,10 +565,10 @@ substituteOverrideKeys(DcmDataset *dset)
 static void
 progressCallback(
 	/* in */
-	void */*callbackData*/, 
-	T_DIMSE_C_FindRQ */*request*/, 	/* original find request */
+	void * /*callbackData*/ , 
+	T_DIMSE_C_FindRQ * /*request*/ , 	/* original find request */
 	int responseCount, 
-	T_DIMSE_C_FindRSP */*response*/,	/* pending response received */
+	T_DIMSE_C_FindRSP * /*response*/ ,	/* pending response received */
 	DcmDataset *responseIdentifiers /* pending response identifiers */
 	)
 {
@@ -678,7 +678,11 @@ cfind(T_ASC_Association * assoc, const char *fname)
 /*
 ** CVS Log
 ** $Log: findscu.cc,v $
-** Revision 1.12  1997-05-29 15:52:56  meichel
+** Revision 1.13  1997-05-30 07:33:21  meichel
+** Added space characters around comments and simplified
+** some inlining code (needed for SunCC 2.0.1).
+**
+** Revision 1.12  1997/05/29 15:52:56  meichel
 ** Added constant for dcmtk release date in dcuid.h.
 ** All dcmtk applications now contain a version string
 ** which is displayed with the command line options ("usage" message)
