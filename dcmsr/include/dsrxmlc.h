@@ -23,8 +23,8 @@
  *    classes: DSRXMLCursor
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-09-04 10:14:30 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2003-10-06 09:51:43 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -149,7 +149,10 @@ class DSRXMLCursor
 /*
  *  CVS/RCS Log:
  *  $Log: dsrxmlc.h,v $
- *  Revision 1.4  2003-09-04 10:14:30  joergr
+ *  Revision 1.5  2003-10-06 09:51:43  joergr
+ *  Replaced wrong newline character sequence.
+ *
+ *  Revision 1.4  2003/09/04 10:14:30  joergr
  *  Combined two #include "ofstdinc.h" statements.
  *
  *  Revision 1.3  2003/09/03 16:00:11  meichel
