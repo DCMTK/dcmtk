@@ -24,8 +24,8 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-13 11:46:44 $
- *  CVS/RCS Revision: $Revision: 1.50 $
+ *  Update Date:      $Date: 2004-02-13 14:11:54 $
+ *  CVS/RCS Revision: $Revision: 1.51 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -178,7 +178,7 @@ static const UIDNameMap uidNameMap[] = {
     { UID_RawDataStorage,                                     "RawDataStorage" },
     { UID_SecondaryCaptureImageStorage,                       "SecondaryCaptureImageStorage" },
     { UID_SpatialRegistrationStorage,                         "SpatialRegistrationStorage" },
-    { UID_SpatialFinducialsStorage,                           "SpatialFinducialsStorage" },
+    { UID_SpatialFiducialsStorage,                            "SpatialFiducialsStorage" },
     { UID_StandaloneCurveStorage,                             "StandaloneCurveStorage" },
     { UID_StandaloneModalityLUTStorage,                       "StandaloneModalityLUTStorage" },
     { UID_StandaloneOverlayStorage,                           "StandaloneOverlayStorage" },
@@ -387,7 +387,7 @@ const char* dcmStorageSOPClassUIDs[] = {
     UID_RawDataStorage,
     UID_SecondaryCaptureImageStorage,
     UID_SpatialRegistrationStorage,
-    UID_SpatialFinducialsStorage,
+    UID_SpatialFiducialsStorage,
     UID_StandaloneCurveStorage,
     UID_StandaloneModalityLUTStorage,
     UID_StandaloneOverlayStorage,
@@ -538,7 +538,7 @@ static const DcmModalityTable modalities[] = {
     { UID_RawDataStorage,                                      "RAW", 512 * 512 * 256 },
     { UID_SecondaryCaptureImageStorage,                        "SC",  2 * 512 * 512 },
     { UID_SpatialRegistrationStorage,                          "REG", 4096 },
-    { UID_SpatialFinducialsStorage,                            "FID", 4096 },
+    { UID_SpatialFiducialsStorage,                             "FID", 4096 },
     { UID_StandaloneCurveStorage,                              "CV",  4096 },
     { UID_StandaloneModalityLUTStorage,                        "ML",  4096 * 2 },
     { UID_StandaloneOverlayStorage,                            "OV",  512 * 512 },
@@ -1107,7 +1107,10 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.50  2004-02-13 11:46:44  joergr
+** Revision 1.51  2004-02-13 14:11:54  joergr
+** Fixed wrong spelling of "SpatialFiducialsStorage".
+**
+** Revision 1.50  2004/02/13 11:46:44  joergr
 ** orrected order of UIDs, modified comments and other minor corrections.
 ** Changed filename prefix for some storage SOP classes (array "modalities").
 ** Replaced non-Unix newline characters.

@@ -24,9 +24,9 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-13 11:42:43 $
+ *  Update Date:      $Date: 2004-02-13 14:10:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
- *  CVS/RCS Revision: $Revision: 1.59 $
+ *  CVS/RCS Revision: $Revision: 1.60 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -342,7 +342,7 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 
 // Storage SOP Class from Supplement 73 (final text)
 #define UID_SpatialRegistrationStorage                             "1.2.840.10008.5.1.4.1.1.66.1"
-#define UID_SpatialFinducialsStorage                               "1.2.840.10008.5.1.4.1.1.66.2"
+#define UID_SpatialFiducialsStorage                                "1.2.840.10008.5.1.4.1.1.66.2"
 
 // Worklist and Query/Retrieve
 #define UID_FINDPatientRootQueryRetrieveInformationModel           "1.2.840.10008.5.1.4.1.2.1.1"
@@ -474,7 +474,10 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.59  2004-02-13 11:42:43  joergr
+** Revision 1.60  2004-02-13 14:10:30  joergr
+** Fixed wrong spelling of "SpatialFiducialsStorage".
+**
+** Revision 1.59  2004/02/13 11:42:43  joergr
 ** Corrected order of tags, modified comments and other minor corrections.
 **
 ** Revision 1.58  2004/02/11 15:53:08  wilkens
