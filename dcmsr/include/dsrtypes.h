@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-06 11:21:04 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2000-11-07 18:14:05 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -113,6 +113,9 @@ class DSRTypes
 
     /// external: render the code of the numeric measurement unit
     static const size_t HF_renderNumericUnitCodes;
+
+    /// external: use code meaning for the numeric measurement unit (default: code value)
+    static const size_t HF_useCodeMeaningAsUnit;
 
     /// external: use patient information as document title (default: document type)
     static const size_t HF_renderPatientTitle;
@@ -393,7 +396,7 @@ class DSRTypes
         AM_afterCurrent,
         /// add new node before current one (sibling)
         AM_beforeCurrent,
-        /// add new node below current one (child)
+        /// add new node below current one (after last child)
         AM_belowCurrent
     };
 
@@ -569,24 +572,63 @@ class DSRTypes
 
     /** get current date in DICOM 'DA' format
      ** @param  dateString  string used to store the current date.
-     *                      ('19000101' current date could not be retrieved)
+     *                      ('19000101' if current date could not be retrieved)
      ** @return resulting character string (see 'dateString')
      */
     static const OFString &currentDate(OFString &dateString);
 
     /** get current time in DICOM 'TM' format
      ** @param  timeString  string used to store the current time
-     *                      ('00000000' current time could not be retrieved)
+     *                      ('000000' if current time could not be retrieved)
      ** @return resulting character string (see 'timeString')
      */
     static const OFString &currentTime(OFString &timeString);
 
     /** get current date and time in DICOM 'DT' format
      ** @param  dateTimeString  string used to store the current date and time
-     *                      ('1900010100000000' current date/time could not be retrieved)
+     *                          ('19000101000000.000000' if current date/time
+     *                          could not be retrieved)
      ** @return resulting character string (see 'dateTimeString')
      */
     static const OFString &currentDateTime(OFString &dateTimeString);
+
+    /** convert DICOM date string to readable format.
+     *  The ISO format "YYYY-MM-DD" is used for the readable format.
+     ** @param  dicomDate     date in DICOM DA format (YYYYMMDD)
+     *  @param  readableDate  reference to variable where the resulting string is stored
+     ** @return reference to resulting string (might be empty)
+     */
+    static const OFString &dicomToReadableDate(const OFString &dicomDate,
+                                               OFString &readableDate);
+
+    /** convert DICOM time string to readable format.
+     *  The ISO format "HH:MM" or "HH:MM:SS" (if seconds are available) is used for the
+     *  readable format.
+     ** @param  dicomTime     time in DICOM TM format (HHMM or HHMMSS...)
+     *  @param  readableTime  reference to variable where the resulting string is stored
+     ** @return reference to resulting string (might be empty)
+     */
+    static const OFString &dicomToReadableTime(const OFString &dicomTime,
+                                               OFString &readableTime);
+
+    /** convert DICOM date time string to readable format.
+     *  The format "YYYY-MM-DD, HH:MM" or "YYYY-MM-DD, HH:MM:SS" is used for the readable format.
+     ** @param  dicomDateTime     time in DICOM DT format (YYYYMMDDHHMMSS...)
+     *  @param  readableDateTime  reference to variable where the resulting string is stored
+     ** @return reference to resulting string (might be empty)
+     */
+    static const OFString &dicomToReadableDateTime(const OFString &dicomDateTime,
+                                                   OFString &readableDateTime);
+
+    /** convert DICOM person name to readable format.
+     *  The format "<prefix> <first_name> <middle_name> <last_name>, <suffix>" is used for the
+     *  readable format.
+     ** @param  dicomPersonName     person name in DICOM PN format (ln^fn^mn^p^s)
+     *  @param  readablePersonName  reference to variable where the resulting string is stored
+     ** @return reference to resulting string (might be empty)
+     */
+    static const OFString &dicomToReadablePersonName(const OFString &dicomPersonName,
+                                                     OFString &readablePersonName);
 
     /** convert unsigned integer number to character string
      ** @param  number  unsigned integer number to be converted
@@ -909,7 +951,12 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
- *  Revision 1.7  2000-11-06 11:21:04  joergr
+ *  Revision 1.8  2000-11-07 18:14:05  joergr
+ *  Added new command line option allowing to choose code value or meaning to be
+ *  rendered as the numeric measurement unit.
+ *  Enhanced rendered HTML output of date, time, datetime and pname.
+ *
+ *  Revision 1.7  2000/11/06 11:21:04  joergr
  *  Changes structure of HTML hyperlinks to composite objects (now using pseudo
  *  CGI script).
  *
