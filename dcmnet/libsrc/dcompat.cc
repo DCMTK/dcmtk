@@ -64,9 +64,9 @@
 ** 
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1999-04-21 13:02:58 $
+** Update Date:		$Date: 1999-04-22 13:35:29 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dcompat.cc,v $
-** CVS/RCS Revision:	$Revision: 1.16 $
+** CVS/RCS Revision:	$Revision: 1.17 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -170,7 +170,7 @@ int flock(int fd, int operation)
       if (LockFileEx(handle,0,0,(DWORD)-1,(DWORD)-1,&overl) !=0) return 0; else return -1;
     } else {
       // using LockFile on Win32s and Win95. LOCKS ARE ALWAYS EXCLUSIVE!
-      if (LockFile(handle, 0,0,(DWORD)-1,(DWORD)-1) return 0; else return -1;
+      if (LockFile(handle, 0,0,(DWORD)-1,(DWORD)-1) !=0) return 0; else return -1;
     }
   }
   else if (operation==LOCK_EX)
@@ -181,7 +181,7 @@ int flock(int fd, int operation)
       if (LockFileEx(handle,LOCKFILE_EXCLUSIVE_LOCK,0,(DWORD)-1,(DWORD)-1,&overl) !=0) return 0; else return -1;
     } else {
       // using LockFile on Win32s and Win95.
-      if (LockFile(handle, 0,0,(DWORD)-1,(DWORD)-1) return 0; else return -1;
+      if (LockFile(handle, 0,0,(DWORD)-1,(DWORD)-1) !=0) return 0; else return -1;
     }
   }
   else if (operation==LOCK_UN)
@@ -426,7 +426,10 @@ tempnam(char *dir, char *pfx)
 /*
 ** CVS Log
 ** $Log: dcompat.cc,v $
-** Revision 1.16  1999-04-21 13:02:58  meichel
+** Revision 1.17  1999-04-22 13:35:29  meichel
+** Corrected Win32 API version of flock emulation
+**
+** Revision 1.16  1999/04/21 13:02:58  meichel
 ** Now always including <windows.h> instead of <winsock.h> on Win32 platforms.
 **   This makes sure that <winsock2.h> is used if available.
 **
