@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-05-03 14:16:38 $
+ *  Update Date:      $Date: 1999-05-05 14:23:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsrcv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -865,7 +865,11 @@ int main(int argc, char *argv[])
             sinfo.cb = sizeof(sinfo);
             char commandline[4096];
             sprintf(commandline, "%s %s", receiver_application, opt_cfgName);
+#ifdef DEBUG
             if (CreateProcess(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
+#else
+            if (CreateProcess(NULL, commandline, NULL, NULL, 0, DETACHED_PROCESS, NULL, NULL, &sinfo, &procinfo))
+#endif
             {
               handleClient(&assoc, dbfolder, opt_verbose, networkBitPreserving);
               finished1=OFTrue;              
@@ -896,7 +900,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsrcv.cc,v $
- * Revision 1.8  1999-05-03 14:16:38  joergr
+ * Revision 1.9  1999-05-05 14:23:56  joergr
+ * Modified parameter of CreateProcess call to avoid creation of new command
+ * line window under Windows.
+ *
+ * Revision 1.8  1999/05/03 14:16:38  joergr
  * Minor code purifications to keep Sun CC 2.0.1 quiet.
  *
  * Revision 1.7  1999/04/30 16:36:56  meichel
