@@ -22,9 +22,8 @@
  *  Purpose: Class for date and time functions (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-09-15 12:15:07 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofdatime.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2003-12-17 15:27:21 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,7 +64,7 @@ OFDateTime::OFDateTime(const OFDateTime &dateTime)
 
 
 OFDateTime::OFDateTime(const OFDate &dateVal,
-                      const OFTime &timeVal)
+                       const OFTime &timeVal)
   : Date(dateVal),
     Time(timeVal)
 {
@@ -87,12 +86,14 @@ OFDateTime &OFDateTime::operator=(const OFDateTime &dateTime)
 
 OFBool OFDateTime::operator==(const OFDateTime &dateTime) const
 {
+    /* note that the "overflow" from one day to another is currently not handled */
     return (Date == dateTime.Date) && (Time == dateTime.Time);
 }
 
 
 OFBool OFDateTime::operator!=(const OFDateTime &dateTime) const
 {
+    /* note that the "overflow" from one day to another is currently not handled */
     return (Date != dateTime.Date) || (Time != dateTime.Time);
 }
 
@@ -224,7 +225,11 @@ ostream& operator<<(ostream& stream, const OFDateTime &dateTime)
  *
  * CVS/RCS Log:
  * $Log: ofdatime.cc,v $
- * Revision 1.4  2003-09-15 12:15:07  joergr
+ * Revision 1.5  2003-12-17 15:27:21  joergr
+ * Added note to the comparison operators that the "day overflow" is not yet
+ * handled correctly.
+ *
+ * Revision 1.4  2003/09/15 12:15:07  joergr
  * Made comparison operators const.
  *
  * Revision 1.3  2002/11/27 15:09:39  meichel
