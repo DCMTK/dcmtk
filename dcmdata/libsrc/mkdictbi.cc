@@ -1,6 +1,6 @@
 /*
 **
-** Author: Andrew Hewett	Created: 4.11.95
+** Author: Andrew Hewett        Created: 4.11.95
 **
 ** Program: mkdictbi.cc
 **
@@ -8,11 +8,11 @@
 ** Generate a builtin data dictionary which can be compiled into
 ** the dcmdata library.  
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-08-26 14:03:20 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/mkdictbi.cc,v $
-** CVS/RCS Revision:	$Revision: 1.10 $
-** Status:		$State: Exp $
+** Last Update:         $Author: joergr $
+** Update Date:         $Date: 1998-07-15 14:09:52 $
+** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/mkdictbi.cc,v $
+** CVS/RCS Revision:    $Revision: 1.11 $
+** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
 **
@@ -24,6 +24,9 @@
 #include <stdio.h>
 #ifdef HAVE_STDLIB_H
 #include <stdlib.h>
+#endif
+#ifdef HAVE_LIBC_H
+#include <libc.h>
 #endif
 #include <string.h>
 #include <ctype.h>
@@ -50,17 +53,17 @@ rr2s(DcmDictRangeRestriction rr)
     const char* s;
     switch (rr) {
     case DcmDictRange_Unspecified:
-	s = "DcmDictRange_Unspecified";
-	break;
+        s = "DcmDictRange_Unspecified";
+        break;
     case DcmDictRange_Odd:
-	s = "DcmDictRange_Odd";
-	break;
+        s = "DcmDictRange_Odd";
+        break;
     case DcmDictRange_Even:
-	s = "DcmDictRange_Even";
-	break;
+        s = "DcmDictRange_Even";
+        break;
     default:
-	s = "DcmDictRange_GENERATOR_ERROR";
-	break;
+        s = "DcmDictRange_GENERATOR_ERROR";
+        break;
     }
     return s;
 }
@@ -69,19 +72,19 @@ static void
 printSimpleEntry(FILE* fout, const DcmDictEntry* e, int lastEntry)
 {
     fprintf(fout, "    { 0x%04x, 0x%04x, 0x%04x, 0x%04x,\n",
-	    e->getGroup(), e->getElement(), 
-	    e->getUpperGroup(), e->getUpperElement());
+            e->getGroup(), e->getElement(), 
+            e->getUpperGroup(), e->getUpperElement());
     fprintf(fout, "      EVR_%s, \"%s\", %d, %d, \"%s\",\n",
-	    e->getVR().getVRName(),
-	    e->getTagName(), 
-	    e->getVMMin(), e->getVMMax(),
-	    e->getStandardVersion());
+            e->getVR().getVRName(),
+            e->getTagName(), 
+            e->getVMMin(), e->getVMMax(),
+            e->getStandardVersion());
     fprintf(fout, "      %s, %s }", rr2s(e->getGroupRangeRestriction()),
-	    rr2s(e->getElementRangeRestriction()));
+            rr2s(e->getElementRangeRestriction()));
     if (!lastEntry) {
-    	fprintf(fout, ",\n");
+        fprintf(fout, ",\n");
     } else {
-    	fprintf(fout, "\n");
+        fprintf(fout, "\n");
     } 
 }
 
@@ -210,10 +213,10 @@ main(int argc, char* argv[])
     fprintf(fout, "**   Prog: %s\n", progname);
     fputs("**\n", fout);
     if (argc > 1) {
-	fprintf(fout, "** From: %s\n", argv[1]);
-	for (i=2; i<argc; i++) {
-	    fprintf(fout, "**       %s\n", argv[i]);
-	}
+        fprintf(fout, "** From: %s\n", argv[1]);
+        for (i=2; i<argc; i++) {
+            fprintf(fout, "**       %s\n", argv[i]);
+        }
     }
     fputs("**\n", fout);
     fprintf(fout, "*/\n");
@@ -248,26 +251,26 @@ main(int argc, char* argv[])
     DcmHashDictIterator iter(dcmDataDict.normalBegin());
     DcmHashDictIterator last(dcmDataDict.normalEnd());
     for (; iter != last; ++iter) {
-	e = new DcmDictEntry(*(*iter));
-	list.insertAndReplace(e);
+        e = new DcmDictEntry(*(*iter));
+        list.insertAndReplace(e);
     }
     /* output the list contents */
     DcmDictEntryListIterator listIter(list.begin());
     DcmDictEntryListIterator listLast(list.end());
     for (; listIter != listLast; ++listIter) {
-	printSimpleEntry(fout, *listIter, lastEntry);
+        printSimpleEntry(fout, *listIter, lastEntry);
     }
 
     DcmDictEntryListIterator repIter(dcmDataDict.repeatingBegin());
     DcmDictEntryListIterator repLast(dcmDataDict.repeatingEnd());
     DcmDictEntryListIterator nextIter;
     for (; repIter != repLast; ++repIter) {
-	e = *repIter;
-	nextIter = repIter;
-	++nextIter;
-	if (nextIter == repLast) {
-	    lastEntry = OFTrue;
-	}
+        e = *repIter;
+        nextIter = repIter;
+        ++nextIter;
+        if (nextIter == repLast) {
+            lastEntry = OFTrue;
+        }
         printSimpleEntry(fout, e, lastEntry);
     }
 
@@ -303,7 +306,11 @@ main(int argc, char* argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: mkdictbi.cc,v $
-** Revision 1.10  1997-08-26 14:03:20  hewett
+** Revision 1.11  1998-07-15 14:09:52  joergr
+** Including of <libc.h> to support getlogin() on NeXTSTEP.
+** Replaced tabs by spaces.
+**
+** Revision 1.10  1997/08/26 14:03:20  hewett
 ** New data structures for data-dictionary.  The main part of the
 ** data-dictionary is now stored in an hash table using an optimized
 ** hash function.  This new data structure reduces data-dictionary
