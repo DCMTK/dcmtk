@@ -4,7 +4,7 @@
 **
 **   User: meichel
 **   Host: sulla
-**   Date: Mon Oct 26 13:36:41 1998
+**   Date: Mon Oct 26 15:34:09 1998
 **   Prog: /home/meichel/dicom/dcmtk/dcmdata/libsrc/mkdictbi
 **
 ** From: /home/meichel/dicom/dcmtk/dcmdata/libsrc/dicom.dic
@@ -13,7 +13,7 @@
 
 #include "dcdict.h"
 
-char* dcmBuiltinDictBuildDate = "Mon Oct 26 13:36:41 1998";
+char* dcmBuiltinDictBuildDate = "Mon Oct 26 15:34:09 1998";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -1325,6 +1325,9 @@ static DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0018, 0x1622, 0x0018, 0x1622,
       EVR_US, "ShutterPresentationValue", 1, 1, "DICOM3",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified },
+    { 0x0018, 0x1623, 0x0018, 0x1623,
+      EVR_US, "ShutterOverlayGroup", 1, 1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0018, 0x1700, 0x0018, 0x1700,
       EVR_CS, "CollimatorShape", 1, 3, "DICOM3",

@@ -4,7 +4,7 @@
 **
 **   User: meichel
 **   Host: sulla
-**   Date: Mon Oct 26 13:34:33 1998
+**   Date: Mon Oct 26 15:33:58 1998
 **   Prog: /home/meichel/dicom/dcmtk/dcmdata/libsrc/mkdeftag
 **
 ** From: /home/meichel/dicom/dcmtk/dcmdata/libsrc/dicom.dic
@@ -16,12 +16,12 @@
 
 #include "dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "Mon Oct 26 13:34:33 1998"
+#define DCM_DICT_DEFTAG_BUILD_DATE "Mon Oct 26 15:33:58 1998"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 1682
+** Number of entries: 1683
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -456,6 +456,7 @@
 #define DCM_RadiusOfCircularShutter              DcmTagKey(0x0018, 0x1612)
 #define DCM_VerticesOfThePolygonalShutter        DcmTagKey(0x0018, 0x1620)
 #define DCM_ShutterPresentationValue             DcmTagKey(0x0018, 0x1622)
+#define DCM_ShutterOverlayGroup                  DcmTagKey(0x0018, 0x1623)
 #define DCM_CollimatorShape                      DcmTagKey(0x0018, 0x1700)
 #define DCM_CollimatorLeftVerticalEdge           DcmTagKey(0x0018, 0x1702)
 #define DCM_CollimatorRightVerticalEdge          DcmTagKey(0x0018, 0x1704)
