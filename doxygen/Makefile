@@ -4,15 +4,20 @@
 
 
 SHELL = /bin/sh
+DOXYGEN = doxygen
 
 html:
-	doxygen doxygen.cfg
+	$(DOXYGEN) htmldocs.cfg
 
-all:
-	echo Nothing to do for all. Use html instead.
+man:
+	$(DOXYGEN) manpages.cfg
+
+all: html man
+
 
 clean:
-	rm -f *.log
+	rm -f *.log *.bak
 
 distclean: clean
 	rm -rf htmldocs
+	rm -rf manpages

@@ -49,6 +49,9 @@ install-include: $makeinstallinclude
 
 install-support: $makeinstallsupport
 
+man:
+	(cd doxygen; \$(MAKE) man)
+
 html:
 	(cd doxygen; \$(MAKE) html)
 
