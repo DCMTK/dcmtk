@@ -64,9 +64,9 @@
 ** 
 **
 ** Last Update:		$Author: vorwerk $
-** Update Date:		$Date: 1999-01-06 16:32:33 $
+** Update Date:		$Date: 1999-01-11 13:06:13 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dcompat.cc,v $
-** CVS/RCS Revision:	$Revision: 1.10 $
+** CVS/RCS Revision:	$Revision: 1.11 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -120,14 +120,16 @@ BEGIN_EXTERN_C
 #include <io.h>
 #undef access
 #endif
-#if defined (windows)
-#include <sys/locking.h>
-#include <share.h>
-#include <fcntl.h>
-#endif
 
+/* Structure that controls the locking mechanism of Windows NT */
+
+OVERLAPPED overl;
 END_EXTERN_C
 
+#if defined (windows)
+#include "windows.h"
+#include "winbase.h"
+#endif
 /*
  * On DEC alpha the linker moans if a library is empty.
  * So define a dummy variable.
@@ -147,33 +149,61 @@ int flock(int fd, int operation)
 }
 #else
 #if defined(windows)
+
+/*
+* MS Visual C++ only
+*/
+
 int flock(int fd, int operation)
 {
-    if ((operation==LOCK_EX) || (operation==LOCK_SH))
-	{
-	if (operation==LOCK_SH)
-	fprintf(stderr, "dcmnet/libsrc/dcompat(windows): WARNING ! \n");
-	fprintf(stderr,"No shared locks supported. Switching to exclusive lock.\n");
+			if (operation==LOCK_SH){
+				int endpos;
+		        endpos = lseek(fd, 0, SEEK_END);
+				printf("shared Lock \n");
+				HANDLE handle;
+				handle=(void *)_get_osfhandle(fd);
+				if (LockFileEx(handle,0,0,endpos,0,&overl)!=0) {
+					printf("file locked \n");
+					return 0;}
 
+				else return -1;
+			}
+				
+			
+    if ((operation==LOCK_EX))
+	{
+		printf("exclusive Lock \n");
 		int endpos;
 		endpos = lseek(fd, 0, SEEK_END);
-			if( _locking( fd, LK_NBLCK, endpos ) != -1 ) return 0;
-		else
-		{
-			return 1;
-		}
+				HANDLE handle;
+				long a;
+				a=_get_osfhandle(fd);
+				handle=(int *)a;
+				if (LockFileEx(handle,LOCKFILE_EXCLUSIVE_LOCK,0,endpos,0,&overl)!=0) {
+					printf("file locked \n");
+					return 0;}
+
+				else return -1;
+	
 	}
 	if (operation==LOCK_UN)
 	{
 		int endpos;
 		endpos = lseek(fd, 0, SEEK_END);
-	    if  ( _locking( fd, LK_UNLCK, endpos ) != -1 ) return 0;
+		fprintf(stderr,"Groesse %d \n",endpos);
+		HANDLE handle;
+				long a;
+				a=_get_osfhandle(fd);
+				handle=(int *)a;
+				if (UnlockFileEx(handle,0,endpos,0,&overl)!=0) {
+					printf("file unlocked \n");
+					return 0;}
 		else
 		{
-			return 1;
+			return -1;
 		}
 	}
-	return 1;
+	return -1;
 }
 #else
 /*
@@ -369,7 +399,10 @@ tempnam(char *dir, char *pfx)
 /*
 ** CVS Log
 ** $Log: dcompat.cc,v $
-** Revision 1.10  1999-01-06 16:32:33  vorwerk
+** Revision 1.11  1999-01-11 13:06:13  vorwerk
+** Shared and exclusive locking mechanism for Windows with MS Visual C++ added.
+**
+** Revision 1.10  1999/01/06 16:32:33  vorwerk
 ** exclusive lockmechanism for windows added
 **
 ** Revision 1.9  1997/09/18 14:41:26  meichel
