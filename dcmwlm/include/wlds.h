@@ -22,9 +22,9 @@
  *  Purpose: (Partially) abstract class for connecting to an arbitrary data source.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2003-02-17 12:02:03 $
+ *  Update Date:      $Date: 2003-07-02 09:17:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wlds.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,39 +52,272 @@ class DcmSequenceOfItems;
 class WlmDataSource
 {
   protected:
+    /// indicates if the application shall fail on an invalid C-Find RQ message
     OFBool failOnInvalidQuery;
+    /// called AE title
     char *calledApplicationEntityTitle;
+    /// indicates if the application is run in verbose mode or not
     OFBool verbose;
+    /// indicates if the application is run in debug mode or not
     OFBool debug;
+    /// the search mask which is contained in the C-Find RQ message
     DcmDataset *identifiers;
+    /// captures all records that match the specified search mask
     DcmList *objlist;
+    /// list of error elements
     DcmAttributeTag *errorElements;
+    /// list of offending elements
     DcmAttributeTag *offendingElements;
+    /// error comment
     DcmLongString *errorComment;
+    /// indicates if we encountered an unsupported optional key attribute in the search mask
     OFBool foundUnsupportedOptionalKey;
+    /// indicates if a read lock was set on the data source
     OFBool readLockSetOnDataSource;
+    /// stream logging information will be dumped to
     OFConsole *logStream;
+    /// indicates if the expansion of empty sequence attributes shall take place or not
     OFBool noSequenceExpansion;
+    /// returned character set type
     WlmReturnedCharacterSetType returnedCharacterSet;
 
+      /** This function checks if the search mask has a correct format. It returns OFTrue if this
+       *  is the case, OFFalse if this is not the case.
+       *  @param searchMask Contains the search mask.
+       *  @return OFTrue, in case the search mask has a correct format, OFFalse otherwise.
+       */
     OFBool CheckSearchMask( DcmDataset *searchMask );
+
+      /** This function checks if a non-sequence element in the search mask has a correct format.
+       *  Note that if the current element is an unsupported element, the entire element will be re-
+       *  moved from the search mask, since unsupported elements shall not be returned to the caller.
+       *  @param searchMask                       Pointer to the search mask.
+       *  @param invalidMatchingKeyAttributeCount Counter that counts invalid elements in the search mask.
+       *  @param element                          Pointer to the currently processed element.
+       *  @param supSequenceElement               Pointer to the superordinate sequence element of which
+       *                                          the currently processed element is an attribute.
+       */
     void CheckNonSequenceElementInSearchMask( DcmDataset *searchMask, int &invalidMatchingKeyAttributeCount, DcmElement *element, DcmSequenceOfItems *supSequenceElement=NULL );
+
+      /** This function checks if a sequence element in the search mask has a correct format.
+       *  Note that if the current element is an unsupported element, the entire element will be re-
+       *  moved from the search mask, since unsupported elements shall not be returned to the caller.
+       *  Moreover, in case the sequence element in the search mask is supported but empty, this
+       *  function will expand the sequence element by inserting all required attributes into that sequence.
+       *  @param searchMask                       Pointer to the search mask.
+       *  @param invalidMatchingKeyAttributeCount Counter that counts invalid elements in the search mask.
+       *  @param element                          Pointer to the currently processed element.
+       *  @param supSequenceElement               Pointer to the superordinate sequence element of which
+       *                                          the currently processed element is an attribute.
+       */
     void CheckSequenceElementInSearchMask( DcmDataset *searchMask, int &invalidMatchingKeyAttributeCount, DcmElement *element, DcmSequenceOfItems *supSequenceElement=NULL );
+
+      /** According to the 2001 DICOM standard (part 4, section C.2.2.2.6), if a search mask
+       *  contains a sequence attribute which contains no item or a single empty item, all
+       *  attributes from that particular sequence are in fact queried and shall be returned
+       *  by the SCP. This implementation accounts for this specification by inserting a
+       *  corresponding single item with all required attributes into such emtpy sequences.
+       *  This function performs the insertion of the required item and attributes.
+       *  @param element Pointer to the currently processed element.
+       */
     void ExpandEmptySequenceInSearchMask( DcmElement *&element );
+
+      /** This function checks if the given element refers to an attribute which is a supported
+       *  matching key attribute. If this is the case OFTrue is returned, else OFFalse.
+       *  Currently, the following attributes are supported matching key attributes:
+       *  - DCM_ScheduledProcedureStepSequence         (0040,0100)  SQ  R  1
+       *     > DCM_ScheduledStationAETitle             (0040,0001)  AE  R  1
+       *     > DCM_ScheduledProcedureStepStartDate     (0040,0002)  DA  R  1
+       *     > DCM_ScheduledProcedureStepStartTime     (0040,0003)  TM  R  1
+       *     > DCM_Modality                            (0008,0060)  CS  R  1
+       *     > DCM_ScheduledPerformingPhysiciansName   (0040,0006)  PN  R  2
+       *  - DCM_PatientsName                           (0010,0010)  PN  R  1
+       *  - DCM_PatientID                              (0010,0020)  LO  R  1
+       *  The list of these attributes completely covers the required matching key attributes
+       *  which are specified in the 2001 DICOM standard, part 4, Table K.6-1, i.e. all matching
+       *  key attributes which (according to the 2001 DICOM standard) have to be supported by an
+       *  SCP are supported by this SCP.
+       *  @param element            Pointer to the element which shall be checked.
+       *  @param supSequenceElement Pointer to the superordinate sequence element of which
+       *                            the currently processed element is an attribute, or NULL if
+       *                            the currently processed element does not belong to any sequence.
+       *  @return OFTrue, in case the given tag is a supported matching key attribute, OFFalse otherwise.
+       */
     OFBool IsSupportedMatchingKeyAttribute( DcmElement *element, DcmSequenceOfItems *supSequenceElement=NULL );
+
+      /** This function checks if the given element refers to an attribute which is a supported
+       *  return key attribute. If this is the case OFTrue is returned, else OFFalse.
+       *  Currently, the following required return key attributes are supported:
+       *  - DCM_SpecificCharacterSet                              (0008,0005)  CS  O  1
+       *  - DCM_ScheduledProcedureStepSequence                    (0040,0100)  SQ  R  1
+       *     > DCM_ScheduledStationAETitle                        (0040,0001)  AE  R  1
+       *     > DCM_ScheduledProcedureStepStartDate                (0040,0002)  DA  R  1
+       *     > DCM_ScheduledProcedureStepStartTime                (0040,0003)  TM  R  1
+       *     > DCM_Modality                                       (0008,0060)  CS  R  1
+       *     > DCM_ScheduledPerformingPhysiciansName              (0040,0006)  PN  R  2
+       *     > DCM_ScheduledProcedureStepDescription              (0040,0007)  LO  O  1
+       *     > DCM_ScheduledStationName                           (0040,0010)  SH  O  2
+       *     > DCM_ScheduledProcedureStepLocation                 (0040,0011)  SH  O  2
+       *     > DCM_PreMedication                                  (0040,0012)  LO  O  2
+       *     > DCM_ScheduledProcedureStepID                       (0040,0009)  SH  O  1
+       *     > DCM_RequestedContrastAgent                         (0032,1070)  LO  O  2
+       *  - DCM_RequestedProcedureID                              (0040,1001)  SH  O  1
+       *  - DCM_RequestedProcedureDescription                     (0032,1060)  LO  O  1
+       *  - DCM_StudyInstanceUID                                  (0020,000d)  UI  O  1
+       *  - DCM_ReferencedStudySequence                           (0008,1110)  SQ  O  2
+       *     > DCM_ReferencedSOPClassUID                          (0008,1150)  UI  O  1  Note that the standard specifies this attribute as 1. unfortunately, this implementation only supports this attribute as 2. Also note that currently there are two ReferencedSOPClassUID attributes in two different sequences. For these two attributes, always the same values will be returned by this SCP.
+       *     > DCM_ReferencedSOPInstanceUID                       (0008,1155)  UI  O  1  Note that the standard specifies this attribute as 1. unfortunately, this implementation only supports this attribute as 2. Also note that currently there are two ReferencedSOPClassUID attributes in two different sequences. For these two attributes, always the same values will be returned by this SCP.
+       *  - DCM_RequestedProcedurePriority                        (0040,1003)  SH  O  2
+       *  - DCM_PatientTransportArrangements                      (0040,1004)  LO  O  2
+       *  - DCM_AccessionNumber                                   (0008,0050)  SH  O  2
+       *  - DCM_RequestingPhysician                               (0032,1032)  PN  O  2
+       *  - DCM_ReferringPhysiciansName                           (0008,0090)  PN  O  2
+       *  - DCM_AdmissionID                                       (0038,0010)  LO  O  2
+       *  - DCM_CurrentPatientLocation                            (0038,0300)  LO  O  2
+       *  - DCM_ReferencedPatientSequence                         (0008,1120)  SQ  O  2
+       *     > DCM_ReferencedSOPClassUID                          (0008,1150)  UI  O  2  Note that currently there are two ReferencedSOPClassUID attributes in two different sequences. For these two attributes, always the same values will be returned by this SCP.
+       *     > DCM_ReferencedSOPInstanceUID                       (0008,1155)  UI  O  2  Note that currently there are two ReferencedSOPClassUID attributes in two different sequences. For these two attributes, always the same values will be returned by this SCP.
+       *  - DCM_PatientsName                                      (0010,0010)  PN  R  1
+       *  - DCM_PatientID                                         (0010,0020)  LO  R  1
+       *  - DCM_PatientsBirthDate                                 (0010,0030)  DA  O  2
+       *  - DCM_PatientsSex                                       (0010,0040)  CS  O  2
+       *  - DCM_PatientsWeight                                    (0010,1030)  DS  O  2
+       *  - DCM_ConfidentialityConstraintOnPatientDataDescription (0040,3001)  LO  O  2
+       *  - DCM_PatientState                                      (0038,0500)  LO  O  2
+       *  - DCM_PregnancyStatus                                   (0010,21c0)  US  O  2
+       *  - DCM_MedicalAlerts                                     (0010,2000)  LO  O  2
+       *  - DCM_ContrastAllergies                                 (0010,2110)  LO  O  2
+       *  - DCM_SpecialNeeds                                      (0038,0050)  LO  O  2
+       *  The list of these attributes completely covers the required return key attributes which are
+       *  specified in the 2001 DICOM standard, part 4, Table K.6-1, i.e. all return key attributes
+       *  which (according to the 2001 DICOM standard) have to be supported by an SCP are supported by
+       *  this SCP. Additionally, the following optional return key attributes are supported by this SCP:
+       *  - DCM_NamesOfIntendedRecipientsOfResults (from the Requested Procedure Module)    (0040,1010)  PN  O  3
+       *  - DCM_InstitutionName                    (from the Visit Identification Module)   (0008,0080)  LO  O  3
+       *  - DCM_AdmittingDiagnosesDescription      (from the Visit Admission Module)        (0008,1080)  LO  O  3
+       *  - DCM_OtherPatientIDs                    (from the Patient Identification Module) (0010,1000)  LO  O  3
+       *  - DCM_PatientsSize                       (from the Patient Demographic Module)    (0010,1020)  DS  O  3
+       *  - DCM_EthnicGroup                        (from the Patient Demographic Module)    (0010,2160)  SH  O  3
+       *  - DCM_PatientComments                    (from the Patient Demographic Module)    (0010,4000)  LT  O  3
+       *  - DCM_AdditionalPatientHistory           (from the Patient Medical Module)        (0010,21b0)  LT  O  3
+       *  - DCM_LastMenstrualDate                  (from the Patient Medical Module)        (0010,21d0)  DA  O  3
+       *  - DCM_ScheduledProcedureStepSequence
+       *     > DCM_CommentsOnTheScheduledProcedureStep (from the Scheduled Procedure Step Module)  (0040,0400)  LT  O  3
+       *  @param element            Pointer to the element which shall be checked.
+       *  @param supSequenceElement Pointer to the superordinate sequence element of which
+       *                            the currently processed element is an attribute, or NULL if
+       *                            the currently processed element does not belong to any sequence.
+       *  @return OFTrue in case the given tag is a supported return key attribute, OFFalse otherwise.
+       */
     OFBool IsSupportedReturnKeyAttribute( DcmElement *element, DcmSequenceOfItems *supSequenceElement=NULL );
+
+      /** This function removes all elements from member variable objlist. This variable
+       *  will be used to capture all records that match the specified search mask.
+       */
     void ClearObjectList();
-    void ClearDataset( DcmDataset *identifiers );
+
+      /** This function removes all elements from the given DcmDataset object.
+       *  @param idents pointer to object which shall be cleared.
+       */
+    void ClearDataset( DcmDataset *idents );
+
+      /** This function inserts the tag of an offending element into the
+       *  corresponding member variable, unless this tag is already con-
+       *  tained in this variable.
+       *  @param tag The tag that shall be inserted.
+       */
     void PutOffendingElements( DcmTagKey &tag );
+
+      /** This function inserts the tag of an error element into the
+       *  corresponding member variable, without checking if it is already
+       *  contained in this variable.
+       *  @param tag The tag that shall be inserted.
+       */
     void PutErrorElements( DcmTagKey &tag );
+
+      /** This function checks if the passed matching key's value only uses characters
+       *  which are part of its data type's character repertoire. Note that at the moment
+       *  this application supports the following matching key attributes:
+       *  - DCM_ScheduledProcedureStepSequence         (0040,0100)  SQ  R  1
+       *     > DCM_ScheduledStationAETitle             (0040,0001)  AE  R  1
+       *     > DCM_ScheduledProcedureStepStartDate     (0040,0002)  DA  R  1
+       *     > DCM_ScheduledProcedureStepStartTime     (0040,0003)  TM  R  1
+       *     > DCM_Modality                            (0008,0060)  CS  R  1
+       *     > DCM_ScheduledPerformingPhysiciansName   (0040,0006)  PN  R  2
+       *  - DCM_PatientsName                           (0010,0010)  PN  R  1
+       *  - DCM_PatientID                              (0010,0020)  LO  R  1
+       *  As a result, the following data types have to be supported in this function:
+       *  AE, DA, TM, CS, PN and LO. For the correct specification of these datatypes
+       *  2001 DICOM standard, part 5, section 6.2, table 6.2-1.
+       *  @param elem Element which shall be checked.
+       *  @return OFTrue in case the given element's value only uses characters which are part of
+       *          the element's data type's character repertoire. OFFalse in case the given element's value
+       *          does not only use characters which are part of the element's data type's character repertoire.
+       */
     OFBool CheckMatchingKey( DcmElement *elem );
+
+      /** This function returns OFTrue if all the characters of s can be found
+       *  in the string charset.
+       *  @param s String which shall be checked.
+       *  @param charset Possible character set for s. (valid pointer expected.)
+       *  @return This function returns OFTrue if all the characters of s can be found
+       *          in the string charset. If s equals NULL, OFTrue will be returned.
+       */
     OFBool ContainsOnlyValidCharacters( const char *s, const char *charset );
+
+      /** This function checks if the given value is a valid date or date range.
+       *  @param value The value which shall be checked.
+       *  @return OFTrue in case the given value is a valid date or date range, OFFalse otherwise.
+       */
     OFBool IsValidDateOrDateRange( const char *value );
+
+      /** This function checks if the given date value is valid.
+       *  According to the 2001 DICOM standard, part 5, Table 6.2-1, a date
+       *  value is either in format "yyyymmdd" or in format "yyyy.mm.dd",
+       *  so that e.g. "19840822" represents August 22, 1984.
+       *  @param value The value which shall be checked.
+       *  @return OFTrue in case the Date is valid, OFFalse otherwise.
+       */
     OFBool IsValidDate( const char *value );
+
+      /** This function checks if the given value is a valid time or time range.
+       *  @param value The value which shall be checked.
+       *  @return OFTrue in case the given value is a valid time or time range, OFFalse otherwise.
+       */
     OFBool IsValidTimeOrTimeRange( const char *value );
+
+      /** This function checks if the given time value is valid.
+       *  According to the 2001 DICOM standard, part 5, Table 6.2-1, a time
+       *  value is either in format "hhmmss.fracxx" or "hh:mm:ss.fracxx" where
+       *  - hh represents the hour (0-23)
+       *  - mm represents the minutes (0-59)
+       *  - ss represents the seconds (0-59)
+       *  - fracxx represents the fraction of a second in millionths of seconds (000000-999999)
+       *  Note that one or more of the components mm, ss, or fracxx may be missing as
+       *  long as every component to the right of a missing component is also missing.
+       *  If fracxx is missing, the "." character in front of fracxx is also missing.
+       *  @param value The value which shall be checked.
+       *  @return OFTrue in case the time is valid, OFFalse otherwise.
+       */
     OFBool IsValidTime( const char *value );
+
+      /** This function returns the value of the given DICOM string element (attribute).
+       *  If the element does not refer to a string attribute, a NULL pointer is returned.
+       *  @param elem The DICOM element.
+       *  @return The value of the given DICOM (string) element or NULL.
+       */
     char *GetStringValue( DcmElement *elem );
+
+      /** This function dumps the given information on a stream.
+       *  Used for dumping information in normal, debug and verbose mode.
+       *  @param message The message to dump.
+       */
     void DumpMessage( const char *message );
+
+      /** This function makes a copy of value without leading and trailing blanks.
+       *  @param value The source string.
+       *  @return A copy of the given string without leading and trailing blanks.
+       */
     char *DeleteLeadingAndTrailingBlanks( const char *value );
 
       /** Protected undefined copy-constructor. Shall never be called.
@@ -205,57 +438,48 @@ class WlmDataSource
     DcmLongString *GetErrorComments();
 
       /** Set value in a member variable in a derived class.
-       *  @param value The value to set.
        */
     virtual void SetDbDsn( const char * /*value*/ ) {}
 
       /** Set value in a member variable in a derived class.
-       *  @param value The value to set.
        */
     virtual void SetDbUserName( const char * /*value*/ ) {}
 
       /** Set value in a member variable in a derived class.
-       *  @param value The value to set.
        */
     virtual void SetDbUserPassword( const char * /*value*/ ) {}
 
       /** Set value in a member variable in a derived class.
-       *  @param value The value to set.
        */
     virtual void SetCfgFileMatchRecords( const char * /*value*/ ) {}
 
       /** Set value in a member variable in a derived class.
-       *  @param value The value to set.
        */
     virtual void SetCfgFileSelectValues( const char * /*value*/ ) {}
 
       /** Set value in a member variable in a derived class.
-       *  @param value The value to set.
        */
     virtual void SetDatabaseType( WlmDatabaseType /*value*/ ) {}
 
       /** Set value in a member variable in a derived class.
-       *  @param value The value to set.
+       *  @param int The value to set.
        */
     virtual void SetSerialNumber( const int /*value*/ ) {}
 
       /** Set value in a member variable in a derived class.
-       *  @param value The value to set.
+       *  @param int The value to set.
        */
     virtual void SetInstitutionId( const unsigned int /*value*/ ) {}
 
       /** Set value in a member variable in a derived class.
-       *  @param value The value to set.
        */
     virtual void SetDfPath( const char * /*value*/ ) {}
 
       /** Set value in a member variable in a derived class.
-       *  @param value The value to set.
        */
     virtual void SetCreateNullvalues( OFBool /*value*/ ) {}
 
       /** Set value in a member variable in a derived class.
-       *  @param value The value to set.
        */
     virtual void SetPfFileName( const char * /*value*/ ) {}
 };
@@ -265,7 +489,10 @@ class WlmDataSource
 /*
 ** CVS Log
 ** $Log: wlds.h,v $
-** Revision 1.11  2003-02-17 12:02:03  wilkens
+** Revision 1.12  2003-07-02 09:17:55  wilkens
+** Updated documentation to get rid of doxygen warnings.
+**
+** Revision 1.11  2003/02/17 12:02:03  wilkens
 ** Made some minor modifications to be able to modify a special variant of the
 ** worklist SCP implementation (wlmscpki).
 **

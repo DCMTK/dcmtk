@@ -23,9 +23,9 @@
  *           management service class providers based on the file system.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-12-16 11:08:28 $
+ *  Update Date:      $Date: 2003-07-02 09:17:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/wlcefs.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,24 +47,43 @@ class OFCommandLine;
 class WlmConsoleEngineFileSystem
 {
   protected:
+    /// contains application's id string
     char rcsid[200];
+    /// returned character set type
     WlmReturnedCharacterSetType opt_returnedCharacterSet;
+    /// path to database files
     const char *opt_dfPath;
+    /// port on which this application is listening
     OFCmdUnsignedInt opt_port;
+    /// indicates if incoming associations shall be refused or not
     OFBool opt_refuseAssociation;
+    /// indicates if incoming associations shall be refused if no implementation class uid is specified
     OFBool opt_rejectWithoutImplementationUID;
+    /// indicates how long the application shall sleep after a find
     OFCmdUnsignedInt opt_sleepAfterFind;
+    /// indicates how long the application shall sleep during a find
     OFCmdUnsignedInt opt_sleepDuringFind;
+    /// max PDU size
     OFCmdUnsignedInt opt_maxPDU;
+    /// preferred network transfer syntax
     E_TransferSyntax opt_networkTransferSyntax;
+    /// indicates if this application is run in verbose mode
     OFBool opt_verbose;
+    /// indicates if this application is run in debug mode
     OFBool opt_debug;
+    /// indicates if find shall fail on an invalid query or not
     OFBool opt_failInvalidQuery;
+    /// indicates if this application is run in single process mode or not
     OFBool opt_singleProcess;
+    /// indicates how many associations can be accepted at the same time
     int opt_maxAssociations;
+    /// indicates if an expansion of empty sequences in C-Find RQ messages shall take place or not
     OFBool opt_noSequenceExpansion;
+    /// instance of console application class (for handling command line arguments)
     OFConsoleApplication *app;
+    /// instance of command line class (for handling command line arguments)
     OFCommandLine *cmd;
+    /// data source which shall be queried on incoming C-Find RQ messages
     WlmDataSource *dataSource;
 
       /** This function dumps the given information on a stream.

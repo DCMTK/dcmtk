@@ -23,9 +23,9 @@
  *           class provider engines.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-12-16 11:08:36 $
+ *  Update Date:      $Date: 2003-07-02 09:17:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wlmactmg.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,35 +47,121 @@ class OFConsole;
 class WlmActivityManager
 {
   protected:
+    /// data source connection object
     WlmDataSource *dataSource;
+    /// port on which the application is listening
     OFCmdUnsignedInt opt_port;
+    /// indicates if the application shall refuse any association
     OFBool opt_refuseAssociation;
+    /// indicates if the application shall reject associations without implementation class uids
     OFBool opt_rejectWithoutImplementationUID;
+    /// indicates how long the application shall sleep after a find
     OFCmdUnsignedInt opt_sleepAfterFind;
+    /// indicates how long the application shall sleep during a find
     OFCmdUnsignedInt opt_sleepDuringFind;
+    /// max pdu size
     OFCmdUnsignedInt opt_maxPDU;
+    /// preferred network transfer syntax
     E_TransferSyntax opt_networkTransferSyntax;
+    /// indicates if the application is run in verbose mode or not
     OFBool opt_verbose;
+    /// indicates if the application is run in debug mode or not
     OFBool opt_debug;
+    /// indicates if the application shall fail on an invalid C-Find RQ message
     OFBool opt_failInvalidQuery;
+    /// indicates if the application is run in single process mode or not
     OFBool opt_singleProcess;
+    /// maximum number of association for non-single process mode
     int opt_maxAssociations;
+    /// array of supported abstract syntaxes
     char **supportedAbstractSyntaxes;
+    /// number of array fields
     int numberOfSupportedAbstractSyntaxes;
+    /// stream log information will be dumped to
     OFConsole *logStream;
+    /// table of processes for non-single process mode
     WlmProcessTableType processTable;
 
+      /** This function dumps the given information on a stream. Used for dumping information in normal, debug and verbose mode.
+       *  @param message The message to dump.
+       */
     void DumpMessage( const char *message );
+
+      /** This function takes care of receiving, negotiating and accepting/refusing an
+       *  association request. Additionally, it handles the request the association
+       *  requesting application transmits after a connection isd established.
+       *  @param net Contains network parameters.
+       */
     OFCondition WaitForAssociation( T_ASC_Network *net );
+
+      /** This function takes care of removing items referring to (terminated) subprocess
+       *  from the table which stores all subprocess information. Three different versions
+       *  for three different platforms are implemented.
+       */
     void CleanChildren();
+
+      /** This function negotiates a presentation context which will be used by this application
+       *  and the other DICOM appliation that requests an association.
+       *  @param assoc The association (network connection to another DICOM application).
+       */
     OFCondition NegotiateAssociation( T_ASC_Association *assoc );
-    void AddProcessToTable( int pid, T_ASC_Association * assoc );
+
+      /** This function adds a process to the table that stores process information.
+       *  @param pid   the process id of the sub-process which was just started.
+       *  @param assoc The association (network connection to another DICOM application).
+       */
+    void AddProcessToTable( int pid, T_ASC_Association *assoc );
+
+      /** This function counts all child processes which are still referenced in the process table.
+       *  @return The current amount of child processes.
+       */
     int CountChildProcesses();
+
+      /** This function removes one particular item from the table which stores all subprocess
+       *  information. The item which shall be deleted will be identified by its process id.
+       *  @param pid process id.
+       */
     void RemoveProcessFromTable( int pid );
+
+      /** This function takes care of refusing an assocation request.
+       *  @param assoc  The association (network connection to another DICOM application).
+       *  @param reason The reason why the association request will be refused.
+       */
     void RefuseAssociation( T_ASC_Association **assoc, WlmRefuseReasonType reason );
+
+      /** This function takes care of handling the other DICOM application's request. After
+       *  having accomplished all necessary steps, the association will be dropped and destroyed.
+       *  @param assoc The association (network connection to another DICOM application).
+       */
     void HandleAssociation( T_ASC_Association *assoc );
+
+      /** This function takes care of handling the other DICOM application's request.
+       *  @param assoc The association (network connection to another DICOM application).
+       *  @return An OFCondition value 'cond' for which 'cond.bad()' will always be set
+       *          indicating that either some kind of error occurred, or that the peer aborted
+       *          the association (DUL_PEERABORTEDASSOCIATION), or that the peer requested the
+       *          release of the association (DUL_PEERREQUESTEDRELEASE).
+       */
     OFCondition ReceiveAndHandleCommands( T_ASC_Association *assoc );
+
+      /** Having received a DIMSE C-ECHO-RQ message, this function takes care of sending a
+       *  DIMSE C-ECHO-RSP message over the network connection.
+       *  @param assoc  The association (network connection to another DICOM application).
+       *  @param req    The DIMSE C-ECHO-RQ message that was received.
+       *  @param presId The ID of the presentation context which was specified in the PDV
+       *                which contained the DIMSE command.
+       *  @return OFCondition value denoting success or error.
+       */
     OFCondition HandleEchoSCP( T_ASC_Association *assoc, T_DIMSE_C_EchoRQ *req, T_ASC_PresentationContextID presId );
+
+      /** This function processes a DIMSE C-FIND-RQ commmand that was
+       *  received over the network connection.
+       *  @param assoc   The association (network connection to another DICOM application).
+       *  @param request The DIMSE C-FIND-RQ message that was received.
+       *  @param presID  The ID of the presentation context which was specified in the PDV
+       *                 which contained the DIMSE command.
+       *  @return OFCondition value denoting success or error.
+       */
     OFCondition HandleFindSCP( T_ASC_Association *assoc, T_DIMSE_C_FindRQ *request, T_ASC_PresentationContextID presID );
 
       /** Protected undefined copy-constructor. Shall never be called.
@@ -126,7 +212,10 @@ class WlmActivityManager
 /*
 ** CVS Log
 ** $Log: wlmactmg.h,v $
-** Revision 1.10  2002-12-16 11:08:36  wilkens
+** Revision 1.11  2003-07-02 09:17:55  wilkens
+** Updated documentation to get rid of doxygen warnings.
+**
+** Revision 1.10  2002/12/16 11:08:36  wilkens
 ** Added missing #include "osconfig.h" to certain files.
 **
 ** Revision 1.9  2002/12/12 16:48:35  wilkens

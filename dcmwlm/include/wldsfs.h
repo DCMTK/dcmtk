@@ -22,9 +22,9 @@
  *  Purpose: Class for connecting to a file-based data source.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-12-16 11:08:34 $
+ *  Update Date:      $Date: 2003-07-02 09:17:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wldsfs.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,16 +48,51 @@ class DcmElement;
 class WlmDataSourceFileSystem : public WlmDataSource
 {
   protected:
+    /// manager for file system interaction
     WlmFileSystemInteractionManager *fileSystemInteractionManager;
+    /// array of matching datasets
     DcmDataset **matchingDatasets;
+    /// number of array fields
     unsigned long numOfMatchingDatasets;
+    /// path to database files
     char *dfPath;
+    /// handle to the read lock file
     int handleToReadLockFile;
 
+      /** This function sets a read lock on the LOCKFILE in the directory
+       *  that is specified through dfPath and calledApplicationEntityTitle.
+       *  @return 0 in case the read lock has been set successfully, 1 otherwise.
+       */
     int SetReadlock();
+
+      /** This function releases a read lock on the LOCKFILE in the given directory.
+       *  @return 0 in case the read lock has been released successfully, 1 otherwise.
+       */
     int ReleaseReadlock();
-    void DetermineMatchingKeyAttributeValues( const char **&matchingKeyValues, unsigned long &numOfMatchingKeyValues );
+
+      /** This function takes care of handling a certain non-sequence element whithin
+       *  the structure of a certain result dataset. This function assumes that all
+       *  elements in the result dataset are supported. In detail, a value for the
+       *  current element with regard to the currently processed matching record will
+       *  be requested from the fileSystemInteractionManager, and this value will be
+       *  set in the element.
+       *  @param element Pointer to the currently processed element.
+       *  @param idx     Index of the matching record (identifies this record).
+       */
     void HandleNonSequenceElementInResultDataset( DcmElement *element, unsigned long idx );
+
+      /** This function takes care of handling a certain sequence element whithin the
+       *  structure of a certain result dataset. This function assumes that all elements
+       *  in the result dataset are supported. It also assumes that there are no sequence
+       *  elements with length == 0 in the result dataset, and that each sequence element
+       *  contains one single non-empty item. In case there is more than one item in a
+       *  sequence element, the sequence element in the result data set will completely
+       *  be left unchanged. In detail, a value for the current element with regard to
+       *  the currently processed matching record will be requested from the fileSystem-
+       *  InteractionManager and this value will be set in the element.
+       *  @param element Pointer to the currently processed element.
+       *  @param idx     Index of the matching record (identifies this record).
+       */
     void HandleSequenceElementInResultDataset( DcmElement *element, unsigned long idx );
 
       /** Protected undefined copy-constructor. Shall never be called.
@@ -137,7 +172,10 @@ class WlmDataSourceFileSystem : public WlmDataSource
 /*
 ** CVS Log
 ** $Log: wldsfs.h,v $
-** Revision 1.9  2002-12-16 11:08:34  wilkens
+** Revision 1.10  2003-07-02 09:17:55  wilkens
+** Updated documentation to get rid of doxygen warnings.
+**
+** Revision 1.9  2002/12/16 11:08:34  wilkens
 ** Added missing #include "osconfig.h" to certain files.
 **
 ** Revision 1.8  2002/12/09 13:40:49  joergr

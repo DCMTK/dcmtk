@@ -22,9 +22,9 @@
  *  Purpose: Type definitions and macros for dcmwlm project.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-12-16 11:08:36 $
+ *  Update Date:      $Date: 2003-07-02 09:17:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wltypdef.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,8 +36,7 @@
 
 #include "osconfig.h"
 
-  /** Data source status types
-   */
+  /// Data source status types
 enum WlmDataSourceStatusType
 {
   WLM_REFUSED_OUT_OF_RESOURCES = 0xa700,
@@ -49,8 +48,7 @@ enum WlmDataSourceStatusType
   WLM_PENDING_WARNING = 0xff01
 };
 
-  /** Data source types
-   */
+  /// Data source types
 enum WlmDataSourceType
 {
   DATA_SOURCE_IS_DATABASE,
@@ -58,46 +56,52 @@ enum WlmDataSourceType
   DATA_SOURCE_IS_PKI_FILE
 };
 
-  /** Database types
-   */
+  /// Database types
 enum WlmDatabaseType
 {
   WLM_DATABASE_TYPE_UNKNOWN,
   WLM_DATABASE_ORACLE
 };
 
-  /** Returned Character Set types
-   */
+  /// Returned Character Set types
 enum WlmReturnedCharacterSetType
 {
   RETURN_NO_CHARACTER_SET,
   RETURN_CHARACTER_SET_ISO_IR_100
 };
 
-  // name of lockfile for worklist management based on file system
+  /// name of lockfile for worklist management based on file system
 #define LOCKFILENAME "lockfile"
 
-  // structure for non-single process mode
+  /// structure for non-single process mode
 struct WlmProcessSlotType
 {
+  /// name of peer
   DIC_NODENAME peerName;
+  /// calling AE title
   DIC_AE callingAETitle;
+  /// called AE title
   DIC_AE calledAETitle;
+  /// process id
   int processId;
+  /// start time
   time_t startTime;
+  /// indicator if process has storage ability
   OFBool hasStorageAbility;
+  /// pointer to next link
   WlmProcessSlotType *next;
 };
 
-  // structure for non-single process mode
+  /// structure for non-single process mode
 struct WlmProcessTableType
 {
+  /// counter
   int pcnt;
+  /// list of processes
   WlmProcessSlotType *plist;
 };
 
-  /** Reason for refusing association types
-   */
+  /// Reason for refusing association types
 enum WlmRefuseReasonType
 {
   WLM_TOO_MANY_ASSOCIATIONS,
@@ -108,7 +112,7 @@ enum WlmRefuseReasonType
   WLM_NO_IC_UID
 };
 
-  // const objects for error objects below
+  /// const objects for error objects below
 const OFConditionConst WLM_ECC_InsufficientPortPrivileges              ( OFM_dcmwlm,  1, OF_error, "Insufficient privileges to listen to port.");
 const OFConditionConst WLM_ECC_InitializationOfNetworkConnectionFailed ( OFM_dcmwlm,  2, OF_error, "Initialization of network connection failed.");
 const OFConditionConst WLM_ECC_TerminationOfNetworkConnectionFailed    ( OFM_dcmwlm,  3, OF_error, "Termination of network connection failed.");
@@ -130,8 +134,7 @@ const OFCondition WLM_EC_DatabaseStatementConfigFilesNotExistent   ( WLM_ECC_Dat
   /// error: Cannot connect to data source.
 const OFCondition WLM_EC_CannotConnectToDataSource                 ( WLM_ECC_CannotConnectToDataSource );
 
-
-  // number of currently supported matching key attributes
+  /// number of currently supported matching key attributes
 #define NUMBER_OF_SUPPORTED_MATCHING_KEY_ATTRIBUTES 7
 
 
@@ -140,7 +143,10 @@ const OFCondition WLM_EC_CannotConnectToDataSource                 ( WLM_ECC_Can
 /*
 ** CVS Log
 ** $Log: wltypdef.h,v $
-** Revision 1.6  2002-12-16 11:08:36  wilkens
+** Revision 1.7  2003-07-02 09:17:55  wilkens
+** Updated documentation to get rid of doxygen warnings.
+**
+** Revision 1.6  2002/12/16 11:08:36  wilkens
 ** Added missing #include "osconfig.h" to certain files.
 **
 ** Revision 1.5  2002/08/12 10:56:09  wilkens
