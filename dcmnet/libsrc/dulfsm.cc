@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: meichel $, $Date: 1997-07-04 09:24:55 $
+** Last Update:		$Author: meichel $, $Date: 1997-07-04 11:44:35 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.11 $
+** Revision:		$Revision: 1.12 $
 ** Status:		$State: Exp $
 */
 
@@ -60,6 +60,12 @@
 #include <errno.h>
 #ifdef HAVE_STDLIB_H
 #include <stdlib.h>
+#endif
+#ifdef HAVE_SYS_SELECT_H
+#include <sys/select.h>
+#endif
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>
 #endif
 #include <signal.h>
 #include <time.h>
@@ -4070,7 +4076,13 @@ DULPRV_translateAssocReq(unsigned char *buffer,
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.11  1997-07-04 09:24:55  meichel
+** Revision 1.12  1997-07-04 11:44:35  meichel
+** Configure now also tests <sys/select.h> if available
+**   when searching for a select() prototype.
+**   Updated files using select() to include <sys/select.h> and
+**   <sys/types.h> if available (needed for AIX).
+**
+** Revision 1.11  1997/07/04 09:24:55  meichel
 ** Simplified some sizeof() constructs to avoid compiler warnings
 **   on the IBM xlC compiler (AIX 3.x).
 **

@@ -67,10 +67,10 @@
 **	Module Prefix: ASC_
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-04-15 16:18:50 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1997-07-04 11:44:31 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:	$Revision: 1.11 $
+** CVS/RCS Revision:	$Revision: 1.12 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -90,6 +90,12 @@
 #include <string.h>
 #ifdef HAVE_STDARG_H
 #include <stdarg.h>
+#endif
+#ifdef HAVE_SYS_SELECT_H
+#include <sys/select.h>
+#endif
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>
 #endif
 #include <errno.h>
 
@@ -1805,7 +1811,13 @@ ASC_dropAssociation(T_ASC_Association * association)
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
-** Revision 1.11  1997-04-15 16:18:50  hewett
+** Revision 1.12  1997-07-04 11:44:31  meichel
+** Configure now also tests <sys/select.h> if available
+**   when searching for a select() prototype.
+**   Updated files using select() to include <sys/select.h> and
+**   <sys/types.h> if available (needed for AIX).
+**
+** Revision 1.11  1997/04/15 16:18:50  hewett
 ** The network function ASC_destroyAssociation now only destroys the
 ** association parameters if they are non-NULL.
 **

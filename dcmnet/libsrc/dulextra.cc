@@ -54,9 +54,9 @@
 **	Supplementary DUL functions.
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1996-12-03 15:29:48 $
+** Update Date:		$Date: 1997-07-04 11:44:34 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dulextra.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -69,6 +69,12 @@
 #include <string.h>
 #ifdef HAVE_STDLIB_H
 #include <stdlib.h>
+#endif
+#ifdef HAVE_SYS_SELECT_H
+#include <sys/select.h>
+#endif
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>
 #endif
 #include <errno.h>
 
@@ -200,7 +206,13 @@ DUL_associationWaiting(DUL_NETWORKKEY * callerNet, int timeout)
 /*
 ** CVS Log
 ** $Log: dulextra.cc,v $
-** Revision 1.5  1996-12-03 15:29:48  meichel
+** Revision 1.6  1997-07-04 11:44:34  meichel
+** Configure now also tests <sys/select.h> if available
+**   when searching for a select() prototype.
+**   Updated files using select() to include <sys/select.h> and
+**   <sys/types.h> if available (needed for AIX).
+**
+** Revision 1.5  1996/12/03 15:29:48  meichel
 ** Added support for HP-UX 9.05 systems using GCC 2.7.2.1
 **
 ** Revision 1.4  1996/06/20 07:35:50  hewett

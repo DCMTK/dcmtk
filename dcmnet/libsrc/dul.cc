@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: meichel $, $Date: 1996-12-03 15:29:47 $
+** Last Update:		$Author: meichel $, $Date: 1997-07-04 11:44:33 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.7 $
+** Revision:		$Revision: 1.8 $
 ** Status:		$State: Exp $
 */
 
@@ -71,6 +71,12 @@
 #endif
 #ifdef HAVE_STDLIB_H
 #include <stdlib.h>
+#endif
+#ifdef HAVE_SYS_SELECT_H
+#include <sys/select.h>
+#endif
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>
 #endif
 #include <signal.h>
 #include <time.h>
@@ -2234,7 +2240,13 @@ clearPresentationContext(LST_HEAD ** l)
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.7  1996-12-03 15:29:47  meichel
+** Revision 1.8  1997-07-04 11:44:33  meichel
+** Configure now also tests <sys/select.h> if available
+**   when searching for a select() prototype.
+**   Updated files using select() to include <sys/select.h> and
+**   <sys/types.h> if available (needed for AIX).
+**
+** Revision 1.7  1996/12/03 15:29:47  meichel
 ** Added support for HP-UX 9.05 systems using GCC 2.7.2.1
 **
 ** Revision 1.6  1996/09/27 08:38:40  hewett
