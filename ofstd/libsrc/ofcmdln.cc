@@ -21,10 +21,9 @@
  *
  *  Purpose: Template class for command line arguments (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-07-09 13:58:04 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofcmdln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-05 10:35:24 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -174,7 +173,6 @@ private:
  *  implementation  *
  *------------------*/
 
-
 OFCommandLine::OFCommandLine()
   : ValidOptionList(),
     ValidParamList(),
@@ -296,7 +294,7 @@ OFBool OFCommandLine::addOption(const char *longOpt,
                     ofConsole.unlockCerr();
                     return OFFalse;
                 }
-                iter++;
+                ++iter;
             }
         }
 #endif
@@ -416,6 +414,21 @@ OFBool OFCommandLine::addParam(const char *param,
 }
 
 
+OFBool OFCommandLine::gotoFirstArg()
+{
+    ArgumentIterator = ArgumentList.begin();
+    return ArgumentIterator != ArgumentList.end();
+}
+
+
+OFBool OFCommandLine::gotoNextArg()
+{
+    if (ArgumentIterator != ArgumentList.end())
+        return ++ArgumentIterator != ArgumentList.end();
+    return OFFalse;
+}
+
+
 OFBool OFCommandLine::getCurrentArg(const char *&arg)
 {
     if (ArgumentIterator != ArgumentList.end())
@@ -434,15 +447,7 @@ OFBool OFCommandLine::getCurrentArg(OFCmdString &arg)
 }
 
 
-OFBool OFCommandLine::getLastArg(const char *&arg)
-{
-    if (!ArgumentList.empty())
-        return strlen(arg = (ArgumentList.back()).c_str()) > 0;
-    return OFFalse;
-}
-
-
-OFBool OFCommandLine::getLastArg(OFCmdString &arg)
+OFBool OFCommandLine::getLastArg(OFString &arg)
 {
     if (!ArgumentList.empty())
         return (arg = ArgumentList.back()).length() > 0;
@@ -469,7 +474,7 @@ OFBool OFCommandLine::findParam(int pos,
             ArgumentIterator = (*pos_iter)->ParamIter;
             if (--pos == 0)
                 return OFTrue;
-            pos_iter++;
+            ++pos_iter;
         }
     }
     return OFFalse;
@@ -654,7 +659,7 @@ OFBool OFCommandLine::findOption(const char *longOpt,
             (*iter)->Checked = OFTrue;
             break;
         }
-        iter++;
+        ++iter;
     }
     if (iter == last)
     {
@@ -674,7 +679,7 @@ OFBool OFCommandLine::findOption(const char *longOpt,
             ((pos < 0) && (diropt == 0)))                              // no 'direct' option ...
                 return OFFalse;
         pos_iter = (*param_iter)->OptionIter;                          // first option in front of parameter
-        pos_iter++;                                                    // goto next to facilitate loop condition
+        ++pos_iter;                                                    // goto next to facilitate loop condition
     }
     while (pos_iter != pos_first)
     {
@@ -695,12 +700,26 @@ OFBool OFCommandLine::findOption(const char *longOpt,
 }
 
 
+OFBool OFCommandLine::gotoFirstOption()
+{
+    OptionPosIterator = OptionPosList.begin();
+    return OptionPosIterator != OptionPosList.end();
+}
+
+
+OFBool OFCommandLine::gotoNextOption()
+{
+    if (OptionPosIterator != OptionPosList.end())
+        return ++OptionPosIterator != OptionPosList.end();
+    return OFFalse;
+}
+
+
 OFBool OFCommandLine::getCurrentOption(const char *&opt)
 {
     if (OptionPosIterator != OptionPosList.end())
         return strlen(opt = (**OptionPosIterator).c_str()) > 0;
     return OFFalse;
-
 }
 
 
@@ -709,7 +728,6 @@ OFBool OFCommandLine::getCurrentOption(OFCmdString &opt)
     if (OptionPosIterator != OptionPosList.end())
         return (opt = **OptionPosIterator).length() > 0;
     return OFFalse;
-
 }
 
 
@@ -887,7 +905,7 @@ const OFCmdOption *OFCommandLine::findCmdOption(const OFString &option) const
     {
         if (((*iter)->LongOption == option) || ((*iter)->ShortOption == option))
             return *iter;
-        iter++;
+        ++iter;
     }
     return NULL;
 }
@@ -999,7 +1017,7 @@ OFCommandLine::E_ParseStatus OFCommandLine::checkParamCount()
                     break;
             }
         }
-        iter++;
+        ++iter;
     }
     if ((getArgCount() == 0) || ((getArgCount() == 1) && hasExclusiveOption()))
         return PS_NoArguments;
@@ -1156,7 +1174,7 @@ void OFCommandLine::getSyntaxString(OFString &syntaxStr) const
                         break;
                 }
             }
-            iter++;
+            ++iter;
         }
     }
 }
@@ -1234,7 +1252,7 @@ void OFCommandLine::getOptionString(OFString &optionStr) const
                 optionStr += str;
                 optionStr += "\n";
             }
-            iter++;
+            ++iter;
         }
     }
 }
@@ -1255,7 +1273,7 @@ void OFCommandLine::getParamString(OFString &paramStr) const
         {
             if ((*iter)->ParamName.length() > columnSize)           // determine maximum column width
                 columnSize = (*iter)->ParamName.length();
-            iter++;
+            ++iter;
         }
         iter = ValidParamList.begin();                              // reset iterator
         while (iter != last)
@@ -1276,7 +1294,7 @@ void OFCommandLine::getParamString(OFString &paramStr) const
                 paramStr += str;
                 paramStr += "\n";
             }
-            iter++;
+            ++iter;
         }
     }
 }
@@ -1290,7 +1308,7 @@ OFBool OFCommandLine::getMissingParam(OFString &param)
         const OFListIterator(OFCmdParam *) last = ValidParamList.end();
         int i = getParamCount();
         while ((iter != last) && (i-- > 0))
-            iter++;
+            ++iter;
         if (iter != last)
         {
             param = (*iter)->ParamName;
@@ -1433,7 +1451,10 @@ void OFCommandLine::getStatusString(const E_ValueStatus status,
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.cc,v $
- * Revision 1.33  2003-07-09 13:58:04  meichel
+ * Revision 1.34  2003-12-05 10:35:24  joergr
+ * Added support for iterating over command line arguments and options.
+ *
+ * Revision 1.33  2003/07/09 13:58:04  meichel
  * Adapted type casts to new-style typecast operators defined in ofcast.h
  *
  * Revision 1.32  2003/06/12 13:25:57  joergr
