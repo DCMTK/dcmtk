@@ -110,7 +110,7 @@ be created with the dump2dcm utility from a script like the following example:
 Individual attributes of each file sent can be modified or supplemented
 using the "-k key" option.  For example the command:
 
-    findscu -k 0010,0010="HEWETT*" caesar 5678 patqry.dcm
+    findscu -P -k 0010,0010="HEWETT*" caesar 5678 patqry.dcm
 
 will, when sent to the SCP caesar at TCP/IP port 5678, cause any
 PatientsName attribute in patqry.dcm to have the value "HEWETT*". If such
