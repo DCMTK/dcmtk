@@ -10,10 +10,10 @@
 ** Implementation of the class DcmItem
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-04-24 12:12:18 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-04-30 16:32:50 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.23 $
+** CVS/RCS Revision:	$Revision: 1.24 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -636,7 +636,6 @@ E_Condition DcmItem::readTagAndLength(DcmStream & inStream,
     // Tag ist gelesen
     bytesRead = 4;
     DcmTag newTag(groupTag, elementTag );
-    nxtobj = newTag.getEVR();	    // VR aus Tag bestimmen
 
     if (xferSyn.isExplicitVR() && 
 	nxtobj != EVR_na) 	// Delimitation Items do not have a VR
@@ -645,11 +644,16 @@ E_Condition DcmItem::readTagAndLength(DcmStream & inStream,
 	vrstr[2] = '\0';
 	inStream.ReadBytes(vrstr, 2);  // 2 Byte Laenge:VR als string
 	DcmVR vr(vrstr);	    // class DcmVR
-	nxtobj = vr.getEVR();
-	newTag.setVR(nxtobj);     // VR in newTag anpassen, falls Element
+	newTag.setVR(vr);     // VR in newTag anpassen, falls Element
 	// nicht fehlerhaft kodiert ist.
 	bytesRead += 2;
     }
+
+    if (xferSyn.isEncapsulated() && newTag.getXTag() == DCM_PixelData) 
+	newTag.setVR(EVR_pixelSQ);
+
+    nxtobj = newTag.getEVR();	    // VR aus Tag bestimmen
+
 
     if ((l_error = inStream.Avail(calcHeaderLength(nxtobj, xfer)-bytesRead))
 	!= EC_Normal)
@@ -673,7 +677,8 @@ E_Condition DcmItem::readTagAndLength(DcmStream & inStream,
     else if (xferSyn.isExplicitVR())
     {
 	if (nxtobj == EVR_OB || nxtobj == EVR_OW 
-	    || nxtobj == EVR_SQ || nxtobj == EVR_UN)
+	    || nxtobj == EVR_SQ || nxtobj == EVR_UN || 
+	    nxtobj == EVR_pixelSQ)
 	{
 	    Uint16 reserved;
 	    inStream.ReadBytes(&reserved, 2);  // 2 Byte Laenge
@@ -1847,7 +1852,10 @@ DcmItem::findLong(const DcmTagKey& xtag,
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.23  1997-04-24 12:12:18  hewett
+** Revision 1.24  1997-04-30 16:32:50  andreas
+** - Corrected Bug for reading of encapsulated pixel sequences
+**
+** Revision 1.23  1997/04/24 12:12:18  hewett
 ** Fixed DICOMDIR generation bug affecting the use of Unknown VR
 ** attributes (the file offsets were not being computed correctly).
 **
