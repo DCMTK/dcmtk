@@ -1,6 +1,21 @@
 DCMTK FAQ - Frequently Asked Questions
 
 ----
+1998.06.29
+
+Q: I am trying to compile DCMTK on a HP-UX 10 machine with the HP C++ compiler.
+   Compilation fails with the error message
+   "CC: sorry, not implemented: cannot expand value-returning inline ... 
+   with call of non-value-returning inline ..."
+
+A: You should use the compiler options "+d +a1" to prevent the
+   HP compiler from attempting to inline code.
+   Before using "configure", you might type:
+     setenv CXX "CC +d +a1"
+   
+   Reported by Shashikala Duraiswami <shash@alexis.com>.
+   
+----
 1998.01.27
 
 Q: I am trying to compile DCMTK on a SGI IRIX 6.x machine with gcc 2.7.2.
