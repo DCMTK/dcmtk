@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-23 11:45:24 $
- *  CVS/RCS Revision: $Revision: 1.41 $
+ *  Update Date:      $Date: 1999-02-24 20:23:05 $
+ *  CVS/RCS Revision: $Revision: 1.42 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -136,7 +136,7 @@ DVInterface::DVInterface(const char *config_file)
         {
             if (df) delete df;
 #ifdef DEBUG
-            cerr << "warning: unable to load monitor characterics file '" << displayFunctionFile.c_str() << "', ignoring." << endl;
+            cerr << "warning: unable to load monitor characterics file '" << displayFunctionFile << "', ignoring." << endl;
 #endif
         }        
     }
@@ -231,46 +231,41 @@ E_Condition DVInterface::loadPState(const char *studyUID,
         DcmDataset *dataset = pstate->getDataset();
         if (dataset) status = newState->read(*dataset); else status = EC_CorruptedData;
     } 
-    if (status!=EC_Normal)
+    if (status == EC_Normal)
     {
-        delete pstate;
-        delete newState;
-        return status;
-    }
+        // access the first image reference in the presentation state
+        OFString ofstudyUID, ofseriesUID, ofsopclassUID, ofinstanceUID, offrames;
+        status = newState->getImageReference(0, ofstudyUID, ofseriesUID, ofsopclassUID, ofinstanceUID, offrames);
     
-    // access the first image reference in the presentation state
-    OFString ofstudyUID, ofseriesUID, ofsopclassUID, ofinstanceUID, offrames;
-    status = newState->getImageReference(0, ofstudyUID, ofseriesUID, ofsopclassUID, ofinstanceUID, offrames);
-    
-    // determine the filename of the referenced image
-    const char *imagefilename = NULL;
-    if (EC_Normal == status)
-    { 
-        imagefilename = getFilename(ofstudyUID.c_str(), ofseriesUID.c_str(), ofinstanceUID.c_str());
-    }
-    
-    // load the image file and attach it
-    DcmFileFormat *fimage = NULL; 
-    if (imagefilename && (status == EC_Normal))
-    {
-        if ((EC_Normal == (status = loadFileFormat(imagefilename, fimage)))&&(fimage))
-        {
-            DcmDataset *dataset = pstate->getDataset();
-            if (dataset)
+        if (EC_Normal == status)
+        { 
+            // determine the filename of the referenced image
+            const char *imagefilename = NULL;
+            imagefilename = getFilename(ofstudyUID.c_str(), ofseriesUID.c_str(), ofinstanceUID.c_str());
+            
+            // load the image file and attach it
+            if (imagefilename)
             {
-                status = newState->attachImage(fimage, OFFalse);
-                if (EC_Normal == status) exchangeImageAndPState(newState, fimage, pstate);
-            } else status = EC_CorruptedData;
-        } 
+                DcmFileFormat *fimage = NULL; 
+                if ((EC_Normal == (status = loadFileFormat(imagefilename, fimage)))&&(fimage))
+                {
+                    DcmDataset *dataset = pstate->getDataset();
+                    if (dataset)
+                    {
+                        status = newState->attachImage(fimage, OFFalse);
+                        if (EC_Normal == status) exchangeImageAndPState(newState, fimage, pstate);
+                    } else status = EC_CorruptedData;
+                }
+                if (status!=EC_Normal)
+                    delete fimage;
+            } else status = EC_IllegalCall;     // no valid image filename
+        }
     }
-    
     if (status!=EC_Normal)
     {
-        delete fimage;
         delete pstate;
         delete newState;
-    }
-    
+    }    
     return status;
 }
 
@@ -280,11 +275,11 @@ E_Condition DVInterface::loadPState(const char *pstName,
 {
     E_Condition status = EC_IllegalCall;
     DcmFileFormat *pstate = NULL;
-    DcmFileFormat *image = NULL;
+    DcmFileFormat *image = pDicomImage;     // default: do not replace image if image filename is NULL
     DVPresentationState *newState = new DVPresentationState(displayFunction);
     if (newState==NULL) return EC_MemoryExhausted;
     if (((status = loadFileFormat(pstName, pstate)) == EC_Normal) &&
-        ((status = loadFileFormat(imgName, image)) == EC_Normal))
+        ((imgName == NULL) || ((status = loadFileFormat(imgName, image)) == EC_Normal)))
     {
         if ((pstate)&&(image))
         {
@@ -397,7 +392,7 @@ E_Condition DVInterface::exchangeImageAndPState(DVPresentationState *newState, D
     if (image==NULL) return EC_IllegalCall;
     if (pState) delete pState;
     if (pStoredPState) delete pStoredPState;
-    if (pDicomImage) delete pDicomImage;
+    if (pDicomImage != image) delete pDicomImage;       // only delete if different
     if (pDicomPState) delete pDicomPState;
     pState = newState;
     pStoredPState = NULL;
@@ -450,6 +445,70 @@ E_Condition DVInterface::resetPresentationState()
 }
 
 
+Uint32 DVInterface::getNumberOfPStates()
+{
+    if (createPStateCache())
+    {
+        DVInstanceCache::ItemStruct *instance = getInstanceStruct();
+        if ((instance != NULL) && (!instance->PState))
+            return instance->List.size();
+    }
+    return 0;
+}
+
+
+E_Condition DVInterface::selectPState(Uint32 idx)
+{
+    if (createPStateCache())
+    {
+        DVInstanceCache::ItemStruct *instance = getInstanceStruct();
+        if ((instance != NULL) && (!instance->PState))
+        {
+            OFListIterator(DVInstanceCache::ItemStruct *) iter = instance->List.begin();
+            OFListIterator(DVInstanceCache::ItemStruct *) last = instance->List.end();
+            while (iter != last)
+            {
+                if (idx == 0)
+                {
+                    DVInstanceCache::ItemStruct *pstate = (*iter);
+                    if (pstate != NULL)
+                        return loadPState(pstate->Filename.c_str());
+                }
+                idx--;
+                ++iter;
+            }
+        }
+    }
+    return EC_IllegalCall;
+}
+
+
+const char *DVInterface::getPStateDescription(Uint32 idx)
+{
+    if (createPStateCache())
+    {
+        DVInstanceCache::ItemStruct *instance = getInstanceStruct();
+        if ((instance != NULL) && (!instance->PState))
+        {
+            OFListIterator(DVInstanceCache::ItemStruct *) iter = instance->List.begin();
+            OFListIterator(DVInstanceCache::ItemStruct *) last = instance->List.end();
+            while (iter != last)
+            {
+                if (idx == 0)
+                {
+                    DVInstanceCache::ItemStruct *pstate = (*iter);
+                    if (pstate != NULL)
+                        return pstate->Description.c_str();
+                }
+                idx--;
+                ++iter;
+            }
+        }
+    }
+    return NULL;
+}
+
+    
 E_Condition DVInterface::disablePresentationState()
 {
     E_Condition status = EC_IllegalCall;
@@ -496,9 +555,9 @@ E_Condition DVInterface::enablePresentationState()
 DVStudyCache::ItemStruct *DVInterface::getStudyStruct(const char *studyUID,
                                                       const char *seriesUID)
 {
-    if (studyUID)
+    if (createIndexCache())
     {
-        if (createIndexCache())
+        if (studyUID)
         {
             if (idxCache.isElem(studyUID))
             {
@@ -506,7 +565,8 @@ DVStudyCache::ItemStruct *DVInterface::getStudyStruct(const char *studyUID,
                 if ((seriesUID == NULL) || (study->List.isElem(seriesUID)))
                     return study;
             }
-        }
+        } else
+            return idxCache.getItem();          // current study
     }
     return NULL;
 }
@@ -516,7 +576,7 @@ DVSeriesCache::ItemStruct *DVInterface::getSeriesStruct(const char *studyUID,
                                                         const char *seriesUID,
                                                         const char *instanceUID)
 {
-    if (studyUID && seriesUID)
+    if ((studyUID && seriesUID) || (!studyUID && !seriesUID))
     {
         DVStudyCache::ItemStruct *study = getStudyStruct(studyUID, seriesUID);
         if (study != NULL)
@@ -528,6 +588,20 @@ DVSeriesCache::ItemStruct *DVInterface::getSeriesStruct(const char *studyUID,
                     return series;
             }
         }
+    }
+    return NULL;
+}
+
+
+DVInstanceCache::ItemStruct *DVInterface::getInstanceStruct(const char *studyUID,
+                                                            const char *seriesUID,
+                                                            const char *instanceUID)
+{
+    if ((studyUID && seriesUID && instanceUID) || (!studyUID && !seriesUID && !instanceUID))
+    {
+        DVSeriesCache::ItemStruct *series = getSeriesStruct(studyUID, seriesUID, instanceUID);
+        if (series != NULL)
+            return series->List.getItem();
     }
     return NULL;
 }
@@ -547,7 +621,6 @@ const char *DVInterface::getFilename(const char *studyUID,
 E_Condition DVInterface::lockDatabase()
 {
     if (pHandle) return EC_Normal; // may be called multiple times  
-
     DB_Handle *handle = NULL;
     if (DB_createHandle(getDatabaseFolder(), PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &handle) == DB_NORMAL)
     {
@@ -710,6 +783,78 @@ OFBool DVInterface::createIndexCache()
 }
 
 
+OFBool DVInterface::createPStateCache()
+{
+    DVStudyCache::ItemStruct *study = getStudyStruct();
+    if (study != NULL)
+    {
+        DVSeriesCache::ItemStruct *series = study->List.getItem();
+        if (series != NULL)
+        {
+            DVInstanceCache::ItemStruct *instance = series->List.getItem();
+            if ((instance != NULL) && (!instance->PState) && (!instance->Checked))
+            {
+                if (instance->List.empty())
+                {
+                    OFString seriesUID = series->UID;
+                    OFString instanceUID = instance->UID;
+                    if (study->List.gotoFirst())
+                    {
+                        do { /* for all series */
+                            if (study->List.getPState())
+                            {
+                                DVSeriesCache::ItemStruct *series = study->List.getItem();
+                                if (series != NULL)
+                                {
+                                    if (series->List.gotoFirst())
+                                    {
+                                        do { /* for all instances */
+                                            if (series->List.getPState())
+                                            {
+                                                DcmFileFormat *pstate = NULL;
+                                                if ((loadFileFormat(series->List.getFilename(), pstate) == EC_Normal) && pstate)
+                                                {
+                                                    DcmDataset *dataset = pstate->getDataset();
+                                                    DVPSReferencedSeries_PList plist;
+                                                    if (dataset && (plist.read(*dataset) == EC_Normal) && plist.isValid())
+                                                    {
+                                                        if (plist.findImageReference(seriesUID.c_str(), instanceUID.c_str()))
+                                                        {
+                                                            DVInstanceCache::ItemStruct *reference = series->List.getItem();
+                                                            if (reference != NULL)
+                                                            {
+                                                                DcmStack stack;
+                                                                if (dataset->search(DCM_PresentationDescription, stack, ESM_fromHere, OFFalse) == EC_Normal)
+                                                                {
+                                                                    char *value = NULL;
+                                                                    if ((*((DcmLongString *)(stack.top()))).getString(value) == EC_Normal)
+                                                                        reference->Description = value;
+                                                                }
+                                                                instance->List.push_back(reference);
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                delete pstate;
+                                            }
+                                        } while (series->List.gotoNext());
+                                    }
+                                    series->List.reset();                    // set iterator to old position
+                                }
+                            }
+                        } while (study->List.gotoNext());
+                    }
+                    study->List.reset();                                     // set iterator to old position
+                }
+                instance->Checked = OFTrue;                                  // do not check twice
+                return OFTrue;
+            }
+        }
+    }
+    return OFFalse;
+}
+
+    
 void DVInterface::clearIndexRecord(IdxRecord &record,
                                    int &recpos)
 {
@@ -753,7 +898,7 @@ Uint32 DVInterface::getNumberOfStudies()
 
 Uint32 DVInterface::getNumberOfSeries()
 {
-    DVStudyCache::ItemStruct *study = idxCache.getItem();
+    DVStudyCache::ItemStruct *study = getStudyStruct();
     if (study != NULL)
         return study->List.getCount();
     return 0;
@@ -762,13 +907,9 @@ Uint32 DVInterface::getNumberOfSeries()
 
 Uint32 DVInterface::getNumberOfInstances()
 {
-    DVStudyCache::ItemStruct *study = idxCache.getItem();
-    if (study != NULL)
-    {
-        DVSeriesCache::ItemStruct *series = study->List.getItem();
-        if (series != NULL)
-            return series->List.getCount();
-    }
+    DVSeriesCache::ItemStruct *series = getSeriesStruct();
+    if (series != NULL)
+        return series->List.getCount();
     return 0;
 }
 
@@ -800,7 +941,7 @@ E_Condition DVInterface::selectStudy(Uint32 idx)
 
 E_Condition DVInterface::selectSeries(Uint32 idx)
 {
-    DVStudyCache::ItemStruct *study = idxCache.getItem();
+    DVStudyCache::ItemStruct *study = getStudyStruct();
     if (study != NULL)
     {
         if (study->List.gotoItem(idx))
@@ -822,20 +963,16 @@ E_Condition DVInterface::selectSeries(Uint32 idx)
 
 E_Condition DVInterface::selectInstance(Uint32 idx)
 {
-    DVStudyCache::ItemStruct *study = idxCache.getItem();
-    if (study != NULL)
+    DVSeriesCache::ItemStruct *series = getSeriesStruct();
+    if (series != NULL)
     {
-        DVSeriesCache::ItemStruct *series = study->List.getItem();
-        if (series != NULL)
+        if (series->List.gotoItem(idx))
         {
-            if (series->List.gotoItem(idx))
-            {
-                if (readIndexRecord(series->List.getPos(), idxRec, &idxRecPos))
-                    return EC_Normal;
-            }
+            if (readIndexRecord(series->List.getPos(), idxRec, &idxRecPos))
+                return EC_Normal;
         }
     }
-    return EC_Normal;
+    return EC_IllegalCall;
 }
 
 
@@ -882,7 +1019,7 @@ OFBool DVInterface::isPresentationStateSeries()
 
 const char *DVInterface::getStudyUID()
 {
-    return idxCache.getUID();
+    return idxRec.StudyInstanceUID;
 }
 
 
@@ -1061,17 +1198,18 @@ E_Condition DVInterface::instanceReviewed(const char *studyUID,
         clearIndexRecord(record, recpos);
         if (readIndexRecord(series->List.getPos(), record, &recpos))
         {
+            OFBool wasNew = OFTrue;
             if (lockExclusive() == EC_Normal)
             {
-                OFBool wasNew = newInstancesReceived();
+                wasNew = newInstancesReceived();
                 record.hstat = DVIF_objectIsNotNew;
                 lseek(pHandle->pidx, (long)(SIZEOF_STUDYDESC + recpos * SIZEOF_IDXRECORD), SEEK_SET);
                 write(pHandle->pidx, (char *)&record, SIZEOF_IDXRECORD);
                 lseek(pHandle->pidx, 0L, SEEK_SET);
-                if (!wasNew)
-                    resetDatabaseReferenceTime();
             }
             unlockExclusive();
+            if (!wasNew)
+                resetDatabaseReferenceTime();
             return EC_Normal;
         }
     }
@@ -1121,9 +1259,10 @@ E_Condition DVInterface::deleteStudy(const char *studyUID)
     if (study != NULL)
     {
         E_Condition result = EC_IllegalCall;
+        OFBool wasNew = OFTrue;
         if (lockExclusive() == EC_Normal)
         {
-            OFBool wasNew = newInstancesReceived();
+            wasNew = newInstancesReceived();
             if (study->List.gotoFirst())
             {
                 StudyDescRecord *study_desc = (StudyDescRecord *)malloc(SIZEOF_STUDYDESC);
@@ -1157,10 +1296,10 @@ E_Condition DVInterface::deleteStudy(const char *studyUID)
                     free(study_desc);
                 }
             }
-            if (!wasNew)
-                resetDatabaseReferenceTime();
         }
         unlockExclusive();
+        if (!wasNew)
+            resetDatabaseReferenceTime();
         return result;
     }
     return EC_IllegalCall;
@@ -1174,9 +1313,10 @@ E_Condition DVInterface::deleteSeries(const char *studyUID,
     if (series != NULL)
     {
         E_Condition result = EC_IllegalCall;
+        OFBool wasNew = OFTrue;
         if (lockExclusive() == EC_Normal)
         {
-            OFBool wasNew = newInstancesReceived();
+            wasNew = newInstancesReceived();
             if (series->List.gotoFirst())
             {
                 StudyDescRecord *study_desc = (StudyDescRecord *)malloc(SIZEOF_STUDYDESC);
@@ -1203,10 +1343,10 @@ E_Condition DVInterface::deleteSeries(const char *studyUID,
                     free(study_desc);
                 }
             }
-            if (!wasNew)
-                resetDatabaseReferenceTime();
         }
         unlockExclusive();
+        if (!wasNew)
+            resetDatabaseReferenceTime();
         return result;
     }
     return EC_IllegalCall;
@@ -1222,9 +1362,10 @@ E_Condition DVInterface::deleteInstance(const char *studyUID,
     if (series != NULL)
     {
         E_Condition result = EC_IllegalCall;
+        OFBool wasNew = OFTrue;
         if (lockExclusive() == EC_Normal)
         {
-            OFBool wasNew = newInstancesReceived();
+            wasNew = newInstancesReceived();
             DB_IdxRemove(pHandle, series->List.getPos());
             StudyDescRecord *study_desc = (StudyDescRecord *)malloc(SIZEOF_STUDYDESC);
             if (study_desc != NULL)
@@ -1251,10 +1392,10 @@ E_Condition DVInterface::deleteInstance(const char *studyUID,
                 }
                 deleteImageFile(series->List.getFilename());
             }
-            if (!wasNew)
-                resetDatabaseReferenceTime();
         }
         unlockExclusive();
+        if (!wasNew)
+            resetDatabaseReferenceTime();
         return result;
     }
     return EC_IllegalCall;
@@ -1891,7 +2032,17 @@ void DVInterface::cleanChildren()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.41  1999-02-23 11:45:24  joergr
+ *  Revision 1.42  1999-02-24 20:23:05  joergr
+ *  Added methods to get a list of presentation states referencing the
+ *  currently selected image.
+ *  Added support for exchanging current presentation state (load from file)
+ *  without deleting the current image.
+ *  Report an error when loading a presentation state and the referenced image
+ *  file is absent.
+ *  Removed bug concerning newInstancesReceived (Windows NT behaves different to
+ *  Unix when closing/unlocking a file).
+ *
+ *  Revision 1.41  1999/02/23 11:45:24  joergr
  *  Added check whether new instances have been received before resetting
  *  database reference time (affects delete and instance reviewed methods).
  *
