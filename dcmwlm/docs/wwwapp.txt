@@ -169,7 +169,7 @@ current status of the system using a DICOM Worklist SCU.
 PROBLEMS
 
 Should   you  experience   problems,   please  contact  us  at 
-dicom-bugs@offis.uni-oldenburg.de.
+dicom-bugs@offis.de.
 Please include  the following  information with  your request:
 * Problem description
 * Version of Source Code used
