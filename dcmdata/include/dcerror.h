@@ -22,9 +22,9 @@
  *  Purpose: Error handling, codes and strings
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:22:22 $
+ *  Update Date:      $Date: 2001-10-12 10:42:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcerror.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,6 +73,8 @@ extern const OFCondition EC_RepresentationNotFound;
 extern const OFCondition EC_CannotChangeRepresentation;
 
 
+#ifndef OFCONDITION_STRICT_MODE
+
 // for backward compatibility with existing software
 typedef OFCondition E_Condition;
 
@@ -81,13 +83,21 @@ typedef OFCondition E_Condition;
  */
 extern const char *dcmErrorConditionToString(OFCondition cond);
 
+#endif
+
 
 #endif /* !DCERROR_H */
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.h,v $
-** Revision 1.10  2001-09-25 17:22:22  meichel
+** Revision 1.11  2001-10-12 10:42:28  meichel
+** Introduced conditional define OFCONDITION_STRICT_MODE in which the
+**   compatibility options related to the transition to OFCondition are disabled:
+**   No OFCondition default constructor, no typedefs for E_Condition, CONDITION,
+**   no macros for SUCCESS and condition aliases.
+**
+** Revision 1.10  2001/09/25 17:22:22  meichel
 ** Enabled E_Condition and dcmErrorConditionToString() for backward
 **   compatibility with existing code.
 **

@@ -22,9 +22,9 @@
  *  Purpose: class OFCondition and helper classes
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:07:24 $
+ *  Update Date:      $Date: 2001-10-12 10:42:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofcond.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,7 +67,7 @@ public:
   }
 
   /// copy constructor
-  OFConditionBase(const OFConditionBase& arg)
+  OFConditionBase(const OFConditionBase& /* arg */)
   {
   }
 
@@ -324,7 +324,12 @@ public:
    *     to exist for the lifetime of this (and every derived) object 
    *     since it is only referenced but not copied.
    */
+#ifdef OFCONDITION_STRICT_MODE
+  // in strict mode OFCondition has no default constructor.
+  OFCondition(const OFConditionConst& base)
+#else
   OFCondition(const OFConditionConst& base = ECC_Normal)
+#endif
   : theCondition(&base)
   {
     assert(theCondition);
@@ -467,7 +472,13 @@ extern const OFCondition EC_MemoryExhausted;
 /*
  * CVS/RCS Log:
  * $Log: ofcond.h,v $
- * Revision 1.2  2001-09-25 17:07:24  meichel
+ * Revision 1.3  2001-10-12 10:42:26  meichel
+ * Introduced conditional define OFCONDITION_STRICT_MODE in which the
+ *   compatibility options related to the transition to OFCondition are disabled:
+ *   No OFCondition default constructor, no typedefs for E_Condition, CONDITION,
+ *   no macros for SUCCESS and condition aliases.
+ *
+ * Revision 1.2  2001/09/25 17:07:24  meichel
  * Disabled implicit conversion to bool, added default constructor
  *   to class OFCondition.
  *
