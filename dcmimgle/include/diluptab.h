@@ -22,9 +22,9 @@
  *  Purpose: DicomLookupTable (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-23 11:34:34 $
+ *  Update Date:      $Date: 1999-02-03 17:27:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diluptab.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -36,23 +36,10 @@
 #define __DILUPTAB_H
 
 #include "osconfig.h"
-#include "dctypes.h"
 #include "dctagkey.h"
-#include "ofstring.h"
 
+#include "dibaslut.h"
 #include "diobjcou.h"
-#include "diutils.h"
-
-#include <stddef.h>
-
-
-/*---------------------*
- *  macro definitions  *
- *---------------------*/
-
-#define MIN_TABLE_ENTRY_SIZE 8
-#define MAX_TABLE_ENTRY_SIZE 16
-#define MAX_TABLE_ENTRY_COUNT 65536
 
 
 /*------------------------*
@@ -69,7 +56,9 @@ class DiDocument;
  *  class declaration  *
  *---------------------*/
 
-class DiLookupTable : public DiObjectCounter
+class DiLookupTable
+  : public DiBaseLUT,
+    public DiObjectCounter
 {
 
  public:
@@ -96,55 +85,6 @@ class DiLookupTable : public DiObjectCounter
 
     virtual ~DiLookupTable();
 
-    inline Uint32 getCount() const
-        { return Count; }
-    
-    inline Uint16 getBits() const
-        { return Bits; }
-
-    inline Uint32 getFirstEntry(const Uint32 = 0) const
-        { return FirstEntry; }
-
-    inline Sint32 getFirstEntry(const Sint32) const
-        { return (Sint16)FirstEntry; }
-
-    inline Uint32 getLastEntry(const Uint32 = 0) const
-        { return FirstEntry + Count - 1; }
-
-    inline Sint32 getLastEntry(const Sint32) const
-        { return (Sint32)((Sint16)FirstEntry) + Count - 1; }
-
-    inline Uint16 getValue(const Uint32 pos) const
-        { return Data[pos - FirstEntry]; }
-
-    inline Uint16 getValue(const Sint32 pos) const
-        { return Data[pos - (Sint32)((Sint16)FirstEntry)]; }
-
-    inline Uint16 getFirstValue() const
-        { return Data[0]; }
-
-    inline Uint16 getLastValue() const
-        { return Data[Count - 1]; }
-
-    inline Uint16 getMinValue() const
-        { return MinValue; }
-
-    inline Uint16 getMaxValue() const
-        { return MaxValue; }
-
-    inline Uint32 getAbsMaxRange() const
-        { return maxval(Bits, 0); }
-
-    inline int isValid() const
-        { return Valid; }
-
-    inline const char *getExplanation() const
-    {
-        if (!Explanation.empty())
-            return Explanation.c_str();
-        return NULL;
-    }
-
 
  protected:
 
@@ -163,28 +103,6 @@ class DiLookupTable : public DiObjectCounter
     void checkBits(const Uint16 bits,
                    const Uint16 right,
                    const Uint16 wrong = 0);
-
-
- private:
-
-    Uint32 Count;
-    Uint16 FirstEntry;
-    Uint16 Bits;
-    
-    Uint16 MinValue;
-    Uint16 MaxValue;
-
-    int Valid;
-
-    OFString Explanation;
-
-    const Uint16 *Data;             // points to lookup table data
-    Uint16 *DataBuffer;
-
- // --- declarations to avoid compiler warnings
- 
-    DiLookupTable(const DiLookupTable &);
-    DiLookupTable &operator=(const DiLookupTable &);
 };
 
 
@@ -195,7 +113,11 @@ class DiLookupTable : public DiObjectCounter
  *
  * CVS/RCS Log:
  * $Log: diluptab.h,v $
- * Revision 1.5  1998-12-23 11:34:34  joergr
+ * Revision 1.6  1999-02-03 17:27:23  joergr
+ * Added base class for look-up tables (moved main functionality of class
+ * DiLookupTable to DiBaseLUT).
+ *
+ * Revision 1.5  1998/12/23 11:34:34  joergr
  * Changed behaviour of getLabel/Description/Explanation() methods: return
  * NULL if string empty, no empty string "".
  *
