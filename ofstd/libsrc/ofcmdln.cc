@@ -21,10 +21,10 @@
  *
  *  Purpose: Template class for command line arguments (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-06-12 13:25:57 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-07-09 13:58:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofcmdln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,7 @@
 
 #include "ofcmdln.h"
 #include "ofstd.h"
+#include "ofcast.h"
 
 #ifdef HAVE_WINDOWS_H
 #include <windows.h>
@@ -1093,7 +1094,7 @@ OFCommandLine::E_ParseStatus OFCommandLine::parseLine(int argCount,
                 const OFCmdOption *opt = findCmdOption(*argIter);
                 if (opt != NULL)
                 {
-                    ArgumentList.push_back((OFString)(opt->LongOption)); // convert argument to long format
+                    ArgumentList.push_back(OFstatic_cast(OFString, opt->LongOption)); // convert argument to long format
                     OptionPosList.push_back(--ArgumentList.end());
                     if (opt->ExclusiveOption)                            // check for an "exclusive" option
                         ExclusiveOption = OFTrue;
@@ -1432,7 +1433,10 @@ void OFCommandLine::getStatusString(const E_ValueStatus status,
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.cc,v $
- * Revision 1.32  2003-06-12 13:25:57  joergr
+ * Revision 1.33  2003-07-09 13:58:04  meichel
+ * Adapted type casts to new-style typecast operators defined in ofcast.h
+ *
+ * Revision 1.32  2003/06/12 13:25:57  joergr
  * Added support for so-called command files ("@filename") which can be used to
  * summarize command line options and parameters.
  * Introduced macro OFListConstIterator() to support STL const_iterators.

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002, OFFIS
+ *  Copyright (C) 2002-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Class for time functions (Source)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-12-04 10:40:50 $
+ *  Update Date:      $Date: 2003-07-09 13:58:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/oftime.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -249,7 +249,7 @@ OFBool OFTime::setTimeZone(const signed int hour,
                            const unsigned int minute)
 {
     /* convert hour and minute values to one time zone value */
-    const double timeZone = (hour < 0) ? (double)hour - (double)minute / 60 : (double)hour + (double)minute / 60;
+    const double timeZone = (hour < 0) ? OFstatic_cast(double, hour) - OFstatic_cast(double, minute) / 60 : OFstatic_cast(double, hour) + OFstatic_cast(double, minute) / 60;
     /* only change the currently stored value if the new time zone is valid */
     return setTimeZone(timeZone);
 }
@@ -264,11 +264,11 @@ OFBool OFTime::setTimeInSeconds(const double seconds,
     if (normalize || ((seconds >= 0) && (seconds < 86400)))
     {
         /* first normalize the value first to the valid range of [0.0,86400.0[ */
-        const double normalSeconds = (normalize) ? seconds + (signed long)(seconds / 86400) * 86400 : seconds;
+        const double normalSeconds = (normalize) ? seconds + OFstatic_cast(signed long, seconds / 86400) * 86400 : seconds;
         /* compute time from given number of seconds since "00:00:00" */
-        const unsigned int newHour = (unsigned int)(normalSeconds / 3600);
-        const unsigned int newMinute = (unsigned int)((normalSeconds - (double)newHour * 3600) / 60);
-        const double newSecond = normalSeconds - (double)newHour * 3600 - (double)newMinute * 60;
+        const unsigned int newHour = OFstatic_cast(unsigned int, normalSeconds / 3600);
+        const unsigned int newMinute = OFstatic_cast(unsigned int, (normalSeconds - OFstatic_cast(double, newHour) * 3600) / 60);
+        const double newSecond = normalSeconds - OFstatic_cast(double, newHour) * 3600 - OFstatic_cast(double, newMinute) * 60;
         status = setTime(newHour, newMinute, newSecond, timeZone);
     }
     return status;
@@ -284,11 +284,11 @@ OFBool OFTime::setTimeInHours(const double hours,
     if (normalize || ((hours >= 0) && (hours < 24)))
     {
         /* first normalize the value to the valid range of [0.0,24.0[ */
-        const double normalHours = (normalize) ? hours + (signed long)(hours / 24) * 24 : hours;
+        const double normalHours = (normalize) ? hours + OFstatic_cast(signed long, hours / 24) * 24 : hours;
         /* compute time from given number of hours since "00:00:00" */
-        const unsigned int newHour = (unsigned int)normalHours;
-        const unsigned int newMinute = (unsigned int)((normalHours - (double)newHour) * 60);
-        const double newSecond = (normalHours - (double)newHour) * 3600 - (double)newMinute * 60;
+        const unsigned int newHour = OFstatic_cast(unsigned int, normalHours);
+        const unsigned int newMinute = OFstatic_cast(unsigned int, (normalHours - OFstatic_cast(double, newHour)) * 60);
+        const double newSecond = (normalHours - OFstatic_cast(double, newHour)) * 3600 - OFstatic_cast(double, newMinute) * 60;
         status = setTime(newHour, newMinute, newSecond, timeZone);
     }
     return status;
@@ -333,7 +333,7 @@ OFBool OFTime::setCurrentTime(const time_t &tt)
         if (gt != NULL)
         {
             /* retrieve and store the time zone */
-            TimeZone = (lt->tm_hour - gt->tm_hour) + (double)(lt->tm_min - gt->tm_min) / 60;
+            TimeZone = (lt->tm_hour - gt->tm_hour) + OFstatic_cast(double, lt->tm_min - gt->tm_min) / 60;
         } else {
             /* could not retrieve the time zone */
             TimeZone = 0;
@@ -342,11 +342,11 @@ OFBool OFTime::setCurrentTime(const time_t &tt)
         /* Windows: no microseconds available, use milliseconds instead */
         SYSTEMTIME timebuf;
         GetSystemTime(&timebuf);
-        Second += (double)timebuf.wMilliseconds / 1000;
+        Second += OFstatic_cast(double, timebuf.wMilliseconds) / 1000;
 #else /* Unix */
         struct timeval tv;
         if (gettimeofday(&tv, NULL) == 0)
-            Second += (double)tv.tv_usec / 1000000;
+            Second += OFstatic_cast(double, tv.tv_usec) / 1000000;
 #endif
         /* report that current system time has been set */
         status = OFTrue;
@@ -376,19 +376,19 @@ double OFTime::getSecond() const
 unsigned int OFTime::getIntSecond() const
 {
     /* return integral value of seconds */
-    return (unsigned int)Second;
+    return OFstatic_cast(unsigned int, Second);
 }
 
 
 unsigned int OFTime::getMilliSecond() const
 {
-    return (unsigned int)((Second - (unsigned int)Second) * 1000);
+    return OFstatic_cast(unsigned int, (Second - OFstatic_cast(unsigned int, Second)) * 1000);
 }
 
 
 unsigned int OFTime::getMicroSecond() const
 {
-    return (unsigned int)((Second - (unsigned int)Second) * 1000000);
+    return OFstatic_cast(unsigned int, (Second - OFstatic_cast(unsigned int, Second)) * 1000000);
 }
 
 
@@ -417,10 +417,10 @@ double OFTime::getTimeInSeconds(const unsigned int hour,
                                 const OFBool normalize)
 {
     /* compute number of seconds since 00:00:00 */
-    double result = ((double)(hour - timeZone) * 60 + (double)minute) * 60 + second;
+    double result = (OFstatic_cast(double, hour - timeZone) * 60 + OFstatic_cast(double, minute)) * 60 + second;
     /* normalize the result to the range [0.0,86400.0[ */
     if (normalize)
-        result -= (unsigned long)(result / 86400) * 86400;
+        result -= OFstatic_cast(unsigned long, result / 86400) * 86400;
     return result;
 }
 
@@ -432,10 +432,10 @@ double OFTime::getTimeInHours(const unsigned int hour,
                               const OFBool normalize)
 {
     /* compute number of hours since 00:00:00 (incl. fraction of hours) */
-    double result = (double)hour - timeZone + ((double)minute + second / 60) / 60;
+    double result = OFstatic_cast(double, hour) - timeZone + (OFstatic_cast(double, minute) + second / 60) / 60;
     /* normalize the result to the range [0.0,24.0[ */
     if (normalize)
-        result -= (unsigned long)(result / 24) * 24;
+        result -= OFstatic_cast(unsigned long, result / 24) * 24;
     return result;
 }
 
@@ -500,10 +500,10 @@ OFBool OFTime::getISOFormattedTime(OFString &formattedTime,
             } else {
                 /* format: HH:MM:SS*/
                 if (showDelimiter)
-                    sprintf(strchr(buf, 0), ":%02u", (unsigned int)Second);
+                    sprintf(strchr(buf, 0), ":%02u", OFstatic_cast(unsigned int, Second));
                 /* format: HHMMSS */
                 else
-                    sprintf(strchr(buf, 0), "%02u", (unsigned int)Second);
+                    sprintf(strchr(buf, 0), "%02u", OFstatic_cast(unsigned int, Second));
             }
         }
         if (showTimeZone)
@@ -511,8 +511,8 @@ OFBool OFTime::getISOFormattedTime(OFString &formattedTime,
             /* convert time zone from hours and fraction of hours to hours and minutes */
             const char zoneSign = (TimeZone < 0) ? '-' : '+';
             const double zoneAbs = (TimeZone < 0) ? -TimeZone : TimeZone;
-            const unsigned int zoneHour = (unsigned int)zoneAbs;
-            const unsigned int zoneMinute = (unsigned int)((zoneAbs - zoneHour) * 60);
+            const unsigned int zoneHour = OFstatic_cast(unsigned int, zoneAbs);
+            const unsigned int zoneMinute = OFstatic_cast(unsigned int, (zoneAbs - zoneHour) * 60);
             /* format: ...+HH:MM or -HH:MM */
             if (showDelimiter)
                 sprintf(strchr(buf, 0), "%c%02u:%02u", zoneSign, zoneHour, zoneMinute);
@@ -563,7 +563,10 @@ ostream& operator<<(ostream& stream, const OFTime &timeVal)
  *
  * CVS/RCS Log:
  * $Log: oftime.cc,v $
- * Revision 1.7  2002-12-04 10:40:50  meichel
+ * Revision 1.8  2003-07-09 13:58:04  meichel
+ * Adapted type casts to new-style typecast operators defined in ofcast.h
+ *
+ * Revision 1.7  2002/12/04 10:40:50  meichel
  * Changed toolkit to use OFStandard::ftoa instead of sprintf for all
  *   double to string conversions that are supposed to be locale independent
  *

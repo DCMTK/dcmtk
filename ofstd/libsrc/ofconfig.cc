@@ -23,8 +23,8 @@
  *    classes: OFConfigFileNode
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-05-12 12:54:55 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2003-07-09 13:58:04 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,6 +33,7 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "ofconfig.h"
+#include "ofcast.h"
 
 #define INCLUDE_CSTRING
 #define INCLUDE_CCTYPE
@@ -81,7 +82,7 @@ OFBool OFConfigFileCursor::section_valid(unsigned int level) const
   if (level <= OFConfigFile_MaxLevel)
   {
     result = OFTrue;
-    for (int i = OFConfigFile_MaxLevel; i >= (int)level; i--)
+    for (int i = OFConfigFile_MaxLevel; i >= OFstatic_cast(int, level); i--)
       result = result && (ptr[i] != NULL);
   }
   return result;
@@ -196,7 +197,7 @@ OFBool OFConfigFile::get_bool_value(OFBool defaultvalue)
   for (size_t i=0; i<len; i++)
   {
     c = pstring[i];
-    if ((c>='a') && (c <= 'z')) ostring += (char)(toupper(c));
+    if ((c>='a') && (c <= 'z')) ostring += OFstatic_cast(char, toupper(c));
     else if ((c>='A') && (c <= 'Z')) ostring += c;
     else if ((c>='0') && (c <= '9')) ostring += c;
     else if (c=='_')  ostring += c;
@@ -247,7 +248,7 @@ const char *OFConfigFile::get_entry(const char *key0)
 
 void OFConfigFile::store_char(char c)
 {
-  if (bufptr == (size_t)bufsize)
+  if (bufptr == OFstatic_cast(size_t, bufsize))
   {
      char *oldbuf=buffer;
      bufsize += 1024;
@@ -275,7 +276,7 @@ char OFConfigFile::read_char(FILE *infile)
   int commentmode=0;
   while (!done)
   {
-    c = (char)(getc(infile));
+    c = OFstatic_cast(char, getc(infile));
     handled=0;
     if(!handled) if ((feof(infile))||(ferror(infile)))
     {
@@ -468,7 +469,10 @@ OFConfigFile::~OFConfigFile()
 
 /*
  *  $Log: ofconfig.cc,v $
- *  Revision 1.2  2003-05-12 12:54:55  meichel
+ *  Revision 1.3  2003-07-09 13:58:04  meichel
+ *  Adapted type casts to new-style typecast operators defined in ofcast.h
+ *
+ *  Revision 1.2  2003/05/12 12:54:55  meichel
  *  Fixed off-by-one bug in for loop
  *
  *  Revision 1.1  2003/04/29 10:14:08  meichel

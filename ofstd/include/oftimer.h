@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2001, OFFIS
+ *  Copyright (C) 1997-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Class for measurement of time (Header)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:51:36 $
+ *  Update Date:      $Date: 2003-07-09 13:57:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/oftimer.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,7 @@
 #define __OFTIMER_H
 
 #include "osconfig.h"
+#include "ofcast.h"
 
 #ifdef HAVE_WINDOWS_H
 #include <windows.h>
@@ -98,11 +99,11 @@ class OFTimer
     inline static double getTime()
     {
 #ifdef HAVE_WINDOWS_H
-        return (double)GetTickCount() / 1000;
+        return OFstatic_cast(double, GetTickCount()) / 1000;
 #else /* tested on solaris */
         timeval c_time;
         gettimeofday(&c_time, NULL);
-        return (double)c_time.tv_sec + (double)c_time.tv_usec / 1000000;
+        return OFstatic_cast(double, c_time.tv_sec) + OFstatic_cast(double, c_time.tv_usec) / 1000000;
 #endif
     }
 
@@ -121,7 +122,10 @@ class OFTimer
  *
  * CVS/RCS Log:
  * $Log: oftimer.h,v $
- * Revision 1.8  2001-06-01 15:51:36  meichel
+ * Revision 1.9  2003-07-09 13:57:43  meichel
+ * Adapted type casts to new-style typecast operators defined in ofcast.h
+ *
+ * Revision 1.8  2001/06/01 15:51:36  meichel
  * Updated copyright header
  *
  * Revision 1.7  2000/03/08 16:36:03  meichel

@@ -22,9 +22,9 @@
  *  Purpose: A simple string class
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-07-04 13:31:51 $
+ *  Update Date:      $Date: 2003-07-09 13:57:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstring.h,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,7 @@
 
 #include "osconfig.h"     /* include OS specific configuration first */
 #include "oftypes.h"      /* for OFBool */
+#include "ofcast.h"
 
 #ifdef HAVE_STD_STRING
 /*
@@ -82,7 +83,7 @@ END_EXTERN_C
  *  Normally string::npos is defined as a static const member
  * but some C++ compilers are too primitive.
  */
-static const size_t OFString_npos = ((size_t)-1);
+static const size_t OFString_npos = (OFstatic_cast(size_t, -1));
 
 
 /** a simple string class that implements a subset of std::string.
@@ -1081,7 +1082,10 @@ OFBool operator>= (const OFString& lhs, char rhs);
 /*
 ** CVS/RCS Log:
 ** $Log: ofstring.h,v $
-** Revision 1.15  2003-07-04 13:31:51  meichel
+** Revision 1.16  2003-07-09 13:57:43  meichel
+** Adapted type casts to new-style typecast operators defined in ofcast.h
+**
+** Revision 1.15  2003/07/04 13:31:51  meichel
 ** Fixed issues with compiling with HAVE_STD_STRING
 **
 ** Revision 1.14  2003/06/12 13:13:51  joergr

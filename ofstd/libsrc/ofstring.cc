@@ -22,9 +22,9 @@
  *  Purpose: A simple string class
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-07-04 13:31:52 $
+ *  Update Date:      $Date: 2003-07-09 13:58:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofstring.cc,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,6 +45,7 @@
 #ifndef HAVE_STD_STRING
 
 #include "ofstring.h"
+#include "ofcast.h"
 
 #define INCLUDE_CCTYPE
 #include "ofstdinc.h"
@@ -96,7 +97,7 @@ OFString::OFString (size_t rep, char c)
     : theCString(NULL), theCapacity(0)
 {
     reserve(rep);
-    for (int i=0; i<(int)rep; i++) {
+    for (size_t i=0; i < rep; ++i) {
         this->theCString[i] = c;
     }
 }
@@ -247,7 +248,7 @@ OFString&
 OFString::insert (size_t pos1, const OFString& str, size_t pos2, size_t n)
 {
     OFString i(str, pos2, n);
-    OFString a(*this, (size_t)0, pos1);
+    OFString a(*this, OFstatic_cast(size_t, 0), pos1);
     OFString b(*this, pos1);
     return this->assign(a).append(i).append(b);
 }
@@ -295,7 +296,7 @@ OFString&
 OFString::replace (size_t pos1, size_t n1, const OFString& str,
                        size_t pos2, size_t n2)
 {
-    OFString a(*this, (size_t)0, pos1);
+    OFString a(*this, OFstatic_cast(size_t, 0), pos1);
     OFString b;
     if ((n1 < OFString_npos) && ((pos1 + n1) < this->size())) {
         b.assign(*this, pos1 + n1, OFString_npos);
@@ -640,7 +641,7 @@ OFString::find_last_of (const OFString& str, size_t pos) const
     if (pos == OFString_npos || pos > this_size) {
         pos = this_size;
     }
-    for (int i=(int)pos-1; i>=0; i--) {
+    for (int i=OFstatic_cast(int, pos-1); i>=0; i--) {
         for (size_t j=0; j<str_size; j++) {
             if (this->at(i) == str[j]) {
                 return i;
@@ -731,7 +732,7 @@ OFString::find_last_not_of (const OFString& str, size_t pos) const
     if (pos == OFString_npos) {
         pos = this_size;
     }
-    for (int i=(int)pos-1; i>=0; i--) {
+    for (int i=OFstatic_cast(int, pos-1); i>=0; i--) {
         for (size_t j=0; j<str_size; j++) {
             if (this->at(i) != str[j]) {
                 return i;
@@ -1030,7 +1031,10 @@ int ofstring_cc_dummy_to_keep_linker_from_moaning = 0;
 /*
 ** CVS/RCS Log:
 ** $Log: ofstring.cc,v $
-** Revision 1.19  2003-07-04 13:31:52  meichel
+** Revision 1.20  2003-07-09 13:58:04  meichel
+** Adapted type casts to new-style typecast operators defined in ofcast.h
+**
+** Revision 1.19  2003/07/04 13:31:52  meichel
 ** Fixed issues with compiling with HAVE_STD_STRING
 **
 ** Revision 1.18  2003/05/14 13:22:29  joergr

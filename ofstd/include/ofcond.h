@@ -22,9 +22,9 @@
  *  Purpose: class OFCondition and helper classes
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-07-04 13:31:51 $
+ *  Update Date:      $Date: 2003-07-09 13:57:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofcond.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +38,7 @@
 #include "osconfig.h"
 #include "oftypes.h"   /* for class OFBool */
 #include "ofstring.h"  /* for class OFString */
+#include "ofcast.h"
 
 #define INCLUDE_CASSERT
 #include "ofstdinc.h"
@@ -105,13 +106,13 @@ public:
   /// returns the module identifier for this object.   
   unsigned short module() const
   {
-    return (unsigned short)((codeAndModule() >> 16) & 0xFFFF);
+    return OFstatic_cast(unsigned short,((codeAndModule() >> 16) & 0xFFFF));
   }
 
   /// returns the status code identifier for this object.   
   unsigned short code() const
   {
-    return (unsigned short)(codeAndModule() & 0xFFFF);
+    return OFstatic_cast(unsigned short,(codeAndModule() & 0xFFFF));
   }
 
   /** comparison operator.
@@ -161,7 +162,7 @@ public:
    */
   OFConditionConst(unsigned short aModule, unsigned short aCode, OFStatus aStatus, const char *aText)
   : OFConditionBase()
-  , theCodeAndModule((unsigned long)aCode | ((unsigned long)aModule << 16))
+  , theCodeAndModule(OFstatic_cast(unsigned long, aCode) | OFstatic_cast(unsigned long, aModule << 16))
   , theStatus(aStatus)
   , theText(aText)
   {
@@ -238,7 +239,7 @@ public:
    */
   OFConditionString(unsigned short aModule, unsigned short aCode, OFStatus aStatus, const char *aText)
   : OFConditionBase()
-  , theCodeAndModule((unsigned long)aCode | ((unsigned long)aModule << 16))
+  , theCodeAndModule(OFstatic_cast(unsigned long, aCode) | OFstatic_cast(unsigned long, aModule << 16))
   , theStatus(aStatus)
   , theText()
   {
@@ -349,7 +350,7 @@ public:
   {
     if (theCondition->deletable())
     {
-      delete (OFConditionBase *) theCondition; // cast away const
+      delete OFconst_cast(OFConditionBase *, theCondition); // cast away const
     }
   }
 
@@ -360,7 +361,7 @@ public:
     {
       if (theCondition->deletable())
       {
-        delete (OFConditionBase *) theCondition; // cast away const
+        delete OFconst_cast(OFConditionBase *, theCondition); // cast away const
       }
       theCondition = arg.theCondition->clone();
       assert(theCondition);
@@ -474,7 +475,10 @@ extern const OFCondition EC_MemoryExhausted;
 /*
  * CVS/RCS Log:
  * $Log: ofcond.h,v $
- * Revision 1.6  2003-07-04 13:31:51  meichel
+ * Revision 1.7  2003-07-09 13:57:43  meichel
+ * Adapted type casts to new-style typecast operators defined in ofcast.h
+ *
+ * Revision 1.6  2003/07/04 13:31:51  meichel
  * Fixed issues with compiling with HAVE_STD_STRING
  *
  * Revision 1.5  2003/06/12 13:15:59  joergr

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002, OFFIS
+ *  Copyright (C) 2002-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,10 +22,10 @@
  *  Purpose: general purpose 32-bit CRC in C++
  *           Code is based on the CRC32 implementation (C)1986 Gary S. Brown
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-08 10:18:57 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-07-09 13:58:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofcrc32.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,11 +36,11 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "ofcrc32.h"
-
+#include "ofcast.h"
 
 void OFCRC32::addBlock(const void *ptr, unsigned long size)
 {
-  const unsigned char *p=(const unsigned char *)ptr;
+  const unsigned char *p= OFstatic_cast(const unsigned char *, ptr);
   for (unsigned long i=0; i<size; i++)
     value = crctab[(value^p[i]) & 0xff] ^ (value >> 8);
 }
@@ -114,7 +114,10 @@ const unsigned int OFCRC32::crctab[256] =
 /*
  * CVS/RCS Log:
  * $Log: ofcrc32.cc,v $
- * Revision 1.1  2002-01-08 10:18:57  joergr
+ * Revision 1.2  2003-07-09 13:58:04  meichel
+ * Adapted type casts to new-style typecast operators defined in ofcast.h
+ *
+ * Revision 1.1  2002/01/08 10:18:57  joergr
  * Added general purpose class which computes a CRC32 checksum on arbitrary
  * data.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2002, OFFIS
+ *  Copyright (C) 1997-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: OFFilenameCreator
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 11:23:10 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2003-07-09 13:58:04 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,7 +33,8 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "offname.h"
-      
+#include "ofcast.h"
+
 #define INCLUDE_CERRNO
 #define INCLUDE_CSTRING
 #define INCLUDE_CTIME
@@ -52,11 +53,10 @@ END_EXTERN_C
 /* give up after this number of unsuccessful attempts to create a unique filename */
 #define MAX_TRY 1024  
 
-
 OFFilenameCreator::OFFilenameCreator()
 : creation_time(0)
 {
-  creation_time = (unsigned long) time(NULL);
+  creation_time = OFstatic_cast(unsigned long, time(NULL));
 }
   
 OFFilenameCreator::OFFilenameCreator(const OFFilenameCreator& copy)
@@ -125,7 +125,9 @@ void OFFilenameCreator::addLongToString(unsigned long l, OFString &s)
   {
     m = l & 0x0FL;
     l >>= 4;
-    if (m>9) chr_array[idx--] = (char)('a'+(m-10)); else chr_array[idx--] = (char)('0'+m);
+    if (m > 9) 
+        chr_array[idx--] = OFstatic_cast(char, 'a'+(m-10)); 
+        else chr_array[idx--] = OFstatic_cast(char, '0'+m);
   }
   s += chr_array;
   return;
@@ -134,13 +136,13 @@ void OFFilenameCreator::addLongToString(unsigned long l, OFString &s)
 unsigned int OFFilenameCreator::hashString(const char *str)
 {
   /* very simple hash function: XOR result with string character and rotate left by 1 bit. */
-  unsigned int result = (unsigned int)-1;
+  unsigned int result = OFstatic_cast(unsigned int, -1);
   if (str)
   {
     while (*str != '\0')
     {
       result %= *str++;
-      if ((signed int)result <0) result = (result << 1)| 1; else result <<= 1;
+      if (OFstatic_cast(signed int, result) <0) result = (result << 1)| 1; else result <<= 1;
     }
   }
   return result;
@@ -148,15 +150,18 @@ unsigned int OFFilenameCreator::hashString(const char *str)
 
 int OFFilenameCreator::myrand_r(unsigned int *seed)
 {
-  unsigned long val = (unsigned long) *seed;  
+  unsigned long val = OFstatic_cast(unsigned long, *seed);  
   val = val * 1103515245 + 12345;
-  *seed = (unsigned int)(val %((unsigned long)0x80000000));
-  return (int) *seed;
+  *seed = OFstatic_cast(unsigned int, val %(OFstatic_cast(unsigned long, 0x80000000)));
+  return OFstatic_cast(int, *seed);
 }
 
 /*
  *  $Log: offname.cc,v $
- *  Revision 1.9  2002-11-27 11:23:10  meichel
+ *  Revision 1.10  2003-07-09 13:58:04  meichel
+ *  Adapted type casts to new-style typecast operators defined in ofcast.h
+ *
+ *  Revision 1.9  2002/11/27 11:23:10  meichel
  *  Adapted module ofstd to use of new header file ofstdinc.h
  *
  *  Revision 1.8  2001/06/01 15:51:38  meichel

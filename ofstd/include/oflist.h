@@ -22,10 +22,10 @@
  *  Purpose:
  *          Defines a template list class with interfaces similar to the C++ Standard
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-06-12 15:20:30 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-07-09 13:57:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/oflist.h,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,6 +52,7 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "oftypes.h"
+#include "ofcast.h"
 
 #ifndef HAVE_CLASS_TEMPLATE
 #error Your C++ compiler cannot handle class templates:
@@ -211,7 +212,7 @@ public:
     T& operator*() const
     {
         assert(!node->dummy);
-        return ((OFListLink<T> *)node)->info;
+        return (OFstatic_cast(OFListLink<T> *,node))->info;
     }
 
     /** moves the iterator to the next element of the list.
@@ -351,7 +352,7 @@ public:
     /** inserts before the first element of the list.
      *  @param x value from which the new list entry is copy constructed
      */
-    void push_front(const T& x) { insert(begin(), (T&)x); }
+    void push_front(const T& x) { insert(begin(), OFconst_cast(T&, x)); }
     /* const cast away to keep some old compilers happy */
 
     /** removes the first element of the list.
@@ -363,7 +364,7 @@ public:
     /** inserts after the last element of the list.
      *  @param x value from which the new list entry is copy constructed
      */
-    void push_back(const T& x) { insert(end(), (T&)x); }
+    void push_back(const T& x) { insert(end(), OFconst_cast(T&, x)); }
     /* const cast away to keep some old compilers happy */
 
     /** removes the last element of the list.
@@ -540,7 +541,10 @@ void OF_ListRemoveIf(OFList<T>& c, Predicate pred)
 /*
 ** CVS/RCS Log:
 ** $Log: oflist.h,v $
-** Revision 1.17  2003-06-12 15:20:30  joergr
+** Revision 1.18  2003-07-09 13:57:43  meichel
+** Adapted type casts to new-style typecast operators defined in ofcast.h
+**
+** Revision 1.17  2003/06/12 15:20:30  joergr
 ** Slightly modified macro definitions to avoid potential parser errors (added
 ** space character after '<' and before '>').
 **

@@ -93,8 +93,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-07-08 14:39:15 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Update Date:      $Date: 2003-07-09 13:58:04 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -437,11 +437,11 @@ const OFString &OFStandard::convertToMarkupString(const OFString &sourceString,
             }
         } else {
             /* other character: ... */
-            const size_t charValue = (size_t)(*(const unsigned char *)str);
+            const size_t charValue = OFstatic_cast(unsigned char, *str);
             if (convertNonASCII && (charValue > 127))
             {
                 char buffer[16];
-                sprintf(buffer, "%lu", (unsigned long)charValue);
+                sprintf(buffer, "%lu", OFstatic_cast(unsigned long, charValue));
                 /* convert > #127 to Unicode (ISO Latin-1), what is about < #32 ? */
                 markupString += "&#";
                 markupString += buffer;
@@ -473,7 +473,7 @@ const OFString &OFStandard::encodeBase64(const unsigned char *data,
         size_t w = 0;
         /* reserve expected output size: +33%, even multiple of 4 */
         result.reserve(((length + 2) / 3) * 4);
-        char *bufPtr = (char *)result.c_str();
+        char *bufPtr = OFconst_cast(char *, result.c_str());
         /* iterate over all data elements */
         for (size_t i = 0; i < length; i++)
         {
@@ -482,7 +482,7 @@ const OFString &OFStandard::encodeBase64(const unsigned char *data,
             /* insert line break (if width > 0) */
             if (++w == width)
             {
-                *(bufPtr++) = (unsigned char)'\n';
+                *(bufPtr++) = OFstatic_cast(unsigned char, '\n');
                 w = 0;
             }
             /* encode remaining 2 bits of the first byte and 4 bits of the second byte */
@@ -493,7 +493,7 @@ const OFString &OFStandard::encodeBase64(const unsigned char *data,
             /* insert line break (if width > 0) */
             if (++w == width)
             {
-                *(bufPtr++) = (unsigned char)'\n';
+                *(bufPtr++) = OFstatic_cast(unsigned char, '\n');
                 w = 0;
             }
             /* encode remaining 4 bits of the second byte and 2 bits of the third byte */
@@ -573,7 +573,7 @@ size_t OFStandard::decodeBase64(const OFString &data,
                     if (i < length)
                     {
                         /* decode first byte */
-                        result[count++] = (unsigned char)((c1 << 2) | ((c2 >> 4) & 0x3));
+                        result[count++] = OFstatic_cast(unsigned char, (c1 << 2) | ((c2 >> 4) & 0x3));
                         if (++i < length)
                         {
                             /* skip invalid characters and assign third decoded char */
@@ -582,7 +582,7 @@ size_t OFStandard::decodeBase64(const OFString &data,
                             if (i < length)
                             {
                                 /* decode second byte */
-                                result[count++] = (unsigned char)(((c2 << 4) & 0xf0) | ((c1 >> 2) & 0xf));
+                                result[count++] = OFstatic_cast(unsigned char, ((c2 << 4) & 0xf0) | ((c1 >> 2) & 0xf));
                                 if (++i < length)
                                 {
                                     /* skip invalid characters and assign fourth decoded char */
@@ -590,7 +590,7 @@ size_t OFStandard::decodeBase64(const OFString &data,
                                         i++;
                                     /* decode third byte */
                                     if (i < length)
-                                        result[count++] = (unsigned char)(((c1 << 6) & 0xc0) | c2);
+                                        result[count++] = OFstatic_cast(unsigned char, ((c1 << 6) & 0xc0) | c2);
                                 }
                             }
                         }
@@ -671,7 +671,7 @@ double OFStandard::atof(const char *s, OFBool *success)
     int fracExp = 0;
 
     // Strip off leading blanks and check for a sign.
-    while (isspace((int)(*p))) ++p;
+    while (isspace(OFstatic_cast(int, *p))) ++p;
 
     if (*p == '-')
     {
@@ -691,7 +691,7 @@ double OFStandard::atof(const char *s, OFBool *success)
     for (mantSize = 0; ; ++mantSize)
     {
         c = *p;
-        if (!isdigit((int)c))
+        if (!isdigit(OFstatic_cast(int, c)))
         {
             if ((c != '.') || (decPt >= 0)) break;
             decPt = mantSize;
@@ -772,7 +772,7 @@ double OFStandard::atof(const char *s, OFBool *success)
             if (*p == '+') ++p;
             expSign = 0;
         }
-        while (isdigit((int)(*p)))
+        while (isdigit(OFstatic_cast(int, *p)))
         {
             exponent = exponent * 10 + (*p - '0');
             ++p;
@@ -993,16 +993,16 @@ static char *ftoa_exponent(char *p, int exponent, char fmtch)
   {
     do
     {
-      *--t = (char)(FTOA_TOCHAR(exponent % 10));
+      *--t = OFstatic_cast(char, FTOA_TOCHAR(exponent % 10));
     }
     while ((exponent /= 10) > 9);
-    *--t = (char)(FTOA_TOCHAR(exponent));
+    *--t = OFstatic_cast(char, FTOA_TOCHAR(exponent));
     for (; t < expbuf + FTOA_MAXEXP; *p++ = *t++) /* nothing */;
   }
   else
   {
     *p++ = '0';
-    *p++ = (char)(FTOA_TOCHAR(exponent));
+    *p++ = OFstatic_cast(char, FTOA_TOCHAR(exponent));
   }
 
   return p;
@@ -1092,7 +1092,7 @@ static int ftoa_convert(double val, int prec, int flags, char *signp, char fmtch
   for (p = endp - 1; integer; ++expcnt)
   {
     tmp = modf(integer / 10, &integer);
-    *p-- = (char)(FTOA_TOCHAR((int)((tmp + .01) * 10)));
+    *p-- = OFstatic_cast(char, FTOA_TOCHAR(OFstatic_cast(int, (tmp + .01) * 10)));
   }
 
   switch(fmtch)
@@ -1117,11 +1117,11 @@ static int ftoa_convert(double val, int prec, int flags, char *signp, char fmtch
         if (prec) do
         {
           fract = modf(fract * 10, &tmp);
-          *t++ = (char)(FTOA_TOCHAR((int)tmp));
+          *t++ = OFstatic_cast(char, FTOA_TOCHAR(OFstatic_cast(int, tmp)));
         } while (--prec && fract);
         if (fract)
         {
-          startp = ftoa_round(fract, (int *)NULL, startp, t - 1, (char)0, signp);
+          startp = ftoa_round(fract, OFstatic_cast(int *, NULL), startp, t - 1, OFstatic_cast(char, 0), signp);
         }
       }
       for (; prec--; *t++ = '0');
@@ -1146,7 +1146,7 @@ eformat:
         if (!prec && ++p < endp)
         {
           fract = 0;
-          startp = ftoa_round((double)0, &expcnt, startp, t - 1, *p, signp);
+          startp = ftoa_round(OFstatic_cast(double, 0), &expcnt, startp, t - 1, *p, signp);
         }
         /* adjust expcnt for digit in front of decimal */
         --expcnt;
@@ -1160,7 +1160,7 @@ eformat:
                 if (tmp)
                         break;
         }
-        *t++ = (char)(FTOA_TOCHAR((int)tmp));
+        *t++ = OFstatic_cast(char, FTOA_TOCHAR(OFstatic_cast(int, tmp)));
         if (prec || flags&FTOA_ALTERNATE_FORM) *t++ = '.';
       }
       else
@@ -1175,11 +1175,11 @@ eformat:
         if (prec) do
         {
           fract = modf(fract * 10, &tmp);
-          *t++ = (char)(FTOA_TOCHAR((int)tmp));
+          *t++ = OFstatic_cast(char, FTOA_TOCHAR(OFstatic_cast(int, tmp)));
         } while (--prec && fract);
         if (fract)
         {
-          startp = ftoa_round(fract, &expcnt, startp, t - 1, (char)0, signp);
+          startp = ftoa_round(fract, &expcnt, startp, t - 1, OFstatic_cast(char, 0), signp);
         }
       }
 
@@ -1249,17 +1249,17 @@ eformat:
           do
           {
             fract = modf(fract * 10, &tmp);
-            *t++ = (char)(FTOA_TOCHAR((int)tmp));
+            *t++ = OFstatic_cast(char, FTOA_TOCHAR(OFstatic_cast(int, tmp)));
           } while(!tmp);
           while (--prec && fract)
           {
             fract = modf(fract * 10, &tmp);
-            *t++ = (char)(FTOA_TOCHAR((int)tmp));
+            *t++ = OFstatic_cast(char, FTOA_TOCHAR(OFstatic_cast(int, tmp)));
           }
         }
         if (fract)
         {
-          startp = ftoa_round(fract, (int *)NULL, startp, t - 1, (char)0, signp);
+          startp = ftoa_round(fract, OFstatic_cast(int *, NULL), startp, t - 1, OFstatic_cast(char, 0), signp);
         }
       }
       /* alternate format, adds 0's for precision, else trim 0's */
@@ -1456,7 +1456,10 @@ unsigned int OFStandard::my_sleep(unsigned int seconds)
 
 /*
  *  $Log: ofstd.cc,v $
- *  Revision 1.20  2003-07-08 14:39:15  meichel
+ *  Revision 1.21  2003-07-09 13:58:04  meichel
+ *  Adapted type casts to new-style typecast operators defined in ofcast.h
+ *
+ *  Revision 1.20  2003/07/08 14:39:15  meichel
  *  Fixed bug in OFStandard::ftoa that could cause a segmentation fault
  *    if the number to be converted was NAN or infinity.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2002, OFFIS
+ *  Copyright (C) 1997-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,9 @@
  *      Defines a template stack class with interfaces similar to the C++ Standard
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 11:23:06 $
+ *  Update Date:      $Date: 2003-07-09 13:57:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstack.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +38,7 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "oftypes.h"
+#include "ofcast.h"
 
 #if defined(HAVE_STL) || defined(HAVE_STL_STACK)
 // It is possible to use the standard template library list class since the 
@@ -234,7 +235,7 @@ public:
      */
     T & top() 
     { 
-        return ((OFStackLink<T>*)(OFStackBase::base_top()))->info; 
+        return (OFstatic_cast(OFStackLink<T> *, OFStackBase::base_top()))->info; 
     }
 
     /** inserts a new element on top of the stack. The value of
@@ -262,13 +263,13 @@ private:
         stackSize = x.size();
         if (stackSize)
         {
-            head = new OFStackLink<T>(((OFStackLink<T>*)(x.head))->info);
+            head = new OFStackLink<T>((OFstatic_cast(OFStackLink<T>*, x.head))->info);
             OFStackLinkBase * newPtr = head;
             OFStackLinkBase * oldPtr = x.head->next;
             while (oldPtr)
             {
             newPtr->next = 
-                new OFStackLink<T>(((OFStackLink<T>*)oldPtr)->info);
+                new OFStackLink<T>((OFstatic_cast(OFStackLink<T>*, oldPtr))->info);
             oldPtr = oldPtr->next;
             newPtr = newPtr->next;
             }
@@ -284,7 +285,10 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: ofstack.h,v $
-** Revision 1.14  2002-11-27 11:23:06  meichel
+** Revision 1.15  2003-07-09 13:57:43  meichel
+** Adapted type casts to new-style typecast operators defined in ofcast.h
+**
+** Revision 1.14  2002/11/27 11:23:06  meichel
 ** Adapted module ofstd to use of new header file ofstdinc.h
 **
 ** Revision 1.13  2002/07/10 11:50:40  meichel

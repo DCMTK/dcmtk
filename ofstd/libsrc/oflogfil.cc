@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2002, OFFIS
+ *  Copyright (C) 1999-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Define general purpose facility for log file output
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-11 12:21:37 $
+ *  Update Date:      $Date: 2003-07-09 13:58:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/Attic/oflogfil.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +35,7 @@
 #include "oflogfil.h"
 #include "ofstring.h"
 #include "ofdatime.h"
+#include "ofcast.h"
 
 #define INCLUDE_CSTDIO
 #include "ofstdinc.h"
@@ -42,7 +43,7 @@
 
 OFLogFile::OFLogFile(const char *filename, int flags)
 #ifdef HAVE_DECLARATION_STD__IOS_BASE__OPENMODE
-  : File(filename, (std::ios_base::openmode)flags)
+  : File(filename, OFstatic_cast(std::ios_base::openmode, flags))
 #else
   : File(filename, flags)
 #endif
@@ -106,7 +107,10 @@ void OFLogFile::writeMessage(const char *message, int indent)
  *
  * CVS/RCS Log:
  * $Log: oflogfil.cc,v $
- * Revision 1.8  2003-06-11 12:21:37  meichel
+ * Revision 1.9  2003-07-09 13:58:04  meichel
+ * Adapted type casts to new-style typecast operators defined in ofcast.h
+ *
+ * Revision 1.8  2003/06/11 12:21:37  meichel
  * Fixed configure test for std::ios_base::openmode
  *
  * Revision 1.7  2002/11/27 11:23:10  meichel
