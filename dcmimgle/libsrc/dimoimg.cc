@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomMonochromeImage (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-02-09 14:21:11 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-02-11 16:52:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -783,7 +783,7 @@ int DiMonoImage::convertPValueToDDL(const Uint16 pvalue,                // UNTES
                                     const int bits)
 {
     const unsigned long maxvalue = DicomImageClass::maxval(bits);
-    if ((DisplayFunction != NULL) && (DisplayFunction->isValid()) && (DisplayFunction->getValueCount() == maxvalue + 1))
+    if ((DisplayFunction != NULL) && (DisplayFunction->isValid()) && (DisplayFunction->getMaxDDLValue() == maxvalue))
     {
         const DiBartenLUT *blut = DisplayFunction->getBartenLUT(WIDTH_OF_PVALUES);
         if ((blut != NULL) && (blut->isValid()))
@@ -1090,7 +1090,7 @@ void *DiMonoImage::getData(void *buffer,
                 high = DicomImageClass::maxval(bits);
             }
             DiDisplayFunction *disp = DisplayFunction;
-            if ((disp != NULL) && (disp->isValid()) && (disp->getValueCount() != DicomImageClass::maxval(bits, 0)))
+            if ((disp != NULL) && (disp->isValid()) && (disp->getMaxDDLValue() != DicomImageClass::maxval(bits)))
             {
                 if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
                 {
@@ -1413,7 +1413,11 @@ int DiMonoImage::writeRawPPM(FILE *stream, const unsigned long frame, const int 
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.13  1999-02-09 14:21:11  meichel
+ * Revision 1.14  1999-02-11 16:52:22  joergr
+ * Changed method to check suitability of display function for a certain
+ * image.
+ *
+ * Revision 1.13  1999/02/09 14:21:11  meichel
  * Corrected const signatures of some ctor declarations
  *
  * Revision 1.12  1999/02/08 13:09:33  joergr
