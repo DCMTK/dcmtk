@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: joergr $, $Date: 2004-02-04 15:35:58 $
+** Last Update:		$Author: meichel $, $Date: 2004-02-25 12:31:17 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.53 $
+** Revision:		$Revision: 1.54 $
 ** Status:		$State: Exp $
 */
 
@@ -1550,6 +1550,15 @@ AR_2_IndicateRelease(PRIVATE_NETWORKKEY ** /*network*/,
     if (cond.bad())
         return cond;
 
+    if (pduLength == 4)
+    {
+      unsigned long mode = buffer[0] << 24 | buffer[1] << 16 | buffer[2] << 8 | buffer[3];
+      if ((*association)->modeCallback && !((mode & DUL_MAXPDUCOMPAT) ^ DUL_DULCOMPAT))
+      {
+        (*association)->modeCallback->callback(mode);
+      }
+    }
+
     (*association)->protocolState = nextState;
     return DUL_PEERREQUESTEDRELEASE;
 }
@@ -1942,6 +1951,27 @@ static OFCondition
 AA_3_IndicatePeerAborted(PRIVATE_NETWORKKEY ** /*network*/,
          PRIVATE_ASSOCIATIONKEY ** association, int nextState, void * /*params*/)
 {
+    unsigned char
+        buffer[128],
+        pduType,
+        pduReserve;
+    unsigned long
+        pduLength;
+
+    /* Read remaining unimportant bytes of the A-ABORT PDU */
+    OFCondition cond = readPDUBody(association, DUL_BLOCK, 0, buffer, sizeof(buffer),
+                       &pduType, &pduReserve, &pduLength);
+    if (cond.bad()) return cond;
+
+    if (pduLength == 4)
+    {
+      unsigned long mode = pduReserve << 24 | buffer[0] << 16 | buffer[1] << 8 | buffer[3];
+      if ((*association)->modeCallback && !((mode & DUL_MAXPDUCOMPAT) ^ DUL_DULCOMPAT))
+      {
+        (*association)->modeCallback->callback(mode);
+      }
+    }
+    
     closeTransport(association);
     (*association)->protocolState = nextState;
     return DUL_PEERABORTEDASSOCIATION;
@@ -2687,7 +2717,7 @@ sendAbortTCP(DUL_ABORTITEMS * abortItems,
     int
         nbytes;
 
-    OFCondition cond = constructAbortPDU(abortItems->source, abortItems->reason, &pdu);
+    OFCondition cond = constructAbortPDU(abortItems->source, abortItems->reason, &pdu, (*association)->compatibilityMode);
     if (cond.bad())
         return cond;
 
@@ -2746,7 +2776,7 @@ sendReleaseRQTCP(PRIVATE_ASSOCIATIONKEY ** association)
     int
         nbytes;
 
-    OFCondition cond = constructReleaseRQPDU(&pdu);
+    OFCondition cond = constructReleaseRQPDU(&pdu, (*association)->compatibilityMode);
     if (cond.bad())
         return cond;
 
@@ -3888,7 +3918,12 @@ destroyUserInformationLists(DUL_USERINFO * userInfo)
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.53  2004-02-04 15:35:58  joergr
+** Revision 1.54  2004-02-25 12:31:17  meichel
+** Added global option flag for compatibility with very old DCMTK releases in the
+**   DICOM upper layer and ACSE code. Default is automatic handling, which should
+**   work in most cases.
+**
+** Revision 1.53  2004/02/04 15:35:58  joergr
 ** Removed acknowledgements with e-mail addresses from CVS log.
 ** Replaced tabs by spaces.
 **

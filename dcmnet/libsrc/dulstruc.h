@@ -50,9 +50,9 @@
 **  get the public definitions and function prototypes.  I have omitted
 **  the public definitions and prototypes on purpose so that they
 **  exist in only one location.
-** Last Update:		$Author: meichel $, $Date: 2002-11-26 15:37:03 $
+** Last Update:		$Author: meichel $, $Date: 2004-02-25 12:31:17 $
 ** Source File:		$RCSfile: dulstruc.h,v $
-** Revision:		$Revision: 1.7 $
+** Revision:		$Revision: 1.8 $
 ** Status:		$State: Exp $
 */
 
@@ -78,9 +78,7 @@ typedef enum {
 #define ASSOCIATION_RELEASED		5
 
 typedef struct {
-/*    void *reserved[2]; */
     char keyType[40];
-    // char networkType[40];
     int applicationFunction;
     int networkState;
     int protocolState;
@@ -92,16 +90,12 @@ typedef struct {
 	    int listenSocket;
             DcmTransportLayer *tLayer;
             int tLayerOwned;
-	    /* int connectedSocket; */
 	}   TCP;
     }   networkSpecific;
 }   PRIVATE_NETWORKKEY;
 
 typedef struct {
-/*    void *reserved[2]; */
     char keyType[40];
-    // char networkType[40];
-/*    char applicationType[40]; */
     int applicationFunction;
     char remoteNode[64];
     DUL_ASSOC_STATE associationState;
@@ -128,6 +122,7 @@ typedef struct {
     unsigned char nextPDUType;
     unsigned char nextPDUReserved;
     unsigned long nextPDULength;
+    unsigned long compatibilityMode;
     int pdvCount;
     int pdvIndex;
     void *logHandle;
@@ -138,6 +133,7 @@ typedef struct {
     unsigned char *pdvPointer;
     unsigned long fragmentBufferLength;
     unsigned char *fragmentBuffer;
+    DUL_ModeCallback *modeCallback;
 }   PRIVATE_ASSOCIATIONKEY;
 
 #define KEY_NETWORK	"KEY NETWORK"
@@ -314,7 +310,12 @@ typedef struct dul_datapdu {
 /*
 ** CVS Log
 ** $Log: dulstruc.h,v $
-** Revision 1.7  2002-11-26 15:37:03  meichel
+** Revision 1.8  2004-02-25 12:31:17  meichel
+** Added global option flag for compatibility with very old DCMTK releases in the
+**   DICOM upper layer and ACSE code. Default is automatic handling, which should
+**   work in most cases.
+**
+** Revision 1.7  2002/11/26 15:37:03  meichel
 ** Changed DUL code to always send A-ASSOCIATE user information sub-items
 **   in ascending order.
 **

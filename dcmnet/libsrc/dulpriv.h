@@ -51,9 +51,9 @@
 **  the public definitions and prototypes on purpose so that they
 **  exist in only one location.
 **
-** Last Update:		$Author: meichel $, $Date: 2001-10-12 10:18:41 $
+** Last Update:		$Author: meichel $, $Date: 2004-02-25 12:31:17 $
 ** Source File:		$RCSfile: dulpriv.h,v $
-** Revision:		$Revision: 1.6 $
+** Revision:		$Revision: 1.7 $
 ** Status:		$State: Exp $
 */
 
@@ -81,11 +81,11 @@ OFCondition
 constructAssociateRejectPDU(unsigned char result,
 			    unsigned char source, unsigned char reason,
 			    DUL_REJECTRELEASEABORTPDU * pdu);
-OFCondition constructReleaseRQPDU(DUL_REJECTRELEASEABORTPDU * pdu);
+OFCondition constructReleaseRQPDU(DUL_REJECTRELEASEABORTPDU * pdu, unsigned long mode);
 OFCondition constructReleaseRPPDU(DUL_REJECTRELEASEABORTPDU * pdu);
 OFCondition
 constructAbortPDU(unsigned char src, unsigned char reason,
-		  DUL_REJECTRELEASEABORTPDU * pdu);
+		  DUL_REJECTRELEASEABORTPDU * pdu, unsigned long mode);
 OFCondition
 constructDataPDU(void *buf, unsigned long length, DUL_DATAPDV type,
        DUL_PRESENTATIONCONTEXTID ctxID, OFBool last, DUL_DATAPDU * pdu);
@@ -114,7 +114,12 @@ void parseDebug(OFBool flag);
 /*
 ** CVS Log
 ** $Log: dulpriv.h,v $
-** Revision 1.6  2001-10-12 10:18:41  meichel
+** Revision 1.7  2004-02-25 12:31:17  meichel
+** Added global option flag for compatibility with very old DCMTK releases in the
+**   DICOM upper layer and ACSE code. Default is automatic handling, which should
+**   work in most cases.
+**
+** Revision 1.6  2001/10/12 10:18:41  meichel
 ** Replaced the CONDITION types, constants and functions in the dcmnet module
 **   by an OFCondition based implementation which eliminates the global condition
 **   stack.  This is a major change, caveat emptor!

@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2003-07-03 14:21:10 $
+** Update Date:         $Date: 2004-02-25 12:31:17 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:    $Revision: 1.41 $
+** CVS/RCS Revision:    $Revision: 1.42 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -128,7 +128,6 @@ typedef unsigned short T_Length;
 typedef char T_ASSOC_UID[DUL_LEN_UID + 4]; // T_UID is a macro on OSF/1
 typedef char T_TITLE[DUL_LEN_TITLE + 4];
 typedef T_Byte *T_Data;
-
 
 /*
 ** Implementation Class UID Sub-Item Structure 
@@ -314,6 +313,7 @@ ASC_createAssociationParameters(T_ASC_Parameters ** params,
     (*params)->ourMaxPDUReceiveSize = maxReceivePDUSize;        
     (*params)->DULparams.maxPDU = maxReceivePDUSize; 
     (*params)->theirMaxPDUReceiveSize = 0;      /* not yet negotiated */
+    (*params)->modeCallback = NULL;
 
     /* set something unusable */
     ASC_setPresentationAddresses(*params,
@@ -1683,7 +1683,6 @@ ASC_requestAssociation(T_ASC_Network * network,
 
     (*assoc)->params = params;
     (*assoc)->nextMsgID = 1;
-
     (*assoc)->sendPDVLength = 0;
     (*assoc)->sendPDVBuffer = NULL;
 
@@ -1706,13 +1705,19 @@ ASC_requestAssociation(T_ASC_Network * network,
 
     if (cond.good())
     {
-
        /*
         * The params->DULparams.peerMaxPDU parameter contains the 
         * max-pdu-length value in the a-associate-ac (i.e. the max-pdu-length 
         * that the remote AE is prepared to accept).
         */
         params->theirMaxPDUReceiveSize = params->DULparams.peerMaxPDU;
+
+        if (!((params->theirMaxPDUReceiveSize & DUL_MAXPDUCOMPAT) ^ DUL_DULCOMPAT))
+        {          
+          /* activate compatibility with DCMTK releases prior to 3.0 */
+          DUL_activateCompatibilityMode((*assoc)->DULassociation, dcmEnableBackwardCompatibility.get() | DUL_DULCOMPAT | DUL_DIMSECOMPAT);
+          if (params->modeCallback) params->modeCallback->callback(params->theirMaxPDUReceiveSize);
+        }
 
         /* create a sendPDVBuffer */
         sendLen = params->theirMaxPDUReceiveSize;
@@ -1777,12 +1782,16 @@ ASC_acknowledgeAssociation(
     int retrieveRawPDU = 0;
     if (associatePDU && associatePDUlength) retrieveRawPDU = 1;
 
-    assoc->params->DULparams.maxPDU = assoc->params->ourMaxPDUReceiveSize;
+    assoc->params->DULparams.maxPDU = assoc->params->ourMaxPDUReceiveSize;    
+    if (!((assoc->params->theirMaxPDUReceiveSize & DUL_MAXPDUCOMPAT) ^ DUL_DULCOMPAT))
+    {
+      assoc->params->DULparams.maxPDU = dcmEnableBackwardCompatibility.get() | DUL_DULCOMPAT | DUL_DIMSECOMPAT;
+    }
+
     strcpy(assoc->params->DULparams.calledImplementationClassUID,
         assoc->params->ourImplementationClassUID);
     strcpy(assoc->params->DULparams.calledImplementationVersionName,
         assoc->params->ourImplementationVersionName);
-
 
     OFCondition cond = DUL_AcknowledgeAssociationRQ(&assoc->DULassociation,
                                         &assoc->params->DULparams, 
@@ -1958,11 +1967,21 @@ unsigned long ASC_getPeerCertificate(T_ASC_Association *assoc, void *buf, unsign
   return DUL_getPeerCertificate(assoc->DULassociation, buf, bufLen);
 }
 
+void ASC_activateCallback(T_ASC_Parameters *params, DUL_ModeCallback *cb)
+{
+  if (params) params->modeCallback = cb;
+}
+
 
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
-** Revision 1.41  2003-07-03 14:21:10  meichel
+** Revision 1.42  2004-02-25 12:31:17  meichel
+** Added global option flag for compatibility with very old DCMTK releases in the
+**   DICOM upper layer and ACSE code. Default is automatic handling, which should
+**   work in most cases.
+**
+** Revision 1.41  2003/07/03 14:21:10  meichel
 ** Added special handling for FD_SET() on MinGW, which expects an
 **   unsigned first argument.
 **

@@ -54,9 +54,9 @@
 ** Author, Date:        Stephen M. Moore, 14-Apr-93
 ** Intent:              This module contains the public entry points for the
 **                      DICOM Upper Layer (DUL) protocol package.
-** Last Update:         $Author: meichel $, $Date: 2004-02-24 15:05:50 $
+** Last Update:         $Author: meichel $, $Date: 2004-02-25 12:31:17 $
 ** Source File:         $RCSfile: dul.cc,v $
-** Revision:            $Revision: 1.61 $
+** Revision:            $Revision: 1.62 $
 ** Status:              $State: Exp $
 */
 
@@ -144,6 +144,7 @@ OFGlobal<OFBool> dcmDisableGethostbyaddr(OFFalse);
 OFGlobal<Sint32> dcmConnectionTimeout(-1);
 OFGlobal<int>    dcmExternalSocketHandle(-1);
 OFGlobal<const char *> dcmTCPWrapperDaemonName(NULL);
+OFGlobal<unsigned long> dcmEnableBackwardCompatibility(0);
 
 static int networkInitialized = 0;
 
@@ -196,6 +197,24 @@ void DUL_activateAssociatePDUStorage(DUL_ASSOCIATIONKEY *dulassoc)
   {
     PRIVATE_ASSOCIATIONKEY *assoc = (PRIVATE_ASSOCIATIONKEY *)dulassoc;
     assoc->associatePDUFlag = 1;
+  }
+}
+
+void DUL_activateCompatibilityMode(DUL_ASSOCIATIONKEY *dulassoc, unsigned long mode)
+{
+  if (dulassoc)
+  {
+    PRIVATE_ASSOCIATIONKEY *assoc = (PRIVATE_ASSOCIATIONKEY *)dulassoc;
+    assoc->compatibilityMode = mode;
+  }
+}
+
+void DUL_activateCallback(DUL_ASSOCIATIONKEY *dulassoc, DUL_ModeCallback *cb)
+{
+  if (dulassoc)
+  {
+    PRIVATE_ASSOCIATIONKEY *assoc = (PRIVATE_ASSOCIATIONKEY *)dulassoc;
+    assoc->modeCallback = cb;
   }
 }
 
@@ -406,6 +425,7 @@ DUL_RequestAssociation(
     {
         return DUL_ILLEGALREQUEST;
     }
+
     if (params->maxPDU < MIN_PDU_LENGTH || params->maxPDU > MAX_PDU_LENGTH)
     {
         return makeDcmnetCondition(DULC_ILLEGALPARAMETER, OF_error, "DUL Illegal parameter (maxPDU) in function DUL_RequestAssociation");
@@ -1914,7 +1934,7 @@ createAssociationKey(PRIVATE_NETWORKKEY ** networkKey,
     key->nextPDUType = 0x00;
     key->nextPDUReserved = 0;
     key->nextPDULength = 0;
-
+    key->compatibilityMode = 0;
     key->pdvCount = 0;
     key->pdvIndex = -1;
     key->pdvPointer = NULL;
@@ -1926,6 +1946,7 @@ createAssociationKey(PRIVATE_NETWORKKEY ** networkKey,
 
     key->logHandle = NULL;
     key->connection = NULL;
+    key->modeCallback = NULL;
     *associationKey = key;
     return EC_Normal;
 }
@@ -2397,7 +2418,12 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, ostream& outs
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.61  2004-02-24 15:05:50  meichel
+** Revision 1.62  2004-02-25 12:31:17  meichel
+** Added global option flag for compatibility with very old DCMTK releases in the
+**   DICOM upper layer and ACSE code. Default is automatic handling, which should
+**   work in most cases.
+**
+** Revision 1.61  2004/02/24 15:05:50  meichel
 ** Fixed infinite loop in DUL_AbortAssociation that could occur on Win2K systems.
 **
 ** Revision 1.60  2004/02/04 15:34:29  joergr

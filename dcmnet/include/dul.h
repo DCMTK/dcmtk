@@ -44,9 +44,9 @@
 ** Intent:		This file defines the public structures and constants
 **			and the function prototypes for the DUL (DICOM Upper
 **			Layer) facility.
-** Last Update:		$Author: meichel $, $Date: 2003-08-14 09:01:37 $
+** Last Update:		$Author: meichel $, $Date: 2004-02-25 12:31:15 $
 ** Source File:		$RCSfile: dul.h,v $
-** Revision:		$Revision: 1.18 $
+** Revision:		$Revision: 1.19 $
 ** Status:		$State: Exp $
 */
 
@@ -90,6 +90,11 @@ extern OFGlobal<int> dcmExternalSocketHandle;   /* default -1 */
  */
 extern OFGlobal<const char *> dcmTCPWrapperDaemonName;   /* default NULL */
 
+/* Global option flag for compatibility with DCMTK releases prior to 3.0 
+ * Default (0) is automatic handling, which should work in most cases.
+ */
+extern OFGlobal<unsigned long> dcmEnableBackwardCompatibility;
+
 #ifndef DUL_KEYS
 #define DUL_KEYS 1
 typedef void DUL_NETWORKKEY;
@@ -122,6 +127,17 @@ typedef unsigned char DUL_PRESENTATIONCONTEXTID;
 #define	DUL_TYPEABORT			OFstatic_cast(unsigned char, 0x07)
 
 #define DUL_MAXTYPE			OFstatic_cast(unsigned char, 0x07)
+
+/** pure virtual base class for DUL mode callbacks
+ */
+class DUL_ModeCallback
+{
+public:
+  /** callback method
+   *  @param mode DUL compatibility mode passed in callback
+   */
+  virtual void callback(unsigned long mode) = 0;
+};
 
 typedef struct {
     char applicationContextName[DUL_LEN_NAME + 1];
@@ -300,6 +316,14 @@ typedef enum {
 
 #define	DUL_TIMEOUT	180
 
+/* Operating mode flags as defined in the 1993 toolkit specification.
+** Needed for backward compatibility with DCMTK releases prior to 3.0
+** (and possibly older CTN releases).
+*/
+
+#define DUL_DULCOMPAT          2768240730UL 
+#define DUL_DIMSECOMPAT        196608UL
+#define DUL_MAXPDUCOMPAT       4278190335UL
 
 /* Define the function prototypes for this facility.
 **
@@ -407,6 +431,10 @@ DcmTransportConnection *DUL_getTransportConnection(DUL_ASSOCIATIONKEY * callerAs
 /* change transport layer */
 OFCondition DUL_setTransportLayer(DUL_NETWORKKEY *callerNetworkKey, DcmTransportLayer *newLayer, int takeoverOwnership);
 
+/* activate compatibility mode and callback */
+void DUL_activateCompatibilityMode(DUL_ASSOCIATIONKEY *dulassoc, unsigned long mode);
+void DUL_activateCallback(DUL_ASSOCIATIONKEY *dulassoc, DUL_ModeCallback *cb);
+
 /*
  * function allowing to retrieve the peer certificate from the DUL layer
  */
@@ -423,7 +451,12 @@ unsigned long DUL_getPeerCertificate(DUL_ASSOCIATIONKEY *dulassoc, void *buf, un
 /*
 ** CVS Log
 ** $Log: dul.h,v $
-** Revision 1.18  2003-08-14 09:01:37  meichel
+** Revision 1.19  2004-02-25 12:31:15  meichel
+** Added global option flag for compatibility with very old DCMTK releases in the
+**   DICOM upper layer and ACSE code. Default is automatic handling, which should
+**   work in most cases.
+**
+** Revision 1.18  2003/08/14 09:01:37  meichel
 ** Adapted type casts to new-style typecast operators defined in ofcast.h
 **
 ** Revision 1.17  2003/06/10 13:37:36  meichel

@@ -49,9 +49,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-1993
 ** Intent:		This file contains functions for construction of
 **			DICOM Upper Layer (DUL) Protocol Data Units (PDUs).
-** Last Update:		$Author: meichel $, $Date: 2003-06-02 16:44:11 $
+** Last Update:		$Author: meichel $, $Date: 2004-02-25 12:31:17 $
 ** Source File:		$RCSfile: dulconst.cc,v $
-** Revision:		$Revision: 1.13 $
+** Revision:		$Revision: 1.14 $
 ** Status:		$State: Exp $
 */
 
@@ -301,7 +301,7 @@ constructAssociateRejectPDU(unsigned char result,
 **	Description of the algorithm (optional) and any other notes.
 */
 OFCondition
-constructReleaseRQPDU(DUL_REJECTRELEASEABORTPDU * pdu)
+constructReleaseRQPDU(DUL_REJECTRELEASEABORTPDU * pdu, unsigned long mode)
 {
     pdu->type = DUL_TYPERELEASERQ;
     pdu->rsv1 = 0;
@@ -310,6 +310,13 @@ constructReleaseRQPDU(DUL_REJECTRELEASEABORTPDU * pdu)
     pdu->result = 0;
     pdu->source = 0;
     pdu->reason = 0;
+    if (mode)
+    {
+      pdu->rsv2   = (unsigned char)(mode >> 24);
+      pdu->result = (unsigned char)(mode >> 16);
+      pdu->source = (unsigned char)(mode >> 8);
+      pdu->reason = (unsigned char)(mode);
+    }
 
     return EC_Normal;
 }
@@ -362,7 +369,8 @@ constructReleaseRPPDU(DUL_REJECTRELEASEABORTPDU * pdu)
 */
 OFCondition
 constructAbortPDU(unsigned char src, unsigned char reason,
-		  DUL_REJECTRELEASEABORTPDU * pdu)
+		  DUL_REJECTRELEASEABORTPDU * pdu,
+		  unsigned long mode)
 {
     pdu->type = DUL_TYPEABORT;
     pdu->rsv1 = 0;
@@ -371,7 +379,14 @@ constructAbortPDU(unsigned char src, unsigned char reason,
     pdu->result = 0;
     pdu->source = src;
     pdu->reason = reason;
-
+    if (mode)
+    {
+      pdu->rsv1   = (unsigned char)(mode >> 24);
+      pdu->rsv2   = (unsigned char)(mode >> 16);
+      pdu->result = (unsigned char)(mode >> 8);
+      pdu->reason = (unsigned char)(mode);
+      pdu->source = 0;
+    }
     return EC_Normal;
 }
 
@@ -904,10 +919,12 @@ static OFCondition
 constructMaxLength(unsigned long maxPDU, DUL_MAXLENGTH * max,
 		   unsigned long *rtnLen)
 {
+    unsigned long compatMode = dcmEnableBackwardCompatibility.get();
     max->type = DUL_TYPEMAXLENGTH;
     max->rsv1 = 0;
     max->length = 4;
-    max->maxLength = maxPDU;
+    if (compatMode) max->maxLength = DUL_DULCOMPAT | DUL_DIMSECOMPAT | compatMode;
+    else max->maxLength = maxPDU;
     *rtnLen = 8;
 
     return EC_Normal;
@@ -1478,7 +1495,12 @@ streamExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *b, unsig
 /*
 ** CVS Log
 ** $Log: dulconst.cc,v $
-** Revision 1.13  2003-06-02 16:44:11  meichel
+** Revision 1.14  2004-02-25 12:31:17  meichel
+** Added global option flag for compatibility with very old DCMTK releases in the
+**   DICOM upper layer and ACSE code. Default is automatic handling, which should
+**   work in most cases.
+**
+** Revision 1.13  2003/06/02 16:44:11  meichel
 ** Renamed local variables to avoid name clashes with STL
 **
 ** Revision 1.12  2002/11/27 13:04:44  meichel

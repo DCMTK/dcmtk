@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2003-06-10 13:42:07 $
+** Update Date:		$Date: 2004-02-25 12:31:15 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/assoc.h,v $
-** CVS/RCS Revision:	$Revision: 1.20 $
+** CVS/RCS Revision:	$Revision: 1.21 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -213,6 +213,7 @@ struct T_ASC_Parameters
     DIC_SH ourImplementationVersionName;
     DIC_UI theirImplementationClassUID;
     DIC_SH theirImplementationVersionName;
+    DUL_ModeCallback *modeCallback;
 
     DUL_ASSOCIATESERVICEPARAMETERS DULparams;
     /*
@@ -234,12 +235,10 @@ struct T_ASC_Association
     DUL_ASSOCIATIONKEY *DULassociation;
     T_ASC_Parameters *params;
 
-    unsigned short nextMsgID;	/* should be incremented by user */
-
+    unsigned short nextMsgID;	        /* should be incremented by user */
     unsigned long sendPDVLength;	/* max length of PDV to send out */
     unsigned char *sendPDVBuffer;	/* buffer of size sendPDVLength */
 };
-
 
 /*
 ** Public Function Prototypes
@@ -416,6 +415,8 @@ ASC_dumpPresentationContext(T_ASC_PresentationContext * presentationContext, ost
 void
 ASC_dumpConnectionParameters(T_ASC_Association *association, ostream& outstream);
 
+void ASC_activateCallback(T_ASC_Parameters *params, DUL_ModeCallback *cb);
+
 /*
  * Association Inquiries
  */
@@ -493,7 +494,12 @@ ASC_destroyAssociation(T_ASC_Association ** association);
 /*
 ** CVS Log
 ** $Log: assoc.h,v $
-** Revision 1.20  2003-06-10 13:42:07  meichel
+** Revision 1.21  2004-02-25 12:31:15  meichel
+** Added global option flag for compatibility with very old DCMTK releases in the
+**   DICOM upper layer and ACSE code. Default is automatic handling, which should
+**   work in most cases.
+**
+** Revision 1.20  2003/06/10 13:42:07  meichel
 ** Replaced unnamed C style structs by C++ declarations
 **
 ** Revision 1.19  2002/07/10 11:43:55  meichel
