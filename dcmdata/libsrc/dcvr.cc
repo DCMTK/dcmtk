@@ -11,7 +11,7 @@
 **
 **
 ** Last Update:   $Author: meichel $
-** Revision:      $Revision: 1.14 $
+** Revision:      $Revision: 1.15 $
 ** Status:        $State: Exp $
 **
 */
@@ -109,11 +109,10 @@ static DcmVREntry DcmVRDict[] = {
       DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, DCM_UndefinedLength },
     { EVR_pixelItem, "pi_EVR_pixelItem", sizeof(Uint8), 
       DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, DCM_UndefinedLength },
-    
-    { EVR_UNKNOWN, "??", sizeof(Uint8), /* EVR_UNKNOWN - if someone uses illegal VRs,
-      we assume that he does not use extended length coding */
-      DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL , 0, DCM_UndefinedLength },
 
+    { EVR_UNKNOWN, "??", sizeof(Uint8), /* EVR_UNKNOWN (i.e. "future" VRs) should be mapped to UN or OB */
+      DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL | DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
+    
     /* Unknown Value Representation - Supplement 14 */
     { EVR_UN, "UN", sizeof(Uint8), DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
 
@@ -126,6 +125,9 @@ static DcmVREntry DcmVRDict[] = {
     { EVR_UT, "UT", sizeof(char), DCMVR_PROP_ISASTRING|DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
     /* Virtual String - defined in CP 101 */
     { EVR_VS, "VS", sizeof(char), DCMVR_PROP_ISASTRING, 0, 1024 },
+
+    { EVR_UNKNOWN2B, "??", sizeof(Uint8), /* illegal VRs, we assume no extended length coding */
+      DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL , 0, DCM_UndefinedLength },
 
 };
 
@@ -182,15 +184,31 @@ void
 DcmVR::setVR(const char* vrName)
 {
     vr = EVR_UNKNOWN;   /* default */
-    if ( vrName != NULL) {
+    if ( vrName != NULL)
+    {
         int found = OFFalse;
         int i = 0;
-        for (i=0;  (!found && (i < DcmVRDict_DIM)); i++) {
-            if (strncmp(vrName, DcmVRDict[i].vrName, 2) == 0) {
+        for (i=0;  (!found && (i < DcmVRDict_DIM)); i++)
+        {
+            if (strncmp(vrName, DcmVRDict[i].vrName, 2) == 0)
+            {
                 found = OFTrue;
                 vr = DcmVRDict[i].vr;
             }
         }
+        /* Workaround: There have been reports of systems transmitting
+         * illegal VR strings in explicit VR (i.e. '??') without using
+         * extended length fields. This is particularly bad because the
+         * DICOM committee has announced that all future VRs will use
+         * extended length. In order to distinguish between these two
+         * variants, we treat all unknown VRs consisting of uppercase
+         * letters as "real" future VRs (and thus assume extended length).
+         * All other VR strings are treated as "illegal" VRs.
+         */
+        register char c1 = *vrName;
+        register char c2 = (c1)?(*(vrName+1)):('\0');
+        if ((c1=='?')&&(c2=='?')) vr = EVR_UNKNOWN2B;
+        if (!found && ((c1<'A')||(c1>'Z')||(c2<'A')||(c2>'Z'))) vr = EVR_UNKNOWN2B;
     }
 }
 

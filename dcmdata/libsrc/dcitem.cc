@@ -9,10 +9,10 @@
 ** Implementation of the class DcmItem
 **
 **
-** Last Update:         $Author: joergr $
-** Update Date:         $Date: 1998-07-15 15:51:59 $
+** Last Update:         $Author: meichel $
+** Update Date:         $Date: 1999-03-22 15:55:52 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
-** CVS/RCS Revision:    $Revision: 1.41 $
+** CVS/RCS Revision:    $Revision: 1.42 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -301,6 +301,9 @@ DcmObject* DcmItem::copyDcmObject( DcmObject *oldObj )
     case EVR_OB :
     case EVR_OW :
     case EVR_ox :
+    case EVR_UN :
+    case EVR_UNKNOWN :   // Treat unknown elements as Byte-String
+    case EVR_UNKNOWN2B : // Treat unknown elements as Byte-String
         newObj = new DcmOtherByteOtherWord( *(DcmOtherByteOtherWord*)oldObj );
         break;
 
@@ -314,13 +317,6 @@ DcmObject* DcmItem::copyDcmObject( DcmObject *oldObj )
         newObj = new DcmOverlayData(*(DcmOverlayData *)oldObj);
         break;
         
-
-        // Treat unknown elements as Byte-String:
-    case EVR_UNKNOWN :
-    case EVR_UN :
-        newObj = new DcmOtherByteOtherWord( *(DcmOtherByteOtherWord*)oldObj );
-        break;
-
     case EVR_na :
     default :
         cerr << "Warning: DcmItem::copyDcmObject(): unsupported Element("
@@ -645,6 +641,15 @@ E_Condition DcmItem::readTagAndLength(DcmStream & inStream,
         vrstr[2] = '\0';
         inStream.ReadBytes(vrstr, 2);  // 2 Byte Laenge:VR als string
         DcmVR vr(vrstr);            // class DcmVR
+        if (!vr.isStandard())
+        {
+            /* this VR is unknown (e.g. "??").  print a warning. */
+            cerr << "WARNING: parsing attribute: " << newTag.getXTag() << 
+                " non-standard VR encountered: '" << vrstr << "', assuming ";
+            if (vr.usesExtendedLengthEncoding()) 
+              cerr << "4 byte length field" << endl;
+              else cerr << "2 byte length field" << endl;
+        }
         newTag.setVR(vr);     // VR in newTag anpassen, falls Element
         // nicht fehlerhaft kodiert ist.
         bytesRead += 2;
@@ -1622,6 +1627,7 @@ E_Condition newDicomElement(DcmElement * & newElement,
 
         // Unbekannte Typen als Byte-String lesen:
     case EVR_UNKNOWN :
+    case EVR_UNKNOWN2B :
     case EVR_UN :
     default :
         if (length == DCM_UndefinedLength) {
@@ -1882,7 +1888,14 @@ DcmItem::findRealNumber(
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.41  1998-07-15 15:51:59  joergr
+** Revision 1.42  1999-03-22 15:55:52  meichel
+** New handling of unknown (unsupported) VRs encountered when reading explicit
+**   VR data. If the VR string consists of uppercase letters, we assume a
+**   "future DICOM VR" and decode it expecting an extended length field
+**   (4 bytes). Otherwise, we assume an illegal VR string created by some old
+**   equipment (i.e.) "??" and decode without extended length (2 bytes).
+**
+** Revision 1.41  1998/07/15 15:51:59  joergr
 ** Removed several compiler warnings reported by gcc 2.8.1 with
 ** additional options, e.g. missing copy constructors and assignment
 ** operators, initialization of member variables in the body of a

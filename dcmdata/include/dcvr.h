@@ -10,8 +10,8 @@
 ** Definition of the DcmVR class for Value Representation
 **
 **
-** Last Update:   $Author: joergr $
-** Revision:      $Revision: 1.8 $
+** Last Update:   $Author: meichel $
+** Revision:      $Revision: 1.9 $
 ** Status:        $State: Exp $
 **
 */
@@ -94,7 +94,8 @@ enum DcmEVR
     EVR_OverlayData=39,    /* used internally */
 
     EVR_UT=40,          /* Unlimited Text - defined in CP 101 & CP 122 - needed for Structured Reporting (SR) */
-    EVR_VS=41           /* Virtual String - defined in CP 101 */
+    EVR_VS=41,          /* Virtual String - defined in CP 101 */
+    EVR_UNKNOWN2B=42    /* like EVR_UNKNOWN but without extended length property in explicit VR */
 };
 
 
