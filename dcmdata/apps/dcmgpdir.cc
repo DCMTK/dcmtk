@@ -10,10 +10,10 @@
 ** CD-R Image Interchange Profile (Supplement 19).
 **
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-09-18 07:35:35 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1997-09-22 16:40:10 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
-** CVS/RCS Revision:	$Revision: 1.18 $
+** CVS/RCS Revision:	$Revision: 1.19 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -90,7 +90,7 @@ static char rcsid[] = "$dcmtk: dcmgpdir v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
 /* default File-Set ID */
-#define DEFAULT_FSID "DEMO CAR 97"
+#define DEFAULT_FSID "DCMTK_MEDIA_DEMO"
 /* default File-Set Descriptor File ID */
 #define DEFAULT_FSDFID "README"
 /* default Specific Character Set of File-Set Descriptor File */
@@ -107,7 +107,7 @@ OFString ofname = "DICOMDIR";
 /* actual File-Set ID */
 OFString fsid = DEFAULT_FSID;
 /* actual File-Set Descriptor File ID */
-OFString fsdfid = NULL; /* can be set to DEFAULT_FSDFID during option handling */
+OFString fsdfid = ""; /* can be set to DEFAULT_FSDFID during option handling */
 /* actual Specific Character Set of File-Set Descriptor File */
 OFString scsfsdf = DEFAULT_SCSFSDF;
 
@@ -391,7 +391,7 @@ int main(int argc, char *argv[])
 }
 
 /*
-** Bebug assistance
+** Debug assistance
 */
 
 void
@@ -407,33 +407,15 @@ dcmPrint(DcmObject *obj)
 */
 
 static OFBool
-dcmTagExists(DcmItem* d, const DcmTagKey& xtag, OFBool searchIntoSub = OFFalse)
+dcmTagExists(DcmItem* d, const DcmTagKey& key)
 {
-    DcmStack stack;
-    E_Condition ec = EC_Normal;
-    
-    ec = d->search(xtag, stack, ESM_fromHere, searchIntoSub);
-
-    return (ec == EC_Normal);
+    return d->tagExists(key, OFFalse);
 }
 
 static OFBool
-dcmTagExistsWithValue(DcmItem* d, const DcmTagKey& xtag, 
-		      OFBool searchIntoSub = OFFalse)
+dcmTagExistsWithValue(DcmItem* d, const DcmTagKey& key)
 {
-    DcmElement *elem = NULL;
-    DcmStack stack;
-    E_Condition ec = EC_Normal;
-    Uint32 len = 0;
-
-    
-    ec = d->search(xtag, stack, ESM_fromHere, searchIntoSub);
-    elem = (DcmElement*) stack.top();
-    if (ec == EC_Normal && elem != NULL) {
-	len = elem->getLength();
-    }
-
-    return (ec == EC_Normal) && (len > 0);
+    return d->tagExistsWithValue(key, OFFalse);
 }
 
 static OFString
@@ -454,7 +436,7 @@ dcmFindString(DcmItem* d, const DcmTagKey& key,
 }
 
 static OFString
-dcmFindStringInFile(const OFString& fname, const DcmTagKey& xtag, 
+dcmFindStringInFile(const OFString& fname, const DcmTagKey& key, 
 		    OFBool searchIntoSub = OFFalse)
 {
     if (verbosemode) {
@@ -480,13 +462,13 @@ dcmFindStringInFile(const OFString& fname, const DcmTagKey& xtag,
 
     DcmDataset *d = ff.getDataset();
 
-    OFString s = dcmFindString(d, xtag, searchIntoSub);
+    OFString s = dcmFindString(d, key, searchIntoSub);
 
     return s;
 }
 
 static OFBool 
-dcmInsertString(DcmItem* d, const DcmTagKey& xtag, 
+dcmInsertString(DcmItem* d, const DcmTagKey& key, 
 		const OFString& s, OFBool replaceOld = OFTrue)
 {
     if (d == NULL) {
@@ -494,7 +476,7 @@ dcmInsertString(DcmItem* d, const DcmTagKey& xtag,
 	return OFFalse;
     }
 
-    DcmTag tag(xtag);
+    DcmTag tag(key);
     DcmElement *elem = newDicomElement(tag);
     E_Condition cond = EC_Normal;
 
@@ -502,7 +484,7 @@ dcmInsertString(DcmItem* d, const DcmTagKey& xtag,
 	cerr << "error: dcmInsertString: cannot create DcmElement" << endl;
 	return OFFalse;
     }
-    if (s != (char *)NULL) {
+    if (!s.empty()) {
 	cond = elem->putOFStringArray(s);
 	if (cond != EC_Normal) {
 	    cerr << "error: dcmInsertString: cannot put string" << endl;
@@ -519,54 +501,55 @@ dcmInsertString(DcmItem* d, const DcmTagKey& xtag,
 }
 
 static OFBool 
-dcmCopyString(DcmItem* sink, const DcmTagKey& xtag, DcmItem* source)
+dcmCopyString(DcmItem* sink, const DcmTagKey& key, DcmItem* source)
 {
-    return dcmInsertString(sink, xtag, dcmFindString(source, xtag));
+    return dcmInsertString(sink, key, dcmFindString(source, key));
 }
 
 static OFBool 
-dcmCopyOptString(DcmItem* sink, const DcmTagKey& xtag, DcmItem* source)
+dcmCopyOptString(DcmItem* sink, const DcmTagKey& key, DcmItem* source)
 {
     OFBool ok = OFTrue;
-    if (dcmTagExists(source, xtag)) {
-	ok = dcmInsertString(sink, xtag, dcmFindString(source, xtag));
+    if (dcmTagExists(source, key)) {
+	ok = dcmInsertString(sink, key, dcmFindString(source, key));
     }
     return ok;
 }
 
-#ifdef UNUSED_FUNCTION
+#if 0
+/* currently unused */
 static OFBool 
-dcmCopyStringWithDefault(DcmItem* sink, const DcmTagKey& xtag, 
+dcmCopyStringWithDefault(DcmItem* sink, const DcmTagKey& key, 
 			 DcmItem* source, const char* defaultString)
 {
     OFBool ok = OFTrue;
-    if (dcmTagExistsWithValue(source, xtag)) {
-	ok = dcmInsertString(sink, xtag, dcmFindString(source, xtag));
+    if (dcmTagExistsWithValue(source, key)) {
+	ok = dcmInsertString(sink, key, dcmFindString(source, key));
     } else {
-	ok = dcmInsertString(sink, xtag, defaultString);
+	ok = dcmInsertString(sink, key, defaultString);
     }
     return ok;
 }
 #endif
 
 static OFBool 
-dcmCopyOptSequence(DcmItem* sink, const DcmTagKey& xtag, DcmItem* source)
+dcmCopyOptSequence(DcmItem* sink, const DcmTagKey& key, DcmItem* source)
 {
     OFBool ok = OFTrue;
-    DcmTag tag(xtag);
+    DcmTag tag(key);
 
     if (tag.getEVR() != EVR_SQ) {
 	cerr << "internal error: dcmCopyOptSequence: " 
-	     << xtag << " not SQ" << endl;
+	     << key << " not SQ" << endl;
 	abort();
     }
 
-    if (dcmTagExists(source, xtag)) {
+    if (dcmTagExists(source, key)) {
 	DcmSequenceOfItems *sq = NULL;
 	DcmStack stack;
 	E_Condition ec = EC_Normal;
     
-	ec = source->search(xtag, stack, ESM_fromHere, OFFalse);
+	ec = source->search(key, stack, ESM_fromHere, OFFalse);
 
 	sq = (DcmSequenceOfItems*) stack.top();
 	if (ec == EC_Normal && sq != NULL) {
@@ -595,7 +578,7 @@ currentDate()
     struct tm *ts = localtime(&tt);
     if (ts == NULL) {
 	cerr << "ERROR: cannot get localtime" << endl;
-	return NULL;
+	return "";
     }
     int year = 1900 + ts->tm_year;
     sprintf(dateBuf, "%04d%02d%02d", year, ts->tm_mon + 1, ts->tm_mday);
@@ -610,7 +593,7 @@ currentTime()
     struct tm *ts = localtime(&tt);
     if (ts == NULL) {
 	cerr << "ERROR: cannot get localtime" << endl;
-	return NULL;
+	return "";
     }
     sprintf(timeBuf, "%02d%02d%02d", ts->tm_hour, ts->tm_min, ts->tm_sec);
     return timeBuf;
@@ -915,17 +898,29 @@ checkImage(const OFString& fname, DcmFileFormat *ff)
     */
     OFBool found = OFFalse;
 
-    for (int i=0; i<numberOfDcmStorageSOPClassUIDs && !found; i++) {
-	found = cmp(mediaSOPClassUID, dcmStorageSOPClassUIDs[i]);
+    /* is it an image ? */
+    for (int i=0; i<numberOfDcmImageSOPClassUIDs && !found; i++) {
+	found = cmp(mediaSOPClassUID, dcmImageSOPClassUIDs[i]);
     }
+    /* is it an overlay/curve/modality_lut/voi_lut etc ? */
+    found = found || cmp(mediaSOPClassUID, UID_StandaloneOverlayStorage);
+    found = found || cmp(mediaSOPClassUID, UID_StandaloneCurveStorage);
+    found = found || cmp(mediaSOPClassUID, UID_StandaloneModalityLUTStorage);
+    found = found || cmp(mediaSOPClassUID, UID_StandaloneVOILUTStorage);
+    found = found || cmp(mediaSOPClassUID, UID_PETCurveStorage);
+
     /* a detached patient mgmt sop class is also ok */
+    found = found || cmp(mediaSOPClassUID, UID_DetachedPatientManagementSOPClass);
+
     if (!found) {
-	found = cmp(mediaSOPClassUID, UID_DetachedPatientManagementSOPClass);
-    }
-    if (!found) {
-	cerr << "error: invalid sop class for STD-GEN-CD profile: "
-	     << fname << endl;
-	ok = OFFalse;
+	OFString sopClassName = dcmFindNameOfUID(mediaSOPClassUID.c_str());
+	if (sopClassName.empty()) {
+	    sopClassName = mediaSOPClassUID;
+	}
+	cerr << "error: invalid sop class (" << sopClassName
+	     << ") for STD-GEN-CD profile: " << fname << endl;
+	/* give up checking */
+	return OFFalse;
     }
 
     /* 
@@ -1003,7 +998,8 @@ checkImage(const OFString& fname, DcmFileFormat *ff)
 	    if (!checkExistsWithValue(d, DCM_LUTNumber, fname)) 
 		ok = OFFalse;
 	}
-    } else if (cmp(mediaSOPClassUID, UID_StandaloneCurveStorage)) {
+    } else if (cmp(mediaSOPClassUID, UID_StandaloneCurveStorage) ||
+	       cmp(mediaSOPClassUID, UID_PETCurveStorage)) {
 	/* a curve */
 	if (!inventAttributes) {
 	    if (!checkExistsWithValue(d, DCM_CurveNumber, fname)) 
@@ -1070,7 +1066,7 @@ buildStudyRecord(const OFString& referencedFileName, DcmItem* d,
 	dcmCopyString(rec, DCM_StudyDate, d);
     } else {
 	OFString altDate = alternativeStudyDate(d);
-	cerr << "warning: " << sourceFileName 
+	cerr << "Warning: " << sourceFileName 
 	     << ": StudyDate missing: using alternative: "
 	     << altDate << endl;
 	dcmInsertString(rec, DCM_StudyDate, altDate);
@@ -1079,7 +1075,7 @@ buildStudyRecord(const OFString& referencedFileName, DcmItem* d,
 	dcmCopyString(rec, DCM_StudyTime, d);
     } else {
 	OFString altTime = alternativeStudyTime(d);
-	cerr << "warning: " << sourceFileName
+	cerr << "Warning: " << sourceFileName
 	     << ": StudyTime missing: using alternative: "
 	     << altTime << endl;
 	dcmInsertString(rec, DCM_StudyTime, altTime);
@@ -1408,10 +1404,42 @@ buildRecord(E_DirRecType dirtype, const OFString& referencedFileName,
 }
 
 static void 
-printAttribute(ostream& o, DcmTagKey& key, const OFString& s)
+printAttribute(ostream& out, DcmTagKey& key, const OFString& s)
 {
     DcmTag tag(key);
-    o << tag.getTagName() << " " << key << "=\"" << s << "\"";
+    out << tag.getTagName() << " " << key << "=\"" << s << "\"";
+}
+
+static void
+printRecordUniqueKey(ostream& out, DcmDirectoryRecord *rec)
+{
+    OFString key;
+    switch (rec->getRecordType()) {
+    case ERT_Patient:
+	out << "PatientID " << DCM_PatientID << "=\""
+	    << dcmFindString(rec, DCM_PatientID) << "\"";
+	break;
+    case ERT_Study:
+	out << "StudyInstanceUID " << DCM_StudyInstanceUID << "=\""
+	    << dcmFindString(rec, DCM_StudyInstanceUID) << "\"";
+	break;
+    case ERT_Series:
+	out << "SeriesInstanceUID " << DCM_SeriesInstanceUID << "=\""
+	    << dcmFindString(rec, DCM_SeriesInstanceUID) << "\"";
+	break;
+    case ERT_Image:
+    case ERT_Overlay:
+    case ERT_Curve:
+    case ERT_ModalityLut:
+    case ERT_VoiLut:
+	out << "ReferencedSOPInstanceUIDInFile " 
+	    << DCM_ReferencedSOPInstanceUIDInFile << "=\""
+	    << dcmFindString(rec, DCM_ReferencedSOPInstanceUIDInFile) << "\"";
+	break;
+    default:
+	cerr << "error: record type not yet implemented" << endl;
+	break; 
+    }
 }
 
 static OFBool
@@ -1426,12 +1454,15 @@ compareStringAttributes(DcmTagKey& tag, DcmDirectoryRecord *rec,
 	cerr << "Warning: file inconsistant with existing DICOMDIR record"
 	     << endl;
 	cerr << "  " << recordTypeToName(rec->getRecordType()) 
-	     << " Record (origin: " << rec->getRecordsOriginFile()
+	     << " Record [Key: ";
+	printRecordUniqueKey(cerr, rec);
+	cerr << "]" << endl;
+	cerr << "    Existing Record (origin: " << rec->getRecordsOriginFile()
 	     << ") defines: " << endl;
-	cerr << "    "; 
+	cerr << "      "; 
 	printAttribute(cerr, tag, s1); cerr << endl;
-	cerr << "  File (" << sourceFileName << ") defines:" << endl;
-	cerr << "    "; 
+	cerr << "    File (" << sourceFileName << ") defines:" << endl;
+	cerr << "      "; 
 	printAttribute(cerr, tag, s2); cerr << endl;
     }
 
@@ -1489,7 +1520,7 @@ getISNumber(DcmItem *i, const DcmTagKey& key)
 {
     int num = 0;
     OFString s = dcmFindString(i, key);
-    if (s != (char *)NULL) {
+    if (!s.empty()) {
 	sscanf(s.c_str(), "%d", &num);
     }
     return num;
@@ -1705,7 +1736,8 @@ addToDir(DcmDirectoryRecord* rootRec, const OFString& ifname)
 	if (rec == NULL) {
 	    return OFFalse;
 	}
-    } else if (cmp(sopClass, UID_StandaloneCurveStorage)) {
+    } else if (cmp(sopClass, UID_StandaloneCurveStorage) || 
+	       cmp(sopClass, UID_PETCurveStorage)) {
 	/* Add a curve record */
 	rec = includeRecord(seriesRec, ERT_Curve, dataset, fname, ifname);
 	if (rec == NULL) {
@@ -1744,15 +1776,16 @@ areCSCharsValid(const OFString& fname)
     return OFTrue;
 }
 
-static OFBool 
-areFileNameCharsValid(const OFString& fname,
-		      char separator = PATH_SEPARATOR)
+static OFString 
+locateInvalidFileNameChars(const OFString& fname,
+			   char separator = PATH_SEPARATOR)
 {
     int len = fname.size();
     if (mapFilenames && fname[len-1] == '.') {
 	/* disregard trailing point */
 	len--;
     }
+    OFString invalidChars;
     for (int i=0; i<len; i++) {
 	char c = fname[i];
 	if ((c == '_') || isdigit(c) || (c == separator) || 
@@ -1761,21 +1794,21 @@ areFileNameCharsValid(const OFString& fname,
 	} else if (c == '\\') {
 	    /* this is only ok if the underlying OS uses \ */
 	    if (separator != '\\') {
-		cerr << "error: invalid character encountered: "
-		     << char(c) << endl;
-		return OFFalse;
+		if (invalidChars.find(c) == OFString_npos) {
+		    invalidChars += c;
+		}
 	    }
 	} else if (isalpha(c) && islower(c)) {
-	    cerr << "error: lower-case characters encountered: "
-		 << char(c) << endl;
-	    return OFFalse;
+	    if (invalidChars.find(c) == OFString_npos) {
+		invalidChars += c;
+	    }
 	} else {
-	    cerr << "error: invalid character encountered: "
-		 << char(c) << endl;
-	    return OFFalse;
+	    if (invalidChars.find(c) == OFString_npos) {
+		invalidChars += c;
+	    }
 	}
     }
-    return OFTrue;
+    return invalidChars;
 }
 
 static OFBool
@@ -1787,9 +1820,10 @@ isaValidFileName(const OFString& fname,
     ** Is the file name path ok?
     ** The filename is assumed to be in local format for this check.
     */
-    if (!areFileNameCharsValid(fname, sep)) {
-	cerr << "       invalid characters in filename: " 
-	     << fname << endl;
+    OFString invalidChars = locateInvalidFileNameChars(fname, sep);
+    if (!invalidChars.empty()) {
+	cerr << "error: invalid characters (\"" << invalidChars 
+	     << "\") in filename: " << fname << endl;
 	ok = OFFalse;
     }
     /*
@@ -1805,9 +1839,8 @@ isaValidFileName(const OFString& fname,
     ** Ensure that each component is not too large
     */
     if (isComponentTooLarge(fname, MAX_FNAME_COMPONENT_SIZE, sep)) {
-	cerr << "error: component " 
-	     << " too large (max " << MAX_FNAME_COMPONENT_SIZE 
-	     << " characters) in filename: "
+	cerr << "error: component too large (max " 
+	     << MAX_FNAME_COMPONENT_SIZE << " characters) in filename: "
 	     << fname << endl;
 	ok = OFFalse;
     }
@@ -1852,13 +1885,12 @@ isaValidFileSetID(const OFString& fsid)
 static OFBool
 checkFileCanBeUsed(const OFString& fname) 
 {
-    OFBool ok = OFTrue;
     if (verbosemode) {
 	cout << "checking: " << fname << endl;
     }
 
     if (!isaValidFileName(fname)) {
-	ok = OFFalse;
+	return OFFalse;
     }
 
     /*
@@ -1885,11 +1917,7 @@ checkFileCanBeUsed(const OFString& fname)
 	return OFFalse;
     }
 
-    if (checkImage(fname, &ff) == OFFalse) {
-	ok = OFFalse;
-    }
-
-    return ok;
+    return checkImage(fname, &ff);
 }
 
 static void
@@ -1908,7 +1936,7 @@ inventMissingImageLevelAttributes(DcmDirectoryRecord *parent)
 	case ERT_Image:
 	    if (!dcmTagExistsWithValue(rec, DCM_ImageNumber)) {
 		OFString defNum = defaultNumber(imageNumber++);
-		cerr << "warning: " <<  recordTypeToName(rec->getRecordType())
+		cerr << "Warning: " <<  recordTypeToName(rec->getRecordType())
 		     << "Record (origin: " << rec->getRecordsOriginFile() 
 		     << ") inventing ImageNumber: "
 		     << defNum << endl;
@@ -1918,7 +1946,7 @@ inventMissingImageLevelAttributes(DcmDirectoryRecord *parent)
 	case ERT_Overlay:
 	    if (!dcmTagExistsWithValue(rec, DCM_OverlayNumber)) {
 		OFString defNum = defaultNumber(overlayNumber++);
-		cerr << "warning: " <<  recordTypeToName(rec->getRecordType())
+		cerr << "Warning: " <<  recordTypeToName(rec->getRecordType())
 		     << "Record (origin: " << rec->getRecordsOriginFile() 
 		     << ") inventing OverlayNumber: "
 		     << defNum << endl;
@@ -1929,7 +1957,7 @@ inventMissingImageLevelAttributes(DcmDirectoryRecord *parent)
 	case ERT_VoiLut:
 	    if (!dcmTagExistsWithValue(rec, DCM_LUTNumber)) {
 		OFString defNum = defaultNumber(lutNumber++);
-		cerr << "warning: " <<  recordTypeToName(rec->getRecordType())
+		cerr << "Warning: " <<  recordTypeToName(rec->getRecordType())
 		     << "Record (origin: " << rec->getRecordsOriginFile() 
 		     << ") inventing LutNumber: "
 		     << defNum << endl;
@@ -1939,7 +1967,7 @@ inventMissingImageLevelAttributes(DcmDirectoryRecord *parent)
 	case ERT_Curve:
 	    if (!dcmTagExistsWithValue(rec, DCM_CurveNumber)) {
 		OFString defNum = defaultNumber(curveNumber++);
-		cerr << "warning: " <<  recordTypeToName(rec->getRecordType())
+		cerr << "Warning: " <<  recordTypeToName(rec->getRecordType())
 		     << "Record (origin: " << rec->getRecordsOriginFile() 
 		     << ") inventing CurveNumber: "
 		     << defNum << endl;
@@ -1965,7 +1993,7 @@ inventMissingSeriesLevelAttributes(DcmDirectoryRecord *parent)
 	DcmDirectoryRecord* rec = parent->getSub(i);
 	if (!dcmTagExistsWithValue(rec, DCM_SeriesNumber)) {
 	    OFString defNum = defaultNumber(seriesNumber++);
-	    cerr << "warning: Series Record (origin: " 
+	    cerr << "Warning: Series Record (origin: " 
 		 << rec->getRecordsOriginFile() << ") inventing SeriesNumber: "
 		 << defNum << endl;
 	    dcmInsertString(rec, DCM_SeriesNumber, defNum);
@@ -1985,7 +2013,7 @@ inventMissingStudyLevelAttributes(DcmDirectoryRecord *parent)
 	DcmDirectoryRecord* rec = parent->getSub(i);
 	if (!dcmTagExistsWithValue(rec, DCM_StudyID)) {
 	    OFString defId = defaultID("DCMTKSTUDY", studyNumber++);
-	    cerr << "warning: Study Record (origin: " 
+	    cerr << "Warning: Study Record (origin: " 
 		 << rec->getRecordsOriginFile() << ") inventing StudyID: "
 		 << defId << endl;
 	    dcmInsertString(rec, DCM_StudyID, defId);
@@ -2004,7 +2032,7 @@ inventMissingAttributes(DcmDirectoryRecord *root)
 	DcmDirectoryRecord* rec = root->getSub(i);
 	if (!dcmTagExistsWithValue(rec, DCM_PatientID)) {
 	    OFString defId = defaultID("DCMTKPAT", patientNumber++);
-	    cerr << "warning: Patient Record (origin: " 
+	    cerr << "Warning: Patient Record (origin: " 
 		 << rec->getRecordsOriginFile() << ") inventing PatientID: "
 		 << defId << endl;
 	    dcmInsertString(rec, DCM_PatientID, defId);
@@ -2072,25 +2100,28 @@ createDicomdirFromFiles(OFList<OFString>& fileNames)
     ** Check the files before adding
     */
 
-    int badFileCount = 0;
-    int goodFileCount = 0;
+    OFList<OFString> goodFileNames;
+    OFList<OFString> badFileNames;
     OFListIterator(OFString) iter = fileNames.begin();
     while (iter != fileNames.end()) {
-	if (checkFileCanBeUsed((*iter).c_str())) {
-	    goodFileCount++;
+	if (checkFileCanBeUsed(*iter)) {
+	    goodFileNames.push_back(*iter);
 	} else {
-	    badFileCount++;
+	    badFileNames.push_back(*iter);;
 	}
 	++iter;
     }
-    if (badFileCount > 0) {
-	cerr << "error: " << badFileCount << " bad files (" << goodFileCount
-	     << " good files): DICOMDIR not created" << endl;
-	ok = OFFalse;
-    }
-
-    if (!ok) {
+    if (goodFileNames.empty()) {
+	cerr << "FATAL ERROR: no good files: DICOMDIR not created" << endl;
 	return OFFalse;
+    } else if (!badFileNames.empty()) {
+	cerr << "WARNING: " << badFileNames.size() 
+	     << " file(s) cannot be added to DICOMDIR: " << endl;
+	iter = badFileNames.begin();
+	while (iter != badFileNames.end()) {
+	    cerr << "         " << *iter << endl;
+	    ++iter;
+	}
     }
 
     OFBool backupCreated = OFFalse;
@@ -2128,15 +2159,15 @@ createDicomdirFromFiles(OFList<OFString>& fileNames)
     /* 
     ** add optional parts to root record
     */
-    if (fsdfid != (char *)NULL) {
+    if (!fsdfid.empty()) {
 	dcmInsertString(dicomdir->getDirFileFormat().getDataset(), 
 			DCM_FileSetDescriptorFileID, fsdfid);
 	dcmInsertString(dicomdir->getDirFileFormat().getDataset(), 
 			DCM_FileSetCharacterSet, scsfsdf);
     }
 
-    iter = fileNames.begin();
-    while (iter != fileNames.end()) {
+    iter = goodFileNames.begin();
+    while (iter != goodFileNames.end()) {
 	if (addToDir(&rootRecord, *iter) == OFFalse) {
 	    return OFFalse;
 	}
@@ -2266,7 +2297,12 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 /*
 ** CVS/RCS Log:
 ** $Log: dcmgpdir.cc,v $
-** Revision 1.18  1997-09-18 07:35:35  meichel
+** Revision 1.19  1997-09-22 16:40:10  hewett
+** Modified to use the new attribute existance tests
+** from DcmItem and the global list dcmImageSOPClassUIDs of SOP
+** Classes which can be referenced from a DICOMDIR IMAGE record.
+**
+** Revision 1.18  1997/09/18 07:35:35  meichel
 ** Overloading ambiguity removed. Affects systems on which NULL is defined
 **   as a (typeless) 0. OFString comparisons with a non-casted NULL will
 **   cause compile errors on such systems because 0 is a valid pointer and a
