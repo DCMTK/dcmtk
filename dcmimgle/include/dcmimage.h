@@ -22,9 +22,9 @@
  *  Purpose: Provides main interface to the "DICOM image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-19 08:24:20 $
+ *  Update Date:      $Date: 2002-08-02 15:02:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dcmimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1507,16 +1507,21 @@ class DicomImage
 
  // --- output image file: return true ('1') if successful
 
-    /** render pixel data and write image related attributes to DICOM dataset.
+    /** render pixel data of the given frame and write image related attributes to DICOM dataset.
      *  Applies VOI/PLUT transformation and (visible) overlay planes, output data is
-     *  always padded to 8, 16, 32, ... bits (bits allocated).
-     *  Writes the following DICOM attributes:
+     *  always padded to 8, 16, 32, ... bits (bits allocated).  Replaces any modality
+     *  transformation in the dataset by a linear rescale/slope since the modality
+     *  transformation is rendered into the pixel data.  Replaces the VOI transformations
+     *  in the dataset by a "max range" VOI window.  Removes all Overlay Plane Module
+     *  attributes from the dataset.
+     *  Writes the following DICOM attributes (from Image Pixel Module):
      *    - Photometric Interpretation, Samples per Pixel
      *    - Columns, Rows, Number of Frames
-     *    - Pixel Aspect Ratio (only if pixels are non-square)
      *    - Bits Allocated, Bits Stored, High Bit
      *    - Planar Configuration (only if "Samples per Pixel" is greater than 1)
      *    - Pixel Representation, Pixel Data
+     *  Updates the following DICOM attributes (if present in the original image dataset):
+     *    - Imager Pixel Spacing and/or Imager Pixel Spacing and/or Pixel Aspect Ratio
      *  Supported output color models: Monochrome 2, RGB (and YCbCr_Full if flag
      *  CIF_KeepYCbCrColorModel set).
      *
@@ -1529,13 +1534,40 @@ class DicomImage
      *
      ** @return true if successful, false otherwise
      */
-    inline int writeToDataset(DcmItem &dataset,
-                              const int bits = 0,
-                              const unsigned long frame = 0,
-                              const int planar = 0)
+    inline int writeFrameToDataset(DcmItem &dataset,
+                                   const int bits = 0,
+                                   const unsigned long frame = 0,
+                                   const int planar = 0)
     {
         return (Image != NULL) ?
-            Image->writeToDataset(dataset, frame, bits, planar) : 0;
+            Image->writeFrameToDataset(dataset, frame, bits, planar) : 0;
+    }
+
+    /** write current image and related attributes to DICOM dataset.
+     *  Uses the internal representation of the pixel data, therefore the output data is
+     *  always padded to 8, 16, 32, ... bits (bits allocated).  Replaces any modality
+     *  transformation in the dataset by a linear rescale/slope since the modality
+     *  transformation is rendered into the pixel data.  Removes all Overlay Plane Module
+     *  attributes from the dataset.
+     *  Writes the following DICOM attributes (from Image Pixel Module):
+     *    - Photometric Interpretation, Samples per Pixel
+     *    - Columns, Rows, Number of Frames
+     *    - Bits Allocated, Bits Stored, High Bit
+     *    - Planar Configuration (only if "Samples per Pixel" is greater than 1)
+     *    - Pixel Representation, Pixel Data
+     *  Updates the following DICOM attributes (if present in the original image dataset):
+     *    - Imager Pixel Spacing and/or Imager Pixel Spacing and/or Pixel Aspect Ratio
+     *  Supported output color models: Monochrome 1/2, RGB (and YCbCr_Full if flag
+     *  CIF_KeepYCbCrColorModel set).
+     *
+     ** @param  dataset  reference to DICOM dataset where the image attributes are stored
+     *
+     ** @return true if successful, false otherwise
+     */
+    inline int writeImageToDataset(DcmItem &dataset)
+    {
+        return (Image != NULL) ?
+            Image->writeImageToDataset(dataset) : 0;
     }
 
     /** write pixel data to PPM file (specified by filename).
@@ -1748,7 +1780,13 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.42  2002-07-19 08:24:20  joergr
+ * Revision 1.43  2002-08-02 15:02:34  joergr
+ * Enhanced writeFrameToDataset() routine (remove out-data DICOM attributes
+ * from the dataset).
+ * Added function to write the current image (not only a selected frame) to a
+ * DICOM dataset.
+ *
+ * Revision 1.42  2002/07/19 08:24:20  joergr
  * Enhanced/corrected comments.
  *
  * Revision 1.41  2002/07/05 10:37:47  joergr
