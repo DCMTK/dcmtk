@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: meichel $, $Date: 1999-04-19 08:38:59 $
+** Last Update:		$Author: meichel $, $Date: 1999-04-21 15:49:49 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.25 $
+** Revision:		$Revision: 1.26 $
 ** Status:		$State: Exp $
 */
 
@@ -2513,7 +2513,7 @@ sendAssociationRQTCP(PRIVATE_NETWORKKEY ** /*network*/,
     CONDITION
 	cond;
 
-    OFBitmanipTemplate<PRV_ASSOCIATEPDU>::zeroMem(&associateRequest, 1); // initialize PDU
+    OFBitmanipTemplate<char>::zeroMem((char *)&associateRequest, sizeof(PRV_ASSOCIATEPDU)); // initialize PDU
     // associateRequest.presentationContextList = NULL;
     cond = constructAssociatePDU(params, DUL_TYPEASSOCIATERQ,
 				 &associateRequest);
@@ -2611,7 +2611,7 @@ sendAssociationACTCP(PRIVATE_NETWORKKEY ** /*network*/,
     DUL_ASSOCIATESERVICEPARAMETERS
 	localService;
 
-    OFBitmanipTemplate<PRV_ASSOCIATEPDU>::zeroMem(&associateReply, 1); // initialize PDU
+    OFBitmanipTemplate<char>::zeroMem((char *)&associateReply, sizeof(PRV_ASSOCIATEPDU)); // initialize PDU
     // associateReply.presentationContextList = NULL;
 
     localService = *params;
@@ -4197,7 +4197,10 @@ DULPRV_translateAssocReq(unsigned char *buffer,
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.25  1999-04-19 08:38:59  meichel
+** Revision 1.26  1999-04-21 15:49:49  meichel
+** Fixed use of OFBitmanipTemplate<>::zeroMem in sendAssociationRQTCP().
+**
+** Revision 1.25  1999/04/19 08:38:59  meichel
 ** Added experimental support for extended SOP class negotiation.
 **
 ** Revision 1.24  1999/03/29 11:20:05  meichel
