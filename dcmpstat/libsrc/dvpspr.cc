@@ -23,8 +23,8 @@
  *    classes: DVPSPrintMessageHandler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:35 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2001-08-22 08:28:15 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -506,10 +506,9 @@ CONDITION DVPSPrintMessageHandler::negotiateAssociation(
   CONDITION cond = ASC_initializeNetwork(NET_REQUESTOR, 0, 1000, &net);
   if (!SUCCESS(cond)) 
   {
-                return cond;
-                }
-                
-        cond = ASC_createAssociationParameters(&params, peerMaxPDU);
+    return cond;
+  }
+  cond = ASC_createAssociationParameters(&params, peerMaxPDU);
 
   ASC_setAPTitles(params, myAEtitle, peerAEtitle, NULL);
   gethostname(dnlocalHost, sizeof(dnlocalHost) - 1);
@@ -603,7 +602,7 @@ CONDITION DVPSPrintMessageHandler::negotiateAssociation(
       logstream->unlockCerr();
     }
   } else {
-    if (params) ASC_destroyAssociationParameters(&params);
+    // params is now an alias to assoc->params. Don't call ASC_destroyAssociationParameters.
     if (assoc) ASC_destroyAssociation(&assoc);
     if (net) ASC_dropNetwork(&net);
     assoc = NULL;
@@ -633,7 +632,11 @@ void DVPSPrintMessageHandler::setLog(OFConsole *stream, OFBool verbMode, OFBool 
 
 /*
  *  $Log: dvpspr.cc,v $
- *  Revision 1.13  2001-06-01 15:50:35  meichel
+ *  Revision 1.14  2001-08-22 08:28:15  meichel
+ *  Fixed double deletion of association parameters in dcmpstat
+ *    class DVPSPrintMessageHandler.
+ *
+ *  Revision 1.13  2001/06/01 15:50:35  meichel
  *  Updated copyright header
  *
  *  Revision 1.12  2000/06/07 13:17:08  meichel
