@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2003, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: create a Dicom FileFormat or DataSet from an ASCII-dump
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-11-05 16:15:27 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dump2dcm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-01-16 10:53:16 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -447,7 +446,7 @@ putFileContentsIntoElement(DcmElement* elem, const char* filename)
     if (buf == NULL) {
         CERR << "ERROR: out of memory reading binary data file: " << filename << endl;
         ec = EC_MemoryExhausted;
-    } else if (fread(buf, 1, (size_t)len, f) != len) {
+    } else if (fread(buf, 1, OFstatic_cast(size_t, len), f) != len) {
         CERR << "ERROR: error reading binary data file: " << filename << ": ";
         perror(NULL);
         ec = EC_CorruptedData;
@@ -460,7 +459,7 @@ putFileContentsIntoElement(DcmElement* elem, const char* filename)
         } else if (evr == EVR_OW) {
             /* put 16 bit OW data into the attribute */
             swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, buf, buflen, sizeof(Uint16));
-            ec = elem->putUint16Array((Uint16*)buf, buflen/2);
+            ec = elem->putUint16Array(OFreinterpret_cast(Uint16 *, buf), buflen / 2);
         }
     }
 
@@ -540,7 +539,7 @@ insertIntoSet(DcmStack & stack, DcmTagKey tagkey, DcmEVR vr, char * value)
                       case EVR_dataset:
                       case EVR_metainfo:
                       {
-                          DcmItem * item = (DcmItem *)topOfStack;
+                          DcmItem *item = OFstatic_cast(DcmItem *, topOfStack);
                           item -> insert(newElement);
                           if (newElement->ident() == EVR_SQ || newElement->ident() == EVR_pixelSQ)
                               stack.push(newElement);
@@ -587,14 +586,14 @@ insertIntoSet(DcmStack & stack, DcmTagKey tagkey, DcmEVR vr, char * value)
                 {
                     // an Item must be pushed to the stack
                     item = new DcmDirectoryRecord(tag, 0);
-                    ((DcmSequenceOfItems *) topOfStack) -> insert(item);
+                    OFstatic_cast(DcmSequenceOfItems *, topOfStack) -> insert(item);
                     stack.push(item);
                 }
                 else if (topOfStack->ident() == EVR_SQ)
                 {
                     // an item must be pushed to the stack
                     item = new DcmItem(tag);
-                    ((DcmSequenceOfItems *) topOfStack) -> insert(item);
+                    OFstatic_cast(DcmSequenceOfItems *, topOfStack) -> insert(item);
                     stack.push(item);
                 }
                 else
@@ -912,14 +911,14 @@ int main(int argc, char *argv[])
     }
 
     // read dump file into metaheader and dataset
-    if (readDumpFile(metaheader, dataset, dumpfile, ifname, (unsigned long)opt_linelength))
+    if (readDumpFile(metaheader, dataset, dumpfile, ifname, OFstatic_cast(unsigned long, opt_linelength)))
     {
         // write into file format or dataset
         if (verbosemode)
             COUT << "writing DICOM file" << endl;
 
-        OFCondition l_error = fileformat.saveFile(ofname, oxfer, oenctype, oglenc,
-            opadenc, (Uint32) opt_filepad, (Uint32) opt_itempad, !createFileFormat);
+        OFCondition l_error = fileformat.saveFile(ofname, oxfer, oenctype, oglenc, opadenc,
+            OFstatic_cast(Uint32, opt_filepad), OFstatic_cast(Uint32, opt_itempad), !createFileFormat);
 
         if (l_error == EC_Normal)
             COUT << "dump successfully converted." << endl;
@@ -939,7 +938,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
-** Revision 1.46  2003-11-05 16:15:27  meichel
+** Revision 1.47  2004-01-16 10:53:16  joergr
+** Adapted type casts to new-style typecast operators defined in ofcast.h.
+** Removed acknowledgements with e-mail addresses from CVS log.
+**
+** Revision 1.46  2003/11/05 16:15:27  meichel
 ** Removed useless "--write-xfer-same" command line option
 **
 ** Revision 1.45  2002/12/05 13:59:29  joergr
@@ -965,13 +968,9 @@ int main(int argc, char *argv[])
 **
 ** Revision 1.39  2002/04/16 13:38:55  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
-** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
-** contribution.
 **
 ** Revision 1.38  2001/12/11 14:00:39  joergr
 ** Fixed bug in 'dump2dcm' parser causing AT attribute values to be ignored.
-** Thanks to Anders Gustafsson <agustafsson@mds.nordion.com> for the bug
-** report.
 **
 ** Revision 1.37  2001/11/09 15:50:53  joergr
 ** Renamed some of the getValue/getParam methods to avoid ambiguities reported

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: List the contents of a dicom file
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-12-13 13:44:29 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmdump.cc,v $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-01-16 10:52:42 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -107,7 +106,7 @@ static OFBool addPrintTagName(const char* tagName)
         printTagKeys[printTagCount] = NULL;
     }
 
-    printTagNames[printTagCount] = strcpy((char*)malloc(strlen(tagName)+1),tagName);
+    printTagNames[printTagCount] = strcpy(OFstatic_cast(char*, malloc(strlen(tagName)+1)), tagName);
     printTagCount++;
     return OFTrue;
 }
@@ -397,8 +396,8 @@ static void printResult(ostream& out, DcmStack& stack, size_t printFlags)
             if (dobj != NULL && dobj->getTag().getXTag() != DCM_Item) {
                 char buf[512];
                 sprintf(buf, "(%x,%x).",
-                    (unsigned)dobj->getGTag(),
-                    (unsigned)dobj->getETag());
+                    OFstatic_cast(unsigned, dobj->getGTag()),
+                    OFstatic_cast(unsigned, dobj->getETag()));
                 out << buf;
             }
         }
@@ -497,7 +496,11 @@ static int dumpFile(ostream & out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
- * Revision 1.46  2002-12-13 13:44:29  meichel
+ * Revision 1.47  2004-01-16 10:52:42  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ * Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ * Revision 1.46  2002/12/13 13:44:29  meichel
  * Fixed problem in dcmdump, --ignore-errors now works correctly again.
  *
  * Revision 1.45  2002/12/06 12:05:44  joergr
@@ -527,8 +530,7 @@ static int dumpFile(ostream & out,
  *   use of the DICOM stream classes.
  *
  * Revision 1.38  2002/08/02 08:43:16  joergr
- * Fixed bug in dcmdump that was preventing the +p option from working. Thanks
- * to Tom Probasco <dimatics@attbi.com> for the bug report and fix.
+ * Fixed bug in dcmdump that was preventing the +p option from working.
  *
  * Revision 1.37  2002/07/08 14:44:54  meichel
  * Improved dcmdata behaviour when reading odd tag length. Depending on the
@@ -538,8 +540,6 @@ static int dumpFile(ostream & out,
  *
  * Revision 1.36  2002/04/16 13:38:53  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
- * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- * contribution.
  *
  * Revision 1.35  2002/01/11 14:34:20  joergr
  * Added new option to dcmdump tool which prints a header with the filename.
@@ -655,8 +655,7 @@ static int dumpFile(ostream & out,
  *
  * Revision 1.6  1996/09/18 16:34:16  hewett
  * Added optional code to the dcmdump program to restrict its
- * output to specified named tags.  Based on a suggestion from
- * Larry V. Streepy, Jr.  (mailto:streepy@healthcare.com).
+ * output to specified named tags.
  *
  * Revision 1.5  1996/08/05 08:43:36  andreas
  * new print routine with additional parameters:
