@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-05 14:37:23 $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  Update Date:      $Date: 2004-01-16 10:09:45 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1071,7 +1071,7 @@ const OFString &DSRTypes::convertToPrintString(const OFString &sourceString,
     /* start with empty string */
     printString.clear();
     /* avoid to resize the string too often */
-    printString.resize(count);
+    printString.reserve(count);
     for (size_t i = 0; i < count; i++)
     {
         /* newline: depends on OS */
@@ -1456,7 +1456,10 @@ OFCondition DSRTypes::appendStream(ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
- *  Revision 1.40  2004-01-05 14:37:23  joergr
+ *  Revision 1.41  2004-01-16 10:09:45  joergr
+ *  Replaced OFString::resize() by ..reserve() in convertToPrintString().
+ *
+ *  Revision 1.40  2004/01/05 14:37:23  joergr
  *  Removed acknowledgements with e-mail addresses from CVS log.
  *
  *  Revision 1.39  2003/12/08 13:05:48  joergr
