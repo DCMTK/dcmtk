@@ -1,4 +1,9 @@
+**** Changes from 1999.01.28 (vorwerk)
 
+- added shared or exclusive locking mechanism to all browser
+  methods.
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
 **** Changes from 1999.01.27 (vorwerk)
 
 - implemented error handling for index files of length zero.
