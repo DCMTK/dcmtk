@@ -10,9 +10,9 @@
 ** routines for finding and creating UIDs.
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-03-26 17:21:02 $
+** Update Date:		$Date: 1997-03-27 16:10:43 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
-** CVS/RCS Revision:	$Revision: 1.11 $
+** CVS/RCS Revision:	$Revision: 1.12 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -87,10 +87,10 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
 */
 
 /* NOTE: Implementation version name may not be longer than 16 chars */
-#define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME	"OFFIS_DCMTK_312"
+#define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME	"OFFIS_DCMTK_313"
 
 #define OFFIS_UID_ROOT		       "1.2.276.0.7230010.3"
-#define OFFIS_DCMTK_VERSION	       "3.1.2"
+#define OFFIS_DCMTK_VERSION	       "3.1.3"
 #define OFFIS_IMPLEMENTATION_CLASS_UID OFFIS_UID_ROOT ".0." OFFIS_DCMTK_VERSION
 
 /* 
@@ -242,7 +242,11 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.11  1997-03-26 17:21:02  hewett
+** Revision 1.12  1997-03-27 16:10:43  hewett
+** Updated Implementation Version Name and Implementation Class UID to
+** reflect the new version 3.1.3
+**
+** Revision 1.11  1997/03/26 17:21:02  hewett
 ** Changed DCMTK's implementation version name to be consitent with VR=CS.
 **
 ** Revision 1.10  1997/02/06 11:25:26  hewett
