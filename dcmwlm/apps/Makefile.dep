@@ -1,5 +1,6 @@
 wlcefs.o: wlcefs.cc ../../config/include/osconfig.h \
- ../../dcmnet/include/dicom.h ../../dcmnet/include/cond.h \
+ ../../config/include/cfunix.h ../../dcmnet/include/dicom.h \
+ ../../ofstd/include/ofstdinc.h ../../dcmnet/include/cond.h \
  ../../ofstd/include/ofconsol.h ../../ofstd/include/ofstream.h \
  ../../ofstd/include/ofthread.h ../../ofstd/include/oftypes.h \
  ../../dcmdata/include/dcerror.h ../../ofstd/include/ofcond.h \
@@ -23,7 +24,8 @@ wlcefs.o: wlcefs.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dcsequen.h ../include/wldsfs.h \
  ../include/wlmactmg.h wlcefs.h
 wlmscpfs.o: wlmscpfs.cc ../../config/include/osconfig.h \
- ../../dcmnet/include/dicom.h ../../dcmnet/include/cond.h \
+ ../../config/include/cfunix.h ../../dcmnet/include/dicom.h \
+ ../../ofstd/include/ofstdinc.h ../../dcmnet/include/cond.h \
  ../../ofstd/include/ofconsol.h ../../ofstd/include/ofstream.h \
  ../../ofstd/include/ofthread.h ../../ofstd/include/oftypes.h \
  ../../dcmdata/include/dcerror.h ../../ofstd/include/ofcond.h \
