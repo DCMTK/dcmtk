@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2002, OFFIS
+ *  Copyright (C) 2000-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRNumericMeasurementValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-10 13:20:07 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2003-08-07 12:43:44 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -79,7 +79,7 @@ class DSRNumericMeasurementValue
                                const DSRCodedEntryValue &measurementUnit,
                                const DSRCodedEntryValue &valueQualifier);
 
-    /** copy constructor.
+    /** copy constructor
      ** @param  numericMeasurement  numeric measurement value to be copied (not checked !)
      */
     DSRNumericMeasurementValue(const DSRNumericMeasurementValue &numericMeasurement);
@@ -101,7 +101,7 @@ class DSRNumericMeasurementValue
 
     /** check whether the current numeric measurement value is valid.
      *  The value is valid if isEmpty() is true or all three values (numeric value, measurement
-     *  unit and value qualifier) do contain valid values (see check...() methods).
+     *  unit and value qualifier) do contain valid values (see checkXXX() methods).
      ** @return OFTrue if value is valid, OFFalse otherwise
      */
     virtual OFBool isValid() const;
@@ -122,6 +122,14 @@ class DSRNumericMeasurementValue
      */
     virtual OFCondition print(ostream &stream,
                               const size_t flags) const;
+
+    /** read numeric measurement value from XML document
+     ** @param  doc     document containing the XML file content
+     *  @param  cursor  cursor pointing to the starting node
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition readXML(const DSRXMLDocument &doc,
+                                DSRXMLCursor cursor);
 
     /** write numeric measurement value in XML format
      ** @param  stream     output stream to which the XML document is written
@@ -199,7 +207,7 @@ class DSRNumericMeasurementValue
         return MeasurementUnit;
     }
 
-    /** get numeric value qualifier
+    /** get numeric value qualifier (optional)
      ** @return reference to current numeric value qualifier code (might be invalid or empty)
      */
     inline const DSRCodedEntryValue &getNumericValueQualifier() const
@@ -214,7 +222,7 @@ class DSRNumericMeasurementValue
     OFCondition getMeasurementUnit(DSRCodedEntryValue &measurementUnit) const;
 
     /** set numeric measurement value.
-     *  Before setting the value it is checked (see check...()).  If the value is invalid
+     *  Before setting the value it is checked (see checkXXX()).  If the value is invalid
      *  the current value is not replaced and remains unchanged.
      ** @param  numericMeasurement  value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
@@ -222,7 +230,7 @@ class DSRNumericMeasurementValue
     OFCondition setValue(const DSRNumericMeasurementValue &numericMeasurement);
 
     /** set numeric value and measurement unit.
-     *  Before setting the values they are checked (see check...()).  If the value pair is
+     *  Before setting the values they are checked (see checkXXX()).  If the value pair is
      *  invalid the current value pair is not replaced and remains unchanged.
      ** @param  numericValue     numeric value to be set
      *  @param  measurementUnit  measurement unit to be set
@@ -232,7 +240,7 @@ class DSRNumericMeasurementValue
                          const DSRCodedEntryValue &measurementUnit);
 
     /** set numeric value, measurement unit and numeric value qualifier.
-     *  Before setting the values they are checked (see check...()).  If one of the three
+     *  Before setting the values they are checked (see checkXXX()).  If one of the three
      *  values is invalid the current numeric measurement value is not replaced and remains
      *  unchanged.
      ** @param  numericValue     numeric value to be set
@@ -339,7 +347,10 @@ class DSRNumericMeasurementValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrnumvl.h,v $
- *  Revision 1.7  2002-12-10 13:20:07  joergr
+ *  Revision 1.8  2003-08-07 12:43:44  joergr
+ *  Added readXML functionality.
+ *
+ *  Revision 1.7  2002/12/10 13:20:07  joergr
  *  Added support for the Numeric Value Qualifier Code Sequence (introduced with
  *  CP 260).
  *

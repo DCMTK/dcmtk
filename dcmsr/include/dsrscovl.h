@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2001, OFFIS
+ *  Copyright (C) 2000-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRSpatialCoordinatesValue
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 13:04:11 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-08-07 12:47:10 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,6 +39,7 @@
 
 #include "dsrtypes.h"
 #include "dsrscogr.h"
+#include "dsrxmlc.h"
 
 
 /*---------------------*
@@ -124,7 +125,15 @@ class DSRSpatialCoordinatesValue
      */
     virtual OFCondition write(DcmItem &dataset,
                               OFConsole *logStream) const;
-                              
+
+    /** read spatial coordinates value from XML document
+     ** @param  doc     document containing the XML file content
+     *  @param  cursor  cursor pointing to the starting node
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition readXML(const DSRXMLDocument &doc,
+                                DSRXMLCursor cursor);
+
     /** write spatial coordinates value in XML format
      ** @param  stream     output stream to which the XML document is written
      *  @param  flags      flag used to customize the output (see DSRTypes::XF_xxx)
@@ -199,7 +208,7 @@ class DSRSpatialCoordinatesValue
     {
         return GraphicDataList;
     }
-    
+
 
   protected:
 
@@ -213,7 +222,7 @@ class DSRSpatialCoordinatesValue
 
     /** check the graphic type and data for validity.
      *  If 'graphicType' is valid the number of entries in the 'graphicDatalist' are checked.
-     *  A POINT needs exactly 1 value pair (column,row), a MULTIPOINT at least 1?, a closed 
+     *  A POINT needs exactly 1 value pair (column,row), a MULTIPOINT at least 1?, a closed
      *  POLYLINE at least 1? where the first and last pair are equal, a CIRCLE exactly 2 and an
      *  ELLIPSE exactly 4.
      ** @param  graphicType      graphic type to be checked
@@ -227,7 +236,7 @@ class DSRSpatialCoordinatesValue
 
 
   private:
-  
+
     /// graphic type (associated DICOM VR=CS, type 1)
     DSRTypes::E_GraphicType GraphicType;
     /// graphic data (associated DICOM VR=FL, VM=2-n, type 1)
@@ -241,7 +250,10 @@ class DSRSpatialCoordinatesValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscovl.h,v $
- *  Revision 1.7  2001-09-26 13:04:11  meichel
+ *  Revision 1.8  2003-08-07 12:47:10  joergr
+ *  Added readXML functionality.
+ *
+ *  Revision 1.7  2001/09/26 13:04:11  meichel
  *  Adapted dcmsr to class OFCondition
  *
  *  Revision 1.6  2001/06/01 15:51:03  meichel

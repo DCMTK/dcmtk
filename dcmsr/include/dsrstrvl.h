@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2001, OFFIS
+ *  Copyright (C) 2000-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRStringValue
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 13:04:11 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-08-07 12:50:44 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +38,7 @@
 #include "osconfig.h"   /* make sure OS specific configuration is included first */
 
 #include "dsrtypes.h"
+#include "dsrxmlc.h"
 
 #include "ofstring.h"
 
@@ -57,13 +58,13 @@ class DSRStringValue
      */
     DSRStringValue();
 
-    /** constructor.
+    /** constructor
      *  The string value is only set if it passed the validity check (see setValue()).
      ** @param  stringValue  string value to be set
      */
     DSRStringValue(const OFString &stringValue);
 
-    /** copy constructor.
+    /** copy constructor
      ** @param  stringValue  string value to be copied (not checked !)
      */
     DSRStringValue(const DSRStringValue &stringValue);
@@ -124,10 +125,20 @@ class DSRStringValue
                       const DcmTagKey &tagKey,
                       OFConsole *logStream) const;
 
+    /** read string value from XML document
+     ** @param  doc       document containing the XML file content
+     *  @param  cursor    cursor pointing to the starting node
+     *  @param  encoding  use encoding handler if OFTrue, ignore character set otherwise
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition readXML(const DSRXMLDocument &doc,
+                        DSRXMLCursor cursor,
+                        const OFBool encoding = OFFalse);
+
     /** render string value in HTML format
-     ** @param  docStream    output stream to which the main HTML document is written
-     *  @param  flags        flag used to customize the output (see DSRTypes::HF_xxx)
-     *  @param  logStream    pointer to error/warning output stream (output disabled if NULL)
+     ** @param  docStream  output stream to which the main HTML document is written
+     *  @param  flags      flag used to customize the output (see DSRTypes::HF_xxx)
+     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition renderHTML(ostream &docStream,
@@ -177,7 +188,10 @@ class DSRStringValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrstrvl.h,v $
- *  Revision 1.7  2001-09-26 13:04:11  meichel
+ *  Revision 1.8  2003-08-07 12:50:44  joergr
+ *  Added readXML functionality.
+ *
+ *  Revision 1.7  2001/09/26 13:04:11  meichel
  *  Adapted dcmsr to class OFCondition
  *
  *  Revision 1.6  2001/06/01 15:51:03  meichel

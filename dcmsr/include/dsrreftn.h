@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2001, OFFIS
+ *  Copyright (C) 2000-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRByReferenceTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-09-28 14:07:02 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2003-08-07 12:45:14 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,18 +50,18 @@
 class DSRByReferenceTreeNode
   : public DSRDocumentTreeNode
 {
-
+    // allow access to private member variables
     friend class DSRDocumentTree;
 
   public:
- 
-    /** constructor.
+
+    /** constructor
      ** @param  relationshipType  type of relationship to the parent/source tree node.
      *                            Should not be RT_invalid or RT_isRoot.
      */
     DSRByReferenceTreeNode(const E_RelationshipType relationshipType);
 
-    /** constructor.
+    /** constructor
      ** @param  relationshipType  type of relationship to the parent/source tree node.
      *                            Should not be RT_invalid or RT_isRoot.
      *  @param  referencedNodeID  ID of the node to be referenced
@@ -118,7 +118,7 @@ class DSRByReferenceTreeNode
     virtual OFCondition setObservationDateTime(const OFString &observationDateTime);
 
     /** check whether a node could be added as a child node
-     ** @param  documentType      dummy parameter 
+     ** @param  documentType      dummy parameter
      *  @param  relationshipType  dummy parameter
      *  @param  valueType         dummy parameter
      *  @param  byReference       dummy parameter
@@ -128,7 +128,7 @@ class DSRByReferenceTreeNode
                               const E_RelationshipType relationshipType,
                               const E_ValueType valueType,
                               const OFBool byReference = OFFalse) const;
-    
+
     /** get ID of the referenced node
      ** @return ID of the referenced node if valid, 0 otherwise
      */
@@ -139,7 +139,7 @@ class DSRByReferenceTreeNode
 
 
   protected:
-  
+
     /** read content item (value) from dataset
      ** @param  dataset    DICOM dataset from which the content item should be read
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
@@ -155,6 +155,14 @@ class DSRByReferenceTreeNode
      */
     virtual OFCondition writeContentItem(DcmItem &dataset,
                                          OFConsole *logStream) const;
+
+    /** read content item specific XML data
+     ** @param  doc     document containing the XML file content
+     *  @param  cursor  cursor pointing to the starting node
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition readXMLContentItem(const DSRXMLDocument &doc,
+                                           DSRXMLCursor cursor);
 
     /** render content item (value) in HTML format
      ** @param  docStream     output stream to which the main HTML document is written
@@ -198,7 +206,10 @@ class DSRByReferenceTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrreftn.h,v $
- *  Revision 1.6  2001-09-28 14:07:02  joergr
+ *  Revision 1.7  2003-08-07 12:45:14  joergr
+ *  Added readXML functionality.
+ *
+ *  Revision 1.6  2001/09/28 14:07:02  joergr
  *  Added term "class" to friend declaration to keep gcc 3.0 quiet.
  *
  *  Revision 1.5  2001/09/26 13:04:10  meichel
