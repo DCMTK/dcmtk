@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-05 16:46:15 $
+ *  Update Date:      $Date: 1999-02-08 13:09:33 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -969,11 +969,15 @@ int DiMonoImage::addOverlay(const unsigned int group,
 }
 
 
-int DiMonoImage::removeOverlay(const unsigned int group)
+int DiMonoImage::removeAllOverlays()
 {
     if (Overlays[1] != NULL)
-        return Overlays[1]->removePlane(group);
-    return 0;
+    {
+        delete Overlays[1];
+        Overlays[1] = NULL;
+        return 1;
+    }
+    return 2;
 }
 
 
@@ -1409,7 +1413,10 @@ int DiMonoImage::writeRawPPM(FILE *stream, const unsigned long frame, const int 
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.11  1999-02-05 16:46:15  joergr
+ * Revision 1.12  1999-02-08 13:09:33  joergr
+ * Changed implementation of removeAllOverlays().
+ *
+ * Revision 1.11  1999/02/05 16:46:15  joergr
  * Added optional parameter to method convertPValueToDDL to specify width
  * of output data (number of bits).
  *
