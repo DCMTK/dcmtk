@@ -9,10 +9,10 @@
 ** Purpose:
 ** Implementation of class DcmFileFormat
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:27:37 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1996-03-11 14:48:04 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcfilefo.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -220,9 +220,9 @@ E_Condition DcmFileFormat::checkValue(DcmMetaInfo * metainfo,
 		    debug(( 2, "use SOPClassUID [%s]", uid ));
 
 		} else {
-                    cerr << "Warning: dcfilefo: I can't find"
-                        " DCM_SOPClassUID in Dataset!" << endl;
-                    l_error = EC_CorruptedData;
+		    ((DcmUniqueIdentifier*)elem)->put( 
+			UID_PrivateGenericFileSOPClass );
+		    debug(( 2, "No SOP Class UID in Dataset, using PrivateGenericFileSOPClass" ));
 		}
 	    }
 	} else if ( xtag == DCM_MediaStorageSOPInstanceUID ) {	// (0002,0003)
@@ -277,7 +277,6 @@ E_Condition DcmFileFormat::checkValue(DcmMetaInfo * metainfo,
 		elem = new DcmUniqueIdentifier( tag );
 		metainfo->insert( elem, TRUE );
 	    }
-	    //old: if ( elem->getLength() == 0 && elem->ident() == EVR_UI )
 	    if ( elem->ident() == EVR_UI )
 	    {
 		const char *uid = OFFIS_IMPLEMENTATION_CLASS_UID;
@@ -290,7 +289,6 @@ E_Condition DcmFileFormat::checkValue(DcmMetaInfo * metainfo,
 		elem = new DcmShortString( tag );
 		metainfo->insert( elem, TRUE );
 	    }
-	    //old: if ( elem->getLength() == 0 && elem->ident() == EVR_SH )
 	    if ( elem->ident() == EVR_SH )
 	    {
 		char *uid = OFFIS_DTK_IMPLEMENTATION_VERSION_NAME;
@@ -664,7 +662,13 @@ DcmDataset* DcmFileFormat::getDataset()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
-** Revision 1.3  1996-01-05 13:27:37  andreas
+** Revision 1.4  1996-03-11 14:48:04  hewett
+** When creating a DICOM file, if a SOP Class UID is present in the
+** data set then it will be used.  Otherwise, a private UID will now be used
+** in the meta header attribute MediaStorageSOPClass UID.  Previously this
+** attribute was left empty (an error for type 1 attributes).
+**
+** Revision 1.3  1996/01/05 13:27:37  andreas
 ** - changed to support new streaming facilities
 ** - unique read/write methods for file and block transfer
 ** - more cleanups
