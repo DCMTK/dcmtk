@@ -21,10 +21,10 @@
  *
  *  Purpose: Template class for bit manipulations (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-04-30 16:34:07 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-08-25 16:44:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofbmanip.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -84,7 +84,7 @@ class OFBitmanipTemplate
         register unsigned long i;
         register const T *p = src;
         register T *q = dest;
-        for (i = 0; i < count; i++)
+        for (i = count; i > 0; i--)
             *q++ = *p++;
 #endif
     }
@@ -106,7 +106,7 @@ class OFBitmanipTemplate
         {
             register unsigned long i;
             register T *q = dest;
-            for (i = 0; i < count; i++)
+            for (i = count; i > 0; i--)
                 *q++ = value;
         }
     }
@@ -136,7 +136,10 @@ class OFBitmanipTemplate
  *
  * CVS/RCS Log:
  * $Log: ofbmanip.h,v $
- * Revision 1.6  1999-04-30 16:34:07  meichel
+ * Revision 1.7  1999-08-25 16:44:44  joergr
+ * Enhanced efficiency of inner loops (count loop variable down).
+ *
+ * Revision 1.6  1999/04/30 16:34:07  meichel
  * Added provision for systems which have bzero() but no prototype, e.g. SunOS
  *
  * Revision 1.5  1999/04/29 16:49:22  meichel
