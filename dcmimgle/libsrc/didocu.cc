@@ -22,9 +22,9 @@
  *  Purpose: DicomDocument (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-14 17:33:45 $
+ *  Update Date:      $Date: 1998-12-16 16:11:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/didocu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,6 +34,7 @@
 
 #include "osconfig.h"
 #include "dctk.h"
+#include "ofstring.h"
 
 #include "didocu.h"
 #include "diutils.h"
@@ -264,6 +265,14 @@ unsigned long DiDocument::getValue(const DcmTagKey &tag,
 }
 
 
+unsigned long DiDocument::getValue(const DcmTagKey &tag,
+                                   OFString &returnVal,
+                                   const unsigned long pos) const
+{
+    return getElemValue(search(tag), returnVal, pos);
+}
+
+
 unsigned long DiDocument::getSequence(const DcmTagKey &tag,
                                       DcmSequenceOfItems *&seq) const
 {
@@ -308,9 +317,22 @@ unsigned long DiDocument::getElemValue(const DcmElement *elem,
 {
     if (elem != NULL)
     {
-        char *val;                                      // parameter has no 'const' qualifier
-        ((DcmElement *)elem)->getString(val);           // remove 'const' to use non-const methods
+        char *val;                                        // parameter has no 'const' qualifier
+        ((DcmElement *)elem)->getString(val);             // remove 'const' to use non-const methods
         returnVal = val;
+        return ((DcmElement *)elem)->getVM();
+    }
+    return 0;
+}
+
+
+unsigned long DiDocument::getElemValue(const DcmElement *elem,
+                                       OFString &returnVal,
+                                       const unsigned long pos)
+{
+    if (elem != NULL)
+    {
+        ((DcmElement *)elem)->getOFString(returnVal, pos);      // remove 'const' to use non-const methods
         return ((DcmElement *)elem)->getVM();
     }
     return 0;
@@ -321,7 +343,11 @@ unsigned long DiDocument::getElemValue(const DcmElement *elem,
  *
  * CVS/RCS Log:
  * $Log: didocu.cc,v $
- * Revision 1.2  1998-12-14 17:33:45  joergr
+ * Revision 1.3  1998-12-16 16:11:14  joergr
+ * Added methods to use getOFString from class DcmElement (incl. multi value
+ * fields).
+ *
+ * Revision 1.2  1998/12/14 17:33:45  joergr
  * Added (simplified) methods to return values of a given DcmElement object.
  *
  * Revision 1.1  1998/11/27 15:53:36  joergr
