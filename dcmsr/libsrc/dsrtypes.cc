@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-01 16:36:11 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2000-11-07 18:32:01 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,11 +73,12 @@ const size_t DSRTypes::HF_neverExpandChildrenInline =   16;
 const size_t DSRTypes::HF_renderInlineCodes         =   32;
 const size_t DSRTypes::HF_renderConceptNameCodes    =   64;
 const size_t DSRTypes::HF_renderNumericUnitCodes    =  128;
-const size_t DSRTypes::HF_renderPatientTitle        =  256;
-const size_t DSRTypes::HF_renderNoDocumentHeader    =  512;
-const size_t DSRTypes::HF_renderDcmtkFootnote       = 1024;
-const size_t DSRTypes::HF_renderFullData            = 2048;
-const size_t DSRTypes::HF_copyStyleSheetContent     = 4096;
+const size_t DSRTypes::HF_useCodeMeaningAsUnit      =  256;
+const size_t DSRTypes::HF_renderPatientTitle        =  512;
+const size_t DSRTypes::HF_renderNoDocumentHeader    = 1024;
+const size_t DSRTypes::HF_renderDcmtkFootnote       = 2048;
+const size_t DSRTypes::HF_renderFullData            = 4096;
+const size_t DSRTypes::HF_copyStyleSheetContent     = 8192;
 const size_t DSRTypes::HF_renderAllCodes            = DSRTypes::HF_renderInlineCodes | DSRTypes::HF_renderConceptNameCodes |
                                                       DSRTypes::HF_renderNumericUnitCodes;
 const size_t DSRTypes::HF_internalUseOnly           = DSRTypes::HF_renderItemsSeparately | DSRTypes::HF_renderItemInline |
@@ -693,7 +694,7 @@ E_Condition DSRTypes::putStringValueToDataset(DcmItem &dataset,
     {
         result = elem->putString(stringValue.c_str());
         if (result == EC_Normal)
-            dataset.insert(elem, OFTrue /* replaceOld */);            
+            dataset.insert(elem, OFTrue /* replaceOld */);
     } else if (result == EC_Normal)
         result = EC_MemoryExhausted;
     return result;
@@ -863,12 +864,130 @@ const OFString &DSRTypes::currentDateTime(OFString &dateTimeString)
     if (ts)
     {
         char buf[32];
-        sprintf(buf, "%04d%02d%02d%02d%02d%02d", 1900 + ts->tm_year, ts->tm_mon + 1, ts->tm_mday,
+        sprintf(buf, "%04d%02d%02d%02d%02d%02d.000000", 1900 + ts->tm_year, ts->tm_mon + 1, ts->tm_mday,
             ts->tm_hour, ts->tm_min, ts->tm_sec);
         dateTimeString = buf;
     } else
-        dateTimeString = "19000101000000";
+        dateTimeString = "19000101000000.000000";
     return dateTimeString;
+}
+
+
+const OFString &DSRTypes::dicomToReadableDate(const OFString &dicomDate,
+                                              OFString &readableDate)
+{
+    /* fixed length required by DICOM part 5 */
+    if (dicomDate.length() == 8)
+    {
+        readableDate = dicomDate.substr(0, 4);
+        readableDate += '-';
+        readableDate += dicomDate.substr(4, 2);
+        readableDate += '-';
+        readableDate += dicomDate.substr(6, 2);
+    } else
+        readableDate = dicomDate;
+    return readableDate;
+}
+
+
+const OFString &DSRTypes::dicomToReadableTime(const OFString &dicomTime,
+                                              OFString &readableTime)
+{
+    /* cut off optional fraction part */
+    OFString tempStr = dicomTime.substr(0, 4);
+    /* fill with trailing '0' */
+    tempStr.append(4 - tempStr.length(), '0');
+    /* hours */
+    readableTime = tempStr.substr(0, 2);
+    /* minutes */
+    readableTime += ':';
+    readableTime += tempStr.substr(2, 2);
+    /* optional seconds */
+    if (dicomTime.length() >= 6)
+    {
+        readableTime += ':';
+        readableTime += dicomTime.substr(4, 2);
+    }
+    return readableTime;
+}
+
+
+const OFString &DSRTypes::dicomToReadableDateTime(const OFString &dicomDateTime,
+                                                  OFString &readableDateTime)
+{
+    OFString tempStr = dicomDateTime.substr(0, 8);
+    dicomToReadableDate(tempStr, readableDateTime);
+    OFString timeStr;
+    tempStr = dicomDateTime.substr(8);
+    dicomToReadableTime(tempStr, timeStr);
+    readableDateTime += ", ";
+    readableDateTime += timeStr;
+    return readableDateTime;
+}
+
+
+const OFString &DSRTypes::dicomToReadablePersonName(const OFString &dicomPersonName,
+                                                    OFString &readablePersonName)
+{
+    readablePersonName.clear();
+    const size_t pos1 = dicomPersonName.find('^');
+    if (pos1 != OFString_npos)
+    {
+        const size_t pos2 = dicomPersonName.find('^', pos1 + 1);
+        OFString str1 = dicomPersonName.substr(0, pos1);
+        OFString str2, str3, str4, str5;
+        if (pos2 != OFString_npos)
+        {
+            const size_t pos3 = dicomPersonName.find('^', pos2 + 1);
+            str2 = dicomPersonName.substr(pos1 + 1, pos2 - pos1 - 1);
+            if (pos3 != OFString_npos)
+            {
+                const size_t pos4 = dicomPersonName.find('^', pos3 + 1);
+                str3 = dicomPersonName.substr(pos2 + 1, pos3 - pos2 - 1);
+                if (pos4 != OFString_npos)
+                {
+                    str4 = dicomPersonName.substr(pos3 + 1, pos4 - pos3 - 1);
+                    str5 = dicomPersonName.substr(pos4 + 1);
+                } else
+                    str4 = dicomPersonName.substr(pos3 + 1);
+            } else
+                str3 = dicomPersonName.substr(pos2 + 1);
+        } else
+            str2 = dicomPersonName.substr(pos1 + 1);
+        /* prefix */
+        if (str4.length() > 0)
+            readablePersonName += str4;
+        /* first name */
+        if (str2.length() > 0)
+        {
+            if (readablePersonName.length() > 0)
+                readablePersonName += ' ';
+            readablePersonName = str2;
+        }
+        /* middle name */
+        if (str3.length() > 0)
+        {
+            if (readablePersonName.length() > 0)
+                readablePersonName += ' ';
+            readablePersonName += str3;
+        }
+        /* last name */
+        if (str1.length() > 0)
+        {
+            if (readablePersonName.length() > 0)
+                readablePersonName += ' ';
+            readablePersonName += str1;
+        }
+        /* suffix */
+        if (str5.length() > 0)
+        {
+            if (readablePersonName.length() > 0)
+                readablePersonName += ", ";
+            readablePersonName += str5;
+        }
+    } else
+        readablePersonName = dicomPersonName;
+    return readablePersonName;
 }
 
 
@@ -1236,7 +1355,12 @@ E_Condition DSRTypes::appendStream(ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
- *  Revision 1.6  2000-11-01 16:36:11  joergr
+ *  Revision 1.7  2000-11-07 18:32:01  joergr
+ *  Enhanced rendered HTML output of date, time, datetime and pname.
+ *  Added new command line option allowing to choose code value or meaning to be
+ *  rendered as the numeric measurement unit.
+ *
+ *  Revision 1.6  2000/11/01 16:36:11  joergr
  *  Added support for conversion to XML.
  *  Added support for Cascading Style Sheet (CSS) used optionally for HTML
  *  rendering.
