@@ -93,8 +93,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-05-07 11:25:38 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Update Date:      $Date: 2004-05-26 10:14:47 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -176,17 +176,16 @@ const unsigned int OFStandard::ftoa_zeropad   = 0x20;
 #endif
 
 
-#ifdef HAVE_ISINF
-
-// some systems don't properly define finite()
-#ifndef HAVE_PROTOTYPE_ISINF
+// some systems don't properly define isnan()
+#ifdef HAVE_ISNAN
+#ifndef HAVE_PROTOTYPE_ISNAN
 extern "C"
 {
-  int isinf(double value);
+  int isnan(double value);
 }
 #endif
+#endif
 
-#else
 
 // some systems don't properly define finite()
 #ifdef HAVE_FINITE
@@ -198,15 +197,17 @@ extern "C"
 #endif
 #endif
 
-// some systems don't properly define isnan()
-#ifdef HAVE_ISNAN
-#ifndef HAVE_PROTOTYPE_ISNAN
+
+// some systems don't properly define isinf()
+#ifdef HAVE_ISINF
+#ifndef HAVE_PROTOTYPE_ISINF
 extern "C"
 {
-  int isnan(double value);
+  int isinf(double value);
 }
 #endif
-#endif
+
+#else /* HAVE_ISINF */
 
 static int my_isinf(double x)
 {
@@ -217,7 +218,8 @@ static int my_isinf(double x)
   return (! finite(x)) && (! isnan(x));
 #endif
 }
-#endif
+#endif /* HAVE_ISINF */
+
 
 // --- string functions ---
 
@@ -1624,7 +1626,10 @@ unsigned int OFStandard::my_sleep(unsigned int seconds)
 
 /*
  *  $Log: ofstd.cc,v $
- *  Revision 1.30  2004-05-07 11:25:38  meichel
+ *  Revision 1.31  2004-05-26 10:14:47  meichel
+ *  Completed isinf() workaround for MacOS X
+ *
+ *  Revision 1.30  2004/05/07 11:25:38  meichel
  *  Added workaround for MacOS X where isinf() and isnan() are defined in <math.h>
  *    but not in <cmath>.
  *
