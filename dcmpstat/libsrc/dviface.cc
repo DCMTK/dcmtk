@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-04 12:30:28 $
- *  CVS/RCS Revision: $Revision: 1.143 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-09-18 11:52:18 $
+ *  CVS/RCS Revision: $Revision: 1.144 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,6 +40,9 @@
 #include "ofdatime.h"    /* for OFDateTime */
 #include "oflist.h"      /* for class OFList */
 #include "oflogfil.h"    /* for class OFLogFile */
+#include "ofstream.h"
+#include "ofcast.h"
+
 #include "digsdfn.h"     /* for DiGSDFunction */
 #include "diciefn.h"     /* for DiCIELABFunction */
 #include "diutil.h"      /* for DU_getStringDOElement */
@@ -48,7 +51,6 @@
 #include "dcmimage.h"    /* for class DicomImage */
 #include "dvsighdl.h"    /* for class DVSignatureHandler */
 #include "dcsignat.h"    /* for class DcmSignature */
-#include "ofstream.h"
 #include "dsrdoc.h"      /* for class DSRDocument */
 #include "dsrcodvl.h"
 
@@ -203,7 +205,7 @@ DVInterface::DVInterface(const char *config_file, OFBool useLog)
     maximumPreviewImageHeight = getMaxPreviewResolutionY();
 
     pPrint = new DVPSStoredPrint(getDefaultPrintIllumination(), getDefaultPrintReflection(), getNetworkAETitle());
-    pState = new DVPresentationState((DiDisplayFunction **)displayFunction,
+    pState = new DVPresentationState(OFstatic_cast(DiDisplayFunction **, displayFunction),
       minimumPrintBitmapWidth, minimumPrintBitmapHeight, maximumPrintBitmapWidth, maximumPrintBitmapHeight,
       maximumPreviewImageWidth, maximumPreviewImageHeight);
     pReport = new DSRDocument();
@@ -214,7 +216,7 @@ DVInterface::DVInterface(const char *config_file, OFBool useLog)
     if (pReport && debugMode)
         pReport->setLogStream(logstream);
 
-    referenceTime = (unsigned long)time(NULL);
+    referenceTime = OFstatic_cast(unsigned long, time(NULL));
     /* initialize printJobIdentifier with a string comprising the current time */
     char buf[20];
     sprintf(buf, "%lu", referenceTime);
@@ -238,7 +240,7 @@ DVInterface::DVInterface(const char *config_file, OFBool useLog)
             } else
                 logFile = new OFLogFile(filename);
             if (logFile != NULL)
-                logFile->setFilter((OFLogFile::LF_Level)getLogLevel());
+                logFile->setFilter(OFstatic_cast(OFLogFile::LF_Level, getLogLevel()));
             writeLogMessage(DVPSM_informational, "DCMPSTAT", "---------------------------\n--- Application started ---\n---------------------------");
         }
     }
@@ -263,7 +265,7 @@ DVInterface::~DVInterface()
     // refresh database index file access time
     if (databaseIndexFile.length() > 0)
         // cast to char* required for gcc 2.5.8 on NeXTSTEP
-        utime((char *)databaseIndexFile.c_str(), NULL);
+        utime(OFconst_cast(char *, databaseIndexFile.c_str()), NULL);
 }
 
 
@@ -300,7 +302,7 @@ OFCondition DVInterface::loadImage(const char *imgName)
 {
     OFCondition status = EC_IllegalCall;
     DcmFileFormat *image = NULL;
-    DVPresentationState *newState = new DVPresentationState((DiDisplayFunction **)displayFunction,
+    DVPresentationState *newState = new DVPresentationState(OFstatic_cast(DiDisplayFunction **, displayFunction),
       minimumPrintBitmapWidth, minimumPrintBitmapHeight, maximumPrintBitmapWidth, maximumPrintBitmapHeight,
       maximumPreviewImageWidth, maximumPreviewImageHeight);
     if (newState==NULL)
@@ -414,7 +416,7 @@ OFCondition DVInterface::loadPState(const char *studyUID,
 
     // load the presentation state
     DcmFileFormat *pstate = NULL;
-    DVPresentationState *newState = new DVPresentationState((DiDisplayFunction **)displayFunction,
+    DVPresentationState *newState = new DVPresentationState(OFstatic_cast(DiDisplayFunction **, displayFunction),
       minimumPrintBitmapWidth, minimumPrintBitmapHeight, maximumPrintBitmapWidth, maximumPrintBitmapHeight,
       maximumPreviewImageWidth, maximumPreviewImageHeight);
     if (newState==NULL)
@@ -494,7 +496,7 @@ OFCondition DVInterface::loadPState(const char *pstName,
     OFCondition status = EC_IllegalCall;
     DcmFileFormat *pstate = NULL;
     DcmFileFormat *image = pDicomImage;     // default: do not replace image if image filename is NULL
-    DVPresentationState *newState = new DVPresentationState((DiDisplayFunction **)displayFunction,
+    DVPresentationState *newState = new DVPresentationState(OFstatic_cast(DiDisplayFunction **, displayFunction),
       minimumPrintBitmapWidth, minimumPrintBitmapHeight, maximumPrintBitmapWidth, maximumPrintBitmapHeight,
       maximumPreviewImageWidth, maximumPreviewImageHeight);
     if (newState==NULL)
@@ -837,7 +839,7 @@ OFCondition DVInterface::saveStructuredReport()
 
 OFCondition DVInterface::saveStructuredReport(const char *filename, OFBool explicitVR)
 {
-    if (pState==NULL) return EC_IllegalCall;
+    if (pReport==NULL) return EC_IllegalCall;
     if (filename==NULL) return EC_IllegalCall;
 
     OFCondition status = EC_IllegalCall;
@@ -847,6 +849,8 @@ OFCondition DVInterface::saveStructuredReport(const char *filename, OFBool expli
 
     if (dataset)
     {
+        /* always add information about private OFFIS DCMTK Coding Scheme */
+        pReport->getCodingSchemeIdentification().addPrivateDcmtkCodingScheme();
         if ((status = pReport->write(*dataset)) == EC_Normal)
         {
             status = DVPSHelper::saveFileFormat(filename, fileformat, explicitVR);
@@ -1236,7 +1240,7 @@ OFCondition DVInterface::lockDatabase()
     DB_Handle *handle = NULL;
     if (DB_createHandle(getDatabaseFolder(), PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &handle).good())
     {
-        pHandle = (DB_Private_Handle *) handle;
+        pHandle = OFreinterpret_cast(DB_Private_Handle *, handle);
         lockingMode = OFFalse;
         if (DB_lock(pHandle, OFFalse).good())
         {
@@ -1275,7 +1279,7 @@ OFCondition DVInterface::unlockExclusive()
     {
         if (DB_unlock(pHandle).good())
         {
-            DB_destroyHandle((DB_Handle **)(&pHandle));
+            DB_destroyHandle(OFreinterpret_cast(DB_Handle **, &pHandle));
             lockingMode=OFFalse;
             pHandle=NULL;
             clearIndexCache();
@@ -1292,7 +1296,7 @@ OFCondition DVInterface::releaseDatabase()
 
     if (DB_unlock(pHandle).good())
     {
-        DB_destroyHandle((DB_Handle **)(&pHandle));
+        DB_destroyHandle(OFreinterpret_cast(DB_Handle **, &pHandle));
         pHandle=NULL;
         clearIndexCache();
         return EC_Normal;
@@ -1308,15 +1312,15 @@ void DVInterface::resetDatabaseReferenceTime()
     // date/time differences (i.e. over NFS)
 #ifdef HAVE_DECLARATION_STRUCT_UTIMBUF
     struct utimbuf utime_buf;
-    utime_buf.actime  = (time_t) referenceTime;
-    utime_buf.modtime = (time_t) referenceTime;
+    utime_buf.actime  = OFstatic_cast(time_t, referenceTime);
+    utime_buf.modtime = OFstatic_cast(time_t, referenceTime);
     if (0 != utime(databaseIndexFile.c_str(), &utime_buf))
 #else
     // some old platforms use the prototype int utime(char *file, time_t timep[])
     time_t utime_buf[2];
-    utime_buf[0]  = (time_t) referenceTime;
-    utime_buf[1] = (time_t) referenceTime;
-    if (0 != utime((char *)databaseIndexFile.c_str(), utime_buf))
+    utime_buf[0]  = OFstatic_cast(time_t, referenceTime);
+    utime_buf[1] = OFstatic_cast(time_t, referenceTime);
+    if (0 != utime(OFconst_cast(char *, databaseIndexFile.c_str()), utime_buf))
 #endif
     {
       if (verboseMode)
@@ -1328,7 +1332,7 @@ void DVInterface::resetDatabaseReferenceTime()
       struct stat stat_buf;
       if (0 == stat(databaseIndexFile.c_str(), &stat_buf))
       {
-        referenceTime = (unsigned long) stat_buf.st_mtime;
+        referenceTime = OFstatic_cast(unsigned long, stat_buf.st_mtime);
       }
     }
 }
@@ -1350,7 +1354,7 @@ OFBool DVInterface::newInstancesReceived()
     struct stat stat_buf;
     if (0== stat(databaseIndexFile.c_str(), &stat_buf))
     {
-      if (((unsigned long)stat_buf.st_mtime) == referenceTime) return OFFalse;
+      if (OFstatic_cast(unsigned long, stat_buf.st_mtime) == referenceTime) return OFFalse;
     }
 
     resetDatabaseReferenceTime();
@@ -1462,14 +1466,14 @@ OFBool DVInterface::createPStateCache()
                                                                     if (dataset->search(DCM_PresentationDescription, stack, ESM_fromHere, OFFalse) == EC_Normal)
                                                                     {
                                                                         char *value = NULL;
-                                                                        if ((*((DcmLongString *)(stack.top()))).getString(value) == EC_Normal)
+                                                                        if ((*OFstatic_cast(DcmLongString *, stack.top())).getString(value) == EC_Normal)
                                                                             reference->Description = value;
                                                                     }
                                                                     stack.clear();
                                                                     if (dataset->search(DCM_PresentationLabel, stack, ESM_fromHere, OFFalse) == EC_Normal)
                                                                     {
                                                                         char *value = NULL;
-                                                                        if ((*((DcmLongString *)(stack.top()))).getString(value) == EC_Normal)
+                                                                        if ((*OFstatic_cast(DcmLongString *, stack.top())).getString(value) == EC_Normal)
                                                                             reference->Label = value;
                                                                     }
                                                                     instance->List.push_back(reference);
@@ -1501,7 +1505,7 @@ OFBool DVInterface::createPStateCache()
 void DVInterface::clearIndexRecord(IdxRecord &record,
                                    int &recpos)
 {
-    OFBitmanipTemplate<Uint8>::zeroMem((Uint8 *)&record, sizeof(idxRec));
+    OFBitmanipTemplate<Uint8>::zeroMem(OFreinterpret_cast(Uint8 *, &record), sizeof(idxRec));
     recpos = -1;
 }
 
@@ -1995,8 +1999,8 @@ OFCondition DVInterface::instanceReviewed(int pos)
             {
                 wasNew = newInstancesReceived();
                 record.hstat = DVIF_objectIsNotNew;
-                lseek(pHandle->pidx, (long)(SIZEOF_STUDYDESC + recpos * SIZEOF_IDXRECORD), SEEK_SET);
-                write(pHandle->pidx, (char *)&record, SIZEOF_IDXRECORD);
+                lseek(pHandle->pidx, OFstatic_cast(long, SIZEOF_STUDYDESC + recpos * SIZEOF_IDXRECORD), SEEK_SET);
+                write(pHandle->pidx, OFreinterpret_cast(char *, &record), SIZEOF_IDXRECORD);
                 lseek(pHandle->pidx, 0L, SEEK_SET);
             }
             unlockExclusive();
@@ -2050,7 +2054,7 @@ int DVInterface::deleteImageFile(const char *filename)
     if ((filename != NULL) && (pHandle != NULL))
     {
         const char *pos;
-        if (((pos = strrchr(filename, (int)PATH_SEPARATOR)) == NULL) ||   // check whether image file resides in index.dat directory
+        if (((pos = strrchr(filename, OFstatic_cast(int, PATH_SEPARATOR))) == NULL) ||   // check whether image file resides in index.dat directory
             (strncmp(filename, pHandle->storageArea, pos - filename) == 0))
         {
 //            DB_deleteImageFile((/*const */char *)filename);
@@ -2075,7 +2079,7 @@ OFCondition DVInterface::deleteStudy(const char *studyUID)
             wasNew = newInstancesReceived();
             if (study->List.gotoFirst())
             {
-                StudyDescRecord *study_desc = (StudyDescRecord *)malloc(SIZEOF_STUDYDESC);
+                StudyDescRecord *study_desc = OFstatic_cast(StudyDescRecord *, malloc(SIZEOF_STUDYDESC));
                 if (study_desc != NULL)
                 {
                     if (DB_GetStudyDesc(pHandle, study_desc).good())
@@ -2129,7 +2133,7 @@ OFCondition DVInterface::deleteSeries(const char *studyUID,
             wasNew = newInstancesReceived();
             if (series->List.gotoFirst())
             {
-                StudyDescRecord *study_desc = (StudyDescRecord *)malloc(SIZEOF_STUDYDESC);
+                StudyDescRecord *study_desc = OFstatic_cast(StudyDescRecord *, malloc(SIZEOF_STUDYDESC));
                 if (study_desc != NULL)
                 {
                     if (DB_GetStudyDesc(pHandle, study_desc).good())
@@ -2177,7 +2181,7 @@ OFCondition DVInterface::deleteInstance(const char *studyUID,
         {
             wasNew = newInstancesReceived();
             DB_IdxRemove(pHandle, series->List.getPos());
-            StudyDescRecord *study_desc = (StudyDescRecord *)malloc(SIZEOF_STUDYDESC);
+            StudyDescRecord *study_desc = OFstatic_cast(StudyDescRecord *, malloc(SIZEOF_STUDYDESC));
             if (study_desc != NULL)
             {
                 if (DB_GetStudyDesc(pHandle, study_desc).good())
@@ -2477,8 +2481,8 @@ OFCondition DVInterface::startQueryRetrieveServer()
     if (timeout > 0)
     {
       char str_timeout[20];
-      sprintf(str_timeout, "%lu", (unsigned long) timeout);
-      execl(server_application, server_application, "-c", config_filename.c_str(), "--allow-shutdown", 
+      sprintf(str_timeout, "%lu", OFstatic_cast(unsigned long, timeout));
+      execl(server_application, server_application, "-c", config_filename.c_str(), "--allow-shutdown",
         "--timeout", str_timeout, NULL);
     }
     else
@@ -2507,7 +2511,7 @@ OFCondition DVInterface::startQueryRetrieveServer()
 
   if (timeout > 0)
   {
-    sprintf(commandline, "%s -c %s --allow-shutdown --timeout %lu", 
+    sprintf(commandline, "%s -c %s --allow-shutdown --timeout %lu",
       server_application, config_filename.c_str(), (unsigned long) timeout);
   }
   else
@@ -2567,7 +2571,7 @@ OFCondition DVInterface::terminateQueryRetrieveServer()
     {
       ASC_setAPTitles(params, getNetworkAETitle(), getQueryRetrieveAETitle(), NULL);
       gethostname(localHost, sizeof(localHost) - 1);
-      sprintf(peerHost, "localhost:%d", (int)getQueryRetrievePort());
+      sprintf(peerHost, "localhost:%d", OFstatic_cast(int, getQueryRetrievePort()));
       ASC_setPresentationAddresses(params, localHost, peerHost);
 
       const char* transferSyntaxes[] = { UID_LittleEndianImplicitTransferSyntax };
@@ -2651,8 +2655,8 @@ OFCondition DVInterface::saveDICOMImage(
     if (filename == NULL) return EC_IllegalCall;
     if (aspectRatio == 0.0) return EC_IllegalCall;
 
-    Uint16 columns = (Uint16) width;
-    Uint16 rows = (Uint16) height;
+    Uint16 columns = OFstatic_cast(Uint16, width);
+    Uint16 rows = OFstatic_cast(Uint16, height);
     OFCondition status = EC_Normal;
     DcmFileFormat *fileformat = new DcmFileFormat();
     DcmDataset *dataset = NULL;
@@ -2692,13 +2696,13 @@ OFCondition DVInterface::saveDICOMImage(
       if (EC_Normal==status) status = DVPSHelper::putUint16Value(dataset, DCM_PixelRepresentation, 0);
       if ((EC_Normal==status)&&(aspectRatio != 1.0))
       {
-        sprintf(newuid, "%ld\\%ld", 1000L, (long)(aspectRatio*1000.0));
+        sprintf(newuid, "%ld\\%ld", 1000L, OFstatic_cast(long, aspectRatio*1000.0));
         status = DVPSHelper::putStringValue(dataset, DCM_PixelAspectRatio, newuid);
       }
       DcmPolymorphOBOW *pxData = new DcmPolymorphOBOW(DCM_PixelData);
       if (pxData)
       {
-        status = pxData->putUint8Array((Uint8 *)pixelData, (unsigned long)(width*height));
+        status = pxData->putUint8Array(OFstatic_cast(Uint8 *, OFconst_cast(void *, pixelData)), OFstatic_cast(unsigned long, width*height));
         if (EC_Normal==status) status = dataset->insert(pxData, OFTrue /*replaceOld*/); else delete pxData;
       } else status = EC_MemoryExhausted;
 
@@ -2787,8 +2791,8 @@ OFCondition DVInterface::saveHardcopyGrayscaleImage(
     if (filename == NULL) return EC_IllegalCall;
     if (aspectRatio == 0.0) return EC_IllegalCall;
 
-    Uint16 columns = (Uint16) width;
-    Uint16 rows = (Uint16) height;
+    Uint16 columns = OFstatic_cast(Uint16, width);
+    Uint16 rows = OFstatic_cast(Uint16, height);
     OFCondition status = EC_Normal;
     DcmFileFormat *fileformat = new DcmFileFormat();
     DcmDataset *dataset = NULL;
@@ -2836,14 +2840,14 @@ OFCondition DVInterface::saveHardcopyGrayscaleImage(
       if (EC_Normal==status) status = DVPSHelper::putUint16Value(dataset, DCM_PixelRepresentation, 0);
       if ((EC_Normal==status)&&(aspectRatio != 1.0))
       {
-        sprintf(newuid, "%ld\\%ld", 1000L, (long)(aspectRatio*1000.0));
+        sprintf(newuid, "%ld\\%ld", 1000L, OFstatic_cast(long, aspectRatio*1000.0));
         status = DVPSHelper::putStringValue(dataset, DCM_PixelAspectRatio, newuid);
       }
 
       DcmPolymorphOBOW *pxData = new DcmPolymorphOBOW(DCM_PixelData);
       if (pxData)
       {
-        status = pxData->putUint16Array((Uint16 *)pixelData, (unsigned long)(width*height));
+        status = pxData->putUint16Array(OFstatic_cast(Uint16 *, OFconst_cast(void *, pixelData)), OFstatic_cast(unsigned long, width*height));
         if (EC_Normal==status) status = dataset->insert(pxData, OFTrue /*replaceOld*/); else delete pxData;
       } else status = EC_MemoryExhausted;
 
@@ -2948,12 +2952,12 @@ OFCondition DVInterface::saveFileFormatToDB(DcmFileFormat &fileformat)
   {
     if (EC_Normal == dset->search(DCM_SOPInstanceUID, stack, ESM_fromHere, OFFalse))
     {
-      ((DcmElement *)(stack.top()))->getString(instanceUID);
+      OFstatic_cast(DcmElement *, stack.top())->getString(instanceUID);
     }
     stack.clear();
     if (EC_Normal == dset->search(DCM_SOPClassUID, stack, ESM_fromHere, OFFalse))
     {
-      ((DcmElement *)(stack.top()))->getString(classUID);
+      OFstatic_cast(DcmElement *, stack.top())->getString(classUID);
     }
   }
   if ((instanceUID==NULL)||(classUID==NULL)) return EC_IllegalCall;
@@ -3216,9 +3220,11 @@ OFCondition DVInterface::loadPrintPreview(size_t idx, OFBool printLUT, OFBool ch
               ratio *= (mpWidth / mpHeight);
             if (ratio == 0.0)
               ratio = 1.0;
-            if ((double)image->getWidth() / (double)width * ratio < (double)image->getHeight() / (double)height)
+            if (OFstatic_cast(double, image->getWidth()) / OFstatic_cast(double, width * ratio) <
+                OFstatic_cast(double, image->getHeight()) / OFstatic_cast(double, height))
+            {
               width = 0;
-            else
+            } else
               height = 0;
             image->setWidthHeightRatio(ratio);
             pHardcopyImage = image->createScaledImage(width, height, 0 /*interpolate*/, 1 /*aspect ratio*/);
@@ -3782,7 +3788,7 @@ OFCondition DVInterface::terminatePrintServer()
       {
         ASC_setAPTitles(params, getNetworkAETitle(), getTargetAETitle(target), NULL);
         gethostname(localHost, sizeof(localHost) - 1);
-        sprintf(peerHost, "%s:%d", getTargetHostname(target), (int)getTargetPort(target));
+        sprintf(peerHost, "%s:%d", getTargetHostname(target), OFstatic_cast(int, getTargetPort(target)));
         ASC_setPresentationAddresses(params, localHost, peerHost);
 
         const char* transferSyntaxes[] = { UID_LittleEndianImplicitTransferSyntax };
@@ -3830,12 +3836,12 @@ OFCondition DVInterface::addToPrintHardcopyFromDB(const char *studyUID, const ch
               {
                 DcmStack stack;
                 DVPSPresentationLUT presentationLUT;
-                    if (EC_Normal != presentationLUT.read(*dataset, OFFalse)) presentationLUT.setType(DVPSP_identity);
-                    result = dataset->search((DcmTagKey &)sopclassuid.getTag(), stack, ESM_fromHere, OFFalse);
+                if (EC_Normal != presentationLUT.read(*dataset, OFFalse)) presentationLUT.setType(DVPSP_identity);
+                    result = dataset->search(sopclassuid.getTag(), stack, ESM_fromHere, OFFalse);
                 if (EC_Normal == result)
                 {
                   char *sopclass = NULL;
-                  sopclassuid = *((DcmUniqueIdentifier *)(stack.top()));
+                  sopclassuid = *OFstatic_cast(DcmUniqueIdentifier *, stack.top());
                   if (EC_Normal == sopclassuid.getString(sopclass))
                     result = pPrint->addImageBox(getNetworkAETitle(), studyUID, seriesUID,
                       sopclass, instanceUID, NULL, NULL, &presentationLUT, OFFalse);
@@ -3984,16 +3990,16 @@ void DVInterface::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
 void DVInterface::setLogFilter(DVPSLogMessageLevel level)
 {
   if (logFile != NULL)
-    logFile->setFilter((OFLogFile::LF_Level)level);
+    logFile->setFilter(OFstatic_cast(OFLogFile::LF_Level, level));
 }
 
 OFCondition DVInterface::writeLogMessage(DVPSLogMessageLevel level, const char *module, const char *message)
 {
   if ((logFile != NULL) && (logFile->good()))
   {
-    if (logFile->checkFilter((OFLogFile::LF_Level)level))
+    if (logFile->checkFilter(OFstatic_cast(OFLogFile::LF_Level, level)))
     {
-      logFile->lockFile((OFLogFile::LF_Level)level, module);
+      logFile->lockFile(OFstatic_cast(OFLogFile::LF_Level, level), module);
       logFile->writeMessage(message);
       logFile->unlockFile();
     }
@@ -4315,7 +4321,12 @@ void DVInterface::disableImageAndPState()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.143  2003-06-04 12:30:28  meichel
+ *  Revision 1.144  2003-09-18 11:52:18  joergr
+ *  Call addPrivateDcmtkCodingScheme() when saving a structured report.
+ *  Fixed wrong "assert" (pointer check) statement in saveStructuredReport().
+ *  Adapted type casts to new-style typecast operators defined in ofcast.h.
+ *
+ *  Revision 1.143  2003/06/04 12:30:28  meichel
  *  Added various includes needed by MSVC5 with STL
  *
  *  Revision 1.142  2003/04/29 10:13:56  meichel
