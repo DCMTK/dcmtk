@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSStoredPrint
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-07-30 13:34:59 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-08-25 16:56:14 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +35,10 @@
 #include "ofstring.h"
 #include "dvpssp.h"
 #include "dcuid.h"
+
+#ifdef HAVE_TIME_H
+#include <time.h>
+#endif
 
 /* some defaults for creating Stored Print objects */
 #define DEFAULT_imageDisplayFormat        "STANDARD\1,1"
@@ -753,7 +757,10 @@ E_Condition DVPSStoredPrint::write(DcmItem &dset, OFBool limitImages)
 
 /*
  *  $Log: dvpssp.cc,v $
- *  Revision 1.1  1999-07-30 13:34:59  meichel
+ *  Revision 1.2  1999-08-25 16:56:14  joergr
+ *  Added '#include <time.h>' to make MSVC happy.
+ *
+ *  Revision 1.1  1999/07/30 13:34:59  meichel
  *  Added new classes managing Stored Print objects
  *
  *
