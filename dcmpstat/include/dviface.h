@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVInterface
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-04 15:48:23 $
- *  CVS/RCS Revision: $Revision: 1.89 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-04-04 10:11:57 $
+ *  CVS/RCS Revision: $Revision: 1.90 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,10 +42,8 @@
 #include "dctk.h"
 #include "dvpscf.h"     /* for class DVConfiguration */
 #include "dvpstat.h"    /* for class DVPresentationState */
-#include "dbpriv.h"     /* for struct IdxRecord */
-#include "dbstore.h"    /* for filedeletion */
+#include "dcmqridx.h"   /* for struct IdxRecord */
 #include "ofstring.h"   /* for class OFString */
-#include "imagedb.h"    /* for DB_UpperMaxBytesPerStudy */
 #include "dvcache.h"    /* for index file caching */
 
 
@@ -1699,7 +1697,7 @@ private:
 
     /** handle to access database/index file
      */
-    DB_Private_Handle *pHandle;
+    DcmQueryRetrieveIndexDatabaseHandle *pHandle;
 
     /** locking mode (OFFalse => shared, OFTrue => exclusive)
      */
@@ -1889,7 +1887,11 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.89  2004-02-04 15:48:23  joergr
+ *  Revision 1.90  2005-04-04 10:11:57  meichel
+ *  Module dcmpstat now uses the dcmqrdb API instead of imagectn for maintaining
+ *    the index database
+ *
+ *  Revision 1.89  2004/02/04 15:48:23  joergr
  *  Removed acknowledgements with e-mail addresses from CVS log.
  *
  *  Revision 1.88  2003/04/29 10:13:56  meichel

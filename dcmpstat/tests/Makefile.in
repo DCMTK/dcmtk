@@ -16,19 +16,19 @@ include $(configdir)/@common_makefile@
 ofstddir = $(top_srcdir)/../ofstd
 dcmdatadir = $(top_srcdir)/../dcmdata
 dcmnetdir = $(top_srcdir)/../dcmnet
-imagectndir = $(top_srcdir)/../imagectn
+dcmqrdbdir = $(top_srcdir)/../dcmqrdb
 dcmimgledir = $(top_srcdir)/../dcmimgle
 dcmsigndir = $(top_srcdir)/../dcmsign
 dcmtlsdir = $(top_srcdir)/../dcmtls
 dcmsrdir = $(top_srcdir)/../dcmsr
 
 LOCALINCLUDES = -I$(dcmnetdir)/include -I$(ofstddir)/include -I$(dcmdatadir)/include \
-	-I$(dcmsigndir)/include -I$(dcmtlsdir)/include -I$(imagectndir)/include \
+	-I$(dcmsigndir)/include -I$(dcmtlsdir)/include -I$(dcmqrdbdir)/include \
 	-I$(dcmimgledir)/include -I$(dcmsrdir)/include
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(dcmnetdir)/libsrc -L$(ofstddir)/libsrc \
 	-L$(dcmdatadir)/libsrc -L$(dcmsigndir)/libsrc -L$(dcmtlsdir)/libsrc \
-	-L$(imagectndir)/libsrc -L$(dcmimgledir)/libsrc -L$(dcmsrdir)/libsrc 
-LOCALLIBS = -ldcmpstat -ldcmdsig -ldcmimgle -ldcmsr -limagedb -ldcmnet -ldcmtls \
+	-L$(dcmqrdbdir)/libsrc -L$(dcmimgledir)/libsrc -L$(dcmsrdir)/libsrc 
+LOCALLIBS = -ldcmpstat -ldcmdsig -ldcmimgle -ldcmsr -ldcmqrdb -ldcmnet -ldcmtls \
 	-ldcmdata -lofstd $(XMLLIBS) $(ZLIBLIBS) $(TCPWRAPPERLIBS) $(OPENSSLLIBS)
 
 objs = msgserv.o

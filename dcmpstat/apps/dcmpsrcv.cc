@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2004, OFFIS
+ *  Copyright (C) 1999-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-04 15:44:38 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-04-04 10:11:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsrcv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.45 $
+ *  CVS/RCS Revision: $Revision: 1.46 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,7 +56,8 @@ END_EXTERN_C
 #include "diutil.h"
 #include "cmdlnarg.h"
 #include "ofconapp.h"
-#include "imagedb.h"     /* for LOCK_IMAGE_FILES */
+#include "dcmqrdbi.h"    /* for LOCK_IMAGE_FILES */
+#include "dcmqrdbs.h"    /* for DcmQueryRetrieveDatabaseStatus */
 #include "dvpsmsg.h"     /* for class DVPSIPCClient */
 #include "dcmlayer.h"
 #include "dcfilefo.h"
@@ -332,17 +333,15 @@ static associationType negotiateAssociation(
 class StoreContext
 {
 public:
-  DB_Handle *dbHandle;
+  DcmQueryRetrieveIndexDatabaseHandle *dbHandle;
   DIC_US status;
-  DcmDataset *statusDetail;
   const char *fileName;
   DcmFileFormat *dcmff;
   OFBool opt_correctUIDPadding;
 
-  StoreContext(DB_Handle *handle, DIC_US aStatus, const char *fname, DcmFileFormat *ff, OFBool correctUID)
+  StoreContext(DcmQueryRetrieveIndexDatabaseHandle *handle, DIC_US aStatus, const char *fname, DcmFileFormat *ff, OFBool correctUID)
   : dbHandle(handle)
   , status(aStatus)
-  , statusDetail(NULL)
   , fileName(fname)
   , dcmff(ff)
   , opt_correctUIDPadding(correctUID)
@@ -415,30 +414,22 @@ saveImageToDB(
     T_DIMSE_C_StoreRSP *rsp,            /* final store response */
     DcmDataset **statusDetail)
 {
-    DB_Status dbStatus;
-    dbStatus.status = STATUS_Success;
-    dbStatus.statusDetail = NULL;
+    DcmQueryRetrieveDatabaseStatus dbStatus(STATUS_Success);
 
     /* Store image */
     if (context->status == STATUS_Success)
     {
-      if (DB_storeRequest(context->dbHandle,
-          req->AffectedSOPClassUID, req->AffectedSOPInstanceUID,
+      if (context->dbHandle->storeRequest(req->AffectedSOPClassUID, req->AffectedSOPInstanceUID,
           imageFileName, &dbStatus).bad())
       {
         CERR << "storeSCP: Database: DB_storeRequest Failed ("
-             << DU_cstoreStatusString(dbStatus.status) << ")" << endl;
+             << DU_cstoreStatusString(dbStatus.status()) << ")" << endl;
       }
+      context->status = dbStatus.status();
     }
-    else
-    {
-      dbStatus.status = context->status;
-      dbStatus.statusDetail = context->statusDetail;
-    }
-    rsp->DimseStatus = dbStatus.status;
-    *statusDetail = dbStatus.statusDetail;
-    context->statusDetail = dbStatus.statusDetail;
-    context->status = dbStatus.status;
+
+     rsp->DimseStatus = context->status;
+    *statusDetail = dbStatus.extractStatusDetail();
     return;
 }
 
@@ -514,7 +505,7 @@ static OFCondition storeSCP(
     DcmFileFormat dcmff;
     DcmDataset *dset = dcmff.getDataset();
     DIC_US status = STATUS_Success;
-    DB_Handle *dbhandle = NULL;
+    DcmQueryRetrieveIndexDatabaseHandle *dbhandle = NULL;
 
     if (!dcmIsaStorageSOPClassUID(request->AffectedSOPClassUID))
     {
@@ -525,19 +516,19 @@ static OFCondition storeSCP(
     }
     else
     {
-      if (DB_createHandle(dbfolder, PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &dbhandle).bad())
+      dbhandle = new DcmQueryRetrieveIndexDatabaseHandle(dbfolder, PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, cond);
+      if (cond.bad())
       {
         CERR << "Unable to access database '" << dbfolder << "'" << endl;
         /* must still receive data */
         strcpy(imageFileName, NULL_DEVICE_NAME);
         /* callback will send back out of resources status */
         status = STATUS_STORE_Refused_OutOfResources;
-        DB_destroyHandle(&dbhandle);
         dbhandle = NULL;
       }
       else
       {
-        if (DB_makeNewStoreFileName(dbhandle,
+        if (dbhandle->makeNewStoreFileName(
             request->AffectedSOPClassUID,
             request->AffectedSOPInstanceUID,
             imageFileName).bad())
@@ -587,7 +578,7 @@ static OFCondition storeSCP(
           if (opt_verbose) CERR << "Store SCP: Deleting Image File: " << imageFileName << endl;
           unlink(imageFileName);
         }
-        if (dbhandle) DB_pruneInvalidRecords(dbhandle);
+        if (dbhandle) dbhandle->pruneInvalidRecords();
     }
 
 #ifdef LOCK_IMAGE_FILES
@@ -597,7 +588,7 @@ static OFCondition storeSCP(
 #endif
 
     /* free DB handle */
-    if (dbhandle) DB_destroyHandle(&dbhandle);
+    delete dbhandle;
 
     if (messageClient)
     {
@@ -1197,18 +1188,21 @@ int main(int argc, char *argv[])
 
     /* check if we can get access to the database */
     const char *dbfolder = dvi.getDatabaseFolder();
-    DB_Handle *dbhandle = NULL;
 
     if (opt_verbose)
     {
       CERR << "Using database in directory '" << dbfolder << "'" << endl;
     }
-    if (DB_createHandle(dbfolder, PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &dbhandle).bad())
+
+    OFCondition cond2 = EC_Normal;
+    DcmQueryRetrieveIndexDatabaseHandle *dbhandle = new DcmQueryRetrieveIndexDatabaseHandle(dbfolder, PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, cond2);
+    delete dbhandle;
+
+    if (cond2.bad())
     {
       CERR << "Unable to access database '" << dbfolder << "'" << endl;
       return 1;
     }
-    DB_destroyHandle(&dbhandle);
 
     T_ASC_Network *net = NULL; /* the DICOM network and listen port */
     T_ASC_Association *assoc = NULL; /* the DICOM association */
@@ -1491,7 +1485,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsrcv.cc,v $
- * Revision 1.45  2004-02-04 15:44:38  joergr
+ * Revision 1.46  2005-04-04 10:11:53  meichel
+ * Module dcmpstat now uses the dcmqrdb API instead of imagectn for maintaining
+ *   the index database
+ *
+ * Revision 1.45  2004/02/04 15:44:38  joergr
  * Removed acknowledgements with e-mail addresses from CVS log.
  *
  * Revision 1.44  2003/09/05 09:27:05  meichel

@@ -21,10 +21,10 @@
  *
  *  Purpose: Presentation State Viewer - Network Send Component (Store SCU)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-04 15:44:38 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-04-04 10:11:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpssnd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,7 +57,8 @@ END_EXTERN_C
 #include "cmdlnarg.h"
 #include "ofconapp.h"
 #include "dvpshlp.h"     /* for class DVPSHelper */
-#include "imagedb.h"     /* for LOCK_IMAGE_FILES */
+#include "dcmqrdbi.h"    /* for LOCK_IMAGE_FILES */
+#include "dcmqrdbs.h"    /* for DcmQueryRetrieveDatabaseStatus */
 #include "dvpsmsg.h"
 
 #ifdef WITH_OPENSSL
@@ -207,14 +208,14 @@ static OFCondition sendImage(T_ASC_Association *assoc, const char *sopClass, con
  */
 
 static OFCondition sendStudy(
-  DB_Handle *handle,
+  DcmQueryRetrieveIndexDatabaseHandle &handle,
   T_ASC_Association *assoc,
   const char *studyUID,
   const char *seriesUID,
   const char *instanceUID,
   int opt_verbose)
 {
-    if ((handle==NULL)||(assoc==NULL)||(studyUID==NULL)) return DIMSE_NULLKEY;
+    if ((assoc==NULL)||(studyUID==NULL)) return DIMSE_NULLKEY;
 
     /* build query */
     DcmDataset query;
@@ -260,29 +261,26 @@ static OFCondition sendStudy(
       }
     }
 
-    DB_Status dbStatus;
+    DcmQueryRetrieveDatabaseStatus dbStatus(STATUS_Pending);
     DIC_UI sopClass;
     DIC_UI sopInstance;
     char imgFile[MAXPATHLEN+1];
     DIC_US nRemaining = 0;
 
-    dbStatus.status = STATUS_Pending;
-    dbStatus.statusDetail = NULL;
-
-    cond = DB_startMoveRequest(handle, UID_MOVEStudyRootQueryRetrieveInformationModel, &query, &dbStatus);
+    cond = handle.startMoveRequest(UID_MOVEStudyRootQueryRetrieveInformationModel, &query, &dbStatus);
     if (cond.bad()) return cond;
 
-    while (dbStatus.status == STATUS_Pending)
+    while (dbStatus.status() == STATUS_Pending)
     {
-      cond = DB_nextMoveResponse(handle, sopClass, sopInstance, imgFile, &nRemaining, &dbStatus);
+      cond = handle.nextMoveResponse(sopClass, sopInstance, imgFile, &nRemaining, &dbStatus);
       if (cond.bad()) return cond;
 
-      if (dbStatus.status == STATUS_Pending)
+      if (dbStatus.status() == STATUS_Pending)
       {
         cond = sendImage(assoc, sopClass, sopInstance, imgFile, opt_verbose);
         if (cond.bad())
         {
-          DB_cancelMoveRequest(handle, &dbStatus);
+          handle.cancelMoveRequest(&dbStatus);
           return cond;
         }
       }
@@ -646,13 +644,15 @@ int main(int argc, char *argv[])
 
     /* open database */
     const char *dbfolder = dvi.getDatabaseFolder();
-    DB_Handle *dbhandle = NULL;
 
     if (opt_verbose)
     {
       CERR << "Opening database in directory '" << dbfolder << "'" << endl;
     }
-    if (DB_createHandle(dbfolder, PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &dbhandle).bad())
+
+    OFCondition result;
+    DcmQueryRetrieveIndexDatabaseHandle dbhandle(dbfolder, PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, result);    
+    if (result.bad())
     {
       CERR << "Unable to access database '" << dbfolder << "'" << endl;
       return 1;
@@ -975,9 +975,6 @@ int main(int argc, char *argv[])
       return 1;
     }
 
-    /* clean up DB handle */
-    DB_destroyHandle(&dbhandle);
-
     // tell the IPC server that we're going to terminate.
     // We need to do this before we shutdown WinSock.
     if (messageClient)
@@ -1017,7 +1014,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpssnd.cc,v $
- * Revision 1.32  2004-02-04 15:44:38  joergr
+ * Revision 1.33  2005-04-04 10:11:53  meichel
+ * Module dcmpstat now uses the dcmqrdb API instead of imagectn for maintaining
+ *   the index database
+ *
+ * Revision 1.32  2004/02/04 15:44:38  joergr
  * Removed acknowledgements with e-mail addresses from CVS log.
  *
  * Revision 1.31  2002/11/29 13:16:28  meichel

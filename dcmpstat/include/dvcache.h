@@ -22,9 +22,9 @@
  *  Purpose: Classes for caching of the image database (Header/Source)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:11 $
+ *  Update Date:      $Date: 2005-04-04 10:11:57 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/include/Attic/dvcache.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,8 +39,7 @@
 
 #include "oflist.h"
 #include "ofstring.h"
-#include "imagedb.h"
-
+#include "dcmqrdbi.h"  /* for DVIFhierarchyStatus */
 
 /*--------------------*
  *  type definitions  *
@@ -910,7 +909,11 @@ class DVStudyCache
  *
  * CVS/RCS Log:
  * $Log: dvcache.h,v $
- * Revision 1.14  2001-06-01 15:50:11  meichel
+ * Revision 1.15  2005-04-04 10:11:57  meichel
+ * Module dcmpstat now uses the dcmqrdb API instead of imagectn for maintaining
+ *   the index database
+ *
+ * Revision 1.14  2001/06/01 15:50:11  meichel
  * Updated copyright header
  *
  * Revision 1.13  2000/10/16 11:39:10  joergr

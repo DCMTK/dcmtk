@@ -38,10 +38,10 @@ dcmpstatinc = -I$(dcmpstatdir)/include
 dcmpstatlibdir = -L$(dcmpstatdir)/libsrc
 dcmpstatlib = -ldcmpstat
 
-imagectndir = $(top_srcdir)/../imagectn
-imagectninc = -I$(imagectndir)/include
-imagectnlibdir = -L$(imagectndir)/libsrc
-imagectnlib = -limagedb
+dcmqrdbdir = $(top_srcdir)/../dcmqrdb
+dcmqrdbinc = -I$(dcmqrdbdir)/include
+dcmqrdblibdir = -L$(dcmqrdbdir)/libsrc
+dcmqrdblib = -ldcmqrdb
 
 dcmtlsdir = $(top_srcdir)/../dcmtls
 dcmtlsinc = -I$(dcmtlsdir)/include
@@ -59,11 +59,11 @@ dcmsrlibdir = -L$(dcmsrdir)/libsrc
 dcmsrlib = -ldcmsr
 
 LOCALINCLUDES = $(dcmpstatinc) $(ofstdinc) $(dcmnetinc) $(dcmdatainc) $(dcmimgleinc) \
-	$(imagectninc) $(dcmtlsinc) $(dcmsigninc) $(dcmsrinc)
-LIBDIRS = -L$(top_srcdir)/libsrc $(dcmpstatlibdir) $(imagectnlibdir) $(dcmnetlibdir) \
+	$(dcmqrdbinc) $(dcmtlsinc) $(dcmsigninc) $(dcmsrinc)
+LIBDIRS = -L$(top_srcdir)/libsrc $(dcmpstatlibdir) $(dcmqrdblibdir) $(dcmnetlibdir) \
 	$(dcmtlslibdir) $(dcmsignlibdir) $(dcmsrlibdir) $(dcmdatalibdir) $(ofstdlibdir) \
 	$(dcmimglelibdir)
-LOCALLIBS = $(dcmpstatlib) $(dcmsignlib) $(dcmimglelib) $(dcmsrlib) $(imagectnlib) $(dcmnetlib) \
+LOCALLIBS = $(dcmpstatlib) $(dcmsignlib) $(dcmimglelib) $(dcmsrlib) $(dcmqrdblib) $(dcmnetlib) \
 	$(dcmtlslib) $(dcmdatalib) $(ofstdlib) $(XMLLIBS) $(ZLIBLIBS) $(TCPWRAPPERLIBS) $(OPENSSLLIBS)
 DCMMKLUT_LIBS = $(dcmimglelib) $(dcmdatalib) $(ofstdlib) $(XMLLIBS) $(ZLIBLIBS) 
 DCMMKCRV_LIBS = $(dcmdatalib) $(ofstdlib) $(XMLLIBS) $(ZLIBLIBS)

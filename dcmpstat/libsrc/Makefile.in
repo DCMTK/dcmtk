@@ -17,13 +17,13 @@ dcmdatadir = $(top_srcdir)/../dcmdata
 ofstddir = $(top_srcdir)/../ofstd
 dcmimgledir = $(top_srcdir)/../dcmimgle
 dcmsrdir = $(top_srcdir)/../dcmsr
-imagectndir = $(top_srcdir)/../imagectn
+dcmqrdbdir = $(top_srcdir)/../dcmqrdb
 dcmnetdir = $(top_srcdir)/../dcmnet
 dcmsigndir = $(top_srcdir)/../dcmsign
 dcmtlsdir = $(top_srcdir)/../dcmtls
 
 LOCALINCLUDES = -I$(ofstddir)/include -I$(dcmdatadir)/include -I$(dcmimgledir)/include \
-	-I$(dcmsrdir)/include -I$(imagectndir)/include -I$(dcmnetdir)/include \
+	-I$(dcmsrdir)/include -I$(dcmqrdbdir)/include -I$(dcmnetdir)/include \
 	-I$(dcmsigndir)/include	-I$(dcmtlsdir)/include
 LOCALDEFS =
 

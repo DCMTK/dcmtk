@@ -94,13 +94,13 @@ dviface.o: dviface.cc ../../config/include/osconfig.h \
   ../include/dvpsrsl.h ../include/dvpsall.h ../include/dvpsgal.h \
   ../include/dvpscul.h ../include/dvpsvll.h ../include/dvpsvwl.h \
   ../include/dvpsdal.h ../include/dvpssvl.h ../include/dvpspl.h \
-  ../../imagectn/include/dbpriv.h ../../imagectn/include/imagedb.h \
-  ../../dcmnet/include/dicom.h ../../dcmnet/include/cond.h \
-  ../../dcmnet/include/dcompat.h ../../ofstd/include/ofbmanip.h \
-  ../../dcmnet/include/dimse.h ../../dcmnet/include/lst.h \
-  ../../dcmnet/include/dul.h ../../dcmnet/include/extneg.h \
-  ../../dcmnet/include/assoc.h ../../imagectn/include/dbstore.h \
-  ../include/dvcache.h ../include/dvpsdef.h \
+  ../../dcmqrdb/include/dcmqridx.h ../../dcmnet/include/dicom.h \
+  ../../dcmnet/include/cond.h ../../dcmnet/include/dcompat.h \
+  ../../ofstd/include/ofbmanip.h ../../dcmqrdb/include/dcmqrdbi.h \
+  ../../dcmqrdb/include/dcmqrdba.h ../../dcmnet/include/dimse.h \
+  ../../dcmnet/include/lst.h ../../dcmnet/include/dul.h \
+  ../../dcmnet/include/extneg.h ../../dcmnet/include/assoc.h \
+  ../../ofstd/include/offname.h ../include/dvcache.h ../include/dvpsdef.h \
   ../../ofstd/include/oflogfil.h ../../dcmimgle/include/digsdfn.h \
   ../../dcmimgle/include/didispfn.h ../../dcmimgle/include/didislut.h \
   ../../dcmimgle/include/dibaslut.h ../../dcmimgle/include/diutils.h \
@@ -127,13 +127,16 @@ dviface.o: dviface.cc ../../config/include/osconfig.h \
   ../../dcmsr/include/dsrtcoto.h ../../dcmsr/include/dsrcomvl.h \
   ../../dcmsr/include/dsrimgvl.h ../../dcmsr/include/dsrimgfr.h \
   ../../dcmsr/include/dsrwavvl.h ../../dcmsr/include/dsrwavch.h \
-  ../../dcmsr/include/dsrsoprf.h ../include/dvpsib.h ../include/dvpsab.h \
-  ../include/dvpsov.h ../include/dvpsgl.h ../include/dvpsal.h \
-  ../include/dvpsga.h ../include/dvpstxl.h ../include/dvpsgrl.h \
-  ../include/dvpsril.h ../include/dvpscu.h ../include/dvpsvl.h \
-  ../include/dvpsvw.h ../include/dvpsda.h ../include/dvpssv.h \
-  ../include/dvpsrs.h ../include/dvpstx.h ../include/dvpsgr.h \
-  ../include/dvpsri.h
+  ../../dcmsr/include/dsrsoprf.h ../../dcmsr/include/dsrcsidl.h \
+  ../include/dvpsib.h ../include/dvpsab.h ../include/dvpsov.h \
+  ../include/dvpsgl.h ../include/dvpsal.h ../include/dvpsga.h \
+  ../include/dvpstxl.h ../include/dvpsgrl.h ../include/dvpsril.h \
+  ../include/dvpscu.h ../include/dvpsvl.h ../include/dvpsvw.h \
+  ../include/dvpsda.h ../include/dvpssv.h ../include/dvpsrs.h \
+  ../include/dvpstx.h ../include/dvpsgr.h ../include/dvpsri.h \
+  ../../dcmqrdb/include/dcmqrdbs.h ../../dcmtls/include/tlstrans.h \
+  ../../dcmnet/include/dcmtrans.h ../../dcmnet/include/dcmlayer.h \
+  ../../dcmtls/include/tlslayer.h
 dvpsab.o: dvpsab.cc ../../config/include/osconfig.h \
   ../../config/include/cfunix.h ../../ofstd/include/ofstring.h \
   ../../ofstd/include/oftypes.h ../../ofstd/include/ofcast.h \
@@ -1260,16 +1263,17 @@ dvpsprt.o: dvpsprt.cc ../../config/include/osconfig.h \
   ../include/dvpsall.h ../include/dvpsgal.h ../include/dvpscul.h \
   ../include/dvpsvll.h ../include/dvpsvwl.h ../include/dvpsdal.h \
   ../include/dvpssvl.h ../include/dvpspl.h \
-  ../../imagectn/include/dbpriv.h ../../imagectn/include/imagedb.h \
-  ../../imagectn/include/dbstore.h ../include/dvcache.h \
-  ../include/dvpsfs.h ../include/dvpssp.h ../include/dvpsibl.h \
-  ../include/dvpsabl.h ../include/dvpspr.h ../include/dvpshlp.h \
-  ../include/dvpsov.h ../include/dvpsgl.h ../include/dvpsrs.h \
-  ../include/dvpsril.h ../include/dvpsal.h ../include/dvpsga.h \
-  ../include/dvpstxl.h ../include/dvpsgrl.h ../include/dvpscu.h \
-  ../include/dvpsvl.h ../include/dvpsvw.h ../include/dvpsda.h \
-  ../include/dvpssv.h ../include/dvpsib.h ../include/dvpsab.h \
-  ../include/dvpstx.h ../include/dvpsgr.h ../include/dvpsri.h
+  ../../dcmqrdb/include/dcmqridx.h ../../dcmqrdb/include/dcmqrdbi.h \
+  ../../dcmqrdb/include/dcmqrdba.h ../../ofstd/include/offname.h \
+  ../include/dvcache.h ../include/dvpsfs.h ../include/dvpssp.h \
+  ../include/dvpsibl.h ../include/dvpsabl.h ../include/dvpspr.h \
+  ../include/dvpshlp.h ../include/dvpsov.h ../include/dvpsgl.h \
+  ../include/dvpsrs.h ../include/dvpsril.h ../include/dvpsal.h \
+  ../include/dvpsga.h ../include/dvpstxl.h ../include/dvpsgrl.h \
+  ../include/dvpscu.h ../include/dvpsvl.h ../include/dvpsvw.h \
+  ../include/dvpsda.h ../include/dvpssv.h ../include/dvpsib.h \
+  ../include/dvpsab.h ../include/dvpstx.h ../include/dvpsgr.h \
+  ../include/dvpsri.h
 dvpsri.o: dvpsri.cc ../../config/include/osconfig.h \
   ../../config/include/cfunix.h ../../ofstd/include/ofstring.h \
   ../../ofstd/include/oftypes.h ../../ofstd/include/ofcast.h \
@@ -1556,14 +1560,15 @@ dvpsspl.o: dvpsspl.cc ../../config/include/osconfig.h \
   ../include/dvpsvwl.h ../include/dvpsdal.h ../include/dvpssvl.h \
   ../include/dvpspl.h ../include/dvpspr.h ../include/dvpsib.h \
   ../include/dviface.h ../include/dvpscf.h \
-  ../../imagectn/include/dbpriv.h ../../imagectn/include/imagedb.h \
-  ../../imagectn/include/dbstore.h ../include/dvcache.h \
-  ../include/dvpsdef.h ../include/dvpsov.h ../include/dvpsgl.h \
-  ../include/dvpsrs.h ../include/dvpsril.h ../include/dvpsal.h \
-  ../include/dvpsga.h ../include/dvpstxl.h ../include/dvpsgrl.h \
-  ../include/dvpscu.h ../include/dvpsvl.h ../include/dvpsvw.h \
-  ../include/dvpsda.h ../include/dvpssv.h ../include/dvpsab.h \
-  ../include/dvpstx.h ../include/dvpsgr.h ../include/dvpsri.h
+  ../../dcmqrdb/include/dcmqridx.h ../../dcmqrdb/include/dcmqrdbi.h \
+  ../../dcmqrdb/include/dcmqrdba.h ../../ofstd/include/offname.h \
+  ../include/dvcache.h ../include/dvpsdef.h ../include/dvpsov.h \
+  ../include/dvpsgl.h ../include/dvpsrs.h ../include/dvpsril.h \
+  ../include/dvpsal.h ../include/dvpsga.h ../include/dvpstxl.h \
+  ../include/dvpsgrl.h ../include/dvpscu.h ../include/dvpsvl.h \
+  ../include/dvpsvw.h ../include/dvpsda.h ../include/dvpssv.h \
+  ../include/dvpsab.h ../include/dvpstx.h ../include/dvpsgr.h \
+  ../include/dvpsri.h
 dvpssv.o: dvpssv.cc ../../config/include/osconfig.h \
   ../../config/include/cfunix.h ../../ofstd/include/ofstring.h \
   ../../ofstd/include/oftypes.h ../../ofstd/include/ofcast.h \

@@ -21,10 +21,10 @@
  *
  *  Purpose: Presentation State Viewer - Print Server
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-04 15:44:38 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-04-04 10:11:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmprscp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -298,18 +298,20 @@ int main(int argc, char *argv[])
 
     /* check if we can get access to the database */
     const char *dbfolder = dvi.getDatabaseFolder();
-    DB_Handle *dbhandle = NULL;
-
     if (opt_verbose)
     {
       *logstream << "Using database in directory '" << dbfolder << "'" << endl;
     }
-    if (DB_createHandle(dbfolder, PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &dbhandle).bad())
+
+    OFCondition cond2 = EC_Normal;
+    DcmQueryRetrieveIndexDatabaseHandle *dbhandle = new DcmQueryRetrieveIndexDatabaseHandle(dbfolder, PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, cond2);
+    delete dbhandle;
+
+    if (cond2.bad())
     {
-      *logstream << "Unable to access database '" << dbfolder << "'" << endl;
+      CERR << "Unable to access database '" << dbfolder << "'" << endl;
       return 10;
     }
-    DB_destroyHandle(&dbhandle);
 
     /* get print scp data from configuration file */
     unsigned short targetPort   = dvi.getTargetPort(opt_printer);
@@ -580,7 +582,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprscp.cc,v $
- * Revision 1.15  2004-02-04 15:44:38  joergr
+ * Revision 1.16  2005-04-04 10:11:53  meichel
+ * Module dcmpstat now uses the dcmqrdb API instead of imagectn for maintaining
+ *   the index database
+ *
+ * Revision 1.15  2004/02/04 15:44:38  joergr
  * Removed acknowledgements with e-mail addresses from CVS log.
  *
  * Revision 1.14  2003/09/05 10:38:24  meichel
