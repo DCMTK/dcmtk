@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2002, OFFIS
+ *  Copyright (C) 1997-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: encapsulation of old style vs. ISO C++ standard includes
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-05-07 10:46:32 $
+ *  Update Date:      $Date: 2004-08-03 11:45:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstdinc.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -309,10 +309,40 @@ END_EXTERN_C
 #endif
 
 
+/* Headers other than ISO C++, such as BSD and Posix.1 headers */
+
+// define INCLUDE_LIBC to include <libc.h> if available
+#ifdef INCLUDE_LIBC
+#ifdef HAVE_LIBC_H
+#ifndef INCLUDE_LIBC_H_AS_CXX
+BEGIN_EXTERN_C
+#endif
+#include <libc.h>
+#ifndef INCLUDE_LIBC_H_AS_CXX
+END_EXTERN_C
+#endif
+#endif
+#endif
+
+// define INCLUDE_UNISTD to include <unistd.h> if available
+#ifdef INCLUDE_UNISTD
+#ifdef HAVE_UNISTD_H
+BEGIN_EXTERN_C
+#include <unistd.h>
+END_EXTERN_C
+#endif
+#endif
+
+
+
+
 /*
  * CVS/RCS Log:
  * $Log: ofstdinc.h,v $
- * Revision 1.9  2004-05-07 10:46:32  meichel
+ * Revision 1.10  2004-08-03 11:45:09  meichel
+ * Added macros INCLUDE_LIBC and INCLUDE_UNISTD that correctly include libc.h
+ *
+ * Revision 1.9  2004/05/07 10:46:32  meichel
  * Removed unneeded semicolon, reported by gcc 3.4
  *
  * Revision 1.8  2003/12/11 13:40:22  meichel
