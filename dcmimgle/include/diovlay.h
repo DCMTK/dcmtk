@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlay (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-08 12:39:50 $
+ *  Update Date:      $Date: 1999-03-22 08:52:17 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diovlay.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -194,7 +194,8 @@ class DiOverlay
                         EM_Overlay &mode,                        
                         const Uint16 columns,
                         const Uint16 rows,
-                        const Uint8 value = 0xff);
+                        const Uint8 fore = 0xff,
+                        const Uint8 back = 0x0);
 
     static const unsigned int MaxOverlayCount;
     static const unsigned int FirstOverlayGroup;
@@ -244,7 +245,11 @@ class DiOverlay
  *
  * CVS/RCS Log:
  * $Log: diovlay.h,v $
- * Revision 1.9  1999-02-08 12:39:50  joergr
+ * Revision 1.10  1999-03-22 08:52:17  joergr
+ * Added parameter to specify (transparent) background color for method
+ * getOverlayData().
+ *
+ * Revision 1.9  1999/02/08 12:39:50  joergr
  * Corrected some typos and formatting.
  *
  * Revision 1.8  1999/02/03 17:33:51  joergr

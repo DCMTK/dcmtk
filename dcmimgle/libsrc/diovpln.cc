@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlayPlane (Source) - Multiframe Overlays UNTESTED !
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-28 16:42:21 $
+ *  Update Date:      $Date: 1999-03-22 08:58:32 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diovpln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -269,13 +269,14 @@ Uint8 *DiOverlayPlane::getData(const unsigned long frame,
                                const Uint16 ymin,
                                const Uint16 xmax,
                                const Uint16 ymax,
-                               const Uint8 value)
+                               const Uint8 fore,
+                               const Uint8 back)
 {
     const unsigned long count = (unsigned long)(xmax - xmin) * (unsigned long)(ymax - ymin);
     Uint8 *data = new Uint8[count];
     if (data != NULL)
     {
-        OFBitmanipTemplate<Uint8>::zeroMem(data, count);
+        OFBitmanipTemplate<Uint8>::setMem(data, back, count);
         register Uint16 x;
         register Uint16 y;
         register Uint8 *q = data;
@@ -287,7 +288,7 @@ Uint8 *DiOverlayPlane::getData(const unsigned long frame,
                 for (x = xmin; x < xmax; x++, q++)
                 {
                     if (getNextBit())
-                        *q = value;                         // set pixel value (default: 0xff)
+                        *q = fore;                         // set pixel value (default: 0xff)
                 }
             }
         }
@@ -387,7 +388,11 @@ void DiOverlayPlane::setRotation(const int degree,
  *
  * CVS/RCS Log:
  * $Log: diovpln.cc,v $
- * Revision 1.9  1999-02-28 16:42:21  joergr
+ * Revision 1.10  1999-03-22 08:58:32  joergr
+ * Added parameter to specify (transparent) background color for method
+ * getOverlayData().
+ *
+ * Revision 1.9  1999/02/28 16:42:21  joergr
  * Corrected bug: the bit position for bitmap shutters was 1 instead of 0
  * (i.e. the first bit was always been skipped and the all following bits were
  * wrong).

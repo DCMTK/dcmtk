@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlayPlane (Header) - Multiframe Overlays UNTESTED !
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-03 17:34:36 $
+ *  Update Date:      $Date: 1999-03-22 08:52:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diovpln.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -220,7 +220,8 @@ class DiOverlayPlane
                    const Uint16 ymin,
                    const Uint16 xmax,
                    const Uint16 ymax,
-                   const Uint8 value);
+                   const Uint8 fore,
+                   const Uint8 back);
 
     inline int reset(const unsigned long);
 
@@ -331,7 +332,11 @@ inline void DiOverlayPlane::setStart(const Uint16 x,
  *
  * CVS/RCS Log:
  * $Log: diovpln.h,v $
- * Revision 1.7  1999-02-03 17:34:36  joergr
+ * Revision 1.8  1999-03-22 08:52:18  joergr
+ * Added parameter to specify (transparent) background color for method
+ * getOverlayData().
+ *
+ * Revision 1.7  1999/02/03 17:34:36  joergr
  * Added BEGIN_EXTERN_C and END_EXTERN_C to some C includes.
  * Added support for calibration according to Barten transformation (incl.
  * a DISPLAY file describing the monitor characteristic).

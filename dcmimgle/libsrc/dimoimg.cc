@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-03 12:06:54 $
+ *  Update Date:      $Date: 1999-03-22 08:55:02 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1236,7 +1236,8 @@ const Uint8 *DiMonoImage::getOverlayData(const unsigned long frame,
                                          unsigned int &height,
                                          EM_Overlay &mode,
                                          const unsigned int idx,
-                                         const Uint8 value)
+                                         const Uint8 fore,
+                                         const Uint8 back)
 {
     if (ImageStatus == EIS_Normal)
     {
@@ -1249,7 +1250,7 @@ const Uint8 *DiMonoImage::getOverlayData(const unsigned long frame,
             if ((Overlays[i] != NULL) && (Overlays[i]->hasPlane(plane)))
             {
                 deleteOverlayData();
-                OverlayData = Overlays[i]->getPlaneData(frame, plane, left, top, width, height, mode, Columns, Rows, value);
+                OverlayData = Overlays[i]->getPlaneData(frame, plane, left, top, width, height, mode, Columns, Rows, fore, back);
                 return (const Uint8 *)OverlayData;
             }
         }
@@ -1413,7 +1414,11 @@ int DiMonoImage::writeRawPPM(FILE *stream, const unsigned long frame, const int 
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.15  1999-03-03 12:06:54  joergr
+ * Revision 1.16  1999-03-22 08:55:02  joergr
+ * Added parameter to specify (transparent) background color for method
+ * getOverlayData().
+ *
+ * Revision 1.15  1999/03/03 12:06:54  joergr
  * Changed comments.
  *
  * Revision 1.14  1999/02/11 16:52:22  joergr

@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-11 16:34:36 $
+ *  Update Date:      $Date: 1999-03-22 08:51:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoimg.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -203,7 +203,8 @@ class DiMonoImage
                                 unsigned int &height,
                                 EM_Overlay &mode,
                                 const unsigned int idx,
-                                const Uint8 value = 0xff);
+                                const Uint8 fore = 0xff,
+                                const Uint8 back = 0x0);
 
     void deleteOverlayData();
 
@@ -299,7 +300,11 @@ class DiMonoImage
  *
  * CVS/RCS Log:
  * $Log: dimoimg.h,v $
- * Revision 1.13  1999-02-11 16:34:36  joergr
+ * Revision 1.14  1999-03-22 08:51:39  joergr
+ * Added parameter to specify (transparent) background color for method
+ * getOverlayData().
+ *
+ * Revision 1.13  1999/02/11 16:34:36  joergr
  * Added routine to check whether particular grayscale values are unused in
  * the output data.
  *
