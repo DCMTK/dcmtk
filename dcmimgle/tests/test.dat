@@ -201,11 +201,11 @@
 
 # special test cases
 
-1000	cabinb08.dio	+Ww	100	150				window center and width
+1000	cabinb08.dio	+Ww 100 150				window center and width
 1001	cabinb08.dio	+Wm						min/max	window
-1002	cabinb08.dio	+Wh	5					histogram window
-1003	cabinb12.dio	+Dg	+D monitor.lut		GSDF calibration
-1004	cabinb12.dio	+Dc	+D monitor.lut		CIELAB calibration
+1002	cabinb08.dio	+Wh 5					histogram window
+1003	cabinb12.dio	+Dg +D monitor.lut		GSDF calibration
+1004	cabinb12.dio	+Dc +D monitor.lut		CIELAB calibration
 1005	cabinb12.dio	+Rl						rotate left
 1006	cabinb08.dio	+Rr						rotate right
 1007	cabinb08.dio	+Rtd +Lh				rotate top-down, flip
