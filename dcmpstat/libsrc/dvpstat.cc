@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-08 10:44:38 $
- *  CVS/RCS Revision: $Revision: 1.60 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-06-08 17:39:07 $
+ *  CVS/RCS Revision: $Revision: 1.61 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -313,6 +313,14 @@ const char *DVPresentationState::getPatientID()
   char *c = NULL;
   if (EC_Normal == patientID.getString(c)) return c; else return NULL;
 }
+
+
+const char *DVPresentationState::getStudyUID()
+{
+  char *c = NULL;
+  if (EC_Normal == studyInstanceUID.getString(c)) return c; else return NULL;
+}
+
 
 E_Condition DVPresentationState::createDummyValues()
 {
@@ -4106,7 +4114,10 @@ void DVPresentationState::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgM
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.60  2000-06-08 10:44:38  meichel
+ *  Revision 1.61  2000-06-08 17:39:07  joergr
+ *  Corrected bug in addImageReferenceToPState().
+ *
+ *  Revision 1.60  2000/06/08 10:44:38  meichel
  *  Implemented Referenced Presentation LUT Sequence on Basic Film Session level.
  *    Empty film boxes (pages) are not written to file anymore.
  *

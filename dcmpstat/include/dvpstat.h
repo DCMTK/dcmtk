@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-02 16:00:53 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-06-08 17:36:51 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -121,6 +121,11 @@ public:
    */
   const char *getPatientID();
     
+  /** returns the Study Instance UID of the presentation state.
+   *  @return Study Instance UID if successful, NULL otherwise.
+   */
+  const char *getStudyUID();
+
   /** adds a reference to an image to this presentation state.
    *  This method checks if the given SOP class and Study UID match
    *  for this presentation state and returns an error code otherwise.
@@ -2144,7 +2149,10 @@ private:
 
 /*
  *  $Log: dvpstat.h,v $
- *  Revision 1.34  2000-06-02 16:00:53  meichel
+ *  Revision 1.35  2000-06-08 17:36:51  joergr
+ *  Corrected bug in addImageReferenceToPState().
+ *
+ *  Revision 1.34  2000/06/02 16:00:53  meichel
  *  Adapted all dcmpstat classes to use OFConsole for log and error output
  *
  *  Revision 1.33  2000/05/30 14:21:24  joergr
