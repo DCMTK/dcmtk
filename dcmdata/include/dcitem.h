@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmItem
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-25 10:06:46 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-05-17 09:58:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcitem.h,v $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -141,8 +141,24 @@ public:
     virtual OFBool containsUnknownVR() const;
 
     virtual unsigned long card();
-    virtual OFCondition insert(DcmElement* elem,
-                               OFBool replaceOld = OFFalse);
+
+    /** insert a new element into the list of elements maintained by this item.
+     *  The list of elements is always kept in ascending tag order.
+     *  @param elem element to be inserted, must not be contained in this or
+     *    any other item.  Will be deleted upon destruction of this item object.
+     *  @param replaceOld if true, this element replaces any other element with 
+     *    the same tag which may already be contained in the item.  If false,
+     *    insert fails if another element with the same tag is already present.
+     *  @param checkInsertOrder if true, a warning message is sent to the console
+     *    if the element is not inserted at the end of the list.  This is used
+     *    in the read() method to detect datasets with out-of-order elements.
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition insert(
+        DcmElement* elem,
+        OFBool replaceOld = OFFalse,
+        OFBool checkInsertOrder = OFFalse);
+
     virtual DcmElement* getElement(const unsigned long num);
 
     // get next Object from position in stack. If stack empty
@@ -583,7 +599,12 @@ OFCondition nextUp(DcmStack & stack);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
-** Revision 1.34  2002-04-25 10:06:46  joergr
+** Revision 1.35  2002-05-17 09:58:14  meichel
+** fixed bug in DcmItem which caused the parser to fail if the same attribute
+**   tag appeared twice within one dataset (which is illegal in DICOM anyway).
+**   Added console warning if the attributes read are not in ascending order.
+**
+** Revision 1.34  2002/04/25 10:06:46  joergr
 ** Added support for XML output of DICOM objects.
 **
 ** Revision 1.33  2001/12/18 11:37:24  joergr

@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmItem
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-25 10:15:56 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-05-17 09:58:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.67 $
+ *  CVS/RCS Revision: $Revision: 1.68 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -392,11 +392,10 @@ DcmObject* DcmItem::copyDcmObject( DcmObject *oldObj )
 
     case EVR_na :
     default :
-        ofConsole.lockCerr() << "Warning: DcmItem::copyDcmObject(): unsupported Element("
+        ofConsole.lockCerr() << "Warning: DcmItem: unable to copy unsupported element("
              << hex << oldObj->getGTag() << "," << oldObj->getETag()
              << dec << ") with ident()="
-             << DcmVR(oldObj->ident()).getVRName() << " found."
-             << endl;
+             << DcmVR(oldObj->ident()).getVRName() << endl;
         ofConsole.unlockCerr();
         break;
     }
@@ -884,7 +883,7 @@ OFCondition DcmItem::readTagAndLength(DcmStream & inStream,
         if (!vr.isStandard())
         {
           ostream &localCerr = ofConsole.lockCerr();
-          localCerr << "WARNING: parsing attribute: " << newTag.getXTag() <<
+          localCerr << "Warning: parsing attribute: " << newTag.getXTag() <<
               " non-standard VR encountered: '" << vrstr << "', assuming ";
           if (vr.usesExtendedLengthEncoding())
             localCerr << "4 byte length field" << endl;
@@ -1002,14 +1001,30 @@ OFCondition DcmItem::readSubElement(DcmStream & inStream,
         /* insert the new element into the (sorted) element list and */
         /* assign information which was read from the instream to it */
         inStream.UnsetPutbackMark();
-        if (insert( subElem ) == EC_Normal)            //note that "DcmItem::elementList->insert( subElem, ELP_next );" would be faster, but this is better since this insert-function creates a sorted element list
+
+        subElem->transferInit();
+
+        /* we need to read the content of the attribute, no matter if */
+        /* inserting the attribute succeeds or fails */
+        l_error = subElem->read(inStream, xfer, glenc, maxReadLength);
+
+        if (l_error.good())
         {
-            subElem->transferInit();
-            l_error = subElem->read(inStream, xfer, glenc, maxReadLength);
-        } else {
-            /* error could be EC_DoubledTag, i.e. 'subElem' has not been inserted */
+          // try to insert element into item
+          // note that "DcmItem::elementList->insert( subElem, ELP_next );" 
+          // would be faster, but this is better since this insert-function creates a sorted element list
+          l_error = insert(subElem, OFFalse, OFTrue);
+
+          if (l_error.bad())
+          {
+            // produce diagnostics
+            ofConsole.lockCerr() << "Warning: element " << newTag
+               << " found twice in one dataset/item, ignoring second entry" << endl;
+            ofConsole.unlockCerr();            
             delete subElem;
-        }
+            l_error = EC_Normal;
+          }
+        }        
     }
     /* else if an error occured, try to recover from this error */
     else if ( l_error == EC_InvalidTag )
@@ -1018,19 +1033,15 @@ OFCondition DcmItem::readSubElement(DcmStream & inStream,
         /* readTagAndLength but it is impossible that both can be executed */
         /* without setting the Mark twice. */
         inStream.Putback();
-        ofConsole.lockCerr() << "Warning: DcmItem::readSubElement(): parse error occurred: " <<  newTag << endl;
+        ofConsole.lockCerr() << "Warning: DcmItem: parse error occurred: " <<  newTag << endl;
         ofConsole.unlockCerr();
-        debug(1, ( "Warning: DcmItem::readSubElement(): parse error occurred:"
-                " (0x%4.4hx,0x%4.4hx)\n", newTag.getGTag(), newTag.getETag() ));
     }
     else if ( l_error != EC_ItemEnd )
     {
         // Very important: Unset the putback mark
         inStream.UnsetPutbackMark();
-        ofConsole.lockCerr() << "Error: DcmItem::readSubElement(): cannot create SubElement: " <<  newTag << endl;
+        ofConsole.lockCerr() << "Error: DcmItem: cannot create SubElement: " <<  newTag << endl;
         ofConsole.unlockCerr();
-        debug(1, ( "Error: DcmItem::readSubElement(): cannot create SubElement:"
-                " (0x%4.4hx,0x%4.4hx)\n", newTag.getGTag(), newTag.getETag() ));
     }
     else
     {
@@ -1346,8 +1357,10 @@ unsigned long DcmItem::card()
 // ********************************
 
 
-OFCondition DcmItem::insert( DcmElement* elem,
-                             OFBool replaceOld )
+OFCondition DcmItem::insert(
+        DcmElement* elem,
+        OFBool replaceOld,
+        OFBool checkInsertOrder)
     /*
      * This function inserts a new element into elementList. The new element will be inserted in
      * a way so that the elements in elementList are sorted ascendingly based on their tag values.
@@ -1359,6 +1372,9 @@ OFCondition DcmItem::insert( DcmElement* elem,
      *   elem       - [in] Pointer to the object which shall be inserted.
      *   replaceOld - [in] [optional parameter, default=OFFalse] Specifies if an old element shall be
      *                     removed or not (see above).
+     *   checkInsertOrder - [in] if true, a warning message is sent to the console
+     *      if the element is not inserted at the end of the list.  This is used
+     *      in the read() method to detect datasets with out-of-order elements.
      */
 {
     /* intialize error flag with ok */
@@ -1382,6 +1398,19 @@ OFCondition DcmItem::insert( DcmElement* elem,
                 /* insert new element at the beginning of elementList */
                 elementList->insert( elem, ELP_first );
 
+                if (checkInsertOrder)                
+                {
+                  // check if we have inserted at the end of the list
+                  if (elem != (DcmElement*)(elementList->seek(ELP_last)))
+                  {
+                    // produce diagnostics
+                    ofConsole.lockCerr() 
+                       << "Warning: dataset not in ascending tag order, at element "
+                       << elem->getTag() << endl;
+                    ofConsole.unlockCerr();                              	
+                  }
+                }
+
                 /* dump some information if required */
                 debug(3, ("DcmItem::Insert() element (0x%4.4x,0x%4.4x) / VR=\"%s\" at beginning inserted",
                         elem->getGTag(), elem->getETag(), DcmVR(elem->getVR()).getVRName() ));
@@ -1395,6 +1424,19 @@ OFCondition DcmItem::insert( DcmElement* elem,
             {
                 /* insert the new element after the current element */
                 elementList->insert( elem, ELP_next );
+
+                if (checkInsertOrder)                
+                {
+                  // check if we have inserted at the end of the list
+                  if (elem != (DcmElement*)(elementList->seek(ELP_last)))
+                  {
+                    // produce diagnostics
+                    ofConsole.lockCerr() 
+                       << "Warning: dataset not in ascending tag order, at element "
+                       << elem->getTag() << endl;
+                    ofConsole.unlockCerr();                              	
+                  }
+                }
 
                 /* dump some information if required */
                 debug(3, ( "DcmItem::Insert() element (0x%4.4x,0x%4.4x) / VR=\"%s\" inserted",
@@ -1445,24 +1487,15 @@ OFCondition DcmItem::insert( DcmElement* elem,
                     /* or else, i.e. the current element shall not be replaced by the new element */
                     else
                     {
-                        /* dump some information if required */
-                        debug(1, ( "DcmItem::insert() element with (0x%4.4x,0x%4.4x) VR=\"%s\" is already inserted:",
-                                elem->getGTag(), elem->getETag(),
-                                DcmVR(elem->getVR()).getVRName() ));
-                        /* and set the error flag correspondingly; we do not */
+                        /* set the error flag correspondingly; we do not */
                         /* allow two elements with the same tag in elementList */
                         errorFlag = EC_DoubledTag;
                     }   // if ( !replaceOld )
                 }   // if ( elem != dE )
                 /* if the new and the current element are identical, the caller tries to insert */
-                /* one element twice. print a warning and set the error flag correspondingly */
+                /* one element twice. Most probably an application error. */
                 else
                 {
-                    ofConsole.lockCerr() << "Warning: DcmItem::insert(): element "
-                         << elem->getTag() << "VR=\""
-                         << DcmVR(elem->getVR()).getVRName()
-                         << " was already in list: not inserted" << endl;
-                    ofConsole.unlockCerr();
                     errorFlag = EC_DoubledTag;
                 }
 
@@ -3081,7 +3114,12 @@ OFBool DcmItem::containsUnknownVR() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.67  2002-04-25 10:15:56  joergr
+** Revision 1.68  2002-05-17 09:58:24  meichel
+** fixed bug in DcmItem which caused the parser to fail if the same attribute
+**   tag appeared twice within one dataset (which is illegal in DICOM anyway).
+**   Added console warning if the attributes read are not in ascending order.
+**
+** Revision 1.67  2002/04/25 10:15:56  joergr
 ** Added support for XML output of DICOM objects.
 **
 ** Revision 1.66  2002/04/16 13:43:17  joergr
