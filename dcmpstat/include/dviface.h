@@ -23,8 +23,8 @@
  *    classes: DVInterface
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-07 14:15:52 $
- *  CVS/RCS Revision: $Revision: 1.67 $
+ *  Update Date:      $Date: 2000-06-08 17:36:23 $
+ *  CVS/RCS Revision: $Revision: 1.68 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -927,6 +927,18 @@ class DVInterface: public DVConfiguration
      */
     E_Condition saveStoredPrint(OFBool writeRequestedImageSize);
 
+    /** converts an optical density (OD) value to an 8/12/16-bit value which is linear to luminance.
+     *  The output is not calibrated according to the GSDF.  This can be done by convertPValueToDDL() in
+     *  class DVPSPresentationState.  The attributes illumination and reflected ambient light are
+     *  determined from the stored print object (required for successful calculation).
+     *  @param density in hundreds of OD (e.g. 150 corressponds to 1.5 OD)
+     *  @param min minimum printer density (in OD)
+     *  @param max maximum printer density (in OD)
+     *  @param bits number of bits used for the output value (8, 12, 16)
+     *  @return display driving level (DDL), 0..0xFF, 0..0xFFF, 0..0xFFFF, < 0 if an error occurred.
+     */
+    Sint32 convertODtoLum(Uint16 density, Uint16 min, Uint16 max, unsigned int bits = 8);
+
     /** gets the number of Hardcopy Grayscaleimages currently registered by the stored print object.
      *  @return number of images.
      */
@@ -1624,7 +1636,10 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.67  2000-06-07 14:15:52  joergr
+ *  Revision 1.68  2000-06-08 17:36:23  joergr
+ *  Added method convertODtoLum().
+ *
+ *  Revision 1.67  2000/06/07 14:15:52  joergr
  *  Added configuration file entry "LogLevel" to filter log messages.
  *  Added flag to constructor specifying whether the general log file should be
  *  used (default: off).
