@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-22 14:21:20 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Update Date:      $Date: 2002-08-02 12:38:32 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -143,6 +143,9 @@ class DSRTypes
 
     /// print more detailed debug messages (verbose mode)
     static const size_t RF_verboseDebugMode;
+
+    /// show the currently processed content item (e.g. "1.2.3")
+    static const size_t RF_showCurrentlyProcessedItem;
     //@}
 
 
@@ -1016,25 +1019,29 @@ class DSRTypes
 
     /** print the warning message that the current content item is invalid/incomplete.
      *  The value type (for DEBUG mode also the node ID) is added if the 'node' if specified.
-     ** @param  stream  output stream to which the warning message is printed (no message if NULL)
-     *  @param  action  text describing the current action (e.g. 'Reading'), 'Processing' if NULL
-     *  @param  node    pointer to document tree node forwhich the message should be printed
+     ** @param  stream    output stream to which the warning message is printed (no message if NULL)
+     *  @param  action    text describing the current action (e.g. 'Reading'), 'Processing' if NULL
+     *  @param  node      pointer to document tree node for which the message should be printed
+     *  @param  location  position of the affected content item (e.g. '1.2.3', not printed if NULL)
      */
     static void printInvalidContentItemMessage(OFConsole *stream,
                                                const char *action,
-                                               const DSRDocumentTreeNode *node);
+                                               const DSRDocumentTreeNode *node,
+                                               const char *location = NULL);
 
     /** print an error message for the current content item.
      *  The value type (for DEBUG mode also the node ID) is added if the 'node' if specified.
-     ** @param  stream  output stream to which the warning message is printed (no message if NULL)
-     *  @param  action  text describing the current action (e.g. 'Reading'), 'Processing' if NULL
-     *  @param  result  status used to print more information on the error (no message if EC_Normal)
-     *  @param  node    pointer to document tree node forwhich the message should be printed
+     ** @param  stream    output stream to which the warning message is printed (no message if NULL)
+     *  @param  action    text describing the current action (e.g. 'Reading'), 'Processing' if NULL
+     *  @param  result    status used to print more information on the error (no message if EC_Normal)
+     *  @param  node      pointer to document tree node for which the message should be printed
+     *  @param  location  position of the affected content item (e.g. '1.2.3', not printed if NULL)
      */
     static void printContentItemErrorMessage(OFConsole *stream,
                                              const char *action,
                                              const OFCondition &result,
-                                             const DSRDocumentTreeNode *node);
+                                             const DSRDocumentTreeNode *node,
+                                             const char *location = NULL);
 
     /** write string value to XML output stream.
      *  The output looks like this: "<" tagName ">" stringValue "</" tagName ">"
@@ -1111,7 +1118,11 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
- *  Revision 1.28  2002-07-22 14:21:20  joergr
+ *  Revision 1.29  2002-08-02 12:38:32  joergr
+ *  Enhanced debug output of dcmsr::read() routines (e.g. add position string
+ *  of invalid content items to error messages).
+ *
+ *  Revision 1.28  2002/07/22 14:21:20  joergr
  *  Added new print flag to suppress the output of general document information.
  *
  *  Revision 1.27  2002/05/14 08:14:51  joergr

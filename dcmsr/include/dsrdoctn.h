@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2001, OFFIS
+ *  Copyright (C) 2000-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:10:49 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2002-08-02 12:38:31 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -426,12 +426,14 @@ class DSRDocumentTreeNode
     /** read document relationship macro
      ** @param  dataset       DICOM dataset from which the data should be read
      *  @param  documentType  type of the document to be read (used for checking purposes)
+     *  @param  posString     location of the current content item (e.g. "1.2.3")
      *  @param  flags         flag used to customize the reading process (see DSRTypes::RF_xxx)
      *  @param  logStream     pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition readDocumentRelationshipMacro(DcmItem &dataset,
                                               const E_DocumentType documentType,
+                                              const OFString &posString,
                                               const size_t flags,
                                               OFConsole *logStream);
 
@@ -448,10 +450,12 @@ class DSRDocumentTreeNode
 
     /** read document content macro
      ** @param  dataset    DICOM dataset from which the data should be read
+     *  @param  posString  location of the current content item (e.g. "1.2.3")
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition readDocumentContentMacro(DcmItem &dataset,
+                                         const OFString &posString,
                                          OFConsole *logStream);
 
     /** write document content macro
@@ -465,12 +469,14 @@ class DSRDocumentTreeNode
     /** read content sequence
      ** @param  dataset       DICOM dataset from which the data should be read
      *  @param  documentType  type of the document to be read (used for checking purposes)
+     *  @param  posString     location of the current content item (e.g. "1.2.3")
      *  @param  flags         flag used to customize the reading process (see DSRTypes::RF_xxx)
      *  @param  logStream     pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition readContentSequence(DcmItem &dataset,
                                     const E_DocumentType documentType,
+                                    const OFString &posString,
                                     const size_t flags,
                                     OFConsole *logStream);
 
@@ -564,7 +570,11 @@ class DSRDocumentTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.h,v $
- *  Revision 1.12  2001-11-09 16:10:49  joergr
+ *  Revision 1.13  2002-08-02 12:38:31  joergr
+ *  Enhanced debug output of dcmsr::read() routines (e.g. add position string
+ *  of invalid content items to error messages).
+ *
+ *  Revision 1.12  2001/11/09 16:10:49  joergr
  *  Added preliminary support for Mammography CAD SR.
  *
  *  Revision 1.11  2001/09/26 13:04:07  meichel

@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-22 14:22:34 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Update Date:      $Date: 2002-08-02 12:39:07 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,6 +65,7 @@ const size_t DSRTypes::RF_readDigitalSignatures          = 1 <<  0;
 const size_t DSRTypes::RF_ignoreRelationshipConstraints  = 1 <<  1;
 const size_t DSRTypes::RF_skipInvalidContentItems        = 1 <<  2;
 const size_t DSRTypes::RF_verboseDebugMode               = 1 <<  3;
+const size_t DSRTypes::RF_showCurrentlyProcessedItem     = 1 <<  4;
 
 /* renderHTML flags */
 const size_t DSRTypes::HF_neverExpandChildrenInline      = 1 <<  0;
@@ -1177,7 +1178,8 @@ void DSRTypes::printErrorMessage(OFConsole *stream,
 
 void DSRTypes::printInvalidContentItemMessage(OFConsole *stream,
                                               const char *action,
-                                              const DSRDocumentTreeNode *node)
+                                              const DSRDocumentTreeNode *node,
+                                              const char *location)
 {
     if (stream != NULL)
     {
@@ -1191,11 +1193,12 @@ void DSRTypes::printInvalidContentItemMessage(OFConsole *stream,
         {
             message += " ";
             message += valueTypeToDefinedTerm(node->getValueType());
-#ifdef DEBUG
-            message += " #";
-            char string[20];
-            message += numberToString(node->getNodeID(), string);
-#endif
+        }
+        if (location != NULL)
+        {
+            message += " \"";
+            message += location;
+            message += "\"";
         }
         printWarningMessage(stream, message.c_str());
     }
@@ -1205,7 +1208,8 @@ void DSRTypes::printInvalidContentItemMessage(OFConsole *stream,
 void DSRTypes::printContentItemErrorMessage(OFConsole *stream,
                                             const char *action,
                                             const OFCondition &result,
-                                            const DSRDocumentTreeNode *node)
+                                            const DSRDocumentTreeNode *node,
+                                            const char *location)
 {
     if ((stream != NULL) && (result.bad()))
     {
@@ -1219,11 +1223,12 @@ void DSRTypes::printContentItemErrorMessage(OFConsole *stream,
         {
             message += " ";
             message += valueTypeToDefinedTerm(node->getValueType());
-#ifdef DEBUG
-            message += " #";
-            char string[20];
-            message += numberToString(node->getNodeID(), string);
-#endif
+        }
+        if (location != NULL)
+        {
+            message += " \"";
+            message += location;
+            message += "\"";
         }
         message += " (";
         message += result.text();
@@ -1338,7 +1343,11 @@ OFCondition DSRTypes::appendStream(ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
- *  Revision 1.27  2002-07-22 14:22:34  joergr
+ *  Revision 1.28  2002-08-02 12:39:07  joergr
+ *  Enhanced debug output of dcmsr::read() routines (e.g. add position string
+ *  of invalid content items to error messages).
+ *
+ *  Revision 1.27  2002/07/22 14:22:34  joergr
  *  Added new print flag to suppress the output of general document information.
  *
  *  Revision 1.26  2002/05/07 12:54:28  joergr

@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-05-02 14:08:35 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Update Date:      $Date: 2002-08-02 12:39:06 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -87,11 +87,7 @@ OFCondition DSRDocumentTreeNode::print(ostream &stream,
 {
     if (RelationshipType != RT_isRoot)
         stream << relationshipTypeToReadableName(RelationshipType) << " ";
-    stream << valueTypeToDefinedTerm(ValueType);
-#ifdef DEBUG
-    stream << " #" << Ident;
-#endif
-    stream << ":";
+    stream << valueTypeToDefinedTerm(ValueType) << ":";
     if (ConceptName.isValid())
         ConceptName.print(stream, flags & PF_printConceptNameCodes);
     return EC_Normal;
@@ -290,10 +286,10 @@ OFCondition DSRDocumentTreeNode::readSRDocumentContentModule(DcmItem &dataset,
 {
     OFCondition result = EC_Normal;
     /* read DocumentRelationshipMacro */
-    result = readDocumentRelationshipMacro(dataset, documentType, flags, logStream);
+    result = readDocumentRelationshipMacro(dataset, documentType, "" /*posString*/, flags, logStream);
     /* read DocumentContentMacro */
     if (result.good())
-        result= readDocumentContentMacro(dataset, logStream);
+        result= readDocumentContentMacro(dataset, "" /*posString*/, logStream);
     return result;
 }
 
@@ -314,6 +310,7 @@ OFCondition DSRDocumentTreeNode::writeSRDocumentContentModule(DcmItem &dataset,
 
 OFCondition DSRDocumentTreeNode::readDocumentRelationshipMacro(DcmItem &dataset,
                                                                const E_DocumentType documentType,
+                                                               const OFString &posString,
                                                                const size_t flags,
                                                                OFConsole *logStream)
 {
@@ -330,7 +327,7 @@ OFCondition DSRDocumentTreeNode::readDocumentRelationshipMacro(DcmItem &dataset,
 
     /* read ContentSequence */
     if (result.good())
-        result = readContentSequence(dataset, documentType, flags, logStream);
+        result = readContentSequence(dataset, documentType, posString, flags, logStream);
     return result;
 }
 
@@ -364,6 +361,7 @@ OFCondition DSRDocumentTreeNode::writeDocumentRelationshipMacro(DcmItem &dataset
 
 
 OFCondition DSRDocumentTreeNode::readDocumentContentMacro(DcmItem &dataset,
+                                                          const OFString &posString,
                                                           OFConsole *logStream)
 {
     OFCondition result = EC_Normal;
@@ -378,7 +376,7 @@ OFCondition DSRDocumentTreeNode::readDocumentContentMacro(DcmItem &dataset,
         result = readContentItem(dataset, logStream);
         /* check for validity, after reading */
         if (!isValid())
-            printInvalidContentItemMessage(logStream, "Reading", this);
+            printInvalidContentItemMessage(logStream, "Reading", this, posString.c_str());
     }
     return result;
 }
@@ -416,7 +414,7 @@ OFCondition DSRDocumentTreeNode::createAndAppendNewNode(DSRDocumentTreeNode *&pr
 {
     OFCondition result = EC_Normal;
     /* do not check by-reference relationships here, will be done later (after complete reading) */
-    if (((valueType == VT_byReference) && (relationshipType != RT_unknown)) || 
+    if (((valueType == VT_byReference) && (relationshipType != RT_unknown)) ||
         !checkConstraints || !isConstraintCheckingSupported(documentType) ||
         canAddNode(documentType, relationshipType, valueType))
     {
@@ -454,6 +452,7 @@ OFCondition DSRDocumentTreeNode::createAndAppendNewNode(DSRDocumentTreeNode *&pr
 
 OFCondition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
                                                      const E_DocumentType documentType,
+                                                     const OFString &posString,
                                                      const size_t flags,
                                                      OFConsole *logStream)
 {
@@ -478,6 +477,17 @@ OFCondition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
                 ditem = dseq->getItem(i);
                 if (ditem != NULL)
                 {
+                    /* create current location string */
+                    char buffer[20];
+                    OFString location = posString;
+                    if (!location.empty())
+                        location += ".";
+                    location += numberToString(i + 1, buffer);
+                    if ((logStream != NULL) && (flags & RF_showCurrentlyProcessedItem))
+                    {
+                        logStream->lockCerr() << "Processing content item " << location << endl;
+                        logStream->unlockCerr();
+                    }
                     /* read RelationshipType */
                     result = getAndCheckStringValueFromDataset(*ditem, DCM_RelationshipType, string, "1", "1", logStream);
                     if (result.good())
@@ -517,7 +527,7 @@ OFCondition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
                                 result = createAndAppendNewNode(node, documentType, relationshipType, valueType, !(flags & RF_ignoreRelationshipConstraints));
                                 /* read RelationshipMacro */
                                 if (result.good())
-                                    result = node->readDocumentRelationshipMacro(*ditem, documentType, flags, logStream);
+                                    result = node->readDocumentRelationshipMacro(*ditem, documentType, location, flags, logStream);
                                 else
                                 {
                                     /* create new node failed */
@@ -533,19 +543,19 @@ OFCondition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
                                 }
                                 /* read DocumentContentMacro (might be empty) */
                                 if (result.good())
-                                    node->readDocumentContentMacro(*ditem, logStream);
+                                    node->readDocumentContentMacro(*ditem, location.c_str(), logStream);
                             }
                         }
                     }
                     /* check for any errors */
                     if ((result.bad()) /*&& (node != NULL)*/)
                     {
-                        printContentItemErrorMessage(logStream, "Reading", result, node);
+                        printContentItemErrorMessage(logStream, "Reading", result, node, location.c_str());
                         /* print current data set (item) that caused the error */
                         if ((logStream != NULL) && (flags & RF_verboseDebugMode))
                         {
                             logStream->lockCerr() << OFString(31, '-') << " DICOM DATA SET " << OFString(31, '-') << endl;
-                            ditem->print(logStream->getCerr(), OFFalse /* showFullData */);
+                            ditem->print(logStream->getCerr(), OFFalse /* showFullData */, 1 /* level */);
                             logStream->getCerr() << OFString(78, '-') << endl;
                             logStream->unlockCerr();
                         }
@@ -828,7 +838,11 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
- *  Revision 1.20  2002-05-02 14:08:35  joergr
+ *  Revision 1.21  2002-08-02 12:39:06  joergr
+ *  Enhanced debug output of dcmsr::read() routines (e.g. add position string
+ *  of invalid content items to error messages).
+ *
+ *  Revision 1.20  2002/05/02 14:08:35  joergr
  *  Added support for standard and non-standard string streams (which one is
  *  supported is detected automatically via the configure mechanism).
  *  Thanks again to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
