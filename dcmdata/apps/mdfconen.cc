@@ -21,10 +21,10 @@
  *
  *  Purpose: Class for modifying DICOM-Files from comandline
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-10-13 13:28:28 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2003-10-13 14:51:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/mdfconen.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -98,17 +98,17 @@ MdfConsoleEngine::MdfConsoleEngine(int argc, char *argv[],
         cmd->addOption("--verbose",              "-v",        "verbose mode, print verbose output\n");
 
     cmd->addGroup("insert-mode options:");
-        cmd->addOption("--insert-tag",       "-i",1, "\"xxxx,xxxx=value\"", "insert given tag,\nat 1.Level denoted by gggg,eeee=value");
-        cmd->addOption("--insert-item-tag", "-ii",1, "\"xxxx,xxxx[n].yyyy,yyyy=value\"", "insert tag in sequences\ndenoted by gggg,eeee[n]=value \nn specifies item-nr(starts with 0)\ncan repeated for deeper-level-access\n");
+        cmd->addOption("--insert-tag",       "-i",1, "\"xxxx,xxxx=value\"", "insert (and overwrite) given tag,\nat 1.Level denoted by gggg,eeee=value");
+        cmd->addOption("--insert-item-tag", "-ii",1, "\"xxxx,xxxx[n].yyyy,yyyy=value\"", "insert (and overwrite) tag in sequence\ndenoted by gggg,eeee[n]=value \nn specifies item-nr(starts with 0)\ncan repeated for deeper-level-access\n");
 
     cmd->addGroup("modify-mode options:");
         cmd->addOption("--modify-tag",       "-m",1, "\"xxxx,xxxx=value\"", "modify given tag,\nat 1.Level denoted by gggg,eeee=value");
-        cmd->addOption("--modify-item-tag", "-mi",1, "\"xxxx,xxxx[n].yyyy,yyyy=value\"", "modify tag in sequences\ndenoted by gggg,eeee[n]=value \nn specifies item-nr (starts with 0)\ncan repeated for deeper-level-access");
+        cmd->addOption("--modify-item-tag", "-mi",1, "\"xxxx,xxxx[n].yyyy,yyyy=value\"", "modify tag in sequence\ndenoted by gggg,eeee[n]=value \nn specifies item-nr (starts with 0)\ncan repeated for deeper-level-access");
         cmd->addOption("--modify-all-tags", "-ma",1, "\"xxxx,xxxx=value\"", "modify ALL exisiting tags matching gggg,eeee in file\n");
 
     cmd->addGroup("erase-mode options:");
         cmd->addOption("--erase-tag",       "-e",1, "\"xxxx,xxxx\"", "erase given tag,\nat 1.Level denoted by gggg,eeee");
-        cmd->addOption("--erase-item-tag",  "-ei",1, "\"xxxx,xxxx[n].yyyy,yyyy=value\"", "erases tag in sequences\ndenoted by gggg,eeee[n]=value \nn specifies item-nr (starts with 0)\ncan repeated for deeper-level-access");
+        cmd->addOption("--erase-item-tag",  "-ei",1, "\"xxxx,xxxx[n].yyyy,yyyy=value\"", "erases tag in sequence\ndenoted by gggg,eeee[n]=value \nn specifies item-nr (starts with 0)\ncan repeated for deeper-level-access");
         cmd->addOption("--erase-all-tags",  "-ea",1, "\"xxxx,xxxx\"", "erase ALL exisiting tags matching gggg,eeee in file\n ");
 
     cmd->addGroup("batch-mode options:");
@@ -331,35 +331,28 @@ int MdfConsoleEngine::startTagAction(DcmTagKey mod_key, char* tag_value)
 // Task         : does real job of modifying/inserting an item-tag
 // Parameters   : mod_key - [in] Tag to be modified
 //                tag_value - [in] new tag-value for modify-option
-// Return Value : An int, whether modify/insert was successfull(=0) or not(!=0)
+// Return Value : An int, whether modify/insert was successful(=0) or not(!=0)
 {
     int error_count=0;
-    OFString backup;
+    OFCondition backup_result;
     OFCondition result;
     int result2=0;
     //file_it will iterate through the files saved in a List
     OFListIterator(const char*) file_it;
     //begin with the first...suprise;)
     file_it=files->begin();
-
+    //iterate over all files
     for (unsigned int i=0; i<files->size(); i++)
     {
         ds_man = new MdfDataSetManager();
         if (verbose_option) COUT << "Processing File " << *file_it << endl;
-        //load -> backup -> modify -> save:
-        backup=*file_it;
-        backup+=".bak";
+        //load file into DataSetManager
         result=ds_man->loadFile(*file_it);
-
         //if file could be loaded
         if (result.good())
         {
-            //backup original file!
-            result2=rename(*file_it,backup.c_str());
-            if (result2==0 && verbose_option) COUT << *file_it
-                << " was backuped to " << backup.c_str() << endl;
-            else if (verbose_option && result2>0)
-                CERR << "Not able to backup " << *file_it << endl;
+            //backup file to .bak
+            backup_result=backupFile(*file_it);
             //different calls for modify/insert/erase/modify-all
             if (modify_tag_option)
             {
@@ -393,19 +386,20 @@ int MdfConsoleEngine::startTagAction(DcmTagKey mod_key, char* tag_value)
                 if (verbose_option)
                     printf("Modified %i tags overall\n", result2);
             }
-            //if modifying wasn't successfull
+            //if modifying wasn't successful then restore original from backup
             if (result.bad())
             {
                 //If an error occurs, throw out error message
                 CERR << "Error modifying Tag in file "
                      << *file_it << ": " << result.text() << endl;
                 error_count++;
-                //and rename file back!
-                result2=rename(backup.c_str(),*file_it);
-                if (result2!=0 && verbose_option) CERR << "Failed to rename "
-                    << backup.c_str() << " back to original" << endl;
-                else debug(3,("%s renamed to original filename",backup.c_str()));
-
+                //and rename file back, if it was backuped before
+                if (backup_result.good())
+                {
+                    OFCondition restore;
+                    restore=restoreFile(*file_it);
+                    if (restore.bad()) error_count++;
+                 }
             }
             //else if we had success modifying tag, save file
             else
@@ -445,11 +439,10 @@ int MdfConsoleEngine::startItemTagAction(char *tag_path, char *tag_value)
 // Task         : does real job of inserting/modifying item-tags
 // Parameters   : tag_path - [in] path to item-tag
 //                tag_value - [in] (new) tag-value for item-tag
-// Return Value : An Integer whether modifying was successfull(0) or not (!=0)
+// Return Value : An Integer whether modifying was successful(0) or not (!=0)
 {
     int error_count=0;
-    OFCondition result;
-    int result2;
+    OFCondition result, backup_result;
     OFString backup;
     //file_it will iterate through the files saved in a List
     OFListIterator(const char*) file_it;
@@ -463,18 +456,16 @@ int MdfConsoleEngine::startItemTagAction(char *tag_path, char *tag_value)
         backup=*file_it;
         backup+=".bak";
         result=ds_man->loadFile(*file_it);
-        //backup original file!
-        result2=rename(*file_it,backup.c_str());
-        if (result2==0 && verbose_option) COUT << *file_it <<" was backuped to "
-            << backup.c_str() << endl;
-        else if (verbose_option)
-            CERR << "Not able to backup " << *file_it << endl;
         if (result.good())
         {
+            //backup file to .bak
+            backup_result=backupFile(*file_it);
+            //all modify-item-tag-options excluding delete:
             if (modify_item_tag_option || insert_item_tag_option)
                 result=ds_man->modifyOrInsertItemTag(tag_path,tag_value,
                                                      modify_item_tag_option);
-            else //erase-item-tag is chosen
+            //else erase-item-tag was chosen
+            else
                 result=ds_man->deleteItemTag(tag_path);
             if (result.good())
             {
@@ -494,14 +485,14 @@ int MdfConsoleEngine::startItemTagAction(char *tag_path, char *tag_value)
                 //print error-message
                 CERR << "Error modifying tag in file " << *file_it
                      << ": " << result.text() << endl;
-                //and rename file back!
-                result2=rename(backup.c_str(),*file_it);
-                if (result2!=0 && verbose_option) CERR << "Failed to rename "
-                    << backup.c_str() << " back to original" << endl;
-                else if (verbose_option)
-                    COUT << backup.c_str() << " renamed to original filename"
-                    << endl;
                 error_count++;
+                //and rename file back, if it was backuped before
+                if (backup_result.good())
+                {
+                    OFCondition restore;
+                    restore=restoreFile(*file_it);
+                    if (restore.bad()) error_count++;
+                 }
             }
         }
         else
@@ -521,7 +512,7 @@ int MdfConsoleEngine::delegateTagAction()
 // Date         : August, 20th, 2003
 // Author       : Michael Onken
 // Task         : organizes data for startTagAction and starts it
-// Return Value : An Integer whether modifying was successfull(0) or not (!=0)
+// Return Value : An Integer whether modifying was successful(0) or not (!=0)
 {
     //return-value of this function
     int error_count=0;
@@ -577,7 +568,7 @@ int MdfConsoleEngine::delegateItemTagAction()
 // Date         : August, 20th, 2003
 // Author       : Michael Onken
 // Task         : organizes data for startItemTagAction and starts it
-// Return Value : An Integer whether modifying was successfull(0) or not (!=0)
+// Return Value : An Integer whether modifying was successful(0) or not (!=0)
 {
     int error_count = 0;
     const char *temp;
@@ -632,7 +623,7 @@ int MdfConsoleEngine::delegateBatchMode()
 // Author       : Michael Onken
 // Task         : reads operation-options from batch-file and processes them
 //                as possible
-// Return Value : An Integer whether modifying was successfull(0) or not (!=0)
+// Return Value : An Integer whether modifying was successful(0) or not (!=0)
 {
     int error_count=0;
     debug(3,("Entered batchmode\n"));
@@ -835,6 +826,88 @@ int MdfConsoleEngine::startProvidingService()
     return error_count;
 }
 
+OFCondition MdfConsoleEngine::backupFile(const char *file_name)
+// Date         : October, 8th, 2003
+// Author       : Michael Onken
+// Task         : backup given file to file.bak
+// Parameters   : file_name - [in] filename of file, that should be backuped
+// Return Value : An OFCondition, whether backup was successful
+{
+    OFCondition backup_result;
+    int result;
+    OFString backup = file_name;
+    backup+=".bak";
+    //delete backup-file, if it already exists
+    if ( OFStandard::fileExists(backup.c_str()) )
+    {
+        int del_result = remove(backup.c_str());
+        if (del_result!=0)
+        {
+            backup_result=makeOFCondition(0,0,OF_error,
+            "Couldn't delete previous backup file, unable to backup!\n");
+        }
+    }
+    //if backup-file could be removed:
+    if (backup_result.good())
+    {
+        //backup original file!
+        result=rename(file_name,backup.c_str());
+        //set return-value
+        if (result==0)
+            backup_result=makeOFCondition(0,0,OF_ok,"Backup successful\n");
+        else
+            backup_result=makeOFCondition(0,0,OF_error,"Unable to backup!\n");
+    }
+    if (verbose_option)
+    {
+        COUT << "Tried to backup " << file_name
+             << " to " << file_name << ".bak: "
+             << backup_result.text();
+    }
+    return backup_result;
+}
+
+OFCondition MdfConsoleEngine::restoreFile(const char *file_name)
+// Date         : October, 8th, 2003
+// Author       : Michael Onken
+// Task         : restore given file from file.bak to original (without .bak)
+// Parameters   : file_name - [in] filename of file, that should be restored
+// Return Value : An OFCondition, whether restoring was successful
+{
+    OFCondition restore_result;
+    int result, del_result;
+    OFString backup = file_name;
+    backup+=".bak";
+    //delete the (original) file, that dcmodify couldn't modify
+    if ( OFStandard::fileExists(file_name) )
+    {
+        del_result=remove(file_name);
+        if (del_result!=0)
+            makeOFCondition(0,0,OF_error,"Unable to delete working-file!\n");
+    }
+    //and rename backup-file back to original file-name
+    result=rename(backup.c_str(),file_name);
+    if ( result!=0)
+    {
+        restore_result=makeOFCondition(0,0,OF_error,
+            "Error renaming backup-filename to original\n");
+    }
+    else
+    {
+        restore_result=makeOFCondition(0,0,OF_ok,
+            "Successfully renamed backup-file to original\n");
+    }
+    //throw out messages
+    if (restore_result.bad())
+    {
+        CERR << "Couldnt restore " << backup << " to file "
+             << file_name << ": " << restore_result.text() << endl;
+    }
+    else if (verbose_option)
+        COUT << restore_result.text();
+    //and return result of restore-operation
+    return restore_result;
+}
 
 MdfConsoleEngine::~MdfConsoleEngine()
 // Date         : May, 13th, 2003
@@ -853,7 +926,10 @@ MdfConsoleEngine::~MdfConsoleEngine()
 /*
 ** CVS/RCS Log:
 ** $Log: mdfconen.cc,v $
-** Revision 1.5  2003-10-13 13:28:28  meichel
+** Revision 1.6  2003-10-13 14:51:49  onken
+** improved backup-strategy
+**
+** Revision 1.5  2003/10/13 13:28:28  meichel
 ** Minor code purifications, needed for Borland C++
 **
 ** Revision 1.4  2003/09/19 12:43:54  onken

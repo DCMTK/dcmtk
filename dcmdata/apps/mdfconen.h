@@ -22,9 +22,9 @@
  *  Purpose: Class for modifying DICOM-Files from comandline
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2003-10-01 14:04:03 $
+ *  Update Date:      $Date: 2003-10-13 14:51:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/mdfconen.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -161,6 +161,18 @@ protected:
      */
     int delegateBatchMode();
 
+    /**backup given file from file to file.bak
+     *@param file_name filename of file, that should be backuped
+     *@return OFCondition OFCondition, whether backup was successful
+     */
+    OFCondition backupFile(const char *file_name);
+
+    /**restore given file from file.bak to original (without .bak)
+     *@param file_name filename of file, that should be restored
+     *@return OFCondition OFCondition, whether restoring was successful
+     */
+    OFCondition restoreFile(const char *file_name);
+
 private:
 
     /** private undefined assignment operator
@@ -179,7 +191,10 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: mdfconen.h,v $
-** Revision 1.4  2003-10-01 14:04:03  onken
+** Revision 1.5  2003-10-13 14:51:49  onken
+** improved backup-strategy
+**
+** Revision 1.4  2003/10/01 14:04:03  onken
 ** Corrected doxygen-information in headerfiles
 **
 ** Revision 1.3  2003/09/19 12:43:54  onken
