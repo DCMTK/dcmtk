@@ -14,7 +14,7 @@ configdir=@top_srcdir@/@configdir@
 include $(configdir)/@common_makefile@
 
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(libdir)
-LOCALLIBS = cmdlnarg.o -ldcmdata
+LOCALLIBS = -ldcmdata
 
 objs= dcmconv.o dcimapix.o dcm2ppm.o dcmdump.o dcmutils.o ds2file.o dump2dcm.o file2ds.o mknldir.o ppm2dcm.o
 
