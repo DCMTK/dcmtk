@@ -22,9 +22,9 @@
  *  Purpose: DicomFlipTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 14:57:46 $
+ *  Update Date:      $Date: 1998-12-16 16:27:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diflipt.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -97,6 +97,8 @@ class DiFlipTemplate
                 flipHorz(src, dest);
             else if (vert)
                 flipVert(src, dest);
+            else
+                copyPixel(src, dest);
         }
     }
 
@@ -284,7 +286,10 @@ class DiFlipTemplate
 **
 ** CVS/RCS Log:
 ** $Log: diflipt.h,v $
-** Revision 1.1  1998-11-27 14:57:46  joergr
+** Revision 1.2  1998-12-16 16:27:54  joergr
+** Added additional case to copy pixels.
+**
+** Revision 1.1  1998/11/27 14:57:46  joergr
 ** Added copyright message.
 ** Added methods and classes for flipping and rotating, changed for
 ** scaling and clipping.
