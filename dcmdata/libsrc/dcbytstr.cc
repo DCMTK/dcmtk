@@ -10,9 +10,9 @@
 ** Implementation of class DcmByteString
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-05-30 17:17:49 $
+** Update Date:		$Date: 1996-05-31 09:09:08 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcbytstr.cc,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -208,26 +208,21 @@ E_Condition DcmByteString::makeMachineByteString(void)
     else
     	realLength = 0;
 
-#ifdef INCORRECT_REMOVAL_OF_TRAILING_WHITESPACE
     /* 
-    ** DISABLED CODE
-    **
-    ** This code removes extra padding chars and whitespace at the end of
-    ** a ByteString.  Such behaviour is incorrect.  Trailing whitespace is 
-    ** allowed for most value representations.
+    ** This code removes extra padding chars at the end of
+    ** a ByteString.  Trailing padding can cause problems
+    ** when comparing strings.
     */
     if (realLength)
     {
 	size_t i = 0;
 	for(i = realLength;
-	    i > 0 && 
-		(value[i-1] == paddingChar || isspace(value[i-1]));
+	    i > 0 && (value[i-1] == paddingChar);
 	    i--)
 	    value[i-1] = '\0';
 
 	realLength = (Uint32)i;
     }
-#endif
     fStringMode = DCM_MachineString;
     return errorFlag;
 }
@@ -366,7 +361,14 @@ E_Condition DcmByteString::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
-** Revision 1.7  1996-05-30 17:17:49  hewett
+** Revision 1.8  1996-05-31 09:09:08  hewett
+** The stripping of trailing padding characters has been restored (without
+** the 8bit char removal bug).  Trailing padding characters are insignificant
+** and if they are not removed problems arise with string comparisons since
+** the dicom encoding rules require the addition of a padding character for
+** odd length strings.
+**
+** Revision 1.7  1996/05/30 17:17:49  hewett
 ** Disabled erroneous code to strip trailing padding characters.
 **
 ** Revision 1.6  1996/04/16 16:05:22  andreas
