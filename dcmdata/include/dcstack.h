@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: stack class
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-02 16:52:20 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcstack.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-04-14 11:50:21 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -135,7 +134,7 @@ public:
     /** returns n-th element from stack without removing it.
      *  @return n-th element from stack
      */
-    DcmObject* elem(unsigned long number) const;
+    DcmObject* elem(const unsigned long number) const;
 
     /** checks if the stack is empty
      *  @return true if stack is empty, false otherwise
@@ -162,10 +161,14 @@ private:
 
 #endif  // DCSTACK_H
 
+
 /*
  * CVS/RCS Log:
  * $Log: dcstack.h,v $
- * Revision 1.10  2003-06-02 16:52:20  meichel
+ * Revision 1.11  2004-04-14 11:50:21  joergr
+ * Added const qualifier to parameter to keep Sun CC 2.0.1 quiet.
+ *
+ * Revision 1.10  2003/06/02 16:52:20  meichel
  * Cleaned up implementation of DcmStack, added doc++ comments
  *
  * Revision 1.9  2001/06/01 15:48:44  meichel
