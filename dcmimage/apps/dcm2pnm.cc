@@ -22,9 +22,9 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-24 17:11:06 $
+ *  Update Date:      $Date: 1999-04-28 14:37:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,14 +50,12 @@ END_EXTERN_C
 #include "dcmimage.h"
 #include "dcuid.h"      /* for dcmtk version name */
 
+#define DEBUG
+
 #include "ofconapp.h"
 #include "ofcmdln.h"
 
-#ifdef DEBUG
- #include "oftimer.h"
-#endif
-
-//#include "diregist.h"   /* include to support color images */
+#include "diregist.h"   /* include to support color images */
 
 #undef  USE_LICENSE
 #define LICENSE_TYPE       ""
@@ -75,11 +73,14 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 #endif
   ;
 
+#define SHORTCOL 4
+#define LONGCOL 20
+
 // ********************************************
 
 int main(int argc, char *argv[])
 {
-    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Convert DICOM images to PGM or PNM", rcsid);
+    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "Convert DICOM images to PGM or PNM", rcsid);
     OFCommandLine cmd;
     OFString str;
 
@@ -121,7 +122,7 @@ int main(int argc, char *argv[])
 
     int                 opt_verboseMode = 0;              /* default: be quiet */
     int                 opt_imageInfo = 0;                /* default: no info */
-    OFCmdUnsignedInt    opt_debugMode   = 0;              /* default: no debug */
+    int                 opt_debugMode   = 0;              /* default: no debug */
     int                 opt_suppressOutput = 0;           /* default: create output */
     int                 opt_fileType = 1;                 /* default: 8-bit binary PGM/PPM */
                         /* 2=8-bit-ASCII, 3=16-bit-ASCII */  
@@ -132,103 +133,117 @@ int main(int argc, char *argv[])
     for (i = 0; i < 16; i++) opt_Overlay[i] = 2;       /* default: display all overlays if present */
 
     SetDebugLevel(( 0 ));
-    DicomImageClass::DebugLevel = DicomImageClass::DL_NoMessages;
+    DicomImageClass::DebugLevel = DicomImageClass::DL_Warnings | DicomImageClass::DL_Errors;
   
     prepareCmdLineArgs(argc, argv, "dcm2pnm");
-      
-    cmd.addGroup("options:");
-    cmd.addOption("--help", "print this help screen");
+    cmd.setOptionColumns(LONGCOL, SHORTCOL);
+
+    cmd.addParam("dcmfile-in",  "DICOM input filename to be converted");
+    cmd.addParam("dcmfile-out", "PGM/PNM output file name to be written", OFCmdParam::PM_Optional);
+
+    cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
+     cmd.addOption("--help",                 "-h",      "print this help text and exit");
+     cmd.addOption("--verbose",              "-v",      "verbose mode, print processing details");
+     cmd.addOption("--debug",                "-d",      "debug mode, print debug information");
+     cmd.addOption("--image-info",           "+I",      "info mode, print image details");
 
     cmd.addGroup("input options:");
-     cmd.addOption("--read-as-dataset", "+D", "read as a dataset");
-     cmd.addOption("--auto-read-mode",  "-D", "read as a fileformat or dataset (default)");
 
-    cmd.addGroup("input transfer syntax: use only after +D");
-     cmd.addOption("--transfer-syntax-recognition", "+t=", "use transfer syntax recognition\n(default)");
-     cmd.addOption("--little-endian-implicit",      "+ti", "read with little-endian implicit\ntransfer syntax");
-     cmd.addOption("--little-endian-explicit",      "+te", "read with little-endian explicit\ntransfer syntax");
-     cmd.addOption("--big-endian-explicit",         "+tb", "read with big-endian explicit\ntransfer syntax");
+     cmd.addSubGroup("input file format:");
+      cmd.addOption("--read-file",           "+f",      "read file format or data set (default)");
+      cmd.addOption("--read-dataset",        "-f",      "read data set without file meta information");
 
-    cmd.addGroup("compatibility options:");
-     cmd.addOption("--accept-acr-nema",           "+Ma", "accept ACR-NEMA images without\nphotometric interpretation");
-     cmd.addOption("--accept-incorrect-palettes", "+Mp", "accept incorrect palette attribute\ntags (0028,111x) and (0028,121x)");
+     cmd.addSubGroup("input transfer syntax (only with --read-dataset):");
+      cmd.addOption("--read-xfer-auto",      "-t=",     "use TS recognition (default)");
+      cmd.addOption("--read-xfer-little",    "-te",     "read with explicit VR little endian TS");
+      cmd.addOption("--read-xfer-big",       "-tb",     "read with explicit VR big endian TS");
+      cmd.addOption("--read-xfer-implicit",  "-ti",     "read with implicit VR little endian TS");
 
     cmd.addGroup("image processing options:");
-     cmd.addOption("--frame",               "+F",   1, "[n]umber : integer",
-                                                       "select specified frame (default: 1)");
-     cmd.addOption("--frame-range",         "+Fr",  2, "[n]umber [c]ount : integer",
-                                                       "select c frames beginning with n");
-     cmd.addOption("--all-frames",          "+Fa",     "select all frames");
-     cmd.addOption("--grayscale",           "+G",      "convert to grayscale if necessary");
-     cmd.addOption("--clip-region",         "+C",   4, "[l]eft [t]op [w]idth [h]eight : integer",
-                                                       "clip image region (l, t, w, h)");
-     cmd.addOption("--rotate-left",         "+Rl",     "rotate image left (-90 degrees)");
-     cmd.addOption("--rotate-right",        "+Rr",     "rotate image left (+90 degrees)");
-     cmd.addOption("--rotate-top-down",     "+Rtd",    "rotate image left (180 degrees)");
-     cmd.addOption("--flip-horizontally",   "+Ph",     "flip image horizontally");
-     cmd.addOption("--flip-vertically",     "+Pv",     "flip image vertically");
-     cmd.addOption("--flip-both-axes",      "+Phv",    "flip image horizontally and vertically");
-     cmd.addOption("--pixel-aspect-ratio",  "+a",      "recognize pixel aspect ratio when scaling\n(default)");
-     cmd.addOption("--ignore-pixel-aspect", "-a",      "ignore pixel aspect ratio when scaling");
-     cmd.addOption("--interpolate",         "+i",      "use bilinear interpolation when scaling\n(default)");
-     cmd.addOption("--no-interpolation",    "-i",      "no interpolation when scaling");
-     cmd.addOption("--no-scaling",          "-S",      "no scaling, ignore pixel aspect ratio\n(default)");
-     cmd.addOption("--scale-x-factor",      "+Sxf", 1, "[f]actor : float",
-                                                       "scale x axis by factor, compute y axis\nautomatically");
-     cmd.addOption("--scale-y-factor",      "+Syf", 1, "[f]actor : float",
-                                                       "scale y axis by factor, compute x axis\nautomatically");
-     cmd.addOption("--scale-x-size",        "+Sxv", 1, "[n]umber : integer",
-                                                       "scale x axis to n pixels, compute y axis\nautomatically");
-     cmd.addOption("--scale-y-size",        "+Syv", 1, "[n]umber : integer",
-                                                       "scale y axis to n pixels, compute x axis\nautomatically");
 
-    cmd.addGroup("VOI windowing options:");
-     cmd.addOption("--no-windowing",     "-W",     "no VOI windowing (default)");
-     cmd.addOption("--use-window",       "+Wi", 1, "[n]umber : integer",
-                                                   "use the n-th VOI window from the image file");
-     cmd.addOption("--use-voi-lut",      "+Wl", 1, "[n]umber : integer",
-                                                   "use the n-th VOI look up table from the image file");
-     cmd.addOption("--min-max-window",   "+Wm",    "Compute VOI window using min-max algorithm");
-     cmd.addOption("--min-max-window-n", "+Wn",    "Compute VOI window using min-max algorithm,\nignoring extreme values");
-     cmd.addOption("--histogram-window", "+Wh", 1, "[n]umber: integer",
-                                                   "Compute VOI window using Histogram algorithm,\nignoring n percent");
-     cmd.addOption("--set-window",       "+Ww", 2, "[c]enter [w]idth : float",
-                                                   "Compute VOI window using center c and width w");
+     cmd.addSubGroup("frame selection:");
+      cmd.addOption("--frame",               "+F",   1, "[n]umber : integer",
+                                                        "select specified frame (default: 1)");
+      cmd.addOption("--frame-range",         "+Fr",  2, "[n]umber [c]ount : integer",
+                                                        "select c frames beginning with n");
+      cmd.addOption("--all-frames",          "+Fa",     "select all frames");
 
-    cmd.addGroup("presentation LUT transformation options:");
-     cmd.addOption("--identity-shape",             "Presentation LUT shape IDENTITY (default)");
-     cmd.addOption("--inverse-shape",              "Presentation LUT shape INVERSE");
+     cmd.addSubGroup("rotation:");
+      cmd.addOption("--rotate-left",         "+Rl",     "rotate image left (-90 degrees)");
+      cmd.addOption("--rotate-right",        "+Rr",     "rotate image left (+90 degrees)");
+      cmd.addOption("--rotate-top-down",     "+Rtd",    "rotate image left (180 degrees)");
 
-    cmd.addGroup("Barten LUT transformation options:");
-     cmd.addOption("--display-file",           1, "file name",
-                                                  "Calibrate output according to monitor characteristics");
+     cmd.addSubGroup("flipping:");
+      cmd.addOption("--flip-horizontally",   "+Ph",     "flip image horizontally");
+      cmd.addOption("--flip-vertically",     "+Pv",     "flip image vertically");
+      cmd.addOption("--flip-both-axes",      "+Phv",    "flip image horizontally and vertically");
 
-    cmd.addGroup("overlay options:");
-     cmd.addOption("--no-overlays",               "-O",     "do not display overlays");
-     cmd.addOption("--display-overlay",           "+O" , 1, "[n]umber : integer",
-                                                            "display overlay n\n(0..16, 0=all, default: +O 0)");
-     cmd.addOption("--overlay-replace",           "+mr",    "use overlay mode \"Replace\"\n(default for Graphic overlays)");
-     cmd.addOption("--overlay-threshold-replace", "+mt",    "use overlay mode \"Threshold-Replace\"");
-     cmd.addOption("--overlay-complement",        "+mc",    "use overlay mode \"Complement\"");
-     cmd.addOption("--overlay-roi",               "+mi",    "use overlay mode \"Region of Interest\"\n(default for ROI overlays)");
-     cmd.addOption("--overlay-foreground",        "+of", 1, "[d]ensity : float",
-                                                            "set overlay foreground density to d\n(0..1, default: 1)\n"
-                                                            "must be used together with +mr, +mt,\n+mc or +mi.");
-     cmd.addOption("--overlay-threshold",         "+ot", 1, "[d]ensity : float",
-                                                            "set overlay threshold density to d\n(0..1, default: 0.5)\n"
-                                                            "must be used together with +mr, +mt,\n+mc or +mi.");
+     cmd.addSubGroup("scaling:");
+      cmd.addOption("--pixel-aspect-ratio",  "+a",      "recognize pixel aspect ratio when scaling\n(default)");
+      cmd.addOption("--ignore-pixel-aspect", "-a",      "ignore pixel aspect ratio when scaling");
+      cmd.addOption("--interpolate",         "+i",      "use bilinear interpolation when scaling\n(default)");
+      cmd.addOption("--no-interpolation",    "-i",      "no interpolation when scaling");
+      cmd.addOption("--no-scaling",          "-S",      "no scaling, ignore pixel aspect ratio\n(default)");
+      cmd.addOption("--scale-x-factor",      "+Sxf", 1, "[f]actor : float",
+                                                        "scale x axis by factor, auto-compute y axis");
+      cmd.addOption("--scale-y-factor",      "+Syf", 1, "[f]actor : float",
+                                                        "scale y axis by factor, auto-compute x axis");
+      cmd.addOption("--scale-x-size",        "+Sxv", 1, "[n]umber : integer",
+                                                        "scale x axis to n pixels, auto-compute y axis");
+      cmd.addOption("--scale-y-size",        "+Syv", 1, "[n]umber : integer",
+                                                        "scale y axis to n pixels, auto-compute x axis");
 
-    cmd.addGroup("output options:");
-     cmd.addOption("--verbose",          "+V",    "verbose mode, print processing details");
-     cmd.addOption("--image-info",       "+I",    "info mode, print image details");
-     cmd.addOption("--debug-level",      "+d", 1, "[n]umber : integer",
-                                                  "set debug level to n (0..9, default: 0)");
-     cmd.addOption("--no-output",        "-f",    "do not create any output (useful with +V)");
-     cmd.addOption("--write-raw-pnm",    "+fb",   "write 8-bit binary PGM/PPM (default)");
-     cmd.addOption("--write-8-bit-pnm",  "+fa",   "write 8-bit ASCII PGM/PPM");
-     cmd.addOption("--write-16-bit-pnm", "+fA",   "write 16-bit ASCII PGM/PPM");
+     cmd.addSubGroup("VOI windowing options:");
+      cmd.addOption("--no-windowing",        "-W",      "no VOI windowing (default)");
+      cmd.addOption("--use-window",          "+Wi",  1, "[n]umber : integer",
+                                                        "use the n-th VOI window from image file");
+      cmd.addOption("--use-voi-lut",         "+Wl",  1, "[n]umber : integer",
+                                                        "use the n-th VOI look up table from image file");
+      cmd.addOption("--min-max-window",      "+Wm",     "compute VOI window using min-max algorithm");
+      cmd.addOption("--min-max-window-n",    "+Wn",     "compute VOI window using min-max algorithm,\nignoring extreme values");
+      cmd.addOption("--histogram-window",    "+Wh",  1, "[n]umber: integer",
+                                                        "compute VOI window using Histogram algorithm,\nignoring n percent");
+      cmd.addOption("--set-window",          "+Ww",  2, "[c]enter [w]idth : float",
+                                                        "compute VOI window using center c and width w");
 
-    if (app.parseCommandLine(cmd, argc, argv, "dcmfile-in [pnmfile-out]", 1, 2))
+     cmd.addSubGroup("presentation LUT transformation options:");
+      cmd.addOption("--identity-shape",                 "Presentation LUT shape IDENTITY (default)");
+      cmd.addOption("--inverse-shape",                  "Presentation LUT shape INVERSE");
+
+     cmd.addSubGroup("overlay options:");
+      cmd.addOption("--no-overlays",         "-O",      "do not display overlays");
+      cmd.addOption("--display-overlay",     "+O" ,  1, "[n]umber : integer",
+                                                        "display overlay n (0..16, 0=all, default: +O 0)");
+      cmd.addOption("--ovl-replace",         "+mr",     "use overlay mode \"Replace\"\n(default for Graphic overlays)");
+      cmd.addOption("--ovl-threshold",       "+mt",     "use overlay mode \"Threshold-Replace\"");
+      cmd.addOption("--ovl-complement",      "+mc",     "use overlay mode \"Complement\"");
+      cmd.addOption("--ovl-roi",             "+mi",     "use overlay mode \"Region of Interest\"\n(default for ROI overlays)");
+      cmd.addOption("--set-foreground",      "+of",  1, "[d]ensity : float",
+                                                        "set overlay foreground density (0..1, def: 1)");
+      cmd.addOption("--set-threshold",       "+ot",  1, "[d]ensity : float",
+                                                        "set overlay threshold density (0..1, def: 0.5)");
+
+     cmd.addSubGroup("Barten LUT transformation options:");
+      cmd.addOption("--display-file",                1, "file name",
+                                                        "Calibrate output according to monitor\ncharacteristics");
+
+     cmd.addSubGroup("compatibility options:");
+      cmd.addOption("--accept-acr-nema",     "+Ma",     "accept ACR-NEMA images without\nphotometric interpretation");
+      cmd.addOption("--accept-palettes",     "+Mp",     "accept incorrect palette attribute\ntags (0028,111x) and (0028,121x)");
+
+     cmd.addSubGroup("other transformations:");
+      cmd.addOption("--grayscale",           "+G",      "convert to grayscale if necessary");
+      cmd.addOption("--clip-region",         "+C",   4, "[l]eft [t]op [w]idth [h]eight : integer",
+                                                        "clip image region (l, t, w, h)");
+
+    cmd.addGroup("output options:", LONGCOL, SHORTCOL + 2);
+     cmd.addOption("--no-output",            "-f",      "do not create any output (useful with +I)");
+     cmd.addOption("--write-raw-pnm",        "+fb",     "write 8-bit binary PGM/PPM (default)");
+     cmd.addOption("--write-8-bit-pnm",      "+fa",     "write 8-bit ASCII PGM/PPM");
+     cmd.addOption("--write-16-bit-pnm",     "+fA",     "write 16-bit ASCII PGM/PPM");
+     cmd.addOption("--write-pastel-pnm",                "write 8-bit binary PPM with pastel colors\n(early experimental version)");
+
+    if (app.parseCommandLine(cmd, argc, argv))
     {
         if ((cmd.getParamCount() == 1) && (!cmd.findOption("--no-output")))
             app.printError("Missing output file");
@@ -237,27 +252,34 @@ int main(int argc, char *argv[])
             cmd.getParam(1, opt_ifname);
             cmd.getParam(2, opt_ofname);
 
+            if (cmd.findOption("--verbose"))
+                opt_verboseMode = 1;
+            if (cmd.findOption("--debug"))
+                opt_debugMode = 1;
+            if (cmd.findOption("--image-info"))
+                opt_imageInfo = 1;
+
             cmd.beginOptionBlock();
-            if (cmd.findOption("--read-as-dataset"))
+            if (cmd.findOption("--read-dataset"))
                 opt_readAsDataset = 1;
-            if (cmd.findOption("--auto-read-mode"))
+            if (cmd.findOption("--read-file"))
                 opt_readAsDataset = 0;
             cmd.endOptionBlock();
 
             cmd.beginOptionBlock();
-            if (cmd.findOption("--transfer-syntax-recognition"))
+            if (cmd.findOption("--read-xfer-auto"))
                 opt_transferSyntax = EXS_Unknown;
-            if (cmd.findOption("--little-endian-implicit"))
+            if (cmd.findOption("--read-xfer-implicit"))
                 opt_transferSyntax = EXS_LittleEndianImplicit;
-            if (cmd.findOption("--little-endian-explicit"))
+            if (cmd.findOption("--read-xfer-little"))
                 opt_transferSyntax = EXS_LittleEndianExplicit;
-            if (cmd.findOption("--big-endian-explicit"))
+            if (cmd.findOption("--read-xfer-big"))
                 opt_transferSyntax = EXS_BigEndianExplicit;
             cmd.endOptionBlock();
 
             if (cmd.findOption("--accept-acr-nema"))
                 opt_compatibilityMode |= CIF_AcrNemaCompatibility;
-            if (cmd.findOption("--accept-incorrect-palettes"))
+            if (cmd.findOption("--accept-palettes"))
                 opt_compatibilityMode |= CIF_WrongPaletteAttributeTags;
 
             cmd.beginOptionBlock();
@@ -416,27 +438,20 @@ int main(int argc, char *argv[])
             cmd.endOptionBlock();
 
             cmd.beginOptionBlock();
-            if (cmd.findOption("--overlay-replace"))
+            if (cmd.findOption("--ovl-replace"))
                 opt_OverlayMode = 1;
-            if (cmd.findOption("--overlay-threshold-replace"))
+            if (cmd.findOption("--ovl-threshold"))
                 opt_OverlayMode = 2;
-            if (cmd.findOption("--overlay-complement"))
+            if (cmd.findOption("--ovl-complement"))
                 opt_OverlayMode = 3;
-            if (cmd.findOption("--overlay-roi"))
+            if (cmd.findOption("--ovl-roi"))
                 opt_OverlayMode = 4;
             cmd.endOptionBlock();
 
-            if (cmd.findOption("--overlay-foreground"))
+            if (cmd.findOption("--set-foreground"))
                 app.checkValue(cmd.getValue(opt_foregroundDensity, 0.0, 1.0));
-            if (cmd.findOption("--overlay-threshold"))
+            if (cmd.findOption("--set-threshold"))
                 app.checkValue(cmd.getValue(opt_thresholdDensity, 0.0, 1.0));
-
-            if (cmd.findOption("--verbose"))
-                opt_verboseMode = 1;
-            if (cmd.findOption("--image-info"))
-                opt_imageInfo = 1;
-            if (cmd.findOption("--debug-level"))
-                app.checkValue(cmd.getValue(opt_debugMode, 0, 9));
 
             cmd.beginOptionBlock();
             if (cmd.findOption("--no-output"))
@@ -447,6 +462,8 @@ int main(int argc, char *argv[])
                 opt_fileType = 2;
             if (cmd.findOption("--write-16-bit-pnm"))
                 opt_fileType = 3;
+            if (cmd.findOption("--write-pastel-pnm"))
+                opt_fileType = 4;
             cmd.endOptionBlock();
         }
     }
@@ -457,10 +474,14 @@ int main(int argc, char *argv[])
         fprintf(stderr, "Warning: no data dictionary loaded, check environment variable: %s\n", DCM_DICT_ENVIRONMENT_VARIABLE);
         
 //    SetDebugLevel(( (int)opt_debugMode ));
-    DicomImageClass::DebugLevel = opt_debugMode;
+    if (opt_debugMode > 0)
+        DicomImageClass::DebugLevel |= DicomImageClass::DL_DebugMessages;
 
     if (opt_verboseMode > 0)
+    {
+        DicomImageClass::DebugLevel |= DicomImageClass::DL_Informationals;
         fprintf(stderr, "reading DICOM file: %s\n", opt_ifname);
+    }
 
     DcmFileStream myin(opt_ifname, DCM_ReadMode);
     if ( myin.GetError() != EC_Normal )
@@ -874,6 +895,9 @@ int main(int argc, char *argv[])
         case 3:
             di->writePPM(ofile, 16);
             break;
+        case 4:
+            di->writePPM(ofile, MI_PastelColor);
+            break;
         case 1:
         default:
             di->writeRawPPM(ofile, 8);
@@ -894,7 +918,14 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.25  1999-03-24 17:11:06  joergr
+ * Revision 1.26  1999-04-28 14:37:25  joergr
+ * Added experimental support to create grayscale images with more than 256
+ * shades of gray to be display an a consumer monitor (use pastel colors).
+ * Modified some command line options (not yet finished).
+ * Adapted console application to new OFCommandline and OFConsoleApplication
+ * features.
+ *
+ * Revision 1.25  1999/03/24 17:11:06  joergr
  * Changed optional integer parameter in method findOption to enum type.
  * Removed debug code.
  *
