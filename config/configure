@@ -2325,6 +2325,638 @@ done
 
 
 
+echo $ac_n "checking prototype for accept (in sys/types.h sys/socket.h)""... $ac_c" 1>&6
+ac_includes=""
+for ac_header in sys/types.h sys/socket.h
+do
+  ac_includes="$ac_includes
+#include<$ac_header>"
+done
+if eval "test \"`echo '$''{'ac_cv_prototype_accept'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  cat > conftest.$ac_ext <<EOF
+#line 2340 "configure"
+#include "confdefs.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+$ac_includes
+
+#ifdef __cplusplus
+}
+#endif
+
+typedef union { int member; } dummyStruct;
+#ifdef __cplusplus
+extern "C"
+#endif
+
+dummyStruct accept(dummyStruct);
+
+
+int main() { return 0; }
+int t() {
+
+; return 0; }
+EOF
+if eval $ac_compile; then
+  rm -rf conftest*
+  eval "ac_cv_prototype_accept=no"
+else
+  rm -rf conftest*
+  eval "ac_cv_prototype_accept=yes"
+fi
+rm -f conftest*
+
+fi
+if eval "test \"`echo '$ac_cv_prototype_'accept`\" = yes"; then
+  echo "$ac_t""yes" 1>&6
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo accept | tr '[a-z]' '[A-Z]'`
+  cat >> confdefs.h <<EOF
+#define $ac_tr_prototype 1
+EOF
+
+  :
+else
+  echo "$ac_t""no" 1>&6
+fi
+
+echo $ac_n "checking prototype for bind (in sys/types.h sys/socket.h)""... $ac_c" 1>&6
+ac_includes=""
+for ac_header in sys/types.h sys/socket.h
+do
+  ac_includes="$ac_includes
+#include<$ac_header>"
+done
+if eval "test \"`echo '$''{'ac_cv_prototype_bind'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  cat > conftest.$ac_ext <<EOF
+#line 2398 "configure"
+#include "confdefs.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+$ac_includes
+
+#ifdef __cplusplus
+}
+#endif
+
+typedef union { int member; } dummyStruct;
+#ifdef __cplusplus
+extern "C"
+#endif
+
+dummyStruct bind(dummyStruct);
+
+
+int main() { return 0; }
+int t() {
+
+; return 0; }
+EOF
+if eval $ac_compile; then
+  rm -rf conftest*
+  eval "ac_cv_prototype_bind=no"
+else
+  rm -rf conftest*
+  eval "ac_cv_prototype_bind=yes"
+fi
+rm -f conftest*
+
+fi
+if eval "test \"`echo '$ac_cv_prototype_'bind`\" = yes"; then
+  echo "$ac_t""yes" 1>&6
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo bind | tr '[a-z]' '[A-Z]'`
+  cat >> confdefs.h <<EOF
+#define $ac_tr_prototype 1
+EOF
+
+  :
+else
+  echo "$ac_t""no" 1>&6
+fi
+
+echo $ac_n "checking prototype for gethostbyname (in netdb.h)""... $ac_c" 1>&6
+ac_includes=""
+for ac_header in netdb.h
+do
+  ac_includes="$ac_includes
+#include<$ac_header>"
+done
+if eval "test \"`echo '$''{'ac_cv_prototype_gethostbyname'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  cat > conftest.$ac_ext <<EOF
+#line 2456 "configure"
+#include "confdefs.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+$ac_includes
+
+#ifdef __cplusplus
+}
+#endif
+
+typedef union { int member; } dummyStruct;
+#ifdef __cplusplus
+extern "C"
+#endif
+
+dummyStruct gethostbyname(dummyStruct);
+
+
+int main() { return 0; }
+int t() {
+
+; return 0; }
+EOF
+if eval $ac_compile; then
+  rm -rf conftest*
+  eval "ac_cv_prototype_gethostbyname=no"
+else
+  rm -rf conftest*
+  eval "ac_cv_prototype_gethostbyname=yes"
+fi
+rm -f conftest*
+
+fi
+if eval "test \"`echo '$ac_cv_prototype_'gethostbyname`\" = yes"; then
+  echo "$ac_t""yes" 1>&6
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo gethostbyname | tr '[a-z]' '[A-Z]'`
+  cat >> confdefs.h <<EOF
+#define $ac_tr_prototype 1
+EOF
+
+  :
+else
+  echo "$ac_t""no" 1>&6
+fi
+
+echo $ac_n "checking predefined prototype for gethostid""... $ac_c" 1>&6
+ac_includes=""
+
+if eval "test \"`echo '$''{'ac_cv_prototype_gethostid'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  cat > conftest.$ac_ext <<EOF
+#line 2510 "configure"
+#include "confdefs.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+$ac_includes
+
+#ifdef __cplusplus
+}
+#endif
+
+typedef union { int member; } dummyStruct;
+#ifdef __cplusplus
+extern "C"
+#endif
+
+dummyStruct gethostid(dummyStruct);
+
+
+int main() { return 0; }
+int t() {
+
+; return 0; }
+EOF
+if eval $ac_compile; then
+  rm -rf conftest*
+  eval "ac_cv_prototype_gethostid=no"
+else
+  rm -rf conftest*
+  eval "ac_cv_prototype_gethostid=yes"
+fi
+rm -f conftest*
+
+fi
+if eval "test \"`echo '$ac_cv_prototype_'gethostid`\" = yes"; then
+  echo "$ac_t""yes" 1>&6
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo gethostid | tr '[a-z]' '[A-Z]'`
+  cat >> confdefs.h <<EOF
+#define $ac_tr_prototype 1
+EOF
+
+  :
+else
+  echo "$ac_t""no" 1>&6
+fi
+
+echo $ac_n "checking predefined prototype for gethostname""... $ac_c" 1>&6
+ac_includes=""
+
+if eval "test \"`echo '$''{'ac_cv_prototype_gethostname'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  cat > conftest.$ac_ext <<EOF
+#line 2564 "configure"
+#include "confdefs.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+$ac_includes
+
+#ifdef __cplusplus
+}
+#endif
+
+typedef union { int member; } dummyStruct;
+#ifdef __cplusplus
+extern "C"
+#endif
+
+dummyStruct gethostname(dummyStruct);
+
+
+int main() { return 0; }
+int t() {
+
+; return 0; }
+EOF
+if eval $ac_compile; then
+  rm -rf conftest*
+  eval "ac_cv_prototype_gethostname=no"
+else
+  rm -rf conftest*
+  eval "ac_cv_prototype_gethostname=yes"
+fi
+rm -f conftest*
+
+fi
+if eval "test \"`echo '$ac_cv_prototype_'gethostname`\" = yes"; then
+  echo "$ac_t""yes" 1>&6
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo gethostname | tr '[a-z]' '[A-Z]'`
+  cat >> confdefs.h <<EOF
+#define $ac_tr_prototype 1
+EOF
+
+  :
+else
+  echo "$ac_t""no" 1>&6
+fi
+
+echo $ac_n "checking prototype for getsockopt (in sys/types.h sys/socket.h)""... $ac_c" 1>&6
+ac_includes=""
+for ac_header in sys/types.h sys/socket.h
+do
+  ac_includes="$ac_includes
+#include<$ac_header>"
+done
+if eval "test \"`echo '$''{'ac_cv_prototype_getsockopt'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  cat > conftest.$ac_ext <<EOF
+#line 2622 "configure"
+#include "confdefs.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+$ac_includes
+
+#ifdef __cplusplus
+}
+#endif
+
+typedef union { int member; } dummyStruct;
+#ifdef __cplusplus
+extern "C"
+#endif
+
+dummyStruct getsockopt(dummyStruct);
+
+
+int main() { return 0; }
+int t() {
+
+; return 0; }
+EOF
+if eval $ac_compile; then
+  rm -rf conftest*
+  eval "ac_cv_prototype_getsockopt=no"
+else
+  rm -rf conftest*
+  eval "ac_cv_prototype_getsockopt=yes"
+fi
+rm -f conftest*
+
+fi
+if eval "test \"`echo '$ac_cv_prototype_'getsockopt`\" = yes"; then
+  echo "$ac_t""yes" 1>&6
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo getsockopt | tr '[a-z]' '[A-Z]'`
+  cat >> confdefs.h <<EOF
+#define $ac_tr_prototype 1
+EOF
+
+  :
+else
+  echo "$ac_t""no" 1>&6
+fi
+
+echo $ac_n "checking prototype for listen (in sys/types.h sys/socket.h)""... $ac_c" 1>&6
+ac_includes=""
+for ac_header in sys/types.h sys/socket.h
+do
+  ac_includes="$ac_includes
+#include<$ac_header>"
+done
+if eval "test \"`echo '$''{'ac_cv_prototype_listen'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  cat > conftest.$ac_ext <<EOF
+#line 2680 "configure"
+#include "confdefs.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+$ac_includes
+
+#ifdef __cplusplus
+}
+#endif
+
+typedef union { int member; } dummyStruct;
+#ifdef __cplusplus
+extern "C"
+#endif
+
+dummyStruct listen(dummyStruct);
+
+
+int main() { return 0; }
+int t() {
+
+; return 0; }
+EOF
+if eval $ac_compile; then
+  rm -rf conftest*
+  eval "ac_cv_prototype_listen=no"
+else
+  rm -rf conftest*
+  eval "ac_cv_prototype_listen=yes"
+fi
+rm -f conftest*
+
+fi
+if eval "test \"`echo '$ac_cv_prototype_'listen`\" = yes"; then
+  echo "$ac_t""yes" 1>&6
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo listen | tr '[a-z]' '[A-Z]'`
+  cat >> confdefs.h <<EOF
+#define $ac_tr_prototype 1
+EOF
+
+  :
+else
+  echo "$ac_t""no" 1>&6
+fi
+
+echo $ac_n "checking prototype for socket (in sys/types.h sys/socket.h)""... $ac_c" 1>&6
+ac_includes=""
+for ac_header in sys/types.h sys/socket.h
+do
+  ac_includes="$ac_includes
+#include<$ac_header>"
+done
+if eval "test \"`echo '$''{'ac_cv_prototype_socket'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  cat > conftest.$ac_ext <<EOF
+#line 2738 "configure"
+#include "confdefs.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+$ac_includes
+
+#ifdef __cplusplus
+}
+#endif
+
+typedef union { int member; } dummyStruct;
+#ifdef __cplusplus
+extern "C"
+#endif
+
+dummyStruct socket(dummyStruct);
+
+
+int main() { return 0; }
+int t() {
+
+; return 0; }
+EOF
+if eval $ac_compile; then
+  rm -rf conftest*
+  eval "ac_cv_prototype_socket=no"
+else
+  rm -rf conftest*
+  eval "ac_cv_prototype_socket=yes"
+fi
+rm -f conftest*
+
+fi
+if eval "test \"`echo '$ac_cv_prototype_'socket`\" = yes"; then
+  echo "$ac_t""yes" 1>&6
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo socket | tr '[a-z]' '[A-Z]'`
+  cat >> confdefs.h <<EOF
+#define $ac_tr_prototype 1
+EOF
+
+  :
+else
+  echo "$ac_t""no" 1>&6
+fi
+
+echo $ac_n "checking prototype for connect (in sys/types.h sys/socket.h)""... $ac_c" 1>&6
+ac_includes=""
+for ac_header in sys/types.h sys/socket.h
+do
+  ac_includes="$ac_includes
+#include<$ac_header>"
+done
+if eval "test \"`echo '$''{'ac_cv_prototype_connect'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  cat > conftest.$ac_ext <<EOF
+#line 2796 "configure"
+#include "confdefs.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+$ac_includes
+
+#ifdef __cplusplus
+}
+#endif
+
+typedef union { int member; } dummyStruct;
+#ifdef __cplusplus
+extern "C"
+#endif
+
+dummyStruct connect(dummyStruct);
+
+
+int main() { return 0; }
+int t() {
+
+; return 0; }
+EOF
+if eval $ac_compile; then
+  rm -rf conftest*
+  eval "ac_cv_prototype_connect=no"
+else
+  rm -rf conftest*
+  eval "ac_cv_prototype_connect=yes"
+fi
+rm -f conftest*
+
+fi
+if eval "test \"`echo '$ac_cv_prototype_'connect`\" = yes"; then
+  echo "$ac_t""yes" 1>&6
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo connect | tr '[a-z]' '[A-Z]'`
+  cat >> confdefs.h <<EOF
+#define $ac_tr_prototype 1
+EOF
+
+  :
+else
+  echo "$ac_t""no" 1>&6
+fi
+
+echo $ac_n "checking prototype for setsockopt (in sys/types.h sys/socket.h)""... $ac_c" 1>&6
+ac_includes=""
+for ac_header in sys/types.h sys/socket.h
+do
+  ac_includes="$ac_includes
+#include<$ac_header>"
+done
+if eval "test \"`echo '$''{'ac_cv_prototype_setsockopt'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  cat > conftest.$ac_ext <<EOF
+#line 2854 "configure"
+#include "confdefs.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+$ac_includes
+
+#ifdef __cplusplus
+}
+#endif
+
+typedef union { int member; } dummyStruct;
+#ifdef __cplusplus
+extern "C"
+#endif
+
+dummyStruct setsockopt(dummyStruct);
+
+
+int main() { return 0; }
+int t() {
+
+; return 0; }
+EOF
+if eval $ac_compile; then
+  rm -rf conftest*
+  eval "ac_cv_prototype_setsockopt=no"
+else
+  rm -rf conftest*
+  eval "ac_cv_prototype_setsockopt=yes"
+fi
+rm -f conftest*
+
+fi
+if eval "test \"`echo '$ac_cv_prototype_'setsockopt`\" = yes"; then
+  echo "$ac_t""yes" 1>&6
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo setsockopt | tr '[a-z]' '[A-Z]'`
+  cat >> confdefs.h <<EOF
+#define $ac_tr_prototype 1
+EOF
+
+  :
+else
+  echo "$ac_t""no" 1>&6
+fi
+
+echo $ac_n "checking prototype for wait3 (in sys/wait.h sys/time.h sys/resource.h)""... $ac_c" 1>&6
+ac_includes=""
+for ac_header in sys/wait.h sys/time.h sys/resource.h
+do
+  ac_includes="$ac_includes
+#include<$ac_header>"
+done
+if eval "test \"`echo '$''{'ac_cv_prototype_wait3'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  cat > conftest.$ac_ext <<EOF
+#line 2912 "configure"
+#include "confdefs.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+$ac_includes
+
+#ifdef __cplusplus
+}
+#endif
+
+typedef union { int member; } dummyStruct;
+#ifdef __cplusplus
+extern "C"
+#endif
+
+dummyStruct wait3(dummyStruct);
+
+
+int main() { return 0; }
+int t() {
+
+; return 0; }
+EOF
+if eval $ac_compile; then
+  rm -rf conftest*
+  eval "ac_cv_prototype_wait3=no"
+else
+  rm -rf conftest*
+  eval "ac_cv_prototype_wait3=yes"
+fi
+rm -f conftest*
+
+fi
+if eval "test \"`echo '$ac_cv_prototype_'wait3`\" = yes"; then
+  echo "$ac_t""yes" 1>&6
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo wait3 | tr '[a-z]' '[A-Z]'`
+  cat >> confdefs.h <<EOF
+#define $ac_tr_prototype 1
+EOF
+
+  :
+else
+  echo "$ac_t""no" 1>&6
+fi
+
+
+
 common_makefile=Makefile.def
 
 
