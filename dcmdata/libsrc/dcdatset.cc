@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-06-06 09:55:28 $
+** Update Date:		$Date: 1997-07-03 15:09:53 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdatset.cc,v $
-** CVS/RCS Revision:	$Revision: 1.10 $
+** CVS/RCS Revision:	$Revision: 1.11 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -42,13 +42,7 @@
 DcmDataset::DcmDataset()
     : DcmItem(ItemTag, DCM_UndefinedLength)
 {
-    Bdebug((5, "dcdatset:DcmDataset::DcmDataset()" ));
-    debug(( 8, "Object pointer this=0x%p", this ));
-
     Xfer = EXS_Unknown;
-
-    Edebug(());
-
 }
 
 
@@ -59,13 +53,7 @@ DcmDataset::DcmDataset()
 DcmDataset::DcmDataset(const DcmDataset &old)
     : DcmItem( old )
 {
-    Bdebug((5, "dcdatset:DcmDataset::DcmDataset(DcmDataset&)" ));
-    debug(( 8, "Object pointer this=0x%p", this ));
-    debug(( 5, "ident()=%d", old.ident() ));
-
     Xfer = old.Xfer;
-
-    Edebug(());
 }
 
 
@@ -74,10 +62,6 @@ DcmDataset::DcmDataset(const DcmDataset &old)
 
 DcmDataset::~DcmDataset()
 {
-    Bdebug((5, "dcdatset:DcmDataset::~DcmDataset()" ));
-    debug(( 8, "Object pointer this=0x%p", this ));
-    Edebug(());
-
 }
 
 
@@ -157,9 +141,6 @@ E_Condition DcmDataset::read(DcmStream & inStream,
 			     const E_GrpLenEncoding glenc,
 			     const Uint32 maxReadLength)
 {
-    Bdebug((3, "DcmDataset::read(xfer=%d,glenc=%d)", xfer, glenc ));
-
-
     errorFlag = inStream.GetError();
 
     if (errorFlag == EC_Normal && inStream.EndOfStream())
@@ -189,9 +170,7 @@ E_Condition DcmDataset::read(DcmStream & inStream,
  	computeGroupLengthAndPadding(glenc, EPD_noChange, Xfer);
 	fTransferState = ERW_ready;              // Dataset ist komplett
     }
-    debug(( 3, "errorFlag=(%d)", errorFlag ));
-    Edebug(());
-
+    debug(3, ( "DcmDataset::read: At End: errorFlag=(%d), %s", errorFlag, dcmErrorConditionToString(errorFlag) ));
     return errorFlag;
 }
 
@@ -216,9 +195,6 @@ E_Condition DcmDataset::write(DcmStream & outStream,
 			      const Uint32 subPadlen,
 			      Uint32 instanceLength)
 {
-    Bdebug((3, "DcmDataset::writeBlock(oxfer=%d,enctype=%d,glenc=%d)",
-	    oxfer, enctype, glenc ));
-
     if (fTransferState == ERW_notInitialized)
 	errorFlag = EC_IllegalCall;
     else
@@ -256,8 +232,6 @@ E_Condition DcmDataset::write(DcmStream & outStream,
 	    }
 	}
     }
-    Edebug(());
-
     return errorFlag;
 }
 
@@ -268,7 +242,14 @@ E_Condition DcmDataset::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.cc,v $
-** Revision 1.10  1997-06-06 09:55:28  andreas
+** Revision 1.11  1997-07-03 15:09:53  andreas
+** - removed debugging functions Bdebug() and Edebug() since
+**   they write a static array and are not very useful at all.
+**   Cdebug and Vdebug are merged since they have the same semantics.
+**   The debugging functions in dcmdata changed their interfaces
+**   (see dcmdata/include/dcdebug.h)
+**
+** Revision 1.10  1997/06/06 09:55:28  andreas
 ** - corrected error: canWriteXfer returns false if the old transfer syntax
 **   was unknown, which causes several applications to prohibit the writing
 **   of dataset.

@@ -10,9 +10,9 @@
 ** Implementation of class DcmAttributeTag
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-04-18 08:17:19 $
+** Update Date:		$Date: 1997-07-03 15:10:08 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrat.cc,v $
-** CVS/RCS Revision:	$Revision: 1.9 $
+** CVS/RCS Revision:	$Revision: 1.10 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -37,10 +37,6 @@
 DcmAttributeTag::DcmAttributeTag(const DcmTag &tag, const Uint32 len)
 : DcmElement(tag, len)
 {
-Bdebug((5, "dcvrat:DcmAttributeTag::DcmAttributeTag(DcmTag&,len=%ld)",
-           len ));
-debug(( 8, "Object pointer this=0x%p", this ));
-Edebug(());
 }
 
 
@@ -50,18 +46,12 @@ Edebug(());
 DcmAttributeTag::DcmAttributeTag( const DcmAttributeTag& old )
 : DcmElement( old )
 {
-Bdebug((5, "dcvrat:DcmAttributeTag::DcmAttributeTag(DcmAttributeTag&)" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
     if ( old.ident() != EVR_AT )
-
     {
         errorFlag = EC_IllegalCall;
         cerr << "Warning: DcmAttributeTag: wrong use of Copy-Constructor"
              << endl;
     }
-Edebug(());
-
 }
 
 
@@ -70,10 +60,6 @@ Edebug(());
 
 DcmAttributeTag::~DcmAttributeTag()
 {
-Bdebug((5, "dcvrat:DcmAttributeTag::~DcmAttributeTag()" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
-Edebug(());
 }
 
 
@@ -164,8 +150,6 @@ E_Condition DcmAttributeTag::putUint16Array(const Uint16 * attrValue,
 E_Condition DcmAttributeTag::putTagVal(const DcmTagKey &attrTag, 
 				       const unsigned long position)
 {
-Bdebug((2, "DcmAttributeTag::put(DcmTag&,=%ld)", position ));
-
     Uint16 attributeTag[2];
     attributeTag[0] = attrTag.getGroup();
     attributeTag[1] = attrTag.getElement();
@@ -173,8 +157,6 @@ Bdebug((2, "DcmAttributeTag::put(DcmTag&,=%ld)", position ));
     errorFlag = this -> changeValue(attributeTag, 
 				    2*sizeof(Uint16)* Uint32(position), 
 				    2*sizeof(Uint16));
-
-Edebug(());
     return errorFlag;
 }
 
@@ -277,7 +259,14 @@ E_Condition DcmAttributeTag::verify(const BOOL autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrat.cc,v $
-** Revision 1.9  1997-04-18 08:17:19  andreas
+** Revision 1.10  1997-07-03 15:10:08  andreas
+** - removed debugging functions Bdebug() and Edebug() since
+**   they write a static array and are not very useful at all.
+**   Cdebug and Vdebug are merged since they have the same semantics.
+**   The debugging functions in dcmdata changed their interfaces
+**   (see dcmdata/include/dcdebug.h)
+**
+** Revision 1.9  1997/04/18 08:17:19  andreas
 ** - The put/get-methods for all VRs did not conform to the C++-Standard
 **   draft. Some Compilers (e.g. SUN-C++ Compiler, Metroworks
 **   CodeWarrier, etc.) create many warnings concerning the hiding of

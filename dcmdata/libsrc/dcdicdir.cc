@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-28 12:42:40 $
+** Update Date:		$Date: 1997-07-03 15:09:55 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdicdir.cc,v $
-** CVS/RCS Revision:	$Revision: 1.15 $
+** CVS/RCS Revision:	$Revision: 1.16 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -65,8 +65,6 @@ char * mktemp(char *);
 
 DcmDicomDir::DcmDicomDir()
 {
-    Bdebug((5, "dcdicdir:DcmDicomDir::DcmDicomDir()" ));
-
     errorFlag = EC_Normal;
     modified = FALSE;
     mustCreateNewDir = FALSE;
@@ -91,8 +89,6 @@ DcmDicomDir::DcmDicomDir()
     MRDRSeq = new DcmSequenceOfItems( mrdrSeqTag );
 
     errorFlag = convertLinearToTree();
-    Edebug(());
-
 }
 
 
@@ -102,8 +98,6 @@ DcmDicomDir::DcmDicomDir()
 DcmDicomDir::DcmDicomDir(char *fileName,
 			 char *fileSetID)
 {
-    Bdebug((5, "DcmDicomDir::DcmDicomDir(char*,char*)" ));
-
     errorFlag = EC_Normal;
     modified = FALSE;
     mustCreateNewDir = FALSE;
@@ -114,14 +108,14 @@ DcmDicomDir::DcmDicomDir(char *fileName,
     DcmFileStream inStream(dicomDirFileName, DCM_ReadMode);
     if (inStream.GetError() != EC_Normal)
     {
-	debug(( 3, "dcdicdir:DcmDicomDir() creating new DicomDir [%s]",
+	debug(3, ( "dcdicdir:DcmDicomDir() creating new DicomDir [%s]",
 		dicomDirFileName ));
 	mustCreateNewDir = TRUE;
 	DirFile = new DcmFileFormat();
     }
     else
     {
-	debug(( 5, "dcdicdir:DcmDicomDir() reading DicomDir [%s]",
+	debug(5, (  "dcdicdir:DcmDicomDir() reading DicomDir [%s]",
 		dicomDirFileName ));
 	DirFile = new DcmFileFormat();
 	DirFile->transferInit();
@@ -135,8 +129,6 @@ DcmDicomDir::DcmDicomDir(char *fileName,
     MRDRSeq = new DcmSequenceOfItems( mrdrSeqTag );
 
     errorFlag = convertLinearToTree();
-    Edebug(());
-
 }
 
 
@@ -145,8 +137,6 @@ DcmDicomDir::DcmDicomDir(char *fileName,
 
 DcmDicomDir::DcmDicomDir( const DcmDicomDir & /*newDir*/ )
 {
-    Bdebug((5, "dcdicdir:DcmDicomDir::DcmDicomDir(DcmDicomDir&)" ));
-
     errorFlag = EC_IllegalCall;
     modified = FALSE;
     mustCreateNewDir = FALSE;
@@ -157,8 +147,6 @@ DcmDicomDir::DcmDicomDir( const DcmDicomDir & /*newDir*/ )
     DcmTag mrdrSeqTag( DCM_DirectoryRecordSequence );
     MRDRSeq = new DcmSequenceOfItems( mrdrSeqTag );
     cerr << "Warning: DcmDicomDir: wrong use of Copy-Constructor" << endl;
-    Edebug(());
-
 }
 
 
@@ -167,8 +155,6 @@ DcmDicomDir::DcmDicomDir( const DcmDicomDir & /*newDir*/ )
 
 DcmDicomDir::~DcmDicomDir()
 {
-Bdebug((5, "dcdicdir:DcmDicomDir::~DcmDicomDir()" ));
-
     if (modified)
 		this->write();
 
@@ -176,9 +162,6 @@ Bdebug((5, "dcdicdir:DcmDicomDir::~DcmDicomDir()" ));
     delete dicomDirFileName;
     delete RootRec;
     delete MRDRSeq;
-
-Edebug(());
-
 }
 
 
@@ -190,8 +173,6 @@ Edebug(());
 
 E_Condition DcmDicomDir::createNewElements( char *fileSetID )
 {
-Bdebug((3, "dcdicdir:DcmDicomDir::createNewElements(char*)" ));
-
     E_Condition l_error = EC_Normal;
     DcmUnsignedLongOffset *uloP;
     DcmUnsignedShort *usP;
@@ -224,9 +205,6 @@ Bdebug((3, "dcdicdir:DcmDicomDir::createNewElements(char*)" ));
     usP = new DcmUnsignedShort( fileConsTag );		   // (0004,1212)
     usP->putUint16(Uint16(0x0000));
     dset.insert( usP, TRUE );
-
-Edebug(());
-
     return l_error;
 }
 
@@ -288,9 +266,6 @@ DcmSequenceOfItems& DcmDicomDir::getDirRecSeq( DcmDataset &dset )
 DcmUnsignedLongOffset* DcmDicomDir::lookForOffsetElem( DcmObject *obj,
 						       const DcmTagKey &offsetTag )
 {
-Bdebug((4, "dcdicdir:DcmDicomDir::lookForOffsetElem(obj*,tag=(%x,%x))",
-	   offsetTag.getGroup(), offsetTag.getElement() ));
-
     DcmUnsignedLongOffset *offElem = (DcmUnsignedLongOffset*)NULL;
     if ( obj != (DcmObject*)NULL )
     {
@@ -304,7 +279,7 @@ Bdebug((4, "dcdicdir:DcmDicomDir::lookForOffsetElem(obj*,tag=(%x,%x))",
 #ifdef DEBUG
 Uint32 uint = 0;
 offElem->getUint32(uint);
-debug(( 4, "Offset-Element(0x%4.4hx,0x%4.4hx) offs=0x%8.8lx p=%p l=%p",
+debug(4, ( "DcmDicomDir::lookForOffsetElem() Offset-Element(0x%4.4hx,0x%4.4hx) offs=0x%8.8lx p=%p l=%p",
 	   offElem->getGTag(), offElem->getETag(),
 	   uint, offElem, 
 	   offElem->getNextRecord() ));
@@ -312,8 +287,6 @@ debug(( 4, "Offset-Element(0x%4.4hx,0x%4.4hx) offs=0x%8.8lx p=%p l=%p",
 	    }
 	}
     }
-Edebug(());
-
     return offElem;
 }
 
@@ -326,10 +299,6 @@ E_Condition DcmDicomDir::resolveGivenOffsets( DcmObject *startPoint,
 					      const unsigned long numOffsets,
 					      const DcmTagKey &offsetTag )
 {
-  Bdebug((3, "dcdicdir:DcmDicomDir::resolveGivenOffsets(DcmObject*,ItemOffset*,"
-	  "num=%ld,offsetTag=(%x,%x))", numOffsets, offsetTag.getGroup(),
-	  offsetTag.getElement()));
-
   E_Condition l_error = EC_Normal;
   if ( startPoint != (DcmObject*)NULL )
     {
@@ -346,7 +315,7 @@ E_Condition DcmDicomDir::resolveGivenOffsets( DcmObject *startPoint,
 	      l_error = offElem->getUint32(offset);
 	      if (offset == itOffsets[ i ].fileOffset )
 		{
-debug(( 3, "Offset-Element(0x%4.4hx,0x%4.4hx) with offset 0x%8.8lx found",
+debug(3, ( "DcmDicomDir::resolveGivenOffset() Offset-Element(0x%4.4hx,0x%4.4hx) with offset 0x%8.8lx found",
 	offElem->getGTag(), offElem->getETag(), offset));
 
 		  offElem->setNextRecord( itOffsets[ i ].item );
@@ -355,7 +324,6 @@ debug(( 3, "Offset-Element(0x%4.4hx,0x%4.4hx) with offset 0x%8.8lx found",
 	    }
 	}
     }
-  Edebug(());
 
   return l_error;
 }
@@ -366,8 +334,6 @@ debug(( 3, "Offset-Element(0x%4.4hx,0x%4.4hx) with offset 0x%8.8lx found",
 
 E_Condition DcmDicomDir::resolveAllOffsets( DcmDataset &dset )	 // inout
 {
-Bdebug((3, "dcdicdir:DcmDicomDir::resolveAllOffsets(DcmDataset&)" ));
-
     E_Condition l_error = EC_Normal;
     DcmSequenceOfItems &localDirRecSeq = this->getDirRecSeq( dset );
     unsigned long maxitems = localDirRecSeq.card();
@@ -380,7 +346,7 @@ Bdebug((3, "dcdicdir:DcmDicomDir::resolveAllOffsets(DcmDataset&)" ));
 	long filePos = rec->getFileOffset();
 	itOffsets[ i ].item = rec;
 	itOffsets[ i ].fileOffset = (Uint32)filePos;
-debug(( 3, "Item-Offset[%d]=0x%8.8lx", i, filePos ));
+debug(3, ( "DcmDicomDir::resolveAllOffsets() Item-Offset[%d]=0x%8.8lx", i, filePos ));
 
     }
     resolveGivenOffsets( &dset, itOffsets, maxitems,
@@ -396,7 +362,6 @@ debug(( 3, "Item-Offset[%d]=0x%8.8lx", i, filePos ));
 	DCM_DirectoryRecordOffset );
 
     delete itOffsets;
-Edebug(());
 
     return l_error;
 }
@@ -407,8 +372,6 @@ Edebug(());
 
 E_Condition DcmDicomDir::linkMRDRtoRecord( DcmDirectoryRecord *dRec )
 {
-Bdebug((3, "dcdicdir:DcmDicomDir::linkMRDRtoRecord(DcmDirectoryRecord*)" ));
-
     E_Condition l_error = EC_Normal;
 
     if ( dRec != (DcmDirectoryRecord*)NULL )
@@ -417,7 +380,6 @@ Bdebug((3, "dcdicdir:DcmDicomDir::linkMRDRtoRecord(DcmDirectoryRecord*)" ));
 	// geht nur, weil DcmDicomDir friend class von DcmDirectoryRecord ist
 	dRec->referencedMRDR = dRec->lookForReferencedMRDR();
     }
-Edebug(());
 
     return l_error;
 }
@@ -430,9 +392,6 @@ E_Condition DcmDicomDir::moveRecordToTree( DcmDirectoryRecord *startRec,
 					   DcmSequenceOfItems &fromDirSQ,
 					   DcmDirectoryRecord *toRecord )
 {
-Bdebug((2, "dcdicdir:DcmDicomDir::moveRecordToTree(*startRec,&fromDirSQ,"
-	   "*toRecord)" ));
-
     E_Condition l_error = EC_Normal;
 
     if (
@@ -454,7 +413,7 @@ Bdebug((2, "dcdicdir:DcmDicomDir::moveRecordToTree(*startRec,&fromDirSQ,"
 	if ( offElem != (DcmUnsignedLongOffset*)NULL )
 	    nextRec = (DcmDirectoryRecord*)offElem->getNextRecord();
 
-debug(( 2, "Record(0x%4.4hx,0x%4.4hx) p=%p has lower=%p and next=%p Record",
+debug(2,( "DcmDicomDir::moveRecordToTree() Record(0x%4.4hx,0x%4.4hx) p=%p has lower=%p and next=%p Record",
 	   startRec->getGTag(), startRec->getETag(),
 	   startRec, lowerRec, nextRec ));
 
@@ -475,7 +434,6 @@ debug(( 2, "Record(0x%4.4hx,0x%4.4hx) p=%p has lower=%p and next=%p Record",
 	moveRecordToTree( lowerRec, fromDirSQ, startRec );
 	moveRecordToTree( nextRec, fromDirSQ, toRecord );
     }
-Edebug(());
 
     return l_error;
 }
@@ -487,8 +445,6 @@ Edebug(());
 E_Condition DcmDicomDir::moveMRDRbetweenSQs( DcmSequenceOfItems &fromSQ,
 					     DcmSequenceOfItems &toSQ )
 {
-Bdebug((3, "dcdicdir:DcmDicomDir::moveMRDRbetweenSQs(&fromSQ,&toSQ)" ));
-
     E_Condition l_error = EC_Normal;
 
     unsigned long num = fromSQ.card();
@@ -500,15 +456,12 @@ Bdebug((3, "dcdicdir:DcmDicomDir::moveMRDRbetweenSQs(&fromSQ,&toSQ)" ));
 	    && dRec->getRecordType() == ERT_Mrdr
 	   )
 	{
-debug(( 2, "move MRDR from fromSQ[%d] to toSQ", j ));
-
 	    toSQ.insert( dRec );
 	    fromSQ.remove( j );
 	}
 	else
 	    j++;
     }
-Edebug(());
 
     return l_error;
 }
@@ -519,8 +472,6 @@ Edebug(());
 
 E_Condition DcmDicomDir::convertLinearToTree()
 {
-Bdebug((1, "dcdicdir:DcmDicomDir::convertLinearToTree()" ));
-
     DcmDataset &dset = this->getDataset();    // existiert auf jeden Fall
     DcmSequenceOfItems &localDirRecSeq = this->getDirRecSeq( dset );
     E_Condition l_error = resolveAllOffsets( dset );
@@ -542,8 +493,6 @@ Bdebug((1, "dcdicdir:DcmDicomDir::convertLinearToTree()" ));
     for (unsigned long i = localDirRecSeq.card(); i > 0; i-- )
 	linkMRDRtoRecord( (DcmDirectoryRecord*)localDirRecSeq.getItem(i-1) );
 
-Edebug(());
-
     return l_error;
 }
 
@@ -555,9 +504,6 @@ Uint32 DcmDicomDir::lengthUntilSQ(DcmDataset &dset,
 				  E_TransferSyntax oxfer,
 				  E_EncodingType enctype )
 {
-Bdebug((4, "dcdicdir:DcmDicomDir::lengthUntilSQ(&dset,oxfer=%d,enctype=%d)",
-	   oxfer, enctype ));
-
     Uint32 templen = 0L;
     unsigned long num = dset.card();
     for (unsigned long i = 0; i < num; i++ )
@@ -579,16 +525,11 @@ Bdebug((4, "dcdicdir:DcmDicomDir::lengthUntilSQ(&dset,oxfer=%d,enctype=%d)",
 		 << subvr.getVRName() << "\" has undefined Length" << endl;
 	}
 
-	if (	( dO->getVR() == EVR_SQ )
-	     && ( enctype == EET_UndefinedLength )
-	   )
+	if ( dO->getVR() == EVR_SQ  && enctype == EET_UndefinedLength )
 	    templen += 8;	    // fuer ItemDelimitationItem
-debug(( 4, "subLength of \"%s\" is %d, actual sum of Length is %d",
-	   DcmVR(dO->getVR()).getVRName(), sublength, templen ));
 
     }
-debug(( 4, "Length of Dataset until SQ=%ld", templen ));
-Edebug(());
+debug(4, ( "DcmDicomDir::lengthUntilSQ() Length of Dataset until SQ=%ld", templen ));
 
     return templen;
 }
@@ -623,10 +564,6 @@ E_Condition DcmDicomDir::convertGivenPointer( DcmObject *startPoint,
 					      const unsigned long numOffsets,
 					      const DcmTagKey &offsetTag )
 {
-Bdebug((3, "dcdicdir:DcmDicomDir::convertGivenPointer(*startPoint,*ItemOffset,"
-	"numOffsets=%ld,tag=%d)", numOffsets, offsetTag.getGroup(), 
-	offsetTag.getElement() ));
-
     E_Condition l_error = EC_Normal;
     if ( startPoint != (DcmObject*)NULL )
     {
@@ -643,16 +580,11 @@ Bdebug((3, "dcdicdir:DcmDicomDir::convertGivenPointer(*startPoint,*ItemOffset,"
 		if ( offElem->getNextRecord() == itOffsets[i].item )
 		{
 		    offElem->putUint32( itOffsets[i].fileOffset );
-
-debug(( 2, "Offset-Element(0x%4.4hx,0x%4.4hx) with offset 0x%8.8lx updated",
-	   offElem->getGTag(), offElem->getETag(), itOffsets[i].fileOffset ));
-
 		    break;
 		}
 	    }
 	}
     }
-Edebug(());
 
     return l_error;
 }
@@ -666,17 +598,11 @@ E_Condition DcmDicomDir::convertAllPointer( DcmDataset &dset,	       // inout
 					    E_TransferSyntax oxfer,    // in
 					    E_EncodingType enctype )   // in
 {
-Bdebug((3, "dcdicdir:DcmDicomDir::convertAllPointer(&dset,beginOfDataSet=%ld,"
-	   "oxfer=%d,enctype=%d)", beginOfDataSet, oxfer, enctype ));
-
     E_Condition l_error = EC_Normal;
     DcmSequenceOfItems &localDirRecSeq = this->getDirRecSeq( dset );
 
     Uint32 offs_Item1 =   beginOfDataSet
 			 + lengthUntilSQ( dset, oxfer, enctype );
-debug(( 2, "Length: offs_Item1(%d) = beginOfDataSet(%d) + lengthUntilSQ()",
-	   offs_Item1, beginOfDataSet ));
-
     unsigned long num = localDirRecSeq.card();
     ItemOffset *itOffsets = new ItemOffset[ num ];
 
@@ -688,8 +614,6 @@ debug(( 2, "Length: offs_Item1(%d) = beginOfDataSet(%d) + lengthUntilSQ()",
 	rec->setFileOffset( item_pos );
 	itOffsets[ i ].item = rec;
 	itOffsets[ i ].fileOffset = item_pos;
-debug(( 2, "Item-Offset[%d]=0x%8.8lx  p=%p", i, item_pos, rec ));
-
 	item_pos = lengthOfRecord( rec, oxfer, enctype ) + item_pos;
     }
 
@@ -713,7 +637,6 @@ debug(( 2, "Item-Offset[%d]=0x%8.8lx  p=%p", i, item_pos, rec ));
        )
 	l_error = EC_InvalidVR;
     delete itOffsets;
-Edebug(());
 
     return l_error;
 }
@@ -727,21 +650,15 @@ E_Condition DcmDicomDir::copyRecordPtrToSQ( DcmDirectoryRecord *record,
 					    DcmDirectoryRecord **firstRec,
 					    DcmDirectoryRecord **lastRec )
 {
-Bdebug((2, "dcdicdir:DcmDicomDir::copyRecordPtrToSQ(*record,&toDirSQ,"
-	   "**firstRec,**lastRec)" ));
-
     DcmDirectoryRecord *nextRec = (DcmDirectoryRecord*)NULL;
     DcmDirectoryRecord *lastReturnItem = (DcmDirectoryRecord*)NULL;
 
     if ( record != (DcmDirectoryRecord*)NULL )
     {
 	unsigned long lastIndex = record->cardSub();
-	debug(( 3, "there are %ld subRecords and %ld toDirItems ",
-		lastIndex, toDirSQ.card() ));
-
 	for (unsigned long i = lastIndex; i > 0; i-- )
 	{
-	    debug(( 3, "testing subRecord no %ld of %ld:", i, lastIndex ));
+	    debug(3, ( "DcmDicomDir::copyRecordPtrToSQ() testing subRecord no %ld of %ld:", i, lastIndex ));
 
 	    DcmDirectoryRecord *subRecord = record->getSub( i-1 );
 
@@ -759,7 +676,7 @@ Bdebug((2, "dcdicdir:DcmDicomDir::copyRecordPtrToSQ(*record,&toDirSQ,"
 #ifdef DEBUG
 Uint32 uint = 0;
 uloP->getUint32(uint);
-debug(( 2, "Next Offset-Element(0x%4.4hx,0x%4.4hx) offs=0x%8.8lx p=%p next=%p",
+debug(2, ( "DcmDicomDir::copyRecordPtrToSQ() Next Offset-Element(0x%4.4hx,0x%4.4hx) offs=0x%8.8lx p=%p next=%p",
 	   uloP->getGTag(), uloP->getETag(),
 	   uint, uloP, nextRec ));
 #endif
@@ -773,7 +690,7 @@ debug(( 2, "Next Offset-Element(0x%4.4hx,0x%4.4hx) offs=0x%8.8lx p=%p next=%p",
 		subRecord->insert( uloP, TRUE );
 #ifdef DEBUG
 uloP->getUint32(uint);
-debug(( 2, "Lower Offset-Element(0x%4.4hx,0x%4.4hx) offs=0x%8.8lx p=%p lower=%p",
+debug(2, ( "DcmDicomDir::copyRecordPtrToSQ() Lower Offset-Element(0x%4.4hx,0x%4.4hx) offs=0x%8.8lx p=%p lower=%p",
 	   uloP->getGTag(), uloP->getETag(),
 	   uint, uloP, *firstRec ));
 #endif
@@ -790,8 +707,6 @@ debug(( 2, "Lower Offset-Element(0x%4.4hx,0x%4.4hx) offs=0x%8.8lx p=%p lower=%p"
     // zeigt auf ersten Record der untergeordneten Ebene
     if ( firstRec != (DcmDirectoryRecord**)NULL )
 	*firstRec = nextRec;
-Edebug(());
-
     return EC_Normal;
 }
 
@@ -805,9 +720,6 @@ E_Condition DcmDicomDir::convertTreeToLinear(Uint32 beginOfDataSet,
 					     E_GrpLenEncoding glenc,
 					     DcmSequenceOfItems &unresRecs )
 {
-Bdebug((1, "dcdicdir:DcmDicomDir::convertTreeToLinear(beginOfDataSet=%ld)",
-	   beginOfDataSet  ));
-
     E_Condition l_error = EC_Normal;
     DcmDataset &dset = this->getDataset();    // existiert auf jeden Fall
     DcmSequenceOfItems &localDirRecSeq = this->getDirRecSeq( dset );
@@ -816,12 +728,12 @@ Bdebug((1, "dcdicdir:DcmDicomDir::convertTreeToLinear(beginOfDataSet=%ld)",
     unsigned long numUnresItems = localDirRecSeq.card();
     for (unsigned long i = numUnresItems; i > 0; i-- )
     {
-debug(( 2, "copy pointer of unresolved Record no %ld of %ld to unresRecs-SQ:",
+debug(2, ( "DcmDicomDir::convertTreeToLinear() copy pointer of unresolved Record no %ld of %ld to unresRecs-SQ:",
 	   i, numUnresItems ));
 
 	unresRecs.insert( localDirRecSeq.getItem(i-1), 0 );
     }
-debug(( 5, "copied %d pointer of unresolvedRecords", numUnresItems ));
+debug(5, ( "DcmDicomDir::convertTreeToLinear() copied %d pointer of unresolvedRecords", numUnresItems ));
 
     // Konvertiere Items in die Root Directory Entity zurueck:
     DcmDirectoryRecord *firstRootRecord[1], *lastRootRecord[1];
@@ -846,7 +758,7 @@ debug(( 5, "copied %d pointer of unresolvedRecords", numUnresItems ));
     unsigned long numMRDRItems = this->getMRDRSequence().card();
     for (unsigned long j = numMRDRItems; j > 0; j-- )
     {
-debug(( 2, "copy pointer of MRDR no %ld of %ld to localDirRecSeq:",
+debug(2, ( "DcmDicomDir::convertTreeToLinear() copy pointer of MRDR no %ld of %ld to localDirRecSeq:",
 	   j, numUnresItems ));
 
 	localDirRecSeq.insert( this->getMRDRSequence().getItem(j-1), 0 );
@@ -865,8 +777,6 @@ debug(( 2, "copy pointer of MRDR no %ld of %ld to localDirRecSeq:",
 		    " in file " << dicomDirFileName << endl;
 	    l_error = EC_CorruptedData;
 	}
-Edebug(());
-
     return l_error;
 }
 
@@ -876,8 +786,6 @@ Edebug(());
 
 E_Condition DcmDicomDir::insertMediaSOPUID( DcmMetaInfo &metaInfo )  // inout
 {
-Bdebug((5, "dcdicdir:DcmDicomDir::insertMediaSOPUID(DcmMetaInfo&)" ));
-
     E_Condition l_error = EC_Normal;
     DcmTag medSOPClassTag( DCM_MediaStorageSOPClassUID );
     DcmUniqueIdentifier *mediaStorageSOPClassUID =
@@ -885,10 +793,6 @@ Bdebug((5, "dcdicdir:DcmDicomDir::insertMediaSOPUID(DcmMetaInfo&)" ));
     const char* valueUID = UID_BasicDirectoryStorageSOPClass;
     mediaStorageSOPClassUID->putString( valueUID );
     metaInfo.insert( mediaStorageSOPClassUID, TRUE );
-
-debug(( 2, "MediaStoredSOPClassUID %s in MetaInfo inserted.", valueUID ));
-Edebug(());
-
     return l_error;
 }
 
@@ -966,8 +870,6 @@ DcmSequenceOfItems& DcmDicomDir::getMRDRSequence()
 DcmDirectoryRecord* DcmDicomDir::recurseMatchFile( DcmDirectoryRecord* startRec,
 						   char *filename )
 {
-Bdebug((4, "dcdicdir:DcmDicomDir::recurseMatchFile(*startRec,*filename)" ));
-
     DcmDirectoryRecord* retRec = (DcmDirectoryRecord*)NULL;
     if (    filename != (char*)NULL
 	 && *filename != '\0'
@@ -982,7 +884,7 @@ Bdebug((4, "dcdicdir:DcmDicomDir::recurseMatchFile(*startRec,*filename)" ));
 
 	    if ( subName != (char*)NULL && !strcmp( filename, subName ) )
 	    {
-debug(( 2, "Record p=%p with matching filename [%s] found.",
+debug(2, ( "DcmDicomDir::recurseMatchFile() Record p=%p with matching filename [%s] found.",
 	   subRecord, subName ));
 
 		retRec = subRecord;
@@ -992,8 +894,6 @@ debug(( 2, "Record p=%p with matching filename [%s] found.",
 		retRec = recurseMatchFile( subRecord, filename );
 	}
     }
-Edebug(());
-
     return retRec;
 }
 
@@ -1004,8 +904,6 @@ Edebug(());
 DcmDirectoryRecord* DcmDicomDir::searchMatchFile( DcmSequenceOfItems& recSeq,
 						  char *filename )
 {
-Bdebug((4, "dcdicdir:DcmDicomDir::searchMatchFile(&recSeq,*filename)" ));
-
     DcmDirectoryRecord* retRec = (DcmDirectoryRecord*)NULL;
     if ( filename != (char*)NULL && *filename != '\0' )
     {
@@ -1018,7 +916,7 @@ Bdebug((4, "dcdicdir:DcmDicomDir::searchMatchFile(&recSeq,*filename)" ));
 
 	    if ( subName != (char*)NULL && !strcmp( filename, subName ) )
 	    {
-debug(( 2, "Record p=%p with matching filename [%s] found.",
+debug(2, ( "DcmDicomDir::searchMatchFile() Record p=%p with matching filename [%s] found.",
 	   record, subName ));
 
 		retRec = record;
@@ -1026,7 +924,6 @@ debug(( 2, "Record p=%p with matching filename [%s] found.",
 	    }
 	}
     }
-Edebug(());
 
     return retRec;
 }
@@ -1037,8 +934,6 @@ Edebug(());
 
 DcmDirectoryRecord* DcmDicomDir::matchFilename( char *filename )
 {
-Bdebug((4, "dcdicdir:DcmDicomDir::matchFilename(*filename)" ));
-
     DcmDirectoryRecord* retRec = (DcmDirectoryRecord*)NULL;
     if ( filename != (char*)NULL && *filename != '\0' )
     {
@@ -1053,10 +948,8 @@ Bdebug((4, "dcdicdir:DcmDicomDir::matchFilename(*filename)" ));
 	    }
 	}
     }
-Vdebug((2, retRec==NULL, "No Record with matching filename [%s] found.",
+Cdebug(2, retRec==NULL, ("DcmDicomDir::matchFilename() No Record with matching filename [%s] found.",
 			 filename ));
-Edebug(());
-
     return retRec;
 }
 
@@ -1066,8 +959,6 @@ Edebug(());
 
 DcmDirectoryRecord* DcmDicomDir::matchOrCreateMRDR( char *filename )
 {
-Bdebug((4, "dcdicdir:DcmDicomDir::matchOrCreateMRDR(*filename)" ));
-
     DcmDirectoryRecord* newMRDR = (DcmDirectoryRecord*)NULL;
     DcmDirectoryRecord* matchRec = this->matchFilename( filename );
     if ( matchRec != (DcmDirectoryRecord*)NULL )
@@ -1085,16 +976,15 @@ Bdebug((4, "dcdicdir:DcmDicomDir::matchOrCreateMRDR(*filename)" ));
 		newMRDR = (DcmDirectoryRecord*)NULL;
 		cerr << "Error: Internal error, can't Create MRDR." << endl;
 	    }
-Vdebug((1, newMRDR!=NULL, "New MRDR p=%p with matching filename [%s] created,"
+Cdebug(1, newMRDR!=NULL, ("DcmDicomDir::matchOrCreateMRDR() New MRDR p=%p with matching filename [%s] created,"
 			  " original Record p=%p with same filename modified.",
 			  newMRDR, filename, matchRec ));
 
 	    modified = TRUE;
 	}
     }
-Vdebug((1, newMRDR==NULL, "No MRDR with matching filename [%s] found.",
+Cdebug(1, newMRDR==NULL, ("DcmDicomDir::matchOrCreateMRDR() No MRDR with matching filename [%s] found.",
 			  filename ));
-Edebug(());
 
     return newMRDR;
 }
@@ -1108,9 +998,6 @@ E_Condition DcmDicomDir::write(const E_TransferSyntax oxfer,
 			       const E_EncodingType enctype,
 			       const E_GrpLenEncoding glenc)
 {
-    Bdebug((1, "DcmDicomDir::write(oxfer=%d,enctype=%d,lpenc=%d)",
-	    oxfer, enctype, glenc ));
-
     if ( oxfer != DICOMDIR_DEFAULT_TRANSFERSYNTAX )
 	cerr << "Error: DcmDicomDir::write(): wrong TransferSyntax used"
 	     << " - only LittleEndianExplicit allowed!"
@@ -1140,7 +1027,7 @@ E_Condition DcmDicomDir::write(const E_TransferSyntax oxfer,
 	sprintf(newname, "%s%c%s", dicomdirPath, PATH_SEPARATOR, oldname);
 	delete oldname;
     }
-    debug(( 1, "use tempory filename \"%s\"", newname ));
+    debug(1, ( "DcmDicomDir::write() use tempory filename \"%s\"", newname ));
 
     DcmDataset &dset = this->getDataset();	 // existiert auf jeden Fall
     // existiert daher auch:
@@ -1226,8 +1113,6 @@ E_Condition DcmDicomDir::write(const E_TransferSyntax oxfer,
 	    localUnresRecs.remove((const unsigned long)(0));
 	localDirRecSeq.insert( unresRecord );
     }
-    Edebug(());
-
     return errorFlag;
 }
 
@@ -1240,9 +1125,6 @@ E_Condition DcmDicomDir::countMRDRRefs( DcmDirectoryRecord *startRec,
 					ItemOffset *refCounter,
 					const unsigned long numCounters )
 {
-Bdebug((4, "dcdicdir:DcmDicomDir::countMRDRRefs(*startRec,*refCounter,"
-	   "numCounters=%ld)", numCounters ));
-
     E_Condition l_error = EC_Normal;
     if ( refCounter == (ItemOffset*)NULL )
 	l_error = EC_IllegalCall;
@@ -1263,15 +1145,13 @@ Bdebug((4, "dcdicdir:DcmDicomDir::countMRDRRefs(*startRec,*refCounter,"
 			++refCounter[ j ].fileOffset;	    // Reference counter
 			break;
 		    }
-debug(( 3, "MRDR p=%p found, which is %ld times referenced and %ld times"
+debug(3, ( "DcmDicomDir::countMRDRRefs() MRDR p=%p found, which is %ld times referenced and %ld times"
 	   " counted.", refMRDR, refMRDR->numberOfReferences, j ));
 
 	    }
 	    countMRDRRefs( subRecord, refCounter, numCounters );
 	}
     }
-Edebug(());
-
     return l_error;
 }
 
@@ -1283,9 +1163,6 @@ E_Condition DcmDicomDir::checkMRDRRefCounter( DcmDirectoryRecord *startRec,
 					      ItemOffset *refCounter,
 					      const unsigned long numCounters )
 {
-Bdebug((4, "dcdicdir:DcmDicomDir::checkMRDRRefCounter(*startRec,*refCounter,"
-	   "numCounters=%ld)", numCounters ));
-
     E_Condition l_error = EC_Normal;
     if ( refCounter == (ItemOffset*)NULL )
 	l_error = EC_IllegalCall;
@@ -1306,7 +1183,7 @@ Bdebug((4, "dcdicdir:DcmDicomDir::checkMRDRRefCounter(*startRec,*refCounter,"
 			++refCounter[ j ].fileOffset;	    // Reference counter
 			break;
 		    }
-debug(( 3, "MRDR p=%p found, which is %ld times referenced and %ld times"
+debug(3, ( "DcmDicomDir::checkMRDRRefCounter() MRDR p=%p found, which is %ld times referenced and %ld times"
 	   " counted.", refMRDR, refMRDR->numberOfReferences, j ));
 
 	    }
@@ -1317,8 +1194,6 @@ debug(( 3, "MRDR p=%p found, which is %ld times referenced and %ld times"
 		l_error = err1; 	// der zuerst aufgetretene Fehler zaehlt
 	}
     }
-Edebug(());
-
     return l_error;
 }
 
@@ -1348,8 +1223,6 @@ PENDING:
 
 E_Condition DcmDicomDir::verify( BOOL autocorrect )
 {
-Bdebug((3, "dcdicdir:DcmDicomDir::verify(BOOL autocorrect=%d", autocorrect ));
-
     errorFlag = EC_Normal;
     if ( autocorrect == TRUE )
     ;
@@ -1391,10 +1264,10 @@ Bdebug((3, "dcdicdir:DcmDicomDir::verify(BOOL autocorrect=%d", autocorrect ));
 	Uint32 refNum = refMRDR->lookForNumberOfReferences();	// friend
 	if ( refCounter[k].fileOffset != refNum )
 	{
-debug(( 1, "Error: Refcounter of MRDR p=%p has incorrect value=%ld (must be"
+debug(1, ( "DcmDicomDir::verify() Error: Refcounter of MRDR p=%p has incorrect value=%ld (must be"
 	   " %ld)", refMRDR, refNum, refCounter[k].fileOffset ));
-Vdebug((1, refCounter[k].fileOffset==refMRDR->numberOfReferences,
-	   "but internal record class value numberOfReferences is correct" ));
+Cdebug(1, refCounter[k].fileOffset==refMRDR->numberOfReferences,
+	  ( "but internal record class value numberOfReferences is correct" ));
 
 	    if ( autocorrect )		   // korrigiere Referenzzaehler, friend
 		refMRDR->setNumberOfReferences( refCounter[k].fileOffset );
@@ -1417,8 +1290,6 @@ Vdebug((1, refCounter[k].fileOffset==refMRDR->numberOfReferences,
 	    )
        )
 	errorFlag = EC_CorruptedData;
-Edebug(());
-
     return errorFlag;
 }
 
@@ -1429,7 +1300,14 @@ Edebug(());
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
-** Revision 1.15  1997-05-28 12:42:40  andreas
+** Revision 1.16  1997-07-03 15:09:55  andreas
+** - removed debugging functions Bdebug() and Edebug() since
+**   they write a static array and are not very useful at all.
+**   Cdebug and Vdebug are merged since they have the same semantics.
+**   The debugging functions in dcmdata changed their interfaces
+**   (see dcmdata/include/dcdebug.h)
+**
+** Revision 1.15  1997/05/28 12:42:40  andreas
 ** - deleted unused variable lastDirIndex
 **
 ** Revision 1.14  1997/05/16 08:31:27  andreas

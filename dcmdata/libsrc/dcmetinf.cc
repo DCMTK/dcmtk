@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-16 08:23:54 $
+** Update Date:		$Date: 1997-07-03 15:10:00 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcmetinf.cc,v $
-** CVS/RCS Revision:	$Revision: 1.10 $
+** CVS/RCS Revision:	$Revision: 1.11 $
 ** Status:		$State: Exp $
 **
 */
@@ -42,14 +42,9 @@ const Uint32 DCM_GroupLengthElementLength = 12;
 DcmMetaInfo::DcmMetaInfo()
     : DcmItem( ItemTag )
 {
-    Bdebug((5, "dcmetinf:DcmMetaInfo::DcmMetaInfo()" ));
-    debug(( 8, "Object pointer this=0x%p", this ));
-
     Xfer = META_HEADER_DEFAULT_TRANSFERSYNTAX;
     setPreamble();
     fPreambleTransferState = ERW_init;
-
-    Edebug(());
 }
 
 
@@ -59,10 +54,6 @@ DcmMetaInfo::DcmMetaInfo()
 DcmMetaInfo::DcmMetaInfo( const DcmMetaInfo &old )
     : DcmItem( old )
 {
-    Bdebug((5, "dcmetinf:DcmMetaInfo::DcmMetaInfo(DcmMetaInfo&)" ));
-    debug(( 8, "Object pointer this=0x%p", this ));
-    debug(( 5, "ident()=%d", old.ident() ));
-
     if ( old.ident() == EVR_metainfo ) 
     {
 	Xfer = old.Xfer;
@@ -73,8 +64,6 @@ DcmMetaInfo::DcmMetaInfo( const DcmMetaInfo &old )
 	     << endl;
 	setPreamble();
     }
-
-    Edebug(());
 }
 
 
@@ -83,10 +72,6 @@ DcmMetaInfo::DcmMetaInfo( const DcmMetaInfo &old )
 
 DcmMetaInfo::~DcmMetaInfo()
 {
-    Bdebug((5, "dcmetinf:DcmMetaInfo::~DcmMetaInfo()" ));
-    debug(( 8, "Object pointer this=0x%p", this ));
-    Edebug(());
-
 }
 
 
@@ -133,8 +118,6 @@ void DcmMetaInfo::setPreamble()
 BOOL DcmMetaInfo::checkAndReadPreamble(DcmStream & inStream,
 				       E_TransferSyntax & newxfer) 
 {
-    Bdebug((4, "dcmetinf:DcmMetaInfo::checkAndReadPreamble()" ));
-
     if (fPreambleTransferState == ERW_init)
     {
 	inStream.SetPutbackMark();
@@ -160,7 +143,7 @@ BOOL DcmMetaInfo::checkAndReadPreamble(DcmStream & inStream,
 	{					     // Datei zu kurz => keine Preamble
 	    inStream.ClearError();
 	    inStream.Putback();
-	    debug(( 4, "No Preamble available: File too short (%d) < %d bytes",
+	    debug(4, ( "DcmMetaInfo::checkAndReadPreamble() No Preamble available: File too short (%d) < %d bytes",
 		    preambleLen, DCM_PreambleLen + DCM_MagicLen ));
 
 	    retval = FALSE;
@@ -210,11 +193,9 @@ BOOL DcmMetaInfo::checkAndReadPreamble(DcmStream & inStream,
     }
 
 
-    Vdebug((4, retval==TRUE, "found Preamble=[0x%8.8x]", (Uint32)(*filePreamble) ));
-    Vdebug((4, retval==FALSE, "No Preambel found!" ));
-    debug(( 4, "TransferSyntax(-1..3)=(%d)", newxfer ));
-    Edebug(());
-
+    Cdebug(4, retval==TRUE, ("DcmMetaInfo::checkAndReadPreamble() found Preamble=[0x%8.8x]", (Uint32)(*filePreamble) ));
+    Cdebug(4, retval==FALSE, ("DcmMetaInfo::checkAndReadPreamble() No Preambel found!" ));
+    debug(4, ( "DcmMetaInfo::checkAndReadPreamble() TransferSyntax = %s", DcmXfer(newxfer).getXferName() ));
     return retval;
 } // DcmMetaInfo::checkAndReadPreamble
 
@@ -258,9 +239,6 @@ E_Condition DcmMetaInfo::readGroupLength(DcmStream & inStream,
 					 Uint32 & bytesRead,
 					 const Uint32 maxReadLength)
 {
-    Bdebug((4, "dcmetinf:DcmMetaInfo::readGroupLength(xfer=%d,...)",
-	    xfer ));
-
     E_Condition l_error = EC_TagNotFound;
     E_TransferSyntax newxfer = xfer;
     bytesRead = 0;
@@ -293,7 +271,7 @@ E_Condition DcmMetaInfo::readGroupLength(DcmStream & inStream,
 	    {
                 l_error = ((DcmUnsignedLong*)(elementList->get()))->
 		    getUint32(headerLen);
-		debug((4, "Group Length of File Meta Header=%d", headerLen+bytesRead));
+		debug(4, ("DcmMetaInfo::readGroupLength() Group Length of File Meta Header=%d", headerLen+bytesRead));
 
 	    }
 	    else
@@ -307,9 +285,7 @@ E_Condition DcmMetaInfo::readGroupLength(DcmStream & inStream,
 	else
 	    l_error = EC_InvalidStream;
     }
-    debug((4, "readGroupLength() returns error=%d (=2 if no Meta)", l_error));
-    Edebug(());
-
+    debug(4, ("DcmMetaInfo::readGroupLength() returns error=%d (=2 if no Meta)", l_error));
     return l_error;
 }
 
@@ -322,9 +298,6 @@ E_Condition DcmMetaInfo::read(DcmStream & inStream,
 			      const E_GrpLenEncoding glenc,
 			      const Uint32 maxReadLength)
 {
-    Bdebug((3, "dcmetinf:DcmMetaInfo::readBlock(xfer=%d)",
-	    xfer ));
-
     if (fPreambleTransferState == ERW_notInitialized || 
 	fTransferState == ERW_notInitialized)
 	errorFlag = EC_IllegalCall;
@@ -345,7 +318,7 @@ E_Condition DcmMetaInfo::read(DcmStream & inStream,
 		if ( xfer == EXS_Unknown )
 		{
 		    preambleUsed = checkAndReadPreamble(inStream, newxfer);
-		    Vdebug((3, inStream.Tell() != 0, "found %ld bytes preamble", 
+		    Cdebug(3, inStream.Tell() != 0, ("DcmMetaInfo::Read() found %ld bytes preamble", 
 			    inStream.Tell()));
 		}
 		else
@@ -445,9 +418,6 @@ E_Condition DcmMetaInfo::read(DcmStream & inStream,
 	    }
 	}
     }
-    debug(( 3, "errorFlag=(%d)", errorFlag ));
-    Edebug(());
-
     return errorFlag;
 } // DcmMetaInfo::read()
 
@@ -474,19 +444,10 @@ void DcmMetaInfo::transferEnd()
 
 // ********************************
 
-#ifdef DEBUG
-E_Condition DcmMetaInfo::write(DcmStream & outStream,
-			       const E_TransferSyntax oxfer,
-			       const E_EncodingType enctype)
-#else
 E_Condition DcmMetaInfo::write(DcmStream & outStream,
 			       const E_TransferSyntax /*oxfer*/,
 			       const E_EncodingType enctype)
-#endif
 {
-    Bdebug((3, "DcmMetaInfo::writeBlock(oxfer=%d,enctype=%d)",
-	    oxfer, enctype ));
-
     if (fTransferState == ERW_notInitialized)
 	errorFlag = EC_IllegalCall;
     else
@@ -545,8 +506,6 @@ E_Condition DcmMetaInfo::write(DcmStream & outStream,
 		fTransferState = ERW_ready;
 	}
     }
-    Edebug(());
-
     return errorFlag;
 }
 
@@ -557,7 +516,14 @@ E_Condition DcmMetaInfo::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.cc,v $
-** Revision 1.10  1997-05-16 08:23:54  andreas
+** Revision 1.11  1997-07-03 15:10:00  andreas
+** - removed debugging functions Bdebug() and Edebug() since
+**   they write a static array and are not very useful at all.
+**   Cdebug and Vdebug are merged since they have the same semantics.
+**   The debugging functions in dcmdata changed their interfaces
+**   (see dcmdata/include/dcdebug.h)
+**
+** Revision 1.10  1997/05/16 08:23:54  andreas
 ** - Revised handling of GroupLength elements and support of
 **   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
 **   got additional enumeration values (for a description see dctypes.h).

@@ -10,9 +10,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-16 08:12:12 $
+** Update Date:		$Date: 1997-07-03 15:09:56 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdirrec.cc,v $
-** CVS/RCS Revision:	$Revision: 1.14 $
+** CVS/RCS Revision:	$Revision: 1.15 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -87,9 +87,6 @@ static short DIM_OF_DRTypeNames = 20;
 DcmDirectoryRecord::DcmDirectoryRecord()
     : DcmItem( ItemTag )
 {
-    Bdebug((5, "dcdirrec:DcmDirectoryRecord::DcmDirectoryRecord()" ));
-    debug(( 8, "Object pointer this=0x%p", this ));
-    
     DcmTag sequTag( DCM_DirectoryRecordSequence );
     lowerLevelList = new DcmSequenceOfItems( sequTag );
     DirRecordType = ERT_Private;
@@ -97,7 +94,6 @@ DcmDirectoryRecord::DcmDirectoryRecord()
     numberOfReferences = 0;
     offsetInFile = 0;
     recordsOriginFile = NULL;
-    Edebug(());
 }
 
 
@@ -108,10 +104,6 @@ DcmDirectoryRecord::DcmDirectoryRecord(const DcmTag &tag,
 				       const Uint32 len)
     : DcmItem(tag, len)
 {
-    Bdebug((5, "DcmDirectoryRecord::DcmDirectoryRecord(DcmTag&,len=%ld)",
-	    len ));
-    debug(( 8, "Object pointer this=0x%p", this ));
-    
     DcmTag sequTag( DCM_DirectoryRecordSequence );
     lowerLevelList = new DcmSequenceOfItems( sequTag );
     DirRecordType = ERT_Private;
@@ -119,7 +111,6 @@ DcmDirectoryRecord::DcmDirectoryRecord(const DcmTag &tag,
     numberOfReferences = 0;
     offsetInFile = 0;
     recordsOriginFile = NULL;
-    Edebug(());
 }
 
 
@@ -130,10 +121,6 @@ DcmDirectoryRecord::DcmDirectoryRecord(const E_DirRecType recordType,
 				       const char * referencedFileID )
     : DcmItem(ItemTag)
 {
-    Bdebug((5, "DcmDirectoryRecord::DcmDirectoryRecord(recordType=%d,char*)",
-	    recordType ));
-    debug(( 8, "Object pointer this=0x%p", this ));
-
     DcmTag sequTag( DCM_DirectoryRecordSequence );
     lowerLevelList = new DcmSequenceOfItems( sequTag );
     DirRecordType = recordType;
@@ -145,7 +132,6 @@ DcmDirectoryRecord::DcmDirectoryRecord(const E_DirRecType recordType,
 
     if ( DirRecordType != ERT_root )
 	errorFlag = this -> fillElementsAndReadSOP(referencedFileID);
-    Edebug(());
 }
 
 
@@ -156,9 +142,6 @@ DcmDirectoryRecord::DcmDirectoryRecord(const char * recordTypeName,
 				       const char * referencedFileID	)
     : DcmItem(ItemTag)
 {
-    Bdebug((5, "DcmDirectoryRecord::DcmDirectoryRecord(char*,char*)" ));
-    debug(( 8, "Object pointer this=0x%p", this ));
-
     DcmTag sequTag( DCM_DirectoryRecordSequence );
     lowerLevelList = new DcmSequenceOfItems( sequTag );
     DirRecordType = this -> recordNameToType( recordTypeName );
@@ -169,7 +152,6 @@ DcmDirectoryRecord::DcmDirectoryRecord(const char * recordTypeName,
 
     if ( DirRecordType != ERT_root )
 	errorFlag = this -> fillElementsAndReadSOP( referencedFileID );
-    Edebug(());
 }
 
 
@@ -179,10 +161,6 @@ DcmDirectoryRecord::DcmDirectoryRecord(const char * recordTypeName,
 DcmDirectoryRecord::DcmDirectoryRecord(const DcmDirectoryRecord &old)
     : DcmItem( old )
 {
-    Bdebug((5, "DcmDirectoryRecord::DcmDirectoryRecord(DcmObject&)" ));
-    debug(( 8, "Object pointer this=0x%p", this ));
-    debug(( 5, "ident()=%d", old.ident() ));
-    
     DcmTag sequTag( DCM_DirectoryRecordSequence );
     if ( old.ident() == EVR_dirRecord )
     {
@@ -212,8 +190,6 @@ DcmDirectoryRecord::DcmDirectoryRecord(const DcmDirectoryRecord &old)
 	referencedMRDR = this->lookForReferencedMRDR();
 	DirRecordType = this->lookForRecordType();
     }
-    
-    Edebug(());
 }
 
 
@@ -222,12 +198,8 @@ DcmDirectoryRecord::DcmDirectoryRecord(const DcmDirectoryRecord &old)
 
 DcmDirectoryRecord::~DcmDirectoryRecord()
 {
-    Bdebug((5, "dcdirrec:DcmDirectoryRecord::~DcmDirectoryRecord()" ));
-    debug(( 8, "Object pointer this=0x%p", this ));
-    
     delete lowerLevelList;
     delete recordsOriginFile;
-    Edebug(());
 }
 
 
@@ -237,8 +209,6 @@ DcmDirectoryRecord::~DcmDirectoryRecord()
 
 E_DirRecType DcmDirectoryRecord::recordNameToType(const char * recordTypeName)
 {
-    Bdebug((4, "dcdirrec:DcmDirectoryRecord::recordNameToType(char*)" ));
-
     E_DirRecType recType = ERT_Private;
     if (recordTypeName != (char*)NULL)
     {
@@ -250,10 +220,8 @@ E_DirRecType DcmDirectoryRecord::recordNameToType(const char * recordTypeName)
 	if (i < DIM_OF_DRTypeNames && 
 	    strcmp(DRTypeNames[i], recordTypeName) == 0)
 	    recType = (E_DirRecType)i;
-	debug((4, "input char*=\"%s\" output enum=%d", recordTypeName, recType));
+	debug(4, ("DcmDirectoryRecord::recordNameToType() input char*=\"%s\" output enum=%d", recordTypeName, recType));
     }
-    Edebug(());
-
     return recType;
 }
 
@@ -489,8 +457,6 @@ E_Condition DcmDirectoryRecord::setRecordType( E_DirRecType newType )
 
 E_DirRecType DcmDirectoryRecord::lookForRecordType()
 {
-  Bdebug((4, "dcdirrec:DcmDirectoryRecord::lookForRecordType()" ));
-
   E_DirRecType localType = ERT_Private;
   if ( !elementList->empty() )
     {
@@ -505,13 +471,12 @@ E_DirRecType DcmDirectoryRecord::lookForRecordType()
 	      recType->verify( TRUE );	    // erzwinge dealigning
 	      recType->getString(recName);
 	      localType = this->recordNameToType(recName);
-debug(( 4, "RecordType-Element(0x%4.4hx,0x%4.4hx) Type=[%s]",
+debug(4, ( "DcmDirectoryRecord::lookForRecordType() RecordType-Element(0x%4.4hx,0x%4.4hx) Type=[%s]",
 	recType->getGTag(), recType->getETag(), DRTypeNames[DirRecordType] ));
 
 	    }
 	}
     }
-  Edebug(());
 
   return localType;
 }
@@ -569,8 +534,6 @@ DcmDirectoryRecord::setReferencedFileID( const char *referencedFileID )
 
 const char* DcmDirectoryRecord::lookForReferencedFileID()
 {
-Bdebug((4, "dcdirrec:DcmDirectoryRecord::lookForReferencedFileID()" ));
-
     char *localFile = (char*)NULL;
     if ( !elementList->empty() )
     {
@@ -588,9 +551,7 @@ Bdebug((4, "dcdirrec:DcmDirectoryRecord::lookForReferencedFileID()" ));
 	    }
 	}
     }
-debug(( 4, "ReferencedFileID = [%s]", ((localFile)?(localFile):("")) ));
-Edebug(());
-
+debug(4, ( "DcmDirectoryRecord::lookForReferencedFileID() ReferencedFileID = [%s]", ((localFile)?(localFile):("")) ));
     return localFile;
 }
 
@@ -600,8 +561,6 @@ Edebug(());
 
 DcmDirectoryRecord* DcmDirectoryRecord::lookForReferencedMRDR()
 {
-Bdebug((4, "dcdirrec:DcmDirectoryRecord::lookForReferencedMRDR()" ));
-
     DcmDirectoryRecord *localMRDR = (DcmDirectoryRecord*)NULL;
     if ( !elementList->empty() )
     {
@@ -617,7 +576,7 @@ Bdebug((4, "dcdirrec:DcmDirectoryRecord::lookForReferencedMRDR()" ));
 #ifdef DEBUG
 Uint32 uint = 0;
 offElem->getUint32(uint);
-debug(( 4, "MRDR Offset-Element(0x%4.4hx,0x%4.4hx) offs=0x%8.8lx p=%p n=%p",
+debug(4, ( "DcmDirectoryRecord::lookForReferencedMRDR() MRDR Offset-Element(0x%4.4hx,0x%4.4hx) offs=0x%8.8lx p=%p n=%p",
 	   offElem->getGTag(), offElem->getETag(),
  	   uint, offElem, localMRDR ));
 #endif
@@ -625,8 +584,7 @@ debug(( 4, "MRDR Offset-Element(0x%4.4hx,0x%4.4hx) offs=0x%8.8lx p=%p n=%p",
 	    }
 	}
     }
-Vdebug((4, localMRDR==(DcmDirectoryRecord*)NULL, "no ReferencedMRDR found" ));
-Edebug(());
+Cdebug(4, localMRDR==(DcmDirectoryRecord*)NULL, ("DcmDirectoryRecord::lookForReferencedMRDR() no ReferencedMRDR found" ));
 
     return localMRDR;
 }
@@ -637,17 +595,11 @@ Edebug(());
 
 const char* DcmDirectoryRecord::getReferencedFileName()
 {
-Bdebug((4, "dcdirrec:DcmDirectoryRecord::getReferencedFileName()" ));
-
     const char *localFile = (char*)NULL;
     if ( referencedMRDR != (DcmDirectoryRecord*)NULL )
 	localFile = referencedMRDR->lookForReferencedFileID();
     else
 	localFile = this->lookForReferencedFileID();
-
-debug(( 4, "ReferencedFileName = [%s]", ((localFile)?(localFile):("")) ));
-Edebug(());
-
     return localFile;
 }
 
@@ -673,8 +625,6 @@ E_Condition DcmDirectoryRecord::setRecordInUseFlag(const Uint16 newFlag )
 
 Uint16 DcmDirectoryRecord::lookForRecordInUseFlag()
 {
-Bdebug((4, "dcdirrec:DcmDirectoryRecord::lookForRecordInUseFlag()" ));
-
     Uint16 localFlag = Uint16(0xffff);     // default value: Record is in use
     if ( !elementList->empty() )
     {
@@ -687,9 +637,6 @@ Bdebug((4, "dcdirrec:DcmDirectoryRecord::lookForRecordInUseFlag()" ));
 			getUint16(localFlag);
 	}
     }
-debug(( 4, "RecordInuseFlag = 0x%4.4hx", localFlag ));
-Edebug(());
-
     return localFlag;
 }
 
@@ -743,8 +690,6 @@ E_Condition DcmDirectoryRecord::setNumberOfReferences(Uint32 newRefNum )
 
 Uint32 DcmDirectoryRecord::lookForNumberOfReferences()
 {
-Bdebug((4, "dcdirrec:DcmDirectoryRecord::lookForNumberOfReferences()" ));
-
     Uint32 localRefNum = 0L;
     if ( !elementList->empty() )
     {
@@ -757,9 +702,6 @@ Bdebug((4, "dcdirrec:DcmDirectoryRecord::lookForNumberOfReferences()" ));
 			getUint32(localRefNum);
 	}
     }
-debug(( 4, "NumberOfReferences = %ld", localRefNum ));
-Edebug(());
-
     return localRefNum;
 }
 
@@ -843,8 +785,6 @@ Uint32 DcmDirectoryRecord::decreaseRefNum()
 E_Condition DcmDirectoryRecord::fillElementsAndReadSOP
                                                  (const char *referencedFileID)
 {
-    Bdebug((3, "dcdirrec:DcmDirectoryRecord::fillElementsAndReadSOP(char*)" ));
-
     E_Condition l_error = EC_Normal;
     char *fileName = (char*)NULL;
     DcmFileStream * fileStream = NULL;
@@ -1017,7 +957,6 @@ E_Condition DcmDirectoryRecord::fillElementsAndReadSOP
 	delete fileStream;
     if ( fileName != (char*)NULL )
 	delete fileName;
-    Edebug(());
 
     return l_error;
 }
@@ -1030,12 +969,7 @@ E_Condition DcmDirectoryRecord::masterInsertSub(DcmDirectoryRecord* dirRec,
 												const unsigned long where)
 {
     // Einfuegen ohne Typ-Ueberpruefung
-Bdebug((4, "dcdirrec:DcmDirectoryRecord::masterInsertSub(DcmItem*,where=%ld)",
-	   where ));
-
     errorFlag = lowerLevelList->insert( dirRec, where );
-Edebug(());
-
     return errorFlag;
 }
 
@@ -1045,8 +979,6 @@ Edebug(());
 
 E_Condition DcmDirectoryRecord::purgeReferencedFile()
 {
-Bdebug((2, "dcdirrec:DcmDirectoryRecord::purgeReferencedFile()" ));
-
     E_Condition l_error = EC_Normal;
     if ( DirRecordType != ERT_root )
     {
@@ -1060,7 +992,7 @@ Bdebug((2, "dcdirrec:DcmDirectoryRecord::purgeReferencedFile()" ));
 	    buildFileName( fileName, localFileName );
 	    this->setReferencedFileID( (char*)NULL );
 	}
-debug(( 2, "trying to purge file %s from file system", localFileName ));
+debug(2, ( "DcmDirectoryRecord::purgeReferencedFile() trying to purge file %s from file system", localFileName ));
 
 	if ( localFileName != (char*)NULL )
 	{				// Dateiname vorhanden
@@ -1078,7 +1010,6 @@ debug(( 2, "trying to purge file %s from file system", localFileName ));
     }
     else
 	l_error = EC_IllegalCall;
-Edebug(());
 
     return l_error;
 }
@@ -1230,21 +1161,14 @@ E_Condition DcmDirectoryRecord::search( const DcmTag &tag,
 					E_SearchMode mode,
 					BOOL searchIntoSub )
 {
-Bdebug((5, "dcdirrec:DcmDirectoryRecord::search(tag=(%4.4x,%4.4x),Stack&(%ld),"
-	   "mode=%d,sub=%d)", tag.getGTag(), tag.getETag(), resultStack.card(),
-	   mode, searchIntoSub ));
-debug(( 5, "local Info: Tag=(%4.4x,%4.4x) \"%s\" p=%p",
-	   getGTag(), getETag(), DcmVR(getVR()).getVRName(), this ));
-debug(( 5, "switching to method DcmItem::search()" ));
-
     E_Condition l_error = DcmItem::search( tag,
 					   resultStack,
 					   mode,
 					   searchIntoSub );
     if ( l_error != EC_Normal )
     {
-debug(( 5, "no element found: err(%d). now searching in lowerLevelList",
-	   l_error ));
+debug(5, ( "DcmDirectoryRecord::search() no element found: err(%d, %s). now searching in lowerLevelList",
+	   l_error, dcmErrorConditionToString(l_error) ));
 
 	if ( mode != ESM_afterStackTop || resultStack.top() == this )
 	    resultStack.push( lowerLevelList );
@@ -1255,8 +1179,6 @@ debug(( 5, "no element found: err(%d). now searching in lowerLevelList",
 	if ( l_error != EC_Normal )
 	    resultStack.pop();
     }
-Edebug(());
-
     return l_error;
 }
 
@@ -1269,16 +1191,11 @@ E_Condition DcmDirectoryRecord::search( const DcmTagKey &xtag,
 					E_SearchMode mode,
 					BOOL searchIntoSub )
 {
-Bdebug((5, "dcdirrec:DcmDirectoryRecord::search(xtag=(%x,%x),Stack&,mode=%d,sub=%d)",
-	   xtag.getGroup(), xtag.getElement(), mode, searchIntoSub ));
-
     DcmTag tag( xtag );
     E_Condition l_error = DcmDirectoryRecord::search( tag,
 						      resultStack,
 						      mode,
 						      searchIntoSub );
-Edebug(());
-
     return l_error;
 }
 
@@ -1321,14 +1238,12 @@ DcmDirectoryRecord* DcmDirectoryRecord::getReferencedMRDR()
 
 E_Condition DcmDirectoryRecord::assignToSOPFile( const char *referencedFileID )
 {
-Bdebug((2, "dcdirrec:DcmDirectoryRecord::assignToSOPFile(char*)" ));
-
     errorFlag = EC_Normal;
 
     if ( DirRecordType != ERT_root )
     {
-debug(( 2, "old Referenced File ID was %s", this->getReferencedFileName() ));
-debug(( 2, "new Referenced File ID is  %s", referencedFileID ));
+debug(2, ( "DcmDirectoryRecord::assignToSOPFile() old Referenced File ID was %s", this->getReferencedFileName() ));
+debug(2, ( "new Referenced File ID is  %s", referencedFileID ));
 
 	// aktualisiere geg. den alten Referenz-Zaehler
 	if ( referencedMRDR != (DcmDirectoryRecord*)NULL )
@@ -1339,8 +1254,6 @@ debug(( 2, "new Referenced File ID is  %s", referencedFileID ));
     }
     else
 	errorFlag = EC_IllegalCall;
-Edebug(());
-
     return errorFlag;
 }
 
@@ -1350,16 +1263,14 @@ Edebug(());
 
 E_Condition DcmDirectoryRecord::assignToMRDR( DcmDirectoryRecord *mrdr )
 {
-Bdebug((2, "dcdirrec:DcmDirectoryRecord::assignToMRDR(*mrdr=%p)", mrdr ));
-
     errorFlag = EC_Normal;
     if (   DirRecordType != ERT_root
 	&& mrdr != (DcmDirectoryRecord*)NULL   // neuer MRDR vorhanden
 	&& mrdr != referencedMRDR	       // alter MRDR != neuer MRDR
        )
     {
-debug(( 2, "old Referenced File ID was %s", this->getReferencedFileName() ));
-debug(( 2, "new Referenced File ID is  %s", mrdr->lookForReferencedFileID() ));
+debug(2, ( "DcmDirectoryRecord::assignToMRDR() old Referenced File ID was %s", this->getReferencedFileName() ));
+debug(2, ( "new Referenced File ID is  %s", mrdr->lookForReferencedFileID() ));
 
 	// setze internen Zeiger auf mrdr und aktualisiere geg. den alten Wert
 	if ( referencedMRDR != (DcmDirectoryRecord*)NULL )
@@ -1374,7 +1285,6 @@ debug(( 2, "new Referenced File ID is  %s", mrdr->lookForReferencedFileID() ));
     }
     else
 	errorFlag = EC_IllegalCall;
-Edebug(());
 
     return errorFlag;
 }
@@ -1397,9 +1307,6 @@ E_Condition DcmDirectoryRecord::insertSub( DcmDirectoryRecord* dirRec,
 					   unsigned long where,
 					   BOOL before )
 {
-Bdebug((3, "dcdirrec:DcmDirectoryRecord::insertSub(DcmItem*,where=%ld)",
-	   where ));
-
     if ( dirRec != (DcmDirectoryRecord*)NULL )
     {
 	if (	checkHierarchy( DirRecordType, dirRec->DirRecordType )
@@ -1408,13 +1315,12 @@ Bdebug((3, "dcdirrec:DcmDirectoryRecord::insertSub(DcmItem*,where=%ld)",
 	else
 	{
 	    errorFlag = EC_IllegalCall;
-debug(( 1, "dcdirrec: ( %s -> %s ) hierarchy not allowed.",
+debug(1, ( "DcmDirectoryRecord::insertSub() dcdirrec: ( %s -> %s ) hierarchy not allowed.",
 	   DRTypeNames[ this->getRecordType() ],
 	   DRTypeNames[ dirRec->getRecordType() ] ));
 
 	}
     }
-Edebug(());
 
     return errorFlag;
 }
@@ -1461,9 +1367,6 @@ DcmDirectoryRecord* DcmDirectoryRecord::removeSub( DcmDirectoryRecord* dirRec )
 
 E_Condition DcmDirectoryRecord::deleteSubAndPurgeFile(const unsigned long num )
 {
-Bdebug((2, "dcdirrec:DcmDirectoryRecord::deleteSubAndPurgeFile(num=%d)",
-	   num ));
-
     DcmDirectoryRecord *subDirRec = (DcmDirectoryRecord*)
 						lowerLevelList->remove( num );
     errorFlag = lowerLevelList->error();
@@ -1477,14 +1380,12 @@ Bdebug((2, "dcdirrec:DcmDirectoryRecord::deleteSubAndPurgeFile(num=%d)",
 	}
 	else				    // Datei direkt entfernen
 	    errorFlag = subDirRec->purgeReferencedFile();
-debug(( 2, "now purging lower records:" ));
+debug(2, ( "DcmDirectoryRecord::deleteSubAndPurgeFile() now purging lower records:" ));
 
 	while ( subDirRec->cardSub() > 0 )  // alle sub sub records loeschen
 	    subDirRec->deleteSubAndPurgeFile((const unsigned long)(0));
 	delete subDirRec;		    // loesche sub directory record
     }
-Edebug(());
-
     return errorFlag;
 }
 
@@ -1494,8 +1395,6 @@ Edebug(());
 
 E_Condition DcmDirectoryRecord::deleteSubAndPurgeFile( DcmDirectoryRecord* dirRec )
 {
-Bdebug((2, "dcdirrec:DcmDirectoryRecord::deleteSubAndPurgeFile(*dirRec)" ));
-
     DcmDirectoryRecord *subDirRec = (DcmDirectoryRecord*)
 					      lowerLevelList->remove( dirRec );
     errorFlag = lowerLevelList->error();
@@ -1509,13 +1408,12 @@ Bdebug((2, "dcdirrec:DcmDirectoryRecord::deleteSubAndPurgeFile(*dirRec)" ));
 	}
 	else				    // Datei direkt entfernen
 	    errorFlag = subDirRec->purgeReferencedFile();
-debug(( 2, "now purging lower records:" ));
+debug(2, ( "DcmDirectoryRecord::deleteSubAndPurgeFile() now purging lower records:" ));
 
 	while ( subDirRec->cardSub() > 0 )  // alle sub sub records loeschen
 	    subDirRec->deleteSubAndPurgeFile((const unsigned long)(0));
 	delete subDirRec;		    // loesche sub directory record
     }
-Edebug(());
 
     return errorFlag;
 }
@@ -1526,11 +1424,7 @@ Edebug(());
 
 E_Condition DcmDirectoryRecord::clearSub()
 {
-Bdebug((3, "dcdirrec:DcmDirectoryRecord::clear()"));
-
     errorFlag = lowerLevelList->clear();
-Edebug(());
-
     return errorFlag;
 }
 

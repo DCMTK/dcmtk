@@ -10,9 +10,9 @@
 ** Implementation of class DcmIntegerString
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-30 06:45:00 $
+** Update Date:		$Date: 1997-07-03 15:10:13 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvris.cc,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -29,15 +29,10 @@
 
 
 DcmIntegerString::DcmIntegerString(const DcmTag &tag,
-								   const Uint32 len)
+				   const Uint32 len)
 : DcmByteString(tag, len)
 {
-Bdebug((5, "dcvris:DcmIntegerString::DcmIntegerString(DcmTag&,len=%ld)",
-           len ));
-
     maxLength = 12;
-Edebug(());
-
 }
 
 
@@ -47,11 +42,7 @@ Edebug(());
 DcmIntegerString::DcmIntegerString( const DcmIntegerString& old )
 : DcmByteString( old, EVR_IS )
 {
-Bdebug((5, "dcvris:DcmIntegerString::DcmIntegerString(DcmIntegerString&)" ));
-
     maxLength = 12;
-Edebug(());
-
 }
 
 
@@ -60,9 +51,6 @@ Edebug(());
 
 DcmIntegerString::~DcmIntegerString()
 {
-  Bdebug((5, "dcvris:DcmIntegerString::~DcmIntegerString()" ));
-  Edebug(());
-
 }
 
 
@@ -112,7 +100,14 @@ E_Condition DcmIntegerString::getSint32(Sint32 &val,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvris.cc,v $
-** Revision 1.6  1997-05-30 06:45:00  andreas
+** Revision 1.7  1997-07-03 15:10:13  andreas
+** - removed debugging functions Bdebug() and Edebug() since
+**   they write a static array and are not very useful at all.
+**   Cdebug and Vdebug are merged since they have the same semantics.
+**   The debugging functions in dcmdata changed their interfaces
+**   (see dcmdata/include/dcdebug.h)
+**
+** Revision 1.6  1997/05/30 06:45:00  andreas
 ** - fixed scanf format problem leading to warnings on 64 bit machines.
 **
 ** Revision 1.5  1997/05/12 09:57:02  andreas

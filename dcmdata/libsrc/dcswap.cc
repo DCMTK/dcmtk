@@ -10,7 +10,7 @@
 **
 **
 ** Last Update:   $Author: andreas $
-** Revision:      $Revision: 1.4 $
+** Revision:      $Revision: 1.5 $
 ** Status:	  $State: Exp $
 **
 */
@@ -24,9 +24,6 @@
 void swapBytes(void * value, const Uint32 byteLength, 
 			   const size_t valWidth)
 {
-	Bdebug((6, "dcswap:swapBytes(value,byteLength=%ld,valWidth=%d)", byteLength, valWidth));
-    
-
 	if (valWidth > 1)
 	{
 		Uint8 * src = (Uint8 *)value;
@@ -48,7 +45,6 @@ void swapBytes(void * value, const Uint32 byteLength,
 			}
 		}
 	}
-	Edebug(());
 }
 
 

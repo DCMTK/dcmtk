@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-06-13 13:07:31 $
+** Update Date:		$Date: 1997-07-03 15:10:15 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrobow.cc,v $
-** CVS/RCS Revision:	$Revision: 1.15 $
+** CVS/RCS Revision:	$Revision: 1.16 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -43,12 +43,6 @@ DcmOtherByteOtherWord::DcmOtherByteOtherWord(const DcmTag &tag,
 					     const Uint32 len)
     : DcmElement(tag, len)
 {
-    Bdebug((5, "DcmOtherByteOtherWord::DcmOtherByteOtherWord(DcmTag&,len=%ld)",
-	    len ));
-    debug(( 8, "Object pointer this=0x%p", this ));
-
-    Edebug(());
-
 }
 
 
@@ -58,10 +52,6 @@ DcmOtherByteOtherWord::DcmOtherByteOtherWord(const DcmTag &tag,
 DcmOtherByteOtherWord::DcmOtherByteOtherWord( const DcmOtherByteOtherWord& old )
     : DcmElement( old )
 {
-    Bdebug((5, "dcvrobow:DcmOtherByteOtherWord::DcmOtherByteOtherWord("
-	    "DcmOtherByteOtherWord&)"));
-    debug(( 8, "Object pointer this=0x%p", this ));
-
     if (old.ident() != EVR_OW && old.ident() != EVR_OB && old.ident() != EVR_ox && 
     	old.ident() != EVR_UNKNOWN && old.ident() != EVR_UN)
     {
@@ -69,8 +59,6 @@ DcmOtherByteOtherWord::DcmOtherByteOtherWord( const DcmOtherByteOtherWord& old )
         cerr << "Warning: DcmOtherByteOtherWord: wrong use of Copy-Constructor"
              << endl;
     }
-    Edebug(());
-
 }
 
 
@@ -79,10 +67,6 @@ DcmOtherByteOtherWord::DcmOtherByteOtherWord( const DcmOtherByteOtherWord& old )
 
 DcmOtherByteOtherWord::~DcmOtherByteOtherWord()
 {
-    Bdebug((5, "dcvrobow:DcmOtherByteOtherWord::~DcmOtherByteOtherWord()"));
-    debug(( 8, "Object pointer this=0x%p", this ));
-
-    Edebug(());
 }
 
 
@@ -402,7 +386,14 @@ E_Condition DcmOtherByteOtherWord::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
-** Revision 1.15  1997-06-13 13:07:31  andreas
+** Revision 1.16  1997-07-03 15:10:15  andreas
+** - removed debugging functions Bdebug() and Edebug() since
+**   they write a static array and are not very useful at all.
+**   Cdebug and Vdebug are merged since they have the same semantics.
+**   The debugging functions in dcmdata changed their interfaces
+**   (see dcmdata/include/dcdebug.h)
+**
+** Revision 1.15  1997/06/13 13:07:31  andreas
 ** - Corrected printing of OW values. The length of the output array was
 **   computed incorrectly.
 **

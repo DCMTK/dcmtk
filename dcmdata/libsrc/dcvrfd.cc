@@ -10,9 +10,9 @@
 ** Implementation of class DcmFloatingPointDouble
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-04-18 08:10:50 $
+** Update Date:		$Date: 1997-07-03 15:10:12 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrfd.cc,v $
-** CVS/RCS Revision:	$Revision: 1.9 $
+** CVS/RCS Revision:	$Revision: 1.10 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -37,12 +37,6 @@ DcmFloatingPointDouble::DcmFloatingPointDouble(const DcmTag &tag,
                                                const Uint32 len)
 : DcmElement(tag, len)
 {
-Bdebug((5, "dcvrfd:DcmFloatingPointDouble::DcmFloatingPointDouble"
-           "(DcmTag&,len=%ld)", len ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
-Edebug(());
-
 }
 
 
@@ -52,16 +46,12 @@ Edebug(());
 DcmFloatingPointDouble::DcmFloatingPointDouble(const DcmFloatingPointDouble& old)
 : DcmElement( old )
 {
-Bdebug((5, "dcvrfd:DcmFloatingPointDouble::DcmFloatingPointDouble(DcmFloatingPointDouble&)" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
     if ( old.ident() != EVR_FD ) 
 	{
         errorFlag = EC_IllegalCall;
         cerr << "Warning: DcmFloatingPointDouble: wrong use of Copy-Constructor"
              << endl;
     }
-Edebug(());
 }
 
 
@@ -70,10 +60,6 @@ Edebug(());
 
 DcmFloatingPointDouble::~DcmFloatingPointDouble()
 {
-Bdebug((5, "dcvrfd:DcmFloatingPointDouble::~DcmFloatingPointDouble()" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
-Edebug(());
 }
 
 
@@ -154,15 +140,9 @@ E_Condition DcmFloatingPointDouble::putFloat64Array(
 E_Condition DcmFloatingPointDouble::putFloat64(const Float64 doubleVal,
 					       const unsigned long position )
 {
-Bdebug((2, "DcmFloatingPointDouble::putFloat64(doubleval=%ld,position=%ld)", 
-	    doubleVal, position));
-
     Float64 val = doubleVal;
-
     errorFlag = this -> changeValue(&val, sizeof(Float64)*position, 
 				    sizeof(Float64));
-
-Edebug(());
     return errorFlag;
 }
 
@@ -258,7 +238,14 @@ E_Condition DcmFloatingPointDouble::verify(const BOOL autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrfd.cc,v $
-** Revision 1.9  1997-04-18 08:10:50  andreas
+** Revision 1.10  1997-07-03 15:10:12  andreas
+** - removed debugging functions Bdebug() and Edebug() since
+**   they write a static array and are not very useful at all.
+**   Cdebug and Vdebug are merged since they have the same semantics.
+**   The debugging functions in dcmdata changed their interfaces
+**   (see dcmdata/include/dcdebug.h)
+**
+** Revision 1.9  1997/04/18 08:10:50  andreas
 ** - Corrected debugging code
 ** - The put/get-methods for all VRs did not conform to the C++-Standard
 **   draft. Some Compilers (e.g. SUN-C++ Compiler, Metroworks

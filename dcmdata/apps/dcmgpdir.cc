@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-06-26 12:50:03 $
+** Update Date:		$Date: 1997-07-03 15:09:39 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
-** CVS/RCS Revision:	$Revision: 1.13 $
+** CVS/RCS Revision:	$Revision: 1.14 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -310,7 +310,7 @@ int main(int argc, char *argv[])
     GUSISetup(GUSIwithInternetSockets);
 #endif
 
-    SetDebugLevel(( 0 ));
+    SetDebugLevel(0);
 
     prepareCmdLineArgs(argc, argv, progname);
     progname = basename(argv[0]);
@@ -473,7 +473,7 @@ int main(int argc, char *argv[])
 	return 1; /* DcmDicomDir class dumps core when no data dictionary */
     }
 
-    SetDebugLevel(( localDebugLevel ));
+    SetDebugLevel(localDebugLevel);
 
     BOOL ok = TRUE;
     StrList expandedNames;
@@ -2375,7 +2375,14 @@ expandFileNames(StrList& fileNames, StrList& expandedNames)
 /*
 ** CVS/RCS Log:
 ** $Log: dcmgpdir.cc,v $
-** Revision 1.13  1997-06-26 12:50:03  andreas
+** Revision 1.14  1997-07-03 15:09:39  andreas
+** - removed debugging functions Bdebug() and Edebug() since
+**   they write a static array and are not very useful at all.
+**   Cdebug and Vdebug are merged since they have the same semantics.
+**   The debugging functions in dcmdata changed their interfaces
+**   (see dcmdata/include/dcdebug.h)
+**
+** Revision 1.13  1997/06/26 12:50:03  andreas
 ** - Added function version expandFileNames for Windows NT/95
 ** - Include Additional headers (winsock.h, io.h) for Windows NT/95
 **

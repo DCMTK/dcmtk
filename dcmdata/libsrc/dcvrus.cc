@@ -10,9 +10,9 @@
 ** Implementation of class DcmUnsignedShort
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-04-18 08:10:54 $
+** Update Date:		$Date: 1997-07-03 15:10:22 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrus.cc,v $
-** CVS/RCS Revision:	$Revision: 1.9 $
+** CVS/RCS Revision:	$Revision: 1.10 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -34,12 +34,6 @@
 DcmUnsignedShort::DcmUnsignedShort(const DcmTag &tag, const Uint32 len)
     : DcmElement(tag, len)
 {
-    Bdebug((5, "dcvrsl:DcmUnsignedShort::DcmUnsignedShort(DcmTag&,len=%ld)",
-	    len ));
-    debug(( 8, "Object pointer this=0x%p", this ));
-
-    Edebug(());
-
 }
 
 
@@ -49,16 +43,12 @@ DcmUnsignedShort::DcmUnsignedShort(const DcmTag &tag, const Uint32 len)
 DcmUnsignedShort::DcmUnsignedShort(const DcmUnsignedShort& old)
     : DcmElement( old )
 {
-    Bdebug((5, "dcvrsl:DcmUnsignedShort::DcmUnsignedShort(DcmUnsignedShort&)" ));
-    debug(( 8, "Object pointer this=0x%p", this ));
-
     if ( old.ident() != EVR_US )
     {
         errorFlag = EC_IllegalCall;
         cerr << "Warning: DcmUnsignedShort: wrong use of Copy-Constructor"
              << endl;
     }
-    Edebug(());
 }
 
 
@@ -67,10 +57,6 @@ DcmUnsignedShort::DcmUnsignedShort(const DcmUnsignedShort& old)
 
 DcmUnsignedShort::~DcmUnsignedShort(void)
 {
-    Bdebug((5, "dcvrsl:DcmUnsignedShort::~DcmUnsignedShort()" ));
-    debug(( 8, "Object pointer this=0x%p", this ));
-
-    Edebug(());
 }
 
 
@@ -155,13 +141,10 @@ E_Condition DcmUnsignedShort::putUint16Array(const Uint16 * uintVal,
 E_Condition DcmUnsignedShort::putUint16(const Uint16 uintVal,
 					const unsigned long position)
 {
-Bdebug((2, "DcmUnsignedShort::put(slong=%ld,num=%ld)", uintVal, position));
-
     Uint16 val = uintVal;
 
     errorFlag = this -> changeValue(&val, sizeof(Uint16)*position,
 				    sizeof(Uint16));
-Edebug(());
     return errorFlag;
 }
 
@@ -257,7 +240,14 @@ E_Condition DcmUnsignedShort::verify(const BOOL autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrus.cc,v $
-** Revision 1.9  1997-04-18 08:10:54  andreas
+** Revision 1.10  1997-07-03 15:10:22  andreas
+** - removed debugging functions Bdebug() and Edebug() since
+**   they write a static array and are not very useful at all.
+**   Cdebug and Vdebug are merged since they have the same semantics.
+**   The debugging functions in dcmdata changed their interfaces
+**   (see dcmdata/include/dcdebug.h)
+**
+** Revision 1.9  1997/04/18 08:10:54  andreas
 ** - Corrected debugging code
 ** - The put/get-methods for all VRs did not conform to the C++-Standard
 **   draft. Some Compilers (e.g. SUN-C++ Compiler, Metroworks

@@ -10,9 +10,9 @@
 ** Implementation of class DcmDecimalString
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-03 10:22:45 $
+** Update Date:		$Date: 1997-07-03 15:10:10 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrds.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -31,12 +31,7 @@
 DcmDecimalString::DcmDecimalString(const DcmTag &tag, const Uint32 len)
 : DcmByteString(tag, len)
 {
-Bdebug((5, "dcvrds:DcmDecimalString::DcmDecimalString(DcmTag&,len=%ld)",
-           len ));
-
     maxLength = 16;
-Edebug(());
-
 }
 
 
@@ -46,11 +41,7 @@ Edebug(());
 DcmDecimalString::DcmDecimalString( const DcmDecimalString &newDS )
 : DcmByteString( newDS, EVR_DS )
 {
-Bdebug((5, "dcvrds:DcmDecimalString::DcmDecimalString(DcmDecimalString&)" ));
-
     maxLength = 16;
-Edebug(());
-
 }
 
 
@@ -59,9 +50,6 @@ Edebug(());
 
 DcmDecimalString::~DcmDecimalString()
 {
-Bdebug((5, "dcvrds:DcmDecimalString::~DcmDecimalString()" ));
-Edebug(());
-
 }
 
 
@@ -103,7 +91,14 @@ E_Condition DcmDecimalString::getFloat64(Float64 & val,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrds.cc,v $
-** Revision 1.5  1997-07-03 10:22:45  andreas
+** Revision 1.6  1997-07-03 15:10:10  andreas
+** - removed debugging functions Bdebug() and Edebug() since
+**   they write a static array and are not very useful at all.
+**   Cdebug and Vdebug are merged since they have the same semantics.
+**   The debugging functions in dcmdata changed their interfaces
+**   (see dcmdata/include/dcdebug.h)
+**
+** Revision 1.5  1997/07/03 10:22:45  andreas
 ** - corrected Bug in DcmDecimalString::getFloat64 (Thanks to
 **   Phil Liao <phil@eggroll.eeg.com>)
 **

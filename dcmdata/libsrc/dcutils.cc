@@ -10,7 +10,7 @@
  *
  *
  * Last Update:   $Author: andreas $
- * Revision:	  $Revision: 1.1 $
+ * Revision:	  $Revision: 1.2 $
  * Status:	  $State: Exp $
  *
  */
@@ -60,10 +60,6 @@ BOOL getSingleValue( DcmObject *obj,
 		     DcmTagKey searchtag,
 		     Uint16 &returnVal)
 {
-Bdebug((3, "dcutils:getSingleValue(DcmObject*=%p,searchtag=(%x,%x),returnVal)",
-           obj, searchtag.getGroup(), searchtag.getElement() ));
-
-//    returnVal = 0;
     BOOL l_error = FALSE;
     DcmStack stack;
 
@@ -83,19 +79,12 @@ Bdebug((3, "dcutils:getSingleValue(DcmObject*=%p,searchtag=(%x,%x),returnVal)",
 	    }
             else
                 l_error = TRUE;
-debug(( 3, "returnVal=%hu found", returnVal ));
-
 	}
 	else
 	    l_error = TRUE;
     }
     else
-    {
-debug(( 3, "no element with vr=\"US\" found" ));
-
 	l_error = TRUE;
-    }
-Edebug(());
 
     return l_error;
 }
@@ -108,10 +97,6 @@ BOOL getSingleValue( DcmObject *obj,
 		     DcmTagKey searchtag,
 		     Sint16 &returnVal)
 {
-Bdebug((3, "dcutils:getSingleValue(DcmObject*=%p,searchtag=(%x,%x),returnVal)",
-           obj, searchtag.getGroup(), searchtag.getElement() ));
-
-//    returnVal = 0;
     BOOL l_error = FALSE;
     DcmStack stack;
 
@@ -131,19 +116,12 @@ Bdebug((3, "dcutils:getSingleValue(DcmObject*=%p,searchtag=(%x,%x),returnVal)",
 	    }
             else
                 l_error = TRUE;
-debug(( 3, "returnVal=%hd found", returnVal ));
-
 	}
 	else
 	    l_error = TRUE;
     }
     else
-    {
-debug(( 3, "no element with vr=\"SS\" found" ));
-
 	l_error = TRUE;
-    }
-Edebug(());
 
     return l_error;
 }
@@ -156,10 +134,6 @@ BOOL getSingleValue( DcmObject *obj,
 		     DcmTagKey searchtag,
 		     Uint32 &returnVal)
 {
-Bdebug((3, "dcutils:getSingleValue(DcmObject*=%p,searchtag=(%x,%x),returnVal)",
-           obj, searchtag.getGroup(), searchtag.getElement() ));
-
-//    returnVal = 0;
     BOOL l_error = FALSE;
     DcmStack stack;
 
@@ -179,20 +153,14 @@ Bdebug((3, "dcutils:getSingleValue(DcmObject*=%p,searchtag=(%x,%x),returnVal)",
 	    }
             else
                 l_error = TRUE;
-debug(( 3, "returnVal=%lu found", returnVal ));
-
 	}
 	else
 	    l_error = TRUE;
     }
     else
     {
-debug(( 3, "no element with vr=\"UL\" found" ));
-
 	l_error = TRUE;
     }
-Edebug(());
-
     return l_error;
 }
 
@@ -204,10 +172,6 @@ BOOL getSingleValue( DcmObject *obj,
 		     DcmTagKey searchtag,
 		     Sint32 &returnVal)
 {
-Bdebug((3, "dcmutils:getSingleValueSL(DcmObject*=%p,searchtag=(%x,%x),returnVal)",
-           obj, searchtag.getGroup(), searchtag.getElement() ));
-
-//    returnVal = 0;
     BOOL l_error = FALSE;
     DcmStack stack;
 
@@ -227,20 +191,14 @@ Bdebug((3, "dcmutils:getSingleValueSL(DcmObject*=%p,searchtag=(%x,%x),returnVal)
 	    }
             else
                 l_error = TRUE;
-debug(( 3, "returnVal=%ld found", returnVal ));
-
 	}
 	else
 	    l_error = TRUE;
     }
     else
     {
-debug(( 3, "no element with vr=\"SL\" found" ));
-
 	l_error = TRUE;
     }
-Edebug(());
-
     return l_error;
 }
 
@@ -252,10 +210,6 @@ BOOL getSingleValue( DcmObject *obj,
 		     DcmTagKey searchtag,
 		     char * & returnVal)
 {
-Bdebug((3, "dcutils:getSingleValue(DcmObject*=%p,searchtag=(%x,%x),"
-           "returnVal)", obj, searchtag.getGroup(), searchtag.getElement() ));
-
-//    returnVal = "";
     BOOL l_error = FALSE;
     DcmStack stack;
 
@@ -288,17 +242,11 @@ Bdebug((3, "dcutils:getSingleValue(DcmObject*=%p,searchtag=(%x,%x),"
 		 ((DcmCharString*)searchedObj)->getString(returnVal);
 	else
 	    l_error = TRUE;
-debug(( 3, "returnVal=[%s]", returnVal ));
-
     }
     else
     {
-debug(( 3, "no element with vr=\"Byte/CharString\" found" ));
-
 	l_error = TRUE;
     }
-Edebug(());
-
     return l_error;
 }
 
@@ -310,9 +258,6 @@ BOOL putSingleValue( DcmItem *item,
 		     DcmTagKey tag,
 		     Uint16 value)
 {
-Bdebug((3, "dcmutils:putSingleValue(DcmItem*=%p,tag=(%x,%x),USvalue=%hu)",
-	   item, tag.getGroup(), tag.getElement(), value ));
-
     BOOL l_error = FALSE;
     DcmTag localTag( tag );
     if ( item != (DcmItem*)NULL )
@@ -333,20 +278,14 @@ Bdebug((3, "dcmutils:putSingleValue(DcmItem*=%p,tag=(%x,%x),USvalue=%hu)",
 	}
 	else
 	{
-debug(( 3, "tag is not EVR_US=%d or EVR_IS=%d", (int)EVR_US, (int)EVR_IS ));
-
 	    l_error = TRUE;
 	}
 	item->insert( elem, TRUE );  // NULL-Elemente werden nicht eingefuegt
     }
     else
     {
-debug(( 3, "no item available" ));
-
 	l_error = TRUE;
     }
-Edebug(());
-
     return l_error;
 }
 
@@ -358,9 +297,6 @@ BOOL putSingleValue( DcmItem *item,
 		     DcmTagKey tag,
 		     Sint16 value)
 {
-Bdebug((3, "dcmutils:putSingleValue(DcmItem*=%p,tag=(%x,%x),SSvalue=%hd)",
-	   item, tag.getGroup(), tag.getElement(), value ));
-
     BOOL l_error = FALSE;
     DcmTag localTag( tag );
     if ( item != (DcmItem*)NULL )
@@ -381,20 +317,14 @@ Bdebug((3, "dcmutils:putSingleValue(DcmItem*=%p,tag=(%x,%x),SSvalue=%hd)",
 	}
 	else
 	{
-debug(( 3, "tag is not EVR_SS=%d or EVR_IS=%d", (int)EVR_SS, (int)EVR_IS ));
-
 	    l_error = TRUE;
 	}
 	item->insert( elem, TRUE );  // NULL-Elemente werden nicht eingefuegt
     }
     else
     {
-debug(( 3, "no item available" ));
-
 	l_error = TRUE;
     }
-Edebug(());
-
     return l_error;
 }
 
@@ -406,9 +336,6 @@ BOOL putSingleValue( DcmItem *item,
 		     DcmTagKey tag,
 		     Uint32 value)
 {
-Bdebug((3, "dcmutils:putSingleValue(DcmItem*=%p,tag=(%x,%x),ULvalue=%lu)",
-	   item, tag.getGroup(), tag.getElement(), value ));
-
     BOOL l_error = FALSE;
     DcmTag localTag( tag );
     if ( item != (DcmItem*)NULL )
@@ -429,20 +356,14 @@ Bdebug((3, "dcmutils:putSingleValue(DcmItem*=%p,tag=(%x,%x),ULvalue=%lu)",
 	}
 	else
 	{
-debug(( 3, "tag is not EVR_UL=%d or EVR_IS=%d", (int)EVR_UL, (int)EVR_IS ));
-
 	    l_error = TRUE;
 	}
 	item->insert( elem, TRUE );  // NULL-Elemente werden nicht eingefuegt
     }
     else
     {
-debug(( 3, "no item available" ));
-
 	l_error = TRUE;
     }
-Edebug(());
-
     return l_error;
 }
 
@@ -454,9 +375,6 @@ BOOL putSingleValue( DcmItem *item,
 		     DcmTagKey tag,
 		     Sint32 value)
 {
-Bdebug((3, "dcmutils:putSingleValue(DcmItem*=%p,tag=(%x,%x),SLvalue=%ld)",
-	   item, tag.getGroup(), tag.getElement(), value ));
-
     BOOL l_error = FALSE;
     DcmTag localTag( tag );
     if ( item != (DcmItem*)NULL )
@@ -477,20 +395,14 @@ Bdebug((3, "dcmutils:putSingleValue(DcmItem*=%p,tag=(%x,%x),SLvalue=%ld)",
 	}
 	else
 	{
-debug(( 3, "tag is not EVR_SL=%d or EVR_IS=%d", (int)EVR_SL, (int)EVR_IS ));
-
 	    l_error = TRUE;
 	}
 	item->insert( elem, TRUE );  // NULL-Elemente werden nicht eingefuegt
     }
     else
     {
-debug(( 3, "no item available" ));
-
 	l_error = TRUE;
     }
-Edebug(());
-
     return l_error;
 }
 

@@ -9,8 +9,8 @@
  * Implementation of the list-class
  * 
  * 
- * Last Update:	  $Author: hewett $
- * Revision:      $Revision: 1.4 $
+ * Last Update:	  $Author: andreas $
+ * Revision:      $Revision: 1.5 $
  * Status:        $State: Exp $
  *
  */
@@ -30,13 +30,8 @@
 
 DcmListNode::DcmListNode( DcmObject *obj )
 {
-Bdebug((6, "dclist:DcmListNode::DcmListNode(DcmObject*)" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
     objNodeValue = obj;
     nextNode = prevNode = (DcmListNode*)NULL;
-Edebug(());
-
 }
 
 
@@ -45,10 +40,6 @@ Edebug(());
 
 DcmListNode::~DcmListNode()
 {
-Bdebug((6, "dclist:DcmListNode::~DcmListNode()" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-Edebug(());
-
 }
 
 
@@ -68,13 +59,8 @@ DcmObject *DcmListNode::value()
 
 DcmList::DcmList()
 {
-Bdebug((6, "dclist:DcmList::DcmList()" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
     actualNode = firstNode = lastNode = (DcmListNode*)NULL;
     cardinality = 0;
-Edebug(());
-
 }
 
 
@@ -83,15 +69,11 @@ Edebug(());
 
 DcmList::DcmList( const DcmList & /*newList*/ )
 {
-Bdebug((6, "dclist:DcmList::DcmList(DcmList&)" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
     actualNode = firstNode = lastNode = (DcmListNode*)NULL;
     cardinality = 0;
     cerr << "Warning: DcmList: use of Copy-Constructor not allowed"
          << endl;
-Edebug(());
-
+    abort();
 }
 
 
@@ -100,9 +82,6 @@ Edebug(());
 
 DcmList::~DcmList()
 {
-Bdebug((6, "dclist:DcmList::~DcmList()" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
     if ( !DcmList::empty() )                      // Liste ist nicht leer !
     {
         lastNode->nextNode = (DcmListNode*)NULL;  // setze zur Sicherheit auf 0
@@ -114,8 +93,6 @@ debug(( 8, "Object pointer this=0x%p", this ));
         } while ( firstNode != (DcmListNode*)NULL );
         actualNode = firstNode = lastNode = (DcmListNode*)NULL;
     }
-Edebug(());
-
 }
 
 

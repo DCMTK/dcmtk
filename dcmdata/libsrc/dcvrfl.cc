@@ -10,9 +10,9 @@
 ** Implementation of class DcmFloatingPointSingle
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-04-18 08:10:52 $
+** Update Date:		$Date: 1997-07-03 15:10:13 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrfl.cc,v $
-** CVS/RCS Revision:	$Revision: 1.10 $
+** CVS/RCS Revision:	$Revision: 1.11 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -34,15 +34,9 @@
 
 
 DcmFloatingPointSingle::DcmFloatingPointSingle(const DcmTag &tag,
-											   const Uint32 len)
+					       const Uint32 len)
 : DcmElement(tag, len)
 {
-Bdebug((5, "DcmFloatingPointSingle::DcmFloatingPointSingle(DcmTag&,len=%ld)",
-		len ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
-Edebug(());
-
 }
 
 
@@ -54,16 +48,12 @@ Edebug(());
 DcmFloatingPointSingle::DcmFloatingPointSingle(const DcmFloatingPointSingle& old)
 : DcmElement( old )
 {
-Bdebug((5, "dcvrfl:DcmFloatingPointSingle::DcmFloatingPointSingle(DcmFloatingPointSingle&)" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
     if ( old.ident() != EVR_FL )
-	{
+    {
         errorFlag = EC_IllegalCall;
         cerr << "Warning: DcmFloatingPointSingle: wrong use of Copy-Constructor"
              << endl;
     }
-Edebug(());
 }
 
 
@@ -72,11 +62,6 @@ Edebug(());
 
 DcmFloatingPointSingle::~DcmFloatingPointSingle()
 {
-Bdebug((5, "dcvrfl:DcmFloatingPointSingle::~DcmFloatingPointSingle()" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
-Edebug(());
-
 }
 
 
@@ -160,14 +145,9 @@ E_Condition DcmFloatingPointSingle::putFloat32Array(
 E_Condition DcmFloatingPointSingle::putFloat32(const Float32 floatVal,
 					       const unsigned long position)
 {
-Bdebug((2, "DcmFloatingPointSingle::putFloat32(floatval=%ld,position=%ld)", 
-	floatVal, position));
-
     Float32 val = floatVal;
-
     errorFlag = this -> changeValue(&val, sizeof(Float32)*position,
 				    sizeof(Float32));
-Edebug(());
     return errorFlag;
 }
 
@@ -261,7 +241,14 @@ E_Condition DcmFloatingPointSingle::verify(const BOOL autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrfl.cc,v $
-** Revision 1.10  1997-04-18 08:10:52  andreas
+** Revision 1.11  1997-07-03 15:10:13  andreas
+** - removed debugging functions Bdebug() and Edebug() since
+**   they write a static array and are not very useful at all.
+**   Cdebug and Vdebug are merged since they have the same semantics.
+**   The debugging functions in dcmdata changed their interfaces
+**   (see dcmdata/include/dcdebug.h)
+**
+** Revision 1.10  1997/04/18 08:10:52  andreas
 ** - Corrected debugging code
 ** - The put/get-methods for all VRs did not conform to the C++-Standard
 **   draft. Some Compilers (e.g. SUN-C++ Compiler, Metroworks

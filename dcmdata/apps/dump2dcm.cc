@@ -51,9 +51,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-30 06:44:57 $
+** Update Date:		$Date: 1997-07-03 15:09:40 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dump2dcm.cc,v $
-** CVS/RCS Revision:	$Revision: 1.14 $
+** CVS/RCS Revision:	$Revision: 1.15 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -635,7 +635,7 @@ int main(int argc, char *argv[])
     GUSISetup(GUSIwithInternetSockets);
 #endif
 
-    SetDebugLevel(( 0 ));
+    SetDebugLevel(0);
 
     prepareCmdLineArgs(argc, argv, "dump2dcm");
         
@@ -841,7 +841,7 @@ int main(int argc, char *argv[])
 	     << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
     }
     
-    SetDebugLevel(( localDebugLevel ));
+    SetDebugLevel(localDebugLevel);
 
     if (verbosemode) 
 	cout << "reading dumfile: " << ifname << endl;
@@ -930,7 +930,14 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
-** Revision 1.14  1997-05-30 06:44:57  andreas
+** Revision 1.15  1997-07-03 15:09:40  andreas
+** - removed debugging functions Bdebug() and Edebug() since
+**   they write a static array and are not very useful at all.
+**   Cdebug and Vdebug are merged since they have the same semantics.
+**   The debugging functions in dcmdata changed their interfaces
+**   (see dcmdata/include/dcdebug.h)
+**
+** Revision 1.14  1997/05/30 06:44:57  andreas
 ** - fixed scanf format problem leading to warnings on 64 bit machines.
 **
 ** Revision 1.13  1997/05/29 15:52:52  meichel

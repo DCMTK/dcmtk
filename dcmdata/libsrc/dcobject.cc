@@ -10,7 +10,7 @@
 **
 **
 ** Last Update:   $Author: andreas $
-** Revision:      $Revision: 1.14 $
+** Revision:      $Revision: 1.15 $
 ** Status:	  $State: Exp $
 **
 */
@@ -39,9 +39,6 @@ BOOL dcmEnableAutomaticInputDataCorrection = TRUE;
 
 DcmObject::DcmObject(const DcmTag &tag, const Uint32 len)
 {
-  Bdebug((6, "DcmObject::DcmObject(DcmTag&,len=%ld)", len ));
-  debug(( 8, "Object pointer this=0x%p", this ));
-
   Tag = new DcmTag( tag );    // copy-operator in DcmTag
   Length = len;
   errorFlag = EC_Normal;
@@ -51,8 +48,6 @@ DcmObject::DcmObject(const DcmTag &tag, const Uint32 len)
 #ifdef DEBUG
   testConstructDestruct = 1; // for debugging
 #endif
-
-  Edebug(());
 }
 
 
@@ -61,9 +56,6 @@ DcmObject::DcmObject(const DcmTag &tag, const Uint32 len)
 
 DcmObject::DcmObject( const DcmObject& obj )
 {
-  Bdebug((6, "dcobject:DcmObject::DcmObject(const DcmObject& obj=0x%p)", &obj ));
-  debug(( 8, "Object pointer this=0x%p", this ));
-
   Tag = new DcmTag( *obj.Tag );    // copy-operator in DcmTag
   Length = obj.Length;
   errorFlag = obj.errorFlag;
@@ -73,8 +65,6 @@ DcmObject::DcmObject( const DcmObject& obj )
 #ifdef DEBUG
   testConstructDestruct = 1; // for debugging
 #endif
-
-  Edebug(());
 }
 
 
@@ -83,10 +73,6 @@ DcmObject::DcmObject( const DcmObject& obj )
 
 DcmObject::~DcmObject()
 {
-  Bdebug((6, "dcobject:DcmObject::~DcmObject()" ));
-  debug(( 8, "Object pointer this=0x%p", this ));
-  debug(( 8, "Pointer to Tag=0x%p", Tag ));
-
   if (Tag != (DcmTag*)NULL)
     delete Tag;
 
@@ -95,7 +81,7 @@ DcmObject::~DcmObject()
     testConstructDestruct = 2; // for debugging
   else
     {
-      debug(( 1, "Error: ~DcmObject called more than once (%d)",
+      debug(1, ( "Error: ~DcmObject called more than once (%d)",
 	      testConstructDestruct ));
 
       cerr << "Error: ~DcmObject called more than once ("
@@ -103,8 +89,6 @@ DcmObject::~DcmObject()
       testConstructDestruct++;
     }
 #endif
-  Edebug(());
-
 }
 
 
@@ -195,28 +179,12 @@ E_Condition DcmObject::nextObject(DcmStack & /*stack*/,
 
 // ********************************
 
-#ifdef DEBUG
-E_Condition DcmObject::search( const DcmTag &tag,
-			       DcmStack &resultStack,
-			       E_SearchMode mode,
-			       BOOL searchIntoSub )
-#else
 E_Condition DcmObject::search( const DcmTag &/*tag*/,
 			       DcmStack &/*resultStack*/,
 			       E_SearchMode /*mode*/,
 			       BOOL /*searchIntoSub*/ )
-#endif
 {
-  Bdebug((5, "dcobject:DcmObject::search(tag=(%4.4x,%4.4x),Stack&(%ld),mode=%d,"
-	  "sub=%d)", tag.getGTag(), tag.getETag(), resultStack.card(),
-	  mode, searchIntoSub ));
-  debug(( 5, "local Info: Tag=(%4.4x,%4.4x) \"%s\" p=%p",
-	  getGTag(), getETag(), DcmVR(getVR()).getVRName(), this ));
-
   E_Condition l_error = EC_TagNotFound;
-
-  Edebug(());
-
   return l_error;
 }
 
@@ -229,13 +197,8 @@ E_Condition DcmObject::search( const DcmTagKey& xtag,
 			       E_SearchMode mode,
 			       BOOL searchIntoSub )
 {
-  Bdebug((5, "dcobject:DcmObject::search(xtag=(%x,%x),Stack&,mode=%d,sub=%d)",
-	  xtag.getGroup(), xtag.getElement(), mode, searchIntoSub ));
-
   DcmTag tag( xtag );
   E_Condition l_error = search( tag, resultStack, mode, searchIntoSub );
-  Edebug(());
-
   return l_error;
 }
 
@@ -245,12 +208,8 @@ E_Condition DcmObject::search( const DcmTagKey& xtag,
 
 E_Condition DcmObject::searchErrors( DcmStack &resultStack )
 {
-  Bdebug((5, "dcobject:DcmObject::searchErrors(Stack&)" ));
-
   if ( errorFlag != EC_Normal )
     resultStack.push( this );
-  Edebug(());
-
   return errorFlag;
 }
 
@@ -346,30 +305,18 @@ E_Condition DcmObject::writeTagAndLength(DcmStream & outStream,
 					 const E_TransferSyntax oxfer,	
 					 Uint32 & writtenBytes)	
 {
-  Bdebug((4, "DcmObject::writeTagAndLength(&outStream,oxfer=%d)", oxfer ));
-
   E_Condition l_error = outStream.GetError();
   if (l_error != EC_Normal)
     writtenBytes = 0;
   else
     {
-#ifndef NO_ANON_CLASS_COMP
-      debug(( 4, "Tag (0x%4.4x,0x%4.4x) \"%s\" [0x%8.8x] \"%s\"",
-	      Tag->getGTag(), Tag->getETag(),
-	      DcmVR(Tag->getVR()).getVRName(),
-	      this -> getLength(), Tag->getTagName() ));
-#endif
-
       l_error = this -> writeTag(outStream, *Tag, oxfer);
       writtenBytes = 4;
 
       DcmXfer oxferSyn(oxfer);
       const E_ByteOrder oByteOrder = oxferSyn.getByteOrder();
       if (oByteOrder == EBO_unknown)
-      {
-	  Edebug(());
 	  return EC_IllegalCall;
-      }
 
       if (oxferSyn.isExplicitVR())
 	{
@@ -411,8 +358,6 @@ E_Condition DcmObject::writeTagAndLength(DcmStream & outStream,
 	  writtenBytes += 4;
 	}
     }
-  Edebug(());
-
   return l_error;
 }
 

@@ -9,8 +9,8 @@
  * Print debug information
  * 
  * 
- * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.2 $
+ * Last Update:   $Author: andreas $
+ * Revision:      $Revision: 1.3 $
  * Status:        $State: Exp $
  *
  */
@@ -23,27 +23,31 @@
 
 #ifdef DEBUG
 
-void real_SetDebugLevel( int level );
-void real_Bdebug( int lev, const char* text, ... );
-void real_debug(  int lev, const char* text, ... );
-void real_Vdebug( int lev, int printit, const char* text, ... );
-void real_Edebug( void );
+#include <stdio.h>
+extern int DcmDebugLevel;
+extern FILE * DcmDebugDevice;
 
-#define SetDebugLevel(param) real_SetDebugLevel param
-#define Bdebug(param) real_Bdebug param
-#define debug(param)  real_debug  param
-#define Vdebug(param) real_Vdebug param
-#define Edebug(param) real_Edebug param
-#define Cdebug(cond,param) if ((cond)) { real_debug param ; }
+void debug_print(const char* text, ... );
+
+// Set the output device for debugging messages
+#define SetDebugDevice(device) DcmDebugDevice = (device);
+
+// Set the debug level
+#define SetDebugLevel(level) DcmDebugLevel = (level);
+
+// debug prints a debug message in param if lev <= DcmDebugLevel. param has the
+// format of the printf parameters (with round brackets)!
+#define debug(lev, param)  { if ((lev) <= DcmDebugLevel) { fprintf(DcmDebugDevice, __FILE__ ", LINE %d:", __LINE__); debug_print param ; } }
+
+// Cdebug does the same as debug but only if a condition cond is TRUE
+#define Cdebug(lev, cond, param) { if ((lev) <= DcmDebugLevel && (cond)) { fprintf(DcmDebugDevice, __FILE__ ", LINE %d:", __LINE__); debug_print param; } }
 
 #else  // DEBUG
 
+#define SetDebugDevice(device)
 #define SetDebugLevel(param)
-#define Bdebug(param)
-#define debug(param)
-#define Vdebug(param)
-#define Edebug(param)
-#define Cdebug(cond,param)
+#define debug(lev, param)
+#define Cdebug(lev, cond, param)
 
 #endif // DEBUG
 

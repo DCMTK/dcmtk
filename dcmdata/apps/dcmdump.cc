@@ -9,10 +9,10 @@
 ** List the contents of a dicom file to stdout
 **
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-05-29 15:52:50 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-07-03 15:09:38 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmdump.cc,v $
-** CVS/RCS Revision:	$Revision: 1.15 $
+** CVS/RCS Revision:	$Revision: 1.16 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -154,7 +154,7 @@ int main(int argc, char *argv[])
     GUSISetup(GUSIwithInternetSockets);
 #endif
 
-    SetDebugLevel(( 0 ));
+    SetDebugLevel(0);
 
     prepareCmdLineArgs(argc, argv, "dcmdump");
     
@@ -410,7 +410,14 @@ static int dumpFile(ostream & out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmdump.cc,v $
-** Revision 1.15  1997-05-29 15:52:50  meichel
+** Revision 1.16  1997-07-03 15:09:38  andreas
+** - removed debugging functions Bdebug() and Edebug() since
+**   they write a static array and are not very useful at all.
+**   Cdebug and Vdebug are merged since they have the same semantics.
+**   The debugging functions in dcmdata changed their interfaces
+**   (see dcmdata/include/dcdebug.h)
+**
+** Revision 1.15  1997/05/29 15:52:50  meichel
 ** Added constant for dcmtk release date in dcuid.h.
 ** All dcmtk applications now contain a version string
 ** which is displayed with the command line options ("usage" message)

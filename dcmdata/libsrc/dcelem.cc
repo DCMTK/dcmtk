@@ -10,9 +10,9 @@
 ** Implementation of class DcmElement
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-27 13:48:58 $
+** Update Date:		$Date: 1997-07-03 15:09:57 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcelem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.14 $
+** CVS/RCS Revision:	$Revision: 1.15 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -89,15 +89,10 @@ E_Condition DcmElement::clear(void)
 DcmElement::DcmElement(const DcmTag &tag, const Uint32 len)
     : DcmObject(tag, len)
 {
-    Bdebug((6, "dcelem:DcmElement::DcmElement(DcmTag&,len=%ld)", len ));
-    debug(( 8, "Object pointer this=0x%p", this ));
-
     fValue = NULL;
     fLoadValue = NULL;
     fTransferredBytes = 0;
     fByteOrder = gLocalByteOrder;
-
-    Edebug(());
 }
 
 
@@ -107,9 +102,6 @@ DcmElement::DcmElement(const DcmTag &tag, const Uint32 len)
 DcmElement::DcmElement(const DcmElement & elem)
     : DcmObject(elem)
 {
-    Bdebug((6, "dcelem:DcmElement::DcmElement(const DcmObject&)" ));
-    debug(( 8, "Object pointer this=0x%p", this ));
-
     if (elem.fValue)
     {
 	unsigned short pad = 0;
@@ -175,8 +167,6 @@ DcmElement::DcmElement(const DcmElement & elem)
 
     fTransferredBytes = elem.fTransferredBytes;
     fByteOrder = elem.fByteOrder;
-	
-    Edebug(());
 }
 
 
@@ -185,16 +175,11 @@ DcmElement::DcmElement(const DcmElement & elem)
 
 DcmElement::~DcmElement()
 {
-    Bdebug((6, "dcelem:DcmElement::~DcmElement()"));
-    debug(( 8, "Object pointer this=0x%p", this ));
-
     if (fValue)
 	delete[] fValue;
 
     if (fLoadValue)
 	delete fLoadValue;
-
-    Edebug(());
 }
 
 Uint32 DcmElement::calcElementLength(const E_TransferSyntax xfer,
@@ -783,7 +768,14 @@ E_Condition DcmElement::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
-** Revision 1.14  1997-05-27 13:48:58  andreas
+** Revision 1.15  1997-07-03 15:09:57  andreas
+** - removed debugging functions Bdebug() and Edebug() since
+**   they write a static array and are not very useful at all.
+**   Cdebug and Vdebug are merged since they have the same semantics.
+**   The debugging functions in dcmdata changed their interfaces
+**   (see dcmdata/include/dcdebug.h)
+**
+** Revision 1.14  1997/05/27 13:48:58  andreas
 ** - Add method canWriteXfer to class DcmObject and all derived classes.
 **   This method checks whether it is possible to convert the original
 **   transfer syntax to an new transfer syntax. The check is used in the

@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:27:52 $
+** Update Date:		$Date: 1997-07-03 15:10:17 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrsh.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -30,12 +30,7 @@
 DcmShortString::DcmShortString( const DcmTag &tag, const Uint32 len)
 : DcmCharString(tag, len )
 {
-Bdebug((5, "dcvrsh:DcmShortString::DcmShortString(DcmTag&,len=%ld)",
-           len ));
-
     maxLength = 16;
-Edebug(());
-
 }
 
 
@@ -45,11 +40,6 @@ Edebug(());
 DcmShortString::DcmShortString( const DcmShortString& old )
 : DcmCharString( old, EVR_SH )
 {
-Bdebug((5, "dcvrsh:DcmShortString::DcmShortString(DcmShortString&)" ));
-
-    maxLength = 16;
-Edebug(());
-
 }
 
 
@@ -58,9 +48,6 @@ Edebug(());
 
 DcmShortString::~DcmShortString(void)
 {
-Bdebug((5, "dcvrsh:DcmShortString::~DcmShortString()" ));
-Edebug(());
-
 }
 
 
@@ -69,7 +56,14 @@ Edebug(());
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrsh.cc,v $
-** Revision 1.3  1996-01-05 13:27:52  andreas
+** Revision 1.4  1997-07-03 15:10:17  andreas
+** - removed debugging functions Bdebug() and Edebug() since
+**   they write a static array and are not very useful at all.
+**   Cdebug and Vdebug are merged since they have the same semantics.
+**   The debugging functions in dcmdata changed their interfaces
+**   (see dcmdata/include/dcdebug.h)
+**
+** Revision 1.3  1996/01/05 13:27:52  andreas
 ** - changed to support new streaming facilities
 ** - unique read/write methods for file and block transfer
 ** - more cleanups

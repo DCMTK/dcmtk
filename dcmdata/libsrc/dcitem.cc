@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-06-06 09:55:29 $
+** Update Date:		$Date: 1997-07-03 15:09:59 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.28 $
+** CVS/RCS Revision:	$Revision: 1.29 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -44,14 +44,9 @@
 DcmItem::DcmItem()
     : DcmObject( ItemTag )
 {
-    Bdebug((5, "dcitem:DcmItem::DcmItem()" ));
-    debug(( 8, "Object pointer this=0x%p", this ));
-
     elementList = new DcmList;
     lastElementComplete = TRUE;
     fStartPosition = 0;
-    Edebug(());
-
 }
 
 
@@ -61,14 +56,9 @@ DcmItem::DcmItem()
 DcmItem::DcmItem(const DcmTag &tag, const Uint32 len)
     : DcmObject(tag, len)
 {
-    Bdebug((5, "dcitem:DcmItem::DcmItem(DcmTag&,len=%ld)", len ));
-    debug(( 8, "Object pointer this=0x%p", this ));
-
     elementList = new DcmList;
     lastElementComplete = TRUE;
     fStartPosition = 0;
-    Edebug(());
-
 }
 
 
@@ -78,13 +68,9 @@ DcmItem::DcmItem(const DcmTag &tag, const Uint32 len)
 DcmItem::DcmItem( const DcmItem& old )
     : DcmObject( old )
 {
-    Bdebug((5, "dcitem:DcmItem::DcmItem(DcmItem&)"));
-    debug(( 8, "Object pointer this=0x%p", this ));
-
     lastElementComplete = TRUE;
     fStartPosition = old.fStartPosition;
     elementList = new DcmList;
-    debug(( 5, "ident()=%d", old.ident() ));
 
     switch ( old.ident() ) {
     case EVR_item:
@@ -108,8 +94,6 @@ DcmItem::DcmItem( const DcmItem& old )
         cerr << "Warning: DcmItem: wrong use of Copy-Constructor" << endl;
 	break;
     }
-    Edebug(());
-
 }
 
 
@@ -118,9 +102,6 @@ DcmItem::DcmItem( const DcmItem& old )
 
 DcmItem::~DcmItem()
 {
-    Bdebug((5, "dcitem:DcmItem::~DcmItem()"));
-    debug(( 8, "Object pointer this=0x%p", this ));
-
     DcmObject *dO;
     elementList->seek( ELP_first );
     while ( !elementList->empty() ) {
@@ -129,8 +110,6 @@ DcmItem::~DcmItem()
 	    delete dO;
     }
     delete elementList;
-
-    Edebug(());
 }
 
 
@@ -168,8 +147,6 @@ BOOL DcmItem::foundVR( char* atposition )
 
 E_TransferSyntax DcmItem::checkTransferSyntax(DcmStream & inStream)
 {
-    Bdebug((3, "dcitem:DcmItem::checkTransferSyntax()" ));
-
     E_TransferSyntax transferSyntax;
     char tagAndVR[6];
     inStream.SetPutbackMark();
@@ -211,8 +188,7 @@ E_TransferSyntax DcmItem::checkTransferSyntax(DcmStream & inStream)
 	}
     }						    // gueltige TransferSyntax
 
-    debug(( 3, "found TransferSyntax(0,2,3)=(%d)", transferSyntax ));
-    Edebug(());
+    debug(3, ( "found TransferSyntax=(%s)", DcmXfer(transferSyntax).getXferName()));
 
     return transferSyntax;
 } // DcmItem::checkTransferSyntax
@@ -223,8 +199,6 @@ E_TransferSyntax DcmItem::checkTransferSyntax(DcmStream & inStream)
 
 DcmObject* DcmItem::copyDcmObject( DcmObject *oldObj )
 {
-    Bdebug((4, "dcitem:DcmItem::copyDcmObject(DcmObject*)"));
-
     DcmObject *newObj = (DcmObject*)NULL;
     switch ( oldObj->ident() )
     {
@@ -334,8 +308,6 @@ DcmObject* DcmItem::copyDcmObject( DcmObject *oldObj )
 	     << endl;
 	break;
     }
-    Edebug(());
-
     return newObj;
 }
 
@@ -425,18 +397,12 @@ BOOL DcmItem::canWriteXfer(const E_TransferSyntax newXfer,
 Uint32 DcmItem::calcElementLength(const E_TransferSyntax xfer,
 				  const E_EncodingType enctype )
 {
-    Bdebug((4, "dcitem:DcmItem::calcElementLength(xfer=%d,enctype=%d)",
-	    xfer, enctype ));
-
     Uint32 itemlen = 0L;
     DcmXfer xferSyn(xfer);
     itemlen = getLength(xfer, enctype) + 
 	xferSyn.sizeofTagHeader(getVR());
     if (enctype == EET_UndefinedLength)
 	itemlen += 8;
-
-    Edebug(());
-
     return itemlen;
 }
 
@@ -447,9 +413,6 @@ Uint32 DcmItem::calcElementLength(const E_TransferSyntax xfer,
 Uint32 DcmItem::getLength(const E_TransferSyntax xfer, 
 			  const E_EncodingType enctype)
 {
-    Bdebug((4, "dcitem:DcmItem::getLength(xfer=%d,enctype=%d)",
-	    xfer, enctype ));
-
     Uint32 itemlen = 0L;
     if ( !elementList->empty() )
     {
@@ -460,8 +423,6 @@ Uint32 DcmItem::getLength(const E_TransferSyntax xfer,
 	    itemlen += dO->calcElementLength(xfer, enctype);
 	} while ( elementList->seek( ELP_next ) );
     }
-    Edebug(());
-
     return itemlen;
 }
 
@@ -566,7 +527,7 @@ E_Condition DcmItem::computeGroupLengthAndPadding
 			if (actGLElem != (DcmUnsignedLong*)NULL )
 			{   
 			    actGLElem->putUint32(grplen);
-			    debug(( 2, "Length of Group 0x%4.4x len=%lu", actGLElem->getGTag(), grplen ));
+			    debug(2, ( "DcmItem::computeGroupLengthAndPadding() Length of Group 0x%4.4x len=%lu", actGLElem->getGTag(), grplen ));
 			}
 			grplen = 0L;
 			if (dO -> getETag() == 0x0000)
@@ -631,9 +592,6 @@ E_Condition DcmItem::readTagAndLength(DcmStream & inStream,
 				      Uint32 & length,
 				      Uint32 & bytesRead)
 {
-    Bdebug((4, "dcitem:DcmItem::readTagAndLength(newxfer=%d,&tag,*length,"
-	    "*item_bytes)", xfer ));
-
     E_Condition l_error = EC_Normal;
     Uint32 valueLength = 0;
     DcmEVR nxtobj = EVR_UNKNOWN;
@@ -641,18 +599,13 @@ E_Condition DcmItem::readTagAndLength(DcmStream & inStream,
     Uint16 elementTag = 0xffff;
 
     DcmXfer xferSyn(xfer);
+    debug(4, ("DcmItem::readTagAndLength() read transfer syntax %s", xferSyn.getXferName()));
     if ((l_error = inStream.Avail(xferSyn.isExplicitVR() ? 6:4)) != EC_Normal)
-    {
-	Edebug(());
 	return l_error;
-    }
 
     const E_ByteOrder byteOrder = xferSyn.getByteOrder();
     if (byteOrder == EBO_unknown)
-    {
-	Edebug(());
 	return EC_IllegalCall;
-    }
 
     inStream.SetPutbackMark();
     inStream.ReadBytes(&groupTag, 2);
@@ -686,7 +639,6 @@ E_Condition DcmItem::readTagAndLength(DcmStream & inStream,
     {
 	inStream.Putback();
 	bytesRead = 0;
-	Edebug(());
 	return l_error;
     }
     // The UnsetPutbackMark is in readSubElement
@@ -697,8 +649,6 @@ E_Condition DcmItem::readTagAndLength(DcmStream & inStream,
 	inStream.ReadBytes(&valueLength, 4);
 	this->swapIfNecessary(gLocalByteOrder, byteOrder, &valueLength, 4, 4);
 	bytesRead += 4;
-	debug(( 4, "Implicit xfer=%d", xfer ));
-
     }
     else if (xferSyn.isExplicitVR())
     {
@@ -722,23 +672,17 @@ E_Condition DcmItem::readTagAndLength(DcmStream & inStream,
 	    bytesRead += 2;
 	    valueLength = tmpValueLength;
 	}
-
-	debug(( 4, "Explicit xfer=%d", xfer ));
-
     } // else if ( xfer = EXS..Explicit ...
     else
     {
 	l_error = EC_IllegalCall;
     }
-    debug(( 3, "TagAndLength read of: (0x%4.4x,0x%4.4x) \"%s\" [0x%8.8x] \"%s\"",
+    debug(3, ( "TagAndLength read of: (0x%4.4x,0x%4.4x) \"%s\" [0x%8.8x] \"%s\"",
 	    newTag.getGTag(), newTag.getETag(),
 	    newTag.getVRName(), valueLength, newTag.getTagName() ));
 
     length = valueLength;	 // Rueckgabewert
     tag = newTag;                   // Rueckgabewert
-    Vdebug((4, l_error!=EC_Normal, "errorFlag(4,7)=(%d)", l_error ));
-    Edebug(());
-
     return l_error;
 }
 
@@ -753,9 +697,6 @@ E_Condition DcmItem::readSubElement(DcmStream & inStream,
 				    const E_GrpLenEncoding glenc,
 				    const Uint32 maxReadLength)
 {
-    Bdebug((4, "dcitem:DcmItem::readSubElement(&newTag,newLength=%ld,xfer=%d)",
-	    newLength, xfer));
-
     DcmElement *subElem = NULL;
     E_Condition l_error = newDicomElement(subElem, newTag, newLength);
 
@@ -790,7 +731,7 @@ E_Condition DcmItem::readSubElement(DcmStream & inStream,
 	inStream.Putback();
 	cerr << "Warning: DcmItem::readSubElement(): parse error occurred: "
              <<  newTag << endl;
-	debug(( 1, "Warning: DcmItem::readSubElement(): parse error occurred:"
+	debug(1, ( "Warning: DcmItem::readSubElement(): parse error occurred:"
 		" (0x%4.4hx,0x%4.4hx)\n", newTag.getGTag(), newTag.getETag() ));
 
     }
@@ -800,16 +741,14 @@ E_Condition DcmItem::readSubElement(DcmStream & inStream,
 	inStream.UnsetPutbackMark();
 	cerr << "Error: DcmItem::readSubElement(): cannot create SubElement: "
              <<  newTag << endl;
-	debug(( 1, "Error: DcmItem::readSubElement(): cannot create SubElement:"
+	debug(1, ( "Error: DcmItem::readSubElement(): cannot create SubElement:"
 		" (0x%4.4hx,0x%4.4hx)\n", newTag.getGTag(), newTag.getETag() ));
 
     }
     else
     {
-	Vdebug((4, l_error!=EC_Normal, "errorFlag(8)=(%d)", l_error ));
 	inStream.UnsetPutbackMark();
     }
-    Edebug(());
 
     return l_error;
 }
@@ -823,8 +762,6 @@ E_Condition DcmItem::read(DcmStream & inStream,
 			  const E_GrpLenEncoding glenc,
 			  const Uint32 maxReadLength)
 {
-    Bdebug((3, "DcmItem::read(xfer=%d)", xfer));
-
     if (fTransferState == ERW_notInitialized)
 	errorFlag = EC_IllegalCall;
     else
@@ -888,9 +825,6 @@ E_Condition DcmItem::read(DcmStream & inStream,
 	if ( errorFlag == EC_Normal )
 	    fTransferState = ERW_ready;	     // Item ist komplett
     }
-    debug(( 3, "errorFlag=(%d)", errorFlag ));
-    Edebug(());
-
     return errorFlag;
 } // DcmItem::read()
 
@@ -902,9 +836,6 @@ E_Condition DcmItem::write(DcmStream & outStream,
 			   const E_TransferSyntax oxfer,
 			   const E_EncodingType enctype)
 {
-    Bdebug((3, "DcmItem::writeBlock(&outStream,oxfer=%d,enctype=%d)",
-	    oxfer, enctype));
-
     if (fTransferState == ERW_notInitialized)
 	errorFlag = EC_IllegalCall;
     else
@@ -927,10 +858,7 @@ E_Condition DcmItem::write(DcmStream & outStream,
 		    DcmXfer outXfer(oxfer);
 		    const E_ByteOrder oByteOrder = outXfer.getByteOrder();
 		    if (oByteOrder == EBO_unknown)
-		    {
-			Edebug(());
 			return EC_IllegalCall;
-		    }
 		    this -> swapIfNecessary(oByteOrder, 
 					    gLocalByteOrder, 
 					    &valueLength, 4, 4);
@@ -977,8 +905,6 @@ E_Condition DcmItem::write(DcmStream & outStream,
 	    }
 	}
     }
-    Edebug(());
-
     return errorFlag;
 }
 
@@ -1036,10 +962,6 @@ unsigned long DcmItem::card()
 E_Condition DcmItem::insert( DcmElement* elem,
 			     BOOL replaceOld )
 {						  // geordnetes Einfuegen
-
-    Bdebug((3, "dcitem:DcmItem::insert(DcmElement*=%p,BOOL replaceOld=%d)",
-	    elem, replaceOld ));
-
     errorFlag = EC_Normal;
     if ( elem != (DcmElement*)NULL )
     {
@@ -1051,7 +973,7 @@ E_Condition DcmItem::insert( DcmElement* elem,
 		// oder elem hat kleinstes Tag
 	    {
 		elementList->insert( elem, ELP_first );
-		debug(( 3, "element (0x%4.4x,0x%4.4x) / VR=\"%s\" at beginning inserted",
+		debug(3, ("DcmItem::Insert() element (0x%4.4x,0x%4.4x) / VR=\"%s\" at beginning inserted",
 			elem->getGTag(), elem->getETag(), DcmVR(elem->getVR()).getVRName() ));
 
 		break;
@@ -1060,7 +982,7 @@ E_Condition DcmItem::insert( DcmElement* elem,
 		// Position gefunden
 	    {
 		elementList->insert( elem, ELP_next );
-		debug(( 3, "element (0x%4.4x,0x%4.4x) / VR=\"%s\" inserted",
+		debug(3, ( "DcmItem::Insert() element (0x%4.4x,0x%4.4x) / VR=\"%s\" inserted",
 			elem->getGTag(), elem->getETag(),
 			DcmVR(elem->getVR()).getVRName() ));
 
@@ -1075,25 +997,25 @@ E_Condition DcmItem::insert( DcmElement* elem,
 			DcmObject *remObj = elementList->remove();
 			// Es gilt: remObj == dE
 			// Liste zeigt auf naechsten
-			debug(( 3, "DcmItem::insert:element (0x%4.4x,0x%4.4x) VR=\"%s\" p=%p removed",
+			debug(3, ( "DcmItem::insert:element (0x%4.4x,0x%4.4x) VR=\"%s\" p=%p removed",
 				remObj->getGTag(), remObj->getETag(),
 				DcmVR(remObj->getVR()).getVRName(), remObj ));
 
 			if ( remObj != (DcmObject*)NULL )
 			{
 			    delete remObj; // loesche "abgehaengtes" Element
-			    debug(( 3, "DcmItem::insert:element p=%p deleted", remObj ));
+			    debug(3, ( "DcmItem::insert:element p=%p deleted", remObj ));
 
 			}
 			elementList->insert( elem, ELP_prev );
-			debug(( 3, "element (0x%4.4x,0x%4.4x) VR=\"%s\" p=%p replaced older one",
+			debug(3, ( "DcmItem::insert() element (0x%4.4x,0x%4.4x) VR=\"%s\" p=%p replaced older one",
 				elem->getGTag(), elem->getETag(),
 				DcmVR(elem->getVR()).getVRName(), elem ));
 
 		    }	// if ( replaceOld )
 		    else
 		    {
-			debug(( 1, "element with (0x%4.4x,0x%4.4x) VR=\"%s\" is already inserted:",
+			debug(1, ( "DcmItem::insert() element with (0x%4.4x,0x%4.4x) VR=\"%s\" is already inserted:",
 				elem->getGTag(), elem->getETag(),
 				DcmVR(elem->getVR()).getVRName() ));
 		        errorFlag = EC_DoubledTag;
@@ -1115,8 +1037,6 @@ E_Condition DcmItem::insert( DcmElement* elem,
     }
     else
 	errorFlag = EC_IllegalCall;
-    Edebug(());
-
     return errorFlag;
 }
 
@@ -1126,16 +1046,12 @@ E_Condition DcmItem::insert( DcmElement* elem,
 
 DcmElement* DcmItem::getElement(const unsigned long num)
 {
-    Bdebug((5, "dcitem:DcmItem::getElement(num=%d)", num ));
-
     errorFlag = EC_Normal;
     DcmElement *elem;
     elem = (DcmElement*)( elementList->seek_to(num) );
     // liest Element aus Liste
     if ( elem == (DcmElement*)NULL )
 	errorFlag = EC_IllegalCall;
-    Edebug(());
-
     return elem;
 }
 
@@ -1205,22 +1121,16 @@ E_Condition DcmItem::nextObject(DcmStack & stack, const BOOL intoSub)
 
 DcmElement* DcmItem::remove(const unsigned long num)
 {
-    Bdebug((3, "dcitem:DcmItem::remove(num=%ld)", num ));
-
     errorFlag = EC_Normal;
     DcmElement *elem;
     elem = (DcmElement*)( elementList->seek_to(num) );
     // liest Element aus Liste
     if ( elem != (DcmElement*)NULL )
     {
-	debug(( 3, "element p=%p removed, but not deleted", elem ));
-
 	elementList->remove();			// entfernt Element aus Liste,
     }						// aber loescht es nicht
     else
 	errorFlag = EC_IllegalCall;
-    Edebug(());
-
     return elem;
 }
 
@@ -1230,8 +1140,6 @@ DcmElement* DcmItem::remove(const unsigned long num)
 
 DcmElement* DcmItem::remove( DcmObject* elem )
 {
-    Bdebug((3, "dcitem:DcmItem::remove(DcmObject*=%p)", elem ));
-
     errorFlag = EC_IllegalCall;
     if ( !elementList->empty() && elem != (DcmObject*)NULL )
     {
@@ -1241,8 +1149,6 @@ DcmElement* DcmItem::remove( DcmObject* elem )
 	    dO = elementList->get();
 	    if ( dO == elem )
 	    {
-		debug(( 3, "element p=%p removed, but not deleted", elem ));
-
 		elementList->remove();	       // entfernt Element aus Liste,
 		// aber loescht es nicht
 		errorFlag = EC_Normal;
@@ -1250,8 +1156,6 @@ DcmElement* DcmItem::remove( DcmObject* elem )
 	    }
 	} while ( elementList->seek( ELP_next ) );
     }
-    Edebug(());
-
     if ( errorFlag == EC_IllegalCall )
 	return (DcmElement*)NULL;
     else
@@ -1264,9 +1168,6 @@ DcmElement* DcmItem::remove( DcmObject* elem )
 
 DcmElement* DcmItem::remove( const DcmTag& tag )
 {
-    Bdebug((3, "dcitem:DcmItem::remove(tag=(%4.4x,%4.4x))",
-	    tag.getGTag(), tag.getETag() ));
-
     errorFlag = EC_TagNotFound;
     DcmObject *dO = (DcmObject*)NULL;
     if ( !elementList->empty() )
@@ -1276,8 +1177,6 @@ DcmElement* DcmItem::remove( const DcmTag& tag )
 	    dO = elementList->get();
             if ( dO->getTag() == tag )
 	    {
-		debug(( 3, "element p=%p removed, but not deleted", dO ));
-
 		elementList->remove();	       // entfernt Element aus Liste,
 		// aber loescht es nicht
 		errorFlag = EC_Normal;
@@ -1285,7 +1184,6 @@ DcmElement* DcmItem::remove( const DcmTag& tag )
 	    }
 	} while ( elementList->seek( ELP_next ) );
     }
-    Edebug(());
 
     if ( errorFlag == EC_TagNotFound )
 	return (DcmElement*)NULL;
@@ -1299,8 +1197,6 @@ DcmElement* DcmItem::remove( const DcmTag& tag )
 
 E_Condition DcmItem::clear()
 {
-    Bdebug((2, "dcitem:DcmItem::clear()"));
-
     errorFlag = EC_Normal;
     DcmObject *dO;
     elementList->seek( ELP_first );
@@ -1311,7 +1207,6 @@ E_Condition DcmItem::clear()
 	    delete dO;				// loesche auch Sub-Elemente
     }
     Length = 0;
-    Edebug(());
 
     return errorFlag;
 }
@@ -1322,8 +1217,7 @@ E_Condition DcmItem::clear()
 
 E_Condition DcmItem::verify(const BOOL autocorrect )
 {
-    Bdebug((3, "dcitem:DcmItem::verify(autocorrect=%d)", autocorrect ));
-    debug(( 3, "Tag=(0x%4.4x,0x%4.4x) \"%s\" \"%s\"",
+    debug(3, ( "DcmItem::verify() Tag=(0x%4.4x,0x%4.4x) \"%s\" \"%s\"",
 	    getGTag(), getETag(),
 	    DcmVR(getVR()).getVRName(), Tag->getTagName() ));
 
@@ -1340,8 +1234,6 @@ E_Condition DcmItem::verify(const BOOL autocorrect )
     }
     if ( autocorrect == TRUE )
 	Length = this->getLength();
-    Edebug(());
-
     return errorFlag;
 }
 
@@ -1361,10 +1253,6 @@ E_Condition DcmItem::searchSubFromHere( const DcmTag &tag,
 					DcmStack &resultStack,
 					BOOL searchIntoSub )
 {
-    Bdebug((5, "dcitem:DcmItem::searchSubFromHere(tag=(%4.4x,%4.4x),Stack&(%ld),"
-	    "sub=%d)", tag.getGTag(), tag.getETag(), resultStack.card(),
-	    searchIntoSub ));
-
     DcmObject *dO;
     E_Condition l_error = EC_TagNotFound;
     if ( !elementList->empty() )
@@ -1394,13 +1282,11 @@ E_Condition DcmItem::searchSubFromHere( const DcmTag &tag,
                 }
             }
         } while ( l_error != EC_Normal && elementList->seek( ELP_next ) );
-	Vdebug((4, l_error==EC_Normal && dO->getTag()==tag, "Search-Tag=(%4.4x,%4.4x)"
+	Cdebug(4, l_error==EC_Normal && dO->getTag()==tag, ("DcmItem::searchSubFromHere() Search-Tag=(%4.4x,%4.4x)"
 		" \"%s\" found!", tag.getGTag(), tag.getETag(),
 		tag.getVR().getVRName() ));
 
     }
-    Edebug(());
-
     return l_error;
 }
 
@@ -1413,33 +1299,25 @@ E_Condition DcmItem::search( const DcmTag &tag,
 			     E_SearchMode mode,
 			     BOOL searchIntoSub )
 {
-    Bdebug((5, "dcitem:DcmItem::search(tag=(%4.4x,%4.4x),Stack&(%ld),mode=%d,"
-	    "sub=%d)", tag.getGTag(), tag.getETag(), resultStack.card(),
-	    mode, searchIntoSub ));
-    debug(( 5, "local Info: Tag=(%4.4x,%4.4x) \"%s\" p=%p",
-	    getGTag(), getETag(), DcmVR(getVR()).getVRName(), this ));
-
     DcmObject *dO = (DcmObject*)NULL;
     E_Condition l_error = EC_TagNotFound;
     if ( mode == ESM_afterStackTop && resultStack.top() == this )
     {
         l_error = searchSubFromHere( tag, resultStack, searchIntoSub );
-	debug(( 5, "mode=ESM_afterStackTop && resultStack.top()=this" ));
+	debug(5, ( "DcmItem::search() mode=ESM_afterStackTop && resultStack.top()=this" ));
 
     }
     else if ( !elementList->empty() )
     {
         if ( mode == ESM_fromHere || resultStack.empty() )
 	{
-	    debug(( 5, "mode=ESM_fromHere || resultStack.empty()" ));
-
+	    debug(5, ( "DcmItem::search() mode=ESM_fromHere || resultStack.empty()" ));
 	    resultStack.clear();
 	    l_error = searchSubFromHere( tag, resultStack, searchIntoSub );
 	}
 	else if ( mode == ESM_fromStackTop )
 	{
-	    debug(( 5, "mode=ESM_fromStackTop" ));
-
+	    debug(5, ( "DcmItem::search() mode=ESM_fromStackTop" ));
 	    dO = resultStack.top();
 	    if ( dO == this )
 		l_error = searchSubFromHere( tag, resultStack, searchIntoSub );
@@ -1453,8 +1331,7 @@ E_Condition DcmItem::search( const DcmTag &tag,
 	}
 	else if ( mode == ESM_afterStackTop && searchIntoSub )
 	{
-	    debug(( 5, "mode=ESM_afterStackTop && searchIntoSub" ));
-
+	    debug(5, ( "DcmItem::search() mode=ESM_afterStackTop && searchIntoSub" ));
 	    // resultStack enthaelt Zielinformationen:
 	    // - stelle Zustand der letzen Suche in den einzelnen Suchroutinen
 	    //	 wieder her
@@ -1466,11 +1343,11 @@ E_Condition DcmItem::search( const DcmTag &tag,
 	    //	 4. starte Suche ab dnO
 
 	    unsigned long i = resultStack.card();
-	    debug(( 5, "resultStack: card()=%d", i ));
+	    debug(5, ( "DcmItem::search() resultStack: card()=%d", i ));
 
 	    while ( i > 0 && (dO = resultStack.elem(i-1)) != this )
 	    {
-		debug(( 5, "--dO=elem(%d)=%p  this=%p", i-1, dO, this ));
+		debug(5, ( "DcmItem::search() --dO=elem(%d)=%p  this=%p", i-1, dO, this ));
 
 		i--;
 	    }
@@ -1481,8 +1358,8 @@ E_Condition DcmItem::search( const DcmTag &tag,
 	    }
 	    if ( dO == this )
 	    {
-		debug(( 5, "--dO=elem(%d)=%p==this=%p", i-1, dO, this ));
-		debug(( 5, "currently at resultStack position %d, dO=%p", i-1, dO ));
+		debug(5, ( "DcmItem::search() --dO=elem(%d)=%p==this=%p", i-1, dO, this ));
+		debug(5, ( "currently at resultStack position %d, dO=%p", i-1, dO ));
 
                 if ( i == 1 )                 // habe resultStack.top() gefunden
                     l_error = EC_TagNotFound; // markiere als kein Treffer, s.o.
@@ -1492,17 +1369,17 @@ E_Condition DcmItem::search( const DcmTag &tag,
 		    BOOL searchNode = TRUE;
 		    DcmObject *dnO;
 		    dnO = resultStack.elem( i-2 ); // Knoten der naechsten Ebene
-		    debug(( 5, "elementList: dnO=%p", dnO ));
+		    debug(5, ( "DcmItem::search() elementList: dnO=%p", dnO ));
 
 		    elementList->seek( ELP_first );
 		    do {
 			dO = elementList->get();
 			searchNode = searchNode ? ( dO != dnO ) : FALSE;
-			Vdebug((5, searchNode,  "--searching Node dnO=%p, found: dO=%p", dnO, dO ));
-			Vdebug((5, !searchNode && submode==ESM_afterStackTop,
-				"--searching Node dnO=%p found!", dO ));
-			Vdebug((5, !searchNode && submode!=ESM_afterStackTop,
-				"--next Node dO=%p for beeing tested", dO ));
+			Cdebug(5, searchNode,  ("DcmItem::search() --searching Node dnO=%p, found: dO=%p", dnO, dO ));
+			Cdebug(5, !searchNode && submode==ESM_afterStackTop,
+				("DcmItem::search() --searching Node dnO=%p found!", dO ));
+			Cdebug(5, !searchNode && submode!=ESM_afterStackTop,
+				("DcmItem::search() --next Node dO=%p for beeing tested", dO ));
 
 			if ( !searchNode )
 			{				// suche jetzt weiter
@@ -1532,8 +1409,6 @@ E_Condition DcmItem::search( const DcmTag &tag,
 	else
 	    l_error = EC_IllegalCall;
     }
-    Edebug(());
-
     return l_error;
 }
 
@@ -1546,13 +1421,8 @@ E_Condition DcmItem::search( const DcmTagKey &xtag,
 			     E_SearchMode mode,
 			     BOOL searchIntoSub )
 {
-    Bdebug((5, "dcitem:DcmItem::search(xtag=(%x,%x),Stack&,mode=%d,sub=%d)",
-	    xtag.getGroup(), xtag.getElement(), mode, searchIntoSub ));
-
     DcmTag tag( xtag );
     E_Condition l_error = search( tag, resultStack, mode, searchIntoSub );
-    Edebug(());
-
     return l_error;
 }
 
@@ -1562,8 +1432,6 @@ E_Condition DcmItem::search( const DcmTagKey &xtag,
 
 E_Condition DcmItem::searchErrors( DcmStack &resultStack )
 {
-    Bdebug((5, "dcitem:DcmItem::searchErrors(Stack&)" ));
-
     E_Condition l_error = errorFlag;
     DcmObject *dO = (DcmObject*)NULL;
     if ( errorFlag != EC_Normal )
@@ -1578,8 +1446,6 @@ E_Condition DcmItem::searchErrors( DcmStack &resultStack )
 		l_error = err;
 	} while ( elementList->seek( ELP_next ) );
     }
-    Edebug(());
-
     return l_error;
 }
 
@@ -1589,8 +1455,6 @@ E_Condition DcmItem::searchErrors( DcmStack &resultStack )
 
 E_Condition DcmItem::loadAllDataIntoMemory(void)
 {
-    Bdebug((3, "dcitem:DcmItem::loadAllDataIntoMemory()"));
-
     E_Condition l_error = EC_Normal;
     if (!elementList -> empty())
     {
@@ -1603,8 +1467,6 @@ E_Condition DcmItem::loadAllDataIntoMemory(void)
 		l_error = err;
 	} while ( elementList->seek( ELP_next ) );
     }
-    Edebug(());
-
     return l_error;
 }
 
@@ -1769,8 +1631,8 @@ E_Condition newDicomElement(DcmElement * & newElement,
 	} else {
 	    newElement = new DcmOtherByteOtherWord(tag, length);
 	}
-	debug((1, 
-	       "Warning: newDicomElement(): unknown Tag detected: (%04x,%04x)",
+	debug(1, 
+	       ("Warning: newDicomElement(): unknown Tag detected: (%04x,%04x)",
 	       tag.getGTag(), tag.getETag()));
 	break;
     }
@@ -1877,7 +1739,14 @@ DcmItem::findLong(const DcmTagKey& xtag,
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.28  1997-06-06 09:55:29  andreas
+** Revision 1.29  1997-07-03 15:09:59  andreas
+** - removed debugging functions Bdebug() and Edebug() since
+**   they write a static array and are not very useful at all.
+**   Cdebug and Vdebug are merged since they have the same semantics.
+**   The debugging functions in dcmdata changed their interfaces
+**   (see dcmdata/include/dcdebug.h)
+**
+** Revision 1.28  1997/06/06 09:55:29  andreas
 ** - corrected error: canWriteXfer returns false if the old transfer syntax
 **   was unknown, which causes several applications to prohibit the writing
 **   of dataset.

@@ -10,9 +10,9 @@
 ** Implementation of class DcmSignedShort
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-04-18 08:10:53 $
+** Update Date:		$Date: 1997-07-03 15:10:18 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrss.cc,v $
-** CVS/RCS Revision:	$Revision: 1.9 $
+** CVS/RCS Revision:	$Revision: 1.10 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -34,12 +34,6 @@
 DcmSignedShort::DcmSignedShort(const DcmTag &tag, const Uint32 len)
 : DcmElement(tag, len)
 {
-Bdebug((5, "dcvrsl:DcmSignedShort::DcmSignedShort(DcmTag&,len=%ld)",
-           len ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
-Edebug(());
-
 }
 
 
@@ -49,16 +43,12 @@ Edebug(());
 DcmSignedShort::DcmSignedShort(const DcmSignedShort& old)
 : DcmElement( old )
 {
-Bdebug((5, "dcvrsl:DcmSignedShort::DcmSignedShort(DcmSignedShort&)" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
     if ( old.ident() != EVR_SS )
 	{
         errorFlag = EC_IllegalCall;
         cerr << "Warning: DcmSignedShort: wrong use of Copy-Constructor"
              << endl;
     }
-Edebug(());
 }
 
 
@@ -67,10 +57,6 @@ Edebug(());
 
 DcmSignedShort::~DcmSignedShort(void)
 {
-Bdebug((5, "dcvrsl:DcmSignedShort::~DcmSignedShort()" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
-Edebug(());
 }
 
 
@@ -152,13 +138,9 @@ E_Condition DcmSignedShort::putSint16Array(const Sint16 * sintVal,
 E_Condition DcmSignedShort::putSint16(const Sint16 sintVal,
 				const unsigned long position)
 {
- Bdebug((2, "DcmSignedShort::putSint16(slong=%ld,num=%ld)", sintVal, position));
-
     Sint16 val = sintVal;
-
     errorFlag = this -> changeValue(&val, sizeof(Sint16)*position,
 				    sizeof(Sint16));
-Edebug(());
     return errorFlag;
 }
 
@@ -256,7 +238,14 @@ E_Condition DcmSignedShort::verify(const BOOL autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrss.cc,v $
-** Revision 1.9  1997-04-18 08:10:53  andreas
+** Revision 1.10  1997-07-03 15:10:18  andreas
+** - removed debugging functions Bdebug() and Edebug() since
+**   they write a static array and are not very useful at all.
+**   Cdebug and Vdebug are merged since they have the same semantics.
+**   The debugging functions in dcmdata changed their interfaces
+**   (see dcmdata/include/dcdebug.h)
+**
+** Revision 1.9  1997/04/18 08:10:53  andreas
 ** - Corrected debugging code
 ** - The put/get-methods for all VRs did not conform to the C++-Standard
 **   draft. Some Compilers (e.g. SUN-C++ Compiler, Metroworks

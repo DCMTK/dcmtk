@@ -10,9 +10,9 @@
 ** Implementation of class DcmLongString
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:27:50 $
+** Update Date:		$Date: 1997-07-03 15:10:14 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrlo.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -32,11 +32,7 @@ DcmLongString::DcmLongString(const DcmTag &tag,
 							 const Uint32 len)
 : DcmCharString(tag, len)
 {
-Bdebug((5, "dcvrlo:DcmLongString::DcmLongString(DcmTag&,len=%ld)", len ));
-
     maxLength = 64;
-Edebug(());
-
 }
 
 
@@ -46,11 +42,7 @@ Edebug(());
 DcmLongString::DcmLongString( const DcmLongString& old )
 : DcmCharString( old, EVR_LO )
 {
-Bdebug((5, "dcvrlo:DcmLongString::DcmLongString(DcmLongString&)" ));
-
     maxLength = 64;
-Edebug(());
-
 }
 
 
@@ -59,9 +51,6 @@ Edebug(());
 
 DcmLongString::~DcmLongString()
 {
-Bdebug((5, "dcvrlo:DcmLongString::~DcmLongString()" ));
-Edebug(());
-
 }
 
 
@@ -70,7 +59,14 @@ Edebug(());
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrlo.cc,v $
-** Revision 1.3  1996-01-05 13:27:50  andreas
+** Revision 1.4  1997-07-03 15:10:14  andreas
+** - removed debugging functions Bdebug() and Edebug() since
+**   they write a static array and are not very useful at all.
+**   Cdebug and Vdebug are merged since they have the same semantics.
+**   The debugging functions in dcmdata changed their interfaces
+**   (see dcmdata/include/dcdebug.h)
+**
+** Revision 1.3  1996/01/05 13:27:50  andreas
 ** - changed to support new streaming facilities
 ** - unique read/write methods for file and block transfer
 ** - more cleanups

@@ -10,9 +10,9 @@
 ** Implementation of class DcmUnsignedLong
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-04-18 08:17:21 $
+** Update Date:		$Date: 1997-07-03 15:10:21 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrul.cc,v $
-** CVS/RCS Revision:	$Revision: 1.9 $
+** CVS/RCS Revision:	$Revision: 1.10 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -34,12 +34,6 @@
 DcmUnsignedLong::DcmUnsignedLong(const DcmTag &tag, const Uint32 len)
 : DcmElement(tag, len)
 {
-Bdebug((5, "dcvrsl:DcmUnsignedLong::DcmUnsignedLong(DcmTag&,len=%ld)",
-           len ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
-Edebug(());
-
 }
 
 
@@ -49,16 +43,12 @@ Edebug(());
 DcmUnsignedLong::DcmUnsignedLong(const DcmUnsignedLong& old)
 : DcmElement( old )
 {
-Bdebug((5, "dcvrsl:DcmUnsignedLong::DcmUnsignedLong(DcmUnsignedLong&)" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
     if ( old.ident() != EVR_UL )
 	{
         errorFlag = EC_IllegalCall;
         cerr << "Warning: DcmUnsignedLong: wrong use of Copy-Constructor"
              << endl;
     }
-Edebug(());
 }
 
 
@@ -67,10 +57,6 @@ Edebug(());
 
 DcmUnsignedLong::~DcmUnsignedLong(void)
 {
-Bdebug((5, "dcvrsl:DcmUnsignedLong::~DcmUnsignedLong()" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
-Edebug(());
 }
 
 
@@ -262,7 +248,14 @@ E_Condition DcmUnsignedLong::verify(const BOOL autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrul.cc,v $
-** Revision 1.9  1997-04-18 08:17:21  andreas
+** Revision 1.10  1997-07-03 15:10:21  andreas
+** - removed debugging functions Bdebug() and Edebug() since
+**   they write a static array and are not very useful at all.
+**   Cdebug and Vdebug are merged since they have the same semantics.
+**   The debugging functions in dcmdata changed their interfaces
+**   (see dcmdata/include/dcdebug.h)
+**
+** Revision 1.9  1997/04/18 08:17:21  andreas
 ** - The put/get-methods for all VRs did not conform to the C++-Standard
 **   draft. Some Compilers (e.g. SUN-C++ Compiler, Metroworks
 **   CodeWarrier, etc.) create many warnings concerning the hiding of

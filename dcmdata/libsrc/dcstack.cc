@@ -10,7 +10,7 @@
  * 
  * 
  * Last Update:	  $Author: andreas $
- * Revision:      $Revision: 1.3 $
+ * Revision:      $Revision: 1.4 $
  * Status:        $State: Exp $
  *
  */
@@ -31,13 +31,8 @@
 
 DcmStackNode::DcmStackNode( DcmObject *obj )
 {
-Bdebug((6, "dcstack:DcmStackNode::DcmStackNode(DcmObject*)" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
     objNodeValue = obj;
     link = (DcmStackNode*)NULL;
-Edebug(());
-
 }
 
 
@@ -46,10 +41,6 @@ Edebug(());
 
 DcmStackNode::~DcmStackNode()
 {
-Bdebug((6, "dcstack:DcmStackNode::~DcmStackNode()" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-Edebug(());
-
 }
 
 
@@ -70,13 +61,8 @@ DcmObject* DcmStackNode::value()
 
 DcmStack::DcmStack()
 {
-Bdebug((6, "dcstack:DcmStack::DcmStack()" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
     topNode = (DcmStackNode*)NULL;
     cardinality = 0;
-Edebug(());
-
 }
 
 
@@ -85,15 +71,11 @@ Edebug(());
 
 DcmStack::DcmStack( const DcmStack & /*newStack*/ )
 {
-Bdebug((6, "dcstack:DcmStack::DcmStack(DcmStack&)" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
     topNode = (DcmStackNode*)NULL;
     cardinality = 0;
     cerr << "Warning: DcmStack: use of Copy-Constructor not allowed"
          << endl;
-Edebug(());
-
+    abort();
 }
 
 
@@ -102,12 +84,7 @@ Edebug(());
 
 DcmStack::~DcmStack()
 {
-Bdebug((6, "dcstack:DcmStack::~DcmStack()" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
     clear();
-Edebug(());
-
 }
 
 

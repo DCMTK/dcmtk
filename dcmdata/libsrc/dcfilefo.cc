@@ -10,9 +10,9 @@
 ** Implementation of class DcmFileFormat
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-27 13:48:59 $
+** Update Date:		$Date: 1997-07-03 15:09:57 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcfilefo.cc,v $
-** CVS/RCS Revision:	$Revision: 1.10 $
+** CVS/RCS Revision:	$Revision: 1.11 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -55,15 +55,10 @@
 DcmFileFormat::DcmFileFormat()
     : DcmSequenceOfItems(InternalUseTag)
 {
-    Bdebug((5, "dcfilefo:DcmFileFormat::DcmFileFormat()" ));
-    debug(( 8, "Object pointer this=0x%p", this ));
-
     DcmMetaInfo *MetaInfo = new DcmMetaInfo();
     DcmSequenceOfItems::itemList->insert( MetaInfo );
     DcmDataset *Dataset = new DcmDataset();
     DcmSequenceOfItems::itemList->insert( Dataset );
-    Edebug(());
-
 }
 
 
@@ -73,9 +68,6 @@ DcmFileFormat::DcmFileFormat()
 DcmFileFormat::DcmFileFormat(DcmDataset * dataset)
     : DcmSequenceOfItems(InternalUseTag)
 {
-    Bdebug((5, "dcfilefo:DcmFileFormat::DcmFileFormat(DcmDataset*)" ));
-    debug(( 8, "Object pointer this=0x%p", this ));
-
     DcmMetaInfo *MetaInfo = new DcmMetaInfo();
     DcmSequenceOfItems::itemList->insert( MetaInfo );
     DcmDataset *newDataset;
@@ -85,8 +77,6 @@ DcmFileFormat::DcmFileFormat(DcmDataset * dataset)
     else
 	newDataset = new DcmDataset( *dataset );
     DcmSequenceOfItems::itemList->insert( newDataset );
-    Edebug(());
-
 }
 
 
@@ -96,12 +86,6 @@ DcmFileFormat::DcmFileFormat(DcmDataset * dataset)
 DcmFileFormat::DcmFileFormat(const DcmFileFormat &old)
     : DcmSequenceOfItems( old )
 {
-    Bdebug((5, "dcfilefo:DcmFileFormat::DcmFileFormat(DcmFileFormat&)" ));
-    debug(( 8, "Object pointer this=0x%p", this ));
-
-    debug(( 5, "ident()=%d", old.ident() ));
-
-    Edebug(());
 }
 
 
@@ -110,10 +94,6 @@ DcmFileFormat::DcmFileFormat(const DcmFileFormat &old)
 
 DcmFileFormat::~DcmFileFormat()
 {
-    Bdebug((5, "dcfilefo:DcmFileFormat::~DcmFileFormat()" ));
-    debug(( 8, "Object pointer this=0x%p", this ));
-    Edebug(());
-
 }
 
 
@@ -157,9 +137,6 @@ E_Condition DcmFileFormat::checkValue(DcmMetaInfo * metainfo,
 				      DcmObject* obj,
 				      const E_TransferSyntax oxfer )
 {
-    Bdebug((2, "dcfilefo:DcmFileFormat::checkValue(*metainfo,*dataset,xtag=(%x,%x),*obj,oxfer=%d)",
-	    atagkey.getGroup(), atagkey.getElement(), oxfer ));
-
     E_Condition l_error = EC_Normal;
     if ( metainfo != (DcmMetaInfo*)NULL && dataset != (DcmDataset*)NULL )
     {
@@ -196,7 +173,7 @@ E_Condition DcmFileFormat::checkValue(DcmMetaInfo * metainfo,
 	    l_error = ((DcmOtherByteOtherWord*)elem)->getUint8Array(currVers);
             if (((currVers[0] & version[0] & 0xff) == version[0]) &&
 		((currVers[1] & version[1] & 0xff) == version[1]) ) {
-		debug(( 2, "Version of MetaHeader is ok: 0x%2.2x%2.2x",
+		debug(2, ( "DcmFileFormat::checkValue() Version of MetaHeader is ok: 0x%2.2x%2.2x",
 			currVers[1], currVers[0] ));
 
             } else {
@@ -220,12 +197,12 @@ E_Condition DcmFileFormat::checkValue(DcmMetaInfo * metainfo,
 		    char *uid = NULL;
 		    l_error = ((DcmUniqueIdentifier*)stack.top())->getString(uid);
 		    ((DcmUniqueIdentifier*)elem)->putString( uid );
-		    debug(( 2, "use SOPClassUID [%s]", uid ));
+		    debug(2, ( "DcmFileFormat::checkValue() use SOPClassUID [%s]", uid ));
 
 		} else {
 		    ((DcmUniqueIdentifier*)elem)->putString( 
 			UID_PrivateGenericFileSOPClass );
-		    debug(( 2, "No SOP Class UID in Dataset, using PrivateGenericFileSOPClass" ));
+		    debug(2, ( "DcmFileFormat::checkValue() No SOP Class UID in Dataset, using PrivateGenericFileSOPClass" ));
 		}
 	    }
 	} else if ( xtag == DCM_MediaStorageSOPInstanceUID ) {	// (0002,0003)
@@ -242,7 +219,7 @@ E_Condition DcmFileFormat::checkValue(DcmMetaInfo * metainfo,
 		    char* uid = NULL;
 		    l_error =((DcmUniqueIdentifier*)stack.top())->getString(uid);
 		    ((DcmUniqueIdentifier*)elem)->putString( uid );
-		    debug(( 2, "use SOPInstanceUID [%s] from Dataset", uid ));
+		    debug(2, ( "DcmFileFormat::checkValue() use SOPInstanceUID [%s] from Dataset", uid ));
 
 		}
 		else
@@ -252,7 +229,7 @@ E_Condition DcmFileFormat::checkValue(DcmMetaInfo * metainfo,
 		    dcmGenerateUniqueIdentifer(uid);	// from dcuid.h 
 
 		    ((DcmUniqueIdentifier*)elem)->putString( uid );
-		    debug(( 2, "use new generated SOPInstanceUID [%s]", uid ));
+		    debug(2, ( "DcmFileFormat::checkValue() use new generated SOPInstanceUID [%s]", uid ));
 
 		}
 	    }
@@ -267,13 +244,13 @@ E_Condition DcmFileFormat::checkValue(DcmMetaInfo * metainfo,
 #ifdef DEBUG
 char * uidtmp = NULL;
 ((DcmUniqueIdentifier*)elem)->getString(uidtmp);
-Vdebug((2,  uidtmp != (char*)NULL,
-	"found old transfer-syntax: [%s]",uidtmp ));
+Cdebug(2,  uidtmp != (char*)NULL,
+       ( "DcmFileFormat::checkValue() found old transfer-syntax: [%s]",uidtmp ));
 #endif
 		DcmXfer dcXfer( oxfer );
 		const char *uid = dcXfer.getXferID();
 		elem->putString( uid );
-		debug(( 2, "use new transfer-syntax [%s] on writing following Dataset",
+		debug(2,( "DcmFileFormat::checkValue() use new transfer-syntax [%s] on writing following Dataset",
 			dcXfer.getXferName() ));
 
 	    }
@@ -338,8 +315,6 @@ Vdebug((2,  uidtmp != (char*)NULL,
     } else {
         l_error = EC_IllegalCall;
     }
-    Edebug(());
-
     return l_error;
 }
 
@@ -350,8 +325,6 @@ Vdebug((2,  uidtmp != (char*)NULL,
 
 E_Condition DcmFileFormat::validateMetaInfo(E_TransferSyntax oxfer)
 {
-    Bdebug((2, "dcfilefo:DcmFileFormat::validateMetaInfo(oxfer=%d)", oxfer ));
-
     E_Condition l_error = EC_Normal;
     DcmMetaInfo *metinf = getMetaInfo();
     DcmDataset *datset = getDataset();
@@ -387,7 +360,7 @@ E_Condition DcmFileFormat::validateMetaInfo(E_TransferSyntax oxfer)
 	metinf->search(DCM_ImplementationVersionName, stack, ESM_fromHere, FALSE );
 	checkValue( metinf, datset, DCM_ImplementationVersionName, stack.top(), oxfer );
 
-	debug(( 2, "DcmFileFormat:found %ld Elements in DcmMetaInfo metinf.",
+	debug(2, ( "DcmFileFormat: found %ld Elements in DcmMetaInfo metinf.",
 		metinf->card() ));
 
 	// berechne neue GroupLength
@@ -402,8 +375,6 @@ E_Condition DcmFileFormat::validateMetaInfo(E_TransferSyntax oxfer)
     else {
         l_error = EC_CorruptedData;
     }
-    Edebug(());
-
     return l_error;
 }
 
@@ -414,8 +385,6 @@ E_Condition DcmFileFormat::validateMetaInfo(E_TransferSyntax oxfer)
 
 E_TransferSyntax DcmFileFormat::lookForXfer(DcmMetaInfo* metainfo)
 {
-    Bdebug((4, "dcfilefo:DcmFileFormat::lookForXfer(metainfo*)" ));
-
     E_TransferSyntax newxfer = EXS_Unknown;
     DcmStack stack;
     if (metainfo && metainfo->search(DCM_TransferSyntaxUID, stack) == EC_Normal
@@ -428,13 +397,11 @@ E_TransferSyntax DcmFileFormat::lookForXfer(DcmMetaInfo* metainfo)
 	    xferUI->getString(xferid);     // auslesen der ID
             DcmXfer localXfer(xferid);      // dekodieren in E_TransferSyntax
             newxfer = localXfer.getXfer();
-	    debug(( 4, "detected xfer=%d=[%s] in MetaInfo",
+	    debug(4, ( "DcmFileFormat::lookForXfer() detected xfer=%d=[%s] in MetaInfo",
 		    newxfer,
 		    localXfer.getXferName() ));
 	}
     }
-    Edebug(());
-
     return newxfer;
 }
 
@@ -473,9 +440,6 @@ E_Condition DcmFileFormat::read(DcmStream & inStream,
 				const Uint32 maxReadLength)
 
 {
-    Bdebug((3, "DcmFileFormat::read(xfer=%d,glenc=%d)",
-	    xfer, glenc ));
-
     if (fTransferState == ERW_notInitialized)
 	errorFlag = EC_IllegalCall;
     else
@@ -502,7 +466,6 @@ E_Condition DcmFileFormat::read(DcmStream & inStream,
 	    {
 		errorFlag = metaInfo->read(inStream, xfer, glenc,
 					   maxReadLength );
-		debug(( 3, "MetaInfo has been read." ));
 	    }
 
 	    // lese aus MetaInfo() Tag(0002,0010) aus und bestimme xfer
@@ -524,7 +487,6 @@ E_Condition DcmFileFormat::read(DcmStream & inStream,
 		{
 		    errorFlag = dataset->read(inStream, newxfer, glenc,
 					      maxReadLength);
-		    debug(( 3, "Dataset has been read." ));
 		}
 	    }
 	}
@@ -534,7 +496,6 @@ E_Condition DcmFileFormat::read(DcmStream & inStream,
 	if (dataset && dataset->transferState() == ERW_ready)
 	    fTransferState = ERW_ready;
     }		
-Edebug(());
     return errorFlag;
 }  // DcmFileFormat::read()
 
@@ -561,8 +522,6 @@ E_Condition DcmFileFormat::write(DcmStream & outStream,
 				 const Uint32 subPadlen,
 				 Uint32 instanceLength)
 {
-    Bdebug((3, "DcmFileFormat::write(oxfer=%d,enctype=%d,"
-	    "glenc=%d)", oxfer, enctype, glenc ));
     if (fTransferState == ERW_notInitialized)
 	errorFlag = EC_IllegalCall;
     else
@@ -610,8 +569,6 @@ E_Condition DcmFileFormat::write(DcmStream & outStream,
 		" used" << endl;
 	}
     }
-    Edebug(());
-
     return errorFlag;
 }
 
@@ -660,12 +617,8 @@ DcmItem* DcmFileFormat::remove( DcmItem* /*item*/ )
 
 E_Condition DcmFileFormat::clear()
 {
-    Bdebug((2, "dcfilefo:DcmFileFormat::clear()"));
-
     cerr << "Warning: illegal call of DcmFileFormat::clear()" << endl;
     errorFlag = EC_IllegalCall;
-    Edebug(());
-
     return errorFlag;
 }
 
@@ -728,7 +681,14 @@ DcmDataset* DcmFileFormat::getAndRemoveDataset()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
-** Revision 1.10  1997-05-27 13:48:59  andreas
+** Revision 1.11  1997-07-03 15:09:57  andreas
+** - removed debugging functions Bdebug() and Edebug() since
+**   they write a static array and are not very useful at all.
+**   Cdebug and Vdebug are merged since they have the same semantics.
+**   The debugging functions in dcmdata changed their interfaces
+**   (see dcmdata/include/dcdebug.h)
+**
+** Revision 1.10  1997/05/27 13:48:59  andreas
 ** - Add method canWriteXfer to class DcmObject and all derived classes.
 **   This method checks whether it is possible to convert the original
 **   transfer syntax to an new transfer syntax. The check is used in the

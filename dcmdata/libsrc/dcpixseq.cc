@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-06-06 09:55:30 $
+** Update Date:		$Date: 1997-07-03 15:10:02 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixseq.cc,v $
-** CVS/RCS Revision:	$Revision: 1.9 $
+** CVS/RCS Revision:	$Revision: 1.10 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -42,14 +42,8 @@ DcmPixelSequence::DcmPixelSequence(const DcmTag &tag,
 				   const Uint32 len)
 : DcmSequenceOfItems(tag, len)
 {
-Bdebug((5, "dcpixseq:DcmPixelSequence::DcmPixelSequence(DcmTag&,len=%ld)",
-           len ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
     Tag->setVR(EVR_pixelSQ);
     xfer = EXS_Unknown;
-Edebug(());
-
 }
 
 
@@ -70,10 +64,6 @@ DcmPixelSequence::DcmPixelSequence(const DcmPixelSequence &old)
 
 DcmPixelSequence::~DcmPixelSequence()
 {
-Bdebug((5, "dcpixseq:DcmPixelSequence::~DcmPixelSequence()" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-Edebug(());
-
 }
 
 
@@ -151,22 +141,17 @@ E_Condition DcmPixelSequence::makeSubObject(DcmObject * & subObject,
 E_Condition DcmPixelSequence::insert(DcmPixelItem* item,
 				       unsigned long where)
 {
-    Bdebug((3, "dcsequen:DcmSequenceOfItems::insert(DcmItem*=%p,where=%ld)",
-	    item, where ));
-
     errorFlag = EC_Normal;
     if ( item != NULL )
     {
 	itemList->seek_to( where );
 	itemList->insert( item );
-	Vdebug((3, where< itemList->card(), "item at position %d inserted", where ));
-	Vdebug((3, where>=itemList->card(), "item at last position inserted" ));
+	Cdebug(3, where< itemList->card(), ("DcmPixelSequence::insert() item at position %d inserted", where ));
+	Cdebug(3, where>=itemList->card(), ("DcmPixelSequence::insert() item at last position inserted" ));
 
     }
     else
 	errorFlag = EC_IllegalCall;
-    Edebug(());
-
     return errorFlag;
 }
 
@@ -191,20 +176,14 @@ E_Condition DcmPixelSequence::getItem(DcmPixelItem * & item,
 E_Condition DcmPixelSequence::remove(DcmPixelItem * & item, 
 				     const unsigned long num)
 {
-    Bdebug((3, "dcsequen:DcmSequenceOfItems::remove(num=%ld)", num ));
-
     errorFlag = EC_Normal;
     item = (DcmPixelItem*)( itemList->seek_to(num) );  // liest Item aus Liste
     if ( item != (DcmPixelItem*)NULL )
     {
-	debug(( 3, "item p=%p removed, but not deleted", item ));
-
 	itemList->remove();
     }
     else
 	errorFlag = EC_IllegalCall;
-    Edebug(());
-
     return errorFlag;
 }
 
@@ -214,8 +193,6 @@ E_Condition DcmPixelSequence::remove(DcmPixelItem * & item,
 
 E_Condition DcmPixelSequence::remove(DcmPixelItem* item)
 {
-    Bdebug((3, "dcsequen:DcmSequenceOfItems::remove(DcmItem*)" ));
-
     errorFlag = EC_IllegalCall;
     if ( !itemList->empty() && item != NULL )
     {
@@ -225,8 +202,6 @@ E_Condition DcmPixelSequence::remove(DcmPixelItem* item)
 	    dO = itemList->get();
 	    if ( dO == item )
 	    {
-		debug(( 3, "item p=%p removed, but not deleted", item ));
-
 		itemList->remove();	    // entfernt Element aus Liste,
 		// aber loescht es nicht
 		errorFlag = EC_Normal;
@@ -234,9 +209,6 @@ E_Condition DcmPixelSequence::remove(DcmPixelItem* item)
 	    }
 	} while ( itemList->seek( ELP_next ) );
     }
-
-    Edebug(());
-
     return errorFlag;
 }
 
@@ -296,7 +268,14 @@ E_Condition DcmPixelSequence::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.cc,v $
-** Revision 1.9  1997-06-06 09:55:30  andreas
+** Revision 1.10  1997-07-03 15:10:02  andreas
+** - removed debugging functions Bdebug() and Edebug() since
+**   they write a static array and are not very useful at all.
+**   Cdebug and Vdebug are merged since they have the same semantics.
+**   The debugging functions in dcmdata changed their interfaces
+**   (see dcmdata/include/dcdebug.h)
+**
+** Revision 1.9  1997/06/06 09:55:30  andreas
 ** - corrected error: canWriteXfer returns false if the old transfer syntax
 **   was unknown, which causes several applications to prohibit the writing
 **   of dataset.

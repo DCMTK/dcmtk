@@ -9,8 +9,8 @@
  * handling of transfer syntax
  *
  * 
- * Last Update:	  $Author: hewett $
- * Revision:      $Revision: 1.6 $
+ * Last Update:	  $Author: andreas $
+ * Revision:      $Revision: 1.7 $
  * Status:        $State: Exp $
  *
  */
@@ -207,15 +207,11 @@ const int DIM_OF_XferNames = (sizeof(XferNames) / sizeof(S_XferNames));
 
 DcmXfer::DcmXfer( E_TransferSyntax xfer )
 {
-Bdebug((7, "dcxfer:DcmXfer::DcmXfer(xfer=%d)", xfer ));
-
     int i = 0;
     while (    (i < DIM_OF_XferNames)
 	       && XferNames[i].xfer != xfer
 	)
         i++;
-    debug(( 7, "found index i=[%d] for xfer=%d", i, xfer));
-
     if ( (i < DIM_OF_XferNames)
 	 && XferNames[i].xfer == xfer)
     {
@@ -239,8 +235,6 @@ Bdebug((7, "dcxfer:DcmXfer::DcmXfer(xfer=%d)", xfer ));
         JPEGProcess8  = 0L;
         JPEGProcess12 = 0L;
     }
-Edebug(());
-
 }
 
 
@@ -249,8 +243,6 @@ Edebug(());
 
 DcmXfer::DcmXfer( const char* xferName_xferID )
 {
-Bdebug((7, "dcxfer:DcmXfer::DcmXfer(char*)" ));
-
     const char* xname = xferName_xferID;
     if ( xname == (char*)NULL )
     {
@@ -269,7 +261,6 @@ Bdebug((7, "dcxfer:DcmXfer::DcmXfer(char*)" ));
         while ( (i < DIM_OF_XferNames)
                 && (strcmp(XferNames[i].xferID, xname) != 0) )
             i++;
-	debug(( 7, "found index i=[%d] in first column", i));
 
         if ( (i < DIM_OF_XferNames)
              && (strcmp(XferNames[i].xferID, xname) == 0) )
@@ -289,7 +280,6 @@ Bdebug((7, "dcxfer:DcmXfer::DcmXfer(char*)" ));
             while ( (i < DIM_OF_XferNames)
                     && (strcmp(XferNames[i].xferName, xname) != 0) )
                 i++;
-	    debug(( 7, "found index i=[%d] in second column", i));
 
             if ( (i < DIM_OF_XferNames)
                  && (strcmp(XferNames[i].xferName, xname) == 0) )
@@ -316,8 +306,6 @@ Bdebug((7, "dcxfer:DcmXfer::DcmXfer(char*)" ));
             }
         }
     }
-Edebug(());
-
 }
 
 
@@ -326,8 +314,6 @@ Edebug(());
 
 DcmXfer::DcmXfer( const DcmXfer &newXfer )
 {
-Bdebug((7, "dcxfer:DcmXfer::DcmXfer(DcmXfer&)" ));
-
     xferSyn       = newXfer.xferSyn;
     xferID        = newXfer.xferID;
     xferName      = newXfer.xferName;
@@ -336,8 +322,6 @@ Bdebug((7, "dcxfer:DcmXfer::DcmXfer(DcmXfer&)" ));
     encapsulated  = newXfer.encapsulated;
     JPEGProcess8  = newXfer.JPEGProcess8;
     JPEGProcess12 = newXfer.JPEGProcess12;
-Edebug(());
-
 }
 
 
@@ -346,9 +330,6 @@ Edebug(());
 
 DcmXfer::~DcmXfer()
 {
-    Bdebug((7, "dcxfer:DcmXfer::~DcmXfer()" ));
-    Edebug(());
-
 }
 
 
@@ -357,14 +338,11 @@ DcmXfer::~DcmXfer()
 
 DcmXfer & DcmXfer::operator = ( const E_TransferSyntax xfer )
 {
-    Bdebug((6, "dcxfer:DcmXfer::= (xfer=%d)", xfer ));
-
     int i = 0;
     while (    (i < DIM_OF_XferNames)
 	       && XferNames[i].xfer != xfer
 	)
         i++;
-    debug(( 7, "found index i=[%d] for xfer=%d", i, xfer));
 
     if (    (i < DIM_OF_XferNames)
 	    && XferNames[i].xfer == xfer
@@ -390,8 +368,6 @@ DcmXfer & DcmXfer::operator = ( const E_TransferSyntax xfer )
         JPEGProcess8  = 0L;
         JPEGProcess12 = 0L;
     }
-    Edebug(());
-
     return *this;
 }
 
@@ -401,9 +377,6 @@ DcmXfer & DcmXfer::operator = ( const E_TransferSyntax xfer )
 
 DcmXfer & DcmXfer::operator = ( const DcmXfer &newXfer )
 {
-    Bdebug((6, "dcxfer:DcmXfer::= (DcmXfer&)"));
-    debug(( 8, "Object pointer this=0x%p", this ));
-
     if ( this != &newXfer )
     {
         xferSyn       = newXfer.xferSyn;
@@ -414,16 +387,7 @@ DcmXfer & DcmXfer::operator = ( const DcmXfer &newXfer )
         encapsulated  = newXfer.encapsulated;
         JPEGProcess8  = newXfer.JPEGProcess8;
         JPEGProcess12 = newXfer.JPEGProcess12;
-	debug(( 4, "DcmXfer & operator = ( DcmXfer & ): xfer=(%s)", xferName ));
-
     }
-    else
-    {
-	debug(( 1, "dcxfer:DcmXfer::DcmXfer(DcmXfer&)  Warning: self-assignment" ));
-
-    }
-    Edebug(());
-
     return *this;
 }
 

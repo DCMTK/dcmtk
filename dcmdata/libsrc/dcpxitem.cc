@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-22 16:57:16 $
+** Update Date:		$Date: 1997-07-03 15:10:03 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpxitem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -27,7 +27,7 @@
  *
  *
  * Last Update:   $Author: andreas $
- * Revision:      $Revision: 1.4 $
+ * Revision:      $Revision: 1.5 $
  * Status:	  $State: Exp $
  *
  */
@@ -52,13 +52,7 @@
 DcmPixelItem::DcmPixelItem(const DcmTag &tag, const Uint32 len)
 : DcmOtherByteOtherWord(tag, len)
 {
-	Bdebug((5, "DcmPixelItem::DcmPixelItem(DcmTag&,len=%ld)",
-			len ));
-	debug(( 8, "Object pointer this=0x%p", this ));
-
 	Tag -> setVR(EVR_OB);
-
-	Edebug(());
 }
 
 
@@ -68,19 +62,14 @@ DcmPixelItem::DcmPixelItem(const DcmTag &tag, const Uint32 len)
 DcmPixelItem::DcmPixelItem(const DcmPixelItem & old)
 : DcmOtherByteOtherWord(old)
 {
-	Bdebug((5, "dcpxitem:DcmPixelItem::DcmPixelItem(DcmPixelItem&)"));
-	debug(( 8, "Object pointer this=0x%p", this ));
-
     if ( old.ident() != EVR_pixelItem )
     {
-		errorFlag = EC_IllegalCall;
+	errorFlag = EC_IllegalCall;
         cerr << "Warning: DcmPixelItem: wrong use of Copy-Constructor"
              << endl;
     }
-	else
-		Tag -> setVR(EVR_OB);
-
-	Edebug(());
+    else
+	Tag -> setVR(EVR_OB);
 }
 
 
@@ -89,10 +78,6 @@ DcmPixelItem::DcmPixelItem(const DcmPixelItem & old)
 
 DcmPixelItem::~DcmPixelItem()
 {
-	Bdebug((5, "dcpxitem:DcmPixelItem::~DcmPixelItem()"));
-	debug(( 8, "Object pointer this=0x%p", this ));
-
-	Edebug(());
 }
 
 // ********************************
@@ -131,7 +116,14 @@ E_Condition DcmPixelItem::writeTagAndLength(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpxitem.cc,v $
-** Revision 1.4  1997-05-22 16:57:16  andreas
+** Revision 1.5  1997-07-03 15:10:03  andreas
+** - removed debugging functions Bdebug() and Edebug() since
+**   they write a static array and are not very useful at all.
+**   Cdebug and Vdebug are merged since they have the same semantics.
+**   The debugging functions in dcmdata changed their interfaces
+**   (see dcmdata/include/dcdebug.h)
+**
+** Revision 1.4  1997/05/22 16:57:16  andreas
 ** - Corrected errors for writing of pixel sequences for encapsulated
 **   transfer syntaxes.
 **

@@ -10,9 +10,9 @@
 ** Implementation of class DcmByteString
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-16 08:31:27 $
+** Update Date:		$Date: 1997-07-03 15:09:52 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcbytstr.cc,v $
-** CVS/RCS Revision:	$Revision: 1.12 $
+** CVS/RCS Revision:	$Revision: 1.13 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -39,12 +39,9 @@ DcmByteString::DcmByteString(const DcmTag &tag,
 			     const Uint32 len)
     : DcmElement(tag, len)
 {
-    Bdebug((6, "DcmByteString::DcmByteString(DcmTag&,len=%ld)",
-	    len));
     realLength = len;
     paddingChar = ' ';
     maxLength = DCM_UndefinedLength;
-    Edebug(());
 }
 
 
@@ -54,9 +51,6 @@ DcmByteString::DcmByteString(const DcmTag &tag,
 DcmByteString::DcmByteString(const DcmByteString& old, const DcmEVR oldIdent)
     : DcmElement( old )
 {
-    Bdebug((6, "DcmByteString::DcmByteString(DcmObject&,oldIdent=%d)",
-	    oldIdent ));
-
     paddingChar = ' ';
     realLength = old.realLength;
     maxLength = DCM_UndefinedLength;
@@ -66,7 +60,6 @@ DcmByteString::DcmByteString(const DcmByteString& old, const DcmEVR oldIdent)
         cerr << "Warning: DcmByteString: wrong use of Copy-Constructor"
 	     << endl;
     }
-    Edebug(());
 }
 
 
@@ -286,11 +279,6 @@ DcmByteString::putString(const char * byteStringValue)
 
 E_Condition DcmByteString::verify(const BOOL autocorrect)
 {
-    Bdebug((3, "DcmByteString::verify(autocorrect=%d)", autocorrect));
-    debug(( 3, "Tag=(0x%4.4x,0x%4.4x) \"%s\" \"%s\"",
-	    getGTag(), getETag(),
-	    DcmVR(getVR()).getVRName(), getTag().getTagName() ));
-
     char * value = NULL;
     errorFlag = this -> getString(value);
     if (value != NULL && realLength != 0 )
@@ -325,10 +313,9 @@ E_Condition DcmByteString::verify(const BOOL autocorrect)
 	delete tempstr;
     }
 
-    Vdebug((3, errorFlag!=EC_Normal,
-	    "Illegal values in Tag=(0x%4.4x,0x%4.4x) VM=%d",
+    Cdebug(3, errorFlag!=EC_Normal,
+	    ("DcmByteString::verify: Illegal values in Tag=(0x%4.4x,0x%4.4x) VM=%d",
 	    getGTag(), getETag(), getVM() ));
-    Edebug(());
 
     return errorFlag;
 }
@@ -365,7 +352,14 @@ E_Condition DcmByteString::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
-** Revision 1.12  1997-05-16 08:31:27  andreas
+** Revision 1.13  1997-07-03 15:09:52  andreas
+** - removed debugging functions Bdebug() and Edebug() since
+**   they write a static array and are not very useful at all.
+**   Cdebug and Vdebug are merged since they have the same semantics.
+**   The debugging functions in dcmdata changed their interfaces
+**   (see dcmdata/include/dcdebug.h)
+**
+** Revision 1.12  1997/05/16 08:31:27  andreas
 ** - Revised handling of GroupLength elements and support of
 **   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
 **   got additional enumeration values (for a description see dctypes.h).
