@@ -21,10 +21,10 @@
  *
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-10-11 16:35:09 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-10-16 12:33:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsrcv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -966,8 +966,8 @@ int main(int argc, char *argv[])
         }
       }
       CERR << endl;
-    }
 #endif
+    }
     
     /* check if we can get access to the database */
     const char *dbfolder = dvi.getDatabaseFolder();
@@ -1183,7 +1183,7 @@ int main(int argc, char *argv[])
             OFBitmanipTemplate<char>::zeroMem((char *)&sinfo, sizeof(sinfo));
             sinfo.cb = sizeof(sinfo);
             char commandline[4096];
-            sprintf(commandline, "%s %s %s", receiver_application, opt_cfgName, opt_cfgID);
+            sprintf(commandline, "%s %s", receiver_application, opt_cfgName);
 #ifdef DEBUG
             if (CreateProcess(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
 #else
@@ -1198,7 +1198,7 @@ int main(int argc, char *argv[])
               dcmGenerateUniqueIdentifer(randomUID);              
               if (tLayer) tLayer->addPRNGseed(randomUID, strlen(randomUID));
 #endif
-              handleClient(&assoc, dbfolder, opt_verbose, networkBitPreserving, useTLS);
+              handleClient(&assoc, dbfolder, opt_verbose, networkBitPreserving);
               finished1=OFTrue;              
             } else {
               CERR << "Cannot execute command line: " << commandline << endl;
@@ -1268,8 +1268,8 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsrcv.cc,v $
- * Revision 1.21  2000-10-11 16:35:09  meichel
- * Fixed CreateProcess parameter list
+ * Revision 1.22  2000-10-16 12:33:53  joergr
+ * Moved incorrectly placed #endif statement to correct position.
  *
  * Revision 1.20  2000/10/10 12:23:45  meichel
  * Added extensions for TLS encrypted communication
