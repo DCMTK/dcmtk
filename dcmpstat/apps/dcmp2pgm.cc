@@ -26,9 +26,9 @@
  *    ignored. If no presentation state is loaded, a default is created.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-09-28 13:47:38 $
+ *  Update Date:      $Date: 2001-11-09 16:06:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmp2pgm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,6 +42,7 @@
 #include <GUSI.h>
 #endif
 
+#include <iostream.h>
 #include <iomanip.h>
 
 #include "dviface.h"
@@ -118,7 +119,7 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--debug"))       opt_debugMode = 3;
       if (cmd.findOption("--pstate"))      app.checkValue(cmd.getValue(opt_pstName));
       if (cmd.findOption("--config"))      app.checkValue(cmd.getValue(opt_cfgName));
-      if (cmd.findOption("--frame"))       app.checkValue(cmd.getValue(opt_frame, 1));
+      if (cmd.findOption("--frame"))       app.checkValue(cmd.getValueAndCheckMin(opt_frame, 1));
       if (cmd.findOption("--pgm"))         opt_dicom_mode = OFFalse;
       if (cmd.findOption("--dicom"))       opt_dicom_mode = OFTrue;
       if (cmd.findOption("--save-pstate")) app.checkValue(cmd.getValue(opt_savName));
@@ -577,7 +578,11 @@ void dumpPresentationState(DVInterface& dvi)
 /*
  * CVS/RCS Log:
  * $Log: dcmp2pgm.cc,v $
- * Revision 1.27  2001-09-28 13:47:38  joergr
+ * Revision 1.28  2001-11-09 16:06:04  joergr
+ * Renamed some of the getValue/getParam methods to avoid ambiguities reported
+ * by certain compilers.
+ *
+ * Revision 1.27  2001/09/28 13:47:38  joergr
  * Added check whether ios::nocreate exists.
  *
  * Revision 1.26  2001/09/26 15:36:01  meichel

@@ -25,9 +25,9 @@
  *    file.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-09-28 13:47:36 $
+ *  Update Date:      $Date: 2001-11-09 16:06:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmklut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -845,19 +845,19 @@ int main(int argc, char *argv[])
             app.checkValue(cmd.getValue(opt_reflection));
 
         if (cmd.findOption("--bits"))
-            app.checkValue(cmd.getValue(opt_bits, 8, 16));
+            app.checkValue(cmd.getValueAndCheckMinMax(opt_bits, 8, 16));
         if (cmd.findOption("--entries"))
-            app.checkValue(cmd.getValue(opt_entries, 1, 65536));
+            app.checkValue(cmd.getValueAndCheckMinMax(opt_entries, 1, 65536));
         if (cmd.findOption("--first-mapped"))
-            app.checkValue(cmd.getValue(opt_firstMapped, -32768, 65535));
+            app.checkValue(cmd.getValueAndCheckMinMax(opt_firstMapped, -32768, 65535));
         if (cmd.findOption("--explanation"))
             app.checkValue(cmd.getValue(opt_explanation));
         if (cmd.findOption("--random"))
-            app.checkValue(cmd.getValue(opt_randomCount, 1, 99999));
+            app.checkValue(cmd.getValueAndCheckMinMax(opt_randomCount, 1, 99999));
         if (cmd.findOption("--random-seed"))
             app.checkValue(cmd.getValue(opt_randomSeed));
         if (cmd.findOption("--order"))
-            app.checkValue(cmd.getValue(opt_order, 0, 99));
+            app.checkValue(cmd.getValueAndCheckMinMax(opt_order, 0, 99));
         if (cmd.findOption("--byte-align"))
         {
             opt_byteAlign = OFTrue;
@@ -1089,7 +1089,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmmklut.cc,v $
- * Revision 1.25  2001-09-28 13:47:36  joergr
+ * Revision 1.26  2001-11-09 16:06:03  joergr
+ * Renamed some of the getValue/getParam methods to avoid ambiguities reported
+ * by certain compilers.
+ *
+ * Revision 1.25  2001/09/28 13:47:36  joergr
  * Added check whether ios::nocreate exists.
  *
  * Revision 1.24  2001/09/26 15:36:00  meichel

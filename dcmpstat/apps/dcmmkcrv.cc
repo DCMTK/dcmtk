@@ -21,10 +21,10 @@
  *
  *  Purpose: This application reads a DICOM image, adds a Curve and writes it back.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:00 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-09 16:06:02 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmkcrv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -126,9 +126,9 @@ int main(int argc, char *argv[])
       cmd.endOptionBlock();
 
 
-      if (cmd.findOption("--data-vr")) app.checkValue(cmd.getValue(opt_data_vr,0,(OFCmdUnsignedInt)4));
-      if (cmd.findOption("--curve-vr")) app.checkValue(cmd.getValue(opt_curve_vr,0,(OFCmdUnsignedInt)2));
-      if (cmd.findOption("--group")) app.checkValue(cmd.getValue(opt_group,0,(OFCmdUnsignedInt)15));
+      if (cmd.findOption("--data-vr")) app.checkValue(cmd.getValueAndCheckMinMax(opt_data_vr, 0, 4));
+      if (cmd.findOption("--curve-vr")) app.checkValue(cmd.getValueAndCheckMinMax(opt_curve_vr, 0, 2));
+      if (cmd.findOption("--group")) app.checkValue(cmd.getValueAndCheckMin(opt_group, 0, 15));
       if (cmd.findOption("--label")) app.checkValue(cmd.getValue(opt_label));
       if (cmd.findOption("--description")) app.checkValue(cmd.getValue(opt_description));
       if (cmd.findOption("--axis"))
@@ -416,7 +416,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmmkcrv.cc,v $
-** Revision 1.10  2001-09-26 15:36:00  meichel
+** Revision 1.11  2001-11-09 16:06:02  joergr
+** Renamed some of the getValue/getParam methods to avoid ambiguities reported
+** by certain compilers.
+**
+** Revision 1.10  2001/09/26 15:36:00  meichel
 ** Adapted dcmpstat to class OFCondition
 **
 ** Revision 1.9  2001/06/07 14:34:08  joergr

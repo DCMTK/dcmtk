@@ -21,10 +21,10 @@
  *
  *  Purpose: Presentation State Viewer - Print Spooler
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-10-12 13:46:48 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-09 16:06:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmprscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -743,7 +743,7 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--copies"))
       {
         app.checkConflict("--copies", "--spool", opt_spoolMode);
-        app.checkValue(cmd.getValue(opt_copies, (OFCmdUnsignedInt)1, (OFCmdUnsignedInt)100));
+        app.checkValue(cmd.getValueAndCheckMinMax(opt_copies, 1, 100));
       }
       if (cmd.findOption("--sleep"))
       {
@@ -992,7 +992,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprscu.cc,v $
- * Revision 1.7  2001-10-12 13:46:48  meichel
+ * Revision 1.8  2001-11-09 16:06:04  joergr
+ * Renamed some of the getValue/getParam methods to avoid ambiguities reported
+ * by certain compilers.
+ *
+ * Revision 1.7  2001/10/12 13:46:48  meichel
  * Adapted dcmpstat to OFCondition based dcmnet module (supports strict mode).
  *
  * Revision 1.6  2001/09/26 15:36:02  meichel

@@ -26,9 +26,9 @@
  *    Non-grayscale transformations in the presentation state are ignored.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-09-28 13:47:38 $
+ *  Update Date:      $Date: 2001-11-09 16:06:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsprt.cc,v $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -339,7 +339,7 @@ int main(int argc, char *argv[])
 
       cmd.findOption("--overlay", 0, OFCommandLine::FOM_First);      /* check at least once to avoid warnings */
       if (cmd.findOption("--ovl-graylevel"))
-         app.checkValue(cmd.getValue(opt_ovl_graylevel, (OFCmdUnsignedInt)0, (OFCmdUnsignedInt)4095));
+         app.checkValue(cmd.getValueAndCheckMinMax(opt_ovl_graylevel, 0, 4095));
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--print-date"))    opt_annotationDatetime = OFTrue;
@@ -381,11 +381,11 @@ int main(int argc, char *argv[])
       }
       if (cmd.findOption("--illumination"))
       {
-        app.checkValue(cmd.getValue(opt_illumination, (OFCmdUnsignedInt)0, (OFCmdUnsignedInt)65535));
+        app.checkValue(cmd.getValueAndCheckMinMax(opt_illumination, 0, 65535));
       }
       if (cmd.findOption("--reflection"))
       {
-        app.checkValue(cmd.getValue(opt_reflection, (OFCmdUnsignedInt)0, (OFCmdUnsignedInt)65535));
+        app.checkValue(cmd.getValueAndCheckMinMax(opt_reflection, 0, 65535));
       }
 
       if (cmd.findOption("--destination"))
@@ -411,15 +411,15 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--copies"))
       {
         app.checkConflict("--copies", "--nospool", (! opt_spool));
-        app.checkValue(cmd.getValue(opt_copies, (OFCmdUnsignedInt)1, (OFCmdUnsignedInt)100));
+        app.checkValue(cmd.getValueAndCheckMinMax(opt_copies, 1, 100));
       }
 
       if (cmd.findOption("--pstate")) { /* prevent warning - this option is only checked if image filenames are really specified */ }
 
       if (cmd.findOption("--layout"))
       {
-         app.checkValue(cmd.getValue(opt_columns, (OFCmdUnsignedInt)1));
-         app.checkValue(cmd.getValue(opt_rows, (OFCmdUnsignedInt)1));
+         app.checkValue(cmd.getValueAndCheckMin(opt_columns, 1));
+         app.checkValue(cmd.getValueAndCheckMin(opt_rows, 1));
       }
 
       const char *imageFile=NULL;
@@ -677,7 +677,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsprt.cc,v $
- * Revision 1.27  2001-09-28 13:47:38  joergr
+ * Revision 1.28  2001-11-09 16:06:05  joergr
+ * Renamed some of the getValue/getParam methods to avoid ambiguities reported
+ * by certain compilers.
+ *
+ * Revision 1.27  2001/09/28 13:47:38  joergr
  * Added check whether ios::nocreate exists.
  *
  * Revision 1.26  2001/09/26 15:36:03  meichel
