@@ -26,7 +26,7 @@ are to be performed on a particular DICOM file, \b dcmodify has to be called
 multiple times or to be used in batch mode.  Please note that \b dcmodify
 does not check whether given values are of the right value representation (VR).
 Usually, an error message is printed but generally the user should take care
-for the right VR usage.
+of the right VR usage.
 
 \section parameters PARAMETERS
 
