@@ -1,0 +1,57 @@
+#
+#	Makefile for dcmimage/apps
+#
+
+@SET_MAKE@
+
+SHELL = /bin/sh
+VPATH= @srcdir@:@top_srcdir@/include:@top_srcdir@/@configdir@/include
+srcdir= @srcdir@
+top_srcdir= @top_srcdir@
+configdir=@top_srcdir@/@configdir@
+
+include $(configdir)/@common_makefile@
+
+LOCALINCLUDES = -I../../dcmdata/include
+LIBDIRS = -L$(top_srcdir)/libsrc -L../../dcmdata/libsrc -L$(libdir)
+LOCALLIBS = -ldcmimage -ldcmdata
+
+objs = diclip.o discale.o disize.o di2mono.o di2ppm.o
+
+progs = diclip discale disize di2mono di2ppm 
+
+all: $(progs)
+
+diclip: diclip.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
+
+discale: discale.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
+
+disize: disize.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
+
+di2mono: di2mono.o 
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
+
+di2ppm: di2ppm.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
+
+install: all
+	$(configdir)/mkinstalldirs $(bindir)
+	for prog in $(progs); do \
+		$(INSTALL_PROGRAM) $$prog $(bindir); strip $(bindir)/$$prog ;\
+	done
+
+clean:
+	rm -f $(objs) $(progs) $(TRASH)
+
+distclean: 
+	rm -f $(objs) $(progs) $(DISTTRASH)
+
+dependencies:
+	$(CXX) -MM $(defines) $(includes) $(CPPFLAGS) $(CXXFLAGS) *.cc  > $(DEP)
+
+$(objs): config.h
+
+include $(DEP)

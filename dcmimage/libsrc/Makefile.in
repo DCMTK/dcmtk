@@ -1,0 +1,55 @@
+#
+#	Makefile for dcmimage/libsrc
+#
+
+@SET_MAKE@
+
+SHELL = /bin/sh
+VPATH=@srcdir@:@top_srcdir@/include:@top_srcdir@/@configdir@/include
+srcdir=@srcdir@
+top_srcdir=@top_srcdir@
+configdir=@top_srcdir@/@configdir@
+
+# Special defines for the Library, define them in LOCALDEFS
+#   REVERSE_OVERLAY_ORIGIN_ORDER
+#	swap order of overlay origin coordinates
+
+LOCALDEFS = -DREVERSE_OVERLAY_ORIGIN_ORDER
+LOCALINCLUDES = -I../../dcmdata/include
+
+include $(configdir)/@common_makefile@
+
+objs = diutils.o \
+	dcmimage.o didocu.o diimage.o diinpx.o diovlay.o diovpln.o diovlimg.o diluptab.o \
+	dimoimg.o dimo1img.o dimo2img.o dimomod.o dimopx.o dimoopx.o \
+	dicoimg.o dicopx.o dicoopx.o dipalimg.o dirgbimg.o dicmyimg.o diargimg.o dihsvimg.o
+
+all: libdcmimage.a
+
+install: install-lib
+
+install-lib:	$(libdir)/libdcmimage.a
+
+$(libdir)/libdcmimage.a:	libdcmimage.a
+	$(configdir)/mkinstalldirs $(libdir)
+	$(INSTALL_DATA) libdcmimage.a $(libdir)/libdcmimage.a
+
+clean:
+	rm -f $(objs) 
+	rm -f libdcmimage.a 
+	rm -f $(TRASH)
+
+distclean: clean
+	rm -f $(DISTTRASH) 
+
+libdcmimage.a: $(objs)
+	$(AR) $(ARFLAGS) $@ $(objs)
+	$(RANLIB) $@
+
+dependencies:
+	$(CXX) -MM $(defines) $(includes) $(CPPFLAGS) $(CXXFLAGS) *.cc  > $(DEP)
+
+$(objs): config.h
+
+include $(DEP)
+

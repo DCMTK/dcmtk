@@ -1,0 +1,20 @@
+di2mono.o: di2mono.cc ../../config/include/osconfig.h \
+ ../include/dcmimage.h ../include/diimage.h \
+ ../../dcmdata/include/dctypes.h ../include/diutils.h \
+ ../libsrc/libdcmimage.a
+di2ppm.o: di2ppm.cc ../../config/include/osconfig.h \
+ ../include/dcmimage.h ../include/diimage.h \
+ ../../dcmdata/include/dctypes.h ../include/diutils.h \
+ ../libsrc/libdcmimage.a
+diclip.o: diclip.cc ../../config/include/osconfig.h \
+ ../include/dcmimage.h ../include/diimage.h \
+ ../../dcmdata/include/dctypes.h ../include/diutils.h \
+ ../libsrc/libdcmimage.a
+discale.o: discale.cc ../../config/include/osconfig.h \
+ ../include/dcmimage.h ../include/diimage.h \
+ ../../dcmdata/include/dctypes.h ../include/diutils.h \
+ ../libsrc/libdcmimage.a
+disize.o: disize.cc ../../config/include/osconfig.h \
+ ../include/dcmimage.h ../include/diimage.h \
+ ../../dcmdata/include/dctypes.h ../include/diutils.h \
+ ../libsrc/libdcmimage.a

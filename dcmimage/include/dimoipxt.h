@@ -1,0 +1,124 @@
+/*********************************************************************
+** 
+**  DicomMonochromeInputPixelTemplate (Header)
+**
+**  author   : Joerg Riesmeier
+**  created  : 03.01.97
+**  modified : 25.04.97
+**
+*********************************************************************/
+
+
+#ifndef __DIMOIPXT_H
+#define __DIMOIPXT_H
+
+#include "osconfig.h"
+
+#include "dimopxt.h"
+
+
+/*---------------------*
+ *  class declaration  *
+ *---------------------*/
+
+template<class T1, class T2>
+class DiMonoInputPixelTemplate : public DiMonoPixelTemplate<T2>
+{
+ public:
+	DiMonoInputPixelTemplate(const DiInputPixel *pixel, DiMonoModality *modality)
+	  : DiMonoPixelTemplate<T2>(pixel, modality)
+	{
+		if ((pixel != NULL) && (getCount() > 0))
+		{	
+			if ((Modality != NULL) && Modality->hasLookupTable() && (bitsof(T1) <= MAX_TABLE_ENTRY_SIZE))
+			{
+				table((const T1 *)pixel->getData());
+				determineMinMax((T2)Modality->getMinValue(), (T2)Modality->getMaxValue());
+			}
+			else if ((Modality != NULL) && Modality->hasRescaling() && !((Modality->getRescaleIntercept() == 0) &&
+				(Modality->getRescaleSlope() == 1)))
+			{
+				rescale((const T1 *)pixel->getData());
+				determineMinMax((T2)Modality->getMinValue(), (T2)Modality->getMaxValue());
+			}
+			else
+			{
+				copy((const T1 *)pixel->getData());
+				determineMinMax((T2)pixel->getMinValue(), (T2)pixel->getMaxValue());
+			}
+		}
+	}
+
+	virtual ~DiMonoInputPixelTemplate()
+	{
+	}
+
+ private:
+	inline void table(const T1 *pixel)		// UNTESTED !
+	{
+		if ((pixel != NULL) && (Modality != NULL))
+		{
+			Data = new T2[getCount()];
+			if (Data != NULL)
+			{
+				const DiLookupTable *table = Modality->getTableData();
+				const T1 min = (const T1)table->getFirstEntry();
+				const T1 max = (const T1)table->getLastEntry();
+				const T2 minvalue = (const T2)table->getFirstValue();
+				const T2 maxvalue = (const T2)table->getLastValue();
+				register const T1 *p = pixel;
+				register T2 *q = Data;
+				register T1 value;
+				register unsigned long i;
+				for (i = 0; i < getCount(); i++)
+				{
+					value = *(p++);
+					if (value <= min)
+						*(q++) = minvalue;
+					else if (value >= max)
+						*(q++) = maxvalue;
+					else
+						*(q++) = (T2)table->getValue(value);
+				}
+			} 
+		}
+	}
+
+	inline void rescale(const T1 *pixel)
+	{
+		if ((pixel != NULL) && (Modality != NULL))
+		{
+			Data = new T2[getCount()];
+			if (Data != NULL)
+			{
+				register const T1 *p = pixel;
+				register T2 *q = Data;
+				register unsigned long i;
+				register const double intercept = (const double)Modality->getRescaleIntercept();
+				register const double slope = (const double)Modality->getRescaleSlope();
+				for (i = 0; i < getCount(); i++)
+					*(q++) = (T2)((double)*(p++) * slope + intercept);
+			}
+		}
+	}
+
+	inline void copy(const T1 *pixel)
+	{
+		if (pixel != NULL)
+		{
+			Data = new T2[getCount()];
+			if (Data != NULL)
+			{
+				register const T1 *p = pixel;
+				register T2 *q = Data;
+				register unsigned long i;
+				for (i = 0; i < getCount(); i++)
+					*(q++) = (T2)*(p++);
+			}
+		}
+	}
+
+};
+
+
+#endif
