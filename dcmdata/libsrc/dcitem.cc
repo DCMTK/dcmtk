@@ -22,9 +22,9 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-12-18 11:37:44 $
+ *  Update Date:      $Date: 2002-04-11 12:28:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.64 $
+ *  CVS/RCS Revision: $Revision: 1.65 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -545,10 +545,12 @@ OFCondition DcmItem::computeGroupLengthAndPadding
      *   padenc         - [in] Encoding type for padding. Specifies what shall be done with padding tags.
      *   oxfer          - [in] The transfer syntax that shall be used.
      *   enctype        - [in] Encoding type for sequences. Specifies how sequences will be handled.
-     *   padlen         - [in] The length up to which shall be padded, if padding is desired.
-     *   subPadlen      - [in] For sequences (i.e. sub elements), the length up to which shall be padded,
+     *   padlen         - [in] The length up to which the dataset shall be padded, if padding is desired.
+     *   subPadlen      - [in] For sequences (i.e. sub elements), the length up to which item shall be padded,
      *                         if padding is desired.
-     *   instanceLength - [in]
+     *   instanceLength - [in] Number of extra bytes added to the item/dataset length used when computing the
+     *                         padding. This parameter is for instance used to pass the length of the file meta
+     *                         header from the DcmFileFormat to the DcmDataset object.
      */
 {
     /* if certain conditions are met, this is considered to be an illegal call. */
@@ -3047,7 +3049,10 @@ OFBool DcmItem::containsUnknownVR() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.64  2001-12-18 11:37:44  joergr
+** Revision 1.65  2002-04-11 12:28:00  joergr
+** Enhanced documentation.
+**
+** Revision 1.64  2001/12/18 11:37:44  joergr
 ** Added helper method allowing to create and insert empty elements into an
 ** item/dataset.
 **

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: class DcmPersonName
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-10 15:22:05 $
+ *  Update Date:      $Date: 2002-04-11 12:28:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrpn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,7 +41,7 @@
 DcmPersonName::DcmPersonName(const DcmTag &tag, const Uint32 len)
 : DcmCharString(tag, len)
 {
-    maxLength = 64;
+    maxLength = 64;     // not correct: max length of PN is 3*64+2 = 194 characters (not bytes!)
 }
 
 
@@ -281,7 +281,10 @@ DcmPersonName::getFormattedNameFromComponents(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrpn.cc,v $
-** Revision 1.13  2001-10-10 15:22:05  joergr
+** Revision 1.14  2002-04-11 12:28:56  joergr
+** Enhanced documentation.
+**
+** Revision 1.13  2001/10/10 15:22:05  joergr
 ** Updated comments.
 **
 ** Revision 1.12  2001/10/01 15:04:44  joergr
