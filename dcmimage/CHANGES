@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2000.03.30 (riesmeier)
+
+- Corrected wrong bit expansion of output pixel data (left shift is not
+  correct).
+  Affects: dcmimage/include/dicoopxt.h
+           dcmimage/libsrc/dicoimg.cc
+
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 Release 1.1.1 (Release date - 2000-03-10)
