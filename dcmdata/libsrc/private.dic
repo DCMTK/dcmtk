@@ -22,8 +22,8 @@
 #  This is the private tag DICOM data dictionary for the dcmtk class library.
 #
 #  Last Update:      $Author: wilkens $
-#  Update Date:      $Date: 2004-03-24 14:20:52 $
-#  CVS/RCS Revision: $Revision: 1.6 $
+#  Update Date:      $Date: 2004-03-25 08:21:16 $
+#  CVS/RCS Revision: $Revision: 1.7 $
 #  Status:           $State: Exp $
 #
 #
@@ -963,7 +963,7 @@
 (0041,"INTEGRIS 1.0",40)	FL	TotalDose	1
 (0041,"INTEGRIS 1.0",41)	FL	TotalNumberOfFrames	1
 (0041,"INTEGRIS 1.0",50)	SQ	ExposureInformationSequence	1
-(0009,"INTEGRIS 1.0",08)	CS	ExposureChannel	1
+(0009,"INTEGRIS 1.0",08)	CS	ExposureChannel	1-n
 (0009,"INTEGRIS 1.0",32)	TM	ImageBlankingShape	1
 (0019,"INTEGRIS 1.0",00)	LO	ExposureStartTime	1
 (0019,"INTEGRIS 1.0",40)	DS	FrameRate	1
