@@ -14,13 +14,14 @@ configdir=@top_srcdir@/@configdir@
 dcmdatadir=$(top_srcdir)/../dcmdata
 ofstddir=$(top_srcdir)/../ofstd
 dcmimgledir=$(top_srcdir)/../dcmimgle
+dcmsrdir=$(top_srcdir)/../dcmsr
 imagectndir=$(top_srcdir)/../imagectn
 dcmnetdir=$(top_srcdir)/../dcmnet
 
 LOCALINCLUDES=-I$(ofstddir)/include -I$(dcmdatadir)/include -I$(dcmimgledir)/include \
-  -I$(imagectndir)/include -I$(dcmnetdir)/include \
+  -I$(dcmsrdir)/include -I$(imagectndir)/include -I$(dcmnetdir)/include \
   -I$(includedir)/ofstd -I$(includedir)/dcmdata -I$(includedir)/dcmimgle \
-  -I$(includedir)/imagectn -I$(includedir)/dcmnet
+  -I$(includedir)/dcmsr -I$(includedir)/imagectn -I$(includedir)/dcmnet
 
 
 LOCALDEFS= 
