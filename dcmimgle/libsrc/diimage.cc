@@ -1,0 +1,451 @@
+/*
+ *
+ *  Copyright (C) 1996-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmimgle
+ *
+ *  Author:  Joerg Riesmeier
+ *
+ *  Purpose: DicomImage (Source)
+ *
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1998-11-27 16:01:43 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diimage.cc,v $
+ *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
+
+
+#include "osconfig.h"
+#include "dctypes.h"
+#include "dcdeftag.h"
+
+#include "diimage.h"
+#include "diinpxt.h"
+#include "didocu.h"
+#include "diutils.h"
+
+
+/*----------------*
+ *  constructors  *
+ *----------------*/
+
+DiImage::DiImage(const DiDocument *docu,
+                 const EI_Status status,
+                 const int spp)
+  : ImageStatus(status),
+    Document(docu),
+    FirstFrame(0),
+    NumberOfFrames(0),
+    Rows(0),
+    Columns(0),
+    PixelWidth(1),
+    PixelHeight(1),
+    BitsAllocated(0),
+    BitsStored(0),
+    HighBit(0),
+    BitsPerSample(0),
+    hasSignedRepresentation(0),
+    hasPixelSpacing(0),
+    hasPixelAspectRatio(0),
+    isOriginal(1),
+    InputData(NULL)
+{
+    if ((Document != NULL) && (ImageStatus == EIS_Normal))
+    {
+        Sint32 sl = 0;
+        if (Document->getValue(DCM_NumberOfFrames, sl))
+        {
+            if (sl < 1)
+            {
+                if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+                {
+                    cerr << "WARNING: invalid value for 'NumberOfFrames' (" << sl << ") ";
+                    cerr << "... assuming 1 !" << endl;
+                }
+                NumberOfFrames = 1;
+            }
+            else
+                NumberOfFrames = (Uint32)sl;
+        }
+        else
+            NumberOfFrames = 1;
+        FirstFrame = (docu->getFrameStart() < NumberOfFrames) ? docu->getFrameStart() : NumberOfFrames - 1;
+        if ((docu->getFrameCount() > 0) && (NumberOfFrames > docu->getFrameCount()))
+            NumberOfFrames = docu->getFrameCount();
+        int ok = (Document->getValue(DCM_Rows, Rows) > 0);
+        ok &= (Document->getValue(DCM_Columns, Columns) > 0);
+        if (!ok || ((Rows > 0) && (Columns > 0)))
+        {
+            Uint16 us;
+            ok &= (Document->getValue(DCM_BitsAllocated, BitsAllocated) > 0);
+            ok &= (Document->getValue(DCM_BitsStored, BitsStored) > 0);
+            ok &= (Document->getValue(DCM_HighBit, HighBit) > 0);
+            ok &= (Document->getValue(DCM_PixelRepresentation, us) > 0);
+            BitsPerSample = BitsStored;
+            hasSignedRepresentation = (us == 1);
+            if ((us != 0) && (us != 1))
+            {
+                if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+                {
+                    cerr << "WARNING: invalid value for 'PixelRepresentation' (" << us << ") ";
+                    cerr << "... assuming 'unsigned' (0) !" << endl;
+                }
+            }
+            hasPixelSpacing = (Document->getValue(DCM_PixelSpacing, PixelHeight, 0) > 0);
+            hasPixelSpacing &= (Document->getValue(DCM_PixelSpacing, PixelWidth, 1) > 0);
+            if (!hasPixelSpacing)
+            {
+                Sint32 sl2;
+                hasPixelAspectRatio = (Document->getValue(DCM_PixelAspectRatio, sl2, 0) > 0);
+                PixelHeight = sl2;
+                hasPixelAspectRatio &= (Document->getValue(DCM_PixelAspectRatio, sl2, 1) > 0);
+                PixelWidth = sl2;
+                if (!hasPixelAspectRatio)
+                {
+                    PixelWidth = 1;
+                    PixelHeight = 1;
+                }
+            }
+            checkPixelExtension();
+            DcmStack pstack;
+            if (ok && Document->search(DCM_PixelData, pstack))
+            {
+                DcmPixelData *pixel = (DcmPixelData *)pstack.top();
+                if ((pixel != NULL) && (pixel->chooseRepresentation(EXS_LittleEndianExplicit, NULL, pstack) == EC_Normal))
+                    convertPixelData(pixel, spp);
+                else
+                {
+                    ImageStatus = EIS_NotSupportedValue;
+                    if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
+                        cerr << "ERROR: cannot change to unencapsulated representation for pixel data !" << endl;
+                }
+            }
+            else
+            {
+                ImageStatus = EIS_MissingAttribute;
+                if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
+                    cerr << "ERROR: one or more mandatory attributes are missing in image pixel module !" << endl;
+            }
+        }
+        else
+        {
+            ImageStatus = EIS_InvalidValue;
+            if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
+                cerr << "ERROR: invalid value for 'Rows' (" << Rows << ") and/or 'Columns' (" << Columns << ") !" << endl;
+        }
+    }
+    else
+    {
+        ImageStatus = EIS_InvalidDocument;
+        if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
+            cerr << "ERROR: this DICOM document is invalid !" << endl;
+    }
+}
+
+
+DiImage::DiImage(const DiDocument *docu,
+                 const EI_Status status)
+  : ImageStatus(status),
+    Document(docu),
+    FirstFrame(0),
+    NumberOfFrames(0),
+    Rows(0),
+    Columns(0),
+    PixelWidth(1),
+    PixelHeight(1),
+    BitsAllocated(0),
+    BitsStored(0),
+    HighBit(0),
+    BitsPerSample(0),
+    hasSignedRepresentation(0),
+    hasPixelSpacing(0),
+    hasPixelAspectRatio(0),
+    isOriginal(1),
+    InputData(NULL)
+{
+}
+
+
+DiImage::DiImage(const DiImage *image,
+                 const unsigned long fstart,
+                 const unsigned long fcount)
+  : ImageStatus(image->ImageStatus),
+    Document(image->Document),
+    FirstFrame(image->FirstFrame + fstart),
+    NumberOfFrames(fcount),
+    Rows(image->Rows), 
+    Columns(image->Columns),
+    PixelWidth(image->PixelWidth),
+    PixelHeight(image->PixelHeight),
+    BitsAllocated(image->BitsAllocated),
+    BitsStored(image->BitsStored),
+    HighBit(image->HighBit),
+    BitsPerSample(image->BitsPerSample),
+    hasSignedRepresentation(image->hasSignedRepresentation),
+    hasPixelSpacing(image->hasPixelSpacing),
+    hasPixelAspectRatio(image->hasPixelAspectRatio),
+    isOriginal(0),
+    InputData(NULL)
+{
+}
+
+
+DiImage::DiImage(const DiImage *image,
+                 const Uint16 columns,
+                 const Uint16 rows,
+                 const int aspect)
+  : ImageStatus(image->ImageStatus),
+    Document(image->Document),
+    FirstFrame(image->FirstFrame),
+    NumberOfFrames(image->NumberOfFrames),
+    Rows(rows), 
+    Columns(columns),
+    PixelWidth((aspect) ? 1 : image->PixelWidth),
+    PixelHeight((aspect) ? 1 : image->PixelHeight),
+    BitsAllocated(image->BitsAllocated),
+    BitsStored(image->BitsStored),
+    HighBit(image->HighBit),
+    BitsPerSample(image->BitsPerSample),
+    hasSignedRepresentation(image->hasSignedRepresentation),
+    hasPixelSpacing(image->hasPixelSpacing),
+    hasPixelAspectRatio((aspect) ? 0 : image->hasPixelAspectRatio),
+    isOriginal(0),
+    InputData(NULL)
+{
+}
+
+
+DiImage::DiImage(const DiImage *image,
+                 const int degree)
+  : ImageStatus(image->ImageStatus),
+    Document(image->Document),
+    FirstFrame(image->FirstFrame),
+    NumberOfFrames(image->NumberOfFrames),
+    Rows(((degree == 90) ||(degree == 270)) ? image->Columns : image->Rows),
+    Columns(((degree == 90) ||(degree == 270)) ? image->Rows : image->Columns),
+    PixelWidth(((degree == 90) ||(degree == 270)) ? image->PixelHeight : image->PixelWidth),
+    PixelHeight(((degree == 90) ||(degree == 270)) ? image-> PixelWidth : image->PixelHeight),
+    BitsAllocated(image->BitsAllocated),
+    BitsStored(image->BitsStored),
+    HighBit(image->HighBit),
+    BitsPerSample(image->BitsPerSample),
+    hasSignedRepresentation(image->hasSignedRepresentation),
+    hasPixelSpacing(image->hasPixelSpacing),
+    hasPixelAspectRatio(image->hasPixelAspectRatio),
+    isOriginal(0),
+    InputData(NULL)
+{
+}
+
+
+/*--------------*
+ *  destructor  *
+ *--------------*/
+
+DiImage::~DiImage()
+{
+    delete InputData;
+}
+
+
+/********************************************************************/
+
+
+int DiImage::rotate(const int degree)
+{
+    if ((degree == 90) || (degree == 270))
+    {
+        Uint16 us = Rows;                   // swap image width and height
+        Rows = Columns;
+        Columns = us;
+        double db = PixelWidth;             // swap pixel width and height
+        PixelWidth = PixelHeight;
+        PixelHeight = db;
+        return 1;
+    }
+    return 0;
+}
+
+
+/********************************************************************/
+
+
+void DiImage::deleteInputData()
+{
+    delete InputData;
+    InputData = NULL;
+}
+
+
+void DiImage::checkPixelExtension()
+{
+    if (hasPixelSpacing || hasPixelAspectRatio)
+    {
+        if (PixelHeight == 0)
+        {
+            if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+            {
+                cerr << "WARNING: invalid value for 'PixelHeight' (" << PixelHeight << ") ";
+                cerr << "... assuming 1 !" << endl;
+            }
+            PixelHeight = 1;
+        }
+        else if (PixelHeight < 0)
+        {
+            if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+            {
+                cerr << "WARNING: negative value for 'PixelHeight' (" << PixelHeight << ") ";
+                cerr << "... assuming " << -PixelHeight << " !" << endl;
+            }
+            PixelHeight = -PixelHeight;
+        }
+        if (PixelWidth == 0)
+        {
+            if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+            {
+                cerr << "WARNING: invalid value for 'PixelWidth' (" << PixelWidth << ") ";
+                cerr << "... assuming 1 !" << endl;
+            }
+            PixelWidth = 1;
+        }
+        else if (PixelWidth < 0)
+        {
+            if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+            {
+                cerr << "WARNING: negative value for 'PixelWidth' (" << PixelWidth << ") ";
+                cerr << "... assuming " << -PixelWidth << " !" << endl;
+            }
+            PixelHeight = -PixelHeight;
+        }
+    }
+}
+
+
+void DiImage::convertPixelData(/*const*/ DcmPixelData *pixel, const int spp)
+{
+    if ((pixel->getVR() == EVR_OW) || ((pixel->getVR() == EVR_OB) && (BitsAllocated <= 8)))
+    {
+        const unsigned long start = FirstFrame * (unsigned long)Rows * (unsigned long)Columns * (unsigned long)spp;
+        const unsigned long count = NumberOfFrames * (unsigned long)Rows * (unsigned long)Columns * (unsigned long)spp;
+        if ((BitsAllocated < 1) || (BitsStored < 1) || (BitsAllocated < BitsStored) || 
+            (BitsStored > (Uint16)(HighBit + 1)))
+        {
+            ImageStatus = EIS_InvalidValue;
+            if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
+            {
+                cerr << "ERROR: invalid values for 'BitsAllocated' (" << BitsAllocated << "), ";
+                cerr << "'BitsStored' (" << BitsStored << ") and/or 'HighBit' (" << HighBit << ") !" << endl;
+            }
+            return;
+        }
+        else if ((pixel->getVR() == EVR_OB) && (BitsAllocated <= 8))
+        {
+            if (hasSignedRepresentation)
+                InputData = new DiInputPixelTemplate<Uint8, Sint8>(pixel, BitsAllocated, BitsStored, HighBit, start, count);
+            else
+                InputData  = new DiInputPixelTemplate<Uint8, Uint8>(pixel, BitsAllocated, BitsStored, HighBit, start, count);
+        }
+        else if (BitsStored <= bitsof(Uint8)) 
+        {
+            if (hasSignedRepresentation)
+                InputData = new DiInputPixelTemplate<Uint16, Sint8>(pixel, BitsAllocated, BitsStored, HighBit, start, count);
+            else
+                InputData  = new DiInputPixelTemplate<Uint16, Uint8>(pixel, BitsAllocated, BitsStored, HighBit, start, count);
+        }
+        else if (BitsStored <= bitsof(Uint16))
+        {
+            if (hasSignedRepresentation)
+                InputData = new DiInputPixelTemplate<Uint16, Sint16>(pixel, BitsAllocated, BitsStored, HighBit, start, count);
+            else
+                InputData = new DiInputPixelTemplate<Uint16, Uint16>(pixel, BitsAllocated, BitsStored, HighBit, start, count);
+        }
+        else if (BitsStored <= bitsof(Uint32))
+        {
+            if (hasSignedRepresentation)
+                InputData = new DiInputPixelTemplate<Uint16, Sint32>(pixel, BitsAllocated, BitsStored, HighBit, start, count);
+            else
+                InputData = new DiInputPixelTemplate<Uint16, Uint32>(pixel, BitsAllocated, BitsStored, HighBit, start, count);
+        }
+        else    /* BitsStored > 32 !! */
+        {
+            ImageStatus = EIS_NotSupportedValue;
+            if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
+            {
+                cerr << "ERROR: invalid value for 'BitsStored' (" << BitsStored << ") ";
+                cerr << "... exceeds " << MAX_BITS << " bit !" << endl;
+            }
+            return;
+        }
+        if (InputData == NULL)
+        {
+            ImageStatus = EIS_MemoryFailure;
+            if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
+                cerr << "ERROR: can't allocate memory for input-representation !" << endl;
+        }
+    }
+    else
+    {
+        ImageStatus = EIS_NotSupportedValue;
+        if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
+            cerr << "ERROR: 'PixelData' has an other value representation than OB (with 'BitsAllocated' <= 8) or OW !" << endl;
+    }
+}
+
+
+int DiImage::detachPixelData()
+{
+    DcmStack pstack;    
+    if ((Document != NULL) && (Document->getFlags() & CIF_MayDetachPixelData) && Document->search(DCM_PixelData, pstack))
+    {
+        DcmPixelData *pixel = (DcmPixelData *)pstack.top();
+        if (pixel != NULL)
+        {
+            if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Informationals)
+                cerr << "INFO: detach pixel data" << endl;
+            pixel->detachValueField();
+            return 1;
+        }
+    }
+    return 0;        
+}
+
+
+/*
+**
+** CVS/RCS Log:
+** $Log: diimage.cc,v $
+** Revision 1.1  1998-11-27 16:01:43  joergr
+** Added copyright message.
+** Added methods and constructors for flipping and rotating, changed for
+** scaling and clipping.
+** Added method to directly create java AWT bitmaps.
+** Introduced global debug level for dcmimage module to control error output.
+** Renamed variable 'Status' to 'ImageStatus' because of possible conflicts
+** with X windows systems.
+** Added method to detach pixel data if it is no longer needed.
+**
+** Revision 1.7  1998/06/25 08:51:41  joergr
+** Removed some wrong newline characters.
+**
+** Revision 1.6  1998/05/11 14:52:29  joergr
+** Added CVS/RCS header to each file.
+**
+**
+*/
