@@ -23,8 +23,8 @@
  *    classes: DSRCodingSchemeIdentificationList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-09-10 13:18:43 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2003-09-15 13:55:45 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -187,7 +187,7 @@ OFCondition DSRCodingSchemeIdentificationList::readXML(const DSRXMLDocument &doc
                         /* check for known element tags */
                         doc.getStringFromNodeContent(childCursor, item->CodingSchemeRegistry, "registry", OFTrue /*encoding*/, OFFalse /*clearString*/);
                         doc.getStringFromNodeContent(childCursor, item->CodingSchemeUID, "uid", OFFalse /*encoding*/, OFFalse /*clearString*/);
-                        doc.getStringFromNodeContent(childCursor, item->CodingSchemeExternalID, "identifier", OFTrue /*encoding*/, OFFalse /*clearString*/);
+                        doc.getStringFromNodeContent(childCursor, item->CodingSchemeExternalID, "id", OFTrue /*encoding*/, OFFalse /*clearString*/);
                         doc.getStringFromNodeContent(childCursor, item->CodingSchemeName, "name", OFTrue /*encoding*/, OFFalse /*clearString*/);
                         doc.getStringFromNodeContent(childCursor, item->CodingSchemeVersion, "version", OFTrue /*encoding*/, OFFalse /*clearString*/);
                         doc.getStringFromNodeContent(childCursor, item->ResponsibleOrganization, "organization", OFTrue /*encoding*/, OFFalse /*clearString*/);
@@ -572,7 +572,11 @@ OFCondition DSRCodingSchemeIdentificationList::setResponsibleOrganization(const 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcsidl.cc,v $
- *  Revision 1.1  2003-09-10 13:18:43  joergr
+ *  Revision 1.2  2003-09-15 13:55:45  joergr
+ *  Made XML output more consistent: changed XML tag name from "identifier" to
+ *  "id".
+ *
+ *  Revision 1.1  2003/09/10 13:18:43  joergr
  *  Replaced PrivateCodingSchemeUID by new CodingSchemeIdenticationSequence as
  *  required by CP 324.
  *
