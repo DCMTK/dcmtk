@@ -22,9 +22,9 @@
  *  Purpose: A simple string class
  * 
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:36:06 $
+ *  Update Date:      $Date: 2000-04-14 15:21:33 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofstring.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -336,8 +336,7 @@ OFString::replace (size_t pos, size_t n, size_t rep, char s)
 const char* 
 OFString::data () const 
 {
-    static OFString emptyString("");
-    return ((this->size() != 0)?(this->c_str()):(emptyString.c_str()));
+    return ((this->size() != 0)?(this->c_str()): "");
 }
 
 
@@ -1009,7 +1008,10 @@ OFBool operator>= (const OFString& lhs, char rhs)
 /*
 ** CVS/RCS Log:
 ** $Log: ofstring.cc,v $
-** Revision 1.11  2000-03-08 16:36:06  meichel
+** Revision 1.12  2000-04-14 15:21:33  meichel
+** Minor change to make OFString thread safe.
+**
+** Revision 1.11  2000/03/08 16:36:06  meichel
 ** Updated copyright header.
 **
 ** Revision 1.10  2000/02/02 14:30:17  joergr
