@@ -22,9 +22,9 @@
  *  Purpose: class DcmPersonName
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-11 12:28:56 $
+ *  Update Date:      $Date: 2002-04-25 10:32:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrpn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -74,18 +74,6 @@ DcmPersonName::getOFString(
     OFCondition l_error = DcmCharString::getOFString(str, pos, normalize);
     if (l_error.good() && normalize)
 	    normalizeString(str, !MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
-    return l_error;
-}
-
-
-OFCondition
-DcmPersonName::getOFStringArray(
-    OFString & str,
-    OFBool normalize)
-{
-    OFCondition l_error = DcmCharString::getOFStringArray(str, normalize);
-    if (l_error.good() && normalize)
-	    normalizeString(str, MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
     return l_error;
 }
 
@@ -281,7 +269,10 @@ DcmPersonName::getFormattedNameFromComponents(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrpn.cc,v $
-** Revision 1.14  2002-04-11 12:28:56  joergr
+** Revision 1.15  2002-04-25 10:32:45  joergr
+** Removed getOFStringArray() implementation.
+**
+** Revision 1.14  2002/04/11 12:28:56  joergr
 ** Enhanced documentation.
 **
 ** Revision 1.13  2001/10/10 15:22:05  joergr

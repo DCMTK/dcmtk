@@ -22,9 +22,9 @@
  *  Purpose: class DcmTime
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-11 12:31:35 $
+ *  Update Date:      $Date: 2002-04-25 10:34:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrtm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -77,20 +77,6 @@ DcmTime::getOFString(
         normalizeString(str, !MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
     return l_error;
 }
-
-// ********************************
-
-OFCondition
-DcmTime::getOFStringArray(
-    OFString & str,
-    OFBool normalize)
-{
-    OFCondition l_error = DcmByteString::getOFStringArray(str, normalize);
-    if (l_error.good() && normalize)
-        normalizeString(str, !MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
-    return l_error;
-}
-
 
 // ********************************
 
@@ -343,7 +329,10 @@ DcmTime::getTimeZoneFromString(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrtm.cc,v $
-** Revision 1.18  2002-04-11 12:31:35  joergr
+** Revision 1.19  2002-04-25 10:34:35  joergr
+** Removed getOFStringArray() implementation.
+**
+** Revision 1.18  2002/04/11 12:31:35  joergr
 ** Enhanced DICOM date, time and date/time classes. Added support for new
 ** standard date and time functions.
 **

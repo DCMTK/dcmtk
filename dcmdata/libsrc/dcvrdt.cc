@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: class DcmDateTime
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-11 12:31:34 $
+ *  Update Date:      $Date: 2002-04-25 10:29:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrdt.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -79,21 +79,6 @@ DcmDateTime::getOFString(
     OFCondition l_error = DcmByteString::getOFString(str, pos, normalize);
     if (l_error.good() && normalize)
         normalizeString(str, !MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
-    return l_error;
-}
-
-
-// ********************************
-
-
-OFCondition
-DcmDateTime::getOFStringArray(
-    OFString & str,
-    OFBool normalize)
-{
-    OFCondition l_error = DcmByteString::getOFStringArray(str, normalize);
-    if (l_error.good() && normalize)
-        normalizeString(str, MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
     return l_error;
 }
 
@@ -315,7 +300,10 @@ DcmDateTime::getISOFormattedDateTimeFromString(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrdt.cc,v $
-** Revision 1.18  2002-04-11 12:31:34  joergr
+** Revision 1.19  2002-04-25 10:29:13  joergr
+** Removed getOFStringArray() implementation.
+**
+** Revision 1.18  2002/04/11 12:31:34  joergr
 ** Enhanced DICOM date, time and date/time classes. Added support for new
 ** standard date and time functions.
 **

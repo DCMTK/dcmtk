@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmDecimalString
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:19:56 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-25 10:28:42 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrds.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -97,24 +97,13 @@ DcmDecimalString::getOFString(
 
 // ********************************
 
-OFCondition 
-DcmDecimalString::getOFStringArray(
-    OFString & str,
-    OFBool normalize)
-{
-    OFCondition l_error = DcmByteString::getOFStringArray(str, normalize);
-    if (l_error == EC_Normal && normalize)
-	normalizeString(str, MULTIPART, DELETE_LEADING, DELETE_TRAILING);
-    return l_error;
-}
-
-
-// ********************************
-
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrds.cc,v $
-** Revision 1.13  2001-09-25 17:19:56  meichel
+** Revision 1.14  2002-04-25 10:28:42  joergr
+** Removed getOFStringArray() implementation.
+**
+** Revision 1.13  2001/09/25 17:19:56  meichel
 ** Adapted dcmdata to class OFCondition
 **
 ** Revision 1.12  2001/06/01 15:49:15  meichel

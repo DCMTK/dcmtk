@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmCodeString
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:19:55 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-25 10:28:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrcs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -81,24 +81,14 @@ DcmCodeString::getOFString(
     return l_error;
 }
 
-// ********************************
-
-OFCondition 
-DcmCodeString::getOFStringArray(
-    OFString & str,
-    OFBool normalize)
-{
-    OFCondition l_error = DcmByteString::getOFStringArray(str, normalize);
-    if (l_error == EC_Normal && normalize)
-	normalizeString(str, MULTIPART, DELETE_LEADING, DELETE_TRAILING);
-    return l_error;
-}
-
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrcs.cc,v $
-** Revision 1.11  2001-09-25 17:19:55  meichel
+** Revision 1.12  2002-04-25 10:28:07  joergr
+** Removed getOFStringArray() implementation.
+**
+** Revision 1.11  2001/09/25 17:19:55  meichel
 ** Adapted dcmdata to class OFCondition
 **
 ** Revision 1.10  2001/06/01 15:49:15  meichel
