@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-04-16 16:01:36 $
+** Update Date:		$Date: 1996-07-17 12:38:58 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcelem.h,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -73,6 +73,7 @@ public:
 	return Length;
     }
 
+    virtual BOOL isLeaf(void) const { return TRUE; }
     inline BOOL valueLoaded(void) { return fValue != NULL || Length == 0; }
 
     virtual void transferInit(void);
@@ -156,7 +157,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.h,v $
-** Revision 1.5  1996-04-16 16:01:36  andreas
+** Revision 1.6  1996-07-17 12:38:58  andreas
+** new nextObject to iterate a DicomDataset, DicomFileFormat, Item, ...
+**
+** Revision 1.5  1996/04/16 16:01:36  andreas
 ** - put methods for AttributeTag with DcmTagKey Parameter
 ** - better support for NULL values
 **

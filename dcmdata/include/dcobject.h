@@ -10,7 +10,7 @@
 ** DICOM object encoding/decoding, search and lookup facilities.
 **
 ** Last Update:   $Author: andreas $
-** Revision:      $Revision: 1.6 $
+** Revision:      $Revision: 1.7 $
 ** Status:	  $State: Exp $
 **
 */
@@ -25,6 +25,7 @@
 #include "dcxfer.h"
 #include "dcstream.h"
 #include "dctag.h"
+#include "dclist.h"
 #include "dcstack.h"
 
 
@@ -71,6 +72,8 @@ public:
     virtual ~DcmObject();
 
     virtual DcmEVR ident(void) const = 0;
+    virtual BOOL isLeaf(void) const = 0;
+    virtual DcmObject * nextInContainer(const DcmObject * obj);
     virtual void print(const int level = 0) = 0;
     inline E_Condition error(void) const { return errorFlag; }
 
@@ -104,6 +107,7 @@ public:
     virtual E_Condition clear() = 0;
     virtual E_Condition verify(const BOOL autocorrect = FALSE) = 0;
 
+    virtual E_Condition nextObject(DcmStack & stack, const BOOL intoSub);
     virtual E_Condition search(const DcmTag &tag,                 // in
 			       DcmStack &resultStack,	       // inout
 			       E_SearchMode mode = ESM_fromHere,  // in

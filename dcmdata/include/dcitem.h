@@ -10,10 +10,10 @@
 ** Interface of class DcmItem
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-04-29 15:08:53 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-07-17 12:38:58 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcitem.h,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
+** CVS/RCS Revision:	$Revision: 1.9 $
 ** Status:		$State: Exp $
 **
 */
@@ -60,10 +60,12 @@ protected:
 			       const E_GrpLenEncoding gltype,   // in
 			       const Uint32 maxReadLength);	// in
 
-    E_Condition      searchSubFromHere(const DcmTag &tag,         // in
-				       DcmStack &resultStack,	  // inout
-				       BOOL searchIntoSub );      // in
-    BOOL	     foundVR(char* atposition );
+    E_Condition searchSubFromHere(const DcmTag &tag,         // in
+				  DcmStack &resultStack,     // inout
+				  BOOL searchIntoSub );      // in
+    DcmObject * iterObject(const DcmObject * obj,
+			   const E_ListPos pos);
+    BOOL foundVR(char* atposition );
     E_TransferSyntax checkTransferSyntax(DcmStream & inStream);
 
 public:
@@ -73,7 +75,8 @@ public:
     DcmItem( const DcmItem& old );
     virtual ~DcmItem();
 
-    virtual DcmEVR 	ident() const;
+    virtual DcmEVR 	ident(void) const;
+    virtual BOOL isLeaf(void) const { return FALSE; }
     virtual void	print(const int level = 0);
 
     virtual unsigned long getVM();
@@ -102,6 +105,13 @@ public:
     virtual E_Condition insert(DcmElement* elem,
 			       BOOL replaceOld = FALSE);
     virtual DcmElement* getElement(const unsigned long num);
+
+    // get next Object from position in stack. If stack empty
+    // get next Object in this item. if intoSub true, scan
+    // complete hierarchy, false scan only elements direct in this
+    // item (not deeper). 
+    virtual E_Condition nextObject(DcmStack & stack, const BOOL intoSub);
+    virtual DcmObject * nextInContainer(const DcmObject * obj);
     virtual DcmElement* remove(const unsigned long num);
     virtual DcmElement* remove(DcmObject* elem);
     virtual DcmElement* remove(const DcmTag& tag);
@@ -171,13 +181,21 @@ E_Condition newDicomElement(DcmElement * & newElement,
 DcmElement * newDicomElement(const DcmTag & tag,
 			     const Uint32 length = 0);
 
+// Function: nextUp
+// pop Object from stack and get next Object in top of stack
+
+E_Condition nextUp(DcmStack & stack);
+
 
 #endif // DCITEM_H
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
-** Revision 1.8  1996-04-29 15:08:53  hewett
+** Revision 1.9  1996-07-17 12:38:58  andreas
+** new nextObject to iterate a DicomDataset, DicomFileFormat, Item, ...
+**
+** Revision 1.8  1996/04/29 15:08:53  hewett
 ** Replaced DcmItem::findInt(...) with the more general DcmItem::findLong(...).
 **
 ** Revision 1.7  1996/04/16 16:00:05  andreas
