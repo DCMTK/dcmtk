@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmDicomDir
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-08-03 11:41:09 $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-09-24 08:45:55 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -374,7 +374,7 @@ debug(3, ( "DcmDicomDir::resolveAllOffsets() Item-Offset[%d]=0x%8.8lx", i, fileP
     resolveGivenOffsets( &localDirRecSeq, itOffsets, maxitems,
         DCM_MRDRDirectoryRecordOffset );
 
-    delete itOffsets;
+    delete[] itOffsets;
 
     return l_error;
 }
@@ -1327,7 +1327,10 @@ Cdebug(1, refCounter[k].fileOffset==refMRDR->numberOfReferences,
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
-** Revision 1.44  2004-08-03 11:41:09  meichel
+** Revision 1.45  2004-09-24 08:45:55  joergr
+** Replaced "delete" statement by "delete[]" (object created with "new[]").
+**
+** Revision 1.44  2004/08/03 11:41:09  meichel
 ** Headers libc.h and unistd.h are now included via ofstdinc.h
 **
 ** Revision 1.43  2004/03/16 13:44:03  joergr
