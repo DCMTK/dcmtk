@@ -23,9 +23,9 @@
  *    class DcmAssociationConfigurationFile
  * 
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-10 14:30:15 $
+ *  Update Date:      $Date: 2003-06-18 11:53:42 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dcasccff.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -214,14 +214,10 @@ OFCondition DcmAssociationConfigurationFile::parseRoleSelectionItems(
   DcmAssociationConfiguration& cfg,
   OFConfigFile& config)
 {
+  OFCondition result = EC_Normal;
+
   config.set_section(2, L2_SCPSCUROLESELECTION);
-  if (! config.section_valid(2))
-  {
-    OFString s("cannot find section [[");
-    s += L2_SCPSCUROLESELECTION;
-    s += "]] in config file";
-    return makeOFCondition(OFM_dcmnet, 1053, OF_error, s.c_str());      
-  }
+  if (! config.section_valid(2)) return result; // SCP/SCU role selection is optional, may be absent
 
   char buf[64];
   unsigned int counter;
@@ -234,7 +230,6 @@ OFCondition DcmAssociationConfigurationFile::parseRoleSelectionItems(
   size_t i;
   size_t len;
   char c;
-  OFCondition result = EC_Normal;
 
   config.first_section(1);
   while (config.section_valid(1))
@@ -308,14 +303,10 @@ OFCondition DcmAssociationConfigurationFile::parseExtendedNegotiationItems(
   DcmAssociationConfiguration& cfg,
   OFConfigFile& config)
 {
+  OFCondition result = EC_Normal;
+
   config.set_section(2, L2_EXTENDEDNEGOTIATION);
-  if (! config.section_valid(2))
-  {
-    OFString s("cannot find section [[");
-    s += L2_EXTENDEDNEGOTIATION;
-    s += "]] in config file";
-    return makeOFCondition(OFM_dcmnet, 1056, OF_error, s.c_str());      
-  }
+  if (! config.section_valid(2)) return result; // extended negotiation is optional, may be absent
 
   char buf[64];
   unsigned char raw[1024];
@@ -330,7 +321,6 @@ OFCondition DcmAssociationConfigurationFile::parseExtendedNegotiationItems(
   size_t i;
   size_t len;
   unsigned short us = 0;
-  OFCondition result = EC_Normal;
   OFBool parseError = OFFalse;
   char c;
 
@@ -458,6 +448,7 @@ OFCondition DcmAssociationConfigurationFile::parseProfiles(
 
     // do name mangling for presentation context key
     c = context;
+    scontext.clear();
     while (*c)
     {
       if (! isspace(*c)) scontext += (char) (toupper(*c));
@@ -469,6 +460,7 @@ OFCondition DcmAssociationConfigurationFile::parseProfiles(
     if (role)
     {
       c = role;
+      srole.clear();
       while (*c)
       {
         if (! isspace(*c)) srole += (char) (toupper(*c));
@@ -481,6 +473,7 @@ OFCondition DcmAssociationConfigurationFile::parseProfiles(
     if (extneg)
     {
       c = extneg;
+      sextneg.clear();
       while (*c)
       {
         if (! isspace(*c)) sextneg += (char) (toupper(*c));
@@ -501,7 +494,10 @@ OFCondition DcmAssociationConfigurationFile::parseProfiles(
 /*
  * CVS/RCS Log
  * $Log: dcasccff.cc,v $
- * Revision 1.1  2003-06-10 14:30:15  meichel
+ * Revision 1.2  2003-06-18 11:53:42  meichel
+ * Fixed bug in association configuration file parser
+ *
+ * Revision 1.1  2003/06/10 14:30:15  meichel
  * Initial release of class DcmAssociationConfiguration and support
  *   classes. This class maintains a list of association negotiation
  *   profiles that can be addressed by symbolic keys. The profiles may
