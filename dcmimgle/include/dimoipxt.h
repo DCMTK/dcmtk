@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeInputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-10-21 10:13:51 $
+ *  Update Date:      $Date: 2003-06-02 17:06:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoipxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -214,7 +214,7 @@ class DiMonoInputPixelTemplate
         const T1 *pixel = (const T1 *)input->getData();
         if (pixel != NULL)
         {
-            const int useInputBuffer = (sizeof(T1) == sizeof(T3)) && (Count <= input->getCount());
+            const int useInputBuffer = (sizeof(T1) == sizeof(T3)) && (Count <= input->getCount()) && (input->getPixelStart() == 0);
             if (useInputBuffer)
             {                                              // do not copy pixel data, reference them!
                 Data = (T3 *)input->getData();
@@ -299,7 +299,13 @@ class DiMonoInputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoipxt.h,v $
- * Revision 1.25  2002-10-21 10:13:51  joergr
+ * Revision 1.26  2003-06-02 17:06:21  joergr
+ * Fixed bug in optimization criterion which caused dcmimgle to ignore the
+ * "start frame" parameter in the DicomImage constructors under certain
+ * circumstances. Thanks to Hervé Baekeland <h.baekeland@global-imaging.net>
+ * for the bug report.
+ *
+ * Revision 1.25  2002/10/21 10:13:51  joergr
  * Corrected wrong calculation of min/max pixel value in cases where the
  * stored pixel data exceeds the expected size.
  * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for the bug
