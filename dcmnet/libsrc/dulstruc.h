@@ -50,9 +50,9 @@
 **  get the public definitions and function prototypes.  I have omitted
 **  the public definitions and prototypes on purpose so that they
 **  exist in only one location.
-** Last Update:		$Author: hewett $, $Date: 1996-03-26 18:38:46 $
+** Last Update:		$Author: andreas $, $Date: 1997-07-07 08:11:37 $
 ** Source File:		$RCSfile: dulstruc.h,v $
-** Revision:		$Revision: 1.1 $
+** Revision:		$Revision: 1.2 $
 ** Status:		$State: Exp $
 */
 
@@ -301,6 +301,14 @@ typedef struct dul_datapdu {
 	(B)[0] = (unsigned char)((A)>>8);		\
 	(B)[1] = (unsigned char)(A) ;	}
 
+#define EXTRACT_LONG_BIG(A,B)	{			\
+	(B) = (unsigned long)(A)[3]				\
+	  | (((unsigned long)(A)[2]) << 8)		\
+	  | (((unsigned long)(A)[1]) << 16)		\
+	  | (((unsigned long)(A)[0]) << 24);	\
+	}
+
+/*
 #define EXTRACT_LONG_BIG(A,B)	{		\
 	(B) = 0;				\
 	(B) = (unsigned long)(A)[3];		\
@@ -308,18 +316,27 @@ typedef struct dul_datapdu {
 	(B) |= ((unsigned long)(A)[1]) << 16;	\
 	(B) |= ((unsigned long)(A)[0]) << 24;	\
 	}
+*/
+
+#define EXTRACT_SHORT_BIG(A,B)  { (B) = (unsigned short)(A)[1] | (((unsigned short)(A)[0]) << 8); }
+
+/*
 #define EXTRACT_SHORT_BIG(A,B)	{		\
 	(B) = 0;				\
 	(B) = (unsigned long)(A)[1];		\
 	(B) |= ((unsigned long)(A)[0]) << 8;	\
 	}
-
+*/
 
 /*
 ** CVS Log
 ** $Log: dulstruc.h,v $
-** Revision 1.1  1996-03-26 18:38:46  hewett
-** Initial revision
+** Revision 1.2  1997-07-07 08:11:37  andreas
+** - Changed macros EXTRACT_LONG_BIG and EXTRACT_SHORT_BIG to avoid
+**   compiler warnings on SUN-CC and Windows NT/95
+**
+** Revision 1.1.1.1  1996/03/26 18:38:46  hewett
+** Initial Release.
 **
 **
 */
