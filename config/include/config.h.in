@@ -91,6 +91,9 @@
 /* Define if you have the getenv function.  */
 #undef HAVE_GETENV
 
+/* Define if you have the geteuid function.  */
+#undef HAVE_GETEUID
+
 /* Define if you have the gethostbyname function.  */
 #undef HAVE_GETHOSTBYNAME
 
@@ -111,6 +114,9 @@
 
 /* Define if you have the getsockopt function.  */
 #undef HAVE_GETSOCKOPT
+
+/* Define if you have the getuid function.  */
+#undef HAVE_GETUID
 
 /* Define if you have the getwd function.  */
 #undef HAVE_GETWD
@@ -153,6 +159,9 @@
 
 /* Define if you have the setsockopt function.  */
 #undef HAVE_SETSOCKOPT
+
+/* Define if you have the setuid function.  */
+#undef HAVE_SETUID
 
 /* Define if you have the shmat function.  */
 #undef HAVE_SHMAT
@@ -240,6 +249,9 @@
 
 /* Define if you have the <sys/dir.h> header file.  */
 #undef HAVE_SYS_DIR_H
+
+/* Define if you have the <sys/errno.h> header file.  */
+#undef HAVE_SYS_ERRNO_H
 
 /* Define if you have the <sys/file.h> header file.  */
 #undef HAVE_SYS_FILE_H

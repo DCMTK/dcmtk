@@ -99,6 +99,7 @@ AC_CHECK_HEADERS(sys/sem.h)
 AC_CHECK_HEADERS(sys/shm.h)
 AC_CHECK_HEADERS(sys/param.h)
 AC_CHECK_HEADERS(sys/resource.h)
+AC_CHECK_HEADERS(sys/errno.h)
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_TYPE_SIZE_T
@@ -132,6 +133,7 @@ AC_CHECK_FUNCS(flock lockf)
 AC_CHECK_FUNCS(listen connect setsockopt getsockopt select gethostbyname)
 AC_CHECK_FUNCS(bind accept getsockname)
 AC_CHECK_FUNCS(waitpid)
+AC_CHECK_FUNCS(getuid geteuid setuid)
 
 dnl Checks for prototypes
 
