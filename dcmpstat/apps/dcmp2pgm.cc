@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2002, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -26,9 +26,9 @@
  *    ignored. If no presentation state is loaded, a default is created.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-26 08:44:25 $
+ *  Update Date:      $Date: 2003-09-05 09:26:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmp2pgm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -62,175 +62,9 @@
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
-void dumpPresentationState(DVInterface& dvi);
 
-#define SHORTCOL 2
-#define LONGCOL 13
-
-int main(int argc, char *argv[])
+void dumpPresentationState(DVPresentationState &ps)
 {
-    int    opt_debugMode       = 0;                       /* default: no debug */
-    OFBool opt_dump_pstate     = OFFalse;                 /* default: do not dump presentation state */
-    OFBool opt_dicom_mode      = OFFalse;                 /* default: create PGM, not DICOM SC */
-    OFCmdUnsignedInt opt_frame = 1;                       /* default: first frame */
-    const char *opt_pstName    = NULL;                    /* pstate read file name */
-    const char *opt_imgName    = NULL;                    /* image read file name */
-    const char *opt_pgmName    = NULL;                    /* pgm save file name */
-    const char *opt_savName    = NULL;                    /* pstate save file name */
-    const char *opt_cfgName    = NULL;                    /* config read file name */
-
-    SetDebugLevel(( 0 ));
-    DicomImageClass::setDebugLevel(DicomImageClass::DL_NoMessages);
-
-    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "Read DICOM image and presentation state and render bitmap", rcsid);
-    OFCommandLine cmd;
-    cmd.setOptionColumns(LONGCOL, SHORTCOL);
-    cmd.setParamColumn(LONGCOL + SHORTCOL + 2);
-
-    cmd.addParam("dcmimage_in",              "input DICOM image");
-    cmd.addParam("bitmap_out",               "output DICOM image or PGM bitmap", OFCmdParam::PM_Optional);
-
-    cmd.addGroup("general options:");
-     cmd.addOption("--help",        "-h",    "print this help text and exit");
-     cmd.addOption("--version",              "print version information and exit", OFTrue /* exclusive */);
-     cmd.addOption("--verbose",     "-v",    "verbose mode, dump presentation state contents");
-     cmd.addOption("--debug",       "-d",    "debug mode, print debug information");
-
-    cmd.addGroup("processing options:");
-     cmd.addOption("--pstate",      "-p", 1, "[f]ilename: string",
-                                             "process using presentation state file");
-     cmd.addOption("--config",      "-c", 1, "[f]ilename: string",
-                                             "process using settings from configuration file");
-     cmd.addOption("--frame",       "-f", 1, "[f]rame: integer",
-                                             "process using image frame f (default: 1)");
-
-    cmd.addGroup("output format:");
-     cmd.addOption("--pgm",         "-D",    "save image as PGM (default)");
-     cmd.addOption("--dicom",       "+D",    "save image as DICOM secondary capture");
-
-    cmd.addGroup("output options:");
-     cmd.addOption("--save-pstate", "+S", 1, "[f]ilename: string",
-                                             "save presentation state to file");
-    /* evaluate command line */
-    prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
-    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
-    {
-      /* check exclusive options first */
-      if (cmd.getParamCount() == 0)
-      {
-        if (cmd.findOption("--version"))
-        {
-            app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-            CERR << endl << "External libraries used:";
-#ifdef WITH_ZLIB
-            CERR << endl << "- ZLIB, Version " << zlibVersion() << endl;
-#else
-            CERR << " none" << endl;
-#endif
-            return 0;
-         }
-      }
-
-      /* command line parameters and options */
-      cmd.getParam(1, opt_imgName);
-      if (cmd.getParamCount() > 1)
-        cmd.getParam(2, opt_pgmName);
-      if (cmd.findOption("--verbose"))     opt_dump_pstate=OFTrue;
-      if (cmd.findOption("--debug"))       opt_debugMode = 3;
-      if (cmd.findOption("--pstate"))      app.checkValue(cmd.getValue(opt_pstName));
-      if (cmd.findOption("--config"))      app.checkValue(cmd.getValue(opt_cfgName));
-      if (cmd.findOption("--frame"))       app.checkValue(cmd.getValueAndCheckMin(opt_frame, 1));
-      if (cmd.findOption("--pgm"))         opt_dicom_mode = OFFalse;
-      if (cmd.findOption("--dicom"))       opt_dicom_mode = OFTrue;
-      if (cmd.findOption("--save-pstate")) app.checkValue(cmd.getValue(opt_savName));
-    }
-
-    SetDebugLevel((opt_debugMode));
-    DicomImageClass::setDebugLevel(opt_debugMode);
-
-    if (opt_cfgName)
-    {
-      FILE *cfgfile = fopen(opt_cfgName, "rb");
-      if (cfgfile) fclose(cfgfile); else
-      {
-        CERR << "error: can't open configuration file '" << opt_cfgName << "'" << endl;
-        return 10;
-      }
-    }
-    DVInterface dvi(opt_cfgName);
-    OFCondition status = EC_Normal;
-
-    if (opt_pstName == NULL)
-    {
-        if (opt_debugMode > 0)
-            CERR << "reading DICOM image file: " << opt_imgName << endl;
-        status = dvi.loadImage(opt_imgName);
-    } else {
-        if (opt_debugMode > 0)
-        {
-            CERR << "reading DICOM pstate file: " << opt_pstName << endl;
-            CERR << "reading DICOM image file: " << opt_imgName << endl;
-        }
-        status = dvi.loadPState(opt_pstName, opt_imgName);
-    }
-
-    if (status == EC_Normal)
-    {
-    	if (opt_dump_pstate) dumpPresentationState(dvi);
-        if (opt_pgmName != NULL)
-        {
-            const void *pixelData = NULL;
-            unsigned long width = 0;
-            unsigned long height = 0;
-            if (opt_debugMode > 0) CERR << "creating pixel data" << endl;
-            if ((opt_frame > 0) && (dvi.getCurrentPState().selectImageFrameNumber(opt_frame) != EC_Normal))
-               CERR << "cannot select frame " << opt_frame << endl;
-            if ((dvi.getCurrentPState().getPixelData(pixelData, width, height) == EC_Normal) && (pixelData != NULL))
-            {
-              if (opt_dicom_mode)
-              {
-                double pixelAspectRatio = dvi.getCurrentPState().getPrintBitmapPixelAspectRatio(); // works for rotated images
-                if (opt_debugMode > 0) CERR << "writing DICOM SC file: " << opt_pgmName << endl;
-                if (EC_Normal != dvi.saveDICOMImage(opt_pgmName, pixelData, width, height, pixelAspectRatio))
-                {
-                  CERR << "error during creation of DICOM file" << endl;
-                }
-              } else {
-                FILE *outfile = fopen(opt_pgmName, "wb");
-                if (outfile)
-                {
-                    if (opt_debugMode > 0)
-                        CERR << "writing PGM file: " << opt_pgmName << endl;
-                    fprintf(outfile, "P5\n%ld %ld 255\n", width, height);
-                    fwrite(pixelData, (size_t)width, (size_t)height, outfile);
-                    fclose(outfile);
-                } else app.printError("Can't create output file.");
-              }
-            } else app.printError("Can't create output data.");
-        }
-        if (opt_savName != NULL)
-        {
-            if (opt_debugMode > 0)
-                CERR << "writing pstate file: " << opt_savName << endl;
-            if (dvi.savePState(opt_savName, OFFalse) != EC_Normal)
-                app.printError("Can't write pstate file.");
-        }
-    } else
-        app.printError("Can't open input file(s).");
-
-#ifdef DEBUG
-    dcmDataDict.clear();  /* useful for debugging with dmalloc */
-#endif
-
-    return (status != EC_Normal);
-}
-
-
-// ********************************************
-
-void dumpPresentationState(DVInterface& dvi)
-{
-  DVPresentationState &ps = dvi.getCurrentPState();
   size_t i, j, max;
   const char *c;
 
@@ -583,22 +417,178 @@ void dumpPresentationState(DVInterface& dvi)
   }
   COUT << endl;
 
-  Uint32 numberOfPeers = dvi.getNumberOfTargets();
-  COUT << "Communication peers (defined in config file): " << numberOfPeers << endl;
-  for (Uint32 cpi=0; cpi<numberOfPeers; cpi++)
-  {
-    COUT << "  Peer " << cpi+1 << ": ID='" << dvi.getTargetID(cpi) << "' description='"
-         << dvi.getTargetDescription(dvi.getTargetID(cpi)) << "'" << endl;
-  }
-  COUT << endl;
+}
 
+
+#define SHORTCOL 2
+#define LONGCOL 13
+
+int main(int argc, char *argv[])
+{
+    int    opt_debugMode       = 0;                       /* default: no debug */
+    OFBool opt_dump_pstate     = OFFalse;                 /* default: do not dump presentation state */
+    OFBool opt_dicom_mode      = OFFalse;                 /* default: create PGM, not DICOM SC */
+    OFCmdUnsignedInt opt_frame = 1;                       /* default: first frame */
+    const char *opt_pstName    = NULL;                    /* pstate read file name */
+    const char *opt_imgName    = NULL;                    /* image read file name */
+    const char *opt_pgmName    = NULL;                    /* pgm save file name */
+    const char *opt_savName    = NULL;                    /* pstate save file name */
+    const char *opt_cfgName    = NULL;                    /* config read file name */
+
+    SetDebugLevel(( 0 ));
+    DicomImageClass::setDebugLevel(DicomImageClass::DL_NoMessages);
+
+    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "Read DICOM image and presentation state and render bitmap", rcsid);
+    OFCommandLine cmd;
+    cmd.setOptionColumns(LONGCOL, SHORTCOL);
+    cmd.setParamColumn(LONGCOL + SHORTCOL + 2);
+
+    cmd.addParam("dcmimage_in",              "input DICOM image");
+    cmd.addParam("bitmap_out",               "output DICOM image or PGM bitmap", OFCmdParam::PM_Optional);
+
+    cmd.addGroup("general options:");
+     cmd.addOption("--help",        "-h",    "print this help text and exit");
+     cmd.addOption("--version",              "print version information and exit", OFTrue /* exclusive */);
+     cmd.addOption("--verbose",     "-v",    "verbose mode, dump presentation state contents");
+     cmd.addOption("--debug",       "-d",    "debug mode, print debug information");
+
+    cmd.addGroup("processing options:");
+     cmd.addOption("--pstate",      "-p", 1, "[f]ilename: string",
+                                             "process using presentation state file");
+     cmd.addOption("--config",      "-c", 1, "[f]ilename: string",
+                                             "process using settings from configuration file");
+     cmd.addOption("--frame",       "-f", 1, "[f]rame: integer",
+                                             "process using image frame f (default: 1)");
+
+    cmd.addGroup("output format:");
+     cmd.addOption("--pgm",         "-D",    "save image as PGM (default)");
+     cmd.addOption("--dicom",       "+D",    "save image as DICOM secondary capture");
+
+    cmd.addGroup("output options:");
+     cmd.addOption("--save-pstate", "+S", 1, "[f]ilename: string",
+                                             "save presentation state to file");
+    /* evaluate command line */
+    prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
+    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
+    {
+      /* check exclusive options first */
+      if (cmd.getParamCount() == 0)
+      {
+        if (cmd.findOption("--version"))
+        {
+            app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
+            CERR << endl << "External libraries used:";
+#ifdef WITH_ZLIB
+            CERR << endl << "- ZLIB, Version " << zlibVersion() << endl;
+#else
+            CERR << " none" << endl;
+#endif
+            return 0;
+         }
+      }
+
+      /* command line parameters and options */
+      cmd.getParam(1, opt_imgName);
+      if (cmd.getParamCount() > 1)
+        cmd.getParam(2, opt_pgmName);
+      if (cmd.findOption("--verbose"))     opt_dump_pstate=OFTrue;
+      if (cmd.findOption("--debug"))       opt_debugMode = 3;
+      if (cmd.findOption("--pstate"))      app.checkValue(cmd.getValue(opt_pstName));
+      if (cmd.findOption("--config"))      app.checkValue(cmd.getValue(opt_cfgName));
+      if (cmd.findOption("--frame"))       app.checkValue(cmd.getValueAndCheckMin(opt_frame, 1));
+      if (cmd.findOption("--pgm"))         opt_dicom_mode = OFFalse;
+      if (cmd.findOption("--dicom"))       opt_dicom_mode = OFTrue;
+      if (cmd.findOption("--save-pstate")) app.checkValue(cmd.getValue(opt_savName));
+    }
+
+    SetDebugLevel((opt_debugMode));
+    DicomImageClass::setDebugLevel(opt_debugMode);
+
+    if (opt_cfgName)
+    {
+      FILE *cfgfile = fopen(opt_cfgName, "rb");
+      if (cfgfile) fclose(cfgfile); else
+      {
+        CERR << "error: can't open configuration file '" << opt_cfgName << "'" << endl;
+        return 10;
+      }
+    }
+    DVInterface dvi(opt_cfgName);
+    OFCondition status = EC_Normal;
+
+    if (opt_pstName == NULL)
+    {
+        if (opt_debugMode > 0)
+            CERR << "reading DICOM image file: " << opt_imgName << endl;
+        status = dvi.loadImage(opt_imgName);
+    } else {
+        if (opt_debugMode > 0)
+        {
+            CERR << "reading DICOM pstate file: " << opt_pstName << endl;
+            CERR << "reading DICOM image file: " << opt_imgName << endl;
+        }
+        status = dvi.loadPState(opt_pstName, opt_imgName);
+    }
+
+    if (status == EC_Normal)
+    {
+    	if (opt_dump_pstate) dumpPresentationState(dvi.getCurrentPState());
+        if (opt_pgmName != NULL)
+        {
+            const void *pixelData = NULL;
+            unsigned long width = 0;
+            unsigned long height = 0;
+            if (opt_debugMode > 0) CERR << "creating pixel data" << endl;
+            if ((opt_frame > 0) && (dvi.getCurrentPState().selectImageFrameNumber(opt_frame) != EC_Normal))
+               CERR << "cannot select frame " << opt_frame << endl;
+            if ((dvi.getCurrentPState().getPixelData(pixelData, width, height) == EC_Normal) && (pixelData != NULL))
+            {
+              if (opt_dicom_mode)
+              {
+                double pixelAspectRatio = dvi.getCurrentPState().getPrintBitmapPixelAspectRatio(); // works for rotated images
+                if (opt_debugMode > 0) CERR << "writing DICOM SC file: " << opt_pgmName << endl;
+                if (EC_Normal != dvi.saveDICOMImage(opt_pgmName, pixelData, width, height, pixelAspectRatio))
+                {
+                  CERR << "error during creation of DICOM file" << endl;
+                }
+              } else {
+                FILE *outfile = fopen(opt_pgmName, "wb");
+                if (outfile)
+                {
+                    if (opt_debugMode > 0)
+                        CERR << "writing PGM file: " << opt_pgmName << endl;
+                    fprintf(outfile, "P5\n%ld %ld 255\n", width, height);
+                    fwrite(pixelData, (size_t)width, (size_t)height, outfile);
+                    fclose(outfile);
+                } else app.printError("Can't create output file.");
+              }
+            } else app.printError("Can't create output data.");
+        }
+        if (opt_savName != NULL)
+        {
+            if (opt_debugMode > 0)
+                CERR << "writing pstate file: " << opt_savName << endl;
+            if (dvi.savePState(opt_savName, OFFalse) != EC_Normal)
+                app.printError("Can't write pstate file.");
+        }
+    } else
+        app.printError("Can't open input file(s).");
+
+#ifdef DEBUG
+    dcmDataDict.clear();  /* useful for debugging with dmalloc */
+#endif
+
+    return (status != EC_Normal);
 }
 
 
 /*
  * CVS/RCS Log:
  * $Log: dcmp2pgm.cc,v $
- * Revision 1.31  2002-11-26 08:44:25  meichel
+ * Revision 1.32  2003-09-05 09:26:54  meichel
+ * Minor code purifications
+ *
+ * Revision 1.31  2002/11/26 08:44:25  meichel
  * Replaced all includes for "zlib.h" with <zlib.h>
  *   to avoid inclusion of zlib.h in the makefile dependencies.
  *
