@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomDisplayFunction (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-08 13:09:06 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-02-09 14:22:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/didispfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -360,7 +360,7 @@ int DiDisplayFunction::interpolateValues()
     {
         int status = 0;
         double *spline = new double[ValueCount];
-        if ((spline != NULL) && CubicSplineFunction<Uint16, double>(DDLValue, LumValue, ValueCount, spline))
+        if ((spline != NULL) && (CubicSplineFunction(DDLValue, LumValue, ValueCount, spline, 1.0e30, 1.0e30)))
         {
             const Uint16 count = ValueCount;
             Uint16 *old_ddl = DDLValue;
@@ -373,7 +373,7 @@ int DiDisplayFunction::interpolateValues()
                 register Uint16 i;
                 for (i = 0; i < ValueCount; i++)                        // set all DDL values, from 0 to max
                     DDLValue[i] = i;
-                status = CubicSplineInterpolation<Uint16, double>(old_ddl, old_lum, spline, count, DDLValue, LumValue, ValueCount);
+                status = CubicSplineInterpolation(old_ddl, old_lum, spline, count, DDLValue, LumValue, ValueCount);
             }
             delete[] old_ddl;
             delete[] old_lum;
@@ -437,7 +437,7 @@ int DiDisplayFunction::calculateGSDFSpline()
             register unsigned int *p = jidx;
             for (i = 1; i <= GSDFCount; i++)
                 *(p++) = i;
-            status = CubicSplineFunction<unsigned int, double>(jidx, GSDFValue, GSDFCount, GSDFSpline);
+            status = CubicSplineFunction(jidx, GSDFValue, GSDFCount, GSDFSpline, 1.0e30, 1.0e30);
         }
         delete[] jidx;
     }
@@ -490,7 +490,11 @@ double DiDisplayFunction::getJNDIndex(const double lum) const
  *
  * CVS/RCS Log:
  * $Log: didispfn.cc,v $
- * Revision 1.2  1999-02-08 13:09:06  joergr
+ * Revision 1.3  1999-02-09 14:22:31  meichel
+ * Removed explicit template parameters from template function calls,
+ *   required for Sun CC 4.2
+ *
+ * Revision 1.2  1999/02/08 13:09:06  joergr
  * Added (debug) warning message when using invalid DISPLAY file names.
  *
  * Revision 1.1  1999/02/03 17:48:37  joergr

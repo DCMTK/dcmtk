@@ -1,3 +1,19 @@
+
+**** Changes from 1999.02.09 (eichelberg)
+
+- Corrected const signatures of some ctor declarations
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/libsrc/dimoimg.cc
+           
+- Removed default parameters from template functions,
+  required for Sun CC 4.2
+  Affects: dcmimgle/include/displine.h
+
+- Removed explicit template parameters from template function calls,
+  required for Sun CC 4.2
+  Affects: dcmimgle/libsrc/dibarlut.cc
+           dcmimgle/libsrc/didispfn.cc
+
 **** Changes from 1999.02.08 (riesmeier)
 
 - Corrected some typos and formatting.

@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomBartenLUT (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-08 13:07:30 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-02-09 14:22:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/Attic/dibarlut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -114,7 +114,7 @@ int DiBartenLUT::createLUT(const Uint16 *ddl_tab,
                 double *gsdf = new double[Count];                       // interpolated GSDF
                 if (gsdf != NULL)
                 {     
-                    if (CubicSplineInterpolation<double, double>(jnd_idx, gsdf_tab, gsdf_spl, gsdf_cnt, jidx, gsdf, Count))
+                    if (CubicSplineInterpolation(jnd_idx, gsdf_tab, gsdf_spl, gsdf_cnt, jidx, gsdf, Count))
                     {
                         DataBuffer = new Uint16[Count];
                         if (DataBuffer != NULL)
@@ -151,7 +151,11 @@ int DiBartenLUT::createLUT(const Uint16 *ddl_tab,
  *
  * CVS/RCS Log:
  * $Log: dibarlut.cc,v $
- * Revision 1.2  1999-02-08 13:07:30  joergr
+ * Revision 1.3  1999-02-09 14:22:30  meichel
+ * Removed explicit template parameters from template function calls,
+ *   required for Sun CC 4.2
+ *
+ * Revision 1.2  1999/02/08 13:07:30  joergr
  * Corrected some typos and formatting.
  *
  * Revision 1.1  1999/02/03 17:48:36  joergr
