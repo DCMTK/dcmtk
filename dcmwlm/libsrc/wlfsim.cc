@@ -22,9 +22,9 @@
 *  Purpose: Class for managing file system interaction.
 *
 *  Last Update:      $Author: joergr $
-*  Update Date:      $Date: 2002-12-09 13:42:22 $
+*  Update Date:      $Date: 2002-12-11 18:10:48 $
 *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlfsim.cc,v $
-*  CVS/RCS Revision: $Revision: 1.5 $
+*  CVS/RCS Revision: $Revision: 1.6 $
 *  Status:           $State: Exp $
 *
 *  CVS/RCS Log at end of file
@@ -1431,7 +1431,7 @@ void WlmFileSystemInteractionManager::ExtractValuesFromRange( const char *range,
 // Return Value : none.
 {
   // get lower value
-  char *tmp = strchr( range, '-' );
+  const char *tmp = strchr( range, '-' );
   int res = tmp - range;
   if( res == 0 )
     lower = NULL;
@@ -1459,7 +1459,11 @@ void WlmFileSystemInteractionManager::ExtractValuesFromRange( const char *range,
 /*
 ** CVS Log
 ** $Log: wlfsim.cc,v $
-** Revision 1.5  2002-12-09 13:42:22  joergr
+** Revision 1.6  2002-12-11 18:10:48  joergr
+** Added const type specifier to a "char*" variable declaration to avoid
+** compiler error on Sun CC 5.2.
+**
+** Revision 1.5  2002/12/09 13:42:22  joergr
 ** Renamed parameter to avoid name clash with global function index().
 **
 ** Revision 1.4  2002/11/28 11:04:47  meichel
