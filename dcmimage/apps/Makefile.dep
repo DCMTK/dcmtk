@@ -23,7 +23,8 @@ dcm2pnm.o: dcm2pnm.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dcvrtm.h ../../dcmdata/include/dcchrstr.h \
  ../../dcmdata/include/dcvrlo.h ../../dcmdata/include/dcvrlt.h \
  ../../dcmdata/include/dcvrpn.h ../../dcmdata/include/dcvrsh.h \
- ../../dcmdata/include/dcvrst.h ../../dcmdata/include/dcvrobow.h \
+ ../../dcmdata/include/dcvrst.h ../../dcmdata/include/dcvrut.h \
+ ../../dcmdata/include/dcvrvs.h ../../dcmdata/include/dcvrobow.h \
  ../../dcmdata/include/dcpixel.h ../../dcmdata/include/dcvrpobw.h \
  ../../dcmdata/include/dcovlay.h ../../dcmdata/include/dcvrat.h \
  ../../dcmdata/include/dcvrss.h ../../dcmdata/include/dcvrus.h \
