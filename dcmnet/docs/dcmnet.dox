@@ -1,11 +1,13 @@
 /*!
 
-\defgroup dcmnet dcmnet
+\page dcmnet Module dcmnet
 
 This module contains a collection of functions that implement DICOM network 
-communication, i.e. the DICOM Upper Layer Finite State Machine, the Association 
-Control Service Element (ACSE) and the DICOM Message Service Element (DIMSE). 
-The main interfaces are the structs and functions declared in file assoc.h and dimse.h.
+communication, i.e. the DICOM Upper Layer Finite State Machine, the Association
+Control Service Element (ACSE) and the DICOM Message Service Element (DIMSE).
+
+The main interfaces are the structs and functions declared in file assoc.h and
+dimse.h.
 
 \section Tools
 
@@ -45,7 +47,7 @@ ASC_addPresentationContext(params, 1, UID_VerificationSOPClass, ts, 1);
 T_ASC_Association *assoc;
 if (ASC_requestAssociation(net, params, &assoc).good())
 {
-  if (ASC_countAcceptedPresentationContexts(params) == 1) 
+  if (ASC_countAcceptedPresentationContexts(params) == 1)
   {
     // the remote SCP has accepted the Verification Service Class
     DIC_US id = assoc->nextMsgID++; // generate next message ID
