@@ -4,7 +4,7 @@ NAME
 
 SYNOPSIS
 
-    echoscu [-r n][-v][-d][-a][-b n][-t ourAETitle][-c theirAETitle] peer port
+    echoscu [options] peer port
 
 SUMMARY
 
@@ -15,24 +15,34 @@ used to verify basic DICOM connectivity.
 
 USAGE
 
-Invoking the echoscu application without any parameters will cause it to 
-display an invocation syntax summary.
-
-The echoscu application command line parameters and options:
-
-    echoscu [-r n][-v][-d][-a][-b n][-t ourAETitle][-c theirAETitle] peer port
+echoscu: DICOM verification (C-ECHO) SCU
+usage: echoscu [options] peer port
 
 parameters:
-    peer        hostname of dicom peer
-    port        tcp/ip port number of peer
-options:
-    -r n        repeat n times
-    -v          verbose mode
-    -d          debug mode
-    -a          abort association
-    -b n        set max receive pdu to n bytes (default: 16K)
-    -t title    my calling AE title (default: ECHOSCU)
-    -c title    called AE title of peer (default: ANY-SCP)
+  peer                  hostname of DICOM peer
+  port                  tcp/ip port number of peer
+
+general options:
+  -h      --help        print this help text and exit
+  -v      --verbose     verbose mode, print processing details
+  -d      --debug       debug mode, print debug information
+network options:
+  application entity titles:
+    -aet  --aetitle     aetitle: string
+                        set my calling AE title (default: ECHOSCU)
+    -aec  --call        aetitle: string
+                        set called AE title of peer (default: ANY-SCP)
+  association negotiation debugging:
+    -pts  --propose-ts  [n]umber: integer (1..22)
+                        propose n transfer syntaxes
+    -ppc  --propose-pc  [n]umber: integer (1..128)
+                        propose n presentation contexts
+  other network options:
+    -pdu  --max-pdu     [n]umber of bytes: integer [8192..65536]
+                        set max receive pdu to n bytes (default: 16384)
+          --repeat      [n]umber: integer
+                        repeat n times
+          --abort       abort association instead of releasing it
 
 DICOM CONFORMANCE
 
@@ -40,24 +50,21 @@ The echoscu application supports the SOP Classes as an SCU:
 
     VerificationSOPClass	"1.2.840.10008.1.1"
 
-The echoscu application will only propose the transfer syntax
+Unless the --propose-ts option is used, the echoscu application will only 
+propose the transfer syntax
 
     LittleEndianImplicitTransferSyntax	"1.2.840.10008.1.2"
 
 ENVIRONMENT
 
-The echoscu application will attempt to load DICOM data dictionaries
-specified in the DCMDICTPATH environment variable.  By default, if
-the DCMDICTPATH environment variable is not set, the file
-/usr/local/dicom/lib/dicom.dic will be loaded.  The default behaviour
-should be preferred and the DCMDICTPATH environment variable only used
-when alternative data dictionaries are required.  The DCMDICTPATH 
-environment variable has the same format as the shell PATH variable in
-that a colon (":") separates entries.  The data dictionary code will
-attempt to load each file specified in the DCMDICTPATH environment 
-variable.  It is an error if no data dictionary can be loaded.
-
-AUTHOR
-
-Andrew Hewett, Kuratorium OFFIS e.V., Oldenburg, Germany
+The echoscu application will attempt to load DICOM data dictionaries 
+specified in the DCMDICTPATH environment variable.  By default, if the 
+DCMDICTPATH environment variable is not set, the file 
+/usr/local/dicom/lib/dicom.dic will be loaded.  The default behaviour 
+should be preferred and the DCMDICTPATH environment variable only used when 
+alternative data dictionaries are required.  The DCMDICTPATH environment 
+variable has the same format as the shell PATH variable in that a colon 
+(":") separates entries.  The data dictionary code will attempt to load 
+each file specified in the DCMDICTPATH environment variable.  It is an 
+error if no data dictionary can be loaded.
 

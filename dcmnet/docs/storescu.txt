@@ -4,107 +4,161 @@ NAME
 
 SYNOPSIS
 
-    storescu [options] peer port file ...
+    storescu [options] peer port dcmfile_in...
 
 SUMMARY
 
-The storescu application implements an SCU for the Storage Service
-Class.  For each image file command line parameter it
-sends a C-STORE message to a Storage SCP and waits for a response.
-The application can be used to transmit DICOM images.  
+The storescu application implements an SCU for the Storage Service Class.  
+For each image file command line parameter it sends a C-STORE message to a 
+Storage SCP and waits for a response. The application can be used to 
+transmit DICOM images.  
 
 USAGE
 
-Invoking the storescu application without any parameters will 
-cause it to display an invocation syntax summary.
-
-The storescu application accepts the following command line
-parameters and options:
-
-    storescu [options] peer port file ...
+storescu: DICOM storage (C-STORE) SCU
+usage: storescu [options] peer port dcmfile_in...
 
 parameters:
-    peer         hostname of dicom peer
-    port         tcp/ip port number of peer
-    file         dicom image file
-options:
-    -ti          use little-endian implicit transfer syntax only
-    -u           disable generation of new VRs (UN/UT/VS)
-    -r n         repeat n times
-    -v           verbose mode
-    -d           debug mode
-    -a           abort association
-    -b n         set max receive pdu to n bytes (default: 16K)
-    -t title     my calling AE title (default: STORESCU)
-    -c title     called AE title of peer (default: ANY-SCP)
+  peer                        hostname of DICOM peer
+  port                        tcp/ip port number of peer
+  dcmfile_in                  DICOM file(s) to be transmitted
+
+general options:
+  -h      --help              print this help text and exit
+  -v      --verbose           verbose mode, print processing details
+  +v      --verbose-pc        verbose mode and show presentation contexts
+  -d      --debug             debug mode, print debug information
+network options:
+  application entity titles:
+    -aet  --aetitle           aetitle: string
+                              set my calling AE title (default: STORESCU)
+    -aec  --call              aetitle: string
+                              set called AE title of peer (default: ANY-SCP)
+  proposed transmission transfer syntaxes:
+    -x=   --propose-uncompr   propose all uncompressed TS, explicit VR
+                              with local byte ordering first (default)
+    -xe   --propose-little    propose all uncompressed TS, explicit VR
+                              little endian first
+    -xb   --propose-big       propose all uncompressed TS, explicit VR
+                              big endian first
+    -xi   --propose-implicit  propose implicit VR little endian TS only
+    -xs   --propose-lossless  propose default JPEG lossless TS
+                              and all uncompressed transfer syntaxes
+    -xy   --propose-jpeg8     propose default JPEG lossy TS for 8 bit data
+                              and all uncompressed transfer syntaxes
+    -xx   --propose-jpeg12    propose default JPEG lossy TS for 12 bit data
+                              and all uncompressed transfer syntaxes
+    -xr   --propose-rle       propose RLE lossless TS
+                              and all uncompressed transfer syntaxes
+    -R    --required          propose only required presentation contexts
+                              (default: propose all supported)
+    +C    --combine           combine proposed transfer syntaxes
+                              (default: separate pres. context for each TS)
+  post-1993 value representations:
+    +u    --enable-new-vr     enable support for new VRs (UN/UT/VS) (default)
+    -u    --disable-new-vr    disable support for new VRs, convert to OB
+  other network options:
+    -pdu  --max-pdu           [n]umber of bytes: integer [8192..65536]
+                              set max receive pdu to n bytes (default: 16384)
+          --repeat            [n]umber: integer
+                              repeat n times
+          --abort             abort association instead of releasing it
+          --no-halt           do not halt if unsuccessful store encountered
+                              (default: do halt)
+    +II   --invent-instance   invent a new SOP instance UID for every image sent
+    +IR   --invent-series     [n]umber: integer (implies --invent-instance)
+                              invent a new series UID after n images
+                              have been sent (default: 100)
+    +IS   --invent-study      [n]umber: integer (implies --invent-instance)
+                              invent a new study UID after n series
+                              have been sent (default: 50)
+    +IP   --invent-patient    [n]umber: integer (implies --invent-instance)
+                              invent a new patient ID and name after n studies
+                              have been sent (default: 25)
 
 DICOM CONFORMANCE
 
 The storescu application supports the following 
 Storage SOP Classes as an SCU:
 
-    ComputedRadiographyImageStorage		"1.2.840.10008.5.1.4.1.1.1"
-    CTImageStorage				"1.2.840.10008.5.1.4.1.1.2"
-    MRImageStorage				"1.2.840.10008.5.1.4.1.1.4"
-    NuclearMedicineImageStorage			"1.2.840.10008.5.1.4.1.1.20"
-    RETIRED_NuclearMedicineImageStorage		"1.2.840.10008.5.1.4.1.1.5"
-    UltrasoundImageStorage			"1.2.840.10008.5.1.4.1.1.6.1"
-    RETIRED_UltrasoundImageStorage		"1.2.840.10008.5.1.4.1.1.6"
-    UltrasoundMultiframeImageStorage		"1.2.840.10008.5.1.4.1.1.3.1"
-    RETIRED_UltrasoundMultiframeImageStorage	"1.2.840.10008.5.1.4.1.1.3"
-    SecondaryCaptureImageStorage		"1.2.840.10008.5.1.4.1.1.7"
-    XRayAngiographicImageStorage		"1.2.840.10008.5.1.4.1.1.12.1"
-    XRayAngiographicBiPlaneImageStorage		"1.2.840.10008.5.1.4.1.1.12.3"
-    XRayFluoroscopyImageStorage			"1.2.840.10008.5.1.4.1.1.12.2"
-    StandaloneOverlayStorage			"1.2.840.10008.5.1.4.1.1.8"
-    StandaloneCurveStorage			"1.2.840.10008.5.1.4.1.1.9"
-    StandaloneModalityLUTStorage		"1.2.840.10008.5.1.4.1.1.10"
-    StandaloneVOILUTStorage			"1.2.840.10008.5.1.4.1.1.11"
-    RTImageStorage				"1.2.840.10008.5.1.4.1.1.481.1"
-    RTDoseStorage				"1.2.840.10008.5.1.4.1.1.481.2"
-    RTStructureSetStorage			"1.2.840.10008.5.1.4.1.1.481.3"
-    RTPlanStorage				"1.2.840.10008.5.1.4.1.1.481.5"
-    PETImageStorage				"1.2.840.10008.5.1.4.1.1.128"
-    PETCurveStorage				"1.2.840.10008.5.1.4.1.1.129"
-    VLImageStorage				"1.2.840.10008.5.1.4.1.1.77.1" 
-    VLMultiFrameImageStorage			"1.2.840.10008.5.1.4.1.1.77.2"
-    PageDescriptionStorage			"1.2.840.10008.5.1.1.50"
-    SRTextStorage				"1.2.840.10008.5.1.4.1.1.88.1"
-    SRAudioStorage				"1.2.840.10008.5.1.4.1.1.88.2" 
-    SRDetailStorage				"1.2.840.10008.5.1.4.1.1.88.3" 
-    SRComprehensiveStorage			"1.2.840.10008.5.1.4.1.1.88.4"
-    HardcopyGrayscaleImageStorage		"1.2.840.10008.5.1.1.29"
-    HardcopyColorImageStorage			"1.2.840.10008.5.1.1.30"
-    StoredPrintStorage				"1.2.840.10008.5.1.1.27"
-    WaveformStorage				"1.2.840.10008.5.1.4.1.1.9.1" 
-    ECGWaveformStorage				"1.2.840.10008.5.1.4.1.1.9.1.1" 
-    AudioWaveformStorage			"1.2.840.10008.5.1.4.1.1.9.1.2" 
+    StoredPrintStorage                                  "1.2.840.10008.5.1.1.27"
+    HardcopyGrayscaleImageStorage                       "1.2.840.10008.5.1.1.29"
+    HardcopyColorImageStorage                           "1.2.840.10008.5.1.1.30"
+    ComputedRadiographyImageStorage                     "1.2.840.10008.5.1.4.1.1.1"
+    CTImageStorage                                      "1.2.840.10008.5.1.4.1.1.2"
+    RETIRED_UltrasoundMultiframeImageStorage            "1.2.840.10008.5.1.4.1.1.3"
+    UltrasoundMultiframeImageStorage                    "1.2.840.10008.5.1.4.1.1.3.1"
+    MRImageStorage                                      "1.2.840.10008.5.1.4.1.1.4"
+    RETIRED_NuclearMedicineImageStorage                 "1.2.840.10008.5.1.4.1.1.5"
+    RETIRED_UltrasoundImageStorage                      "1.2.840.10008.5.1.4.1.1.6"
+    UltrasoundImageStorage                              "1.2.840.10008.5.1.4.1.1.6.1"
+    SecondaryCaptureImageStorage                        "1.2.840.10008.5.1.4.1.1.7"
+    StandaloneOverlayStorage                            "1.2.840.10008.5.1.4.1.1.8"
+    StandaloneCurveStorage                              "1.2.840.10008.5.1.4.1.1.9"
+    StandaloneModalityLUTStorage                        "1.2.840.10008.5.1.4.1.1.10"
+    StandaloneVOILUTStorage                             "1.2.840.10008.5.1.4.1.1.11"
+    XRayAngiographicImageStorage                        "1.2.840.10008.5.1.4.1.1.12.1"
+    XRayFluoroscopyImageStorage                         "1.2.840.10008.5.1.4.1.1.12.2"
+    XRayAngiographicBiPlaneImageStorage                 "1.2.840.10008.5.1.4.1.1.12.3"
+    NuclearMedicineImageStorage                         "1.2.840.10008.5.1.4.1.1.20"
+    PETImageStorage                                     "1.2.840.10008.5.1.4.1.1.128"
+    PETCurveStorage                                     "1.2.840.10008.5.1.4.1.1.129"
+    RTImageStorage                                      "1.2.840.10008.5.1.4.1.1.481.1"
+    RTDoseStorage                                       "1.2.840.10008.5.1.4.1.1.481.2"
+    RTStructureSetStorage                               "1.2.840.10008.5.1.4.1.1.481.3"
+    RTPlanStorage                                       "1.2.840.10008.5.1.4.1.1.481.5"
+    DigitalXRayImageStorageForPresentation              "1.2.840.10008.5.1.4.1.1.1.1"
+    DigitalXRayImageStorageForProcessing                "1.2.840.10008.5.1.4.1.1.1.1.1"
+    DigitalMammographyXRayImageStorageForPresentation   "1.2.840.10008.5.1.4.1.1.1.2"
+    DigitalMammographyXRayImageStorageForProcessing     "1.2.840.10008.5.1.4.1.1.1.2.1"
+    DigitalIntraOralXRayImageStorageForPresentation     "1.2.840.10008.5.1.4.1.1.1.3"
+    DigitalIntraOralXRayImageStorageForProcessing       "1.2.840.10008.5.1.4.1.1.1.3.1"
 
-If the -ti option is not specified, the storescu application will 
-propose presentation contexts for all of the abovementioned supported 
-SOP Classes using the transfer syntaxes:
+Experimental support for the following draft SOP classes is also provided as SCU:
 
-    LittleEndianImplicitTransferSyntax	"1.2.840.10008.1.2"
-    LittleEndianExplicitTransferSyntax	"1.2.840.10008.1.2.1"
-    BigEndianExplicitTransferSyntax	"1.2.840.10008.1.2.2"
+    DRAFT_VLImageStorage                                "1.2.840.10008.5.1.4.1.1.77.1" 
+    DRAFT_VLMultiFrameImageStorage                      "1.2.840.10008.5.1.4.1.1.77.2"
+    VLEndoscopicImageStorage                            "1.2.840.10008.5.1.4.1.1.77.1.1"
+    VLMicroscopicImageStorage                           "1.2.840.10008.5.1.4.1.1.77.1.2"
+    VLSlideCoordinatesMicroscopicImageStorage           "1.2.840.10008.5.1.4.1.1.77.1.3"
+    VLPhotographicImageStorage                          "1.2.840.10008.5.1.4.1.1.77.1.4"
+    SRTextStorage                                       "1.2.840.10008.5.1.4.1.1.88.1"
+    SRAudioStorage                                      "1.2.840.10008.5.1.4.1.1.88.2" 
+    SRDetailStorage                                     "1.2.840.10008.5.1.4.1.1.88.3" 
+    SRComprehensiveStorage                              "1.2.840.10008.5.1.4.1.1.88.4"
+    RTBeamsTreatmentRecordStorage                       "1.2.840.10008.5.1.4.1.1.481.4"
+    RTBrachyTreatmentRecordStorage                      "1.2.840.10008.5.1.4.1.1.481.6"
+    RTTreatmentSummaryRecordStorage                     "1.2.840.10008.5.1.4.1.1.481.7"
+    DRAFT_WaveformStorage                               "1.2.840.10008.5.1.4.1.1.9.1"
+    WaveformStorage                                     "1.2.840.10008.5.1.4.1.1.9.0"
+    TwelveLeadECGWaveformStorage                        "1.2.840.10008.5.1.4.1.1.9.1.1"
+    GeneralECGWaveformStorage                           "1.2.840.10008.5.1.4.1.1.9.1.2"
+    CardiacElectrophysiologyWaveformStorage             "1.2.840.10008.5.1.4.1.1.9.1.3"
+    HemodynamicWaveformStorage                          "1.2.840.10008.5.1.4.1.1.9.1.4"
+    BasicAudioWaveformStorage                           "1.2.840.10008.5.1.4.1.1.9.2.1"
+    HighResolutionAudioWaveformStorage                  "1.2.840.10008.5.1.4.1.1.9.2.2"
+    GrayscaleSoftcopyPresentationStateStorage           "1.2.840.10008.5.1.4.1.1.11.1"
+
+The default behaviour of storescu is to propose two presentation contexts 
+for each supported SOP class (abstract syntax) - one with the preferred 
+transfer syntax and one with all other uncompressed transfer syntaxes. The 
+default preferred transfer syntax is explicit VR with byte ordering 
+corresponding to the local byte ordering of the machine on which storescu 
+is running. This behaviour can be changed with the --propose, --combine and 
+--required options, see above.
 
 The storescu application does not support extended negotiation.
 
 ENVIRONMENT
 
-The storescu application will attempt to load DICOM data dictionaries
-specified in the DCMDICTPATH environment variable.  By default, if
-the DCMDICTPATH environment variable is not set, the file
-/usr/local/dicom/lib/dicom.dic will be loaded.  The default behaviour
-should be preferred and the DCMDICTPATH environment variable only used
-when alternative data dictionaries are required.  The DCMDICTPATH 
-environment variable has the same format as the shell PATH variable in
-that a colon (":") separates entries.  The data dictionary code will
-attempt to load each file specified in the DCMDICTPATH environment 
-variable.  It is an error if no data dictionary can be loaded.
+The storescu application will attempt to load DICOM data dictionaries 
+specified in the DCMDICTPATH environment variable.  By default, if the 
+DCMDICTPATH environment variable is not set, the file 
+/usr/local/dicom/lib/dicom.dic will be loaded.  The default behaviour 
+should be preferred and the DCMDICTPATH environment variable only used when 
+alternative data dictionaries are required.  The DCMDICTPATH environment 
+variable has the same format as the shell PATH variable in that a colon 
+(":") separates entries.  The data dictionary code will attempt to load 
+each file specified in the DCMDICTPATH environment variable.  It is an 
+error if no data dictionary can be loaded.
 
-AUTHOR
-
-Andrew Hewett, Kuratorium OFFIS e.V., Oldenburg, Germany
-
-Last Revised: Andrew Hewett, Oldenburg, February 6, 1998

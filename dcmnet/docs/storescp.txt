@@ -9,162 +9,143 @@ SYNOPSIS
 
 SUMMARY
 
-The storescp application implements a Service Class Provider (SCP)
-for the Storage Service Class.  It listens on a specific TCP/IP
-port for incoming association requests from a Storage SCU and
-can receive images according to the Storage Service Class.
-Received images will normally be stored in files (within the
-current working directory).  The storescp application also
+The storescp application implements a Service Class Provider (SCP) for the 
+Storage Service Class.  It listens on a specific TCP/IP port for incoming 
+association requests from a Storage SCU and can receive images according to 
+the Storage Service Class. Received images will normally be stored in files 
+(within the current working directory).  The storescp application also 
 supports the Verification Service Class as an SCP.
 
 USAGE
 
-Invoking the storescp application without any parameters will 
-cause it to display an invocation syntax summary.
+storescp: DICOM storage (C-STORE) SCP
+usage: storescp [options] port
 
-The storescp application accepts the following command line
-parameters and options:
+parameters:
+  port                           tcp/ip port number to listen on
 
-   storescp [options] port
-
-parameters are:
-    port      tcp/ip port number to listen on
-    
-options are:
-
-  network options:
-      -r      refuse association
-              Useful for debugging only. Storescp will refuse all A-ASSOCIATE
-              requests.
-      +R      reject association if implementation class UID is missing
-              Causes storescp to reject A-ASSOCIATE requests
-              if the implementation class UID is missing in the A-ASSOCIATE
-              request
-      -s n    sleep n seconds after store (default: 0)
-              Useful for debugging (i.e. of timeouts) only. Storescp will
-              sleep()  for n seconds after performing a C-STORE operation.
-      +s n    sleep n seconds during store (default: 0)
-              Useful for debugging (i.e. of timeouts) only. Storescp will
-              sleep() for n seconds after each received PDV.
-      -b n    set max receive pdu to n bytes (8192-65536, default: 16384)
-      -t=     prefer local byte ordering, explicit transfer syntaxes (default)
-              The default behaviour of storescp is to prefer explicit transfer
-              syntaxes if available. The transfer syntax corresponding to the
-              byte ordering of the machine on which storescp is running
-              is also preferred.
-      -te     prefer little-endian explicit transfer syntax
-              Causes storescp to support only little-endian explicit
-              (preferred) and the default little-endian implicit
-              transfer syntaxes.
-      -tb     prefer big-endian explicit transfer syntax
-              Causes storescp to support only big-endian explicit (preferred)
-              and the default little-endian implicit transfer syntaxes.
-      -ti     use little-endian implicit transfer syntax only
-              Causes storescp to support only the default 
-              little-endian implicit transfer syntaxs.
-
-  output options:
-    DICOM fileformat (Sup. 1) support:
-      -F      write file without metaheader
-              Writes a dataset without metaheader.
-              Note: Most tools will not automatically recognise datasets
-              in explicit transfer syntax without metaheader.
-      +F      write file with metaheader (default)
-              Writes a file conforming to DICOM Part 10/Supplement 1.
-    output transfer syntax (not with +B):
-      +t=     write with same transfer syntax as input (default)
-      +te     write with little-endian explicit transfer syntax
-      +tb     write with big-endian explicit transfer syntax
-      +ti     write with little-endian implicit transfer syntax
-    group length encoding (not with +B):
-      +g      write with group lengths
-              Group length tags are created for each group in
-              the DICOM dataset.
-      +g=     recalculate group lengths (default)
-              If group length tags exist, their value is recalculated.
-              No new group length tags are created.
-      -g      write without group lengths
-              All group length tags are removed from the dataset.
-    length encoding in sequences and items (not with +B):
-      +e      write with explicit lengths (default)
-      -e      write with undefined lengths
-    padding (not with +B or -F):
-      Applicable only for DICOM files with metaheader.
-      According to DICOM Supplement 1, a dataset or an item in a sequence
-      may contain a DataSetTrailingPadding tag if it is stored in a file.
-      -p      no padding (default)
-      +p n m  pad file to x*n bytes and items to y*m bytes
-    unknown VR (not with +B):
-      -u      disable generation of new VRs (UN/UT/VS)
-      +u      enable generation of new VRs (UN/UT/VS) (default)
-      
-  other options:
-      -h      print this usage string
-      +V      verbose mode, print actions
-      +d      debug mode
-      +B      bypass dcmdata, save C-STORE data directly to file
-              This option switches storescp to a different mode of operation.
-              In bypass mode, the DICOM dataset is not processed and stored
-              by the dcmdata library. Instead, the metaheader (if applicable)
-              is computed from the data contained in the C-STORE request
-              and the dataset is directly stored to file as a "snapshot"
-              of the data received over the network, without any processing.
-              Bypass mode is slightly faster than the usual mode of operation
-              and maybe useful for debugging since errors in the received
-              dataset remain present (i.e. dcmdata would re-compute
-              group lengths so that incorrect numbers could never occur).
-              The disadvantage of this mode is - obviously - that no processing
-              of the received data is possible so that most dcmdata related
-              command line switches are disabled.
-              To clearly identify files created in bypass mode,
-              their metaheader will contain a different implementation
-              version name.
-      -i      ignore store data, receive but do not save to disk
-              Useful for debugging only.
+general options:
+  -h      --help                 print this help text and exit
+  -v      --verbose              verbose mode, print processing details
+  -d      --debug                debug mode, print debug information
+network options:
+  preferred network transfer syntaxes:
+    +x=   --prefer-uncompr       prefer explicit VR local byte order (default)
+    +xe   --prefer-little        prefer explicit VR little endian TS
+    +xb   --prefer-big           prefer explicit VR big endian TS
+    +xs   --prefer-lossless      prefer default JPEG lossless TS
+    +xy   --prefer-jpeg8         prefer default JPEG lossy TS for 8 bit data
+    +xx   --prefer-jpeg12        prefer default JPEG lossy TS for 12 bit data
+    +xr   --prefer-rle           prefer RLE lossless TS
+    +xi   --implicit             accept implicit VR little endian TS only
+  other network options:
+    -aet  --aetitle              aetitle: string
+                                 set my AE title (default: STORESCP)
+    -pdu  --max-pdu              [n]umber of bytes: integer [8192..65536]
+                                 set max receive pdu to n bytes (default: 16384)
+          --refuse               refuse association
+          --reject               reject association if no implement. class UID
+          --ignore               ignore store data, receive but do not store
+          --sleep-after          [s]econds: integer
+                                 sleep s seconds after store (default: 0)
+          --sleep-during         [s]econds: integer
+                                 sleep s seconds during store (default: 0)
+          --abort-after          abort association after receipt of C-STORE-RQ
+                                 (but before sending response)
+          --abort-during         abort association during receipt of C-STORE-RQ
+output options:
+  bit preserving mode:
+    -B    --normal               allow implicit format conversions (default)
+    +B    --bit-preserving       write data exactly as read
+  output file format:
+    +F    --write-file           write file format (default)
+    -F    --write-dataset        write data set without file meta information
+  output transfer syntax (not with --bit-preserving or compressed transmission):
+    +t=   --write-xfer-same      write with same TS as input (default)
+    +te   --write-xfer-little    write with explicit VR little endian TS
+    +tb   --write-xfer-big       write with explicit VR big endian TS
+    +ti   --write-xfer-implicit  write with implicit VR little endian TS
+  post-1993 value representations (not with --bit-preserving):
+    +u    --enable-new-vr        enable support for new VRs (UN/UT/VS) (default)
+    -u    --disable-new-vr       disable support for new VRs, convert to OB
+  group length encoding (not with --bit-preserving):
+    +g=   --group-length-recalc  recalculate group lengths if present (default)
+    +g    --group-length-create  always write with group length elements
+    -g    --group-length-remove  always write without group length elements
+  length encoding in sequences and items (not with --bit-preserving):
+    +e    --length-explicit      write with explicit lengths (default)
+    -e    --length-undefined     write with undefined lengths
+  data set trailing padding (not with --write-dataset or --bit-preserving):
+    -p    --padding-off          no padding (default)
+    +p    --padding-create       [f]ile-pad [i]tem-pad: integer
+                                 align file on multiple of f bytes
+                                 and items on multiple of i bytes
 
 DICOM CONFORMANCE
 
 The storescp application supports the following SOP Classes
 as an SCP:
 
-    VerificationSOPClass                     "1.2.840.10008.1.1"   
-    ComputedRadiographyImageStorage          "1.2.840.10008.5.1.4.1.1.1"
-    CTImageStorage                           "1.2.840.10008.5.1.4.1.1.2"
-    MRImageStorage                           "1.2.840.10008.5.1.4.1.1.4"
-    NuclearMedicineImageStorage              "1.2.840.10008.5.1.4.1.1.20"
-    RETIRED_NuclearMedicineImageStorage      "1.2.840.10008.5.1.4.1.1.5"
-    UltrasoundImageStorage                   "1.2.840.10008.5.1.4.1.1.6.1"
-    RETIRED_UltrasoundImageStorage           "1.2.840.10008.5.1.4.1.1.6"
-    UltrasoundMultiframeImageStorage         "1.2.840.10008.5.1.4.1.1.3.1"
-    RETIRED_UltrasoundMultiframeImageStorage "1.2.840.10008.5.1.4.1.1.3"
-    SecondaryCaptureImageStorage             "1.2.840.10008.5.1.4.1.1.7"
-    XRayAngiographicImageStorage             "1.2.840.10008.5.1.4.1.1.12.1"
-    XRayAngiographicBiPlaneImageStorage      "1.2.840.10008.5.1.4.1.1.12.3"
-    XRayFluoroscopyImageStorage              "1.2.840.10008.5.1.4.1.1.12.2"
-    StandaloneOverlayStorage                 "1.2.840.10008.5.1.4.1.1.8"
-    StandaloneCurveStorage                   "1.2.840.10008.5.1.4.1.1.9"
-    StandaloneModalityLUTStorage             "1.2.840.10008.5.1.4.1.1.10"
-    StandaloneVOILUTStorage                  "1.2.840.10008.5.1.4.1.1.11"
+    VerificationSOPClass                                "1.2.840.10008.1.1"
 
-    RTImageStorage				"1.2.840.10008.5.1.4.1.1.481.1"
-    RTDoseStorage				"1.2.840.10008.5.1.4.1.1.481.2"
-    RTStructureSetStorage			"1.2.840.10008.5.1.4.1.1.481.3"
-    RTPlanStorage				"1.2.840.10008.5.1.4.1.1.481.5"
-    PETImageStorage				"1.2.840.10008.5.1.4.1.1.128"
-    PETCurveStorage				"1.2.840.10008.5.1.4.1.1.129"
-    VLImageStorage				"1.2.840.10008.5.1.4.1.1.77.1" 
-    VLMultiFrameImageStorage			"1.2.840.10008.5.1.4.1.1.77.2"
-    PageDescriptionStorage			"1.2.840.10008.5.1.1.50"
-    SRTextStorage				"1.2.840.10008.5.1.4.1.1.88.1"
-    SRAudioStorage				"1.2.840.10008.5.1.4.1.1.88.2" 
-    SRDetailStorage				"1.2.840.10008.5.1.4.1.1.88.3" 
-    SRComprehensiveStorage			"1.2.840.10008.5.1.4.1.1.88.4"
-    HardcopyGrayscaleImageStorage		"1.2.840.10008.5.1.1.29"
-    HardcopyColorImageStorage			"1.2.840.10008.5.1.1.30"
-    StoredPrintStorage				"1.2.840.10008.5.1.1.27"
-    WaveformStorage				"1.2.840.10008.5.1.4.1.1.9.1" 
-    ECGWaveformStorage				"1.2.840.10008.5.1.4.1.1.9.1.1" 
-    AudioWaveformStorage			"1.2.840.10008.5.1.4.1.1.9.1.2"
+    StoredPrintStorage                                  "1.2.840.10008.5.1.1.27"
+    HardcopyGrayscaleImageStorage                       "1.2.840.10008.5.1.1.29"
+    HardcopyColorImageStorage                           "1.2.840.10008.5.1.1.30"
+    ComputedRadiographyImageStorage                     "1.2.840.10008.5.1.4.1.1.1"
+    CTImageStorage                                      "1.2.840.10008.5.1.4.1.1.2"
+    RETIRED_UltrasoundMultiframeImageStorage            "1.2.840.10008.5.1.4.1.1.3"
+    UltrasoundMultiframeImageStorage                    "1.2.840.10008.5.1.4.1.1.3.1"
+    MRImageStorage                                      "1.2.840.10008.5.1.4.1.1.4"
+    RETIRED_NuclearMedicineImageStorage                 "1.2.840.10008.5.1.4.1.1.5"
+    RETIRED_UltrasoundImageStorage                      "1.2.840.10008.5.1.4.1.1.6"
+    UltrasoundImageStorage                              "1.2.840.10008.5.1.4.1.1.6.1"
+    SecondaryCaptureImageStorage                        "1.2.840.10008.5.1.4.1.1.7"
+    StandaloneOverlayStorage                            "1.2.840.10008.5.1.4.1.1.8"
+    StandaloneCurveStorage                              "1.2.840.10008.5.1.4.1.1.9"
+    StandaloneModalityLUTStorage                        "1.2.840.10008.5.1.4.1.1.10"
+    StandaloneVOILUTStorage                             "1.2.840.10008.5.1.4.1.1.11"
+    XRayAngiographicImageStorage                        "1.2.840.10008.5.1.4.1.1.12.1"
+    XRayFluoroscopyImageStorage                         "1.2.840.10008.5.1.4.1.1.12.2"
+    XRayAngiographicBiPlaneImageStorage                 "1.2.840.10008.5.1.4.1.1.12.3"
+    NuclearMedicineImageStorage                         "1.2.840.10008.5.1.4.1.1.20"
+    PETImageStorage                                     "1.2.840.10008.5.1.4.1.1.128"
+    PETCurveStorage                                     "1.2.840.10008.5.1.4.1.1.129"
+    RTImageStorage                                      "1.2.840.10008.5.1.4.1.1.481.1"
+    RTDoseStorage                                       "1.2.840.10008.5.1.4.1.1.481.2"
+    RTStructureSetStorage                               "1.2.840.10008.5.1.4.1.1.481.3"
+    RTPlanStorage                                       "1.2.840.10008.5.1.4.1.1.481.5"
+    DigitalXRayImageStorageForPresentation              "1.2.840.10008.5.1.4.1.1.1.1"
+    DigitalXRayImageStorageForProcessing                "1.2.840.10008.5.1.4.1.1.1.1.1"
+    DigitalMammographyXRayImageStorageForPresentation   "1.2.840.10008.5.1.4.1.1.1.2"
+    DigitalMammographyXRayImageStorageForProcessing     "1.2.840.10008.5.1.4.1.1.1.2.1"
+    DigitalIntraOralXRayImageStorageForPresentation     "1.2.840.10008.5.1.4.1.1.1.3"
+    DigitalIntraOralXRayImageStorageForProcessing       "1.2.840.10008.5.1.4.1.1.1.3.1"
+
+Experimental support for the following draft SOP classes is also provided as SCP:
+
+    DRAFT_VLImageStorage                                "1.2.840.10008.5.1.4.1.1.77.1" 
+    DRAFT_VLMultiFrameImageStorage                      "1.2.840.10008.5.1.4.1.1.77.2"
+    VLEndoscopicImageStorage                            "1.2.840.10008.5.1.4.1.1.77.1.1"
+    VLMicroscopicImageStorage                           "1.2.840.10008.5.1.4.1.1.77.1.2"
+    VLSlideCoordinatesMicroscopicImageStorage           "1.2.840.10008.5.1.4.1.1.77.1.3"
+    VLPhotographicImageStorage                          "1.2.840.10008.5.1.4.1.1.77.1.4"
+    SRTextStorage                                       "1.2.840.10008.5.1.4.1.1.88.1"
+    SRAudioStorage                                      "1.2.840.10008.5.1.4.1.1.88.2" 
+    SRDetailStorage                                     "1.2.840.10008.5.1.4.1.1.88.3" 
+    SRComprehensiveStorage                              "1.2.840.10008.5.1.4.1.1.88.4"
+    RTBeamsTreatmentRecordStorage                       "1.2.840.10008.5.1.4.1.1.481.4"
+    RTBrachyTreatmentRecordStorage                      "1.2.840.10008.5.1.4.1.1.481.6"
+    RTTreatmentSummaryRecordStorage                     "1.2.840.10008.5.1.4.1.1.481.7"
+    DRAFT_WaveformStorage                               "1.2.840.10008.5.1.4.1.1.9.1"
+    WaveformStorage                                     "1.2.840.10008.5.1.4.1.1.9.0"
+    TwelveLeadECGWaveformStorage                        "1.2.840.10008.5.1.4.1.1.9.1.1"
+    GeneralECGWaveformStorage                           "1.2.840.10008.5.1.4.1.1.9.1.2"
+    CardiacElectrophysiologyWaveformStorage             "1.2.840.10008.5.1.4.1.1.9.1.3"
+    HemodynamicWaveformStorage                          "1.2.840.10008.5.1.4.1.1.9.1.4"
+    BasicAudioWaveformStorage                           "1.2.840.10008.5.1.4.1.1.9.2.1"
+    HighResolutionAudioWaveformStorage                  "1.2.840.10008.5.1.4.1.1.9.2.2"
+    GrayscaleSoftcopyPresentationStateStorage           "1.2.840.10008.5.1.4.1.1.11.1"
+
     
 The storescp application will accept presentation contexts for
 all of the abovementioned supported SOP Classes using any
@@ -178,27 +159,21 @@ The default behaviour of the storescp application is to prefer transfer
 syntaxes having an explicit encoding over the default implicit transfer syntax.
 If storescp is running on big-endian hardware it will prefer
 BigEndianExplicitTransferSyntax to LittleEndianExplicitTransferSyntax (and vice
-versa). This behaviour can be changed with the -te, -tb and -ti options
+versa). This behaviour can be changed with the --prefer options
 (see above).
 
 The storescp application does not support extended negotiation.
 
 ENVIRONMENT
 
-The storescp application will attempt to load DICOM data dictionaries
-specified in the DCMDICTPATH environment variable.  By default, if
-the DCMDICTPATH environment variable is not set, the file
-/usr/local/dicom/lib/dicom.dic will be loaded.  The default behaviour
-should be preferred and the DCMDICTPATH environment variable only used
-when alternative data dictionaries are required.  The DCMDICTPATH 
-environment variable has the same format as the shell PATH variable in
-that a colon (":") separates entries.  The data dictionary code will
-attempt to load each file specified in the DCMDICTPATH environment 
-variable.  It is an error if no data dictionary can be loaded.
+The storescp application will attempt to load DICOM data dictionaries 
+specified in the DCMDICTPATH environment variable.  By default, if the 
+DCMDICTPATH environment variable is not set, the file 
+/usr/local/dicom/lib/dicom.dic will be loaded.  The default behaviour 
+should be preferred and the DCMDICTPATH environment variable only used when 
+alternative data dictionaries are required.  The DCMDICTPATH environment 
+variable has the same format as the shell PATH variable in that a colon 
+(":") separates entries.  The data dictionary code will attempt to load 
+each file specified in the DCMDICTPATH environment variable.  It is an 
+error if no data dictionary can be loaded.
 
-AUTHOR
-
-Andrew Hewett, Marco Eichelberg,
-Kuratorium OFFIS e.V., Oldenburg, Germany
-
-Last Revised: Andrew Hewett, Oldenburg, February 6, 1998

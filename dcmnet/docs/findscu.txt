@@ -4,64 +4,84 @@ NAME
 
 SYNOPSIS
 
-findscu [options] peer port [queryfile ...]
+    findscu [options] peer port [dcmfile_in...]
 
 SUMMARY
 
-The findscu application implements an SCU for the Query/Retrieve
-Service Class and the Basic Worklist Management Service Class.  
-Findscu only supports query functionality using the C-FIND
-message.  It sends query keys to an SCP and awaits responses.
-The application can be used to test SCPs of the Query/Retrieve
-and Basic Worklist Management Service Classes.  
+The findscu application implements an SCU for the Query/Retrieve Service 
+Class and the Basic Worklist Management Service Class.  Findscu only 
+supports query functionality using the C-FIND message.  It sends query keys 
+to an SCP and awaits responses. The application can be used to test SCPs of 
+the Query/Retrieve and Basic Worklist Management Service Classes.  
 
 USAGE
 
-Invoking the findscu application without any parameters will 
-cause it to display an invocation syntax summary.
-
-The findscu application accepts the following command line
-parameters and options:
-
-findscu [-k key][-u][-r n][-v][-d][-a][-b n][-P][-S][-O][-W]
-        [-t ourAETitle][-c theirAETitle] peer port [queryfile ...]
+findscu: DICOM query (C-FIND) SCU
+usage: findscu [options] peer port [dcmfile_in...]
 
 parameters:
-    peer        hostname of dicom peer
-    port        tcp/ip port number of peer
-    queryfile   matching keys (DICOM file)
-options:
-    -u          disable generation of new VRs (UN/UT/VS)
-    -k key      override matching key (gggg,eeee="string")
-    -r n        repeat n times
-    -v          verbose mode
-    -d          debug mode
-    -a          abort association
-    -b n        set max receive pdu to n bytes (default: 16K)
-    -P          use Patient Root Q/R Information Model
-    -S          use Study Root Q/R Information Model
-    -O          use Patient/Study Only Root Q/R Information Model
-    -W          use Modality Worklist Information Model (default)
-    -t title    my calling AE title (default: FINDSCU)
-    -c title    called AE title of peer (default: ANY-SCP)
+  peer                      hostname of DICOM peer
+  port                      tcp/ip port number of peer
+  dcmfile_in                DICOM query file(s)
 
-Each file supplied on the command line will be sent to the SCP
-as part of a C-FIND request.  Each set of response identifers 
-received will be printed to stdout.
+general options:
+  -h      --help            print this help text and exit
+  -v      --verbose         verbose mode, print processing details
+  -d      --debug           debug mode, print debug information
+network options:
+  override matching keys:
+    -k    --key             key: gggg,eeee="string"
+                            override matching key
+  query information model:
+    -W    --worklist        use modality worklist information model (default)
+    -P    --patient         use patient root information model
+    -S    --study           use study root information model
+    -O    --psonly          use patient/study only information model
+  application entity titles:
+    -aet  --aetitle         aetitle: string
+                            set my calling AE title (default: FINDSCU)
+    -aec  --call            aetitle: string
+                            set called AE title of peer (default: ANY-SCP)
+  post-1993 value representations:
+    +u    --enable-new-vr   enable support for new VRs (UN/UT/VS) (default)
+    -u    --disable-new-vr  disable support for new VRs, convert to OB
+  other network options:
+    -pdu  --max-pdu         [n]umber of bytes: integer [8192..65536]
+                            set max receive pdu to n bytes (default: 16384)
+          --repeat          [n]umber: integer
+                            repeat n times
+          --abort           abort association instead of releasing it
+    -X    --extract         extract responses to file (rsp0001.dcm, ...)
 
-Individual attributes of each file sent can be modified or
-supplemented using the "-k key" option.  For example the 
-command:
+
+Each file supplied on the command line will be sent to the SCP as part of a 
+C-FIND request.  The query file must be a valid DICOM data set containing
+the dataset part of a C-FIND-RQ message. The query file could, for instance,
+be created with the dump2dcm utility from a script like the following example:
+
+# query patient names and IDs
+(0008,0052) CS [PATIENT]     # QueryRetrieveLevel
+(0010,0010) PN []            # PatientsName
+(0010,0020) LO []            # PatientID
+
+Individual attributes of each file sent can be modified or supplemented 
+using the "-k key" option.  For example the command:
 
     findscu -k '0010,0010=HEWETT*' caesar 5678 patqry.dcm
 
-will, when sent to the SCP caesar at TCP/IP port 5678, cause any
-PatientsName attribute in patqry.dcm to have the value 'HEWETT*'. 
-If such an attribute is present it will be replaced, if absent it
-will be inserted.  The -k option can be present more than once.  
-The value part (after the =) may be absent causing the attribute to
-be sent with zero length.  It is not possible to replace or insert
-attributes within sequences using the -k option.
+will, when sent to the SCP caesar at TCP/IP port 5678, cause any 
+PatientsName attribute in patqry.dcm to have the value 'HEWETT*'. If such 
+an attribute is present it will be replaced, if absent it will be inserted.  
+The -k option can be present more than once.  The value part (after the =) 
+may be absent causing the attribute to be sent with zero length.  It is not 
+possible to replace or insert attributes within sequences using the -k 
+option.
+
+If no file is specified on the command line, the query must be specified
+completely with one or more "-k key" options.
+
+Each set of response identifers received will be printed to stdout.
+
 
 DICOM CONFORMANCE
 
@@ -96,8 +116,4 @@ environment variable has the same format as the shell PATH variable in
 that a colon (":") separates entries.  The data dictionary code will
 attempt to load each file specified in the DCMDICTPATH environment 
 variable.  It is an error if no data dictionary can be loaded.
-
-AUTHOR
-
-Andrew Hewett, Kuratorium OFFIS e.V., Oldenburg, Germany
 
