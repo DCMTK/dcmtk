@@ -10,9 +10,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-05-06 09:40:08 $
+** Update Date:		$Date: 1997-05-09 13:12:11 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdirrec.cc,v $
-** CVS/RCS Revision:	$Revision: 1.12 $
+** CVS/RCS Revision:	$Revision: 1.13 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -96,6 +96,7 @@ DcmDirectoryRecord::DcmDirectoryRecord()
     referencedMRDR = (DcmDirectoryRecord*)NULL;
     numberOfReferences = 0;
     offsetInFile = 0;
+    recordsOriginFile = NULL;
     Edebug(());
 }
 
@@ -117,6 +118,7 @@ DcmDirectoryRecord::DcmDirectoryRecord(const DcmTag &tag,
     referencedMRDR = (DcmDirectoryRecord*)NULL;
     numberOfReferences = 0;
     offsetInFile = 0;
+    recordsOriginFile = NULL;
     Edebug(());
 }
 
@@ -138,6 +140,8 @@ DcmDirectoryRecord::DcmDirectoryRecord(const E_DirRecType recordType,
     referencedMRDR = (DcmDirectoryRecord*)NULL;
     numberOfReferences = 0;
     offsetInFile = 0;
+    recordsOriginFile = NULL;
+    setRecordsOriginFile(referencedFileID);
 
     if ( DirRecordType != ERT_root )
 	errorFlag = this -> fillElementsAndReadSOP(referencedFileID);
@@ -161,6 +165,7 @@ DcmDirectoryRecord::DcmDirectoryRecord(const char * recordTypeName,
     referencedMRDR = (DcmDirectoryRecord*)NULL;
     numberOfReferences = 0;
     offsetInFile = 0;
+    setRecordsOriginFile(referencedFileID);
 
     if ( DirRecordType != ERT_root )
 	errorFlag = this -> fillElementsAndReadSOP( referencedFileID );
@@ -188,15 +193,15 @@ DcmDirectoryRecord::DcmDirectoryRecord(const DcmDirectoryRecord &old)
 	referencedMRDR = old.referencedMRDR;
 	numberOfReferences = old.numberOfReferences;
 	offsetInFile = old.offsetInFile;
-    }
-    else
-    {
+	setRecordsOriginFile(old.recordsOriginFile);
+    } else {
 	lowerLevelList = new DcmSequenceOfItems( sequTag );
 	DirRecordType = ERT_Private;
 	referencedMRDR = (DcmDirectoryRecord*)NULL;
 	numberOfReferences = 0;
 	offsetInFile = 0;
-	
+	recordsOriginFile = NULL;
+
 	if ( old.ident() != EVR_item )
 	    cerr << "Warning: DcmDirectoryRecord: wrong use of Copy-Constructor"
 		 << endl;
@@ -221,6 +226,7 @@ DcmDirectoryRecord::~DcmDirectoryRecord()
     debug(( 8, "Object pointer this=0x%p", this ));
     
     delete lowerLevelList;
+    delete recordsOriginFile;
     Edebug(());
 }
 
@@ -910,13 +916,6 @@ E_Condition DcmDirectoryRecord::fillElementsAndReadSOP
     else
 	delete this->remove( privRecTag );
 
-    /*  // alternative Realisierung
-	else if ( this->search( DCM_PrivateRecordUID,
-	stack, ESM_fromHere, FALSE )
-	== EC_Normal )
-	delete this->remove( stack.top() );
-	*/
-
     if ( directFromFile )				    // (0004,1500)
 	this->setReferencedFileID( referencedFileID );
     else
@@ -1534,5 +1533,28 @@ Edebug(());
 
     return errorFlag;
 }
+
+// ********************************
+
+void 
+DcmDirectoryRecord::setRecordsOriginFile(const char* fname)
+{
+    if (recordsOriginFile != NULL) {
+	delete recordsOriginFile;
+    }
+    if (fname != NULL) {
+	recordsOriginFile = new char[strlen(fname) + 1];
+	strcpy(recordsOriginFile, fname);
+    } else {
+	recordsOriginFile = NULL;
+    }
+}
+
+const char* 
+DcmDirectoryRecord::getRecordsOriginFile()
+{
+    return recordsOriginFile;
+}
+
 
 

@@ -10,9 +10,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-05-06 09:22:35 $
+** Update Date:		$Date: 1997-05-09 13:12:02 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdirrec.h,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -62,6 +62,9 @@ class DcmDicomDir;
 class DcmDirectoryRecord : public DcmItem {
 
     friend class DcmDicomDir;
+
+private:
+    char* recordsOriginFile;
 
 protected:
     DcmSequenceOfItems* lowerLevelList;
@@ -141,8 +144,8 @@ public:
     virtual DcmDirectoryRecord* getReferencedMRDR();
     virtual E_Condition assignToMRDR( DcmDirectoryRecord *mrdr );// in
     virtual E_Condition assignToSOPFile( const char *referencedFileID );  // in
-
-// Manipulation der Lower-Level Directory Entities:
+								       	 
+    // Manipulation of the Lower-Level Directory Entities:
 
     virtual unsigned long cardSub();
     virtual E_Condition insertSub(DcmDirectoryRecord* dirRec,
@@ -154,6 +157,11 @@ public:
     virtual E_Condition deleteSubAndPurgeFile(const unsigned long num);
     virtual E_Condition deleteSubAndPurgeFile( DcmDirectoryRecord* dirRec );
     virtual E_Condition clearSub();
+
+    // note the records origin file
+    virtual void setRecordsOriginFile(const char* fname);
+    virtual const char* getRecordsOriginFile();
+
 };
 
 
@@ -163,7 +171,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdirrec.h,v $
-** Revision 1.5  1997-05-06 09:22:35  hewett
+** Revision 1.6  1997-05-09 13:12:02  hewett
+** Added a member variable and associated get/set methods to DcmDirectoryRecord
+** to allow the origin of a directory record to be noted.
+**
+** Revision 1.5  1997/05/06 09:22:35  hewett
 ** Added a "before" flag to the insertion of items for compatibility with
 ** insertion in normal Sequences.
 **
