@@ -22,9 +22,9 @@
  *  Purpose: DicomBaseLUT (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-08 15:19:24 $
+ *  Update Date:      $Date: 1999-09-17 12:07:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dibaslut.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -61,79 +61,219 @@ class DiBaseLUT
 
  public:
 
+    /** constructor
+     *
+     ** @param  count  number of LUT entries
+     *  @param  bits   number of bits per entry
+     */
     DiBaseLUT(const Uint32 count = 0,
               const Uint16 bits = 0);
 
+    /** destructor
+     */
     virtual ~DiBaseLUT();
 
+    /** get number of LUT entries
+     *
+     ** @return number of LUT entries
+     */
     inline Uint32 getCount() const
-        { return Count; }
+    {
+        return Count;
+    }
     
+    /** get number of bits per entry
+     *
+     ** @return number of bits per entry
+     */
     inline Uint16 getBits() const
-        { return Bits; }
+    {
+        return Bits;
+    }
 
+    /** get index of first LUT entry.
+     *  First input value mapped (FIV) in LUT descriptor is US -> 16 bit unsigned.
+     *  ... or the previous pixel transformation requires an unsigned LUT input value.
+     *
+     ** @param  dummy (used to distinguish between signed and unsigned methods)
+     *
+     ** @return index of first LUT entry
+     */
     inline Uint32 getFirstEntry(const Uint32 = 0) const
-        { return FirstEntry; }
+    {
+        return FirstEntry;
+    }
 
+    /** get index of first LUT entry.
+     *  First input value mapped (FIV) in LUT descriptor is SS -> 16 bit signed.
+     *  ... or the previous pixel transformation requires a signed LUT input value.
+     *
+     ** @param  dummy (used to distinguish between signed and unsigned methods)
+     *
+     ** @return index of first LUT entry
+     */
     inline Sint32 getFirstEntry(const Sint32) const
-        { return (Sint16)FirstEntry; }
+    {
+        return (Sint16)FirstEntry;
+    }
 
+    /** get index of last LUT entry.
+     *  FIV in LUT descriptor is US -> 16 bit unsigned.
+     *  ... or the previous pixel transformation requires an unsigned LUT input value.
+     *
+     ** @param  dummy (used to distinguish between signed and unsigned methods)
+     *
+     ** @return index of last LUT entry
+     */
     inline Uint32 getLastEntry(const Uint32 = 0) const
-        { return FirstEntry + Count - 1; }
+    {
+        return FirstEntry + Count - 1;
+    }
 
+    /** get index of last LUT entry.
+     *  FIV in LUT descriptor is SS -> 16 bit signed.
+     *  ... or the previous pixel transformation requires a signed LUT input value.
+     *
+     ** @param  dummy (used to distinguish between signed and unsigned methods)
+     *
+     ** @return index of first LUT entry
+     */
     inline Sint32 getLastEntry(const Sint32) const
-        { return (Sint32)((Sint16)FirstEntry) + Count - 1; }
+    {
+        return (Sint32)((Sint16)FirstEntry) + Count - 1;
+    }
 
+    /** get value of specified LUT entry.
+     *  FIV in LUT descriptor is US -> 16 bit unsigned.
+     *  ... or the previous pixel transformation requires an unsigned LUT input value.
+     *
+     ** @param  pos  position in the LUT to be returned
+     *
+     ** @return value of specified LUT entry
+     */
     inline Uint16 getValue(const Uint32 pos) const
-        { return Data[pos - FirstEntry]; }
+    {
+        return Data[pos - FirstEntry];
+    }
 
+    /** get value of specified LUT entry.
+     *  FIV in LUT descriptor is SS -> 16 bit signed.
+     *  ... or the previous pixel transformation requires a signed LUT input value.
+     *
+     ** @param  pos  position in the LUT to be returned
+     *
+     ** @return value of specified LUT entry
+     */
     inline Uint16 getValue(const Sint32 pos) const
-        { return Data[pos - (Sint32)((Sint16)FirstEntry)]; }
+    {
+        return Data[pos - (Sint32)((Sint16)FirstEntry)];
+    }
 
+    /** get value of first LUT entry.
+     *
+     ** @return value of first LUT entry
+     */
     inline Uint16 getFirstValue() const
-        { return Data[0]; }
+    {
+        return Data[0];
+    }
 
+    /** get value of last LUT entry.
+     *
+     ** @return value of last LUT entry
+     */
     inline Uint16 getLastValue() const
-        { return Data[Count - 1]; }
+    {
+        return Data[Count - 1];
+    }
 
+    /** get minimum value of the LUT.
+     *
+     ** @return minimum value of the LUT
+     */
     inline Uint16 getMinValue() const
-        { return MinValue; }
+    {
+        return MinValue;
+    }
 
+    /** get maximum value of the LUT.
+     *
+     ** @return maximum value of the LUT
+     */
     inline Uint16 getMaxValue() const
-        { return MaxValue; }
+    {
+        return MaxValue;
+    }
 
+    /** get absolute value range of the LUT entries.
+     *  The maximum value which could be stored with the specified bit depth is calculated.
+     *
+     ** @return absolute range of LUT entries
+     */
     inline Uint32 getAbsMaxRange() const
-        { return DicomImageClass::maxval(Bits, 0); }
+    {
+        return DicomImageClass::maxval(Bits, 0);
+    }
 
+    /** check whether LUT is valid
+     *
+     ** @return status, true if valid, false otherwise
+     */
     inline int isValid() const
-        { return Valid; }
+    {
+        return Valid;
+    }
 
+    /** get LUT explanation string
+     *
+     ** @return LUT explanation string if successful, NULL otherwise
+     */
     inline const char *getExplanation() const
     {
         return (Explanation.empty()) ? (const char *)NULL : Explanation.c_str();
     }
     
+    /** invert all LUT values.
+     *  (e.g. used for presentation LUTs)
+     *
+     ** @return status, true if successful, false otherwise
+     */
     int invertTable();
     
 
  protected:
 
+    /** constructor
+     *
+     ** @param  buffer  pointer to array with LUT entries
+     *  @param  count   number of LUT entries
+     *  @param  bits    number of bits per entry
+     */
     DiBaseLUT(Uint16 *buffer,
               const Uint32 count = 0,
               const Uint16 bits = 0);
 
+    /// number of LUT entries
     Uint32 Count;
+    /// first input value mapped (FIV)
     Uint16 FirstEntry;
+    /// number of bits per entry
     Uint16 Bits;
     
+    /// minimum LUT value
     Uint16 MinValue;
+    /// maximum LUT value
     Uint16 MaxValue;
 
+    /// status code, indicating whether LUT is valid
     int Valid;
 
+    /// LUT explanation string
     OFString Explanation;
 
-    const Uint16 *Data;             // points to lookup table data
+    /// pointer to lookup table data
+    const Uint16 *Data;
+    /// pointer to data buffer (will be deleted in the destructor)
     Uint16 *DataBuffer;
 
 
@@ -153,7 +293,10 @@ class DiBaseLUT
  *
  * CVS/RCS Log:
  * $Log: dibaslut.h,v $
- * Revision 1.7  1999-09-08 15:19:24  joergr
+ * Revision 1.8  1999-09-17 12:07:23  joergr
+ * Added/changed/completed DOC++ style comments in the header files.
+ *
+ * Revision 1.7  1999/09/08 15:19:24  joergr
  * Completed implementation of setting inverse presentation LUT as needed
  * e.g. for DICOM print (invert 8->12 bits PLUT).
  *

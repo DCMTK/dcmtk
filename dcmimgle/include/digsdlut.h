@@ -22,9 +22,9 @@
  *  Purpose: DicomGSDFLUT (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-10 08:50:24 $
+ *  Update Date:      $Date: 1999-09-17 12:11:32 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/digsdlut.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -52,6 +52,21 @@ class DiGSDFLUT
 
  public:
 
+    /** constructor
+     *
+     ** @param  count     number of values to be stored
+     *  @param  max       maximum value to be stored
+     *  @param  ddl_tab   array of DDL values
+     *  @param  lum_tab   array of luminance values
+     *  @param  ddl_cnt   number of DDL values
+     *  @param  gsdf_tab  array with GSDF
+     *  @param  gsdf_spl  array with helper function used for interpolation
+     *  @param  gsdf_cnt  number of values in GSDF
+     *  @param  jnd_min   minimum JND index value
+     *  @param  jnd_max   maximum JND index value
+     *  @param  amb       ambient light value
+     *  @param  stream    output stream (used to write curve data to a file)
+     */
     DiGSDFLUT(const unsigned long count,
               const Uint16 max,
               const Uint16 *ddl_tab,
@@ -65,11 +80,27 @@ class DiGSDFLUT
               const double amb,
               ostream *stream = NULL);
 
+    /** destructor
+     */
     virtual ~DiGSDFLUT();
 
 
  protected:
  
+    /** create lookup table
+     *
+     ** @param  ddl_tab   array of DDL values
+     *  @param  lum_tab   array of luminance values
+     *  @param  ddl_cnt   number of DDL values
+     *  @param  gsdf_tab  array with GSDF
+     *  @param  gsdf_spl  array with helper function used for interpolation
+     *  @param  gsdf_cnt  number of values in GSDF
+     *  @param  jnd_min   minimum JND index value
+     *  @param  jnd_max   maximum JND index value
+     *  @param  stream    output stream (used to write curve data to a file)
+     *
+     ** @return status, true if successful, false otherwise
+     */
     int createLUT(const Uint16 *ddl_tab,
                   const double *lum_tab,
                   const Uint16 ddl_cnt,
@@ -89,10 +120,11 @@ class DiGSDFLUT
  *
  * CVS/RCS Log:
  * $Log: digsdlut.h,v $
- * Revision 1.1  1999-09-10 08:50:24  joergr
+ * Revision 1.2  1999-09-17 12:11:32  joergr
+ * Added/changed/completed DOC++ style comments in the header files.
+ *
+ * Revision 1.1  1999/09/10 08:50:24  joergr
  * Added support for CIELAB display function. Restructured class hierarchy
  * for display functions.
- *
- *
  *
  */

@@ -22,9 +22,9 @@
  *  Purpose: DicomDisplayLUT (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-10 08:55:19 $
+ *  Update Date:      $Date: 1999-09-17 12:08:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/didislut.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -52,17 +52,35 @@ class DiDisplayLUT
 
  public:
 
+    /** constructor
+     *
+     ** @param  count  number of values to be stored
+     *  @param  max    maximum value to be stored
+     *  @param  amb    ambient light value
+     */
     DiDisplayLUT(const unsigned long count,
                  const Uint16 max,
                  const double amb);
 
+    /** destructor
+     */
     virtual ~DiDisplayLUT();
 
+    /** get value of specified LUT entry
+     *
+     ** @param  pos  position in the LUT to be returned
+     *
+     ** @return value of specified LUT entry
+     */
     inline Uint16 getValue(const Uint16 pos) const
     {
         return Data[pos];
     }
 
+    /** get ambient light value
+     *
+     ** @return ambient light value
+     */
     inline double getAmbientLightValue() const
     {
         return AmbientLight;
@@ -71,6 +89,7 @@ class DiDisplayLUT
 
  private:
  
+    /// ambient light value (measured in cd/m^2)
     double AmbientLight;
 };
 
@@ -82,10 +101,11 @@ class DiDisplayLUT
  *
  * CVS/RCS Log:
  * $Log: didislut.h,v $
- * Revision 1.1  1999-09-10 08:55:19  joergr
+ * Revision 1.2  1999-09-17 12:08:24  joergr
+ * Added/changed/completed DOC++ style comments in the header files.
+ *
+ * Revision 1.1  1999/09/10 08:55:19  joergr
  * Added support for CIELAB display function. Restructured class hierarchy
  * for display functions.
- *
- *
  *
  */

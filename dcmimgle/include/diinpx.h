@@ -22,11 +22,11 @@
  *  Purpose: DicomInputPixel (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-07-23 13:54:37 $
+ *  Update Date:      $Date: 1999-09-17 12:13:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diinpx.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
- * 
+ *
  *   CVS/RCS Log at end of file
  *
  */
@@ -47,59 +47,113 @@
 
 /** Abstract base class to convert DICOM pixel stream to intermediate representation
  */
-class DiInputPixel 
+class DiInputPixel
 {
 
  public:
 
+    /** constructor
+     *
+     ** @param  bits  number of bits stored for each pixel (depth)
+     */
     DiInputPixel(const unsigned int bits);
 
+    /** destructor
+     */
     virtual ~DiInputPixel();
-    
+
+    /** determine minimum and maximum pixel value (abstract)
+     *
+     ** @return status, true if successful, false otherwise
+     */
     virtual int determineMinMax() = 0;
-    
+
+    /** get pixel representation (abstract).
+     *  Determine which integer type (size and signed/unsigned) is necessary to store
+     *  the pixel data.
+     *
+     ** @return pixel representation
+     */
     virtual EP_Representation getRepresentation() const = 0;
 
+    /** get pointer to input pixel data (abstract)
+     *
+     ** @return pointer to input pixel data
+     */
     virtual void *getData() const = 0;
-    
+
+    /** remove reference to (internally handled) pixel data (abstract)
+     */
     virtual void removeDataReference() = 0;
 
+    /** get minimum pixel value (abstract)
+     *
+     ** @return minimum pixel value
+     */
     virtual double getMinValue() const = 0;
 
+    /** get maximum pixel value (abstract)
+     *
+     ** @return maximum pixel value
+     */
     virtual double getMaxValue() const = 0;
 
+    /** get number of bits per pixel
+     *
+     ** @return number of bits per pixel
+     */
     inline unsigned int getBits() const
     {
         return Bits;
     }
-    
+
+    /** get absolute minimum pixel value
+     *
+     ** @return absolute minimum pixel value
+     */
     inline double getAbsMinimum() const
     {
         return AbsMinimum;
     }
-    
+
+    /** get absolute maximum pixel value
+     *
+     ** @return absolute maximum pixel value
+     */
     inline double getAbsMaximum() const
     {
         return AbsMaximum;
     }
-    
+
+    /** get absolute pixel value range
+     *
+     ** @return absolute pixel value range
+     */
     inline double getAbsMaxRange() const
     {
         return AbsMaximum - AbsMinimum + 1;
     }
-    
+
+    /** get number of pixels
+     *
+     ** @return number of pixels
+     */
     inline unsigned long getCount() const
     {
         return Count;
     }
-    
+
 
  protected:
 
+    /// number of pixels
     unsigned long Count;
-    
+    /// bits per pixel/sample
     unsigned int Bits;
+
+    /// absolute minimum (possible) pixel value
     double AbsMinimum;
+    /// absolute maximum (possible) pixel value
     double AbsMaximum;
 };
 
@@ -111,7 +165,10 @@ class DiInputPixel
  *
  * CVS/RCS Log:
  * $Log: diinpx.h,v $
- * Revision 1.7  1999-07-23 13:54:37  joergr
+ * Revision 1.8  1999-09-17 12:13:18  joergr
+ * Added/changed/completed DOC++ style comments in the header files.
+ *
+ * Revision 1.7  1999/07/23 13:54:37  joergr
  * Optimized memory usage for converting input pixel data (reference instead
  * of copying where possible).
  *

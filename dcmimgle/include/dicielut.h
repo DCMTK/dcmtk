@@ -22,9 +22,9 @@
  *  Purpose: DicomCIELABLUT (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-10 08:50:23 $
+ *  Update Date:      $Date: 1999-09-17 12:08:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dicielut.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -52,6 +52,18 @@ class DiCIELABLUT
 
  public:
 
+    /** constructor
+     *
+     ** @param  count    number of values to be stored
+     *  @param  max      maximum value to be stored
+     *  @param  ddl_tab  array of DDL values
+     *  @param  lum_tab  array of luminance values
+     *  @param  ddl_cnt  number of DDL values
+     *  @param  lum_min  minimum luminance
+     *  @param  lum_max  maximum luminance
+     *  @param  amb      ambient light value
+     *  @param  stream   output stream (used to write curve data to a file)
+     */
     DiCIELABLUT(const unsigned long count,
                 const Uint16 max,
                 const Uint16 *ddl_tab,
@@ -62,11 +74,24 @@ class DiCIELABLUT
                 const double amb,
                 ostream *stream = NULL);
 
+    /** destructor
+     */
     virtual ~DiCIELABLUT();
 
 
  protected:
  
+    /** create lookup table
+     *
+     ** @param  ddl_tab  array of DDL values
+     *  @param  lum_tab  array of luminance values
+     *  @param  ddl_cnt  number of DDL values
+     *  @param  lum_min  minimum luminance
+     *  @param  lum_max  maximum luminance
+     *  @param  stream   output stream (used to write curve data to a file)
+     *
+     ** @return status, true if successful, false otherwise
+     */
     int createLUT(const Uint16 *ddl_tab,
                   const double *lum_tab,
                   const Uint16 ddl_cnt,
@@ -83,10 +108,11 @@ class DiCIELABLUT
  *
  * CVS/RCS Log:
  * $Log: dicielut.h,v $
- * Revision 1.1  1999-09-10 08:50:23  joergr
+ * Revision 1.2  1999-09-17 12:08:23  joergr
+ * Added/changed/completed DOC++ style comments in the header files.
+ *
+ * Revision 1.1  1999/09/10 08:50:23  joergr
  * Added support for CIELAB display function. Restructured class hierarchy
  * for display functions.
- *
- *
  *
  */

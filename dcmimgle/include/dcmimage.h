@@ -19,12 +19,12 @@
  *
  *  Author:  Joerg Riesmeier
  *
- *  Purpose: Provides main interface to the "dicom image toolkit"
+ *  Purpose: Provides main interface to the "DICOM image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-10 08:45:17 $
+ *  Update Date:      $Date: 1999-09-17 12:06:17 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dcmimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -69,11 +69,11 @@ class DicomImage
 
  // --- constructors and destructor
  
-    /** constructor, open a dicom file.
+    /** constructor, open a DICOM file.
      *  opens specified file and reads image related data, creates internal representation of image data.
      *  use getStatus() to obtain detailed information about any errors.
      *
-     ** @param  filename  the dicom file
+     ** @param  filename  the DICOM file
      *  @param  flags     configuration flags (see diutils.h, CIF_MayDetachPixelData is automatically set)
      *  @param  fstart    first frame to be processed (not fully implemented!)
      *  @param  fcount    number of frames (not fully implemented!)
@@ -85,7 +85,7 @@ class DicomImage
 
     /** constructor, use a given DcmFileStream
      *
-     ** @param  stream  open dicom file stream
+     ** @param  stream  open DICOM file stream
      *  @param  flags   configuration flags (see diutils.h, CIF_MayDetachPixelData is automatically set)
      *  @param  fstart  first frame to be processed (not fully implemented!)
      *  @param  fcount  number of frames (not fully implemented!)
@@ -98,7 +98,7 @@ class DicomImage
 #ifndef STARVIEW
     /** constructor, use a given DcmObject
      *
-     ** @param  object  pointer to dicom data structures (do not delete while referenced, not deleted within dcmimage)
+     ** @param  object  pointer to DICOM data structures (do not delete while referenced, not deleted within dcmimage)
      *  @param  xfer    transfer syntax
      *  @param  flags   configuration flags (see diutils.h)
      *  @param  fstart  first frame to be processed (not fully implemented!)
@@ -112,7 +112,7 @@ class DicomImage
 
     /** constructor, use a given DcmObject with specified rescale/slope
      *
-     ** @param  object     pointer to dicom data structures (do not delete while referenced, not deleted within dcmimage)
+     ** @param  object     pointer to DICOM data structures (do not delete while referenced, not deleted within dcmimage)
      *  @param  xfer       transfer syntax
      *  @param  slope      rescale slope (modality transformation)
      *  @param  intercept  rescale intercept (modality transformation)
@@ -130,7 +130,7 @@ class DicomImage
 
     /** constructor, use a given DcmObject with specified modality LUT
      *
-     ** @param  object      pointer to dicom data structures (do not delete while referenced, not deleted within dcmimage)
+     ** @param  object      pointer to DICOM data structures (do not delete while referenced, not deleted within dcmimage)
      *  @param  xfer        transfer syntax
      *  @param  data        dataset element containing modality LUT data
      *  @param  descriptor  dataset element containing modality LUT descriptor
@@ -277,7 +277,7 @@ class DicomImage
      *
      ** @return status code (true if successful)
      */
-    inline double setWidthHeightRatio(const double ratio) const
+    inline int setWidthHeightRatio(const double ratio) const
     {
         return (Image != NULL) ?
             Image->setColumnRowRatio(ratio) : 0;
@@ -289,7 +289,7 @@ class DicomImage
      *
      ** @return status code (true if successful)
      */
-    inline double setHeightWidthRatio(const double ratio) const
+    inline int setHeightWidthRatio(const double ratio) const
     {
         return (Image != NULL) ?
             Image->setRowColumnRatio(ratio) : 0;
@@ -369,6 +369,7 @@ class DicomImage
     }
 
     /** delete internal memory buffer used for rendered images.
+     *  Save memory if data is no longer needed.
      */
     inline void deleteOutputData() const 
     {
@@ -428,7 +429,9 @@ class DicomImage
     /** set no display function.
      *  disables display function transformation, object is not deleted!
      *
-     ** @return true if successful, false otherwise
+     ** @return true if successful (1 = disabled current function,
+     *                              2 = there was no function to disable)
+     *          false otherwise
      */
     inline int setNoDisplayFunction()
     {
@@ -1045,7 +1048,7 @@ class DicomImage
      *  NB: clipping and interpolated scaling at the same moment is not yet fully implemented!
      *
      ** @param  left          x coordinate of top left corner of area to be scaled
-     *                        (referring to image orgin, negative values create a border around the image)
+     *                        (referring to image origin, negative values create a border around the image)
      *  @param  top           y coordinate of top left corner of area to be scaled
      *  @param  clip_width    width of area to be scaled
      *  @param  clip_height   height of area to be scaled
@@ -1179,7 +1182,7 @@ class DicomImage
      *
      ** @param  frame  index of frame to be converted (default: first frame)
      *
-     ** @return pointer to memory buffer containing the bitmap data
+     ** @return pointer to memory buffer containing the bitmap data (NULL if an error occurred)
      */
     void *createTrueColorDIB(const unsigned long frame = 0)
     {
@@ -1193,7 +1196,7 @@ class DicomImage
      ** @param  frame  index of frame to be converted (default: first frame)
      *  @param  bits   number of bits per pixel used for the output bitmap (default: 32)
      *
-     ** @return pointer to memory buffer containing the bitmap data
+     ** @return pointer to memory buffer containing the bitmap data (NULL if an error occurred)
      */
     void *createJavaAWTBitmap(const unsigned long frame = 0,
                               const int bits = 32)
@@ -1209,7 +1212,7 @@ class DicomImage
      *  @param  size    size of memory buffer (will be checked whether it is sufficient)
      *  @param  count   number of entries (pixels) in input buffer
      *
-     ** @return pointer to memory buffer containing the packed output bitmap data
+     ** @return pointer to memory buffer containing the packed output bitmap data (NULL if an error occurred)
      */
     static void *create12BitPackedBitmap(const void *buffer,
                                          const unsigned long size,
@@ -1332,7 +1335,7 @@ class DicomImage
      *
      ** @param  degree  value to be normalized, valid values are: 0, 90, 180, 270
      *
-     ** @return true if successfull, false otherwise (invalid value)
+     ** @return true if successful, false otherwise (invalid value)
      */
     int normalizeDegreeValue(signed int &degree) const;
     
@@ -1363,7 +1366,10 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.22  1999-09-10 08:45:17  joergr
+ * Revision 1.23  1999-09-17 12:06:17  joergr
+ * Added/changed/completed DOC++ style comments in the header files.
+ *
+ * Revision 1.22  1999/09/10 08:45:17  joergr
  * Added support for CIELAB display function.
  *
  * Revision 1.21  1999/09/08 15:19:23  joergr

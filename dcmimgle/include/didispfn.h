@@ -22,9 +22,9 @@
  *  Purpose: DicomDisplayFunction (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-10 08:45:18 $
+ *  Update Date:      $Date: 1999-09-17 12:08:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/didispfn.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -61,68 +61,159 @@ class DiDisplayFunction
 
  public:
 
+    /** constructor, read monitor characteristics file
+     *
+     ** @param  filename  name of the monitor characteristics file (luminance for each DDL)
+     */
     DiDisplayFunction(const char *filename);
 
+    /** constructor, use given array of luminance values. UNTESTED
+     *  Values must be sorted and complete (i.e. there must be an entry for each DDL)
+     *
+     ** @param  lum_tab  pointer to array with luminance values (measuredin cd/m^2)
+     *  @param  count    number of array elements (should be equal to 'max + 1')
+     *  @param  max      maximum DDL (device driving level)
+     */
     DiDisplayFunction(const double *lum_tab,
                       const Uint16 count,
                       const Uint16 max = 255);
 
+    /** constructor, use given array of DDL and luminance values. UNTESTED
+     *  Values will be automatically sorted and missing values will be calculated by means of
+     *  a cubic spline interpolation.
+     *
+     ** @param  ddl_tab  pointer to array with DDL values (must be with the interval 0..max)
+     *  @param  lum_tab  pointer to array with luminance values (measuredin cd/m^2)
+     *  @param  count    number of array elements
+     *  @param  max      maximum DDL (device driving level)
+     */
     DiDisplayFunction(const Uint16 *ddl_tab,
                       const double *lum_tab,
                       const Uint16 count,
                       const Uint16 max = 255);
 
+    /** destructor
+     */
     virtual ~DiDisplayFunction();
 
+    /** check whether DisplayFunction is valid
+     *
+     ** @return status, true if valid, false otherwise
+     */
     inline int isValid() const
     {
         return Valid;
     }
 
+    /** get maximum DDL value
+     *
+     ** @return maximum DDL value
+     */
     inline Uint16 getMaxDDLValue() const
     {
         return MaxDDLValue;
     }
 
+    /** create CIELAB LUT with specified number of entries
+     *
+     ** @param  bits   depth of input values
+     *  @param  count  number of LUT entries (default: 0 = auto)
+     *
+     ** @return pointer to created LUT if successful, NULL otherwise
+     */
     const DiDisplayLUT *getLookupTable(const int bits,
                                        unsigned long count = 0);
     
+    /** delete specified LUT
+     *
+     ** @param  bits  depth of input values of the LUT to be deleted
+     *
+     ** @return status, true if valid, false otherwise
+     */
     int deleteLookupTable(const int bits);
     
+    /** write curve data to a text file (abstract method)
+     *
+     ** @param  filename  name of the text fileto which the data should be written
+     *
+     ** @return status, true if successful, false otherwise
+     */
     virtual int writeCurveData(const char *filename) = 0;
     
+    /** get ambient light value.
+     *  (measured in cd/m^2)
+     *
+     ** @return ambient light value
+     */
     inline double getAmbientLightValue() const
     {
         return AmbientLight;
     }
     
+    /** set ambient light value.
+     *  (measured in cd/m^2)
+     *
+     ** @param  value  ambient light value to be set (> 0)
+     *
+     ** @return status, true if successful, false otherwise
+     */
     virtual int setAmbientLightValue(const double value);
 
 
  protected:
 
-    virtual DiDisplayLUT *getLookupTable(unsigned long count = 0) = 0;
+    /** create display LUT with specified number of entries (abstract method)
+     *
+     ** @param  count  number of LUT entries
+     *
+     ** @return pointer to created LUT if successful, NULL otherwise
+     */
+    virtual DiDisplayLUT *getLookupTable(unsigned long count) = 0;
 
+    /** read the given monitor characteristics file
+     *
+     ** @param  filename  name of the monitor characteristics file
+     *
+     ** @return status, true if successful, false otherwise
+     */
     int readConfigFile(const char *filename);
 
+    /** create a sorted (by DDL) table from the given DDL/luminance tables
+     *
+     ** @param  ddl_tab  pointer to array with DDL values
+     *  @param  lum_tab  pointer to array with luminance values
+     *
+     ** @return status, true if successful, false otherwise
+     */
     int createSortedTable(const Uint16 *ddl_tab,
                           const double *lum_tab);
 
+    /** interpolate monitor characteristic curve by means of a cubic spline interpolation
+     */
     int interpolateValues();
 
+    /// status flag, indicating whether display function is valid
     int Valid;
 
-    Uint16 ValueCount;                  // Number of DDL/Lum values
-    Uint16 MaxDDLValue;                 // maximum DDL value (e.g. 255)
+    /// number of DDL/luminance values
+    Uint16 ValueCount;
+    /// maximum DDL value (normally 255)
+    Uint16 MaxDDLValue;
     
+    /// ambient light values
     double AmbientLight;
 
+    /// pointer to array of DDL values
     Uint16 *DDLValue;
+    /// pointer to array of corresponding luminance values
     double *LumValue;
 
+    /// constant defining minimum value for number of bits for LUT input (here: 8)
     static const int MinBits;
+    /// constant defining maximum value for number of bits for LUT input (here: 16)
     static const int MaxBits;
 
+    /// array with pointer to the different lookup tables (here: 8-16 bits)
     DiDisplayLUT *LookupTable[MAX_NUMBER_OF_TABLES];
 
 
@@ -142,7 +233,10 @@ class DiDisplayFunction
  *
  * CVS/RCS Log:
  * $Log: didispfn.h,v $
- * Revision 1.7  1999-09-10 08:45:18  joergr
+ * Revision 1.8  1999-09-17 12:08:24  joergr
+ * Added/changed/completed DOC++ style comments in the header files.
+ *
+ * Revision 1.7  1999/09/10 08:45:18  joergr
  * Added support for CIELAB display function.
  *
  * Revision 1.6  1999/03/24 17:19:20  joergr
