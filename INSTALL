@@ -196,6 +196,34 @@ A precompiled version of the library can be downloaded from
 http://dicom.offis.de/dcmtk/
 
 
+LIBPNG SUPPORT
+==============
+
+Starting with release 3.5.3, DCMTK supports the conversion of DICOM images
+to PNG.  DCMTK relies on the libpng toolkit (www.libpng.org) for this
+purpose.  This release of DCMTK is known to compile with the current
+libpng release 1.2.5, although older releases may work as well.
+
+On Unix platforms, if support for PNG export is desired, a compiled 
+version of the libpng libraries and include files must be available 
+during compilation of DCMTK, and the libpng support must be switched on 
+explicitly.  By default, DCMTK compiles without libpng support.
+It should be noted that libpng requires zlib. The configure script
+will disable libpng support even though --with-libpng is specified if
+--with-zlib is not specified as well.
+
+On Windows, the Visual C++ project files provided as part of the toolkit 
+expect a directory named "libpng-1.2.5" to be present in the same 
+directory where the DCMTK root directory (dcmtk) also resides. Include 
+files are expected in libpng-1.2.5/include. A debug version of the library 
+is expected in libpng-1.2.5/debug/libpng.lib, a release version in 
+libpng-1.2.5/release/libpng.lib. The debug version must be compiled for 
+the multithread debug version of the runtime (/MTd)", the release 
+version must be compiled for the non-debug multithread runtime (/MT). 
+A precompiled version of the library can be downloaded from 
+http://dicom.offis.de/dcmtk/
+
+
 BUILDING (Unix)
 ===============
 
