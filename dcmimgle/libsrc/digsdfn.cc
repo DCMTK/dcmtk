@@ -22,9 +22,9 @@
  *  Purpose: DicomGSDFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-17 13:13:29 $
+ *  Update Date:      $Date: 1999-10-18 10:14:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/digsdfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -145,7 +145,7 @@ int DiGSDFunction::writeCurveData(const char *filename)
         if (file)
         {
             file << "# Number of DDLs : " << ValueCount << endl;
-            file << "# Luminance range: " << LumValue[0] << " - " << LumValue[ValueCount - 1] << endl;
+            file << "# Luminance range: " << MinLumValue << " - " << MaxLumValue << endl;
             file << "# Ambient light  : " << AmbientLight << endl;
             file << "# JND index range: " << JNDMin << " - " << JNDMax << endl << endl;
             file << "DDL\tCC\tGSDF\tPSC" << endl;
@@ -236,8 +236,8 @@ int DiGSDFunction::calculateJNDBoundaries()
 {
     if ((LumValue != NULL) && (ValueCount > 0))
     {
-        JNDMin = getJNDIndex(LumValue[0] + AmbientLight);
-        JNDMax = getJNDIndex(LumValue[ValueCount - 1] + AmbientLight);
+        JNDMin = getJNDIndex(MinLumValue + AmbientLight);
+        JNDMax = getJNDIndex(MaxLumValue + AmbientLight);
         return (JNDMin >= 0) && (JNDMax >= 0);
     }
     return 0;
@@ -277,7 +277,12 @@ double DiGSDFunction::getJNDIndex(const double lum) const
  *
  * CVS/RCS Log:
  * $Log: digsdfn.cc,v $
- * Revision 1.2  1999-09-17 13:13:29  joergr
+ * Revision 1.3  1999-10-18 10:14:27  joergr
+ * Moved min/max value determination to display function base class. Now the
+ * actual min/max values are also used for GSDFunction (instead of first and
+ * last luminance value).
+ *
+ * Revision 1.2  1999/09/17 13:13:29  joergr
  * Enhanced efficiency of some "for" loops.
  *
  * Revision 1.1  1999/09/10 08:54:49  joergr

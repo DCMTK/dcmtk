@@ -22,9 +22,9 @@
  *  Purpose: DicomCIELABFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-17 13:13:29 $
+ *  Update Date:      $Date: 1999-10-18 10:14:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diciefn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,12 +49,8 @@
  *----------------*/
 
 DiCIELABFunction::DiCIELABFunction(const char *filename)
-  : DiDisplayFunction(filename),
-    MinLumValue(0),
-    MaxLumValue(0)
+  : DiDisplayFunction(filename)
 {
-    if (Valid)
-        Valid = calculateMinMax();
     if (!Valid)
     {
         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
@@ -66,12 +62,8 @@ DiCIELABFunction::DiCIELABFunction(const char *filename)
 DiCIELABFunction::DiCIELABFunction(const double *lum_tab,             // UNTESTED !!
                                    const Uint16 count,
                                    const Uint16 max)
-  : DiDisplayFunction(lum_tab, count, max),
-    MinLumValue(0),
-    MaxLumValue(0)
+  : DiDisplayFunction(lum_tab, count, max)
 {
-    if (Valid)
-        Valid = calculateMinMax();
     if (!Valid)
     {
         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
@@ -84,12 +76,8 @@ DiCIELABFunction::DiCIELABFunction(const Uint16 *ddl_tab,             // UNTESTE
                                    const double *lum_tab,
                                    const Uint16 count,
                                    const Uint16 max)
-  : DiDisplayFunction(ddl_tab, lum_tab, count, max),
-    MinLumValue(0),
-    MaxLumValue(0)
+  : DiDisplayFunction(ddl_tab, lum_tab, count, max)
 {
-    if (Valid)
-        Valid = calculateMinMax();
     if (!Valid)
     {
         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
@@ -147,26 +135,6 @@ DiDisplayLUT *DiCIELABFunction::getLookupTable(unsigned long count)
 }
 
 
-int DiCIELABFunction::calculateMinMax()
-{
-    if ((LumValue != NULL) && (ValueCount > 0))
-    {
-        MinLumValue = LumValue[0];
-        MaxLumValue = LumValue[0];
-        register unsigned int i;
-        for (i = 1; i < ValueCount; i++)
-        {
-            if (LumValue[i] < MinLumValue)
-                MinLumValue = LumValue[i];
-            if (LumValue[i] > MaxLumValue)
-                MaxLumValue = LumValue[i];
-        }
-        return 1;
-    }
-    return 0;
-}
-
-
 /********************************************************************/
 
 
@@ -174,13 +142,17 @@ int DiCIELABFunction::calculateMinMax()
  *
  * CVS/RCS Log:
  * $Log: diciefn.cc,v $
- * Revision 1.2  1999-09-17 13:13:29  joergr
+ * Revision 1.3  1999-10-18 10:14:26  joergr
+ * Moved min/max value determination to display function base class. Now the
+ * actual min/max values are also used for GSDFunction (instead of first and
+ * last luminance value).
+ *
+ * Revision 1.2  1999/09/17 13:13:29  joergr
  * Enhanced efficiency of some "for" loops.
  *
  * Revision 1.1  1999/09/10 08:54:47  joergr
  * Added support for CIELAB display function. Restructured class hierarchy
  * for display functions.
- *
  *
  *
  */

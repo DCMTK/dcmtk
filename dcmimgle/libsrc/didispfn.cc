@@ -22,9 +22,9 @@
  *  Purpose: DicomDisplayFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-10 08:54:49 $
+ *  Update Date:      $Date: 1999-10-18 10:14:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/didispfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,11 +65,13 @@ DiDisplayFunction::DiDisplayFunction(const char *filename)
     MaxDDLValue(0),
     AmbientLight(0),
     DDLValue(NULL),
-    LumValue(NULL)
+    LumValue(NULL),
+    MinLumValue(0),
+    MaxLumValue(0)
 {
     OFBitmanipTemplate<DiDisplayLUT *>::zeroMem(LookupTable, MAX_NUMBER_OF_TABLES);
     if (readConfigFile(filename))
-        Valid = createSortedTable(DDLValue, LumValue) && interpolateValues();
+        Valid = createSortedTable(DDLValue, LumValue) && calculateMinMax() && interpolateValues();
 }
 
 
@@ -81,7 +83,9 @@ DiDisplayFunction::DiDisplayFunction(const double *lum_tab,             // UNTES
     MaxDDLValue(max),
     AmbientLight(0),
     DDLValue(NULL),
-    LumValue(NULL)
+    LumValue(NULL),
+    MinLumValue(0),
+    MaxLumValue(0)
 {
     OFBitmanipTemplate<DiDisplayLUT *>::zeroMem(LookupTable, MAX_NUMBER_OF_TABLES);
     if ((ValueCount > 0) && (ValueCount == MaxDDLValue + 1))
@@ -96,7 +100,7 @@ DiDisplayFunction::DiDisplayFunction(const double *lum_tab,             // UNTES
                 DDLValue[i] = i;                            // set DDL values
                 LumValue[i] = lum_tab[i];                   // copy table
             }
-            Valid = 1;
+            Valid = calculateMinMax();
         }
     }
 }
@@ -111,10 +115,12 @@ DiDisplayFunction::DiDisplayFunction(const Uint16 *ddl_tab,             // UNTES
     MaxDDLValue(max),
     AmbientLight(0),
     DDLValue(NULL),
-    LumValue(NULL)
+    LumValue(NULL),
+    MinLumValue(0),
+    MaxLumValue(0)
 {
     OFBitmanipTemplate<DiDisplayLUT *>::zeroMem(LookupTable, MAX_NUMBER_OF_TABLES);
-    Valid = createSortedTable(ddl_tab, lum_tab) && interpolateValues();
+    Valid = createSortedTable(ddl_tab, lum_tab) && calculateMinMax() && interpolateValues();
 }
 
 
@@ -335,7 +341,7 @@ int DiDisplayFunction::createSortedTable(const Uint16 *ddl_tab,
             if (i < ValueCount)                                                     // invalid luminance value(s)
             {
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
-                    cerr << "WARNING: luminance values (ordered by DDLs) don't ascend monotonous !" << endl;
+                    cerr << "WARNING: luminance values (ordered by DDLs) don't ascend monotonously !" << endl;
             }
             status = (ValueCount > 0);
         }
@@ -378,11 +384,36 @@ int DiDisplayFunction::interpolateValues()
 }
 
 
+int DiDisplayFunction::calculateMinMax()
+{
+    if ((LumValue != NULL) && (ValueCount > 0))
+    {
+        MinLumValue = LumValue[0];
+        MaxLumValue = LumValue[0];
+        register unsigned int i;
+        for (i = 1; i < ValueCount; i++)
+        {
+            if (LumValue[i] < MinLumValue)
+                MinLumValue = LumValue[i];
+            if (LumValue[i] > MaxLumValue)
+                MaxLumValue = LumValue[i];
+        }
+        return 1;
+    }
+    return 0;
+}
+
+
 /*
  *
  * CVS/RCS Log:
  * $Log: didispfn.cc,v $
- * Revision 1.15  1999-09-10 08:54:49  joergr
+ * Revision 1.16  1999-10-18 10:14:27  joergr
+ * Moved min/max value determination to display function base class. Now the
+ * actual min/max values are also used for GSDFunction (instead of first and
+ * last luminance value).
+ *
+ * Revision 1.15  1999/09/10 08:54:49  joergr
  * Added support for CIELAB display function. Restructured class hierarchy
  * for display functions.
  *

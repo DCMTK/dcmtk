@@ -22,9 +22,9 @@
  *  Purpose: DicomDisplayFunction (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-17 12:08:24 $
+ *  Update Date:      $Date: 1999-10-18 10:15:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/didispfn.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -192,6 +192,12 @@ class DiDisplayFunction
      */
     int interpolateValues();
 
+    /** calculate minimum and maximum luminance values
+     *
+     ** @return status, true if successful, false otherwise
+     */
+    int calculateMinMax();
+
     /// status flag, indicating whether display function is valid
     int Valid;
 
@@ -207,6 +213,11 @@ class DiDisplayFunction
     Uint16 *DDLValue;
     /// pointer to array of corresponding luminance values
     double *LumValue;
+
+    /// minimum luminance value
+    double MinLumValue;
+    /// maximum luminance value
+    double MaxLumValue;
 
     /// constant defining minimum value for number of bits for LUT input (here: 8)
     static const int MinBits;
@@ -233,7 +244,12 @@ class DiDisplayFunction
  *
  * CVS/RCS Log:
  * $Log: didispfn.h,v $
- * Revision 1.8  1999-09-17 12:08:24  joergr
+ * Revision 1.9  1999-10-18 10:15:50  joergr
+ * Moved min/max value determination to display function base class. Now the
+ * actual min/max values are also used for GSDFunction (instead of first and
+ * last luminance value).
+ *
+ * Revision 1.8  1999/09/17 12:08:24  joergr
  * Added/changed/completed DOC++ style comments in the header files.
  *
  * Revision 1.7  1999/09/10 08:45:18  joergr

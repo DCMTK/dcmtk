@@ -22,9 +22,9 @@
  *  Purpose: DicomCIELABFunction (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-17 12:08:22 $
+ *  Update Date:      $Date: 1999-10-18 10:15:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diciefn.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -106,20 +106,9 @@ class DiCIELABFunction
      ** @return pointer to created LUT if successful, NULL otherwise
      */
     DiDisplayLUT *getLookupTable(unsigned long count);
-    
-    /** calculate minimum and maximum luminance values
-     *
-     ** @return status, true if successful, false otherwise
-     */
-    int calculateMinMax();
 
 
  private:
-
-    /// minimum luminance value
-    double MinLumValue;
-    /// maximum luminance value
-    double MaxLumValue;
 
  // --- declarations to avoid compiler warnings
  
@@ -135,7 +124,12 @@ class DiCIELABFunction
  *
  * CVS/RCS Log:
  * $Log: diciefn.h,v $
- * Revision 1.2  1999-09-17 12:08:22  joergr
+ * Revision 1.3  1999-10-18 10:15:49  joergr
+ * Moved min/max value determination to display function base class. Now the
+ * actual min/max values are also used for GSDFunction (instead of first and
+ * last luminance value).
+ *
+ * Revision 1.2  1999/09/17 12:08:22  joergr
  * Added/changed/completed DOC++ style comments in the header files.
  *
  * Revision 1.1  1999/09/10 08:50:22  joergr
