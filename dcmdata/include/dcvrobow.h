@@ -1,74 +1,82 @@
 /*
- *
- * Author: Gerd Ehlers	    Created:  05-05-94
- *                          Modified: 02-07-95
- *
- * Module: dcvrobow.h
- *
- * Purpose:
- * Interface of class DcmOtherByteOtherWord
- *
- *
- * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.2 $
- * Status:	  $State: Exp $
- *
- */
+**
+** Author: Gerd Ehlers      05.05.94 -- First Creation
+**         Andreas Barth    05.12.95 -- new Stream class, unique value field
+** Kuratorium OFFIS e.V.
+**
+** Module: dcvrobow.h
+**
+** Purpose:
+** Interface of class DcmOtherByteOtherWord
+**
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-01-05 13:23:07 $
+** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrobow.h,v $
+** CVS/RCS Revision:	$Revision: 1.3 $
+** Status:		$State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 #ifndef DCVROBOW_H
 #define DCVROBOW_H
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
+#include "dcerror.h"
 #include "dctypes.h"
 #include "dcelem.h"
 
 
 
-class DcmOtherByteOtherWord : public DcmElement {
-    void*   OtherValue;
-    BOOL    mustSwap, swappedToWord;
+class DcmOtherByteOtherWord : public DcmElement 
+{
+  protected:
+	virtual void postLoadValue(void);
+    E_Condition alignValue();
 
-    void    swapValueToWord( BOOL toWord );
-
-protected:
-    virtual E_Condition readValueField( E_TransferSyntax xfer );
-    virtual E_Condition alignValue();
-
-public:
-    DcmOtherByteOtherWord( const DcmTag &tag,
-			   T_VR_UL len = 0,
-			   iDicomStream *iDStream = NULL);
+  public:
+    DcmOtherByteOtherWord( const DcmTag &tag, const Uint32 len = 0);
     DcmOtherByteOtherWord( const DcmOtherByteOtherWord& old );
     virtual ~DcmOtherByteOtherWord();
 
-    virtual E_Condition setVR( DcmEVR vr );
-    virtual DcmEVR 	ident() const;
-    virtual void	print( int level = 0 );
-    virtual T_VR_UL	getVM();
+    virtual E_Condition setVR(DcmEVR vr);
+    virtual DcmEVR ident() const;
+    virtual void print(const int level = 0);
+    virtual unsigned long getVM(void) { return 1L; }
 
-    virtual E_Condition read(   E_TransferSyntax xfer,
-                                E_GrpLenEncoding gltype = EGL_withoutGL );
-    virtual E_Condition write(  oDicomStream &oDS,
-                                E_TransferSyntax oxfer,
-                                E_EncodingType enctype = EET_UndefinedLength,
-                                E_GrpLenEncoding gltype = EGL_withoutGL );
-    virtual E_Condition readBlock(  E_TransferSyntax xfer,
-                                    E_GrpLenEncoding gltype = EGL_withoutGL );
-    virtual E_Condition writeBlock( oDicomStream &oDS,
-				    E_TransferSyntax oxfer,
-                                    E_EncodingType enctype = EET_UndefinedLength,
-                                    E_GrpLenEncoding gltype = EGL_withoutGL );
-    virtual E_Condition put(    BYTE *bytevalue,
-				T_VR_UL length );      // number of bytes
-    virtual E_Condition put(	T_VR_US *wordvalue,
-				T_VR_UL length );      // number of words
-    virtual BYTE*	getBytes();		       // Restriction of C++
-    virtual T_VR_US*	getWords();		       //	   -""-
-    virtual E_Condition clear();
-    virtual E_Condition verify( BOOL autocorrect = FALSE );
-    virtual E_Condition loadAllDataIntoMemory();
+    virtual E_Condition write(DcmStream & outStream,
+							  const E_TransferSyntax oxfer,
+							  const E_EncodingType enctype = EET_UndefinedLength,
+							  const E_GrpLenEncoding gltype = EGL_withoutGL);
+
+    virtual E_Condition put(const Uint8 * byteValue,
+							const unsigned long length);      // number of bytes
+
+    virtual E_Condition put(const Uint16 * wordValue,
+							const unsigned long length );      // number of words
+
+	virtual E_Condition get(Uint8 * & bytes);
+	virtual E_Condition get(Uint16 * & words);
+
+    Uint8 * getBytes(void);		       // Restriction of C++
+    Uint16 * getWords(void);	       //	   -""-
+
+    virtual E_Condition verify(const BOOL autocorrect = FALSE);
 };
 
 
 #endif // DCVROBOW_H
+
+/*
+** CVS/RCS Log:
+** $Log: dcvrobow.h,v $
+** Revision 1.3  1996-01-05 13:23:07  andreas
+** - changed to support new streaming facilities
+** - more cleanups
+** - merged read / write methods for block and file transfer
+**
+**
+**
+*/

@@ -1,121 +1,122 @@
 /*
- *
- * Author: Gerd Ehlers	    Created:  04-09-94
- *                          Modified: 02-07-95
- *
- * Module: dcobject.h
- *
- * Purpose:
- * This file contains the interface to routines which provide
- * DICOM object encoding/decoding, search and lookup facilities.
- *
- * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.2 $
- * Status:	  $State: Exp $
- *
- */
+**
+** Author: Gerd Ehlers	    Created:  09.04.94
+**                          Modified: 26.11.95
+**
+** Module: dcobject.h
+**
+** Purpose:
+** This file contains the interface to routines which provide
+** DICOM object encoding/decoding, search and lookup facilities.
+**
+** Last Update:   $Author: andreas $
+** Revision:      $Revision: 1.3 $
+** Status:	  $State: Exp $
+**
+*/
 
 #ifndef DCOBJECT_H
 #define DCOBJECT_H
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dctypes.h"
 #include "dcerror.h"
+#include "dctypes.h"
+#include "dcxfer.h"
 #include "dcstream.h"
 #include "dctag.h"
 #include "dcstack.h"
 
 
 const Uint32 DCM_UndefinedLength = 0xffffffff;
-/*
-** Remove UNDEF_LEN when all use have been changed to DCM_UndefinedLength
-*/
-#define UNDEF_LEN DCM_UndefinedLength
+
+// Maxinum number of read bytes for a Value Element
+const Uint32 DCM_MaxReadLength = 4096;	
+
+// Maximun Length of Tag and Length in a DICOM element
+const Uint32 DCM_TagInfoLength = 12;	
 
 
-class DcmObject {
+class DcmObject 
+{
 protected:
-    int              testConstructDestruct;   // for debugging
+#ifdef DEBUG
+    int testConstructDestruct;   // for debugging
+#endif
 
-    DcmTag	     *Tag;
-    T_VR_UL	     Length;
-    E_Condition      errorFlag;
-    iDicomStream     *iDS;
-    E_TransferSyntax Xfer;
-    long	     offsetInFile;
-    BOOL	     valueInMemory;
-    BOOL	     valueModified;
-    E_ReadWriteState rdStat;
-    E_ReadWriteState wrStat;
-    T_VR_UL	     bytesRead;
-    T_VR_UL	     bytesWritten;
+    DcmTag *Tag;
+    Uint32 Length;
+    E_Condition errorFlag;
+    E_TransferState fTransferState;
+    Uint32 fTransferredBytes;
 
-    virtual void	printInfoLine(	   int level,
-					   const char *info );
-    virtual void	printInfoLine(	   int level,
-                                           const DcmTag &tag,
-					   T_VR_UL length,
-					   const char *info );
-    virtual E_Condition writeTagAndLength( oDicomStream &oDS,           // in
-					   E_TransferSyntax oxfer,	// in
-					   T_VR_UL *written_bytes );	// out
+    virtual void printInfoLine(int level, const char *info );
+    virtual void printInfoLine(int level, const DcmTag &tag,
+			       Uint32 length, const char *info );
+
+    E_Condition writeTag(DcmStream & outStream,	const DcmTag & tag,
+			 const E_TransferSyntax oxfer); // in
+
+    E_Condition writeTagAndLength(DcmStream & outStream,  
+				  const E_TransferSyntax oxfer,	// in
+				  Uint32 & writtenBytes ); // out
+
+    void swapIfNecessary(const E_ByteOrder newByteOrder, 
+			 const E_ByteOrder oldByteOrder,
+			 void * value, const Uint32 byteLength,
+			 const size_t valWidth);
+
 public:
-    DcmObject( const DcmTag &tag, T_VR_UL len = 0, iDicomStream *iDStream = NULL);
-    DcmObject( const DcmObject& obj );
+    DcmObject(const DcmTag & tag, const Uint32 len = 0);
+    DcmObject(const DcmObject & obj);
 
     virtual ~DcmObject();
 
-    virtual DcmEVR 	     ident() const = 0;
-    virtual void	     print( int level = 0 ) = 0;
-    virtual E_Condition      error();
+    virtual DcmEVR ident() const = 0;
+    virtual void print(int level = 0) = 0;
+    inline E_Condition error(void) const { return errorFlag; }
 
-    virtual E_ReadWriteState readState();
-    virtual E_ReadWriteState writeState();
-    virtual E_Condition      readBlockInit();
-    virtual E_Condition      writeBlockInit();
+    inline E_TransferState transferState(void) const { return fTransferState; }
+    virtual void transferInit(void);
+    virtual void transferEnd(void);
 
-    virtual E_TransferSyntax getOriginalXfer();
+    virtual Uint16 getGTag();
+    virtual Uint16 getETag();
+    const DcmTag & getTag(void) const;
+    DcmEVR getVR(void);
+    virtual E_Condition setVR(DcmEVR vr);
+    virtual unsigned long getVM() = 0;
+    virtual Uint32 getLength(const E_TransferSyntax xfer 
+			     = EXS_LittleEndianImplicit,
+			     const E_EncodingType enctype 
+			     = EET_UndefinedLength) = 0;
 
-    virtual T_VR_US	getGTag();
-    virtual T_VR_US	getETag();
-    virtual DcmTag&     getTag();
-    virtual DcmEVR 	getVR();
-    virtual E_Condition setVR(	    DcmEVR vr );
-    virtual T_VR_UL	getVM() = 0;
-    virtual T_VR_UL	getLength(  E_TransferSyntax xfer = EXS_LittleEndianImplicit,
-				    E_EncodingType enctype = EET_UndefinedLength );
-    virtual E_Condition read(       E_TransferSyntax xfer = EXS_UNKNOWN,
-                                    E_GrpLenEncoding gltype = EGL_withoutGL ) = 0;
-    virtual E_Condition write(      oDicomStream &oDS,
-				    E_TransferSyntax oxfer,
-                                    E_EncodingType enctype = EET_UndefinedLength,
-                                    E_GrpLenEncoding gltype = EGL_withoutGL ) = 0;
-    virtual E_Condition readBlock(  E_TransferSyntax xfer = EXS_UNKNOWN,
-                                    E_GrpLenEncoding gltype = EGL_withoutGL ) = 0;
-    virtual E_Condition writeBlock( oDicomStream &oDS,
-				    E_TransferSyntax oxfer,
-                                    E_EncodingType enctype = EET_UndefinedLength,
-                                    E_GrpLenEncoding gltype = EGL_withoutGL ) = 0;
+    virtual E_Condition read(DcmStream & inStream,
+			     const E_TransferSyntax ixfer,
+                             const E_GrpLenEncoding gltype = EGL_withoutGL,
+			     const Uint32 maxReadLength = DCM_MaxReadLength) = 0;
+
+    virtual E_Condition write(DcmStream & outStream,
+			      const E_TransferSyntax oxfer,
+			      const E_EncodingType enctype = EET_UndefinedLength,
+			      const E_GrpLenEncoding gltype = EGL_withoutGL) = 0;
+
     virtual E_Condition clear() = 0;
-    virtual E_Condition verify(     BOOL autocorrect = FALSE ) = 0;
-    virtual E_Condition search(     const DcmTag &tag,                 // in
-				    DcmStack &resultStack,	       // inout
-				    E_SearchMode mode = ESM_fromHere,  // in
-				    BOOL searchIntoSub = TRUE );       // in
-    virtual E_Condition search(     const DcmTagKey &xtag,	       // in
-				    DcmStack &resultStack,	       // inout
-				    E_SearchMode mode = ESM_fromHere,  // in
-				    BOOL searchIntoSub = TRUE );       // in
-    virtual E_Condition searchErrors( DcmStack &resultStack );	       // inout
-    virtual E_Condition loadAllDataIntoMemory() = 0;
+    virtual E_Condition verify(BOOL autocorrect = FALSE) = 0;
 
-// Folgende Methoden koennen nicht abstrakt deklariert werden,
-// weil sie unterschiedliche Parameter- und Rueckgabetypen besitzen:
-//    virtual E_Condition put( void* );
-//    virtual E_Condition insert( void* );
-//    virtual void* get();
-//    virtual void* remove();
+    virtual E_Condition search(const DcmTag &tag,                 // in
+			       DcmStack &resultStack,	       // inout
+			       E_SearchMode mode = ESM_fromHere,  // in
+			       BOOL searchIntoSub = TRUE );       // in
+	
+    virtual E_Condition search(const DcmTagKey &xtag,	       // in
+			       DcmStack &resultStack,	       // inout
+			       E_SearchMode mode = ESM_fromHere,  // in
+			       BOOL searchIntoSub = TRUE );       // in
+
+    virtual E_Condition searchErrors( DcmStack &resultStack );	       // inout
+
+    virtual E_Condition loadAllDataIntoMemory(void) = 0;
 
 }; // class DcmObject
 

@@ -9,8 +9,8 @@
  * This file contains a Stack-Definition
  * 
  * 
- * Last Update:	  $Author: hewett $
- * Revision:      $Revision: 1.2 $
+ * Last Update:	  $Author: andreas $
+ * Revision:      $Revision: 1.3 $
  * Status:        $State: Exp $
  *
  */
@@ -48,7 +48,7 @@ public:
 
 class DcmStack {
     DcmStackNode *topNode;
-    T_VR_UL cardinality;
+    unsigned long cardinality;
 
 public:
     DcmStack();
@@ -58,9 +58,9 @@ public:
     DcmObject* push( DcmObject *obj );
     DcmObject* pop();
     DcmObject* top();
-    DcmObject* elem( T_VR_UL number );
+    DcmObject* elem(const unsigned long number);
     BOOL empty();
-    T_VR_UL card();
+    const unsigned long card();
     void clear();
 };
 

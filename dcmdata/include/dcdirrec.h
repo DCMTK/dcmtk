@@ -1,25 +1,30 @@
 /*
- *
- * Author: Gerd Ehlers	    Created:  06-04-94
- *			    Modified: 02-07-95
- *
- * Module: dcdirrec.h
- *
- * Purpose:
- * Interface of class DcmDirectoryRecord
- *
- *
- * Last Update:   $Author: hewett $
- * Revision:	  $Revision: 1.1 $
- * Status:	  $State: Exp $
- *
- */
+**
+** Author: Gerd Ehlers	    04.06.94 -- Created
+**		   Andreas Barth	30.11.95 -- modify to support new streams
+**
+** Module: dcdirrec.h
+**
+** Purpose:
+** Interface of class DcmDirectoryRecord
+**
+**
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-01-05 13:22:54 $
+** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdirrec.h,v $
+** CVS/RCS Revision:	$Revision: 1.2 $
+** Status:		$State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 #ifndef DCDIRREC_H
 #define DCDIRREC_H
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
+#include "dcerror.h"
 #include "dctypes.h"
 #include "dcitem.h"
 #include "dcsequen.h"
@@ -60,72 +65,70 @@ class DcmDirectoryRecord : public DcmItem {
 
 protected:
     DcmSequenceOfItems* lowerLevelList;
-    E_DirRecType	DirRecordType;
+    E_DirRecType DirRecordType;
     DcmDirectoryRecord* referencedMRDR;
-    T_VR_UL		numberOfReferences;
+    Uint32 numberOfReferences;
+	Uint32 offsetInFile;
 
     // Seiteneffekt-freie Konversions-Methoden:
-    E_DirRecType	recordNameToType( const char *recordTypeName );
-    char*		buildFileName( const char* origName, char* destName );
-    E_Condition 	checkHierarchy( 	E_DirRecType upperRecord,
-						E_DirRecType lowerRecord );
+    E_DirRecType recordNameToType(const char *recordTypeName);
+    char *	buildFileName(const char* origName, char* destName );
+    E_Condition checkHierarchy(const E_DirRecType upperRecord,
+							   const E_DirRecType lowerRecord );
 
     // Zugriff auf Datenelemente innerhalb des Directory Records:
-    E_Condition 	setRecordType(		E_DirRecType newType );
+    E_Condition 	setRecordType(E_DirRecType newType );
     E_DirRecType	lookForRecordType();
     E_Condition 	setReferencedFileID( const char *referencedFileID );
     const char*		lookForReferencedFileID();
     DcmDirectoryRecord* lookForReferencedMRDR();
     const char*		getReferencedFileName();      // lokal oder in MRDR
-    E_Condition 	setRecordInUseFlag(	T_VR_US newFlag );
-    T_VR_US		lookForRecordInUseFlag();
-    long		getFileOffset();
-    long		setFileOffset(long position );
+    E_Condition 	setRecordInUseFlag(const Uint16 newFlag );
+    Uint16		lookForRecordInUseFlag();
+    Uint32		getFileOffset();
+    Uint32		setFileOffset(Uint32 position );
 
 
     // Zugriff auf MRDR-Datenelement:
-    E_Condition 	setNumberOfReferences(	T_VR_UL newRefNum );
-    T_VR_UL		lookForNumberOfReferences();
-    T_VR_UL		increaseRefNum();
-    T_VR_UL		decreaseRefNum();
+    E_Condition 	setNumberOfReferences(	Uint32 newRefNum );
+    Uint32		lookForNumberOfReferences();
+    Uint32		increaseRefNum();
+    Uint32		decreaseRefNum();
 
     // Verschiedenes:
 // PENDING: benutze hierfuer DcmModuleTable
-    E_Condition 	fillTypeElements(	E_DirRecType type,
-						DcmFileFormat *fromFile );
-    E_Condition 	fillElementsAndReadSOP( const char *referencedFileID );
-    E_Condition 	masterInsertSub(	DcmDirectoryRecord* dirRec,
-						T_VR_UL where = UNDEF_LEN );
+    E_Condition 	fillTypeElements(E_DirRecType type,
+									 DcmFileFormat *fromFile);
+    E_Condition 	fillElementsAndReadSOP(const char *referencedFileID);
+    E_Condition 	masterInsertSub(DcmDirectoryRecord* dirRec,
+									const unsigned long where 
+									      = DCM_EndOfListIndex);
     E_Condition 	purgeReferencedFile();
 
 public:
     DcmDirectoryRecord();
-    DcmDirectoryRecord( const DcmTag &tag,
-			T_VR_UL len,
-			iDicomStream *iDStream );
-    DcmDirectoryRecord( E_DirRecType recordType,
-			char *referencedFileID );     // Dicom-Format mit '\\'
-    DcmDirectoryRecord( char *recordTypeName,
-			char *referencedFileID );     // Dicom-Format mit '\\'
-    DcmDirectoryRecord( const DcmDirectoryRecord &oldDirRec );
+    DcmDirectoryRecord(const DcmTag &tag,
+					   const Uint32 len);
+    DcmDirectoryRecord(const E_DirRecType recordType,
+					   const char *referencedFileID);   // Dicom-Format mit '\\'
+    DcmDirectoryRecord(const char *recordTypeName,
+					   const char *referencedFileID);   // Dicom-Format mit '\\'
+    DcmDirectoryRecord(const DcmDirectoryRecord &oldDirRec );
     virtual ~DcmDirectoryRecord();
 
     virtual DcmEVR 		ident() const;
-    virtual void		print(	   int level = 0 );
+    virtual void		print(const int level = 0);
 
-    virtual E_Condition 	read(	   E_TransferSyntax xfer,
-					   E_GrpLenEncoding gltype = EGL_withoutGL );
-    virtual E_Condition 	write(	   oDicomStream &oDS,
-					   E_TransferSyntax oxfer,
-					   E_EncodingType enctype = EET_UndefinedLength,
-					   E_GrpLenEncoding gltype = EGL_withoutGL );
-    virtual E_Condition 	readBlock( E_TransferSyntax xfer,
-					   E_GrpLenEncoding gltype = EGL_withoutGL );
-    virtual E_Condition 	writeBlock(oDicomStream &oDS,
-					   E_TransferSyntax oxfer,
-					   E_EncodingType enctype = EET_UndefinedLength,
-					   E_GrpLenEncoding gltype = EGL_withoutGL );
-    virtual E_Condition 	verify(    BOOL autocorrect = FALSE );
+    virtual E_Condition read(DcmStream & inStream,
+							 const E_TransferSyntax xfer,
+							 const E_GrpLenEncoding gltype = EGL_withoutGL,
+							 const Uint32 maxReadLength = DCM_MaxReadLength);
+    virtual E_Condition write(DcmStream & outStream,
+							  const E_TransferSyntax oxfer,
+							  const E_EncodingType enctype = EET_UndefinedLength,
+							  const E_GrpLenEncoding gltype = EGL_withoutGL);
+
+    virtual E_Condition 	verify(const BOOL autocorrect = FALSE);
     virtual E_Condition 	search(    const DcmTag &tag, 		    // in
 					   DcmStack &resultStack,	    // inout
 					   E_SearchMode mode = ESM_fromHere,// in
@@ -143,13 +146,14 @@ public:
 
 // Manipulation der Lower-Level Directory Entities:
 
-    virtual T_VR_UL		cardSub();
-    virtual E_Condition 	insertSub( DcmDirectoryRecord* dirRec,
-					   T_VR_UL where = UNDEF_LEN );
-    virtual DcmDirectoryRecord* getSub(    T_VR_UL num );
-    virtual DcmDirectoryRecord* removeSub( T_VR_UL num );
+    virtual unsigned long cardSub();
+    virtual E_Condition insertSub(DcmDirectoryRecord* dirRec,
+								  const unsigned long where 
+								        = DCM_EndOfListIndex);
+    virtual DcmDirectoryRecord* getSub(const unsigned long num);
+    virtual DcmDirectoryRecord* removeSub(const unsigned long num);
     virtual DcmDirectoryRecord* removeSub( DcmDirectoryRecord* dirRec );
-    virtual E_Condition 	deleteSubAndPurgeFile( T_VR_UL num );
+    virtual E_Condition 	deleteSubAndPurgeFile(const unsigned long num);
     virtual E_Condition 	deleteSubAndPurgeFile( DcmDirectoryRecord* dirRec );
     virtual E_Condition 	clearSub();
 };
@@ -158,3 +162,13 @@ public:
 
 #endif // DCDIRREC_H
 
+/*
+** CVS/RCS Log:
+** $Log: dcdirrec.h,v $
+** Revision 1.2  1996-01-05 13:22:54  andreas
+** - changed to support new streaming facilities
+** - more cleanups
+** - merged read / write methods for block and file transfer
+**
+**
+*/

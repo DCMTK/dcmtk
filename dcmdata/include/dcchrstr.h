@@ -1,81 +1,60 @@
 /*
- *
- * Author: Gerd Ehlers	    Created:  05-05-94
- *                          Modified: 02-07-95
- *
- * Module: dcchrstr.h
- *
- * Purpose:
- * Interface of class DcmCharString
- *
- *
- * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.2 $
- * Status:	  $State: Exp $
- *
- */
+**
+** Autor:	Andreas Barth	02.12.95 -- Completely new class design
+** Kuratorium OFFIS e.V.
+**
+** Module: dcchrstr.h
+**
+** Purpose:
+** Interface of class DcmCharString
+**
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-01-05 13:22:52 $
+** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcchrstr.h,v $
+** CVS/RCS Revision:	$Revision: 1.3 $
+** Status:		$State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
+
 
 #ifndef DCCHRSTR_H
 #define DCCHRSTR_H
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dctypes.h"
-#include "dcelem.h"
+//
+// This implementation does not support 16 bit character sets. Sinece 8 bit 
+// character sets are supported by the class DcmByteString the class 
+// DcmCharString is derived from DcmByteString without any extensions.
+//
+// If the extension for 16 bit character sets will be implemented this class
+// must be derived directly from DcmElement. This class is designed to support
+// the value representations (LO, LT, PN, SH, ST). They are a problem because 
+// there value width (1, 2, .. Bytes) is specified with the element 
+// SpecificCharacterSet (0008, 0005) and an implementation must support 
+// differnt value width that cannot be derived from the value representation.
+// 
 
 
-// In dieser Implementierung ist die Zeichenbreite auf 8-Bit beschraenkt.
-// Bei einer Erweiterung auf einen Zeichensatz mit 16-Bit-Zeichen muessen
-// alle Quelltext-Zeilen ueberprueft und gegebenenfalls angepasst werden, die
-// den folgenden Typ ALT_CHAR benutzen.
-// Insbesondere sollten alle von DcmCharString abgeleiteten Klassen
-// ueberprueft werden.
 
-typedef char ALT_CHAR;
+#include "dcbytstr.h"
 
+class DcmCharString : public DcmByteString
+{
+	// Dummy class stub
 
-class DcmCharString : public DcmElement {
-protected:
-    ALT_CHAR *CharStringValue;
-    ALT_CHAR paddingChar;
-    T_VR_UL  maxLength;
-    T_VR_UL  realLength;
-
-    virtual E_Condition readValueField( E_TransferSyntax xfer );
-    virtual E_Condition alignValue();
-    virtual E_Condition deAlignValue();
-
-public:
-    DcmCharString( const DcmTag &tag,
-		   T_VR_UL len = 0,
-		   iDicomStream *iDStream = NULL );
-    DcmCharString( const DcmCharString& old,
-                   DcmEVR oldIdent = EVR_UNKNOWN );
-    virtual ~DcmCharString();
-
-    virtual DcmEVR      ident() const { return EVR_UNKNOWN; }
-    virtual void	print(	int level = 0 );
-    virtual T_VR_UL	getVM();
-
-    virtual E_Condition read(   E_TransferSyntax xfer,
-                                E_GrpLenEncoding gltype = EGL_withoutGL );
-    virtual E_Condition write(  oDicomStream &oDS,
-                                E_TransferSyntax oxfer,
-                                E_EncodingType enctype = EET_UndefinedLength,
-                                E_GrpLenEncoding gltype = EGL_withoutGL );
-    virtual E_Condition readBlock(  E_TransferSyntax xfer,
-                                    E_GrpLenEncoding gltype = EGL_withoutGL );
-    virtual E_Condition writeBlock( oDicomStream &oDS,
-				    E_TransferSyntax oxfer,
-                                    E_EncodingType enctype = EET_UndefinedLength,
-                                    E_GrpLenEncoding gltype = EGL_withoutGL );
-    virtual E_Condition put( const ALT_CHAR *charstringvalue );
-    virtual ALT_CHAR*	get();
-    virtual E_Condition clear();
-    virtual E_Condition verify( BOOL autocorrect = FALSE );
-    virtual E_Condition loadAllDataIntoMemory();
+  public:
+	DcmCharString(const DcmTag & tag, const Uint32 len);
+	DcmCharString(const DcmCharString & old, const DcmEVR oldIdent);
+	virtual ~DcmCharString(void);
 };
 
 
 #endif // DCCHRSTR_H
+
+
+
+
 

@@ -9,10 +9,10 @@
 ** Error handling, codes and strings
 ** 
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1995-11-23 16:37:54 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-01-05 13:22:55 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcerror.h,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -36,14 +36,16 @@ typedef enum {
     EC_TagNotFound = 2,
     EC_InvalidVR = 3,
     EC_InvalidStream = 4,
-    EC_EndOfFile = 5,
+    EC_EndOfStream = 5,
     EC_CorruptedData = 6,
     EC_IllegalCall = 7,
     EC_SequEnd = 8,
     EC_DoubledTag = 9,
-    EC_BufferFull = 10,
-    EC_EndOfBuffer = 11
+	EC_StreamNotifyClient = 10,
+	EC_WrongStreamMode = 11,
+	EC_MemoryExhausted = 12
 } E_Condition;
+
 
 /*
 ** Utility functions for Error Codes/Conditions
@@ -57,7 +59,7 @@ typedef enum {
 ** describing the error condition.
 */
 
-const char*
+extern const char*
 dcmErrorConditionToString(E_Condition cond);
 
 
@@ -66,7 +68,12 @@ dcmErrorConditionToString(E_Condition cond);
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.h,v $
-** Revision 1.1  1995-11-23 16:37:54  hewett
+** Revision 1.2  1996-01-05 13:22:55  andreas
+** - changed to support new streaming facilities
+** - more cleanups
+** - merged read / write methods for block and file transfer
+**
+** Revision 1.1  1995/11/23 16:37:54  hewett
 ** Updated for loadable data dictionary + some cleanup (more to do).
 **
 **

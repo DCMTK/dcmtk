@@ -1,7 +1,7 @@
 /*
  * 
- * Author: Gerd Ehlers      Created:  04-09-94
- *                          Modified: 02-07-95
+ * Author: Gerd Ehlers      Created:  09.04.94
+ *                          Modified: 02.12.95
  *
  * Module: dclist.h
  *
@@ -9,8 +9,8 @@
  * This file contains a List-Definition
  * 
  * 
- * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.2 $
+ * Last Update:   $Author: andreas $
+ * Revision:      $Revision: 1.3 $
  * Status:        $State: Exp $
  *
  */
@@ -20,7 +20,12 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
+#include <stdlib.h>
+#include "dcerror.h"
 #include "dctypes.h"
+
+
+const unsigned long DCM_EndOfListIndex = (unsigned long)(-1L);
 
 
 class DcmObject;    // forward declaration
@@ -61,7 +66,7 @@ class DcmList {
     DcmListNode *firstNode;
     DcmListNode *lastNode;
     DcmListNode *actualNode;
-    T_VR_UL cardinality;
+    unsigned long cardinality;
 
 public:
     DcmList();
@@ -75,10 +80,10 @@ public:
     DcmObject *remove();
     DcmObject *get(     E_ListPos pos = ELP_atpos );
     DcmObject *seek(    E_ListPos pos = ELP_next );
-    DcmObject *seek_to( T_VR_UL absolute_position );
-    T_VR_UL card();
-    BOOL empty();
-    BOOL valid();
+    DcmObject *seek_to(unsigned long absolute_position);
+    inline unsigned long card() const { return cardinality; }
+    inline BOOL empty(void) const { return firstNode == NULL; }
+    inline BOOL valid(void) const { return actualNode != NULL; }
 };
 
 

@@ -1,350 +1,336 @@
 /*
- *
- * Author: Gerd Ehlers      Created:  03-26-94
- *                          Modified: 07-17-95
- *
- * Module: dcstream.h
- *
- * Purpose:
- * Binary streams implmented with stdio
- *
- *
- * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.2 $
- * Status:	  $State: Exp $
- *
- */
+** Author: Andreas Barth	Created:	12.11.95
+**							Modified:	21.11.95
+** Kuratorium OFFIS e.V.
+**
+** Module: dcstream.h
+**
+** Purpose:
+**	defines streaming classes for file and buffer input/output
+**
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-01-05 13:23:00 $
+** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcstream.h,v $
+** CVS/RCS Revision:	$Revision: 1.3 $
+** Status:		$State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 #ifndef DCSTREAM_H
 #define DCSTREAM_H
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "osconfig.h"
 
 #include <stdio.h>
-#include "dctypes.h"
 #include "dcerror.h"
-#include "dcxfer.h"
+#include "dctypes.h"
+#include "dcbuf.h"
 
 
-// ********************************************************
-// *** input **********************************************
-// ********************************************************
+const BOOL DCM_ReadMode = TRUE;
+const BOOL DCM_WriteMode = FALSE;
 
-#define DCM_InFile 1
-#define DCM_OutFile 2
-#define DCM_NoCreateFile 4
-#define DCM_BinaryFile 8
-#define DCM_TruncFile 16
+const BOOL DCM_RandomAccess = TRUE;
+const BOOL DCM_SequentialAccess = FALSE;
 
+class DcmStreamConstructor;
 
-// Bis zu dieser Grenze werden Datenelemente (Value-Field) aus Dateien sofort
-// gelesen. Der Rest wird erst bei einem Zugriff darauf nachgeladen. Stammen
-// die Daten nicht aus einer Datei, so werden alle Datenelemente gelesen.
-#define READ_MAX_BYTE 4096
-
-#define MIN_BUFFER_LENGTH 200;
+//
+// CLASS DcmStream
+//
 
 
-class iDicomStream 
+class DcmStream
 {
-private:
-    FILE *      inFile;
-    BOOL        fileOperationOK;  
-    int         fileOperationErrno;
-    BOOL	flagStreamFromFile;
-    E_ByteOrder machineByteOrder;
-    E_ByteOrder dataByteOrder;
-    BOOL	mustSwap;
-    char	*buffer;
-    BOOL        EndOfFile;
-    T_VR_UL     BufLen;
-    T_VR_UL	startBuf;
-    T_VR_UL	endBuf;
-    T_VR_UL     numChars;
-    T_VR_UL	_gcount;
-    T_VR_UL     _gposition;
 
-    iDicomStream& readFromFile(   char* val, int size );
-    iDicomStream& readFromBuffer( char* val, int size );
+  protected:
+	BOOL fReadMode;				// Stream readable or writable
+	BOOL fRandomAccess;			// Stream random or sequentiall Access
+	Uint32 fTransferredBytes;	// no of bytes from last r/w operation
+	E_Condition fErrorCond;	   	// Error Condition
+	
 
-protected:
-    iDicomStream& readSw( char* val, int val_width, int times );
+  public:
 
-public:
+// CONSTRUCTOR
 
-    // CONSTUCTORS
-    iDicomStream( const char *name,
-                  int mode=DCM_InFile|DCM_NoCreateFile|DCM_BinaryFile,
-                  int prot=0444 );
+	DcmStream(const BOOL readMode, const BOOL randomAccess);
+	virtual DcmStreamConstructor * NewConstructor(void) = 0;
 
-    iDicomStream( T_VR_UL bufferLength );
-    iDicomStream( const iDicomStream &newiDicom );
+// DESTRUCTOR
+	
+	virtual ~DcmStream(void);
+	virtual void Close(void) = 0;
+	
 
-    // DESTRUCTORS
-    ~iDicomStream();
-
-    // STREAMPOSITION
-    long     tellg();
-    inline T_VR_UL gcount() { return _gcount; }
-    void seekg(long offset);
-
-    // STATE HANDLING
-    inline int rdstate() { return fileOperationErrno; }
-    inline void clear() { fileOperationOK = TRUE; fileOperationErrno = 0; }
-    int good();
-    inline int fail() { return !good(); }
-    int eof();
-    T_VR_UL buffered();
-    T_VR_UL avail();
+// LAST STREAM OPERATION
 
 
-    // BUFFER HANDLING
-    E_Condition   fillBuffer( char *buf, T_VR_UL len );
-    E_Condition   markBufferEOF();
+	// Get number of bytes of last r/w operation
+	inline Uint32 TransferredBytes(void) const
+	{ 
+		return fTransferredBytes; 
+	}
+
+	// Get the number of bytes available in the stream
+	virtual Uint32 Avail(void) = 0;
+
+	// test Stream if number of Bytes are Available
+	virtual E_Condition Avail(const Uint32 numBytes) = 0;
 
 
-    // UNGET Operations on File Streams
-    iDicomStream& putback( char ch );
-    iDicomStream& unget();
+// FLUSHING STREAM
 
-    // MISC
-    T_VR_UL	  maximumLength()		{ return READ_MAX_BYTE; }
-    BOOL	  fromFile()			{ return flagStreamFromFile; }
-    void	  setDataByteOrder( E_TransferSyntax ts );
-    void	  setDataByteOrder( E_ByteOrder bo );
-    E_ByteOrder   getDataByteOrder()		{ return dataByteOrder; }
+	virtual BOOL MustFlush(void) = 0;
+	virtual BOOL Flush(void) = 0;
 
 
-    // READ Operations
+// ERROR HANDLING
 
-    iDicomStream& operator>> (char& val) {
-        readSw( &val, sizeof(val), 1 );
-	return *this;
-    }
-    iDicomStream& operator>> (unsigned char& val) {
-        readSw( (char*)&val, sizeof(val), 1 );
-	return *this;
-    }
-    iDicomStream& operator>> (T_VR_SS& val) {
-        readSw( (char*)&val, sizeof(val), 1 );
-	return *this;
-    }
-    iDicomStream& operator>> (T_VR_US& val) {
-        readSw( (char*)&val, sizeof(val), 1 );
-	return *this;
-    }
-    iDicomStream& operator>> (T_VR_SL& val) {
-        readSw( (char*)&val, sizeof(val), 1 );
-	return *this;
-    }
-    iDicomStream& operator>> (T_VR_UL& val) {
-        readSw( (char*)&val, sizeof(val), 1 );
-	return *this;
-    }
-    iDicomStream& operator>> (T_VR_FL& val) {
-        readSw( (char*)&val, sizeof(val), 1 );
-	return *this;
-    }
-    iDicomStream& operator>> (T_VR_FD& val) {
-        readSw( (char*)&val, sizeof(val), 1 );
-	return *this;
-    }
+	// Get Error Code
+	inline E_Condition GetError(void) const
+	{
+		return fErrorCond;
+	}
 
-    iDicomStream& read( char& c ) {
-        readSw( &c, sizeof(c), 1 );
-        return *this;
-    }
-    iDicomStream& read( unsigned char& c ) {
-        readSw( (char*)&c, sizeof(c), 1 );
-        return *this;
-    }
-    iDicomStream& read( char* val, int size ) {
-        readSw( val, sizeof(*val), size );
-        return *this;
-    }
-    iDicomStream& read( unsigned char* val, int size ) {
-        readSw( (char*)val, sizeof(*val), size );
-	return *this;
-    }
-    iDicomStream& read( T_VR_SS* val, int size ) {
-        readSw( (char*)val, sizeof(*val), size );
-	return *this;
-    }
-    iDicomStream& read( T_VR_US* val, int size ) {
-        readSw( (char*)val, sizeof(*val), size );
-	return *this;
-    }
-    iDicomStream& read( T_VR_SL* val, int size ) {
-        readSw( (char*)val, sizeof(*val), size );
-	return *this;
-    }
-    iDicomStream& read( T_VR_UL* val, int size ) {
-        readSw( (char*)val, sizeof(*val), size );
-	return *this;
-    }
-    iDicomStream& read( T_VR_FL* val, int size ) {
-        readSw( (char*)val, sizeof(*val), size );
-	return *this;
-    }
-    iDicomStream& read( T_VR_FD* val, int size ) {
-        readSw( (char*)val, sizeof(*val), size );
-	return *this;
-    }
+	inline BOOL Fail(void) const
+	{
+		return fErrorCond != EC_Normal;
+	}
+	
+
+	// Reset error code if not fatal.
+	inline void ClearError(void)
+	{
+			fErrorCond = EC_Normal;
+	}	
+
+// STREAM MODE
+
+	// Is Stream readable or writeble
+	inline BOOL IsReadMode(void) const
+	{
+		return fReadMode;
+	}
+
+	// Is Random Access possible ?
+	inline BOOL HasRandomAccess(void) const
+	{
+		return fRandomAccess;
+	}
+
+
+// STREAM POSITION (FOR READING)
+
+	// Get and Set stream position for next read operation
+	// To use Seek functions the stream must be random
+	virtual Uint32 Tell(void) = 0;
+	virtual void Seek(Sint32 offset) = 0;
+	
+// HANDLING OF READ AND WRITE OPERATIONS
+
+	virtual BOOL EndOfStream(void) = 0;
+
+	// Putback of bytes. To use the putback routines, the stream must 
+	// be in read mode and you must first set a putback mark. If you decide 
+	// that no putback is necessary, you should unset the mark.
+	virtual void SetPutbackMark(void) = 0;
+	virtual void UnsetPutbackMark(void) = 0;
+	virtual BOOL Putback(void) = 0;
+	virtual BOOL Putback(const Uint32 noBytes) = 0;
+	
+
+	virtual void ReadBytes(void * bytes, const Uint32 length) = 0;
+
+	virtual void WriteBytes(const void * bytes, const Uint32 length) = 0;
+};
+
+
+//
+// CLASS DcmFileStream
+//
+
+
+class DcmFileStream : public DcmStream
+{
+  private:
+	char * fFilename;			// Filename of file
+	FILE * fFile;				// file for Input/Output
+	Uint32 fNumBytes;			// Number of Bytes in file
+	BOOL fPutbackMode;			// putback mark set ?
+	Uint32 fNumPutbackBytes; 	// number of bytes to putback
+
+  public:
+
+// CONSTRUCTOR
+	DcmFileStream(const char * filename, 
+				  const BOOL readMode, 
+				  const BOOL randomAccess = DCM_RandomAccess);
+	virtual DcmStreamConstructor * NewConstructor(void);
+
+// DESTRUCTOR
+
+	virtual ~DcmFileStream(void);
+	virtual void Close(void);
+	
+// LAST STREAM OPERATION
+
+	virtual Uint32 Avail(void);
+	virtual E_Condition Avail(const Uint32 numBytes);
+
+// STREAM POSITION (FOR READING)
+
+	virtual Uint32 Tell(void);
+	virtual void Seek(Sint32 offset);
+
+// FLUSHING STREAM
+
+	virtual BOOL MustFlush(void);
+	virtual BOOL Flush(void);
+
+
+// HANDLING OF READ AND WRITE OPERATIONS
+
+
+	virtual BOOL EndOfStream(void);
+
+	virtual void SetPutbackMark(void);
+	virtual void UnsetPutbackMark(void);
+
+	virtual BOOL Putback(void);
+	virtual BOOL Putback(const Uint32 noBytes);
+	
+	virtual void ReadBytes(void * bytes, const Uint32 length);
+
+	virtual void WriteBytes(const void * bytes, const Uint32 length);
 };
 
 
 
-// ********************************************************
-// *** output *********************************************
-// ********************************************************
+//
+// CLASS DcmBufferStream
+//
 
-
-
-class oDicomStream 
+class DcmBufferStream : public DcmStream
 {
-private:
-    FILE *      outFile;
-    BOOL        fileOperationOK;
-    int         fileOperationErrno;
-    BOOL	flagStreamIntoFile;
-    E_ByteOrder machineByteOrder;
-    E_ByteOrder dataByteOrder;
-    BOOL	mustSwap;
-    char	*buffer;
-    BOOL        EndOfFile;
-    T_VR_UL	BufLen;
-    T_VR_UL	startBuf;
-    T_VR_UL	endBuf;
-    T_VR_UL     numChars;
-    T_VR_UL	_pcount;
-    T_VR_UL     _pposition;
+  private:
+	DcmMemoryBuffer * fBuffer;
+	
+  public:
 
-    oDicomStream& writeIntoFile(   const char* val, int size );
-    oDicomStream& writeIntoBuffer( const char* val, int size );
+// CONSTRUCTOR
 
-protected:
-    oDicomStream& writeSw( const char* val, int val_width, int times );
+	DcmBufferStream(const BOOL readMode);
+	DcmBufferStream(const Uint32 length, const BOOL readMode);
+	DcmBufferStream(void * buffer, const Uint32 length,
+					const BOOL readMode);
 
-public:
+	virtual DcmStreamConstructor * NewConstructor(void);
 
-    // CONSTUCTORS
-    oDicomStream( const char *name,
-                  int mode=DCM_OutFile|DCM_BinaryFile|DCM_TruncFile,
-		  int prot=0664 );
+// DESTRUCTOR
 
+	virtual ~DcmBufferStream(void);
+	virtual void Close(void);
+	
+// LAST STREAM OPERATION
 
-    oDicomStream( T_VR_UL bufferLength );
-    oDicomStream( const oDicomStream &newoDicom );
+	virtual Uint32 Avail(void);
+	virtual E_Condition Avail(const Uint32 numBytes);
 
-    // DESDTRUCTORS
-    ~oDicomStream();
+// STREAM POSITION (FOR READING)
 
-    // CLOSING Stream
-    void close();
+	virtual Uint32 Tell(void);
+	virtual void Seek(Sint32 offset);
+
+// FLUSHING STREAM
+
+	virtual BOOL MustFlush(void);
+	virtual BOOL Flush(void);
 
 
-    // STREAMPOSITION
-    long   tellp();
-    inline T_VR_UL pcount() { return _pcount; }
+// HANDLING OF READ AND WRITE OPERATIONS
+
+	void SetEndOfStream();
+	virtual BOOL EndOfStream(void);
+
+	virtual void SetPutbackMark(void);
+	virtual void UnsetPutbackMark(void);
+	virtual BOOL Putback(void);
+	virtual BOOL Putback(const Uint32 noBytes);
+
+	virtual void ReadBytes(void * bytes, const Uint32 length);
+
+	virtual void WriteBytes(const void * bytes, const Uint32 length);
+	
+	
+// SPECIAL BUFFER HANDLING
+
+	void GetBuffer(void * & buffer, Uint32 & length);
+	void CopyFromBuffer(void * buffer);
+	Uint32 GetBufferLength(void);
+	
+	inline void ReleaseBuffer(void)
+	{
+		if (fErrorCond == EC_Normal)
+			fBuffer -> Release();
+	}
+
+	void SetBuffer(void * buffer, const Uint32 length);
+	void FillBuffer(void * buffer, const Uint32 length);
+};	
 
 
-    // STATE HANDLING
-    inline int rdstate() { return fileOperationErrno; }
-    inline void clear() { fileOperationOK = TRUE; fileOperationErrno = 0; }
-    int 	good();
-    inline int fail() { return !good(); }
-    T_VR_UL     buffered();
-    T_VR_UL     avail();
-    BOOL	intoFile()		    { return flagStreamIntoFile; }
+//
+// CLASS DcmStreamConstructor
+//
 
-    // BUFFER HANDLING
-    E_Condition readBuffer( char* buf, T_VR_UL size, T_VR_UL *realsize );
-    E_Condition markBufferEOF();
+class DcmStreamConstructor
+{
+  protected:
+	BOOL fReadMode;
+	BOOL fRandomAccess;
 
+  public:
+	DcmStreamConstructor(const BOOL readMode, const BOOL randomAccess);
+	virtual ~DcmStreamConstructor(void);
 
-    // BYTE ORDERING
-    void	setDataByteOrder( E_TransferSyntax ts );
-    void	setDataByteOrder( E_ByteOrder bo );
-    E_ByteOrder getDataByteOrder()	    { return dataByteOrder; }
-
-
-    // WRITE Operations
-    oDicomStream& operator<< (char val) {
-	writeSw( (char*)&val, 1, 1 );
-	return *this;
-    }
-    oDicomStream& operator<< (unsigned char val) {
-	writeSw( (char*)&val, 1, 1 );
-	return *this;
-    }
-    oDicomStream& operator<< (T_VR_SS val) {
-	writeSw( (char*)&val, sizeof(val), 1 );
-	return *this;
-    }
-    oDicomStream& operator<< (T_VR_US val) {
-	writeSw( (char*)&val, sizeof(val), 1 );
-	return *this;
-    }
-    oDicomStream& operator<< (T_VR_SL val) {
-	writeSw( (char*)&val, sizeof(val), 1 );
-	return *this;
-    }
-    oDicomStream& operator<< (T_VR_UL val) {
-	writeSw( (char*)&val, sizeof(val), 1 );
-	return *this;
-    }
-    oDicomStream& operator<< (T_VR_FL val) {
-	writeSw( (char*)&val, sizeof(val), 1 );
-	return *this;
-    }
-    oDicomStream& operator<< (T_VR_FD val) {
-	writeSw( (char*)&val, sizeof(val), 1 );
-	return *this;
-    }
-
-    oDicomStream& write( const char c ) {
-	writeSw( &c, 1, 1 );
-	return *this;
-    }
-    oDicomStream& write( const unsigned char c ) {
-	writeSw( (const char*)&c, 1, 1 );
-	return *this;
-    }
-    oDicomStream& write( const char* val, int size ) {
-	writeSw( (const char*)val, 1, size );
-	return *this;
-    }
-    oDicomStream& write( const unsigned char* val, int size ) {
-	writeSw( (const char*)val, 1, size );
-	return *this;
-    }
-    oDicomStream& write( const T_VR_SS* val, int size ) {
-	writeSw( (const char*)val, sizeof(*val), size );
-	return *this;
-    }
-    oDicomStream& write( const T_VR_US* val, int size ) {
-	writeSw( (const char*)val, sizeof(*val), size );
-	return *this;
-    }
-    oDicomStream& write( const T_VR_SL* val, int size ) {
-	writeSw( (const char*)val, sizeof(*val), size );
-	return *this;
-    }
-    oDicomStream& write( const T_VR_UL* val, int size ) {
-	writeSw( (const char*)val, sizeof(*val), size );
-	return *this;
-    }
-    oDicomStream& write( const T_VR_FL* val, int size ) {
-	writeSw( (const char*)val, sizeof(*val), size );
-	return *this;
-    }
-    oDicomStream& write( const T_VR_FD* val, int size ) {
-	writeSw( (const char*)val, sizeof(*val), size );
-	return *this;
-    }
+	virtual DcmStream * NewDcmStream(void) = 0;
+	virtual DcmStreamConstructor * Copy(void) = 0;
 };
 
+
+//
+// CLASS DcmFileStreamConstructor
+//
+
+class DcmFileStreamConstructor : public DcmStreamConstructor
+{
+  private:
+	char * fFilename;
+
+  public:
+	DcmFileStreamConstructor(const char * fFilename, const BOOL readMode,
+							 const BOOL randomAccess);
+	virtual ~DcmFileStreamConstructor(void);
+
+	virtual DcmStream * NewDcmStream(void);
+	virtual DcmStreamConstructor * Copy(void);
+};
 
 
 #endif // DCSTREAM_H
+
+
+/*
+** CVS/RCS Log:
+** $Log: dcstream.h,v $
+** Revision 1.3  1996-01-05 13:23:00  andreas
+** - changed to support new streaming facilities
+** - more cleanups
+** - merged read / write methods for block and file transfer
+**
+**
+*/
 

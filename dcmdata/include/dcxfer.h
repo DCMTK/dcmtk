@@ -1,19 +1,19 @@
 /*
- * 
- * Author: Gerd Ehlers      Created:  05-01-94
- *                          Modified: 02-07-95
- *
- * Module: dcxfer.h
- * 
- * Purpose:
- * handling of transfer syntax
- *
- * 
- * Last Update:	  $Author: hewett $
- * Revision:      $Revision: 1.2 $
- * Status:        $State: Exp $
- *
- */
+** 
+** Author: Gerd Ehlers      01.05.94 -- Creation
+**         Andreas Barth    27.11.95 -- make get-methods inline
+**
+** Module: dcxfer.h
+** 
+** Purpose:
+** handling of transfer syntax
+**
+** 
+** Last Update:	  $Author: andreas $
+** Revision:      $Revision: 1.3 $
+** Status:        $State: Exp $
+**
+*/
 
 
 #ifndef DCXFER_H
@@ -28,7 +28,7 @@
 */
 
 typedef enum {
-    EXS_UNKNOWN = -1,
+    EXS_Unknown = -1,
     EXS_LittleEndianImplicit = 0,
     EXS_BigEndianImplicit = 1,
     EXS_LittleEndianExplicit = 2,
@@ -84,8 +84,8 @@ class DcmXfer {
     E_ByteOrder        byteOrder;
     E_VRType           vrType;
     E_JPEGEncapsulated encapsulated;
-    T_VR_UL            JPEGProcess8;
-    T_VR_UL            JPEGProcess12;
+    Uint32            JPEGProcess8;
+    Uint32            JPEGProcess12;
 
 public:
     DcmXfer( E_TransferSyntax xfer );
@@ -96,19 +96,31 @@ public:
     DcmXfer & operator = ( const E_TransferSyntax xfer );
     DcmXfer & operator = ( const DcmXfer &newtag );
 
-    E_TransferSyntax getXfer();
-    const char*      getXferName();
-    const char*      getXferID();
-    BOOL             isLittleEndian();
-    BOOL             isBigEndian();
-    BOOL             isImplicitVR();
-    BOOL             isExplicitVR();
-    BOOL             isEncapsulated();
-    BOOL             isNotEncapsulated();
-    T_VR_UL          getJPEGProcess8Bit();
-    T_VR_UL          getJPEGProcess12Bit();
+    inline const E_TransferSyntax getXfer() const  { return xferSyn; }
+	inline const E_ByteOrder getByteOrder() const { return byteOrder; }
+    inline const char* getXferName() const { return xferName; }
+    inline const char* getXferID() const { return xferID; }
+    inline const BOOL isLittleEndian() const 
+	{ 
+		return byteOrder == EBO_LittleEndian; 
+	}
+	inline const BOOL isBigEndian() const { return byteOrder == EBO_BigEndian; }
+    inline const BOOL isImplicitVR() const { return vrType == EVT_Implicit; }
+    inline const BOOL isExplicitVR() const { return vrType == EVT_Explicit; }
+    inline const BOOL isEncapsulated() const 
+	{ 
+		return encapsulated == EJE_Encapsulated; 
+	}
+    inline const BOOL isNotEncapsulated() const
+	{ 
+		return encapsulated == EJE_NotEncapsulated; 
+	}
+    inline const Uint32 getJPEGProcess8Bit() const { return JPEGProcess8; }
+    inline const Uint32 getJPEGProcess12Bit() const { return JPEGProcess12;}
 };
 
+
+extern E_ByteOrder gLocalByteOrder;
 
 #endif // DCXFER_H
 

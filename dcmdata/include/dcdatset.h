@@ -1,57 +1,76 @@
 /*
- *
- * Author: Gerd Ehlers	    Created:  04-26-94
- *                          Modified: 02-07-95
- *
- * Module: dcdatset.h
- *
- * Purpose:
- * Interface of class DcmDataset
- *
- *
- * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.2 $
- * Status:	  $State: Exp $
- *
- */
+**
+** Author: Gerd Ehlers      26.04.94 -- Created
+**         Andreas Barth    02.12.95 -- Modified for new stream classes
+** Kuratorium OFFIS e.V.
+**
+** Module: dcdatset.h
+**
+** Purpose:
+** Interface of the class DcmDataset
+**
+**
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-01-05 13:22:52 $
+** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdatset.h,v $
+** CVS/RCS Revision:	$Revision: 1.3 $
+** Status:		$State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 #ifndef DCDATSET_H
 #define DCDATSET_H
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
+#include "dcerror.h"
 #include "dctypes.h"
 #include "dcitem.h"
+#include "dcstream.h"
 
 
 
-class DcmDataset : public DcmItem {
-    T_VR_UL		resolveAmbigous();
+class DcmDataset : public DcmItem 
+{
+private:
+    E_TransferSyntax Xfer;
+    void resolveAmbigous(void);
 
 public:
     DcmDataset();
-    DcmDataset( iDicomStream *iDStream );
-    DcmDataset( const DcmDataset &old );
+    DcmDataset(const DcmDataset &old);
     virtual ~DcmDataset();
 
-    virtual DcmEVR 	ident() const;
-    virtual void	print(	    int level = 0 );
+    inline E_TransferSyntax getOriginalXfer(void) { return Xfer; }
 
-    virtual E_Condition read(       E_TransferSyntax xfer = EXS_UNKNOWN,
-                                    E_GrpLenEncoding gltype = EGL_withoutGL );
-    virtual E_Condition write(      oDicomStream &oDS,
-				    E_TransferSyntax oxfer,
-                                    E_EncodingType enctype = EET_UndefinedLength,
-                                    E_GrpLenEncoding gltype = EGL_withoutGL );
-    virtual E_Condition readBlock(  E_TransferSyntax xfer,
-                                    E_GrpLenEncoding gltype = EGL_withoutGL );
-    virtual E_Condition writeBlock( oDicomStream &oDS,
-				    E_TransferSyntax oxfer,
-                                    E_EncodingType enctype = EET_UndefinedLength,
-                                    E_GrpLenEncoding gltype = EGL_withoutGL );
+    virtual DcmEVR ident() const { return EVR_dataset; }
+    virtual void print(int level = 0);
+
+    virtual E_Condition read(DcmStream & inStream,
+			     const E_TransferSyntax xfer = EXS_Unknown,
+			     const E_GrpLenEncoding gltype = EGL_withoutGL,
+			     const Uint32 maxReadLength = DCM_MaxReadLength);
+
+    virtual E_Condition write(DcmStream & outStream,
+			      const E_TransferSyntax oxfer,
+			      const E_EncodingType enctype = EET_UndefinedLength,
+			      const E_GrpLenEncoding gltype = EGL_withoutGL );
 };
 
 
 
 #endif // DCDATSET_H
 
+
+/*
+** CVS/RCS Log:
+** $Log: dcdatset.h,v $
+** Revision 1.3  1996-01-05 13:22:52  andreas
+** - changed to support new streaming facilities
+** - more cleanups
+** - merged read / write methods for block and file transfer
+**
+**
+*/

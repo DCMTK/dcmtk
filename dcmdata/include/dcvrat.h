@@ -1,19 +1,23 @@
 /*
- *
- * Author: Gerd Ehlers	    Created:  05-01-94
- *                          Modified: 02-07-95
- *
- * Module: dcvrat.h
- *
- * Purpose:
- * Interface of class DcmAttributeTag
- *
- *
- * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.2 $
- * Status:	  $State: Exp $
- *
- */
+**
+** Author: Gerd Ehlers      27.04.94 -- First Creation
+**         Andreas Barth    04.12.95 -- new Stream class, unique value field
+** Kuratorium OFFIS e.V.
+**
+** Module: dcvrat.h
+**
+** Purpose:
+** Interface of class DcmAttributeTag
+**
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-01-05 13:23:03 $
+** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrat.h,v $
+** CVS/RCS Revision:	$Revision: 1.3 $
+** Status:		$State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 #ifndef DCVRAT_H
 #define DCVRAT_H
@@ -25,47 +29,44 @@
 
 
 
-class DcmAttributeTag : public DcmElement {
-    T_VR_US *AttrValue;
-
-protected:
-    virtual E_Condition readValueField( E_TransferSyntax xfer );
-
-public:
-    DcmAttributeTag( const DcmTag &tag,
-		     T_VR_UL len = 0,
-		     iDicomStream *iDStream = NULL);
+class DcmAttributeTag : public DcmElement 
+{
+  public:
+    DcmAttributeTag(const DcmTag &tag, const Uint32 len = 0);
     DcmAttributeTag( const DcmAttributeTag &newAT );
     virtual ~DcmAttributeTag();
 
-    virtual DcmEVR         ident() const;
-    virtual void	print(	int level = 0 );
-    virtual T_VR_UL	getVM();
+    virtual DcmEVR ident() const { return EVR_AT; }
+    virtual void print(int level = 0);
+    virtual unsigned long getVM();
 
-    virtual E_Condition read(   E_TransferSyntax xfer,
-                                E_GrpLenEncoding gltype = EGL_withoutGL );
-    virtual E_Condition write(  oDicomStream &oDS,
-                                E_TransferSyntax oxfer,
-                                E_EncodingType enctype = EET_UndefinedLength,
-                                E_GrpLenEncoding gltype = EGL_withoutGL );
-    virtual E_Condition readBlock(  E_TransferSyntax xfer,
-                                    E_GrpLenEncoding gltype = EGL_withoutGL );
-    virtual E_Condition writeBlock( oDicomStream &oDS,
-				    E_TransferSyntax oxfer,
-                                    E_EncodingType enctype = EET_UndefinedLength,
-                                    E_GrpLenEncoding gltype = EGL_withoutGL );
-    virtual E_Condition put(	T_VR_US *attrvalue,
-                                T_VR_UL length );   // number of double words
-    virtual E_Condition put(    DcmTag &attrTag );  // for one Tag only
-    virtual E_Condition put(    DcmTag &attrTag,    // any Tags
-                                T_VR_UL num );
-    virtual T_VR_US*	get();
-    virtual DcmTag      get(    T_VR_UL num );
-    virtual E_Condition clear();
-    virtual E_Condition verify( BOOL autocorrect = FALSE );
-    virtual E_Condition loadAllDataIntoMemory();
+    virtual E_Condition put(const Uint16 * attrValue,	// Tags
+                            const unsigned long tagNum);   	// number of tags
+
+	virtual E_Condition put(const DcmTag & attrTag);
+
+	virtual E_Condition put(const DcmTag & attrTag, 		// new Tag
+							const unsigned long position);	// pos. in Tag array
+
+	virtual E_Condition get(DcmTag & attrTag, const unsigned long pos = 0);
+	virtual E_Condition get(Uint16 * & attributeTags);
+    Uint16 * get(void);
+    DcmTag get(const unsigned long num);
+
+    virtual E_Condition verify(const BOOL autocorrect = FALSE);
 };
 
 
 #endif // DCVRAT_H
 
+/*
+** CVS/RCS Log:
+** $Log: dcvrat.h,v $
+** Revision 1.3  1996-01-05 13:23:03  andreas
+** - changed to support new streaming facilities
+** - more cleanups
+** - merged read / write methods for block and file transfer
+**
+**
+**
+*/

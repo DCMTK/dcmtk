@@ -1,82 +1,105 @@
 /*
- *
- * Author: Gerd Ehlers	    Created:  04-26-94
- *                          Modified: 02-07-95
- *
- * Module: dcsequen.h
- *
- * Purpose:
- * Interface of class DcmSequenceOfItems
- *
- *
- * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.2 $
- * Status:	  $State: Exp $
- *
- */
+**
+** Author: Gerd Ehlers	    26.04.94 -- Created
+**         Andreas Barth    30.11.95 -- New Stream classes
+** Kuratorium OFFIS e.V.
+**
+** Module: dcsequen.h
+**
+** Purpose:
+** Interface of class DcmSequenceOfItems
+**
+**
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-01-05 13:22:59 $
+** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcsequen.h,v $
+** CVS/RCS Revision:	$Revision: 1.3 $
+** Status:		$State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 #ifndef DCSEQUEN_H
 #define DCSEQUEN_H
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
+#include "dcerror.h"
 #include "dctypes.h"
-#include "dcelem.h"
+#include "dcobject.h"
 #include "dcitem.h"
 #include "dctag.h"
 #include "dclist.h"
 #include "dcstack.h"
 
 
-class DcmSequenceOfItems : public DcmElement {
-protected:
-    DcmList *itemList;
-    BOOL    lastItemComplete;
+//
+// CLASS DcmSequenceOfItems
+// A sequence has no explicit value. Therefore, it should be derived from 
+// DcmObject. Since a sequence is created in an (pseudo)-item and items collect
+// sequences of elements the sequence Tag is derived from element.
 
-    virtual E_Condition readTagAndLength(  E_TransferSyntax xfer,      // in
-                                           DcmTag &tag,                // out
-					   T_VR_UL *length );	       // out
-    virtual E_Condition readSubItem(       const DcmTag &newTag,       // in
-                                           T_VR_UL newLength,          // in
-                                           E_TransferSyntax xfer,      // in
-                                           E_GrpLenEncoding gltype );  // in
-    virtual E_Condition searchSubFromHere( const DcmTag &tag,          // in
-					   DcmStack &resultStack,      // inout
-					   BOOL searchIntoSub );       // in
+class DcmSequenceOfItems : public DcmElement
+{
+  protected:
+    DcmList *itemList;
+    BOOL lastItemComplete;
+	Uint32 fStartPosition;
+
+    virtual E_Condition readTagAndLength(DcmStream & inStream,		   // inout
+										 const E_TransferSyntax xfer,  // in
+                                         DcmTag &tag,                  // out
+										 Uint32 & length );	   // out
+
+	virtual E_Condition makeSubObject(DcmObject * & subObject,
+									  const DcmTag & mewTag,
+									  const unsigned long newLength);
+
+    E_Condition readSubItem(DcmStream & inStream,			// inout
+							const DcmTag &newTag,       	// in
+							const Uint32 newLength, 		// in
+							const E_TransferSyntax xfer,    // in
+							const E_GrpLenEncoding gltype,	// in
+							const Uint32 maxReadLength 		// in
+							      = DCM_MaxReadLength);
+
+    virtual E_Condition searchSubFromHere(const DcmTag &tag,          // in
+										  DcmStack &resultStack,      // inout
+										  const BOOL searchIntoSub ); // in
 
 public:
-    DcmSequenceOfItems( const DcmTag &tag,
-			T_VR_UL len = 0,
-			iDicomStream *iDStream = NULL );
+    DcmSequenceOfItems(const DcmTag &tag, const Uint32 len = 0);
     DcmSequenceOfItems( const DcmSequenceOfItems& oldSeq );
     virtual ~DcmSequenceOfItems();
 
-    virtual DcmEVR 	ident() const;
-    virtual void        print(   int level = 0 );
-    virtual T_VR_UL	getVM();
-    virtual T_VR_UL	getLength(  E_TransferSyntax xfer = EXS_LittleEndianImplicit,
-				    E_EncodingType enctype = EET_UndefinedLength );
+    virtual DcmEVR ident() const { return EVR_SQ; }
+    virtual void print(const int level = 0);
+    virtual unsigned long getVM() { return 1L; }
+    virtual Uint32 getLength(const E_TransferSyntax xfer 
+							       = EXS_LittleEndianImplicit,
+							 const E_EncodingType enctype 
+							       = EET_UndefinedLength );
 
-    virtual E_Condition readBlockInit();
-    virtual E_Condition writeBlockInit();
-    virtual E_Condition read(       E_TransferSyntax xfer,
-                                    E_GrpLenEncoding gltype = EGL_withoutGL );
-    virtual E_Condition write(      oDicomStream &oDS,
-				    E_TransferSyntax oxfer,
-                                    E_EncodingType enctype = EET_UndefinedLength,
-                                    E_GrpLenEncoding gltype = EGL_withoutGL );
-    virtual E_Condition readBlock(  E_TransferSyntax xfer,
-                                    E_GrpLenEncoding gltype = EGL_withoutGL );
-    virtual E_Condition writeBlock( oDicomStream &oDS,
-				    E_TransferSyntax oxfer,
-                                    E_EncodingType enctype = EET_UndefinedLength,
-                                    E_GrpLenEncoding gltype = EGL_withoutGL );
-    virtual T_VR_UL	card();
-    virtual E_Condition insert(  DcmItem* item,
-				 T_VR_UL where = UNDEF_LEN );
-    virtual DcmItem*	getItem( T_VR_UL num );
-    virtual DcmItem*	remove(  T_VR_UL num );
-    virtual DcmItem*    remove(  DcmItem* item );
+    virtual void transferInit(void);
+	virtual void transferEnd(void);
+
+    virtual E_Condition read(DcmStream & inStream,
+							 const E_TransferSyntax xfer,
+							 const E_GrpLenEncoding gltype = EGL_withoutGL,
+							 const Uint32 maxReadLength = DCM_MaxReadLength);
+
+    virtual E_Condition write(DcmStream & outStream,
+							  const E_TransferSyntax oxfer,
+                              const E_EncodingType enctype = EET_UndefinedLength,
+							  const E_GrpLenEncoding gltype = EGL_withoutGL);
+
+    virtual unsigned long card();
+    virtual E_Condition insert(DcmItem* item,
+							   unsigned long where = DCM_EndOfListIndex);
+    virtual DcmItem*	getItem(const unsigned long num);
+    virtual DcmItem*	remove(const unsigned long num);
+    virtual DcmItem*    remove(DcmItem* item);
     virtual E_Condition clear();
     virtual E_Condition verify(  BOOL autocorrect = FALSE );
     virtual E_Condition search(  const DcmTag &tag,                    // in
@@ -88,7 +111,7 @@ public:
 				 E_SearchMode mode = ESM_fromHere,     // in
 				 BOOL searchIntoSub = TRUE );	       // in
     virtual E_Condition searchErrors( DcmStack &resultStack );	       // inout
-    virtual E_Condition loadAllDataIntoMemory();
+    virtual E_Condition loadAllDataIntoMemory(void);
 
     virtual E_Condition addGroupLengthElements( E_TransferSyntax xfer,
                                                 E_EncodingType enctype );
@@ -99,3 +122,13 @@ public:
 
 #endif // DCSEQUEN_H
 
+/*
+** CVS/RCS Log:
+** $Log: dcsequen.h,v $
+** Revision 1.3  1996-01-05 13:22:59  andreas
+** - changed to support new streaming facilities
+** - more cleanups
+** - merged read / write methods for block and file transfer
+**
+**
+*/

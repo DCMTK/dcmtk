@@ -1,13 +1,32 @@
+/*
+**
+** Author: Gerd Ehlers      Created:  26.04.94
+**         Andreas Barth    26.11.95 -- support of value width
+**
+** Module: dcvr.h
+**
+** Purpose:
+** Definition of the DcmVR class for Value Representation
+**
+**
+** Last Update:   $Author: andreas $
+** Revision:      $Revision: 1.3 $
+** Status:	  $State: Exp $
+**
+*/
+
 #ifndef DCMVR_H
 #define DCMVR_H 1
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
+#if HAVE_STDLIB_H
+#include <stdlib.h>
+#endif
 #include "dctypes.h"
 
-enum DcmEVR {
-    EVR_UNKNOWN=-1,
-
+enum DcmEVR 
+{
     EVR_AE=0,
     EVR_AS=1,
     EVR_AT=2,
@@ -46,11 +65,11 @@ enum DcmEVR {
     EVR_dirRecord=33,	/* used internally */
 	
     EVR_pixelSQ=34,	/* used internally */
-    EVR_pixelItem=35	/* used internally */
-	
+    EVR_pixelItem=35,	/* used internally */
+
+    EVR_UNKNOWN=36	/* used internally */
 };
 
-#define DcmVR_ERROR_VRName "??"
 
 class DcmVR {
 private:
@@ -69,6 +88,7 @@ public:
     DcmEVR getValidEVR() const;
     const char* getVRName() const ;
     const char* getValidVRName() const;
+	const size_t getValueWidth(void) const;
 	
     /* returns true if VR is a standard DICOM VR */
     int isStandard() const;
@@ -91,3 +111,7 @@ DcmVR::DcmVR(const char* vrName)
 
 
 #endif /* !DCMVR_H */
+
+
+
+

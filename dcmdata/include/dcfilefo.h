@@ -1,19 +1,23 @@
 /*
- *
- * Author: Gerd Ehlers	    Created:  05-15-94
- *                          Modified: 02-07-95
- *
- * Module: dcfilefo.h
- *
- * Purpose:
- * Interface of class DcmFileFormat
- *
- *
- * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.2 $
- * Status:	  $State: Exp $
- *
- */
+**
+** Author: Gerd Ehlers      26.04.94 -- Created
+**         Andreas Barth    02.12.95 -- Modified for new stream classes
+** Kuratorium OFFIS e.V.
+**
+** Module: dcfilefo.h
+**
+** Purpose:
+** Interface of class DcmFileFormat
+**
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-01-05 13:22:55 $
+** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcfilefo.h,v $
+** CVS/RCS Revision:	$Revision: 1.3 $
+** Status:		$State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 #ifndef DCFILEFO_H
 #define DCFILEFO_H
@@ -28,51 +32,60 @@
 
 
 
-class DcmFileFormat : public DcmSequenceOfItems {
-    E_Condition      checkValue(    DcmMetaInfo *metainfo,
-				    DcmDataset *dataset,
-				    const DcmTagKey &atagkey,
-				    DcmObject* obj,
-				    E_TransferSyntax oxfer );
-    E_TransferSyntax lookForXfer(   DcmMetaInfo* metainfo );
+class DcmFileFormat : public DcmSequenceOfItems 
+{
+private:
+    E_Condition checkValue(DcmMetaInfo * metainfo,
+			   DcmDataset * dataset,
+			   const DcmTagKey & atagkey,
+			   DcmObject * obj,
+			   const E_TransferSyntax oxfer);
+    E_TransferSyntax lookForXfer(DcmMetaInfo * metainfo );
 
 public:
     DcmFileFormat();
-    DcmFileFormat( DcmDataset *dataset );
-    DcmFileFormat( iDicomStream *iDStream );
-    DcmFileFormat( const DcmFileFormat &old );
+    DcmFileFormat(DcmDataset * dataset);
+    DcmFileFormat(const DcmFileFormat &old);
     virtual ~DcmFileFormat();
 
-    virtual E_Condition  validateMetaInfo( E_TransferSyntax oxfer );
+    virtual E_Condition validateMetaInfo(E_TransferSyntax oxfer);
 
-    virtual DcmEVR 	 ident() const;
-    virtual void	 print(      int level = 0 );
+    virtual DcmEVR ident() const { return EVR_fileFormat; }
+    virtual void print(int level = 0);
 
-    virtual E_Condition  read(       E_TransferSyntax xfer = EXS_UNKNOWN,
-                                     E_GrpLenEncoding gltype = EGL_withoutGL );
-    virtual E_Condition  write(      oDicomStream &oDS,
-                                     E_TransferSyntax oxfer,
-                                     E_EncodingType enctype = EET_UndefinedLength,
-                                     E_GrpLenEncoding gltype = EGL_withoutGL );
+    virtual E_Condition read(DcmStream & inStream,
+			     const E_TransferSyntax xfer = EXS_Unknown,
+			     const E_GrpLenEncoding gltype = EGL_withoutGL,
+			     const Uint32 maxReadLength = DCM_MaxReadLength);
+    virtual E_Condition write(DcmStream & outStream,
+			      const E_TransferSyntax oxfer,
+			      const E_EncodingType enctype = EET_UndefinedLength,
+			      const E_GrpLenEncoding gltype = EGL_withoutGL );
     virtual DcmMetaInfo* getMetaInfo();
     virtual DcmDataset*  getDataset();
 
-// Die folgenden Methoden werden nicht benoetigt und sind deshalb ohne Funktion:
 
-    virtual E_Condition  readBlock(  E_TransferSyntax xfer,
-                                     E_GrpLenEncoding gltype = EGL_withoutGL );
-    virtual E_Condition  writeBlock( oDicomStream &oDS,
-                                     E_TransferSyntax oxfer,
-                                     E_EncodingType enctype = EET_UndefinedLength,
-                                     E_GrpLenEncoding gltype = EGL_withoutGL );
-    virtual E_Condition  insertItem( DcmItem* item,
-				     T_VR_UL where = UNDEF_LEN );
-    virtual DcmItem*	 remove(     T_VR_UL num );
-    virtual DcmItem*     remove(     DcmItem* item );
+// The following methods have no meaning in DcmFileFormat and shall not be 
+// called. Since it is not possible to delete inherited methods from a class
+// stubs are defined that create an error.
+
+    virtual E_Condition  insertItem(DcmItem* item,
+				    unsigned long where = DCM_EndOfListIndex);
+    virtual DcmItem*	 remove(unsigned long num);
+    virtual DcmItem*     remove(DcmItem* item);
     virtual E_Condition  clear();
 };
 
 
-
 #endif // DCFILEFO_H
 
+/*
+** CVS/RCS Log:
+** $Log: dcfilefo.h,v $
+** Revision 1.3  1996-01-05 13:22:55  andreas
+** - changed to support new streaming facilities
+** - more cleanups
+** - merged read / write methods for block and file transfer
+**
+**
+*/

@@ -8,10 +8,10 @@
 ** Purpose:
 ** Definition of the class DcmTag
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1995-11-23 16:38:03 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-01-05 13:23:01 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dctag.h,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -40,8 +40,10 @@ private:
     DcmVR vr;
     const DcmDictEntry* dictRef;	/* reference to global data dictionary */
 	
-    int testConstructDestruct;		/* for debugging */
     E_Condition errorFlag;		/* the current error code */
+#ifdef DEBUG
+    int testConstructDestruct;		/* for debugging */
+#endif
 
 public:
     DcmTag();
@@ -87,7 +89,12 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dctag.h,v $
-** Revision 1.2  1995-11-23 16:38:03  hewett
+** Revision 1.3  1996-01-05 13:23:01  andreas
+** - changed to support new streaming facilities
+** - more cleanups
+** - merged read / write methods for block and file transfer
+**
+** Revision 1.2  1995/11/23 16:38:03  hewett
 ** Updated for loadable data dictionary + some cleanup (more to do).
 **
 **

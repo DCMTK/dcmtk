@@ -1,19 +1,23 @@
 /*
- *
- * Author: Gerd Ehlers	    Created:  05-01-94
- *                          Modified: 02-07-95
- *
- * Module: dcvrda.h
- *
- * Purpose:
- * Interface of class DcmDate
- *
- *
- * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.2 $
- * Status:	  $State: Exp $
- *
- */
+**
+** Author: Gerd Ehlers      01.05.94 -- First Creation
+**         Andreas Barth    04.12.95 -- new Stream class, unique value field
+** Kuratorium OFFIS e.V.
+**
+** Module: dcvrda.h
+**
+** Purpose:
+** Interface of class DcmDate
+**
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-01-05 13:23:04 $
+** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrda.h,v $
+** CVS/RCS Revision:	$Revision: 1.3 $
+** Status:		$State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 #ifndef DCVRDA_H
 #define DCVRDA_H
@@ -22,21 +26,31 @@
 
 
 #include "dctypes.h"
-#include "dcelem.h"
 #include "dcbytstr.h"
 
 
 
-class DcmDate : public DcmByteString {
-public:
-    DcmDate( const DcmTag &tag,
-             T_VR_UL len = 0,
-             iDicomStream *iDStream = 0);
+class DcmDate : public DcmByteString 
+{
+  public:
+    DcmDate(const DcmTag &tag, const Uint32 len = 0);
     DcmDate( const DcmDate &newDA );
     virtual ~DcmDate();
-    virtual DcmEVR ident() const;
+
+    virtual DcmEVR ident() const { return EVR_DA; }
 };
 
 
 #endif // DCVRDA_H
 
+/*
+** CVS/RCS Log:
+** $Log: dcvrda.h,v $
+** Revision 1.3  1996-01-05 13:23:04  andreas
+** - changed to support new streaming facilities
+** - more cleanups
+** - merged read / write methods for block and file transfer
+**
+**
+**
+*/
