@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSPrintMessageHandler
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-10-12 13:46:55 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-09 16:03:21 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -585,13 +585,13 @@ OFCondition DVPSPrintMessageHandler::negotiateAssociation(
                         
   if ((cond.good()) && (0 == ASC_findAcceptedPresentationContextID(assoc, UID_BasicGrayscalePrintManagementMetaSOPClass)))
   {                     
-    return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
     if (verboseMode)
     {
       logstream->lockCerr() << "Peer does not support Basic Grayscale Print Management, aborting association." << endl;
       logstream->unlockCerr();
     }
     abortAssociation();
+    cond = DIMSE_NOVALIDPRESENTATIONCONTEXTID;
   }
   
   if (cond.good())
@@ -632,7 +632,10 @@ void DVPSPrintMessageHandler::setLog(OFConsole *stream, OFBool verbMode, OFBool 
 
 /*
  *  $Log: dvpspr.cc,v $
- *  Revision 1.15  2001-10-12 13:46:55  meichel
+ *  Revision 1.16  2001-11-09 16:03:21  joergr
+ *  Fixed small bug introduced during changeover to new OFCondition mechanism.
+ *
+ *  Revision 1.15  2001/10/12 13:46:55  meichel
  *  Adapted dcmpstat to OFCondition based dcmnet module (supports strict mode).
  *
  *  Revision 1.14  2001/08/22 08:28:15  meichel
