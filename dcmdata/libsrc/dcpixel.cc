@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmPixelData
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 13:16:57 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2002-12-09 09:30:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixel.cc,v $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -334,15 +334,6 @@ DcmPixelData::chooseRepresentation(
 void
 DcmPixelData::clearRepresentationList(
     DcmRepresentationListIterator leaveInList)
-    /*
-     * This function removes all pixel representations from the list of pixel representations
-     * except the one which was passed. Note that if parameter leaveInList equals repListEnd,
-     * all representations will be removed from the list.
-     *
-     * Parameters:
-     *   leaveInList - [in] Iterator to a representation which shall not be removed from the list
-     *                      of representations.
-     */
 {
     /* define iterators to go through all representations in the list */
     DcmRepresentationListIterator it(repList.begin());
@@ -691,18 +682,6 @@ DcmPixelData::read(
     const E_TransferSyntax ixfer,
     const E_GrpLenEncoding glenc,
     const Uint32 maxReadLength)
-    /*
-     * This function reads the data value of a pixel data attribute which is captured in the input
-     * stream and captures this information in this. This function takes into account, if the pixel
-     * data is captured in native (uncompressed) or encapsulated (compressed) format.
-     *
-     * Parameters:
-     *   inStream      - [in] The stream which contains the information.
-     *   ixfer         - [in] The transfer syntax which was used to encode the information in inStream.
-     *   glenc         - [in] [optional parameter, default = EGL_noChange]. Encoding type for group length.
-     *                        Specifies what will be done with group length tags.
-     *   maxReadLength - [in] [optional parameter, default = DCM_MaxReadLength].
-     */
 {
     /* if this element's transfer state shows ERW_notInitialized, this is an illegal call */
     if (fTransferState == ERW_notInitialized)
@@ -1059,7 +1038,10 @@ OFCondition DcmPixelData::loadAllDataIntoMemory(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.cc,v $
-** Revision 1.26  2002-12-06 13:16:57  joergr
+** Revision 1.27  2002-12-09 09:30:54  wilkens
+** Modified/Added doc++ documentation.
+**
+** Revision 1.26  2002/12/06 13:16:57  joergr
 ** Enhanced "print()" function by re-working the implementation and replacing
 ** the boolean "showFullData" parameter by a more general integer flag.
 ** Made source code formatting more consistent with other modules/files.

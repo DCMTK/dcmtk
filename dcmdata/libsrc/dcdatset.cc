@@ -21,10 +21,10 @@
  *
  *  Purpose: Implementation of class DcmDataset
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 13:09:26 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2002-12-09 09:30:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdatset.cc,v $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -185,22 +185,6 @@ OFCondition DcmDataset::read(DcmInputStream &inStream,
                              const E_TransferSyntax xfer,
                              const E_GrpLenEncoding glenc,
                              const Uint32 maxReadLength)
-    /*
-     * This function reads the information of all attributes which are captured in the
-     * input stream and captures this information in this->elementList. Each attribute
-     * is represented as an element in this list. Having read all information for this
-     * particular data set or command, this function will also take care of group length
-     * (according to what is specified in glenc) and padding elements (don't change
-     * anything).
-     *
-     * Parameters:
-     *   inStream      - [in] The stream which contains the information.
-     *   xfer          - [in] [optional parameter, default = EXS_Unknown] The transfer syntax which
-     *                        was used to encode the information in inStream.
-     *   glenc         - [in] [optional parameter, default = EGL_noChange] Encoding type for group
-     *                        length. Specifies what will be done with group length tags.
-     *   maxReadLength - [in] [optional parameter, default = DCM_MaxReadLength].
-     */
 {
     /* check if the stream variable reported an error */
     errorFlag = inStream.status();
@@ -289,27 +273,6 @@ OFCondition DcmDataset::write(DcmOutputStream &outStream,
                               const Uint32 padlen,
                               const Uint32 subPadlen,
                               Uint32 instanceLength)
-    /*
-     * This function writes data values which are contained in this DcmDataset object to the stream
-     * which is passed as first argument. With regard to the writing of information, the other
-     * parameters which are passed are accounted for. The function will return EC_Normal, if the
-     * information from all elements of this data set has been written to the buffer, it will return
-     * EC_StreamNotifyClient, if there is no more space in the buffer and _not_ all elements have been
-     * written to it, and it will return some other (error) value if there was an error.
-     *
-     * Parameters:
-     *   outStream      - [out] The stream that the information will be written to.
-     *   oxfer          - [in] The transfer syntax which shall be used.
-     *   enctype        - [in] Encoding type for sequences. Specifies how sequences will be handled.
-     *   glenc          - [in] Encoding type for group length. Specifies what will be done with group length tags.
-     *   padenc         - [in] Encoding type for padding. Specifies what will be done with padding tags.
-     *   padlen         - [in] The length up to which the dataset shall be padded, if padding is desired.
-     *   subPadlen      - [in] For sequences (i.e. sub elements), the length up to which item shall be padded,
-     *                         if padding is desired.
-     *   instanceLength - [in] Number of extra bytes added to the item/dataset length used when computing the
-     *                         padding. This parameter is for instance used to pass the length of the file meta
-     *                         header from the DcmFileFormat to the DcmDataset object.
-     */
 {
   /* if the transfer state of this is not initialized, this is an illegal call */
   if (fTransferState == ERW_notInitialized)
@@ -594,7 +557,10 @@ void DcmDataset::removeAllButOriginalRepresentations()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.cc,v $
-** Revision 1.31  2002-12-06 13:09:26  joergr
+** Revision 1.32  2002-12-09 09:30:49  wilkens
+** Modified/Added doc++ documentation.
+**
+** Revision 1.31  2002/12/06 13:09:26  joergr
 ** Enhanced "print()" function by re-working the implementation and replacing
 ** the boolean "showFullData" parameter by a more general integer flag.
 ** Made source code formatting more consistent with other modules/files.

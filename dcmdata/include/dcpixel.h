@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmPixelData
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 12:49:12 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2002-12-09 09:31:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpixel.h,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -97,63 +97,72 @@ class DcmPixelData : public DcmPolymorphOBOW
 private:
     friend class DcmRepresentationEntry;
 
-    // List of representations of pixel data
+    /// List of representations of pixel data
     DcmRepresentationList repList;
 
-    // Iterator to the last dummy element in representation lis
+    /// Iterator to the last dummy element in representation lis
     DcmRepresentationListIterator repListEnd;
 
-    // Iterator to the original representation. if an uncompressed
-    // representation is used the iterator points to repList.end()
+    /// Iterator to the original representation. if an uncompressed
+    /// representation is used the iterator points to repList.end()
     DcmRepresentationListIterator original;
 
-    // current list element for some operations
+    /// current list element for some operations
     DcmRepresentationListIterator current;
 
-    // shows if an unecapsulated representation is stored
+    /// shows if an unecapsulated representation is stored
     OFBool existUnencapsulated;
 
-    // value representation of unencapsulated data
+    /// value representation of unencapsulated data
     DcmEVR unencapsulatedVR;
 
-    // in write function: pointer to current pixel sequence
+    /// in write function: pointer to current pixel sequence
     DcmPixelSequence * pixelSeqForWrite;
 
-    // erases all representation entries but leaveInList from
-    // the representation List. The entries self are deleted, too.
+    /** This function removes all pixel representations from the list
+     *  of pixel representations except the one which was passed. Note
+     *  that if parameter leaveInList equals repListEnd, all representations
+     *  will be removed from the list.
+     *  @param leaveInList Iterator to a representation which shall not
+     *                     be removed from the list of representations.
+     */
     void clearRepresentationList(
         DcmRepresentationListIterator leaveInList);
 
-    // find a conforming representation in the list of
-    // encapsulated representations
+    /** find a conforming representation in the list of
+     *  encapsulated representations
+     */
     OFCondition findConformingEncapsulatedRepresentation(
         const DcmXfer & repType,
         const DcmRepresentationParameter * repParam,
         DcmRepresentationListIterator & result);
 
 
-    // find a representation entry and return an iterator to the found entry
-    // or the next element in the list. The condition returned can be EC_Normal
-    // if such an entry is found or EC_RepresentationNotFound. The pixSeq
-    // attribute in findEntry can be NULL, it is not needed for the find
-    // operation!
+    /** find a representation entry and return an iterator to the found entry
+     *  or the next element in the list. The condition returned can be EC_Normal
+     *  if such an entry is found or EC_RepresentationNotFound. The pixSeq
+     *  attribute in findEntry can be NULL, it is not needed for the find
+     *  operation!
+     */
     OFCondition findRepresentationEntry(
         const DcmRepresentationEntry & findEntry,
         DcmRepresentationListIterator & result);
 
-    // insert or replace a representation entry in the list
+    /** insert or replace a representation entry in the list
+     */
     DcmRepresentationListIterator insertRepresentationEntry(
         DcmRepresentationEntry * repEntry);
 
-    // decode representation to unencapsulated format
+    /** decode representation to unencapsulated format
+     */
     OFCondition decode(
         const DcmXfer & fromType,
         const DcmRepresentationParameter * fromParam,
         DcmPixelSequence * fromPixSeq,
         DcmStack & pixelStack);
 
-
-    // encode to encapsulated format
+    /** encode to encapsulated format
+     */
     OFCondition encode(
         const DcmXfer & fromType,
         const DcmRepresentationParameter * fromParam,
@@ -184,42 +193,57 @@ public:
                        const char *pixelFileName = NULL,
                        size_t *pixelCounter = NULL);
 
-    // tests if it is possible to write a specific representation
-    // Only existing representations are considered, since this
-    // method does not create a representation.
+    /** tests if it is possible to write a specific representation
+     *  Only existing representations are considered, since this
+     *  method does not create a representation.
+     */
     virtual OFBool canWriteXfer(const E_TransferSyntax newXfer,
                                 const E_TransferSyntax oldXfer);
 
-    // returns length of representation conforming to the
-    // transfer syntax with tag, vr, ... It does not create a
-    // representation. If no conforming representation exists an
-    // error code is set and 0 returned.
+    /** returns length of representation conforming to the
+     *  transfer syntax with tag, vr, ... It does not create a
+     *  representation. If no conforming representation exists an
+     *  error code is set and 0 returned.
+     */
     virtual Uint32 calcElementLength(const E_TransferSyntax xfer,
                                      const E_EncodingType enctype);
 
-    // returns length of representation value field conforming to
-    // given transfer syntax. It does not create a representation.
-    // If no conforming representation exists, an error code is set
-    // and 0 returned.
+    /** returns length of representation value field conforming to
+     *  given transfer syntax. It does not create a representation.
+     *  If no conforming representation exists, an error code is set
+     *  and 0 returned.
+     */
     virtual Uint32 getLength(
         const E_TransferSyntax xfer  = EXS_LittleEndianImplicit,
         const E_EncodingType enctype = EET_UndefinedLength);
 
-    // Initialize a streaming operation (read, write)
+    /** Initialize a streaming operation (read, write)
+     */
     virtual void transferInit();
 
-    // reads a representation and sets the current and orignal
-    // representation to the new representation
-    // it deletes all old representations before reading!
+    /** This function reads the data value of a pixel data attribute
+     *  which is captured in the input stream and captures this
+     *  information in this. This function takes into account, if the
+     *  pixel data is captured in native (uncompressed) or encapsulated
+     *  (compressed) format.
+     *  @param inStream      The stream which contains the information.
+     *  @param ixfer         The transfer syntax which was used to encode the
+     *                       information in inStream.
+     *  @param glenc         Encoding type for group length; specifies what 
+     *                       will be done with group length tags.
+     *  @param maxReadLength Maximum read length for reading an attribute value.
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
     virtual OFCondition read(DcmInputStream & inStream,
                              const E_TransferSyntax ixfer,
                              const E_GrpLenEncoding glenc = EGL_noChange,
                              const Uint32 maxReadLength = DCM_MaxReadLength);
 
-    // writes a representation conforming to the transfer syntax
-    // It does not create a representation. If no conforming
-    // representation exists,  an error code is returned.
-    // The written representation is the new current representation
+    /** writes a representation conforming to the transfer syntax
+     *  It does not create a representation. If no conforming
+     *  representation exists,  an error code is returned.
+     *  The written representation is the new current representation
+     */
     virtual OFCondition write(
         DcmOutputStream & outStream,
         const E_TransferSyntax oxfer,
@@ -242,33 +266,38 @@ public:
 
     virtual OFCondition loadAllDataIntoMemory(void);
 
-    // Finalize a streaming operation (read, write)
+    /** Finalize a streaming operation (read, write)
+     */
     virtual void transferEnd();
 
-    // test if it is possible to choose the representation in the parameters
+    /** test if it is possible to choose the representation in the parameters
+     */
     OFBool canChooseRepresentation(
         const E_TransferSyntax repType,
         const DcmRepresentationParameter * repParam);
 
-    // choose a specific representation. if representation does not exist
-    // it is created (if possible).
-    // if repParam is zero, a representation is chosen or created that
-    // is equal to the default representation parameters
+    /** choose a specific representation. if representation does not exist
+     *  it is created (if possible).
+     *  if repParam is zero, a representation is chosen or created that
+     *  is equal to the default representation parameters
+     */
     OFCondition chooseRepresentation(
         const E_TransferSyntax repType,
         const DcmRepresentationParameter * repParam,
         DcmStack & stack);
 
-    // Inserts an original encapsulated representation. current and original
-    // representations are changed, all old representations are deleted
+    /** Inserts an original encapsulated representation. current and original
+     *  representations are changed, all old representations are deleted
+     */
     void putOriginalRepresentation(
         const E_TransferSyntax repType,
         const DcmRepresentationParameter * repParam,
         DcmPixelSequence * pixSeq);
 
-    // The following two put-methods insert an original unencapsulated
-    // representation. current and original representations are changed,
-    // all old representations are deleted
+    /** The following two put-methods insert an original unencapsulated
+     *  representation. current and original representations are changed,
+     *  all old representations are deleted
+     */
     virtual OFCondition putUint16Array(
         const Uint16 * wordValue,
         const unsigned long length);
@@ -278,52 +307,61 @@ public:
         const unsigned long length);
 
 
-    // get a specific exisiting Representation, creates no representation
-    // if repParam is NULL, then the representation conforming to the default
-    // presentationParameters (defined with the codec) is returned.
+    /** get a specific exisiting Representation, creates no representation
+     *  if repParam is NULL, then the representation conforming to the default
+     *  presentationParameters (defined with the codec) is returned.
+     */
     OFCondition getEncapsulatedRepresentation(
         const E_TransferSyntax repType,
         const DcmRepresentationParameter * repParam,
         DcmPixelSequence * & pixSeq);
 
-    // returns the representation identification (key) consisting of
-    // representation type and parameter of the original representation
+    /** returns the representation identification (key) consisting of
+     *  representation type and parameter of the original representation
+     */
     void getOriginalRepresentationKey(
         E_TransferSyntax & repType,
         const DcmRepresentationParameter * & repParam);
 
-    // returns the representation identification (key) consisting of
-    // representation type and parameter of the current representation
+    /** returns the representation identification (key) consisting of
+     *  representation type and parameter of the current representation
+     */
     void getCurrentRepresentationKey(
         E_TransferSyntax & repType,
         const DcmRepresentationParameter * & repParam);
 
-    // sets the representation identification parameter of the current
-    // representation
+    /** sets the representation identification parameter of the current
+     *  representation
+     */
     OFCondition setCurrentRepresentationParameter(
         const DcmRepresentationParameter * repParam);
 
-    // returns if a specific conforming  representation exists.
+    /** returns if a specific conforming  representation exists.
+     */
     OFBool hasRepresentation(
         const E_TransferSyntax repType,
         const DcmRepresentationParameter * repParam = NULL);
 
-    // delete a representation. It is not possible to delete the
-    // original representation with this method
+    /** delete a representation. It is not possible to delete the
+     *  original representation with this method
+     */
     OFCondition removeRepresentation(
         const E_TransferSyntax repType,
         const DcmRepresentationParameter * repParam);
 
-    // removes all but the original representation
+    /** removes all but the original representation
+     */
     void removeAllButOriginalRepresentations();
 
-    // removes all but the current representation
-    // Makes the current representation original
+    /** removes all but the current representation
+     *  Makes the current representation original
+     */
     void removeAllButCurrentRepresentations();
 
-    // delete original representation and set new original representation.
-    // If the new representation does not exist, the original one is not
-    // deleted and an error code returns
+    /** delete original representation and set new original representation.
+     *  If the new representation does not exist, the original one is not
+     *  deleted and an error code returns
+     */
     OFCondition removeOriginalRepresentation(
         const E_TransferSyntax repType,
         const DcmRepresentationParameter * repParam);
@@ -334,7 +372,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.h,v $
-** Revision 1.17  2002-12-06 12:49:12  joergr
+** Revision 1.18  2002-12-09 09:31:16  wilkens
+** Modified/Added doc++ documentation.
+**
+** Revision 1.17  2002/12/06 12:49:12  joergr
 ** Enhanced "print()" function by re-working the implementation and replacing
 ** the boolean "showFullData" parameter by a more general integer flag.
 ** Added doc++ documentation.

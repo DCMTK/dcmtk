@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmItem
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 12:57:58 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2002-12-09 09:30:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.79 $
+ *  CVS/RCS Revision: $Revision: 1.80 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -186,18 +186,6 @@ OFBool DcmItem::foundVR(char *atposition)
 
 
 E_TransferSyntax DcmItem::checkTransferSyntax(DcmInputStream & inStream)
-    /*
-     * This function reads the first 6 bytes from the input stream and determines the transfer syntax
-     * which was used to code the information in the stream. The decision is based on two questions:
-     * a) Did we encounter a valid tag? and b) Do the last 2 bytes which were read from the stream
-     * represent a valid VR? In certain special cases, where the transfer syntax cannot be determined
-     * without doubt, we want to guess the most likely transfer syntax (see code).
-     *
-     * This function is used in the classes DcmDataset and DcmMetaInfo.
-     *
-     * Parameters:
-     *   inStream      - [in] The stream which contains the coded information.
-     */
 {
     E_TransferSyntax transferSyntax;
     char tagAndVR[6];
@@ -598,26 +586,6 @@ OFCondition DcmItem::computeGroupLengthAndPadding(const E_GrpLenEncoding glenc,
                                                   const Uint32 padlen,
                                                   const Uint32 subPadlen,
                                                   Uint32 instanceLength)
-    /*
-     * This function takes care of group length and padding elements in the current element list according
-     * to what is specified in glenc and padenc. If required, this function does the following two things:
-     *  a) it calculates the group length of all groups which are contained in this item and sets the
-     *     calculated values in the corresponding group length elements and
-     *  b) it inserts a corresponding padding element (or, in case of sequences: padding elements)
-     *     with a corresponding correct size into the element list.
-     *
-     * Parameters:
-     *   glenc          - [in] Encoding type for group length. Specifies what shall be done with group length tags.
-     *   padenc         - [in] Encoding type for padding. Specifies what shall be done with padding tags.
-     *   oxfer          - [in] The transfer syntax that shall be used.
-     *   enctype        - [in] Encoding type for sequences. Specifies how sequences will be handled.
-     *   padlen         - [in] The length up to which the dataset shall be padded, if padding is desired.
-     *   subPadlen      - [in] For sequences (i.e. sub elements), the length up to which item shall be padded,
-     *                         if padding is desired.
-     *   instanceLength - [in] Number of extra bytes added to the item/dataset length used when computing the
-     *                         padding. This parameter is for instance used to pass the length of the file meta
-     *                         header from the DcmFileFormat to the DcmDataset object.
-     */
 {
     /* if certain conditions are met, this is considered to be an illegal call. */
     if ((padenc == EPD_withPadding && (padlen % 2 || subPadlen % 2)) ||
@@ -841,22 +809,6 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
                                       DcmTag &tag,
                                       Uint32 &length,
                                       Uint32 &bytesRead)
-    /*
-     * This function reads tag and length information from inStream and returns this information
-     * to the caller. When reading information, the transfer syntax which was passed is accounted
-     * for. If the transfer syntax shows an explicit value representation, the data type of this
-     * object is also read from the stream. In general, this function follows the rules which are
-     * specified in the DICOM standard (see DICOM standard (year 2000) part 5, section 7) (or the
-     * corresponding section in a later version of the standard) concerning the encoding of a data
-     * set.
-     *
-     * Parameters:
-     *   inStream  - [in] The stream which contains the information.
-     *   xfer      - [in] The transfer syntax which was used to encode the information in inStream.
-     *   tag       - [out] Contains in the end the tag that was read.
-     *   length    - [out] Contains in the end the length value that was read.
-     *   bytesRead - [out] Contains in the end the amount of bytes which were read from inStream.
-     */
 {
     OFCondition l_error = EC_Normal;
     Uint32 valueLength = 0;
@@ -1010,20 +962,6 @@ OFCondition DcmItem::readSubElement(DcmInputStream &inStream,
                                     const E_TransferSyntax xfer,
                                     const E_GrpLenEncoding glenc,
                                     const Uint32 maxReadLength)
-    /*
-     * This function creates a new DcmElement object on the basis of the newTag and newLength information
-     * which was passed, inserts this new element into elementList, reads the actual data value which
-     * belongs to this element (attribute) from the inStream and also assigns this information to the
-     * object which was created at the beginning.
-     *
-     * Parameters:
-     *   inStream      - [in] The stream which contains the information.
-     *   newTag        - [in] The tag of the element of which the information is being read.
-     *   newLength     - [in] The length of the information which is being read.
-     *   xfer          - [in] The transfer syntax which was used to encode the information in inStream.
-     *   glenc         - [in] Encoding type for group length. Specifies what will be done with group length tags.
-     *   maxReadLength - [in] [optional parameter, default = DCM_MaxReadLength].
-     */
 {
     DcmElement *subElem = NULL;
 
@@ -1090,19 +1028,6 @@ OFCondition DcmItem::read(DcmInputStream & inStream,
                           const E_TransferSyntax xfer,
                           const E_GrpLenEncoding glenc,
                           const Uint32 maxReadLength)
-    /*
-     * This function reads the information of all attributes which are captured in the
-     * input stream and captures this information in elementList. Each attribute
-     * is represented as an element in this list. If not all information for an attribute
-     * could be read from the stream, the function returns EC_StreamNotifyClient.
-     *
-     * Parameters:
-     *   inStream      - [in] The stream which contains the information.
-     *   xfer          - [in] The transfer syntax which was used to encode the information in inStream.
-     *   glenc         - [in] [optional parameter, default = EGL_noChange] Encoding type for group
-     *                        length. Specifies what will be done with group length tags.
-     *   maxReadLength - [in] [optional parameter, default = DCM_MaxReadLength].
-     */
 {
     /* check if this is an illegal call; if so set the error flag and do nothing, else go ahead */
     if (fTransferState == ERW_notInitialized)
@@ -1383,21 +1308,6 @@ unsigned long DcmItem::card() const
 OFCondition DcmItem::insert(DcmElement *elem,
                             OFBool replaceOld,
                             OFBool checkInsertOrder)
-    /*
-     * This function inserts a new element into elementList. The new element will be inserted in
-     * a way so that the elements in elementList are sorted ascendingly based on their tag values.
-     * The parameter replaceOld specifies if an old element (which shows the same tag as the new
-     * element and which at the same time differs from the new element) shall be removed from the
-     * element list or not.
-     *
-     * Parameters:
-     *   elem       - [in] Pointer to the object which shall be inserted.
-     *   replaceOld - [in] [optional parameter, default=OFFalse] Specifies if an old element shall be
-     *                     removed or not (see above).
-     *   checkInsertOrder - [in] if true, a warning message is sent to the console
-     *      if the element is not inserted at the end of the list.  This is used
-     *      in the read() method to detect datasets with out-of-order elements.
-     */
 {
     /* intialize error flag with ok */
     errorFlag = EC_Normal;
@@ -1923,15 +1833,6 @@ DcmElement *newDicomElement(const DcmTag &tag,
 OFCondition newDicomElement(DcmElement *&newElement,
                             const DcmTag &tag,
                             const Uint32 length)
-    /*
-     * This function creates a new DcmElement object based on the tag and length information which was
-     * passed and returns a pointer to this object in newElement.
-     *
-     * Parameters:
-     *   newElement - [inout] Contains in the end a pointer to the object which was created.
-     *   tag        - [in] The tag which shall be set in the object.
-     *   length     - [in] The length which shall be set in the object.
-     */
 {
     /* initialize variables */
     OFCondition l_error = EC_Normal;
@@ -3198,7 +3099,10 @@ OFBool DcmItem::containsUnknownVR() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.79  2002-12-06 12:57:58  joergr
+** Revision 1.80  2002-12-09 09:30:52  wilkens
+** Modified/Added doc++ documentation.
+**
+** Revision 1.79  2002/12/06 12:57:58  joergr
 ** Enhanced "print()" function by re-working the implementation and replacing
 ** the boolean "showFullData" parameter by a more general integer flag.
 ** Made source code formatting more consistent with other modules/files.

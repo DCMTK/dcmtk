@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmItem
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 12:49:10 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2002-12-09 09:31:15 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcitem.h,v $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -114,6 +114,19 @@ class DcmItem
     virtual OFBool canWriteXfer(const E_TransferSyntax newXfer,
                                 const E_TransferSyntax oldXfer);
 
+    /** This function reads the information of all attributes which
+     *  are captured in the input stream and captures this information
+     *  in elementList. Each attribute is represented as an element
+     *  in this list. If not all information for an attribute could be
+     *  read from the stream, the function returns EC_StreamNotifyClient.
+     *  @param inStream      The stream which contains the information.
+     *  @param ixfer         The transfer syntax which was used to encode
+     *                       the information in inStream.
+     *  @param glenc         Encoding type for group length; specifies
+     *                       what will be done with group length tags.
+     *  @param maxReadLength Maximum read length for reading an attribute value.
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
     virtual OFCondition read(DcmInputStream &inStream,
                              const E_TransferSyntax ixfer,
                              const E_GrpLenEncoding glenc = EGL_noChange,
@@ -189,6 +202,34 @@ class DcmItem
     virtual OFCondition searchErrors( DcmStack &resultStack );     // inout
     virtual OFCondition loadAllDataIntoMemory();
 
+    /** This function takes care of group length and padding elements
+     *  in the current element list according to what is specified in
+     *  glenc and padenc. If required, this function does the following
+     *  two things:
+     *    a) it calculates the group length of all groups which are
+     *       contained in this item and sets the calculated values
+     *       in the corresponding group length elements and
+     *    b) it inserts a corresponding padding element (or, in case
+     *       of sequences: padding elements) with a corresponding correct
+     *       size into the element list.
+     *  @param glenc          Encoding type for group length; specifies what shall
+     *                        be done with group length tags.
+     *  @param padenc         Encoding type for padding; specifies what shall be
+     *                        done with padding tags.
+     *  @param xfer           The transfer syntax that shall be used.
+     *  @param enctype        Encoding type for sequences; specifies how sequences
+     *                        will be handled.
+     *  @param padlen         The length up to which the dataset shall be padded,
+     *                        if padding is desired.
+     *  @param subPadlen      For sequences (ie sub elements), the length up to
+     *                        which item shall be padded, if padding is desired.
+     *  @param instanceLength Number of extra bytes added to the item/dataset
+     *                        length used when computing the padding; this
+     *                        parameter is for instance used to pass the length
+     *                        of the file meta header from the DcmFileFormat to
+     *                        the DcmDataset object.
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
     virtual OFCondition computeGroupLengthAndPadding(const E_GrpLenEncoding glenc,
                                                      const E_PaddingEncoding padenc = EPD_noChange,
                                                      const E_TransferSyntax xfer = EXS_Unknown,
@@ -620,12 +661,46 @@ class DcmItem
      */
     Uint32 fStartPosition;
 
+    /** This function reads tag and length information from inStream and
+     *  returns this information to the caller. When reading information,
+     *  the transfer syntax which was passed is accounted for. If the
+     *  transfer syntax shows an explicit value representation, the data
+     *  type of this object is also read from the stream. In general, this
+     *  function follows the rules which are specified in the DICOM standard
+     *  (see DICOM standard (year 2000) part 5, section 7) (or the corresponding
+     *  section in a later version of the standard) concerning the encoding
+     *  of a dataset.
+     *  @param inStream  The stream which contains the information.
+     *  @param xfer      The transfer syntax which was used to encode the
+     *                   information in inStream.
+     *  @param tag       Contains in the end the tag that was read.
+     *  @param length    Contains in the end the length value that was read.
+     *  @param bytesRead Contains in the end the amount of bytes which were
+     *                   read from inStream.
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
     OFCondition readTagAndLength(DcmInputStream &inStream,       // inout
                                  const E_TransferSyntax newxfer, // in
                                  DcmTag &tag,                    // out
                                  Uint32 &length,                 // out
                                  Uint32 &bytesRead);             // out
 
+    /** This function creates a new DcmElement object on the basis of the newTag
+     *  and newLength information which was passed, inserts this new element into
+     *  elementList, reads the actual data value which belongs to this element
+     *  (attribute) from the inStream and also assigns this information to the
+     *  object which was created at the beginning.
+     *  @param inStream      The stream which contains the information.
+     *  @param newTag        The tag of the element of which the information is
+     *                       being read.
+     *  @param newLength     The length of the information which is being read.
+     *  @param xfer          The transfer syntax which was used to encode the
+     *                       information in inStream.
+     *  @param glenc         Encoding type for group length. Specifies what will
+     *                       be done with group length tags.
+     *  @param maxReadLength Maximum read length for reading the attribute value.
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
     OFCondition readSubElement(DcmInputStream &inStream,         // inout
                                DcmTag &newTag,                   // inout
                                const Uint32 newLength,           // in
@@ -633,6 +708,15 @@ class DcmItem
                                const E_GrpLenEncoding glenc,     // in
                                const Uint32 maxReadLength = DCM_MaxReadLength);
 
+    /** This function reads the first 6 bytes from the input stream and determines
+     *  the transfer syntax which was used to code the information in the stream.
+     *  The decision is based on two questions: a) Did we encounter a valid tag?
+     *  and b) Do the last 2 bytes which were read from the stream represent a valid
+     *  VR? In certain special cases, where the transfer syntax cannot be determined
+     *  without doubt, we want to guess the most likely transfer syntax (see code).
+     *  @param inStream The stream which contains the coded information.
+     *  @return The transfer syntax which was determined.
+     */
     E_TransferSyntax checkTransferSyntax(DcmInputStream &inStream);
 
 
@@ -700,7 +784,10 @@ OFCondition nextUp(DcmStack &stack);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
-** Revision 1.40  2002-12-06 12:49:10  joergr
+** Revision 1.41  2002-12-09 09:31:15  wilkens
+** Modified/Added doc++ documentation.
+**
+** Revision 1.40  2002/12/06 12:49:10  joergr
 ** Enhanced "print()" function by re-working the implementation and replacing
 ** the boolean "showFullData" parameter by a more general integer flag.
 ** Added doc++ documentation.

@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmElement
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 12:49:09 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2002-12-09 09:31:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcelem.h,v $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -97,15 +97,45 @@ class DcmElement
     virtual OFBool canWriteXfer(const E_TransferSyntax newXfer,
                                 const E_TransferSyntax oldXfer);
 
+    /** This function reads the data value of an attribute which is
+     *  captured in the input stream and captures this information
+     *  in this. If not all information for an attribute could be
+     *  read from the stream, the function returns EC_StreamNotifyClient.
+     *  Note that if certain conditions are met, this function does
+     *  not actually load the data value but creates and stores an object
+     *  that enables us to load this information later.
+     *  @param inStream      The stream which contains the information.
+     *  @param ixfer         The transfer syntax which was used to encode
+     *                       the information in inStream.
+     *  @param glenc         Encoding type for group length; specifies what
+     *                       will be done with group length tags.
+     *  @param maxReadLength Maximum read length for reading an attribute value.
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
     virtual OFCondition read(DcmInputStream &inStream,
                              const E_TransferSyntax ixfer,
                              const E_GrpLenEncoding glenc = EGL_noChange,
                              const Uint32 maxReadLength = DCM_MaxReadLength);
 
-    /** write element to a stream
-     *  @param outStream DICOM output stream
-     *  @param oxfer output transfer syntax
-     *  @param enctype encoding types (undefined or explicit length)
+    /** This function writes this element's value to the outstream which was
+     *  passed. When writing information, the byte ordering (little or big endian)
+     *  of the transfer syntax which was passed will be accounted for. In case the
+     *  outstream does not provide enough space for all bytes of the current
+     *  element's value, only a certain part of the value will be written to the
+     *  stream. This element's transfer state indicates if the all bytes of value
+     *  have already been written to the stream (ERW_ready), if the writing is
+     *  still in progress and more bytes need to be written to the stream
+     *  (ERW_inWork) or if the writing of the bytes of this element's value has not
+     *  even begun yet (ERW_init). The member variable fTransferredBytes indicates
+     *  how many bytes (starting from byte 0) of this element's value have already
+     *  been written to the stream. This function will return EC_Normal, if the
+     *  entire value of this element has been written to the stream, it will return
+     *  EC_StreamNotifyClient, if there is no more space in the buffer and _not_ all
+     *  bytes of this element's value have been written, and it will return some
+     *  other (error) value if there was an error.
+     *  @param outStream The stream the information will be written to.
+     *  @param oxfer The transfer syntax which shall be used.
+     *  @param enctype encoding types (undefined or explicit length) (actually unused)
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition write(DcmOutputStream &outStream,
@@ -221,6 +251,12 @@ class DcmElement
 
     E_ByteOrder fByteOrder;
 
+    /** This function returns this element's value. The returned value
+     *  corresponds to the byte ordering (little or big endian) that
+     *  was passed.
+     *  @param newByteOrder The byte ordering that shall be accounted
+     *                      for (little or big endian).
+     */
     void *getValue(const E_ByteOrder newByteOrder = gLocalByteOrder);
 
 
@@ -233,10 +269,26 @@ class DcmElement
 
     OFCondition createEmptyValue(const Uint32 length); // number of new value bytes
 
+
+
+
+    /** This function reads the data value of an attribute and stores the
+     *  information which was read in this. The information is either read
+     *  from the inStream or (if inStream is NULL) from a different stream
+     *  which was created earlier and which is accessible through the fLoadValue
+     *  member variable. Note that if not all information for an attribute
+     *  could be read from the stream, the function returns EC_StreamNotifyClient.
+     *  @param inStream The stream which contains the information.
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
     OFCondition loadValue(DcmInputStream *inStream = NULL);
 
     virtual void postLoadValue();
 
+    /** This function creates a byte array of Length bytes and returns this
+     *  array. In case Length is odd, an array of Length+1 bytes will be
+     *  created and Length will be increased by 1.
+     */
     virtual Uint8 *newValueField();
 
     void swapValueField(size_t valueWidth);
@@ -274,7 +326,10 @@ class DcmElement
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.h,v $
-** Revision 1.25  2002-12-06 12:49:09  joergr
+** Revision 1.26  2002-12-09 09:31:14  wilkens
+** Modified/Added doc++ documentation.
+**
+** Revision 1.25  2002/12/06 12:49:09  joergr
 ** Enhanced "print()" function by re-working the implementation and replacing
 ** the boolean "showFullData" parameter by a more general integer flag.
 ** Added doc++ documentation.
