@@ -22,9 +22,9 @@
  *  Purpose: Image Server Central Test Node (ctn) Main Program
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-04-04 10:05:43 $
+ *  Update Date:      $Date: 2005-04-04 13:15:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/apps/Attic/dcmqrdb.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,6 +66,12 @@ BEGIN_EXTERN_C
 #endif
 #ifdef HAVE_IO_H
 #include <io.h>
+#endif     
+#ifdef HAVE_PWD_H
+#include <pwd.h>
+#endif
+#ifdef HAVE_GRP_H
+#include <grp.h>
 #endif
 END_EXTERN_C
 
@@ -495,6 +501,40 @@ main(int argc, char *argv[])
     setuid(getuid());
 #endif
 
+#if defined(HAVE_GETGRNAM) && defined(HAVE_GETPWNAM) && defined(HAVE_SETUID)
+     struct group *grp = NULL;
+     struct passwd *pwd = NULL;
+     const char *opt_UserName = NULL;
+     const char *opt_GroupName = NULL;
+
+     if (((opt_GroupName = config.getGroupName()) != NULL) && strlen(opt_GroupName) > 0)
+     {     
+       if (!(grp = getgrnam(opt_GroupName)))
+       {
+         errmsg("Bad group name %s", opt_GroupName);
+         return 10;
+       }
+       if (setgid(grp->gr_gid) == -1)
+       {
+         errmsg("setgid: Unable to set group id to group %u", (unsigned)grp->gr_gid);
+         return 10;
+       }
+     }
+     if (((opt_UserName = config.getUserName()) != NULL) && strlen(opt_UserName) > 0)
+     {
+       if (!(pwd = getpwnam(opt_UserName)))
+       {
+         errmsg("Bad user name %s\n", opt_UserName);
+         return 10;
+       }
+       if (setuid(pwd->pw_uid) == -1)
+       {
+         errmsg("setuid: Unable to set user id to user %u", (unsigned)pwd->pw_uid);
+         return 10;
+       }
+     }
+#endif
+
 #ifdef WITH_SQL_DATABASE
     // use SQL database
     DcmQueryRetrieveSQLDatabaseHandleFactory factory;
@@ -531,7 +571,12 @@ main(int argc, char *argv[])
 /*
  * CVS Log
  * $Log: dcmqrdb.cc,v $
- * Revision 1.2  2005-04-04 10:05:43  meichel
+ * Revision 1.3  2005-04-04 13:15:12  meichel
+ * Added username/groupname configuration option that allows to start the
+ *   image database as root and let it call setuid/setgid to execute under an
+ *   unprivileged account once the listen socket has been opened.
+ *
+ * Revision 1.2  2005/04/04 10:05:43  meichel
  * Minor corrections for use with external DB interface
  *
  * Revision 1.1  2005/03/30 13:34:44  meichel

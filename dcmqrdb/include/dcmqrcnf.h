@@ -22,9 +22,9 @@
  *  Purpose: class DcmQueryRetrieveConfig
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-03-30 13:34:50 $
+ *  Update Date:      $Date: 2005-04-04 13:15:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/include/Attic/dcmqrcnf.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -279,7 +279,6 @@ public:
    *  Returns : number of entries in the malloced array.
    *      0 if no entries found.
    */
-
   int aeTitlesForSymbolicName(const char *symbolicName, const char ***aeTitleList) const;
 
   /*
@@ -287,6 +286,20 @@ public:
    *  to stdout
    */
   void printConfig();
+
+  /*
+   *  get User Name
+   *  Input :
+   *  Return : User Name
+   */
+  const char *getUserName() const;
+
+  /*
+   *  get Group Name
+   *  Input :
+   *  Return : Group Name
+   */
+  const char *getGroupName() const;
 
 private:
 
@@ -443,6 +456,8 @@ private:
   OFString implementationClass_;
   OFString implementationVersion_;
   OFString networkType_;
+  OFString UserName_;
+  OFString GroupName_;
   int networkTCPPort_;
   Uint32 maxPDUSize_;
   int maxAssociations_;
@@ -458,7 +473,12 @@ private:
 /*
  * CVS Log
  * $Log: dcmqrcnf.h,v $
- * Revision 1.1  2005-03-30 13:34:50  meichel
+ * Revision 1.2  2005-04-04 13:15:13  meichel
+ * Added username/groupname configuration option that allows to start the
+ *   image database as root and let it call setuid/setgid to execute under an
+ *   unprivileged account once the listen socket has been opened.
+ *
+ * Revision 1.1  2005/03/30 13:34:50  meichel
  * Initial release of module dcmqrdb that will replace module imagectn.
  *   It provides a clear interface between the Q/R DICOM front-end and the
  *   database back-end. The imagectn code has been re-factored into a minimal

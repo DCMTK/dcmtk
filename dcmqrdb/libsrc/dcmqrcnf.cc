@@ -22,9 +22,9 @@
  *  Purpose: class DcmQueryRetrieveConfig
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-03-30 13:34:53 $
+ *  Update Date:      $Date: 2005-04-04 13:15:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqrcnf.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -228,7 +228,10 @@ int DcmQueryRetrieveConfig::readConfigLines(FILE *cnffp)
       if (feof(cnffp)) continue;
       if (rcline[0] == '#' || rcline[0] == 10 || rcline[0] == 13)
          continue;        /* comment or blank line */
-      sscanf(rcline, "%s", mnemonic);
+
+      if (sscanf(rcline, "%s", mnemonic) != 1)
+        continue;  /* ignore lines containing only whitespace */
+
       valueptr = skipmnemonic(rcline);
 
       if (!strcmp("ApplicationTitle", mnemonic)) {
@@ -254,6 +257,16 @@ int DcmQueryRetrieveConfig::readConfigLines(FILE *cnffp)
       else if (!strcmp("NetworkType", mnemonic)) {
          c = parsevalues(&valueptr);
          networkType_ = c;
+         free(c);
+      }
+      else if (!strcmp("UserName", mnemonic)) {
+         c = parsevalues(&valueptr);
+         UserName_ = c;
+         free(c);
+      }
+      else if (!strcmp("GroupName", mnemonic)) {
+         c = parsevalues(&valueptr);
+         GroupName_ = c;
          free(c);
       }
       else if (!strcmp("NetworkTCPPort", mnemonic)) {
@@ -1004,10 +1017,25 @@ OFBool DcmQueryRetrieveConfig::writableStorageArea(const char *aeTitle) const
     return OFFalse;
 }
 
+const char *DcmQueryRetrieveConfig::getUserName() const
+{
+   return UserName_.c_str();
+}
+
+const char *DcmQueryRetrieveConfig::getGroupName() const
+{
+   return GroupName_.c_str();
+}
+
 /*
  * CVS Log
  * $Log: dcmqrcnf.cc,v $
- * Revision 1.1  2005-03-30 13:34:53  meichel
+ * Revision 1.2  2005-04-04 13:15:13  meichel
+ * Added username/groupname configuration option that allows to start the
+ *   image database as root and let it call setuid/setgid to execute under an
+ *   unprivileged account once the listen socket has been opened.
+ *
+ * Revision 1.1  2005/03/30 13:34:53  meichel
  * Initial release of module dcmqrdb that will replace module imagectn.
  *   It provides a clear interface between the Q/R DICOM front-end and the
  *   database back-end. The imagectn code has been re-factored into a minimal
