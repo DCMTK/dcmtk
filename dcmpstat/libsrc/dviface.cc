@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:29:00 $
- *  CVS/RCS Revision: $Revision: 1.85 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-05-30 13:56:23 $
+ *  CVS/RCS Revision: $Revision: 1.86 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,8 +42,11 @@
 #include "diutil.h"      /* for DU_getStringDOElement */
 #include "dvpssp.h"      /* for class DVPSStoredPrint */
 #include "dvpshlp.h"     /* for class DVPSHelper */
+#include "dcmimage.h"    /* for class DicomImage */
 #include <stdio.h>
 #include <ctype.h>       /* for toupper() */
+#include <iostream.h>
+#include <fstream.h>
 
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_TYPES_H
@@ -90,8 +93,10 @@ DVInterface::DVInterface(const char *config_file)
 , pPrint(NULL)
 , pState(NULL)
 , pStoredPState(NULL)
+, pDicomPrint(NULL)
 , pDicomImage(NULL)
 , pDicomPState(NULL)
+, pHardcopyImage(NULL)
 , printJobIdentifier()
 , printJobCounter(0)
 , configPath()
@@ -107,6 +112,8 @@ DVInterface::DVInterface(const char *config_file)
 , minimumPrintBitmapHeight(0)
 , maximumPrintBitmapWidth(0)
 , maximumPrintBitmapHeight(0)
+, maximumPrintPreviewWidth(0)
+, maximumPrintPreviewHeight(0)
 , maximumPreviewImageWidth(0)
 , maximumPreviewImageHeight(0)
 , currentPrinter()
@@ -183,13 +190,15 @@ DVInterface::DVInterface(const char *config_file)
 
 DVInterface::~DVInterface()
 {
-    if (pPrint) delete pPrint;
-    if (pDicomImage) delete pDicomImage;
-    if (pDicomPState) delete pDicomPState;
-    if (pState) delete pState;
-    if (pStoredPState) delete pStoredPState;
+    delete pPrint;
+    delete pState;
+    delete pStoredPState;
+    delete pDicomPrint;
+    delete pDicomImage;
+    delete pDicomPState;
+    delete pHardcopyImage;
     for (int i = DVPSD_first; i < DVPSD_max; i++)
-      if (displayFunction[i]) delete displayFunction[i];
+      delete displayFunction[i];
     if (pHandle) releaseDatabase();
     // refresh database index file access time
     if (databaseIndexFile.length() > 0) utime(databaseIndexFile.c_str(), NULL);
@@ -234,9 +243,7 @@ E_Condition DVInterface::loadImage(const char *imgName)
             if (dataset)
             {
               if (EC_Normal == (status = newState->createFromImage(*dataset)))
-              {
                 status = newState->attachImage(image, OFFalse);
-              }
               if (EC_Normal == status)
               {
                 exchangeImageAndPState(newState, image);
@@ -249,6 +256,47 @@ E_Condition DVInterface::loadImage(const char *imgName)
     {
         delete newState;
         delete image;
+    }
+    return status;
+}
+
+
+E_Condition DVInterface::loadReferencedImage(size_t idx)
+{
+    E_Condition status = EC_IllegalCall;
+    if ((pState != NULL) && (idx < pState->numberOfImageReferences()))
+    {
+        OFString ofstudyUID, ofseriesUID, ofsopclassUID, ofinstanceUID, offrames, aetitle, mediaID, mediaUID;
+        if ((status = pState->getImageReference(idx, ofstudyUID, ofseriesUID, ofsopclassUID, ofinstanceUID,
+            offrames, aetitle, mediaID, mediaUID)) == EC_Normal)
+        {
+            if (lockDatabase() == EC_Normal)
+            {
+                const char *filename = getFilename(ofstudyUID.c_str(), ofseriesUID.c_str(), ofinstanceUID.c_str());
+                if (filename != NULL)
+                {
+                    DcmFileFormat *image = NULL;
+                    if ((status = DVPSHelper::loadFileFormat(filename, image)) == EC_Normal)
+                    {
+                        status = EC_IllegalCall;
+                        if (image != NULL)
+                        {
+                            DcmDataset *dataset = image->getDataset();
+                            if (dataset != NULL)
+                            {
+                                if ((status = pState->attachImage(image, OFFalse)) == EC_Normal)
+                                {
+                                    exchangeImageAndPState(pState, image);      // do not exchange pState
+                                    imageInDatabase = OFTrue;
+                                }
+                            }
+                        }
+                    } else status = EC_CorruptedData;
+                    if (status != EC_Normal)
+                        delete image;
+                } else status = EC_IllegalCall;
+            }
+        }        
     }
     return status;
 }
@@ -360,9 +408,10 @@ E_Condition DVInterface::loadPState(const char *pstName,
     }
     if (status != EC_Normal)
     {
-       delete newState;
-       if (image != pDicomImage) delete image;
-       delete pstate;
+        delete newState;
+        if (image != pDicomImage)
+            delete image;
+        delete pstate;
     }
     return status;
 }
@@ -372,9 +421,8 @@ E_Condition DVInterface::savePState()
 {
     // release database lock since we are using the DB module directly
     releaseDatabase();
-
+    
     if (pState==NULL) return EC_IllegalCall;
-
     const char *instanceUID = pState->createInstanceUID();
     if (instanceUID==NULL) return EC_IllegalCall;
 
@@ -403,7 +451,7 @@ E_Condition DVInterface::savePState()
             }
         }
     }
-    if (pDicomImage !=NULL)
+    if (pDicomImage != NULL)
     {
         DcmDataset *dset = pDicomImage->getDataset();
         if (dset != NULL)
@@ -463,7 +511,7 @@ E_Condition DVInterface::savePState(const char *filename, OFBool explicitVR)
           status = DVPSHelper::saveFileFormat(filename, fileformat, explicitVR);
 
           // replace the stored data for resetPresentationState()
-          if (pDicomPState) delete pDicomPState;
+          delete pDicomPState;
           pDicomPState = fileformat;
           fileformat = NULL; // make sure we don't delete fileformat later
         }
@@ -481,21 +529,63 @@ E_Condition DVInterface::saveCurrentImage(const char *filename, OFBool explicitV
     return DVPSHelper::saveFileFormat(filename, pDicomImage, explicitVR);
 }
 
+
+E_Condition DVInterface::addImageReferenceToPState(const char *studyUID, const char *seriesUID, const char *instanceUID)
+{
+    E_Condition status = EC_IllegalCall;
+    if (pState && studyUID && seriesUID && instanceUID)
+    {
+        OFString study = getStudyUID();
+        if ((study == studyUID) && (lockDatabase() == EC_Normal))
+        {
+            const char *filename = getFilename(studyUID, seriesUID, instanceUID);
+            if (filename)
+            {
+                DcmFileFormat *image = NULL;
+                if ((status = DVPSHelper::loadFileFormat(filename, image)) == EC_Normal)
+                {
+                    status = EC_CorruptedData;
+                    if (image)
+                    {
+                        DcmDataset *dataset = image->getDataset();
+                        if (dataset)
+                            status = pState->addImageReference(*dataset);
+                    }
+                }
+                delete image;
+            }
+        }
+    }
+    return status;
+}
+
+
+size_t DVInterface::getNumberOfImageReferences()
+{
+    if (pState != NULL)
+        return pState->numberOfImageReferences();
+    return 0;
+}
+
+
 E_Condition DVInterface::exchangeImageAndPState(DVPresentationState *newState, DcmFileFormat *image, DcmFileFormat *state)
 {
     if (newState==NULL) return EC_IllegalCall;
     if (image==NULL) return EC_IllegalCall;
-    if (pState) delete pState;
-    if (pStoredPState) delete pStoredPState;
-    if (pDicomPState) delete pDicomPState;
+    if (pState != newState)
+    {
+        delete pState;
+        delete pStoredPState;
+        delete pDicomPState;
+        pState = newState;
+        pStoredPState = NULL;
+        pDicomPState = state;
+    }
     if (pDicomImage != image)
     {
-        delete pDicomImage;       // only delete if different
+        delete pDicomImage;       // delete only if different
         pDicomImage = image;
     }
-    pState = newState;
-    pStoredPState = NULL;
-    pDicomPState = state;
     return EC_Normal;
 }
 
@@ -919,7 +1009,7 @@ OFBool DVInterface::createIndexCache()
                                 if (strcmp(record.Modality, "PR") == 0)
                                     type = DVPSI_presentationState;
                                 else if (strcmp(record.Modality, "HC") == 0)
-                                    type =DVPSI_grayscaleHardcopy;
+                                    type =DVPSI_hardcopyGrayscale;
                                 else if (strcmp(record.Modality, "STORED_PRINT") == 0)
                                     type = DVPSI_storedPrint;
                             }
@@ -1188,18 +1278,6 @@ DVPSInstanceType DVInterface::getInstanceType()
             return series->List.getType();
     }
     return DVPSI_image;
-}
-
-
-OFBool DVInterface::isPresentationStateSeries()
-{
-    return (getSeriesType() == DVPSI_presentationState);
-}
-
-
-OFBool DVInterface::isPresentationState()
-{
-    return (getInstanceType() == DVPSI_presentationState);
 }
 
 
@@ -1606,15 +1684,6 @@ OFBool DVInterface::isDisplayTransformPossible(DVPSDisplayTransform transform)
     return (displayFunction[transform] != NULL);
 }
 
-// --- <BEGIN> ONLY FOR COMPATIBILITY REASONS <BEGIN> ---
-
-OFBool DVInterface::isBartenTransformPossible()
-{
-    return (displayFunction[DVPSD_GSDF] != NULL);
-}
-
-// --- <END> ONLY FOR COMPATIBILITY REASONS <END> ---
-
 
 E_Condition DVInterface::setAmbientLightValue(double value)
 {
@@ -1788,7 +1857,7 @@ E_Condition DVInterface::terminateReceiver()
       ASC_setPresentationAddresses(params, localHost, peerHost);
 
       const char* transferSyntaxes[] = { UID_LittleEndianImplicitTransferSyntax };
-      cond = ASC_addPresentationContext(params, 1, PSTAT_PRIVATESOPCLASSUID,transferSyntaxes, 1);
+      cond = ASC_addPresentationContext(params, 1, UID_PrivateShutdownSOPClass, transferSyntaxes, 1);
       if (SUCCESS(cond))
       {
 
@@ -1807,6 +1876,162 @@ E_Condition DVInterface::terminateReceiver()
 #endif
 
   return result;
+}
+
+E_Condition DVInterface::startQueryRetrieveServer()
+{
+  OFString config_filename = getQueryRetrieveServerName();
+  config_filename += ".cfg";
+  if (getQueryRetrieveAutoCreateConfigFile())
+    createQueryRetrieveServerConfigFile(config_filename.c_str());
+
+  const char *server_application = getQueryRetrieveServerName();
+  if (server_application==NULL) return EC_IllegalCall;
+  if (configPath.length()==0) return EC_IllegalCall;
+
+  DVPSHelper::cleanChildren(); // clean up old child processes before creating new ones
+
+#ifdef HAVE_FORK
+  // Unix version - call fork() and execl()
+  pid_t pid = fork();
+  if (pid < 0)
+  {
+    // fork failed - return error code
+    return EC_IllegalCall;
+  } else if (pid > 0)
+  {
+    // we are the parent process
+    return EC_Normal;
+  } else {
+    // we are the child process
+    if (execl(server_application, server_application, "-c", config_filename.c_str(), "--allow-shutdown", NULL) < 0)
+    {
+      *logstream << "error: unable to execute '" << server_application << "'" << endl;
+    }
+    // if execl succeeds, this part will not get executed.
+    // if execl fails, there is not much we can do except bailing out.
+    abort();
+  }
+#else
+  // Windows version - call CreateProcess()
+  // initialize startup info
+  PROCESS_INFORMATION procinfo;
+  STARTUPINFO sinfo;
+  OFBitmanipTemplate<char>::zeroMem((char *)&sinfo, sizeof(sinfo));
+  sinfo.cb = sizeof(sinfo);
+  char commandline[4096];
+  sprintf(commandline, "%s -c %s --allow-shutdown", server_application, config_filename.c_str());
+#ifdef DEBUG
+  if (CreateProcess(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
+#else
+  if (CreateProcess(NULL, commandline, NULL, NULL, 0, DETACHED_PROCESS, NULL, NULL, &sinfo, &procinfo))
+#endif
+  {
+    return EC_Normal;
+  } else {
+      *logstream << "error: unable to execute '" << server_application << "'" << endl;
+  }
+#endif
+  return EC_IllegalCall;
+}
+
+E_Condition DVInterface::terminateQueryRetrieveServer()
+{
+#ifdef HAVE_GUSI_H
+  GUSISetup(GUSIwithSIOUXSockets);
+  GUSISetup(GUSIwithInternetSockets);
+#endif
+
+#ifdef HAVE_WINSOCK_H
+  WSAData winSockData;
+  /* we need at least version 1.1 */
+  WORD winSockVersionNeeded = MAKEWORD( 1, 1 );
+  WSAStartup(winSockVersionNeeded, &winSockData);
+#endif
+
+  E_Condition result = EC_Normal;
+  T_ASC_Network *net=NULL;
+  T_ASC_Parameters *params=NULL;
+  DIC_NODENAME localHost;
+  DIC_NODENAME peerHost;
+  T_ASC_Association *assoc=NULL;
+
+  CONDITION cond = ASC_initializeNetwork(NET_REQUESTOR, 0, 1000, &net);
+  if (SUCCESS(cond))
+  {
+    cond = ASC_createAssociationParameters(&params, DEFAULT_MAXPDU);
+    if (SUCCESS(cond))
+    {
+      ASC_setAPTitles(params, getQueryRetrieveAETitle(), getQueryRetrieveAETitle(), NULL);
+      gethostname(localHost, sizeof(localHost) - 1);
+      sprintf(peerHost, "localhost:%d", (int)getQueryRetrievePort());
+      ASC_setPresentationAddresses(params, localHost, peerHost);
+
+      const char* transferSyntaxes[] = { UID_LittleEndianImplicitTransferSyntax };
+      cond = ASC_addPresentationContext(params, 1, UID_PrivateShutdownSOPClass, transferSyntaxes, 1);
+      if (SUCCESS(cond))
+      {
+        cond = ASC_requestAssociation(net, params, &assoc);
+        if (cond==ASC_NORMAL) ASC_abortAssociation(assoc); // tear down association if necessary
+        ASC_dropAssociation(assoc);
+        ASC_destroyAssociation(&assoc);
+      }
+    } else result = EC_IllegalCall;
+    ASC_dropNetwork(&net);
+  } else result = EC_IllegalCall;
+  COND_PopCondition(OFTrue); // clear condition stack
+
+#ifdef HAVE_WINSOCK_H
+  WSACleanup();
+#endif
+
+  return result;
+}
+
+E_Condition DVInterface::createQueryRetrieveServerConfigFile(const char *filename)
+{
+  ofstream output(filename);
+  if (file)
+  {
+    output << "# ATTENTION: This file has been created automatically and will" << endl;
+    output << "#            be re-created each time the query/retrieve server" << endl;
+    output << "#            is started.  To avoid that manual changes to this" << endl;
+    output << "#            file are destroyed, the flag AutoCreateConfigFile" << endl;
+    output << "#            in the configuration file '" << configPath << "' has to be" << endl;
+    output << "#            switched off." << endl;
+    output << endl;
+    output << "NetworkType     = \"tcp\"" << endl;
+    output << "NetworkTCPPort  = " << getQueryRetrievePort() << endl;
+    output << "MaxPDUSize      = " << getQueryRetrieveMaxPDU() << endl;
+    output << "MaxAssociations = " << getQueryRetrieveMaxAssociations() << endl;
+    output << "Display         = \"no\"" << endl;
+    output << endl;
+    output << "HostTable BEGIN" << endl;
+    const char *aet = getNetworkAETitle();
+    if (aet != NULL)
+        output << "LOCALHOST = (" << aet << ", localhost, " << getNetworkPort() << ")" << endl;
+    const char *name = NULL;
+    const Uint32 count = getNumberOfTargets();
+    for (Uint32 i = 0; i < count; i++)
+    {
+      const char *id = getTargetID(i);
+      if (id != NULL)
+      {
+          aet = getTargetAETitle(id);
+          name = getTargetHostname(id);
+          if ((aet != NULL) && (name != NULL))
+            output << id << " = (" << aet << ", " << name << ", " << getTargetPort(id) << ")" << endl;
+      }
+    }
+    output << "HostTable END" << endl;
+    output << endl;
+    output << "AETable BEGIN" << endl;
+    output << getQueryRetrieveAETitle() << "\t" << getDatabaseFolder() << "\tR\t(";
+    output << PSTAT_MAXSTUDYCOUNT << ", " << PSTAT_STUDYSIZE / 1024 / 1024 << "mb)\tANY" << endl;
+    output << "AETable END" << endl;
+    return EC_Normal;
+  }
+  return EC_IllegalCall;
 }
 
 E_Condition DVInterface::saveDICOMImage(
@@ -1924,8 +2149,7 @@ E_Condition DVInterface::saveDICOMImage(
   return result;
 }
 
-
-E_Condition DVInterface::saveGrayscaleHardcopyImage(
+E_Condition DVInterface::saveHardcopyGrayscaleImage(
   const char *filename,
   const void *pixelData,
   unsigned long width,
@@ -2031,8 +2255,7 @@ E_Condition DVInterface::saveGrayscaleHardcopyImage(
     return status;
 }
 
-
-E_Condition DVInterface::saveGrayscaleHardcopyImage(
+E_Condition DVInterface::saveHardcopyGrayscaleImage(
   const void *pixelData,
   unsigned long width,
   unsigned long height,
@@ -2054,14 +2277,14 @@ E_Condition DVInterface::saveGrayscaleHardcopyImage(
   E_Condition result=EC_Normal;
   if (DB_NORMAL == DB_makeNewStoreFileName(handle, UID_HardcopyGrayscaleImageStorage, uid, imageFileName))
   {
-     result = saveGrayscaleHardcopyImage(imageFileName, pixelData, width, height, aspectRatio, OFTrue, uid);
+     result = saveHardcopyGrayscaleImage(imageFileName, pixelData, width, height, aspectRatio, OFTrue, uid);
      if (EC_Normal==result)
      {
        if (DB_NORMAL != DB_storeRequest(handle, UID_HardcopyGrayscaleImageStorage, uid, imageFileName, &dbStatus))
        {
          result = EC_IllegalCall;
 #ifdef DEBUG
-         *logstream << "unable to register grayscale hardcopy image '" << imageFileName << "' in database." << endl;
+         *logstream << "unable to register hardcopy grayscale image '" << imageFileName << "' in database." << endl;
          COND_DumpConditions();
 #endif
        }
@@ -2072,6 +2295,51 @@ E_Condition DVInterface::saveGrayscaleHardcopyImage(
   return result;
 }
 
+E_Condition DVInterface::loadStoredPrint(const char *studyUID, const char *seriesUID, const char *instanceUID)
+{
+    if (studyUID && seriesUID && instanceUID)
+    {
+        if (lockDatabase() == EC_Normal)
+        {
+            const char *filename = getFilename(studyUID, seriesUID, instanceUID);
+            if (filename)
+                return loadStoredPrint(filename);
+        }
+    }
+    return EC_IllegalCall;
+}
+
+E_Condition DVInterface::loadStoredPrint(const char *filename)
+{
+    E_Condition status = EC_IllegalCall;
+    DcmFileFormat *fileformat = NULL;
+    DVPSStoredPrint *print = new DVPSStoredPrint(getDefaultPrintIllumination(), getDefaultPrintReflection());
+    if (print==NULL) return EC_MemoryExhausted;
+    if ((status = DVPSHelper::loadFileFormat(filename, fileformat)) == EC_Normal)
+    {
+        if (fileformat)
+        {
+            DcmDataset *dataset = fileformat->getDataset();
+            if (dataset)
+            {
+                if (EC_Normal == (status = print->read(*dataset)))
+                {
+                    delete pPrint;
+                    delete pDicomPrint;
+                    pPrint = print;
+                    pDicomPrint = fileformat;
+                    clearFilmSessionSettings();
+                }
+            } else status = EC_CorruptedData;
+        } else status = EC_IllegalCall;
+    }
+    if (status != EC_Normal)
+    {
+        delete print;
+        delete fileformat;
+    }
+    return status;
+}
 
 E_Condition DVInterface::saveStoredPrint(
   const char *filename,
@@ -2086,7 +2354,8 @@ E_Condition DVInterface::saveStoredPrint(
     E_Condition status = EC_Normal;
     DcmFileFormat *fileformat = new DcmFileFormat();
     DcmDataset *dataset = NULL;
-    if (fileformat) dataset=fileformat->getDataset();
+    if (fileformat)
+        dataset = fileformat->getDataset();
     
     char newuid[70];
     OFString aString;
@@ -2148,7 +2417,11 @@ E_Condition DVInterface::saveStoredPrint(
       if (EC_Normal == status) status = DVPSHelper::saveFileFormat(filename, fileformat, explicitVR);
     } else status = EC_MemoryExhausted;
 
-    delete fileformat;
+    if (status == EC_Normal)
+    {
+      delete pDicomPrint;
+      pDicomPrint = fileformat;
+    }
     return status;
 }
 
@@ -2187,6 +2460,116 @@ E_Condition DVInterface::saveStoredPrint(OFBool writeRequestedImageSize)
   DB_destroyHandle(&handle);
   COND_PopCondition(OFTrue); // clear condition stack
   return result;
+}
+
+size_t DVInterface::getNumberOfPrintPreviews()
+{
+  if (pPrint != NULL)
+    return pPrint->getNumberOfImages();
+  return 0;
+}
+
+E_Condition DVInterface::loadPrintPreview(size_t idx)
+{
+  E_Condition status = EC_IllegalCall;
+  if ((pPrint != NULL) && (maximumPrintPreviewWidth > 0) && (maximumPrintPreviewHeight > 0))
+  {
+    const char *studyUID;
+    const char *seriesUID;
+    const char *instanceUID;
+    if ((status = pPrint->getImageReference(idx, studyUID, seriesUID, instanceUID)) == EC_Normal)
+    {
+      status = EC_IllegalCall;
+      const char *filename = getFilename(studyUID, seriesUID, instanceUID);
+      if (filename)
+      {
+        DicomImage *image = new DicomImage(filename, CIF_UsePresentationState /* ignore all grayscale transforms */);
+        if (image != NULL)
+        {
+          if (image->getStatus() == EIS_Normal)
+          {
+
+            /* still need to set presentation LUT etc. */
+  
+            unsigned long width = maximumPrintPreviewWidth;
+            unsigned long height = maximumPrintPreviewHeight;
+            
+            /* consider aspect ratio of the display ?? */
+            
+            if ((double)image->getWidth() / (double)width < (double)image->getHeight() / (double)height)
+              width = 0;
+            else
+              height = 0;
+            pHardcopyImage = image->createScaledImage(width, height, 1 /*interpolate*/, 1 /*aspect ratio*/);
+            if (pHardcopyImage != NULL)
+            {
+              if (pHardcopyImage->getStatus() == EIS_Normal)
+              {
+                status = EC_Normal;
+              } else {
+                unloadPrintPreview();
+              }
+            }          
+          }
+          delete image;
+        }
+      }
+    }
+  }
+  return status;
+}
+
+void DVInterface::unloadPrintPreview()
+{
+  delete pHardcopyImage;
+  pHardcopyImage = NULL;
+}
+
+unsigned long DVInterface::getPrintPreviewSize()
+{
+  unsigned long result = 0;
+  unsigned long width;
+  unsigned long height;
+  if (getPrintPreviewWidthHeight(width, height) == EC_Normal)
+    result = width * height;
+  return result;
+}
+    
+void DVInterface::setMaxPrintPreviewWidthHeight(unsigned long width, unsigned long height)
+{
+  if ((width != maximumPrintPreviewWidth) || (height != maximumPrintPreviewHeight))
+  {
+    unloadPrintPreview();
+    maximumPrintPreviewWidth = width;
+    maximumPrintPreviewHeight = height;
+  }
+}
+   
+E_Condition DVInterface::getPrintPreviewWidthHeight(unsigned long &width, unsigned long &height)
+{
+  E_Condition result = EC_IllegalCall;
+  if (pHardcopyImage != NULL)
+  {
+    width = pHardcopyImage->getWidth();
+    height = pHardcopyImage->getHeight();
+    if ((width > 0) && (height > 0))
+      result = EC_Normal;
+  } else {
+    width = 0;
+    height = 0;
+  }
+  return result;
+}
+
+E_Condition DVInterface::getPrintPreviewBitmap(void *bitmap, unsigned long size)
+{
+  E_Condition status = EC_IllegalCall;
+  if ((pHardcopyImage != NULL) && (bitmap != NULL) && (size > 0))
+  {
+    if (pHardcopyImage->getOutputData(bitmap, size, 8 /*bits*/))
+      status = EC_Normal;
+  }
+  return status;
 }
 
 E_Condition DVInterface::setCurrentPrinter(const char *targetID)
@@ -2270,30 +2653,6 @@ unsigned long DVInterface::getPrinterNumberOfCopies()
   return printerNumberOfCopies;
 }
 
-E_Condition DVInterface::setPrintIllumination(Uint16 value)
-{
-  if (pPrint) return pPrint->setPrintIllumination(value);
-  else return EC_IllegalCall;
-}
-
-Uint16 DVInterface::getPrintIllumination()
-{
-  if (pPrint) return pPrint->getPrintIllumination();
-  else return 0;
-}
-
-E_Condition DVInterface::setPrintReflectedAmbientLight(Uint16 value)
-{
-  if (pPrint) return pPrint->setPrintReflectedAmbientLight(value);
-  else return EC_IllegalCall;
-}
-
-Uint16 DVInterface::getPrintReflectedAmbientLight()
-{
-  if (pPrint) return pPrint->getPrintReflectedAmbientLight();
-  else return 0;
-}
-
 E_Condition DVInterface::selectDisplayPresentationLUT(const char *lutID)
 {
   E_Condition result = EC_IllegalCall;
@@ -2305,16 +2664,16 @@ E_Condition DVInterface::selectDisplayPresentationLUT(const char *lutID)
        OFString filename = getLUTFolder(); // never NULL.
        filename += PATH_SEPARATOR;
        filename += lutfile;
-       DcmFileFormat *ff = NULL;
-       result = DVPSHelper::loadFileFormat(filename.c_str(), ff);
-       if ((EC_Normal == result) && ff)
+       DcmFileFormat *fileformat = NULL;
+       result = DVPSHelper::loadFileFormat(filename.c_str(), fileformat);
+       if ((EC_Normal == result) && fileformat)
        {
-         DcmDataset *dataset = ff->getDataset();
+         DcmDataset *dataset = fileformat->getDataset();
          if (dataset) result = pState->setPresentationLookupTable(*dataset);
          else result = EC_IllegalCall;
          if (EC_Normal == result) displayCurrentLUTID = lutID; else displayCurrentLUTID.clear();
        }
-       if (ff) delete ff;
+       delete fileformat;
      }
   }
   return result;
@@ -2323,6 +2682,24 @@ E_Condition DVInterface::selectDisplayPresentationLUT(const char *lutID)
 const char *DVInterface::getDisplayPresentationLUTID()
 {
   return displayCurrentLUTID.c_str();
+}
+
+E_Condition DVInterface::setPrintPresentationLUTShape(DVPSPresentationLUTType shape)
+{
+  return EC_IllegalCall;
+}
+   
+E_Condition DVInterface::setPrintPresentationLookupTable(
+      DcmUnsignedShort& lutDescriptor,
+      DcmUnsignedShort& lutData,
+      DcmLongString& lutExplanation)
+{
+  return EC_IllegalCall;
+}
+  
+E_Condition DVInterface::setPrintPresentationLookupTable(DcmItem &dset)
+{
+  return EC_IllegalCall;
 }
 
 E_Condition DVInterface::spoolPrintJob(OFBool deletePrintedImages)
@@ -2470,6 +2847,22 @@ E_Condition DVInterface::terminatePrintSpooler()
     }
   }
   return EC_Normal;
+}
+
+E_Condition DVInterface::startPrintServer()
+{
+
+  // to be implemented ...
+
+  return EC_IllegalCall;
+}
+
+E_Condition DVInterface::terminatePrintServer()
+{
+
+  // to be implemented ...
+
+  return EC_IllegalCall;
 }
 
 E_Condition DVInterface::addToPrintHardcopyFromDB(const char *studyUID, const char *seriesUID, const char *instanceUID)
@@ -2622,6 +3015,21 @@ void DVInterface::setLog(ostream *o)
   if (pPrint) pPrint->setLog(o);
 }
 
+void DVInterface::setLogFilter(DVPSLogMessageLevel level)
+{
+    
+  // to be implemented ...
+    
+}
+
+E_Condition DVInterface::writeLogMessage(DVPSLogMessageLevel level, const char *module, const char *message)
+{
+    
+  // to be implemented ...
+    
+  return EC_IllegalCall;
+}
+
 void DVInterface::setAnnotationText(const char *value)
 {
   if (value) annotationText=value; else annotationText.clear();
@@ -2689,11 +3097,32 @@ E_Condition DVInterface::dumpIOD(const char *studyUID, const char *seriesUID, co
   return result;
 }
 
+E_Condition DVInterface::checkIOD(const char *filename)
+{
+  return EC_IllegalCall;
+}
+
+E_Condition DVInterface::checkIOD(const char *studyUID, const char *seriesUID, const char *instanceUID)
+{
+  return EC_IllegalCall;
+}
+
 
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.85  2000-03-08 16:29:00  meichel
+ *  Revision 1.86  2000-05-30 13:56:23  joergr
+ *  Renamed GrayscaleHardcopy to HardcopyGrayscale (which is the correct term
+ *  according to the DICOM standard).
+ *  Added support for multi-frame images and multiple references from a single
+ *  presentation to a number of images.
+ *  Removed methods which were already marked as "retired".
+ *  Added support for the folowwing new features:
+ *    - start/terminate query/retrieve server
+ *    - load stored print objects
+ *    - create print preview from hardcopy grayscale images
+ *
+ *  Revision 1.85  2000/03/08 16:29:00  meichel
  *  Updated copyright header.
  *
  *  Revision 1.84  2000/02/29 12:16:19  meichel
