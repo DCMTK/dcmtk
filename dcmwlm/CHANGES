@@ -1,6 +1,32 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2002.04.18 (wilkens)
+
+- Performed split between db-variant and pki-variant.
+  Added:   dcmwlm/apps/wldspf.cc
+           dcmwlm/apps/wldspf.h
+           dcmwlm/apps/wlpfim.cc
+           dcmwlm/apps/wlpfim.h
+           dcmwlm/apps/wlmscpki.cc
+  Affects: dcmwlm/libsrc/wldbim.cc  (changed and moved to apps folder)
+           dcmwlm/libsrc/wldsdb.cc  (changed and moved to apps folder)
+           dcmwlm/libsrc/wldsfs.cc  (changed and moved to apps folder)
+           dcmwlm/include/wldbim.h  (changed and moved to apps folder)
+           dcmwlm/include/wldsdb.h  (changed and moved to apps folder)
+           dcmwlm/include/wldsfs.h  (changed and moved to apps folder)
+
+**** Changes from 2002.04.18 (wilkens)
+
+- Corrected recognition of non-standard characters, added new supported return
+  key attributes, updated checking the search mask.
+  Affects: dcmwlm/libsrc/wldbim.cc
+           dcmwlm/libsrc/wldsdb.cc
+           dcmwlm/libsrc/wldsfs.cc
+           dcmwlm/include/wldbim.h
+           dcmwlm/include/wldsdb.h
+           dcmwlm/include/wldsfs.h
+
 **** Changes from 2002.04.16 (riesmeier)
 
 - Added missing target "install-support" to make files.
