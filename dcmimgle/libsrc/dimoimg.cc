@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-06-26 16:13:04 $
+ *  Update Date:      $Date: 2002-08-02 15:05:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.48 $
+ *  CVS/RCS Revision: $Revision: 1.49 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1887,6 +1887,106 @@ int DiMonoImage::createLinODPresentationLut(const unsigned long count, const int
 
 /*********************************************************************/
 
+void DiMonoImage::updateImagePixelModuleAttributes(DcmItem &dataset)
+{
+    DiImage::updateImagePixelModuleAttributes(dataset);
+    /* replace any modality transformation in the dataset */
+    if (dataset.tagExists(DCM_RescaleIntercept) ||
+        dataset.tagExists(DCM_RescaleSlope) ||
+        dataset.tagExists(DCM_ModalityLUTSequence))
+    {
+        dataset.putAndInsertString(DCM_RescaleIntercept, "0");
+        dataset.putAndInsertString(DCM_RescaleSlope, "1");
+        delete dataset.remove(DCM_ModalityLUTSequence);
+    }
+    /* remove overlays */
+    for (Uint16 grp = 0x6000; grp < 0x601f; grp += 2)
+    {
+        /* attributes from Overlay Plane Module in group 0x6000-0x601f */
+        delete dataset.remove(DcmTagKey(grp, DCM_OverlayGroupLength.getElement()));
+        delete dataset.remove(DcmTagKey(grp, DCM_OverlayRows.getElement()));
+        delete dataset.remove(DcmTagKey(grp, DCM_OverlayColumns.getElement()));
+        delete dataset.remove(DcmTagKey(grp, DCM_OverlayPlanes.getElement()));
+        delete dataset.remove(DcmTagKey(grp, DCM_NumberOfFramesInOverlay.getElement()));
+        delete dataset.remove(DcmTagKey(grp, DCM_OverlayDescription.getElement()));
+        delete dataset.remove(DcmTagKey(grp, DCM_OverlayType.getElement()));
+        delete dataset.remove(DcmTagKey(grp, DCM_OverlaySubtype.getElement()));
+        delete dataset.remove(DcmTagKey(grp, DCM_OverlayOrigin.getElement()));
+        delete dataset.remove(DcmTagKey(grp, DCM_ImageFrameOrigin.getElement()));
+        delete dataset.remove(DcmTagKey(grp, DCM_OverlayPlaneOrigin.getElement()));
+        delete dataset.remove(DcmTagKey(grp, DCM_OverlayBitsAllocated.getElement()));
+        delete dataset.remove(DcmTagKey(grp, DCM_OverlayBitPosition.getElement()));
+        delete dataset.remove(DcmTagKey(grp, DCM_OverlayLabel.getElement()));
+        delete dataset.remove(DcmTagKey(grp, DCM_OverlayData.getElement()));
+    }
+}
+
+
+// --- write current image to DICOM dataset
+
+int DiMonoImage::writeImageToDataset(DcmItem &dataset)
+{
+    int result = 0;
+    if (InterData != NULL)
+    {
+        void *pixel = InterData->getData();
+        const unsigned long count = InterData->getCount();
+        if ((BitsPerSample > 0) && (pixel != NULL) && (count > 0))
+        {
+            /* set color model */
+            if (getInternalColorModel() == EPI_Monochrome1)
+                dataset.putAndInsertString(DCM_PhotometricInterpretation, "MONOCHROME1");
+            else
+                dataset.putAndInsertString(DCM_PhotometricInterpretation, "MONOCHROME2");
+            /* set image resolution */
+            dataset.putAndInsertUint16(DCM_Columns, Columns);
+            dataset.putAndInsertUint16(DCM_Rows, Rows);
+            dataset.putAndInsertSint32(DCM_NumberOfFrames, NumberOfFrames);
+            dataset.putAndInsertUint16(DCM_SamplesPerPixel, 1);
+            /* set pixel encoding and data */
+            switch (InterData->getRepresentation())
+            {
+                case EPR_Uint8:
+                    dataset.putAndInsertUint16(DCM_BitsAllocated, 8);
+                    dataset.putAndInsertUint16(DCM_PixelRepresentation, 0);
+                    dataset.putAndInsertUint8Array(DCM_PixelData, (Uint8 *)pixel, count);
+                    break;
+                case EPR_Sint8:
+                    dataset.putAndInsertUint16(DCM_BitsAllocated, 8);
+                    dataset.putAndInsertUint16(DCM_PixelRepresentation, 1);
+                    dataset.putAndInsertUint8Array(DCM_PixelData, (Uint8 *)pixel, count);
+                    break;
+                case EPR_Uint16:
+                    dataset.putAndInsertUint16(DCM_BitsAllocated, 16);
+                    dataset.putAndInsertUint16(DCM_PixelRepresentation, 0);
+                    dataset.putAndInsertUint16Array(DCM_PixelData, (Uint16 *)pixel, count);
+                    break;
+                case EPR_Sint16:
+                    dataset.putAndInsertUint16(DCM_BitsAllocated, 16);
+                    dataset.putAndInsertUint16(DCM_PixelRepresentation, 1);
+                    dataset.putAndInsertUint16Array(DCM_PixelData, (Uint16 *)pixel, count);
+                    break;
+                case EPR_Uint32:
+                    dataset.putAndInsertUint16(DCM_BitsAllocated, 32);
+                    dataset.putAndInsertUint16(DCM_PixelRepresentation, 0);
+                    dataset.putAndInsertUint16Array(DCM_PixelData, (Uint16 *)pixel, count);
+                    break;
+                case EPR_Sint32:
+                    dataset.putAndInsertUint16(DCM_BitsAllocated, 32);
+                    dataset.putAndInsertUint16(DCM_PixelRepresentation, 1);
+                    dataset.putAndInsertUint16Array(DCM_PixelData, (Uint16 *)pixel, count);
+                    break;
+            }
+            dataset.putAndInsertUint16(DCM_BitsStored, BitsPerSample);
+            dataset.putAndInsertUint16(DCM_HighBit, BitsPerSample - 1);
+            /* update other DICOM attributes */
+            updateImagePixelModuleAttributes(dataset);
+            result = 1;
+        }
+    }
+    return result;
+}
+
 
 /*
  *   write output data of 'frame' with depth of 'bits' to C++-output 'stream' (format is PGM - portable gray map)
@@ -1987,7 +2087,11 @@ int DiMonoImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.48  2002-06-26 16:13:04  joergr
+ * Revision 1.49  2002-08-02 15:05:25  joergr
+ * Added function to write the current image (not only a selected frame) to a
+ * DICOM dataset.
+ *
+ * Revision 1.48  2002/06/26 16:13:04  joergr
  * Enhanced handling of corrupted pixel data and/or length.
  * Added support for polarity flag to color images.
  * Added new methods to get the explanation string of stored VOI windows and

@@ -22,9 +22,9 @@
  *  Purpose: DicomColorImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-06-26 16:28:53 $
+ *  Update Date:      $Date: 2002-08-02 15:07:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dicoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,6 +34,7 @@
 
 #include "osconfig.h"
 #include "dctypes.h"
+#include "dcdeftag.h"
 
 #include "dicoimg.h"
 #include "dimo2img.h"
@@ -496,6 +497,89 @@ unsigned long DiColorImage::createAWTBitmap(void *&data,
 }
 
 
+void DiColorImage::updateImagePixelModuleAttributes(DcmItem &dataset)
+{
+    DiImage::updateImagePixelModuleAttributes(dataset);
+    /* remove color palette LUTs (if any) */
+    delete dataset.remove(DCM_RedPaletteColorLookupTableDescriptor);
+    delete dataset.remove(DCM_GreenPaletteColorLookupTableDescriptor);
+    delete dataset.remove(DCM_BluePaletteColorLookupTableDescriptor);
+    delete dataset.remove(DCM_RedPaletteColorLookupTableData);
+    delete dataset.remove(DCM_GreenPaletteColorLookupTableData);
+    delete dataset.remove(DCM_BluePaletteColorLookupTableData);
+    delete dataset.remove(DCM_SegmentedRedPaletteColorLookupTableData);
+    delete dataset.remove(DCM_SegmentedGreenPaletteColorLookupTableData);
+    delete dataset.remove(DCM_SegmentedBluePaletteColorLookupTableData);
+}
+
+
+// --- write current image to DICOM dataset
+
+int DiColorImage::writeImageToDataset(DcmItem &dataset)
+{
+    int result = 0;
+    if (InterData != NULL)
+    {
+        void *pixel = InterData->getData();
+        const unsigned long count = InterData->getCount() * 3 /*planes*/;
+        if ((BitsPerSample > 0) && (pixel != NULL) && (count > 0))
+        {
+            /* set color model */
+            if (getInternalColorModel() == EPI_YBR_Full)
+                dataset.putAndInsertString(DCM_PhotometricInterpretation, "YBR_FULL");
+            else
+                dataset.putAndInsertString(DCM_PhotometricInterpretation, "RGB");
+            /* set image resolution */
+            dataset.putAndInsertUint16(DCM_Columns, Columns);
+            dataset.putAndInsertUint16(DCM_Rows, Rows);
+            dataset.putAndInsertSint32(DCM_NumberOfFrames, NumberOfFrames);
+            dataset.putAndInsertUint16(DCM_SamplesPerPixel, 3);
+            dataset.putAndInsertUint16(DCM_PlanarConfiguration, 1);
+            /* set pixel encoding and data */
+            switch (InterData->getRepresentation())
+            {
+                case EPR_Uint8:
+                    dataset.putAndInsertUint16(DCM_BitsAllocated, 8);
+                    dataset.putAndInsertUint16(DCM_PixelRepresentation, 0);
+                    dataset.putAndInsertUint8Array(DCM_PixelData, (Uint8 *)pixel, count);
+                    break;
+                case EPR_Sint8:
+                    dataset.putAndInsertUint16(DCM_BitsAllocated, 8);
+                    dataset.putAndInsertUint16(DCM_PixelRepresentation, 1);
+                    dataset.putAndInsertUint8Array(DCM_PixelData, (Uint8 *)pixel, count);
+                    break;
+                case EPR_Uint16:
+                    dataset.putAndInsertUint16(DCM_BitsAllocated, 16);
+                    dataset.putAndInsertUint16(DCM_PixelRepresentation, 0);
+                    dataset.putAndInsertUint16Array(DCM_PixelData, (Uint16 *)pixel, count);
+                    break;
+                case EPR_Sint16:
+                    dataset.putAndInsertUint16(DCM_BitsAllocated, 16);
+                    dataset.putAndInsertUint16(DCM_PixelRepresentation, 1);
+                    dataset.putAndInsertUint16Array(DCM_PixelData, (Uint16 *)pixel, count);
+                    break;
+                case EPR_Uint32:
+                    dataset.putAndInsertUint16(DCM_BitsAllocated, 32);
+                    dataset.putAndInsertUint16(DCM_PixelRepresentation, 0);
+                    dataset.putAndInsertUint16Array(DCM_PixelData, (Uint16 *)pixel, count);
+                    break;
+                case EPR_Sint32:
+                    dataset.putAndInsertUint16(DCM_BitsAllocated, 32);
+                    dataset.putAndInsertUint16(DCM_PixelRepresentation, 1);
+                    dataset.putAndInsertUint16Array(DCM_PixelData, (Uint16 *)pixel, count);
+                    break;
+            }
+            dataset.putAndInsertUint16(DCM_BitsStored, BitsPerSample);
+            dataset.putAndInsertUint16(DCM_HighBit, BitsPerSample - 1);
+            /* update other DICOM attributes */
+            updateImagePixelModuleAttributes(dataset);
+            result = 1;
+        }
+    }
+    return result;
+}
+
+
 int DiColorImage::writePPM(ostream &stream,
                            const unsigned long frame,
                            const int bits)
@@ -574,7 +658,11 @@ int DiColorImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dicoimg.cc,v $
- * Revision 1.22  2002-06-26 16:28:53  joergr
+ * Revision 1.23  2002-08-02 15:07:21  joergr
+ * Added function to write the current image (not only a selected frame) to a
+ * DICOM dataset.
+ *
+ * Revision 1.22  2002/06/26 16:28:53  joergr
  * Enhanced handling of corrupted pixel data and/or length.
  * Added support for polarity flag to color images.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DicomColorImage (Header)
  *
  *  Last Update:         $Author: joergr $
- *  Update Date:         $Date: 2002-01-29 17:07:07 $
+ *  Update Date:         $Date: 2002-08-02 15:07:02 $
  *  Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicoimg.h,v $
- *  CVS/RCS Revision:    $Revision: 1.14 $
+ *  CVS/RCS Revision:    $Revision: 1.15 $
  *  Status:              $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -267,6 +267,14 @@ class DiColorImage
                                   const unsigned long frame,
                                   const int bits);
 
+    /** write current image and related attributes to DICOM dataset.
+     *
+     ** @param  dataset  reference to DICOM dataset where the image attributes are stored
+     *
+     ** @return true if successful, false otherwise
+     */
+    int writeImageToDataset(DcmItem &dataset);
+
     /** write pixel data to PPM file.
      *  pixel data is written in ASCII format.
      *
@@ -397,6 +405,12 @@ class DiColorImage
                   const int bits,
                   const int planar);
 
+    /** update Image Pixel Module attributes in the given dataset.
+     *  Removes color palette lookup tables.  Used in writeXXXToDataset() routines.
+     *
+     ** @param  dataset  reference to DICOM image dataset
+     */
+    virtual void updateImagePixelModuleAttributes(DcmItem &dataset);
 
     /// flag, indicating whether the intermediate representation uses the RGB color model
     const OFBool RGBColorModel;
@@ -424,7 +438,11 @@ class DiColorImage
  *
  * CVS/RCS Log:
  * $Log: dicoimg.h,v $
- * Revision 1.14  2002-01-29 17:07:07  joergr
+ * Revision 1.15  2002-08-02 15:07:02  joergr
+ * Added function to write the current image (not only a selected frame) to a
+ * DICOM dataset.
+ *
+ * Revision 1.14  2002/01/29 17:07:07  joergr
  * Added optional flag to the "Windows DIB" methods allowing to switch off the
  * scanline padding.
  *
