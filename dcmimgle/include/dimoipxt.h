@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeInputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-05-03 15:43:20 $
+ *  Update Date:      $Date: 1999-07-23 14:04:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoipxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,7 +54,7 @@ class DiMonoInputPixelTemplate
 
  public:
 
-    DiMonoInputPixelTemplate(const DiInputPixel *pixel,
+    DiMonoInputPixelTemplate(DiInputPixel *pixel,
                              DiMonoModality *modality)
       : DiMonoPixelTemplate<T3>(pixel, modality)
     {
@@ -70,7 +70,7 @@ class DiMonoInputPixelTemplate
                 rescale(pixel, Modality->getRescaleSlope(), Modality->getRescaleIntercept());
                 determineMinMax((T3)Modality->getMinValue(), (T3)Modality->getMaxValue());
             } else {
-                rescale(pixel);                     // copy pixel data
+                rescale(pixel);                     // "copy" or reference pixel data
                 determineMinMax((T3)pixel->getMinValue(), (T3)pixel->getMaxValue());
             }
         }
@@ -100,18 +100,7 @@ class DiMonoInputPixelTemplate
         return result;
     }
 
-    inline void applyOptimizationLUT(register const T1 *p,
-                                     const T3 *lut,
-                                     const T2 offset)
-    {
-        const T3 *lut0 = (const T3 *)(lut - offset);                          // points to 'zero' entry
-        register T3 *q = Data;
-        register unsigned long i;
-        for (i = 0; i < Count; i++)                                           // apply LUT
-            *(q++) = *(lut0 + (*(p++)));
-    }
-
-    void modlut(const DiInputPixel *input)
+    void modlut(DiInputPixel *input)
     {
         const T1 *pixel = (const T1 *)input->getData();
         if ((pixel != NULL) && (Modality != NULL))
@@ -119,7 +108,12 @@ class DiMonoInputPixelTemplate
             const DiLookupTable *mlut = Modality->getTableData();
             if (mlut != NULL)
             {
-                Data = new T3[Count];
+                if (sizeof(T1) == sizeof(T3))                  // do not copy pixel data, reference them!
+                {
+                    Data = (T3 *)input->getData();
+                    input->removeDataReference();              // avoid double deletion
+                } else
+                    Data = new T3[Count];
                 if (Data != NULL)
                 {
                     if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
@@ -172,23 +166,32 @@ class DiMonoInputPixelTemplate
         }
     }
 
-    void rescale(const DiInputPixel *input,
+
+    void rescale(DiInputPixel *input,
                  const double slope = 1.0,
                  const double intercept = 0.0)
     {
         const T1 *pixel = (const T1 *)input->getData();
         if (pixel != NULL)
         {
-            Data = new T3[Count];
+            if (sizeof(T1) == sizeof(T3))                  // do not copy pixel data, reference them!
+            {
+                Data = (T3 *)input->getData();
+                input->removeDataReference();              // avoid double deletion
+            } else
+                Data = new T3[Count];
             if (Data != NULL)
             {
                 register T3 *q = Data;
                 register unsigned long i;
                 if ((slope == 1.0) && (intercept == 0.0))
                 {
-                    register const T1 *p = pixel;
-                    for (i = 0; i < Count; i++)            // copy pixel data: can't use copyMem because T1 isn't always equal to T3
-                        *(q++) = (T3)*(p++);
+                    if (sizeof(T1) != sizeof(T3))
+                    {
+                        register const T1 *p = pixel;
+                        for (i = 0; i < Count; i++)        // copy pixel data: can't use copyMem because T1 isn't always equal to T3
+                            *(q++) = (T3)*(p++);
+                    }
                 } else {
                     if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
                         cerr << "INFO: using modality routine 'rescale()'" << endl;
@@ -250,7 +253,11 @@ class DiMonoInputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoipxt.h,v $
- * Revision 1.12  1999-05-03 15:43:20  joergr
+ * Revision 1.13  1999-07-23 14:04:35  joergr
+ * Optimized memory usage for converting input pixel data (reference instead
+ * of copying where possible).
+ *
+ * Revision 1.12  1999/05/03 15:43:20  joergr
  * Replaced method applyOptimizationLUT by its contents (method body) to avoid
  * warnings (and possible errors) on Sun CC 2.0.1 :-/
  *
