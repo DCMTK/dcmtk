@@ -21,16 +21,16 @@
  *
  *  Purpose: convert VeriLUM CCx_xx.dat files to DCMTK display files
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-06-20 12:07:57 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-07-18 12:22:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/apps/dconvlum.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
- 
+
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
@@ -54,9 +54,18 @@ END_EXTERN_C
 #include "ofstream.h"
 #include "ofconsol.h"
 #include "ofstd.h"
+#include "dcuid.h"    /* for dcmtk version name */
+
+
+#define OFFIS_CONSOLE_APPLICATION "dconvlum"
+
+static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
+  OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
+
 
 int main(int argc, char *argv[])
 {
+    /* check number of arguments */
     if ((argc >= 3) && (argc <= 4))
     {
 #ifdef HAVE_IOS_NOCREATE
@@ -81,7 +90,7 @@ int main(int argc, char *argv[])
                 {
                     double ambient = OFStandard::atof(argv[3]);
                     output << "# ambient light value" << endl << endl;
-                    output << "  amb   " << ambient << endl << endl;                    
+                    output << "  amb   " << ambient << endl << endl;
                 }
                 output << "# DDL   LumVal" << endl << endl;
                 double lum;
@@ -113,8 +122,14 @@ int main(int argc, char *argv[])
         } else
             CERR << "ERROR: can't open input file !" << endl;
     } else {
-        CERR << "ERROR: program needs exactly two filenames for input and output" << endl;
-        CERR << "       (and an optional floating point value for the ambient light) !" << endl;
+        /* print usage */
+        CERR << rcsid << endl << endl;
+        CERR << OFFIS_CONSOLE_APPLICATION << ": Convert VeriLUM \"CCx_xx.dat\" files to DCMTK display files" << endl;
+        CERR << "usage: " << OFFIS_CONSOLE_APPLICATION << " in-file out-file [ambient]" << endl << endl;
+        CERR << "parameters:" << endl;
+        CERR << "  in-file   VeriLUM characteristic curve file to be converted" << endl;
+        CERR << "  out-file  DCMTK display file to be written" << endl;
+        CERR << "  ambient   ambient light (cd/m^2, floating point value)" << endl;
     }
     return 1;                                                                       // an error has happened
 }
@@ -123,7 +138,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dconvlum.cc,v $
- * Revision 1.14  2002-06-20 12:07:57  meichel
+ * Revision 1.15  2002-07-18 12:22:37  joergr
+ * Adapted "usage" text to the dcmtk standard format.
+ *
+ * Revision 1.14  2002/06/20 12:07:57  meichel
  * Changed toolkit to use OFStandard::atof instead of atof, strtod or
  *   sscanf for all string to double conversions that are supposed to
  *   be locale independent
