@@ -475,6 +475,9 @@
 /* Define to 1 if you have the <stdarg.h> header file. */
 #undef HAVE_STDARG_H
 
+/* Define to 1 if you have the <stdbool.h> header file. */
+#undef HAVE_STDBOOL_H
+
 /* Define to 1 if you have the <stddef.h> header file. */
 #undef HAVE_STDDEF_H
 
@@ -609,6 +612,9 @@
 /* Define to 1 if you have the <utime.h> header file. */
 #undef HAVE_UTIME_H
 
+/* Define if variable-length arrays are supported in C */
+#undef HAVE_VLA
+
 /* Define to 1 if you have the `vprintf' function. */
 #undef HAVE_VPRINTF
 
@@ -721,6 +727,9 @@
 # undef __CHAR_UNSIGNED__
 #endif
 
+/* Define to `long long' if <sys/types.h> does not define. */
+#undef longlong
+
 /* Define to `int' if <sys/types.h> does not define. */
 #undef pid_t
 
@@ -729,5 +738,20 @@
 
 /* Define to `long' if <sys/types.h> does not define. */
 #undef ssize_t
+
+/* Define to `unsigned char' if <sys/types.h> does not define. */
+#undef uchar
+
+/* Define to `unsigned int' if <sys/types.h> does not define. */
+#undef uint
+
+/* Define to `unsigned long' if <sys/types.h> does not define. */
+#undef ulong
+
+/* Define to `unsigned long long' if <sys/types.h> does not define. */
+#undef ulonglong
+
+/* Define to `unsigned short' if <sys/types.h> does not define. */
+#undef ushort
 
 #endif /* CFUNIX_H */

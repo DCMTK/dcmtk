@@ -154,6 +154,22 @@ AC_MY_C_CHAR_UNSIGNED
 AC_MY_C_RIGHTSHIFT_UNSIGNED
 
 dnl -------------------------------------------------------
+dnl Check some typedefs versus definitions in <sys/types.h>,
+dnl needed for JasPer support
+dnl -------------------------------------------------------
+
+AC_CHECK_TYPE(uchar, unsigned char)
+AC_CHECK_TYPE(ushort, unsigned short)
+AC_CHECK_TYPE(uint, unsigned int)
+AC_CHECK_TYPE(ulong, unsigned long)
+AC_CHECK_TYPE(longlong, long long)
+AC_CHECK_TYPE(ulonglong, unsigned long long)
+CHECK_VLA
+
+dnl stdbool.h is only defined in ANSI C, not in C++
+AC_CHECK_HEADERS(stdbool.h)
+
+dnl -------------------------------------------------------
 dnl Checks for libc library functions.
 dnl -------------------------------------------------------
 

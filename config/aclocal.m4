@@ -6,7 +6,7 @@ dnl
 dnl Authors: Andreas Barth, Marco Eichelberg
 dnl
 dnl Last Update:  $Author: meichel $
-dnl Revision:     $Revision: 1.34 $
+dnl Revision:     $Revision: 1.35 $
 dnl Status:       $State: Exp $
 dnl
 
@@ -1425,9 +1425,31 @@ else
 fi
 ])
 
+
+dnl
+dnl CHECK_VLA checks if the C Compiler supports variable-length arrays
+dnl
+AC_DEFUN(CHECK_VLA,
+[AC_MSG_CHECKING([whether variable-length arrays are supported])
+AH_TEMPLATE([HAVE_VLA], [Define if variable-length arrays are supported in C])
+AC_LANG_SAVE
+AC_LANG_C
+AC_TRY_COMPILE([], [
+ int n; int foo[n];
+],
+[AC_MSG_RESULT(yes); AC_DEFINE(HAVE_VLA)],
+AC_MSG_RESULT(no))
+AC_LANG_RESTORE
+])
+
+
 dnl
 dnl $Log: aclocal.m4,v $
-dnl Revision 1.34  2004-08-04 14:50:45  meichel
+dnl Revision 1.35  2004-10-20 15:54:01  meichel
+dnl Added configure tests for <stdbool.h> and a number of C typedefs,
+dnl   needed for JasPer support.
+dnl
+dnl Revision 1.34  2004/08/04 14:50:45  meichel
 dnl Fixed configure test that checks if pthread_t is a pointer type to
 dnl   correctly work on compilers such as gcc 2.95 where assignment from
 dnl   int to void pointer does not cause a compiler error.

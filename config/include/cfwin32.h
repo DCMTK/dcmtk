@@ -18,6 +18,7 @@
 
 /* Compiling for windows */
 #define windows 1
+#define WIN32 1
 
 /* Define if you have the <windows.h> header file.  */
 #define HAVE_WINDOWS_H 1
@@ -494,6 +495,9 @@
 /* Define to 1 if you have the <stdarg.h> header file. */
 #define HAVE_STDARG_H 1
 
+/* Define to 1 if you have the <stdbool.h> header file. */
+/* #undef HAVE_STDBOOL_H */
+
 /* Define to 1 if you have the <stddef.h> header file. */
 #define HAVE_STDDEF_H 1
 
@@ -591,6 +595,9 @@
 
 /* Define to 1 if you have the <sys/utime.h> header file. */
 #define HAVE_SYS_UTIME_H 1
+
+/* Define if variable-length arrays are supported in C */
+/* #undef HAVE_VLA */
 
 /* Define to 1 if you have the <sys/utsname.h> header file. */
 /* #undef  HAVE_SYS_UTSNAME_H */
@@ -740,6 +747,9 @@
 /* #undef __CHAR_UNSIGNED__ */
 #endif
 
+/* Define to `long long' if <sys/types.h> does not define. */
+#define longlong long long
+
 /* Define to `int' if <sys/types.h> does not define. */
 /* #undef  pid_t */
 
@@ -749,6 +759,20 @@
 /* Define to `long' if <sys/types.h> does not define. */
 #define ssize_t long
 
+/* Define to `unsigned char' if <sys/types.h> does not define. */
+#define	uchar unsigned char
+
+/* Define to `unsigned int' if <sys/types.h> does not define. */
+#define uint unsigned int
+
+/* Define to `unsigned long' if <sys/types.h> does not define. */
+#define ulong unsigned long
+
+/* Define to `unsigned long long' if <sys/types.h> does not define. */
+#define ulonglong unsigned long long
+
+/* Define to `unsigned short' if <sys/types.h> does not define. */
+#define	ushort unsigned short
 
 /* Platform specific settings for Visual C++
  * By default, enable ANSI standard C++ includes on Visual C++ 6 and newer 
