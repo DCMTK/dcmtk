@@ -21,10 +21,10 @@
  *
  *  Purpose: Test if a file uses DICOM Part 10 format.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-04-27 12:23:24 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-04-27 17:50:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmftest.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -62,8 +62,9 @@ int main(int argc, char *argv[])
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "test if file uses dicom part 10 format", rcsid);
     OFCommandLine cmd;
 
-    /* evaluate command line */                           
-    app.parseCommandLine(cmd, argc, argv, "file ...", 1, -1, OFCommandLine::ExpandWildcards);
+    /* evaluate command line */
+    cmd.addParam("file", OFCmdParam::PM_MultiMandatory);
+    app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards);
 	
     int badCount = 0;
     int count = cmd.getParamCount();
@@ -107,7 +108,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmftest.cc,v $
-** Revision 1.8  1999-04-27 12:23:24  meichel
+** Revision 1.9  1999-04-27 17:50:50  joergr
+** Adapted console applications to new OFCommandLine and OFConsoleApplication
+** functionality.
+**
+** Revision 1.8  1999/04/27 12:23:24  meichel
 ** Prevented dcmdata applications from opening a file with empty filename,
 **   leads to application crash on Win32.
 **

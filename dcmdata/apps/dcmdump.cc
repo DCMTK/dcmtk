@@ -22,9 +22,9 @@
  *  Purpose: List the contents of a dicom file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-26 16:38:25 $
+ *  Update Date:      $Date: 1999-04-27 17:50:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmdump.cc,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -131,8 +131,11 @@ int main(int argc, char *argv[])
   OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "Dump DICOM file and data set", rcsid);
   OFCommandLine cmd;
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
+  cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
   
-  cmd.addGroup("general options:", LONGCOL, SHORTCOL+2);
+  cmd.addParam("dcmfile-in", "DICOM input filename to be dumped", OFCmdParam::PM_MultiMandatory);
+  
+  cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
     cmd.addOption("--help",                     "-h",        "print this help text and exit");
     cmd.addOption("--debug",                    "-d",        "debug mode, print debug information");
  
@@ -158,7 +161,8 @@ int main(int argc, char *argv[])
       cmd.addOption("--ignore-errors",          "+E",        "attempt to print even if file is damaged");
 
     cmd.addSubGroup("searching:");
-      cmd.addOption("--search",                 "+P",    1,  "[t]ag: \"xxxx,xxxx\" or a data dictionary name", "print the value of tag t\nthis option can be specified multiple times\n(default: the complete file is printed)");
+      cmd.addOption("--search",                 "+P",    1,  "[t]ag: \"xxxx,xxxx\" or a data dictionary name",
+                                                             "print the value of tag t\nthis option can be specified multiple times\n(default: the complete file is printed)");
 
       cmd.addOption("--search-all",             "+s",        "print all instances of searched tags (default)");
       cmd.addOption("--search-first",           "-s",        "only print first instance of searched tags");
@@ -168,9 +172,8 @@ int main(int argc, char *argv[])
 
     /* evaluate command line */                           
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
-    if (app.parseCommandLine(cmd, argc, argv, "dcmfile-in dcmfile-in...", 1, -1, OFCommandLine::ExpandWildcards))
+    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
     {
-      if (cmd.findOption("--help")) app.printUsage(OFFIS_CONSOLE_APPLICATION);
       if (cmd.findOption("--debug")) SetDebugLevel(5);
       
       cmd.beginOptionBlock();
@@ -381,7 +384,11 @@ static int dumpFile(ostream & out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
- * Revision 1.21  1999-04-26 16:38:25  joergr
+ * Revision 1.22  1999-04-27 17:50:50  joergr
+ * Adapted console applications to new OFCommandLine and OFConsoleApplication
+ * functionality.
+ *
+ * Revision 1.21  1999/04/26 16:38:25  joergr
  * Removed bug: empty parameters have always been interpreted as options.
  * Added support to check dependences between different options and report
  * error messages if necessary.

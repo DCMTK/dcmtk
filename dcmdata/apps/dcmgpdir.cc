@@ -23,10 +23,10 @@
  *  Make a General Purpose DICOMDIR according to the General Purpose 
  *  CD-R Image Interchange Profile (former Supplement 19).
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-04-27 12:23:26 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-04-27 17:50:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -193,46 +193,54 @@ int main(int argc, char *argv[])
   opt1 += fsid;
   opt1 += ")";
 
-  cmd.addGroup("general options:", LONGCOL, SHORTCOL+2);
+  cmd.setOptionColumns(LONGCOL, SHORTCOL);
+  cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
+  
+  cmd.addParam("dcmfile-in", "referenced DICOM file", OFCmdParam::PM_MultiMandatory);
+
+  cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
    cmd.addOption("--help",                      "-h",        "print this help text and exit");
    cmd.addOption("--verbose",                   "-v",        "verbose mode, print processing details");
    cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
  
   cmd.addGroup("input options:");
-    cmd.addSubGroup("dicomdir identifiers:", LONGCOL, SHORTCOL);
-      cmd.addOption("--output-file",            "+D",    1,  "[f]ilename: string", "generate specific DICOMDIR file\n(default: DICOMDIR in current directory)");
-      cmd.addOption("--fileset-id",             "+F",    1,   opt1.c_str(), "use specific file set ID");
-      cmd.addOption("--descriptor",             "+R",    1,  "[f]ilename: string", "add a file set descriptor file ID\n(e.g. README, default: no descriptor)");
-      cmd.addOption("--char-set",               "+C",    1,  "[c]har-set: string", "add a specific character set for descriptor\n(default: \"ISO_IR 100\" if descriptor present)");
-    cmd.addSubGroup("type 1 attributes:", LONGCOL, SHORTCOL);
+    cmd.addSubGroup("dicomdir identifiers:");
+      cmd.addOption("--output-file",            "+D",    1,  "[f]ilename: string",
+                                                             "generate specific DICOMDIR file\n(default: DICOMDIR in current directory)");
+      cmd.addOption("--fileset-id",             "+F",    1,   opt1.c_str(),
+                                                             "use specific file set ID");
+      cmd.addOption("--descriptor",             "+R",    1,  "[f]ilename: string",
+                                                             "add a file set descriptor file ID\n(e.g. README, default: no descriptor)");
+      cmd.addOption("--char-set",               "+C",    1,  "[c]har-set: string",
+                                                             "add a specific character set for descriptor\n(default: \"ISO_IR 100\" if descriptor present)");
+    cmd.addSubGroup("type 1 attributes:");
       cmd.addOption("--strict",                 "-I",        "exit with error if DICOMDIR type 1 attributes\nare missing in image file (default)");
       cmd.addOption("--invent",                 "+I",        "invent DICOMDIR type 1 attributes\nif missing in image file");
-    cmd.addSubGroup("reading:", LONGCOL, SHORTCOL);
+    cmd.addSubGroup("reading:");
       cmd.addOption("--keep-filenames",         "-m",        "expect filenames to be in DICOM format (default)");
       cmd.addOption("--map-filenames",          "+m",        "map to DICOM filenames (lowercase -> uppercase,\nand remove trailing period)");
       cmd.addOption("--no-recurse",             "-r",        "do not recurse within directories (default)");
       cmd.addOption("--recurse",                "+r",        "recurse within filesystem directories");
   cmd.addGroup("output options:");
-    cmd.addSubGroup("writing:", LONGCOL, SHORTCOL);
+    cmd.addSubGroup("writing:");
       cmd.addOption("--replace",                "-A",        "replace existing dicomdir (default)");
       cmd.addOption("--append",                 "+A",        "append to existing dicomdir");
       cmd.addOption("--discard",                "-w",        "do not write out dicomdir");
-    cmd.addSubGroup("post-1993 value representations:", LONGCOL, SHORTCOL);
+    cmd.addSubGroup("post-1993 value representations:");
       cmd.addOption("--enable-new-vr",          "+u",        "enable support for new VRs (UN/UT/VS) (default)");
       cmd.addOption("--disable-new-vr",         "-u",        "disable support for new VRs, convert to OB");
-    cmd.addSubGroup("group length encoding:", LONGCOL, SHORTCOL);
+    cmd.addSubGroup("group length encoding:");
       cmd.addOption("--group-length-remove",    "-g",        "write without group length elements (default)");
       cmd.addOption("--group-length-create",    "+g",        "write with group length elements");
-    cmd.addSubGroup("length encoding in sequences and items:", LONGCOL, SHORTCOL);
+    cmd.addSubGroup("length encoding in sequences and items:");
       cmd.addOption("--length-explicit",        "+e",        "write with explicit lengths (default)");
       cmd.addOption("--length-undefined",       "-e",        "write with undefined lengths");
 
     /* evaluate command line */                           
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
-    if (app.parseCommandLine(cmd, argc, argv, "referenced-dicom-file ...", 1, -1, OFCommandLine::ExpandWildcards))
+    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
     {
 
-      if (cmd.findOption("--help")) app.printUsage(OFFIS_CONSOLE_APPLICATION);
       if (cmd.findOption("--verbose")) verbosemode=OFTrue;
       if (cmd.findOption("--debug")) SetDebugLevel(5);
       if (cmd.findOption("--output-file")) app.checkValue(cmd.getValue(ofname));
@@ -2749,7 +2757,11 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 /*
 ** CVS/RCS Log:
 ** $Log: dcmgpdir.cc,v $
-** Revision 1.32  1999-04-27 12:23:26  meichel
+** Revision 1.33  1999-04-27 17:50:51  joergr
+** Adapted console applications to new OFCommandLine and OFConsoleApplication
+** functionality.
+**
+** Revision 1.32  1999/04/27 12:23:26  meichel
 ** Prevented dcmdata applications from opening a file with empty filename,
 **   leads to application crash on Win32.
 **

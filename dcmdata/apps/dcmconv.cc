@@ -21,10 +21,10 @@
  *
  *  Purpose: Convert dicom file encoding
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-04-27 12:23:22 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-04-27 17:50:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmconv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,14 +86,19 @@ int main(int argc, char *argv[])
 
   OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Convert DICOM file encoding", rcsid);
   OFCommandLine cmd;
+  cmd.setOptionColumns(LONGCOL, SHORTCOL);
+  cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
   
-  cmd.addGroup("general options:", LONGCOL, SHORTCOL+2);
+  cmd.addParam("dcmfile-in",  "DICOM input filename to be converted");
+  cmd.addParam("dcmfile-out", "DICOM output filename");
+  
+  cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
    cmd.addOption("--help",                      "-h",        "print this help text and exit");
    cmd.addOption("--verbose",                   "-v",        "verbose mode, print processing details");
    cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
  
   cmd.addGroup("input options:");
-    cmd.addSubGroup("input file format:", LONGCOL, SHORTCOL);
+    cmd.addSubGroup("input file format:");
       cmd.addOption("--read-file",              "+f",        "read file format or data set (default)");
       cmd.addOption("--read-dataset",           "-f",        "read data set without file meta information");
     cmd.addSubGroup("input transfer syntax (only with --read-dataset):", LONGCOL, SHORTCOL);
@@ -103,37 +108,37 @@ int main(int argc, char *argv[])
      cmd.addOption("--read-xfer-implicit",      "-ti",       "read with implicit VR little endian TS");
 
   cmd.addGroup("output options:");
-    cmd.addSubGroup("output file format:", LONGCOL, SHORTCOL);
+    cmd.addSubGroup("output file format:");
       cmd.addOption("--write-file",             "+F",        "write file format (default)");
       cmd.addOption("--write-dataset",          "-F",        "write data set without file meta information");
-    cmd.addSubGroup("output transfer syntax:", LONGCOL, SHORTCOL);
+    cmd.addSubGroup("output transfer syntax:");
       cmd.addOption("--write-xfer-same",        "+t=",       "write with same TS as input (default)");
       cmd.addOption("--write-xfer-little",      "+te",       "write with explicit VR little endian TS");
       cmd.addOption("--write-xfer-big",         "+tb",       "write with explicit VR big endian TS");
       cmd.addOption("--write-xfer-implicit",    "+ti",       "write with implicit VR little endian TS");
-    cmd.addSubGroup("post-1993 value representations:", LONGCOL, SHORTCOL);
+    cmd.addSubGroup("post-1993 value representations:");
       cmd.addOption("--enable-new-vr",          "+u",        "enable support for new VRs (UN/UT/VS) (default)");
       cmd.addOption("--disable-new-vr",         "-u",        "disable support for new VRs, convert to OB");
-    cmd.addSubGroup("group length encoding:", LONGCOL, SHORTCOL);
+    cmd.addSubGroup("group length encoding:");
       cmd.addOption("--group-length-recalc",    "+g=",       "recalculate group lengths if present (default)");
       cmd.addOption("--group-length-create",    "+g",        "always write with group length elements");
       cmd.addOption("--group-length-remove",    "-g",        "always write without group length elements");
-    cmd.addSubGroup("length encoding in sequences and items:", LONGCOL, SHORTCOL);
+    cmd.addSubGroup("length encoding in sequences and items:");
       cmd.addOption("--length-explicit",        "+e",        "write with explicit lengths (default)");
       cmd.addOption("--length-undefined",       "-e",        "write with undefined lengths");
-    cmd.addSubGroup("data set trailing padding (not with --write-dataset):", LONGCOL, SHORTCOL);
+    cmd.addSubGroup("data set trailing padding (not with --write-dataset):");
       cmd.addOption("--padding-retain",         "-p=",       "do not change padding\n(default if not --write-dataset)");
       cmd.addOption("--padding-off",            "-p",        "no padding (implicit if --write-dataset)");
-      cmd.addOption("--padding-create",         "+p",    2,  "[f]ile-pad [i]tem-pad: integer", "align file on multiple of f bytes\nand items on multiple of i bytes");
+      cmd.addOption("--padding-create",         "+p",    2,  "[f]ile-pad [i]tem-pad: integer",
+                                                             "align file on multiple of f bytes\nand items on multiple of i bytes");
 
     /* evaluate command line */                           
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
-    if (app.parseCommandLine(cmd, argc, argv, "dcmfile-in dcmfile-out", 2, 2, OFCommandLine::ExpandWildcards))
+    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
     {
       cmd.getParam(1, opt_ifname);
       cmd.getParam(2, opt_ofname);
 
-      if (cmd.findOption("--help")) app.printUsage(OFFIS_CONSOLE_APPLICATION);
       if (cmd.findOption("--verbose")) opt_verbose=OFTrue;
       if (cmd.findOption("--debug")) SetDebugLevel(5);
       
@@ -374,7 +379,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
-** Revision 1.20  1999-04-27 12:23:22  meichel
+** Revision 1.21  1999-04-27 17:50:49  joergr
+** Adapted console applications to new OFCommandLine and OFConsoleApplication
+** functionality.
+**
+** Revision 1.20  1999/04/27 12:23:22  meichel
 ** Prevented dcmdata applications from opening a file with empty filename,
 **   leads to application crash on Win32.
 **
