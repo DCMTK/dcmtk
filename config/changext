@@ -1,0 +1,41 @@
+#! /bin/sh
+#
+# This script changes the file name extension for all C++ files
+# from .cc to a different extension. This is useful for C++ compilers
+# which do note recognise ".cc" as a valid extension for C++ code.
+# For instance, the IBM xlC compiler on AIX 3.x requires ".C"
+# and Microsofts Visual C++ needs ".cpp" or ".cxx"
+#
+# The script must be called from the "dcmtk/" directory, e.g.
+#   cd dcmtk
+#   config/changext cpp
+#
+# The first command line argument (if given) overrides the
+#   new extension (default: C). 
+#   You must not specify the dot preceding the extension.
+#
+# The second command line argument (if given) overrides the
+#   old extension (default: cc). This is useful if you want
+#   to "rename back".
+#
+# Author: Marco Eichelberg, (C) 1997 Kuratorium OFFIS e.V.
+#
+ 
+newext=${1-C}
+oldext=${2-cc}
+
+echo "renaming C++ files from .$oldext to .$newext"
+for file in `find . -name "*.$oldext" -print`
+do
+  newfile=`echo $file | sed -e "s/\.$oldext/\.$newext/g"`
+  `mv $file $newfile`
+done
+
+echo "updating makefiles"
+for file in `find . -name "Makefile*" -print`
+do
+  `cat $file | sed -e "s/\.$oldext/\.$newext/g" >$file.new`
+  `mv $file.new $file`
+done
+
+echo "done."
