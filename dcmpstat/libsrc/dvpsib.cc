@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-01 16:15:08 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 1999-09-08 16:46:14 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -361,7 +361,7 @@ E_Condition DVPSImageBoxContent::write(DcmItem &dset, OFBool writeRequestedImage
     ditem = new DcmItem();
     if (ditem)
     {
-      dseq = new DcmSequenceOfItems(DCM_PresentationLUTSequence);
+      dseq = new DcmSequenceOfItems(DCM_ReferencedImageSequence);
       if (dseq)
       {
         delem = new DcmApplicationEntity(retrieveAETitle);
@@ -498,7 +498,10 @@ DVPSDecimateCropBehaviour DVPSImageBoxContent::getRequestedDecimateCropBehaviour
 
 /*
  *  $Log: dvpsib.cc,v $
- *  Revision 1.5  1999-09-01 16:15:08  meichel
+ *  Revision 1.6  1999-09-08 16:46:14  meichel
+ *  Fixed sequence tag used for writing image box references in Stored Print objects.
+ *
+ *  Revision 1.5  1999/09/01 16:15:08  meichel
  *  Added support for requested image size to print routines
  *
  *  Revision 1.4  1999/08/31 14:09:26  meichel
