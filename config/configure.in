@@ -83,6 +83,9 @@ AC_CHECK_HEADERS(sys/utsname.h)
 AC_CHECK_HEADERS(limits.h)
 AC_CHECK_HEADERS(sys/select.h)
 AC_CHECK_HEADERS(malloc.h)
+AC_CHECK_HEADERS(sys/ipc.h)
+AC_CHECK_HEADERS(sys/sem.h)
+AC_CHECK_HEADERS(sys/shm.h)
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_INLINE
@@ -110,7 +113,8 @@ AC_CHECK_FUNCS(malloc_debug)
 AC_CHECK_FUNCS(strerror strdup tempnam bzero index rindex access)
 AC_CHECK_FUNCS(uname cuserid getlogin)
 AC_CHECK_FUNCS(usleep)
-
+AC_CHECK_FUNCS(semctl semget semop)
+AC_CHECK_FUNCS(shmat shmdt shmctl shmget)
 dnl Checks for prototypes
 
 AC_CHECK_PROTOTYPE(bzero)
@@ -125,12 +129,14 @@ AC_CHECK_PROTOTYPE(socket, sys/types.h sys/socket.h)
 AC_CHECK_PROTOTYPE(connect, sys/types.h sys/socket.h)
 AC_CHECK_PROTOTYPE(setsockopt, sys/types.h sys/socket.h)
 AC_CHECK_PROTOTYPE(wait3, sys/wait.h sys/time.h sys/resource.h)
-
 if test $ac_cv_header_libc_h = yes ; then
 AC_CHECK_PROTOTYPE(mktemp, stdlib.h libc.h)
 else
 AC_CHECK_PROTOTYPE(mktemp, stdlib.h)
 fi
+
+AC_CHECK_DECLARATION(union semun, sys/types.h sys/ipc.h sys/sem.h)
+AC_CHECK_DECLARATION(struct sembuf, sys/types.h sys/ipc.h sys/sem.h)
 
 if test "$no_x" = "yes" ; then
 X_STD_LIBS=

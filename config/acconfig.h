@@ -25,6 +25,9 @@
 /* #define NO_ANON_CLASS_COMP 1 */ 
 
 /* Define if your system has a prototype for accept */
+#undef HAVE_PROTOTYPE_BZERO
+
+/* Define if your system has a prototype for accept */
 #undef HAVE_PROTOTYPE_ACCEPT
 
 /* Define if your system has a prototype for bind */
@@ -59,6 +62,12 @@
 
 /* Define if your system has a prototype for mktemp */
 #undef HAVE_PROTOTYPE_MKTEMP
+
+/* Define if your system has a prototype for union semun */
+#undef HAVE_DECLARATION_UNION_SEMUN
+
+/* Define if your system has a prototype for struct sembuf */
+#undef HAVE_DECLARATION_STRUCT_SEMBUF
 
 #endif
 
