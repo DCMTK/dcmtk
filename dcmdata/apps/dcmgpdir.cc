@@ -24,9 +24,9 @@
  *  CD-R Image Interchange Profile (former Supplement 19).
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-01 10:11:58 $
+ *  Update Date:      $Date: 2000-02-02 15:17:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -78,24 +78,24 @@ END_EXTERN_C
 
 BEGIN_EXTERN_C
 /* This #if code is suggested by the gnu autoconf documentation */
-#if HAVE_DIRENT_H
-# include <dirent.h>
-# define NAMLEN(dirent) strlen((dirent)->d_name)
+#ifdef HAVE_DIRENT_H
+#include <dirent.h>
+#define NAMLEN(dirent) strlen((dirent)->d_name)
 #else
-# define dirent direct
-# define NAMELEN(dirent) (dirent)->d_namlen
-# if HAVE_SYS_NDIR_H
-#  include <sys/ndir.h>
-# endif
-# if HAVE_SYS_DIR_H
-#  include <sys/dir.h>
-# endif
-# if HAVE_NDIR_H
-#  include <ndir.h>
-# endif
+#define dirent direct
+#define NAMELEN(dirent) (dirent)->d_namlen
+#ifdef HAVE_SYS_NDIR_H
+#include <sys/ndir.h>
 #endif
-#if HAVE_IO_H
-#  include <io.h>
+#ifdef HAVE_SYS_DIR_H
+#include <sys/dir.h>
+#endif
+#ifdef HAVE_NDIR_H
+#include <ndir.h>
+#endif
+#endif
+#ifdef HAVE_IO_H
+#include <io.h>
 #endif
 END_EXTERN_C
 
@@ -2608,7 +2608,7 @@ createDicomdirFromFiles(OFList<OFString>& fileNames)
  * On Windows, this should be handled by the OFCommandLine class.
  */
 
-#if HAVE__FINDFIRST
+#ifdef HAVE__FINDFIRST
 /*
 ** For Win32 and its evil associates.
 */
@@ -2768,7 +2768,10 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 /*
 ** CVS/RCS Log:
 ** $Log: dcmgpdir.cc,v $
-** Revision 1.36  2000-02-01 10:11:58  meichel
+** Revision 1.37  2000-02-02 15:17:13  meichel
+** Replaced some #if statements by more robust #ifdef
+**
+** Revision 1.36  2000/02/01 10:11:58  meichel
 ** Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
 **   workaround for bug in compiler header files.
 **

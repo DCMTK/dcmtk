@@ -24,9 +24,9 @@
  *    studyuid, selects a series and output seriesuid, selects an instance 
  *    and output instanceduid. Finally it delete a selected instance. 
  *
- *  Last Update:      $Author: vorwerk $
- *  Update Date:      $Date: 1999-01-28 15:34:42 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-02-02 15:18:09 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,7 +41,7 @@
 #include "osconfig.h"
 #include "dctk.h"
 
-#if defined windows
+#ifdef windows
 BEGIN_EXTERN_C
 #define access my_access	// Workaround to make Visual C++ Compiler happy!
 #include <io.h>
@@ -177,7 +177,10 @@ delete db;
 
 /*
  *  $Log: didb.cc,v $
- *  Revision 1.3  1999-01-28 15:34:42  vorwerk
+ *  Revision 1.4  2000-02-02 15:18:09  meichel
+ *  Replaced some #if statements by more robust #ifdef
+ *
+ *  Revision 1.3  1999/01/28 15:34:42  vorwerk
  *  reimplemented for configuration file.
  *
  *  Revision 1.2  1999/01/12 17:02:22  vorwerk

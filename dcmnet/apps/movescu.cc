@@ -22,9 +22,9 @@
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-01 10:24:02 $
+ *  Update Date:      $Date: 2000-02-02 15:17:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -531,7 +531,7 @@ main(int argc, char *argv[])
 	  DCM_DICT_ENVIRONMENT_VARIABLE);
   }
 
-#if HAVE_GETEUID
+#ifdef HAVE_GETEUID
     /* if retrieve port is privileged we must be as well */
     if (opt_retrievePort < 1024) {
         if (geteuid() != 0) {
@@ -1352,7 +1352,10 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.25  2000-02-01 10:24:02  meichel
+** Revision 1.26  2000-02-02 15:17:28  meichel
+** Replaced some #if statements by more robust #ifdef
+**
+** Revision 1.25  2000/02/01 10:24:02  meichel
 ** Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
 **   workaround for bug in compiler header files.
 **

@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-11-24 10:21:55 $
+ *  Update Date:      $Date: 2000-02-02 15:18:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsrcv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -719,7 +719,7 @@ int main(int argc, char *argv[])
         return 10;
     }
 
-#if HAVE_GETEUID
+#ifdef HAVE_GETEUID
     /* if port is privileged we must be as well */
     if ((networkPort < 1024)&&(geteuid() != 0))
     {
@@ -798,7 +798,7 @@ int main(int argc, char *argv[])
       cond = ASC_initializeNetwork(NET_ACCEPTOR, networkPort, 10, &net);
       if (errorCond(cond, "Error initialising network:")) return 1;
 
-#if HAVE_SETUID && HAVE_GETUID
+#if defined(HAVE_SETUID) && defined(HAVE_GETUID)
       /* return to normal uid so that we can't do too much damage in case
        * things go very wrong.   Only relevant if the program is setuid root,
        * and run by another user.  Running as root user may be
@@ -901,7 +901,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsrcv.cc,v $
- * Revision 1.11  1999-11-24 10:21:55  meichel
+ * Revision 1.12  2000-02-02 15:18:00  meichel
+ * Replaced some #if statements by more robust #ifdef
+ *
+ * Revision 1.11  1999/11/24 10:21:55  meichel
  * Fixed locking problem in dcmpssnd and dcmpsrcv on Win9x platforms.
  *
  * Revision 1.10  1999/09/06 13:29:48  meichel

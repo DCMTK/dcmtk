@@ -21,10 +21,10 @@
  *
  *  Purpose: Presentation State Viewer - Print Spooler
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-02-02 14:38:25 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-02-02 15:17:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/Attic/dcmprtsv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,26 +39,25 @@
 
 BEGIN_EXTERN_C
 /* This #if code is suggested by the gnu autoconf documentation */
-#if HAVE_DIRENT_H
-# include <dirent.h>
-# define NAMLEN(dirent) strlen((dirent)->d_name)
+#ifdef HAVE_DIRENT_H
+#include <dirent.h>
+#define NAMLEN(dirent) strlen((dirent)->d_name)
 #else
-# define dirent direct
-# define NAMELEN(dirent) (dirent)->d_namlen
-# if HAVE_SYS_NDIR_H
-#  include <sys/ndir.h>
-# endif
-# if HAVE_SYS_DIR_H
-#  include <sys/dir.h>
-# endif
-# if HAVE_NDIR_H
-#  include <ndir.h>
-# endif
+#define dirent direct
+#define NAMELEN(dirent) (dirent)->d_namlen
+#ifdef HAVE_SYS_NDIR_H
+#include <sys/ndir.h>
 #endif
-#if HAVE_IO_H
-#  include <io.h>
+#ifdef HAVE_SYS_DIR_H
+#include <sys/dir.h>
 #endif
-
+#ifdef HAVE_NDIR_H
+#include <ndir.h>
+#endif
+#endif
+#ifdef HAVE_IO_H
+#include <io.h>
+#endif
 #ifdef HAVE_FCNTL_H
 #include <fcntl.h>    /* for O_RDONLY */
 #endif
@@ -967,7 +966,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprtsv.cc,v $
- * Revision 1.13  2000-02-02 14:38:25  joergr
+ * Revision 1.14  2000-02-02 15:17:59  meichel
+ * Replaced some #if statements by more robust #ifdef
+ *
+ * Revision 1.13  2000/02/02 14:38:25  joergr
  * Removed space characters before preprocessor directives.
  *
  * Revision 1.12  1999/11/03 13:05:27  meichel
