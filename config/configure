@@ -8202,9 +8202,9 @@ fi
 TIFFLIBS=""
 echo $ac_n "checking whether to include libtiff support""... $ac_c" 1>&6
 echo "configure:8205: checking whether to include libtiff support" >&5
-# Check whether --with-openssl or --without-openssl was given.
-if test "${with_openssl+set}" = set; then
-  withval="$with_openssl"
+# Check whether --with-libtiff or --without-libtiff was given.
+if test "${with_libtiff+set}" = set; then
+  withval="$with_libtiff"
    case "$withval" in
   yes)
     echo "$ac_t""yes" 1>&6

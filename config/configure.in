@@ -505,7 +505,7 @@ dnl -------------------------------------------------------
 
 TIFFLIBS=""
 AC_MSG_CHECKING(whether to include libtiff support)
-AC_ARG_WITH(openssl,
+AC_ARG_WITH(libtiff,
 [  --with-libtiff          include libtiff support
   --without-libtiff       don't include libtiff support  (default)
   --with-libtiffinc=DIR   location of libtiff includes and libraries],
