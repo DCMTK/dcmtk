@@ -57,9 +57,9 @@
 **      Module Prefix: DIMSE_
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2002-08-27 17:00:51 $
+** Update Date:         $Date: 2002-09-10 15:57:44 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimse.cc,v $
-** CVS/RCS Revision:    $Revision: 1.32 $
+** CVS/RCS Revision:    $Revision: 1.33 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -128,7 +128,20 @@ END_EXTERN_C
 
 
 /*
- * Global variables (should be used very, very rarely).
+ * Global variables, mutex protected
+ */
+
+/*  global flag allowing to restrict the maximum size of outgoing
+ *  P-DATA PDUs to a value less than the maximum supported by the
+ *  remote application entity or this library.  May be useful
+ *  if there is an interaction between PDU size and other network
+ *  layers, e. g. TLS, IP or below.
+ */
+OFGlobal<Uint32> dcmMaxOutgoingPDUSize((Uint32) -1);
+
+/*
+ * Other global variables (should be used very, very rarely).
+ * Modification of this variables is THREAD UNSAFE.
  */
 
 static int debug = 0;
@@ -239,12 +252,6 @@ DIMSE_readNextPDV(T_ASC_Association * assoc,
      * NOTE: DUL currently ignores blocking and timeout so do it here! 
      */
 
-    /* if the blocking mode is DIMSE_NONBLOCKING and there is no data waiting after timeout seconds, report an error */
-    if (blocking == DIMSE_NONBLOCKING)
-    {
-        if (!ASC_dataWaiting(assoc, timeout)) return DIMSE_NODATAAVAILABLE;
-    }
-
     /* determine the DUL blocking option */
     blk = (blocking == DIMSE_BLOCKING) ? (DUL_BLOCK) : (DUL_NOBLOCK);
 
@@ -256,6 +263,12 @@ DIMSE_readNextPDV(T_ASC_Association * assoc,
         /* in case DUL_NextPDV(...) did not return DUL_NORMAL, the association */
         /* did not contain any more PDVs that are waiting to be picked up. Hence, */
         /* we need to read new PDVs from the incoming socket stream. */
+
+        /* if the blocking mode is DIMSE_NONBLOCKING and there is no data waiting after timeout seconds, report an error */
+        if (blocking == DIMSE_NONBLOCKING)
+        {
+            if (!ASC_dataWaiting(assoc, timeout)) return DIMSE_NODATAAVAILABLE;
+        }
 
         /* try to receive new PDVs on the incoming socket stream (in detail, try to receive one PDU) */
         cond = DUL_ReadPDVs(&assoc->DULassociation, NULL, blk, timeout);
@@ -669,6 +682,15 @@ sendDcmDataset(T_ASC_Association * assoc, DcmDataset * obj,
     /* to store data) this buffer can only take a certain number of elements */
     buf = assoc->sendPDVBuffer;
     bufLen = assoc->sendPDVLength;
+
+    /* we may wish to restrict output PDU size */
+    Uint32 maxpdulen = dcmMaxOutgoingPDUSize.get();
+
+    /* max PDV size is max PDU size minus 12 bytes PDU/PDV header */
+    if (bufLen + 12 > maxpdulen)
+    {
+      bufLen = maxpdulen - 12;
+    }
 
     /* on the basis of the association's buffer, create a buffer variable that we can write to */
     DcmOutputBufferStream outBuf(buf, bufLen);
@@ -1752,7 +1774,12 @@ void DIMSE_warning(T_ASC_Association *assoc,
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
-** Revision 1.32  2002-08-27 17:00:51  meichel
+** Revision 1.33  2002-09-10 15:57:44  meichel
+** Fixed bug causing dcmnet to timeout on an incoming message when
+**   a PDU containing both a command PDV and a dataset PDV was received
+**   and dcmnet was operating in nonblocking mode.
+**
+** Revision 1.32  2002/08/27 17:00:51  meichel
 ** Initial release of new DICOM I/O stream classes that add support for stream
 **   compression (deflated little endian explicit VR transfer syntax)
 **
