@@ -22,9 +22,9 @@
  *  Purpose: DicomMonoOutputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-28 14:51:44 $
+ *  Update Date:      $Date: 1999-04-28 18:56:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,13 +39,18 @@
 #include "dctypes.h"
 
 #include "dimoopx.h"
-#include "dimcopxt.h"
 #include "diluptab.h"
 #include "diovlay.h"
 #include "dipxrept.h"
 #include "diutils.h"
 #include "didispfn.h"
 #include "dibarlut.h"
+
+#ifdef PASTEL_COLOR_OUTPUT
+ #include "dimcopxt.h"
+#else
+ #include "dicoopx.h"
+#endif
 
 //BEGIN_EXTERN_C
  #include <math.h>
@@ -90,7 +95,8 @@ class DiMonoOutputPixelTemplate
         {
             if (pastel)
                 color(buffer, pixel, frame, frames);
-            else {
+            else
+            {
                 Data = (T3 *)buffer;
                 if ((vlut != NULL) && (vlut->isValid()))            // valid VOI LUT ?
                     voilut(pixel, frame * Count, vlut, plut, disp, (T3)low, (T3)high);
@@ -237,13 +243,16 @@ class DiMonoOutputPixelTemplate
                const unsigned long frame,
                const unsigned long frames)
     {
+#ifdef PASTEL_COLOR_OUTPUT
         ColorData = new DiMonoColorOutputPixelTemplate<T1, T3>(buffer, inter, frame, frames);
         if (ColorData != NULL)
         {
-cout << "COLOR" << endl;                
+            cout << "COLOR" << endl;                
         }
+#else
+        cerr << "WARNING: pastel color output not supported !" << endl;
+#endif
     }
-
 
     void voilut(const DiMonoPixel *inter,                  // apply VOI LUT
                 const Uint32 start,
@@ -947,7 +956,11 @@ cout << "COLOR" << endl;
     T3 *Data;
     int DeleteData;
     
-    DiMonoColorOutputPixelTemplate<T1,T3> *ColorData;
+#ifdef PASTEL_COLOR_OUTPUT
+    DiMonoColorOutputPixelTemplate<T1, T3> *ColorData;
+#else
+    DiColorOutputPixel *ColorData;
+#endif
 
  // --- declarations to avoid compiler warnings
  
@@ -963,7 +976,10 @@ cout << "COLOR" << endl;
  *
  * CVS/RCS Log:
  * $Log: dimoopxt.h,v $
- * Revision 1.13  1999-04-28 14:51:44  joergr
+ * Revision 1.14  1999-04-28 18:56:07  joergr
+ * Removed support for pastel color output from public DCMTK part.
+ *
+ * Revision 1.13  1999/04/28 14:51:44  joergr
  * Added experimental support to create grayscale images with more than 256
  * shades of gray to be displayed on a consumer monitor (use pastel colors).
  * Introduced new scheme for the debug level variable: now each level can be
