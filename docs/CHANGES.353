@@ -1,0 +1,5482 @@
+
+Release 3.5.3 (Public Release - 2004-05-27)
+
+- Updated version name and implementation name to reflect release 3.5.3.
+  Affects: dcmdata/include/dcuid.h
+
+- Updated announcement file
+  Affects: ANNOUNCE.353
+
+**** Changes from 2004.05.27 (riesmeier)
+
+- Updated man pages.
+  Affects: doxygen/manpages/man1/dbregimg.1
+           doxygen/manpages/man1/dcm2pnm.1
+           doxygen/manpages/man1/dcm2xml.1
+           doxygen/manpages/man1/dcmcjpeg.1
+           doxygen/manpages/man1/dcmconv.1
+           doxygen/manpages/man1/dcmcrle.1
+           doxygen/manpages/man1/dcmdjpeg.1
+           doxygen/manpages/man1/dcmdrle.1
+           doxygen/manpages/man1/dcmdspfn.1
+           doxygen/manpages/man1/dcmdump.1
+           doxygen/manpages/man1/dcmftest.1
+           doxygen/manpages/man1/dcmgpdir.1
+           doxygen/manpages/man1/dcmj2pnm.1
+           doxygen/manpages/man1/dcmmkcrv.1
+           doxygen/manpages/man1/dcmmkdir.1
+           doxygen/manpages/man1/dcmmklut.1
+           doxygen/manpages/man1/dcmodify.1
+           doxygen/manpages/man1/dcmp2pgm.1
+           doxygen/manpages/man1/dcmprscp.1
+           doxygen/manpages/man1/dcmprscu.1
+           doxygen/manpages/man1/dcmpschk.1
+           doxygen/manpages/man1/dcmpsmk.1
+           doxygen/manpages/man1/dcmpsprt.1
+           doxygen/manpages/man1/dcmpsrcv.1
+           doxygen/manpages/man1/dcmpssnd.1
+           doxygen/manpages/man1/dcmquant.1
+           doxygen/manpages/man1/dcmscale.1
+           doxygen/manpages/man1/dcmsign.1
+           doxygen/manpages/man1/dcod2lum.1
+           doxygen/manpages/man1/dconvlum.1
+           doxygen/manpages/man1/dsr2html.1           
+           doxygen/manpages/man1/dsr2xml.1
+           doxygen/manpages/man1/dsrdump.1
+           doxygen/manpages/man1/dump2dcm.1
+           doxygen/manpages/man1/echoscu.1
+           doxygen/manpages/man1/findscu.1
+           doxygen/manpages/man1/imagectn.1
+           doxygen/manpages/man1/movescu.1
+           doxygen/manpages/man1/storescp.1
+           doxygen/manpages/man1/storescu.1
+           doxygen/manpages/man1/ti.1
+           doxygen/manpages/man1/wlmscpfs.1
+           doxygen/manpages/man1/xml2dcm.1
+           doxygen/manpages/man1/xml2dsr.1
+
+- Link additional libraries to avoid problems with shared object compilation.
+  Affects: dcmpstat/apps/Makefile.in
+           dcmpstat/tests/Makefile.in
+           dcmwlm/tests/Makefile.in
+           imagectn/apps/Makefile.in
+
+**** Changes from 2004.05.26 (riesmeier)
+
+- Added preliminary announcement file.
+  Added:   ANNOUNCE.353
+
+- Fixed typo in URL.
+  Affects: INSTALL
+
+**** Changes from 2004.05.26 (eichelberg)
+
+- Completed isinf() workaround for MacOS X
+  Affects: ofstd/libsrc/ofstd.cc
+
+- Updated notes on TCP wrappers and libtiff.
+  Affects: INSTALL
+
+- Fixed minor bug in worklist server regarding failed read locks.
+  Thanks to Pere Rodriguez Rodriguez <prr@hosppal.es> for the bug report and fix.
+  Affects: dcmwlm/include/wldsfs.h
+           dcmwlm/libsrc/wldsfs.cc
+
+**** Changes from 2004.05.25 (riesmeier)
+
+- Minor changes (e.g. updated platform notes).
+  Affects: INSTALL
+
+**** Changes from 2004.05.19 (riesmeier)
+
+- Updated list of supported systems.
+  Affects: INSTALL
+
+**** Changes from 2004.05.17 (wilkens)
+
+- Fixed problem reported by valgrind: passing uninitialized variable sockarg.
+  Affects: dcmnet/libsrc/dul.cc
+
+**** Changes from 2004.05.14 (onken)
+
+- Additional documentation added.
+  Affects: dcmdata/apps/mdfdsman.cc
+           dcmdata/apps/mdfdsman.h
+
+- Added documentation concerning metaheader.
+  Affects: dcmdata/docs/dcmodify.man
+
+**** Changes from 2004.05.14 (riesmeier)
+
+- Fixed bug in "install-bin" target. Added new "install-all" target.
+  Affects: Makefile
+           config/rootconf
+
+- Added missing "install-etc" target.
+  Affects: config/Makefile.in
+
+- Added another step to CMake instructions and other minor corrections.
+  Affects: INSTALL
+
+- Minor corrections.
+  Affects: dcmdata/docs/dcmodify.man
+
+**** Changes from 2004.05.12 (riesmeier)
+
+- Updated FAQ file to reflect the changes in the installation instructions.
+  Updated FAQ entry "Where is rest of the documentation?".
+  Affects: FAQ
+
+**** Changes from 2004.05.11 (riesmeier)
+
+- Fixed typo.
+  Affects: dcmdata/docs/dcmdump.man
+
+- Updated installation instructions (not yet completed).
+  Affects: INSTALL
+
+**** Changes from 2004.05.10 (riesmeier)
+
+- Renamed test.cfg to dcmpstat.cfg.
+  Added:   dcmpstat/etc/dcmpstat.cfg
+  Removed: dcmpstat/etc/test.cfg
+  Affects: dcmpstat/docs/dcmp2pgm.man
+           dcmpstat/docs/dcmprscp.man
+           dcmpstat/docs/dcmprscu.man
+           dcmpstat/docs/dcmpsprt.man
+           dcmpstat/docs/dcmpsrcv.man
+           dcmpstat/docs/dcmpssnd.man
+           dcmpstat/etc/Makefile.in
+
+- Fixed bug that prevented the proper rotation of color images.
+  Thanks to Maryam Zibaeifard <m_zibaeifard@yahoo.com> for the bug report.
+  Affects: dcmimage/libsrc/dicoimg.cc
+
+- Removed unused template instantiations (flipping class for signed images).
+  Affects: dcmimage/libsrc/dicoimg.cc
+
+- Added missing project file for MSVC (created by CMake 1.8.3).
+  Added:   ALL_BUILD_force_1.rule
+
+- Updated Makefile.
+  Affects: Makefile
+
+- Replaced $(DISTTRASH) by $(TRASH) in distclean target to avoid removal of
+  top-level Makefile.
+  Affects: Makefile
+           config/rootconf
+
+**** Changes from 2004.05.07 (riesmeier)
+
+- Removed redundant header file include statement.
+  Affects: dcmpstat/tests/Makefile.in
+
+**** Changes from 2004.05.07 (eichelberg)
+
+- Added explicit typecast to volatile variables, needed for MSVC
+  Affects: dcmjpeg/libsrc/djdijg12.cc
+           dcmjpeg/libsrc/djdijg16.cc
+           dcmjpeg/libsrc/djdijg8.cc
+
+- Removed unneeded semicolon, reported by gcc 3.4
+  Affects: ofstd/include/ofstdinc.h
+           ofstd/include/ofstream.h
+
+- Updated configure script to work on platforms where <tcpd.h>
+  requires inclusion of <stdio.h>
+  Affects: config/configure.in
+           config/configure
+
+- Added workaround for MacOS X where isinf() and isnan() are defined in <math.h>
+  but not in <cmath>.
+  Affects: ofstd/libsrc/ofstd.cc
+
+**** Changes from 2004.05.06 (riesmeier)
+
+- Do not remove toplevel configure and Makefile with "make distclean".
+  Affects: config/rootconf
+
+- Added typecasts to keep Sun CC 2.0.1 quiet.
+  Affects: dcmdata/apps/dcmgpdir.cc
+           dcmnet/libsrc/dccfenmp.cc
+           dcmnet/libsrc/dccfpcmp.cc
+           dcmnet/libsrc/dccfprmp.cc
+           dcmnet/libsrc/dccfrsmp.cc
+           dcmnet/libsrc/dccftsmp.cc
+
+**** Changes from 2004.05.05 (riesmeier)
+
+- Removed inclusion of ${libdir} and ${includedir} since this was never really
+  used but causes problems on systems where an older release of the toolkit is
+  installed in the same directory.
+  Thanks to Alexander Haderer <alexander.haderer@charite.de> for the report.
+  Affects: ofstd/tests/Makefile.in
+           dcmdata/apps/Makefile.in
+           dcmdata/libsrc/Makefile.in
+           dcmimage/apps/Makefile.in
+           dcmimage/libsrc/Makefile.in
+           dcmimgle/apps/Makefile.in
+           dcmimgle/libsrc/Makefile.in
+           dcmjpeg/apps/Makefile.in
+           dcmjpeg/libsrc/Makefile.in
+           dcmjpeg/libijg12/Makefile.in
+           dcmjpeg/libijg16/Makefile.in
+           dcmjpeg/libijg8/Makefile.in
+           dcmnet/apps/Makefile.in
+           dcmnet/libsrc/Makefile.in
+           dcmpstat/apps/Makefile.in
+           dcmpstat/jni/Makefile.in
+           dcmpstat/libsrc/Makefile.in
+           dcmpstat/tests/Makefile.in
+           dcmsign/apps/Makefile.in
+           dcmsign/libsrc/Makefile.in
+           dcmsr/apps/Makefile.in
+           dcmsr/libsrc/Makefile.in
+           dcmtls/libsrc/Makefile.in
+           dcmwlm/apps/Makefile.in
+           dcmwlm/libsrc/Makefile.in
+           dcmwlm/tests/Makefile.in
+           dcmwlm/wwwapps/Makefile.in
+           imagectn/apps/Makefile.in
+           imagectn/libsrc/Makefile.i
+
+- Fixed small inconsistencies.
+  Affects: ofstd/Makefile.in
+           ofstd/docs/Makefile.in
+           ofstd/etc/Makefile.in
+           ofstd/include/Makefile.in
+           ofstd/libsrc/Makefile.in
+           dcmdata/Makefile.in
+           dcmdata/docs/Makefile.in
+           dcmdata/etc/Makefile.in
+           dcmimage/docs/Makefile.in
+           dcmimage/etc/Makefile.in
+           dcmimage/include/Makefile.in
+           dcmimage/tests/Makefile.in
+           dcmimgle/docs/Makefile.in
+           dcmimgle/etc/Makefile.in
+           dcmimgle/include/Makefile.in
+           dcmimgle/tests/Makefile.in
+           dcmtk/dcmjpeg/Makefile.in
+           dcmjpeg/docs/Makefile.in
+           dcmjpeg/etc/Makefile.in
+           dcmjpeg/tests/Makefile.in
+           dcmnet/Makefile.in
+           dcmnet/docs/Makefile.in
+           dcmnet/etc/Makefile.in
+           dcmnet/include/Makefile.in
+           dcmnet/tests/Makefile.in
+           dcmpstat/docs/Makefile.in
+           dcmpstat/etc/Makefile.in
+           dcmsign/Makefile.in
+           dcmsign/docs/Makefile.in
+           dcmsign/etc/Makefile.in
+           dcmsign/tests/Makefile.in
+           dcmsr/Makefile.in
+           dcmsr/docs/Makefile.in
+           dcmsr/etc/Makefile.in
+           dcmtls/Makefile.in
+           dcmtls/apps/Makefile.in
+           dcmtls/docs/Makefile.in
+           dcmtls/etc/Makefile.in
+           dcmwlm/Makefile.in
+           dcmwlm/docs/Makefile.in
+           dcmwlm/etc/Makefile.in
+           imagectn/Makefile.in
+           imagectn/docs/Makefile.in
+           imagectn/etc/Makefile.in
+           imagectn/tests/Makefile.in
+
+- Added explicit typecast to volatile variables to compile with gcc 3.2.
+  Affects: dcmjpeg/libsrc/djdijg12.cc
+           dcmjpeg/libsrc/djdijg16.cc
+           dcmjpeg/libsrc/djdijg8.cc
+
+- Added default configure script and makefile.
+  Added:   configure
+           Makefile
+
+**** Changes from 2004.05.05 (eichelberg)
+
+- Declared a few local variables as volatile that might otherwise
+  be clobbered by longjmp.
+  Affects: dcmjpeg/libsrc/djdijg12.cc
+           dcmjpeg/libsrc/djdijg16.cc
+           dcmjpeg/libsrc/djdijg8.cc
+
+- Simplified template class DcmSimpleMap<T>, needed for Sun CC 2.0.1
+  Affects: dcmnet/include/dcmsmap.h
+           dcmnet/libsrc/dccfenmp.cc
+           dcmnet/libsrc/dccfpcmp.cc
+           dcmnet/libsrc/dccfprmp.cc
+           dcmnet/libsrc/dccfrsmp.cc
+           dcmnet/libsrc/dccftsmp.cc
+
+- Updated dcmpstat Makefile, needed for MinGW
+  Affects: dcmpstat/apps/Makefile.in
+
+**** Changes from 2004.05.04 (eichelberg)
+
+- Updated Makefile.in to correctly work on systems where libxml depends on zlib.
+  Affects: dcmdata/apps/Makefile.in
+
+- Added FAQ entry for systems where libtiff is compiled with JPEG support
+  Affects: FAQ
+
+**** Changes from 2004.04.30 (eichelberg)
+
+- Added configure tests for finite, isinf and isnan
+  Affects: config/configure
+           config/configure.in
+           config/include/cfunix.h.in
+           config/include/cfwin32.h
+
+- my_isinf() now also works on systems where finite() or isinf()
+  are defined but not properly declared in <math.h> or <cmath>.
+  Affects: ofstd/libsrc/ofstd.cc
+
+**** Changes from 2004.04.29 (wilkens)
+
+- Updated MSVC 6 project files (generated by CMake 1.8.3).
+  Affects: ALL_BUILD.dsp
+           dcmtk.dsw
+           dcmtk_all.dsw
+           dcmdata/apps/dcm2xml.dsp
+           dcmdata/apps/dcmconv.dsp
+           dcmdata/apps/dcmcrle.dsp
+           dcmdata/apps/dcmdrle.dsp
+           dcmdata/apps/dcmdump.dsp
+           dcmdata/apps/dcmftest.dsp
+           dcmdata/apps/dcmgpdir.dsp
+           dcmdata/apps/dcmodify.dsp
+           dcmdata/apps/dump2dcm.dsp
+           dcmdata/apps/xml2dcm.dsp
+           dcmdata/libsrc/dcmdata.dsp
+           dcmimage/apps/dcm2pnm.dsp
+           dcmimage/apps/dcmquant.dsp
+           dcmimage/apps/dcmscale.dsp
+           dcmimage/libsrc/dcmimage.dsp
+           dcmimgle/apps/dcmdspfn.dsp
+           dcmimgle/apps/dcod2lum.dsp
+           dcmimgle/apps/dconvlum.dsp
+           dcmimgle/libsrc/dcmimgle.dsp
+           dcmjpeg/apps/dcmcjpeg.dsp
+           dcmjpeg/apps/dcmdjpeg.dsp
+           dcmjpeg/apps/dcmj2pnm.dsp
+           dcmjpeg/apps/dcmmkdir.dsp
+           dcmjpeg/libijg12/ijg12.dsp
+           dcmjpeg/libijg16/ijg16.dsp
+           dcmjpeg/libijg8/ijg8.dsp
+           dcmjpeg/libsrc/dcmjpeg.dsp
+           dcmnet/apps/echoscu.dsp
+           dcmnet/apps/findscu.dsp
+           dcmnet/apps/movescu.dsp
+           dcmnet/apps/storescp.dsp
+           dcmnet/apps/storescu.dsp
+           dcmnet/libsrc/dcmnet.dsp
+           dcmpstat/apps/dcmmkcrv.dsp
+           dcmpstat/apps/dcmmklut.dsp
+           dcmpstat/apps/dcmp2pgm.dsp
+           dcmpstat/apps/dcmprscp.dsp
+           dcmpstat/apps/dcmprscu.dsp
+           dcmpstat/apps/dcmpschk.dsp
+           dcmpstat/apps/dcmpsmk.dsp
+           dcmpstat/apps/dcmpsprt.dsp
+           dcmpstat/apps/dcmpsrcv.dsp
+           dcmpstat/apps/dcmpssnd.dsp
+           dcmpstat/libsrc/dcmpstat.dsp
+           dcmsign/apps/dcmsign.dsp
+           dcmsign/libsrc/dcmdsig.dsp
+           dcmsr/apps/dsr2html.dsp
+           dcmsr/apps/dsr2xml.dsp
+           dcmsr/apps/dsrdump.dsp
+           dcmsr/apps/xml2dsr.dsp
+           dcmsr/libsrc/dcmsr.dsp
+           dcmsr/tests/mkreport.dsp
+           dcmtls/libsrc/dcmtls.dsp
+           dcmwlm/apps/wlmscpfs.dsp
+           dcmwlm/libsrc/dcmwlm.dsp
+           imagectn/apps/dbregimg.dsp
+           imagectn/apps/imagectn.dsp
+           imagectn/apps/ti.dsp
+           imagectn/libsrc/imagedb.dsp
+           ofstd/libsrc/ofstd.dsp
+
+**** Changes from 2004.04.27 (wilkens)
+
+- Fixed a bug in dcelem.cc which occurs when one is serializing a dataset
+  (containing a final attribute whose length value is coded with 2 bytes) into
+  a given buffer. Although the number of available bytes in the buffer was
+  sufficient, the dataset->write(...) method would always return
+  EC_StreamNotifyClient to indicate that there are not sufficient bytes
+  available in the buffer. This code modification fixes the problem.
+  Affects: dcmdata/include/dcobject.h
+           dcmdata/libsrc/dcelem.cc
+           dcmdata/libsrc/dcobject.cc
+           dcmdata/libsrc/dcsequen.cc
+
+**** Changes from 2004.04.22 (riesmeier)
+
+- Changed typecast from OFreinterpret_cast to OFstatic_cast to avoid
+  compilation error on Solaris with gcc 3.x.
+  Thanks to Markus Mertens <markus.mertens@uni-muenster.de> for the report.
+  Affects: ofstd/libsrc/ofthread.cc
+
+**** Changes from 2004.04.21 (riesmeier)
+
+- Included "dcompat" header file required for definition of bzero() on IRIX 5.
+  Thanks to Andreas Barth <andreas.barth@bruker-biospin.de> for the report.
+  Affects: dcmpstat/tests/msgserv.cc
+
+**** Changes from 2004.04.21 (eichelberg)
+
+- Minor modifications for compilation with gcc 3.4.0
+  Affects: dcmimage/include/diargpxt.h
+           dcmimage/include/dicmypxt.h
+           dcmimage/include/dicocpt.h
+           dcmimage/include/dicoflt.h
+           dcmimage/include/dicomot.h
+           dcmimage/include/dicorot.h
+           dcmimage/include/dicosct.h
+           dcmimage/include/dihsvpxt.h
+           dcmimage/include/dipalpxt.h
+           dcmimage/include/diqtcmap.h
+           dcmimage/include/dirgbpxt.h
+           dcmimage/include/diybrpxt.h
+           dcmimage/include/diyf2pxt.h
+           dcmimage/include/diyp2pxt.h
+           dcmimgle/include/diflipt.h
+           dcmimgle/include/diinpxt.h
+           dcmimgle/include/dimocpt.h
+           dcmimgle/include/dimoflt.h
+           dcmimgle/include/dimoipxt.h
+           dcmimgle/include/dimorot.h
+           dcmimgle/include/dimosct.h
+           dcmimgle/include/dirotat.h
+           dcmimgle/include/discalet.h
+           ofstd/include/ofoset.h
+
+**** Changes from 2004.04.20 (riesmeier)
+
+- Added explicit type cast to return value of OFStandard::atof() to avoid
+  warnings reported by Visual Studio 7.
+  Affects: dcmsr/libsrc/dsrscogr.cc
+
+**** Changes from 2004.04.18 (onken)
+
+- Restructured code to avoid default parameter values for "complex types" like
+  OFString. Required for Sun CC 2.0.1.
+  Affects: dcmdata/apps/mdfconen.cc
+           dcmdata/apps/mdfconen.h
+           dcmdata/apps/mdfdsman.cc
+           dcmdata/apps/mdfdsman.h
+
+**** Changes from 2004.04.16 (riesmeier)
+
+- Added missing comma separator to UIDNameMap. Thanks to Andreas Barth
+  <andreas.barth@bruker-biospin.de> for the triggering report.
+  Affects: dcmdata/libsrc/dcuid.cc
+
+- Restructured code to avoid default parameter values for "complex types" like
+  OFString. Required for Sun CC 2.0.1.
+  Affects: ofstd/include/ofdatime.h
+           ofstd/include/ofstd.h
+           ofstd/libsrc/ofdatime.cc
+           dcmdata/include/dcvrdt.h
+           dcmdata/libsrc/dcvrdt.cc
+           dcmsr/include/dsrdoc.h
+           dcmsr/libsrc/dsrdoc.cc
+
+- Renamed local function "isinf" to "my_isinf" to avoid possible conflicts.
+  Affects: ofstd/libsrc/ofstd.cc
+
+- Minor modifications to keep Sun CC 2.0.1 happy.
+  Affects: dcmdata/libsrc/dcddirif.cc
+
+- Added explicit typecast to result of dereferencing operator to keep Sun CC
+  2.0.1 happy.
+  Affects: dcmsr/libsrc/dsrsoprf.cc
+
+**** Changes from 2004.04.16 (eichelberg)
+
+- Configure now correctly finds libwrap on systems where <tcpd.h> requires
+  <sys/types.h> and libxml2 when compiled with zlib support.
+  Affects: config/configure
+           config/configure.in
+
+**** Changes from 2004.04.15 (eichelberg)
+
+- Fixed syntax error in Makefile
+  Affects: dcmwlm/tests/Makefile.in
+
+- dbregimg must not be linked against the TCP wrapper library
+  Affects: imagectn/apps/Makefile.in
+
+- Configure now stores additional include paths in CPPFLAGS,
+  needed for preprocessor based tests within the configure script.
+  Affects: config/configure
+           config/configure.in
+
+**** Changes from 2004.04.14 (eichelberg)
+
+- Updated CMake project file
+  Affects: dcmpstat/apps/CMakeLists.txt
+           CMakeLists.txt
+
+**** Changes from 2004.04.14 (riesmeier)
+
+- Replaced non-Unix newline characters.
+  Affects: dcmdata/include/dcuid.h
+           ofstd/include/oflist.h
+
+- Added const qualifier to parameter to keep Sun CC 2.0.1 quiet.
+  Affects: dcmdata/include/dcstack.h
+
+- Changed type of integer variable to keep Sun CC 2.0.1 quiet.
+  Affects: dcmdata/libsrc/dcddirif.cc
+           dcmimgle/libsrc/dicielut.cc
+           dcmimgle/libsrc/digsdlut.cc
+
+- Added explicit type cast to keep Sun CC 2.0.1 quiet.
+  Affects: dcmdata/libsrc/dcddirif.cc
+           dcmnet/libsrc/dccfenmp.cc
+
+- Introduced default case to switch statement to keep Sun CC 2.0.1 quiet.
+  Affects: dcmdata/libsrc/dcddirif.cc
+
+- Made makefile consistent with other makefiles.
+  Affects: dcmnet/docs/Makefile.in
+           dcmnet/etc/Makefile.in
+
+**** Changes from 2004.04.07 (eichelberg)
+
+- Updated sorting and command execution code in storescp to use OFString
+  and OFList. This will hopefully fix the remaining memory leaks.
+  Affects: dcmnet/apps/storescp.cc
+
+- Removed call to system() and execl to /bin/false which does not exist
+  on some BSD platforms.
+  Affects: dcmnet/apps/storescp.cc
+
+- Added presentation contexts for new SOP classes and transfer syntax
+  Affects: dcmnet/etc/storescp.cfg
+           dcmnet/etc/storescu.cfg
+
+- Added optional parameter to ASC_initializeNetwork that allows to pass
+  the DUL_FULLDOMAINNAME option to the DUL layer
+  Affects: dcmnet/include/assoc.h
+           dcmnet/libsrc/assoc.cc
+
+- Compressed image datasets containing uncompressed icon images
+  are now correctly handled by the parser.
+  Affects: dcmdata/include/dcpixel.h
+           dcmdata/libsrc/dcpixel.cc
+
+- Added OFconst_cast, required on Win32
+  Affects: dcmnet/apps/storescp.cc
+
+**** Changes from 2004.04.07 (riesmeier)
+
+- Added new makefile target "dcmtk-install-doc" which copies the COPYRIGHT,
+  FAQ and HISTORY file to $(docdir). Also invoked with "make install".
+  Affects: config/rootconf
+
+- Added missing member variables to constructor's member initialization list
+  to avoid warnings reported by gcc.
+  Affects: dcmsr/include/dsrcsidl.h
+
+- Adapted code to avoid warnings reported by gcc when compiling without libxml
+  support.
+  Affects: dcmsr/libsrc/dsrxmld.cc
+
+- Removed comma at end of enumerator list.
+  Affects: dcmimage/include/dipipng.h
+
+- Additional modifications for new-style type casts.
+  Affects: dcmdata/apps/dcmconv.cc
+           dcmimage/libsrc/dipipng.cc
+
+- Adapted type casts to new-style typecast operators defined in ofcast.h.
+  Affects: dcmdata/libsrc/dcistrmz.cc
+           dcmdata/libsrc/dcostrmz.cc
+
+- Changed type of integer variables to unsigned to avoid compiler warnings
+  reported by gcc.
+  Affects: dcmdata/apps/mdfdsman.cc
+
+**** Changes from 2004.04.06 (riesmeier)
+
+- Updated data dictionary, UIDs and transfer syntaxes for the latest Final Text
+  Supplements (42 and 47) and Correction Proposals (CP 25).
+  Affects: dcmdata/include/dcuid.h
+           dcmdata/include/dcxfer.h
+           dcmdata/libsrc/dcdictzz.cc
+           dcmdata/libsrc/dcuid.cc
+           dcmdata/libsrc/dcxfer.cc
+           dcmdata/libsrc/dicom.dic
+           dcmnet/docs/movescu.man
+           dcmnet/docs/storescp.man
+           dcmnet/docs/storescu.man
+           dcmwlm/include/wlds.h
+           dcmwlm/libsrc/wlds.cc
+           doxygen/manpages/man1/imagectn.1
+           doxygen/manpages/man1/movescu.1
+           doxygen/manpages/man1/storescp.1
+           doxygen/manpages/man1/storescu.1
+           imagectn/docs/imagectn.man
+
+- Added missing suffix "TransferSyntax" to some transfer syntax constants.
+  Affects: dcmdata/include/dcuid.h
+           dcmdata/libsrc/dcddirif.cc
+           dcmdata/libsrc/dcuid.cc
+           dcmdata/libsrc/dcxfer.cc
+           dcmnet/apps/echoscu.cc
+           dcmnet/apps/movescu.cc
+           dcmnet/apps/storescp.cc
+
+- Added six more transfer syntaxes to the --propose-ts option.
+  Affects: dcmnet/apps/echoscu.cc
+           dcmnet/docs/echoscu.man
+           doxygen/manpages/man1/echoscu.1
+
+- Updated copyright date. Replaced "@" sign in email addresses by "(at)".
+  Affects: COPYRIGHT
+
+**** Changes from 2004.03.29 (riesmeier)
+
+- Removed reference to non-existing DICOM conformance statement.
+  Affects: doxygen/manpages/man1/imagectn.1
+           doxygen/manpages/man1/ti.1
+           imagectn/docs/imagectn.man
+           imagectn/docs/ti.man
+
+- Introduced separate subsections for SCU and SCP conformance.
+  Affects: dcmnet/docs/movescu.man
+           doxygen/manpages/man1/movescu.1
+
+**** Changes from 2004.03.25 (riesmeier)
+
+- Solved issue with function pointer to std::fprintf or fprintf, respectively.
+  Affects: dcmtk/dcmdata/apps/xml2dcm.cc
+           dcmsr/libsrc/dsrxmld.cc
+
+- Replaced configure test for a std::fprintf prototype by std::vfprintf.
+  Affects: config/configure
+           config/configure.in
+           config/include/cfunix.h.in
+           config/include/cfwin32.h
+
+- Uncommented definition of HAVE_PROTOTYPE_STD__VFPRINTF. Required for MSVC 6.
+  Affects: config/include/cfwin32.h
+
+**** Changes from 2004.03.25 (wilkens)
+
+- Updated file which can be used as a builtin dictionary.
+  Affects: dcmdata/libsrc/dcdictzz.cc
+
+- Corrected private tags (Philips Integris System).
+  Affects: dcmdata/libsrc/private.dic
+
+- Added comment.
+  Affects: dcmdata/libsrc/private.dic
+
+- Modified one private tag (Philips Integris System).
+  Affects: dcmdata/libsrc/private.dic
+
+**** Changes from 2004.03.24 (wilkens)
+
+- Added some private tags (Philips Integris System).
+  Affects: dcmdata/libsrc/private.dic
+
+**** Changes from 2004.03.22 (riesmeier)
+
+- Added package information obtained during configure process.
+  Affects: config/Makefile.def.in
+
+- Replaced tabs by spaces.
+  Affects: dcmdata/apps/xml2dcm.cc
+
+**** Changes from 2004.03.18 (eichelberg)
+
+- Configure now checks for presence of xml2-config in current path
+  and adds result of xml2-config --cflags to include flags, needed
+  for some installations of libxml2.
+  Affects: config/configure
+           config/configure.in
+
+**** Changes from 2004.03.16 (riesmeier)
+
+- Added support for non-standard encoding of pixel data (OB with BitsAllocated
+  > 8 and <= 16). Thanks to Markus Mertens <markus.mertens@uni-muenster.de>
+  for the sample data.
+  Affects: dcmimgle/libsrc/diimage.cc
+
+- Renamed UID_BasicDirectoryStorageSOPClass to UID_MediaStorageDirectoryStorage.
+  Affects: dcmdata/include/dcuid.h
+           dcmdata/libsrc/dcuid.cc
+           dcmdata/libsrc/dcdicdir.cc
+
+- Updated comment.
+  Affects: dcmdata/libsrc/dcuid.cc
+
+**** Changes from 2004.03.10 (riesmeier)
+
+- Translated remaining German comments.
+  Thanks to Yannick <ybgn@free.fr> for the report.
+  Affects: dcmdata/libsrc/dcitem.cc
+
+**** Changes from 2004.03.09 (riesmeier)
+
+- Updated makefile for new DICOMscope 3.6.x.
+  Affects: dcmpstat/jni/Makefile.in
+
+- Rebuilt makefile dependencies.
+  Affects: dcmpstat/jni/Makefile.dep
+
+**** Changes from 2004.03.05 (riesmeier)
+
+- Avoid wrong warning for LUTData (0028,3006) having a VR of US or SS.
+  Affects: dcmdata/apps/dump2dcm.cc
+
+- Added initial "hooks" for (compressed) pixel items.
+  Affects: dcmdata/apps/dump2dcm.cc
+
+- Added "ignore errors" option (similar to dcmdump).
+  Affects: dcmdata/apps/dump2dcm.cc
+           dcmdata/docs/dump2dcm.man
+
+- Added "see also" reference to dcmconv.
+  Affects: dcmdata/docs/dcm2xml.man
+
+- Updated documentation (added comment to --fragment-size option).
+  Affects: dcmdata/docs/dcmcrle.man
+
+- Fixed typo.
+  Affects: dcmdata/docs/xml2dcm.man
+           dcmsr/docs/xml2dsr.man
+
+- Removed dependency of target "clean" from "distclean".
+  Affects: dcmwlm/tests/Makefile.in
+
+- Updated modified man pages.
+  Affects: doxygen/manpages/man1/dcm2xml.1
+           doxygen/manpages/man1/dcmcrle.1
+           doxygen/manpages/man1/dump2dcm.1
+           doxygen/manpages/man1/findscu.1
+           doxygen/manpages/man1/wlmscpfs.1
+           doxygen/manpages/man1/xml2dcm.1
+           doxygen/manpages/man1/xml2dsr.1
+
+**** Changes from 2004.02.27 (eichelberg)
+
+- Path separator is now correctly defined on MinGW.
+  Thanks to Dimitri Papadopoulos-Orfanos <papadopo@shfj.cea.fr> for the bug
+  report
+  Affects: config/configure.in
+           config/include/cfunix.h.in
+
+- Added --cancel option to findscu, similar to the option available in movescu.
+  Affects: dcmnet/apps/findscu.cc
+           dcmnet/docs/findscu.man
+
+- Imagectn now refuses find/get/move operations on SERIES or IMAGE level when
+  the Patient/Study Only Q/R model is used and identifier checking is enabled
+  (--check-find or --check-move options).
+  Thanks to Tony C. Pan <tpan@bmi.osu.edu> for the bug report.
+  Affects: imagectn/libsrc/dbfind.cc
+           imagectn/libsrc/dbmove.cc
+
+**** Changes from 2004.02.26 (eichelberg)
+
+- Fixed minor memory leak in findscu
+  Thanks to Dr. Michael Heber <mheber.aup@t-online.de> for the bug report
+  Affects: dcmnet/apps/findscu.cc
+
+**** Changes from 2004.02.25 (eichelberg)
+
+- Added a few dummy macros allowing for future private extensions
+  Affects: dcmnet/apps/echoscu.cc
+           dcmnet/apps/storescp.cc
+
+- Added global option flag for compatibility with very old DCMTK releases in the
+  DICOM upper layer and ACSE code. Default is automatic handling, which should
+  work in most cases.
+  Affects: dcmnet/include/assoc.h
+           dcmnet/include/dul.h
+           dcmnet/libsrc/assoc.cc
+           dcmnet/libsrc/dul.cc
+           dcmnet/libsrc/dulconst.cc
+           dcmnet/libsrc/dulfsm.cc
+           dcmnet/libsrc/dulpriv.h
+           dcmnet/libsrc/dulstruc.h
+
+- Fixed minor bug in libtiff detection routine
+  Affects: config/configure.in
+           config/configure
+
+- Marked option --fragment-size as non-standard since it violates a rule defined
+  in DICOM Part 5 A.4.2: "Each frame shall be encoded in one and only one
+  fragment".
+  Affects: dcmdata/apps/dcmcrle.cc
+
+**** Changes from 2004.02.23 (eichelberg)
+
+- Added max-associations command line option, changed default to 50.
+  Affects: dcmwlm/apps/wlcefs.cc
+           dcmwlm/docs/wlmscpfs.man
+
+- Fixed resource leak due to sockets remaining in CLOSE_WAIT state.
+  Thanks to Anibal Jodorcovsky <anibal@intelerad.com> for the bug report and
+  fix.
+  Affects: dcmwlm/libsrc/wlmactmg.cc
+
+- Fixed infinite loop in DUL_AbortAssociation that could occur on Win2K systems.
+  Affects: dcmnet/libsrc/dul.cc
+
+**** Changes from 2004.02.20 (riesmeier)
+
+- Completed Doxygen module description.
+  Affects: config/docs/config.dox
+           imagectn/docs/imagectn.dox
+
+- Made formatting consistent with other text files.
+  Affects: config/docs/config.txt
+           config/docs/envvars.txt
+           config/docs/macros.txt
+           config/docs/modules.txt
+
+- Added support for private tags used by Intelerad's Image Server. Thanks to
+  Anibal Jodorcovsky <anibal@intelerad.com> for providing this information.
+  Affects: dcmdata/libsrc/private.dic
+           dcmdata/libsrc/dcdictzz.cc
+
+- Removed superfluous dependency of target "clean" from "distclean".
+  Affects: dcmsr/apps/Makefile.in
+           dcmsr/libsrc/Makefile.in
+           dcmtls/libsrc/Makefile.in
+           ofstd/tests/Makefile.in
+
+- Avoid wrong warning for LUTData (0028,3006) having a VR of US or SS.
+  Affects: dcmdata/apps/xml2dcm.cc
+
+- Added optional attribute "xmlns" to element "file-format".
+  Affects: dcmdata/apps/dcm2xml.dtd
+
+**** Changes from 2004.02.13 (riesmeier)
+
+- Added support for configure's "Fine tuning of the installation directories".
+  Affects: config/Makefile.def.in
+
+- Moved "data" and "doc" installation directories into "share".
+  Affects: config/Makefile.def.in
+           dcmdata/docs/*.man
+           dcmimage/docs/*.man
+           dcmimgle/docs/*.man
+           dcmjpeg/docs/*.man
+           dcmnet/docs/*.man
+           dcmpstat/docs/*.man
+           dcmsign/docs/*.man
+           dcmsr/docs/*.man
+           dcmwlm/docs/*.man
+           imagectn/docs/*.man
+           doxygen/manpages/man1/*.1
+
+- Updated configuration files for Doxygen 1.3.6.
+  Affects: doxygen/htmldocs.cfg
+           doxygen/manpages.cfg
+
+- Re-generated include file with DICOM tags.
+  Affects: dcmdata/include/dcdeftag.h
+
+- Re-generated built-in DICOM dictionary.
+  Affects: dcmdata/libsrc/dcdictzz.cc
+
+- Corrected order of UIDs, modified comments and other minor corrections.
+  Affects: dcmdata/include/dcuid.h
+           dcmdata/libsrc/dcuid.cc
+
+- Replaced non-Unix newline characters.
+  Affects: dcmdata/include/dcuid.h
+           dcmdata/libsrc/dcuid.cc
+
+- Changed filename prefix for some storage SOP classes (array "modalities").
+  Affects: dcmdata/libsrc/dcuid.cc
+
+- Adapted code for changed tag names (e.g. PresentationLabel -> ContentLabel).
+  Affects: dcmdata/libsrc/dcddirif.cc
+           dcmpstat/libsrc/dcmpstat.cc
+           dcmpstat/libsrc/dviface.cc
+           imagectn/libsrc/dbindex.cc
+           imagectn/libsrc/dbstore.cc
+
+- Changed order of local libraries to solve a linker problem with egcs-2.91.
+  Affects: dcmpstat/apps/Makefile.in
+
+- Updated copyright header.
+  Affects: dcmdata/libsrc/dcdictbi.nul
+           dcmdata/libsrc/dcdictbi.cc
+
+- Added "#include <sys/time.h>" to compile with gcc 2.95.x on Linux 2.2.x.
+  Affects: dcmpstat/tests/msgserv.cc
+
+- Added support for new directory records REGISTRATION and FIDUCIAL introduced
+  with supplement 73 (Spatial Registration Storage SOP Classes).
+  Affects: dcmdata/include/dcdirrec.h
+           dcmdata/include/dcddirif.h
+           dcmdata/libsrc/dcdirrec.cc
+           dcmdata/libsrc/dcddirif.cc
+
+- Added support for Procedure Log Storage SOP class (supplement 66).
+  Affects: dcmdata/libsrc/dcddirif.cc
+
+- Fixed wrong spelling of "SpatialFiducialsStorage".
+  Affects: dcmdata/include/dcuid.h
+           dcmdata/libsrc/dcuid.cc
+           dcmnet/docs/movescu.man
+           dcmnet/docs/storescp.man
+           dcmnet/docs/storescu.man
+           imagectn/docs/imagectn.man
+           doxygen/manpages/man1/imagectn.1
+           doxygen/manpages/man1/movescu.1
+           doxygen/manpages/man1/storescp.1
+           doxygen/manpages/man1/storescu.1
+
+- Removed acknowledgements with e-mail addresses from CVS log.
+  Affects: dcmnet/apps/storescp.cc
+
+- Added text about new "etc" directory.
+  Affects: README
+           doxygen/htmldocs.dox
+
+- Added support for new directory records RAW DATA and SPECTROSCOPY introduced
+  with CP 343.
+  Affects: dcmdata/include/dcdirrec.h
+           dcmdata/include/dcddirif.h
+           dcmdata/libsrc/dcdirrec.cc
+           dcmdata/libsrc/dcddirif.cc
+
+**** Changes from 2004.02.12 (wilkens)
+
+- Corrected bug in storescp that options "-xcr" and "+B" (or "--ignore") could
+  not be used together. Now they can. Thanks to Philippe Puech
+  <puech@inviweb.com> for the bug report.
+  Affects: dcmnet/apps/storescp.cc
+           dcmnet/docs/storescp.man
+
+**** Changes from 2004.02.11 (wilkens)
+
+- Updated header.
+  Affects: dcmdata/libsrc/dicom.dic
+
+- Updated attribute and UID specification (update before dcmtk 3.5.3 release).
+  Affects: dcmdata/libsrc/dicom.dic
+           dcmdata/include/dcuid.h
+           dcmdata/libsrc/dcuid.cc
+           imagectn/docs/imagectn.man
+           dcmnet/docs/movescu.man
+           dcmnet/docs/storescp.man
+           dcmnet/docs/storescu.man
+
+**** Changes from 2004.02.11 (riesmeier)
+
+- Fixed usage output formatting.
+  Affects: dcmwlm/tests/wltest.cc
+
+- Modified comment on option "--pattern".
+  Affects: dcmdata/docs/dcmgpdir.man
+           dcmjpeg/docs/dcmmkdir.man
+           doxygen/manpages/man1/dcmgpdir.1
+           doxygen/manpages/man1/dcmmkdir.1
+
+- Made "libXXX" text bold (\b) instead of italics (\e).
+  Affects: dcmimage/docs/dcm2pnm.man
+           dcmjpeg/docs/dcmj2pnm.man
+           doxygen/manpages/man1/dcm2pnm.1
+           doxygen/manpages/man1/dcmj2pnm.1
+
+- Added support for converting the man pages to plain text using "make text".
+  Affects: doxygen/Makefile.in
+
+- Renamed UID_ProcedureLog to UID_ProcedureLogStorage.
+  Affects: dcmsr/libsrc/dsrtypes.cc
+
+- Added backslash to escape "<" and ">" characters.
+  Affects: imagectn/docs/ti.man
+           doxygen/manpages/man1/ti.1
+
+**** Changes from 2004.02.10 (riesmeier)
+
+- Revised man pages: removed small inconsistencies, fixed issues with current
+  Doxygen release (version 1.3.5), etc.
+  Affects: dcmdata/docs/dcm2xml.man
+           dcmdata/docs/dcmconv.man
+           dcmdata/docs/dcmcrle.man
+           dcmdata/docs/dcmdrle.man
+           dcmdata/docs/dcmdump.man
+           dcmdata/docs/dcmftest.man
+           dcmdata/docs/dcmgpdir.man
+           dcmdata/docs/dcmodify.man
+           dcmdata/docs/dump2dcm.man
+           dcmdata/docs/xml2dcm.man
+           dcmimage/docs/dcm2pnm.man
+           dcmimage/docs/dcmquant.man
+           dcmimage/docs/dcmscale.man
+           dcmimgle/docs/dcmdspfn.man
+           dcmimgle/docs/dcod2lum.man
+           dcmimgle/docs/dconvlum.man
+           dcmjpeg/docs/dcmcjpeg.man
+           dcmjpeg/docs/dcmdjpeg.man
+           dcmjpeg/docs/dcmj2pnm.man
+           dcmjpeg/docs/dcmmkdir.man
+           dcmnet/docs/echoscu.man
+           dcmnet/docs/findscu.man
+           dcmnet/docs/movescu.man
+           dcmnet/docs/storescp.man
+           dcmnet/docs/storescu.man
+           dcmpstat/docs/dcmmkcrv.man
+           dcmpstat/docs/dcmmklut.man
+           dcmpstat/docs/dcmp2pgm.man
+           dcmpstat/docs/dcmprscp.man
+           dcmpstat/docs/dcmprscu.man
+           dcmpstat/docs/dcmpschk.man
+           dcmpstat/docs/dcmpsmk.man
+           dcmpstat/docs/dcmpsprt.man
+           dcmpstat/docs/dcmpsrcv.man
+           dcmpstat/docs/dcmpssnd.man
+           dcmsign/docs/dcmsign.man
+           dcmsr/docs/dsr2html.man
+           dcmsr/docs/dsr2xml.man
+           dcmsr/docs/dsrdump.man
+           dcmsr/docs/xml2dsr.man
+           dcmwlm/docs/wlmscpfs.man
+           imagectn/docs/dbregimg.man
+           imagectn/docs/imagectn.man
+           imagectn/docs/ti.man
+
+- Added initial version of man pages for all command line tools.
+  Added:   doxygen/manpages/man1/dbregimg.1
+           doxygen/manpages/man1/dcm2pnm.1
+           doxygen/manpages/man1/dcm2xml.1
+           doxygen/manpages/man1/dcmcjpeg.1
+           doxygen/manpages/man1/dcmconv.1
+           doxygen/manpages/man1/dcmcrle.1
+           doxygen/manpages/man1/dcmdjpeg.1
+           doxygen/manpages/man1/dcmdrle.1
+           doxygen/manpages/man1/dcmdspfn.1
+           doxygen/manpages/man1/dcmdump.1
+           doxygen/manpages/man1/dcmftest.1
+           doxygen/manpages/man1/dcmgpdir.1
+           doxygen/manpages/man1/dcmj2pnm.1
+           doxygen/manpages/man1/dcmmkcrv.1
+           doxygen/manpages/man1/dcmmkdir.1
+           doxygen/manpages/man1/dcmmklut.1
+           doxygen/manpages/man1/dcmodify.1
+           doxygen/manpages/man1/dcmp2pgm.1
+           doxygen/manpages/man1/dcmprscp.1
+           doxygen/manpages/man1/dcmprscu.1
+           doxygen/manpages/man1/dcmpschk.1
+           doxygen/manpages/man1/dcmpsmk.1
+           doxygen/manpages/man1/dcmpsprt.1
+           doxygen/manpages/man1/dcmpsrcv.1
+           doxygen/manpages/man1/dcmpssnd.1
+           doxygen/manpages/man1/dcmquant.1
+           doxygen/manpages/man1/dcmscale.1
+           doxygen/manpages/man1/dcmsign.1
+           doxygen/manpages/man1/dcod2lum.1
+           doxygen/manpages/man1/dconvlum.1
+           doxygen/manpages/man1/dsr2html.1
+           doxygen/manpages/man1/dsr2xml.1
+           doxygen/manpages/man1/dsrdump.1
+           doxygen/manpages/man1/dump2dcm.1
+           doxygen/manpages/man1/echoscu.1
+           doxygen/manpages/man1/findscu.1
+           doxygen/manpages/man1/imagectn.1
+           doxygen/manpages/man1/movescu.1
+           doxygen/manpages/man1/storescp.1
+           doxygen/manpages/man1/storescu.1
+           doxygen/manpages/man1/ti.1
+           doxygen/manpages/man1/wlmscpfs.1
+           doxygen/manpages/man1/xml2dcm.1
+           doxygen/manpages/man1/xml2dsr.1
+
+- Moved dbregimg from folder "tests" to "apps".
+  Added:   imagectn/apps/dbregimg.cc
+           imagectn/apps/dbregimg.dsp
+  Removed: imagectn/tests/dbregimg.cc
+           imagectn/tests/dbregimg.dsp
+           imagectn/tests/CMakeLists.txt
+           imagectn/tests/Makefile.dep
+  Affects: dcmtk.dsw
+           dcmtk_all.dsw
+           imagectn/CMakeLists.txt
+           imagectn/Makefile.in
+           imagectn/apps/CMakeLists.txt
+           imagectn/apps/Makefile.dep
+           imagectn/apps/Makefile.in
+           imagectn/tests/Makefile.in
+
+- Introduced new "etc" folder for configuration files.
+  Added:   dcmdata/etc/Makefile.in
+           dcmimage/etc/Makefile.in
+           dcmimgle/etc/Makefile.in
+           dcmjpeg/etc/Makefile.in
+           dcmnet/etc/Makefile.in
+           dcmnet/etc/storescp.cfg
+           dcmnet/etc/storescu.cfg
+           dcmpstat/etc/Makefile.in
+           dcmpstat/etc/printers.cfg
+           dcmpstat/etc/test.cfg
+           dcmsign/etc/Makefile.in
+           dcmsr/etc/Makefile.in
+           dcmtls/etc/Makefile.in
+           dcmwlm/etc/Makefile.in
+           imagectn/etc/Makefile.in
+           imagectn/etc/imagectn.cfg
+  Removed: dcmnet/docs/storescp.cfg
+           dcmnet/docs/storescu.cfg
+           dcmpstat/tests/printers.cfg
+           dcmpstat/tests/test.cfg
+           imagectn/docs/configrc
+  Affects: config/rootconf
+           config/docs/dirstruc.txt
+           config/templates/Makefile.mod
+
+- Renamed configuration file from "configrc" to "imagectn.cfg".
+  Added:   imagectn/etc/imagectn.cfg
+  Removed: imagectn/docs/configrc
+  Affects: imagectn/apps/imagectn.cc
+           imagectn/apps/ti.cc
+           imagectn/docs/imagectn.txt
+           imagectn/docs/ti.txt
+
+- Renamed and moved sample presentation LUT.
+  Added:   dcmpstat/tests/philips.lut
+  Removed: dcmpstat/apps/pms_plut.txt
+
+- Renamed documentation files.
+  Added:   imagectn/docs/ctnconf.txt
+           imagectn/docs/ctnsetup.txt
+  Removed: imagectn/docs/configrc.txt
+           imagectn/docs/setup.txt
+
+- Reworked makefiles: fixed small inconsistencies, added new install targets.
+  Affects: INSTALL
+           config/rootconf
+           config/templates/Makefile.mod
+           dcmdata/Makefile.in
+           dcmdata/apps/Makefile.in
+           dcmdata/docs/Makefile.in
+           dcmdata/include/Makefile.in
+           dcmdata/libsrc/Makefile.in
+           dcmdata/tests/Makefile.in
+           dcmimage/Makefile.in
+           dcmimage/apps/Makefile.in
+           dcmimage/docs/Makefile.in
+           dcmimage/include/Makefile.in
+           dcmimage/libsrc/Makefile.in
+           dcmimage/tests/Makefile.in
+           dcmimgle/Makefile.in
+           dcmimgle/apps/Makefile.in
+           dcmimgle/docs/Makefile.in
+           dcmimgle/libsrc/Makefile.in
+           dcmimgle/tests/Makefile.in
+           dcmjpeg/Makefile.in
+           dcmjpeg/apps/Makefile.in
+           dcmjpeg/docs/Makefile.in
+           dcmjpeg/include/Makefile.in
+           dcmjpeg/libijg12/Makefile.in
+           dcmjpeg/libijg16/Makefile.in
+           dcmjpeg/libijg8/Makefile.in
+           dcmjpeg/libsrc/Makefile.in
+           dcmnet/Makefile.in
+           dcmnet/apps/Makefile.in
+           dcmnet/docs/Makefile.in
+           dcmnet/include/Makefile.in
+           dcmpstat/Makefile.in
+           dcmpstat/apps/Makefile.in
+           dcmpstat/docs/Makefile.in
+           dcmpstat/include/Makefile.in
+           dcmpstat/jni/Makefile.in
+           dcmpstat/libsrc/Makefile.in
+           dcmpstat/tests/Makefile.in
+           dcmsign/Makefile.in
+           dcmsign/apps/Makefile.in
+           dcmsign/docs/Makefile.in
+           dcmsign/include/Makefile.in
+           dcmsr/Makefile.in
+           dcmsr/apps/Makefile.in
+           dcmsr/docs/Makefile.in
+           dcmsr/include/Makefile.in
+           dcmsr/libsrc/Makefile.in
+           dcmsr/tests/Makefile.in
+           dcmtls/Makefile.in
+           dcmtls/apps/Makefile.in
+           dcmtls/include/Makefile.in
+           dcmtls/libsrc/Makefile.in
+           dcmtls/tests/Makefile.in
+           dcmwlm/Makefile.in
+           dcmwlm/apps/Makefile.in
+           dcmwlm/docs/Makefile.in
+           dcmwlm/include/Makefile.in
+           dcmwlm/libsrc/Makefile.in
+           dcmwlm/tests/Makefile.in
+           dcmwlm/wwwapps/Makefile.in
+           imagectn/Makefile.in
+           imagectn/apps/Makefile.in
+           imagectn/docs/Makefile.in
+           imagectn/include/Makefile.in
+           imagectn/libsrc/Makefile.in
+           imagectn/tests/Makefile.in
+           ofstd/docs/Makefile.in
+           ofstd/include/Makefile.in
+           ofstd/libsrc/Makefile.in
+           ofstd/tests/Makefile.in
+
+- Replaced Makefile by Makefile.in (using configure mechanism).
+  Added:   doxygen/configure
+           doxygen/Makefile.in
+  Removed: doxygen/Makefile
+
+- Added comment on issues with Doxygen 1.3.5.
+  Affects: doxygen/patchman.sh
+
+- Rebuilt makefile dependencies.
+  Affects: dcmdata/apps/Makefile.dep
+           dcmdata/libsrc/Makefile.dep
+           dcmdata/tests/Makefile.dep
+           dcmsr/libsrc/Makefile.dep
+           imagectn/libsrc/Makefile.dep
+           ofstd/libsrc/Makefile.dep
+           ofstd/tests/Makefile.dep
+
+- Added "tests" folder.
+  Added:   dcmjpeg/tests/Makefile.in
+           dcmnet/tests/Makefile.in
+           dcmsign/tests/Makefile.in
+
+- Updated copyright header.
+  Affects: dcmsign/apps/dcmsign.cc
+
+- Removed man page.
+  Removed: dcmwlm/docs/wwwapp.man
+
+- Create HTML documentation if required when "make install-html" is called.
+  Affects: doxygen/Makefile.in
+
+- Added text on how to create and install the Unix man pages for all command
+  line tools.
+  Affects: INSTALL
+
+- Fixed minor layout issue in man pages.
+  Affects: dcmnet/docs/movescu.man
+           dcmnet/docs/storescp.man
+           dcmwlm/docs/wlmscpfs.man
+           imagectn/docs/imagectn.man
+           doxygen/manpages/man1/imagectn.1
+           doxygen/manpages/man1/movescu.1
+           doxygen/manpages/man1/wlmscpfs.1
+
+- Removed old text documentation files (replaced by man and HTML pages).
+  Removed: dcmdata/docs/dcm2xml.txt
+           dcmdata/docs/dcmconv.txt
+           dcmdata/docs/dcmcrle.txt
+           dcmdata/docs/dcmdrle.txt
+           dcmdata/docs/dcmdump.txt
+           dcmdata/docs/dcmftest.txt
+           dcmdata/docs/dcmgpdir.txt
+           dcmdata/docs/dcmodify.txt
+           dcmdata/docs/dump2dcm.txt
+           dcmdata/docs/xml2dcm.txt
+           dcmimage/docs/dcm2pnm.txt
+           dcmimage/docs/dcmquant.txt
+           dcmimage/docs/dcmscale.txt
+           dcmimgle/docs/dcmdspfn.txt
+           dcmimgle/docs/dcod2lum.txt
+           dcmimgle/docs/dconvlum.txt
+           dcmjpeg/docs/dcmcjpeg.txt
+           dcmjpeg/docs/dcmdjpeg.txt
+           dcmjpeg/docs/dcmj2pnm.txt
+           dcmjpeg/docs/dcmmkdir.txt
+           dcmnet/docs/echoscu.txt
+           dcmnet/docs/findscu.txt
+           dcmnet/docs/movescu.txt
+           dcmnet/docs/storescp.txt
+           dcmnet/docs/storescu.txt
+           dcmpstat/docs/dcmmkcrv.txt
+           dcmpstat/docs/dcmprscp.txt
+           dcmpstat/docs/dcmpsmk.txt
+           dcmpstat/docs/dcmpssnd.txt
+           dcmpstat/docs/dcmmklut.txt
+           dcmpstat/docs/dcmprscu.txt
+           dcmpstat/docs/dcmpsprt.txt
+           dcmpstat/docs/dcmp2pgm.txt
+           dcmpstat/docs/dcmpschk.txt
+           dcmpstat/docs/dcmpsrcv.txt
+           dcmsign/docs/dcmsign.txt
+           dcmsr/docs/dsr2html.txt
+           dcmsr/docs/dsr2xml.txt
+           dcmsr/docs/dsrdump.txt
+           dcmsr/docs/xml2dsr.txt
+           dcmwlm/docs/wlmscpfs.txt
+           imagectn/docs/dbregimg.txt
+           imagectn/docs/imagectn.txt
+           imagectn/docs/ti.txt
+
+- Removed superfluous sample LUT.
+  Removed: dcmpstat/tests/sample.lut
+
+**** Changes from 2004.02.06 (riesmeier)
+
+- Distinguish more clearly between const and non-const access to pixel data.
+  Affects: dcmimage/include/dicocpt.h
+           dcmimage/include/dicoflt.h
+           dcmimage/include/dicoimg.h
+           dcmimage/include/dicomot.h
+           dcmimage/include/dicoopx.h
+           dcmimage/include/dicoopxt.h
+           dcmimage/include/dicopxt.h
+           dcmimage/include/dicorot.h
+           dcmimage/include/dicosct.h
+           dcmimage/libsrc/dicoimg.cc
+           dcmimage/libsrc/dipipng.cc
+           dcmimage/libsrc/dipitiff.cc
+           dcmimgle/include/diflipt.h
+           dcmimgle/include/diimage.h
+           dcmimgle/include/diinpx.h
+           dcmimgle/include/diinpxt.h
+           dcmimgle/include/dimo1img.h
+           dcmimgle/include/dimo2img.h
+           dcmimgle/include/dimoimg.h
+           dcmimgle/include/dimoipxt.h
+           dcmimgle/include/dimoopx.h
+           dcmimgle/include/dimoopxt.h
+           dcmimgle/include/dimopx.h
+           dcmimgle/include/dimopxt.h
+           dcmimgle/include/dipixel.h
+           dcmimgle/include/dirotat.h
+           dcmimgle/libsrc/dimo1img.cc
+           dcmimgle/libsrc/dimo2img.cc
+           dcmimgle/libsrc/dimoimg.cc
+           dcmimgle/libsrc/dimopx.cc
+           dcmjpeg/libsrc/dipijpeg.cc
+
+- Fixed inconsistency in re-calculation of PixelSpacing and ImagerPixelSpacing
+  when scaling images.
+  Affects: dcmimgle/libsrc/diimage.cc
+
+- Added typecast to array indexes to avoid warning messages on MacOS X 10.3
+  with gcc 3.3.
+  Affects: dcmimage/include/diybrpxt.h
+
+**** Changes from 2004.02.04 (riesmeier)
+
+- Removed acknowledgements with e-mail addresses from CVS log.
+  Affects: dcmdata/libsrc/dcbytstr.cc
+           dcmdata/libsrc/dcdatset.cc
+           dcmdata/libsrc/dcdicdir.cc
+           dcmdata/libsrc/dcdict.cc
+           dcmdata/libsrc/dcfilefo.cc
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcmetinf.cc
+           dcmdata/libsrc/dcobject.cc
+           dcmdata/libsrc/dcpcache.cc
+           dcmdata/libsrc/dcpixseq.cc
+           dcmdata/libsrc/dcpxitem.cc
+           dcmdata/libsrc/dcstack.cc
+           dcmdata/libsrc/dctag.cc
+           dcmdata/libsrc/dcuid.cc
+           dcmdata/libsrc/dcvr.cc
+           dcmdata/libsrc/dcvrat.cc
+           dcmdata/libsrc/dcvrfd.cc
+           dcmdata/libsrc/dcvrfl.cc
+           dcmdata/libsrc/dcvrobow.cc
+           dcmdata/libsrc/dcvrsl.cc
+           dcmdata/libsrc/dcvrss.cc
+           dcmdata/libsrc/dcvrul.cc
+           dcmdata/libsrc/dcvrus.cc
+           dcmdata/tests/tvrdatim.cc
+           dcmnet/libsrc/cond.cc
+           dcmnet/libsrc/dimse.cc
+           dcmnet/libsrc/dulfsm.cc
+           dcmnet/libsrc/dulparse.cc
+           dcmnet/libsrc/extneg.cc
+           dcmpstat/apps/dcmmkcrv.cc
+           dcmpstat/apps/dcmmklut.cc
+           dcmpstat/apps/dcmp2pgm.cc
+           dcmpstat/apps/dcmprscp.cc
+           dcmpstat/apps/dcmprscu.cc
+           dcmpstat/apps/dcmpschk.cc
+           dcmpstat/apps/dcmpsprt.cc
+           dcmpstat/apps/dcmpsrcv.cc
+           dcmpstat/apps/dcmpssnd.cc
+           dcmpstat/include/dviface.h
+           dcmpstat/include/dvpsprt.h
+           dcmpstat/include/dvpssp.h
+           dcmpstat/include/dvsighdl.h
+           dcmpstat/libsrc/dcmpstat.cc
+           dcmpstat/libsrc/dviface.cc
+           dcmpstat/libsrc/dvpsabl.cc
+           dcmpstat/libsrc/dvpsall.cc
+           dcmpstat/libsrc/dvpscul.cc
+           dcmpstat/libsrc/dvpsdal.cc
+           dcmpstat/libsrc/dvpsgal.cc
+           dcmpstat/libsrc/dvpsgll.cc
+           dcmpstat/libsrc/dvpsgrl.cc
+           dcmpstat/libsrc/dvpsibl.cc
+           dcmpstat/libsrc/dvpsovl.cc
+           dcmpstat/libsrc/dvpspl.cc
+           dcmpstat/libsrc/dvpspll.cc
+           dcmpstat/libsrc/dvpsprt.cc
+           dcmpstat/libsrc/dvpsril.cc
+           dcmpstat/libsrc/dvpsrsl.cc
+           dcmpstat/libsrc/dvpsspl.cc
+           dcmpstat/libsrc/dvpssvl.cc
+           dcmpstat/libsrc/dvpstat.cc
+           dcmpstat/libsrc/dvpstxl.cc
+           dcmpstat/libsrc/dvpsvll.cc
+           dcmpstat/libsrc/dvpsvwl.cc
+           dcmpstat/libsrc/dvsighdl.cc
+           imagectn/apps/cnfpriv.cc
+           imagectn/apps/tiquery.cc
+           imagectn/libsrc/dbutils.cc
+
+- Removed leading underscore characters from preprocessor symbols (reserved
+  symbols).
+  Affects: dcmpstat/include/dvpsprt.h
+           dcmpstat/include/dvpssp.h
+           dcmpstat/include/dvsighdl.h
+
+- Replaced tabs by spaces.
+  Affects: dcmnet/libsrc/dulfsm.cc
+
+- Added CVS log entry at the end of the file.
+  Affects: dcmdata/include/dcrledrg.h
+
+- Removed pointer declaration from parameter "resultStack" in method
+  findAndGetElements().
+  Affects: dcmdata/apps/mdfdsman.cc
+           dcmdata/include/dcitem.h
+           dcmdata/libsrc/dcitem.cc
+
+- Adapted type casts to new-style typecast operators defined in ofcast.h.
+  Affects: dcmdata/libsrc/dcbytstr.cc
+           dcmdata/libsrc/dccodec.cc
+           dcmdata/libsrc/dcdatset.cc
+           dcmdata/libsrc/dcdicdir.cc
+           dcmdata/libsrc/dcdicent.cc
+           dcmdata/libsrc/dcdict.cc
+           dcmdata/libsrc/dcelem.cc
+           dcmdata/libsrc/dcfilefo.cc
+           dcmdata/libsrc/dchashdi.cc
+           dcmdata/libsrc/dcistrmb.cc
+           dcmdata/libsrc/dcistrmf.cc
+           dcmdata/libsrc/dcmetinf.cc
+           dcmdata/libsrc/dcobject.cc
+           dcmdata/libsrc/dcostrmb.cc
+           dcmdata/libsrc/dcostrmf.cc
+           dcmdata/libsrc/dcpcache.cc
+           dcmdata/libsrc/dcpixseq.cc
+           dcmdata/libsrc/dcpxitem.cc
+           dcmdata/libsrc/dcrlecce.cc
+           dcmdata/libsrc/dcstack.cc
+           dcmdata/libsrc/dcswap.cc
+           dcmdata/libsrc/dctag.cc
+           dcmdata/libsrc/dctagkey.cc
+           dcmdata/libsrc/dcuid.cc
+           dcmdata/libsrc/dcvr.cc
+           dcmdata/libsrc/dcvrat.cc
+           dcmdata/libsrc/dcvrfd.cc
+           dcmdata/libsrc/dcvrfl.cc
+           dcmdata/libsrc/dcvrobow.cc
+           dcmdata/libsrc/dcvrpobw.cc
+           dcmdata/libsrc/dcvrsl.cc
+           dcmdata/libsrc/dcvrss.cc
+           dcmdata/libsrc/dcvrul.cc
+           dcmdata/libsrc/dcvrus.cc
+
+- Translated remaining German comments.
+  Affects: dcmdata/libsrc/dcdicdir.cc
+
+- Updated copyright header.
+  Affects: dcmdata/libsrc/dcdictbi.cc
+
+**** Changes from 2004.01.27 (onken)
+
+- Minor corrections to manpages.
+  Affects: dcmpstat/docs/dcmpschk.man
+           dcmwlm/docs/wlmscpfs.man
+
+**** Changes from 2004.01.26 (onken)
+
+- Initial checkin of wlmscpfs manpage
+  Added:   dcmwlm/docs/wlmscpfs.man
+           dcmwlm/docs/wwwapp.man
+
+- Initial checkin of imagectn manpages
+  Added:   imagectn/docs/dbregimg.man
+           imagectn/docs/imagectn.man
+           imagectn/docs/ti.man
+
+**** Changes from 2004.01.21 (eichelberg)
+
+- The DUL FSM did not read the complete A-ASSOCIATE-RELEASE-RSP PDU from the
+  socket before closing the transport connection, possibly causing an error
+  message at the remote SCP site. Fixed.
+  Thanks to Andreas Heiduk <Andreas.Heiduk@soft-gate.de> for the bug report.
+  Affects: dcmnet/libsrc/dulfsm.cc
+
+- StoreSCU with --no-halt option now also continues if errors other than a
+  missing presentation context occur, e.g. attempt to load non-DICOM file.
+  Thanks to Jessica Brandt <jessica.brandt@mevis.de> for the suggestion.
+  Affects: dcmnet/apps/storescu.cc
+
+- Added configure test for an mkstemp() prototype. Needed on Solaris 2.5.1
+  where mkstemp() is present in libc but no prototype is defined.
+  Affects: config/configure
+           config/configure.in
+           config/include/cfunix.h.in
+           config/include/cfwin32.h
+
+- Added special handling for platforms where mkstemp() exists but no
+  prototype is defined.
+  Affects: dcmdata/libsrc/dcdicdir.cc
+
+- Fixed DOS CR/LF in preprocessor directives
+  Affects: ofstd/include/ofconsol.h
+
+- Fixed AC_CHECK_PROTOTYPE autoconf macro to support names containing
+  space or colon characters.
+  Affects: config/aclocal.m4
+
+- Added configure test for a std::fprintf prototype in <cstdio> or <stdio.h>.
+  Needed for dcmsr module with Borland Builder.
+  Affects: config/configure
+           config/configure.in
+           config/include/cfunix.h.in
+           config/include/cfwin32.h
+
+- Using std::fprintf instead of fprintf as function pointer if configure
+  symbol HAVE_PROTOTYPE_STD__FPRINTF is defined, needed on Borland Builder.
+  Affects: dcmsr/libsrc/dsrxmld.cc
+
+- Added configure test that checks if the libpng header file is to be included
+  as <png.h> or <libpng/png.h>.
+  Affects: config/configure
+           config/configure.in
+           config/include/cfunix.h.in
+           config/include/cfwin32.h
+
+- Adapted PNG export plugin to new configure test, fixed issue with local
+  variable that could be clobbered by longjmp().
+  Affects: dcmimage/libsrc/dipipng.cc
+
+- Added OFconst_cast, needed for Visual C++ 6
+  Affects: dcmimage/include/dicopxt.h
+
+**** Changes from 2004.01.20 (riesmeier)
+
+- Added new command line option which allows to write the item identifier "id"
+  (XML attribute) even if it is not required (because the item is not
+  referenced by any other item). Useful for debugging purposes.
+  Affects: dcmsr/apps/dsr2xml.cc
+           dcmsr/docs/dsr2xml.man
+           dcmsr/docs/dsr2xml.txt
+           dcmsr/include/dsrtypes.h
+           dcmsr/libsrc/dsrdoctn.cc
+           dcmsr/libsrc/dsrtypes.cc
+
+- Fixed typo.
+  Affects: dcmsr/apps/dsr2xml.cc
+
+**** Changes from 2004.01.20 (eichelberg)
+
+- Added dummy friend class to avoid warning on certain gcc releases
+  Affects: dcmdata/include/dcrledrg.h
+           dcmdata/include/dcrleerg.h
+
+**** Changes from 2004.01.16 (onken)
+
+- Initial checkin of dcmpstat manpages.
+  Added:   dcmpstat/docs/dcmmkcrv.man
+           dcmpstat/docs/dcmmklut.man
+           dcmpstat/docs/dcmp2pgm.man
+           dcmpstat/docs/dcmprscp.man
+           dcmpstat/docs/dcmprscu.man
+           dcmpstat/docs/dcmpschk.man
+           dcmpstat/docs/dcmpsmk.man
+           dcmpstat/docs/dcmpsprt.man
+           dcmpstat/docs/dcmpsrcv.man
+           dcmpstat/docs/dcmpssnd.man
+
+- Initial checkin of dcmsign manpage.
+  Added:   dcmsign/docs/dcmsign.man
+
+**** Changes from 2004.01.16 (riesmeier)
+
+- Adapted XML output format of Date, Time and Datetime to XML Schema (ISO
+  8601) requirements.
+  Affects: dcmsr/apps/dsr2xml.xsd
+           dcmsr/include/dsrdattn.h
+           dcmsr/include/dsrdtitn.h
+           dcmsr/include/dsrtimtn.h
+           dcmsr/libsrc/Makefile.dep
+           dcmsr/libsrc/dsrdoc.cc
+           dcmsr/libsrc/dsrdattn.cc
+           dcmsr/libsrc/dsrdoctn.cc
+           dcmsr/libsrc/dsrdtitn.cc
+           dcmsr/libsrc/dsrtimtn.cc
+
+- Made readXML() more robust with regard to expected XML structure.
+  Affects: dcmsr/libsrc/dsrdoc.cc
+           dcmsr/libsrc/dsrimgvl.cc
+
+- Added clear() method to struct ItemStruct.
+  Affects: dcmsr/include/dsrcsidl.h
+
+- Report more warnings when reading from XML document.
+  Affects: dcmsr/libsrc/dsrcsidl.cc
+
+- Only write <pstate/> XML element value when presentation state is valid.
+  Affects: dcmsr/libsrc/dsrimgvl.cc
+
+- Added comment regarding ISO datetime format.
+  Affects: dcmsr/libsrc/dsrtcovl.cc
+
+- Replaced OFString::resize() by ..reserve() in convertToPrintString().
+  Affects: dcmsr/libsrc/dsrtypes.cc
+
+- Added setISOFormattedXXX() methods for Date, Time and DateTime.
+  Affects: ofstd/include/ofdate.h
+           ofstd/include/ofdatime.h
+           ofstd/include/oftime.h
+           ofstd/libsrc/ofdate.cc
+           ofstd/libsrc/ofdatime.cc
+           ofstd/libsrc/oftime.cc
+           ofstd/tests/tofdatim.cc
+
+- Removed acknowledgements with e-mail addresses from CVS log.
+  Affects: dcmdata/apps/dcmdump.cc
+           dcmdata/apps/dcmgpdir.cc
+           dcmdata/apps/dump2dcm.cc
+           dcmdata/include/dcdebug.h
+           dcmdata/include/dcdicent.h
+           dcmdata/include/dcdict.h
+           dcmdata/include/dcpixel.h
+           dcmdata/include/dcrleenc.h
+           dcmdata/include/dctagkey.h
+           dcmdata/libsrc/cmdlnarg.cc
+           dcmdata/libsrc/dcdirrec.cc
+           dcmdata/libsrc/dclist.cc
+           dcmdata/libsrc/dcpixel.cc
+           dcmdata/libsrc/dcsequen.cc
+           dcmdata/libsrc/dcvrds.cc
+           dcmdata/libsrc/dcvrlt.cc
+           dcmdata/libsrc/dcvrst.cc
+           dcmdata/libsrc/dcvrut.cc
+           dcmdata/libsrc/dcvrulup.cc
+           ofstd/include/ofconapp.h
+           ofstd/include/ofconsol.h
+           ofstd/include/oflogfil.h
+           ofstd/include/ofstream.h
+           ofstd/include/ofstring.h
+           ofstd/libsrc/ofconsol.cc
+           ofstd/tests/tofdatim.cc
+           ofstd/tests/tlist.cc
+           ofstd/tests/tofstd.cc
+           ofstd/tests/tstlist.cc
+           ofstd/tests/tststack.cc
+           ofstd/tests/tstthred.cc
+
+- Replaced OFString::resize() by ..reserve() in convertToMarkupString()
+  because of STL problems with Metrowerks CodeWarrior 8.3 compiler.
+  Thanks to Arnaud Masson <arnaud.masson@kikamedical.com> for the bug report
+  and fix.
+  Affects: ofstd/libsrc/ofstd.cc
+
+- Adapted type casts to new-style typecast operators defined in ofcast.h.
+  Affects: dcmdata/apps/dcmconv.cc
+           dcmdata/apps/dcmcrle.cc
+           dcmdata/apps/dcmdrle.cc
+           dcmdata/apps/dcmdump.cc
+           dcmdata/apps/dump2dcm.cc
+           dcmdata/apps/mdfdsman.cc
+           dcmdata/apps/xml2dcm.cc
+           dcmdata/libsrc/dcxfer.cc
+           dcmdata/libsrc/dcvrtm.cc
+           dcmdata/libsrc/dcvrui.cc
+           dcmdata/libsrc/dcxfer.cc
+
+- Added missing #include "osconfig.h".
+  Affects: dcmdata/libsrc/Makefile.dep
+           dcmdata/libsrc/dcvrst.cc
+
+- Introduced new parameter "dateTimeSeparator" in getISOFormattedXXX() methods
+  to support ISO 8601 format as required by XML Schema type "dateTime".
+  Affects: dcmdata/include/dcvrdt.h
+           dcmdata/libsrc/dcvrdt.cc
+
+- Minor corrections and enhancements.
+  Affects: dcmjpeg/docs/dcmcjpeg.man
+           dcmjpeg/docs/dcmdjpeg.man
+           dcmjpeg/docs/dcmj2pnm.man
+           dcmjpeg/docs/dcmmkdir.man
+
+- Updated copyright header.
+  Affects: dcmjpeg/apps/dcmcjpeg.cc
+           dcmjpeg/apps/dcmdjpeg.cc
+           dcmjpeg/apps/dcmj2pnm.cc
+           dcmjpeg/apps/dcmmkdir.cc
+
+- Added new compatibility flag that allows to ignore the third value of LUT
+  descriptors and to determine the bits per table entry automatically.
+  Affects: dcmjpeg/docs/dcmj2pnm.txt
+
+**** Changes from 2004.01.15 (wilkens)
+
+- Added function to Worklist Management Data Source Base Class. This function
+  is needed in the private part of this toolkit.
+  Affects: dcmwlm/include/wlds.h
+
+**** Changes from 2004.01.15 (onken)
+
+- Initial checkin of dcmjpeg manpages
+  Added:   dcmjpeg/docs/dcmcjpeg.man
+           dcmjpeg/docs/dcmdjpeg.man
+           dcmjpeg/docs/dcmj2pnm.man
+           dcmjpeg/docs/dcmmkdir.man
+
+- Initial checkin of dcmnet manpages
+  Added:   dcmnet/docs/echoscu.man
+           dcmnet/docs/findscu.man
+           dcmnet/docs/movescu.man
+           dcmnet/docs/storescp.man
+           dcmnet/docs/storescu.man
+
+**** Changes from 2004.01.08 (wilkens)
+
+- Added list of supported matching and return keys into documentation
+  for wlmscpfs.
+  Affects: dcmwlm/docs/wlmscpfs.txt
+
+**** Changes from 2004.01.07 (wilkens)
+
+- Fixed typo in comment.
+  Affects: dcmwlm/include/wlds.h
+
+- Added new sequence type return key attributes to wlmscpfs. Fixed bug that for
+  equally named attributes in sequences always the same value will be returned.
+  Added functionality that also more than one item will be returned in sequence
+  type return key attributes.
+  Affects: dcmwlm/include/wlds.h
+           dcmwlm/include/wldsfs.h
+           dcmwlm/include/wlfsim.h
+           dcmwlm/include/wltypdef.h
+           dcmwlm/libsrc/wlds.cc
+           dcmwlm/libsrc/wldsfs.cc
+           dcmwlm/libsrc/wlfsim.cc
+
+**** Changes from 2004.01.05 (riesmeier)
+
+- Renamed XML attribute "ref_id" to "ref".
+  Affects: dcmsr/apps/dsr2xml.xsd
+           dcmsr/include/dsrxmld.h
+           dcmsr/libsrc/dsrreftn.cc
+           dcmsr/libsrc/dsrxmld.cc
+
+- Removed acknowledgements with e-mail addresses from CVS log.
+  Affects: dcmimage/apps/dcm2pnm.cc
+           dcmimgle/apps/dconvlum.cc
+           dcmimgle/include/diimage.h
+           dcmimgle/include/diinpxt.h
+           dcmimgle/include/dimoipxt.h
+           dcmimgle/include/dimoopx.h
+           dcmimgle/include/dimopxt.h
+           dcmimgle/include/diovpln.h
+           dcmimgle/include/discalet.h
+           dcmimgle/libsrc/diciefn.cc
+           dcmimgle/libsrc/didispfn.cc
+           dcmimgle/libsrc/digsdfn.cc
+           dcmimgle/libsrc/diutils.cc
+           dcmsr/apps/dsr2html.cc
+           dcmsr/apps/dsr2xml.cc
+           dcmsr/apps/dsrdump.cc
+           dcmsr/include/dsrdoc.h
+           dcmsr/include/dsrtypes.h
+           dcmsr/libsrc/dsrdoc.cc
+           dcmsr/libsrc/dsrdoctn.cc
+           dcmsr/libsrc/dsrtextn.cc
+           dcmsr/libsrc/dsrtypes.cc
+           dcmsr/tests/mkreport.cc
+
+- Adapted type casts to new-style typecast operators defined in ofcast.h.
+  Affects: dcmimage/apps/dcm2pnm.cc
+
+**** Changes from 2004.01.02 (wilkens)
+
+- Integrated new return key attributes into wlmscpfs and updated function that
+  checks integrity of matching key attribute values (added support for new VR).
+  Affects: dcmwlm/include/wlds.h
+           dcmwlm/libsrc/wlds.cc
+
+**** Changes from 2003.12.23 (riesmeier)
+
+- Added missing API documentation.
+  Affects: dcmimage/include/dicomot.h
+           dcmimage/include/dicoopx.h
+           dcmimage/include/dicoopxt.h
+           dcmimage/include/dicopxt.h
+           dcmimage/include/diregist.h
+           dcmimage/include/diyf2pxt.h
+           dcmimage/include/diyp2pxt.h
+
+- Updated documentation to get rid of doxygen warnings.
+  Affects: dcmimgle/include/dimoimg.h
+           dcmimgle/include/dimoopxt.h
+           dcmimage/include/dipipng.h
+
+- Adapted type casts to new-style typecast operators defined in ofcast.h.
+  Affects: dcmimage/include/diargpxt.h
+           dcmimage/include/dicmypxt.h
+           dcmimage/include/dicocpt.h
+           dcmimage/include/dicoflt.h
+           dcmimage/include/dicomot.h
+           dcmimage/include/dicoopxt.h
+           dcmimage/include/dicopxt.h
+           dcmimage/include/dicorot.h
+           dcmimage/include/dicosct.h
+           dcmimage/include/dihsvpxt.h
+           dcmimage/include/dipalpxt.h
+           dcmimage/include/diqtcmap.h
+           dcmimage/include/diqtctab.h
+           dcmimage/include/diqtfs.h
+           dcmimage/include/diqtpix.h
+           dcmimage/include/diqtstab.h
+           dcmimage/include/dirgbpxt.h
+           dcmimage/include/diybrpxt.h
+           dcmimage/include/diybrpxt.h
+           dcmimage/include/diyf2pxt.h
+           dcmimage/include/diyp2pxt.h
+
+- Updated copyright header.
+  Affects: dcmimage/include/diargpxt.h
+           dcmimage/include/dicmypxt.h
+           dcmimage/include/dicocpt.h
+           dcmimage/include/dicoflt.h
+           dcmimage/include/dicomot.h
+           dcmimage/include/dicoopxt.h
+           dcmimage/include/dicopxt.h
+           dcmimage/include/dicorot.h
+           dcmimage/include/dicosct.h
+           dcmimage/include/dihsvpxt.h
+           dcmimage/include/dipalpxt.h
+           dcmimage/include/diqtcmap.h
+           dcmimage/include/diqtctab.h
+           dcmimage/include/diqtfs.h
+           dcmimage/include/diqthash.h
+           dcmimage/include/diqthitm.h
+           dcmimage/include/diqtid.h
+           dcmimage/include/diqtpbox.h
+           dcmimage/include/diqtpix.h
+           dcmimage/include/diqtstab.h
+           dcmimage/include/diqttype.h
+           dcmimage/include/diquant.h
+           dcmimage/include/dirgbpxt.h
+           dcmimage/include/diybrpxt.h
+           dcmimage/include/diybrpxt.h
+           dcmimage/include/diyf2pxt.h
+           dcmimage/include/diyp2pxt.h
+           dcmimage/libsrc/dicoopx.cc
+           dcmimage/libsrc/dicopx.cc
+           dcmimage/libsrc/diregist.cc
+           dcmimage/libsrc/diyf2img.cc
+           dcmimage/libsrc/diyp2img.cc
+
+- Removed leading underscore characters from preprocessor symbols (reserved
+  symbols).
+  Affects: dcmimage/include/diargpxt.h
+           dcmimage/include/dicmypxt.h
+           dcmimage/include/dicocpt.h
+           dcmimage/include/dicoflt.h
+           dcmimage/include/dicomot.h
+           dcmimage/include/dicoopxt.h
+           dcmimage/include/dicopxt.h
+           dcmimage/include/dicorot.h
+           dcmimage/include/dicosct.h
+           dcmimage/include/dihsvpxt.h
+           dcmimage/include/dipalpxt.h
+           dcmimage/include/dirgbpxt.h
+           dcmimage/include/diybrpxt.h
+           dcmimage/include/diybrpxt.h
+           dcmimage/include/diyf2pxt.h
+           dcmimage/include/diyp2pxt.h
+
+- Rebuilt makefile dependencies.
+  Affects: dcmimage/apps/Makefile.dep
+           dcmimage/libsrc/Makefile.dep
+
+- Replaced post-increment/decrement operators by pre-increment/decrement
+  operators where appropriate (e.g. 'i++' by '++i').
+  Affects: dcmimage/include/diargpxt.h
+           dcmimage/include/dicmypxt.h
+           dcmimage/include/dicoopxt.h
+           dcmimage/include/dicopxt.h
+           dcmimage/include/dihsvpxt.h
+           dcmimage/include/dipalpxt.h
+           dcmimage/include/dirgbpxt.h
+           dcmimage/include/diybrpxt.h
+           dcmimage/include/diyf2pxt.h
+           dcmimage/include/diyp2pxt.h
+           dcmimgle/apps/dcmdspfn.cc
+           dcmimgle/apps/dcod2lum.cc
+           dcmimgle/apps/dconvlum.cc
+           dcmimgle/include/dicrvfit.h
+           dcmimgle/include/diflipt.h
+           dcmimgle/include/diinpxt.h
+           dcmimgle/include/dimoipxt.h
+           dcmimgle/include/dimoopxt.h
+           dcmimgle/include/dimopxt.h
+           dcmimgle/include/diobjcou.h
+           dcmimgle/include/dirotat.h
+           dcmimgle/include/discalet.h
+           dcmimgle/include/displint.h
+           dcmimgle/include/ditranst.h
+           dcmimgle/include/diutils.h
+           dcmimgle/libsrc/dcmimage.cc
+           dcmimgle/libsrc/dibaslut.cc
+           dcmimgle/libsrc/dicielut.cc
+           dcmimgle/libsrc/didispfn.cc
+           dcmimgle/libsrc/digsdfn.cc
+           dcmimgle/libsrc/digsdlut.cc
+           dcmimgle/libsrc/diimage.cc
+           dcmimgle/libsrc/diluptab.cc
+           dcmimgle/libsrc/dimoimg.cc
+           dcmimgle/libsrc/diovdat.cc
+           dcmimgle/libsrc/diovlay.cc
+           dcmimgle/libsrc/diovlimg.cc
+           dcmimgle/libsrc/diovpln.cc
+
+- Updated "HTML documentation" section.
+  Affects: INSTALL
+
+**** Changes from 2003.12.23 (wilkens)
+
+- Integrated new matching key attributes into wlmscpfs.
+  Affects: dcmwlm/include/wlds.h
+           dcmwlm/include/wlfsim.h
+           dcmwlm/include/wltypdef.h
+           dcmwlm/libsrc/wlds.cc
+           dcmwlm/libsrc/wlfsim.cc
+
+- Updated matching algorithm in wlmscpfs so that universal matching key
+  attributes will also lead to a match in case the corresponding attribute does
+  does exist in the dataset.
+  Affects: dcmwlm/libsrc/wlfsim.cc
+
+- Updated dsp-files in module dcmpstat.
+  Affects: dcmpstat/apps/dcmmkcrv.dsp
+           dcmpstat/apps/dcmmklut.dsp
+           dcmpstat/apps/dcmp2pgm.dsp
+           dcmpstat/apps/dcmprscp.dsp
+           dcmpstat/apps/dcmprscu.dsp
+           dcmpstat/apps/dcmpschk.dsp
+           dcmpstat/apps/dcmpsmk.dsp
+           dcmpstat/apps/dcmpsprt.dsp
+           dcmpstat/apps/dcmpsrcv.dsp
+           dcmpstat/apps/dcmpssnd.dsp
+           dcmpstat/libsrc/dcmpstat.dsp
+
+**** Changes from 2003.12.19 (eichelberg)
+
+- DVInterface::terminatePrintServer now also correctly terminates
+  TLS-based print server processes.
+  Affects: dcmpstat/CMakeLists.txt
+           dcmpstat/libsrc/Makefile.in
+           dcmpstat/libsrc/dviface.cc
+
+- Completed support for terminating TLS-based print server processes
+  Affects: dcmpstat/apps/CMakeLists.txt
+           dcmpstat/apps/Makefile.in
+           dcmpstat/libsrc/dviface.cc
+
+**** Changes from 2003.12.18 (eichelberg)
+
+- During creation of default presentation state from image the Modality LUT
+  is now ignored for XA, RF and XA Biplane SOP instances
+  Affects: dcmpstat/libsrc/dcmpstat.cc
+
+- Fixed print preview for MONOCHROME1 images with IDENTITY P-LUT shape
+  Affects: dcmpstat/libsrc/dvpspl2.cc
+
+- Added standard includes needed by Borland Builder
+  Thanks to Gordon Klos <klos@convis.de> for the suggestion.
+  Affects: dcmtls/libsrc/tlslayer.cc
+
+**** Changes from 2003.12.18 (riesmeier)
+
+- Updated TCL script to reflect changes in dcmdump output.
+  Affects: dcmdata/tests/dcmpsdmp.tcl
+
+- Fixed bug in timezone calculation (difference of local time from UTC).
+  Thanks to Anibal Jodorcovsky <anibal@intelerad.com> for the report.
+  Affects: ofstd/libsrc/oftime.cc
+
+**** Changes from 2003.12.17 (onken)
+
+- MdfDatasetManager now remembers loaded filename. Additional save function
+  added.
+  Affects: dcmdata/apps/mdfdsman.cc
+           dcmdata/apps/mdfdsman.h
+
+**** Changes from 2003.12.17 (eichelberg)
+
+- Removed unused macros
+  Thanks to Michael Doppler <m.doppler@icoserve.com> for the suggestion.
+  Affects: dcmnet/include/dcompat.h
+
+- Added configure test that checks if libtiff supports LZW compression
+  Affects: config/aclocal.m4
+           config/configure
+           config/configure.in
+           config/include/cfunix.h.in
+           config/include/cfwin32.h
+
+- Command line options for and defaults for TIFF export now depend on
+  whether or not libtiff supports LZW compression
+  Affects: dcmimage/apps/dcm2pnm.cc
+
+- Changed definition of COUT and CERR macros to allow redirection to file.
+  Thanks to Markus Sabin <sabin@convis.de> for the suggestion.
+  Affects: ofstd/include/ofconsol.h
+
+- Changed order of inheritance to avoid internal compiler error on Borland Builder.
+  Thanks to Gordon Klos <klos@convis.de> for the suggestion.
+  Affects: dcmsr/include/dsrtree.h
+
+**** Changes from 2003.12.17 (riesmeier)
+
+- Fixed bug/inconsistency in comparison operators of class OFTime. Now the
+  "time overflow" is handled correctly.
+  Thanks to Anibal Jodorcovsky <anibal@intelerad.com> for the report.
+  Affects: ofstd/include/oftime.h
+           ofstd/libsrc/oftime.cc
+
+- Added note to the comparison operators that the "day overflow" is not yet
+  handled correctly.
+  Affects: ofstd/include/ofdatime.h
+           ofstd/libsrc/ofdatime.cc
+
+- Added test cases for comparing both time and date/time values.
+  Affects: ofstd/tests/tofdatim.cc
+
+- Added new compatibility flag that allows to ignore the third value of LUT
+  descriptors and to determine the bits per table entry automatically.
+  Affects: dcmimage/apps/dcm2pnm.cc
+           dcmimage/docs/dcm2pnm.man
+           dcmimage/docs/dcm2pnm.txt
+           dcmimage/libsrc/diargimg.cc
+           dcmimage/libsrc/dipalimg.cc
+           dcmimgle/include/dcmimage.h
+           dcmimgle/include/diluptab.h
+           dcmimgle/include/dimoimg.h
+           dcmimgle/include/diutils.h
+           dcmimgle/libsrc/diluptab.cc
+           dcmimgle/libsrc/dimoimg.cc
+           dcmimgle/libsrc/dimomod.cc
+
+- Adapted type casts to new-style typecast operators defined in ofcast.h.
+  Affects: dcmimage/libsrc/diargimg.cc
+           dcmimage/libsrc/dicmyimg.cc
+           dcmimage/libsrc/dicoimg.cc
+           dcmimage/libsrc/dihsvimg.cc
+           dcmimage/libsrc/dipalimg.cc
+           dcmimage/libsrc/dipipng.cc
+           dcmimage/libsrc/dipitiff.cc
+           dcmimage/libsrc/diqtctab.cc
+           dcmimage/libsrc/diqtfs.cc
+           dcmimage/libsrc/diqthash.cc
+           dcmimage/libsrc/diqtpbox.cc
+           dcmimage/libsrc/diquant.cc
+           dcmimage/libsrc/dirgbimg.cc
+           dcmimage/libsrc/diybrimg.cc
+
+- Renamed parameters/variables "list" to avoid name clash with STL class.
+  Affects: dcmimage/include/diqthitl.h
+           dcmimage/libsrc/diqthitl.cc
+
+- Added missing filename entry to MSVC project file (dsrprocc.cxx).
+  Affects: dcmsr/libsrc/dcmsr.dsp
+
+- Removed leading underscore characters from preprocessor symbols (reserved
+  symbols).
+  Affects: dcmimage/include/diargimg.h
+           dcmimage/include/dicmyimg.h
+           dcmimage/include/dicoimg.h
+           dcmimage/include/dicoopx.h
+           dcmimage/include/dicopx.h
+           dcmimage/include/dihsvimg.h
+           dcmimage/include/dipalimg.h
+           dcmimage/include/dipipng.h
+           dcmimage/include/dipitiff.h
+           dcmimage/include/diregist.h
+           dcmimage/include/dirgbimg.h
+           dcmimage/include/diybrimg.h
+           dcmimage/include/diyf2img.h
+           dcmimage/include/diyp2img.h
+
+**** Changes from 2003.12.16 (riesmeier)
+
+- Added note on coding scheme identification and private coding schemes.
+  Affects: dcmsr/include/dsrcodvl.h
+           dcmsr/include/dsrcsidl.h
+
+- Added note that the condition for the Content Template Sequence is currently
+  not checked.
+  Affects: dcmsr/include/dsrcitem.h
+           dcmsr/include/dsrdoctn.h
+
+**** Changes from 2003.12.11 (riesmeier)
+
+- Added initial version of man pages for dcmimage command line tools.
+  Added:   dcmimage/docs/dcm2pnm.man
+           dcmimage/docs/dcmquant.man
+           dcmimage/docs/dcmscale.man
+
+- Made usage output consistent with other tools.
+  Affects: dcmimage/apps/dcm2pnm.cc
+           dcmimage/apps/dcmscale.cc
+
+- Made command line options section consistent with the corresponding tool.
+  Affects: dcmimage/docs/dcmscale.txt
+
+- Removed reference to non-existing command line tool "dcmjscal".
+  Affects: dcmimage/docs/dcmscale.txt
+
+- Made documentation consistent with other tools.
+  Affects: dcmdata/docs/dcm2xml.man
+           dcmdata/docs/dcmcrle.man
+
+- Adapted documentation of print() method to new output format of CodingScheme
+  Version (square brackets instead of comma to separate from CodingScheme).
+  Affects: dcmsr/include/dsrcodvl.h
+
+- Added comment to getOutputData/Plane() methods that the rendered pixel data
+  is always unsigned.
+  Affects: dcmimgle/include/dcmimage.h
+
+**** Changes from 2003.12.11 (wilkens)
+
+- Updated dox file for module dcmwlm.
+  Affects: dcmwlm/docs/dcmwlm.dox
+
+**** Changes from 2003.12.11 (eichelberg)
+
+- Synchronized Win32 configuration header with Autoconf 2.5x version
+  Affects: config/include/cfwin32.h
+
+- Updated configure support files from Autoconf 2.58
+  Affects: config/config.guess
+           config/config.sub
+           config/install-sh
+           config/mkinstalldirs
+
+- Added configure tests for <new.h> and std::nothrow
+  Affects: config/aclocal.m4
+           config/configure
+           config/configure.in
+           config/include/cfunix.h.in
+           config/include/cfwin32.h
+
+- Added support for including <new> or <new.h>
+  Affects: ofstd/include/ofstdinc.h
+
+- newValueField() now uses std::nothrow new if available
+  Affects: dcmdata/libsrc/dcelem.cc
+           dcmdata/libsrc/dcbytstr.cc
+
+**** Changes from 2003.12.11 (wilkens)
+
+- Added function to Worklist Management Data Source Base Class. This function
+  is needed in the private part of this toolkit.
+  Affects: dcmwlm/include/wlds.h
+
+**** Changes from 2003.12.10 (onken)
+
+- Changed API of MdfDatasetManager, so that its transparent for user, whether
+  he wants to modify itemtags or tags at 1. level
+  Affects: dcmdata/apps/mdfdsman.cc
+           dcmdata/apps/mdfdsman.h
+
+- Complete rewrite of MdfConsoleEngine. It doesn't support a batchfile any
+  more, but now a user can give different modify-options at the same time on
+  commandline. Other purifications and simplifications were made.
+  Affects: dcmdata/apps/mdfconen.cc
+           dcmdata/apps/mdfconen.h
+
+- Changed documentation according to dcmodify modifications.
+  Affects: dcmdata/docs/dcmodify.man
+           dcmdata/docs/dcmodify.txt
+
+**** Changes from 2003.12.10 (eichelberg)
+
+- Re-worked configure scripts for Autoconf 2.5x
+  Presence of external library is now checked automatically.
+  Affects: config/Makefile.in
+           config/aclocal.m4
+           config/configure
+           config/configure.in
+           config/confmod
+           config/include/cfunix.h.in
+  Removed: config/acconfig.h
+
+**** Changes from 2003.12.09 (riesmeier)
+
+- Added initial version of man pages for dcmimgle command line tools.
+  Added:   dcmimgle/docs/dcmdspfn.man
+           dcmimgle/docs/dcod2lum.man
+           dcmimgle/docs/dconvlum.man
+
+- Adapted module's description to new module titles.
+  Affects: dcmimage/docs/dcmimage.dox
+           dcmimgle/docs/dcmimgle.dox
+
+- Added missing command line section.
+  Affects: dcmdata/docs/xml2dcm.man
+
+- Adapted type casts to new-style typecast operators defined in ofcast.h.
+  Affects: dcmimgle/include/dimoopxt.h
+           dcmimgle/include/dimopxt.h
+           dcmimgle/include/dimosct.h
+           dcmimgle/include/diovpln.h
+           dcmimgle/include/dirotat.h
+           dcmimgle/include/discalet.h
+
+- Updated copyright header.
+  Affects: dcmimgle/include/dimoopxt.h
+           dcmimgle/include/dimopxt.h
+           dcmimgle/include/dimosct.h
+           dcmimgle/include/diovdat.h
+           dcmimgle/include/diovlimg.h
+           dcmimgle/include/diovpln.h
+           dcmimgle/include/dipixel.h
+           dcmimgle/include/dirotat.h
+           dcmimgle/include/discalet.h
+
+- Removed leading underscore characters from preprocessor symbols (reserved
+  symbols).
+  Affects: dcmimgle/include/dimoopxt.h
+           dcmimgle/include/dimopxt.h
+           dcmimgle/include/dimosct.h
+           dcmimgle/include/diovdat.h
+           dcmimgle/include/diovlimg.h
+           dcmimgle/include/diovpln.h
+           dcmimgle/include/dipixel.h
+           dcmimgle/include/dirotat.h
+           dcmimgle/include/discalet.h
+
+- Renamed macros.
+  Affects: dcmimgle/include/discalet.h
+
+- Rebuilt makefile dependencies.
+  Affects: dcmimgle/apps/Makefile.dep
+           dcmimgle/libsrc/Makefile.dep
+
+- Added define/symbol "MANPAGES" to ENABLED_SECTIONS to distinguish between
+  creation of manpages and HTML documentation.
+  Affects: doxygen/manpages.cfg
+
+- Reworked title/label approach for referenced sections/documents.
+  Affects: config/docs/config.dox
+           dcmdata/docs/dcm2xml.man
+           dcmdata/docs/dcmconv.man
+           dcmdata/docs/dcmcrle.man
+           dcmdata/docs/dcmdata.dox
+           dcmdata/docs/dcmdrle.man
+           dcmdata/docs/dcmdump.man
+           dcmdata/docs/dcmftest.man
+           dcmdata/docs/dcmgpdir.man
+           dcmdata/docs/dcmodify.man
+           dcmdata/docs/dump2dcm.man
+           dcmdata/docs/xml2dcm.man
+           dcmimage/docs/dcmimage.dox
+           dcmimgle/docs/dcmdspfn.man
+           dcmimgle/docs/dcmimgle.dox
+           dcmimgle/docs/dcod2lum.man
+           dcmimgle/docs/dconvlum.man
+           dcmjpeg/docs/dcmjpeg.dox
+           dcmnet/docs/dcmnet.dox
+           dcmpstat/docs/dcmpstat.dox
+           dcmsign/docs/dcmsign.dox
+           dcmsr/docs/dcmsr.dox
+           dcmsr/docs/dsr2html.man
+           dcmsr/docs/dsr2xml.man
+           dcmsr/docs/dsrdump.man
+           dcmsr/docs/xml2dsr.man
+           dcmtls/docs/dcmtls.dox
+           dcmwlm/docs/dcmwlm.dox
+           imagectn/docs/imagectn.dox
+           ofstd/docs/ofstd.dox
+           doxygen/htmldocs.dox
+
+- Fixed tiny bug that was buried in the source code since version 3.4.1 and
+  which affected the output of signed 8 bit pixel data with modality LUT.
+  Affects: dcmimgle/libsrc/dimoimg.cc
+
+**** Changes from 2003.12.09 (eichelberg)
+
+- Removed unused debug output
+  Affects: dcmnet/libsrc/dul.cc
+
+**** Changes from 2003.12.08 (riesmeier)
+
+- Return more appropriate error codes in getAndCheckXXX() routines.
+  Affects: dcmsr/libsrc/dsrtypes.cc
+
+- Added initial version of man pages for dcmsr command line tools.
+  Added:   dcmsr/docs/dsr2html.man
+           dcmsr/docs/dsr2xml.man
+           dcmsr/docs/dsrdump.man
+           dcmsr/docs/xml2dsr.man
+
+- Added preliminary version of Doxygen file for module "config".
+  Added    config/docs/config.dox
+           doxygen/htmldocs.cfg
+
+- Updated configuration file for Doxygen 1.3.5.
+  Affects: doxygen/htmldocs.cfg
+           doxygen/manpages.cfg
+
+- Revised main page of the toolkit's Doxygen documentation.  Solved issue with
+  label duplicate.
+  Affects: doxygen/htmldocs.dox
+
+- Replaced \defgroup by \page to avoid the creation of a separate Module page.
+  Affects: dcmdata/docs/dcmdata.dox
+           dcmimage/docs/dcmimage.dox
+           dcmimgle/docs/dcmimgle.dox
+           dcmjpeg/docs/dcmjpeg.dox
+           dcmnet/docs/dcmnet.dox
+           dcmpstat/docs/dcmpstat.dox
+           dcmsign/docs/dcmsign.dox
+           dcmtls/docs/dcmtls.dox
+           dcmwlm/docs/dcmwlm.dox
+           imagectn/docs/imagectn.dox
+           ofstd/docs/ofstd.dox
+
+- Improved module's documentation.
+  Affects: dcmdata/docs/dcmdata.dox
+           dcmsr/docs/dcmsr.dox
+
+- Added missing line breaks.
+  Affects: dcmdata/docs/dcmgpdir.man
+           dcmnet/docs/dcmnet.dox
+
+- Adapted type casts to new-style typecast operators defined in ofcast.h.
+  Affects: dcmimgle/apps/dcmdspfn.cc
+           dcmimgle/include/dibaslut.h
+           dcmimgle/include/dicrvfit.h
+           dcmimgle/include/diflipt.h
+           dcmimgle/include/diinpxt.h
+           dcmimgle/include/dcmimage.h
+           dcmimgle/include/dimocpt.h
+           dcmimgle/include/dimoflt.h
+           dcmimgle/include/dimomod.h
+           dcmimgle/include/dimoimg.h
+           dcmimgle/include/dimoipxt.h
+           dcmimgle/include/dimopx.h
+           dcmimgle/include/dimorot.h
+           dcmimgle/include/diovlay.h
+           dcmimgle/include/displint.h
+           dcmimgle/include/ditranst.h
+           dcmimgle/include/diutils.h
+           dcmimgle/libsrc/dcmimage.cc
+           dcmimgle/libsrc/dicielut.cc
+           dcmimgle/libsrc/didispfn.cc
+           dcmimgle/libsrc/didocu.cc
+           dcmimgle/libsrc/digsdfn.cc
+           dcmimgle/libsrc/digsdlut.cc
+           dcmimgle/libsrc/diimage.cc
+           dcmimgle/libsrc/diluptab.cc
+           dcmimgle/libsrc/dimo1img.cc
+           dcmimgle/libsrc/dimo2img.cc
+           dcmimgle/libsrc/dimoimg.cc
+           dcmimgle/libsrc/dimomod.cc
+           dcmimgle/libsrc/dimoopx.cc
+           dcmimgle/libsrc/diovlay.cc
+           dcmimgle/libsrc/diovlimg.cc
+           dcmimgle/libsrc/diovpln.cc
+
+- Added heuristics to determine the bit depth of a lookup table in case the
+  stored value is out of the expected range.
+  Affects: dcmimgle/libsrc/diluptab.cc
+
+- Updated CVS header.
+  Affects: dcmimgle/apps/dcmdspfn.cc
+           dcmimgle/include/dibaslut.h
+           dcmimgle/include/dicielut.h
+           dcmimgle/include/dcmimage.h
+           dcmimgle/include/didispfn.h
+           dcmimgle/include/didocu.h
+           dcmimgle/include/digsdfn.h
+           dcmimgle/include/digsdlut.h
+           dcmimgle/include/diimage.h
+           dcmimgle/include/diluptab.h
+           dcmimgle/include/dimo1img.h
+           dcmimgle/include/dimo2img.h
+           dcmimgle/include/dimoimg.h
+           dcmimgle/include/dimoipxt.h
+           dcmimgle/include/diovlay.h
+           dcmimgle/include/diregbas.h
+           dcmimgle/libsrc/diciefn.cc
+           dcmimgle/libsrc/dicielut.cc
+           dcmimgle/libsrc/digsdfn.cc
+           dcmimgle/libsrc/digsdlut.cc
+           dcmimgle/libsrc/dimo1img.cc
+           dcmimgle/libsrc/dimo2img.cc
+           dcmimgle/libsrc/dimomod.cc
+           dcmimgle/libsrc/diovlimg.cc
+
+- Updated copyright header.
+  Affects: dcmimgle/apps/dcod2lum.cc
+           dcmimgle/apps/dconvlum.cc
+           dcmimgle/include/diciefn.h
+           dcmimgle/include/dicrvfit.h
+           dcmimgle/include/didislut.h
+           dcmimgle/include/diflipt.h
+           dcmimgle/include/diinpx.h
+           dcmimgle/include/diinpxt.h
+           dcmimgle/include/dimocpt.h
+           dcmimgle/include/dimoflt.h
+           dcmimgle/include/dimomod.h
+           dcmimgle/include/dimoopx.h
+           dcmimgle/include/dimopx.h
+           dcmimgle/include/dimorot.h
+           dcmimgle/include/diobjcou.h
+           dcmimgle/include/diplugin.h
+           dcmimgle/include/dipxrept.h
+           dcmimgle/include/diregbas.h
+           dcmimgle/include/displint.h
+           dcmimgle/include/ditranst.h
+           dcmimgle/include/diutils.h
+           dcmimgle/libsrc/dibaslut.cc
+           dcmimgle/libsrc/didislut.cc
+           dcmimgle/libsrc/diinpx.cc
+           dcmimgle/libsrc/dimoimg3.cc
+           dcmimgle/libsrc/dimoimg4.cc
+           dcmimgle/libsrc/dimoimg5.cc
+           dcmimgle/libsrc/dimopx.cc
+           dcmimgle/libsrc/diovdat.cc
+           dcmimgle/libsrc/diutils.cc
+
+- Removed leading underscore characters from preprocessor symbols (reserved
+  symbols).
+  Affects: dcmimgle/include/dibaslut.h
+           dcmimgle/include/diciefn.h
+           dcmimgle/include/dicielut.h
+           dcmimgle/include/dicrvfit.h
+           dcmimgle/include/dcmimage.h
+           dcmimgle/include/didislut.h
+           dcmimgle/include/didispfn.h
+           dcmimgle/include/didocu.h
+           dcmimgle/include/diflipt.h
+           dcmimgle/include/digsdfn.h
+           dcmimgle/include/digsdlut.h
+           dcmimgle/include/diimage.h
+           dcmimgle/include/diinpx.h
+           dcmimgle/include/diinpxt.h
+           dcmimgle/include/diluptab.h
+           dcmimgle/include/dimo1img.h
+           dcmimgle/include/dimo2img.h
+           dcmimgle/include/dimocpt.h
+           dcmimgle/include/dimoflt.h
+           dcmimgle/include/dimomod.h
+           dcmimgle/include/dimoimg.h
+           dcmimgle/include/dimoipxt.h
+           dcmimgle/include/dimoopx.h
+           dcmimgle/include/dimopx.h
+           dcmimgle/include/dimorot.h
+           dcmimgle/include/diobjcou.h
+           dcmimgle/include/diovlay.h
+           dcmimgle/include/diplugin.h
+           dcmimgle/include/dipxrept.h
+           dcmimgle/include/diregbas.h
+           dcmimgle/include/displint.h
+           dcmimgle/include/ditranst.h
+           dcmimgle/include/diutils.h
+
+- Added comment that class DiDocument is meant for internal purposes only.
+  Affects: dcmimgle/include/didocu.h
+
+- Added note that certain color models have been retired from the standard.
+  Affects: dcmimgle/include/diutils.h
+
+**** Changes from 2003.12.05 (eichelberg)
+
+- Added module documentation and sample code.
+  Affects: dcmsign/docs/dcmsign.dox
+           dcmjpeg/docs/dcmjpeg.dox
+           dcmtls/docs/dcmtls.dox
+           dcmnet/docs/dcmnet.dox
+           dcmpstat/docs/dcmpstat.dox
+
+**** Changes from 2003.12.05 (riesmeier)
+
+- Added support for iterating over command line arguments and options.
+  Afefcts: ofstd/include/ofcmdln.h
+           ofstd/libsrc/ofcmdln.cc
+
+- Removed leading underscore characters from preprocessor symbols (reserved
+  symbols). Updated copyright date where appropriate.
+  Affects: dcmjpeg/include/dipijpeg.h
+           dcmnet/include/dcmlayer.h
+           dcmnet/include/dcmtrans.h
+           dcmtls/include/tlslayer.h
+           dcmtls/include/tlstrans.h
+           imagectn/include/dbstore.h
+           ofstd/include/ofcmdln.h
+           ofstd/include/ofbmanip.h
+           ofstd/include/ofconapp.h
+           ofstd/include/ofcond.h
+           ofstd/include/ofconsol.h
+           ofstd/include/ofcrc32.h
+           ofstd/include/offname.h
+           ofstd/include/ofglobal.h
+           ofstd/include/oflogfil.h
+           ofstd/include/ofstd.h
+           ofstd/include/ofstream.h
+           ofstd/include/ofthread.h
+           ofstd/include/oftimer.h
+
+- Adapted type casts to new-style typecast operators defined in ofcast.h.
+  Affects: dcmimage/apps/dcm2pnm.cc
+           dcmimage/apps/dcmquant.cc
+           dcmimage/apps/dcmscale.cc
+
+- Fixed bug in 8-bit PGM/PPM export (missing "break" in "switch" statement).
+  Affects: dcmimage/apps/dcm2pnm.cc
+
+- Fixed problem with retrieving option values using the new iteration feature.
+  Affects: ofstd/include/ofcmdln.h
+           ofstd/libsrc/ofcmdln.cc
+
+- Only report warning on incorrect template identifier when actually expecting
+  one (i.e. only for particular SOP classes).
+  Affects: dcmsr/libsrc/dsrdoctn.cc
+
+**** Changes from 2003.12.02 (riesmeier)
+
+- Replaced wrong newline character sequence.
+  Affects: dcmsr/libsrc/dsrscogr.cc
+           dcmsr/libsrc/dsrwavch.cc
+
+**** Changes from 2003.12.02 (eichelberg)
+
+- Changed a few typecasts for static to reinterpret, required
+  for NetBSD and OpenBSD
+  Affects: ofstd/libsrc/ofthread.cc
+
+- Removed linkage against unused libraries
+  Affects: dcmpstat/apps/Makefile.in
+
+- Introduced special handling of compiler flags on OpenBSD
+  Affects: config/configure
+           config/configure.in
+
+**** Changes from 2003.12.01 (eichelberg)
+
+- Fixed handling of LIN OD LUT Shape
+  Affects: dcmpstat/apps/dcmpsprt.cc
+
+**** Changes from 2003.12.01 (riesmeier)
+
+- Changed XML encoding of by-reference relationships if flag
+  XF_valueTypeAsAttribute is set.
+  Affects: dcmsr/include/dsrtypes.h
+           dcmsr/include/dsrxmld.h
+           dcmsr/libsrc/dsrdoctn.cc
+           dcmsr/libsrc/dsrreftn.cc
+           dcmsr/libsrc/dsrtypes.cc
+           dcmsr/libsrc/dsrxmld.cc
+
+- Added text that SOP classes from supplement 66 are also supported.
+  Affects: dcmsr/docs/dsr2html.txt
+           dcmsr/docs/dsr2xml.txt
+           dcmsr/docs/dsrdump.txt
+           dcmsr/docs/xml2dsr.txt
+
+**** Changes from 2003.11.28 (riesmeier)
+
+- Changed output format of CodingSchemeVersion in print() and renderHTML().
+  Now using square brackets instead of comma to separate from CodingScheme.
+  Affects: dcmsr/libsrc/dsrcodvl.cc
+           dcmsr/libsrc/dsrdoc.cc
+
+**** Changes from 2003.11.28 (onken)
+
+- removed wrong manpage modifications from last commit
+  Affects: dcmdata/docs/dcmgpdir.txt
+
+**** Changes from 2003.11.13 (eichelberg)
+
+- Fixed definition of DCM_UndefinedTagKey
+  Thanks to Stefan Allers <stefan.allers@gmx.de> for the bug report.
+  Affects: dcmdata/include/dctagkey.h
+
+**** Changes from 2003.11.13 (riesmeier)
+
+- Revised description section. Other minor modifications.
+  Affects: dcmdata/docs/dcmodify.man
+
+- Made help text consistent with revised man page.
+  Affects: dcmdata/apps/dcmftest.cc
+           dcmdata/apps/mdfconen.cc
+
+- Fixed wrong class name in code example.
+  Affects: dcmsr/docs/dcmsr.dox
+
+- Added files section. Adjusted XML dump formatting.
+  Affects: dcmdata/docs/dcm2xml.man
+           dcmdata/docs/xml2dcm.man
+
+- Corrected copyright date. Minor formatting issues.
+  Affects: dcmdata/docs/dcmcrle.man
+           dcmdata/docs/dcmdrle.man
+           dcmdata/docs/dcmdump.man
+           dcmdata/docs/dcmftest.man
+           dcmdata/docs/dcmgpdir.man
+           dcmdata/docs/dump2dcm.man
+
+- Replaced tabs by spaces.
+  Affects: dcmdata/apps/dcmftest.cc
+
+- Added shell script that fixes a doxygen layout problem (justified text).
+  Added:   doxygen/patchman.sh
+  Affects: doxygen/Makefile
+
+- Separate parameters by an empty line.
+  Affects: dcmdata/docs/dcm2xml.man
+           dcmdata/docs/dcmconv.man
+           dcmdata/docs/dcmcrle.man
+           dcmdata/docs/dcmdrle.man
+           dcmdata/docs/dump2dcm.man
+           dcmdata/docs/xml2dcm.man
+
+**** Changes from 2003.11.12 (riesmeier)
+
+- Added module documentation.
+  Added:   dcmimgle/docs/dcmimgle.dox
+           dcmimage/docs/dcmimgle.dox
+           dcmsr/docs/dcmsr.dox
+           ofstd/docs/ofstd.dox
+
+- Made documentation consistent with other modules.
+  Affects: dcmdata/docs/dcmdata.dox
+
+- Renamed links to external documentation files.
+  Affects: doxygen/htmldocs.dox
+
+- Reworked man page files (layout, missing sections, etc.)
+  Affects: dcmdata/docs/dcm2xml.man
+           dcmdata/docs/dcmconv.man
+           dcmdata/docs/dcmcrle.man
+           dcmdata/docs/dcmdrle.man
+           dcmdata/docs/dcmdump.man
+           dcmdata/docs/dcmftest.man
+           dcmdata/docs/dcmgpdir.man
+           dcmdata/docs/dcmodify.man
+           dcmdata/docs/dump2dcm.man
+           dcmdata/docs/xml2dcm.man
+
+- Added WITH_xxx preprocessor defines to include conditional classes into the
+  documentation.
+  Affects: doxygen/htmdocs.cfg
+
+- Replaced \addtogroup by \defgroup to enforce unique labels.
+  Affects: dcmdata/docs/dcmdata.dox
+           dcmimgle/docs/dcmimgle.dox
+           dcmimage/docs/dcmimage.dox
+           dcmsr/docs/dcmsr.dox
+           ofstd/docs/ofstd.dox
+
+- Added missing module documentation (preliminary version only).
+  Added:   dcmjpeg/docs/dcmjpeg.dox
+           dcmnet/docs/dcmnet.dox
+           dcmpstat/docs/dcmpstat.dox
+           dcmsign/docs/dcmsign.dox
+           dcmtls/docs/dcmtls.dox
+           dcmwlm/docs/dcmwlm.dox
+           imagectn/docs/imagectn.dox
+
+**** Changes from 2003.11.11 (onken)
+
+- debug mechanism doesn't use debug(..) any more.
+  comments purified. adjusted headers to debug modifications.
+  Affects: dcmdata/mdfconen.cc
+           dcmdata/mdfconen.h
+           dcmdata/mdfdsman.cc
+           dcmdata/mdfdsman.h
+
+**** Changes from 2003.11.10 (riesmeier)
+
+- Enhanced detection of invalid filenames: forbid leading path separator, i.e.
+  absolute pathnames.
+  Affects: dcmdata/libsrc/dcddirif.cc
+
+**** Changes from 2003.11.07 (onken)
+
+- initial checkin of manpages dump2dcm and xml2dcm
+  Affects: dcmdata/docs/dump2dcm.man
+           dcmdata/docs/xml2dcm.man
+
+- minor corrections
+  Affects: dcmdata/docs/dcmgpdir.man
+
+- removed DOS <cr>'s xml2dcm.txt
+  Affects: dcmdata/docs/xml2dcm.txt
+
+**** Changes from 2003.11.07 (eichelberg)
+
+- Updated version name to reflect interim release 3.5.2a
+  Affects: dcmdata/include/dcuid.h
+
+- Added configure test for mkstemp
+  Affects: config/configure
+           config/configure.in
+           config/include/cfunix.h.in
+           config/include/cfwin32.h
+
+- Added constructor taking an open FILE* instead of a file name string
+  Affects: dcmdata/include/dcostrmf.h
+           dcmdata/libsrc/dcostrmf.cc
+
+- Now using mkstemp instead of mktemp if available
+  Affects: dcmdata/libsrc/dcdicdir.cc
+
+**** Changes from 2003.11.06 (onken)
+
+- Initial checkin of manpages: dcmcrle.man dcmdrle.man dcmftest.man dcmgpdir.man
+  Added:   dcmdata/docs/dcmcrle.man
+           dcmdata/docs/dcmdrle.man
+           dcmdata/docs/dcmftest.man
+           dcmdata/docs/dcmgpdir.man
+
+- removed dos <cr>'s dcmgpdir.txt
+  Affects: dcmdata/docs/dcmgpdir.txt
+
+**** Changes from 2003.11.06 (riesmeier)
+
+- Added missing line break in XML output.
+  Affects: dcmsr/libsrc/dsrpnmtn.cc
+
+**** Changes from 2003.11.05 (eichelberg)
+
+- Added declaration of operator<< for DcmTagKeys.
+  Fixes compilation issue on Visual C++ 6.0 SP 0.
+  Affects: dcmdata/include/dctagkey.h
+
+- Fixed "--remote" command line option which can be specified multiple times
+  Affects: imagectn/apps/ti.cc
+
+- Removed useless "--write-xfer-same" command line option
+  Affects: dcmdata/apps/dump2dcm.cc
+           dcmdata/docs/dump2dcm.txt
+
+**** Changes from 2003.11.05 (onken)
+
+- initial checkin of some manpages (dcmodify, dcm2xml, dcmconv).
+  Affects: dcmdata/docs/dcmodify.man
+           dcmdata/docs/dcm2xml.man
+           dcmdata/docs/dcmconv.man
+
+**** Changes from 2003.11.05 (riesmeier)
+
+- Replaced \section and \subsection labels.
+  Affects: dcmdata/docs/dcmdump.man
+
+- Fixed bug that prevented the addition of DICOM files missing the "sort key"
+  (e.g. InstanceNumber).
+  Affects: dcmdata/libsrc/dcddirif.cc
+
+- Output generated man pages to directory "doxygen/manpages/man1" instead of
+  "doxygen/manpages/man/man1".
+  Affects: doxygen/Makefile
+           doxygen/manpages.cfg
+
+**** Changes from 2003.11.03 (riesmeier)
+
+- Modified static type casts on DVPSLogMessageLevel variables to compile with
+  gcc 2.95.
+  Affects: dcmpstat/libsrc/dviface.cc
+
+- Added examples section to module's documentation.
+  Affects: dcmdata/docs/dcmdata.dox
+
+**** Changes from 2003.10.31 (onken)
+
+- Note about deleting whole sequences and items with dcmodify
+  Affects: dcmdata/docs/dcmodify.txt
+
+**** Changes from 2003.10.31 (riesmeier)
+
+- Disabled SHOW_INCLUDE_FILES entry.
+  Affects: doxygen/htmldocs.cfg
+
+- Replaced static release date, program name and version by special commands.
+  Affects: doxygen/footer.html
+
+- Added all remaining command line programs of this module.
+  Affects: dcmdata/docs/dcmdata.dox
+
+- Changed behaviour: do not output empty list of predecessor or identical
+  documents in XML format unless flag XF_writeEmptyTags is set.
+  Affects: dcmsr/libsrc/dsrdoc.cc
+
+- Added command line option +Ea (--attr-all), a shortcut for +Ec, +Er and +Er.
+  Affects: dcmsr/apps/dsr2xml.cc
+           dcmsr/docs/dsr2xml.txt
+
+**** Changes from 2003.10.30 (riesmeier)
+
+- Removed remaining "htmldocs" folder.
+  Removed: dcmsign/htmldocs/*
+
+- Added full support for the ContentTemplateSequence (read/write, get/set
+  template identification). Template constraints are not checked yet.
+  Affects: dcmsr/include/dsrcitem.h
+           dcmsr/include/dsrdoc.h
+           dcmsr/include/dsrdoctn.h
+           dcmsr/include/dsrreftn.h
+           dcmsr/libsrc/dsrdoctn.cc
+           dcmsr/libsrc/dsrcitem.cc
+           dcmsr/libsrc/dsrdoctr.cc
+           dcmsr/libsrc/dsrreftn.cc
+
+- Added new command line option which allows to print the template
+  identification of a content item.
+  Affects: dcmsr/apps/dsrdump.cc
+           dcmsr/docs/dsrdump.txt
+           dcmsr/include/dsrtypes.h
+           dcmsr/libsrc/dsrtypes.cc
+
+- Added new command line option which allows to write the template
+  identification of a content item in XML format.
+  Affects: dcmsr/apps/dsr2xml.cc
+           dcmsr/docs/dsr2xml.txt
+           dcmsr/include/dsrtypes.h
+           dcmsr/libsrc/dsrtypes.cc
+
+- Fixed bug in setConceptName() that caused to return EC_IllegalParameter
+  even for valid parameters.
+  Affects: dcmsr/libsrc/dsrdoctn.cc
+
+- Added copyright note.
+  Affects: dcmdata/apps/dcm2xml.dtd
+
+- Slightly modified main page of the HTML documentation.
+  Affects: doxygen/htmldocs.dox
+
+- Added user defined footer to HTML pages.
+  Added:   doxygen/footer.html
+  Affects: doxygen/htmldocs.cfg
+
+- Added "$(TRASH)" to "make clean".
+  Affects: doxygen/Makefile
+
+**** Changes from 2003.10.27 (riesmeier)
+
+- Made text of a warning message consistent with other messages in this module
+  (always begin with an upper-case character).
+  Affects: dcmsr/libsrc/dsrdoc.cc
+
+**** Changes from 2003.10.22 (eichelberg)
+
+- Added configure tests for <ieeefp.h> and isinf(), needed on Solaris 2.5.1
+  Affects: config/configure
+           config/configure.in
+           config/include/cfunix.h.in
+           config/include/cfwin32.h
+
+- Added private implementation of isinf on platforms that have finite()
+  and isnan() but not isinf(), such as Solaris 2.5.1.
+  Affects: ofstd/libsrc/ofstd.cc
+
+- Added two pragmas to the Borland specific configuration in order to
+  suppress warnings that we consider not too useful.
+  Affects: config/include/cfwin32.h
+
+- Fixed double deletion of command set if parsing of command set fails.
+  Thanks to David Clunie <dclunie@dclunie.com> for the bug report.
+  Affects: dcmnet/libsrc/dimse.cc
+
+- Fixed formatting of DICOM tag in error messages
+  Affects: dcmnet/libsrc/dimcmd.cc
+
+**** Changes from 2003.10.17 (riesmeier)
+
+- Fixed wrong wording in a warning message ("too less" -> "too few").
+  Affects: dcmsr/libsrc/dsrscovl.cc
+
+**** Changes from 2003.10.15 (eichelberg)
+
+- Updated error messages for parse errors
+  Affects: dcmdata/libsrc/dcdict.cc
+           dcmdata/libsrc/dcelem.cc
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcmetinf.cc
+           dcmdata/libsrc/dcsequen.cc
+
+- Updated error messages generated while parsing presentation states
+           dcmpstat/libsrc/dvpsri.cc
+           dcmpstat/libsrc/dvpsril.cc
+           dcmpstat/libsrc/dvpsrsl.cc
+
+**** Changes from 2003.10.14 (riesmeier)
+
+- Added generation of compressed Windows HTML file "dcmtk353.chm".
+  Affects: INSTALL
+           doxygen/htmldocs.cfg
+
+- Uncommented name of unused parameter to get rid of a warning reported by
+  Borland C++ 5.5.
+  Affects: dcmsr/libsrc/dsrcsidl.cc
+
+- Moved declaration of loop variable 'i' into the header of the for loop to get
+  rid of warnings reported by Borland C++ 5.5.
+  Affects: dcmsr/libsrc/dsrdoc.cc
+
+**** Changes from 2003.10.14 (eichelberg)
+
+- Explicitly spelled out constructor parameters in const instance declaration.
+  Avoids incompatibility between gcc 3.2 and Borland C++.
+  Affects: dcmsr/libsrc/dsrscogr.cc
+           dcmsr/libsrc/dsrwavch.cc
+
+**** Changes from 2003.10.13 (onken)
+
+- startModify(...) simplified (uses only putString to put element values),
+  this also allows now inserting and modifying of elements with VRM>1.
+  Method getDataset() added.
+  Affects: dcmdata/apps/mdfdsman.cc
+           dcmdata/apps/mdfdsman.h
+
+- improved backup-strategy
+  Affects: dcmdata/apps/mdfconen.cc
+
+- error-message adapted to mdfconen.cc
+  Affects: dcmdata/apps/dcmodify.cc
+
+- description for VRM>1 and for longer tag-path added, correction of batch-
+  mode description
+  Affects: dcmdata/docs/dcmodify.txt
+
+**** Changes from 2003.10.13 (eichelberg)
+
+- Added Borland C++ 5.5 specific settings
+  Affects: config/include/cfwin32.h
+
+- Activated Borland stdlib workaround for compiler versions other than 4.
+  Affects: ofstd/include/ofstdinc.h
+
+- Changed order of include files, as a workaround for problem in Borland C++.
+  Affects: ofstd/libsrc/ofthread.cc
+
+- Added workaround for name clash of typedef "boolean" in the IJG header files
+  and the standard headers for Borland C++.
+  Affects: dcmjpeg/libsrc/dipijpeg.cc
+           dcmjpeg/libsrc/djdijg12.cc
+           dcmjpeg/libsrc/djdijg16.cc
+           dcmjpeg/libsrc/djdijg8.cc
+           dcmjpeg/libsrc/djeijg12.cc
+           dcmjpeg/libsrc/djeijg16.cc
+           dcmjpeg/libsrc/djeijg8.cc
+
+- Minor code purifications, needed for Borland C++
+  Affects: dcmdata/apps/mdfconen.cc
+           dcmwlm/libsrc/wlfsim.cc
+
+- Added code for explicit template specialization, needed for Borland C++
+  Affects: dcmsr/libsrc/dsrscogr.cc
+           dcmsr/libsrc/dsrwavch.cc
+
+- Added missing filename entry to CMake build system
+  Affects: dcmsr/libsrc/CMakeLists.txt
+
+- Disabled setvbuf calls on stdout/stderr on Win32/Borland C++.
+  Affects: dcmdata/libsrc/cmdlnarg.cc
+
+**** Changes from 2003.10.09 (riesmeier)
+
+- Added support for SOP Class "Procedure Log" (Supplement 66).
+  Affects: dcmdata/include/dcuid.h
+           dcmdata/libsrc/dcuid.cc
+           dcmnet/docs/movescu.txt
+           dcmnet/docs/storescp.txt
+           dcmnet/docs/storescu.txt
+           imagectn/docs/imagectn.txt
+
+- Added support for Procedure Log.
+  Added:   dcmsr/include/dsrprocc.h
+           dcmsr/libsrc/dsrprocc.cc
+  Affects: dcmsr/docs/dsr2html.txt
+           dcmsr/docs/dsr2xml.txt
+           dcmsr/docs/dsrdump.txt
+           dcmsr/docs/xml2dsr.txt
+           dcmsr/include/dsrtypes.h
+           dcmsr/libsrc/Makefile.dep
+           dcmsr/libsrc/Makefile.in
+           dcmsr/libsrc/dsrtypes.cc
+
+- Added check for root template identifier when reading an SR document.
+  Affects: dcmsr/include/dsrbascc.h
+           dcmsr/include/dsrchecc.h
+           dcmsr/include/dsrcomcc.h
+           dcmsr/include/dsrenhcc.h
+           dcmsr/include/dsriodcc.h
+           dcmsr/include/dsrkeycc.h
+           dcmsr/include/dsrmamcc.h
+           dcmsr/libsrc/dsrbascc.cc
+           dcmsr/libsrc/dsrchecc.cc
+           dcmsr/libsrc/dsrcomcc.cc
+           dcmsr/libsrc/dsrdoctn.cc
+           dcmsr/libsrc/dsrenhcc.cc
+           dcmsr/libsrc/dsriodcc.cc
+           dcmsr/libsrc/dsrkeycc.cc
+           dcmsr/libsrc/dsrmamcc.cc
+
+- Added text from Supplement 66 to getCurrentRequestedProcedureEvidence() API
+  comment.
+  Affects: dcmsr/include/dsrdoc.h
+
+- Fixed issue with the order of group and element number in print method.
+  Affects: dcmdata/libsrc/dcvrat.cc
+
+- Changed message type for incorrect/missing TemplateIdentifier from error to
+  warning.
+  Affects: dcmsr/libsrc/dsrdoctn.cc
+
+- Replaced wrong newline character sequence.
+  Affects: dcmsr/libsrc/dsrwavch.h
+
+- Added identification information on UCUM coding scheme (see CP 372).
+  Affects: dcmsr/tests/mkreport.cc
+
+- Renamed OFFIS_PRIVATE_CODING_xxx macros to OFFIS_CODING_xxx.
+  Affects: dcmdata/include/dcuid.h
+           dcmsr/libsrc/dsrcsidl.cc
+
+- Slightly modified warning message text in readDocumentRelationshipMacro().
+  Affects: dcmsr/libsrc/dsrdoctn.cc
+
+**** Changes from 2003.10.08 (riesmeier)
+
+- Added support for AT, OB, OF, OW, SL, SS, UL, US to putAndInsertString().
+  Affects: dcmdata/include/dcitem.h
+           dcmdata/libsrc/dcitem.cc
+
+- Added preliminary XML Schema used by dsr2xml and xml2dsr. Please note that
+  the Schema support of "libxml" is currently still somewhat incomplete.
+  Added:   dcmsr/apps/dsr2xml.xsd
+
+- Fixed incorrect output format in writeXML().
+  Affects: dcmsr/libsrc/dsrtcovl.cc
+
+**** Changes from 2003.10.07 (riesmeier)
+
+- Added preliminary support for creating man pages for each command line tool.
+  Affects: config/rootconf
+           doxygen/Makefile
+
+- Enhanced generation of HTML documentation.
+  Added:   dcmdata/docs/dcmdata.dox
+           dcmdata/docs/dcmdump.man
+           doxygen/htmldocs.dox
+  Affects: INSTALL
+
+- Replaced doxygen configuration file by htmldocs.cfg and manpages.cfg.
+  Added:   doxygen/htmldocs.cfg
+           doxygen/manpages.cfg
+  Removed: doxygen/doxygen.cfg
+
+- Updated doxygen configuration files to version 1.3.4 format.
+  Affects: doxygen/htmldocs.cfg
+           doxygen/manpages.cfg
+
+- Removed superfluous *.man.1 files in doxygen/manpages/man/man1.
+  Affects: doxygen/Makefile
+
+**** Changes from 2003.10.06 (eichelberg)
+
+- Fixed issue with window center/width selection in JPEG encoder
+  that prevented "windowed" compression of images containing an Icon Image SQ.
+  Thanks for Gilles Mevel <Gilles.Mevel@etiam.com> for the bug report.
+  Affects: dcmjpeg/libsrc/djcodece.cc
+
+**** Changes from 2003.10.06 (riesmeier)
+
+- Added new flag which allows to ignore content item errors when reading an SR
+  document (e.g. missing value type specific attributes).
+  Affects: dcmsr/apps/dsr2html.cc
+           dcmsr/apps/dsrdump.cc
+           dcmsr/docs/dsr2html.txt
+           dcmsr/docs/dsrdump.txt
+           dcmsr/include/dsrdoctn.h
+           dcmsr/include/dsrtypes.h
+           dcmsr/libsrc/dsrdoctn.cc
+           dcmsr/libsrc/dsrtypes.cc
+
+- Replaced wrong newline character sequence.
+  Affects: dcmsr/include/dsrxmlc.h
+
+- Added comment that the optional IconImageSequence is not yet supported.
+  Affects: dcmsr/include/dsrimgvl.h
+
+- Corrected source code formatting.
+  Affects: dcmsr/libsrc/dsrchecc.cc
+
+**** Changes from 2003.10.01 (onken)
+
+- Corrected description of Environment
+  Affects: dcmdata/docs/dcmodify.txt
+
+- Corrected doxygen information in header files
+  Affects: dcmdata/apps/mdfconen.h
+           dcmdata/apps/mdfdsman.h
+
+- Bug fixed, that excluded pixel data when saving a file loaded into a
+  MdfDataSetManager
+  Affects: dcmdata/apps/mdfdsman.cc
+
+**** Changes from 2003.09.22 (wilkens)
+
+- Modified main CMakeLists.txt file to get rid of compiler option /Zm.
+  Affects: CMakeLists.txt
+           dcmdata/apps/dcm2xml.dsp
+           dcmdata/apps/dcmconv.dsp
+           dcmdata/apps/dcmcrle.dsp
+           dcmdata/apps/dcmdrle.dsp
+           dcmdata/apps/dcmdump.dsp
+           dcmdata/apps/dcmftest.dsp
+           dcmdata/apps/dcmgpdir.dsp
+           dcmdata/apps/dcmodify.dsp
+           dcmdata/apps/dump2dcm.dsp
+           dcmdata/apps/xml2dcm.dsp
+           dcmdata/libsrc/dcmdata.dsp
+           dcmimage/apps/dcm2pnm.dsp
+           dcmimage/apps/dcmquant.dsp
+           dcmimage/apps/dcmscale.dsp
+           dcmimage/libsrc/dcmimage.dsp
+           dcmimgle/apps/dcmdspfn.dsp
+           dcmimgle/apps/dcod2lum.dsp
+           dcmimgle/apps/dconvlum.dsp
+           dcmimgle/libsrc/dcmimgle.dsp
+           dcmjpeg/apps/dcmcjpeg.dsp
+           dcmjpeg/apps/dcmdjpeg.dsp
+           dcmjpeg/apps/dcmj2pnm.dsp
+           dcmjpeg/apps/dcmmkdir.dsp
+           dcmjpeg/libijg12/ijg12.dsp
+           dcmjpeg/libijg16/ijg16.dsp
+           dcmjpeg/libijg8/ijg8.dsp
+           dcmjpeg/libsrc/dcmjpeg.dsp
+           dcmnet/apps/echoscu.dsp
+           dcmnet/apps/findscu.dsp
+           dcmnet/apps/movescu.dsp
+           dcmnet/apps/storescp.dsp
+           dcmnet/apps/storescu.dsp
+           dcmnet/libsrc/dcmnet.dsp
+           dcmpstat/apps/dcmmkcrv.dsp
+           dcmpstat/apps/dcmmklut.dsp
+           dcmpstat/apps/dcmp2pgm.dsp
+           dcmpstat/apps/dcmprscp.dsp
+           dcmpstat/apps/dcmprscu.dsp
+           dcmpstat/apps/dcmpschk.dsp
+           dcmpstat/apps/dcmpsmk.dsp
+           dcmpstat/apps/dcmpsprt.dsp
+           dcmpstat/apps/dcmpsrcv.dsp
+           dcmpstat/apps/dcmpssnd.dsp
+           dcmpstat/libsrc/dcmpstat.dsp
+           dcmsign/apps/dcmsign.dsp
+           dcmsign/libsrc/dcmdsig.dsp
+           dcmsr/apps/dsr2html.dsp
+           dcmsr/apps/dsr2xml.dsp
+           dcmsr/apps/dsrdump.dsp
+           dcmsr/apps/xml2dsr.dsp
+           dcmsr/libsrc/dcmsr.dsp
+           dcmsr/tests/mkreport.dsp
+           dcmtls/libsrc/dcmtls.dsp
+           dcmwlm/apps/wlmscpfs.dsp
+           dcmwlm/libsrc/dcmwlm.dsp
+           imagectn/apps/imagectn.dsp
+           imagectn/apps/ti.dsp
+           imagectn/libsrc/imagedb.dsp
+           imagectn/tests/dbregimg.dsp
+           ofstd/libsrc/ofstd.dsp
+
+**** Changes from 2003.09.19 (onken)
+
+- return value is now only zero, if no error occurred
+  Affects: dcmodify.cc
+
+- major bugfixes, new code structure, better error handling, corrections for
+  "dcmtk coding style", Handling of VR's corrected
+  Affects: dcmdata/apps/mdfdsman.cc
+           dcmdata/apps/mdfdsman.h
+
+- major bugfixes, corrections for "dcmtk coding style", better error handling
+  Affects: dcmdata/apps/mdfconen.cc
+           dcmdata/apps/mdfconen.h
+
+**** Changes from 2003.09.18 (riesmeier)
+
+- Call addPrivateDcmtkCodingScheme() when saving a structured report.
+  Affects: dcmpstat/libsrc/dviface.cc
+
+- Fixed wrong "assert" (pointer check) statement in saveStructuredReport().
+  Affects: dcmpstat/libsrc/dviface.cc
+
+- Adapted type casts to new-style typecast operators defined in ofcast.h.
+  Affects: dcmpstat/libsrc/dviface.cc
+
+**** Changes from 2003.09.17 (riesmeier)
+
+- Implemented CP 359, i.e. forbid HAS CONCEPT MOD relationship by-reference.
+  Affects: dcmsr/libsrc/dsrcomcc.cc
+
+- Renamed variable "string" to avoid name clash with STL class.
+  Affects: ofstd/libsrc/oftime.cc
+           ofstd/tests/tofdatim.cc
+           ofstd/tests/tofstd.cc
+
+**** Changes from 2003.09.15 (riesmeier)
+
+- Made comparison operators const.
+  Affects: ofstd/include/ofdate.h
+           ofstd/include/ofdatime.h
+           ofstd/include/oftime.h
+           ofstd/libsrc/ofdate.cc
+           ofstd/libsrc/ofdatime.cc
+           ofstd/libsrc/oftime.cc
+
+- Fixed incorrect/improper comments of the comparison operators. Enhanced
+  comment of the default constructor.
+  Affects: ofstd/include/ofdate.h
+           ofstd/include/ofdatime.h
+           ofstd/include/oftime.h
+
+- Introduced new class to facilitate checking of SR IOD relationship content
+  constraints. Replaced old implementation distributed over numerous classes.
+  Added:   dcmsr/include/dsrbascc.h
+           dcmsr/include/dsrcomcc.h
+           dcmsr/include/dsrenhcc.h
+           dcmsr/include/dsriodcc.h
+           dcmsr/include/dsrkeycc.h
+           dcmsr/libsrc/dsrbascc.cc
+           dcmsr/libsrc/dsrcomcc.cc
+           dcmsr/libsrc/dsrenhcc.cc
+           dcmsr/libsrc/dsriodcc.cc
+           dcmsr/libsrc/dsrkeycc.cc
+  Affects: dcmsr/include/dsrcodtn.h
+           dcmsr/include/dsrcomtn.h
+           dcmsr/include/dsrcontn.h
+           dcmsr/include/dsrdattn.h
+           dcmsr/include/dsrdoctn.h
+           dcmsr/include/dsrdoctr.h
+           dcmsr/include/dsrdtitn.h
+           dcmsr/include/dsrimgtn.h
+           dcmsr/include/dsrnumtn.h
+           dcmsr/include/dsrpnmtn.h
+           dcmsr/include/dsrreftn.h
+           dcmsr/include/dsrscotn.h
+           dcmsr/include/dsrtcotn.h
+           dcmsr/include/dsrtextn.h
+           dcmsr/include/dsrtimtn.h
+           dcmsr/include/dsrtypes.h
+           dcmsr/include/dsruidtn.h
+           dcmsr/include/dsrwavtn.h
+           dcmsr/libsrc/CMakeLists.txt
+           dcmsr/libsrc/Makefile.dep
+           dcmsr/libsrc/Makefile.in
+           dcmsr/libsrc/dcmsr.dsp
+           dcmsr/libsrc/dsrcodtn.cc
+           dcmsr/libsrc/dsrcomtn.cc
+           dcmsr/libsrc/dsrcontn.cc
+           dcmsr/libsrc/dsrdattn.cc
+           dcmsr/libsrc/dsrdoctn.cc
+           dcmsr/libsrc/dsrdoctr.cc
+           dcmsr/libsrc/dsrdtitn.cc
+           dcmsr/libsrc/dsrimgtn.cc
+           dcmsr/libsrc/dsrnumtn.cc
+           dcmsr/libsrc/dsrpnmtn.cc
+           dcmsr/libsrc/dsrreftn.cc
+           dcmsr/libsrc/dsrscotn.cc
+           dcmsr/libsrc/dsrtcotn.cc
+           dcmsr/libsrc/dsrtextn.cc
+           dcmsr/libsrc/dsrtimtn.cc
+           dcmsr/libsrc/dsrtypes.cc
+           dcmsr/libsrc/dsruidtn.cc
+           dcmsr/libsrc/dsrwavtn.cc
+
+- Added content relationship constraint checking support for Mammography CAD
+  SR and Chest CAD SR.
+  Added:   dcmsr/include/dsrchecc.h
+           dcmsr/include/dsrmamcc.h
+           dcmsr/libsrc/dsrchecc.cc
+           dcmsr/libsrc/dsrmamcc.cc
+  Affects: dcmsr/libsrc/CMakeLists.txt
+           dcmsr/libsrc/Makefile.dep
+           dcmsr/libsrc/Makefile.in
+           dcmsr/libsrc/dcmsr.dsp
+
+- Made XML output more consistent: changed XML tag name from "identifier" to
+  "id".
+  Affects: dcmsr/libsrc/dsrcsidl.cc
+
+**** Changes from 2003.09.11 (wilkens)
+
+- Modified cfwin32.h so that WITH_LIBTIFF, WITH_LIBPNG, WITH_ZLIB and
+  WITH_LIBPNG are no longer defined. On Windows platforms, we will in the future
+  use the CMake generated dsp and dsw files which implicitely define which
+  external libraries are used.
+  Affects: config/include/cfwin32.h
+
+- Added new CMake-generated dsp and dsw files. After having generated these
+  files with CMake they were cleaned from CMake-dependencies using the
+  perl script "config/cleandsp.pl".
+  Added: dcmtk.dsw
+         ALL_BUILD.dsp
+         dcmdata/apps/dcmdrle.dsp
+         dcmdata/apps/dcmconv.dsp
+         dcmdata/apps/xml2dcm.dsp
+         dcmdata/apps/dcmcrle.dsp
+         dcmdata/apps/dump2dcm.dsp
+         dcmdata/apps/dcmdump.dsp
+         dcmdata/apps/dcmodify.dsp
+         dcmdata/apps/dcmgpdir.dsp
+         dcmdata/apps/dcmftest.dsp
+         dcmdata/apps/dcm2xml.dsp
+         dcmdata/libsrc/dcmdata.dsp
+         dcmjpeg/apps/dcmcjpeg.dsp
+         dcmjpeg/apps/dcmj2pnm.dsp
+         dcmjpeg/apps/dcmdjpeg.dsp
+         dcmjpeg/apps/dcmmkdir.dsp
+         dcmjpeg/libijg8/ijg8.dsp
+         dcmjpeg/libsrc/dcmjpeg.dsp
+         dcmjpeg/libijg12/ijg12.dsp
+         dcmjpeg/libijg16/ijg16.dsp
+         dcmsign/apps/dcmsign.dsp
+         dcmsign/libsrc/dcmdsig.dsp
+         dcmsr/apps/xml2dsr.dsp
+         dcmsr/apps/dsrdump.dsp
+         dcmsr/apps/dsr2html.dsp
+         dcmsr/apps/dsr2xml.dsp
+         dcmsr/tests/mkreport.dsp
+         dcmsr/libsrc/dcmsr.dsp
+         ofstd/libsrc/ofstd.dsp
+         dcmimage/apps/dcmscale.dsp
+         dcmimage/apps/dcm2pnm.dsp
+         dcmimage/apps/dcmquant.dsp
+         dcmimage/libsrc/dcmimage.dsp
+         dcmimgle/apps/dcod2lum.dsp
+         dcmimgle/apps/dcmdspfn.dsp
+         dcmimgle/apps/dconvlum.dsp
+         dcmimgle/libsrc/dcmimgle.dsp
+         dcmpstat/apps/dcmp2pgm.dsp
+         dcmpstat/apps/dcmprscp.dsp
+         dcmpstat/apps/dcmprscu.dsp
+         dcmpstat/apps/dcmmklut.dsp
+         dcmpstat/apps/dcmpschk.dsp
+         dcmpstat/apps/dcmpsmk.dsp
+         dcmpstat/apps/dcmpsprt.dsp
+         dcmpstat/apps/dcmpsrcv.dsp
+         dcmpstat/apps/dcmpssnd.dsp
+         dcmpstat/apps/dcmmkcrv.dsp
+         dcmpstat/libsrc/dcmpstat.dsp
+         dcmnet/apps/storescp.dsp
+         dcmnet/apps/storescu.dsp
+         dcmnet/apps/movescu.dsp
+         dcmnet/apps/echoscu.dsp
+         dcmnet/apps/findscu.dsp
+         dcmnet/libsrc/dcmnet.dsp
+         dcmtls/libsrc/dcmtls.dsp
+         dcmwlm/apps/wlmscpfs.dsp
+         dcmwlm/libsrc/dcmwlm.dsp
+         imagectn/apps/ti.dsp
+         imagectn/apps/imagectn.dsp
+         imagectn/tests/dbregimg.dsp
+         imagectn/libsrc/imagedb.dsp
+
+- Removed old dsp and dsw files. These files will soon be replaced by new CMake-
+  generated dsp and dsw files.
+  Removed: dcmtk.dsw
+           dcmdata/dcmdata.dsp
+           dcmdata/apps/dcm2xml.dsp
+           dcmdata/apps/dcmconv.dsp
+           dcmdata/apps/dcmcrle.dsp
+           dcmdata/apps/dcmdrle.dsp
+           dcmdata/apps/dcmdump.dsp
+           dcmdata/apps/dcmftest.dsp
+           dcmdata/apps/dcmgpdir.dsp
+           dcmdata/apps/dcmodify.dsp
+           dcmdata/apps/dump2dcm.dsp
+           dcmdata/apps/xml2dcm.dsp
+           dcmimage/dcmimage.dsp
+           dcmimage/apps/dcm2pnm.dsp
+           dcmimage/apps/dcmquant.dsp
+           dcmimage/apps/dcmscale.dsp
+           dcmimgle/dcmimgle.dsp
+           dcmimgle/apps/dcmdspfn.dsp
+           dcmimgle/apps/dcod2lum.dsp
+           dcmimgle/apps/dconvlum.dsp
+           dcmjpeg/dcmjpeg.dsp
+           dcmjpeg/apps/dcmcjpeg.dsp
+           dcmjpeg/apps/dcmdjpeg.dsp
+           dcmjpeg/apps/dcmj2pnm.dsp
+           dcmjpeg/apps/dcmmkdir.dsp
+           dcmjpeg/libijg12/ijg12.dsp
+           dcmjpeg/libijg16/ijg16.dsp
+           dcmjpeg/libijg8/ijg8.dsp
+           dcmnet/dcmnet.dsp
+           dcmnet/apps/echoscu.dsp
+           dcmnet/apps/findscu.dsp
+           dcmnet/apps/movescu.dsp
+           dcmnet/apps/storescp.dsp
+           dcmnet/apps/storescu.dsp
+           dcmpstat/dcmpstat.dsp
+           dcmpstat/apps/dcmmkcrv.dsp
+           dcmpstat/apps/dcmmklut.dsp
+           dcmpstat/apps/dcmp2pgm.dsp
+           dcmpstat/apps/dcmprscp.dsp
+           dcmpstat/apps/dcmprscu.dsp
+           dcmpstat/apps/dcmpschk.dsp
+           dcmpstat/apps/dcmpsmk.dsp
+           dcmpstat/apps/dcmpsprt.dsp
+           dcmpstat/apps/dcmpsrcv.dsp
+           dcmpstat/apps/dcmpssnd.dsp
+           dcmsign/dcmsign.dsp
+           dcmsign/apps/dcmsign_app.dsp
+           dcmsr/dcmsr.dsp
+           dcmsr/apps/dsr2html.dsp
+           dcmsr/apps/dsr2xml.dsp
+           dcmsr/apps/dsrdump.dsp
+           dcmsr/apps/xml2dsr.dsp
+           dcmsr/tests/mkreport.dsp
+           dcmtls/dcmtls.dsp
+           dcmwlm/dcmwlm.dsp
+           dcmwlm/apps/wlmscpfs.dsp
+           imagectn/imagectn.dsp
+           imagectn/apps/imagectn_app.dsp
+           imagectn/apps/ti.dsp
+           imagectn/tests/dbregimg.dsp
+           ofstd/ofstd.dsp
+
+**** Changes from 2003.09.10 (eichelberg)
+
+- Initial release of Perl script "cleandsp.pl" which cleans up the
+  Visual C++ project files (.dsp files) generated by CMake by exchanging
+  absolute paths by relative paths and removing the custom build section
+  that CMake creates for it's own makefiles. The script has been tested
+  on Unix as well as on Win32 platforms (using ActivePerl 5.6).
+  Added:   config/cleandsp.pl
+
+**** Changes from 2003.09.10 (riesmeier)
+
+- Replaced PrivateCodingSchemeUID by new CodingSchemeIdenticationSequence as
+  required by CP 324.
+  Added:   dcmsr/include/dsrcsidl.h
+           dcmsr/libsrc/dsrcsidl.cc
+  Affects: dcmsr/dcmsr.dsp
+           dcmsr/apps/Makefile.dep
+           dcmsr/include/dsrcodvl.h
+           dcmsr/include/dsrdoc.h
+           dcmsr/include/dsrtypes.h
+           dcmsr/libsrc/CMakeLists.txt
+           dcmsr/libsrc/Makefile.dep
+           dcmsr/libsrc/Makefile.in
+           dcmsr/libsrc/dsrcodvl.cc
+           dcmsr/libsrc/dsrdoc.cc
+           dcmsr/libsrc/dsrdoctn.cc
+           dcmsr/libsrc/dsrtypes.cc
+           dcmsr/tests/Makefile.dep
+           dcmsr/tests/mkreport.cc
+
+- Modified DTD: allow "vr" attribute to contain other values than SQ as
+  required for the pixel sequence.
+  Affects: dcmdata/apps/dcm2xml.dtd
+
+**** Changes from 2003.09.09 (wilkens)
+
+- Found and implemented an easier way to prevent incremental binding.
+  Affects: CMakeLists.txt
+           dcmdata/apps/CMakeLists.txt
+           dcmnet/apps/CMakeLists.txt
+           imagectn/apps/CMakeLists.txt
+           imagectn/tests/CMakeLists.txt
+           dcmimage/apps/CMakeLists.txt
+           dcmimgle/apps/CMakeLists.txt
+           dcmjpeg/apps/CMakeLists.txt
+           dcmpstat/apps/CMakeLists.txt
+           dcmsign/apps/CMakeLists.txt
+           dcmsr/apps/CMakeLists.txt
+           dcmsr/tests/CMakeLists.txt
+           dcmwlm/apps/CMakeLists.txt
+
+**** Changes from 2003.09.08 (wilkens)
+
+- Updated CMakeLists.txt files in order to prevent incremental binding.
+  Affects: dcmdata/apps/CMakeLists.txt
+           dcmnet/apps/CMakeLists.txt
+           imagectn/apps/CMakeLists.txt
+           imagectn/tests/CMakeLists.txt
+           dcmimage/apps/CMakeLists.txt
+           dcmimgle/apps/CMakeLists.txt
+           dcmjpeg/apps/CMakeLists.txt
+           dcmpstat/apps/CMakeLists.txt
+           dcmsign/apps/CMakeLists.txt
+           dcmsr/apps/CMakeLists.txt
+           dcmsr/tests/CMakeLists.txt
+           dcmwlm/apps/CMakeLists.txt
+
+- Added _REENTRANT flag definition to main CMakeLists.txt file.
+  Affects: CMakeLists.txt
+
+**** Changes from 2003.09.08 (eichelberg)
+
+- Updated attribute names that have changed in DICOM 2003
+  Affects: dcmsr/libsrc/dsrcodvl.cc
+
+- Updated data dictionary for 2003 edition of the DICOM standard
+  Affects: dcmdata/include/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+           dcmdata/libsrc/dicom.dic
+
+**** Changes from 2003.09.08 (wilkens)
+
+- Modified CMakeLists.txt files to get rid of name clash between imagectn lib
+  and app and between dcmsign lib and app. The imagectn lib is now called
+  imagedb, the dcmsign lib is now called dcmdsig.
+  Affects: dcmpstat/apps/CMakeLists.txt
+           imagectn/apps/CMakeLists.txt
+           imagectn/libsrc/CMakeLists.txt
+           imagectn/tests/CMakeLists.txt
+           dcmsign/apps/CMakeLists.txt
+           dcmsign/libsrc/CMakeLists.txt
+
+- Modified Makefiles to get rid of name clash between dcmsign lib and app. The
+  dcmsign lib is now called dcmdsig.
+  Affects: dcmpstat/apps/Makefile.in
+           dcmpstat/jni/Makefile.in
+           dcmsign/apps/Makefile.in
+           dcmsign/libsrc/Makefile.in
+
+**** Changes from 2003.09.05 (riesmeier)
+
+- Added library "ssleay32" to compile targets dcmprscu and dcmprscp. Required
+  in order to get new TLS support working.
+  Affects: dcmpstat/apps/CMakeLists.txt
+
+**** Changes from 2003.09.05 (eichelberg)
+
+- Added file with sample printer configurations for various printers.
+  Added:   dcmpstat/tests/printers.cfg
+
+- Updated configuration file and added entries for TLS print server
+  processes. Restored both IHE pseudo-printers as defined in earlier
+  DICOMscope releases.
+  Affects: dcmpstat/tests/test.cfg
+
+- Introduced new API methods that allow Displayed Areas to be queried
+  and set either relative to the image (ignoring rotation and flip) or
+  in absolute values as defined in the standard.  Rotate and flip methods
+  now adjust displayed areas in the presentation state.
+  Affects: dcmpstat/apps/dcmp2pgm.cc
+           dcmpstat/include/dvpsda.h
+           dcmpstat/include/dvpsdal.h
+           dcmpstat/include/dvpstat.h
+           dcmpstat/libsrc/dcmpstat.cc
+           dcmpstat/libsrc/dvpsda.cc
+           dcmpstat/libsrc/dvpsdal.cc
+           dcmpstat/libsrc/dvpstat.cc
+
+- Print SCU now supports TLS connections.
+  Affects: dcmpstat/apps/Makefile.in
+           dcmpstat/apps/dcmprscu.cc
+           dcmpstat/include/dvpspr.h
+           dcmpstat/libsrc/dvpspr.cc
+
+- Print SCP now supports TLS connections and the Verification Service Class.
+  Affects: dcmpstat/apps/Makefile.in
+           dcmpstat/apps/dcmprscp.cc
+           dcmpstat/include/dvpsprt.h
+           dcmpstat/libsrc/dvpsprt.cc
+
+- Minor code purifications
+  Affects: dcmpstat/apps/dcmp2pgm.cc
+
+- Modified code to use class DcmPresentationState instead of DVPresentationState.
+  Affects: dcmpstat/apps/Makefile.dep
+           dcmpstat/apps/Makefile.in
+           dcmpstat/apps/dcmpsmk.cc
+           dcmpstat/apps/dcmpsrcv.cc
+
+- Updated presentation state checker to use class DcmPresentationState
+  instead of DVPresentationState. Imported updated VR checking code
+  from module dcmcheck.
+  Affects: dcmpstat/apps/Makefile.dep
+           dcmpstat/apps/Makefile.in
+           dcmpstat/apps/dcmpschk.cc
+           dcmpstat/apps/vrscan.cc
+           dcmpstat/apps/vrscan.h
+
+- Fixed minor issue that caused certain error messages during the
+  parse process on a GSPS object to be "swallowed".
+  Affects: dcmpstat/libsrc/dcmpstat.cc
+           dcmpstat/libsrc/dvpsall.cc
+           dcmpstat/libsrc/dvpscul.cc
+           dcmpstat/libsrc/dvpsdal.cc
+           dcmpstat/libsrc/dvpsgal.cc
+           dcmpstat/libsrc/dvpsgll.cc
+           dcmpstat/libsrc/dvpsgrl.cc
+           dcmpstat/libsrc/dvpsovl.cc
+           dcmpstat/libsrc/dvpsril.cc
+           dcmpstat/libsrc/dvpsrsl.cc
+           dcmpstat/libsrc/dvpsvll.cc
+           dcmpstat/libsrc/dvpsvwl.cc
+
+**** Changes from 2003.09.04 (wilkens)
+
+- Updated the main CMakeLists.txt file so that libpng, libtiff and zlib support
+  are turned on as a default.
+  Affects: CMakeLists.txt
+
+- Updated INSTALL file. Added specifications for use of CMake on Win32
+  platforms.
+  Affects: INSTALL
+
+**** Changes from 2003.09.04 (riesmeier)
+
+- Fixed wrong use of OFBool/bool variable.
+  Affects: dcmnet/apps/movescu.cc
+           dcmpstat/apps/dcmprscp.cc
+           dcmpstat/apps/dcmprscu.cc
+           imagectn/apps/scemove.cc
+
+- Replaced wrong call of OFCommandLine::getValueAndCheckMin() by
+  OFCommandLine::getValueAndCheckMinMax().
+  Affects: imagectn/apps/ti.cc
+
+- Converted variable opt_verbose from int into OFBool to fix warnings reported
+  by MSVC6.
+  Affects: dcmpstat/apps/dcmpsrcv.cc
+
+- Combined two #include "ofstdinc.h" statements.
+  Affects: dcmsr/include/dsrxmlc.h
+
+**** Changes from 2003.09.03 (eichelberg)
+
+- Added standard includes needed on Win32
+  Affects: dcmsr/include/dsrxmlc.h
+           dcmsr/libsrc/dsrwavch.cc
+
+- Fixed bug in command line evaluation
+  Affects: dcmpstat/apps/dcmmklut.cc
+
+**** Changes from 2003.09.01 (riesmeier)
+
+- Updated "DICOM bugs" e-mail address.
+  Affects: dcmwlm/docs/wwwapp.doc
+           dcmwlm/docs/wwwapp.txt
+
+**** Changes from 2003.09.01 (wilkens)
+
+- Inserted CMakeLists.txt files for use of CMake on Win32 platforms.
+  Added:   CMakeLists.txt
+           dcmdata/CMakeLists.txt
+           dcmdata/apps/CMakeLists.txt
+           dcmdata/libsrc/CMakeLists.txt
+           dcmimage/CMakeLists.txt
+           dcmimage/apps/CMakeLists.txt
+           dcmimage/libsrc/CMakeLists.txt
+           dcmimgle/CMakeLists.txt
+           dcmimgle/apps/CMakeLists.txt
+           dcmimgle/libsrc/CMakeLists.txt
+           dcmjpeg/CMakeLists.txt
+           dcmjpeg/apps/CMakeLists.txt
+           dcmjpeg/libijg12/CMakeLists.txt
+           dcmjpeg/libijg16/CMakeLists.txt
+           dcmjpeg/libijg8/CMakeLists.txt
+           dcmjpeg/libsrc/CMakeLists.txt
+           dcmnet/CMakeLists.txt
+           dcmnet/apps/CMakeLists.txt
+           dcmnet/libsrc/CMakeLists.txt
+           dcmpstat/CMakeLists.txt
+           dcmpstat/apps/CMakeLists.txt
+           dcmpstat/libsrc/CMakeLists.txt
+           dcmsign/CMakeLists.txt
+           dcmsign/apps/CMakeLists.txt
+           dcmsign/libsrc/CMakeLists.txt
+           dcmsr/CMakeLists.txt
+           dcmsr/apps/CMakeLists.txt
+           dcmsr/libsrc/CMakeLists.txt
+           dcmsr/tests/CMakeLists.txt
+           dcmtls/CMakeLists.txt
+           dcmtls/libsrc/CMakeLists.txt
+           dcmwlm/CMakeLists.txt
+           dcmwlm/apps/CMakeLists.txt
+           dcmwlm/libsrc/CMakeLists.txt
+           imagectn/CMakeLists.txt
+           imagectn/apps/CMakeLists.txt
+           imagectn/libsrc/CMakeLists.txt
+           imagectn/tests/CMakeLists.txt
+           ofstd/CMakeLists.txt
+           ofstd/libsrc/CMakeLists.txt
+
+- Updated dsp file to include new cxx-files in dcmpstat/libsrc.
+  Affects: dcmpstat/dcmpstat.dsp
+
+- Added #include to file to be able to compile again under Win32.
+  Affects: dcmpstat/apps/dcmpschk.cc
+
+**** Changes from 2003.08.29 (riesmeier)
+
+- Modified function zeroMem() to compile with MSVC again where bzero() is not
+  available.
+  Affects: ofstd/include/ofbmanip.h
+
+- Replaced wrong getValueAndCheckMin() by getValueAndCheckMinMax().
+  Affects: dcmpstat/apps/dcmmkcrv.cc
+
+- Adapted type casts to new-style typecast operators defined in ofcast.h.
+  Affects: dcmpstat/apps/dcmmkcrv.cc
+
+- Replaced inclusion of unistd.h by cstddef/stddef.h to compile under Windows
+  with libxml support (required for definition of NULL).
+  Affects: dcmsr/include/dsrxmlc.h
+
+**** Changes from 2003.08.27 (eichelberg)
+
+- Changed anonymous struct typedefs into struct declarations
+  Affects: dcmnet/include/dimse.h
+
+- Splitted class DVPresentationState into a base class DcmPresentationState
+  that does not depend on module dcmimgle and current derived class with
+  public API identical to the previous version.
+  Affects: dcmpstat/include/dvpstat.h
+           dcmpstat/libsrc/dvpstat.cc
+           dcmpstat/libsrc/Makefile.in
+  Added:   dcmpstat/libsrc/dcmpstat.cc
+           dcmpstat/include/dcmpstat.h
+
+- Moved all methods of class DVPSPresentationLUT that depend on module dcmimgle
+  into a separate implementation file
+  Affects: dcmpstat/libsrc/dvpspl.cc
+           dcmpstat/include/dvpspl.h
+           dcmpstat/libsrc/Makefile.in
+  Added:   dcmpstat/libsrc/dvpspl2.cc
+
+- Changed API of class DVPSOverlay to avoid dependency on module dcmimgle
+  Affects: dcmpstat/include/dvpsov.h
+           dcmpstat/libsrc/dvpsov.cc
+           dcmpstat/libsrc/dvpstat.cc
+
+- Rebuilt Makefile dependencies for module dcmpstat
+  Affects: dcmpstat/apps/Makefile.dep
+           dcmpstat/libsrc/Makefile.dep
+
+**** Changes from 2003.08.21 (wilkens)
+
+- Got rid of memory leak in function FindCallback().
+  Thanks to Asger Halkier <Halkier@medarchiver.com> for the bug report and fix.
+  Affects: dcmwlm/libsrc/wlmactmg.cc
+
+- Got rid of some unnecessary if-statements in function FindCallback().
+  Affects: dcmwlm/libsrc/wlmactmg.cc
+
+- Function NextFindResponse() will not any longer return an empty dataset when
+  status WLM_SUCCESS is reached.
+  Affects: dcmwlm/libsrc/wldsfs.cc
+
+- Moved declaration and initialization of member variables matchingDatasets and
+  numOfMatchingDatasets to base class.
+  Affects: dcmwlm/include/wlds.h
+           dcmwlm/include/wldsfs.h
+           dcmwlm/libsrc/wlds.cc
+           dcmwlm/libsrc/wldsfs.cc
+
+- Got rid of superfluous member variable objlist and of superfluous function
+  ClearObjList().
+  Affects: dcmwlm/include/wlds.h
+           dcmwlm/libsrc/wlds.cc
+
+**** Changes from 2003.08.20 (wilkens)
+
+- Added new class OFSetIterator, an iterator class for OFxxxSet data structures.
+  Added:   ofstd/include/ofsetit.h
+  Affects: dcmwlm/libsrc/wlfsim.cc
+
+**** Changes from 2003.08.14 (riesmeier)
+
+- Removed libxml dependencies.
+  Affects: dcmdata/apps/Makefile.dep
+
+**** Changes from 2003.08.14 (eichelberg)
+
+- OFStack now explicitly defined as std::stack if compiling with HAVE_STL
+  Affects: ofstd/include/ofstack.h
+
+- Adapted type casts to new-style typecast operators defined in ofcast.h
+  Affects: dcmdata/include/dcdicdir.h
+           dcmdata/include/dcdicent.h
+           dcmdata/include/dcrledec.h
+           dcmdata/include/dcrleenc.h
+           dcmdata/include/dctag.h
+           dcmdata/libsrc/dcrleccd.cc
+           dcmdata/libsrc/dcrlecce.cc
+           dcmnet/include/dul.h
+           ofstd/include/ofbmanip.h
+           ofstd/libsrc/ofthread.cc
+           ofstd/tests/tlist.cc
+           ofstd/tests/tofstd.cc
+           ofstd/tests/tstthred.cc
+
+- Minor code modifications to avoid warnings about unused code on MinGW
+  Affects: imagectn/apps/imagectn.cc
+
+- Added documentation for association negotiation profiles as well as
+  sample configuration files for storescu and storescp.
+  Added:   dcmnet/docs/asconfig.txt
+           dcmnet/docs/storescp.cfg
+           dcmnet/docs/storescu.cfg
+
+- Added check if association configuration profile is valid for SCP use
+  Affects: dcmnet/apps/storescp.cc
+           dcmnet/include/dcasccfg.h
+           dcmnet/libsrc/dcasccfg.cc
+
+**** Changes from 2003.08.12 (riesmeier)
+
+- Added new interface class for simplified creation of a DICOMDIR. Completely
+  reworked implementation. Still requires intensive testing!
+  Added:   dcmdata/include/dcddirif.h
+           dcmdata/libsrc/dcddirif.cc
+  Affects: dcmdata/dcmdata.dsp
+           dcmdata/libsrc/Makefile.in
+
+- Adapted implementation to use new DICOMDIR class. Added new command line
+  options (e.g. --input-directory or --pattern).
+  Affects: dcmdata/apps/Makefile.dep
+           dcmdata/apps/dcmgpdir.cc
+           dcmdata/docs/dcmgpdir.txt
+           dcmjpeg/docs/dcmmkdir.txt
+
+- Added plugable image support for the new DICOMDIR class.
+  Added:   dcmjpeg/include/ddpimpl.h
+           dcmjpeg/libsrc/ddpimpl.cc
+  Affects: dcmjpeg/dcmjpeg.dsp
+           dcmjpeg/libsrc/Makefile.dep
+           dcmjpeg/libsrc/Makefile.in
+
+- Added "COMMAND LINE" section and enhanced "ENVIRONMENT" section.
+  Affects: dcmdata/docs/dcmgpdir.txt
+           dcmjpeg/docs/dcmmkdir.txt
+
+- Improved implementation of normalizeDirName().
+  Affects: ofstd/include/ofstd.h
+           ofstd/libsrc/ofstd.cc
+           ofstd/tests/tofstd.c
+
+- Replaced call of OFCommandLine::getValueAndCheckMin() by OFCommandLine::
+  getValueAndCheckMinMax() - warning reported by MSVC 5.
+  Affects: dcmdata/apps/dcmgpdir.cc
+
+- Added libxml und iconv libraries. Required when compiled with WITH_LIBXML.
+  Affects: dcmsr/apps/dsr2html.dsp
+           dcmsr/apps/dsr2xml.dsp
+           dcmsr/apps/dsrdump.dsp
+           dcmpstat/apps/dcmp2pgm.dsp
+           dcmpstat/apps/dcmprscp.dsp
+           dcmpstat/apps/dcmprscu.dsp
+           dcmpstat/apps/dcmpsprt.dsp
+
+- Removed description of USE__FINDFIRST.
+  Affects: config/docs/macros.txt
+
+**** Changes from 2003.08.11 (riesmeier)
+
+- Included "ctype" header file required for gcc 3.2.3 on Debian Linux.
+  Affects: dcmnet/apps/storescp.cc
+           dcmnet/apps/storescu.cc
+           dcmnet/libsrc/dcasccff.cc
+
+- Included "stdio" header file required for gcc 3.2.3 on Debian Linux.
+  Affects: dcmsr/libsrc/dsrtcosp.cc
+
+**** Changes from 2003.08.08 (riesmeier)
+
+- Made DcmListNode::value() inline.
+  Affects: dcmdata/include/dclist.h
+           dcmdata/libsrc/dclist.cc
+
+- Renamed member variable "actualNode" to "currentNode".
+  Affects: dcmdata/include/dclist.h
+           dcmdata/libsrc/dclist.cc
+
+- Translated remaining German comments.
+  Affects: dcmdata/include/dcdirrec.h
+           dcmdata/libsrc/dclist.cc
+           dcmdata/libsrc/dcdirrec.cc
+           dcmdata/libsrc/dcsequen.cc
+
+- Removed needless type casts (e.g. on the NULL constant).
+  Affects: dcmdata/libsrc/dclist.cc
+
+- Adapted type casts to new-style typecast operators defined in ofcast.h.
+  Affects: dcmdata/include/dclist.h
+           dcmdata/libsrc/dcdirrec.cc
+           dcmdata/libsrc/dcsequen.cc
+
+- Added new method insertAtCurrentPos() which allows for a much more efficient
+  insertion (avoids re-searching for the correct position).
+  Affects: dcmdata/include/dcsequen.h
+           dcmdata/libsrc/dcsequen.cc
+
+- Added two new methods insertSubAtCurrentPos() and nextSub() which allow for
+  a much more efficient insertion (avoids re-searching for correct position).
+  Affects: dcmdata/include/dcdirrec.h
+           dcmdata/libsrc/dcdirrec.cc
+
+- Made libxml output consistent with new xml2dsr command line tool.
+  Affects: dcmdata/libsrc/xml2dcm.cc
+
+- Re-added xml2dcm to the makefile.
+  Affects: dcmdata/apps/Makefile.in
+
+**** Changes from 2003.08.07 (riesmeier)
+
+- Improved implementation of combineDirAndFilename().
+  Affects: ofstd/libsrc/ofstd.cc
+
+- Slightly modified header comments to conform to doxygen syntax.
+  Affects: ofstd/include/oflist.h
+           ofstd/include/ofstring.h
+
+- Added new command line tool xml2dsr (convert XML document to DICOM SR file).
+  Added:   dcmsr/apps/xml2dsr.cc
+           dcmsr/docs/xml2dsr.txt
+  Affects: dcmsr/apps/Makefile.dep
+           dcmsr/apps/Makefile.in
+
+- Added readXML functionality.
+  Affects: dcmsr/include/dsrcodtn.h
+           dcmsr/include/dsrcodvl.h
+           dcmsr/include/dsrcomtn.h
+           dcmsr/include/dsrcomvl.h
+           dcmsr/include/dsrcontn.h
+           dcmsr/include/dsrdattn.h
+           dcmsr/include/dsrdoc.h
+           dcmsr/include/dsrdoctn.h
+           dcmsr/include/dsrdoctr.h
+           dcmsr/include/dsrdtitn.h
+           dcmsr/include/dsrimgtn.h
+           dcmsr/include/dsrimgvl.h
+           dcmsr/include/dsrnumtn.h
+           dcmsr/include/dsrnumvl.h
+           dcmsr/include/dsrpnmtn.h
+           dcmsr/include/dsrreftn.h
+           dcmsr/include/dsrscotn.h
+           dcmsr/include/dsrscovl.h
+           dcmsr/include/dsrsoprf.h
+           dcmsr/include/dsrstrvl.h
+           dcmsr/include/dsrtcotn.h
+           dcmsr/include/dsrtcovl.h
+           dcmsr/include/dsrtextn.h
+           dcmsr/include/dsrtimtn.h
+           dcmsr/include/dsrtypes.h
+           dcmsr/include/dsruidtn.h
+           dcmsr/include/dsrwavtn.h
+           dcmsr/include/dsrwavvl.h
+           dcmsr/libsrc/dsrcodtn.cc
+           dcmsr/libsrc/dsrcodvl.cc
+           dcmsr/libsrc/dsrcomtn.cc
+           dcmsr/libsrc/dsrcomvl.cc
+           dcmsr/libsrc/dsrcontn.cc
+           dcmsr/libsrc/dsrdattn.cc
+           dcmsr/libsrc/dsrdoc.cc
+           dcmsr/libsrc/dsrdoctn.cc
+           dcmsr/libsrc/dsrdoctr.cc
+           dcmsr/libsrc/dsrdtitn.cc
+           dcmsr/libsrc/dsrimgtn.cc
+           dcmsr/libsrc/dsrimgvl.cc
+           dcmsr/libsrc/dsrnumtn.cc
+           dcmsr/libsrc/dsrnumvl.cc
+           dcmsr/libsrc/dsrpnmtn.cc
+           dcmsr/libsrc/dsrreftn.cc
+           dcmsr/libsrc/dsrscotn.cc
+           dcmsr/libsrc/dsrscovl.cc
+           dcmsr/libsrc/dsrsoprf.cc
+           dcmsr/libsrc/dsrstrvl.cc
+           dcmsr/libsrc/dsrtcotn.cc
+           dcmsr/libsrc/dsrtcovl.cc
+           dcmsr/libsrc/dsrtextn.cc
+           dcmsr/libsrc/dsrtimtn.cc
+           dcmsr/libsrc/dsrtypes.cc
+           dcmsr/libsrc/dsruidtn.cc
+           dcmsr/libsrc/dsrwavtn.cc
+           dcmsr/libsrc/dsrwavvl.cc
+
+- Added interface classes hiding the access to libxml (document and cursor
+  class).
+  Added:   dcmsr/include/dsrxmlc.h
+           dcmsr/include/dsrxmld.h
+           dcmsr/libsrc/dsrxmlc.cc
+           dcmsr/libsrc/dsrxmld.cc
+  Affects: dcmsr/dcmsr.dsp
+           dcmsr/libsrc/Makefile.dep
+           dcmsr/libsrc/Makefile.in
+           dcmsr/tests/Makefile.dep
+           dcmsr/tests/Makefile.in
+           dcmpstat/apps/Makefile.in
+
+- Added new option --add-schema-reference to command line tool dsr2xml. XML
+  Schema not yet completed!
+  Affects: dcmsr/apps/dsr2xml.cc
+           dcmsr/docs/dsr2xml.txt
+           dcmsr/include/dsrtypes.h
+           dcmsr/libsrc/dsrdoc.cc
+           dcmsr/libsrc/dsrtypes.cc
+
+- Added support for Chest CAD SR.
+  Affects: dcmsr/docs/dsr2xml.txt
+           dcmsr/include/dsrcodtn.h
+           dcmsr/include/dsrcomtn.h
+           dcmsr/include/dsrcontn.h
+           dcmsr/include/dsrdattn.h
+           dcmsr/include/dsrdoctn.h
+           dcmsr/include/dsrdoctr.h
+           dcmsr/include/dsrdtitn.h
+           dcmsr/include/dsrimgtn.h
+           dcmsr/include/dsrnumtn.h
+           dcmsr/include/dsrpnmtn.h
+           dcmsr/include/dsrscotn.h
+           dcmsr/include/dsrtcotn.h
+           dcmsr/include/dsrtextn.h
+           dcmsr/include/dsrtimtn.h
+           dcmsr/include/dsrtypes.h
+           dcmsr/include/dsruidtn.h
+           dcmsr/include/dsrwavtn.h
+           dcmsr/libsrc/dsrtypes.cc
+
+- Added "COMMAND LINE" section and enhanced "ENVIRONMENT" section.
+  Affects: dcmsr/docs/dsr2xml.txt
+
+- Updated documentation to get rid of doxygen warnings.
+  Affects: dcmsr/include/dsrcitem.h
+           dcmsr/include/dsrcomtn.h
+           dcmsr/include/dsrcontn.h
+           dcmsr/include/dsrdoc.h
+           dcmsr/include/dsrdoctn.h
+           dcmsr/include/dsrdoctr.h
+           dcmsr/include/dsrtlist.h
+           dcmsr/include/dsrtncsr.h
+           dcmsr/include/dsrtree.h
+
+- Made method isFinalized() const.
+  Affects: dcmsr/include/dsrdoc.h
+           dcmsr/libsrc/dsrdoc.cc
+
+- Added new option to createRevisedVersion() which allows to keep the current
+  list of predecessor documents.
+  Affects: dcmsr/include/dsrdoc.h
+           dcmsr/libsrc/dsrdoc.cc
+
+- Changed interface to access the list of predecessor documents. Now using the
+  existing class DSRSOPInstanceReferenceList.
+  Affects: dcmsr/include/dsrdoc.h
+           dcmsr/libsrc/dsrdoc.cc
+
+- Added preliminary support for the Identical Documents Sequence.
+  Affects: dcmsr/include/dsrdoc.h
+           dcmsr/libsrc/dsrdoc.cc
+
+- Renamed parameters/variables "string" to avoid name clash with STL class.
+  Affects: dcmsr/include/dsrdoc.h
+           dcmsr/include/dsrsoprf.h
+           dcmsr/include/dsrtypes.h
+           dcmsr/libsrc/dsrdoc.cc
+           dcmsr/libsrc/dsrdoctr.cc
+           dcmsr/libsrc/dsrimgvl.cc
+           dcmsr/libsrc/dsrpnmtn.cc
+           dcmsr/libsrc/dsrscovl.cc
+           dcmsr/libsrc/dsrsoprf.cc
+           dcmsr/libsrc/dsrtcodt.cc
+           dcmsr/libsrc/dsrtcoto.cc
+           dcmsr/libsrc/dsrtcovl.cc
+           dcmsr/libsrc/dsrtncsr.cc
+           dcmsr/libsrc/dsrtypes.cc
+           dcmsr/libsrc/dsrwavvl.cc
+
+- Added new putString() method.
+  Affects: dcmsr/include/dsrimgfr.h
+           dcmsr/include/dsrscogr.h
+           dcmsr/include/dsrtcodt.h
+           dcmsr/include/dsrtcosp.h
+           dcmsr/include/dsrtcoto.h
+           dcmsr/include/dsrwavch.h
+           dcmsr/libsrc/dsrimgfr.cc
+           dcmsr/libsrc/dsrscogr.cc
+           dcmsr/libsrc/dsrtcodt.cc
+           dcmsr/libsrc/dsrtcosp.cc
+           dcmsr/libsrc/dsrtcoto.cc
+           dcmsr/libsrc/dsrwavch.cc
+
+- Enhanced class DSRSOPInstanceReferenceList: empty/incomplete items (e.g.
+  series with no instances or studies with no series) are automatically
+  removed from the list and "degenerated" (i.e. not stricly hierarchical)
+  sequence structures are now also supported.
+  Affects: dcmsr/include/dsrsoprf.h
+           dcmsr/libsrc/dsrsoprf.cc
+
+- Adapted type casts to new-style typecast operators defined in ofcast.h.
+  Affects: dcmsr/libsrc/dsrcitem.cc
+           dcmsr/libsrc/dsrdoctn.cc
+           dcmsr/libsrc/dsrdoctr.cc
+           dcmsr/libsrc/dsrsoprf.cc
+           dcmsr/libsrc/dsrtypes.cc
+
+- Follow more strictly the rules for Key Object Selection Documents (e.g.
+  there is a special Key Object Document Series Module).
+  Affects: dcmsr/libsrc/dsrdoc.cc
+
+- Distinguish more strictly between OFBool and int (required when HAVE_CXX_BOOL
+  is defined).
+  Affects: dcmsr/libsrc/dsrdoc.cc
+           dcmsr/libsrc/dsrdoctn.cc
+           dcmsr/libsrc/dsrdtitn.cc
+           dcmsr/libsrc/dsrscovl.cc
+           dcmsr/libsrc/dsrstrvl.cc
+           dcmsr/libsrc/dsrtextn.cc
+           dcmsr/libsrc/dsrtimtn.cc
+           dcmsr/libsrc/dsruidtn.cc
+
+- Adapted for use of OFListConstIterator, needed for compiling with HAVE_STL.
+  Affects: dcmsr/libsrc/dsrimgfr.cc
+           dcmsr/libsrc/dsrscogr.cc
+           dcmsr/libsrc/dsrsoprf.cc
+           dcmsr/libsrc/dsrtcodt.cc
+           dcmsr/libsrc/dsrtcosp.cc
+           dcmsr/libsrc/dsrtcoto.cc
+           dcmsr/libsrc/dsrtncsr.cc
+           dcmsr/libsrc/dsrwavch.cc
+           dcmsr/tests/mkreport.cc
+
+- Modified writeXML() output (introduced new "<value>...</value>" element).
+  Affects: dcmsr/libsrc/dsrcomtn.cc
+           dcmsr/libsrc/dsrimgtn.cc
+           dcmsr/libsrc/dsrwavtn.cc
+
+- Added comment.
+  Affects: dcmsr/libsrc/dsrtree.cc
+
+- Added xml2dsr to MSVC project files (Windows).
+  Added:   dcmsr/apps/xml2dsr.dsp
+  Affects: dcmtk.dsw
+
+- Added brackets around "bitwise and" operator/operands to avoid warnings
+  reported by MSVC5.
+  Affects: dcmsr/libsrc/dsrcodvl.cc
+           dcmsr/libsrc/dsrdattn.cc
+           dcmsr/libsrc/dsrdoc.cc
+           dcmsr/libsrc/dsrdoctn.cc
+           dcmsr/libsrc/dsrdtitn.cc
+           dcmsr/libsrc/dsrnumvl.cc
+           dcmsr/libsrc/dsrpnmtn.cc
+           dcmsr/libsrc/dsrscovl.cc
+           dcmsr/libsrc/dsrsoprf.cc
+           dcmsr/libsrc/dsrstrvl.cc
+           dcmsr/libsrc/dsrtextn.cc
+           dcmsr/libsrc/dsrtimtn.cc
+           dcmsr/libsrc/dsruidtn.cc
+           dcmsr/libsrc/dsrxmld.cc
+
+- Removed libxml dependency from header files. Simplifies linking (MSVC).
+  Affects: dcmsr/apps/Makefile.dep
+           dcmsr/include/dsrcodvl.h
+           dcmsr/include/dsrcomvl.h
+           dcmsr/include/dsrdoc.h
+           dcmsr/include/dsrdoctn.h
+           dcmsr/include/dsrimgvl.h
+           dcmsr/include/dsrscovl.h
+           dcmsr/include/dsrsoprf.h
+           dcmsr/include/dsrstrvl.h
+           dcmsr/include/dsrtcovl.h
+           dcmsr/include/dsrtypes.h
+           dcmsr/include/dsrwavvl.h
+           dcmsr/include/dsrxmld.h
+           dcmsr/libsrc/Makefile.dep
+           dcmsr/libsrc/dsrcodtn.cc
+           dcmsr/libsrc/dsrcodvl.cc
+           dcmsr/libsrc/dsrcomtn.cc
+           dcmsr/libsrc/dsrcontn.cc
+           dcmsr/libsrc/dsrdattn.cc
+           dcmsr/libsrc/dsrdoc.cc
+           dcmsr/libsrc/dsrdoctn.cc
+           dcmsr/libsrc/dsrdoctr.cc
+           dcmsr/libsrc/dsrdtitn.cc
+           dcmsr/libsrc/dsrimgtn.cc
+           dcmsr/libsrc/dsrnumtn.cc
+           dcmsr/libsrc/dsrnumvl.cc
+           dcmsr/libsrc/dsrpnmtn.cc
+           dcmsr/libsrc/dsrreftn.cc
+           dcmsr/libsrc/dsrscotn.cc
+           dcmsr/libsrc/dsrtcotn.cc
+           dcmsr/libsrc/dsrtextn.cc
+           dcmsr/libsrc/dsrtimtn.cc
+           dcmsr/libsrc/dsruidtn.cc
+           dcmsr/libsrc/dsrwavch.cc
+           dcmsr/libsrc/dsrwavtn.cc
+           dcmsr/tests/Makefile.dep
+
+**** Changes from 2003.07.17 (riesmeier)
+
+- Added new function searchDirectoryRecursively().
+  Affects: ofstd/include/ofstd.h
+
+- Added "#include <unistd.h>" required for ::sleep() on Linux 2.4.x.
+  Affects: ofstd/include/ofstd.h
+
+- Updated documentation to get rid of doxygen warnings.
+  Affects: ofstd/include/ofstd.h
+
+- Added test for "fnmatch.h" header file.
+  Affects: config/configure
+           config/configure.in
+           config/include/cfunix.h.in
+           config/include/cfwin32.h
+
+**** Changes from 2003.07.16 (riesmeier)
+
+- Added new function findAndGetSequence().
+  Affects: dcmdata/include/dcitem.h
+
+- Adapted type casts to new-style typecast operators defined in ofcast.h.
+  Affects: dcmdata/include/dcitem.h
+           dcmdata/libsrc/dcitem.cc
+
+**** Changes from 2003.07.11 (riesmeier)
+
+- Added workaround to get rid of "implicit typename" warnings on gcc 3.x
+  (introduced macro OFLIST_TYPENAME).
+  Affects: ofstd/include/oflist.h
+           dcmnet/include/dcmsmap.h
+           dcmsr/include/dsrtlist.h
+
+- Renamed member variable.
+  Affects: dcmsr/include/dsrtlist.h
+           dcmsr/libsrc/dsrimgfr.cc
+           dcmsr/libsrc/dsrscogr.cc
+           dcmsr/libsrc/dsrtcodt.cc
+           dcmsr/libsrc/dsrtcosp.cc
+           dcmsr/libsrc/dsrtcoto.cc
+           dcmsr/libsrc/dsrwavch.cc
+
+**** Changes from 2003.07.09 (eichelberg)
+
+- Included dcmodify in MSVC build system, updated headers
+  Affects: dcmtk.dsw
+           dcmdata/apps/dcmodify.cc
+           dcmdata/apps/mdfconen.cc
+           dcmdata/apps/mdfconen.h
+           dcmdata/apps/mdfdsman.cc
+           dcmdata/apps/mdfdsman.h
+           dcmdata/include/dcvrobow.h
+  Added:   dcmdata/apps/dcmodify.dsp
+
+- Added FAQ entry about filename extensions ".cc" and ".cxx"
+  Affects: FAQ
+
+- Added configure test for new-style cast operators such as
+  static_cast<> and const_cast<>.
+  Affects: config/acconfig.h
+           config/aclocal.m4
+           config/configure
+           config/configure.in
+           config/include/cfunix.h.in
+           config/include/cfwin32.h
+
+- Added new header file ofcast.h which defines portable macros
+  for new-style typecast operators
+  Added:   ofstd/include/ofcast.h
+
+- Adapted type casts to new-style typecast operators defined in ofcast.h
+  Affects: ofstd/include/ofcond.h
+           ofstd/include/oflist.h
+           ofstd/include/ofstack.h
+           ofstd/include/ofstring.h
+           ofstd/include/oftimer.h
+           ofstd/libsrc/ofcmdln.cc
+           ofstd/libsrc/ofconfig.cc
+           ofstd/libsrc/ofcrc32.cc
+           ofstd/libsrc/offname.cc
+           ofstd/libsrc/oflogfil.cc
+           ofstd/libsrc/ofstd.cc
+           ofstd/libsrc/ofstring.cc
+           ofstd/libsrc/oftime.cc
+
+- Removed unused variable
+  Affects: dcmsign/libsrc/dcsignat.cc
+
+- Removed unused debug output
+  Affects: dcmnet/libsrc/dul.cc
+
+**** Changes from 2003.07.08 (eichelberg)
+
+- Configure now correctly handles the ".exe" file extension on MinGW.
+  Affects: config/configure
+           config/configure.in
+
+- Fixed bug in OFStandard::ftoa that could cause a segmentation fault
+  if the number to be converted was NAN or infinity.
+  Thanks to Michael Doppler <m.doppler@icoserve.com> for the bug report and fix.
+  Affects: ofstd/libsrc/ofstd.cc
+
+**** Changes from 2003.07.04 (eichelberg)
+
+- Fixed issues with compiling with HAVE_STD_STRING
+  Affects: ofstd/include/ofcond.h
+           ofstd/include/ofstd.h
+           ofstd/include/ofstring.h
+           ofstd/libsrc/ofstring.cc
+           ofstd/tests/tstring.cc
+
+- Replaced forward declarations for OFString with explicit includes,
+  needed when compiling with HAVE_STD_STRING
+  Affects: dcmdata/include/dcbytstr.h
+           dcmdata/include/dcelem.h
+           dcmimage/include/diqtctab.h
+           dcmimage/include/diquant.h
+           dcmimgle/include/didocu.h
+           dcmjpeg/include/djcodecd.h
+           dcmjpeg/include/djcodece.h
+           dcmpstat/include/dvpsmsg.h
+           dcmsign/include/sicert.h
+           ofstd/include/ofconapp.h
+           ofstd/include/ofthread.h
+
+- Added include for ofstream.h, to make sure ofstream is correctly defined
+  Affects: dcmnet/include/dcmtrans.h
+           dcmtls/include/tlslayer.h
+           dcmtls/include/tlstrans.h
+           ofstd/include/ofdate.h
+
+**** Changes from 2003.07.03 (eichelberg)
+
+- Renamed type INT32 to IJG_INT32 to avoid name clash on MinGW
+  Affects: dcmjpeg/libijg12/jaricom.c
+           dcmjpeg/libijg12/jccolor.c
+           dcmjpeg/libijg12/jcdctmgr.c
+           dcmjpeg/libijg12/jchuff.c
+           dcmjpeg/libijg12/jclhuff.c
+           dcmjpeg/libijg12/jcphuff.c
+           dcmjpeg/libijg12/jcsample.c
+           dcmjpeg/libijg12/jcshuff.c
+           dcmjpeg/libijg12/jdcoefct.c
+           dcmjpeg/libijg12/jdcolor.c
+           dcmjpeg/libijg12/jdct12.h
+           dcmjpeg/libijg12/jddctmgr.c
+           dcmjpeg/libijg12/jdhuff.c
+           dcmjpeg/libijg12/jdhuff12.h
+           dcmjpeg/libijg12/jdmarker.c
+           dcmjpeg/libijg12/jdmerge.c
+           dcmjpeg/libijg12/jdsample.c
+           dcmjpeg/libijg12/jfdctfst.c
+           dcmjpeg/libijg12/jfdctint.c
+           dcmjpeg/libijg12/jidctflt.c
+           dcmjpeg/libijg12/jidctfst.c
+           dcmjpeg/libijg12/jidctint.c
+           dcmjpeg/libijg12/jidctred.c
+           dcmjpeg/libijg12/jlossls12.h
+           dcmjpeg/libijg12/jmorecfg12.h
+           dcmjpeg/libijg12/jpegint12.h
+           dcmjpeg/libijg12/jquant1.c
+           dcmjpeg/libijg12/jquant2.c
+           dcmjpeg/libijg16/jaricom.c
+           dcmjpeg/libijg16/jccolor.c
+           dcmjpeg/libijg16/jcdctmgr.c
+           dcmjpeg/libijg16/jchuff.c
+           dcmjpeg/libijg16/jclhuff.c
+           dcmjpeg/libijg16/jcphuff.c
+           dcmjpeg/libijg16/jcsample.c
+           dcmjpeg/libijg16/jcshuff.c
+           dcmjpeg/libijg16/jdcoefct.c
+           dcmjpeg/libijg16/jdcolor.c
+           dcmjpeg/libijg16/jdct16.h
+           dcmjpeg/libijg16/jddctmgr.c
+           dcmjpeg/libijg16/jdhuff.c
+           dcmjpeg/libijg16/jdhuff16.h
+           dcmjpeg/libijg16/jdmarker.c
+           dcmjpeg/libijg16/jdmerge.c
+           dcmjpeg/libijg16/jdsample.c
+           dcmjpeg/libijg16/jfdctfst.c
+           dcmjpeg/libijg16/jfdctint.c
+           dcmjpeg/libijg16/jidctflt.c
+           dcmjpeg/libijg16/jidctfst.c
+           dcmjpeg/libijg16/jidctint.c
+           dcmjpeg/libijg16/jidctred.c
+           dcmjpeg/libijg16/jlossls16.h
+           dcmjpeg/libijg16/jmorecfg16.h
+           dcmjpeg/libijg16/jpegint16.h
+           dcmjpeg/libijg16/jquant1.c
+           dcmjpeg/libijg16/jquant2.c
+           dcmjpeg/libijg8/jaricom.c
+           dcmjpeg/libijg8/jccolor.c
+           dcmjpeg/libijg8/jcdctmgr.c
+           dcmjpeg/libijg8/jchuff.c
+           dcmjpeg/libijg8/jclhuff.c
+           dcmjpeg/libijg8/jcphuff.c
+           dcmjpeg/libijg8/jcsample.c
+           dcmjpeg/libijg8/jcshuff.c
+           dcmjpeg/libijg8/jdcoefct.c
+           dcmjpeg/libijg8/jdcolor.c
+           dcmjpeg/libijg8/jdct8.h
+           dcmjpeg/libijg8/jddctmgr.c
+           dcmjpeg/libijg8/jdhuff.c
+           dcmjpeg/libijg8/jdhuff8.h
+           dcmjpeg/libijg8/jdmarker.c
+           dcmjpeg/libijg8/jdmerge.c
+           dcmjpeg/libijg8/jdsample.c
+           dcmjpeg/libijg8/jfdctfst.c
+           dcmjpeg/libijg8/jfdctint.c
+           dcmjpeg/libijg8/jidctflt.c
+           dcmjpeg/libijg8/jidctfst.c
+           dcmjpeg/libijg8/jidctint.c
+           dcmjpeg/libijg8/jidctred.c
+           dcmjpeg/libijg8/jlossls8.h
+           dcmjpeg/libijg8/jmorecfg8.h
+           dcmjpeg/libijg8/jpegint8.h
+           dcmjpeg/libijg8/jquant1.c
+           dcmjpeg/libijg8/jquant2.c
+
+- Added special handling for FD_SET() on MinGW, which expects an
+  unsigned first argument.
+  Affects: dcmnet/libsrc/assoc.cc
+           dcmnet/libsrc/dcmtrans.cc
+           dcmnet/libsrc/dul.cc
+           dcmnet/libsrc/dulextra.cc
+           dcmnet/libsrc/dulfsm.cc
+
+- Added special handling for MinGW where getMacAddress() cannot
+  be compiled because the <snmp.h> header file is not (yet) available.
+  Affects: dcmdata/libsrc/dcuid.cc
+
+- Minor changes to make OFStandard::sleep compile on MinGW
+  Affects: ofstd/include/ofstd.h
+           ofstd/libsrc/ofstd.cc
+
+- When compiling on MinGW, only issues "die" command since the flock
+  family of functions is not available on this platform and, therefore,
+  preplock cannot be made to work.
+  Affects: dcmwlm/wwwapps/preplock.cc
+
+- Fixed AC_CHECK_DECLARATION macro. Header files are now only included during
+  the test if the presence of the header file has been checked with
+  AC_CHECK_HEADERS before.
+  Affects: config/aclocal.m4
+
+- Added special handling for MinGW platform
+  Affects: config/acconfig.h
+           config/configure
+           config/configure.in
+           config/include/cfunix.h.in
+           config/include/cfwin32.h
+
+- Added configure test for "typename" C++ keyword
+  Affects: config/acconfig.h
+           config/aclocal.m4
+           config/configure
+           config/configure.in
+           config/include/cfunix.h.in
+           config/include/cfwin32.h
+
+- Introduced DcmDictEntryListConstIterator, needed for compiling with HAVE_STL.
+  Affects: dcmdata/include/dchashdi.h
+           dcmdata/libsrc/dcdict.cc
+
+- Adapted for use of OFListConstIterator, needed for compiling with HAVE_STL.
+  Affects: dcmnet/apps/storescu.cc
+           dcmnet/libsrc/dcasccfg.cc
+
+- Fixed problems with iterators, included zlib.h if needed
+  Affects: dcmdata/apps/mdfconen.cc
+
+- Introduced workaround for "implicit typename" warning on gcc 3.x when
+  compiling with HAVE_STL.
+  Affects: dcmnet/include/dcmsmap.h
+
+**** Changes from 2003.07.02 (riesmeier)
+
+- Added Makefile support for Doxygen.
+  Added:   doxygen/Makefile
+  Affects: INSTALL
+           config/rootconf
+
+- Slightly modified Doxygen configuration (e.g. use 3 columns instead of 5 in
+  the alphabetical class index).
+  Affects: doxygen/doxygen.cfg
+
+- Removed support for DOC++.
+  Removed: dcmdata/htmldocs
+           dcmimage/htmldocs/*
+           dcmimgle/htmldocs/*
+           dcmjpeg/htmldocs/*
+           dcmpstat/htmldocs/*
+           dcmsr/htmldocs/*
+           dcmtls/htmldocs/*
+           dcmwlm/htmldocs/*
+           ofstd/htmldocs/*
+  Affects: INSTALL
+           README
+           config/docs/dirstruc.txt
+           dcmdata/Makefile.in
+           dcmimage/Makefile.in
+           dcmimgle/Makefile.in
+           dcmjpeg/Makefile.in
+           dcmpstat/Makefile.in
+           dcmsr/Makefile.in
+           dcmtls/Makefile.in
+           dcmwlm/Makefile.in
+           ofstd/Makefile.in
+
+- Changed main development system from Solaris 7 / GNU C++ 2.95 to Linux 2.4 /
+  GNU C++ 3.2.
+  Affects: INSTALL
+
+- Renamed Doxygen output directory from "html" to "htmldocs".
+  Affects: doxygen/doxygen.cfg
+           doxygen/Makefile
+
+**** Changes from 2003.07.02 (wilkens)
+
+- Updated documentation to get rid of doxygen warnings.
+  Affects: dcmwlm/include/wltypdef.h
+           dcmwlm/include/wlmactmg.h
+           dcmwlm/include/wlds.h
+           dcmwlm/include/wldsfs.h
+           dcmwlm/include/wlfsim.h
+           dcmwlm/apps/wlcefs.h
+
+**** Changes from 2003.06.26 (onken)
+
+- Added commandline application dcmodify.
+  Added:   dcmdata/apps/dcmodify.cc
+           dcmdata/apps/mdfconen.cc
+           dcmdata/apps/mdfdsman.cc
+           dcmdata/apps/mdfconen.h
+           dcmdata/apps/mdfdsman.h
+           dcmdata/docs/dcmodify.txt
+  Affects: dcmdata/apps/Makefile.in
+           dcmdata/apps/Makefile.dep
+           dcmdata/include/dcitem.h
+           dcmdata/libsrc/dcitem.cc
+
+**** Changes from 2003.06.18 (eichelberg)
+
+- Updated MSVC project file
+  Affects: dcmnet/dcmnet.dsp
+
+- Added comparison operators to keep MSVC5 compiler happy
+  Affects: dcmnet/include/dccfenmp.h
+           dcmnet/include/dccfpcmp.h
+           dcmnet/include/dccfprmp.h
+           dcmnet/include/dccfrsmp.h
+           dcmnet/include/dcmsmap.h
+           dcmnet/libsrc/dccfenmp.cc
+
+- Fixed bug in association configuration file parser
+  Affects: dcmnet/libsrc/dcascff.cc
+
+**** Changes from 2003.06.17 (riesmeier)
+
+- Added support for libxml to MSVC project files (Windows).
+  Added:   dcmdata/apps/xml2dcm.dsp
+  Affects: INSTALL
+           dcmtk.dsw
+           config/include/cfwin32.h
+
+- Distinguish more strictly between OFBool and int (required when HAVE_CXX_BOOL
+  is defined).
+  Affects: dcmdata/apps/xml2dcm.cc
+
+**** Changes from 2003.06.12 (riesmeier)
+
+- Added support for Doxygen hypertext documentation.
+  Added:   doxygen/doxygen.cfg
+  Affects: INSTALL
+
+- Fixed inconsistent API documentation reported by Doxygen.
+  Affects: ofstd/include/ofconapp.h
+           ofstd/include/ofcond.h
+           ofstd/include/ofconfig.h
+           ofstd/include/offname.h
+           ofstd/include/oflogfil.h
+           ofstd/include/ofstring.h
+           dcmdata/include/dcbytstr.h
+           dcmdata/include/dccodec.h
+           dcmdata/include/dchashdi.h
+           dcmdata/include/dcistrmb.h
+           dcmdata/include/dcitem.h
+           dcmdata/include/dcobject.h
+           dcmdata/include/dcpixel.h
+           dcmdata/include/dcrleenc.h
+           dcmdata/include/dcvr.h
+           dcmdata/include/dcvrat.h
+           dcmdata/include/dcvrobow.h
+           dcmdata/include/dcvrsl.h
+           dcmimgle/include/dcmimage.h
+           dcmimgle/include/dibaslut.h
+           dcmimgle/include/didocu.h
+           dcmimgle/include/digsdlut.h
+           dcmimgle/include/diimage.h
+           dcmimgle/include/diluptab.h
+           dcmimgle/include/dimo1img.h
+           dcmimgle/include/dimo2img.h
+           dcmimgle/include/dimoimg.h
+           dcmimgle/include/dimoipxt.h
+           dcmimgle/include/dimoopxt.h
+           dcmimgle/include/diovlay.h
+           dcmimgle/include/diovpln.h
+           dcmimage/include/dicoimg.h
+           dcmimage/include/diqtctab.h
+           dcmnet/include/dcmlayer.h
+
+- Added static function checkVR().
+  Affects: dcmdata/include/dcvrcs.h
+           dcmdata/libsrc/dcvrcs.cc
+
+- Added support for so-called command files ("@filename") which can be used to
+  summarize command line options and parameters.
+  Added:   dcmdata/apps/dumppat.txt
+  Affects: dcmdata/docs/dcmdump.txt
+           ofstd/include/ofcmdln.h
+           ofstd/libsrc/ofcmdln.cc
+
+- Enhanced method printWarning(). Added method quietMode().
+  Affects: ofstd/include/ofconapp.h
+           ofstd/libsrc/ofconapp.cc
+
+- Introduced macro OFListConstIterator() to support STL const_iterators.
+  Affects: ofstd/include/oflist.h
+           ofstd/libsrc/ofcmdln.cc
+
+- Slightly modified macro definitions to avoid potential parser errors (added
+  space character after '<' and before '>').
+  Affects: ofstd/include/oflist.h
+
+- Modified code to use const_iterators where appropriate (required for STL).
+  Thanks to Henning Meyer <Henning-Meyer@web.de> for the report.
+  Affects: dcmdata/include/dcpixel.h
+           dcmdata/include/dcrleenc.h
+           dcmdata/libsrc/dcpcache.cc
+           dcmdata/libsrc/dcpixel.cc
+           dcmdata/libsrc/dcpxitem.cc
+           dcmnet/libsrc/extneg.cc
+           dcmpstat/libsrc/dvpsabl.cc
+           dcmpstat/libsrc/dvpsall.cc
+           dcmpstat/libsrc/dvpscul.cc
+           dcmpstat/libsrc/dvpsdal.cc
+           dcmpstat/libsrc/dvpsgal.cc
+           dcmpstat/libsrc/dvpsgll.cc
+           dcmpstat/libsrc/dvpsgrl.cc
+           dcmpstat/libsrc/dvpsibl.cc
+           dcmpstat/libsrc/dvpsovl.cc
+           dcmpstat/libsrc/dvpspll.cc
+           dcmpstat/libsrc/dvpsril.cc
+           dcmpstat/libsrc/dvpsrsl.cc
+           dcmpstat/libsrc/dvpsspl.cc
+           dcmpstat/libsrc/dvpssvl.cc
+           dcmpstat/libsrc/dvpstxl.cc
+           dcmpstat/libsrc/dvpsvll.cc
+           dcmpstat/libsrc/dvpsvwl.cc
+
+**** Changes from 2003.06.11 (eichelberg)
+
+- Updated MSVC5 project files
+  Affects: ofstd/ofstd.dsp
+           dcmtk.dsw
+
+- Cleaned up usage of boolean constants
+  Affects: dcmimage/apps/dcm2pnm.cc
+           ofstd/include/oflogfil.h
+
+- Fixed configure test for std::ios_base::openmode
+  Affects: config/acconfig.h
+           config/configure
+           config/configure.in
+           config/include/cfunix.h.in
+           config/include/cfwin32.h
+           ofstd/libsrc/oflogfil.cc
+
+- Added support for configuration file based association negotiation
+  profiles
+  Affects: dcmnet/apps/Makefile.dep
+           dcmnet/apps/storescp.cc
+           dcmnet/apps/storescu.cc
+           dcmnet/docs/storescp.txt
+           dcmnet/docs/storescu.txt
+
+- Extended documentation, fixed typos
+  Affects: dcmnet/apps/storescu.cc
+           dcmnet/docs/storescu.txt
+
+**** Changes from 2003.06.10 (eichelberg)
+
+- Added configure test for TCP wrapper library (libwrap)
+  Affects: config/Makefile.def.in
+           config/acconfig.h
+           config/configure
+           config/configure.in
+           config/include/cfunix.h.in
+           config/include/cfwin32.h
+           INSTALL
+
+- Updated Makefiles for linking against the TCP wrapper library
+  Affects: dcmnet/apps/Makefile.in
+           dcmpstat/apps/Makefile.in
+           dcmwlm/apps/Makefile.in
+           imagectn/apps/Makefile.in
+
+- Added support for TCP wrappers in DICOM network layer
+  Affects: dcmnet/include/dul.h
+           dcmnet/include/cond.h
+           dcmnet/libsrc/dul.cc
+
+- Replaced unnamed C style structs by C++ declarations
+  Affects: dcmnet/include/assoc.h
+
+- Added support for TCP wrappers based host access control
+  Affects: dcmnet/apps/movescu.cc
+           dcmnet/apps/storescp.cc
+           dcmnet/docs/movescu.txt
+           dcmnet/docs/storescp.txt
+           dcmwlm/apps/wlcefs.cc
+           dcmwlm/docs/wlcefs.txt
+           imagectn/apps/imagectn.cc
+           imagectn/docs/imagectn.txt
+
+- Added option to create unique filenames, even if receiving the same
+  SOP instance multiple times. Exec options now allow to pass the calling
+  and called aetitle on the command line.
+  Affects: dcmnet/apps/storescp.cc
+
+- Initial release of class DcmAssociationConfiguration and support
+  classes. This class maintains a list of association negotiation
+  profiles that can be addressed by symbolic keys. The profiles may
+  be read from a configuration file.
+  Affects: dcmnet/libsrc/Makefile.in
+           dcmnet/libsrc/Makefile.dep
+  Added:   dcmnet/include/dcasccff.h
+           dcmnet/include/dcasccfg.h
+           dcmnet/include/dccfenmp.h
+           dcmnet/include/dccfpcmp.h
+           dcmnet/include/dccfprmp.h
+           dcmnet/include/dccfrsmp.h
+           dcmnet/include/dccftsmp.h
+           dcmnet/include/dccfuidh.h
+           dcmnet/include/dcmsmap.h
+           dcmnet/libsrc/dcasccff.cc
+           dcmnet/libsrc/dcasccfg.cc
+           dcmnet/libsrc/dccfenmp.cc
+           dcmnet/libsrc/dccfpcmp.cc
+           dcmnet/libsrc/dccfprmp.cc
+           dcmnet/libsrc/dccfrsmp.cc
+           dcmnet/libsrc/dccftsmp.cc
+           dcmnet/libsrc/dccfuidh.cc
+
+
+**** Changes from 2003.06.06 (eichelberg)
+
+- Introduced global flag dcmExternalSocketHandle which allows
+  to pass an already opened socket file descriptor to dcmnet.
+  Thanks to Markus Sabin <sabin@convis.de> for the suggestion.
+  Affects: dcmnet/include/dul.h
+           dcmnet/libsrc/dul.cc
+
+- Added configure tests for bool and volatile keywords
+  Affects: config/acconfig.h
+           config/aclocal.m4
+           config/configure
+           config/configure.in
+           config/confmod
+           config/include/cfunix.h.in
+           config/include/cfwin32.h
+
+- Added volatile keyword to data pointers in multi-thread wrapper classes
+  Affects: ofstd/include/ofthread.h
+
+- Added static sleep function in class OFStandard. This replaces the various
+  calls to sleep(), Sleep() and usleep() throughout the toolkit.
+  Affects: dcmnet/apps/movescu.cc
+           dcmnet/apps/storescp.cc
+           dcmnet/include/dcompat.h
+           dcmpstat/apps/dcmprscu.cc
+           dcmwlm/libsrc/wlmactmg.cc
+           ofstd/include/ofstd.h
+           ofstd/libsrc/ofstd.cc
+           ofstd/tests/tstthred.cc
+
+**** Changes from 2003.06.04 (eichelberg)
+
+- Added dummy comparison operators, needed by MSVC5 with STL
+  Affects: ofstd/include/ofconfig.h
+
+- Added comparison operators, needed by MSVC5 with STL
+  Affects: dcmsr/include/dsrscogr.h
+           dcmsr/include/dsrwavch.h
+
+- Added various includes needed by MSVC5 with STL
+  Affects: dcmpstat/libsrc/dviface.cc
+           dcmpstat/libsrc/dvpsall.cc
+           dcmpstat/libsrc/dvpsda.cc
+           dcmpstat/libsrc/dvpsdal.cc
+           dcmpstat/libsrc/dvpsfs.cc
+           dcmpstat/libsrc/dvpsga.cc
+           dcmpstat/libsrc/dvpsgal.cc
+           dcmpstat/libsrc/dvpsgll.cc
+           dcmpstat/libsrc/dvpsib.cc
+           dcmpstat/libsrc/dvpspll.cc
+           dcmpstat/libsrc/dvpsprt.cc
+           dcmpstat/libsrc/dvpsril.cc
+           dcmpstat/libsrc/dvpsrs.cc
+           dcmpstat/libsrc/dvpsrsl.cc
+           dcmpstat/libsrc/dvpssp.cc
+           dcmpstat/libsrc/dvpsspl.cc
+           dcmpstat/libsrc/dvpssv.cc
+           dcmpstat/libsrc/dvpssvl.cc
+           dcmpstat/libsrc/dvpstat.cc
+           dcmpstat/libsrc/dvpsvl.cc
+           dcmwlm/libsrc/wlds.cc
+           dcmwlm/libsrc/wlmactmg.cc
+
+- Fixed incorrect include
+  Affects: dcmimgle/libsrc/dcmimage.cc
+
+- Replaced private inheritance from template with aggregation
+  Affects: dcmpstat/include/dvpsabl.h
+           dcmpstat/include/dvpsall.h
+           dcmpstat/include/dvpscul.h
+           dcmpstat/include/dvpsdal.h
+           dcmpstat/include/dvpsgal.h
+           dcmpstat/include/dvpsgll.h
+           dcmpstat/include/dvpsgrl.h
+           dcmpstat/include/dvpsibl.h
+           dcmpstat/include/dvpsovl.h
+           dcmpstat/include/dvpspll.h
+           dcmpstat/include/dvpsril.h
+           dcmpstat/include/dvpsrsl.h
+           dcmpstat/include/dvpsspl.h
+           dcmpstat/include/dvpssvl.h
+           dcmpstat/include/dvpstxl.h
+           dcmpstat/include/dvpsvll.h
+           dcmpstat/include/dvpsvwl.h
+           dcmpstat/libsrc/dvpsabl.cc
+           dcmpstat/libsrc/dvpsall.cc
+           dcmpstat/libsrc/dvpscul.cc
+           dcmpstat/libsrc/dvpsdal.cc
+           dcmpstat/libsrc/dvpsgal.cc
+           dcmpstat/libsrc/dvpsgll.cc
+           dcmpstat/libsrc/dvpsgrl.cc
+           dcmpstat/libsrc/dvpsibl.cc
+           dcmpstat/libsrc/dvpsovl.cc
+           dcmpstat/libsrc/dvpspll.cc
+           dcmpstat/libsrc/dvpsril.cc
+           dcmpstat/libsrc/dvpsrsl.cc
+           dcmpstat/libsrc/dvpsspl.cc
+           dcmpstat/libsrc/dvpssvl.cc
+           dcmpstat/libsrc/dvpstxl.cc
+           dcmpstat/libsrc/dvpsvll.cc
+           dcmpstat/libsrc/dvpsvwl.cc
+
+- Replaced protected inheritance from OFList with protected aggregation
+  Affects: dcmsr/include/dsrtlist.h
+           dcmsr/libsrc/dsrimgfr.cc
+           dcmsr/libsrc/dsrscogr.cc
+           dcmsr/libsrc/dsrtcodt.cc
+           dcmsr/libsrc/dsrtcosp.cc
+           dcmsr/libsrc/dsrtcoto.cc
+           dcmsr/libsrc/dsrwavch.cc
+
+- Cleaned up usage of boolean constants
+  Affects: dcmdata/libsrc/dcvr.cc
+           dcmnet/libsrc/dimse.cc
+           dcmnet/libsrc/dulfsm.cc
+
+- Simplified include structure to avoid preprocessor limitation
+  (max 32 #if levels) on MSVC5 with STL.
+  Affects: dcmsign/include/dcsignat.h
+           dcmsign/include/sialgo.h
+           dcmsign/include/siautopr.h
+           dcmsign/include/sibrsapr.h
+           dcmsign/include/sicert.h
+           dcmsign/include/sicertvf.h
+           dcmsign/include/sicreapr.h
+           dcmsign/include/sidsa.h
+           dcmsign/include/simac.h
+           dcmsign/include/simaccon.h
+           dcmsign/include/simd5.h
+           dcmsign/include/sinullpr.h
+           dcmsign/include/siprivat.h
+           dcmsign/include/siripemd.h
+           dcmsign/include/sirsa.h
+           dcmsign/include/sisha1.h
+           dcmsign/include/sisprof.h
+           dcmsign/include/sitstamp.h
+           dcmsr/libsrc/dsrcodtn.cc
+           dcmsr/libsrc/dsrcodvl.cc
+           dcmsr/libsrc/dsrcomtn.cc
+           dcmsr/libsrc/dsrcomvl.cc
+           dcmsr/libsrc/dsrcontn.cc
+           dcmsr/libsrc/dsrdattn.cc
+           dcmsr/libsrc/dsrdtitn.cc
+           dcmsr/libsrc/dsrimgfr.cc
+           dcmsr/libsrc/dsrimgtn.cc
+           dcmsr/libsrc/dsrnumtn.cc
+           dcmsr/libsrc/dsrpnmtn.cc
+           dcmsr/libsrc/dsrreftn.cc
+           dcmsr/libsrc/dsrscogr.cc
+           dcmsr/libsrc/dsrscotn.cc
+           dcmsr/libsrc/dsrtcodt.cc
+           dcmsr/libsrc/dsrtcosp.cc
+           dcmsr/libsrc/dsrtcotn.cc
+           dcmsr/libsrc/dsrtcoto.cc
+           dcmsr/libsrc/dsrtextn.cc
+           dcmsr/libsrc/dsrtimtn.cc
+           dcmsr/libsrc/dsruidtn.cc
+           dcmsr/libsrc/dsrwavch.cc
+           dcmsr/libsrc/dsrwavtn.cc
+
+- Updated MSVC project files
+  Affects: dcmpstat/dcmpstat.dsp
+
+- Updated flex++ skeleton files to avoid warnings on gcc 3.x
+  Affects: dcmpstat/apps/vrscan.cc
+           dcmpstat/apps/vrscan.h
+
+**** Changes from 2003.06.03 (eichelberg)
+
+- Added include for dcdicent.h, needed by MSVC5 with STL
+  Affects: dcmimgle/libsrc/dcmimage.cc
+
+- Renamed local variables to avoid name clashes with STL
+  Affects: dcmdata/include/dchashdi.h
+           dcmsr/include/dsrimgfr.h
+           dcmsr/include/dsrscogr.h
+           dcmsr/include/dsrtcodt.h
+           dcmsr/include/dsrtcosp.h
+           dcmsr/include/dsrtcoto.h
+           dcmsr/include/dsrtlist.h
+           dcmsr/include/dsrwavch.h
+           dcmsr/libsrc/dsrimgfr.cc
+           dcmsr/libsrc/dsrscogr.cc
+           dcmsr/libsrc/dsrtcodt.cc
+           dcmsr/libsrc/dsrtcosp.cc
+           dcmsr/libsrc/dsrtcoto.cc
+           dcmsr/libsrc/dsrwavch.cc
+           imagectn/libsrc/dbutils.cc
+
+- OFList now explicitly defined as std::list if std namespace present
+  Affects: ofstd/include/oflist.h
+
+**** Changes from 2003.06.02 (riesmeier)
+
+- Fixed bug in optimization criterion which caused dcmimgle to ignore the
+  "start frame" parameter in the DicomImage constructors under certain
+  circumstances. Thanks to Herve Baekeland <h.baekeland@global-imaging.net>
+  for the bug report.
+  Affects: dcmimgle/include/dimoipxt.h
+
+- Added include statement for "diutils.h".
+  Affects: dcmimgle/include/ditranst.h
+
+- Added $(TIFFLIBS) and $(PNGLIBS) to LOCALLIBS to avoid problems with shared
+  object compilation. Thanks to Markus Mertens <markus.mertens@uni-muenster.de>
+  for the bug report.
+  Affects: dcmimage/apps/Makefile.in
+           dcmjpeg/apps/Makefile.in
+
+- Added new helper function DcmItem::findAndCopyElement().
+  Affects: dcmdata/include/dcitem.h
+           dcmdata/libsrc/dcitem.cc
+
+- Fixed bug in findAndDelete() implementation.
+  Affects: dcmdata/libsrc/dcitem.cc
+
+- Added explicit support for class DcmPixelData to putAndInsertUintXXArray().
+  Affects: dcmdata/libsrc/dcitem.cc
+
+- Changed implementation of findAndGetXXXArray() to avoid problems with MSVC5.
+  Affects: dcmdata/libsrc/dcitem.cc
+
+**** Changes from 2003.06.02 (eichelberg)
+
+- Updated MSVC project files
+  Affects: dcmdata/dcmdata.dsp
+
+- Renamed local variables to avoid name clashes with STL
+  Affects: dcmdata/include/dcitem.h
+           dcmdata/libsrc/dchashdi.cc
+           dcmnet/apps/storescu.cc
+           dcmnet/include/dul.h
+           dcmnet/include/extneg.h
+           dcmnet/include/lst.h
+           dcmnet/libsrc/assoc.cc
+           dcmnet/libsrc/dimcmd.cc
+           dcmnet/libsrc/dimse.cc
+           dcmnet/libsrc/dul.cc
+           dcmnet/libsrc/dulconst.cc
+           dcmnet/libsrc/dulfsm.cc
+           dcmnet/libsrc/extneg.cc
+           dcmnet/libsrc/lst.cc
+
+- Cleaned up implementation of DcmStack, added doc++ comments
+  Affects: dcmdata/include/dcstack.h
+           dcmdata/libsrc/dcstack.cc
+
+- Cleaned up implementation of DcmRepresentationEntry, added doc++ comments
+  Affects: dcmdata/include/dcpixel.h
+           dcmdata/libsrc/dcpixel.cc
+
+- Added typedef needed by MSVC5 when compiling with STL support
+  Affects: dcmdata/include/dchashdi.h
+
+**** Changes from 2003.05.20 (riesmeier)
+
+- Renamed parameters/variables "string" to avoid name clash with STL class.
+  Affects: ofstd/include/ofcmdln.h
+           ofstd/libsrc/ofcmdln.cc
+
+- Enhanced use of OFString routines.
+  Affects: ofstd/libsrc/ofcmdln.cc
+
+- Added support for SOP Class "Chest CAD SR" (Supplement 65).
+  Affects: dcmdata/apps/dcmgpdir.cc
+           dcmdata/include/dcuid.h
+           dcmdata/libsrc/dcuid.cc
+           dcmnet/docs/movescu.txt
+           dcmnet/docs/storescp.txt
+           dcmnet/docs/storescu.txt
+           imagectn/docs/imagectn.txt
+
+- Minor code corrections.
+  Affects: dcmdata/apps/xml2dcm.cc
+
+- Added methods and static functions to compose a DICOM Person Name from five
+  name components.
+  Affects: dcmdata/include/dcvrpn.h
+           dcmdata/libsrc/dcvrpn.cc
+
+- Added new helper methods: findAndGetElement(), findAndGetUint32Array(),
+  findAndGetSint32Array(), findAndGetFloat64Array(), findAndDeleteElement().
+  Affects: dcmdata/include/dcitem.h
+           dcmdata/libsrc/dcitem.cc
+
+- Enhanced findAndGetSequenceItem() and findOrCreateSequenceItem() by checking
+  the return value of ident() - avoids crashes when applied to non-sequence
+  elements.
+  Affects: dcmdata/include/dcitem.h
+           dcmdata/libsrc/dcitem.cc
+
+- Removed unused helper functions.
+  Affects: dcmdata/libsrc/Makefile.dep
+           dcmdata/libsrc/Makefile.in
+           dcmimage/apps/Makefile.dep
+           dcmimage/apps/dcm2pnm.cc
+           dcmimage/apps/dcmquant.cc
+           dcmjpeg/apps/Makefile.dep
+  Removed: dcmdata/include/dcutils.h
+           dcmdata/libsrc/dcutils.cc
+
+- Added new configuration/compatibility flag that allows to ignore the
+  modality transform stored in the dataset.
+  Affects: dcmimgle/include/diutils.h
+           dcmimgle/libsrc/dimomod.cc
+           dcmimage/apps/dcm2pnm.cc
+           dcmimage/docs/dcm2pnm.txt
+           dcmjpeg/docs/dcmj2pnm.txt
+
+- Added method returning the number of bytes required to store a single
+  rendered frame: getOutputDataSize().
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/include/diimage.h
+           dcmimgle/include/dimoimg.h
+           dcmimgle/libsrc/dimoimg
+           dcmimage/include/dicoimg.h
+           dcmimage/libsrc/dicoimg.cc
+
+**** Changes from 2003.05.14 (riesmeier)
+
+- Fixed bug in OFString::find_first_of().
+  Affects: ofstd/libsrc/ofstring.cc
+
+**** Changes from 2003.05.13 (eichelberg)
+
+- Fixed minor issue in AC_CHECK_INTP_SELECT configure macro
+  Affects: config/aclocal.m4
+           config/configure
+           config/configure.in
+
+**** Changes from 2003.05.12 (eichelberg)
+
+- Fixed off-by-one bug in for loop
+  Affects: ofstd/libsrc/ofconfig.cc
+
+- Added systems to private dictionary: Swissvision TR4000,
+  Philips Digital Diagnost 1.3, Fuji CR console, 3rd release
+  Affects: dcmdata/libsrc/private.dic
+
+- Fixed formatting bug in dumpExtNegList()
+  Affects: dcmnet/libsrc/dul.cc
+
+**** Changes from 2003.04.29 (eichelberg)
+
+- Moved configuration file parser from module dcmpstat to ofstd and renamed
+  class to OFConfigFile. Cleaned up implementation (no more friend declarations).
+  Affects: dcmpstat/apps/Makefile.dep
+           dcmpstat/include/dviface.h
+           dcmpstat/include/dvpscf.h
+           dcmpstat/libsrc/Makefile.dep
+           dcmpstat/libsrc/Makefile.in
+           dcmpstat/libsrc/dviface.cc
+           dcmpstat/libsrc/dvpscf.cc
+           ofstd/libsrc/Makefile.dep
+           ofstd/libsrc/Makefile.in
+           ofstd/tests/Makefile.dep
+  Added:   ofstd/include/ofconfig.h
+           ofstd/libsrc/ofconfig.cc
+  Removed: dcmpstat/libsrc/include/dvpsconf.h
+           dcmpstat/libsrc/libsrc/dvpsconf.cc
+
+**** Changes from 2003.04.25 (riesmeier)
+
+- Fixed inconsistency regarding the default option for frame selection.
+  Affects: dcmimage/apps/dcmquant.cc
+           dcmimage/docs/dcmquant.txt
+
+- Minor correction: explicitly specify query information model in the example.
+  Affects: dcmnet/docs/findscu.txt
+
+- Added missing command line option --no-sq-expansion (-nse).
+  Affects: dcmwlm/docs/wlmscpfs.txt
+
+- Reformatted text (replaced tabs by spaces, etc.) and fixed typos.
+  Affects: imagectn/docs/configrc.txt
+
+- Fixed memory leak in readPeerList().
+  Corrected debug output of parse routines.
+  Thanks to Stefan Vogel <stefan.vogel@med.ge.com> for the bug report and fix.
+  Affects: imagectn/apps/cnfpriv.cc
+
+**** Changes from 2003.04.22 (eichelberg)
+
+- Updated FAQ
+  Affects: FAQ
+
+**** Changes from 2003.04.22 (riesmeier)
+
+- Adapted code to also compile trouble-free without libxml support (report a
+  message that libxml library is required).
+  Affects: dcmdata/apps/xml2dcm.cc
+
+- Added new command line option which allows to embed the content of the DTD
+  instead of referencing the DTD file.
+  Affects: dcmdata/apps/dcm2xml.cc
+           dcmdata/docs/dcm2xml.txt
+           dcmdata/include/dctypes.h
+           dcmdata/libsrc/dctypes.cc
+
+- Rebuilt makefile dependencies.
+  Affects: dcmdata/apps/Makefile.dep
+
+**** Changes from 2003.04.17 (riesmeier)
+
+- Replace LF and CR by &#10; and &#13; in XML mode instead of &#182; (para).
+  Affects: ofstd/include/ofstd.h
+           ofstd/libsrc/ofstd.cc
+           dcmsr/include/dsrtypes.h
+
+- Enhanced performance of base64 encoder and decoder routines.
+  Affects: ofstd/libsrc/ofstd.cc
+
+- Enhanced performance of find routines.
+  Affects: ofstd/libsrc/ofstring.cc
+
+- Corrected API documentation of createUint8/16Array() methods.
+  Affects: dcmdata/include/dcpixel.h
+
+- Use method OFString::c_str() instead of OFString::operator[] to avoid range
+  checking (which implies an "expensive" strlen() call).
+  Affects: dcmdata/libsrc/dcvrobow.cc
+
+- Added new command line tool that allows to convert an XML document to DICOM
+  file or dataset.
+  Affects: dcmdata/apps/Makefile.in
+  Added:   dcmdata/apps/xml2dcm.cc
+           dcmdata/docs/xml2dcm.txt
+
+- Modified DTD: use #PCDATA instead of CDATA for element "element".
+  Affects: dcmdata/apps/dcm2xml.dtd
+
+- Added support for libxml.
+  Affects: INSTALL
+           config/Makefile.def.in
+           config/acconfig.h
+           config/configure
+           config/configure.in
+           config/include/cfunix.h.in
+           config/include/cfwin32.h
+
+**** Changes from 2003.04.14 (eichelberg)
+
+- Added explicit typecasts in calls to pow(). Needed by Visual C++ .NET 2003.
+  Thanks to Peter Klotz <p.klotz@icoserve.com> for the bug report and fix.
+  Affects: dcmimgle/libsrc/didispfn.cc
+           dcmimgle/libsrc/digsdfn.cc
+           dcmimgle/libsrc/dimoimg.cc
+           dcmpstat/apps/dcmmklut.cc
+           dcmpstat/libsrc/dvpssp.cc
+           dcmpstat/libsrc/dvpstat.cc
+
+**** Changes from 2003.04.03 (riesmeier)
+
+- Fixed bug introduced in the context of the new createUint8/16Array() methods.
+  Affects: dcmdata/libsrc/dcpixel.cc
+
+**** Changes from 2003.04.01 (riesmeier)
+
+- Added implementation of createUint8/16Array() methods to DcmPixelData.
+  Required to work properly with chooseRepresentation() for pixel compression.
+  Thanks to Rick H. <rickh_2003@hotmail.com> for the original problem report.
+  Affects: dcmdata/include/dcpixel.h
+           dcmdata/libsrc/dcpixel.cc
+
+- Added support for XML namespaces.
+  Affects: dcmdata/apps/dcm2xml.cc
+           dcmdata/docs/dcm2xml.txt
+           dcmdata/include/dctypes.h
+           dcmdata/libsrc/dcdatset.cc
+           dcmdata/libsrc/dcfilefo.cc
+           dcmdata/libsrc/dctypes.cc
+           dcmsr/apps/dsr2xml.cc
+           dcmsr/docs/dsr2xml.txt
+           dcmsr/include/dsrtypes.h
+           dcmsr/libsrc/dsrdoc.cc
+           dcmsr/libsrc/dsrtypes.cc
+
+**** Changes from 2003.03.25 (riesmeier)
+
+- Fixed bug in print method: wrong position of setw() operators.
+  Thanks to Syam Gadde <gadde@biac.duke.edu> for the bug report and fix.
+  Affects: dcmdata/libsrc/dcvrat.cc
+
+**** Changes from 2003.03.21 (eichelberg)
+
+- Minor code purifications for warnings reported by MSVC in Level 4
+  Affects: dcmdata/include/dcdatset.h
+           dcmdata/include/dchashdi.h
+           dcmdata/include/dcmetinf.h
+           dcmdata/include/dcrleccd.h
+           dcmdata/include/dcrlecce.h
+           dcmdata/include/dcrledec.h
+           dcmdata/include/dcrledrg.h
+           dcmdata/include/dcrleenc.h
+           dcmdata/include/dcrleerg.h
+           dcmdata/include/dcvr.h
+           dcmdata/libsrc/dcdict.cc
+           dcmdata/libsrc/dcdirrec.cc
+           dcmdata/libsrc/dcelem.cc
+           dcmdata/libsrc/dcfilefo.cc
+           dcmdata/libsrc/dchashdi.cc
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcpixel.cc
+           dcmdata/libsrc/dcpixseq.cc
+           dcmdata/libsrc/dcrleccd.cc
+           dcmdata/libsrc/dcrlecce.cc
+           dcmdata/libsrc/dctag.cc
+           dcmdata/libsrc/dcuid.cc
+           dcmdata/libsrc/dcvr.cc
+           ofstd/libsrc/ofstd.cc
+
+**** Changes from 2003.03.14 (eichelberg)
+
+- Enabled TLS network connections in findscu
+  Affects: dcmnet/apps/Makefile.dep
+           dcmnet/apps/Makefile.in
+           dcmnet/apps/findscu.cc
+           dcmnet/apps/findscu.dsp
+           dcmnet/docs/findscu.txt
+           dcmtk.dsw
+
+**** Changes from 2003.03.12 (eichelberg)
+
+- Updated DcmObject::print() flags
+  Affects: dcmdata/apps/dcmgpdir.cc
+           dcmnet/libsrc/dimdump.cc
+           dcmpstat/apps/dcmpschk.cc
+           dcmpstat/libsrc/dvpsfs.cc
+           dcmpstat/libsrc/dvpsib.cc
+           dcmpstat/libsrc/dvpspl.cc
+           dcmpstat/libsrc/dvpssp.cc
+
+**** Changes from 2003.03.12 (riesmeier)
+
+- Fixed bug in GSDF calibration routines. Ambient light value was added twice
+  in case of OD input data (i.e. for hardcopy devices).
+  Thanks to Gilles Mevel <Gilles.Mevel@etiam.com> for the bug report.
+  Affects: dcmimgle/libsrc/digsdfn.cc
+
+- Removed default value from parameter "useAmb" in method convertODtoLumTable.
+  Affects: dcmimgle/include/didispfn.h
+
+- Added apostrophe (') to the list of characters to be replaced by the
+  corresponding HTML/XML mnenonic.
+  Affects: ofstd/include/ofstd.h
+           ofstd/libsrc/ofstd.cc
+
+**** Changes from 2003.02.17 (wilkens)
+
+- Made some minor modifications to be able to modify a special variant of the
+  worklist SCP implementation (wlmscpki).
+  Affects: dcmwlm/apps/wlcefs.cc
+           dcmwlm/include/wlds.h
+           dcmwlm/libsrc/wlds.cc
+           dcmwlm/libsrc/wldsfs.cc
+
+**** Changes from 2003.02.12 (riesmeier)
+
+- Added Dmin/max support to CIELAB calibration routines.
+  Affects: dcmimgle/apps/dcmdspfn.cc
+           dcmimgle/docs/dcmdspfn.txt
+           dcmimgle/include/dicielut.h
+           dcmimgle/include/didispfn.h
+           dcmimgle/include/digsdfn.h
+           dcmimgle/libsrc/diciefn.cc
+           dcmimgle/libsrc/dicielut.cc
+           dcmimgle/libsrc/didispfn.cc
+           dcmimgle/libsrc/digsdfn.cc
+           dcmimgle/libsrc/digsdlut.cc
+
+- Defined default file extension for PNG image format.
+  Affects: dcmimage/apps/dcm2pnm.cc
+
+- Introduced "enum" for output file type.
+  Affects: dcmimage/apps/dcm2pnm.cc
+
+**** Changes from 2003.02.11 (eichelberg)
+
+- Fixed overwrite problem caused by last commit.
+  Affects: dcmimage/apps/dcm2pnm.cc
+           dcmimage/docs/dcm2pnm.txt
+           dcmjpeg/docs/dcmj2pnm.txt
+
+- Updated MSVC project files for OpenSSL 0.9.6h.
+  Affects: dcmnet/apps/echoscu.dsp
+           dcmnet/apps/storescp.dsp
+           dcmnet/apps/storescu.dsp
+           dcmpstat/dcmpstat.dsp
+           dcmpstat/apps/dcmp2pgm.dsp
+           dcmpstat/apps/dcmprscp.dsp
+           dcmpstat/apps/dcmprscu.dsp
+           dcmpstat/apps/dcmpsprt.dsp
+           dcmpstat/apps/dcmpsrcv.dsp
+           dcmpstat/apps/dcmpssnd.dsp
+           dcmsign/dcmsign.dsp
+           dcmsign/apps/dcmsign_app.dsp
+           dcmtls/dcmtls.dsp
+
+- Added libpng support to MSVC project files.
+  Affects: dcmimage/dcmimage.dsp
+           dcmimage/apps/dcm2pnm.dsp
+           dcmjpeg/apps/dcmj2pnm.dsp
+
+- Added PNG export option to dcm2pnm and dcmj2pnm.
+  Thanks to Alexander Haderer <alexander.haderer@charite.de> for the
+  contribution.
+  Affects: dcmimage/apps/Makefile.in
+           dcmimage/apps/dcm2pnm.cc
+           dcmimage/docs/dcm2pnm.txt
+           dcmimage/libsrc/Makefile.in
+           dcmjpeg/apps/Makefile.in
+           dcmjpeg/docs/dcmj2pnm.txt
+  Added:   dcmimage/include/dipipng.h
+           dcmimage/libsrc/dipipng.cc
+
+- Added --with-libpng flag to configure system.
+  Thanks to Alexander Haderer <alexander.haderer@charite.de> for the
+  contribution.
+  Affects: config/Makefile.def.in
+           config/acconfig.h
+           config/configure
+           config/configure.in
+           config/include/cfunix.h.in
+           config/include/cfwin32.h
+           INSTALL
+
+**** Changes from 2003.02.11 (riesmeier)
+
+- Added support for Dmin/max to calibration routines (required for printers).
+  Affects: dcmimgle/apps/dcmdspfn.cc
+           dcmimgle/docs/dcmdspfn.txt
+           dcmimgle/include/didispfn.h
+           dcmimgle/include/digsdfn.h
+           dcmimgle/include/digsdlut.h
+           dcmimgle/libsrc/didispfn.cc
+           dcmimgle/libsrc/digsdfn.cc
+           dcmimgle/libsrc/digsdlut.cc
+           dcmimage/apps/dcm2pnm.cc
+           dcmimage/docs/dcm2pnm.txt
+           dcmjpeg/docs/dcmj2pnm.txt
+
+- Added two new functions to determine the luminance/OD value of a particular
+  DDL according to the device's characteristic curve and vice versa.
+  Affects: dcmimgle/apps/dcmdspfn.cc
+           dcmimgle/include/didispfn.h
+           dcmimgle/libsrc/didispfn.cc
+
+- Removed debug/test code.
+  Affects: dcmimgle/apps/dcmdspfn.cc
+
+- Added note on --write-png option.
+  Affects: dcmjpeg/docs/dcmj2pnm.txt
+
+**** Changes from 2003.01.31 (wilkens)
+
+- Fixed bug in ti application (option named "--config" and "--config-file").
+  Thanks to Eike Rietzel <e.rietzel@gsi.de> for the bug report.
+  Affects: imagectn/apps/ti.cc
+
+**** Changes from 2003.01.23 (wilkens)
+
+- Fixed inconsistencies in comments.
+  Affects: dcmdata/libsrc/dicom.dic
+
+**** Changes from 2003.01.08 (riesmeier)
+
+- Fixed typo (missing closing bracket).
+  Affects: dcmdata/apps/dcmconv.cc
+           dcmdata/docs/dcmconv.txt
+
+**** Changes from 2003.01.06 (riesmeier)
+
+- Moved old announcement and change log for release 3.5.2 to docs.
+  Removed: ANNOUNCE.352
+           CHANGES.352
+  Added:   docs/ANNOUNCE.352
+           docs/CHANGES.352
+
+- Created new change log.
+  Added:   CHANGES.353
+
+- Performed minor text corrections to get a more consistent print() output.
+  Affects: dcmdata/libsrc/dcpixseq.cc
+           dcmdata/libsrc/dcsequen.cc
+
+- Updated URL to dcmtk homepage.
+  Affects: dcmsr/libsrc/dsrdoc.cc
+
+- Updated URL to OFFIS DICOM homepage.
+  Affects: HISTORY

@@ -1,0 +1,130 @@
+
+ANNOUNCEMENT
+
+Version 3.5.3 of the OFFIS DCMTK (DICOM ToolKit) software is now available
+for public release.  This release includes the following main changes
+over the previous version (Version 3.5.2):
+
+- DCMTK 3.5.3 builds correctly with GNU gcc 3.3 and 3.4.
+
+- Better ISO C++ and STL compliance.
+
+- Various enhancements in the configure system which now works correctly
+  without manual interaction on more platforms, e.g. MinGW.  External
+  libraries are automatically detected if installed in the standard path.
+
+- Added CMake project files for improved configuration on Windows systems.
+  MSVC 6.0 project files are still part of the source code package, though.
+
+- The new application dcmodify allows to modify DICOM files from the
+  command line, i.e. replace, insert and remove particular tags.
+
+- The new application xml2dcm converts the XML output of dcm2xml back to
+  DICOM format (uses libxml2).
+
+- The new application xml2dsr converts the XML output of dsr2xml back to
+  DICOM format (uses libxml2).
+
+- Enhanced worklist SCP by supporting more optional matching and return
+  keys.  Improved handling of sequences with multiple items and nested
+  sequences.
+
+- Findscu now supports C-FIND over TLS (Security Enhancements One).
+
+- Print SCU and SCP now support TLS connections.  Print SCP now also
+  supports the Verification Service Class.
+
+- Added support for configuration file based association negotiation
+  profiles to network module.  Currently used by storescp and storescu.
+
+- Added support for TCP wrappers based host access control (uses libwrap).
+  Currently used by storescp, movescu, wlmscpfs and imagectn.
+
+- Introduced wrapper class for creating DICOMDIR files, used by dcmgpdir
+  and dcmmkdir.  Improved performance when adding a large number of 
+  DICOM files.
+
+- Enhanced Structured Reporting module: added support for the Identical
+  Documents Sequence, the Content Template Sequence, the Coding Scheme
+  Identification Sequence, new SOP classes, etc.
+
+- Added PNG export option to dcm2pnm and dcmj2pnm (uses libpng).
+
+- Added support for minimum and maximum density to calibration routines
+  (required for printers).
+
+- Enhanced handling of Icon Image Sequence, e.g. uncompressed icon image
+  in a compressed image dataset.
+
+- Added new helper methods to access and/or delete data elements.
+
+- Added support for so-called command files ("@filename") which can be
+  used to summarize command line options and parameters.
+
+- Introduced new, more consistent and "standard" conformant directory
+  structure for "make install".
+
+- Enhanced documentation: switched to Doxygen for generating HTML and
+  CHM files as well as man pages for all command line tools; added
+  simple code examples for typical use cases.
+
+- The DICOM data dictionary has been re-worked based on the latest
+  supplements and correction proposals, as usual.
+
+- Many bug fixes and minor improvements as usual - see the CHANGES.353
+  file for more details.
+
+
+Many people have contributed to this new release of DCMTK, appearing here
+in alphabetical order.  Thank you very much for your support!
+
+  Stefan Allers <stefan.allers@gmx.de>
+  Herve Baekeland <h.baekeland@global-imaging.net>
+  Andreas Barth <andreas.barth@bruker-biospin.de>
+  Jessica Brandt <jessica.brandt@mevis.de>
+  David Clunie <dclunie@dclunie.com>
+  Josh Coleman <jcoleman@eigen.com>
+  Diego <diego_fs@terra.com.br>
+  Razvan Costea-Barlutiu <cbrazvan@laitek.com>
+  Michael Doppler <m.doppler@icoserve.com>
+  Syam Gadde <gadde@biac.duke.edu>
+  Rick H. <rickh_2003@hotmail.com>
+  Alexander Haderer <alexander.haderer@charite.de>
+  Asger Halkier <Halkier@medarchiver.com>
+  Michael Heber <mheber.aup@t-online.de>
+  Andreas Heiduk <Andreas.Heiduk@soft-gate.de>
+  Anibal Jodorcovsky <anibal@intelerad.com>
+  Gordon Klos <klos@convis.de>
+  Peter Klotz <p.klotz@icoserve.com>
+  Bernd Kuemmerlen <bkuemmer@mevis.de>
+  David Lappen <dlappen@digitalams.com>
+  Kenneth Manley <kenneth.manley@philips.com>
+  Arnaud Masson <arnaud.masson@kikamedical.com>
+  Markus Mertens <markus.mertens@uni-muenster.de>
+  Gilles Mevel <Gilles.Mevel@etiam.com>
+  Henning Meyer <Henning-Meyer@web.de>
+  Vladimir Milevski <milevski@gtsoft.spb.ru>
+  Igor Okulist <okigan@hotmail.com>
+  Tony C. Pan <tpan@bmi.osu.edu>
+  Dimitri Papadopoulos-Orfanos <papadopo@shfj.cea.fr>
+  Philippe Puech <puech@inviweb.com>
+  Eike Rietzel <e.rietzel@gsi.de>
+  Pere Rodriguez Rodriguez <prr@hosppal.es>
+  Markus Sabin <sabin@convis.de>
+  Stein Roger Skaflotten <srs@keymind.no>
+  James Soutter <james.soutter@ed.ac.uk>
+  Rainer Thieme <rainer.thieme@siemens.com>
+  Judit Verestoy <JVerestoy@tomtec.de>
+  Stefan Vogel <stefan.vogel@med.ge.com>
+  Yannick <ybgn@free.fr>
+  Maryam Zibaeifard <m_zibaeifard@yahoo.com>
+
+OFFIS staff who have worked on this release are:
+  Marco Eichelberg <eichelberg@offis.de>
+  Joerg Riesmeier <riesmeier@offis.de>
+  Thomas Wilkens <wilkens@offis.de>
+
+The DCMTK software can be downloaded via:
+  http://dicom.offis.de/dcmtk
+
+Kuratorium OFFIS e.V., Oldenburg, Germany, 2004-05-27
