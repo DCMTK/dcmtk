@@ -22,9 +22,9 @@
  *  Purpose: generic list class
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-08 12:30:38 $
+ *  Update Date:      $Date: 2003-08-08 13:32:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dclist.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,7 +43,7 @@
 #include "ofstdinc.h"
 
 
-const unsigned long DCM_EndOfListIndex = (unsigned long)(-1L);
+const unsigned long DCM_EndOfListIndex = OFstatic_cast(unsigned long, -1L);
 
 
 class DcmObject;    // forward declaration
@@ -115,7 +115,10 @@ public:
 /*
  * CVS/RCS Log:
  * $Log: dclist.h,v $
- * Revision 1.14  2003-08-08 12:30:38  joergr
+ * Revision 1.15  2003-08-08 13:32:45  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ *
+ * Revision 1.14  2003/08/08 12:30:38  joergr
  * Made DcmListNode::value() inline.
  * Renamed member variable "actualNode" to "currentNode".
  *
