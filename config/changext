@@ -18,7 +18,7 @@
 #   old extension (default: cc). This is useful if you want
 #   to "rename back".
 #
-# Author: Marco Eichelberg, (C) 1997 Kuratorium OFFIS e.V.
+# Author: Marco Eichelberg, (C) 1997-2004 Kuratorium OFFIS e.V.
 #
  
 newext=${1-C}
@@ -31,13 +31,29 @@ do
   `mv $file $newfile`
 done
 
-echo "updating implementation include in dcmj2pnm.$newext"
-`cat dcmjpeg/apps/dcmj2pnm.$newext | sed -e "s/#include \"\.\.\/\.\.\/dcmimage\/apps\/dcm2pnm\.$oldext\"/#include \"..\/..\/dcmimage\/apps\/dcm2pnm.$newext\"/g" >dcmjpeg/apps/dcmj2pnm.new`
-`mv dcmjpeg/apps/dcmj2pnm.new dcmjpeg/apps/dcmj2pnm.$newext`
+if [ -f dcmjpeg/apps/dcmj2pnm.$newext ] ; then
+  echo "updating implementation include in dcmj2pnm.$newext"
+  `cat dcmjpeg/apps/dcmj2pnm.$newext | sed -e "s/#include \"\.\.\/\.\.\/dcmimage\/apps\/dcm2pnm\.$oldext\"/#include \"..\/..\/dcmimage\/apps\/dcm2pnm.$newext\"/g" >dcmjpeg/apps/dcmj2pnm.new`
+  `mv dcmjpeg/apps/dcmj2pnm.new dcmjpeg/apps/dcmj2pnm.$newext`
+fi
 
-echo "updating implementation include in dcmmkdir.$newext"
-`cat dcmjpeg/apps/dcmmkdir.$newext | sed -e "s/#include \"\.\.\/\.\.\/dcmdata\/apps\/dcmgpdir\.$oldext\"/#include \"..\/..\/dcmdata\/apps\/dcmgpdir.$newext\"/g" >dcmjpeg/apps/dcmmkdir.new`
-`mv dcmjpeg/apps/dcmmkdir.new dcmjpeg/apps/dcmmkdir.$newext`
+if [ -f dcmjpeg/apps/dcmj2pnm.$newext ] ; then
+  echo "updating implementation include in dcmmkdir.$newext"
+  `cat dcmjpeg/apps/dcmmkdir.$newext | sed -e "s/#include \"\.\.\/\.\.\/dcmdata\/apps\/dcmgpdir\.$oldext\"/#include \"..\/..\/dcmdata\/apps\/dcmgpdir.$newext\"/g" >dcmjpeg/apps/dcmmkdir.new`
+  `mv dcmjpeg/apps/dcmmkdir.new dcmjpeg/apps/dcmmkdir.$newext`
+fi
+
+if [ -f dcmmisc/apps/tcpsrv_e.$newext ] ; then
+  echo "updating implementation include in tcpsrv_e.$newext"
+  `cat dcmmisc/apps/tcpsrv_e.$newext | sed -e "s/#include \"\.\.\/\.\.\/dcmprint\/apps\/tcpsrv\.$oldext\"/#include \"..\/..\/dcmprint\/apps\/tcpsrv.$newext\"/g" >dcmmisc/apps/tcpsrv_e.new`
+  `mv dcmmisc/apps/tcpsrv_e.new dcmmisc/apps/tcpsrv_e.$newext`
+fi
+
+if [ -f dcmmisc/apps/tcpprt_e.$newext ] ; then
+  echo "updating implementation include in tcpprt_e.$newext"
+  `cat dcmmisc/apps/tcpprt_e.$newext | sed -e "s/#include \"\.\.\/\.\.\/dcmprint\/apps\/tcpprt\.$oldext\"/#include \"..\/..\/dcmprint\/apps\/tcpprt.$newext\"/g" >dcmmisc/apps/tcpprt_e.new`
+  `mv dcmmisc/apps/tcpprt_e.new dcmmisc/apps/tcpprt_e.$newext`
+fi
 
 echo "updating makefiles"
 for file in `find . -name "Makefile*" -print`
