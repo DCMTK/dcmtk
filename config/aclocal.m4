@@ -7,13 +7,16 @@ dnl
 dnl Authors: Andreas Barth, Marco Eichelberg
 dnl
 dnl Last Update:  $Author: meichel $
-dnl Revision:     $Revision: 1.24 $
+dnl Revision:     $Revision: 1.25 $
 dnl Status:       $State: Exp $
 dnl
-dnl $Id: aclocal.m4,v 1.24 2003-06-06 10:23:41 meichel Exp $
+dnl $Id: aclocal.m4,v 1.25 2003-07-03 14:49:05 meichel Exp $
 dnl
 dnl $Log: aclocal.m4,v $
-dnl Revision 1.24  2003-06-06 10:23:41  meichel
+dnl Revision 1.25  2003-07-03 14:49:05  meichel
+dnl Fixed AC_CHECK_DECLARATION macro
+dnl
+dnl Revision 1.24  2003/06/06 10:23:41  meichel
 dnl Added configure tests for bool and volatile keywords
 dnl
 dnl Revision 1.23  2003/05/13 09:55:30  meichel
@@ -209,6 +212,8 @@ fi
 dnl AC_CHECK_DECLARATION checks if a certain type is declared in the include files given as argument 2 or 3.
 dnl   Files given as argument 2 are included extern "C" in C++ mode,
 dnl   files given as argument 3 are included "as is".
+dnl   Header files are only included in the search if they 
+dnl   have already been found using the AC_CHECK_HEADERS(header) macro.  
 dnl Note:
 dnl   Since GNU autoheader does not support this macro, you must create entries
 dnl   in your acconfig.h for each function which is tested.
@@ -227,8 +232,11 @@ ifelse([$2], , [ac_includes=""
 [ac_includes=""
 for ac_header in $2
 do
-  ac_includes="$ac_includes
+  ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
+  if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
+    ac_includes="$ac_includes 
 #include<$ac_header>"
+  fi
 done
 ])
 ifelse([$3], , [ac_cpp_includes=""
@@ -236,8 +244,11 @@ ifelse([$3], , [ac_cpp_includes=""
 [ac_cpp_includes=""
 for ac_header in $3
 do
-  ac_cpp_includes="$ac_cpp_includes
+  ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
+  if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
+    ac_cpp_includes="$ac_cpp_includes 
 #include<$ac_header>"
+  fi
 done
 ])
 [ac_cv_declaration=`echo 'ac_cv_declaration_$1' | tr ' :' '__'`
