@@ -23,8 +23,8 @@
  *    classes: DSRXMLDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-08-04 12:12:18 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2004-09-03 08:50:48 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -259,7 +259,7 @@ OFCondition DSRXMLDocument::setEncodingHandler(const char *charset)
 #else /* WITH_LIBXML */
 OFCondition DSRXMLDocument::setEncodingHandler(const char *)
 {
-	return EC_IllegalCall;
+    return EC_IllegalCall;
 }
 #endif
 
@@ -347,7 +347,7 @@ OFBool DSRXMLDocument::matchNode(const DSRXMLCursor &cursor,
 OFBool DSRXMLDocument::matchNode(const DSRXMLCursor &,
                                  const char *) const
 {
-	return OFFalse;
+    return OFFalse;
 }
 #endif
 
@@ -419,7 +419,7 @@ OFBool DSRXMLDocument::convertUtf8ToCharset(const xmlChar *fromString,
 OFBool DSRXMLDocument::convertUtf8ToCharset(const xmlChar *,
                                             OFString &) const
 {
-	return OFFalse;
+    return OFFalse;
 }
 #endif
 
@@ -441,7 +441,7 @@ OFBool DSRXMLDocument::hasAttribute(const DSRXMLCursor &cursor,
 OFBool DSRXMLDocument::hasAttribute(const DSRXMLCursor &,
                                     const char *) const
 {
-	return OFFalse;
+    return OFFalse;
 }
 #endif
 
@@ -747,7 +747,10 @@ void DSRXMLDocument::printGeneralNodeError(const DSRXMLCursor &cursor,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrxmld.cc,v $
- *  Revision 1.8  2004-08-04 12:12:18  joergr
+ *  Revision 1.9  2004-09-03 08:50:48  joergr
+ *  Replaced tabs by spaces.
+ *
+ *  Revision 1.8  2004/08/04 12:12:18  joergr
  *  Disabled support for XML Schema if not compiled into libxml2 library.
  *
  *  Revision 1.7  2004/04/07 12:04:48  joergr
