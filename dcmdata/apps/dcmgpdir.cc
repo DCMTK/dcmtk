@@ -30,9 +30,9 @@
  *  dcmjpeg/apps/dcmmkdir.cc.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-19 17:53:36 $
+ *  Update Date:      $Date: 2001-11-29 16:51:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
- *  CVS/RCS Revision: $Revision: 1.56 $
+ *  CVS/RCS Revision: $Revision: 1.57 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -175,6 +175,7 @@ OFBool appendMode = OFFalse;
 OFBool inventAttributes = OFFalse;
 OFBool mapFilenames = OFFalse;
 OFBool recurseFilesystem = OFFalse;
+OFBool resolutionCheck = OFTrue;
 
 E_EncodingType lengthEncoding = EET_ExplicitLength;
 E_GrpLenEncoding groupLengthEncoding = EGL_withoutGL;
@@ -286,6 +287,8 @@ int main(int argc, char *argv[])
         cmd.addOption("--no-recurse",           "-r",     "do not recurse within directories (default)");
         cmd.addOption("--recurse",              "+r",     "recurse within filesystem directories");
 #ifdef BUILD_DCMGPDIR_AS_DCMMKDIR
+      cmd.addSubGroup("profiles:");
+        cmd.addOption("--no-resolution-check",  "-Prc",   "do not reject images with non-standard spatial\nresolution (just warn)");
       cmd.addSubGroup("external icon images (only with -Pbc or -Pxa):");
         cmd.addOption("--icon-file-prefix",     "-Xi", 1, "[p]refix: string",
                                                           "use PGM image 'prefix'+'dcmfile-in' as icon\n(default: create icon from DICOM image)");
@@ -351,6 +354,8 @@ int main(int argc, char *argv[])
       cmd.endOptionBlock();
 
 #ifdef BUILD_DCMGPDIR_AS_DCMMKDIR
+      if (cmd.findOption("--no-resolution-check")) resolutionCheck = OFFalse;
+
       if (cmd.findOption("--icon-file-prefix")) app.checkValue(cmd.getValue(iconPrefix));
       if (cmd.findOption("--default-icon")) app.checkValue(cmd.getValue(defaultIcon));
 
@@ -995,7 +1000,7 @@ checkExistsWithIntegerValue(DcmItem* d, const DcmTagKey& key, const long value, 
 }
 
 static OFBool
-checkExistsWithMinMaxValue(DcmItem* d, const DcmTagKey& key, const long min, const long max, const OFString& fname)
+checkExistsWithMinMaxValue(DcmItem* d, const DcmTagKey& key, const long min, const long max, const OFString& fname, const OFBool reject = OFTrue)
 {
     if (!checkExists(d, key, fname)) {
         return OFFalse;
@@ -1003,10 +1008,17 @@ checkExistsWithMinMaxValue(DcmItem* d, const DcmTagKey& key, const long min, con
     long i = dcmFindInteger(d, key);
     if ((i < min) || (i > max)) {
         DcmTag tag(key);
-        CERR << "error: attribute " << tag.getTagName()
-             << " " << key << " has other value than expected in file: "
-             << fname << endl;
-        return OFFalse;
+        if (reject)
+        {
+            CERR << "error: attribute " << tag.getTagName()
+                 << " " << key << " has other value than expected in file: "
+                 << fname << endl;
+            return OFFalse;
+        } else {
+            CERR << "warning: attribute " << tag.getTagName()
+                 << " " << key << " has other value than expected in file: "
+                 << fname << endl;
+        }
     }
     return OFTrue;
 }
@@ -1405,8 +1417,8 @@ checkImage(const OFString& fname, DcmFileFormat *ff)
              cmp(mediaSOPClassUID, UID_XRayAngiographicImageStorage)) {
             /* a XA image */
             if (!checkExistsWithStringValue(d, DCM_Modality, "XA", fname)) ok = OFFalse;
-            if (!checkExistsWithMinMaxValue(d, DCM_Rows, 1, 512, fname)) ok = OFFalse;
-            if (!checkExistsWithMinMaxValue(d, DCM_Columns, 1, 512, fname)) ok = OFFalse;
+            if (!checkExistsWithMinMaxValue(d, DCM_Rows, 1, 512, fname, resolutionCheck)) ok = OFFalse;
+            if (!checkExistsWithMinMaxValue(d, DCM_Columns, 1, 512, fname, resolutionCheck)) ok = OFFalse;
             if (!checkExistsWithIntegerValue(d, DCM_BitsAllocated, 8, fname)) ok = OFFalse;
             if (!checkExistsWithIntegerValue(d, DCM_BitsStored, 8, fname)) ok = OFFalse;
             if (cmp(dcmFindString(d, DCM_ImageType), "BIPLANE A") ||
@@ -1419,8 +1431,8 @@ checkImage(const OFString& fname, DcmFileFormat *ff)
                     cmp(mediaSOPClassUID, UID_XRayAngiographicImageStorage)) {
             /* a XA image */
             if (!checkExistsWithStringValue(d, DCM_Modality, "XA", fname)) ok = OFFalse;
-            if (!checkExistsWithMinMaxValue(d, DCM_Rows, 1, 1024, fname)) ok = OFFalse;
-            if (!checkExistsWithMinMaxValue(d, DCM_Columns, 1, 1024, fname)) ok = OFFalse;
+            if (!checkExistsWithMinMaxValue(d, DCM_Rows, 1, 1024, fname, resolutionCheck)) ok = OFFalse;
+            if (!checkExistsWithMinMaxValue(d, DCM_Columns, 1, 1024, fname, resolutionCheck)) ok = OFFalse;
             if (!checkExists(d, DCM_BitsStored, fname))
                 ok = OFFalse;
             {
@@ -1436,8 +1448,8 @@ checkImage(const OFString& fname, DcmFileFormat *ff)
         } else if ((dicomdirProfile == EDDP_XrayAngiographic) &&
                     cmp(mediaSOPClassUID, UID_SecondaryCaptureImageStorage)) {
             /* a SC image */
-            if (!checkExistsWithMinMaxValue(d, DCM_Rows, 1, 1024, fname)) ok = OFFalse;
-            if (!checkExistsWithMinMaxValue(d, DCM_Columns, 1, 1024, fname)) ok = OFFalse;
+            if (!checkExistsWithMinMaxValue(d, DCM_Rows, 1, 1024, fname, resolutionCheck)) ok = OFFalse;
+            if (!checkExistsWithMinMaxValue(d, DCM_Columns, 1, 1024, fname, resolutionCheck)) ok = OFFalse;
             if (!checkExistsWithIntegerValue(d, DCM_SamplesPerPixel, 1, fname)) ok = OFFalse;
             if (!checkExistsWithStringValue(d, DCM_PhotometricInterpretation, "MONOCHROME2", fname)) ok = OFFalse;
             if (!checkExistsWithIntegerValue(d, DCM_BitsAllocated, 8, fname)) ok = OFFalse;
@@ -1895,7 +1907,7 @@ buildImageRecord(
             dcmCopySequence(rec, DCM_ReferencedImageSequence, d);
         } else
             dcmCopyOptSequence(rec, DCM_ReferencedImageSequence, d);
-    } else 
+    } else
 #endif
     {
         /* type 1C */
@@ -3921,7 +3933,12 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 /*
  * CVS/RCS Log:
  * $Log: dcmgpdir.cc,v $
- * Revision 1.56  2001-11-19 17:53:36  joergr
+ * Revision 1.57  2001-11-29 16:51:45  joergr
+ * Added new command line option to dcmmkdir that allows to ignore non-standard
+ * conformant spatial resolutions for images (e.g. images larger than 1024*1024
+ * for the cardiac profiles).
+ *
+ * Revision 1.56  2001/11/19 17:53:36  joergr
  * Implemented performance optimization for the generation of icon images of
  * compressed multi-frame images.
  *
