@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeModality (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-16 16:16:50 $
+ *  Update Date:      $Date: 1998-12-22 13:41:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimomod.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,11 +49,12 @@ DiMonoModality::DiMonoModality(const DiDocument *docu,
   : Representation(EPR_MaxSigned),
     MinValue(0),
     MaxValue(0),
+    AbsMinimum(0),
+    AbsMaximum(0),
     RescaleIntercept(0),
     RescaleSlope(0),
     LookupTable(0),
     Rescaling(0),
-    PotentialSignedRange(0),
     TableData(NULL)
 {
     if (Init(docu, pixel))
@@ -78,11 +79,12 @@ DiMonoModality::DiMonoModality(const DiDocument *docu,
   : Representation(EPR_MaxSigned),
     MinValue(0),
     MaxValue(0),
+    AbsMinimum(0),
+    AbsMaximum(0),
     RescaleIntercept(intercept),
     RescaleSlope(slope),
     LookupTable(0),
     Rescaling(0),
-    PotentialSignedRange(0),
     TableData(NULL)
 {
     if (Init(docu, pixel))
@@ -102,11 +104,12 @@ DiMonoModality::DiMonoModality(const DiDocument *docu,
   : Representation(EPR_MaxSigned),
     MinValue(0),
     MaxValue(0),
+    AbsMinimum(0),
+    AbsMaximum(0),
     RescaleIntercept(0),
     RescaleSlope(0),
     LookupTable(0),
     Rescaling(0),
-    PotentialSignedRange(0),
     TableData(NULL)
 {
     if (Init(docu, pixel))
@@ -139,6 +142,8 @@ int DiMonoModality::Init(const DiDocument *docu,
         pixel->determineMinMax();
         MinValue = pixel->getMinValue(); 
         MaxValue = pixel->getMaxValue();
+        AbsMinimum = pixel->getAbsMinimum(); 
+        AbsMaximum = pixel->getAbsMaximum();
         Uint16 us;
         if (docu->getValue(DCM_SamplesPerPixel, us) && (us != 1))
         {
@@ -160,6 +165,8 @@ void DiMonoModality::checkTable()
         {
             MinValue = TableData->getMinValue();
             MaxValue = TableData->getMaxValue();
+            AbsMinimum = 0;
+            AbsMaximum = maxval(TableData->getBits());
         }
     }
 }
@@ -191,36 +198,42 @@ void DiMonoModality::checkRescaling(const DiInputPixel *pixel)
                 if (RescaleSlope < 0) {                                     // negative slope value
                     MinValue = MaxValue * RescaleSlope + RescaleIntercept;
                     MaxValue = MinValue * RescaleSlope + RescaleIntercept;
+                    AbsMinimum = pixel->getAbsMaximum() * RescaleSlope + RescaleIntercept;
+                    AbsMaximum = pixel->getAbsMinimum() * RescaleSlope + RescaleIntercept;
                 } else {                                                    // positive slope value
                     MinValue = MinValue * RescaleSlope + RescaleIntercept;
                     MaxValue = MaxValue * RescaleSlope + RescaleIntercept;
+                    AbsMinimum = pixel->getAbsMinimum() * RescaleSlope + RescaleIntercept;
+                    AbsMaximum = pixel->getAbsMaximum() * RescaleSlope + RescaleIntercept;
                 }
             }
-            if ((pixel->getAbsMinimum() * RescaleSlope + RescaleIntercept < 0) || (pixel->getAbsMaximum() * RescaleSlope + RescaleIntercept < 0))
-                PotentialSignedRange = 1;
         }
     }
 }
 
     
 /*
-**
-** CVS/RCS Log:
-** $Log: dimomod.cc,v $
-** Revision 1.3  1998-12-16 16:16:50  joergr
-** Added explanation string to LUT class (retrieved from dataset).
-**
-** Revision 1.2  1998/12/14 17:38:18  joergr
-** Added support for correct scaling of input/output values for grayscale
-** transformations.
-**
-** Revision 1.1  1998/11/27 16:14:35  joergr
-** Added copyright message.
-** Introduced global debug level for dcmimage module to control error output.
-** Added constructors to use external modality transformations.
-**
-** Revision 1.4  1998/05/11 14:52:33  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: dimomod.cc,v $
+ * Revision 1.4  1998-12-22 13:41:04  joergr
+ * Changed calculation of AbsMinimum/Maximum.
+ * Removed member variable and method for isPotentiallySigned.
+ *
+ * Revision 1.3  1998/12/16 16:16:50  joergr
+ * Added explanation string to LUT class (retrieved from dataset).
+ *
+ * Revision 1.2  1998/12/14 17:38:18  joergr
+ * Added support for correct scaling of input/output values for grayscale
+ * transformations.
+ *
+ * Revision 1.1  1998/11/27 16:14:35  joergr
+ * Added copyright message.
+ * Introduced global debug level for dcmimage module to control error output.
+ * Added constructors to use external modality transformations.
+ *
+ * Revision 1.4  1998/05/11 14:52:33  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */
