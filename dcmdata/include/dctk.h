@@ -9,8 +9,8 @@
  * Collection of necessary Header-Files for users
  *
  * 
- * Last Update:	  $Author: hewett $
- * Revision:      $Revision: 1.3 $
+ * Last Update:	  $Author: andreas $
+ * Revision:      $Revision: 1.4 $
  * Status:        $State: Exp $
  *
  */
@@ -23,7 +23,6 @@
 // various headers
 #include "dctypes.h"
 #include "dcswap.h"
-#include "dcbuf.h"
 #include "dcstream.h"
 #include "dcvr.h"
 #include "dcxfer.h"

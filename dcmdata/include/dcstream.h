@@ -9,9 +9,9 @@
 **	defines streaming classes for file and buffer input/output
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:23:00 $
+** Update Date:		$Date: 1997-04-18 08:01:59 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcstream.h,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -26,8 +26,8 @@
 #include <stdio.h>
 #include "dcerror.h"
 #include "dctypes.h"
-#include "dcbuf.h"
 
+class DcmMemoryBuffer;
 
 const BOOL DCM_ReadMode = TRUE;
 const BOOL DCM_WriteMode = FALSE;
@@ -270,13 +270,7 @@ class DcmBufferStream : public DcmStream
 	void GetBuffer(void * & buffer, Uint32 & length);
 	void CopyFromBuffer(void * buffer);
 	Uint32 GetBufferLength(void);
-	
-	inline void ReleaseBuffer(void)
-	{
-		if (fErrorCond == EC_Normal)
-			fBuffer -> Release();
-	}
-
+	void ReleaseBuffer(void);
 	void SetBuffer(void * buffer, const Uint32 length);
 	void FillBuffer(void * buffer, const Uint32 length);
 };	
@@ -326,7 +320,10 @@ class DcmFileStreamConstructor : public DcmStreamConstructor
 /*
 ** CVS/RCS Log:
 ** $Log: dcstream.h,v $
-** Revision 1.3  1996-01-05 13:23:00  andreas
+** Revision 1.4  1997-04-18 08:01:59  andreas
+** - Make the Declaration of DcmBuffer local to the DcmStream classes
+**
+** Revision 1.3  1996/01/05 13:23:00  andreas
 ** - changed to support new streaming facilities
 ** - more cleanups
 ** - merged read / write methods for block and file transfer

@@ -8,10 +8,10 @@
 ** Purpose:
 **	implements streaming classes for file and buffer input/output
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-09-18 16:28:51 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-04-18 08:02:10 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dcstream.cc,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -26,7 +26,7 @@
 #endif
 
 #include "dcstream.h"
-
+#include "dcbuf.h"
 
 //
 // CLASS DcmStream
@@ -562,6 +562,12 @@ void DcmBufferStream::ReadBytes(void * bytes, const Uint32 length)
     else if (length == 0)
 	fTransferredBytes = 0;
 }
+
+void DcmBufferStream::ReleaseBuffer(void)
+{
+    if (fErrorCond == EC_Normal)
+	fBuffer -> Release();
+}
 	
 
 void DcmBufferStream::Seek(Sint32 /*offset*/)
@@ -719,7 +725,10 @@ DcmFileStreamConstructor::Copy(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcstream.cc,v $
-** Revision 1.6  1996-09-18 16:28:51  hewett
+** Revision 1.7  1997-04-18 08:02:10  andreas
+** - Make the Declaration of DcmBuffer local to the DcmStream classes
+**
+** Revision 1.6  1996/09/18 16:28:51  hewett
 ** Removed code which generated an error if DcmFileStream::Tell(void)
 ** was called when the stream was in write mode.  This behaviour was
 ** causing DcmDicomDir::write(...) to always fail.  In particular, this
