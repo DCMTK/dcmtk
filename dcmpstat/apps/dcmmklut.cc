@@ -25,9 +25,9 @@
  *    file.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-14 20:21:29 $
+ *  Update Date:      $Date: 1999-10-15 09:35:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmklut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -225,33 +225,39 @@ E_Condition readTextFile(const char *filename,
                         if (count < inputEntries)
                         {
                             file >> inputXData[count];                      // read x value
-                            if (inputXData[count] > xmax)
-                                xmax = inputXData[count];
                             file >> inputYData[count];                      // read y value
-                            if (inputYData[count] > ymax)
-                                ymax = inputYData[count];
                             if (file.fail())
                             {
                                 if (opt_debug)
                                     cerr << "Warning: missing y value in text file ... ignoring last entry !" << endl;
-                            }
-                            else if ((inputXMax != 0) && (inputXData[count] > inputXMax))
-                            {
-                                if (opt_debug)
+                            } else {
+                                if ((count > 0) && (inputXData[count] <= xmax))
                                 {
-                                    cerr << "Warning: x value (" << inputXData[count] << ") exceeds maximum value (";
-                                    cerr << inputXMax << ") in text file ..." << endl << "         ... ignoring value !" << endl;
+                                    if (opt_debug)
+                                        cerr << "Warning: x values in text file not strictly monotonous ... ignoring entry #" << (count + 1) << " !" << endl;
+                                } else {
+                                    xmax = inputXData[count];
+                                    if (inputYData[count] > ymax)
+                                        ymax = inputYData[count];                                
+                                    if ((inputXMax != 0) && (inputXData[count] > inputXMax))
+                                    {
+                                        if (opt_debug)
+                                        {
+                                            cerr << "Warning: x value (" << inputXData[count] << ") exceeds maximum value (";
+                                            cerr << inputXMax << ") in text file ..." << endl << "         ... ignoring value !" << endl;
+                                        }
+                                    }
+                                    else if ((inputYMax != 0) && (inputYData[count] > inputYMax))
+                                    {
+                                        if (opt_debug)
+                                        {
+                                            cerr << "Warning: y value (" << inputYData[count] << ") exceeds maximum value (";
+                                            cerr << inputYMax << ") in text file ..." << endl << "         ... ignoring value !" << endl;
+                                        }
+                                    } else
+                                        count++;
                                 }
                             }
-                            else if ((inputYMax != 0) && (inputYData[count] > inputYMax))
-                            {
-                                if (opt_debug)
-                                {
-                                    cerr << "Warning: y value (" << inputYData[count] << ") exceeds maximum value (";
-                                    cerr << inputYMax << ") in text file ..." << endl << "         ... ignoring value !" << endl;
-                                }
-                            } else
-                                count++;
                         } else {
                             if (opt_debug)
                                 cerr << "Warning: too many values in text file ... ignoring last line(s) !" << endl;
@@ -260,11 +266,17 @@ E_Condition readTextFile(const char *filename,
                     }
                 }
             }
+            if (count  < inputEntries)
+            {
+                inputEntries = count;
+                if (opt_debug)
+                    cerr << "Warning: automatically setting number of entries in text file to " << inputEntries << " !" << endl;
+            }
             if (inputXMax == 0)                                             // automatic calculation
                 inputXMax = xmax;
             if (inputYMax == 0)
                 inputYMax = ymax;
-            if ((inputXMax > 0) && (inputYMax > 0) && (count > 0) && (inputXData != NULL) && (inputYData != NULL))
+            if (/*(inputXMax > 0) && (inputYMax > 0) &&*/ (inputEntries > 0) && (inputXData != NULL) && (inputYData != NULL))
                 return EC_Normal;
             else
                 cerr << "Warning: invalid text file ... ignoring !" << endl;
@@ -922,7 +934,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmmklut.cc,v $
- * Revision 1.7  1999-10-14 20:21:29  joergr
+ * Revision 1.8  1999-10-15 09:35:05  joergr
+ * Enhanced checking mechanism for input text files.
+ *
+ * Revision 1.7  1999/10/14 20:21:29  joergr
  * Fixed problems with MSVC.
  *
  * Revision 1.6  1999/10/14 19:08:48  joergr
