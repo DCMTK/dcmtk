@@ -51,13 +51,15 @@ AC_AIX
 AC_ISC_POSIX
 AC_SYS_LONG_FILE_NAMES
 
+dnl Check X11 paths
+AC_PATH_XTRA
+
 dnl Checks for libraries.
 AC_LANG_CPLUSPLUS
 AC_CHECK_GXXLIB
 AC_CHECK_LIB(iostream, main)
 AC_CHECK_LIB(nsl, main)
 AC_CHECK_LIB(socket, main)
-
 
 dnl Checks for header files.
 AC_HEADER_STDC
@@ -128,8 +130,15 @@ else
 AC_CHECK_PROTOTYPE(mktemp, stdlib.h)
 fi
 
+if test $no_x = yes ; then
+X_STD_LIBS=
+else
+X_STD_LIBS=-lX11
+fi
+
 dnl Special Definitions for output
 AC_SUBST(configdir)
+AC_SUBST(X_STD_LIBS)
 common_makefile=Makefile.def
 AC_SUBST(common_makefile)
 
