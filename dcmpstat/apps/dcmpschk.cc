@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2004, OFFIS
+ *  Copyright (C) 2000-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -24,8 +24,8 @@
  *
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-04 15:44:38 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2005-03-09 18:07:53 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -777,7 +777,7 @@ int dcmchkMetaHeader(ostream& out, DcmMetaInfo* meta, DcmDataset* dset)
             dset->findAndGetOFStringArray(DCM_SOPClassUID, datasetClassUID);
             if (metaHeaderClassUID != datasetClassUID) {
                 out << MSGe_wrongAtt << endl
-                    << "   Inconsistant SOP class information"
+                    << "   Inconsistent SOP class information"
                 << endl << "   Affected attributes: " << endl << "      ";
                 printAttribute(out, meta, msscuid);
                 out << "      ";
@@ -809,7 +809,7 @@ int dcmchkMetaHeader(ostream& out, DcmMetaInfo* meta, DcmDataset* dset)
             dset->findAndGetOFStringArray(DCM_SOPInstanceUID, datasetInstanceUID);
             if (metaHeaderInstanceUID != datasetInstanceUID) {
                 out << MSGe_wrongAtt << endl
-                    << "   Inconsistant SOP instance information"
+                    << "   Inconsistent SOP instance information"
                 << endl << "   Affected attributes: " << endl << "      ";
                 printAttribute(out, meta, mssiuid);
                 out << "      ";
@@ -1086,7 +1086,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpschk.cc,v $
- * Revision 1.16  2004-02-04 15:44:38  joergr
+ * Revision 1.17  2005-03-09 18:07:53  joergr
+ * Fixed spelling error.
+ *
+ * Revision 1.16  2004/02/04 15:44:38  joergr
  * Removed acknowledgements with e-mail addresses from CVS log.
  *
  * Revision 1.15  2003/09/05 09:00:49  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,10 +23,10 @@
  *   Program to create a worklist file from a WWW CGI perl script generated 
  *   hexedecimal encoded string.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-12-13 13:43:26 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-03-09 18:04:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/wwwapps/writwlst.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -315,7 +315,7 @@ addValue(int valCount, SimpleStr& val, DcmDataset& dset)
     
     KeyPos *kp = &posTab[valCount];
     if (kp->position != valCount) {
-	CERR << "internal error: inconsistant posTab (valCount=" 
+	CERR << "internal error: inconsistent posTab (valCount=" 
 	     << valCount <<")" << endl;
 	return OFFalse;
     }
@@ -590,7 +590,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log
  *   $Log: writwlst.cc,v $
- *   Revision 1.2  2002-12-13 13:43:26  meichel
+ *   Revision 1.3  2005-03-09 18:04:14  joergr
+ *   Fixed spelling error.
+ *
+ *   Revision 1.2  2002/12/13 13:43:26  meichel
  *   Removed unused code reported by the MIPSpro 7.3 optimizer
  *
  *   Revision 1.1  2002/12/03 12:17:37  wilkens
