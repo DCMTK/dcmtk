@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-05-06 16:43:47 $
+** Update Date:		$Date: 1997-05-09 13:18:52 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
+** CVS/RCS Revision:	$Revision: 1.9 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -391,7 +391,7 @@ int main(int argc, char *argv[])
 		break;
 	    case 'A':
 		if (arg[0] == '+' && arg[2] == '\0') {
-		    appendMode = FALSE;
+		    appendMode = TRUE;
 		} else {
 		    cerr << "unknown option: " << arg << endl;
 		    return 1;
@@ -928,6 +928,58 @@ checkExistsWithValue(DcmItem* d, const DcmTagKey& key, const char* fname)
     return TRUE;
 }
 
+static const char*
+recordTypeToName(E_DirRecType t)
+{
+    const char* s = NULL;
+    switch (t) {
+    case ERT_root:
+	s = "Root"; break;
+    case ERT_Curve:
+	s = "Curve"; break;
+    case ERT_FilmBox:
+	s = "FilmBox"; break;
+    case ERT_FilmSession:
+	s = "FilmSession"; break;
+    case ERT_Image:
+	s = "Image"; break;
+    case ERT_ImageBox:
+	s = "ImageBox"; break;
+    case ERT_Interpretation:
+	s = "Interpretation"; break;
+    case ERT_ModalityLut:
+	s = "ModalityLUT"; break;
+    case ERT_Mrdr:
+	s = "MRDR"; break;
+    case ERT_Overlay:
+	s = "Overlay"; break;
+    case ERT_Patient:
+	s = "Patient"; break;
+    case ERT_PrintQueue:
+	s = "PrintQueue"; break;
+    case ERT_Private:
+	s = "Private"; break;
+    case ERT_Results:
+	s = "Results"; break;
+    case ERT_Series:
+	s = "Series"; break;
+    case ERT_Study:
+	s = "Study"; break;
+    case ERT_StudyComponent:
+	s = "StudyComponent"; break;
+    case ERT_Topic:
+	s = "Topic"; break;
+    case ERT_Visit:
+	s = "Visit"; break;
+    case ERT_VoiLut:
+	s = "VOILUT"; break;
+    default:
+	s = "(unknown-directory-record-type)";
+	break;
+    }
+    return s;
+}
+
 /*
 ** Sanity Checks
 */
@@ -1092,6 +1144,13 @@ DcmDirectoryRecord* buildPatientRecord(const char* fname, DcmItem* d)
 	cerr << "error: out of memory (creating patient record)" << endl;
 	return NULL;
     }
+    if (rec->error() != EC_Normal) {
+	cerr << "error: cannot create " 
+	     << recordTypeToName(rec->getRecordType()) << " directory record: "
+	     << dcmErrorConditionToString(rec->error()) << endl;
+	delete rec;
+	return NULL;
+    }
     
     dcmCopyOptString(rec, DCM_SpecificCharacterSet, d);
     dcmCopyString(rec, DCM_PatientID, d);
@@ -1101,11 +1160,20 @@ DcmDirectoryRecord* buildPatientRecord(const char* fname, DcmItem* d)
 }
 
 DcmDirectoryRecord* 
-buildStudyRecord(const char* fname, DcmItem* d)
+buildStudyRecord(const char* referencedFileName, DcmItem* d, 
+		 const char* sourceFileName)
 {
-    DcmDirectoryRecord* rec = new DcmDirectoryRecord(ERT_Study, fname);
+    DcmDirectoryRecord* rec = new DcmDirectoryRecord(ERT_Study, 
+						     referencedFileName);
     if (rec == NULL) {
 	cerr << "error: out of memory (creating study record)" << endl;
+	return NULL;
+    }
+    if (rec->error() != EC_Normal) {
+	cerr << "error: cannot create " 
+	     << recordTypeToName(rec->getRecordType()) << " directory record: "
+	     << dcmErrorConditionToString(rec->error()) << endl;
+	delete rec;
 	return NULL;
     }
     
@@ -1114,7 +1182,8 @@ buildStudyRecord(const char* fname, DcmItem* d)
 	dcmCopyString(rec, DCM_StudyDate, d);
     } else {
 	const char* altDate = alternativeStudyDate(d);
-	cerr << "warning: StudyDate missing: using alternative: "
+	cerr << "warning: " << sourceFileName 
+	     << ": StudyDate missing: using alternative: "
 	     << altDate << endl;
 	dcmInsertString(rec, DCM_StudyDate, altDate);
     }
@@ -1122,7 +1191,8 @@ buildStudyRecord(const char* fname, DcmItem* d)
 	dcmCopyString(rec, DCM_StudyTime, d);
     } else {
 	const char* altTime = alternativeStudyTime(d);
-	cerr << "warning: StudyTime missing: using alternative: "
+	cerr << "warning: " << sourceFileName
+	     << ": StudyTime missing: using alternative: "
 	     << altTime << endl;
 	dcmInsertString(rec, DCM_StudyTime, altTime);
     }
@@ -1142,6 +1212,13 @@ buildSeriesRecord(const char* fname, DcmItem* d)
 	cerr << "error: out of memory (creating series record)" << endl;
 	return NULL;
     }
+    if (rec->error() != EC_Normal) {
+	cerr << "error: cannot create " 
+	     << recordTypeToName(rec->getRecordType()) << " directory record: "
+	     << dcmErrorConditionToString(rec->error()) << endl;
+	delete rec;
+	return NULL;
+    }
     
     dcmCopyOptString(rec, DCM_SpecificCharacterSet, d);
     dcmCopyString(rec, DCM_Modality, d);
@@ -1157,6 +1234,13 @@ buildImageRecord(const char* fname, DcmItem* d)
     DcmDirectoryRecord* rec = new DcmDirectoryRecord(ERT_Image, fname);
     if (rec == NULL) {
 	cerr << "error: out of memory (creating image record)" << endl;
+	return NULL;
+    }
+    if (rec->error() != EC_Normal) {
+	cerr << "error: cannot create " 
+	     << recordTypeToName(rec->getRecordType()) << " directory record: "
+	     << dcmErrorConditionToString(rec->error()) << endl;
+	delete rec;
 	return NULL;
     }
     
@@ -1178,6 +1262,13 @@ buildOverlayRecord(const char* fname, DcmItem* d)
 	cerr << "error: out of memory (creating overlay record)" << endl;
 	return NULL;
     }
+    if (rec->error() != EC_Normal) {
+	cerr << "error: cannot create " 
+	     << recordTypeToName(rec->getRecordType()) << " directory record: "
+	     << dcmErrorConditionToString(rec->error()) << endl;
+	delete rec;
+	return NULL;
+    }
     
     dcmCopyOptString(rec, DCM_SpecificCharacterSet, d);
     dcmCopyString(rec, DCM_OverlayNumber, d);
@@ -1191,6 +1282,13 @@ buildModalityLutRecord(const char* fname, DcmItem* d)
     DcmDirectoryRecord* rec = new DcmDirectoryRecord(ERT_ModalityLut, fname);
     if (rec == NULL) {
 	cerr << "error: out of memory (creating modality lut record)" << endl;
+	return NULL;
+    }
+    if (rec->error() != EC_Normal) {
+	cerr << "error: cannot create " 
+	     << recordTypeToName(rec->getRecordType()) << " directory record: "
+	     << dcmErrorConditionToString(rec->error()) << endl;
+	delete rec;
 	return NULL;
     }
     
@@ -1208,6 +1306,13 @@ buildVoiLutRecord(const char* fname, DcmItem* d)
 	cerr << "error: out of memory (creating voi lut record)" << endl;
 	return NULL;
     }
+    if (rec->error() != EC_Normal) {
+	cerr << "error: cannot create " 
+	     << recordTypeToName(rec->getRecordType()) << " directory record: "
+	     << dcmErrorConditionToString(rec->error()) << endl;
+	delete rec;
+	return NULL;
+    }
     
     dcmCopyOptString(rec, DCM_SpecificCharacterSet, d);
     dcmCopyString(rec, DCM_LUTNumber, d);
@@ -1221,6 +1326,13 @@ buildCurveRecord(const char* fname, DcmItem* d)
     DcmDirectoryRecord* rec = new DcmDirectoryRecord(ERT_Curve, fname);
     if (rec == NULL) {
 	cerr << "error: out of memory (creating curve record)" << endl;
+	return NULL;
+    }
+    if (rec->error() != EC_Normal) {
+	cerr << "error: cannot create " 
+	     << recordTypeToName(rec->getRecordType()) << " directory record: "
+	     << dcmErrorConditionToString(rec->error()) << endl;
+	delete rec;
 	return NULL;
     }
     
@@ -1349,86 +1461,36 @@ findExistingRecord(DcmDirectoryRecord *root, E_DirRecType dirtype,
     return (found)?(r):((DcmDirectoryRecord*)NULL);
 }
 
-static const char*
-recordTypeToName(E_DirRecType t)
-{
-    const char* s = NULL;
-    switch (t) {
-    case ERT_root:
-	s = "Root"; break;
-    case ERT_Curve:
-	s = "Curve"; break;
-    case ERT_FilmBox:
-	s = "FilmBox"; break;
-    case ERT_FilmSession:
-	s = "FilmSession"; break;
-    case ERT_Image:
-	s = "Image"; break;
-    case ERT_ImageBox:
-	s = "ImageBox"; break;
-    case ERT_Interpretation:
-	s = "Interpretation"; break;
-    case ERT_ModalityLut:
-	s = "ModalityLUT"; break;
-    case ERT_Mrdr:
-	s = "MRDR"; break;
-    case ERT_Overlay:
-	s = "Overlay"; break;
-    case ERT_Patient:
-	s = "Patient"; break;
-    case ERT_PrintQueue:
-	s = "PrintQueue"; break;
-    case ERT_Private:
-	s = "Private"; break;
-    case ERT_Results:
-	s = "Results"; break;
-    case ERT_Series:
-	s = "Series"; break;
-    case ERT_Study:
-	s = "Study"; break;
-    case ERT_StudyComponent:
-	s = "StudyComponent"; break;
-    case ERT_Topic:
-	s = "Topic"; break;
-    case ERT_Visit:
-	s = "Visit"; break;
-    case ERT_VoiLut:
-	s = "VOILUT"; break;
-    default:
-	s = "(unknown-directory-record-type)";
-	break;
-    }
-    return s;
-}
-
 static DcmDirectoryRecord*
-buildRecord(E_DirRecType dirtype, const char* fname, DcmItem* dataset)
+buildRecord(E_DirRecType dirtype, const char* referencedFileName, 
+	    DcmItem* dataset, const char* sourceFileName)
 {
     DcmDirectoryRecord *rec = NULL;
 
     switch (dirtype) {
     case ERT_Patient:
-	rec = buildPatientRecord(fname, dataset);
+	rec = buildPatientRecord(referencedFileName, dataset);
 	break;
     case ERT_Study:
-	rec = buildStudyRecord(fname, dataset);
+	rec = buildStudyRecord(referencedFileName, dataset, sourceFileName);
 	break;
     case ERT_Series:
-	rec = buildSeriesRecord(fname, dataset);
+	rec = buildSeriesRecord(referencedFileName, dataset);
 	break;
     case ERT_Image:
-	rec = buildImageRecord(fname, dataset);
+	rec = buildImageRecord(referencedFileName, dataset);
 	break;
     case ERT_Overlay:
-	rec = buildOverlayRecord(fname, dataset);
+	rec = buildOverlayRecord(referencedFileName, dataset);
 	break;
     case ERT_Curve:
-	rec = buildCurveRecord(fname, dataset);
+	rec = buildCurveRecord(referencedFileName, dataset);
 	break;
     case ERT_ModalityLut:
-	rec = buildModalityLutRecord(fname, dataset);
+	rec = buildModalityLutRecord(referencedFileName, dataset);
+	break;
     case ERT_VoiLut:
-	rec = buildVoiLutRecord(fname, dataset);
+	rec = buildVoiLutRecord(referencedFileName, dataset);
 	break;
     default:
 	cerr << "error: record type not yet implemented" << endl;
@@ -1450,20 +1512,21 @@ printAttribute(ostream& o, DcmTagKey& key, const char* s)
 
 static BOOL
 compareStringAttributes(DcmTagKey& tag, DcmDirectoryRecord *rec, 
-			DcmItem* dataset, const char* fname)
+			DcmItem* dataset, const char* sourceFileName)
 {
     const char* s1 = dcmFindString(rec, tag);
     const char* s2 = dcmFindString(dataset, tag);
     BOOL equals = cmp(s1, s2);
 
     if (!equals) {
-	cerr << "Warning:  DICOMDIR inconsistant with file: "
-	     << fname << endl;
+	cerr << "Warning: file inconsistant with existing DICOMDIR record"
+	     << endl;
 	cerr << "  " << recordTypeToName(rec->getRecordType()) 
-	     << " Record defines: " << endl;
+	     << " Record (origin: " << rec->getRecordsOriginFile()
+	     << ") defines: " << endl;
 	cerr << "    "; 
 	printAttribute(cerr, tag, s1); cerr << endl;
-	cerr << "  " << fname << " defines:" << endl;
+	cerr << "  File (" << sourceFileName << ") defines:" << endl;
 	cerr << "    "; 
 	printAttribute(cerr, tag, s2); cerr << endl;
     }
@@ -1473,7 +1536,7 @@ compareStringAttributes(DcmTagKey& tag, DcmDirectoryRecord *rec,
 
 static void
 warnAboutInconsistantAttributes(DcmDirectoryRecord *rec, 
-				DcmItem* dataset, const char* fname)
+				DcmItem* dataset, const char* sourceFileName)
 {
     /*
     ** See if all the attributes in rec match the values in dataset
@@ -1506,7 +1569,7 @@ warnAboutInconsistantAttributes(DcmDirectoryRecord *rec,
 		case EVR_ST:
 		case EVR_TM:
 		case EVR_UI:
-		    compareStringAttributes(tag, rec, dataset, fname);
+		    compareStringAttributes(tag, rec, dataset, sourceFileName);
 		    break;
 		default:
 		    break;
@@ -1596,12 +1659,14 @@ insertSortedUnder(DcmDirectoryRecord *parent, DcmDirectoryRecord *child)
 
 static DcmDirectoryRecord*
 includeRecord(DcmDirectoryRecord *parentRec, E_DirRecType dirtype, 
-	      DcmItem* dataset, const char* fname)
+	      DcmItem* dataset, const char* referencedFileName,
+	      const char* sourceFileName)
 {
     DcmDirectoryRecord *rec = 
 	findExistingRecord(parentRec, dirtype, dataset);
     if (rec == NULL) {
-	rec = buildRecord(dirtype, fname, dataset);
+	rec = buildRecord(dirtype, referencedFileName, 
+			  dataset, sourceFileName);
 	if (rec != NULL) {
 	    /* insert underneath correct parent record */
 	    E_Condition cond = insertSortedUnder(parentRec,rec);
@@ -1664,11 +1729,17 @@ addToDir(DcmDirectoryRecord* rootRec, const char* ifname)
     ** Add a patient record underneath the root
     */
     DcmDirectoryRecord *patientRec = 
-	includeRecord(rootRec, ERT_Patient, dataset, NULL);
+	includeRecord(rootRec, ERT_Patient, dataset, NULL, ifname);
     if (patientRec == NULL) {
 	return FALSE;
     }
-    /* if PatientMgmgt file then attach it to Patient Record */
+    if (patientRec->getRecordsOriginFile() == NULL) {
+	// not yet noted
+	patientRec->setRecordsOriginFile(ifname);
+    }
+    warnAboutInconsistantAttributes(patientRec, dataset, ifname);
+
+    /* if PatientMgmgt file then attach it to Patient Record and stop */
     if (cmp(sopClass, UID_DetachedPatientManagementMetaSOPClass)) {
 	cond = patientRec->assignToSOPFile(fname);
 	if (cond != EC_Normal) {
@@ -1677,16 +1748,21 @@ addToDir(DcmDirectoryRecord* rootRec, const char* ifname)
 		 << fname << endl;
 	    return FALSE;
 	}
+	/* stop adding STUDY/SERIES/.. records */
+	return TRUE;
     }
-    warnAboutInconsistantAttributes(patientRec, dataset, ifname);
 
     /*
     ** Add a study record underneath the actual patient record
     */
     DcmDirectoryRecord *studyRec = 
-	includeRecord(patientRec, ERT_Study, dataset, NULL);
+	includeRecord(patientRec, ERT_Study, dataset, NULL, ifname);
     if (studyRec == NULL) {
 	return FALSE;
+    }
+    if (studyRec->getRecordsOriginFile() == NULL) {
+	// not yet noted
+	studyRec->setRecordsOriginFile(ifname);
     }
     warnAboutInconsistantAttributes(studyRec, dataset, ifname);
 
@@ -1694,9 +1770,13 @@ addToDir(DcmDirectoryRecord* rootRec, const char* ifname)
     ** Add a series record underneath the actual study
     */
     DcmDirectoryRecord *seriesRec = 
-	includeRecord(studyRec, ERT_Series, dataset, NULL);
+	includeRecord(studyRec, ERT_Series, dataset, NULL, ifname);
     if (seriesRec == NULL) {
 	return FALSE;
+    }
+    if (seriesRec->getRecordsOriginFile() == NULL) {
+	// not yet noted
+	seriesRec->setRecordsOriginFile(ifname);
     }
     warnAboutInconsistantAttributes(seriesRec, dataset, ifname);
 
@@ -1707,35 +1787,39 @@ addToDir(DcmDirectoryRecord* rootRec, const char* ifname)
 
     if (cmp(sopClass, UID_StandaloneOverlayStorage)) {
 	/* Add an overlay record */
-	rec = includeRecord(seriesRec, ERT_Overlay, dataset, fname);
+	rec = includeRecord(seriesRec, ERT_Overlay, dataset, fname, ifname);
 	if (rec == NULL) {
 	    return FALSE;
 	}
     } else if (cmp(sopClass, UID_StandaloneModalityLUTStorage)) {
 	/* Add a modality lut record */
-	rec = includeRecord(seriesRec, ERT_ModalityLut, dataset, fname);
+	rec = includeRecord(seriesRec, ERT_ModalityLut, dataset, fname, ifname);
 	if (rec == NULL) {
 	    return FALSE;
 	}
     } else if (cmp(sopClass, UID_StandaloneVOILUTStorage)) {
 	/* Add a voi lut record */
-	rec = includeRecord(seriesRec, ERT_VoiLut, dataset, fname);
+	rec = includeRecord(seriesRec, ERT_VoiLut, dataset, fname, ifname);
 	if (rec == NULL) {
 	    return FALSE;
 	}
     } else if (cmp(sopClass, UID_StandaloneCurveStorage)) {
 	/* Add a curve record */
-	rec = includeRecord(seriesRec, ERT_Curve, dataset, fname);
+	rec = includeRecord(seriesRec, ERT_Curve, dataset, fname, ifname);
 	if (rec == NULL) {
 	    return FALSE;
 	}
     } else {
 	/* it can only be an image */ 
 	/* Add an image record */
-	rec = includeRecord(seriesRec, ERT_Image, dataset, fname);
+	rec = includeRecord(seriesRec, ERT_Image, dataset, fname, ifname);
 	if (rec == NULL) {
 	    return FALSE;
 	}
+    }
+    if (rec->getRecordsOriginFile() == NULL) {
+	// not yet noted
+	rec->setRecordsOriginFile(ifname);
     }
     warnAboutInconsistantAttributes(rec, dataset, ifname);
 
@@ -1922,7 +2006,9 @@ inventMissingImageLevelAttributes(DcmDirectoryRecord *parent)
 	case ERT_Image:
 	    if (!dcmTagExistsWithValue(rec, DCM_ImageNumber)) {
 		const char* defNum = defaultNumber(imageNumber++);
-		cerr << "warning: inventing ImageNumber: "
+		cerr << "warning: " <<  recordTypeToName(rec->getRecordType())
+		     << "Record (origin: " << rec->getRecordsOriginFile() 
+		     << ") inventing ImageNumber: "
 		     << defNum << endl;
 		dcmInsertString(rec, DCM_ImageNumber, defNum);
 	    }
@@ -1930,7 +2016,9 @@ inventMissingImageLevelAttributes(DcmDirectoryRecord *parent)
 	case ERT_Overlay:
 	    if (!dcmTagExistsWithValue(rec, DCM_OverlayNumber)) {
 		const char* defNum = defaultNumber(overlayNumber++);
-		cerr << "warning: inventing OverlayNumber: "
+		cerr << "warning: " <<  recordTypeToName(rec->getRecordType())
+		     << "Record (origin: " << rec->getRecordsOriginFile() 
+		     << ") inventing OverlayNumber: "
 		     << defNum << endl;
 		dcmInsertString(rec, DCM_OverlayNumber, defNum);
 	    }
@@ -1939,7 +2027,9 @@ inventMissingImageLevelAttributes(DcmDirectoryRecord *parent)
 	case ERT_VoiLut:
 	    if (!dcmTagExistsWithValue(rec, DCM_LUTNumber)) {
 		const char* defNum = defaultNumber(lutNumber++);
-		cerr << "warning: inventing LUTNumber: "
+		cerr << "warning: " <<  recordTypeToName(rec->getRecordType())
+		     << "Record (origin: " << rec->getRecordsOriginFile() 
+		     << ") inventing LutNumber: "
 		     << defNum << endl;
 		dcmInsertString(rec, DCM_LUTNumber, defNum);
 	    }
@@ -1947,7 +2037,9 @@ inventMissingImageLevelAttributes(DcmDirectoryRecord *parent)
 	case ERT_Curve:
 	    if (!dcmTagExistsWithValue(rec, DCM_CurveNumber)) {
 		const char* defNum = defaultNumber(curveNumber++);
-		cerr << "warning: inventing CurveNumber: "
+		cerr << "warning: " <<  recordTypeToName(rec->getRecordType())
+		     << "Record (origin: " << rec->getRecordsOriginFile() 
+		     << ") inventing CurveNumber: "
 		     << defNum << endl;
 		dcmInsertString(rec, DCM_CurveNumber, defNum);
 	    }
@@ -1971,7 +2063,8 @@ inventMissingSeriesLevelAttributes(DcmDirectoryRecord *parent)
 	DcmDirectoryRecord* rec = parent->getSub(i);
 	if (!dcmTagExistsWithValue(rec, DCM_SeriesNumber)) {
 	    const char* defNum = defaultNumber(seriesNumber++);
-	    cerr << "warning: inventing SeriesNumber: "
+	    cerr << "warning: Series Record (origin: " 
+		 << rec->getRecordsOriginFile() << ") inventing SeriesNumber: "
 		 << defNum << endl;
 	    dcmInsertString(rec, DCM_SeriesNumber, defNum);
 	}
@@ -1990,7 +2083,8 @@ inventMissingStudyLevelAttributes(DcmDirectoryRecord *parent)
 	DcmDirectoryRecord* rec = parent->getSub(i);
 	if (!dcmTagExistsWithValue(rec, DCM_StudyID)) {
 	    const char* defId = defaultID("DCMTKSTUDY", studyNumber++);
-	    cerr << "warning: inventing StudyID: "
+	    cerr << "warning: Study Record (origin: " 
+		 << rec->getRecordsOriginFile() << ") inventing StudyID: "
 		 << defId << endl;
 	    dcmInsertString(rec, DCM_StudyID, defId);
 	}
@@ -2008,7 +2102,8 @@ inventMissingAttributes(DcmDirectoryRecord *root)
 	DcmDirectoryRecord* rec = root->getSub(i);
 	if (!dcmTagExistsWithValue(rec, DCM_PatientID)) {
 	    const char* defId = defaultID("DCMTKPAT", patientNumber++);
-	    cerr << "warning: inventing PatientID: "
+	    cerr << "warning: Patient Record (origin: " 
+		 << rec->getRecordsOriginFile() << ") inventing PatientID: "
 		 << defId << endl;
 	    dcmInsertString(rec, DCM_PatientID, defId);
 	}
@@ -2017,9 +2112,39 @@ inventMissingAttributes(DcmDirectoryRecord *root)
 }
 
 static BOOL
+copyFile(const char* fromfname, const char* tofname)
+{
+    FILE* fromf = NULL;
+    FILE* tof = NULL;
+    if ((fromf = fopen(fromfname, "r")) == NULL) {
+	cerr << "error: copying files: cannot open: " << fromfname << endl;
+	return FALSE;
+    }
+    if ((tof = fopen(tofname, "w")) == NULL) {
+	cerr << "error: copying files: cannot create: " << tofname << endl;
+	fclose(fromf);
+	return FALSE;
+    }
+    BOOL ok = TRUE;
+    int c = 0;
+    while ((c = getc(fromf)) != EOF) {
+	if (putc(c, tof) == EOF) {
+	    cerr << "error: copying files: " << fromfname << " to "
+		 << tofname << endl;
+	    ok = FALSE;
+	    break;
+	}
+    }
+    fclose(fromf);
+    fclose(tof);
+    return ok;
+}
+
+static BOOL
 createDicomdirFromFiles(StrList& fileNames)
 {
     BOOL ok = TRUE;
+
     /*
     ** Check the FileSetID and the FileSetDescriptorFileID
     */
@@ -2066,8 +2191,31 @@ createDicomdirFromFiles(StrList& fileNames)
 	return FALSE;
     }
 
-    if (!appendMode && writeDicomdir) {
-	/* delete the existing DICOMDIR file */
+    BOOL backupCreated = FALSE;
+    char* backupName = NULL;
+
+    if (writeDicomdir && fileExists(ofname)) {
+	/* rename existing DICOMDIR */
+	char* suffix = ".BAK";
+	backupName = new char[strlen(ofname) + strlen(suffix) + 1];
+	strcpy(backupName, ofname);
+	strcat(backupName, suffix);
+	unlink(backupName);
+	if (verbosemode) {
+	    cout << "creating backup dicomdir: " << backupName << endl;
+	}
+	if (copyFile(ofname, backupName)) {
+	    backupCreated = TRUE;
+	} else {
+	    cerr << "error: cannot create backup of: " << ofname << endl;
+	}
+    }
+
+    if (!appendMode && writeDicomdir && fileExists(ofname)) {
+	/* 
+	** delete existing DICOMDIR because otherwise DcmDicomDir 
+	** will parse it and try to append to existing records
+	*/
 	unlink(ofname);
     }
 
@@ -2109,6 +2257,13 @@ createDicomdirFromFiles(StrList& fileNames)
 			lengthEncoding, groupLengthEncoding);
 	if (dicomdir->error() != EC_Normal) {
 	    cerr << "error: cannot create: " << ofname << endl;
+	} else {
+	    if (backupCreated) {
+		if (verbosemode) {
+		    cout << "deleting backup: " << backupName << endl;
+		}
+		unlink(backupName);
+	    }
 	}
     }
 
@@ -2162,7 +2317,12 @@ expandFileNames(StrList& fileNames, StrList& expandedNames)
 /*
 ** CVS/RCS Log:
 ** $Log: dcmgpdir.cc,v $
-** Revision 1.8  1997-05-06 16:43:47  hewett
+** Revision 1.9  1997-05-09 13:18:52  hewett
+** Added improved error/warning messages and backup of existing DICOMDIR
+** file (the backup file has the suffix .BAK and is removed if the new
+** DICOMDIR file is sucessfully created).
+**
+** Revision 1.8  1997/05/06 16:43:47  hewett
 ** Now possible to invent a value for the PatientID attribute.
 ** Invention of missing attributes is now delayed when possible until
 ** after all directory records have been constructed.  This allows
