@@ -9,10 +9,10 @@
 ** Purpose:
 ** Implementation of class DcmSignedShort
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1996-03-26 09:59:38 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-04-16 16:05:26 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrss.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -79,32 +79,32 @@ Edebug(());
 
 void DcmSignedShort::print(const int level)
 {
-	if (valueLoaded())
-	{
-		Sint16 * sintVals = this -> get();
+    if (valueLoaded())
+    {
+	Sint16 * sintVals = this -> get();
 
-		if (!sintVals)
-			printInfoLine( level, "(no value available)" );
-		else
-		{
-			char *ch_words;
-			char *tmp = ch_words = new char[Length*8/sizeof(Sint16)+2];
-
-			for (unsigned long i=0; i<( Length/sizeof(Sint16) ); i++ )
-			{
-				sprintf( tmp, "%hd\\", *sintVals );
-				tmp += strlen(tmp);
-				sintVals++;
-			}
-			if ( Length > 0 )
-				tmp--;
-			*tmp = '\0';
-			printInfoLine(level, ch_words);
-			delete ch_words;
-		}
-	}
+	if (!sintVals)
+	    printInfoLine( level, "(no value available)" );
 	else
-		printInfoLine( level, "(not loaded)" );
+	{
+	    char *ch_words;
+	    char *tmp = ch_words = new char[Length*8/sizeof(Sint16)+2];
+
+	    for (unsigned long i=0; i<( Length/sizeof(Sint16) ); i++ )
+	    {
+		sprintf( tmp, "%hd\\", *sintVals );
+		tmp += strlen(tmp);
+		sintVals++;
+	    }
+	    if ( Length > 0 )
+		tmp--;
+	    *tmp = '\0';
+	    printInfoLine(level, ch_words);
+	    delete ch_words;
+	}
+    }
+    else
+	printInfoLine( level, "(not loaded)" );
 }
 
 
@@ -132,6 +132,8 @@ E_Condition DcmSignedShort::put(const Sint16 * sintVal,
 	else
 	    errorFlag = EC_CorruptedData;
     }
+    else
+	errorFlag = this -> putValue(NULL, 0);
     return errorFlag;
 }
 
@@ -171,25 +173,34 @@ E_Condition DcmSignedShort::put(const Sint16 sintVal,
 E_Condition DcmSignedShort::put(const char * val)
 {
     errorFlag = EC_Normal;
-    if (val)
+    if (val && val[0] != 0)
     {
 	unsigned long vm = getVMFromString(val);
-	Sint16 * field = new Sint16[vm];
-	const char * s = val;
-	    
-	for(unsigned long i = 0; i < vm && errorFlag == EC_Normal; i++)
+
+	if (vm)
 	{
-	    char * value = getFirstValueFromString(s);
-	    if (!value || sscanf(value, "%hd", &field[i]) != 1)
-		errorFlag = EC_CorruptedData;
-	    else if (value)
-		delete[] value;
-	}
+	    Sint16 * field = new Sint16[vm];
+	    const char * s = val;
+	    
+	    for(unsigned long i = 0; i < vm && errorFlag == EC_Normal; i++)
+	    {
+		char * value = getFirstValueFromString(s);
+		if (!value || sscanf(value, "%hd", &field[i]) != 1)
+		    errorFlag = EC_CorruptedData;
+		else if (value)
+		    delete[] value;
+	    }
 	
-	if (errorFlag == EC_Normal)
-	    errorFlag = this -> put(field, vm);
-	delete[] field;
+	    if (errorFlag == EC_Normal)
+		errorFlag = this -> put(field, vm);
+	    delete[] field;
+	}
+	else
+	    errorFlag = this -> putValue(NULL, 0);
     }
+    else
+	errorFlag = this -> putValue(NULL, 0);
+
     return errorFlag;
 }
 
@@ -199,8 +210,19 @@ E_Condition DcmSignedShort::put(const char * val)
 
 E_Condition DcmSignedShort::get(Sint16 & sintVal, const unsigned long pos)
 {
-	sintVal = this -> get(pos);
-	return errorFlag;
+    Sint16 * sintVals = NULL;
+    errorFlag = this -> get(sintVals);
+
+    if (sintVals && errorFlag == EC_Normal &&
+	pos < this -> getVM())
+	sintVal = sintVals[pos];
+    else
+    {
+	errorFlag = EC_IllegalCall;
+	sintVal = 0;
+    }
+    
+    return errorFlag;
 }
 
 
@@ -209,8 +231,8 @@ E_Condition DcmSignedShort::get(Sint16 & sintVal, const unsigned long pos)
 
 E_Condition DcmSignedShort::get(Sint16 * & sintVals)
 {
-	sintVals = this -> get();
-	return errorFlag;
+    sintVals = (Sint16 *)this -> getValue();
+    return errorFlag;
 }
 
 
@@ -219,12 +241,7 @@ E_Condition DcmSignedShort::get(Sint16 * & sintVals)
 
 Sint16 * DcmSignedShort::get(void)
 {
-	Sint16 * sintVal = (Sint16 *)this -> getValue();
-
-	if (errorFlag == EC_Normal)
-		return sintVal;
-	else
-		return NULL;
+    return (Sint16 *)this -> getValue();
 }
 
 
@@ -233,13 +250,9 @@ Sint16 * DcmSignedShort::get(void)
 
 Sint16 DcmSignedShort::get(const unsigned long position)
 {
-	Sint16 * sintVals = this -> get();
-
-	if (sintVals && errorFlag == EC_Normal &&
-		position < this -> getVM())
-		return sintVals[position];
-	else
-		return Sint16(0);
+    Sint16 sintVal = 0;
+    errorFlag = this -> get(sintVal, position);
+    return sintVal;
 }
 
 
@@ -267,7 +280,10 @@ E_Condition DcmSignedShort::verify(const BOOL autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrss.cc,v $
-** Revision 1.5  1996-03-26 09:59:38  meichel
+** Revision 1.6  1996-04-16 16:05:26  andreas
+** - better support und bug fixes for NULL element value
+**
+** Revision 1.5  1996/03/26 09:59:38  meichel
 ** corrected bug (deletion of const char *) which prevented compilation on NeXT
 **
 ** Revision 1.4  1996/01/29 13:38:34  andreas

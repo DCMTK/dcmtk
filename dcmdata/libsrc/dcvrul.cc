@@ -9,10 +9,10 @@
 ** Purpose:
 ** Implementation of class DcmUnsignedLong
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1996-03-26 09:59:38 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-04-16 16:05:26 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrul.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -136,6 +136,9 @@ E_Condition DcmUnsignedLong::put(const Uint32 * uintVal,
 	else
 	    errorFlag = EC_CorruptedData;
     }
+    else
+	errorFlag = this -> putValue(NULL, 0);
+
     return errorFlag;
 }
 
@@ -148,8 +151,6 @@ E_Condition DcmUnsignedLong::put(const Uint32 uintVal)
     Uint32 val = uintVal;
     errorFlag = this -> putValue(&val, sizeof(Uint32));
     return errorFlag;
-
-    errorFlag = EC_Normal;
 }
 
 
@@ -159,10 +160,7 @@ E_Condition DcmUnsignedLong::put(const Uint32 uintVal)
 E_Condition DcmUnsignedLong::put(const Uint32 uintVal,
 				 const unsigned long position)
 {
-    Bdebug((2, "DcmUnsignedLong::put(slong=%ld,num=%ld)", uintVal, position));
-
     Uint32 val = uintVal;
-
     errorFlag = this -> changeValue(&val, sizeof(Uint32)*position,
 				    sizeof(Uint32));
     return errorFlag;
@@ -175,30 +173,39 @@ E_Condition DcmUnsignedLong::put(const Uint32 uintVal,
 E_Condition DcmUnsignedLong::put(const char * val)
 {
     errorFlag = EC_Normal;
-    if (val)
+    if (val && val[0] != '\0')
     {
 	unsigned long vm = getVMFromString(val);
-	Uint32 * field = new Uint32[vm];
-	const char * s = val;
-	    
-	for(unsigned long i = 0; i < vm && errorFlag == EC_Normal; i++)
+	if (vm)
 	{
-	    char * value = getFirstValueFromString(s);
-	    if (!value || 
+	    Uint32 * field = new Uint32[vm];
+	    const char * s = val;
+	    
+	    for(unsigned long i = 0; i < vm && errorFlag == EC_Normal; i++)
+	    {
+		char * value = getFirstValueFromString(s);
+		if (!value || 
 #if SIZEOF_LONG == 8
-		sscanf(value, "%u", &field[i]) != 1)
+		    sscanf(value, "%u", &field[i]) != 1
 #else
-		sscanf(value, "%lu", &field[i]) != 1)
+		    sscanf(value, "%lu", &field[i]) != 1
 #endif
-		errorFlag = EC_CorruptedData;
-	    else if (value)
-		delete[] value;
-	}
+		    )
+		    errorFlag = EC_CorruptedData;
+		else if (value)
+		    delete[] value;
+	    }
 	
-	if (errorFlag == EC_Normal)
-	    errorFlag = this -> put(field, vm);
-	delete[] field;
+	    if (errorFlag == EC_Normal)
+		errorFlag = this -> put(field, vm);
+	    delete[] field;
+	}
+	else 
+	    errorFlag = this -> putValue(NULL, 0);
     }
+    else
+	errorFlag = this -> putValue(NULL, 0);
+
     return errorFlag;
 }
 
@@ -208,8 +215,8 @@ E_Condition DcmUnsignedLong::put(const char * val)
 
 E_Condition DcmUnsignedLong::get(Uint32 * & uintVals)
 {
-	uintVals = this -> get();
-	return errorFlag;
+    uintVals = (Uint32 *)this -> getValue();
+    return errorFlag;
 }
 
 // ********************************
@@ -217,8 +224,18 @@ E_Condition DcmUnsignedLong::get(Uint32 * & uintVals)
 
 E_Condition DcmUnsignedLong::get(Uint32 & uintVal, const unsigned long pos)
 {
-	uintVal = this -> get(pos);
-	return errorFlag;
+    Uint32 * uintVals = NULL;
+    errorFlag = this -> get(uintVals);
+
+    if (uintVals && errorFlag == EC_Normal &&
+	pos < this -> getVM())
+	uintVal = uintVals[pos];
+    else
+    {
+	errorFlag = EC_IllegalCall;
+	uintVal = 0;
+    }
+    return errorFlag;
 }
 
 
@@ -227,12 +244,8 @@ E_Condition DcmUnsignedLong::get(Uint32 & uintVal, const unsigned long pos)
 
 Uint32 * DcmUnsignedLong::get(void)
 {
-	Uint32 * uintVal = (Uint32 *)this -> getValue();
-
-	if (errorFlag == EC_Normal)
-		return uintVal;
-	else
-		return NULL;
+    Uint32 * uintVal = (Uint32 *)this -> getValue();
+    return uintVal;
 }
 
 
@@ -241,13 +254,9 @@ Uint32 * DcmUnsignedLong::get(void)
 
 Uint32 DcmUnsignedLong::get(const unsigned long position)
 {
-	Uint32 * uintVals = this -> get();
-
-	if (uintVals && errorFlag == EC_Normal &&
-		position < this -> getVM())
-		return uintVals[position];
-	else
-		return Uint32(0);
+    Uint32 uintVal = 0; 
+    errorFlag = this -> get(uintVal, position);
+    return uintVal;
 }
 
 
@@ -275,7 +284,10 @@ E_Condition DcmUnsignedLong::verify(const BOOL autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrul.cc,v $
-** Revision 1.5  1996-03-26 09:59:38  meichel
+** Revision 1.6  1996-04-16 16:05:26  andreas
+** - better support und bug fixes for NULL element value
+**
+** Revision 1.5  1996/03/26 09:59:38  meichel
 ** corrected bug (deletion of const char *) which prevented compilation on NeXT
 **
 ** Revision 1.4  1996/01/29 13:38:35  andreas

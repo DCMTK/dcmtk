@@ -9,10 +9,10 @@
 ** Purpose:
 ** Implementation of class DcmSignedLong
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1996-03-26 09:59:37 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-04-16 16:05:25 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrsl.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -136,6 +136,8 @@ E_Condition DcmSignedLong::put(const Sint32 * sintVal,
 	else
 	    errorFlag = EC_CorruptedData;
     }
+    else 
+	errorFlag = this -> putValue(NULL, 0);
     return errorFlag;
 }
 
@@ -175,30 +177,38 @@ E_Condition DcmSignedLong::put(const Sint32 sintVal,
 E_Condition DcmSignedLong::put(const char * val)
 {
     errorFlag = EC_Normal;
-    if (val)
+    if (val && val[0] != 0)
     {
 	unsigned long vm = getVMFromString(val);
-	Sint32 * field = new Sint32[vm];
-	const char * s = val;
-	    
-	for(unsigned long i = 0; i < vm && errorFlag == EC_Normal; i++)
+	if (vm)
 	{
-	    char * value = getFirstValueFromString(s);
-	    if (!value || 
+	    Sint32 * field = new Sint32[vm];
+	    const char * s = val;
+	    
+	    for(unsigned long i = 0; i < vm && errorFlag == EC_Normal; i++)
+	    {
+		char * value = getFirstValueFromString(s);
+		if (!value || 
 #if SIZEOF_LONG == 8
-		sscanf(value, "%d", &field[i]) != 1)
+		    sscanf(value, "%d", &field[i]) != 1
 #else
-		sscanf(value, "%ld", &field[i]) != 1)
+		    sscanf(value, "%ld", &field[i]) != 1
 #endif
-		errorFlag = EC_CorruptedData;
-	    else if (value)
-		delete[] value;
-	}
+		   )
+		    errorFlag = EC_CorruptedData;
+		else if (value)
+		    delete[] value;
+	    }
 	
-	if (errorFlag == EC_Normal)
-	    errorFlag = this -> put(field, vm);
-	delete[] field;
+	    if (errorFlag == EC_Normal)
+		errorFlag = this -> put(field, vm);
+	    delete[] field;
+	}
+	else 
+	    this -> putValue(NULL, 0);
     }
+    else
+	this -> putValue(NULL, 0);
     return errorFlag;
 }
 
@@ -208,7 +218,7 @@ E_Condition DcmSignedLong::put(const char * val)
 
 E_Condition DcmSignedLong::get(Sint32 * & sintVals)
 {
-	sintVals = this -> get();
+	sintVals = (Sint32 *)this -> getValue();
 	return errorFlag;
 }
 
@@ -217,8 +227,18 @@ E_Condition DcmSignedLong::get(Sint32 * & sintVals)
 
 E_Condition DcmSignedLong::get(Sint32 & sintVal, const unsigned long pos)
 {
-	sintVal = this -> get(pos);
-	return errorFlag;
+    Sint32 * sintVals = NULL;
+    errorFlag = this -> get(sintVals);
+
+    if (sintVals && errorFlag == EC_Normal &&
+	pos < this -> getVM())
+	sintVal = sintVals[pos];
+    else
+    {
+	sintVal = 0;
+	errorFlag = EC_IllegalCall;
+    }
+    return errorFlag;
 }
 
 
@@ -241,13 +261,9 @@ Sint32 * DcmSignedLong::get(void)
 
 Sint32 DcmSignedLong::get(const unsigned long position)
 {
-	Sint32 * sintVals = this -> get();
-
-	if (sintVals && errorFlag == EC_Normal &&
-		position < this -> getVM())
-		return sintVals[position];
-	else
-		return Sint32(0);
+	Sint32  sintVal = 0;
+	errorFlag = this -> get(sintVal, position);
+	return sintVal;
 }
 
 
@@ -275,7 +291,10 @@ E_Condition DcmSignedLong::verify(const BOOL autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrsl.cc,v $
-** Revision 1.5  1996-03-26 09:59:37  meichel
+** Revision 1.6  1996-04-16 16:05:25  andreas
+** - better support und bug fixes for NULL element value
+**
+** Revision 1.5  1996/03/26 09:59:37  meichel
 ** corrected bug (deletion of const char *) which prevented compilation on NeXT
 **
 ** Revision 1.4  1996/01/29 13:38:33  andreas

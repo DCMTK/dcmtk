@@ -9,10 +9,10 @@
 ** Purpose:
 ** Implementation of class DcmByteString
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-11 13:17:23 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-04-16 16:05:22 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcbytstr.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -87,7 +87,7 @@ void DcmByteString::print(const int level)
     if (this -> valueLoaded())
     {
 	const char * byteStringValue = this -> get();
-	if (byteStringValue )
+	if (byteStringValue)
 	{
 	    char *tmp = new char[realLength + 3];
 	    tmp[0] = '[';
@@ -97,7 +97,7 @@ void DcmByteString::print(const int level)
 	    printInfoLine(level, tmp);
 	    delete tmp;
 	}
-	else 
+	else
 	    printInfoLine( level, "(no value available)" );
     }
     else
@@ -110,7 +110,11 @@ void DcmByteString::print(const int level)
 
 E_Condition DcmByteString::get(char * & byteStringValue)
 {
-    byteStringValue = this -> get();
+    byteStringValue = (char *)this -> getValue();
+
+    if (byteStringValue && fStringMode != DCM_MachineString)
+	this -> makeMachineByteString();
+
     return errorFlag;
 }
 
@@ -173,11 +177,8 @@ unsigned long DcmByteString::getVM()
 
 E_Condition DcmByteString::makeDicomByteString(void)
 {
-    errorFlag = EC_Normal;
-    if (fStringMode == DCM_UnknownString)
-	errorFlag = this -> makeMachineByteString();
-
-    char * value = this -> get();
+    char * value = NULL;
+    errorFlag = this -> get(value);
 
     if (value) 
     {
@@ -190,9 +191,8 @@ E_Condition DcmByteString::makeDicomByteString(void)
 	    Length = realLength;
 
 	value[Length] = '\0';
-	fStringMode = DCM_DicomString;
     }
-
+    fStringMode = DCM_DicomString;
     return errorFlag;
 }
 
@@ -208,7 +208,7 @@ E_Condition DcmByteString::makeMachineByteString(void)
     else
     	realLength = 0;
 
-    if (realLength && value)
+    if (realLength)
     {
 	size_t i = 0;
 	for(i = realLength;
@@ -218,11 +218,8 @@ E_Condition DcmByteString::makeMachineByteString(void)
 	    value[i-1] = '\0';
 
 	realLength = (Uint32)i;
-	fStringMode = DCM_MachineString;
     }
-    else
-	errorFlag = EC_CorruptedData;
-
+    fStringMode = DCM_MachineString;
     return errorFlag;
 }
 
@@ -261,14 +258,14 @@ void DcmByteString::postLoadValue(void)
 
 
 E_Condition 
-DcmByteString::put(const char * byteStringValue )
+DcmByteString::put(const char * byteStringValue)
 {
     errorFlag = EC_Normal;
 
-    if (byteStringValue)
+    if (byteStringValue && byteStringValue[0] != '\0')
 	this -> putValue(byteStringValue, strlen(byteStringValue));
     else
-	errorFlag = EC_CorruptedData;
+	this -> putValue(NULL, 0);
 
     fStringMode = DCM_UnknownString;
     this -> makeMachineByteString();
@@ -285,8 +282,8 @@ E_Condition DcmByteString::verify(const BOOL autocorrect)
 	    getGTag(), getETag(),
 	    DcmVR(getVR()).getVRName(), getTag().getTagName() ));
 
-    errorFlag = EC_Normal;
-    const char * value = this -> get();
+    char * value = NULL;
+    errorFlag = this -> get(value);
     if (value != NULL && realLength != 0 )
     {
 	char *tempstr = new char[ realLength + 1 ];
@@ -359,7 +356,10 @@ E_Condition DcmByteString::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
-** Revision 1.5  1996-03-11 13:17:23  hewett
+** Revision 1.6  1996-04-16 16:05:22  andreas
+** - better support und bug fixes for NULL element value
+**
+** Revision 1.5  1996/03/11 13:17:23  hewett
 ** Removed get function for unsigned char*
 **
 ** Revision 1.4  1996/01/09 11:06:42  andreas

@@ -9,10 +9,10 @@
 ** Purpose:
 ** Implementation of class DcmUnsignedShort
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1996-03-26 09:59:39 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-04-16 16:05:27 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrus.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -132,6 +132,9 @@ E_Condition DcmUnsignedShort::put(const Uint16 * uintVal,
 	else
 	    errorFlag = EC_CorruptedData;
     }
+    else
+	errorFlag = this -> putValue(NULL, 0);
+
     return errorFlag;
 }
 
@@ -144,8 +147,6 @@ E_Condition DcmUnsignedShort::put(const Uint16 uintVal)
     Uint16 val = uintVal;
     errorFlag = this -> putValue(&val, sizeof(Uint16));
     return errorFlag;
-
-    errorFlag = EC_Normal;
 }
 
 
@@ -171,25 +172,33 @@ E_Condition DcmUnsignedShort::put(const Uint16 uintVal,
 E_Condition DcmUnsignedShort::put(const char * val)
 {
     errorFlag = EC_Normal;
-    if (val)
+    if (val && val[0] != '\0')
     {
 	unsigned long vm = getVMFromString(val);
-	Uint16 * field = new Uint16[vm];
-	const char * s = val;
-	    
-	for(unsigned long i = 0; i < vm && errorFlag == EC_Normal; i++)
+	if (vm)
 	{
-	    char * value = getFirstValueFromString(s);
-	    if (!value || sscanf(value, "%hu", &field[i]) != 1)
-		errorFlag = EC_CorruptedData;
-	    else if (value)
-		delete[] value;
-	}
+	    Uint16 * field = new Uint16[vm];
+	    const char * s = val;
+	    
+	    for(unsigned long i = 0; i < vm && errorFlag == EC_Normal; i++)
+	    {
+		char * value = getFirstValueFromString(s);
+		if (!value || sscanf(value, "%hu", &field[i]) != 1)
+		    errorFlag = EC_CorruptedData;
+		else if (value)
+		    delete[] value;
+	    }
 	
-	if (errorFlag == EC_Normal)
-	    errorFlag = this -> put(field, vm);
-	delete[] field;
+	    if (errorFlag == EC_Normal)
+		errorFlag = this -> put(field, vm);
+	    delete[] field;
+	}
+	else
+	    errorFlag = this -> putValue(NULL, 0);
     }
+    else
+	errorFlag = this -> putValue(NULL, 0);
+
     return errorFlag;
 }
 
@@ -199,7 +208,17 @@ E_Condition DcmUnsignedShort::put(const char * val)
 
 E_Condition DcmUnsignedShort::get(Uint16 & uintVal, const unsigned long pos)
 {
-    uintVal = this -> get(pos);
+    Uint16 * uintVals = NULL;
+    errorFlag = this -> get(uintVals);
+
+    if (uintVals && errorFlag == EC_Normal &&
+	pos < this -> getVM())
+	uintVal = uintVals[pos];
+    else
+    {
+	errorFlag = EC_IllegalCall;
+	uintVal = 0;
+    }
     return errorFlag;
 }
 
@@ -209,7 +228,7 @@ E_Condition DcmUnsignedShort::get(Uint16 & uintVal, const unsigned long pos)
 
 E_Condition DcmUnsignedShort::get(Uint16 * & uintVals)
 {
-    uintVals = this -> get();
+    uintVals = (Uint16 *)this -> getValue();
     return errorFlag;
 }
 
@@ -220,11 +239,7 @@ E_Condition DcmUnsignedShort::get(Uint16 * & uintVals)
 Uint16 * DcmUnsignedShort::get(void)
 {
     Uint16 * uintVal = (Uint16 *)this -> getValue();
-
-    if (errorFlag == EC_Normal)
-	return uintVal;
-    else
-	return NULL;
+    return uintVal;
 }
 
 
@@ -233,13 +248,9 @@ Uint16 * DcmUnsignedShort::get(void)
 
 Uint16 DcmUnsignedShort::get(const unsigned long position)
 {
-    Uint16 * uintVals = this -> get();
-
-    if (uintVals && errorFlag == EC_Normal &&
-	position < this -> getVM())
-	return uintVals[position];
-    else
-	return Uint16(0);
+    Uint16 uintVal = 0;
+    errorFlag = this -> get(uintVal, position);
+    return uintVal;
 }
 
 
@@ -267,7 +278,10 @@ E_Condition DcmUnsignedShort::verify(const BOOL autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrus.cc,v $
-** Revision 1.5  1996-03-26 09:59:39  meichel
+** Revision 1.6  1996-04-16 16:05:27  andreas
+** - better support und bug fixes for NULL element value
+**
+** Revision 1.5  1996/03/26 09:59:39  meichel
 ** corrected bug (deletion of const char *) which prevented compilation on NeXT
 **
 ** Revision 1.4  1996/01/29 13:38:35  andreas

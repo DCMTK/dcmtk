@@ -9,10 +9,10 @@
 ** Purpose:
 ** Implementation of class DcmFloatingPointDouble
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1996-03-26 09:59:35 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-04-16 16:05:23 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrfd.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -79,32 +79,32 @@ Edebug(());
 
 void DcmFloatingPointDouble::print(const int level)
 {
-	if (valueLoaded)
+    if (valueLoaded)
+    {
+	Float64 * doubleVals =  this -> get();
+
+	if (!doubleVals)
+	    printInfoLine( level, "(no value available)" );
+	else
 	{
-		Float64 * doubleVals =  this -> get();
+	    char *ch_words;
+	    char *tmp = ch_words = new char[Length*26/sizeof(Float64)+8];
 
-		if (!doubleVals)
-			printInfoLine( level, "(no value available)" );
-		else
-		{
-			char *ch_words;
-			char *tmp = ch_words = new char[Length*26/sizeof(Float64)+8];
-
-			for (unsigned long i=0; i<( Length/sizeof(Float64) ); i++ )
-			{
-				sprintf( tmp, "%g\\", *doubleVals );
-				tmp += strlen(tmp);
-				doubleVals++;
-			}
-			if ( Length > 0 )
-				tmp--;
-			*tmp = '\0';
-			printInfoLine(level, ch_words);
-			delete ch_words;
-		}
+	    for (unsigned long i=0; i<( Length/sizeof(Float64) ); i++ )
+	    {
+		sprintf( tmp, "%g\\", *doubleVals );
+		tmp += strlen(tmp);
+		doubleVals++;
+	    }
+	    if ( Length > 0 )
+		tmp--;
+	    *tmp = '\0';
+	    printInfoLine(level, ch_words);
+	    delete ch_words;
+	}
     }
     else
-		DcmObject::printInfoLine( level, "(not loaded)" );
+	DcmObject::printInfoLine( level, "(not loaded)" );
 }
 
 
@@ -132,6 +132,9 @@ E_Condition DcmFloatingPointDouble::put(const Float64 * doubleVal,
 	else
 	    errorFlag = EC_CorruptedData;
     }
+    else
+	this -> putValue(NULL, 0);
+
     return errorFlag;
 }
 
@@ -170,25 +173,32 @@ E_Condition DcmFloatingPointDouble::put(const Float64 doubleVal,
 E_Condition DcmFloatingPointDouble::put(const char * val)
 {
     errorFlag = EC_Normal;
-    if (val)
+    if (val && val[0] != 0)
     {
 	unsigned long vm = getVMFromString(val);
-	Float64 * field = new Float64[vm];
-	const char * s = val;
-	    
-	for(unsigned long i = 0; i < vm && errorFlag == EC_Normal; i++)
+	if (vm)
 	{
-	    char * value = getFirstValueFromString(s);
-	    if (!value || sscanf(value, "%lf", &field[i]) != 1)
-		errorFlag = EC_CorruptedData;
-	    else if (value)
-		delete[] value;
-	}
+	    Float64 * field = new Float64[vm];
+	    const char * s = val;
+	    
+	    for(unsigned long i = 0; i < vm && errorFlag == EC_Normal; i++)
+	    {
+		char * value = getFirstValueFromString(s);
+		if (!value || sscanf(value, "%lf", &field[i]) != 1)
+		    errorFlag = EC_CorruptedData;
+		else if (value)
+		    delete[] value;
+	    }
 	
-	if (errorFlag == EC_Normal)
-	    errorFlag = this -> put(field, vm);
-	delete[] field;
+	    if (errorFlag == EC_Normal)
+		errorFlag = this -> put(field, vm);
+	    delete[] field;
+	}
+	else 
+	    this -> putValue(NULL, 0);
     }
+    else
+	this -> putValue(NULL,0);
     return errorFlag;
 }
 
@@ -198,7 +208,7 @@ E_Condition DcmFloatingPointDouble::put(const char * val)
 
 E_Condition DcmFloatingPointDouble::get(Float64 * & doubleVals)
 {
-	doubleVals = this -> get();
+	doubleVals =(Float64 *)this -> getValue();
 	return errorFlag;
 }
 
@@ -207,10 +217,23 @@ E_Condition DcmFloatingPointDouble::get(Float64 * & doubleVals)
 
 
 E_Condition DcmFloatingPointDouble::get(Float64 & doubleVal, 
-										const unsigned long pos)
+					const unsigned long pos)
 {
-	doubleVal = this -> get(pos);
-	return errorFlag;
+    Float64 * doubleVals = NULL;
+    errorFlag = this -> get(doubleVals);
+
+    if (doubleVals && errorFlag == EC_Normal &&
+	pos < this -> getVM())
+	doubleVal = doubleVals[pos];
+    else if (doubleVals == NULL)
+	errorFlag = EC_IllegalCall;
+    else if (errorFlag == EC_Normal)
+	errorFlag = EC_CorruptedData;
+	
+    if (errorFlag != EC_Normal)
+	doubleVal = 0.0;
+
+    return errorFlag;
 }
 
 
@@ -219,12 +242,12 @@ E_Condition DcmFloatingPointDouble::get(Float64 & doubleVal,
 
 Float64 * DcmFloatingPointDouble::get(void)
 {
-	Float64 * doubleVal = (Float64 *)this -> getValue();
+    Float64 * doubleVal = (Float64 *)this -> getValue();
 
-	if (errorFlag == EC_Normal)
-		return doubleVal;
-	else
-		return NULL;
+    if (errorFlag == EC_Normal)
+	return doubleVal;
+    else
+	return NULL;
 }
 
 
@@ -233,17 +256,9 @@ Float64 * DcmFloatingPointDouble::get(void)
 
 Float64 DcmFloatingPointDouble::get(const unsigned long position)
 {
-	Float64 * doubleVals = this -> get();
-
-	if (doubleVals && errorFlag == EC_Normal &&
-		position < this -> getVM())
-		return doubleVals[position];
-	else
-	{
-		if (errorFlag == EC_Normal)
-			errorFlag = EC_CorruptedData;
-		return Float64(0.0);
-	}
+    Float64 doubleVal = 0.0;
+    this -> get(doubleVal, position);
+    return doubleVal;
 }
 
 
@@ -269,7 +284,10 @@ E_Condition DcmFloatingPointDouble::verify(const BOOL autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrfd.cc,v $
-** Revision 1.5  1996-03-26 09:59:35  meichel
+** Revision 1.6  1996-04-16 16:05:23  andreas
+** - better support und bug fixes for NULL element value
+**
+** Revision 1.5  1996/03/26 09:59:35  meichel
 ** corrected bug (deletion of const char *) which prevented compilation on NeXT
 **
 ** Revision 1.4  1996/01/29 13:38:32  andreas

@@ -9,10 +9,10 @@
 ** Purpose:
 ** Implementation of class DcmFloatingPointSingle
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1996-03-26 09:59:36 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-04-16 16:05:23 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrfl.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -85,32 +85,32 @@ Edebug(());
 
 void DcmFloatingPointSingle::print(const int level)
 {
-	if (valueLoaded)
+    if (valueLoaded)
+    {
+	Float32 * floatVals =  this -> get();
+
+	if (!floatVals)
+	    printInfoLine( level, "(no value available)" );
+	else
 	{
-		Float32 * floatVals =  this -> get();
+	    char *ch_words;
+	    char *tmp = ch_words = new char[Length*26/sizeof(Float32)+8];
 
-		if (!floatVals)
-			printInfoLine( level, "(no value available)" );
-		else
-		{
-			char *ch_words;
-			char *tmp = ch_words = new char[Length*26/sizeof(Float32)+8];
-
-			for (unsigned long i=0; i<( Length/sizeof(Float32) ); i++ )
-			{
-				sprintf( tmp, "%g\\", *floatVals );
-				tmp += strlen(tmp);
-				floatVals++;
-			}
-			if ( Length > 0 )
-				tmp--;
-			*tmp = '\0';
-			printInfoLine(level, ch_words);
-			delete ch_words;
-		}
+	    for (unsigned long i=0; i<( Length/sizeof(Float32) ); i++ )
+	    {
+		sprintf( tmp, "%g\\", *floatVals );
+		tmp += strlen(tmp);
+		floatVals++;
+	    }
+	    if ( Length > 0 )
+		tmp--;
+	    *tmp = '\0';
+	    printInfoLine(level, ch_words);
+	    delete ch_words;
+	}
     }
     else
-		DcmObject::printInfoLine( level, "(not loaded)" );
+	DcmObject::printInfoLine( level, "(not loaded)" );
 }
 
 
@@ -138,6 +138,9 @@ E_Condition DcmFloatingPointSingle::put(const Float32 * floatVal,
 	else
 	    errorFlag = EC_CorruptedData;
     }
+    else
+	this -> putValue(NULL, 0);
+
     return errorFlag;
 }
 
@@ -176,25 +179,33 @@ E_Condition DcmFloatingPointSingle::put(const Float32 floatVal,
 E_Condition DcmFloatingPointSingle::put(const char * val)
 {
     errorFlag = EC_Normal;
-    if (val)
+    if (val && val[0] != 0)
     {
 	unsigned long vm = getVMFromString(val);
-	Float32 * field = new Float32[vm];
-	const char * s = val;
-	    
-	for(unsigned long i = 0; i < vm && errorFlag == EC_Normal; i++)
+	if (vm)
 	{
-	    char * value = getFirstValueFromString(s);
-	    if (!value || sscanf(value, "%f", &field[i]) != 1)
-		errorFlag = EC_CorruptedData;
-	    else if (value)
-		delete[] value;
-	}
+	    Float32 * field = new Float32[vm];
+	    const char * s = val;
+	    
+	    for(unsigned long i = 0; i < vm && errorFlag == EC_Normal; i++)
+	    {
+		char * value = getFirstValueFromString(s);
+		if (!value || sscanf(value, "%f", &field[i]) != 1)
+		    errorFlag = EC_CorruptedData;
+		else if (value)
+		    delete[] value;
+	    }
 	
-	if (errorFlag == EC_Normal)
-	    errorFlag = this -> put(field, vm);
-	delete[] field;
+	    if (errorFlag == EC_Normal)
+		errorFlag = this -> put(field, vm);
+	    delete[] field;
+	}
+	else
+	    errorFlag = this -> putValue(NULL, 0);
     }
+    else
+	errorFlag = this -> putValue(NULL, 0);
+
     return errorFlag;
 }
 
@@ -204,7 +215,7 @@ E_Condition DcmFloatingPointSingle::put(const char * val)
 
 E_Condition DcmFloatingPointSingle::get(Float32 * & singleVals)
 {
-	singleVals = this -> get();
+	singleVals = (Float32 *)this -> getValue();
 	return errorFlag;
 }
 
@@ -213,10 +224,20 @@ E_Condition DcmFloatingPointSingle::get(Float32 * & singleVals)
 
 
 E_Condition DcmFloatingPointSingle::get(Float32 & singleVal, 
-										const unsigned long pos)
+					const unsigned long pos)
 {
-	singleVal = this -> get(pos);
-	return errorFlag;
+    Float32 * floatVals = NULL;
+    errorFlag = this -> get(floatVals);
+
+    if (floatVals && errorFlag == EC_Normal &&
+	pos < this -> getVM())
+	singleVal = floatVals[pos];
+    else
+    {
+	errorFlag = EC_IllegalCall;
+	singleVal = 0.0;
+    }
+    return errorFlag;
 }
 
 
@@ -239,13 +260,9 @@ Float32 * DcmFloatingPointSingle::get(void)
 
 Float32 DcmFloatingPointSingle::get(const unsigned long position)
 {
-	Float32 * floatVals = this -> get();
-
-	if (floatVals && errorFlag == EC_Normal &&
-		position < this -> getVM())
-		return floatVals[position];
-	else
-		return Float32(0.0);
+    Float32 floatVal = 0.0;
+    errorFlag = this -> get(floatVal, position);
+    return floatVal;
 }
 
 
@@ -271,7 +288,10 @@ E_Condition DcmFloatingPointSingle::verify(const BOOL autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrfl.cc,v $
-** Revision 1.5  1996-03-26 09:59:36  meichel
+** Revision 1.6  1996-04-16 16:05:23  andreas
+** - better support und bug fixes for NULL element value
+**
+** Revision 1.5  1996/03/26 09:59:36  meichel
 ** corrected bug (deletion of const char *) which prevented compilation on NeXT
 **
 ** Revision 1.4  1996/01/29 13:38:32  andreas

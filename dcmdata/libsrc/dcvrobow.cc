@@ -10,10 +10,10 @@
 ** Implementation of class DcmOtherByteOtherWord
 **
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1996-03-26 09:59:36 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-04-16 16:05:24 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrobow.cc,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -218,6 +218,9 @@ E_Condition DcmOtherByteOtherWord::put(const Uint8 * byteValue,
 	else
 	    errorFlag = EC_IllegalCall;
     }
+    else
+	this -> putValue(NULL, 0);
+
     return errorFlag;
 }
 
@@ -241,6 +244,9 @@ E_Condition DcmOtherByteOtherWord::put(const Uint16 * wordValue,
 	else
 	    errorFlag = EC_IllegalCall;
     }
+    else
+	errorFlag = this -> putValue(NULL, 0);
+
     return errorFlag;
 }
 
@@ -251,53 +257,59 @@ E_Condition DcmOtherByteOtherWord::put(const Uint16 * wordValue,
 E_Condition DcmOtherByteOtherWord::put(const char * val)
 {
     errorFlag = EC_Normal;
-    if (val)
+    if (val && val[0] != 0)
     {
 	unsigned long vm = getVMFromString(val);
-	const DcmEVR evr = Tag -> getEVR();
-	Uint16 * wordField = NULL;
-	Uint8 * byteField = NULL;
-
-	if (evr == EVR_OW)
-	    wordField = new Uint16[vm];
-	else
-	    byteField = new Uint8[vm];
-
-	const char * s = val;
-	Uint16 intVal = 0;
-	    
-	for(unsigned long i = 0; i < vm && errorFlag == EC_Normal; i++)
+	if (vm)
 	{
-	    char * value = getFirstValueFromString(s);
-	    if (value) 
-	    {
-		if (sscanf(value, "%hx", &intVal) != 1)
-		    errorFlag = EC_CorruptedData;
-		else if (evr != EVR_OW)
-		    byteField[i] = Uint8(intVal);
-		else
-		    wordField[i] = Uint16(intVal);
-		delete[] value;
-	    }
-	    else 
-		errorFlag = EC_CorruptedData;
-	}
-	
+	    const DcmEVR evr = Tag -> getEVR();
+	    Uint16 * wordField = NULL;
+	    Uint8 * byteField = NULL;
 
-
-	if (errorFlag == EC_Normal)
-	{
-	    if (evr != EVR_OW)
-		errorFlag = this -> put(byteField, vm);
+	    if (evr == EVR_OW)
+		wordField = new Uint16[vm];
 	    else
-		errorFlag = this -> put(wordField, vm);
-	}
+		byteField = new Uint8[vm];
 
-	if (evr != EVR_OW)
-	    delete[] byteField;
+	    const char * s = val;
+	    Uint16 intVal = 0;
+	    
+	    for(unsigned long i = 0; i < vm && errorFlag == EC_Normal; i++)
+	    {
+		char * value = getFirstValueFromString(s);
+		if (value) 
+		{
+		    if (sscanf(value, "%hx", &intVal) != 1)
+			errorFlag = EC_CorruptedData;
+		    else if (evr != EVR_OW)
+			byteField[i] = Uint8(intVal);
+		    else
+			wordField[i] = Uint16(intVal);
+		    delete[] value;
+		}
+		else 
+		    errorFlag = EC_CorruptedData;
+	    }
+
+
+	    if (errorFlag == EC_Normal)
+	    {
+		if (evr != EVR_OW)
+		    errorFlag = this -> put(byteField, vm);
+		else
+		    errorFlag = this -> put(wordField, vm);
+	    }
+
+	    if (evr != EVR_OW)
+		delete[] byteField;
+	    else
+		delete[] wordField;
+	}
 	else
-	    delete[] wordField;
+	    this -> putValue(NULL, 0);
     }
+    else
+	this -> putValue(NULL, 0);
     return errorFlag;
 }
 
@@ -394,7 +406,10 @@ E_Condition DcmOtherByteOtherWord::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
-** Revision 1.6  1996-03-26 09:59:36  meichel
+** Revision 1.7  1996-04-16 16:05:24  andreas
+** - better support und bug fixes for NULL element value
+**
+** Revision 1.6  1996/03/26 09:59:36  meichel
 ** corrected bug (deletion of const char *) which prevented compilation on NeXT
 **
 ** Revision 1.5  1996/01/29 13:38:33  andreas
