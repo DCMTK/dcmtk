@@ -19,11 +19,13 @@ VeriLUM is a calibration package from ImageSmiths consisting of a photometer
 
 USAGE
 
-dconvlum in-file out-file [ambient]
+dconvlum: Convert VeriLUM "CCx_xx.dat" files to DCMTK display files
+usage: dconvlum in-file out-file [ambient]
 
-in-file:  VeriLUM characteristic curve (filename)
-out-file: DCMTK monitor LUT (filename)
-ambient:  ambient light (optional floating point value)
+parameters:
+  in-file   VeriLUM characteristic curve file to be converted
+  out-file  DCMTK display file to be written
+  ambient   ambient light (cd/m^2, floating point value)
 
 
 FORMAT
