@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2002.07.01 (wilkens)
+
+- Some more corrections to get rid of msvc6's warnings.
+  Affects: dcmwlm/include/wlds.h
+
 **** Changes from 2002.06.10 (wilkens)
 
 - Some more corrections to keep gcc 2.95.3 quiet.
