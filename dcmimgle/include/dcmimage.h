@@ -22,9 +22,9 @@
  *  Purpose: Provides main interface to the "DICOM image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-17 12:06:17 $
+ *  Update Date:      $Date: 1999-10-06 13:26:08 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dcmimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1221,6 +1221,17 @@ class DicomImage
         return DiMonoImage::createPackedBitmap(buffer, size, count, 16, 12);
     }
 
+    /** create new single frame DicomImage with applied grayscale transformations.
+     *  The method getOutputData() is used internally for the new bitmap.
+     *  Limited to monochrome images.
+     *
+     ** @param  frame  index of frame to be converted
+     *  @param  bits   number of bits per pixel used for the output bitmap
+     *
+     ** @return pointer to new DicomImage object (NULL if an error occurred)
+     */
+    DicomImage *createMonoOutputImage(const unsigned long frame,
+                                      const int bits);
 
  // --- output ppm file: return true ('1') if successful
 
@@ -1366,7 +1377,13 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.23  1999-09-17 12:06:17  joergr
+ * Revision 1.24  1999-10-06 13:26:08  joergr
+ * Corrected creation of PrintBitmap pixel data: VOI windows should be applied
+ * before clipping to avoid that the region outside the image (border) is also
+ * windowed (this requires a new method in dcmimgle to create a DicomImage
+ * with the grayscale transformations already applied).
+ *
+ * Revision 1.23  1999/09/17 12:06:17  joergr
  * Added/changed/completed DOC++ style comments in the header files.
  *
  * Revision 1.22  1999/09/10 08:45:17  joergr

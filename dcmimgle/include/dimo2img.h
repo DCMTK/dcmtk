@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochrome2Image (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-17 12:22:57 $
+ *  Update Date:      $Date: 1999-10-06 13:29:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimo2img.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -99,6 +99,20 @@ class DiMono2Image
                  const double green,
                  const double blue);
                  
+    /** constructor, createMonoOutput
+     *
+     ** @param  image   pointer to reference image
+     *  @param  pixel   pointer to output pixel data used for the new image
+     *  @param  frame   number of frame stored in the new image object
+     *  @param  stored  number of bits stored
+     *  @param  alloc   number of bits allocated
+     */
+    DiMono2Image(const DiMonoImage *image,
+                 const DiMonoOutputPixel *pixel,
+                 const unsigned long frame,
+                 const int stored,
+                 const int alloc);
+
     /** destructor
      */
     virtual ~DiMono2Image();
@@ -280,7 +294,13 @@ class DiMono2Image
  *
  * CVS/RCS Log:
  * $Log: dimo2img.h,v $
- * Revision 1.6  1999-09-17 12:22:57  joergr
+ * Revision 1.7  1999-10-06 13:29:55  joergr
+ * Corrected creation of PrintBitmap pixel data: VOI windows should be applied
+ * before clipping to avoid that the region outside the image (border) is also
+ * windowed (this requires a new method in dcmimgle to create a DicomImage
+ * with the grayscale transformations already applied).
+ *
+ * Revision 1.6  1999/09/17 12:22:57  joergr
  * Added/changed/completed DOC++ style comments in the header files.
  *
  * Revision 1.5  1999/08/25 16:41:52  joergr

@@ -22,9 +22,9 @@
  *  Purpose: DicomImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-17 12:12:18 $
+ *  Update Date:      $Date: 1999-10-06 13:28:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -451,6 +451,18 @@ class DiImage
     DiImage(const DiImage *image,
             const int degree = 0);
 
+    /** constructor, createMonoOutput
+     *
+     ** @param  image   pointer to reference image
+     *  @param  frame   number of frame stored in the new image object
+     *  @param  stored  number of bits stored
+     *  @param  alloc   number of bits allocated
+     */
+    DiImage(const DiImage *image,
+            const unsigned long frame,
+            const int stored,
+            const int alloc);
+
     /** delete internally handled object for the input pixel data conversion
      */
     void deleteInputData();
@@ -531,7 +543,13 @@ class DiImage
  *
  * CVS/RCS Log:
  * $Log: diimage.h,v $
- * Revision 1.15  1999-09-17 12:12:18  joergr
+ * Revision 1.16  1999-10-06 13:28:21  joergr
+ * Corrected creation of PrintBitmap pixel data: VOI windows should be applied
+ * before clipping to avoid that the region outside the image (border) is also
+ * windowed (this requires a new method in dcmimgle to create a DicomImage
+ * with the grayscale transformations already applied).
+ *
+ * Revision 1.15  1999/09/17 12:12:18  joergr
  * Added/changed/completed DOC++ style comments in the header files.
  *
  * Revision 1.14  1999/08/25 16:39:31  joergr
