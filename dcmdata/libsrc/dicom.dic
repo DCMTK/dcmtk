@@ -1540,6 +1540,7 @@
 (0040,0301)	US	TotalNumberOfExposures	1
 (0040,0302)	US	EntranceDose	1
 (0040,0303)	US	ExposedArea	1-2
+(0040,0306)	DS	DistanceSourceToEntrance	1
 (0040,0310)	ST	CommentsOnRadiationDose	1
 (0040,0320)	SQ	BillingProcedureStepSequence	1
 (0040,0321)	SQ	FilmConsumptionSequence	1

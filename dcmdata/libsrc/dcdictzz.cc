@@ -3,8 +3,8 @@
 ** It was generated automatically by:
 **
 **   User: hewett
-**   Host: sulla
-**   Date: Wed Feb 25 14:00:35 1998
+**   Host: livius
+**   Date: Fri Feb 27 13:36:34 1998
 **   Prog: /home/hewett/dicom/dcmtk/dcmdata/libsrc/mkdictbi
 **
 ** From: /home/hewett/dicom/dcmtk/dcmdata/libsrc/dicom.dic
@@ -13,7 +13,7 @@
 
 #include "dcdict.h"
 
-char* dcmBuiltinDictBuildDate = "Wed Feb 25 14:00:35 1998";
+char* dcmBuiltinDictBuildDate = "Fri Feb 27 13:36:34 1998";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -2342,6 +2342,9 @@ static DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0040, 0x0303, 0x0040, 0x0303,
       EVR_US, "ExposedArea", 1, 2, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified },
+    { 0x0040, 0x0306, 0x0040, 0x0306,
+      EVR_DS, "DistanceSourceToEntrance", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0040, 0x0310, 0x0040, 0x0310,
       EVR_ST, "CommentsOnRadiationDose", 1, 1, "DICOM",

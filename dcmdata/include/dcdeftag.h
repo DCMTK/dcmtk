@@ -3,8 +3,8 @@
 ** It was generated automatically by:
 **
 **   User: hewett
-**   Host: sulla
-**   Date: Wed Feb 25 14:04:38 1998
+**   Host: livius
+**   Date: Fri Feb 27 13:36:07 1998
 **   Prog: /home/hewett/dicom/dcmtk/dcmdata/libsrc/mkdeftag
 **
 ** From: /home/hewett/dicom/dcmtk/dcmdata/libsrc/dicom.dic
@@ -16,12 +16,12 @@
 
 #include "dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "Wed Feb 25 14:04:38 1998"
+#define DCM_DICT_DEFTAG_BUILD_DATE "Fri Feb 27 13:36:07 1998"
 
 
 /*
 ** Fixed Tags in assending (gggg,eeee) order.
-** Number of entries: 1504
+** Number of entries: 1505
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -795,6 +795,7 @@
 #define DCM_TotalNumberOfExposures               DcmTagKey(0x0040, 0x0301)
 #define DCM_EntranceDose                         DcmTagKey(0x0040, 0x0302)
 #define DCM_ExposedArea                          DcmTagKey(0x0040, 0x0303)
+#define DCM_DistanceSourceToEntrance             DcmTagKey(0x0040, 0x0306)
 #define DCM_CommentsOnRadiationDose              DcmTagKey(0x0040, 0x0310)
 #define DCM_BillingProcedureStepSequence         DcmTagKey(0x0040, 0x0320)
 #define DCM_FilmConsumptionSequence              DcmTagKey(0x0040, 0x0321)
