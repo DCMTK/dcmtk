@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-04-30 16:32:50 $
+** Update Date:		$Date: 1997-05-07 12:27:27 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.24 $
+** CVS/RCS Revision:	$Revision: 1.25 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -638,7 +638,7 @@ E_Condition DcmItem::readTagAndLength(DcmStream & inStream,
     DcmTag newTag(groupTag, elementTag );
 
     if (xferSyn.isExplicitVR() && 
-	nxtobj != EVR_na) 	// Delimitation Items do not have a VR
+	newTag.getEVR() != EVR_na) 	// Delimitation Items do not have a VR
     {
 	char vrstr[3];
 	vrstr[2] = '\0';
@@ -1852,7 +1852,10 @@ DcmItem::findLong(const DcmTagKey& xtag,
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.24  1997-04-30 16:32:50  andreas
+** Revision 1.25  1997-05-07 12:27:27  andreas
+** Corrected error reading ItemDelimitationItem using explicit transfer syntaxes
+**
+** Revision 1.24  1997/04/30 16:32:50  andreas
 ** - Corrected Bug for reading of encapsulated pixel sequences
 **
 ** Revision 1.23  1997/04/24 12:12:18  hewett
