@@ -2,7 +2,7 @@
 #	Makefile include for X Windows
 #
 
-X_LIBS = @X_LIBS@
+X_LIBDIRS = @X_LIBS@
 
 #
 # -DX_DISPLAY_MISSING defined here on non-X systems
