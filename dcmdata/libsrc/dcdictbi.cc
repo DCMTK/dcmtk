@@ -22,15 +22,14 @@
  *  Purpose: 
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-04 16:52:36 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2004-02-13 12:45:53 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcdict.h"
 
 /* There is no builtin data dictionary */
@@ -52,15 +51,8 @@ DcmDataDictionary::loadBuiltinDictionary()
 /*
  * CVS/RCS Log:
  * $Log: dcdictbi.cc,v $
- * Revision 1.11  2004-02-04 16:52:36  joergr
+ * Revision 1.12  2004-02-13 12:45:53  joergr
  * Updated copyright header.
- *
- * Revision 1.10  2002/11/27 12:06:45  meichel
- * Adapted module dcmdata to use of new header file ofstdinc.h
- *
- * Revision 1.9  2002/08/27 16:55:45  meichel
- * Initial release of new DICOM I/O stream classes that add support for stream
- *   compression (deflated little endian explicit VR transfer syntax)
  *
  * Revision 1.5  2001/06/01 15:49:02  meichel
  * Updated copyright header
@@ -73,5 +65,6 @@ DcmDataDictionary::loadBuiltinDictionary()
  *
  * Revision 1.2  1999/03/31 09:25:24  meichel
  * Updated copyright header in module dcmdata
+ *
  *
  */

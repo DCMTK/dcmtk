@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -19,12 +19,11 @@
  *
  *  Author:  Andrew Hewett
  *
- *  Purpose: 
+ *  Purpose:
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:02 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdictbi.nul,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-02-13 12:42:37 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,7 +43,7 @@ DcmDataDictionary::loadBuiltinDictionary()
     **
     ** We don't want a builtin data dictionary or
     ** it is not yet created.
-    ** A complete builtin dictionary can be created 
+    ** A complete builtin dictionary can be created
     ** by mkdictbi (see mkdictbi.cc)
     */
 }
@@ -52,7 +51,10 @@ DcmDataDictionary::loadBuiltinDictionary()
 /*
  * CVS/RCS Log:
  * $Log: dcdictbi.nul,v $
- * Revision 1.5  2001-06-01 15:49:02  meichel
+ * Revision 1.6  2004-02-13 12:42:37  joergr
+ * Updated copyright header.
+ *
+ * Revision 1.5  2001/06/01 15:49:02  meichel
  * Updated copyright header
  *
  * Revision 1.4  2000/04/14 16:14:46  meichel
