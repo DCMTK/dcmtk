@@ -1,4 +1,38 @@
 
+**** Changes from 1999.01.15 (eichelberg)
+
+- added methods to DVPresentationState allowing to
+  access the image references in the presentation state.
+  Also added methods allowing to get the width and height
+  of the attached image
+  Affects: dcmpstat/include/dvpsri.h
+           dcmpstat/include/dvpsril.h
+           dcmpstat/include/dvpsrs.h
+           dcmpstat/include/dvpsrsl.h
+           dcmpstat/include/dvpstat.h
+           dcmpstat/libsrc/dvpsri.cc
+           dcmpstat/libsrc/dvpsril.cc
+           dcmpstat/libsrc/dvpsrs.cc
+           dcmpstat/libsrc/dvpsrsl.cc
+           dcmpstat/libsrc/dvpstat.cc
+  
+- added DVInterface method resetPresentationState() which
+  allows to reset a presentation state to the initial state
+  (after loading).
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+           
+- added configuration file facility (derived from dcmprint)
+  and a sample config file.
+  Added:   dcmpstat/include/dvpsconf.h
+           dcmpstat/libsrc/dvpsconf.cc
+           dcmpstat/tests/test.cfg
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+           dcmpstat/libsrc/Makefile.dep
+           dcmpstat/apps/dcmpstst.cc
+           dcmpstat/apps/dcmp2pgm.cc
+          
 **** Changes from 1999.01.14 (eichelberg)
 
 - added new method saveDICOMImage() to class DVInterface.

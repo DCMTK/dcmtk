@@ -25,8 +25,8 @@
  *    the image data "via" the presentation state.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-12-14 16:10:25 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 1999-01-15 17:36:03 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -404,7 +404,7 @@ int main(int argc, char *argv[])
 	return 1;
     }
     
-    if (fileformat) error = state.attachImage(fileformat); else error = state.attachImage(dataset);
+    if (fileformat) error = state.attachImage(fileformat,OFTrue); else error = state.attachImage(dataset, OFTrue);
     if (error != EC_Normal) 
     {
 	cerr << "Error: "  
@@ -445,7 +445,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmpstst.cc,v $
-** Revision 1.2  1998-12-14 16:10:25  meichel
+** Revision 1.3  1999-01-15 17:36:03  meichel
+** added configuration file facility (derived from dcmprint)
+**   and a sample config file.
+**
+** Revision 1.2  1998/12/14 16:10:25  meichel
 ** Implemented Presentation State interface for graphic layers,
 **   text and graphic annotations, presentation LUTs.
 **

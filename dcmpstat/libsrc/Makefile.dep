@@ -38,7 +38,8 @@ dviface.o: dviface.cc ../../config/include/osconfig.h \
  ../../dcmnet/include/dicom.h ../../dcmnet/include/dcompat.h \
  ../../dcmnet/include/cond.h ../../dcmnet/include/dimse.h \
  ../../dcmnet/include/lst.h ../../dcmnet/include/dul.h \
- ../../dcmnet/include/assoc.h
+ ../../dcmnet/include/assoc.h ../../ofstd/include/ofstring.h \
+ ../include/dvpsconf.h ../../ofstd/include/ofstack.h
 dvpsal.o: dvpsal.cc ../../config/include/osconfig.h \
  ../include/dvpsal.h ../../dcmdata/include/dctk.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
@@ -107,6 +108,9 @@ dvpsall.o: dvpsall.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dcvrfd.h ../../dcmdata/include/cmdlnarg.h \
  ../include/dvpstyp.h ../include/dvpsal.h ../include/dvpsovl.h \
  ../include/dvpsgll.h
+dvpsconf.o: dvpsconf.cc ../../config/include/osconfig.h \
+ ../include/dvpsconf.h ../../ofstd/include/ofstring.h \
+ ../../ofstd/include/oftypes.h ../../ofstd/include/ofstack.h
 dvpscu.o: dvpscu.cc ../../config/include/osconfig.h \
  ../include/dvpscu.h ../include/dvpstyp.h \
  ../../ofstd/include/ofstring.h ../../ofstd/include/oftypes.h \

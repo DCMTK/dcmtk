@@ -22,9 +22,9 @@
  *  Purpose: test ...
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-01-14 17:50:55 $
+ *  Update Date:      $Date: 1999-01-15 17:36:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmp2pgm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -418,7 +418,16 @@ void dumpPresentationState(DVInterface& dvi)
     if (ps.overlayInImageIsROI(oidx)) cout << "ROI"; else cout << "graphic";
     cout << endl;
   }
+  cout << endl;
   
+  size_t numberOfPeers = dvi.getNumberOfTargets();
+  cout << "Communication peers (defined in config file): " << numberOfPeers << endl;
+  for (size_t cpi=0; cpi<numberOfPeers; cpi++)
+  {
+    cout << "  Peer " << cpi+1 << ": ID='" << dvi.getTargetID(cpi) << "' description='" 
+         << dvi.getTargetDescription(cpi) << "'" << endl;
+  }
+  cout << endl;
   
 }
 
@@ -437,6 +446,7 @@ int main(int argc, char *argv[])
     const char *opt_imgName = NULL;                    /* image file name */
     const char *opt_pgmName = NULL;                    /* pgm file name */
     const char *opt_savName = NULL;                    /* save file name */
+    const char *opt_cfgName = NULL;                    /* config file name */
     
     SetDebugLevel(( 0 ));
     DicomImageClass::DebugLevel = DicomImageClass::DL_NoMessages;
@@ -455,6 +465,9 @@ int main(int argc, char *argv[])
                                              "save presentation state to file");
      cmd.addOption("--dicom",       "+D",    "save image as DICOM SC instead of PGM");
      cmd.addOption("--dump",        "-d",    "dump presentation state contents");
+     cmd.addOption("--config",      "-c", 1, "[f]ilename",
+                                             "read configuration file [f]");
+     
      
     switch (cmd.parseLine(argc, argv))    
     {
@@ -502,13 +515,24 @@ int main(int argc, char *argv[])
                     opt_dump_pstate = 1;
                 if (cmd.findOption("--dicom"))
                     opt_dicom_mode = 1;
+                if (cmd.findOption("--config"))
+                    checkValue(cmd, cmd.getValue(opt_cfgName));
             }
     }
 
     SetDebugLevel(((int)opt_debugMode));
     DicomImageClass::DebugLevel = opt_debugMode;
 
-    DVInterface dvi(".");
+    if (opt_cfgName)
+    {
+      FILE *cfgfile = fopen(opt_cfgName, "rb");
+      if (cfgfile) fclose(cfgfile); else
+      {
+        cerr << "error: can't open configuration file '" << opt_cfgName << "'" << endl;
+        return 10;
+      }
+    }
+    DVInterface dvi(".", opt_cfgName);
     E_Condition status = EC_Normal;
 
     if (opt_pstName == NULL)
@@ -575,7 +599,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmp2pgm.cc,v $
-** Revision 1.4  1999-01-14 17:50:55  meichel
+** Revision 1.5  1999-01-15 17:36:03  meichel
+** added configuration file facility (derived from dcmprint)
+**   and a sample config file.
+**
+** Revision 1.4  1999/01/14 17:50:55  meichel
 ** added new command line option --dicom to test application
 **   dcmp2pgm. This demonstrates DVInterface::saveDICOMImage().
 **

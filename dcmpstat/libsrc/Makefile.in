@@ -30,7 +30,8 @@ include $(configdir)/@common_makefile@
 objs =  dvpsal.o   dvpsgal.o  dvpsgr.o   dvpsovl.o  dvpsrs.o   dvpstx.o \
         dvpsall.o  dvpsgl.o   dvpsgrl.o  dvpsri.o   dvpsrsl.o  dvpstxl.o \
         dvpsga.o   dvpsgll.o  dvpsov.o   dvpsril.o  dvpstat.o  dviface.o \
-        dvpscu.o   dvpscul.o  dvpsvl.o   dvpsvll.o  dvpsvw.o   dvpsvwl.o
+        dvpscu.o   dvpscul.o  dvpsvl.o   dvpsvll.o  dvpsvw.o   dvpsvwl.o \
+        dvpsconf.o
 
 all: libdcmpstat.$(LIBEXT)
 
