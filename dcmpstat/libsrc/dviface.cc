@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: vorwerk $
- *  Update Date:      $Date: 1999-01-06 16:23:06 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 1999-01-07 16:40:04 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -170,14 +170,14 @@ E_Condition DVInterface::lockDatabase()
 		  );
   phandle = (DB_Private_Handle *) handle ; 
 
- DB_lock(phandle, OFTrue);
+ if (DB_lock(phandle, OFTrue)==DB_ERROR) return EC_IllegalCall;
  return EC_Normal;
 }
 
 
 E_Condition DVInterface::unlockDatabase()
 {
- DB_unlock(phandle);
+ if (DB_unlock(phandle)==DB_ERROR) return EC_IllegalCall;
  DB_destroyHandle(&handle); 
  return EC_Normal;
 }
@@ -274,6 +274,15 @@ DVInterface::getNameOfPhysiciansReadingStudy(){
   getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec, selectedStudy);
   return idxRec.NameOfPhysiciansReadingStudy;
 }
+
+
+const char *DVInterface::getSeriesDescription()
+{ 
+  if (selectedSeries==NULL) return NULL; 
+  getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec,selectedSeries);
+  return idxRec.SeriesDescription;
+}
+
 
 const char *
 DVInterface::getSeriesNumber(){
@@ -687,8 +696,8 @@ E_Condition DVInterface::saveFileFormat(const char *filename,
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.6  1999-01-06 16:23:06  vorwerk
- *  isPresentationStateSeries() searching now for PR instances in a series.
+ *  Revision 1.7  1999-01-07 16:40:04  vorwerk
+ *  getSeriesDescription implemented
  *
  *  Revision 1.5  1999/01/04 13:28:11  vorwerk
  *  line inserted
