@@ -104,8 +104,8 @@ event options:
                                  one study, rename output files according to
                                  a certain pattern
   -tos    --eostudy-timeout      [t]imeout: integer (only w/ -ss, -xcs or -rns)
-                                 specifies a timeout value for end-of-study
-                                 determination
+                                 specifies a timeout of t seconds for
+                                 end-of-study determination
 transport layer security (TLS) options:
   transport protocol stack options:
     -tls  --disable-tls          use normal TCP/IP connection (default)
