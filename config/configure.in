@@ -68,8 +68,17 @@ dnl Checks for libraries.
 AC_LANG_CPLUSPLUS
 AC_CHECK_GXXLIB
 AC_CHECK_LIB(iostream, main)
+dnl Some C++ compilers have problems with recursive main calls
+dnl (e.g. Sun C++ 4.2). In this case we must test another function
+dnl to link.
 AC_CHECK_LIB(nsl, main)
+if test $ac_cv_lib_nsl_main = no ; then
+AC_CHECK_LIB(nsl, gethostbyname)
+fi
 AC_CHECK_LIB(socket, main)
+if test $ac_cv_lib_socket_main = no ; then
+AC_CHECK_LIB(socket, socket)
+fi
 
 dnl Checks for header files.
 AC_HEADER_STDC
