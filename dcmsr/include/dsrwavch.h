@@ -23,8 +23,8 @@
  *    classes: DSRWaveformChannelItem, DSRWaveformChannelList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-03 10:16:44 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2003-06-04 12:33:13 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -69,6 +69,33 @@ class DSRWaveformChannelItem
     inline OFBool operator==(const DSRWaveformChannelItem &item) const
     {
         return (item.MultiplexGroupNumber == MultiplexGroupNumber) && (item.ChannelNumber == ChannelNumber);
+    }
+
+    /** comparison operator
+     ** @param  item  item with which the (m,c) pair should be compared
+     ** @return true if not equal, false if equal
+     */
+    inline OFBool operator!=(const DSRWaveformChannelItem &item) const
+    {
+        return (item.MultiplexGroupNumber != MultiplexGroupNumber) || (item.ChannelNumber != ChannelNumber);
+    }
+
+    /** comparison operator
+     ** @param  item  item with which the (m,c) pair should be compared
+     ** @return true if smaller. ChannelNumber takes precedence over MultiplexGroupNumber.
+     */
+    inline OFBool operator<(const DSRWaveformChannelItem &item) const
+    {
+        return (ChannelNumber < item.ChannelNumber) || ((ChannelNumber == item.ChannelNumber) && (MultiplexGroupNumber < item.MultiplexGroupNumber));
+    }
+
+    /** comparison operator
+     ** @param  item  item with which the (m,c) pair should be compared
+     ** @return true if greater. ChannelNumber takes precedence over MultiplexGroupNumber.
+     */
+    inline OFBool operator>(const DSRWaveformChannelItem &item) const
+    {
+        return (ChannelNumber > item.ChannelNumber) || ((ChannelNumber == item.ChannelNumber) && (MultiplexGroupNumber > item.MultiplexGroupNumber));
     }
 
     /* copy constructor and assignment operator are defined implicitly */
@@ -169,7 +196,10 @@ class DSRWaveformChannelList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavch.h,v $
- *  Revision 1.9  2003-06-03 10:16:44  meichel
+ *  Revision 1.10  2003-06-04 12:33:13  meichel
+ *  Added comparison operators, needed by MSVC5 with STL
+ *
+ *  Revision 1.9  2003/06/03 10:16:44  meichel
  *  Renamed local variables to avoid name clashes with STL
  *
  *  Revision 1.8  2001/09/26 13:04:15  meichel

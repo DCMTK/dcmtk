@@ -23,8 +23,8 @@
  *    classes: DSRGraphicDataItem, DSRGraphicDataList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-03 10:16:44 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2003-06-04 12:33:13 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -70,6 +70,34 @@ class DSRGraphicDataItem
     {
         return (item.Column == Column) && (item.Row == Row);
     }
+
+    /** comparison operator
+     ** @param  item  item with which the (column,row) pair should be compared
+     ** @return true if not equal, false if equal
+     */
+    inline OFBool operator!=(const DSRGraphicDataItem &item) const
+    {
+        return (item.Column != Column) || (item.Row != Row);
+    }
+
+    /** comparison operator
+     ** @param  item  item with which the (column,row) pair should be compared
+     ** @return true if smaller. Row takes precedence over column.
+     */
+    inline OFBool operator<(const DSRGraphicDataItem &item) const
+    {
+        return (Row < item.Row) || ((Row == item.Row) && (Column < item.Column));
+    }
+
+    /** comparison operator
+     ** @param  item  item with which the (column,row) pair should be compared
+     ** @return true if greater. Row takes precedence over column.
+     */
+    inline OFBool operator>(const DSRGraphicDataItem &item) const
+    {
+        return (Row > item.Row) || ((Row == item.Row) && (Column > item.Column));
+    }
+
 
     /* copy constructor and assignment operator are defined implicitly */
      
@@ -167,7 +195,10 @@ class DSRGraphicDataList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscogr.h,v $
- *  Revision 1.8  2003-06-03 10:16:44  meichel
+ *  Revision 1.9  2003-06-04 12:33:13  meichel
+ *  Added comparison operators, needed by MSVC5 with STL
+ *
+ *  Revision 1.8  2003/06/03 10:16:44  meichel
  *  Renamed local variables to avoid name clashes with STL
  *
  *  Revision 1.7  2001/09/26 13:04:10  meichel
