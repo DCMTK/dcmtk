@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-26 18:38:45 $
+** Update Date:		$Date: 1996-04-22 10:00:54 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -290,6 +290,7 @@ ASC_initializeNetwork(T_ASC_NetworkRole role,
 	break;
     case NET_ACCEPTORREQUESTOR:
 	mode = DUL_AEBOTH;
+	break;
     default:
 	mode = "unknown";
 	break;
@@ -548,10 +549,16 @@ ASC_getRejectParameters(T_ASC_Parameters * params,
   * the supplied structure.  Youmust provide storage to copy into. 
   */
 {
+    int reason;
     if (rejectParameters) {
-	rejectParameters->result = (T_ASC_RejectParametersResult) params->DULparams.result;
-	rejectParameters->source = (T_ASC_RejectParametersSource) params->DULparams.resultSource;
-	rejectParameters->reason = (T_ASC_RejectParametersReason) params->DULparams.diagnostic;
+	rejectParameters->result = 
+	    (T_ASC_RejectParametersResult) params->DULparams.result;
+	rejectParameters->source = 
+	    (T_ASC_RejectParametersSource) params->DULparams.resultSource;
+
+	reason = params->DULparams.diagnostic | 
+	    ((params->DULparams.resultSource & 0xff) << 8);
+	rejectParameters->reason = (T_ASC_RejectParametersReason) reason;
     }
     return ASC_NORMAL;
 }
@@ -1779,8 +1786,11 @@ ASC_dropAssociation(T_ASC_Association * association)
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
-** Revision 1.1  1996-03-26 18:38:45  hewett
-** Initial revision
+** Revision 1.2  1996-04-22 10:00:54  hewett
+** Corrected incorrect translation of reject reason from DUL to ASC.
+**
+** Revision 1.1.1.1  1996/03/26 18:38:45  hewett
+** Initial Release.
 **
 **
 */
