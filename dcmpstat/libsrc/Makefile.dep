@@ -57,7 +57,7 @@ dviface.o: dviface.cc ../../config/include/osconfig.h \
  ../../dcmsr/include/dsrdoctn.h ../../dcmsr/include/dsrcodvl.h \
  ../../dcmsr/include/dsrcitem.h ../../dcmsr/include/dsrnumvl.h \
  ../../dcmsr/include/dsrscovl.h ../../dcmsr/include/dsrscogr.h \
- ../../dcmsr/include/dsrtlist.h ../../dcmsr/include/dsrrefvl.h \
+ ../../dcmsr/include/dsrtlist.h ../../dcmsr/include/dsrcomvl.h \
  ../../dcmsr/include/dsrimgvl.h ../../dcmsr/include/dsrimgfr.h \
  ../../dcmsr/include/dsrwavvl.h ../../dcmsr/include/dsrwavch.h \
  ../../dcmimgle/include/dcmimage.h ../../dcmimgle/include/dimoimg.h \
