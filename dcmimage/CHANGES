@@ -1,3 +1,20 @@
+**** Changes from 1999.03.03 (riesmeier)
+
+- Added support to specify ambient light value (re: Barten transformation).
+  Affects: dcmimgle/apps/dconvlum.cc
+           dcmimgle/include/dibarlut.h
+           dcmimgle/include/didispfn.h
+           dcmimgle/libsrc/dibarlut.cc
+           dcmimgle/libsrc/didispfn.cc
+
+- Changed comments.
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/libsrc/dimoimg.cc
+
+- Added method to invert lookup table data (used for presentation state LUTs).
+  Affects: dcmimgle/include/dibaslut.h
+           dcmimgle/libsrc/dibaslut.cc
+
 **** Changes from 1999.03.02 (riesmeier)
 
 - Corrected bug: when determine minimum and maximum pixel value (external)
