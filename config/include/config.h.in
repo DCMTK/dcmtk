@@ -82,6 +82,9 @@
 /* Define if you have the malloc_debug function.  */
 #undef HAVE_MALLOC_DEBUG
 
+/* Define if you have the memcpy function.  */
+#undef HAVE_MEMCPY
+
 /* Define if you have the mktemp function.  */
 #undef HAVE_MKTEMP
 
@@ -142,6 +145,5 @@
 
 /* Compile in the debug code */
 /* #define DEBUG 1 */
-
 
 #endif
