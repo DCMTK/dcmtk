@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-11 13:02:52 $
+ *  Update Date:      $Date: 2003-06-11 15:47:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.54 $
+ *  CVS/RCS Revision: $Revision: 1.55 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -221,7 +221,7 @@ main(int argc, char *argv[])
       cmd.addOption("--call",                   "-aec",   1, "aetitle: string", opt2.c_str());
     cmd.addSubGroup("association negotiation profile from configuration file:");
       cmd.addOption("--config-file",            "-xf",    2, "[f]ilename, [p]rofile: string",
-                                                             "use profile p from config file p");
+                                                             "use profile p from config file f");
     cmd.addSubGroup("proposed transmission transfer syntaxes (not with --config-file):");
 
       cmd.addOption("--propose-uncompr",        "-x=",       "propose all uncompressed TS, explicit VR\nwith local byte ordering first (default)");
@@ -1462,7 +1462,10 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.54  2003-06-11 13:02:52  meichel
+** Revision 1.55  2003-06-11 15:47:10  meichel
+** Extended documentation, fixed typos
+**
+** Revision 1.54  2003/06/11 13:02:52  meichel
 ** Added support for configuration file based association negotiation
 **   profiles
 **

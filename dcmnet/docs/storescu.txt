@@ -41,7 +41,7 @@ network options:
                                set called AE title of peer (default: ANY-SCP)
   association negotiation profile from configuration file:
     -xf   --config-file        [f]ilename, [p]rofile: string
-                               use profile p from config file p
+                               use profile p from config file f
   proposed transmission transfer syntaxes (not with --config-file):
     -x=   --propose-uncompr    propose all uncompressed TS, explicit VR
                                with local byte ordering first (default)
@@ -202,6 +202,15 @@ behaviour can be changed with the --propose, --combine and --required options,
 see above.
 
 The storescu application does not support extended negotiation.
+
+
+ASSOCIATION NEGOTIATION PROFILES AND CONFIGURATION FILES
+
+storescu supports a flexible mechanism for specifying the DICOM network 
+association negotiation behaviour, based on so-called "association 
+negotiation profiles" which may be read from a configuration file.
+The format and semantics of this configuration file are documented in
+"asconfig.txt".
 
 
 ENVIRONMENT
