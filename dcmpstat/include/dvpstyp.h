@@ -25,8 +25,8 @@
  *           DVPSShutterType
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-05 16:22:52 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2000-07-07 13:38:45 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -133,25 +133,6 @@ enum DVPSPresentationLUTType
    */
   DVPSP_lin_od 
   
-};
-
-/** describes a type of presentation LUT that is currently
- *  being used or set in a stored print object
- */
-enum DVPSPrintPresentationLUTType
-{
-  /** Presentation LUT Shape with value 'IDENTITY'
-   */
-  DVPSQ_identity,
-  /** Presentation LUT look up table
-   */
-  DVPSQ_table,
-  /** Presentation LUT SOP Class not used
-   */
-  DVPSQ_none,
-  /** Presentation LUT Shape with value 'IDENTITY'
-   */
-  DVPSQ_lin_od 
 };
 
 /** some Print SCPs which support Presentation LUTs require that the number
@@ -496,7 +477,10 @@ enum DVPSImageDepth
 
 /*
  *  $Log: dvpstyp.h,v $
- *  Revision 1.11  2000-06-05 16:22:52  joergr
+ *  Revision 1.12  2000-07-07 13:38:45  joergr
+ *  Removed unused enum type.
+ *
+ *  Revision 1.11  2000/06/05 16:22:52  joergr
  *  Implemented log message methods.
  *
  *  Revision 1.10  2000/05/31 12:56:40  meichel
