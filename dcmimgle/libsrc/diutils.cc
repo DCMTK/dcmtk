@@ -22,9 +22,9 @@
  *  Purpose: Utilities (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 16:23:32 $
+ *  Update Date:      $Date: 1999-02-03 17:44:33 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diutils.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -61,8 +61,8 @@ const int DicomImageClass::DL_DebugMessages  = 4;
  *  function definitions  *
  *------------------------*/
 
-EP_Representation determineRepresentation(double minvalue,
-                                          double maxvalue)
+EP_Representation DicomImageClass::determineRepresentation(double minvalue,
+                                                           double maxvalue)
 {
     if (minvalue > maxvalue)                        /* assertion: min < max ! */
     {
@@ -78,7 +78,7 @@ EP_Representation determineRepresentation(double minvalue,
             return EPR_Sint16;
         if (-minvalue > maxval(MAX_BITS - 1, 0))
         {
-            if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+            if (DebugLevel >= DL_Warnings)
             {
                 cerr << "WARNING: minimum pixel value (" << minvalue << ") exceeds signed " << MAX_BITS << " bit ";
                 cerr << "representation after modality transformation !" << endl;
@@ -86,7 +86,7 @@ EP_Representation determineRepresentation(double minvalue,
         }
         if (maxvalue > maxval(MAX_BITS - 1))
         {
-            if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+            if (DebugLevel >= DL_Warnings)
             {
                 cerr << "WARNING: maximum pixel value (" << maxvalue << ") exceeds signed " << MAX_BITS << " bit ";
                 cerr << "representation after modality transformation !" << endl;
@@ -100,7 +100,7 @@ EP_Representation determineRepresentation(double minvalue,
         return EPR_Uint16;
     if (maxvalue > maxval(MAX_BITS))
     {
-        if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+        if (DebugLevel >= DL_Warnings)
         {
             cerr << "WARNING: maximum pixel value (" << maxvalue << ") exceeds unsigned " << MAX_BITS << " bit ";
             cerr << "representation after modality transformation !" << endl;
@@ -111,16 +111,20 @@ EP_Representation determineRepresentation(double minvalue,
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: diutils.cc,v $
-** Revision 1.1  1998-11-27 16:23:32  joergr
-** Added copyright message.
-** Introduced global debug level for dcmimage module to control error output.
-** Introduced configuration flags to adjust behaviour in different cases.
-**
-** Revision 1.4  1998/05/11 14:52:37  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: diutils.cc,v $
+ * Revision 1.2  1999-02-03 17:44:33  joergr
+ * Moved global functions maxval() and determineRepresentation() to class
+ * DicomImageClass (as static methods).
+ *
+ * Revision 1.1  1998/11/27 16:23:32  joergr
+ * Added copyright message.
+ * Introduced global debug level for dcmimage module to control error output.
+ * Introduced configuration flags to adjust behaviour in different cases.
+ *
+ * Revision 1.4  1998/05/11 14:52:37  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */
