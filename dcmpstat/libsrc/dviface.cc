@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-11-13 15:50:45 $
- *  CVS/RCS Revision: $Revision: 1.117 $
+ *  Update Date:      $Date: 2000-11-14 13:25:59 $
+ *  CVS/RCS Revision: $Revision: 1.118 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2412,7 +2412,7 @@ E_Condition DVInterface::startQueryRetrieveServer()
     return EC_Normal;
   } else {
     // we are the child process
-    if (execl(server_application, server_application, "-c", config_filename.c_str(), "--allow-shutdown", "-v", "-d", NULL) < 0)
+    if (execl(server_application, server_application, "-c", config_filename.c_str(), "--allow-shutdown", NULL) < 0)
     {
       if (verboseMode)
       {
@@ -4128,7 +4128,11 @@ OFBool DVInterface::verifyUserPassword(const char *userID, const char *passwd)
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.117  2000-11-13 15:50:45  meichel
+ *  Revision 1.118  2000-11-14 13:25:59  meichel
+ *  Imagectn was always invoked in debug mode from class DVInterface
+ *    on Unix platforms. Fixed.
+ *
+ *  Revision 1.117  2000/11/13 15:50:45  meichel
  *  Added dcmpstat support methods for creating image references
  *    in SR documents.
  *
