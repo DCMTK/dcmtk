@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-09-28 13:15:48 $
+ *  Update Date:      $Date: 2001-09-28 13:16:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1203,7 +1203,7 @@ int DiMonoImage::setHardcopyParameters(const unsigned int min,
         }
         if ((result == 1) && (PresLutShape == ESP_LinOD) && (PresLutData != NULL))
         {
-            PresLutData->removeReference();       // look-up table no longer valid     
+            PresLutData->removeReference();       // look-up table no longer valid
             PresLutData = NULL;
         }
     }
@@ -1429,7 +1429,7 @@ void *DiMonoImage::getData(void *buffer,
                 WindowWidth = -1;                           // negative width means no window, saves additional parameter ;)
             Uint32 low;
             Uint32 high;
-            if ((PresLutData == NULL) && 
+            if ((PresLutData == NULL) &&
                ((PresLutShape == ESP_Inverse) || (negative && (PresLutShape == ESP_Default))))
             {
                 low = DicomImageClass::maxval(bits);        // inverse/negative: white to black
@@ -1763,7 +1763,7 @@ DiImage *DiMonoImage::createOutputImage(const unsigned long frame,
 int DiMonoImage::createLinODPresentationLut(const unsigned long count, const int bits)
 {
     if ((PresLutData == NULL) && (MinDensity < MaxDensity) &&
-        (count > 1) && (count <= MAX_TABLE_ENTRY_COUNT) && 
+        (count > 1) && (count <= MAX_TABLE_ENTRY_COUNT) &&
         (bits > 0) && (bits <= MAX_TABLE_ENTRY_SIZE))
     {
         Uint16 *data = new Uint16[count];
@@ -1878,7 +1878,12 @@ int DiMonoImage::writeRawPPM(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.40  2001-09-28 13:15:48  joergr
+ * Revision 1.41  2001-09-28 13:16:59  joergr
+ * Added method to extract embedded overlay planes from pixel data and store
+ * them in group (6xxx,3000) format.
+ * Added support for the optional PresentationLUTShape (e.g. in DX images).
+ *
+ * Revision 1.40  2001/09/28 13:15:48  joergr
  * Added routines to get the currently active Polarity and PresentationLUTShape.
  * Added method setRoiWindow() which automatically calculates a min-max VOI
  * window for a specified rectangular region of the image.
