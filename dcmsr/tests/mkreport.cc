@@ -22,8 +22,8 @@
  *  Purpose: Create sample structured reports using the dcmsr API
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-03-28 09:05:44 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2001-06-13 10:09:55 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -530,6 +530,7 @@ int main(int argc, char *argv[])
                     doc->createNewDocument(DSRTypes::DT_BasicTextSR);
                     doc->setStudyDescription("OFFIS Structured Reporting Samples");
                     doc->setSeriesDescription("Text Report with different sections");
+                    doc->setSpecificCharacterSetType(DSRTypes::CS_Latin1);
 
                     doc->setPatientsName("Silverman^Elaine J.");
                     doc->setPatientsBirthDate("19811010");
@@ -1127,7 +1128,12 @@ int main(int argc, char *argv[])
 /*
  *  CVS/RCS Log:
  *  $Log: mkreport.cc,v $
- *  Revision 1.8  2001-03-28 09:05:44  joergr
+ *  Revision 1.9  2001-06-13 10:09:55  joergr
+ *  Added SpecificCharacterSet attribute to report "05".
+ *  Thanks to Merlijn van Minderhout <Merlijn.van.Minderhout@philips.com>
+ *  for the validation report of our SR sample documents.
+ *
+ *  Revision 1.8  2001/03/28 09:05:44  joergr
  *  Added new sample report (valid structured report with cycle/loop).
  *
  *
