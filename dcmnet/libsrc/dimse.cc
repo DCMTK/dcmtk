@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1999-04-19 08:35:23 $
+** Update Date:		$Date: 2000-01-31 17:14:23 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimse.cc,v $
-** CVS/RCS Revision:	$Revision: 1.17 $
+** CVS/RCS Revision:	$Revision: 1.18 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -125,6 +125,13 @@ static int debug = 0;
 E_GrpLenEncoding  g_dimse_send_groupLength_encoding = EGL_recalcGL;
 E_EncodingType    g_dimse_send_sequenceType_encoding = EET_ExplicitLength;
 
+/*
+ * These globals control the options for saving all DIMSE messages
+ */
+
+OFBool g_dimse_save_dimse_data = OFFalse;
+static unsigned long g_dimse_commandCounter = 0;
+static unsigned long g_dimse_dataCounter = 0;
 
 /*
 ** Private Functions Prototypes
@@ -134,6 +141,37 @@ E_EncodingType    g_dimse_send_sequenceType_encoding = EET_ExplicitLength;
 ** Private Functions Bodies
 */
 
+static void saveDimseFragment(DcmDataset *dset, OFBool isCommand, OFBool isReceive)
+{
+  if (isCommand) 
+  {
+    g_dimse_commandCounter++;
+    g_dimse_dataCounter = 0;
+  } else g_dimse_dataCounter++;  
+  if (dset==NULL) return;
+  const char *transmission = (isReceive ? "rcv" : "snd");
+  char filename[2048];
+  
+  if (isCommand)
+  {
+    sprintf(filename, "dimse-cmd-%s-%04lu.dcm", transmission, g_dimse_commandCounter);
+  } else {
+    if (g_dimse_dataCounter < 2)
+    {
+      sprintf(filename, "dimse-dat-%s-%04lu.dcm", transmission, g_dimse_commandCounter);
+    } else {
+      sprintf(filename, "dimse-dat-%s-%04lu-%02lu.dcm", transmission, g_dimse_commandCounter, g_dimse_dataCounter);
+    }
+  }
+  DcmFileStream stream(filename, DCM_WriteMode);
+  if (!stream.Fail())
+  {
+    dset->transferInit();
+    dset->write(stream, EXS_LittleEndianImplicit, EET_ExplicitLength, EGL_recalcGL, EPD_withoutPadding);
+    dset->transferEnd();
+  }
+  return;    
+}
 
 static OFBool
 isDataDictPresent()
@@ -711,6 +749,7 @@ DIMSE_sendMessage(T_ASC_Association *assoc,
 
     if (SUCCESS(cond))
     {
+      if (g_dimse_save_dimse_data) saveDimseFragment(cmdObj, OFTrue, OFFalse);
       if (debug)
       {
 	    printf("DIMSE Command To Send:\n");
@@ -726,7 +765,8 @@ DIMSE_sendMessage(T_ASC_Association *assoc,
 
     if (SUCCESS(cond) && DIMSE_isDataSetPresent(msg) &&(dataObject))
     {
-        cond = sendDcmDataset(assoc, dataObject, presID, xferSyntax,
+      if (g_dimse_save_dimse_data) saveDimseFragment(dataObject, OFFalse, OFFalse);
+      cond = sendDcmDataset(assoc, dataObject, presID, xferSyntax,
           DUL_DATASETPDV, callback, callbackContext);
     }
 
@@ -928,6 +968,8 @@ DIMSE_receiveCommand(T_ASC_Association * assoc,
 	COND_PushCondition(cond, "DIMSE: Command PDV Expected");
 	return DIMSE_RECEIVEFAILED;
     }
+
+    if (g_dimse_save_dimse_data) saveDimseFragment(cmdSet, OFTrue, OFTrue);
 
     if (debug) {
 	printf("DIMSE Command Received:\n");
@@ -1314,6 +1356,8 @@ DIMSE_receiveDataSetInMemory(T_ASC_Association * assoc,
 	return COND_PushCondition(cond, DIMSE_Message(cond));
     }
 
+    if (g_dimse_save_dimse_data) saveDimseFragment(dset, OFFalse, OFTrue);
+
     /* set the Presentation Context ID we received */
     *presID = pid;
 
@@ -1350,7 +1394,12 @@ void DIMSE_warning(T_ASC_Association *assoc,
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
-** Revision 1.17  1999-04-19 08:35:23  meichel
+** Revision 1.18  2000-01-31 17:14:23  meichel
+** Introduced new flag g_dimse_save_dimse_data. If enabled, all DIMSE messages
+** and data sets sent or received are stored in files.
+** This facilitates debugging of DIMSE problems.
+**
+** Revision 1.17  1999/04/19 08:35:23  meichel
 ** Added basic support for sending/receiving in encapsulated transfer syntaxes.
 **
 ** Revision 1.16  1998/10/20 08:20:23  meichel
