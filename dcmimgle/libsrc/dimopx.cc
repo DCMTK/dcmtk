@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromePixel (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 16:16:45 $
+ *  Update Date:      $Date: 1998-12-22 13:42:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimopx.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,7 +50,8 @@ DiMonoPixel::DiMonoPixel(const unsigned long count)
 }
 
 
-DiMonoPixel::DiMonoPixel(const DiInputPixel *pixel, DiMonoModality *modality)
+DiMonoPixel::DiMonoPixel(const DiInputPixel *pixel,
+                         DiMonoModality *modality)
   : DiPixel(0),
     Modality(modality)
 {
@@ -66,7 +67,8 @@ DiMonoPixel::DiMonoPixel(const DiPixel *pixel)
 }
 
 
-DiMonoPixel::DiMonoPixel(const DiMonoPixel *pixel, const unsigned long count)
+DiMonoPixel::DiMonoPixel(const DiMonoPixel *pixel,
+                         const unsigned long count)
   : DiPixel(count),
     Modality(pixel->Modality)
 {
@@ -87,15 +89,18 @@ DiMonoPixel::~DiMonoPixel()
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: dimopx.cc,v $
-** Revision 1.1  1998-11-27 16:16:45  joergr
-** Added copyright message.
-** Introduced new pixel base class.
-**
-** Revision 1.3  1998/05/11 14:52:34  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: dimopx.cc,v $
+ * Revision 1.2  1998-12-22 13:42:58  joergr
+ * Corrected some typos and formatting.
+ *
+ * Revision 1.1  1998/11/27 16:16:45  joergr
+ * Added copyright message.
+ * Introduced new pixel base class.
+ *
+ * Revision 1.3  1998/05/11 14:52:34  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */
