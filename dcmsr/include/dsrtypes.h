@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRTypes
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-09-09 14:01:30 $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-11-22 16:35:38 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -904,6 +904,16 @@ class DSRTypes
                                                        const E_ValueType valueType);
 
 
+    /** check if this element contains non-ASCII characters.
+     *  @return true if element contains non-ASCII characters, false otherwise
+     */
+    static OFBool elementContainsExtendedCharacters(DcmElement &elem);
+
+    /** check if this string contains non-ASCII characters.
+     *  @return true if element contains non-ASCII characters, false otherwise
+     */
+    static OFBool stringContainsExtendedCharacters(const OFString &s);
+
   // --- DICOM data structure access functions ---
 
     /** add given element to the dataset.
@@ -1203,7 +1213,11 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
- *  Revision 1.42  2004-09-09 14:01:30  joergr
+ *  Revision 1.43  2004-11-22 16:35:38  meichel
+ *  Added helper methods to check strings and DICOM elements for presence of
+ *    extended (non-ASCII) characters
+ *
+ *  Revision 1.42  2004/09/09 14:01:30  joergr
  *  Added flags to control the way the template identification is encoded in
  *  writeXML() and expected in readXML().
  *

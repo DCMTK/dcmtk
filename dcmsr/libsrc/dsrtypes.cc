@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRTypes
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-09-09 14:02:02 $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-11-22 16:35:40 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1456,11 +1456,64 @@ OFCondition DSRTypes::appendStream(ostream &mainStream,
     return result;
 }
 
+static OFBool checkForNonASCIICharacters(DcmElement& elem)
+{
+  char *c = NULL;
+  if (elem.getString(c).good() && c)
+  {
+    while (*c)
+    {
+      if (OFstatic_cast(unsigned char, *c) > 127) return OFTrue;
+      ++c;
+    }
+  }
+  return OFFalse;
+}
+
+OFBool DSRTypes::stringContainsExtendedCharacters(const OFString &s)
+{
+  const char *c = s.c_str();
+  if (c)
+  {
+    while (*c)
+    {
+      if (OFstatic_cast(unsigned char, *c) > 127) return OFTrue;
+      ++c;
+    }
+  }
+  return OFFalse;  
+}
+
+OFBool DSRTypes::elementContainsExtendedCharacters(DcmElement &elem)
+{
+  if (elem.isaString())
+  {
+    return checkForNonASCIICharacters(elem);
+  }
+  else if (! elem.isLeaf()) // element is a sequence
+  {  
+    DcmStack stack;
+    while (elem.nextObject(stack, OFTrue).good())
+    {
+      if (stack.top()->isaString())
+      {
+        if (checkForNonASCIICharacters(* OFstatic_cast(DcmElement *, stack.top()))) 
+          return OFTrue;
+      }
+    }  
+    return OFFalse;
+  }
+  return OFFalse;
+}
 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
- *  Revision 1.44  2004-09-09 14:02:02  joergr
+ *  Revision 1.45  2004-11-22 16:35:40  meichel
+ *  Added helper methods to check strings and DICOM elements for presence of
+ *    extended (non-ASCII) characters
+ *
+ *  Revision 1.44  2004/09/09 14:02:02  joergr
  *  Added flags to control the way the template identification is encoded in
  *  writeXML() and expected in readXML().
  *
