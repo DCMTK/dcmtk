@@ -21,10 +21,10 @@
  *
  *  Purpose: RLE compressor
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-07-08 07:02:50 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-07-18 12:16:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcrleenc.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -175,7 +175,7 @@ public:
     }
   }
 
-  /** this method adds a block of bytes to the byte stream to be 
+  /** this method adds a block of bytes to the byte stream to be
    *  compressed with the RLE compressor.
    *  @param buf buffer to be added
    *  @param bufcount number of bytes in buffer
@@ -358,7 +358,7 @@ private:
         if (! currentBlock_) // out of memory
         {
           fail_ = 1;
-          return;
+          break;    // exit while loop
         }
       }
       currentBlock_[offset_++] = RLE_buff_[i++];
@@ -379,7 +379,7 @@ private:
    *  True if padding is required, false otherwise
    */
   int pad_;
-  
+
   /** this member points to a block of size DcmRLEEncoder_BLOCKSIZE
    *  (unless fail_ is true). This is the current block of data to
    *  which the RLE stream is written
@@ -425,7 +425,11 @@ private:
 /*
  * CVS/RCS Log
  * $Log: dcrleenc.h,v $
- * Revision 1.3  2002-07-08 07:02:50  meichel
+ * Revision 1.4  2002-07-18 12:16:52  joergr
+ * Replaced return statement by break in a while loop of an inline function (not
+ * supported by Sun CC 2.0.1).
+ *
+ * Revision 1.3  2002/07/08 07:02:50  meichel
  * RLE codec now includes <string.h>, needed for memcpy on Win32
  *
  * Revision 1.2  2002/06/27 15:15:42  meichel
