@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2003, OFFIS
+ *  Copyright (C) 1996-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomColorImage (Header)
  *
  *  Last Update:         $Author: joergr $
- *  Update Date:         $Date: 2003-12-17 18:10:56 $
- *  CVS/RCS Revision:    $Revision: 1.19 $
+ *  Update Date:         $Date: 2004-02-06 11:18:18 $
+ *  CVS/RCS Revision:    $Revision: 1.20 $
  *  Status:              $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -105,9 +105,9 @@ class DiColorImage
      *
      ** @return untyped pointer to the pixel data if successful, NULL otherwise
      */
-    void *getOutputData(const unsigned long frame,
-                        const int bits,
-                        const int planar = 0);
+    const void *getOutputData(const unsigned long frame,
+                              const int bits,
+                              const int planar = 0);
 
     /** get pixel data with specified format.
      *  (memory is handled externally)
@@ -136,7 +136,7 @@ class DiColorImage
      *
      ** @return untyped pointer to the pixel data if successful, NULL otherwise
      */
-    void *getOutputPlane(const int plane) const;
+    const void *getOutputPlane(const int plane) const;
 
     /** delete internally handled output memory buffer
      *  Save memory if data is no longer needed.
@@ -406,11 +406,11 @@ class DiColorImage
      *
      ** @return untyped pointer to the pixel data if successful, NULL otherwise
      */
-    void *getData(void *buffer,
-                  const unsigned long size,
-                  const unsigned long frame,
-                  const int bits,
-                  const int planar);
+    const void *getData(void *buffer,
+                        const unsigned long size,
+                        const unsigned long frame,
+                        const int bits,
+                        const int planar);
 
     /** update Image Pixel Module attributes in the given dataset.
      *  Removes color palette lookup tables.  Used in writeXXXToDataset() routines.
@@ -445,7 +445,10 @@ class DiColorImage
  *
  * CVS/RCS Log:
  * $Log: dicoimg.h,v $
- * Revision 1.19  2003-12-17 18:10:56  joergr
+ * Revision 1.20  2004-02-06 11:18:18  joergr
+ * Distinguish more clearly between const and non-const access to pixel data.
+ *
+ * Revision 1.19  2003/12/17 18:10:56  joergr
  * Removed leading underscore characters from preprocessor symbols (reserved
  * symbols).
  *

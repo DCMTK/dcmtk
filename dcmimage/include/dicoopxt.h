@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2003, OFFIS
+ *  Copyright (C) 1996-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomColorOutputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-23 16:06:21 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2004-02-06 11:18:18 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -84,7 +84,7 @@ class DiColorOutputPixelTemplate
         if ((pixel != NULL) && (Count > 0) && (FrameSize >= Count))
         {
             Data = OFstatic_cast(T2 *, buffer);
-            convert(OFstatic_cast(const T1 **, pixel->getData()), frame * FrameSize, bits1, bits2, planar, inverse);
+            convert(OFstatic_cast(const T1 **, OFconst_cast(void *, pixel->getData())), frame * FrameSize, bits1, bits2, planar, inverse);
         }
     }
 
@@ -140,9 +140,18 @@ class DiColorOutputPixelTemplate
 
     /** get pointer to output pixel data
      *
-     ** @return pointer to pixel data if sucessful, NULL otherwise
+     ** @return pointer to pixel data
      */
-    inline void *getData() const
+    inline const void *getData() const
+    {
+        return OFstatic_cast(const void *, Data);
+    }
+
+    /** get pointer to output pixel data
+     *
+     ** @return pointer to pixel data
+     */
+    virtual void *getDataPtr()
     {
         return OFstatic_cast(void *, Data);
     }
@@ -153,7 +162,7 @@ class DiColorOutputPixelTemplate
      *
      ** @return pointer to beginning of plane if sucessful, NULL otherwise
      */
-    inline void *getPlane(const int plane) const
+    inline const void *getPlane(const int plane) const
     {
         void *result = NULL;
         if (Data != NULL)
@@ -422,7 +431,10 @@ class DiColorOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dicoopxt.h,v $
- * Revision 1.22  2003-12-23 16:06:21  joergr
+ * Revision 1.23  2004-02-06 11:18:18  joergr
+ * Distinguish more clearly between const and non-const access to pixel data.
+ *
+ * Revision 1.22  2003/12/23 16:06:21  joergr
  * Replaced additional post-increment/decrement operators by pre-increment/
  * decrement operators.
  *

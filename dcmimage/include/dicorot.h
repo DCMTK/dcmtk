@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2003, OFFIS
+ *  Copyright (C) 1998-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomColorRotateTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-23 11:44:32 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2004-02-06 11:18:18 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -79,7 +79,7 @@ class DiColorRotateTemplate
         if ((pixel != NULL) && (pixel->getCount() > 0))
         {
             if (pixel->getCount() == OFstatic_cast(unsigned long, src_cols) * OFstatic_cast(unsigned long, src_rows) * frames)
-                rotate(OFstatic_cast(const T **, pixel->getData()), degree);
+                rotate(OFstatic_cast(const T **, OFconst_cast(void *, pixel->getData())), degree);
             else {
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                 {
@@ -127,7 +127,10 @@ class DiColorRotateTemplate
  *
  * CVS/RCS Log:
  * $Log: dicorot.h,v $
- * Revision 1.7  2003-12-23 11:44:32  joergr
+ * Revision 1.8  2004-02-06 11:18:18  joergr
+ * Distinguish more clearly between const and non-const access to pixel data.
+ *
+ * Revision 1.7  2003/12/23 11:44:32  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  * Removed leading underscore characters from preprocessor symbols (reserved
  * symbols). Updated copyright header.
@@ -153,5 +156,5 @@ class DiColorRotateTemplate
  * Added methods and classes for flipping and rotating, changed for
  * scaling and clipping.
  *
- * 
+ *
  */

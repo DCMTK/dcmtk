@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2003, OFFIS
+ *  Copyright (C) 1996-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomColorMonochromeTemplate (Header)
  *
  *  Last Update:         $Author: joergr $
- *  Update Date:         $Date: 2003-12-23 11:21:12 $
- *  CVS/RCS Revision:    $Revision: 1.12 $
+ *  Update Date:         $Date: 2004-02-06 11:18:18 $
+ *  CVS/RCS Revision:    $Revision: 1.13 $
  *  Status:              $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -71,7 +71,7 @@ class DiColorMonoTemplate
     {
         if ((pixel != NULL) && (pixel->getCount() > 0))
         {
-            convert(OFstatic_cast(const T **, pixel->getData()), red, green, blue);
+            convert(OFstatic_cast(const T **, OFconst_cast(void *, pixel->getData())), red, green, blue);
             determineMinMax();
         }
     }
@@ -126,7 +126,10 @@ class DiColorMonoTemplate
  *
  * CVS/RCS Log:
  * $Log: dicomot.h,v $
- * Revision 1.12  2003-12-23 11:21:12  joergr
+ * Revision 1.13  2004-02-06 11:18:18  joergr
+ * Distinguish more clearly between const and non-const access to pixel data.
+ *
+ * Revision 1.12  2003/12/23 11:21:12  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  * Removed leading underscore characters from preprocessor symbols (reserved
  * symbols). Added missing API documentation. Updated copyright header.

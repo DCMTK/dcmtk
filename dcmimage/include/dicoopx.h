@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2003, OFFIS
+ *  Copyright (C) 1996-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomColorOutputPixel (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-23 11:23:30 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2004-02-06 11:18:18 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -83,9 +83,15 @@ class DiColorOutputPixel
 
     /** get pointer to output pixel data (abstract)
      *
-     ** @return pointer to pixel data if sucessful, NULL otherwise
+     ** @return pointer to pixel data
      */
-    virtual void *getData() const = 0;
+    virtual const void *getData() const = 0;
+
+    /** get pointer to outpout pixel data (abstract)
+     *
+     ** @return pointer to pixel data
+     */
+    virtual void *getDataPtr() = 0;
 
     /** get pointer to given plane of output pixel data (abstract)
      *
@@ -93,7 +99,7 @@ class DiColorOutputPixel
      *
      ** @return pointer to beginning of plane if sucessful, NULL otherwise
      */
-    virtual void *getPlane(const int plane) const = 0;
+    virtual const void *getPlane(const int plane) const = 0;
 
     /** get size of one pixel / item in the pixel array (abstract)
      *
@@ -143,7 +149,10 @@ class DiColorOutputPixel
  *
  * CVS/RCS Log:
  * $Log: dicoopx.h,v $
- * Revision 1.17  2003-12-23 11:23:30  joergr
+ * Revision 1.18  2004-02-06 11:18:18  joergr
+ * Distinguish more clearly between const and non-const access to pixel data.
+ *
+ * Revision 1.17  2003/12/23 11:23:30  joergr
  * Added missing API documentation.
  *
  * Revision 1.16  2003/12/17 18:13:41  joergr

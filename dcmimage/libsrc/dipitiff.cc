@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2003, OFFIS
+ *  Copyright (C) 2001-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Implements TIFF interface for plugable image formats
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-17 16:34:57 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2004-02-06 11:20:00 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -87,7 +87,7 @@ int DiTIFFPlugin::write(
 #endif
 
     /* create bitmap with 8 bits per sample */
-    void *data = image->getOutputData(frame, 8 /*bits*/, 0 /*planar*/);
+    void *data = OFconst_cast(void *, image->getOutputData(frame, 8 /*bits*/, 0 /*planar*/));
     if (data != NULL)
     {
       OFBool isMono = (image->getInternalColorModel() == EPI_Monochrome1) || (image->getInternalColorModel() == EPI_Monochrome2);
@@ -210,7 +210,10 @@ int dipitiff_cc_dummy_to_keep_linker_from_moaning = 0;
  *
  * CVS/RCS Log:
  * $Log: dipitiff.cc,v $
- * Revision 1.6  2003-12-17 16:34:57  joergr
+ * Revision 1.7  2004-02-06 11:20:00  joergr
+ * Distinguish more clearly between const and non-const access to pixel data.
+ *
+ * Revision 1.6  2003/12/17 16:34:57  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  *
  * Revision 1.5  2002/12/16 12:58:21  meichel

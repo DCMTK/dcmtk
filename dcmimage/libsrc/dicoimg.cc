@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2003, OFFIS
+ *  Copyright (C) 1996-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomColorImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-17 16:34:57 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Update Date:      $Date: 2004-02-06 11:20:00 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -284,9 +284,9 @@ unsigned long DiColorImage::getOutputDataSize(const int bits) const
 }
 
 
-void *DiColorImage::getOutputData(const unsigned long frame,
-                                  const int bits,
-                                  const int planar)
+const void *DiColorImage::getOutputData(const unsigned long frame,
+                                        const int bits,
+                                        const int planar)
 {
     return getData(NULL, 0, frame, bits, planar);
 }
@@ -302,11 +302,11 @@ int DiColorImage::getOutputData(void *buffer,
 }
 
 
-void *DiColorImage::getData(void *buffer,
-                            const unsigned long size,
-                            const unsigned long frame,
-                            const int bits,
-                            const int planar)
+const void *DiColorImage::getData(void *buffer,
+                                  const unsigned long size,
+                                  const unsigned long frame,
+                                  const int bits,
+                                  const int planar)
 {
     if ((InterData != NULL) && (ImageStatus == EIS_Normal) && (frame < NumberOfFrames) && (bits > 0) && (bits <= MAX_BITS))
     {
@@ -380,7 +380,7 @@ void *DiColorImage::getData(void *buffer,
 }
 
 
-void *DiColorImage::getOutputPlane(const int plane) const
+const void *DiColorImage::getOutputPlane(const int plane) const
 {
     if (OutputData != NULL)
         return OutputData->getPlane(plane);
@@ -719,7 +719,10 @@ int DiColorImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dicoimg.cc,v $
- * Revision 1.30  2003-12-17 16:34:57  joergr
+ * Revision 1.31  2004-02-06 11:20:00  joergr
+ * Distinguish more clearly between const and non-const access to pixel data.
+ *
+ * Revision 1.30  2003/12/17 16:34:57  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  *
  * Revision 1.29  2003/05/20 09:26:25  joergr

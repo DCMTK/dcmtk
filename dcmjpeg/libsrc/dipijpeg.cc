@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2002, OFFIS
+ *  Copyright (C) 2001-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Implements JPEG interface for plugable image formats
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-10-13 13:25:49 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-02-06 11:20:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/dipijpeg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -148,14 +148,15 @@ int DiJPEGPlugin::write(DiImage *image,
     if ((image != NULL) && (stream != NULL))
     {
         /* create bitmap with 8 bits per sample */
-        void *data = image->getOutputData(frame, 8 /*bits*/, 0 /*planar*/);
+        const void *data = image->getOutputData(frame, 8 /*bits*/, 0 /*planar*/);
         if (data != NULL)
         {
-            const OFBool isMono = (image->getInternalColorModel() == EPI_Monochrome1) || (image->getInternalColorModel() == EPI_Monochrome2);
+            const OFBool isMono = (image->getInternalColorModel() == EPI_Monochrome1) ||
+                                  (image->getInternalColorModel() == EPI_Monochrome2);
 
             /* taking the address of the variable prevents register allocation
              * which is needed here because otherwise longjmp might clobber
-             * the content of the variable 
+             * the content of the variable
              */
             if (& isMono) { /* nothing */ };
 
@@ -256,7 +257,10 @@ OFString DiJPEGPlugin::getLibraryVersionString()
  *
  * CVS/RCS Log:
  * $Log: dipijpeg.cc,v $
- * Revision 1.7  2003-10-13 13:25:49  meichel
+ * Revision 1.8  2004-02-06 11:20:59  joergr
+ * Distinguish more clearly between const and non-const access to pixel data.
+ *
+ * Revision 1.7  2003/10/13 13:25:49  meichel
  * Added workaround for name clash of typedef "boolean" in the IJG header files
  *   and the standard headers for Borland C++.
  *
@@ -280,7 +284,6 @@ OFString DiJPEGPlugin::getLibraryVersionString()
  * Revision 1.1  2001/11/27 18:27:19  joergr
  * Added support for plugable output formats in class DicomImage. First
  * implementation is JPEG.
- *
  *
  *
  */

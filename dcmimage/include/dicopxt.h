@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2003, OFFIS
+ *  Copyright (C) 1996-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomColorPixelTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-01-21 12:59:43 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-02-06 11:18:18 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -155,9 +155,9 @@ class DiColorPixelTemplate
      *
      ** @return pointer to pixel data
      */
-    inline void *getData() const
+    inline const void *getData() const
     {
-        return OFconst_cast(void *, OFstatic_cast(const void *, Data));
+        return OFstatic_cast(const void *, Data);
     }
 
     /** get reference to pointer to pixel data
@@ -165,6 +165,15 @@ class DiColorPixelTemplate
      ** @return reference to pointer to pixel data
      */
     inline void *getDataPtr()
+    {
+        return OFstatic_cast(void *, Data);
+    }
+
+    /** get reference to pointer to pixel data
+     *
+     ** @return reference to pointer to pixel data
+     */
+    inline void *getDataArrayPtr()
     {
         return OFstatic_cast(void *, Data);
     }
@@ -552,7 +561,10 @@ class DiColorPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dicopxt.h,v $
- * Revision 1.22  2004-01-21 12:59:43  meichel
+ * Revision 1.23  2004-02-06 11:18:18  joergr
+ * Distinguish more clearly between const and non-const access to pixel data.
+ *
+ * Revision 1.22  2004/01/21 12:59:43  meichel
  * Added OFconst_cast, needed for Visual C++ 6
  *
  * Revision 1.21  2003/12/23 11:43:03  joergr

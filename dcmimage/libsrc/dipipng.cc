@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003, OFFIS
+ *  Copyright (C) 2003-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Implements PNG interface for plugable image formats
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-01-21 12:57:32 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-02-06 11:20:00 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -71,12 +71,12 @@ int DiPNGPlugin::write(
   if ((image != NULL) && (stream != NULL))
   {
     /* create bitmap with 8 bits per sample */
-    void *data = image->getOutputData(frame, 8 /*bits*/, 0 /*planar*/);
+    const void *data = image->getOutputData(frame, 8 /*bits*/, 0 /*planar*/);
     if (data != NULL)
     {
-      png_struct        *png_ptr = NULL;
-      png_info  *info_ptr = NULL;
-      png_byte  *pix_ptr = NULL;
+      png_struct *png_ptr = NULL;
+      png_info *info_ptr = NULL;
+      png_byte *pix_ptr = NULL;
 
       png_byte ** volatile row_ptr = NULL;
       volatile png_textp  text_ptr = NULL;
@@ -84,15 +84,14 @@ int DiPNGPlugin::write(
 
       int width  = image->getColumns();
       int height = image->getRows();
-      int       color_type;
-      int       bpp;            // bytesperpixel
-      int       bit_depth = 8;
+      int color_type;
+      int bpp;            // bytesperpixel
+      int bit_depth = 8;
 
-      int       row;
-      
+      int row;
+
       // create png write struct
-      png_ptr = png_create_write_struct( PNG_LIBPNG_VER_STRING, 
-                                         NULL, NULL, NULL );
+      png_ptr = png_create_write_struct( PNG_LIBPNG_VER_STRING, NULL, NULL, NULL );
       if( png_ptr == NULL ) {
         return 0;
       }
@@ -103,7 +102,7 @@ int DiPNGPlugin::write(
         png_destroy_write_struct( &png_ptr, (png_infopp) NULL );
         return 0;
       }
-    
+
       // setjmp stuff for png lib
       if( setjmp(png_jmpbuf(png_ptr) ) ) {
         png_destroy_write_struct( &png_ptr, (png_infopp) NULL );
@@ -115,10 +114,10 @@ int DiPNGPlugin::write(
       if((image->getInternalColorModel() == EPI_Monochrome1) || (image->getInternalColorModel() == EPI_Monochrome2))
       {
         color_type = PNG_COLOR_TYPE_GRAY;
-        bpp        = 1;
+        bpp = 1;
       } else {
         color_type = PNG_COLOR_TYPE_RGB;
-        bpp        = 3;
+        bpp = 3;
       }
 
       int opt_interlace = 0;
@@ -136,8 +135,7 @@ int DiPNGPlugin::write(
 
       // set write mode
       png_set_IHDR( png_ptr, info_ptr, width, height, bit_depth, color_type,
-                    opt_interlace, PNG_COMPRESSION_TYPE_BASE, 
-                    PNG_FILTER_TYPE_BASE);
+                    opt_interlace, PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
 
       // set text & time
       if( metainfoType == E_pngFileMetainfo ) {
@@ -175,8 +173,8 @@ int DiPNGPlugin::write(
         return result;
       }
       for( row=0, pix_ptr=(png_byte*)data;
-        row<height; 
-        row++, pix_ptr+=width*bpp ) 
+        row<height;
+        row++, pix_ptr+=width*bpp )
       {
         row_ptr[row] = pix_ptr;
       }
@@ -234,7 +232,10 @@ int dipipng_cc_dummy_to_keep_linker_from_moaning = 0;
 /*
  * CVS/RCS Log:
  * $Log: dipipng.cc,v $
- * Revision 1.3  2004-01-21 12:57:32  meichel
+ * Revision 1.4  2004-02-06 11:20:00  joergr
+ * Distinguish more clearly between const and non-const access to pixel data.
+ *
+ * Revision 1.3  2004/01/21 12:57:32  meichel
  * Adapted PNG export plugin to new configure test, fixed issue with local
  *   variable that could be clobbered by longjmp().
  *
