@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2002, OFFIS
+ *  Copyright (C) 1997-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,10 +22,10 @@
  *  Purpose:
  *          Defines a template list class with interfaces similar to the C++ Standard
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-03 10:20:00 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-06-12 13:21:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/oflist.h,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,19 +35,19 @@
 #ifndef OFLIST_H
 #define OFLIST_H
 
-// Usage (only non standard): 
-//   OFListInsert(InputIterator_type, T_type, c, pos, first, last)    
-//                      Inserts the elements of type T in 
-//                      range [first, last) into list c, 
+// Usage (only non standard):
+//   OFListInsert(InputIterator_type, T_type, c, pos, first, last)
+//                      Inserts the elements of type T in
+//                      range [first, last) into list c,
 //   OFListRemoveIf(Predicate_Type, T_type, c, pred)
-//                      Erases all elements of type T in the list referred by 
+//                      Erases all elements of type T in the list referred by
 //                      an iterator i where pred(*i) == true.
 //                      Predicate_Type is the function type of pred
 //
 // Additional Remarks:
 //   In some template functions one template parameter is another function.
-//   Some compilers  cannot determine automatically the type of template 
-//   function parameters, so you must give  them a hint casting 
+//   Some compilers  cannot determine automatically the type of template
+//   function parameters, so you must give  them a hint casting
 //   the parameter function to the correct type (e.g. NeXT gcc 2.5.8)
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
@@ -58,9 +58,9 @@
 #endif
 
 #if defined(HAVE_STL) || defined(HAVE_STL_LIST)
-// It is possible to use the standard template library list class since the 
+// It is possible to use the standard template library list class since the
 // interface is nearly identical.
-// Important: If you want to use the standard template library (STL), no 
+// Important: If you want to use the standard template library (STL), no
 // variable within a namespace using a class of the STL shall have a name
 // of one class of the STL
 #include <list>
@@ -68,9 +68,11 @@
 #ifdef HAVE_STD_NAMESPACE
 #define OFList std::list
 #define OFListIterator(x) std::list<x>::iterator
+#define OFListConstIterator(x) std::list<x>::const_iterator
 #else
 #define OFList list
 #define OFListIterator(x) list<x>::iterator
+#define OFListConstIterator(x) list<x>::const_iterator
 #endif
 
 #define OFListInsert(InputIterator, T, c, pos, first, last) (c).insert((pos), (first), (last))
@@ -82,7 +84,7 @@
 #include "ofstdinc.h"
 
 
-// OFListLinkBase, OFListLink and OFListBase are classes for internal 
+// OFListLinkBase, OFListLink and OFListBase are classes for internal
 // use only and shall not be used.
 
 /* non-template double linked list. Base class fo OFListLink.
@@ -120,14 +122,14 @@ public:
     size_t base_size() const { return listSize; }
     OFListLinkBase * base_insert(OFListLinkBase * pos, OFListLinkBase * newElem);
     OFListLinkBase * base_erase(OFListLinkBase * pos);
-    void base_splice(OFListLinkBase * pos, 
+    void base_splice(OFListLinkBase * pos,
                 OFListLinkBase * begin, OFListLinkBase * end);
     void base_clear();
 
   private:
     /* undefined */ OFListBase(const OFListBase&);
     /* undefined */ OFListBase& operator=(const OFListBase&);
-};  
+};
 
 
 
@@ -151,10 +153,10 @@ struct OFListLink : public OFListLinkBase
 template <class T> class OFList;
 
 
-/** iterator class for OFList. An iterator is a generalization of a pointer 
- *  and allows a C++ program to work with different containers independently 
- *  from their internal structure. Instances of this template class should 
- *  be declared as OFListIterator(T) instead of OFListIterator<T>.  This 
+/** iterator class for OFList. An iterator is a generalization of a pointer
+ *  and allows a C++ program to work with different containers independently
+ *  from their internal structure. Instances of this template class should
+ *  be declared as OFListIterator(T) instead of OFListIterator<T>.  This
  *  allows to re-map OFList to the STL list class if available.
  */
 template <class T>
@@ -172,20 +174,20 @@ protected:
     OFIterator(OFListLinkBase * x) : node(x) { }
 public:
 
-    /** default constructor. Creates an iterator referencing nothing. 
+    /** default constructor. Creates an iterator referencing nothing.
      *  In general, iterators should always be copy-constructed
      *  in user code.
      */
     OFIterator() : node(NULL)  { }
-    
+
     /// copy constructor
     OFIterator(const OFIterator<T>& x) : node(x.node) { };
 
     /// copy assignment operator
-    OFIterator<T>& operator=(const OFIterator<T>& x) 
-    { 
-        node = x.node; 
-        return *this; 
+    OFIterator<T>& operator=(const OFIterator<T>& x)
+    {
+        node = x.node;
+        return *this;
     }
 
     /** comparison of two iterators.  The iterators are equal if and only if
@@ -201,13 +203,13 @@ public:
      *  @return OFTrue if not equal, OFFalse otherwise.
      */
     OFBool operator!=(const OFIterator<T>& x) const { return node != x.node; }
-    
+
     /** dereferences the iterator. May only be called if iterator references
      *  a valid element of a list.
      *  @return reference to the element "pointed to" by the iterator.
      */
-    T& operator*() const 
-    { 
+    T& operator*() const
+    {
         assert(!node->dummy);
         return ((OFListLink<T> *)node)->info;
     }
@@ -222,7 +224,7 @@ public:
         node = node->next;
         return *this;
     }
-    
+
     /** moves the iterator to the next element of the list.
      *  The list is circular: the first element follows after the end of the list.
      *  May only be called if iterator references a valid element or the end of a list.
@@ -262,8 +264,8 @@ public:
 };
 
 
-/** double linked list template class. The interface is a subset of the STL 
- *  list class. 
+/** double linked list template class. The interface is a subset of the STL
+ *  list class.
  */
 template <class T>
 class OFList : private OFListBase
@@ -284,7 +286,7 @@ private:
     /** inserts a copy of the given list into the current list.
      *  @param oldList list to be copied
      */
-    void copy(const OFList<T>& oldList) 
+    void copy(const OFList<T>& oldList)
     {
         OFIterator<T> vfirst(oldList.begin());
         OFIterator<T> vend(oldList.end());
@@ -302,7 +304,7 @@ private:
     void recalcListSize() { OFListBase::base_recalcListSize(); }
 
 public:
- 
+
     /// default constructor
     OFList() : OFListBase() { }
 
@@ -323,12 +325,12 @@ public:
      *  @return iterator to past-to-end, by value.
      */
     OFIterator<T> end() const { return OFIterator<T>(OFListBase::base_end()); }
-    
+
     /** returns true if list is empty.
      *  @return OFTrue if list is empty, OFFalse otherwise.
      */
     OFBool empty() const { return OFListBase::base_empty(); }
-    
+
     /** returns number of elements in the list.
      *  @return number of elements
      */
@@ -349,7 +351,7 @@ public:
     /** inserts before the first element of the list.
      *  @param x value from which the new list entry is copy constructed
      */
-    void push_front(const T& x) { insert(begin(), (T&)x); } 
+    void push_front(const T& x) { insert(begin(), (T&)x); }
     /* const cast away to keep some old compilers happy */
 
     /** removes the first element of the list.
@@ -403,7 +405,7 @@ public:
 
     /** removes all elements from the list.
      *  All iterators pointing to elements in the list become invalid.
-     */           
+     */
     void clear() { OFListBase::base_clear(); }
 
     /** moves the contents of list x into the current list before the
@@ -458,11 +460,11 @@ public:
     }
 
 private:
-	
-	/** private undefined copy assignment operator 
+
+	/** private undefined copy assignment operator
 	 */
 	OFList<T>& operator=(const OFList<T>& arg);
-}; 
+};
 
 
 #ifdef HAVE_FUNCTION_TEMPLATE
@@ -485,11 +487,11 @@ private:
 template <class InputIterator, class T>
 #if defined(HAVE_STATIC_TEMPLATE_METHOD) && !defined(HAVE_FUNCTION_TEMPLATE)
 class OF_ListInsertClass
-{ 
+{
 public:
 static
 #endif
-void OF_ListInsert(OFList<T>& c, OFIterator<T> position, 
+void OF_ListInsert(OFList<T>& c, OFIterator<T> position,
                   InputIterator first, InputIterator last)
 {
     while(first != last)
@@ -529,6 +531,7 @@ void OF_ListRemoveIf(OFList<T>& c, Predicate pred)
 #endif
 
 #define OFListIterator(x) OFIterator<x>
+#define OFListConstIterator(x) OFIterator<x>
 
 #endif
 
@@ -537,7 +540,10 @@ void OF_ListRemoveIf(OFList<T>& c, Predicate pred)
 /*
 ** CVS/RCS Log:
 ** $Log: oflist.h,v $
-** Revision 1.15  2003-06-03 10:20:00  meichel
+** Revision 1.16  2003-06-12 13:21:54  joergr
+** Introduced macro OFListConstIterator() to support STL const_iterators.
+**
+** Revision 1.15  2003/06/03 10:20:00  meichel
 ** OFList now explicitly defined as std::list if std namespace present
 **
 ** Revision 1.14  2002/11/27 11:23:05  meichel
