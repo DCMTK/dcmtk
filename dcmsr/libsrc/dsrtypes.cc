@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2001, OFFIS
+ *  Copyright (C) 2000-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:20:18 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Update Date:      $Date: 2002-04-25 09:15:39 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,6 +50,8 @@
 #include "dsrwavtn.h"
 #include "dsrcontn.h"
 #include "dsrreftn.h"
+
+#include "ofstd.h"
 
 #include <ctype.h>
 
@@ -1043,61 +1045,8 @@ const OFString &DSRTypes::convertToMarkupString(const OFString &sourceString,
                                                 const OFBool newlineAllowed,
                                                 const OFBool xmlMode)
 {
-    /* char ptr allows fastest access to the string */
-    const char *str = sourceString.c_str();
-    /* start with empty string */
-    markupString.clear();
-    /* avoid to resize the string too often */
-    markupString.resize(strlen(str));
-    while (*str != 0)
-    {
-        /* less than */
-        if (*str == '<')
-            markupString += "&lt;";
-        /* greater than */
-        else if (*str == '>')
-            markupString += "&gt;";
-        /* ampers and */
-        else if (*str == '&')
-            markupString += "&amp;";
-        /* quotation mark */
-        else if (*str == '"')
-            markupString += "&quot;";
-        /* newline: LF, CR, LF CR, CR LF */
-        else if ((*str == '\012') || (*str == '\015'))
-        {
-            /* skip next character if it belongs to the newline sequence */
-            if (((*str == '\012') && (*(str + 1) == '\015')) || ((*str == '\015') && (*(str + 1) == '\012')))
-                str++;
-            if (xmlMode)
-            {
-                /* "<br>" and "&param;" not defined in XML - requires DTD definition */
-                markupString += "&#182;";
-            } else {
-                if (newlineAllowed)
-                    markupString += "<br>\n";
-                else
-                    markupString += "&para;";
-            }
-        }
-        else {
-            /* other character: ... */
-            const size_t charValue = (size_t)(*(const unsigned char *)str);
-            if (convertNonASCII && (charValue > 127))
-            {
-                char buffer[16];
-                /* convert > #127 to Unicode (ISO Latin-1), what is about < #32 ? */
-                markupString += "&#";
-                markupString += numberToString(charValue, buffer);
-                markupString += ";";
-            } else {
-                /* just append */
-                markupString += *str;
-            }
-        }
-        str++;
-    }
-    return markupString;
+    /* NB: the order of the parameters 'newlineAllowed' and 'xmlMode' is interchanged! */
+    return OFStandard::convertToMarkupString(sourceString, markupString, convertNonASCII, xmlMode, newlineAllowed);
 }
 
 
@@ -1381,7 +1330,12 @@ OFCondition DSRTypes::appendStream(ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
- *  Revision 1.23  2001-11-09 16:20:18  joergr
+ *  Revision 1.24  2002-04-25 09:15:39  joergr
+ *  Moved helper function which converts a conventional character string to an
+ *  HTML/XML mnenonic string (e.g. using "&lt;" instead of "<") from module
+ *  dcmsr to ofstd.
+ *
+ *  Revision 1.23  2001/11/09 16:20:18  joergr
  *  Added new command line option allowing to encode codes as XML attributes
  *  (instead of tags).
  *  Added preliminary support for Mammography CAD SR.

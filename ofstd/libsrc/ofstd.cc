@@ -51,8 +51,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-11 12:08:06 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2002-04-25 09:13:55 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -319,9 +319,79 @@ OFString &OFStandard::combineDirAndFilename(OFString &result,
 }
 
 
+const OFString &OFStandard::convertToMarkupString(const OFString &sourceString,
+                                                  OFString &markupString,
+                                                  const OFBool convertNonASCII,
+                                                  const OFBool xmlMode,
+                                                  const OFBool newlineAllowed)
+{
+    /* char ptr allows fastest access to the string */
+    const char *str = sourceString.c_str();
+    /* start with empty string */
+    markupString.clear();
+    /* avoid to resize the string too often */
+    markupString.resize(strlen(str));
+    while (*str != 0)
+    {
+        /* less than */
+        if (*str == '<')
+            markupString += "&lt;";
+        /* greater than */
+        else if (*str == '>')
+            markupString += "&gt;";
+        /* ampers and */
+        else if (*str == '&')
+            markupString += "&amp;";
+        /* quotation mark */
+        else if (*str == '"')
+            markupString += "&quot;";
+        /* newline: LF, CR, LF CR, CR LF */
+        else if ((*str == '\012') || (*str == '\015'))
+        {
+            /* skip next character if it belongs to the newline sequence */
+            if (((*str == '\012') && (*(str + 1) == '\015')) || ((*str == '\015') && (*(str + 1) == '\012')))
+                str++;
+            if (xmlMode)
+            {
+                /* "<br>" and "&param;" not defined in XML - requires DTD definition */
+                markupString += "&#182;";
+            } else {
+                if (newlineAllowed)
+                    markupString += "<br>\n";
+                else
+                    markupString += "&para;";
+            }
+        }
+        else {
+            /* other character: ... */
+            const size_t charValue = (size_t)(*(const unsigned char *)str);
+            if (convertNonASCII && (charValue > 127))
+            {
+                char buffer[16];
+                sprintf(buffer, "%lu", (unsigned long)charValue);
+                /* convert > #127 to Unicode (ISO Latin-1), what is about < #32 ? */
+                markupString += "&#";
+                markupString += buffer;
+                markupString += ";";
+            } else {
+                /* just append */
+                markupString += *str;
+            }
+        }
+        str++;
+    }
+    return markupString;
+}
+
+
 /*
  *  $Log: ofstd.cc,v $
- *  Revision 1.2  2002-04-11 12:08:06  joergr
+ *  Revision 1.3  2002-04-25 09:13:55  joergr
+ *  Moved helper function which converts a conventional character string to an
+ *  HTML/XML mnenonic string (e.g. using "&lt;" instead of "<") from module
+ *  dcmsr to ofstd.
+ *
+ *  Revision 1.2  2002/04/11 12:08:06  joergr
  *  Added general purpose routines to check whether a file exists, a path points
  *  to a directory or a file, etc.
  *

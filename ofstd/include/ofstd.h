@@ -22,9 +22,9 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-11 12:06:42 $
+ *  Update Date:      $Date: 2002-04-25 09:13:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstd.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -189,6 +189,31 @@ class OFStandard
                                            const OFString &fileName,
                                            const OFBool allowEmptyDirName = OFFalse);
 
+    // --- other functions ---
+
+    /** convert character string to HTML/XML mnenonic string.
+     *  Characters with special meaning for HTML/XML (e.g. '<' and '&') are replace by the
+     *  corresponding mnenonics (e.g. "&lt;" and "&amp;").  If flag 'convertNonASCII' is OFTrue
+     *  all characters > #127 are also converted (useful if only HTML 3.2 is supported which does
+     *  not allow to specify the character set).
+     ** @param  sourceString     source string to be converted
+     *  @param  markupString     reference to character string where the result should be stored
+     *  @param  convertNonASCII  convert non-ASCII characters (> #127) to numeric value (&#nnn;)
+     *                           if OFTrue
+     *  @param  xmlMode          convert to XML markup string if OFTrue, HTML string otherwise.
+     *                           Newlines are always encoded as "&#182;" in XML mode, the flag
+     *                           'newlineAllowed' has no meaning in this case.
+     *  @param  newlineAllowed   optional flag indicating whether newlines are allowed or not.
+     *                           If they are allowed the text "<br>" is used, "&para;" otherwise.
+     *                           The following combinations are accepted: LF, CR, LF CR, CF LF.
+     ** @return reference to resulting 'markupString' (might be empty if 'sourceString' was empty)
+     */
+    static const OFString &convertToMarkupString(const OFString &sourceString,
+                                                 OFString &markupString,
+                                                 const OFBool convertNonASCII = OFFalse,
+                                                 const OFBool xmlMode = OFTrue,
+                                                 const OFBool newlineAllowed = OFFalse);
+
 
  private:
 
@@ -222,7 +247,12 @@ class OFStandard
  *
  * CVS/RCS Log:
  * $Log: ofstd.h,v $
- * Revision 1.4  2002-04-11 12:06:42  joergr
+ * Revision 1.5  2002-04-25 09:13:52  joergr
+ * Moved helper function which converts a conventional character string to an
+ * HTML/XML mnenonic string (e.g. using "&lt;" instead of "<") from module
+ * dcmsr to ofstd.
+ *
+ * Revision 1.4  2002/04/11 12:06:42  joergr
  * Added general purpose routines to check whether a file exists, a path points
  * to a directory or a file, etc.
  *
