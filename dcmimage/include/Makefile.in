@@ -26,6 +26,3 @@ distclean:
 
 dependencies:
 	echo Nothing to do for dependencies
-
-
-
