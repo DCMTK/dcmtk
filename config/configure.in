@@ -116,6 +116,7 @@ AC_CHECK_HEADERS(string.h)
 AC_CHECK_HEADERS(strings.h)
 AC_CHECK_HEADERS(ctype.h)
 AC_CHECK_HEADERS(alloca.h)
+AC_CHECK_HEADERS(arpa/inet.h)
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_TYPE_SIZE_T
