@@ -1,3 +1,85 @@
+**** Changes from 1998.12.22 (riesmeier)
+
+- Corrected spelling of option used for scaling without interpolation.
+  Use presentation LUT shape only when set explicitly.
+  Affects: dcmimage/apps/dcm2pnm.cc
+
+- Added comments that the routines for expanding pixel's depth have to be
+  enhanced in the future (replicate bit pattern instead of shifting). Same
+  question for reducing depth.
+  Affects: dcmimage/include/dicoopxt.h
+
+- Corrected some typos and formatting.
+  Affects: dcmimgle/libsrc/dcmimage.cc
+           dcmimgle/libsrc/dimopx.cc
+           dcmimgle/include/dimopxt.h
+
+- Changed parameter type.
+  Affects: dcmimgle/include/diluptab.h
+           dcmimgle/libsrc/diluptab.cc
+
+- Added method getAbsMaxRange.
+  Affects: dcmimgle/include/diluptab.h
+
+- Check descriptor value 'first input value mapped' for presentation LUTs
+  (shall always be 0).
+  Affects: dcmimgle/libsrc/dimoimg.cc
+
+- Added support for 'potentially' signed input ranges for different kinds
+  of grayscale transformations (according to supplement 33 from Cor Loef).
+  Affects: dcmimgle/libsrc/dimoimg.cc
+
+- Changed behaviour of getOverlayData() method (new parameter to choose
+  overlay plane group: dataset, additional, overlap).
+  Affects: dcmimgle/libsrc/dimoimg.cc
+                                                     
+- Changed calculation of AbsMinimum/Maximum.
+  Removed member variable and method for isPotentiallySigned.
+  Affects: dcmimgle/include/dimomod.h
+           dcmimgle/libsrc/dimomod.cc
+
+- Added method to check whether plane is visible, to get plane mode and to
+  remove all planes. Set 'value' used for getOverlay/PlaneData().
+  Changed meaning of return values (differentiate between different value
+  for 'true').
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/include/diovlay.h
+           dcmimgle/include/diovpln.h
+           dcmimgle/libsrc/diovlay.cc
+  
+- Removed variable declaration to avoid compiler warnings (reported by
+  MSVC5). Changed initialization of member variable 'DefaultMode'.
+  Affects: dcmimgle/libsrc/diovpln.cc
+
+- Added index parameter to overlay methods (choose dataset or additional
+  planes).
+  Affects: dcmimgle/include/dcmimage.h
+
+- Changed parameter declaration to avoid compiler warnings (hide parameter
+  name).
+  Affects: dcmimgle/include/diimage.h
+
+- Added implementation of methods to return member variables AbsMinimum/
+  Maximum.
+  Affects: dcmimgle/include/diinpx.h
+           dcmimgle/include/dimopx.h
+
+- Added calculation of member variables AbsMinimum/AbsMaximum.
+  Replaced method copyMem by for-loop copying each item.
+  Removed some '#ifdef DEBUG'.
+  Affects: dcmimgle/include/diinpxt.h
+
+- Added new parameters to method getOverlayData().
+  Affects: dcmimgle/include/dimoimg.h
+
+- Replaced method copyMem by for-loop copying each item.
+  Renamed some variables
+  Affects: dcmimgle/include/dimoipxt.h
+
+- Improved implementation of presentation LUT application (and other gray
+  scale transformations). Tested with ECR test images from David Clunie.
+  Affects: dcmimgle/include/dimoopxt.h
+
 **** Changes from 1998.12.16 (riesmeier)
 
 - Rebuilt Makefile dependencies.
@@ -73,6 +155,16 @@
   Affects: dcmimgle/include/diinpx.h
            dcmimgle/include/diinpxt.h
            dcmimgle/include/dipxrept.h
+
+- Removed methods getMinimum/Maximum().
+  Affects: dcmimgle/include/dipxrept.h
+
+- Added some preparation to enhance interpolated scaling (clipping and
+  scaling) in the future.
+  Affects: dcmimgle/include/discalet.h
+
+- Removed const declaration (as long as interpolated scaling isn't completed).
+  Affects: dcmimgle/include/ditranst.h
 
 **** Changes from 1998.12.14 (riesmeier)
 
