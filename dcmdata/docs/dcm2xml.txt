@@ -50,7 +50,8 @@ input options:
     -M   --load-short          do not load very long values (default)
 output options:
   XML structure:
-    +Xd  --add-document-type   add reference to document type definition (DTD)
+    +Xd  --add-dtd-reference   add reference to document type definition (DTD)
+    +Xe  --embed-dtd-content   embed document type definition into XML document
     +Xn  --use-xml-namespace   add XML namespace declaration to root element
   DICOM elements:
     +Wb  --write-binary-data   write binary data of OB and OW elements
