@@ -22,9 +22,9 @@
  *  Purpose: class DcmDataset
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-11-07 16:56:18 $
+ *  Update Date:      $Date: 2001-05-03 08:15:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdatset.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -209,7 +209,9 @@ E_Condition DcmDataset::write(DcmStream & outStream,
       }
       if (fTransferState == ERW_inWork)
       {
-        if (!elementList->empty())
+      	// elementList->get() can be NULL if buffer was full after
+      	// writing the last item but before writing the sequence delimitation.
+        if (!elementList->empty() && (elementList->get() != NULL)) 
         {
           DcmObject *dO;
           do 
@@ -247,7 +249,9 @@ E_Condition DcmDataset::writeSignatureFormat(DcmStream & outStream,
       }
       if (fTransferState == ERW_inWork)
       {
-        if (!elementList->empty())
+      	// elementList->get() can be NULL if buffer was full after
+      	// writing the last item but before writing the sequence delimitation.
+        if (!elementList->empty() && (elementList->get() != NULL)) 
         {
           DcmObject *dO;
           do 
@@ -358,7 +362,11 @@ DcmDataset::removeAllButOriginalRepresentations()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.cc,v $
-** Revision 1.18  2000-11-07 16:56:18  meichel
+** Revision 1.19  2001-05-03 08:15:21  meichel
+** Fixed bug in dcmdata sequence handling code that could lead to application
+**   failure in rare cases during parsing of a correct DICOM dataset.
+**
+** Revision 1.18  2000/11/07 16:56:18  meichel
 ** Initial release of dcmsign module for DICOM Digital Signatures
 **
 ** Revision 1.17  2000/04/14 16:07:26  meichel

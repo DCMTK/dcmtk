@@ -22,9 +22,9 @@
  *  Purpose: class DcmMetaInfo
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-04-14 15:55:06 $
+ *  Update Date:      $Date: 2001-05-03 08:15:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcmetinf.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -520,7 +520,8 @@ E_Condition DcmMetaInfo::write(DcmStream & outStream,
                 }
             }
                         
-            if (!elementList->empty() && fTransferState == ERW_inWork )
+            // elementList->get() should never be NULL, but lets play the game safe here...
+            if (!elementList->empty() && (fTransferState == ERW_inWork) && (elementList->get() != NULL))
             {
                 DcmObject *dO;
                 do 
@@ -544,7 +545,11 @@ E_Condition DcmMetaInfo::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.cc,v $
-** Revision 1.20  2000-04-14 15:55:06  meichel
+** Revision 1.21  2001-05-03 08:15:22  meichel
+** Fixed bug in dcmdata sequence handling code that could lead to application
+**   failure in rare cases during parsing of a correct DICOM dataset.
+**
+** Revision 1.20  2000/04/14 15:55:06  meichel
 ** Dcmdata library code now consistently uses ofConsole for error output.
 **
 ** Revision 1.19  2000/03/08 16:26:38  meichel

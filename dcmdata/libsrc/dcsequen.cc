@@ -22,9 +22,9 @@
  *  Purpose: class DcmSequenceOfItems
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-11-07 16:56:22 $
+ *  Update Date:      $Date: 2001-05-03 08:15:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcsequen.cc,v $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -549,7 +549,9 @@ E_Condition DcmSequenceOfItems::write(DcmStream & outStream,
       }
       if (fTransferState == ERW_inWork)
       {
-        if (!itemList->empty())
+      	// itemList->get() can be NULL if buffer was full after
+      	// writing the last item but before writing the sequence delimitation.
+        if (!itemList->empty() && (itemList->get() != NULL)) 
         {
           DcmObject *dO;
           do 
@@ -613,7 +615,9 @@ E_Condition DcmSequenceOfItems::writeSignatureFormat(DcmStream & outStream,
       }
       if (fTransferState == ERW_inWork)
       {
-        if (!itemList->empty())
+      	// itemList->get() can be NULL if buffer was full after
+      	// writing the last item but before writing the sequence delimitation.
+        if (!itemList->empty() && (itemList->get() != NULL)) 
         {
           DcmObject *dO;
           do 
@@ -1104,7 +1108,11 @@ E_Condition DcmSequenceOfItems::loadAllDataIntoMemory()
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.36  2000-11-07 16:56:22  meichel
+** Revision 1.37  2001-05-03 08:15:23  meichel
+** Fixed bug in dcmdata sequence handling code that could lead to application
+**   failure in rare cases during parsing of a correct DICOM dataset.
+**
+** Revision 1.36  2000/11/07 16:56:22  meichel
 ** Initial release of dcmsign module for DICOM Digital Signatures
 **
 ** Revision 1.35  2000/04/14 15:55:07  meichel
