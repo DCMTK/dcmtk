@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmVR: Value Representation
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 12:06:54 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-06 13:00:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvr.cc,v $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -85,6 +85,7 @@ static const DcmVREntry DcmVRDict[] = {
     { EVR_LO, "LO", sizeof(char), DCMVR_PROP_ISASTRING, 0, 64 },
     { EVR_LT, "LT", sizeof(char), DCMVR_PROP_ISASTRING, 0, 10240 },
     { EVR_OB, "OB", sizeof(Uint8), DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
+    { EVR_OF, "OF", sizeof(Float32), DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
     { EVR_OW, "OW", sizeof(Uint16), DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
     { EVR_PN, "PN", sizeof(char), DCMVR_PROP_ISASTRING, 0, 64 },
     { EVR_SH, "SH", sizeof(char), DCMVR_PROP_ISASTRING, 0, 16 },
@@ -96,6 +97,7 @@ static const DcmVREntry DcmVRDict[] = {
     { EVR_UI, "UI", sizeof(char), DCMVR_PROP_ISASTRING, 0, 64 },
     { EVR_UL, "UL", sizeof(Uint32), DCMVR_PROP_NONE, 4, 4 },
     { EVR_US, "US", sizeof(Uint16), DCMVR_PROP_NONE, 2, 2 },
+    { EVR_UT, "UT", sizeof(char), DCMVR_PROP_ISASTRING|DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
 
     { EVR_ox, "ox", sizeof(Uint8), DCMVR_PROP_NONSTANDARD | DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
     { EVR_xs, "xs", sizeof(Uint16), DCMVR_PROP_NONSTANDARD, 2, 2 },
@@ -103,28 +105,28 @@ static const DcmVREntry DcmVRDict[] = {
     { EVR_up, "up", sizeof(Uint32), DCMVR_PROP_NONSTANDARD, 4, 4 },
 
     /* unique prefixes have been "invented" for the following internal VRs */
-    { EVR_item, "it_EVR_item", 0, 
+    { EVR_item, "it_EVR_item", 0,
       DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, 0 },
-    { EVR_metainfo, "mi_EVR_metainfo", 0, 
+    { EVR_metainfo, "mi_EVR_metainfo", 0,
       DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, 0 },
-    { EVR_dataset, "ds_EVR_dataset", 0, 
+    { EVR_dataset, "ds_EVR_dataset", 0,
       DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, 0 },
-    { EVR_fileFormat, "ff_EVR_fileFormat", 0, 
+    { EVR_fileFormat, "ff_EVR_fileFormat", 0,
       DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, 0 },
     { EVR_dicomDir, "dd_EVR_dicomDir", 0,
       DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, 0 },
-    { EVR_dirRecord, "dr_EVR_dirRecord", 0, 
+    { EVR_dirRecord, "dr_EVR_dirRecord", 0,
       DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, 0 },
-            
-    { EVR_pixelSQ, "ps_EVR_pixelSQ", sizeof(Uint8), 
+
+    { EVR_pixelSQ, "ps_EVR_pixelSQ", sizeof(Uint8),
       DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, DCM_UndefinedLength },
     /* Moved from internal use to non standard only: necessary to distinguish from "normal" OB */
-    { EVR_pixelItem, "pi", sizeof(Uint8), 
+    { EVR_pixelItem, "pi", sizeof(Uint8),
       DCMVR_PROP_NONSTANDARD, 0, DCM_UndefinedLength },
 
     { EVR_UNKNOWN, "??", sizeof(Uint8), /* EVR_UNKNOWN (i.e. "future" VRs) should be mapped to UN or OB */
       DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL | DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
-    
+
     /* Unknown Value Representation - Supplement 14 */
     { EVR_UN, "UN", sizeof(Uint8), DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
 
@@ -132,9 +134,6 @@ static const DcmVREntry DcmVRDict[] = {
     { EVR_PixelData, "PixelData", 0, DCMVR_PROP_INTERNAL, 0, DCM_UndefinedLength },
     /* Overlay Data - only used in ident() */
     { EVR_OverlayData, "OverlayData", 0, DCMVR_PROP_INTERNAL, 0, DCM_UndefinedLength },
-
-    /* Unlimited Text */
-    { EVR_UT, "UT", sizeof(char), DCMVR_PROP_ISASTRING|DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
 
     { EVR_UNKNOWN2B, "??", sizeof(Uint8), /* illegal VRs, we assume no extended length coding */
       DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL , 0, DCM_UndefinedLength },
@@ -159,7 +158,7 @@ public:
     DcmVRDict_checker();
 };
 
-DcmVRDict_checker::DcmVRDict_checker() 
+DcmVRDict_checker::DcmVRDict_checker()
   : error_found(OFFalse)
 {
     for (int i=0; i<DcmVRDict_DIM; i++) {
@@ -182,7 +181,7 @@ const DcmVRDict_checker DcmVRDict_startup_check();
 */
 
 void
-DcmVR::setVR(DcmEVR evr) 
+DcmVR::setVR(DcmEVR evr)
 {
     if ( ((int)evr >= 0) && ((int)evr < DcmVRDict_DIM)) {
         vr = evr;
@@ -223,11 +222,11 @@ DcmVR::setVR(const char* vrName)
     }
 }
 
-DcmEVR 
+DcmEVR
 DcmVR::getValidEVR() const
 {
     DcmEVR evr = EVR_UNKNOWN;
-    
+
     if (isStandard()) {
         evr = vr;
     } else {
@@ -264,7 +263,7 @@ DcmVR::getValidEVR() const
     if (evr == EVR_UT)
     {
       if (!dcmEnableUnlimitedTextVRGeneration.get()) evr = EVR_OB; /* handle UT as if OB */
-    }        
+    }
     return evr;
 }
 
@@ -287,8 +286,8 @@ DcmVR::getValidVRName() const
     DcmVR avr(getValidEVR());
     return avr.getVRName();
 }
-        
-OFBool 
+
+OFBool
 DcmVR::isStandard() const
 {
     return !(DcmVRDict[vr].propertyFlags & DCMVR_PROP_NONSTANDARD);
@@ -301,17 +300,17 @@ DcmVR::isForInternalUseOnly() const
 }
 
 /* returns true if VR represents a string */
-OFBool 
+OFBool
 DcmVR::isaString() const
 {
     return (DcmVRDict[vr].propertyFlags & DCMVR_PROP_ISASTRING);
 }
 
-/* 
- * returns true if VR uses an extended length encoding 
- * for explicit transfer syntaxes 
+/*
+ * returns true if VR uses an extended length encoding
+ * for explicit transfer syntaxes
  */
-OFBool 
+OFBool
 DcmVR::usesExtendedLengthEncoding() const
 {
     return (DcmVRDict[vr].propertyFlags & DCMVR_PROP_EXTENDEDLENGTHENCODING);
@@ -366,7 +365,10 @@ int DcmVR::isEquivalent(const DcmVR& avr) const
 /*
  * CVS/RCS Log:
  * $Log: dcvr.cc,v $
- * Revision 1.26  2002-11-27 12:06:54  meichel
+ * Revision 1.27  2002-12-06 13:00:31  joergr
+ * Added support for new value representation Other Float String (OF).
+ *
+ * Revision 1.26  2002/11/27 12:06:54  meichel
  * Adapted module dcmdata to use of new header file ofstdinc.h
  *
  * Revision 1.25  2002/04/16 13:43:23  joergr
