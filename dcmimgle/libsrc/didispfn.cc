@@ -22,9 +22,9 @@
  *  Purpose: DicomDisplayFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-02 16:24:37 $
+ *  Update Date:      $Date: 2002-07-02 16:52:40 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/didispfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -141,6 +141,7 @@ DiDisplayFunction::DiDisplayFunction(const double val_min,
                                      const unsigned long count,
                                      const E_DeviceType deviceType)
   : Valid(0),
+    DeviceType(deviceType),
     ValueCount(count),
     MaxDDLValue(0),
     AmbientLight(0),
@@ -587,7 +588,10 @@ double DiDisplayFunction::convertODtoLum(const double value,
  *
  * CVS/RCS Log:
  * $Log: didispfn.cc,v $
- * Revision 1.30  2002-07-02 16:24:37  joergr
+ * Revision 1.31  2002-07-02 16:52:40  joergr
+ * Minor fixes to keep MSVC6 quiet.
+ *
+ * Revision 1.30  2002/07/02 16:24:37  joergr
  * Added support for hardcopy devices to the calibrated output routines.
  *
  * Revision 1.29  2002/04/16 13:53:31  joergr

@@ -39,9 +39,9 @@
  *  dcmjpeg/apps/dcmmkdir.cc.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-02 16:16:16 $
+ *  Update Date:      $Date: 2002-07-02 16:52:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
- *  CVS/RCS Revision: $Revision: 1.61 $
+ *  CVS/RCS Revision: $Revision: 1.62 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1306,6 +1306,7 @@ checkImage(const OFString& fname, DcmFileFormat *ff)
             break;
         }
 #endif
+        case EDDP_GeneralPurpose:
         default:
         {
             /* compare with expected transfer syntax */
@@ -4147,7 +4148,10 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 /*
  * CVS/RCS Log:
  * $Log: dcmgpdir.cc,v $
- * Revision 1.61  2002-07-02 16:16:16  joergr
+ * Revision 1.62  2002-07-02 16:52:14  joergr
+ * Minor fixes to keep MSVC6 quiet.
+ *
+ * Revision 1.61  2002/07/02 16:16:16  joergr
  * Added support for ultrasound and waveform media storage application profiles.
  * Added Mammography CAD SR to the list of supported SOP classes.
  *
