@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2000-06-07 08:57:52 $
+** Update Date:		$Date: 2000-12-15 13:28:16 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/dimse.h,v $
-** CVS/RCS Revision:	$Revision: 1.9 $
+** CVS/RCS Revision:	$Revision: 1.10 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -82,11 +82,22 @@
 #include "dul.h"
 #include "assoc.h"
 #include "dcdatset.h"
+#include "ofglobal.h"
 
 /*
  * Constant Definitions
  */
 
+
+/* Global flag to enable/disable workaround code for some buggy Store SCUs
+ * in DIMSE_storeProvider().  If enabled, an illegal space-padding in the
+ * Affected SOP Instance UID field of the C-STORE-RQ message is retained
+ * in the corresponding C-STORE-RSP message.
+ * To enable the workaround, this flag must be set to OFTrue and 
+ * dcmEnableAutomaticInputDataCorrection must be set to OFFalse.
+ * (see declaration in dcmdata/include/dcobject.h)
+ */
+extern OFGlobal<OFBool> dcmPeerRequiresExactUIDCopy; /* default OFFalse */
 
 
 /* 
@@ -260,6 +271,12 @@ typedef struct {
 	unsigned int	opts; /* which optional items are set */
 #define O_STORE_MOVEORIGINATORAETITLE			0x0001
 #define O_STORE_MOVEORIGINATORID			0x0002
+        /* the following flag is set on incoming C-STORE requests if
+         * the SOP instance UID is (incorrectly) padded with a space
+         * character. Will only be detected if the dcmdata flag
+         * dcmEnableAutomaticInputDataCorrection is false.
+         */
+#define O_STORE_RQ_BLANK_PADDING			0x0008
 } T_DIMSE_C_StoreRQ;
 
 typedef struct {
@@ -271,6 +288,13 @@ typedef struct {
 	unsigned int	opts; /* which optional items are set */
 #define O_STORE_AFFECTEDSOPCLASSUID		0x0001
 #define O_STORE_AFFECTEDSOPINSTANCEUID		0x0002
+        /* peer requires an exact copy of the SOP instance UID
+         * as it was sent in the C-STORE-RQ,
+         * including any illegal trailing space padding.
+         */
+#define O_STORE_PEER_REQUIRES_EXACT_UID_COPY    0x0004
+        /* SOP instance UID in C-STORE-RQ was space padded. */
+#define O_STORE_RSP_BLANK_PADDING		0x0008
 } T_DIMSE_C_StoreRSP;
 
 /* C-ECHO */
@@ -1063,7 +1087,13 @@ void DIMSE_printMessage(ostream& outstream, T_DIMSE_Message &msg, DcmItem *datas
 /*
 ** CVS Log
 ** $Log: dimse.h,v $
-** Revision 1.9  2000-06-07 08:57:52  meichel
+** Revision 1.10  2000-12-15 13:28:16  meichel
+** Global flag to enable/disable workaround code for some buggy Store SCUs
+**   in DIMSE_storeProvider().  If enabled, an illegal space-padding in the
+**   Affected SOP Instance UID field of the C-STORE-RQ message is retained
+**   in the corresponding C-STORE-RSP message.
+**
+** Revision 1.9  2000/06/07 08:57:52  meichel
 ** dcmnet DIMSE routines now allow to retrieve raw command sets as DcmDataset
 **   objects, e.g. for logging purposes. Added enhanced message dump functions.
 **

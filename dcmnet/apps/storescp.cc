@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-11-10 18:07:43 $
+ *  Update Date:      $Date: 2000-12-15 13:28:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -842,6 +842,20 @@ acceptAssociation(T_ASC_Network * net)
     }
   }
 
+#ifdef BUGGY_IMPLEMENTATION_CLASS_UID_PREFIX
+  /* active the dcmPeerRequiresExactUIDCopy workaround code
+   * (see comments in dimse.h) for a implementation class UID 
+   * prefix known to exhibit the buggy behaviour.
+   */
+  if (0 == strncmp(assoc->params->theirImplementationClassUID, 
+      BUGGY_IMPLEMENTATION_CLASS_UID_PREFIX, 
+      strlen(BUGGY_IMPLEMENTATION_CLASS_UID_PREFIX)))
+  {
+    dcmEnableAutomaticInputDataCorrection.set(OFFalse);
+    dcmPeerRequiresExactUIDCopy.set(OFTrue);
+  }
+#endif
+  
   /* now do the real work */
   cond = processCommands(assoc);
 
@@ -1173,7 +1187,13 @@ static CONDITION storeSCP(
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.34  2000-11-10 18:07:43  meichel
+** Revision 1.35  2000-12-15 13:28:14  meichel
+** Global flag to enable/disable workaround code for some buggy Store SCUs
+**   in DIMSE_storeProvider().  If enabled, an illegal space-padding in the
+**   Affected SOP Instance UID field of the C-STORE-RQ message is retained
+**   in the corresponding C-STORE-RSP message.
+**
+** Revision 1.34  2000/11/10 18:07:43  meichel
 ** Mixed up strcmp and strcpy - oops.
 **
 ** Revision 1.33  2000/11/10 16:25:04  meichel

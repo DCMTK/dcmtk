@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2000-11-10 18:07:45 $
+** Update Date:		$Date: 2000-12-15 13:28:18 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimstore.cc,v $
-** CVS/RCS Revision:	$Revision: 1.12 $
+** CVS/RCS Revision:	$Revision: 1.13 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -96,6 +96,17 @@ END_EXTERN_C
 #include "diutil.h"
 #include "dimse.h"		/* always include the module header */
 #include "dimcond.h"
+
+
+/* Global flag to enable/disable workaround code for some buggy Store SCUs
+ * in DIMSE_storeProvider().  If enabled, an illegal space-padding in the
+ * Affected SOP Instance UID field of the C-STORE-RQ message is retained
+ * in the corresponding C-STORE-RSP message.
+ * To enable the workaround, this flag must be set to OFTrue and 
+ * dcmEnableAutomaticInputDataCorrection must be set to OFFalse.
+ * (see declaration in dcmdata/include/dcobject.h)
+ */
+OFGlobal<OFBool> dcmPeerRequiresExactUIDCopy(OFFalse);
 
 
 /*
@@ -319,8 +330,9 @@ DIMSE_storeProvider(/* in */
     response.DataSetType = DIMSE_DATASET_NULL;	/* always for C-STORE-RSP */
     strcpy(response.AffectedSOPClassUID, request->AffectedSOPClassUID);
     strcpy(response.AffectedSOPInstanceUID, request->AffectedSOPInstanceUID);
-    response.opts = (O_STORE_AFFECTEDSOPCLASSUID | 
-        O_STORE_AFFECTEDSOPINSTANCEUID);
+    response.opts = (O_STORE_AFFECTEDSOPCLASSUID | O_STORE_AFFECTEDSOPINSTANCEUID);
+    if (request->opts & O_STORE_RQ_BLANK_PADDING) response.opts |= O_STORE_RSP_BLANK_PADDING;
+    if (dcmPeerRequiresExactUIDCopy.get()) response.opts |= O_STORE_PEER_REQUIRES_EXACT_UID_COPY;
 
     /* set up callback routine */
     if (callback != NULL) {
@@ -401,7 +413,13 @@ DIMSE_storeProvider(/* in */
 /*
 ** CVS Log
 ** $Log: dimstore.cc,v $
-** Revision 1.12  2000-11-10 18:07:45  meichel
+** Revision 1.13  2000-12-15 13:28:18  meichel
+** Global flag to enable/disable workaround code for some buggy Store SCUs
+**   in DIMSE_storeProvider().  If enabled, an illegal space-padding in the
+**   Affected SOP Instance UID field of the C-STORE-RQ message is retained
+**   in the corresponding C-STORE-RSP message.
+**
+** Revision 1.12  2000/11/10 18:07:45  meichel
 ** Mixed up strcmp and strcpy - oops.
 **
 ** Revision 1.11  2000/11/10 16:25:03  meichel
