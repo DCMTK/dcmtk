@@ -23,8 +23,8 @@
  *    classes: DVInterface
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-10-07 17:21:45 $
- *  CVS/RCS Revision: $Revision: 1.54 $
+ *  Update Date:      $Date: 1999-10-19 14:46:01 $
+ *  CVS/RCS Revision: $Revision: 1.55 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -964,7 +964,7 @@ class DVInterface: public DVConfiguration
     const char *getPrinterOwnerID();
 
     /** sets the (optional) print number of copies.
-     *  @param value new attribute value, may be NULL.
+     *  @param value new attribute value, may be 0.
      *    The caller is responsible for making sure
      *    that the value is valid for the selected printer.
      *  @return EC_Normal if successful, an error code otherwise.
@@ -1093,6 +1093,58 @@ class DVInterface: public DVConfiguration
      */
     E_Condition printSCUcreateBasicFilmSession(DVPSPrintMessageHandler& printHandler, OFBool plutInSession);
 
+    /* annotation interface */
+
+    /** gets the current setting of the annotation activity annotation flag.
+     *  @return OFTrue if annotation is on, OFFalse otherwise.
+     */
+    OFBool isActiveAnnotation() { return activateAnnotation; }
+    
+    /** gets the current setting of the Prepend Date/Time annotation flag.
+     *  @return OFTrue if Prepend Date/Time is on, OFFalse otherwise.
+     */
+    OFBool getPrependDateTime() { return prependDateTime; }
+
+    /** gets the current setting of the Prepend Printer Name annotation flag.
+     *  @return OFTrue if Prepend Printer Name is on, OFFalse otherwise.
+     */
+    OFBool getPrependPrinterName() { return prependPrinterName; }
+
+    /** gets the current setting of the Prepend Lighting annotation flag.
+     *  @return OFTrue if Prepend Lighting is on, OFFalse otherwise.
+     */
+    OFBool getPrependLighting() { return prependLighting; }
+
+    /** gets the current annotation text.
+     *  @return annotation text, may be NULL or empty string.
+     */
+    const char *getAnnotationText() { return annotationText.c_str(); }
+
+    /** switches annotation printing on/off
+     *  @param value OFTrue if annotation is switched on, OFFalse otherwise.
+     */
+    void setActiveAnnotation(OFBool value) { activateAnnotation=value; }
+
+    /** sets the Prepend Date/Time annotation flag.
+     *  @param value OFTrue if Prepend Date/Time is switched on, OFFalse otherwise.
+     */
+    void setPrependDateTime(OFBool value) { prependDateTime=value; }
+
+    /** sets the Prepend Printer Name annotation flag.
+     *  @param value OFTrue if Prepend Printer Name is switched on, OFFalse otherwise.
+     */
+    void setPrependPrinterName(OFBool value) { prependPrinterName=value; }
+
+    /** sets the Prepend Lighting annotation flag.
+     *  @param value OFTrue if Prepend Lighting is switched on, OFFalse otherwise.
+     */
+    void setPrependLighting(OFBool value) { prependLighting=value; }
+
+    /** sets the current annotation text.
+     *  @param value new text, may be NULL.
+     */
+    void setAnnotationText(const char *value);
+    
     /** sets a new log stream
      *  @param o new log stream, must not be NULL
      */
@@ -1335,7 +1387,26 @@ private:
     /** printer film session owner ID, may be empty. VR=SH, VM=1
      */
     OFString printerOwnerID;
+
+    /** true if annotation should be created when spooling print job
+     */
+    OFBool activateAnnotation;
     
+    /** true if date and time should be prepended to annotation text
+     */
+    OFBool prependDateTime;
+
+    /** true if printer name should be prepended to annotation text
+     */
+    OFBool prependPrinterName;
+
+    /** true if reflected ambient light and illumination should be prepended to annotation text
+     */
+    OFBool prependLighting;
+
+    /** annotation text (if any)
+     */
+    OFString annotationText;
 };
 
 
@@ -1345,7 +1416,11 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.54  1999-10-07 17:21:45  meichel
+ *  Revision 1.55  1999-10-19 14:46:01  meichel
+ *  added support for the Basic Annotation Box SOP Class
+ *    as well as access methods for Max Density and Min Density.
+ *
+ *  Revision 1.54  1999/10/07 17:21:45  meichel
  *  Reworked management of Presentation LUTs in order to create tighter
  *    coupling between Softcopy and Print.
  *

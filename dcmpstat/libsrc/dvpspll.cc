@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-10-07 17:22:00 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 1999-10-19 14:48:24 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -229,6 +229,8 @@ const char *DVPSPresentationLUT_PList::addPresentationLUT(DVPSPresentationLUT *n
   DVPSPresentationLUT *myLUT = newLUT->clone();
   if (myLUT)
   {
+  	// make sure that we don't copy an inverse LUT shape
+  	if (myLUT->getType() == DVPSP_inverse) myLUT->setType(DVPSP_identity);
   	dcmGenerateUniqueIdentifer(uid);
   	myLUT->setSOPInstanceUID(uid);
     push_back(myLUT);
@@ -240,7 +242,11 @@ const char *DVPSPresentationLUT_PList::addPresentationLUT(DVPSPresentationLUT *n
 
 /*
  *  $Log: dvpspll.cc,v $
- *  Revision 1.1  1999-10-07 17:22:00  meichel
+ *  Revision 1.2  1999-10-19 14:48:24  meichel
+ *  added support for the Basic Annotation Box SOP Class
+ *    as well as access methods for Max Density and Min Density.
+ *
+ *  Revision 1.1  1999/10/07 17:22:00  meichel
  *  Reworked management of Presentation LUTs in order to create tighter
  *    coupling between Softcopy and Print.
  *

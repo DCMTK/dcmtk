@@ -23,8 +23,8 @@
  *    classes: DVConfiguration
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-10-13 14:11:56 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 1999-10-19 14:46:02 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -229,6 +229,44 @@ class DVConfiguration
     const char *getTargetPrinterBorderDensity(const char *targetID, Uint32 idx, OFString& value);
 
     /** returns the number of distinct values (separated by backslash characters)
+     *  in the MAXDENSITY entry for the printer with the given
+     *  target ID from the configuration file.
+     *  @param targetID communication target ID, must be one of the target
+     *    identifiers returned by getTargetID() for peer type DVPSE_printer.
+     *  @return number of values if entry present in the config file, 0 otherwise.
+     */
+    Uint32 getTargetPrinterNumberOfMaxDensities(const char *targetID);
+
+    /** returns one value from the MAXDENSITY entry for the printer
+     *  with the given target ID from the configuration file.
+     *  @param targetID communication target ID, must be one of the target
+     *    identifiers returned by getTargetID() for peer type DVPSE_printer.
+     *  @param idx index of the value, must be < getTargetPrinterNumberOfMaxDensities(targetID)
+     *  @param value the result is both stored in this object and returned as return value.
+     *  @return value if present, NULL otherwise.
+     */
+    const char *getTargetPrinterMaxDensity(const char *targetID, Uint32 idx, OFString& value);
+
+    /** returns the number of distinct values (separated by backslash characters)
+     *  in the MINDENSITY entry for the printer with the given
+     *  target ID from the configuration file.
+     *  @param targetID communication target ID, must be one of the target
+     *    identifiers returned by getTargetID() for peer type DVPSE_printer.
+     *  @return number of values if entry present in the config file, 0 otherwise.
+     */
+    Uint32 getTargetPrinterNumberOfMinDensities(const char *targetID);
+
+    /** returns one value from the MINDENSITY entry for the printer
+     *  with the given target ID from the configuration file.
+     *  @param targetID communication target ID, must be one of the target
+     *    identifiers returned by getTargetID() for peer type DVPSE_printer.
+     *  @param idx index of the value, must be < getTargetPrinterNumberOfMinDensities(targetID)
+     *  @param value the result is both stored in this object and returned as return value.
+     *  @return value if present, NULL otherwise.
+     */
+    const char *getTargetPrinterMinDensity(const char *targetID, Uint32 idx, OFString& value);
+
+    /** returns the number of distinct values (separated by backslash characters)
      *  in the DISPLAYFORMAT entry for the printer with the given
      *  target ID from the configuration file.
      *  @param targetID communication target ID, must be one of the target
@@ -255,6 +293,31 @@ class DVConfiguration
      */
     Uint32 getTargetPrinterPortraitDisplayFormatColumns(const char *targetID, Uint32 idx);
 
+    /** returns OFTrue if an ANNOTATION entry for the printer with the given
+     *  target ID from the configuration file exists.
+     *  @param targetID communication target ID, must be one of the target
+     *    identifiers returned by getTargetID() for peer type DVPSE_printer.
+     *  @return OFTrue if printer supports annotation, OFFalse otherwise.
+     */
+    OFBool getTargetPrinterSupportsAnnotation(const char *targetID);
+
+    /** returns the second value from the ANNOTATION entry for the printer
+     *  with the given target ID from the configuration file.
+     *  @param targetID communication target ID, must be one of the target
+     *    identifiers returned by getTargetID() for peer type DVPSE_printer.
+     *  @param value the result is both stored in this object and returned as return value.
+     *  @return value if present, NULL otherwise.
+     */
+    const char *getTargetPrinterAnnotationDisplayFormatID(const char *targetID, OFString& value);
+    
+    /** returns the first value from the ANNOTATION entry for the printer
+     *  with the given target ID from the configuration file.
+     *  @param targetID communication target ID, must be one of the target
+     *    identifiers returned by getTargetID() for peer type DVPSE_printer.
+     *  @return value if present, 0 otherwise.
+     */
+    Uint16 getTargetPrinterAnnotationPosition(const char *targetID);
+    
 // --- <BEGIN> ONLY FOR COMPATIBILITY REASONS <BEGIN> ---
 
     /** returns the MAXCOLUMNS entry for the printer with the given
@@ -706,7 +769,11 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.h,v $
- *  Revision 1.9  1999-10-13 14:11:56  meichel
+ *  Revision 1.10  1999-10-19 14:46:02  meichel
+ *  added support for the Basic Annotation Box SOP Class
+ *    as well as access methods for Max Density and Min Density.
+ *
+ *  Revision 1.9  1999/10/13 14:11:56  meichel
  *  Added config file entries and access methods
  *    for user-defined VOI presets, log directory, verbatim logging
  *    and an explicit list of image display formats for each printer.

@@ -22,8 +22,8 @@
  *  Purpose: DVConfiguration
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-10-13 14:12:00 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 1999-10-19 14:48:23 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,6 +52,7 @@
 /* keywords for configuration file */
 
 #define L0_AETITLE                      "AETITLE"
+#define L0_ANNOTATION                   "ANNOTATION"
 #define L0_ALWAYSDELETETERMINATEJOBS    "ALWAYSDELETETERMINATEJOBS"
 #define L0_BITPRESERVINGMODE            "BITPRESERVINGMODE"
 #define L0_BORDERDENSITY                "BORDERDENSITY"
@@ -73,10 +74,12 @@
 #define L0_LOGDIRECTORY                 "LOGDIRECTORY"
 #define L0_MAGNIFICATIONTYPE            "MAGNIFICATIONTYPE"
 #define L0_MAXCOLUMNS                   "MAXCOLUMNS"
+#define L0_MAXDENSITY                   "MAXDENSITY"
 #define L0_MAXPDU                       "MAXPDU"
 #define L0_MAXPRINTRESOLUTION           "MAXPRINTRESOLUTION"
 #define L0_MAXROWS                      "MAXROWS"
 #define L0_MEDIUMTYPE                   "MEDIUMTYPE"
+#define L0_MINDENSITY                   "MINDENSITY"
 #define L0_MINPRINTRESOLUTION           "MINPRINTRESOLUTION"
 #define L0_MODALITY                     "MODALITY"
 #define L0_PORT                         "PORT"
@@ -732,6 +735,28 @@ const char *DVConfiguration::getTargetPrinterBorderDensity(const char *targetID,
   if (value.length()) return value.c_str(); else return NULL;
 }
 
+Uint32 DVConfiguration::getTargetPrinterNumberOfMaxDensities(const char *targetID)
+{
+  return countValues(getConfigEntry(L2_COMMUNICATION, targetID, L0_MAXDENSITY));
+}
+
+const char *DVConfiguration::getTargetPrinterMaxDensity(const char *targetID, Uint32 idx, OFString& value)
+{
+  copyValue(getConfigEntry(L2_COMMUNICATION, targetID, L0_MAXDENSITY), idx, value);
+  if (value.length()) return value.c_str(); else return NULL;
+}
+
+Uint32 DVConfiguration::getTargetPrinterNumberOfMinDensities(const char *targetID)
+{
+  return countValues(getConfigEntry(L2_COMMUNICATION, targetID, L0_MINDENSITY));
+}
+
+const char *DVConfiguration::getTargetPrinterMinDensity(const char *targetID, Uint32 idx, OFString& value)
+{
+  copyValue(getConfigEntry(L2_COMMUNICATION, targetID, L0_MINDENSITY), idx, value);
+  if (value.length()) return value.c_str(); else return NULL;
+}
+
 Uint32 DVConfiguration::getTargetPrinterNumberOfEmptyImageDensities(const char *targetID)
 {
   return countValues(getConfigEntry(L2_COMMUNICATION, targetID, L0_EMPTYIMAGEDENSITY));
@@ -948,10 +973,38 @@ Uint32 DVConfiguration::getTargetPrinterPortraitDisplayFormatColumns(const char 
   return 0;
 }
 
+OFBool DVConfiguration::getTargetPrinterSupportsAnnotation(const char *targetID)
+{
+  if (NULL==getConfigEntry(L2_COMMUNICATION, targetID, L0_ANNOTATION)) return OFFalse;
+  return OFTrue;
+}
+
+const char *DVConfiguration::getTargetPrinterAnnotationDisplayFormatID(const char *targetID, OFString& value)
+{
+  copyValue(getConfigEntry(L2_COMMUNICATION, targetID, L0_ANNOTATION), 1, value);
+  if (value.length()) return value.c_str(); else return NULL;
+}
+    
+Uint16 DVConfiguration::getTargetPrinterAnnotationPosition(const char *targetID)
+{
+  OFString value;
+  copyValue(getConfigEntry(L2_COMMUNICATION, targetID, L0_ANNOTATION), 0, value);
+  if (value.length())
+  {
+    Uint16 result = 0;
+    if (1 == sscanf(value.c_str(), "%hu", &result)) return result;
+  }
+  return 0;
+}
+
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.cc,v $
- *  Revision 1.13  1999-10-13 14:12:00  meichel
+ *  Revision 1.14  1999-10-19 14:48:23  meichel
+ *  added support for the Basic Annotation Box SOP Class
+ *    as well as access methods for Max Density and Min Density.
+ *
+ *  Revision 1.13  1999/10/13 14:12:00  meichel
  *  Added config file entries and access methods
  *    for user-defined VOI presets, log directory, verbatim logging
  *    and an explicit list of image display formats for each printer.

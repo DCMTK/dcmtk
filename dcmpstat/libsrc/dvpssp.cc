@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-10-13 14:11:14 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 1999-10-19 14:48:26 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -118,6 +118,7 @@ DVPSStoredPrint::DVPSStoredPrint(Uint16 illumin, Uint16 reflection)
 , requestedResolutionID(DCM_RequestedResolutionID)
 , referencedPresentationLUTInstanceUID(DCM_ReferencedSOPInstanceUID)
 , imageBoxContentList()
+, annotationContentList()
 , presentationLUTList()
 , sOPInstanceUID(DCM_SOPInstanceUID)
 , specificCharacterSet(DCM_SpecificCharacterSet)
@@ -133,6 +134,7 @@ DVPSStoredPrint::DVPSStoredPrint(Uint16 illumin, Uint16 reflection)
 , presentationLUTInstanceUID()
 , transmitImagesIn12Bit(OFTrue)
 , renderPresentationLUTinSCP(OFFalse)
+, tempDensity()
 , logstream(&cerr)
 {
   illumination.putUint16(illumin,0);
@@ -171,6 +173,7 @@ DVPSStoredPrint::DVPSStoredPrint(const DVPSStoredPrint& copy)
 , requestedResolutionID(copy.requestedResolutionID)
 , referencedPresentationLUTInstanceUID(copy.referencedPresentationLUTInstanceUID)
 , imageBoxContentList(copy.imageBoxContentList)
+, annotationContentList(copy.annotationContentList)
 , presentationLUTList(copy.presentationLUTList)  
 , sOPInstanceUID(copy.sOPInstanceUID)
 , specificCharacterSet(copy.specificCharacterSet)
@@ -186,6 +189,7 @@ DVPSStoredPrint::DVPSStoredPrint(const DVPSStoredPrint& copy)
 , presentationLUTInstanceUID(copy.presentationLUTInstanceUID)
 , transmitImagesIn12Bit(copy.transmitImagesIn12Bit)
 , renderPresentationLUTinSCP(copy.renderPresentationLUTinSCP)
+, tempDensity(copy.tempDensity)
 , logstream(copy.logstream)
 {
 }
@@ -227,6 +231,7 @@ void DVPSStoredPrint::clear()
   requestedResolutionID.clear();
   referencedPresentationLUTInstanceUID.clear();
   imageBoxContentList.clear();
+  annotationContentList.clear();
   presentationLUTList.clear();  
   sOPInstanceUID.clear();
   specificCharacterSet.clear();
@@ -240,6 +245,7 @@ void DVPSStoredPrint::clear()
   presentationLUTInstanceUID.clear();
   transmitImagesIn12Bit = OFTrue;
   renderPresentationLUTinSCP = OFFalse;
+  tempDensity.clear();
   // we don't change the log stream
 }
 
@@ -416,6 +422,8 @@ E_Condition DVPSStoredPrint::read(DcmItem &dset)
   }
 
   if (EC_Normal==result) result = imageBoxContentList.read(dset, presentationLUTList);
+
+  if (EC_Normal==result) result = annotationContentList.read(dset);
        
   /* Now perform basic sanity checks */
 
@@ -474,6 +482,7 @@ E_Condition DVPSStoredPrint::read(DcmItem &dset)
    *   - Printer (is part of Basic Grayscale Meta SOP Class)
    *   - Basic Film Session (ditto)
    *   - Presentation LUT
+   *   - Basic Annotation Box
    */
   if (result==EC_Normal)
   {
@@ -501,7 +510,8 @@ E_Condition DVPSStoredPrint::read(DcmItem &dset)
            else
              if ((aString == UID_PrinterSOPClass)
                ||(aString == UID_BasicFilmSessionSOPClass)
-               ||(aString == UID_PresentationLUTSOPClass)) { }
+               ||(aString == UID_PresentationLUTSOPClass)
+               ||(aString == UID_BasicAnnotationBoxSOPClass)) { }
              else 
                if (isImageStorageSOPClass(aString)) 
                  haveImageStorage=OFTrue;
@@ -690,6 +700,9 @@ E_Condition DVPSStoredPrint::write(DcmItem &dset, OFBool writeRequestedImageSize
   // write imageBoxContentList
   if (EC_Normal == result) result = imageBoxContentList.write(dset, writeRequestedImageSize, writeImageBoxes);
 
+  // write annotationContentList
+  if (EC_Normal == result) result = annotationContentList.write(dset);
+
   // write PrintManagementCapabilitiesSequence
   dseq = new DcmSequenceOfItems(DCM_PrintManagementCapabilitiesSequence);
   if (dseq)
@@ -702,9 +715,13 @@ E_Condition DVPSStoredPrint::write(DcmItem &dset, OFBool writeRequestedImageSize
     {
       result = DVPSHelper::addReferencedUIDItem(*dseq, UID_PresentationLUTSOPClass);
     }
+    if ((result == EC_Normal)&&(annotationContentList.size() > 0))
+    {
+      result = DVPSHelper::addReferencedUIDItem(*dseq, UID_BasicAnnotationBoxSOPClass);
+    }
+    
     if (result==EC_Normal) dset.insert(dseq); else delete dseq;
   } else result = EC_MemoryExhausted;
-
 
   return result;
 }
@@ -896,6 +913,9 @@ E_Condition DVPSStoredPrint::newPrinter()
   trim.clear();
   borderDensity.clear();
   emptyImageDensity.clear();
+  minDensity.clear();
+  maxDensity.clear();
+
   E_Condition result = setRequestedDecimateCropBehaviour(DVPSI_default);
   if (EC_Normal == result) result = imageBoxContentList.setAllImagesToDefault();
   return result;
@@ -1287,6 +1307,7 @@ E_Condition DVPSStoredPrint::printSCUcreateBasicFilmBox(DVPSPrintMessageHandler&
   Uint16 status=0;
   DcmStack stack;
   OFString grayscaleIB(UID_BasicGrayscaleImageBoxSOPClass);
+  OFString annotationB(UID_BasicAnnotationBoxSOPClass);
   
   ADD_TO_DATASET(DcmShortText, imageDisplayFormat)
   if (filmOrientation.getLength() > 0)           { ADD_TO_DATASET(DcmCodeString, filmOrientation) }
@@ -1294,13 +1315,16 @@ E_Condition DVPSStoredPrint::printSCUcreateBasicFilmBox(DVPSPrintMessageHandler&
   if (magnificationType.getLength() > 0)         { ADD_TO_DATASET(DcmCodeString, magnificationType) }
   if (maxDensity.getLength() > 0)                { ADD_TO_DATASET(DcmUnsignedShort, maxDensity) }
   if (configurationInformation.getLength() > 0)  { ADD_TO_DATASET(DcmShortText, configurationInformation) }
-  if (annotationDisplayFormatID.getLength() > 0) { ADD_TO_DATASET(DcmCodeString, annotationDisplayFormatID) }
   if (smoothingType.getLength() > 0)             { ADD_TO_DATASET(DcmCodeString, smoothingType) }
   if (borderDensity.getLength() > 0)             { ADD_TO_DATASET(DcmCodeString, borderDensity) }
   if (emptyImageDensity.getLength() > 0)         { ADD_TO_DATASET(DcmCodeString, emptyImageDensity) }
   if (minDensity.getLength() > 0)                { ADD_TO_DATASET(DcmUnsignedShort, minDensity) }
   if (trim.getLength() > 0)                      { ADD_TO_DATASET(DcmCodeString, trim) }
   if (requestedResolutionID.getLength() > 0)     { ADD_TO_DATASET(DcmCodeString, requestedResolutionID) }
+  if ((printHandler.printerSupportsAnnotationBox())&&(annotationDisplayFormatID.getLength() > 0)) 
+  { 
+  	ADD_TO_DATASET(DcmCodeString, annotationDisplayFormatID)	
+  }
   
   // add Referenced Film Session SQ
   DcmUniqueIdentifier refsopclassuid(DCM_ReferencedSOPClassUID);
@@ -1341,6 +1365,8 @@ E_Condition DVPSStoredPrint::printSCUcreateBasicFilmBox(DVPSPrintMessageHandler&
 
   if (result==EC_Normal)
   {
+  	size_t numItems = 0;
+  	size_t i;
     CONDITION cond = printHandler.createRQ(UID_BasicFilmBoxSOPClass, filmBoxInstanceUID, &dset, status, attributeListOut);
     if ((SUCCESS(cond))&&((status==0)||((status & 0xf000)==0xb000))&& attributeListOut)
     {
@@ -1349,9 +1375,9 @@ E_Condition DVPSStoredPrint::printSCUcreateBasicFilmBox(DVPSPrintMessageHandler&
       if (EC_Normal == attributeListOut->search(DCM_ReferencedImageBoxSequence, stack, ESM_fromHere, OFFalse))
       {
         seq=(DcmSequenceOfItems *)stack.top();
-        size_t numItems = seq->card();
+        numItems = seq->card();
         if (numItems > imageBoxContentList.size()) numItems = imageBoxContentList.size();
-        for (size_t i=0; i<numItems; i++)
+        for (i=0; i<numItems; i++)
         {
            item = seq->getItem(i);
            stack.clear();
@@ -1365,6 +1391,29 @@ E_Condition DVPSStoredPrint::printSCUcreateBasicFilmBox(DVPSPrintMessageHandler&
            } else result = EC_IllegalCall; /* wrong SOP class or unable to read UID */     
         }
       } else result=EC_TagNotFound;
+
+      // evaluate Referenced Basic Annotation Box SQ if present
+      stack.clear();
+      annotationContentList.clearAnnotationSOPInstanceUIDs();
+      if (EC_Normal == attributeListOut->search(DCM_ReferencedBasicAnnotationBoxSequence, stack, ESM_fromHere, OFFalse))
+      {
+        seq=(DcmSequenceOfItems *)stack.top();
+        numItems = seq->card();
+        if (numItems > annotationContentList.size()) numItems = annotationContentList.size();
+        for (i=0; i<numItems; i++)
+        {
+           item = seq->getItem(i);
+           stack.clear();
+           READ_FROM_DATASET2(DcmUniqueIdentifier, refsopclassuid)
+           READ_FROM_DATASET2(DcmUniqueIdentifier, refsopinstanceuid)
+           if (EC_Normal==result) result = refsopclassuid.getString(c);
+           if ((EC_Normal==result) && c && (annotationB == c))
+           {
+             result = refsopinstanceuid.getString(c);
+           	 if (EC_Normal==result) result = annotationContentList.setAnnotationSOPInstanceUID(i, c);
+           } else result = EC_IllegalCall; /* wrong SOP class or unable to read UID */     
+        }
+      }
     } else {
       filmBoxInstanceUID.clear();
       result = EC_IllegalCall;
@@ -1547,6 +1596,39 @@ E_Condition DVPSStoredPrint::printSCUsetBasicImageBox(
   return result;
 }    
 
+E_Condition DVPSStoredPrint::printSCUsetBasicAnnotationBox(
+    DVPSPrintMessageHandler& printHandler,
+    size_t idx)
+{
+  DcmDataset dataset;
+  DcmDataset *attributeListOut=NULL; 
+  Uint16 status=0;
+  E_Condition result = EC_Normal;
+
+  if (printHandler.printerSupportsAnnotationBox())
+  {  
+    const char *annotationSopInstanceUID = annotationContentList.getSOPInstanceUID(idx);  
+    if ((annotationSopInstanceUID==NULL)||(strlen(annotationSopInstanceUID)==0))
+    {
+       *logstream << "Warning: not enough Annotation Boxes created by printer, ignoring annotation." << endl;
+       return EC_Normal;
+    }
+
+    result = annotationContentList.prepareBasicAnnotationBox(idx, dataset);
+  
+    if (EC_Normal == result)
+    {
+      CONDITION cond = printHandler.setRQ(UID_BasicAnnotationBoxSOPClass, annotationSopInstanceUID, &dataset, status, attributeListOut);
+      if ((! SUCCESS(cond))||((status!=0)&&((status & 0xf000)!=0xb000))) result = EC_IllegalCall;
+    }
+    delete attributeListOut;
+  } else {
+     *logstream << "Warning: printer does not support Annotation Box, ignoring annotation." << endl;
+  }
+
+  return result;
+}    
+
 void DVPSStoredPrint::setLog(ostream *o)
 {
   if (o)
@@ -1557,9 +1639,97 @@ void DVPSStoredPrint::setLog(ostream *o)
   }
 }
 
+const char *DVPSStoredPrint::getMaxDensity()
+{
+  if (maxDensity.getLength() > 0)
+  {
+    Uint16 density=0;
+    if (EC_Normal == maxDensity.getUint16(density,0))
+    {
+      char buf[20];
+      sprintf(buf, "%hu", density);
+      tempDensity = buf;
+      return tempDensity.c_str();
+    }
+  }
+  return NULL;
+}
+
+const char *DVPSStoredPrint::getMinDensity()
+{
+  if (minDensity.getLength() > 0)
+  {
+    Uint16 density=0;
+    if (EC_Normal == minDensity.getUint16(density,0))
+    {
+      char buf[20];
+      sprintf(buf, "%hu", density);
+      tempDensity = buf;
+      return tempDensity.c_str();
+    }
+  }
+  return NULL;
+}
+
+E_Condition DVPSStoredPrint::setMaxDensity(const char *value)
+{
+  E_Condition result = EC_Normal;
+  if (value && (strlen(value)>0))
+  {
+  	Uint16 density = 0;
+  	if (1 == (sscanf(value, "%hu", &density)))
+  	{
+  	  result = maxDensity.putUint16(density, 0);
+  	} else result = EC_IllegalCall;
+  } else maxDensity.clear();
+  return result;
+}
+
+E_Condition DVPSStoredPrint::setMinDensity(const char *value)
+{
+  E_Condition result = EC_Normal;
+  if (value && (strlen(value)>0))
+  {
+  	Uint16 density = 0;
+  	if (1 == (sscanf(value, "%hu", &density)))
+  	{
+  	  result = minDensity.putUint16(density, 0);
+  	} else result = EC_IllegalCall;
+  } else minDensity.clear();
+  return result;
+}
+
+E_Condition DVPSStoredPrint::setSingleAnnotation(
+    const char *displayformat,
+    const char *text,
+    Uint16 position)
+{
+  E_Condition result = EC_IllegalCall;
+  if (displayformat && text)
+  {
+    char newuid[70];
+    dcmGenerateUniqueIdentifer(newuid);
+    deleteAnnotations();
+    result = annotationContentList.addAnnotationBox(newuid, text, position);
+    if (EC_Normal==result) result = annotationDisplayFormatID.putString(displayformat);
+  }
+  return result;
+}
+
+void DVPSStoredPrint::deleteAnnotations()
+{
+  annotationContentList.clear();
+  annotationDisplayFormatID.clear();
+  return;
+}
+
 /*
  *  $Log: dvpssp.cc,v $
- *  Revision 1.18  1999-10-13 14:11:14  meichel
+ *  Revision 1.19  1999-10-19 14:48:26  meichel
+ *  added support for the Basic Annotation Box SOP Class
+ *    as well as access methods for Max Density and Min Density.
+ *
+ *  Revision 1.18  1999/10/13 14:11:14  meichel
  *  Fixed bug in routine that renders P-LUTs into a print bitmap
  *    before sending an image to the printer
  *

@@ -23,8 +23,8 @@
  *    classes: DVPSPrintMessageHandler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-10-13 14:10:49 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 1999-10-19 14:48:24 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,7 +41,7 @@ static void printStatusString(ostream& dumpStream, int status)
   switch(status)
   {
     case 0x0000:
-      dumpStream << "0x0000: Sucess";
+      dumpStream << "0x0000: Success";
       break;
     case 0xFE00:
       dumpStream << "0xFE00: Cancel";
@@ -882,7 +882,11 @@ OFBool DVPSPrintMessageHandler::printerSupportsAnnotationBox()
 
 /*
  *  $Log: dvpspr.cc,v $
- *  Revision 1.5  1999-10-13 14:10:49  meichel
+ *  Revision 1.6  1999-10-19 14:48:24  meichel
+ *  added support for the Basic Annotation Box SOP Class
+ *    as well as access methods for Max Density and Min Density.
+ *
+ *  Revision 1.5  1999/10/13 14:10:49  meichel
  *  Now negotiation Basic Annotation Box SOP Class
  *
  *  Revision 1.4  1999/09/24 15:24:08  meichel

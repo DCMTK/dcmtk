@@ -1,0 +1,250 @@
+/*
+ *
+ *  Copyright (C) 1998-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module: dcmpstat
+ *
+ *  Author: Marco Eichelberg
+ *
+ *  Purpose:
+ *    classes: DVPSAnnotationContent_PList
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-10-19 14:48:27 $
+ *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
+
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dvpsabl.h"
+#include "dvpsab.h"      /* for DVPSAnnotationContent */
+#include "dvpshlp.h"     /* for class DVPSHelper */
+
+/* --------------- class DVPSAnnotationContent_PList --------------- */
+
+DVPSAnnotationContent_PList::DVPSAnnotationContent_PList()
+: OFList<DVPSAnnotationContent *>()
+, logstream(&cerr)
+{
+}
+
+DVPSAnnotationContent_PList::DVPSAnnotationContent_PList(const DVPSAnnotationContent_PList &arg)
+: OFList<DVPSAnnotationContent *>()
+, logstream(arg.logstream)
+{
+  OFListIterator(DVPSAnnotationContent *) first = arg.begin();
+  OFListIterator(DVPSAnnotationContent *) last = arg.end();
+  while (first != last)
+  {     
+    push_back((*first)->clone());
+    ++first;
+  }
+}
+
+DVPSAnnotationContent_PList::~DVPSAnnotationContent_PList()
+{
+  clear();
+}
+
+void DVPSAnnotationContent_PList::clear()
+{
+  OFListIterator(DVPSAnnotationContent *) first = begin();
+  OFListIterator(DVPSAnnotationContent *) last = end();
+  while (first != last)
+  {     
+    delete (*first);
+    first = erase(first);
+  }
+}
+
+E_Condition DVPSAnnotationContent_PList::read(DcmItem &dset)
+{
+  E_Condition result = EC_Normal;
+  DcmStack stack;
+  DVPSAnnotationContent *newAnnotation = NULL;
+  DcmSequenceOfItems *dseq=NULL;
+  DcmItem *ditem=NULL;
+  
+  if (EC_Normal == dset.search(DCM_AnnotationContentSequence, stack, ESM_fromHere, OFFalse))
+  {
+    dseq=(DcmSequenceOfItems *)stack.top();
+    if (dseq)
+    {
+      unsigned long numItems = dseq->card();
+      for (unsigned int i=0; i<numItems; i++)
+      {
+        ditem = dseq->getItem(i);
+        newAnnotation = new DVPSAnnotationContent();
+        if (newAnnotation && ditem)
+        {
+          newAnnotation->setLog(logstream);
+          result = newAnnotation->read(*ditem);
+          push_back(newAnnotation);
+        } else result = EC_MemoryExhausted;
+      }
+    }
+  }    
+  
+  return result;
+}
+
+E_Condition DVPSAnnotationContent_PList::write(DcmItem &dset)
+{
+  if (size()==0) return EC_Normal; // don't write if sequence is empty
+
+  E_Condition result = EC_Normal;
+  DcmSequenceOfItems *dseq=NULL;
+  DcmItem *ditem=NULL;
+  
+  dseq = new DcmSequenceOfItems(DCM_AnnotationContentSequence);
+  if (dseq)
+  {
+    OFListIterator(DVPSAnnotationContent *) first = begin();
+    OFListIterator(DVPSAnnotationContent *) last = end();
+    while (first != last)
+    {
+      if (result==EC_Normal)
+      {
+        ditem = new DcmItem();
+        if (ditem)
+        {
+          result = (*first)->write(*ditem);
+          if (result==EC_Normal) dseq->insert(ditem); else delete ditem;
+        } else result = EC_MemoryExhausted;
+      }
+      ++first;
+    }
+    if (result==EC_Normal) dset.insert(dseq); else delete dseq;
+  } else result = EC_MemoryExhausted;
+  return result;
+}
+
+
+E_Condition DVPSAnnotationContent_PList::addAnnotationBox(
+    const char *instanceuid,
+    const char *text,
+    Uint16 position)
+{
+  E_Condition result = EC_Normal;
+  DVPSAnnotationContent *newAnnotation = new DVPSAnnotationContent();
+  if (newAnnotation)
+  {
+    newAnnotation->setLog(logstream);  	
+    result = newAnnotation->setContent(instanceuid, text, position);
+    if (EC_Normal == result) push_back(newAnnotation); else delete newAnnotation;
+  } else result = EC_MemoryExhausted;
+  return result;
+}
+
+
+E_Condition DVPSAnnotationContent_PList::deleteAnnotation(size_t idx)
+{
+  OFListIterator(DVPSAnnotationContent *) first = begin();
+  OFListIterator(DVPSAnnotationContent *) last = end();
+  while ((first != last)&&(idx--)) ++first;
+  if (first != last)
+  {
+    delete (*first);
+    erase(first);
+    return EC_Normal;
+  }
+  return EC_IllegalCall;
+}
+
+E_Condition DVPSAnnotationContent_PList::deleteMultipleAnnotations(size_t number)
+{
+  OFListIterator(DVPSAnnotationContent *) first = begin();
+  OFListIterator(DVPSAnnotationContent *) last = end();
+  while ((first != last)&&(number--))
+  {
+    delete (*first);
+    first = erase(first);
+  }
+  return EC_Normal;
+}
+
+DVPSAnnotationContent *DVPSAnnotationContent_PList::getAnnotationBox(size_t idx)
+{
+  OFListIterator(DVPSAnnotationContent *) first = begin();
+  OFListIterator(DVPSAnnotationContent *) last = end();
+  while (first != last)
+  {
+    if (idx==0) return *first;
+    idx--;
+    ++first;
+  }
+  return NULL;
+}
+
+E_Condition DVPSAnnotationContent_PList::setAnnotationSOPInstanceUID(size_t idx, const char *value)
+{
+  DVPSAnnotationContent *box = getAnnotationBox(idx);
+  if (box) return box->setSOPInstanceUID(value);
+  return EC_IllegalCall; 
+}
+
+const char *DVPSAnnotationContent_PList::getSOPInstanceUID(size_t idx)
+{
+  DVPSAnnotationContent *box = getAnnotationBox(idx);
+  if (box) return box->getSOPInstanceUID();
+  return NULL; 
+}
+
+E_Condition DVPSAnnotationContent_PList::prepareBasicAnnotationBox(size_t idx, DcmItem &dset)
+{
+  DVPSAnnotationContent *box = getAnnotationBox(idx);
+  if (box) return box->prepareBasicAnnotationBox(dset);
+  return EC_IllegalCall; 
+}
+
+void DVPSAnnotationContent_PList::setLog(ostream *o)
+{
+  if (o)
+  {
+  	logstream = o;
+    OFListIterator(DVPSAnnotationContent *) first = begin();
+    OFListIterator(DVPSAnnotationContent *) last = end();
+    while (first != last)
+    {
+      (*first)->setLog(o);
+      ++first;
+    }	
+  }
+}
+
+void DVPSAnnotationContent_PList::clearAnnotationSOPInstanceUIDs()
+{
+  OFListIterator(DVPSAnnotationContent *) first = begin();
+  OFListIterator(DVPSAnnotationContent *) last = end();
+  while (first != last)
+  {
+    (*first)->setSOPInstanceUID(NULL);
+    ++first;
+  }	
+}
+
+/*
+ *  $Log: dvpsabl.cc,v $
+ *  Revision 1.1  1999-10-19 14:48:27  meichel
+ *  added support for the Basic Annotation Box SOP Class
+ *    as well as access methods for Max Density and Min Density.
+ *
+ *
+ */
+

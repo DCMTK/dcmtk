@@ -26,9 +26,9 @@
  *    Non-grayscale transformations in the presentation state are ignored. 
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-10-07 17:21:42 $
+ *  Update Date:      $Date: 1999-10-19 14:45:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsprt.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,8 +56,6 @@
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
-void dumpPrinterCharacteristics(DVInterface& dvi, const char *target);
-
 #define SHORTCOL 2
 #define LONGCOL 21
 
@@ -65,7 +63,6 @@ int main(int argc, char *argv[])
 {
     OFCmdUnsignedInt          opt_debugMode      = 0;           /* default: no debug */
     OFBool                    opt_verbose        = OFFalse;     /* default: do not dump presentation state */
-    OFBool                    opt_dump           = OFFalse;
     const char *              opt_printerID = NULL;             /* printer ID */
     const char *              opt_cfgName = NULL;               /* config read file name */
     DVPSFilmOrientation       opt_filmorientation = DVPSF_default;
@@ -94,6 +91,12 @@ int main(int argc, char *argv[])
     const char *              opt_priority        = NULL;
     const char *              opt_ownerID         = NULL;
 
+    OFBool                    opt_annotation = OFFalse;
+    OFBool                    opt_annotationDatetime = OFTrue;
+    OFBool                    opt_annotationPrinter = OFTrue;
+    OFBool                    opt_annotationIllumination = OFTrue;
+    const char *              opt_annotationString = NULL;
+   
     OFCmdUnsignedInt          opt_illumination = (OFCmdUnsignedInt)-1;
     OFCmdUnsignedInt          opt_reflection = (OFCmdUnsignedInt)-1;
         
@@ -121,8 +124,7 @@ int main(int argc, char *argv[])
                                              "process using settings from configuration file");
      cmd.addOption("--printer",     "-p", 1, "[n]ame: string (default: 1st printer in cfg file)",
                                              "select printer with identifier [n] from cfg file");
-     cmd.addOption("--dump",                 "dump characteristics of selected printer");
-
+                                             
     cmd.addGroup("spooling options:");
      cmd.addOption("--spool",       "-s",    "spool print job to DICOM printer");
      cmd.addOption("--nospool",              "do not spool print job to DICOM printer (default)");
@@ -166,6 +168,19 @@ int main(int argc, char *argv[])
                                              "set print priority to [v]");
      cmd.addOption("--owner",             1, "[v]alue: string",
                                              "set film session owner ID to [v]");
+
+    cmd.addGroup("annotation options:");    
+     cmd.addOption("--no-annotation",        "do not create annotation (default)");
+     cmd.addOption("--annotation",  "-a", 1, "[t]ext: string",
+                                             "create annotation with text [t]");
+     cmd.addOption("--print-date",        "+pd",  "prepend date/time to annotation (default)");
+     cmd.addOption("--print-no-date",     "-pd",  "do not prepend date/time to annotation");
+
+     cmd.addOption("--print-name",        "+pn",  "prepend printer name to annotation (default)");
+     cmd.addOption("--print-no-name",     "-pn",  "do not prepend printer name to annotation");
+
+     cmd.addOption("--print-lighting",    "+pl",  "prepend illumination to annotation (default)");
+     cmd.addOption("--print-no-lighting", "-pl",  "do not prepend illumination to annotation");
 
     cmd.addGroup("other print options:");
      cmd.addOption("--layout",      "-l", 2, "[c]olumns, [r]ows: integer (default: 1,1)",
@@ -228,6 +243,30 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--nospool"))       opt_spool = OFFalse;
       cmd.endOptionBlock();
 
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--no-annotation"))         opt_annotation = OFFalse;
+      if (cmd.findOption("--annotation"))
+      {
+      	opt_annotation = OFTrue;
+        app.checkValue(cmd.getValue(opt_annotationString));
+      }
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--print-date"))         opt_annotationDatetime = OFTrue;
+      if (cmd.findOption("--print-no-date"))      opt_annotationDatetime = OFFalse;
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--print-name"))         opt_annotationPrinter = OFTrue;
+      if (cmd.findOption("--print-no-name"))      opt_annotationPrinter = OFFalse;
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--print-lighting"))         opt_annotationIllumination = OFTrue;
+      if (cmd.findOption("--print-no-lighting"))      opt_annotationIllumination = OFFalse;
+      cmd.endOptionBlock();
+
       if (cmd.findOption("--filmsize"))      app.checkValue(cmd.getValue(opt_filmsize));
       if (cmd.findOption("--magnification")) app.checkValue(cmd.getValue(opt_magnification));
       if (cmd.findOption("--smoothing"))     app.checkValue(cmd.getValue(opt_smoothing));
@@ -240,7 +279,6 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--img-magnification")) app.checkValue(cmd.getValue(opt_img_magnification));
       if (cmd.findOption("--img-smoothing"))     app.checkValue(cmd.getValue(opt_img_smoothing));
       if (cmd.findOption("--img-configinfo"))    app.checkValue(cmd.getValue(opt_img_configuration));
-      if (cmd.findOption("--dump"))          opt_dump = OFTrue;
 
       /* film session options */
       if (cmd.findOption("--medium-type"))
@@ -323,7 +361,6 @@ int main(int argc, char *argv[])
 
     /* dump printer characteristics if requested */
     const char *currentPrinter = dvi.getCurrentPrinter();
-    if (opt_dump) dumpPrinterCharacteristics(dvi, currentPrinter);
 
     if (EC_Normal != dvi.getPrintHandler().setImageDisplayFormat(opt_columns, opt_rows))
       cerr << "warning: cannot set image display format to columns=" << opt_columns
@@ -451,6 +488,27 @@ int main(int argc, char *argv[])
       }
     }
 
+    // set annotations
+    if (status == EC_Normal)
+    {
+      if (opt_annotation)
+      {
+      	if (dvi.getTargetPrinterSupportsAnnotation(currentPrinter))
+      	{
+          dvi.setActiveAnnotation(OFTrue);
+          dvi.setPrependDateTime(opt_annotationDatetime);
+          dvi.setPrependPrinterName(opt_annotationPrinter);
+          dvi.setPrependLighting(opt_annotationIllumination);
+          dvi.setAnnotationText(opt_annotationString);        
+        } else {
+          cerr << "warning: printer '" << currentPrinter << "' does not support annotations, ignoring." << endl;
+          dvi.setActiveAnnotation(OFFalse);
+        }
+      } else {
+      	dvi.setActiveAnnotation(OFFalse);
+      }
+    }
+
     if (status == EC_Normal)
     {
       size_t numImages = dvi.getPrintHandler().getNumberOfImages();
@@ -473,7 +531,7 @@ int main(int argc, char *argv[])
         }
       }
     }
-
+    
     if ((status == EC_Normal) && opt_spool)
     {
       if (currentPrinter)
@@ -497,120 +555,14 @@ int main(int argc, char *argv[])
 }
 
 
-// ********************************************
-
-
-void dumpPrinterCharacteristics(DVInterface& dvi, const char *target)
-{
-    const char *c;
-    OFString aString;
-    
-    cerr << "========== Dump of Printer Characteristics ==========" << endl;
-    cerr << "Printer ID                    : " << target << endl;
-    c = dvi.getTargetDescription(target);
-    cerr << "description                   : " << (c ? c : "(none)") << endl;
-    c = dvi.getTargetHostname(target);
-    cerr << "hostname                      : " << (c ? c : "(none)") << endl;
-    unsigned short port = dvi.getTargetPort(target);
-    cerr << "port                          : " << port << endl;
-    c = dvi.getTargetAETitle(target);
-    cerr << "application entity title      : " << (c ? c : "(none)") << endl;
-    unsigned long pdu = dvi.getTargetMaxPDU(target);
-    cerr << "max PDU size                  : " << pdu << endl;
-    cerr << "implicit only                 : ";
-    if (dvi.getTargetImplicitOnly(target)) cerr << "yes" << endl; else cerr << "no" << endl;
-    cerr << "disable new vr                : ";
-    if (dvi.getTargetDisableNewVRs(target)) cerr << "yes" << endl; else cerr << "no" << endl;
-    cerr << "supports presentation lut     : ";
-    if (dvi.getTargetPrinterSupportsPresentationLUT(target)) cerr << "yes" << endl; else cerr << "no" << endl;
-    cerr << "supports 12 bit transmission  : ";
-    if (dvi.getTargetPrinterSupports12BitTransmission(target)) cerr << "yes" << endl; else cerr << "no" << endl;
-    cerr << "supports requested image size : ";
-    if (dvi.getTargetPrinterSupportsRequestedImageSize(target)) cerr << "yes" << endl; else cerr << "no" << endl;
-    cerr << "supports decimate/crop        : ";
-    if (dvi.getTargetPrinterSupportsDecimateCrop(target)) cerr << "yes" << endl; else cerr << "no" << endl;  
-    cerr << "supports trim                 : ";
-    if (dvi.getTargetPrinterSupportsTrim(target)) cerr << "yes" << endl; else cerr << "no" << endl;  
-    Uint32 maxcols = dvi.getTargetPrinterMaxDisplayFormatColumns(target);
-    Uint32 maxrows = dvi.getTargetPrinterMaxDisplayFormatRows(target);
-    cerr << "max columns/rows              : ";
-    if (maxcols == (unsigned long)-1) cerr << "unlimited/"; else cerr << maxcols << "/";
-    if (maxrows == (unsigned long)-1) cerr << "unlimited" << endl; else cerr << maxrows << endl;
-
-    Uint32 j, k;
-    j = dvi.getTargetPrinterNumberOfFilmSizeIDs(target);
-    cerr << "film size IDs                 : " << j << endl;
-    for (k=0; k<j; k++)
-    {
-      c = dvi.getTargetPrinterFilmSizeID(target, k, aString);
-      if (c==NULL) c="(none)";
-      cerr << "    [" << c << "]" << endl;
-    }
-    j = dvi.getTargetPrinterNumberOfMediumTypes(target);
-    cerr << "medium types                  : " << j << endl;
-    for (k=0; k<j; k++)
-    {
-      c = dvi.getTargetPrinterMediumType(target, k, aString);
-      if (c==NULL) c="(none)";
-      cerr << "    [" << c << "]" << endl;
-    }
-    j = dvi.getTargetPrinterNumberOfPrinterResolutionIDs(target);
-    cerr << "resolution IDs                : " << j << endl;
-    for (k=0; k<j; k++)
-    {
-      c = dvi.getTargetPrinterResolutionID(target, k, aString);
-      if (c==NULL) c="(none)";
-      cerr << "    [" << c << "]" << endl;
-    }
-    j = dvi.getTargetPrinterNumberOfMagnificationTypes(target);
-    cerr << "magnification types           : " << j << endl;
-    for (k=0; k<j; k++)
-    {
-      c = dvi.getTargetPrinterMagnificationType(target, k, aString);
-      if (c==NULL) c="(none)";
-      cerr << "    [" << c << "]" << endl;
-    }
-    j = dvi.getTargetPrinterNumberOfSmoothingTypes(target);
-    cerr << "smoothing types               : " << j << endl;
-    for (k=0; k<j; k++)
-    {
-      c = dvi.getTargetPrinterSmoothingType(target, k, aString);
-      if (c==NULL) c="(none)";
-      cerr << "    [" << c << "]" << endl;
-    }
-    j = dvi.getTargetPrinterNumberOfConfigurationSettings(target);
-    cerr << "configuration information     : " << j << endl;
-    for (k=0; k<j; k++)
-    {
-      c = dvi.getTargetPrinterConfigurationSetting(target, k);
-      if (c==NULL) c="(none)";
-      cerr << "    [" << c << "]" << endl;
-    }
-    j = dvi.getTargetPrinterNumberOfBorderDensities(target);
-    cerr << "border density                : " << j << endl;
-    for (k=0; k<j; k++)
-    {
-      c = dvi.getTargetPrinterBorderDensity(target, k, aString);
-      if (c==NULL) c="(none)";
-      cerr << "    [" << c << "]" << endl;
-    }
-    j = dvi.getTargetPrinterNumberOfEmptyImageDensities(target);
-    cerr << "empty image density           : " << j << endl;
-    for (k=0; k<j; k++)
-    {
-      c = dvi.getTargetPrinterEmptyImageDensity(target, k, aString);
-      if (c==NULL) c="(none)";
-      cerr << "    [" << c << "]" << endl;
-    }
-
-    cerr << "=====================================================" << endl << endl;
-    return;  
-}
-
 /*
  * CVS/RCS Log:
  * $Log: dcmpsprt.cc,v $
- * Revision 1.9  1999-10-07 17:21:42  meichel
+ * Revision 1.10  1999-10-19 14:45:27  meichel
+ * added support for the Basic Annotation Box SOP Class
+ *   as well as access methods for Max Density and Min Density.
+ *
+ * Revision 1.9  1999/10/07 17:21:42  meichel
  * Reworked management of Presentation LUTs in order to create tighter
  *   coupling between Softcopy and Print.
  *

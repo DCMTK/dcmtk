@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-10-07 17:21:48 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 1999-10-19 14:46:03 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,7 +50,7 @@ class DVPSPresentationLUT_PList;
 class DVPSImageBoxContent_PList: public OFList<DVPSImageBoxContent *>
 {
 public:
-	E_Condition addImageBox(DVPSImageBoxContent *box);
+
   /// default constructor
   DVPSImageBoxContent_PList();
   
@@ -137,6 +137,12 @@ public:
     const char *requestedimagesize,
     const char *patientid,
     const char *presentationlutuid);
+
+  /** adds the given image box object to the list managed by this object.
+   *  @param box image box object to be added.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition addImageBox(DVPSImageBoxContent *box);
   
   /** sets the (optional) requested decimate/crop behaviour
    *  for all image boxes managed by this object.
@@ -301,7 +307,11 @@ private:
 
 /*
  *  $Log: dvpsibl.h,v $
- *  Revision 1.11  1999-10-07 17:21:48  meichel
+ *  Revision 1.12  1999-10-19 14:46:03  meichel
+ *  added support for the Basic Annotation Box SOP Class
+ *    as well as access methods for Max Density and Min Density.
+ *
+ *  Revision 1.11  1999/10/07 17:21:48  meichel
  *  Reworked management of Presentation LUTs in order to create tighter
  *    coupling between Softcopy and Print.
  *

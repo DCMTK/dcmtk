@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-10-13 14:11:12 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 1999-10-19 14:46:04 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,6 +41,7 @@
 #include "dvpstyp.h"         /* for enum types */
 #include "dvpspll.h"         /* for class DVPSPresentationLUT_PList */
 #include "dvpsibl.h"         /* for class DVPSImageBoxContent_PList */
+#include "dvpsabl.h"         /* for class DVPSAnnotationContent_PList */
 #include "dvpstat.h"		 /* for class DVPresentationState */
 #include "dvpspr.h"			 /* for class DVPrintMessageHandler */
 
@@ -191,7 +192,23 @@ class DVPSStoredPrint
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition setEmtpyImageDensity(const char *value);
-    
+
+  /** sets the (optional) max density.
+   *  @param value new attribute value, may be NULL.
+   *    The caller is responsible for making sure
+   *    that the value is valid for the selected printer.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition setMaxDensity(const char *value);
+
+  /** sets the (optional) min density.
+   *  @param value new attribute value, may be NULL.
+   *    The caller is responsible for making sure
+   *    that the value is valid for the selected printer.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition setMinDensity(const char *value);
+
   /** deletes all optional attribute values that might not be
    *  supported by all printers. Film size ID, magnification and smoothing type,
    *  configuration information, requested resolution ID,
@@ -280,6 +297,20 @@ class DVPSStoredPrint
    *  @return empty image density, may be NULL.
    */
   const char *getEmtpyImageDensity();
+
+  /** gets the (optional) max density.
+   *  The string returned becomes invalid after the next
+   *  call to getMaxDensity or getMinDensity.
+   *  @return max density, may be NULL.
+   */
+  const char *getMaxDensity();
+
+  /** gets the (optional) min density.
+   *  The string returned becomes invalid after the next
+   *  call to getMaxDensity or getMinDensity.
+   *  @return min density, may be NULL.
+   */
+  const char *getMinDensity();
      
   /** gets the number of images currently registered in this object.
    *  @return number of images.
@@ -287,6 +318,14 @@ class DVPSStoredPrint
   size_t getNumberOfImages()
   {
     return imageBoxContentList.size();
+  }
+
+  /** gets the number of annotations currently registered in this object.
+   *  @return number of annotations.
+   */
+  size_t getNumberOfAnnotations()
+  {
+    return annotationContentList.size();
   }
   
   /** deletes one of the registered images.
@@ -430,7 +469,25 @@ class DVPSStoredPrint
     const char *requestedimagesize=NULL,
     const char *patientid=NULL,
     DVPSPresentationLUT *presentationlut=NULL);
-      
+
+  /** deletes all existing annotations and creates a new one,
+   *  with given text and position. Sets annotation display format
+   *  to the given value.
+   *  
+   *  @param displayformat annotation display format
+   *  @param text annotation text
+   *  @param position annotation position
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition setSingleAnnotation(
+    const char *displayformat,
+    const char *text,
+    Uint16 position);
+  
+  /** deletes all annotations, clears annotation display format.
+   */
+  void deleteAnnotations();
+  
   /** sets a new SOP Instance UID for the Stored Print object.
    *  @param uid new SOP Instance UID
    *  @return EC_Normal if successful, an error code otherwise.
@@ -506,7 +563,17 @@ class DVPSStoredPrint
     DVPSPrintMessageHandler& printHandler,
     size_t idx,
     DicomImage& image);
-  
+
+  /** Transmits a DICOM annotation to the printer (Basic Annotation Box N-SET).
+   *  @param printHandler print communication handler, association must be open.
+   *  @param idx index of the annotation from which the settings are taken,
+   *     must be < getNumberOfAnnotations().
+   *  @return EC_Normal upon success, an error code otherwise.
+   */
+  E_Condition printSCUsetBasicAnnotationBox(
+    DVPSPrintMessageHandler& printHandler,
+    size_t idx);
+    
   /** Prints the current DICOM Basic Film Box SOP Instance.
    *  @param printHandler print communication handler, association must be open.
    *  @return EC_Normal upon success, an error code otherwise.
@@ -680,6 +747,11 @@ class DVPSStoredPrint
   /// Module=Image_Box_List_Module, VR=SQ, VM=1, Type 1
   DVPSImageBoxContent_PList imageBoxContentList;
 
+  /* Module: Annotation List (U)
+   */
+  /// Module=Annotation_List_Module, VR=SQ, VM=1, Type 3
+  DVPSAnnotationContent_PList annotationContentList;
+   
   /* Module: Presentation LUT List (U)
    */   
   DVPSPresentationLUT_PList presentationLUTList;  
@@ -723,7 +795,10 @@ class DVPSStoredPrint
 
   /// presentation LUTs are rendered on SCP side
   OFBool renderPresentationLUTinSCP;
-  
+
+  /// temporary buffer for getMaxDensity and getMinDensity
+  OFString tempDensity;
+
   /** output stream for error messages, never NULL
    */
   ostream *logstream;
@@ -734,7 +809,11 @@ class DVPSStoredPrint
 
 /*
  *  $Log: dvpssp.h,v $
- *  Revision 1.15  1999-10-13 14:11:12  meichel
+ *  Revision 1.16  1999-10-19 14:46:04  meichel
+ *  added support for the Basic Annotation Box SOP Class
+ *    as well as access methods for Max Density and Min Density.
+ *
+ *  Revision 1.15  1999/10/13 14:11:12  meichel
  *  Fixed bug in routine that renders P-LUTs into a print bitmap
  *    before sending an image to the printer
  *

@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-10-13 14:11:59 $
- *  CVS/RCS Revision: $Revision: 1.76 $
+ *  Update Date:      $Date: 1999-10-19 14:48:21 $
+ *  CVS/RCS Revision: $Revision: 1.77 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -115,6 +115,11 @@ DVInterface::DVInterface(const char *config_file)
 , printerNumberOfCopies(0)
 , printerPriority()
 , printerOwnerID()
+, activateAnnotation(OFFalse)
+, prependDateTime(OFTrue)
+, prependPrinterName(OFTrue)
+, prependLighting(OFTrue)
+, annotationText()
 {
     clearIndexRecord(idxRec, idxRecPos);
     if (config_file) configPath = config_file;
@@ -162,7 +167,11 @@ DVInterface::DVInterface(const char *config_file)
     maximumPrintBitmapWidth  = getMaxPrintResolutionX();
     maximumPrintBitmapHeight = getMaxPrintResolutionY();
     const char *cPrinter = getTargetID(0, DVPSE_print);
-    if (cPrinter) currentPrinter = cPrinter;
+    if (cPrinter) 
+    {
+      currentPrinter = cPrinter;
+      activateAnnotation = getTargetPrinterSupportsAnnotation(currentPrinter.c_str());
+    }
 }
 
 
@@ -2082,7 +2091,43 @@ E_Condition DVInterface::saveStoredPrint(
     char newuid[70];
     OFString aString;
     OFString theInstanceUID;
+    char buf[32];
 
+    /* set annotation if active */
+    if (activateAnnotation)
+    {
+  	  OFString text;
+      OFString dummy;
+      if (prependDateTime)
+      {
+        time_t tt = time(NULL);
+        struct tm *ts = localtime(&tt);
+        if (ts)
+        {
+          sprintf(buf, "%04d-%02d-%02d %02d:%02d ", 1900 + ts->tm_year, ts->tm_mon + 1, ts->tm_mday, ts->tm_hour, ts->tm_min);
+          text = buf;
+        }
+      }        
+      if (prependPrinterName)
+      { 
+        text += currentPrinter;
+        text += " ";
+      }
+      if (prependLighting)
+      {
+        sprintf(buf, "%d/%d ", pPrint->getPrintIllumination(), pPrint->getPrintReflectedAmbientLight());
+        text += buf;
+      }
+      text += annotationText;
+      if (text.size() >64) text.erase(64); // limit to max annotation length
+
+      const char *displayformat = getTargetPrinterAnnotationDisplayFormatID(currentPrinter.c_str(), dummy);
+      Uint16 position = getTargetPrinterAnnotationPosition(currentPrinter.c_str());
+      pPrint->setSingleAnnotation(displayformat, text.c_str(), position);
+    } else {
+      pPrint->deleteAnnotations();
+    }
+ 
     if (dataset)
     {
       if (instanceUID) status = pPrint->setInstanceUID(instanceUID); else
@@ -2151,6 +2196,8 @@ E_Condition DVInterface::setCurrentPrinter(const char *targetID)
   if (targetID == NULL) return EC_IllegalCall;
   if (getTargetHostname(targetID) == NULL) return EC_IllegalCall; // Printer seems to be unknown
   currentPrinter = targetID;
+  activateAnnotation = getTargetPrinterSupportsAnnotation(currentPrinter.c_str());
+
   return EC_Normal;
 }
 
@@ -2284,7 +2331,7 @@ E_Condition DVInterface::spoolPrintJob(OFBool deletePrintedImages)
 {
   if (pPrint==NULL) return EC_IllegalCall;
   if (currentPrinter.size()==0) return EC_IllegalCall;
-
+ 
   E_Condition result = saveStoredPrint(getTargetPrinterSupportsRequestedImageSize(currentPrinter.c_str()));
   if (EC_Normal == result)
   {
@@ -2574,10 +2621,21 @@ void DVInterface::setLog(ostream *o)
   if (pPrint) pPrint->setLog(o);
 }
 
+void DVInterface::setAnnotationText(const char *value)
+{
+  if (value) annotationText=value; else annotationText.clear();
+  return;
+}
+
+
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.76  1999-10-13 14:11:59  meichel
+ *  Revision 1.77  1999-10-19 14:48:21  meichel
+ *  added support for the Basic Annotation Box SOP Class
+ *    as well as access methods for Max Density and Min Density.
+ *
+ *  Revision 1.76  1999/10/13 14:11:59  meichel
  *  Added config file entries and access methods
  *    for user-defined VOI presets, log directory, verbatim logging
  *    and an explicit list of image display formats for each printer.
