@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Network Send Component (Store SCU)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-17 14:29:07 $
+ *  Update Date:      $Date: 1999-11-24 10:21:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpssnd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,6 +50,7 @@ END_EXTERN_C
 #include "cmdlnarg.h"
 #include "ofconapp.h"
 #include "dvpshlp.h"     /* for class DVPSHelper */
+#include "imagedb.h"     /* for LOCK_IMAGE_FILES */
 
 #define OFFIS_CONSOLE_APPLICATION "dcmpssnd"
 
@@ -80,6 +81,7 @@ static CONDITION sendImage(T_ASC_Association *assoc, const char *sopClass, const
     if ((sopInstance == NULL)||(strlen(sopInstance) == 0)) return DIMSE_NULLKEY;
     if ((imgFile == NULL)||(strlen(imgFile) == 0)) return DIMSE_NULLKEY;
         
+#ifdef LOCK_IMAGE_FILES
     /* shared lock image file */
 #ifdef O_BINARY
     lockfd = open(imgFile, O_RDONLY | O_BINARY, 0666);
@@ -92,6 +94,7 @@ static CONDITION sendImage(T_ASC_Association *assoc, const char *sopClass, const
       return DIMSE_BADDATA;
     }
     dcmtk_flock(lockfd, LOCK_SH);
+#endif
 
     /* which presentation context should be used */
     presId = ASC_findAcceptedPresentationContextID(assoc, sopClass);
@@ -112,9 +115,11 @@ static CONDITION sendImage(T_ASC_Association *assoc, const char *sopClass, const
     CONDITION cond = DIMSE_storeUser(assoc, presId, &req,
         imgFile, NULL, NULL, NULL, DIMSE_BLOCKING, 0, &rsp, &statusDetail);
 
+#ifdef LOCK_IMAGE_FILES
     /* unlock image file */
     dcmtk_flock(lockfd, LOCK_UN);
     close(lockfd);
+#endif
 
     if (cond == DIMSE_NORMAL) 
     {
@@ -572,7 +577,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpssnd.cc,v $
- * Revision 1.8  1999-09-17 14:29:07  meichel
+ * Revision 1.9  1999-11-24 10:21:56  meichel
+ * Fixed locking problem in dcmpssnd and dcmpsrcv on Win9x platforms.
+ *
+ * Revision 1.8  1999/09/17 14:29:07  meichel
  * Moved static helper functions to new class DVPSHelper, removed some unused code.
  *
  * Revision 1.7  1999/09/06 13:29:48  meichel

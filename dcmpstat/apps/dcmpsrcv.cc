@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-06 13:29:48 $
+ *  Update Date:      $Date: 1999-11-24 10:21:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsrcv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,6 +49,7 @@ END_EXTERN_C
 #include "diutil.h"
 #include "cmdlnarg.h"
 #include "ofconapp.h"
+#include "imagedb.h"     /* for LOCK_IMAGE_FILES */
 
 #define OFFIS_CONSOLE_APPLICATION "dcmpsrcv"
 
@@ -505,7 +506,7 @@ static CONDITION storeSCP(
       }
     }
 
-#ifdef HAVE_FORK
+#ifdef LOCK_IMAGE_FILES
     /* exclusively lock image file, but only on Unix systems -
          * on Win32 we would prevent ourselves from writing the file!
          */
@@ -541,7 +542,7 @@ static CONDITION storeSCP(
         if (dbhandle) DB_pruneInvalidRecords(dbhandle);
     }
 
-#ifdef HAVE_FORK
+#ifdef LOCK_IMAGE_FILES
     /* unlock image file */
     dcmtk_flock(lockfd, LOCK_UN);
     close(lockfd);
@@ -900,7 +901,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsrcv.cc,v $
- * Revision 1.10  1999-09-06 13:29:48  meichel
+ * Revision 1.11  1999-11-24 10:21:55  meichel
+ * Fixed locking problem in dcmpssnd and dcmpsrcv on Win9x platforms.
+ *
+ * Revision 1.10  1999/09/06 13:29:48  meichel
  * Enhanced max receive PDU range to 4-128K.
  *
  * Revision 1.9  1999/05/05 14:23:56  joergr
