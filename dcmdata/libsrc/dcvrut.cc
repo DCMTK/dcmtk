@@ -19,46 +19,40 @@
  *
  *  Author:  Andrew Hewett
  *
- *  Purpose: 
- *  class DcmUnlimitedText
- *  Value Representation UT is defined in Correction Proposal 101
+ *  Purpose: Implementation of class DcmUnlimitedText
+ *           Value Representation UT is defined in Correction Proposal 101
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-25 10:35:29 $
+ *  Update Date:      $Date: 2002-12-06 13:01:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
+
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
+
 #include "dcvrut.h"
-#include "dcdebug.h"
 
 
 // ********************************
 
 
 DcmUnlimitedText::DcmUnlimitedText(const DcmTag &tag,
-			     const Uint32 len)
-: DcmCharString(tag, len)
+                                   const Uint32 len)
+  : DcmCharString(tag, len)
 {
     maxLength = DCM_UndefinedLength;
 }
 
 
-// ********************************
-
-
-DcmUnlimitedText::DcmUnlimitedText( const DcmUnlimitedText& old )
-: DcmCharString(old)
+DcmUnlimitedText::DcmUnlimitedText(const DcmUnlimitedText &old)
+  : DcmCharString(old)
 {
 }
-
-
-// ********************************
 
 
 DcmUnlimitedText::~DcmUnlimitedText()
@@ -66,44 +60,65 @@ DcmUnlimitedText::~DcmUnlimitedText()
 }
 
 
-// ********************************
-
-OFCondition
-DcmUnlimitedText::getOFString(
-    OFString & str,
-    const unsigned long pos,
-    OFBool normalize)
+DcmUnlimitedText &DcmUnlimitedText::operator=(const DcmUnlimitedText &obj)
 {
-    OFCondition l_error = DcmCharString::getOFString(str, pos, normalize);
-    // leading spaces are significant and backslash is normal character
-    if (l_error == EC_Normal && normalize)
-	normalizeString(str, !MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
-    return l_error;
+    DcmCharString::operator=(obj);
+    return *this;
 }
 
+
 // ********************************
 
-OFCondition 
-DcmUnlimitedText::getOFStringArray(
-    OFString & str,
-    OFBool normalize)
+
+DcmEVR DcmUnlimitedText::ident() const
+{
+    return EVR_UT;
+}
+
+
+unsigned long DcmUnlimitedText::getVM()
+{
+    /* value multiplicity is 1 for non-empty string, 0 otherwise */
+    return (getRealLength() > 0) ? 1 : 0;
+}
+
+
+// ********************************
+
+
+OFCondition DcmUnlimitedText::getOFString(OFString &strValue,
+                                          const unsigned long /*pos*/,
+                                          OFBool normalize)
+{
+    /* treat backslash as a normal character */
+    return getOFStringArray(strValue, normalize);
+}
+
+
+OFCondition DcmUnlimitedText::getOFStringArray(OFString &strValue,
+                                               OFBool normalize)
 {
     /* get string value without handling the "\" as a delimiter */
-    OFCondition l_error = getStringValue(str);
+    OFCondition l_error = getStringValue(strValue);
     // leading spaces are significant and backslash is normal character
-    if (l_error == EC_Normal && normalize)
-	normalizeString(str, !MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
+    if (l_error.good() && normalize)
+        normalizeString(strValue, !MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
     return l_error;
 }
-
-
-// ********************************
 
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrut.cc,v $
-** Revision 1.7  2002-04-25 10:35:29  joergr
+** Revision 1.8  2002-12-06 13:01:52  joergr
+** Fixed bug in Unlimited Text (UT) class: the backslash character was treated
+** as a component separator which is wrong according to the DICOM standard.
+** Thanks to Razvan Costea-B. <cbrazvan@laitek.com> for the bug report.
+** Enhanced "print()" function by re-working the implementation and replacing
+** the boolean "showFullData" parameter by a more general integer flag.
+** Made source code formatting more consistent with other modules/files.
+**
+** Revision 1.7  2002/04/25 10:35:29  joergr
 ** Added/modified getOFStringArray() implementation.
 **
 ** Revision 1.6  2001/09/25 17:20:03  meichel
