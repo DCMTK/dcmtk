@@ -23,8 +23,8 @@
  *    classes: DSRContentItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-17 12:34:31 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-10-18 16:58:27 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,6 +59,7 @@
 class DSRContentItem
   : public DSRTypes
 {
+    // allow access to setTreeNode()
     friend class DSRDocumentTree;
 
   public:
@@ -99,6 +100,12 @@ class DSRContentItem
      */
     E_Condition setStringValue(const OFString &stringValue);
 
+    /** get pointer to code value.
+     *  Applicable to: CODE
+     ** @return pointer to code value of current content item if valid, NULL otherwise
+     */
+    DSRCodedEntryValue *getCodeValuePtr();
+
     /** get code value.
      *  Applicable to: CODE
      ** @return coded entry value of current content item if valid, EmptyCodedEntry otherwise
@@ -118,6 +125,12 @@ class DSRContentItem
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition setCodeValue(const DSRCodedEntryValue &codeValue);
+
+    /** get pointer to numeric value.
+     *  Applicable to: NUM
+     ** @return pointer to numeric value of current content item if valid, NULL otherwise
+     */
+    DSRNumericMeasurementValue *getNumericValuePtr();
 
     /** get numeric value.
      *  Applicable to: NUM
@@ -141,7 +154,7 @@ class DSRContentItem
 
     /** get pointer to spatial coordinates.
      *  Applicable to: SCOORD
-     ** @return pointer spatial coordinates value of current content item if valid, NULL otherwise
+     ** @return pointer to spatial coordinates value of current content item if valid, NULL otherwise
      */
     DSRSpatialCoordinatesValue *getSpatialCoordinatesPtr();
 
@@ -167,7 +180,7 @@ class DSRContentItem
 
     /** get pointer to composite reference.
      *  Applicable to: COMPOSITE
-     ** @return pointer reference value of current content item if valid, NULL otherwise
+     ** @return pointer to reference value of current content item if valid, NULL otherwise
      */
     DSRReferenceValue *getCompositeReferencePtr();
 
@@ -193,7 +206,7 @@ class DSRContentItem
 
     /** get pointer to image reference.
      *  Applicable to: IMAGE
-     ** @return pointer image reference value of current content item if valid, NULL otherwise
+     ** @return pointer to image reference value of current content item if valid, NULL otherwise
      */
     DSRImageReferenceValue *getImageReferencePtr();
 
@@ -219,7 +232,7 @@ class DSRContentItem
 
     /** get pointer to waveform reference.
      *  Applicable to: WAVEFORM
-     ** @return pointer waveform reference value of current content item if valid, NULL otherwise
+     ** @return pointer to waveform reference value of current content item if valid, NULL otherwise
      */
     DSRWaveformReferenceValue *getWaveformReferencePtr();
 
@@ -256,6 +269,12 @@ class DSRContentItem
      */
     E_Condition setContinuityOfContent(const E_ContinuityOfContent continuityOfContent);
 
+    /** get pointer to concept name.
+     *  Applicable to all content items.
+     ** @return pointer to comcept name value of current content item if valid, NULL otherwise
+     */
+    DSRCodedEntryValue *getConceptNamePtr();
+
     /** get concept name.
      *  Applicable to all content items.
      ** @return concept name value of current content item if valid, EmptyCodedEntry otherwise
@@ -270,7 +289,7 @@ class DSRContentItem
     E_Condition getConceptName(DSRCodedEntryValue &conceptName) const;
 
     /** set concept name.
-     *  Applicable to all content items.
+     *  Applicable to all content items (optional/conditional for some value types).
      ** @param  conceptName  value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
@@ -278,7 +297,7 @@ class DSRContentItem
 
     /** get observation date time.
      *  Applicable to all content items (optional attribute).
-     ** @return string value of current content item if valid, EmptyString otherwise
+     ** @return observation date and time of current content item if valid, EmptyString otherwise
      */
     const OFString &getObservationDateTime() const;
 
@@ -299,7 +318,7 @@ class DSRContentItem
     /** set internal tree node pointer
      *  @param  node  pointer to the document tree node (content item)
      */
-    void setTreeNode(DSRDocumentTreeNode *node)
+    inline void setTreeNode(DSRDocumentTreeNode *node)
     {
         TreeNode = node;
     }
@@ -310,19 +329,19 @@ class DSRContentItem
     /// internal tree node pointer (current conten item)
     DSRDocumentTreeNode *TreeNode;
 
-    /// empty string value, used as default return value for getStringValue()
+    /// empty string value. Used as default return value for getStringValue()
     static const OFString                   EmptyString;
-    /// empty coded entry value, used as default return value for getCodeValue() and getConceptName()
+    /// empty coded entry value. Used as default return value for getCodeValue() and getConceptName()
     static const DSRCodedEntryValue         EmptyCodedEntry;
-    /// empty numberic measurement value, used as default return value for getNumericValue()
+    /// empty numberic measurement value. Used as default return value for getNumericValue()
     static const DSRNumericMeasurementValue EmptyNumericMeasurement;
-    /// empty spatial coordinates value, used as default return value for getSpatialCoordinates()
+    /// empty spatial coordinates value. Used as default return value for getSpatialCoordinates()
     static const DSRSpatialCoordinatesValue EmptySpatialCoordinates;
-    /// empty reference value, used as default return value for getReference()
+    /// empty reference value. Used as default return value for getReference()
     static const DSRReferenceValue          EmptyReference;
-    /// empty image reference value, used as default return value for getImageReference()
+    /// empty image reference value. Used as default return value for getImageReference()
     static const DSRImageReferenceValue     EmptyImageReference;
-    /// empty waveform reference value, used as default return value for getWaveformReference()
+    /// empty waveform reference value. Used as default return value for getWaveformReference()
     static const DSRWaveformReferenceValue  EmptyWaveformReference;
 
 
@@ -339,7 +358,10 @@ class DSRContentItem
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcitem.h,v $
- *  Revision 1.4  2000-10-17 12:34:31  joergr
+ *  Revision 1.5  2000-10-18 16:58:27  joergr
+ *  Added methods allowing direct access to certain content item values.
+ *
+ *  Revision 1.4  2000/10/17 12:34:31  joergr
  *  Added method checking content item for validity/completeness.
  *  Renamed methods for composite objects.
  *
