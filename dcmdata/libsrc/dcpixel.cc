@@ -22,8 +22,8 @@
  *  Purpose: class DcmPixelData
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-04-07 13:56:08 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Update Date:      $Date: 2004-07-01 12:28:12 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -110,6 +110,7 @@ DcmPixelData::DcmPixelData(
     original(),
     current(),
     existUnencapsulated(oldPixelData.existUnencapsulated),
+    isIconImage(oldPixelData.isIconImage),
     unencapsulatedVR(oldPixelData.unencapsulatedVR),
     pixelSeqForWrite(NULL)
 {
@@ -153,6 +154,7 @@ DcmPixelData &DcmPixelData::operator=(const DcmPixelData &obj)
   {
     DcmPolymorphOBOW::operator=(obj);
     existUnencapsulated = obj.existUnencapsulated;
+    isIconImage = obj.isIconImage;
     unencapsulatedVR = obj.unencapsulatedVR;
     pixelSeqForWrite = NULL;
     repList.clear();
@@ -1029,7 +1031,11 @@ OFCondition DcmPixelData::loadAllDataIntoMemory(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.cc,v $
-** Revision 1.34  2004-04-07 13:56:08  meichel
+** Revision 1.35  2004-07-01 12:28:12  meichel
+** Fixed copy constructor for class DcmPixelData which did not work correctly
+**   under certain circumstances due to an uninitialized attribute.
+**
+** Revision 1.34  2004/04/07 13:56:08  meichel
 ** Compressed image datasets containing uncompressed icon images
 **   are now correctly handled by the parser.
 **
