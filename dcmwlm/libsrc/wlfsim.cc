@@ -21,10 +21,10 @@
 *
 *  Purpose: Class for managing file system interaction.
 *
-*  Last Update:      $Author: joergr $
-*  Update Date:      $Date: 2002-12-11 18:10:48 $
+*  Last Update:      $Author: wilkens $
+*  Update Date:      $Date: 2002-12-12 16:49:40 $
 *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlfsim.cc,v $
-*  CVS/RCS Revision: $Revision: 1.6 $
+*  CVS/RCS Revision: $Revision: 1.7 $
 *  Status:           $State: Exp $
 *
 *  CVS/RCS Log at end of file
@@ -239,7 +239,7 @@ unsigned long WlmFileSystemInteractionManager::DetermineMatchingRecords( DcmData
   DetermineWorklistFiles( worklistFiles );
 
   // go through all worklist files
-  for( unsigned long i=0 ; i<worklistFiles.NumberOfElements() ; i++ )
+  for( unsigned int i=0 ; i<worklistFiles.NumberOfElements() ; i++ )
   {
     // read information from worklist file
     DcmFileFormat fileform;
@@ -1459,7 +1459,11 @@ void WlmFileSystemInteractionManager::ExtractValuesFromRange( const char *range,
 /*
 ** CVS Log
 ** $Log: wlfsim.cc,v $
-** Revision 1.6  2002-12-11 18:10:48  joergr
+** Revision 1.7  2002-12-12 16:49:40  wilkens
+** Added some code to avoid compiler warning (unsigned long passed as unsigned
+** int) on Sun CC 2.0.1.
+**
+** Revision 1.6  2002/12/11 18:10:48  joergr
 ** Added const type specifier to a "char*" variable declaration to avoid
 ** compiler error on Sun CC 5.2.
 **
