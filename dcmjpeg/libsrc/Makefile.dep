@@ -1,3 +1,15 @@
+dipijpeg.o: dipijpeg.cc ../../config/include/osconfig.h \
+ ../../ofstd/include/ofconsol.h ../../ofstd/include/ofthread.h \
+ ../../ofstd/include/oftypes.h ../../dcmdata/include/dctypes.h \
+ ../../dcmimgle/include/diimage.h ../../dcmimgle/include/diovlay.h \
+ ../../dcmimgle/include/diobjcou.h ../../dcmimgle/include/diovdat.h \
+ ../../dcmimgle/include/diovpln.h ../../ofstd/include/ofstring.h \
+ ../../dcmimgle/include/diutils.h ../../ofstd/include/ofglobal.h \
+ ../include/dipijpeg.h ../../dcmimgle/include/diplugin.h \
+ ../include/djutils.h ../../ofstd/include/ofcond.h \
+ ../../dcmjpeg/libijg8/jpeglib8.h ../../dcmjpeg/libijg8/jconfig8.h \
+ ../../dcmjpeg/libijg8/jmorecfg8.h ../../dcmjpeg/libijg8/jerror8.h \
+ ../../dcmjpeg/libijg8/jpegint8.h
 djcodecd.o: djcodecd.cc ../../config/include/osconfig.h \
  ../include/djcodecd.h ../../ofstd/include/oftypes.h \
  ../../dcmdata/include/dccodec.h ../../dcmdata/include/dctypes.h \
