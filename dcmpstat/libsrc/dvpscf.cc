@@ -22,8 +22,8 @@
  *  Purpose: DVConfiguration
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-24 15:24:33 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 1999-09-27 10:41:27 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -625,7 +625,7 @@ Uint32 DVConfiguration::getTargetPrinterNumberOfConfigurationSettings(const char
 const char *DVConfiguration::getTargetPrinterConfigurationSetting(const char *targetID, Uint32 idx)
 {
   char l0_key[80];
-  sprintf(l0_key, "CONFIGURATION_%d", (int)idx);
+  sprintf(l0_key, "CONFIGURATION_%d", (int)idx+1);
   return getConfigEntry(L2_COMMUNICATION, targetID, l0_key);
 }
 
@@ -774,7 +774,10 @@ Uint16 DVConfiguration::getDefaultPrintReflection()
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.cc,v $
- *  Revision 1.7  1999-09-24 15:24:33  meichel
+ *  Revision 1.8  1999-09-27 10:41:27  meichel
+ *  Fixed index bug in getTargetPrinterConfigurationSetting.
+ *
+ *  Revision 1.7  1999/09/24 15:24:33  meichel
  *  Added support for CP 173 (Presentation LUT clarifications)
  *
  *  Revision 1.6  1999/09/23 17:37:16  meichel
