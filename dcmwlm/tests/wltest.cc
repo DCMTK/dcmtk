@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Worklist Database Test Program
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-12-03 12:16:37 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-02-11 09:49:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/tests/wltest.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,8 +67,8 @@ int debug = 0;
 static void
 shortusage()
 {
-    fprintf(stderr, 
-      "usage: %s [-k key][-v][-d<n>] <worklist-db-dir> <query> [<query> ...]\n", 
+    fprintf(stderr,
+      "usage: %s [-k key][-v][-d<n>] <worklist-db-dir> <query> [<query> ...]\n",
       progname);
 }
 
@@ -80,15 +80,15 @@ fullusage()
     fprintf(stderr, "\
 parameters:\n\
     <worklist-db-dir> the worklist database directory\n\
-    <query>   a dicom file containing a worklist query\n\
+    <query> a dicom file containing a worklist query\n\
 options:\n\
-    -k key      override query key (gggg,eeee=\"string\")\n\
-    -v    verbose mode\n\
-    -d<n> set debug level <n>\n");
+    -k key  override query key (gggg,eeee=\"string\")\n\
+    -v      verbose mode\n\
+    -d<n>   set debug level <n>\n");
     exit(1);
 }
 
-static void 
+static void
 usage()
 {
     shortusage();
@@ -98,7 +98,7 @@ usage()
 void errmsg(const char* msg, ...)
 {
     va_list args;
-  
+
     fprintf(stderr, "%s: ", progname);
     va_start(args, msg);
     vfprintf(stderr, msg, args);
@@ -117,7 +117,7 @@ addOverrideKey(DcmDataset& overrideKeys, char* s)
 
     val[0] = '\0';
     n = sscanf(s, "%x,%x=%s", &g, &e, val);
-    
+
     if (n < 2) {
         errmsg("bad key format: %s", s);
         usage(); /* does not return */
@@ -149,7 +149,7 @@ addOverrideKey(DcmDataset& overrideKeys, char* s)
 }
 
 static OFBool
-queryWorklistDB(WlmDataSourceFileSystem& wdb, 
+queryWorklistDB(WlmDataSourceFileSystem& wdb,
     const char* queryFilename, DcmDataset& overrideKeys);
 
 
@@ -195,7 +195,7 @@ int main(int argc, char* argv[])
             case 'd':
                 if (((i + 1) < argc) && (argv[i + 1][0] != '-') &&
                     (sscanf(argv[i + 1], "%d", &debug) == 1)) {
-                    i++;    
+                    i++;
                 } else {
                     debug = 1;
                 }
@@ -225,7 +225,7 @@ int main(int argc, char* argv[])
 
     for (j=i; j<argc; j++) {
         if (!OFStandard::pathExists(argv[j])) {
-            errmsg("cannot access %s: %s", argv[j], 
+            errmsg("cannot access %s: %s", argv[j],
                strerror(errno));
             usage();
         }
@@ -277,7 +277,7 @@ isaPendingStatus(WlmDataSourceStatusType status)
 }
 
 static const char*
-status2string(WlmDataSourceStatusType status) 
+status2string(WlmDataSourceStatusType status)
 {
     const char* s = NULL;
     switch (status) {
@@ -302,12 +302,12 @@ status2string(WlmDataSourceStatusType status)
 }
 
 static OFBool
-queryWorklistDB(WlmDataSourceFileSystem& wdb, 
+queryWorklistDB(WlmDataSourceFileSystem& wdb,
     const char* queryFilename, DcmDataset& overrideKeys)
 {
-    
+
     DcmFileFormat dcmff;
-    if (queryFilename != NULL) 
+    if (queryFilename != NULL)
     {
         if (dcmff.loadFile(queryFilename).bad())
         {
@@ -328,7 +328,7 @@ queryWorklistDB(WlmDataSourceFileSystem& wdb,
     }
 
     /* perform the query */
-    
+
     WlmDataSourceStatusType status = WLM_PENDING;
     int responseCount = 0;
 
@@ -338,7 +338,7 @@ queryWorklistDB(WlmDataSourceFileSystem& wdb,
     status = wdb.StartFindRequest(*dcmff.getDataset());
 
     while (isaPendingStatus(status)) {
-  
+
         DcmDataset* response=NULL;
 
         /*
@@ -346,7 +346,7 @@ queryWorklistDB(WlmDataSourceFileSystem& wdb,
         */
         response = wdb.NextFindResponse(status);
         responseCount++;
-      
+
         if (isaPendingStatus(status)) {
             printf("------------\n");
             printf("Response %d (%s)\n", responseCount, status2string(status));
@@ -375,10 +375,14 @@ queryWorklistDB(WlmDataSourceFileSystem& wdb,
     return OFTrue;
 }
 
+
 /*
 ** CVS Log
 ** $Log: wltest.cc,v $
-** Revision 1.1  2002-12-03 12:16:37  wilkens
+** Revision 1.2  2004-02-11 09:49:06  joergr
+** Fixed usage output formatting.
+**
+** Revision 1.1  2002/12/03 12:16:37  wilkens
 ** Added files und functionality from the dcmtk/wlisctn folder to dcmtk/dcmwlm
 ** so that dcmwlm can now completely replace wlistctn in the public domain part
 ** of dcmtk. Pertaining to this replacement requirement, another optional return
