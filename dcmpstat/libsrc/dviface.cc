@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-09 10:14:55 $
- *  CVS/RCS Revision: $Revision: 1.97 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-06-21 15:41:00 $
+ *  CVS/RCS Revision: $Revision: 1.98 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -3528,11 +3528,9 @@ void DVInterface::setAnnotationText(const char *value)
   return;
 }
 
-E_Condition DVInterface::dumpIOD(const char *filename)
-{
-  const char *application = getDumpToolName();
+E_Condition DVInterface::startExternalApplication(const char *application, const char *filename)
+{	
   if ((filename==NULL)||(application==NULL)) return EC_IllegalCall;
-
   DVPSHelper::cleanChildren(logstream); // clean up old child processes before creating new ones
 
 #ifdef HAVE_FORK
@@ -3583,6 +3581,11 @@ E_Condition DVInterface::dumpIOD(const char *filename)
   return EC_IllegalCall;
 }
 
+E_Condition DVInterface::dumpIOD(const char *filename)
+{
+  return startExternalApplication(getDumpToolName(), filename);
+}
+
 E_Condition DVInterface::dumpIOD(const char *studyUID, const char *seriesUID, const char *instanceUID)
 {
   E_Condition result = EC_IllegalCall;
@@ -3599,8 +3602,7 @@ E_Condition DVInterface::dumpIOD(const char *studyUID, const char *seriesUID, co
 
 E_Condition DVInterface::checkIOD(const char *filename)
 {
-  // not yet implemented
-  return EC_IllegalCall;
+  return startExternalApplication(getCheckToolName(), filename);
 }
 
 E_Condition DVInterface::checkIOD(const char *studyUID, const char *seriesUID, const char *instanceUID)
@@ -3621,7 +3623,10 @@ E_Condition DVInterface::checkIOD(const char *studyUID, const char *seriesUID, c
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.97  2000-06-09 10:14:55  joergr
+ *  Revision 1.98  2000-06-21 15:41:00  meichel
+ *  Added DICOMscope support for calling the Presentation State Checker.
+ *
+ *  Revision 1.97  2000/06/09 10:14:55  joergr
  *  Added method to get number of presentation states referencing an image
  *  (specified by the three UIDs).
  *

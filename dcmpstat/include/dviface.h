@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVInterface
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-09 10:13:54 $
- *  CVS/RCS Revision: $Revision: 1.69 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-06-21 15:40:57 $
+ *  CVS/RCS Revision: $Revision: 1.70 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -748,7 +748,7 @@ class DVInterface: public DVConfiguration
      */
     E_Condition dumpIOD(const char *studyUID, const char *seriesUID, const char *instanceUID);
 
-    /** NOT YET IMPLEMENTED - checks the contents of a DICOM file and displays an evaluation report on the screen.
+    /** checks the contents of a DICOM file and displays an evaluation report on the screen.
      *  A separate application or process is launched to handle the evaluation and display.
      *  This call returns when the check operation has successfully been launched.
      *  No information about the status or success of the process itself is being made
@@ -760,7 +760,7 @@ class DVInterface: public DVConfiguration
      */
     E_Condition checkIOD(const char *filename);
 
-    /** NOT YET IMPLEMENTED - checks the contents of a DICOM file and displays an evaluation report on the screen.
+    /** checks the contents of a DICOM file and displays an evaluation report on the screen.
      *  A separate application or process is launched to handle the evaluation and display.
      *  This call returns when the check operation has successfully been launched.
      *  No information about the status or success of the process itself is being made
@@ -1402,6 +1402,14 @@ private:
      */
     E_Condition createQueryRetrieveServerConfigFile(const char *filename);
 
+    /** starts an external application and passes a filename.
+     *  @param application pathname of the application to be started
+     *  @param filename filename to be passed as single parameter.
+     *  @return EC_Normal if fork or CreateProcess succeeds, an error
+     *    condition otherwise.
+     */
+    E_Condition startExternalApplication(const char *application, const char *filename);
+
     /* member variables */
 
     /** pointer to the current print handler object
@@ -1644,7 +1652,10 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.69  2000-06-09 10:13:54  joergr
+ *  Revision 1.70  2000-06-21 15:40:57  meichel
+ *  Added DICOMscope support for calling the Presentation State Checker.
+ *
+ *  Revision 1.69  2000/06/09 10:13:54  joergr
  *  Added method to get number of presentation states referencing an image
  *  (specified by the three UIDs).
  *

@@ -21,9 +21,9 @@
  *
  *  Purpose: DVConfiguration
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-07 16:46:43 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-06-21 15:41:01 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,6 +51,7 @@
 #define L0_BORDERDENSITY                "BORDERDENSITY"
 #define L0_CENTER                       "CENTER"
 #define L0_CHARACTERISTICS              "CHARACTERISTICS"
+#define L0_CHECK                        "CHECK"
 #define L0_DEFAULTILLUMINATION          "DEFAULTILLUMINATION"
 #define L0_DEFAULTREFLECTION            "DEFAULTREFLECTION"
 #define L0_DELETEPRINTJOBS              "DELETEPRINTJOBS"
@@ -588,6 +589,11 @@ const char *DVConfiguration::getPrintServerName()
 const char *DVConfiguration::getDumpToolName()
 {
   return getConfigEntry(L2_GENERAL, L1_DATABASE, L0_DUMP);
+}
+
+const char *DVConfiguration::getCheckToolName()
+{
+  return getConfigEntry(L2_GENERAL, L1_DATABASE, L0_CHECK);
 }
 
 const char *DVConfiguration::getMonitorCharacteristicsFile()
@@ -1158,7 +1164,10 @@ void DVConfiguration::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.cc,v $
- *  Revision 1.30  2000-06-07 16:46:43  joergr
+ *  Revision 1.31  2000-06-21 15:41:01  meichel
+ *  Added DICOMscope support for calling the Presentation State Checker.
+ *
+ *  Revision 1.30  2000/06/07 16:46:43  joergr
  *  Corrected typo in #ifdef statement.
  *
  *  Revision 1.29  2000/06/07 14:26:04  joergr

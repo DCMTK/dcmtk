@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVConfiguration
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-07 14:16:21 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-06-21 15:40:57 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -652,6 +652,13 @@ class DVConfiguration
    */
   const char *getDumpToolName();
 
+  /** returns the filename (path) of the application used
+   *  for dumping DICOM objects, as configured in section
+   *  GENERAL/DATABASE/CHECK in the config file.
+   *  @return check application path name or NULL if absent.
+   */
+  const char *getCheckToolName();
+
   /** returns the sleep delay for the print spooler in seconds,
    *  as configured in section GENERAL/PRINT/SLEEP in the config file.
    *  @return sleep delay, 0 if absent.
@@ -883,7 +890,10 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.h,v $
- *  Revision 1.22  2000-06-07 14:16:21  joergr
+ *  Revision 1.23  2000-06-21 15:40:57  meichel
+ *  Added DICOMscope support for calling the Presentation State Checker.
+ *
+ *  Revision 1.22  2000/06/07 14:16:21  joergr
  *  Added configuration file entry "LogLevel" to filter log messages.
  *
  *  Revision 1.21  2000/06/07 13:17:45  meichel
