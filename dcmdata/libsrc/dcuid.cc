@@ -24,9 +24,9 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-06-19 15:35:46 $
+ *  Update Date:      $Date: 2002-08-27 16:55:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcuid.cc,v $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -302,11 +302,18 @@ const char* dcmStorageSOPClassUIDs[] = {
     UID_CardiacElectrophysiologyWaveformStorage,
     UID_ComprehensiveSR,
     UID_ComputedRadiographyImageStorage,
+/* disabled draft storage SOP classes to keep the number of storage transfer 
+ * syntaxes <= 64.  If we have more than 64 storage transfer syntaxes, tools 
+ * such as storescu will fail because they attempt to negotiate two 
+ * presentation contexts for each SOP class, and there is a total limit of 
+ * 128 contexts for one association.
+ *
     UID_DRAFT_SRAudioStorage,
     UID_DRAFT_SRComprehensiveStorage,
     UID_DRAFT_SRDetailStorage,
     UID_DRAFT_SRTextStorage,
     UID_DRAFT_WaveformStorage,
+ */
     UID_DigitalIntraOralXRayImageStorageForPresentation,
     UID_DigitalIntraOralXRayImageStorageForProcessing,
     UID_DigitalMammographyXRayImageStorageForPresentation,
@@ -334,8 +341,15 @@ const char* dcmStorageSOPClassUIDs[] = {
     UID_RETIRED_NuclearMedicineImageStorage,
     UID_RETIRED_UltrasoundImageStorage,
     UID_RETIRED_UltrasoundMultiframeImageStorage,
+/* disabled draft storage SOP classes to keep the number of storage transfer 
+ * syntaxes <= 64.  If we have more than 64 storage transfer syntaxes, tools 
+ * such as storescu will fail because they attempt to negotiate two 
+ * presentation contexts for each SOP class, and there is a total limit of 
+ * 128 contexts for one association.
+ *
     UID_RETIRED_VLImageStorage,
     UID_RETIRED_VLMultiFrameImageStorage,
+ */
     UID_RETIRED_XRayAngiographicBiPlaneImageStorage,
     UID_RTBeamsTreatmentRecordStorage,
     UID_RTBrachyTreatmentRecordStorage,
@@ -1061,7 +1075,11 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.39  2002-06-19 15:35:46  meichel
+** Revision 1.40  2002-08-27 16:55:14  meichel
+** Restricted list of storage SOP classes to less than 64 to prevent
+**   presentation context overflow in various tools
+**
+** Revision 1.39  2002/06/19 15:35:46  meichel
 ** Updated list of SOP Class UIDs for Supplement 49
 **
 ** Revision 1.38  2002/05/16 12:37:31  meichel
