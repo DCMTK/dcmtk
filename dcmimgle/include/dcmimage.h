@@ -22,9 +22,9 @@
  *  Purpose: Provides main interface to the "DICOM image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-07-07 13:42:11 $
+ *  Update Date:      $Date: 2001-05-10 16:46:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dcmimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -995,19 +995,23 @@ class DicomImage
     }
 
     /** create bitmap for specified overlay plane.
-     *  (up to 16 bits per pixel with two values: fore and back)
+     *  (up to 16 bits per pixel with two values: 'fore' and 'back')
      *
      ** @param  plane   number (0..15) or group number (0x60nn) of overlay plane
      *  @param  width   returns width of overlay plane (in pixels)
      *  @param  height  returns height of overlay plane (in pixels)
      *  @param  left    returns x coordinate of plane's origin
      *  @param  top     returns y coordinate of plane's origin
-     *  @param  mode    return display mode (see 'diutils.h')
+     *  @param  mode    returns display mode (see 'diutils.h')
      *  @param  frame   index of frame used for output, default: 0
-     *  @param  bits    number of bits (stored) in the resulting array, default: 8
-     *  @param  fore    foreground color to be set in bitmap, default: 255
-     *  @param  back    background color to be set in bitmap (transparent), default: 0
-     *  @param  idx     index of overlay group (0 = dataset, 1 = additional, 2 = '1' plane hides '0' plane), default: 2
+     *  @param  bits    number of bits (stored) in the resulting array, default: 8, range: 1..16
+     *  @param  fore    foreground color to be set in bitmap, default: 255, range: 0..2^bits-1
+     *  @param  back    background color to be set in bitmap (transparent), default: 0, range: 0..2^bits-1
+     *  @param  idx     index of overlay group (0 = dataset, planes stored in the image dataset
+     *                                          1 = additional, planes added by addOverlay()
+     *                                          2 = 'additional' overlay planes hide 'dataset' planes
+     *                                              when the overlay group number exists in both),
+     *                  default: 2
      *
      ** @return pointer to overlay plane data (internal memory buffer)
      */
@@ -1420,7 +1424,10 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.31  2000-07-07 13:42:11  joergr
+ * Revision 1.32  2001-05-10 16:46:26  joergr
+ * Enhanced comments of some overlay related methods.
+ *
+ * Revision 1.31  2000/07/07 13:42:11  joergr
  * Added support for LIN OD presentation LUT shape.
  *
  * Revision 1.30  2000/06/07 14:30:26  joergr
