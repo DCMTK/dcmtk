@@ -33,7 +33,7 @@ if test $# != 0;  then
 		./configure $*
 		cd $thisdir
 		echo "running configure for this module"
-		sh $configdir/confmod --srcdir=. $* 
+		sh $configdir/confmod --srcdir=. $*
 		;;
 	-c)
 		shift
@@ -43,14 +43,10 @@ if test $# != 0;  then
 		;;
 	*)
 		echo "running configure for this module"
-		sh $configdir/confmod --srcdir=. $* 
+		sh $configdir/confmod --srcdir=. $*
 		;;
 	esac
 else
 	echo "running configure for this module"
 	sh $configdir/confmod --srcdir=. $*
-fi	
-
-
-
-
+fi

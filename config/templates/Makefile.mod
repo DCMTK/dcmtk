@@ -1,5 +1,5 @@
 #
-#	Makefile for dcmdata
+#	Makefile for modules
 #
 
 
@@ -78,7 +78,3 @@ dependencies:
 	(cd libsrc; touch $(DEP); $(MAKE) dependencies)
 	(cd apps; touch $(DEP); $(MAKE) dependencies)
 	(cd tests; touch $(DEP); $(MAKE) dependencies)
-
-
-
-
