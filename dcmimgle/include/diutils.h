@@ -22,9 +22,9 @@
  *  Purpose: Utilities (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-07-23 14:16:16 $
+ *  Update Date:      $Date: 1999-09-17 13:08:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diutils.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,10 +40,10 @@
 
 BEGIN_EXTERN_C
 #ifdef HAVE_LIBC_H
-#include <libc.h>
+ #include <libc.h>
 #endif
 #ifdef HAVE_STDLIB_H
-#include <stdlib.h>
+ #include <stdlib.h>
 #endif
 #include <stdio.h>
 END_EXTERN_C
@@ -55,9 +55,9 @@ END_EXTERN_C
 
 /** @name configuration flags
  */
- 
+
 //@{
-    
+
 /// compatibility with old ACR-NEMA images
 const unsigned long CIF_AcrNemaCompatibility      = 0x0000001;
 
@@ -76,7 +76,7 @@ const unsigned long CIF_KeepOriginalColorModel    = 0x0000010;
 //@}
 
 
-/// true color color mode (for monochrome images only)
+// / true color color mode (for monochrome images only)
 const int MI_PastelColor = -1;
 
 
@@ -88,16 +88,27 @@ const int MI_PastelColor = -1;
  */
 enum EP_Interpretation
 {
+    /// unknown, undefined, invalid
     EPI_Unknown,
+    /// monochrome 1
     EPI_Monochrome1,
+    /// monochrome 2
     EPI_Monochrome2,
+    /// palette color
     EPI_PaletteColor,
+    /// RGB color
     EPI_RGB,
+    /// HSV color
     EPI_HSV,
+    /// ARGB color
     EPI_ARGB,
+    /// CMYK color
     EPI_CMYK,
+    /// YCbCr full
     EPI_YBR_Full,
+    /// YCbCr full 4:2:2
     EPI_YBR_Full_422,
+    /// YCbCr partial 4:2:2
     EPI_YBR_Partial_422
 };
 
@@ -106,50 +117,75 @@ enum EP_Interpretation
  */
 struct SP_Interpretation
 {
+    /// string
     const char *Name;
+    /// constant
     EP_Interpretation Type;
 };
 
 
 /** internal representation of pixel data
  */
-enum EP_Representation 
+enum EP_Representation
 {
+    /// unsigned 8 bit integer
     EPR_Uint8, EPR_MinUnsigned = EPR_Uint8,
+    /// signed 8 bit integer
     EPR_Sint8, EPR_MinSigned = EPR_Sint8,
+    /// unsigned 16 bit integer
     EPR_Uint16,
+    /// signed 16 bit integer
     EPR_Sint16,
+    /// unsigned 32 bit integer
     EPR_Uint32, EPR_MaxUnsigned = EPR_Uint32,
+    /// signed 32 bit integer
     EPR_Sint32, EPR_MaxSigned = EPR_Sint32
 };
 
 
-/** status code
+/** image status code
  */
-enum EI_Status 
+enum EI_Status
 {
+    /// normal, no error
     EIS_Normal,
+    /// data dictionary not found
     EIS_NoDataDictionary,
+    /// invalid dataset/file
     EIS_InvalidDocument,
+    /// mandatory attribute missing
     EIS_MissingAttribute,
+    /// invalid value for an important attribute
     EIS_InvalidValue,
+    /// specified value for an attribute not supported
     EIS_NotSupportedValue,
+    /// memory exhausted etc.
     EIS_MemoryFailure,
+    /// invalid image, internal error
     EIS_InvalidImage,
+    /// other error
     EIS_OtherError
 };
 
 
-/** overlay modes
+/** overlay modes.
+ *  This mode is used to define how to display an overlay plane.
  */
 enum EM_Overlay
 {
+    /// default mode, as stored in the dataset
     EMO_Default,
+    /// replace mode
     EMO_Replace,
+    /// graphics overlay
     EMO_Graphic = EMO_Replace,
+    /// threshold replace
     EMO_ThresholdReplace,
+    /// complement, inverse
     EMO_Complement,
+    /// region of interest (ROI)
     EMO_RegionOfInterest,
+    /// bitmap shutter
     EMO_BitmapShutter
 };
 
@@ -158,7 +194,9 @@ enum EM_Overlay
  */
 enum ES_PresentationLut
 {
+    /// shape IDENTITY
     ESP_Identity,
+    /// shape INVERSE
     ESP_Inverse
 };
 
@@ -167,8 +205,6 @@ enum ES_PresentationLut
  *  constant initializations  *
  *----------------------------*/
 
-/** definition of photometric strings and related constants
- */
 const SP_Interpretation PhotometricInterpretationNames[] =
 {
     {"MONOCHROME1",   EPI_Monochrome1},
@@ -211,12 +247,26 @@ class DicomImageClass
 
  public:
 
+    /** calculate maximum value which could be stored in the specified number of bits
+     *
+     ** @param  mv_bits  number of bits
+     *  @param  mv_pos   value substracted from the maximum value (0 or 1)
+     *
+     ** @return maximum value
+     */
     static inline unsigned long maxval(const int mv_bits,
                                        const unsigned long mv_pos = 1)
     {
         return (mv_bits < MAX_BITS) ? ((unsigned long)1 << mv_bits) - mv_pos : (unsigned long)-1;
     }
 
+    /** calculate number of bits which are necessary to store the specified value
+     *
+     ** @param  tb_value  value to be stored
+     *  @param  tb_pos    value substracted from the value (0 or 1) before converting
+     *
+     ** @return number of bits
+     */
     static inline unsigned int tobits(unsigned long tb_value,
                                       const unsigned long tb_pos = 1)
     {
@@ -231,15 +281,28 @@ class DicomImageClass
         return tb_bits;
     }
 
+    /** determine integer representation which is necessary to store values in the specified range
+     *
+     ** @param  minvalue  minimum value to be stored
+     *  @param  maxvalue  maximum value to be stored
+     *
+     ** @return integer representation (enum)
+     */
     static EP_Representation determineRepresentation(double minvalue,
                                                      double maxvalue);
 
+    /// debug level: display no messages
     static const int DL_NoMessages;
+    /// debug level: display error messages
     static const int DL_Errors;
+    /// debug level: display warning messages
     static const int DL_Warnings;
+    /// debug level: display informational messages
     static const int DL_Informationals;
+    /// debug level: display debug messages
     static const int DL_DebugMessages;
-    
+
+    /// debug level defining the verboseness of the toolkit
     static int DebugLevel;
 };
 
@@ -251,7 +314,10 @@ class DicomImageClass
  *
  * CVS/RCS Log:
  * $Log: diutils.h,v $
- * Revision 1.9  1999-07-23 14:16:16  joergr
+ * Revision 1.10  1999-09-17 13:08:13  joergr
+ * Added/changed/completed DOC++ style comments in the header files.
+ *
+ * Revision 1.9  1999/07/23 14:16:16  joergr
  * Added flag to avoid color space conversion for color images (not yet
  * implemented).
  *

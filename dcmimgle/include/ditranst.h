@@ -22,9 +22,9 @@
  *  Purpose: DicomTransTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-08-25 16:41:56 $
+ *  Update Date:      $Date: 1999-09-17 13:08:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/ditranst.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,6 +54,16 @@ class DiTransTemplate
 
  protected:
 
+    /** constructor
+     *
+     ** @param  planes     number of planes
+     *  @param  src_x      width of source image
+     *  @param  src_y      height of source image
+     *  @param  dest_x     width of destination image (after transformation)
+     *  @param  dest_y     height of destination image
+     *  @param  frames     number of frames 
+     *  @param  bits       number of bits per plane/pixel (optional)
+     */
     DiTransTemplate(const int planes,
                     const Uint16 src_x,
                     const Uint16 src_y,
@@ -71,10 +81,17 @@ class DiTransTemplate
     {
     }
 
+    /** destructor
+     */
     virtual ~DiTransTemplate()
     {
     }
     
+    /** copy pixel data
+     *
+     ** @param  src   array of pointers to source image pixels
+     *  @param  dest  array of pointers to destination image pixels
+     */
     inline void copyPixel(const T *src[],
                           T *dest[])
     {
@@ -83,6 +100,11 @@ class DiTransTemplate
             OFBitmanipTemplate<T>::copyMem(src[j], dest[j], count);
     }
 
+    /** copy pixel data
+     *
+     ** @param  dest   array of pointers to destination image pixels
+     *  @param  value  value to be filled in destination array
+     */
     inline void fillPixel(T *dest[],
                           const T value)
     {
@@ -92,12 +114,21 @@ class DiTransTemplate
     }
 
 
+    /// number of planes
     const int Planes;
+
+    /// width of source image
     /*const*/ Uint16 Src_X;                     // add 'const' when interpolated scaling with clipping is fully implemented
+    /// height of source image
     /*const*/ Uint16 Src_Y;                     // ... dito ...
+    /// width of destination image
     const Uint16 Dest_X;
+    /// height of destination image
     const Uint16 Dest_Y;
+
+    /// number of frames
     const Uint32 Frames;
+    /// number of bits per plane/pixel
     const int Bits;
 };
 
@@ -109,7 +140,10 @@ class DiTransTemplate
  *
  * CVS/RCS Log:
  * $Log: ditranst.h,v $
- * Revision 1.6  1999-08-25 16:41:56  joergr
+ * Revision 1.7  1999-09-17 13:08:12  joergr
+ * Added/changed/completed DOC++ style comments in the header files.
+ *
+ * Revision 1.6  1999/08/25 16:41:56  joergr
  * Added new feature: Allow clipping region to be outside the image
  * (overlapping).
  *
