@@ -16,9 +16,9 @@ include $(configdir)/@common_makefile@
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(libdir)
 LOCALLIBS = -ldcmdata
 
-objs= dcmgpdir.o isadicmf.o dcmconv.o dcimapix.o dcm2ppm.o dcmdump.o ds2file.o dump2dcm.o file2ds.o mknldir.o ppm2dcm.o 
+objs= dcmgpdir.o isadicmf.o dcmconv.o dcmdump.o ds2file.o dump2dcm.o file2ds.o
 
-progs= dcmgpdir isadicmf dcmconv dcm2ppm dcmdump ds2file dump2dcm file2ds mknldir ppm2dcm 
+progs= dcmgpdir isadicmf dcmconv dcmdump ds2file dump2dcm file2ds 
 
 all: $(progs)
 
@@ -31,9 +31,6 @@ isadicmf: isadicmf.o
 dcmconv: dcmconv.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
 
-dcm2ppm: dcm2ppm.o dcimapix.o 
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o dcimapix.o $(LOCALLIBS) $(LIBS)  
-
 dcmdump: dcmdump.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
 
@@ -45,13 +42,6 @@ dump2dcm: dump2dcm.o
 
 file2ds: file2ds.o 
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
-
-mknldir: mknldir.o 
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
-
-ppm2dcm: ppm2dcm.o dcimapix.o 
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o dcimapix.o $(LOCALLIBS) $(LIBS)  
-
 
 install: all
 	$(configdir)/mkinstalldirs $(bindir)
