@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 15:20:57 $
+ *  Update Date:      $Date: 1998-12-14 17:20:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoimg.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -119,25 +119,24 @@ class DiMonoImage
     int setPresentationLut(const DcmUnsignedShort &data,
                            const DcmUnsignedShort &descriptor);
     
-    inline int showOverlay(const unsigned int plane)
-        { return (Overlays != NULL) ? Overlays->showPlane(plane) : 0; }
-    inline int showOverlay(const unsigned int plane, const double fore, const double thresh, const EM_Overlay mode)
-        { return (Overlays != NULL) ? Overlays->showPlane(plane, fore, thresh, mode) : 0; }
+    int addOverlay(const unsigned int group,
+                   const unsigned long rows,
+                   const unsigned long columns,
+                   const EM_Overlay mode,
+                   const signed int left,
+                   const signed int top,
+                   const DcmOverlayData &data,
+                   const DcmLongString &label,
+                   const DcmLongString &description);
 
-    inline int showAllOverlays()
-        { return (Overlays != NULL) ? Overlays->showAllPlanes() : 0; }
-    inline int showAllOverlays(const double fore, const double thresh, const EM_Overlay mode)
-        { return (Overlays != NULL) ? Overlays->showAllPlanes(fore, thresh, mode) : 0; }
+    int removeOverlay(const unsigned int group);
 
-    inline int hideOverlay(const unsigned int plane)
-        { return (Overlays != NULL) ? Overlays->hidePlane(plane) : 0; }
-    inline int hideAllOverlays()
-        { return (Overlays != NULL) ? Overlays->hideAllPlanes() : 0; }
-
-    inline int placeOverlay(const unsigned int plane, const signed int left, const signed int top)
-        { return (Overlays != NULL) ? Overlays->placePlane(plane, left, top) : 0; }
-    inline unsigned int getOverlayCount() const
-        { return (Overlays != NULL) ? Overlays->getCount() : 0; }
+    inline DiOverlay *getOverlayPtr(const unsigned int idx = 0)
+    {
+        if (idx < 2)
+            return Overlays[idx];
+        return NULL;
+    }
 
     int flip(const int, const int);
     int rotate(const int);
@@ -147,7 +146,9 @@ class DiMonoImage
     void deleteOutputData();
 
     const DiMonoPixel *getInterData() const
-        { return InterData; }
+    {
+        return InterData;
+    }
 
     void *createDIB(const unsigned long);
     void *createAWTBitmap(const unsigned long, const int);
@@ -160,7 +161,7 @@ class DiMonoImage
 
     DiMonoImage(const DiDocument *image,
                 const EI_Status status,
-                const char dummy);
+                const char /*dummy*/);
 
     DiMonoImage(const DiMonoImage *image,
                 const unsigned long fstart,
@@ -192,10 +193,9 @@ class DiMonoImage
 
     int checkInterData(const int mode = 1);
 
-    void *getData(const unsigned long,
-                  const int,
-                  const Uint32,
-                  const Uint32);
+    void *getData(const unsigned long frame,
+                  const int bits,
+                  const int negative);
 
     double WindowCenter;                            // center of current VOI-window
     double WindowWidth;                             // width of current VOI-window
@@ -206,7 +206,7 @@ class DiMonoImage
     
     ES_PresentationLut PresLutShape;                // presentation LUT shape (identity or inverse)
 
-    DiOverlay *Overlays;                            // points to associated overlay-object
+    DiOverlay *Overlays[2];                         // points to associated overlay-objects ([0] = built-in, [1] = additional)
     DiLookupTable *VoiLutData;                      // points to associated VOI-LUT-object
     DiLookupTable *PresLutData;                     // points to associated presentation-LUT-object
     DiMonoPixel *InterData;                         // points to intermediate pixel data representation (object)
@@ -228,7 +228,10 @@ class DiMonoImage
 **
 ** CVS/RCS Log:
 ** $Log: dimoimg.h,v $
-** Revision 1.1  1998-11-27 15:20:57  joergr
+** Revision 1.2  1998-12-14 17:20:03  joergr
+** Added methods to add and remove additional overlay planes (still untested).
+**
+** Revision 1.1  1998/11/27 15:20:57  joergr
 ** Added copyright message.
 ** Added methods and constructors for flipping and rotating, changed for
 ** scaling and clipping.
