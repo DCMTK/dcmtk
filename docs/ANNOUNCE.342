@@ -1,0 +1,60 @@
+
+ANNOUNCEMENT
+
+Version 3.4.2 of the OFFIS DCMTK (DICOM ToolKit) software is now available
+for public release.  This release includes the following main changes 
+over the previous version (Version 3.4.1):
+
+- The DICOM data dictionary has been re-worked based on the 2000 edition of 
+  the DICOM standard, the latest supplements and correction proposals.
+
+- Support for the "DICOM Security Enhancements One" has been implemented:
+  The storescu and storescp tools now support DICOM network transmission 
+  "tunneled" through a secure TLSv1 transport connection. DCMTK relies on 
+  the OpenSSL toolkit (www.openssl.org) for the underlying cryptographic 
+  routines and the TLS protocol implementation.
+
+- An implementation of a DICOM Basic Grayscale Print Management SCP
+  supporting the Presentation LUT SOP Class has been added to the dcmpstat
+  module. The Print SCP stores incoming print jobs as a set of Stored Print
+  and Hardcopy Grayscale Image objects.
+
+- A checking tool for Grayscale Softcopy Presentation States has been added.
+  This tool allows to check presentation states for syntactical correctness
+  and completeness.
+
+- Experimental support for multi-threaded applications has been added for the
+  ofstd, dcmdata and dcmimgle modules (i.e. the class libraries that handle 
+  DICOM data in memory and on disk and the library that processes DICOM 
+  images.)
+
+- Extended logging routines for debugging A-ASSOCIATE PDUs and DIMSE command
+  sets have been added to the dcmnet module.
+
+- DCMTK 3.4.2 compiles "out of the box" on FreeBSD 4.1.1.
+
+- Many bug fixes and minor improvements as usual - See the dcmtk/CHANGES 
+  file for more details.
+
+
+Many people have contributed to this new release of DCMTK, appearing here 
+in alphabetical order. Thank you very much for your support!
+  Andreas Barth <Andreas.Barth@medical.bruker.de>
+  Mohamed Ahmed Abd Elkader <mokader@iti-idsc.gov.eg>
+  Alexander Haderer <alexander.haderer@charite.de>
+  Bernd Kuemmerlen <bkuemmer@mevis.de>
+  Gilles Mevel <Gilles.Mevel@etiam.com>
+  Sebastian Meyer <meyer@mevis.de>
+  Dimitri Papadopoulos-Orfanos <papadopo@shfj.cea.fr>
+  Andreas Thiel <Andreas.Thiel@Informatik.Uni-Oldenburg.DE>
+
+OFFIS staff who have worked on this release are:
+  Marco Eichelberg <Eichelberg@OFFIS.Uni-Oldenburg.DE>
+  Joerg Riesmeier <Riesmeier@OFFIS.Uni-Oldenburg.DE>
+  
+The DCMTK software can be downloaded via:
+  http://www.offis.uni-oldenburg.de/projekte/dicom/
+
+
+Kuratorium OFFIS eV, Oldenburg, Germany, 2000-12-20
+
