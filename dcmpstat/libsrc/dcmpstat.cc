@@ -23,8 +23,8 @@
  *    classes: DcmPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-08-27 14:57:20 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2003-09-05 08:37:46 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -751,7 +751,15 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
       else if (aString == "CIRCULAR") useShutterCircular=OFTrue;
       else if (aString == "POLYGONAL") useShutterPolygonal=OFTrue;
       else if (aString == "BITMAP") useShutterBitmap=OFTrue;
-      else result=EC_IllegalCall; /* reject presentation state with unknown shutter type */
+      else 
+      {
+        result=EC_IllegalCall;
+        if (verboseMode)
+        {
+          logstream->lockCerr() << "Error: unknown shutter type '" << aString << "'" << endl;
+          logstream->unlockCerr();
+        }
+      }
     }
 
     if (useShutterRectangular)
@@ -892,8 +900,13 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
   }
 
   /* check that referenced series list is non-empty and that every series contains images
-     and that all referenced images share the same SOP class UID */
-  if (result.good() && (!referencedSeriesList.isValid())) result = EC_IllegalCall;
+     and that all referenced images share the same SOP class UID.
+   */
+  if (result.good() && (!referencedSeriesList.isValid())) 
+  {
+    // referencedSeriesList.isValid() has already displayed an error message in verbose mode
+    result = EC_IllegalCall; 
+  }
 
   /* check that there is no mask module present. We don't support Mask and therefore
      are obliged to reject any presentation state containing a mask! */
@@ -2131,7 +2144,11 @@ void DcmPresentationState::setLog(OFConsole *stream, OFBool verbMode, OFBool dbg
 
 /*
  *  $Log: dcmpstat.cc,v $
- *  Revision 1.1  2003-08-27 14:57:20  meichel
+ *  Revision 1.2  2003-09-05 08:37:46  meichel
+ *  Fixed minor issue that caused certain error messages during the
+ *    parse process on a GSPS object to be "swallowed".
+ *
+ *  Revision 1.1  2003/08/27 14:57:20  meichel
  *  Splitted class DVPresentationState into a base class DcmPresentationState
  *    that does not depend on module dcmimgle and current derived class with
  *    public API identical to the previous version.

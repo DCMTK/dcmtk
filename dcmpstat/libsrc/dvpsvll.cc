@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSVOILUT_PList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-06-12 18:23:11 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-09-05 08:37:46 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -95,6 +95,7 @@ OFCondition DVPSVOILUT_PList::read(DcmItem &dset)
         newObject = new DVPSVOILUT();
         if (newObject && ditem)
         {
+          newObject->setLog(logstream, verboseMode, debugMode);          
           if (EC_Normal == newObject->read(*ditem)) list_.push_back(newObject); else delete(newObject);
         } else result = EC_MemoryExhausted;
       }
@@ -135,7 +136,11 @@ void DVPSVOILUT_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode
 
 /*
  *  $Log: dvpsvll.cc,v $
- *  Revision 1.7  2003-06-12 18:23:11  joergr
+ *  Revision 1.8  2003-09-05 08:37:46  meichel
+ *  Fixed minor issue that caused certain error messages during the
+ *    parse process on a GSPS object to be "swallowed".
+ *
+ *  Revision 1.7  2003/06/12 18:23:11  joergr
  *  Modified code to use const_iterators where appropriate (required for STL).
  *  Thanks to Henning Meyer <Henning-Meyer@web.de> for the report.
  *

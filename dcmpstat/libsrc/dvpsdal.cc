@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSDisplayedArea_PList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-06-12 18:23:11 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-09-05 08:37:46 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -96,8 +96,8 @@ OFCondition DVPSDisplayedArea_PList::read(DcmItem &dset)
         newImage = new DVPSDisplayedArea();
         if (newImage && ditem)
         {
-          result = newImage->read(*ditem);
           newImage->setLog(logstream, verboseMode, debugMode);
+          result = newImage->read(*ditem);
           list_.push_back(newImage);
         } else result = EC_MemoryExhausted;
       }
@@ -220,7 +220,11 @@ void DVPSDisplayedArea_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool 
 
 /*
  *  $Log: dvpsdal.cc,v $
- *  Revision 1.9  2003-06-12 18:23:11  joergr
+ *  Revision 1.10  2003-09-05 08:37:46  meichel
+ *  Fixed minor issue that caused certain error messages during the
+ *    parse process on a GSPS object to be "swallowed".
+ *
+ *  Revision 1.9  2003/06/12 18:23:11  joergr
  *  Modified code to use const_iterators where appropriate (required for STL).
  *  Thanks to Henning Meyer <Henning-Meyer@web.de> for the report.
  *

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSOverlayCurveActivationLayer_PList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-06-12 18:23:11 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-09-05 08:37:46 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -100,6 +100,7 @@ OFCondition DVPSOverlayCurveActivationLayer_PList::read(DcmItem &dset)
         newLayer = new DVPSOverlayCurveActivationLayer();
         if (newLayer)
         {
+          newLayer->setLog(logstream, verboseMode, debugMode);          
           result = newLayer->read(dset,i);
           list_.push_back(newLayer);
         } else result = EC_MemoryExhausted;
@@ -488,7 +489,11 @@ void DVPSOverlayCurveActivationLayer_PList::setLog(OFConsole *stream, OFBool ver
 
 /*
  *  $Log: dvpsall.cc,v $
- *  Revision 1.11  2003-06-12 18:23:11  joergr
+ *  Revision 1.12  2003-09-05 08:37:46  meichel
+ *  Fixed minor issue that caused certain error messages during the
+ *    parse process on a GSPS object to be "swallowed".
+ *
+ *  Revision 1.11  2003/06/12 18:23:11  joergr
  *  Modified code to use const_iterators where appropriate (required for STL).
  *  Thanks to Henning Meyer <Henning-Meyer@web.de> for the report.
  *
