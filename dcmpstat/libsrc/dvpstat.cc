@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-03 14:02:03 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 1999-03-03 17:58:07 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -3526,7 +3526,6 @@ E_Condition DVPresentationState::invertImage()
             status = EC_IllegalCall;
             if (havePresentationLookupTable())
             {
-                currentImagePLUTValid = OFFalse; // PLUT has changed
                 DiLookupTable *lut = new DiLookupTable(presentationLUTData, presentationLUTDescriptor);
                 if (lut != NULL)
                 {
@@ -3537,6 +3536,8 @@ E_Condition DVPresentationState::invertImage()
             }
             break;
     }
+    if (status == EC_Normal)
+        currentImagePLUTValid = OFFalse; // PLUT has changed
     return status;
 }
 
@@ -3611,7 +3612,10 @@ void DVPresentationState::changeDisplayFunction(DiDisplayFunction *dispFunction)
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.15  1999-03-03 14:02:03  joergr
+ *  Revision 1.16  1999-03-03 17:58:07  joergr
+ *  Changed implementation of invertImage(): set modify flag for all plut types.
+ *
+ *  Revision 1.15  1999/03/03 14:02:03  joergr
  *  Changed implementation of invertImage() to avoid compiler errors on MSVC5
  *  ('return' has to be last statement).
  *
