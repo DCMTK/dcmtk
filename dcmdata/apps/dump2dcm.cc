@@ -21,10 +21,10 @@
  *
  *  Purpose: create a Dicom FileFormat or DataSet from an ASCII-dump
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:38:55 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-08-21 10:14:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dump2dcm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -870,9 +870,9 @@ int main(int argc, char *argv[])
 
     }
 
-    DcmFileFormat * fileformat = NULL;
-    DcmMetaInfo * metaheader = NULL;
-    DcmDataset * dataset = NULL;
+    DcmFileFormat fileformat;
+    DcmMetaInfo * metaheader = fileformat.getMetaInfo();
+    DcmDataset * dataset = fileformat.getDataset();
 
     SetDebugLevel((opt_debugMode));
 
@@ -885,34 +885,6 @@ int main(int argc, char *argv[])
 
     if (verbosemode)
         COUT << "reading dump file: " << ifname << endl;
-
-
-    // create dicom metaheader and dataset
-    OFBool memoryError = OFFalse;
-    if (createFileFormat)
-    {
-        fileformat = new DcmFileFormat();
-        if (fileformat)
-        {
-            metaheader = fileformat -> getMetaInfo();
-            dataset = fileformat -> getDataset();
-            if (!metaheader || !dataset)
-                memoryError = OFTrue;
-        } else
-            memoryError = OFTrue;
-    }
-    else
-    {
-        dataset = new DcmDataset();
-        if (!dataset)
-            memoryError = OFTrue;
-    }
-
-    if (memoryError)
-    {
-        CERR << "virtual memory exhausted" << endl;
-        return 1;
-    }
 
     // open input dump file
     if ((ifname == NULL) || (strlen(ifname) == 0))
@@ -932,28 +904,10 @@ int main(int argc, char *argv[])
     {
         // write into file format or dataset
         if (verbosemode)
-            COUT << "writing as DICOM file format or dataset" << endl;
+            COUT << "writing DICOM file" << endl;
 
-        DcmFileStream oStream(ofname, DCM_WriteMode);
-
-        if (oStream.Fail())
-        {
-            CERR << "cannot open output file: " << ofname << endl;
-            return 1;
-        }
-
-        OFCondition l_error = EC_Normal;
-        if (fileformat)
-        {
-            fileformat -> transferInit();
-            l_error = fileformat -> write(oStream, oxfer, oenctype, oglenc,
-                          opadenc, (Uint32) opt_filepad, (Uint32) opt_itempad);
-        }
-        else if (dataset)
-        {
-            dataset -> transferInit();
-            l_error = dataset -> write(oStream, oxfer, oenctype, oglenc, EPD_withoutPadding);
-        }
+        OFCondition l_error = fileformat.saveFile(ofname, oxfer, oenctype, oglenc,
+            opadenc, (Uint32) opt_filepad, (Uint32) opt_itempad, !createFileFormat);
     
         if (l_error == EC_Normal)
             COUT << "dump successfully converted." << endl;
@@ -973,7 +927,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
-** Revision 1.39  2002-04-16 13:38:55  joergr
+** Revision 1.40  2002-08-21 10:14:16  meichel
+** Adapted code to new loadFile and saveFile methods, thus removing direct
+**   use of the DICOM stream classes.
+**
+** Revision 1.39  2002/04/16 13:38:55  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
 ** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
 ** contribution.

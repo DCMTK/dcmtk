@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-02 10:59:56 $
+ *  Update Date:      $Date: 2002-08-21 10:18:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.53 $
+ *  CVS/RCS Revision: $Revision: 1.54 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1435,46 +1435,16 @@ storeSCPCallback(
         strcpy( outputFileNameArray[0], tmpstr6 );
       }
 
-      // create a corresponding filestream that we can write to.
-      DcmFileStream outf(fileName, DCM_WriteMode);
-      if (outf.Fail())
+      // determine the transfer syntax which shall be used to write the information to the file
+      E_TransferSyntax xfer = opt_writeTransferSyntax;
+      if (xfer == EXS_Unknown) xfer = (*imageDataSet)->getOriginalXfer();
+
+      // store file either with meta header or as pure dataset      
+      OFCondition cond = cbdata->dcmff->saveFile(fileName, xfer, opt_sequenceType, opt_groupLength, opt_paddingType, (Uint32)opt_filepad, (Uint32)opt_itempad, !opt_useMetaheader);
+      if (cond.bad())
       {
         fprintf(stderr, "storescp: Cannot write image file: %s\n", fileName);
         rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
-      }
-      else
-      {
-        // if the creation of the filestream was successful go ahead
-
-        // determine the transfer syntax which shall be used to write the information to the file
-        E_TransferSyntax xfer = opt_writeTransferSyntax;
-        if (xfer == EXS_Unknown) xfer = (*imageDataSet)->getOriginalXfer();
-
-        // if the user required that the resulting file shall have DICOM format (i.e. a
-        // meta infomation header) go ahead and write the information correspondingly.
-        if (opt_useMetaheader)
-        {
-          cbdata->dcmff->transferInit();
-          cbdata->dcmff->write(outf, xfer, opt_sequenceType, opt_groupLength, opt_paddingType, (Uint32)opt_filepad, (Uint32)opt_itempad);
-          cbdata->dcmff->transferEnd();
-          if (cbdata->dcmff->error() != EC_Normal)
-          {
-            fprintf(stderr, "storescp: Cannot write image file: %s\n", fileName);
-            rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
-          }
-        }
-        else
-        {
-          //* if not, just write the information as a data set
-          (*imageDataSet)->transferInit();
-          (*imageDataSet)->write(outf, xfer, opt_sequenceType, opt_groupLength, opt_paddingType, (Uint32)opt_filepad, (Uint32)opt_itempad);
-          (*imageDataSet)->transferEnd();
-          if ((*imageDataSet)->error() != EC_Normal)
-          {
-            fprintf(stderr, "storescp: Cannot write image file: %s\n", fileName);
-            rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
-          }
-        }
       }
 
       // check the image to make sure it is consistent, i.e. that its sopClass and sopInstance correspond
@@ -1920,7 +1890,11 @@ static void cleanChildren()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.53  2002-08-02 10:59:56  meichel
+** Revision 1.54  2002-08-21 10:18:27  meichel
+** Adapted code to new loadFile and saveFile methods, thus removing direct
+**   use of the DICOM stream classes.
+**
+** Revision 1.53  2002/08/02 10:59:56  meichel
 ** Execute options in storescp now clean up zombie child processes
 **   as they should.
 **

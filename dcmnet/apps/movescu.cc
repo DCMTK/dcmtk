@@ -22,9 +22,9 @@
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-20 12:21:21 $
+ *  Update Date:      $Date: 2002-08-21 10:18:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.41 $
+ *  CVS/RCS Revision: $Revision: 1.42 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -976,39 +976,15 @@ storeSCPCallback(
          StoreCallbackData *cbdata = (StoreCallbackData*) callbackData;
          const char* fileName = cbdata->imageFileName;
 
-         DcmFileStream outf(fileName, DCM_WriteMode);
-         if (outf.Fail())
+         E_TransferSyntax xfer = opt_writeTransferSyntax;
+         if (xfer == EXS_Unknown) xfer = (*imageDataSet)->getOriginalXfer();
+
+         OFCondition cond = cbdata->dcmff->saveFile(fileName, xfer, opt_sequenceType, opt_groupLength,
+           opt_paddingType, (Uint32)opt_filepad, (Uint32)opt_itempad, !opt_useMetaheader);
+         if (cond.bad())
          {
            fprintf(stderr, "storescp: Cannot write image file: %s\n", fileName);
            rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
-         } else {
-           E_TransferSyntax xfer = opt_writeTransferSyntax;
-           if (xfer == EXS_Unknown) xfer = (*imageDataSet)->getOriginalXfer();
-
-           if (opt_useMetaheader)
-           {
-             /* write as fileformat */
-             cbdata->dcmff->transferInit();
-             cbdata->dcmff->write(outf, xfer, opt_sequenceType, opt_groupLength,
-               opt_paddingType, (Uint32)opt_filepad, (Uint32)opt_itempad);
-             cbdata->dcmff->transferEnd();
-             if (cbdata->dcmff->error() != EC_Normal)
-             {
-               fprintf(stderr, "storescp: Cannot write image file: %s\n", fileName);
-               rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
-             }
-           } else {
-             /* write as dataset */
-             (*imageDataSet)->transferInit();
-             (*imageDataSet)->write(outf, xfer, opt_sequenceType, opt_groupLength,
-               opt_paddingType, (Uint32)opt_filepad, (Uint32)opt_itempad);
-             (*imageDataSet)->transferEnd();
-             if ((*imageDataSet)->error() != EC_Normal)
-             {
-               fprintf(stderr, "storescp: Cannot write image file: %s\n", fileName);
-               rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
-             }
-           }
          }
       
         /* should really check the image to make sure it is consistent,
@@ -1325,7 +1301,11 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.41  2002-08-20 12:21:21  meichel
+** Revision 1.42  2002-08-21 10:18:27  meichel
+** Adapted code to new loadFile and saveFile methods, thus removing direct
+**   use of the DICOM stream classes.
+**
+** Revision 1.41  2002/08/20 12:21:21  meichel
 ** Adapted code to new loadFile and saveFile methods, thus removing direct
 **   use of the DICOM stream classes.
 **

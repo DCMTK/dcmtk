@@ -21,10 +21,10 @@
  *
  *  Purpose: Convert the contents of a DICOM file to XML format
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-06-10 17:35:47 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-08-21 10:14:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcm2xml.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,30 +67,23 @@ static OFCondition writeFile(ostream &out,
     }
 
     /* read DICOM file or data set */
-    DcmFileFormat *dfile = new DcmFileFormat();
-    if (dfile != NULL)
-    {
-        if (isDataset)
-            result = dfile->getDataset()->loadFile(ifname, xfer);
-        else
-            result = dfile->loadFile(ifname, xfer);
-        if (result.bad())
-        {
-            CERR << OFFIS_CONSOLE_APPLICATION << ": error (" << result.text()
-                 << ") reading file: "<< ifname << endl;
-        }
-    } else
-        result = EC_MemoryExhausted;
+    DcmFileFormat dfile;
+    result = dfile.loadFile(ifname, xfer, EGL_noChange, DCM_MaxReadLength, isDataset);
 
-    /* write content to XML format */
-    if (result.good())
+    if (result.bad())
     {
+        CERR << OFFIS_CONSOLE_APPLICATION << ": error (" << result.text()
+             << ") reading file: "<< ifname << endl;
+    } 
+    else
+    {
+        /* write content to XML format */
         if (loadIntoMemory)
-            dfile->getDataset()->loadAllDataIntoMemory();
+            dfile.getDataset()->loadAllDataIntoMemory();
         /* determine dataset character encoding */
         OFString encString;
         OFString csetString;
-        if (dfile->getDataset()->findAndGetOFString(DCM_SpecificCharacterSet, csetString).good())
+        if (dfile.getDataset()->findAndGetOFString(DCM_SpecificCharacterSet, csetString).good())
         {
             if (csetString == "ISO_IR 6")
                 encString = "UTF-8";
@@ -131,12 +124,10 @@ static OFCondition writeFile(ostream &out,
         }
         /* write XML document content */
         if (isDataset)
-            result = dfile->getDataset()->writeXML(out, writeFlags);
+            result = dfile.getDataset()->writeXML(out, writeFlags);
         else
-            result = dfile->writeXML(out, writeFlags);
+            result = dfile.writeXML(out, writeFlags);
     }
-    delete dfile;
-
     return result;
 }
 
@@ -276,7 +267,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2xml.cc,v $
- * Revision 1.5  2002-06-10 17:35:47  joergr
+ * Revision 1.6  2002-08-21 10:14:13  meichel
+ * Adapted code to new loadFile and saveFile methods, thus removing direct
+ *   use of the DICOM stream classes.
+ *
+ * Revision 1.5  2002/06/10 17:35:47  joergr
  * Fixed inconsistency regarding spelling of the "file-format" element.
  *
  * Revision 1.4  2002/05/14 08:19:22  joergr

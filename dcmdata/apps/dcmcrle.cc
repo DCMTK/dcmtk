@@ -22,9 +22,9 @@
  *  Purpose: Compress DICOM file with RLE Transfer Syntax
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-06-06 14:52:31 $
+ *  Update Date:      $Date: 2002-08-21 10:14:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmcrle.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -278,66 +278,22 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    if (opt_verbose) 
+    DcmFileFormat fileformat;
+    DcmDataset * dataset = fileformat.getDataset();
+
+    if (opt_verbose)
         COUT << "open input file " << opt_ifname << endl;
 
-    DcmFileStream inf(opt_ifname, DCM_ReadMode);
-    if ( inf.Fail() )
-    {
-        CERR << "cannot open file: " << opt_ifname << endl;
-        return 1;
-    }
-       
-    DcmFileFormat *fileformat = NULL;
-    DcmDataset * dataset = NULL;
-    OFCondition error = EC_Normal;
+    OFCondition error = fileformat.loadFile(opt_ifname, opt_ixfer, EGL_noChange, DCM_MaxReadLength, opt_iDataset);
 
-    if (opt_iDataset)
+    if (error.bad())
     {
-      dataset = new DcmDataset;
-      if (!dataset)
-      {
-          CERR << "memory exhausted\n";
-          return 1;
-      }
-      if (opt_verbose)
-          COUT << "read and interpret DICOM dataset " << opt_ifname << endl;
-      dataset->transferInit();
-      error = dataset -> read(inf, opt_ixfer, EGL_noChange);
-      dataset->transferEnd();
-    }
-    else
-    {
-      fileformat = new DcmFileFormat;
-      if (!fileformat)
-      {
-          CERR << "memory exhausted\n";
-          return 1;
-      }
-      if (opt_verbose)
-        COUT << "read and interpret DICOM file with metaheader " 
-             << opt_ifname << endl;
-      fileformat->transferInit();
-      error = fileformat -> read(inf, opt_ixfer, EGL_noChange);
-      fileformat->transferEnd();
-      dataset = fileformat -> getDataset();
-    }
-
-    if (error != EC_Normal) 
-    {
-        CERR << "Error: "  
+        CERR << "Error: "
              << error.text()
              << ": reading file: " <<  opt_ifname << endl;
         return 1;
     }
-    
-    if (!fileformat)
-    {
-        if (opt_verbose)
-            COUT << "create new Metaheader for dataset\n";
-        fileformat = new DcmFileFormat(dataset);
-    }
-
+       
     DcmXfer original_xfer(dataset->getOriginalXfer());
     if (original_xfer.isEncapsulated())
     {
@@ -367,34 +323,23 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    if (opt_verbose)
-        COUT << "create output file " << opt_ofname << endl;
- 
-    DcmFileStream outf( opt_ofname, DCM_WriteMode );
-    if ( outf.Fail() )
-    {
-        CERR << "cannot create file: " << opt_ofname << endl;
-        return 1;
-    }
-
-    if (opt_verbose) COUT << "write converted DICOM file with metaheader\n";
-
     // force meta-header to refresh SOP Class/Instance UIDs.
-    DcmItem *metaInfo = fileformat->getMetaInfo();
+    DcmItem *metaInfo = fileformat.getMetaInfo();
     if (metaInfo)
     {
       delete metaInfo->remove(DCM_MediaStorageSOPClassUID);
       delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);     
     }
 
-    fileformat->transferInit();
-    error = fileformat->write(outf, opt_oxfer, opt_oenctype, opt_oglenc,
-              opt_opadenc, (Uint32) opt_filepad, (Uint32) opt_itempad);
-    fileformat->transferEnd();
+    if (opt_verbose)
+        COUT << "create output file " << opt_ofname << endl;
 
-    if (error != EC_Normal) 
+    error = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc,
+              opt_opadenc, (Uint32) opt_filepad, (Uint32) opt_itempad);
+
+    if (error.bad())
     {
-        CERR << "Error: "  
+        CERR << "Error: "
              << error.text()
              << ": writing file: " <<  opt_ofname << endl;
         return 1;
@@ -412,7 +357,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmcrle.cc,v $
- * Revision 1.1  2002-06-06 14:52:31  meichel
+ * Revision 1.2  2002-08-21 10:14:14  meichel
+ * Adapted code to new loadFile and saveFile methods, thus removing direct
+ *   use of the DICOM stream classes.
+ *
+ * Revision 1.1  2002/06/06 14:52:31  meichel
  * Initial release of the new RLE codec classes
  *   and the dcmcrle/dcmdrle tools in module dcmdata
  *

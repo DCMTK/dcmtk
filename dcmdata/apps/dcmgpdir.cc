@@ -40,10 +40,10 @@
  *  There should be no need to set this compiler flag manually, just compile
  *  dcmjpeg/apps/dcmmkdir.cc.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-08-13 09:56:44 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-08-21 10:14:15 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
- *  CVS/RCS Revision: $Revision: 1.64 $
+ *  CVS/RCS Revision: $Revision: 1.65 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -636,27 +636,18 @@ dcmFindStringInFile(const OFString& fname, const DcmTagKey& key,
     if (verbosemode) {
         COUT << "investigating file: " << fname << endl;
     }
-    DcmFileStream myin(fname.c_str(), DCM_ReadMode);
-    if ( myin.GetError() != EC_Normal ) {
-        CERR << "error : cannot open file: " << fname << endl;
-        return OFFalse;
-    }
+
     DcmFileFormat ff;
+    OFCondition cond = ff.loadFile(fname.c_str());
 
-    ff.transferInit();
-    ff.read(myin, EXS_Unknown, EGL_noChange);
-    ff.transferEnd();
-
-    if (ff.error() != EC_Normal) {
+    if (cond.bad()) {
         CERR << "Error: "
-             << ff.error().text()
+             << cond.text()
              << ": reading file: " << fname << endl;
         return OFFalse;
     }
 
-    DcmDataset *d = ff.getDataset();
-
-    OFString s = dcmFindString(d, key, searchIntoSub);
+    OFString s = dcmFindString(ff.getDataset(), key, searchIntoSub);
 
     return s;
 }
@@ -3538,19 +3529,12 @@ addToDir(DcmDirectoryRecord* rootRec, const OFString& ifname)
     if (verbosemode) {
         COUT << "adding: " << fname << endl;
     }
-    DcmFileStream myin(fname.c_str(), DCM_ReadMode);
-    if ( myin.GetError() != EC_Normal ) {
-        CERR << "cannot open file: " << fname << endl;
-        return OFFalse;
-    }
+
     DcmFileFormat ff;
+    OFCondition cond = ff.loadFile(fname.c_str());
 
-    ff.transferInit();
-    ff.read(myin, EXS_Unknown, EGL_noChange );
-    ff.transferEnd();
-
-    if (ff.error() != EC_Normal) {
-        CERR << "Error: " << ff.error().text()
+    if (cond.bad()) {
+        CERR << "Error: " << cond.text()
              << ": reading file: " << fname << endl;
         return OFFalse;
     }
@@ -3561,7 +3545,6 @@ addToDir(DcmDirectoryRecord* rootRec, const OFString& ifname)
     */
     hostToDicomFilename(fname);
 
-    OFCondition cond = EC_Normal;
     DcmMetaInfo* metainfo = ff.getMetaInfo();
     DcmDataset* dataset = ff.getDataset();
     /* what kind of object (SOP Class) is stored in the file */
@@ -3889,29 +3872,18 @@ checkFileCanBeUsed(const OFString& fname)
         COUT << "checking: " << fname << endl;
     }
 
-    if (!isaValidFileName(fname)) {
-        return OFFalse;
-    }
+    if (!isaValidFileName(fname)) return OFFalse;
 
     /*
     ** Does the file exist??
     */
-    DcmFileStream myin(fname.c_str(), DCM_ReadMode);
-    if ( myin.GetError() != EC_Normal ) {
-        CERR << "Error: cannot open file: " << fname << endl;
-        /* cannot continue checking */
-        return OFFalse;
-    }
 
     DcmFileFormat ff;
+    OFCondition cond = ff.loadFile(fname.c_str());
 
-    ff.transferInit();
-    ff.read(myin, EXS_Unknown, EGL_noChange );
-    ff.transferEnd();
-
-    if (ff.error() != EC_Normal) {
+    if (cond.bad()) {
         CERR << "Error: "
-             << ff.error().text()
+             << cond.text()
              << ": reading file: " << fname << endl;
         /* cannot continue checking */
         return OFFalse;
@@ -4423,7 +4395,11 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 /*
  * CVS/RCS Log:
  * $Log: dcmgpdir.cc,v $
- * Revision 1.64  2002-08-13 09:56:44  joergr
+ * Revision 1.65  2002-08-21 10:14:15  meichel
+ * Adapted code to new loadFile and saveFile methods, thus removing direct
+ *   use of the DICOM stream classes.
+ *
+ * Revision 1.64  2002/08/13 09:56:44  joergr
  * Added new profile (NONE) based on STD-GEN-xxxx which allows DICOM objects
  * of any transfer syntax to be referenced from a DICOMDIR.  NB: there's no
  * equivilent application profile in the DICOM standard.

@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmDicomDir
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:43:15 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-08-21 10:14:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdicdir.cc,v $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -88,25 +88,21 @@ DcmDicomDir::DcmDicomDir()
     dicomDirFileName(NULL),
     modified(OFFalse),
     mustCreateNewDir(OFFalse),
-    DirFile(NULL),
+    DirFile(new DcmFileFormat()),
     RootRec(NULL),
     MRDRSeq(NULL)
 {
     dicomDirFileName = new char[ strlen( DEFAULT_DICOMDIR_NAME ) + 1 ];
     strcpy( dicomDirFileName, DEFAULT_DICOMDIR_NAME );
-    DcmFileStream inStream(dicomDirFileName, DCM_ReadMode);
-    if (inStream.GetError() != EC_Normal)
+
+    OFCondition cond = DirFile->loadFile(dicomDirFileName);
+    if (cond.bad()) 
     {
-        mustCreateNewDir = OFTrue;
-        DirFile = new DcmFileFormat();
+      delete DirFile; // clean up file format object
+      DirFile = new DcmFileFormat();
+      mustCreateNewDir = OFTrue;
     }
-    else
-    {
-        DirFile = new DcmFileFormat();
-        DirFile->transferInit();
-        DirFile->read(inStream);
-        DirFile->transferEnd();
-    }
+
     createNewElements( "" );      // erzeugt Daten-Elemente, die noch fehlen
     RootRec = new DcmDirectoryRecord( ERT_root,NULL, NULL);
     DcmTag mrdrSeqTag( DCM_DirectoryRecordSequence );
@@ -124,7 +120,7 @@ DcmDicomDir::DcmDicomDir(const char *fileName, const char *fileSetID)
     dicomDirFileName(NULL),
     modified(OFFalse),
     mustCreateNewDir(OFFalse),
-    DirFile(NULL),
+    DirFile(new DcmFileFormat()),
     RootRec(NULL),
     MRDRSeq(NULL)
 {
@@ -132,20 +128,13 @@ DcmDicomDir::DcmDicomDir(const char *fileName, const char *fileSetID)
         fileName = DEFAULT_DICOMDIR_NAME;
     dicomDirFileName = new char[ strlen( fileName ) + 1 ];
     strcpy( dicomDirFileName, fileName );
-    DcmFileStream inStream(dicomDirFileName, DCM_ReadMode);
-    if (inStream.GetError() != EC_Normal)
+
+    OFCondition cond = DirFile->loadFile(dicomDirFileName);
+    if (cond.bad()) 
     {
-        debug(3, ( "dcdicdir:DcmDicomDir() creating new DicomDir [%s]",
-                dicomDirFileName ));
-        mustCreateNewDir = OFTrue;
-        DirFile = new DcmFileFormat();
-    }
-    else
-    {
-        DirFile = new DcmFileFormat();
-        DirFile->transferInit();
-        DirFile->read(inStream);
-        DirFile->transferEnd();
+      delete DirFile; // clean up file format object
+      DirFile = new DcmFileFormat();
+      mustCreateNewDir = OFTrue;
     }
 
     createNewElements( fileSetID );   // erzeugt Daten-Elemente, die noch fehlen
@@ -1337,7 +1326,11 @@ Cdebug(1, refCounter[k].fileOffset==refMRDR->numberOfReferences,
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
-** Revision 1.35  2002-04-16 13:43:15  joergr
+** Revision 1.36  2002-08-21 10:14:20  meichel
+** Adapted code to new loadFile and saveFile methods, thus removing direct
+**   use of the DICOM stream classes.
+**
+** Revision 1.35  2002/04/16 13:43:15  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
 ** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
 ** contribution.

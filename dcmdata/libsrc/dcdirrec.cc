@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmDirectoryRecord
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:43:16 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-08-21 10:14:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdirrec.cc,v $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -855,7 +855,6 @@ OFCondition DcmDirectoryRecord::fillElementsAndReadSOP(
 {
     OFCondition l_error = EC_Normal;
     char *fileName = NULL;
-    DcmFileStream * fileStream = NULL;
     DcmFileFormat *refFile = (DcmFileFormat*)NULL;
 
     OFBool directFromFile = OFFalse;
@@ -881,21 +880,18 @@ OFCondition DcmDirectoryRecord::fillElementsAndReadSOP(
             fileName = new char[strlen(sourceFileName)+1];
             strcpy(fileName, sourceFileName);
         }
-
-        fileStream = new DcmFileStream(fileName, DCM_ReadMode);
-        if (!fileStream || fileStream->GetError() != EC_Normal )
-        {
-            ofConsole.lockCerr() << "Error: DcmDirectoryRecord::readSOPandFileElements(): DicomFile \"" << fileName << "\" not found." << endl;
-            ofConsole.unlockCerr();
-            l_error = EC_InvalidStream;
-            directFromFile = OFFalse;
-            indirectViaMRDR = OFFalse;
-        }
-        else if ( DirRecordType != ERT_Mrdr )
+        
+        if ( DirRecordType != ERT_Mrdr )
         {
             refFile = new DcmFileFormat();
-            refFile->transferInit();
-            refFile->read(*fileStream);
+            l_error = refFile->loadFile(fileName);
+            if (l_error.bad())
+            {
+              ofConsole.lockCerr() << "Error: DcmDirectoryRecord::readSOPandFileElements(): DicomFile \"" << fileName << "\" not found." << endl;
+              ofConsole.unlockCerr();
+              directFromFile = OFFalse;
+              indirectViaMRDR = OFFalse;
+            }
         }
     }
     else
@@ -903,6 +899,7 @@ OFCondition DcmDirectoryRecord::fillElementsAndReadSOP(
         directFromFile = OFFalse;
         indirectViaMRDR = OFFalse;
     }
+
     DcmStack stack;
     DcmUnsignedLongOffset *uloP;
     DcmUniqueIdentifier *uiP;
@@ -957,9 +954,7 @@ OFCondition DcmDirectoryRecord::fillElementsAndReadSOP(
     DcmTag refSOPInstTag( DCM_ReferencedSOPInstanceUIDInFile );
     DcmTag refFileXferTag( DCM_ReferencedTransferSyntaxUIDInFile );
 
-    if (    DirRecordType != ERT_Mrdr
-            && ( directFromFile || indirectViaMRDR )
-        )
+    if (DirRecordType != ERT_Mrdr && ( directFromFile || indirectViaMRDR ))
     {
         if ( refFile == (DcmFileFormat*)NULL )
         {
@@ -967,8 +962,7 @@ OFCondition DcmDirectoryRecord::fillElementsAndReadSOP(
             ofConsole.unlockCerr();
         }
         uiP = new DcmUniqueIdentifier( refSOPClassTag );    // (0004,1510)
-        if ( refFile->search( DCM_SOPClassUID, stack )
-             == EC_Normal )
+        if ( refFile->search( DCM_SOPClassUID, stack ) == EC_Normal )
         {
             char *uid = NULL;
             ((DcmUniqueIdentifier*)stack.top())->getString(uid);
@@ -1025,12 +1019,8 @@ OFCondition DcmDirectoryRecord::fillElementsAndReadSOP(
         delete this->remove( refFileXferTag );
     }
 
-    if ( refFile != (DcmFileFormat*)NULL )
-        delete refFile;
-    if (fileStream != NULL)
-        delete fileStream;
-    if ( fileName != (char*)NULL)
-        delete[] fileName;
+    delete refFile;
+    delete[] fileName;
 
     return l_error;
 }
@@ -1483,7 +1473,11 @@ DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
- * Revision 1.39  2002-04-16 13:43:16  joergr
+ * Revision 1.40  2002-08-21 10:14:20  meichel
+ * Adapted code to new loadFile and saveFile methods, thus removing direct
+ *   use of the DICOM stream classes.
+ *
+ * Revision 1.39  2002/04/16 13:43:16  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
  * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
  * contribution.

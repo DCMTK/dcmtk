@@ -22,9 +22,9 @@
  *  Purpose: Decompress RLE-compressed DICOM file
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-06-06 14:52:32 $
+ *  Update Date:      $Date: 2002-08-21 10:14:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmdrle.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -226,38 +226,21 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    if (opt_verbose) 
-        COUT << "reading input file " << opt_ifname << endl;
+    DcmFileFormat fileformat;
+    DcmDataset * dataset = fileformat.getDataset();
 
-    DcmFileStream inf(opt_ifname, DCM_ReadMode);
-    if ( inf.Fail() )
-    {
-        CERR << "Error: cannot open file: " << opt_ifname << endl;
-        return 1;
-    }
-       
-    DcmDataset * dataset = NULL;
-    OFCondition error = EC_Normal;
+    if (opt_verbose)
+        COUT << "open input file " << opt_ifname << endl;
 
-    DcmFileFormat *fileformat = new DcmFileFormat;
-    if (!fileformat)
-    {
-        CERR << "Error: memory exhausted\n";
-        return 1;
-    }
+    OFCondition error = fileformat.loadFile(opt_ifname);
 
-    fileformat->transferInit();
-    error = fileformat -> read(inf, EXS_Unknown, EGL_noChange);
-    fileformat->transferEnd();
-    if (error.bad()) 
+    if (error.bad())
     {
-        CERR << "Error: "  
+        CERR << "Error: "
              << error.text()
              << ": reading file: " <<  opt_ifname << endl;
         return 1;
     }
-
-    dataset = fileformat -> getDataset();
  
     if (opt_verbose)
         COUT << "decompressing file" << endl;
@@ -281,29 +264,14 @@ int main(int argc, char *argv[])
     }
    
     if (opt_verbose)
-        COUT << "creating output file " << opt_ofname << endl;
-    DcmFileStream outf( opt_ofname, DCM_WriteMode );
-    if ( outf.Fail() )
-    {
-        CERR << "Error: cannot create file: " << opt_ofname << endl;
-        return 1;
-    }
+        COUT << "create output file " << opt_ofname << endl;
 
-    if (opt_oDataset)
-    {
-        dataset->transferInit();
-        error = dataset->write(outf, opt_oxfer, opt_oenctype, opt_oglenc, EPD_withoutPadding);
-        dataset->transferEnd();
-    } else {
-        fileformat->transferInit();
-        error = fileformat->write(outf, opt_oxfer, opt_oenctype, opt_oglenc,
-                  opt_opadenc, (Uint32) opt_filepad, (Uint32) opt_itempad);
-        fileformat->transferEnd();
-    }
+    error = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc,
+              opt_opadenc, (Uint32) opt_filepad, (Uint32) opt_itempad, opt_oDataset);
 
-    if (error != EC_Normal) 
+    if (error.bad())
     {
-        CERR << "Error: "  
+        CERR << "Error: "
              << error.text()
              << ": writing file: " <<  opt_ofname << endl;
         return 1;
@@ -321,7 +289,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmdrle.cc,v $
- * Revision 1.1  2002-06-06 14:52:32  meichel
+ * Revision 1.2  2002-08-21 10:14:14  meichel
+ * Adapted code to new loadFile and saveFile methods, thus removing direct
+ *   use of the DICOM stream classes.
+ *
+ * Revision 1.1  2002/06/06 14:52:32  meichel
  * Initial release of the new RLE codec classes
  *   and the dcmcrle/dcmdrle tools in module dcmdata
  *

@@ -57,9 +57,9 @@
 **      Module Prefix: DIMSE_
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2002-08-20 12:21:24 $
+** Update Date:         $Date: 2002-08-21 10:18:30 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimse.cc,v $
-** CVS/RCS Revision:    $Revision: 1.30 $
+** CVS/RCS Revision:    $Revision: 1.31 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -187,16 +187,7 @@ static void saveDimseFragment(DcmDataset *dset, OFBool isCommand, OFBool isRecei
     }
   }
 
-  /* associate file with a stream */
-  DcmFileStream stream(filename, DCM_WriteMode);
-
-  /* if stream was initialized successfully, write data to the stream, i.e. to the file */
-  if (!stream.Fail())
-  {
-    dset->transferInit();
-    dset->write(stream, EXS_LittleEndianImplicit, EET_ExplicitLength, EGL_recalcGL, EPD_withoutPadding);
-    dset->transferEnd();
-  }
+  dset->saveFile(filename, EXS_LittleEndianImplicit, EET_ExplicitLength, EGL_recalcGL, EPD_withoutPadding);
   return;    
 }
 
@@ -1722,7 +1713,11 @@ void DIMSE_warning(T_ASC_Association *assoc,
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
-** Revision 1.30  2002-08-20 12:21:24  meichel
+** Revision 1.31  2002-08-21 10:18:30  meichel
+** Adapted code to new loadFile and saveFile methods, thus removing direct
+**   use of the DICOM stream classes.
+**
+** Revision 1.30  2002/08/20 12:21:24  meichel
 ** Adapted code to new loadFile and saveFile methods, thus removing direct
 **   use of the DICOM stream classes.
 **
