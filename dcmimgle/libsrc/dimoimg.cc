@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-07 14:54:06 $
+ *  Update Date:      $Date: 2000-07-07 13:47:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,6 +48,18 @@
 #include "diutils.h"
 #include "diregbas.h"
 
+#include <math.h>        /* for pow() */
+
+
+/*---------------------*
+ *  const definitions  *
+ *---------------------*/
+
+const unsigned int Default_MinDensity   = 20;
+const unsigned int Default_MaxDensity   = 300;
+const unsigned int Default_Reflection   = 10;
+const unsigned int Default_Illumination = 2000;
+
 
 /*----------------*
  *  constructors  *
@@ -67,7 +79,11 @@ DiMonoImage::DiMonoImage(const DiDocument *docu,
     ValidWindow(0),
     VoiExplanation(),
     Polarity(EPP_Normal),
-    PresLutShape(ESP_Identity),
+    PresLutShape(ESP_Default),
+    MinDensity(Default_MinDensity),
+    MaxDensity(Default_MaxDensity),
+    Reflection(Default_Reflection),
+    Illumination(Default_Illumination),
     VoiLutData(NULL),
     PresLutData(NULL),
     InterData(NULL),
@@ -79,6 +95,8 @@ DiMonoImage::DiMonoImage(const DiDocument *docu,
     Overlays[1] = NULL;
     if ((Document != NULL) && (InputData != NULL) && (ImageStatus == EIS_Normal))
     {
+        if (Document->getFlags() & CIF_UsePresentationState)
+            PresLutShape = ESP_Identity;
         DiMonoModality *modality = new DiMonoModality(Document, InputData);
         Init(modality);
     }
@@ -97,7 +115,11 @@ DiMonoImage::DiMonoImage(const DiDocument *docu,
     ValidWindow(0),
     VoiExplanation(),
     Polarity(EPP_Normal),
-    PresLutShape(ESP_Identity),
+    PresLutShape(ESP_Default),
+    MinDensity(Default_MinDensity),
+    MaxDensity(Default_MaxDensity),
+    Reflection(Default_Reflection),
+    Illumination(Default_Illumination),
     VoiLutData(NULL),
     PresLutData(NULL),
     InterData(NULL),
@@ -109,6 +131,8 @@ DiMonoImage::DiMonoImage(const DiDocument *docu,
     Overlays[1] = NULL;
     if ((Document != NULL) && (InputData != NULL) && (ImageStatus == EIS_Normal))
     {
+        if (Document->getFlags() & CIF_UsePresentationState)
+            PresLutShape = ESP_Identity;
         DiMonoModality *modality = new DiMonoModality(Document, InputData, slope, intercept);
         Init(modality);
     }
@@ -128,7 +152,11 @@ DiMonoImage::DiMonoImage(const DiDocument *docu,
     ValidWindow(0),
     VoiExplanation(),
     Polarity(EPP_Normal),
-    PresLutShape(ESP_Identity),
+    PresLutShape(ESP_Default),
+    MinDensity(Default_MinDensity),
+    MaxDensity(Default_MaxDensity),
+    Reflection(Default_Reflection),
+    Illumination(Default_Illumination),
     VoiLutData(NULL),
     PresLutData(NULL),
     InterData(NULL),
@@ -140,6 +168,8 @@ DiMonoImage::DiMonoImage(const DiDocument *docu,
     Overlays[1] = NULL;
     if ((Document != NULL) && (InputData != NULL) && (ImageStatus == EIS_Normal))
     {
+        if (Document->getFlags() & CIF_UsePresentationState)
+            PresLutShape = ESP_Identity;
         DiMonoModality *modality = new DiMonoModality(Document, InputData, data, descriptor, explanation);
         Init(modality);
     }
@@ -161,7 +191,11 @@ DiMonoImage::DiMonoImage(const DiDocument *docu,
     ValidWindow(0),
     VoiExplanation(),
     Polarity(EPP_Normal),
-    PresLutShape(ESP_Identity),
+    PresLutShape(ESP_Default),
+    MinDensity(Default_MinDensity),
+    MaxDensity(Default_MaxDensity),
+    Reflection(Default_Reflection),
+    Illumination(Default_Illumination),
     VoiLutData(NULL),
     PresLutData(NULL),
     InterData(NULL),
@@ -190,6 +224,10 @@ DiMonoImage::DiMonoImage(const DiMonoImage *image,
     VoiExplanation(image->VoiExplanation),
     Polarity(image->Polarity),
     PresLutShape(image->PresLutShape),
+    MinDensity(image->MinDensity),
+    MaxDensity(image->MaxDensity),
+    Reflection(image->Reflection),
+    Illumination(image->Illumination),
     VoiLutData(image->VoiLutData),
     PresLutData(image->PresLutData),
     InterData(NULL),
@@ -253,7 +291,11 @@ DiMonoImage::DiMonoImage(const DiColorImage *image,
     ValidWindow(0),
     VoiExplanation(),
     Polarity(EPP_Normal),
-    PresLutShape(ESP_Identity),
+    PresLutShape(ESP_Default),
+    MinDensity(Default_MinDensity),
+    MaxDensity(Default_MaxDensity),
+    Reflection(Default_Reflection),
+    Illumination(Default_Illumination),
     VoiLutData(NULL),
     PresLutData(NULL),
     InterData(NULL),
@@ -263,6 +305,8 @@ DiMonoImage::DiMonoImage(const DiColorImage *image,
 {
     Overlays[0] = NULL;
     Overlays[1] = NULL;
+    if ((Document != NULL) && (Document->getFlags() & CIF_UsePresentationState))
+        PresLutShape = ESP_Identity;
     if (DiRegisterBase::Pointer != NULL)
         InterData = DiRegisterBase::Pointer->createMonoImageData(image, red, green, blue);
     if ((InterData == NULL) || (InterData->getData() == NULL))
@@ -293,6 +337,10 @@ DiMonoImage::DiMonoImage(const DiMonoImage *image,
     VoiExplanation(image->VoiExplanation),
     Polarity(image->Polarity),
     PresLutShape(image->PresLutShape),
+    MinDensity(image->MinDensity),
+    MaxDensity(image->MaxDensity),
+    Reflection(image->Reflection),
+    Illumination(image->Illumination),
     VoiLutData(image->VoiLutData),
     PresLutData(image->PresLutData),
     InterData(NULL),
@@ -363,6 +411,10 @@ DiMonoImage::DiMonoImage(const DiMonoImage *image,
     VoiExplanation(image->VoiExplanation),
     Polarity(image->Polarity),
     PresLutShape(image->PresLutShape),
+    MinDensity(image->MinDensity),
+    MaxDensity(image->MaxDensity),
+    Reflection(image->Reflection),
+    Illumination(image->Illumination),
     VoiLutData(image->VoiLutData),
     PresLutData(image->PresLutData),
     InterData(NULL),
@@ -426,6 +478,10 @@ DiMonoImage::DiMonoImage(const DiMonoImage *image,
     VoiExplanation(image->VoiExplanation),
     Polarity(image->Polarity),
     PresLutShape(image->PresLutShape),
+    MinDensity(image->MinDensity),
+    MaxDensity(image->MaxDensity),
+    Reflection(image->Reflection),
+    Illumination(image->Illumination),
     VoiLutData(image->VoiLutData),
     PresLutData(image->PresLutData),
     InterData(NULL),
@@ -493,7 +549,11 @@ DiMonoImage::DiMonoImage(const DiMonoImage &)
     ValidWindow(0),
     VoiExplanation(),
     Polarity(EPP_Normal),
-    PresLutShape(ESP_Identity),
+    PresLutShape(ESP_Default),
+    MinDensity(Default_MinDensity),
+    MaxDensity(Default_MaxDensity),
+    Reflection(Default_Reflection),
+    Illumination(Default_Illumination),
     VoiLutData(NULL),
     PresLutData(NULL),
     InterData(NULL),
@@ -527,7 +587,11 @@ DiMonoImage::DiMonoImage(const DiMonoImage *image,
     ValidWindow(0),
     VoiExplanation(),
     Polarity(EPP_Normal),
-    PresLutShape(ESP_Identity),
+    PresLutShape(ESP_Default),
+    MinDensity(Default_MinDensity),
+    MaxDensity(Default_MaxDensity),
+    Reflection(Default_Reflection),
+    Illumination(Default_Illumination),
     VoiLutData(NULL),
     PresLutData(NULL),
     InterData(NULL),
@@ -537,6 +601,8 @@ DiMonoImage::DiMonoImage(const DiMonoImage *image,
 {
     Overlays[0] = NULL;
     Overlays[1] = NULL;
+    if ((Document != NULL) && (Document->getFlags() & CIF_UsePresentationState))
+        PresLutShape = ESP_Identity;
     if (pixel->getData() != NULL)
     {
         DiMonoModality *modality = new DiMonoModality(stored);
@@ -1068,6 +1134,44 @@ int DiMonoImage::setPolarity(const EP_Polarity polarity)
     return 2;
 }
 
+int DiMonoImage::setHardcopyParameters(const unsigned int min,
+                                       const unsigned int max,
+                                       const unsigned int reflect,
+                                       const unsigned int illumin)
+{
+    int result = 0;
+    if (min < max)
+    {
+        result = 2;
+        if (min != MinDensity)
+        {
+            MinDensity = min;
+            result = 1;
+        }
+        if (max != MaxDensity)
+        {
+            MaxDensity = max;
+            result = 1;
+        }
+        if (reflect != Reflection)
+        {
+            Reflection = reflect;
+            result = 1;
+        }
+        if (illumin != Illumination)
+        {
+            Illumination = illumin;
+            result = 1;
+        }
+        if ((result == 1) && (PresLutShape == ESP_LinOD) && (PresLutData != NULL))
+        {
+            PresLutData->removeReference();       // look-up table no longer valid     
+            PresLutData = NULL;
+        }
+    }
+    return result;
+}
+
 int DiMonoImage::setPresentationLutShape(const ES_PresentationLut shape)
 {
     if (PresLutData != NULL)
@@ -1090,7 +1194,10 @@ int DiMonoImage::setPresentationLut(const DcmUnsignedShort &data,
         PresLutData->removeReference();
     PresLutData = new DiLookupTable(data, descriptor, explanation, 0);
     if (PresLutData != NULL)
+    {
+        PresLutShape = ESP_Default;
         return PresLutData->isValid();
+    }
     return 0;
 }
 
@@ -1277,13 +1384,26 @@ void *DiMonoImage::getData(void *buffer,
                 WindowWidth = -1;                           // negative width means no window, saves additional parameter ;)
             Uint32 low;
             Uint32 high;
-            if ((PresLutData == NULL) && ((negative && (PresLutShape == ESP_Identity)) || (!negative && (PresLutShape == ESP_Inverse))))
+            if ((PresLutData == NULL) && 
+               ((PresLutShape == ESP_Inverse) || (negative && (PresLutShape == ESP_Default))))
             {
                 low = DicomImageClass::maxval(bits);        // inverse/negative: white to black
                 high = 0;
             } else {
                 low = 0;                                    // normal/positive: black to white
                 high = DicomImageClass::maxval(bits);
+            }
+            if ((PresLutData == NULL) && (PresLutShape == ESP_LinOD))
+            {
+                if (!createLinODPresentationLut(4096, 16))  // create presentation LUT converting linOD data (on demand)
+                {
+                    if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
+                    {
+                       ofConsole.lockCerr() << "WARNING: could not create presentation LUT for LinOD conversion" << endl
+                                            << "         ... ignoring presentation LUT shape LinOD !" << endl;
+                       ofConsole.unlockCerr();
+                    }
+                }
             }
             if (Polarity == EPP_Reverse)                    // swap high and low value
             {
@@ -1548,6 +1668,35 @@ DiImage *DiMonoImage::createOutputImage(const unsigned long frame,
 }
 
 
+int DiMonoImage::createLinODPresentationLut(const unsigned long count, const int bits)
+{
+    if ((PresLutData == NULL) && (MinDensity < MaxDensity) &&
+        (count > 1) && (count <= MAX_TABLE_ENTRY_COUNT) && 
+        (bits > 0) && (bits <= MAX_TABLE_ENTRY_SIZE))
+    {
+        Uint16 *data = new Uint16[count];
+        if (data != NULL)
+        {
+            const double l0 = (double)Illumination;
+            const double la = (double)Reflection;
+            const double dmin = (double)MinDensity / 100;
+            const double dmax = (double)MaxDensity / 100;
+            const double lmin = la + l0 * pow(10, -dmax);
+            const double lmax = la + l0 * pow(10, -dmin);
+            const double offset = la - lmin;
+            const double factor = (double)DicomImageClass::maxval(bits) / (lmax - lmin);
+            const double density = (dmax - dmin) / (double)(count - 1);
+            Uint16 *p = data;
+            for (unsigned long i = 0; i < count; i++)
+                *(p++) = (Uint16)((offset + l0 * pow(10, -(dmin + (double)i * density))) * factor);
+            PresLutData = new DiLookupTable(data, count, bits);
+            return (PresLutData != NULL) && (PresLutData->isValid());
+        }
+    }
+    return 0;
+}
+
+
 /*********************************************************************/
 
 
@@ -1636,7 +1785,11 @@ int DiMonoImage::writeRawPPM(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.36  2000-06-07 14:54:06  joergr
+ * Revision 1.37  2000-07-07 13:47:51  joergr
+ * Added support for LIN OD presentation LUT shape.
+ * Corrected interpretation of presentation LUT shape.
+ *
+ * Revision 1.36  2000/06/07 14:54:06  joergr
  * Added missing variable to member initialization list.
  *
  * Revision 1.35  2000/06/07 14:31:11  joergr
