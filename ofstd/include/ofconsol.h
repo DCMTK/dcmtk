@@ -53,9 +53,9 @@
  *  in multithread applications. Use ofConsole instead.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-04-14 15:16:08 $
+ *  Update Date:      $Date: 2000-04-14 15:41:40 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofconsol.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -113,6 +113,16 @@ public:
 #endif
   }
 
+  /** returns a reference to the current cout stream.
+   *  This method neither locks nor unlocks the stream - the called
+   *  must ensure that the stream is locked and unlocked appropriately.
+   *  @return reference to cout stream
+   */
+  ostream& getCout()
+  {
+    return *currentCout;
+  }
+
   /** exchanges the cout stream object.
    *  This method acquires its own lock. Cout must not
    *  be locked by the calling thread, otherwise a deadlock may occur.
@@ -142,6 +152,17 @@ public:
 #endif
       return *currentCout;
     }
+    return *currentCerr;
+  }
+
+  /** returns a reference to the current cerr stream.
+   *  This method neither locks nor unlocks the stream - the called
+   *  must ensure that the stream is locked and unlocked appropriately.
+   *  @return reference to cerr stream
+   */
+  ostream& getCerr()
+  {
+    if (joined) return *currentCout;
     return *currentCerr;
   }
 
@@ -262,7 +283,10 @@ extern OFConsole ofConsole;
  *
  * CVS/RCS Log:
  * $Log: ofconsol.h,v $
- * Revision 1.2  2000-04-14 15:16:08  meichel
+ * Revision 1.3  2000-04-14 15:41:40  meichel
+ * Added unprotected get methods, required for the cmdata debug facility.
+ *
+ * Revision 1.2  2000/04/14 15:16:08  meichel
  * Added new class OFConsole and global instance ofConsole which provide
  *   access to standard output and error streams in a way that allows multiple
  *   threads to safely create output concurrently.
