@@ -22,9 +22,9 @@
  *  Purpose: class DcmVR: Value Representation
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-03-21 13:08:04 $
+ *  Update Date:      $Date: 2003-06-04 12:41:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvr.cc,v $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -290,20 +290,20 @@ DcmVR::getValidVRName() const
 OFBool
 DcmVR::isStandard() const
 {
-    return !(DcmVRDict[vr].propertyFlags & DCMVR_PROP_NONSTANDARD);
+    return (DcmVRDict[vr].propertyFlags & DCMVR_PROP_NONSTANDARD) ? OFFalse : OFTrue;
 }
 
 OFBool
 DcmVR::isForInternalUseOnly() const
 {
-    return (DcmVRDict[vr].propertyFlags & DCMVR_PROP_INTERNAL);
+    return (DcmVRDict[vr].propertyFlags & DCMVR_PROP_INTERNAL) ? OFTrue : OFFalse;
 }
 
 /* returns true if VR represents a string */
 OFBool
 DcmVR::isaString() const
 {
-    return (DcmVRDict[vr].propertyFlags & DCMVR_PROP_ISASTRING);
+    return (DcmVRDict[vr].propertyFlags & DCMVR_PROP_ISASTRING) ? OFTrue : OFFalse;
 }
 
 /*
@@ -313,7 +313,7 @@ DcmVR::isaString() const
 OFBool
 DcmVR::usesExtendedLengthEncoding() const
 {
-    return (DcmVRDict[vr].propertyFlags & DCMVR_PROP_EXTENDEDLENGTHENCODING);
+    return (DcmVRDict[vr].propertyFlags & DCMVR_PROP_EXTENDEDLENGTHENCODING) ? OFTrue : OFFalse;
 }
 
 Uint32 DcmVR::getMinValueLength() const
@@ -364,7 +364,10 @@ OFBool DcmVR::isEquivalent(const DcmVR& avr) const
 /*
  * CVS/RCS Log:
  * $Log: dcvr.cc,v $
- * Revision 1.28  2003-03-21 13:08:04  meichel
+ * Revision 1.29  2003-06-04 12:41:07  meichel
+ * Cleaned up usage of boolean constants
+ *
+ * Revision 1.28  2003/03/21 13:08:04  meichel
  * Minor code purifications for warnings reported by MSVC in Level 4
  *
  * Revision 1.27  2002/12/06 13:00:31  joergr
