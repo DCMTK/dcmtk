@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: DicomColorScaleTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-09 13:37:52 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicosct.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2003-12-23 11:45:54 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +31,8 @@
  */
 
 
-#ifndef __DICOSCT_H
-#define __DICOSCT_H
+#ifndef DICOSCT_H
+#define DICOSCT_H
 
 #include "osconfig.h"
 #include "dctypes.h"
@@ -83,13 +82,13 @@ class DiColorScaleTemplate
                          const Uint32 frames,
                          const int bits,
                          const int interpolate)
-      : DiColorPixelTemplate<T>(pixel, (unsigned long)dest_cols * (unsigned long)dest_rows * frames),
+      : DiColorPixelTemplate<T>(pixel, OFstatic_cast(unsigned long, dest_cols) * OFstatic_cast(unsigned long, dest_rows) * frames),
         DiScaleTemplate<T>(3, columns, rows, left_pos, top_pos, src_cols, src_rows, dest_cols, dest_rows, frames, bits)
    {
         if ((pixel != NULL) && (pixel->getCount() > 0))
         {
-            if (pixel->getCount() == (unsigned long)columns * (unsigned long)rows * frames)
-                scale((const T **)pixel->getData(), interpolate);
+            if (pixel->getCount() == OFstatic_cast(unsigned long, columns) * OFstatic_cast(unsigned long, rows) * frames)
+                scale(OFstatic_cast(const T **, pixel->getData()), interpolate);
             else {
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                 {
@@ -130,7 +129,12 @@ class DiColorScaleTemplate
  *
  * CVS/RCS Log:
  * $Log: dicosct.h,v $
- * Revision 1.12  2002-12-09 13:37:52  joergr
+ * Revision 1.13  2003-12-23 11:45:54  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated copyright header.
+ *
+ * Revision 1.12  2002/12/09 13:37:52  joergr
  * Renamed parameter/local variable to avoid name clashes with global
  * declaration left and/or right (used for as iostream manipulators).
  *

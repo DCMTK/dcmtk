@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: DicomColorRotateTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:45:00 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicorot.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2003-12-23 11:44:32 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +31,8 @@
  */
 
 
-#ifndef __DICOROT_H
-#define __DICOROT_H
+#ifndef DICOROT_H
+#define DICOROT_H
 
 #include "osconfig.h"
 #include "dctypes.h"
@@ -74,13 +73,13 @@ class DiColorRotateTemplate
                           const Uint16 dest_rows,
                           const Uint32 frames,
                           const int degree)
-      : DiColorPixelTemplate<T>(pixel, (unsigned long)dest_cols * (unsigned long)dest_rows * frames),
+      : DiColorPixelTemplate<T>(pixel, OFstatic_cast(unsigned long, dest_cols) * OFstatic_cast(unsigned long, dest_rows) * frames),
         DiRotateTemplate<T>(3, src_cols, src_rows, dest_cols, dest_rows, frames)
     {
         if ((pixel != NULL) && (pixel->getCount() > 0))
         {
-            if (pixel->getCount() == (unsigned long)src_cols * (unsigned long)src_rows * frames)
-                rotate((const T **)pixel->getData(), degree);
+            if (pixel->getCount() == OFstatic_cast(unsigned long, src_cols) * OFstatic_cast(unsigned long, src_rows) * frames)
+                rotate(OFstatic_cast(const T **, pixel->getData()), degree);
             else {
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                 {
@@ -128,7 +127,12 @@ class DiColorRotateTemplate
  *
  * CVS/RCS Log:
  * $Log: dicorot.h,v $
- * Revision 1.6  2001-11-09 16:45:00  joergr
+ * Revision 1.7  2003-12-23 11:44:32  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated copyright header.
+ *
+ * Revision 1.6  2001/11/09 16:45:00  joergr
  * Updated/Enhanced comments.
  *
  * Revision 1.5  2001/06/01 15:49:30  meichel
@@ -148,7 +152,6 @@ class DiColorRotateTemplate
  * Added copyright message.
  * Added methods and classes for flipping and rotating, changed for
  * scaling and clipping.
- *
  *
  * 
  */
