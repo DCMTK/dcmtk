@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 2002-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: class DcmQuantHistogramItemList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-01-25 13:32:11 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/diqthitl.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-17 16:34:14 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,30 +33,33 @@
 #include "osconfig.h"
 #include "diqthitl.h"
 
+
 DcmQuantHistogramItemList::DcmQuantHistogramItemList()
-: list()
-, first(list.end())
-, last(list.end())
+: list_()
+, first(list_.end())
+, last(list_.end())
 {
 }
+
 
 DcmQuantHistogramItemList::~DcmQuantHistogramItemList()
 {
-  first = list.begin();
+  first = list_.begin();
   while (first != last)
   {
     delete *first;
-    first = list.erase(first);
+    first = list_.erase(first);
   }
 }
 
+
 void DcmQuantHistogramItemList::moveto(DcmQuantHistogramItemPointer *array, unsigned long& counter, unsigned long numcolors)
 {
-  first = list.begin();
+  first = list_.begin();
   while ((first != last) && (counter < numcolors))
   {
     array[counter++] = *first;
-    first = list.erase(first);
+    first = list_.erase(first);
   }
 }
 
@@ -66,7 +68,10 @@ void DcmQuantHistogramItemList::moveto(DcmQuantHistogramItemPointer *array, unsi
  *
  * CVS/RCS Log:
  * $Log: diqthitl.cc,v $
- * Revision 1.1  2002-01-25 13:32:11  meichel
+ * Revision 1.2  2003-12-17 16:34:14  joergr
+ * Renamed parameters/variables "list" to avoid name clash with STL class.
+ *
+ * Revision 1.1  2002/01/25 13:32:11  meichel
  * Initial release of new color quantization classes and
  *   the dcmquant tool in module dcmimage.
  *
