@@ -22,9 +22,9 @@
  *  Purpose: DicomColorImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-08-17 10:29:14 $
+ *  Update Date:      $Date: 1999-08-25 16:58:32 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dicoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -98,8 +98,8 @@ DiColorImage::DiColorImage(const DiColorImage *image,
 
 
 DiColorImage::DiColorImage(const DiColorImage *image,
-                           const Uint16 left,
-                           const Uint16 top,
+                           const signed long left,
+                           const signed long top,
                            const Uint16 src_cols,
                            const Uint16 src_rows,                 
                            const Uint16 dest_cols,
@@ -349,16 +349,17 @@ DiImage *DiColorImage::createImage(const unsigned long fstart,
 }
 
 
-DiImage *DiColorImage::createScale(const unsigned long left,
-                                   const unsigned long top,
+DiImage *DiColorImage::createScale(const signed long left,
+                                   const signed long top,
                                    const unsigned long src_cols,
                                    const unsigned long src_rows,                 
                                    const unsigned long dest_cols,
                                    const unsigned long dest_rows,
                                    const int interpolate,
-                                   const int aspect) const
+                                   const int aspect,
+                                   const Uint16 /*pvalue*/) const
 {
-    DiImage *image = new DiColorImage(this, (Uint16)left, (Uint16)top, (Uint16)src_cols, (Uint16)src_rows,
+    DiImage *image = new DiColorImage(this, left, top, (Uint16)src_cols, (Uint16)src_rows,
         (Uint16)dest_cols, (Uint16)dest_rows, interpolate, aspect);
     return image;
 }
@@ -512,7 +513,11 @@ int DiColorImage::writeRawPPM(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dicoimg.cc,v $
- * Revision 1.11  1999-08-17 10:29:14  joergr
+ * Revision 1.12  1999-08-25 16:58:32  joergr
+ * Added new feature: Allow clipping region to be outside the image
+ * (overlapping).
+ *
+ * Revision 1.11  1999/08/17 10:29:14  joergr
  * Removed unused parameter.
  *
  * Revision 1.10  1999/07/23 13:18:48  joergr

@@ -22,9 +22,9 @@
  *  Purpose: DicomColorImage (Header)
  *
  *  Last Update:         $Author: joergr $
- *  Update Date:         $Date: 1999-04-28 12:51:57 $
+ *  Update Date:         $Date: 1999-08-25 16:58:06 $
  *  Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicoimg.h,v $
- *  CVS/RCS Revision:    $Revision: 1.7 $
+ *  CVS/RCS Revision:    $Revision: 1.8 $
  *  Status:              $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -88,17 +88,18 @@ class DiColorImage
     DiImage *createImage(const unsigned long fstart,
                          const unsigned long fcount) const;
 
-    DiImage *createScale(const unsigned long left,
-                         const unsigned long top,
+    DiImage *createScale(const signed long left,
+                         const signed long top,
                          const unsigned long src_cols,
                          const unsigned long src_rows,                 
                          const unsigned long dest_cols,
                          const unsigned long dest_rows,
                          const int interpolate,
-                         const int aspect) const;
+                         const int aspect,
+                         const Uint16 /*pvalue*/) const;
 
-    DiImage *createClip(const unsigned long left,
-                        const unsigned long top,
+    DiImage *createClip(const signed long left,
+                        const signed long top,
                         const unsigned long width,
                         const unsigned long height) const;
 
@@ -146,8 +147,8 @@ class DiColorImage
                  const unsigned long fcount);
 
     DiColorImage(const DiColorImage *image,
-                 const Uint16 left,
-                 const Uint16 top,
+                 const signed long left,
+                 const signed long top,
                  const Uint16 src_cols,
                  const Uint16 src_rows,                 
                  const Uint16 dest_cols,
@@ -156,8 +157,8 @@ class DiColorImage
                  const int aspect = 0);
                  
     DiColorImage(const DiColorImage *image,
-                 const Uint16 left,
-                 const Uint16 top,
+                 const signed long left,
+                 const signed long top,
                  const Uint16 columns,
                  const Uint16 rows);
 
@@ -198,7 +199,11 @@ class DiColorImage
  *
  * CVS/RCS Log:
  * $Log: dicoimg.h,v $
- * Revision 1.7  1999-04-28 12:51:57  joergr
+ * Revision 1.8  1999-08-25 16:58:06  joergr
+ * Added new feature: Allow clipping region to be outside the image
+ * (overlapping).
+ *
+ * Revision 1.7  1999/04/28 12:51:57  joergr
  * Corrected some typos, comments and formatting.
  *
  * Revision 1.6  1999/01/20 14:39:52  joergr

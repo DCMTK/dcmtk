@@ -22,9 +22,9 @@
  *  Purpose: DicomColorScaleTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-28 12:52:00 $
+ *  Update Date:      $Date: 1999-08-25 16:58:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicosct.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,8 +59,8 @@ class DiColorScaleTemplate
     DiColorScaleTemplate(const DiColorPixel *pixel,
                          const Uint16 columns,
                          const Uint16 rows,
-                         const Uint16 left,
-                         const Uint16 top,
+                         const signed long left,
+                         const signed long top,
                          const Uint16 src_cols,
                          const Uint16 src_rows,
                          const Uint16 dest_cols,
@@ -98,7 +98,11 @@ class DiColorScaleTemplate
  *
  * CVS/RCS Log:
  * $Log: dicosct.h,v $
- * Revision 1.6  1999-04-28 12:52:00  joergr
+ * Revision 1.7  1999-08-25 16:58:06  joergr
+ * Added new feature: Allow clipping region to be outside the image
+ * (overlapping).
+ *
+ * Revision 1.6  1999/04/28 12:52:00  joergr
  * Corrected some typos, comments and formatting.
  *
  * Revision 1.5  1998/11/27 13:51:07  joergr

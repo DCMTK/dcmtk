@@ -22,9 +22,9 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-07-23 13:14:44 $
+ *  Update Date:      $Date: 1999-08-25 16:59:15 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -97,7 +97,8 @@ int main(int argc, char *argv[])
     int                 opt_useAspectRatio = 1;           /* default: use aspect ratio for scaling */
     OFCmdUnsignedInt    opt_useInterpolation = 1;         /* default: use interpolation method '1' for scaling */
     int                 opt_useClip = 0;                  /* default: don't clip */
-    OFCmdUnsignedInt    opt_left=0, opt_top=0, opt_width=0, opt_height=0; /* clip region */
+    OFCmdSignedInt      opt_left=0, opt_top=0;            /* clip region (origin) */
+    OFCmdUnsignedInt    opt_width=0, opt_height=0;        /* clip region (extension) */
     int                 opt_rotateDegree = 0;             /* default: no rotation */
     int                 opt_flipType = 0;                 /* default: no flipping */
     int                 opt_scaleType = 0;                /* default: no scaling */
@@ -768,11 +769,11 @@ int main(int argc, char *argv[])
     if (opt_useClip && (opt_scaleType == 0))
     { 
          if (opt_verboseMode > 1)
-             fprintf(stderr, "clipping image to (%lu,%lu,%lu,%lu).\n", opt_left, opt_top, opt_width, opt_height);
+             fprintf(stderr, "clipping image to (%li,%li,%lu,%lu).\n", opt_left, opt_top, opt_width, opt_height);
          DicomImage *newimage = di->createClippedImage(opt_left, opt_top, opt_width, opt_height);
          if (newimage==NULL)
          {
-             fprintf(stderr, "dcm2pnm: error: clipping to (%lu,%lu,%lu,%lu) failed.\n", 
+             fprintf(stderr, "dcm2pnm: error: clipping to (%li,%li,%lu,%lu) failed.\n", 
                  opt_left, opt_top, opt_width, opt_height);
              return 1;
          } else if (newimage->getStatus() != EIS_Normal)
@@ -825,7 +826,7 @@ int main(int argc, char *argv[])
     {
         DicomImage *newimage;
         if ((opt_verboseMode > 1) && opt_useClip)
-            fprintf(stderr, "clipping image to (%lu,%lu,%lu,%lu).\n", opt_left, opt_top, opt_width, opt_height);
+            fprintf(stderr, "clipping image to (%li,%li,%lu,%lu).\n", opt_left, opt_top, opt_width, opt_height);
         switch (opt_scaleType)
         {
             case 1:
@@ -936,7 +937,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.29  1999-07-23 13:14:44  joergr
+ * Revision 1.30  1999-08-25 16:59:15  joergr
+ * Added new feature: Allow clipping region to be outside the image
+ * (overlapping).
+ *
+ * Revision 1.29  1999/07/23 13:14:44  joergr
  * Added new interpolation algorithm for scaling.
  * Added command line option '--quiet'.
  * Added support for frame selection.
