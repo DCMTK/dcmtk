@@ -2,6 +2,7 @@
 **
 ** Author: Gerd Ehlers      Created:  26.04.94
 **         Andreas Barth    26.11.95 -- support of value width
+**         Andrew Hewett    17.12.97 -- support for UT/VS
 **
 ** Module: dcvr.h
 **
@@ -9,8 +10,8 @@
 ** Definition of the DcmVR class for Value Representation
 **
 **
-** Last Update:   $Author: andreas $
-** Revision:      $Revision: 1.5 $
+** Last Update:   $Author: hewett $
+** Revision:      $Revision: 1.6 $
 ** Status:	  $State: Exp $
 **
 */
@@ -30,6 +31,16 @@
 ** Global flag to enable/disable the generation of VR=UN
 */
 extern OFBool dcmEnableUnknownVRGeneration; /* default OFTrue */
+
+/*
+** Global flag to enable/disable the generation of VR=UT
+*/
+extern OFBool dcmEnableUnlimitedTextVRGeneration; /* default OFTrue */
+
+/*
+** Global flag to enable/disable the generation of VR=VS
+*/
+extern OFBool dcmEnableVirtualStringVRGeneration; /* default OFTrue */
 
 /*
 ** VR Enumerations
@@ -80,7 +91,10 @@ enum DcmEVR
     EVR_UNKNOWN=36,	/* used internally */
     EVR_UN=37,		/* Unknown Value Representation - defined in supplement 14 */
     EVR_PixelData=38,   /* used internally */
-    EVR_OverlayData=39    /* used internally */
+    EVR_OverlayData=39,    /* used internally */
+
+    EVR_UT=40,		/* Unlimited Text - defined in CP 101 & CP 122 - needed for Structured Reporting (SR) */
+    EVR_VS=41		/* Virtual String - defined in CP 101 */
 };
 
 
@@ -104,9 +118,14 @@ public:
 	const size_t getValueWidth(void) const;
 	
     /* returns true if VR is a standard DICOM VR */
-    int isStandard() const;
+    OFBool isStandard() const;
     /* returns true if VR is for internal use only */
-    int isForInternalUseOnly() const;
+    OFBool isForInternalUseOnly() const;
+
+    /* returns true if VR represents a string */
+    OFBool isaString() const;
+    /* returns true if VR uses an extended length encoding for explicit transfer syntaxes */
+    OFBool usesExtendedLengthEncoding() const;
 
     /* returns true if the vr is equivalent */
     int isEquivalent(const DcmVR& avr) const;
