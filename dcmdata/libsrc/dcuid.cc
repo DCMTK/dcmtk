@@ -10,9 +10,9 @@
 ** routines for finding and created UIDs.
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1998-10-26 13:02:53 $
+** Update Date:		$Date: 1999-03-22 13:41:24 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcuid.cc,v $
-** CVS/RCS Revision:	$Revision: 1.16 $
+** CVS/RCS Revision:	$Revision: 1.17 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -68,6 +68,10 @@ BEGIN_EXTERN_C
 #endif
 END_EXTERN_C
 
+#ifdef windows
+#include <process.h>	/* needed for declaration of getpid() */
+#endif
+
 
 #include "dcuid.h"
 
@@ -79,132 +83,140 @@ struct UIDNameMap {
 //
 // It is very important that the names of the UIDs may not use the following 
 // characters: space  (  )  [  ], =  <  >
- 
+    
 static UIDNameMap uidNameMap[] = {
-    { UID_StandardApplicationContext, "StandardApplicationContext" },
-    { UID_VerificationSOPClass, "VerificationSOPClass" },        
-    { UID_LittleEndianImplicitTransferSyntax, "LittleEndianImplicit" },
-    { UID_LittleEndianExplicitTransferSyntax, "LittleEndianExplicit" },
-    { UID_BigEndianExplicitTransferSyntax, "BigEndianExplicit" },
-    { UID_JPEGProcess1TransferSyntax, "JPEGBaseline" },
-    { UID_JPEGProcess2_4TransferSyntax, "JPEGExtended" },
-    { UID_JPEGProcess3_5TransferSyntax, "JPEGExtended" },
-    { UID_JPEGProcess6_8TransferSyntax, "JPEGSpectralSelection:Non-hierarchical" },
-    { UID_JPEGProcess7_9TransferSyntax, "JPEGSpectralSelection:Non-hierarchical" },
-    { UID_JPEGProcess10_12TransferSyntax, "JPEGFullProgression:Non-hierarchical" },
-    { UID_JPEGProcess11_13TransferSyntax, "JPEGFullProgression:Non-hierarchical" },
-    { UID_JPEGProcess14TransferSyntax, "JPEGLossless:Non-hierarchical" },
-    { UID_JPEGProcess15TransferSyntax, "JPEGLossless:Non-hierarchical" },
-    { UID_JPEGProcess16_18TransferSyntax, "JPEGExtended:Hierarchical" },
-    { UID_JPEGProcess17_19TransferSyntax, "JPEGExtended:Hierarchical" },
-    { UID_JPEGProcess20_22TransferSyntax, "JPEGSpectralSelection:Hierarchical" },
-    { UID_JPEGProcess21_23TransferSyntax, "JPEGSpectralSelection:Hierarchical" },
-    { UID_JPEGProcess24_26TransferSyntax, "JPEGFullProgression:Hierarchical" },
-    { UID_JPEGProcess25_27TransferSyntax, "JPEGFullProgression:Hierarchical" },
-    { UID_JPEGProcess28TransferSyntax, "JPEGLossless:Hierarchical" },
-    { UID_JPEGProcess29TransferSyntax, "JPEGLossless:Hierarchical" },
-    { UID_JPEGProcess14SV1TransferSyntax, "JPEGLossless:Hierarchical-1stOrderPrediction" },
-    { UID_RLELossless, "RLELossless" },
-    { UID_BasicDirectoryStorageSOPClass, "BasicDirectoryStorageSOPClass" },
-    { UID_BasicStudyContentNotificationSOPClass, "BasicStudyContentNotificationSOPClass" },
-    { UID_DetachedPatientManagementSOPClass, "DetachedPatientManagementSOPClass" },
-    { UID_DetachedPatientManagementMetaSOPClass, "DetachedPatientManagementMetaSOPClass" },
-    { UID_DetachedVisitManagementSOPClass, "DetachedVisitManagementSOPClass" },
-    { UID_DetachedStudyManagementSOPClass, "DetachedStudyManagementSOPClass" },
-    { UID_StudyComponentManagementSOPClass, "StudyComponentManagementSOPClass" },
-    { UID_DetachedResultsManagementSOPClass, "DetachedResultsManagementSOPClass" },
-    { UID_DetachedResultsManagementMetaSOPClass, "DetachedResultsManagementMetaSOPClass" },
-    { UID_DetachedStudyManagementMetaSOPClass, "DetachedStudyManagementMetaSOPClass" },
-    { UID_DetachedInterpretationManagementSOPClass, "DetachedInterpretationManagementSOPClass" },
-    { UID_BasicFilmSessionSOPClass, "BasicFilmSessionSOPClass" },
-    { UID_PrintJobSOPClass, "PrintJobSOPClass" },
-    { UID_BasicAnnotationBoxSOPClass, "BasicAnnotationBoxSOPClass" },
-    { UID_PrinterSOPClass, "PrinterSOPClass" },
-    { UID_PrinterSOPInstance, "PrinterSOPInstance" },
-    { UID_BasicColorPrintManagementMetaSOPClass, "BasicColorPrintManagementMetaSOPClass" },
-    { UID_ReferencedColorPrintManagementMetaSOPClass, "ReferencedColorPrintManagementMetaSOPClass" },
-    { UID_BasicFilmBoxSOPClass, "BasicFilmBoxSOPClass" },
-    { UID_VOILUTBoxSOPClass, "VOILUTBoxSOPClass" },
-    { UID_ImageOverlayBoxSOPClass, "ImageOverlayBoxSOPClass" },
-    { UID_BasicGrayscaleImageBoxSOPClass, "BasicGrayscaleImageBoxSOPClass" },
-    { UID_BasicColorImageBoxSOPClass, "BasicColorImageBoxSOPClass" },
-    { UID_ReferencedImageBoxSOPClass, "ReferencedImageBoxSOPClass" },
-    { UID_BasicGrayscalePrintManagementMetaSOPClass, "BasicGrayscalePrintManagementMetaSOPClass" },
-    { UID_ReferencedGrayscalePrintManagementMetaSOPClass, "ReferencedGrayscalePrintManagementMetaSOPClass" },
-    { UID_ComputedRadiographyImageStorage, "ComputedRadiographyImageStorage" },
-    { UID_StandaloneModalityLUTStorage, "StandaloneModalityLUTStorage" },
-    { UID_StandaloneVOILUTStorage, "StandaloneVOILUTStorage" },
-    { UID_CTImageStorage, "CTImageStorage" },
-    { UID_UltrasoundMultiframeImageStorage, "UltrasoundMultiframeImageStorage" },
-    { UID_MRImageStorage, "MRImageStorage" },
-    { UID_NuclearMedicineImageStorage, "NuclearMedicineImageStorage" },
-    { UID_UltrasoundImageStorage, "UltrasoundImageStorage" },
-    { UID_SecondaryCaptureImageStorage, "SecondaryCaptureImageStorage" },
-    { UID_StandaloneOverlayStorage, "StandaloneOverlayStorage" },
-    { UID_StandaloneCurveStorage, "StandaloneCurveStorage" },
-    { UID_FINDPatientRootQueryRetrieveInformationModel, "FINDPatientRootQueryRetrieveInformationModel" },
-    { UID_MOVEPatientRootQueryRetrieveInformationModel, "MOVEPatientRootQueryRetrieveInformationModel" },
-    { UID_GETPatientRootQueryRetrieveInformationModel, "GETPatientRootQueryRetrieveInformationModel" },
-    { UID_FINDStudyRootQueryRetrieveInformationModel, "FINDStudyRootQueryRetrieveInformationModel" },
-    { UID_MOVEStudyRootQueryRetrieveInformationModel, "MOVEStudyRootQueryRetrieveInformationModel" },
-    { UID_GETStudyRootQueryRetrieveInformationModel, "GETStudyRootQueryRetrieveInformationModel" },
-    { UID_FINDPatientStudyOnlyQueryRetrieveInformationModel, "FINDPatientStudyOnlyQueryRetrieveInformationModel" },
-    { UID_MOVEPatientStudyOnlyQueryRetrieveInformationModel, "MOVEPatientStudyOnlyQueryRetrieveInformationModel" },
-    { UID_GETPatientStudyOnlyQueryRetrieveInformationModel, "GETPatientStudyOnlyQueryRetrieveInformationModel" },
-    
-    { UID_RETIRED_NuclearMedicineImageStorage, "RETIRED_NuclearMedicineImageStorage" },
-    { UID_RETIRED_UltrasoundImageStorage, "RETIRED_UltrasoundImageStorage" },
-    { UID_RETIRED_UltrasoundMultiframeImageStorage, "RETIRED_UltrasoundMultiframeImageStorage" },
-
-    { UID_XRayAngiographicImageStorage, "XRayAngiographicImageStorage" },
-    { UID_XRayAngiographicBiPlaneImageStorage, "XRayAngiographicBiPlaneImageStorage" },
-    { UID_XRayFluoroscopyImageStorage, "XRayFluoroscopyImageStorage" },
-    
-    { UID_StorageCommitmentPushModelSOPClass, "StorageCommitmentPushModelSOPClass" },
-    { UID_StorageCommitmentPushModelSOPInstance, "StorageCommitmentPushModelSOPInstance" },
-    { UID_StorageCommitmentPullModelSOPClass, "StorageCommitmentPullModelSOPClass" },
-    { UID_StorageCommitmentPullModelSOPInstance, "StorageCommitmentPullModelSOPInstance" },
-
-    { UID_FINDModalityWorklistInformationModel, "FINDModalityWorklistInformationModel" },
-    
-    { UID_RTImageStorage, "RTImageStorage" },
-    { UID_RTDoseStorage, "RTDoseStorage" },
-    { UID_RTStructureSetStorage, "RTStructureSetStorage" },
-    { UID_RTPlanStorage, "RTPlanStorage" },
-
-    { UID_PETImageStorage, "PETImageStorage" },
-    { UID_PETCurveStorage, "PETCurveStorage" },
-
-    { UID_PrintQueueSOPInstance, "PrintQueueSOPInstance" },
-    { UID_PrintQueueManagementSOPClass, "PrintQueueManagementSOPClass" },
-
-    { UID_VLImageStorage, "VLImageStorage" },
-    { UID_VLMultiFrameImageStorage, "VLMultiFrameImageStorage" },
-
-    { UID_PageDescriptionStorage, "PageDescriptionStorage" },
-
-    { UID_ModalityPerformedProcedureStepSOPClass, "ModalityPerformedProcedureStepSOPClass" },
-    { UID_ModalityPerformedProcedureStepRetrieveSOPClass, "ModalityPerformedProcedureStepRetrieveSOPClass" },
+    { UID_StandardApplicationContext,                         "StandardApplicationContext" },
+    { UID_LittleEndianImplicitTransferSyntax,                 "LittleEndianImplicit" },
+    { UID_LittleEndianExplicitTransferSyntax,                 "LittleEndianExplicit" },
+    { UID_BigEndianExplicitTransferSyntax,                    "BigEndianExplicit" },
+    { UID_JPEGProcess1TransferSyntax,                         "JPEGBaseline" },
+    { UID_JPEGProcess2_4TransferSyntax,                       "JPEGExtended:Process2+4" },
+    { UID_JPEGProcess3_5TransferSyntax,                       "JPEGExtended:Process3+5" },
+    { UID_JPEGProcess6_8TransferSyntax,                       "JPEGSpectralSelection:Non-hierarchical:Process6+8" },
+    { UID_JPEGProcess7_9TransferSyntax,                       "JPEGSpectralSelection:Non-hierarchical:Process7+9" },
+    { UID_JPEGProcess10_12TransferSyntax,                     "JPEGFullProgression:Non-hierarchical:Process10+12" },
+    { UID_JPEGProcess11_13TransferSyntax,                     "JPEGFullProgression:Non-hierarchical:Process11+13" },
+    { UID_JPEGProcess14TransferSyntax,                        "JPEGLossless:Non-hierarchical:Process14" },
+    { UID_JPEGProcess15TransferSyntax,                        "JPEGLossless:Non-hierarchical:Process15" },
+    { UID_JPEGProcess16_18TransferSyntax,                     "JPEGExtended:Hierarchical:Process16+18" },
+    { UID_JPEGProcess17_19TransferSyntax,                     "JPEGExtended:Hierarchical:Process17+19" },
+    { UID_JPEGProcess20_22TransferSyntax,                     "JPEGSpectralSelection:Hierarchical:Process20+22" },
+    { UID_JPEGProcess21_23TransferSyntax,                     "JPEGSpectralSelection:Hierarchical:Process21+23" },
+    { UID_JPEGProcess24_26TransferSyntax,                     "JPEGFullProgression:Hierarchical:Process24+26" },
+    { UID_JPEGProcess25_27TransferSyntax,                     "JPEGFullProgression:Hierarchical:Process25+27" },
+    { UID_JPEGProcess28TransferSyntax,                        "JPEGLossless:Hierarchical:Process28" },
+    { UID_JPEGProcess29TransferSyntax,                        "JPEGLossless:Hierarchical:Process29" },
+    { UID_JPEGProcess14SV1TransferSyntax,                     "JPEGLossless:Non-hierarchical-1stOrderPrediction" },
+    { UID_RLELossless,                                        "RLELossless" },
+ 
+    { UID_VerificationSOPClass,                               "VerificationSOPClass" },        
+    { UID_BasicDirectoryStorageSOPClass,                      "BasicDirectoryStorageSOPClass" },
+    { UID_BasicStudyContentNotificationSOPClass,              "BasicStudyContentNotificationSOPClass" },
+    { UID_StorageCommitmentPushModelSOPClass,                 "StorageCommitmentPushModelSOPClass" },
+    { UID_StorageCommitmentPushModelSOPInstance,              "StorageCommitmentPushModelSOPInstance" },
+    { UID_StorageCommitmentPullModelSOPClass,                 "StorageCommitmentPullModelSOPClass" },
+    { UID_StorageCommitmentPullModelSOPInstance,              "StorageCommitmentPullModelSOPInstance" },
+    { UID_DetachedPatientManagementSOPClass,                  "DetachedPatientManagementSOPClass" },
+    { UID_DetachedPatientManagementMetaSOPClass,              "DetachedPatientManagementMetaSOPClass" },
+    { UID_DetachedVisitManagementSOPClass,                    "DetachedVisitManagementSOPClass" },
+    { UID_DetachedStudyManagementSOPClass,                    "DetachedStudyManagementSOPClass" },
+    { UID_StudyComponentManagementSOPClass,                   "StudyComponentManagementSOPClass" },
+    { UID_ModalityPerformedProcedureStepSOPClass,             "ModalityPerformedProcedureStepSOPClass" },
+    { UID_ModalityPerformedProcedureStepRetrieveSOPClass,     "ModalityPerformedProcedureStepRetrieveSOPClass" },
     { UID_ModalityPerformedProcedureStepNotificationSOPClass, "ModalityPerformedProcedureStepNotificationSOPClass" },
+    { UID_DetachedResultsManagementSOPClass,                  "DetachedResultsManagementSOPClass" },
+    { UID_DetachedResultsManagementMetaSOPClass,              "DetachedResultsManagementMetaSOPClass" },
+    { UID_DetachedStudyManagementMetaSOPClass,                "DetachedStudyManagementMetaSOPClass" },
+    { UID_DetachedInterpretationManagementSOPClass,           "DetachedInterpretationManagementSOPClass" },
+    { UID_BasicFilmSessionSOPClass,                           "BasicFilmSessionSOPClass" },
+    { UID_BasicFilmBoxSOPClass,                               "BasicFilmBoxSOPClass" },
+    { UID_BasicGrayscaleImageBoxSOPClass,                     "BasicGrayscaleImageBoxSOPClass" },
+    { UID_BasicColorImageBoxSOPClass,                         "BasicColorImageBoxSOPClass" },
+    { UID_ReferencedImageBoxSOPClass,                         "ReferencedImageBoxSOPClass" },
+    { UID_BasicGrayscalePrintManagementMetaSOPClass,          "BasicGrayscalePrintManagementMetaSOPClass" },
+    { UID_ReferencedGrayscalePrintManagementMetaSOPClass,     "ReferencedGrayscalePrintManagementMetaSOPClass" },
+    { UID_PrintJobSOPClass,                                   "PrintJobSOPClass" },
+    { UID_BasicAnnotationBoxSOPClass,                         "BasicAnnotationBoxSOPClass" },
+    { UID_PrinterSOPClass,                                    "PrinterSOPClass" },
+    { UID_PrinterSOPInstance,                                 "PrinterSOPInstance" },
+    { UID_BasicColorPrintManagementMetaSOPClass,              "BasicColorPrintManagementMetaSOPClass" },
+    { UID_ReferencedColorPrintManagementMetaSOPClass,         "ReferencedColorPrintManagementMetaSOPClass" },
+    { UID_VOILUTBoxSOPClass,                                  "VOILUTBoxSOPClass" },
+    { UID_PresentationLUTSOPClass,                            "PresentationLUTSOPClass" },
+    { UID_ImageOverlayBoxSOPClass,                            "ImageOverlayBoxSOPClass" },
+    { UID_PrintQueueSOPInstance,                              "PrintQueueSOPInstance" },
+    { UID_PrintQueueManagementSOPClass,                       "PrintQueueManagementSOPClass" },
+    { UID_StoredPrintStorage,                                 "StoredPrintStorage" },    
+    { UID_HardcopyGrayscaleImageStorage,                      "HardcopyGrayscaleImageStorage" },
+    { UID_HardcopyColorImageStorage,                          "HardcopyColorImageStorage" },
+    { UID_PullPrintRequestSOPClass,                           "PullPrintRequestSOPClass" },
+    { UID_PullStoredPrintManagementMetaSOPClass,              "PullStoredPrintManagementMetaSOPClass" },
 
-    { UID_PresentationLUTSOPClass, "PresentationLUTSOPClass" },
-
-    { UID_SRTextStorage, "SRTextStorage" },
-    { UID_SRAudioStorage, "SRAudioStorage" },
-    { UID_SRDetailStorage, "SRDetailStorage" },
-    { UID_SRComprehensiveStorage, "SRComprehensiveStorage" },
-
-    { UID_PullPrintRequestSOPClass, "PullPrintRequestSOPClass" },
-    { UID_HardcopyGrayscaleImageStorage, "HardcopyGrayscaleImageStorage" },
-    { UID_HardcopyColorImageStorage, "HardcopyColorImageStorage" },
-    { UID_StoredPrintStorage, "StoredPrintStorage" },
-
-    { UID_WaveformStorage, "WaveformStorage" },
-    { UID_ECGWaveformStorage, "ECGWaveformStorage" },
-    { UID_AudioWaveformStorage, "AudioWaveformStorage" },
-
-    { UID_GrayscaleSoftcopyPresentationStateStorage, "GrayscaleSoftcopyPresentationStateStorage" },
-    { UID_PullStoredPrintManagementMetaSOPClass, "PullStoredPrintManagementMetaSOPClass" },
+    { UID_ComputedRadiographyImageStorage,                    "ComputedRadiographyImageStorage" },
+    { UID_CTImageStorage,                                     "CTImageStorage" },
+    { UID_RETIRED_UltrasoundMultiframeImageStorage,           "RETIRED_UltrasoundMultiframeImageStorage" },
+    { UID_UltrasoundMultiframeImageStorage,                   "UltrasoundMultiframeImageStorage" },
+    { UID_MRImageStorage,                                     "MRImageStorage" },
+    { UID_RETIRED_NuclearMedicineImageStorage,                "RETIRED_NuclearMedicineImageStorage" },
+    { UID_RETIRED_UltrasoundImageStorage,                     "RETIRED_UltrasoundImageStorage" },
+    { UID_UltrasoundImageStorage,                             "UltrasoundImageStorage" },
+    { UID_SecondaryCaptureImageStorage,                       "SecondaryCaptureImageStorage" },
+    { UID_StandaloneOverlayStorage,                           "StandaloneOverlayStorage" },
+    { UID_StandaloneCurveStorage,                             "StandaloneCurveStorage" },
+    { UID_StandaloneModalityLUTStorage,                       "StandaloneModalityLUTStorage" },
+    { UID_StandaloneVOILUTStorage,                            "StandaloneVOILUTStorage" },
+    { UID_XRayAngiographicImageStorage,                       "XRayAngiographicImageStorage" },
+    { UID_XRayFluoroscopyImageStorage,                        "XRayFluoroscopyImageStorage" },
+    { UID_XRayAngiographicBiPlaneImageStorage,                "XRayAngiographicBiPlaneImageStorage" },
+    { UID_NuclearMedicineImageStorage,                        "NuclearMedicineImageStorage" },
+    { UID_PETImageStorage,                                    "PETImageStorage" },
+    { UID_PETCurveStorage,                                    "PETCurveStorage" },
+    { UID_RTImageStorage,                                     "RTImageStorage" },
+    { UID_RTDoseStorage,                                      "RTDoseStorage" },
+    { UID_RTStructureSetStorage,                              "RTStructureSetStorage" },
+    { UID_RTPlanStorage,                                      "RTPlanStorage" },
+    { UID_FINDPatientRootQueryRetrieveInformationModel,       "FINDPatientRootQueryRetrieveInformationModel" },
+    { UID_MOVEPatientRootQueryRetrieveInformationModel,       "MOVEPatientRootQueryRetrieveInformationModel" },
+    { UID_GETPatientRootQueryRetrieveInformationModel,        "GETPatientRootQueryRetrieveInformationModel" },
+    { UID_FINDStudyRootQueryRetrieveInformationModel,         "FINDStudyRootQueryRetrieveInformationModel" },
+    { UID_MOVEStudyRootQueryRetrieveInformationModel,         "MOVEStudyRootQueryRetrieveInformationModel" },
+    { UID_GETStudyRootQueryRetrieveInformationModel,          "GETStudyRootQueryRetrieveInformationModel" },
+    { UID_FINDPatientStudyOnlyQueryRetrieveInformationModel,  "FINDPatientStudyOnlyQueryRetrieveInformationModel" },
+    { UID_MOVEPatientStudyOnlyQueryRetrieveInformationModel,  "MOVEPatientStudyOnlyQueryRetrieveInformationModel" },
+    { UID_GETPatientStudyOnlyQueryRetrieveInformationModel,   "GETPatientStudyOnlyQueryRetrieveInformationModel" },
+    { UID_FINDModalityWorklistInformationModel,               "FINDModalityWorklistInformationModel" },
+    
+    { UID_DigitalXRayImageStorageForPresentation,              "DigitalXRayImageStorageForPresentation" },
+    { UID_DigitalXRayImageStorageForProcessing,                "DigitalXRayImageStorageForProcessing" },
+    { UID_DigitalMammographyXRayImageStorageForPresentation,   "DigitalMammographyXRayImageStorageForPresentation" },
+    { UID_DigitalMammographyXRayImageStorageForProcessing,     "DigitalMammographyXRayImageStorageForProcessing" },
+    { UID_DigitalIntraOralXRayImageStorageForPresentation,     "DigitalIntraOralXRayImageStorageForPresentation" },
+    { UID_DigitalIntraOralXRayImageStorageForProcessing,       "DigitalIntraOralXRayImageStorageForProcessing" },
+    { UID_PrinterConfigurationRetrievalSOPClass,               "PrinterConfigurationRetrievalSOPClass" },
+    { UID_PrinterConfigurationRetrievalSOPInstance,            "PrinterConfigurationRetrievalSOPInstance" },
+    { UID_BasicPrintImageOverlayBoxSOPClass,                   "BasicPrintImageOverlayBoxSOPClass" },
+    { UID_DRAFT_VLImageStorage,                                "DRAFT_VLImageStorage"  },
+    { UID_DRAFT_VLMultiFrameImageStorage,                      "DRAFT_VLMultiFrameImageStorage" },
+    { UID_VLEndoscopicImageStorage,                            "VLEndoscopicImageStorage" },
+    { UID_VLMicroscopicImageStorage,                           "VLMicroscopicImageStorage" },
+    { UID_VLSlideCoordinatesMicroscopicImageStorage,           "VLSlideCoordinatesMicroscopicImageStorage" },
+    { UID_VLPhotographicImageStorage,                          "VLPhotographicImageStorage" },
+    { UID_SRTextStorage,                                       "SRTextStorage" },
+    { UID_SRAudioStorage,                                      "SRAudioStorage" },
+    { UID_SRDetailStorage,                                     "SRDetailStorage" },
+    { UID_SRComprehensiveStorage,                              "SRComprehensiveStorage" },
+    { UID_RTBeamsTreatmentRecordStorage,                       "RTBeamsTreatmentRecordStorage" },
+    { UID_RTBrachyTreatmentRecordStorage,                      "RTBrachyTreatmentRecordStorage" },
+    { UID_RTTreatmentSummaryRecordStorage,                     "RTTreatmentSummaryRecordStorage" },
+    { UID_DRAFT_WaveformStorage,                               "DRAFT_WaveformStorage" },
+    { UID_WaveformStorage,                                     "WaveformStorage" },
+    { UID_TwelveLeadECGWaveformStorage,                        "TwelveLeadECGWaveformStorage" },
+    { UID_GeneralECGWaveformStorage,                           "GeneralECGWaveformStorage" },
+    { UID_CardiacElectrophysiologyWaveformStorage,             "CardiacElectrophysiologyWaveformStorage" },
+    { UID_HemodynamicWaveformStorage,                          "HemodynamicWaveformStorage" },
+    { UID_BasicAudioWaveformStorage,                           "BasicAudioWaveformStorage" },
+    { UID_HighResolutionAudioWaveformStorage,                  "HighResolutionAudioWaveformStorage" },
+    { UID_GrayscaleSoftcopyPresentationStateStorage,           "GrayscaleSoftcopyPresentationStateStorage" },
 
     { NULL, NULL }
 };
@@ -219,53 +231,69 @@ static int uidNameMap_size = ( sizeof(uidNameMap) / sizeof(UIDNameMap) );
 */
 
 const char* dcmStorageSOPClassUIDs[] = {
-    UID_ComputedRadiographyImageStorage, 
+    // basic directory storage is a special case - we cannot
+    // transmit a DICOMDIR by c-store because of the absolute
+    // file position offsets within the DICOMDIR.
+    // UID_BasicDirectoryStorageSOPClass,
+
+    UID_StoredPrintStorage,
+    UID_HardcopyGrayscaleImageStorage,
+    UID_HardcopyColorImageStorage,
+
+    UID_ComputedRadiographyImageStorage,
     UID_CTImageStorage,
+    UID_RETIRED_UltrasoundMultiframeImageStorage,
     UID_UltrasoundMultiframeImageStorage,
     UID_MRImageStorage,
-    UID_NuclearMedicineImageStorage,
+    UID_RETIRED_NuclearMedicineImageStorage,
+    UID_RETIRED_UltrasoundImageStorage,
     UID_UltrasoundImageStorage,
     UID_SecondaryCaptureImageStorage,
-
     UID_StandaloneOverlayStorage,
     UID_StandaloneCurveStorage,
     UID_StandaloneModalityLUTStorage,
     UID_StandaloneVOILUTStorage,
-
-    UID_RETIRED_NuclearMedicineImageStorage,
-    UID_RETIRED_UltrasoundImageStorage,
-    UID_RETIRED_UltrasoundMultiframeImageStorage,
-
     UID_XRayAngiographicImageStorage,
-    UID_XRayAngiographicBiPlaneImageStorage,
     UID_XRayFluoroscopyImageStorage,
-    
+    UID_XRayAngiographicBiPlaneImageStorage,
+    UID_NuclearMedicineImageStorage,
+    UID_PETImageStorage,
+    UID_PETCurveStorage,
     UID_RTImageStorage,
     UID_RTDoseStorage,
     UID_RTStructureSetStorage,
     UID_RTPlanStorage,
-
-    UID_PETImageStorage,
-    UID_PETCurveStorage,
-
-    UID_VLImageStorage,
-    UID_VLMultiFrameImageStorage,
-
-    UID_PageDescriptionStorage,
-
-    UID_SRTextStorage, 
-    UID_SRAudioStorage, 
-    UID_SRDetailStorage, 
-    UID_SRComprehensiveStorage, 
-
-    UID_HardcopyGrayscaleImageStorage, 
-    UID_HardcopyColorImageStorage, 
-    UID_StoredPrintStorage, 
-
-    UID_WaveformStorage, 
-    UID_ECGWaveformStorage, 
-    UID_AudioWaveformStorage, 
-
+    
+    UID_DigitalXRayImageStorageForPresentation,
+    UID_DigitalXRayImageStorageForProcessing,
+    UID_DigitalMammographyXRayImageStorageForPresentation,
+    UID_DigitalMammographyXRayImageStorageForProcessing,
+    UID_DigitalIntraOralXRayImageStorageForPresentation,
+    UID_DigitalIntraOralXRayImageStorageForProcessing,
+    UID_PrinterConfigurationRetrievalSOPClass,
+    UID_PrinterConfigurationRetrievalSOPInstance,
+    UID_BasicPrintImageOverlayBoxSOPClass,
+    UID_DRAFT_VLImageStorage,
+    UID_DRAFT_VLMultiFrameImageStorage,
+    UID_VLEndoscopicImageStorage,
+    UID_VLMicroscopicImageStorage,
+    UID_VLSlideCoordinatesMicroscopicImageStorage,
+    UID_VLPhotographicImageStorage,
+    UID_SRTextStorage,
+    UID_SRAudioStorage,
+    UID_SRDetailStorage,
+    UID_SRComprehensiveStorage,
+    UID_RTBeamsTreatmentRecordStorage,
+    UID_RTBrachyTreatmentRecordStorage,
+    UID_RTTreatmentSummaryRecordStorage,
+    UID_DRAFT_WaveformStorage,
+    UID_WaveformStorage,
+    UID_TwelveLeadECGWaveformStorage,
+    UID_GeneralECGWaveformStorage,
+    UID_CardiacElectrophysiologyWaveformStorage,
+    UID_HemodynamicWaveformStorage,
+    UID_BasicAudioWaveformStorage,
+    UID_HighResolutionAudioWaveformStorage,
     UID_GrayscaleSoftcopyPresentationStateStorage,
 
     NULL
@@ -291,50 +319,35 @@ const int numberOfDcmStorageSOPClassUIDs =
 */
 
 const char* dcmImageSOPClassUIDs[] = {
-    UID_ComputedRadiographyImageStorage, 
+    UID_HardcopyGrayscaleImageStorage,
+    UID_HardcopyColorImageStorage,
+    UID_ComputedRadiographyImageStorage,
     UID_CTImageStorage,
+    UID_RETIRED_UltrasoundMultiframeImageStorage,
     UID_UltrasoundMultiframeImageStorage,
     UID_MRImageStorage,
-    UID_NuclearMedicineImageStorage,
-    UID_UltrasoundImageStorage,
-    UID_SecondaryCaptureImageStorage,
-
-// The Standalone objects are not really images
-//    UID_StandaloneOverlayStorage,
-//    UID_StandaloneCurveStorage,
-//    UID_StandaloneModalityLUTStorage,
-//    UID_StandaloneVOILUTStorage,
-
     UID_RETIRED_NuclearMedicineImageStorage,
     UID_RETIRED_UltrasoundImageStorage,
-    UID_RETIRED_UltrasoundMultiframeImageStorage,
-
+    UID_UltrasoundImageStorage,
+    UID_SecondaryCaptureImageStorage,
     UID_XRayAngiographicImageStorage,
-    UID_XRayAngiographicBiPlaneImageStorage,
     UID_XRayFluoroscopyImageStorage,
-    
-    UID_RTImageStorage,
-// The other RT objects are not images and therefore cannot be put 
-// in DICOMDIR IMAGE records
-//    UID_RTDoseStorage,
-//    UID_RTStructureSetStorage,
-//    UID_RTPlanStorage,
-
+    UID_XRayAngiographicBiPlaneImageStorage,
+    UID_NuclearMedicineImageStorage,
     UID_PETImageStorage,
-// Curves are not images
-//    UID_PETCurveStorage,
-
-    UID_VLImageStorage,
-    UID_VLMultiFrameImageStorage,
-
-// The print objects are not really images
-//    UID_PageDescriptionStorage
-//    UID_HardcopyGrayscaleImageStorage, 
-//    UID_HardcopyColorImageStorage, 
-//    UID_StoredPrintStorage, 
-
-// Presentation states are not really images
-//     UID_GrayscaleSoftcopyPresentationStateStorage,
+    UID_RTImageStorage,    
+    UID_DigitalXRayImageStorageForPresentation,
+    UID_DigitalXRayImageStorageForProcessing,
+    UID_DigitalMammographyXRayImageStorageForPresentation,
+    UID_DigitalMammographyXRayImageStorageForProcessing,
+    UID_DigitalIntraOralXRayImageStorageForPresentation,
+    UID_DigitalIntraOralXRayImageStorageForProcessing,
+    UID_DRAFT_VLImageStorage,
+    UID_DRAFT_VLMultiFrameImageStorage,
+    UID_VLEndoscopicImageStorage,
+    UID_VLMicroscopicImageStorage,
+    UID_VLSlideCoordinatesMicroscopicImageStorage,
+    UID_VLPhotographicImageStorage,
 
     NULL
 };
@@ -484,7 +497,7 @@ long gethostid(void);
 #endif // HAVE_GETHOSTID
 
 #ifndef HAVE_GETPID
-static int getpid(void) { return 0; }   // workaround for MSDOS & MAC
+static int getpid(void) { return 0; }   // workaround for MAC
 #endif // !HAVE_GETPID
 
 // ********************************
@@ -497,7 +510,7 @@ static int getpid(void) { return 0; }   // workaround for MSDOS & MAC
 ** NOTE: Thread UNSAFE
 */
 
-static unsigned int counterOfCurrentUID = 0;
+static unsigned int counterOfCurrentUID = 1;
 
 static const int maxUIDLen = 64;	/* A UID may be 64 chars or less */
 
@@ -567,7 +580,11 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.16  1998-10-26 13:02:53  meichel
+** Revision 1.17  1999-03-22 13:41:24  meichel
+** Reworked UID list based on the 1998 DICOM edition and the latest
+**   supplement versions.
+**
+** Revision 1.16  1998/10/26 13:02:53  meichel
 ** Updated data dictionary and UIDs for Grayscale Softcopy Presentation State
 ** (Supplement 33 frozen draft).
 **
