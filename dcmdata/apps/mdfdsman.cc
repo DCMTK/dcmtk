@@ -22,8 +22,8 @@
  *  Purpose: Class for modifying DICOM-Files and Datasets
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-04 16:03:38 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2004-04-07 12:25:53 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -290,7 +290,7 @@ static OFCondition splitTagPath(OFString &tag_path, DcmTagKey &key)
 // Return Value : returns EC_normal if everything is ok, else a parse error
 {
     OFString target_tag;
-    int group,elem;
+    unsigned int group,elem;
     int lpos,rpos;
     rpos=tag_path.size()-1;
     lpos=rpos;
@@ -610,7 +610,11 @@ MdfDatasetManager::~MdfDatasetManager()
 /*
 ** CVS/RCS Log:
 ** $Log: mdfdsman.cc,v $
-** Revision 1.10  2004-02-04 16:03:38  joergr
+** Revision 1.11  2004-04-07 12:25:53  joergr
+** Changed type of integer variables to unsigned to avoid compiler warnings
+** reported by gcc.
+**
+** Revision 1.10  2004/02/04 16:03:38  joergr
 ** Removed pointer declaration from parameter "resultStack" in method
 ** findAndGetElements().
 **
