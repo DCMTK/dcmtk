@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-22 14:21:59 $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  Update Date:      $Date: 1999-02-23 11:45:24 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1063,12 +1063,14 @@ E_Condition DVInterface::instanceReviewed(const char *studyUID,
         {
             if (lockExclusive() == EC_Normal)
             {
+                OFBool wasNew = newInstancesReceived();
                 record.hstat = DVIF_objectIsNotNew;
                 lseek(pHandle->pidx, (long)(SIZEOF_STUDYDESC + recpos * SIZEOF_IDXRECORD), SEEK_SET);
                 write(pHandle->pidx, (char *)&record, SIZEOF_IDXRECORD);
                 lseek(pHandle->pidx, 0L, SEEK_SET);
+                if (!wasNew)
+                    resetDatabaseReferenceTime();
             }
-            resetDatabaseReferenceTime();
             unlockExclusive();
             return EC_Normal;
         }
@@ -1121,6 +1123,7 @@ E_Condition DVInterface::deleteStudy(const char *studyUID)
         E_Condition result = EC_IllegalCall;
         if (lockExclusive() == EC_Normal)
         {
+            OFBool wasNew = newInstancesReceived();
             if (study->List.gotoFirst())
             {
                 StudyDescRecord *study_desc = (StudyDescRecord *)malloc(SIZEOF_STUDYDESC);
@@ -1154,8 +1157,9 @@ E_Condition DVInterface::deleteStudy(const char *studyUID)
                     free(study_desc);
                 }
             }
+            if (!wasNew)
+                resetDatabaseReferenceTime();
         }
-        resetDatabaseReferenceTime();
         unlockExclusive();
         return result;
     }
@@ -1172,6 +1176,7 @@ E_Condition DVInterface::deleteSeries(const char *studyUID,
         E_Condition result = EC_IllegalCall;
         if (lockExclusive() == EC_Normal)
         {
+            OFBool wasNew = newInstancesReceived();
             if (series->List.gotoFirst())
             {
                 StudyDescRecord *study_desc = (StudyDescRecord *)malloc(SIZEOF_STUDYDESC);
@@ -1198,8 +1203,9 @@ E_Condition DVInterface::deleteSeries(const char *studyUID,
                     free(study_desc);
                 }
             }
+            if (!wasNew)
+                resetDatabaseReferenceTime();
         }
-        resetDatabaseReferenceTime();
         unlockExclusive();
         return result;
     }
@@ -1218,6 +1224,7 @@ E_Condition DVInterface::deleteInstance(const char *studyUID,
         E_Condition result = EC_IllegalCall;
         if (lockExclusive() == EC_Normal)
         {
+            OFBool wasNew = newInstancesReceived();
             DB_IdxRemove(pHandle, series->List.getPos());
             StudyDescRecord *study_desc = (StudyDescRecord *)malloc(SIZEOF_STUDYDESC);
             if (study_desc != NULL)
@@ -1244,8 +1251,9 @@ E_Condition DVInterface::deleteInstance(const char *studyUID,
                 }
                 deleteImageFile(series->List.getFilename());
             }
+            if (!wasNew)
+                resetDatabaseReferenceTime();
         }
-        resetDatabaseReferenceTime();
         unlockExclusive();
         return result;
     }
@@ -1883,7 +1891,11 @@ void DVInterface::cleanChildren()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.40  1999-02-22 14:21:59  joergr
+ *  Revision 1.41  1999-02-23 11:45:24  joergr
+ *  Added check whether new instances have been received before resetting
+ *  database reference time (affects delete and instance reviewed methods).
+ *
+ *  Revision 1.40  1999/02/22 14:21:59  joergr
  *  Added deletion of image files (depending on directory where the file is
  *  stored).
  *  Reset reference time for file modification checking after the index file
