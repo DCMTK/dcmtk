@@ -9,10 +9,10 @@
 **	Defines a template stack class with interfaces similar to the
 **      C++ Standard
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1998-02-06 15:07:40 $
+** Last Update:		$Author: joergr $
+** Update Date:		$Date: 1998-07-02 10:11:31 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstack.h,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -48,19 +48,36 @@
 struct OFStackLinkBase
 {
     OFStackLinkBase * next;
-    OFStackLinkBase() { next = NULL; }
+    OFStackLinkBase()
+      : next(NULL)
+    {
+    }
+
+private:
+
+ // --- declarations to avoid compiler warnings
+ 
+    OFStackLinkBase(const OFStackLinkBase &);
+    OFStackLinkBase &operator=(const OFStackLinkBase &);
 };
 
 class OFStackBase
 {
+private:
+
+ // --- declarations to avoid compiler warnings
+ 
+    OFStackBase(const OFStackBase &);
+    OFStackBase &operator=(const OFStackBase &);
+
 protected:
     OFStackLinkBase * head;
     size_t stackSize;
 public:
     OFStackBase()
-    {
-	head = NULL;
-	stackSize = 0;
+      :	head(NULL),
+	    stackSize(0)
+	{
     }
 
     virtual ~OFStackBase()
@@ -172,7 +189,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: ofstack.h,v $
-** Revision 1.4  1998-02-06 15:07:40  meichel
+** Revision 1.5  1998-07-02 10:11:31  joergr
+** Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
+** options), e.g. add copy constructors.
+**
+** Revision 1.4  1998/02/06 15:07:40  meichel
 ** Removed many minor problems (name clashes, unreached code)
 **   reported by Sun CC4 with "+w" or Sun CC2.
 **
