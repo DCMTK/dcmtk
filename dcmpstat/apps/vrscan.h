@@ -57,16 +57,16 @@
 
 
 /* % here is the declaration from section1 %header{  */ 
-#line 64 "vrscan.l"
+#line 76 "vrscan.l"
 #define YY_vrscan_IOSTREAM 
-#line 66 "vrscan.l"
+#line 78 "vrscan.l"
 #define YY_vrscan_MEMBERS  \
   private: \
     /* undefined */ vrscan& operator=(const vrscan&); \
     /* undefined */ vrscan(const vrscan&);
-#line 72 "vrscan.l"
+#line 84 "vrscan.l"
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
-#line 112 "vrscan.l"
+#line 134 "vrscan.l"
 #line 56 "flexskel.xh"
 
 #ifdef YY_USE_CLASS
@@ -256,9 +256,9 @@ YY_vrscan_LEX_PARAM_DEF
 
 #ifndef YY_vrscan_ECHO_CODE
 #ifndef YY_vrscan_IOSTREAM
-#define YY_vrscan_ECHO_CODE fwrite( (char *) YY_vrscan_TEXT, YY_vrscan_LENG, 1, YY_vrscan_OUT );
+#define YY_vrscan_ECHO_CODE fwrite( OFreinterpret_cast(char *, YY_vrscan_TEXT), YY_vrscan_LENG, 1, YY_vrscan_OUT );
 #else
-#define YY_vrscan_ECHO_CODE (YY_vrscan_OUT->write( (char *) YY_vrscan_TEXT, YY_vrscan_LENG));
+#define YY_vrscan_ECHO_CODE (YY_vrscan_OUT->write( OFreinterpret_cast(char *, YY_vrscan_TEXT), YY_vrscan_LENG));
 #endif
 #endif
 
@@ -391,7 +391,7 @@ class YY_vrscan_CLASS YY_vrscan_INHERIT
 /* declaration of externs for public use of yylex scanner */
 
 /* % here is the declaration from section2 %header{ */ 
-#line 130 "vrscan.l"
+#line 153 "vrscan.l"
 #endif
 #line 379 "flexskel.xh"
 

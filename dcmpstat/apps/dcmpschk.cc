@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2002, OFFIS
+ *  Copyright (C) 1997-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,9 @@
  *    VR and IOD checker for Presentation States
  *
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2003-09-01 12:58:58 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-09-05 09:00:49 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,7 +52,7 @@
 #include "ofstring.h"    /* for class OFString */
 #include "vrscan.h"
 #include "ofconapp.h"    /* for OFConsoleApplication */
-#include "dvpstat.h"
+#include "dcmpstat.h"    /* for DcmPresentationState */
 
 #ifdef WITH_ZLIB
 #include <zlib.h>        /* for zlibVersion() */
@@ -92,7 +92,7 @@ enum ErrorMode
 #define MSGe_wrongAtt      "Error: Attribute is incorrect."
 #define MSGe_wrongDType    "Error: Attribute value does not conform to data type definition."
 #define MSGi_wrongDType    "Informational: Attribute value does not conform to data type definition."
-#define MSGw_wrongDType    "Warning: Attribute value uses retired ACR-NEMA form."
+#define MSGw_wrongDType    "Warning: Attribute value uses retired form."
 
 void printVRError(
   ostream& out,
@@ -269,7 +269,7 @@ int scanValue(istream& scannerInput)
    valueScanner.yyin = &scannerInput;
    int firstResult = valueScanner.yylex();
    if (valueScanner.yylex())
-      return 15;
+      return 16;
    return firstResult;
 }
 
@@ -284,12 +284,6 @@ int checkelem(ostream & out, DcmElement *elem,  DcmXfer& oxfer,
     const DcmDataDictionary& globalDataDict = dcmDataDict.rdlock();
     const DcmDictEntry *dictRef = globalDataDict.findEntry(tag, NULL);
     int i = 0;
-
-/*
-    if (verbose) {
-        printResult(out, stack, showFullData);
-    }
-*/
 
     /*
     ** if the data was encoded in explicit VR then check that the given VR matches
@@ -480,7 +474,7 @@ int checkelem(ostream & out, DcmElement *elem,  DcmXfer& oxfer,
                       printVRError(out, EM_warning, value, dictRef, NULL);
                       dderrors++;
                    } else {
-                     printVRError(out, EM_error, value, dictRef, "[0-9]{8}");
+                     printVRError(out, EM_error, value, dictRef, "[0-9]{8} with valid values for year, month and day");
                      dderrors++;
                    }
                 }
@@ -520,7 +514,7 @@ int checkelem(ostream & out, DcmElement *elem,  DcmXfer& oxfer,
              int realVR = scanValue(input);
              if (realVR != 8)
              {
-                printVRError(out, EM_error, value, dictRef, "[\\+\\-]?[0-9]+");
+                printVRError(out, EM_error, value, dictRef, "[\\+\\-]?[0-9]+ in the range -2^31 .. 2^31-1");
                 dderrors++;
              }
            }
@@ -561,8 +555,14 @@ int checkelem(ostream & out, DcmElement *elem,  DcmXfer& oxfer,
              int realVR = scanValue(input);
              if (realVR != 11)
              {
-                printVRError(out, EM_error, value, dictRef, "{all}*([\\^]{all}*([\\^]{all}*([\\^]{all}*(\\^{all}*)?)?)?)?");
-                dderrors++;
+                if (realVR == 15) /* OLD_PN */
+                {
+                  printVRError(out, EM_warning, value, dictRef, NULL);
+                  dderrors++;
+                } else {
+                  printVRError(out, EM_error, value, dictRef, "{all}*([\\^]{all}*([\\^]{all}*([\\^]{all}*(\\^{all}*)?)?)?)?");
+                  dderrors++;
+                }
              }
            }
            break;
@@ -579,7 +579,7 @@ int checkelem(ostream & out, DcmElement *elem,  DcmXfer& oxfer,
                   printVRError(out, EM_warning, value, dictRef, NULL);
                   dderrors++;
                 } else {
-                  printVRError(out, EM_error, value, dictRef, "[0-9]{2}([0-9]{2}([0-9]{2}(\\.[0-9]{1,6})?)?)?");
+                  printVRError(out, EM_error, value, dictRef, "[0-9]{2}([0-9]{2}([0-9]{2}(\\.[0-9]{1,6})?)?)? with valid values for hour, minute and second");
                   dderrors++;
                 }
              }
@@ -593,7 +593,7 @@ int checkelem(ostream & out, DcmElement *elem,  DcmXfer& oxfer,
              int realVR = scanValue(input);
              if (realVR != 9)
              {
-                printVRError(out, EM_error, value, dictRef, "([0-9]+\\.)*[0-9]+");
+                printVRError(out, EM_error, value, dictRef, "([0-9]+\\.)*[0-9]+ without any leading zeroes");
                 dderrors++;
              }
            }
@@ -672,8 +672,6 @@ int dcmchk(
 
     DcmStack stack;
     DcmXfer oxfer(META_HEADER_DEFAULT_TRANSFERSYNTAX);
-
-    // oxfer = META_HEADER_DEFAULT_TRANSFERSYNTAX;
 
     DcmMetaInfo *mi = ds->getMetaInfo();
     if (mi->card() > 0)
@@ -958,9 +956,9 @@ int checkfile(const char *filename, OFBool verbose, ostream& out, OFConsole *out
     sopclassuid.getOFString(aString,0);
     if (aString == UID_GrayscaleSoftcopyPresentationStateStorage)
     {
-      DVPresentationState pState(NULL, 0, 0, 0, 0, 0, 0);
+      DcmPresentationState pState;
       pState.setLog(outconsole, OFTrue, opt_debug);
-      if (EC_Normal != pState.read(*DataSet))
+      if (pState.read(*DataSet).bad())
       {
         test_passed = OFFalse;
         out << endl;
@@ -1088,7 +1086,12 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpschk.cc,v $
- * Revision 1.14  2003-09-01 12:58:58  wilkens
+ * Revision 1.15  2003-09-05 09:00:49  meichel
+ * Updated presentation state checker to use class DcmPresentationState
+ *   instead of DVPresentationState. Imported updated VR checking code
+ *   from module dcmcheck.
+ *
+ * Revision 1.14  2003/09/01 12:58:58  wilkens
  * Added #include to file to be able to compile again under Win32.
  *
  * Revision 1.13  2003/03/12 17:34:20  meichel

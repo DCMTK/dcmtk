@@ -305,11 +305,11 @@ dcmpschk.o: dcmpschk.cc ../../config/include/osconfig.h \
   ../../dcmdata/include/dcvrfd.h ../../dcmdata/include/dcvrof.h \
   ../../dcmdata/include/cmdlnarg.h vrscan.h \
   ../../ofstd/include/ofconapp.h ../../ofstd/include/ofcmdln.h \
-  ../include/dvpstat.h ../include/dcmpstat.h ../include/dvpstyp.h \
-  ../include/dvpsovl.h ../include/dvpsgll.h ../include/dvpsrsl.h \
-  ../include/dvpsall.h ../include/dvpsgal.h ../include/dvpscul.h \
-  ../include/dvpsvll.h ../include/dvpsvwl.h ../include/dvpsdal.h \
-  ../include/dvpssvl.h ../include/dvpspl.h
+  ../include/dcmpstat.h ../include/dvpstyp.h ../include/dvpsovl.h \
+  ../include/dvpsgll.h ../include/dvpsrsl.h ../include/dvpsall.h \
+  ../include/dvpsgal.h ../include/dvpscul.h ../include/dvpsvll.h \
+  ../include/dvpsvwl.h ../include/dvpsdal.h ../include/dvpssvl.h \
+  ../include/dvpspl.h
 dcmpsmk.o: dcmpsmk.cc ../../config/include/osconfig.h \
   ../../config/include/cfunix.h ../../ofstd/include/ofstdinc.h \
   ../../dcmdata/include/dctk.h ../../dcmdata/include/dctypes.h \
