@@ -1,0 +1,220 @@
+/*!
+
+\page dsr2html Render DICOM SR file and data set to HTML
+
+\section synopsis SYNOPSIS
+
+\verbatim
+dsr2html [options] dsrfile-in [htmlfile-out]
+\endverbatim
+
+\section description DESCRIPTION
+
+The \b dsr2html utility renders the contents of a DICOM Structured Reporting
+(SR) document (file format or raw data set) to HTML (Hyper Text Markup
+Language) which is compatible with version 3.2 or 4.0.
+
+If \b dsr2html reads a raw data set (DICOM data without a file format
+meta-header) it will attempt to guess the transfer syntax by examining the
+first few bytes of the file.  It is not always possible to correctly guess the
+transfer syntax and it is better to convert a data set to a file format
+whenever possible (using the \b dcmconv utility).  It is also possible to use
+the \e -f and <em>-t[ieb]</em> options to force \b dsr2html to read a dataset
+with a particular transfer syntax.
+
+\section parameters PARAMETERS
+
+\verbatim
+dsrfile-in    DICOM SR input filename to be rendered
+
+htmlfile-out  HTML output filename (default: stdout)
+\endverbatim
+
+\section options OPTIONS
+
+\subsection general_options general options
+\verbatim
+  -h   --help
+         print this help text and exit
+
+       --version
+         print version information and exit
+
+  -d   --debug
+         debug mode, print debug information
+
+  -dd  --verbose-debug
+         verbose debug mode, print more details
+\endverbatim
+
+\subsection input_options input options
+\verbatim
+input file format:
+
+  +f   --read-file
+         read file format or data set (default)
+
+  -f   --read-dataset
+         read data set without file meta information
+
+input transfer syntax (only with --read-dataset):
+
+  -t=  --read-xfer-auto
+         use TS recognition (default)
+
+  -te  --read-xfer-little
+         read with explicit VR little endian TS
+
+  -tb  --read-xfer-big
+         read with explicit VR big endian TS
+
+  -ti  --read-xfer-implicit
+         read with implicit VR little endian TS
+\endverbatim
+
+\subsection parsing_options parsing options
+\verbatim
+additional information:
+
+  -Ip  --processing-details
+         show currently processed content item
+
+error handling:
+
+  -Ec  --ignore-constraints
+         ignore relationship content constraints
+
+  -Ee  --ignore-item-errors
+         do not abort on content item errors, just warn
+         (e.g. missing value type specific attributes)
+
+  -Ei  --skip-invalid-items
+         skip invalid content items (incl. sub-tree)
+\endverbatim
+
+\subsection output_options output options
+\verbatim
+HTML compatibility:
+
+  +H3  --html-3.2
+         use only HTML version 3.2 compatible features
+
+  +H4  --html-4.0
+         allow all HTML version 4.0 features (default)
+
+  +Hd  --add-document-type
+         add reference to SGML document type definition
+
+cascading style sheet (CSS), only with HTML 4.0:
+
+  +Sr  --css-reference  URL : string
+         add reference to specified CSS to HTML page
+
+  +Sf  --css-file  filename : string
+         embed content of specified CSS into HTML page
+
+general rendering:
+
+  +Ri  --expand-inline
+         expand short content items inline (default)
+
+  -Ri  --never-expand-inline
+         never expand content items inline
+
+  +Rd  --render-full-data
+         render full data of content items
+
+document rendering:
+
+  +Dt  --document-type-title
+         use document type as document title (default)
+
+  +Dp  --patient-info-title
+         use patient information as document title
+
+  -Dh  --no-document-header
+         do not render general document information
+
+code rendering:
+
+  +Ci  --render-inline-codes
+         render codes in continuous text blocks
+
+  +Cn  --concept-name-codes
+         render code of concept names
+
+  +Cu  --numeric-unit-codes
+         render code of numeric measurement units
+
+  +Cv  --code-value-unit
+         use code value as measurement unit (default)
+
+  +Cm  --code-meaning-unit
+         use code meaning as measurement unit
+
+  +Ca  --render-all-codes
+         render all codes (implies +Ci, +Cn and +Cu)
+\endverbatim
+
+\section dicom_conformance DICOM CONFORMANCE
+
+The \b dsr2html utility supports the following SOP Classes (according to
+DICOM 2003 and Supplement 66):
+
+\verbatim
+  BasicTextSR                 "1.2.840.10008.5.1.4.1.1.88.11"
+  EnhancedSR                  "1.2.840.10008.5.1.4.1.1.88.22"
+  ComprehensiveSR             "1.2.840.10008.5.1.4.1.1.88.33"
+  ProcedureLog                "1.2.840.10008.5.1.4.1.1.88.40"
+  MammographyCADSR            "1.2.840.10008.5.1.4.1.1.88.50"
+  KeyObjectSelectionDocument  "1.2.840.10008.5.1.4.1.1.88.59"
+  ChestCADSR                  "1.2.840.10008.5.1.4.1.1.88.65"
+\endverbatim
+
+\section command_line COMMAND LINE
+
+All command line tools use the following notation for parameters: square
+brackets enclose optional values (0-1), three trailing dots indicate that
+multiple values are allowed (1-n), a combination of both means 0 to n values.
+
+Command line options are distinguished from parameters by a leading '+' or '-'
+sign, respectively.  Usually, order and position of command line options are
+arbitrary (i.e. they can appear anywhere).  However, if options are mutually
+exclusive the rightmost appearance is used.  This behaviour conforms to the
+standard evaluation rules of common Unix shells.
+
+In addition, one or more command files can be specified using an '@' sign as a
+prefix to the filename (e.g. <em>\@command.txt</em>).  Such a command argument
+is replaced by the content of the corresponding text file (multiple
+whitespaces are treated as a single separator) prior to any further
+evaluation.  Please note that a command file cannot contain another command
+file. This simple but effective approach allows to summarize common
+combinations of options/parameters and avoids longish and confusing command
+lines (an example is provided in file <em>dcmdata/apps/dumppat.txt</em>).
+
+\section environment ENVIRONMENT
+
+The \b dsr2html utility will attempt to load DICOM data dictionaries specified
+in the \e DCMDICTPATH environment variable.  By default, i.e. if the
+\e DCMDICTPATH environment variable is not set, the file
+<em>/usr/local/dicom/lib/dicom.dic</em> (in fact the \e PREFIX as defined
+during \b configure is used) will be loaded unless the dictionary is built
+into the application (default for Windows).
+
+The default behaviour should be preferred and the \e DCMDICTPATH environment
+variable only used when alternative data dictionaries are required.  The
+\e DCMDICTPATH environment variable has the same format as the Unix shell
+\e PATH variable in that a colon (":") separates entries.  The data dictionary
+code will attempt to load each file specified in the \e DCMDICTPATH
+environment variable.  It is an error if no data dictionary can be loaded.
+
+\section see_also SEE ALSO
+
+<b>dcmconv</b>(1)
+
+\section copyright COPYRIGHT
+
+Copyright (C) 2000-2003 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
+Germany.
+
+*/
