@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSPresentationLUT
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-10-07 17:22:00 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-10-20 10:55:19 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -370,7 +370,7 @@ E_Condition DVPSPresentationLUT::invert()
           if (haveTable())
           {
               DiLookupTable *lut = new DiLookupTable(presentationLUTData, presentationLUTDescriptor);
-              if (lut && (lut->invertTable())) status = EC_Normal;
+              if (lut && (lut->invertTable(0x2))) status = EC_Normal;       // flag = 0x2: invert only original LUT data
               delete lut;
           }
           break;
@@ -489,7 +489,11 @@ OFBool DVPSPresentationLUT::matchesImageDepth(OFBool is12bit)
 
 /*
  *  $Log: dvpspl.cc,v $
- *  Revision 1.5  1999-10-07 17:22:00  meichel
+ *  Revision 1.6  1999-10-20 10:55:19  joergr
+ *  Enhanced method invertTable to distinguish between copy of LUT data and
+ *  original (referenced) LUT data.
+ *
+ *  Revision 1.5  1999/10/07 17:22:00  meichel
  *  Reworked management of Presentation LUTs in order to create tighter
  *    coupling between Softcopy and Print.
  *
