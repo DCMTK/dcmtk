@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2000-01-31 17:14:17 $
+** Update Date:		$Date: 2000-06-07 08:57:52 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/dimse.h,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
+** CVS/RCS Revision:	$Revision: 1.9 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -138,6 +138,42 @@
 #define STATUS_GET_Failed_UnableToProcess 	 /* high nibble */      0xc000 
 #define STATUS_GET_Cancel_SubOperationsTerminatedDueToCancelIndication	0xfe00
 #define STATUS_GET_Warning_SubOperationsCompleteOneOrMoreFailures	0xb000
+
+/* DIMSE-N Specific Codes */
+#define STATUS_N_Cancel                                                 0xFE00
+#define STATUS_N_AttributeListError                                     0x0107
+#define STATUS_N_SOPClassNotSupported                                   0x0122
+#define STATUS_N_ClassInstanceConflict                                  0x0119
+#define STATUS_N_DuplicateSOPInstance                                   0x0111
+#define STATUS_N_DuplicateInvocation                                    0x0210
+#define STATUS_N_InvalidArgumentValue                                   0x0115
+#define STATUS_N_InvalidAttributeValue                                  0x0106
+#define STATUS_N_InvalidObjectInstance                                  0x0117
+#define STATUS_N_MissingAttribute                                       0x0120
+#define STATUS_N_MissingAttributeValue                                  0x0121
+#define STATUS_N_MistypedArgument                                       0x0212
+#define STATUS_N_NoSuchArgument                                         0x0114
+#define STATUS_N_NoSuchAttribute                                        0x0105
+#define STATUS_N_NoSuchEventType                                        0x0113
+#define STATUS_N_NoSuchObjectInstance                                   0x0112
+#define STATUS_N_NoSuchSOPClass                                         0x0118
+#define STATUS_N_ProcessingFailure                                      0x0110
+#define STATUS_N_ResourceLimitation                                     0x0213
+#define STATUS_N_UnrecognizedOperation                                  0x0211
+
+/* Print Management Service Class Specific Codes */
+#define STATUS_N_PRINT_BFS_Warn_MemoryAllocation                        0xB600
+#define STATUS_N_PRINT_BFS_Warn_NoSessionPrinting                       0xB601
+#define STATUS_N_PRINT_BFS_Warn_EmptyPage                               0xB602
+#define STATUS_N_PRINT_BFB_Warn_EmptyPage                               0xB603
+#define STATUS_N_PRINT_BFS_Fail_NoFilmBox                               0xC600
+#define STATUS_N_PRINT_BFS_Fail_PrintQueueFull                          0xC601
+#define STATUS_N_PRINT_BSB_Fail_PrintQueueFull                          0xC602
+#define STATUS_N_PRINT_BFS_BFB_Fail_ImageSize                           0xC603
+#define STATUS_N_PRINT_BFS_BFB_Fail_PositionCollision                   0xC604
+#define STATUS_N_PRINT_IB_Fail_InsufficientMemory                       0xC605
+#define STATUS_N_PRINT_IB_Fail_MoreThanOneVOILUT                        0xC606
+
 
 /*
  * Type Definitions
@@ -637,7 +673,9 @@ DIMSE_storeUser(
 	/* out */
 	T_DIMSE_C_StoreRSP *response,
 	DcmDataset **statusDetail,
-        T_DIMSE_DetectedCancelParameters *checkForCancelParams = NULL);
+        T_DIMSE_DetectedCancelParameters *checkForCancelParams = NULL,
+        /* in */
+        long imageFileTotalBytes=0);
 
 typedef void (*DIMSE_StoreProviderCallback)(
     /* in */
@@ -867,7 +905,8 @@ DIMSE_sendMessageUsingFileData(T_ASC_Association *association,
 		  T_DIMSE_Message *msg, DcmDataset *statusDetail,
 		  const char* dataFileName,
 		  DIMSE_ProgressCallback callback,
-		  void *callbackContext);
+		  void *callbackContext,
+		  DcmDataset **commandSet=NULL);
 
 CONDITION 
 DIMSE_sendMessageUsingMemoryData(T_ASC_Association *association,
@@ -875,16 +914,17 @@ DIMSE_sendMessageUsingMemoryData(T_ASC_Association *association,
 		  T_DIMSE_Message *msg, DcmDataset *statusDetail,
 		  DcmDataset *dataObject,
 		  DIMSE_ProgressCallback callback,
-		  void *callbackContext);
-
-
+		  void *callbackContext,
+		  DcmDataset **commandSet=NULL);
 
 CONDITION
 DIMSE_receiveCommand(T_ASC_Association *association,
 		     T_DIMSE_BlockingMode blocking,
 		     int timeout,
 		     T_ASC_PresentationContextID *presID,
-		     T_DIMSE_Message *msg, DcmDataset **statusDetail);
+		     T_DIMSE_Message *msg, 
+		     DcmDataset **statusDetail,
+		     DcmDataset **commandSet=NULL);
 
 CONDITION
 DIMSE_receiveDataSetInMemory(T_ASC_Association *association,
@@ -950,6 +990,7 @@ void DIMSE_printNCreateRSP(FILE * f, T_DIMSE_N_CreateRSP * rsp);
 void DIMSE_printNDeleteRQ(FILE * f, T_DIMSE_N_DeleteRQ * req);
 void DIMSE_printNDeleteRSP(FILE * f, T_DIMSE_N_DeleteRSP * rsp);
 
+void DIMSE_printMessage(ostream& outstream, T_DIMSE_Message &msg, DcmItem *dataset=NULL);
 
 /*
  * Conditions
@@ -1022,7 +1063,11 @@ void DIMSE_printNDeleteRSP(FILE * f, T_DIMSE_N_DeleteRSP * rsp);
 /*
 ** CVS Log
 ** $Log: dimse.h,v $
-** Revision 1.8  2000-01-31 17:14:17  meichel
+** Revision 1.9  2000-06-07 08:57:52  meichel
+** dcmnet DIMSE routines now allow to retrieve raw command sets as DcmDataset
+**   objects, e.g. for logging purposes. Added enhanced message dump functions.
+**
+** Revision 1.8  2000/01/31 17:14:17  meichel
 ** ntroduced new flag g_dimse_save_dimse_data. If enabled, all DIMSE messages
 ** and data sets sent or received are stored in files.
 ** This facilitates debugging of DIMSE problems.

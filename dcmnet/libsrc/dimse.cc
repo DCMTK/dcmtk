@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2000-04-14 16:28:35 $
+** Update Date:		$Date: 2000-06-07 08:57:55 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimse.cc,v $
-** CVS/RCS Revision:	$Revision: 1.22 $
+** CVS/RCS Revision:	$Revision: 1.23 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -676,7 +676,8 @@ DIMSE_sendMessage(T_ASC_Association *assoc,
 		  DcmDataset *dataObject,
 		  const char *dataFileName,
 		  DIMSE_ProgressCallback callback,
-		  void *callbackContext)
+		  void *callbackContext,
+		  DcmDataset **commandSet)
 
 {
     CONDITION cond;
@@ -684,6 +685,8 @@ DIMSE_sendMessage(T_ASC_Association *assoc,
     DcmDataset *cmdObj = NULL;
     DcmFileFormat dcmff;
     int fromFile = 0;
+    
+    if (commandSet) *commandSet = NULL;
     
     if (!isDataDictPresent())
     {
@@ -759,6 +762,10 @@ DIMSE_sendMessage(T_ASC_Association *assoc,
     if (SUCCESS(cond))
     {
       if (g_dimse_save_dimse_data) saveDimseFragment(cmdObj, OFTrue, OFFalse);
+
+      // return a copy of the raw command set in commandSet if defined
+      if (commandSet) *commandSet = new DcmDataset(*cmdObj);
+ 
       if (debug)
       {
 	    COUT << "DIMSE Command To Send:" << endl;
@@ -791,14 +798,15 @@ DIMSE_sendMessageUsingFileData(T_ASC_Association * assoc,
 		  DcmDataset *statusDetail,
 		  const char *dataFileName,
 		  DIMSE_ProgressCallback callback,
-		  void *callbackContext)
+		  void *callbackContext,
+		  DcmDataset **commandSet)
 
 {
     CONDITION cond;
 
     cond = DIMSE_sendMessage(assoc, presID, msg, statusDetail, 
 	NULL, dataFileName,
-	callback, callbackContext);
+	callback, callbackContext, commandSet);
 
     return cond;
 }
@@ -810,14 +818,15 @@ DIMSE_sendMessageUsingMemoryData(T_ASC_Association * assoc,
 		  DcmDataset *statusDetail,
 		  DcmDataset *dataObject,
 		  DIMSE_ProgressCallback callback,
-		  void *callbackContext)
+		  void *callbackContext,
+		  DcmDataset **commandSet)
 
 {
     CONDITION cond;
 
     cond = DIMSE_sendMessage(assoc, presID, msg, statusDetail, 
 	dataObject, NULL,
-	callback, callbackContext);
+	callback, callbackContext, commandSet);
 
     return cond;
 }
@@ -857,7 +866,10 @@ DIMSE_receiveCommand(T_ASC_Association * assoc,
 		     T_DIMSE_BlockingMode blocking,
 		     int timeout,
 		     T_ASC_PresentationContextID *presID,
-		     T_DIMSE_Message * msg, DcmDataset ** statusDetail)
+		     T_DIMSE_Message * msg, 
+		     DcmDataset ** statusDetail,
+		     DcmDataset ** commandSet)
+
 {
     CONDITION cond;
     unsigned long bytesRead;
@@ -874,6 +886,7 @@ DIMSE_receiveCommand(T_ASC_Association * assoc,
     E_Condition econd = EC_Normal;
 
     if (statusDetail) *statusDetail = NULL;
+    if (commandSet) *commandSet = NULL;
 
     if (debug) {
 	COUT << "DIMSE receiveCommand" << endl;
@@ -979,6 +992,9 @@ DIMSE_receiveCommand(T_ASC_Association * assoc,
     }
 
     if (g_dimse_save_dimse_data) saveDimseFragment(cmdSet, OFTrue, OFTrue);
+
+    // return a copy of the raw command set in commandSet if defined
+    if (commandSet) *commandSet = new DcmDataset(*cmdSet);
 
     if (debug) {
 	COUT << "DIMSE Command Received:" << endl;
@@ -1400,10 +1416,15 @@ void DIMSE_warning(T_ASC_Association *assoc,
     CERR << buf << endl;
 }
 
+
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
-** Revision 1.22  2000-04-14 16:28:35  meichel
+** Revision 1.23  2000-06-07 08:57:55  meichel
+** dcmnet DIMSE routines now allow to retrieve raw command sets as DcmDataset
+**   objects, e.g. for logging purposes. Added enhanced message dump functions.
+**
+** Revision 1.22  2000/04/14 16:28:35  meichel
 ** Removed default value from output stream passed to print() method.
 **   Required for use in multi-thread environments.
 **

@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2000-02-23 15:12:32 $
+** Update Date:		$Date: 2000-06-07 08:57:54 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimdump.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -559,11 +559,785 @@ void DIMSE_printNDeleteRSP(FILE * f, T_DIMSE_N_DeleteRSP * rsp)
 	    "Not Present" : "Present");
 }
 
+static void DIMSE_printNStatusString(ostream& dumpStream, int status)
+{
+  char buf[20];
+  switch(status)
+  {
+    case STATUS_Success:
+      dumpStream << "0x0000: Success";
+      break;
+    case STATUS_N_Cancel:
+      dumpStream << "0xFE00: Cancel";
+      break;
+    case STATUS_N_AttributeListError:
+      dumpStream << "0x0107: Attribute list error";
+      break;
+    case STATUS_N_SOPClassNotSupported:
+      dumpStream << "0x0122: SOP class not supported";
+      break;
+    case STATUS_N_ClassInstanceConflict:
+      dumpStream << "0x0119: Class/instance conflict";
+      break;
+    case STATUS_N_DuplicateSOPInstance:
+      dumpStream << "0x0111: Duplicate SOP instance";
+      break;
+    case STATUS_N_DuplicateInvocation:
+      dumpStream << "0x0210: Duplicate invocation";
+      break;
+    case STATUS_N_InvalidArgumentValue:
+      dumpStream << "0x0115: Invalid argument value";
+      break;
+    case STATUS_N_InvalidAttributeValue:
+      dumpStream << "0x0106: Invalid attribute value";
+      break;
+    case STATUS_N_InvalidObjectInstance:
+      dumpStream << "0x0117: Invalid object instance";
+      break;
+    case STATUS_N_MissingAttribute:
+      dumpStream << "0x0120: Missing attribute";
+      break;
+    case STATUS_N_MissingAttributeValue:
+      dumpStream << "0x0121: Missing attribute value";
+      break;
+    case STATUS_N_MistypedArgument:
+      dumpStream << "0x0212: Mistyped argument";
+      break;
+    case STATUS_N_NoSuchArgument:
+      dumpStream << "0x0114: No such argument";
+      break;
+    case STATUS_N_NoSuchAttribute:
+      dumpStream << "0x0105: No such attribute";
+      break;
+    case STATUS_N_NoSuchEventType:
+      dumpStream << "0x0113: No such event type";
+      break;
+    case STATUS_N_NoSuchObjectInstance:
+      dumpStream << "0x0112: No such object instance";
+      break;
+    case STATUS_N_NoSuchSOPClass:
+      dumpStream << "0x0118: No such SOP class";
+      break;
+    case STATUS_N_ProcessingFailure:
+      dumpStream << "0x0110: Processing failure";
+      break;
+    case STATUS_N_ResourceLimitation:
+      dumpStream << "0x0213: Resource limitation";
+      break;
+    case STATUS_N_UnrecognizedOperation:
+      dumpStream << "0x0211: Unrecognized operation";
+      break;
+    case STATUS_N_PRINT_BFS_Warn_MemoryAllocation:
+      dumpStream << "0xB600: Basic film session warning - memory allocation";
+      break;
+    case STATUS_N_PRINT_BFS_Warn_NoSessionPrinting:
+      dumpStream << "0xB601: Basic film session warning - no session printing";
+      break;
+    case STATUS_N_PRINT_BFS_Warn_EmptyPage:
+      dumpStream << "0xB602: Basic film session warning - empty page";
+      break;
+    case STATUS_N_PRINT_BFB_Warn_EmptyPage:
+      dumpStream << "0xB603: Basic film box warning - empty page";
+      break;
+    case STATUS_N_PRINT_BFS_Fail_NoFilmBox:
+      dumpStream << "0xC600: Basic film session failure - no film box";
+      break;
+    case STATUS_N_PRINT_BFS_Fail_PrintQueueFull:
+      dumpStream << "0xC601: Basic film session failure - print queue full";
+      break;
+    case STATUS_N_PRINT_BSB_Fail_PrintQueueFull:
+      dumpStream << "0xC602: Basic film box failure - print queue full";
+      break;
+    case STATUS_N_PRINT_BFS_BFB_Fail_ImageSize:
+      dumpStream << "0xC603: Basic film session/box failure - Image size";
+      break;
+    case STATUS_N_PRINT_BFS_BFB_Fail_PositionCollision:
+      dumpStream << "0xC604: Basic film session/box failure - Position collision";
+      break;
+    case STATUS_N_PRINT_IB_Fail_InsufficientMemory:
+      dumpStream << "0xC605: Image box failure - Insufficient memory";
+      break;
+    case STATUS_N_PRINT_IB_Fail_MoreThanOneVOILUT:
+      dumpStream << "0xC606: Image box failure - More than one VOI LUT";
+      break;
+    default:
+      sprintf(buf, "0x%04x", status);
+      dumpStream << buf << ": Unknown Status Code";
+      break;
+  }
+  return;
+}
+
+static void DIMSE_printCStoreStatusString(ostream& dumpStream, int status)
+{
+  char buf[20];
+  sprintf(buf, "0x%04x", status);
+
+  if ((status & 0xff00) == STATUS_STORE_Refused_OutOfResources)
+  {
+    dumpStream << buf << ": Error: Refused - Out of resources";
+  }
+  else if ((status & 0xff00) == STATUS_STORE_Refused_SOPClassNotSupported)
+  {
+    dumpStream << buf << ": Error: Refused - SOP Class not supported";
+  }
+  else if ((status & 0xff00) == STATUS_STORE_Error_DataSetDoesNotMatchSOPClass)
+  {
+    dumpStream << buf << ": Error: Refused - Data Set does not match SOP Class";
+  }
+  else if ((status & 0xf000) == STATUS_STORE_Error_CannotUnderstand)
+  {
+    dumpStream << buf << ": Error: Cannot understand";
+  }
+  else if (status == STATUS_STORE_Warning_CoersionOfDataElements)
+  {
+    dumpStream << buf << ": Warning: Coersion of data elements";
+  }
+  else if (status == STATUS_STORE_Warning_DataSetDoesNotMatchSOPClass)
+  {
+    dumpStream << buf << ": Warning: Data Set does not match SOP Class";
+  }
+  else if (status == STATUS_STORE_Warning_ElementsDiscarded)
+  {
+    dumpStream << buf << ": Warning: elements discarded";
+  }
+  else if (DICOM_WARNING_STATUS(status))
+  {
+    dumpStream << buf << ": Warning";
+  }
+  else if (DICOM_PENDING_STATUS(status))
+  {
+    dumpStream << buf << ": Pending";
+  }
+  else if (status == STATUS_Success)
+  {
+    dumpStream << "0x0000: Success";
+  }
+  else 
+  {
+    dumpStream << buf << ": Unknown Status Code";
+  }
+  return;
+}
+
+static void DIMSE_printCFindStatusString(ostream& dumpStream, int status)
+{
+  char buf[20];
+  sprintf(buf, "0x%04x", status);
+
+  if ((status & 0xff00) == STATUS_FIND_Refused_OutOfResources)
+  {
+    dumpStream << buf << ": Error: Refused - Out of resources";
+  }
+  else if ((status & 0xff00) == STATUS_FIND_Refused_SOPClassNotSupported)
+  {
+    dumpStream << buf << ": Error: Refused - SOP Class not supported";
+  }
+  else if ((status & 0xff00) == STATUS_FIND_Failed_IdentifierDoesNotMatchSOPClass)
+  {
+    dumpStream << buf << ": Error: Failed - Identifier does not match SOP Class";
+  }
+  else if ((status & 0xf000) == STATUS_FIND_Failed_UnableToProcess)
+  {
+    dumpStream << buf << ": Error: Failed - Unable to process";
+  }
+  else if (status == STATUS_FIND_Cancel_MatchingTerminatedDueToCancelRequest)
+  {
+    dumpStream << buf << ": Cancel: Matching terminated due to Cancel Request";
+  }
+  else if (status == STATUS_FIND_Pending_WarningUnsupportedOptionalKeys)
+  {
+    dumpStream << buf << ": Pending: Warning - unsupported optional keys";
+  }
+  else if (DICOM_WARNING_STATUS(status))
+  {
+    dumpStream << buf << ": Warning";
+  }
+  else if (DICOM_PENDING_STATUS(status))
+  {
+    dumpStream << buf << ": Pending";
+  }
+  else if (status == STATUS_Success)
+  {
+    dumpStream << "0x0000: Success";
+  }
+  else 
+  {
+    dumpStream << buf << ": Unknown Status Code";
+  }
+  return;
+}
+
+static void DIMSE_printCGetMoveStatusString(ostream& dumpStream, int status)
+{
+  char buf[20];
+  sprintf(buf, "0x%04x", status);
+
+  if ((status & 0xf000) == STATUS_MOVE_Failed_UnableToProcess)
+  {
+    dumpStream << buf << ": Error: Failed - Unable to process";
+  }
+  else if (status == STATUS_MOVE_Refused_OutOfResourcesNumberOfMatches)
+  {
+    dumpStream << buf << ": Error: Refused - out of resources - number of matches";
+  }
+  else if (status == STATUS_MOVE_Refused_OutOfResourcesSubOperations)
+  {
+    dumpStream << buf << ": Error: Refused - out of resources - suboperations";
+  }
+  else if (status == STATUS_MOVE_Failed_SOPClassNotSupported)
+  {
+    dumpStream << buf << ": Failed: SOP Class not supported";
+  }
+  else if (status == STATUS_MOVE_Failed_MoveDestinationUnknown)
+  {
+    dumpStream << buf << ": Failed: Move Destination unknown";
+  }
+  else if (status == STATUS_MOVE_Failed_IdentifierDoesNotMatchSOPClass)
+  {
+    dumpStream << buf << ": Failed: Identifier does not match SOP Class";
+  }
+  else if (status == STATUS_MOVE_Cancel_SubOperationsTerminatedDueToCancelIndication)
+  {
+    dumpStream << buf << ": Cancel: Suboperations terminated due to Cancel Indication";
+  }
+  else if (status == STATUS_MOVE_Warning_SubOperationsCompleteOneOrMoreFailures)
+  {
+    dumpStream << buf << ": Warning: Suboperations complete, one or more failures";
+  }
+  else if (DICOM_WARNING_STATUS(status))
+  {
+    dumpStream << buf << ": Warning";
+  }
+  else if (DICOM_PENDING_STATUS(status))
+  {
+    dumpStream << buf << ": Pending";
+  }
+  else if (status == STATUS_Success)
+  {
+    dumpStream << "0x0000: Success";
+  }
+  else 
+  {
+    dumpStream << buf << ": Unknown Status Code";
+  }
+  return;
+}
+
+static void DIMSE_printCEchoStatusString(ostream& dumpStream, int status)
+{
+  char buf[20];
+  sprintf(buf, "0x%04x", status);
+  if (DICOM_WARNING_STATUS(status))
+  {
+    dumpStream << buf << ": Warning";
+  }
+  else if (DICOM_PENDING_STATUS(status))
+  {
+    dumpStream << buf << ": Pending";
+  }
+  else if (status == STATUS_Success)
+  {
+    dumpStream << "0x0000: Success";
+  }
+  else 
+  {
+    dumpStream << buf << ": Unknown Status Code";
+  }
+  return;
+}
+
+
+static void DIMSE_printNGetRQ(ostream& outstream, T_DIMSE_N_GetRQ& msg)
+{
+  char buf[80];
+  const char *uid = dcmFindNameOfUID(msg.RequestedSOPClassUID);
+  outstream   << "Message Type                  : N-GET RQ" << endl
+              << "Message ID                    : " << msg.MessageID << endl
+              << "Requested SOP Class UID       : " << (uid ? uid : msg.RequestedSOPClassUID) << endl
+              << "Requested SOP Instance UID    : " << msg.RequestedSOPInstanceUID << endl
+              << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << endl
+              << "Attribute Identifier List     : ";
+  if (msg.ListCount==0) outstream << "none";
+  else for (int cList=0; cList<msg.ListCount; cList += 2)
+  {
+    sprintf(buf,"(%04X,%04X) ", msg.AttributeIdentifierList[cList], msg.AttributeIdentifierList[cList+1]);
+    outstream << buf;
+  }
+  outstream << endl;
+}
+
+static void DIMSE_printNSetRQ(ostream& outstream, T_DIMSE_N_SetRQ& msg)
+{
+  const char *uid = dcmFindNameOfUID(msg.RequestedSOPClassUID);
+  outstream   << "Message Type                  : N-SET RQ" << endl
+              << "Message ID                    : " << msg.MessageID << endl
+              << "Requested SOP Class UID       : " << (uid ? uid : msg.RequestedSOPClassUID) << endl
+              << "Requested SOP Instance UID    : " << msg.RequestedSOPInstanceUID << endl
+              << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << endl;
+}
+
+static void DIMSE_printNActionRQ(ostream& outstream, T_DIMSE_N_ActionRQ& msg)
+{
+  const char *uid = dcmFindNameOfUID(msg.RequestedSOPClassUID);
+  outstream   << "Message Type                  : N-ACTION RQ" << endl
+              << "Message ID                    : " << msg.MessageID << endl
+              << "Requested SOP Class UID       : " << (uid ? uid : msg.RequestedSOPClassUID) << endl
+              << "Requested SOP Instance UID    : " << msg.RequestedSOPInstanceUID << endl
+              << "Action Type ID                : " << msg.ActionTypeID << endl
+              << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << endl;
+}
+
+static void DIMSE_printNCreateRQ(ostream& outstream, T_DIMSE_N_CreateRQ& msg)
+{
+  const char *uid = dcmFindNameOfUID(msg.AffectedSOPClassUID);
+  outstream   << "Message Type                  : N-CREATE RQ" << endl
+              << "Message ID                    : " << msg.MessageID << endl
+              << "Affected SOP Class UID        : " << (uid ? uid : msg.AffectedSOPClassUID) << endl
+              << "Affected SOP Instance UID     : ";
+  if (msg.opts & O_NCREATE_AFFECTEDSOPINSTANCEUID) outstream << msg.AffectedSOPInstanceUID << endl;
+  else outstream << "none" << endl;
+  outstream   << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << endl;
+}
+
+static void DIMSE_printNDeleteRQ(ostream& outstream, T_DIMSE_N_DeleteRQ& msg)
+{
+  const char *uid = dcmFindNameOfUID(msg.RequestedSOPClassUID);
+  outstream   << "Message Type                  : N-DELETE RQ" << endl
+              << "Message ID                    : " << msg.MessageID << endl
+              << "Requested SOP Class UID       : " << (uid ? uid : msg.RequestedSOPClassUID) << endl
+              << "Requested SOP Instance UID    : " << msg.RequestedSOPInstanceUID << endl
+              << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << endl;
+}
+
+static void DIMSE_printNEventReportRQ(ostream& outstream, T_DIMSE_N_EventReportRQ& msg)
+{
+  const char *uid = dcmFindNameOfUID(msg.AffectedSOPClassUID);
+  outstream   << "Message Type                  : N-EVENT-REPORT RQ" << endl
+              << "Message ID                    : " << msg.MessageID << endl
+              << "Affected SOP Class UID        : " << (uid ? uid : msg.AffectedSOPClassUID) << endl
+              << "Affected SOP Instance UID     : " << msg.AffectedSOPInstanceUID << endl
+              << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << endl
+              << "Event Type ID                 : " << msg.EventTypeID << endl;
+}
+
+static void DIMSE_printNGetRSP(ostream& outstream, T_DIMSE_N_GetRSP& msg)
+{
+  const char *uid = NULL;
+  if (msg.opts & O_NGET_AFFECTEDSOPCLASSUID) uid = dcmFindNameOfUID(msg.AffectedSOPClassUID);
+  outstream   << "Message Type                  : N-GET RSP" << endl
+              << "Message ID Being Responded To : " << msg.MessageIDBeingRespondedTo << endl                    
+              << "Affected SOP Class UID        : " ;
+  if (msg.opts & O_NGET_AFFECTEDSOPCLASSUID) outstream << (uid ? uid : msg.AffectedSOPClassUID) << endl;
+  else outstream << "none" << endl;
+  outstream   << "Affected SOP Instance UID     : ";
+  if (msg.opts & O_NGET_AFFECTEDSOPINSTANCEUID) outstream << msg.AffectedSOPInstanceUID << endl;
+  else outstream << "none" << endl;
+  outstream   << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << endl
+              << "DIMSE Status                  : ";
+  DIMSE_printNStatusString(outstream, msg.DimseStatus);
+  outstream   << endl;
+}
+
+static void DIMSE_printNSetRSP(ostream& outstream, T_DIMSE_N_SetRSP& msg)
+{
+  const char *uid = NULL;
+  if (msg.opts & O_NSET_AFFECTEDSOPCLASSUID) uid = dcmFindNameOfUID(msg.AffectedSOPClassUID);
+  outstream   << "Message Type                  : N-SET RSP" << endl
+              << "Message ID Being Responded To : " << msg.MessageIDBeingRespondedTo << endl                    
+              << "Affected SOP Class UID        : " ;
+  if (msg.opts & O_NSET_AFFECTEDSOPCLASSUID) outstream << (uid ? uid : msg.AffectedSOPClassUID) << endl;
+  else outstream << "none" << endl;
+  outstream   << "Affected SOP Instance UID     : ";
+  if (msg.opts & O_NSET_AFFECTEDSOPINSTANCEUID) outstream << msg.AffectedSOPInstanceUID << endl;
+  else outstream << "none" << endl;
+  outstream   << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << endl
+              << "DIMSE Status                  : ";
+  DIMSE_printNStatusString(outstream, msg.DimseStatus);
+  outstream   << endl;
+}
+
+static void DIMSE_printNActionRSP(ostream& outstream, T_DIMSE_N_ActionRSP& msg)
+{
+  const char *uid = NULL;
+  if (msg.opts & O_NACTION_AFFECTEDSOPCLASSUID) uid = dcmFindNameOfUID(msg.AffectedSOPClassUID);
+  outstream   << "Message Type                  : N-ACTION RSP" << endl
+              << "Message ID Being Responded To : " << msg.MessageIDBeingRespondedTo << endl                    
+              << "Affected SOP Class UID        : " ;
+  if (msg.opts & O_NACTION_AFFECTEDSOPCLASSUID) outstream << (uid ? uid : msg.AffectedSOPClassUID) << endl;
+  else outstream << "none" << endl;
+  outstream   << "Affected SOP Instance UID     : ";
+  if (msg.opts & O_NACTION_AFFECTEDSOPINSTANCEUID) outstream << msg.AffectedSOPInstanceUID << endl;
+  else outstream << "none" << endl;
+  outstream   << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << endl
+              << "Action Type ID                : ";
+  if (msg.opts & O_NACTION_ACTIONTYPEID) outstream << msg.ActionTypeID << endl;
+  else outstream << "none" << endl;
+  outstream   << "DIMSE Status                  : ";
+  DIMSE_printNStatusString(outstream, msg.DimseStatus);
+  outstream   << endl;
+}
+
+static void DIMSE_printNCreateRSP(ostream& outstream, T_DIMSE_N_CreateRSP& msg)
+{
+  const char *uid = NULL;
+  if (msg.opts & O_NCREATE_AFFECTEDSOPCLASSUID) uid = dcmFindNameOfUID(msg.AffectedSOPClassUID);
+  outstream   << "Message Type                  : N-CREATE RSP" << endl
+              << "Message ID Being Responded To : " << msg.MessageIDBeingRespondedTo << endl                    
+              << "Affected SOP Class UID        : " ;
+  if (msg.opts & O_NCREATE_AFFECTEDSOPCLASSUID) outstream << (uid ? uid : msg.AffectedSOPClassUID) << endl;
+  else outstream << "none" << endl;
+  outstream   << "Affected SOP Instance UID     : ";
+  if (msg.opts & O_NCREATE_AFFECTEDSOPINSTANCEUID) outstream << msg.AffectedSOPInstanceUID << endl;
+  else outstream << "none" << endl;
+  outstream   << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << endl
+              << "DIMSE Status                  : ";
+  DIMSE_printNStatusString(outstream, msg.DimseStatus);
+  outstream   << endl;
+}
+
+static void DIMSE_printNDeleteRSP(ostream& outstream, T_DIMSE_N_DeleteRSP& msg)
+{
+  const char *uid = NULL;
+  if (msg.opts & O_NDELETE_AFFECTEDSOPCLASSUID) uid = dcmFindNameOfUID(msg.AffectedSOPClassUID);
+  outstream   << "Message Type                  : N-DELETE RSP" << endl
+              << "Message ID Being Responded To : " << msg.MessageIDBeingRespondedTo << endl                    
+              << "Affected SOP Class UID        : " ;
+  if (msg.opts & O_NDELETE_AFFECTEDSOPCLASSUID) outstream << (uid ? uid : msg.AffectedSOPClassUID) << endl;
+  else outstream << "none" << endl;
+  outstream   << "Affected SOP Instance UID     : ";
+  if (msg.opts & O_NDELETE_AFFECTEDSOPINSTANCEUID) outstream << msg.AffectedSOPInstanceUID << endl;
+  else outstream << "none" << endl;
+  outstream   << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << endl
+              << "DIMSE Status                  : ";
+  DIMSE_printNStatusString(outstream, msg.DimseStatus);
+  outstream   << endl;
+}
+
+static void DIMSE_printNEventReportRSP(ostream& outstream, T_DIMSE_N_EventReportRSP& msg)
+{
+  const char *uid = NULL;
+  if (msg.opts & O_NEVENTREPORT_AFFECTEDSOPCLASSUID) uid = dcmFindNameOfUID(msg.AffectedSOPClassUID);
+  outstream   << "Message Type                  : N-EVENT-REPORT RSP" << endl
+              << "Message ID Being Responded To : " << msg.MessageIDBeingRespondedTo << endl                    
+              << "Affected SOP Class UID        : " ;
+  if (msg.opts & O_NEVENTREPORT_AFFECTEDSOPCLASSUID) outstream << (uid ? uid : msg.AffectedSOPClassUID) << endl;
+  else outstream << "none" << endl;
+  outstream   << "Affected SOP Instance UID     : ";
+  if (msg.opts & O_NEVENTREPORT_AFFECTEDSOPINSTANCEUID) outstream << msg.AffectedSOPInstanceUID << endl;
+  else outstream << "none" << endl;
+  outstream   << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << endl
+              << "Event Type ID                 : ";
+  if (msg.opts & O_NEVENTREPORT_EVENTTYPEID) outstream << msg.EventTypeID << endl;
+  else outstream << "none" << endl;
+  outstream   << "DIMSE Status                  : ";
+  DIMSE_printNStatusString(outstream, msg.DimseStatus);
+  outstream   << endl;
+}
+
+static void DIMSE_printCStoreRQ(ostream& outstream, T_DIMSE_C_StoreRQ& msg)
+{
+  const char *uid = dcmFindNameOfUID(msg.AffectedSOPClassUID);
+  outstream   << "Message Type                  : C-STORE RQ" << endl
+              << "Message ID                    : " << msg.MessageID << endl
+              << "Affected SOP Class UID        : " << (uid ? uid : msg.AffectedSOPClassUID) << endl
+              << "Affected SOP Instance UID     : " << msg.AffectedSOPInstanceUID << endl
+              << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << endl
+              << "Priority                      : ";
+  switch (msg.Priority)
+  {
+    case DIMSE_PRIORITY_LOW:
+      outstream << "low" << endl;
+      break;
+    case DIMSE_PRIORITY_MEDIUM:
+      outstream << "medium" << endl;
+      break;
+    case DIMSE_PRIORITY_HIGH:
+      outstream << "high" << endl;
+      break;
+  }
+  outstream   << "Move Originator AE Title      : ";
+  if (msg.opts & O_STORE_MOVEORIGINATORAETITLE) outstream << msg.MoveOriginatorApplicationEntityTitle << endl;
+  else outstream << "none" << endl;
+  outstream   << "Move Originator ID            : ";
+  if (msg.opts & O_STORE_MOVEORIGINATORID) outstream << msg.MoveOriginatorID << endl;
+  else outstream << "none" << endl;
+}
+
+static void DIMSE_printCGetRQ(ostream& outstream, T_DIMSE_C_GetRQ& msg)
+{
+  const char *uid = dcmFindNameOfUID(msg.AffectedSOPClassUID);
+  outstream   << "Message Type                  : C-GET RQ" << endl
+              << "Message ID                    : " << msg.MessageID << endl
+              << "Affected SOP Class UID        : " << (uid ? uid : msg.AffectedSOPClassUID) << endl
+              << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << endl
+              << "Priority                      : ";
+  switch (msg.Priority)
+  {
+    case DIMSE_PRIORITY_LOW:
+      outstream << "low" << endl;
+      break;
+    case DIMSE_PRIORITY_MEDIUM:
+      outstream << "medium" << endl;
+      break;
+    case DIMSE_PRIORITY_HIGH:
+      outstream << "high" << endl;
+      break;
+  }
+}
+
+static void DIMSE_printCFindRQ(ostream& outstream, T_DIMSE_C_FindRQ& msg)
+{
+  const char *uid = dcmFindNameOfUID(msg.AffectedSOPClassUID);
+  outstream   << "Message Type                  : C-FIND RQ" << endl
+              << "Message ID                    : " << msg.MessageID << endl
+              << "Affected SOP Class UID        : " << (uid ? uid : msg.AffectedSOPClassUID) << endl
+              << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << endl
+              << "Priority                      : ";
+  switch (msg.Priority)
+  {
+    case DIMSE_PRIORITY_LOW:
+      outstream << "low" << endl;
+      break;
+    case DIMSE_PRIORITY_MEDIUM:
+      outstream << "medium" << endl;
+      break;
+    case DIMSE_PRIORITY_HIGH:
+      outstream << "high" << endl;
+      break;
+  }
+}
+
+static void DIMSE_printCMoveRQ(ostream& outstream, T_DIMSE_C_MoveRQ& msg)
+{
+  const char *uid = dcmFindNameOfUID(msg.AffectedSOPClassUID);
+  outstream   << "Message Type                  : C-MOVE RQ" << endl
+              << "Message ID                    : " << msg.MessageID << endl
+              << "Affected SOP Class UID        : " << (uid ? uid : msg.AffectedSOPClassUID) << endl
+              << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << endl
+              << "Priority                      : ";
+  switch (msg.Priority)
+  {
+    case DIMSE_PRIORITY_LOW:
+      outstream << "low" << endl;
+      break;
+    case DIMSE_PRIORITY_MEDIUM:
+      outstream << "medium" << endl;
+      break;
+    case DIMSE_PRIORITY_HIGH:
+      outstream << "high" << endl;
+      break;
+  }
+  outstream   << "Move Destination              : " << msg.MoveDestination << endl;
+}
+
+static void DIMSE_printCEchoRQ(ostream& outstream, T_DIMSE_C_EchoRQ& msg)
+{
+  outstream   << "Message Type                  : C-ECHO RQ" << endl
+              << "Message ID                    : " << msg.MessageID << endl
+              << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << endl;
+}
+
+static void DIMSE_printCCancelRQ(ostream& outstream, T_DIMSE_C_CancelRQ& msg)
+{
+  outstream   << "Message Type                  : C-CANCEL RQ" << endl
+              << "Message ID Being Responded To : " << msg.MessageIDBeingRespondedTo << endl
+              << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << endl;
+}
+
+static void DIMSE_printCStoreRSP(ostream& outstream, T_DIMSE_C_StoreRSP& msg)
+{
+  const char *uid = NULL;
+  if (msg.opts & O_STORE_AFFECTEDSOPCLASSUID) uid = dcmFindNameOfUID(msg.AffectedSOPClassUID);
+  outstream   << "Message Type                  : C-STORE RSP" << endl
+              << "Message ID Being Responded To : " << msg.MessageIDBeingRespondedTo << endl
+              << "Affected SOP Class UID        : ";                   
+  if (msg.opts & O_STORE_AFFECTEDSOPCLASSUID) outstream << (uid ? uid : msg.AffectedSOPClassUID) << endl;
+  else outstream << "none" << endl;
+  outstream   << "Affected SOP Instance UID     : ";
+  if (msg.opts & O_STORE_AFFECTEDSOPINSTANCEUID) outstream << msg.AffectedSOPInstanceUID << endl;
+  else outstream << "none" << endl;
+  outstream   << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << endl
+              << "DIMSE Status                  : ";
+  DIMSE_printCStoreStatusString(outstream, msg.DimseStatus);
+  outstream   << endl;
+}
+
+static void DIMSE_printCGetRSP(ostream& outstream, T_DIMSE_C_GetRSP& msg)
+{
+  const char *uid = NULL;
+  if (msg.opts & O_GET_AFFECTEDSOPCLASSUID) uid = dcmFindNameOfUID(msg.AffectedSOPClassUID);
+  outstream   << "Message Type                  : C-GET RSP" << endl
+              << "Message ID Being Responded To : " << msg.MessageIDBeingRespondedTo << endl
+              << "Affected SOP Class UID        : ";                   
+  if (msg.opts & O_GET_AFFECTEDSOPCLASSUID) outstream << (uid ? uid : msg.AffectedSOPClassUID) << endl;
+  else outstream << "none" << endl;
+  outstream   << "Remaining Suboperations       : ";
+  if (msg.opts & O_GET_NUMBEROFREMAININGSUBOPERATIONS) outstream << msg.NumberOfRemainingSubOperations << endl;
+  else outstream << "none" << endl;
+  outstream   << "Completed Suboperations       : ";
+  if (msg.opts & O_GET_NUMBEROFCOMPLETEDSUBOPERATIONS) outstream << msg.NumberOfCompletedSubOperations << endl;
+  else outstream << "none" << endl;
+  outstream   << "Failed Suboperations          : ";
+  if (msg.opts & O_GET_NUMBEROFFAILEDSUBOPERATIONS) outstream << msg.NumberOfFailedSubOperations << endl;
+  else outstream << "none" << endl;
+  outstream   << "Warning Suboperations         : ";
+  if (msg.opts & O_GET_NUMBEROFWARNINGSUBOPERATIONS) outstream << msg.NumberOfWarningSubOperations << endl;
+  else outstream << "none" << endl;
+  outstream   << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << endl
+              << "DIMSE Status                  : ";
+  DIMSE_printCGetMoveStatusString(outstream, msg.DimseStatus);
+  outstream   << endl;
+}
+
+static void DIMSE_printCFindRSP(ostream& outstream, T_DIMSE_C_FindRSP& msg)
+{
+  const char *uid = NULL;
+  if (msg.opts & O_FIND_AFFECTEDSOPCLASSUID) uid = dcmFindNameOfUID(msg.AffectedSOPClassUID);
+  outstream   << "Message Type                  : C-FIND RSP" << endl
+              << "Message ID Being Responded To : " << msg.MessageIDBeingRespondedTo << endl
+              << "Affected SOP Class UID        : ";                   
+  if (msg.opts & O_FIND_AFFECTEDSOPCLASSUID) outstream << (uid ? uid : msg.AffectedSOPClassUID) << endl;
+  else outstream << "none" << endl;
+  outstream   << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << endl
+              << "DIMSE Status                  : ";
+  DIMSE_printCFindStatusString(outstream, msg.DimseStatus);
+  outstream   << endl;
+}
+
+static void DIMSE_printCMoveRSP(ostream& outstream, T_DIMSE_C_MoveRSP& msg)
+{
+  const char *uid = NULL;
+  if (msg.opts & O_MOVE_AFFECTEDSOPCLASSUID) uid = dcmFindNameOfUID(msg.AffectedSOPClassUID);
+  outstream   << "Message Type                  : C-MOVE RSP" << endl
+              << "Message ID Being Responded To : " << msg.MessageIDBeingRespondedTo << endl
+              << "Affected SOP Class UID        : ";                   
+  if (msg.opts & O_MOVE_AFFECTEDSOPCLASSUID) outstream << (uid ? uid : msg.AffectedSOPClassUID) << endl;
+  else outstream << "none" << endl;
+  outstream   << "Remaining Suboperations       : ";
+  if (msg.opts & O_MOVE_NUMBEROFREMAININGSUBOPERATIONS) outstream << msg.NumberOfRemainingSubOperations << endl;
+  else outstream << "none" << endl;
+  outstream   << "Completed Suboperations       : ";
+  if (msg.opts & O_MOVE_NUMBEROFCOMPLETEDSUBOPERATIONS) outstream << msg.NumberOfCompletedSubOperations << endl;
+  else outstream << "none" << endl;
+  outstream   << "Failed Suboperations          : ";
+  if (msg.opts & O_MOVE_NUMBEROFFAILEDSUBOPERATIONS) outstream << msg.NumberOfFailedSubOperations << endl;
+  else outstream << "none" << endl;
+  outstream   << "Warning Suboperations         : ";
+  if (msg.opts & O_MOVE_NUMBEROFWARNINGSUBOPERATIONS) outstream << msg.NumberOfWarningSubOperations << endl;
+  else outstream << "none" << endl;
+  outstream   << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << endl
+              << "DIMSE Status                  : ";
+  DIMSE_printCGetMoveStatusString(outstream, msg.DimseStatus);
+  outstream   << endl;
+}
+
+static void DIMSE_printCEchoRSP(ostream& outstream, T_DIMSE_C_EchoRSP& msg)
+{
+  const char *uid = NULL;
+  if (msg.opts & O_ECHO_AFFECTEDSOPCLASSUID) uid = dcmFindNameOfUID(msg.AffectedSOPClassUID);
+  outstream   << "Message Type                  : C-ECHO RSP" << endl
+              << "Message ID Being Responded To : " << msg.MessageIDBeingRespondedTo << endl
+              << "Affected SOP Class UID        : ";                   
+  if (msg.opts & O_ECHO_AFFECTEDSOPCLASSUID) outstream << (uid ? uid : msg.AffectedSOPClassUID) << endl;
+  else outstream << "none" << endl;
+
+  outstream   << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << endl
+              << "DIMSE Status                  : ";
+  DIMSE_printCEchoStatusString(outstream, msg.DimseStatus);
+  outstream   << endl;
+}
+
+void DIMSE_printMessage(ostream& outstream, T_DIMSE_Message &msg, DcmItem *dataset)
+{    
+    switch(msg.CommandField)
+    {
+      case DIMSE_N_GET_RQ:
+        DIMSE_printNGetRQ(outstream, msg.msg.NGetRQ);
+        break;
+      case DIMSE_N_SET_RQ:
+        DIMSE_printNSetRQ(outstream, msg.msg.NSetRQ);
+        break;
+      case DIMSE_N_ACTION_RQ:
+        DIMSE_printNActionRQ(outstream, msg.msg.NActionRQ);
+        break;
+      case DIMSE_N_CREATE_RQ:
+        DIMSE_printNCreateRQ(outstream, msg.msg.NCreateRQ);
+        break;
+      case DIMSE_N_DELETE_RQ:
+        DIMSE_printNDeleteRQ(outstream, msg.msg.NDeleteRQ);
+        break;
+      case DIMSE_N_EVENT_REPORT_RQ:
+        DIMSE_printNEventReportRQ(outstream, msg.msg.NEventReportRQ);
+        break;
+      case DIMSE_N_GET_RSP:
+        DIMSE_printNGetRSP(outstream, msg.msg.NGetRSP);
+        break;
+      case DIMSE_N_SET_RSP:
+        DIMSE_printNSetRSP(outstream, msg.msg.NSetRSP);
+        break;
+      case DIMSE_N_ACTION_RSP:
+        DIMSE_printNActionRSP(outstream, msg.msg.NActionRSP);
+        break;
+      case DIMSE_N_CREATE_RSP:
+        DIMSE_printNCreateRSP(outstream, msg.msg.NCreateRSP);
+        break;
+      case DIMSE_N_DELETE_RSP:
+        DIMSE_printNDeleteRSP(outstream, msg.msg.NDeleteRSP);
+        break;
+      case DIMSE_N_EVENT_REPORT_RSP:
+        DIMSE_printNEventReportRSP(outstream, msg.msg.NEventReportRSP);
+        break;
+      case DIMSE_C_STORE_RQ:
+        DIMSE_printCStoreRQ(outstream, msg.msg.CStoreRQ);
+        break;
+      case DIMSE_C_GET_RQ:
+        DIMSE_printCGetRQ(outstream, msg.msg.CGetRQ);
+        break;
+      case DIMSE_C_FIND_RQ:
+        DIMSE_printCFindRQ(outstream, msg.msg.CFindRQ);
+        break;
+      case DIMSE_C_MOVE_RQ:
+        DIMSE_printCMoveRQ(outstream, msg.msg.CMoveRQ);
+        break;
+      case DIMSE_C_ECHO_RQ:
+        DIMSE_printCEchoRQ(outstream, msg.msg.CEchoRQ);
+        break;
+      case DIMSE_C_CANCEL_RQ:
+        DIMSE_printCCancelRQ(outstream, msg.msg.CCancelRQ);
+        break;
+      case DIMSE_C_STORE_RSP:
+        DIMSE_printCStoreRSP(outstream, msg.msg.CStoreRSP);
+        break;
+      case DIMSE_C_GET_RSP:
+        DIMSE_printCGetRSP(outstream, msg.msg.CGetRSP);
+        break;
+      case DIMSE_C_FIND_RSP:
+        DIMSE_printCFindRSP(outstream, msg.msg.CFindRSP);
+        break;
+      case DIMSE_C_MOVE_RSP:
+        DIMSE_printCMoveRSP(outstream, msg.msg.CMoveRSP);
+        break;
+      case DIMSE_C_ECHO_RSP:
+        DIMSE_printCEchoRSP(outstream, msg.msg.CEchoRSP);
+        break;
+      default:
+        outstream   << "Message Type                  : UNKNOWN (DIMSE Protocol Error)" << endl;
+        break;
+    }
+
+    if (dataset) dataset->print(outstream, OFFalse);
+    return;
+}
 
 /*
 ** CVS Log
 ** $Log: dimdump.cc,v $
-** Revision 1.4  2000-02-23 15:12:32  meichel
+** Revision 1.5  2000-06-07 08:57:54  meichel
+** dcmnet DIMSE routines now allow to retrieve raw command sets as DcmDataset
+**   objects, e.g. for logging purposes. Added enhanced message dump functions.
+**
+** Revision 1.4  2000/02/23 15:12:32  meichel
 ** Corrected macro for Borland C++ Builder 4 workaround.
 **
 ** Revision 1.3  2000/02/01 10:24:09  meichel
