@@ -22,9 +22,9 @@
  *  Purpose: DicomInputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-16 16:30:34 $
+ *  Update Date:      $Date: 1998-12-22 14:23:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diinpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -138,6 +138,14 @@ class DiInputPixelTemplate
         MinValue(0),
         MaxValue(0)
     {
+        if (isSigned())
+        {
+            AbsMinimum = -(double)maxval(stored - 1, 0);
+            AbsMaximum = (double)maxval(stored - 1);
+        } else {
+            AbsMinimum = 0;
+            AbsMaximum = (double)maxval(stored) + 1;
+        }
         if (pixel != NULL)
             convert(pixel, alloc, stored, high, start, count);
     }
@@ -189,16 +197,6 @@ class DiInputPixelTemplate
         return (double)MaxValue;
     }
 
-    inline double getAbsMinimum() const
-    {
-        return DiPixelRepresentationTemplate<T2>::getMinimum();
-    }
-
-    inline double getAbsMaximum() const
-    {
-        return DiPixelRepresentationTemplate<T2>::getMaximum();
-    }
-
 
  private:
 
@@ -206,8 +204,13 @@ class DiInputPixelTemplate
                         const Uint16 BitsAllocated,
                         const Uint16 BitsStored,
                         const Uint16 HighBit,
+#ifdef DEBUG
                         const unsigned long start,
                         const unsigned long count)
+#else
+                        const unsigned long /*start*/,
+                        const unsigned long /*count*/)
+#endif
     {
         const Uint16 bitsof_T1 = bitsof(T1);
         const Uint16 bitsof_T2 = bitsof(T2);
@@ -233,15 +236,10 @@ class DiInputPixelTemplate
             {
                 if (BitsStored == BitsAllocated)
                 {
-#ifdef DEBUG
                     if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Informationals)
                         cerr << "convert PixelData: case 1a (single copy)" << endl;
-#endif
-                    OFBitmanipTemplate<T2>::copyMem((const T2 *)pixel, Data, getCount());
-/*                    
                     for (i = 0; i < getCount(); i++)
                         *(q++) = (T2)*(p++);
-*/                        
                 }
                 else /* BitsStored < BitsAllocated */
                 {
@@ -255,19 +253,15 @@ class DiInputPixelTemplate
                     const Uint16 shift = HighBit + 1 - BitsStored;
                     if (shift == 0)
                     {
-#ifdef DEBUG
                         if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Informationals)
                             cerr << "convert PixelData: case 1b (mask & sign)" << endl;
-#endif
                         for (i = 0; i < length_T1; i++)
                             *(q++) = expandSign((T2)(*(p++) & mask), sign, smask);
                     }
                     else /* shift > 0 */
                     {
-#ifdef DEBUG
                         if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Informationals)
                             cerr << "convert PixelData: case 1c (shift & mask & sign)" << endl;
-#endif
                         for (i = 0; i < length_T1; i++)
                             *(q++) = expandSign((T2)((*(p++) >> shift) & mask), sign, smask);
                     }
@@ -285,10 +279,8 @@ class DiInputPixelTemplate
                 {
                     if (times == 2)
                     {
-#ifdef DEBUG
                         if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Informationals)
                             cerr << "convert PixelData: case 2a (simple mask)" << endl;
-#endif
                         for (i = 0; i < length_T1; i++, p++)
                         {
                             *(q++) = (T2)(*p & mask);
@@ -297,10 +289,8 @@ class DiInputPixelTemplate
                     }   
                     else
                     {
-#ifdef DEBUG
                         if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Informationals)
                             cerr << "convert PixelData: case 2b (mask)" << endl;
-#endif
                         for (i = 0; i < length_T1; i++)
                         {
                             value = *(p++);
@@ -314,10 +304,8 @@ class DiInputPixelTemplate
                 }
                 else
                 {
-#ifdef DEBUG
                     if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Informationals)
                         cerr << "convert PixelData: case 2c (shift & mask & sign)" << endl;
-#endif
                     const T2 sign = 1 << (BitsStored - 1);
                     T2 smask = 0;
                     for (i = BitsStored; i < bitsof_T2; i++)
@@ -337,10 +325,8 @@ class DiInputPixelTemplate
             else if ((bitsof_T1 < BitsAllocated) && (BitsAllocated % bitsof_T1 == 0)    // case 3: multiplicant of 8/16
                 && (BitsStored == BitsAllocated))
             {
-#ifdef DEBUG
                 if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Informationals)
                     cerr << "convert PixelData: case 3 (multi copy)" << endl;
-#endif
                 const Uint16 times = BitsAllocated / bitsof_T1;
                 register Uint16 j;
                 register Uint16 shift;
@@ -359,10 +345,8 @@ class DiInputPixelTemplate
             }
             else                                                                        // case 4: anything else
             {
-#ifdef DEBUG
                 if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Informationals)
                     cerr << "convert PixelData: case 4 (general)" << endl;
-#endif
                 register T2 value = 0;
                 register Uint16 bits = 0;
                 register Uint32 skip = HighBit + 1 - BitsStored;
@@ -432,7 +416,12 @@ class DiInputPixelTemplate
 **
 ** CVS/RCS Log:
 ** $Log: diinpxt.h,v $
-** Revision 1.3  1998-12-16 16:30:34  joergr
+** Revision 1.4  1998-12-22 14:23:16  joergr
+** Added calculation of member variables AbsMinimum/AbsMaximum.
+** Replaced method copyMem by for-loop copying each item.
+** Removed some '#ifdef DEBUG'.
+**
+** Revision 1.3  1998/12/16 16:30:34  joergr
 ** Added methods to determine absolute minimum and maximum value for given
 ** value representation.
 **
