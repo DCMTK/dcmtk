@@ -9,10 +9,10 @@
 ** Definitions of "well known" DICOM Unique Indentifiers,
 ** routines for finding and created UIDs.
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-11 14:38:01 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-03-22 12:42:22 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcuid.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -171,7 +171,7 @@ dcmFindUIDFromName(const char * name)
 {
     for(int i = 0; i < uidNameMap_size; i++)
     {
-        if (strcmp(name, uidNameMap[i].name) == 0) 
+        if (uidNameMap[i].name != NULL && strcmp(name, uidNameMap[i].name) == 0) 
             return uidNameMap[i].uid;
     }
     return NULL;
@@ -292,7 +292,10 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.4  1996-03-11 14:38:01  hewett
+** Revision 1.5  1996-03-22 12:42:22  andreas
+** findUIDfromName does not dump anymore if name does not correspond to a uid
+**
+** Revision 1.4  1996/03/11 14:38:01  hewett
 ** Added new SOP Class UIDs.
 **
 ** Revision 1.3  1996/01/29 13:38:30  andreas
