@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVInterface
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-11-27 14:50:24 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1998-11-30 11:26:59 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -168,3 +168,12 @@ private:
     /* member variables */
     DVPresentationState pState;
 };
+
+
+/*
+ *  $Log: dviface.h,v $
+ *  Revision 1.2  1998-11-30 11:26:59  joergr
+ *  Added CVS/RCS log at end of file.
+ *
+ *
+ */
