@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRTreeNodeCursor
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-03-28 09:06:56 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-12-18 09:55:06 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,6 +48,8 @@
 
 class DSRTreeNode;
 
+// this typedef is needed to avoid a warning on Sun CC 2.0.1
+typedef DSRTreeNode *DSRTreeNodePointer;
 
 /*---------------------*
  *  class declaration  *
@@ -204,7 +206,7 @@ class DSRTreeNodeCursor
     /// pointer current node
     DSRTreeNode *NodeCursor;
     /// stack of node pointers. Used to store the cursor position of upper levels.
-    OFStack<DSRTreeNode *> NodeCursorStack;
+    OFStack<DSRTreeNodePointer> NodeCursorStack;
 
     /// current position within the current level
     size_t Position;
@@ -219,7 +221,10 @@ class DSRTreeNodeCursor
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtncsr.h,v $
- *  Revision 1.8  2001-03-28 09:06:56  joergr
+ *  Revision 1.9  2001-12-18 09:55:06  meichel
+ *  Introduced typedef to avoid warning on Sun CC 2.0.1
+ *
+ *  Revision 1.8  2001/03/28 09:06:56  joergr
  *  Fixed bug in cycle/loop detection "algorithm".
  *
  *  Revision 1.7  2000/11/09 20:32:08  joergr
