@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-05-04 16:05:49 $
- *  CVS/RCS Revision: $Revision: 1.55 $
+ *  Update Date:      $Date: 1999-05-05 14:26:21 $
+ *  CVS/RCS Revision: $Revision: 1.56 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -227,7 +227,8 @@ E_Condition DVInterface::loadImage(const char *imgName)
 
 E_Condition DVInterface::loadPState(const char *studyUID,
                                     const char *seriesUID,
-                                    const char *instanceUID)
+                                    const char *instanceUID,
+                                    OFBool changeStatus)
 {
     // determine the filename of the presentation state
     E_Condition status = lockDatabase();
@@ -272,6 +273,12 @@ E_Condition DVInterface::loadPState(const char *studyUID,
                         {
                           exchangeImageAndPState(newState, fimage, pstate);
                           imageInDatabase = OFTrue;
+                          if (changeStatus)
+                          {
+                              // mark pstate and image reviewed
+                              instanceReviewed(studyUID, seriesUID, instanceUID);
+                              instanceReviewed(ofstudyUID.c_str(), ofseriesUID.c_str(), ofinstanceUID.c_str());
+                          }
                         }
                     } else status = EC_CorruptedData;
                 }
@@ -1612,8 +1619,11 @@ E_Condition DVInterface::sendIOD(const char * targetID,
   else if (seriesUID) sprintf(commandline, "%s %s %s %s %s", sender_application, configPath.c_str(), targetID, 
       studyUID, seriesUID);
   else sprintf(commandline, "%s %s %s %s", sender_application, configPath.c_str(), targetID, studyUID);
-  
+#ifdef DEBUG  
   if (CreateProcess(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
+#else
+  if (CreateProcess(NULL, commandline, NULL, NULL, 0, DETACHED_PROCESS, NULL, NULL, &sinfo, &procinfo))
+#endif
   {
     return EC_Normal;
   } else {
@@ -1663,7 +1673,11 @@ E_Condition DVInterface::startReceiver()
   sinfo.cb = sizeof(sinfo);
   char commandline[4096];
   sprintf(commandline, "%s %s", receiver_application, configPath.c_str());
+#ifdef DEBUG
   if (CreateProcess(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
+#else
+  if (CreateProcess(NULL, commandline, NULL, NULL, 0, DETACHED_PROCESS, NULL, NULL, &sinfo, &procinfo))
+#endif
   {
     return EC_Normal;
   } else {
@@ -2194,7 +2208,13 @@ void DVInterface::cleanChildren()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.55  1999-05-04 16:05:49  joergr
+ *  Revision 1.56  1999-05-05 14:26:21  joergr
+ *  Modified parameter of CreateProcess call to avoid creation of new command
+ *  line window under Windows.
+ *  Added optional parameter to method loadPState (from database) to change
+ *  instance reviewed flag for pstate and image.
+ *
+ *  Revision 1.55  1999/05/04 16:05:49  joergr
  *  Added releaseDatabase to savePState to avoid deadlocks.
  *  Change status of variable imageInDatabase in savePState to avoid unnecessary
  *  saving of (probabaly large) image files.
