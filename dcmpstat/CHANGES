@@ -1,3 +1,18 @@
+**** Changes from 1999.02.23 (riesmeier)
+
+- Added debug code (exclitly delete data dictionary).
+  Affects: dcmpstat/apps/dcmp2pgm.cc
+
+- Added layer number to filename when extracting overlay planes.
+  Affects: dcmpstat/apps/dcmp2pgm.cc
+ 
+- Added check whether new instances have been received before resetting
+  database reference time (affects delete and instance reviewed methods).
+  Affects: dcmpstat/libsrc/dviface.cc
+  
+- Corrected bug: shutters were not saved correctly (sometimes even ignored).
+  Affects: dcmpstat/libsrc/dvpstat.cc
+  
 **** Changes from 1999.02.22 (riesmeier)
 
 - Added deletion of image files (depending on directory where the file is
