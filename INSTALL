@@ -236,8 +236,8 @@ A few DCMTK modules have been documented with DOC++, a free source code
 documentation system similar to javadoc (see http://docpp.sourceforge.net/). 
 Users who have doc++ installed can create a hypertext documentation for these 
 modules with "make html" in the module subdirectories.  At the current time, 
-dcmimage, dcmimgle, dcmpstat, dcmsign, dcmsr and dcmtls are fully documented 
-and ofstd is partially documented.  See FAQ entry: "Where is rest of the 
+dcmimgle, dcmpstat, dcmsign, dcmsr and dcmtls are fully documented, dcmimage
+and ofstd are partially documented.  See FAQ entry: "Where is rest of the 
 documentation?"
 
 ---------
@@ -247,4 +247,4 @@ Have fun.
 Marco Eichelberg, Joerg Riesmeier
 Kuratorium OFFIS e.V., Oldenburg, Germany.
 
-Last revised: 2001-06-14 (Eichelberg).
+Last revised: 2001-08-21 (Riesmeier).
