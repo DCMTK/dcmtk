@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003, OFFIS
+ *  Copyright (C) 2003-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Class for modifying DICOM files from comandline
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2004-11-05 17:17:23 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-03-09 17:58:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/mdfconen.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -176,7 +176,8 @@ MdfConsoleEngine::MdfConsoleEngine(int argc, char *argv[],
         if ( (cmd->getArgCount() == 0) || (cmd->findOption("--help")) )
         {
             app->printUsage();
-            delete app, delete cmd;
+            delete app;
+            delete cmd;
             exit(0);
         }
 
@@ -189,7 +190,8 @@ MdfConsoleEngine::MdfConsoleEngine(int argc, char *argv[],
             debugMsg(OFTrue,"ZLIB, Version ", zlibVersion(),"");
 #else
             debugMsg(OFTrue," none","","");
-            delete app, delete cmd;
+            delete app;
+            delete cmd;
             exit(0);
 #endif
         }
@@ -206,7 +208,8 @@ MdfConsoleEngine::MdfConsoleEngine(int argc, char *argv[],
         if (files->empty()==OFTrue)
         {
             debugMsg(OFTrue,"No dicom files given!","","");
-            delete app, delete cmd;
+            delete app;
+            delete cmd;
             exit(1);
         }
 
@@ -701,10 +704,15 @@ MdfConsoleEngine::~MdfConsoleEngine()
     delete ds_man;
 }
 
+
 /*
 ** CVS/RCS Log:
 ** $Log: mdfconen.cc,v $
-** Revision 1.12  2004-11-05 17:17:23  onken
+** Revision 1.13  2005-03-09 17:58:00  joergr
+** Replaced "," between two delete statements by ";" since this confuses some
+** compilers.
+**
+** Revision 1.12  2004/11/05 17:17:23  onken
 ** Added input and output options for dcmodify. minor code enhancements.
 **
 ** Revision 1.11  2004/10/22 16:53:26  onken
