@@ -12,6 +12,10 @@
 
   amb   10
 
+# order of the polynomial curve fitting algorithm (optional)
+
+  ord   5
+
 # DDL   OD Val
 
     0    3.00
