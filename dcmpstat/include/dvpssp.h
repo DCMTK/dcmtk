@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSStoredPrint
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-07 13:17:46 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-06-07 14:23:09 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -438,6 +438,15 @@ class DVPSStoredPrint
     return imageBoxContentList.setImageConfigurationInformation(idx, value);
   }
 
+  /** gets the polarity for the given registered image box.
+   *  @param idx index, must be < getNumberOfImages()
+   *  @return polarity, may be NULL.
+   */
+  const char *getImagePolarity(size_t idx)
+  {
+    return imageBoxContentList.getImagePolarity(idx);
+  }
+
   /** gets the (optional) magnification type for the given registered image box.
    *  @param idx index, must be < getNumberOfImages()
    *  @return magnification type, may be NULL.
@@ -465,6 +474,13 @@ class DVPSStoredPrint
     return imageBoxContentList.getImageConfigurationInformation(idx);
   }
   
+  /** gets the presentation LUT for the given registered image box.
+   *  If not available the presentation LUT of the film box is used.
+   *  @param idx index, must be < getNumberOfImages()
+   *  @return pointer to presentation LUT, may be NULL.
+   */
+  DVPSPresentationLUT *getImagePresentationLUT(size_t idx);
+
   /** writes the general study and series module attributes for a grayscale hardcopy image
    *  that is related to this stored print object to a DICOM dataset.
    *  Copies of the DICOM elements managed by this object are inserted into
@@ -1004,7 +1020,12 @@ class DVPSStoredPrint
 
 /*
  *  $Log: dvpssp.h,v $
- *  Revision 1.24  2000-06-07 13:17:46  meichel
+ *  Revision 1.25  2000-06-07 14:23:09  joergr
+ *  Added methods to access the image polarity attribute.
+ *  Added missing transformations (polarity, GSDF, presentation LUT, aspect
+ *  ratio) to print preview rendering.
+ *
+ *  Revision 1.24  2000/06/07 13:17:46  meichel
  *  added binary and textual log facilities to Print SCP.
  *
  *  Revision 1.23  2000/06/02 16:00:51  meichel
