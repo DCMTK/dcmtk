@@ -21,10 +21,10 @@
  *
  *  Purpose: abstract codec class for JPEG encoders.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-14 09:30:47 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-28 13:48:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djcodece.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -507,14 +507,14 @@ OFCondition DJCodecEncoder::newInstance(DcmItem *dataset) const
         if (elem1)
         {
           result = elem1->putString(classUID);
-          ditem->insert(elem1);
+          ditem->insert(elem1, OFTrue /*replaceOld*/);
           if (result.good())
           {
             DcmElement *elem2 = new DcmUniqueIdentifier(DCM_ReferencedSOPInstanceUID);
             if (elem2)
             {
               result = elem2->putString(instanceUID);
-              ditem->insert(elem2);
+              ditem->insert(elem2, OFTrue /*replaceOld*/);
             } else result = EC_MemoryExhausted;
           }
         } else result = EC_MemoryExhausted;
@@ -666,7 +666,7 @@ OFCondition DJCodecEncoder::adjustOverlays(
             delete[] buffer;
             if (result.good())
             {
-              dataset->insert(elem);
+              dataset->insert(elem, OFTrue /*replaceOld*/);
               // DCM_OverlayBitsAllocated
               result = dataset->putAndInsertUint16(DcmTagKey(group, 0x0100), 1); 
               // DCM_OverlayBitPosition
@@ -1251,7 +1251,11 @@ OFCondition DJCodecEncoder::convertToSecondaryCapture(DcmItem *dataset)
 /*
  * CVS/RCS Log
  * $Log: djcodece.cc,v $
- * Revision 1.2  2001-11-14 09:30:47  meichel
+ * Revision 1.3  2001-11-28 13:48:16  joergr
+ * Check return value of DcmItem::insert() statements where appropriate to
+ * avoid memory leaks when insert procedure fails.
+ *
+ * Revision 1.2  2001/11/14 09:30:47  meichel
  * Minor modifications for Visual C++
  *
  * Revision 1.1  2001/11/13 15:58:24  meichel

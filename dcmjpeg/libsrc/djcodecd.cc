@@ -21,10 +21,10 @@
  *
  *  Purpose: Abstract base class for IJG JPEG decoder
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-13 15:58:23 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-28 13:48:15 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djcodecd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -508,14 +508,14 @@ OFCondition DJCodecDecoder::newInstance(DcmItem *dataset)
         if (elem1)
         {
           result = elem1->putString(classUID);
-          ditem->insert(elem1);
+          ditem->insert(elem1, OFTrue /*replaceOld*/);
           if (result.good())
           {
             DcmElement *elem2 = new DcmUniqueIdentifier(DCM_ReferencedSOPInstanceUID);
             if (elem2)
             {
               result = elem2->putString(instanceUID);
-              ditem->insert(elem2);
+              ditem->insert(elem2, OFTrue /*replaceOld*/);
             } else result = EC_MemoryExhausted;
           }
         } else result = EC_MemoryExhausted;
@@ -631,7 +631,11 @@ OFBool DJCodecDecoder::requiresPlanarConfiguration(
 /*
  * CVS/RCS Log
  * $Log: djcodecd.cc,v $
- * Revision 1.1  2001-11-13 15:58:23  meichel
+ * Revision 1.2  2001-11-28 13:48:15  joergr
+ * Check return value of DcmItem::insert() statements where appropriate to
+ * avoid memory leaks when insert procedure fails.
+ *
+ * Revision 1.1  2001/11/13 15:58:23  meichel
  * Initial release of module dcmjpeg
  *
  *
