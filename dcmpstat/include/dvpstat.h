@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-01 16:14:42 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-09-07 09:04:37 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1432,8 +1432,6 @@ public:
     */   
    E_Condition getImageHeight(unsigned long &height);
    
-// -+-+- <NEW> -+-+-
-
     /** gets number of bytes used for the print bitmap.
      *  (depends on width, height and depth)
      *  @return number of bytes used for the print bitmap
@@ -1514,8 +1512,6 @@ public:
      */
     E_Condition getPrintBitmap(void *bitmap,
                                unsigned long size);
-
-// -+-+- <WEN> -+-+-
 
    /** gets smallest and biggest possible pixel value in the attached image.
     *  These values are defined as the smallest and biggest number that
@@ -1871,6 +1867,26 @@ private:
   /** contains the height of the attached image without consideration of rotation.
    */
   unsigned long currentImageHeight;
+  /** contains the width of the attached image after pixel data have been rendered (w/o clipping).
+   */
+  unsigned long renderedImageWidth;
+  /** contains the height of the attached image after pixel data have been rendered (w/o clipping).
+   */
+  unsigned long renderedImageHeight;
+  /** contains the top hand corner of the attached image after pixel data have been rendered.
+   */
+  signed long renderedImageTop;
+  /** contains the left hand corner of the attached image after pixel data have been rendered.
+   *  (the following equation is always true: renderedImageTop <= renderedImageBottom)
+   */
+  signed long renderedImageLeft;
+  /** contains the bottom hand corner of the attached image after pixel data have been rendered.
+   *  (the following equation is always true: renderedImageLeft <= renderedImageRight)
+   */
+  signed long renderedImageBottom;
+  /** contains the right hand corner of the attached image after pixel data have been rendered.
+   */
+  signed long renderedImageRight;
   /** contains the SOP Class UID of the attached image
    */
   char *currentImageSOPClassUID;
@@ -1930,8 +1946,6 @@ private:
    */
   DiDisplayFunction *displayFunction;
   
-// -+-+- <NEW> -+-+-
-
   /** minimum width of print bitmap (used for implicit scaling)
    */
   unsigned long minimumPrintBitmapWidth;
@@ -1947,16 +1961,16 @@ private:
   /** maximum height of print bitmap (used for implicit scaling)
    */
   unsigned long maximumPrintBitmapHeight;
-
-// -+-+- <WEN> -+-+-
-
 };
 
 #endif
 
 /*
  *  $Log: dvpstat.h,v $
- *  Revision 1.20  1999-09-01 16:14:42  meichel
+ *  Revision 1.21  1999-09-07 09:04:37  joergr
+ *  Completed support for getting a print bitmap out of a pstate object.
+ *
+ *  Revision 1.20  1999/09/01 16:14:42  meichel
  *  Added support for requested image size to print routines
  *
  *  Revision 1.19  1999/08/27 15:57:58  meichel

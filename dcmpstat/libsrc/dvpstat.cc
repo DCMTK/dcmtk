@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-01 16:15:11 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-09-07 09:05:13 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -189,6 +189,12 @@ DVPresentationState::DVPresentationState(DiDisplayFunction *dispFunction)
 , currentImage(NULL)
 , currentImageWidth(0)
 , currentImageHeight(0)
+, renderedImageWidth(0)
+, renderedImageHeight(0)
+, renderedImageTop(0)
+, renderedImageLeft(0)
+, renderedImageBottom(0)
+, renderedImageRight(0)
 , currentImageSOPClassUID(NULL)
 , currentImageSOPInstanceUID(NULL)
 , currentImageSelectedFrame(0)
@@ -204,16 +210,10 @@ DVPresentationState::DVPresentationState(DiDisplayFunction *dispFunction)
 , useBartenTransform(OFTrue)
 , imageInverse(OFFalse)
 , displayFunction(dispFunction)
-
-// -+-+- <NEW> -+-+-
-
 , minimumPrintBitmapWidth(0)
 , minimumPrintBitmapHeight(0)
 , maximumPrintBitmapWidth(0)
 , maximumPrintBitmapHeight(0)
-
-// -+-+- <WEN> -+-+-
-
 {
 }
 
@@ -240,6 +240,12 @@ void DVPresentationState::detachImage()
   // reset flags
   currentImageWidth = 0;
   currentImageHeight = 0;
+  renderedImageWidth = 0;
+  renderedImageHeight = 0;
+  renderedImageTop = 0;
+  renderedImageLeft = 0;
+  renderedImageBottom = 0;
+  renderedImageRight = 0;
   currentImageOwned = OFFalse;
   currentImageVOIValid = OFFalse;
   currentImagePLUTValid = OFFalse;
@@ -1524,8 +1530,6 @@ E_Condition DVPresentationState::writeHardcopyImageAttributes(DcmItem &dset)
   return result;
 }
 
-// -+-+- <NEW> -+-+-
-
 unsigned long DVPresentationState::getPrintBitmapSize()
 {
   unsigned long result = 0;
@@ -1576,34 +1580,12 @@ E_Condition DVPresentationState::getPrintBitmapWidthHeight(unsigned long &width,
   if (currentImage)
   {
     renderPixelData(OFFalse);                                 // switch off display function
-    width = currentImageWidth;
-    height = currentImageHeight;
+    width = renderedImageWidth;
+    height = renderedImageHeight;
     if ((width > 0) && (height > 0))
     {
-      DVPSDisplayedArea *area = getDisplayedAreaSelection();
-      if (area != NULL)
-      {                                  // use displayed area
-        Sint32 tlhcX;
-        Sint32 tlhcY;
-        Sint32 brhcX;
-        Sint32 brhcY;
-        area->getDisplayedArea(tlhcX, tlhcY, brhcX, brhcY);
-        switch (area->getPresentationSizeMode())
-        {
-          case DVPSD_scaleToFit:
-            width = (unsigned long)(brhcX - tlhcX + 1);       // abs() needed?, depends on rotation?
-            height = (unsigned long)(brhcY - tlhcY + 1);
-            break;
-          case DVPSD_trueSize:
-            /* ... */
-            break;
-          case DVPSD_magnify:
-            /* ... */
-            break;
-        }
-      }
-  
-      // use pixel aspect ratio(s) ?
+      width = (unsigned long)(renderedImageRight - renderedImageLeft + 1);
+      height = (unsigned long)(renderedImageBottom - renderedImageTop + 1);
   
       if ((minimumPrintBitmapWidth > 0) && (width < minimumPrintBitmapWidth))
       {
@@ -1664,16 +1646,6 @@ E_Condition DVPresentationState::getPrintBitmapWidthHeight(unsigned long &width,
     height = 0;
     result = EC_IllegalCall;
   }
-  
-  // swap width and height if image is rotated by 90 or 270 degrees
-  DVPSRotationType rotation = getRotation();
-  if ((rotation==DVPSR_90_deg)||(rotation==DVPSR_270_deg))
-  {
-    unsigned long dummy = width;
-    width = height;
-    height = dummy;
-  }  
-  
   return result;
 }
 
@@ -1691,6 +1663,7 @@ E_Condition DVPresentationState::getPrintBitmapHeight(unsigned long &height)
   return getPrintBitmapWidthHeight(dummy, height);
 }
 
+
 double DVPresentationState::getPrintBitmapPixelAspectRatio()
 {
   double result = getDisplayedAreaPresentationPixelAspectRatio();
@@ -1701,6 +1674,7 @@ double DVPresentationState::getPrintBitmapPixelAspectRatio()
   if ((rotation==DVPSR_90_deg)||(rotation==DVPSR_270_deg)) result = 1.0/result;
   return result;
 }
+
 
 E_Condition DVPresentationState::getPrintBitmap(void *bitmap,
                                                 unsigned long size)
@@ -1713,61 +1687,37 @@ E_Condition DVPresentationState::getPrintBitmap(void *bitmap,
       renderPixelData(OFFalse);                                 // don't use current display function
       unsigned long width;
       unsigned long height;
-      if ((getPrintBitmapWidthHeight(width, height) == EC_Normal) &&
-        ((width != currentImageWidth) || (height != currentImageHeight)))
+      DicomImage *image = currentImage;
+      if (getPrintBitmapWidthHeight(width, height) == EC_Normal)
       {
-
-        // use displayed area -> clipping !!
-        signed long   c_left = 0;                               // clipping area
-        signed long   c_top = 0;
-        unsigned long c_width = currentImageWidth;
-        unsigned long c_height = currentImageHeight;
-        DVPSDisplayedArea *area = getDisplayedAreaSelection();
-        if (area != NULL)
-        {                                                       // use displayed area
-          Sint32 tlhcX;
-          Sint32 tlhcY;
-          Sint32 brhcX;
-          Sint32 brhcY;
-          area->getDisplayedArea(tlhcX, tlhcY, brhcX, brhcY);
-          switch (area->getPresentationSizeMode())
-          {
-            case DVPSD_scaleToFit:
-              c_left = tlhcX - 1;                               // negative values?
-              c_top = tlhcY - 1;
-              c_width = (unsigned long)(brhcX - tlhcX + 1);     // abs() needed ?
-              c_height = (unsigned long)(brhcY - tlhcY + 1);
-              break;
-            case DVPSD_trueSize:
-              /* ... */
-              break;
-            case DVPSD_magnify:
-              /* ... */
-              break;
-          }
-        }
-        
-        // use pixel aspect ratio(s) ?
-
-cout << c_left << "/" << c_top << "/" << c_width << "/" << c_height << endl;
-        DicomImage *image = currentImage->createScaledImage(c_left, c_top, c_width, c_height, width, height, 2 /*interpolate*/, 0 /*aspect ratio*/);
-        if (image != NULL)
+        /* clip to displayed area if necessary */
+        if ((renderedImageLeft != 1) || (renderedImageRight != (signed long)renderedImageWidth) ||
+            (renderedImageTop != 1) || (renderedImageBottom != (signed long)renderedImageHeight))
         {
-          if (image->getOutputData(bitmap, size, 12, 0 /*frame*/))
-            result = EC_Normal;
+          image = currentImage->createClippedImage(renderedImageLeft - 1, renderedImageTop - 1,
+            renderedImageRight - renderedImageLeft + 1, renderedImageBottom - renderedImageTop + 1);
         }
-        delete image;
-      } else {
-        if (currentImage->getOutputData(bitmap, size, 12, 0 /*frame*/))
+        /* scale up to minimum size or down to maximum size if necessary */
+        if (((signed long)width != renderedImageRight - renderedImageLeft + 1) ||
+           ((signed long)height != renderedImageBottom - renderedImageTop + 1))
+        {
+          DicomImage *old = image;
+          image = old->createScaledImage(width, height, 2 /*interpolate*/, 0 /*aspect ratio*/);
+          if (old != currentImage)
+            delete old;
+        }
+      }
+      if (image != NULL)
+      {
+        if (image->getOutputData(bitmap, size, 12, 0 /*frame*/))
           result = EC_Normal;
       }
+      if (image != currentImage)
+        delete image;
     }
   }    
   return result;
 }
-
-// -+-+- <WEN> -+-+-
-
 
 
 E_Condition DVPresentationState::attachImage(DcmDataset *dataset, OFBool transferOwnership)
@@ -3159,7 +3109,7 @@ void DVPresentationState::renderPixelData(OFBool display)
   int result=0;
 
   /* activate Barten transform */
-  if (display && displayFunction && useBartenTransform) currentImage->setDisplayFunction(displayFunction);
+  if (displayFunction && useBartenTransform && display) currentImage->setDisplayFunction(displayFunction);
   else currentImage->setNoDisplayFunction();
   
   if (! currentImageVOIValid)
@@ -3286,7 +3236,65 @@ void DVPresentationState::renderPixelData(OFBool display)
     }
     currentImageOverlaysValid = 2; // valid
   }
+    
+  // store image width and height after application of rotation
+  DVPSRotationType rotation = getRotation();
+  if ((rotation == DVPSR_90_deg) || (rotation == DVPSR_270_deg))
+  {
+    renderedImageWidth = currentImageHeight;
+    renderedImageHeight = currentImageWidth;
+  } else {
+    renderedImageWidth = currentImageWidth;
+    renderedImageHeight = currentImageHeight;
+  }
   
+  // get coordinates of current displayed area and store values after the
+  // 'virtual' anti-rotation has been applied
+  Sint32 tlhcX = 1;
+  Sint32 tlhcY = 1;
+  Sint32 brhcX = currentImageWidth;
+  Sint32 brhcY = currentImageHeight;
+  getDisplayedArea(tlhcX, tlhcY, brhcX, brhcY);
+  if (tlhcX > brhcX)
+  {                                     // swap 'left' and 'right' if necessary
+    Sint32 tmp = tlhcX;
+    tlhcX = brhcX;
+    brhcX = tmp;
+  }
+  if (tlhcY > brhcY)
+  {                                     // swap 'top' and 'bottom' if necessary
+    Sint32 tmp = tlhcY;
+    tlhcY = brhcY;
+    brhcY = tmp;
+  }
+  switch (rotation)
+  {
+    case DVPSR_0_deg:
+      renderedImageTop = tlhcY;
+      renderedImageLeft = tlhcX;
+      renderedImageBottom = brhcY;
+      renderedImageRight = brhcX;
+      break;
+    case DVPSR_90_deg:
+      renderedImageTop = (signed long)currentImageWidth - brhcX + 1;
+      renderedImageLeft = tlhcY;
+      renderedImageBottom = (signed long)currentImageWidth - tlhcX + 1;
+      renderedImageRight = brhcY;
+      break;
+    case DVPSR_180_deg:
+      renderedImageTop = (signed long)currentImageHeight - brhcY + 1;
+      renderedImageLeft = (signed long)currentImageWidth - brhcX + 1;
+      renderedImageBottom = (signed long)currentImageHeight - tlhcY + 1;
+      renderedImageRight = (signed long)currentImageWidth - tlhcX + 1;
+      break;
+    case DVPSR_270_deg:
+      renderedImageTop = tlhcX;
+      renderedImageLeft = (signed long)currentImageHeight - brhcY + 1;
+      renderedImageBottom = brhcX;
+      renderedImageRight = (signed long)currentImageHeight - tlhcY + 1;
+      break;
+  }
+
   // we can always reach the final rotation/flip status with
   // at most one rotation and one flip. The following formula
   // derives the operations to perform.
@@ -3336,6 +3344,8 @@ void DVPresentationState::renderPixelData(OFBool display)
       }
       break;
   }
+
+  
 
   if (rot != 0)
   {
@@ -3612,7 +3622,10 @@ E_Condition DVPresentationState::getPrintBitmapRequestedImageSize(OFString& requ
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.30  1999-09-01 16:15:11  meichel
+ *  Revision 1.31  1999-09-07 09:05:13  joergr
+ *  Completed support for getting a print bitmap out of a pstate object.
+ *
+ *  Revision 1.30  1999/09/01 16:15:11  meichel
  *  Added support for requested image size to print routines
  *
  *  Revision 1.29  1999/08/31 14:01:38  meichel
