@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSStoredPrint
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-07 13:17:08 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-06-07 14:27:50 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -821,6 +821,22 @@ E_Condition DVPSStoredPrint::writeHardcopyImageAttributes(DcmItem &dset)
   return result;
 }
 
+DVPSPresentationLUT *DVPSStoredPrint::getImagePresentationLUT(size_t idx)
+{
+    /* look for referenced Presentation LUT in image box */
+    const char *plutuid = imageBoxContentList.getReferencedPresentationLUTInstanceUID(idx);
+    /* if absent, look for referenced Presentation LUT in film box */
+    if ((plutuid == NULL) || (strlen(plutuid) == 0))
+    {
+        char *uid = NULL;
+        if (referencedPresentationLUTInstanceUID.getString(uid) == EC_Normal)
+            plutuid = uid;
+    }
+    DVPSPresentationLUT *plut = NULL;
+    if ((plutuid != NULL) && (strlen(plutuid) > 0))
+        plut = presentationLUTList.findPresentationLUT(plutuid);
+    return plut;
+}
 
 E_Condition DVPSStoredPrint::addImageBox(
   const char *retrieveaetitle,
@@ -3360,7 +3376,11 @@ void DVPSStoredPrint::updatePresentationLUTList(DVPSPresentationLUT_PList& globa
 
 /*
  *  $Log: dvpssp.cc,v $
- *  Revision 1.30  2000-06-07 13:17:08  meichel
+ *  Revision 1.31  2000-06-07 14:27:50  joergr
+ *  Added missing transformations (polarity, GSDF, presentation LUT, aspect
+ *  ratio) to print preview rendering.
+ *
+ *  Revision 1.30  2000/06/07 13:17:08  meichel
  *  now using DIMSE status constants and log facilities defined in dcmnet
  *
  *  Revision 1.29  2000/06/02 16:01:06  meichel
