@@ -21,11 +21,11 @@
  *
  *  Purpose:
  *    classes: DSRSOPInstanceReferenceList
-*             - InstanceStruct, SeriesStruct, StudyStruct
-  *
+ *             - InstanceStruct, SeriesStruct, StudyStruct
+ *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-05-07 12:49:31 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2002-05-07 14:04:44 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -211,6 +211,11 @@ class DSRSOPInstanceReferenceList
         /// currently selected series (cursor)
         OFListIterator(SeriesStruct *) Iterator;
     };
+
+    // friend declarations required for MSVC
+    friend struct InstanceStruct;
+    friend struct SeriesStruct;
+    friend struct StudyStruct;
 
 
   public:
@@ -400,7 +405,10 @@ class DSRSOPInstanceReferenceList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrsoprf.h,v $
- *  Revision 1.1  2002-05-07 12:49:31  joergr
+ *  Revision 1.2  2002-05-07 14:04:44  joergr
+ *  Added "friend" statements to class declaration (required for MSVC).
+ *
+ *  Revision 1.1  2002/05/07 12:49:31  joergr
  *  Added support for the Current Requested Procedure Evidence Sequence and the
  *  Pertinent Other Evidence Sequence to the dcmsr module.
  *
