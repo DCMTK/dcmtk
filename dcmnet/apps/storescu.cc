@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-04-30 16:40:23 $
+ *  Update Date:      $Date: 1999-07-14 12:03:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -818,7 +818,7 @@ replaceSOPInstanceInformation(DcmDataset* dataset)
     updateStringAttributeValue(dataset, DCM_SeriesInstanceUID, seriesInstanceUID);
     updateStringAttributeValue(dataset, DCM_SeriesNumber, seriesNumber);
     updateStringAttributeValue(dataset, DCM_SOPInstanceUID, sopInstanceUID);
-    updateStringAttributeValue(dataset, DCM_ImageNumber, imageNumber);
+    updateStringAttributeValue(dataset, DCM_InstanceNumber, imageNumber);
 
     imageCounter++;
 }
@@ -968,7 +968,11 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.24  1999-04-30 16:40:23  meichel
+** Revision 1.25  1999-07-14 12:03:35  meichel
+** Updated data dictionary for supplement 29, 39, 33_lb, CP packet 4 and 5.
+**   Corrected dcmtk applications for changes in attribute name constants.
+**
+** Revision 1.24  1999/04/30 16:40:23  meichel
 ** Minor code purifications to keep Sun CC 2.0.1 quiet
 **
 ** Revision 1.23  1999/04/27 17:24:24  meichel

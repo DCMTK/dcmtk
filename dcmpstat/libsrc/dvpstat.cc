@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-05-04 15:27:27 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 1999-07-14 12:03:44 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -144,7 +144,7 @@ DVPresentationState::DVPresentationState(DiDisplayFunction *dispFunction)
 , presentationLUTDescriptor(DCM_LUTDescriptor)
 , presentationLUTExplanation(DCM_LUTExplanation)
 , presentationLUTData(DCM_LUTData)
-, imageNumber(DCM_ImageNumber)
+, imageNumber(DCM_InstanceNumber)
 , presentationLabel(DCM_PresentationLabel)
 , presentationDescription(DCM_PresentationDescription)
 , presentationCreationDate(DCM_PresentationCreationDate)
@@ -3651,7 +3651,11 @@ void DVPresentationState::changeDisplayFunction(DiDisplayFunction *dispFunction)
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.22  1999-05-04 15:27:27  meichel
+ *  Revision 1.23  1999-07-14 12:03:44  meichel
+ *  Updated data dictionary for supplement 29, 39, 33_lb, CP packet 4 and 5.
+ *    Corrected dcmtk applications for changes in attribute name constants.
+ *
+ *  Revision 1.22  1999/05/04 15:27:27  meichel
  *  Minor code purifications to keep gcc on OSF1 quiet.
  *
  *  Revision 1.21  1999/05/03 11:01:38  joergr

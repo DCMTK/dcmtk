@@ -24,9 +24,9 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-05-06 12:42:09 $
+ *  Update Date:      $Date: 1999-07-14 12:02:33 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -297,7 +297,7 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
 #define UID_StandaloneVOILUTStorage                             "1.2.840.10008.5.1.4.1.1.11"
 #define UID_XRayAngiographicImageStorage                        "1.2.840.10008.5.1.4.1.1.12.1"
 #define UID_XRayFluoroscopyImageStorage                         "1.2.840.10008.5.1.4.1.1.12.2"
-#define UID_XRayAngiographicBiPlaneImageStorage                 "1.2.840.10008.5.1.4.1.1.12.3"
+#define UID_RETIRED_XRayAngiographicBiPlaneImageStorage         "1.2.840.10008.5.1.4.1.1.12.3"
 #define UID_NuclearMedicineImageStorage                         "1.2.840.10008.5.1.4.1.1.20"
 #define UID_PETImageStorage                                     "1.2.840.10008.5.1.4.1.1.128"
 #define UID_PETCurveStorage                                     "1.2.840.10008.5.1.4.1.1.129"
@@ -316,6 +316,14 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
 #define UID_MOVEPatientStudyOnlyQueryRetrieveInformationModel   "1.2.840.10008.5.1.4.1.2.3.2"
 #define UID_GETPatientStudyOnlyQueryRetrieveInformationModel    "1.2.840.10008.5.1.4.1.2.3.3"
 #define UID_FINDModalityWorklistInformationModel                "1.2.840.10008.5.1.4.31"
+
+/*
+ * Supplement 29: Radiotherapy Treatment Records and Radiotherapy Media Extensions
+ * Final Text - 27 May 1999
+ */
+#define UID_RTBeamsTreatmentRecordStorage                       "1.2.840.10008.5.1.4.1.1.481.4"
+#define UID_RTBrachyTreatmentRecordStorage                      "1.2.840.10008.5.1.4.1.1.481.6"
+#define UID_RTTreatmentSummaryRecordStorage                     "1.2.840.10008.5.1.4.1.1.481.7"
 
 /*
  * Supplement 32: Digital X-Ray Supplement
@@ -367,14 +375,6 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
 #define UID_SRComprehensiveStorage                              "1.2.840.10008.5.1.4.1.1.88.4"
 
 /*
- * Supplement 29: Radiotherapy Treatment Records and Radiotherapy Media Extensions
- * DRAFT Version 0.7 - October 18, 1998
- */
-#define UID_RTBeamsTreatmentRecordStorage                       "1.2.840.10008.5.1.4.1.1.481.4"
-#define UID_RTBrachyTreatmentRecordStorage                      "1.2.840.10008.5.1.4.1.1.481.6"
-#define UID_RTTreatmentSummaryRecordStorage                     "1.2.840.10008.5.1.4.1.1.481.7"
-
-/*
  * Supplement 30: Waveform Interchange
  * DRAFT Version 0.13 - October 28, 1998 For Public Comment
  *
@@ -392,7 +392,7 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
 
 /*
  * Supplement 33: Grayscale Softcopy Presentation State Storage
- * DRAFT Version 18 - Revised Frozen Draft for Demonstration - 13 November 1998
+ * Letter Ballot Text - 1 July 1999
  */
 #define UID_GrayscaleSoftcopyPresentationStateStorage           "1.2.840.10008.5.1.4.1.1.11.1"
 
@@ -402,7 +402,11 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.30  1999-05-06 12:42:09  meichel
+** Revision 1.31  1999-07-14 12:02:33  meichel
+** Updated data dictionary for supplement 29, 39, 33_lb, CP packet 4 and 5.
+**   Corrected dcmtk applications for changes in attribute name constants.
+**
+** Revision 1.30  1999/05/06 12:42:09  meichel
 ** Updated Version Number and Implementation Version Name to reflect the
 **   current public release (3.4.0)
 **

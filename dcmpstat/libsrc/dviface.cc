@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-05-05 14:26:21 $
- *  CVS/RCS Revision: $Revision: 1.56 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-07-14 12:03:43 $
+ *  CVS/RCS Revision: $Revision: 1.57 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2082,7 +2082,7 @@ E_Condition DVInterface::saveDICOMImage(
       if (EC_Normal==status) status = putStringValue(dataset, DCM_StudyID);
       if (EC_Normal==status) status = putStringValue(dataset, DCM_AccessionNumber);
       if (EC_Normal==status) status = putStringValue(dataset, DCM_SeriesNumber);
-      if (EC_Normal==status) status = putStringValue(dataset, DCM_ImageNumber);
+      if (EC_Normal==status) status = putStringValue(dataset, DCM_InstanceNumber);
       if (EC_Normal==status) status = putStringValue(dataset, DCM_PatientOrientation);
       if (EC_Normal==status) status = putStringValue(dataset, DCM_SOPClassUID, UID_SecondaryCaptureImageStorage);
       if (EC_Normal==status) status = putStringValue(dataset, DCM_Modality, "OT");
@@ -2208,7 +2208,11 @@ void DVInterface::cleanChildren()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.56  1999-05-05 14:26:21  joergr
+ *  Revision 1.57  1999-07-14 12:03:43  meichel
+ *  Updated data dictionary for supplement 29, 39, 33_lb, CP packet 4 and 5.
+ *    Corrected dcmtk applications for changes in attribute name constants.
+ *
+ *  Revision 1.56  1999/05/05 14:26:21  joergr
  *  Modified parameter of CreateProcess call to avoid creation of new command
  *  line window under Windows.
  *  Added optional parameter to method loadPState (from database) to change

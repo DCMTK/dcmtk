@@ -24,9 +24,9 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-04-21 13:02:32 $
+ *  Update Date:      $Date: 1999-07-14 12:02:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcuid.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -181,7 +181,7 @@ static UIDNameMap uidNameMap[] = {
     { UID_StandaloneVOILUTStorage,                            "StandaloneVOILUTStorage" },
     { UID_XRayAngiographicImageStorage,                       "XRayAngiographicImageStorage" },
     { UID_XRayFluoroscopyImageStorage,                        "XRayFluoroscopyImageStorage" },
-    { UID_XRayAngiographicBiPlaneImageStorage,                "XRayAngiographicBiPlaneImageStorage" },
+    { UID_RETIRED_XRayAngiographicBiPlaneImageStorage,        "RETIRED_XRayAngiographicBiPlaneImageStorage" },
     { UID_NuclearMedicineImageStorage,                        "NuclearMedicineImageStorage" },
     { UID_PETImageStorage,                                    "PETImageStorage" },
     { UID_PETCurveStorage,                                    "PETCurveStorage" },
@@ -267,7 +267,7 @@ const char* dcmStorageSOPClassUIDs[] = {
     UID_StandaloneVOILUTStorage,
     UID_XRayAngiographicImageStorage,
     UID_XRayFluoroscopyImageStorage,
-    UID_XRayAngiographicBiPlaneImageStorage,
+    UID_RETIRED_XRayAngiographicBiPlaneImageStorage,
     UID_NuclearMedicineImageStorage,
     UID_PETImageStorage,
     UID_PETCurveStorage,
@@ -340,7 +340,7 @@ const char* dcmImageSOPClassUIDs[] = {
     UID_SecondaryCaptureImageStorage,
     UID_XRayAngiographicImageStorage,
     UID_XRayFluoroscopyImageStorage,
-    UID_XRayAngiographicBiPlaneImageStorage,
+    UID_RETIRED_XRayAngiographicBiPlaneImageStorage,
     UID_NuclearMedicineImageStorage,
     UID_PETImageStorage,
     UID_RTImageStorage,    
@@ -588,7 +588,11 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.20  1999-04-21 13:02:32  meichel
+** Revision 1.21  1999-07-14 12:02:36  meichel
+** Updated data dictionary for supplement 29, 39, 33_lb, CP packet 4 and 5.
+**   Corrected dcmtk applications for changes in attribute name constants.
+**
+** Revision 1.20  1999/04/21 13:02:32  meichel
 ** Now always including <windows.h> instead of <winsock.h> on Win32 platforms.
 **   This makes sure that <winsock2.h> is used if available.
 **

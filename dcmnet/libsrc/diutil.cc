@@ -58,9 +58,9 @@
 **
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1999-06-10 10:56:37 $
+** Update Date:		$Date: 1999-07-14 12:03:38 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/diutil.cc,v $
-** CVS/RCS Revision:	$Revision: 1.13 $
+** CVS/RCS Revision:	$Revision: 1.14 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -178,7 +178,7 @@ static DU_Modality modalities[] = {
     { UID_VLPhotographicImageStorage,                   "VLp", 768 * 576 * 3 },
     { UID_VLSlideCoordinatesMicroscopicImageStorage,    "VMs", 768 * 576 * 3 },
     { UID_WaveformStorage,                              "WV", 4096 },
-    { UID_XRayAngiographicBiPlaneImageStorage,          "XB", 2 * 512 * 512 },
+    { UID_RETIRED_XRayAngiographicBiPlaneImageStorage,  "XB", 2 * 512 * 512 },
     { UID_XRayAngiographicImageStorage,                 "XA", 2 * 512 * 512 },
     { UID_XRayFluoroscopyImageStorage,                  "RF", 2 * 512 * 512 },
 
@@ -582,7 +582,11 @@ DU_cgetStatusString(Uint16 statusCode)
 /*
 ** CVS Log
 ** $Log: diutil.cc,v $
-** Revision 1.13  1999-06-10 10:56:37  meichel
+** Revision 1.14  1999-07-14 12:03:38  meichel
+** Updated data dictionary for supplement 29, 39, 33_lb, CP packet 4 and 5.
+**   Corrected dcmtk applications for changes in attribute name constants.
+**
+** Revision 1.13  1999/06/10 10:56:37  meichel
 ** Adapted imagectn to new command line option scheme.
 **   Added support for Patient/Study Only Q/R model and C-GET (experimental).
 **

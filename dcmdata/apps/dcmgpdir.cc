@@ -24,9 +24,9 @@
  *  CD-R Image Interchange Profile (former Supplement 19).
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-04-30 16:40:02 $
+ *  Update Date:      $Date: 1999-07-14 12:02:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -983,13 +983,13 @@ checkImage(const OFString& fname, DcmFileFormat *ff)
              * NOTE: SR uses the name "Instance Number" for (0020,0013) but we know it
              * as "Image Number".  CP 99 wants to change the name of this attribute.
              */
-	    if (!checkExistsWithValue(d, DCM_ImageNumber, fname)) 
+	    if (!checkExistsWithValue(d, DCM_InstanceNumber, fname)) 
 		ok = OFFalse;
 	}
     } else {
 	/* it can only be an image */ 
 	if (!inventAttributes) {
-	    if (!checkExistsWithValue(d, DCM_ImageNumber, fname)) 
+	    if (!checkExistsWithValue(d, DCM_InstanceNumber, fname)) 
 		ok = OFFalse;
 	}
     }
@@ -1118,7 +1118,7 @@ buildImageRecord(
     }
     
     dcmCopyOptString(rec, DCM_SpecificCharacterSet, d);
-    dcmCopyString(rec, DCM_ImageNumber, d);
+    dcmCopyString(rec, DCM_InstanceNumber, d);
 
     /* addition type 1C keys specified by STD-GEN-CD profile */
     dcmCopyOptString(rec, DCM_ImageType, d);
@@ -1257,7 +1257,7 @@ buildStructReportRecord(
      * NOTE: SR uses the name "Instance Number" for (0020,0013) but we know it
      * as "Image Number".  CP 99 wants to change the name of this attribute.
      */
-    dcmCopyString(rec, DCM_ImageNumber, d);
+    dcmCopyString(rec, DCM_InstanceNumber, d);
     dcmCopyOptString(rec, DCM_InterpretationRecordedDate, d);
 
     return rec;
@@ -1918,7 +1918,7 @@ insertSortedUnder(DcmDirectoryRecord *parent, DcmDirectoryRecord *child)
     switch (child->getRecordType()) {
     case ERT_Image:
 	/* try to insert based on ImageNumber */
-	cond = insertWithISCriterion(parent, child, DCM_ImageNumber);
+	cond = insertWithISCriterion(parent, child, DCM_InstanceNumber);
 	break;
     case ERT_Overlay:
 	/* try to insert based on OverlayNumber */
@@ -1939,7 +1939,7 @@ insertSortedUnder(DcmDirectoryRecord *parent, DcmDirectoryRecord *child)
          * NOTE: SR uses the name "Instance Number" for (0020,0013) but we know it
          * as "Image Number".  CP 99 wants to change the name of this attribute.
          */
-	cond = insertWithISCriterion(parent, child, DCM_ImageNumber);
+	cond = insertWithISCriterion(parent, child, DCM_InstanceNumber);
 	break;
     case ERT_Series:
 	/* try to insert based on SeriesNumber */
@@ -2311,13 +2311,13 @@ inventMissingImageLevelAttributes(DcmDirectoryRecord *parent)
 	
 	switch (rec->getRecordType()) {
 	case ERT_Image:
-	    if (!dcmTagExistsWithValue(rec, DCM_ImageNumber)) {
+	    if (!dcmTagExistsWithValue(rec, DCM_InstanceNumber)) {
 		OFString defNum = defaultNumber(imageNumber++);
 		cerr << "Warning: " <<  recordTypeToName(rec->getRecordType())
 		     << "Record (origin: " << rec->getRecordsOriginFile() 
 		     << ") inventing ImageNumber: "
 		     << defNum << endl;
-		dcmInsertString(rec, DCM_ImageNumber, defNum);
+		dcmInsertString(rec, DCM_InstanceNumber, defNum);
 	    }
 	    break;
 	case ERT_Overlay:
@@ -2356,13 +2356,13 @@ inventMissingImageLevelAttributes(DcmDirectoryRecord *parent)
              * NOTE: SR uses the name "Instance Number" for (0020,0013) but we know it
              * as "Image Number".  CP 99 wants to change the name of this attribute.
              */
-	    if (!dcmTagExistsWithValue(rec, DCM_ImageNumber)) {
+	    if (!dcmTagExistsWithValue(rec, DCM_InstanceNumber)) {
 		OFString defNum = defaultNumber(structReportInstanceNumber++);
 		cerr << "Warning: " <<  recordTypeToName(rec->getRecordType())
 		     << "Record (origin: " << rec->getRecordsOriginFile() 
 		     << ") inventing InstanceNumber/ImageNumber: "
 		     << defNum << endl;
-		dcmInsertString(rec, DCM_ImageNumber, defNum);
+		dcmInsertString(rec, DCM_InstanceNumber, defNum);
 	    }
 	    break;
 	default:
@@ -2759,7 +2759,11 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 /*
 ** CVS/RCS Log:
 ** $Log: dcmgpdir.cc,v $
-** Revision 1.34  1999-04-30 16:40:02  meichel
+** Revision 1.35  1999-07-14 12:02:24  meichel
+** Updated data dictionary for supplement 29, 39, 33_lb, CP packet 4 and 5.
+**   Corrected dcmtk applications for changes in attribute name constants.
+**
+** Revision 1.34  1999/04/30 16:40:02  meichel
 ** Minor code purifications to keep Sun CC 2.0.1 quiet
 **
 ** Revision 1.33  1999/04/27 17:50:51  joergr
