@@ -236,6 +236,12 @@
 /* Define if you have the waitpid function.  */
 #undef HAVE_WAITPID
 
+/* Define if you have the <assert.h> header file */
+#define HAVE_ASSERT_H
+
+/* Define if you have the <assert.h> header file */
+#define HAVE_CTYPE_H
+
 /* Define if you have the <dirent.h> header file.  */
 #undef HAVE_DIRENT_H
 
@@ -274,6 +280,12 @@
 
 /* Define if you have the <stdlib.h> header file.  */
 #define HAVE_STDLIB_H 1
+
+/* Define if you have the <string.h> header file.  */
+#define HAVE_STRING_H 1
+
+/* Define if you have the <strings.h> header file.  */
+#undef HAVE_STRINGS_H
 
 /* Define if you have the <sys/dir.h> header file.  */
 #undef HAVE_SYS_DIR_H
