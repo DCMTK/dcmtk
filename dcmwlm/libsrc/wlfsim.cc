@@ -22,9 +22,9 @@
 *  Purpose: Class for managing file system interaction.
 *
 *  Last Update:      $Author: wilkens $
-*  Update Date:      $Date: 2002-12-12 16:49:40 $
+*  Update Date:      $Date: 2002-12-13 12:37:08 $
 *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlfsim.cc,v $
-*  CVS/RCS Revision: $Revision: 1.7 $
+*  CVS/RCS Revision: $Revision: 1.8 $
 *  Status:           $State: Exp $
 *
 *  CVS/RCS Log at end of file
@@ -209,11 +209,12 @@ OFBool WlmFileSystemInteractionManager::IsCalledApplicationEntityTitleSupported(
     fullPath += PATH_SEPARATOR;
   fullPath += calledApplicationEntityTitle;
 
-  // Check if the path is existent.
-  if( !OFStandard::dirExists( OFString( fullPath ) ) )
+  // in case the path is not existent, we need to return OFFalse
+  if( !( OFStandard::dirExists( OFString( fullPath ) ) ) )
     return( OFFalse );
-  else
-    return( OFTrue );
+
+  // if we get to here, the path is existent and we need to return OFTrue
+  return( OFTrue );
 }
 
 // ----------------------------------------------------------------------------
@@ -1459,7 +1460,11 @@ void WlmFileSystemInteractionManager::ExtractValuesFromRange( const char *range,
 /*
 ** CVS Log
 ** $Log: wlfsim.cc,v $
-** Revision 1.7  2002-12-12 16:49:40  wilkens
+** Revision 1.8  2002-12-13 12:37:08  wilkens
+** Modified code to keep Sun CC 2.0.1 happy on Solaris 2.5.1 (unreachable
+** statement warning).
+**
+** Revision 1.7  2002/12/12 16:49:40  wilkens
 ** Added some code to avoid compiler warning (unsigned long passed as unsigned
 ** int) on Sun CC 2.0.1.
 **
