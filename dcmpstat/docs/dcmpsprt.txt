@@ -85,6 +85,12 @@ annotation options:
   -pn   --print-no-name        do not prepend printer name to annotation
   +pl   --print-lighting       prepend illumination to annotation (default)
   -pl   --print-no-lighting    do not prepend illumination to annotation
+overlay options:
+  +O    --overlay              [f]ilename : string, [x] [y] : integer
+                               load overlay data from PBM file f and
+                               display at position (x,y)
+  +Og   --ovl-graylevel        [v]alue: integer (0..4095)
+                               use overlay gray level v (default: 4095 = white)
 other print options:
   -l    --layout               [c]olumns [r]ows: integer (default: 1 1)
                                use 'STANDARD\c,r' image display format

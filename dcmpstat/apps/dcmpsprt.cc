@@ -26,9 +26,9 @@
  *    Non-grayscale transformations in the presentation state are ignored.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-14 11:30:15 $
+ *  Update Date:      $Date: 2000-06-14 14:24:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsprt.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,6 +41,15 @@
 #ifdef HAVE_GUSI_H
 #include <GUSI.h>
 #endif
+
+#include <iostream.h>
+#include <fstream.h>
+
+BEGIN_EXTERN_C
+#ifdef HAVE_CTYPE_H
+#include <ctype.h>
+#endif
+END_EXTERN_C
 
 #include "dviface.h"
 #include "dvpssp.h"
@@ -55,6 +64,60 @@
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
+
+
+int addOverlay(const char *filename,
+               unsigned long xpos,
+               unsigned long ypos,
+               Uint16 *pixel,
+               unsigned long width,
+               unsigned long height,
+               unsigned int gray)
+{
+    if ((filename != NULL) && (pixel != NULL))
+    {
+#ifdef NO_IOS_NOCREATE
+        ifstream input(filename);
+#else
+        ifstream input(filename, ios::in|ios::nocreate);
+#endif
+        if (input)
+        {
+            char c;
+            unsigned int xsize, ysize;
+            if (input.get(c) && (c == 'P') && input.get(c) && (c == '1'))
+            {
+                /* still need to add code for skipping comments in PBM file */
+                input >> xsize;
+                input >> ysize;
+                if ((xpos + xsize <= width) && (ypos + ysize <= height))
+                {
+                    unsigned int value;
+                    Uint16 *p = pixel + (ypos * width) + xpos;
+                    for (unsigned long ys = 0; ys < ysize; ys++)
+                    {
+                        for (unsigned long xs = 0; xs < xsize; xs++)
+                        {
+                            while (input.get(c) && !isdigit(c));                            // skip non-numeric chars
+                            input.putback(c);
+                            input >> value;
+                            if (value)
+                                *p = gray;
+                            p++;
+                        }
+                        p += (width - xsize);
+                    }
+                    return 1;
+                } else
+                    CERR << "error: invalid position for overlay PBM file '" << filename << endl;
+            } else
+                CERR << "error: overlay PBM file '" << filename << "' has no magic number P1" << endl;
+        } else
+            CERR << "error: can't open overlay PBM file '" << filename << "'" << endl;
+    }
+    return 0;
+}
+
 
 #define SHORTCOL 2
 #define LONGCOL 21
@@ -71,6 +134,7 @@ int main(int argc, char *argv[])
     OFCmdUnsignedInt          opt_columns = 1;
     OFCmdUnsignedInt          opt_rows = 1;
     OFCmdUnsignedInt          opt_copies = 0;
+    OFCmdUnsignedInt          opt_ovl_graylevel = 4095;
     const char *              opt_filmsize = NULL;
     const char *              opt_magnification = NULL;
     const char *              opt_smoothing = NULL;
@@ -188,6 +252,12 @@ int main(int argc, char *argv[])
      cmd.addOption("--print-lighting",    "+pl",  "prepend illumination to annotation (default)");
      cmd.addOption("--print-no-lighting", "-pl",  "do not prepend illumination to annotation");
 
+    cmd.addGroup("overlay options:");
+     cmd.addOption("--overlay",       "+O" , 3, "[f]ilename : string, [x] [y] : integer",
+                                                "load overlay data from PBM file f and\ndisplay at position (x,y)");
+     cmd.addOption("--ovl-graylevel", "+Og", 1, "[v]alue: integer (0..4095)",
+                                                "use overlay gray level v (default: 4095 = white)");
+
     cmd.addGroup("other print options:");
      cmd.addOption("--layout",      "-l", 2, "[c]olumns [r]ows: integer (default: 1 1)",
                                              "use 'STANDARD\\c,r' image display format");
@@ -266,6 +336,10 @@ int main(int argc, char *argv[])
         app.checkValue(cmd.getValue(opt_annotationString));
       }
       cmd.endOptionBlock();
+
+      cmd.findOption("--overlay", 0, OFCommandLine::FOM_First);      /* check at least once to avoid warnings */
+      if (cmd.findOption("--ovl-graylevel"))
+         app.checkValue(cmd.getValue(opt_ovl_graylevel, (OFCmdUnsignedInt)0, (OFCmdUnsignedInt)4095));
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--print-date"))    opt_annotationDatetime = OFTrue;
@@ -497,6 +571,19 @@ int main(int argc, char *argv[])
             }
             pixelAspectRatio = dvi.getCurrentPState().getPrintBitmapPixelAspectRatio();
 
+            if (cmd.findOption("--overlay", 0, OFCommandLine::FOM_First))
+            {
+                do {
+                    const char *fn = NULL;
+                    OFCmdUnsignedInt x, y;
+                    app.checkValue(cmd.getValue(fn));
+                    app.checkValue(cmd.getValue(x));
+                    app.checkValue(cmd.getValue(y));
+                    if (fn != NULL)
+                        addOverlay(fn, x, y, (Uint16 *)pixelData, width, height, (unsigned int)opt_ovl_graylevel);
+                } while (cmd.findOption("--overlay", 0, OFCommandLine::FOM_Next));
+            }
+
             if (opt_verbose) CERR << "writing DICOM grayscale hardcopy image to database." << endl;
             if (EC_Normal != dvi.saveHardcopyGrayscaleImage(pixelData, width, height, pixelAspectRatio))
             {
@@ -588,7 +675,12 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsprt.cc,v $
- * Revision 1.20  2000-06-14 11:30:15  joergr
+ * Revision 1.21  2000-06-14 14:24:39  joergr
+ * Added new command line option allowing to add a PBM file as an overlay to
+ * the hardcopy grayscale image (very preliminary support, only "P1" files
+ * without comments).
+ *
+ * Revision 1.20  2000/06/14 11:30:15  joergr
  * Added methods to access the attributes Polarity and Requested Image Size.
  *
  * Revision 1.19  2000/06/09 10:19:56  joergr
