@@ -10,9 +10,9 @@
 **      C++ Standard
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-02 11:51:15 $
+** Update Date:		$Date: 1997-07-21 09:02:24 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstack.h,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -53,7 +53,7 @@ struct OFStackLinkBase
 
 class OFStackBase
 {
-private:
+protected:
     OFStackLinkBase * head;
     size_t stackSize;
 public:
@@ -109,9 +109,38 @@ struct OFStackLink : public OFStackLinkBase
 template <class T>
 class OFStack : protected OFStackBase
 {
+friend class OFStackBase;
+private:
+
+    // copy is needed for the SUN CC 2.0.1. It returns a dummy value
+    // to make this compiler happy.
+    int copy(const OFStack<T> & x)
+    {
+	stackSize = x.size();
+	if (stackSize)
+	{
+	    head = new OFStackLink<T>(((OFStackLink<T>*)(x.head))->info);
+	    OFStackLinkBase * newPtr = head;
+	    OFStackLinkBase * oldPtr = x.head->next;
+	    while (oldPtr)
+	    {
+		newPtr->next = 
+		    new OFStackLink<T>(((OFStackLink<T>*)oldPtr)->info);
+		oldPtr = oldPtr->next;
+		newPtr = newPtr->next;
+	    }
+	}
+	return 0;
+    }
+
 public:
     // Constructors
     OFStack() {};
+
+    OFStack(const OFStack<T> & x) : OFStackBase()
+    {
+	copy(x);
+    }
 
     // returns TRUE if Stack is empty
     OFBool empty() const { return OFStackBase::empty(); }
@@ -143,7 +172,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: ofstack.h,v $
-** Revision 1.1  1997-07-02 11:51:15  andreas
+** Revision 1.2  1997-07-21 09:02:24  andreas
+** - New copy constructor for class OFStack
+**
+** Revision 1.1  1997/07/02 11:51:15  andreas
 ** - Preliminary release of the OFFIS Standard Library.
 **   In the future this library shall contain a subset of the
 **   ANSI C++ Library (Version 3) that works on a lot of different
