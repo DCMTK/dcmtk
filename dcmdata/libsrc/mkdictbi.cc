@@ -9,9 +9,9 @@
 ** the dcmdata library.  
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-09-24 16:37:43 $
+** Update Date:		$Date: 1997-03-26 17:14:04 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/mkdictbi.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -66,8 +66,8 @@ printSimpleEntry(FILE* fout, const DcmDictEntry* e, int lastEntry)
     fprintf(fout, "    { 0x%04x, 0x%04x, 0x%04x, 0x%04x,\n",
 	    e->getGroup(), e->getElement(), 
 	    e->getUpperGroup(), e->getUpperElement());
-    fprintf(fout, "      ((DcmEVR)(%d)) /*%s*/, \"%s\", %d, %d, \"%s\",\n",
-	    int(e->getVR().getEVR()), e->getVR().getVRName(),
+    fprintf(fout, "      EVR_%s, \"%s\", %d, %d, \"%s\",\n",
+	    e->getVR().getVRName(),
 	    e->getTagName(), 
 	    e->getVMMin(), e->getVMMax(),
 	    e->getStandardVersion());
@@ -284,7 +284,10 @@ main(int argc, char* argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: mkdictbi.cc,v $
-** Revision 1.5  1996-09-24 16:37:43  hewett
+** Revision 1.6  1997-03-26 17:14:04  hewett
+** Now uses proper enumerated type names for VR instead of numbers.
+**
+** Revision 1.5  1996/09/24 16:37:43  hewett
 ** Now correctly includes cmdlnarg.h
 **
 ** Revision 1.4  1996/09/24 16:26:28  hewett
