@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-05-03 11:01:36 $
- *  CVS/RCS Revision: $Revision: 1.52 $
+ *  Update Date:      $Date: 1999-05-03 14:15:58 $
+ *  CVS/RCS Revision: $Revision: 1.53 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,7 +38,7 @@
 #include "ofbmanip.h"    /* for OFBitmanipTemplate */
 #include "oflist.h"      /* for class OFList */
 #include "didispfn.h"    /* for DiDisplayFunction */
-#include "diutil.h"        /* for DU_findSOPClassAndInstanceInDataSet */
+#include "diutil.h"      /* for DU_getStringDOElement */
 #include <stdio.h>
 
 BEGIN_EXTERN_C
@@ -360,24 +360,36 @@ E_Condition DVInterface::savePState()
             }
         }
     }
-    if ((pDicomImage !=NULL) && (!imageInDatabase))
+    if (pDicomImage !=NULL)
     {
-        DIC_UI sopClass;
-        DIC_UI sopInstance;
-        DU_findSOPClassAndInstanceInDataSet(pDicomImage->getDataset(), sopClass, sopInstance);
-        if (DB_NORMAL == DB_makeNewStoreFileName(handle, sopClass, sopInstance, imageFileName))
+        DcmDataset *dset = pDicomImage->getDataset();
+        if (dset != NULL)
         {
-            // now store presentation state as filename
-            result = saveCurrentImage(imageFileName);
-            if (EC_Normal==result)
+            DIC_UI sopClass;
+            DIC_UI instanceUID;
+            DIC_UI seriesUID;
+            DIC_UI studyUID;
+            if (DU_getStringDOElement(dset, DCM_SOPClassUID, sopClass) &&
+	            DU_getStringDOElement(dset, DCM_SOPInstanceUID, instanceUID) &&
+	            DU_getStringDOElement(dset, DCM_SeriesInstanceUID, seriesUID) &&
+	            DU_getStringDOElement(dset, DCM_StudyInstanceUID, studyUID) &&
+                ((!imageInDatabase) || (getSeriesStruct(studyUID, seriesUID, instanceUID) == NULL)))
             {
-                if (DB_NORMAL != DB_storeRequest(handle, sopClass, sopInstance, imageFileName, &dbStatus))
+                if (DB_NORMAL == DB_makeNewStoreFileName(handle, sopClass, instanceUID, imageFileName))
                 {
-                    result = EC_IllegalCall;
+                    // now store presentation state as filename
+                    result = saveCurrentImage(imageFileName);
+                    if (EC_Normal==result)
+                    {
+                        if (DB_NORMAL != DB_storeRequest(handle, sopClass, instanceUID, imageFileName, &dbStatus))
+                        {
+                            result = EC_IllegalCall;
 #ifdef DEBUG
-                    cerr << "unable to register image '" << imageFileName << "' in database." << endl;
-                    COND_DumpConditions();
-#endif         
+                            cerr << "unable to register image '" << imageFileName << "' in database." << endl;
+                            COND_DumpConditions();
+#endif
+                        }
+                    }
                 }
             }
         }
@@ -2171,7 +2183,11 @@ void DVInterface::cleanChildren()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.52  1999-05-03 11:01:36  joergr
+ *  Revision 1.53  1999-05-03 14:15:58  joergr
+ *  Enhanced check in savePState() method whether image file is already stored
+ *  in database.
+ *
+ *  Revision 1.52  1999/05/03 11:01:36  joergr
  *  Minor code purifications to keep Sun CC 2.0.1 quiet.
  *
  *  Revision 1.51  1999/04/29 15:26:14  joergr
