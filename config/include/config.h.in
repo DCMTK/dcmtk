@@ -64,6 +64,9 @@
 /* The number of bytes in a short.  */
 #undef SIZEOF_SHORT
 
+/* Define if you have the _findfirst function.  */
+#undef HAVE__FINDFIRST
+
 /* Define if you have the accept function.  */
 #undef HAVE_ACCEPT
 
@@ -225,6 +228,9 @@
 
 /* Define if you have the <fcntl.h> header file.  */
 #undef HAVE_FCNTL_H
+
+/* Define if you have the <io.h> header file.  */
+#undef HAVE_IO_H
 
 /* Define if you have the <libc.h> header file.  */
 #undef HAVE_LIBC_H

@@ -80,6 +80,9 @@
 /* The number of bytes in a short.  */
 #define SIZEOF_SHORT 2
 
+/* Define if you have the _findfirst function.  */
+#define HAVE__FINDFIRST 1
+
 /* Define if you have the accept function.  */
 #define HAVE_ACCEPT 1
 
@@ -102,7 +105,7 @@
 #undef HAVE_FLOCK
 
 /* Define if you have the fork function.  */
-#define HAVE_FORK 1
+#undef HAVE_FORK 
 
 /* Define if you have the getcwd function.  */
 #define HAVE_GETCWD 1
@@ -222,7 +225,7 @@
 #define HAVE_TEMPNAM 1
 
 /* Define if you have the uname function.  */
-#define HAVE_UNAME 1
+#undef HAVE_UNAME 
 
 /* Define if you have the sleep function.  */
 #undef HAVE_SLEEP
@@ -238,6 +241,9 @@
 
 /* Define if you have the <fcntl.h> header file.  */
 #define HAVE_FCNTL_H 1
+
+/* Define if you have the <io.h> header file.  */
+#define HAVE_IO_H 1
 
 /* Define if you have the <libc.h> header file.  */
 #undef HAVE_LIBC_H

@@ -94,6 +94,9 @@
 /* The number of bytes in a short.  */
 #define SIZEOF_SHORT 2
 
+/* Define if you have the _findfirst function.  */
+#undef HAVE__FINDFIRST 
+
 /* Define if you have the accept function.  */
 #define HAVE_ACCEPT 1
 
@@ -263,6 +266,9 @@
 
 /* Define if you have the <dirent.h> header file.  */
 #define HAVE_DIRENT_H 1
+
+/* Define if you have the <io.h> header file.  */
+#undef HAVE_IO_H 
 
 /* Define if you have the <fcntl.h> header file.  */
 #define HAVE_FCNTL_H 1
