@@ -23,16 +23,16 @@ LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(dcmdatadir)/libsrc
 LOCALLIBS = -ldcmsr -ldcmdata -lofstd 
 
 
-objs = test.o
+objs = mkreport.o
 
-progs= test
+progs= mkreport
 
 
 all: $(progs)
 
   
-test: test.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ test.o $(LOCALLIBS) $(LIBS)  
+mkreport: mkreport.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ mkreport.o $(LOCALLIBS) $(LIBS)  
 
 install: all
 	echo Nothing to do for install
