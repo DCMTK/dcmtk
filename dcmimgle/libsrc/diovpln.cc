@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlayPlane (Source) - Multiframe Overlays UNTESTED !
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-23 13:22:26 $
+ *  Update Date:      $Date: 1999-01-20 14:57:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diovpln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -166,7 +166,7 @@ DiOverlayPlane::DiOverlayPlane(const unsigned int group,
     Description(),
     GroupNumber(group),
     Valid(0),
-    Visible(0),
+    Visible((mode == EMO_BitmapShutter) ? 1 : 0),
     BitPos(0),
     StartBitPos(0),
     StartLeft(0),
@@ -374,7 +374,10 @@ void DiOverlayPlane::setRotation(const int degree,
  *
  * CVS/RCS Log:
  * $Log: diovpln.cc,v $
- * Revision 1.6  1998-12-23 13:22:26  joergr
+ * Revision 1.7  1999-01-20 14:57:12  joergr
+ * Added new overlay plane mode for bitmap shutters.
+ *
+ * Revision 1.6  1998/12/23 13:22:26  joergr
  * Changed parameter type (long to int) to avoid warning reported by MSVC5.
  *
  * Revision 1.5  1998/12/23 11:31:12  joergr
