@@ -45,7 +45,8 @@ dviface.o: dviface.cc ../../config/include/osconfig.h \
  ../include/dvpsconf.h ../../ofstd/include/ofstack.h \
  ../../dcmimgle/include/didispfn.h ../../dcmimgle/include/dibarlut.h \
  ../../dcmimgle/include/dibaslut.h ../../dcmimgle/include/diutils.h \
- ../../dcmnet/include/diutil.h
+ ../../dcmnet/include/diutil.h ../include/dvpssp.h \
+ ../include/dvpsibl.h ../include/dvpspr.h
 dvpsal.o: dvpsal.cc ../../config/include/osconfig.h \
  ../include/dvpsal.h ../../dcmdata/include/dctk.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
