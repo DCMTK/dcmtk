@@ -22,9 +22,9 @@
  *  Purpose: 
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-10 14:27:33 $
+ *  Update Date:      $Date: 2003-08-14 10:58:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/dcasccfg.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -158,6 +158,14 @@ public:
    */
   OFBool isKnownProfile(const char *key) const;
 
+  /** checks if the profile is suitable for use by an SCP.
+   *  A profile is suitable for use by an SCP if each SOP class in the
+   *  list of presentation contexts appears at most once.
+   *  @param key profile name, must not be NULL
+   *  @return true if profile is suitable for use by an SCP, false otherwise
+   */
+  OFBool isValidSCPProfile(const char *key) const;
+
 private:
   /// private undefined copy constructor
   DcmAssociationConfiguration(const DcmAssociationConfiguration& arg);
@@ -186,7 +194,10 @@ private:
 /*
  * CVS/RCS Log
  * $Log: dcasccfg.h,v $
- * Revision 1.1  2003-06-10 14:27:33  meichel
+ * Revision 1.2  2003-08-14 10:58:49  meichel
+ * Added check if association configuration profile is valid for SCP use
+ *
+ * Revision 1.1  2003/06/10 14:27:33  meichel
  * Initial release of class DcmAssociationConfiguration and support
  *   classes. This class maintains a list of association negotiation
  *   profiles that can be addressed by symbolic keys. The profiles may

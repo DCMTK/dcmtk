@@ -22,9 +22,9 @@
  *  Purpose: 
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-07-03 15:43:48 $
+ *  Update Date:      $Date: 2003-08-14 10:58:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dcasccfg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -124,10 +124,47 @@ OFCondition DcmAssociationConfiguration::addProfile(
   return profiles_.add(key, presentationContextKey, roleSelectionKey, extendedNegotiationKey);
 }
 
+
 OFBool DcmAssociationConfiguration::isKnownProfile(const char *key) const
 {
   return profiles_.isKnownKey(key);
 }
+
+
+OFBool DcmAssociationConfiguration::isValidSCPProfile(const char *key) const
+{
+  const char *contextKey = profiles_.getPresentationContextKey(key);
+  const DcmPresentationContextList *contextList = contexts_.getPresentationContextList(contextKey);
+  if (contextList)
+  {
+    // now loop through all presentation contexts  
+    OFListConstIterator(DcmPresentationContextItem) outerfirst = contextList->begin();
+    OFListConstIterator(DcmPresentationContextItem) innerfirst;
+    OFListConstIterator(DcmPresentationContextItem) last = contextList->end();
+    OFString outerAbstractSyntax;
+    while (outerfirst != last)
+    {
+      innerfirst = outerfirst;
+      ++innerfirst;
+      outerAbstractSyntax = (*outerfirst).getAbstractSyntax();
+      while (innerfirst != last)
+      {
+        if (outerAbstractSyntax == (*innerfirst).getAbstractSyntax())
+        {
+          // we have found two instances of the same abstract syntax in this list,
+          // so this is not a valid SCP profile.
+          return OFFalse;
+        }
+        ++innerfirst;
+      }  
+      ++outerfirst;
+    }
+    // there are no duplicate abstract syntaxes, so this is a valid SCP profile.
+    return OFTrue;
+  }
+  return OFFalse;
+}
+
 
 OFCondition DcmAssociationConfiguration::setAssociationParameters(
   const char *profile,
@@ -290,7 +327,7 @@ OFCondition DcmAssociationConfiguration::setAssociationParameters(
       // create and populate SOPClassExtendedNegotiationSubItem object
       currentItem = new SOPClassExtendedNegotiationSubItem();
       currentItem->sopClassUID = (*enfirst).getAbstractSyntaxC();
-      currentItem->serviceClassAppInfoLength = (unsigned short)((*enfirst).getLength());
+      currentItem->serviceClassAppInfoLength = OFstatic_cast(unsigned short, (*enfirst).getLength());
       currentItem->serviceClassAppInfo = new unsigned char[currentItem->serviceClassAppInfoLength];
       memcpy(currentItem->serviceClassAppInfo, (*enfirst).getRaw() , currentItem->serviceClassAppInfoLength);
       enlist->push_back(currentItem);
@@ -489,7 +526,7 @@ OFCondition DcmAssociationConfiguration::evaluateAssociationParameters(
         // create and populate SOPClassExtendedNegotiationSubItem object
         currentItem = new SOPClassExtendedNegotiationSubItem();
         currentItem->sopClassUID = (*enfirst).getAbstractSyntaxC();
-        currentItem->serviceClassAppInfoLength = (unsigned short)((*enfirst).getLength());
+        currentItem->serviceClassAppInfoLength = OFstatic_cast(unsigned short, (*enfirst).getLength());
         currentItem->serviceClassAppInfo = new unsigned char[currentItem->serviceClassAppInfoLength];
         memcpy(currentItem->serviceClassAppInfo, (*enfirst).getRaw() , currentItem->serviceClassAppInfoLength);
         enlist->push_back(currentItem);
@@ -509,7 +546,10 @@ OFCondition DcmAssociationConfiguration::evaluateAssociationParameters(
 /*
  * CVS/RCS Log
  * $Log: dcasccfg.cc,v $
- * Revision 1.2  2003-07-03 15:43:48  meichel
+ * Revision 1.3  2003-08-14 10:58:49  meichel
+ * Added check if association configuration profile is valid for SCP use
+ *
+ * Revision 1.2  2003/07/03 15:43:48  meichel
  * Adapted for use of OFListConstIterator, needed for compiling with HAVE_STL.
  *
  * Revision 1.1  2003/06/10 14:30:15  meichel

@@ -21,10 +21,10 @@
  *
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-11 18:31:15 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-08-14 10:58:47 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.65 $
+ *  CVS/RCS Revision: $Revision: 1.66 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -234,14 +234,14 @@ int main(int argc, char *argv[])
       opt1 += ")";
       cmd.addOption("--aetitle",                "-aet",  1,  "aetitle: string", opt1.c_str());
       OFString opt3 = "set max receive pdu to n bytes (def.: ";
-      sprintf(tempstr, "%ld", (long)ASC_DEFAULTMAXPDU);
+      sprintf(tempstr, "%ld", OFstatic_cast(long, ASC_DEFAULTMAXPDU));
       opt3 += tempstr;
       opt3 += ")";
       OFString opt4 = "[n]umber of bytes: integer [";
-      sprintf(tempstr, "%ld", (long)ASC_MINIMUMPDUSIZE);
+      sprintf(tempstr, "%ld", OFstatic_cast(long, ASC_MINIMUMPDUSIZE));
       opt4 += tempstr;
       opt4 += "..";
-      sprintf(tempstr, "%ld", (long)ASC_MAXIMUMPDUSIZE);
+      sprintf(tempstr, "%ld", OFstatic_cast(long, ASC_MAXIMUMPDUSIZE));
       opt4 += tempstr;
       opt4 += "]";
       cmd.addOption("--max-pdu",                "-pdu",  1,  opt4.c_str(), opt3.c_str());
@@ -444,7 +444,7 @@ int main(int argc, char *argv[])
       const char *c = opt_profileName;
       while (*c)
       {
-        if (! isspace(*c)) sprofile += (char) (toupper(*c));
+        if (! isspace(*c)) sprofile += OFstatic_cast(char, toupper(*c));
         ++c;
       }
 
@@ -454,6 +454,16 @@ int main(int argc, char *argv[])
              << sprofile << endl;
         return 1;
       }
+
+      if (!asccfg.isValidSCPProfile(sprofile.c_str()))
+      {
+        CERR << "profile '" 
+             << sprofile 
+             << "' is not valid for SCP use, duplicate abstract syntaxes found." 
+             << endl;
+        return 1;
+      }
+
     }
 
 #ifdef WITH_TCPWRAPPER
@@ -580,7 +590,7 @@ int main(int argc, char *argv[])
         if (opt_writeTransferSyntax != EXS_DeflatedLittleEndianExplicit && opt_writeTransferSyntax != EXS_Unknown)
           app.printError("--compression-level only allowed with --write-xfer-deflated or --write-xfer-same");
         app.checkValue(cmd.getValueAndCheckMinMax(opt_compressionLevel, 0, 9));
-        dcmZlibCompressionLevel.set((int) opt_compressionLevel);
+        dcmZlibCompressionLevel.set(OFstatic_cast(int, opt_compressionLevel));
     }
     cmd.endOptionBlock();
 #endif
@@ -755,7 +765,7 @@ int main(int argc, char *argv[])
   }
 
   /* initialize network, i.e. create an instance of T_ASC_Network*. */
-  OFCondition cond = ASC_initializeNetwork(NET_ACCEPTOR, (int)opt_port, 1000, &net);
+  OFCondition cond = ASC_initializeNetwork(NET_ACCEPTOR, OFstatic_cast(int, opt_port), 1000, &net);
   if (cond.bad())
   {
     DimseCondition::dump(cond);
@@ -939,7 +949,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
   if( opt_endOfStudyTimeout == -1 )
     cond = ASC_receiveAssociation(net, &assoc, opt_maxPDU, NULL, NULL, opt_secureConnection);
   else
-    cond = ASC_receiveAssociation(net, &assoc, opt_maxPDU, NULL, NULL, opt_secureConnection, DUL_NOBLOCK, (int)opt_endOfStudyTimeout);
+    cond = ASC_receiveAssociation(net, &assoc, opt_maxPDU, NULL, NULL, opt_secureConnection, DUL_NOBLOCK, OFstatic_cast(int, opt_endOfStudyTimeout));
 
   // if some kind of error occured, take care of it
   if (cond.bad())
@@ -1108,7 +1118,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
     const char *c = opt_profileName;
     while (*c)
     {
-      if (! isspace(*c)) sprofile += (char) (toupper(*c));
+      if (! isspace(*c)) sprofile += OFstatic_cast(char, toupper(*c));
       ++c;
     }
 
@@ -1308,7 +1318,7 @@ processCommands(T_ASC_Association * assoc)
     if( opt_endOfStudyTimeout == -1 )
       cond = DIMSE_receiveCommand(assoc, DIMSE_BLOCKING, 0, &presID, &msg, &statusDetail);
     else
-      cond = DIMSE_receiveCommand(assoc, DIMSE_NONBLOCKING, (int)opt_endOfStudyTimeout, &presID, &msg, &statusDetail);
+      cond = DIMSE_receiveCommand(assoc, DIMSE_NONBLOCKING, OFstatic_cast(int, opt_endOfStudyTimeout), &presID, &msg, &statusDetail);
 
     // check what kind of error occurred. If no data was
     // received, check if certain other conditions are met
@@ -1375,7 +1385,7 @@ processCommands(T_ASC_Association * assoc)
         default:
           // we cannot handle this kind of message
           cond = DIMSE_BADCOMMANDTYPE;
-          fprintf(stderr, "storescp: Cannot handle command: 0x%x\n", (unsigned)msg.CommandField);
+          fprintf(stderr, "storescp: Cannot handle command: 0x%x\n", OFstatic_cast(unsigned, msg.CommandField));
           break;
       }
     }
@@ -1450,7 +1460,7 @@ storeSCPCallback(
   {
     if (opt_verbose)
       printf("ABORT initiated (due to command line options)\n");
-    ASC_abortAssociation(((StoreCallbackData*) callbackData)->assoc);
+    ASC_abortAssociation((OFstatic_cast(StoreCallbackData*, callbackData))->assoc);
     rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
     return;
   }
@@ -1459,7 +1469,7 @@ storeSCPCallback(
   // sleep a certain amount of seconds after having received one PDU.
   if (opt_sleepDuring > 0)
   {
-    OFStandard::sleep((unsigned int)opt_sleepDuring);
+    OFStandard::sleep(OFstatic_cast(unsigned int, opt_sleepDuring));
   }
 
   // dump some information if required (depending on the progress state)
@@ -1496,7 +1506,7 @@ storeSCPCallback(
     // is present and the options opt_bitPreserving and opt_ignore are not set.
     if ((imageDataSet)&&(*imageDataSet)&&(!opt_bitPreserving)&&(!opt_ignore))
     {
-      StoreCallbackData *cbdata = (StoreCallbackData*) callbackData;
+      StoreCallbackData *cbdata = OFstatic_cast(StoreCallbackData *, callbackData);
       char *fileName = NULL;
 
       // in case option --sort-conc-studies is set, we need to perform some particular
@@ -1651,7 +1661,9 @@ storeSCPCallback(
       if (xfer == EXS_Unknown) xfer = (*imageDataSet)->getOriginalXfer();
 
       // store file either with meta header or as pure dataset
-      OFCondition cond = cbdata->dcmff->saveFile(fileName, xfer, opt_sequenceType, opt_groupLength, opt_paddingType, (Uint32)opt_filepad, (Uint32)opt_itempad, !opt_useMetaheader);
+      OFCondition cond = cbdata->dcmff->saveFile(fileName, xfer, opt_sequenceType, opt_groupLength, 
+          opt_paddingType, OFstatic_cast(Uint32, opt_filepad), 
+          OFstatic_cast(Uint32, opt_itempad), !opt_useMetaheader);
       if (cond.bad())
       {
         fprintf(stderr, "storescp: Cannot write image file: %s\n", fileName);
@@ -1760,11 +1772,13 @@ static OFCondition storeSCP(
   // DIMSE_storeProvider must be called with certain parameters.
   if (opt_bitPreserving)
   {
-      cond = DIMSE_storeProvider(assoc, presID, req, imageFileName, opt_useMetaheader, NULL, storeSCPCallback, (void*)&callbackData, DIMSE_BLOCKING, 0);
+      cond = DIMSE_storeProvider(assoc, presID, req, imageFileName, opt_useMetaheader, NULL, 
+          storeSCPCallback, &callbackData, DIMSE_BLOCKING, 0);
   }
   else
   {
-    cond = DIMSE_storeProvider(assoc, presID, req, (char *)NULL, opt_useMetaheader, &dset, storeSCPCallback, (void*)&callbackData, DIMSE_BLOCKING, 0);
+    cond = DIMSE_storeProvider(assoc, presID, req, NULL, opt_useMetaheader, &dset, 
+        storeSCPCallback, &callbackData, DIMSE_BLOCKING, 0);
   }
 
   // if some error occured, dump corresponding information and remove the outfile if necessary
@@ -1798,7 +1812,7 @@ static OFCondition storeSCP(
   // sleep a certain amount of seconds after storing the instance data.
   if (opt_sleepAfter > 0)
   {
-    OFStandard::sleep((unsigned int)opt_sleepAfter);
+    OFStandard::sleep(OFstatic_cast(unsigned int, opt_sleepAfter));
   }
 
   // return return value
@@ -2104,7 +2118,7 @@ static void cleanChildren()
     while (child > 0)
     {
 #ifdef HAVE_WAITPID
-        child = (int)(waitpid(-1, &stat_loc, options));
+        child = OFstatic_cast(int, waitpid(-1, &stat_loc, options));
 #elif defined(HAVE_WAIT3)
         child = wait3(&status, options, &rusage);
 #endif
@@ -2132,14 +2146,14 @@ findPresentationContextID(LST_HEAD * head,
     if (*l == NULL)
         return NULL;
 
-    pc = (DUL_PRESENTATIONCONTEXT*) LST_Head(l);
-    (void)LST_Position(l, (LST_NODE*)pc);
+    pc = OFstatic_cast(DUL_PRESENTATIONCONTEXT *, LST_Head(l));
+    (void)LST_Position(l, OFstatic_cast(LST_NODE *, pc));
 
     while (pc && !found) {
         if (pc->presentationContextID == presentationContextID) {
             found = OFTrue;
         } else {
-            pc = (DUL_PRESENTATIONCONTEXT*) LST_Next(l);
+            pc = OFstatic_cast(DUL_PRESENTATIONCONTEXT *, LST_Next(l));
         }
     }
     return pc;
@@ -2177,7 +2191,7 @@ static OFCondition acceptUnknownContextsWithTransferSyntax(
             abstractOK = OFTrue;
 
             /* check the transfer syntax */
-            for (k = 0; (k < (int)pc.transferSyntaxCount) && !accepted; k++)
+            for (k = 0; (k < OFstatic_cast(int, pc.transferSyntaxCount)) && !accepted; k++)
             {
                 if (strcmp(pc.proposedTransferSyntaxes[k], transferSyntax) == 0)
                 {
@@ -2258,7 +2272,10 @@ static OFCondition acceptUnknownContextsWithPreferredTransferSyntaxes(
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.65  2003-08-11 18:31:15  joergr
+** Revision 1.66  2003-08-14 10:58:47  meichel
+** Added check if association configuration profile is valid for SCP use
+**
+** Revision 1.65  2003/08/11 18:31:15  joergr
 ** Included "ctype" header file required for gcc 3.2.3 on Debian Linux.
 **
 ** Revision 1.64  2003/06/11 15:46:24  meichel
