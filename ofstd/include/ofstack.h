@@ -22,10 +22,10 @@
  *  Purpose:
  *	    Defines a template stack class with interfaces similar to the C++ Standard
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-10-10 12:01:21 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-10-12 08:11:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstack.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -141,6 +141,13 @@ struct OFStackLink : public OFStackLinkBase
 {
     T info;
     OFStackLink(const T & i) : OFStackLinkBase(), info(i)  { }
+
+private:
+
+ // --- declarations to avoid compiler warnings
+ 
+    OFStackLink(const OFStackLink<T> &);
+    OFStackLink<T> &operator=(const OFStackLink<T> &);
 };
 
 
@@ -188,6 +195,13 @@ public:
 	copy(x);
     }
 
+    // Assignment operator
+    OFStack<T> &operator=(const OFStack<T> &x)
+    {
+        copy(x);
+        return *this;
+    }
+
     /** checks if the stack is empty.
      *  @return OFTrue if stack is empty, OFFalse otherwise.
      */
@@ -228,7 +242,12 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: ofstack.h,v $
-** Revision 1.8  2000-10-10 12:01:21  meichel
+** Revision 1.9  2000-10-12 08:11:35  joergr
+** Added assignment operator to class OFStack.
+** Declared (unimplemented) copy constructor and assignment operator in class
+** OFStackLink to avoid compiler warnings (e.g. on Sun CC 2.0.1).
+**
+** Revision 1.8  2000/10/10 12:01:21  meichel
 ** Created/updated doc++ comments
 **
 ** Revision 1.7  2000/03/08 16:36:02  meichel
