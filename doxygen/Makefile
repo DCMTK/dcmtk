@@ -13,7 +13,7 @@ html:
 
 man:
 	$(DOXYGEN) manpages.cfg
-	rm -f manpages/man/man1/*.man.1
+	rm -f manpages/man1/*.man.1
 
 clean:
 	rm -f *.log $(TRASH)
