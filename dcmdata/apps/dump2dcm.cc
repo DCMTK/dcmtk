@@ -22,9 +22,9 @@
  *  Purpose: create a Dicom FileFormat or DataSet from an ASCII-dump
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 15:50:53 $
+ *  Update Date:      $Date: 2001-12-11 14:00:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dump2dcm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,7 +48,10 @@
  * Value: There are several rules for writing values:
  *        1. US, SS, SL, UL, FD, FL are written as
  *           decimal strings that can be read by scanf.
- *        2. OB, OW values are written as byte or word hexadecimal values
+ *        2. AT is written as (gggg,eeee) with additional spaces stripped off
+ *           automatically and gggg and eeee being decimal strings that
+ *           can be read by scanf.
+ *        3. OB, OW values are written as byte or word hexadecimal values
  *           separated by '\' character.  Alternatively, OB or OW values can
  *           be read from a separate file by writing the filename prefixed
  *           by a '=' character (e.g. =largepixeldata.dat).  The contents of
@@ -56,14 +59,14 @@
  *           endian ordered and will be swapped if necessary.  No checks will
  *           be made to ensure that the amount of data is reasonable in terms
  *           of other attributes such as Rows or Columns.
- *        3. UI is written as =Name in data dictionary or as
- *           unique identifer string (see  5.) , e.g. [1.2.840.....]
- *        4. Strings without () <> [] spaces, tabs and # can be
+ *        4. UI is written as =Name in data dictionary or as
+ *           unique identifer string (see  6.) , e.g. [1.2.840.....]
+ *        5. Strings without () <> [] spaces, tabs and # can be
  *           written directly
- *        5. Other strings with must be surrounded by [ ]. No
+ *        6. Other strings with must be surrounded by [ ]. No
  *           bracket structure is passed. The value ends at the last ] in
  *           the line. Anything after the ] is interpreted as comment.
- *        6. ( < are interpreted special and may not be used when writing
+ *        7. ( < are interpreted special and may not be used when writing
  *           an input file by hand as beginning characters of a string.
  *        Multiple Value are separated by \
  *        The sequence of lines must not be ordered but they can.
@@ -75,7 +78,8 @@
  *  (0008,0016) UI  =MRImageStorage     #    26,  1  SOPClassUID
  *  (0002,0012) UI  [1.2.276.0.7230010.100.1.1]
  *  (0020,0032) DS  [0.0\0.0]           #     8,  2  ImagePositionPatient
- *  (0028,0010) US  256
+ *  (0028,0009) AT  (3004,000c)         #     4,  1  FrameIncrementPointer
+ *  (0028,0010) US  256                 #     4,  1  Rows
  *  (0002,0001) OB  01\00
  *
  */
@@ -115,6 +119,7 @@ END_EXTERN_C
 #include "dcdebug.h"
 #include "cmdlnarg.h"
 #include "ofconapp.h"
+#include "ofstd.h"
 #include "dcuid.h"    /* for dcmtk version name */
 
 #define OFFIS_CONSOLE_APPLICATION "dump2dcm"
@@ -149,10 +154,10 @@ stripWhitespace(char* s)
 
     p = s;
     while (*s != '\0') {
-    if (isspace(*s) == OFFalse) {
-        *p++ = *s;
-    }
-    s++;
+        if (isspace(*s) == OFFalse) {
+            *p++ = *s;
+        }
+        s++;
     }
     *p = '\0';
 }
@@ -178,7 +183,7 @@ stripPrecedingWhitespace(char * s)
     if (s == NULL) return s;
 
     for(p = s; *p && isspace(*p); p++)
-    ;
+        ;
 
     return p;
 }
@@ -190,7 +195,7 @@ onlyWhitespace(const char* s)
     int charsFound = OFFalse;
 
     for (int i=0; (!charsFound) && (i<len); i++) {
-    charsFound = !isspace(s[i]);
+        charsFound = !isspace(s[i]);
     }
     return (!charsFound)?(OFTrue):(OFFalse);
 }
@@ -205,10 +210,10 @@ getLine(char* line, int maxLineLen, FILE* f, const unsigned long lineNumber)
     // if line is too long, throw rest of it away
     if (s && strlen(s) == size_t(maxLineLen-1) && s[maxLineLen-2] != '\n')
     {
-    int c = fgetc(f);
-    while(c != '\n' && c != EOF)
-        c = fgetc(f);
-    CERR << "line " << lineNumber << " to long." << endl;
+        int c = fgetc(f);
+        while(c != '\n' && c != EOF)
+            c = fgetc(f);
+        CERR << "line " << lineNumber << " to long." << endl;
     }
 
 
@@ -226,7 +231,7 @@ isaCommentLine(const char* s)
     int len = strlen(s);
     int i = 0;
     for (i=0; i<len && isspace(s[i]); i++) /*loop*/;
-    isComment = (s[i] == DCM_DumpCommentChar);
+        isComment = (s[i] == DCM_DumpCommentChar);
     return isComment;
 }
 
@@ -241,22 +246,21 @@ parseTag(char* & s, DcmTagKey& key)
     p = strchr(s, DCM_DumpTagDelim);
     if (p)
     {
-    // string all white spaces and read tag
-    int len = p-s+1;
-    p = new char[len+1];
-    strncpy(p, s, len);
-    p[len] = '\0';
-    stripWhitespace(p);
-    s += len;
-
-    if (sscanf(p, "(%x,%x)", &g, &e) == 2) {
-        key.set(g, e);
-    } else {
-        ok = OFFalse;
+        // string all white spaces and read tag
+        int len = p-s+1;
+        p = new char[len+1];
+        OFStandard::strlcpy(p, s, len+1);
+        stripWhitespace(p);
+        s += len;
+    
+        if (sscanf(p, "(%x,%x)", &g, &e) == 2) {
+            key.set(g, e);
+        } else {
+            ok = OFFalse;
+        }
+        delete[] p;
     }
-    delete[] p;
-    }
-    else ok = OFFalse;
+        else ok = OFFalse;
 
     return ok;
 }
@@ -272,20 +276,19 @@ parseVR(char * & s, DcmEVR & vr)
     // Are there two upper characters?
     if (isupper(*s) && isupper(*(s+1)))
     {
-    char c_vr[3];
-    strncpy(c_vr, s, 2);
-    c_vr[2] = '\0';
-    // Convert to VR
-    DcmVR dcmVR(c_vr);
-    vr = dcmVR.getEVR();
-    s+=2;
+        char c_vr[3];
+        OFStandard::strlcpy(c_vr, s, 3);
+        // Convert to VR
+        DcmVR dcmVR(c_vr);
+        vr = dcmVR.getEVR();
+        s+=2;
     }
     else if (((*s == 'o')&&(*(s+1) == 'x')) || ((*s == 'x')&&(*(s+1) == 's'))
       || ((*s == 'n')&&(*(s+1) == 'a')) || ((*s == 'u')&&(*(s+1) == 'p')))
     {
-      // swallow internal VRs
-      vr = EVR_UNKNOWN;
-      s+=2;
+        // swallow internal VRs
+        vr = EVR_UNKNOWN;
+        s+=2;
     }
     else ok = OFFalse;
 
@@ -304,18 +307,18 @@ searchLastClose(char *s, char closeChar)
 
     while(p && *p)
     {
-    p = strchr(p, closeChar);
-    if (p)
-    {
-        found = p;
-        p++;
-    }
+        p = strchr(p, closeChar);
+        if (p)
+        {
+            found = p;
+            p++;
+        }
     }
 
     if (found)
-    return (found - s) + 1;
+        return (found - s) + 1;
     else
-    return 0;
+        return 0;
 }
 
 
@@ -324,11 +327,11 @@ searchCommentOrEol(char *s)
 {
     char * comment = strchr(s, DCM_DumpCommentChar);
     if (comment)
-    return comment - s;
+        return comment - s;
     else if (s)
-    return strlen(s);
+        return strlen(s);
     else
-    return 0;
+        return 0;
 }
 
 
@@ -351,7 +354,7 @@ convertNewlineCharacters(char* s)
 }
 
 static OFBool
-parseValue(char * & s, char * & value)
+parseValue(char * & s, char * & value, const DcmEVR & vr)
 {
     OFBool ok = OFTrue;
     int len;
@@ -361,41 +364,59 @@ parseValue(char * & s, char * & value)
 
     switch (*s)
     {
-    case DCM_DumpOpenString:
-    len = searchLastClose(s, DCM_DumpCloseString);
-    if (len == 0)
-        ok = OFFalse;
-    else if (len > 2)
-    {
-        value = new char[len-1];
-        strncpy(value, s+1, len-2);
-        value[len-2] = '\0';
-            value = convertNewlineCharacters(value);
-    }
-    else
-        value = NULL;
-    break;
-
-    case DCM_DumpOpenDescription:
-    break;
-
-    case DCM_DumpOpenFile:
-    ok = OFFalse;  // currently not supported
-    break;
-
-    case DCM_DumpCommentChar:
-    break;
-
-    default:
-    len = searchCommentOrEol(s);
-    if (len)
-    {
-        value = new char[len+1];
-        strncpy(value, s, len);
-        value[len] = '\0';
-        stripTrailingWhitespace(value);
-    }
-    break;
+        case DCM_DumpOpenString:
+            len = searchLastClose(s, DCM_DumpCloseString);
+            if (len == 0)
+                ok = OFFalse;
+            else if (len > 2)
+            {
+                value = new char[len-1];
+                OFStandard::strlcpy(value, s+1, len-1);
+                value = convertNewlineCharacters(value);
+            }
+            else
+                value = NULL;
+            break;
+    
+        case DCM_DumpOpenDescription:
+            /* need to distinguish vr=AT from description field */
+            /* NB: if the vr is unknown this workaround will not succeed */
+            if (vr == EVR_AT)
+            {
+                len = searchLastClose(s, DCM_DumpTagDelim);
+                if (len >= 11)  // (gggg,eeee) allow non-significant spaces
+                {
+                    char *pv = s;
+                    DcmTagKey tag;
+                    if (parseTag(pv, tag))   // check for valid tag format
+                    {
+                        value = new char[len+1];
+                        OFStandard::strlcpy(value, s, len+1);
+                        stripWhitespace(value);
+                    } else
+                        ok = OFFalse;   // skip description
+                }
+                else
+                    ok = OFFalse;   // skip description
+            }
+            break;
+    
+        case DCM_DumpOpenFile:
+            ok = OFFalse;  // currently not supported
+            break;
+    
+        case DCM_DumpCommentChar:
+            break;
+    
+        default:
+            len = searchCommentOrEol(s);
+            if (len)
+            {
+                value = new char[len+1];
+                OFStandard::strlcpy(value, s, len+1);
+                stripTrailingWhitespace(value);
+            }
+            break;
     }
     return ok;
 }
@@ -408,7 +429,7 @@ fileSize(const char *fname)
     unsigned long nbytes = 0;
 
     if (stat(fname, &s) == 0) {
-    nbytes = s.st_size;
+        nbytes = s.st_size;
     }
     return nbytes;
 }
@@ -511,7 +532,7 @@ insertIntoSet(DcmStack & stack, DcmTagKey tagkey, DcmEVR vr, char * value)
                          */
                         l_error = putFileContentsIntoElement(newElement, value+1);
                     } else {
-                                l_error = newElement->putString(value);
+                        l_error = newElement->putString(value);
                     }
                 }
     
@@ -541,11 +562,10 @@ insertIntoSet(DcmStack & stack, DcmTagKey tagkey, DcmEVR vr, char * value)
         else if (newElementError == EC_SequEnd)
         {
             // pop stack if stack object was a sequence
-            if (topOfStack->ident() == EVR_SQ ||
-            topOfStack->ident() == EVR_pixelSQ)
-            stack.pop();
+            if (topOfStack->ident() == EVR_SQ || topOfStack->ident() == EVR_pixelSQ)
+                stack.pop();
             else
-            l_error = EC_InvalidTag;
+                l_error = EC_InvalidTag;
         }
         else if (newElementError == EC_ItemEnd)
         {    
@@ -556,11 +576,11 @@ insertIntoSet(DcmStack & stack, DcmTagKey tagkey, DcmEVR vr, char * value)
               case EVR_dirRecord:
               case EVR_dataset:
               case EVR_metainfo:
-              stack.pop();
+                stack.pop();
               break;
             
               default:
-              l_error = EC_InvalidTag;
+                l_error = EC_InvalidTag;
               break;
             }
         }
@@ -568,27 +588,26 @@ insertIntoSet(DcmStack & stack, DcmTagKey tagkey, DcmEVR vr, char * value)
         {    
             if (tag.getXTag() == DCM_Item)
             {
-            DcmItem * item = NULL;
-            if (topOfStack->getTag().getXTag() == DCM_DirectoryRecordSequence)
-            {
-                // an Item must be pushed to the stack
-                item = new DcmDirectoryRecord(tag, 0);
-                ((DcmSequenceOfItems *) topOfStack) -> insert(item);
-                stack.push(item);
-            }
-            else if (topOfStack->ident() == EVR_SQ)
-            {
-                // an item must be pushed to the stack
-                item = new DcmItem(tag);
-                ((DcmSequenceOfItems *) topOfStack) -> insert(item);
-                stack.push(item);
+                DcmItem * item = NULL;
+                if (topOfStack->getTag().getXTag() == DCM_DirectoryRecordSequence)
+                {
+                    // an Item must be pushed to the stack
+                    item = new DcmDirectoryRecord(tag, 0);
+                    ((DcmSequenceOfItems *) topOfStack) -> insert(item);
+                    stack.push(item);
+                }
+                else if (topOfStack->ident() == EVR_SQ)
+                {
+                    // an item must be pushed to the stack
+                    item = new DcmItem(tag);
+                    ((DcmSequenceOfItems *) topOfStack) -> insert(item);
+                    stack.push(item);
+                }
+                else
+                    l_error = EC_InvalidTag;    
             }
             else
-                l_error = EC_InvalidTag;
-    
-            }
-            else
-            l_error = EC_InvalidTag;    
+                l_error = EC_InvalidTag;    
         }
         else
         {
@@ -648,7 +667,7 @@ readDumpFile(DcmMetaInfo * metaheader, DcmDataset * dataset,
             vr = EVR_UNKNOWN;
     
         // parse optional value
-        if (!errorOnThisLine && !parseValue(parse, value))
+        if (!errorOnThisLine && !parseValue(parse, value, vr))
         {
             CERR << OFFIS_CONSOLE_APPLICATION ": "<< ifname << ": "
              << "incorrect value specification (line "
@@ -895,7 +914,6 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-
     // open input dump file
     if ((ifname == NULL) || (strlen(ifname) == 0))
     {
@@ -955,7 +973,12 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
-** Revision 1.37  2001-11-09 15:50:53  joergr
+** Revision 1.38  2001-12-11 14:00:39  joergr
+** Fixed bug in 'dump2dcm' parser causing AT attribute values to be ignored.
+** Thanks to Anders Gustafsson <agustafsson@mds.nordion.com> for the bug
+** report.
+**
+** Revision 1.37  2001/11/09 15:50:53  joergr
 ** Renamed some of the getValue/getParam methods to avoid ambiguities reported
 ** by certain compilers.
 **
@@ -1121,8 +1144,3 @@ int main(int argc, char *argv[])
 **
 **
 */
-
-
-
-
-
