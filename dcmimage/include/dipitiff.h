@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2002, OFFIS
+ *  Copyright (C) 2001-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: Implements TIFF interface for plugable image formats
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-09-19 08:34:53 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dipitiff.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2003-12-17 18:18:08 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +31,8 @@
  */
 
 
-#ifndef __DIPITIFF_H
-#define __DIPITIFF_H
+#ifndef DIPITIFF_H
+#define DIPITIFF_H
 
 #include "osconfig.h"
 
@@ -41,7 +40,17 @@
 
 #include "diplugin.h"
 
+
+/*------------------------*
+ *  forward declarations  *
+ *------------------------*/
+
 class DiImage;
+
+
+/*--------------------*
+ *  type definitions  *
+ *--------------------*/
 
 /** describes the different types of compression supported by
  *  the TIFF plugin.  Enumeration depends on capabilities
@@ -73,6 +82,10 @@ enum DiTIFFLZWPredictor
   E_tiffLZWPredictorHDifferencing
 };
 
+
+/*---------------------*
+ *  class declaration  *
+ *---------------------*/
 
 /** Implementation of a TIFF plugin for the dcmimgle/dcmimage library
  */
@@ -139,11 +152,16 @@ class DiTIFFPlugin
 #endif
 #endif
 
+
 /*
  *
  * CVS/RCS Log:
  * $Log: dipitiff.h,v $
- * Revision 1.3  2002-09-19 08:34:53  joergr
+ * Revision 1.4  2003-12-17 18:18:08  joergr
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols).
+ *
+ * Revision 1.3  2002/09/19 08:34:53  joergr
  * Added static method getLibraryVersionString().
  *
  * Revision 1.2  2001/12/06 10:10:59  meichel

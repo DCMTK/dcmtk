@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: DicomColorOutputPixel (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 14:16:56 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicoopx.h,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-17 18:13:41 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +31,8 @@
  */
 
 
-#ifndef __DICOOPX_H
-#define __DICOOPX_H
+#ifndef DICOOPX_H
+#define DICOOPX_H
 
 #include "osconfig.h"
 #include "diutils.h"
@@ -42,6 +41,7 @@
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
 #include "ofstdinc.h"
+
 
 /*------------------------*
  *  forward declarations  *
@@ -56,7 +56,7 @@ class DiPixel;
 
 /** Abstract base class to create color output data
  */
-class DiColorOutputPixel 
+class DiColorOutputPixel
 {
 
  public:
@@ -66,7 +66,7 @@ class DiColorOutputPixel
                        const unsigned long frame);
 
     virtual ~DiColorOutputPixel();
-    
+
     virtual EP_Representation getRepresentation() const = 0;
 
     virtual void *getData() const = 0;
@@ -78,7 +78,7 @@ class DiColorOutputPixel
     virtual int writePPM(ostream &) const = 0;
 
     virtual int writePPM(FILE *) const = 0;
-    
+
     inline unsigned long getCount() const
     {
         return FrameSize;
@@ -99,7 +99,11 @@ class DiColorOutputPixel
  *
  * CVS/RCS Log:
  * $Log: dicoopx.h,v $
- * Revision 1.15  2002-11-27 14:16:56  meichel
+ * Revision 1.16  2003-12-17 18:13:41  joergr
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols).
+ *
+ * Revision 1.15  2002/11/27 14:16:56  meichel
  * Adapted module dcmimage to use of new header file ofstdinc.h
  *
  * Revision 1.14  2002/04/16 13:54:42  joergr

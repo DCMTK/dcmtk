@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,18 +22,17 @@
  *  Purpose: DicomRegister (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date $
- *  Source File:      $Source $
- *  CVS/RCS Revision: $Revision $
- *  Status:           $State $
+ *  Update Date:      $Date: 2003-12-17 18:18:08 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
 
-#ifndef __DIREGIST_H
-#define __DIREGIST_H
+#ifndef DIREGIST_H
+#define DIREGIST_H
 
 #include "osconfig.h"
 
@@ -74,7 +73,11 @@ static DiRegister Init_dcmimage_Module;        // registration pointer is initia
  *
  * CVS/RCS Log:
  * $Log: diregist.h,v $
- * Revision 1.7  2001-06-20 15:11:39  joergr
+ * Revision 1.8  2003-12-17 18:18:08  joergr
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols).
+ *
+ * Revision 1.7  2001/06/20 15:11:39  joergr
  * Removed old dcmimage license information.
  *
  * Revision 1.6  2001/06/01 15:49:31  meichel

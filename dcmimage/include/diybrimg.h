@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: DicomYBRImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:46:01 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diybrimg.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2003-12-17 18:12:23 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +31,8 @@
  */
 
 
-#ifndef __DIYBRIMG_H
-#define __DIYBRIMG_H
+#ifndef DIYBRIMG_H
+#define DIYBRIMG_H
 
 #include "osconfig.h"
 
@@ -73,7 +72,11 @@ class DiYBRImage
  *
  * CVS/RCS Log:
  * $Log: diybrimg.h,v $
- * Revision 1.7  2001-11-09 16:46:01  joergr
+ * Revision 1.8  2003-12-17 18:12:23  joergr
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols).
+ *
+ * Revision 1.7  2001/11/09 16:46:01  joergr
  * Updated/Enhanced comments.
  *
  * Revision 1.6  2001/06/01 15:49:32  meichel

@@ -22,9 +22,8 @@
  *  Purpose: DicomColorImage (Header)
  *
  *  Last Update:         $Author: joergr $
- *  Update Date:         $Date: 2003-06-12 15:09:41 $
- *  Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicoimg.h,v $
- *  CVS/RCS Revision:    $Revision: 1.18 $
+ *  Update Date:         $Date: 2003-12-17 18:10:56 $
+ *  CVS/RCS Revision:    $Revision: 1.19 $
  *  Status:              $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +31,8 @@
  */
 
 
-#ifndef __DICOIMG_H
-#define __DICOIMG_H
+#ifndef DICOIMG_H
+#define DICOIMG_H
 
 #include "osconfig.h"
 #include "dctypes.h"
@@ -446,7 +445,11 @@ class DiColorImage
  *
  * CVS/RCS Log:
  * $Log: dicoimg.h,v $
- * Revision 1.18  2003-06-12 15:09:41  joergr
+ * Revision 1.19  2003-12-17 18:10:56  joergr
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols).
+ *
+ * Revision 1.18  2003/06/12 15:09:41  joergr
  * Fixed inconsistent API documentation reported by Doxygen.
  *
  * Revision 1.17  2003/05/20 09:26:05  joergr

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: DicomHSVImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:45:59 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dihsvimg.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2003-12-17 18:11:15 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +31,8 @@
  */
 
 
-#ifndef __DIHSVIMG_H
-#define __DIHSVIMG_H
+#ifndef DIHSVIMG_H
+#define DIHSVIMG_H
 
 #include "osconfig.h"
 
@@ -73,7 +72,11 @@ class DiHSVImage
  *
  * CVS/RCS Log:
  * $Log: dihsvimg.h,v $
- * Revision 1.7  2001-11-09 16:45:59  joergr
+ * Revision 1.8  2003-12-17 18:11:15  joergr
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols).
+ *
+ * Revision 1.7  2001/11/09 16:45:59  joergr
  * Updated/Enhanced comments.
  *
  * Revision 1.6  2001/06/01 15:49:30  meichel
@@ -90,6 +93,6 @@ class DiHSVImage
  *
  * Revision 1.2  1998/05/11 14:53:15  joergr
  * Added CVS/RCS header to each file.
- * 
+ *
  *
  */

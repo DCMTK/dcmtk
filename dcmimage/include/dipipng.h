@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2003, OFFIS
+ *  Copyright (C) 2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Implements PNG interface for plugable image formats
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-02-11 13:18:38 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dipipng.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-17 18:18:08 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +31,8 @@
  */
 
 
-#ifndef __DIPIPNG_H
-#define __DIPIPNG_H
+#ifndef DIPIPNG_H
+#define DIPIPNG_H
 
 #include "osconfig.h"
 
@@ -41,7 +40,17 @@
 
 #include "diplugin.h"
 
+
+/*------------------------*
+ *  forward declarations  *
+ *------------------------*/
+
 class DiImage;
+
+
+/*--------------------*
+ *  type definitions  *
+ *--------------------*/
 
 /** describes the different types of interlace supported by
  *  the PNG plugin.  Enumeration depends on capabilities
@@ -67,6 +76,11 @@ enum DiPNGMetainfo
   /// file time, creator
   E_pngFileMetainfo,
 };
+
+
+/*---------------------*
+ *  class declaration  *
+ *---------------------*/
 
 /** Implementation of a PNG plugin for the dcmimgle/dcmimage library
  */
@@ -124,10 +138,15 @@ class DiPNGPlugin
 #endif
 #endif
 
+
 /*
  * CVS/RCS Log:
  * $Log: dipipng.h,v $
- * Revision 1.1  2003-02-11 13:18:38  meichel
+ * Revision 1.2  2003-12-17 18:18:08  joergr
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols).
+ *
+ * Revision 1.1  2003/02/11 13:18:38  meichel
  * Added PNG export option to dcm2pnm and dcmj2pnm
  *
  *

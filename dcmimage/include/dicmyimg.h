@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -19,12 +19,11 @@
  *
  *  Author:  Joerg Riesmeier
  *
- *  Purpose: DicomCMYKImage (Header) 
+ *  Purpose: DicomCMYKImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:39:57 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicmyimg.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2003-12-17 18:10:25 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +31,8 @@
  */
 
 
-#ifndef __DICMYIMG_H
-#define __DICMYIMG_H
+#ifndef DICMYIMG_H
+#define DICMYIMG_H
 
 #include "osconfig.h"
 
@@ -67,13 +66,17 @@ class DiCMYKImage
 
 
 #endif
-                        
+
 
 /*
  *
  * CVS/RCS Log:
  * $Log: dicmyimg.h,v $
- * Revision 1.7  2001-11-09 16:39:57  joergr
+ * Revision 1.8  2003-12-17 18:10:25  joergr
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols).
+ *
+ * Revision 1.7  2001/11/09 16:39:57  joergr
  * Updated/Enhanced comments.
  *
  * Revision 1.6  2001/06/01 15:49:27  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: DicomYBR422Image (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:46:01 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diyf2img.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2003-12-17 18:12:42 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +31,8 @@
  */
 
 
-#ifndef __DIYF2IMG_H
-#define __DIYF2IMG_H
+#ifndef DIYF2IMG_H
+#define DIYF2IMG_H
 
 #include "osconfig.h"
 
@@ -73,7 +72,11 @@ class DiYBR422Image
  *
  * CVS/RCS Log:
  * $Log: diyf2img.h,v $
- * Revision 1.9  2001-11-09 16:46:01  joergr
+ * Revision 1.10  2003-12-17 18:12:42  joergr
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols).
+ *
+ * Revision 1.9  2001/11/09 16:46:01  joergr
  * Updated/Enhanced comments.
  *
  * Revision 1.8  2001/06/01 15:49:32  meichel
