@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-04-14 16:29:27 $
+ *  Update Date:      $Date: 2000-06-07 13:56:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -414,7 +414,7 @@ acceptAssociation(T_ASC_Network * net)
   if (opt_debug)
   {
     printf("Parameters:\n");
-    ASC_dumpParameters(assoc->params);
+    ASC_dumpParameters(assoc->params, COUT);
   }
 
   if (opt_refuseAssociation)
@@ -582,7 +582,7 @@ acceptAssociation(T_ASC_Network * net)
       printf("Association Acknowledged (Max Send PDV: %lu)\n", assoc->sendPDVLength);
       if (ASC_countAcceptedPresentationContexts(assoc->params) == 0)
         printf("    (but no valid presentation contexts)\n");
-      if (opt_debug) ASC_dumpParameters(assoc->params);
+      if (opt_debug) ASC_dumpParameters(assoc->params, COUT);
     }
   }
 
@@ -917,7 +917,10 @@ static CONDITION storeSCP(
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.30  2000-04-14 16:29:27  meichel
+** Revision 1.31  2000-06-07 13:56:18  meichel
+** Output stream now passed as mandatory parameter to ASC_dumpParameters.
+**
+** Revision 1.30  2000/04/14 16:29:27  meichel
 ** Removed default value from output stream passed to print() method.
 **   Required for use in multi-thread environments.
 **

@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2000-06-07 08:57:25 $
+** Update Date:         $Date: 2000-06-07 13:56:21 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:    $Revision: 1.29 $
+** CVS/RCS Revision:    $Revision: 1.30 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1341,7 +1341,7 @@ void ASC_setAcceptedExtNegList(T_ASC_Parameters* params, SOPClassExtendedNegotia
 }
 
 void 
-ASC_dumpParameters(T_ASC_Parameters * params)
+ASC_dumpParameters(T_ASC_Parameters * params, ostream& outstream)
  /*
   * Write parameters in textual form to stdout (debugging aid) 
   */
@@ -1349,7 +1349,7 @@ ASC_dumpParameters(T_ASC_Parameters * params)
     int i;
     T_ASC_PresentationContext pc;
         
-    COUT << "Our Implementation Class UID:    "
+    outstream << "Our Implementation Class UID:    "
         << params->ourImplementationClassUID << endl
         << "Our Implementation Version Name: "
         << params->ourImplementationVersionName << endl
@@ -1370,39 +1370,39 @@ ASC_dumpParameters(T_ASC_Parameters * params)
         << "Their Max PDU Receive Size: "
         << params->theirMaxPDUReceiveSize << endl;
 
-    COUT << "Presentation Contexts:" << endl;
+    outstream << "Presentation Contexts:" << endl;
     for (i=0; i<ASC_countPresentationContexts(params); i++) {
         ASC_getPresentationContext(params, i, &pc);
-        ASC_dumpPresentationContext(&pc);
+        ASC_dumpPresentationContext(&pc, outstream);
     }
 
     SOPClassExtendedNegotiationSubItemList* extNegList=NULL;
     ASC_getRequestedExtNegList(params, &extNegList);
-    COUT << "Requested Extended Negotiation:";
+    outstream << "Requested Extended Negotiation:";
     if (extNegList != NULL) {
-        COUT << endl;
+        outstream << endl;
         dumpExtNegList(*extNegList);
     } else {
-        COUT << " none" << endl;
+        outstream << " none" << endl;
     }
     ASC_getAcceptedExtNegList(params, &extNegList);
-    COUT << "Accepted Extended Negotiation:";
+    outstream << "Accepted Extended Negotiation:";
     if (extNegList != NULL) {
-        COUT << endl;
+        outstream << endl;
         dumpExtNegList(*extNegList);
     } else {
-        COUT << " none" << endl;
+        outstream << " none" << endl;
     }
 
 #if 0
-    COUT << "DUL Params --- BEGIN" << endl;
+    outstream << "DUL Params --- BEGIN" << endl;
     DUL_DumpParams(&params->DULparams);
-    COUT << "DUL Params --- END" << endl;
+    outstream << "DUL Params --- END" << endl;
 #endif
 }
 
 void
-ASC_dumpPresentationContext(T_ASC_PresentationContext * p)
+ASC_dumpPresentationContext(T_ASC_PresentationContext * p, ostream& outstream)
  /*
   * Write presentation context structure in textual form to stdout.
   * (debugging aid) 
@@ -1410,38 +1410,38 @@ ASC_dumpPresentationContext(T_ASC_PresentationContext * p)
 {
     int i = 0;
 
-    COUT << "  Context ID:        " << (int)p->presentationContextID << " ";
+    outstream << "  Context ID:        " << (int)p->presentationContextID << " ";
     switch (p->resultReason) {
     case ASC_P_ACCEPTANCE:
-        COUT << "(Accepted)" << endl;
+        outstream << "(Accepted)" << endl;
         break;
     case ASC_P_USERREJECTION:
-        COUT << "(User Rejection)" << endl;
+        outstream << "(User Rejection)" << endl;
         break;
     case ASC_P_NOREASON:
-        COUT << "(No Reason)" << endl;
+        outstream << "(No Reason)" << endl;
         break;
     case ASC_P_ABSTRACTSYNTAXNOTSUPPORTED:
-        COUT << "(Abstract Syntax Not Supported)" << endl;
+        outstream << "(Abstract Syntax Not Supported)" << endl;
         break;
     case ASC_P_TRANSFERSYNTAXESNOTSUPPORTED:
-        COUT << "(Transfer Syntaxes Not Supported)" << endl;
+        outstream << "(Transfer Syntaxes Not Supported)" << endl;
         break;
     case ASC_P_NOTYETNEGOTIATED:
-        COUT << "(Proposed)" << endl;
+        outstream << "(Proposed)" << endl;
         break;
     default:
-        COUT << "(--Invalid Result/Reason--)" << endl;
+        outstream << "(--Invalid Result/Reason--)" << endl;
     }
 
     const char* l_as = dcmFindNameOfUID(p->abstractSyntax);
     if (l_as) {
-        COUT << "    Abstract Syntax: =" << l_as  << endl;
+        outstream << "    Abstract Syntax: =" << l_as  << endl;
     } else {
-        COUT << "    Abstract Syntax: " <<  p->abstractSyntax << endl;
+        outstream << "    Abstract Syntax: " <<  p->abstractSyntax << endl;
     }
     
-    COUT << "    Proposed SCP/SCU Role: "
+    outstream << "    Proposed SCP/SCU Role: "
         << ascRole2String(p->proposedRole) << endl
         << "    Accepted SCP/SCU Role: "
         << ascRole2String(p->acceptedRole) << endl;
@@ -1449,21 +1449,21 @@ ASC_dumpPresentationContext(T_ASC_PresentationContext * p)
     if (p->resultReason == ASC_P_ACCEPTANCE) {
         const char* ts = dcmFindNameOfUID(p->acceptedTransferSyntax);
         if (ts) {
-            COUT << "    Accepted Transfer Syntax: =" << ts << endl;
+            outstream << "    Accepted Transfer Syntax: =" << ts << endl;
         } else {
-            COUT << "    Accepted Transfer Syntax: "
+            outstream << "    Accepted Transfer Syntax: "
                 << p->acceptedTransferSyntax << endl;
         }
     }
 
     if (p->resultReason == ASC_P_NOTYETNEGOTIATED) {
-        COUT << "    Proposed Transfer Syntax(es):" << endl;
+        outstream << "    Proposed Transfer Syntax(es):" << endl;
         for (i = 0; i < (int)p->transferSyntaxCount; i++) {
             const char* ts = dcmFindNameOfUID(p->proposedTransferSyntaxes[i]);
             if (ts) {
-                COUT << "      =" << ts << endl;
+                outstream << "      =" << ts << endl;
             } else {
-                COUT << "      " << p->proposedTransferSyntaxes[i] << endl;
+                outstream << "      " << p->proposedTransferSyntaxes[i] << endl;
             }
         }
     }
@@ -2055,7 +2055,10 @@ ASC_dropAssociation(T_ASC_Association * association)
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
-** Revision 1.29  2000-06-07 08:57:25  meichel
+** Revision 1.30  2000-06-07 13:56:21  meichel
+** Output stream now passed as mandatory parameter to ASC_dumpParameters.
+**
+** Revision 1.29  2000/06/07 08:57:25  meichel
 ** dcmnet ACSE routines now allow to retrieve a binary copy of the A-ASSOCIATE
 **   RQ/AC/RJ PDUs, e.g. for logging purposes.
 **

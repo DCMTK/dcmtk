@@ -22,9 +22,9 @@
  *  Purpose: Verification Service Class User (C-ECHO operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-04-14 16:29:25 $
+ *  Update Date:      $Date: 2000-06-07 13:56:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/echoscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -259,7 +259,7 @@ main(int argc, char *argv[])
 
     if (opt_debug) {
 	printf("Request Parameters:\n");
-	ASC_dumpParameters(params);
+	ASC_dumpParameters(params, COUT);
     }
 
     /* create association */
@@ -283,7 +283,7 @@ main(int argc, char *argv[])
     /* what has been accepted/refused ? */
     if (opt_debug) {
 	printf("Association Parameters Negotiated:\n");
-	ASC_dumpParameters(params);
+	ASC_dumpParameters(params, COUT);
     }
 
     if (ASC_countAcceptedPresentationContexts(params) == 0) {
@@ -425,7 +425,10 @@ cecho(T_ASC_Association * assoc, unsigned long num_repeat)
 /*
 ** CVS Log
 ** $Log: echoscu.cc,v $
-** Revision 1.20  2000-04-14 16:29:25  meichel
+** Revision 1.21  2000-06-07 13:56:16  meichel
+** Output stream now passed as mandatory parameter to ASC_dumpParameters.
+**
+** Revision 1.20  2000/04/14 16:29:25  meichel
 ** Removed default value from output stream passed to print() method.
 **   Required for use in multi-thread environments.
 **

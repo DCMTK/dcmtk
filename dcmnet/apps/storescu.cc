@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-07 08:58:10 $
+ *  Update Date:      $Date: 2000-06-07 13:56:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -377,7 +377,7 @@ main(int argc, char *argv[])
     }
     if (opt_showPresentationContexts || opt_debug) {
 	printf("Request Parameters:\n");
-	ASC_dumpParameters(params);
+	ASC_dumpParameters(params, COUT);
     }
 
     /* create association */
@@ -401,7 +401,7 @@ main(int argc, char *argv[])
     /* what has been accepted/refused ? */
     if (opt_showPresentationContexts || opt_debug) {
 	printf("Association Parameters Negotiated:\n");
-	ASC_dumpParameters(params);
+	ASC_dumpParameters(params, COUT);
     }
 
     if (ASC_countAcceptedPresentationContexts(params) == 0) {
@@ -973,7 +973,10 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.34  2000-06-07 08:58:10  meichel
+** Revision 1.35  2000-06-07 13:56:18  meichel
+** Output stream now passed as mandatory parameter to ASC_dumpParameters.
+**
+** Revision 1.34  2000/06/07 08:58:10  meichel
 ** added optional paramter to DIMSE_storeUser that enables precise file size
 **   information inside the store user callback.
 **

@@ -22,9 +22,9 @@
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-04-14 16:29:26 $
+ *  Update Date:      $Date: 2000-06-07 13:56:17 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -585,7 +585,7 @@ main(int argc, char *argv[])
     }
     if (opt_debug) {
 	printf("Request Parameters:\n");
-	ASC_dumpParameters(params);
+	ASC_dumpParameters(params, COUT);
     }
 
     /* create association */
@@ -609,7 +609,7 @@ main(int argc, char *argv[])
     /* what has been accepted/refused ? */
     if (opt_debug) {
 	printf("Association Parameters Negotiated:\n");
-	ASC_dumpParameters(params);
+	ASC_dumpParameters(params, COUT);
     }
 
     if (ASC_countAcceptedPresentationContexts(params) == 0) {
@@ -1350,7 +1350,10 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.31  2000-04-14 16:29:26  meichel
+** Revision 1.32  2000-06-07 13:56:17  meichel
+** Output stream now passed as mandatory parameter to ASC_dumpParameters.
+**
+** Revision 1.31  2000/04/14 16:29:26  meichel
 ** Removed default value from output stream passed to print() method.
 **   Required for use in multi-thread environments.
 **

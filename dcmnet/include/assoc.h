@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2000-06-07 08:57:21 $
+** Update Date:		$Date: 2000-06-07 13:56:20 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/assoc.h,v $
-** CVS/RCS Revision:	$Revision: 1.12 $
+** CVS/RCS Revision:	$Revision: 1.13 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -384,10 +384,10 @@ void ASC_setRequestedExtNegList(T_ASC_Parameters* params, SOPClassExtendedNegoti
 void ASC_setAcceptedExtNegList(T_ASC_Parameters* params, SOPClassExtendedNegotiationSubItemList* extNegList);
 
 void 
-ASC_dumpParameters(T_ASC_Parameters * params);
+ASC_dumpParameters(T_ASC_Parameters * params, ostream& outstream);
 
 void 
-ASC_dumpPresentationContext(T_ASC_PresentationContext * presentationContext);
+ASC_dumpPresentationContext(T_ASC_PresentationContext * presentationContext, ostream& outstream);
 
 /*
  * Association Inquiries
@@ -516,7 +516,10 @@ ASC_destroyAssociation(T_ASC_Association ** association);
 /*
 ** CVS Log
 ** $Log: assoc.h,v $
-** Revision 1.12  2000-06-07 08:57:21  meichel
+** Revision 1.13  2000-06-07 13:56:20  meichel
+** Output stream now passed as mandatory parameter to ASC_dumpParameters.
+**
+** Revision 1.12  2000/06/07 08:57:21  meichel
 ** dcmnet ACSE routines now allow to retrieve a binary copy of the A-ASSOCIATE
 **   RQ/AC/RJ PDUs, e.g. for logging purposes.
 **
