@@ -22,9 +22,9 @@
  *  Purpose: abstract codec class for JPEG encoders.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-05-24 14:59:51 $
+ *  Update Date:      $Date: 2002-07-08 16:13:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djcodece.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -160,44 +160,52 @@ OFCondition DJCodecEncoder::encode(
         break;
     }
 
-    // update image type
-    if (result.good()) result = DcmCodec::updateImageType((DcmItem *)dataset);
+    // the following operations do not affect the Image Pixel Module
+    // but other modules such as SOP Common.  We only perform these
+    // changes if we're on the main level of the dataset,
+    // which should always identify itself as dataset, not as item.
+    if (dataset->ident() == EVR_dataset)
+    {
 
-    // determine compressed bit depth passed to JPEG codec
-    Uint16 compressedBits = djcp->getForcedBitDepth();
-    if (result.good())
-    {
-      if (compressedBits == 0)
-      {
-        result = ((DcmItem *)dataset)->findAndGetUint16(DCM_BitsStored, compressedBits);
-      }  
-    }
-    
-    // update derivation description
-    if (result.good()) result = updateDerivationDescription((DcmItem *)dataset, toRepParam, 
-      djcp, (Uint8)compressedBits, compressionRatio);
-    
-    if (result.good())
-    {
-      if (isLosslessProcess())
-      {
-        // lossless process - create new UID if mode is EUC_always or if we're converting to Secondary Capture
-        if (djcp->getConvertToSC() || (djcp->getUIDCreation() == EUC_always)) result = DcmCodec::newInstance((DcmItem *)dataset);
-      }
-      else
-      {
-        // lossy process - create new UID unless mode is EUC_never and we're not converting to Secondary Capture
-        if (djcp->getConvertToSC() || (djcp->getUIDCreation() != EUC_never)) result = DcmCodec::newInstance((DcmItem *)dataset);
+      // update image type
+      if (result.good()) result = DcmCodec::updateImageType((DcmItem *)dataset);
       
-        // update lossy compression ratio
-        if (result.good()) result = updateLossyCompressionRatio((DcmItem *)dataset, compressionRatio);
+      // determine compressed bit depth passed to JPEG codec
+      Uint16 compressedBits = djcp->getForcedBitDepth();
+      if (result.good())
+      {
+        if (compressedBits == 0)
+        {
+          result = ((DcmItem *)dataset)->findAndGetUint16(DCM_BitsStored, compressedBits);
+        }  
       }
-    }
+    
+      // update derivation description
+      if (result.good()) result = updateDerivationDescription((DcmItem *)dataset, toRepParam, 
+        djcp, (Uint8)compressedBits, compressionRatio);
+      
+      if (result.good())
+      {
+        if (isLosslessProcess())
+        {
+          // lossless process - create new UID if mode is EUC_always or if we're converting to Secondary Capture
+          if (djcp->getConvertToSC() || (djcp->getUIDCreation() == EUC_always)) result = DcmCodec::newInstance((DcmItem *)dataset);
+        }
+        else
+        {
+          // lossy process - create new UID unless mode is EUC_never and we're not converting to Secondary Capture
+          if (djcp->getConvertToSC() || (djcp->getUIDCreation() != EUC_never)) result = DcmCodec::newInstance((DcmItem *)dataset);
+        
+          // update lossy compression ratio
+          if (result.good()) result = updateLossyCompressionRatio((DcmItem *)dataset, compressionRatio);
+        }
+      }
 
-    // convert to Secondary Capture if requested by user.  
-    // This method creates a new SOP class UID, so it should be executed
-    // after the call to newInstance() which creates a Source Image Sequence.
-    if (result.good() && djcp->getConvertToSC()) result = DcmCodec::convertToSecondaryCapture((DcmItem *)dataset);
+      // convert to Secondary Capture if requested by user.  
+      // This method creates a new SOP class UID, so it should be executed
+      // after the call to newInstance() which creates a Source Image Sequence.
+      if (result.good() && djcp->getConvertToSC()) result = DcmCodec::convertToSecondaryCapture((DcmItem *)dataset);
+    }
   }
 
   return result;
@@ -1037,7 +1045,12 @@ OFCondition DJCodecEncoder::correctVOIWindows(
 /*
  * CVS/RCS Log
  * $Log: djcodece.cc,v $
- * Revision 1.7  2002-05-24 14:59:51  meichel
+ * Revision 1.8  2002-07-08 16:13:19  meichel
+ * Fixed dcmjpeg encoder: non Image Pixel module attributes are now created on
+ *   dataset level only, not inside sequence items (such as the Icon Image
+ *   Sequence)
+ *
+ * Revision 1.7  2002/05/24 14:59:51  meichel
  * Moved helper methods that are useful for different compression techniques
  *   from module dcmjpeg to module dcmdata
  *
