@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: vorwerk $
- *  Update Date:      $Date: 1999-01-18 16:15:17 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-01-18 17:30:48 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -311,7 +311,7 @@ E_Condition DVInterface::resetPresentationState()
   return status;
 }
 
-const char *DVInterface::getFilename(const char */*studyUID*/, const char */*seriesUID*/, const char */*instanceUID*/)
+const char *DVInterface::getFilename(const char * /*studyUID*/, const char * /*seriesUID*/, const char * /*instanceUID*/)
 {
   // UNIMPLEMENTED
   return NULL;
@@ -792,10 +792,10 @@ if (studyUID==NULL) return EC_IllegalCall;
 }
  
 
-E_Condition DVInterface::sendIOD(const char */*targetID*/,
-                                 const char */*studyUID*/,
-                                 const char */*seriesUID*/,
-                                 const char */*instanceUID*/)
+E_Condition DVInterface::sendIOD(const char * /*targetID*/,
+                                 const char * /*studyUID*/,
+                                 const char * /*seriesUID*/,
+                                 const char * /*instanceUID*/)
 {
     return EC_IllegalCall;
 }
@@ -1053,7 +1053,10 @@ E_Condition DVInterface::saveDICOMImage(
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.13  1999-01-18 16:15:17  vorwerk
+ *  Revision 1.14  1999-01-18 17:30:48  meichel
+ *  minor syntax purifications to keep VC++ happy
+ *
+ *  Revision 1.13  1999/01/18 16:15:17  vorwerk
  *  Bug in isPresentationstateSeries() corrected.
  *
  *  Revision 1.12  1999/01/15 17:27:17  meichel
