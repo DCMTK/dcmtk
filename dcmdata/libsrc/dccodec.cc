@@ -22,9 +22,9 @@
  *  Purpose: abstract class DcmCodec and the class DcmCodecStruct
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:48:59 $
+ *  Update Date:      $Date: 2001-09-25 17:19:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dccodec.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -68,6 +68,17 @@ void registerGlobalCodec(const DcmCodecStruct * codecStruct)
     globalCodecMutex.unlock();
 }
 
+void deregisterGlobalCodec(const DcmCodecStruct * codecStruct)
+{
+    if (! codecStruct) return;
+    globalCodecMutex.lock();
+    DcmCodecIterator first = globalCodecList.begin();
+    DcmCodecIterator last = globalCodecList.end();
+    while ((first != last) && (*first != codecStruct)) ++first;
+    if (first != last) globalCodecList.erase(first);    
+    globalCodecMutex.unlock();
+}
+
 const DcmCodecStruct * searchGlobalCodec(const E_TransferSyntax repType)
 {
     globalCodecMutex.lock();
@@ -88,7 +99,11 @@ const DcmCodecStruct * searchGlobalCodec(const E_TransferSyntax repType)
 /*
 ** CVS/RCS Log:
 ** $Log: dccodec.cc,v $
-** Revision 1.6  2001-06-01 15:48:59  meichel
+** Revision 1.7  2001-09-25 17:19:09  meichel
+** Updated abstract class DcmCodecParameter for use with dcmjpeg.
+**   Added new function deregisterGlobalCodec().
+**
+** Revision 1.6  2001/06/01 15:48:59  meichel
 ** Updated copyright header
 **
 ** Revision 1.5  2000/09/27 08:19:57  meichel

@@ -22,9 +22,9 @@
  *  Purpose: Interface of abstract class DcmCodec and the class DcmCodecStruct
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:48:34 $
+ *  Update Date:      $Date: 2001-09-25 17:19:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dccodec.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,6 +47,27 @@ class DcmPolymorphOBOW;
 
 class DcmCodecParameter
 {
+public:
+    /// default constructor
+    DcmCodecParameter() {}
+
+    /// copy constructor
+    DcmCodecParameter(const DcmCodecParameter&) {}
+
+    /// destructor
+    virtual ~DcmCodecParameter() {}
+    
+    /** this methods creates a copy of type DcmCodecParameter *
+     *  it must be overweritten in every subclass.
+     *  @return copy of this object
+     */
+    virtual DcmCodecParameter *clone() const = 0;
+
+    /** returns the class name as string.
+     *  can be used as poor man's RTTI replacement.
+     */
+    virtual const char *className() const = 0;
+
 };                    
 
 class DcmCodec
@@ -64,7 +85,7 @@ public:
      *    element in the current dataset.
      *  @return EC_Normal if successful, an error code otherwise.
      */
-    virtual E_Condition decode(
+    virtual OFCondition decode(
         const DcmRepresentationParameter * fromRepParam,
         DcmPixelSequence * pixSeq,
         DcmPolymorphOBOW& uncompressedPixelData,
@@ -72,7 +93,7 @@ public:
         const DcmStack& objStack) const = 0;
 
     // compress pixelData to pixSeq 
-    virtual E_Condition encode(
+    virtual OFCondition encode(
         const Uint16 * pixelData,
         const Uint32 length,
         const DcmRepresentationParameter * toRepParam,
@@ -81,7 +102,7 @@ public:
         DcmStack & objStack) const = 0;
 
     // change compression type
-    virtual E_Condition encode(
+    virtual OFCondition encode(
         const E_TransferSyntax fromRepType,
         const DcmRepresentationParameter * fromRepParam,
         DcmPixelSequence * fromPixSeq,
@@ -133,6 +154,7 @@ public:
  * e. g. from constructors of global objects.
  */
 void registerGlobalCodec(const DcmCodecStruct * codecStruct);
+void deregisterGlobalCodec(const DcmCodecStruct * codecStruct);
 const DcmCodecStruct * searchGlobalCodec(const E_TransferSyntax repType);
 
 #endif
@@ -140,7 +162,11 @@ const DcmCodecStruct * searchGlobalCodec(const E_TransferSyntax repType);
 /*
 ** CVS/RCS Log:
 ** $Log: dccodec.h,v $
-** Revision 1.9  2001-06-01 15:48:34  meichel
+** Revision 1.10  2001-09-25 17:19:07  meichel
+** Updated abstract class DcmCodecParameter for use with dcmjpeg.
+**   Added new function deregisterGlobalCodec().
+**
+** Revision 1.9  2001/06/01 15:48:34  meichel
 ** Updated copyright header
 **
 ** Revision 1.8  2001/05/25 09:53:51  meichel
