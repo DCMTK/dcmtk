@@ -22,9 +22,9 @@
  *  Purpose: network conditions and helper class
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-12-10 11:00:57 $
+ *  Update Date:      $Date: 2003-06-10 13:37:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/cond.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -159,6 +159,7 @@ const unsigned short DULC_UNKNOWNHOST                      = 0x320;
 const unsigned short DULC_UNRECOGNIZEDPDUTYPE              = 0x321;
 const unsigned short DULC_UNSUPPORTEDPEERPROTOCOL          = 0x322;
 const unsigned short DULC_WRONGDATATYPE                    = 0x323;
+const unsigned short DULC_TCPWRAPPER                       = 0x324;
 
 // condition constants used in the DUL module
 extern const OFCondition DUL_ASSOCIATIONREJECTED;       /* DUL Association Rejected */
@@ -183,6 +184,7 @@ extern const OFCondition DUL_REQUESTASSOCIATIONFAILED;  /* Failed to establish a
 extern const OFCondition DUL_UNEXPECTEDPDU;             /* Received unexpected PDU */
 extern const OFCondition DUL_UNSUPPORTEDPEERPROTOCOL;   /* DUL Unsupported peer protocol */
 extern const OFCondition DUL_WRONGDATATYPE;             /* DUL Wrong Data Type Specified for Request */
+
 
 // This macro creates a condition with given code, severity and text.
 // Making this a macro instead of a function saves the creation of a temporary.
@@ -267,7 +269,10 @@ typedef OFCondition CONDITION;
 /*
  * CVS Log
  * $Log: cond.h,v $
- * Revision 1.7  2002-12-10 11:00:57  meichel
+ * Revision 1.8  2003-06-10 13:37:36  meichel
+ * Added support for TCP wrappers in DICOM network layer
+ *
+ * Revision 1.7  2002/12/10 11:00:57  meichel
  * Removed error code DUL_NETWORKINITIALIZED which is not used anymore
  *
  * Revision 1.6  2001/10/12 10:18:25  meichel

@@ -44,9 +44,9 @@
 ** Intent:		This file defines the public structures and constants
 **			and the function prototypes for the DUL (DICOM Upper
 **			Layer) facility.
-** Last Update:		$Author: meichel $, $Date: 2003-06-06 13:07:29 $
+** Last Update:		$Author: meichel $, $Date: 2003-06-10 13:37:36 $
 ** Source File:		$RCSfile: dul.h,v $
-** Revision:		$Revision: 1.16 $
+** Revision:		$Revision: 1.17 $
 ** Status:		$State: Exp $
 */
 
@@ -81,6 +81,13 @@ extern OFGlobal<Sint32> dcmConnectionTimeout;   /* default -1 */
  */
 extern OFGlobal<int> dcmExternalSocketHandle;   /* default -1 */
 
+/** When compiled with WITH_TCPWRAPPER, DCMTK server processes may use the
+ *  TCP wrapper library to enforce access control - see hosts_access(5).
+ *  If this global flag is non-NULL, the TCP wrapper is enabled and the
+ *  string pointed to is used as the daemon name.  If the flag is NULL,
+ *  no access control is performed.
+ */
+extern OFGlobal<const char *> dcmTCPWrapperDaemonName;   /* default NULL */
 
 #ifndef DUL_KEYS
 #define DUL_KEYS 1
@@ -415,7 +422,10 @@ unsigned long DUL_getPeerCertificate(DUL_ASSOCIATIONKEY *dulassoc, void *buf, un
 /*
 ** CVS Log
 ** $Log: dul.h,v $
-** Revision 1.16  2003-06-06 13:07:29  meichel
+** Revision 1.17  2003-06-10 13:37:36  meichel
+** Added support for TCP wrappers in DICOM network layer
+**
+** Revision 1.16  2003/06/06 13:07:29  meichel
 ** Introduced global flag dcmExternalSocketHandle which allows
 **   to pass an already opened socket file descriptor to dcmnet.
 **

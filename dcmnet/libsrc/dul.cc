@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: meichel $, $Date: 2003-06-06 13:07:30 $
+** Last Update:		$Author: meichel $, $Date: 2003-06-10 13:37:43 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.55 $
+** Revision:		$Revision: 1.56 $
 ** Status:		$State: Exp $
 */
 
@@ -94,7 +94,23 @@ BEGIN_EXTERN_C
 #ifdef HAVE_NETINET_TCP_H
 #include <netinet/tcp.h>        /* for TCP_NODELAY */
 #endif
+#ifdef WITH_TCPWRAPPER
+#include <tcpd.h>               /* for hosts_ctl */
+#include <syslog.h>
+#endif
 END_EXTERN_C
+
+#ifdef WITH_TCPWRAPPER
+/* libwrap expects that two global flags, deny_severity and allow_severity,
+ * are defined and initialized by user code. If these flags are already present
+ * somewhere else, compile DCMTK with TCPWRAPPER_SEVERITY_EXTERN defined
+ * to avoid linker errors due to duplicate symbols.
+ */
+#ifndef TCPWRAPPER_SEVERITY_EXTERN
+int deny_severity = LOG_WARNING;
+int allow_severity = LOG_INFO;
+#endif
+#endif
 
 BEGIN_EXTERN_C
 /* declare extern "C" typedef for signal handler function pointer */
@@ -122,10 +138,12 @@ END_EXTERN_C
 #include "dulfsm.h"
 #include "dcmtrans.h"
 #include "dcmlayer.h"
+#include "ofstd.h"
 
 OFGlobal<OFBool> dcmDisableGethostbyaddr(OFFalse);
 OFGlobal<Sint32> dcmConnectionTimeout(-1);
 OFGlobal<int>    dcmExternalSocketHandle(-1);
+OFGlobal<const char *> dcmTCPWrapperDaemonName(NULL);
 
 static int networkInitialized = 0;
 static OFBool debug = 0;
@@ -1559,36 +1577,70 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
     }
 #endif // DONT_DISABLE_NAGLE_ALGORITHM
 
+    // create string containing numerical IP address.
+    OFString client_dns_name;
+    char client_ip_address[20];
+    sprintf(client_ip_address, "%-d.%-d.%-d.%-d",  // this code is ugly but thread safe
+       ((int) from.sa_data[2]) & 0xff,
+       ((int) from.sa_data[3]) & 0xff,
+       ((int) from.sa_data[4]) & 0xff,
+       ((int) from.sa_data[5]) & 0xff);
+
     if (! dcmDisableGethostbyaddr.get()) remote = gethostbyaddr(&from.sa_data[2], 4, 2);
     if (remote == NULL)
     {
         // reverse DNS lookup disabled or host not found, use numerical address
-        (void) sprintf(params->callingPresentationAddress, "%-d.%-d.%-d.%-d",
-                       ((int) from.sa_data[2]) & 0xff,
-                       ((int) from.sa_data[3]) & 0xff,
-                       ((int) from.sa_data[4]) & 0xff,
-                       ((int) from.sa_data[5]) & 0xff);
+        OFStandard::strlcpy(params->callingPresentationAddress, client_ip_address, 
+          sizeof(params->callingPresentationAddress));
+        OFStandard::strlcpy((*association)->remoteNode, client_ip_address, sizeof((*association)->remoteNode));
+
+      CERR << "sizeof is " << sizeof(params->callingPresentationAddress) << endl;
     } 
     else 
     {
-        char node[128];
-        size_t size;
+        client_dns_name = remote->h_name;
 
+        char node[128];
         if ((*network)->options & DUL_FULLDOMAINNAME)
-            strcpy(node, remote->h_name);
+            OFStandard::strlcpy(node, remote->h_name, sizeof(node));
         else {
             if (sscanf(remote->h_name, "%[^.]", node) != 1)
                 node[0] = '\0';
         }
 
-        size = sizeof((*association)->remoteNode);
-        (void) strncpy((*association)->remoteNode, node, size);
-        (*association)->remoteNode[size - 1] = '\0';
-
-        size = sizeof(params->callingPresentationAddress);
-        (void) strncpy(params->callingPresentationAddress, node, size);
-        params->callingPresentationAddress[size - 1] = '\0';
+        OFStandard::strlcpy((*association)->remoteNode, node, sizeof((*association)->remoteNode));
+        OFStandard::strlcpy(params->callingPresentationAddress, node, sizeof(params->callingPresentationAddress));
     }
+
+#ifdef WITH_TCPWRAPPER
+    const char *daemon = dcmTCPWrapperDaemonName.get();
+    if (daemon)
+    {
+        // enforce access control using the TCP wrapper - see hosts_access(5).
+
+        // if reverse DNS lookup is disabled, use default value
+        if (client_dns_name.size() == 0) client_dns_name = STRING_UNKNOWN;
+        
+        struct request_info request;
+        request_init(&request, RQ_CLIENT_NAME, client_dns_name.c_str(), 0);
+        request_set(&request, RQ_CLIENT_ADDR, client_ip_address, 0);
+        request_set(&request, RQ_USER, STRING_UNKNOWN, 0);
+        request_set(&request, RQ_DAEMON, daemon, 0);
+        
+        if (! hosts_access(&request))
+        {
+#ifdef HAVE_WINSOCK_H
+          (void) shutdown(sock,  1 /* SD_SEND */); 
+          (void) closesocket(sock);
+#else
+          (void) close(sock);
+#endif
+          char buf[1024];
+          sprintf(buf, "TCP wrapper: denied connection from %s (%s)", client_dns_name.c_str(), client_ip_address);
+          return makeDcmnetCondition(DULC_TCPWRAPPER, OF_error, buf);
+        }
+    }
+#endif
 
     if ((*association)->connection) delete (*association)->connection;
     
@@ -2336,7 +2388,10 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, ostream& outs
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.55  2003-06-06 13:07:30  meichel
+** Revision 1.56  2003-06-10 13:37:43  meichel
+** Added support for TCP wrappers in DICOM network layer
+**
+** Revision 1.55  2003/06/06 13:07:30  meichel
 ** Introduced global flag dcmExternalSocketHandle which allows
 **   to pass an already opened socket file descriptor to dcmnet.
 **
