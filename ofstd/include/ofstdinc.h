@@ -22,9 +22,9 @@
  *  Purpose: encapsulation of old style vs. ISO C++ standard includes
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-12-16 16:20:45 $
+ *  Update Date:      $Date: 2003-10-13 13:38:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstdinc.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -248,12 +248,12 @@ END_EXTERN_C
 #ifdef USE_STD_CXX_INCLUDES
 #include <cstdlib>
 #elif defined(HAVE_STDLIB_H)
-/* workaround for bug in Borland C++ Builder 4 */
-#ifndef _BCB4
+/* workaround for bug in Borland C++ Builder */
+#ifndef __BORLANDC__
 BEGIN_EXTERN_C
 #endif
 #include <stdlib.h>
-#ifndef _BCB4
+#ifndef __BORLANDC__
 END_EXTERN_C
 #endif
 #endif
@@ -303,7 +303,10 @@ END_EXTERN_C
 /*
  * CVS/RCS Log:
  * $Log: ofstdinc.h,v $
- * Revision 1.6  2002-12-16 16:20:45  meichel
+ * Revision 1.7  2003-10-13 13:38:44  meichel
+ * Activated Borland stdlib workaround for compiler versions other than 4.
+ *
+ * Revision 1.6  2002/12/16 16:20:45  meichel
  * Added configure test that checks if extern "C" inclusion
  *   of <math.h> fails, e.g. on HP/UX 10 and WIN32
  *
