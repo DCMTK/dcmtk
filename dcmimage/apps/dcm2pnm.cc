@@ -22,15 +22,15 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-13 17:28:30 $
+ *  Update Date:      $Date: 1999-09-17 13:40:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
- 
+
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
@@ -43,10 +43,10 @@ END_EXTERN_C
  #include <GUSI.h>
 #endif
 
-#include "dctk.h"
-#include "dcutils.h"
-#include "dcdebug.h"
-#include "cmdlnarg.h"
+#include "dctk.h"          /* for various dcmdata headers */
+#include "dcutils.h"       /* for getSingleValue */
+#include "dcdebug.h"       /* for SetDebugLevel */
+#include "cmdlnarg.h"      /* for prepareCmdLineArgs */
 #include "dcuid.h"         /* for dcmtk version name */
 
 #include "dcmimage.h"      /* for DicomImage */
@@ -58,7 +58,11 @@ END_EXTERN_C
 
 #include "diregist.h"      /* include to support color images */
 
-#include "strstream.h"     /* for ostrstream */
+#ifdef _WIN32
+ #include <strstrea.h>     /* for ostrstream */
+#else
+ #include <strstream.h>    /* for ostrstream */
+#endif
 
 #undef  USE_LICENSE
 #define LICENSE_TYPE       ""
@@ -92,7 +96,7 @@ int main(int argc, char *argv[])
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "Convert DICOM images to PGM or PNM", rcsid, &OUTPUT);
     OFCommandLine cmd;
 
-	char buf[1024];
+    char buf[1024];
     ostrstream oss(buf, 1024);
 
     int                 opt_readAsDataset = 0;            /* default: fileformat or dataset */
@@ -138,17 +142,18 @@ int main(int argc, char *argv[])
     int                 opt_debugMode   = 0;              /* default: no debug */
     int                 opt_suppressOutput = 0;           /* default: create output */
     int                 opt_fileType = 1;                 /* default: 8-bit binary PGM/PPM */
-                        /* 2=8-bit-ASCII, 3=16-bit-ASCII, 4=n-bit-ASCII, 5=pastel color */  
+                        /* 2=8-bit-ASCII, 3=16-bit-ASCII, 4=n-bit-ASCII, 5=pastel color */
     OFCmdUnsignedInt    opt_fileBits = 0;                 /* default: 0 */
     const char *        opt_ifname = NULL;
     const char *        opt_ofname = NULL;
-    
-    int i;
-    for (i = 0; i < 16; i++) opt_Overlay[i] = 2;          /* default: display all overlays if present */
 
-    SetDebugLevel(( 0 ));
+    int i;
+    for (i = 0; i < 16; i++)
+        opt_Overlay[i] = 2;                               /* default: display all overlays if present */
+
+    SetDebugLevel((0));
     DicomImageClass::DebugLevel = DicomImageClass::DL_Warnings | DicomImageClass::DL_Errors;
-  
+
     prepareCmdLineArgs(argc, argv, "dcm2pnm");
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
 
@@ -180,7 +185,7 @@ int main(int argc, char *argv[])
       cmd.addOption("--frame",              "+F",   1, "[n]umber : integer",
                                                         "select specified frame (default: 1)");
       cmd.addOption("--frame-range",        "+Fr",  2, "[n]umber [c]ount : integer",
-                                                        "select c frames beginning with n");
+                                                       "select c frames beginning with n");
       cmd.addOption("--all-frames",         "+Fa",     "select all frames");
 
      cmd.addSubGroup("rotation:");
@@ -269,7 +274,7 @@ int main(int argc, char *argv[])
     {
         if ((cmd.getParamCount() == 1) && (!cmd.findOption("--no-output")))
             app.printError("Missing output file");
-        else 
+        else
         {
             cmd.getParam(1, opt_ifname);
             cmd.getParam(2, opt_ofname);
@@ -283,7 +288,7 @@ int main(int argc, char *argv[])
                 app.setQuietMode();
             }
             cmd.endOptionBlock();
-                
+
             if (cmd.findOption("--debug"))
                 opt_debugMode = 1;
             if (cmd.findOption("--image-info"))
@@ -327,7 +332,7 @@ int main(int argc, char *argv[])
                 opt_MultiFrame = 1;
             }
             cmd.endOptionBlock();
-            
+
             if (cmd.findOption("--grayscale"))
                 opt_ConvertToGrayscale = 1;
 
@@ -336,7 +341,7 @@ int main(int argc, char *argv[])
                 app.checkValue(cmd.getValue(opt_left));
                 app.checkValue(cmd.getValue(opt_top));
                 app.checkValue(cmd.getValue(opt_width, 1));
-                app.checkValue(cmd.getValue(opt_height,1));
+                app.checkValue(cmd.getValue(opt_height, 1));
                 opt_useClip = 1;
             }
 
@@ -346,7 +351,7 @@ int main(int argc, char *argv[])
             if (cmd.findOption("--rotate-right"))
                 opt_rotateDegree = 90;
             if (cmd.findOption("--rotate-top-down"))
-                opt_rotateDegree = 180;                
+                opt_rotateDegree = 180;
             cmd.endOptionBlock();
 
             cmd.beginOptionBlock();
@@ -439,7 +444,7 @@ int main(int argc, char *argv[])
                 opt_presShape = ESP_Inverse;
             }
             cmd.endOptionBlock();
-            
+
             if (cmd.findOption("--display-file"))
                 app.checkValue(cmd.getValue(opt_displayFile));
             cmd.beginOptionBlock();
@@ -453,7 +458,8 @@ int main(int argc, char *argv[])
             if (cmd.findOption("--no-overlays"))
             {
                 opt_O_used = 1;
-                for (i = 0; i < 16; i++) opt_Overlay[i] = 0;
+                for (i = 0; i < 16; i++)
+                    opt_Overlay[i] = 0;
             }
             if (cmd.findOption("--display-overlay", 0, OFCommandLine::FOM_First))
             {
@@ -462,13 +468,16 @@ int main(int argc, char *argv[])
                     app.checkValue(cmd.getValue(l, 1, 16));
                     if (!opt_O_used)
                     {
-                        for (i = 0; i < 16; i++) opt_Overlay[i] = 0; 
+                        for (i = 0; i < 16; i++) opt_Overlay[i] = 0;
                         opt_O_used = 1;
                     }
                     if (l > 0)
                         opt_Overlay[l - 1]=1;
                     else
-                        for (i = 0; i < 16; i++) opt_Overlay[i] = 2; 
+                    {
+                        for (i = 0; i < 16; i++)
+                            opt_Overlay[i] = 2;
+                    }
                 } while (cmd.findOption("--display-overlay", 0, OFCommandLine::FOM_Next));
             }
             cmd.endOptionBlock();
@@ -515,13 +524,13 @@ int main(int argc, char *argv[])
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
-    	oss << "no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << ends;
-    	app.printWarning(oss.str());
+        oss << "no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << ends;
+        app.printWarning(oss.str());
     }
-        
+
 //    SetDebugLevel(( (int)opt_debugMode ));
     if (opt_verboseMode < 1)
-        DicomImageClass::DebugLevel = 0;    
+        DicomImageClass::DebugLevel = 0;
     if (opt_debugMode > 0)
         DicomImageClass::DebugLevel |= DicomImageClass::DL_DebugMessages;
     if (opt_verboseMode > 1)
@@ -533,26 +542,26 @@ int main(int argc, char *argv[])
     DcmFileStream myin(opt_ifname, DCM_ReadMode);
     if (myin.GetError() != EC_Normal)
     {
-		oss << "cannot open DICOM file: " << opt_ifname << ends;
+        oss << "cannot open DICOM file: " << opt_ifname << ends;
         app.printError(oss.str());
     }
- 
+
     DcmObject * dfile = NULL;
     if (opt_readAsDataset)
         dfile = new DcmDataset();
     else
         dfile = new DcmFileFormat();
- 
+
     dfile->transferInit();
     dfile->read(myin, opt_transferSyntax, EGL_withoutGL);
     dfile->transferEnd();
- 
+
     if (dfile->error() != EC_Normal)
     {
         oss << dcmErrorConditionToString(dfile->error()) << ": reading file: " << opt_ifname << ends;
         app.printError(oss.str());
     }
-    
+
     if (opt_verboseMode > 1)
         OUTPUT << "preparing pixel data." << endl;
 
@@ -582,23 +591,23 @@ int main(int argc, char *argv[])
 
     if (opt_imageInfo)
     {
-        
+
         /* dump image parameters */
         if (opt_verboseMode > 1)
             OUTPUT << "dumping image parameters." << endl;
 
-        double minVal=0.0;
-        double maxVal=0.0;
+        double minVal = 0.0;
+        double maxVal = 0.0;
         const char *colorModel;
-        char *SOPClassUID=NULL;
-        char *SOPInstanceUID=NULL;
-        const char *SOPClassText=NULL;
-        
+        char *SOPClassUID = NULL;
+        char *SOPInstanceUID = NULL;
+        const char *SOPClassText = NULL;
+
         int minmaxValid = di->getMinMaxValues(minVal, maxVal);
         colorModel = di->getString(di->getPhotometricInterpretation());
         if (colorModel == NULL)
             colorModel = "unknown";
-        
+
         if (opt_readAsDataset)
         {
             getSingleValue(dfile, DCM_SOPClassUID, SOPClassUID);
@@ -610,12 +619,12 @@ int main(int argc, char *argv[])
         if (SOPInstanceUID == NULL)
             SOPInstanceUID = (char *)"not present";
         if (SOPClassUID == NULL)
-            SOPClassText="not present";
+            SOPClassText = "not present";
         else
-            SOPClassText=dcmFindNameOfUID(SOPClassUID);
-        if (SOPClassText==NULL)
-            SOPClassText=SOPClassUID;
-                                
+            SOPClassText = dcmFindNameOfUID(SOPClassUID);
+        if (SOPClassText == NULL)
+            SOPClassText = SOPClassUID;
+
         fprintf(stderr,
             "filename            : %s\n"
             "SOP class           : %s\n"
@@ -650,7 +659,7 @@ int main(int argc, char *argv[])
             );
         }
     }
-    
+
     if (opt_suppressOutput) return 0;
 
     /* select frame */
@@ -659,21 +668,21 @@ int main(int argc, char *argv[])
         oss << "cannot select frame no. " << opt_Frame << ", only " << di->getFrameCount() << " frame(s) in file." << ends;
         app.printError(oss.str());
     }
-    
+
     /* convert to grayscale if necessary */
-    if ((opt_ConvertToGrayscale)&&(! di->isMonochrome()))
-    { 
+    if ((opt_ConvertToGrayscale)  &&  (!di->isMonochrome()))
+    {
          if (opt_verboseMode > 1)
              OUTPUT << "converting image to grayscale." << endl;
 
          DicomImage *newimage = di->createMonochromeImage();
-         if (newimage==NULL)
+         if (newimage == NULL)
              app.printError("Out of memory.\n");
          else if (newimage->getStatus() != EIS_Normal)
              app.printError(DicomImage::getString(newimage->getStatus()));
          else
          {
-             delete di; 
+             delete di;
              di = newimage;
          }
     }
@@ -683,41 +692,41 @@ int main(int argc, char *argv[])
     switch (opt_OverlayMode)
     {
         case 2:
-            overlayMode=EMO_ThresholdReplace;
+            overlayMode = EMO_ThresholdReplace;
             break;
         case 3:
-            overlayMode=EMO_Complement;
+            overlayMode = EMO_Complement;
             break;
         case 4:
-            overlayMode=EMO_RegionOfInterest;
+            overlayMode = EMO_RegionOfInterest;
             break;
         case 1:
         default:
-            overlayMode=EMO_Replace;
+            overlayMode = EMO_Replace;
             break;
-            
+
     }
     di->hideAllOverlays();
-    for (unsigned int k=0; k<16; k++)
+    for (unsigned int k = 0; k < 16; k++)
     {
         if (opt_Overlay[k])
         {
-            if ((opt_Overlay[k]==1)||(k < di->getOverlayCount()))
+            if ((opt_Overlay[k] == 1) || (k < di->getOverlayCount()))
             {
                 if (opt_verboseMode > 1)
-                    OUTPUT << "activating overlay plane " << k+1 << endl;
+                    OUTPUT << "activating overlay plane " << k + 1 << endl;
                 if (opt_OverlayMode)
                 {
                     if (!di->showOverlay(k, overlayMode, opt_foregroundDensity, opt_thresholdDensity))
                     {
-                    	oss << "cannot display overlay plane " << k+1 << ends;
-                    	app.printWarning(oss.str());
+                        oss << "cannot display overlay plane " << k + 1 << ends;
+                        app.printWarning(oss.str());
                     }
                 } else {
                     if (!di->showOverlay(k)) /* use default values */
                     {
-                        oss << "cannot display overlay plane " << k+1 << ends;
-                    	app.printWarning(oss.str());
+                        oss << "cannot display overlay plane " << k + 1 << ends;
+                        app.printWarning(oss.str());
                     }
                 }
             }
@@ -725,10 +734,10 @@ int main(int argc, char *argv[])
     }
 
     /* process VOI parameters */
-    switch (opt_windowType)    
+    switch (opt_windowType)
     {
         case 1: /* use the n-th VOI window from the image file */
-            if ((opt_windowParameter<1)||(opt_windowParameter>di->getWindowCount()))
+            if ((opt_windowParameter < 1) || (opt_windowParameter > di->getWindowCount()))
             {
                 oss << "cannot select VOI window no. " << opt_windowParameter << ", only " << di->getWindowCount() <<
                     " window(s) in file." << ends;
@@ -736,22 +745,22 @@ int main(int argc, char *argv[])
             }
             if (opt_verboseMode > 1)
                 OUTPUT << "activating VOI window " << opt_windowParameter << endl;
-            if (!di->setWindow(opt_windowParameter-1))
+            if (!di->setWindow(opt_windowParameter - 1))
             {
                 oss << "cannot select VOI window no. " << opt_windowParameter << ends;
                 app.printWarning(oss.str());
             }
             break;
         case 2: /* use the n-th VOI look up table from the image file */
-            if ((opt_windowParameter<1)||(opt_windowParameter>di->getVoiLutCount()))
+            if ((opt_windowParameter < 1) || (opt_windowParameter > di->getVoiLutCount()))
             {
-            	oss << "cannot select VOI LUT no. " << opt_windowParameter << ", only " << di->getVoiLutCount() <<
-            	    " LUT(s) in file." << ends;
+                oss << "cannot select VOI LUT no. " << opt_windowParameter << ", only " << di->getVoiLutCount() <<
+                    " LUT(s) in file." << ends;
                 app.printError(oss.str());
             }
             if (opt_verboseMode > 1)
                 OUTPUT << "activating VOI LUT " << opt_windowParameter << endl;
-            if (!di->setVoiLut(opt_windowParameter-1))
+            if (!di->setVoiLut(opt_windowParameter - 1))
             {
                 oss << "cannot select VOI LUT no. " << opt_windowParameter << ends;
                 app.printWarning(oss.str());
@@ -762,7 +771,7 @@ int main(int argc, char *argv[])
                 OUTPUT << "activating VOI window min-max algorithm" << endl;
             if (!di->setMinMaxWindow(0))
                 app.printWarning("cannot compute min/max VOI window");
-            break;         
+            break;
         case 4: /* Compute VOI window using Histogram algorithm, ignoring n percent */
             if (opt_verboseMode > 1)
                 OUTPUT << "activating VOI window histogram algorithm, ignoring " << opt_windowParameter << "%" << endl;
@@ -783,13 +792,13 @@ int main(int argc, char *argv[])
                 OUTPUT << "activating VOI window min-max algorithm, ignoring extreme values" << endl;
             if (!di->setMinMaxWindow(1))
                 app.printWarning("cannot compute min/max VOI window");
-            break;         
+            break;
         default: /* no VOI windowing */
             if (di->isMonochrome())
             {
                 if (opt_verboseMode > 1)
                     OUTPUT << "disabling VOI window computation" << endl;
-                if (! di->setNoVoiTransformation()) 
+                if (! di->setNoVoiTransformation())
                     app.printWarning("cannot ignore VOI window");
             }
             break;
@@ -814,7 +823,7 @@ int main(int argc, char *argv[])
 
     /* perform clipping */
     if (opt_useClip && (opt_scaleType == 0))
-    { 
+    {
          if (opt_verboseMode > 1)
              OUTPUT << "clipping image to (" << opt_left << "," << opt_top << "," << opt_width << "," << opt_height << ")." << endl;
          DicomImage *newimage = di->createClippedImage(opt_left, opt_top, opt_width, opt_height);
@@ -830,7 +839,7 @@ int main(int argc, char *argv[])
              di = newimage;
          }
     }
-    
+
     /* perform rotation */
     if (opt_rotateDegree > 0)
     {
@@ -927,18 +936,18 @@ int main(int argc, char *argv[])
             app.printError(DicomImage::getString(newimage->getStatus()));
         else
         {
-            delete di; 
+            delete di;
             di = newimage;
         }
     }
-    
+
     if (opt_verboseMode > 1)
          OUTPUT << "writing PPM/PGM file to " << ((opt_ofname)? opt_ofname : "stderr") << endl;
     FILE *ofile = stdout;
     if (opt_ofname)
     {
         ofile = fopen(opt_ofname, "wb");
-        if (ofile==NULL)     
+        if (ofile==NULL)
         {
             oss << "cannot create file " << opt_ofname << ends;
             app.printError(oss.str());
@@ -969,7 +978,8 @@ int main(int argc, char *argv[])
             break;
     }
 
-    if (opt_ofname) fclose(ofile);
+    if (opt_ofname)
+        fclose(ofile);
 
     /* done, now cleanup. */
     if (opt_verboseMode > 1)
@@ -984,7 +994,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.33  1999-09-13 17:28:30  joergr
+ * Revision 1.34  1999-09-17 13:40:54  joergr
+ * Corrected typos and formatting.
+ *
+ * Revision 1.33  1999/09/13 17:28:30  joergr
  * Changed (almost) all output commands from C to C++ style (using string
  * streams). Advantage: C++ output routines are type safe and using the
  * same output streams (in this case 'cerr').
