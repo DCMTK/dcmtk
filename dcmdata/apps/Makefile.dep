@@ -1,30 +1,3 @@
-dcm2raw.o: dcm2raw.cc ../../config/include/osconfig.h \
- ../include/dctk.h ../include/dctypes.h ../../ofstd/include/oftypes.h \
- ../include/dcswap.h ../include/dcerror.h ../include/dcxfer.h \
- ../include/dcvr.h ../../ofstd/include/ofglobal.h \
- ../../ofstd/include/ofthread.h ../include/dcstream.h \
- ../include/dcuid.h ../include/dcvm.h ../include/dcdefine.h \
- ../include/dcdebug.h ../include/dctagkey.h \
- ../../ofstd/include/ofstring.h ../include/dctag.h \
- ../include/dcdicent.h ../include/dchashdi.h \
- ../../ofstd/include/oflist.h ../include/dcdict.h \
- ../include/dcdeftag.h ../include/dcobject.h \
- ../../ofstd/include/ofconsol.h ../include/dclist.h \
- ../include/dcstack.h ../include/dcelem.h ../include/dcitem.h \
- ../include/dcvrui.h ../include/dcbytstr.h ../include/dcmetinf.h \
- ../include/dcdatset.h ../include/dcsequen.h ../include/dcfilefo.h \
- ../include/dcdicdir.h ../include/dcdirrec.h ../include/dcvrulup.h \
- ../include/dcvrul.h ../include/dcpixseq.h ../include/dcvrae.h \
- ../include/dcvras.h ../include/dcvrcs.h ../include/dcvrda.h \
- ../include/dcvrds.h ../include/dcvrdt.h ../include/dcvris.h \
- ../include/dcvrtm.h ../include/dcchrstr.h ../include/dcvrlo.h \
- ../include/dcvrlt.h ../include/dcvrpn.h ../include/dcvrsh.h \
- ../include/dcvrst.h ../include/dcvrut.h ../include/dcvrobow.h \
- ../include/dcpixel.h ../include/dcvrpobw.h ../include/dcovlay.h \
- ../include/dcvrat.h ../include/dcvrss.h ../include/dcvrus.h \
- ../include/dcvrsl.h ../include/dcvrfl.h ../include/dcvrfd.h \
- ../include/cmdlnarg.h ../../ofstd/include/ofconapp.h \
- ../../ofstd/include/ofcmdln.h ../include/dcpxitem.h
 dcmconv.o: dcmconv.cc ../../config/include/osconfig.h \
  ../include/dctk.h ../include/dctypes.h ../../ofstd/include/oftypes.h \
  ../include/dcswap.h ../include/dcerror.h ../include/dcxfer.h \
