@@ -9,9 +9,9 @@
 ** the dcmdata library.  
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-06-26 12:59:16 $
+** Update Date:		$Date: 1997-07-21 08:25:37 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/mkdictbi.cc,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
+** CVS/RCS Revision:	$Revision: 1.9 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -240,7 +240,7 @@ main(int argc, char* argv[])
     
     Pix p = NULL;
     Pix pp = NULL;
-    int lastEntry = FALSE;
+    int lastEntry = OFFalse;
     for (p = dcmDataDict.normalFirst(); p != 0; dcmDataDict.normalNext(p)) {
         e = dcmDataDict.normalContents(p);
         printSimpleEntry(fout, e, lastEntry);
@@ -252,7 +252,7 @@ main(int argc, char* argv[])
         pp = p;
         dcmDataDict.repeatingNext(pp);
         if (pp == 0) {
-            lastEntry = TRUE;
+            lastEntry = OFTrue;
         }
         printSimpleEntry(fout, e, lastEntry);
     }
@@ -274,7 +274,7 @@ main(int argc, char* argv[])
     fprintf(fout, "        e = new DcmDictEntry(b->group, b->element,\n");
     fprintf(fout, "            b->upperGroup, b->upperElement, b->evr,\n");
     fprintf(fout, "            b->tagName, b->vmMin, b->vmMax,\n");
-    fprintf(fout, "            b->standardVersion, FALSE);\n");
+    fprintf(fout, "            b->standardVersion, OFFalse);\n");
     fprintf(fout, "        e->setGroupRangeRestriction(b->groupRestriction);\n");
     fprintf(fout, "        e->setElementRangeRestriction(b->elementRestriction);\n");
     fprintf(fout, "        addEntry(e);\n");
@@ -289,7 +289,11 @@ main(int argc, char* argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: mkdictbi.cc,v $
-** Revision 1.8  1997-06-26 12:59:16  andreas
+** Revision 1.9  1997-07-21 08:25:37  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.8  1997/06/26 12:59:16  andreas
 ** - Include Additional headers (winsock.h, io.h) for Windows NT/95
 **
 ** Revision 1.7  1997/05/13 13:44:30  hewett

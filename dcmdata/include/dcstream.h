@@ -9,9 +9,9 @@
 **	defines streaming classes for file and buffer input/output
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-04-18 08:01:59 $
+** Update Date:		$Date: 1997-07-21 08:25:11 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcstream.h,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -29,11 +29,11 @@
 
 class DcmMemoryBuffer;
 
-const BOOL DCM_ReadMode = TRUE;
-const BOOL DCM_WriteMode = FALSE;
+const OFBool DCM_ReadMode = OFTrue;
+const OFBool DCM_WriteMode = OFFalse;
 
-const BOOL DCM_RandomAccess = TRUE;
-const BOOL DCM_SequentialAccess = FALSE;
+const OFBool DCM_RandomAccess = OFTrue;
+const OFBool DCM_SequentialAccess = OFFalse;
 
 class DcmStreamConstructor;
 
@@ -46,8 +46,8 @@ class DcmStream
 {
 
   protected:
-	BOOL fReadMode;				// Stream readable or writable
-	BOOL fRandomAccess;			// Stream random or sequentiall Access
+	OFBool fReadMode;				// Stream readable or writable
+	OFBool fRandomAccess;			// Stream random or sequentiall Access
 	Uint32 fTransferredBytes;	// no of bytes from last r/w operation
 	E_Condition fErrorCond;	   	// Error Condition
 	
@@ -56,7 +56,7 @@ class DcmStream
 
 // CONSTRUCTOR
 
-	DcmStream(const BOOL readMode, const BOOL randomAccess);
+	DcmStream(const OFBool readMode, const OFBool randomAccess);
 	virtual DcmStreamConstructor * NewConstructor(void) = 0;
 
 // DESTRUCTOR
@@ -83,8 +83,8 @@ class DcmStream
 
 // FLUSHING STREAM
 
-	virtual BOOL MustFlush(void) = 0;
-	virtual BOOL Flush(void) = 0;
+	virtual OFBool MustFlush(void) = 0;
+	virtual OFBool Flush(void) = 0;
 
 
 // ERROR HANDLING
@@ -95,7 +95,7 @@ class DcmStream
 		return fErrorCond;
 	}
 
-	inline BOOL Fail(void) const
+	inline OFBool Fail(void) const
 	{
 		return fErrorCond != EC_Normal;
 	}
@@ -110,13 +110,13 @@ class DcmStream
 // STREAM MODE
 
 	// Is Stream readable or writeble
-	inline BOOL IsReadMode(void) const
+	inline OFBool IsReadMode(void) const
 	{
 		return fReadMode;
 	}
 
 	// Is Random Access possible ?
-	inline BOOL HasRandomAccess(void) const
+	inline OFBool HasRandomAccess(void) const
 	{
 		return fRandomAccess;
 	}
@@ -131,15 +131,15 @@ class DcmStream
 	
 // HANDLING OF READ AND WRITE OPERATIONS
 
-	virtual BOOL EndOfStream(void) = 0;
+	virtual OFBool EndOfStream(void) = 0;
 
 	// Putback of bytes. To use the putback routines, the stream must 
 	// be in read mode and you must first set a putback mark. If you decide 
 	// that no putback is necessary, you should unset the mark.
 	virtual void SetPutbackMark(void) = 0;
 	virtual void UnsetPutbackMark(void) = 0;
-	virtual BOOL Putback(void) = 0;
-	virtual BOOL Putback(const Uint32 noBytes) = 0;
+	virtual OFBool Putback(void) = 0;
+	virtual OFBool Putback(const Uint32 noBytes) = 0;
 	
 
 	virtual void ReadBytes(void * bytes, const Uint32 length) = 0;
@@ -159,15 +159,15 @@ class DcmFileStream : public DcmStream
 	char * fFilename;			// Filename of file
 	FILE * fFile;				// file for Input/Output
 	Uint32 fNumBytes;			// Number of Bytes in file
-	BOOL fPutbackMode;			// putback mark set ?
+	OFBool fPutbackMode;			// putback mark set ?
 	Uint32 fNumPutbackBytes; 	// number of bytes to putback
 
   public:
 
 // CONSTRUCTOR
 	DcmFileStream(const char * filename, 
-				  const BOOL readMode, 
-				  const BOOL randomAccess = DCM_RandomAccess);
+				  const OFBool readMode, 
+				  const OFBool randomAccess = DCM_RandomAccess);
 	virtual DcmStreamConstructor * NewConstructor(void);
 
 // DESTRUCTOR
@@ -187,20 +187,20 @@ class DcmFileStream : public DcmStream
 
 // FLUSHING STREAM
 
-	virtual BOOL MustFlush(void);
-	virtual BOOL Flush(void);
+	virtual OFBool MustFlush(void);
+	virtual OFBool Flush(void);
 
 
 // HANDLING OF READ AND WRITE OPERATIONS
 
 
-	virtual BOOL EndOfStream(void);
+	virtual OFBool EndOfStream(void);
 
 	virtual void SetPutbackMark(void);
 	virtual void UnsetPutbackMark(void);
 
-	virtual BOOL Putback(void);
-	virtual BOOL Putback(const Uint32 noBytes);
+	virtual OFBool Putback(void);
+	virtual OFBool Putback(const Uint32 noBytes);
 	
 	virtual void ReadBytes(void * bytes, const Uint32 length);
 
@@ -222,10 +222,10 @@ class DcmBufferStream : public DcmStream
 
 // CONSTRUCTOR
 
-	DcmBufferStream(const BOOL readMode);
-	DcmBufferStream(const Uint32 length, const BOOL readMode);
+	DcmBufferStream(const OFBool readMode);
+	DcmBufferStream(const Uint32 length, const OFBool readMode);
 	DcmBufferStream(void * buffer, const Uint32 length,
-					const BOOL readMode);
+					const OFBool readMode);
 
 	virtual DcmStreamConstructor * NewConstructor(void);
 
@@ -246,19 +246,19 @@ class DcmBufferStream : public DcmStream
 
 // FLUSHING STREAM
 
-	virtual BOOL MustFlush(void);
-	virtual BOOL Flush(void);
+	virtual OFBool MustFlush(void);
+	virtual OFBool Flush(void);
 
 
 // HANDLING OF READ AND WRITE OPERATIONS
 
 	void SetEndOfStream();
-	virtual BOOL EndOfStream(void);
+	virtual OFBool EndOfStream(void);
 
 	virtual void SetPutbackMark(void);
 	virtual void UnsetPutbackMark(void);
-	virtual BOOL Putback(void);
-	virtual BOOL Putback(const Uint32 noBytes);
+	virtual OFBool Putback(void);
+	virtual OFBool Putback(const Uint32 noBytes);
 
 	virtual void ReadBytes(void * bytes, const Uint32 length);
 
@@ -283,11 +283,11 @@ class DcmBufferStream : public DcmStream
 class DcmStreamConstructor
 {
   protected:
-	BOOL fReadMode;
-	BOOL fRandomAccess;
+	OFBool fReadMode;
+	OFBool fRandomAccess;
 
   public:
-	DcmStreamConstructor(const BOOL readMode, const BOOL randomAccess);
+	DcmStreamConstructor(const OFBool readMode, const OFBool randomAccess);
 	virtual ~DcmStreamConstructor(void);
 
 	virtual DcmStream * NewDcmStream(void) = 0;
@@ -305,8 +305,8 @@ class DcmFileStreamConstructor : public DcmStreamConstructor
 	char * fFilename;
 
   public:
-	DcmFileStreamConstructor(const char * fFilename, const BOOL readMode,
-							 const BOOL randomAccess);
+	DcmFileStreamConstructor(const char * fFilename, const OFBool readMode,
+							 const OFBool randomAccess);
 	virtual ~DcmFileStreamConstructor(void);
 
 	virtual DcmStream * NewDcmStream(void);
@@ -320,7 +320,11 @@ class DcmFileStreamConstructor : public DcmStreamConstructor
 /*
 ** CVS/RCS Log:
 ** $Log: dcstream.h,v $
-** Revision 1.4  1997-04-18 08:01:59  andreas
+** Revision 1.5  1997-07-21 08:25:11  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.4  1997/04/18 08:01:59  andreas
 ** - Make the Declaration of DcmBuffer local to the DcmStream classes
 **
 ** Revision 1.3  1996/01/05 13:23:00  andreas

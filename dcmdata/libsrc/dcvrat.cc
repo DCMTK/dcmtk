@@ -10,9 +10,9 @@
 ** Implementation of class DcmAttributeTag
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-03 15:10:08 $
+** Update Date:		$Date: 1997-07-21 08:25:32 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrat.cc,v $
-** CVS/RCS Revision:	$Revision: 1.10 $
+** CVS/RCS Revision:	$Revision: 1.11 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -66,7 +66,7 @@ DcmAttributeTag::~DcmAttributeTag()
 // ********************************
 
 
-void DcmAttributeTag::print(ostream & out, const BOOL showFullData,
+void DcmAttributeTag::print(ostream & out, const OFBool showFullData,
 			    const int level)
 {
     if (this -> valueLoaded())
@@ -237,7 +237,7 @@ E_Condition DcmAttributeTag::getTagVal(DcmTagKey & attrTag, const unsigned long 
 
 // ********************************
 
-E_Condition DcmAttributeTag::verify(const BOOL autocorrect)
+E_Condition DcmAttributeTag::verify(const OFBool autocorrect)
 {
     errorFlag = EC_Normal;
     if ( Length % (2*sizeof(Uint16)) != 0 )
@@ -259,7 +259,11 @@ E_Condition DcmAttributeTag::verify(const BOOL autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrat.cc,v $
-** Revision 1.10  1997-07-03 15:10:08  andreas
+** Revision 1.11  1997-07-21 08:25:32  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.10  1997/07/03 15:10:08  andreas
 ** - removed debugging functions Bdebug() and Edebug() since
 **   they write a static array and are not very useful at all.
 **   Cdebug and Vdebug are merged since they have the same semantics.

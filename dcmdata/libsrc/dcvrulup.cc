@@ -10,9 +10,9 @@
 ** Implementation of class DcmUnsignedLongOffset
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-03 15:10:21 $
+** Update Date:		$Date: 1997-07-21 08:25:36 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrulup.cc,v $
-** CVS/RCS Revision:	$Revision: 1.10 $
+** CVS/RCS Revision:	$Revision: 1.11 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -76,7 +76,7 @@ DcmEVR DcmUnsignedLongOffset::ident() const
 // ********************************
 
 
-void DcmUnsignedLongOffset::print(ostream & out, const BOOL showFullData,
+void DcmUnsignedLongOffset::print(ostream & out, const OFBool showFullData,
 				  const int level)
 {
     if (this -> valueLoaded())
@@ -152,7 +152,7 @@ E_Condition DcmUnsignedLongOffset::clear(void)
 // ********************************
 
 
-E_Condition DcmUnsignedLongOffset::verify(const BOOL autocorrect)
+E_Condition DcmUnsignedLongOffset::verify(const OFBool autocorrect)
 {
     errorFlag = DcmUnsignedLong::verify(autocorrect);
     Uint32 * uintVals;
@@ -171,7 +171,11 @@ E_Condition DcmUnsignedLongOffset::verify(const BOOL autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrulup.cc,v $
-** Revision 1.10  1997-07-03 15:10:21  andreas
+** Revision 1.11  1997-07-21 08:25:36  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.10  1997/07/03 15:10:21  andreas
 ** - removed debugging functions Bdebug() and Edebug() since
 **   they write a static array and are not very useful at all.
 **   Cdebug and Vdebug are merged since they have the same semantics.

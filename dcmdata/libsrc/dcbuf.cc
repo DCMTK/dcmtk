@@ -10,9 +10,9 @@
 ** 
 ** 
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-09 11:06:42 $
+** Update Date:		$Date: 1997-07-21 08:25:24 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dcbuf.cc,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -33,7 +33,7 @@ DcmBuffer::DcmBuffer(void)
     fLength = 0;
     fFilled = 0;
     fBuffer = NULL;
-    fSelfAllocated = FALSE;
+    fSelfAllocated = OFFalse;
 }
 
 DcmBuffer::DcmBuffer(const Uint32 length)
@@ -42,7 +42,7 @@ DcmBuffer::DcmBuffer(const Uint32 length)
     fBuffer = new unsigned char[length];
     fLength = length;
     fFilled = 0;
-    fSelfAllocated = TRUE;
+    fSelfAllocated = OFTrue;
 }
 
 
@@ -54,7 +54,7 @@ DcmBuffer::DcmBuffer(void * buffer,
     memcpy(fBuffer, (unsigned char *)buffer, filled);
     fFilled = filled;
     fLength = length;
-    fSelfAllocated = TRUE;
+    fSelfAllocated = OFTrue;
 }
 
 
@@ -91,7 +91,7 @@ void DcmMemoryBuffer::CopyIntoBuffer(void * buffer,
 {
     this -> InstallBackupBuffer();
     DcmBuffer * newBuffer = new DcmBuffer(buffer, filled, length);
-    BOOL mustSetCurrent = fCurrent == fBuffers[MAIN] || fCurrent == NULL;
+    OFBool mustSetCurrent = fCurrent == fBuffers[MAIN] || fCurrent == NULL;
     delete fBuffers[MAIN];
     fBuffers[MAIN] = newBuffer;
     if (mustSetCurrent)
@@ -138,8 +138,8 @@ void DcmMemoryBuffer::Initialize(void)
     fPutbackBuffer = NULL;
     fPutbackIndex = 0;
     fPutbackNumber = 0;
-    fEndOfBuffer = FALSE;
-    fLockedBuffer = FALSE;
+    fEndOfBuffer = OFFalse;
+    fLockedBuffer = OFFalse;
 }
 
 
@@ -284,7 +284,7 @@ void DcmMemoryBuffer::InstallBackupBuffer(void)
 }
 
 
-BOOL DcmMemoryBuffer::Putback(void)
+OFBool DcmMemoryBuffer::Putback(void)
 {
     if (fPutbackBuffer)
     {
@@ -294,35 +294,35 @@ BOOL DcmMemoryBuffer::Putback(void)
 	fPutbackBuffer = NULL;
 	fPutbackIndex = 0;
 	fPutbackNumber = 0;
-	return TRUE;
+	return OFTrue;
     }
     else
-	return FALSE;
+	return OFFalse;
 }
 
 
-BOOL DcmMemoryBuffer::Putback(const Uint32 number)
+OFBool DcmMemoryBuffer::Putback(const Uint32 number)
 {
-    BOOL result = FALSE;
+    OFBool result = OFFalse;
     if (fPutbackBuffer)
     {
 	if (fCurrent == fPutbackBuffer && fIndex - number >= fPutbackIndex)
 	{
 	    fIndex -= number;
-	    result = TRUE;
+	    result = OFTrue;
 	}
 	else if (fCurrent != fPutbackBuffer) 
 	{	// Putback is backup buffer, current buffer is main buffer
 	    if (fIndex >= number)
 	    {
 		fIndex -= number;
-		result = TRUE;
+		result = OFTrue;
 	    }
 	    else if (fPutbackBuffer->fFilled - fPutbackIndex >= number - fIndex)
 	    {
 		fIndex = fPutbackBuffer->fFilled - number + fIndex;
 		fCurrent = fPutbackBuffer;
-		result = TRUE;
+		result = OFTrue;
 	    }
 	}
     }
@@ -339,9 +339,9 @@ BOOL DcmMemoryBuffer::Putback(const Uint32 number)
 }
 
 
-BOOL DcmMemoryBuffer::Putback(void * content, const Uint32 length)
+OFBool DcmMemoryBuffer::Putback(void * content, const Uint32 length)
 {
-    BOOL result = this -> Putback(length);
+    OFBool result = this -> Putback(length);
     if (result)
     {
 	unsigned char * bytes = (unsigned char *)content;
@@ -410,7 +410,7 @@ Uint32 DcmMemoryBuffer::Read(void * content,
 void DcmMemoryBuffer::Release(void)
 {
     this -> InstallBackupBuffer();
-    fLockedBuffer = FALSE;
+    fLockedBuffer = OFFalse;
 }
 
 
@@ -423,7 +423,7 @@ void DcmMemoryBuffer::SetBuffer(void * buffer,
     if (!fLockedBuffer)
     {
 	fBuffers[MAIN]->SetBuffer(buffer, filled, length);
-	fLockedBuffer = TRUE;
+	fLockedBuffer = OFTrue;
     }
 }
 
@@ -450,7 +450,11 @@ Uint32 DcmMemoryBuffer::Write(const void * content,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbuf.cc,v $
-** Revision 1.2  1996-01-09 11:06:42  andreas
+** Revision 1.3  1997-07-21 08:25:24  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.2  1996/01/09 11:06:42  andreas
 ** New Support for Visual C++
 ** Correct problems with inconsistent const declarations
 ** Correct error in reading Item Delimitation Elements

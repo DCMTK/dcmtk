@@ -10,7 +10,7 @@
  * 
  * 
  * Last Update:   $Author: andreas $
- * Revision:      $Revision: 1.3 $
+ * Revision:      $Revision: 1.4 $
  * Status:        $State: Exp $
  *
  */
@@ -39,7 +39,7 @@ void debug_print(const char* text, ... );
 // format of the printf parameters (with round brackets)!
 #define debug(lev, param)  { if ((lev) <= DcmDebugLevel) { fprintf(DcmDebugDevice, __FILE__ ", LINE %d:", __LINE__); debug_print param ; } }
 
-// Cdebug does the same as debug but only if a condition cond is TRUE
+// Cdebug does the same as debug but only if a condition cond is OFTrue
 #define Cdebug(lev, cond, param) { if ((lev) <= DcmDebugLevel && (cond)) { fprintf(DcmDebugDevice, __FILE__ ", LINE %d:", __LINE__); debug_print param; } }
 
 #else  // DEBUG

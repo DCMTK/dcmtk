@@ -10,9 +10,9 @@
 ** Interface of class DcmUnsignedLongOffset
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-08-05 08:45:40 $
+** Update Date:		$Date: 1997-07-21 08:25:17 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrulup.h,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -39,12 +39,12 @@ class DcmUnsignedLongOffset : public DcmUnsignedLong
     virtual ~DcmUnsignedLongOffset(void);
 
     virtual DcmEVR ident(void) const;
-    virtual void print(ostream & out = cout, const BOOL showFullData = TRUE,
+    virtual void print(ostream & out = cout, const OFBool showFullData = OFTrue,
 		       const int level = 0);
     virtual DcmObject*  setNextRecord(DcmObject* record);
     virtual DcmObject*  getNextRecord();
     virtual E_Condition clear();
-    virtual E_Condition verify(const BOOL autocorrect = FALSE);
+    virtual E_Condition verify(const OFBool autocorrect = OFFalse);
 };
 
 
@@ -53,7 +53,11 @@ class DcmUnsignedLongOffset : public DcmUnsignedLong
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrulup.h,v $
-** Revision 1.4  1996-08-05 08:45:40  andreas
+** Revision 1.5  1997-07-21 08:25:17  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.4  1996/08/05 08:45:40  andreas
 ** new print routine with additional parameters:
 **         - print into files
 **         - fix output length for elements

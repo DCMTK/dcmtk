@@ -10,7 +10,7 @@
 ** DICOM object encoding/decoding, search and lookup facilities.
 **
 ** Last Update:   $Author: andreas $
-** Revision:      $Revision: 1.13 $
+** Revision:      $Revision: 1.14 $
 ** Status:	  $State: Exp $
 **
 */
@@ -44,7 +44,7 @@ const Uint32 DCM_OptPrintLineLength = 70;
 ** Should automatic correction be applied to input data (e.g. stripping
 ** of padding blanks, removal of blanks in UIDs, etc).
 */
-extern BOOL dcmEnableAutomaticInputDataCorrection; /* default TRUE */
+extern OFBool dcmEnableAutomaticInputDataCorrection; /* default OFTrue */
 
 /*
 ** The base dicom object class
@@ -63,9 +63,9 @@ protected:
 
     // The next two functions require that the memory for the info
     // field is minimum 4 chars longer than strlen(info)
-    virtual void printInfoLine(ostream & out, const BOOL showFullData,
+    virtual void printInfoLine(ostream & out, const OFBool showFullData,
 			       const int level, char *info );
-    virtual void printInfoLine(ostream & out, const BOOL showFullData,
+    virtual void printInfoLine(ostream & out, const OFBool showFullData,
 			       const int level, const DcmTag &tag,
 			       const Uint32 length, char *info );
 
@@ -91,9 +91,9 @@ public:
     // (e.g. private tags, encapsulated data ...)
     inline DcmEVR getVR(void) const { return Tag.getEVR(); }
 
-    virtual BOOL isLeaf(void) const = 0;
+    virtual OFBool isLeaf(void) const = 0;
     virtual DcmObject * nextInContainer(const DcmObject * obj);
-    virtual void print(ostream & out = cout, const BOOL showFullData = TRUE,
+    virtual void print(ostream & out = cout, const OFBool showFullData = OFTrue,
 		       const int level = 0) = 0;
     inline E_Condition error(void) const { return errorFlag; }
 
@@ -119,7 +119,7 @@ public:
 			     const E_EncodingType enctype 
 			     = EET_UndefinedLength) = 0;
 
-    virtual BOOL canWriteXfer(const E_TransferSyntax newXfer,
+    virtual OFBool canWriteXfer(const E_TransferSyntax newXfer,
 				 const E_TransferSyntax oldXfer) = 0;
 
     virtual E_Condition read(DcmStream & inStream,
@@ -132,14 +132,14 @@ public:
 			      const E_EncodingType enctype = EET_UndefinedLength) = 0;
 
     virtual E_Condition clear() = 0;
-    virtual E_Condition verify(const BOOL autocorrect = FALSE) = 0;
+    virtual E_Condition verify(const OFBool autocorrect = OFFalse) = 0;
 
-    virtual E_Condition nextObject(DcmStack & stack, const BOOL intoSub);
+    virtual E_Condition nextObject(DcmStack & stack, const OFBool intoSub);
 	
     virtual E_Condition search(const DcmTagKey &xtag,	       // in
 			       DcmStack &resultStack,	       // inout
 			       E_SearchMode mode = ESM_fromHere,  // in
-			       BOOL searchIntoSub = TRUE );       // in
+			       OFBool searchIntoSub = OFTrue );       // in
 
     virtual E_Condition searchErrors( DcmStack &resultStack );	       // inout
 

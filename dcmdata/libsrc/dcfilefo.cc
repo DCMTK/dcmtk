@@ -10,9 +10,9 @@
 ** Implementation of class DcmFileFormat
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-03 15:09:57 $
+** Update Date:		$Date: 1997-07-21 08:25:28 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcfilefo.cc,v $
-** CVS/RCS Revision:	$Revision: 1.11 $
+** CVS/RCS Revision:	$Revision: 1.12 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -42,6 +42,7 @@
 #include "dcvrus.h"
 #include "dcvrae.h"
 #include "dcvrsh.h"
+#include "dcmetinf.h"
 #include "dcdebug.h"
 
 #include "dcdeftag.h"
@@ -100,7 +101,7 @@ DcmFileFormat::~DcmFileFormat()
 // ********************************
 
 
-void DcmFileFormat::print(ostream & out, const BOOL showFullData, 
+void DcmFileFormat::print(ostream & out, const OFBool showFullData, 
 			  const int level)
 {
     int i;
@@ -152,7 +153,7 @@ E_Condition DcmFileFormat::checkValue(DcmMetaInfo * metainfo,
             if ( elem == (DcmElement*)NULL )
             {
                 elem = new DcmUnsignedLong( tag );
-                metainfo->insert( elem, TRUE );
+                metainfo->insert( elem, OFTrue );
             }
             Uint32 temp = 0;
             if ( elem->getLength() == 0 && elem->ident() == EVR_UL )
@@ -162,7 +163,7 @@ E_Condition DcmFileFormat::checkValue(DcmMetaInfo * metainfo,
             if ( elem == (DcmElement*)NULL )
             {
                 elem = new DcmOtherByteOtherWord( tag );
-                metainfo->insert( elem, TRUE );
+                metainfo->insert( elem, OFTrue );
             }
             Uint8 version[2] = {0,1};
             if ( elem->getLength() == 0 && elem->ident() == EVR_OB )
@@ -190,7 +191,7 @@ E_Condition DcmFileFormat::checkValue(DcmMetaInfo * metainfo,
 	} else if ( xtag == DCM_MediaStorageSOPClassUID ) {	// (0002,0002)
 	    if ( elem == (DcmElement*)NULL ) {
                 elem = new DcmUniqueIdentifier( tag );
-                metainfo->insert( elem, TRUE );
+                metainfo->insert( elem, OFTrue );
             }
             if ( elem->getLength() == 0 && elem->ident() == EVR_UI ) {
 		if ( dataset->search( DCM_SOPClassUID, stack ) == EC_Normal ) {
@@ -209,7 +210,7 @@ E_Condition DcmFileFormat::checkValue(DcmMetaInfo * metainfo,
 	    if ( elem == (DcmElement*)NULL )
 	    {
 		elem = new DcmUniqueIdentifier( tag );
-		metainfo->insert( elem, TRUE );
+		metainfo->insert( elem, OFTrue );
 	    }
 	    if ( elem->getLength() == 0 && elem->ident() == EVR_UI )
 	    {
@@ -237,7 +238,7 @@ E_Condition DcmFileFormat::checkValue(DcmMetaInfo * metainfo,
 	    if ( elem == (DcmElement*)NULL )
 	    {
 		elem = new DcmUniqueIdentifier( tag );
-		metainfo->insert( elem, TRUE );
+		metainfo->insert( elem, OFTrue );
 	    }
 	    if ( elem->ident() == EVR_UI )
 	    {
@@ -258,7 +259,7 @@ Cdebug(2,  uidtmp != (char*)NULL,
 	    if ( elem == (DcmElement*)NULL )
 	    {
 		elem = new DcmUniqueIdentifier( tag );
-		metainfo->insert( elem, TRUE );
+		metainfo->insert( elem, OFTrue );
 	    }
 	    if ( elem->ident() == EVR_UI )
 	    {
@@ -270,7 +271,7 @@ Cdebug(2,  uidtmp != (char*)NULL,
 	    if ( elem == (DcmElement*)NULL )
 	    {
 		elem = new DcmShortString( tag );
-		metainfo->insert( elem, TRUE );
+		metainfo->insert( elem, OFTrue );
 	    }
 	    if ( elem->ident() == EVR_SH )
 	    {
@@ -282,7 +283,7 @@ Cdebug(2,  uidtmp != (char*)NULL,
 	    if ( elem == (DcmElement*)NULL )
 	    {
 		elem = new DcmApplicationEntity( tag );
-		metainfo->insert( elem, TRUE );
+		metainfo->insert( elem, OFTrue );
 	    }
 	    cerr << "Error: dcfilefo: I don't know how to handle"
 		" DCM_SourceApplicationEntityTitle!" << endl;
@@ -291,7 +292,7 @@ Cdebug(2,  uidtmp != (char*)NULL,
 	    if ( elem == (DcmElement*)NULL )
 	    {
 		elem = new DcmUniqueIdentifier( tag );
-		metainfo->insert( elem, TRUE );
+		metainfo->insert( elem, OFTrue );
 	    }
 	    cerr << "Error: dcfilefo: I don't know how to handle"
 		" DCM_PrivateInformationCreatorUID!" << endl;
@@ -300,7 +301,7 @@ Cdebug(2,  uidtmp != (char*)NULL,
 	    if ( elem == (DcmElement*)NULL )
 	    {
 		elem = new DcmOtherByteOtherWord( tag );
-		metainfo->insert( elem, TRUE );
+		metainfo->insert( elem, OFTrue );
 	    }
 	    cerr << "Warning: dcfilefo: I don't know how to handle"
 		" DCM_PrivateInformation!" << endl;
@@ -333,31 +334,31 @@ E_Condition DcmFileFormat::validateMetaInfo(E_TransferSyntax oxfer)
 	DcmStack stack;
 
 	/* DCM_MetaElementGroupLength */
-	metinf->search(DCM_MetaElementGroupLength, stack, ESM_fromHere, FALSE );
+	metinf->search(DCM_MetaElementGroupLength, stack, ESM_fromHere, OFFalse );
 	checkValue( metinf, datset, DCM_MetaElementGroupLength, stack.top(), oxfer );
 
 	/* DCM_FileMetaInformationVersion */
-	metinf->search(DCM_FileMetaInformationVersion, stack, ESM_fromHere, FALSE );
+	metinf->search(DCM_FileMetaInformationVersion, stack, ESM_fromHere, OFFalse );
 	checkValue( metinf, datset, DCM_FileMetaInformationVersion, stack.top(), oxfer );
 
 	/* DCM_MediaStorageSOPClassUID */
-	metinf->search(DCM_MediaStorageSOPClassUID, stack, ESM_fromHere, FALSE );
+	metinf->search(DCM_MediaStorageSOPClassUID, stack, ESM_fromHere, OFFalse );
 	checkValue( metinf, datset, DCM_MediaStorageSOPClassUID, stack.top(), oxfer );
 
 	/* DCM_MediaStorageSOPInstanceUID */
-	metinf->search(DCM_MediaStorageSOPInstanceUID, stack, ESM_fromHere, FALSE );
+	metinf->search(DCM_MediaStorageSOPInstanceUID, stack, ESM_fromHere, OFFalse );
 	checkValue( metinf, datset, DCM_MediaStorageSOPInstanceUID, stack.top(), oxfer );
 
 	/* DCM_TransferSyntaxUID */
-	metinf->search(DCM_TransferSyntaxUID, stack, ESM_fromHere, FALSE );
+	metinf->search(DCM_TransferSyntaxUID, stack, ESM_fromHere, OFFalse );
 	checkValue( metinf, datset, DCM_TransferSyntaxUID, stack.top(), oxfer );
 
 	/* DCM_ImplementationClassUID */
-	metinf->search(DCM_ImplementationClassUID, stack, ESM_fromHere, FALSE );
+	metinf->search(DCM_ImplementationClassUID, stack, ESM_fromHere, OFFalse );
 	checkValue( metinf, datset, DCM_ImplementationClassUID, stack.top(), oxfer );
 
 	/* DCM_ImplementationVersionName */
-	metinf->search(DCM_ImplementationVersionName, stack, ESM_fromHere, FALSE );
+	metinf->search(DCM_ImplementationVersionName, stack, ESM_fromHere, OFFalse );
 	checkValue( metinf, datset, DCM_ImplementationVersionName, stack.top(), oxfer );
 
 	debug(2, ( "DcmFileFormat: found %ld Elements in DcmMetaInfo metinf.",
@@ -419,7 +420,7 @@ Uint32 DcmFileFormat::calcElementLength(const E_TransferSyntax xfer,
 // ********************************
 
 
-BOOL DcmFileFormat::canWriteXfer(const E_TransferSyntax newXfer,
+OFBool DcmFileFormat::canWriteXfer(const E_TransferSyntax newXfer,
 				 const E_TransferSyntax oldXfer)
 {
     DcmDataset * dataset = getDataset();
@@ -427,7 +428,7 @@ BOOL DcmFileFormat::canWriteXfer(const E_TransferSyntax newXfer,
     if (dataset)
 	return dataset -> canWriteXfer(newXfer, oldXfer);
     else
-	return FALSE;
+	return OFFalse;
 }
 	   
 
@@ -681,7 +682,11 @@ DcmDataset* DcmFileFormat::getAndRemoveDataset()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
-** Revision 1.11  1997-07-03 15:09:57  andreas
+** Revision 1.12  1997-07-21 08:25:28  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.11  1997/07/03 15:09:57  andreas
 ** - removed debugging functions Bdebug() and Edebug() since
 **   they write a static array and are not very useful at all.
 **   Cdebug and Vdebug are merged since they have the same semantics.

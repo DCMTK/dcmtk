@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-03 15:10:00 $
+** Update Date:		$Date: 1997-07-21 08:25:28 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcmetinf.cc,v $
-** CVS/RCS Revision:	$Revision: 1.11 $
+** CVS/RCS Revision:	$Revision: 1.12 $
 ** Status:		$State: Exp $
 **
 */
@@ -78,7 +78,7 @@ DcmMetaInfo::~DcmMetaInfo()
 // ********************************
 
 
-void DcmMetaInfo::print(ostream & out, const BOOL showFullData,
+void DcmMetaInfo::print(ostream & out, const OFBool showFullData,
 			const int level)
 {
     int i;
@@ -108,14 +108,14 @@ void DcmMetaInfo::print(ostream & out, const BOOL showFullData,
 void DcmMetaInfo::setPreamble()
 {
     memzero(filePreamble, sizeof(filePreamble) );
-    preambleUsed = FALSE;
+    preambleUsed = OFFalse;
 }
 
 
 // ********************************
 
 
-BOOL DcmMetaInfo::checkAndReadPreamble(DcmStream & inStream,
+OFBool DcmMetaInfo::checkAndReadPreamble(DcmStream & inStream,
 				       E_TransferSyntax & newxfer) 
 {
     if (fPreambleTransferState == ERW_init)
@@ -124,7 +124,7 @@ BOOL DcmMetaInfo::checkAndReadPreamble(DcmStream & inStream,
 	fPreambleTransferState = ERW_inWork;
     }
 
-    BOOL retval = FALSE;
+    OFBool retval = OFFalse;
 
     if (fPreambleTransferState == ERW_inWork)
     {
@@ -146,7 +146,7 @@ BOOL DcmMetaInfo::checkAndReadPreamble(DcmStream & inStream,
 	    debug(4, ( "DcmMetaInfo::checkAndReadPreamble() No Preamble available: File too short (%d) < %d bytes",
 		    preambleLen, DCM_PreambleLen + DCM_MagicLen ));
 
-	    retval = FALSE;
+	    retval = OFFalse;
 	    this -> setPreamble();
 	    fPreambleTransferState = ERW_ready;
 	}
@@ -156,12 +156,12 @@ BOOL DcmMetaInfo::checkAndReadPreamble(DcmStream & inStream,
 	    char *prefix = filePreamble + DCM_PreambleLen;
 	    if ( memcmp(prefix, DCM_Magic, DCM_MagicLen) == 0 )
 	    {
-		retval = TRUE;			      // Preamble vorhanden!
+		retval = OFTrue;			      // Preamble vorhanden!
 		inStream.UnsetPutbackMark();
 	    }
 	    else
 	    {					      // keine Preamble
-		retval = FALSE;
+		retval = OFFalse;
 		this -> setPreamble();
 		inStream.Putback();
 	    }
@@ -193,8 +193,8 @@ BOOL DcmMetaInfo::checkAndReadPreamble(DcmStream & inStream,
     }
 
 
-    Cdebug(4, retval==TRUE, ("DcmMetaInfo::checkAndReadPreamble() found Preamble=[0x%8.8x]", (Uint32)(*filePreamble) ));
-    Cdebug(4, retval==FALSE, ("DcmMetaInfo::checkAndReadPreamble() No Preambel found!" ));
+    Cdebug(4, retval==OFTrue, ("DcmMetaInfo::checkAndReadPreamble() found Preamble=[0x%8.8x]", (Uint32)(*filePreamble) ));
+    Cdebug(4, retval==OFFalse, ("DcmMetaInfo::checkAndReadPreamble() No Preambel found!" ));
     debug(4, ( "DcmMetaInfo::checkAndReadPreamble() TransferSyntax = %s", DcmXfer(newxfer).getXferName() ));
     return retval;
 } // DcmMetaInfo::checkAndReadPreamble
@@ -203,7 +203,7 @@ BOOL DcmMetaInfo::checkAndReadPreamble(DcmStream & inStream,
 // ********************************
 
 
-BOOL DcmMetaInfo::nextTagIsMeta(DcmStream & inStream)
+OFBool DcmMetaInfo::nextTagIsMeta(DcmStream & inStream)
 {
     char testbytes[2];
     inStream.SetPutbackMark();
@@ -373,14 +373,14 @@ E_Condition DcmMetaInfo::read(DcmStream & inStream,
 			if (errorFlag != EC_Normal)
 			    break;			   // beende while-Schleife
 
-			lastElementComplete = FALSE;
+			lastElementComplete = OFFalse;
 			errorFlag = DcmItem::readSubElement(inStream, newTag,
 							    newValueLength,
 							    newxfer,
 							    glenc,
 							    maxReadLength);
 			if ( errorFlag == EC_Normal )
-			    lastElementComplete = TRUE;
+			    lastElementComplete = OFTrue;
 		    }
 		    else
 		    {
@@ -388,7 +388,7 @@ E_Condition DcmMetaInfo::read(DcmStream & inStream,
 							     glenc,
 							     maxReadLength);
 			if ( errorFlag == EC_Normal )
-			    lastElementComplete = TRUE;
+			    lastElementComplete = OFTrue;
 		    }
 		    fTransferredBytes = inStream.Tell() - fStartPosition;
 
@@ -516,7 +516,11 @@ E_Condition DcmMetaInfo::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.cc,v $
-** Revision 1.11  1997-07-03 15:10:00  andreas
+** Revision 1.12  1997-07-21 08:25:28  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.11  1997/07/03 15:10:00  andreas
 ** - removed debugging functions Bdebug() and Edebug() since
 **   they write a static array and are not very useful at all.
 **   Cdebug and Vdebug are merged since they have the same semantics.

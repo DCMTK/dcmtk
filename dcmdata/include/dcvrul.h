@@ -10,9 +10,9 @@
 ** Interface of class DcmUnsignedLong
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-04-18 08:13:33 $
+** Update Date:		$Date: 1997-07-21 08:25:17 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrul.h,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -37,7 +37,7 @@ public:
     virtual ~DcmUnsignedLong(void);
 
     virtual DcmEVR ident(void) const { return EVR_UL; }
-    virtual void print(ostream & out = cout, const BOOL showFullData = TRUE,
+    virtual void print(ostream & out = cout, const OFBool showFullData = OFTrue,
 		       const int level = 0);
     virtual unsigned long getVM(void);
 
@@ -52,7 +52,7 @@ public:
     virtual E_Condition getUint32Array(Uint32 * & uintVals);
     virtual E_Condition getUint32(Uint32 & uintVal, const unsigned long pos = 0);
 
-    virtual E_Condition verify(const BOOL autocorrect = FALSE);
+    virtual E_Condition verify(const OFBool autocorrect = OFFalse);
 };
 
 
@@ -61,7 +61,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrul.h,v $
-** Revision 1.6  1997-04-18 08:13:33  andreas
+** Revision 1.7  1997-07-21 08:25:17  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.6  1997/04/18 08:13:33  andreas
 ** - The put/get-methods for all VRs did not conform to the C++-Standard
 **   draft. Some Compilers (e.g. SUN-C++ Compiler, Metroworks
 **   CodeWarrier, etc.) create many warnings concerning the hiding of

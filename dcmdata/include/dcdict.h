@@ -9,10 +9,10 @@
 ** Interface for loadable DICOM data dictionary
 ** 
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-05-22 13:15:54 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-07-21 08:25:07 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdict.h,v $
-** CVS/RCS Revision:	$Revision: 1.9 $
+** CVS/RCS Revision:	$Revision: 1.10 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -56,11 +56,11 @@ private:
     DcmDictEntryPtrBSTSet dict;    /* dictionary of normal tags */
     DcmDictEntryList repDict; /* dictionary of repeating tags */
     int skeletonCount; /* the number of skeleton entries */
-    BOOL dictionaryLoaded; /* is a dictionary loaded (more than skeleton) */
+    OFBool dictionaryLoaded; /* is a dictionary loaded (more than skeleton) */
 
 protected:
     /* Load external dictionaries defined via environment variables */
-    BOOL loadExternalDictionaries();
+    OFBool loadExternalDictionaries();
 
     /* Load a builtin (compiled) data dictionary.
     ** Depending on which code is in use, this function may not
@@ -69,7 +69,7 @@ protected:
     void loadBuiltinDictionary();
 
     /* Load skeleton dictionary (the bare minimum needed to run) */
-    BOOL loadSkeletonDictionary();
+    OFBool loadSkeletonDictionary();
 
 
     const DcmDictEntry* findEntry(const DcmDictEntry& entry);
@@ -77,11 +77,11 @@ protected:
 
 public:
     /* constructor/destructor */
-    DcmDataDictionary(BOOL loadBuiltin=FALSE, BOOL loadExternal=FALSE);
+    DcmDataDictionary(OFBool loadBuiltin=OFFalse, OFBool loadExternal=OFFalse);
     ~DcmDataDictionary();
 
     /* is a data dictionary loaded (excluding the skeleton dictionary) */
-    BOOL isDictionaryLoaded() { return dictionaryLoaded; }
+    OFBool isDictionaryLoaded() { return dictionaryLoaded; }
 
     /* the number of normal/repeating tag entries  */
     int numberOfNormalTagEntries() { return dict.length(); }
@@ -97,10 +97,10 @@ public:
 
     /*
      * Load a particular dictionary from file.
-     * Returns FALSE if file cannot be opened (only if errorIfAbsent==TRUE)
-     * Returns FALSE if formatting error encountered in file
+     * Returns OFFalse if file cannot be opened (only if errorIfAbsent==OFTrue)
+     * Returns OFFalse if formatting error encountered in file
      */
-    BOOL loadDictionary(const char* fileName, BOOL errorIfAbsent=TRUE);
+    OFBool loadDictionary(const char* fileName, OFBool errorIfAbsent=OFTrue);
     
     /* 
      * Dictionary lookups are performed by looking for a key. 
@@ -168,7 +168,11 @@ extern DcmDataDictionary dcmDataDict;
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.h,v $
-** Revision 1.9  1997-05-22 13:15:54  hewett
+** Revision 1.10  1997-07-21 08:25:07  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.9  1997/05/22 13:15:54  hewett
 ** Added method DcmDataDictionary::isDictionaryLoaded() to ask if a full
 ** data dictionary has been loaded.  This method should be used in tests
 ** rather that querying the number of entries (a sekelton dictionary is

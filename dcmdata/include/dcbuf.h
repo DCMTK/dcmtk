@@ -11,9 +11,9 @@
 ** 
 ** 
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-09 11:06:13 $
+** Update Date:		$Date: 1997-07-21 08:25:05 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcbuf.h,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -45,7 +45,7 @@ private:
     Uint32 fLength; 		// physical buffer length
     Uint32 fFilled;		// filled part of buffer
     unsigned char * fBuffer;	// content of buffer
-    BOOL fSelfAllocated;		// buffer allocated by this object ?
+    OFBool fSelfAllocated;		// buffer allocated by this object ?
 
 public:
     // Create a new Buffer without any content
@@ -95,8 +95,8 @@ private:
     DcmBuffer * fPutbackBuffer;	// buffer ptr for Putback
     Uint32 fPutbackIndex;		// index in Putback buffer
     Uint32 fPutbackNumber;		// number of Bytes putbacked
-    BOOL fEndOfBuffer;			// No more information in buffer ?
-    BOOL fLockedBuffer;			// internal buffer locked ?	
+    OFBool fEndOfBuffer;		// No more information in buffer ?
+    OFBool fLockedBuffer;		// internal buffer locked ?	
 
     // Common initialization of Attributes
     void Initialize(void);
@@ -128,7 +128,7 @@ public:
     // must be used before buffer is set with SetBuffer
     void Release(void);
 
-    inline BOOL BufferLocked(void) const
+    inline OFBool BufferLocked(void) const
     {
 	return fLockedBuffer;
     }
@@ -190,18 +190,18 @@ public:
     //  Inform buffer, that everything is loaded
     inline void SetEndOfBuffer(void)
     {
-	fEndOfBuffer = TRUE;
+	fEndOfBuffer = OFTrue;
     }
 
     // Is buffer at an End?
-    inline BOOL EndOfBuffer(void) const
+    inline OFBool EndOfBuffer(void) const
     {
 	return fEndOfBuffer && fIndex == fCurrent-> fFilled &&
 	    (fCurrent != fBuffers[BACKUP] || fBuffers[MAIN] == 0);
     }
 
     // Is EndOfBuffer mark set ?
-    inline BOOL EndOfBufferMarkSet(void) const
+    inline OFBool EndOfBufferMarkSet(void) const
     {
 	return fEndOfBuffer;
     }
@@ -224,9 +224,9 @@ public:
 	fPutbackNumber = 0;
     }
 
-    BOOL Putback(const Uint32 number);
-    BOOL Putback(void * bytes, const Uint32 number);
-    BOOL Putback(void);
+    OFBool Putback(const Uint32 number);
+    OFBool Putback(void * bytes, const Uint32 number);
+    OFBool Putback(void);
 };
 
 #endif
@@ -234,7 +234,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcbuf.h,v $
-** Revision 1.2  1996-01-09 11:06:13  andreas
+** Revision 1.3  1997-07-21 08:25:05  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.2  1996/01/09 11:06:13  andreas
 ** New Support for Visual C++
 ** Correct problems with inconsistent const declarations
 **

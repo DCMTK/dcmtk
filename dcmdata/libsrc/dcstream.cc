@@ -8,10 +8,10 @@
 ** Purpose:
 **	implements streaming classes for file and buffer input/output
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-07-04 09:27:48 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-07-21 08:25:30 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dcstream.cc,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
+** CVS/RCS Revision:	$Revision: 1.9 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -34,7 +34,7 @@
 // CLASS DcmStream
 //
 
-DcmStream::DcmStream(const BOOL readMode, const BOOL randomAccess)
+DcmStream::DcmStream(const OFBool readMode, const OFBool randomAccess)
 {
     fReadMode = readMode;
     fRandomAccess = randomAccess;
@@ -89,8 +89,8 @@ void DcmFileStream::Close(void)
 
 
 DcmFileStream::DcmFileStream(const char * filename, 
-			     const BOOL readMode,
-			     const BOOL randomAccess)
+			     const OFBool readMode,
+			     const OFBool randomAccess)
     : DcmStream(readMode, randomAccess)
 
 {
@@ -130,7 +130,7 @@ DcmFileStream::DcmFileStream(const char * filename,
 	fseek(fFile, 0L, SEEK_SET);
     }
 
-    fPutbackMode = FALSE;
+    fPutbackMode = OFFalse;
     fNumPutbackBytes = 0;
 }
 
@@ -144,27 +144,27 @@ DcmFileStream::~DcmFileStream(void)
 
 
 
-BOOL DcmFileStream::EndOfStream(void)
+OFBool DcmFileStream::EndOfStream(void)
 {
     if (!fFile)
 	fErrorCond = EC_IllegalCall;
 
     if (fErrorCond == EC_Normal)
     {
-	BOOL ret = feof(fFile);
+	OFBool ret = feof(fFile);
 	if (!ret)
 	    ret = fNumBytes <= this -> Tell();
 	return ret;
     }
     else
-	return FALSE;
+	return OFFalse;
 }
 
-BOOL DcmFileStream::Flush(void)
+OFBool DcmFileStream::Flush(void)
 {
     if (fErrorCond != EC_InvalidStream && fFile)
 	fflush(fFile); 
-    return TRUE;
+    return OFTrue;
 }
 
 
@@ -180,21 +180,21 @@ DcmStreamConstructor * DcmFileStream::NewConstructor(void)
 }
 
 
-BOOL DcmFileStream::MustFlush(void)
+OFBool DcmFileStream::MustFlush(void)
 {
-    return FALSE;
+    return OFFalse;
 }
 
 
-BOOL DcmFileStream::Putback(void)
+OFBool DcmFileStream::Putback(void)
 {
     return this -> Putback(fNumPutbackBytes);
 }
 
 
-BOOL DcmFileStream::Putback(const Uint32 noBytes)
+OFBool DcmFileStream::Putback(const Uint32 noBytes)
 {
-    BOOL result = FALSE;
+    OFBool result = OFFalse;
 
     if (fPutbackMode && fFile)
     {
@@ -211,9 +211,9 @@ BOOL DcmFileStream::Putback(const Uint32 noBytes)
 	    }
 	    else 
 	    {
-		fPutbackMode = FALSE;
+		fPutbackMode = OFFalse;
 		fNumPutbackBytes = 0;
-		result = TRUE;
+		result = OFTrue;
 	    }
 	}
     }
@@ -264,7 +264,7 @@ void DcmFileStream::SetPutbackMark(void)
     if (!fReadMode || !fFile)
 	fErrorCond = EC_WrongStreamMode;
     else
-	fPutbackMode = TRUE;
+	fPutbackMode = OFTrue;
 }
 
 
@@ -290,8 +290,8 @@ void DcmFileStream::UnsetPutbackMark(void)
 	fErrorCond = EC_WrongStreamMode;
     else
     {
-	fPutbackMode = TRUE;
-	fNumPutbackBytes = FALSE;
+	fPutbackMode = OFTrue;
+	fNumPutbackBytes = OFFalse;
     }
 }
 
@@ -375,7 +375,7 @@ void DcmBufferStream::CopyFromBuffer(void * buffer)
 }
 
 
-DcmBufferStream::DcmBufferStream(const BOOL readMode) 
+DcmBufferStream::DcmBufferStream(const OFBool readMode) 
     : DcmStream(readMode, DCM_SequentialAccess)
 {
     fErrorCond = EC_Normal;
@@ -388,7 +388,7 @@ DcmBufferStream::DcmBufferStream(const BOOL readMode)
 }
 
 DcmBufferStream::DcmBufferStream(const Uint32 length, 
-				 const BOOL readMode)
+				 const OFBool readMode)
     : DcmStream(readMode, DCM_SequentialAccess)
 {
     fErrorCond = EC_Normal;
@@ -413,8 +413,8 @@ DcmBufferStream::DcmBufferStream(const Uint32 length,
 
 DcmBufferStream::DcmBufferStream(void * buffer,
 				 const Uint32 length, 
-				 const BOOL readMode)
-    : DcmStream(readMode, FALSE)
+				 const OFBool readMode)
+    : DcmStream(readMode, OFFalse)
 {
     fErrorCond = EC_Normal;
     if (length & 1)
@@ -442,13 +442,13 @@ DcmBufferStream::~DcmBufferStream(void)
 }
 
 
-BOOL DcmBufferStream::EndOfStream(void)
+OFBool DcmBufferStream::EndOfStream(void)
 {
     if (fReadMode && 
 	(fErrorCond == EC_Normal || fErrorCond == EC_StreamNotifyClient))
 	return fBuffer->EndOfBuffer();
     else
-	return FALSE;
+	return OFFalse;
 }
 
 
@@ -465,9 +465,9 @@ void DcmBufferStream::FillBuffer(void * buffer, const Uint32 length)
 }
 
 
-BOOL DcmBufferStream::Flush(void)
+OFBool DcmBufferStream::Flush(void)
 {
-    return FALSE;
+    return OFFalse;
 }
 
 
@@ -506,13 +506,13 @@ DcmStreamConstructor * DcmBufferStream::NewConstructor(void)
 
 
 
-BOOL DcmBufferStream::MustFlush(void)
+OFBool DcmBufferStream::MustFlush(void)
 {
     return this -> GetBufferLength() != 0;
 }
 
 
-BOOL DcmBufferStream::Putback(void)
+OFBool DcmBufferStream::Putback(void)
 {
     if (fErrorCond == EC_Normal)
     {
@@ -521,15 +521,15 @@ BOOL DcmBufferStream::Putback(void)
 	else
 	{
 	    fErrorCond = EC_WrongStreamMode;
-	    return FALSE;
+	    return OFFalse;
 	}
     }
-    return FALSE;
+    return OFFalse;
 }
 
 
 
-BOOL DcmBufferStream::Putback(const Uint32 noBytes)
+OFBool DcmBufferStream::Putback(const Uint32 noBytes)
 {
     if (fErrorCond == EC_Normal)
     {
@@ -538,10 +538,10 @@ BOOL DcmBufferStream::Putback(const Uint32 noBytes)
 	else
 	{
 	    fErrorCond = EC_WrongStreamMode;
-	    return FALSE;
+	    return OFFalse;
 	}
     }
-    return FALSE;
+    return OFFalse;
 }
 
 void DcmBufferStream::ReadBytes(void * bytes, const Uint32 length)
@@ -665,8 +665,8 @@ void DcmBufferStream::WriteBytes(const void * bytes, const Uint32 length)
 // CLASS DcmStreamConstructor
 //
 
-DcmStreamConstructor::DcmStreamConstructor(const BOOL readMode, 
-					   const BOOL randomAccess)
+DcmStreamConstructor::DcmStreamConstructor(const OFBool readMode, 
+					   const OFBool randomAccess)
 {
     fReadMode = readMode;
     fRandomAccess = randomAccess;
@@ -682,8 +682,8 @@ DcmStreamConstructor::~DcmStreamConstructor(void)
 //
 
 DcmFileStreamConstructor::DcmFileStreamConstructor(const char * filename,
-						   const BOOL readMode,
-						   const BOOL randomAccess)
+						   const OFBool readMode,
+						   const OFBool randomAccess)
     : DcmStreamConstructor(readMode, randomAccess)
 {
     if (filename)
@@ -727,7 +727,11 @@ DcmFileStreamConstructor::Copy(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcstream.cc,v $
-** Revision 1.8  1997-07-04 09:27:48  meichel
+** Revision 1.9  1997-07-21 08:25:30  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.8  1997/07/04 09:27:48  meichel
 ** Now including <stream.h> in dcstream.cc,
 ** required for systems without <unistd.h>.
 **

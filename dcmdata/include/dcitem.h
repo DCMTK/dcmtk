@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-07 07:42:03 $
+** Update Date:		$Date: 1997-07-21 08:25:08 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcitem.h,v $
-** CVS/RCS Revision:	$Revision: 1.14 $
+** CVS/RCS Revision:	$Revision: 1.15 $
 ** Status:		$State: Exp $
 **
 */
@@ -36,7 +36,7 @@ class DcmItem : public DcmObject
 {
 protected:
     DcmList * elementList;
-    BOOL lastElementComplete;
+    OFBool lastElementComplete;
     Uint32 fStartPosition;
 
     DcmObject*	     copyDcmObject(DcmObject *oldObj);
@@ -56,10 +56,10 @@ protected:
 
     E_Condition searchSubFromHere(const DcmTagKey &tag,         // in
 				  DcmStack &resultStack,     // inout
-				  BOOL searchIntoSub );      // in
+				  OFBool searchIntoSub );      // in
     DcmObject * iterObject(const DcmObject * obj,
 			   const E_ListPos pos);
-    BOOL foundVR(char* atposition );
+    OFBool foundVR(char* atposition );
     E_TransferSyntax checkTransferSyntax(DcmStream & inStream);
 
 public:
@@ -70,8 +70,8 @@ public:
     virtual ~DcmItem();
 
     virtual DcmEVR 	ident(void) const;
-    virtual BOOL isLeaf(void) const { return FALSE; }
-    virtual void print(ostream & out = cout, const BOOL showFullData = TRUE,
+    virtual OFBool isLeaf(void) const { return OFFalse; }
+    virtual void print(ostream & out = cout, const OFBool showFullData = OFTrue,
 		       const int level = 0);
     virtual unsigned long getVM();
     virtual Uint32 calcElementLength(const E_TransferSyntax xfer,
@@ -85,7 +85,7 @@ public:
     virtual void transferInit();
     virtual void transferEnd();
 
-    virtual BOOL canWriteXfer(const E_TransferSyntax oldXfer,
+    virtual OFBool canWriteXfer(const E_TransferSyntax oldXfer,
 			      const E_TransferSyntax newXfer);
 
     virtual E_Condition read(DcmStream & inStream,
@@ -102,24 +102,24 @@ public:
 
     virtual unsigned long card();
     virtual E_Condition insert(DcmElement* elem,
-			       BOOL replaceOld = FALSE);
+			       OFBool replaceOld = OFFalse);
     virtual DcmElement* getElement(const unsigned long num);
 
     // get next Object from position in stack. If stack empty
     // get next Object in this item. if intoSub true, scan
     // complete hierarchy, false scan only elements direct in this
     // item (not deeper). 
-    virtual E_Condition nextObject(DcmStack & stack, const BOOL intoSub);
+    virtual E_Condition nextObject(DcmStack & stack, const OFBool intoSub);
     virtual DcmObject * nextInContainer(const DcmObject * obj);
     virtual DcmElement* remove(const unsigned long num);
     virtual DcmElement* remove(DcmObject* elem);
     virtual DcmElement* remove(const DcmTagKey & tag);
     virtual E_Condition clear();
-    virtual E_Condition verify(const BOOL autocorrect = FALSE );
+    virtual E_Condition verify(const OFBool autocorrect = OFFalse );
     virtual E_Condition search(const DcmTagKey& xtag,	       // in
 			       DcmStack &resultStack,	       // inout
 			       E_SearchMode mode = ESM_fromHere,  // in
-			       BOOL searchIntoSub = TRUE );       // in
+			       OFBool searchIntoSub = OFTrue );       // in
     virtual E_Condition searchErrors( DcmStack &resultStack );	       // inout
     virtual E_Condition loadAllDataIntoMemory(void);
 
@@ -135,10 +135,10 @@ public:
     /* simplified search&get functions */
     virtual E_Condition findString(const DcmTagKey& xtag,
 				   char* aString, int maxStringLength,
-				   BOOL searchIntoSub = FALSE);
+				   OFBool searchIntoSub = OFFalse);
     virtual E_Condition findLong(const DcmTagKey& xtag,
 				 long& aLong, 
-				 BOOL searchIntoSub = FALSE);
+				 OFBool searchIntoSub = OFFalse);
 
 
 };
@@ -190,7 +190,11 @@ E_Condition nextUp(DcmStack & stack);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
-** Revision 1.14  1997-07-07 07:42:03  andreas
+** Revision 1.15  1997-07-21 08:25:08  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.14  1997/07/07 07:42:03  andreas
 ** - Changed parameter type DcmTag & to DcmTagKey & in all search functions
 **   in DcmItem, DcmSequenceOfItems, DcmDirectoryRecord and DcmObject
 **

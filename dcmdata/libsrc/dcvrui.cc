@@ -10,9 +10,9 @@
 ** Implementation of class DcmUniqueIdentifier
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-03 15:10:20 $
+** Update Date:		$Date: 1997-07-21 08:25:35 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrui.cc,v $
-** CVS/RCS Revision:	$Revision: 1.10 $
+** CVS/RCS Revision:	$Revision: 1.11 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -64,7 +64,7 @@ DcmUniqueIdentifier::~DcmUniqueIdentifier()
 // ********************************
 
 
-void DcmUniqueIdentifier::print(ostream & out, const BOOL showFullData,
+void DcmUniqueIdentifier::print(ostream & out, const OFBool showFullData,
 				const int level)
 {
     if (this -> valueLoaded())
@@ -146,7 +146,11 @@ E_Condition DcmUniqueIdentifier::makeMachineByteString(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrui.cc,v $
-** Revision 1.10  1997-07-03 15:10:20  andreas
+** Revision 1.11  1997-07-21 08:25:35  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.10  1997/07/03 15:10:20  andreas
 ** - removed debugging functions Bdebug() and Edebug() since
 **   they write a static array and are not very useful at all.
 **   Cdebug and Vdebug are merged since they have the same semantics.

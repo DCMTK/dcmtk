@@ -9,10 +9,10 @@
 ** Test if a file uses DICOM Part 10 format.
 **
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-05-29 17:16:38 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-07-21 08:25:00 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmftest.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -62,21 +62,21 @@ int main(int argc, char *argv[])
     int badCount = 0;
     for (int i=1; i<argc; i++) {
 	char* fname = argv[i];
-	BOOL ok = FALSE;
+	OFBool ok = OFFalse;
 	FILE* f = fopen(fname, "r");
 
 	if (f == 0) {
-	    ok = FALSE;
+	    ok = OFFalse;
 	} else {
 	    char signature[4];
 	    if ((fseek(f, DCM_PreambleLen, SEEK_SET) < 0) || 
 		(fread(signature, 1, DCM_MagicLen, f) != DCM_MagicLen)) {
-		ok = FALSE;
+		ok = OFFalse;
 	    } else if (strncmp(signature, DCM_Magic, DCM_MagicLen) != 0) {
-		ok = FALSE;
+		ok = OFFalse;
 	    } else {
 		/* looks ok */
-		ok = TRUE;
+		ok = OFTrue;
 	    }
 	    fclose(f);
 	}
@@ -98,7 +98,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmftest.cc,v $
-** Revision 1.3  1997-05-29 17:16:38  meichel
+** Revision 1.4  1997-07-21 08:25:00  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.3  1997/05/29 17:16:38  meichel
 ** dcmftest.cc now includes <unistd.h> if available. Needed for SunOS.
 **
 ** Revision 1.2  1997/05/29 15:52:51  meichel

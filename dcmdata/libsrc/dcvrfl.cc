@@ -10,9 +10,9 @@
 ** Implementation of class DcmFloatingPointSingle
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-03 15:10:13 $
+** Update Date:		$Date: 1997-07-21 08:25:33 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrfl.cc,v $
-** CVS/RCS Revision:	$Revision: 1.11 $
+** CVS/RCS Revision:	$Revision: 1.12 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -68,7 +68,7 @@ DcmFloatingPointSingle::~DcmFloatingPointSingle()
 // ********************************
 
 
-void DcmFloatingPointSingle::print(ostream & out, const BOOL showFullData,
+void DcmFloatingPointSingle::print(ostream & out, const OFBool showFullData,
 				   const int level)
 {
     if (this -> valueLoaded())
@@ -222,7 +222,7 @@ E_Condition DcmFloatingPointSingle::getFloat32(Float32 & singleVal,
 
 // ********************************
 
-E_Condition DcmFloatingPointSingle::verify(const BOOL autocorrect)
+E_Condition DcmFloatingPointSingle::verify(const OFBool autocorrect)
 {
     errorFlag = EC_Normal;
     if ( Length % (sizeof(Float32)) != 0 )
@@ -241,7 +241,11 @@ E_Condition DcmFloatingPointSingle::verify(const BOOL autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrfl.cc,v $
-** Revision 1.11  1997-07-03 15:10:13  andreas
+** Revision 1.12  1997-07-21 08:25:33  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.11  1997/07/03 15:10:13  andreas
 ** - removed debugging functions Bdebug() and Edebug() since
 **   they write a static array and are not very useful at all.
 **   Cdebug and Vdebug are merged since they have the same semantics.

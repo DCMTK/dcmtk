@@ -4357,7 +4357,7 @@ DcmDataDictionary::loadBuiltinDictionary()
         e = new DcmDictEntry(b->group, b->element,
             b->upperGroup, b->upperElement, b->evr,
             b->tagName, b->vmMin, b->vmMax,
-            b->standardVersion, FALSE);
+            b->standardVersion, OFFalse);
         e->setGroupRangeRestriction(b->groupRestriction);
         e->setElementRangeRestriction(b->elementRestriction);
         addEntry(e);

@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-07 07:42:05 $
+** Update Date:		$Date: 1997-07-21 08:25:10 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcsequen.h,v $
-** CVS/RCS Revision:	$Revision: 1.12 $
+** CVS/RCS Revision:	$Revision: 1.13 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -44,7 +44,7 @@ class DcmSequenceOfItems : public DcmElement
 {
 protected:
     DcmList *itemList;
-    BOOL lastItemComplete;
+    OFBool lastItemComplete;
     Uint32 fStartPosition;
 
     virtual E_Condition readTagAndLength(DcmStream & inStream,	 // inout
@@ -66,7 +66,7 @@ protected:
 
     virtual E_Condition searchSubFromHere(const DcmTagKey &tag,          // in
 					  DcmStack &resultStack,      // inout
-					  const BOOL searchIntoSub ); // in
+					  const OFBool searchIntoSub ); // in
 
 public:
     DcmSequenceOfItems(const DcmTag &tag, const Uint32 len = 0);
@@ -74,8 +74,8 @@ public:
     virtual ~DcmSequenceOfItems();
 
     virtual DcmEVR ident() const { return EVR_SQ; }
-    virtual BOOL isLeaf(void) const { return FALSE; }
-    virtual void print(ostream & out = cout, const BOOL showFullData = TRUE,
+    virtual OFBool isLeaf(void) const { return OFFalse; }
+    virtual void print(ostream & out = cout, const OFBool showFullData = OFTrue,
 		       const int level = 0);
     virtual unsigned long getVM() { return 1L; }
 
@@ -99,7 +99,7 @@ public:
     virtual void transferInit(void);
     virtual void transferEnd(void);
 
-    virtual BOOL canWriteXfer(const E_TransferSyntax oldXfer,
+    virtual OFBool canWriteXfer(const E_TransferSyntax oldXfer,
 			      const E_TransferSyntax newXfer);
 
     virtual E_Condition read(DcmStream & inStream,
@@ -117,20 +117,20 @@ public:
     virtual E_Condition prepend(DcmItem* item);
     virtual E_Condition insert(DcmItem* item,
 			       unsigned long where = DCM_EndOfListIndex,
-			       BOOL before = FALSE );
+			       OFBool before = OFFalse );
     virtual E_Condition append(DcmItem* item);
 			       
     virtual DcmItem* getItem(const unsigned long num);
-    virtual E_Condition nextObject(DcmStack & stack, const BOOL intoSub);
+    virtual E_Condition nextObject(DcmStack & stack, const OFBool intoSub);
     virtual DcmObject * nextInContainer(const DcmObject * obj);
     virtual DcmItem* remove(const unsigned long num);
     virtual DcmItem* remove(DcmItem* item);
     virtual E_Condition clear();
-    virtual E_Condition verify(const BOOL autocorrect = FALSE);
+    virtual E_Condition verify(const OFBool autocorrect = OFFalse);
     virtual E_Condition search(const DcmTagKey &xtag,	       // in
 			       DcmStack &resultStack, 	       // inout
 			       E_SearchMode mode = ESM_fromHere,  // in
-			       BOOL searchIntoSub = TRUE );	  // in
+			       OFBool searchIntoSub = OFTrue );	  // in
     virtual E_Condition searchErrors( DcmStack &resultStack );	  // inout
     virtual E_Condition loadAllDataIntoMemory(void);
 
@@ -143,7 +143,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.h,v $
-** Revision 1.12  1997-07-07 07:42:05  andreas
+** Revision 1.13  1997-07-21 08:25:10  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.12  1997/07/07 07:42:05  andreas
 ** - Changed parameter type DcmTag & to DcmTagKey & in all search functions
 **   in DcmItem, DcmSequenceOfItems, DcmDirectoryRecord and DcmObject
 **

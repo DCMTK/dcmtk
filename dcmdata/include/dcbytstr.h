@@ -10,9 +10,9 @@
 ** Interface of class DcmByteString
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-16 08:31:19 $
+** Update Date:		$Date: 1997-07-21 08:25:05 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcbytstr.h,v $
-** CVS/RCS Revision:	$Revision: 1.9 $
+** CVS/RCS Revision:	$Revision: 1.10 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -61,11 +61,15 @@ public:
     virtual ~DcmByteString();
 
     virtual DcmEVR ident(void) const { return EVR_UNKNOWN; } 
-    virtual void print(ostream & out = cout, const BOOL showFullData = TRUE,
+    virtual void print(ostream & out = cout, const OFBool showFullData = OFTrue,
 		       const int level = 0);
     virtual unsigned long getVM();
 
     Uint32 getRealLength(void);
+
+    virtual Uint32 getLength(
+	const E_TransferSyntax xfer = EXS_LittleEndianImplicit,
+	const E_EncodingType enctype = EET_UndefinedLength);
 
     virtual E_Condition write(DcmStream & outStream,
 			      const E_TransferSyntax oxfer,
@@ -77,7 +81,7 @@ public:
     virtual E_Condition getString(char * & byteStringValue);
 
     virtual E_Condition clear();
-    virtual E_Condition verify(const BOOL autocorrect = FALSE);
+    virtual E_Condition verify(const OFBool autocorrect = OFFalse);
 };
 
 
@@ -86,7 +90,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.h,v $
-** Revision 1.9  1997-05-16 08:31:19  andreas
+** Revision 1.10  1997-07-21 08:25:05  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.9  1997/05/16 08:31:19  andreas
 ** - Revised handling of GroupLength elements and support of
 **   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
 **   got additional enumeration values (for a description see dctypes.h).

@@ -1,18 +1,18 @@
 /*
 **
 ** Author: Gerd Ehlers      05.05.94 -- First Creation
-**         Andreas Barth    05.12.95 -- new Stream class, unique value field
+**
 ** Kuratorium OFFIS e.V.
 **
 ** Module: dcvrobow.h
 **
 ** Purpose:
-** Interface of class DcmOtherByteOtherWord
+** Interface of class DcmOtherByteOtherWord for data VR OB or OW
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-27 13:48:30 $
+** Update Date:		$Date: 1997-07-21 08:25:15 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrobow.h,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
+** CVS/RCS Revision:	$Revision: 1.9 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -43,11 +43,11 @@ public:
 
     virtual E_Condition setVR(DcmEVR vr);
     virtual DcmEVR ident() const;
-    virtual void print(ostream & out = cout, const BOOL showFullData = TRUE,
+    virtual void print(ostream & out = cout, const OFBool showFullData = OFTrue,
 		       const int level = 0);
     virtual unsigned long getVM(void) { return 1L; }
 
-    virtual BOOL canWriteXfer(const E_TransferSyntax newXfer,
+    virtual OFBool canWriteXfer(const E_TransferSyntax newXfer,
 				 const E_TransferSyntax oldXfer);
 
     virtual E_Condition write(DcmStream & outStream,
@@ -56,9 +56,11 @@ public:
 			      = EET_UndefinedLength);
 
 
+    // put an Unit8 array if VR == OB else return error code
     virtual E_Condition putUint8Array(const Uint8 * byteValue,
 				      const unsigned long length);    
 
+    // put an Unit16 array if VR == OW else return error code
     virtual E_Condition putUint16Array(const Uint16 * wordValue,
 				       const unsigned long length ); 
 
@@ -67,7 +69,7 @@ public:
     virtual E_Condition getUint8Array(Uint8 * & bytes);
     virtual E_Condition getUint16Array(Uint16 * & words);
 
-    virtual E_Condition verify(const BOOL autocorrect = FALSE);
+    virtual E_Condition verify(const OFBool autocorrect = OFFalse);
 };
 
 
@@ -76,7 +78,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.h,v $
-** Revision 1.8  1997-05-27 13:48:30  andreas
+** Revision 1.9  1997-07-21 08:25:15  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.8  1997/05/27 13:48:30  andreas
 ** - Add method canWriteXfer to class DcmObject and all derived classes.
 **   This method checks whether it is possible to convert the original
 **   transfer syntax to an new transfer syntax. The check is used in the

@@ -10,9 +10,9 @@
 ** 
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-04-18 08:04:39 $
+** Update Date:		$Date: 1997-07-21 08:25:07 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdicent.h,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -55,7 +55,7 @@ private:
     int		valueMultiplicityMin;
     int		valueMultiplicityMax;
     const char*	standardVersion;
-    BOOL	stringsAreCopies;
+    OFBool	stringsAreCopies;
     DcmDictRangeRestriction groupRangeRestriction;
     DcmDictRangeRestriction elementRangeRestriction;
 
@@ -65,10 +65,10 @@ public:
     DcmDictEntry(DcmTagKey k);
     DcmDictEntry(Uint16 g, Uint16 e, DcmVR vr, 
         const char* nam=NULL, int vmMin=1, int vmMax=1,
-        const char* vers="DICOM3", BOOL doCopyStrings=TRUE);	
+        const char* vers="DICOM3", OFBool doCopyStrings=OFTrue);	
     DcmDictEntry(Uint16 g, Uint16 e, Uint16 ug, Uint16 ue, DcmVR vr,
         const char* nam=NULL, int vmMin=1, int vmMax=1,
-        const char* vers="DICOM3", BOOL doCopyStrings=TRUE);	
+        const char* vers="DICOM3", OFBool doCopyStrings=OFTrue);	
     
     /* destructor */
     ~DcmDictEntry();
@@ -82,9 +82,9 @@ public:
     
     int getVMMin() const;
     int getVMMax() const;
-    BOOL isFixedSingleVM() const;
-    BOOL isFixedRangeVM() const;
-    BOOL isVariableRangeVM() const;
+    OFBool isFixedSingleVM() const;
+    OFBool isFixedRangeVM() const;
+    OFBool isVariableRangeVM() const;
 
     void setUpper(const DcmTagKey& key);
     void setUpperGroup(Uint16 ug);
@@ -156,24 +156,24 @@ DcmDictEntry::getVMMax() const
     return valueMultiplicityMax; 
 }
 
-inline BOOL 
+inline OFBool 
 DcmDictEntry::isFixedSingleVM() const 
 { 
-    return (BOOL)((valueMultiplicityMin != DcmVariableVM) &&
+    return (OFBool)((valueMultiplicityMin != DcmVariableVM) &&
 		  (valueMultiplicityMin == valueMultiplicityMax));
 }
 
-inline BOOL 
+inline OFBool 
 DcmDictEntry::isFixedRangeVM() const 
 { 
-    return (BOOL)((valueMultiplicityMin != DcmVariableVM) &&
+    return (OFBool)((valueMultiplicityMin != DcmVariableVM) &&
 		  (valueMultiplicityMax != DcmVariableVM));
 }
 
-inline BOOL 
+inline OFBool 
 DcmDictEntry::isVariableRangeVM() const 
 {
-    return (BOOL)((valueMultiplicityMin != DcmVariableVM) &&
+    return (OFBool)((valueMultiplicityMin != DcmVariableVM) &&
 		  (valueMultiplicityMax == DcmVariableVM));
 }
 
@@ -267,16 +267,16 @@ DcmDictEntry::contains(const DcmTagKey& key) const
 {
     if ((getGroupRangeRestriction() == DcmDictRange_Even) && 
 	DCM_IS_ODD(key.getGroup()))
-	return FALSE;
+	return OFFalse;
     else if ((getGroupRangeRestriction() == DcmDictRange_Odd) &&
 	DCM_IS_EVEN(key.getGroup())) 
-	return FALSE;
+	return OFFalse;
     else if ((getElementRangeRestriction() == DcmDictRange_Even) &&
 	DCM_IS_ODD(key.getElement()))
-	return FALSE;
+	return OFFalse;
     else if ((getElementRangeRestriction() == DcmDictRange_Odd) &&
 	DCM_IS_EVEN(key.getElement()))
-	return FALSE;
+	return OFFalse;
     else
     {
 	return 
@@ -320,7 +320,11 @@ DcmDictEntry::setEQ(const DcmDictEntry& e) const
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicent.h,v $
-** Revision 1.7  1997-04-18 08:04:39  andreas
+** Revision 1.8  1997-07-21 08:25:07  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.7  1997/04/18 08:04:39  andreas
 ** - Minor corrections: correct some warnings of the SUN-C++ Compiler
 **   concerning the assignments of wrong types and inline compiler
 **   errors

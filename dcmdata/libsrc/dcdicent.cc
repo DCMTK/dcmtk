@@ -9,10 +9,10 @@
 ** A dictionary entry in the loadable DICOM data dictionary
 ** 
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-20 16:44:04 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-07-21 08:25:24 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdicent.cc,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -62,7 +62,7 @@ char* strdup_new(const char* str)
 
 DcmDictEntry::DcmDictEntry(Uint16 g, Uint16 e, DcmVR vr, 
         const char* nam, int vmMin, int vmMax,
-        const char* vers, BOOL doCopyStrings) : DcmTagKey(g,e) 
+        const char* vers, OFBool doCopyStrings) : DcmTagKey(g,e) 
 {
     upperKey.set(g,e);	/* default: make upper key same as normal key */
     valueRepresentation.setVR(vr);
@@ -81,7 +81,7 @@ DcmDictEntry::DcmDictEntry(Uint16 g, Uint16 e, DcmVR vr,
 
 DcmDictEntry::DcmDictEntry(Uint16 g, Uint16 e, Uint16 ug, Uint16 ue, DcmVR vr, 
         const char* nam, int vmMin, int vmMax,
-        const char* vers, BOOL doCopyStrings) : DcmTagKey(g,e)
+        const char* vers, OFBool doCopyStrings) : DcmTagKey(g,e)
 {
     upperKey.set(ug, ue);
     valueRepresentation.setVR(vr);
@@ -155,7 +155,11 @@ ostream& operator<<(ostream& s, const DcmDictEntry& e) {
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicent.cc,v $
-** Revision 1.2  1996-03-20 16:44:04  hewett
+** Revision 1.3  1997-07-21 08:25:24  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.2  1996/03/20 16:44:04  hewett
 ** Updated for revised data dictionary.  Repeating tags are now handled better.
 ** A linear list of repeating tags has been introduced with a subset ordering
 ** mechanism to ensure that dictionary searches locate the most precise

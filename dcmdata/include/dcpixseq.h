@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-27 13:48:29 $
+** Update Date:		$Date: 1997-07-21 08:25:10 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpixseq.h,v $
-** CVS/RCS Revision:	$Revision: 1.9 $
+** CVS/RCS Revision:	$Revision: 1.10 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -47,7 +47,7 @@ public:
     virtual ~DcmPixelSequence();
 
     virtual DcmEVR ident(void) const { return EVR_pixelSQ; }
-    virtual void print(ostream & out = cout, const BOOL showFullData = TRUE,
+    virtual void print(ostream & out = cout, const OFBool showFullData = OFTrue,
 		       const int level = 0);
     virtual E_Condition insert(DcmPixelItem* item,
 			       unsigned long where = DCM_EndOfListIndex);
@@ -58,7 +58,7 @@ public:
 
     E_Condition changeXfer(const E_TransferSyntax newXfer);
 
-    virtual BOOL canWriteXfer(const E_TransferSyntax newXfer,
+    virtual OFBool canWriteXfer(const E_TransferSyntax newXfer,
 			      const E_TransferSyntax oldXfer);
 
     virtual E_Condition read(DcmStream & inStream,
@@ -75,7 +75,7 @@ public:
 // This methods are not sensible for a pix-sequence
     virtual E_Condition insert(DcmItem* /*item*/,
 			       unsigned long /*where*/ = DCM_EndOfListIndex,
-			       BOOL /*before*/ = FALSE )
+			       OFBool /*before*/ = OFFalse )
     {
 	return EC_IllegalCall;
     }
@@ -91,7 +91,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.h,v $
-** Revision 1.9  1997-05-27 13:48:29  andreas
+** Revision 1.10  1997-07-21 08:25:10  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.9  1997/05/27 13:48:29  andreas
 ** - Add method canWriteXfer to class DcmObject and all derived classes.
 **   This method checks whether it is possible to convert the original
 **   transfer syntax to an new transfer syntax. The check is used in the

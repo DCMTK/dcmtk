@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-07 07:46:20 $
+** Update Date:		$Date: 1997-07-21 08:25:29 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcsequen.cc,v $
-** CVS/RCS Revision:	$Revision: 1.20 $
+** CVS/RCS Revision:	$Revision: 1.21 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -34,6 +34,7 @@
 #include "dcpxitem.h"
 #include "dcswap.h"
 #include "dcdebug.h"
+#include "dcmetinf.h"
 
 #include "dcdeftag.h"
 
@@ -45,7 +46,7 @@ DcmSequenceOfItems::DcmSequenceOfItems(const DcmTag &tag, const Uint32 len)
     : DcmElement(tag, len)
 {
     itemList = new DcmList;
-    lastItemComplete = TRUE;
+    lastItemComplete = OFTrue;
     fStartPosition = 0;
 }
 
@@ -56,7 +57,7 @@ DcmSequenceOfItems::DcmSequenceOfItems(const DcmTag &tag, const Uint32 len)
 DcmSequenceOfItems::DcmSequenceOfItems(const DcmSequenceOfItems& old)
     : DcmElement(old)
 {
-    lastItemComplete = TRUE;
+    lastItemComplete = OFTrue;
     itemList = new DcmList;
     fStartPosition = old.fStartPosition;
 
@@ -124,7 +125,7 @@ DcmSequenceOfItems::~DcmSequenceOfItems()
 // ********************************
 
 
-void DcmSequenceOfItems::print(ostream & out, const BOOL showFullData,
+void DcmSequenceOfItems::print(ostream & out, const OFBool showFullData,
 			       const int level)
 {
     char info[200]; 
@@ -161,13 +162,13 @@ void DcmSequenceOfItems::print(ostream & out, const BOOL showFullData,
 // ********************************
 
 
-BOOL DcmSequenceOfItems::canWriteXfer(const E_TransferSyntax newXfer, 
+OFBool DcmSequenceOfItems::canWriteXfer(const E_TransferSyntax newXfer, 
 				      const E_TransferSyntax oldXfer)
 {
-    BOOL canWrite = TRUE;
+    OFBool canWrite = OFTrue;
 
     if (newXfer == EXS_Unknown)
-	canWrite = FALSE;
+	canWrite = OFFalse;
     else if ( !itemList->empty() )
     {
 	DcmObject *dO;
@@ -404,18 +405,18 @@ E_Condition DcmSequenceOfItems::read(DcmStream & inStream,
 		    else
 			fTransferredBytes += 8;
 
-		    lastItemComplete = FALSE;
+		    lastItemComplete = OFFalse;
 		    errorFlag = readSubItem(inStream, newTag, newValueLength, 
 					    xfer, glenc, maxReadLength);
 		    if ( errorFlag == EC_Normal )
-			lastItemComplete = TRUE;
+			lastItemComplete = OFTrue;
 		}
 		else
 		{
 		    errorFlag = itemList->get()->read(inStream, xfer, glenc,
 						      maxReadLength);
 		    if ( errorFlag == EC_Normal )
-			lastItemComplete = TRUE;
+			lastItemComplete = OFTrue;
 		}
 		fTransferredBytes = inStream.Tell() - fStartPosition;
 				
@@ -525,7 +526,7 @@ void  DcmSequenceOfItems::transferInit(void)
 {
     DcmObject::transferInit();
     fStartPosition = 0;
-    lastItemComplete = TRUE;
+    lastItemComplete = OFTrue;
     if (!itemList->empty() )
     {
 	itemList->seek( ELP_first );
@@ -585,7 +586,7 @@ E_Condition DcmSequenceOfItems::prepend(DcmItem* item)
 
 E_Condition DcmSequenceOfItems::insert(DcmItem* item,
 				       unsigned long where,
-				       BOOL before)
+				       OFBool before)
 {
     errorFlag = EC_Normal;
     if ( item != (DcmItem*)NULL ) {
@@ -655,18 +656,18 @@ DcmObject * DcmSequenceOfItems::nextInContainer(const DcmObject * obj)
 
 // ********************************
 
-E_Condition DcmSequenceOfItems::nextObject(DcmStack & stack, const BOOL intoSub)
+E_Condition DcmSequenceOfItems::nextObject(DcmStack & stack, const OFBool intoSub)
 {
     E_Condition l_error = EC_Normal;
     DcmObject * container = NULL;
     DcmObject * obj = NULL;
     DcmObject * result = NULL;
-    BOOL examSub = intoSub;
+    OFBool examSub = intoSub;
 
     if (stack.empty())
     {
 	stack.push(this);
-	examSub = TRUE;
+	examSub = OFTrue;
     }
 
     obj = stack.top();
@@ -767,7 +768,7 @@ E_Condition DcmSequenceOfItems::clear()
 // ********************************
 
 
-E_Condition DcmSequenceOfItems::verify(const BOOL autocorrect)
+E_Condition DcmSequenceOfItems::verify(const OFBool autocorrect)
 {
     errorFlag = EC_Normal;
     if ( !itemList->empty() )
@@ -780,7 +781,7 @@ E_Condition DcmSequenceOfItems::verify(const BOOL autocorrect)
 		errorFlag = EC_CorruptedData;
 	} while ( itemList->seek( ELP_next ) );
     }
-    if ( autocorrect == TRUE )
+    if ( autocorrect == OFTrue )
 	Length = this->getLength();
 
     return errorFlag;
@@ -800,7 +801,7 @@ E_Condition DcmSequenceOfItems::verify(const BOOL autocorrect)
 
 E_Condition DcmSequenceOfItems::searchSubFromHere(const DcmTagKey &tag,
 						  DcmStack &resultStack,
-						  const BOOL searchIntoSub)
+						  const OFBool searchIntoSub)
 {
     DcmObject *dO;
     E_Condition l_error = EC_TagNotFound;
@@ -818,7 +819,7 @@ E_Condition DcmSequenceOfItems::searchSubFromHere(const DcmTagKey &tag,
                     l_error = dO->search( tag,
                                           resultStack,
                                           ESM_fromStackTop,
-                                          TRUE );
+                                          OFTrue );
                 if ( l_error != EC_Normal )
                     resultStack.pop();
             }
@@ -842,7 +843,7 @@ E_Condition DcmSequenceOfItems::searchSubFromHere(const DcmTagKey &tag,
 E_Condition DcmSequenceOfItems::search( const DcmTagKey &tag,
 					DcmStack &resultStack,
 					E_SearchMode mode,
-					BOOL searchIntoSub )
+					OFBool searchIntoSub )
 {
     DcmObject *dO = (DcmObject*)NULL;
     E_Condition l_error = EC_TagNotFound;
@@ -913,7 +914,7 @@ E_Condition DcmSequenceOfItems::search( const DcmTagKey &tag,
 		else
 		{
 		    E_SearchMode submode = mode;
-		    BOOL searchNode = TRUE;
+		    OFBool searchNode = OFTrue;
 		    DcmObject *dnO;
 		    dnO = resultStack.elem( i-2 ); // Knoten der naechsten Ebene
 		    debug(5, ( "DcmSequenceOfItems::search() itemList: dnO=%p", dnO ));
@@ -921,7 +922,7 @@ E_Condition DcmSequenceOfItems::search( const DcmTagKey &tag,
 		    itemList->seek( ELP_first );
 		    do {
 			dO = itemList->get();
-			searchNode = searchNode ? ( dO != dnO ) : FALSE;
+			searchNode = searchNode ? ( dO != dnO ) : OFFalse;
 			Cdebug(5, searchNode,  ("DcmSequenceOfItems::search() --searching Node dnO=%p, found: dO=%p", dnO, dO ));
 			Cdebug(5, !searchNode && submode==ESM_afterStackTop,
 				("DcmSequenceOfItems::search() --searching Node dnO=%p found!", dO ));
@@ -940,7 +941,7 @@ E_Condition DcmSequenceOfItems::search( const DcmTagKey &tag,
                                 l_error = dO->search( tag,
                                                       resultStack,
                                                       submode,
-                                                      TRUE );
+                                                      OFTrue );
 			    if ( l_error != EC_Normal )
 				resultStack.pop();
 			    else
@@ -1011,7 +1012,11 @@ E_Condition DcmSequenceOfItems::loadAllDataIntoMemory()
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.20  1997-07-07 07:46:20  andreas
+** Revision 1.21  1997-07-21 08:25:29  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.20  1997/07/07 07:46:20  andreas
 ** - Changed parameter type DcmTag & to DcmTagKey & in all search functions
 **   in DcmItem, DcmSequenceOfItems, DcmDirectoryRecord and DcmObject
 ** - Enhanced (faster) byte swapping routine. swapIfNecessary moved from
@@ -1069,7 +1074,7 @@ E_Condition DcmSequenceOfItems::loadAllDataIntoMemory()
 ** Some more testing in nextObject
 **
 ** Revision 1.10  1996/08/08 10:06:24  andreas
-** Correct error for intoSub=FALSE
+** Correct error for intoSub=OFFalse
 **
 ** Revision 1.9  1996/08/05 08:46:17  andreas
 ** new print routine with additional parameters:

@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-16 08:23:47 $
+** Update Date:		$Date: 1997-07-21 08:25:09 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcmetinf.h,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 */
@@ -38,14 +38,14 @@ class DcmMetaInfo : public DcmItem
 {
 private:
     char filePreamble[DCM_PreambleLen+DCM_MagicLen];
-    BOOL preambleUsed;
+    OFBool preambleUsed;
     E_TransferState fPreambleTransferState;
     E_TransferSyntax Xfer;
 
     void setPreamble(void);
-    BOOL checkAndReadPreamble(DcmStream & inStream,
+    OFBool checkAndReadPreamble(DcmStream & inStream,
 			      E_TransferSyntax & newxfer);	 // out
-    BOOL nextTagIsMeta(DcmStream & inStream);
+    OFBool nextTagIsMeta(DcmStream & inStream);
     E_Condition readGroupLength(DcmStream & inStream,		// inout
 				const E_TransferSyntax xfer,    // in
                                 const DcmTagKey & xtag,         // in
@@ -61,7 +61,7 @@ public:
     virtual ~DcmMetaInfo();
 
     virtual DcmEVR ident(void) const { return EVR_metainfo; }
-    virtual void print(ostream & out = cout, const BOOL showFullData = TRUE,
+    virtual void print(ostream & out = cout, const OFBool showFullData = OFTrue,
 		       const int level = 0);
     virtual	void transferInit(void);
     virtual void transferEnd(void);
@@ -86,7 +86,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.h,v $
-** Revision 1.6  1997-05-16 08:23:47  andreas
+** Revision 1.7  1997-07-21 08:25:09  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.6  1997/05/16 08:23:47  andreas
 ** - Revised handling of GroupLength elements and support of
 **   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
 **   got additional enumeration values (for a description see dctypes.h).

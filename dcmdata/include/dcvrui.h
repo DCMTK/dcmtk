@@ -10,9 +10,9 @@
 ** Interface of class DcmUniqueIdentifier
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-04-18 08:13:33 $
+** Update Date:		$Date: 1997-07-21 08:25:16 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrui.h,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -40,7 +40,7 @@ public:
     virtual ~DcmUniqueIdentifier(void);
  
     virtual DcmEVR ident(void) const { return EVR_UI; }
-    virtual void print(ostream & out = cout, const BOOL showFullData = TRUE,
+    virtual void print(ostream & out = cout, const OFBool showFullData = OFTrue,
 		       const int level = 0);
 
     virtual E_Condition putString(const char * value);
@@ -52,7 +52,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrui.h,v $
-** Revision 1.7  1997-04-18 08:13:33  andreas
+** Revision 1.8  1997-07-21 08:25:16  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.7  1997/04/18 08:13:33  andreas
 ** - The put/get-methods for all VRs did not conform to the C++-Standard
 **   draft. Some Compilers (e.g. SUN-C++ Compiler, Metroworks
 **   CodeWarrier, etc.) create many warnings concerning the hiding of

@@ -10,7 +10,7 @@
  * 
  * 
  * Last Update:	  $Author: andreas $
- * Revision:      $Revision: 1.3 $
+ * Revision:      $Revision: 1.4 $
  * Status:        $State: Exp $
  *
  */
@@ -59,7 +59,7 @@ public:
     DcmObject* pop();
     DcmObject* top();
     DcmObject* elem(const unsigned long number);
-    BOOL empty();
+    OFBool empty();
     const unsigned long card();
     void clear();
 };

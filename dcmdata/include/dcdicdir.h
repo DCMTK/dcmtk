@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-16 08:31:19 $
+** Update Date:		$Date: 1997-07-21 08:25:06 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdicdir.h,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -50,8 +50,8 @@ class DcmDicomDir
   protected:
     E_Condition	errorFlag;
     char * dicomDirFileName;
-    BOOL modified;              // wird wo gebraucht ?
-    BOOL mustCreateNewDir;
+    OFBool modified;              // wird wo gebraucht ?
+    OFBool mustCreateNewDir;
     DcmFileFormat * DirFile;
     DcmDirectoryRecord * RootRec;
     DcmSequenceOfItems * MRDRSeq;
@@ -120,7 +120,7 @@ public:
     DcmDicomDir( const DcmDicomDir &newDir );
     virtual ~DcmDicomDir();
 
-    virtual void print(ostream & out = cout, const BOOL showFullData = TRUE,
+    virtual void print(ostream & out = cout, const OFBool showFullData = OFTrue,
 		       const int level = 0);
     virtual E_Condition         error();
     virtual DcmFileFormat&      getDirFileFormat();
@@ -135,7 +135,7 @@ public:
                                       const E_GrpLenEncoding glenc
                                             = EGL_withoutGL );
 // PENDING: DICOM-konform, aber unvollstaendig
-    virtual E_Condition         verify( BOOL autocorrect = FALSE );
+    virtual E_Condition         verify( OFBool autocorrect = OFFalse );
 };
 
 #endif // DCDICDIR_H
@@ -143,7 +143,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.h,v $
-** Revision 1.5  1997-05-16 08:31:19  andreas
+** Revision 1.6  1997-07-21 08:25:06  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.5  1997/05/16 08:31:19  andreas
 ** - Revised handling of GroupLength elements and support of
 **   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
 **   got additional enumeration values (for a description see dctypes.h).

@@ -10,7 +10,7 @@
  *
  *
  * Last Update:   $Author: andreas $
- * Revision:	  $Revision: 1.1 $
+ * Revision:	  $Revision: 1.2 $
  * Status:	  $State: Exp $
  *
  */
@@ -24,24 +24,24 @@
 #include "dcitem.h"
 
 
-BOOL getSingleValue(DcmObject *obj, DcmTagKey searchtag, 
+OFBool getSingleValue(DcmObject *obj, DcmTagKey searchtag, 
 		    Uint16 &returnVal );
-BOOL getSingleValue(DcmObject *obj, DcmTagKey searchtag, 
+OFBool getSingleValue(DcmObject *obj, DcmTagKey searchtag, 
 		    Sint16 &returnVal );
-BOOL getSingleValue(DcmObject *obj, DcmTagKey searchtag, 
+OFBool getSingleValue(DcmObject *obj, DcmTagKey searchtag, 
 		    Uint32 &returnVal );
-BOOL getSingleValue(DcmObject *obj, DcmTagKey searchtag, 
+OFBool getSingleValue(DcmObject *obj, DcmTagKey searchtag, 
 		    Sint32 &returnVal );
-BOOL getSingleValue(DcmObject *obj, DcmTagKey searchtag, 
+OFBool getSingleValue(DcmObject *obj, DcmTagKey searchtag, 
 		    char * & returnVal );
 
-BOOL putSingleValue(DcmItem *item, DcmTagKey tag, Uint16 value);
-BOOL putSingleValue(DcmItem *item, DcmTagKey tag, Sint16 value);
-BOOL putSingleValue(DcmItem *item, DcmTagKey tag, Uint32 value);
-BOOL putSingleValue(DcmItem *item, DcmTagKey tag, Sint32 value);
-BOOL putSingleValue(DcmItem *item, DcmTagKey tag, const char *value);
+OFBool putSingleValue(DcmItem *item, DcmTagKey tag, Uint16 value);
+OFBool putSingleValue(DcmItem *item, DcmTagKey tag, Sint16 value);
+OFBool putSingleValue(DcmItem *item, DcmTagKey tag, Uint32 value);
+OFBool putSingleValue(DcmItem *item, DcmTagKey tag, Sint32 value);
+OFBool putSingleValue(DcmItem *item, DcmTagKey tag, const char *value);
 
-BOOL deleteAttribute( DcmItem *item, DcmTagKey searchtag );
-BOOL deleteAttribute( DcmItem *item, DcmObject *attribute );
+OFBool deleteAttribute( DcmItem *item, DcmTagKey searchtag );
+OFBool deleteAttribute( DcmItem *item, DcmObject *attribute );
 
 #endif

@@ -1,7 +1,6 @@
 /*
 ** 
 ** Author: Gerd Ehlers      01.05.94 -- Creation
-**         Andreas Barth    27.11.95 -- make get-methods inline
 **
 ** Module: dcxfer.h
 ** 
@@ -9,8 +8,8 @@
 ** handling of transfer syntax
 **
 ** 
-** Last Update:	  $Author: hewett $
-** Revision:      $Revision: 1.4 $
+** Last Update:	  $Author: andreas $
+** Revision:      $Revision: 1.5 $
 ** Status:        $State: Exp $
 **
 */
@@ -98,21 +97,21 @@ public:
     DcmXfer & operator = ( const DcmXfer &newtag );
 
     inline const E_TransferSyntax getXfer() const  { return xferSyn; }
-	inline const E_ByteOrder getByteOrder() const { return byteOrder; }
+    inline const E_ByteOrder getByteOrder() const { return byteOrder; }
     inline const char* getXferName() const { return xferName; }
     inline const char* getXferID() const { return xferID; }
-    inline const BOOL isLittleEndian() const 
+    inline const OFBool isLittleEndian() const 
 	{ 
 		return byteOrder == EBO_LittleEndian; 
 	}
-	inline const BOOL isBigEndian() const { return byteOrder == EBO_BigEndian; }
-    inline const BOOL isImplicitVR() const { return vrType == EVT_Implicit; }
-    inline const BOOL isExplicitVR() const { return vrType == EVT_Explicit; }
-    inline const BOOL isEncapsulated() const 
+    inline const OFBool isBigEndian() const { return byteOrder == EBO_BigEndian; }
+    inline const OFBool isImplicitVR() const { return vrType == EVT_Implicit; }
+    inline const OFBool isExplicitVR() const { return vrType == EVT_Explicit; }
+    inline const OFBool isEncapsulated() const 
 	{ 
 		return encapsulated == EJE_Encapsulated; 
 	}
-    inline const BOOL isNotEncapsulated() const
+    inline const OFBool isNotEncapsulated() const
 	{ 
 		return encapsulated == EJE_NotEncapsulated; 
 	}

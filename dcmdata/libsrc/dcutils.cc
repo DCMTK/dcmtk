@@ -10,7 +10,7 @@
  *
  *
  * Last Update:   $Author: andreas $
- * Revision:	  $Revision: 1.2 $
+ * Revision:	  $Revision: 1.3 $
  * Status:	  $State: Exp $
  *
  */
@@ -56,14 +56,14 @@ char* skipWS( char *str )
 // **********************************************
 
 
-BOOL getSingleValue( DcmObject *obj,
+OFBool getSingleValue( DcmObject *obj,
 		     DcmTagKey searchtag,
 		     Uint16 &returnVal)
 {
-    BOOL l_error = FALSE;
+    OFBool l_error = OFFalse;
     DcmStack stack;
 
-    if ( obj->search( searchtag, stack, ESM_fromHere, FALSE )
+    if ( obj->search( searchtag, stack, ESM_fromHere, OFFalse )
 	 == EC_Normal )
     {
 	DcmObject *searchedObj = stack.top();
@@ -78,13 +78,13 @@ BOOL getSingleValue( DcmObject *obj,
 		returnVal = (Uint16)atoi( istr );
 	    }
             else
-                l_error = TRUE;
+                l_error = OFTrue;
 	}
 	else
-	    l_error = TRUE;
+	    l_error = OFTrue;
     }
     else
-	l_error = TRUE;
+	l_error = OFTrue;
 
     return l_error;
 }
@@ -93,14 +93,14 @@ BOOL getSingleValue( DcmObject *obj,
 // **********************************************
 
 
-BOOL getSingleValue( DcmObject *obj,
+OFBool getSingleValue( DcmObject *obj,
 		     DcmTagKey searchtag,
 		     Sint16 &returnVal)
 {
-    BOOL l_error = FALSE;
+    OFBool l_error = OFFalse;
     DcmStack stack;
 
-    if ( obj->search( searchtag, stack, ESM_fromHere, FALSE )
+    if ( obj->search( searchtag, stack, ESM_fromHere, OFFalse )
 	 == EC_Normal )
     {
 	DcmObject *searchedObj = stack.top();
@@ -115,13 +115,13 @@ BOOL getSingleValue( DcmObject *obj,
 	      returnVal = (Sint16)atoi( istr );
 	    }
             else
-                l_error = TRUE;
+                l_error = OFTrue;
 	}
 	else
-	    l_error = TRUE;
+	    l_error = OFTrue;
     }
     else
-	l_error = TRUE;
+	l_error = OFTrue;
 
     return l_error;
 }
@@ -130,14 +130,14 @@ BOOL getSingleValue( DcmObject *obj,
 // **********************************************
 
 
-BOOL getSingleValue( DcmObject *obj,
+OFBool getSingleValue( DcmObject *obj,
 		     DcmTagKey searchtag,
 		     Uint32 &returnVal)
 {
-    BOOL l_error = FALSE;
+    OFBool l_error = OFFalse;
     DcmStack stack;
 
-    if ( obj->search( searchtag, stack, ESM_fromHere, FALSE )
+    if ( obj->search( searchtag, stack, ESM_fromHere, OFFalse )
 	 == EC_Normal )
     {
 	DcmObject *searchedObj = stack.top();
@@ -152,14 +152,14 @@ BOOL getSingleValue( DcmObject *obj,
 		returnVal = (Uint32)atol( istr );
 	    }
             else
-                l_error = TRUE;
+                l_error = OFTrue;
 	}
 	else
-	    l_error = TRUE;
+	    l_error = OFTrue;
     }
     else
     {
-	l_error = TRUE;
+	l_error = OFTrue;
     }
     return l_error;
 }
@@ -168,14 +168,14 @@ BOOL getSingleValue( DcmObject *obj,
 // **********************************************
 
 
-BOOL getSingleValue( DcmObject *obj,
+OFBool getSingleValue( DcmObject *obj,
 		     DcmTagKey searchtag,
 		     Sint32 &returnVal)
 {
-    BOOL l_error = FALSE;
+    OFBool l_error = OFFalse;
     DcmStack stack;
 
-    if ( obj->search( searchtag, stack, ESM_fromHere, FALSE )
+    if ( obj->search( searchtag, stack, ESM_fromHere, OFFalse )
 	 == EC_Normal )
     {
 	DcmObject *searchedObj = stack.top();
@@ -190,14 +190,14 @@ BOOL getSingleValue( DcmObject *obj,
 		returnVal = (Sint32)atol( istr );
 	    }
             else
-                l_error = TRUE;
+                l_error = OFTrue;
 	}
 	else
-	    l_error = TRUE;
+	    l_error = OFTrue;
     }
     else
     {
-	l_error = TRUE;
+	l_error = OFTrue;
     }
     return l_error;
 }
@@ -206,18 +206,18 @@ BOOL getSingleValue( DcmObject *obj,
 // **********************************************
 
 
-BOOL getSingleValue( DcmObject *obj,
+OFBool getSingleValue( DcmObject *obj,
 		     DcmTagKey searchtag,
 		     char * & returnVal)
 {
-    BOOL l_error = FALSE;
+    OFBool l_error = OFFalse;
     DcmStack stack;
 
-    if ( obj->search( searchtag, stack, ESM_fromHere, FALSE )
+    if ( obj->search( searchtag, stack, ESM_fromHere, OFFalse )
 	 == EC_Normal )
     {
 	DcmObject *searchedObj = stack.top();
-        searchedObj->verify( TRUE );                   // erzwinge dealigning
+        searchedObj->verify( OFTrue );                   // erzwinge dealigning
 	if (   (   searchedObj->ident() == EVR_AE
 		|| searchedObj->ident() == EVR_AS
 		|| searchedObj->ident() == EVR_CS
@@ -241,11 +241,11 @@ BOOL getSingleValue( DcmObject *obj,
 		)
 		 ((DcmCharString*)searchedObj)->getString(returnVal);
 	else
-	    l_error = TRUE;
+	    l_error = OFTrue;
     }
     else
     {
-	l_error = TRUE;
+	l_error = OFTrue;
     }
     return l_error;
 }
@@ -254,11 +254,11 @@ BOOL getSingleValue( DcmObject *obj,
 // **********************************************
 
 
-BOOL putSingleValue( DcmItem *item,
+OFBool putSingleValue( DcmItem *item,
 		     DcmTagKey tag,
 		     Uint16 value)
 {
-    BOOL l_error = FALSE;
+    OFBool l_error = OFFalse;
     DcmTag localTag( tag );
     if ( item != (DcmItem*)NULL )
     {
@@ -278,13 +278,13 @@ BOOL putSingleValue( DcmItem *item,
 	}
 	else
 	{
-	    l_error = TRUE;
+	    l_error = OFTrue;
 	}
-	item->insert( elem, TRUE );  // NULL-Elemente werden nicht eingefuegt
+	item->insert( elem, OFTrue );  // NULL-Elemente werden nicht eingefuegt
     }
     else
     {
-	l_error = TRUE;
+	l_error = OFTrue;
     }
     return l_error;
 }
@@ -293,11 +293,11 @@ BOOL putSingleValue( DcmItem *item,
 // **********************************************
 
 
-BOOL putSingleValue( DcmItem *item,
+OFBool putSingleValue( DcmItem *item,
 		     DcmTagKey tag,
 		     Sint16 value)
 {
-    BOOL l_error = FALSE;
+    OFBool l_error = OFFalse;
     DcmTag localTag( tag );
     if ( item != (DcmItem*)NULL )
     {
@@ -317,13 +317,13 @@ BOOL putSingleValue( DcmItem *item,
 	}
 	else
 	{
-	    l_error = TRUE;
+	    l_error = OFTrue;
 	}
-	item->insert( elem, TRUE );  // NULL-Elemente werden nicht eingefuegt
+	item->insert( elem, OFTrue );  // NULL-Elemente werden nicht eingefuegt
     }
     else
     {
-	l_error = TRUE;
+	l_error = OFTrue;
     }
     return l_error;
 }
@@ -332,11 +332,11 @@ BOOL putSingleValue( DcmItem *item,
 // **********************************************
 
 
-BOOL putSingleValue( DcmItem *item,
+OFBool putSingleValue( DcmItem *item,
 		     DcmTagKey tag,
 		     Uint32 value)
 {
-    BOOL l_error = FALSE;
+    OFBool l_error = OFFalse;
     DcmTag localTag( tag );
     if ( item != (DcmItem*)NULL )
     {
@@ -356,13 +356,13 @@ BOOL putSingleValue( DcmItem *item,
 	}
 	else
 	{
-	    l_error = TRUE;
+	    l_error = OFTrue;
 	}
-	item->insert( elem, TRUE );  // NULL-Elemente werden nicht eingefuegt
+	item->insert( elem, OFTrue );  // NULL-Elemente werden nicht eingefuegt
     }
     else
     {
-	l_error = TRUE;
+	l_error = OFTrue;
     }
     return l_error;
 }
@@ -371,11 +371,11 @@ BOOL putSingleValue( DcmItem *item,
 // **********************************************
 
 
-BOOL putSingleValue( DcmItem *item,
+OFBool putSingleValue( DcmItem *item,
 		     DcmTagKey tag,
 		     Sint32 value)
 {
-    BOOL l_error = FALSE;
+    OFBool l_error = OFFalse;
     DcmTag localTag( tag );
     if ( item != (DcmItem*)NULL )
     {
@@ -395,13 +395,13 @@ BOOL putSingleValue( DcmItem *item,
 	}
 	else
 	{
-	    l_error = TRUE;
+	    l_error = OFTrue;
 	}
-	item->insert( elem, TRUE );  // NULL-Elemente werden nicht eingefuegt
+	item->insert( elem, OFTrue );  // NULL-Elemente werden nicht eingefuegt
     }
     else
     {
-	l_error = TRUE;
+	l_error = OFTrue;
     }
     return l_error;
 }
@@ -410,11 +410,11 @@ BOOL putSingleValue( DcmItem *item,
 // **********************************************
 
 
-BOOL putSingleValue( DcmItem *item,
+OFBool putSingleValue( DcmItem *item,
 		     DcmTagKey tag,
 		     const char *value)
 {
-    BOOL l_error = FALSE;
+    OFBool l_error = OFFalse;
     DcmTag localTag( tag );
     if ( item != (DcmItem*)NULL )
     {
@@ -490,11 +490,11 @@ BOOL putSingleValue( DcmItem *item,
 	    ((DcmShortText*)elem)->putString( value );
 	}
 	else
-	    l_error = TRUE;
-	item->insert( elem, TRUE );  // NULL-Elemente werden nicht eingefuegt
+	    l_error = OFTrue;
+	item->insert( elem, OFTrue );  // NULL-Elemente werden nicht eingefuegt
     }
     else
-	l_error = TRUE;
+	l_error = OFTrue;
     return l_error;
 }
 
@@ -502,22 +502,22 @@ BOOL putSingleValue( DcmItem *item,
 // **********************************************
 
 
-BOOL deleteAttribute( DcmItem *item, DcmTagKey searchtag )
+OFBool deleteAttribute( DcmItem *item, DcmTagKey searchtag )
 {
-    BOOL l_error = FALSE;
+    OFBool l_error = OFFalse;
     DcmStack stack;
 
-    if ( item->search( searchtag, stack, ESM_fromHere, FALSE )
+    if ( item->search( searchtag, stack, ESM_fromHere, OFFalse )
 	 == EC_Normal )
     {
 	DcmObject *searchedObj = stack.top();
 	if ( item->remove( searchedObj ) != (DcmObject*)NULL )
 	    delete searchedObj;
 	else
-	    l_error = TRUE;
+	    l_error = OFTrue;
     }
     else
-	l_error = TRUE;
+	l_error = OFTrue;
     return l_error;
 }
 
@@ -525,13 +525,13 @@ BOOL deleteAttribute( DcmItem *item, DcmTagKey searchtag )
 // **********************************************
 
 
-BOOL deleteAttribute( DcmItem *item, DcmObject *attribute )
+OFBool deleteAttribute( DcmItem *item, DcmObject *attribute )
 {
-    BOOL l_error = FALSE;
+    OFBool l_error = OFFalse;
     if ( item->remove( attribute ) != (DcmObject*)NULL )
 	delete attribute;
     else
-	l_error = TRUE;
+	l_error = OFTrue;
     return l_error;
 }
 

@@ -10,7 +10,7 @@
  *
  *
  * Last Update:   $Author: andreas $
- * Revision:      $Revision: 1.5 $
+ * Revision:      $Revision: 1.6 $
  * Status:	  $State: Exp $
  *
  */
@@ -19,15 +19,8 @@
 #define DCTYPES_H 1
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
-#ifndef TRUE
-#define TRUE (1)
-#endif
-#ifndef FALSE
-#define FALSE (0)
-#endif
 
-typedef int BOOL;
-
+#include "oftypes.h"
 
 typedef unsigned char 	Uint8;
 typedef signed char 	Sint8;

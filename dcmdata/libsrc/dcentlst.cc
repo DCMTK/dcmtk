@@ -9,10 +9,10 @@
 ** A doubly linked list of DcmDictEntry's
 ** 
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-20 16:23:05 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-07-21 08:25:27 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dcentlst.cc,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -142,7 +142,7 @@ DcmDictEntryList::replace(Pix p, DcmDictEntry* e)
 Pix
 DcmDictEntryList::find(const DcmDictEntry *e) const
 {
-    int found = FALSE;
+    int found = OFFalse;
     Pix p = NULL;
     for (p = head(); !found && p != NULL; next(p)) {
 	found = (e == contents(p));
@@ -153,7 +153,11 @@ DcmDictEntryList::find(const DcmDictEntry *e) const
 /*
 ** CVS/RCS Log:
 ** $Log: dcentlst.cc,v $
-** Revision 1.1  1996-03-20 16:23:05  hewett
+** Revision 1.2  1997-07-21 08:25:27  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.1  1996/03/20 16:23:05  hewett
 ** A list of DcmDictEntry's.  Needed for revised handling of repeating tags.
 **
 **

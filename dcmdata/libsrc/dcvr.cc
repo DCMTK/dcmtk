@@ -9,8 +9,8 @@
 ** Implementation of the DcmVR class for Value Representation
 **
 **
-** Last Update:   $Author: hewett $
-** Revision:      $Revision: 1.9 $
+** Last Update:   $Author: andreas $
+** Revision:      $Revision: 1.10 $
 ** Status:	  $State: Exp $
 **
 */
@@ -25,7 +25,7 @@
 /*
 ** Global flag to enable/disable the generation of VR=UN
 */
-BOOL dcmEnableUnknownVRGeneration = TRUE;
+OFBool dcmEnableUnknownVRGeneration = OFTrue;
 
 /*
 ** VR property table
@@ -103,6 +103,11 @@ static DcmVREntry DcmVRDict[] = {
     /* Unknown Value Representation - Supplement 14 */
     { EVR_UN, "UN", sizeof(Uint8), DCMVR_PROP_NONE, 0, DCM_UndefinedLength },
 
+    /* Pixel Data - only used in ident() */
+    { EVR_PixelData, "PixelData", 0, DCMVR_PROP_INTERNAL, 0, DCM_UndefinedLength },
+    /* Overlay Data - only used in ident() */
+    { EVR_OverlayData, "OverlayData", 0, DCMVR_PROP_INTERNAL, 0, DCM_UndefinedLength },
+
 };
 
 static int DcmVRDict_DIM = sizeof(DcmVRDict) / sizeof(DcmVREntry);
@@ -125,10 +130,10 @@ public:
 
 DcmVRDict_checker::DcmVRDict_checker() 
 {
-	error_found = FALSE;
+	error_found = OFFalse;
 	for (int i=0; i<DcmVRDict_DIM; i++) {
 		if (DcmVRDict[i].vr != i) {
-			error_found = TRUE;
+			error_found = OFTrue;
 			cerr << "DcmVRDict:: Internal ERROR: inconsistent indexing: "
 				<< DcmVRDict[i].vrName << endl;
 		}
@@ -159,11 +164,11 @@ DcmVR::setVR(const char* vrName)
 {
 	vr = EVR_UNKNOWN;	/* default */
 	if ( vrName != NULL) {
-		int found = FALSE;
+		int found = OFFalse;
 		int i = 0;
 		for (i=0;  (!found && (i < DcmVRDict_DIM)); i++) {
 			if (strncmp(vrName, DcmVRDict[i].vrName, 2) == 0) {
-				found = TRUE;
+				found = OFTrue;
 				vr = DcmVRDict[i].vr;
 			}
 		}
@@ -198,7 +203,7 @@ DcmVR::getValidEVR() const
 	** If the generation of UN is not globally enabled then use OB instead.
 	** We may not want to generate UN if other software cannot handle it.
 	*/
-	if ((evr == EVR_UN) && (dcmEnableUnknownVRGeneration == FALSE)) {
+	if ((evr == EVR_UN) && (dcmEnableUnknownVRGeneration == OFFalse)) {
 	    evr = EVR_OB; /* handle UN as if OB */
 	}
 	return evr;
@@ -251,9 +256,9 @@ int DcmVR::isEquivalent(const DcmVR& avr) const
 {
     DcmEVR evr = avr.getEVR();
     if (vr == evr) {
-	return TRUE;
+	return OFTrue;
     }
-    BOOL ok = FALSE;
+    OFBool ok = OFFalse;
     switch (vr) {
     case EVR_ox:
 	ok = (evr == EVR_OB || evr == EVR_OW);
@@ -276,7 +281,7 @@ int DcmVR::isEquivalent(const DcmVR& avr) const
 	ok = (evr == EVR_xs);
 	break;
     default:
-	ok = FALSE;
+	ok = OFFalse;
 	break;
     }
     return ok;

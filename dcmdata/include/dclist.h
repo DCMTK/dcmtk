@@ -10,7 +10,7 @@
  * 
  * 
  * Last Update:   $Author: andreas $
- * Revision:      $Revision: 1.4 $
+ * Revision:      $Revision: 1.5 $
  * Status:        $State: Exp $
  *
  */
@@ -83,8 +83,8 @@ public:
     DcmObject *seek(    E_ListPos pos = ELP_next );
     DcmObject *seek_to(unsigned long absolute_position);
     inline unsigned long card() const { return cardinality; }
-    inline BOOL empty(void) const { return firstNode == NULL; }
-    inline BOOL valid(void) const { return actualNode != NULL; }
+    inline OFBool empty(void) const { return firstNode == NULL; }
+    inline OFBool valid(void) const { return actualNode != NULL; }
 };
 
 
