@@ -93,8 +93,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-07-03 14:23:51 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2003-07-08 14:39:15 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -106,6 +106,7 @@
 #include "ofstd.h"
 
 #define INCLUDE_CMATH
+#define INCLUDE_CFLOAT
 #define INCLUDE_CSTRING
 #define INCLUDE_CSTDIO
 #define INCLUDE_CCTYPE
@@ -853,6 +854,30 @@ void OFStandard::ftoa(
   OFString s("%"); // this will become the format string
   unsigned char fmtch = 'G';
 
+  // check if val is NAN
+#ifdef HAVE_WINDOWS_H
+  if (_isnan(val))
+#else
+  if (isnan(val))
+#endif
+  {
+    OFStandard::strlcpy(dst, "nan", siz);
+    return;
+  }  
+
+  // check if val is infinity
+#ifdef HAVE_WINDOWS_H 
+  if (! _finite(val)) 
+#else 
+  if (isinf(val)) 
+#endif 
+  { 
+    if (val < 0)
+        OFStandard::strlcpy(dst, "-inf", siz);
+        else OFStandard::strlcpy(dst, "inf", siz); 
+    return; 
+  }   
+
   // determine format character
   if (flags & FTOA_FORMAT_UPPERCASE)
   {
@@ -1260,6 +1285,30 @@ void OFStandard::ftoa(
   // if target string is NULL or zero bytes long, bail out.
   if (!dst || !siz) return;
 
+  // check if val is NAN
+#ifdef HAVE_WINDOWS_H
+  if (_isnan(val))
+#else
+  if (isnan(val))
+#endif
+  {
+    OFStandard::strlcpy(dst, "nan", siz);
+    return;
+  }  
+
+  // check if val is infinity
+#ifdef HAVE_WINDOWS_H 
+  if (! _finite(val)) 
+#else 
+  if (isinf(val)) 
+#endif 
+  { 
+    if (val < 0)
+        OFStandard::strlcpy(dst, "-inf", siz);
+        else OFStandard::strlcpy(dst, "inf", siz); 
+    return; 
+  }   
+
   int fpprec = 0;     /* `extra' floating precision in [eEfgG] */
   char softsign = 0;  /* temporary negative sign for floats */
   char buf[FTOA_BUFSIZE];      /* space for %c, %[diouxX], %[eEfgG] */
@@ -1407,7 +1456,11 @@ unsigned int OFStandard::my_sleep(unsigned int seconds)
 
 /*
  *  $Log: ofstd.cc,v $
- *  Revision 1.19  2003-07-03 14:23:51  meichel
+ *  Revision 1.20  2003-07-08 14:39:15  meichel
+ *  Fixed bug in OFStandard::ftoa that could cause a segmentation fault
+ *    if the number to be converted was NAN or infinity.
+ *
+ *  Revision 1.19  2003/07/03 14:23:51  meichel
  *  Minor changes to make OFStandard::sleep compile on MinGW
  *
  *  Revision 1.18  2003/06/06 09:44:01  meichel
