@@ -64,4 +64,5 @@ dependencies:
 	(cd tests; touch $(DEP); $(MAKE) dependencies)
 
 html:
-	(doc++ -d htmldocs -p -B /dev/null include/*.h libsrc/*.cc apps/*.h apps/*.cc)
+	(doc++ -d htmldocs -p -B /dev/null ../dcmimgle/include/*.h ../dcmimgle/libsrc/*.cc \
+	    ../dcmimgle/apps/*.h ../dcmimgle/apps/*.cc include/*.h libsrc/*.cc apps/*.h apps/*.cc)
