@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Class for modifying DICOM-Files from comandline
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2003-06-26 09:17:18 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-07-09 12:13:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/mdfconen.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,6 +34,7 @@
 #ifndef MDFCONEN_H
 #define MDFCONEN_H
 
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "oftypes.h"
 #include "ofconapp.h"
 #include "mdfdsman.h"
@@ -145,7 +146,10 @@ protected:
 /*
 ** CVS/RCS Log:
 ** $Log: mdfconen.h,v $
-** Revision 1.1  2003-06-26 09:17:18  onken
+** Revision 1.2  2003-07-09 12:13:13  meichel
+** Included dcmodify in MSVC build system, updated headers
+**
+** Revision 1.1  2003/06/26 09:17:18  onken
 ** Added commandline-application dcmodify.
 **
 **

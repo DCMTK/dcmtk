@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmOtherByteOtherWord
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-06-12 13:29:28 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-07-09 12:13:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrobow.h,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,7 +36,6 @@
 #define DCVROBOW_H
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
-
 #include "dcelem.h"
 
 
@@ -267,7 +266,10 @@ class DcmOtherByteOtherWord
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.h,v $
-** Revision 1.23  2003-06-12 13:29:28  joergr
+** Revision 1.24  2003-07-09 12:13:13  meichel
+** Included dcmodify in MSVC build system, updated headers
+**
+** Revision 1.23  2003/06/12 13:29:28  joergr
 ** Fixed inconsistent API documentation reported by Doxygen.
 **
 ** Revision 1.22  2002/12/06 12:49:17  joergr

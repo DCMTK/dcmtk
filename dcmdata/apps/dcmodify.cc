@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -17,14 +17,14 @@
  *
  *  Module:  dcmdata
  *
- *  Author:  Gerd Ehlers
+ *  Author:  Michael Onken
  *
  *  Purpose: Commandline-Application to modify tags in DICOM-Files
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2003-06-26 09:17:18 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-07-09 12:13:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmodify.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,12 +48,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmodify.cc,v $
-** Revision 1.1  2003-06-26 09:17:18  onken
+** Revision 1.2  2003-07-09 12:13:13  meichel
+** Included dcmodify in MSVC build system, updated headers
+**
+** Revision 1.1  2003/06/26 09:17:18  onken
 ** Added commandline-application dcmodify.
 **
 **
 */
-
-    
-
-    
