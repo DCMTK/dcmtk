@@ -16,14 +16,11 @@ all: include-all libsrc-all apps-all docs-all
 
 install: install-bin
 
-install-bin: apps-install install-support
+install-bin: apps-install
 
-install-lib: libsrc-install-lib install-include install-support
+install-lib: libsrc-install-lib install-include
 
 install-include: include-install
-
-install-support: libsrc-install-support
-
 
 include-all:
 	(cd include; $(MAKE) ARCH="$(ARCH)" all)
@@ -42,9 +39,6 @@ include-install:
 
 libsrc-install-lib: include-all
 	(cd libsrc; $(MAKE) ARCH="$(ARCH)" install)
-
-libsrc-install-support:
-	(cd libsrc; $(MAKE) ARCH="$(ARCH)" install-support)
 
 apps-install: libsrc-all
 	(cd apps; $(MAKE) ARCH="$(ARCH)" install)
