@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2003, OFFIS
+ *  Copyright (C) 2002-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Class for time functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-17 15:18:48 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2004-01-16 10:30:39 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -236,6 +236,16 @@ class OFTime
      */
     OFBool setCurrentTime();
 
+    /** set the time value to the given ISO formatted time string.
+     *  The two ISO time formats supported by this function are "HH:MM[:SS]" (with arbitrary
+     *  delimiters) and "HHMM[SS]" (without delimiters) where the brackets enclose optional
+     *  parts.  The optional fractional part of a second and the time zone (see getISO...)
+     *  are not yet supported.
+     *  @param formattedTime ISO formatted time value to be set
+     *  @return OFTrue if input is valid and result variable has been set, OFFalse otherwise
+     */
+    OFBool setISOFormattedTime(const OFString &formattedTime);
+
     /** get the currently stored hour value
      *  @return hour value (might be invalid, i.e. out of range)
      */
@@ -429,7 +439,10 @@ ostream& operator<<(ostream& stream, const OFTime &timeVal);
  *
  * CVS/RCS Log:
  * $Log: oftime.h,v $
- * Revision 1.6  2003-12-17 15:18:48  joergr
+ * Revision 1.7  2004-01-16 10:30:39  joergr
+ * Added setISOFormattedXXX() methods for Date, Time and DateTime.
+ *
+ * Revision 1.6  2003/12/17 15:18:48  joergr
  * Fixed bug/inconsistency in comparison operators of class OFTime. Now the
  * "time overflow" is handled correctly.
  *

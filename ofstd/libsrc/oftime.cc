@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2003, OFFIS
+ *  Copyright (C) 2002-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Class for time functions (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-18 16:28:22 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2004-01-16 10:35:18 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -360,6 +360,43 @@ OFBool OFTime::setCurrentTime(const time_t &tt)
 }
 
 
+OFBool OFTime::setISOFormattedTime(const OFString &formattedTime)
+{
+    OFBool status = OFFalse;
+    const size_t length = formattedTime.length();
+    unsigned int hours, minutes, seconds;
+    /* check for supported formats: HHMM */
+    if (length == 4)
+    {
+        /* extract components from time string */
+        if (sscanf(formattedTime.c_str(), "%02u%02u", &hours, &minutes) == 2)
+            status = setTime(hours, minutes, 0 /*seconds*/);
+    }
+    /* HH:MM */
+    else if (length == 5)
+    {
+        /* extract components from time string */
+        if (sscanf(formattedTime.c_str(), "%02u%*c%02u", &hours, &minutes) == 2)
+            status = setTime(hours, minutes, 0 /*seconds*/);
+    }
+    /* HHMMSS */
+    else if (length == 6)
+    {
+        /* extract components from time string */
+        if (sscanf(formattedTime.c_str(), "%02u%02u%02u", &hours, &minutes, &seconds) == 3)
+            status = setTime(hours, minutes, seconds);
+    }
+    /* HH:MM:SS */
+    else if (length == 8)
+    {
+        /* extract components from time string */
+        if (sscanf(formattedTime.c_str(), "%02u%*c%02u%*c%02u", &hours, &minutes, &seconds) == 3)
+            status = setTime(hours, minutes, seconds);
+    }
+    return status;
+}
+
+
 unsigned int OFTime::getHour() const
 {
     return Hour;
@@ -570,7 +607,10 @@ ostream& operator<<(ostream& stream, const OFTime &timeVal)
  *
  * CVS/RCS Log:
  * $Log: oftime.cc,v $
- * Revision 1.12  2003-12-18 16:28:22  joergr
+ * Revision 1.13  2004-01-16 10:35:18  joergr
+ * Added setISOFormattedXXX() methods for Date, Time and DateTime.
+ *
+ * Revision 1.12  2003/12/18 16:28:22  joergr
  * Fixed bug in timezone calculation (difference of local time from UTC).
  *
  * Revision 1.11  2003/12/17 15:23:18  joergr

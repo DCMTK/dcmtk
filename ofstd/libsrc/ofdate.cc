@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2003, OFFIS
+ *  Copyright (C) 2002-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: Class for date functions (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-09-15 12:15:07 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofdate.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2004-01-16 10:35:18 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -235,6 +234,29 @@ OFBool OFDate::setCurrentDate(const time_t &tt)
 }
 
 
+OFBool OFDate::setISOFormattedDate(const OFString &formattedDate)
+{
+    OFBool status = OFFalse;
+    const size_t length = formattedDate.length();
+    unsigned int year, month, day;
+    /* we expect the following formats: YYYY-MM-DD with arbitrary delimiters ... */
+    if (length == 10)
+    {
+        /* extract components from date string */
+        if (sscanf(formattedDate.c_str(), "%04u%*c%02u%*c%02u", &year, &month, &day) == 3)
+            status = setDate(year, month, day);
+    }
+    /* ... or YYYYMMDD (without delimiters) */
+    else if (length == 8)
+    {
+        /* extract components from date string */
+        if (sscanf(formattedDate.c_str(), "%04u%02u%02u", &year, &month, &day) == 3)
+            status = setDate(year, month, day);
+    }
+    return status;
+}
+
+
 unsigned int OFDate::getYear() const
 {
     return Year;
@@ -299,7 +321,10 @@ ostream& operator<<(ostream& stream, const OFDate &dateVal)
  *
  * CVS/RCS Log:
  * $Log: ofdate.cc,v $
- * Revision 1.5  2003-09-15 12:15:07  joergr
+ * Revision 1.6  2004-01-16 10:35:18  joergr
+ * Added setISOFormattedXXX() methods for Date, Time and DateTime.
+ *
+ * Revision 1.5  2003/09/15 12:15:07  joergr
  * Made comparison operators const.
  *
  * Revision 1.4  2002/11/27 11:23:10  meichel

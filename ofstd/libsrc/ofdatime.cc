@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2003, OFFIS
+ *  Copyright (C) 2002-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Class for date and time functions (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-17 15:27:21 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2004-01-16 10:35:18 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,6 +34,7 @@
 #include "osconfig.h"
 
 #define INCLUDE_CTIME
+#define INCLUDE_CCTYPE
 #include "ofstdinc.h"
 
 BEGIN_EXTERN_C
@@ -162,6 +163,33 @@ OFBool OFDateTime::setCurrentDateTime()
 }
 
 
+OFBool OFDateTime::setISOFormattedDateTime(const OFString &formattedDateTime)
+{
+    OFBool result = OFFalse;
+    const size_t length = formattedDateTime.length();
+    /* check for supported formats: YYYYMMDDHHMM[SS] */
+    if ((length == 12) || (length == 14))
+    {
+        if (Date.setISOFormattedDate(formattedDateTime.substr(0, 8)) && Time.setISOFormattedTime(formattedDateTime.substr(8)))
+            result = OFTrue;
+    }
+    /* YYYY-MM-DD HH:MM[:SS] */
+    else if (length >= 16)
+    {
+        if (Date.setISOFormattedDate(formattedDateTime.substr(0, 10)))
+        {
+            size_t pos = 10;
+            /* search for first digit of the time value (skip arbitrary separators) */
+            while ((pos < length) && !isdigit(formattedDateTime.at(pos)))
+                ++pos;
+            if ((pos < length) && Time.setISOFormattedTime(formattedDateTime.substr(pos)))
+                result = OFTrue;
+        }
+    }
+    return result;
+}
+
+
 const OFDate &OFDateTime::getDate() const
 {
     return Date;
@@ -178,7 +206,8 @@ OFBool OFDateTime::getISOFormattedDateTime(OFString &formattedDateTime,
                                            const OFBool showSeconds,
                                            const OFBool showFraction,
                                            const OFBool showTimeZone,
-                                           const OFBool showDelimiter) const
+                                           const OFBool showDelimiter,
+                                           const OFString &dateTimeSeparator) const
 {
     /* get formatted date first component */
     OFBool result = Date.getISOFormattedDate(formattedDateTime, showDelimiter);
@@ -189,7 +218,7 @@ OFBool OFDateTime::getISOFormattedDateTime(OFString &formattedDateTime,
         if (Time.getISOFormattedTime(timeString, showSeconds, showFraction, showTimeZone, showDelimiter))
         {
             if (showDelimiter)
-                formattedDateTime += " ";
+                formattedDateTime += dateTimeSeparator;
             formattedDateTime += timeString;
         }
     } else {
@@ -225,7 +254,10 @@ ostream& operator<<(ostream& stream, const OFDateTime &dateTime)
  *
  * CVS/RCS Log:
  * $Log: ofdatime.cc,v $
- * Revision 1.5  2003-12-17 15:27:21  joergr
+ * Revision 1.6  2004-01-16 10:35:18  joergr
+ * Added setISOFormattedXXX() methods for Date, Time and DateTime.
+ *
+ * Revision 1.5  2003/12/17 15:27:21  joergr
  * Added note to the comparison operators that the "day overflow" is not yet
  * handled correctly.
  *

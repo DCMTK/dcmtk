@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2003, OFFIS
+ *  Copyright (C) 2002-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Combined class for date and time functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-17 15:16:20 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2004-01-16 10:30:39 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -148,6 +148,16 @@ class OFDateTime
      */
     OFBool setCurrentDateTime();
 
+    /** set the date/time value to the given ISO formatted date/time string.
+     *  The two ISO date/time formats supported by this function are
+     *  - "YYYY-MM-DD HH:MM[:SS]" (with arbitrary delimiters) and
+     *  - "YYYYMMDDHHMM[SS]" (without delimiters, useful for DICOM datetime type).
+     *  where the brackets enclose optional parts.
+     *  @param formattedDateTime ISO formatted date/time value to be set
+     *  @return OFTrue if input is valid and result variable has been set, OFFalse otherwise
+     */
+    OFBool setISOFormattedDateTime(const OFString &formattedDateTime);
+
     /** get the current date component
      *  @return reference to date object
      */
@@ -160,8 +170,8 @@ class OFDateTime
 
     /** get the current date/time value in ISO format.
      *  The two ISO time formats supported by this function are
-     *    "YYYY-MM-DD HH:MM[:SS[.FFFFFF]][&ZZ:ZZ]" (with delimiters) and
-     *    "YYYYMMDDHHMM[SS[.FFFFFF]][&ZZZZ]" (without delimiters, useful for DICOM date/time type)
+     *  - "YYYY-MM-DD HH:MM[:SS[.FFFFFF]][&ZZ:ZZ]" (with delimiters) and
+     *  - "YYYYMMDDHHMM[SS[.FFFFFF]][&ZZZZ]" (without delimiters, useful for DICOM datetime type)
      *  where the brackets enclose optional parts.
      *  @param formattedDateTime reference to string variable where the result is stored
      *  @param showSeconds add optional seconds (":SS" or "SS") to the resulting string if OFTrue
@@ -171,13 +181,16 @@ class OFDateTime
      *    if OFTrue. The time zone indicates the offset from the Coordinated Universal Time (UTC)
      *    in hours and minutes. The "&" is a placeholder for the sign symbol ("+" or "-").
      *  @param showDelimiter flag, indicating whether to use delimiters ("-", ":" and " ") or not
+     *  @param dateTimeSeparator separator between ISO date and time value (default: " "). Only
+     *    used if 'showDelimiter' is true.
      *  @return OFTrue if result variable has been set, OFFalse otherwise
      */
     OFBool getISOFormattedDateTime(OFString &formattedDateTime,
                                    const OFBool showSeconds = OFTrue,
                                    const OFBool showFraction = OFFalse,
                                    const OFBool showTimeZone = OFFalse,
-                                   const OFBool showDelimiter = OFTrue) const;
+                                   const OFBool showDelimiter = OFTrue,
+                                   const OFString &dateTimeSeparator = " ") const;
 
     /* --- static helper functions --- */
 
@@ -213,7 +226,10 @@ ostream& operator<<(ostream& stream, const OFDateTime &dateTime);
  *
  * CVS/RCS Log:
  * $Log: ofdatime.h,v $
- * Revision 1.4  2003-12-17 15:16:20  joergr
+ * Revision 1.5  2004-01-16 10:30:39  joergr
+ * Added setISOFormattedXXX() methods for Date, Time and DateTime.
+ *
+ * Revision 1.4  2003/12/17 15:16:20  joergr
  * Added note to the comparison operators that the "day overflow" is not yet
  * handled correctly.
  *

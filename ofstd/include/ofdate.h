@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2003, OFFIS
+ *  Copyright (C) 2002-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: Class for date functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-09-15 12:12:56 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofdate.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2004-01-16 10:30:39 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -182,6 +181,14 @@ class OFDate
      */
     OFBool setCurrentDate();
 
+    /** set the date value to the given ISO formatted date string.
+     *  The two ISO date formats supported by this function are "YYYY-MM-DD" (with arbitrary
+     *  delimiters) and "YYYYMMDD" (without delimiters, useful for DICOM date type).
+     *  @param formattedDate ISO formatted date value to be set
+     *  @return OFTrue if input is valid and result variable has been set, OFFalse otherwise
+     */
+    OFBool setISOFormattedDate(const OFString &formattedDate);
+
     /** get the currently stored year value
      *  @return year value (might be invalid, i.e. out of range)
      */
@@ -270,7 +277,10 @@ ostream& operator<<(ostream& stream, const OFDate &dateVal);
  *
  * CVS/RCS Log:
  * $Log: ofdate.h,v $
- * Revision 1.5  2003-09-15 12:12:56  joergr
+ * Revision 1.6  2004-01-16 10:30:39  joergr
+ * Added setISOFormattedXXX() methods for Date, Time and DateTime.
+ *
+ * Revision 1.5  2003/09/15 12:12:56  joergr
  * Fixed incorrect/improper comments of the comparision operators. Enhanced
  * comment of the default constructor. Made comparison operators const.
  *
