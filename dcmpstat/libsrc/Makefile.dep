@@ -3,6 +3,7 @@ dviface.o: dviface.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
  ../../dcmdata/include/dcswap.h ../../dcmdata/include/dcerror.h \
  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
+ ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
  ../../dcmdata/include/dcstream.h ../../dcmdata/include/dcuid.h \
  ../../dcmdata/include/dcvm.h ../../dcmdata/include/dcdefine.h \
  ../../dcmdata/include/dcdebug.h ../../dcmdata/include/dctagkey.h \
@@ -49,13 +50,20 @@ dviface.o: dviface.cc ../../config/include/osconfig.h \
  ../../dcmimgle/include/digsdlut.h ../../dcmimgle/include/diciefn.h \
  ../../dcmimgle/include/dicielut.h ../../dcmnet/include/diutil.h \
  ../include/dvpssp.h ../include/dvpspll.h ../include/dvpsibl.h \
- ../include/dvpsabl.h ../include/dvpspr.h ../include/dvpshlp.h
+ ../include/dvpsabl.h ../include/dvpspr.h ../include/dvpshlp.h \
+ ../../dcmimgle/include/dcmimage.h ../../dcmimgle/include/dimoimg.h \
+ ../../dcmimgle/include/diimage.h ../../dcmimgle/include/diovlay.h \
+ ../../dcmimgle/include/diobjcou.h ../../dcmimgle/include/diovdat.h \
+ ../../dcmimgle/include/diovpln.h ../../dcmimgle/include/dimopx.h \
+ ../../dcmimgle/include/dipixel.h ../../dcmimgle/include/dimomod.h \
+ ../../dcmimgle/include/diluptab.h ../../dcmimgle/include/dimoopx.h
 dvpsab.o: dvpsab.cc ../../config/include/osconfig.h \
  ../../ofstd/include/ofstring.h ../../ofstd/include/oftypes.h \
  ../include/dvpsab.h ../../dcmdata/include/dctk.h \
  ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcswap.h \
  ../../dcmdata/include/dcerror.h ../../dcmdata/include/dcxfer.h \
- ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
+ ../../dcmdata/include/dcvr.h ../../ofstd/include/ofglobal.h \
+ ../../ofstd/include/ofthread.h ../../dcmdata/include/dcstream.h \
  ../../dcmdata/include/dcuid.h ../../dcmdata/include/dcvm.h \
  ../../dcmdata/include/dcdefine.h ../../dcmdata/include/dcdebug.h \
  ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dctag.h \
@@ -89,7 +97,8 @@ dvpsabl.o: dvpsabl.cc ../../config/include/osconfig.h \
  ../../ofstd/include/oftypes.h ../../dcmdata/include/dctk.h \
  ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcswap.h \
  ../../dcmdata/include/dcerror.h ../../dcmdata/include/dcxfer.h \
- ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
+ ../../dcmdata/include/dcvr.h ../../ofstd/include/ofglobal.h \
+ ../../ofstd/include/ofthread.h ../../dcmdata/include/dcstream.h \
  ../../dcmdata/include/dcuid.h ../../dcmdata/include/dcvm.h \
  ../../dcmdata/include/dcdefine.h ../../dcmdata/include/dcdebug.h \
  ../../dcmdata/include/dctagkey.h ../../ofstd/include/ofstring.h \
@@ -123,6 +132,7 @@ dvpsal.o: dvpsal.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
  ../../dcmdata/include/dcswap.h ../../dcmdata/include/dcerror.h \
  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
+ ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
  ../../dcmdata/include/dcstream.h ../../dcmdata/include/dcuid.h \
  ../../dcmdata/include/dcvm.h ../../dcmdata/include/dcdefine.h \
  ../../dcmdata/include/dcdebug.h ../../dcmdata/include/dctagkey.h \
@@ -157,6 +167,7 @@ dvpsall.o: dvpsall.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dctk.h ../../dcmdata/include/dctypes.h \
  ../../dcmdata/include/dcswap.h ../../dcmdata/include/dcerror.h \
  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
+ ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
  ../../dcmdata/include/dcstream.h ../../dcmdata/include/dcuid.h \
  ../../dcmdata/include/dcvm.h ../../dcmdata/include/dcdefine.h \
  ../../dcmdata/include/dcdebug.h ../../dcmdata/include/dctagkey.h \
@@ -190,7 +201,8 @@ dvpscf.o: dvpscf.cc ../../config/include/osconfig.h \
  ../include/dvpscf.h ../../ofstd/include/ofstring.h \
  ../../ofstd/include/oftypes.h ../../dcmdata/include/dctypes.h \
  ../include/dvpstyp.h ../include/dvpsconf.h \
- ../../ofstd/include/ofstack.h ../../ofstd/include/ofconsol.h
+ ../../ofstd/include/ofstack.h ../../ofstd/include/ofconsol.h \
+ ../../ofstd/include/ofthread.h
 dvpsconf.o: dvpsconf.cc ../../config/include/osconfig.h \
  ../include/dvpsconf.h ../../ofstd/include/ofstring.h \
  ../../ofstd/include/oftypes.h ../../ofstd/include/ofstack.h
@@ -200,6 +212,7 @@ dvpscu.o: dvpscu.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcerror.h \
  ../../dcmdata/include/dctk.h ../../dcmdata/include/dcswap.h \
  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
+ ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
  ../../dcmdata/include/dcstream.h ../../dcmdata/include/dcuid.h \
  ../../dcmdata/include/dcvm.h ../../dcmdata/include/dcdefine.h \
  ../../dcmdata/include/dcdebug.h ../../dcmdata/include/dctagkey.h \
@@ -233,7 +246,8 @@ dvpscul.o: dvpscul.cc ../../config/include/osconfig.h \
  ../../ofstd/include/oftypes.h ../../dcmdata/include/dctk.h \
  ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcswap.h \
  ../../dcmdata/include/dcerror.h ../../dcmdata/include/dcxfer.h \
- ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
+ ../../dcmdata/include/dcvr.h ../../ofstd/include/ofglobal.h \
+ ../../ofstd/include/ofthread.h ../../dcmdata/include/dcstream.h \
  ../../dcmdata/include/dcuid.h ../../dcmdata/include/dcvm.h \
  ../../dcmdata/include/dcdefine.h ../../dcmdata/include/dcdebug.h \
  ../../dcmdata/include/dctagkey.h ../../ofstd/include/ofstring.h \
@@ -267,7 +281,8 @@ dvpsda.o: dvpsda.cc ../../config/include/osconfig.h \
  ../include/dvpsda.h ../../dcmdata/include/dctk.h \
  ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcswap.h \
  ../../dcmdata/include/dcerror.h ../../dcmdata/include/dcxfer.h \
- ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
+ ../../dcmdata/include/dcvr.h ../../ofstd/include/ofglobal.h \
+ ../../ofstd/include/ofthread.h ../../dcmdata/include/dcstream.h \
  ../../dcmdata/include/dcuid.h ../../dcmdata/include/dcvm.h \
  ../../dcmdata/include/dcdefine.h ../../dcmdata/include/dcdebug.h \
  ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dctag.h \
@@ -302,7 +317,8 @@ dvpsdal.o: dvpsdal.cc ../../config/include/osconfig.h \
  ../../ofstd/include/oftypes.h ../../dcmdata/include/dctk.h \
  ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcswap.h \
  ../../dcmdata/include/dcerror.h ../../dcmdata/include/dcxfer.h \
- ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
+ ../../dcmdata/include/dcvr.h ../../ofstd/include/ofglobal.h \
+ ../../ofstd/include/ofthread.h ../../dcmdata/include/dcstream.h \
  ../../dcmdata/include/dcuid.h ../../dcmdata/include/dcvm.h \
  ../../dcmdata/include/dcdefine.h ../../dcmdata/include/dcdebug.h \
  ../../dcmdata/include/dctagkey.h ../../ofstd/include/ofstring.h \
@@ -336,6 +352,7 @@ dvpsga.o: dvpsga.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
  ../../dcmdata/include/dcswap.h ../../dcmdata/include/dcerror.h \
  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
+ ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
  ../../dcmdata/include/dcstream.h ../../dcmdata/include/dcuid.h \
  ../../dcmdata/include/dcvm.h ../../dcmdata/include/dcdefine.h \
  ../../dcmdata/include/dcdebug.h ../../dcmdata/include/dctagkey.h \
@@ -371,7 +388,8 @@ dvpsgal.o: dvpsgal.cc ../../config/include/osconfig.h \
  ../../ofstd/include/oftypes.h ../../dcmdata/include/dctk.h \
  ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcswap.h \
  ../../dcmdata/include/dcerror.h ../../dcmdata/include/dcxfer.h \
- ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
+ ../../dcmdata/include/dcvr.h ../../ofstd/include/ofglobal.h \
+ ../../ofstd/include/ofthread.h ../../dcmdata/include/dcstream.h \
  ../../dcmdata/include/dcuid.h ../../dcmdata/include/dcvm.h \
  ../../dcmdata/include/dcdefine.h ../../dcmdata/include/dcdebug.h \
  ../../dcmdata/include/dctagkey.h ../../ofstd/include/ofstring.h \
@@ -407,6 +425,7 @@ dvpsgl.o: dvpsgl.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
  ../../dcmdata/include/dcswap.h ../../dcmdata/include/dcerror.h \
  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
+ ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
  ../../dcmdata/include/dcstream.h ../../dcmdata/include/dcuid.h \
  ../../dcmdata/include/dcvm.h ../../dcmdata/include/dcdefine.h \
  ../../dcmdata/include/dcdebug.h ../../dcmdata/include/dctagkey.h \
@@ -441,6 +460,7 @@ dvpsgll.o: dvpsgll.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dctk.h ../../dcmdata/include/dctypes.h \
  ../../dcmdata/include/dcswap.h ../../dcmdata/include/dcerror.h \
  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
+ ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
  ../../dcmdata/include/dcstream.h ../../dcmdata/include/dcuid.h \
  ../../dcmdata/include/dcvm.h ../../dcmdata/include/dcdefine.h \
  ../../dcmdata/include/dcdebug.h ../../dcmdata/include/dctagkey.h \
@@ -475,6 +495,7 @@ dvpsgr.o: dvpsgr.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
  ../../dcmdata/include/dcswap.h ../../dcmdata/include/dcerror.h \
  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
+ ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
  ../../dcmdata/include/dcstream.h ../../dcmdata/include/dcuid.h \
  ../../dcmdata/include/dcvm.h ../../dcmdata/include/dcdefine.h \
  ../../dcmdata/include/dcdebug.h ../../dcmdata/include/dctagkey.h \
@@ -509,7 +530,8 @@ dvpsgrl.o: dvpsgrl.cc ../../config/include/osconfig.h \
  ../../ofstd/include/oftypes.h ../../dcmdata/include/dctk.h \
  ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcswap.h \
  ../../dcmdata/include/dcerror.h ../../dcmdata/include/dcxfer.h \
- ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
+ ../../dcmdata/include/dcvr.h ../../ofstd/include/ofglobal.h \
+ ../../ofstd/include/ofthread.h ../../dcmdata/include/dcstream.h \
  ../../dcmdata/include/dcuid.h ../../dcmdata/include/dcvm.h \
  ../../dcmdata/include/dcdefine.h ../../dcmdata/include/dcdebug.h \
  ../../dcmdata/include/dctagkey.h ../../ofstd/include/ofstring.h \
@@ -543,6 +565,7 @@ dvpshlp.o: dvpshlp.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
  ../../dcmdata/include/dcswap.h ../../dcmdata/include/dcerror.h \
  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
+ ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
  ../../dcmdata/include/dcstream.h ../../dcmdata/include/dcuid.h \
  ../../dcmdata/include/dcvm.h ../../dcmdata/include/dcdefine.h \
  ../../dcmdata/include/dcdebug.h ../../dcmdata/include/dctagkey.h \
@@ -576,7 +599,8 @@ dvpsib.o: dvpsib.cc ../../config/include/osconfig.h \
  ../include/dvpsib.h ../../dcmdata/include/dctk.h \
  ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcswap.h \
  ../../dcmdata/include/dcerror.h ../../dcmdata/include/dcxfer.h \
- ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
+ ../../dcmdata/include/dcvr.h ../../ofstd/include/ofglobal.h \
+ ../../ofstd/include/ofthread.h ../../dcmdata/include/dcstream.h \
  ../../dcmdata/include/dcuid.h ../../dcmdata/include/dcvm.h \
  ../../dcmdata/include/dcdefine.h ../../dcmdata/include/dcdebug.h \
  ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dctag.h \
@@ -610,7 +634,8 @@ dvpsibl.o: dvpsibl.cc ../../config/include/osconfig.h \
  ../../ofstd/include/oftypes.h ../../dcmdata/include/dctk.h \
  ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcswap.h \
  ../../dcmdata/include/dcerror.h ../../dcmdata/include/dcxfer.h \
- ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
+ ../../dcmdata/include/dcvr.h ../../ofstd/include/ofglobal.h \
+ ../../ofstd/include/ofthread.h ../../dcmdata/include/dcstream.h \
  ../../dcmdata/include/dcuid.h ../../dcmdata/include/dcvm.h \
  ../../dcmdata/include/dcdefine.h ../../dcmdata/include/dcdebug.h \
  ../../dcmdata/include/dctagkey.h ../../ofstd/include/ofstring.h \
@@ -644,6 +669,7 @@ dvpsov.o: dvpsov.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
  ../../dcmdata/include/dcswap.h ../../dcmdata/include/dcerror.h \
  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
+ ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
  ../../dcmdata/include/dcstream.h ../../dcmdata/include/dcuid.h \
  ../../dcmdata/include/dcvm.h ../../dcmdata/include/dcdefine.h \
  ../../dcmdata/include/dcdebug.h ../../dcmdata/include/dctagkey.h \
@@ -685,7 +711,8 @@ dvpsovl.o: dvpsovl.cc ../../config/include/osconfig.h \
  ../../ofstd/include/oftypes.h ../../dcmdata/include/dctk.h \
  ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcswap.h \
  ../../dcmdata/include/dcerror.h ../../dcmdata/include/dcxfer.h \
- ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
+ ../../dcmdata/include/dcvr.h ../../ofstd/include/ofglobal.h \
+ ../../ofstd/include/ofthread.h ../../dcmdata/include/dcstream.h \
  ../../dcmdata/include/dcuid.h ../../dcmdata/include/dcvm.h \
  ../../dcmdata/include/dcdefine.h ../../dcmdata/include/dcdebug.h \
  ../../dcmdata/include/dctagkey.h ../../ofstd/include/ofstring.h \
@@ -719,7 +746,8 @@ dvpspl.o: dvpspl.cc ../../config/include/osconfig.h \
  ../include/dvpspl.h ../../dcmdata/include/dctk.h \
  ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcswap.h \
  ../../dcmdata/include/dcerror.h ../../dcmdata/include/dcxfer.h \
- ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
+ ../../dcmdata/include/dcvr.h ../../ofstd/include/ofglobal.h \
+ ../../ofstd/include/ofthread.h ../../dcmdata/include/dcstream.h \
  ../../dcmdata/include/dcuid.h ../../dcmdata/include/dcvm.h \
  ../../dcmdata/include/dcdefine.h ../../dcmdata/include/dcdebug.h \
  ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dctag.h \
@@ -761,7 +789,8 @@ dvpspll.o: dvpspll.cc ../../config/include/osconfig.h \
  ../../ofstd/include/oftypes.h ../../dcmdata/include/dctk.h \
  ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcswap.h \
  ../../dcmdata/include/dcerror.h ../../dcmdata/include/dcxfer.h \
- ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
+ ../../dcmdata/include/dcvr.h ../../ofstd/include/ofglobal.h \
+ ../../ofstd/include/ofthread.h ../../dcmdata/include/dcstream.h \
  ../../dcmdata/include/dcuid.h ../../dcmdata/include/dcvm.h \
  ../../dcmdata/include/dcdefine.h ../../dcmdata/include/dcdebug.h \
  ../../dcmdata/include/dctagkey.h ../../ofstd/include/ofstring.h \
@@ -798,7 +827,8 @@ dvpspr.o: dvpspr.cc ../../config/include/osconfig.h \
  ../include/dvpspr.h ../../dcmdata/include/dctk.h \
  ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcswap.h \
  ../../dcmdata/include/dcerror.h ../../dcmdata/include/dcxfer.h \
- ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
+ ../../dcmdata/include/dcvr.h ../../ofstd/include/ofglobal.h \
+ ../../ofstd/include/ofthread.h ../../dcmdata/include/dcstream.h \
  ../../dcmdata/include/dcuid.h ../../dcmdata/include/dcvm.h \
  ../../dcmdata/include/dcdefine.h ../../dcmdata/include/dcdebug.h \
  ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dctag.h \
@@ -836,7 +866,8 @@ dvpsri.o: dvpsri.cc ../../config/include/osconfig.h \
  ../include/dvpsri.h ../../dcmdata/include/dctk.h \
  ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcswap.h \
  ../../dcmdata/include/dcerror.h ../../dcmdata/include/dcxfer.h \
- ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
+ ../../dcmdata/include/dcvr.h ../../ofstd/include/ofglobal.h \
+ ../../ofstd/include/ofthread.h ../../dcmdata/include/dcstream.h \
  ../../dcmdata/include/dcuid.h ../../dcmdata/include/dcvm.h \
  ../../dcmdata/include/dcdefine.h ../../dcmdata/include/dcdebug.h \
  ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dctag.h \
@@ -869,7 +900,8 @@ dvpsril.o: dvpsril.cc ../../config/include/osconfig.h \
  ../../ofstd/include/oftypes.h ../../dcmdata/include/dctk.h \
  ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcswap.h \
  ../../dcmdata/include/dcerror.h ../../dcmdata/include/dcxfer.h \
- ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
+ ../../dcmdata/include/dcvr.h ../../ofstd/include/ofglobal.h \
+ ../../ofstd/include/ofthread.h ../../dcmdata/include/dcstream.h \
  ../../dcmdata/include/dcuid.h ../../dcmdata/include/dcvm.h \
  ../../dcmdata/include/dcdefine.h ../../dcmdata/include/dcdebug.h \
  ../../dcmdata/include/dctagkey.h ../../ofstd/include/ofstring.h \
@@ -903,7 +935,8 @@ dvpsrs.o: dvpsrs.cc ../../config/include/osconfig.h \
  ../include/dvpsrs.h ../../dcmdata/include/dctk.h \
  ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcswap.h \
  ../../dcmdata/include/dcerror.h ../../dcmdata/include/dcxfer.h \
- ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
+ ../../dcmdata/include/dcvr.h ../../ofstd/include/ofglobal.h \
+ ../../ofstd/include/ofthread.h ../../dcmdata/include/dcstream.h \
  ../../dcmdata/include/dcuid.h ../../dcmdata/include/dcvm.h \
  ../../dcmdata/include/dcdefine.h ../../dcmdata/include/dcdebug.h \
  ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dctag.h \
@@ -938,6 +971,7 @@ dvpsrsl.o: dvpsrsl.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dctk.h ../../dcmdata/include/dctypes.h \
  ../../dcmdata/include/dcswap.h ../../dcmdata/include/dcerror.h \
  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
+ ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
  ../../dcmdata/include/dcstream.h ../../dcmdata/include/dcuid.h \
  ../../dcmdata/include/dcvm.h ../../dcmdata/include/dcdefine.h \
  ../../dcmdata/include/dcdebug.h ../../dcmdata/include/dctagkey.h \
@@ -971,7 +1005,8 @@ dvpssp.o: dvpssp.cc ../../config/include/osconfig.h \
  ../include/dvpssp.h ../../dcmdata/include/dctk.h \
  ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcswap.h \
  ../../dcmdata/include/dcerror.h ../../dcmdata/include/dcxfer.h \
- ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
+ ../../dcmdata/include/dcvr.h ../../ofstd/include/ofglobal.h \
+ ../../ofstd/include/ofthread.h ../../dcmdata/include/dcstream.h \
  ../../dcmdata/include/dcuid.h ../../dcmdata/include/dcvm.h \
  ../../dcmdata/include/dcdefine.h ../../dcmdata/include/dcdebug.h \
  ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dctag.h \
@@ -1023,7 +1058,8 @@ dvpssv.o: dvpssv.cc ../../config/include/osconfig.h \
  ../include/dvpssv.h ../../dcmdata/include/dctk.h \
  ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcswap.h \
  ../../dcmdata/include/dcerror.h ../../dcmdata/include/dcxfer.h \
- ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
+ ../../dcmdata/include/dcvr.h ../../ofstd/include/ofglobal.h \
+ ../../ofstd/include/ofthread.h ../../dcmdata/include/dcstream.h \
  ../../dcmdata/include/dcuid.h ../../dcmdata/include/dcvm.h \
  ../../dcmdata/include/dcdefine.h ../../dcmdata/include/dcdebug.h \
  ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dctag.h \
@@ -1058,7 +1094,8 @@ dvpssvl.o: dvpssvl.cc ../../config/include/osconfig.h \
  ../../ofstd/include/oftypes.h ../../dcmdata/include/dctk.h \
  ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcswap.h \
  ../../dcmdata/include/dcerror.h ../../dcmdata/include/dcxfer.h \
- ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
+ ../../dcmdata/include/dcvr.h ../../ofstd/include/ofglobal.h \
+ ../../ofstd/include/ofthread.h ../../dcmdata/include/dcstream.h \
  ../../dcmdata/include/dcuid.h ../../dcmdata/include/dcvm.h \
  ../../dcmdata/include/dcdefine.h ../../dcmdata/include/dcdebug.h \
  ../../dcmdata/include/dctagkey.h ../../ofstd/include/ofstring.h \
@@ -1092,6 +1129,7 @@ dvpstat.o: dvpstat.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
  ../../dcmdata/include/dcswap.h ../../dcmdata/include/dcerror.h \
  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
+ ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
  ../../dcmdata/include/dcstream.h ../../dcmdata/include/dcuid.h \
  ../../dcmdata/include/dcvm.h ../../dcmdata/include/dcdefine.h \
  ../../dcmdata/include/dcdebug.h ../../dcmdata/include/dctagkey.h \
@@ -1140,6 +1178,7 @@ dvpstx.o: dvpstx.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
  ../../dcmdata/include/dcswap.h ../../dcmdata/include/dcerror.h \
  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
+ ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
  ../../dcmdata/include/dcstream.h ../../dcmdata/include/dcuid.h \
  ../../dcmdata/include/dcvm.h ../../dcmdata/include/dcdefine.h \
  ../../dcmdata/include/dcdebug.h ../../dcmdata/include/dctagkey.h \
@@ -1174,7 +1213,8 @@ dvpstxl.o: dvpstxl.cc ../../config/include/osconfig.h \
  ../../ofstd/include/oftypes.h ../../dcmdata/include/dctk.h \
  ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcswap.h \
  ../../dcmdata/include/dcerror.h ../../dcmdata/include/dcxfer.h \
- ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
+ ../../dcmdata/include/dcvr.h ../../ofstd/include/ofglobal.h \
+ ../../ofstd/include/ofthread.h ../../dcmdata/include/dcstream.h \
  ../../dcmdata/include/dcuid.h ../../dcmdata/include/dcvm.h \
  ../../dcmdata/include/dcdefine.h ../../dcmdata/include/dcdebug.h \
  ../../dcmdata/include/dctagkey.h ../../ofstd/include/ofstring.h \
@@ -1209,6 +1249,7 @@ dvpsvl.o: dvpsvl.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dctk.h ../../dcmdata/include/dctypes.h \
  ../../dcmdata/include/dcswap.h ../../dcmdata/include/dcerror.h \
  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
+ ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
  ../../dcmdata/include/dcstream.h ../../dcmdata/include/dcuid.h \
  ../../dcmdata/include/dcvm.h ../../dcmdata/include/dcdefine.h \
  ../../dcmdata/include/dcdebug.h ../../dcmdata/include/dctagkey.h \
@@ -1243,7 +1284,8 @@ dvpsvll.o: dvpsvll.cc ../../config/include/osconfig.h \
  ../../ofstd/include/oftypes.h ../../dcmdata/include/dctk.h \
  ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcswap.h \
  ../../dcmdata/include/dcerror.h ../../dcmdata/include/dcxfer.h \
- ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
+ ../../dcmdata/include/dcvr.h ../../ofstd/include/ofglobal.h \
+ ../../ofstd/include/ofthread.h ../../dcmdata/include/dcstream.h \
  ../../dcmdata/include/dcuid.h ../../dcmdata/include/dcvm.h \
  ../../dcmdata/include/dcdefine.h ../../dcmdata/include/dcdebug.h \
  ../../dcmdata/include/dctagkey.h ../../ofstd/include/ofstring.h \
@@ -1277,7 +1319,8 @@ dvpsvw.o: dvpsvw.cc ../../config/include/osconfig.h \
  ../../ofstd/include/oftypes.h ../../dcmdata/include/dcerror.h \
  ../../dcmdata/include/dctk.h ../../dcmdata/include/dctypes.h \
  ../../dcmdata/include/dcswap.h ../../dcmdata/include/dcxfer.h \
- ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
+ ../../dcmdata/include/dcvr.h ../../ofstd/include/ofglobal.h \
+ ../../ofstd/include/ofthread.h ../../dcmdata/include/dcstream.h \
  ../../dcmdata/include/dcuid.h ../../dcmdata/include/dcvm.h \
  ../../dcmdata/include/dcdefine.h ../../dcmdata/include/dcdebug.h \
  ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dctag.h \
@@ -1310,7 +1353,8 @@ dvpsvwl.o: dvpsvwl.cc ../../config/include/osconfig.h \
  ../../ofstd/include/oftypes.h ../../dcmdata/include/dctk.h \
  ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcswap.h \
  ../../dcmdata/include/dcerror.h ../../dcmdata/include/dcxfer.h \
- ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
+ ../../dcmdata/include/dcvr.h ../../ofstd/include/ofglobal.h \
+ ../../ofstd/include/ofthread.h ../../dcmdata/include/dcstream.h \
  ../../dcmdata/include/dcuid.h ../../dcmdata/include/dcvm.h \
  ../../dcmdata/include/dcdefine.h ../../dcmdata/include/dcdebug.h \
  ../../dcmdata/include/dctagkey.h ../../ofstd/include/ofstring.h \
