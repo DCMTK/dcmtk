@@ -24,8 +24,8 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-03-16 13:43:08 $
- *  CVS/RCS Revision: $Revision: 1.52 $
+ *  Update Date:      $Date: 2004-03-16 13:49:49 $
+ *  CVS/RCS Revision: $Revision: 1.53 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -316,7 +316,7 @@ const char* dcmStorageSOPClassUIDs[] = {
     // basic directory storage is a special case - we cannot
     // transmit a DICOMDIR by C-STORE because of the absolute
     // file position offsets within the DICOMDIR.
-    // UID_BasicDirectoryStorageSOPClass,
+    // UID_MediaStorageDirectoryStorage,
 
     UID_AmbulatoryECGWaveformStorage,
     UID_BasicTextSR,
@@ -1107,7 +1107,10 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.52  2004-03-16 13:43:08  joergr
+** Revision 1.53  2004-03-16 13:49:49  joergr
+** Updated comment.
+**
+** Revision 1.52  2004/03/16 13:43:08  joergr
 ** Renamed UID_BasicDirectoryStorageSOPClass to UID_MediaStorageDirectoryStorage.
 **
 ** Revision 1.51  2004/02/13 14:11:54  joergr
