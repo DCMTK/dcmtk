@@ -23,8 +23,8 @@
  *    classes: DSRChestCadSRConstraintChecker
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-09-15 14:15:36 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2003-10-06 09:55:13 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,9 +67,9 @@ DSRTypes::E_DocumentType DSRChestCadSRConstraintChecker::getDocumentType() const
 
 
 OFBool DSRChestCadSRConstraintChecker::checkContentRelationship(const E_ValueType sourceValueType,
-                                                                      const E_RelationshipType relationshipType,
-                                                                      const E_ValueType targetValueType,
-                                                                      const OFBool byReference) const
+                                                                const E_RelationshipType relationshipType,
+                                                                const E_ValueType targetValueType,
+                                                                const OFBool byReference) const
 {
     /* the following code implements the constraints of table A.35.6-2 in DICOM PS3.3 */
     OFBool result = OFFalse;
@@ -88,7 +88,7 @@ OFBool DSRChestCadSRConstraintChecker::checkContentRelationship(const E_ValueTyp
                  (targetValueType == VT_UIDRef) || (targetValueType == VT_Composite);
     }
     /* row 3 of the table */
-    else if ((relationshipType == RT_hasAcqContext) && !byReference && 
+    else if ((relationshipType == RT_hasAcqContext) && !byReference &&
         ((sourceValueType == VT_Image) || (sourceValueType == VT_Waveform)))
     {
         result = (targetValueType == VT_Text) || (targetValueType == VT_Code) || (targetValueType == VT_Num) ||
@@ -136,10 +136,12 @@ OFBool DSRChestCadSRConstraintChecker::checkContentRelationship(const E_ValueTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrchecc.cc,v $
- *  Revision 1.1  2003-09-15 14:15:36  joergr
+ *  Revision 1.2  2003-10-06 09:55:13  joergr
+ *  Corrected source code formatting.
+ *
+ *  Revision 1.1  2003/09/15 14:15:36  joergr
  *  Added content relationship constraint checking support for Mammography CAD
  *  SR and Chest CAD SR.
- *
  *
  *
  */
