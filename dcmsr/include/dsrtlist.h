@@ -23,8 +23,8 @@
  *    classes: DSRListOfItems
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-07-11 13:44:00 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2003-08-07 12:55:13 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -218,8 +218,8 @@ template<class T> class DSRListOfItems
     }
 
     /// default item which is returned in getItem() if the index is invalid.
-    /// This static member variable needs to be defined (not declared) in each
-    /// derived class.
+    /// This static member variable needs to be defined (not only declared)
+    /// in each derived class.
     static const T EmptyItem;
 
 
@@ -273,7 +273,10 @@ template<class T> class DSRListOfItems
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtlist.h,v $
- *  Revision 1.11  2003-07-11 13:44:00  joergr
+ *  Revision 1.12  2003-08-07 12:55:13  joergr
+ *  Updated documentation to get rid of doxygen warnings.
+ *
+ *  Revision 1.11  2003/07/11 13:44:00  joergr
  *  Added workaround to get rid of "implicit typename" warnings on gcc 3.x
  *  (introduced macro OFLIST_TYPENAME).
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2002, OFFIS
+ *  Copyright (C) 2000-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRTreeNode, DSRTree
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-11 13:02:34 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2003-08-07 12:56:22 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -81,17 +81,17 @@ class DSRTreeNode
     DSRTreeNode *Next;
     /// pointer to first child node (if any)
     DSRTreeNode *Down;
-  
+
     /// unique identifier (created automatically)
     const size_t Ident;
-    
+
 
   private:
 
     /// global counter used to create the unique identifiers
     static size_t IdentCounter;
 
- 
+
  // --- declaration of copy constructor and assignment operator
 
     DSRTreeNode(const DSRTreeNode &);
@@ -99,8 +99,7 @@ class DSRTreeNode
 };
 
 
-/** Class managing a tree of nodes.
- *  This is in fact a directed acyclic graph (DAG).
+/** Class managing a tree of nodes
  */
 class DSRTree
   : protected DSRTypes,
@@ -120,7 +119,7 @@ class DSRTree
     /** clear all member variables
      */
     virtual void clear();
-    
+
     /** check whether tree has any nodes
      ** @return OFTrue if tree is empty, OFFalse otherwise
      */
@@ -174,7 +173,7 @@ class DSRTree
 
 
   protected:
-  
+
     /** get pointer to root node
      ** @return pointer to root node, might be NULL (empty tree)
      */
@@ -182,7 +181,7 @@ class DSRTree
     {
         return RootNode;
     }
-  
+
 
   private:
 
@@ -203,7 +202,10 @@ class DSRTree
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtree.h,v $
- *  Revision 1.6  2002-04-11 13:02:34  joergr
+ *  Revision 1.7  2003-08-07 12:56:22  joergr
+ *  Updated documentation to get rid of doxygen warnings.
+ *
+ *  Revision 1.6  2002/04/11 13:02:34  joergr
  *  Corrected typo and/or enhanced documentation.
  *
  *  Revision 1.5  2001/06/01 15:51:06  meichel

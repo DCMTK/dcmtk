@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2001, OFFIS
+ *  Copyright (C) 2000-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRTreeNodeCursor
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-12-18 09:55:06 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-08-07 12:55:46 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,8 +48,14 @@
 
 class DSRTreeNode;
 
+
+/*-------------------*
+ *  type definition  *
+ *-------------------*/
+
 // this typedef is needed to avoid a warning on Sun CC 2.0.1
 typedef DSRTreeNode *DSRTreeNodePointer;
+
 
 /*---------------------*
  *  class declaration  *
@@ -97,6 +103,7 @@ class DSRTreeNodeCursor
     virtual void clear();
 
     /** check whether cursor currently points to a valid node
+     ** @return OFTrue if valid, OFFalse otherwise
      */
     virtual OFBool isValid() const;
 
@@ -153,7 +160,7 @@ class DSRTreeNodeCursor
     size_t gotoNode(const size_t searchID);
 
     /** set cursor to specified node. Starts from current position!
-     ** @param  reference  position string of the node to set the cursor to.
+     ** @param  position   position string of the node to set the cursor to.
      *                     (the format is e.g. "1.2.3" for the third child of the
      *                     second child of the first node - see getPosition()).
      *  @param  separator  character used to separate the figures (default: '.')
@@ -206,7 +213,7 @@ class DSRTreeNodeCursor
     /// pointer current node
     DSRTreeNode *NodeCursor;
     /// stack of node pointers. Used to store the cursor position of upper levels.
-    OFStack<DSRTreeNodePointer> NodeCursorStack;
+    OFStack< DSRTreeNodePointer > NodeCursorStack;
 
     /// current position within the current level
     size_t Position;
@@ -221,7 +228,10 @@ class DSRTreeNodeCursor
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtncsr.h,v $
- *  Revision 1.9  2001-12-18 09:55:06  meichel
+ *  Revision 1.10  2003-08-07 12:55:46  joergr
+ *  Updated documentation to get rid of doxygen warnings.
+ *
+ *  Revision 1.9  2001/12/18 09:55:06  meichel
  *  Introduced typedef to avoid warning on Sun CC 2.0.1
  *
  *  Revision 1.8  2001/03/28 09:06:56  joergr
