@@ -10,9 +10,9 @@
 ** Interface of class DcmFileFormat
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-09 11:06:15 $
+** Update Date:		$Date: 1996-07-29 15:46:23 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcfilefo.h,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -63,6 +63,7 @@ public:
 			      const E_GrpLenEncoding gltype = EGL_withoutGL );
     virtual DcmMetaInfo* getMetaInfo();
     virtual DcmDataset*  getDataset();
+    virtual DcmDataset*  getAndRemoveDataset();
 
 
 // The following methods have no meaning in DcmFileFormat and shall not be 
@@ -82,7 +83,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.h,v $
-** Revision 1.4  1996-01-09 11:06:15  andreas
+** Revision 1.5  1996-07-29 15:46:23  andreas
+** Add method getAndRemoveDataset to remove connection of dataset from fileformat
+**
+** Revision 1.4  1996/01/09 11:06:15  andreas
 ** New Support for Visual C++
 ** Correct problems with inconsistent const declarations
 **
