@@ -21,10 +21,10 @@
  *
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-13 14:17:39 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-02-25 12:18:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.68 $
+ *  CVS/RCS Revision: $Revision: 1.69 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,7 +80,11 @@ END_EXTERN_C
 #include <zlib.h>          /* for zlibVersion() */
 #endif
 
+#ifdef PRIVATE_STORESCP_DECLARATIONS
+PRIVATE_STORESCP_DECLARATIONS
+#else
 #define OFFIS_CONSOLE_APPLICATION "storescp"
+#endif
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v" OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
@@ -415,7 +419,7 @@ int main(int argc, char *argv[])
     if (cmd.findOption("--config-file"))
     {
       app.checkValue(cmd.getValue(opt_configFile));
-      app.checkValue(cmd.getValue(opt_profileName));        
+      app.checkValue(cmd.getValue(opt_profileName));
 
       // check conflicts with other command line options
       app.checkConflict("--config-file", "--prefer-little", (opt_networkTransferSyntax == EXS_LittleEndianExplicit));
@@ -457,9 +461,9 @@ int main(int argc, char *argv[])
 
       if (!asccfg.isValidSCPProfile(sprofile.c_str()))
       {
-        CERR << "profile '" 
-             << sprofile 
-             << "' is not valid for SCP use, duplicate abstract syntaxes found." 
+        CERR << "profile '"
+             << sprofile
+             << "' is not valid for SCP use, duplicate abstract syntaxes found."
              << endl;
         return 1;
       }
@@ -601,7 +605,7 @@ int main(int argc, char *argv[])
       app.checkValue(cmd.getValue(opt_sortConcerningStudies));
     }
 
-    cmd.beginOptionBlock(); 
+    cmd.beginOptionBlock();
     if (cmd.findOption("--default-filenames")) opt_uniqueFilenames = OFFalse;
     if (cmd.findOption("--unique-filenames")) opt_uniqueFilenames = OFTrue;
     cmd.endOptionBlock();
@@ -936,6 +940,10 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
   T_ASC_Association *assoc;
   OFCondition cond;
 
+#ifdef PRIVATE_STORESCP_VARIABLES
+  PRIVATE_STORESCP_VARIABLES
+#endif
+
   const char* knownAbstractSyntaxes[] =
   {
     UID_VerificationSOPClass
@@ -1139,7 +1147,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
       if (opt_verbose) DimseCondition::dump(cond);
       goto cleanup;
     }
-  
+
     /* the array of Storage SOP Class UIDs comes from dcuid.h */
     cond = ASC_acceptContextsWithPreferredTransferSyntaxes( assoc->params, dcmStorageSOPClassUIDs, numberOfDcmStorageSOPClassUIDs, transferSyntaxes, numTransferSyntaxes);
     if (cond.bad())
@@ -1147,7 +1155,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
       if (opt_verbose) DimseCondition::dump(cond);
       goto cleanup;
     }
-  
+
     if (opt_promiscuous)
     {
       /* accept everything not known not to be a storage SOP class */
@@ -1205,6 +1213,9 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
   }
   else
   {
+#ifdef PRIVATE_STORESCP_CODE
+    PRIVATE_STORESCP_CODE
+#endif
     cond = ASC_acknowledgeAssociation(assoc);
     if (cond.bad())
     {
@@ -1663,8 +1674,8 @@ storeSCPCallback(
       if (xfer == EXS_Unknown) xfer = (*imageDataSet)->getOriginalXfer();
 
       // store file either with meta header or as pure dataset
-      OFCondition cond = cbdata->dcmff->saveFile(fileName, xfer, opt_sequenceType, opt_groupLength, 
-          opt_paddingType, OFstatic_cast(Uint32, opt_filepad), 
+      OFCondition cond = cbdata->dcmff->saveFile(fileName, xfer, opt_sequenceType, opt_groupLength,
+          opt_paddingType, OFstatic_cast(Uint32, opt_filepad),
           OFstatic_cast(Uint32, opt_itempad), !opt_useMetaheader);
       if (cond.bad())
       {
@@ -1792,12 +1803,12 @@ static OFCondition storeSCP(
   // DIMSE_storeProvider must be called with certain parameters.
   if (opt_bitPreserving)
   {
-      cond = DIMSE_storeProvider(assoc, presID, req, imageFileName, opt_useMetaheader, NULL, 
+      cond = DIMSE_storeProvider(assoc, presID, req, imageFileName, opt_useMetaheader, NULL,
           storeSCPCallback, &callbackData, DIMSE_BLOCKING, 0);
   }
   else
   {
-    cond = DIMSE_storeProvider(assoc, presID, req, NULL, opt_useMetaheader, &dset, 
+    cond = DIMSE_storeProvider(assoc, presID, req, NULL, opt_useMetaheader, &dset,
         storeSCPCallback, &callbackData, DIMSE_BLOCKING, 0);
   }
 
@@ -2296,7 +2307,10 @@ static OFCondition acceptUnknownContextsWithPreferredTransferSyntaxes(
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.68  2004-02-13 14:17:39  joergr
+** Revision 1.69  2004-02-25 12:18:06  meichel
+** Added a few dummy macros allowing for future private extensions
+**
+** Revision 1.68  2004/02/13 14:17:39  joergr
 ** Removed acknowledgements with e-mail addresses from CVS log.
 **
 ** Revision 1.67  2004/02/12 14:05:17  wilkens

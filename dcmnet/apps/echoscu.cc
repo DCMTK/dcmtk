@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Verification Service Class User (C-ECHO operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-12-13 15:42:43 $
+ *  Update Date:      $Date: 2004-02-25 12:18:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/echoscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,7 +58,11 @@
 #include <zlib.h>     /* for zlibVersion() */
 #endif
 
+#ifdef PRIVATE_ECHOSCU_DECLARATIONS
+PRIVATE_ECHOSCU_DECLARATIONS
+#else
 #define OFFIS_CONSOLE_APPLICATION "echoscu"
+#endif
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
@@ -286,7 +290,7 @@ main(int argc, char *argv[])
       if (cmd.findOption("--aetitle")) app.checkValue(cmd.getValue(opt_ourTitle));
       if (cmd.findOption("--call")) app.checkValue(cmd.getValue(opt_peerTitle));
 
-      if (cmd.findOption("--timeout")) 
+      if (cmd.findOption("--timeout"))
       {
         OFCmdSignedInt opt_timeout = 0;
         app.checkValue(cmd.getValueAndCheckMin(opt_timeout, 1));
@@ -502,6 +506,10 @@ main(int argc, char *argv[])
         DimseCondition::dump(cond);
         exit(1);
     }
+
+#ifdef PRIVATE_ECHOSCU_CODE
+    PRIVATE_ECHOSCU_CODE
+#endif
 
     /* sets this application's title and the called application's title in the params */
     /* structure. The default values to be set here are "STORESCU" and "ANY-SCP". */
@@ -753,7 +761,10 @@ cecho(T_ASC_Association * assoc, unsigned long num_repeat)
 /*
 ** CVS Log
 ** $Log: echoscu.cc,v $
-** Revision 1.32  2002-12-13 15:42:43  meichel
+** Revision 1.33  2004-02-25 12:18:06  meichel
+** Added a few dummy macros allowing for future private extensions
+**
+** Revision 1.32  2002/12/13 15:42:43  meichel
 ** Enabled TLS network connections in echoscu
 **
 ** Revision 1.31  2002/11/29 09:15:49  meichel
