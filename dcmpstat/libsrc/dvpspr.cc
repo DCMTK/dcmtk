@@ -23,8 +23,8 @@
  *    classes: DVPSPrintMessageHandler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-10-19 14:48:24 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 1999-10-28 08:18:57 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -763,6 +763,8 @@ CONDITION DVPSPrintMessageHandler::negotiateAssociation(
   const char *peerHost,
   int peerPort,
   long peerMaxPDU,
+  OFBool negotiatePresentationLUT,
+  OFBool negotiateAnnotationBox,
   OFBool implicitOnly,
   OFBool verbose)
 {
@@ -817,9 +819,16 @@ CONDITION DVPSPrintMessageHandler::negotiateAssociation(
 
   /* we always propose basic grayscale, presentation LUT and annotation box*/
   if (SUCCESS(cond)) cond = ASC_addPresentationContext(params, 1, UID_BasicGrayscalePrintManagementMetaSOPClass, transferSyntaxes, transferSyntaxCount);
-  if (SUCCESS(cond)) cond = ASC_addPresentationContext(params, 3, UID_PresentationLUTSOPClass, transferSyntaxes, transferSyntaxCount);
-  if (SUCCESS(cond)) cond = ASC_addPresentationContext(params, 5, UID_BasicAnnotationBoxSOPClass, transferSyntaxes, transferSyntaxCount);
+  if (negotiatePresentationLUT)
+  {
+    if (SUCCESS(cond)) cond = ASC_addPresentationContext(params, 3, UID_PresentationLUTSOPClass, transferSyntaxes, transferSyntaxCount);
+  }
 
+  if (negotiateAnnotationBox)
+  {
+    if (SUCCESS(cond)) cond = ASC_addPresentationContext(params, 5, UID_BasicAnnotationBoxSOPClass, transferSyntaxes, transferSyntaxCount);
+  }
+  
   /* create association */
   if (verbose) *logstream << "Requesting Association" << endl;
     
@@ -882,7 +891,11 @@ OFBool DVPSPrintMessageHandler::printerSupportsAnnotationBox()
 
 /*
  *  $Log: dvpspr.cc,v $
- *  Revision 1.6  1999-10-19 14:48:24  meichel
+ *  Revision 1.7  1999-10-28 08:18:57  meichel
+ *  Print client does not attempt any more to negotiate Presentation LUT or
+ *    Annotation Box if config file says that the printer does not support them.
+ *
+ *  Revision 1.6  1999/10/19 14:48:24  meichel
  *  added support for the Basic Annotation Box SOP Class
  *    as well as access methods for Max Density and Min Density.
  *

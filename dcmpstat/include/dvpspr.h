@@ -23,8 +23,8 @@
  *    classes: DVPSPrintMessageHandler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-10-13 14:10:47 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 1999-10-28 08:18:56 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -181,6 +181,8 @@ public:
    *  @param peerHost hostname/IP address of the printer
    *  @param peerPort port number of the printer
    *  @param peerMaxPDU maximum PDU size to negotiate, must be between 8192 and 65536.
+   *  @param negotiatePresentationLUT if true, Presentation LUT SOP Class is negotiated
+   *  @param negotiateAnnotationBox if true, Basic Annotation Box SOP Class is negotiated
    *  @param implicitOnly if true, only the default implicit VR transfer syntax is proposed,
    *    otherwise all uncompressed transfer syntaxes are proposed.
    *  @param verbose if true, messages are printed to cerr.
@@ -193,6 +195,8 @@ public:
     const char *peerHost,
     int peerPort,
     long peerMaxPDU,
+    OFBool negotiatePresentationLUT,
+    OFBool negotiateAnnotationBox,
     OFBool implicitOnly,
     OFBool verbose);
   
@@ -317,7 +321,11 @@ private:
 
 /*
  *  $Log: dvpspr.h,v $
- *  Revision 1.4  1999-10-13 14:10:47  meichel
+ *  Revision 1.5  1999-10-28 08:18:56  meichel
+ *  Print client does not attempt any more to negotiate Presentation LUT or
+ *    Annotation Box if config file says that the printer does not support them.
+ *
+ *  Revision 1.4  1999/10/13 14:10:47  meichel
  *  Now negotiation Basic Annotation Box SOP Class
  *
  *  Revision 1.3  1999/09/24 15:23:47  meichel
