@@ -2,10 +2,10 @@
 
 \defgroup dcmnet dcmnet
 
-This module contains ...
-
-The main interface classes and functions are:
-\li \b ...
+This module contains a collection of functions that implement DICOM network 
+communication, i.e. the DICOM Upper Layer Finite State Machine, the Association 
+Control Service Element (ACSE) and the DICOM Message Service Element (DIMSE). 
+The main interfaces are the structs and functions declared in file assoc.h and dimse.h.
 
 \section Tools
 
@@ -18,10 +18,47 @@ This module contains the following command line tools:
 
 \section Examples
 
-The following example shows ...:
+The following example shows a very simple Echo SCU (Verification Service Class 
+SCU). Most error handling code has been omitted for brevity, also OS specific 
+code such as WinSock initialization on Win32 is not shown.
 
 \code
-...
+T_ASC_Network *net; // network struct, contains DICOM upper layer FSM etc.
+ASC_initializeNetwork(NET_REQUESTOR, 0, 1000 /* timeout */, &net);
+
+T_ASC_Parameters *params; // parameters of association request
+ASC_createAssociationParameters(&params, ASC_DEFAULTMAXPDU);
+
+// set calling and called AE titles
+ASC_setAPTitles(params, "ECHOSCU", "ANY-SCP", NULL);
+
+// the DICOM server accepts connections at server.nowhere.com port 104
+ASC_setPresentationAddresses(params, "localhost", "server.nowhere.com:104");
+
+// list of transfer syntaxes, only a single entry here
+const char* ts[] = { UID_LittleEndianImplicitTransferSyntax };
+
+// add presentation context to association request
+ASC_addPresentationContext(params, 1, UID_VerificationSOPClass, ts, 1);
+
+// request DICOM association
+T_ASC_Association *assoc;
+if (ASC_requestAssociation(net, params, &assoc).good())
+{
+  if (ASC_countAcceptedPresentationContexts(params) == 1) 
+  {
+    // the remote SCP has accepted the Verification Service Class
+    DIC_US id = assoc->nextMsgID++; // generate next message ID
+    DIC_US status; // DIMSE status of C-ECHO-RSP will be stored here
+    DcmDataset *sd = NULL; // status detail will be stored here
+    // send C-ECHO-RQ and handle response
+    DIMSE_echoUser(assoc, id, DIMSE_BLOCKING, 0, &status, &sd);
+    delete sd; // we don't care about status detail
+  }
+}
+ASC_releaseAssociation(assoc); // release association
+ASC_destroyAssociation(&assoc); // delete assoc structure
+ASC_dropNetwork(&net); // delete net structure
 \endcode
 
 */
