@@ -38,12 +38,12 @@ install: all
 	$(INSTALL_DATA) libijg12.$(LIBEXT) $(libdir)/libijg12.$(LIBEXT)
 
 clean:
-	rm -f $(objs) 
-	rm -f libijg12.$(LIBEXT) 
+	rm -f $(objs)
+	rm -f libijg12.$(LIBEXT)
 	rm -f $(TRASH)
 
 distclean: clean
-	rm -f $(DISTTRASH) 
+	rm -f $(DISTTRASH)
 
 libijg12.$(LIBEXT): $(objs)
 	$(AR) $(ARFLAGS) $@ $(objs)
@@ -52,7 +52,4 @@ libijg12.$(LIBEXT): $(objs)
 dependencies:
 	$(CXX) -MM $(defines) $(includes) $(CPPFLAGS) $(CXXFLAGS) *.c  > $(DEP)
 
-$(objs): config.h
-
 include $(DEP)
-
