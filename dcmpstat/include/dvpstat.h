@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-07-22 16:39:13 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 1999-07-30 13:34:51 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,6 +49,7 @@
 #include "dvpsvwl.h"     /* for DVPSVOIWindow_PList */
 #include "dvpsdal.h"     /* for DVPSDisplayedArea_PList */
 #include "dvpssvl.h"     /* for DVPSSoftcopyVOI_PList */
+#include "dvpspl.h"      /* for DVPSPresentationLUT */
 
 class DVPSTextObject;
 class DVPSGraphicObject;
@@ -256,7 +257,7 @@ public:
   /** gets the current Presentation LUT type.
    *  @return the current presentation LUT type
    */
-  DVPSPresentationLUTType getPresentationLUT() { return presentationLUT; }
+  DVPSPresentationLUTType getPresentationLUT() { return presentationLUT.getType(); }
   
   /** checks if a real Presentation LUT (not shape)
    *  is available in the presentation state.
@@ -264,7 +265,7 @@ public:
    *    a presentation LUT, no matter if it is activated or not.
    *    Returns OFFalse otherwise.
    */
-  OFBool havePresentationLookupTable();
+  OFBool havePresentationLookupTable() { return presentationLUT.haveTable(); }
   
   /** sets the current Presentation LUT type.
    *  DVPSP_table can only be used if the presentation state
@@ -297,14 +298,14 @@ public:
    *  This method never returns NULL.
    *  @return a pointer to a string describing the current presentation LUT.
    */
-  const char *getCurrentPresentationLUTExplanation();
+  const char *getCurrentPresentationLUTExplanation() { return presentationLUT.getCurrentExplanation(); }
 
   /** returns the LUT explanation of the presentation LUT
    *  if it exists and is non-empty. 
    *  Otherwise returns NULL.
    *  @return a string pointer
    */
-  const char *getPresentationLUTExplanation();
+  const char *getPresentationLUTExplanation() { return presentationLUT.getLUTExplanation(); }
   
   
   /* Rotate/Flip Interface */
@@ -1541,12 +1542,6 @@ private:
    *  rotation, flip, overlay activation. 
    */
   void renderPixelData();
-
-  /** checks whether current pstate status is inverse (shape, plut or mono1).
-   *  This method sets the member variable currentImageInverse which is used
-   *  for method isInverse().
-   */
-  void checkInverse();
   
   /** creates a default displayed area selection for the given dataset.
    *  Used in createFromImage().
@@ -1618,14 +1613,7 @@ private:
    * There must never be more that one Presentation LUT for one Presentation State,
    * therefore we need not save a list of LUTs.
    */
-  /// describes active type of presentation LUT.
-  DVPSPresentationLUTType  presentationLUT;
-  /// Module=Softcopy_Presentation_LUT, VR=xs, VM=3, Type 1c 
-  DcmUnsignedShort         presentationLUTDescriptor;
-  /// Module=Softcopy_Presentation_LUT, VR=LO, VM=1, Type 3 
-  DcmLongString            presentationLUTExplanation;
-  /// Module=Softcopy_Presentation_LUT, VR=xs, VM=1-n, Type 1c 
-  DcmUnsignedShort         presentationLUTData;
+  DVPSPresentationLUT      presentationLUT;
 
   /* Module: Presentation State (M)
    * specializes mask and display shutter
@@ -1847,7 +1835,10 @@ private:
 
 /*
  *  $Log: dvpstat.h,v $
- *  Revision 1.16  1999-07-22 16:39:13  meichel
+ *  Revision 1.17  1999-07-30 13:34:51  meichel
+ *  Added new classes managing Stored Print objects
+ *
+ *  Revision 1.16  1999/07/22 16:39:13  meichel
  *  Adapted dcmpstat data structures and API to supplement 33 letter ballot text.
  *
  *  Revision 1.15  1999/05/04 12:28:11  meichel

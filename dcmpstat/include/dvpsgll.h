@@ -23,8 +23,8 @@
  *    classes: DVPSGraphicLayer_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-07-22 16:39:08 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 1999-07-30 13:34:46 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -244,7 +244,7 @@ public:
    */
   E_Condition toBackGraphicLayer(size_t idx);
 
-  /** UNIMPLEMENTED - exchanges the layer order of the two graphic layers with
+  /** exchanges the layer order of the two graphic layers with
    *  the given indices. This method does not sort or renumber
    *  the graphic layers.
    *  @param idx1 index of the first graphic layer, must be < getNumberOfGraphicLayers()
@@ -283,7 +283,10 @@ private:
 
 /*
  *  $Log: dvpsgll.h,v $
- *  Revision 1.4  1999-07-22 16:39:08  meichel
+ *  Revision 1.5  1999-07-30 13:34:46  meichel
+ *  Added new classes managing Stored Print objects
+ *
+ *  Revision 1.4  1999/07/22 16:39:08  meichel
  *  Adapted dcmpstat data structures and API to supplement 33 letter ballot text.
  *
  *  Revision 1.3  1999/02/09 15:58:55  meichel

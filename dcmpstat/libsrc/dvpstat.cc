@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-07-28 07:57:26 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Update Date:      $Date: 1999-07-30 13:35:01 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -63,7 +63,6 @@
 #define DEFAULT_seriesNumber              "1"
 #define DEFAULT_presentationLabel         "UNNAMED"
 #define DEFAULT_specificCharacterSet      "ISO_IR 100"
-#define DEFAULT_presentationLUTShape      "IDENTITY"
 #define DEFAULT_shutterPresentationValue  0
 
 /* --------------- a few macros avoiding copy/paste --------------- */
@@ -141,10 +140,7 @@ DVPresentationState::DVPresentationState(DiDisplayFunction *dispFunction)
 , seriesNumber(DCM_SeriesNumber)
 , manufacturer(DCM_Manufacturer)
 , displayedAreaSelectionList()
-, presentationLUT(DVPSP_identity)
-, presentationLUTDescriptor(DCM_LUTDescriptor)
-, presentationLUTExplanation(DCM_LUTExplanation)
-, presentationLUTData(DCM_LUTData)
+, presentationLUT()
 , imageNumber(DCM_InstanceNumber)
 , presentationLabel(DCM_PresentationLabel)
 , presentationDescription(DCM_PresentationDescription)
@@ -264,10 +260,7 @@ void DVPresentationState::clear()
   seriesNumber.clear();
   manufacturer.clear();
   displayedAreaSelectionList.clear();
-  presentationLUT = DVPSP_identity;
-  presentationLUTDescriptor.clear();
-  presentationLUTExplanation.clear();
-  presentationLUTData.clear();
+  presentationLUT.clear();
   imageNumber.clear();
   presentationLabel.clear();
   presentationDescription.clear();
@@ -405,7 +398,6 @@ E_Condition DVPresentationState::read(DcmItem &dset)
   /* check SOP class UID and modality first */
   DcmUniqueIdentifier sopclassuid(DCM_SOPClassUID);
   DcmCodeString modality(DCM_Modality);
-  DcmCodeString presentationLUTShape(DCM_PresentationLUTShape);
   OFString aString;
   READ_FROM_DATASET(DcmUniqueIdentifier, sopclassuid)
   READ_FROM_DATASET(DcmCodeString, modality)
@@ -499,46 +491,8 @@ E_Condition DVPresentationState::read(DcmItem &dset)
     READ_FROM_DATASET(DcmDecimalString, rescaleIntercept)
     READ_FROM_DATASET(DcmDecimalString, rescaleSlope)
     READ_FROM_DATASET(DcmLongString, rescaleType) 
-    READ_FROM_DATASET(DcmCodeString, presentationLUTShape)
   }
   
-  /* read Presentation LUT Sequence */
-  if (result==EC_Normal)
-  {
-    stack.clear();
-    if (EC_Normal == dset.search(DCM_PresentationLUTSequence, stack, ESM_fromHere, OFFalse))
-    {
-      seq=(DcmSequenceOfItems *)stack.top();
-      if (seq->card() ==1)
-      {
-         item = seq->getItem(0);
-         stack.clear();
-         if (EC_Normal == item->search((DcmTagKey &)presentationLUTDescriptor.getTag(), 
-           stack, ESM_fromHere, OFFalse))
-         {
-           presentationLUTDescriptor = *((DcmUnsignedShort *)(stack.top()));
-         }
-         stack.clear();
-         if (EC_Normal == item->search((DcmTagKey &)presentationLUTExplanation.getTag(), 
-           stack, ESM_fromHere, OFFalse))
-         {
-           presentationLUTExplanation = *((DcmLongString *)(stack.top()));
-         }
-         stack.clear();
-         if (EC_Normal == item->search((DcmTagKey &)presentationLUTData.getTag(), 
-           stack, ESM_fromHere, OFFalse))
-         {
-           presentationLUTData = *((DcmUnsignedShort *)(stack.top()));
-         }
-      } else {
-        result=EC_TagNotFound;
-#ifdef DEBUG
-        cerr << "Error: Presentation LUT SQ does not have exactly one item in presentation state" << endl;
-#endif
-      } 
-    }
-  }
-
   /* read Modality LUT Sequence */
   if (result==EC_Normal)
   {
@@ -589,6 +543,7 @@ E_Condition DVPresentationState::read(DcmItem &dset)
   if (result==EC_Normal) result = graphicAnnotationList.read(dset);
   if (result==EC_Normal) result = displayedAreaSelectionList.read(dset);
   if (result==EC_Normal) result = softcopyVOIList.read(dset);
+  if (result==EC_Normal) result = presentationLUT.read(dset);
 
   /* Now perform basic sanity checks and adjust use flags */
   
@@ -708,55 +663,7 @@ E_Condition DVPresentationState::read(DcmItem &dset)
 #endif
   }
 
-    /* Presentation LUT */
-    if (presentationLUTShape.getLength() == 0)
-    {
-      presentationLUT = DVPSP_table;
-
-      if (presentationLUTDescriptor.getLength() == 0)
-      {
-        result=EC_IllegalCall;
-#ifdef DEBUG
-        cerr << "Error: presentationLUTShape and presentationLUTDescriptor absent or empty in presentation state" << endl;
-#endif
-      }
-      else if (presentationLUTDescriptor.getVM() != 3)
-      {
-        result=EC_IllegalCall;
-#ifdef DEBUG
-        cerr << "Error: presentationLUTDescriptor present but VM != 3 in presentation state" << endl;
-#endif
-      }
-      if (presentationLUTData.getLength() == 0)
-      {
-        result=EC_IllegalCall;
-#ifdef DEBUG
-        cerr << "Error: presentationLUTShape and presentationLUTData absent or empty in presentation state" << endl;
-#endif
-      }
-    } else {
-      if (presentationLUTShape.getVM() != 1)
-      {
-        result=EC_IllegalCall;
-#ifdef DEBUG
-        cerr << "Error: presentationLUTShape present but VM != 1 in presentation state" << endl;
-#endif
-      } else {
-        // check presentation LUT shape
-        aString.clear();
-        presentationLUTShape.getOFString(aString,0);
-        if (aString=="IDENTITY") presentationLUT = DVPSP_identity;
-        else if (aString=="INVERSE") presentationLUT = DVPSP_inverse;
-        else
-        {
-          result=EC_IllegalCall;
-#ifdef DEBUG
-        cerr << "Error: unknown presentationLUTShape keyword: " << aString << endl;
-#endif
-        }
-      }
-    }
-    checkInverse();
+  imageInverse = presentationLUT.isInverse();
 
     /* if imageRotation or imageHorizontalFlip are present, then both must be present. */
     if ((imageRotation.getLength() > 0)&&(imageHorizontalFlip.getLength() == 0))
@@ -1240,15 +1147,15 @@ E_Condition DVPresentationState::createFromImage(
   if (result==EC_Normal)
   {
     /* Presentation LUT Shape */
-    if (isMonochrome1) presentationLUT=DVPSP_inverse; else presentationLUT=DVPSP_identity;
+    if (isMonochrome1) presentationLUT.setType(DVPSP_inverse); else presentationLUT.setType(DVPSP_identity);
     if (presentationLUTShape.getVM() == 1)
     {
       aString.clear();
       presentationLUTShape.getOFString(aString,0);
-      if (aString == "IDENTITY") presentationLUT=DVPSP_identity;
-      if (aString == "INVERSE") presentationLUT=DVPSP_inverse;     
+      if (aString == "IDENTITY") presentationLUT.setType(DVPSP_identity);
+      if (aString == "INVERSE") presentationLUT.setType(DVPSP_inverse);     
     }
-    checkInverse();
+    imageInverse = presentationLUT.isInverse();
   }
    
   if (result==EC_Normal)
@@ -1361,7 +1268,6 @@ E_Condition DVPresentationState::write(DcmItem &dset)
   DcmElement *delem=NULL;
   DcmSequenceOfItems *dseq=NULL;
   DcmItem *ditem=NULL;
-  DcmCodeString presentationLUTShape(DCM_PresentationLUTShape);
   
   cleanupLayers(); /* remove unused layers */
   createDummyValues();
@@ -1396,50 +1302,6 @@ E_Condition DVPresentationState::write(DcmItem &dset)
   ADD_TO_DATASET(DcmUniqueIdentifier, seriesInstanceUID)
   ADD_TO_DATASET(DcmIntegerString, seriesNumber)
   ADD_TO_DATASET(DcmLongString, manufacturer)
-
-  if (presentationLUT==DVPSP_table)
-  {
-    if (result == EC_Normal)
-    {
-      ditem = new DcmItem();
-      if (ditem)
-      {
-        dseq = new DcmSequenceOfItems(DCM_PresentationLUTSequence);
-        if (dseq)
-        {
-          delem = new DcmUnsignedShort(presentationLUTDescriptor);
-          if (delem) ditem->insert(delem); else result=EC_MemoryExhausted;
-          delem = new DcmUnsignedShort(presentationLUTData);
-          if (delem) ditem->insert(delem); else result=EC_MemoryExhausted;
-          if (presentationLUTExplanation.getLength() >0)
-          {
-            delem = new DcmLongString(presentationLUTExplanation);
-            if (delem) ditem->insert(delem); else result=EC_MemoryExhausted;
-          }
-          if (result==EC_Normal)
-          {
-            dseq->insert(ditem);
-            dset.insert(dseq);
-          } else {
-            // out of memory during creation of sequence contents.
-            delete dseq;
-            delete ditem;
-            result = EC_MemoryExhausted;
-          }
-        } else {
-          // could allocate item but not sequence. Bail out.
-          delete ditem;
-          result = EC_MemoryExhausted;
-        }
-      }
-      else result = EC_MemoryExhausted;
-    }
-  } else {
-    if (presentationLUT==DVPSP_inverse) presentationLUTShape.putString("INVERSE");
-    else presentationLUTShape.putString("IDENTITY");
-    ADD_TO_DATASET(DcmCodeString, presentationLUTShape)
-  }
- 
   ADD_TO_DATASET(DcmIntegerString, imageNumber)
   ADD_TO_DATASET(DcmCodeString, presentationLabel)
   ADD_TO_DATASET(DcmLongString, presentationDescription)
@@ -1509,6 +1371,7 @@ E_Condition DVPresentationState::write(DcmItem &dset)
   if (EC_Normal == result) result = displayedAreaSelectionList.write(dset);
   if (EC_Normal == result) result = softcopyVOIList.write(dset);
   if (EC_Normal == result) result = graphicLayerList.write(dset);
+  if (EC_Normal == result) result = presentationLUT.write(dset);
   
   // strictly speaking we are not allowed to include the Spatial Transformation
   // Module if neither rotation nor flipping are needed.
@@ -1848,18 +1711,11 @@ E_Condition DVPresentationState::getImageReference(
   return result;
 }
 
-OFBool DVPresentationState::havePresentationLookupTable()
-{
-  if ((presentationLUTDescriptor.getVM()==3)&&(presentationLUTData.getLength() > 0)) return OFTrue;
-  else return OFFalse;
-}
-
 E_Condition DVPresentationState::setCurrentPresentationLUT(DVPSPresentationLUTType newType)
 {
-  if ((newType == DVPSP_table)&&(! havePresentationLookupTable())) return EC_IllegalCall;
-  presentationLUT = newType;
-  currentImagePLUTValid = OFFalse; // PLUT has changed
-  return EC_Normal;
+  E_Condition result = presentationLUT.setType(newType);
+  if (EC_Normal==result) currentImagePLUTValid = OFFalse; // PLUT has changed
+  return result;
 }
 
 E_Condition DVPresentationState::setPresentationLookupTable(
@@ -1867,46 +1723,11 @@ E_Condition DVPresentationState::setPresentationLookupTable(
     DcmUnsignedShort& lutData,
     DcmLongString& lutExplanation)
 {
-  if ((lutDescriptor.getVM()==3)&&(lutData.getLength() > 0))
-  {
-    presentationLUTDescriptor = lutDescriptor;
-    presentationLUTData = lutData;
-    presentationLUTExplanation = lutExplanation;
-    presentationLUT = DVPSP_table;
-    currentImagePLUTValid = OFFalse; // PLUT has changed
-  } else return EC_IllegalCall;
-  return EC_Normal;
+  E_Condition result = presentationLUT.setLUT(lutDescriptor, lutData, lutExplanation);
+  if (EC_Normal==result) currentImagePLUTValid = OFFalse; // PLUT has changed
+  return result;
 }
     
-
-const char *DVPresentationState::getCurrentPresentationLUTExplanation()
-{
-  const char *value = NULL;
-  switch (presentationLUT)
-  {
-    case DVPSP_identity:
-      value = "Identity Presentation LUT Shape";
-      break;
-    case DVPSP_inverse:
-      value = "Inverse Presentation LUT Shape";
-      break;
-    case DVPSP_table:
-      value = getPresentationLUTExplanation();
-      if (value==NULL) value = "Unnamed Presentation LUT";
-      break;
-  }
-  return value;
-}
-
-
-const char *DVPresentationState::getPresentationLUTExplanation()
-{
-  char *value = NULL;
-  if (EC_Normal != presentationLUTExplanation.getString(value)) return NULL;
-  return value;
-}
-
-
 DVPSRotationType DVPresentationState::getRotation()
 {
   DVPSRotationType result = DVPSR_0_deg;
@@ -3044,31 +2865,8 @@ void DVPresentationState::renderPixelData()
 
   if (! currentImagePLUTValid)
   {
+     presentationLUT.activate(currentImage);
      currentImagePLUTValid = OFTrue;
-     
-     /* set Presentation LUT transformation */
-     switch (presentationLUT)
-     {
-       case DVPSP_identity:
-         result = currentImage->setPresentationLutShape(ESP_Identity);
-#ifdef DEBUG
-         if (!result) cerr << "warning: unable to set identity presentation LUT shape, ignoring." << endl;
-#endif
-         break;
-       case DVPSP_inverse:
-         result = currentImage->setPresentationLutShape(ESP_Inverse);
-#ifdef DEBUG
-         if (!result) cerr << "warning: unable to set inverse presentation LUT shape, ignoring." << endl;
-#endif
-         break;
-       case DVPSP_table:
-         result = currentImage->setPresentationLut(presentationLUTData, presentationLUTDescriptor,
-           &presentationLUTExplanation);
-#ifdef DEBUG
-         if (!result) cerr << "warning: unable to set identity presentation LUT shape, ignoring." << endl;
-#endif
-         break;
-     }
   } /* Presentation LUT */
 
   Uint16 bitmapShutterGroup = 0;
@@ -3287,59 +3085,15 @@ OFBool DVPresentationState::isInverse()
     return imageInverse;
 }
 
-void DVPresentationState::checkInverse()
-{
-  switch (presentationLUT)
-  {
-    case DVPSP_identity:
-      imageInverse = OFFalse;
-      break;
-    case DVPSP_inverse:
-      imageInverse = OFTrue;
-      break;
-    case DVPSP_table:
-      if (havePresentationLookupTable())
-      {
-        DiLookupTable *lut = new DiLookupTable(presentationLUTData, presentationLUTDescriptor);
-        if (lut != NULL)
-          imageInverse = (lut->getFirstValue() > lut->getLastValue());
-        delete lut;
-      }
-      break;
-  }
-}
-
 E_Condition DVPresentationState::invertImage()
 {
-    E_Condition status = EC_Normal;
-    switch (presentationLUT)
-    {
-        case DVPSP_identity:
-            presentationLUT = DVPSP_inverse;
-            break;
-        case DVPSP_inverse:
-            presentationLUT = DVPSP_identity;
-            break;
-        case DVPSP_table:
-            status = EC_IllegalCall;
-            if (havePresentationLookupTable())
-            {
-                DiLookupTable *lut = new DiLookupTable(presentationLUTData, presentationLUTDescriptor);
-                if (lut != NULL)
-                {
-                    if (lut->invertTable())
-                        status = EC_Normal;
-                }
-                delete lut;
-            }
-            break;
-    }
-    if (status == EC_Normal)
-    {
-        currentImagePLUTValid = OFFalse; // PLUT has changed
-        imageInverse = (imageInverse ? OFFalse : OFTrue);
-    }
-    return status;
+  E_Condition status = presentationLUT.invert();
+  if (status == EC_Normal)
+  {
+      currentImagePLUTValid = OFFalse; // PLUT has changed
+      imageInverse = (imageInverse ? OFFalse : OFTrue);
+  }
+  return status;
 }
 
 
@@ -3511,7 +3265,10 @@ DVPSSoftcopyVOI *DVPresentationState::getCurrentSoftcopyVOI()
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.25  1999-07-28 07:57:26  meichel
+ *  Revision 1.26  1999-07-30 13:35:01  meichel
+ *  Added new classes managing Stored Print objects
+ *
+ *  Revision 1.25  1999/07/28 07:57:26  meichel
  *  Minor correction for VC++ 5.
  *
  *  Revision 1.24  1999/07/22 16:40:04  meichel

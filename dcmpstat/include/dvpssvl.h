@@ -23,8 +23,8 @@
  *    classes: DVPSSoftcopyVOI_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-07-22 16:39:12 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 1999-07-30 13:34:51 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -94,7 +94,7 @@ public:
    */
   size_t size() const { return OFList<DVPSSoftcopyVOI *>::size(); }
 
-  /** UNIMPLEMENTED - creates a default softcopy VOI LUT sequence for a presentation state from a DICOM image.
+  /** creates a default softcopy VOI LUT sequence for a presentation state from a DICOM image.
    *  If this method returns an error code, the object is in undefined state afterwards.
    *  @param dset the DICOM dataset containing the image IOD
    *  @param allReferences list of series/instance references registered for the
@@ -167,7 +167,10 @@ public:
 
 /*
  *  $Log: dvpssvl.h,v $
- *  Revision 1.1  1999-07-22 16:39:12  meichel
+ *  Revision 1.2  1999-07-30 13:34:51  meichel
+ *  Added new classes managing Stored Print objects
+ *
+ *  Revision 1.1  1999/07/22 16:39:12  meichel
  *  Adapted dcmpstat data structures and API to supplement 33 letter ballot text.
  *
  *

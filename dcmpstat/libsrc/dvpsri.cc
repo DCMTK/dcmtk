@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998, OFFIS
+ *  Copyright (C) 1998-99, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSReferencedImage
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-07-22 16:40:00 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 1999-07-30 13:34:59 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -291,7 +291,10 @@ void DVPSReferencedImage::removeFrameReference(unsigned long frame, unsigned lon
 
 /*
  *  $Log: dvpsri.cc,v $
- *  Revision 1.4  1999-07-22 16:40:00  meichel
+ *  Revision 1.5  1999-07-30 13:34:59  meichel
+ *  Added new classes managing Stored Print objects
+ *
+ *  Revision 1.4  1999/07/22 16:40:00  meichel
  *  Adapted dcmpstat data structures and API to supplement 33 letter ballot text.
  *
  *  Revision 1.3  1999/01/15 17:32:56  meichel
