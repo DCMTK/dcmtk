@@ -22,9 +22,9 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-19 13:04:54 $
+ *  Update Date:      $Date: 2001-11-19 17:52:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.51 $
+ *  CVS/RCS Revision: $Revision: 1.52 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -577,7 +577,7 @@ int main(int argc, char *argv[])
 
 #ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
     // register global decompression codecs
-    DJDecoderRegistration::registerCodecs(opt_decompCSconversion);
+    DJDecoderRegistration::registerCodecs(opt_decompCSconversion, EUC_default, EPC_default, opt_debugMode);
 #endif
 
     DcmFileStream myin(opt_ifname, DCM_ReadMode);
@@ -1087,7 +1087,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.51  2001-11-19 13:04:54  joergr
+ * Revision 1.52  2001-11-19 17:52:18  joergr
+ * Added support for new 'verbose mode' in module dcmjpeg.
+ *
+ * Revision 1.51  2001/11/19 13:04:54  joergr
  * Moved dcmmkdir tool to dcmjpeg module.
  *
  * Revision 1.50  2001/11/09 16:35:20  joergr
