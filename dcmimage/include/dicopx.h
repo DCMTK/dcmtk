@@ -22,9 +22,9 @@
  *  Purpose: DicomColorPixel (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-29 17:07:08 $
+ *  Update Date:      $Date: 2002-08-29 12:57:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicopx.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -90,6 +90,15 @@ class DiColorPixel
     {
         return 3;
     }
+
+    /** create memory block that contains all three image planes (RGB).
+     *  Currently, the samples are always ordered by plane, thus the DICOM attribute
+     *  'PlanarConfiguration' has to be set to '1'.
+     *  NB: Memory has to be deleted by the caller.
+     *
+     ** @return pointer to pixel data, NULL if an error occurred
+     */
+    virtual void *createPixelData() const = 0;
 
     /** create true color (24/32 bit) bitmap for MS Windows.
      *
@@ -158,7 +167,10 @@ class DiColorPixel
  *
  * CVS/RCS Log:
  * $Log: dicopx.h,v $
- * Revision 1.11  2002-01-29 17:07:08  joergr
+ * Revision 1.12  2002-08-29 12:57:49  joergr
+ * Added method that creates pixel data in DICOM format.
+ *
+ * Revision 1.11  2002/01/29 17:07:08  joergr
  * Added optional flag to the "Windows DIB" methods allowing to switch off the
  * scanline padding.
  *

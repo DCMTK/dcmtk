@@ -22,9 +22,9 @@
  *  Purpose: DicomColorPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-06-26 16:17:41 $
+ *  Update Date:      $Date: 2002-08-29 12:57:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -146,6 +146,24 @@ class DiColorPixelTemplate
     inline void *getDataPtr()
     {
         return (void *)Data;
+    }
+
+    void *createPixelData() const
+    {
+        T *pixel = NULL;
+        if ((Data[0] != NULL) && (Data[1] != NULL) && (Data[2] != NULL))
+        {
+            /* allocate memory block for the resulting pixel data */
+            pixel = new T[Count * 3];
+            if (pixel != NULL)
+            {
+                /* copy all three planes to the new memory block */
+                OFBitmanipTemplate<T>::copyMem(Data[0], pixel, Count);
+                OFBitmanipTemplate<T>::copyMem(Data[1], pixel + Count, Count);
+                OFBitmanipTemplate<T>::copyMem(Data[2], pixel + 2 * Count, Count);
+            }
+        }
+        return (void *)pixel;
     }
 
     unsigned long createDIB(void *&data,
@@ -454,7 +472,10 @@ class DiColorPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dicopxt.h,v $
- * Revision 1.16  2002-06-26 16:17:41  joergr
+ * Revision 1.17  2002-08-29 12:57:49  joergr
+ * Added method that creates pixel data in DICOM format.
+ *
+ * Revision 1.16  2002/06/26 16:17:41  joergr
  * Enhanced handling of corrupted pixel data and/or length.
  *
  * Revision 1.15  2002/01/29 17:07:08  joergr
