@@ -22,8 +22,8 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-05 10:48:45 $
- *  CVS/RCS Revision: $Revision: 1.76 $
+ *  Update Date:      $Date: 2003-12-11 15:39:50 $
+ *  CVS/RCS Revision: $Revision: 1.77 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -84,17 +84,17 @@
 # define OFFIS_CONSOLE_APPLICATION "dcm2pnm"
 #endif
 
-static const char *consoleDescription = "Convert DICOM images to "
-#ifdef WITH_LIBTIFF
-  "TIFF, "
-#endif
+static const char *consoleDescription = "Convert DICOM images to PGM/PPM"
 #ifdef WITH_LIBPNG
-  "PNG, "
+  ", PNG"
+#endif
+#ifdef WITH_LIBTIFF
+  ", TIFF"
 #endif
 #ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
-  "JPEG, "
+  ", JPEG"
 #endif
-  "PGM, PPM or BMP";
+  " or BMP";
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
@@ -294,7 +294,7 @@ int main(int argc, char *argv[])
       cmd.addOption("--min-max-window-n",   "+Wn",     "compute VOI window using min-max algorithm,\nignoring extreme values");
       cmd.addOption("--roi-min-max-window", "+Wr",  4, "[l]eft [t]op [w]idth [h]eight : integer",
                                                        "compute ROI window using min-max algorithm,\nregion of interest is specified by l,t,w,h");
-      cmd.addOption("--histogram-window",   "+Wh",  1, "[n]umber: integer",
+      cmd.addOption("--histogram-window",   "+Wh",  1, "[n]umber : integer",
                                                        "compute VOI window using Histogram algorithm,\nignoring n percent");
       cmd.addOption("--set-window",         "+Ww",  2, "[c]enter [w]idth : float",
                                                        "compute VOI window using center c and width w");
@@ -1390,7 +1390,7 @@ int main(int argc, char *argv[])
                      OUTPUT << "writing frame " << (opt_frame + frame) << " to stdout" << endl;
             }
 
-            /* finally create PPM/PGM or BMP file */
+            /* finally create output image file */
 
             switch (opt_fileType)
             {
@@ -1490,7 +1490,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.76  2003-12-05 10:48:45  joergr
+ * Revision 1.77  2003-12-11 15:39:50  joergr
+ * Made usage output consistent with other tools.
+ *
+ * Revision 1.76  2003/12/05 10:48:45  joergr
  * Fixed bug in 8-bit PGM/PPM export (missing "break" in "switch" statement).
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  *

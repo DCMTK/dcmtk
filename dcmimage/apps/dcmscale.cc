@@ -22,8 +22,8 @@
  *  Purpose: Scale DICOM images
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-05 10:50:52 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2003-12-11 15:39:50 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -128,8 +128,8 @@ int main(int argc, char *argv[])
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
      cmd.addOption("--help",                "-h",         "print this help text and exit" /*, OFTrue is set implicitly */);
      cmd.addOption("--version",                           "print version information and exit", OFTrue /* exclusive */);
-     cmd.addOption("--debug",               "-d",         "debug mode, print debug information");
      cmd.addOption("--verbose",             "-v",         "verbose mode, print processing details");
+     cmd.addOption("--debug",               "-d",         "debug mode, print debug information");
 
     cmd.addGroup("input options:");
 
@@ -562,7 +562,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmscale.cc,v $
- * Revision 1.8  2003-12-05 10:50:52  joergr
+ * Revision 1.9  2003-12-11 15:39:50  joergr
+ * Made usage output consistent with other tools.
+ *
+ * Revision 1.8  2003/12/05 10:50:52  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  *
  * Revision 1.7  2002/12/13 13:44:43  meichel
