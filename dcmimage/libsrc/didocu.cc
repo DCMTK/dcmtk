@@ -70,7 +70,7 @@ void DiDocument::Init(DcmStream &stream)
 	}
 	else
 	{
-	    dfile.transferEnd();
+	    dfile->transferEnd();
 	    Xfer =  dfile->getDataset()->getOriginalXfer();
 	}
     }
