@@ -33,7 +33,7 @@
 */
 #include "cfmwerks.h"
 
-#elif _WIN32
+#elif defined(_WIN32)
 /*
 ** Visual C++ in a Windows 32 bit environment (WindowsNT/95)
 */
