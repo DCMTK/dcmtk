@@ -87,8 +87,8 @@ bspobj.o: bspobj.cc ../include/dctk.h ../../config/include/osconfig.h \
 bspstack.o: bspstack.cc ../include/dcstack.h \
  ../../config/include/osconfig.h ../include/dctypes.h \
  ../include/dcobject.h ../include/dcerror.h ../include/dcxfer.h \
- ../include/dcstream.h ../include/dctag.h ../include/dctagkey.h \
- ../include/dcvr.h ../include/dcdicent.h ../include/dclist.h \
+ ../include/dcvr.h ../include/dcstream.h ../include/dctag.h \
+ ../include/dctagkey.h ../include/dcdicent.h ../include/dclist.h \
  ../include/dcvrus.h ../include/dcelem.h ../include/dcdeftag.h
 bsptag.o: bsptag.cc ../include/dctag.h ../../config/include/osconfig.h \
  ../include/dctypes.h ../include/dcerror.h ../include/dctagkey.h \
@@ -96,8 +96,8 @@ bsptag.o: bsptag.cc ../include/dctag.h ../../config/include/osconfig.h \
 tstblock.o: tstblock.cc ../../config/include/osconfig.h \
  ../include/dcdatset.h ../include/dcerror.h ../include/dctypes.h \
  ../include/dcitem.h ../include/dcobject.h ../include/dcxfer.h \
- ../include/dcstream.h ../include/dctag.h ../include/dctagkey.h \
- ../include/dcvr.h ../include/dcdicent.h ../include/dclist.h \
+ ../include/dcvr.h ../include/dcstream.h ../include/dctag.h \
+ ../include/dctagkey.h ../include/dcdicent.h ../include/dclist.h \
  ../include/dcstack.h ../include/dcvrui.h ../include/dcbytstr.h \
  ../include/dcelem.h ../include/dcdict.h ../include/dcentbst.h \
  ../include/dcentset.h ../include/pix.h ../include/dcentdef.h \
@@ -128,13 +128,13 @@ tstdir.o: tstdir.cc ../../config/include/osconfig.h ../include/dctk.h \
 tstlist.o: tstlist.cc ../../config/include/osconfig.h \
  ../include/dclist.h ../include/dcerror.h ../include/dctypes.h \
  ../include/dcvrus.h ../include/dcelem.h ../include/dcobject.h \
- ../include/dcxfer.h ../include/dcstream.h ../include/dctag.h \
- ../include/dctagkey.h ../include/dcvr.h ../include/dcdicent.h \
+ ../include/dcxfer.h ../include/dcvr.h ../include/dcstream.h \
+ ../include/dctag.h ../include/dctagkey.h ../include/dcdicent.h \
  ../include/dcstack.h ../include/dcdebug.h ../include/dcdeftag.h
 tststack.o: tststack.cc ../../config/include/osconfig.h \
  ../include/dcstack.h ../include/dctypes.h ../include/dcobject.h \
- ../include/dcerror.h ../include/dcxfer.h ../include/dcstream.h \
- ../include/dctag.h ../include/dctagkey.h ../include/dcvr.h \
+ ../include/dcerror.h ../include/dcxfer.h ../include/dcvr.h \
+ ../include/dcstream.h ../include/dctag.h ../include/dctagkey.h \
  ../include/dcdicent.h ../include/dclist.h ../include/dcvrus.h \
  ../include/dcelem.h ../include/dcdebug.h ../include/dcdeftag.h
 tststream.o: tststream.cc ../../config/include/osconfig.h \
