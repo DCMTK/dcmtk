@@ -22,9 +22,9 @@
  *  Purpose: (Partially) abstract class for connecting to an arbitrary data source.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2003-08-21 13:38:23 $
+ *  Update Date:      $Date: 2003-12-11 10:45:33 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wlds.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -481,6 +481,10 @@ class WlmDataSource
       /** Set value in a member variable in a derived class.
        */
     virtual void SetPfFileName( const char * /*value*/ ) {}
+
+      /** Set value in a member variable in a derived class.
+       */
+    virtual void SetModalityToReturn( const char * /*value*/ ) {}
 };
 
 #endif
@@ -488,7 +492,11 @@ class WlmDataSource
 /*
 ** CVS Log
 ** $Log: wlds.h,v $
-** Revision 1.13  2003-08-21 13:38:23  wilkens
+** Revision 1.14  2003-12-11 10:45:33  wilkens
+** Added function to Worklist Management Data Source Base Class. This function
+** is needed in the private part of this toolkit.
+**
+** Revision 1.13  2003/08/21 13:38:23  wilkens
 ** Moved declaration and initialization of member variables matchingDatasets and
 ** numOfMatchingDatasets to base class.
 ** Got rid of superfluous member variable objlist and of superfluous function
