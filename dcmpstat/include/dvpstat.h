@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-02-05 17:45:36 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 1999-02-09 15:58:57 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -91,6 +91,12 @@ public:
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition write(DcmItem &dset);
+
+  /** generates a new SOP Instance UID which is used when writing the
+   *  Presentation State to file. Internal use only.
+   *  @return new SOP Instance UID if successfully set, NULL otherwise.
+   */
+  const char *createInstanceUID();
    	
   /** adds a reference to an image to this presentation state.
    *  This method checks if the given SOP class and Study UID match
@@ -779,6 +785,15 @@ public:
    */
   E_Condition toBackGraphicLayer(size_t idx);
 
+  /** exchanges the layer order of the two graphic layers with
+   *  the given indices. This method does not sort or renumber
+   *  the graphic layers.
+   *  @param idx1 index of the first graphic layer, must be < getNumberOfGraphicLayers()
+   *  @param idx2 index of the second graphic layer, must be < getNumberOfGraphicLayers()
+   *  @return EC_Normal upon success, an error code otherwise
+   */
+  E_Condition exchangeGraphicLayers(size_t idx1, size_t idx2);
+
   /** creates a new graphic layer with the given
    *  name and optional description.
    *  The new name must be unique, otherwise an error code is returned.
@@ -991,8 +1006,6 @@ public:
   OFBool activeOverlayIsROI(size_t layer, size_t idx);
 
   /** gets one overlay bitmap.
-   *  This method may only be called if <UNIMPLEMENTED> has beed called before
-   *  for the current presentation state settings.
    *  @param layer index of the graphic layer on which this overlay is
    *    activated, must be < getNumberOfGraphicLayers().
    *  @param idx index of the overlay activation on the given layer,
@@ -1470,6 +1483,8 @@ private:
    */
   /// Module=SOP_Common, VR=UI, VM=1, Type 1 
   DcmUniqueIdentifier      sOPInstanceUID;
+  /// flag indicating whether SOP instance UID should be replaced on write
+  OFBool replaceInstanceUIDOnWrite;
   /// Module=SOP_Common, VR=CS, VM=1-n, Type 1C 
   DcmCodeString            specificCharacterSet;
   /// Module=SOP_Common, VR=DA, VM=1, Type 3 
@@ -1668,7 +1683,11 @@ private:
 
 /*
  *  $Log: dvpstat.h,v $
- *  Revision 1.6  1999-02-05 17:45:36  meichel
+ *  Revision 1.7  1999-02-09 15:58:57  meichel
+ *  Implemented bitmap shutter activation amd method for
+ *    exchanging graphic layers.
+ *
+ *  Revision 1.6  1999/02/05 17:45:36  meichel
  *  Added config file entry for monitor characteristics file.  Monitor charac-
  *    teristics are passed to dcmimage if present to activate Barten transform.
  *

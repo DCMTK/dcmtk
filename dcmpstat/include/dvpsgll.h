@@ -23,8 +23,8 @@
  *    classes: DVPSGraphicLayer_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-12-14 16:10:29 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 1999-02-09 15:58:55 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -243,6 +243,15 @@ public:
    *  @return EC_Normal upon success, an error code otherwise
    */
   E_Condition toBackGraphicLayer(size_t idx);
+
+  /** UNIMPLEMENTED - exchanges the layer order of the two graphic layers with
+   *  the given indices. This method does not sort or renumber
+   *  the graphic layers.
+   *  @param idx1 index of the first graphic layer, must be < getNumberOfGraphicLayers()
+   *  @param idx2 index of the second graphic layer, must be < getNumberOfGraphicLayers()
+   *  @return EC_Normal upon success, an error code otherwise
+   */
+  E_Condition exchangeGraphicLayers(size_t idx1, size_t idx2);
  
   /** removes and deletes a graphic layer. 
    *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
@@ -274,7 +283,11 @@ private:
 
 /*
  *  $Log: dvpsgll.h,v $
- *  Revision 1.2  1998-12-14 16:10:29  meichel
+ *  Revision 1.3  1999-02-09 15:58:55  meichel
+ *  Implemented bitmap shutter activation amd method for
+ *    exchanging graphic layers.
+ *
+ *  Revision 1.2  1998/12/14 16:10:29  meichel
  *  Implemented Presentation State interface for graphic layers,
  *    text and graphic annotations, presentation LUTs.
  *

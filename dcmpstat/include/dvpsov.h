@@ -23,8 +23,8 @@
  *    classes: DVPSOverlay
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-12-22 17:57:06 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 1999-02-09 15:58:56 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -126,9 +126,13 @@ public:
   
   /** copies this overlay into the DicomImage data structure.
    *  @param image the DicomImage to which the overlay is copied
+   *  @param asShutter optional flag defining whether the overlay
+   *    should be activated as bitmap shutter. Default: no.
+   *  @param pvalue optional shutter presentation value when used
+   *    as bitmap shutter. Default: 0=black.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition activate(DicomImage &image);
+  E_Condition activate(DicomImage &image, OFBool asShutter=OFFalse, Uint16 pvalue=0);
   
 private:
   /// lower byte of the overlay repeating group managed by this object
@@ -157,7 +161,11 @@ private:
 
 /*
  *  $Log: dvpsov.h,v $
- *  Revision 1.3  1998-12-22 17:57:06  meichel
+ *  Revision 1.4  1999-02-09 15:58:56  meichel
+ *  Implemented bitmap shutter activation amd method for
+ *    exchanging graphic layers.
+ *
+ *  Revision 1.3  1998/12/22 17:57:06  meichel
  *  Implemented Presentation State interface for overlays,
  *    VOI LUTs, VOI windows, curves. Added test program that
  *    allows to add curve data to DICOM images.

@@ -23,8 +23,8 @@
  *    classes: DVPSOverlay
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-12-23 14:02:26 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 1999-02-09 15:59:08 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -296,14 +296,15 @@ OFBool DVPSOverlay::isROI()
 }
 
 
-E_Condition DVPSOverlay::activate(DicomImage &image)
+E_Condition DVPSOverlay::activate(DicomImage &image, OFBool asShutter, Uint16 pvalue)
 {
   Sint16 originX=0;
   Sint16 originY=0;
   Uint16 sizeX=0;
   Uint16 sizeY=0;
   unsigned int group = overlayGroup + 0x6000;
-  EM_Overlay mode = isROI() ? EMO_RegionOfInterest : EMO_Graphic;
+  EM_Overlay mode=EMO_Graphic;
+  if (asShutter) mode=EMO_BitmapShutter; else if (isROI()) mode=EMO_RegionOfInterest;
 
   E_Condition result = overlayOrigin.getSint16(originX,1);
   if (result==EC_Normal) result = overlayOrigin.getSint16(originY,0);
@@ -317,14 +318,22 @@ E_Condition DVPSOverlay::activate(DicomImage &image)
     unsigned long rows = (unsigned long)sizeY;
     if (0 == image.addOverlay(group, left, top, columns, rows,
       overlayData, overlayLabel, overlayDescription, mode))
-      result = EC_IllegalCall;      
+      result = EC_IllegalCall;
+    if ((asShutter)&&(EC_Normal==result))
+    {
+      if (0 == image.showOverlay(group, pvalue)) result = EC_IllegalCall;
+    }
   }  
   return result;                      
 }
 
 /*
  *  $Log: dvpsov.cc,v $
- *  Revision 1.4  1998-12-23 14:02:26  meichel
+ *  Revision 1.5  1999-02-09 15:59:08  meichel
+ *  Implemented bitmap shutter activation amd method for
+ *    exchanging graphic layers.
+ *
+ *  Revision 1.4  1998/12/23 14:02:26  meichel
  *  Updated for changed interfaces in dcmimage overlays.
  *    Fixed bug affecting overlay origin delivered to dcmimage.
  *

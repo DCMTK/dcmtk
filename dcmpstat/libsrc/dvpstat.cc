@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-02-05 17:45:39 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 1999-02-09 15:59:09 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -152,6 +152,7 @@ DVPresentationState::DVPresentationState(const char *displayFunctionFname)
 , presentationCreatorsName(DCM_PresentationCreatorsName)
 , referencedSeriesList()
 , sOPInstanceUID(DCM_SOPInstanceUID)
+, replaceInstanceUIDOnWrite(OFTrue)
 , specificCharacterSet(DCM_SpecificCharacterSet)
 , instanceCreationDate(DCM_InstanceCreationDate)
 , instanceCreationTime(DCM_InstanceCreationTime)
@@ -278,6 +279,7 @@ void DVPresentationState::clear()
   presentationCreatorsName.clear();
   referencedSeriesList.clear();
   sOPInstanceUID.clear();
+  replaceInstanceUIDOnWrite = OFTrue;
   specificCharacterSet.clear();
   instanceCreationDate.clear();
   instanceCreationTime.clear();
@@ -323,6 +325,28 @@ void DVPresentationState::clear()
   return;
 }
 
+
+const char *DVPresentationState::createInstanceUID()
+{
+  E_Condition result = EC_Normal;
+  char uid[100];
+  OFString aString;
+  char *puid = NULL;
+  
+  sOPInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
+  currentDate(aString);
+  SET_DEFAULT(instanceCreationDate, aString.c_str() )
+  currentTime(aString);
+  SET_DEFAULT(instanceCreationTime, aString.c_str() )
+  if (EC_Normal == result)
+  {
+    if (EC_Normal != sOPInstanceUID.getString(puid)) puid=NULL; 
+    else replaceInstanceUIDOnWrite = OFFalse; 
+  }
+  return puid;
+}
+
+
 E_Condition DVPresentationState::createDummyValues()
 {
   E_Condition result = EC_Normal;
@@ -350,11 +374,7 @@ E_Condition DVPresentationState::createDummyValues()
   currentTime(aString);
   SET_DEFAULT(presentationCreationTime, aString.c_str() )
 
-#ifdef DONT_CHANGE_INSTANCEUID_ON_WRITE
-  if (result==EC_Normal && (sOPInstanceUID.getLength()==0))
-#else
-  if (result==EC_Normal)
-#endif
+  if ((result==EC_Normal)&&(replaceInstanceUIDOnWrite ||(sOPInstanceUID.getLength()==0)))
   {
     sOPInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
     currentDate(aString);
@@ -362,7 +382,8 @@ E_Condition DVPresentationState::createDummyValues()
     currentTime(aString);
     SET_DEFAULT(instanceCreationTime, aString.c_str() )
   }
-    
+  replaceInstanceUIDOnWrite = OFTrue; // reset flag for next write
+
   // default for specific character set is -absent-.
   // SET_DEFAULT(specificCharacterSet, DEFAULT_specificCharacterSet )
 
@@ -2486,6 +2507,11 @@ E_Condition DVPresentationState::toBackGraphicLayer(size_t idx)
   return graphicLayerList.toBackGraphicLayer(idx);
 }
 
+E_Condition DVPresentationState::exchangeGraphicLayers(size_t idx1, size_t idx2)
+{
+  return graphicLayerList.exchangeGraphicLayers(idx1, idx2);
+}
+
 E_Condition DVPresentationState::addGraphicLayer(
      const char *gLayer, 
      const char *gLayerDescription)
@@ -3184,10 +3210,10 @@ void DVPresentationState::renderPixelData()
     else
     {
       if (df) delete df;
-      displayFunctionFile.clear(); // we won't try again
 #ifdef DEBUG
       cerr << "warning: unable to load monitor characterics file '" << displayFunctionFile.c_str() << "', ignoring." << endl;
 #endif
+      displayFunctionFile.clear(); // we won't try again
     }        
   }
 
@@ -3264,14 +3290,22 @@ void DVPresentationState::renderPixelData()
      }
   } /* Presentation LUT */
 
+  Uint16 bitmapShutterGroup = 0;
+  Uint16 bitmapShutterPValue = 0;
+  if (useShutterBitmap)
+  {
+    if (EC_Normal != shutterOverlayGroup.getUint16(bitmapShutterGroup, 0)) bitmapShutterGroup=0;
+    if (EC_Normal != shutterPresentationValue.getUint16(bitmapShutterPValue, 0)) bitmapShutterPValue=0;
+  }
+
   if (currentImageOverlaysValid==1)
   {
     /* overlays are invalid but no external overlays have been added */
-    /* remove all external overlays that are not active */
+    /* remove all external overlays that are not active as overlay or bitmap shutter */
     for (unsigned int remgroup=0x6000; remgroup <= 0x601F; remgroup += 2)
-    {
-      if ((! overlayList.haveOverlayGroup(remgroup))||
-          (NULL == activationLayerList.getActivationLayer(remgroup)))
+    {        
+      if ((remgroup != bitmapShutterGroup)&&((! overlayList.haveOverlayGroup(remgroup))||
+          (NULL == activationLayerList.getActivationLayer(remgroup))))
       {
       	 currentImage->removeOverlay(remgroup); // ignore return value.
       }
@@ -3332,6 +3366,17 @@ void DVPresentationState::renderPixelData()
 #ifdef DEBUG
        if (!result) cerr << "warning: unable to set external overlay group 0x" 
                          << hex << ovgroup << dec << ", ignoring." << endl;
+#endif
+          }
+        }
+        else if ((useShutterBitmap)&&(ovgroup == bitmapShutterGroup))
+        {
+          //activate bitmap overlay
+          if (EC_Normal != overlay->activate(*currentImage, OFTrue, bitmapShutterPValue))
+          {
+#ifdef DEBUG
+            if (!result) cerr << "warning: unable to activate bitmap shutter 0x" 
+                              << hex << ovgroup << dec << ", ignoring." << endl;
 #endif
           }
         }
@@ -3508,7 +3553,11 @@ void DVPresentationState::changeMonitorCharacteristics(const char *displayFuncti
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.8  1999-02-05 17:45:39  meichel
+ *  Revision 1.9  1999-02-09 15:59:09  meichel
+ *  Implemented bitmap shutter activation amd method for
+ *    exchanging graphic layers.
+ *
+ *  Revision 1.8  1999/02/05 17:45:39  meichel
  *  Added config file entry for monitor characteristics file.  Monitor charac-
  *    teristics are passed to dcmimage if present to activate Barten transform.
  *

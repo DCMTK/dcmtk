@@ -23,8 +23,8 @@
  *    classes: DVPSGraphicLayer_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-12-14 16:10:42 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 1999-02-09 15:59:07 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -371,7 +371,24 @@ E_Condition DVPSGraphicLayer_PList::toBackGraphicLayer(size_t idx)
   } else return EC_IllegalCall;
   return EC_Normal;
 }
- 
+
+E_Condition DVPSGraphicLayer_PList::exchangeGraphicLayers(size_t idx1, size_t idx2)
+{
+  if (idx1 == idx2) return EC_Normal;
+  DVPSGraphicLayer *layer1 = getGraphicLayer(idx1);
+  DVPSGraphicLayer *layer2 = getGraphicLayer(idx2);
+  if ((layer1==NULL)||(layer2==NULL)) return EC_IllegalCall;
+
+  Sint32 order1 = layer1->getGLOrder();
+  Sint32 order2 = layer2->getGLOrder();
+  if (order1 != order2)
+  {
+    layer1->setGLOrder(order2);
+    layer2->setGLOrder(order1);
+  }
+  return EC_Normal;
+}
+
 E_Condition DVPSGraphicLayer_PList::removeGraphicLayer(size_t idx)
 {
   OFListIterator(DVPSGraphicLayer *) first = begin();
@@ -412,7 +429,11 @@ void DVPSGraphicLayer_PList::cleanupLayers(
 
 /*
  *  $Log: dvpsgll.cc,v $
- *  Revision 1.2  1998-12-14 16:10:42  meichel
+ *  Revision 1.3  1999-02-09 15:59:07  meichel
+ *  Implemented bitmap shutter activation amd method for
+ *    exchanging graphic layers.
+ *
+ *  Revision 1.2  1998/12/14 16:10:42  meichel
  *  Implemented Presentation State interface for graphic layers,
  *    text and graphic annotations, presentation LUTs.
  *

@@ -3,6 +3,20 @@
 
 - Changed some bool consts from true to OFTrue.
   Affects: dcmpstat/apps/dcmpsrcv.cc
+
+- Implemented methods that save images and presentation states
+  in the database.
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+
+- Implemented bitmap shutter activation amd method for
+  exchanging graphic layers.
+  Affects: dcmpstat/include/dvpsgll.h
+           dcmpstat/include/dvpsov.h
+           dcmpstat/include/dvpstat.h
+           dcmpstat/libsrc/dvpsgll.cc
+           dcmpstat/libsrc/dvpsov.cc
+           dcmpstat/libsrc/dvpstat.cc
   
 **** Changes from 1999.02.08 (eichelberg)
 
