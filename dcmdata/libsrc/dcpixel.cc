@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmPixelData
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-03-21 13:08:04 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-04-01 12:35:17 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixel.cc,v $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -632,6 +632,20 @@ DcmPixelData::print(ostream &out,
 }
 
 OFCondition
+DcmPixelData::putUint8Array(
+    const Uint8 * byteValue,
+    const unsigned long length)
+{
+    // clear RepresentationList
+    clearRepresentationList(repListEnd);
+    OFCondition l_error = DcmPolymorphOBOW::putUint8Array(byteValue, length);
+    original = current = repListEnd;
+    recalcVR();
+    existUnencapsulated = OFTrue;
+    return l_error;
+}
+
+OFCondition
 DcmPixelData::putUint16Array(
     const Uint16 * wordValue,
     const unsigned long length)
@@ -646,13 +660,27 @@ DcmPixelData::putUint16Array(
 }
 
 OFCondition
-DcmPixelData::putUint8Array(
-    const Uint8 * byteValue,
-    const unsigned long length)
+DcmPixelData::createUint8Array(
+    const Uint32 numBytes,
+    Uint8 * & bytes)
 {
     // clear RepresentationList
     clearRepresentationList(repListEnd);
-    OFCondition l_error = DcmPolymorphOBOW::putUint8Array(byteValue, length);
+    OFCondition l_error = DcmPolymorphOBOW::createUint8Array(numBytes, bytes);
+    original = current = repListEnd;
+    recalcVR();
+    existUnencapsulated = OFTrue;
+    return l_error;
+}
+
+OFCondition
+DcmPixelData::createUint16Array(
+    const Uint32 numWords,
+    Uint16 * & words)
+{
+    // clear RepresentationList
+    clearRepresentationList(repListEnd);
+    OFCondition l_error = DcmPolymorphOBOW::createUint16Array(numWords, words);
     original = current = repListEnd;
     recalcVR();
     existUnencapsulated = OFTrue;
@@ -1038,7 +1066,12 @@ OFCondition DcmPixelData::loadAllDataIntoMemory(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.cc,v $
-** Revision 1.28  2003-03-21 13:08:04  meichel
+** Revision 1.29  2003-04-01 12:35:17  joergr
+** Added implementation of createUint8/16Array() methods to DcmPixelData.
+** Required to work properly with chooseRepresentation() for pixel compression.
+** Thanks to Rick H. <rickh_2003@hotmail.com> for the original problem report.
+**
+** Revision 1.28  2003/03/21 13:08:04  meichel
 ** Minor code purifications for warnings reported by MSVC in Level 4
 **
 ** Revision 1.27  2002/12/09 09:30:54  wilkens

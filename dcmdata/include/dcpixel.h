@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmPixelData
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-12-09 09:31:16 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-04-01 12:35:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpixel.h,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -296,16 +296,27 @@ public:
 
     /** The following two put-methods insert an original unencapsulated
      *  representation. current and original representations are changed,
-     *  all old representations are deleted
+     *  all old representations are deleted. The array data is copied.
      */
-    virtual OFCondition putUint16Array(
-        const Uint16 * wordValue,
-        const unsigned long length);
-
     virtual OFCondition putUint8Array(
         const Uint8 * byteValue,
         const unsigned long length);
 
+    virtual OFCondition putUint16Array(
+        const Uint16 * wordValue,
+        const unsigned long length);
+
+    /** The following two methods create a pixel array and insert an
+     *  original unencapsulated representation. current and original
+     *  representations are changed, all old representations are deleted.
+     */
+    virtual OFCondition createUint8Array(
+        const Uint32 numBytes,
+        Uint8 * & bytes);
+
+    virtual OFCondition createUint16Array(
+        const Uint32 numWords,
+        Uint16 * & words);
 
     /** get a specific exisiting Representation, creates no representation
      *  if repParam is NULL, then the representation conforming to the default
@@ -372,7 +383,12 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.h,v $
-** Revision 1.18  2002-12-09 09:31:16  wilkens
+** Revision 1.19  2003-04-01 12:35:12  joergr
+** Added implementation of createUint8/16Array() methods to DcmPixelData.
+** Required to work properly with chooseRepresentation() for pixel compression.
+** Thanks to Rick H. <rickh_2003@hotmail.com> for the original problem report.
+**
+** Revision 1.18  2002/12/09 09:31:16  wilkens
 ** Modified/Added doc++ documentation.
 **
 ** Revision 1.17  2002/12/06 12:49:12  joergr
