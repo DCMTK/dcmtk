@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomYBRPart422PixelTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:33 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-09 16:47:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diyp2pxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -84,8 +84,8 @@ class DiYBRPart422PixelTemplate
 
  private:
 
-    inline void convert(const T1 *pixel,
-                        const int bits)
+    void convert(const T1 *pixel,
+                 const int bits)
     {
         if (Init(pixel))
         {
@@ -138,7 +138,10 @@ class DiYBRPart422PixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diyp2pxt.h,v $
- * Revision 1.12  2001-06-01 15:49:33  meichel
+ * Revision 1.13  2001-11-09 16:47:03  joergr
+ * Removed 'inline' specifier from certain methods.
+ *
+ * Revision 1.12  2001/06/01 15:49:33  meichel
  * Updated copyright header
  *
  * Revision 1.11  2000/04/28 12:39:33  joergr

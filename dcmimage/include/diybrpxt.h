@@ -22,9 +22,9 @@
  *  Purpose: DicomYBRPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-09-28 13:55:41 $
+ *  Update Date:      $Date: 2001-11-09 16:47:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diybrpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -72,9 +72,9 @@ class DiYBRPixelTemplate
 
  private:
 
-    inline void convert(const T1 *pixel,
-                        const int bits,
-                        const OFBool rgb)
+    void convert(const T1 *pixel,
+                 const int bits,
+                 const OFBool rgb)
     {
         if (Init(pixel))
         {
@@ -210,7 +210,10 @@ class DiYBRPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diybrpxt.h,v $
- * Revision 1.11  2001-09-28 13:55:41  joergr
+ * Revision 1.12  2001-11-09 16:47:03  joergr
+ * Removed 'inline' specifier from certain methods.
+ *
+ * Revision 1.11  2001/09/28 13:55:41  joergr
  * Added new flag (CIF_KeepYCbCrColorModel) which avoids conversion of YCbCr
  * color models to RGB.
  *

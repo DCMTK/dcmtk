@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomColorMonochromeTemplate (Header)
  *
- *  Last Update:         $Author: meichel $
- *  Update Date:         $Date: 2001-06-01 15:49:28 $
+ *  Last Update:         $Author: joergr $
+ *  Update Date:         $Date: 2001-11-09 16:41:34 $
  *  Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicomot.h,v $
- *  CVS/RCS Revision:    $Revision: 1.10 $
+ *  CVS/RCS Revision:    $Revision: 1.11 $
  *  Status:              $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -76,10 +76,10 @@ class DiColorMonoTemplate
 
  private:
 
-    inline void convert(const T *pixel[3],
-                        const double red,
-                        const double green,
-                        const double blue)
+    void convert(const T *pixel[3],
+                 const double red,
+                 const double green,
+                 const double blue)
     {
         if (pixel != NULL)
         {
@@ -106,7 +106,10 @@ class DiColorMonoTemplate
  *
  * CVS/RCS Log:
  * $Log: dicomot.h,v $
- * Revision 1.10  2001-06-01 15:49:28  meichel
+ * Revision 1.11  2001-11-09 16:41:34  joergr
+ * Removed 'inline' specifier from certain methods.
+ *
+ * Revision 1.10  2001/06/01 15:49:28  meichel
  * Updated copyright header
  *
  * Revision 1.9  2000/03/08 16:21:50  meichel

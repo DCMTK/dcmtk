@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomColorOutputPixelTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:29 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-09 16:42:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicoopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -131,7 +131,7 @@ class DiColorOutputPixelTemplate
         return result; 
     }
     
-    inline int writePPM(ostream &stream) const
+    int writePPM(ostream &stream) const
     {
         if (Data != NULL)
         {
@@ -146,7 +146,7 @@ class DiColorOutputPixelTemplate
         return 0;
     }
 
-    inline int writePPM(FILE *stream) const
+    int writePPM(FILE *stream) const
     {
         if (Data != NULL)
         {
@@ -169,11 +169,11 @@ class DiColorOutputPixelTemplate
 
  private:
 
-    inline void convert(const T1 *pixel[3],
-                        const unsigned long start,
-                        const int bits1,
-                        const int bits2,
-                        const int planar)
+    void convert(const T1 *pixel[3],
+                 const unsigned long start,
+                 const int bits1,
+                 const int bits2,
+                 const int planar)
     {
         if ((pixel[0] != NULL) && (pixel[1] != NULL) && (pixel[2] != NULL))
         {
@@ -294,7 +294,10 @@ class DiColorOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dicoopxt.h,v $
- * Revision 1.17  2001-06-01 15:49:29  meichel
+ * Revision 1.18  2001-11-09 16:42:04  joergr
+ * Removed 'inline' specifier from certain methods.
+ *
+ * Revision 1.17  2001/06/01 15:49:29  meichel
  * Updated copyright header
  *
  * Revision 1.16  2000/03/30 14:15:44  joergr
