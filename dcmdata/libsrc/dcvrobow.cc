@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: class DcmOtherByteOtherWord for data VR OB or OW
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:43:25 $
+ *  Update Date:      $Date: 2002-04-25 10:32:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrobow.cc,v $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -116,36 +116,36 @@ void DcmOtherByteOtherWord::print(ostream & out, const OFBool showFullData,
         const DcmEVR evr = Tag.getEVR();
         Uint16 * wordValues = NULL;
         Uint8 * byteValues = NULL;
-    
+
         if (evr == EVR_OW)
             this -> getUint16Array(wordValues);
         else
             this -> getUint8Array(byteValues);
-    
+
         errorFlag = EC_Normal;
         if (wordValues || byteValues)
         {
             char *ch_words = NULL;;
             char *tmp = NULL;
-            Uint32 maxCount = 0; 
+            Uint32 maxCount = 0;
             Uint32 vrLength = 0;
             if (evr == EVR_OW)
             {
             vrLength = Length/sizeof(Uint16);
-            maxCount = 
-                !showFullData && DCM_OptPrintLineLength/5 < vrLength ? 
+            maxCount =
+                !showFullData && DCM_OptPrintLineLength/5 < vrLength ?
                 DCM_OptPrintLineLength/5 : vrLength;
             tmp = ch_words = new char[maxCount*5+6];
             }
             else
             {
             vrLength = Length;
-            maxCount = 
-                !showFullData && DCM_OptPrintLineLength/3 < Length ? 
+            maxCount =
+                !showFullData && DCM_OptPrintLineLength/3 < Length ?
                 DCM_OptPrintLineLength/3 : Length;
             tmp = ch_words = new char[maxCount*3+6];
             }
-            
+
             if (tmp)
             {
             for (unsigned int i=0; i<maxCount; i++)
@@ -163,13 +163,13 @@ void DcmOtherByteOtherWord::print(ostream & out, const OFBool showFullData,
                 byteValues++;
                 }
             }
-    
+
             if (maxCount > 0 )
                 tmp--;
             *tmp = '\0';
             if (maxCount < vrLength)
                 strcat(tmp, "...");
-                
+
             printInfoLine(out, showFullData, level, ch_words );
             delete[] ch_words;
             }
@@ -183,7 +183,7 @@ void DcmOtherByteOtherWord::print(ostream & out, const OFBool showFullData,
 }
 
 
-void DcmOtherByteOtherWord::printPixel(ostream & out, const OFBool showFullData, 
+void DcmOtherByteOtherWord::printPixel(ostream & out, const OFBool showFullData,
               const int level, const char *pixelFileName,
               size_t *pixelCounter)
 {
@@ -218,12 +218,12 @@ void DcmOtherByteOtherWord::printPixel(ostream & out, const OFBool showFullData,
                         swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, data, Length, sizeof(Uint16));
                     }
                 } else {
-                    Uint8 *data = NULL;    
+                    Uint8 *data = NULL;
                     getUint8Array(data);
                     if (data != NULL)
                         fwrite(data, sizeof(Uint8), (size_t)Length, file);
                 }
-                fclose(file);   
+                fclose(file);
             } else {
                 ofConsole.lockCerr() << "Warning: can't open output file for pixel data: " << fname << endl;
                 ofConsole.unlockCerr();
@@ -292,7 +292,7 @@ OFCondition DcmOtherByteOtherWord::putUint8Array(const Uint8 * byteValue,
 
 
 OFCondition DcmOtherByteOtherWord::putUint16Array(const Uint16 * wordValue,
-                          const unsigned long numWords)      
+                          const unsigned long numWords)
 {
     errorFlag = EC_Normal;
     if (numWords)
@@ -331,22 +331,22 @@ OFCondition DcmOtherByteOtherWord::putString(const char * val)
 
         const char * s = val;
         Uint16 intVal = 0;
-        
+
         for(unsigned long i = 0; i < vm && errorFlag == EC_Normal; i++)
         {
-        char * value = getFirstValueFromString(s);
-        if (value) 
-        {
-            if (sscanf(value, "%hx", &intVal) != 1)
-            errorFlag = EC_CorruptedData;
-            else if (evr != EVR_OW)
-            byteField[i] = Uint8(intVal);
+            char * value = getFirstValueFromString(s);
+            if (value)
+            {
+                if (sscanf(value, "%hx", &intVal) != 1)
+                    errorFlag = EC_CorruptedData;
+                else if (evr != EVR_OW)
+                    byteField[i] = Uint8(intVal);
+                else
+                    wordField[i] = Uint16(intVal);
+                delete[] value;
+            }
             else
-            wordField[i] = Uint16(intVal);
-            delete[] value;
-        }
-        else 
-            errorFlag = EC_CorruptedData;
+                errorFlag = EC_CorruptedData;
         }
 
 
@@ -359,9 +359,9 @@ OFCondition DcmOtherByteOtherWord::putString(const char * val)
         }
 
         if (evr != EVR_OW)
-        delete[] byteField;
+            delete[] byteField;
         else
-        delete[] wordField;
+            delete[] wordField;
     }
     else
         this -> putValue(NULL, 0);
@@ -434,12 +434,110 @@ OFCondition DcmOtherByteOtherWord::getUint16Array(Uint16 * & words)
 
 // ********************************
 
+OFCondition DcmOtherByteOtherWord::getOFString(OFString &value,
+                                               const unsigned long pos,
+                                               OFBool /*normalize*/)
+{
+    if (Tag.getEVR() == EVR_OW)
+    {
+        Uint16 uint16Val;
+        /* get the specified numeric value (16 bit) */
+        errorFlag = getUint16(uint16Val, pos);
+        if (errorFlag.good())
+        {
+            /* ... and convert it to a character string (hex mode) */
+            char buffer[32];
+            sprintf(buffer, "%4.4hx", uint16Val);
+            /* assign result */
+            value = buffer;
+        }
+    } else {
+        Uint8 uint8Val;
+        /* get the specified numeric value (8 bit) */
+        errorFlag = getUint8(uint8Val, pos);
+        if (errorFlag.good())
+        {
+            /* ... and convert it to a character string (hex mode) */
+            char buffer[32];
+            sprintf(buffer, "%2.2hx", uint8Val);
+            /* assign result */
+            value = buffer;
+        }
+    }
+    return errorFlag;
+}
+
+OFCondition DcmOtherByteOtherWord::getOFStringArray(OFString &value,
+                                                    OFBool /*normalize*/)
+{
+    if (Tag.getEVR() == EVR_OW)
+    {
+        /* get array of 16 bit values */
+        Uint16 *uint16Vals = (Uint16 *)getValue();
+        const unsigned long count = getLength() / sizeof(Uint16);
+        if ((uint16Vals != NULL) && (count > 0))
+        {
+            /* allocate number of bytes expected */
+            char *buffer = new char[5 * count + 1];
+            if (buffer != NULL)
+            {
+                char *bufPtr = buffer;
+                /* for all array elements ... */
+                for (unsigned long i = 0; i < count; i++)
+                {
+                    /* ... convert numeric value to hexadecimal string representation */
+                    sprintf(bufPtr, "%4.4hx\\", uint16Vals[i]);
+                    bufPtr += 5;
+                }
+                /* remove last '\' */
+                *(--bufPtr) = '\0';
+                /* copy string to result variable */
+                value = buffer;
+                delete[] buffer;
+                errorFlag = EC_Normal;
+            } else
+                errorFlag = EC_MemoryExhausted;
+        } else
+            errorFlag = EC_IllegalCall;
+    } else {
+        /* get array of 8 bit values */
+        Uint8 *uint8Vals = (Uint8 *)getValue();
+        const unsigned long count = getLength();
+        if ((uint8Vals != NULL) && (count > 0))
+        {
+            /* allocate number of bytes expected */
+            char *buffer = new char[3 * count + 1];
+            if (buffer != NULL)
+            {
+                char *bufPtr = buffer;
+                /* for all array elements ... */
+                for (unsigned long i = 0; i < count; i++)
+                {
+                    /* ... convert numeric value to hexadecimal string representation */
+                    sprintf(bufPtr, "%2.2hx\\", uint8Vals[i]);
+                    bufPtr += 3;
+                }
+                /* remove last '\' */
+                *(--bufPtr) = '\0';
+                /* copy string to result variable */
+                value = buffer;
+                delete[] buffer;
+                errorFlag = EC_Normal;
+            } else
+                errorFlag = EC_MemoryExhausted;
+        } else
+            errorFlag = EC_IllegalCall;
+    }
+    return errorFlag;
+}
+
+// ********************************
 
 OFCondition DcmOtherByteOtherWord::verify(const OFBool autocorrect)
 {
     errorFlag = EC_Normal;
     if (autocorrect)
-    errorFlag = alignValue();
+        errorFlag = alignValue();
     return errorFlag;
 }
 
@@ -452,7 +550,7 @@ OFBool DcmOtherByteOtherWord::canWriteXfer(const E_TransferSyntax newXfer,
     DcmXfer newXferSyn(newXfer);
     return Tag != DCM_PixelData || !newXferSyn.isEncapsulated();
 }
-    
+
 
 // ********************************
 
@@ -486,10 +584,36 @@ OFCondition DcmOtherByteOtherWord::writeSignatureFormat(DcmStream & outStream,
 
 // ********************************
 
+OFCondition DcmOtherByteOtherWord::writeXML(ostream &out,
+                                            const size_t flags)
+{
+    /* XML start tag: <element tag="gggg,eeee" vr="XX" ...> */
+    writeXMLStartTag(out, flags, "binary=\"yes\"");
+    /* write element value (if loaded) */
+    if (valueLoaded() && (flags & DCMTypes::XF_writeBinaryData))
+    {
+        OFString value;
+        if (getOFStringArray(value).good())
+            out << value;
+    }
+    /* XML end tag: </element> */
+    writeXMLEndTag(out, flags);
+    /* always report success */
+    return EC_Normal;
+}
+
+// ********************************
+
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
-** Revision 1.35  2002-04-16 13:43:25  joergr
+** Revision 1.36  2002-04-25 10:32:16  joergr
+** Added getOFString() implementation.
+** Added/modified getOFStringArray() implementation.
+** Added support for XML output of DICOM objects.
+**
+** Revision 1.35  2002/04/16 13:43:25  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
 ** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
 ** contribution.
