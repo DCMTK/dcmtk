@@ -10,7 +10,7 @@
 ** DICOM object encoding/decoding, search and lookup facilities.
 **
 ** Last Update:   $Author: andreas $
-** Revision:      $Revision: 1.12 $
+** Revision:      $Revision: 1.13 $
 ** Status:	  $State: Exp $
 **
 */
@@ -55,7 +55,7 @@ class DcmObject
 protected:
     int testConstructDestruct;   // for debugging
 
-    DcmTag *Tag;
+    DcmTag Tag;
     Uint32 Length;
     E_Condition errorFlag;
     E_TransferState fTransferState;
@@ -76,18 +76,21 @@ protected:
 					  const E_TransferSyntax oxfer,	// in
 					  Uint32 & writtenBytes ); // out
 
-    void swapIfNecessary(const E_ByteOrder newByteOrder, 
-			 const E_ByteOrder oldByteOrder,
-			 void * value, const Uint32 byteLength,
-			 const size_t valWidth);
-
 public:
     DcmObject(const DcmTag & tag, const Uint32 len = 0);
     DcmObject(const DcmObject & obj);
 
     virtual ~DcmObject();
 
+    // class identification
     virtual DcmEVR ident(void) const = 0;
+
+    // current value representation. If object was read from a stream
+    // getVR returns the read value representation. It is possible that 
+    // this vr is not the same as mentioned in the data dictionary
+    // (e.g. private tags, encapsulated data ...)
+    inline DcmEVR getVR(void) const { return Tag.getEVR(); }
+
     virtual BOOL isLeaf(void) const = 0;
     virtual DcmObject * nextInContainer(const DcmObject * obj);
     virtual void print(ostream & out = cout, const BOOL showFullData = TRUE,
@@ -98,13 +101,12 @@ public:
     virtual void transferInit(void);
     virtual void transferEnd(void);
 
-    virtual Uint16 getGTag();
-    virtual Uint16 getETag();
-    const DcmTag & getTag(void) const;
+    inline Uint16 getGTag() const { return Tag.getGTag(); }
+    inline Uint16 getETag() const { return Tag.getETag(); }
+    inline const DcmTag & getTag(void) const { return Tag; }
 
-    DcmEVR getVR(void);
 
-    virtual E_Condition setVR(DcmEVR vr);
+    virtual E_Condition setVR(DcmEVR /*vr*/) { return EC_IllegalCall; }
     virtual unsigned long getVM() = 0;
 
     // calculate length of Dicom element 
@@ -133,10 +135,6 @@ public:
     virtual E_Condition verify(const BOOL autocorrect = FALSE) = 0;
 
     virtual E_Condition nextObject(DcmStack & stack, const BOOL intoSub);
-    virtual E_Condition search(const DcmTag &tag,                 // in
-			       DcmStack &resultStack,	       // inout
-			       E_SearchMode mode = ESM_fromHere,  // in
-			       BOOL searchIntoSub = TRUE );       // in
 	
     virtual E_Condition search(const DcmTagKey &xtag,	       // in
 			       DcmStack &resultStack,	       // inout
