@@ -50,10 +50,10 @@
 **
 **
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-05-29 15:52:52 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-05-30 06:44:57 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dump2dcm.cc,v $
-** CVS/RCS Revision:	$Revision: 1.13 $
+** CVS/RCS Revision:	$Revision: 1.14 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -732,12 +732,20 @@ int main(int argc, char *argv[])
 		else if (arg[0] == '+' && arg[2] == '\0')
 		{
 		    opadenc = EPD_withPadding;
+#if SIZEOF_LONG == 8
+		    if (sscanf(argv[++i], "%d", &padlen) != 1)
+#else
 		    if (sscanf(argv[++i], "%ld", &padlen) != 1)
+#endif
 		    {
 			cerr << "wrong parameter option +p n m\n";
 			return 1;
 		    }
+#if SIZEOF_LONG == 8
+		    if (sscanf(argv[++i], "%d", &subPadlen) != 1)
+#else
 		    if (sscanf(argv[++i], "%ld", &subPadlen) != 1)
+#endif
 		    {
 			cerr << "wrong parameter option +p n m\n";
 			return 1;
@@ -922,7 +930,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
-** Revision 1.13  1997-05-29 15:52:52  meichel
+** Revision 1.14  1997-05-30 06:44:57  andreas
+** - fixed scanf format problem leading to warnings on 64 bit machines.
+**
+** Revision 1.13  1997/05/29 15:52:52  meichel
 ** Added constant for dcmtk release date in dcuid.h.
 ** All dcmtk applications now contain a version string
 ** which is displayed with the command line options ("usage" message)

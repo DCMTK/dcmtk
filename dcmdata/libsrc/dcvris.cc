@@ -10,9 +10,9 @@
 ** Implementation of class DcmIntegerString
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-12 09:57:02 $
+** Update Date:		$Date: 1997-05-30 06:45:00 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvris.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -86,12 +86,20 @@ E_Condition DcmIntegerString::getSint32(Sint32 &val,
 	{
 	  if (p == NULL)
 	    {
+#if SIZEOF_LONG == 8
+	      if (sscanf(str, "%d", &val) != 1)
+#else
 	      if (sscanf(str, "%ld", &val) != 1)
+#endif
 		l_error = EC_CorruptedData;
 	    }
 	  else
 	    {
+#if SIZEOF_LONG == 8
+	      if (sscanf(str, "%d\\", &val) != 1)
+#else
 	      if (sscanf(str, "%ld\\", &val) != 1)
+#endif
 		l_error = EC_CorruptedData;
 	    }
 	}
@@ -104,7 +112,10 @@ E_Condition DcmIntegerString::getSint32(Sint32 &val,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvris.cc,v $
-** Revision 1.5  1997-05-12 09:57:02  andreas
+** Revision 1.6  1997-05-30 06:45:00  andreas
+** - fixed scanf format problem leading to warnings on 64 bit machines.
+**
+** Revision 1.5  1997/05/12 09:57:02  andreas
 ** - warnings deletetd
 **
 ** Revision 1.4  1997/05/12 07:38:27  andreas
