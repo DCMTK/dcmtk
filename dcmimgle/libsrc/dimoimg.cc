@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-29 17:06:31 $
+ *  Update Date:      $Date: 2002-06-26 16:13:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.47 $
+ *  CVS/RCS Revision: $Revision: 1.48 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -79,7 +79,6 @@ DiMonoImage::DiMonoImage(const DiDocument *docu,
     VoiLutCount(0),
     ValidWindow(0),
     VoiExplanation(),
-    Polarity(EPP_Normal),
     PresLutShape(ESP_Default),
     MinDensity(Default_MinDensity),
     MaxDensity(Default_MaxDensity),
@@ -115,7 +114,6 @@ DiMonoImage::DiMonoImage(const DiDocument *docu,
     VoiLutCount(0),
     ValidWindow(0),
     VoiExplanation(),
-    Polarity(EPP_Normal),
     PresLutShape(ESP_Default),
     MinDensity(Default_MinDensity),
     MaxDensity(Default_MaxDensity),
@@ -152,7 +150,6 @@ DiMonoImage::DiMonoImage(const DiDocument *docu,
     VoiLutCount(0),
     ValidWindow(0),
     VoiExplanation(),
-    Polarity(EPP_Normal),
     PresLutShape(ESP_Default),
     MinDensity(Default_MinDensity),
     MaxDensity(Default_MaxDensity),
@@ -191,7 +188,6 @@ DiMonoImage::DiMonoImage(const DiDocument *docu,
     VoiLutCount(0),
     ValidWindow(0),
     VoiExplanation(),
-    Polarity(EPP_Normal),
     PresLutShape(ESP_Default),
     MinDensity(Default_MinDensity),
     MaxDensity(Default_MaxDensity),
@@ -223,7 +219,6 @@ DiMonoImage::DiMonoImage(const DiMonoImage *image,
     VoiLutCount(image->VoiLutCount),
     ValidWindow(image->ValidWindow),
     VoiExplanation(image->VoiExplanation),
-    Polarity(image->Polarity),
     PresLutShape(image->PresLutShape),
     MinDensity(image->MinDensity),
     MaxDensity(image->MaxDensity),
@@ -291,7 +286,6 @@ DiMonoImage::DiMonoImage(const DiColorImage *image,
     VoiLutCount(0),
     ValidWindow(0),
     VoiExplanation(),
-    Polarity(EPP_Normal),
     PresLutShape(ESP_Default),
     MinDensity(Default_MinDensity),
     MaxDensity(Default_MaxDensity),
@@ -336,7 +330,6 @@ DiMonoImage::DiMonoImage(const DiMonoImage *image,
     VoiLutCount(image->VoiLutCount),
     ValidWindow(image->ValidWindow),
     VoiExplanation(image->VoiExplanation),
-    Polarity(image->Polarity),
     PresLutShape(image->PresLutShape),
     MinDensity(image->MinDensity),
     MaxDensity(image->MaxDensity),
@@ -410,7 +403,6 @@ DiMonoImage::DiMonoImage(const DiMonoImage *image,
     VoiLutCount(image->VoiLutCount),
     ValidWindow(image->ValidWindow),
     VoiExplanation(image->VoiExplanation),
-    Polarity(image->Polarity),
     PresLutShape(image->PresLutShape),
     MinDensity(image->MinDensity),
     MaxDensity(image->MaxDensity),
@@ -477,7 +469,6 @@ DiMonoImage::DiMonoImage(const DiMonoImage *image,
     VoiLutCount(image->VoiLutCount),
     ValidWindow(image->ValidWindow),
     VoiExplanation(image->VoiExplanation),
-    Polarity(image->Polarity),
     PresLutShape(image->PresLutShape),
     MinDensity(image->MinDensity),
     MaxDensity(image->MaxDensity),
@@ -549,7 +540,6 @@ DiMonoImage::DiMonoImage(const DiMonoImage &)
     VoiLutCount(0),
     ValidWindow(0),
     VoiExplanation(),
-    Polarity(EPP_Normal),
     PresLutShape(ESP_Default),
     MinDensity(Default_MinDensity),
     MaxDensity(Default_MaxDensity),
@@ -587,7 +577,6 @@ DiMonoImage::DiMonoImage(const DiMonoImage *image,
     VoiLutCount(0),
     ValidWindow(0),
     VoiExplanation(),
-    Polarity(EPP_Normal),
     PresLutShape(ESP_Default),
     MinDensity(Default_MinDensity),
     MaxDensity(Default_MaxDensity),
@@ -913,11 +902,12 @@ int DiMonoImage::checkInterData(const int mode)
     else if (mode && (ImageStatus == EIS_Normal))
     {
         const unsigned long count = (unsigned long)Columns * (unsigned long)Rows * NumberOfFrames;
-        if ((InterData->getCount() != count) && ((InterData->getCount() >> 1) != ((count + 1) >> 1)))
+        if ((InterData->getInputCount() != count) && ((InterData->getInputCount() >> 1) != ((count + 1) >> 1)))
         {
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
             {
-                ofConsole.lockCerr() << "WARNING: computed (" << count << ") and stored (" << InterData->getCount() << ") "
+                ofConsole.lockCerr() << "WARNING: computed (" << count
+                                     << ") and stored (" << InterData->getInputCount() << ") "
                                      << "pixel count differ !" << endl;
                 ofConsole.unlockCerr();
             }
@@ -1086,7 +1076,7 @@ int DiMonoImage::setWindow(const unsigned long pos)
         {
             /* save return value to be used later (setWindow clears the explanation string!) */
             const int result = setWindow(center, width);
-            /* get the stored explanation string*/
+            /* get the stored explanation string */
             Document->getValue(DCM_WindowCenterWidthExplanation, VoiExplanation, pos);
             return result;
         }
@@ -1166,15 +1156,32 @@ int DiMonoImage::setVoiLut(const unsigned long pos)
 }
 
 
-int DiMonoImage::setPolarity(const EP_Polarity polarity)
+const char *DiMonoImage::getVoiWindowExplanation(const unsigned long pos,
+                                                 OFString &explanation) const
 {
-    if (polarity != Polarity)
-    {
-        Polarity = polarity;
-        return 1;
-    }
-    return 2;
+    const char *result = NULL;
+    /* get the stored explanation string */
+    if (Document->getValue(DCM_WindowCenterWidthExplanation, explanation, pos) > 0)
+        result = explanation.c_str();
+    return result;
 }
+
+
+const char *DiMonoImage::getVoiLutExplanation(const unsigned long pos,
+                                              OFString &explanation) const
+{
+    const char *result = NULL;
+    /* get the given sequence item ... */
+    DcmSequenceOfItems *seq = NULL;
+    if ((pos < Document->getSequence(DCM_VOILUTSequence, seq)) && (seq != NULL))
+    {
+        /* ... and then the stored explanation string */
+        if (Document->getValue(DCM_LUTExplanation, explanation, 0 /*vm pos*/, seq->getItem(pos)) > 0)
+            result = explanation.c_str();
+    }
+    return result;
+}
+
 
 int DiMonoImage::setHardcopyParameters(const unsigned int min,
                                        const unsigned int max,
@@ -1414,7 +1421,7 @@ void *DiMonoImage::getData(void *buffer,
                            const unsigned long size,
                            const unsigned long frame,
                            int bits,
-                           const int /*planar*/,            /* not yet supported, needed for pastelcolor images !! */
+                           const int /*planar*/,            /* not yet supported, needed for pastel color images !! */
                            const int negative)
 {
     if ((InterData != NULL) && (ImageStatus == EIS_Normal) && (frame < NumberOfFrames) &&
@@ -1980,7 +1987,13 @@ int DiMonoImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.47  2002-01-29 17:06:31  joergr
+ * Revision 1.48  2002-06-26 16:13:04  joergr
+ * Enhanced handling of corrupted pixel data and/or length.
+ * Added support for polarity flag to color images.
+ * Added new methods to get the explanation string of stored VOI windows and
+ * LUTs (not only of the currently selected VOI transformation).
+ *
+ * Revision 1.47  2002/01/29 17:06:31  joergr
  * Added optional flag to the "Windows DIB" methods allowing to switch off the
  * scanline padding.
  *
