@@ -7,7 +7,7 @@ The DICOM ToolKit (DCMTK) needs to be compiled with a C++ compiler.
 We have only used the GNU-C++ compiler in versions higher than 2.5.8 
 (most of the development was done using GNU-C++ 2.7.2 on Solaris 2.4).
 
-You will need around 50Mb of disk space to compile the software.
+You will need around 70Mb of disk space to compile the software.
 
 SUPPORTED SYSTEMS
 
