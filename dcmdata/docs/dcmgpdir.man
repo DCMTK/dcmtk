@@ -51,6 +51,7 @@ dcmfile-in  referenced DICOM file
 \subsection input_options input options
 \verbatim
 DICOMDIR identifiers:
+
   +D    --output-file  [f]ilename : string
           generate specific DICOMDIR file
           (default: DICOMDIR in current directory)
@@ -67,6 +68,7 @@ DICOMDIR identifiers:
           (default: "ISO_IR 100" if descriptor present)
 
 type 1 attributes:
+
   -I    --strict
           exit with error if DICOMDIR type 1 attributes
           are missing in DICOM file (default)
@@ -75,6 +77,7 @@ type 1 attributes:
           invent DICOMDIR type 1 attributes if missing in DICOM file
 
 reading:
+
   +id   --input-directory  [d]irectory : string
           read referenced DICOM files from directory d
           (default for --recurse: ".")
@@ -96,6 +99,7 @@ reading:
           pattern for filename matching (wildcards)
 
 checking:
+
   -W    --no-consistency-check
           do not check files for consistency
 
@@ -115,6 +119,7 @@ checking:
 \subsection output_options output options
 \verbatim
 writing:
+
   -A    --replace
           replace existing DICOMDIR (default)
   +A    --append
@@ -127,6 +132,7 @@ writing:
           do not create a backup of existing DICOMDIR
 
 post-1993 value representations:
+
   +u    --enable-new-vr
           enable support for new VRs (UN/UT) (default)
 
@@ -134,6 +140,7 @@ post-1993 value representations:
           disable support for new VRs, convert to OB
 
 group length encoding:
+
   -g    --group-length-remove
           write without group length elements (default)
 
@@ -141,6 +148,7 @@ group length encoding:
           write with group length elements
 
 length encoding in sequences and items:
+
   +e    --length-explicit
           write with explicit lengths (default)
 
