@@ -23,8 +23,8 @@
  *    classes: OFConfigFile
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-04-29 10:14:16 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2003-06-04 12:31:44 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -270,6 +270,22 @@ public:
     OFConfigFileNode *newnode,
     OFConfigFileNode *& anchor);
 
+  /** dummy comparison operator, needed by MSVC5 with STL.
+   *  @return always false
+   */
+  OFBool operator<(const OFConfigFileCursor& /* arg */) const
+  {
+    return OFFalse;
+  }
+
+  /** dummy comparison operator, needed by MSVC5 with STL.
+   *  @return always true
+   */
+  OFBool operator==(const OFConfigFileCursor& /* arg */) const
+  {
+    return OFTrue;
+  }
+
 private:
   /// the cursor is an array of pointers to OFConfigFileNode objects
   OFPConfigFileNode ptr[OFConfigFile_MaxLevel +1];
@@ -465,7 +481,10 @@ private:
 
 /*
  *  $Log: ofconfig.h,v $
- *  Revision 1.1  2003-04-29 10:14:16  meichel
+ *  Revision 1.2  2003-06-04 12:31:44  meichel
+ *  Added dummy comparison operators, needed by MSVC5 with STL
+ *
+ *  Revision 1.1  2003/04/29 10:14:16  meichel
  *  Moved configuration file parser from module dcmpstat to ofstd and renamed
  *    class to OFConfigFile. Cleaned up implementation (no more friend declarations).
  *
