@@ -23,9 +23,9 @@
  *	    Defines a template stack class with interfaces similar to the C++ Standard
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:51:35 $
+ *  Update Date:      $Date: 2001-07-03 14:35:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstack.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -70,6 +70,9 @@ struct OFStackLinkBase
     {
     }
 
+    virtual ~OFStackLinkBase()
+    {
+    }
 private:
 
  // --- declarations to avoid compiler warnings
@@ -242,7 +245,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: ofstack.h,v $
-** Revision 1.10  2001-06-01 15:51:35  meichel
+** Revision 1.11  2001-07-03 14:35:01  meichel
+** Fixed memory leak in ofstack.h
+**
+** Revision 1.10  2001/06/01 15:51:35  meichel
 ** Updated copyright header
 **
 ** Revision 1.9  2000/10/12 08:11:35  joergr
