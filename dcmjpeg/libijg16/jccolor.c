@@ -55,7 +55,18 @@ typedef my_color_converter * my_cconvert_ptr;
  * in the tables to save adding them separately in the inner loop.
  */
 
-#define SCALEBITS	16	/* speediest right-shift on some machines */
+/*
+ * SCALEBITS has been changed from 16 to 15 in this particular file.
+ * The problem is that for 16-bit images SCALEBITS=16 leads to an
+ * INT32 integer overflow in rgb_ycc_start().
+ * SCALEBITS=15 avoids the overflow at the expense of precision
+ * and possibly a slight increase in CPU time.
+ * WARNING: This modification has not really been tested since
+ * we're never actually converting 16-bit images from RGB to YCC:
+ * 16-bit per pixel is used with lossless JPEG only, and we don't convert
+ * RGB to YCC in lossless mode.
+ */ 
+#define SCALEBITS	15	
 #define CBCR_OFFSET	((INT32) CENTERJSAMPLE << SCALEBITS)
 #define ONE_HALF	((INT32) 1 << (SCALEBITS-1))
 #define FIX(x)		((INT32) ((x) * (1L<<SCALEBITS) + 0.5))
