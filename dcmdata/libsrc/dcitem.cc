@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-09-13 12:04:12 $
+** Update Date:		$Date: 1996-09-24 15:54:14 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.18 $
+** CVS/RCS Revision:	$Revision: 1.19 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1079,7 +1079,7 @@ E_Condition DcmItem::insert( DcmElement* elem,
 			debug(( 1, "element with (0x%4.4x,0x%4.4x) VR=\"%s\" is already inserted:",
 				elem->getGTag(), elem->getETag(),
 				DcmVR(elem->getVR()).getVRName() ));
-
+		        errorFlag = EC_DoubledTag;
 		    }	// if ( !replaceOld )
 		}   // if ( elem != dE )
 		else	     // Versuch, Listen-Element nochmals einzufuegen
@@ -1088,8 +1088,8 @@ E_Condition DcmItem::insert( DcmElement* elem,
 			 << elem->getTag() << "VR=\"" 
 			 << DcmVR(elem->getVR()).getVRName()
 			 << " was already in list: not inserted\n";
+		    errorFlag = EC_DoubledTag;
 		}
-		errorFlag = EC_DoubledTag;
 		break;
 	    }
 	    // else : nicht noetig!
@@ -1843,7 +1843,13 @@ DcmItem::findLong(const DcmTagKey& xtag,
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.18  1996-09-13 12:04:12  hewett
+** Revision 1.19  1996-09-24 15:54:14  hewett
+** Corrected erroneous setting of an error flag when inserting an
+** attribute into an Item (via Item::insert(...)) and the attribute
+** was already present.  Now the error flag is only set if replaceOld
+** is FALSE and an attribute already exists.
+**
+** Revision 1.18  1996/09/13 12:04:12  hewett
 ** Corrected missing () in function call (stack.card()) used in nextObject(...)
 **
 ** Revision 1.17  1996/08/08 10:15:09  andreas
