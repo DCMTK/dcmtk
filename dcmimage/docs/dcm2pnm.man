@@ -1,0 +1,408 @@
+/*!
+
+\if MANPAGES
+\page dcm2pnm Convert DICOM images to PPM/PGM, PNG, TIFF or BMP
+\else
+\page dcm2pnm dcm2pnm: Convert DICOM images to PPM/PGM, PNG, TIFF or BMP
+\endif
+
+\section synopsis SYNOPSIS
+
+\verbatim
+dcm2pnm [options] dcmfile-in [pnmfile-out]
+\endverbatim
+
+\section description DESCRIPTION
+
+The \b dcm2pnm utility reads a DICOM image, converts the pixel data according
+to the selected image processing options and writes back an image in the
+well-known PPM/PGM file format (portable pix map / portable gray map), PNG,
+TIFF or BMP format.  This utility only supports uncompressed and RLE
+compressed DICOM images.  The command line tool \b dcmj2pnm also supports a
+number of JPEG compression schemes.
+
+\section parameters PARAMETERS
+
+\verbatim
+dcmfile-in   DICOM input filename to be converted
+pnmfile-out  output filename to be written (default: stdout)
+\endverbatim
+
+\section options OPTIONS
+
+\subsection general_options general options
+\verbatim
+  -h    --help
+          print this help text and exit
+
+        --version
+          print version information and exit
+
+  -v    --verbose
+          verbose mode, print processing details
+
+  -q    --quiet
+          quiet mode, print no warnings and errors
+
+  -d    --debug
+          debug mode, print debug information
+
+  -im   --image-info
+          info mode, print image details
+\endverbatim
+
+\subsection input_options input options
+\verbatim
+input file format:
+
+  +f    --read-file
+          read file format or data set (default)
+
+  -f    --read-dataset
+          read data set without file meta information
+
+input transfer syntax (only with --read-dataset):
+
+  -t=   --read-xfer-auto
+          use TS recognition (default)
+
+  -te   --read-xfer-little
+          read with explicit VR little endian TS
+
+  -tb   --read-xfer-big
+          read with explicit VR big endian TS
+
+  -ti   --read-xfer-implicit
+          read with implicit VR little endian TS
+\endverbatim
+
+\subsection processing_options image processing options
+\verbatim
+frame selection:
+
+  +F    --frame  [n]umber : integer
+          select specified frame (default: 1)
+          
+  +Fr   --frame-range  [n]umber [c]ount : integer
+          select c frames beginning with frame n
+          
+  +Fa   --all-frames
+          select all frames
+          
+rotation:
+  
+  +Rl   --rotate-left
+          rotate image left (-90 degrees)
+
+  +Rr   --rotate-right
+          rotate image right (+90 degrees)
+
+  +Rtd  --rotate-top-down
+          rotate image top-down (180 degrees)
+
+flipping:
+  
+  +Lh   --flip-horizontally
+          flip image horizontally
+
+  +Lv   --flip-vertically
+          flip image vertically
+
+  +Lhv  --flip-both-axes
+          flip image horizontally and vertically
+
+scaling:
+
+  +a    --recognize-aspect
+          recognize pixel aspect ratio (default)
+
+  -a    --ignore-aspect
+          ignore pixel aspect ratio when scaling
+
+  +i    --interpolate  [n]umber of algorithm : integer
+          use interpolation when scaling (1..2, default: 1)
+
+  -i    --no-interpolation
+          no interpolation when scaling
+
+  -S    --no-scaling
+          no scaling, ignore pixel aspect ratio (default)
+
+  +Sxf  --scale-x-factor  [f]actor : float
+          scale x axis by factor, auto-compute y axis
+
+  +Syf  --scale-y-factor  [f]actor : float
+          scale y axis by factor, auto-compute x axis
+
+  +Sxv  --scale-x-size  [n]umber : integer
+          scale x axis to n pixels, auto-compute y axis
+
+  +Syv  --scale-y-size  [n]umber : integer
+          scale y axis to n pixels, auto-compute x axis
+
+modality LUT transformation:
+
+  -M    --no-modality
+          ignore stored modality LUT transformation
+
+  +M    --use-modality
+          use modality LUT transformation (default)
+
+VOI LUT transformation:
+
+  -W    --no-windowing
+          no VOI windowing (default)
+
+  +Wi   --use-window  [n]umber : integer
+          use the n-th VOI window from image file
+
+  +Wl   --use-voi-lut  [n]umber : integer
+          use the n-th VOI look up table from image file
+
+  +Wm   --min-max-window
+          compute VOI window using min-max algorithm
+
+  +Wn   --min-max-window-n
+          compute VOI window using min-max algorithm,
+          ignoring extreme values
+
+  +Wr   --roi-min-max-window  [l]eft [t]op [w]idth [h]eight : integer
+          compute ROI window using min-max algorithm,
+          region of interest is specified by l,t,w,h
+
+  +Wh   --histogram-window  [n]umber : integer
+          compute VOI window using Histogram algorithm,
+          ignoring n percent
+
+  +Ww   --set-window  [c]enter [w]idth : float
+          compute VOI window using center c and width w
+
+presentation LUT transformation:
+
+  +Pid  --identity-shape
+          presentation LUT shape IDENTITY
+
+  +Piv  --inverse-shape
+          presentation LUT shape INVERSE
+
+  +Pod  --lin-od-shape
+          presentation LUT shape LIN OD
+
+overlay:
+
+  -O    --no-overlays
+          do not display overlays
+
+  +O    --display-overlay  [n]umber : integer
+          display overlay n (0..16, 0=all, default: +O 0)
+
+  +Omr  --ovl-replace
+          use overlay mode "Replace"
+          (default for Graphic overlays)
+
+  +Omt  --ovl-threshold
+          use overlay mode "Threshold-Replace"
+
+  +Omc  --ovl-complement
+          use overlay mode "Complement"
+
+  +Omi  --ovl-roi
+          use overlay mode "Region of Interest"
+          (default for ROI overlays)
+
+  +Osf  --set-foreground  [d]ensity : float
+          set overlay foreground density (0..1, default: 1)
+
+  +Ost  --set-threshold  [d]ensity : float
+          set overlay threshold density (0..1, default: 0.5)
+
+display LUT transformation:
+
+  +Dm   --monitor-file  [f]ilename : string
+          calibrate output according to monitor
+          characteristics defined in f
+
+  +Dp   --printer-file  [f]ilename : string
+          calibrate output according to printer
+          characteristics defined in f
+
+  +Da   --ambient-light  [a]mbient light : float
+          ambient light value (cd/m^2, default: file f)
+
+  +Di   --illumination  [i]llumination : float
+          illumination value (cd/m^2, default: file f)
+
+  +Dn   --min-density  [m]inimum optical density : float
+          Dmin value (default: off, only with +Dp)
+
+  +Dx   --max-density  [m]aximum optical density : float
+          Dmax value (default: off, only with +Dp)
+
+  +Dg   --gsd-function
+          use GSDF for calibration (default for +Dm/+Dp)
+
+  +Dc   --cielab-function
+          use CIELAB function for calibration
+
+compatibility options:
+
+  +Ma   --accept-acr-nema
+          accept ACR-NEMA images without photometric
+          interpretation
+
+  +Mp   --accept-palettes
+          accept incorrect palette attribute tags
+          (0028,111x) and (0028,121x)
+          
+TIFF options:
+
+  +Tl   --compr-lzw
+          LZW compression (default)
+
+  +Tr   --compr-rle
+          RLE compression
+
+  +Tn   --compr-none
+          uncompressed
+
+  +Pd   --predictor-default
+          no LZW predictor (default)
+
+  +Pn   --predictor-none
+          LZW predictor 1 (no prediction)
+
+  +Ph   --predictor-horz
+          LZW predictor 2 (horizontal differencing)
+
+  +Rs   --rows-per-strip  [r]ows : integer (default: 0)
+          rows per strip, default 8K per strip
+
+PNG options:
+
+  +il   --interlace
+          create interlaced file (default)
+
+  -il   --nointerlace
+          create non-interlaced file
+
+  +mf   --meta-file
+          create PNG file meta information (default)
+
+  -mf   --meta-none
+          no PNG file meta information
+
+other transformations:
+
+  +G    --grayscale
+          convert to grayscale if necessary
+
+  +P    --change-polarity
+          change polarity (invert pixel output)
+
+  +C    --clip-region  [l]eft [t]op [w]idth [h]eight : integer
+          clip image region (l, t, w, h)
+\endverbatim
+
+\subsection output_options output options
+\verbatim
+  -o    --no-output
+          do not create any output (useful with -im)
+  
+  +op   --write-raw-pnm
+          write 8-bit binary PGM/PPM (default for files)
+  
+  +opb  --write-8-bit-pnm
+          write 8-bit ASCII PGM/PPM (default for stdout)
+  
+  +opw  --write-16-bit-pnm
+          write 16-bit ASCII PGM/PPM
+  
+  +opn  --write-n-bit-pnm  [n]umber : integer
+          write n-bit ASCII PGM/PPM (1..32)
+  
+  +ob   --write-bmp
+          write 8-bit (monochrome) or 24-bit (color) BMP
+  
+  +obp  --write-8-bit-bmp
+          write 8-bit palette BMP (monochrome only)
+  
+  +obt  --write-24-bit-bmp
+          write 24-bit truecolor BMP
+  
+  +ot   --write-tiff
+          write 8-bit (monochrome) or 24-bit (color) TIFF
+  
+  +on   --write-png
+          write 8-bit (monochrome) or 24-bit (color) PNG
+\endverbatim
+
+\section notes NOTES
+
+The \e --write-tiff option is only available when DCMTK has been configured
+and compiled with support for the external "libtiff" TIFF library.  The
+availability of the TIFF compression options depends on the libtiff
+configuration.  In particular, the patented LZW algorithm may not be
+available.
+
+The \e --write-png option is only available when DCMTK has been configured
+and compiled with support for the external "libpng" PNG library.  Interlace
+enables progressive image view while loading the PNG file.  Only a few
+applications take care of the metainfo (TEXT) in a png file.
+
+Sample monitor and printer characteristics files are available in the folder
+\e dcmimgle/tests.
+
+\section command_line COMMAND LINE
+
+All command line tools use the following notation for parameters: square
+brackets enclose optional values (0-1), three trailing dots indicate that
+multiple values are allowed (1-n), a combination of both means 0 to n values.
+
+Command line options are distinguished from parameters by a leading '+' or '-'
+sign, respectively.  Usually, order and position of command line options are
+arbitrary (i.e. they can appear anywhere).  However, if options are mutually
+exclusive the rightmost appearance is used.  This behaviour conforms to the
+standard evaluation rules of common Unix shells.
+
+In addition, one or more command files can be specified using an '@' sign as a
+prefix to the filename (e.g. <em>\@command.txt</em>).  Such a command argument
+is replaced by the content of the corresponding text file (multiple
+whitespaces are treated as a single separator) prior to any further
+evaluation.  Please note that a command file cannot contain another command
+file. This simple but effective approach allows to summarize common
+combinations of options/parameters and avoids longish and confusing command
+lines (an example is provided in file <em>dcmdata/apps/dumppat.txt</em>).
+
+\section environment ENVIRONMENT
+
+The \b dcm2pnm utility will attempt to load DICOM data dictionaries specified
+in the \e DCMDICTPATH environment variable.  By default, i.e. if the
+\e DCMDICTPATH environment variable is not set, the file
+<em>/usr/local/dicom/lib/dicom.dic</em> (in fact the \e PREFIX as defined
+during \b configure is used) will be loaded unless the dictionary is built
+into the application (default for Windows).
+
+The default behaviour should be preferred and the \e DCMDICTPATH environment
+variable only used when alternative data dictionaries are required.  The
+\e DCMDICTPATH environment variable has the same format as the Unix shell
+\e PATH variable in that a colon (":") separates entries.  The data dictionary
+code will attempt to load each file specified in the \e DCMDICTPATH
+environment variable.  It is an error if no data dictionary can be loaded.
+
+\section files FILES
+
+\e camera.lut  sample characteristics file of a camera
+\n\e monitor.lut  sample characteristics file of a monitor
+\n\e printer.lut  sample characteristics file of a printer
+\n\e scanner.lut  sample characteristics file of a scanner
+
+\section see_also SEE ALSO
+
+<b>dcmj2pnm</b>(1)
+
+\section copyright COPYRIGHT
+
+Copyright (C) 1998-2003 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
+Germany.
+
+*/
