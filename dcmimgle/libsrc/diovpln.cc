@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomOverlayPlane (Source) - Multiframe Overlays UNTESTED !
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-03-22 09:37:33 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-03-24 17:24:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diovpln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -349,11 +349,13 @@ void DiOverlayPlane::setFlipping(const int horz,
 
 
 void DiOverlayPlane::setRotation(const int degree,
+                                 const Uint16 left,
+                                 const Uint16 top,
                                  const Uint16 columns,
                                  const Uint16 rows)
 {
-    if (degree == 180)
-        setFlipping(1, 1, columns, rows);
+    if (degree == 180)                          // equal to v/h flip
+        setFlipping(1, 1, left + columns, top + rows);
     else if ((degree == 90) || (degree == 270))
     {
         Uint16 us = Height;                     // swap visible width/height
@@ -368,16 +370,16 @@ void DiOverlayPlane::setRotation(const int degree,
         {
             Sint16 ss = Left;
             us = StartLeft;
-            Left = (Sint16)((signed long)columns - Width - Top);
+            Left = (Sint16)((signed long)columns - Width - Top + top);
             StartLeft = (Uint16)((signed long)Columns - Width - StartTop);
-            Top = ss;
+            Top = ss - left;
             StartTop = us;
         } else {                                // rotate left
             Sint16 ss = Left;
             us = StartLeft;
-            Left = Top;
+            Left = Top - top;
             StartLeft = StartTop;
-            Top = (Sint16)((signed long)rows - Height - ss);
+            Top = (Sint16)((signed long)rows - Height - ss + left);
             StartTop = (Uint16)((signed long)Rows - Height - us);
         }
     }
@@ -388,7 +390,11 @@ void DiOverlayPlane::setRotation(const int degree,
  *
  * CVS/RCS Log:
  * $Log: diovpln.cc,v $
- * Revision 1.11  1999-03-22 09:37:33  meichel
+ * Revision 1.12  1999-03-24 17:24:07  joergr
+ * Removed bug in routines rotating and flipping overlay planes in clipped
+ * images.
+ *
+ * Revision 1.11  1999/03/22 09:37:33  meichel
  * Reworked data dictionary based on the 1998 DICOM edition and the latest
  *   supplement versions. Corrected dcmtk applications for minor changes
  *   in attribute name constants.

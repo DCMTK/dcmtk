@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlay (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-22 08:57:44 $
+ *  Update Date:      $Date: 1999-03-24 17:24:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diovlay.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -157,8 +157,8 @@ DiOverlay::DiOverlay(const DiOverlay *overlay,
                      const int vert,
                      const Uint16 columns,              // width of surrounding image
                      const Uint16 rows)
-  : Left(overlay->Left),
-    Top(overlay->Top),
+  : Left((horz) ? 0 : overlay->Left),
+    Top((vert) ? 0 : overlay->Top),
     Width(overlay->Width),
     Height(overlay->Height),
     Frames(overlay->Frames),
@@ -176,7 +176,7 @@ DiOverlay::DiOverlay(const DiOverlay *overlay,
         for (i = 0; i < Data->ArrayEntries; i++)
         {
             if (Data->Planes[i] != NULL)
-                Data->Planes[i]->setFlipping(horz, vert, columns, rows);
+                Data->Planes[i]->setFlipping(horz, vert, columns + overlay->Left, rows + overlay->Top);
         }
     }
 }
@@ -188,10 +188,10 @@ DiOverlay::DiOverlay(const DiOverlay *overlay,
                      const int degree,
                      const Uint16 columns,              // width of surrounding image (already rotated)
                      const Uint16 rows)
-  : Left(overlay->Left),
-    Top(overlay->Top),
-    Width(((degree == 90) ||(degree == 270)) ? overlay->Height : overlay->Width),
-    Height(((degree == 90) ||(degree == 270)) ? overlay->Width : overlay->Height),
+  : Left(0),
+    Top(0),
+    Width(((degree == 90) || (degree == 270)) ? overlay->Height : overlay->Width),
+    Height(((degree == 90) || (degree == 270)) ? overlay->Width : overlay->Height),
     Frames(overlay->Frames),
     AdditionalPlanes(overlay->AdditionalPlanes),
     Data(NULL)
@@ -199,10 +199,6 @@ DiOverlay::DiOverlay(const DiOverlay *overlay,
     Uint16 *temp = Init(overlay);
     if (temp != NULL)
     {
-/*
-        if (degree == 90)                               // to be continued ...
-            Left = ;
-*/
         DiRotateTemplate<Uint16> rotate(1, overlay->Width, overlay->Height, Width, Height, Frames);
         rotate.rotateData((const Uint16 **)&temp, &(Data->DataBuffer), degree);
         if (temp != overlay->Data->DataBuffer)
@@ -211,7 +207,7 @@ DiOverlay::DiOverlay(const DiOverlay *overlay,
         for (i = 0; i < Data->ArrayEntries; i++)
         {
             if (Data->Planes[i] != NULL)
-                Data->Planes[i]->setRotation(degree, columns, rows);
+                Data->Planes[i]->setRotation(degree, overlay->Left, overlay->Top, columns, rows);
         }
     }
 }
@@ -613,7 +609,11 @@ Uint8 *DiOverlay::getPlaneData(const unsigned long frame,
 F *
  * CVS/RCS Log:
  * $Log: diovlay.cc,v $
- * Revision 1.9  1999-03-22 08:57:44  joergr
+ * Revision 1.10  1999-03-24 17:24:07  joergr
+ * Removed bug in routines rotating and flipping overlay planes in clipped
+ * images.
+ *
+ * Revision 1.9  1999/03/22 08:57:44  joergr
  * Added parameter to specify (transparent) background color for method
  * getOverlayData().
  * Removed bug concerning the rotation and flipping of additional overlay
