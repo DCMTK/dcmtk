@@ -98,9 +98,9 @@ The XML encoding is determined automatically from the DICOM attribute
   Greek         "ISO_IR 126"  =>  "ISO-8859-7"
   Hebrew        "ISO_IR 138"  =>  "ISO-8859-8"
 
-Attributes with very large value fields (e.g. pixel data) are not loaded by
-default.  They can be identified by the additional attribute "loaded" with a
-value of "no" (see example above).  The command line option "--load-all" forces
+Attributes with very large value fields (e.g. pixel data) are not loaded by 
+default.  They can be identified by the additional attribute "loaded" with a 
+value of "no" (see example above).  The command line option "--load-all" forces 
 to load all value fields including the very long ones.
 
 However, binary information of OB and OW attributes are not written to the XML
@@ -109,9 +109,12 @@ attribute "binary" with a value of "yes" (default is "no").  The command line
 option "--write-binary-data" causes also binary value fields to be printed.
 But, be careful when using this option together with "--load-all" because of
 the large amounts of pixel data that might be printed to the output.
+Future versions of this tool might also support base64 encoding according to
+RFC 2045 (MIME) which allows for a much more efficient textual coding of binary
+data.
 
 Multiple values (i.e. where the DICOM value multiplicity is greater than 1)
-are always separated by a backslash "\". If the "len" attribute is missing in
+are always separated by a backslash "\".  If the "len" attribute is missing in
 "sequence" or "item" start tags, the corresponding DICOM element has been
 stored with undefined length.
 
