@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: DicomPixel (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-06-26 16:06:08 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dipixel.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $ 
+ *  Update Date:      $Date: 2003-12-09 10:07:16 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +31,8 @@
  */
 
 
-#ifndef __DIPIXEL_H
-#define __DIPIXEL_H
+#ifndef DIPIXEL_H
+#define DIPIXEL_H
 
 #include "osconfig.h"
 #include "dctypes.h"
@@ -47,7 +46,7 @@
 
 /** Abstract base class to handle pixel data
  */
-class DiPixel 
+class DiPixel
 {
 
  public:
@@ -69,7 +68,7 @@ class DiPixel
     virtual ~DiPixel()
     {
     }
-    
+
     /** get integer representation (abstract)
      *
      ** @return integer representation
@@ -101,7 +100,7 @@ class DiPixel
     inline unsigned long getCount() const
     {
         return Count;
-    }    
+    }
 
     /** get number of pixels stored in the 'PixelData' element
      *
@@ -130,7 +129,11 @@ class DiPixel
  *
  * CVS/RCS Log:
  * $Log: dipixel.h,v $
- * Revision 1.7  2002-06-26 16:06:08  joergr
+ * Revision 1.8  2003-12-09 10:07:16  joergr
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated copyright header.
+ *
+ * Revision 1.7  2002/06/26 16:06:08  joergr
  * Enhanced handling of corrupted pixel data and/or length.
  *
  * Revision 1.6  2001/06/01 15:49:50  meichel

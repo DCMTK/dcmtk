@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: DicomOverlayData (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:48 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diovdat.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-09 10:05:22 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +31,8 @@
  */
 
 
-#ifndef __DIOVDAT_H
-#define __DIOVDAT_H
+#ifndef DIOVDAT_H
+#define DIOVDAT_H
 
 #include "osconfig.h"
 #include "dctypes.h"
@@ -102,7 +101,11 @@ class DiOverlayData
  *
  * CVS/RCS Log:
  * $Log: diovdat.h,v $
- * Revision 1.3  2001-06-01 15:49:48  meichel
+ * Revision 1.4  2003-12-09 10:05:22  joergr
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated copyright header.
+ *
+ * Revision 1.3  2001/06/01 15:49:48  meichel
  * Updated copyright header
  *
  * Revision 1.2  2000/03/08 16:24:22  meichel
