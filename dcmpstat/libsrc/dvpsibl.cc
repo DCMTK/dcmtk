@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSImageBoxContent_PList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-06 15:53:24 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-03-07 16:23:37 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -388,13 +388,13 @@ OFBool DVPSImageBoxContent_PList::presentationLUTInstanceUIDisUsed(const char *u
 
 const char *DVPSImageBoxContent_PList::haveSinglePresentationLUTUsed(const char *filmBox)
 {
-  OFList<const char *> uidList;
+  OFList<char *> uidList;
   if (filmBox==NULL) filmBox = "";
   const char *c;
   OFString aString;
   OFBool found;
-  OFListIterator(const char *) uidfirst;
-  OFListIterator(const char *) uidlast;  
+  OFListIterator(char *) uidfirst;
+  OFListIterator(char *) uidlast;  
   
   OFListIterator(DVPSImageBoxContent *) first = begin();
   OFListIterator(DVPSImageBoxContent *) last = end();  
@@ -415,7 +415,7 @@ const char *DVPSImageBoxContent_PList::haveSinglePresentationLUTUsed(const char 
       }
       ++uidfirst;
     }
-    if (!found) uidList.push_back(c);
+    if (!found) uidList.push_back((char *)c);
     ++first;
   }
 
@@ -425,7 +425,10 @@ const char *DVPSImageBoxContent_PList::haveSinglePresentationLUTUsed(const char 
 
 /*
  *  $Log: dvpsibl.cc,v $
- *  Revision 1.12  2000-03-06 15:53:24  meichel
+ *  Revision 1.13  2000-03-07 16:23:37  joergr
+ *  Removed type specifier 'const' to make Sun CC 2.0.1 happy.
+ *
+ *  Revision 1.12  2000/03/06 15:53:24  meichel
  *  Fixed unassigned variable usage problem
  *
  *  Revision 1.11  2000/03/03 14:14:00  meichel
