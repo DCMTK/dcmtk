@@ -22,9 +22,9 @@
  *  Purpose: decompression routines of the IJG JPEG library configured for 8 bits/sample. 
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-13 15:56:23 $
+ *  Update Date:      $Date: 2001-11-19 15:13:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/include/Attic/djdijg8.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -97,7 +97,12 @@ public:
   {
     return decompressedColorModel;
   }
-  	
+
+  /** callback function used to report warning messages and the like.
+   *  Should not be called by user code directly.
+   */
+  virtual void outputMessage() const;
+
 private:
 
   /// private undefined copy constructor
@@ -134,7 +139,12 @@ private:
 /*
  * CVS/RCS Log
  * $Log: djdijg8.h,v $
- * Revision 1.1  2001-11-13 15:56:23  meichel
+ * Revision 1.2  2001-11-19 15:13:28  meichel
+ * Introduced verbose mode in module dcmjpeg. If enabled, warning
+ *   messages from the IJG library are printed on ofConsole, otherwise
+ *   the library remains quiet.
+ *
+ * Revision 1.1  2001/11/13 15:56:23  meichel
  * Initial release of module dcmjpeg
  *
  *

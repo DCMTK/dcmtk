@@ -22,9 +22,9 @@
  *  Purpose: codec parameter class for dcmjpeg codecs
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-13 15:56:17 $
+ *  Update Date:      $Date: 2001-11-19 15:13:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/include/Attic/djcparam.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,6 +50,7 @@ public:
    *  @param pCreateSOPInstanceUID mode for SOP Instance UID creation
    *  @param pPlanarConfiguration flag describing how planar configuration of 
    *    decompressed color images should be handled
+   *  @param pVerbose verbose mode flag
    *  @param pOptimizeHuffman perform huffman table optimization for 8 bits/pixel compression?
    *  @param pSmoothingFactor smoothing factor for image compression, 0..100
    *  @param pForcedBitDepth forced bit depth for image compression, 0 (auto) or 8/12/16
@@ -77,6 +78,7 @@ public:
     E_DecompressionColorSpaceConversion pDecompressionCSConversion,
     E_UIDCreation pCreateSOPInstanceUID,
     E_PlanarConfiguration pPlanarConfiguration,
+    OFBool pVerbose = OFFalse,
     OFBool pOptimizeHuffman = OFFalse,
     int pSmoothingFactor = 0,
     int pForcedBitDepth = 0,
@@ -270,6 +272,14 @@ public:
     return useModalityRescale;
   }
 
+  /** returns verbose mode flag
+   *  @return verbose mode flag
+   */
+  OFBool isVerbose() const
+  {
+    return verboseMode;
+  }
+
 private:
 
   /// private undefined copy assignment operator
@@ -343,6 +353,8 @@ private:
   /// Create Rescale Slope/Intercept to scale back to original pixel range, mode 0 only
   OFBool useModalityRescale;
 
+  /// verbose mode flag. If true, warning messages are printed to console
+  OFBool verboseMode;
 };
 
 
@@ -351,7 +363,12 @@ private:
 /*
  * CVS/RCS Log
  * $Log: djcparam.h,v $
- * Revision 1.1  2001-11-13 15:56:17  meichel
+ * Revision 1.2  2001-11-19 15:13:26  meichel
+ * Introduced verbose mode in module dcmjpeg. If enabled, warning
+ *   messages from the IJG library are printed on ofConsole, otherwise
+ *   the library remains quiet.
+ *
+ * Revision 1.1  2001/11/13 15:56:17  meichel
  * Initial release of module dcmjpeg
  *
  *

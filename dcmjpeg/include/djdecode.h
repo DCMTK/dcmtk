@@ -22,9 +22,9 @@
  *  Purpose: singleton class that registers decoders for all supported JPEG processes.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-13 15:56:20 $
+ *  Update Date:      $Date: 2001-11-19 15:13:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/include/Attic/djdecode.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,11 +58,13 @@ public:
    *    a new SOP Instance UID should be assigned upon decompression.
    *  @param pPlanarConfiguration flag indicating how planar configuration
    *    of color images should be encoded upon decompression.
+   *  @param pVerbose verbose mode flag
    */   
   static void registerCodecs(
     E_DecompressionColorSpaceConversion pDecompressionCSConversion = EDC_photometricInterpretation,
     E_UIDCreation pCreateSOPInstanceUID = EUC_default,
-    E_PlanarConfiguration pPlanarConfiguration = EPC_default);
+    E_PlanarConfiguration pPlanarConfiguration = EPC_default,
+    OFBool pVerbose = OFFalse);
 
   /** deregisters decoders.
    *  Attention: Must not be called while other threads might still use
@@ -104,7 +106,12 @@ private:
 /*
  * CVS/RCS Log
  * $Log: djdecode.h,v $
- * Revision 1.1  2001-11-13 15:56:20  meichel
+ * Revision 1.2  2001-11-19 15:13:27  meichel
+ * Introduced verbose mode in module dcmjpeg. If enabled, warning
+ *   messages from the IJG library are printed on ofConsole, otherwise
+ *   the library remains quiet.
+ *
+ * Revision 1.1  2001/11/13 15:56:20  meichel
  * Initial release of module dcmjpeg
  *
  *

@@ -22,9 +22,9 @@
  *  Purpose: singleton class that registers encoders for all supported JPEG processes.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-13 15:58:32 $
+ *  Update Date:      $Date: 2001-11-19 15:13:32 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djencode.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,6 +56,7 @@ DJEncoderLossless *DJEncoderRegistration::enclol          = NULL;
 void DJEncoderRegistration::registerCodecs(
     E_CompressionColorSpaceConversion pCompressionCSConversion,
     E_UIDCreation pCreateSOPInstanceUID,
+    OFBool pVerbose,
     OFBool pOptimizeHuffman,
     int pSmoothingFactor,
     int pForcedBitDepth,
@@ -82,6 +83,7 @@ void DJEncoderRegistration::registerCodecs(
       EDC_photometricInterpretation,  // not relevant, used for decompression only
       pCreateSOPInstanceUID,
       EPC_default, // not relevant, used for decompression only
+      pVerbose,
       pOptimizeHuffman,
       pSmoothingFactor,
       pForcedBitDepth,
@@ -165,7 +167,12 @@ void DJEncoderRegistration::cleanup()
 /*
  * CVS/RCS Log
  * $Log: djencode.cc,v $
- * Revision 1.1  2001-11-13 15:58:32  meichel
+ * Revision 1.2  2001-11-19 15:13:32  meichel
+ * Introduced verbose mode in module dcmjpeg. If enabled, warning
+ *   messages from the IJG library are printed on ofConsole, otherwise
+ *   the library remains quiet.
+ *
+ * Revision 1.1  2001/11/13 15:58:32  meichel
  * Initial release of module dcmjpeg
  *
  *

@@ -22,9 +22,9 @@
  *  Purpose: Decompress DICOM file
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-13 15:56:10 $
+ *  Update Date:      $Date: 2001-11-19 15:13:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/apps/dcmdjpeg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -237,7 +237,8 @@ int main(int argc, char *argv[])
     DJDecoderRegistration::registerCodecs(
       opt_decompCSconversion,
       opt_uidcreation,
-      opt_planarconfig);
+      opt_planarconfig,
+      opt_verbose);
         
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
@@ -349,7 +350,12 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmdjpeg.cc,v $
- * Revision 1.1  2001-11-13 15:56:10  meichel
+ * Revision 1.2  2001-11-19 15:13:22  meichel
+ * Introduced verbose mode in module dcmjpeg. If enabled, warning
+ *   messages from the IJG library are printed on ofConsole, otherwise
+ *   the library remains quiet.
+ *
+ * Revision 1.1  2001/11/13 15:56:10  meichel
  * Initial release of module dcmjpeg
  *
  *

@@ -22,9 +22,9 @@
  *  Purpose: decompression routines of the IJG JPEG library configured for 16 bits/sample. 
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-13 15:58:28 $
+ *  Update Date:      $Date: 2001-11-19 15:13:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djdijg16.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -62,6 +62,9 @@ struct DJDIJG16ErrorStruct
 
   // our jump buffer
   jmp_buf setjmp_buffer;
+
+  // pointer to this
+  DJDecompressIJG16Bit *instance;
 };
 
 // private source manager struct
@@ -82,6 +85,7 @@ struct DJDIJG16SourceManagerStruct
 
 // callback forward declarations
 void DJDIJG16ErrorExit(j_common_ptr);
+void DJDIJG16OutputMessage(j_common_ptr cinfo);
 void DJDIJG16initSource(j_decompress_ptr);
 boolean DJDIJG16fillInputBuffer(j_decompress_ptr);
 void DJDIJG16skipInputData(j_decompress_ptr, long);
@@ -96,6 +100,14 @@ void DJDIJG16ErrorExit(j_common_ptr cinfo)
   DJDIJG16ErrorStruct *myerr = (DJDIJG16ErrorStruct *)cinfo->err;
   longjmp(myerr->setjmp_buffer, 1);
 }
+
+// message handler for warning messages and the like
+void DJDIJG16OutputMessage(j_common_ptr cinfo)
+{
+  DJDIJG16ErrorStruct *myerr = (DJDIJG16ErrorStruct *)cinfo->err;
+  myerr->instance->outputMessage();
+}
+
 
 // methods for decompress-source-manager
 
@@ -219,7 +231,9 @@ OFCondition DJDecompressIJG16Bit::init()
         return EC_MemoryExhausted;
       }
       cinfo->err = jpeg_std_error(&jerr->pub);
+      jerr->instance = this;
       jerr->pub.error_exit = DJDIJG16ErrorExit;
+      jerr->pub.output_message = DJDIJG16OutputMessage;
       if (setjmp(jerr->setjmp_buffer)) 
       {
         // the IJG error handler will cause the following code to be executed
@@ -404,11 +418,26 @@ OFCondition DJDecompressIJG16Bit::decode(
   return EC_Normal;
 }
 
+void DJDecompressIJG16Bit::outputMessage() const
+{
+  if (cinfo && cparam->isVerbose())
+  {
+    char buffer[JMSG_LENGTH_MAX];    
+    (*cinfo->err->format_message)((jpeg_common_struct *)cinfo, buffer); /* Create the message */
+    ofConsole.lockCerr() << buffer << endl;
+    ofConsole.unlockCerr();
+  }
+}
 
 /*
  * CVS/RCS Log
  * $Log: djdijg16.cc,v $
- * Revision 1.1  2001-11-13 15:58:28  meichel
+ * Revision 1.2  2001-11-19 15:13:31  meichel
+ * Introduced verbose mode in module dcmjpeg. If enabled, warning
+ *   messages from the IJG library are printed on ofConsole, otherwise
+ *   the library remains quiet.
+ *
+ * Revision 1.1  2001/11/13 15:58:28  meichel
  * Initial release of module dcmjpeg
  *
  *

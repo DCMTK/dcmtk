@@ -22,9 +22,9 @@
  *  Purpose: compression routines of the IJG JPEG library configured for 12 bits/sample. 
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-13 15:58:29 $
+ *  Update Date:      $Date: 2001-11-19 15:13:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djeijg12.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -64,10 +64,14 @@ struct DJEIJG12ErrorStruct
 
   // our jump buffer
   jmp_buf setjmp_buffer;
+
+  // pointer to this
+  DJCompressIJG12Bit *instance;
 };
 
 // callback forward declarations
 void DJEIJG12ErrorExit(j_common_ptr);
+void DJEIJG12OutputMessage(j_common_ptr cinfo);
 void DJEIJG12initDestination(j_compress_ptr cinfo);
 boolean DJEIJG12emptyOutputBuffer(j_compress_ptr cinfo);
 void DJEIJG12termDestination(j_compress_ptr cinfo);
@@ -83,6 +87,12 @@ void DJEIJG12ErrorExit(j_common_ptr cinfo)
   longjmp(myerr->setjmp_buffer, 1);
 }
 
+// message handler for warning messages and the like
+void DJEIJG12OutputMessage(j_common_ptr cinfo)
+{
+  DJEIJG12ErrorStruct *myerr = (DJEIJG12ErrorStruct *)cinfo->err;
+  myerr->instance->outputMessage(cinfo);
+}
 
 // callbacks for compress-destination-manager
 
@@ -321,7 +331,9 @@ OFCondition DJCompressIJG12Bit::encode(
   struct jpeg_compress_struct cinfo;
   struct DJEIJG12ErrorStruct jerr;
   cinfo.err = jpeg_std_error(&jerr.pub);
+  jerr.instance = this;
   jerr.pub.error_exit = DJEIJG12ErrorExit;
+  jerr.pub.output_message = DJEIJG12OutputMessage;
   if (setjmp(jerr.setjmp_buffer))
   {
     // the IJG error handler will cause the following code to be executed
@@ -511,11 +523,28 @@ void DJCompressIJG12Bit::cleanup()
   bytesInLastBlock = 0;
 }
 
+void DJCompressIJG12Bit::outputMessage(void *arg) const
+{
+  jpeg_common_struct *cinfo = (jpeg_common_struct *)arg;
+  if (cinfo && cparam->isVerbose())
+  {
+    char buffer[JMSG_LENGTH_MAX];    
+    (*cinfo->err->format_message)(cinfo, buffer); /* Create the message */
+    ofConsole.lockCerr() << buffer << endl;
+    ofConsole.unlockCerr();
+  }
+}
+
 
 /*
  * CVS/RCS Log
  * $Log: djeijg12.cc,v $
- * Revision 1.1  2001-11-13 15:58:29  meichel
+ * Revision 1.2  2001-11-19 15:13:31  meichel
+ * Introduced verbose mode in module dcmjpeg. If enabled, warning
+ *   messages from the IJG library are printed on ofConsole, otherwise
+ *   the library remains quiet.
+ *
+ * Revision 1.1  2001/11/13 15:58:29  meichel
  * Initial release of module dcmjpeg
  *
  *
