@@ -9,10 +9,10 @@
 ** Basis class for dicom tags.  
 ** 
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1995-11-23 17:02:55 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1999-03-17 11:08:58 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dctagkey.cc,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -30,6 +30,18 @@
  * DcmTagKey member functions
  */
 
+const OFString 
+DcmTagKey::toString() const
+{
+    char tagBuf[16];
+
+    if (group == 0xffff && element == 0xffff) {
+        strcpy(tagBuf, "(????,????)");
+    } else {
+        sprintf(tagBuf, "(%04x,%04x)", (unsigned)group, (unsigned)element);
+    }
+    return tagBuf;
+}
 
 
 /*
@@ -38,18 +50,7 @@
 
 ostream& operator<<(ostream& s, const DcmTagKey& k) 
 {
-
-    const DcmTagKey *kp = &k;
-    if (kp == NULL) {
-        s << "(????,????)";
-        return s;
-    }
-
-    char tagBuf[16];
-
-    sprintf(tagBuf, "(%04x,%04x)", k.getGroup(), k.getElement());
-    s << tagBuf;
-
+    s << k.toString();
     return s;
 }
 
@@ -57,7 +58,10 @@ ostream& operator<<(ostream& s, const DcmTagKey& k)
 /*
 ** CVS/RCS Log:
 ** $Log: dctagkey.cc,v $
-** Revision 1.1  1995-11-23 17:02:55  hewett
+** Revision 1.2  1999-03-17 11:08:58  meichel
+** added method DcmTagKey::toString()
+**
+** Revision 1.1  1995/11/23 17:02:55  hewett
 ** Updated for loadable data dictionary.  Some cleanup (more to do).
 **
 **

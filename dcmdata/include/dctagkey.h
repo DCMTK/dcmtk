@@ -9,10 +9,10 @@
 ** Basis class for dicom tags.  
 ** 
 **
-** Last Update:         $Author: joergr $
-** Update Date:         $Date: 1998-07-15 15:48:54 $
+** Last Update:         $Author: meichel $
+** Update Date:         $Date: 1999-03-17 11:08:54 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dctagkey.h,v $
-** CVS/RCS Revision:    $Revision: 1.3 $
+** CVS/RCS Revision:    $Revision: 1.4 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -28,6 +28,7 @@
 #include <iostream.h>
 
 #include "dctypes.h"
+#include "ofstring.h"
 
 /*
 ** Defines
@@ -76,6 +77,8 @@ public:
     int operator >= (const DcmTagKey& key) const;
 
     friend ostream&   operator<<(ostream& s, const DcmTagKey& k);
+
+    const OFString toString() const;
 };
 
 
@@ -242,7 +245,10 @@ DcmTagKey::operator >= (const DcmTagKey& key) const
 /*
 ** CVS/RCS Log:
 ** $Log: dctagkey.h,v $
-** Revision 1.3  1998-07-15 15:48:54  joergr
+** Revision 1.4  1999-03-17 11:08:54  meichel
+** added method DcmTagKey::toString()
+**
+** Revision 1.3  1998/07/15 15:48:54  joergr
 ** Removed several compiler warnings reported by gcc 2.8.1 with
 ** additional options, e.g. missing copy constructors and assignment
 ** operators, initialization of member variables in the body of a
