@@ -22,9 +22,9 @@
  *  Purpose: Provides main interface to the "dicom image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 14:50:00 $
+ *  Update Date:      $Date: 1998-12-14 17:14:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dcmimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,8 +40,6 @@
 #define OFFIS_DCMIMAGE_VERSION     "1.0.2"
 #define OFFIS_DCMIMAGE_RELEASEDATE "1998/02/17"
 
-#include "dcxfer.h"
-
 #include "diimage.h"
 #include "diutils.h"
 
@@ -50,8 +48,13 @@
  *  forward declarations  *
  *------------------------*/
 
-class DcmFileStream;
+class DcmXfer;
 class DcmObject;
+class DcmFileStream;
+class DcmOverlayData;
+class DcmLongString;
+class DcmUnsignedShort;
+
 class DiDocument;
 
 
@@ -152,7 +155,6 @@ class DicomImage
     /** convert status code to status string
      *
      ** @param  status  code of current internal status
-     *
      ** @return pointer to status string
      */
     static const char *getString(const EI_Status status); 
@@ -160,13 +162,11 @@ class DicomImage
     /** convert photometric interpretation code to interpretation string
      *
      ** @param  interpret  code of image's photometric interpretation
-     *
      ** @return pointer to photometric interpretation string
      */
     static const char *getString(const EP_Interpretation interpret);
             
     /** get status information
-     *
      ** @return status code
      */
     inline EI_Status getStatus() const 
@@ -211,9 +211,10 @@ class DicomImage
     }
         
     /** get minimum and maximum pixel values
+     *  the resulting pixel values are stored in 'double' variables to avoid problems with different number ranges
      *
-     ** @param  min  
-     *  @param  max  
+     ** @param  min  minimum pixel value (reference parameter)
+     *  @param  max  maximum pixel value (reference parameter)
      *
      ** @return status code (true if successful)
      */
@@ -223,22 +224,18 @@ class DicomImage
         return (Image != NULL) ? Image->getMinMaxValues(min, max) : 0;
     }
         
-    /** .
+    /** get width height ratio (pixel aspect ratio: x/y)
      *
-     ** @param
-     *
-     ** @return
+     ** @return pixel aspect ratio (floating point value)
      */
     inline double getWidthHeightRatio() const
     {
         return (Image != NULL) ? Image->getColumnRowRatio() : 0;
     }
 
-    /** .
+    /** get height width ratio (pixel aspect ratio: y/x)
      *
-     ** @param
-     *
-     ** @return
+     ** @return pixel aspect ratio (floating point value)
      */
     inline double getHeightWidthRatio() const
     {
@@ -454,19 +451,52 @@ class DicomImage
 
  // --- overlays: return true ('1') if successful (see also 'diovlay.cc')
 
-    /** .
+    /** !! UNTESTED !!
      *
-     ** @param
+     ** @param  group  group number (0x60nn) of overlay plane
+     *
+     ** @return
+     */
+    inline int addOverlay(const unsigned int group,
+                          const unsigned long rows,
+                          const unsigned long columns,
+                          const EM_Overlay mode,
+                          const signed int left,
+                          const signed int top,
+                          const DcmOverlayData &data,
+                          const DcmLongString &label,
+                          const DcmLongString &description)
+    {
+        return (Image != NULL) ? Image->addOverlay(group, rows, columns, mode, left, top, data, label, description) : 0;
+    }
+
+    /** !! UNTESTED !!
+     *
+     ** @param  group  group number (0x60nn) of overlay plane
+     *
+     ** @return
+     */
+    inline int removeOverlay(const unsigned int group)
+    {
+        return (Image != NULL) ? Image->removeOverlay(group) : 0;
+    }
+
+    /** activate specified overlay plane.
+     *
+     ** @param  plane  number (0..15) or group number (0x60nn) of overlay plane
      *
      ** @return
      */
     inline int showOverlay(const unsigned int plane)
     {
-        return (Image != NULL) ? Image->showOverlay(plane) : 0;
+        if ((Image != NULL) && (Image->getOverlayPtr() != NULL)) 
+            return Image->getOverlayPtr()->showPlane(plane);
+        return 0;
     }
 
     /** .
      *
+     ** @param  plane  number (0..15) or group number (0x60nn) of overlay plane
      ** @param
      *
      ** @return
@@ -476,18 +506,20 @@ class DicomImage
                            const double fore = 1,
                            const double thresh = 0.5)
     {
-        return (Image != NULL) ? Image->showOverlay(plane, fore, thresh, mode) : 0;
+        if ((Image != NULL) && (Image->getOverlayPtr() != NULL))
+            return Image->getOverlayPtr()->showPlane(plane, fore, thresh, mode);
+        return 0;
     }
         
     /** .
-     *
-     ** @param
      *
      ** @return
      */
     inline int showAllOverlays()
     {
-        return (Image != NULL) ? Image->showAllOverlays() : 0;
+        if ((Image != NULL) && (Image->getOverlayPtr() != NULL))
+            return Image->getOverlayPtr()->showAllPlanes();
+        return 0;
     }
 
     /** .
@@ -500,33 +532,38 @@ class DicomImage
                                const double fore = 1,
                                const double thresh = 0.5)
     {
-        return (Image != NULL) ? Image->showAllOverlays(fore, thresh, mode) : 0;
+        if ((Image != NULL) && (Image->getOverlayPtr() != NULL))
+            return Image->getOverlayPtr()->showAllPlanes(fore, thresh, mode);
+        return 0;
     }
         
     /** .
      *
-     ** @param
+     ** @param  plane  number (0..15) or group number (0x60nn) of overlay plane
      *
      ** @return
      */
     inline int hideOverlay(const unsigned int plane)
     {
-        return (Image != NULL) ? Image->hideOverlay(plane) : 0;
+        if ((Image != NULL) && (Image->getOverlayPtr() != NULL))
+            return Image->getOverlayPtr()->hidePlane(plane);
+        return 0;
     }
 
     /** .
-     *
-     ** @param
      *
      ** @return
      */
     inline int hideAllOverlays()
     {
-        return (Image != NULL) ? Image->hideAllOverlays() : 0;
+        if ((Image != NULL) && (Image->getOverlayPtr() != NULL))
+            return Image->getOverlayPtr()->hideAllPlanes();
+        return 0;
     }
         
     /** .
      *
+     ** @param  plane  number (0..15) or group number (0x60nn) of overlay plane
      ** @param
      *
      ** @return
@@ -535,21 +572,65 @@ class DicomImage
                             const signed int left,
                             const signed int top)
     {
-        return (Image != NULL) ? Image->placeOverlay(plane, left, top) : 0;
+        if ((Image != NULL) && (Image->getOverlayPtr() != NULL))
+            return Image->getOverlayPtr()->placePlane(plane, left, top);
+        return 0;
     }
 
     /** .
      *
-     ** @param
-     *
-     ** @return
+     ** @return number of overlay planes stored in the image
      */
     inline unsigned int getOverlayCount() const
     {
-        return (Image != NULL) ? Image->getOverlayCount() : 0;
+        if ((Image != NULL) && (Image->getOverlayPtr() != NULL))
+            return Image->getOverlayPtr()->getCount();
+        return 0;
     }
-    
- // --- create...Image: return pointer to new 'DicomImage' object, memory isn't handled internally !
+
+    /** !! UNTESTED !!
+     *
+     ** @param  plane  number (0..15) or group number (0x60nn) of overlay plane
+     *  @param  idx    index of overlay group (0 = dataset, 1 = additional)
+     *
+     ** @return pointer to overlay plane label
+     */
+    inline const char *getOverlayLabel(const unsigned int plane,
+                                       const unsigned int idx = 0) const
+    {
+        if ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL))
+            return Image->getOverlayPtr(idx)->getPlaneLabel(plane);
+        return NULL;
+    }
+
+    /** !! UNTESTED !!
+     *
+     ** @param  plane  number (0..15) or group number (0x60nn) of overlay plane
+     *  @param  idx    index of overlay group (0 = dataset, 1 = additional)
+     *
+     ** @return pointer to overlay plane description
+     */
+    inline const char *getOverlayDescription(const unsigned int plane,
+                                             const unsigned int idx = 0) const
+    {
+        if ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL))
+            return Image->getOverlayPtr(idx)->getPlaneDescription(plane);
+        return NULL;
+    }
+
+    /** !! NOT IMPLEMENTED !!
+     *
+     ** @param  plane  number (0..15) or group number (0x60nn) of overlay plane
+     *
+     ** @return pointer to overlay plane data
+     */
+    const Uint8 *getOverlayData(const unsigned int plane,
+                                const unsigned int &width,
+                                const unsigned int &height,
+                                const unsigned int &left,
+                                const unsigned int &top) const;
+
+    // --- create...Image: return pointer to new 'DicomImage' object, memory isn't handled internally !
     
     /** Method:
      *
@@ -581,7 +662,7 @@ class DicomImage
                                   const int interpolate = 0,
                                   const int aspect = 0) const;
 
-    /** .
+    /** !! NOT FULLY IMPLEMENTED !!
      *
      ** @param
      *
@@ -819,7 +900,11 @@ class DicomImage
 **
 ** CVS/RCS Log:
 ** $Log: dcmimage.h,v $
-** Revision 1.1  1998-11-27 14:50:00  joergr
+** Revision 1.2  1998-12-14 17:14:07  joergr
+** Added methods to add and remove additional overlay planes (still untested).
+** Added methods to support overlay labels and descriptions.
+**
+** Revision 1.1  1998/11/27 14:50:00  joergr
 ** Added copyright message.
 ** Added methods to convert module defined enum types to strings.
 ** Added methods to support presentation LUTs and shapes.
