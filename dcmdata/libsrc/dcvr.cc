@@ -22,9 +22,9 @@
  *  Purpose: class DcmVR: Value Representation
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:44 $
+ *  Update Date:      $Date: 2000-04-14 15:42:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvr.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,18 +33,18 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include <string.h>
+#include <stdlib.h>
 #include "ofconsol.h"
 #include "dcvr.h"
-
 /*
 ** Global flag to enable/disable the generation of VR=UN
 */
-OFBool dcmEnableUnknownVRGeneration = OFTrue;
+OFGlobal<OFBool> dcmEnableUnknownVRGeneration(OFTrue);
 
 /*
 ** Global flag to enable/disable the generation of VR=UT
 */
-OFBool dcmEnableUnlimitedTextVRGeneration = OFTrue; 
+OFGlobal<OFBool> dcmEnableUnlimitedTextVRGeneration(OFTrue);
 
 /*
 ** VR property table
@@ -67,7 +67,7 @@ struct DcmVREntry {
 
 
 
-static DcmVREntry DcmVRDict[] = {
+static const DcmVREntry DcmVRDict[] = {
 
     { EVR_AE, "AE", sizeof(char), DCMVR_PROP_ISASTRING, 0, 16 },
     { EVR_AS, "AS", sizeof(char), DCMVR_PROP_ISASTRING, 4, 4 },
@@ -138,7 +138,7 @@ static DcmVREntry DcmVRDict[] = {
 
 };
 
-static int DcmVRDict_DIM = sizeof(DcmVRDict) / sizeof(DcmVREntry);
+static const int DcmVRDict_DIM = sizeof(DcmVRDict) / sizeof(DcmVREntry);
 
 
 /*
@@ -162,14 +162,15 @@ DcmVRDict_checker::DcmVRDict_checker()
     for (int i=0; i<DcmVRDict_DIM; i++) {
         if (DcmVRDict[i].vr != i) {
             error_found = OFTrue;
-            CERR << "DcmVRDict:: Internal ERROR: inconsistent indexing: "
-                 << DcmVRDict[i].vrName << endl;
+            // we can't use ofConsole here because this piece of code
+            // might be called before ofConsole is initialized.
+            cerr << "DcmVRDict:: Internal ERROR: inconsistent indexing: " << DcmVRDict[i].vrName << endl;
+            abort();
         }
     }
 }
 
-
-DcmVRDict_checker DcmVRDict_startup_check;
+const DcmVRDict_checker DcmVRDict_startup_check();
 
 #endif
 
@@ -243,20 +244,24 @@ DcmVR::getValidEVR() const
             break;
         }
     }
+
     /*
     ** If the generation of UN is not globally enabled then use OB instead.
     ** We may not want to generate UN if other software cannot handle it.
     */
-    if ((evr == EVR_UN) && (!dcmEnableUnknownVRGeneration)) {
-        evr = EVR_OB; /* handle UN as if OB */
+    if (evr == EVR_UN)
+    {
+      if (!dcmEnableUnknownVRGeneration.get()) evr = EVR_OB; /* handle UN as if OB */
     }
+
     /*
     ** If the generation of UT is not globally enabled then use OB instead.
     ** We may not want to generate UT if other software cannot handle it.
     */
-    if ((evr == EVR_UT)  && (!dcmEnableUnlimitedTextVRGeneration)) {
-        evr = EVR_OB; /* handle UT as if OB */
-    }
+    if (evr == EVR_UT)
+    {
+      if (!dcmEnableUnlimitedTextVRGeneration.get()) evr = EVR_OB; /* handle UT as if OB */
+    }        
     return evr;
 }
 
@@ -358,7 +363,11 @@ int DcmVR::isEquivalent(const DcmVR& avr) const
 /*
  * CVS/RCS Log:
  * $Log: dcvr.cc,v $
- * Revision 1.20  2000-03-08 16:26:44  meichel
+ * Revision 1.21  2000-04-14 15:42:58  meichel
+ * Global VR generation flags are now derived from OFGlobal and, thus,
+ *   safe for use in multi-thread applications.
+ *
+ * Revision 1.20  2000/03/08 16:26:44  meichel
  * Updated copyright header.
  *
  * Revision 1.19  2000/03/03 14:05:38  meichel
