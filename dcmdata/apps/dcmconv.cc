@@ -22,9 +22,9 @@
  *  Purpose: Convert dicom file encoding
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-03-31 09:24:18 $
+ *  Update Date:      $Date: 1999-04-27 12:23:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmconv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -229,6 +229,12 @@ int main(int argc, char *argv[])
     }
 	
     // open inputfile
+    if ((opt_ifname == NULL) || (strlen(opt_ifname) == 0))
+    {
+        cerr << "invalid filename: <empty string>" << endl;
+        return 1;
+    }
+
     if (opt_verbose) 
 	cout << "open input file " << opt_ifname << endl;
 
@@ -368,7 +374,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
-** Revision 1.19  1999-03-31 09:24:18  meichel
+** Revision 1.20  1999-04-27 12:23:22  meichel
+** Prevented dcmdata applications from opening a file with empty filename,
+**   leads to application crash on Win32.
+**
+** Revision 1.19  1999/03/31 09:24:18  meichel
 ** Updated copyright header in module dcmdata
 **
 ** Revision 1.18  1999/03/29 10:14:11  meichel

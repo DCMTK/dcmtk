@@ -24,9 +24,9 @@
  *  CD-R Image Interchange Profile (former Supplement 19).
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-04-22 13:43:09 $
+ *  Update Date:      $Date: 1999-04-27 12:23:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2178,6 +2178,10 @@ isaValidFileName(const OFString& fname,
 		 char sep = PATH_SEPARATOR)
 {
     OFBool ok = OFTrue;
+    if (fname.length() == 0) {
+	cerr << "error: <empty string> not allowed as filename" << endl;
+	ok = OFFalse;
+    }
     /*
     ** Is the file name path ok?
     ** The filename is assumed to be in local format for this check.
@@ -2745,7 +2749,11 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 /*
 ** CVS/RCS Log:
 ** $Log: dcmgpdir.cc,v $
-** Revision 1.31  1999-04-22 13:43:09  meichel
+** Revision 1.32  1999-04-27 12:23:26  meichel
+** Prevented dcmdata applications from opening a file with empty filename,
+**   leads to application crash on Win32.
+**
+** Revision 1.31  1999/04/22 13:43:09  meichel
 ** Removed carriage returns that VC++ has put into the source code
 **
 ** Revision 1.30  1999/04/22 13:32:52  meichel

@@ -22,9 +22,9 @@
  *  Purpose: create a Dicom FileFormat or DataSet from an ASCII-dump
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-03-31 09:24:23 $
+ *  Update Date:      $Date: 1999-04-27 12:23:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dump2dcm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -879,6 +879,11 @@ int main(int argc, char *argv[])
 
 
     // open input dump file
+    if ((ifname == NULL) || (strlen(ifname) == 0))
+    {
+        cerr << "invalid input filename: <empty string>" << endl;
+        return 1;
+    }
     FILE * dumpfile = fopen(ifname, "r");
     if (!dumpfile)
     {
@@ -932,7 +937,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
-** Revision 1.23  1999-03-31 09:24:23  meichel
+** Revision 1.24  1999-04-27 12:23:27  meichel
+** Prevented dcmdata applications from opening a file with empty filename,
+**   leads to application crash on Win32.
+**
+** Revision 1.23  1999/03/31 09:24:23  meichel
 ** Updated copyright header in module dcmdata
 **
 ** Revision 1.22  1999/03/29 10:14:15  meichel

@@ -22,9 +22,9 @@
  *  Purpose: Test if a file uses DICOM Part 10 format.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-03-31 09:24:19 $
+ *  Update Date:      $Date: 1999-04-27 12:23:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmftest.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -71,8 +71,9 @@ int main(int argc, char *argv[])
     for (int i=1; i<=count; i++) {
         cmd.getParam(i, fname);
 	OFBool ok = OFFalse;
-	FILE* f = fopen(fname, "rb");
+	FILE* f = NULL;
 
+        if (fname && (strlen(fname) > 0)) f = fopen(fname, "rb");
 	if (f == 0) {
 	    ok = OFFalse;
 	} else {
@@ -106,7 +107,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmftest.cc,v $
-** Revision 1.7  1999-03-31 09:24:19  meichel
+** Revision 1.8  1999-04-27 12:23:24  meichel
+** Prevented dcmdata applications from opening a file with empty filename,
+**   leads to application crash on Win32.
+**
+** Revision 1.7  1999/03/31 09:24:19  meichel
 ** Updated copyright header in module dcmdata
 **
 ** Revision 1.6  1999/03/29 10:14:13  meichel
