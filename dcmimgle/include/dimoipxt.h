@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeInputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-14 17:21:09 $
+ *  Update Date:      $Date: 1998-12-22 14:29:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoipxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,8 +49,11 @@ template<class T1, class T2, class T3>
 class DiMonoInputPixelTemplate
   : public DiMonoPixelTemplate<T3>
 {
+
  public:
-    DiMonoInputPixelTemplate(const DiInputPixel *pixel, DiMonoModality *modality)
+
+    DiMonoInputPixelTemplate(const DiInputPixel *pixel,
+                             DiMonoModality *modality)
       : DiMonoPixelTemplate<T3>(pixel, modality)
     {
         if ((pixel != NULL) && (getCount() > 0))
@@ -69,7 +72,9 @@ class DiMonoInputPixelTemplate
     {
     }
 
+
  private:
+
     inline void modlut(const T1 *pixel)
     {
         if ((pixel != NULL) && (Modality != NULL))
@@ -81,20 +86,20 @@ class DiMonoInputPixelTemplate
                 if (Data != NULL)
                 {
                     register T2 value;
-                    const T2 min = mlut->getFirstEntry(value);                     // choose signed/unsigned method
-                    const T2 max = mlut->getLastEntry(value);
-                    const T3 minvalue = (T3)mlut->getFirstValue();
-                    const T3 maxvalue = (T3)mlut->getLastValue();
+                    const T2 firstentry = mlut->getFirstEntry(value);                     // choose signed/unsigned method
+                    const T2 lastentry = mlut->getLastEntry(value);
+                    const T3 firstvalue = (T3)mlut->getFirstValue();
+                    const T3 lastvalue = (T3)mlut->getLastValue();
                     register const T1 *p = pixel;
                     register T3 *q = Data;
                     register unsigned long i;
                     for (i = 0; i < getCount(); i++)
                     {
                         value = (T2)(*(p++));
-                        if (value <= min)
-                            *(q++) = minvalue;
-                        else if (value >= max)
-                            *(q++) = maxvalue;
+                        if (value <= firstentry)
+                            *(q++) = firstvalue;
+                        else if (value >= lastentry)
+                            *(q++) = lastvalue;
                         else
                             *(q++) = (T3)mlut->getValue(value);
                     }
@@ -103,7 +108,9 @@ class DiMonoInputPixelTemplate
         }
     }
 
-    inline void rescale(const T1 *pixel, const double slope, const double intercept)
+    inline void rescale(const T1 *pixel,
+                        const double slope,
+                        const double intercept)
     {
         if (pixel != NULL)
         {
@@ -115,11 +122,8 @@ class DiMonoInputPixelTemplate
                 register unsigned long i;
                 if (slope == 1.0) {
                     if (intercept == 0.0) {
-                        OFBitmanipTemplate<T3>::copyMem((const T3 *)pixel, Data, getCount());
-/*                        
-                        for (i = 0; i < getCount(); i++)            // copy pixel data
+                        for (i = 0; i < getCount(); i++)            // copy pixel data: can't use copyMem because T1 isn't always equal to T3
                             *(q++) = (T3)*(p++);
-*/                            
                     } else {
                         for (i = 0; i < getCount(); i++)
                             *(q++) = (T3)((double)*(p++) + intercept);
@@ -144,25 +148,29 @@ class DiMonoInputPixelTemplate
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: dimoipxt.h,v $
-** Revision 1.2  1998-12-14 17:21:09  joergr
-** Added support for signed values as second entry in look-up tables
-** (= first value mapped).
-**
-** Revision 1.1  1998/11/27 15:24:08  joergr
-** Added copyright message.
-** Added new cases to optimize rescaling.
-** Added support for new bit manipulation class.
-** Corrected bug in modality LUT transformation method.
-**
-** Revision 1.5  1998/07/01 08:39:23  joergr
-** Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
-** options), e.g. add copy constructors.
-**
-** Revision 1.4  1998/05/11 14:53:21  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: dimoipxt.h,v $
+ * Revision 1.3  1998-12-22 14:29:39  joergr
+ * Replaced method copyMem by for-loop copying each item.
+ * Renamed some variables
+ *
+ * Revision 1.2  1998/12/14 17:21:09  joergr
+ * Added support for signed values as second entry in look-up tables
+ * (= first value mapped).
+ *
+ * Revision 1.1  1998/11/27 15:24:08  joergr
+ * Added copyright message.
+ * Added new cases to optimize rescaling.
+ * Added support for new bit manipulation class.
+ * Corrected bug in modality LUT transformation method.
+ *
+ * Revision 1.5  1998/07/01 08:39:23  joergr
+ * Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
+ * options), e.g. add copy constructors.
+ *
+ * Revision 1.4  1998/05/11 14:53:21  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */
