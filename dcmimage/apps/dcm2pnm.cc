@@ -22,9 +22,9 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-11 15:33:10 $
+ *  Update Date:      $Date: 1999-03-24 17:11:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -397,12 +397,11 @@ int main(int argc, char *argv[])
                 opt_O_used = 1;
                 for (i = 0; i < 16; i++) opt_Overlay[i] = 0;
             }
-            if (cmd.findOption("--display-overlay", 0, 1))
+            if (cmd.findOption("--display-overlay", 0, OFCommandLine::FOM_First))
             {
                 do {
                     unsigned long l;
                     app.checkValue(cmd.getValue(l, 1, 16));
-// cout << "overlay: " << l << endl;
                     if (!opt_O_used)
                     {
                         for (i = 0; i < 16; i++) opt_Overlay[i] = 0; 
@@ -412,7 +411,7 @@ int main(int argc, char *argv[])
                         opt_Overlay[l - 1]=1;
                     else
                         for (i = 0; i < 16; i++) opt_Overlay[i] = 2; 
-                } while (cmd.findOption("--display-overlay", 0, 2));
+                } while (cmd.findOption("--display-overlay", 0, OFCommandLine::FOM_Next));
             }
             cmd.endOptionBlock();
 
@@ -495,7 +494,6 @@ int main(int argc, char *argv[])
     else
         xfer = ((DcmFileFormat *)dfile)->getDataset()->getOriginalXfer();
     DicomImage *di = new DicomImage(dfile, xfer, opt_compatibilityMode); /* warning: dfile is Dataset or Fileformat! */
-//    DicomImage *di = new DicomImage(dfile, xfer, opt_compatibilityMode, opt_Frame - 1, opt_FrameCount);
     if (di == NULL)
         app.printError("Out of memory");
 
@@ -649,22 +647,7 @@ int main(int argc, char *argv[])
             }
         }
     }
-/*
- unsigned int us[4];
- const Uint8 *buf = di->getOverlayData(0x6002, us[0], us[1], us[2], us[3]);
- if (buf != NULL)
- {
-     cout << us[0] << " " << us[1] << " " << us[2] << " " << us[3] << endl;
-     FILE *outfile = fopen("/home/joergr/tmp/overlay.pgm", "wb");
-     if (outfile)
-     {
-         fprintf(outfile, "P5\n%d %d 255\n", us[0], us[1]);
-         fwrite(buf, us[0], us[1], outfile);
-         fclose(outfile);
-     } else
-         cerr << "can't create file !" << endl;
- }
-*/
+
     /* process VOI parameters */
     switch (opt_windowType)    
     {
@@ -726,9 +709,7 @@ int main(int argc, char *argv[])
             }
             break;
     }
-/*
- cout << "VOI: " << di->getVoiTransformationExplanation() << endl;
-*/        
+
     /* process presentation LUT parameters */
     if (opt_usePresShape)
     {
@@ -772,22 +753,7 @@ int main(int argc, char *argv[])
     {
         if (opt_verboseMode)
             fprintf(stderr, "rotating image by %i degrees.\n", opt_rotateDegree);
-
-#ifdef DEBUG
- OFTimer timer;
-#endif
         di->rotateImage(opt_rotateDegree);
-#ifdef DEBUG
- fprintf(stderr, "time for rotation: %fs\n", timer.getDiff()); 
-#endif
-/*
-        DicomImage *newimage = di->createRotatedImage(opt_rotateDegree);
-        if (newimage != NULL)
-        {
-            delete di;
-            di = newimage;
-        }
-*/
     }
 
 
@@ -796,9 +762,6 @@ int main(int argc, char *argv[])
     {
         if (opt_verboseMode)
             fprintf(stderr, "flipping image");
-#ifdef DEBUG
- OFTimer timer;
-#endif
         switch (opt_flipType)
         {
             case 1:
@@ -820,9 +783,6 @@ int main(int argc, char *argv[])
                 if (opt_verboseMode)
                     fprintf(stderr, "\n");
         }
-#ifdef DEBUG
- fprintf(stderr, "time for flipping: %fs\n", timer.getDiff());
-#endif
     }
 
 
@@ -906,30 +866,6 @@ int main(int argc, char *argv[])
     }
 
     /* finally create PPM/PGM file */
-/*
-    for (i = 0; i < (int)di->getFrameCount(); i++)
-        cout << "Frame: " << i << endl;
-*/
-#ifdef DEBUG
- OFTimer timer;
-#endif
-/*
-    unsigned long width = di->getWidth();
-    unsigned long height = di->getHeight();
-    Uint8 *buffer = new Uint8[width * height];
-    if ((buffer != NULL) && (di->getOutputData(buffer, width * height, 8)))
-    {
-        fprintf(ofile, "P5\n%ld %ld 255\n", width, height);
-        fwrite(buffer, width, height, ofile);
-        i = 0;
-        while (di->isOutputValueUnused(i) < 2)
-        {        
-            if (di->isOutputValueUnused(i))
-                cerr << i << " unused" << endl;
-            i++;
-        }
-    }
-*/
     switch (opt_fileType)
     {
         case 2:
@@ -943,10 +879,6 @@ int main(int argc, char *argv[])
             di->writeRawPPM(ofile, 8);
             break;
     }
-#ifdef DEBUG
- fprintf(stderr, "time for writing file (incl. rendering): %fs\n", timer.getDiff());
-#endif
-
 
     if (opt_ofname) fclose(ofile);
 
@@ -962,7 +894,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.24  1999-02-11 15:33:10  joergr
+ * Revision 1.25  1999-03-24 17:11:06  joergr
+ * Changed optional integer parameter in method findOption to enum type.
+ * Removed debug code.
+ *
+ * Revision 1.24  1999/02/11 15:33:10  joergr
  * Added testing routine for new isOutputValueUnused() method.
  *
  * Revision 1.23  1999/02/08 13:12:57  joergr
