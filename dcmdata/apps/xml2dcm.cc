@@ -22,9 +22,9 @@
  *  Purpose: Convert XML document to DICOM file or data set
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-04-17 18:57:08 $
+ *  Update Date:      $Date: 2003-04-22 08:25:48 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/xml2dcm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,19 +44,20 @@
 #include <zlib.h>        /* for zlibVersion() */
 #endif
 
-#ifdef WITH_LIBXML
-#include <libxml/parser.h>
-#endif
-
 #define OFFIS_CONSOLE_APPLICATION "xml2dcm"
+#define OFFIS_CONSOLE_DESCRIPTION "Convert XML document to DICOM file or data set"
 
-#define DOCUMENT_TYPE_DECLARATION_FILE "dcm2xml.dtd"
+// currently not used since DTD is always retrieved from XML document
+//#define DOCUMENT_TYPE_DEFINITION_FILE "dcm2xml.dtd"
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
-
 // ********************************************
+
+#ifdef WITH_LIBXML
+
+#include <libxml/parser.h>
 
 // stores pointer to character encoding handler
 static xmlCharEncodingHandlerPtr EncodingHandler = NULL;
@@ -257,7 +258,7 @@ static OFCondition parseElement(DcmItem *dataset,
                     encString = "ISO-8859-7";
                 else if (xmlStrcmp(elemVal, (const xmlChar *)"ISO_IR 138") == 0)
                     encString = "ISO-8859-8";
-                else 
+                else
                     CERR << "Warning: character set '" << elemVal <<"' not supported" << endl;
                 if (encString != NULL)
                 {
@@ -581,7 +582,7 @@ int main(int argc, char *argv[])
     SetDebugLevel(( 0 ));
 
     /* set-up command line parameters and options */
-    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "Convert XML document to DICOM file or data set", rcsid);
+    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, OFFIS_CONSOLE_DESCRIPTION, rcsid);
     OFCommandLine cmd;
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
     cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
@@ -814,11 +815,28 @@ int main(int argc, char *argv[])
     return result.status();
 }
 
+#else /* WITH_LIBXML */
+
+int main(int, char *[])
+{
+  CERR << rcsid << endl << OFFIS_CONSOLE_DESCRIPTION << endl << endl
+       << OFFIS_CONSOLE_APPLICATION " requires the libxml library." << endl
+       << "This " OFFIS_CONSOLE_APPLICATION " has been configured and compiled without libxml." << endl
+       << "Please reconfigure your system and recompile if appropriate." << endl;
+  return 0;
+}
+
+#endif /* WITH_LIBXML */
+
 
 /*
  * CVS/RCS Log:
  * $Log: xml2dcm.cc,v $
- * Revision 1.1  2003-04-17 18:57:08  joergr
+ * Revision 1.2  2003-04-22 08:25:48  joergr
+ * Adapted code to also compile trouble-free without libxml support (report a
+ * message that libxml library is required).
+ *
+ * Revision 1.1  2003/04/17 18:57:08  joergr
  * Added new command line tool that allows to convert an XML document to DICOM
  * file or dataset.
  *
