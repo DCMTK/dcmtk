@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DcmTransportConnection, DcmTCPConnection
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-08-10 14:50:56 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-09-05 15:24:18 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -61,6 +61,10 @@ BEGIN_EXTERN_C
 #include <signal.h>
 #include <time.h>
 END_EXTERN_C
+
+#ifdef HAVE_WINDOWS_H
+#include <windows.h>
+#endif
 
 #ifdef HAVE_GUSI_H
 #include <GUSI.h>	/* Use the Grand Unified Sockets Interface (GUSI) on Macintosh */
@@ -154,7 +158,11 @@ OFBool DcmTransportConnection::fastSelectReadableAssociation(DcmTransportConnect
     if (connections[i])
     {
       socketfd = connections[i]->getSocket();
+#ifdef HAVE_WINDOWS_H
+      FD_SET((u_int)socketfd, &fdset);
+#else
       FD_SET(socketfd, &fdset);
+#endif
       if (socketfd > maxsocketfd) maxsocketfd = socketfd;
     }
   }
@@ -260,7 +268,11 @@ OFBool DcmTCPConnection::networkDataAvailable(int timeout)
   int nfound;
 
   FD_ZERO(&fdset);
+#ifdef HAVE_WINDOWS_H
+  FD_SET((u_int)getSocket(), &fdset);
+#else
   FD_SET(getSocket(), &fdset);
+#endif
   t.tv_sec = timeout;
   t.tv_usec = 0;
 
@@ -286,7 +298,10 @@ OFBool DcmTCPConnection::isTransparentConnection()
 
 /*
  *  $Log: dcmtrans.cc,v $
- *  Revision 1.1  2000-08-10 14:50:56  meichel
+ *  Revision 1.2  2000-09-05 15:24:18  joergr
+ *  Adapted source code to compile on Windows (MSVC++ 5.0).
+ *
+ *  Revision 1.1  2000/08/10 14:50:56  meichel
  *  Added initial OpenSSL support.
  *
  *
