@@ -1,7 +1,7 @@
 /*
 **
-** Author: Gerd Ehlers	    04.06.94 -- Created
-**		   Andreas Barth	30.11.95 -- modify to support new streams
+** Author: Gerd Ehlers    04.06.94 -- Created
+**         Andreas Barth  30.11.95 -- modify to support new streams
 **
 ** Module: dcdirrec.h
 **
@@ -9,10 +9,10 @@
 ** Interface of class DcmDirectoryRecord
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-08-05 08:45:20 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1997-03-26 16:56:25 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdirrec.h,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -68,13 +68,13 @@ protected:
     E_DirRecType DirRecordType;
     DcmDirectoryRecord* referencedMRDR;
     Uint32 numberOfReferences;
-	Uint32 offsetInFile;
+    Uint32 offsetInFile;
 
     // Seiteneffekt-freie Konversions-Methoden:
     E_DirRecType recordNameToType(const char *recordTypeName);
     char *	buildFileName(const char* origName, char* destName );
     E_Condition checkHierarchy(const E_DirRecType upperRecord,
-							   const E_DirRecType lowerRecord );
+			       const E_DirRecType lowerRecord );
 
     // Zugriff auf Datenelemente innerhalb des Directory Records:
     E_Condition 	setRecordType(E_DirRecType newType );
@@ -96,67 +96,64 @@ protected:
     Uint32		decreaseRefNum();
 
     // Verschiedenes:
-// PENDING: benutze hierfuer DcmModuleTable
-    E_Condition 	fillTypeElements(E_DirRecType type,
-									 DcmFileFormat *fromFile);
     E_Condition 	fillElementsAndReadSOP(const char *referencedFileID);
     E_Condition 	masterInsertSub(DcmDirectoryRecord* dirRec,
-									const unsigned long where 
-									      = DCM_EndOfListIndex);
+					const unsigned long where 
+					= DCM_EndOfListIndex);
     E_Condition 	purgeReferencedFile();
 
 public:
     DcmDirectoryRecord();
     DcmDirectoryRecord(const DcmTag &tag,
-					   const Uint32 len);
+		       const Uint32 len);
     DcmDirectoryRecord(const E_DirRecType recordType,
-					   const char *referencedFileID);   // Dicom-Format mit '\\'
+		       const char *referencedFileID);   // Dicom-Format mit '\\'
     DcmDirectoryRecord(const char *recordTypeName,
-					   const char *referencedFileID);   // Dicom-Format mit '\\'
+		       const char *referencedFileID);   // Dicom-Format mit '\\'
     DcmDirectoryRecord(const DcmDirectoryRecord &oldDirRec );
     virtual ~DcmDirectoryRecord();
 
-    virtual DcmEVR 		ident() const;
+    virtual DcmEVR ident() const;
     virtual void print(ostream & out = cout, const BOOL showFullData = TRUE,
 		       const int level = 0);
 
     virtual E_Condition read(DcmStream & inStream,
-							 const E_TransferSyntax xfer,
-							 const E_GrpLenEncoding gltype = EGL_withoutGL,
-							 const Uint32 maxReadLength = DCM_MaxReadLength);
+			     const E_TransferSyntax xfer,
+			     const E_GrpLenEncoding gltype = EGL_withoutGL,
+			     const Uint32 maxReadLength = DCM_MaxReadLength);
     virtual E_Condition write(DcmStream & outStream,
-							  const E_TransferSyntax oxfer,
-							  const E_EncodingType enctype = EET_UndefinedLength,
-							  const E_GrpLenEncoding gltype = EGL_withoutGL);
+			      const E_TransferSyntax oxfer,
+			      const E_EncodingType enctype = EET_UndefinedLength,
+			      const E_GrpLenEncoding gltype = EGL_withoutGL);
 
-    virtual E_Condition 	verify(const BOOL autocorrect = FALSE);
-    virtual E_Condition 	search(    const DcmTag &tag, 		    // in
-					   DcmStack &resultStack,	    // inout
-					   E_SearchMode mode = ESM_fromHere,// in
-					   BOOL searchIntoSub = TRUE );     // in
-    virtual E_Condition 	search(    const DcmTagKey &xtag,	    // in
-					   DcmStack &resultStack,	    // inout
-					   E_SearchMode mode = ESM_fromHere,// in
-					   BOOL searchIntoSub = TRUE );     // in
-    virtual E_Condition 	searchErrors(	 DcmStack &resultStack );   // inout
+    virtual E_Condition verify(const BOOL autocorrect = FALSE);
+    virtual E_Condition search(const DcmTag &tag, 		    // in
+			       DcmStack &resultStack,	    // inout
+			       E_SearchMode mode = ESM_fromHere,// in
+			       BOOL searchIntoSub = TRUE );     // in
+    virtual E_Condition search(const DcmTagKey &xtag,	    // in
+			       DcmStack &resultStack,	    // inout
+			       E_SearchMode mode = ESM_fromHere,// in
+			       BOOL searchIntoSub = TRUE );     // in
+    virtual E_Condition searchErrors(DcmStack &resultStack );   // inout
 
-    virtual E_DirRecType	getRecordType();
+    virtual E_DirRecType getRecordType();
     virtual DcmDirectoryRecord* getReferencedMRDR();
-    virtual E_Condition 	assignToMRDR( DcmDirectoryRecord *mrdr );// in
-    virtual E_Condition 	assignToSOPFile( const char *referencedFileID );  // in
+    virtual E_Condition assignToMRDR( DcmDirectoryRecord *mrdr );// in
+    virtual E_Condition assignToSOPFile( const char *referencedFileID );  // in
 
 // Manipulation der Lower-Level Directory Entities:
 
     virtual unsigned long cardSub();
     virtual E_Condition insertSub(DcmDirectoryRecord* dirRec,
-								  const unsigned long where 
-								        = DCM_EndOfListIndex);
+				  const unsigned long where 
+				  = DCM_EndOfListIndex);
     virtual DcmDirectoryRecord* getSub(const unsigned long num);
     virtual DcmDirectoryRecord* removeSub(const unsigned long num);
     virtual DcmDirectoryRecord* removeSub( DcmDirectoryRecord* dirRec );
-    virtual E_Condition 	deleteSubAndPurgeFile(const unsigned long num);
-    virtual E_Condition 	deleteSubAndPurgeFile( DcmDirectoryRecord* dirRec );
-    virtual E_Condition 	clearSub();
+    virtual E_Condition deleteSubAndPurgeFile(const unsigned long num);
+    virtual E_Condition deleteSubAndPurgeFile( DcmDirectoryRecord* dirRec );
+    virtual E_Condition clearSub();
 };
 
 
@@ -166,7 +163,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdirrec.h,v $
-** Revision 1.3  1996-08-05 08:45:20  andreas
+** Revision 1.4  1997-03-26 16:56:25  hewett
+** Removed the DcmDirectoryRecord member function fillTypeElements since it
+** did nothing useful.  Smoothed out some poor indentation.
+**
+** Revision 1.3  1996/08/05 08:45:20  andreas
 ** new print routine with additional parameters:
 **         - print into files
 **         - fix output length for elements
