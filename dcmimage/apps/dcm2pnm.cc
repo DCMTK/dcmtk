@@ -21,10 +21,10 @@
  *
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-05-20 09:29:34 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-06-11 11:59:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.74 $
+ *  CVS/RCS Revision: $Revision: 1.75 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -845,15 +845,15 @@ int main(int argc, char *argv[])
     }
 
     // register RLE decompression codec
-    DcmRLEDecoderRegistration::registerCodecs(OFFalse /*pCreateSOPInstanceUID*/, opt_debugMode);
+    DcmRLEDecoderRegistration::registerCodecs(OFFalse /*pCreateSOPInstanceUID*/, (opt_debugMode ? OFTrue : OFFalse));
 #ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
     // register JPEG decompression codecs
-    DJDecoderRegistration::registerCodecs(opt_decompCSconversion, EUC_default, EPC_default, opt_debugMode);
+    DJDecoderRegistration::registerCodecs(opt_decompCSconversion, EUC_default, EPC_default, (opt_debugMode ? OFTrue : OFFalse));
 #endif
 
     DcmFileFormat *dfile = new DcmFileFormat();
     OFCondition cond = dfile->loadFile(opt_ifname, opt_transferSyntax, EGL_withoutGL,
-        DCM_MaxReadLength, opt_readAsDataset);
+        DCM_MaxReadLength, (opt_readAsDataset ? OFTrue : OFFalse));
 
     if (cond.bad())
     {
@@ -1482,7 +1482,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.74  2003-05-20 09:29:34  joergr
+ * Revision 1.75  2003-06-11 11:59:12  meichel
+ * Cleaned up usage of boolean constants
+ *
+ * Revision 1.74  2003/05/20 09:29:34  joergr
  * Added new configuration/compatibility flag that allows to ignore the
  * modality transform stored in the dataset.
  * Removed unused helper functions (dcutils.*).
