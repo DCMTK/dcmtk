@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000, OFFIS
+ *  Copyright (C) 2000-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRTree
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-01-25 18:46:37 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2001-02-16 16:58:50 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -167,15 +167,25 @@ size_t DSRTree::removeNode()
     if (NodeCursor != NULL)
     {
         DSRTreeNode *cursor = NodeCursor;
-        
+
         /* extract current node (incl. subtree) from tree */
-        
+
         /* are there any siblings? */
         if ((cursor->Prev != NULL) || (cursor->Next != NULL))
         {
             /* connect to previous node */
             if (cursor->Prev != NULL)
+            {
                 (cursor->Prev)->Next = cursor->Next;
+            } else {
+                /* is there any direct parent node? */
+                if (!NodeCursorStack.empty())
+                {
+                    DSRTreeNode *parent = NodeCursorStack.top();
+                    if (parent != NULL)
+                        parent->Down = cursor->Next;
+                }
+            }
             /* connect to next node */
             if (cursor->Next != NULL)
             {
@@ -217,7 +227,7 @@ size_t DSRTree::removeNode()
 
         /* delete all nodes from extracted subtree */
         /* (this routine might also use the "new" DSRTreeNodeCursor class) */
-        
+
         DSRTreeNode *delNode = NULL;
         OFStack<DSRTreeNode *> cursorStack;
         while (cursor != NULL)
@@ -249,7 +259,10 @@ size_t DSRTree::removeNode()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtree.cc,v $
- *  Revision 1.3  2001-01-25 18:46:37  joergr
+ *  Revision 1.4  2001-02-16 16:58:50  joergr
+ *  Fixed another small bug in method removeNode().
+ *
+ *  Revision 1.3  2001/01/25 18:46:37  joergr
  *  Fixed bug in method removeNode().
  *
  *  Revision 1.2  2000/11/07 18:33:32  joergr
