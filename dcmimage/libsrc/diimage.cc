@@ -8,9 +8,9 @@
 ** Purpose: DicomImage (Source)
 **
 ** Last Update:      $Author: joergr $
-** Update Date:      $Date: 1998-05-11 14:52:29 $
+** Update Date:      $Date: 1998-06-25 08:51:41 $
 ** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/Attic/diimage.cc,v $
-** CVS/RCS Revision: $Revision: 1.6 $
+** CVS/RCS Revision: $Revision: 1.7 $
 ** Status:           $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -309,7 +309,10 @@ void DiImage::convertPixelData(/*const*/ DcmPixelData *pixel)
 **
 ** CVS/RCS Log:
 ** $Log: diimage.cc,v $
-** Revision 1.6  1998-05-11 14:52:29  joergr
+** Revision 1.7  1998-06-25 08:51:41  joergr
+** Removed some wrong newline characters.
+**
+** Revision 1.6  1998/05/11 14:52:29  joergr
 ** Added CVS/RCS header to each file.
 **
 **
