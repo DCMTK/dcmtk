@@ -9,10 +9,10 @@
 ** Definitions of "well known" DICOM Unique Indentifiers,
 ** routines for finding and created UIDs.
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-29 13:38:30 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1996-03-11 14:38:01 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcuid.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -116,7 +116,24 @@ static UIDNameMap uidNameMap[] = {
     { UID_GETStudyRootQueryRetrieveInformationModel, "GETStudyRootQueryRetrieveInformationModel" },
     { UID_FINDPatientStudyOnlyQueryRetrieveInformationModel, "FINDPatientStudyOnlyQueryRetrieveInformationModel" },
     { UID_MOVEPatientStudyOnlyQueryRetrieveInformationModel, "MOVEPatientStudyOnlyQueryRetrieveInformationModel" },
-    { UID_GETPatientStudyOnlyQueryRetrieveInformationModel, "GETPatientStudyOnlyQueryRetrieveInformationModel" }
+    { UID_GETPatientStudyOnlyQueryRetrieveInformationModel, "GETPatientStudyOnlyQueryRetrieveInformationModel" },
+    
+    { UID_RETIRED_NuclearMedicineImageStorage, "RETIRED_NuclearMedicineImageStorage" },
+    { UID_RETIRED_UltrasoundImageStorage, "RETIRED_UltrasoundImageStorage" },
+    { UID_RETIRED_UltrasoundMultiframeImageStorage, "RETIRED_UltrasoundMultiframeImageStorage" },
+
+    { UID_XRayAngiographicImageStorage, "XRayAngiographicImageStorage" },
+    { UID_XRayAngiographicBiPlaneImageStorage, "XRayAngiographicBiPlaneImageStorage" },
+    { UID_XRayFluoroscopyImageStorage, "XRayFluoroscopyImageStorage" },
+    
+    { UID_StorageCommitmentPushModelSOPClass, "StorageCommitmentPushModelSOPClass" },
+    { UID_StorageCommitmentPushModelSOPInstance, "StorageCommitmentPushModelSOPInstance" },
+    { UID_StorageCommitmentPullModelSOPClass, "StorageCommitmentPullModelSOPClass" },
+    { UID_StorageCommitmentPullModelSOPInstance, "StorageCommitmentPullModelSOPInstance" },
+
+    { UID_FINDModalityWorklistInformationModel, "FINDModalityWorklistInformationModel" },
+    
+    { NULL, NULL }
 };
 
 static int uidNameMap_size = ( sizeof(uidNameMap) / sizeof(UIDNameMap) );
@@ -133,8 +150,9 @@ const char*
 dcmFindNameOfUID(const char* uid)
 {
     int i = 0;
+    if (uid == NULL) return NULL;
     for (i=0; i<uidNameMap_size; i++) {
-        if (strcmp(uid, uidNameMap[i].uid) == 0) {
+        if (uidNameMap[i].uid != NULL && strcmp(uid, uidNameMap[i].uid) == 0) {
             return uidNameMap[i].name;
         }
     }
@@ -274,7 +292,10 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.3  1996-01-29 13:38:30  andreas
+** Revision 1.4  1996-03-11 14:38:01  hewett
+** Added new SOP Class UIDs.
+**
+** Revision 1.3  1996/01/29 13:38:30  andreas
 ** - new put method for every VR to put value as a string
 ** - better and unique print methods
 **
