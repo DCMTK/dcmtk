@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002, OFFIS
+ *  Copyright (C) 2002-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -15,17 +15,17 @@
  *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
  *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
- *  Module: dcmsr
+ *  Module:  dcmsr
  *
- *  Author: Joerg Riesmeier
+ *  Author:  Joerg Riesmeier
  *
  *  Purpose:
  *    classes: DSRSOPInstanceReferenceList
  *             - InstanceStruct, SeriesStruct, StudyStruct
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-05-24 09:52:02 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2003-08-07 13:51:53 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,7 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dsrsoprf.h"
+#include "dsrxmld.h"
 
 #include "dcdeftag.h"
 
@@ -69,13 +70,19 @@ DSRSOPInstanceReferenceList::SeriesStruct::SeriesStruct(const OFString &seriesUI
 DSRSOPInstanceReferenceList::SeriesStruct::~SeriesStruct()
 {
     Iterator = InstanceList.begin();
-    const OFListIterator(InstanceStruct *) last = InstanceList.end();
+    const OFListConstIterator(InstanceStruct *) last = InstanceList.end();
     /* delete all items and free memory */
     while (Iterator != last)
     {
         delete (*Iterator);
         Iterator = InstanceList.erase(Iterator);
     }
+}
+
+
+size_t DSRSOPInstanceReferenceList::SeriesStruct::getNumberOfInstances() const
+{
+    return InstanceList.size();
 }
 
 
@@ -103,16 +110,28 @@ OFCondition DSRSOPInstanceReferenceList::SeriesStruct::read(DcmItem &dataset,
                 if (getAndCheckStringValueFromDataset(*item, DCM_ReferencedSOPClassUID, sopClassUID, "1", "1", logStream).good() &&
                     getAndCheckStringValueFromDataset(*item, DCM_ReferencedSOPInstanceUID, instanceUID, "1", "1", logStream).good())
                 {
-                    /* create new instance list item */
-                    InstanceStruct *instance = new InstanceStruct(sopClassUID, instanceUID);
-                    if (instance != NULL)
+                    /* check whether instance item already exists */
+                    InstanceStruct *instance = gotoInstance(instanceUID);
+                    if (instance == NULL)
                     {
-                        InstanceList.push_back(instance);
-                        /* set cursor to new position */
-                        Iterator = --InstanceList.end();
+                        /* if not, create new instance list item */
+                        instance = new InstanceStruct(sopClassUID, instanceUID);
+                        if (instance != NULL)
+                        {
+                            /* add add it to the list of instances */
+                            InstanceList.push_back(instance);
+                            /* set cursor to new position */
+                            Iterator = --InstanceList.end();
+                        } else {
+                            result = EC_MemoryExhausted;
+                            break;
+                        }
                     } else {
-                        result = EC_MemoryExhausted;
-                        break;
+                        /* report a warning message and ignore this entry */
+                        OFString message = "SOP Instance \"";
+                        message += instanceUID;
+                        message += "\" already exists in reference list ... ignoring";
+                        DSRTypes::printWarningMessage(logStream, message.c_str());
                     }
                 }
             }
@@ -129,15 +148,15 @@ OFCondition DSRSOPInstanceReferenceList::SeriesStruct::write(DcmItem &dataset,
     /* store the series level attributes */
     dataset.putAndInsertOFStringArray(DCM_SeriesInstanceUID, SeriesUID);
     /* write optional attributes if non-empty */
-    if (RetrieveAETitle.length() > 0)
+    if (!RetrieveAETitle.empty())
         dataset.putAndInsertOFStringArray(DCM_RetrieveAETitle, RetrieveAETitle);
-    if (StorageMediaFileSetID.length() > 0)
+    if (!StorageMediaFileSetID.empty())
         dataset.putAndInsertOFStringArray(DCM_StorageMediaFileSetID, StorageMediaFileSetID);
-    if (StorageMediaFileSetUID.length() > 0)
+    if (!StorageMediaFileSetUID.empty())
         dataset.putAndInsertOFStringArray(DCM_StorageMediaFileSetUID, StorageMediaFileSetUID);
     /* iterate over all list items */
-    OFListIterator(InstanceStruct *) iter = InstanceList.begin();
-    const OFListIterator(InstanceStruct *) last = InstanceList.end();
+    OFListConstIterator(InstanceStruct *) iter = InstanceList.begin();
+    const OFListConstIterator(InstanceStruct *) last = InstanceList.end();
     while ((iter != last) && result.good())
     {
         InstanceStruct *instance = *iter;
@@ -160,23 +179,89 @@ OFCondition DSRSOPInstanceReferenceList::SeriesStruct::write(DcmItem &dataset,
 }
 
 
+OFCondition DSRSOPInstanceReferenceList::SeriesStruct::readXML(const DSRXMLDocument &doc,
+                                                               DSRXMLCursor cursor)
+{
+    OFCondition result = SR_EC_InvalidDocument;
+    if (cursor.valid())
+    {
+        /* first, read optional elements on series level */
+        doc.getStringFromNodeContent(doc.getNamedNode(cursor, "aetitle", OFFalse /*required*/), RetrieveAETitle);
+        const DSRXMLCursor childCursor = doc.getNamedNode(cursor, "fileset", OFFalse /*required*/);
+        if (childCursor.valid())
+        {
+            doc.getStringFromAttribute(childCursor, StorageMediaFileSetUID, "uid", OFFalse /*encoding*/, OFFalse /*required*/);
+            doc.getStringFromNodeContent(childCursor, StorageMediaFileSetID);
+        }
+        /* then proceed with instance level elements */
+        OFString sopClassUID, instanceUID;
+        do {
+            /* iterate over all "value" elements */
+            cursor = doc.getNamedNode(cursor, "value");
+            if (cursor.valid())
+            {
+                if (!doc.getStringFromAttribute(doc.getNamedNode(cursor.getChild(), "sopclass"), sopClassUID, "uid").empty() &&
+                    !doc.getStringFromAttribute(doc.getNamedNode(cursor.getChild(), "instance"), instanceUID, "uid").empty())
+                {
+                    /* check whether instance item already exists,
+                       because the internal structure is organized in a strictly hierarchical manner  */
+                    InstanceStruct *instance = gotoInstance(instanceUID);
+                    if (instance == NULL)
+                    {
+                        /* if not, create a new instance list item */
+                        instance = new InstanceStruct(sopClassUID, instanceUID);
+                        if (instance != NULL)
+                        {
+                            /* and add it to the list of instances */
+                            InstanceList.push_back(instance);
+                            /* set cursor to new position */
+                            Iterator = --InstanceList.end();
+                            result = EC_Normal;
+                        } else {
+                            result = EC_MemoryExhausted;
+                            break;
+                        }
+                    } else {
+                        /* report a warning message and ignore this entry */
+                        OFString message = "SOP Instance \"";
+                        message += instanceUID;
+                        message += "\" already exists in reference list ... ignoring";
+                        DSRTypes::printWarningMessage(doc.getLogStream(), message.c_str());
+                    }
+                }
+                /* proceed with next node */
+                cursor.gotoNext();
+            }
+        } while (cursor.valid());
+        /* report a warning message if no "value" element found */
+        if (result.bad())
+        {
+            OFString message = "Series \"";
+            message += SeriesUID;
+            message += "\" empty in reference list ... ignoring";
+            DSRTypes::printWarningMessage(doc.getLogStream(), message.c_str());
+        }
+    }
+    return result;
+}
+
+
 OFCondition DSRSOPInstanceReferenceList::SeriesStruct::writeXML(ostream &stream,
                                                                 const size_t flags) const
 {
-    OFString string;
     /* write the series level attributes */
-    stream << "<series uid=\"" << convertToMarkupString(SeriesUID, string) << "\">" << endl;
-    writeStringValueToXML(stream, RetrieveAETitle, "aetitle", flags & XF_writeEmptyTags);
-    if ((flags & XF_writeEmptyTags) || (StorageMediaFileSetUID.length() > 0) || (StorageMediaFileSetID.length() > 0))
+    stream << "<series uid=\"" << SeriesUID << "\">" << endl;
+    writeStringValueToXML(stream, RetrieveAETitle, "aetitle", flags & XF_writeEmptyTags > 0);
+    if ((flags & XF_writeEmptyTags) || !StorageMediaFileSetUID.empty() || !StorageMediaFileSetID.empty())
     {
         stream << "<fileset";
-        if (StorageMediaFileSetUID.length() > 0)
-            stream << " uid=\"" << convertToMarkupString(StorageMediaFileSetUID, string) << "\"";
-        stream << ">" << convertToMarkupString(StorageMediaFileSetID, string) << "</fileset>" << endl;
+        if (!StorageMediaFileSetUID.empty())
+            stream << " uid=\"" << StorageMediaFileSetUID << "\"";
+        stream << ">" << StorageMediaFileSetID << "</fileset>" << endl;
     }
     /* iterate over all list items */
-    OFListIterator(InstanceStruct *) iter = InstanceList.begin();
-    const OFListIterator(InstanceStruct *) last = InstanceList.end();
+    OFListConstIterator(InstanceStruct *) iter = InstanceList.begin();
+    const OFListConstIterator(InstanceStruct *) last = InstanceList.end();
     while (iter != last)
     {
         InstanceStruct *instance = *iter;
@@ -184,15 +269,15 @@ OFCondition DSRSOPInstanceReferenceList::SeriesStruct::writeXML(ostream &stream,
         if (instance != NULL)
         {
             /* write instance level */
-            stream << "<reference>" << endl;
-            stream << "<sopclass uid=\"" << convertToMarkupString(instance->SOPClassUID, string) << "\">";
+            stream << "<value>" << endl;
+            stream << "<sopclass uid=\"" << instance->SOPClassUID << "\">";
             /* retrieve name of SOP class */
             const char *sopClass = dcmFindNameOfUID(instance->SOPClassUID.c_str());
             if (sopClass != NULL)
                 stream << sopClass;
             stream << "</sopclass>" << endl;
-            stream << "<instance uid=\"" << convertToMarkupString(instance->InstanceUID, string) << "\"/>" << endl;
-            stream << "</reference>" << endl;
+            stream << "<instance uid=\"" << instance->InstanceUID << "\"/>" << endl;
+            stream << "</value>" << endl;
         }
         iter++;
     }
@@ -211,7 +296,7 @@ DSRSOPInstanceReferenceList::InstanceStruct *DSRSOPInstanceReferenceList::Series
     {
         /* start with the first list item */
         Iterator = InstanceList.begin();
-        const OFListIterator(InstanceStruct *) last = InstanceList.end();
+        const OFListConstIterator(InstanceStruct *) last = InstanceList.end();
         /* search for given SOP instance UID */
         while ((Iterator != last) && ((*Iterator == NULL) || ((*Iterator)->InstanceUID != instanceUID)))
             Iterator++;
@@ -220,6 +305,40 @@ DSRSOPInstanceReferenceList::InstanceStruct *DSRSOPInstanceReferenceList::Series
             instance = *Iterator;
     }
     return instance;
+}
+
+
+OFCondition DSRSOPInstanceReferenceList::SeriesStruct::gotoFirstItem()
+{
+    OFCondition result = EC_IllegalCall;
+    /* check for empty instance list */
+    if (!InstanceList.empty())
+    {
+        /* set cursor to first list item */
+        Iterator = InstanceList.begin();
+        /* check whether list item is valid */
+        if (*Iterator != NULL)
+            result = EC_Normal;
+        else
+            result = EC_CorruptedData;
+    }
+    return result;
+}
+
+
+OFCondition DSRSOPInstanceReferenceList::SeriesStruct::gotoNextItem()
+{
+    OFCondition result = EC_IllegalCall;
+    /* goto next list item */
+    if (++Iterator != InstanceList.end())
+    {
+        /* check whether list item is valid */
+        if (*Iterator != NULL)
+            result = EC_Normal;
+        else
+            result = EC_CorruptedData;
+    }
+    return result;
 }
 
 
@@ -281,7 +400,7 @@ DSRSOPInstanceReferenceList::StudyStruct::StudyStruct(const OFString &studyUID)
 DSRSOPInstanceReferenceList::StudyStruct::~StudyStruct()
 {
     Iterator = SeriesList.begin();
-    const OFListIterator(SeriesStruct *) last = SeriesList.end();
+    const OFListConstIterator(SeriesStruct *) last = SeriesList.end();
     /* delete all items and free memory */
     while (Iterator != last)
     {
@@ -289,6 +408,24 @@ DSRSOPInstanceReferenceList::StudyStruct::~StudyStruct()
         Iterator = SeriesList.erase(Iterator);
     }
 }
+
+
+size_t DSRSOPInstanceReferenceList::StudyStruct::getNumberOfInstances() const
+{
+    size_t result = 0;
+    OFListConstIterator(SeriesStruct *) iter = SeriesList.begin();
+    const OFListConstIterator(SeriesStruct *) last = SeriesList.end();
+    /* for all series in the list */
+    while (iter != last)
+    {
+        /* sum up the number of instances */
+        if (*iter != NULL)
+            result += (*iter)->getNumberOfInstances();
+        ++iter;
+    }
+    return result;
+}
+
 
 OFCondition DSRSOPInstanceReferenceList::StudyStruct::read(DcmItem &dataset,
                                                            OFConsole *logStream)
@@ -309,18 +446,28 @@ OFCondition DSRSOPInstanceReferenceList::StudyStruct::read(DcmItem &dataset,
                 OFString seriesUID;
                 if (getAndCheckStringValueFromDataset(*item, DCM_SeriesInstanceUID, seriesUID, "1", "1", logStream).good())
                 {
-                    /* create new series list item */
-                    SeriesStruct *series = new SeriesStruct(seriesUID);
+                    /* check whether series item already exists,
+                       because the internal structure is organized in a strictly hierarchical manner  */
+                    SeriesStruct *series = gotoSeries(seriesUID);
+                    if (series == NULL)
+                    {
+                        /* if not, create a new series list item */
+                        series = new SeriesStruct(seriesUID);
+                        if (series != NULL)
+                        {
+                            /* and add it to the list of studies */
+                            SeriesList.push_back(series);
+                        } else {
+                            result = EC_MemoryExhausted;
+                            break;
+                        }
+                    }
                     if (series != NULL)
                     {
-                        SeriesList.push_back(series);
                         /* set cursor to new position */
                         Iterator = --SeriesList.end();
                         /* read further attributes on series level and the instance level */
                         result = series->read(*item, logStream);
-                    } else {
-                        result = EC_MemoryExhausted;
-                        break;
                     }
                 }
             }
@@ -337,11 +484,11 @@ OFCondition DSRSOPInstanceReferenceList::StudyStruct::write(DcmItem &dataset,
     /* store the study level attributes */
     dataset.putAndInsertOFStringArray(DCM_StudyInstanceUID, StudyUID);
     /* iterate over all list items */
-    OFListIterator(SeriesStruct *) iter = SeriesList.begin();
-    const OFListIterator(SeriesStruct *) last = SeriesList.end();
+    OFListConstIterator(SeriesStruct *) iter = SeriesList.begin();
+    const OFListConstIterator(SeriesStruct *) last = SeriesList.end();
     while ((iter != last) && result.good())
     {
-        SeriesStruct *series = (SeriesStruct *)(*iter);
+        SeriesStruct *series = OFstatic_cast(SeriesStruct *, *iter);
         /* check whether list item really exists */
         if (series != NULL)
         {
@@ -358,19 +505,73 @@ OFCondition DSRSOPInstanceReferenceList::StudyStruct::write(DcmItem &dataset,
 }
 
 
+OFCondition DSRSOPInstanceReferenceList::StudyStruct::readXML(const DSRXMLDocument &doc,
+                                                              DSRXMLCursor cursor)
+{
+    OFCondition result = SR_EC_InvalidDocument;
+    if (cursor.valid())
+    {
+        OFString seriesUID;
+        while (cursor.valid())
+        {
+            /* check for known element tags */
+            if (doc.checkNode(cursor, "series").good())
+            {
+                if (!doc.getStringFromAttribute(cursor, seriesUID, "uid").empty())
+                {
+                    /* check whether series item already exists,
+                       because the internal structure is organized in a strictly hierarchical manner  */
+                    SeriesStruct *series = gotoSeries(seriesUID);
+                    if (series == NULL)
+                    {
+                        /* if not, create a new series list item */
+                        series = new SeriesStruct(seriesUID);
+                        if (series != NULL)
+                        {
+                            /* and add it to the list of series */
+                            SeriesList.push_back(series);
+                        } else {
+                            result = EC_MemoryExhausted;
+                            break;
+                        }
+                    }
+                    if (series != NULL)
+                    {
+                        /* set cursor to new position */
+                        Iterator = --SeriesList.end();
+                        /* read further attributes on series level and the instance level */
+                        result = series->readXML(doc, cursor.getChild());
+                    }
+                }
+            }
+            /* proceed with next node */
+            cursor.gotoNext();
+        }
+        /* report a warning message if no "value" element found */
+        if (result.bad())
+        {
+            OFString message = "Study \"";
+            message += StudyUID;
+            message += "\" empty in reference list ... ignoring";
+            DSRTypes::printWarningMessage(doc.getLogStream(), message.c_str());
+        }
+    }
+    return result;
+}
+
+
 OFCondition DSRSOPInstanceReferenceList::StudyStruct::writeXML(ostream &stream,
                                                                const size_t flags) const
 {
-    OFString string;
     OFCondition result = EC_Normal;
     /* write the study level attributes */
-    stream << "<study uid=\"" << convertToMarkupString(StudyUID, string) << "\">" << endl;
+    stream << "<study uid=\"" << StudyUID << "\">" << endl;
     /* iterate over all list items */
-    OFListIterator(SeriesStruct *) iter = SeriesList.begin();
-    const OFListIterator(SeriesStruct *) last = SeriesList.end();
+    OFListConstIterator(SeriesStruct *) iter = SeriesList.begin();
+    const OFListConstIterator(SeriesStruct *) last = SeriesList.end();
     while ((iter != last) && result.good())
     {
-        SeriesStruct *series = (SeriesStruct *)(*iter);
+        SeriesStruct *series = OFstatic_cast(SeriesStruct *, *iter);
         /* check whether list item really exists */
         if (series != NULL)
         {
@@ -388,19 +589,19 @@ DSRSOPInstanceReferenceList::SeriesStruct *DSRSOPInstanceReferenceList::StudyStr
 {
     SeriesStruct *series = NULL;
     /* first, check whether the current series is the one we're searching for */
-    if ((Iterator != SeriesList.end()) && (*Iterator != NULL) && (((SeriesStruct *)(*Iterator))->SeriesUID == seriesUID))
-        series = (SeriesStruct *)(*Iterator);
+    if ((Iterator != SeriesList.end()) && (*Iterator != NULL) && (OFstatic_cast(SeriesStruct *, *Iterator)->SeriesUID == seriesUID))
+        series = OFstatic_cast(SeriesStruct *, *Iterator);
     else
     {
         /* start with the first list item */
         Iterator = SeriesList.begin();
-        const OFListIterator(SeriesStruct *) last = SeriesList.end();
+        const OFListConstIterator(SeriesStruct *) last = SeriesList.end();
         /* search for given series UID */
-        while ((Iterator != last) && ((*Iterator == NULL) || (((SeriesStruct *)(*Iterator))->SeriesUID != seriesUID)))
+        while ((Iterator != last) && ((*Iterator == NULL) || (OFstatic_cast(SeriesStruct *, *Iterator)->SeriesUID != seriesUID)))
             Iterator++;
         /* item found */
         if (Iterator != last)
-            series = (SeriesStruct *)(*Iterator);
+            series = OFstatic_cast(SeriesStruct *, *Iterator);
     }
     return series;
 }
@@ -411,11 +612,11 @@ DSRSOPInstanceReferenceList::InstanceStruct *DSRSOPInstanceReferenceList::StudyS
     InstanceStruct *instance = NULL;
     /* start with the first list item */
     Iterator = SeriesList.begin();
-    const OFListIterator(SeriesStruct *) last = SeriesList.end();
+    const OFListConstIterator(SeriesStruct *) last = SeriesList.end();
     /* search for given series UID */
     while ((Iterator != last) && (instance == NULL))
     {
-        SeriesStruct *series = (SeriesStruct *)(*Iterator);
+        SeriesStruct *series = OFstatic_cast(SeriesStruct *, *Iterator);
         /* continue search on instance level */
         if (series != NULL)
             instance = series->gotoInstance(instanceUID);
@@ -424,6 +625,54 @@ DSRSOPInstanceReferenceList::InstanceStruct *DSRSOPInstanceReferenceList::StudyS
             Iterator++;
     }
     return instance;
+}
+
+
+OFCondition DSRSOPInstanceReferenceList::StudyStruct::gotoFirstItem()
+{
+    OFCondition result = EC_IllegalCall;
+    /* check for empty series list */
+    if (!SeriesList.empty())
+    {
+        /* set cursor to first list item */
+        Iterator = SeriesList.begin();
+        /* check whether list item is valid */
+        if (*Iterator != NULL)
+        {
+            /* do the same for instance level */
+            result = (*Iterator)->gotoFirstItem();
+        } else
+            result = EC_CorruptedData;
+    }
+    return result;
+}
+
+
+OFCondition DSRSOPInstanceReferenceList::StudyStruct::gotoNextItem()
+{
+    OFCondition result = EC_IllegalCall;
+    /* goto next list item */
+    if (Iterator != SeriesList.end())
+    {
+        /* check whether current list item is valid */
+        if (*Iterator != NULL)
+        {
+            /* try to go to the next instance item */
+            result = (*Iterator)->gotoNextItem();
+            /* if this fails ... */
+            if (result.bad())
+            {
+                /* goto to the first instance of the next series item */
+                if (++Iterator != SeriesList.end())
+                {
+                    if (*Iterator != NULL)
+                        result = (*Iterator)->gotoFirstItem();
+                }
+            }
+        } else
+            result = EC_CorruptedData;
+    }
+    return result;
 }
 
 
@@ -459,7 +708,7 @@ OFCondition DSRSOPInstanceReferenceList::StudyStruct::removeItem()
     /* check whether list is empty or iterator is invalid */
     if (!SeriesList.empty() && (Iterator != SeriesList.end()))
     {
-        SeriesStruct *series = (SeriesStruct *)(*Iterator);
+        SeriesStruct *series = OFstatic_cast(SeriesStruct *, *Iterator);
         if (series != NULL)
         {
             result = series->removeItem();
@@ -467,13 +716,38 @@ OFCondition DSRSOPInstanceReferenceList::StudyStruct::removeItem()
             if (result.good() && series->InstanceList.empty())
             {
                 /* free memory */
-                delete (*Iterator);
+                delete series;
                 /* if so, remove series from list and set iterator to the next item */
                 Iterator = SeriesList.erase(Iterator);
             }
         }
     }
     return result;
+}
+
+
+void DSRSOPInstanceReferenceList::StudyStruct::removeIncompleteItems()
+{
+    Iterator = SeriesList.begin();
+    const OFListConstIterator(SeriesStruct *) last = SeriesList.end();
+    /* for all series in the list */
+    while (Iterator != last)
+    {
+        SeriesStruct *series = OFstatic_cast(SeriesStruct *, *Iterator);
+        if (series != NULL)
+        {
+            /* check whether list of series is empty */
+            if (series->InstanceList.empty())
+            {
+                /* free memory */
+                delete series;
+                /* if so, remove series from list and set iterator to the next item */
+                Iterator = SeriesList.erase(Iterator);
+            } else
+                ++Iterator;
+        } else
+          ++Iterator;
+    }
 }
 
 
@@ -499,7 +773,7 @@ DSRSOPInstanceReferenceList::~DSRSOPInstanceReferenceList()
 void DSRSOPInstanceReferenceList::clear()
 {
     Iterator = StudyList.begin();
-    const OFListIterator(StudyStruct *) last = StudyList.end();
+    const OFListConstIterator(StudyStruct *) last = StudyList.end();
     /* delete all items and free memory */
     while (Iterator != last)
     {
@@ -515,6 +789,23 @@ void DSRSOPInstanceReferenceList::clear()
 OFBool DSRSOPInstanceReferenceList::empty() const
 {
     return StudyList.empty();
+}
+
+
+size_t DSRSOPInstanceReferenceList::getNumberOfInstances() const
+{
+    size_t result = 0;
+    OFListConstIterator(StudyStruct *) iter = StudyList.begin();
+    const OFListConstIterator(StudyStruct *) last = StudyList.end();
+    /* for all studies in the list */
+    while (iter != last)
+    {
+        /* sum up the number of instances */
+        if (*iter != NULL)
+            result += (*iter)->getNumberOfInstances();
+        ++iter;
+    }
+    return result;
 }
 
 
@@ -537,22 +828,34 @@ OFCondition DSRSOPInstanceReferenceList::read(DcmItem &dataset,
                 OFString studyUID;
                 if (getAndCheckStringValueFromDataset(*item, DCM_StudyInstanceUID, studyUID, "1", "1", logStream).good())
                 {
-                    /* create new study list item */
-                    StudyStruct *study = new StudyStruct(studyUID);
+                    /* check whether study item already exists,
+                       because the internal structure is organized in a strictly hierarchical manner  */
+                    StudyStruct *study = gotoStudy(studyUID);
+                    if (study == NULL)
+                    {
+                        /* if not, create a new study list item */
+                        study = new StudyStruct(studyUID);
+                        if (study != NULL)
+                        {
+                            /* and add it to the list of studies */
+                            StudyList.push_back(study);
+                        } else {
+                            result = EC_MemoryExhausted;
+                            break;
+                        }
+                    }
                     if (study != NULL)
                     {
-                        StudyList.push_back(study);
                         /* set cursor to new position */
                         Iterator = --StudyList.end();
                         /* read attributes on series and instance level */
                         result = study->read(*item, logStream);
-                    } else {
-                        result = EC_MemoryExhausted;
-                        break;
                     }
                 }
             }
         }
+        /* remove empty/incomplete items from the list structure */
+        removeIncompleteItems();
     }
     return result;
 }
@@ -563,11 +866,11 @@ OFCondition DSRSOPInstanceReferenceList::write(DcmItem &dataset,
 {
     OFCondition result = EC_Normal;
     /* iterate over all list items */
-    OFListIterator(StudyStruct *) iter = StudyList.begin();
-    const OFListIterator(StudyStruct *) last = StudyList.end();
+    OFListConstIterator(StudyStruct *) iter = StudyList.begin();
+    const OFListConstIterator(StudyStruct *) last = StudyList.end();
     while ((iter != last) && result.good())
     {
-        StudyStruct *study = (StudyStruct *)(*iter);
+        StudyStruct *study = OFstatic_cast(StudyStruct *, *iter);
         /* check whether list item really exists */
         if (study != NULL)
         {
@@ -584,16 +887,67 @@ OFCondition DSRSOPInstanceReferenceList::write(DcmItem &dataset,
 }
 
 
+OFCondition DSRSOPInstanceReferenceList::readXML(const DSRXMLDocument &doc,
+                                                 DSRXMLCursor cursor,
+                                                 const size_t /*flags*/)
+{
+    /* default: no error, e.g. for empty list of references */
+    OFCondition result = EC_Normal;
+    if (cursor.valid())
+    {
+        OFString studyUID;
+        while (cursor.valid())
+        {
+            /* check for known element tags */
+            if (doc.checkNode(cursor, "study").good())
+            {
+                if (!doc.getStringFromAttribute(cursor, studyUID, "uid").empty())
+                {
+                    /* check whether study item already exists,
+                       because the internal structure is organized in a strictly hierarchical manner  */
+                    StudyStruct *study = gotoStudy(studyUID);
+                    if (study == NULL)
+                    {
+                        /* if not, create a new study list item */
+                        study = new StudyStruct(studyUID);
+                        if (study != NULL)
+                        {
+                            /* and add it to the list of studies */
+                            StudyList.push_back(study);
+                        } else {
+                            result = EC_MemoryExhausted;
+                            break;
+                        }
+                    }
+                    if (study != NULL)
+                    {
+                        /* set cursor to new position */
+                        Iterator = --StudyList.end();
+                        /* read attributes on series and instance level */
+                        result = study->readXML(doc, cursor.getChild());
+                    }
+                }
+            }
+            /* proceed with next node */
+            cursor.gotoNext();
+        }
+        /* remove empty/incomplete items from the list structure */
+        removeIncompleteItems();
+    }
+    return result;
+}
+
+
 OFCondition DSRSOPInstanceReferenceList::writeXML(ostream &stream,
                                                   const size_t flags) const
 {
     OFCondition result = EC_Normal;
     /* iterate over all list items */
-    OFListIterator(StudyStruct *) iter = StudyList.begin();
-    const OFListIterator(StudyStruct *) last = StudyList.end();
+    OFListConstIterator(StudyStruct *) iter = StudyList.begin();
+    const OFListConstIterator(StudyStruct *) last = StudyList.end();
     while ((iter != last) && result.good())
     {
-        StudyStruct *study = (StudyStruct *)(*iter);
+        StudyStruct *study = OFstatic_cast(StudyStruct *, *iter);
         /* check whether list item really exists */
         if (study != NULL)
         {
@@ -610,19 +964,19 @@ DSRSOPInstanceReferenceList::StudyStruct *DSRSOPInstanceReferenceList::gotoStudy
 {
     StudyStruct *study = NULL;
     /* first, check whether the current study is the one we're searching for */
-    if ((Iterator != StudyList.end()) && (*Iterator != NULL) && (((StudyStruct *)(*Iterator))->StudyUID == studyUID))
-        study = (StudyStruct *)(*Iterator);
+    if ((Iterator != StudyList.end()) && (*Iterator != NULL) && (OFstatic_cast(StudyStruct *, *Iterator)->StudyUID == studyUID))
+        study = OFstatic_cast(StudyStruct *, *Iterator);
     else
     {
         /* start with the first list item */
         Iterator = StudyList.begin();
-        const OFListIterator(StudyStruct *) last = StudyList.end();
+        const OFListConstIterator(StudyStruct *) last = StudyList.end();
         /* search for given study UID */
-        while ((Iterator != last) && ((*Iterator == NULL) || (((StudyStruct *)(*Iterator))->StudyUID != studyUID)))
+        while ((Iterator != last) && ((*Iterator == NULL) || (OFstatic_cast(StudyStruct *, *Iterator)->StudyUID != studyUID)))
             Iterator++;
         /* item found */
         if (Iterator != last)
-            study = (StudyStruct *)(*Iterator);
+            study = OFstatic_cast(StudyStruct *, *Iterator);
     }
     return study;
 }
@@ -635,7 +989,7 @@ OFCondition DSRSOPInstanceReferenceList::addItem(const OFString &studyUID,
 {
     OFCondition result = EC_IllegalParameter;
     /* check parameters first */
-    if ((studyUID.length() > 0) && (seriesUID.length() > 0) && (sopClassUID.length() > 0) && (instanceUID.length() > 0))
+    if (!studyUID.empty() && !seriesUID.empty() && !sopClassUID.empty() && !instanceUID.empty())
     {
         result = EC_Normal;
         StudyStruct *study = gotoStudy(studyUID);
@@ -666,7 +1020,7 @@ OFCondition DSRSOPInstanceReferenceList::removeItem()
     /* check whether list is empty or iterator is invalid */
     if (!StudyList.empty() && (Iterator != StudyList.end()))
     {
-        StudyStruct *study = (StudyStruct *)(*Iterator);
+        StudyStruct *study = OFstatic_cast(StudyStruct *, *Iterator);
         if (study != NULL)
         {
             result = study->removeItem();
@@ -674,7 +1028,7 @@ OFCondition DSRSOPInstanceReferenceList::removeItem()
             if (result.good() && study->SeriesList.empty())
             {
                 /* free memory */
-                delete (*Iterator);
+                delete study;
                 /* if so, remove study from list and set iterator to the next item */
                 Iterator = StudyList.erase(Iterator);
             }
@@ -709,22 +1063,49 @@ OFCondition DSRSOPInstanceReferenceList::removeItem(const OFString &studyUID,
 }
 
 
+void DSRSOPInstanceReferenceList::removeIncompleteItems()
+{
+    Iterator = StudyList.begin();
+    const OFListConstIterator(StudyStruct *) last = StudyList.end();
+    /* for all studies in the list */
+    while (Iterator != last)
+    {
+        StudyStruct *study = OFstatic_cast(StudyStruct *, *Iterator);
+        if (study != NULL)
+        {
+            /* remove empty/incomplete items on series/instance level */
+            study->removeIncompleteItems();
+            /* check whether list of series is empty */
+            if (study->SeriesList.empty())
+            {
+                /* free memory */
+                delete study;
+                /* if so, remove study from list and set iterator to the next item */
+                Iterator = StudyList.erase(Iterator);
+            } else
+                ++Iterator;
+        } else
+          ++Iterator;
+    }
+}
+
+
 OFCondition DSRSOPInstanceReferenceList::gotoItem(const OFString &sopClassUID,
                                                   const OFString &instanceUID)
 {
     OFCondition result = EC_IllegalParameter;
     /* check parameters first */
-    if ((sopClassUID.length() > 0) && (instanceUID.length() > 0))
+    if (!sopClassUID.empty() && !instanceUID.empty())
     {
         OFBool sopClassMatch = OFFalse;
         result = SR_EC_SOPInstanceNotFound;
         /* start with first study */
         Iterator = StudyList.begin();
-        const OFListIterator(StudyStruct *) last = StudyList.end();
+        const OFListConstIterator(StudyStruct *) last = StudyList.end();
         /* iterate over all studies */
         while ((Iterator != last) && result.bad())
         {
-            StudyStruct *study = (StudyStruct *)(*Iterator);
+            StudyStruct *study = OFstatic_cast(StudyStruct *, *Iterator);
             /* continue search on series level */
             if (study != NULL)
             {
@@ -754,7 +1135,7 @@ OFCondition DSRSOPInstanceReferenceList::gotoItem(const OFString &studyUID,
 {
     OFCondition result = EC_IllegalParameter;
     /* check parameters first */
-    if ((studyUID.length() > 0) && (seriesUID.length() > 0) && (instanceUID.length() > 0))
+    if (!studyUID.empty() && !seriesUID.empty() && !instanceUID.empty())
     {
         result = SR_EC_SOPInstanceNotFound;
         /* search for given study */
@@ -775,12 +1156,58 @@ OFCondition DSRSOPInstanceReferenceList::gotoItem(const OFString &studyUID,
 }
 
 
+OFCondition DSRSOPInstanceReferenceList::gotoFirstItem()
+{
+    OFCondition result = EC_IllegalCall;
+    /* check for empty study list */
+    if (!StudyList.empty())
+    {
+        /* set cursor to first list item */
+        Iterator = StudyList.begin();
+        if (*Iterator != NULL)
+        {
+            /* do the same for series and instance level */
+            result = (*Iterator)->gotoFirstItem();
+        }
+    }
+    return result;
+}
+
+
+OFCondition DSRSOPInstanceReferenceList::gotoNextItem()
+{
+    OFCondition result = EC_IllegalCall;
+    /* goto next list item */
+    if (Iterator != StudyList.end())
+    {
+        /* check whether current list item is valid */
+        if (*Iterator != NULL)
+        {
+            /* try to go to the next instance item */
+            result = (*Iterator)->gotoNextItem();
+            /* if this fails ... */
+            if (result.bad())
+            {
+                /* goto to the first series/instance of the next stidy item */
+                if (++Iterator != StudyList.end())
+                {
+                    if (*Iterator != NULL)
+                        result = (*Iterator)->gotoFirstItem();
+                }
+            }
+        } else
+            result = EC_CorruptedData;
+    }
+    return result;
+}
+
+
 DSRSOPInstanceReferenceList::StudyStruct *DSRSOPInstanceReferenceList::getCurrentStudy() const
 {
     StudyStruct *study = NULL;
     /* check whether current study is valid */
     if (Iterator != StudyList.end())
-        study = (StudyStruct *)(*Iterator);
+        study = OFstatic_cast(StudyStruct *, *Iterator);
     return study;
 }
 
@@ -791,7 +1218,7 @@ DSRSOPInstanceReferenceList::SeriesStruct *DSRSOPInstanceReferenceList::getCurre
     StudyStruct *study = getCurrentStudy();
     /* check whether current series is valid */
     if ((study != NULL) && (study->Iterator != study->SeriesList.end()))
-        series = (SeriesStruct *)(*(study->Iterator));
+        series = OFstatic_cast(SeriesStruct *, *(study->Iterator));
     return series;
 }
 
@@ -807,94 +1234,94 @@ DSRSOPInstanceReferenceList::InstanceStruct *DSRSOPInstanceReferenceList::getCur
 }
 
 
-const OFString &DSRSOPInstanceReferenceList::getStudyInstanceUID(OFString &string) const
+const OFString &DSRSOPInstanceReferenceList::getStudyInstanceUID(OFString &stringValue) const
 {
     /* check whether current study is valid */
     StudyStruct *study = getCurrentStudy();
     /* get study instance UID or clear string if invalid */
     if (study != NULL)
-        string = study->StudyUID;
+        stringValue = study->StudyUID;
     else
-        string.clear();
-    return string;
+        stringValue.clear();
+    return stringValue;
 }
 
 
-const OFString &DSRSOPInstanceReferenceList::getSeriesInstanceUID(OFString &string) const
+const OFString &DSRSOPInstanceReferenceList::getSeriesInstanceUID(OFString &stringValue) const
 {
     /* check whether current series is valid */
     SeriesStruct *series = getCurrentSeries();
     /* get series instance UID or clear string if invalid */
     if (series != NULL)
-        string = series->SeriesUID;
+        stringValue = series->SeriesUID;
     else
-        string.clear();
-    return string;
+        stringValue.clear();
+    return stringValue;
 }
 
 
-const OFString &DSRSOPInstanceReferenceList::getSOPInstanceUID(OFString &string) const
+const OFString &DSRSOPInstanceReferenceList::getSOPInstanceUID(OFString &stringValue) const
 {
     /* check whether current instance is valid */
     InstanceStruct *instance = getCurrentInstance();
     /* get SOP instance UID or clear string if invalid */
     if (instance != NULL)
-        string = instance->InstanceUID;
+        stringValue = instance->InstanceUID;
     else
-        string.clear();
-    return string;
+        stringValue.clear();
+    return stringValue;
 }
 
 
-const OFString &DSRSOPInstanceReferenceList::getSOPClassUID(OFString &string) const
+const OFString &DSRSOPInstanceReferenceList::getSOPClassUID(OFString &stringValue) const
 {
     /* check whether current instance is valid */
     InstanceStruct *instance = getCurrentInstance();
     /* get SOP class UID or clear string if invalid */
     if (instance != NULL)
-        string = instance->SOPClassUID;
+        stringValue = instance->SOPClassUID;
     else
-        string.clear();
-    return string;
+        stringValue.clear();
+    return stringValue;
 }
 
 
-const OFString &DSRSOPInstanceReferenceList::getRetrieveAETitle(OFString &string) const
+const OFString &DSRSOPInstanceReferenceList::getRetrieveAETitle(OFString &stringValue) const
 {
     /* check whether current series is valid */
     SeriesStruct *series = getCurrentSeries();
     /* get retrieve application entity title or clear string if invalid */
     if (series != NULL)
-        string = series->RetrieveAETitle;
+        stringValue = series->RetrieveAETitle;
     else
-        string.clear();
-    return string;
+        stringValue.clear();
+    return stringValue;
 }
 
 
-const OFString &DSRSOPInstanceReferenceList::getStorageMediaFileSetID(OFString &string) const
+const OFString &DSRSOPInstanceReferenceList::getStorageMediaFileSetID(OFString &stringValue) const
 {
     /* check whether current series is valid */
     SeriesStruct *series = getCurrentSeries();
     /* get storage media file set ID or clear string if invalid */
     if (series != NULL)
-        string = series->StorageMediaFileSetID;
+        stringValue = series->StorageMediaFileSetID;
     else
-        string.clear();
-    return string;
+        stringValue.clear();
+    return stringValue;
 }
 
 
-const OFString &DSRSOPInstanceReferenceList::getStorageMediaFileSetUID(OFString &string) const
+const OFString &DSRSOPInstanceReferenceList::getStorageMediaFileSetUID(OFString &stringValue) const
 {
     /* check whether current series is valid */
     SeriesStruct *series = getCurrentSeries();
     /* get storage media file set UID or clear string if invalid */
     if (series != NULL)
-        string = series->StorageMediaFileSetUID;
+        stringValue = series->StorageMediaFileSetUID;
     else
-        string.clear();
-    return string;
+        stringValue.clear();
+    return stringValue;
 }
 
 
@@ -946,7 +1373,16 @@ OFCondition DSRSOPInstanceReferenceList::setStorageMediaFileSetUID(const OFStrin
 /*
  *  CVS/RCS Log:
  *  $Log: dsrsoprf.cc,v $
- *  Revision 1.3  2002-05-24 09:52:02  joergr
+ *  Revision 1.4  2003-08-07 13:51:53  joergr
+ *  Added readXML functionality.
+ *  Enhanced class DSRSOPInstanceReferenceList: empty/incomplete items (e.g.
+ *  series with no instances or studies with no series) are automatically
+ *  removed from the list and "degenerated" (i.e. not stricly hierarchical)
+ *  sequence structures are now also supported.
+ *  Adapted type casts to new-style typecast operators defined in ofcast.h.
+ *  Adapted for use of OFListConstIterator, needed for compiling with HAVE_STL.
+ *
+ *  Revision 1.3  2002/05/24 09:52:02  joergr
  *  Added missing member variables to member initialization list (warnings
  *  reported by gcc 2.95.3 with additional options).
  *
