@@ -23,8 +23,8 @@
  *    classes: DSRWaveformChannelList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-07-11 14:41:38 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2003-08-07 14:16:22 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -70,18 +70,21 @@ OFCondition DSRWaveformChannelList::print(ostream &stream,
                                           const char pairSeparator,
                                           const char itemSeparator) const
 {
-    const OFListIterator(DSRWaveformChannelItem) endPos = ItemList.end();
-    OFListIterator(DSRWaveformChannelItem) iterator = ItemList.begin();
+    const OFListConstIterator(DSRWaveformChannelItem) endPos = ItemList.end();
+    OFListConstIterator(DSRWaveformChannelItem) iterator = ItemList.begin();
     while (iterator != endPos)
     {
         stream << (*iterator).MultiplexGroupNumber << pairSeparator << (*iterator).ChannelNumber;
         iterator++;
-        if (flags & DSRTypes::PF_shortenLongItemValues)
+        if (iterator != endPos)
         {
-            stream << itemSeparator << "...";
-            iterator = endPos;
-        } else if (iterator != endPos)
-            stream << itemSeparator;
+            if (flags & DSRTypes::PF_shortenLongItemValues)
+            {
+                stream << itemSeparator << "...";
+                iterator = endPos;
+            } else
+                stream << itemSeparator;
+        }
     }
     return EC_Normal;
 }
@@ -102,7 +105,7 @@ OFCondition DSRWaveformChannelList::read(DcmItem &dataset,
         const unsigned long count = delem.getVM();
         /* fill list with values from integer string */
         unsigned long i = 0;
-        while ((i < count) && (result.good()))
+        while ((i < count) && result.good())
         {
             result = delem.getUint16(group, i++);
             if (result.good())
@@ -118,15 +121,15 @@ OFCondition DSRWaveformChannelList::read(DcmItem &dataset,
 
 
 OFCondition DSRWaveformChannelList::write(DcmItem &dataset,
-                                          OFConsole * /* logStream */) const
+                                          OFConsole * /*logStream*/) const
 {
     OFCondition result = EC_Normal;
     /* fill string with values from list */
     DcmUnsignedShort delem(DCM_ReferencedWaveformChannels);
-    const OFListIterator(DSRWaveformChannelItem) endPos = ItemList.end();
-    OFListIterator(DSRWaveformChannelItem) iterator = ItemList.begin();
+    const OFListConstIterator(DSRWaveformChannelItem) endPos = ItemList.end();
+    OFListConstIterator(DSRWaveformChannelItem) iterator = ItemList.begin();
     unsigned long i = 0;
-    while ((iterator != endPos) && (result.good()))
+    while ((iterator != endPos) && result.good())
     {
         result = delem.putUint16((*iterator).MultiplexGroupNumber, i++);
         if (result.good())
@@ -166,10 +169,43 @@ void DSRWaveformChannelList::addItem(const Uint16 multiplexGroupNumber,
 }
 
 
+OFCondition DSRWaveformChannelList::putString(const char *stringValue)
+{
+    OFCondition result = EC_Normal;
+    /* clear internal list */
+    clear();
+    /* check input string */
+    if ((stringValue != NULL) && (strlen(stringValue) > 0))
+    {
+        Uint16 group = 0;
+        Uint16 channel = 0;
+        const char *ptr = stringValue;
+        /* retrieve channel pairs from string */
+        while (result.good() && (ptr != NULL))
+        {
+            if (sscanf(ptr, "%hu/%hu", &group, &channel) == 2)
+            {
+                addItem(group, channel);
+                /* jump to next channel pair */
+                ptr = strchr(ptr, ',');
+                if (ptr != NULL)
+                    ptr++;
+            } else
+                result = EC_CorruptedData;
+        }
+    }
+    return result;
+}
+
+
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavch.cc,v $
- *  Revision 1.13  2003-07-11 14:41:38  joergr
+ *  Revision 1.14  2003-08-07 14:16:22  joergr
+ *  Added new putString() method.
+ *  Adapted for use of OFListConstIterator, needed for compiling with HAVE_STL.
+ *
+ *  Revision 1.13  2003/07/11 14:41:38  joergr
  *  Renamed member variable.
  *
  *  Revision 1.12  2003/06/04 14:26:54  meichel
