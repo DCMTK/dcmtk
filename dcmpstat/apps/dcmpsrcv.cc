@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-11-08 18:38:03 $
+ *  Update Date:      $Date: 2000-11-10 16:21:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsrcv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -525,7 +525,7 @@ static CONDITION storeSCP(
         /* callback will send back sop class not supported status */ 
         status = STATUS_STORE_Refused_SOPClassNotSupported;
         /* must still receive data */
-        strcpy(imageFileName, "/dev/null");
+        strcpy(imageFileName, NULL_DEVICE_NAME);
     } 
     else
     {
@@ -534,7 +534,7 @@ static CONDITION storeSCP(
         CERR << "Unable to access database '" << dbfolder << "'" << endl;
         COND_DumpConditions();
         /* must still receive data */
-        strcpy(imageFileName, "/dev/null");     
+        strcpy(imageFileName, NULL_DEVICE_NAME);     
         /* callback will send back out of resources status */ 
         status = STATUS_STORE_Refused_OutOfResources;
         DB_destroyHandle(&dbhandle);
@@ -549,7 +549,7 @@ static CONDITION storeSCP(
         {
             CERR << "storeSCP: Database: DB_makeNewStoreFileName Failed" << endl;
             /* must still receive data */
-            strcpy(imageFileName, "/dev/null"); 
+            strcpy(imageFileName, NULL_DEVICE_NAME); 
             /* callback will send back out of resources status */ 
             status = STATUS_STORE_Refused_OutOfResources;
         }
@@ -587,8 +587,11 @@ static CONDITION storeSCP(
     if (!SUCCESS(cond) || (context.status != STATUS_Success))
     {
         /* remove file */
-        if (opt_verbose) CERR << "Store SCP: Deleting Image File: " << imageFileName << endl;
-        unlink(imageFileName);
+        if (strcpy(imageFileName, NULL_DEVICE_NAME) != 0) 
+        {
+          if (opt_verbose) CERR << "Store SCP: Deleting Image File: " << imageFileName << endl;
+          unlink(imageFileName);
+        }
         if (dbhandle) DB_pruneInvalidRecords(dbhandle);
     }
 
@@ -734,6 +737,151 @@ static void handleClient(T_ASC_Association **assoc, const char *dbfolder, OFBool
   dropAssociation(assoc);
 }
 
+static void terminateAllReceivers(DVConfiguration& dvi, OFBool opt_verbose)
+{
+
+  if (opt_verbose) CERR << "Terminating all receivers" << endl;
+
+  const char *recID=NULL;
+  const char *recAETitle=NULL;
+  unsigned short recPort=0;
+  OFBool recUseTLS=OFFalse;
+  T_ASC_Network *net=NULL;
+  T_ASC_Parameters *params=NULL;
+  DIC_NODENAME localHost;
+  DIC_NODENAME peerHost;
+  T_ASC_Association *assoc=NULL;
+  OFBool prepared = OFTrue;
+  const char *xfer = UID_LittleEndianImplicitTransferSyntax;
+  
+#ifdef WITH_OPENSSL
+  /* TLS directory */
+  const char *current = NULL;
+  const char *tlsFolder = dvi.getTLSFolder();
+  if (tlsFolder==NULL) tlsFolder = ".";
+
+  /* key file format */
+  int keyFileFormat = SSL_FILETYPE_PEM;
+  if (! dvi.getTLSPEMFormat()) keyFileFormat = SSL_FILETYPE_ASN1;
+#endif  
+
+  if (!SUCCESS(ASC_initializeNetwork(NET_REQUESTOR, 0, 1000, &net))) return;
+
+  Uint32 numReceivers = dvi.getNumberOfTargets(DVPSE_receiver);
+  for (Uint32 i=0; i<numReceivers; i++)
+  {
+    prepared = OFTrue;
+    recID = dvi.getTargetID(i, DVPSE_receiver);
+    recPort = dvi.getTargetPort(recID);
+    recUseTLS = dvi.getTargetUseTLS(recID);
+    recAETitle = dvi.getTargetAETitle(recID);
+    if (opt_verbose) 
+    {
+      CERR << "Receiver " << recID << " on port " << recPort;
+      if (recUseTLS) CERR << " with TLS" << endl; else CERR << endl;
+    }
+
+    if (recUseTLS)
+    {
+#ifdef WITH_OPENSSL
+      /* certificate file */
+      OFString tlsCertificateFile(tlsFolder);
+      tlsCertificateFile += PATH_SEPARATOR;
+      current = dvi.getTargetCertificate(recID);
+      if (current) tlsCertificateFile += current; else tlsCertificateFile += "sitecert.pem";
+    
+      /* private key file */    
+      OFString tlsPrivateKeyFile(tlsFolder);
+      tlsPrivateKeyFile += PATH_SEPARATOR;
+      current = dvi.getTargetPrivateKey(recID);
+      if (current) tlsPrivateKeyFile += current; else tlsPrivateKeyFile += "sitekey.pem";
+    
+      /* private key password */
+      const char *tlsPrivateKeyPassword = dvi.getTargetPrivateKeyPassword(recID);
+    
+      /* DH parameter file */
+      OFString tlsDHParametersFile;
+      current = dvi.getTargetDiffieHellmanParameters(recID);
+      if (current) 
+      {
+        tlsDHParametersFile = tlsFolder;
+        tlsDHParametersFile += PATH_SEPARATOR;
+        tlsDHParametersFile += current;
+      }
+    
+      /* random seed file */
+      OFString tlsRandomSeedFile(tlsFolder);
+      tlsRandomSeedFile += PATH_SEPARATOR;
+      current = dvi.getTargetRandomSeed(recID);
+      if (current) tlsRandomSeedFile += current; else tlsRandomSeedFile += "siteseed.bin";
+    
+      /* CA certificate directory */
+      const char *tlsCACertificateFolder = dvi.getTLSCACertificateFolder();
+      if (tlsCACertificateFolder==NULL) tlsCACertificateFolder = ".";
+    
+      /* ciphersuites */
+      OFString tlsCiphersuites(SSL3_TXT_RSA_DES_192_CBC3_SHA);
+      Uint32 tlsNumberOfCiphersuites = dvi.getTargetNumberOfCipherSuites(recID);
+      if (tlsNumberOfCiphersuites > 0)
+      {
+        tlsCiphersuites.clear();
+        OFString currentSuite;
+        const char *currentOpenSSL;
+        for (Uint32 ui=0; ui<tlsNumberOfCiphersuites; ui++)
+        {
+          dvi.getTargetCipherSuite(recID, ui, currentSuite);
+          if (NULL != (currentOpenSSL = DcmTLSTransportLayer::findOpenSSLCipherSuiteName(currentSuite.c_str())))
+          {
+            if (tlsCiphersuites.length() > 0) tlsCiphersuites += ":";
+            tlsCiphersuites += currentOpenSSL;
+          }
+        }
+      }
+      DcmTLSTransportLayer *tLayer = new DcmTLSTransportLayer(DICOM_APPLICATION_REQUESTOR, tlsRandomSeedFile.c_str());
+      if (tLayer)
+      {    
+        if (tlsCACertificateFolder) tLayer->addTrustedCertificateDir(tlsCACertificateFolder, keyFileFormat);
+        if (tlsDHParametersFile.size() > 0) tLayer->setTempDHParameters(tlsDHParametersFile.c_str());
+        tLayer->setPrivateKeyPasswd(tlsPrivateKeyPassword); // never prompt on console
+        tLayer->setPrivateKeyFile(tlsPrivateKeyFile.c_str(), keyFileFormat);
+        tLayer->setCertificateFile(tlsCertificateFile.c_str(), keyFileFormat);
+        tLayer->setCipherSuites(tlsCiphersuites.c_str());    
+        tLayer->setCertificateVerification(DCV_ignoreCertificate);
+        ASC_setTransportLayer(net, tLayer, 1);
+      }
+#else
+      prepared = OFFalse;
+#endif
+    } else {
+      DcmTransportLayer *dLayer = new DcmTransportLayer(DICOM_APPLICATION_REQUESTOR);
+      ASC_setTransportLayer(net, dLayer, 1);
+    }
+    if (prepared && recAETitle && (recPort > 0))
+    {
+      if (SUCCESS(ASC_createAssociationParameters(&params, DEFAULT_MAXPDU)))
+      {
+        ASC_setTransportLayerType(params, recUseTLS);
+        ASC_setAPTitles(params, dvi.getNetworkAETitle(), recAETitle, NULL);
+        gethostname(localHost, sizeof(localHost) - 1);
+        sprintf(peerHost, "%s:%d", "localhost", (int)recPort);
+        ASC_setPresentationAddresses(params, localHost, peerHost);
+        // we propose only the "shutdown" SOP class in implicit VR
+        ASC_addPresentationContext(params, 1, UID_PrivateShutdownSOPClass, &xfer, 1);
+        // request shutdown association, abort if some strange peer accepts it
+        if (ASC_NORMAL == ASC_requestAssociation(net, params, &assoc)) ASC_abortAssociation(assoc);
+        ASC_dropAssociation(assoc);
+        ASC_destroyAssociation(&assoc);
+      }
+    }
+  } /* for loop */
+
+  ASC_dropNetwork(&net);      
+#ifdef HAVE_WINSOCK_H
+  WSACleanup();
+#endif
+  return;
+}
+
 
 // ********************************************
 
@@ -758,6 +906,7 @@ int main(int argc, char *argv[])
     OFString str;
     int         opt_debugMode   = 0;                   /* default: no debug */
     int         opt_verbose     = 0;                   /* default: not verbose */
+    int         opt_terminate   = 0;                   /* default: no terminate mode */
     const char *opt_cfgName     = NULL;                /* config file name */
     const char *opt_cfgID       = NULL;                /* name of entry in config file */
 
@@ -769,21 +918,29 @@ int main(int argc, char *argv[])
     cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
   
     cmd.addParam("config-file",  "configuration file to be read");
-    cmd.addParam("receiver-id",  "identifier of receiver in config file");
+    cmd.addParam("receiver-id",  "identifier of receiver in config file", OFCmdParam::PM_Optional);
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
      cmd.addOption("--help",                      "-h",        "print this help text and exit");
      cmd.addOption("--verbose",                   "-v",        "verbose mode, print processing details");
      cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
+     cmd.addOption("--terminate",                 "-t",        "terminate all running receivers");
  
     /* evaluate command line */                           
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
     {
       cmd.getParam(1, opt_cfgName);
-      cmd.getParam(2, opt_cfgID);
+      if (cmd.getParamCount() >= 2) cmd.getParam(2, opt_cfgID);
       if (cmd.findOption("--verbose")) opt_verbose = 1;
       if (cmd.findOption("--debug")) opt_debugMode = 3;
+      if (cmd.findOption("--terminate")) opt_terminate = 1;
+    }
+   
+    if ((opt_cfgID == 0)&&(! opt_terminate))
+    {
+        CERR << "error: paramter receiver-id required unless --terminate is specified." << endl;
+        return 10;
     }
   
     if (opt_verbose)
@@ -813,6 +970,11 @@ int main(int argc, char *argv[])
     }
     
     DVInterface dvi(opt_cfgName);
+    if (opt_terminate)
+    {
+      terminateAllReceivers(dvi, opt_verbose);
+      return 0;  // application terminates here
+    }
 
     /* get network configuration from configuration file */
     OFBool networkImplicitVROnly  = dvi.getTargetImplicitOnly(opt_cfgID);
@@ -1318,7 +1480,12 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsrcv.cc,v $
- * Revision 1.24  2000-11-08 18:38:03  meichel
+ * Revision 1.25  2000-11-10 16:21:13  meichel
+ * Fixed problem with DICOMscope being unable to shut down receiver processes
+ *   that are operating with TLS encryption by adding a special shutdown mode to
+ *   dcmpsrcv.
+ *
+ * Revision 1.24  2000/11/08 18:38:03  meichel
  * Updated dcmpstat IPC protocol for additional message parameters
  *
  * Revision 1.23  2000/10/23 12:19:15  joergr

@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-16 11:46:45 $
- *  CVS/RCS Revision: $Revision: 1.113 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-11-10 16:21:17 $
+ *  CVS/RCS Revision: $Revision: 1.114 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2286,65 +2286,66 @@ E_Condition DVInterface::startReceiver()
 
 E_Condition DVInterface::terminateReceiver()
 {
-  if (getReceiverName()==NULL) return EC_IllegalCall;
+  const char *receiver_application = getReceiverName();
+  if (receiver_application==NULL) return EC_IllegalCall;
   if (configPath.length()==0) return EC_IllegalCall;
 
-#ifdef HAVE_GUSI_H
-  GUSISetup(GUSIwithSIOUXSockets);
-  GUSISetup(GUSIwithInternetSockets);
-#endif
-
-#ifdef HAVE_WINSOCK_H
-  WSAData winSockData;
-  /* we need at least version 1.1 */
-  WORD winSockVersionNeeded = MAKEWORD( 1, 1 );
-  WSAStartup(winSockVersionNeeded, &winSockData);
-#endif
-
   E_Condition result = EC_Normal;
-  T_ASC_Network *net=NULL;
-  T_ASC_Parameters *params=NULL;
-  DIC_NODENAME localHost;
-  DIC_NODENAME peerHost;
-  T_ASC_Association *assoc=NULL;
-
   writeLogMessage(DVPSM_informational, "DCMPSTAT", "Terminating network receiver processes ...");
 
-  gethostname(localHost, sizeof(localHost) - 1);
-  CONDITION cond = ASC_initializeNetwork(NET_REQUESTOR, 0, 1000, &net);
-  if (SUCCESS(cond))
+  DVPSHelper::cleanChildren(logstream); // clean up old child processes before creating new ones
+#ifdef HAVE_FORK
+  // Unix version - call fork() and execl()
+  pid_t pid = fork();
+  if (pid < 0)
   {
-    Uint32 numberOfReceivers = getNumberOfTargets(DVPSE_receiver);
-    for (Uint32 i=0; i < numberOfReceivers; i++)
+    // fork failed - set error code
+    result = EC_IllegalCall;
+  } else if (pid > 0)
+  {
+    // we are the parent process, continue loop
+  } else {
+    // we are the child process
+    if (execl(receiver_application, receiver_application, configPath.c_str(), "--terminate", NULL) < 0)
     {
-      cond = ASC_createAssociationParameters(&params, DEFAULT_MAXPDU);
-      if (SUCCESS(cond))
+      if (verboseMode)
       {
-        ASC_setAPTitles(params, getNetworkAETitle(), getNetworkAETitle(), NULL);
-        sprintf(peerHost, "localhost:%d", (int)getTargetPort(getTargetID(i, DVPSE_receiver)));
-        ASC_setPresentationAddresses(params, localHost, peerHost);
-
-        const char* transferSyntaxes[] = { UID_LittleEndianImplicitTransferSyntax };
-        cond = ASC_addPresentationContext(params, 1, UID_PrivateShutdownSOPClass, transferSyntaxes, 1);
-        if (SUCCESS(cond))
-        {
-          cond = ASC_requestAssociation(net, params, &assoc);
-          if (cond==ASC_NORMAL) ASC_abortAssociation(assoc); // tear down association if necessary
-          ASC_dropAssociation(assoc);
-          ASC_destroyAssociation(&assoc);
-        }
-      } else result = EC_IllegalCall;
+        logstream->lockCerr() << "error: unable to execute '" << receiver_application << "'" << endl;
+        logstream->unlockCerr();
+      }
     }
-    ASC_dropNetwork(&net);
-  } else result = EC_IllegalCall;
-  COND_PopCondition(OFTrue); // clear condition stack
-
-#ifdef HAVE_WINSOCK_H
-  WSACleanup();
+    // if execl succeeds, this part will not get executed.
+    // if execl fails, there is not much we can do except bailing out.
+    abort();
+  }
+#else
+  // Windows version - call CreateProcess()
+  // initialize startup info
+  PROCESS_INFORMATION procinfo;
+  STARTUPINFO sinfo;
+  OFBitmanipTemplate<char>::zeroMem((char *)&sinfo, sizeof(sinfo));
+  sinfo.cb = sizeof(sinfo);
+  char commandline[4096];
+  sprintf(commandline, "%s %s %s", receiver_application, configPath.c_str(), "--terminate");
+#ifdef DEBUG
+  if (CreateProcess(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
+#else
+  if (CreateProcess(NULL, commandline, NULL, NULL, 0, DETACHED_PROCESS, NULL, NULL, &sinfo, &procinfo))
 #endif
-
+  {
+    // continue loop
+  } else {
+      if (verboseMode)
+      {
+        logstream->lockCerr() << "error: unable to execute '" << receiver_application << "'" << endl;
+        logstream->unlockCerr();
+      }
+      result = EC_IllegalCall;
+  }
+#endif
   return result;
 }
+
 
 E_Condition DVInterface::startQueryRetrieveServer()
 {
@@ -4021,7 +4022,12 @@ E_Condition DVInterface::checkIOD(const char *studyUID, const char *seriesUID, c
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.113  2000-10-16 11:46:45  joergr
+ *  Revision 1.114  2000-11-10 16:21:17  meichel
+ *  Fixed problem with DICOMscope being unable to shut down receiver processes
+ *    that are operating with TLS encryption by adding a special shutdown mode to
+ *    dcmpsrcv.
+ *
+ *  Revision 1.113  2000/10/16 11:46:45  joergr
  *  Added support for new structured reports.
  *  Added method allowing to select an instance by instance UID and SOP class
  *  UID (without series and study UID). Required for composite references in
