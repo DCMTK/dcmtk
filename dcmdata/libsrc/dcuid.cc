@@ -24,9 +24,9 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:43 $
+ *  Update Date:      $Date: 2000-04-14 16:04:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcuid.cc,v $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -96,6 +96,7 @@ BEGIN_EXTERN_C
 END_EXTERN_C
 
 #include "dcuid.h"
+#include "ofthread.h"
 
 struct UIDNameMap {
     const char* uid;
@@ -106,7 +107,7 @@ struct UIDNameMap {
 // It is very important that the names of the UIDs may not use the following 
 // characters: space  (  )  [  ], =  <  >
     
-static UIDNameMap uidNameMap[] = {
+static const UIDNameMap uidNameMap[] = {
     { UID_StandardApplicationContext,                         "StandardApplicationContext" },
     { UID_LittleEndianImplicitTransferSyntax,                 "LittleEndianImplicit" },
     { UID_LittleEndianExplicitTransferSyntax,                 "LittleEndianExplicit" },
@@ -257,7 +258,7 @@ static UIDNameMap uidNameMap[] = {
     { NULL, NULL }
 };
 
-static int uidNameMap_size = ( sizeof(uidNameMap) / sizeof(UIDNameMap) );
+static const int uidNameMap_size = ( sizeof(uidNameMap) / sizeof(UIDNameMap) );
 
 /*
 ** The global variable dcmStorageSOPClassUIDs is an array of 
@@ -404,7 +405,7 @@ typedef struct {
 ** idea of progress when receiving an image (C-STORE does not indicate 
 ** the size of an image being transmitted).
 */
-static DcmModalityTable modalities[] = {
+static const DcmModalityTable modalities[] = {
     { UID_CTImageStorage,                                    "CT",  2 *  512 *  512 },
     { UID_ComputedRadiographyImageStorage,                   "CR",  2 * 2048 * 2048 },
     { UID_DigitalIntraOralXRayImageStorageForPresentation,   "DXo", 2 * 1024 * 1024 },
@@ -568,7 +569,8 @@ static long gethostid(void)
 {
     char buf[128];
     if (sysinfo(SI_HW_SERIAL, buf, 128) == -1) {
-       CERR << "sysinfo: " << strerror(errno) << endl;
+       ofConsole.lockCerr() << "sysinfo: " << strerror(errno) << endl;
+       ofConsole.unlockCerr();
        exit(1);
     }
 #ifdef HAVE_STRTOUL
@@ -588,10 +590,13 @@ static long gethostid(void)
 */
 #if defined(HAVE_GETHOSTNAME) && defined(HAVE_GETHOSTBYNAME)
 
+#define GETHOSTBYNAME_R_BUFSIZE 16384
+
 #ifdef HAVE_PROTOTYPE_GETHOSTID
 /* CW10 has a prototype but no implementation (gethostid() is already declared extern */
 long gethostid(void)
 #else
+// 16K should be large enough to handle everything pointed to by a struct hostent
 static long gethostid(void)   
 #endif
 {
@@ -607,7 +612,16 @@ static long gethostid(void)
     if (gethostname(name, 1024) < 0) {
         return 0;
     }
-    if ((hent = gethostbyname(name)) == NULL) {
+#ifdef _REENTRANT
+    // use gethostbyname_r instead of gethostbyname
+    int h_errnop=0;
+    struct hostent theHostent;
+    char buffer[GETHOSTBYNAME_R_BUFSIZE];    
+    if ((hent = hent =gethostbyname_r(name, &theHostent, buffer, GETHOSTBYNAME_R_BUFSIZE, &h_errnop)) == NULL)
+#else
+    if ((hent = gethostbyname(name)) == NULL)
+#endif
+    {
         return 0;
     }
     p = hent->h_addr_list;
@@ -649,9 +663,12 @@ static int getpid(void) { return 0; }   // workaround for MAC
 ** char* generateUniqueIdentifer(char* buf)
 ** Creates a Unique Identifer in buf and returns buf.
 ** buf must be at least 65 bytes.
-**
-** NOTE: Thread UNSAFE
 */
+
+
+#ifdef _REENTRANT
+static OFMutex uidCounterMutex;  // mutex protecting access to counterOfCurrentUID
+#endif
 
 static unsigned int counterOfCurrentUID = 1;
 
@@ -713,7 +730,15 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix)
     sprintf(buf, ".%ld", forcePositive(time(NULL)));
     addUIDComponent(uid, buf);
 
-    sprintf(buf, ".%ld", forcePositive(counterOfCurrentUID++));
+#ifdef _REENTRANT
+    uidCounterMutex.lock();
+#endif
+    long counter = forcePositive(counterOfCurrentUID++);
+#ifdef _REENTRANT
+    uidCounterMutex.unlock();
+#endif
+    sprintf(buf, ".%ld", counter);
+
     addUIDComponent(uid, buf);
 
     return uid;
@@ -723,7 +748,12 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.26  2000-03-08 16:26:43  meichel
+** Revision 1.27  2000-04-14 16:04:53  meichel
+** Made function dcmGenerateUniqueIdentifer thread safe by protecting
+**   the counter with a Mutex and using gethostbyname_r instead of
+**   gethostbyname on Posix platforms.
+**
+** Revision 1.26  2000/03/08 16:26:43  meichel
 ** Updated copyright header.
 **
 ** Revision 1.25  2000/03/03 14:05:37  meichel

@@ -24,9 +24,9 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:20 $
+ *  Update Date:      $Date: 2000-04-14 16:04:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -119,8 +119,6 @@ extern const int numberOfDcmImageSOPClassUIDs;
 **      the process id (if obtainable, zero otherwise)
 **      the system calendar time
 **      an accumulating counter for this process
-**
-** NOTE: Thread UNSAFE
 */
 char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
 
@@ -421,7 +419,12 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.35  2000-03-08 16:26:20  meichel
+** Revision 1.36  2000-04-14 16:04:50  meichel
+** Made function dcmGenerateUniqueIdentifer thread safe by protecting
+**   the counter with a Mutex and using gethostbyname_r instead of
+**   gethostbyname on Posix platforms.
+**
+** Revision 1.35  2000/03/08 16:26:20  meichel
 ** Updated copyright header.
 **
 ** Revision 1.34  2000/02/23 15:11:40  meichel
