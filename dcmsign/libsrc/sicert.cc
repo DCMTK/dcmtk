@@ -23,8 +23,8 @@
  *    classes: SiCertificate
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-11-08 11:20:58 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2001-01-25 15:11:47 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -298,32 +298,6 @@ long SiCertificate::getCertKeyBits()
   return certPubKeyBits;
 }
 
-/* UNIMPLEMENTED
- * At some point in the future we might want to check
- * - whether a certificate used for a signature can be verified (traced back to a trusted CA)
- * - whether a certificate used for a signature is contained in a Certificate Revocation List
- * 
-SI_E_Condition SiCertificate::verify()
-{
-    X509_STORE_CTX csc;
-    FILE *fp = fopen ("certificate_revocation_list.pem", "rb"); 
-    X509_CRL *crl = PEM_read_X509_CRL(fp,NULL,NULL, NULL);
-    X509_STORE *ctx = X509_STORE_new();
-    X509_STORE_set_default_paths(ctx);
-    X509_STORE_load_locations(ctx, NULL, "certs_directory");
-    X509_STORE_add_crl(ctx, crl);
-    X509_STORE_CTX_init(&csc, ctx, x509, NULL);
-    int i=X509_verify_cert(&csc);
-    cout << X509_STORE_CTX_get_error(&csc) << endl;
-    X509_STORE_CTX_cleanup(&csc);
-    ERR_print_errors_fp (stderr);
-    if (i) cout << "ok" << endl;
-    else cout << "not ok" << endl;
-    fclose(fp);
-    return SI_EC_Normal;
-}
-*/
-
 #else /* WITH_OPENSSL */
 
 const int sicert_cc_dummy_to_keep_linker_from_moaning = 0;
@@ -332,7 +306,12 @@ const int sicert_cc_dummy_to_keep_linker_from_moaning = 0;
 
 /*
  *  $Log: sicert.cc,v $
- *  Revision 1.2  2000-11-08 11:20:58  meichel
+ *  Revision 1.3  2001-01-25 15:11:47  meichel
+ *  Added class SiCertificateVerifier in dcmsign which allows to check
+ *    whether a certificate from a digital signature is trusted, i.e. issued
+ *    by a known CA and not contained in a CRL.
+ *
+ *  Revision 1.2  2000/11/08 11:20:58  meichel
  *  Fixed trailing garbage characters problem in extracting validity
  *    information from a X.509 certificate.
  *

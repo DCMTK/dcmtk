@@ -40,6 +40,10 @@ sicert.o: sicert.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
  ../../dcmdata/include/dcelem.h ../../dcmdata/include/dcvrcs.h \
  ../../dcmdata/include/dcvrobow.h ../../dcmdata/include/dcdeftag.h
+sicertvf.o: sicertvf.cc ../../config/include/osconfig.h \
+ ../include/sicert.h ../include/sitypes.h \
+ ../../ofstd/include/oftypes.h ../../dcmdata/include/dctypes.h \
+ ../../dcmdata/include/dcerror.h ../include/sicertvf.h
 sicreapr.o: sicreapr.cc ../../config/include/osconfig.h \
  ../include/sicreapr.h ../include/sisprof.h \
  ../../ofstd/include/oftypes.h ../../dcmdata/include/dcxfer.h \

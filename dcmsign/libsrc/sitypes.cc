@@ -23,8 +23,8 @@
  *    consts, typedefs and enums for dcmsign
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-11-07 16:49:09 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2001-01-25 15:11:48 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -95,6 +95,9 @@ const char *siErrorConditionToString(SI_E_Condition cond)
     case SI_EC_VerificationFailed_Corrupted:
       return "signature verification failed: signature is invalid (document corrupted)";
       /* break; */
+    case SI_EC_VerificationFailed_NoTrust:
+      return "signature verification failed: certificate issued by unknown CA";
+      /* break; */
   }
   return "unknown dcmsign error";
 }
@@ -107,7 +110,12 @@ const int sitypes_cc_dummy_to_keep_linker_from_moaning = 0;
 
 /*
  *  $Log: sitypes.cc,v $
- *  Revision 1.1  2000-11-07 16:49:09  meichel
+ *  Revision 1.2  2001-01-25 15:11:48  meichel
+ *  Added class SiCertificateVerifier in dcmsign which allows to check
+ *    whether a certificate from a digital signature is trusted, i.e. issued
+ *    by a known CA and not contained in a CRL.
+ *
+ *  Revision 1.1  2000/11/07 16:49:09  meichel
  *  Initial release of dcmsign module for DICOM Digital Signatures
  *
  *
