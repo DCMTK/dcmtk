@@ -22,8 +22,8 @@
  *  Purpose: DicomMonoOutputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-09 16:49:11 $
- *  CVS/RCS Revision: $Revision: 1.41 $
+ *  Update Date:      $Date: 2003-12-23 10:51:52 $
+ *  CVS/RCS Revision: $Revision: 1.42 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -83,8 +83,8 @@ class DiMonoOutputPixelTemplate
      *  @param  high      highest pixel value for the output data (e.g. 255)
      *  @param  columns   image's width (in pixels)
      *  @param  rows      image's height
-     *  @param  frame     number of frame to be rendered.
-     *  @param  frames    total number of frames present in intermediate representation
+     *  @param  frame     frame to be rendered
+     *  #param  frames    total number of frames present in intermediate representation
      *  @param  pastel    flag indicating whether to use not only 'real' grayscale values (optional, experimental)
      */
     DiMonoOutputPixelTemplate(void *buffer,
@@ -1152,7 +1152,10 @@ class DiMonoOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoopxt.h,v $
- * Revision 1.41  2003-12-09 16:49:11  joergr
+ * Revision 1.42  2003-12-23 10:51:52  joergr
+ * Updated documentation to get rid of doxygen warnings.
+ *
+ * Revision 1.41  2003/12/09 16:49:11  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  * Removed leading underscore characters from preprocessor symbols (reserved
  * symbols). Updated copyright header.

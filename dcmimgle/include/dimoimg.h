@@ -22,8 +22,8 @@
  *  Purpose: DicomMonochromeImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-17 16:17:29 $
- *  CVS/RCS Revision: $Revision: 1.41 $
+ *  Update Date:      $Date: 2003-12-23 10:51:52 $
+ *  CVS/RCS Revision: $Revision: 1.42 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -451,11 +451,9 @@ class DiMonoImage
                    const DcmLongString &description,
                    const EM_Overlay mode);
 
-    /** remove specified (additional) overlay plane
+    /** remove all additional overlay planes
      *
-     ** @param  group  group number (0x60nn) of overlay plane
-     *
-     ** @return false (0) if an error occurred (e.g. plane doesn't exist), true otherwise
+     ** @return false (0) if an error occurred, true otherwise
      */
     int removeAllOverlays();
 
@@ -634,7 +632,7 @@ class DiMonoImage
      *  @param  plane   number (0..15) or group number (0x60nn) of overlay plane
      *  @param  width   returns width of overlay plane (in pixels)
      *  @param  height  returns height of overlay plane (in pixels)
-     *  @param  frame   returns number of frames (multiple overlay frames possible!)
+     *  @param  frames  returns number of frames (multiple overlay frames possible!)
      *  @param  idx     index of overlay group (0 = dataset, planes stored in the image dataset;
      *                                          1 = additional, planes added by addOverlay()),
      *                  default: 0
@@ -1093,9 +1091,9 @@ class DiMonoImage
     unsigned int MinDensity;
     /// maximum density of a print-out (ditto)
     unsigned int MaxDensity;
-    // reflected ambient light (in candela per squaremeter)
+    /// reflected ambient light (in candela per squaremeter)
     unsigned int Reflection;
-    // illumination (ditto)
+    /// illumination (ditto)
     unsigned int Illumination;
 
     /// points to associated overlay-objects ([0] = built-in, [1] = additional)
@@ -1132,7 +1130,10 @@ class DiMonoImage
  *
  * CVS/RCS Log:
  * $Log: dimoimg.h,v $
- * Revision 1.41  2003-12-17 16:17:29  joergr
+ * Revision 1.42  2003-12-23 10:51:52  joergr
+ * Updated documentation to get rid of doxygen warnings.
+ *
+ * Revision 1.41  2003/12/17 16:17:29  joergr
  * Added new compatibility flag that allows to ignore the third value of LUT
  * descriptors and to determine the bits per table entry automatically.
  *
