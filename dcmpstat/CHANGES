@@ -6,6 +6,7 @@
   Affects: dcmpstat/apps/dcmpssnd.cc
            dcmpstat/include/dviface.h
            dcmpstat/libsrc/dviface.cc
+           dcmpstat/tests/test.cfg
            
 **** Changes from 1999.01.20 (eichelberg)
 
