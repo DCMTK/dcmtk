@@ -22,9 +22,9 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-10 09:41:17 $
+ *  Update Date:      $Date: 1999-09-10 14:16:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -557,12 +557,15 @@ int main(int argc, char *argv[])
 
     /* create & set display function */
     DiDisplayFunction *disp = NULL;
-    if (opt_displayFunction == 1)
-        disp = new DiCIELABFunction(opt_displayFile.c_str());
-    else
-        disp = new DiGSDFunction(opt_displayFile.c_str());
-    if ((di != NULL) && (disp != NULL) && (disp->isValid()))
-        di->setDisplayFunction(disp);
+    if (!opt_displayFile.empty())
+    {
+        if (opt_displayFunction == 1)
+            disp = new DiCIELABFunction(opt_displayFile.c_str());
+        else
+            disp = new DiGSDFunction(opt_displayFile.c_str());
+        if ((di != NULL) && (disp != NULL) && (disp->isValid()))
+            di->setDisplayFunction(disp);
+    }
 
     if (opt_imageInfo)
     {
@@ -955,7 +958,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.31  1999-09-10 09:41:17  joergr
+ * Revision 1.32  1999-09-10 14:16:22  joergr
+ * Added check whether display filename is specified or not to avoid
+ * unnecessary warning messages.
+ *
+ * Revision 1.31  1999/09/10 09:41:17  joergr
  * Added support for CIELAB display function.
  *
  * Revision 1.30  1999/08/25 16:59:15  joergr
