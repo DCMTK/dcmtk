@@ -23,9 +23,9 @@
  *           XML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 11:53:12 $
+ *  Update Date:      $Date: 2003-10-30 17:43:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/dsr2xml.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -159,6 +159,7 @@ int main(int argc, char *argv[])
         cmd.addOption("--use-xml-namespace",    "+Xn", "add XML namespace declaration to root element");
       cmd.addSubGroup("writing:");
         cmd.addOption("--write-empty-tags",     "+We", "write all tags even if their value is empty");
+        cmd.addOption("--write-template-id",    "+Wt", "write template identification information");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -233,6 +234,8 @@ int main(int argc, char *argv[])
 
         if (cmd.findOption("--write-empty-tags"))
             opt_writeFlags |= DSRTypes::XF_writeEmptyTags;
+        if (cmd.findOption("--write-template-id"))
+            opt_writeFlags |= DSRTypes::XF_writeTemplateIdentification;            
 
         /* check whether appropriate XML Schema is available */
         if (opt_writeFlags & DSRTypes::XF_addSchemaReference)
@@ -281,7 +284,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2xml.cc,v $
- * Revision 1.16  2003-08-07 11:53:12  joergr
+ * Revision 1.17  2003-10-30 17:43:54  joergr
+ * Added new command line option which allows to write the template
+ * identification of a content item in XML format.
+ *
+ * Revision 1.16  2003/08/07 11:53:12  joergr
  * Added new option --add-schema-reference to command line tool dsr2xml.
  *
  * Revision 1.15  2003/04/01 14:58:32  joergr
