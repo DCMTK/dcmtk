@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2003, OFFIS
+ *  Copyright (C) 1996-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomMonochromePixel (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-08 17:43:04 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2004-02-06 11:10:39 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -77,7 +77,7 @@ DiMonoPixel::DiMonoPixel(const DiMonoPixel *pixel,
 }
 
 
-DiMonoPixel::DiMonoPixel(const DiMonoOutputPixel *pixel,
+DiMonoPixel::DiMonoPixel(DiMonoOutputPixel *pixel,
                          DiMonoModality *modality)
   : DiPixel(pixel->getCount()),
     Modality(modality)
@@ -100,7 +100,10 @@ DiMonoPixel::~DiMonoPixel()
  *
  * CVS/RCS Log:
  * $Log: dimopx.cc,v $
- * Revision 1.10  2003-12-08 17:43:04  joergr
+ * Revision 1.11  2004-02-06 11:10:39  joergr
+ * Distinguish more clearly between const and non-const access to pixel data.
+ *
+ * Revision 1.10  2003/12/08 17:43:04  joergr
  * Updated copyright header.
  *
  * Revision 1.9  2002/06/26 16:13:25  joergr

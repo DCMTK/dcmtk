@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2003, OFFIS
+ *  Copyright (C) 1996-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomMonochrome1Image (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-08 18:25:12 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2004-02-06 11:07:50 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -81,9 +81,9 @@ class DiMono1Image
      *
      ** @return untyped pointer to the pixel data if successful, NULL otherwise
      */
-    virtual void *getOutputData(const unsigned long frame,
-                                const int bits,
-                                const int planar = 0);
+    virtual const void *getOutputData(const unsigned long frame,
+                                      const int bits,
+                                      const int planar = 0);
 
     /** get pixel data with specified format.
      *  (memory is handled externally)
@@ -239,7 +239,10 @@ class DiMono1Image
  *
  * CVS/RCS Log:
  * $Log: dimo1img.h,v $
- * Revision 1.12  2003-12-08 18:25:12  joergr
+ * Revision 1.13  2004-02-06 11:07:50  joergr
+ * Distinguish more clearly between const and non-const access to pixel data.
+ *
+ * Revision 1.12  2003/12/08 18:25:12  joergr
  * Removed leading underscore characters from preprocessor symbols (reserved
  * symbols). Updated CVS header.
  *

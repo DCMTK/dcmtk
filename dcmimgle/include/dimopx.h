@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2003, OFFIS
+ *  Copyright (C) 1996-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomMonochromePixel (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-08 18:45:29 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2004-02-06 11:07:50 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -82,7 +82,7 @@ class DiMonoPixel
      ** @param  pixel     pointer to output pixel data used for intermediate representation
      *  @param  modality  pointer to object managing modality transform
      */
-    DiMonoPixel(const DiMonoOutputPixel *pixel,
+    DiMonoPixel(DiMonoOutputPixel *pixel,
                 DiMonoModality *modality);
 
     /** destructor
@@ -253,7 +253,10 @@ class DiMonoPixel
  *
  * CVS/RCS Log:
  * $Log: dimopx.h,v $
- * Revision 1.16  2003-12-08 18:45:29  joergr
+ * Revision 1.17  2004-02-06 11:07:50  joergr
+ * Distinguish more clearly between const and non-const access to pixel data.
+ *
+ * Revision 1.16  2003/12/08 18:45:29  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  * Removed leading underscore characters from preprocessor symbols (reserved
  * symbols). Updated copyright header.

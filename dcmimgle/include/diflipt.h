@@ -22,8 +22,8 @@
  *  Purpose: DicomFlipTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-23 15:53:22 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2004-02-06 11:07:50 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -81,11 +81,11 @@ class DiFlipTemplate
                 (pixel->getCount() == OFstatic_cast(unsigned long, columns) * OFstatic_cast(unsigned long, rows) * frames))
             {
                 if (horz && vert)
-                    flipHorzVert(OFstatic_cast(T **, pixel->getDataPtr()));
+                    flipHorzVert(OFstatic_cast(T **, pixel->getDataArrayPtr()));
                 else if (horz)
-                    flipHorz(OFstatic_cast(T **, pixel->getDataPtr()));
+                    flipHorz(OFstatic_cast(T **, pixel->getDataArrayPtr()));
                 else if (vert)
-                    flipVert(OFstatic_cast(T **, pixel->getDataPtr()));
+                    flipVert(OFstatic_cast(T **, pixel->getDataArrayPtr()));
             } else {
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                 {
@@ -354,7 +354,10 @@ class DiFlipTemplate
  *
  * CVS/RCS Log:
  * $Log: diflipt.h,v $
- * Revision 1.14  2003-12-23 15:53:22  joergr
+ * Revision 1.15  2004-02-06 11:07:50  joergr
+ * Distinguish more clearly between const and non-const access to pixel data.
+ *
+ * Revision 1.14  2003/12/23 15:53:22  joergr
  * Replaced post-increment/decrement operators by pre-increment/decrement
  * operators where appropriate (e.g. 'i++' by '++i').
  *

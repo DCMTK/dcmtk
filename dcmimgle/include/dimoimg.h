@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2003, OFFIS
+ *  Copyright (C) 1996-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomMonochromeImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-23 10:51:52 $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  Update Date:      $Date: 2004-02-06 11:07:50 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -531,9 +531,9 @@ class DiMonoImage
      *
      ** @return untyped pointer to the pixel data if successful, NULL otherwise
      */
-    virtual void *getOutputData(const unsigned long frame,
-                                const int bits,
-                                const int planar = 0) = 0;
+    virtual const void *getOutputData(const unsigned long frame,
+                                      const int bits,
+                                      const int planar = 0) = 0;
 
     /** get pixel data with specified format.
      *  (memory is handled externally)
@@ -559,7 +559,7 @@ class DiMonoImage
      *
      ** @return untyped pointer to the pixel data if successful, NULL otherwise
      */
-    void *getOutputPlane(const int dummy) const;
+    const void *getOutputPlane(const int dummy) const;
 
     /** delete internally handled output memory buffer
      *  Save memory if data is no longer needed.
@@ -865,7 +865,7 @@ class DiMonoImage
      *  @param  alloc   number of bits allocated
      */
      DiMonoImage(const DiMonoImage *image,
-                 const DiMonoOutputPixel *pixel,
+                 DiMonoOutputPixel *pixel,
                  const unsigned long frame,
                  const int stored,
                  const int alloc);
@@ -938,12 +938,12 @@ class DiMonoImage
      *
      ** @return untyped pointer to the pixel data if successful, NULL otherwise
      */
-    void *getData(void *buffer,
-                  const unsigned long size,
-                  const unsigned long frame,
-                  int bits,
-                  const int planar,
-                  const int negative);
+    const void *getData(void *buffer,
+                        const unsigned long size,
+                        const unsigned long frame,
+                        int bits,
+                        const int planar,
+                        const int negative);
 
     /** get pixel data with specified format for Uint8 input (helper function).
      *  (memory is handled externally)
@@ -1130,7 +1130,10 @@ class DiMonoImage
  *
  * CVS/RCS Log:
  * $Log: dimoimg.h,v $
- * Revision 1.42  2003-12-23 10:51:52  joergr
+ * Revision 1.43  2004-02-06 11:07:50  joergr
+ * Distinguish more clearly between const and non-const access to pixel data.
+ *
+ * Revision 1.42  2003/12/23 10:51:52  joergr
  * Updated documentation to get rid of doxygen warnings.
  *
  * Revision 1.41  2003/12/17 16:17:29  joergr

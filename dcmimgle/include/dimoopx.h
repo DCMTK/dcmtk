@@ -22,8 +22,8 @@
  *  Purpose: DicomMonoOutputPixel (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-05 14:52:20 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2004-02-06 11:07:50 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,9 +86,15 @@ class DiMonoOutputPixel
 
     /** get pointer to output pixel data (abstract)
      *
-     ** @return pointer to pixel data if sucessful, NULL otherwise
+     ** @return pointer to pixel data
      */
-    virtual void *getData() const = 0;
+    virtual const void *getData() const = 0;
+
+    /** get pointer to output pixel data (abstract)
+     *
+     ** @return pointer to pixel data
+     */
+    virtual void *getDataPtr() = 0;
 
     /** remove reference to (internally handled) pixel data (abstract)
      */
@@ -170,7 +176,10 @@ class DiMonoOutputPixel
  *
  * CVS/RCS Log:
  * $Log: dimoopx.h,v $
- * Revision 1.16  2004-01-05 14:52:20  joergr
+ * Revision 1.17  2004-02-06 11:07:50  joergr
+ * Distinguish more clearly between const and non-const access to pixel data.
+ *
+ * Revision 1.16  2004/01/05 14:52:20  joergr
  * Removed acknowledgements with e-mail addresses from CVS log.
  *
  * Revision 1.15  2003/12/08 18:44:05  joergr

@@ -22,8 +22,8 @@
  *  Purpose: DicomMonochromePixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-05 14:52:20 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2004-02-06 11:07:50 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -100,10 +100,10 @@ class DiMonoPixelTemplate
      ** @param  pixel     pointer to output pixel data used for intermediate representation
      *  @param  modality  pointer to object managing modality transform
      */
-    DiMonoPixelTemplate(const DiMonoOutputPixel *pixel,
+    DiMonoPixelTemplate(DiMonoOutputPixel *pixel,
                         DiMonoModality *modality)
       : DiMonoPixel(pixel, modality),
-        Data(OFstatic_cast(T *, pixel->getData()))
+        Data(OFstatic_cast(T *, pixel->getDataPtr()))
     {
         MinValue[0] = 0;
         MinValue[1] = 0;
@@ -131,7 +131,16 @@ class DiMonoPixelTemplate
      *
      ** @return pointer to pixel data
      */
-    inline void *getData() const
+    inline const void *getData() const
+    {
+        return OFstatic_cast(const void *, Data);
+    }
+
+    /** get pointer to pixel data
+     *
+     ** @return pointer to pixel data
+     */
+    inline void *getDataPtr()
     {
         return OFstatic_cast(void *, Data);
     }
@@ -140,7 +149,7 @@ class DiMonoPixelTemplate
      *
      ** @return reference to pointer to pixel data
      */
-    inline void *getDataPtr()
+    inline void *getDataArrayPtr()
     {
         return OFstatic_cast(void *, &Data);
     }
@@ -428,7 +437,10 @@ class DiMonoPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimopxt.h,v $
- * Revision 1.24  2004-01-05 14:52:20  joergr
+ * Revision 1.25  2004-02-06 11:07:50  joergr
+ * Distinguish more clearly between const and non-const access to pixel data.
+ *
+ * Revision 1.24  2004/01/05 14:52:20  joergr
  * Removed acknowledgements with e-mail addresses from CVS log.
  *
  * Revision 1.23  2003/12/23 15:53:22  joergr

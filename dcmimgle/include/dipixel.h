@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2003, OFFIS
+ *  Copyright (C) 1996-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomPixel (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-09 10:07:16 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2004-02-06 11:07:50 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -85,13 +85,19 @@ class DiPixel
      *
      ** @return pointer to pixel data
      */
-    virtual void *getData() const = 0;
+    virtual const void *getData() const = 0;
+
+    /** get pointer to pixel data (abstract)
+     *
+     ** @return pointer to pixel data
+     */
+    virtual void *getDataPtr() = 0;
 
     /** get reference to pointer to pixel data (abstract)
      *
      ** @return reference to pointer to pixel data
      */
-    virtual void *getDataPtr() = 0;
+    virtual void *getDataArrayPtr() = 0;
 
     /** get number of pixels
      *
@@ -129,7 +135,10 @@ class DiPixel
  *
  * CVS/RCS Log:
  * $Log: dipixel.h,v $
- * Revision 1.8  2003-12-09 10:07:16  joergr
+ * Revision 1.9  2004-02-06 11:07:50  joergr
+ * Distinguish more clearly between const and non-const access to pixel data.
+ *
+ * Revision 1.8  2003/12/09 10:07:16  joergr
  * Removed leading underscore characters from preprocessor symbols (reserved
  * symbols). Updated copyright header.
  *

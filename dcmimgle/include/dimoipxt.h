@@ -22,8 +22,8 @@
  *  Purpose: DicomMonochromeInputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-05 14:52:20 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Update Date:      $Date: 2004-02-06 11:07:50 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -140,7 +140,7 @@ class DiMonoInputPixelTemplate
                 const int useInputBuffer = (sizeof(T1) == sizeof(T3)) && (Count <= input->getCount());
                 if (useInputBuffer)                            // do not copy pixel data, reference them!
                 {
-                    Data = OFstatic_cast(T3 *, input->getData());
+                    Data = OFstatic_cast(T3 *, input->getDataPtr());
                     input->removeDataReference();              // avoid double deletion
                 } else
                     Data = new T3[Count];
@@ -217,7 +217,7 @@ class DiMonoInputPixelTemplate
             const int useInputBuffer = (sizeof(T1) == sizeof(T3)) && (Count <= input->getCount()) && (input->getPixelStart() == 0);
             if (useInputBuffer)
             {                                              // do not copy pixel data, reference them!
-                Data = OFstatic_cast(T3 *, input->getData());
+                Data = OFstatic_cast(T3 *, input->getDataPtr());
                 input->removeDataReference();              // avoid double deletion
             } else
                 Data = new T3[Count];
@@ -299,7 +299,10 @@ class DiMonoInputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoipxt.h,v $
- * Revision 1.30  2004-01-05 14:52:20  joergr
+ * Revision 1.31  2004-02-06 11:07:50  joergr
+ * Distinguish more clearly between const and non-const access to pixel data.
+ *
+ * Revision 1.30  2004/01/05 14:52:20  joergr
  * Removed acknowledgements with e-mail addresses from CVS log.
  *
  * Revision 1.29  2003/12/23 15:53:22  joergr

@@ -22,8 +22,8 @@
  *  Purpose: DicomImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-05 14:52:20 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Update Date:      $Date: 2004-02-06 11:07:50 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -255,9 +255,9 @@ class DiImage
      *
      ** @return untyped pointer to the pixel data if successful, NULL otherwise
      */
-    virtual void *getOutputData(const unsigned long frame,
-                                const int bits,
-                                const int planar) = 0;
+    virtual const void *getOutputData(const unsigned long frame,
+                                      const int bits,
+                                      const int planar) = 0;
 
     /** get pixel data with specified format (abstract).
      *  (memory is handled externally)
@@ -283,7 +283,7 @@ class DiImage
      *
      ** @return untyped pointer to the pixel data if successful, NULL otherwise
      */
-    virtual void *getOutputPlane(const int plane) const = 0;
+    virtual const void *getOutputPlane(const int plane) const = 0;
 
     /** delete internally handled output memory buffer (abstract)
      */
@@ -640,7 +640,10 @@ class DiImage
  *
  * CVS/RCS Log:
  * $Log: diimage.h,v $
- * Revision 1.33  2004-01-05 14:52:20  joergr
+ * Revision 1.34  2004-02-06 11:07:50  joergr
+ * Distinguish more clearly between const and non-const access to pixel data.
+ *
+ * Revision 1.33  2004/01/05 14:52:20  joergr
  * Removed acknowledgements with e-mail addresses from CVS log.
  *
  * Revision 1.32  2003/12/08 18:22:26  joergr

@@ -22,8 +22,8 @@
  *  Purpose: DicomInputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-05 14:52:20 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Update Date:      $Date: 2004-02-06 11:07:50 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -292,7 +292,16 @@ class DiInputPixelTemplate
      *
      ** @return pointer to input pixel data
      */
-    inline void *getData() const
+    inline const void *getData() const
+    {
+        return OFstatic_cast(const void *, Data);
+    }
+
+    /** get reference to pointer to input pixel data
+     *
+     ** @return reference to pointer to input pixel data
+     */
+    virtual void *getDataPtr()
     {
         return OFstatic_cast(void *, Data);
     }
@@ -590,7 +599,10 @@ class DiInputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diinpxt.h,v $
- * Revision 1.27  2004-01-05 14:52:20  joergr
+ * Revision 1.28  2004-02-06 11:07:50  joergr
+ * Distinguish more clearly between const and non-const access to pixel data.
+ *
+ * Revision 1.27  2004/01/05 14:52:20  joergr
  * Removed acknowledgements with e-mail addresses from CVS log.
  *
  * Revision 1.26  2003/12/23 15:53:22  joergr

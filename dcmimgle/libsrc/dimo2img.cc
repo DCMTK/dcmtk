@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2003, OFFIS
+ *  Copyright (C) 1996-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomMonochrome2Image (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-08 17:38:27 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2004-02-06 11:10:39 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -124,7 +124,7 @@ DiMono2Image::DiMono2Image(const DiMonoImage *image,
 
 
 DiMono2Image::DiMono2Image(const DiMonoImage *image,
-                           const DiMonoOutputPixel *pixel,
+                           DiMonoOutputPixel *pixel,
                            const unsigned long frame,
                            const int stored,
                            const int alloc)
@@ -145,9 +145,9 @@ DiMono2Image::~DiMono2Image()
 /*********************************************************************/
 
 
-void *DiMono2Image::getOutputData(const unsigned long frame,
-                                  const int bits,
-                                  const int planar)
+const void *DiMono2Image::getOutputData(const unsigned long frame,
+                                        const int bits,
+                                        const int planar)
 {
     return DiMonoImage::getData(NULL, 0, frame, bits, planar, 0);
 }
@@ -215,7 +215,10 @@ DiImage *DiMono2Image::createMono(const double,
  *
  * CVS/RCS Log:
  * $Log: dimo2img.cc,v $
- * Revision 1.12  2003-12-08 17:38:27  joergr
+ * Revision 1.13  2004-02-06 11:10:39  joergr
+ * Distinguish more clearly between const and non-const access to pixel data.
+ *
+ * Revision 1.12  2003/12/08 17:38:27  joergr
  * Updated CVS header.
  *
  * Revision 1.11  2003/12/08 14:52:07  joergr

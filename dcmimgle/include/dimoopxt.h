@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2003, OFFIS
+ *  Copyright (C) 1996-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomMonoOutputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-23 15:53:22 $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  Update Date:      $Date: 2004-02-06 11:07:50 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -169,11 +169,20 @@ class DiMonoOutputPixelTemplate
 
     /** get pointer to output pixel data
      *
-     ** @return pointer to pixel data if sucessful, NULL otherwise
+     ** @return pointer to pixel data
      */
-    inline void *getData() const
+    inline const void *getData() const
     {
-        return (ColorData != NULL) ? ColorData->getData() : OFstatic_cast(void *, Data);
+        return (ColorData != NULL) ? ColorData->getData() : OFstatic_cast(const void *, Data);
+    }
+
+    /** get pointer to output pixel data
+     *
+     ** @return pointer to pixel data
+     */
+    virtual void *getDataPtr()
+    {
+        return (ColorData != NULL) ? ColorData->getDataPtr() : OFstatic_cast(void *, Data);
     }
 
     /** remove reference to (internally handled) pixel data (abstract)
@@ -1152,7 +1161,10 @@ class DiMonoOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoopxt.h,v $
- * Revision 1.43  2003-12-23 15:53:22  joergr
+ * Revision 1.44  2004-02-06 11:07:50  joergr
+ * Distinguish more clearly between const and non-const access to pixel data.
+ *
+ * Revision 1.43  2003/12/23 15:53:22  joergr
  * Replaced post-increment/decrement operators by pre-increment/decrement
  * operators where appropriate (e.g. 'i++' by '++i').
  *

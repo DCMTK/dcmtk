@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2003, OFFIS
+ *  Copyright (C) 1996-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-23 16:03:18 $
- *  CVS/RCS Revision: $Revision: 1.58 $
+ *  Update Date:      $Date: 2004-02-06 11:10:39 $
+ *  CVS/RCS Revision: $Revision: 1.59 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -570,7 +570,7 @@ DiMonoImage::DiMonoImage(const DiMonoImage &)
  */
 
 DiMonoImage::DiMonoImage(const DiMonoImage *image,
-                         const DiMonoOutputPixel *pixel,
+                         DiMonoOutputPixel *pixel,
                          const unsigned long frame,
                          const int stored,
                          const int alloc)
@@ -948,10 +948,10 @@ unsigned long DiMonoImage::getOutputDataSize(const int bits) const
 }
 
 
-void *DiMonoImage::getOutputPlane(const int) const
+const void *DiMonoImage::getOutputPlane(const int) const
 {
     if (OutputData != NULL)
-        return OFstatic_cast(void *, OutputData->getData());  // monochrome images don't have multiple planes
+        return OutputData->getData();  // monochrome images don't have multiple planes
     return NULL;
 }
 
@@ -1446,12 +1446,12 @@ int DiMonoImage::rotate(const int degree)
  *   create output data of 'frame' with depth of 'bits' and min/max values depending on 'negative' (support mono1/2)
  */
 
-void *DiMonoImage::getData(void *buffer,
-                           const unsigned long size,
-                           const unsigned long frame,
-                           int bits,
-                           const int /*planar*/,            /* not yet supported, needed for pastel color images !! */
-                           const int negative)
+const void *DiMonoImage::getData(void *buffer,
+                                 const unsigned long size,
+                                 const unsigned long frame,
+                                 int bits,
+                                 const int /*planar*/,            /* not yet supported, needed for pastel color images !! */
+                                 const int negative)
 {
     if ((InterData != NULL) && (ImageStatus == EIS_Normal) && (frame < NumberOfFrames) &&
         (((bits > 0) && (bits <= MAX_BITS)) || (bits == MI_PastelColor)))
@@ -1679,7 +1679,7 @@ unsigned long DiMonoImage::createDIB(void *&data,
                         }
                     }
                 } else {                                    // data already aligned and correctly oriented
-                    data = OutputData->getData();
+                    data = OutputData->getDataPtr();
                     OutputData = NULL;                      // remove reference to internal memory
                     bytes = count;
                 }
@@ -1767,7 +1767,7 @@ unsigned long DiMonoImage::createAWTBitmap(void *&data,
         if ((OutputData != NULL) && (OutputData->getData() != NULL))
         {
             bytes = OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, Rows);
-            data = OutputData->getData();
+            data = OutputData->getDataPtr();
             OutputData = NULL;                          // remove reference to internal memory
         }
     }
@@ -1956,7 +1956,7 @@ int DiMonoImage::writeImageToDataset(DcmItem &dataset)
     int result = 0;
     if (InterData != NULL)
     {
-        void *pixel = InterData->getData();
+        const void *pixel = InterData->getData();
         const unsigned long count = InterData->getCount();
         if ((BitsPerSample > 0) && (pixel != NULL) && (count > 0))
         {
@@ -1976,32 +1976,32 @@ int DiMonoImage::writeImageToDataset(DcmItem &dataset)
                 case EPR_Uint8:
                     dataset.putAndInsertUint16(DCM_BitsAllocated, 8);
                     dataset.putAndInsertUint16(DCM_PixelRepresentation, 0);
-                    dataset.putAndInsertUint8Array(DCM_PixelData, OFstatic_cast(Uint8 *, pixel), count);
+                    dataset.putAndInsertUint8Array(DCM_PixelData, OFstatic_cast(const Uint8 *, pixel), count);
                     break;
                 case EPR_Sint8:
                     dataset.putAndInsertUint16(DCM_BitsAllocated, 8);
                     dataset.putAndInsertUint16(DCM_PixelRepresentation, 1);
-                    dataset.putAndInsertUint8Array(DCM_PixelData, OFstatic_cast(Uint8 *, pixel), count);
+                    dataset.putAndInsertUint8Array(DCM_PixelData, OFstatic_cast(const Uint8 *, pixel), count);
                     break;
                 case EPR_Uint16:
                     dataset.putAndInsertUint16(DCM_BitsAllocated, 16);
                     dataset.putAndInsertUint16(DCM_PixelRepresentation, 0);
-                    dataset.putAndInsertUint16Array(DCM_PixelData, OFstatic_cast(Uint16 *, pixel), count);
+                    dataset.putAndInsertUint16Array(DCM_PixelData, OFstatic_cast(const Uint16 *, pixel), count);
                     break;
                 case EPR_Sint16:
                     dataset.putAndInsertUint16(DCM_BitsAllocated, 16);
                     dataset.putAndInsertUint16(DCM_PixelRepresentation, 1);
-                    dataset.putAndInsertUint16Array(DCM_PixelData, OFstatic_cast(Uint16 *, pixel), count);
+                    dataset.putAndInsertUint16Array(DCM_PixelData, OFstatic_cast(const Uint16 *, pixel), count);
                     break;
                 case EPR_Uint32:
                     dataset.putAndInsertUint16(DCM_BitsAllocated, 32);
                     dataset.putAndInsertUint16(DCM_PixelRepresentation, 0);
-                    dataset.putAndInsertUint16Array(DCM_PixelData, OFstatic_cast(Uint16 *, pixel), count);
+                    dataset.putAndInsertUint16Array(DCM_PixelData, OFstatic_cast(const Uint16 *, pixel), count);
                     break;
                 case EPR_Sint32:
                     dataset.putAndInsertUint16(DCM_BitsAllocated, 32);
                     dataset.putAndInsertUint16(DCM_PixelRepresentation, 1);
-                    dataset.putAndInsertUint16Array(DCM_PixelData, OFstatic_cast(Uint16 *, pixel), count);
+                    dataset.putAndInsertUint16Array(DCM_PixelData, OFstatic_cast(const Uint16 *, pixel), count);
                     break;
             }
             dataset.putAndInsertUint16(DCM_BitsStored, BitsPerSample);
@@ -2114,7 +2114,10 @@ int DiMonoImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.58  2003-12-23 16:03:18  joergr
+ * Revision 1.59  2004-02-06 11:10:39  joergr
+ * Distinguish more clearly between const and non-const access to pixel data.
+ *
+ * Revision 1.58  2003/12/23 16:03:18  joergr
  * Replaced post-increment/decrement operators by pre-increment/decrement
  * operators where appropriate (e.g. 'i++' by '++i').
  *
