@@ -10,9 +10,9 @@
 ** Implementation of class DcmFloatingPointDouble
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-04-16 16:05:23 $
+** Update Date:		$Date: 1996-05-20 13:27:51 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrfd.cc,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -79,7 +79,7 @@ Edebug(());
 
 void DcmFloatingPointDouble::print(const int level)
 {
-    if (valueLoaded)
+    if (this -> valueLoaded())
     {
 	Float64 * doubleVals =  this -> get();
 
@@ -284,7 +284,10 @@ E_Condition DcmFloatingPointDouble::verify(const BOOL autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrfd.cc,v $
-** Revision 1.6  1996-04-16 16:05:23  andreas
+** Revision 1.7  1996-05-20 13:27:51  andreas
+** correct minor bug in print routine
+**
+** Revision 1.6  1996/04/16 16:05:23  andreas
 ** - better support und bug fixes for NULL element value
 **
 ** Revision 1.5  1996/03/26 09:59:35  meichel

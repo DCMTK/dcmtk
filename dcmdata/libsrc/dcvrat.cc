@@ -10,9 +10,9 @@
 ** Implementation of class DcmAttributeTag
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-04-16 16:04:04 $
+** Update Date:		$Date: 1996-05-20 13:27:50 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrat.cc,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -82,7 +82,7 @@ Edebug(());
 
 void DcmAttributeTag::print(const int level)
 {
-    if (valueLoaded)
+    if (this -> valueLoaded())
     {
 	Uint16 * attributeTags = this -> get();
 
@@ -308,7 +308,10 @@ E_Condition DcmAttributeTag::verify(const BOOL autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrat.cc,v $
-** Revision 1.6  1996-04-16 16:04:04  andreas
+** Revision 1.7  1996-05-20 13:27:50  andreas
+** correct minor bug in print routine
+**
+** Revision 1.6  1996/04/16 16:04:04  andreas
 ** - new put parameter DcmTagKey for DcmAttributeTag elements
 ** - better support for NULL element value
 **

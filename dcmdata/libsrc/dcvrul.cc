@@ -10,9 +10,9 @@
 ** Implementation of class DcmUnsignedLong
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-04-16 16:05:26 $
+** Update Date:		$Date: 1996-05-20 13:27:53 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrul.cc,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -79,7 +79,7 @@ Edebug(());
 
 void DcmUnsignedLong::print(const int level)
 {
-    if (valueLoaded())
+    if (this -> valueLoaded())
     {
 	Uint32 * uintVals = this -> get();
 
@@ -284,7 +284,10 @@ E_Condition DcmUnsignedLong::verify(const BOOL autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrul.cc,v $
-** Revision 1.6  1996-04-16 16:05:26  andreas
+** Revision 1.7  1996-05-20 13:27:53  andreas
+** correct minor bug in print routine
+**
+** Revision 1.6  1996/04/16 16:05:26  andreas
 ** - better support und bug fixes for NULL element value
 **
 ** Revision 1.5  1996/03/26 09:59:38  meichel
