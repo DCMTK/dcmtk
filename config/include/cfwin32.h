@@ -628,16 +628,16 @@
 /* #undef WITH_OPENSSL */
 
 /* Define if we are compiling with libtiff support */
-#define WITH_LIBTIFF
+/* #define WITH_LIBTIFF */
 
 /* Define if we are compiling with libpng support */
-#define WITH_LIBPNG
+/* #define WITH_LIBPNG */
 
 /* Define if we are compiling with zlib support */
-#define WITH_ZLIB
+/* #define WITH_ZLIB */
 
 /* Define if we are compiling with libxml support */
-#define WITH_LIBXML
+/* #define WITH_LIBXML */
 
 /* Define if we are compiling with libwrap (TCP wrapper) support */
 /* #undef WITH_TCPWRAPPER*/
