@@ -23,8 +23,8 @@
  *           XML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-20 15:33:26 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Update Date:      $Date: 2004-01-20 15:37:51 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -238,7 +238,7 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--write-empty-tags"))
             opt_writeFlags |= DSRTypes::XF_writeEmptyTags;
         if (cmd.findOption("--write-item-id"))
-            opt_writeFlags |= DSRTypes::XF_alywaysWriteItemIdentifier;
+            opt_writeFlags |= DSRTypes::XF_alwaysWriteItemIdentifier;
         if (cmd.findOption("--write-template-id"))
             opt_writeFlags |= DSRTypes::XF_writeTemplateIdentification;
 
@@ -289,7 +289,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2xml.cc,v $
- * Revision 1.20  2004-01-20 15:33:26  joergr
+ * Revision 1.21  2004-01-20 15:37:51  joergr
+ * Fixed typo.
+ *
+ * Revision 1.20  2004/01/20 15:33:26  joergr
  * Added new command line option which allows to write the item identifier "id"
  * (XML attribute) even if it is not required (because the item is not referenced
  * by any other item). Useful for debugging purposes.
