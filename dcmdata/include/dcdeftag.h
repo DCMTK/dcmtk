@@ -4,7 +4,7 @@
 **
 **   User: hewett
 **   Host: caesar
-**   Date: Thu Apr 25 16:48:51 1996
+**   Date: Mon Aug 26 16:55:24 1996
 **   Prog: /home/hewett/dicom/dcmtk/dcmdata/libsrc/mkdeftag
 **
 ** From: /home/hewett/dicom/dcmtk/dcmdata/libsrc/dicom.dic
@@ -16,7 +16,7 @@
 
 #include "dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "Thu Apr 25 16:48:51 1996"
+#define DCM_DICT_DEFTAG_BUILD_DATE "Mon Aug 26 16:55:24 1996"
 
 
 /*
@@ -294,7 +294,7 @@
 #define DCM_ContrastBolusTotalDose               DcmTagKey(0x0018, 0x1044)
 #define DCM_SyringeCounts                        DcmTagKey(0x0018, 0x1045)
 #define DCM_ContrastFlowRates                    DcmTagKey(0x0018, 0x1046)
-#define DCM_ContrastFlowDuration_s_              DcmTagKey(0x0018, 0x1047)
+#define DCM_ContrastFlowDurations                DcmTagKey(0x0018, 0x1047)
 #define DCM_ContrastBolusIngredient              DcmTagKey(0x0018, 0x1048)
 #define DCM_ContrastBolusIngredientConcentration DcmTagKey(0x0018, 0x1049)
 #define DCM_SpatialResolution                    DcmTagKey(0x0018, 0x1050)
