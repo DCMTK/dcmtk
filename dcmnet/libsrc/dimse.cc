@@ -57,9 +57,9 @@
 **      Module Prefix: DIMSE_
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2004-08-03 11:42:47 $
+** Update Date:         $Date: 2005-02-22 09:40:58 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimse.cc,v $
-** CVS/RCS Revision:    $Revision: 1.39 $
+** CVS/RCS Revision:    $Revision: 1.40 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1046,10 +1046,12 @@ DIMSE_sendMessageUsingMemoryData(T_ASC_Association * assoc,
  * Message Receive
  */
 
-static OFCondition
-ignoreDataSet(T_ASC_Association * assoc,
-              T_DIMSE_BlockingMode blocking, int timeout,
-              DIC_UL * bytesRead, DIC_UL * pdvCount)
+OFCondition DIMSE_ignoreDataSet(
+  T_ASC_Association * assoc,
+  T_DIMSE_BlockingMode blocking, 
+  int timeout,
+  DIC_UL * bytesRead, 
+  DIC_UL * pdvCount)
 {
     OFCondition cond = EC_Normal;
     DUL_PDV pdv;
@@ -1057,7 +1059,7 @@ ignoreDataSet(T_ASC_Association * assoc,
 
     while (!last) {
         cond = DIMSE_readNextPDV(assoc, blocking, timeout, &pdv);
-        if (cond != EC_Normal) {
+        if (cond.bad()) {
             break;
         }
         if (pdv.pdvType != DUL_DATASETPDV) {
@@ -1439,7 +1441,7 @@ DIMSE_receiveDataSetInFile(T_ASC_Association *assoc,
     if ((assoc == NULL) || (presID==NULL) || (filestream==NULL)) return DIMSE_NULLKEY;
 
     *presID = 0;        /* invalid value */
-
+    Uint32 written = 0;
     while (!last)
     {
         cond = DIMSE_readNextPDV(assoc, blocking, timeout, &pdv);
@@ -1487,10 +1489,10 @@ DIMSE_receiveDataSetInFile(T_ASC_Association *assoc,
 
         if (!last)
         {
-          filestream->write((void *)(pdv.data), (Uint32)(pdv.fragmentLength));
-          if (! filestream->good())
+          written = filestream->write((void *)(pdv.data), (Uint32)(pdv.fragmentLength));
+          if ((! filestream->good()) || (written != (Uint32)(pdv.fragmentLength)))
           {
-              cond = ignoreDataSet(assoc, blocking, timeout, &bytesRead, &pdvCount);
+              cond = DIMSE_ignoreDataSet(assoc, blocking, timeout, &bytesRead, &pdvCount);
               if (cond == EC_Normal)
               {
                 cond = makeDcmnetCondition(DIMSEC_OUTOFRESOURCES, OF_error, "DIMSE_receiveDataSetInFile: Cannot write to file");
@@ -1574,7 +1576,7 @@ DIMSE_receiveDataSetInMemory(T_ASC_Association * assoc,
     if (dset == NULL)
     {
         /* if this is the case, just go ahead an receive data, but do not store it anywhere */
-        cond = ignoreDataSet(assoc, blocking, timeout, &bytesRead, &pdvCount);
+        cond = DIMSE_ignoreDataSet(assoc, blocking, timeout, &bytesRead, &pdvCount);
 
         /* if receiving was successful, let the caller know though that no DcmDataset variable could be created */
         if (cond == EC_Normal)
@@ -1759,7 +1761,12 @@ void DIMSE_warning(T_ASC_Association *assoc,
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
-** Revision 1.39  2004-08-03 11:42:47  meichel
+** Revision 1.40  2005-02-22 09:40:58  meichel
+** Fixed two bugs in "bit-preserving" Store SCP code. Errors while creating or
+**   writing the DICOM file (e.g. file system full) now result in a DIMSE error
+**   response (out of resources) being sent back to the SCU.
+**
+** Revision 1.39  2004/08/03 11:42:47  meichel
 ** Headers libc.h and unistd.h are now included via ofstdinc.h
 **
 ** Revision 1.38  2004/02/04 15:35:17  joergr

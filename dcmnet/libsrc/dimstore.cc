@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2002-11-27 13:04:42 $
+** Update Date:		$Date: 2005-02-22 09:40:58 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimstore.cc,v $
-** CVS/RCS Revision:	$Revision: 1.17 $
+** CVS/RCS Revision:	$Revision: 1.18 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -443,21 +443,31 @@ DIMSE_storeProvider( T_ASC_Association *assoc,
     if (imageFileName != NULL) {
         /* create filestream */
         DcmOutputFileStream *filestream = NULL;
-        if (EC_Normal != (cond = DIMSE_createFilestream(imageFileName, request, assoc, 
-          presIdCmd, writeMetaheader, &filestream)))
+        cond = DIMSE_createFilestream(imageFileName, request, assoc, presIdCmd, writeMetaheader, &filestream);
+        if (cond.bad())
         {
-          return cond;
+          /* We cannot create the filestream, so ignore the incoming dataset and return an out-of-resources error to the SCU */
+          DIC_UL bytesRead = 0; 
+          DIC_UL pdvCount=0;
+          cond = DIMSE_ignoreDataSet(assoc, blockMode, timeout, &bytesRead, &pdvCount);
+          if (cond.good())
+          {
+            OFString s = "DIMSE_storeProvider: Cannot create file: ";
+            s += imageFileName;
+            cond = makeDcmnetCondition(DIMSEC_OUTOFRESOURCES, OF_error, s.c_str());
+          }
         } else {
-            /* if no error occured, receive data and write it to the file */
-          cond = DIMSE_receiveDataSetInFile(assoc, blockMode, timeout,
-          &presIdData, filestream, privCallback, &callbackCtx);
+          /* if no error occured, receive data and write it to the file */
+          cond = DIMSE_receiveDataSetInFile(assoc, blockMode, timeout, &presIdData, filestream, privCallback, &callbackCtx);
           delete filestream;
           if (cond != EC_Normal)
           {
             if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0) unlink(imageFileName);
           }
         }
-    } else if (imageDataSet != NULL) {
+    } 
+    else if (imageDataSet != NULL)
+    {
         /* receive data and store it in memory */
         cond = DIMSE_receiveDataSetInMemory(assoc, blockMode, timeout,
 		&presIdData, imageDataSet, privCallback, &callbackCtx);
@@ -468,7 +478,7 @@ DIMSE_storeProvider( T_ASC_Association *assoc,
 
     /* check if presentation context IDs of the command (which was received earlier) and of the data */
     /* set (which was received just now) differ from each other. If this is the case, return an error. */
-    if (presIdData != presIdCmd)
+    if (cond.good() && (presIdData != presIdCmd))
     {
     	cond = makeDcmnetCondition(DIMSEC_INVALIDPRESENTATIONCONTEXTID, OF_error, "DIMSE: Presentation Contexts of Command and Data Differ");
     }
@@ -493,8 +503,10 @@ DIMSE_storeProvider( T_ASC_Association *assoc,
     }
     
     /* send a C-STORE-RSP message over the network to the other DICOM application */
-    cond = DIMSE_sendStoreResponse(assoc, presIdCmd, request, 
-        &response, statusDetail);
+    OFCondition cond2 = DIMSE_sendStoreResponse(assoc, presIdCmd, request, &response, statusDetail);
+ 
+    /* if we already had an error condition, don't overwrite */
+    if (cond.good()) cond = cond2;
 
     /* return result value */    
     return cond;
@@ -503,7 +515,12 @@ DIMSE_storeProvider( T_ASC_Association *assoc,
 /*
 ** CVS Log
 ** $Log: dimstore.cc,v $
-** Revision 1.17  2002-11-27 13:04:42  meichel
+** Revision 1.18  2005-02-22 09:40:58  meichel
+** Fixed two bugs in "bit-preserving" Store SCP code. Errors while creating or
+**   writing the DICOM file (e.g. file system full) now result in a DIMSE error
+**   response (out of resources) being sent back to the SCU.
+**
+** Revision 1.17  2002/11/27 13:04:42  meichel
 ** Adapted module dcmnet to use of new header file ofstdinc.h
 **
 ** Revision 1.16  2002/08/27 17:00:52  meichel

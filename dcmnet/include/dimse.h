@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2003-08-27 15:03:33 $
+** Update Date:		$Date: 2005-02-22 09:40:55 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/dimse.h,v $
-** CVS/RCS Revision:	$Revision: 1.14 $
+** CVS/RCS Revision:	$Revision: 1.15 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -982,6 +982,13 @@ DIMSE_receiveDataSetInFile(T_ASC_Association *assoc,
 		     DcmOutputStream *filestream,
 		     DIMSE_ProgressCallback callback, void *callbackData);
 
+OFCondition 
+DIMSE_ignoreDataSet( T_ASC_Association * assoc,
+                     T_DIMSE_BlockingMode blocking, 
+                     int timeout,
+                     DIC_UL * bytesRead, 
+                     DIC_UL * pdvCount);
+
 /*
  * Misc functions
  */
@@ -1025,7 +1032,12 @@ void DIMSE_printMessage(ostream& outstream, T_DIMSE_Message &msg, DcmItem *datas
 /*
 ** CVS Log
 ** $Log: dimse.h,v $
-** Revision 1.14  2003-08-27 15:03:33  meichel
+** Revision 1.15  2005-02-22 09:40:55  meichel
+** Fixed two bugs in "bit-preserving" Store SCP code. Errors while creating or
+**   writing the DICOM file (e.g. file system full) now result in a DIMSE error
+**   response (out of resources) being sent back to the SCU.
+**
+** Revision 1.14  2003/08/27 15:03:33  meichel
 ** Changed anonymous struct typedefs into struct declarations
 **
 ** Revision 1.13  2002/09/10 16:00:47  meichel

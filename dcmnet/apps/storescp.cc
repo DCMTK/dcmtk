@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-08-03 16:46:00 $
+ *  Update Date:      $Date: 2005-02-22 09:40:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.74 $
+ *  CVS/RCS Revision: $Revision: 1.75 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1299,7 +1299,7 @@ processCommands(T_ASC_Association * assoc)
   DcmDataset *statusDetail = NULL;
 
   // start a loop to be able to receive more than one DIMSE command
-  while( cond == EC_Normal || cond == DIMSE_NODATAAVAILABLE )
+  while( cond == EC_Normal || cond == DIMSE_NODATAAVAILABLE || cond == DIMSE_OUTOFRESOURCES )
   {
     // receive a DIMSE command over the network
     if( opt_endOfStudyTimeout == -1 )
@@ -2186,7 +2186,12 @@ static OFCondition acceptUnknownContextsWithPreferredTransferSyntaxes(
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.74  2004-08-03 16:46:00  meichel
+** Revision 1.75  2005-02-22 09:40:54  meichel
+** Fixed two bugs in "bit-preserving" Store SCP code. Errors while creating or
+**   writing the DICOM file (e.g. file system full) now result in a DIMSE error
+**   response (out of resources) being sent back to the SCU.
+**
+** Revision 1.74  2004/08/03 16:46:00  meichel
 ** Minor changes for platforms on which strchr/strrchr return a const pointer.
 **
 ** Revision 1.73  2004/04/07 16:58:55  meichel
