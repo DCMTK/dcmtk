@@ -23,8 +23,8 @@
  *    classes: DSRCodingSchemeIdentificationList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-10-09 17:47:54 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2003-10-14 15:32:13 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -165,7 +165,7 @@ OFCondition DSRCodingSchemeIdentificationList::write(DcmItem &dataset,
 
 OFCondition DSRCodingSchemeIdentificationList::readXML(const DSRXMLDocument &doc,
                                                        DSRXMLCursor cursor,
-                                                       const size_t flags)
+                                                       const size_t /*flags*/)
 {
     OFCondition result = SR_EC_InvalidDocument;
     ItemStruct *item = NULL;
@@ -572,7 +572,11 @@ OFCondition DSRCodingSchemeIdentificationList::setResponsibleOrganization(const 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcsidl.cc,v $
- *  Revision 1.3  2003-10-09 17:47:54  joergr
+ *  Revision 1.4  2003-10-14 15:32:13  joergr
+ *  Uncommented name of unused parameter to get rid of a warning reported by
+ *  Borland C++ 5.5.
+ *
+ *  Revision 1.3  2003/10/09 17:47:54  joergr
  *  Renamed OFFIS_PRIVATE_CODING_xxx macros to OFFIS_CODING_xxx.
  *
  *  Revision 1.2  2003/09/15 13:55:45  joergr
