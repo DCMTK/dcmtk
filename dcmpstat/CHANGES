@@ -15,6 +15,29 @@
 - Modified implementation of instanceReviewed.
   Affects: dcmpstat/libsrc/dviface.cc
 
+- Added new methods to interate through Caches (getFirst/getNext) - needed
+  for delete routines in Interface class.
+  Affects: dcmpstat/include/dvcache.h
+
+- Added methods to disable and (re-)enable PresentationStates.
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+  
+- Added (private) helper methods to reduce redundant lines of code.
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+  
+- Removed bug concerning method newInstancesReceived (databaseFilename was
+  never set).
+  Affects: dcmpstat/libsrc/dviface.cc
+  
+- Implemented main part of delete methods (image files are not yet deleted).
+  Affects: dcmpstat/libsrc/dviface.cc
+
+- Removed implicit application of a shared lock to the database file when
+  unlock an exclusive lock.
+  Affects: dcmpstat/libsrc/dviface.cc
+
 **** Changes from 1999.02.18 (riesmeier)
 
 - Re-implemented methods to access index file (delete methods are still
