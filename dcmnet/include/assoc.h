@@ -67,10 +67,10 @@
 **	Module Prefix: ASC_
 **
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1999-09-06 13:28:31 $
+** Last Update:		$Author: joergr $
+** Update Date:		$Date: 2000-05-30 13:07:41 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/assoc.h,v $
-** CVS/RCS Revision:	$Revision: 1.10 $
+** CVS/RCS Revision:	$Revision: 1.11 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -499,13 +499,19 @@ ASC_destroyAssociation(T_ASC_Association ** association);
 	FORM_COND(FAC_ASC, SEV_SUCC,  18)
 #define	ASC_READTIMEOUT			/* Timeout on network */ \
 	FORM_COND(FAC_ASC, SEV_WARN,  19)
+#define	ASC_SHUTDOWNAPPLICATION	/* Peer requested application shutdown */ \
+	FORM_COND(FAC_ASC, SEV_ERROR, 20)
 
 #endif
 
 /*
 ** CVS Log
 ** $Log: assoc.h,v $
-** Revision 1.10  1999-09-06 13:28:31  meichel
+** Revision 1.11  2000-05-30 13:07:41  joergr
+** Added a condition value to report the external request for a shutdown of
+** the application (used for imagectn).
+**
+** Revision 1.10  1999/09/06 13:28:31  meichel
 ** Enhanced max receive PDU range to 4-128K.
 **
 ** Revision 1.9  1999/04/26 17:20:55  meichel
