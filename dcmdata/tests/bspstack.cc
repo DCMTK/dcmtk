@@ -10,8 +10,8 @@ main()
 {
     DcmStack s;
 
-    for (T_VR_UL i=1; i<=10; i++)
-        s.push(new DcmUnsignedShort( DcmTag(DCM_Item), i*i, NULL ));
+    for (Uint32 i=1; i<=10; i++)
+        s.push(new DcmUnsignedShort( DcmTag(DCM_Item), i*i));
 
     cout << "DcmStack: \n";
     while ( !s.empty() ) {

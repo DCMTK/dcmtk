@@ -25,7 +25,7 @@ void eraselist( DcmList &l )
        delete l.remove();
 }
 
-DcmObject* createNumber( T_VR_SL num )
+DcmObject* createNumber(Sint32 num )
 {
     DcmTag tag(DCM_CommandGroupLength);
     DcmSignedLong* sl = new DcmSignedLong( tag );

@@ -11,61 +11,57 @@ BOOL readObject( DcmDataset **pobj, const char *filename )
 {
     struct stat file_stat;
     stat( filename, &file_stat );
-    T_VR_UL filelen = file_stat.st_size;
+    Uint32 filelen = file_stat.st_size;
 
-    T_VR_UL buflen = 1020;
-    const T_VR_UL packetlen = 200;
+    const Uint32 packetlen = 200;
 
-    iDicomStream buf( filename );
-    if ( buf.fail() ) {
+    DcmFileStream buf(filename, DCM_ReadMode);
+    if ( buf.Fail() ) {
         fprintf(stderr, "cannot open file: %s\n", filename);
         return FALSE;
     }
 
-    iDicomStream *myin = new iDicomStream( buflen );
-    *pobj = new DcmDataset( myin );
+    DcmBufferStream *myin = new DcmBufferStream(DCM_ReadMode);
+    *pobj = new DcmDataset();
 
     char buffer[ packetlen ];
     BOOL generateMoreData = TRUE;
-    T_VR_UL actlen = packetlen;
-    T_VR_UL eofCounter = 0;
+    Uint32 actlen = packetlen;
+    Uint32 eofCounter = 0;
 
     while ( 1 )
     {
-	if ( generateMoreData && filelen > 0 )
-	{
-	    actlen = packetlen <= filelen ? packetlen : filelen;
+		if ( generateMoreData && filelen > 0 )
+		{
+			actlen = packetlen <= filelen ? packetlen : filelen;
 
-            buf.read( buffer, (int)actlen ); // ReadPacketFromNet( buffer,...
+			myin->ReleaseBuffer();
+            buf.ReadBytes( buffer, actlen ); // ReadPacketFromNet( buffer,...
 
-	    generateMoreData = FALSE;
-	    filelen -= actlen;
-	}
+			generateMoreData = FALSE;
+			filelen -= actlen;
+		}
 
-	if ( !generateMoreData )
-	{
-	    if ( myin->fillBuffer( buffer, actlen ) == EC_BufferFull )
-		cerr << endl << "Warning: Buffer Full!" << endl;
-	    else
-	    {
-		generateMoreData = TRUE;
-		if ( filelen == 0 )
-                    myin->markBufferEOF();   // mark EOF
-	    }
-	}
+		if ( !generateMoreData )
+		{
+			myin->SetBuffer( buffer, actlen );
+			generateMoreData = TRUE;
+			if ( filelen == 0 )
+				myin->SetEndOfStream();   // mark EOF
+		}
 
-        if ( (*pobj)->readBlock( EXS_UNKNOWN, EGL_withGL ) == EC_Normal )
+        if ( (*pobj)->read(*myin, EXS_Unknown, EGL_withGL ) == EC_Normal )
             break;                    // EndOfFile from readBlock() detected
-        if ( myin->eof() )
-	{
-	    eofCounter++;
-	    if ( eofCounter > 2 )
+        if ( myin->EndOfStream() )
+		{
+			eofCounter++;
+			if ( eofCounter > 2 )
             {                         // emergency halt
-		cerr << endl;
+				cerr << endl;
                 cerr << " Error: end of Buffer detected." << endl;
-		break;
-	    }
-	}
+				break;
+			}
+		}
     }
     delete myin;
     return TRUE;
@@ -81,34 +77,34 @@ BOOL writeObject( DcmDataset *pobj,
                   E_EncodingType enctype,
                   E_GrpLenEncoding gltype )
 {
-    T_VR_UL buflen = 1020;
-    const T_VR_UL packetlen = 200;
+    const Uint32 packetlen = 200;
 
-    oDicomStream buf( filename );
-    if ( buf.fail() ) {
+    DcmFileStream buf(filename, DCM_WriteMode);
+    if ( buf.Fail() ) {
         fprintf(stderr, "dcmdump: cannot create file: %s\n", filename);
         return FALSE;
     }
 
-    oDicomStream myout( buflen );
+	DcmBufferStream myout(DCM_WriteMode);
 
     char *buffer = new char[ packetlen ];
+    void * getPtr = NULL;
     BOOL generateMoreData = TRUE;
+	myout.SetBuffer(buffer, packetlen);
 
     while ( 1 )
     {
-	if (	generateMoreData
-             && pobj->writeBlock( myout, xfer, enctype, gltype ) == EC_Normal )
-	{
-	    generateMoreData = FALSE;
-            myout.markBufferEOF();     // No more data available
-	}
+		if (generateMoreData && 
+			pobj->write(myout, xfer, enctype, gltype ) == EC_Normal )
+		{
+			generateMoreData = FALSE;
+            myout.SetEndOfStream();     // No more data available
+		}
 
-	T_VR_UL maxreadlen = 0;
-	E_Condition errBuf;
-	errBuf = myout.readBuffer( buffer, packetlen, &maxreadlen );
-        buf.write( buffer, (int)maxreadlen ); // putPacketIntoNet( buffer,...
-	if ( errBuf == EC_EndOfBuffer )
+		Uint32 maxreadlen = 0;
+		myout.GetBuffer(getPtr, maxreadlen);
+		buf.WriteBytes(getPtr, maxreadlen); // putPacketIntoNet( buffer,...
+		if (myout.EndOfStream())
             break;           // EndOfFile from readBuffer() detected
     }
     delete buffer;

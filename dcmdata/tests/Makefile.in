@@ -17,11 +17,11 @@ LIBDIRS = -L$(top_srcdir)/libsrc -L$(libdir)
 LOCALLIBS = -ldcmdata
 
 objs= bspblock.o bspdir.o bsplist.o bspobj.o bspstack.o bsptag.o \
-	tstblock.o tstdir.o tstlist.o tststack.o \
+	tstblock.o tstbuf.o tstdir.o tstlist.o tststack.o \
 	tststream.o tsttag.o
 
 progs= bspblock bspdir bsplist bspobj bspstack bsptag \
-	tstblock tstdir tstlist tststack tststream tsttag
+	tstblock tstbuf tstdir tstlist tststack tststream tsttag
 
 all: $(progs)
 
@@ -44,6 +44,9 @@ bsptag: bsptag.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $^ $(LOCALLIBS) $(LIBS)  
 
 tstblock: tstblock.o 
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $^ $(LOCALLIBS) $(LIBS)  
+
+tstbuf: tstbuf.o 
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $^ $(LOCALLIBS) $(LIBS)  
 
 tstdir: tstdir.o 

@@ -8,10 +8,10 @@
 ** Test the block read/write code
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1995-11-28 10:46:15 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-01-05 13:31:37 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/tests/Attic/tstblock.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -44,29 +44,29 @@ static void
 usage()
 {
     fprintf(stderr, 
-	   "tstblock: test block read/write operations\n"
-	   "usage: dcmconv [options] dataset-in dataset-out\n"
-	   "options are:\n"
-	   "  input transfer syntax:\n"
-	   "    -t=   try and discover input transfer syntax (can fail)\n"
-	   "    -ti   input is little-endian implicit transfer syntax (default)\n"
-	   "    -te   input is little-endian explicit transfer syntax\n"
-	   "    -tb   input is big-endian explicit transfer syntax\n"
-	   "  group length encoding:\n" 
-	   "    +g    write with group lengths (default)\n"
-	   "    -g    write without group lengths\n"
-	   "  length encoding in sequences and items:\n"
-	   "    +e    write with explicit lengths (default)\n"
-	   "    -e    write with undefined lengths\n"
-	   "  output transfer syntax:\n"
-	   "    +t=   write with same transfer syntax as input (default)\n"
-	   "    +ti   write with little-endian implicit transfer syntax\n"
-	   "    +te   write with little-endian explicit transfer syntax\n"
-	   "    +tb   write with big-endian explicit transfer syntax\n"
-	   "  other test/debug options:\n"
-	   "    +bn   use block size n (default 1024)\n"
-	   "    +V    verbose mode, print actions\n"
-	   "    +dn   set debug level to n (n=1..9)\n");
+	    "tstblock: test block read/write operations\n"
+	    "usage: dcmconv [options] dataset-in dataset-out\n"
+	    "options are:\n"
+	    "  input transfer syntax:\n"
+	    "    -t=   try and discover input transfer syntax (can fail)\n"
+	    "    -ti   input is little-endian implicit transfer syntax (default)\n"
+	    "    -te   input is little-endian explicit transfer syntax\n"
+	    "    -tb   input is big-endian explicit transfer syntax\n"
+	    "  group length encoding:\n" 
+	    "    +g    write with group lengths (default)\n"
+	    "    -g    write without group lengths\n"
+	    "  length encoding in sequences and items:\n"
+	    "    +e    write with explicit lengths (default)\n"
+	    "    -e    write with undefined lengths\n"
+	    "  output transfer syntax:\n"
+	    "    +t=   write with same transfer syntax as input (default)\n"
+	    "    +ti   write with little-endian implicit transfer syntax\n"
+	    "    +te   write with little-endian explicit transfer syntax\n"
+	    "    +tb   write with big-endian explicit transfer syntax\n"
+	    "  other test/debug options:\n"
+	    "    +bn   use block size n (default 1024)\n"
+	    "    +V    verbose mode, print actions\n"
+	    "    +dn   set debug level to n (n=1..9)\n");
 }
 
 
@@ -75,11 +75,10 @@ usage()
 
 E_Condition readObject( DcmDataset **dset,
                         const char *filename,
-			int blockSize,
-			E_TransferSyntax xfer,
-                        E_GrpLenEncoding igltype )
+			const int blockSize,
+			const E_TransferSyntax xfer,
+                        const E_GrpLenEncoding igltype )
 {
-    long buflen = blockSize;
     long packetlen = blockSize;
     unsigned long bytesread = 0;
 
@@ -92,45 +91,47 @@ E_Condition readObject( DcmDataset **dset,
     int readlen = 0;
     E_Condition econd = EC_Normal;
 
-    iDicomStream *streambuf = new iDicomStream( buflen );
+    DcmBufferStream streambuf(DCM_ReadMode);
+    econd = streambuf.GetError();
 
-    /* attach streambuf to dset */
-    *dset = new DcmDataset( streambuf );
+    if (econd == EC_Normal)
+    {
+	// create dset
+	*dset = new DcmDataset();
 
-    econd = (*dset)->readBlockInit();
+	(*dset)->transferInit();
 
-    char *buffer = new char[ packetlen ];
+	char *buffer = new char[ packetlen ];
 
-    do {
-	readlen = fread(buffer, sizeof(char), packetlen, f); 
+	do {
+	    streambuf.ReleaseBuffer();
+	    readlen = fread(buffer, sizeof(char), packetlen, f); 
 
-	if (verbosemode) 
-	    putchar('.');
+	    if (verbosemode) 
+		putchar('.');
 
-	if (readlen > 0) {
-	    econd = streambuf->fillBuffer(buffer, readlen);
-	    if (econd == EC_BufferFull) {
-		delete buffer;
-		return econd;
+	    if (readlen > 0) {
+		streambuf.SetBuffer(buffer, readlen);
 	    }
-	}
 
-	if (feof(f)) {
-	    streambuf->markBufferEOF();
-	}
+	    if (feof(f)) {
+		streambuf.SetEndOfStream();
+	    }
 
-	econd = (*dset)->readBlock(xfer, igltype);
+	    econd = (*dset)->read(streambuf, xfer, igltype);
 
-	bytesread += readlen;
+	    bytesread += readlen;
 
-    } while (!ferror(f) && !feof(f));
+	} while (!ferror(f) && !feof(f) && 
+		 (econd == EC_Normal || econd == EC_StreamNotifyClient));
 
-    fclose(f);
+	fclose(f);
     
-    delete buffer;
+	delete buffer;
 
-    if (verbosemode) {
-	printf("(%ld bytes)\n", bytesread);
+	if (verbosemode) {
+	    printf("(%ld bytes)\n", bytesread);
+	}
     }
 
     return econd;
@@ -143,14 +144,14 @@ E_Condition readObject( DcmDataset **dset,
 
 E_Condition writeObject( DcmDataset& dset,
 			 const char *filename,
-			 int blockSize,
-			 E_TransferSyntax xfer,
-                         E_EncodingType enctype,
-                         E_GrpLenEncoding ogltype )
+			 const int blockSize,
+			 const E_TransferSyntax xfer,
+                         const E_EncodingType enctype,
+                         const E_GrpLenEncoding ogltype )
 {
-    long buflen = blockSize;
     long packetlen = blockSize;
     E_Condition econd = EC_Normal;
+    E_TransferSyntax oxfer = xfer;
     unsigned long readlen;
     unsigned long byteswritten = 0;
 
@@ -160,58 +161,60 @@ E_Condition writeObject( DcmDataset& dset,
 	return EC_InvalidStream;
     }
 
-    oDicomStream streambuf(buflen);
-
-    econd = dset.writeBlockInit();
-
     char *buffer = new char[ packetlen ];
+    void * getBuf = NULL;
+
+    DcmBufferStream streambuf(buffer, packetlen, DCM_WriteMode);
+
+    dset.transferInit();
+
+    if (oxfer == EXS_Unknown)
+	oxfer = dset.getOriginalXfer();
 
     BOOL last = FALSE;
-    BOOL allBlocksInStream = FALSE;
 
     E_Condition bufcond = EC_Normal;
 
-    while (!last) {
-	
-	if (!allBlocksInStream) {
-	    econd = dset.writeBlock(streambuf, xfer, enctype, ogltype);
-	    if ( econd == EC_Normal ) {
-		/* last block written to stream buffer */
-		allBlocksInStream = TRUE;
-		streambuf.markBufferEOF();
-	    } else if (econd == EC_InvalidStream) {
-		/* ok, not really invalid, just no more space in streambuf */
-	    } else {
-		/* some error has occurred */
-		delete buffer;
-		return econd;
-	    }
+    while (!last) 
+    {
+	econd = dset.write(streambuf, oxfer, enctype, ogltype);
+	if ( econd == EC_Normal ) {
+	    /* last block written to stream buffer */
+	    last = TRUE;
+	} else if (econd == EC_StreamNotifyClient) {
+	    /* ok,just no more space in streambuf */
+	} else {
+	    /* some error has occurred */
+	    delete buffer;
+	    return econd;
 	}
 
-	bufcond = streambuf.readBuffer(buffer, packetlen, &readlen);
-	if (bufcond != EC_Normal) {
-	    if (bufcond == EC_EndOfBuffer) {
+	streambuf.GetBuffer(getBuf, readlen);
+	if (streambuf.Fail()) {
+	    if (bufcond == EC_EndOfStream) {
 		last = TRUE;
 	    } else {
-		fprintf(stderr, "readBuffer failed\n");
+		fprintf(stderr, "GetBuffer failed\n");
 		delete buffer;
 		return bufcond;
 	    }
 	}
 
-	int writelen = fwrite(buffer, sizeof(char), readlen, f);
-	if (writelen != (long)readlen) {
-	    perror("fwrite");
-	    delete buffer;
-	    return EC_InvalidStream;
+	if (readlen)
+	{
+	    int writelen = fwrite(getBuf, sizeof(char), readlen, f);
+	    if (writelen != (long)readlen) {
+		perror("fwrite");
+		delete buffer;
+		return EC_InvalidStream;
+	    }
+
+	    if (verbosemode) {
+		putchar('.');
+	    }
+
+	    byteswritten += writelen;
 	}
-
-	if (verbosemode) {
-	    putchar('.');
-	}
-
-	byteswritten += writelen;
-
     }
 
     delete buffer;
@@ -242,7 +245,7 @@ int main(int argc, char *argv[])
     const char*	ifname = NULL;
     const char*	ofname = NULL;
     E_TransferSyntax xfer_in = EXS_LittleEndianImplicit;
-    E_TransferSyntax xfer_out = EXS_UNKNOWN;
+    E_TransferSyntax xfer_out = EXS_Unknown;
     E_EncodingType enctype = EET_ExplicitLength;
     E_GrpLenEncoding ogltype = EGL_withGL;
     int localDebugLevel = 0;
@@ -274,8 +277,8 @@ int main(int argc, char *argv[])
 	    case 't':
 		switch (arg[2]) {
 		case '=':
-		    if (arg[0] == '-') xfer_in = EXS_UNKNOWN;
-		    else xfer_out = EXS_UNKNOWN;
+		    if (arg[0] == '-') xfer_in = EXS_Unknown;
+		    else xfer_out = EXS_Unknown;
 		    break;
 		case 'i':
 		    if (arg[0] == '-') xfer_in = EXS_LittleEndianImplicit;
@@ -372,6 +375,8 @@ int main(int argc, char *argv[])
     if (econd != EC_Normal) {
 	fprintf(stderr, "Error: %s: block writing: %s\n", 
 		dcmErrorConditionToString(econd), ifname);
+	if (econd == EC_IllegalCall)
+	    fprintf(stderr, "Buffer to small.\n");
 	return 1;
     }
 
@@ -383,7 +388,12 @@ int main(int argc, char *argv[])
 /*
 **
 ** $Log: tstblock.cc,v $
-** Revision 1.4  1995-11-28 10:46:15  hewett
+** Revision 1.5  1996-01-05 13:31:37  andreas
+** - new streaming facilities and test routines for blocks and buffers
+** - unique read/write methods for block and file transfer
+** - more cleanups
+**
+** Revision 1.4  1995/11/28 10:46:15  hewett
 ** Added calls to readInitBlock() and writeInitBlock().
 **
 **

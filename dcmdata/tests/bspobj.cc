@@ -39,12 +39,12 @@ void search( DcmObject* pobj, DcmTagKey xtag )
 int main()
 {
     SetDebugLevel(( 0 ));
-    iDicomStream myin( "PRIMITIV.DIO" );
-    if ( myin.fail() )
+    DcmFileStream myin("data/primitiv.dio", DCM_ReadMode);
+    if ( myin.Fail() )
         return 1;
 
-    DcmFileFormat *pobj = new DcmFileFormat( &myin );
-    pobj->read( EXS_UNKNOWN, EGL_withGL );
+    DcmFileFormat *pobj = new DcmFileFormat();
+    pobj->read(myin, EXS_Unknown, EGL_withGL );
     pobj->print();
 
     DcmFileFormat ff( *pobj );               // copy FileFormat
@@ -55,7 +55,7 @@ int main()
 
     search( pobj, DCM_BitsAllocated );    // search one tag
 
-    oDicomStream myout( "PRIMITIV.OUT" );
+    DcmFileStream myout( "data/primitiv.out", DCM_WriteMode );
     pobj->write( myout, EXS_BigEndianExplicit,
                  EET_ExplicitLength, EGL_withoutGL );
 

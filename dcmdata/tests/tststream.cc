@@ -1,245 +1,499 @@
 /*
- *
- * Author: Gerd Ehlers		Created:  03-26-94
- *                              Modified: 11-23-94
- *
- * Module: streamtst.cc
- *
- * Purpose:
- * Test the Dicom binary streams
- *
- *
- * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.2 $
- * Status:	  $State: Exp $
- *
- */
+** 
+** Author: Andreas Barth 	Created:  09.11.95
+**                          Modified: 18.11.95
+**
+** Module: tststream.cc
+** 
+** Purpose:
+** 	This file tests the DcmFileStream and DcmMemoryStream 
+** 
+** 
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-01-05 13:31:40 $
+** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/tests/Attic/tststream.cc,v $
+** CVS/RCS Revision:	$Revision: 1.3 $
+** Status:		$State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "osconfig.h"    // make sure OS specific configuration is included first
 
+#include <iostream.h>
 #include <stdlib.h>
-#include <stdio.h>
 #include <string.h>
-#include <sys/stat.h>
-#include <stream.h>
-#include "dctk.h"
-#include "dcvr.h"
-#include "dcdebug.h"
+
 #include "dcstream.h"
 
 
-E_Condition test_iDS( T_VR_UL buflen,
-		      T_VR_UL packetlen,
-		      T_VR_UL readlen,
-		      T_VR_UL filelen )
+#define BUFLEN 32
+char buffer[BUFLEN];
+
+void ReadFromFile(DcmBufferStream * stream, FILE * inFile)
 {
-    cerr << endl << "test_iDS: Begin" << endl;
-    cerr << "param: packetlen=" << packetlen << " readlen=" << readlen;
-    cerr << " buflen=" << buflen << " filelen=" << filelen << endl;
 
-    iDicomStream *buf = new iDicomStream( buflen );
-
-    char *buffer = new char[ packetlen ];
-    char *printbuf = new char[ readlen ];
-    BOOL generateMoreData = TRUE;
-    T_VR_UL val = 0;
-    T_VR_UL actlen = packetlen;
-
-    cerr << "buffer: avail()=" << buf->avail();
-    cerr << " buffered()=" << buf->buffered() << endl;
-
-    while ( 1 )
+    if (!stream -> EndOfStream())
     {
-	cerr << "*" << endl;
-	if ( generateMoreData && filelen > 0 )
+	stream -> ReleaseBuffer();
+	unsigned long length = fread(buffer, 1, BUFLEN, inFile);
+	stream -> SetBuffer(buffer, length);
+		
+	if (feof(inFile))
 	{
-	    actlen = packetlen <= filelen ? packetlen : filelen;
-
-	    cerr << endl << "Info: creating " << actlen << " bytes data.";
-	    cerr << endl;
-	    memset( buffer, 0, packetlen );
-	    T_VR_UL i;
-	    for ( i = 0; i < actlen; i++ )
-		buffer[ i ] = (char)( val++ & 0xff );
-	    generateMoreData = FALSE;
-
-	    filelen -= actlen;
-	}
-
-	if ( !generateMoreData )
-	{
-	    if ( buf->fillBuffer( buffer, actlen ) == EC_BufferFull )
-		cerr << "Warning: Buffer Full!" << endl;
-	    else
-	    {
-		generateMoreData = TRUE;
-		if ( filelen == 0 )
-		{
-		    buf->markBufferEOF();
-		    cerr << "Info: end of input file detected." << endl;
-		}
-	    }
-	}
-
-	cerr << "#" << endl;
-	if ( buf->eof() )
-	    break;
-	else
-	{
-	    T_VR_UL maxreadlen = ( readlen <= buf->buffered() )
-				 ? readlen
-				 : buf->buffered();
-	    buf->read( printbuf, (int)maxreadlen );
-
-	    T_VR_UL j = 0;
-	    while ( j < maxreadlen )
-	    {
-		fprintf( stderr, " %2.2x", (unsigned char)printbuf[ j ] );
-		j++;
-		if ( j % 16 == 0 )
-		    cerr << endl;
-	    }
-	    cerr << endl;
+	    cout << endl << "EOF reached" << endl;
+	    stream -> SetEndOfStream();
 	}
     }
-    cerr << "test_iDS: End" << endl;
-
-    delete buf;
-    delete buffer;
-    delete printbuf;
-
-    return EC_Normal;
 }
 
 
-// ********************************************
-
-
-E_Condition test_oDS( T_VR_UL buflen,
-		      T_VR_UL packetlen,
-		      T_VR_UL readlen,
-		      T_VR_UL filelen )
+void ReadTest(DcmStream * stream, FILE * inFile, BOOL putback)
 {
-    cerr << endl << "test_oDS: Begin" << endl;
-    cerr << "param: packetlen=" << packetlen << " readlen=" << readlen;
-    cerr << " buflen=" << buflen << " filelen=" << filelen << endl;
+    Uint32 ul[10];
+    Sint32 sl[10];
+    Uint16 us[10];
+    Sint16 ss[10];
+    Float32 fl[10];
+    Float64 fd[10];
+    char * uc;
+    size_t uc_len;
+    int times = putback ? 2 : 1;
+    int k;
 
-    oDicomStream *buf = new oDicomStream( buflen );
 
-    char *buffer = new char[ packetlen ];
-    char *printbuf = new char[ readlen ];
-    T_VR_UL val = 0;
-    T_VR_UL actlen = packetlen;
-
-    cerr << "buffer: avail()=" << buf->avail();
-    cerr << " buffered()=" << buf->buffered() << endl;
-
-    while ( 1 )
+    for (k=0; k < times; k++)
     {
-	if ( filelen > 0 )
-	{
-	    cerr << "*";
-	    actlen = buf->avail() <= filelen ? buf->avail() : filelen;
-	    T_VR_UL restlen = actlen % packetlen;
-	    actlen -= restlen;
+	if (putback && k == 0)
+	    stream -> SetPutbackMark();
 
-	    cerr << endl << "Info: creating " << actlen << " bytes data.";
-	    cerr << endl;
-	    memset( buffer, 0, packetlen );
-	    T_VR_UL i, k;
-	    if ( restlen < filelen )
-	    {
-		for ( i = 0; i < actlen/packetlen; i++ )
-		{
-		    for ( k = 0; k < packetlen; k++ )
-			buffer[ k ] = (char)( val++ & 0xff );
+	while (stream -> Avail() < 10 * sizeof(Uint32))
+	    ReadFromFile((DcmBufferStream *) stream, inFile);
+		
+	stream->ReadBytes(ul,10 * sizeof(Uint32));
+	cout << endl << "ul: ";
+	for (int i = 0; i < 10; i++)
+	    cout << ul[i] << " ";
+	cout << endl;
 
-		    cerr << "*";
-		    buf->write( buffer, packetlen );
-		    if ( buf->pcount() != packetlen )
-			cerr << "Warning: error in writing Buffer" << endl;
-		}
-	    }
-	    else
-	    {
-		cerr << "Info: creating rest " << filelen << " bytes." << endl;
-		for ( k = 0; k < filelen; k++ )
-		    buffer[ k ] = (char)( val++ & 0xff );
-
-		buf->write( buffer, filelen );
-		filelen = 0;
-	    }
-	    filelen -= actlen;
-	}
-	if ( filelen == 0 )
-	    buf->markBufferEOF();
-
-	cerr << "#" << endl;
-	{
-	    T_VR_UL maxreadlen = 0;
-	    E_Condition errBuf;
-	    errBuf = buf->readBuffer( printbuf, readlen, &maxreadlen );
-
-	    T_VR_UL j = 0;
-	    while ( j < maxreadlen )
-	    {
-		fprintf( stderr, " %2.2x", (unsigned char)printbuf[ j ] );
-		j++;
-		if ( j % 16 == 0 )
-		    cerr << endl;
-	    }
-	    cerr << endl;
-	    if ( errBuf == EC_EndOfBuffer )
-		break;
-	}
+	if (putback && k == 0)
+	    stream->Putback();
     }
-    cerr << "test_iDS: End" << endl;
 
-    delete buf;
-    delete buffer;
-    delete printbuf;
+    for (k=0; k < times; k++)
+    {
+	if (putback && k == 0)
+	    stream -> SetPutbackMark();
 
-    return EC_Normal;
+	while (stream -> Avail() < 10 * sizeof(Sint32))
+	    ReadFromFile((DcmBufferStream *) stream, inFile);
+
+	stream->ReadBytes(sl,10 * sizeof(Sint32));
+	cout << endl << "sl: " ;
+	for (int i = 0; i < 10; i++)
+	    cout << sl[i] << " ";
+	cout << endl;
+
+	if (putback && k == 0)
+	    stream->Putback();
+    }
+
+    for (k=0; k < times; k++)
+    {
+	if (putback && k == 0)
+	    stream -> SetPutbackMark();
+
+	while (stream -> Avail() < 10 * sizeof(Uint16))
+	    ReadFromFile((DcmBufferStream *) stream, inFile);
+
+	stream->ReadBytes(us,10 * sizeof(Uint16));
+	cout << endl << "us: " ;
+	for (int i = 0; i < 10; i++)
+	    cout << us[i] << " ";
+	cout << endl;
+
+	if (putback && k == 0)
+	    stream->Putback();
+    }
+
+    for (k=0; k < times; k++)
+    {
+	if (putback && k == 0)
+	    stream -> SetPutbackMark();
+
+	while (stream -> Avail() < 10 * sizeof(Sint16))
+	    ReadFromFile((DcmBufferStream *) stream, inFile);
+
+	stream->ReadBytes(ss,10 * sizeof(Sint16));
+	cout << endl << "ss: " ;
+	for (int i = 0; i < 10; i++)
+	    cout << ss[i] << " ";
+	cout << endl;
+
+	if (putback && k == 0)
+	    stream->Putback();
+    }
+
+    for (k=0; k < times; k++)
+    {
+	if (putback && k == 0)
+	    stream -> SetPutbackMark();
+
+	while (stream -> Avail() < 10 * sizeof(Float32))
+	    ReadFromFile((DcmBufferStream *) stream, inFile);
+
+	stream->ReadBytes(fl,10 * sizeof(Float32));
+	cout << endl << "fl: " ;
+	for (int i = 0; i < 10; i++)
+	    cout << fl[i] << " ";
+	cout << endl;
+
+	if (putback && k == 0)
+	    stream->Putback();
+    }
+
+    for (k=0; k < times; k++)
+    {
+	if (putback && k == 0)
+	    stream -> SetPutbackMark();
+
+	while (stream -> Avail() < 10 * sizeof(Float64))
+	    ReadFromFile((DcmBufferStream *) stream, inFile);
+
+	stream->ReadBytes(fd,10 * sizeof(Float64));
+	cout << endl << "fd: " ;
+	for (int i = 0; i < 10; i++)
+	    cout << fd[i] << " ";
+	cout << endl;
+
+	if (putback && k == 0)
+	    stream->Putback();
+    }
+
+    for (k=0; k < times; k++)
+    {
+	if (putback && k == 0)
+	    stream -> SetPutbackMark();
+
+	while(stream -> Avail() < sizeof(size_t))
+	    ReadFromFile((DcmBufferStream *) stream, inFile);
+
+	stream->ReadBytes(&uc_len, sizeof(size_t));
+	cout << endl << "uc_len: " ;
+	cout << uc_len << endl;
+	uc = new char[uc_len+1];
+
+	if (putback && k == 0)
+	    stream->Putback();
+    }
+
+    for (k=0; k < times; k++)
+    {
+	if (putback && k == 0)
+	    stream -> SetPutbackMark();
+
+	while(stream -> Avail() < uc_len)
+	    ReadFromFile((DcmBufferStream *) stream, inFile);
+
+	stream->ReadBytes(uc, uc_len);
+	cout << endl << "uc: " ;
+	uc[uc_len] = 0;
+	cout << uc << endl;
+
+	if (putback && k == 0)
+	    stream->Putback();
+    }
+
+    if (stream->EndOfStream())
+	cout << "End of Stream reached" << endl;
 }
 
 
-// ********************************************
-
-
-int main(int argc, char *argv[])
+void WriteToFile(DcmBufferStream * stream, FILE * outFile)
 {
-    cin.sync_with_stdio();
-    cout.sync_with_stdio();
-    cerr.sync_with_stdio();
-
-    T_VR_UL buflen = 110;
-    T_VR_UL packetlen = 100;
-    T_VR_UL readlen = 80;
-    T_VR_UL filelen = 510;
-
-    if ( (argc > 5) || (argc == 2 && !strcmp( argv[1], "-h" )) )
-    {
-	cerr << "usage: " << argv[0];
-	cerr << " [packetlen [readlen [buflen [filelen]]]]" << endl;
-	cerr << "       test buffered streams" << endl;
-	cerr << endl;
-	cerr << "param: packetlen=" << packetlen << " readlen=" << readlen;
-	cerr << " buflen=" << buflen << " filelen=" << filelen << endl;
-	exit(1);
-    }
-
-    if ( argc >= 5 )
-	filelen = (T_VR_UL)atoi( argv[4] );
-    if ( argc >= 4 )
-	buflen = (T_VR_UL)atoi( argv[3] );
-    if ( argc >= 3 )
-	readlen = (T_VR_UL)atoi( argv[2] );
-    if ( argc >= 2 )
-	packetlen = (T_VR_UL)atoi( argv[1] );
-
-    test_iDS( buflen, packetlen, readlen, filelen );
-    test_oDS( buflen, packetlen, readlen, filelen );
-
-    exit(0);
+    void * bufptr;
+    unsigned long length;
+    stream -> GetBuffer(bufptr, length);
+    fwrite(bufptr, 1, length, outFile);
 }
 
+void WriteTest(DcmStream * stream, FILE * outFile)
+{
+    Uint32 ul[10];
+    Sint32 sl[10];
+    Uint16 us[10];
+    Sint16 ss[10];
+    Float32 fl[10];
+    Float64 fd[10];
+    char * uc = "abcdefghijklmnop";
+    size_t uc_len = strlen(uc);
+    unsigned long length, t;
+    int i;
+
+    for (i=1; i < 10; i++)
+    {
+	ul[i] = Uint32(rand());
+	sl[i] = Sint32(rand());
+	us[i] = Uint16(rand());
+	ss[i] = Sint16(rand());
+	fl[i] = Float32(Float32(rand())/rand());
+	fd[i] = Float64(Float64(rand())/rand());
+    }
+
+
+    for(length = 10 * sizeof(Uint32), t = 0;
+	length != t; 
+	t += stream -> TransferredBytes())
+    {
+	stream->WriteBytes(&((unsigned char *)ul)[t],length-t);
+		
+	if (stream -> Avail() == 0)
+	{
+	    WriteToFile((DcmBufferStream *) stream, outFile);
+	    if (stream -> GetError() == EC_StreamNotifyClient)
+		stream -> ClearError();
+	}
+    }
+    cout << endl << "ul: " ;
+    for (i = 0; i < 10; i++)
+	cout << ul[i] << " ";
+    cout << endl;
+
+
+    for(length = 10 * sizeof(Sint32), t = 0;
+	length != t; 
+	t += stream -> TransferredBytes())
+    {
+	stream->WriteBytes(&((unsigned char *)sl)[t],length-t);
+		
+	if (stream -> Avail() == 0)
+	{
+	    WriteToFile((DcmBufferStream *) stream, outFile);
+	    if (stream -> GetError() == EC_StreamNotifyClient)
+		stream -> ClearError();
+	}
+    }
+    cout << endl << "sl: " ;
+    for (i = 0; i < 10; i++)
+	cout << sl[i] << " ";
+    cout << endl;
+
+
+    for(length = 10 * sizeof(Uint16), t=0; 
+	length != t; 
+	t += stream -> TransferredBytes())
+    {
+	stream->WriteBytes(&((unsigned char *)us)[t],length-t);
+		
+	if (stream -> Avail() == 0)
+	{
+	    WriteToFile((DcmBufferStream *) stream, outFile);
+	    if (stream -> GetError() == EC_StreamNotifyClient)
+		stream -> ClearError();
+	}
+    }
+    cout << endl << "us: " ;
+    for (i = 0; i < 10; i++)
+	cout << us[i] << " ";
+    cout << endl;
+
+
+    for(length = 10 * sizeof(Sint16), t = 0;
+	length != t; 
+	t += stream -> TransferredBytes())
+    {
+	stream->WriteBytes(&((unsigned char *)ss)[t],length-t);
+		
+	if (stream -> Avail() == 0)
+	{
+	    WriteToFile((DcmBufferStream *) stream, outFile);
+	    if (stream -> GetError() == EC_StreamNotifyClient)
+		stream -> ClearError();
+	}
+    }
+    cout << endl << "ss: " ;
+    for (i = 0; i < 10; i++)
+	cout << ss[i] << " ";
+    cout << endl;
+
+
+    for(length = 10 * sizeof(Float32), t = 0;
+	length != t; 
+	t += stream -> TransferredBytes())
+    {
+	stream->WriteBytes(&((unsigned char *)fl)[t],length-t);
+		
+	if (stream -> Avail() == 0)
+	{
+	    WriteToFile((DcmBufferStream *) stream, outFile);
+	    if (stream -> GetError() == EC_StreamNotifyClient)
+		stream -> ClearError();
+	}
+    }
+    cout << endl << "fl: " ;
+    for (i = 0; i < 10; i++)
+	cout << fl[i] << " ";
+    cout << endl;
+
+
+    for(length = 10 * sizeof(Float64), t = 0;
+	length != t; 
+	t += stream -> TransferredBytes())
+    {
+	stream->WriteBytes(&((unsigned char *)fd)[t],length-t);
+		
+	if (stream -> Avail() == 0)
+	{
+	    WriteToFile((DcmBufferStream *) stream, outFile);
+	    if (stream -> GetError() == EC_StreamNotifyClient)
+		stream -> ClearError();
+	}
+    }
+    cout << endl << "fd: " ;
+    for (i = 0; i < 10; i++)
+	cout << fd[i] << " ";
+    cout << endl;
+
+
+    for(length = sizeof(size_t), t = 0; 
+	t != length; 
+	t += stream -> TransferredBytes())
+    {
+	stream->WriteBytes(&((unsigned char *)&uc_len)[t], length-t);
+		
+	if (stream -> Avail() == 0)
+	{
+	    WriteToFile((DcmBufferStream *) stream, outFile);
+	    if (stream -> GetError() == EC_StreamNotifyClient)
+		stream -> ClearError();
+	}
+    }
+
+    cout << endl << "uc_len: " ;
+    cout << uc_len << endl;
+
+    for(length = uc_len, t = 0; 
+	length != t; 
+	t += stream -> TransferredBytes())
+    {
+	stream->WriteBytes(&uc[t], length-t);
+		
+	if (stream -> Avail() == 0)
+	{
+	    WriteToFile((DcmBufferStream *) stream, outFile);
+	    if (stream -> GetError() == EC_StreamNotifyClient)
+		stream -> ClearError();
+	}
+    }
+
+    if (!stream -> Flush())
+	WriteToFile((DcmBufferStream *) stream, outFile);
+
+    cout << endl << "uc: " ;
+    cout << uc << endl;
+}
+
+
+int main(int argc, char * argv[])
+{
+
+    char filename[80];
+
+    if(argc != 2)
+    {
+	cerr << "usage: " << argv[0] << " FilenameGroup" << endl;
+	return 1;
+    }
+
+    cout << endl << "WRITE-Test with file" << endl;
+    cout << "====================" << endl << endl;
+
+    strcpy(filename, argv[1]);
+    strcat(filename, ".1");
+    DcmFileStream * writeFileStream = 
+	new DcmFileStream(filename, FALSE);
+
+    WriteTest(writeFileStream, NULL);
+
+    delete writeFileStream;
+
+
+    cout << endl << "READ-Test with file" << endl;
+    cout << "====================" << endl << endl;
+
+    DcmFileStream * readFileStream = 
+	new DcmFileStream(filename, TRUE);
+   
+    ReadTest(readFileStream, NULL, FALSE);
+
+    delete readFileStream;
+
+
+    cout << endl << "PUTBACK-Test with file" << endl;
+    cout << "====================" << endl << endl;
+
+    DcmFileStream * putbackFileStream = 
+	new DcmFileStream(filename, TRUE);
+
+    ReadTest(putbackFileStream, NULL, TRUE);
+
+    delete putbackFileStream;
+
+
+    cout << endl << "WRITE-Test with buffer" << endl;
+    cout << "======================" << endl << endl;
+
+    strcpy(filename, argv[1]);
+    strcat(filename, ".2");
+    FILE * outFile = fopen(filename, "wb");
+
+    DcmBufferStream * writeBufStream = 
+	new DcmBufferStream(buffer, BUFLEN, FALSE);
+
+    WriteTest(writeBufStream, outFile);
+		
+    delete writeBufStream;
+    fclose(outFile);
+
+
+    cout << endl << "READ-Test with buffer" << endl;
+    cout << "=====================" << endl << endl;
+
+    FILE * inFile = fopen(filename, "rb");
+
+    DcmBufferStream * readBufStream = 
+	new DcmBufferStream(TRUE);
+   
+    ReadTest(readBufStream, inFile, FALSE);
+
+    delete readBufStream;
+    fclose(inFile);
+
+
+    cout << endl << "PUTBACK-Test with file" << endl;
+    cout << "====================" << endl << endl;
+
+    inFile = fopen(filename, "rb");
+
+    DcmBufferStream * putbackBufStream = 
+	new DcmBufferStream(TRUE);
+
+    ReadTest(putbackBufStream, inFile, TRUE);
+		  
+	
+    delete putbackBufStream;
+    fclose(inFile);
+}
+
+
+/*
+** CVS/RCS Log:
+** $Log: tststream.cc,v $
+** Revision 1.3  1996-01-05 13:31:40  andreas
+** - new streaming facilities and test routines for blocks and buffers
+** - unique read/write methods for block and file transfer
+** - more cleanups
+**
+**
+*/

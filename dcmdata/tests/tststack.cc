@@ -9,8 +9,8 @@
  * testing the stack-class
  * 
  * 
- * Last Update:	  $Author: hewett $
- * Revision:      $Revision: 1.2 $
+ * Last Update:	  $Author: andreas $
+ * Revision:      $Revision: 1.3 $
  * Status:        $State: Exp $
  *
  */
@@ -32,7 +32,7 @@ main()
     DcmObject *obj;
 
     for (i=1; i<=10; i++)
-        s.push(new DcmUnsignedShort( DcmTag(DCM_Item), i*i, NULL ));
+        s.push(new DcmUnsignedShort( DcmTag(DCM_Item), i*i));
 
     cout << "DcmStack: \n";
     while ( !s.empty() ) {

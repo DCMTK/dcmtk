@@ -8,8 +8,8 @@
  * Purpose:
  * 	convert and verify dicom directories
  *
- * Update:   $Author: hewett $
- * Revision:      $Revision: 1.2 $
+ * Update:   $Author: andreas $
+ * Revision:      $Revision: 1.3 $
  * Status:	  $State: Exp $
  *
  */
@@ -348,7 +348,7 @@ Bdebug((1, "tstdir:main()" ));
 
     if ( removemode )
     {
-        dir->getRootRecord().deleteSubAndPurgeFile( (T_VR_UL)0 );
+        dir->getRootRecord().deleteSubAndPurgeFile((const unsigned long)0);
         writemode = TRUE;                         // forciere das Abspeichern
 
 	fflush( stdout );

@@ -9,8 +9,8 @@
  * testing the list-class
  * 
  * 
- * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.2 $
+ * Last Update:   $Author: andreas $
+ * Revision:      $Revision: 1.3 $
  * Status:        $State: Exp $
  *
  */
@@ -64,36 +64,36 @@ main()
 Bdebug((3, "tstlist:main()" ));
 
     for (i=1; i<=10; i++)
-        l.append( new DcmUnsignedShort( owntag, cadd + i*i, NULL ) );
+        l.append( new DcmUnsignedShort( owntag, cadd + i*i) );
     printlist( "List 1..100:\n", l );
 
     for (i=1; i<=10; i++)
-        l.prepend( new DcmUnsignedShort( owntag, cadd + -i*i, NULL ) );
+        l.prepend( new DcmUnsignedShort( owntag, cadd + -i*i) );
     printlist( "List -100..100:\n", l );
 
-    l.prepend( new DcmUnsignedShort( owntag, cadd + -111, NULL ) );
+    l.prepend( new DcmUnsignedShort( owntag, cadd + -111) );
     printlist( "Prepend before pos. 0:\n", l );
 
     l.seek( ELP_first );
     for (i=1; i<=7; i++)
         l.seek( ELP_next );
-    l.insert( new DcmUnsignedShort( owntag, cadd + 21, NULL ) );
-    l.insert( new DcmUnsignedShort( owntag, cadd + 22, NULL ) );
-    l.insert( new DcmUnsignedShort( owntag, cadd + 23, NULL ) );
+    l.insert( new DcmUnsignedShort( owntag, cadd + 21) );
+    l.insert( new DcmUnsignedShort( owntag, cadd + 22) );
+    l.insert( new DcmUnsignedShort( owntag, cadd + 23) );
     printlist( "Insert at pos. 7:\n", l );
 
     l.seek( ELP_first );
     for (i=1; i<=4; i++)
         l.seek( ELP_next );
-    l.insert( new DcmUnsignedShort( owntag, cadd + 51, NULL ), ELP_prev );
-    l.insert( new DcmUnsignedShort( owntag, cadd + 52, NULL ), ELP_prev );
-    l.insert( new DcmUnsignedShort( owntag, cadd + 53, NULL ), ELP_prev );
+    l.insert( new DcmUnsignedShort( owntag, cadd + 51), ELP_prev );
+    l.insert( new DcmUnsignedShort( owntag, cadd + 52), ELP_prev );
+    l.insert( new DcmUnsignedShort( owntag, cadd + 53), ELP_prev );
     printlist( "Insert before pos. 4:\n", l );
 
     cout << "Element 25: ";
     cout << l.seek_to(25)->getLength() << endl;
     l.seek_to( 26 );
-    l.insert( new DcmUnsignedShort( owntag, cadd + 99, NULL ), ELP_prev );
+    l.insert( new DcmUnsignedShort( owntag, cadd + 99), ELP_prev );
     printlist( "Direct insert before pos. 26:\n", l );
 
     eraselist( l );
