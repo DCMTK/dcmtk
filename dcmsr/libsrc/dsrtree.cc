@@ -23,8 +23,8 @@
  *    classes: DSRTree
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-07 18:33:32 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2001-01-25 18:46:37 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -211,6 +211,10 @@ size_t DSRTree::removeNode()
             }
         }
 
+        /* remove references to former siblings */
+        cursor->Prev = NULL;
+        cursor->Next = NULL;
+
         /* delete all nodes from extracted subtree */
         /* (this routine might also use the "new" DSRTreeNodeCursor class) */
         
@@ -245,7 +249,10 @@ size_t DSRTree::removeNode()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtree.cc,v $
- *  Revision 1.2  2000-11-07 18:33:32  joergr
+ *  Revision 1.3  2001-01-25 18:46:37  joergr
+ *  Fixed bug in method removeNode().
+ *
+ *  Revision 1.2  2000/11/07 18:33:32  joergr
  *  Enhanced support for by-reference relationships.
  *
  *  Revision 1.1  2000/10/13 07:52:27  joergr
