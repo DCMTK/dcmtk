@@ -10,9 +10,9 @@
 ** 
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-21 09:50:38 $
+** Update Date:		$Date: 1996-03-22 13:09:12 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdict.h,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -39,15 +39,11 @@
 #define DCM_DICT_ENVIRONMENT_VARIABLE	"DCMDICTPATH"
 
 #ifndef DCM_DICT_DEFAULT_PATH
-#if defined(unix)
-#define DCM_DICT_DEFAULT_PATH	"/usr/local/dicom/lib/dicom.dic"
-#elif defined(dos) || defined(win31)
-#define DCM_DICT_DEFAULT_PATH	"\\dicom.dic"
-#elif defined(macintosh)
-#define DCM_DICT_DEFAULT_PATH	"dicom.dic"
-#else
-#error "Don't know how to define DCM_DICT_DEFAULT_PATH"
-#endif
+/* 
+** The default dictionary path is system dependent.  It should
+** be defined in a configuration file included from "osconfig.h"
+*/
+#error "DCM_DICT_DEFAULT_PATH is not defined via osconfig.h"
 #endif /* !DCM_DICT_DEFAULT_PATH */
 
 #ifndef ENVIRONMENT_PATH_SEPARATOR
@@ -158,7 +154,11 @@ extern DcmDataDictionary dcmDataDict;
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.h,v $
-** Revision 1.5  1996-03-21 09:50:38  hewett
+** Revision 1.6  1996-03-22 13:09:12  hewett
+** Moved the definition of DCM_DICT_DEFAULT_PATH to the system
+** dependent configuration files included via "osconfig.h".
+**
+** Revision 1.5  1996/03/21 09:50:38  hewett
 ** Added a  method numberOfEntries() to return the total number of
 ** dictionary entries.
 **
