@@ -1,7 +1,6 @@
 /*
 **
 ** Author: Gerd Ehlers      26.04.94 
-**     
 ** Kuratorium OFFIS e.V.
 **
 ** Module: dcitem.cc
@@ -11,9 +10,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-08-29 07:52:40 $
+** Update Date:		$Date: 1997-08-29 08:31:33 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.33 $
+** CVS/RCS Revision:	$Revision: 1.34 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1773,7 +1772,25 @@ DcmItem::findLong(const DcmTagKey& xtag,
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.33  1997-08-29 07:52:40  andreas
+** Revision 1.34  1997-08-29 08:31:33  andreas
+** - Added methods getOFString and getOFStringArray for all
+**   string VRs. These methods are able to normalise the value, i. e.
+**   to remove leading and trailing spaces. This will be done only if
+**   it is described in the standard that these spaces are not relevant.
+**   These methods do not test the strings for conformance, this means
+**   especially that they do not delete spaces where they are not allowed!
+**   getOFStringArray returns the string with all its parts separated by \
+**   and getOFString returns only one value of the string.
+**   CAUTION: Currently getString returns a string with trailing
+**   spaces removed (if dcmEnableAutomaticInputDataCorrection == OFTrue) and
+**   truncates the original string (since it is not copied!). If you rely on this
+**   behaviour please change your application now.
+**   Future changes will ensure that getString returns the original
+**   string from the DICOM object (NULL terminated) inclusive padding.
+**   Currently, if you call getOF... before calling getString without
+**   normalisation, you can get the original string read from the DICOM object.
+**
+** Revision 1.33  1997/08/29 07:52:40  andreas
 ** - New error messages if length of an element is odd. Previously, no
 **   error was reported. But the length is corrected by the method
 **   newValueFiel and. so it was impossible for a checking utility to find

@@ -10,9 +10,9 @@
 ** Interface of class DcmByteString
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:25:05 $
+** Update Date:		$Date: 1997-08-29 08:32:37 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcbytstr.h,v $
-** CVS/RCS Revision:	$Revision: 1.10 $
+** CVS/RCS Revision:	$Revision: 1.11 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -27,6 +27,8 @@
 #include "dcerror.h"
 #include "dctypes.h"
 #include "dcelem.h"
+
+class OFString;
 
 typedef enum
 {
@@ -78,19 +80,66 @@ public:
 
     virtual E_Condition putString(const char *byteStringValue);
 
+    // returns a copy of one string value (perhaps normalized)
+    virtual E_Condition getOFString(
+	OFString & str,
+	const unsigned long pos = 0,
+	OFBool normalize);
+ 
     virtual E_Condition getString(char * & byteStringValue);
+
+    // returns all string values (perhaps normalized)
+    virtual E_Condition getOFStringArray(OFString & str, OFBool normalize);
 
     virtual E_Condition clear();
     virtual E_Condition verify(const OFBool autocorrect = OFFalse);
 };
 
+/* Fucntion to get part out of a String for VM > 1 */
+
+E_Condition getStringPart(
+    OFString & result,
+    char * orgStr,
+    const unsigned long which);
+
+
+/* Function for String Normalisation - delete leading and trailing Spaces */
+
+const OFBool DELETE_TRAILING = OFTrue;
+const OFBool DELETE_LEADING = OFTrue;
+const OFBool MULTIPART = OFTrue;
+
+void normalizeString(
+    OFString & str,
+    const OFBool multiPart,    
+    const OFBool leading,
+    const OFBool trailing);
+ 
 
 #endif // DCBYTSTR_H
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.h,v $
-** Revision 1.10  1997-07-21 08:25:05  andreas
+** Revision 1.11  1997-08-29 08:32:37  andreas
+** - Added methods getOFString and getOFStringArray for all
+**   string VRs. These methods are able to normalise the value, i. e.
+**   to remove leading and trailing spaces. This will be done only if
+**   it is described in the standard that these spaces are not relevant.
+**   These methods do not test the strings for conformance, this means
+**   especially that they do not delete spaces where they are not allowed!
+**   getOFStringArray returns the string with all its parts separated by \
+**   and getOFString returns only one value of the string.
+**   CAUTION: Currently getString returns a string with trailing
+**   spaces removed (if dcmEnableAutomaticInputDataCorrection == OFTrue) and
+**   truncates the original string (since it is not copied!). If you rely on this
+**   behaviour please change your application now.
+**   Future changes will ensure that getString returns the original
+**   string from the DICOM object (NULL terminated) inclusive padding.
+**   Currently, if you call getOF... before calling getString without
+**   normalisation, you can get the original string read from the DICOM object.
+**
+** Revision 1.10  1997/07/21 08:25:05  andreas
 ** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
 **   with one unique boolean type OFBool.
 **

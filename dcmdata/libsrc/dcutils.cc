@@ -10,7 +10,7 @@
  *
  *
  * Last Update:   $Author: andreas $
- * Revision:	  $Revision: 1.3 $
+ * Revision:	  $Revision: 1.4 $
  * Status:	  $State: Exp $
  *
  */
@@ -20,6 +20,7 @@
 
 #include <stdlib.h>
 #include <ctype.h>
+#include "ofstring.h"
 #include "dcutils.h"
 #include "dctk.h"
 
@@ -56,9 +57,9 @@ char* skipWS( char *str )
 // **********************************************
 
 
-OFBool getSingleValue( DcmObject *obj,
-		     DcmTagKey searchtag,
-		     Uint16 &returnVal)
+OFBool getSingleValue(DcmObject *obj,
+		      DcmTagKey searchtag,
+		      Uint16 &returnVal)
 {
     OFBool l_error = OFFalse;
     DcmStack stack;
@@ -73,9 +74,9 @@ OFBool getSingleValue( DcmObject *obj,
                 ((DcmUnsignedShort*)searchedObj)->getUint16(returnVal);
 	    else if ( searchedObj->ident() == EVR_IS )
 	    {
-		char *istr = NULL;
-		((DcmIntegerString*)searchedObj)->getString(istr);
-		returnVal = (Uint16)atoi( istr );
+		Sint32 val = 0;
+		((DcmIntegerString*)searchedObj)->getSint32(val);
+		returnVal = (Uint16)val;
 	    }
             else
                 l_error = OFTrue;
@@ -110,9 +111,9 @@ OFBool getSingleValue( DcmObject *obj,
                 ((DcmSignedShort*)searchedObj)->getSint16(returnVal);
 	    else if ( searchedObj->ident() == EVR_IS )
 	    {
-	      char *istr = NULL;
-	      ((DcmIntegerString*)searchedObj)->getString(istr);
-	      returnVal = (Sint16)atoi( istr );
+		Sint32 val = 0;
+		((DcmIntegerString *)searchedObj)->getSint32(val);
+		returnVal = (Sint16)val;
 	    }
             else
                 l_error = OFTrue;
@@ -147,9 +148,9 @@ OFBool getSingleValue( DcmObject *obj,
                 ((DcmUnsignedLong*)searchedObj)->getUint32(returnVal);
 	    else if ( searchedObj->ident() == EVR_IS )
 	    {
-		char *istr = NULL;
-		((DcmIntegerString*)searchedObj)->getString(istr);
-		returnVal = (Uint32)atol( istr );
+		Sint32 val = 0;
+		((DcmIntegerString *)searchedObj)->getSint32(val);
+		returnVal = (Uint32)val;
 	    }
             else
                 l_error = OFTrue;
@@ -184,11 +185,7 @@ OFBool getSingleValue( DcmObject *obj,
 	    if ( searchedObj->ident() == EVR_SL )
                 ((DcmSignedLong*)searchedObj)->getSint32(returnVal);
 	    else if ( searchedObj->ident() == EVR_IS )
-	    {
-		char *istr = NULL;
-		((DcmIntegerString*)searchedObj)->getString(istr);
-		returnVal = (Sint32)atol( istr );
-	    }
+		((DcmIntegerString *)searchedObj)->getSint32(returnVal);
             else
                 l_error = OFTrue;
 	}
@@ -202,9 +199,7 @@ OFBool getSingleValue( DcmObject *obj,
     return l_error;
 }
 
-
 // **********************************************
-
 
 OFBool getSingleValue( DcmObject *obj,
 		     DcmTagKey searchtag,
@@ -217,29 +212,37 @@ OFBool getSingleValue( DcmObject *obj,
 	 == EC_Normal )
     {
 	DcmObject *searchedObj = stack.top();
-        searchedObj->verify( OFTrue );                   // erzwinge dealigning
-	if (   (   searchedObj->ident() == EVR_AE
-		|| searchedObj->ident() == EVR_AS
-		|| searchedObj->ident() == EVR_CS
-		|| searchedObj->ident() == EVR_DA
-		|| searchedObj->ident() == EVR_DS
-		|| searchedObj->ident() == EVR_DT
-		|| searchedObj->ident() == EVR_IS
-		|| searchedObj->ident() == EVR_TM
-		|| searchedObj->ident() == EVR_UI
-	       )
-	    && searchedObj->getLength() > 0
-	   )
-	    ((DcmByteString*)searchedObj)->getString(returnVal);
-	else if (   (	searchedObj->ident() == EVR_LO
-		     || searchedObj->ident() == EVR_LT
-		     || searchedObj->ident() == EVR_PN
-		     || searchedObj->ident() == EVR_SH
-		     || searchedObj->ident() == EVR_ST
-		    )
-		 && searchedObj->getLength() > 0
-		)
-		 ((DcmCharString*)searchedObj)->getString(returnVal);
+	searchedObj->verify(OFTrue);
+	if (searchedObj->getLength() > 0)
+	    l_error = 
+		((DcmElement *)searchedObj)->getString(returnVal) != EC_Normal;
+	else
+	    l_error = OFTrue;
+    }
+    else
+    {
+	l_error = OFTrue;
+    }
+    return l_error;
+}
+
+// **********************************************
+
+
+OFBool getSingleValue( DcmObject *obj,
+		     DcmTagKey searchtag,
+		     OFString & returnVal)
+{
+    OFBool l_error = OFFalse;
+    DcmStack stack;
+
+    if ( obj->search( searchtag, stack, ESM_fromHere, OFFalse )
+	 == EC_Normal )
+    {
+	DcmObject *searchedObj = stack.top();
+	if (searchedObj->getLength() > 0)
+	    l_error = 
+		((DcmElement *)searchedObj)->getOFStringArray(returnVal) != EC_Normal;
 	else
 	    l_error = OFTrue;
     }
@@ -406,6 +409,16 @@ OFBool putSingleValue( DcmItem *item,
     return l_error;
 }
 
+
+// **********************************************
+
+
+OFBool putSingleValue( DcmItem *item,
+		     DcmTagKey tag,
+		     OFString  & value)
+{
+    return putSingleValue(item, tag, value.c_str());
+}
 
 // **********************************************
 

@@ -10,9 +10,9 @@
 ** Implementation of class DcmByteString
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-24 13:10:50 $
+** Update Date:		$Date: 1997-08-29 08:32:53 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcbytstr.cc,v $
-** CVS/RCS Revision:	$Revision: 1.15 $
+** CVS/RCS Revision:	$Revision: 1.16 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -27,6 +27,7 @@
 #include <iostream.h>
 
 
+#include "ofstring.h"
 #include "dcbytstr.h"
 #include "dcvr.h"
 #include "dcdebug.h"
@@ -125,6 +126,41 @@ DcmByteString::getLength(
     makeDicomByteString();
     return Length;
 }
+
+
+    
+// ********************************
+
+E_Condition
+DcmByteString::getOFString(
+    OFString & str,
+    const unsigned long pos,
+    OFBool /*normalize*/) 
+{
+    errorFlag = EC_Normal;
+    if (getVM() > pos)
+	errorFlag = EC_IllegalCall;
+    else
+    {
+	char * s = (char *)getValue();
+	if (errorFlag == EC_Normal) errorFlag = getStringPart(str, s, pos);
+    }
+    return errorFlag;
+}
+
+// ********************************
+
+E_Condition 
+DcmByteString::getOFStringArray(
+    OFString & str,
+    OFBool /*normalize*/)
+{
+    char * s = (char *)getValue();
+    if (s) str = s;
+    else s = "";
+    return errorFlag;
+}
+
 
 // ********************************
 
@@ -360,10 +396,117 @@ E_Condition DcmByteString::write(DcmStream & outStream,
 }
 
 
+
+/**** Function to get Part of a DICOM String ****/
+
+E_Condition 
+getStringPart(
+    OFString & result,
+    char * orgStr,
+    const unsigned long which)
+{
+    E_Condition l_error = EC_Normal;
+    if (!orgStr) l_error = EC_IllegalCall;
+    else
+    {
+	unsigned long i=0;
+	while (i<which && *orgStr != '\0') if (*orgStr++ == '\\') i++;
+	if (i==which)
+	{
+	    char *t = orgStr;
+	    while (*t != '\0' && *t != '\\') t++;
+	    if (t - orgStr >0) result.assign(orgStr, t-orgStr);
+	    else result = "";
+	} 
+	else l_error = EC_IllegalCall;
+    }
+    return l_error;
+}
+
+/*** general Function for Normalizing of DICOM STRINGS ** */
+
+void 
+normalizeString(
+    OFString & str,
+    const OFBool multiPart,
+    const OFBool leading,
+    const OFBool trailing)
+{
+    if (!str.empty())
+    {
+	size_t partindex = 0;
+	size_t offset = 0;
+	size_t len = str.length();
+	while (partindex < len)
+	{
+	    // remove leading spaces in every part of the string
+	    if (leading)
+	    {
+		offset = 0;
+		while(partindex+offset < len && str[partindex+offset] == ' ') 
+		    offset++;
+		if (offset) str.erase(partindex, offset);
+	    }
+
+	    len = str.length();
+	    // compute begin to the next separator index!
+	    if (multiPart)
+	    {
+		partindex = str.find('\\', partindex);
+		if (partindex == OFString_npos) partindex = len;
+	    }
+	    else partindex = len;
+
+	    // remove trailing spaces in every part of the string
+	    if (trailing && partindex)
+	    {
+		offset = partindex-1;
+		while(offset && str[offset] == ' ') offset--;
+		if (offset != partindex-1)
+		{
+		    if (str[offset] == ' ')
+		    {
+			str.erase(offset, partindex-offset);
+			partindex = offset;
+		    }
+		    else
+		    {
+			str.erase(offset+1, partindex-offset-1);
+			partindex = offset+1;
+		    }
+		}
+	    }
+
+	    len = str.length();
+	    if (partindex != len) ++partindex;
+	}
+    }
+}
+
+
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
-** Revision 1.15  1997-07-24 13:10:50  andreas
+** Revision 1.16  1997-08-29 08:32:53  andreas
+** - Added methods getOFString and getOFStringArray for all
+**   string VRs. These methods are able to normalise the value, i. e.
+**   to remove leading and trailing spaces. This will be done only if
+**   it is described in the standard that these spaces are not relevant.
+**   These methods do not test the strings for conformance, this means
+**   especially that they do not delete spaces where they are not allowed!
+**   getOFStringArray returns the string with all its parts separated by \
+**   and getOFString returns only one value of the string.
+**   CAUTION: Currently getString returns a string with trailing
+**   spaces removed (if dcmEnableAutomaticInputDataCorrection == OFTrue) and
+**   truncates the original string (since it is not copied!). If you rely on this
+**   behaviour please change your application now.
+**   Future changes will ensure that getString returns the original
+**   string from the DICOM object (NULL terminated) inclusive padding.
+**   Currently, if you call getOF... before calling getString without
+**   normalisation, you can get the original string read from the DICOM object.
+**
+** Revision 1.15  1997/07/24 13:10:50  andreas
 ** - Removed Warnings from SUN CC 2.0.1
 **
 ** Revision 1.14  1997/07/21 07:56:39  andreas

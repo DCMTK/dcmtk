@@ -10,9 +10,9 @@
 ** Implementation of class DcmElement
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-31 06:58:04 $
+** Update Date:		$Date: 1997-08-29 08:32:54 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcelem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.19 $
+** CVS/RCS Revision:	$Revision: 1.20 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -273,7 +273,28 @@ E_Condition DcmElement::getTagVal(DcmTagKey & /*val*/, const unsigned long /*pos
 }
 
 
+E_Condition 
+DcmElement::getOFString(
+    OFString &/*val*/,
+    const unsigned long /*pos*/,
+    OFBool /*normalize*/)
+{
+    errorFlag = EC_IllegalCall;
+    return errorFlag;
+}
+
+
 E_Condition DcmElement::getString(char * &/*val*/)
+{
+    errorFlag = EC_IllegalCall;
+    return errorFlag;
+}
+
+
+E_Condition 
+DcmElement::getOFStringArray(
+    OFString & /*val*/,
+    OFBool /*normalize*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -801,7 +822,25 @@ E_Condition DcmElement::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
-** Revision 1.19  1997-07-31 06:58:04  andreas
+** Revision 1.20  1997-08-29 08:32:54  andreas
+** - Added methods getOFString and getOFStringArray for all
+**   string VRs. These methods are able to normalise the value, i. e.
+**   to remove leading and trailing spaces. This will be done only if
+**   it is described in the standard that these spaces are not relevant.
+**   These methods do not test the strings for conformance, this means
+**   especially that they do not delete spaces where they are not allowed!
+**   getOFStringArray returns the string with all its parts separated by \
+**   and getOFString returns only one value of the string.
+**   CAUTION: Currently getString returns a string with trailing
+**   spaces removed (if dcmEnableAutomaticInputDataCorrection == OFTrue) and
+**   truncates the original string (since it is not copied!). If you rely on this
+**   behaviour please change your application now.
+**   Future changes will ensure that getString returns the original
+**   string from the DICOM object (NULL terminated) inclusive padding.
+**   Currently, if you call getOF... before calling getString without
+**   normalisation, you can get the original string read from the DICOM object.
+**
+** Revision 1.19  1997/07/31 06:58:04  andreas
 ** new protected method swapValueField for DcmElement
 **
 ** Revision 1.18  1997/07/24 13:10:51  andreas
