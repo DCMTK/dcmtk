@@ -22,9 +22,9 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-02-12 11:33:27 $
+ *  Update Date:      $Date: 2003-05-20 09:29:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.73 $
+ *  CVS/RCS Revision: $Revision: 1.74 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,7 +43,6 @@
 #endif
 
 #include "dctk.h"          /* for various dcmdata headers */
-#include "dcutils.h"       /* for getSingleValue */
 #include "dcdebug.h"       /* for SetDebugLevel */
 #include "cmdlnarg.h"      /* for prepareCmdLineArgs */
 #include "dcuid.h"         /* for dcmtk version name */
@@ -282,7 +281,11 @@ int main(int argc, char *argv[])
       cmd.addOption("--conv-never",         "+cn",     "never convert color space");
 #endif
 
-     cmd.addSubGroup("VOI windowing:");
+     cmd.addSubGroup("modality LUT transformation:");
+      cmd.addOption("--no-modality",        "-M",      "ignore stored modality LUT transformation");
+      cmd.addOption("--use-modality",       "+M",      "use modality LUT transformation (default)");
+
+     cmd.addSubGroup("VOI LUT transformation:");
       cmd.addOption("--no-windowing",       "-W",      "no VOI windowing (default)");
       cmd.addOption("--use-window",         "+Wi",  1, "[n]umber : integer",
                                                        "use the n-th VOI window from image file");
@@ -587,7 +590,16 @@ int main(int argc, char *argv[])
         cmd.endOptionBlock();
 #endif
 
-        /* image processing options: VOI windowing */
+        /* image processing options: modality LUT transformation */
+
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--no-modality"))
+            opt_compatibilityMode |= CIF_IgnoreModalityTransformation;
+        if (cmd.findOption("--use-modality"))
+            opt_compatibilityMode &= ~CIF_IgnoreModalityTransformation;
+        cmd.endOptionBlock();
+
+        /* image processing options: VOI LUT transformation */
 
         cmd.beginOptionBlock();
         if (cmd.findOption("--no-windowing"))
@@ -908,8 +920,8 @@ int main(int argc, char *argv[])
         double minVal = 0.0;
         double maxVal = 0.0;
         const char *colorModel;
-        char *SOPClassUID = NULL;
-        char *SOPInstanceUID = NULL;
+        const char *SOPClassUID = NULL;
+        const char *SOPInstanceUID = NULL;
         const char *SOPClassText = NULL;
         const char *XferText = DcmXfer(xfer).getXferName();
 
@@ -918,8 +930,8 @@ int main(int argc, char *argv[])
         if (colorModel == NULL)
             colorModel = "unknown";
 
-            getSingleValue(dfile->getDataset(), DCM_SOPClassUID, SOPClassUID);
-            getSingleValue(dfile->getDataset(), DCM_SOPInstanceUID, SOPInstanceUID);
+        dfile->getDataset()->findAndGetString(DCM_SOPClassUID, SOPClassUID);
+        dfile->getDataset()->findAndGetString(DCM_SOPInstanceUID, SOPInstanceUID);
 
         if (SOPInstanceUID == NULL)
             SOPInstanceUID = (char *)"not present";
@@ -1470,7 +1482,12 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.73  2003-02-12 11:33:27  joergr
+ * Revision 1.74  2003-05-20 09:29:34  joergr
+ * Added new configuration/compatibility flag that allows to ignore the
+ * modality transform stored in the dataset.
+ * Removed unused helper functions (dcutils.*).
+ *
+ * Revision 1.73  2003/02/12 11:33:27  joergr
  * Defined default file extension for PNG image format.
  * Introduced "enum" for output file type.
  *
