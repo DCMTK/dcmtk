@@ -8,6 +8,10 @@ Changes between releases are documented here.
            dcmimage/apps/dcm2pnm.cc
            dcmimage/libsrc/Makefile.dep
 
+- Added check whether display filename is specified or not to avoid
+  unnecessary warning messages.
+  Affects: dcmimage/apps/dcm2pnm.cc
+
 **** Changes from 1999.08.25 (riesmeier)
 
 - Added new feature: Allow clipping region to be outside the image
