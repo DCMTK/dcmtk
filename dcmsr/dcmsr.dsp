@@ -186,6 +186,10 @@ SOURCE=.\libsrc\dsrscovl.cxx
 # End Source File
 # Begin Source File
 
+SOURCE=.\libsrc\dsrsoprf.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=.\libsrc\dsrstrvl.cxx
 # End Source File
 # Begin Source File
