@@ -22,9 +22,9 @@
  *  Purpose: DicomFlipTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-16 16:27:54 $
+ *  Update Date:      $Date: 1999-01-20 14:59:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diflipt.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,6 +40,10 @@
 
 #include "dipixel.h"
 #include "ditranst.h"
+
+#ifdef DEBUG
+ #include "oftimer.h"
+#endif
 
 
 /*---------------------*
@@ -198,6 +202,9 @@ class DiFlipTemplate
         register T *q;
         register T t;
         T *r;
+#ifdef DEBUG
+ OFTimer timer;
+#endif
         for (int j = 0; j < Planes; j++)
         {
             r = data[j];
@@ -217,6 +224,9 @@ class DiFlipTemplate
                 }
             }
         }
+#ifdef DEBUG
+ cerr << "time for flipHorz: " << timer.getDiff() << " s" << endl; 
+#endif
     }
 
     inline void flipVert(T *data[])
@@ -283,17 +293,19 @@ class DiFlipTemplate
                         
 
 /*
-**
-** CVS/RCS Log:
-** $Log: diflipt.h,v $
-** Revision 1.2  1998-12-16 16:27:54  joergr
-** Added additional case to copy pixels.
-**
-** Revision 1.1  1998/11/27 14:57:46  joergr
-** Added copyright message.
-** Added methods and classes for flipping and rotating, changed for
-** scaling and clipping.
-**
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: diflipt.h,v $
+ * Revision 1.3  1999-01-20 14:59:05  joergr
+ * Added debug code to measure time of some routines.
+ *
+ * Revision 1.2  1998/12/16 16:27:54  joergr
+ * Added additional case to copy pixels.
+ *
+ * Revision 1.1  1998/11/27 14:57:46  joergr
+ * Added copyright message.
+ * Added methods and classes for flipping and rotating, changed for
+ * scaling and clipping.
+ *
+ *
+ */
