@@ -21,10 +21,10 @@
  *
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-12-20 10:41:28 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-11 12:44:47 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.58 $
+ *  CVS/RCS Revision: $Revision: 1.59 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -670,39 +670,23 @@ int main(int argc, char *argv[])
     DJDecoderRegistration::registerCodecs(opt_decompCSconversion, EUC_default, EPC_default, opt_debugMode);
 #endif
 
-    DcmFileStream myin(opt_ifname, DCM_ReadMode);
-    if (myin.GetError() != EC_Normal)
-    {
-        oss << "cannot open DICOM file: " << opt_ifname << ends;
-        app.printError(oss.str());
-    }
-
-    DcmObject * dfile = NULL;
+    OFCondition status = EC_Normal;
+    DcmFileFormat *dfile = new DcmFileFormat();
     if (opt_readAsDataset)
-        dfile = new DcmDataset();
+        status = dfile->getDataset()->loadFile(opt_ifname, opt_transferSyntax, EGL_withoutGL);
     else
-        dfile = new DcmFileFormat();
+        status = dfile->loadFile(opt_ifname, opt_transferSyntax, EGL_withoutGL);
 
-    dfile->transferInit();
-    dfile->read(myin, opt_transferSyntax, EGL_withoutGL);
-    dfile->transferEnd();
-
-    if (dfile->error() != EC_Normal)
+    if (status.bad())
     {
-        oss << dfile->error().text() << ": reading file: " << opt_ifname << ends;
+        oss << status.text() << ": reading file: " << opt_ifname << ends;
         app.printError(oss.str());
     }
 
     if (opt_verboseMode > 1)
         OUTPUT << "preparing pixel data." << endl;
 
-    E_TransferSyntax xfer;
-    if (opt_readAsDataset)
-        xfer = ((DcmDataset *)dfile)->getOriginalXfer();
-    else
-        xfer = ((DcmFileFormat *)dfile)->getDataset()->getOriginalXfer();
-
-    /* warning: dfile is Dataset or Fileformat! */
+    E_TransferSyntax xfer = dfile->getDataset()->getOriginalXfer();
     DicomImage *di = new DicomImage(dfile, xfer, opt_compatibilityMode, opt_frame - 1, opt_frameCount);
     if (di == NULL)
         app.printError("Out of memory");
@@ -742,14 +726,8 @@ int main(int argc, char *argv[])
         if (colorModel == NULL)
             colorModel = "unknown";
 
-        if (opt_readAsDataset)
-        {
-            getSingleValue(dfile, DCM_SOPClassUID, SOPClassUID);
-            getSingleValue(dfile, DCM_SOPInstanceUID, SOPInstanceUID);
-        } else {
-            getSingleValue(((DcmFileFormat *)dfile)->getDataset(), DCM_SOPClassUID, SOPClassUID);
-            getSingleValue(((DcmFileFormat *)dfile)->getDataset(), DCM_SOPInstanceUID, SOPInstanceUID);
-        }
+        getSingleValue(dfile->getDataset(), DCM_SOPClassUID, SOPClassUID);
+        getSingleValue(dfile->getDataset(), DCM_SOPInstanceUID, SOPInstanceUID);
         if (SOPInstanceUID == NULL)
             SOPInstanceUID = (char *)"not present";
         if (SOPClassUID == NULL)
@@ -1220,7 +1198,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.58  2001-12-20 10:41:28  meichel
+ * Revision 1.59  2002-04-11 12:44:47  joergr
+ * Use the new loadFile() and saveFile() routines from the dcmdata library.
+ *
+ * Revision 1.58  2001/12/20 10:41:28  meichel
  * Fixed warnings reported by Sun CC 2.0.1
  *
  * Revision 1.57  2001/12/06 14:08:55  joergr
