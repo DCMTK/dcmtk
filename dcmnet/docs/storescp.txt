@@ -1,11 +1,11 @@
 
 NAME
 
-    storescp
+   storescp
 
 SYNOPSIS
 
-   storescp [-v][-d][-r][-i][-s n][-S n][-b n] port
+   storescp [options] port
 
 SUMMARY
 
@@ -25,56 +25,153 @@ cause it to display an invocation syntax summary.
 The storescp application accepts the following command line
 parameters and options:
 
-   storescp [-v][-d][-r][-i][-s n][-S n][-b n] port
+   storescp [options] port
 
-parameters:
-    port     tcp/ip port number to listen on
-options:
-    -v       verbose mode
-    -d       debug mode
-    -r       refuse association
-    -i       ignore store data, receive but do not save to disk
-    -s n     sleep n seconds after store (default 0)
-    -b n     set max receive pdu to n bytes (default: 16K)
+parameters are:
+    port      tcp/ip port number to listen on
+    
+options are:
 
+  network options:
+      -r      refuse association
+              Useful for debugging only. Storescp will refuse all A-ASSOCIATE
+              requests.
+      +R      reject association if implementation class UID is missing
+              Causes storescp to reject A-ASSOCIATE requests
+              if the implementation class UID is missing in the A-ASSOCIATE
+              request
+      -s n    sleep n seconds after store (default: 0)
+              Useful for debugging (i.e. of timeouts) only. Storescp will
+              sleep()  for n seconds after performing a C-STORE operation.
+      +s n    sleep n seconds during store (default: 0)
+              Useful for debugging (i.e. of timeouts) only. Storescp will
+              sleep() for n seconds after each received PDV.
+      -b n    set max receive pdu to n bytes (8192-65536, default: 16384)
+      -t=     prefer local byte ordering, explicit transfer syntaxes (default)
+              The default behaviour of storescp is to prefer explicit transfer
+              syntaxes if available. The transfer syntax corresponding to the
+              byte ordering of the machine on which storescp is running
+              is also preferred.
+      -te     prefer little-endian explicit transfer syntax
+              Causes storescp to support only little-endian explicit
+              (preferred) and the default little-endian implicit
+              transfer syntaxes.
+      -tb     prefer big-endian explicit transfer syntax
+              Causes storescp to support only big-endian explicit (preferred)
+              and the default little-endian implicit transfer syntaxes.
+      -ti     use little-endian implicit transfer syntax only
+              Causes storescp to support only the default 
+              little-endian implicit transfer syntaxs.
+
+  output options:
+    DICOM fileformat (Sup. 1) support:
+      -F      write file without metaheader
+              Writes a dataset without metaheader.
+              Note: Most tools will not automatically recognise datasets
+              in explicit transfer syntax without metaheader.
+      +F      write file with metaheader (default)
+              Writes a file conforming to DICOM Part 10/Supplement 1.
+    output transfer syntax (not with +B):
+      +t=     write with same transfer syntax as input (default)
+      +te     write with little-endian explicit transfer syntax
+      +tb     write with big-endian explicit transfer syntax
+      +ti     write with little-endian implicit transfer syntax
+    group length encoding (not with +B):
+      +g      write with group lengths
+              Group length tags are created for each group in
+              the DICOM dataset.
+      +g=     recalculate group lengths (default)
+              If group length tags exist, their value is recalculated.
+              No new group length tags are created.
+      -g      write without group lengths
+              All group length tags are removed from the dataset.
+    length encoding in sequences and items (not with +B):
+      +e      write with explicit lengths (default)
+      -e      write with undefined lengths
+    padding (not with +B or -F):
+      Applicable only for DICOM files with metaheader.
+      According to DICOM Supplement 1, a dataset or an item in a sequence
+      may contain a DataSetTrailingPadding tag if it is stored in a file.
+      -p      no padding (default)
+      +p n m  pad file to x*n bytes and items to y*m bytes
+    unknown VR (not with +B):
+      -u      disable generation of unknown VR (UN)
+      +u      enable generation of unkniwn VR (UN) (default)
+      
+  other options:
+      -h      print this usage string
+      +V      verbose mode, print actions
+      +d      debug mode
+      +B      bypass dcmdata, save C-STORE data directly to file
+              This option switches storescp to a different mode of operation.
+              In bypass mode, the DICOM dataset is not processed and stored
+              by the dcmdata library. Instead, the metaheader (if applicable)
+              is computed from the data contained in the C-STORE request
+              and the dataset is directly stored to file as a "snapshot"
+              of the data received over the network, without any processing.
+              Bypass mode is slightly faster than the usual mode of operation
+              and maybe useful for debugging since errors in the received
+              dataset remain present (i.e. dcmdata would re-compute
+              group lengths so that incorrect numbers could never occur).
+              The disadvantage of this mode is - obviously - that no processing
+              of the received data is possible so that most dcmdata related
+              command line switches are disabled.
+              To clearly identify files created in bypass mode,
+              their metaheader will contain a different implementation
+              version name.
+      -i      ignore store data, receive but do not save to disk
+              Useful for debugging only.
 
 DICOM CONFORMANCE
 
 The storescp application supports the following SOP Classes
 as an SCP:
 
-    VerificationSOPClass			"1.2.840.10008.1.1"
-    ComputedRadiographyImageStorage		"1.2.840.10008.5.1.4.1.1.1"
-    CTImageStorage				"1.2.840.10008.5.1.4.1.1.2"
-    MRImageStorage				"1.2.840.10008.5.1.4.1.1.4"
-    NuclearMedicineImageStorage			"1.2.840.10008.5.1.4.1.1.20"
-    RETIRED_NuclearMedicineImageStorage		"1.2.840.10008.5.1.4.1.1.5"
-    UltrasoundImageStorage			"1.2.840.10008.5.1.4.1.1.6.1"
-    RETIRED_UltrasoundImageStorage		"1.2.840.10008.5.1.4.1.1.6"
-    UltrasoundMultiframeImageStorage		"1.2.840.10008.5.1.4.1.1.3.1"
-    RETIRED_UltrasoundMultiframeImageStorage	"1.2.840.10008.5.1.4.1.1.3"
-    SecondaryCaptureImageStorage		"1.2.840.10008.5.1.4.1.1.7"
-    XRayAngiographicImageStorage		"1.2.840.10008.5.1.4.1.1.12.1"
-    XRayAngiographicBiPlaneImageStorage		"1.2.840.10008.5.1.4.1.1.12.3"
-    XRayFluoroscopyImageStorage			"1.2.840.10008.5.1.4.1.1.12.2"
-    StandaloneOverlayStorage			"1.2.840.10008.5.1.4.1.1.8"
-    StandaloneCurveStorage			"1.2.840.10008.5.1.4.1.1.9"
-    StandaloneModalityLUTStorage		"1.2.840.10008.5.1.4.1.1.10"
-    StandaloneVOILUTStorage			"1.2.840.10008.5.1.4.1.1.11"
-
+    VerificationSOPClass                     "1.2.840.10008.1.1"   
+    ComputedRadiographyImageStorage          "1.2.840.10008.5.1.4.1.1.1"
+    CTImageStorage                           "1.2.840.10008.5.1.4.1.1.2"
+    MRImageStorage                           "1.2.840.10008.5.1.4.1.1.4"
+    NuclearMedicineImageStorage              "1.2.840.10008.5.1.4.1.1.20"
+    RETIRED_NuclearMedicineImageStorage      "1.2.840.10008.5.1.4.1.1.5"
+    UltrasoundImageStorage                   "1.2.840.10008.5.1.4.1.1.6.1"
+    RETIRED_UltrasoundImageStorage           "1.2.840.10008.5.1.4.1.1.6"
+    UltrasoundMultiframeImageStorage         "1.2.840.10008.5.1.4.1.1.3.1"
+    RETIRED_UltrasoundMultiframeImageStorage "1.2.840.10008.5.1.4.1.1.3"
+    SecondaryCaptureImageStorage             "1.2.840.10008.5.1.4.1.1.7"
+    XRayAngiographicImageStorage             "1.2.840.10008.5.1.4.1.1.12.1"
+    XRayAngiographicBiPlaneImageStorage      "1.2.840.10008.5.1.4.1.1.12.3"
+    XRayFluoroscopyImageStorage              "1.2.840.10008.5.1.4.1.1.12.2"
+    StandaloneOverlayStorage                 "1.2.840.10008.5.1.4.1.1.8"
+    StandaloneCurveStorage                   "1.2.840.10008.5.1.4.1.1.9"
+    StandaloneModalityLUTStorage             "1.2.840.10008.5.1.4.1.1.10"
+    StandaloneVOILUTStorage                  "1.2.840.10008.5.1.4.1.1.11"
+    RTImageStorage                           "1.2.840.10008.5.1.4.1.1.481.1"
+    RTDoseStorage                            "1.2.840.10008.5.1.4.1.1.481.2"
+    RTStructureSetStorage                    "1.2.840.10008.5.1.4.1.1.481.3"
+    RTPlanStorage                            "1.2.840.10008.5.1.4.1.1.481.5"
+    PETImageStorage                          "1.2.840.10008.5.1.4.1.1.128"
+    PETCurveStorage                          "1.2.840.10008.5.1.4.1.1.129"
+    VLImageStorage                           "1.2.840.10008.5.1.4.1.1.77.1"
+    VLMultiFrameImageStorage                 "1.2.840.10008.5.1.4.1.1.77.2"
+    BasicGrayscalePrintStorageSOPClass       "1.2.840.10008.5.1.4.1.1.27"
+    BasicColorPrintStorageSOPClass           "1.2.840.10008.5.1.4.1.1.28"
+    ReferencedGrayscalePrintStorageSOPClass  "1.2.840.10008.5.1.4.1.1.29"
+    ReferencedColorPrintStorageSOPClass      "1.2.840.10008.5.1.4.1.1.30"
+    
 The storescp application will accept presentation contexts for
 all of the abovementioned supported SOP Classes using any
 of the transfer syntaxes:
 
-    LittleEndianImplicitTransferSyntax	"1.2.840.10008.1.2"
-    LittleEndianExplicitTransferSyntax	"1.2.840.10008.1.2.1"
-    BigEndianExplicitTransferSyntax	"1.2.840.10008.1.2.2"
+    LittleEndianImplicitTransferSyntax        "1.2.840.10008.1.2"
+    LittleEndianExplicitTransferSyntax        "1.2.840.10008.1.2.1"
+    BigEndianExplicitTransferSyntax           "1.2.840.10008.1.2.2"
 
-The storescp application will prefer transfer syntaxes having
-an explicit encoding over the default implicit transfer syntax.
+The default behaviour of the storescp application is to prefer transfer
+syntaxes having an explicit encoding over the default implicit transfer syntax.
 If storescp is running on big-endian hardware it will prefer
-BigEndianExplicitTransferSyntax to LittleEndianExplicitTransferSyntax 
-(and vice versa).
+BigEndianExplicitTransferSyntax to LittleEndianExplicitTransferSyntax (and vice
+versa). This behaviour can be changed with the -te, -tb and -ti options
+(see above).
 
 The storescp application does not support extended negotiation.
 
@@ -93,5 +190,6 @@ variable.  It is an error if no data dictionary can be loaded.
 
 AUTHOR
 
-Andrew Hewett, Kuratorium OFFIS e.V., Oldenburg, Germany
+Andrew Hewett, Marco Eichelberg,
+Kuratorium OFFIS e.V., Oldenburg, Germany
 

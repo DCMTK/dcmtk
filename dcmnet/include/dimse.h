@@ -56,10 +56,10 @@
 **
 **	Module Prefix: DIMSE_
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-04-25 16:06:28 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1997-05-23 10:47:06 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/dimse.h,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -615,7 +615,8 @@ DIMSE_storeProvider(/* in */
 	T_ASC_Association *assoc, 
 	T_ASC_PresentationContextID presIdCmd,
 	T_DIMSE_C_StoreRQ *request,
-	const char* imageFileName, DcmDataset **imageDataSet,
+    const char* imageFileName, int writeMetaheader,
+    DcmDataset **imageDataSet,
 	DIMSE_StoreProviderCallback callback, void *callbackData,
 	/* blocking info for data set */
 	T_DIMSE_BlockingMode blockMode, int timeout);
@@ -799,17 +800,23 @@ DIMSE_receiveDataSetInMemory(T_ASC_Association *association,
 		     DIMSE_ProgressCallback callback,
 		     void *callbackContext);
 
+CONDITION
+DIMSE_createFilestream(
+		     /* in */
+		     const char *filename,
+		     const T_DIMSE_C_StoreRQ *request,
+		     const T_ASC_Association *assoc, 
+		     T_ASC_PresentationContextID presIdCmd,
+		     int writeMetaheader,
+		     /* out */
+		     DcmFileStream **filestream);
 
 CONDITION
-DIMSE_receiveDataSetInFile(T_ASC_Association *association,
-		     T_DIMSE_BlockingMode blocking,
-		     int timeout, 
+DIMSE_receiveDataSetInFile(T_ASC_Association *assoc,
+		     T_DIMSE_BlockingMode blocking, int timeout, 
 		     T_ASC_PresentationContextID *presID,
-		     const char* dataFileName,
-		     DIMSE_ProgressCallback callback,
-		     void *callbackContext);
-
-
+		     DcmStream *filestream,
+		     DIMSE_ProgressCallback callback, void *callbackData);
 
 /*
  * Misc functions
@@ -920,7 +927,11 @@ void DIMSE_printNDeleteRSP(FILE * f, T_DIMSE_N_DeleteRSP * rsp);
 /*
 ** CVS Log
 ** $Log: dimse.h,v $
-** Revision 1.2  1996-04-25 16:06:28  hewett
+** Revision 1.3  1997-05-23 10:47:06  meichel
+** Major rewrite of storescp application. See CHANGES for details.
+** Changes required to interfaces of some DIMSE functions.
+**
+** Revision 1.2  1996/04/25 16:06:28  hewett
 ** Replaced declarations of DIC_UL with unsigned long.
 **
 ** Revision 1.1.1.1  1996/03/26 18:38:45  hewett

@@ -56,10 +56,10 @@
 **
 **	Module Prefix: DIMSE_
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-05-22 13:30:30 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1997-05-23 10:45:28 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimse.cc,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -100,8 +100,7 @@
 #include "dimcond.h"
 #include "dimcmd.h"
 
-#include "dcfilefo.h"
-#include "dcdict.h"
+#include "dctk.h"
 
 /*
  * Type definitions
@@ -945,96 +944,221 @@ DIMSE_receiveCommand(T_ASC_Association * assoc,
 
 }
 
+CONDITION DIMSE_createFilestream(
+  const char *filename,
+  const T_DIMSE_C_StoreRQ *request,
+  const T_ASC_Association *assoc, 
+  T_ASC_PresentationContextID presIdCmd,
+  int writeMetaheader,
+  DcmFileStream **filestream)
+{
+  CONDITION cond = DIMSE_NORMAL;
+  DcmElement *elem=NULL;
+  DcmMetaInfo *metainfo=NULL;
+  DcmTag metaElementGroupLength(DCM_MetaElementGroupLength);
+  DcmTag fileMetaInformationVersion(DCM_FileMetaInformationVersion);
+  DcmTag mediaStorageSOPClassUID(DCM_MediaStorageSOPClassUID);
+  DcmTag mediaStorageSOPInstanceUID(DCM_MediaStorageSOPInstanceUID);
+  DcmTag transferSyntaxUID(DCM_TransferSyntaxUID);
+  DcmTag implementationClassUID(DCM_ImplementationClassUID);
+  DcmTag implementationVersionName(DCM_ImplementationVersionName);
+  T_ASC_PresentationContext presentationContext;
+  
+
+  if ((filename == NULL) || (request==NULL) || (assoc==NULL) ||
+      (assoc->params==NULL) || (filestream==NULL))
+  {
+    cond = COND_PushCondition(DIMSE_NULLKEY, 
+      "DIMSE_createFilestream: NULL parameters");
+    return cond;
+  }
+  if (ASC_NORMAL != ASC_findAcceptedPresentationContext(assoc->params,
+      presIdCmd, &presentationContext))
+  {
+    cond = COND_PushCondition(DIMSE_INVALIDPRESENTATIONCONTEXTID, 
+      "DIMSE_createFilestream: Invalid presentation context ID");
+    return cond;
+  }    
+
+  if (writeMetaheader)
+  {
+    if (NULL == (metainfo = new DcmMetaInfo()))
+    {
+      cond = COND_PushCondition(DIMSE_OUTOFRESOURCES, 
+       "DIMSE_createFilestream: out of memory");
+      return cond;
+    }
+    if (NULL != (elem = new DcmUnsignedLong(metaElementGroupLength)))
+    {
+      metainfo->insert(elem, TRUE);
+      Uint32 temp = 0;
+      ((DcmUnsignedLong*)elem)->putUint32Array(&temp, 1);
+    } else cond = DIMSE_OUTOFRESOURCES;
+    if (NULL != (elem = new DcmOtherByteOtherWord(fileMetaInformationVersion)))
+    {
+      metainfo->insert(elem, TRUE);
+      Uint8 version[2] = {0,1};
+      ((DcmOtherByteOtherWord*)elem)->putUint8Array( version, 2 );
+    } else cond = DIMSE_OUTOFRESOURCES;
+    if (NULL != (elem = new DcmUniqueIdentifier(mediaStorageSOPClassUID)))
+    {
+      metainfo->insert(elem, TRUE);
+      ((DcmUniqueIdentifier*)elem)->putString(request->AffectedSOPClassUID);
+    } else cond = DIMSE_OUTOFRESOURCES;
+    if (NULL != (elem = new DcmUniqueIdentifier(mediaStorageSOPInstanceUID)))
+    {
+      metainfo->insert(elem, TRUE);
+      ((DcmUniqueIdentifier*)elem)->putString(request->AffectedSOPInstanceUID);
+    } else cond = DIMSE_OUTOFRESOURCES;
+    if (NULL != (elem = new DcmUniqueIdentifier(transferSyntaxUID)))
+    {
+      metainfo->insert(elem, TRUE);
+      elem->putString(presentationContext.acceptedTransferSyntax);
+    } else cond = DIMSE_OUTOFRESOURCES;
+    if (NULL != (elem = new DcmUniqueIdentifier(implementationClassUID)))
+    {
+      metainfo->insert(elem, TRUE);
+      const char *uid = OFFIS_IMPLEMENTATION_CLASS_UID;
+      ((DcmUniqueIdentifier*)elem)->putString(uid);
+    } else cond = DIMSE_OUTOFRESOURCES;
+    if (NULL != (elem = new DcmShortString(implementationVersionName)))
+    {
+      metainfo->insert(elem, TRUE);
+      char *version = OFFIS_DTK_IMPLEMENTATION_VERSION_NAME2;
+      ((DcmShortString*)elem)->putString(version);
+    } else cond = DIMSE_OUTOFRESOURCES;
+    if (cond == DIMSE_OUTOFRESOURCES)
+    {
+      delete metainfo;
+      cond = COND_PushCondition(DIMSE_OUTOFRESOURCES, 
+       "DIMSE_createFilestream: out of memory");
+      return cond;
+    }
+    if (EC_Normal != metainfo->computeGroupLengthAndPadding
+	  (EGL_withGL, EPD_noChange, META_HEADER_DEFAULT_TRANSFERSYNTAX, 
+	  EET_UndefinedLength))
+	{
+      delete metainfo;
+      cond = COND_PushCondition(DIMSE_OUTOFRESOURCES, 
+       "DIMSE_createFilestream: cannot compute metaheader length");
+      return cond;
+	}
+  }
+  
+  *filestream = new DcmFileStream(filename, DCM_WriteMode);
+  if ((*filestream == NULL)||((*filestream)->Fail()))
+  {
+     if (metainfo) delete metainfo;
+     if (*filestream)
+     {
+       delete *filestream;
+       *filestream = NULL;
+     }
+     cond = COND_PushCondition(DIMSE_OUTOFRESOURCES, 
+       "DIMSE_createFilestream: cannot create file '%s'", filename);
+     return cond;
+  }
+  
+  if (metainfo)
+  {
+    metainfo->transferInit();
+    if (EC_Normal != metainfo->write(**filestream, META_HEADER_DEFAULT_TRANSFERSYNTAX, EET_ExplicitLength))
+    {
+      cond = COND_PushCondition(DIMSE_OUTOFRESOURCES, 
+       "DIMSE_createFilestream: cannot write metaheader to file '%s'", filename);
+    }
+    metainfo->transferEnd();
+    delete metainfo;
+  }
+
+  return cond;
+  
+}
+
 CONDITION
 DIMSE_receiveDataSetInFile(T_ASC_Association *assoc,
 	T_DIMSE_BlockingMode blocking, int timeout, 
 	T_ASC_PresentationContextID *presID,
-	const char* dataFileName,
+	DcmStream *filestream,
 	DIMSE_ProgressCallback callback, void *callbackData)
 {
     CONDITION cond = DIMSE_NORMAL;
     DUL_PDV pdv;
     T_ASC_PresentationContextID pid = 0;
     E_TransferSyntax xferSyntax; 
-    FILE* f;
     BOOLEAN last = FALSE;
     DIC_UL pdvCount = 0;
     DIC_UL bytesRead = 0;
-    int savedErrno;
+
+    if ((assoc == NULL) || (presID==NULL) || (filestream==NULL))
+    {
+      cond = COND_PushCondition(DIMSE_NULLKEY, 
+        "DIMSE_receiveDataSetInFile: NULL parameters");
+      return cond;
+    }
 
     *presID = 0;	/* invalid value */
 
-    f = fopen(dataFileName, "w");
-    if (f == NULL) {
-        savedErrno = errno;	/* save the system error number */
-	cond = ignoreDataSet(assoc, blocking, timeout, 
-	    &bytesRead, &pdvCount);
-	if (cond == DIMSE_NORMAL) {
-	    return COND_PushCondition(DIMSE_OUTOFRESOURCES, 
-	        "DIMSE: Cannot create file: %s: %s", 
-		dataFileName, strerror(savedErrno));
-	}
-	/* there was a network problem */
-	return cond;
-    }
-
-    while (!last) {
-	cond = DIMSE_readNextPDV(assoc, blocking, timeout, &pdv);
-	if (cond != DIMSE_NORMAL) {
-	    break;
-	}
-	if (pdv.pdvType != DUL_DATASETPDV) {
+    while (!last)
+    {
+	  cond = DIMSE_readNextPDV(assoc, blocking, timeout, &pdv);
+	  if (cond != DIMSE_NORMAL) break;
+      if (pdv.pdvType != DUL_DATASETPDV)
+      {
 	    cond = DIMSE_UNEXPECTEDPDVTYPE;
 	    break;
-	}
-	if (pdvCount == 0) {
+	  }
+	  if (pdvCount == 0)
+	  {
 	    pid = pdv.presentationContextID;
 	    /* is this a valid presentation context ? */
 	    cond = getTransferSyntax(assoc, pid, &xferSyntax);
-	    if (!SUCCESS(cond)) 
-	        break;
-	} else if (pdv.presentationContextID != pid) {
+	    if (!SUCCESS(cond)) break;
+	  }
+	  else if (pdv.presentationContextID != pid)
+	  {
 	    cond = DIMSE_INVALIDPRESENTATIONCONTEXTID;
 	    COND_PushCondition(cond, 
 	        "DIMSE: Different PIDs inside Data Set: %d != %d", 
 	        pid, pdv.presentationContextID);
 	    cond = DIMSE_RECEIVEFAILED;
 	    break;
-	}
-	if ((pdv.fragmentLength % 2) != 0) {
+	  }
+	  if ((pdv.fragmentLength % 2) != 0)
+	  {
 	    /* This should NEVER happen.  See Part 7, Annex F. */
 	    cond = COND_PushCondition(DIMSE_RECEIVEFAILED,
 	        "DIMSE: Odd Fragment Length: %lu", pdv.fragmentLength);
 	    break;
-	}
-	if (fwrite(pdv.data, 1, pdv.fragmentLength, f) != pdv.fragmentLength) {
-            savedErrno = errno;	/* save the system error number */
-	    cond = ignoreDataSet(assoc, blocking, timeout, 
-	        &bytesRead, &pdvCount);
-	    if (cond == DIMSE_NORMAL) {
-	        cond = COND_PushCondition(DIMSE_OUTOFRESOURCES, 
-	            "DIMSE: Cannot write to file: %s: %s", 
-		    dataFileName, strerror(savedErrno));
-	    }
-	    break;
-	}
-	bytesRead += pdv.fragmentLength;
-	pdvCount++;
-	last = pdv.lastPDV;
-	if (debug) {
-	    printf("DIMSE receiveFileData: %lu bytes read (last: %s)\n",
+	  }
+	  filestream->WriteBytes((void *)(pdv.data), (Uint32)(pdv.fragmentLength));
+	  if (filestream->Fail())
+	  {
+	      cond = ignoreDataSet(assoc, blocking, timeout, &bytesRead, &pdvCount);
+	      if (cond == DIMSE_NORMAL)
+	      {
+	          cond = COND_PushCondition(DIMSE_OUTOFRESOURCES, 
+	            "DIMSE_receiveDataSetInFile: Cannot write to file");
+	      }
+	     break;
+	  }
+	  bytesRead += pdv.fragmentLength;
+	  pdvCount++;
+	  last = pdv.lastPDV;
+	  if (debug)
+	  {
+	     printf("DIMSE receiveFileData: %lu bytes read (last: %s)\n",
 		   pdv.fragmentLength, ((last)?("YES"):("NO")));
-	}
-	if (callback) { /* execute callback function */
+	  }
+	  if (callback)
+	  { /* execute callback function */
 	    callback(callbackData, bytesRead);
-	}
+	  }
     }
 
-    fclose(f);
-
-    if (cond != DIMSE_NORMAL) {
-	unlink((char*)dataFileName);
-	return COND_PushCondition(cond, DIMSE_Message(cond));
+    if (cond != DIMSE_NORMAL)
+    {
+	  return COND_PushCondition(cond, DIMSE_Message(cond));
     }
 
     /* set the Presentation Context ID we received */
@@ -1202,7 +1326,11 @@ void DIMSE_warning(T_ASC_Association *assoc,
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
-** Revision 1.7  1997-05-22 13:30:30  hewett
+** Revision 1.8  1997-05-23 10:45:28  meichel
+** Major rewrite of storescp application. See CHANGES for details.
+** Changes required to interfaces of some DIMSE functions.
+**
+** Revision 1.7  1997/05/22 13:30:30  hewett
 ** Modified the test for presence of a data dictionary to use the
 ** method DcmDataDictionary::isDictionaryLoaded().
 **

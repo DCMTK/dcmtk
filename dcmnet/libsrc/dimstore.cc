@@ -56,10 +56,10 @@
 **
 **	Module Prefix: DIMSE_
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-04-25 16:11:17 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1997-05-23 10:45:28 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimstore.cc,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -275,7 +275,8 @@ DIMSE_storeProvider(/* in */
 	T_ASC_Association *assoc, 
 	T_ASC_PresentationContextID presIdCmd,
 	T_DIMSE_C_StoreRQ *request,
-	const char* imageFileName, DcmDataset **imageDataSet,
+	const char* imageFileName, int writeMetaheader,
+	DcmDataset **imageDataSet,
 	DIMSE_StoreProviderCallback callback, void *callbackData,
 	/* blocking info for data set */
 	T_DIMSE_BlockingMode blockMode, int timeout)
@@ -317,13 +318,25 @@ DIMSE_storeProvider(/* in */
     }
     
     if (imageFileName != NULL) {
-        cond = DIMSE_receiveDataSetInFile(assoc, blockMode, timeout,
-		&presIdData, imageFileName, privCallback, &callbackCtx);
+        DcmFileStream *filestream = NULL;
+        if (DIMSE_NORMAL != (cond = DIMSE_createFilestream(imageFileName, request, assoc, 
+          presIdCmd, writeMetaheader, &filestream)))
+        {
+          return cond;
+        } else {
+          cond = DIMSE_receiveDataSetInFile(assoc, blockMode, timeout,
+          &presIdData, filestream, privCallback, &callbackCtx);
+          delete filestream;
+          if (cond != DIMSE_NORMAL)
+          {
+            unlink(imageFileName);
+          }
+        }
     } else if (imageDataSet != NULL) {
         cond = DIMSE_receiveDataSetInMemory(assoc, blockMode, timeout,
 		&presIdData, imageDataSet, privCallback, &callbackCtx);
     } else {
- 	return COND_PushCondition(DIMSE_BADDATA, 
+ 	  return COND_PushCondition(DIMSE_BADDATA, 
 		"DIMSE_storeProvider: No filename or DcmDataset provided");
     }
 
@@ -360,7 +373,11 @@ DIMSE_storeProvider(/* in */
 /*
 ** CVS Log
 ** $Log: dimstore.cc,v $
-** Revision 1.2  1996-04-25 16:11:17  hewett
+** Revision 1.3  1997-05-23 10:45:28  meichel
+** Major rewrite of storescp application. See CHANGES for details.
+** Changes required to interfaces of some DIMSE functions.
+**
+** Revision 1.2  1996/04/25 16:11:17  hewett
 ** Added parameter casts to char* for bzero calls.  Replaced some declarations
 ** of DIC_UL with unsigned long (reduces mismatch problems with 32 & 64 bit
 ** architectures).  Added some protection to inclusion of sys/socket.h (due
