@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeModality (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-17 12:26:25 $
+ *  Update Date:      $Date: 1999-10-06 13:40:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimomod.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -98,6 +98,8 @@ class DiMonoModality
                    const DcmLongString *explanation);
 
     /** constructor, no modality transform
+     *
+     ** @param  bits  number of bits per pixel
      */
     DiMonoModality(const int bits);
 
@@ -279,7 +281,10 @@ class DiMonoModality
  *
  * CVS/RCS Log:
  * $Log: dimomod.h,v $
- * Revision 1.9  1999-09-17 12:26:25  joergr
+ * Revision 1.10  1999-10-06 13:40:25  joergr
+ * Added Doc++ header comments.
+ *
+ * Revision 1.9  1999/09/17 12:26:25  joergr
  * iAdded/changed/completed DOC++ style comments in the header files.
  *
  * Revision 1.8  1999/05/31 12:35:15  joergr
