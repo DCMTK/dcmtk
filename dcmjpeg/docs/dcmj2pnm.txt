@@ -1,3 +1,4 @@
+
 NAME
 
     dcmj2pnm
@@ -10,9 +11,9 @@ SYNOPSIS
 
 SUMMARY
 
-The dcmj2pnm utility reads a DICOM image, converts the pixel data according 
-to the selected image processing options and writes back an image in the 
-well-known PPM/PGM file format (portable pix map / portable gray map), 
+The dcmj2pnm utility reads a DICOM image, converts the pixel data according
+to the selected image processing options and writes back an image in the
+well-known PPM/PGM file format (portable pix map / portable gray map),
 Windows BMP, TIFF or JPEG (Joint Photographic Experts Group) format.
 
 
@@ -153,17 +154,18 @@ output options:
   +ob     --write-bmp           write 8-bit (monochrome) or 24-bit (color) BMP
   +obp    --write-8-bit-bmp     write 8-bit palette BMP (monochrome only)
   +obt    --write-24-bit-bmp    write 24-bit truecolor BMP
-  +ot     --write-tiff          write 8-bit TIFF
+  +ot     --write-tiff          write 8-bit (monochrome) or 24-bit (color) TIFF
   +oj     --write-jpeg          write 8-bit lossy JPEG (baseline)
 
 
 NOTES
 
-The --write-tiff option is only available when DCMTK has been configured 
-and compiled with support for the external "libtiff" TIFF library.  The 
-availability of the TIFF compression options depends on the libtiff 
-configuration.  In particular, the patented LZW algorithm may not be 
+The --write-tiff option is only available when DCMTK has been configured
+and compiled with support for the external "libtiff" TIFF library.  The
+availability of the TIFF compression options depends on the libtiff
+configuration.  In particular, the patented LZW algorithm may not be
 available.
+
 
 ENVIRONMENT
 
