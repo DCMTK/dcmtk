@@ -10,9 +10,9 @@
 ** 
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-09-24 16:24:58 $
+** Update Date:		$Date: 1997-04-15 16:25:05 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdicent.h,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -266,16 +266,16 @@ inline int
 DcmDictEntry::contains(const DcmTagKey& key) const
 {
     if ((getGroupRangeRestriction() == DcmDictRange_Even) && 
-	DCM_IS_ODD(getGroup()))
+	DCM_IS_ODD(key.getGroup()))
 	return FALSE;
     if ((getGroupRangeRestriction() == DcmDictRange_Odd) &&
-	DCM_IS_EVEN(getGroup())) 
+	DCM_IS_EVEN(key.getGroup())) 
 	return FALSE;
     if ((getElementRangeRestriction() == DcmDictRange_Even) &&
-	DCM_IS_ODD(getElement()))
+	DCM_IS_ODD(key.getElement()))
 	return FALSE;
     if ((getElementRangeRestriction() == DcmDictRange_Odd) &&
-	DCM_IS_EVEN(getElement()))
+	DCM_IS_EVEN(key.getElement()))
 	return FALSE;
 
     return 
@@ -318,7 +318,11 @@ DcmDictEntry::setEQ(const DcmDictEntry& e) const
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicent.h,v $
-** Revision 1.5  1996-09-24 16:24:58  hewett
+** Revision 1.6  1997-04-15 16:25:05  hewett
+** Corrected data dictionary bug whereby the even/odd range restrictions
+** were not being taken into consideration when searching the dictionary.
+**
+** Revision 1.5  1996/09/24 16:24:58  hewett
 ** Added preliminary support for the Macintosh environment (GUSI library).
 **
 ** Revision 1.4  1996/09/18 16:37:09  hewett
