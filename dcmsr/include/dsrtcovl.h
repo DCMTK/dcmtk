@@ -23,8 +23,8 @@
  *    classes: DSRTemporalCoordinatesValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-26 14:23:26 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-11-01 16:23:26 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -102,30 +102,6 @@ class DSRTemporalCoordinatesValue
      */
     virtual OFBool isShort(const size_t flags) const;
 
-    /** print temporal coordinates.
-     *  The output of a typical temporal coordinates value looks like this (depending on the
-     *  referenced data list): (SEGMENT,1,2,3) or (SEGMENT,1,2.5,3.1) or (POINT,20001010120000)
-     ** @param  stream  output stream to which the temporal coordinates value should be printed
-     *  @param  flags   flag used to customize the output (see DSRTypes::PF_xxx)
-     */
-    virtual E_Condition print(ostream &stream,
-                              const size_t flags) const;
-
-    /** render temporal coordinates value in HTML format
-     ** @param  docStream    output stream to which the main HTML document is written
-     *  @param  annexStream  output stream to which the HTML document annex is written
-     *  @param  annexNumber  reference to the variable where the current annex number is stored.
-     *                       Value is increased automatically by 1 after a new entry has been added.
-     *  @param  flags        flag used to customize the output (see DSRTypes::HF_xxx)
-     *  @param  logStream    pointer to error/warning output stream (output disabled if NULL)
-     ** @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual E_Condition renderHTML(ostream &docStream,
-                                   ostream &annexStream,
-                                   size_t &annexNumber,
-                                   const size_t flags,
-                                   OFConsole *logStream) const;
-
     /** get reference to temporal coordinates value
      ** @return reference to temporal coordinates value
      */
@@ -192,6 +168,41 @@ class DSRTemporalCoordinatesValue
 
   protected:
 
+    /** print temporal coordinates.
+     *  The output of a typical temporal coordinates value looks like this (depending on the
+     *  referenced data list): (SEGMENT,1,2,3) or (SEGMENT,1,2.5,3.1) or (POINT,20001010120000)
+     ** @param  stream  output stream to which the temporal coordinates value should be printed
+     *  @param  flags   flag used to customize the output (see DSRTypes::PF_xxx)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual E_Condition print(ostream &stream,
+                              const size_t flags) const;
+
+    /** write temporal coordinates value in XML format
+     ** @param  stream     output stream to which the XML document is written
+     *  @param  flags      flag used to customize the output (see DSRTypes::XF_xxx)
+     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual E_Condition writeXML(ostream &stream,
+                                 const size_t flags,
+                                 OFConsole *logStream) const;
+
+    /** render temporal coordinates value in HTML format
+     ** @param  docStream    output stream to which the main HTML document is written
+     *  @param  annexStream  output stream to which the HTML document annex is written
+     *  @param  annexNumber  reference to the variable where the current annex number is stored.
+     *                       Value is increased automatically by 1 after a new entry has been added.
+     *  @param  flags        flag used to customize the output (see DSRTypes::HF_xxx)
+     *  @param  logStream    pointer to error/warning output stream (output disabled if NULL)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual E_Condition renderHTML(ostream &docStream,
+                                   ostream &annexStream,
+                                   size_t &annexNumber,
+                                   const size_t flags,
+                                   OFConsole *logStream) const;
+
     /** get pointer to temporal coordinates value
      ** @return pointer to temporal coordinates value (never NULL)
      */
@@ -256,7 +267,10 @@ class DSRTemporalCoordinatesValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcovl.h,v $
- *  Revision 1.1  2000-10-26 14:23:26  joergr
+ *  Revision 1.2  2000-11-01 16:23:26  joergr
+ *  Added support for conversion to XML.
+ *
+ *  Revision 1.1  2000/10/26 14:23:26  joergr
  *  Added support for TCOORD content item.
  *
  *

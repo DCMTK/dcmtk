@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTree
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-18 17:02:57 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2000-11-01 16:23:20 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -108,7 +108,15 @@ class DSRDocumentTree
      *                   written to
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition write(DcmItem &dataset);
+    E_Condition write(DcmItem &dataset) const;
+
+    /** write current SR document tree in XML format
+     ** @param  stream  output stream to which the XML document is written
+     *  @param  flags   flag used to customize the output (see DSRTypes::XF_xxx)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    E_Condition writeXML(ostream &stream,
+                         const size_t flags) const;
 
     /** render current SR document tree in HTML format
      ** @param  stream  output stream to which the HTML document is written
@@ -239,7 +247,10 @@ class DSRDocumentTree
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.h,v $
- *  Revision 1.3  2000-10-18 17:02:57  joergr
+ *  Revision 1.4  2000-11-01 16:23:20  joergr
+ *  Added support for conversion to XML.
+ *
+ *  Revision 1.3  2000/10/18 17:02:57  joergr
  *  Added doc++ comments.
  *
  *  Revision 1.2  2000/10/16 16:31:45  joergr

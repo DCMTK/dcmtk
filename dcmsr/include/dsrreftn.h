@@ -23,8 +23,8 @@
  *    classes: DSRByReferenceTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-26 14:22:42 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-11-01 16:23:23 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -92,6 +92,16 @@ class DSRByReferenceTreeNode
      */
     virtual E_Condition print(ostream &stream,
                               const size_t flags) const;
+
+    /** write content item in XML format
+     ** @param  stream     output stream to which the XML document is written
+     *  @param  flags      flag used to customize the output (see DSRTypes::XF_xxx)
+     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual E_Condition writeXML(ostream &stream,
+                                 const size_t flags,
+                                 OFConsole *logStream) const;
 
     /** set the concept name
      ** @param  conceptName  dummy parameter
@@ -176,7 +186,10 @@ class DSRByReferenceTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrreftn.h,v $
- *  Revision 1.1  2000-10-26 14:22:42  joergr
+ *  Revision 1.2  2000-11-01 16:23:23  joergr
+ *  Added support for conversion to XML.
+ *
+ *  Revision 1.1  2000/10/26 14:22:42  joergr
  *  Added support for "Comprehensive SR".
  *
  *

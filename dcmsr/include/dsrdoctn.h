@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-26 14:17:38 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-11-01 16:23:19 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -127,6 +127,16 @@ class DSRDocumentTreeNode
      */
     virtual E_Condition write(DcmItem &dataset,
                               OFConsole *logStream = NULL) const;
+
+    /** write content item in XML format
+     ** @param  stream     output stream to which the XML document is written
+     *  @param  flags      flag used to customize the output (see DSRTypes::XF_xxx)
+     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual E_Condition writeXML(ostream &stream,
+                                 const size_t flags,
+                                 OFConsole *logStream = NULL) const;
 
     /** render content item in HTML format.
      *  After rendering the current content item all child nodes (if any) are also rendered (see
@@ -445,7 +455,10 @@ class DSRDocumentTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.h,v $
- *  Revision 1.4  2000-10-26 14:17:38  joergr
+ *  Revision 1.5  2000-11-01 16:23:19  joergr
+ *  Added support for conversion to XML.
+ *
+ *  Revision 1.4  2000/10/26 14:17:38  joergr
  *  Added support for "Comprehensive SR".
  *
  *  Revision 1.3  2000/10/23 15:10:29  joergr

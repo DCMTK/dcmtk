@@ -23,8 +23,8 @@
  *    classes: DSRImageReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-26 14:18:27 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2000-11-01 16:23:21 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -130,31 +130,6 @@ class DSRImageReferenceValue
      */
     virtual OFBool isShort(const size_t flags) const;
 
-    /** print image reference.
-     *  The output of a typical image reference value looks like this: (CT image,"1.2.3") or
-     *  (CT image,"1.2.3"),(GSPS,"1.2.3.4") if a presentation state is present.
-     *  If the SOP class UID is unknown the UID is printed instead of the related name.
-     ** @param  stream  output stream to which the image reference value should be printed
-     *  @param  flags   flag used to customize the output (see DSRTypes::PF_xxx)
-     */
-    virtual E_Condition print(ostream &stream,
-                              const size_t flags) const;
-
-    /** render image reference value in HTML format
-     ** @param  docStream    output stream to which the main HTML document is written
-     *  @param  annexStream  output stream to which the HTML document annex is written
-     *  @param  annexNumber  reference to the variable where the current annex number is stored.
-     *                       Value is increased automatically by 1 after a new entry has been added.
-     *  @param  flags        flag used to customize the output (see DSRTypes::HF_xxx)
-     *  @param  logStream    pointer to error/warning output stream (output disabled if NULL)
-     ** @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual E_Condition renderHTML(ostream &docStream,
-                                   ostream &annexStream,
-                                   size_t &annexNumber,
-                                   const size_t flags,
-                                   OFConsole *logStream) const;
-
     /** get reference to image reference value
      ** @return reference to image reference value
      */
@@ -211,6 +186,42 @@ class DSRImageReferenceValue
 
 
   protected:
+
+    /** print image reference.
+     *  The output of a typical image reference value looks like this: (CT image,"1.2.3") or
+     *  (CT image,"1.2.3"),(GSPS,"1.2.3.4") if a presentation state is present.
+     *  If the SOP class UID is unknown the UID is printed instead of the related name.
+     ** @param  stream  output stream to which the image reference value should be printed
+     *  @param  flags   flag used to customize the output (see DSRTypes::PF_xxx)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual E_Condition print(ostream &stream,
+                              const size_t flags) const;
+
+    /** write image reference in XML format
+     ** @param  stream     output stream to which the XML document is written
+     *  @param  flags      flag used to customize the output (see DSRTypes::XF_xxx)
+     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual E_Condition writeXML(ostream &stream,
+                                 const size_t flags,
+                                 OFConsole *logStream) const;
+
+    /** render image reference value in HTML format
+     ** @param  docStream    output stream to which the main HTML document is written
+     *  @param  annexStream  output stream to which the HTML document annex is written
+     *  @param  annexNumber  reference to the variable where the current annex number is stored.
+     *                       Value is increased automatically by 1 after a new entry has been added.
+     *  @param  flags        flag used to customize the output (see DSRTypes::HF_xxx)
+     *  @param  logStream    pointer to error/warning output stream (output disabled if NULL)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual E_Condition renderHTML(ostream &docStream,
+                                   ostream &annexStream,
+                                   size_t &annexNumber,
+                                   const size_t flags,
+                                   OFConsole *logStream) const;
 
     /** get pointer to image reference value
      ** @return pointer to image reference value (never NULL)
@@ -269,7 +280,10 @@ class DSRImageReferenceValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgvl.h,v $
- *  Revision 1.5  2000-10-26 14:18:27  joergr
+ *  Revision 1.6  2000-11-01 16:23:21  joergr
+ *  Added support for conversion to XML.
+ *
+ *  Revision 1.5  2000/10/26 14:18:27  joergr
  *  Updated comments.
  *
  *  Revision 1.4  2000/10/20 10:15:42  joergr

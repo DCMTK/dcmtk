@@ -23,8 +23,8 @@
  *    classes: DSRWaveformReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-26 14:22:23 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2000-11-01 16:23:29 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -98,31 +98,6 @@ class DSRWaveformReferenceValue
      */
     virtual OFBool isShort(const size_t flags) const;
 
-    /** print image reference.
-     *  The output of a typical waveform reference value looks like this: (HemodynamicWaveform
-     *  Storage,"1.2.3")
-     *  If the SOP class UID is unknown the UID is printed instead of the related name.
-     ** @param  stream  output stream to which the image reference value should be printed
-     *  @param  flags   flag used to customize the output (see DSRTypes::PF_xxx)
-     */
-    virtual E_Condition print(ostream &stream,
-                              const size_t flags) const;
-
-    /** render waveform reference value in HTML format
-     ** @param  docStream    output stream to which the main HTML document is written
-     *  @param  annexStream  output stream to which the HTML document annex is written
-     *  @param  annexNumber  reference to the variable where the current annex number is stored.
-     *                       Value is increased automatically by 1 after a new entry has been added.
-     *  @param  flags        flag used to customize the output (see DSRTypes::HF_xxx)
-     *  @param  logStream    pointer to error/warning output stream (output disabled if NULL)
-     ** @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual E_Condition renderHTML(ostream &docStream,
-                                   ostream &annexStream,
-                                   size_t &annexNumber,
-                                   const size_t flags,
-                                   OFConsole *logStream) const;
-
     /** get reference to waveform reference value
      ** @return reference to waveform reference value
      */
@@ -165,6 +140,42 @@ class DSRWaveformReferenceValue
 
 
   protected:
+
+    /** print waveform reference.
+     *  The output of a typical waveform reference value looks like this: (HemodynamicWaveform
+     *  Storage,"1.2.3")
+     *  If the SOP class UID is unknown the UID is printed instead of the related name.
+     ** @param  stream  output stream to which the image reference value should be printed
+     *  @param  flags   flag used to customize the output (see DSRTypes::PF_xxx)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual E_Condition print(ostream &stream,
+                              const size_t flags) const;
+
+    /** write waveform reference in XML format
+     ** @param  stream     output stream to which the XML document is written
+     *  @param  flags      flag used to customize the output (see DSRTypes::XF_xxx)
+     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual E_Condition writeXML(ostream &stream,
+                                 const size_t flags,
+                                 OFConsole *logStream) const;
+
+    /** render waveform reference value in HTML format
+     ** @param  docStream    output stream to which the main HTML document is written
+     *  @param  annexStream  output stream to which the HTML document annex is written
+     *  @param  annexNumber  reference to the variable where the current annex number is stored.
+     *                       Value is increased automatically by 1 after a new entry has been added.
+     *  @param  flags        flag used to customize the output (see DSRTypes::HF_xxx)
+     *  @param  logStream    pointer to error/warning output stream (output disabled if NULL)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual E_Condition renderHTML(ostream &docStream,
+                                   ostream &annexStream,
+                                   size_t &annexNumber,
+                                   const size_t flags,
+                                   OFConsole *logStream) const;
 
     /** get pointer to waveform reference value
      ** @return pointer to waveform reference value (never NULL)
@@ -211,7 +222,10 @@ class DSRWaveformReferenceValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavvl.h,v $
- *  Revision 1.6  2000-10-26 14:22:23  joergr
+ *  Revision 1.7  2000-11-01 16:23:29  joergr
+ *  Added support for conversion to XML.
+ *
+ *  Revision 1.6  2000/10/26 14:22:23  joergr
  *  Updated comments.
  *
  *  Revision 1.5  2000/10/23 15:13:42  joergr
