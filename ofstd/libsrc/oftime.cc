@@ -21,10 +21,10 @@
  *
  *  Purpose: Class for time functions (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-07-09 13:58:04 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-09-15 12:15:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/oftime.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,6 +57,7 @@ END_EXTERN_C
 
 #include "oftime.h"
 #include "ofstd.h"
+
 
 /*------------------*
  *  implementation  *
@@ -107,37 +108,37 @@ OFTime &OFTime::operator=(const OFTime &timeVal)
 }
 
 
-OFBool OFTime::operator==(const OFTime &timeVal)
+OFBool OFTime::operator==(const OFTime &timeVal) const
 {
     return (getTimeInSeconds(OFTrue /*useTimeZone*/) == timeVal.getTimeInSeconds(OFTrue /*useTimeZone*/));
 }
 
 
-OFBool OFTime::operator!=(const OFTime &timeVal)
+OFBool OFTime::operator!=(const OFTime &timeVal) const
 {
     return (getTimeInSeconds(OFTrue /*useTimeZone*/) != timeVal.getTimeInSeconds(OFTrue /*useTimeZone*/));
 }
 
 
-OFBool OFTime::operator<(const OFTime &timeVal)
+OFBool OFTime::operator<(const OFTime &timeVal) const
 {
     return (getTimeInSeconds(OFTrue /*useTimeZone*/) < timeVal.getTimeInSeconds(OFTrue /*useTimeZone*/));
 }
 
 
-OFBool OFTime::operator<=(const OFTime &timeVal)
+OFBool OFTime::operator<=(const OFTime &timeVal) const
 {
     return (getTimeInSeconds(OFTrue /*useTimeZone*/) <= timeVal.getTimeInSeconds(OFTrue /*useTimeZone*/));
 }
 
 
-OFBool OFTime::operator>=(const OFTime &timeVal)
+OFBool OFTime::operator>=(const OFTime &timeVal) const
 {
     return (getTimeInSeconds(OFTrue /*useTimeZone*/) >= timeVal.getTimeInSeconds(OFTrue /*useTimeZone*/));
 }
 
 
-OFBool OFTime::operator>(const OFTime &timeVal)
+OFBool OFTime::operator>(const OFTime &timeVal) const
 {
     return (getTimeInSeconds(OFTrue /*useTimeZone*/) > timeVal.getTimeInSeconds(OFTrue /*useTimeZone*/));
 }
@@ -491,10 +492,10 @@ OFBool OFTime::getISOFormattedTime(OFString &formattedTime,
             if (showFraction)
             {
                 char buf2[12];
-                OFStandard::ftoa(buf2, sizeof(buf2), Second, 
+                OFStandard::ftoa(buf2, sizeof(buf2), Second,
                   OFStandard::ftoa_format_f | OFStandard::ftoa_zeropad, 9, 6);
-                               
-                if (showDelimiter) 
+
+                if (showDelimiter)
                     strcat(buf, ":");  /* format: HH:MM:SS.FFFFFF */
                 strcat(buf, buf2);
             } else {
@@ -563,7 +564,10 @@ ostream& operator<<(ostream& stream, const OFTime &timeVal)
  *
  * CVS/RCS Log:
  * $Log: oftime.cc,v $
- * Revision 1.8  2003-07-09 13:58:04  meichel
+ * Revision 1.9  2003-09-15 12:15:07  joergr
+ * Made comparison operators const.
+ *
+ * Revision 1.8  2003/07/09 13:58:04  meichel
  * Adapted type casts to new-style typecast operators defined in ofcast.h
  *
  * Revision 1.7  2002/12/04 10:40:50  meichel

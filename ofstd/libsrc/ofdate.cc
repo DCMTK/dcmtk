@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002, OFFIS
+ *  Copyright (C) 2002-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Class for date functions (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 11:23:10 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-09-15 12:15:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofdate.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +38,7 @@
 #define INCLUDE_CSTDIO
 #define INCLUDE_CTIME
 #include "ofstdinc.h"
+
 
 /*------------------*
  *  implementation  *
@@ -83,37 +84,37 @@ OFDate &OFDate::operator=(const OFDate &dateVal)
 }
 
 
-OFBool OFDate::operator==(const OFDate &dateVal)
+OFBool OFDate::operator==(const OFDate &dateVal) const
 {
     return (Year == dateVal.Year) && (Month == dateVal.Month) && (Day == dateVal.Day);
 }
 
 
-OFBool OFDate::operator!=(const OFDate &dateVal)
+OFBool OFDate::operator!=(const OFDate &dateVal) const
 {
     return (Year != dateVal.Year) || (Month != dateVal.Month) || (Day != dateVal.Day);
 }
 
 
-OFBool OFDate::operator<(const OFDate &dateVal)
+OFBool OFDate::operator<(const OFDate &dateVal) const
 {
     return (Year < dateVal.Year) || ((Year == dateVal.Year) && ((Month < dateVal.Month) || ((Month == dateVal.Month) && (Day < dateVal.Day))));
 }
 
 
-OFBool OFDate::operator<=(const OFDate &dateVal)
+OFBool OFDate::operator<=(const OFDate &dateVal) const
 {
     return (Year < dateVal.Year) || ((Year == dateVal.Year) && ((Month < dateVal.Month) || ((Month == dateVal.Month) && (Day <= dateVal.Day))));
 }
 
 
-OFBool OFDate::operator>=(const OFDate &dateVal)
+OFBool OFDate::operator>=(const OFDate &dateVal) const
 {
     return (Year > dateVal.Year) || ((Year == dateVal.Year) && ((Month > dateVal.Month) || ((Month == dateVal.Month) && (Day >= dateVal.Day))));
 }
 
 
-OFBool OFDate::operator>(const OFDate &dateVal)
+OFBool OFDate::operator>(const OFDate &dateVal) const
 {
     return (Year > dateVal.Year) || ((Year == dateVal.Year) && ((Month > dateVal.Month) || ((Month == dateVal.Month) && (Day > dateVal.Day))));
 }
@@ -298,7 +299,10 @@ ostream& operator<<(ostream& stream, const OFDate &dateVal)
  *
  * CVS/RCS Log:
  * $Log: ofdate.cc,v $
- * Revision 1.4  2002-11-27 11:23:10  meichel
+ * Revision 1.5  2003-09-15 12:15:07  joergr
+ * Made comparison operators const.
+ *
+ * Revision 1.4  2002/11/27 11:23:10  meichel
  * Adapted module ofstd to use of new header file ofstdinc.h
  *
  * Revision 1.3  2002/05/24 09:44:26  joergr

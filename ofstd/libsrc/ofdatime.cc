@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002, OFFIS
+ *  Copyright (C) 2002-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Class for date and time functions (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 15:09:39 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-09-15 12:15:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofdatime.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -85,13 +85,13 @@ OFDateTime &OFDateTime::operator=(const OFDateTime &dateTime)
 }
 
 
-OFBool OFDateTime::operator==(const OFDateTime &dateTime)
+OFBool OFDateTime::operator==(const OFDateTime &dateTime) const
 {
     return (Date == dateTime.Date) && (Time == dateTime.Time);
 }
 
 
-OFBool OFDateTime::operator!=(const OFDateTime &dateTime)
+OFBool OFDateTime::operator!=(const OFDateTime &dateTime) const
 {
     return (Date != dateTime.Date) || (Time != dateTime.Time);
 }
@@ -198,7 +198,7 @@ OFBool OFDateTime::getISOFormattedDateTime(OFString &formattedDateTime,
     return result;
 }
 
-    
+
 OFDateTime OFDateTime::getCurrentDateTime()
 {
     /* create a date/time object with the current system date/time set */
@@ -224,7 +224,10 @@ ostream& operator<<(ostream& stream, const OFDateTime &dateTime)
  *
  * CVS/RCS Log:
  * $Log: ofdatime.cc,v $
- * Revision 1.3  2002-11-27 15:09:39  meichel
+ * Revision 1.4  2003-09-15 12:15:07  joergr
+ * Made comparison operators const.
+ *
+ * Revision 1.3  2002/11/27 15:09:39  meichel
  * Adapted module ofstd to use of new header file ofstdinc.h
  *
  * Revision 1.2  2002/05/24 09:44:26  joergr
