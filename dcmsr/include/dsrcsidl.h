@@ -23,8 +23,8 @@
  *    classes: DSRCodingSchemeIdentificationList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-16 09:57:33 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2004-04-07 12:02:53 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,7 +65,13 @@ class DSRCodingSchemeIdentificationList
          ** @param  codingSchemeDesignator  Coding Scheme Designator
          */
         ItemStruct(const OFString &codingSchemeDesignator)
-          : CodingSchemeDesignator(codingSchemeDesignator)
+          : CodingSchemeDesignator(codingSchemeDesignator),
+            CodingSchemeRegistry(),
+            CodingSchemeUID(),
+            CodingSchemeExternalID(),
+            CodingSchemeName(),
+            CodingSchemeVersion(),
+            ResponsibleOrganization()
         {}
 
         /** clear additional information
@@ -327,7 +333,11 @@ class DSRCodingSchemeIdentificationList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcsidl.h,v $
- *  Revision 1.3  2004-01-16 09:57:33  joergr
+ *  Revision 1.4  2004-04-07 12:02:53  joergr
+ *  Added missing member variables to constructor's member initialization list
+ *  to avoid warnings reported by gcc.
+ *
+ *  Revision 1.3  2004/01/16 09:57:33  joergr
  *  Added clear() method to struct ItemStruct.
  *
  *  Revision 1.2  2003/12/16 16:18:35  joergr
