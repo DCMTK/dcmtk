@@ -1,0 +1,32 @@
+/*!
+
+\page mod_dcmqrdb dcmqrdb: an image database server
+
+This module contains a simple image archive that manages a number of storage
+areas and allows images to be stored in these storage areas using the DICOM
+Storage Service Class.  It also allows image attributes to be queried and
+images to be retrieved using the DICOM Query/Retrieve Service Class.
+
+\section Tools
+
+This module contains the following command line tools:
+\li \ref dcmqridx
+\li \ref dcmqrdb
+\li \ref dcmqrti
+
+\section Files
+
+The following files provide further documentation:
+\li \ref file_dcmqrcnf
+\li \ref file_dcmqrset
+
+*/
+
+/*!
+    \page file_dcmqrcnf dcmqrcnf.txt file
+    \verbinclude dcmqrcnf.txt
+*/
+/*!
+    \page file_dcmqrset dcmqrset.txt file
+    \verbinclude dcmqrset.txt
+*/
