@@ -14,16 +14,14 @@ parts of the toolkit:
 3. dcmnet   - library and all applications (including tests) 
 4. imagectn - library and all applications (including tests)
 
-The applications in dcmdata and dcmnet are tested (but not very intensivly) 
-while the imagectn applications are only compiled and do not work properly
-in the moment. It is planned to test them as well.
+All applications in 1.-4. are tested (but not very intensivly). 
 
 The following parts of the toolkit are not supported and probably will 
 never be:
 
 1. ctndisp - This part needs X-Windows and Unix shared memory. It is not
    planned to port it to Windows NT/95
-2. wlistctn - This part needs perl4 and consistent locking mechanisms 
+2. wlistctn - This part needs perl and consistent locking mechanisms 
    between perl and C++. It should be principle possible to port it. 
 
 COMPILE INSTRUCTIONS:
@@ -55,5 +53,5 @@ KNOWN PROBLEMS:
 
 
 Have Fun
-Andreas Barth, 05.08.97
+Andreas Barth, 06.08.97
 
