@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: Interface of class DcmDateTime
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 12:49:15 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrdt.h,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2004-01-16 14:04:11 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -138,6 +137,7 @@ class DcmDateTime
 	 *   time if the time zone is omitted.
 	 *  @param createMissingPart if OFTrue create optional parts (seconds, fractional part of
 	 *   a seconds and/or time zone) if absent in the element value
+	 *  @param dateTimeSeparator separator between ISO date and time value (default: " ")
 	 *  @return EC_Normal upon success, an error code otherwise
 	 */
     OFCondition getISOFormattedDateTime(OFString &formattedDateTime,
@@ -145,7 +145,8 @@ class DcmDateTime
                                         const OFBool seconds = OFTrue,
                                         const OFBool fraction = OFFalse,
                                         const OFBool timeZone = OFTrue,
-                                        const OFBool createMissingPart = OFFalse);
+                                        const OFBool createMissingPart = OFFalse,
+                                        const OFString &dateTimeSeparator = " ");
 
     /* --- static helper functions --- */
 
@@ -201,7 +202,7 @@ class DcmDateTime
     static OFCondition getOFDateTimeFromString(const OFString &dicomDateTime,
                                                OFDateTime &dateTimeValue);
 
-	/** get the specified DICOM date/time value in ISO format.
+	/** get the specified DICOM datetime value in ISO format.
 	 *  The ISO date/time format supported by this function is "YYYY-MM-DD HH:MM[:SS[.FFFFFF]]
 	 *  [&HH:MM]" where the brackets enclose optional parts. Please note that the specified
 	 *  value is expected to be in valid DICOM DT format ("YYYYMMDD[HH[MM[SS[.FFFFFF]]]][&ZZZZ]").
@@ -217,6 +218,7 @@ class DcmDateTime
 	 *   if the time zone is omitted.
 	 *  @param createMissingPart if OFTrue create optional parts (seconds, fractional part of
 	 *   a seconds and/or time zone) if absent in the element value
+	 *  @param dateTimeSeparator separator between ISO date and time value (default: " ")
 	 *  @return EC_Normal upon success, an error code otherwise
 	 */
     static OFCondition getISOFormattedDateTimeFromString(const OFString &dicomDateTime,
@@ -224,7 +226,8 @@ class DcmDateTime
                                                          const OFBool seconds = OFTrue,
                                                          const OFBool fraction = OFFalse,
                                                          const OFBool timeZone = OFTrue,
-                                                         const OFBool createMissingPart = OFFalse);
+                                                         const OFBool createMissingPart = OFFalse,
+                                                         const OFString &dateTimeSeparator = " ");
 };
 
 
@@ -234,7 +237,11 @@ class DcmDateTime
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrdt.h,v $
-** Revision 1.15  2002-12-06 12:49:15  joergr
+** Revision 1.16  2004-01-16 14:04:11  joergr
+** Introduced new parameter "dateTimeSeparator" in getISOFormattedXXX() methods
+** to support ISO 8601 format as required by XML Schema type "dateTime".
+**
+** Revision 1.15  2002/12/06 12:49:15  joergr
 ** Enhanced "print()" function by re-working the implementation and replacing
 ** the boolean "showFullData" parameter by a more general integer flag.
 ** Added doc++ documentation.
