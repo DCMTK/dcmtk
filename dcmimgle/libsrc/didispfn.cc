@@ -22,9 +22,9 @@
  *  Purpose: DicomDisplayFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-03 17:48:37 $
+ *  Update Date:      $Date: 1999-02-08 13:09:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/didispfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -83,7 +83,7 @@ DiDisplayFunction::DiDisplayFunction(const char *filename)
 }
 
 
-DiDisplayFunction::DiDisplayFunction(const double *lum_tab,
+DiDisplayFunction::DiDisplayFunction(const double *lum_tab,             // UNTESTED !!
                                      const Uint16 count,
                                      const Uint16 max,
                                      const Uint16 out)
@@ -117,7 +117,7 @@ DiDisplayFunction::DiDisplayFunction(const double *lum_tab,
 }
 
 
-DiDisplayFunction::DiDisplayFunction(const Uint16 *ddl_tab,
+DiDisplayFunction::DiDisplayFunction(const Uint16 *ddl_tab,             // UNTESTED !!
                                      const double *lum_tab,
                                      const Uint16 count,
                                      const Uint16 max,
@@ -215,85 +215,93 @@ int DiDisplayFunction::deleteBartenLUT(const int bits)
 
 int DiDisplayFunction::readConfigFile(const char *filename)
 {
-    ifstream file(filename);
-    if (file)
+    if ((filename != NULL) && (strlen(filename) > 0))
     {
-        char c;
-        while (file.get(c))
+        ifstream file(filename);
+        if (file)
         {
-            if (c == '#')
+            char c;
+            while (file.get(c))
             {
-                while (file.get(c) && (c != '\n') && (c != '\r'));      // skip comments
-            } 
-            else if (!isspace(c))                                       // skip whitespaces
-            {
-                file.putback(c);
-                if (MaxDDLValue == 0)                                   // read maxvalue
+                if (c == '#')
                 {
-                    char str[4];
-                    file >> str;
-                    if (strcmp(str, "max") == 0)
+                    while (file.get(c) && (c != '\n') && (c != '\r'));      // skip comments
+                } 
+                else if (!isspace(c))                                       // skip whitespaces
+                {
+                    file.putback(c);
+                    if (MaxDDLValue == 0)                                   // read maxvalue
                     {
-                        file >> MaxDDLValue;
-                        if (MaxDDLValue > 0)
+                        char str[4];
+                        file >> str;
+                        if (strcmp(str, "max") == 0)
                         {
-                            DDLValue = new Uint16[MaxDDLValue + 1];
-                            LumValue = new double[MaxDDLValue + 1];
-                            if ((DDLValue == NULL) || (LumValue == NULL))
-                                return 0;
+                            file >> MaxDDLValue;
+                            if (MaxDDLValue > 0)
+                            {
+                                DDLValue = new Uint16[MaxDDLValue + 1];
+                                LumValue = new double[MaxDDLValue + 1];
+                                if ((DDLValue == NULL) || (LumValue == NULL))
+                                    return 0;
+                            } else {
+                                if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
+                                    cerr << "ERROR: invalid or missing value for maximum DDL value in DISPLAY file !" << endl;
+                                return 0;                                   // abort
+                            }
                         } else {
                             if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
-                                cerr << "ERROR: invalid or missing value for maximum DDL value in DISPLAY file !" << endl;
-                            return 0;                                   // abort
+                                cerr << "ERROR: missing keyword 'max' for maximum DDL value in DISPLAY file !" << endl;
+                            return 0;                                       // abort
                         }
-                    } else {
-                        if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
-                            cerr << "ERROR: missing keyword 'max' for maximum DDL value in DISPLAY file !" << endl;
-                        return 0;                                       // abort
                     }
-                }
-                else if ((MaxOutValue == 0) && (c == 'o'))              // read outvalue: optional
-                {
-                    char str[4];
-                    file >> str;
-                    if (strcmp(str, "out") == 0)
-                        file >> MaxOutValue;
-                    else
+/*
+                    else if ((MaxOutValue == 0) && (c == 'o'))              // read outvalue: optional
                     {
-                        if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
-                            cerr << "ERROR: error while parsing 'out'entry in DISPLAY file !" << endl;
-                        return 0;                                       // abort
-                    }
-                }
-                else {
-                    if (ValueCount <= MaxDDLValue)
-                    {
-                        file >> DDLValue[ValueCount];                   // read DDL value
-                        file >> LumValue[ValueCount];                   // read luminance value
-                        if (file.fail())
+                        char str[4];
+                        file >> str;
+                        if (strcmp(str, "out") == 0)
+                            file >> MaxOutValue;
+                        else
                         {
-                            if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
-                                cerr << "WARNING: missing luminance value in DISPLAY file ... ignoring last entry !" << endl;
+                            if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
+                                cerr << "ERROR: error while parsing 'out' entry in DISPLAY file !" << endl;
+                            return 0;                                       // abort
                         }
-                        else if (DDLValue[ValueCount] > MaxDDLValue)
+                    }
+*/
+                    else {
+                        if (ValueCount <= MaxDDLValue)
                         {
-                            if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+                            file >> DDLValue[ValueCount];                   // read DDL value
+                            file >> LumValue[ValueCount];                   // read luminance value
+                            if (file.fail())
                             {
-                                cerr << "WARNING: DDL value (" << DDLValue[ValueCount] << ") exceeds maximum value (";
-                                cerr << MaxDDLValue << ") in DISPLAY file ..." << endl << "         ... ignoring value !" << endl;
+                                if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+                                    cerr << "WARNING: missing luminance value in DISPLAY file ... ignoring last entry !" << endl;
                             }
-                        } else
-                            ValueCount++;
-                    } else {
-                        if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
-                            cerr << "Warning: too many values in DISPLAY file ... ignoring last line(s) !" << endl;
-                        return 2;
+                            else if (DDLValue[ValueCount] > MaxDDLValue)
+                            {
+                                if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+                                {
+                                    cerr << "WARNING: DDL value (" << DDLValue[ValueCount] << ") exceeds maximum value (";
+                                    cerr << MaxDDLValue << ") in DISPLAY file ..." << endl << "         ... ignoring value !" << endl;
+                                }
+                            } else
+                                ValueCount++;
+                        } else {
+                            if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+                                cerr << "WARNING: too many values in DISPLAY file ... ignoring last line(s) !" << endl;
+                            return 2;
+                        }
                     }
                 }
             }
+            return ((MaxDDLValue > 0) && (ValueCount > 0) && (DDLValue != NULL) && (LumValue != NULL));
+        } else {
+            if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+                cerr << "WARNING: can't open DISPLAY file ... ignoring !" << endl;
         }
-        return ((MaxDDLValue > 0) && (ValueCount > 0) && (DDLValue != NULL) && (LumValue != NULL));
-    }
+    }    
     return 0;
 }
 
@@ -482,10 +490,12 @@ double DiDisplayFunction::getJNDIndex(const double lum) const
  *
  * CVS/RCS Log:
  * $Log: didispfn.cc,v $
- * Revision 1.1  1999-02-03 17:48:37  joergr
+ * Revision 1.2  1999-02-08 13:09:06  joergr
+ * Added (debug) warning message when using invalid DISPLAY file names.
+ *
+ * Revision 1.1  1999/02/03 17:48:37  joergr
  * Added support for calibration according to Barten transformation (incl.
  * a DISPLAY file describing the monitor characteristic).
- *
  *
  *
  */
