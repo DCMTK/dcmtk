@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRContainerTreeNode
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-04 14:26:54 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-08-07 13:14:59 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,7 +65,7 @@ OFBool DSRContainerTreeNode::isValid() const
 }
 
 
-OFBool DSRContainerTreeNode::isShort(const size_t /* flags */) const
+OFBool DSRContainerTreeNode::isShort(const size_t /*flags*/) const
 {
     return OFFalse;
 }
@@ -84,18 +84,17 @@ OFCondition DSRContainerTreeNode::print(ostream &stream,
 OFCondition DSRContainerTreeNode::readContentItem(DcmItem &dataset,
                                                   OFConsole *logStream)
 {
-    OFString string;
+    OFString tmpString;
     /* read ContinuityOfContent */
-    OFCondition result = getAndCheckStringValueFromDataset(dataset, DCM_ContinuityOfContent, string, "1", "1", logStream, "CONTAINER content item");
+    OFCondition result = getAndCheckStringValueFromDataset(dataset, DCM_ContinuityOfContent, tmpString, "1", "1", logStream, "CONTAINER content item");
     if (result.good())
     {
-        ContinuityOfContent = enumeratedValueToContinuityOfContent(string);
+        ContinuityOfContent = enumeratedValueToContinuityOfContent(tmpString);
         /* check ContinuityOfContent value */
         if (ContinuityOfContent == COC_invalid)
         {
-            OFString message = "Reading unknown ContinuityOfContent value ";
-            message += string;
-            printWarningMessage(logStream, message.c_str());
+            printUnknownValueWarningMessage(logStream, "ContinuityOfContent value", tmpString.c_str());
+            result = SR_EC_InvalidValue;
         }
     }
     return result;
@@ -103,10 +102,30 @@ OFCondition DSRContainerTreeNode::readContentItem(DcmItem &dataset,
 
 
 OFCondition DSRContainerTreeNode::writeContentItem(DcmItem &dataset,
-                                                   OFConsole * /* logStream */) const
+                                                   OFConsole * /*logStream*/) const
 {
     /* write ContinuityOfContent */
     return putStringValueToDataset(dataset, DCM_ContinuityOfContent, continuityOfContentToEnumeratedValue(ContinuityOfContent));
+}
+
+
+OFCondition DSRContainerTreeNode::readXMLContentItem(const DSRXMLDocument &doc,
+                                                     DSRXMLCursor cursor)
+{
+    OFCondition result = SR_EC_CorruptedXMLStructure;
+    if (cursor.valid())
+    {
+        OFString tmpString;
+        /* read 'flag' and check validity */
+        ContinuityOfContent = enumeratedValueToContinuityOfContent(doc.getStringFromAttribute(cursor, tmpString, "flag"));
+        if (ContinuityOfContent == COC_invalid)
+        {
+            printUnknownValueWarningMessage(doc.getLogStream(), "CONTAINER flag", tmpString.c_str());
+            result = SR_EC_InvalidValue;
+        } else
+            result = EC_Normal;
+    }
+    return result;
 }
 
 
@@ -115,7 +134,7 @@ OFCondition DSRContainerTreeNode::writeXML(ostream &stream,
                                            OFConsole *logStream) const
 {
     OFCondition result = EC_Normal;
-    writeXMLItemStart(stream, flags, OFFalse /* closingBracket */);
+    writeXMLItemStart(stream, flags, OFFalse /*closingBracket*/);
     stream << " flag=\"" << continuityOfContentToEnumeratedValue(ContinuityOfContent) << "\"";
     stream << ">" << endl;
     result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
@@ -125,9 +144,9 @@ OFCondition DSRContainerTreeNode::writeXML(ostream &stream,
 
 
 OFCondition DSRContainerTreeNode::renderHTMLContentItem(ostream &docStream,
-                                                        ostream & /* annexStream */,
+                                                        ostream & /*annexStream*/,
                                                         const size_t nestingLevel,
-                                                        size_t & /* annexNumber */,
+                                                        size_t & /*annexNumber*/,
                                                         const size_t flags,
                                                         OFConsole *logStream) const
 {
@@ -135,18 +154,18 @@ OFCondition DSRContainerTreeNode::renderHTMLContentItem(ostream &docStream,
     if (nestingLevel > 0)
     {
         /* render ConceptName & Code (if valid) */
-        if (getConceptName().getCodeMeaning().length() > 0)
+        if (!getConceptName().getCodeMeaning().empty())
         {
             const size_t section = (nestingLevel > 6) ? 6 : nestingLevel;
             docStream << "<h" << section << ">";
-            getConceptName().renderHTML(docStream, flags, logStream, (flags & HF_renderConceptNameCodes) && getConceptName().isValid() /* fullCode */);
+            getConceptName().renderHTML(docStream, flags, logStream, (flags & HF_renderConceptNameCodes) && getConceptName().isValid() /*fullCode*/);
             docStream << "</h" << section << ">" << endl;
         }
         /* render optional observation datetime */
-        if (getObservationDateTime().length() > 0)
+        if (!getObservationDateTime().empty())
         {
-            OFString string;
-            docStream << "<small>(observed: " << dicomToReadableDateTime(getObservationDateTime(), string) << ")</small>" << endl;
+            OFString tmpString;
+            docStream << "<small>(observed: " << dicomToReadableDateTime(getObservationDateTime(), tmpString) << ")</small>" << endl;
         }
     }
     return EC_Normal;
@@ -285,7 +304,10 @@ OFCondition DSRContainerTreeNode::setContinuityOfContent(const E_ContinuityOfCon
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcontn.cc,v $
- *  Revision 1.20  2003-06-04 14:26:54  meichel
+ *  Revision 1.21  2003-08-07 13:14:59  joergr
+ *  Added readXML functionality.
+ *
+ *  Revision 1.20  2003/06/04 14:26:54  meichel
  *  Simplified include structure to avoid preprocessor limitation
  *    (max 32 #if levels) on MSVC5 with STL.
  *

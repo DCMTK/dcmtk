@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDateTreeNode
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-04 14:26:54 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-08-07 13:16:51 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -92,7 +92,7 @@ OFCondition DSRDateTreeNode::writeXML(ostream &stream,
     OFCondition result = EC_Normal;
     writeXMLItemStart(stream, flags);
     result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
-    writeStringValueToXML(stream, getValue(), "value", ((flags & XF_writeEmptyTags) ? OFTrue : OFFalse));
+    writeStringValueToXML(stream, getValue(), "value", flags & XF_writeEmptyTags > 0);
     writeXMLItemEnd(stream, flags);
     return result;
 }
@@ -114,10 +114,18 @@ OFCondition DSRDateTreeNode::writeContentItem(DcmItem &dataset,
 }
 
 
+OFCondition DSRDateTreeNode::readXMLContentItem(const DSRXMLDocument &doc,
+                                                DSRXMLCursor cursor)
+{
+    /* retrieve value from XML element "value" */
+    return DSRStringValue::readXML(doc, doc.getNamedNode(cursor.gotoChild(), "value"));
+}
+
+
 OFCondition DSRDateTreeNode::renderHTMLContentItem(ostream &docStream,
-                                                   ostream & /* annexStream */,
-                                                   const size_t /* nestingLevel */,
-                                                   size_t & /* annexNumber */,
+                                                   ostream & /*annexStream*/,
+                                                   const size_t /*nestingLevel*/,
+                                                   size_t & /*annexNumber*/,
                                                    const size_t flags,
                                                    OFConsole *logStream) const
 {
@@ -133,7 +141,7 @@ OFCondition DSRDateTreeNode::renderHTMLContentItem(ostream &docStream,
         if (!(flags & DSRTypes::HF_renderItemsSeparately))
             docStream << "</u>";
         docStream << endl;
-    }        
+    }
     return result;
 }
 
@@ -156,7 +164,10 @@ OFBool DSRDateTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdattn.cc,v $
- *  Revision 1.13  2003-06-04 14:26:54  meichel
+ *  Revision 1.14  2003-08-07 13:16:51  joergr
+ *  Added readXML functionality.
+ *
+ *  Revision 1.13  2003/06/04 14:26:54  meichel
  *  Simplified include structure to avoid preprocessor limitation
  *    (max 32 #if levels) on MSVC5 with STL.
  *

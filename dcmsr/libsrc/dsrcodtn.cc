@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRCodeTreeNode
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-04 14:26:54 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-08-07 13:11:53 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -71,7 +71,28 @@ OFCondition DSRCodeTreeNode::print(ostream &stream,
     if (result.good())
     {
         stream << "=";
-        DSRCodedEntryValue::print(stream, OFTrue /* printCodeValue */, OFTrue /* printInvalid */);
+        DSRCodedEntryValue::print(stream, OFTrue /*printCodeValue*/, OFTrue /*printInvalid*/);
+    }
+    return result;
+}
+
+
+OFCondition DSRCodeTreeNode::readXMLContentItem(const DSRXMLDocument &doc,
+                                                DSRXMLCursor cursor)
+{
+    OFCondition result = SR_EC_CorruptedXMLStructure;
+    if (cursor.valid())
+    {
+        /* goto "value" element */
+        const DSRXMLCursor childCursor = doc.getNamedNode(cursor.getChild(), "value");
+        if (childCursor.valid())
+        {
+            /* check whether code is stored as XML elements or attributes */
+            if (doc.hasAttribute(childCursor, "codValue"))
+                result = DSRCodedEntryValue::readXML(doc, childCursor);
+            else
+                result = DSRCodedEntryValue::readXML(doc, cursor);
+        }
     }
     return result;
 }
@@ -98,9 +119,9 @@ OFCondition DSRCodeTreeNode::writeXML(ostream &stream,
 
 OFCondition DSRCodeTreeNode::readContentItem(DcmItem &dataset,
                                              OFConsole *logStream)
-{    
+{
     /* read ConceptCodeSequence */
-    return DSRCodedEntryValue::readSequence(dataset, DCM_ConceptCodeSequence, "1" /* type */, logStream);
+    return DSRCodedEntryValue::readSequence(dataset, DCM_ConceptCodeSequence, "1" /*type*/, logStream);
 }
 
 
@@ -113,9 +134,9 @@ OFCondition DSRCodeTreeNode::writeContentItem(DcmItem &dataset,
 
 
 OFCondition DSRCodeTreeNode::renderHTMLContentItem(ostream &docStream,
-                                                   ostream & /* annexStream */,
-                                                   const size_t /* nestingLevel */,
-                                                   size_t & /* annexNumber */,
+                                                   ostream & /*annexStream*/,
+                                                   const size_t /*nestingLevel*/,
+                                                   size_t & /*annexNumber*/,
                                                    const size_t flags,
                                                    OFConsole *logStream) const
 {
@@ -149,7 +170,7 @@ OFBool DSRCodeTreeNode::canAddNode(const E_DocumentType documentType,
             case RT_hasObsContext:
                 switch (valueType)
                 {
-                    case VT_Text:                
+                    case VT_Text:
                     case VT_Code:
                     case VT_Num:
                     case VT_DateTime:
@@ -203,7 +224,10 @@ OFBool DSRCodeTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodtn.cc,v $
- *  Revision 1.15  2003-06-04 14:26:54  meichel
+ *  Revision 1.16  2003-08-07 13:11:53  joergr
+ *  Added readXML functionality.
+ *
+ *  Revision 1.15  2003/06/04 14:26:54  meichel
  *  Simplified include structure to avoid preprocessor limitation
  *    (max 32 #if levels) on MSVC5 with STL.
  *

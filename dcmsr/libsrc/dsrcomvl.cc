@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRCompositeReferenceValue
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-04 14:26:54 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-08-07 13:14:26 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,7 @@
 
 #include "dsrtypes.h"
 #include "dsrcomvl.h"
+#include "dsrxmld.h"
 
 
 DSRCompositeReferenceValue::DSRCompositeReferenceValue()
@@ -62,7 +63,7 @@ DSRCompositeReferenceValue::DSRCompositeReferenceValue(const DSRCompositeReferen
     /* do not check since this would unexpected to the user */
 }
 
-    
+
 DSRCompositeReferenceValue::~DSRCompositeReferenceValue()
 {
 }
@@ -92,17 +93,17 @@ OFBool DSRCompositeReferenceValue::isValid() const
 
 OFBool DSRCompositeReferenceValue::isEmpty() const
 {
-    return (SOPClassUID.length() == 0) && (SOPInstanceUID.length() == 0);
+    return SOPClassUID.empty() && SOPInstanceUID.empty();
 }
 
 
 OFCondition DSRCompositeReferenceValue::print(ostream &stream,
                                               const size_t flags) const
 {
-    const char *string = dcmFindNameOfUID(SOPClassUID.c_str());
+    const char *className = dcmFindNameOfUID(SOPClassUID.c_str());
     stream << "(";
-    if (string != NULL)
-        stream << string;
+    if (className != NULL)
+        stream << className;
     else
         stream << "\"" << SOPClassUID << "\"";
     stream << ",";
@@ -113,11 +114,27 @@ OFCondition DSRCompositeReferenceValue::print(ostream &stream,
 }
 
 
+OFCondition DSRCompositeReferenceValue::readXML(const DSRXMLDocument &doc,
+                                                DSRXMLCursor cursor)
+{
+    OFCondition result = SR_EC_CorruptedXMLStructure;
+    /* go one node level down */
+    if (cursor.gotoChild().valid())
+    {
+        /* retrieve SOP Class UID and SOP Instance UID from XML tag (required) */
+        doc.getStringFromAttribute(doc.getNamedNode(cursor, "sopclass"), SOPClassUID, "uid");
+        doc.getStringFromAttribute(doc.getNamedNode(cursor, "instance"), SOPInstanceUID, "uid");
+        /* check whether value is valid */
+        result = (isValid() ? EC_Normal : SR_EC_InvalidValue);
+    }
+    return result;
+}
+
+
 OFCondition DSRCompositeReferenceValue::writeXML(ostream &stream,
                                                  const size_t flags,
                                                  OFConsole * /* logStream */) const
 {
-    stream << "<reference>" << endl;
     if ((flags & DSRTypes::XF_writeEmptyTags) || !isEmpty())
     {
         stream << "<sopclass uid=\"" << SOPClassUID << "\">";
@@ -128,7 +145,6 @@ OFCondition DSRCompositeReferenceValue::writeXML(ostream &stream,
         stream << "</sopclass>" << endl;
         stream << "<instance uid=\"" << SOPInstanceUID << "\"/>" << endl;
     }
-    stream << "</reference>" << endl;
     return EC_Normal;
 }
 
@@ -199,7 +215,7 @@ OFCondition DSRCompositeReferenceValue::writeSequence(DcmItem &dataset,
             result = EC_MemoryExhausted;
         /* write sequence */
         if (result.good())
-            result = dataset.insert(dseq, OFTrue /* replaceOld */);
+            result = dataset.insert(dseq, OFTrue /*replaceOld*/);
         if (result.bad())
             delete dseq;
     }
@@ -208,17 +224,17 @@ OFCondition DSRCompositeReferenceValue::writeSequence(DcmItem &dataset,
 
 
 OFCondition DSRCompositeReferenceValue::renderHTML(ostream &docStream,
-                                                   ostream & /* annexStream */,
-                                                   size_t & /* annexNumber */,
-                                                   const size_t /* flags */,
-                                                   OFConsole * /* logStream */) const
+                                                   ostream & /*annexStream*/,
+                                                   size_t & /*annexNumber*/,
+                                                   const size_t /*flags*/,
+                                                   OFConsole * /*logStream*/) const
 {
     /* render reference */
     docStream << "<a href=\"" << HTML_HYPERLINK_PREFIX_FOR_CGI;
     docStream << "?composite=" << SOPClassUID << "+" << SOPInstanceUID << "\">";
-    const char *string = dcmFindNameOfUID(SOPClassUID.c_str());
-    if (string != NULL)
-        docStream << string;
+    const char *className = dcmFindNameOfUID(SOPClassUID.c_str());
+    if (className != NULL)
+        docStream << className;
     else
         docStream << "unknown composite object";
     docStream << "</a>";
@@ -234,7 +250,7 @@ OFCondition DSRCompositeReferenceValue::getValue(DSRCompositeReferenceValue &ref
 
 
 OFCondition DSRCompositeReferenceValue::setValue(const DSRCompositeReferenceValue &referenceValue)
-{    
+{
     return setReference(referenceValue.SOPClassUID, referenceValue.SOPInstanceUID);
 }
 
@@ -293,7 +309,10 @@ OFBool DSRCompositeReferenceValue::checkSOPInstanceUID(const OFString &sopInstan
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcomvl.cc,v $
- *  Revision 1.13  2003-06-04 14:26:54  meichel
+ *  Revision 1.14  2003-08-07 13:14:26  joergr
+ *  Added readXML functionality.
+ *
+ *  Revision 1.13  2003/06/04 14:26:54  meichel
  *  Simplified include structure to avoid preprocessor limitation
  *    (max 32 #if levels) on MSVC5 with STL.
  *

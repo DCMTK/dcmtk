@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRCompositeTreeNode
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-04 14:26:54 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-08-07 13:13:39 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -85,7 +85,9 @@ OFCondition DSRCompositeTreeNode::writeXML(ostream &stream,
     OFCondition result = EC_Normal;
     writeXMLItemStart(stream, flags);
     result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
+    stream << "<value>" << endl;
     DSRCompositeReferenceValue::writeXML(stream, flags, logStream);
+    stream << "</value>" << endl;
     writeXMLItemEnd(stream, flags);
     return result;
 }
@@ -104,6 +106,14 @@ OFCondition DSRCompositeTreeNode::writeContentItem(DcmItem &dataset,
 {
     /* write ReferencedSOPSequence */
     return DSRCompositeReferenceValue::writeSequence(dataset, logStream);
+}
+
+
+OFCondition DSRCompositeTreeNode::readXMLContentItem(const DSRXMLDocument &doc,
+                                                     DSRXMLCursor cursor)
+{
+    /* retrieve value from XML element "value" */
+    return DSRCompositeReferenceValue::readXML(doc, doc.getNamedNode(cursor.gotoChild(), "value"));
 }
 
 
@@ -172,7 +182,10 @@ OFBool DSRCompositeTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcomtn.cc,v $
- *  Revision 1.13  2003-06-04 14:26:54  meichel
+ *  Revision 1.14  2003-08-07 13:13:39  joergr
+ *  Added readXML functionality.
+ *
+ *  Revision 1.13  2003/06/04 14:26:54  meichel
  *  Simplified include structure to avoid preprocessor limitation
  *    (max 32 #if levels) on MSVC5 with STL.
  *

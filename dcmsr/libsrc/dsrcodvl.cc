@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRCodedEntryValue
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-04 14:26:54 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-08-07 13:13:02 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,7 +49,7 @@ DSRCodedEntryValue::DSRCodedEntryValue()
 
 
 DSRCodedEntryValue::DSRCodedEntryValue(const OFString &codeValue,
-                                       const OFString &codingSchemeDesignator, 
+                                       const OFString &codingSchemeDesignator,
                                        const OFString &codeMeaning)
   : CodeValue(codeValue),
     CodingSchemeDesignator(codingSchemeDesignator),
@@ -131,8 +131,7 @@ OFBool DSRCodedEntryValue::isValid() const
 
 OFBool DSRCodedEntryValue::isEmpty() const
 {
-    return (CodeValue.length() == 0) && (CodingSchemeDesignator.length() == 0) &&
-           (CodingSchemeVersion.length() == 0) && (CodeMeaning.length() == 0);
+    return CodeValue.empty() && CodingSchemeDesignator.empty() && CodingSchemeVersion.empty() && CodeMeaning.empty();
 }
 
 
@@ -155,7 +154,7 @@ void DSRCodedEntryValue::print(ostream &stream,
         {
             stream << DSRTypes::convertToPrintString(CodeValue, printString) << ",";
             stream << DSRTypes::convertToPrintString(CodingSchemeDesignator, printString) << ",";
-            if (CodingSchemeVersion.length() > 0)
+            if (!CodingSchemeVersion.empty())
                 stream << DSRTypes::convertToPrintString(CodingSchemeVersion, printString) << ",";
         } else
             stream << ",,";
@@ -183,23 +182,23 @@ OFCondition DSRCodedEntryValue::readItem(DcmItem &dataset,
         DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_PrivateCodingSchemeCreatorUID, PrivateCodingSchemeCreatorUID, "1", "3", logStream, moduleName);
     }
     /* tbd: might add check for correct code */
-        
+
     return result;
 }
 
 
 OFCondition DSRCodedEntryValue::writeItem(DcmItem &dataset,
-                                          OFConsole * /* logStream */) const
+                                          OFConsole * /*logStream*/) const
 {
     /* write BasicCodedEntryAttributes only */
     OFCondition result = DSRTypes::putStringValueToDataset(dataset, DCM_CodeValue, CodeValue);
     if (result.good())
         result = DSRTypes::putStringValueToDataset(dataset, DCM_CodingSchemeDesignator, CodingSchemeDesignator);
-    if ((result.good()) && (CodingSchemeVersion.length() > 0))                /* conditional (type 1C) */
+    if (result.good() && !CodingSchemeVersion.empty())                /* conditional (type 1C) */
         result = DSRTypes::putStringValueToDataset(dataset, DCM_CodingSchemeVersion, CodingSchemeVersion);
     if (result.good())
         result = DSRTypes::putStringValueToDataset(dataset, DCM_CodeMeaning, CodeMeaning);
-    if ((result.good()) && (PrivateCodingSchemeCreatorUID.length() > 0))      /* optional (type 3) */
+    if (result.good() && !PrivateCodingSchemeCreatorUID.empty())      /* optional (type 3) */
         result = DSRTypes::putStringValueToDataset(dataset, DCM_PrivateCodingSchemeCreatorUID, PrivateCodingSchemeCreatorUID);
     return result;
 }
@@ -218,7 +217,7 @@ OFCondition DSRCodedEntryValue::readSequence(DcmItem &dataset,
     {
         DcmItem *ditem = dseq.getItem(0);
         if (ditem != NULL)
-        {            
+        {
             /* read Code */
             result = readItem(*ditem, logStream, DcmTag(tagKey).getTagName());
         } else
@@ -256,7 +255,7 @@ OFCondition DSRCodedEntryValue::writeSequence(DcmItem &dataset,
                 result = EC_MemoryExhausted;
         }
         if (result.good())
-            result= dataset.insert(dseq, OFTrue /* replaceOld */);
+            result= dataset.insert(dseq, OFTrue /*replaceOld*/);
         if (result.bad())
             delete dseq;
     }
@@ -264,26 +263,65 @@ OFCondition DSRCodedEntryValue::writeSequence(DcmItem &dataset,
 }
 
 
+OFCondition DSRCodedEntryValue::readXML(const DSRXMLDocument &doc,
+                                        DSRXMLCursor cursor)
+{
+    OFCondition result = SR_EC_CorruptedXMLStructure;
+    if (cursor.valid())
+    {
+        /* check whether code is stored as XML attributes */
+        if (doc.hasAttribute(cursor, "codValue"))
+        {
+            doc.getStringFromAttribute(cursor, CodeValue, "codValue", OFTrue /*encoding*/);
+            doc.getStringFromAttribute(cursor, CodingSchemeDesignator, "codScheme", OFTrue /*encoding*/);
+            doc.getStringFromAttribute(cursor, CodingSchemeVersion, "codVersion", OFTrue /*encoding*/, OFFalse /*required*/);
+            doc.getStringFromNodeContent(cursor, CodeMeaning, NULL /*name*/, OFTrue /*encoding*/);
+        } else {
+            /* goto first child node */
+            cursor.gotoChild();
+            /* iterate over all content items */
+            while (cursor.valid())
+            {
+                /* check for known element tags */
+                if (doc.matchNode(cursor, "scheme"))
+                {
+                    doc.getStringFromNodeContent(doc.getNamedNode(cursor.getChild(), "designator"), CodingSchemeDesignator, NULL /*name*/, OFTrue /*encoding*/, OFFalse /*clearString*/);
+                    doc.getStringFromNodeContent(doc.getNamedNode(cursor.getChild(), "version", OFFalse /*required*/), CodingSchemeVersion, NULL /*name*/, OFTrue /*encoding*/, OFFalse /*clearString*/);
+                } else {
+                    doc.getStringFromNodeContent(cursor, CodeValue, "value", OFTrue /*encoding*/, OFFalse /*clearString*/);
+                    doc.getStringFromNodeContent(cursor, CodeMeaning, "meaning", OFTrue /*encoding*/, OFFalse /*clearString*/);
+                }
+                /* proceed with next node */
+                cursor.gotoNext();
+            }
+        }
+        /* check whether code is valid */
+        result = (isValid() ? EC_Normal : SR_EC_InvalidValue);
+    }
+    return result;
+}
+
+
 OFCondition DSRCodedEntryValue::writeXML(ostream &stream,
                                          const size_t flags,
-                                         OFConsole * /* logStream */) const
+                                         OFConsole * /*logStream*/) const
 {
+    OFString tmpString;
     if (flags & DSRTypes::XF_codeComponentsAsAttribute)
     {
-        OFString string;
-        stream << " codValue=\"" << DSRTypes::convertToMarkupString(CodeValue, string, OFFalse /* convertNonASCII */, OFFalse /* newlineAllowed */, OFTrue /* xmlMode */) << "\"";
-        stream << " codScheme=\"" << DSRTypes::convertToMarkupString(CodingSchemeDesignator, string, OFFalse /* convertNonASCII */, OFFalse /* newlineAllowed */, OFTrue /* xmlMode */) << "\"";
-        if ((CodingSchemeVersion.length() > 0) || (flags & DSRTypes::XF_writeEmptyTags))
-            stream << " codVersion=\"" << DSRTypes::convertToMarkupString(CodingSchemeVersion, string, OFFalse /* convertNonASCII */, OFFalse /* newlineAllowed */, OFTrue /* xmlMode */) << "\"";
+        stream << " codValue=\"" << DSRTypes::convertToMarkupString(CodeValue, tmpString, OFFalse /*convertNonASCII*/, OFFalse /*newlineAllowed*/, OFTrue /*xmlMode*/) << "\"";
+        stream << " codScheme=\"" << DSRTypes::convertToMarkupString(CodingSchemeDesignator, tmpString, OFFalse /*convertNonASCII*/, OFFalse /*newlineAllowed*/, OFTrue /*xmlMode*/) << "\"";
+        if (!CodingSchemeVersion.empty() || (flags & DSRTypes::XF_writeEmptyTags))
+            stream << " codVersion=\"" << DSRTypes::convertToMarkupString(CodingSchemeVersion, tmpString, OFFalse /*convertNonASCII*/, OFFalse /*newlineAllowed*/, OFTrue /*xmlMode*/) << "\"";
         stream << ">";      // close open bracket from calling routine
-        stream << DSRTypes::convertToMarkupString(CodeMeaning, string, OFFalse /* convertNonASCII */, OFFalse /* newlineAllowed */, OFTrue /* xmlMode */);
+        stream << DSRTypes::convertToMarkupString(CodeMeaning, tmpString, OFFalse /*convertNonASCII*/, OFFalse /*newlineAllowed*/, OFTrue /*xmlMode*/);
     } else {
-        DSRTypes::writeStringValueToXML(stream, CodeValue, "value", ((flags & DSRTypes::XF_writeEmptyTags) ? OFTrue : OFFalse));
+        DSRTypes::writeStringValueToXML(stream, CodeValue, "value", flags & DSRTypes::XF_writeEmptyTags > 0);
         stream << "<scheme>" << endl;
-        DSRTypes::writeStringValueToXML(stream, CodingSchemeDesignator, "designator", ((flags & DSRTypes::XF_writeEmptyTags) ? OFTrue : OFFalse));
-        DSRTypes::writeStringValueToXML(stream, CodingSchemeVersion, "version", ((flags & DSRTypes::XF_writeEmptyTags) ? OFTrue : OFFalse));
+        DSRTypes::writeStringValueToXML(stream, CodingSchemeDesignator, "designator", flags & DSRTypes::XF_writeEmptyTags > 0);
+        DSRTypes::writeStringValueToXML(stream, CodingSchemeVersion, "version", flags & DSRTypes::XF_writeEmptyTags > 0);
         stream << "</scheme>" << endl;
-        DSRTypes::writeStringValueToXML(stream, CodeMeaning, "meaning", ((flags & DSRTypes::XF_writeEmptyTags) ? OFTrue : OFFalse));
+        DSRTypes::writeStringValueToXML(stream, CodeMeaning, "meaning", flags & DSRTypes::XF_writeEmptyTags > 0);
     }
     return EC_Normal;
 }
@@ -291,12 +329,12 @@ OFCondition DSRCodedEntryValue::writeXML(ostream &stream,
 
 OFCondition DSRCodedEntryValue::renderHTML(ostream &stream,
                                            const size_t flags,
-                                           OFConsole * /* logStream */,
+                                           OFConsole * /*logStream*/,
                                            const OFBool fullCode,
                                            const OFBool valueFirst) const
 {
     OFString htmlString;
-    const OFBool convertNonASCII = ((flags & DSRTypes::HF_convertNonASCIICharacters) ? OFTrue : OFFalse);
+    const OFBool convertNonASCII = (flags & DSRTypes::HF_convertNonASCIICharacters > 0);
     if (valueFirst)
         stream << DSRTypes::convertToMarkupString(CodeValue, htmlString, convertNonASCII);
     else
@@ -306,8 +344,8 @@ OFCondition DSRCodedEntryValue::renderHTML(ostream &stream,
         stream << " (";
         if (!valueFirst)
             stream << DSRTypes::convertToMarkupString(CodeValue, htmlString, convertNonASCII) << ", ";
-        stream << DSRTypes::convertToMarkupString(CodingSchemeDesignator, htmlString, convertNonASCII); 
-        if (CodingSchemeVersion.length() > 0)
+        stream << DSRTypes::convertToMarkupString(CodingSchemeDesignator, htmlString, convertNonASCII);
+        if (!CodingSchemeVersion.empty())
             stream << ", " << DSRTypes::convertToMarkupString(CodingSchemeVersion, htmlString, convertNonASCII);
         if (valueFirst)
             stream << ", " << DSRTypes::convertToMarkupString(CodeMeaning, htmlString, convertNonASCII);
@@ -367,14 +405,17 @@ OFBool DSRCodedEntryValue::checkCode(const OFString &codeValue,
                                      const OFString &codeMeaning) const
 {
     /* need to check correctness of the code (code dictionary?) */
-    return (codeValue.length() > 0) && (codingSchemeDesignator.length() > 0) && (codeMeaning.length() > 0);
+    return (!codeValue.empty() && !codingSchemeDesignator.empty() && !codeMeaning.empty());
 }
 
 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodvl.cc,v $
- *  Revision 1.12  2003-06-04 14:26:54  meichel
+ *  Revision 1.13  2003-08-07 13:13:02  joergr
+ *  Added readXML functionality.
+ *
+ *  Revision 1.12  2003/06/04 14:26:54  meichel
  *  Simplified include structure to avoid preprocessor limitation
  *    (max 32 #if levels) on MSVC5 with STL.
  *
