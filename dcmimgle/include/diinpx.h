@@ -22,9 +22,9 @@
  *  Purpose: DicomInputPixel (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-24 17:20:02 $
+ *  Update Date:      $Date: 1999-07-23 13:54:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diinpx.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  * 
  *   CVS/RCS Log at end of file
@@ -61,6 +61,8 @@ class DiInputPixel
     virtual EP_Representation getRepresentation() const = 0;
 
     virtual void *getData() const = 0;
+    
+    virtual void removeDataReference() = 0;
 
     virtual double getMinValue() const = 0;
 
@@ -109,7 +111,11 @@ class DiInputPixel
  *
  * CVS/RCS Log:
  * $Log: diinpx.h,v $
- * Revision 1.6  1999-03-24 17:20:02  joergr
+ * Revision 1.7  1999-07-23 13:54:37  joergr
+ * Optimized memory usage for converting input pixel data (reference instead
+ * of copying where possible).
+ *
+ * Revision 1.6  1999/03/24 17:20:02  joergr
  * Added/Modified comments and formatting.
  *
  * Revision 1.5  1999/02/03 17:03:47  joergr

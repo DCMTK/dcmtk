@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomInputPixelTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-05-04 09:20:39 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-07-23 13:54:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diinpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -189,6 +189,11 @@ class DiInputPixelTemplate
         return (void *)Data;
     }
     
+    inline void removeDataReference()
+    {
+        Data = NULL;
+    }
+
     inline double getMinValue() const
     {
         return (double)MinValue;
@@ -418,7 +423,11 @@ class DiInputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diinpxt.h,v $
- * Revision 1.12  1999-05-04 09:20:39  meichel
+ * Revision 1.13  1999-07-23 13:54:38  joergr
+ * Optimized memory usage for converting input pixel data (reference instead
+ * of copying where possible).
+ *
+ * Revision 1.12  1999/05/04 09:20:39  meichel
  * Minor code purifications to keep IBM xlC quiet
  *
  * Revision 1.11  1999/04/30 16:23:59  meichel
