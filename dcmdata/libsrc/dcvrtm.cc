@@ -22,9 +22,9 @@
  *  Purpose: class DcmTime
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-16 14:21:29 $
+ *  Update Date:      $Date: 2002-07-16 14:33:08 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrtm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -171,7 +171,7 @@ DcmTime::getCurrentTime(
             if (fraction)
             {
                 /* format: HHMMSS.FFFFFF */
-                dicomTime = "000000.FFFFFF";
+                dicomTime = "000000.000000";
             } else {
                 /* format: HHMMS */
                 dicomTime = "000000";
@@ -334,7 +334,10 @@ DcmTime::getTimeZoneFromString(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrtm.cc,v $
-** Revision 1.21  2002-07-16 14:21:29  joergr
+** Revision 1.22  2002-07-16 14:33:08  joergr
+** Fixed bug in DcmTime::getCurrentTime().
+**
+** Revision 1.21  2002/07/16 14:21:29  joergr
 ** Fixed bug in DcmTime::getOFTimeFromString().
 **
 ** Revision 1.20  2002/06/20 12:06:18  meichel
