@@ -45,8 +45,8 @@ dsr2html.o: dsr2html.cc ../../config/include/osconfig.h \
   ../include/dsrtcovl.h ../include/dsrtcodt.h ../include/dsrtcosp.h \
   ../include/dsrtcoto.h ../include/dsrcomvl.h ../include/dsrimgvl.h \
   ../include/dsrimgfr.h ../include/dsrwavvl.h ../include/dsrwavch.h \
-  ../include/dsrsoprf.h ../../ofstd/include/ofconapp.h \
-  ../../ofstd/include/ofcmdln.h
+  ../include/dsrsoprf.h ../include/dsrcsidl.h \
+  ../../ofstd/include/ofconapp.h ../../ofstd/include/ofcmdln.h
 dsr2xml.o: dsr2xml.cc ../../config/include/osconfig.h \
   ../../config/include/cfunix.h ../include/dsrdoc.h ../include/dsrdoctr.h \
   ../include/dsrtree.h ../include/dsrtypes.h ../../dcmdata/include/dctk.h \
@@ -94,8 +94,8 @@ dsr2xml.o: dsr2xml.cc ../../config/include/osconfig.h \
   ../include/dsrtcovl.h ../include/dsrtcodt.h ../include/dsrtcosp.h \
   ../include/dsrtcoto.h ../include/dsrcomvl.h ../include/dsrimgvl.h \
   ../include/dsrimgfr.h ../include/dsrwavvl.h ../include/dsrwavch.h \
-  ../include/dsrsoprf.h ../../ofstd/include/ofconapp.h \
-  ../../ofstd/include/ofcmdln.h
+  ../include/dsrsoprf.h ../include/dsrcsidl.h \
+  ../../ofstd/include/ofconapp.h ../../ofstd/include/ofcmdln.h
 dsrdump.o: dsrdump.cc ../../config/include/osconfig.h \
   ../../config/include/cfunix.h ../include/dsrdoc.h ../include/dsrdoctr.h \
   ../include/dsrtree.h ../include/dsrtypes.h ../../dcmdata/include/dctk.h \
@@ -143,8 +143,8 @@ dsrdump.o: dsrdump.cc ../../config/include/osconfig.h \
   ../include/dsrtcovl.h ../include/dsrtcodt.h ../include/dsrtcosp.h \
   ../include/dsrtcoto.h ../include/dsrcomvl.h ../include/dsrimgvl.h \
   ../include/dsrimgfr.h ../include/dsrwavvl.h ../include/dsrwavch.h \
-  ../include/dsrsoprf.h ../../ofstd/include/ofconapp.h \
-  ../../ofstd/include/ofcmdln.h
+  ../include/dsrsoprf.h ../include/dsrcsidl.h \
+  ../../ofstd/include/ofconapp.h ../../ofstd/include/ofcmdln.h
 xml2dsr.o: xml2dsr.cc ../../config/include/osconfig.h \
   ../../config/include/cfunix.h ../include/dsrdoc.h ../include/dsrdoctr.h \
   ../include/dsrtree.h ../include/dsrtypes.h ../../dcmdata/include/dctk.h \
@@ -192,5 +192,5 @@ xml2dsr.o: xml2dsr.cc ../../config/include/osconfig.h \
   ../include/dsrtcovl.h ../include/dsrtcodt.h ../include/dsrtcosp.h \
   ../include/dsrtcoto.h ../include/dsrcomvl.h ../include/dsrimgvl.h \
   ../include/dsrimgfr.h ../include/dsrwavvl.h ../include/dsrwavch.h \
-  ../include/dsrsoprf.h ../../ofstd/include/ofconapp.h \
-  ../../ofstd/include/ofcmdln.h
+  ../include/dsrsoprf.h ../include/dsrcsidl.h \
+  ../../ofstd/include/ofconapp.h ../../ofstd/include/ofcmdln.h
