@@ -56,9 +56,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-04-18 08:40:30 $
+** Update Date:		$Date: 1997-05-16 08:18:34 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimcmd.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -294,8 +294,7 @@ getAndDeleteUSOpt(DcmDataset *obj, DcmTagKey t, Uint16 *us)
     return cond;
 }
 
-#if 0
-/* Currently Unused */
+
 static CONDITION
 addUL(DcmDataset *obj, DcmTagKey t, Uint32 ul)
 {
@@ -305,7 +304,7 @@ addUL(DcmDataset *obj, DcmTagKey t, Uint32 ul)
     
     ec = newDicomElement(e, tag);
     if (ec == EC_Normal) {
-        ec = e->put(ul);
+        ec = e->putUint32(ul);
     }
     if (ec == EC_Normal) {
         ec = obj->insert(e, TRUE);
@@ -313,7 +312,6 @@ addUL(DcmDataset *obj, DcmTagKey t, Uint32 ul)
     return (ec == EC_Normal)?(DIMSE_NORMAL):
         (buildErrorWithMsg("dimcmd:addUL: Cannot add Uint32", t));
 }
-#endif
 
 static CONDITION
 getUL(DcmDataset *obj, DcmTagKey t, Uint32 *ul)
@@ -426,6 +424,8 @@ buildCommonRQ(DcmDataset *obj, Uint16 command, Uint16 messageID,
 {
     CONDITION cond;
 
+    // insert group length but calculate later
+    cond = addUL(obj, DCM_CommandGroupLength, 0); RET(cond);
     cond = addUS(obj, DCM_CommandField, command); RET(cond);
     cond = addUS(obj, DCM_MessageID, messageID); RET(cond);
     cond = addUS(obj, DCM_DataSetType, dataSetType); RET(cond);
@@ -2093,7 +2093,11 @@ DIMSE_countElements(DcmDataset *obj)
 /*
 ** CVS Log
 ** $Log: dimcmd.cc,v $
-** Revision 1.3  1997-04-18 08:40:30  andreas
+** Revision 1.4  1997-05-16 08:18:34  andreas
+** - Reactivate addUL in dimcmd.cc to add group length attribute explicit
+**   to command dataset.
+**
+** Revision 1.3  1997/04/18 08:40:30  andreas
 ** - The put/get-methods for all VRs did not conform to the C++-Standard
 **   draft. Some Compilers (e.g. SUN-C++ Compiler, Metroworks
 **   CodeWarrier, etc.) create many warnings concerning the hiding of
