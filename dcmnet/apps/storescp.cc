@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-99, OFFIS
+ *  Copyright (C) 1994-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-29 11:49:50 $
+ *  Update Date:      $Date: 2000-03-08 16:43:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -917,7 +917,10 @@ static CONDITION storeSCP(
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.28  2000-02-29 11:49:50  meichel
+** Revision 1.29  2000-03-08 16:43:16  meichel
+** Updated copyright header.
+**
+** Revision 1.28  2000/02/29 11:49:50  meichel
 ** Removed support for VS value representation. This was proposed in CP 101
 **   but never became part of the standard.
 **
