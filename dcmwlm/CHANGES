@@ -78,3 +78,20 @@ Changes between releases are documented here.
            dcmwlm/libsrc/wldsdb.cc
            dcmwlm/libsrc/wldsfs.cc
            dcmwlm/libsrc/wlmactmg.cc
+
+- Minor adaptations to keep the gcc compiler on Linux and Solaris happy.
+  Currently only the "file version" of the worklist SCP is supported on
+  Unix systems.
+  Affects: dcmwlm/apps/Makefile.dep
+           dcmwlm/apps/Makefile.in
+           dcmwlm/include/wlmactmg.h
+           dcmwlm/libsrc/Makefile.dep
+           dcmwlm/libsrc/Makefile.in
+           dcmwlm/libsrc/wldbim.cc
+           dcmwlm/libsrc/wldsfs.cc
+           dcmwlm/libsrc/wlmactmg.cc
+
+- Modified MSVC project files to work with current dcmtk version.
+  Affects: dcmtk/dcmwlm/dcmwlm.dsp
+           dcmwlm/apps/wlmscpdb.dsp
+           dcmwlm/apps/wlmscpfs.dsp
