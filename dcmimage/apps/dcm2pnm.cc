@@ -21,10 +21,10 @@
  *
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-04-14 16:31:49 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-04-27 13:18:48 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.41 $
+ *  CVS/RCS Revision: $Revision: 1.42 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -571,7 +571,9 @@ int main(int argc, char *argv[])
         xfer = ((DcmDataset *)dfile)->getOriginalXfer();
     else
         xfer = ((DcmFileFormat *)dfile)->getDataset()->getOriginalXfer();
-    DicomImage *di = new DicomImage(dfile, xfer, opt_compatibilityMode); /* warning: dfile is Dataset or Fileformat! */
+
+    /* warning: dfile is Dataset or Fileformat! */
+    DicomImage *di = new DicomImage(dfile, xfer, opt_compatibilityMode, opt_Frame - 1, opt_FrameCount);
     if (di == NULL)
         app.printError("Out of memory");
 
@@ -654,12 +656,13 @@ int main(int argc, char *argv[])
     if (opt_suppressOutput) return 0;
 
     /* select frame */
+/*
     if (opt_Frame > di->getFrameCount())
     {
         oss << "cannot select frame no. " << opt_Frame << ", only " << di->getFrameCount() << " frame(s) in file." << ends;
         app.printError(oss.str());
     }
-
+*/
     /* convert to grayscale if necessary */
     if ((opt_ConvertToGrayscale)  &&  (!di->isMonochrome()))
     {
@@ -950,22 +953,22 @@ int main(int argc, char *argv[])
     switch (opt_fileType)
     {
         case 2:
-            di->writePPM(ofile, 8, opt_Frame - 1);
+            di->writePPM(ofile, 8 /*, opt_Frame - 1*/);
             break;
         case 3:
-            di->writePPM(ofile, 16, opt_Frame - 1);
+            di->writePPM(ofile, 16 /*, opt_Frame - 1*/);
             break;
         case 4:
-            di->writePPM(ofile, (int)opt_fileBits, opt_Frame - 1);
+            di->writePPM(ofile, (int)opt_fileBits /*, opt_Frame - 1*/);
             break;
 #ifdef PASTEL_COLOR_OUTPUT
         case 5:
-            di->writePPM(ofile, MI_PastelColor, opt_Frame - 1);
+            di->writePPM(ofile, MI_PastelColor /*, opt_Frame - 1*/);
             break;
 #endif
         case 1:
         default:
-            di->writeRawPPM(ofile, 8, opt_Frame - 1);
+            di->writeRawPPM(ofile, 8 /*, opt_Frame - 1*/);
             break;
     }
 
@@ -985,7 +988,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.41  2000-04-14 16:31:49  meichel
+ * Revision 1.42  2000-04-27 13:18:48  joergr
+ * Adapted output method to new behaviour of dcmimgle library supporting the
+ * specification of a start frame and the number of frames to be converted.
+ *
+ * Revision 1.41  2000/04/14 16:31:49  meichel
  * Adapted to changed parameter list for command line class
  *
  * Revision 1.40  2000/03/08 16:21:47  meichel
