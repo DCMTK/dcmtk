@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: network conditions and helper class
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:57:31 $
+ *  Update Date:      $Date: 2002-05-02 14:07:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/cond.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -143,14 +143,16 @@ OFCondition DimseCondition::push(
     const char *aText,
     OFCondition subCondition)
 {
-  ostrstream os;
+  OFOStringStream os;
+  /* declare variable outside the block structure of the OFSTRINGSTREAM_xxx macros */
+  OFConditionString *condString;
   char buf[16];
   sprintf(buf,"%04x:%04x ", subCondition.module(), subCondition.code()); 
-  os << aText << endl << buf << subCondition.text() << ends;
-  const char *c = os.str();  
-  OFCondition result(new OFConditionString(aModule, aCode, aStatus, c));
-  delete[] (char *)c;
-  return result;
+  os << aText << endl << buf << subCondition.text() << OFStringStream_ends;
+  OFSTRINGSTREAM_GETSTR(os, c)
+  condString = new OFConditionString(aModule, aCode, aStatus, c);
+  OFSTRINGSTREAM_FREESTR(c)
+  return OFCondition(condString);
 }
 
 OFCondition DimseCondition::push(
@@ -164,7 +166,13 @@ OFCondition DimseCondition::push(
 /*
  * CVS Log
  * $Log: cond.cc,v $
- * Revision 1.9  2002-04-16 13:57:31  joergr
+ * Revision 1.10  2002-05-02 14:07:37  joergr
+ * Added support for standard and non-standard string streams (which one is
+ * supported is detected automatically via the configure mechanism).
+ * Thanks again to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+ * contribution.
+ *
+ * Revision 1.9  2002/04/16 13:57:31  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
  * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
  * contribution.

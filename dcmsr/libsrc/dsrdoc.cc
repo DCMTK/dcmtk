@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2001, OFFIS
+ *  Copyright (C) 2000-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:51:37 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Update Date:      $Date: 2002-05-02 14:08:35 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -849,7 +849,7 @@ OFCondition DSRDocument::renderHTML(ostream &stream,
         // --- render document tree to stream ---
 
         /* create memory output stream for the annex */
-        ostrstream annexStream;
+        OFOStringStream annexStream;
         /* render document tree two the streams */
         result = DocumentTree.renderHTML(stream, annexStream, newFlags);
         /* append annex (with heading) to main document */
@@ -1818,7 +1818,13 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.33  2002-04-16 13:51:37  joergr
+ *  Revision 1.34  2002-05-02 14:08:35  joergr
+ *  Added support for standard and non-standard string streams (which one is
+ *  supported is detected automatically via the configure mechanism).
+ *  Thanks again to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+ *  contribution.
+ *
+ *  Revision 1.33  2002/04/16 13:51:37  joergr
  *  Added configurable support for C++ ANSI standard includes (e.g. streams).
  *  Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
  *  contribution.

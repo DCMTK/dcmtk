@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2001, OFFIS
+ *  Copyright (C) 1997-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -24,8 +24,8 @@
  *    
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 14:01:27 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2002-05-02 14:10:04 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -434,7 +434,7 @@ int checkelem(ostream & out, DcmElement *elem,  DcmXfer& oxfer,
               {
                 OFString vrAndValue("ae");
                 vrAndValue += value;
-                istrstream input((char*)(vrAndValue.c_str()));
+                OFIStringStream input((char*)(vrAndValue.c_str()));
                 int realVR = scanValue(input);
                 if (realVR != 13)
                 {
@@ -447,7 +447,7 @@ int checkelem(ostream & out, DcmElement *elem,  DcmXfer& oxfer,
               {   
                 OFString vrAndValue("as");
                 vrAndValue += value;
-                istrstream input((char*)(vrAndValue.c_str()));
+                OFIStringStream input((char*)(vrAndValue.c_str()));
                 int realVR = scanValue(input);
                 if (realVR != 1)
                 {
@@ -460,7 +460,7 @@ int checkelem(ostream & out, DcmElement *elem,  DcmXfer& oxfer,
               {   
                 OFString vrAndValue("cs");
                 vrAndValue += value;
-                istrstream input((char*)(vrAndValue.c_str()));
+                OFIStringStream input((char*)(vrAndValue.c_str()));
                 int realVR = scanValue(input);
                 if (realVR != 10)
                 {
@@ -473,7 +473,7 @@ int checkelem(ostream & out, DcmElement *elem,  DcmXfer& oxfer,
               {   
                 OFString vrAndValue("da");
                 vrAndValue += value;
-                istrstream input((char*)(vrAndValue.c_str()));
+                OFIStringStream input((char*)(vrAndValue.c_str()));
                 int realVR = scanValue(input);
                 if (realVR != 2 )
                 {
@@ -492,7 +492,7 @@ int checkelem(ostream & out, DcmElement *elem,  DcmXfer& oxfer,
               {   
                 OFString vrAndValue("ds");
                 vrAndValue += value;
-                istrstream input((char*)(vrAndValue.c_str()));
+                OFIStringStream input((char*)(vrAndValue.c_str()));
                 int realVR = scanValue(input);
                 if (realVR != 6)
                 {
@@ -505,7 +505,7 @@ int checkelem(ostream & out, DcmElement *elem,  DcmXfer& oxfer,
            {   
              OFString vrAndValue("dt");
              vrAndValue += value;
-             istrstream input((char*)(vrAndValue.c_str()));
+             OFIStringStream input((char*)(vrAndValue.c_str()));
              int realVR = scanValue(input);
              if (realVR != 7)
              {
@@ -518,7 +518,7 @@ int checkelem(ostream & out, DcmElement *elem,  DcmXfer& oxfer,
            {   
              OFString vrAndValue("is");
              vrAndValue += value;
-             istrstream input((char*)(vrAndValue.c_str()));
+             OFIStringStream input((char*)(vrAndValue.c_str()));
              int realVR = scanValue(input);
              if (realVR != 8)
              {
@@ -532,7 +532,7 @@ int checkelem(ostream & out, DcmElement *elem,  DcmXfer& oxfer,
            {   
              OFString vrAndValue("lo");
              vrAndValue += value;
-             istrstream input((char*)(vrAndValue.c_str()));
+             OFIStringStream input((char*)(vrAndValue.c_str()));
              int realVR = scanValue(input);
              if (realVR != 12)
              {
@@ -546,7 +546,7 @@ int checkelem(ostream & out, DcmElement *elem,  DcmXfer& oxfer,
            {   
              OFString vrAndValue("lt");
              vrAndValue += value;
-             istrstream input((char*)(vrAndValue.c_str()));
+             OFIStringStream input((char*)(vrAndValue.c_str()));
              int realVR = scanValue(input);
              if (realVR != 14)
              {
@@ -559,7 +559,7 @@ int checkelem(ostream & out, DcmElement *elem,  DcmXfer& oxfer,
            {   
              OFString vrAndValue("pn");
              vrAndValue += value;
-             istrstream input((char*)(vrAndValue.c_str()));
+             OFIStringStream input((char*)(vrAndValue.c_str()));
              int realVR = scanValue(input);
              if (realVR != 11)
              {
@@ -572,7 +572,7 @@ int checkelem(ostream & out, DcmElement *elem,  DcmXfer& oxfer,
            {   
              OFString vrAndValue("tm");
              vrAndValue += value;
-             istrstream input((char*)(vrAndValue.c_str()));
+             OFIStringStream input((char*)(vrAndValue.c_str()));
              int realVR = scanValue(input);
              if (realVR != 4)
              {
@@ -591,7 +591,7 @@ int checkelem(ostream & out, DcmElement *elem,  DcmXfer& oxfer,
            {   
              OFString vrAndValue("ui");
              vrAndValue += value;
-             istrstream input((char*)(vrAndValue.c_str()));
+             OFIStringStream input((char*)(vrAndValue.c_str()));
              int realVR = scanValue(input);
              if (realVR != 9)
              {
@@ -1115,7 +1115,13 @@ int main(int argc, char *argv[])
 /*     
  * CVS/RCS Log:
  * $Log: dcmpschk.cc,v $
- * Revision 1.6  2002-04-16 14:01:27  joergr
+ * Revision 1.7  2002-05-02 14:10:04  joergr
+ * Added support for standard and non-standard string streams (which one is
+ * supported is detected automatically via the configure mechanism).
+ * Thanks again to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+ * contribution.
+ *
+ * Revision 1.6  2002/04/16 14:01:27  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
  * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
  * contribution.

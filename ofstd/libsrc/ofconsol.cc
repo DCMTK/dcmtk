@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2001, OFFIS
+ *  Copyright (C) 1999-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Define alias for cout, cerr and clog
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:36:26 $
+ *  Update Date:      $Date: 2002-05-02 14:06:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofconsol.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,13 +38,8 @@
 #include "ofthread.h"
 
 #ifdef DCMTK_GUI
-#if defined(HAVE_SSTREAM_H) && !defined(USE_STD_CXX_INCLUDES)
-  ostringstream COUT; 
-  ostringstream CERR; 
-#else
-  ostrstream COUT; 
-  ostrstream CERR; 
-#endif
+  OFOStringStream COUT;
+  OFOStringStream CERR;
 #endif
 
 /* global console object
@@ -137,7 +132,13 @@ OFBool OFConsole::isJoined()
  *
  * CVS/RCS Log:
  * $Log: ofconsol.cc,v $
- * Revision 1.5  2002-04-16 13:36:26  joergr
+ * Revision 1.6  2002-05-02 14:06:07  joergr
+ * Added support for standard and non-standard string streams (which one is
+ * supported is detected automatically via the configure mechanism).
+ * Thanks again to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+ * contribution.
+ *
+ * Revision 1.5  2002/04/16 13:36:26  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
  * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
  * contribution.

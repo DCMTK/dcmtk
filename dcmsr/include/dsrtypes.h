@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:50:52 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2002-05-02 14:08:23 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1091,7 +1091,7 @@ class DSRTypes
      ** @return status, EC_Normal if stream has been added successfully, an error code otherwise
      */
     static OFCondition appendStream(ostream &mainStream,
-                                    ostrstream &tempStream,
+                                    OFOStringStream &tempStream,
                                     const char *heading = NULL);
 };
 
@@ -1102,7 +1102,13 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
- *  Revision 1.24  2002-04-16 13:50:52  joergr
+ *  Revision 1.25  2002-05-02 14:08:23  joergr
+ *  Added support for standard and non-standard string streams (which one is
+ *  supported is detected automatically via the configure mechanism).
+ *  Thanks again to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+ *  contribution.
+ *
+ *  Revision 1.24  2002/04/16 13:50:52  joergr
  *  Added configurable support for C++ ANSI standard includes (e.g. streams).
  *  Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
  *  contribution.

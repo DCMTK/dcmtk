@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -25,9 +25,9 @@
  *    file.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 14:01:25 $
+ *  Update Date:      $Date: 2002-05-02 14:10:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmklut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -333,8 +333,7 @@ OFCondition convertInputLUT(const unsigned int numberOfBits,
     OFCondition result = EC_IllegalCall;
     if ((inputXData != NULL) && (inputYData != NULL) && (inputEntries > 0) && (inputYMax > 0) && (outputData != NULL))
     {
-        char buf[8192];
-        ostrstream oss(buf, 8192);
+        OFOStringStream oss;
         if (explanation !=NULL)
         {
             if (strlen(explanation) == 0)
@@ -396,8 +395,10 @@ OFCondition convertInputLUT(const unsigned int numberOfBits,
         }
         if (result == EC_Normal)
         {
-            oss << ends;
-            header += oss.str();
+            oss << OFStringStream_ends;
+            OFSTRINGSTREAM_GETSTR(oss, tmpString)
+            header += tmpString;
+            OFSTRINGSTREAM_FREESTR(tmpString)
         } else
             CERR << "Warning: can't create lookup table from text file ... ignoring !" << endl;
     }
@@ -418,8 +419,7 @@ void gammaLUT(const unsigned int numberOfBits,
     {
         if (opt_verbose)
             CERR << "computing gamma function ..." << endl;
-        char buf[1024];
-        ostrstream oss(buf, 1024);
+        OFOStringStream oss;
         if (explanation != NULL)
         {
             if (strlen(explanation) == 0)
@@ -451,8 +451,10 @@ void gammaLUT(const unsigned int numberOfBits,
                 outputData[i]= (Uint16)val;
             }
         }
-        oss << ends;
-        header += oss.str();
+        oss << OFStringStream_ends;
+        OFSTRINGSTREAM_GETSTR(oss, tmpString)
+        header += tmpString;
+        OFSTRINGSTREAM_FREESTR(tmpString)
     }
 }
 
@@ -472,8 +474,7 @@ void applyInverseGSDF(const unsigned int numberOfBits,
     {
         if (opt_verbose)
             CERR << "applying inverse GSDF ..." << endl;
-        char buf[1024];
-        ostrstream oss(buf, 1024);
+        OFOStringStream oss;
         if ((explanation != NULL) && (strlen(explanation) > 0))
             strcat(explanation, ", inverse GSDF");
         const double l0 = (double)illumination;
@@ -498,8 +499,10 @@ void applyInverseGSDF(const unsigned int numberOfBits,
         }
         oss << "# applied inverse GSDF with Dmin/max = " << minDensity << "/" << maxDensity << ", L0/La = " 
             << illumination << "/" << reflection << endl;
-        oss << ends;
-        header += oss.str();
+        oss << OFStringStream_ends;
+        OFSTRINGSTREAM_GETSTR(oss, tmpString)
+        header += tmpString;
+        OFSTRINGSTREAM_FREESTR(tmpString)
     }
 }
 
@@ -1085,7 +1088,13 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmmklut.cc,v $
- * Revision 1.28  2002-04-16 14:01:25  joergr
+ * Revision 1.29  2002-05-02 14:10:03  joergr
+ * Added support for standard and non-standard string streams (which one is
+ * supported is detected automatically via the configure mechanism).
+ * Thanks again to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+ * contribution.
+ *
+ * Revision 1.28  2002/04/16 14:01:25  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
  * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
  * contribution.

@@ -296,6 +296,9 @@
 /* Define if you have the <sstream.h> header file.  */
 #undef HAVE_SSTREAM_H
 
+/* Define if you have the <sstream.h> header file.  */
+#define HAVE_SSTREAM
+
 /* Define if you have the <stat.h> header file.  */
 #undef HAVE_STAT_H 
 

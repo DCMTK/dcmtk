@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2001, OFFIS
+ *  Copyright (C) 1999-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -36,10 +36,9 @@
  *  stream handles called COUT and CERR, which are normally only
  *  preprocessor macros for cout and cerr, respectively. If the
  *  toolkit is compiled with the flag DCMTK_GUI defined, however, these
- *  streams are created as ostringstream or ostrstream (depending on
- *  whether <sstream.h> is found on the target system). This will allow
- *  a GUI based application to extract the messages and either present them
- *  to the user or store them in a log file.
+ *  streams are created as OFOStringStream. This will allow a GUI based
+ *  application to extract the messages and either present them to the
+ *  user or store them in a log file.
  *
  *  GUI based applications making use of this feature should periodically
  *  check and clear these streams in order to avoid increasing consumption
@@ -53,9 +52,9 @@
  *  in multithread applications. Use ofConsole instead.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:36:02 $
+ *  Update Date:      $Date: 2002-05-02 14:05:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofconsol.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -266,13 +265,8 @@ extern OFConsole ofConsole;
 
 #ifdef DCMTK_GUI
 
-#if defined(HAVE_SSTREAM_H) && !defined(USE_STD_CXX_INCLUDES)
-  extern ostringstream COUT;
-  extern ostringstream CERR;
-#else 
-  extern ostrstream COUT;
-  extern ostrstream CERR;
-#endif
+extern OFOStringStream COUT;
+extern OFOStringStream CERR;
 
 #else /* DCMTK_GUI */
 
@@ -281,13 +275,20 @@ extern OFConsole ofConsole;
 
 #endif /* DCMTK_GUI */
 
-#endif
+#endif /* __OFCONSOL_H */
+
 
 /*
  *
  * CVS/RCS Log:
  * $Log: ofconsol.h,v $
- * Revision 1.9  2002-04-16 13:36:02  joergr
+ * Revision 1.10  2002-05-02 14:05:50  joergr
+ * Added support for standard and non-standard string streams (which one is
+ * supported is detected automatically via the configure mechanism).
+ * Thanks again to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+ * contribution.
+ *
+ * Revision 1.9  2002/04/16 13:36:02  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
  * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
  * contribution.

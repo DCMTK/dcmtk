@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2001, OFFIS
+ *  Copyright (C) 2000-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:15:19 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2002-05-02 14:08:35 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -686,7 +686,7 @@ OFCondition DSRDocumentTreeNode::renderHTMLChildNodes(ostream &docStream,
         /* footnote counter */
         size_t footnoteNumber = 1;
         /* create memory output stream for the temporal document */
-        ostrstream tempDocStream;
+        OFOStringStream tempDocStream;
         DSRDocumentTreeNode *node = NULL;
         do {        /* for all child nodes */
             node = (DSRDocumentTreeNode *)cursor.getNode();
@@ -733,7 +733,7 @@ OFCondition DSRDocumentTreeNode::renderHTMLChildNodes(ostream &docStream,
                         /* render annex heading and reference */
                         createHTMLAnnexEntry(docStream, annexStream, "" /* referenceText */, annexNumber);
                         /* create memory output stream for the temporal annex */
-                        ostrstream tempAnnexStream;
+                        OFOStringStream tempAnnexStream;
                         /* render HTML code (directly to the annex) */
                         result = node->renderHTML(annexStream, tempAnnexStream, 0 /* nesting level */, annexNumber, newFlags | HF_currentlyInsideAnnex, logStream);
                         /* append temporary stream to main stream */
@@ -828,7 +828,13 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
- *  Revision 1.19  2001-11-09 16:15:19  joergr
+ *  Revision 1.20  2002-05-02 14:08:35  joergr
+ *  Added support for standard and non-standard string streams (which one is
+ *  supported is detected automatically via the configure mechanism).
+ *  Thanks again to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+ *  contribution.
+ *
+ *  Revision 1.19  2001/11/09 16:15:19  joergr
  *  Added new command line option allowing to encode codes as XML attributes
  *  (instead of tags).
  *

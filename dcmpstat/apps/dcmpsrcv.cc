@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 14:01:28 $
+ *  Update Date:      $Date: 2002-05-02 14:10:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsrcv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -209,13 +209,13 @@ static associationType negotiateAssociation(
       if (messageClient)
       {
         // notify about failed association setup
-        ostrstream out;
-        out << "Unable to Receive DIMSE Association Request:" << endl << cond.text() << endl << ends;
-        char *theString = out.str();              
+        OFOStringStream out;
+        out << "Unable to Receive DIMSE Association Request:" << endl << cond.text() << endl << OFStringStream_ends;
+        OFSTRINGSTREAM_GETSTR(out, theString)
         if (useTLS) 
           messageClient->notifyReceivedEncryptedDICOMConnection(DVPSIPCMessage::statusError, theString);
           else messageClient->notifyReceivedUnencryptedDICOMConnection(DVPSIPCMessage::statusError, theString);
-        delete[] theString;
+        OFSTRINGSTREAM_FREESTR(theString)
       }
     }
     else 
@@ -242,19 +242,19 @@ static associationType negotiateAssociation(
           if (messageClient)
           {
             // notify about rejected association
-            ostrstream out;
+            OFOStringStream out;
             out << "DIMSE Association Rejected:" << endl
                 << "  reason: bad application context name '" << buf << "'" << endl
                 << "  calling presentation address: " << (*assoc)->params->DULparams.callingPresentationAddress << endl
                 << "  calling AE title: " << (*assoc)->params->DULparams.callingAPTitle << endl
                 << "  called AE title: " << (*assoc)->params->DULparams.calledAPTitle << endl;
             ASC_dumpConnectionParameters(*assoc, out);
-            out << ends;
-            char *theString = out.str();              
+            out << OFStringStream_ends;
+            OFSTRINGSTREAM_GETSTR(out, theString)
             if (useTLS) 
               messageClient->notifyReceivedEncryptedDICOMConnection(DVPSIPCMessage::statusError, theString);
               else messageClient->notifyReceivedUnencryptedDICOMConnection(DVPSIPCMessage::statusError, theString);
-            delete[] theString;
+            OFSTRINGSTREAM_FREESTR(theString)
           }
           dropAssoc = OFTrue;
           result = assoc_error;
@@ -594,7 +594,7 @@ static OFCondition storeSCP(
 
     if (messageClient)
     {
-      ostrstream out;
+      OFOStringStream out;
       Uint32 operationStatus = DVPSIPCMessage::statusError;
       if (cond.good())
       {
@@ -623,10 +623,10 @@ static OFCondition storeSCP(
       out << "\tDIMSE presentation ctx : " << (int)presId << endl
           << "\tDIMSE message ID       : " << request->MessageID << endl
           << "\tDIMSE status           : " << DU_cstoreStatusString(context.status) << endl
-          << ends;
-      char *theString = out.str();
+          << OFStringStream_ends;
+      OFSTRINGSTREAM_GETSTR(out, theString)
       messageClient->notifyReceivedDICOMObject(operationStatus, theString);
-      delete[] theString;
+      OFSTRINGSTREAM_FREESTR(theString)
     }
 
     return cond;
@@ -646,7 +646,7 @@ static void handleClient(T_ASC_Association **assoc, const char *dbfolder, OFBool
     if (messageClient)
     {
       // notify about successfully negotiated association
-      ostrstream out;
+      OFOStringStream out;
       out << "DIMSE Association Acknowledged:" << endl
           << "  calling presentation address: " << (*assoc)->params->DULparams.callingPresentationAddress << endl
           << "  calling AE title: " << (*assoc)->params->DULparams.callingAPTitle << endl
@@ -654,12 +654,12 @@ static void handleClient(T_ASC_Association **assoc, const char *dbfolder, OFBool
           << "  max send PDV: " << (*assoc)->sendPDVLength << endl
           << "  presentation contexts: " << ASC_countAcceptedPresentationContexts((*assoc)->params) << endl;
       ASC_dumpConnectionParameters(*assoc, out);
-      out << ends;
-      char *theString = out.str();              
+      out << OFStringStream_ends;
+      OFSTRINGSTREAM_GETSTR(out, theString)
       if (useTLS) 
         messageClient->notifyReceivedEncryptedDICOMConnection(DVPSIPCMessage::statusOK, theString);
         else messageClient->notifyReceivedUnencryptedDICOMConnection(DVPSIPCMessage::statusOK, theString);
-      delete[] theString;
+      OFSTRINGSTREAM_FREESTR(theString)
     }
 
     T_DIMSE_Message msg;
@@ -1098,7 +1098,7 @@ int main(int argc, char *argv[])
       dcmEnableUnlimitedTextVRGeneration.set(OFFalse);
     }
 
-    ostrstream verboseParameters;
+    OFOStringStream verboseParameters;
         
     OFBool comma=OFFalse;
     verboseParameters << "Network parameters:" << endl
@@ -1153,8 +1153,8 @@ int main(int argc, char *argv[])
     }
 #endif
 
-    verboseParameters << ends;
-    char *verboseParametersString = verboseParameters.str();
+    verboseParameters << OFStringStream_ends;
+    OFSTRINGSTREAM_GETSTR(verboseParameters, verboseParametersString)
     if (opt_verbose) CERR << verboseParametersString << endl;
     
     /* check if we can get access to the database */
@@ -1309,19 +1309,19 @@ int main(int argc, char *argv[])
               if (messageClient)
               {
                 // notify about rejected association
-                ostrstream out;
+                OFOStringStream out;
                 out << "DIMSE Association Rejected:" << endl
                     << "  reason: cannot create association sub-process: " << strerror(errno) << endl
                     << "  calling presentation address: " << assoc->params->DULparams.callingPresentationAddress << endl
                     << "  calling AE title: " << assoc->params->DULparams.callingAPTitle << endl
                     << "  called AE title: " << assoc->params->DULparams.calledAPTitle << endl;
                 ASC_dumpConnectionParameters(assoc, out);
-                out << ends;
-                char *theString = out.str();              
+                out << OFStringStream_ends;
+                OFSTRINGSTREAM_GETSTR(out, theString)
                 if (useTLS) 
                   messageClient->notifyReceivedEncryptedDICOMConnection(DVPSIPCMessage::statusError, theString);
                   else messageClient->notifyReceivedUnencryptedDICOMConnection(DVPSIPCMessage::statusError, theString);
-                delete[] theString;
+                OFSTRINGSTREAM_FREESTR(theString)
               }
               dropAssociation(&assoc);
             } else if (pid > 0)
@@ -1388,19 +1388,19 @@ int main(int argc, char *argv[])
               if (messageClient)
               {
                 // notify about rejected association
-                ostrstream out;
+                OFOStringStream out;
                 out << "DIMSE Association Rejected:" << endl
                     << "  reason: cannot execute command line: " << commandline << endl
                     << "  calling presentation address: " << assoc->params->DULparams.callingPresentationAddress << endl
                     << "  calling AE title: " << assoc->params->DULparams.callingAPTitle << endl
                     << "  called AE title: " << assoc->params->DULparams.calledAPTitle << endl;
                 ASC_dumpConnectionParameters(assoc, out);
-                out << ends;
-                char *theString = out.str();              
+                out << OFStringStream_ends;
+                OFSTRINGSTREAM_GETSTR(out, theString)
                 if (useTLS) 
                   messageClient->notifyReceivedEncryptedDICOMConnection(DVPSIPCMessage::statusError, theString);
                   else messageClient->notifyReceivedUnencryptedDICOMConnection(DVPSIPCMessage::statusError, theString);
-                delete[] theString;
+                OFSTRINGSTREAM_FREESTR(theString)
               }
 
               dropAssociation(&assoc);
@@ -1440,8 +1440,7 @@ int main(int argc, char *argv[])
     delete tLayer;
 #endif
 
-    delete[] verboseParametersString;
-    verboseParametersString = NULL;
+    OFSTRINGSTREAM_FREESTR(verboseParametersString)
 
 #ifdef DEBUG
     dcmDataDict.clear();  /* useful for debugging with dmalloc */
@@ -1454,7 +1453,13 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsrcv.cc,v $
- * Revision 1.35  2002-04-16 14:01:28  joergr
+ * Revision 1.36  2002-05-02 14:10:04  joergr
+ * Added support for standard and non-standard string streams (which one is
+ * supported is detected automatically via the configure mechanism).
+ * Thanks again to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+ * contribution.
+ *
+ * Revision 1.35  2002/04/16 14:01:28  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
  * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
  * contribution.

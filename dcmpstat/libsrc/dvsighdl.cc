@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVSignatureHandler
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 14:02:23 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2002-05-02 14:10:22 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -213,7 +213,7 @@ void DVSignatureHandler::updateDigitalSignatureInformation(DcmItem& dataset, DVP
 void DVSignatureHandler::updateDigitalSignatureInformation(DcmItem& /*dataset*/, DVPSObjectType objtype, OFBool /* onRead */)
 #endif
 {
-  ostrstream os;
+  OFOStringStream os;
   unsigned long counter = 0;
   unsigned long corrupt_counter = 0;
   unsigned long untrustworthy_counter = 0;
@@ -405,10 +405,10 @@ void DVSignatureHandler::updateDigitalSignatureInformation(DcmItem& /*dataset*/,
       correctSignaturesPState = counter - corrupt_counter - untrustworthy_counter;
       break;  
   }
-  os << htmlFoot << ends;
-  char *newText = os.str();
+  os << htmlFoot << OFStringStream_ends;
+  OFSTRINGSTREAM_GETSTR(os, newText)
   replaceString(objtype, newText); // copies newText into OFString
-  delete[] newText;
+  OFSTRINGSTREAM_FREESTR(newText)
   updateSignatureValidationOverview();
   return;
 }
@@ -524,7 +524,7 @@ void DVSignatureHandler::updateSignatureValidationOverview()
   const char *htmlTableErr = "<p><table cellspacing=\"0\" bgcolor=\"#FFD0D0\">\n";
   const char *htmlTableE   = "</table></p>\n\n";
 
-  ostrstream os;
+  OFOStringStream os;
   DVPSSignatureStatus status;  
   os << htmlHead;
 
@@ -641,11 +641,11 @@ void DVSignatureHandler::updateSignatureValidationOverview()
       break;
   }
   os << htmlTableE;
-  os << htmlFoot << ends;
+  os << htmlFoot << OFStringStream_ends;
 
-  char *newText = os.str();
+  OFSTRINGSTREAM_GETSTR(os, newText)
   htmlOverview = newText;
-  delete[] newText;
+  OFSTRINGSTREAM_FREESTR(newText)
   return;  
 }
 
@@ -877,7 +877,13 @@ OFCondition DVSignatureHandler::createSignature(
 
 /*
  *  $Log: dvsighdl.cc,v $
- *  Revision 1.10  2002-04-16 14:02:23  joergr
+ *  Revision 1.11  2002-05-02 14:10:22  joergr
+ *  Added support for standard and non-standard string streams (which one is
+ *  supported is detected automatically via the configure mechanism).
+ *  Thanks again to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+ *  contribution.
+ *
+ *  Revision 1.10  2002/04/16 14:02:23  joergr
  *  Added configurable support for C++ ANSI standard includes (e.g. streams).
  *  Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
  *  contribution.

@@ -22,9 +22,9 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:54:28 $
+ *  Update Date:      $Date: 2002-05-02 14:09:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.60 $
+ *  CVS/RCS Revision: $Revision: 1.61 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -102,9 +102,6 @@ int main(int argc, char *argv[])
 {
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, OFFIS_CONSOLE_DESCRIPTION, rcsid);
     OFCommandLine cmd;
-
-    char buf[1024];
-    ostrstream oss(buf, 1024);
 
     int                 opt_readAsDataset = 0;            /* default: fileformat or dataset */
     E_TransferSyntax    opt_transferSyntax = EXS_Unknown; /* default: xfer syntax recognition */
@@ -645,8 +642,12 @@ int main(int argc, char *argv[])
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
-        oss << "no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << ends;
-        app.printWarning(oss.str());
+        OFOStringStream oss;
+        oss << "no data dictionary loaded, check environment variable: "
+            << DCM_DICT_ENVIRONMENT_VARIABLE << OFStringStream_ends;
+        OFSTRINGSTREAM_GETSTR(oss, tmpString)
+        app.printWarning(tmpString);
+        OFSTRINGSTREAM_FREESTR(tmpString)
     }
 
 //    SetDebugLevel(( (int)opt_debugMode ));
@@ -674,8 +675,11 @@ int main(int argc, char *argv[])
 
     if (status.bad())
     {
-        oss << status.text() << ": reading file: " << opt_ifname << ends;
-        app.printError(oss.str());
+        OFOStringStream oss;
+        oss << status.text() << ": reading file: " << opt_ifname << OFStringStream_ends;
+        OFSTRINGSTREAM_GETSTR(oss, tmpString)
+        app.printError(tmpString);
+        OFSTRINGSTREAM_FREESTR(tmpString)
     }
 
     if (opt_verboseMode > 1)
@@ -763,8 +767,11 @@ int main(int argc, char *argv[])
         /* try to select frame */
         if (opt_frame != di->getFirstFrame() + 1)
         {
-            oss << "cannot select frame no. " << opt_frame << ", invalid frame no." << ends;
-            app.printError(oss.str());
+            OFOStringStream oss;
+            oss << "cannot select frame no. " << opt_frame << ", invalid frame no." << OFStringStream_ends;
+            OFSTRINGSTREAM_GETSTR(oss, tmpString)
+            app.printError(tmpString);
+            OFSTRINGSTREAM_FREESTR(tmpString)
         }
 
         /* convert to grayscale if necessary */
@@ -817,14 +824,20 @@ int main(int argc, char *argv[])
                     {
                         if (!di->showOverlay(k, overlayMode, opt_foregroundDensity, opt_thresholdDensity))
                         {
-                            oss << "cannot display overlay plane " << k + 1 << ends;
-                            app.printWarning(oss.str());
+                            OFOStringStream oss;
+                            oss << "cannot display overlay plane " << k + 1 << OFStringStream_ends;
+                            OFSTRINGSTREAM_GETSTR(oss, tmpString)
+                            app.printWarning(tmpString);
+                            OFSTRINGSTREAM_FREESTR(tmpString)
                         }
                     } else {
                         if (!di->showOverlay(k)) /* use default values */
                         {
-                            oss << "cannot display overlay plane " << k + 1 << ends;
-                            app.printWarning(oss.str());
+                            OFOStringStream oss;
+                            oss << "cannot display overlay plane " << k + 1 << OFStringStream_ends;
+                            OFSTRINGSTREAM_GETSTR(oss, tmpString)
+                            app.printWarning(tmpString);
+                            OFSTRINGSTREAM_FREESTR(tmpString)
                         }
                     }
                 }
@@ -837,31 +850,43 @@ int main(int argc, char *argv[])
             case 1: /* use the n-th VOI window from the image file */
                 if ((opt_windowParameter < 1) || (opt_windowParameter > di->getWindowCount()))
                 {
-                    oss << "cannot select VOI window no. " << opt_windowParameter << ", only " << di->getWindowCount() <<
-                        " window(s) in file." << ends;
-                    app.printError(oss.str());
+                    OFOStringStream oss;
+                    oss << "cannot select VOI window no. " << opt_windowParameter << ", only "
+                        << di->getWindowCount() << " window(s) in file." << OFStringStream_ends;
+                    OFSTRINGSTREAM_GETSTR(oss, tmpString)
+                    app.printError(tmpString);
+                    OFSTRINGSTREAM_FREESTR(tmpString)
                 }
                 if (opt_verboseMode > 1)
                     OUTPUT << "activating VOI window " << opt_windowParameter << endl;
                 if (!di->setWindow(opt_windowParameter - 1))
                 {
-                    oss << "cannot select VOI window no. " << opt_windowParameter << ends;
-                    app.printWarning(oss.str());
+                    OFOStringStream oss;
+                    oss << "cannot select VOI window no. " << opt_windowParameter << OFStringStream_ends;
+                    OFSTRINGSTREAM_GETSTR(oss, tmpString)
+                    app.printWarning(tmpString);
+                    OFSTRINGSTREAM_FREESTR(tmpString)
                 }
                 break;
             case 2: /* use the n-th VOI look up table from the image file */
                 if ((opt_windowParameter < 1) || (opt_windowParameter > di->getVoiLutCount()))
                 {
-                    oss << "cannot select VOI LUT no. " << opt_windowParameter << ", only " << di->getVoiLutCount() <<
-                        " LUT(s) in file." << ends;
-                    app.printError(oss.str());
+                    OFOStringStream oss;
+                    oss << "cannot select VOI LUT no. " << opt_windowParameter << ", only "
+                        << di->getVoiLutCount() << " LUT(s) in file." << OFStringStream_ends;
+                    OFSTRINGSTREAM_GETSTR(oss, tmpString)
+                    app.printError(tmpString);
+                    OFSTRINGSTREAM_FREESTR(tmpString)
                 }
                 if (opt_verboseMode > 1)
                     OUTPUT << "activating VOI LUT " << opt_windowParameter << endl;
                 if (!di->setVoiLut(opt_windowParameter - 1))
                 {
-                    oss << "cannot select VOI LUT no. " << opt_windowParameter << ends;
-                    app.printWarning(oss.str());
+                    OFOStringStream oss;
+                    oss << "cannot select VOI LUT no. " << opt_windowParameter << OFStringStream_ends;
+                    OFSTRINGSTREAM_GETSTR(oss, tmpString)
+                    app.printWarning(tmpString);
+                    OFSTRINGSTREAM_FREESTR(tmpString)
                 }
                 break;
             case 3: /* Compute VOI window using min-max algorithm */
@@ -881,8 +906,12 @@ int main(int argc, char *argv[])
                     OUTPUT << "activating VOI window center=" << opt_windowCenter << ", width=" << opt_windowWidth << endl;
                 if (!di->setWindow(opt_windowCenter, opt_windowWidth))
                 {
-                    oss << "cannot set VOI window center=" << opt_windowCenter << " width=" << opt_windowWidth << ends;
-                    app.printWarning(oss.str());
+                    OFOStringStream oss;
+                    oss << "cannot set VOI window center=" << opt_windowCenter << " width="
+                        << opt_windowWidth << OFStringStream_ends;
+                    OFSTRINGSTREAM_GETSTR(oss, tmpString)
+                    app.printError(tmpString);
+                    OFSTRINGSTREAM_FREESTR(tmpString)
                 }
                 break;
             case 6: /* Compute VOI window using min-max algorithm ignoring extremes */
@@ -939,8 +968,12 @@ int main(int argc, char *argv[])
              DicomImage *newimage = di->createClippedImage(opt_left, opt_top, opt_width, opt_height);
              if (newimage==NULL)
              {
-                 oss << "clipping to (" << opt_left << "," << opt_top << "," << opt_width << "," << opt_height << ") failed." << ends;
-                 app.printError(oss.str());
+                 OFOStringStream oss;
+                 oss << "clipping to (" << opt_left << "," << opt_top << "," << opt_width << ","
+                     << opt_height << ") failed." << OFStringStream_ends;
+                 OFSTRINGSTREAM_GETSTR(oss, tmpString)
+                 app.printError(tmpString);
+                 OFSTRINGSTREAM_FREESTR(tmpString)
              } else if (newimage->getStatus() != EIS_Normal)
                  app.printError(DicomImage::getString(newimage->getStatus()));
              else
@@ -1079,8 +1112,12 @@ int main(int argc, char *argv[])
 
         if (fcount < opt_frameCount)
         {
-            oss << "cannot select " << opt_frameCount << " frames, limiting to " << fcount << " frames" << ends;
-            app.printWarning(oss.str());
+            OFOStringStream oss;
+            oss << "cannot select " << opt_frameCount << " frames, limiting to "
+                << fcount << " frames" << OFStringStream_ends;
+            OFSTRINGSTREAM_GETSTR(oss, tmpString)
+            app.printWarning(tmpString);
+            OFSTRINGSTREAM_FREESTR(tmpString)
         }
 
         for (unsigned int frame = 0; frame < fcount; frame++)
@@ -1097,8 +1134,11 @@ int main(int argc, char *argv[])
                 ofile = fopen(ofname, "wb");
                 if (ofile == NULL)
                 {
-                    oss << "cannot create file " << ofname << ends;
-                    app.printError(oss.str());
+                    OFOStringStream oss;
+                    oss << "cannot create file " << ofname << OFStringStream_ends;
+                    OFSTRINGSTREAM_GETSTR(oss, tmpString)
+                    app.printError(tmpString);
+                    OFSTRINGSTREAM_FREESTR(tmpString)
                 }
             } else {
                 /* output to stdout */
@@ -1193,7 +1233,13 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.60  2002-04-16 13:54:28  joergr
+ * Revision 1.61  2002-05-02 14:09:19  joergr
+ * Added support for standard and non-standard string streams (which one is
+ * supported is detected automatically via the configure mechanism).
+ * Thanks again to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+ * contribution.
+ *
+ * Revision 1.60  2002/04/16 13:54:28  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
  * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
  * contribution.
