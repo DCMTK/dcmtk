@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002, OFFIS
+ *  Copyright (C) 2002-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Scale DICOM images
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-12-13 13:44:43 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcmscale.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-05 10:50:52 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -470,27 +469,35 @@ int main(int argc, char *argv[])
             {
                 case 1:
                     if (opt_verbose)
-                        CERR << "scaling image, X factor=" << opt_scale_factor << ", Interpolation=" << (int)opt_useInterpolation <<
-                            ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << endl;
-                    newimage = di->createScaledImage(opt_scale_factor, 0.0, (int)opt_useInterpolation, opt_useAspectRatio);
+                        CERR << "scaling image, X factor=" << opt_scale_factor
+                             << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
+                             << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << endl;
+                    newimage = di->createScaledImage(opt_scale_factor, 0.0, OFstatic_cast(int, opt_useInterpolation),
+                        opt_useAspectRatio);
                     break;
                 case 2:
                     if (opt_verbose)
-                        CERR << "scaling image, Y factor=" << opt_scale_factor << ", Interpolation=" << (int)opt_useInterpolation <<
-                            ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << endl;
-                    newimage = di->createScaledImage(0.0, opt_scale_factor, (int)opt_useInterpolation, opt_useAspectRatio);
+                        CERR << "scaling image, Y factor=" << opt_scale_factor
+                             << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
+                             << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << endl;
+                    newimage = di->createScaledImage(0.0, opt_scale_factor, OFstatic_cast(int, opt_useInterpolation),
+                        opt_useAspectRatio);
                     break;
                 case 3:
                     if (opt_verbose)
-                        CERR << "scaling image, X size=" << opt_scale_size << ", Interpolation=" << (int)opt_useInterpolation <<
-                            ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << endl;
-                    newimage = di->createScaledImage(opt_scale_size, 0, (int)opt_useInterpolation, opt_useAspectRatio);
+                        CERR << "scaling image, X size=" << opt_scale_size
+                             << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
+                             << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << endl;
+                    newimage = di->createScaledImage(opt_scale_size, 0, OFstatic_cast(int, opt_useInterpolation),
+                        opt_useAspectRatio);
                     break;
                 case 4:
                     if (opt_verbose)
-                        CERR << "scaling image, Y size=" << opt_scale_size << ", Interpolation=" << (int)opt_useInterpolation <<
-                            ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << endl;
-                    newimage = di->createScaledImage(0, opt_scale_size, (int)opt_useInterpolation, opt_useAspectRatio);
+                        CERR << "scaling image, Y size=" << opt_scale_size
+                             << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
+                             << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << endl;
+                    newimage = di->createScaledImage(0, opt_scale_size, OFstatic_cast(int, opt_useInterpolation),
+                        opt_useAspectRatio);
                     break;
                 default:
                     if (opt_verbose)
@@ -555,7 +562,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmscale.cc,v $
- * Revision 1.7  2002-12-13 13:44:43  meichel
+ * Revision 1.8  2003-12-05 10:50:52  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ *
+ * Revision 1.7  2002/12/13 13:44:43  meichel
  * Activated file padding options
  *
  * Revision 1.6  2002/11/27 14:16:53  meichel

@@ -22,9 +22,8 @@
  *  Purpose: Convert DICOM color images palette color
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-05-20 09:27:22 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcmquant.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2003-12-05 10:50:52 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -485,8 +484,8 @@ int main(int argc, char *argv[])
     if (opt_verbose)
         COUT << "write converted DICOM file" << endl;
 
-    error = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc,
-              opt_opadenc, (Uint32) opt_filepad, (Uint32) opt_itempad, opt_oDataset);
+    error = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc, opt_opadenc,
+        OFstatic_cast(Uint32, opt_filepad), OFstatic_cast(Uint32, opt_itempad), opt_oDataset);
 
     if (error.bad())
     {
@@ -510,7 +509,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmquant.cc,v $
- * Revision 1.9  2003-05-20 09:27:22  joergr
+ * Revision 1.10  2003-12-05 10:50:52  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ *
+ * Revision 1.9  2003/05/20 09:27:22  joergr
  * Removed unused helper functions (dcutils.*).
  *
  * Revision 1.8  2003/04/25 13:15:54  joergr
