@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: meichel $, $Date: 1998-10-20 08:20:24 $
+** Last Update:		$Author: meichel $, $Date: 1999-01-07 14:25:04 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.21 $
+** Revision:		$Revision: 1.22 $
 ** Status:		$State: Exp $
 */
 
@@ -61,11 +61,14 @@
 #ifdef HAVE_STDLIB_H
 #include <stdlib.h>
 #endif
-#ifdef HAVE_SYS_SELECT_H
-#include <sys/select.h>
+#ifdef HAVE_SYS_TIME_H
+#include <sys/time.h>
 #endif
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
+#endif
+#ifdef HAVE_SYS_SELECT_H
+#include <sys/select.h>
 #endif
 #include <signal.h>
 #include <time.h>
@@ -4156,7 +4159,11 @@ DULPRV_translateAssocReq(unsigned char *buffer,
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.21  1998-10-20 08:20:24  meichel
+** Revision 1.22  1999-01-07 14:25:04  meichel
+** Changed sequence of include files in some dcmnet modules
+**   to keep the Unixware compiler happy.
+**
+** Revision 1.21  1998/10/20 08:20:24  meichel
 ** Closed some memory leaks in dcmdata and dcmnet libraries.
 **
 ** Revision 1.20  1998/06/29 12:14:35  meichel
