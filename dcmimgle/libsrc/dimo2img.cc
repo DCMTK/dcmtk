@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochrome2Image (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-01-20 14:52:50 $
+ *  Update Date:      $Date: 1999-04-28 15:02:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimo2img.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -137,9 +137,9 @@ DiMono2Image::~DiMono2Image()
 
 void *DiMono2Image::getOutputData(const unsigned long frame,
                                   const int bits,
-                                  const int)
+                                  const int planar)
 {
-    return DiMonoImage::getData(NULL, 0, frame, bits, 0); 
+    return DiMonoImage::getData(NULL, 0, frame, bits, planar, 0); 
 }
 
 
@@ -147,9 +147,9 @@ int DiMono2Image::getOutputData(void *buffer,
                                 const unsigned long size,
                                 const unsigned long frame,
                                 const int bits,
-                                const int)
+                                const int planar)
 {
-    return (DiMonoImage::getData(buffer, size, frame, bits, 0) != NULL);
+    return (DiMonoImage::getData(buffer, size, frame, bits, planar, 0) != NULL);
 }
 
 
@@ -195,32 +195,35 @@ DiImage *DiMono2Image::createMono(const double,
                                   const double,
                                   const double) const
 {
-    DiImage *image = new DiMono2Image(this, (Uint16)Columns, (Uint16)Rows);
-    return image;
+    return createImage(0, 0);
 }
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: dimo2img.cc,v $
-** Revision 1.4  1999-01-20 14:52:50  joergr
-** Added new output method to fill external memory buffer with rendered pixel
-** data.
-**
-** Revision 1.3  1998/12/16 16:12:36  joergr
-** Added explanation string to LUT class (retrieved from dataset).
-**
-** Revision 1.2  1998/12/14 17:35:58  joergr
-** Added support for presentation shapes.
-**
-** Revision 1.1  1998/11/27 16:07:34  joergr
-** Added copyright message.
-** Added methods and constructors for flipping and rotating, changed for
-** scaling and clipping.
-**
-** Revision 1.5  1998/05/11 14:52:31  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: dimo2img.cc,v $
+ * Revision 1.5  1999-04-28 15:02:46  joergr
+ * Added experimental support to create grayscale images with more than 256
+ * shades of gray to be displayed on a consumer monitor (use pastel colors).
+ *
+ * Revision 1.4  1999/01/20 14:52:50  joergr
+ * Added new output method to fill external memory buffer with rendered pixel
+ * data.
+ *
+ * Revision 1.3  1998/12/16 16:12:36  joergr
+ * Added explanation string to LUT class (retrieved from dataset).
+ *
+ * Revision 1.2  1998/12/14 17:35:58  joergr
+ * Added support for presentation shapes.
+ *
+ * Revision 1.1  1998/11/27 16:07:34  joergr
+ * Added copyright message.
+ * Added methods and constructors for flipping and rotating, changed for
+ * scaling and clipping.
+ *
+ * Revision 1.5  1998/05/11 14:52:31  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */

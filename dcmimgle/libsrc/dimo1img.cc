@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochrome1Image (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-01-20 14:52:50 $
+ *  Update Date:      $Date: 1999-04-28 15:02:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimo1img.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -101,9 +101,9 @@ DiMono1Image::~DiMono1Image()
 
 void *DiMono1Image::getOutputData(const unsigned long frame,
                                   const int bits,
-                                  const int)
+                                  const int planar)
 {
-    return DiMonoImage::getData(NULL, 0, frame, bits, 1);
+    return DiMonoImage::getData(NULL, 0, frame, bits, planar, 1);
 }
 
 
@@ -111,9 +111,9 @@ int DiMono1Image::getOutputData(void *buffer,
                                 const unsigned long size,
                                 const unsigned long frame,
                                 const int bits,
-                                const int)
+                                const int planar)
 {
-    return (DiMonoImage::getData(buffer, size, frame, bits, 1) != NULL);
+    return (DiMonoImage::getData(buffer, size, frame, bits, planar, 1) != NULL);
 }
 
 
@@ -159,29 +159,32 @@ DiImage *DiMono1Image::createMono(const double,
                                   const double,
                                   const double) const
 {
-    DiImage *image = new DiMono1Image(this, (Uint16)Columns, (Uint16)Rows);
-    return image;
+    return createImage(0, 0);
 }
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: dimo1img.cc,v $
-** Revision 1.3  1999-01-20 14:52:50  joergr
-** Added new output method to fill external memory buffer with rendered pixel
-** data.
-**
-** Revision 1.2  1998/12/14 17:35:57  joergr
-** Added support for presentation shapes.
-**
-** Revision 1.1  1998/11/27 16:07:33  joergr
-** Added copyright message.
-** Added methods and constructors for flipping and rotating, changed for
-** scaling and clipping.
-**
-** Revision 1.5  1998/05/11 14:52:31  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: dimo1img.cc,v $
+ * Revision 1.4  1999-04-28 15:02:25  joergr
+ * Added experimental support to create grayscale images with more than 256
+ * shades of gray to be displayed on a consumer monitor (use pastel colors).
+ *
+ * Revision 1.3  1999/01/20 14:52:50  joergr
+ * Added new output method to fill external memory buffer with rendered pixel
+ * data.
+ *
+ * Revision 1.2  1998/12/14 17:35:57  joergr
+ * Added support for presentation shapes.
+ *
+ * Revision 1.1  1998/11/27 16:07:33  joergr
+ * Added copyright message.
+ * Added methods and constructors for flipping and rotating, changed for
+ * scaling and clipping.
+ *
+ * Revision 1.5  1998/05/11 14:52:31  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */
