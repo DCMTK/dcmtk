@@ -20,6 +20,7 @@
 
 #include "osconfig.h"
 
+#include "dcxfer.h"
 #include "diimage.h"
 #include "diutils.h"
 

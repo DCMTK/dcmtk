@@ -1,4 +1,9 @@
 
+**** Unreleased Changes from 97.09.12 (eichelberg)
+
+- dcxfer.h now included in dcmimage.h (as should be).
+  Affects: dcmimage/include/dcmimage.h
+
 **** Unreleased Changes from 97.07.28 (barth)
 
 - Support for pixel representations (class DcmPixelData)
