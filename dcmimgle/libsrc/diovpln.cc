@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlayPlane (Source) - Multiframe Overlays UNTESTED !
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-05-14 09:50:25 $
+ *  Update Date:      $Date: 2001-05-22 13:20:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diovpln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,7 +49,7 @@
 
 DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
                                const unsigned int group,
-                               const Uint16 alloc)
+                               Uint16 alloc)
   : NumberOfFrames(0),
     ImageFrameOrigin(0),
     Top(0),
@@ -81,16 +81,20 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
 {
     if (docu != NULL)
     {
-        DcmTagKey tag(group, DCM_OverlayRows.getElement());
+        /* specifiy overlay group number */
+        DcmTagKey tag(group, DCM_OverlayRows.getElement() /* dummy */);
+        /* get descriptive data */
         tag.setElement(DCM_OverlayLabel.getElement());
         docu->getValue(tag, Label);
         tag.setElement(DCM_OverlayDescription.getElement());
         docu->getValue(tag, Description);
+        /* get overlay type */
         tag.setElement(DCM_OverlayType.getElement());
         const char *str;
         if ((docu->getValue(tag, str) > 0) && (strcmp(str, "R") == 0))
             DefaultMode = Mode = EMO_RegionOfInterest;
         Sint32 sl = 0;
+        /* multi-frame overlays */
         tag.setElement(DCM_NumberOfFramesInOverlay.getElement());
         docu->getValue(tag, sl);
         NumberOfFrames = (sl < 1) ? 1 : (Uint32)sl;
@@ -122,22 +126,34 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
             }
         }
 #endif
-        Top--;                                                      // overlay origin is numbered from 1
+        /* overlay origin is numbered from 1 */
+        Top--;                                                      
         Left--;
+        /* check overlay resolution */
         tag.setElement(DCM_OverlayRows.getElement());
         Valid &= (docu->getValue(tag, Rows) > 0);
         Height = Rows;
         tag.setElement(DCM_OverlayColumns.getElement());
         Valid &= (docu->getValue(tag, Columns) > 0);
         Width = Columns;
+        /* check overlay encoding */
         tag.setElement(DCM_OverlayBitsAllocated.getElement());
         Valid &= (docu->getValue(tag, BitsAllocated) > 0);
         tag.setElement(DCM_OverlayBitPosition.getElement());
         Valid &= (docu->getValue(tag, BitPosition) > 0);
         tag.setElement(DCM_OverlayData.getElement());
-        if (Valid && !docu->getValue(tag, Data))
+        /* final validity checks */
+        if (Valid)
         {
-            ImageFrameOrigin = 0;                                   // see supplement 4
+            unsigned long length = docu->getValue(tag, Data) * 2 /* bytes */;
+            if (length == 0)
+            {
+                ImageFrameOrigin = 0;                               // see supplement 4
+                length = docu->getValue(DCM_PixelData, Data) * 2 /* bytes */;
+                EmbeddedData = (Data != NULL);
+            } else
+                alloc = 1;                                          // separately stored overlay data
+            /* check for correct value of BitsAllocated */
             if (BitsAllocated != alloc)                             // see correction proposal 87
             {
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
@@ -148,9 +164,31 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
                 }
                 BitsAllocated = alloc;
             }
-            docu->getValue(DCM_PixelData, Data);
-            Valid = (Data != NULL);
-            EmbeddedData = (Data != NULL);
+            /* check for correct value of BitPosition */
+            if (BitPosition > BitsAllocated)
+            {
+                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
+                {
+                    ofConsole.lockCerr() << "WARNING: invalid value for 'OverlayBitPosition' (" << BitPosition
+                                         << ") ... assuming " << (BitsAllocated - 1) << " !" << endl;
+                    ofConsole.unlockCerr();
+                }
+                BitPosition = BitsAllocated - 1;
+            }
+            /* expected length of overlay data */
+            const unsigned long expLen = ((unsigned long)NumberOfFrames * (unsigned long)Rows * (unsigned long)Columns *
+                                          (unsigned long)BitsAllocated + 7) / 8;
+            if ((length == 0) || (length < expLen))
+            {
+                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
+                {
+                    ofConsole.lockCerr() << "ERROR: overlay data length is too short !" << endl;
+                    ofConsole.unlockCerr();
+                }
+                Valid = 0;
+                Data = NULL;
+            } else
+                Valid = (Data != NULL);
         }
     }
 }
@@ -196,7 +234,23 @@ DiOverlayPlane::DiOverlayPlane(const unsigned int group,
 {
     DiDocument::getElemValue((const DcmElement *)&label, Label);
     DiDocument::getElemValue((const DcmElement *)&description, Description);
-    Valid = (DiDocument::getElemValue((const DcmElement *)&data, Data) > 0);
+    if ((Columns > 0) && (Rows > 0))
+    {
+        const unsigned long length = DiDocument::getElemValue((const DcmElement *)&data, Data) * 2 /* Bytes */;
+        /* expected length of overlay data */
+        const unsigned long expLen = ((unsigned long)Rows * (unsigned long)Columns + 7) / 8;
+        if ((length == 0) || (length < expLen))
+        {
+            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
+            {
+                ofConsole.lockCerr() << "ERROR: overlay data length is too short !" << endl;
+                ofConsole.unlockCerr();
+            }
+            /* Valid = 0;  =>  This is the default. */
+            Data = NULL;
+        } else
+            Valid = (Data != NULL);
+    }
     Top--;                                                      // overlay origin is numbered from 1
     Left--;
 }
@@ -292,7 +346,7 @@ void *DiOverlayPlane::getData(const unsigned long frame,
                               const Uint16 back)
 {
     const unsigned long count = (unsigned long)(xmax - xmin) * (unsigned long)(ymax - ymin);
-    if (count > 0)
+    if (Valid && (count > 0))
     {
         const Uint16 mask = (Uint16)DicomImageClass::maxval(bits);
         if (bits == 1)
@@ -469,7 +523,7 @@ void DiOverlayPlane::setRotation(const int degree,
         Height = Width;
         Width = us;
 /*
-        us = Rows;                              // swap stored width/height -> already done in constructor !
+        us = Rows;                              // swap stored width/height -> already done in the constructor !
         Rows = Columns;
         Columns = us;
 */
@@ -497,7 +551,11 @@ void DiOverlayPlane::setRotation(const int degree,
  *
  * CVS/RCS Log:
  * $Log: diovpln.cc,v $
- * Revision 1.22  2001-05-14 09:50:25  joergr
+ * Revision 1.23  2001-05-22 13:20:27  joergr
+ * Enhanced checking routines for corrupt overlay data (e.g. invalid value for
+ * OverlayBitsAllocated).
+ *
+ * Revision 1.22  2001/05/14 09:50:25  joergr
  * Added support for "1 bit output" of overlay planes; useful to extract
  * overlay planes from the pixel data and store them separately in the dataset.
  *

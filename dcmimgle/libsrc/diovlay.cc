@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlay (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-05-14 09:50:25 $
+ *  Update Date:      $Date: 2001-05-22 13:20:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diovlay.cc,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -546,7 +546,7 @@ void *DiOverlay::getPlaneData(const unsigned long frame,
     if (convertToPlaneNumber(plane, AdditionalPlanes) > 1)                    // plane does exist
     {
         DiOverlayPlane *op = Data->Planes[plane];
-        if (op != NULL)
+        if ((op != NULL) && op->isValid())
         {
             const Uint16 xmin = (op->getLeft(Left) > 0) ? op->getLeft(Left) : 0;
             const Uint16 ymin = (op->getTop(Top) > 0) ? op->getTop(Top) : 0;
@@ -575,7 +575,7 @@ void *DiOverlay::getFullPlaneData(const unsigned long frame,
     if (convertToPlaneNumber(plane, AdditionalPlanes) > 1)                    // plane does exist
     {
         DiOverlayPlane *op = Data->Planes[plane];
-        if (op != NULL)
+        if ((op != NULL) && op->isValid())
         {
             width = op->getWidth();
             height = op->getHeight();            
@@ -590,7 +590,11 @@ void *DiOverlay::getFullPlaneData(const unsigned long frame,
  *
  * CVS/RCS Log:
  * $Log: diovlay.cc,v $
- * Revision 1.19  2001-05-14 09:50:25  joergr
+ * Revision 1.20  2001-05-22 13:20:27  joergr
+ * Enhanced checking routines for corrupt overlay data (e.g. invalid value for
+ * OverlayBitsAllocated).
+ *
+ * Revision 1.19  2001/05/14 09:50:25  joergr
  * Added support for "1 bit output" of overlay planes; useful to extract
  * overlay planes from the pixel data and store them separately in the dataset.
  *
