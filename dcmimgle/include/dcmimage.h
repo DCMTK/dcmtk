@@ -21,10 +21,10 @@
  *
  *  Purpose: Provides main interface to the "dicom image toolkit"
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-08 12:37:35 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-02-09 14:21:08 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dcmimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -105,7 +105,7 @@ class DicomImage
      *  @param  fcount  number of frames (not implemented!)
      */
     DicomImage(DcmObject *object,
-               E_TransferSyntax xfer,
+               const E_TransferSyntax xfer,
                const unsigned long flags = 0,
                const unsigned long fstart = 0,
                const unsigned long fcount = 0);
@@ -1183,7 +1183,10 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.10  1999-02-08 12:37:35  joergr
+ * Revision 1.11  1999-02-09 14:21:08  meichel
+ * Corrected const signatures of some ctor declarations
+ *
+ * Revision 1.10  1999/02/08 12:37:35  joergr
  * Changed implementation of removeAllOverlays().
  * Added parameter 'idx' to some overlay methods to distinguish between
  * built-in and additional overlay planes.

@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomMonochromeImage (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-08 13:09:33 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-02-09 14:21:11 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -176,7 +176,7 @@ DiMonoImage::DiMonoImage(const DiDocument *docu,
 
 DiMonoImage::DiMonoImage(const DiMonoImage *image,
                          const unsigned long fstart,
-                         unsigned long fcount)
+                         const unsigned long fcount)
   : DiImage(image, fstart, fcount),
     WindowCenter(image->WindowCenter),
     WindowWidth(image->WindowWidth),
@@ -1413,7 +1413,10 @@ int DiMonoImage::writeRawPPM(FILE *stream, const unsigned long frame, const int 
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.12  1999-02-08 13:09:33  joergr
+ * Revision 1.13  1999-02-09 14:21:11  meichel
+ * Corrected const signatures of some ctor declarations
+ *
+ * Revision 1.12  1999/02/08 13:09:33  joergr
  * Changed implementation of removeAllOverlays().
  *
  * Revision 1.11  1999/02/05 16:46:15  joergr
