@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-06-26 16:04:44 $
+ *  Update Date:      $Date: 2002-06-26 17:20:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoimg.h,v $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -320,8 +320,8 @@ class DiMonoImage
      *
      ** @return pointer to description text (NULL if absent or index invalid)
      */
-    inline const char *getVoiWindowExplanation(const unsigned long pos,
-                                               OFString &explanation) const;
+    const char *getVoiWindowExplanation(const unsigned long pos,
+                                        OFString &explanation) const;
 
     /** get description of specified VOI LUT (stored in the image file)
      *
@@ -330,8 +330,8 @@ class DiMonoImage
      *
      ** @return pointer to description text (NULL if absent or index invalid)
      */
-    inline const char *getVoiLutExplanation(const unsigned long pos,
-                                            OFString &explanation) const;
+    const char *getVoiLutExplanation(const unsigned long pos,
+                                     OFString &explanation) const;
 
     /** get description of performed modality LUT transformation
      *
@@ -1096,7 +1096,11 @@ class DiMonoImage
  *
  * CVS/RCS Log:
  * $Log: dimoimg.h,v $
- * Revision 1.34  2002-06-26 16:04:44  joergr
+ * Revision 1.35  2002-06-26 17:20:04  joergr
+ * Removed superfluous "inline" method specifyer (MSVC6 linker reported an
+ * error).
+ *
+ * Revision 1.34  2002/06/26 16:04:44  joergr
  * Added support for polarity flag to color images.
  * Added new methods to get the explanation string of stored VOI windows and
  * LUTs (not only of the currently selected VOI transformation).
