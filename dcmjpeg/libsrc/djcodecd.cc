@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2001, OFFIS
+ *  Copyright (C) 1997-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Abstract base class for IJG JPEG decoder
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-05-24 14:59:51 $
+ *  Update Date:      $Date: 2004-08-24 14:57:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djcodecd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -303,7 +303,8 @@ OFCondition DJCodecDecoder::decode(
     if (dataset->ident() == EVR_dataset)
     {
         // create new SOP instance UID if codec parameters require so
-        if (result.good() && (djcp->getUIDCreation() == EUC_always)) result = DcmCodec::newInstance((DcmItem *)dataset);
+        if (result.good() && (djcp->getUIDCreation() == EUC_always)) 
+          result = DcmCodec::newInstance((DcmItem *)dataset, NULL, NULL, NULL);
     }
 
   }
@@ -577,7 +578,11 @@ OFBool DJCodecDecoder::requiresPlanarConfiguration(
 /*
  * CVS/RCS Log
  * $Log: djcodecd.cc,v $
- * Revision 1.5  2002-05-24 14:59:51  meichel
+ * Revision 1.6  2004-08-24 14:57:10  meichel
+ * Updated compression helper methods. Image type is not set to SECONDARY
+ *   any more, support for the purpose of reference code sequence added.
+ *
+ * Revision 1.5  2002/05/24 14:59:51  meichel
  * Moved helper methods that are useful for different compression techniques
  *   from module dcmjpeg to module dcmdata
  *

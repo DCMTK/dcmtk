@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2003, OFFIS
+ *  Copyright (C) 1997-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: abstract codec class for JPEG decoders.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-07-04 13:26:22 $
+ *  Update Date:      $Date: 2004-08-24 14:57:08 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/include/Attic/djcodecd.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -208,7 +208,7 @@ private:
 
   /** examines if a given image requires color-by-plane planar configuration
    *  depending on SOP Class UID (DICOM IOD) and photometric interpretation.
-   *  All SOP classes defined in the 2001 edition of the DICOM standard or earlier
+   *  All SOP classes defined in the 2003 edition of the DICOM standard or earlier
    *  are handled correctly.
    *  @param sopClassUID SOP Class UID
    *  @param photometricInterpretation decompressed photometric interpretation
@@ -225,7 +225,11 @@ private:
 /*
  * CVS/RCS Log
  * $Log: djcodecd.h,v $
- * Revision 1.3  2003-07-04 13:26:22  meichel
+ * Revision 1.4  2004-08-24 14:57:08  meichel
+ * Updated compression helper methods. Image type is not set to SECONDARY
+ *   any more, support for the purpose of reference code sequence added.
+ *
+ * Revision 1.3  2003/07/04 13:26:22  meichel
  * Replaced forward declarations for OFString with explicit includes,
  *   needed when compiling with HAVE_STD_STRING
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2002, OFFIS
+ *  Copyright (C) 1997-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: abstract codec class for JPEG encoders.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-10-06 15:57:36 $
+ *  Update Date:      $Date: 2004-08-24 14:57:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djcodece.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -189,12 +189,14 @@ OFCondition DJCodecEncoder::encode(
         if (isLosslessProcess())
         {
           // lossless process - create new UID if mode is EUC_always or if we're converting to Secondary Capture
-          if (djcp->getConvertToSC() || (djcp->getUIDCreation() == EUC_always)) result = DcmCodec::newInstance((DcmItem *)dataset);
+          if (djcp->getConvertToSC() || (djcp->getUIDCreation() == EUC_always)) result = 
+            DcmCodec::newInstance((DcmItem *)dataset, "DCM", "121320", "Uncompressed predecessor");
         }
         else
         {
           // lossy process - create new UID unless mode is EUC_never and we're not converting to Secondary Capture
-          if (djcp->getConvertToSC() || (djcp->getUIDCreation() != EUC_never)) result = DcmCodec::newInstance((DcmItem *)dataset);
+          if (djcp->getConvertToSC() || (djcp->getUIDCreation() != EUC_never)) 
+            result = DcmCodec::newInstance((DcmItem *)dataset, "DCM", "121320", "Uncompressed predecessor");
 
           // update lossy compression ratio
           if (result.good()) result = updateLossyCompressionRatio((DcmItem *)dataset, compressionRatio);
@@ -467,7 +469,9 @@ OFCondition DJCodecEncoder::updateDerivationDescription(
     }
   }
 
-  return dataset->putAndInsertString(DCM_DerivationDescription, derivationDescription.c_str());
+  OFCondition result = dataset->putAndInsertString(DCM_DerivationDescription, derivationDescription.c_str());
+  if (result.good()) result = DcmCodec::insertCodeSequence(dataset, DCM_DerivationCodeSequence, "DCM", "113040", "Lossy Compression");
+  return result;
 }
 
 
@@ -1058,7 +1062,11 @@ OFCondition DJCodecEncoder::correctVOIWindows(
 /*
  * CVS/RCS Log
  * $Log: djcodece.cc,v $
- * Revision 1.12  2003-10-06 15:57:36  meichel
+ * Revision 1.13  2004-08-24 14:57:10  meichel
+ * Updated compression helper methods. Image type is not set to SECONDARY
+ *   any more, support for the purpose of reference code sequence added.
+ *
+ * Revision 1.12  2003/10/06 15:57:36  meichel
  * Fixed issue with window center/width selection in JPEG encoder
  *   that prevented "windowed" compression of images containing an Icon Image SQ.
  *
