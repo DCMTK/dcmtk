@@ -78,6 +78,7 @@ AC_CHECK_HEADERS(netinet/in.h)
 AC_CHECK_HEADERS(netdb.h)
 AC_CHECK_HEADERS(stddef.h)
 AC_CHECK_HEADERS(sys/utsname.h)
+AC_CHECK_HEADERS(limits.h)
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_INLINE
