@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Implementation of class DcmSequenceOfItems
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-10 20:03:01 $
+ *  Update Date:      $Date: 2003-01-06 09:29:48 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcsequen.cc,v $
- *  CVS/RCS Revision: $Revision: 1.51 $
+ *  CVS/RCS Revision: $Revision: 1.52 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -238,7 +238,7 @@ void DcmSequenceOfItems::print(ostream &out,
         }
     } else {
         OFOStringStream oss;
-        oss << "(Sequence ";
+        oss << "(Sequence with ";
         if (Length == DCM_UndefinedLength)
             oss << "undefined";
         else
@@ -1255,7 +1255,10 @@ OFBool DcmSequenceOfItems::containsUnknownVR() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.51  2002-12-10 20:03:01  joergr
+** Revision 1.52  2003-01-06 09:29:48  joergr
+** Performed minor text corrections to get a more consistent print() output.
+**
+** Revision 1.51  2002/12/10 20:03:01  joergr
 ** Added curly brackets around debug() call to avoid compiler errors with gcc
 ** 2.9.5 in debug mode.
 **

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Implementation of class DcmPixelSequence
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 13:16:58 $
+ *  Update Date:      $Date: 2003-01-06 09:29:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixseq.cc,v $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -132,7 +132,7 @@ void DcmPixelSequence::print(ostream &out,
         if (Length == DCM_UndefinedLength)
             printInfoLine(out, flags, level, "(SequenceDelimitationItem)", &delimItemTag);
         else
-            printInfoLine(out, flags, level, "(SequenceDelimitationItem for re-enc.)", &delimItemTag);
+            printInfoLine(out, flags, level, "(SequenceDelimitationItem for re-encod.)", &delimItemTag);
     }
 }
 
@@ -375,7 +375,10 @@ OFCondition DcmPixelSequence::storeCompressedFrame(DcmOffsetList &offsetList,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.cc,v $
-** Revision 1.30  2002-12-06 13:16:58  joergr
+** Revision 1.31  2003-01-06 09:29:49  joergr
+** Performed minor text corrections to get a more consistent print() output.
+**
+** Revision 1.30  2002/12/06 13:16:58  joergr
 ** Enhanced "print()" function by re-working the implementation and replacing
 ** the boolean "showFullData" parameter by a more general integer flag.
 ** Made source code formatting more consistent with other modules/files.
