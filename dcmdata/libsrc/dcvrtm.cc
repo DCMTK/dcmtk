@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmTime
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-06-20 12:06:18 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-07-16 14:21:29 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrtm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -164,7 +164,7 @@ DcmTime::getCurrentTime(
     }
     /* set default time if an error occurred */
     if (l_error.bad())
-    {   
+    {
         /* if the current system time cannot be retrieved create a valid default time */
         if (seconds)
         {
@@ -216,22 +216,20 @@ DcmTime::getOFTimeFromString(
         double second = 0.0;
         /* normalize time format (remove ":" chars) */
         OFString string = dicomTime;
-        if (string[5] == ':')
-        {
+        if ((string.length() > 5) && (string[5] == ':'))
             string.erase(5, 1);
-            if (string[2] == ':')
-                string.erase(2, 1);
-        }
+        if ((string.length() > 2) && (string[2] == ':'))
+            string.erase(2, 1);
         /* extract components from time string: HH[MM[SS[.FFFFFF]]] */
        	/* scan seconds using OFStandard::atof to avoid locale issues */
         if (sscanf(string.c_str(), "%02u%02u", &hour, &minute) >= 1)
         {
             if (string.length() > 4)
             {
+                /* get optional seconds part */
             	string.erase(0, 4);
             	second = OFStandard::atof(string.c_str());
             }
-
             /* always use the local time zone */
             if (timeValue.setTime(hour, minute, second, OFTime::getLocalTimeZone()))
                 l_error = EC_Normal;
@@ -336,7 +334,10 @@ DcmTime::getTimeZoneFromString(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrtm.cc,v $
-** Revision 1.20  2002-06-20 12:06:18  meichel
+** Revision 1.21  2002-07-16 14:21:29  joergr
+** Fixed bug in DcmTime::getOFTimeFromString().
+**
+** Revision 1.20  2002/06/20 12:06:18  meichel
 ** Changed toolkit to use OFStandard::atof instead of atof, strtod or
 **   sscanf for all string to double conversions that are supposed to
 **   be locale independent
