@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-09-28 13:16:59 $
+ *  Update Date:      $Date: 2001-10-19 13:51:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.41 $
+ *  CVS/RCS Revision: $Revision: 1.42 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1083,8 +1083,11 @@ int DiMonoImage::setWindow(const unsigned long pos)
             WindowCount = count;
         if (pos < WindowCount)
         {
+            /* save return value to be used later (setWindow clears the explanation string!) */
+            const int result = setWindow(center, width);
+            /* get the stored explanation string*/
             Document->getValue(DCM_WindowCenterWidthExplanation, VoiExplanation, pos);
-            return setWindow(center, width);
+            return result;
         }
     }
     return 0;
@@ -1878,7 +1881,11 @@ int DiMonoImage::writeRawPPM(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.41  2001-09-28 13:16:59  joergr
+ * Revision 1.42  2001-10-19 13:51:18  joergr
+ * Fixed bug in DiMonoImage::setWindow(pos) - WindowCenterWidthExplanation was
+ * always cleared and never extracted from the dataset as actually intended.
+ *
+ * Revision 1.41  2001/09/28 13:16:59  joergr
  * Added method to extract embedded overlay planes from pixel data and store
  * them in group (6xxx,3000) format.
  * Added support for the optional PresentationLUTShape (e.g. in DX images).
