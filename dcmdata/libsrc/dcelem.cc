@@ -10,9 +10,9 @@
 ** Implementation of class DcmElement
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:27:36 $
+** Update Date:		$Date: 1996-01-05 14:00:24 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcelem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -95,6 +95,7 @@ DcmElement::DcmElement(const DcmTag &tag, Uint32 len)
     fValue = NULL;
     fLoadValue = NULL;
     fTransferredBytes = 0;
+    fByteOrder = EBO_unknown;
 
     Edebug(());
 }
@@ -173,6 +174,7 @@ DcmElement::DcmElement(const DcmElement & elem)
 	fLoadValue = NULL;
 
     fTransferredBytes = elem.fTransferredBytes;
+    fByteOrder = elem.fByteOrder;
 	
     Edebug(());
 }
@@ -781,7 +783,10 @@ E_Condition DcmElement::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
-** Revision 1.3  1996-01-05 13:27:36  andreas
+** Revision 1.4  1996-01-05 14:00:24  andreas
+** - add forgotten initialization for the byte order
+**
+** Revision 1.3  1996/01/05 13:27:36  andreas
 ** - changed to support new streaming facilities
 ** - unique read/write methods for file and block transfer
 ** - more cleanups
