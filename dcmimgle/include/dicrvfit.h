@@ -21,10 +21,10 @@
  *
  *  Purpose: DiCurveFitting (Header/Implementation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-21 08:29:41 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-06 15:58:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dicrvfit.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,43 +45,6 @@
 
 
 /********************************************************************/
-
-
-template <class T>
-static inline void convertValue(const T input,
-                                Uint8 &output)
-{
-    output = (input <= 0) ? 0 : ((input >= 255) ? 255 : (Uint8)input);
-}
-
-template <class T>
-static inline void convertValue(const T input,
-                                Sint8 &output)
-{
-    output = (input <= -128) ? -128 : ((input >= 127) ? 127 : (Sint8)input);
-}
-
-template <class T>
-static inline void convertValue(const T input,
-                                Uint16 &output)
-{
-    output = (input <= 0) ? 0 : ((input >= 65535) ? 65535 : (Uint16)input);
-}
-
-template <class T>
-static inline void convertValue(const T input,
-                                Sint16 &output)
-{
-    output = (input <= -32768) ? -32768 : ((input >= 32767) ? 32767 : (Sint16)input);
-}
-
-
-template <class T>
-static inline void convertValue(const T input,
-                                double &output)
-{
-    output = (double)input;
-}
 
 
 /*------------------*
@@ -227,6 +190,31 @@ class DiCurveFitting
 
  private:
 
+    static void convertValue(const _T3 input, Uint8 &output)
+    {
+        output = (input <= 0) ? 0 : ((input >= 255) ? 255 : (Uint8)input);
+    }
+
+    static void convertValue(const _T3 input, Sint8 &output)
+    {
+      output = (input <= -128) ? -128 : ((input >= 127) ? 127 : (Sint8)input);
+    }
+
+    static void convertValue(const _T3 input, Uint16 &output)
+    {
+      output = (input <= 0) ? 0 : ((input >= 65535) ? 65535 : (Uint16)input);
+    }
+
+    static void convertValue(const _T3 input, Sint16 &output)
+    {
+      output = (input <= -32768) ? -32768 : ((input >= 32767) ? 32767 : (Sint16)input);
+    }
+
+    static inline void convertValue(const _T3 input, double &output)
+    {
+      output = (double)input;
+    }
+
     /** solve the equation given by the two matrixes.
      * _T3 = type of coefficients (and for internal calculations)
      *
@@ -313,7 +301,10 @@ class DiCurveFitting
  *
  * CVS/RCS Log:
  * $Log: dicrvfit.h,v $
- * Revision 1.6  1999-10-21 08:29:41  joergr
+ * Revision 1.7  2000-03-06 15:58:39  meichel
+ * Changed static template functions to methods. Required for xlC 1.0 on AIX 3.2.
+ *
+ * Revision 1.6  1999/10/21 08:29:41  joergr
  * Renamed template type definition from 'T3' to '_T3' to avoid naming
  * conflicts.
  *
