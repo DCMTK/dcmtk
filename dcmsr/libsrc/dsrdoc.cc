@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-24 15:04:11 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2000-10-26 14:28:54 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -184,7 +184,7 @@ E_Condition DSRDocument::print(ostream &stream,
         /* verifying observer */
         const size_t obsCount = getNumberOfVerifyingObservers();
         for (size_t i = 1; i <= obsCount; i++)
-        {            
+        {
             OFString dateTime, obsName, organization;
             DSRCodedEntryValue obsCode;
             if (getVerifyingObserver(i, dateTime, obsName, obsCode, organization) == EC_Normal)
@@ -198,7 +198,7 @@ E_Condition DSRDocument::print(ostream &stream,
                 stream << ", " << organization << endl;
             }
         }
-        /* content date and time */        
+        /* content date and time */
         stream << "Content Date/Time  : " << getStringValueFromElement(ContentDate, string) << ", ";
         stream <<                            getStringValueFromElement(ContentTime, string) << endl << endl;
 
@@ -416,7 +416,7 @@ E_Condition DSRDocument::renderHTML(ostream &stream,
         updateAttributes();
 
         // --- HTML document structure (start) ---
-        
+
         stream << "<html>" << endl;
         stream << "<head>" << endl;
         /* document type/title */
@@ -425,7 +425,7 @@ E_Condition DSRDocument::renderHTML(ostream &stream,
         stream << "<body>" << endl;
 
         // --- render some general document information ---
-    
+
         /* create a table for this purpose */
         stream << "<table>" << endl;
         /* patient related information */
@@ -514,19 +514,19 @@ E_Condition DSRDocument::renderHTML(ostream &stream,
                 stream << "</tr>" << endl;
             }
         }
-        /* content date and time */        
+        /* content date and time */
         stream << "<tr>" << endl;
         stream << "<td><b>Content Date/Time:</b></td>" << endl;
         stream << "<td>" << getStringValueFromElement(ContentDate, string) << ", ";
-        stream << getStringValueFromElement(ContentTime, string) << "</td>" << endl;  
+        stream << getStringValueFromElement(ContentTime, string) << "</td>" << endl;
         stream << "</tr>" << endl;
         /* end of table */
         stream << "</table>" << endl;
-    
+
         // --- render document tree to stream ---
 
         stream << "<hr>" << endl;
-        
+
         /* create memory output stream for the annex */
         ostrstream annexStream;
         /* render document tree two the streams */
@@ -536,16 +536,19 @@ E_Condition DSRDocument::renderHTML(ostream &stream,
             result = appendStream(stream, annexStream, "<h1>Annex</h1>");
 
         // --- footnote ---
-        
-        stream << "<hr>" << endl;
-        stream << "<small>" << endl;
-        stream << "This page has been created automatically by 'dsr2html' from the ";
-        stream << "<a href=\"http://www.offis.de/projekte/dicom/\">OFFIS dcmtk</a> package";
-        stream << " (version " << OFFIS_DCMTK_VERSION << ")." << endl;
-        stream << "</small>" << endl;
+
+        if (flags & HF_renderDcmtkFootnote)
+        {
+            stream << "<hr>" << endl;
+            stream << "<small>" << endl;
+            stream << "This page has been created automatically by 'dsr2html' from the ";
+            stream << "<a href=\"http://www.offis.de/projekte/dicom/\">OFFIS dcmtk</a> package";
+            stream << " (version " << OFFIS_DCMTK_VERSION << ")." << endl;
+            stream << "</small>" << endl;
+        }
 
         // --- HTML document structure (end) ---
-        
+
         stream << "</body>" << endl;
         stream << "</html>" << endl;
     }
@@ -588,7 +591,7 @@ size_t DSRDocument::getNumberOfVerifyingObservers()
     return (size_t)VerifyingObserver.card();
 }
 
-    
+
 E_Condition DSRDocument::getVerifyingObserver(const size_t idx,
                                               OFString &dateTime,
                                               OFString &observerName,
@@ -642,7 +645,7 @@ size_t DSRDocument::getNumberOfPredecessorDocuments()
     return (size_t)PredecessorDocuments.card();
 }
 
-    
+
 E_Condition DSRDocument::getPredecessorDocument(const size_t idx,
                                                 OFString &sopClassUID,
                                                 OFString &sopInstanceUID)
@@ -1251,7 +1254,11 @@ void DSRDocument::updateAttributes()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.6  2000-10-24 15:04:11  joergr
+ *  Revision 1.7  2000-10-26 14:28:54  joergr
+ *  Added new flag specifying whether to add a "dcmtk" footnote to the rendered
+ *  HTML document or not.
+ *
+ *  Revision 1.6  2000/10/24 15:04:11  joergr
  *  Changed HTML hyperlinks to referenced objects from "dicom://" to "file://"
  *  to facilitate access from Java.
  *
