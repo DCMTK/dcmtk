@@ -8,10 +8,10 @@
 ** Purpose:
 ** Definition of the class DcmTag
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:23:01 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1996-03-12 15:32:49 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dctag.h,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -50,6 +50,7 @@ public:
     DcmTag(const DcmTagKey& akey);
     DcmTag(Uint16 g, Uint16 e);
     DcmTag(const DcmTagKey& akey, const DcmVR& avr);
+    DcmTag(Uint16 g, Uint16 e, const DcmVR& avr);
     DcmTag(const DcmTag& tag);
 
     ~DcmTag();
@@ -89,7 +90,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dctag.h,v $
-** Revision 1.3  1996-01-05 13:23:01  andreas
+** Revision 1.4  1996-03-12 15:32:49  hewett
+** Added constructor with parameter to explicity set the VR.
+**
+** Revision 1.3  1996/01/05 13:23:01  andreas
 ** - changed to support new streaming facilities
 ** - more cleanups
 ** - merged read / write methods for block and file transfer
