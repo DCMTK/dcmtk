@@ -14,6 +14,9 @@
 /* Compiling for windows */
 #define windows 1
 
+/* Define if you have the <windows.h> header file.  */
+#define HAVE_WINDOWS_H 1
+
 /* 
 ** All the following defines assume that the WinSock socket 
 ** library is available.

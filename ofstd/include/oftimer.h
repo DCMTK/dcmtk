@@ -22,9 +22,9 @@
  *  Purpose: Class for measurement of time (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-01-20 15:56:12 $
+ *  Update Date:      $Date: 1999-02-05 14:07:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/oftimer.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,9 +37,8 @@
 
 #include "osconfig.h"
 
-#ifdef WIN32
+#ifdef HAVE_WINDOWS_H
  #include "windows.h"
- #include "winbase.h"
 #else /* UNIX */
  #include <sys/time.h>
 #endif
@@ -79,12 +78,12 @@ class OFTimer
 
     inline static double getTime()
     {
-#ifdef WIN32
+#ifdef HAVE_WINDOWS_H
         return (double)GetTickCount() / 1000;
 #else /* tested on solaris */
         timeval c_time;
         gettimeofday(&c_time, NULL);
-        return (double)c_time.tv_sec + (double)c_time.tv_usec / 1000000.0;
+        return (double)c_time.tv_sec + (double)c_time.tv_usec / 1000000;
 #endif
     }
 
@@ -102,13 +101,15 @@ class OFTimer
  *
  * CVS/RCS Log:
  * $Log: oftimer.h,v $
- * Revision 1.2  1999-01-20 15:56:12  joergr
+ * Revision 1.3  1999-02-05 14:07:23  joergr
+ * Introduced new preprocessor definition HAVE_WINDOWS_H.
+ *
+ * Revision 1.2  1999/01/20 15:56:12  joergr
  * Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
  * options).
  *
  * Revision 1.1  1999/01/20 14:27:02  joergr
  * Added class for measurement of time.
- *
  *
  *
  */
