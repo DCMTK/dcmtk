@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2001-12-04 16:58:12 $
+** Update Date:         $Date: 2002-07-10 11:43:58 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:    $Revision: 1.36 $
+** CVS/RCS Revision:    $Revision: 1.37 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -285,10 +285,10 @@ ASC_createAssociationParameters(T_ASC_Parameters ** params,
     bzero((char*)*params, sizeof(**params));
 
     strncpy((*params)->ourImplementationClassUID,
-            DIC_EURO_IMPLEMENTATIONCLASSUID,
+            OFFIS_IMPLEMENTATION_CLASS_UID,
             sizeof((*params)->ourImplementationClassUID)-1);
     strncpy((*params)->ourImplementationVersionName,
-            DIC_EURO_IMPLEMENTATIONVERSIONNAME,
+            OFFIS_DTK_IMPLEMENTATION_VERSION_NAME,
             sizeof((*params)->ourImplementationVersionName)-1);
 
     strcpy((*params)->DULparams.callingImplementationClassUID,
@@ -1967,7 +1967,11 @@ unsigned long ASC_getPeerCertificate(T_ASC_Association *assoc, void *buf, unsign
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
-** Revision 1.36  2001-12-04 16:58:12  meichel
+** Revision 1.37  2002-07-10 11:43:58  meichel
+** Replaced dcmnet specific definitions for implementation class UID and
+**   version name by the constants defined in dcmdata.
+**
+** Revision 1.36  2001/12/04 16:58:12  meichel
 ** Implemented strlcpy and strlcat routines compatible with the
 **   corresponding BSD libc routines in class OFStandard
 **

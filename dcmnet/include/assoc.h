@@ -67,10 +67,10 @@
 **	Module Prefix: ASC_
 **
 **
-** Last Update:		$Author: wilkens $
-** Update Date:		$Date: 2001-11-27 09:54:33 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 2002-07-10 11:43:55 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/assoc.h,v $
-** CVS/RCS Revision:	$Revision: 1.18 $
+** CVS/RCS Revision:	$Revision: 1.19 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -101,11 +101,6 @@
 #define ASC_DEFAULTMAXPDU       16384	/* 16K is default if nothing else specified */
 #define ASC_MINIMUMPDUSIZE       4096
 #define ASC_MAXIMUMPDUSIZE     131072	/* 128K - we only handle this big */
-
-
-#define DIC_EURO_UIDROOT			OFFIS_UID_ROOT
-#define DIC_EURO_IMPLEMENTATIONCLASSUID		OFFIS_IMPLEMENTATION_CLASS_UID
-#define DIC_EURO_IMPLEMENTATIONVERSIONNAME	OFFIS_DTK_IMPLEMENTATION_VERSION_NAME
 
 /*
 ** Type Definitions
@@ -488,7 +483,11 @@ ASC_destroyAssociation(T_ASC_Association ** association);
 /*
 ** CVS Log
 ** $Log: assoc.h,v $
-** Revision 1.18  2001-11-27 09:54:33  wilkens
+** Revision 1.19  2002-07-10 11:43:55  meichel
+** Replaced dcmnet specific definitions for implementation class UID and
+**   version name by the constants defined in dcmdata.
+**
+** Revision 1.18  2001/11/27 09:54:33  wilkens
 ** Updated storescp. 6 new options (--output-directory, --sort-conc-studies,
 ** --exec-on-reception, --exec-on-eostudy, --rename-on-eostudy, and
 ** --eostudy-timeout) implemented (requirements from GO-Kard).
