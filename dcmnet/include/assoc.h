@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-05-05 10:30:08 $
+** Update Date:		$Date: 1997-05-05 13:05:53 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/assoc.h,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -130,8 +130,7 @@ typedef struct {
 */
 
 
-/* not defined anywhere (I think) but are hard limitations for now */
-#define DICOM_MAXPRESENTATIONCONTEXTS	32
+/* not defined anywhere (I think) but a hard limitation for now */
 #define DICOM_MAXTRANSFERSYNTAXES	25
 
 
@@ -483,7 +482,10 @@ ASC_destroyAssociation(T_ASC_Association ** association);
 /*
 ** CVS Log
 ** $Log: assoc.h,v $
-** Revision 1.3  1997-05-05 10:30:08  meichel
+** Revision 1.4  1997-05-05 13:05:53  meichel
+** Removed unused constant DICOM_MAXPRESENTATIONCONTEXTS.
+**
+** Revision 1.3  1997/05/05 10:30:08  meichel
 ** Fixed bugs related to association negotiation in the DICOM upper layer module.
 ** Added application tests/assctest.cc to examine handling of large A-ASSOCIATE
 ** PDUs. See CHANGES file for details.
