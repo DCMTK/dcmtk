@@ -1,6 +1,7 @@
 dcm2xml.o: dcm2xml.cc ../../config/include/osconfig.h \
- ../include/dctk.h ../include/dctypes.h ../../ofstd/include/oftypes.h \
- ../include/dcswap.h ../include/dcerror.h ../../ofstd/include/ofcond.h \
+ ../../config/include/cfunix.h ../include/dctk.h ../include/dctypes.h \
+ ../../ofstd/include/oftypes.h ../include/dcswap.h \
+ ../include/dcerror.h ../../ofstd/include/ofcond.h \
  ../../ofstd/include/ofstring.h ../../ofstd/include/ofstream.h \
  ../include/dcxfer.h ../include/dcvr.h ../../ofstd/include/ofglobal.h \
  ../../ofstd/include/ofthread.h ../include/dcistrma.h \
@@ -28,8 +29,9 @@ dcm2xml.o: dcm2xml.cc ../../config/include/osconfig.h \
  ../include/dcvrfd.h ../include/cmdlnarg.h \
  ../../ofstd/include/ofconapp.h ../../ofstd/include/ofcmdln.h
 dcmconv.o: dcmconv.cc ../../config/include/osconfig.h \
- ../include/dctk.h ../include/dctypes.h ../../ofstd/include/oftypes.h \
- ../include/dcswap.h ../include/dcerror.h ../../ofstd/include/ofcond.h \
+ ../../config/include/cfunix.h ../include/dctk.h ../include/dctypes.h \
+ ../../ofstd/include/oftypes.h ../include/dcswap.h \
+ ../include/dcerror.h ../../ofstd/include/ofcond.h \
  ../../ofstd/include/ofstring.h ../../ofstd/include/ofstream.h \
  ../include/dcxfer.h ../include/dcvr.h ../../ofstd/include/ofglobal.h \
  ../../ofstd/include/ofthread.h ../include/dcistrma.h \
@@ -58,8 +60,9 @@ dcmconv.o: dcmconv.cc ../../config/include/osconfig.h \
  ../../ofstd/include/ofconapp.h ../../ofstd/include/ofcmdln.h \
  ../include/dcostrmz.h ../include/dcistrmz.h
 dcmcrle.o: dcmcrle.cc ../../config/include/osconfig.h \
- ../include/dctk.h ../include/dctypes.h ../../ofstd/include/oftypes.h \
- ../include/dcswap.h ../include/dcerror.h ../../ofstd/include/ofcond.h \
+ ../../config/include/cfunix.h ../include/dctk.h ../include/dctypes.h \
+ ../../ofstd/include/oftypes.h ../include/dcswap.h \
+ ../include/dcerror.h ../../ofstd/include/ofcond.h \
  ../../ofstd/include/ofstring.h ../../ofstd/include/ofstream.h \
  ../include/dcxfer.h ../include/dcvr.h ../../ofstd/include/ofglobal.h \
  ../../ofstd/include/ofthread.h ../include/dcistrma.h \
@@ -88,8 +91,9 @@ dcmcrle.o: dcmcrle.cc ../../config/include/osconfig.h \
  ../../ofstd/include/ofconapp.h ../../ofstd/include/ofcmdln.h \
  ../include/dcrleerg.h
 dcmdrle.o: dcmdrle.cc ../../config/include/osconfig.h \
- ../include/dctk.h ../include/dctypes.h ../../ofstd/include/oftypes.h \
- ../include/dcswap.h ../include/dcerror.h ../../ofstd/include/ofcond.h \
+ ../../config/include/cfunix.h ../include/dctk.h ../include/dctypes.h \
+ ../../ofstd/include/oftypes.h ../include/dcswap.h \
+ ../include/dcerror.h ../../ofstd/include/ofcond.h \
  ../../ofstd/include/ofstring.h ../../ofstd/include/ofstream.h \
  ../include/dcxfer.h ../include/dcvr.h ../../ofstd/include/ofglobal.h \
  ../../ofstd/include/ofthread.h ../include/dcistrma.h \
@@ -118,9 +122,9 @@ dcmdrle.o: dcmdrle.cc ../../config/include/osconfig.h \
  ../../ofstd/include/ofconapp.h ../../ofstd/include/ofcmdln.h \
  ../include/dcrledrg.h
 dcmdump.o: dcmdump.cc ../../config/include/osconfig.h \
- ../../ofstd/include/ofstream.h ../include/dctk.h ../include/dctypes.h \
- ../../ofstd/include/oftypes.h ../include/dcswap.h \
- ../include/dcerror.h ../../ofstd/include/ofcond.h \
+ ../../config/include/cfunix.h ../../ofstd/include/ofstream.h \
+ ../include/dctk.h ../include/dctypes.h ../../ofstd/include/oftypes.h \
+ ../include/dcswap.h ../include/dcerror.h ../../ofstd/include/ofcond.h \
  ../../ofstd/include/ofstring.h ../include/dcxfer.h ../include/dcvr.h \
  ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
  ../include/dcistrma.h ../include/dcostrma.h ../include/dcuid.h \
@@ -148,10 +152,10 @@ dcmdump.o: dcmdump.cc ../../config/include/osconfig.h \
  ../../ofstd/include/ofconapp.h ../../ofstd/include/ofcmdln.h \
  ../include/dcistrmz.h
 dcmftest.o: dcmftest.cc ../../config/include/osconfig.h \
- ../include/dcmetinf.h ../../ofstd/include/ofconsol.h \
- ../../ofstd/include/ofstream.h ../../ofstd/include/ofthread.h \
- ../../ofstd/include/oftypes.h ../include/dctypes.h \
- ../include/dcitem.h ../include/dcobject.h \
+ ../../config/include/cfunix.h ../include/dcmetinf.h \
+ ../../ofstd/include/ofconsol.h ../../ofstd/include/ofstream.h \
+ ../../ofstd/include/ofthread.h ../../ofstd/include/oftypes.h \
+ ../include/dctypes.h ../include/dcitem.h ../include/dcobject.h \
  ../../ofstd/include/ofglobal.h ../include/dcerror.h \
  ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
  ../include/dcxfer.h ../include/dcvr.h ../include/dctag.h \
@@ -161,14 +165,14 @@ dcmftest.o: dcmftest.cc ../../config/include/osconfig.h \
  ../../ofstd/include/ofconapp.h ../../ofstd/include/ofcmdln.h \
  ../include/dcuid.h
 dcmgpdir.o: dcmgpdir.cc ../../config/include/osconfig.h \
- ../../ofstd/include/ofstream.h ../../ofstd/include/ofconapp.h \
- ../../ofstd/include/oftypes.h ../../ofstd/include/ofcmdln.h \
- ../../ofstd/include/oflist.h ../../ofstd/include/ofstring.h \
- ../../ofstd/include/ofconsol.h ../../ofstd/include/ofthread.h \
- ../../ofstd/include/ofbmanip.h ../../ofstd/include/ofstd.h \
- ../include/dctk.h ../include/dctypes.h ../include/dcswap.h \
- ../include/dcerror.h ../../ofstd/include/ofcond.h ../include/dcxfer.h \
- ../include/dcvr.h ../../ofstd/include/ofglobal.h \
+ ../../config/include/cfunix.h ../../ofstd/include/ofstream.h \
+ ../../ofstd/include/ofconapp.h ../../ofstd/include/oftypes.h \
+ ../../ofstd/include/ofcmdln.h ../../ofstd/include/oflist.h \
+ ../../ofstd/include/ofstring.h ../../ofstd/include/ofconsol.h \
+ ../../ofstd/include/ofthread.h ../../ofstd/include/ofbmanip.h \
+ ../../ofstd/include/ofstd.h ../include/dctk.h ../include/dctypes.h \
+ ../include/dcswap.h ../include/dcerror.h ../../ofstd/include/ofcond.h \
+ ../include/dcxfer.h ../include/dcvr.h ../../ofstd/include/ofglobal.h \
  ../include/dcistrma.h ../include/dcostrma.h ../include/dcuid.h \
  ../include/dcvm.h ../include/dcdefine.h ../include/dcdebug.h \
  ../include/dctagkey.h ../include/dctag.h ../include/dcdicent.h \
@@ -190,9 +194,9 @@ dcmgpdir.o: dcmgpdir.cc ../../config/include/osconfig.h \
  ../include/dcvrss.h ../include/dcvrus.h ../include/dcvrsl.h \
  ../include/dcvrfl.h ../include/dcvrfd.h ../include/cmdlnarg.h
 dump2dcm.o: dump2dcm.cc ../../config/include/osconfig.h \
- ../../ofstd/include/ofstream.h ../include/dctk.h ../include/dctypes.h \
- ../../ofstd/include/oftypes.h ../include/dcswap.h \
- ../include/dcerror.h ../../ofstd/include/ofcond.h \
+ ../../config/include/cfunix.h ../../ofstd/include/ofstream.h \
+ ../include/dctk.h ../include/dctypes.h ../../ofstd/include/oftypes.h \
+ ../include/dcswap.h ../include/dcerror.h ../../ofstd/include/ofcond.h \
  ../../ofstd/include/ofstring.h ../include/dcxfer.h ../include/dcvr.h \
  ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
  ../include/dcistrma.h ../include/dcostrma.h ../include/dcuid.h \
