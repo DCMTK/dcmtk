@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-04-28 08:29:07 $
+ *  Update Date:      $Date: 1999-04-29 10:02:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -64,18 +64,6 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
 #define APPLICATIONTITLE "STORESCP"     /* our application entity title */
-
-int extract_unsigned_long(unsigned long& result, int argc, char *argv[], int idx)
-{
-  unsigned long l;
-  
-  if (idx >= argc ) return 0;
-  if (1 == sscanf(argv[idx], "%lu", &l))
-  {
-    result = l;
-    return 1;
-  } else return 0;
-}
 
 static CONDITION processCommands(T_ASC_Association *assoc);
 static CONDITION acceptAssociation(T_ASC_Network *net);
@@ -923,7 +911,10 @@ static CONDITION storeSCP(
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.22  1999-04-28 08:29:07  meichel
+** Revision 1.23  1999-04-29 10:02:54  meichel
+** Adapted findscu to new command line option scheme
+**
+** Revision 1.22  1999/04/28 08:29:07  meichel
 ** Adapted storescp to new command line option scheme.
 **   Added support for transmission of compressed images.
 **
