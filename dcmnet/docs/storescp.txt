@@ -285,6 +285,7 @@ The storescp application supports the following SOP Classes as an SCP:
     ComprehensiveSR                                      "1.2.840.10008.5.1.4.1.1.88.33"
     MammographyCADSR                                     "1.2.840.10008.5.1.4.1.1.88.50"
     KeyObjectSelectionDocument                           "1.2.840.10008.5.1.4.1.1.88.59"
+    ChestCADSR                                           "1.2.840.10008.5.1.4.1.1.88.65"
     PETImageStorage                                      "1.2.840.10008.5.1.4.1.1.128"
     PETCurveStorage                                      "1.2.840.10008.5.1.4.1.1.129"
     RTImageStorage                                       "1.2.840.10008.5.1.4.1.1.481.1"
