@@ -22,9 +22,9 @@
  *  Purpose: convert VeriLUM CCx_xx.dat files to DCMTK display files
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-11 16:55:23 $
+ *  Update Date:      $Date: 1999-02-23 16:54:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/apps/dconvlum.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,8 +43,6 @@ BEGIN_EXTERN_C
  #endif
 END_EXTERN_C
 
-
-// ********************************************
 
 int main(int argc, char *argv[])
 {
@@ -102,7 +100,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dconvlum.cc,v $
- * Revision 1.3  1999-02-11 16:55:23  joergr
+ * Revision 1.4  1999-02-23 16:54:10  joergr
+ * Corrected some typos and formatting.
+ *
+ * Revision 1.3  1999/02/11 16:55:23  joergr
  * Added mode ios::nocreate when opening file streams for reading to avoid
  * implicit creation of non-existing files.
  *
