@@ -23,9 +23,9 @@
  *    converts it into a Presentation LUT Sequence that is written to file.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-01 14:53:58 $
+ *  Update Date:      $Date: 1999-10-06 15:34:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/Attic/dconvmap.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,6 +46,14 @@
 #include "ofconapp.h"
 #include "dcuid.h"    /* for dcmtk version name */
 #include "displint.h" /* for cubic spline interpolation */
+
+#include <fstream.h>
+
+BEGIN_EXTERN_C
+#ifdef HAVE_CTYPE_H
+ #include <ctype.h>
+#endif
+END_EXTERN_C
 
 #define OFFIS_CONSOLE_APPLICATION "dconvmap"
 
@@ -212,30 +220,36 @@ int main(int argc, char *argv[])
     OFCmdUnsignedInt bits=12;
     OFCmdUnsignedInt entries=256;
     DcmEVR lutVR = EVR_OW;
+    OFBool opt_mapFile = OFTrue;
 
     SetDebugLevel(( 0 ));
 
-    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Convert MAP file to Presentation LUT", rcsid);
+    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Convert MAP/TXT file to Presentation LUT", rcsid);
     OFCommandLine cmd;
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
     cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
 
-    cmd.addParam("mapfile-in",     "MAP file");
-    cmd.addParam("dcmimg-out",     "DICOM output filename");
+    cmd.addParam("file-in",                   "MAP/TXT file");
+    cmd.addParam("dcmimg-out",                "DICOM output filename");
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-     cmd.addOption("--help",                      "-h",        "print this help text and exit");
-     cmd.addOption("--verbose",                   "-v",        "verbose mode, print processing details");
-     cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
+     cmd.addOption("--help",         "-h",    "print this help text and exit");
+     cmd.addOption("--verbose",      "-v",    "verbose mode, print processing details");
+     cmd.addOption("--debug",        "-d",    "debug mode, print debug information");
+
+    cmd.addGroup("reading options:", LONGCOL, SHORTCOL + 2);
+     cmd.addOption("--map",          "-m",    "read input file in MAP format (default)");
+     cmd.addOption("--text",         "-t",    "read input file in TXT format (256 entries)");
+
     cmd.addGroup("LUT creation options:");
-      cmd.addSubGroup("LUT content:");
-       cmd.addOption("--bits",        "-b", 1, "[n]umber : integer",
-                                               "create LUT with n bit values (10..16, default: 12)");
-       cmd.addOption("--entries",     "-e", 1, "[n]umber : integer",
-                                               "create LUT with n entries (1..65536, default: 256)");
-      cmd.addSubGroup("LUT data VR:");
-       cmd.addOption("--data-ow",     "+Dw",    "write LUT Data as OW (default)");
-       cmd.addOption("--data-us",     "+Du",    "write LUT Data as US");
+     cmd.addSubGroup("LUT content:");
+      cmd.addOption("--bits",        "-b", 1, "[n]umber : integer",
+                                              "create LUT with n bit values (10..16, default: 12)");
+      cmd.addOption("--entries",     "-e", 1, "[n]umber : integer",
+                                              "create LUT with n entries (1..65536, default: 256)");
+     cmd.addSubGroup("LUT data VR:");
+      cmd.addOption("--data-ow",     "+Dw",   "write LUT Data as OW (default)");
+      cmd.addOption("--data-us",     "+Du",   "write LUT Data as US");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -250,43 +264,94 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--entries")) app.checkValue(cmd.getValue(entries,(OFCmdUnsignedInt)1,(OFCmdUnsignedInt)65536));
 
       cmd.beginOptionBlock();
+      if (cmd.findOption("--map")) opt_mapFile = OFTrue;
+      if (cmd.findOption("--text")) opt_mapFile = OFFalse;
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
       if (cmd.findOption("--data-us")) lutVR = EVR_US;
       if (cmd.findOption("--data-ow")) lutVR = EVR_OW;
       cmd.endOptionBlock();
     }
 
     /* make sure data dictionary is loaded */
-    if (!dcmDataDict.isDictionaryLoaded()) {
-    cerr << "Warning: no data dictionary loaded, "
-         << "check environment variable: "
-         << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
+    if (!dcmDataDict.isDictionaryLoaded())
+    {
+      cerr << "Warning: no data dictionary loaded, "
+           << "check environment variable: "
+           << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
     }
 
     unsigned char buffer[1000];
-    FILE *inf;
-    if (NULL == (inf = fopen(opt_inName, "rb")))
+    if (opt_mapFile)
     {
-    cerr << "cannot open file: " << opt_inName << endl;
+      FILE *inf;
+      if (NULL == (inf = fopen(opt_inName, "rb")))
+      {
+        cerr << "cannot open file: " << opt_inName << endl;
         return 1;
-    }
-
-    if (264 !=  fread(buffer, 1, 264, inf))
-    {
-    cerr << "read error in file: " << opt_inName << endl;
+      }
+  
+      if (264 !=  fread(buffer, 1, 264, inf))
+      {
+        cerr << "read error in file: " << opt_inName << endl;
         return 1;
-    }
-
-    if (0 !=  fread(buffer+264, 1, 1, inf))
-    {
-    cerr << "file too large, not a map file: " << opt_inName << endl;
+      }
+  
+      if (0 !=  fread(buffer+264, 1, 1, inf))
+      {
+        cerr << "file too large, not a map file: " << opt_inName << endl;
         return 1;
-    }
-
-    fclose(inf);
-    if ((buffer[0] != 0x8a)||(buffer[1] != 0x3f)||(buffer[2] != 0x0)||(buffer[3] != 0x0))
-    {
-    cerr << "magic word wrong, not a map file: " << opt_inName << endl;
+      }
+  
+      fclose(inf);
+      if ((buffer[0] != 0x8a)||(buffer[1] != 0x3f)||(buffer[2] != 0x0)||(buffer[3] != 0x0))
+      {
+        cerr << "magic word wrong, not a map file: " << opt_inName << endl;
         return 1;
+      }
+    } else {
+      ifstream file(opt_inName, ios::in|ios::nocreate);
+      if (file)
+      {
+        char c;
+        int num = 0;
+        int val = 0;
+        while (file.get(c))
+        {
+          if (c == '#')                                               // comment character
+          {
+            while (file.get(c) && (c != '\n') && (c != '\r'));        // skip comments
+          } 
+          else if (!isspace(c))                                       // skip whitespaces
+          {
+            file.putback(c);
+            if (num < 256)
+            {
+              file >> val;                                            // read value
+              if (file.fail())
+                break;
+              else if (val > 255)
+                cerr << "value (" << val << ") exceeds maximum value (255) ... ignoring value !" << endl;
+              else
+                buffer[num++] = (unsigned char)val;
+            } else {
+              cerr << "too many values in file: " << opt_inName << endl;
+              cerr << " ... ignoring last entry/entries !" << endl;
+              break;
+            }
+          }
+        }
+        if (num < 256)
+        {
+          cerr << "missing value(s) in file: " << opt_inName << endl;
+          cerr << " ... 256 entries expected" << endl;
+          return 1;
+        }
+      } else {
+        cerr << "cannot open file: " << opt_inName << endl;
+        return 1;        
+      }
     }
 
     /* create LUT */
@@ -340,18 +405,22 @@ int main(int argc, char *argv[])
 
 
 /*
-** CVS/RCS Log:
-** $Log: dconvmap.cc,v $
-** Revision 1.3  1999-10-01 14:53:58  joergr
-** Fixed type conversion problems reported by MSVC5.
-**
-** Revision 1.2  1999/10/01 13:31:46  joergr
-** Added new command line option specifying the number of LUT entries to
-** MAP file conversion tool.
-**
-** Revision 1.1  1999/09/08 16:42:51  meichel
-** Added sample application that converts PhotoImpact MAP files
-**   to DICOM Presentation LUTs.
-**
-**
-*/
+ * CVS/RCS Log:
+ * $Log: dconvmap.cc,v $
+ * Revision 1.4  1999-10-06 15:34:24  joergr
+ * Enhanced 'dconvmap' to support the reading of simple text files (256 8bit
+ * entries).
+ *
+ * Revision 1.3  1999/10/01 14:53:58  joergr
+ * Fixed type conversion problems reported by MSVC5.
+ *
+ * Revision 1.2  1999/10/01 13:31:46  joergr
+ * Added new command line option specifying the number of LUT entries to
+ * MAP file conversion tool.
+ *
+ * Revision 1.1  1999/09/08 16:42:51  meichel
+ * Added sample application that converts PhotoImpact MAP files
+ *   to DICOM Presentation LUTs.
+ *
+ *
+ */
