@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-18 17:23:58 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-10-26 14:36:32 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,10 +44,12 @@
 #include "dsruidtn.h"
 #include "dsrpnmtn.h"
 #include "dsrscotn.h"
+#include "dsrtcotn.h"
 #include "dsrcomtn.h"
 #include "dsrimgtn.h"
 #include "dsrwavtn.h"
 #include "dsrcontn.h"
+#include "dsrreftn.h"
 
 BEGIN_EXTERN_C
 #ifdef HAVE_TIME_H
@@ -55,19 +57,22 @@ BEGIN_EXTERN_C
 #endif
 END_EXTERN_C
 
+#include <ctype.h>
+
 
 /*---------------------------------*
  *  constant definitions (part 1)  *
  *---------------------------------*/
 
 /* renderHTML flags */
-const size_t DSRTypes::HF_renderItemsSeparately    =  1;
-const size_t DSRTypes::HF_renderItemInline         =  2;
-const size_t DSRTypes::HF_currentlyInsideAnnex     =  4;
-const size_t DSRTypes::HF_createFootnoteReferences =  8;
-const size_t DSRTypes::HF_neverExpandChildsInline  = 16;
-const size_t DSRTypes::HF_renderConceptNameCodes   = 32;
-const size_t DSRTypes::HF_renderFullData           = 64;
+const size_t DSRTypes::HF_renderItemsSeparately    =   1;
+const size_t DSRTypes::HF_renderItemInline         =   2;
+const size_t DSRTypes::HF_currentlyInsideAnnex     =   4;
+const size_t DSRTypes::HF_createFootnoteReferences =   8;
+const size_t DSRTypes::HF_neverExpandChildsInline  =  16;
+const size_t DSRTypes::HF_renderConceptNameCodes   =  32;
+const size_t DSRTypes::HF_renderDcmtkFootnote      =  64;
+const size_t DSRTypes::HF_renderFullData           = 128;
 const size_t DSRTypes::HF_renderAllCodes           = DSRTypes::HF_renderConceptNameCodes;
 const size_t DSRTypes::HF_internalUseOnly          = DSRTypes::HF_renderItemsSeparately | DSRTypes::HF_renderItemInline |
                                                      DSRTypes::HF_currentlyInsideAnnex | DSRTypes::HF_createFootnoteReferences;
@@ -111,6 +116,14 @@ struct S_ValueTypeNameMap
 struct S_GraphicTypeNameMap
 {
     DSRTypes::E_GraphicType Type;
+    const char *EnumeratedValue;
+    const char *ReadableName;
+};
+
+
+struct S_TemporalRangeTypeNameMap
+{
+    DSRTypes::E_TemporalRangeType Type;
     const char *EnumeratedValue;
     const char *ReadableName;
 };
@@ -192,6 +205,18 @@ static const S_GraphicTypeNameMap GraphicTypeNameMap[] =
     {DSRTypes::GT_Polyline,   "POLYLINE",   "Polyline"},
     {DSRTypes::GT_Circle,     "CIRCLE",     "Circle"},
     {DSRTypes::GT_Ellipse,    "ELLIPSE",    "Ellipse"}
+};
+
+
+static const S_TemporalRangeTypeNameMap TemporalRangeTypeNameMap[] =
+{
+    {DSRTypes::TRT_invalid,      "",             ""},
+    {DSRTypes::TRT_Point,        "POINT",        "Point"},
+    {DSRTypes::TRT_Multipoint,   "MULTIPOINT",   "Multiple Points"},
+    {DSRTypes::TRT_Segment,      "SEGMENT",      "Segment"},
+    {DSRTypes::TRT_Multisegment, "MULTISEGMENT", "Multiple Segments"},
+    {DSRTypes::TRT_Begin,        "BEGIN",        "Begin"},
+    {DSRTypes::TRT_End,          "END",          "End"}
 };
 
 
@@ -295,6 +320,24 @@ const char *DSRTypes::graphicTypeToReadableName(const E_GraphicType graphicType)
 }
 
 
+const char *DSRTypes::temporalRangeTypeToEnumeratedValue(const E_TemporalRangeType temporalRangeType)
+{
+    const S_TemporalRangeTypeNameMap *iterator = TemporalRangeTypeNameMap;
+    while ((iterator->Type != TRT_last) && (iterator->Type != temporalRangeType))
+        iterator++;
+    return iterator->EnumeratedValue;
+}
+
+
+const char *DSRTypes::temporalRangeTypeToReadableName(const E_TemporalRangeType temporalRangeType)
+{
+    const S_TemporalRangeTypeNameMap *iterator = TemporalRangeTypeNameMap;
+    while ((iterator->Type != TRT_last) && (iterator->Type != temporalRangeType))
+        iterator++;
+    return iterator->ReadableName;
+}
+
+
 const char *DSRTypes::continuityOfContentToEnumeratedValue(const E_ContinuityOfContent continuityOfContent)
 {
     const S_ContinuityOfContentNameMap *iterator = ContinuityOfContentNameMap;
@@ -370,6 +413,18 @@ DSRTypes::E_GraphicType DSRTypes::enumeratedValueToGraphicType(const OFString &e
 }
 
 
+DSRTypes::E_TemporalRangeType DSRTypes::enumeratedValueToTemporalRangeType(const OFString &enumeratedValue)
+{
+    E_TemporalRangeType type = TRT_invalid;
+    const S_TemporalRangeTypeNameMap *iterator = TemporalRangeTypeNameMap;
+    while ((iterator->Type != TRT_last) && (enumeratedValue != iterator->EnumeratedValue))
+        iterator++;
+    if (enumeratedValue == iterator->EnumeratedValue)
+        type = iterator->Type;
+    return type;
+}
+
+
 DSRTypes::E_ContinuityOfContent DSRTypes::enumeratedValueToContinuityOfContent(const OFString &enumeratedValue)
 {
     E_ContinuityOfContent type = COC_invalid;
@@ -408,7 +463,7 @@ DSRTypes::E_VerificationFlag DSRTypes::enumeratedValueToVerificationFlag(const O
 
 OFBool DSRTypes::isDocumentTypeSupported(const E_DocumentType documentType)
 {
-    return (documentType == DT_BasicTextSR) || (documentType == DT_EnhancedSR);
+    return (documentType == DT_BasicTextSR) || (documentType == DT_EnhancedSR) || (documentType == DT_ComprehensiveSR);
 }
 
 
@@ -730,7 +785,10 @@ const char *DSRTypes::numberToString(const size_t number,
                                      char *string)
 {
     if (string != NULL)
+    {
+        /* unsigned integer */  
         sprintf(string, "%u", number);
+    }
     return string;
 }
 
@@ -740,11 +798,50 @@ size_t DSRTypes::stringToNumber(const char *string)
     size_t result = 0;
     if (string != NULL)
     {
+        /* unsigned integer */
         if (sscanf(string, "%u", &result) != 1)
             result = 0;
     }
     return result;
 }
+
+
+OFBool DSRTypes::checkForValidUIDFormat(const OFString &string)
+{
+    OFBool result = OFFalse;
+    /* empty strings are invalid */
+    if (string.length() > 0)
+    {
+        const char *p = string.c_str();
+        if (p != NULL)
+        {
+            /* check for leading number */
+            while (isdigit(*p))
+            {
+                result = OFTrue;
+                p++;
+            }
+            /* check for separator */
+            while ((*p == '.') && result)
+            {
+                /* trailing '.' is invalid */
+                result = OFFalse;
+                p++;
+                /* check for trailing number */
+                while (isdigit(*p))
+                {
+                    result = OFTrue;
+                    p++;
+                }
+            }
+            /* all characters checked? */
+            if (*p != 0)
+                result = OFFalse;
+        }
+    }
+    return result;
+}
+
 
 DSRDocumentTreeNode *DSRTypes::createDocumentTreeNode(const E_RelationshipType relationshipType,
                                                       const E_ValueType valueType)
@@ -779,6 +876,9 @@ DSRDocumentTreeNode *DSRTypes::createDocumentTreeNode(const E_RelationshipType r
         case VT_SCoord:
             node = new DSRSCoordTreeNode(relationshipType);
             break;
+        case VT_TCoord:
+            node = new DSRTCoordTreeNode(relationshipType);
+            break;
         case VT_Composite:
             node = new DSRCompositeTreeNode(relationshipType);
             break;
@@ -790,6 +890,9 @@ DSRDocumentTreeNode *DSRTypes::createDocumentTreeNode(const E_RelationshipType r
             break;
         case VT_Container:
             node = new DSRContainerTreeNode(relationshipType);
+            break;
+        case VT_byReference:
+            node = new DSRByReferenceTreeNode(relationshipType);
             break;
         default:
             break;
@@ -939,7 +1042,14 @@ E_Condition DSRTypes::appendStream(ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
- *  Revision 1.4  2000-10-18 17:23:58  joergr
+ *  Revision 1.5  2000-10-26 14:36:32  joergr
+ *  Added support for "Comprehensive SR".
+ *  Added support for TCOORD content item.
+ *  Added new flag specifying whether to add a "dcmtk" footnote to the rendered
+ *  HTML document or not.
+ *  Added check routine for valid UID strings.
+ *
+ *  Revision 1.4  2000/10/18 17:23:58  joergr
  *  Added new method allowing to get and check string values from dataset.
  *
  *  Revision 1.3  2000/10/16 12:09:28  joergr
