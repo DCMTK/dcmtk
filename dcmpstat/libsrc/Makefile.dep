@@ -388,7 +388,13 @@ dvpsfs.o: dvpsfs.cc ../../config/include/osconfig.h \
  ../../ofstd/include/ofbmanip.h ../../dcmnet/include/lst.h \
  ../../dcmnet/include/cond.h ../../dcmnet/include/dul.h \
  ../../dcmnet/include/extneg.h ../../dcmnet/include/assoc.h \
- ../include/dvpsdef.h ../include/dvpshlp.h ../include/dvpscf.h
+ ../include/dvpsdef.h ../include/dvpshlp.h ../include/dvpscf.h \
+ ../include/dvpspl.h ../include/dvpspll.h ../include/dvpssp.h \
+ ../include/dvpsibl.h ../include/dvpsabl.h ../include/dvpstat.h \
+ ../include/dvpsovl.h ../include/dvpsgll.h ../include/dvpsrsl.h \
+ ../include/dvpsall.h ../include/dvpsgal.h ../include/dvpscul.h \
+ ../include/dvpsvll.h ../include/dvpsvwl.h ../include/dvpsdal.h \
+ ../include/dvpssvl.h ../include/dvpspr.h ../include/dvpsspl.h
 dvpsga.o: dvpsga.cc ../../config/include/osconfig.h \
  ../include/dvpsga.h ../../dcmdata/include/dctk.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
@@ -1208,7 +1214,7 @@ dvpsspl.o: dvpsspl.cc ../../config/include/osconfig.h \
  ../../dcmnet/include/dcompat.h ../../ofstd/include/ofbmanip.h \
  ../../dcmnet/include/lst.h ../../dcmnet/include/cond.h \
  ../../dcmnet/include/dul.h ../../dcmnet/include/extneg.h \
- ../../dcmnet/include/assoc.h ../include/dvpssp.h ../include/dvpstyp.h \
+ ../../dcmnet/include/assoc.h ../include/dvpstyp.h ../include/dvpssp.h \
  ../include/dvpspll.h ../include/dvpsibl.h ../include/dvpsabl.h \
  ../include/dvpstat.h ../include/dvpsovl.h ../include/dvpsgll.h \
  ../include/dvpsrsl.h ../include/dvpsall.h ../include/dvpsgal.h \

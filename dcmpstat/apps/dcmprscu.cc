@@ -15,16 +15,16 @@
  *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
  *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
- *  Module:  dcmprtsv
+ *  Module:  dcmprscu
  *
  *  Authors: Andreas Thiel, Marco Eichelberg
  *
  *  Purpose: Presentation State Viewer - Print Spooler
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-06 09:44:07 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/Attic/dcmprtsv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-06-08 10:36:25 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmprscu.cc,v $
+ *  CVS/RCS Revision: $Revision: 1.1 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,7 +80,7 @@ END_EXTERN_C
 #include "dvpssp.h"
 #include "dvpshlp.h"     /* for class DVPSHelper */
 
-#define OFFIS_CONSOLE_APPLICATION "dcmprtsv"
+#define OFFIS_CONSOLE_APPLICATION "dcmprscu"
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
@@ -975,8 +975,11 @@ int main(int argc, char *argv[])
 
 /*
  * CVS/RCS Log:
- * $Log: dcmprtsv.cc,v $
- * Revision 1.23  2000-06-06 09:44:07  joergr
+ * $Log: dcmprscu.cc,v $
+ * Revision 1.1  2000-06-08 10:36:25  meichel
+ * Renamed dcmprtsv to dcmprscu and adapted Makefile.in and Makefile.dep
+ *
+ * Revision 1.23  2000/06/06 09:44:07  joergr
  * Moved configuration file entry "LogDirectory" from "[PRINT]" to new
  * (more general) section "[APPLICATION]".
  *
@@ -1025,7 +1028,7 @@ int main(int argc, char *argv[])
  * Print spooler now correctly dumping DIMSE communication to log file.
  *
  * Revision 1.9  1999/10/19 14:44:27  meichel
- * dcmprtsv now correctly writes DIMSE dump to log file
+ * dcmprscu now correctly writes DIMSE dump to log file
  *   and deletes log file upon termination if no print job was processed.
  *
  * Revision 1.8  1999/10/13 14:11:53  meichel
@@ -1050,7 +1053,7 @@ int main(int argc, char *argv[])
  * Completed print spool functionality including Supplement 22 support
  *
  * Revision 1.2  1999/09/15 17:42:50  meichel
- * Implemented print job dispatcher code for dcmpstat, adapted dcmprtsv
+ * Implemented print job dispatcher code for dcmpstat, adapted dcmprscu
  *   and dcmpsprt applications.
  *
  *
