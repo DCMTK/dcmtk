@@ -1,3 +1,10 @@
+**** Changes from 1999.1.11 (vorwerk)
+
+- add error handling in getNumberOfStudies() and selectStudy()
+- getSeriesDescription() implemented
+- isPresentationStateSeries() rewritten
+  Affects: dcmpstat/libsrc/dviface.cc
+
 **** Changes from 1999.1.4 (vorwerk)
 
 - getSeriesPerformingPhysicainsName() changed in	
