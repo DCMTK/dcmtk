@@ -22,9 +22,9 @@
  *  Purpose: Handle command line arguments (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-24 16:59:38 $
+ *  Update Date:      $Date: 1999-04-26 16:32:47 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofcmdln.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -243,6 +243,14 @@ class OFCommandLine
      */
     void setOptionChars(const char *chars);
     
+    /** sets default width of option columns
+     *
+     *  @param  longCols   minimum width of the long option column
+     *  @param  shortCols  minimum width of the short option column
+     */
+    void setOptionColumns(const int longCols,
+                          const int shortCols);
+
     /** adds an item to the list of valid options
      *  (full version)
      *
@@ -479,7 +487,8 @@ class OFCommandLine
 
  protected:
  
-    OFBool checkOption(const char *string) const;
+    OFBool checkOption(const char *string,
+                       const OFBool mode = OFTrue) const;
 
     OFBool findParam(int pos,
                      OFListIterator(OFCmdParam *) &pos_iter);
@@ -494,6 +503,10 @@ class OFCommandLine
     void unpackColumnValues(const int value,
                             unsigned int &longCols,
                             unsigned int &shortCols) const;
+
+#ifdef HAVE_WINDOWS_H
+    void expandWildcards(const char *param);
+#endif
 
 
  private:
@@ -510,6 +523,9 @@ class OFCommandLine
 
     OFBool OptionBlockMode;
     OFString OptionChars;
+
+    int LongColumn;
+    int ShortColumn;
 };
 
 
@@ -520,7 +536,13 @@ class OFCommandLine
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.h,v $
- * Revision 1.9  1999-03-24 16:59:38  joergr
+ * Revision 1.10  1999-04-26 16:32:47  joergr
+ * Added support to define minimum width of short and long option columns.
+ * Removed bug: empty parameters have always been interpreted as options.
+ * Enhanced support of wildcard expansion under Windows (now very similar
+ * to Unix shells).
+ *
+ * Revision 1.9  1999/03/24 16:59:38  joergr
  * Added optional parameters to define minimum width of columns for short and
  * long options in syntax output.
  * Changed optional integer parameter in method findOption to enum type.
