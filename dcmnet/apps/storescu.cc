@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-29 16:02:19 $
+ *  Update Date:      $Date: 2002-09-10 16:02:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -95,6 +95,7 @@ static OFBool opt_showPresentationContexts = OFFalse;
 static OFBool opt_debug = OFFalse;
 static OFBool opt_abortAssociation = OFFalse;
 static OFCmdUnsignedInt opt_maxReceivePDULength = ASC_DEFAULTMAXPDU;
+static OFCmdUnsignedInt opt_maxSendPDULength = 0;
 static E_TransferSyntax opt_networkTransferSyntax = EXS_Unknown;
 
 static OFBool opt_haltOnUnsuccessfulStore = OFTrue;
@@ -242,6 +243,7 @@ main(int argc, char *argv[])
       opt4 += tempstr;
       opt4 += "]";
       cmd.addOption("--max-pdu",                "-pdu",   1,  opt4.c_str(), opt3.c_str());
+      cmd.addOption("--max-send-pdu",                     1,  opt4.c_str(), "restrict max send pdu to n bytes");
       cmd.addOption("--repeat",                           1,  "[n]umber: integer", "repeat n times");
       cmd.addOption("--abort",                                "abort association instead of releasing it");
       cmd.addOption("--no-halt",                              "do not halt if unsuccessful store encountered\n(default: do halt)");
@@ -369,6 +371,13 @@ main(int argc, char *argv[])
       cmd.endOptionBlock();
 
       if (cmd.findOption("--max-pdu")) app.checkValue(cmd.getValueAndCheckMinMax(opt_maxReceivePDULength, ASC_MINIMUMPDUSIZE, ASC_MAXIMUMPDUSIZE));
+
+      if (cmd.findOption("--max-send-pdu")) 
+      {
+      	app.checkValue(cmd.getValueAndCheckMinMax(opt_maxSendPDULength, ASC_MINIMUMPDUSIZE, ASC_MAXIMUMPDUSIZE));
+      	dcmMaxOutgoingPDUSize.set((Uint32)opt_maxSendPDULength);
+      }
+
       if (cmd.findOption("--repeat"))  app.checkValue(cmd.getValueAndCheckMin(opt_repeatCount, 1));
       if (cmd.findOption("--abort"))   opt_abortAssociation = OFTrue;
       if (cmd.findOption("--no-halt")) opt_haltOnUnsuccessfulStore = OFFalse;
@@ -948,7 +957,7 @@ addStoragePresentationContexts(T_ASC_Parameters *params, OFList<OFString>& sopCl
             sopClasses.push_back(dcmStorageSOPClassUIDs[i]);
         }
     }
-
+    
     // thin out the sop classes to remove any duplicates.
     OFList<OFString> sops;
     s_cur = sopClasses.begin();
@@ -1318,7 +1327,11 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.46  2002-08-29 16:02:19  meichel
+** Revision 1.47  2002-09-10 16:02:06  meichel
+** Added --max-send-pdu option that allows to restrict the size of
+**   outgoing P-DATA PDUs
+**
+** Revision 1.46  2002/08/29 16:02:19  meichel
 ** Added --propose-deflated and --compression-level options to storescu
 **
 ** Revision 1.45  2002/08/20 12:21:22  meichel
