@@ -48,7 +48,6 @@ RSC=rc.exe
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
 # ADD CPP /nologo /MT /W3 /GX /O2 /I "..\..\dcmimgle\include" /I "..\..\imagectn\include" /I "..\include" /I "..\..\config\include" /I "..\..\ofstd\include" /I "..\..\dcmdata\include" /I "..\..\dcmnet\include" /I "..\..\dcmsr\include" /D "_CONSOLE" /D "_MBCS" /D "WIN32" /D "NDEBUG" /D "_REENTRANT" /YX /FD /c
-# SUBTRACT CPP /X
 # ADD BASE RSC /l 0x407 /d "NDEBUG"
 # ADD RSC /l 0x407 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -73,7 +72,6 @@ LINK32=link.exe
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
 # ADD CPP /nologo /MTd /W3 /Gm /GX /Zi /Od /I "..\..\dcmimgle\include" /I "..\..\imagectn\include" /I "..\include" /I "..\..\config\include" /I "..\..\ofstd\include" /I "..\..\dcmdata\include" /I "..\..\dcmnet\include" /I "..\..\dcmsr\include" /D "_CONSOLE" /D "_MBCS" /D "WIN32" /D "_DEBUG" /D "DEBUG" /D "_REENTRANT" /YX /FD /c
-# SUBTRACT CPP /X
 # ADD BASE RSC /l 0x407 /d "_DEBUG"
 # ADD RSC /l 0x407 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -98,9 +96,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /I "..\..\dcmimgle\include" /I "..\..\imagectn\include" /I "..\include" /I "..\..\config\include" /I "..\..\ofstd\include" /I "..\..\dcmdata\include" /I "..\..\dcmnet\include" /I "..\..\dcmsr\include" /D "_CONSOLE" /D "_MBCS" /D "WIN32" /D "NDEBUG" /D "_REENTRANT" /YX /FD /c
-# SUBTRACT BASE CPP /X
 # ADD CPP /nologo /MT /W3 /GX /O2 /I "..\..\dcmimgle\include" /I "..\..\imagectn\include" /I "..\include" /I "..\..\config\include" /I "..\..\ofstd\include" /I "..\..\dcmdata\include" /I "..\..\dcmnet\include" /I "..\..\dcmsr\include" /D "_CONSOLE" /D "_MBCS" /D "WIN32" /D "NDEBUG" /D "_REENTRANT" /D "WITH_OPENSSL" /YX /FD /c
-# SUBTRACT CPP /X
 # ADD BASE RSC /l 0x407 /d "NDEBUG"
 # ADD RSC /l 0x407 /d "NDEBUG"
 BSC32=bscmake.exe

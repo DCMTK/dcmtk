@@ -21,8 +21,7 @@ CFG=ofstd - Win32 Debug
 !MESSAGE 
 !MESSAGE "ofstd - Win32 Release" (basierend auf  "Win32 (x86) Static Library")
 !MESSAGE "ofstd - Win32 Debug" (basierend auf  "Win32 (x86) Static Library")
-!MESSAGE "ofstd - Win32 Release OpenSSL" (basierend auf\
-  "Win32 (x86) Static Library")
+!MESSAGE "ofstd - Win32 Release OpenSSL" (basierend auf  "Win32 (x86) Static Library")
 !MESSAGE 
 
 # Begin Project
@@ -65,7 +64,6 @@ LIB32=link.exe -lib
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /Z7 /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /FD /c
 # ADD CPP /nologo /MTd /W3 /GX /Z7 /Od /I "include" /I "..\config\include" /D "_WINDOWS" /D "WIN32" /D "_DEBUG" /D "DEBUG" /D "_REENTRANT" /YX /FD /c
-# SUBTRACT CPP /X
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -153,10 +151,9 @@ SOURCE=.\libsrc\ofstring.cxx
 
 SOURCE=.\libsrc\ofthread.cxx
 # End Source File
-# End Target
+# Begin Source File
 
 SOURCE=.\libsrc\oftime.cxx
 # End Source File
 # End Target
-
 # End Project
