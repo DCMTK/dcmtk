@@ -10,9 +10,9 @@
 ** Implementation of class DcmFileFormat
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-04-12 13:17:22 $
+** Update Date:		$Date: 1996-07-29 15:47:00 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcfilefo.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -659,10 +659,33 @@ DcmDataset* DcmFileFormat::getDataset()
 // ********************************
 
 
+DcmDataset* DcmFileFormat::getAndRemoveDataset()
+{
+    errorFlag = EC_Normal;
+    DcmDataset *data = (DcmDataset*)NULL;
+    if (    itemList->seek_to( 1 ) != (DcmItem*)NULL
+	    && itemList->get()->ident() == EVR_dataset )
+    {
+	data = (DcmDataset*)( itemList->remove() );
+	DcmDataset *Dataset = new DcmDataset();
+	DcmSequenceOfItems::itemList->insert(Dataset, ELP_last);
+    }
+    else
+	errorFlag = EC_IllegalCall;
+    return data;
+}
+
+
+// ********************************
+
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
-** Revision 1.5  1996-04-12 13:17:22  andreas
+** Revision 1.6  1996-07-29 15:47:00  andreas
+** add method getAndRemoveDataset to remove connection of dataset from fileformat
+**
+** Revision 1.5  1996/04/12 13:17:22  andreas
 ** Minor changes to support DEC ALPHA and DEC MIPS
 **
 ** Revision 1.4  1996/03/11 14:48:04  hewett
