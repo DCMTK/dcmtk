@@ -22,9 +22,9 @@
  *  Purpose: DicomLookupTable (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-20 10:34:44 $
+ *  Update Date:      $Date: 1999-11-03 12:52:08 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diluptab.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -216,6 +216,11 @@ class DiLookupTable
     int OriginalBitsAllocated;
     /// pointer to original data buffer (where the LUT data is created from)
     void *OriginalData;
+
+ // --- declarations to avoid compiler warnings
+
+    DiLookupTable(const DiLookupTable &);
+    DiLookupTable &operator=(const DiLookupTable &);
 };
 
 
@@ -226,7 +231,10 @@ class DiLookupTable
  *
  * CVS/RCS Log:
  * $Log: diluptab.h,v $
- * Revision 1.13  1999-10-20 10:34:44  joergr
+ * Revision 1.14  1999-11-03 12:52:08  joergr
+ * Added copy constructor and assignment operator to avoid compiler warnings.
+ *
+ * Revision 1.13  1999/10/20 10:34:44  joergr
  * Enhanced method invertTable to distinguish between copy of LUT data and
  * original (referenced) LUT data.
  *
