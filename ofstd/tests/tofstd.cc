@@ -21,10 +21,9 @@
  *
  *  Purpose: test program for class OFStandard
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-08-14 09:01:20 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/tests/tofstd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-09-17 17:01:44 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,7 +55,7 @@ static const OFString txt_data2 = "ABC\nabc\n123";
 
 int main()
 {
-    OFString string;
+    OFString tmpString;
     unsigned char *buffer;
     size_t i, length;
 
@@ -82,26 +81,26 @@ int main()
     COUT << "fileExists(\"" << pathname5 << "\") = " << OFStandard::fileExists(pathname5) << endl;
     COUT << "dirExists(\""  << pathname5 << "\") = " << OFStandard::dirExists( pathname5) << endl << endl;
 
-    COUT << "normalizeDirName(\"" << pathname1 << "\") = " << OFStandard::normalizeDirName(string, pathname1) << endl;
-    COUT << "normalizeDirName(\"" << pathname2 << "\") = " << OFStandard::normalizeDirName(string, pathname2) << endl;
-    COUT << "normalizeDirName(\"" << pathname3 << "\") = " << OFStandard::normalizeDirName(string, pathname3) << endl;
-    COUT << "normalizeDirName(\"" << pathname4 << "\") = " << OFStandard::normalizeDirName(string, pathname4) << endl;
-    COUT << "normalizeDirName(\"" << pathname5 << "\") = " << OFStandard::normalizeDirName(string, pathname5) << endl;
-    COUT << "normalizeDirName(\"" << pathname6 << "\") = " << OFStandard::normalizeDirName(string, pathname6) << endl;
-    COUT << "normalizeDirName(\"" << pathname7 << "\") = " << OFStandard::normalizeDirName(string, pathname7) << endl;
-    COUT << "normalizeDirName(\"\") = " << OFStandard::normalizeDirName(string, "") << endl << endl;
+    COUT << "normalizeDirName(\"" << pathname1 << "\") = " << OFStandard::normalizeDirName(tmpString, pathname1) << endl;
+    COUT << "normalizeDirName(\"" << pathname2 << "\") = " << OFStandard::normalizeDirName(tmpString, pathname2) << endl;
+    COUT << "normalizeDirName(\"" << pathname3 << "\") = " << OFStandard::normalizeDirName(tmpString, pathname3) << endl;
+    COUT << "normalizeDirName(\"" << pathname4 << "\") = " << OFStandard::normalizeDirName(tmpString, pathname4) << endl;
+    COUT << "normalizeDirName(\"" << pathname5 << "\") = " << OFStandard::normalizeDirName(tmpString, pathname5) << endl;
+    COUT << "normalizeDirName(\"" << pathname6 << "\") = " << OFStandard::normalizeDirName(tmpString, pathname6) << endl;
+    COUT << "normalizeDirName(\"" << pathname7 << "\") = " << OFStandard::normalizeDirName(tmpString, pathname7) << endl;
+    COUT << "normalizeDirName(\"\") = " << OFStandard::normalizeDirName(tmpString, "") << endl << endl;
 
-    COUT << "combineDirAndFilename(\"" << pathname1 << "\", \"file\") = " << OFStandard::combineDirAndFilename(string, pathname1, "file") << endl;
-    COUT << "combineDirAndFilename(\"" << pathname2 << "\", \"file\") = " << OFStandard::combineDirAndFilename(string, pathname2, "file") << endl;
-    COUT << "combineDirAndFilename(\"" << pathname3 << "\", \"file\") = " << OFStandard::combineDirAndFilename(string, pathname3, "file") << endl;
-    COUT << "combineDirAndFilename(\"" << pathname4 << "\", \"file\") = " << OFStandard::combineDirAndFilename(string, pathname4, "file") << endl;
-    COUT << "combineDirAndFilename(\"" << pathname5 << "\", \"file\") = " << OFStandard::combineDirAndFilename(string, pathname5, "file") << endl;
-    COUT << "combineDirAndFilename(\"" << pathname5 << "\", \"/file\") = " << OFStandard::combineDirAndFilename(string, pathname5, "/file") << endl;
-    COUT << "combineDirAndFilename(\"" << pathname6 << "\", \"file\") = " << OFStandard::combineDirAndFilename(string, pathname6, "file") << endl;
-    COUT << "combineDirAndFilename(\"\", \"file\") = " << OFStandard::combineDirAndFilename(string, "", "file") << endl;
-    COUT << "combineDirAndFilename(\"\", \"file\", OFTrue) = " << OFStandard::combineDirAndFilename(string, "", "file", OFTrue) << endl;
-    COUT << "combineDirAndFilename(\"\", \"\") = " << OFStandard::combineDirAndFilename(string, "", "") << endl;
-    COUT << "combineDirAndFilename(\"\", \"\", OFTrue) = " << OFStandard::combineDirAndFilename(string, "", "", OFTrue) << endl;
+    COUT << "combineDirAndFilename(\"" << pathname1 << "\", \"file\") = " << OFStandard::combineDirAndFilename(tmpString, pathname1, "file") << endl;
+    COUT << "combineDirAndFilename(\"" << pathname2 << "\", \"file\") = " << OFStandard::combineDirAndFilename(tmpString, pathname2, "file") << endl;
+    COUT << "combineDirAndFilename(\"" << pathname3 << "\", \"file\") = " << OFStandard::combineDirAndFilename(tmpString, pathname3, "file") << endl;
+    COUT << "combineDirAndFilename(\"" << pathname4 << "\", \"file\") = " << OFStandard::combineDirAndFilename(tmpString, pathname4, "file") << endl;
+    COUT << "combineDirAndFilename(\"" << pathname5 << "\", \"file\") = " << OFStandard::combineDirAndFilename(tmpString, pathname5, "file") << endl;
+    COUT << "combineDirAndFilename(\"" << pathname5 << "\", \"/file\") = " << OFStandard::combineDirAndFilename(tmpString, pathname5, "/file") << endl;
+    COUT << "combineDirAndFilename(\"" << pathname6 << "\", \"file\") = " << OFStandard::combineDirAndFilename(tmpString, pathname6, "file") << endl;
+    COUT << "combineDirAndFilename(\"\", \"file\") = " << OFStandard::combineDirAndFilename(tmpString, "", "file") << endl;
+    COUT << "combineDirAndFilename(\"\", \"file\", OFTrue) = " << OFStandard::combineDirAndFilename(tmpString, "", "file", OFTrue) << endl;
+    COUT << "combineDirAndFilename(\"\", \"\") = " << OFStandard::combineDirAndFilename(tmpString, "", "") << endl;
+    COUT << "combineDirAndFilename(\"\", \"\", OFTrue) = " << OFStandard::combineDirAndFilename(tmpString, "", "", OFTrue) << endl;
 
     COUT << "isReadable() = " << OFStandard::isReadable(pathname8) << endl;
     COUT << "isWriteable() = " << OFStandard::isWriteable(pathname8) << endl;
@@ -112,8 +111,8 @@ int main()
     for (i = 0; i < bin_len; i++)
         COUT << OFstatic_cast(int, bin_data[i]) << " ";
     COUT << endl;
-    COUT << "base64 encoded: " << OFStandard::encodeBase64(bin_data, bin_len, string) << endl;
-    length = OFStandard::decodeBase64(string, buffer);
+    COUT << "base64 encoded: " << OFStandard::encodeBase64(bin_data, bin_len, tmpString) << endl;
+    length = OFStandard::decodeBase64(tmpString, buffer);
     COUT << "base64 decoded: ";
     for (i = 0; i < length; i++)
         COUT << OFstatic_cast(int, buffer[i]) << " ";
@@ -129,11 +128,11 @@ int main()
     for (i = 0; i < 511; i++)
         COUT << OFstatic_cast(int, buffer[i]) << " ";
     COUT << endl;
-    COUT << "base64 encoded: " << OFStandard::encodeBase64(buffer, 511, string) << endl;
+    COUT << "base64 encoded: " << OFStandard::encodeBase64(buffer, 511, tmpString) << endl;
     COUT << "base64 with line breaks:" << endl;
-    COUT << OFStandard::encodeBase64(buffer, 511, string, 72) << endl;
+    COUT << OFStandard::encodeBase64(buffer, 511, tmpString, 72) << endl;
     delete[] buffer;
-    length = OFStandard::decodeBase64(string, buffer);
+    length = OFStandard::decodeBase64(tmpString, buffer);
     COUT << "base64 decoded: ";
     for (i = 0; i < length; i++)
         COUT << OFstatic_cast(int, buffer[i]) << " ";
@@ -164,7 +163,10 @@ int main()
  *
  * CVS/RCS Log:
  * $Log: tofstd.cc,v $
- * Revision 1.5  2003-08-14 09:01:20  meichel
+ * Revision 1.6  2003-09-17 17:01:44  joergr
+ * Renamed variable "string" to avoid name clash with STL class.
+ *
+ * Revision 1.5  2003/08/14 09:01:20  meichel
  * Adapted type casts to new-style typecast operators defined in ofcast.h
  *
  * Revision 1.4  2003/08/12 13:11:46  joergr
