@@ -1,0 +1,26 @@
+#! /bin/sh
+if test -d config ; then
+	if test -f config/modules ; then
+		tmp=`cat config/modules`
+		modules=`ls -d $tmp`
+	else
+		for dir in `ls`; do
+			if test -d $dir ; then
+				modules="$modules $dir"
+			fi
+		done
+	fi
+	modules=`echo $modules | sed -e "s/config//g" | sed -e "s/CVS//g"`
+	modules="config $modules doxygen"
+else
+	echo "Cannot find configure directory (config or ../config)"
+	exit 1
+fi
+if test "x--help" = "x$*"; then
+  config/configure --help
+else
+  for module in $modules ; do
+	echo "Running configure for module $module."
+	(cd $module; ./configure $* )
+  done
+fi
