@@ -8,9 +8,9 @@
 ** Convert DICOM Images to PPM or PGM using the dcmimage library. 
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-09-18 08:12:58 $
+** Update Date:		$Date: 1997-10-01 09:55:24 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
+** CVS/RCS Revision:	$Revision: 1.9 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -34,8 +34,8 @@
 #include "dcuid.h"    /* for dcmtk version name */
 
 static char rcsid[] = "$dcmtk: dcm2pnm v"
-  OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
-
+  OFFIS_DCMIMAGE_VERSION " " OFFIS_DCMIMAGE_RELEASEDATE 
+  " using dcmtk v" OFFIS_DCMTK_VERSION " $";
 
 // ********************************************
 
@@ -1062,7 +1062,12 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcm2pnm.cc,v $
-** Revision 1.8  1997-09-18 08:12:58  meichel
+** Revision 1.9  1997-10-01 09:55:24  meichel
+** Introduced separate version number and date for dcmimage.
+**   OFFIS_DCMIMAGE_VERSION and OFFIS_DCMIMAGE_RELEASEDATE
+**   are declared in dcmimage.h.
+**
+** Revision 1.8  1997/09/18 08:12:58  meichel
 ** Minor type conflicts (e.g. long passed as int) solved.
 **
 ** Revision 1.7  1997/07/28 16:10:29  andreas

@@ -20,6 +20,9 @@
 
 #include "osconfig.h"
 
+#define OFFIS_DCMIMAGE_VERSION     "1.0.1"
+#define OFFIS_DCMIMAGE_RELEASEDATE "1997/10/01"
+
 #include "dcxfer.h"
 #include "diimage.h"
 #include "diutils.h"

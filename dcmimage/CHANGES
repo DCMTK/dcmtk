@@ -1,6 +1,12 @@
 
 **** Changes from 97.10.01 (eichelberg)
 
+- Introduced separate version number and date for dcmimage.
+  OFFIS_DCMIMAGE_VERSION and OFFIS_DCMIMAGE_RELEASEDATE
+  are declared in dcmimage.h.
+  Affects: dcmimage/include/dcmimage.h
+           dcmimage/apps/dcm2pnm.cc
+  
 - Corrected declaration of expandSign() for Sint8 values.
   Affects: dcmimage/include/diinpxt.h
   
