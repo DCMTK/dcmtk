@@ -8,10 +8,10 @@
 ** Convert dicom file encoding
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:12:42 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1998-01-14 14:41:13 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmconv.cc,v $
-** CVS/RCS Revision:	$Revision: 1.15 $
+** CVS/RCS Revision:	$Revision: 1.16 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -80,8 +80,8 @@ usage()
 	"      -p=     do not change padding (default for metaheader files)\n"
 	"      +p n m  pad file x*n bytes and items y*m bytes\n"
         "    unknown VR\n"
-	"      -u      disable generation of unknown VR (UN)\n"
-        "      +u      enable generation of unkniwn VR (UN) (default)\n"
+	"      -u      disable generation of new VRs (UN/UT/VS)\n"
+        "      +u      enable generation of new VRs (UN/UT/VS) (default)\n"
 	"  other options:\n"
 	"      -h      print this usage string\n"
 	"      +V      verbose mode, print actions\n"
@@ -249,12 +249,15 @@ int main(int argc, char *argv[])
 		}
 		break;
 	    case 'u':
-		if (arg[0] == '-' && arg[2] == '\0') 
+		if (arg[0] == '-' && arg[2] == '\0') {
 		    dcmEnableUnknownVRGeneration = OFFalse;
-		else if (arg[0] == '+' && arg[2] == '\0')
+		    dcmEnableUnlimitedTextVRGeneration = OFFalse;
+		    dcmEnableVirtualStringVRGeneration = OFFalse;
+		} else if (arg[0] == '+' && arg[2] == '\0') {
 		    dcmEnableUnknownVRGeneration = OFTrue;
-		else
-		{
+		    dcmEnableUnlimitedTextVRGeneration = OFTrue;
+		    dcmEnableVirtualStringVRGeneration = OFTrue;
+		} else {
 		    cerr << "unknown option: " << arg << endl;
 		    return 1;
 		}
@@ -479,7 +482,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
-** Revision 1.15  1997-07-21 08:12:42  andreas
+** Revision 1.16  1998-01-14 14:41:13  hewett
+** Modified existing -u command line option to also disable generation
+** of UT and VS (previously just disabled generation of UN).
+**
+** Revision 1.15  1997/07/21 08:12:42  andreas
 ** - New environment for encapsulated pixel representations. DcmPixelData
 **   can contain different representations and uses codecs to convert
 **   between them. Codecs are derived from the DcmCodec class. New error

@@ -50,10 +50,10 @@
 **
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-08-05 07:34:54 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1998-01-14 14:41:15 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dump2dcm.cc,v $
-** CVS/RCS Revision:	$Revision: 1.17 $
+** CVS/RCS Revision:	$Revision: 1.18 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -124,8 +124,8 @@ usage()
 	"      -p      no padding (default)\n"
 	"      +p n m  pad file x*n bytes and items y*m bytes\n"
         "    unknown VR\n"
-	"      -u      disable generation of unknown VR (UN)\n"
-        "      +u      enable generation of unkniwn VR (UN) (default)\n"
+	"      -u      disable generation of new VRs (UN/UT/VS)\n"
+        "      +u      enable generation of new VRs (UN/UT/VS) (default)\n"
 	"  other options:\n"
 	"      -h      print this usage string\n"
 	"      +V      verbose mode, print actions\n"
@@ -753,12 +753,15 @@ int main(int argc, char *argv[])
 		}
 		break;
 	    case 'u':
-		if (arg[0] == '-' && arg[2] == '\0') 
+		if (arg[0] == '-' && arg[2] == '\0') {
 		    dcmEnableUnknownVRGeneration = OFFalse;
-		else if (arg[0] == '+' && arg[2] == '\0')
+		    dcmEnableUnlimitedTextVRGeneration = OFFalse;
+		    dcmEnableVirtualStringVRGeneration = OFFalse;
+		} else if (arg[0] == '+' && arg[2] == '\0') {
 		    dcmEnableUnknownVRGeneration = OFTrue;
-		else
-		{
+		    dcmEnableUnlimitedTextVRGeneration = OFTrue;
+		    dcmEnableVirtualStringVRGeneration = OFTrue;
+		} else {
 		    cerr << "unknown option: " << arg << endl;
 		    return 1;
 		}
@@ -925,7 +928,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
-** Revision 1.17  1997-08-05 07:34:54  andreas
+** Revision 1.18  1998-01-14 14:41:15  hewett
+** Modified existing -u command line option to also disable generation
+** of UT and VS (previously just disabled generation of UN).
+**
+** Revision 1.17  1997/08/05 07:34:54  andreas
 ** Corrected Error handling of SQ in dump2dcm
 **
 ** Revision 1.16  1997/07/21 07:59:02  andreas
