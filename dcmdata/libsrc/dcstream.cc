@@ -8,10 +8,10 @@
 ** Purpose:
 **	implements streaming classes for file and buffer input/output
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-23 17:29:24 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1996-09-18 16:28:51 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dcstream.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -270,19 +270,13 @@ Uint32 DcmFileStream::Tell(void)
 {
     if (fErrorCond == EC_Normal && fFile)
     {
-	if (fReadMode)
-	{
-	    long where = ftell(fFile);
-	    if (where == -1L)
-	    {
-		fErrorCond = EC_InvalidStream;
-		return 0;
-	    }
-	    else
-		return (Uint32)where;
+	long where = ftell(fFile);
+	if (where == -1L) {
+	    fErrorCond = EC_InvalidStream;
+	    return 0;
+	} else {
+	    return (Uint32)where;
 	}
-	else
-	    fErrorCond = EC_WrongStreamMode;
     }
     return 0;
 }
@@ -725,7 +719,14 @@ DcmFileStreamConstructor::Copy(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcstream.cc,v $
-** Revision 1.5  1996-01-23 17:29:24  andreas
+** Revision 1.6  1996-09-18 16:28:51  hewett
+** Removed code which generated an error if DcmFileStream::Tell(void)
+** was called when the stream was in write mode.  This behaviour was
+** causing DcmDicomDir::write(...) to always fail.  In particular, this
+** error was causing the program mknldir to write a DICOMDIR file
+** containing only a meta-header.
+**
+** Revision 1.5  1996/01/23 17:29:24  andreas
 ** Support for old fashioned make without @^
 ** Support for machines that have mktemp but do not define it.
 **
