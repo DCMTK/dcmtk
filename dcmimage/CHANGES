@@ -1,3 +1,20 @@
+**** Changes from 1999.02.23 (riesmeier)
+
+- Added tool to export display curves to a text file.
+  Added:   dcmimgle/apps/dcmgsdf.cc
+  Affects: dcmimgle/apps/Makefile.in
+           dcmimgle/include/dibarlut.h
+           dcmimgle/include/didispfn.h
+           dcmimgle/libsrc/dibarlut.cc
+           dcmimgle/libsrc/didispfn.cc
+
+- Rebuilt Makefile dependencies.
+  Affects: dcmimgle/apps/Makefile.dep
+
+- Corrected some typos and formatting.
+  Affects: dcmimgle/apps/dconvlum.cc
+           dcmimage/apps/Makefile.in
+
 **** Changes from 1999.02.11 (riesmeier)
 
 - Rebuilt Makefile dependencies.
