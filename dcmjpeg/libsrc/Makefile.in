@@ -22,7 +22,7 @@ LOCALINCLUDES= \
   -I$(dcmimgledir)/include -I$(includedir)/dcmimgle \
   -I$(dcmjpegdir)/libijg8 -I$(dcmjpegdir)/libijg12 -I$(dcmjpegdir)/libijg16
 
-LOCALDEFS= 
+LOCALDEFS=
 
 include $(configdir)/@common_makefile@
 
@@ -40,12 +40,12 @@ install: all
 
 
 clean:
-	rm -f $(objs) 
-	rm -f libdcmjpeg.$(LIBEXT) 
+	rm -f $(objs)
+	rm -f libdcmjpeg.$(LIBEXT)
 	rm -f $(TRASH)
 
 distclean: clean
-	rm -f $(DISTTRASH) 
+	rm -f $(DISTTRASH)
 
 
 libdcmjpeg.$(LIBEXT): $(objs)
@@ -58,8 +58,4 @@ libdcmjpeg.$(LIBEXT): $(objs)
 dependencies:
 	$(CXX) -MM $(defines) $(includes) $(CPPFLAGS) $(CXXFLAGS) *.cc  > $(DEP)
 
-$(objs): config.h
-
-
 include $(DEP)
-
