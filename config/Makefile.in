@@ -2,7 +2,6 @@
 #	Makefile for config
 #
 
-
 @SET_MAKE@
 
 SHELL = /bin/sh
@@ -11,15 +10,18 @@ include @common_makefile@
 
 
 all:
-	echo Nothing to do for all
 
 install:
 
 install-bin:
 
-install-lib: include-install
+install-doc:
+
+install-bin:
 
 install-include: include-install
+
+install-lib: include-install
 
 install-support:
 
@@ -39,9 +41,4 @@ distclean:
 	(cd include; rm -f $(DISTTRASH) cfunix.h)
 	rm -rf $(DISTTRASH) Makefile.def
 
-
 dependencies:
-	echo Nothing to do for dependencies
-
-
-

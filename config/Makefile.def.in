@@ -14,10 +14,12 @@ INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 
 bindir = $(exec_prefix)/bin
-libdir = $(exec_prefix)/lib
-includedir=$(prefix)/include
-mandir = $(prefix)/man
+etcdir = $(prefix)/etc
 datadir = $(prefix)/data
+docdir = $(prefix)/doc
+mandir = $(prefix)/man
+libdir = $(exec_prefix)/lib
+includedir = $(prefix)/include
 
 #
 # Definition of dependencies file
@@ -39,8 +41,8 @@ DEBUG = @DEBUG@
 GLOBALDEFS = @DEFS@
 
 #
-# ARCH defines special machine archtecture compiler settings (e.g. -arch i386 on
-# NeXT
+# ARCH defines special machine archtecture compiler settings
+# (e.g. -arch i386 on NeXT)
 #
 
 # ARCH=

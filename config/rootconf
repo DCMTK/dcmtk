@@ -6,7 +6,7 @@ output=$topdir/Makefile
 
 cat > $output  <<EOF
 #
-#	Makefile for dcmtk (Dicom Toolkits)
+#	Makefile for dcmtk (DICOM Toolkit)
 #
 
 SHELL= /bin/sh
@@ -26,28 +26,45 @@ for dir in $tmpmodules; do
 	fi
 done
 
-modules=`echo $modules | sed -e "s/config//g" | sed -e "s/CVS//g"` 
+modules=`echo $modules | sed -e "s/config//g" | sed -e "s/doxygen//g" | sed -e "s/CVS//g"`
 for module in config $modules; do
 	makeall="$makeall ${module}-all"
+if test $module != config ; then
 	makelibsrcall="$makelibsrcall ${module}-libsrc-all"
+fi
 	makeinstall="$makeinstall ${module}-install"
+	makeinstallbin="$makeinstalletc ${module}-install-bin"
+	makeinstalldoc="$makeinstalldoc ${module}-install-doc"
+	makeinstalletc="$makeinstalletc ${module}-install-etc"
 	makeinstalllib="$makeinstalllib ${module}-install-lib"
 	makeinstallinclude="$makeinstallinclude ${module}-install-include"
 	makeinstallsupport="$makeinstallsupport ${module}-install-support"
 done
 
 cat >> $output <<EOF
-all: $makeall 
+all: $makeall
 
-libsrc-all: $makelibsrcall 
+libsrc-all: $makelibsrcall
 
-install: $makeinstall
+install: $makeinstall install-man
+
+install-bin: $makeinstallbin
+
+install-doc: $makeinstalldoc
+
+install-etc: $makeinstalletc
 
 install-lib: $makeinstalllib
 
 install-include: $makeinstallinclude
 
 install-support: $makeinstallsupport
+
+install-man:
+	(cd doxygen; \$(MAKE) install-man)
+
+install-html:
+	(cd doxygen; \$(MAKE) install-html)
 
 man:
 	(cd doxygen; \$(MAKE) man)
@@ -67,6 +84,15 @@ ${module}-libsrc-all:
 
 ${module}-install:
 	(cd $module; \$(MAKE) ARCH="\$(ARCH)" install)
+
+${module}-install-bin:
+	(cd $module; \$(MAKE) ARCH="\$(ARCH)" install-bin)
+
+${module}-install-doc:
+	(cd $module; \$(MAKE) ARCH="\$(ARCH)" install-doc)
+
+${module}-install-etc:
+	(cd $module; \$(MAKE) ARCH="\$(ARCH)" install-etc)
 
 ${module}-install-lib:
 	(cd $module; \$(MAKE) ARCH="\$(ARCH)" install-lib)
@@ -111,8 +137,8 @@ if test -d config ; then
 		done
 	fi
 	modules=\`echo \$modules | sed -e "s/config//g" | sed -e "s/CVS//g"\`
-	modules="config \$modules"
-else    
+	modules="config \$modules doxygen"
+else
 	echo "Cannot find configure directory (config or ../config)"
 	exit 1
 fi
