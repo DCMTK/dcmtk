@@ -3,6 +3,7 @@
   YBR_PARTIAL_422.
   Affects: dcmimage/libsrc/Makefile.in
            dcmimage/libsrc/Makefile.dep
+           dcmimage/apps/Makefile.dep
            dcmimage/include/dcmimage.h
            dcmimage/libsrc/dcmimage.cc
   Added:   dcmimage/include/diybrimg.h
