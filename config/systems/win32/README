@@ -9,13 +9,14 @@ is supported:
 The file msvc4.mak contain the project information for the following
 parts of the toolkit:
 
-1. dcmdata  - library and all applications are supported
-2. dcmnet   - library and all applications (including tests) are supported
-2. imagectn - library and all applications (including tests) are supported
+1. ofstd    - library and test applications
+2. dcmdata  - library and all applications 
+3. dcmnet   - library and all applications (including tests) 
+4. imagectn - library and all applications (including tests)
 
 The applications in dcmdata and dcmnet are tested (but not very intensivly) 
-while the imagectn applications are only compiled. It is planned to test them
-as well.
+while the imagectn applications are only compiled and do not work properly
+in the moment. It is planned to test them as well.
 
 The following parts of the toolkit are not supported and probably will 
 never be:
@@ -29,12 +30,14 @@ COMPILE INSTRUCTIONS:
 
 1. copy the file msvc4.mak to dcmtk directory
 2. rename the extensions of all .cc files into .cxx
-   (e.g. ren .cc .cxx with the COMMAND shell). You must rename
+   (e.g. ren .cc .cxx with the COMMAND shell or if you have a UNIX workstation 
+   station available use config/changext cxx). You must rename
    files in the libsrc, apps and tests directories of dcmdata, 
    dcmnet and imagectn.
 2. Start the Microsoft Developer Studio
 3. Open Workspace.. and select msvc4.mak
-4. Choose one of the subprojects and Build it.
+4. Choose one of the subprojects and build it. If you want to build all
+   applications use the project dcmtk.
 
 KNOWN PROBLEMS:
 
@@ -52,5 +55,5 @@ KNOWN PROBLEMS:
 
 
 Have Fun
-Andreas Barth, 26.06.97
+Andreas Barth, 05.08.97
 
