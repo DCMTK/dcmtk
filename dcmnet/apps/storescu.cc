@@ -1,49 +1,35 @@
 /*
-**
-**  Copyright (C) 1996, OFFIS
-**
-**  This software and supporting documentation were developed by
-**
-**    Kuratorium OFFIS e.V.
-**    Forschungsbereich 2: Kommunikationssysteme
-**    Escherweg 2
-**    D-26121 Oldenburg, Germany
-**
-**  for CEN/TC251/WG4 as a contribution to the Computer Assisted Radiology
-**  (CAR) 1996 DICOM Demonstration.
-**
-**  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
-**  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
-**  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
-**  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
-**  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
-**
-**  Copyright of the software  and  supporting  documentation  is,  unless
-**  otherwise stated, owned by OFFIS, and free access is hereby granted as
-**  a license to  use  this  software,  copy  this  software  and  prepare
-**  derivative works based upon this software.  However, any  distribution
-**  of this software source code or supporting documentation or derivative
-**  works  (source code and  supporting documentation)  must  include  the
-**  three paragraphs of this copyright notice.
-**
-*/
-
-/*
-** Test program for Storage Service Class (C-STORE operation)
-**
-** Author: 	Andrew Hewett
-**		Kuratorium OFFIS e.V., Oldenburg, Germany
-**
-**
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1999-03-29 11:19:56 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.21 $
-** Status:		$State: Exp $
-**
-** CVS/RCS Log at end of file
-*/
-
+ *
+ *  Copyright (C) 1994-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmnet
+ *
+ *  Author:  Andrew Hewett
+ *
+ *  Purpose: Storage Service Class User (C-STORE operation)
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-04-27 12:27:00 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
+ *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */                        
 
 #include "osconfig.h" /* make sure OS specific configuration is included first */
 
@@ -66,79 +52,59 @@ END_EXTERN_C
 #include <GUSI.h>
 #endif
 
+#include "ofstring.h"
 #include "dimse.h"
 #include "diutil.h"
+#include "dcdatset.h"
+#include "dcmetinf.h"
 #include "dcfilefo.h"
 #include "dcdebug.h"
 #include "dcuid.h"
 #include "dcdict.h"
+#include "dcdeftag.h"
 #include "cmdlnarg.h"
+#include "ofconapp.h"
 #include "dcuid.h"    /* for dcmtk version name */
 
-static char rcsid[] = "$dcmtk: storescu v"
+#define OFFIS_CONSOLE_APPLICATION "storescu"
+
+static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
-
-#define PATHSEPARATOR PATH_SEPARATOR /* via osconfig.h */
-
 
 /* default application titles */
 #define APPLICATIONTITLE	"STORESCU"
 #define PEERAPPLICATIONTITLE	"ANY-SCP"
 
-static char *progname = NULL;
-static OFBool verbose = OFFalse;
-static OFBool debug = OFFalse;
-static OFBool abortAssociation = OFFalse;
-static int maxReceivePDULength = ASC_DEFAULTMAXPDU;
-static int repeatCount = 1;
+static OFBool opt_verbose = OFFalse;
+static OFBool opt_showPresentationContexts = OFFalse;
+static OFBool opt_debug = OFFalse;
+static OFBool opt_abortAssociation = OFFalse;
+static OFCmdUnsignedInt opt_maxReceivePDULength = ASC_DEFAULTMAXPDU;
 static E_TransferSyntax opt_networkTransferSyntax = EXS_Unknown;
 
-static void
-shortusage()
-{
-    fprintf(stderr, "\
-usage: %s [-ti][-u][-r n][-v][-d][-a][-b n][-t ourAETitle][-c theirAETitle]\n\
-          peer port file ...\n",
-	progname);
-}
+static OFBool opt_haltOnUnsuccessfulStore = OFTrue;
+static OFBool unsuccessfulStoreEncountered = OFFalse;
+static int lastStatusCode = STATUS_Success;
 
-static void
-fullusage()
-{
-    fprintf(stderr, "%s\n\n", rcsid);
-    shortusage();
-    fprintf(stderr, "\
-parameters:\n\
-    peer      hostname of dicom peer\n\
-    port      tcp/ip port number of peer\n\
-    file      dicom image data set\n\
-options:\n\
-    -ti       use little-endian implicit transfer syntax only\n\
-    -u        disable generation of new VRs (UN/UT/VS)\n\
-    -r n      repeat n times\n\
-    -v        verbose mode\n\
-    -d        debug mode\n\
-    -a        abort association\n\
-    -b n      set max receive pdu to n bytes (default: %d)\n\
-    -t title  my calling AE title (default: %s)\n\
-    -c title  called AE title of peer (default: %s)\n",
-    maxReceivePDULength, APPLICATIONTITLE, PEERAPPLICATIONTITLE);
-    exit(1);
-}
+static OFBool opt_proposeOnlyRequiredPresentationContexts = OFFalse;
+static OFBool opt_combineProposedTransferSyntaxes = OFFalse;
 
-static void 
-usage()
-{
-    shortusage();
-    exit(1);
-}
+static OFCmdUnsignedInt opt_repeatCount = 1;
+static OFCmdUnsignedInt opt_inventPatientCount = 25;
+static OFCmdUnsignedInt opt_inventStudyCount = 50;
+static OFCmdUnsignedInt opt_inventSeriesCount = 100;
+static OFBool opt_inventSOPInstanceInformation = OFFalse;
+static OFString patientNamePrefix("OFFIS^TEST_PN_");   // PatientName is PN (maximum 16 chars)
+static OFString patientIDPrefix("PID_"); // PatientID is LO (maximum 64 chars)
+static OFString studyIDPrefix("SID_");   // StudyID is SH (maximum 16 chars)
+static OFString accessionNumberPrefix;  // AccessionNumber is SH (maximum 16 chars)
 
 static void 
 errmsg(const char *msg,...)
 {
     va_list args;
 
-    fprintf(stderr, "%s: ", progname);
+    fprintf(stderr, "%s: ", OFFIS_CONSOLE_APPLICATION);
     va_start(args, msg);
     vfprintf(stderr, msg, args);
     va_end(args);
@@ -147,26 +113,32 @@ errmsg(const char *msg,...)
 
 
 static CONDITION
-addAllStoragePresentationContexts(T_ASC_Parameters *params);
+addStoragePresentationContexts(T_ASC_Parameters *params, OFList<OFString>& sopClasses);
 
 static CONDITION 
-cstore(T_ASC_Association *assoc, const char* fname);
+cstore(T_ASC_Association *assoc, const OFString& fname);
 
+#define SHORTCOL 4
+#define LONGCOL 18
 
 int
 main(int argc, char *argv[])
 {
+    const char *opt_peer = NULL;
+    OFCmdUnsignedInt opt_port = 104;
+    const char *opt_peerTitle = PEERAPPLICATIONTITLE;
+    const char *opt_ourTitle = APPLICATIONTITLE;
+
+    OFList<OFString> fileNameList;
+    OFList<OFString> sopClassUIDList; // the list of sop classes
+    OFList<OFString> sopInstanceUIDList; // the list of sop instances
+
     CONDITION cond;
     T_ASC_Network *net;
     T_ASC_Parameters *params;
-    char *peer;
-    int port = 104;
     DIC_NODENAME localHost;
     DIC_NODENAME peerHost;
-    int i, j;
     T_ASC_Association *assoc;
-    const char *peerTitle = PEERAPPLICATIONTITLE;
-    const char *ourTitle = APPLICATIONTITLE;
 
 #ifdef HAVE_GUSI_H
     GUSISetup(GUSIwithSIOUXSockets);
@@ -180,107 +152,189 @@ main(int argc, char *argv[])
     WSAStartup(winSockVersionNeeded, &winSockData);
 #endif
 
-    prepareCmdLineArgs(argc, argv, "storescu");
+  char tempstr[20];
+  OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "DICOM storage (C-STORE) SCU", rcsid);
+  OFCommandLine cmd;
 
-    /* strip any leading path from program name */
-    if ((progname = (char*)strrchr(argv[0], PATHSEPARATOR)) != NULL) {
-	progname++;
-    } else {
-	progname = argv[0];
-    }
+  cmd.addGroup("general options:", LONGCOL, SHORTCOL+2);
+   cmd.addOption("--help",                      "-h",        "print this help text and exit");
+   cmd.addOption("--verbose",                   "-v",        "verbose mode, print processing details");
+   cmd.addOption("--verbose-pc",                "+v",        "verbose mode and show presentation contexts");
+   cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
+  cmd.addGroup("network options:");
+    cmd.addSubGroup("application entity titles:", LONGCOL, SHORTCOL);
+      OFString opt1 = "set my calling AE title (default: ";
+      opt1 += APPLICATIONTITLE;
+      opt1 += ")";
+      cmd.addOption("--aetitle",                "-aet",   1, "aetitle: string", opt1.c_str());
+      OFString opt2 = "set called AE title of peer (default: ";
+      opt2 += PEERAPPLICATIONTITLE;
+      opt2 += ")";
+      cmd.addOption("--call",                   "-aec",   1, "aetitle: string", opt2.c_str());
+    cmd.addSubGroup("proposed transmission transfer syntaxes:", LONGCOL, SHORTCOL);
+      cmd.addOption("--propose-uncompr",        "-x=",       "propose all uncompressed TS, explicit VR\nwith local byte ordering first (default)");
+      cmd.addOption("--propose-little",         "-xe",       "propose all uncompressed TS, explicit VR\nlittle endian first");
+      cmd.addOption("--propose-big",            "-xb",       "propose all uncompressed TS, explicit VR\nbig endian first");
+      cmd.addOption("--propose-implicit",       "-xi",       "propose implicit VR little endian TS only");
+      cmd.addOption("--propose-lossless",       "-xs",       "propose default JPEG lossless TS\nand all uncompressed transfer syntaxes");
+      cmd.addOption("--propose-jpeg8",          "-xy",       "propose default JPEG lossy TS for 8 bit data\nand all uncompressed transfer syntaxes");
+      cmd.addOption("--propose-jpeg12",         "-xx",       "propose default JPEG lossy TS for 12 bit data\nand all uncompressed transfer syntaxes");
+      cmd.addOption("--propose-rle",            "-xr",       "propose RLE lossless TS\nand all uncompressed transfer syntaxes");
+      cmd.addOption("--required",               "-R",        "propose only required presentation contexts\n(default: propose all supported)");
+      cmd.addOption("--combine",                "+C",        "combine proposed transfer syntaxes\n(default: separate pres. context for each TS)");
+    cmd.addSubGroup("post-1993 value representations:", LONGCOL, SHORTCOL);
+      cmd.addOption("--enable-new-vr",          "+u",        "enable support for new VRs (UN/UT/VS) (default)");
+      cmd.addOption("--disable-new-vr",         "-u",        "disable support for new VRs, convert to OB");
+    cmd.addSubGroup("other network options:", LONGCOL, SHORTCOL);
+      OFString opt3 = "set max receive pdu to n bytes (default: ";
+      sprintf(tempstr, "%ld", (long)ASC_DEFAULTMAXPDU);
+      opt3 += tempstr;
+      opt3 += ")";
+      OFString opt4 = "[n]umber of bytes: integer [";
+      sprintf(tempstr, "%ld", (long)ASC_MINIMUMPDUSIZE);
+      opt4 += tempstr;
+      opt4 += "..";
+      sprintf(tempstr, "%ld", (long)ASC_MAXIMUMPDUSIZE);
+      opt4 += tempstr;
+      opt4 += "]";
+      cmd.addOption("--max-pdu",                "-pdu",   1,  opt4.c_str(), opt3.c_str());
+      cmd.addOption("--repeat",                           1,  "[n]umber: integer", "repeat n times");
+      cmd.addOption("--abort",                                "abort association instead of releasing it");
+      cmd.addOption("--no-halt",                              "do not halt if unsuccessful store encountered\n(default: do halt)");
+      cmd.addOption("--invent-instance",        "+II",        "invent a new SOP instance UID for every image sent");
+      OFString opt5 = "invent a new series UID after n images\nhave been sent (default: ";
+      sprintf(tempstr, "%ld", (long)opt_inventSeriesCount);
+      opt5 += tempstr;
+      opt5 += ")";
+      cmd.addOption("--invent-series",          "+IR",   1,  "[n]umber: integer (implies --invent-instance)", opt5.c_str());
+      OFString opt6 = "invent a new study UID after n series\nhave been sent (default: ";
+      sprintf(tempstr, "%ld", (long)opt_inventStudyCount);
+      opt6 += tempstr;
+      opt6 += ")";
+      cmd.addOption("--invent-study",           "+IS",   1,  "[n]umber: integer (implies --invent-instance)", opt6.c_str());
+      OFString opt7 = "invent a new patient ID and name after n studies\nhave been sent (default: ";
+      sprintf(tempstr, "%ld", (long)opt_inventPatientCount);
+      opt7 += tempstr;
+      opt7 += ")";
+      cmd.addOption("--invent-patient",         "+IP",   1,  "[n]umber: integer (implies --invent-instance)", opt7.c_str());
 
-    if (argc < 4) {
-	fullusage();
-    }
-    /* parse program arguments */
-    for (i = 1; i < argc && argv[i][0] == '-'; i++) {
-	switch (argv[i][1]) {
-	case 'u':
-	    dcmEnableUnknownVRGeneration = OFFalse;
-	    dcmEnableUnlimitedTextVRGeneration = OFFalse;
-	    dcmEnableVirtualStringVRGeneration = OFFalse;
-	    break;
-	case 'v':
-	    verbose = OFTrue;
-	    break;
-	case 'd':
-	    debug = OFTrue;
-	    verbose = OFTrue;
-	    break;
-	case 'a':
-	    abortAssociation = OFTrue;
-	    break;
-	case 'r':
-	    if (((i + 1) < argc) && (argv[i + 1][0] != '-') &&
-		(sscanf(argv[i + 1], "%d", &repeatCount) == 1)) {
-		i++;		/* repeat count parsed */
-	    } else {
-		repeatCount = 1;
-	    }
-	    break;
-	case 'b':
-	    if (((i + 1) < argc) && 
-		(sscanf(argv[i + 1], "%d", &maxReceivePDULength) == 1)) {
-		i++;		/* Maximum Receive PDU Length parsed */
-		if (maxReceivePDULength < ASC_MINIMUMPDUSIZE) {
-		    errmsg("Maximum receive PDU length (%d) too small",
-			maxReceivePDULength);
-		    usage();
-		} else if (maxReceivePDULength > ASC_MAXIMUMPDUSIZE) {
-		    errmsg("Maximum receive PDU length (%d) too big",
-			maxReceivePDULength);
-		    usage();
-		}
-	    } else {
-		usage();
-	    }
-	    break;
-	case 'c':
-	    if (i++ < argc)
-		peerTitle = argv[i];
-	    else
-		usage();
-	    break;
-	case 't':
-	    if (argv[i][2] == 'i') {
-		opt_networkTransferSyntax = EXS_LittleEndianImplicit;
-	    } else if ((argv[i][2] == '\0') && (argc >= (i+1))) {
-		ourTitle = argv[++i];
-	    } else {
-		usage();
-	    }
-	    break;
-	default:
-	    usage();
-	}
-    }
+    /* evaluate command line */                           
+    prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
+    if (app.parseCommandLine(cmd, argc, argv, "peer port dicom-file...", 3, -1, OFCommandLine::ExpandWildcards))
+    {
+      /* check for --help first */
+      if (cmd.findOption("--help")) app.printUsage(OFFIS_CONSOLE_APPLICATION);
 
-    if (argc - i < 2) {
-	errmsg("port number and filename(s) missing");
-	usage();
-    }
+      cmd.getParam(1, opt_peer);
+      app.checkParam(cmd.getParam(2, opt_port, 1, (OFCmdUnsignedInt)65535));
 
-    /* peer to call */
-    peer = argv[i];
-    i++;
+      if (cmd.findOption("--verbose")) opt_verbose=OFTrue;
+      if (cmd.findOption("--verbose-pc")) 
+      {
+      	opt_verbose=OFTrue;
+      	opt_showPresentationContexts=OFTrue;
+      }
+      if (cmd.findOption("--debug")) 
+      {
+      	opt_debug = OFTrue;
+        DUL_Debug(OFTrue);
+        DIMSE_debug(OFTrue);
+      	SetDebugLevel(3);
+      }
+      if (cmd.findOption("--aetitle")) app.checkValue(cmd.getValue(opt_ourTitle));
+      if (cmd.findOption("--call")) app.checkValue(cmd.getValue(opt_peerTitle));
 
-    /* get port number to call */
-    if (sscanf(argv[i], "%d", &port) != 1) {
-	errmsg("bad port number: %s", argv[i]);
-	usage();
-    }
-    i++;
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--propose-uncompr"))  opt_networkTransferSyntax = EXS_Unknown;
+      if (cmd.findOption("--propose-little"))   opt_networkTransferSyntax = EXS_LittleEndianExplicit;
+      if (cmd.findOption("--propose-big"))      opt_networkTransferSyntax = EXS_BigEndianExplicit;
+      if (cmd.findOption("--propose-implicit")) opt_networkTransferSyntax = EXS_LittleEndianImplicit;
+      if (cmd.findOption("--propose-lossless")) opt_networkTransferSyntax = EXS_JPEGProcess14SV1TransferSyntax;
+      if (cmd.findOption("--propose-jpeg8"))    opt_networkTransferSyntax = EXS_JPEGProcess1TransferSyntax;
+      if (cmd.findOption("--propose-jpeg12"))   opt_networkTransferSyntax = EXS_JPEGProcess2_4TransferSyntax;
+      if (cmd.findOption("--propose-rle"))      opt_networkTransferSyntax = EXS_RLELossless;
+      cmd.endOptionBlock();
 
-    for (j=i; j<argc; j++) {
-	if (access(argv[j], R_OK) < 0) {
-	    errmsg("cannot access file: %s", argv[j]);
-	    usage();
-	}
-    }
+      if (cmd.findOption("--required")) opt_proposeOnlyRequiredPresentationContexts = OFTrue;
+      if (cmd.findOption("--combine")) opt_combineProposedTransferSyntaxes = OFTrue;
 
-    DUL_Debug(debug);
-    DIMSE_debug(debug);
-    SetDebugLevel(((debug)?3:0));	/* dcmdata debugging */
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--enable-new-vr")) 
+      {
+        dcmEnableUnknownVRGeneration = OFTrue;
+        dcmEnableUnlimitedTextVRGeneration = OFTrue;
+        dcmEnableVirtualStringVRGeneration = OFTrue;
+      }
+      if (cmd.findOption("--disable-new-vr"))
+      {
+        dcmEnableUnknownVRGeneration = OFFalse;
+        dcmEnableUnlimitedTextVRGeneration = OFFalse;
+        dcmEnableVirtualStringVRGeneration = OFFalse;
+      }
+      cmd.endOptionBlock();
+
+      if (cmd.findOption("--max-pdu")) app.checkValue(cmd.getValue(opt_maxReceivePDULength, ASC_MINIMUMPDUSIZE, (OFCmdUnsignedInt)ASC_MAXIMUMPDUSIZE));
+      if (cmd.findOption("--repeat"))  app.checkValue(cmd.getValue(opt_repeatCount, (OFCmdUnsignedInt)1));
+      if (cmd.findOption("--abort"))   opt_abortAssociation = OFTrue;
+      if (cmd.findOption("--no-halt")) opt_haltOnUnsuccessfulStore = OFFalse;
+      if (cmd.findOption("--invent-instance")) opt_inventSOPInstanceInformation = OFTrue;
+      if (cmd.findOption("--invent-series")) 
+      {
+      	opt_inventSOPInstanceInformation = OFTrue;
+      	app.checkValue(cmd.getValue(opt_inventSeriesCount, (OFCmdUnsignedInt)1));
+      }
+      if (cmd.findOption("--invent-study")) 
+      {
+      	opt_inventSOPInstanceInformation = OFTrue;
+      	app.checkValue(cmd.getValue(opt_inventStudyCount, (OFCmdUnsignedInt)1));
+      }
+      if (cmd.findOption("--invent-patient")) 
+      {
+      	opt_inventSOPInstanceInformation = OFTrue;
+      	app.checkValue(cmd.getValue(opt_inventPatientCount, (OFCmdUnsignedInt)1));
+      }
+      
+      /* finally parse filenames */
+      int paramCount = cmd.getParamCount();
+      const char *currentFilename = NULL;
+      OFString errormsg;
+      char sopClassUID[128];
+      char sopInstanceUID[128];
+
+      for (int i=3; i <= paramCount; i++)
+      {
+      	cmd.getParam(i, currentFilename);
+        if (access(currentFilename, R_OK) < 0)
+        {
+          errormsg = "cannot access file: ";
+          errormsg += currentFilename;
+          app.printError(errormsg.c_str());
+        }
+        if (opt_proposeOnlyRequiredPresentationContexts)
+        {
+            if (!DU_findSOPClassAndInstanceInFile(currentFilename, sopClassUID, sopInstanceUID))
+            {
+              errormsg = "missing SOP class (or instance) in file: ";
+              errormsg += currentFilename;
+              app.printError(errormsg.c_str());
+            } 
+            else if (!dcmIsaStorageSOPClassUID(sopClassUID))
+            {
+              errormsg = "unknown storage sop class in file: ";
+              errormsg += currentFilename;
+              errormsg += ": ";
+              errormsg += sopClassUID;
+              app.printError(errormsg.c_str());
+            }
+            else
+            {
+              sopClassUIDList.push_back(sopClassUID);
+              sopInstanceUIDList.push_back(sopInstanceUID);
+            }
+        }
+        fileNameList.push_back(currentFilename);
+      }
+   }
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded()) {
@@ -293,29 +347,29 @@ main(int argc, char *argv[])
 	COND_DumpConditions();
 	exit(1);
     }
-    cond = ASC_createAssociationParameters(&params, maxReceivePDULength);
+    cond = ASC_createAssociationParameters(&params, opt_maxReceivePDULength);
     if (!SUCCESS(cond)) {
 	COND_DumpConditions();
 	exit(1);
     }
-    ASC_setAPTitles(params, ourTitle, peerTitle, NULL);
+    ASC_setAPTitles(params, opt_ourTitle, opt_peerTitle, NULL);
 
     gethostname(localHost, sizeof(localHost) - 1);
-    sprintf(peerHost, "%s:%d", peer, port);
+    sprintf(peerHost, "%s:%d", opt_peer, (int)opt_port);
     ASC_setPresentationAddresses(params, localHost, peerHost);
 
-    cond = addAllStoragePresentationContexts(params);
+    cond = addStoragePresentationContexts(params, sopClassUIDList);        
     if (!SUCCESS(cond)) {
 	COND_DumpConditions();
 	exit(1);
     }
-    if (debug) {
+    if (opt_showPresentationContexts || opt_debug) {
 	printf("Request Parameters:\n");
 	ASC_dumpParameters(params);
     }
 
     /* create association */
-    if (verbose)
+    if (opt_verbose)
 	printf("Requesting Association\n");
     cond = ASC_requestAssociation(net, params, &assoc);
     if (cond != ASC_NORMAL) {
@@ -333,7 +387,7 @@ main(int argc, char *argv[])
 	}
     }
     /* what has been accepted/refused ? */
-    if (debug) {
+    if (opt_showPresentationContexts || opt_debug) {
 	printf("Association Parameters Negotiated:\n");
 	ASC_dumpParameters(params);
     }
@@ -343,22 +397,27 @@ main(int argc, char *argv[])
 	exit(1);
     }
 
-    if (verbose) {
+    if (opt_verbose) {
 	printf("Association Accepted (Max Send PDV: %lu)\n",
 		assoc->sendPDVLength);
     }
 
     /* do the real work */
     cond = DIMSE_NORMAL;
-    for (j=i; j<argc && cond==DIMSE_NORMAL; j++) {
-        cond = cstore(assoc, argv[j]);
+    OFListIterator(OFString) iter = fileNameList.begin();
+    OFListIterator(OFString) enditer = fileNameList.end();
+    
+    while ((iter != enditer) && (cond == DIMSE_NORMAL))
+    {
+        cond = cstore(assoc, *iter);
+        ++iter;
     }
 
     /* tear down association */
     switch (cond) {
     case DIMSE_NORMAL:
-	if (abortAssociation) {
-	    if (verbose)
+	if (opt_abortAssociation) {
+	    if (opt_verbose)
 		printf("Aborting Association\n");
 	    cond = ASC_abortAssociation(assoc);
 	    if (!SUCCESS(cond)) {
@@ -368,7 +427,7 @@ main(int argc, char *argv[])
 	    }
 	} else {
 	    /* release association */
-	    if (verbose)
+	    if (opt_verbose)
 		printf("Releasing Association\n");
 	    cond = ASC_releaseAssociation(assoc);
 	    if (cond != ASC_NORMAL && cond != ASC_RELEASECONFIRMED) {
@@ -380,7 +439,7 @@ main(int argc, char *argv[])
 	break;
     case DIMSE_PEERREQUESTEDRELEASE:
 	errmsg("Protocol Error: peer requested release (Aborting)");
-	if (verbose)
+	if (opt_verbose)
 	    printf("Aborting Association\n");
 	cond = ASC_abortAssociation(assoc);
 	if (!SUCCESS(cond)) {
@@ -390,12 +449,12 @@ main(int argc, char *argv[])
 	}
 	break;
     case DIMSE_PEERABORTEDASSOCIATION:
-	if (verbose) printf("Peer Aborted Association\n");
+	if (opt_verbose) printf("Peer Aborted Association\n");
 	break;
     default:
 	errmsg("SCU Failed:");
 	COND_DumpConditions();
-	if (verbose)
+	if (opt_verbose)
 	    printf("Aborting Association\n");
 	cond = ASC_abortAssociation(assoc);
 	if (!SUCCESS(cond)) {
@@ -416,7 +475,7 @@ main(int argc, char *argv[])
 	COND_DumpConditions();
 	exit(1);
     }
-    if (debug) {
+    if (opt_debug) {
 	/* are there any conditions sitting on the condition stack? */
 	char buf[BUFSIZ];
 	CONDITION c;
@@ -431,61 +490,324 @@ main(int argc, char *argv[])
     WSACleanup();
 #endif
 
+    int exitCode = 0;
+    if (opt_haltOnUnsuccessfulStore && unsuccessfulStoreEncountered) {
+        if (lastStatusCode == STATUS_Success) {
+            // there must have been some kind of general network error 
+            exitCode = 0xff;
+        } else {
+            exitCode = (lastStatusCode >> 8); // only the least significant byte is relevant as exit code
+        }
+    }
+
 #ifdef DEBUG
     dcmDataDict.clear();  /* useful for debugging with dmalloc */
 #endif    
-    return 0;
+    return exitCode;
+}
+
+
+static OFBool
+isaListMember(OFList<OFString>& list, OFString& s)
+{
+    OFListIterator(OFString) cur = list.begin();
+    OFListIterator(OFString) end = list.end();
+
+    OFBool found = OFFalse;
+
+    while (cur != end && !found) {
+
+        found = (s == *cur);
+        
+        ++cur;
+    }
+
+    return found;
 }
 
 static CONDITION
-addAllStoragePresentationContexts(T_ASC_Parameters *params)
+addPresentationContext(T_ASC_Parameters *params, 
+    int presentationContextId, const OFString& abstractSyntax,
+    const OFString& transferSyntax, 
+    T_ASC_SC_ROLE proposedRole = ASC_SC_ROLE_DEFAULT)
 {
     CONDITION cond = ASC_NORMAL;
-    int i;
-    int pid = 1;
 
-    /* 
-    ** If a command-line option has specified that only the Little
-    ** Endian Implicit Transfer Syntax be proposed then obey!
-    ** Otherwise, we prefer to accept Explicitly encoded transfer syntaxes
-    ** and if running on a Little Endian machine we prefer 
-    ** LittleEndianExplicitTransferSyntax to BigEndianTransferSyntax.
-    ** Some SCP implementations will just select the first transfer
-    ** syntax they support (this is not part of the standard) so
-    ** organise the proposed transfer syntaxes to take advantage
-    ** of such behaviour.
-    */
+    const char* c_p = transferSyntax.c_str();
+    cond = ASC_addPresentationContext(params, presentationContextId, 
+        abstractSyntax.c_str(), &c_p, 1, proposedRole);
+    return cond;
+}
 
-    const char* transferSyntaxes[3];
+static CONDITION
+addPresentationContext(T_ASC_Parameters *params, 
+    int presentationContextId, const OFString& abstractSyntax,
+    const OFList<OFString>& transferSyntaxList, 
+    T_ASC_SC_ROLE proposedRole = ASC_SC_ROLE_DEFAULT)
+{
+    CONDITION cond = ASC_NORMAL;
+
+    // create an array of supported/possible transfer syntaxes
+    const char** transferSyntaxes = new const char*[transferSyntaxList.size()];
     int transferSyntaxCount = 0;
+    OFListIterator(OFString) s_cur = transferSyntaxList.begin();
+    OFListIterator(OFString) s_end = transferSyntaxList.end();
+    while (s_cur != s_end) {
+        transferSyntaxes[transferSyntaxCount++] = (*s_cur).c_str();
+        ++s_cur;
+    }
 
-    if (opt_networkTransferSyntax == EXS_LittleEndianImplicit) {
-	transferSyntaxes[0] = UID_LittleEndianImplicitTransferSyntax;
-	transferSyntaxCount = 1;
-    } else {
+    cond = ASC_addPresentationContext(params, presentationContextId, 
+        abstractSyntax.c_str(), transferSyntaxes, transferSyntaxCount, proposedRole);
+
+    delete transferSyntaxes;
+    return cond;
+}
+
+static CONDITION
+addStoragePresentationContexts(T_ASC_Parameters *params, OFList<OFString>& sopClasses)
+{
+    /*
+     * Each SOP Class will be proposed in two presentation contexts (unless
+     * the opt_combineProposedTransferSyntaxes global variable is true).
+     * The command line specified a preferred transfer syntax to use.
+     * This prefered transfer syntax will be proposed in one
+     * presentation context and a set of alternative (fallback) transfer
+     * syntaxes will be proposed in a different presentation context.
+     *
+     * Generally, we prefer to use Explicitly encoded transfer syntaxes
+     * and if running on a Little Endian machine we prefer 
+     * LittleEndianExplicitTransferSyntax to BigEndianTransferSyntax.
+     * Some SCP implementations will just select the first transfer
+     * syntax they support (this is not part of the standard) so
+     * organise the proposed transfer syntaxes to take advantage
+     * of such behaviour.
+     */
+
+    // Which transfer syntax was preferred on the command line
+    OFString preferredTransferSyntax;
+    if (opt_networkTransferSyntax == EXS_Unknown) {
 	/* gLocalByteOrder is defined in dcxfer.h */
 	if (gLocalByteOrder == EBO_LittleEndian) {
 	    /* we are on a little endian machine */
-	    transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
-	    transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
+	    preferredTransferSyntax = UID_LittleEndianExplicitTransferSyntax;
 	} else {
 	    /* we are on a big endian machine */
-	    transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
-	    transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+	    preferredTransferSyntax = UID_BigEndianExplicitTransferSyntax;
 	}
-	transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
-	transferSyntaxCount = 3;
+    } else {
+        DcmXfer xfer(opt_networkTransferSyntax);
+	preferredTransferSyntax = xfer.getXferID();
     }
 
-    /* the array of Storage SOP Class UIDs comes from dcuid.h */
-    for (i=0; i<numberOfDcmStorageSOPClassUIDs && SUCCESS(cond); i++) {
-	cond = ASC_addPresentationContext(
-	    params, pid, dcmStorageSOPClassUIDs[i],
-	    transferSyntaxes, transferSyntaxCount);
-	pid += 2;	/* only odd presentation context id's */
+    OFListIterator(OFString) s_cur;
+    OFListIterator(OFString) s_end;
+
+
+    OFList<OFString> fallbackSyntaxes;
+    fallbackSyntaxes.push_back(UID_LittleEndianExplicitTransferSyntax);
+    fallbackSyntaxes.push_back(UID_BigEndianExplicitTransferSyntax);
+    fallbackSyntaxes.push_back(UID_LittleEndianImplicitTransferSyntax);
+    // Remove the preferred syntax from the fallback list
+    fallbackSyntaxes.remove(preferredTransferSyntax);
+    // If little endian implicit is preferred then we don't need any fallback syntaxes
+    // because it is the default transfer syntax and all applications must support it.
+    if (opt_networkTransferSyntax == EXS_LittleEndianImplicit) {
+        fallbackSyntaxes.clear();
+    }
+
+    // created a list of transfer syntaxes combined from the preferred and fallback syntaxes
+    OFList<OFString> combinedSyntaxes;
+    s_cur = fallbackSyntaxes.begin();
+    s_end = fallbackSyntaxes.end();
+    combinedSyntaxes.push_back(preferredTransferSyntax);
+    while (s_cur != s_end)
+    {
+        if (!isaListMember(combinedSyntaxes, *s_cur)) combinedSyntaxes.push_back(*s_cur);
+        ++s_cur;
+    }
+
+    if (!opt_proposeOnlyRequiredPresentationContexts) {
+        // add all the known storage sop classes to the list
+        // the array of Storage SOP Class UIDs comes from dcuid.h
+        for (int i=0; i<numberOfDcmStorageSOPClassUIDs; i++) {
+            sopClasses.push_back(dcmStorageSOPClassUIDs[i]);
+        }
+    }
+
+    // thin out the sop classes to remove any duplicates.
+    OFList<OFString> sops;
+    s_cur = sopClasses.begin();
+    s_end = sopClasses.end();
+    while (s_cur != s_end) {
+        if (!isaListMember(sops, *s_cur)) {
+            sops.push_back(*s_cur);
+        }
+        ++s_cur;
+    }
+
+    // add a presentations context for each sop class / transfer syntax pair
+    CONDITION cond = ASC_NORMAL;
+    int pid = 1; // presentation context id
+    s_cur = sops.begin();
+    s_end = sops.end();
+    while (s_cur != s_end && SUCCESS(cond)) {
+
+        if (pid > 255) {
+    	    errmsg("Too many presentation contexts");
+	    return ASC_BADPRESENTATIONCONTEXTID;
+        }
+
+        if (opt_combineProposedTransferSyntaxes) {
+            cond = addPresentationContext(params, pid, *s_cur, combinedSyntaxes);
+	    pid += 2;	/* only odd presentation context id's */
+        } else {
+
+            // sop class with preferred transfer syntax
+            cond = addPresentationContext(params, pid, *s_cur, preferredTransferSyntax);
+	    pid += 2;	/* only odd presentation context id's */
+
+            if (fallbackSyntaxes.size() > 0) {
+                if (pid > 255) {
+                    errmsg("Too many presentation contexts");
+	            return ASC_BADPRESENTATIONCONTEXTID;
+                }
+
+                // sop class with fallback transfer syntax
+                cond = addPresentationContext(params, pid, *s_cur, fallbackSyntaxes);
+	        pid += 2;	/* only odd presentation context id's */
+            }
+        }
+        ++s_cur;
     }
 
     return cond;
+}
+
+static int
+secondsSince1970()
+{
+    time_t t = time(NULL);
+    return (int)t;
+}
+
+static OFString
+intToString(int i)
+{
+    char numbuf[32];
+    sprintf(numbuf, "%d", i);
+    return numbuf;
+}
+
+static OFString
+makeUID(OFString basePrefix, int counter)
+{
+    OFString prefix = basePrefix + "." + intToString(counter);
+    char uidbuf[65];
+    OFString uid = dcmGenerateUniqueIdentifer(uidbuf, prefix.c_str());
+    return uid;
+}
+
+static OFBool
+updateStringAttributeValue(DcmItem* dataset, const DcmTagKey& key, OFString& value)
+{
+    DcmStack stack;
+    DcmTag tag(key);
+
+    E_Condition cond = EC_Normal;
+    cond = dataset->search(key, stack, ESM_fromHere, OFFalse);
+    if (cond != EC_Normal) {
+	cerr << "error: updateStringAttributeValue: cannot find: " << tag.getTagName() 
+	     << " " << key << ": "
+	     << dcmErrorConditionToString(cond) << endl;
+        return OFFalse;
+    }
+
+    DcmElement* elem = (DcmElement*) stack.top();
+    
+    DcmVR vr(elem->ident());
+    if (elem->getLength() > vr.getMaxValueLength()) {
+	cerr << "error: updateStringAttributeValue: INTERNAL ERROR: " << tag.getTagName() 
+	     << " " << key << ": value too large (max "
+	    << vr.getMaxValueLength() << ") for " << vr.getVRName() << " value: " << value << endl;
+        return OFFalse;
+    }
+    
+    cond = elem->putOFStringArray(value);
+    if (cond != EC_Normal) {
+	cerr << "error: updateStringAttributeValue: cannot put string in attribute: " << tag.getTagName() 
+	     << " " << key << ": "
+	     << dcmErrorConditionToString(cond) << endl;
+        return OFFalse;
+    }
+
+    return OFTrue;
+}
+
+static void
+replaceSOPInstanceInformation(DcmDataset* dataset)
+{
+    static OFCmdUnsignedInt patientCounter = 0;
+    static OFCmdUnsignedInt studyCounter = 0;
+    static OFCmdUnsignedInt seriesCounter = 0;
+    static OFCmdUnsignedInt imageCounter = 0;
+
+    static OFString seriesInstanceUID = makeUID(SITE_SERIES_UID_ROOT, seriesCounter);
+    static OFString seriesNumber = intToString(seriesCounter);
+    static OFString studyInstanceUID = makeUID(SITE_STUDY_UID_ROOT, studyCounter);
+    static OFString studyID = studyIDPrefix + intToString(secondsSince1970()) + intToString(studyCounter);
+    static OFString accessionNumber = accessionNumberPrefix + intToString(secondsSince1970()) + intToString(studyCounter);
+    static OFString patientID = patientIDPrefix + intToString(secondsSince1970()) + intToString(patientCounter);
+    static OFString patientName = patientNamePrefix + intToString(secondsSince1970()) + intToString(patientCounter);
+
+    if (imageCounter >= opt_inventSeriesCount) {
+        imageCounter = 0;
+        seriesCounter++;
+        seriesInstanceUID = makeUID(SITE_SERIES_UID_ROOT, seriesCounter);
+        seriesNumber = intToString(seriesCounter);
+    }
+    if (seriesCounter >= opt_inventStudyCount) {
+        seriesCounter = 0;
+        studyCounter++;
+        studyInstanceUID = makeUID(SITE_STUDY_UID_ROOT, studyCounter);
+        studyID = studyIDPrefix + intToString(secondsSince1970()) + intToString(studyCounter);
+        accessionNumber = accessionNumberPrefix + intToString(secondsSince1970()) + intToString(studyCounter);
+    }
+    if (studyCounter >= opt_inventPatientCount) {
+        // we create as many patients as necessary */
+        studyCounter = 0;
+        patientCounter++;
+        patientID = patientIDPrefix + intToString(secondsSince1970()) + intToString(patientCounter);
+        patientName = patientNamePrefix + intToString(secondsSince1970()) + intToString(patientCounter);
+    }
+
+    OFString sopInstanceUID = makeUID(SITE_INSTANCE_UID_ROOT, imageCounter);
+    OFString imageNumber = intToString(imageCounter);
+
+    if (opt_verbose) {
+        cout << "Inventing Identifying Information (" << 
+            "pa" << patientCounter << ", st" << studyCounter << 
+            ", se" << seriesCounter << ", im" << imageCounter << "): " << endl;
+        cout << "  PatientName=" << patientName << endl;
+        cout << "  PatientID=" << patientID << endl;
+        cout << "  StudyInstanceUID=" << studyInstanceUID << endl;
+        cout << "  StudyID=" << studyID << endl;
+        cout << "  SeriesInstanceUID=" << seriesInstanceUID << endl;
+        cout << "  SeriesNumber=" << seriesNumber << endl;
+        cout << "  SOPInstanceUID=" << sopInstanceUID << endl;
+        cout << "  ImageNumber=" << imageNumber << endl;
+    }
+
+    updateStringAttributeValue(dataset, DCM_PatientsName, patientName);
+    updateStringAttributeValue(dataset, DCM_PatientID, patientID);
+    updateStringAttributeValue(dataset, DCM_StudyInstanceUID, studyInstanceUID);
+    updateStringAttributeValue(dataset, DCM_StudyID, studyID);
+    updateStringAttributeValue(dataset, DCM_SeriesInstanceUID, seriesInstanceUID);
+    updateStringAttributeValue(dataset, DCM_SeriesNumber, seriesNumber);
+    updateStringAttributeValue(dataset, DCM_SOPInstanceUID, sopInstanceUID);
+    updateStringAttributeValue(dataset, DCM_ImageNumber, imageNumber);
+
+    imageCounter++;
 }
 
 static void
@@ -493,7 +815,7 @@ progressCallback(void * /*callbackData*/,
     T_DIMSE_StoreProgress *progress,
     T_DIMSE_C_StoreRQ * /*req*/)
 {
-    if (verbose) {
+    if (opt_verbose) {
         switch (progress->state) {
 	case DIMSE_StoreBegin:	
 	    printf("XMIT:"); break;
@@ -518,6 +840,13 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
     DIC_UI sopInstance;
     DcmDataset *statusDetail = NULL;
 
+    unsuccessfulStoreEncountered = OFTrue; // assumption 
+
+    if (opt_verbose) {
+        printf("--------------------------\n");
+        printf("Sending file: %s\n", fname);
+    }
+
     DcmFileStream inf(fname, DCM_ReadMode);
     if ( inf.Fail() ) {
 	errmsg("Cannot open file: %s: %s", fname, strerror(errno));
@@ -535,6 +864,10 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
 	return DIMSE_BADDATA;
     }
 
+    if (opt_inventSOPInstanceInformation) {
+        replaceSOPInstanceInformation(dcmff.getDataset());
+    }
+
     /* which SOP class and SOP instance ? */
     if (!DU_findSOPClassAndInstanceInDataSet(dcmff.getDataset(), 
 	sopClass, sopInstance)) {
@@ -543,13 +876,24 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
     }
 
     /* which presentation context should be used */
-    presId = ASC_findAcceptedPresentationContextID(assoc, sopClass);
+    DcmXfer filexfer(dcmff.getDataset()->getOriginalXfer());
+    if (filexfer.getXfer() != EXS_Unknown) presId = ASC_findAcceptedPresentationContextID(assoc, sopClass, filexfer.getXferID());
+    else presId = ASC_findAcceptedPresentationContextID(assoc, sopClass);
     if (presId == 0) {
         const char *modalityName = DU_sopClassToModality(sopClass);
         if (!modalityName) modalityName = dcmFindNameOfUID(sopClass);
         if (!modalityName) modalityName = "unknown SOP class";
 	errmsg("No presentation context for: (%s) %s", modalityName, sopClass);
 	return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
+    }
+
+    if (opt_verbose) {
+        DcmXfer fileTransfer(dcmff.getDataset()->getOriginalXfer());
+        T_ASC_PresentationContext pc;
+        ASC_findAcceptedPresentationContext(assoc->params, presId, &pc);
+        DcmXfer netTransfer(pc.acceptedTransferSyntax);
+        printf("Transfer: %s -> %s\n", 
+            dcmFindNameOfUID(fileTransfer.getXferID()), dcmFindNameOfUID(netTransfer.getXferID()));
     }
 
     bzero((char*)&req, sizeof(req));
@@ -559,7 +903,7 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
     req.DataSetType = DIMSE_DATASET_PRESENT;
     req.Priority = DIMSE_PRIORITY_LOW;
 
-    if (verbose) {
+    if (opt_verbose) {
 	printf("Store SCU RQ: MsgID %d, (%s)\n", 
 	    msgId, DU_sopClassToModality(sopClass));
     }
@@ -568,10 +912,19 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
         NULL, dcmff.getDataset(), progressCallback, NULL, 
 	DIMSE_BLOCKING, 0, 
 	&rsp, &statusDetail);
-	
-	
+
+    /*
+     * If store command completed normally, with a status 
+     * of success or some warning then the image was accepted.
+     */
+    if (cond == DIMSE_NORMAL && (rsp.DimseStatus == STATUS_Success || DICOM_WARNING_STATUS(rsp.DimseStatus))) {
+        unsuccessfulStoreEncountered = OFFalse;
+    }
+
+    lastStatusCode = rsp.DimseStatus;
+		
     if (cond == DIMSE_NORMAL) {
-        if (verbose) {
+        if (opt_verbose) {
 	    DIMSE_printCStoreRSP(stdout, &rsp);
         }
     } else {
@@ -588,13 +941,13 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
 
 
 static CONDITION
-cstore(T_ASC_Association * assoc, const char *fname)
+cstore(T_ASC_Association * assoc, const OFString& fname)
 {
     CONDITION cond = DIMSE_NORMAL;
-    int n = repeatCount;
+    int n = opt_repeatCount;
 
-    while (cond == DIMSE_NORMAL && n--) {
-	cond = storeSCU(assoc, fname);
+    while ((cond == DIMSE_NORMAL) && n-- && !(opt_haltOnUnsuccessfulStore && unsuccessfulStoreEncountered)) {
+	cond = storeSCU(assoc, fname.c_str());
     }
     return cond;
 }
@@ -602,7 +955,11 @@ cstore(T_ASC_Association * assoc, const char *fname)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.21  1999-03-29 11:19:56  meichel
+** Revision 1.22  1999-04-27 12:27:00  meichel
+** Adapted storescu to new command line option scheme. Added support for
+**   transmission of compressed images and on-the-fly creation of new UIDs.
+**
+** Revision 1.21  1999/03/29 11:19:56  meichel
 ** Cleaned up dcmnet code for char* to const char* assignments.
 **
 ** Revision 1.20  1998/10/20 08:20:22  meichel
@@ -680,7 +1037,6 @@ cstore(T_ASC_Association * assoc, const char *fname)
 **
 ** Revision 1.1.1.1  1996/03/26 18:38:44  hewett
 ** Initial Release.
-**
 **
 */
 
