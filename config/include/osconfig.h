@@ -27,7 +27,7 @@
 */
 #include <config.h>
 
-#elif __MWERKS__
+#elif defined(__MWERKS__)
 /*
 ** Metrowerks C++ compiler for 68k and PowerPC Apple Macintosh
 */
