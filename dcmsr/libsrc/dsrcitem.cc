@@ -23,8 +23,8 @@
  *    classes: DSRContentItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-20 10:14:57 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2000-10-26 14:26:00 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,16 +44,19 @@
 #include "dsruidtn.h"
 #include "dsrpnmtn.h"
 #include "dsrscotn.h"
+#include "dsrtcotn.h"
 #include "dsrcomtn.h"
 #include "dsrimgtn.h"
 #include "dsrwavtn.h"
 #include "dsrcontn.h"
+#include "dsrreftn.h"
 
 
 const OFString DSRContentItem::EmptyString;
 const DSRCodedEntryValue DSRContentItem::EmptyCodedEntry;
 const DSRNumericMeasurementValue DSRContentItem::EmptyNumericMeasurement;
 const DSRSpatialCoordinatesValue DSRContentItem::EmptySpatialCoordinates;
+const DSRTemporalCoordinatesValue DSRContentItem::EmptyTemporalCoordinates;
 const DSRCompositeReferenceValue DSRContentItem::EmptyCompositeReference;
 const DSRImageReferenceValue DSRContentItem::EmptyImageReference;
 const DSRWaveformReferenceValue DSRContentItem::EmptyWaveformReference;
@@ -109,6 +112,7 @@ const OFString &DSRContentItem::getStringValue() const
             case VT_Time:
             case VT_UIDRef:
             case VT_PName:
+            case VT_byReference:
                 return ((DSRStringValue *)TreeNode)->getValue();
             default:
                 break;
@@ -142,6 +146,9 @@ E_Condition DSRContentItem::setStringValue(const OFString &stringValue)
                 break;
             case VT_PName:
                 result = ((DSRPNameTreeNode *)TreeNode)->setValue(stringValue);
+                break;
+            case VT_byReference:
+                result = ((DSRByReferenceTreeNode *)TreeNode)->setValue(stringValue);
                 break;
             default:
                 break;
@@ -296,6 +303,56 @@ E_Condition DSRContentItem::setSpatialCoordinates(const DSRSpatialCoordinatesVal
     {
         if (TreeNode->getValueType() == VT_SCoord)
             result = ((DSRSCoordTreeNode *)TreeNode)->setValue(coordinatesValue);
+    }
+    return result;
+}
+
+
+DSRTemporalCoordinatesValue *DSRContentItem::getTemporalCoordinatesPtr()
+{
+    DSRTemporalCoordinatesValue *pointer = NULL;
+    if (TreeNode != NULL)
+    {
+        if (TreeNode->getValueType() == VT_TCoord)
+            pointer = ((DSRTCoordTreeNode *)TreeNode)->getValuePtr();
+    }
+    return pointer;
+}
+
+
+const DSRTemporalCoordinatesValue &DSRContentItem::getTemporalCoordinates() const
+{
+    if (TreeNode != NULL)
+    {
+        if (TreeNode->getValueType() == VT_TCoord)
+            return ((DSRTCoordTreeNode *)TreeNode)->getValue();
+    }
+    return EmptyTemporalCoordinates;
+}
+
+
+E_Condition DSRContentItem::getTemporalCoordinates(DSRTemporalCoordinatesValue &coordinatesValue) const
+{
+    E_Condition result = EC_IllegalCall;
+    if (TreeNode != NULL)
+    {
+        if (TreeNode->getValueType() == VT_TCoord)
+            result= ((DSRTCoordTreeNode *)TreeNode)->getValue(coordinatesValue);
+        else
+            coordinatesValue.clear();
+    } else
+        coordinatesValue.clear();
+    return result;
+}
+
+
+E_Condition DSRContentItem::setTemporalCoordinates(const DSRTemporalCoordinatesValue &coordinatesValue)
+{
+    E_Condition result = EC_IllegalCall;
+    if (TreeNode != NULL)
+    {
+        if (TreeNode->getValueType() == VT_TCoord)
+            result = ((DSRTCoordTreeNode *)TreeNode)->setValue(coordinatesValue);
     }
     return result;
 }
@@ -541,7 +598,11 @@ E_Condition DSRContentItem::setObservationDateTime(const OFString &observationDa
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcitem.cc,v $
- *  Revision 1.5  2000-10-20 10:14:57  joergr
+ *  Revision 1.6  2000-10-26 14:26:00  joergr
+ *  Added support for "Comprehensive SR".
+ *  Added support for TCOORD content item.
+ *
+ *  Revision 1.5  2000/10/20 10:14:57  joergr
  *  Renamed class DSRReferenceValue to DSRCompositeReferenceValue.
  *
  *  Revision 1.4  2000/10/18 17:12:06  joergr
