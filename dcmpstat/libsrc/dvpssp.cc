@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-11-19 10:58:40 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Update Date:      $Date: 2000-02-29 12:16:20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -763,10 +763,11 @@ E_Condition DVPSStoredPrint::addImageBox(
   const char *refsopinstanceuid,
   const char *requestedimagesize,
   const char *patientid,
-  DVPSPresentationLUT *presentationlut)
+  DVPSPresentationLUT *presentationlut,
+  OFBool inversePLUT)
 {  
   char instanceuid[100];
-  const char *lutUID = presentationLUTList.addPresentationLUT(presentationlut);
+  const char *lutUID = presentationLUTList.addPresentationLUT(presentationlut, inversePLUT);
   return imageBoxContentList.addImageBox(dcmGenerateUniqueIdentifer(instanceuid), 
      retrieveaetitle, refstudyuid, refseriesuid, refsopclassuid, 
      refsopinstanceuid, requestedimagesize, patientid, lutUID);
@@ -777,7 +778,8 @@ E_Condition DVPSStoredPrint::addImageBox(
   const char *refsopinstanceuid,
   const char *requestedimagesize,
   const char *patientid,
-  DVPSPresentationLUT *presentationlut)
+  DVPSPresentationLUT *presentationlut,
+  OFBool inversePLUT)
 {
   char *refstudyuid=NULL;
   char *refseriesuid=NULL;
@@ -787,7 +789,7 @@ E_Condition DVPSStoredPrint::addImageBox(
   imageSeriesInstanceUID.getString(refseriesuid); // but separate series for the hardcopy images
 
   return addImageBox(retrieveaetitle, refstudyuid, refseriesuid, UID_HardcopyGrayscaleImageStorage,
-     refsopinstanceuid, requestedimagesize, patientid, presentationlut);
+     refsopinstanceuid, requestedimagesize, patientid, presentationlut, inversePLUT);
 }
 
 E_Condition DVPSStoredPrint::setInstanceUID(const char *uid)
@@ -1725,7 +1727,11 @@ void DVPSStoredPrint::deleteAnnotations()
 
 /*
  *  $Log: dvpssp.cc,v $
- *  Revision 1.20  1999-11-19 10:58:40  meichel
+ *  Revision 1.21  2000-02-29 12:16:20  meichel
+ *  Fixed bug in dcmpstat library that caused Monochrome1 images
+ *    to be printed inverse if a Presentation LUT was applied.
+ *
+ *  Revision 1.20  1999/11/19 10:58:40  meichel
  *  Fixed bug in dcmpstat module that prevented printing of images
  *
  *  Revision 1.19  1999/10/19 14:48:26  meichel

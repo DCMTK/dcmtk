@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-10-19 14:48:24 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-02-29 12:16:20 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -188,18 +188,31 @@ DVPSPresentationLUT *DVPSPresentationLUT_PList::findPresentationLUT(const char *
   return NULL;
 }
 
-const char *DVPSPresentationLUT_PList::addPresentationLUT(DVPSPresentationLUT *newLUT)
+const char *DVPSPresentationLUT_PList::addPresentationLUT(DVPSPresentationLUT *newLUT, OFBool inversePLUT)
 {
   if (newLUT == NULL) return NULL;
   
-  DVPSPresentationLUTType lutType = newLUT->getType();
+  DiLookupTable *diLUT = NULL;
+  const char *result = NULL;  
+
   // 'INVERSE' LUT shape is undefined for Print and has already 
   // been rendered into the bitmap at this stage.
+  DVPSPresentationLUTType lutType = newLUT->getType();
   if (lutType == DVPSP_inverse) lutType = DVPSP_identity; 
-  DiLookupTable *diLUT = NULL;
-  if (lutType == DVPSP_table) diLUT = newLUT->createDiLookupTable();
-  const char *result = NULL;
-  
+
+  DVPSPresentationLUT *myLUT = newLUT->clone();
+  if (myLUT)
+  {
+    // make sure that we don't copy an inverse LUT shape
+    if (myLUT->getType() == DVPSP_inverse) myLUT->setType(DVPSP_identity);
+    if (lutType == DVPSP_table)
+    {
+      if (inversePLUT) myLUT->invert();  	 
+      diLUT = myLUT->createDiLookupTable();
+    }
+  } else return NULL;
+
+  // see if myLUT is already somewhere in the list
   OFListIterator(DVPSPresentationLUT *) first = begin();
   OFListIterator(DVPSPresentationLUT *) last = end();
   while (first != last)
@@ -208,11 +221,11 @@ const char *DVPSPresentationLUT_PList::addPresentationLUT(DVPSPresentationLUT *n
     {
       if (lutType == DVPSP_table)
       {
-      	if ((*first)->compareDiLookupTable(diLUT))
+   	if ((*first)->compareDiLookupTable(diLUT))
       	{
       	  result = (*first)->getSOPInstanceUID(); 
       	  break;
-      	}
+        }
       } else {
         result = (*first)->getSOPInstanceUID();
         break;
@@ -220,29 +233,32 @@ const char *DVPSPresentationLUT_PList::addPresentationLUT(DVPSPresentationLUT *n
     }
     ++first;
   }
-  
   delete diLUT;
-  if (result) return result;
   
-  // no match, create new LUT
-  char uid[100];
-  DVPSPresentationLUT *myLUT = newLUT->clone();
-  if (myLUT)
+  if (result)
   {
-  	// make sure that we don't copy an inverse LUT shape
-  	if (myLUT->getType() == DVPSP_inverse) myLUT->setType(DVPSP_identity);
-  	dcmGenerateUniqueIdentifer(uid);
-  	myLUT->setSOPInstanceUID(uid);
-    push_back(myLUT);
-    result = myLUT->getSOPInstanceUID();
+    delete myLUT;
+    return result;
   }
+    
+  // no match, store new LUT
+  char uid[100];
+  dcmGenerateUniqueIdentifer(uid);
+  myLUT->setSOPInstanceUID(uid);
+  push_back(myLUT);
+  result = myLUT->getSOPInstanceUID();
+
   return result;
 }
 
 
 /*
  *  $Log: dvpspll.cc,v $
- *  Revision 1.2  1999-10-19 14:48:24  meichel
+ *  Revision 1.3  2000-02-29 12:16:20  meichel
+ *  Fixed bug in dcmpstat library that caused Monochrome1 images
+ *    to be printed inverse if a Presentation LUT was applied.
+ *
+ *  Revision 1.2  1999/10/19 14:48:24  meichel
  *  added support for the Basic Annotation Box SOP Class
  *    as well as access methods for Max Density and Min Density.
  *

@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-11-25 11:41:10 $
- *  CVS/RCS Revision: $Revision: 1.83 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-02-29 12:16:19 $
+ *  CVS/RCS Revision: $Revision: 1.84 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2024,7 +2024,7 @@ E_Condition DVInterface::saveGrayscaleHardcopyImage(
        * we could end up with multiple images being part of one study and one series, but having
        * different patient IDs. This might confuse archives using the patient root query model.
        */
-      status = pPrint->addImageBox(getNetworkAETitle(), theInstanceUID.c_str(), reqImageSize, NULL, presLUT);
+      status = pPrint->addImageBox(getNetworkAETitle(), theInstanceUID.c_str(), reqImageSize, NULL, presLUT, pState->isMonochrome1Image());
     }
     
     delete fileformat;
@@ -2501,7 +2501,7 @@ E_Condition DVInterface::addToPrintHardcopyFromDB(const char *studyUID, const ch
               sopclassuid = *((DcmUniqueIdentifier *)(stack.top()));
               if (EC_Normal == sopclassuid.getString(sopclass))
                 result = pPrint->addImageBox(getNetworkAETitle(), studyUID, seriesUID,
-                  sopclass, instanceUID, NULL, NULL, &presentationLUT);
+                  sopclass, instanceUID, NULL, NULL, &presentationLUT, OFFalse);
               else
                 result = EC_IllegalCall;
             }
@@ -2693,7 +2693,11 @@ E_Condition DVInterface::dumpIOD(const char *studyUID, const char *seriesUID, co
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.83  1999-11-25 11:41:10  joergr
+ *  Revision 1.84  2000-02-29 12:16:19  meichel
+ *  Fixed bug in dcmpstat library that caused Monochrome1 images
+ *    to be printed inverse if a Presentation LUT was applied.
+ *
+ *  Revision 1.83  1999/11/25 11:41:10  joergr
  *  Changed config file entry "HighEndSystem" to "HighResolutionGraphics".
  *
  *  Revision 1.82  1999/11/18 18:23:06  meichel

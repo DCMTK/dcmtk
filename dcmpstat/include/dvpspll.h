@@ -23,8 +23,8 @@
  *    classes: DVPSPresentationLUT_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-10-07 17:21:49 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-02-29 12:16:15 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -116,9 +116,10 @@ public:
    *  The referenced LUT is copied. If an identical LUT already exists,
    *  no duplicate is created.
    *  @param newLUT pointer to new Presentation LUT. May be NULL.
+   *  @param inversePLUT true if presentation LUT is for Monochrome1 and must be inversed.
    *  @return UID of referenced Presentation LUT. May be NULL (if input was NULL).
    */
-  const char *addPresentationLUT(DVPSPresentationLUT *newLUT);
+  const char *addPresentationLUT(DVPSPresentationLUT *newLUT, OFBool inversePLUT);
   
 private:
 
@@ -137,7 +138,11 @@ private:
 
 /*
  *  $Log: dvpspll.h,v $
- *  Revision 1.1  1999-10-07 17:21:49  meichel
+ *  Revision 1.2  2000-02-29 12:16:15  meichel
+ *  Fixed bug in dcmpstat library that caused Monochrome1 images
+ *    to be printed inverse if a Presentation LUT was applied.
+ *
+ *  Revision 1.1  1999/10/07 17:21:49  meichel
  *  Reworked management of Presentation LUTs in order to create tighter
  *    coupling between Softcopy and Print.
  *

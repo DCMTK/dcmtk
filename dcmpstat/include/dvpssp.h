@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-10-19 14:46:04 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2000-02-29 12:16:16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -440,6 +440,7 @@ class DVPSStoredPrint
    *  @param requestedimagesize requested images size for this image, may be NULL (absent)
    *  @param patientid patient ID for the referenced image, may be NULL (absent)
    *  @param presentationlut presentation LUT to be used, may be NULL (absent)
+   *  @param inversePLUT true if presentation LUT is for Monochrome1 and must be inversed.
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition addImageBox(
@@ -450,7 +451,8 @@ class DVPSStoredPrint
     const char *refsopinstanceuid,
     const char *requestedimagesize,
     const char *patientid,
-    DVPSPresentationLUT *presentationlut);
+    DVPSPresentationLUT *presentationlut,
+    OFBool inversePLUT);
   
   /** creates a new image box object and sets the content of this image box object.
    *  This is a specialized version of the method with the same name and more parameters.
@@ -461,6 +463,7 @@ class DVPSStoredPrint
    *  @param requestedimagesize requested images size for this image, default: absent
    *  @param patientid patient ID for the referenced image, default: absent
    *  @param presentationlut presentation LUT to be used, may be NULL (absent)
+   *  @param inversePLUT true if presentation LUT is for Monochrome1 and must be inversed.
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition addImageBox(
@@ -468,7 +471,8 @@ class DVPSStoredPrint
     const char *refsopinstanceuid,
     const char *requestedimagesize=NULL,
     const char *patientid=NULL,
-    DVPSPresentationLUT *presentationlut=NULL);
+    DVPSPresentationLUT *presentationlut=NULL,
+    OFBool inversePLUT=OFFalse);
 
   /** deletes all existing annotations and creates a new one,
    *  with given text and position. Sets annotation display format
@@ -809,7 +813,11 @@ class DVPSStoredPrint
 
 /*
  *  $Log: dvpssp.h,v $
- *  Revision 1.16  1999-10-19 14:46:04  meichel
+ *  Revision 1.17  2000-02-29 12:16:16  meichel
+ *  Fixed bug in dcmpstat library that caused Monochrome1 images
+ *    to be printed inverse if a Presentation LUT was applied.
+ *
+ *  Revision 1.16  1999/10/19 14:46:04  meichel
  *  added support for the Basic Annotation Box SOP Class
  *    as well as access methods for Max Density and Min Density.
  *

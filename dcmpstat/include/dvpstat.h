@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPresentationState
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-11-15 19:02:16 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-02-29 12:16:16 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -359,6 +359,13 @@ public:
    */
   DVPSPresentationLUT *getPresentationLUTData() { return &presentationLUT; }
   
+  /** checks whether the attached image is MONOCHROME1. In this case, the
+   *  presentation LUT must be reversed when applied to the print bitmap
+   *  which is always MONOCHROME2.
+   *  @return OFTrue if attached image is MONOCHROME1, OFFalse otherwise.
+   */
+  OFBool isMonochrome1Image() { return currentImageMonochrome1; }
+
   /* Rotate/Flip Interface */
   
   /** gets the current rotation status of the presentation state.
@@ -2124,7 +2131,11 @@ private:
 
 /*
  *  $Log: dvpstat.h,v $
- *  Revision 1.29  1999-11-15 19:02:16  joergr
+ *  Revision 1.30  2000-02-29 12:16:16  meichel
+ *  Fixed bug in dcmpstat library that caused Monochrome1 images
+ *    to be printed inverse if a Presentation LUT was applied.
+ *
+ *  Revision 1.29  1999/11/15 19:02:16  joergr
  *  Changed behaviour of method getOverlayData(): parameter 'transp' replaced by
  *  'fore' to specify the foreground color used for the overlay plane.
  *
