@@ -22,9 +22,9 @@
  *  Purpose: DicomRotateTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-17 13:07:20 $
+ *  Update Date:      $Date: 2000-03-02 12:51:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dirotat.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -74,16 +74,20 @@ class DiRotateTemplate
                      const Uint16 dest_rows,
                      const Uint32 frames,
                      const int degree)
-      : DiTransTemplate<T>((pixel != NULL) ? pixel->getPlanes() : 0, src_cols, src_rows, dest_cols, dest_rows, frames)
+      : DiTransTemplate<T>(0, src_cols, src_rows, dest_cols, dest_rows, frames)
     {
-        if ((pixel != NULL) && (pixel->getCount() > 0) && (Planes > 0))
+        if (pixel != NULL)
         {
-            if (degree == 90)
-                rotateRight((T **)pixel->getDataPtr());
-            else if (degree == 180)
-                rotateTopDown((T **)pixel->getDataPtr());
-            else if (degree == 270)
-                rotateLeft((T **)pixel->getDataPtr());
+            Planes = pixel->getPlanes();
+            if ((pixel->getCount() > 0) && (Planes > 0))
+            {
+                if (degree == 90)
+                    rotateRight((T **)pixel->getDataPtr());
+                else if (degree == 180)
+                    rotateTopDown((T **)pixel->getDataPtr());
+                else if (degree == 270)
+                    rotateLeft((T **)pixel->getDataPtr());
+            }
         }
     }
 
@@ -355,7 +359,11 @@ class DiRotateTemplate
  *
  * CVS/RCS Log:
  * $Log: dirotat.h,v $
- * Revision 1.6  1999-09-17 13:07:20  joergr
+ * Revision 1.7  2000-03-02 12:51:37  joergr
+ * Rewrote variable initialization in class contructors to avoid warnings
+ * reported on Irix.
+ *
+ * Revision 1.6  1999/09/17 13:07:20  joergr
  * Added/changed/completed DOC++ style comments in the header files.
  * Enhanced efficiency of some "for" loops.
  *

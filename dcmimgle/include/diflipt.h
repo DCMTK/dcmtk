@@ -22,9 +22,9 @@
  *  Purpose: DicomFlipTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-17 12:10:55 $
+ *  Update Date:      $Date: 2000-03-02 12:51:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diflipt.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -72,16 +72,20 @@ class DiFlipTemplate
                    const Uint32 frames,
                    const int horz,
                    const int vert)
-      : DiTransTemplate<T>((pixel != NULL) ? pixel->getPlanes() : 0, columns, rows, columns, rows, frames)
+      : DiTransTemplate<T>(0, columns, rows, columns, rows, frames)
     {
-        if ((pixel != NULL) && (pixel->getCount() > 0) && (Planes > 0))
+        if (pixel != NULL)
         {
-            if (horz && vert)
-                flipHorzVert((T **)pixel->getDataPtr());
-            else if (horz)
-                flipHorz((T **)pixel->getDataPtr());
-            else if (vert)
-                flipVert((T **)(pixel->getDataPtr()));
+            Planes = pixel->getPlanes();
+            if ((pixel->getCount() > 0) && (Planes > 0))
+            {
+                if (horz && vert)
+                    flipHorzVert((T **)pixel->getDataPtr());
+                else if (horz)
+                    flipHorz((T **)pixel->getDataPtr());
+                else if (vert)
+                    flipVert((T **)(pixel->getDataPtr()));
+            }
         }
     }
 
@@ -343,7 +347,11 @@ class DiFlipTemplate
  *
  * CVS/RCS Log:
  * $Log: diflipt.h,v $
- * Revision 1.8  1999-09-17 12:10:55  joergr
+ * Revision 1.9  2000-03-02 12:51:36  joergr
+ * Rewrote variable initialization in class contructors to avoid warnings
+ * reported on Irix.
+ *
+ * Revision 1.8  1999/09/17 12:10:55  joergr
  * Added/changed/completed DOC++ style comments in the header files.
  * Enhanced efficiency of some "for" loops.
  *

@@ -22,9 +22,9 @@
  *  Purpose: DicomTransTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-17 13:08:12 $
+ *  Update Date:      $Date: 2000-03-02 12:51:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/ditranst.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -115,7 +115,7 @@ class DiTransTemplate
 
 
     /// number of planes
-    const int Planes;
+    /*const*/ int Planes;                       // allow later changing to avoid warnings on Irix
 
     /// width of source image
     /*const*/ Uint16 Src_X;                     // add 'const' when interpolated scaling with clipping is fully implemented
@@ -140,7 +140,11 @@ class DiTransTemplate
  *
  * CVS/RCS Log:
  * $Log: ditranst.h,v $
- * Revision 1.7  1999-09-17 13:08:12  joergr
+ * Revision 1.8  2000-03-02 12:51:37  joergr
+ * Rewrote variable initialization in class contructors to avoid warnings
+ * reported on Irix.
+ *
+ * Revision 1.7  1999/09/17 13:08:12  joergr
  * Added/changed/completed DOC++ style comments in the header files.
  *
  * Revision 1.6  1999/08/25 16:41:56  joergr
