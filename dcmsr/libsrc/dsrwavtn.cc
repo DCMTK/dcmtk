@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRWaveformTreeNode
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-04 14:26:54 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-08-07 14:17:18 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -89,7 +89,9 @@ OFCondition DSRWaveformTreeNode::writeXML(ostream &stream,
     OFCondition result = EC_Normal;
     writeXMLItemStart(stream, flags);
     result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
+    stream << "<value>" << endl;
     DSRWaveformReferenceValue::writeXML(stream, flags, logStream);
+    stream << "</value>" << endl;
     writeXMLItemEnd(stream, flags);
     return result;
 }
@@ -99,7 +101,7 @@ OFCondition DSRWaveformTreeNode::readContentItem(DcmItem &dataset,
                                                  OFConsole *logStream)
 {
     /* read ReferencedSOPSequence */
-    return DSRWaveformReferenceValue::readSequence(dataset, "1" /* type */, logStream);
+    return DSRWaveformReferenceValue::readSequence(dataset, "1" /*type*/, logStream);
 }
 
 
@@ -111,9 +113,17 @@ OFCondition DSRWaveformTreeNode::writeContentItem(DcmItem &dataset,
 }
 
 
+OFCondition DSRWaveformTreeNode::readXMLContentItem(const DSRXMLDocument &doc,
+                                                    DSRXMLCursor cursor)
+{
+    /* retrieve value from XML element "value" */
+    return DSRWaveformReferenceValue::readXML(doc, doc.getNamedNode(cursor.gotoChild(), "value"));
+}
+
+
 OFCondition DSRWaveformTreeNode::renderHTMLContentItem(ostream &docStream,
                                                        ostream &annexStream,
-                                                       const size_t /* nestingLevel */,
+                                                       const size_t /*nestingLevel*/,
                                                        size_t &annexNumber,
                                                        const size_t flags,
                                                        OFConsole *logStream) const
@@ -176,7 +186,11 @@ OFBool DSRWaveformTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavtn.cc,v $
- *  Revision 1.13  2003-06-04 14:26:54  meichel
+ *  Revision 1.14  2003-08-07 14:17:18  joergr
+ *  Added readXML functionality.
+ *  Modified writeXML() output (introduced new "<value>...</value>" element).
+ *
+ *  Revision 1.13  2003/06/04 14:26:54  meichel
  *  Simplified include structure to avoid preprocessor limitation
  *    (max 32 #if levels) on MSVC5 with STL.
  *
