@@ -12,7 +12,7 @@ top_srcdir=@top_srcdir@
 include @configdir@/@common_makefile@
 
 
-all: include-all libsrc-all apps-all docs-all
+all: include-all libsrc-all apps-all docs-all tests-all
 
 install: install-bin
 
@@ -33,6 +33,9 @@ libsrc-all: include-all
 
 apps-all: libsrc-all
 	(cd apps; $(MAKE) ARCH="$(ARCH)" all)
+
+tests-all: libsrc-all
+	(cd tests; $(MAKE) ARCH="$(ARCH)" all)
 
 docs-all:
 	(cd docs; $(MAKE) all)
@@ -57,6 +60,7 @@ clean:
 	(cd libsrc; $(MAKE) clean)
 	(cd apps; $(MAKE) clean)
 	(cd docs; $(MAKE) clean)
+	(cd tests; $(MAKE) clean)
 	(cd htmldocs; $(MAKE) clean)
 	rm -f $(TRASH)
 
@@ -65,12 +69,14 @@ distclean:
 	(cd libsrc; $(MAKE) distclean)
 	(cd apps; $(MAKE) distclean)
 	(cd docs; $(MAKE) distclean)
+	(cd tests; $(MAKE) distclean)
 	(cd htmldocs; $(MAKE) distclean)
 	rm -f $(DISTTRASH)
 
 dependencies:
 	(cd libsrc; touch $(DEP); $(MAKE) dependencies)
 	(cd apps; touch $(DEP); $(MAKE) dependencies)
+	(cd tests; touch $(DEP); $(MAKE) dependencies)
 
 html:
 	(doc++ -d htmldocs -p -i -B /dev/null include/*.h libsrc/*.cc apps/*.h apps/*.cc)
