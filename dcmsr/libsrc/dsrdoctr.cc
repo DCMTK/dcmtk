@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTree
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-13 07:52:20 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-10-16 12:04:14 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -84,12 +84,16 @@ E_Condition DSRDocumentTree::print(ostream &stream,
     DSRTreeNodeCursor cursor(getRoot());
     if (cursor.isValid())
     {
+        OFString string;
         const DSRDocumentTreeNode *node = NULL;
         do {
             node = (DSRDocumentTreeNode *)cursor.getNode();
             if (node != NULL)
             {
-                stream << OFString(cursor.getLevel() * 2, ' ');
+                if (flags & PF_printItemPosition)
+                    stream << cursor.getPosition(string) << "  ";
+                else
+                    stream << OFString(cursor.getLevel() * 2, ' ');
                 stream << "<";
                 result = node->print(stream, flags);
                 stream << ">" << endl;
@@ -271,7 +275,11 @@ size_t DSRDocumentTree::removeNode()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.cc,v $
- *  Revision 1.1  2000-10-13 07:52:20  joergr
+ *  Revision 1.2  2000-10-16 12:04:14  joergr
+ *  Added new options: number nested items instead of indenting them, print SOP
+ *  instance UID of referenced composite objects.
+ *
+ *  Revision 1.1  2000/10/13 07:52:20  joergr
  *  Added new module 'dcmsr' providing access to DICOM structured reporting
  *  documents (supplement 23).  Doc++ documentation not yet completed.
  *
