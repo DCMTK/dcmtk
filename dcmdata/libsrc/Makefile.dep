@@ -460,26 +460,6 @@ dcuid.o: dcuid.cc ../../config/include/osconfig.h \
  ../../ofstd/include/ofstream.h ../include/dcuid.h \
  ../include/dctypes.h ../../ofstd/include/oftypes.h \
  ../../ofstd/include/ofthread.h ../../ofstd/include/ofcrc32.h
-dcutils.o: dcutils.cc ../../config/include/osconfig.h \
- ../../config/include/cfunix.h ../include/dcutils.h \
- ../include/dctypes.h ../../ofstd/include/oftypes.h \
- ../../ofstd/include/ofstdinc.h ../include/dctagkey.h \
- ../../ofstd/include/ofstream.h ../../ofstd/include/ofstring.h \
- ../include/dcitem.h ../../ofstd/include/ofconsol.h \
- ../../ofstd/include/ofthread.h ../include/dcobject.h \
- ../../ofstd/include/ofglobal.h ../include/dcerror.h \
- ../../ofstd/include/ofcond.h ../include/dcxfer.h ../include/dcvr.h \
- ../include/dctag.h ../include/dclist.h ../include/dcstack.h \
- ../include/dcvrui.h ../include/dcbytstr.h ../include/dcelem.h \
- ../include/dcpcache.h ../../ofstd/include/oflist.h \
- ../include/dcvrae.h ../include/dcvras.h ../include/dcvrcs.h \
- ../include/dcvrda.h ../../ofstd/include/ofdate.h ../include/dcvrds.h \
- ../include/dcvrdt.h ../../ofstd/include/ofdatime.h \
- ../../ofstd/include/oftime.h ../include/dcvris.h ../include/dcvrtm.h \
- ../include/dcvrlo.h ../include/dcchrstr.h ../include/dcvrlt.h \
- ../include/dcvrpn.h ../include/dcvrsh.h ../include/dcvrst.h \
- ../include/dcvrut.h ../include/dcvrss.h ../include/dcvrus.h \
- ../include/dcvrsl.h ../include/dcvrul.h
 dcvm.o: dcvm.cc ../../config/include/osconfig.h \
  ../../config/include/cfunix.h ../include/dcvm.h \
  ../../ofstd/include/ofstdinc.h

@@ -46,7 +46,7 @@ objs= dcpixseq.o dcpxitem.o dcuid.o dcerror.o \
 	dccodec.o dcvrda.o dcvrds.o dcvrdt.o dcvris.o dcvrtm.o dcvrui.o \
 	dcchrstr.o dcvrlo.o dcvrlt.o dcvrpn.o dcvrsh.o dcvrst.o dcvrobow.o \
 	dcvrat.o dcvrss.o dcvrus.o dcvrsl.o dcvrul.o dcvrulup.o dcvrfl.o \
-	dcvrfd.o dcvrpobw.o dcvrof.o dcdirrec.o dcdicdir.o dcvm.o dcutils.o \
+	dcvrfd.o dcvrpobw.o dcvrof.o dcdirrec.o dcdicdir.o dcvm.o \
 	dcrleccd.o dcrlecce.o dcrlecp.o dcrlerp.o dcrledrg.o dcrleerg.o \
 	$(dictobjs) cmdlnarg.o dcvrut.o dctypes.o dcpcache.o \
 	dcistrma.o dcistrmb.o dcistrmf.o dcistrmz.o \
