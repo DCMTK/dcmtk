@@ -9,8 +9,8 @@
  * handling of transfer syntax
  *
  * 
- * Last Update:	  $Author: andreas $
- * Revision:      $Revision: 1.3 $
+ * Last Update:	  $Author: hewett $
+ * Revision:      $Revision: 1.4 $
  * Status:        $State: Exp $
  *
  */
@@ -197,7 +197,7 @@ S_XferNames XferNames[] =
     // Hier koennen weitere Transfersyntaxen eingetragen werden:
 };
 
-const short DIM_OF_XferNames = 22;
+const int DIM_OF_XferNames = (sizeof(XferNames) / sizeof(S_XferNames));
 
 
 
