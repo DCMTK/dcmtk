@@ -1,4 +1,20 @@
 
+Changes between releases are documented here.
+
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+Release 1.1.0 (Release date - 1999-05-31)
+
+- Changed Release version and date.
+  Affects: dcmimage/include/diregist.h
+
+- Modified some command line options.
+  Affects: dcmimage/apps/dcm2pnm.cc
+  
+- Corrected bug concerning the conversion of color images to grayscale.
+  Affects: dcmimage/include/dicomot.h
+           dcmimage/libsrc/diregist.cc
+
 **** Changes from 1999.05.10 (riesmeier)
 
 - Moved dcm2pnm version definition from module dcmimgle to dcmimage.
