@@ -25,10 +25,10 @@
  *           of these classes supports the Solaris, POSIX and Win32 
  *           multi-thread APIs.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-12-02 16:20:12 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-04-22 10:45:33 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofthread.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -167,7 +167,8 @@ int OFThread::join()
   return pthread_join(OFreinterpret_cast(pthread_t, theThread), &retcode);
 #elif defined(SOLARIS_INTERFACE)
   void *retcode=NULL;
-  return thr_join(OFreinterpret_cast(thread_t, theThread), NULL, &retcode);
+  // reinterpret_cast does not work for gcc 3.x
+  return thr_join(OFstatic_cast(thread_t, theThread), NULL, &retcode);
 #else
   return -1;
 #endif
@@ -920,7 +921,11 @@ void OFReadWriteLock::errorstr(OFString& description, int /* code */ )
  *
  * CVS/RCS Log:
  * $Log: ofthread.cc,v $
- * Revision 1.12  2003-12-02 16:20:12  meichel
+ * Revision 1.13  2004-04-22 10:45:33  joergr
+ * Changed typecast from OFreinterpret_cast to OFstatic_cast to avoid compilation
+ * error on Solaris with gcc 3.x.
+ *
+ * Revision 1.12  2003/12/02 16:20:12  meichel
  * Changed a few typecasts for static to reinterpret, required
  *   for NetBSD and OpenBSD
  *
