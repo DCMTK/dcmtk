@@ -1,6 +1,66 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2002.08.05 (wilkens)
+
+- Modfified the project's structure in order to be able to create a new
+  application which contains both wlmscpdb and ppsscpdb.
+  Added:   dcmwlm/apps/wlcefs.h
+           dcmwlm/apps/wlcefs.cc
+           dcmwlm/include/wldsfs.h
+           dcmwlm/include/wlfsim.h
+           dcmwlm/libsrc/wldsfs.cc
+           dcmwlm/libsrc/wlfsim.cc
+  Removed: dcmwlm/apps/wldbim.cc
+           dcmwlm/apps/wldbim.h
+           dcmwlm/apps/wldsdb.cc
+           dcmwlm/apps/wldsdb.h
+           dcmwlm/apps/wldsfs.cc
+           dcmwlm/apps/wldsfs.h
+           dcmwlm/apps/wldspf.cc
+           dcmwlm/apps/wldspf.h
+           dcmwlm/apps/wlfsim.cc
+           dcmwlm/apps/wlfsim.h
+           dcmwlm/apps/wlmceng.cc
+           dcmwlm/apps/wlmceng.h
+           dcmwlm/apps/wlmscpdb.cc
+           dcmwlm/apps/wlmscpdb.dsp
+           dcmwlm/apps/wlmscpki.cc
+           dcmwlm/apps/wlmscpki.dsp
+           dcmwlm/apps/wlpfim.cc
+           dcmwlm/apps/wlpfim.h
+           dcmwlm/docs/wlmscpdb.txt
+           dcmwlm/docs/wlmscpki.txt
+           dcmwlm/tests/dcmTagsStmt.txt
+           dcmwlm/tests/pki.txt
+           dcmwlm/tests/searchStmt.txt
+  Affects: dcmwlm/CHANGES
+           dcmwlm/Makefile.in
+           dcmwlm/configure
+           dcmwlm/dcmwlm.dsp
+           dcmwlm/apps/Makefile.dep
+           dcmwlm/apps/Makefile.in
+           dcmwlm/apps/wlmscpfs.cc
+           dcmwlm/apps/wlmscpfs.dsp
+           dcmwlm/apps/wlcefs.h
+           dcmwlm/apps/wlcefs.cc
+           dcmwlm/docs/Makefile.in
+           dcmwlm/docs/wlmscpfs.txt
+           dcmwlm/htmldocs/Makefile.in
+           dcmwlm/include/Makefile.in
+           dcmwlm/include/wlds.h
+           dcmwlm/include/wlmactmg.h
+           dcmwlm/include/wltypdef.h
+           dcmwlm/include/wldsfs.h
+           dcmwlm/include/wlfsim.h
+           dcmwlm/libsrc/Makefile.dep
+           dcmwlm/libsrc/Makefile.in
+           dcmwlm/libsrc/wlds.cc
+           dcmwlm/libsrc/wlmactmg.cc
+           dcmwlm/libsrc/wldsfs.cc
+           dcmwlm/libsrc/wlfsim.cc
+           dcmwlm/tests/Makefile.in
+
 **** Changes from 2002.07.17 (wilkens)
 
 - Updated MSVC++ project file.

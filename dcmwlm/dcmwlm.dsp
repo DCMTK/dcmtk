@@ -89,6 +89,14 @@ SOURCE=.\libsrc\wlds.cxx
 # End Source File
 # Begin Source File
 
+SOURCE=.\libsrc\wldsfs.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=.\libsrc\wlfsim.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=.\libsrc\wlmactmg.cxx
 # End Source File
 # End Group
@@ -98,6 +106,14 @@ SOURCE=.\libsrc\wlmactmg.cxx
 # Begin Source File
 
 SOURCE=.\include\wlds.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\wldsfs.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\wlfsim.h
 # End Source File
 # Begin Source File
 
