@@ -73,9 +73,9 @@
  *
  *  Purpose: Class for various helper functions
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-06-20 12:06:47 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2002-07-02 15:18:24 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -580,24 +580,24 @@ double OFStandard::atof(const char *s, OFBool *success)
   {
     *success = (1 == sscanf(s,"%lf",&result));
   }
-  else 
+  else
   {
     (void) sscanf(s,"%lf",&result);
   }
-  return result;  
+  return result;
 }
 
-#else 
+#else
 
 // --- definitions and constants for atof() ---
 
 /* Largest possible base 10 exponent.  Any exponent larger than this will
- * already produce underflow or overflow, so there's no need to worry    
- * about additional digits.                                              
+ * already produce underflow or overflow, so there's no need to worry
+ * about additional digits.
  */
 #define ATOF_MAXEXPONENT 511
 
-/* Table giving binary powers of 10.  Entry is 10^2^i.  
+/* Table giving binary powers of 10.  Entry is 10^2^i.
  * Used to convert decimal exponents into floating-point numbers.
  */
 static const double atof_powersOf10[] =
@@ -621,14 +621,14 @@ double OFStandard::atof(const char *s, OFBool *success)
     int sign = 0;
     int expSign = 0;
     double fraction;
-    int exp = 0;      // Exponent read from "EX" field. 
+    int exp = 0;      // Exponent read from "EX" field.
     const char *pExp; // Temporarily holds location of exponent in string.
 
-    /* Exponent that derives from the fractional part.  Under normal 
-     * circumstatnces, it is the negative of the number of digits in F. 
-     * However, if I is very long, the last digits of I get dropped 
-     * (otherwise a long I with a large negative exponent could cause an 
-     * unnecessary overflow on I alone).  In this case, fracExp is 
+    /* Exponent that derives from the fractional part.  Under normal
+     * circumstatnces, it is the negative of the number of digits in F.
+     * However, if I is very long, the last digits of I get dropped
+     * (otherwise a long I with a large negative exponent could cause an
+     * unnecessary overflow on I alone).  In this case, fracExp is
      * incremented one for each dropped digit.
      */
     int fracExp = 0;
@@ -648,7 +648,7 @@ double OFStandard::atof(const char *s, OFBool *success)
 
     // Count the number of digits in the mantissa (including the decimal
     // point), and also locate the decimal point.
-    
+
     int decPt = -1; // Number of mantissa digits BEFORE decimal point.
     int mantSize;     // Number of digits in mantissa.
     for (mantSize = 0; ; ++mantSize)
@@ -671,7 +671,7 @@ double OFStandard::atof(const char *s, OFBool *success)
 
     pExp = p;
     p -= mantSize;
-    if (decPt < 0) 
+    if (decPt < 0)
       decPt = mantSize;
       else mantSize -= 1; // One of the digits was the point
 
@@ -685,7 +685,7 @@ double OFStandard::atof(const char *s, OFBool *success)
         fracExp = decPt - mantSize;
     }
 
-    if (mantSize == 0) 
+    if (mantSize == 0)
     {
       // subject sequence does not have expected form.
       // return 0 and leave success flag set to false
@@ -779,9 +779,37 @@ double OFStandard::atof(const char *s, OFBool *success)
 #endif /* DISABLE_OFSTD_ATOF */
 
 
+OFBool OFStandard::stringMatchesCharacterSet( const char *str, const char *charset )
+{
+  if( charset == NULL || str == NULL )
+    return OFTrue;
+
+  OFBool result = OFTrue;
+  unsigned int lenStr = strlen( str );
+  unsigned int lenCharset = strlen( charset );
+  for( unsigned int i=0 ; i<lenStr && result ; i++ )
+  {
+    OFBool charFound = OFFalse;
+    for( unsigned int j=0 ; j<lenCharset && !charFound ; j++ )
+    {
+      if( str[i] == charset[j] )
+        charFound = OFTrue;
+    }
+
+    if( !charFound )
+      result = OFFalse;
+  }
+
+  return( result );
+}
+
+
 /*
  *  $Log: ofstd.cc,v $
- *  Revision 1.7  2002-06-20 12:06:47  meichel
+ *  Revision 1.8  2002-07-02 15:18:24  wilkens
+ *  Added function OFStandard::stringMatchesCharacterSet(...).
+ *
+ *  Revision 1.7  2002/06/20 12:06:47  meichel
  *  Fixed typo in ofstd.cc
  *
  *  Revision 1.6  2002/06/20 12:02:39  meichel

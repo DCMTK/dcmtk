@@ -21,10 +21,10 @@
  *
  *  Purpose: Class for various helper functions
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-06-20 12:02:38 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2002-07-02 15:17:57 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstd.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -257,12 +257,12 @@ class OFStandard
      *  and it does not implement special handling for overflow/underflow
      *  or NaN values.  However, a return code indicates whether or not
      *  a successful conversion could be performed.
-     *  The precision of this implementation is limited to approx. 9 
-     *  decimal digits. 
+     *  The precision of this implementation is limited to approx. 9
+     *  decimal digits.
      *  The use of this implementation can be disabled by defining
      *  the macro DISABLE_OFSTD_ATOF at compile time; in this case,
-     *  the locale dependent Posix implementation of sscanf is used and 
-     *  the application is responsible for making sure that the Posix locale 
+     *  the locale dependent Posix implementation of sscanf is used and
+     *  the application is responsible for making sure that the Posix locale
      *  is activate at all times.
      *
      *  @param s
@@ -283,6 +283,16 @@ class OFStandard
      *    digits, then zero is returned.
      */
      static double atof(const char *s, OFBool *success=NULL);
+
+    /** Checks if a given string consists only of characters which are specified in a
+     *  given charset. Note that in case one of the parameters equals NULL, OFTrue will
+     *  be returned.
+     *  @param str String which shall be checked.
+     *  @param charset Possible character set for s.
+     *  @return OFTrue if the given string consists only of characters which are specified
+     *          in the given charset; OFFalse otherwise.
+     */
+     static OFBool stringMatchesCharacterSet( const char *str, const char *charset );
 
  private:
 
@@ -316,7 +326,10 @@ class OFStandard
  *
  * CVS/RCS Log:
  * $Log: ofstd.h,v $
- * Revision 1.7  2002-06-20 12:02:38  meichel
+ * Revision 1.8  2002-07-02 15:17:57  wilkens
+ * Added function OFStandard::stringMatchesCharacterSet(...).
+ *
+ * Revision 1.7  2002/06/20 12:02:38  meichel
  * Implemented a locale independent function OFStandard::atof() that
  *   converts strings to double and optionally returns a status code
  *
