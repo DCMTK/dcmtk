@@ -14,12 +14,12 @@ include $(configdir)/@common_makefile@
 
 ofstddir=$(top_srcdir)/../ofstd
 ofstdinc=-I$(ofstddir)/include -I$(includedir)/ofstd
-ofstdlibdir=-L$(ofstddir)/libsrc 
+ofstdlibdir=-L$(ofstddir)/libsrc
 ofstdlib=-lofstd
 
 dcmdatadir=$(top_srcdir)/../dcmdata
 dcmdatainc=-I$(dcmdatadir)/include -I$(includedir)/dcmdata
-dcmdatalibdir=-L$(dcmdatadir)/libsrc 
+dcmdatalibdir=-L$(dcmdatadir)/libsrc
 dcmdatalib=-ldcmdata
 
 dcmimgledir=$(top_srcdir)/../dcmimgle
@@ -48,34 +48,32 @@ progs= dcmdjpeg dcmcjpeg dcmj2pnm dcmmkdir
 all: $(progs)
 
 dcmdjpeg: dcmdjpeg.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o  $(LOCALLIBS) $(LIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o  $(LOCALLIBS) $(LIBS)
 
 dcmcjpeg: dcmcjpeg.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o  $(LOCALLIBS) $(MATHLIBS) $(LIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o  $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 dcmj2pnm: dcmj2pnm.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o  $(LOCALLIBS) $(MATHLIBS) $(LIBS) $(TIFFLIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o  $(LOCALLIBS) $(MATHLIBS) $(LIBS) $(TIFFLIBS)
 
 dcmmkdir: dcmmkdir.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o  $(LOCALLIBS) $(MATHLIBS) $(LIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o  $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 install: all
 	$(configdir)/mkinstalldirs $(bindir)
 	for prog in $(progs); do \
-		$(INSTALL_PROGRAM) $$prog $(bindir); strip $(bindir)/$$prog ;\
+		$(INSTALL_PROGRAM) $$prog$(BINEXT) $(bindir); strip $(bindir)/$$prog$(BINEXT)
+		 ;\
 	done
 
 clean:
 	rm -f $(objs) $(progs) $(TRASH)
 
-distclean: 
+distclean:
 	rm -f $(objs) $(progs) $(DISTTRASH)
 
 
 dependencies:
 	$(CXX) -MM $(defines) $(includes) $(CPPFLAGS) $(CXXFLAGS) *.cc  > $(DEP)
-
-$(objs): config.h
-
 
 include $(DEP)
