@@ -23,8 +23,8 @@
  *    classes: DSRGraphicDataList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-18 17:06:51 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-11-01 16:21:16 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -111,6 +111,7 @@ class DSRGraphicDataList
      *  The output of a typical list looks like this: 0/0,127/127,255/255
      ** @param  stream  output stream to which the list should be printed
      *  @param  flags   flag used to customize the output (see DSRTypes::PF_xxx)
+     ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition print(ostream &stream,
                       const size_t flags = 0) const;
@@ -162,7 +163,10 @@ class DSRGraphicDataList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscogr.h,v $
- *  Revision 1.2  2000-10-18 17:06:51  joergr
+ *  Revision 1.3  2000-11-01 16:21:16  joergr
+ *  Updated comments/formatting.
+ *
+ *  Revision 1.2  2000/10/18 17:06:51  joergr
  *  Added doc++ comments.
  *
  *  Revision 1.1  2000/10/13 07:49:31  joergr

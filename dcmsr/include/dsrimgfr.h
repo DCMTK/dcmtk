@@ -23,8 +23,8 @@
  *    classes: DSRImageFrameList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-18 17:03:28 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-11-01 16:19:20 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -76,6 +76,7 @@ class DSRImageFrameList
      *  The output of a typical list looks like this: 1,2,3 or 1,... if shortened.
      ** @param  stream  output stream to which the list should be printed
      *  @param  flags   flag used to customize the output (see DSRTypes::PF_xxx)
+     ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition print(ostream &stream,
                       const size_t flags = 0) const;
@@ -104,7 +105,10 @@ class DSRImageFrameList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgfr.h,v $
- *  Revision 1.2  2000-10-18 17:03:28  joergr
+ *  Revision 1.3  2000-11-01 16:19:20  joergr
+ *  Updated comments/formatting.
+ *
+ *  Revision 1.2  2000/10/18 17:03:28  joergr
  *  Added doc++ comments.
  *
  *  Revision 1.1  2000/10/13 07:49:27  joergr

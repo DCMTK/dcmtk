@@ -23,8 +23,8 @@
  *    classes: DSRReferencedSamplePositionList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-26 14:23:24 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-11-01 16:20:24 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -76,6 +76,7 @@ class DSRReferencedSamplePositionList
      *  The output of a typical list looks like this: 1,2,3 or 1,... if shortened.
      ** @param  stream  output stream to which the list should be printed
      *  @param  flags   flag used to customize the output (see DSRTypes::PF_xxx)
+     ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition print(ostream &stream,
                       const size_t flags = 0) const;
@@ -104,7 +105,10 @@ class DSRReferencedSamplePositionList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcosp.h,v $
- *  Revision 1.1  2000-10-26 14:23:24  joergr
+ *  Revision 1.2  2000-11-01 16:20:24  joergr
+ *  Updated comments/formatting.
+ *
+ *  Revision 1.1  2000/10/26 14:23:24  joergr
  *  Added support for TCOORD content item.
  *
  *
