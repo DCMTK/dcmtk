@@ -21,10 +21,10 @@
  *
  *  Purpose: Convert the contents of a DICOM file to XML format
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-11-22 16:30:19 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-11-29 17:02:17 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcm2xml.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -107,9 +107,7 @@ static OFCondition writeFile(ostream &out,
     {
         CERR << OFFIS_CONSOLE_APPLICATION << ": error (" << result.text()
              << ") reading file: "<< ifname << endl;
-    }
-    else
-    {
+    } else {
         /* write content to XML format */
         if (loadIntoMemory)
             dfile.getDataset()->loadAllDataIntoMemory();
@@ -119,6 +117,8 @@ static OFCondition writeFile(ostream &out,
         if (dfile.getDataset()->findAndGetOFString(DCM_SpecificCharacterSet, csetString).good())
         {
             if (csetString == "ISO_IR 6")
+                encString = "UTF-8";
+            else if (csetString == "ISO_IR 192")
                 encString = "UTF-8";
             else if (csetString == "ISO_IR 100")
                 encString = "ISO-8859-1";
@@ -138,20 +138,19 @@ static OFCondition writeFile(ostream &out,
                 encString = "ISO-8859-7";
             else if (csetString == "ISO_IR 138")
                 encString = "ISO-8859-8";
-        }
-        else
-        {
+            else if (!csetString.empty())
+                CERR << "Warning: (0008,0005) Specific Character Set '" << csetString << "' not supported" << endl;
+        } else {
           /* SpecificCharacterSet is not present in the dataset */
           if (checkForNonASCIICharacters(*dfile.getDataset()))
           {
             if (defaultCharset == NULL)
             {
               /* the dataset contains non-ASCII characters that really should not be there */
-              CERR << OFFIS_CONSOLE_APPLICATION << ": error: (0008,0005) Specific Character Set absent but extended characters used in file: "<< ifname << endl;
+              CERR << OFFIS_CONSOLE_APPLICATION << ": error: (0008,0005) Specific Character Set absent "
+                   << "but extended characters used in file: " << ifname << endl;
               return EC_IllegalCall;
-            }
-            else 
-            {
+            } else {
               OFString charset(defaultCharset);
               if (charset == "latin-1")
               {
@@ -295,7 +294,7 @@ int main(int argc, char *argv[])
         cmd.addOption("--charset-require",     "+Cr",    "require declaration of extended charset (default)");
         cmd.addOption("--charset-assume",      "+Ca", 1, "charset: string constant",
                                                          "(latin-1 to -5, cyrillic, arabic, greek, hebrew)\n"
-                                                         "assume charset if undeclared ext. charset found");     
+                                                         "assume charset if undeclared ext. charset found");
     cmd.addGroup("output options:");
       cmd.addSubGroup("XML structure:");
         cmd.addOption("--add-dtd-reference",   "+Xd",    "add reference to document type definition (DTD)");
@@ -377,8 +376,8 @@ int main(int argc, char *argv[])
         {
           app.checkValue(cmd.getValue(opt_defaultCharset));
           OFString charset(opt_defaultCharset);
-          if (charset != "latin-1" && charset != "latin-2" && charset != "latin-3" && 
-              charset != "latin-4" && charset != "latin-5" && charset != "cyrillic" && 
+          if (charset != "latin-1" && charset != "latin-2" && charset != "latin-3" &&
+              charset != "latin-4" && charset != "latin-5" && charset != "cyrillic" &&
               charset != "arabic" && charset != "greek" && charset != "hebrew")
           {
             app.printError("unknown value for --charset-assume. known values are latin-1 to -5, cyrillic, arabic, greek, hebrew.");
@@ -449,7 +448,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2xml.cc,v $
- * Revision 1.12  2004-11-22 16:30:19  meichel
+ * Revision 1.13  2004-11-29 17:02:17  joergr
+ * Added warning message when character set is unknown, unsupported  or cannot
+ * be mapped to the output format. Added support for UTF-8 character set.
+ *
+ * Revision 1.12  2004/11/22 16:30:19  meichel
  * Now checking whether extended characters are present in a DICOM dataset,
  *   preventing generation of incorrect XML if undeclared extended charset used.
  *
