@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomDisplayFunction (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:54 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-09-28 13:12:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/didispfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -246,10 +246,10 @@ int DiDisplayFunction::readConfigFile(const char *filename)
 {
     if ((filename != NULL) && (strlen(filename) > 0))
     {
-#ifdef NO_IOS_NOCREATE
-        ifstream file(filename, ios::in);
-#else
+#ifdef HAVE_IOS_NOCREATE
         ifstream file(filename, ios::in|ios::nocreate);
+#else
+        ifstream file(filename, ios::in);
 #endif
         if (file)
         {
@@ -484,7 +484,10 @@ int DiDisplayFunction::calculateMinMax()
  *
  * CVS/RCS Log:
  * $Log: didispfn.cc,v $
- * Revision 1.27  2001-06-01 15:49:54  meichel
+ * Revision 1.28  2001-09-28 13:12:20  joergr
+ * Added check whether ios::nocreate exists.
+ *
+ * Revision 1.27  2001/06/01 15:49:54  meichel
  * Updated copyright header
  *
  * Revision 1.26  2000/05/03 09:47:23  joergr
