@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-06 09:44:40 $
+ *  Update Date:      $Date: 2003-06-10 14:05:57 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.61 $
+ *  CVS/RCS Revision: $Revision: 1.62 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -208,6 +208,12 @@ int main(int argc, char *argv[])
 
       cmd.addOption("--implicit",               "+xi",       "accept implicit VR little endian TS only");
 
+#ifdef WITH_TCPWRAPPER
+    cmd.addSubGroup("network host access control (tcp wrapper) options:");
+      cmd.addOption("--access-full",            "-ac",       "accept connections from any host (default)");
+      cmd.addOption("--access-control",         "+ac",       "enforce host access control rules");
+#endif
+
     cmd.addSubGroup("other network options:");
       OFString opt1 = "set my AE title (default: ";
       opt1 += APPLICATIONTITLE;
@@ -388,6 +394,13 @@ int main(int argc, char *argv[])
     if (cmd.findOption("--abort-during")) opt_abortDuringStore = OFTrue;
     if (cmd.findOption("--promiscuous")) opt_promiscuous = OFTrue;
     if (cmd.findOption("--uid-padding")) opt_correctUIDPadding = OFTrue;
+
+#ifdef WITH_TCPWRAPPER
+    cmd.beginOptionBlock();
+    if (cmd.findOption("--access-full")) dcmTCPWrapperDaemonName.set(NULL);
+    if (cmd.findOption("--access-control")) dcmTCPWrapperDaemonName.set(OFFIS_CONSOLE_APPLICATION);
+    cmd.endOptionBlock();
+#endif
 
     cmd.beginOptionBlock();
     if (cmd.findOption("--normal")) opt_bitPreserving = OFFalse;
@@ -842,8 +855,7 @@ int main(int argc, char *argv[])
 
 
 
-static OFCondition
-acceptAssociation(T_ASC_Network * net)
+static OFCondition acceptAssociation(T_ASC_Network *net)
 {
   char buf[BUFSIZ];
   T_ASC_Association *assoc;
@@ -1726,23 +1738,21 @@ static void executeOnReception()
      *   none.
      */
 {
-  OFString rawcmd = opt_execOnReception;
-  OFString ph1 = PATH_PLACEHOLDER;
-  OFString ph2 = FILENAME_PLACEHOLDER;
+  OFString cmd = opt_execOnReception;
 
   // perform substitution for placeholder #p; note that
   //  - in case option --sort-conc-studies is set, #p will be substituted by subdirectoryPathAndName
   //  - and in case option --sort-conc-studies is not set, #p will be substituted by opt_outputDirectory
   OFString dir = (opt_sortConcerningStudies == NULL) ? OFString(opt_outputDirectory) : OFString(subdirectoryPathAndName);
-  OFString expcmd1 = replaceChars( rawcmd, ph1, dir );
+  cmd = replaceChars( cmd, OFString(PATH_PLACEHOLDER), dir );
 
   // perform substitution for placeholder #f; note that the variable outputFileNameArray[outputFileNameArrayCnt-1]
   // always contains the name of the file (without path) which was written last.
   OFString outputFileName = outputFileNameArray[outputFileNameArrayCnt-1];
-  OFString expcmd2 = replaceChars( expcmd1, ph2, outputFileName );
+  cmd = replaceChars( cmd, OFString(FILENAME_PLACEHOLDER), outputFileName );
 
   // Execute command in a new process
-  executeCommand( expcmd2 );
+  executeCommand( cmd );
 }
 
 
@@ -1845,15 +1855,14 @@ static void executeOnEndOfStudy()
      *   none.
      */
 {
-  OFString rawcmd = opt_execOnEndOfStudy;
-  OFString ph = PATH_PLACEHOLDER;
+  OFString cmd = opt_execOnEndOfStudy;
   OFString dir = lastStudySubdirectoryPathAndName;
 
   // perform substitution for placeholder #p; #p will be substituted by lastStudySubdirectoryPathAndName
-  OFString expcmd = replaceChars( rawcmd, ph, dir );
+  cmd = replaceChars( cmd, OFString(PATH_PLACEHOLDER), dir );
 
   // Execute command in a new process
-  executeCommand( expcmd );
+  executeCommand( cmd );
 }
 
 
@@ -2119,7 +2128,10 @@ static OFCondition acceptUnknownContextsWithPreferredTransferSyntaxes(
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.61  2003-06-06 09:44:40  meichel
+** Revision 1.62  2003-06-10 14:05:57  meichel
+** Added support for TCP wrappers based host access control
+**
+** Revision 1.61  2003/06/06 09:44:40  meichel
 ** Added static sleep function in class OFStandard. This replaces the various
 **   calls to sleep(), Sleep() and usleep() throughout the toolkit.
 **
