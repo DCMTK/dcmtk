@@ -10,9 +10,9 @@
 ** 
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-05-13 13:58:41 $
+** Update Date:		$Date: 1997-05-22 13:15:54 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdict.h,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
+** CVS/RCS Revision:	$Revision: 1.9 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -55,6 +55,8 @@ class DcmDataDictionary {
 private:
     DcmDictEntryPtrBSTSet dict;    /* dictionary of normal tags */
     DcmDictEntryList repDict; /* dictionary of repeating tags */
+    int skeletonCount; /* the number of skeleton entries */
+    BOOL dictionaryLoaded; /* is a dictionary loaded (more than skeleton) */
 
 protected:
     /* Load external dictionaries defined via environment variables */
@@ -78,13 +80,20 @@ public:
     DcmDataDictionary(BOOL loadBuiltin=FALSE, BOOL loadExternal=FALSE);
     ~DcmDataDictionary();
 
+    /* is a data dictionary loaded (excluding the skeleton dictionary) */
+    BOOL isDictionaryLoaded() { return dictionaryLoaded; }
+
     /* the number of normal/repeating tag entries  */
     int numberOfNormalTagEntries() { return dict.length(); }
     int numberOfRepeatingTagEntries() { return repDict.length(); }
 
     /* total number of dictionary entries  */
     int numberOfEntries() 
-	{ return numberOfNormalTagEntries() + numberOfRepeatingTagEntries(); }
+	{ return numberOfNormalTagEntries() 
+	      + numberOfRepeatingTagEntries() - skeletonCount; }
+
+    /* the number of skeleton entries */
+    int numberOfSkeletonEntries() { return skeletonCount; }
 
     /*
      * Load a particular dictionary from file.
@@ -159,7 +168,13 @@ extern DcmDataDictionary dcmDataDict;
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.h,v $
-** Revision 1.8  1997-05-13 13:58:41  hewett
+** Revision 1.9  1997-05-22 13:15:54  hewett
+** Added method DcmDataDictionary::isDictionaryLoaded() to ask if a full
+** data dictionary has been loaded.  This method should be used in tests
+** rather that querying the number of entries (a sekelton dictionary is
+** now always present).
+**
+** Revision 1.8  1997/05/13 13:58:41  hewett
 ** Added member function (loadSkeletomDictionary) to preload of a few
 ** essential attribute descriptions into the data dictionary (e.g. Item
 ** and ItemDelimitation tags).

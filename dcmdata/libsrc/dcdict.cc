@@ -10,9 +10,9 @@
 ** 
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-05-13 13:49:37 $
+** Update Date:		$Date: 1997-05-22 13:16:04 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdict.cc,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
+** CVS/RCS Revision:	$Revision: 1.9 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -105,18 +105,23 @@ BOOL DcmDataDictionary::loadSkeletonDictionary()
 		      EVR_na, "SequenceDelimitationItem", 1, 1, "DICOM3",
 		      DcmDictRange_Unspecified, DcmDictRange_Unspecified);
     addEntry(e);
+
+    skeletonCount = numberOfEntries();
     return TRUE;
 }
 
 DcmDataDictionary::DcmDataDictionary(BOOL loadBuiltin, BOOL loadExternal)
 {
     loadSkeletonDictionary();
-
+    dictionaryLoaded = FALSE;
     if (loadBuiltin) {
 	loadBuiltinDictionary();
+	dictionaryLoaded = (numberOfEntries() > skeletonCount);
     }
     if (loadExternal) {
-	loadExternalDictionaries();
+	if (loadExternalDictionaries()) {
+	    dictionaryLoaded = TRUE;
+	}
     }
 }
 
@@ -726,7 +731,13 @@ DcmDataDictionary::findEntry(const char *name)
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.cc,v $
-** Revision 1.8  1997-05-13 13:49:37  hewett
+** Revision 1.9  1997-05-22 13:16:04  hewett
+** Added method DcmDataDictionary::isDictionaryLoaded() to ask if a full
+** data dictionary has been loaded.  This method should be used in tests
+** rather that querying the number of entries (a sekelton dictionary is
+** now always present).
+**
+** Revision 1.8  1997/05/13 13:49:37  hewett
 ** Modified the data dictionary parse code so that it can handle VM
 ** descriptions of the form "2-2n" (as used in some supplements).
 ** Currently, a VM of "2-2n" will be represented internally as "2-n".
