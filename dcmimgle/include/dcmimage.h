@@ -22,9 +22,9 @@
  *  Purpose: Provides main interface to the "dicom image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-16 16:26:17 $
+ *  Update Date:      $Date: 1998-12-22 13:58:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dcmimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -507,13 +507,23 @@ class DicomImage
         return NULL;
     }
 
- // --- overlays: return true ('1') if successful (see also 'diovlay.cc')
 
-    /** !! UNTESTED !!
+ // --- overlays: return true (!0) if successful (see also 'diovlay.cc')
+
+    /** add specified plane to group of additional overlay planes (UNTESTED!)
      *
-     ** @param  group  group number (0x60nn) of overlay plane
+     ** @param  group        group number (0x60nn) of overlay plane
+     *  @param  rows         .
+     *  @param  columns      .
+     *  @param  mode         .
+     *  @param  left         .
+     *  @param  top          .
+     *  @param  data         .
+     *  @param  label        .
+     *  @param  description  .
      *
-     ** @return
+     ** @return false (0) if an error occurred, true otherwise (1 = added new plane,
+     *                                                          2 = replaced existing plane)
      */
     inline int addOverlay(const unsigned int group,
                           const unsigned long rows,
@@ -530,11 +540,11 @@ class DicomImage
         return 0;
     }
 
-    /** !! UNTESTED !!
+    /** remove specified (additional) overlay plane (UNTESTED!)
      *
      ** @param  group  group number (0x60nn) of overlay plane
      *
-     ** @return
+     ** @return false (0) if an error occurred (e.g. plane doesn't exist), true otherwise
      */
     inline int removeOverlay(const unsigned int group)
     {
@@ -543,119 +553,189 @@ class DicomImage
         return 0;
     }
 
-    /** activate specified overlay plane.
+    /** remove all additional overlay planes (UNTESTED!)
      *
-     ** @param  plane  number (0..15) or group number (0x60nn) of overlay plane
-     *
-     ** @return
+     ** @return false (0) if an error occurred, true otherwise (1 = all planes deleted,
+     *                                                          2 = no planes to be deleted)
      */
-    inline int showOverlay(const unsigned int plane)
+    inline int removeAllOverlays()
     {
         if ((Image != NULL) && (Image->getOverlayPtr() != NULL)) 
+            return Image->getOverlayPtr()->removeAllPlanes();
+        return 0;
+    }
+
+    /** check whether specified overlay plane is visible/activated
+     *  See show/hideOverlay() to modifiy the visibility status.
+     *
+     ** @param  plane  number (0..15) or group number (0x60nn) of overlay plane
+     *  @param  idx    index of overlay group (0 = dataset, 1 = additional), default: 0
+     *
+     ** @return true (1) if overlay plane is visible, false (0) otherwise
+     */
+    inline int isOverlayVisible(const unsigned int plane,
+                                const unsigned int idx = 0)
+    {
+        if ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL)) 
+            return Image->getOverlayPtr()->isPlaneVisible(plane);
+        return 0;
+    }
+
+    /** activate specified overlay plane
+     *
+     ** @param  plane  number (0..15) or group number (0x60nn) of overlay plane
+     *  @param  idx    index of overlay group (0 = dataset, 1 = additional), default: 0
+     *
+     ** @return false (0) if an error occurred, true otherwise (1 = plane successfully activated,
+     *                                                          2 = plane has already been visible)
+     */
+    inline int showOverlay(const unsigned int plane,
+                           const unsigned int idx = 0)
+    {
+        if ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL)) 
             return Image->getOverlayPtr()->showPlane(plane);
         return 0;
     }
 
-    /** .
+    /** activate specified overlay plane and change some parameters
      *
-     ** @param  plane  number (0..15) or group number (0x60nn) of overlay plane
-     ** @param
+     ** @param  plane   number (0..15) or group number (0x60nn) of overlay plane
+     *  @param  mode    .
+     *  @param  fore    ..., default: 1.0
+     *  @param  thresh  ..., default: 0.5
+     *  @param  idx     index of overlay group (0 = dataset, 1 = additional), default: 0
      *
-     ** @return
+     ** @return false (0) if an error occurred, true otherwise
      */
     inline int showOverlay(const unsigned int plane,
                            const EM_Overlay mode,
-                           const double fore = 1,
-                           const double thresh = 0.5)
+                           const double fore = 1.0,
+                           const double thresh = 0.5,
+                           const unsigned int idx = 0)
     {
-        if ((Image != NULL) && (Image->getOverlayPtr() != NULL))
+        if ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL))
             return Image->getOverlayPtr()->showPlane(plane, fore, thresh, mode);
         return 0;
     }
         
-    /** .
+    /** activate all overlay planes (make them visible)
      *
-     ** @return
+     ** @param  idx  index of overlay group (0 = dataset, 1 = additional), default: 0
+     *
+     ** @return false (0) if an error occurred, true otherwise (1 = planes have been successfully activated,
+     *                                                          2 = no planes to be activated)
      */
-    inline int showAllOverlays()
+    inline int showAllOverlays(const unsigned int idx = 0)
     {
-        if ((Image != NULL) && (Image->getOverlayPtr() != NULL))
+        if ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL))
             return Image->getOverlayPtr()->showAllPlanes();
         return 0;
     }
 
-    /** .
+    /** activate all overlay planes and set specified parameters
      *
-     ** @param
+     ** @param  mode    .
+     *  @param  fore    .
+     *  @param  thresh  .
+     *  @param  idx     index of overlay group (0 = dataset, 1 = additional), default: 0
      *
-     ** @return
+     ** @return false (0) if an error occurred, true otherwise (1 = planes have been successfully activated,
+     *                                                          2 = no planes to be activated)
      */
     inline int showAllOverlays(const EM_Overlay mode,
                                const double fore = 1,
-                               const double thresh = 0.5)
+                               const double thresh = 0.5,
+                               const unsigned int idx = 0)
     {
-        if ((Image != NULL) && (Image->getOverlayPtr() != NULL))
+        if ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL))
             return Image->getOverlayPtr()->showAllPlanes(fore, thresh, mode);
         return 0;
     }
         
-    /** .
+    /** deactivate specified overlay plane
      *
      ** @param  plane  number (0..15) or group number (0x60nn) of overlay plane
+     *  @param  idx    index of overlay group (0 = dataset, 1 = additional), default: 0
      *
-     ** @return
+     ** @return false (0) if an error occurred, true otherwise (1 = plane successfully deactivated,
+     *                                                          2 = plane has already been invisible)
      */
-    inline int hideOverlay(const unsigned int plane)
+    inline int hideOverlay(const unsigned int plane,
+                           const unsigned int idx = 0)
     {
-        if ((Image != NULL) && (Image->getOverlayPtr() != NULL))
+        if ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL))
             return Image->getOverlayPtr()->hidePlane(plane);
         return 0;
     }
 
-    /** .
+    /** deactivate all overlay planes (make them invisible)
      *
-     ** @return
+     ** @param  idx  index of overlay group (0 = dataset, 1 = additional), default: 0
+     *
+     ** @return false (0) if an error occurred, true otherwise (1 = planes have been successfully deactivated,
+     *                                                          2 = no planes to be deactivated)
      */
-    inline int hideAllOverlays()
+    inline int hideAllOverlays(const unsigned int idx = 0)
     {
-        if ((Image != NULL) && (Image->getOverlayPtr() != NULL))
+        if ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL))
             return Image->getOverlayPtr()->hideAllPlanes();
         return 0;
     }
         
-    /** .
+    /** move origin of specified overlay plane to given position
      *
      ** @param  plane  number (0..15) or group number (0x60nn) of overlay plane
-     ** @param
+     *  @param  left   x coordinate of new plane origin
+     *  @param  top    y coordinate of new plane origin
+     *  @param  idx    index of overlay group (0 = dataset, 1 = additional), default: 0
      *
-     ** @return
+     ** @return false (0) if an error occurred, true otherwise (1 = plane has been successfully moved,
+     *                                                          2 = old and new position are equal, nothing to do)
      */
     inline int placeOverlay(const unsigned int plane,
                             const signed int left,
-                            const signed int top)
+                            const signed int top,
+                            const unsigned int idx = 0)
     {
-        if ((Image != NULL) && (Image->getOverlayPtr() != NULL))
+        if ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL))
             return Image->getOverlayPtr()->placePlane(plane, left, top);
         return 0;
     }
 
     /** .
      *
+     ** @param  idx    index of overlay group (0 = dataset, 1 = additional), default: 0
+     *
      ** @return number of overlay planes stored in the image
      */
-    inline unsigned int getOverlayCount() const
+    inline unsigned int getOverlayCount(const unsigned int idx = 0) const
     {
-        if ((Image != NULL) && (Image->getOverlayPtr() != NULL))
+        if ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL))
             return Image->getOverlayPtr()->getCount();
         return 0;
     }
 
-    /** !! UNTESTED !!
+    /** get group number of specified overlay plane (UNTESTED!)
      *
      ** @param  plane  number (0..15) or group number (0x60nn) of overlay plane
-     *  @param  idx    index of overlay group (0 = dataset, 1 = additional)
+     *  @param  idx    index of overlay group (0 = dataset, 1 = additional), default: 0
      *
-     ** @return pointer to overlay plane label
+     ** @return group number of given overlay plane if successful, false (0) otherwise
+     */
+    inline unsigned int getOverlayGroupNumber(const unsigned int plane,
+                                              const unsigned int idx = 0) const
+    {
+        if ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL))
+            return Image->getOverlayPtr(idx)->getPlaneGroupNumber(plane);
+        return 0;
+    }
+
+    /** get label of specified overlay plane (UNTESTED!)
+     *
+     ** @param  plane  number (0..15) or group number (0x60nn) of overlay plane
+     *  @param  idx    index of overlay group (0 = dataset, 1 = additional), default: 0
+     *
+     ** @return pointer to overlay plane label if successful, false (NULL) otherwise
      */
     inline const char *getOverlayLabel(const unsigned int plane,
                                        const unsigned int idx = 0) const
@@ -665,12 +745,12 @@ class DicomImage
         return NULL;
     }
 
-    /** !! UNTESTED !!
+    /** get description of specified overlay plane (UNTESTED!)
      *
      ** @param  plane  number (0..15) or group number (0x60nn) of overlay plane
-     *  @param  idx    index of overlay group (0 = dataset, 1 = additional)
+     *  @param  idx    index of overlay group (0 = dataset, 1 = additional), default: 0
      *
-     ** @return pointer to overlay plane description
+     ** @return pointer to overlay plane description if successful, false (NULL) otherwise
      */
     inline const char *getOverlayDescription(const unsigned int plane,
                                              const unsigned int idx = 0) const
@@ -680,25 +760,52 @@ class DicomImage
         return NULL;
     }
 
-    /** !! NOT IMPLEMENTED !!
+    /** get mode of specified overlay plane (UNTESTED!)
      *
      ** @param  plane  number (0..15) or group number (0x60nn) of overlay plane
+     *  @param  idx    index of overlay group (0 = dataset, 1 = additional), default: 0
      *
-     ** @return pointer to overlay plane data
+     ** @return mode of overlay plane if succesful, EMO_Default otherwise
+     */
+    inline EM_Overlay getOverlayMode(const unsigned int plane,
+                                     const unsigned int idx = 0) const
+    {
+        if ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL))
+            return Image->getOverlayPtr(idx)->getPlaneMode(plane);
+        return EMO_Default;
+    }
+
+    /** create 8 bits per pixel ...
+     *
+     ** @param  plane   number (0..15) or group number (0x60nn) of overlay plane
+     *  @param  width   .
+     *  @param  height  .
+     *  @param  left    .
+     *  @param  top     .
+     *  @param  mode    .
+     *  @param  frame   ..., default: 0
+     *  @param  idx     index of overlay group (0 = dataset, 1 = additional, 2 = '1' plane hides '0' plane), default: 2
+     *  @param  value   ..., default: 255
+     *
+     ** @return pointer to overlay plane data (internal memory buffer)
      */
     inline const Uint8 *getOverlayData(const unsigned int plane,
                                        unsigned int &width,
                                        unsigned int &height,
                                        unsigned int &left,
                                        unsigned int &top,
-                                       const unsigned long frame = 0) const
+                                       EM_Overlay &mode,
+                                       const unsigned long frame = 0,
+                                       const unsigned int idx = 2,
+                                       const Uint8 value = 0xff) const
     {
         if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
-            return Image->getMonoImagePtr()->getOverlayData(frame, plane, width, height, left, top);
+            return Image->getMonoImagePtr()->getOverlayData(frame, plane, width, height, left, top, mode, idx, value);
         return NULL;
     }
     
-    /** .
+    /** delete buffer for overlay plane data
+     *  Save memory if data is no longer needed.
      */
     inline void deleteOverlayData() const 
     {
@@ -706,7 +813,8 @@ class DicomImage
             Image->getMonoImagePtr()->deleteOverlayData();
     }
     
-    // --- create...Image: return pointer to new 'DicomImage' object, memory isn't handled internally !
+
+ // --- create...Image: return pointer to new 'DicomImage' object, memory isn't handled internally !
     
     /** Method:
      *
@@ -854,7 +962,7 @@ class DicomImage
         return (Image != NULL) ? Image->createAWTBitmap(frame, bits) : NULL;
     }
 
- // --- ppm: return true ('1') if successfull
+ // --- ppm: return true ('1') if successful
 
     /** .
      *
@@ -973,42 +1081,50 @@ class DicomImage
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: dcmimage.h,v $
-** Revision 1.3  1998-12-16 16:26:17  joergr
-** Added explanation string to LUT class (retrieved from dataset).
-** Added explanation string for VOI transformations.
-** Added method to export overlay planes (create 8-bit bitmap).
-** Renamed 'setNoVoiLutTransformation' method ('Voi' instead of 'VOI').
-** Removed several methods used for monochrome images only in base class
-** 'DiImage'. Introduced mechanism to use the methods directly.
-**
-** Revision 1.2  1998/12/14 17:14:07  joergr
-** Added methods to add and remove additional overlay planes (still untested).
-** Added methods to support overlay labels and descriptions.
-**
-** Revision 1.1  1998/11/27 14:50:00  joergr
-** Added copyright message.
-** Added methods to convert module defined enum types to strings.
-** Added methods to support presentation LUTs and shapes.
-** Moved type definitions to diutils.h.
-** Added constructors to use external modality transformations.
-** Added method to directly create java AWT bitmaps.
-** Added methods and constructors for flipping and rotating, changed for
-** scaling and clipping.
-**
-** Revision 1.12  1998/07/01 08:39:17  joergr
-** Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
-** options), e.g. add copy constructors.
-**
-** Revision 1.11  1998/06/25 08:50:09  joergr
-** Added compatibility mode to support ACR-NEMA images and wrong
-** palette attribute tags.
-**
-** Revision 1.10  1998/05/11 14:53:07  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: dcmimage.h,v $
+ * Revision 1.4  1998-12-22 13:58:13  joergr
+ * Added method to check whether plane is visible, to get plane mode and to
+ * remove all planes. Set 'value' used for getOverlay/PlaneData().
+ * Changed meaning of return values (differentiate between different value
+ * for 'true').
+ * Added index parameter to overlay methods (choose dataset or additional
+ * planes).
+ *
+ * Revision 1.3  1998/12/16 16:26:17  joergr
+ * Added explanation string to LUT class (retrieved from dataset).
+ * Added explanation string for VOI transformations.
+ * Added method to export overlay planes (create 8-bit bitmap).
+ * Renamed 'setNoVoiLutTransformation' method ('Voi' instead of 'VOI').
+ * Removed several methods used for monochrome images only in base class
+ * 'DiImage'. Introduced mechanism to use the methods directly.
+ *
+ * Revision 1.2  1998/12/14 17:14:07  joergr
+ * Added methods to add and remove additional overlay planes (still untested).
+ * Added methods to support overlay labels and descriptions.
+ *
+ * Revision 1.1  1998/11/27 14:50:00  joergr
+ * Added copyright message.
+ * Added methods to convert module defined enum types to strings.
+ * Added methods to support presentation LUTs and shapes.
+ * Moved type definitions to diutils.h.
+ * Added constructors to use external modality transformations.
+ * Added method to directly create java AWT bitmaps.
+ * Added methods and constructors for flipping and rotating, changed for
+ * scaling and clipping.
+ *
+ * Revision 1.12  1998/07/01 08:39:17  joergr
+ * Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
+ * options), e.g. add copy constructors.
+ *
+ * Revision 1.11  1998/06/25 08:50:09  joergr
+ * Added compatibility mode to support ACR-NEMA images and wrong
+ * palette attribute tags.
+ *
+ * Revision 1.10  1998/05/11 14:53:07  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */
 
