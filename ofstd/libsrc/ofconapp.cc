@@ -22,9 +22,9 @@
  *  Purpose: Handle console applications (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-08 12:00:14 $
+ *  Update Date:      $Date: 1999-03-24 17:03:57 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofconapp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -116,7 +116,10 @@ void OFConsoleApplication::printUsage(const char *parm,
     if (cmd == NULL)
         cmd = CmdLine;
     printHeader();
-    (*Output) << "usage: " << Name << " [options] " << parm << endl << endl;
+    (*Output) << "usage: " << Name;
+    if ((cmd != NULL) && (cmd->hasOptions()))
+        (*Output) << " [options]";
+    (*Output) << " " << parm << endl << endl;
     if (cmd != NULL)
     {
         OFString str;
@@ -154,7 +157,11 @@ void OFConsoleApplication::checkValue(const OFCommandLine::E_ValueStatus status,
  *
  * CVS/RCS Log:
  * $Log: ofconapp.cc,v $
- * Revision 1.1  1999-02-08 12:00:14  joergr
+ * Revision 1.2  1999-03-24 17:03:57  joergr
+ * Modified output of usage string: "[options]" are only printed if valid
+ * options exist.
+ *
+ * Revision 1.1  1999/02/08 12:00:14  joergr
  * Added class to handle console applications (with or w/o command line
  * arguments).
  *
