@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomDocument (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:41 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-19 12:55:29 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/didocu.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -121,6 +121,15 @@ class DiDocument
     inline int good() const
     {
         return Object != NULL;
+    }
+
+    /** get current DICOM object (dataset)
+     *
+     ** @return pointer to DICOM object
+     */
+    inline DcmObject *getDicomObject() const
+    {
+        return Object;
     }
 
     /** get first frame to be processed
@@ -369,7 +378,10 @@ class DiDocument
  *
  * CVS/RCS Log:
  * $Log: didocu.h,v $
- * Revision 1.10  2001-06-01 15:49:41  meichel
+ * Revision 1.11  2001-11-19 12:55:29  joergr
+ * Adapted code to support new dcmjpeg module and JPEG compressed images.
+ *
+ * Revision 1.10  2001/06/01 15:49:41  meichel
  * Updated copyright header
  *
  * Revision 1.9  2000/09/12 10:04:43  joergr

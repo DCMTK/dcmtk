@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomDocument (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:54 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-19 12:57:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/didocu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,7 +57,7 @@ DiDocument::DiDocument(const char *filename,
 {
     DcmFileStream stream(filename, DCM_ReadMode);
     if (stream.Fail())
-    { 
+    {
         if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
         {
             ofConsole.lockCerr() << "ERROR: can't open file '" << filename << "' !" << endl;
@@ -109,6 +109,8 @@ DiDocument::DiDocument(DcmObject *object,
             Object = ((DcmFileFormat *)object)->getDataset();
         else
             Object = object;
+        if ((Object != NULL) && (Xfer == EXS_Unknown))
+            Xfer = ((DcmDataset *)Object)->getOriginalXfer();
     }
 }
 
@@ -128,9 +130,7 @@ void DiDocument::Init(DcmStream &stream)
             }
             delete FileFormat;
             FileFormat = NULL;
-        }
-        else
-        {
+        } else {
             FileFormat->transferEnd();
             Object = FileFormat->getDataset();
             if (Object != NULL)
@@ -183,7 +183,7 @@ int DiDocument::search(const DcmTagKey &tag,
 /********************************************************************/
 
 
-unsigned long DiDocument::getVM(const DcmTagKey &tag) const 
+unsigned long DiDocument::getVM(const DcmTagKey &tag) const
 {
     DcmElement *elem = search(tag);
     if (elem != NULL)
@@ -195,7 +195,7 @@ unsigned long DiDocument::getVM(const DcmTagKey &tag) const
 unsigned long DiDocument::getValue(const DcmTagKey &tag,
                                    Uint16 &returnVal,
                                    const unsigned long pos,
-                                   DcmObject *item) const 
+                                   DcmObject *item) const
 {
     return getElemValue(search(tag, item), returnVal, pos);
 }
@@ -264,7 +264,7 @@ unsigned long DiDocument::getValue(const DcmTagKey &tag,
     DcmElement *elem = search(tag, item);
     if (elem != NULL)
     {
-        Uint16 *val;    
+        Uint16 *val;
         elem->getUint16Array(val);
         returnVal = val;
         if (elem->getVR() == EVR_OW)
@@ -360,7 +360,10 @@ unsigned long DiDocument::getElemValue(const DcmElement *elem,
  *
  * CVS/RCS Log:
  * $Log: didocu.cc,v $
- * Revision 1.10  2001-06-01 15:49:54  meichel
+ * Revision 1.11  2001-11-19 12:57:04  joergr
+ * Adapted code to support new dcmjpeg module and JPEG compressed images.
+ *
+ * Revision 1.10  2001/06/01 15:49:54  meichel
  * Updated copyright header
  *
  * Revision 1.9  2000/09/12 10:06:14  joergr

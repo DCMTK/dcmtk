@@ -22,9 +22,9 @@
  *  Purpose: DicomImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-13 18:01:41 $
+ *  Update Date:      $Date: 2001-11-19 12:57:17 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diimage.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -197,6 +197,10 @@ DiImage::DiImage(const DiDocument *docu,
             if (ok && Document->search(DCM_PixelData, pstack))
             {
                 DcmPixelData *pixel = (DcmPixelData *)pstack.top();
+                pstack.clear();
+                // push reference to DICOM dataset on the stack (required for decompression process)
+                pstack.push(Document->getDicomObject());                
+                pstack.push(pixel);                         // dummy stack entry
                 if ((pixel != NULL) && (pixel->chooseRepresentation(EXS_LittleEndianExplicit, NULL, pstack) == EC_Normal))
                     convertPixelData(pixel, spp);
                 else
@@ -205,7 +209,7 @@ DiImage::DiImage(const DiDocument *docu,
                     if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
                     {
                         ofConsole.lockCerr() << "ERROR: cannot change to unencapsulated representation for pixel data !" << endl;
-                        ofConsole.lockCerr();
+                        ofConsole.unlockCerr();
                     }
                 }
             }
@@ -679,7 +683,10 @@ int DiImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: diimage.cc,v $
- * Revision 1.16  2001-11-13 18:01:41  joergr
+ * Revision 1.17  2001-11-19 12:57:17  joergr
+ * Adapted code to support new dcmjpeg module and JPEG compressed images.
+ *
+ * Revision 1.16  2001/11/13 18:01:41  joergr
  * Added type cast to delete a void pointer to keep gcc 2.95 compiler quiet.
  *
  * Revision 1.15  2001/11/09 16:29:04  joergr
