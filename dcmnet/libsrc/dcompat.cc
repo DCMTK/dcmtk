@@ -64,9 +64,9 @@
 ** 
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-09-27 09:18:02 $
+** Update Date:		$Date: 1996-09-27 14:03:48 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dcompat.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -201,7 +201,7 @@ int gethostname(char* name, int namelen);
 ** The access function is OS dependent.
 */
 
-#ifdef macintosh
+#if defined(macintosh) || defined(windows)
 int access(const char* path, int /* amode */)
 {
     int rc;
@@ -313,7 +313,10 @@ tempnam(char *dir, char *pfx)
 /*
 ** CVS Log
 ** $Log: dcompat.cc,v $
-** Revision 1.5  1996-09-27 09:18:02  hewett
+** Revision 1.6  1996-09-27 14:03:48  hewett
+** Added simple version of access(...) for Win32.  This needs improvement.
+**
+** Revision 1.5  1996/09/27 09:18:02  hewett
 ** Changed flock_t to struct flock (for IBM AIX C Set++).
 **
 ** Revision 1.4  1996/09/27 08:37:15  hewett
