@@ -21,9 +21,9 @@
  *
  *  Purpose: DVConfiguration
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-11-03 13:05:34 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-11-25 11:41:12 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -112,7 +112,7 @@
 #define L1_PRINT                        "PRINT"
 #define L2_COMMUNICATION                "COMMUNICATION"
 #define L2_GENERAL                      "GENERAL"
-#define L2_HIGHENDSYSTEM                "HIGHENDSYSTEM"
+#define L2_HIGHRESOLUTIONGRAPHICS       "HIGHRESOLUTIONGRAPHICS"
 #define L2_LUT                          "LUT"
 #define L2_VOI                          "VOI"
 
@@ -1047,7 +1047,10 @@ Uint16 DVConfiguration::getTargetPrinterAnnotationPosition(const char *targetID)
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.cc,v $
- *  Revision 1.17  1999-11-03 13:05:34  meichel
+ *  Revision 1.18  1999-11-25 11:41:12  joergr
+ *  Changed config file entry "HighEndSystem" to "HighResolutionGraphics".
+ *
+ *  Revision 1.17  1999/11/03 13:05:34  meichel
  *  Added support for transmitting annotations in the film session label.
  *    Added support for dump tool launched from DVInterface.
  *

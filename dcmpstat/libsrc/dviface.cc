@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-11-18 18:23:06 $
- *  CVS/RCS Revision: $Revision: 1.82 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-11-25 11:41:10 $
+ *  CVS/RCS Revision: $Revision: 1.83 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -82,7 +82,7 @@ END_EXTERN_C
 
 #define DEFAULT_MAXPDU 16384
 
-#define L2_HIGHENDSYSTEM           "HIGHENDSYSTEM"
+#define L2_HIGHRESOLUTIONGRAPHICS       "HIGHRESOLUTIONGRAPHICS"
 
 
 DVInterface::DVInterface(const char *config_file)
@@ -129,7 +129,7 @@ DVInterface::DVInterface(const char *config_file)
     /* initialize display transform (only on low-cost systems) */
     for (int i = DVPSD_first; i < DVPSD_max;i++)
         displayFunction[i] = NULL;
-    if (!getGUIConfigEntryBool(L2_HIGHENDSYSTEM, OFFalse))
+    if (!getGUIConfigEntryBool(L2_HIGHRESOLUTIONGRAPHICS, OFFalse))
     {
         const char *displayFunctionFile = getMonitorCharacteristicsFile();
         if (displayFunctionFile && (strlen(displayFunctionFile) > 0))
@@ -2693,7 +2693,10 @@ E_Condition DVInterface::dumpIOD(const char *studyUID, const char *seriesUID, co
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.82  1999-11-18 18:23:06  meichel
+ *  Revision 1.83  1999-11-25 11:41:10  joergr
+ *  Changed config file entry "HighEndSystem" to "HighResolutionGraphics".
+ *
+ *  Revision 1.82  1999/11/18 18:23:06  meichel
  *  Corrected various memory leaks. DcmFileFormat can be instantiated
  *    with a DcmDataset* as a parameter, but in this case the dataset is
  *    copied and not taken over by the DcmFileFormat. The pointer must
