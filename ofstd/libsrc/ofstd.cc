@@ -73,9 +73,9 @@
  *
  *  Purpose: Class for various helper functions
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-18 12:14:19 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-27 11:23:11 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,9 +86,11 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "ofstd.h"
 
+#define INCLUDE_CSTDIO
+#define INCLUDE_CCTYPE
+#include "ofstdinc.h"
 
 BEGIN_EXTERN_C
-#include <stdio.h>       /* for fopen() and fclose() */
 #ifdef HAVE_SYS_STAT_H
 #include <sys/stat.h>    /* for stat() */
 #endif
@@ -114,9 +116,6 @@ BEGIN_EXTERN_C
 #ifdef HAVE_NDIR_H
 #include <ndir.h>
 #endif
-#endif
-#ifdef HAVE_CTYPE_H
-#include <ctype.h>
 #endif
 END_EXTERN_C
 
@@ -806,7 +805,10 @@ OFBool OFStandard::stringMatchesCharacterSet( const char *str, const char *chars
 
 /*
  *  $Log: ofstd.cc,v $
- *  Revision 1.9  2002-07-18 12:14:19  joergr
+ *  Revision 1.10  2002-11-27 11:23:11  meichel
+ *  Adapted module ofstd to use of new header file ofstdinc.h
+ *
+ *  Revision 1.9  2002/07/18 12:14:19  joergr
  *  Corrected typos.
  *
  *  Revision 1.8  2002/07/02 15:18:24  wilkens

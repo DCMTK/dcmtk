@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2001, OFFIS
+ *  Copyright (C) 1997-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: OFFilenameCreator
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:51:38 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2002-11-27 11:23:10 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,10 +33,13 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "offname.h"
-
-/* give up after this number of unsuccessful attempts to create a unique filename */
-#define MAX_TRY 1024  
-                        
+      
+#define INCLUDE_CERRNO
+#define INCLUDE_CSTRING
+#define INCLUDE_CTIME
+#define INCLUDE_CSTDLIB
+#include "ofstdinc.h"
+                  
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>    /* for time_t */
@@ -44,23 +47,11 @@ BEGIN_EXTERN_C
 #ifdef HAVE_SYS_STAT_H
 #include <sys/stat.h>    /* for stat() */
 #endif
-#ifdef HAVE_TIME_H
-#include <time.h>         /* for time() */
-#endif
-#include <errno.h>
-#include <string.h>
 END_EXTERN_C
 
-#ifdef HAVE_STDLIB_H
-#ifndef  _BCB4
-/* workaround for bug in Borland C++ Builder 4 */
-BEGIN_EXTERN_C
-#endif
-#include <stdlib.h>
-#ifndef  _BCB4
-END_EXTERN_C
-#endif
-#endif
+/* give up after this number of unsuccessful attempts to create a unique filename */
+#define MAX_TRY 1024  
+
 
 OFFilenameCreator::OFFilenameCreator()
 : creation_time(0)
@@ -165,7 +156,10 @@ int OFFilenameCreator::myrand_r(unsigned int *seed)
 
 /*
  *  $Log: offname.cc,v $
- *  Revision 1.8  2001-06-01 15:51:38  meichel
+ *  Revision 1.9  2002-11-27 11:23:10  meichel
+ *  Adapted module ofstd to use of new header file ofstdinc.h
+ *
+ *  Revision 1.8  2001/06/01 15:51:38  meichel
  *  Updated copyright header
  *
  *  Revision 1.7  2000/10/12 08:13:17  joergr

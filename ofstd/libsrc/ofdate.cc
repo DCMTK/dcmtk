@@ -21,10 +21,10 @@
  *
  *  Purpose: Class for date functions (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-05-24 09:44:26 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-27 11:23:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofdate.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,16 +33,11 @@
 
 
 #include "osconfig.h"
-
-BEGIN_EXTERN_C
-#include <stdio.h>         /* for sprintf() */
-#ifdef HAVE_TIME_H
-# include <time.h>         /* for time() */
-#endif
-END_EXTERN_C
-
 #include "ofdate.h"
 
+#define INCLUDE_CSTDIO
+#define INCLUDE_CTIME
+#include "ofstdinc.h"
 
 /*------------------*
  *  implementation  *
@@ -303,7 +298,10 @@ ostream& operator<<(ostream& stream, const OFDate &dateVal)
  *
  * CVS/RCS Log:
  * $Log: ofdate.cc,v $
- * Revision 1.3  2002-05-24 09:44:26  joergr
+ * Revision 1.4  2002-11-27 11:23:10  meichel
+ * Adapted module ofstd to use of new header file ofstdinc.h
+ *
+ * Revision 1.3  2002/05/24 09:44:26  joergr
  * Renamed some parameters/variables to avoid ambiguities.
  *
  * Revision 1.2  2002/04/15 09:40:47  joergr

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2001, OFFIS
+ *  Copyright (C) 1997-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -26,9 +26,9 @@
  *           multi-thread APIs.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-02-27 14:13:22 $
+ *  Update Date:      $Date: 2002-11-27 11:23:11 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofthread.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -68,12 +68,12 @@ extern "C" {
 
 #endif /* WITH_THREADS */
 
-#include <string.h>
-#include <errno.h>
+#define INCLUDE_CSTRING
+#define INCLUDE_CERRNO
+#include "ofstdinc.h"
 #include "ofthread.h"
 #include "ofconsol.h"
 #include "ofstring.h"
-
 
 /* ------------------------------------------------------------------------- */
 
@@ -911,7 +911,10 @@ void OFReadWriteLock::errorstr(OFString& description, int /* code */ )
  *
  * CVS/RCS Log:
  * $Log: ofthread.cc,v $
- * Revision 1.8  2002-02-27 14:13:22  meichel
+ * Revision 1.9  2002-11-27 11:23:11  meichel
+ * Adapted module ofstd to use of new header file ofstdinc.h
+ *
+ * Revision 1.8  2002/02/27 14:13:22  meichel
  * Changed initialized() methods to const. Fixed some return values when
  *   compiled without thread support.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2001, OFFIS
+ *  Copyright (C) 1997-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Template class for bit manipulations (Header)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:51:31 $
+ *  Update Date:      $Date: 2002-11-27 11:23:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofbmanip.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,13 +37,9 @@
 
 #include "osconfig.h"
 
-#ifdef HAVE_STRING_H
-#include <string.h>
-#endif
+#define INCLUDE_CSTRING
+#include "ofstdinc.h"
 
-#ifdef HAVE_STRINGS_H
-#include <strings.h>
-#endif
 
 #ifdef HAVE_BZERO
 #ifndef HAVE_PROTOTYPE_BZERO
@@ -140,7 +136,10 @@ class OFBitmanipTemplate
  *
  * CVS/RCS Log:
  * $Log: ofbmanip.h,v $
- * Revision 1.11  2001-06-01 15:51:31  meichel
+ * Revision 1.12  2002-11-27 11:23:04  meichel
+ * Adapted module ofstd to use of new header file ofstdinc.h
+ *
+ * Revision 1.11  2001/06/01 15:51:31  meichel
  * Updated copyright header
  *
  * Revision 1.10  2000/03/08 16:36:00  meichel

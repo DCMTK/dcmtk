@@ -22,10 +22,10 @@
  *  Purpose: Test code of ascii/double conversion methods in class OFStandard
  *
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-18 12:13:25 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-27 11:23:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/tests/tstatof.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,9 +37,9 @@
 #include "oftypes.h"
 #include "ofconsol.h"
 
-BEGIN_EXTERN_C
-#include <math.h>
-END_EXTERN_C
+#define INCLUDE_CMATH
+#include "ofstdinc.h"
+
 
 struct ValuePair
 {
@@ -151,7 +151,10 @@ int main()
  *
  * CVS/RCS Log:
  * $Log: tstatof.cc,v $
- * Revision 1.2  2002-07-18 12:13:25  joergr
+ * Revision 1.3  2002-11-27 11:23:13  meichel
+ * Adapted module ofstd to use of new header file ofstdinc.h
+ *
+ * Revision 1.2  2002/07/18 12:13:25  joergr
  * Changed value of double constant to avoid compilation error (out of range)
  * reported by Sun CC 2.0.1.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2001, OFFIS
+ *  Copyright (C) 1999-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Define general purpose facility for log file output
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-11 12:14:03 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-27 11:23:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/Attic/oflogfil.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,7 +36,9 @@
 #include "ofstring.h"
 #include "ofdatime.h"
 
-#include <stdio.h>
+#define INCLUDE_CSTDIO
+#include "ofstdinc.h"
+
 
 OFLogFile::OFLogFile(const char *filename, int flags)
 #ifdef HAVE_DECLARATION_STD___IOS_OPENMODE
@@ -104,7 +106,10 @@ void OFLogFile::writeMessage(const char *message, int indent)
  *
  * CVS/RCS Log:
  * $Log: oflogfil.cc,v $
- * Revision 1.6  2002-04-11 12:14:03  joergr
+ * Revision 1.7  2002-11-27 11:23:10  meichel
+ * Adapted module ofstd to use of new header file ofstdinc.h
+ *
+ * Revision 1.6  2002/04/11 12:14:03  joergr
  * Introduced new standard classes providing date and time functions.
  *
  * Revision 1.5  2001/11/02 12:04:10  meichel

@@ -21,10 +21,10 @@
  *
  *  Purpose: Handle command line arguments (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-09-19 08:30:20 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-27 11:23:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofcmdln.h,v $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,13 +36,13 @@
 #define __OFCMDLN_H
 
 #include "osconfig.h"
-
-#include <stdio.h>
 #include "oftypes.h"
 #include "oflist.h"
 #include "ofstring.h"
 #include "ofconsol.h"
 
+#define INCLUDE_CSTDIO
+#include "ofstdinc.h"
 
 /*--------------------*
  *  type declaration  *
@@ -1045,7 +1045,10 @@ private:
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.h,v $
- * Revision 1.29  2002-09-19 08:30:20  joergr
+ * Revision 1.30  2002-11-27 11:23:04  meichel
+ * Adapted module ofstd to use of new header file ofstdinc.h
+ *
+ * Revision 1.29  2002/09/19 08:30:20  joergr
  * Added general support for "exclusive" command line options besides "--help",
  * e.g. "--version".
  *

@@ -22,9 +22,9 @@
  *  Purpose: Define alias for cout, cerr and clog
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-06-14 10:44:41 $
+ *  Update Date:      $Date: 2002-11-27 11:23:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofconsol.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,10 +32,12 @@
  */
 
 #include "osconfig.h"
-#include <assert.h>
-
 #include "ofconsol.h"
 #include "ofthread.h"
+
+#define INCLUDE_CASSERT
+#include "ofstdinc.h"
+
 
 #ifdef DCMTK_GUI
   OFOStringStream COUT;
@@ -151,7 +153,10 @@ OFConsoleInitializer ofConsoleInitializer;
  *
  * CVS/RCS Log:
  * $Log: ofconsol.cc,v $
- * Revision 1.9  2002-06-14 10:44:41  meichel
+ * Revision 1.10  2002-11-27 11:23:09  meichel
+ * Adapted module ofstd to use of new header file ofstdinc.h
+ *
+ * Revision 1.9  2002/06/14 10:44:41  meichel
  * Fixed bug in ofConsole join/split mutex locking behaviour
  *
  * Revision 1.8  2002/05/16 15:56:35  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2001, OFFIS
+ *  Copyright (C) 1997-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,9 @@
  *      Defines a template stack class with interfaces similar to the C++ Standard
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-07-10 11:50:40 $
+ *  Update Date:      $Date: 2002-11-27 11:23:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstack.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,8 +48,9 @@
 #define OFStack stack
 #else
 
-#include <assert.h>
-#include <stddef.h>
+#define INCLUDE_CASSERT
+#define INCLUDE_CSTDDEF
+#include "ofstdinc.h"
 
 #ifndef HAVE_CLASS_TEMPLATE
 #error Your C++ compiler cannot handle class templates:
@@ -283,7 +284,10 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: ofstack.h,v $
-** Revision 1.13  2002-07-10 11:50:40  meichel
+** Revision 1.14  2002-11-27 11:23:06  meichel
+** Adapted module ofstd to use of new header file ofstdinc.h
+**
+** Revision 1.13  2002/07/10 11:50:40  meichel
 ** Added vitual destructor to class OFStackLink
 **
 ** Revision 1.12  2001/12/03 15:09:09  meichel

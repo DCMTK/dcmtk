@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2001, OFFIS
+ *  Copyright (C) 1997-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,9 @@
  *          Defines a template list class with interfaces similar to the C++ Standard
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-08-23 16:05:52 $
+ *  Update Date:      $Date: 2002-11-27 11:23:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/oflist.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -70,8 +70,9 @@
 #define OFListRemoveIf(Predicate, T, c, pred) (c).remove_if((pred))
 #else
 
-#include <assert.h>
-#include <stddef.h>
+#define INCLUDE_CASSERT
+#define INCLUDE_CSTDDEF
+#include "ofstdinc.h"
 
 
 // OFListLinkBase, OFListLink and OFListBase are classes for internal 
@@ -529,7 +530,10 @@ void OF_ListRemoveIf(OFList<T>& c, Predicate pred)
 /*
 ** CVS/RCS Log:
 ** $Log: oflist.h,v $
-** Revision 1.13  2001-08-23 16:05:52  meichel
+** Revision 1.14  2002-11-27 11:23:05  meichel
+** Adapted module ofstd to use of new header file ofstdinc.h
+**
+** Revision 1.13  2001/08/23 16:05:52  meichel
 ** Added private undefined copy assignment operators to avoid gcc warnings
 **
 ** Revision 1.12  2001/06/01 15:51:34  meichel

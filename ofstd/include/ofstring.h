@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2001, OFFIS
+ *  Copyright (C) 1997-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: A simple string class
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:36:03 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-27 11:23:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstring.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,7 +35,6 @@
 #define OFSTRING_H
 
 #include "osconfig.h"     /* include OS specific configuration first */
-
 
 #ifdef HAVE_STD_STRING
 /*
@@ -53,16 +52,10 @@
 ** Declare our own string class
 */
 
-#ifdef HAVE_STDLIB_H
-#ifndef  _BCB4
-/* workaround for bug in Borland C++ Builder 4 */
-BEGIN_EXTERN_C
-#endif
-#include <stdlib.h> /* for NULL */
-#ifndef  _BCB4
-END_EXTERN_C
-#endif
-#endif
+#define INCLUDE_CASSERT
+#define INCLUDE_CSTRING
+#define INCLUDE_CSTDLIB
+#include "ofstdinc.h"
 
 BEGIN_EXTERN_C
 #ifdef HAVE_UNISTD_H
@@ -70,15 +63,6 @@ BEGIN_EXTERN_C
 #endif
 #ifdef HAVE_LIBC_H
 #include <libc.h>
-#endif
-#ifdef HAVE_ASSERT_H
-#include <assert.h>
-#endif
-#ifdef HAVE_STRING_H
-#include <string.h>
-#endif
-#ifdef HAVE_STRINGS_H
-#include <strings.h>
 #endif
 END_EXTERN_C
 
@@ -1095,7 +1079,10 @@ OFBool operator>= (const OFString& lhs, char rhs);
 /*
 ** CVS/RCS Log:
 ** $Log: ofstring.h,v $
-** Revision 1.12  2002-04-16 13:36:03  joergr
+** Revision 1.13  2002-11-27 11:23:06  meichel
+** Adapted module ofstd to use of new header file ofstdinc.h
+**
+** Revision 1.12  2002/04/16 13:36:03  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
 ** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
 ** contribution.

@@ -21,10 +21,10 @@
  *
  *  Purpose: Class for various helper functions
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-07-02 15:17:57 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-27 11:23:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstd.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,22 +36,17 @@
 #define __OFSTD_H
 
 #include "osconfig.h"
+#include "ofstring.h"   /* for class OFString */
+
+#define INCLUDE_CSTRING
+#define INCLUDE_CSTDIO
+#include "ofstdinc.h"
 
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>  /* for size_t */
 #endif
-
-#ifdef HAVE_STRING_H
-#include <string.h>
-#endif
-
-#ifdef HAVE_STRINGS_H
-#include <strings.h>
-#endif
 END_EXTERN_C
-
-#include "ofstring.h"   /* for class OFString */
 
 
 /*---------------------*
@@ -326,7 +321,10 @@ class OFStandard
  *
  * CVS/RCS Log:
  * $Log: ofstd.h,v $
- * Revision 1.8  2002-07-02 15:17:57  wilkens
+ * Revision 1.9  2002-11-27 11:23:06  meichel
+ * Adapted module ofstd to use of new header file ofstdinc.h
+ *
+ * Revision 1.8  2002/07/02 15:17:57  wilkens
  * Added function OFStandard::stringMatchesCharacterSet(...).
  *
  * Revision 1.7  2002/06/20 12:02:38  meichel

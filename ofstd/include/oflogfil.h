@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2001, OFFIS
+ *  Copyright (C) 1999-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Define general purpose facility for log file output
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-05-16 15:56:18 $
+ *  Update Date:      $Date: 2002-11-27 11:23:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/oflogfil.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,17 +39,9 @@
 #include "ofthread.h"
 #include "ofstream.h"
 
+#define INCLUDE_CSTDLIB
+#include "ofstdinc.h"
 
-#ifdef HAVE_STDLIB_H
-#ifndef  _BCB4
-/* workaround for bug in Borland C++ Builder 4 */
-BEGIN_EXTERN_C
-#endif
-#include <stdlib.h> /* for NULL */
-#ifndef  _BCB4
-END_EXTERN_C
-#endif
-#endif
 
 /** Class that provides a general purpose facility for writing log files.
  *  Protection for simultaneous access from different threads is implemented
@@ -205,7 +197,10 @@ class OFLogFile
  *
  * CVS/RCS Log:
  * $Log: oflogfil.h,v $
- * Revision 1.7  2002-05-16 15:56:18  meichel
+ * Revision 1.8  2002-11-27 11:23:05  meichel
+ * Adapted module ofstd to use of new header file ofstdinc.h
+ *
+ * Revision 1.7  2002/05/16 15:56:18  meichel
  * Minor fixes to make ofstd compile on NeXTStep 3.3
  *
  * Revision 1.6  2002/05/14 08:12:29  joergr

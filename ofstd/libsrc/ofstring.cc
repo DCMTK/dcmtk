@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2001, OFFIS
+ *  Copyright (C) 1997-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: A simple string class
  * 
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-12-04 16:48:18 $
+ *  Update Date:      $Date: 2002-11-27 11:23:11 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofstring.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,14 +42,10 @@
 
 
 #include "osconfig.h"     /* include OS specific configuration first */
-
-BEGIN_EXTERN_C
-#ifdef HAVE_CTYPE_H
-#include <ctype.h>
-#endif
-END_EXTERN_C
-
 #include "ofstring.h"
+
+#define INCLUDE_CCTYPE
+#include "ofstdinc.h"
 
 /*
 ** Constructors
@@ -1008,7 +1004,10 @@ OFBool operator>= (const OFString& lhs, char rhs)
 /*
 ** CVS/RCS Log:
 ** $Log: ofstring.cc,v $
-** Revision 1.15  2001-12-04 16:48:18  meichel
+** Revision 1.16  2002-11-27 11:23:11  meichel
+** Adapted module ofstd to use of new header file ofstdinc.h
+**
+** Revision 1.15  2001/12/04 16:48:18  meichel
 ** Completed doc++ documentation, fixed bug in OFString::copy.
 **
 ** Revision 1.14  2001/11/26 16:43:20  joergr
