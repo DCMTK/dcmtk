@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-27 13:49:01 $
+** Update Date:		$Date: 1997-06-06 09:55:30 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixseq.cc,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
+** CVS/RCS Revision:	$Revision: 1.9 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -257,7 +257,7 @@ E_Condition DcmPixelSequence::changeXfer(const E_TransferSyntax newXfer)
 // ********************************
 
 BOOL DcmPixelSequence::canWriteXfer(const E_TransferSyntax newXfer,
-				       const E_TransferSyntax oldXfer)
+				    const E_TransferSyntax oldXfer)
 {
     DcmXfer newXferSyn(newXfer);
 
@@ -296,7 +296,12 @@ E_Condition DcmPixelSequence::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.cc,v $
-** Revision 1.8  1997-05-27 13:49:01  andreas
+** Revision 1.9  1997-06-06 09:55:30  andreas
+** - corrected error: canWriteXfer returns false if the old transfer syntax
+**   was unknown, which causes several applications to prohibit the writing
+**   of dataset.
+**
+** Revision 1.8  1997/05/27 13:49:01  andreas
 ** - Add method canWriteXfer to class DcmObject and all derived classes.
 **   This method checks whether it is possible to convert the original
 **   transfer syntax to an new transfer syntax. The check is used in the

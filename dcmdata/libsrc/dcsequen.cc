@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-30 06:45:45 $
+** Update Date:		$Date: 1997-06-06 09:55:31 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcsequen.cc,v $
-** CVS/RCS Revision:	$Revision: 1.17 $
+** CVS/RCS Revision:	$Revision: 1.18 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -181,7 +181,7 @@ BOOL DcmSequenceOfItems::canWriteXfer(const E_TransferSyntax newXfer,
 {
     BOOL canWrite = TRUE;
 
-    if (newXfer == EXS_Unknown || oldXfer == EXS_Unknown)
+    if (newXfer == EXS_Unknown)
 	canWrite = FALSE;
     else if ( !itemList->empty() )
     {
@@ -1148,7 +1148,12 @@ E_Condition DcmSequenceOfItems::loadAllDataIntoMemory()
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.17  1997-05-30 06:45:45  andreas
+** Revision 1.18  1997-06-06 09:55:31  andreas
+** - corrected error: canWriteXfer returns false if the old transfer syntax
+**   was unknown, which causes several applications to prohibit the writing
+**   of dataset.
+**
+** Revision 1.17  1997/05/30 06:45:45  andreas
 ** - fixed problem of inconsistent interfaces and implementation that the
 **   syntax check of GNU C++ does not find.
 **

@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-27 13:49:00 $
+** Update Date:		$Date: 1997-06-06 09:55:29 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.27 $
+** CVS/RCS Revision:	$Revision: 1.28 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -402,7 +402,7 @@ BOOL DcmItem::canWriteXfer(const E_TransferSyntax newXfer,
 {
     BOOL canWrite = TRUE;
 
-    if (newXfer == EXS_Unknown || oldXfer == EXS_Unknown)
+    if (newXfer == EXS_Unknown)
 	canWrite = FALSE;
     else if ( !elementList->empty() )
     {
@@ -1877,7 +1877,12 @@ DcmItem::findLong(const DcmTagKey& xtag,
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.27  1997-05-27 13:49:00  andreas
+** Revision 1.28  1997-06-06 09:55:29  andreas
+** - corrected error: canWriteXfer returns false if the old transfer syntax
+**   was unknown, which causes several applications to prohibit the writing
+**   of dataset.
+**
+** Revision 1.27  1997/05/27 13:49:00  andreas
 ** - Add method canWriteXfer to class DcmObject and all derived classes.
 **   This method checks whether it is possible to convert the original
 **   transfer syntax to an new transfer syntax. The check is used in the

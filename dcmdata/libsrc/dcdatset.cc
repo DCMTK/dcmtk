@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-27 13:48:57 $
+** Update Date:		$Date: 1997-06-06 09:55:28 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdatset.cc,v $
-** CVS/RCS Revision:	$Revision: 1.9 $
+** CVS/RCS Revision:	$Revision: 1.10 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -104,10 +104,7 @@ BOOL DcmDataset::canWriteXfer(const E_TransferSyntax newXfer,
     if (Xfer == EXS_Unknown)
 	originalXfer = oldXfer;
 
-    if (originalXfer == EXS_Unknown)
-	return FALSE;
-    else
-	return DcmItem::canWriteXfer(newXfer, originalXfer);
+    return DcmItem::canWriteXfer(newXfer, originalXfer);
 
 }
 
@@ -271,7 +268,12 @@ E_Condition DcmDataset::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.cc,v $
-** Revision 1.9  1997-05-27 13:48:57  andreas
+** Revision 1.10  1997-06-06 09:55:28  andreas
+** - corrected error: canWriteXfer returns false if the old transfer syntax
+**   was unknown, which causes several applications to prohibit the writing
+**   of dataset.
+**
+** Revision 1.9  1997/05/27 13:48:57  andreas
 ** - Add method canWriteXfer to class DcmObject and all derived classes.
 **   This method checks whether it is possible to convert the original
 **   transfer syntax to an new transfer syntax. The check is used in the
