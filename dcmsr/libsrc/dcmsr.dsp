@@ -56,7 +56,7 @@ RSC=rc.exe
 # ADD BASE CPP /nologo /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB"  /FD /c
 # ADD CPP /nologo /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB"  /FD /c
 # ADD CPP  /I "../../config\include" /I "../../dcmsr\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../../zlib-1.1.4\include"   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB /D "dcmsr_EXPORTS"
-# ADD CPP   /W3 /Zm1000 /GX /GR 
+# ADD CPP  
 # ADD CPP /nologo /MT /W3 /GX /O2 /GR- /YX -DCMAKE_INTDIR=\"Release\" 
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC  /I "../../config\include" /I "../../dcmsr\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../../zlib-1.1.4\include" /l 0x409 /d "NDEBUG"
@@ -84,7 +84,7 @@ LIB32=link.exe -lib
 # ADD BASE CPP /nologo /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB"  /FD /c
 # ADD CPP /nologo /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB"  /FD /GZ /c
 # ADD CPP  /I "../../config\include" /I "../../dcmsr\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../../zlib-1.1.4\include"   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB /D "dcmsr_EXPORTS"
-# ADD CPP   /W3 /Zm1000 /GX /GR 
+# ADD CPP  
 # ADD CPP /nologo /MTd /W3 /GX /Z7 /Od /GR- /YX -DCMAKE_INTDIR=\"Debug\" 
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC  /I "../../config\include" /I "../../dcmsr\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../../zlib-1.1.4\include" /l 0x409 /d "_DEBUG"
@@ -112,7 +112,7 @@ LIB32=link.exe -lib
 # ADD BASE CPP /nologo /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "_ATL_DLL" /FD /c
 # ADD CPP /nologo /D "NDEBUG" /D "_MBCS" /D "_ATL_DLL"  /D "WIN32" /D "_WINDOWS" /D "_USRDLL" /FD /c
 # ADD CPP  /I "../../config\include" /I "../../dcmsr\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../../zlib-1.1.4\include"   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB /D "dcmsr_EXPORTS"
-# ADD CPP   /W3 /Zm1000 /GX /GR 
+# ADD CPP  
 # ADD CPP /MD /O1 -DCMAKE_INTDIR=\"MinSizeRel\" 
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC  /I "../../config\include" /I "../../dcmsr\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../../zlib-1.1.4\include" /l 0x409 /d "NDEBUG"
@@ -140,7 +140,7 @@ LIB32=link.exe -lib
 # ADD BASE CPP /nologo /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB"  /FD /c
 # ADD CPP /nologo /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB"  /FD /c
 # ADD CPP  /I "../../config\include" /I "../../dcmsr\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../../zlib-1.1.4\include"   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB /D "dcmsr_EXPORTS"
-# ADD CPP   /W3 /Zm1000 /GX /GR 
+# ADD CPP  
 # ADD CPP /MD /Zi /O2 -DCMAKE_INTDIR=\"RelWithDebInfo\" 
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC  /I "../../config\include" /I "../../dcmsr\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../../zlib-1.1.4\include" /l 0x409 /d "NDEBUG"
@@ -166,6 +166,16 @@ LIB32=link.exe -lib
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=../../dcmsr\libsrc\dsrbascc.cxx
+
+# End Source File
+# Begin Source File
+
+SOURCE=../../dcmsr\libsrc\dsrchecc.cxx
+
+# End Source File
+# Begin Source File
+
 SOURCE=../../dcmsr\libsrc\dsrcitem.cxx
 
 # End Source File
@@ -177,6 +187,11 @@ SOURCE=../../dcmsr\libsrc\dsrcodtn.cxx
 # Begin Source File
 
 SOURCE=../../dcmsr\libsrc\dsrcodvl.cxx
+
+# End Source File
+# Begin Source File
+
+SOURCE=../../dcmsr\libsrc\dsrcomcc.cxx
 
 # End Source File
 # Begin Source File
@@ -226,6 +241,11 @@ SOURCE=../../dcmsr\libsrc\dsrdtitn.cxx
 # End Source File
 # Begin Source File
 
+SOURCE=../../dcmsr\libsrc\dsrenhcc.cxx
+
+# End Source File
+# Begin Source File
+
 SOURCE=../../dcmsr\libsrc\dsrimgfr.cxx
 
 # End Source File
@@ -237,6 +257,21 @@ SOURCE=../../dcmsr\libsrc\dsrimgtn.cxx
 # Begin Source File
 
 SOURCE=../../dcmsr\libsrc\dsrimgvl.cxx
+
+# End Source File
+# Begin Source File
+
+SOURCE=../../dcmsr\libsrc\dsriodcc.cxx
+
+# End Source File
+# Begin Source File
+
+SOURCE=../../dcmsr\libsrc\dsrkeycc.cxx
+
+# End Source File
+# Begin Source File
+
+SOURCE=../../dcmsr\libsrc\dsrmamcc.cxx
 
 # End Source File
 # Begin Source File
@@ -362,41 +397,6 @@ SOURCE=../../dcmsr\libsrc\dsrxmlc.cxx
 # Begin Source File
 
 SOURCE=../../dcmsr\libsrc\dsrxmld.cxx
-
-# End Source File
-# Begin Source File
-
-SOURCE=../../dcmsr\libsrc\dsriodcc.cxx
-
-# End Source File
-# Begin Source File
-
-SOURCE=../../dcmsr\libsrc\dsrbascc.cxx
-
-# End Source File
-# Begin Source File
-
-SOURCE=../../dcmsr\libsrc\dsrenhcc.cxx
-
-# End Source File
-# Begin Source File
-
-SOURCE=../../dcmsr\libsrc\dsrcomcc.cxx
-
-# End Source File
-# Begin Source File
-
-SOURCE=../../dcmsr\libsrc\dsrkeycc.cxx
-
-# End Source File
-# Begin Source File
-
-SOURCE=../../dcmsr\libsrc\dsrmamcc.cxx
-
-# End Source File
-# Begin Source File
-
-SOURCE=../../dcmsr\libsrc\dsrchecc.cxx
 
 # End Source File
 # End Group

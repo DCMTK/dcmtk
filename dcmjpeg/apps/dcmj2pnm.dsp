@@ -59,7 +59,7 @@ RSC=rc.exe
 # ADD BASE CPP /nologo  /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS"  /FD /c
 # ADD CPP /nologo  /D "WIN32"  /D "NDEBUG" /D "_CONSOLE" /D "_MBCS"  /FD /c
 # ADD CPP  /I "../../config\include" /I "../../dcmjpeg\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../dcmimgle\include" /I "../../dcmimage\include" /I "../../dcmjpeg\libijg8" /I "../../dcmjpeg\libijg12" /I "../../dcmjpeg\libijg16" /I "../../../zlib-1.1.4\include" /I "../../../tiff-3.5.7\include" /I "../../../libpng-1.2.5\include"   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB /D "dcmj2pnm_EXPORTS"
-# ADD CPP   /W3 /Zm1000 /GX /GR 
+# ADD CPP  
 # ADD CPP /nologo /MT /W3 /GX /O2 /GR- /YX -DCMAKE_INTDIR=\"Release\" 
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC  /I "../../config\include" /I "../../dcmjpeg\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../dcmimgle\include" /I "../../dcmimage\include" /I "../../dcmjpeg\libijg8" /I "../../dcmjpeg\libijg12" /I "../../dcmjpeg\libijg16" /I "../../../zlib-1.1.4\include" /I "../../../tiff-3.5.7\include" /I "../../../libpng-1.2.5\include" /l 0x409 /d "NDEBUG"
@@ -119,7 +119,7 @@ LINK32=link.exe
 # ADD BASE CPP   /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS"  /FD /GZ /c
 # ADD CPP /nologo  /D "WIN32"  /D "_DEBUG" /D "_CONSOLE" /D "_MBCS"  /FD /GZ /c
 # ADD CPP  /I "../../config\include" /I "../../dcmjpeg\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../dcmimgle\include" /I "../../dcmimage\include" /I "../../dcmjpeg\libijg8" /I "../../dcmjpeg\libijg12" /I "../../dcmjpeg\libijg16" /I "../../../zlib-1.1.4\include" /I "../../../tiff-3.5.7\include" /I "../../../libpng-1.2.5\include"   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB /D "dcmj2pnm_EXPORTS"
-# ADD CPP   /W3 /Zm1000 /GX /GR 
+# ADD CPP  
 # ADD CPP /nologo /MTd /W3 /GX /Z7 /Od /GR- /YX -DCMAKE_INTDIR=\"Debug\" 
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
@@ -180,7 +180,7 @@ LINK32=link.exe
 # ADD BASE CPP /nologo  /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS"  /FD /c
 # ADD CPP /nologo  /D "WIN32"  /I "../../config\include" /I "../../dcmjpeg\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../dcmimgle\include" /I "../../dcmimage\include" /I "../../dcmjpeg\libijg8" /I "../../dcmjpeg\libijg12" /I "../../dcmjpeg\libijg16" /I "../../../zlib-1.1.4\include" /I "../../../tiff-3.5.7\include" /I "../../../libpng-1.2.5\include"   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB /D "NDEBUG" /D "_CONSOLE" /D "_MBCS"  /FD /c
 # ADD CPP  /I "../../config\include" /I "../../dcmjpeg\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../dcmimgle\include" /I "../../dcmimage\include" /I "../../dcmjpeg\libijg8" /I "../../dcmjpeg\libijg12" /I "../../dcmjpeg\libijg16" /I "../../../zlib-1.1.4\include" /I "../../../tiff-3.5.7\include" /I "../../../libpng-1.2.5\include"   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB /D "dcmj2pnm_EXPORTS"
-# ADD CPP   /W3 /Zm1000 /GX /GR 
+# ADD CPP  
 # ADD CPP /MD /O1 -DCMAKE_INTDIR=\"MinSizeRel\" 
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC  /I "../../config\include" /I "../../dcmjpeg\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../dcmimgle\include" /I "../../dcmimage\include" /I "../../dcmjpeg\libijg8" /I "../../dcmjpeg\libijg12" /I "../../dcmjpeg\libijg16" /I "../../../zlib-1.1.4\include" /I "../../../tiff-3.5.7\include" /I "../../../libpng-1.2.5\include" /l 0x409 /d "NDEBUG"
@@ -240,7 +240,7 @@ LINK32=link.exe
 # ADD BASE CPP /nologo  /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS"  /FD /c
 # ADD CPP /nologo  /D "WIN32"  /D "NDEBUG" /D "_CONSOLE" /D "_MBCS"  /FD /c
 # ADD CPP  /I "../../config\include" /I "../../dcmjpeg\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../dcmimgle\include" /I "../../dcmimage\include" /I "../../dcmjpeg\libijg8" /I "../../dcmjpeg\libijg12" /I "../../dcmjpeg\libijg16" /I "../../../zlib-1.1.4\include" /I "../../../tiff-3.5.7\include" /I "../../../libpng-1.2.5\include"   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB /D "dcmj2pnm_EXPORTS"
-# ADD CPP   /W3 /Zm1000 /GX /GR 
+# ADD CPP  
 # ADD CPP /MD /Zi /O2 -DCMAKE_INTDIR=\"RelWithDebInfo\" 
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC  /I "../../config\include" /I "../../dcmjpeg\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../dcmimgle\include" /I "../../dcmimage\include" /I "../../dcmjpeg\libijg8" /I "../../dcmjpeg\libijg12" /I "../../dcmjpeg\libijg16" /I "../../../zlib-1.1.4\include" /I "../../../tiff-3.5.7\include" /I "../../../libpng-1.2.5\include" /l 0x409 /d "NDEBUG"
