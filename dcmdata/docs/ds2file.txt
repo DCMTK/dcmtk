@@ -38,7 +38,7 @@ options are:
 
 ENVIRONMENT
 
-The dcmdump utility will attempt to load DICOM data dictionaries
+The ds2file utility will attempt to load DICOM data dictionaries
 specified in the DCMDICTPATH environment variable.  By default, if
 the DCMDICTPATH environment variable is not set, the file
 /usr/local/dicom/lib/dicom.dic will be loaded.  The default behaviour

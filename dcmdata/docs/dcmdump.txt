@@ -4,7 +4,7 @@ NAME
 
 SYNOPSIS
 
-    dcmdump dicomfile ...
+    dcmdump [options] dcmfile-in [options] dcmfile-in
 
 SUMMARY
 
@@ -21,6 +21,27 @@ meta-header) it will attempt to guess the transfer syntax by examining
 the first few bytes of the file.  It is not always possible to correctly
 guess the transfer syntax and it better to convert a data set to
 a file format whenever possible (using the ds2file utility).
+
+USAGE
+
+usage: dcmdump [options] dcmfile-in [options] dcmfile-in
+Options are valid if specified before filename.
+options are:
+  output option
+    +E    print to stderr
+    -E    print to stdout (default)
+    +L    print long element values (default)
+    -L    do not print long element values
+  input option:
+    +D    print dataset
+    -D    print fileformat or dataset (default)
+  input transfer syntax: use only after +D
+    +t=   use transfer syntax recognition (default)
+    +ti   read with little-endian implicit transfer syntax
+    +te   read with little-endian explicit transfer syntax
+    +tb   read with big-endian explicit transfer syntax
+  other test/debug options:
+    +l    force load of all input data into memory
 
 ENVIRONMENT
 
