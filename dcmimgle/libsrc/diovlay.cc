@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlay (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-16 16:18:36 $
+ *  Update Date:      $Date: 1998-12-22 13:47:17 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diovlay.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -336,10 +336,21 @@ int DiOverlay::checkPlane(const unsigned int plane,
     return 0;
 }
 
+
+int DiOverlay::isPlaneVisible(unsigned int plane)
+{
+    if (convertToPlaneNumber(plane, AdditionalPlanes))
+        return Data->Planes[plane]->isVisible();
+    return 0; 
+}
+
+
 int DiOverlay::showPlane(unsigned int plane)
 {
     if (convertToPlaneNumber(plane, AdditionalPlanes))
     {
+        if (Data->Planes[plane]->isVisible())
+            return 2;
         Data->Planes[plane]->show();
         return 1;
     }
@@ -363,12 +374,15 @@ int DiOverlay::showPlane(unsigned int plane,
 
 int DiOverlay::showAllPlanes()
 {
-    if ((Data != NULL) && (Data->Planes != NULL) && !AdditionalPlanes)
+    if ((Data != NULL) && (Data->Planes != NULL))
     {
         register unsigned int i; 
-        for (i = 0; i < Data->Count; i++)
-            Data->Planes[i]->show();
-        return (Data->Count > 0);
+        for (i = 0; i < Data->ArrayEntries; i++)
+            if ((Data->Planes[i] != NULL))
+                Data->Planes[i]->show();
+        if (Data->Count > 0)
+            return 1;
+        return 2;
     }
     return 0;
 }
@@ -378,12 +392,15 @@ int DiOverlay::showAllPlanes(const double fore,
                              const double tresh,
                              const EM_Overlay mode)
 {
-    if ((Data != NULL) && (Data->Planes != NULL) && !AdditionalPlanes)
+    if ((Data != NULL) && (Data->Planes != NULL))
     {
         register unsigned int i; 
-        for (i = 0; i < Data->Count; i++)
-            Data->Planes[i]->show(fore, tresh, mode);
-        return (Data->Count > 0);
+        for (i = 0; i < Data->ArrayEntries; i++)
+            if ((Data->Planes[i] != NULL))
+                Data->Planes[i]->show(fore, tresh, mode);
+        if (Data->Count > 0)
+            return 1;
+        return 2;
     }
     return 0;
 }
@@ -393,6 +410,8 @@ int DiOverlay::hidePlane(unsigned int plane)
 {
     if (convertToPlaneNumber(plane, AdditionalPlanes))
     {
+        if (!Data->Planes[plane]->isVisible())
+            return 2;
         Data->Planes[plane]->hide();
         return 1;
     }
@@ -402,12 +421,15 @@ int DiOverlay::hidePlane(unsigned int plane)
 
 int DiOverlay::hideAllPlanes()
 {
-    if ((Data != NULL) && (Data->Planes != NULL) && !AdditionalPlanes)
+    if ((Data != NULL) && (Data->Planes != NULL))
     {
         register unsigned int i; 
-        for (i = 0; i < Data->Count; i++)
-            Data->Planes[i]->hide();
-        return (Data->Count > 0);
+        for (i = 0; i < Data->ArrayEntries; i++)
+            if ((Data->Planes[i] != NULL))
+                Data->Planes[i]->hide();
+        if (Data->Count > 0)
+            return 1;
+        return 2;
     }
     return 0;
 }
@@ -419,9 +441,19 @@ int DiOverlay::placePlane(unsigned int plane,
 {
     if (convertToPlaneNumber(plane, AdditionalPlanes))
     {
+        if ((Data->Planes[plane]->getLeft() == left) && (Data->Planes[plane]->getTop() == top))
+            return 2;
         Data->Planes[plane]->place(left, top);
         return 1;
     }
+    return 0;
+}
+
+
+unsigned int DiOverlay::getPlaneGroupNumber(unsigned int plane) const
+{
+    if (convertToPlaneNumber(plane, AdditionalPlanes))
+        return Data->Planes[plane]->getGroupNumber();
     return 0;
 }
 
@@ -442,14 +474,22 @@ const char *DiOverlay::getPlaneDescription(unsigned int plane) const
 }
 
 
+EM_Overlay DiOverlay::getPlaneMode(unsigned int plane) const
+{
+    if (convertToPlaneNumber(plane, AdditionalPlanes))
+        return Data->Planes[plane]->getMode();
+    return EMO_Default;
+}
+
+
 int DiOverlay::hasEmbeddedData() const
 {
     if ((Data != NULL) && (Data->Planes != NULL))
     {
         register unsigned int i;
-        for (i = 0; i < Data->Count; i++)
+        for (i = 0; i < Data->ArrayEntries; i++)
         {
-            if (Data->Planes[i]->isEmbedded())
+            if ((Data->Planes[i] != NULL) && (Data->Planes[i]->isEmbedded()))
                 return 1;
         }
     }
@@ -505,8 +545,30 @@ int DiOverlay::removePlane(const unsigned int group)
         delete Data->Planes[plane];                                           // remove invalid plane
         Data->Planes[plane] = NULL;
         (Data->Count)--;                                                      // decrease number of planes
+        return 1;
     }
     return 0;
+}
+
+
+int DiOverlay::removeAllPlanes()
+{
+    if (AdditionalPlanes && (Data != NULL) && (Data->Planes != NULL))
+    {
+        register unsigned int i;
+        for (i = 0; i < Data->ArrayEntries; i++)
+        {
+            delete Data->Planes[i];
+            Data->Planes[i] = NULL;
+        }
+        if (Data->Count != 0)
+        {
+            Data->Count = 0;
+            return 1;                                                         // all planes have been deleted
+        }
+        return 2;                                                             // nothing has been deleted
+    }
+    return 0;                                                                 // an error occurred
 }
 
 
@@ -516,8 +578,10 @@ Uint8 *DiOverlay::getPlaneData(const unsigned long frame,
                                unsigned int &height,
                                unsigned int &left,
                                unsigned int &top,
+                               EM_Overlay &mode,                        
                                const Uint16 columns,
-                               const Uint16 rows)
+                               const Uint16 rows,
+                               const Uint8 value)
 {
     if (convertToPlaneNumber(plane, AdditionalPlanes))                        // plane does exist
     {
@@ -532,7 +596,8 @@ Uint8 *DiOverlay::getPlaneData(const unsigned long frame,
             top = ymin;
             width = xmax - xmin;
             height = ymax - ymin;
-            return op->getData(frame, xmin, ymin, xmax, ymax);
+            mode = op->getMode();
+            return op->getData(frame, xmin, ymin, xmax, ymax, value);
         }
     }
     return NULL;
@@ -542,7 +607,13 @@ Uint8 *DiOverlay::getPlaneData(const unsigned long frame,
 **
 ** CVS/RCS Log:
 ** $Log: diovlay.cc,v $
-** Revision 1.3  1998-12-16 16:18:36  joergr
+** Revision 1.4  1998-12-22 13:47:17  joergr
+** Added method to check whether plane is visible, to get plane mode and to
+** remove all planes. Set 'value' used for getOverlay/PlaneData().
+** Change meaning of return values (differentiate between different value for
+** 'true').
+**
+** Revision 1.3  1998/12/16 16:18:36  joergr
 ** Added method to export overlay planes (create 8-bit bitmap).
 ** Implemented flipping and rotation of overlay planes.
 **
