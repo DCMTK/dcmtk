@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: Implementation of class DcmFloatingPointDouble
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 13:12:40 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrfd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Update Date:      $Date: 2004-02-04 16:17:03 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -105,7 +104,7 @@ void DcmFloatingPointDouble::print(ostream &out,
         {
             const unsigned long count = getVM();
             const unsigned long maxLength = (flags & DCMTypes::PF_shortenLongTagValues) ?
-                DCM_OptPrintLineLength : (unsigned long)-1 /*unlimited*/;
+                DCM_OptPrintLineLength : OFstatic_cast(unsigned long, -1) /*unlimited*/;
             unsigned long printedLength = 0;
             unsigned long newLength = 0;
             char buffer[64];
@@ -175,7 +174,7 @@ OFCondition DcmFloatingPointDouble::getFloat64(Float64 &doubleVal,
 
 OFCondition DcmFloatingPointDouble::getFloat64Array(Float64 *&doubleVals)
 {
-    doubleVals =(Float64 *)getValue();
+    doubleVals = OFstatic_cast(Float64 *, getValue());
     return errorFlag;
 }
 
@@ -222,7 +221,7 @@ OFCondition DcmFloatingPointDouble::putFloat64Array(const Float64 *doubleVals,
     {
         /* check for valid data */
         if (doubleVals != NULL)
-            errorFlag = putValue(doubleVals, sizeof(Float64) * (Uint32)numDoubles);
+            errorFlag = putValue(doubleVals, sizeof(Float64) * OFstatic_cast(Uint32, numDoubles));
         else
             errorFlag = EC_CorruptedData;
     } else
@@ -298,7 +297,11 @@ OFCondition DcmFloatingPointDouble::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrfd.cc,v $
-** Revision 1.25  2002-12-06 13:12:40  joergr
+** Revision 1.26  2004-02-04 16:17:03  joergr
+** Adapted type casts to new-style typecast operators defined in ofcast.h.
+** Removed acknowledgements with e-mail addresses from CVS log.
+**
+** Revision 1.25  2002/12/06 13:12:40  joergr
 ** Enhanced "print()" function by re-working the implementation and replacing
 ** the boolean "showFullData" parameter by a more general integer flag.
 ** Made source code formatting more consistent with other modules/files.
@@ -320,8 +323,6 @@ OFCondition DcmFloatingPointDouble::verify(const OFBool autocorrect)
 **
 ** Revision 1.20  2002/04/16 13:43:24  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
-** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
-** contribution.
 **
 ** Revision 1.19  2001/09/25 17:19:56  meichel
 ** Adapted dcmdata to class OFCondition

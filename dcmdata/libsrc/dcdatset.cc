@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2003, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: Implementation of class DcmDataset
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-04-01 14:57:20 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdatset.cc,v $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Update Date:      $Date: 2004-02-04 16:19:15 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -477,7 +476,7 @@ OFCondition DcmDataset::chooseRepresentation(const E_TransferSyntax repType,
 
         if (resultStack.top()->ident() == EVR_PixelData)
         {
-            DcmPixelData * pixelData = (DcmPixelData *)(resultStack.top());
+            DcmPixelData * pixelData = OFstatic_cast(DcmPixelData *, resultStack.top());
             if (!pixelData->canChooseRepresentation(repType, repParam))
                 l_error = EC_CannotChangeRepresentation;
             pixelStack.push(resultStack);
@@ -489,7 +488,7 @@ OFCondition DcmDataset::chooseRepresentation(const E_TransferSyntax repType,
     {
         while(pixelStack.size() && l_error.good())
         {
-            l_error = ((DcmPixelData*)(pixelStack.top().top()))->
+            l_error = OFstatic_cast(DcmPixelData *, pixelStack.top().top())->
                 chooseRepresentation(repType, repParam, pixelStack.top());
 
 #ifdef PIXELSTACK_MEMORY_LEAK_WORKAROUND
@@ -517,7 +516,7 @@ OFBool DcmDataset::hasRepresentation(const E_TransferSyntax repType,
     {
         if (resultStack.top()->ident() == EVR_PixelData)
         {
-            DcmPixelData *pixelData = (DcmPixelData *)(resultStack.top());
+            DcmPixelData *pixelData = OFstatic_cast(DcmPixelData *, resultStack.top());
             result = pixelData->hasRepresentation(repType, repParam);
         }
         else
@@ -535,7 +534,7 @@ void DcmDataset::removeAllButCurrentRepresentations()
     {
         if (resultStack.top()->ident() == EVR_PixelData)
         {
-            DcmPixelData *pixelData = (DcmPixelData *)(resultStack.top());
+            DcmPixelData *pixelData = OFstatic_cast(DcmPixelData *, resultStack.top());
             pixelData->removeAllButCurrentRepresentations();
         }
     }
@@ -550,7 +549,7 @@ void DcmDataset::removeAllButOriginalRepresentations()
     {
         if (resultStack.top()->ident() == EVR_PixelData)
         {
-            DcmPixelData *pixelData = (DcmPixelData *)(resultStack.top());
+            DcmPixelData *pixelData = OFstatic_cast(DcmPixelData *, resultStack.top());
             pixelData->removeAllButOriginalRepresentations();
         }
     }
@@ -560,7 +559,11 @@ void DcmDataset::removeAllButOriginalRepresentations()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.cc,v $
-** Revision 1.33  2003-04-01 14:57:20  joergr
+** Revision 1.34  2004-02-04 16:19:15  joergr
+** Adapted type casts to new-style typecast operators defined in ofcast.h.
+** Removed acknowledgements with e-mail addresses from CVS log.
+**
+** Revision 1.33  2003/04/01 14:57:20  joergr
 ** Added support for XML namespaces.
 **
 ** Revision 1.32  2002/12/09 09:30:49  wilkens
@@ -590,8 +593,6 @@ void DcmDataset::removeAllButOriginalRepresentations()
 **
 ** Revision 1.25  2002/04/16 13:43:15  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
-** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
-** contribution.
 **
 ** Revision 1.24  2002/04/11 12:27:11  joergr
 ** Added new methods for loading and saving DICOM files.
@@ -708,4 +709,3 @@ void DcmDataset::removeAllButOriginalRepresentations()
 ** - more cleanups
 **
 */
-

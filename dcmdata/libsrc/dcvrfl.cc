@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: Implementation of class DcmFloatingPointSingle
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 13:12:39 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrfl.cc,v $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Update Date:      $Date: 2004-02-04 16:17:03 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -105,7 +104,7 @@ void DcmFloatingPointSingle::print(ostream &out,
         {
             const unsigned long count = Length / sizeof(Float32) /* do not use getVM()! */;
             const unsigned long maxLength = (flags & DCMTypes::PF_shortenLongTagValues) ?
-                DCM_OptPrintLineLength : (unsigned long)-1;
+                DCM_OptPrintLineLength : OFstatic_cast(unsigned long, -1);
             unsigned long printedLength = 0;
             unsigned long newLength = 0;
             char buffer[64];
@@ -175,7 +174,7 @@ OFCondition DcmFloatingPointSingle::getFloat32(Float32 &floatVal,
 
 OFCondition DcmFloatingPointSingle::getFloat32Array(Float32 *&floatVals)
 {
-    floatVals = (Float32 *)getValue();
+    floatVals = OFstatic_cast(Float32 *, getValue());
     return errorFlag;
 }
 
@@ -222,7 +221,7 @@ OFCondition DcmFloatingPointSingle::putFloat32Array(const Float32 *floatVals,
     {
         /* check for valid float data */
         if (floatVals != NULL)
-            errorFlag = putValue(floatVals, sizeof(Float32) * (Uint32)numFloats);
+            errorFlag = putValue(floatVals, sizeof(Float32) * OFstatic_cast(Uint32, numFloats));
         else
             errorFlag = EC_CorruptedData;
     } else
@@ -255,7 +254,7 @@ OFCondition DcmFloatingPointSingle::putString(const char *stringVal)
                 value = getFirstValueFromString(s);
                 if (value != NULL)
                 {
-                    field[i] = (Float32)OFStandard::atof(value, &success);
+                    field[i] = OFstatic_cast(Float32, OFStandard::atof(value, &success));
                     if (!success)
                         errorFlag = EC_CorruptedData;
                     delete[] value;
@@ -298,7 +297,11 @@ OFCondition DcmFloatingPointSingle::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrfl.cc,v $
-** Revision 1.27  2002-12-06 13:12:39  joergr
+** Revision 1.28  2004-02-04 16:17:03  joergr
+** Adapted type casts to new-style typecast operators defined in ofcast.h.
+** Removed acknowledgements with e-mail addresses from CVS log.
+**
+** Revision 1.27  2002/12/06 13:12:39  joergr
 ** Enhanced "print()" function by re-working the implementation and replacing
 ** the boolean "showFullData" parameter by a more general integer flag.
 ** Made source code formatting more consistent with other modules/files.
@@ -323,8 +326,6 @@ OFCondition DcmFloatingPointSingle::verify(const OFBool autocorrect)
 **
 ** Revision 1.21  2002/04/16 13:43:24  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
-** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
-** contribution.
 **
 ** Revision 1.20  2001/09/25 17:19:57  meichel
 ** Adapted dcmdata to class OFCondition
@@ -405,4 +406,3 @@ OFCondition DcmFloatingPointSingle::verify(const OFBool autocorrect)
 ** - more cleanups
 **
 */
-
