@@ -1,6 +1,33 @@
 
 Changes between releases are documented here.
 
+**** Changes from 1999.09.17 (riesmeier)
+
+- Enhanced efficiency of some "for" loops.
+  Affects: dcmimage/include/dicmypxt.h
+           dcmimage/include/dicomot.h
+           dcmimage/include/dicoopxt.h
+           dcmimage/include/dicopxt.h
+           dcmimage/include/dihsvpxt.h
+           dcmimage/include/dipalpxt.h
+           dcmimage/include/dirgbpxt.h
+           dcmimage/include/diybrpxt.h
+           dcmimage/include/diyf2pxt.h
+           dcmimage/include/diyp2pxt.h
+  
+- Added "htmldocs" directory and an option to the make file to delete all
+  HTML related files ('make distclean').
+  Added:   dcmimage/htmldocs
+           dcmimage/htmldocs/Makefile.in
+  Affects: dcmimage/Makefile.in
+
+- Corrected typos and formatting.
+  Affects: dcmimage/apps/dcm2pnm.cc
+
+- Rebuild makefile dependencies.
+  Affects: dcmimage/apps/Makefile.dep
+           dcmimage/libsrc/Makefile.dep
+
 **** Changes from 1999.09.13 (riesmeier)
 
 - Changed (almost) all output commands from C to C++ style (using string
