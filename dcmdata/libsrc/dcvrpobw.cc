@@ -12,9 +12,9 @@
 ** not be used directly in applications. No identification exists.
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 1998-11-12 16:48:28 $
+** Update Date:         $Date: 1998-11-12 17:12:35 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrpobw.cc,v $
-** CVS/RCS Revision:    $Revision: 1.5 $
+** CVS/RCS Revision:    $Revision: 1.6 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -50,6 +50,7 @@ DcmPolymorphOBOW &DcmPolymorphOBOW::operator=(const DcmPolymorphOBOW & obj)
   DcmOtherByteOtherWord::operator=(obj);
   changeVR = obj.changeVR;
   currentVR = obj.currentVR;
+  return *this;
 }
 
 E_Condition 
@@ -234,7 +235,10 @@ DcmPolymorphOBOW::write(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrpobw.cc,v $
-** Revision 1.5  1998-11-12 16:48:28  meichel
+** Revision 1.6  1998-11-12 17:12:35  meichel
+** fixed incorrect return value in DcmPolymorphOBOW::operator=().
+**
+** Revision 1.5  1998/11/12 16:48:28  meichel
 ** Implemented operator= for all classes derived from DcmObject.
 **
 ** Revision 1.4  1998/07/15 15:52:11  joergr
