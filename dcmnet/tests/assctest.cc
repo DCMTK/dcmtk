@@ -35,9 +35,9 @@
 **		Kuratorium OFFIS e.V., Oldenburg, Germany
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-05-13 14:44:55 $
+** Update Date:		$Date: 1997-05-22 13:31:00 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/tests/Attic/assctest.cc,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -360,7 +360,7 @@ main(int argc, char *argv[])
     SetDebugLevel(((debug)?3:0));	/* dcmdata debugging */
 
     /* make sure data dictionary is loaded */
-    if (dcmDataDict.numberOfEntries() == 0) {
+    if (!dcmDataDict.isDictionaryLoaded()) {
 	fprintf(stderr, "Warning: no data dictionary loaded, check environment variable: %s\n",
 		DCM_DICT_ENVIRONMENT_VARIABLE);
     }
@@ -568,7 +568,11 @@ cecho(T_ASC_Association * assoc)
 /*
 ** CVS Log
 ** $Log: assctest.cc,v $
-** Revision 1.2  1997-05-13 14:44:55  hewett
+** Revision 1.3  1997-05-22 13:31:00  hewett
+** Modified the test for presence of a data dictionary to use the
+** method DcmDataDictionary::isDictionaryLoaded().
+**
+** Revision 1.2  1997/05/13 14:44:55  hewett
 ** Removed reference to UID_RTTreatmentRecordStorage.  This UID appeared in
 ** an earlier draft of the Radiotherapy object.  It no longer appears in
 ** the final text version.

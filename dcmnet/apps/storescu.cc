@@ -35,10 +35,10 @@
 **		Kuratorium OFFIS e.V., Oldenburg, Germany
 **
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-05-20 10:17:06 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1997-05-22 13:30:00 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.11 $
+** CVS/RCS Revision:	$Revision: 1.12 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -272,7 +272,7 @@ main(int argc, char *argv[])
     SetDebugLevel(((debug)?3:0));	/* dcmdata debugging */
 
     /* make sure data dictionary is loaded */
-    if (dcmDataDict.numberOfEntries() == 0) {
+    if (!dcmDataDict.isDictionaryLoaded()) {
 	fprintf(stderr, "Warning: no data dictionary loaded, check environment variable: %s\n",
 		DCM_DICT_ENVIRONMENT_VARIABLE);
     }
@@ -579,7 +579,11 @@ cstore(T_ASC_Association * assoc, const char *fname)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.11  1997-05-20 10:17:06  meichel
+** Revision 1.12  1997-05-22 13:30:00  hewett
+** Modified the test for presence of a data dictionary to use the
+** method DcmDataDictionary::isDictionaryLoaded().
+**
+** Revision 1.11  1997/05/20 10:17:06  meichel
 ** *** empty log message ***
 **
 ** Revision 1.10  1997/05/20 10:00:24  meichel

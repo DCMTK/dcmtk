@@ -209,7 +209,7 @@ void DicomImage::Init()
 
 int DicomImage::checkDataDictionary()
 {
-	if (dcmDataDict.numberOfEntries() == 0)
+        if (!dcmDataDict.isDictionaryLoaded()) {
 	{
 		Status = EIS_NoDataDictionary;
 		cerr << "ERROR: can't load data dictionary !" << endl;

@@ -34,10 +34,10 @@
 ** Author: 	Andrew Hewett
 **		Kuratorium OFFIS e.V., Oldenburg, Germany
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-16 08:31:34 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1997-05-22 13:29:59 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
+** CVS/RCS Revision:	$Revision: 1.9 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -249,7 +249,7 @@ main(int argc, char *argv[])
 #endif
 
     /* make sure data dictionary is loaded */
-    if (dcmDataDict.numberOfEntries() == 0) {
+    if (!dcmDataDict.isDictionaryLoaded()) {
 	fprintf(stderr, "Warning: no data dictionary loaded, check environment variable: %s\n",
 		DCM_DICT_ENVIRONMENT_VARIABLE);
     }
@@ -699,7 +699,11 @@ storeSCP(T_ASC_Association * assoc, T_DIMSE_Message * msg,
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.8  1997-05-16 08:31:34  andreas
+** Revision 1.9  1997-05-22 13:29:59  hewett
+** Modified the test for presence of a data dictionary to use the
+** method DcmDataDictionary::isDictionaryLoaded().
+**
+** Revision 1.8  1997/05/16 08:31:34  andreas
 ** - Revised handling of GroupLength elements and support of
 **   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
 **   got additional enumeration values (for a description see dctypes.h).

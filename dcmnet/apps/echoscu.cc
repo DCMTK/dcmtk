@@ -35,9 +35,9 @@
 **		Kuratorium OFFIS e.V., Oldenburg, Germany
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-12-16 15:13:58 $
+** Update Date:		$Date: 1997-05-22 13:29:57 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/echoscu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -241,7 +241,7 @@ main(int argc, char *argv[])
     SetDebugLevel(((debug)?3:0));	/* dcmdata debugging */
 
     /* make sure data dictionary is loaded */
-    if (dcmDataDict.numberOfEntries() == 0) {
+    if (!dcmDataDict.isDictionaryLoaded()) {
 	fprintf(stderr, "Warning: no data dictionary loaded, check environment variable: %s\n",
 		DCM_DICT_ENVIRONMENT_VARIABLE);
     }
@@ -444,7 +444,11 @@ cecho(T_ASC_Association * assoc)
 /*
 ** CVS Log
 ** $Log: echoscu.cc,v $
-** Revision 1.7  1996-12-16 15:13:58  hewett
+** Revision 1.8  1997-05-22 13:29:57  hewett
+** Modified the test for presence of a data dictionary to use the
+** method DcmDataDictionary::isDictionaryLoaded().
+**
+** Revision 1.7  1996/12/16 15:13:58  hewett
 ** Added bugfix for WINSOCK support.  The required WINSOCK version
 ** number was being incorrectly set to version 0.1.  The fixed
 ** WINSOCK initialisation now uses the MAKEWORD macro to correctly

@@ -9,10 +9,10 @@
 ** List the contents of a dicom file to stdout
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-20 07:57:11 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1997-05-22 13:26:23 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmdump.cc,v $
-** CVS/RCS Revision:	$Revision: 1.11 $
+** CVS/RCS Revision:	$Revision: 1.12 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -130,6 +130,7 @@ int main(int argc, char *argv[])
     BOOL iXferSet = FALSE;
     BOOL perr = FALSE;
     E_TransferSyntax xfer = EXS_Unknown;
+    int errorCount = 0;
 
 #ifdef HAVE_GUSI_H
     /* needed for Macintosh */
@@ -153,10 +154,10 @@ int main(int argc, char *argv[])
     }
 
     /* make sure data dictionary is loaded */
-    if (dcmDataDict.numberOfEntries() == 0) 
-    {
+    if (!dcmDataDict.isDictionaryLoaded()) {
 	cerr << "Warning: no data dictionary loaded, "
-	    "check environment variable: "<< DCM_DICT_ENVIRONMENT_VARIABLE;
+	     << "check environment variable: "
+	     << DCM_DICT_ENVIRONMENT_VARIABLE;
     }
     /* parse cmd line */
     for (int i=1; i<argc; i++) {
@@ -266,15 +267,15 @@ int main(int argc, char *argv[])
 		return 1;
 	    }
 	    if (!perr)
-		return dumpFile(cout, arg, isDataset, xfer, 
-				showFullData);
+		errorCount += dumpFile(cout, arg, isDataset, xfer, 
+				       showFullData);
 	    else
-		return dumpFile(cerr, arg, isDataset, xfer, 
-				showFullData);
+		errorCount += dumpFile(cerr, arg, isDataset, xfer, 
+				       showFullData);
 	}
     }
 	    
-    return 0;
+    return errorCount;
 }
 
 static void printResult(ostream& out, DcmStack& stack, BOOL showFullData)
@@ -385,7 +386,11 @@ static int dumpFile(ostream & out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmdump.cc,v $
-** Revision 1.11  1997-05-20 07:57:11  andreas
+** Revision 1.12  1997-05-22 13:26:23  hewett
+** Modified the test for presence of a data dictionary to use the
+** method DcmDataDictionary::isDictionaryLoaded().
+**
+** Revision 1.11  1997/05/20 07:57:11  andreas
 ** - Removed obsolete applications file2ds and ds2file. The functionality of these
 **   applications is now peformed by dcmconv. Unified calling parameters
 **   are implemented in dump2dcm, dcmdump and dcmconv.

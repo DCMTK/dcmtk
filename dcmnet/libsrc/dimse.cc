@@ -56,10 +56,10 @@
 **
 **	Module Prefix: DIMSE_
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-16 08:31:37 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1997-05-22 13:30:30 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimse.cc,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -131,7 +131,7 @@ static BOOLEAN
 isDataDictPresent()
 {
     /* is a data dictionary present */
-    return (dcmDataDict.numberOfEntries() != 0);
+    return dcmDataDict.isDictionaryLoaded();
 }
 
 /*
@@ -1202,7 +1202,11 @@ void DIMSE_warning(T_ASC_Association *assoc,
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
-** Revision 1.6  1997-05-16 08:31:37  andreas
+** Revision 1.7  1997-05-22 13:30:30  hewett
+** Modified the test for presence of a data dictionary to use the
+** method DcmDataDictionary::isDictionaryLoaded().
+**
+** Revision 1.6  1997/05/16 08:31:37  andreas
 ** - Revised handling of GroupLength elements and support of
 **   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
 **   got additional enumeration values (for a description see dctypes.h).

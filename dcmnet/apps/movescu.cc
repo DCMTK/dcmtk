@@ -35,10 +35,10 @@
 **		Kuratorium OFFIS e.V., Oldenburg, Germany
 ** Created:	03/96
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-16 08:31:33 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1997-05-22 13:29:59 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.11 $
+** CVS/RCS Revision:	$Revision: 1.12 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -398,7 +398,7 @@ main(int argc, char *argv[])
     SetDebugLevel(((debug)?3:0));	/* dcmdata debugging */
 
     /* make sure data dictionary is loaded */
-    if (dcmDataDict.numberOfEntries() == 0) {
+    if (!dcmDataDict.isDictionaryLoaded()) {
 	fprintf(stderr, "Warning: no data dictionary loaded, check environment variable: %s\n",
 		DCM_DICT_ENVIRONMENT_VARIABLE);
     }
@@ -1058,7 +1058,11 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.11  1997-05-16 08:31:33  andreas
+** Revision 1.12  1997-05-22 13:29:59  hewett
+** Modified the test for presence of a data dictionary to use the
+** method DcmDataDictionary::isDictionaryLoaded().
+**
+** Revision 1.11  1997/05/16 08:31:33  andreas
 ** - Revised handling of GroupLength elements and support of
 **   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
 **   got additional enumeration values (for a description see dctypes.h).

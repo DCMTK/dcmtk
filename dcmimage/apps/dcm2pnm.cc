@@ -7,10 +7,10 @@
 ** Purpose:
 ** Convert DICOM Images to PPM or PGM using the dcmimage library. 
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-16 08:33:02 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1997-05-22 13:27:14 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -603,8 +603,8 @@ int main(int argc, char *argv[])
 
 
   /* make sure data dictionary is loaded */
-  if (dcmDataDict.numberOfEntries() == 0) {
-  fprintf(stderr, "Warning: no data dictionary loaded, check environment variable: %s\n",
+  if (!dcmDataDict.isDictionaryLoaded()) {
+    fprintf(stderr, "Warning: no data dictionary loaded, check environment variable: %s\n",
       DCM_DICT_ENVIRONMENT_VARIABLE);
   }
     
@@ -1043,7 +1043,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcm2pnm.cc,v $
-** Revision 1.2  1997-05-16 08:33:02  andreas
+** Revision 1.3  1997-05-22 13:27:14  hewett
+** Modified the test for presence of a data dictionary to use the
+** method DcmDataDictionary::isDictionaryLoaded().
+**
+** Revision 1.2  1997/05/16 08:33:02  andreas
 ** - Revised handling of GroupLength elements and support of
 **   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
 **   got additional enumeration values (for a description see dctypes.h).

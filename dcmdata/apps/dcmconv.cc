@@ -8,10 +8,10 @@
 ** Convert dicom file encoding
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-20 07:57:10 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1997-05-22 13:26:22 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmconv.cc,v $
-** CVS/RCS Revision:	$Revision: 1.9 $
+** CVS/RCS Revision:	$Revision: 1.10 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -316,7 +316,7 @@ int main(int argc, char *argv[])
     }
 
     /* make sure data dictionary is loaded */
-    if (dcmDataDict.numberOfEntries() == 0) {
+    if (!dcmDataDict.isDictionaryLoaded()) {
 	cerr << "Warning: no data dictionary loaded, "
 	     << "check environment variable: "
 	     << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
@@ -451,7 +451,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
-** Revision 1.9  1997-05-20 07:57:10  andreas
+** Revision 1.10  1997-05-22 13:26:22  hewett
+** Modified the test for presence of a data dictionary to use the
+** method DcmDataDictionary::isDictionaryLoaded().
+**
+** Revision 1.9  1997/05/20 07:57:10  andreas
 ** - Removed obsolete applications file2ds and ds2file. The functionality of these
 **   applications is now peformed by dcmconv. Unified calling parameters
 **   are implemented in dump2dcm, dcmdump and dcmconv.

@@ -10,10 +10,10 @@
 ** CD-R Image Interchange Profile (Supplement 19).
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-16 08:31:05 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1997-05-22 13:26:24 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
-** CVS/RCS Revision:	$Revision: 1.10 $
+** CVS/RCS Revision:	$Revision: 1.11 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -457,8 +457,8 @@ int main(int argc, char *argv[])
     }
 
     /* make sure data dictionary is loaded */
-    if (dcmDataDict.numberOfEntries() == 0) {
-	cerr << "Warning: no data dictionary loaded, " 
+    if (!dcmDataDict.isDictionaryLoaded()) {
+	cerr << "Error: no data dictionary loaded, " 
 	     << "check environment variable: " 
 	     << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
 	return 1; /* DcmDicomDir class dumps core when no data dictionary */
@@ -2317,7 +2317,11 @@ expandFileNames(StrList& fileNames, StrList& expandedNames)
 /*
 ** CVS/RCS Log:
 ** $Log: dcmgpdir.cc,v $
-** Revision 1.10  1997-05-16 08:31:05  andreas
+** Revision 1.11  1997-05-22 13:26:24  hewett
+** Modified the test for presence of a data dictionary to use the
+** method DcmDataDictionary::isDictionaryLoaded().
+**
+** Revision 1.10  1997/05/16 08:31:05  andreas
 ** - Revised handling of GroupLength elements and support of
 **   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
 **   got additional enumeration values (for a description see dctypes.h).
