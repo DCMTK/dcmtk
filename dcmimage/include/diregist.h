@@ -37,8 +37,8 @@
 
 #include "osconfig.h"
 
-#define OFFIS_DCMIMAGE_VERSION     "1.1.0"
-#define OFFIS_DCMIMAGE_RELEASEDATE "1999/05/31"
+#define OFFIS_DCMIMAGE_VERSION     "1.1.1"
+#define OFFIS_DCMIMAGE_RELEASEDATE "2000/03/10"
 
 #include "diregbas.h"
 
@@ -77,7 +77,10 @@ static DiRegister Init_dcmimage_Module;        // registration pointer is initia
  *
  * CVS/RCS Log:
  * $Log: diregist.h,v $
- * Revision 1.4  2000-03-08 16:21:53  meichel
+ * Revision 1.5  2000-03-10 13:15:08  meichel
+ * Release 1.1.1 (Release date - 2000-03-10)
+ *
+ * Revision 1.4  2000/03/08 16:21:53  meichel
  * Updated copyright header.
  *
  * Revision 1.3  1999/05/31 13:01:03  joergr

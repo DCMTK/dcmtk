@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+Release 1.1.1 (Release date - 2000-03-10)
+
+- Changed Release version and date.
+  Affects: dcmimage/include/diregist.h
+
 **** Changes from 2000.03.08 (eichelberg)
 
 - Updated copyright header.
