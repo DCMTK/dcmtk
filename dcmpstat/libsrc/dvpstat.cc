@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-11-12 16:51:54 $
- *  CVS/RCS Revision: $Revision: 1.49 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-11-15 19:03:13 $
+ *  CVS/RCS Revision: $Revision: 1.50 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -3311,7 +3311,7 @@ void DVPresentationState::renderPixelData(OFBool display)
          {
            result = currentImage->setWindow(wc, ww);
            if (previewImage != NULL)
-             currentImage->setWindow(wc, ww);
+             previewImage->setWindow(wc, ww);
          } else {
            result = currentImage->setNoVoiTransformation();
            if (previewImage != NULL)
@@ -3584,7 +3584,7 @@ E_Condition DVPresentationState::getOverlayData(
      unsigned int &left,
      unsigned int &top,
      OFBool &isROI,
-     Uint16 &transp,
+     Uint16 &fore,
      unsigned int bits)
 {
    EM_Overlay mode = EMO_Default;
@@ -3593,15 +3593,15 @@ E_Condition DVPresentationState::getOverlayData(
      renderPixelData();
      Uint16 group = activationLayerList.getActivationGroup(graphicLayerList.getGraphicLayerName(layer), idx, OFFalse);
      if (group==0) return EC_IllegalCall;
-     transp = 0;
-     Uint16 fore = (Uint16)DicomImageClass::maxval(bits);   /* 255 or 4095 */
+     Uint16 back = 0;
+     fore = (Uint16)DicomImageClass::maxval(bits);   /* 255 or 4095 */
      Uint16 pvalue = 65535;
      if (graphicLayerList.getGraphicLayerRecommendedDisplayValueGray(layer, pvalue) == EC_Normal)
          currentImage->convertPValueToDDL(pvalue, fore, bits);
      if (fore == 0)
-         transp = (Uint16)DicomImageClass::maxval(bits);
+         back = (Uint16)DicomImageClass::maxval(bits);
      const void *data = currentImage->getOverlayData((unsigned int)group, left, top, width, height, mode,
-       currentImageSelectedFrame-1, bits, fore, transp);
+       currentImageSelectedFrame-1, bits, fore, back);
      if (EMO_RegionOfInterest == mode) isROI=OFTrue; else isROI=OFFalse;
      if (data) overlayData = data;
      else
@@ -3616,7 +3616,7 @@ E_Condition DVPresentationState::getOverlayData(
      left = 0;
      top = 0;
      isROI = OFFalse;
-     transp = 0;
+     fore = 0;
      return EC_IllegalCall;
    }
    return EC_Normal;
@@ -3849,7 +3849,13 @@ const char *DVPresentationState::getCurrentImageModality()
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.49  1999-11-12 16:51:54  meichel
+ *  Revision 1.50  1999-11-15 19:03:13  joergr
+ *  Changed behaviour of method getOverlayData(): parameter 'transp' replaced by
+ *  'fore' to specify the foreground color used for the overlay plane.
+ *  Fixed bug concerning the setting of window center and width for the preview
+ *  image.
+ *
+ *  Revision 1.49  1999/11/12 16:51:54  meichel
  *  Corrected creation of circular shutters, X/Y coordinates were swapped.
  *
  *  Revision 1.48  1999/10/25 18:46:07  joergr
