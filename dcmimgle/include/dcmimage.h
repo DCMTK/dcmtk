@@ -22,9 +22,9 @@
  *  Purpose: Provides main interface to the "DICOM image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-06-26 16:00:25 $
+ *  Update Date:      $Date: 2002-07-05 10:37:47 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dcmimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -353,7 +353,7 @@ class DicomImage
      *  @param  frame   number of frame to be rendered (0..n-1)
      *  @param  planar  0 = color-by-pixel (R1G1B1...R2G2B2...R3G2B2...)
      *                  1 = color-by-plane (R1R2R3...G1G2G3...B1B2B3...)
-     *                  (only applicable for multi-planar/color images, otherwise ignored)
+     *                  (only applicable to multi-planar/color images, otherwise ignored)
      *
      ** @return pointer to internal memory buffer containing rendered pixel data
      *          (if successful, NULL otherwise)
@@ -379,7 +379,7 @@ class DicomImage
      *  @param  frame   number of frame to be rendered (0..n-1)
      *  @param  planar  0 = color-by-pixel (R1G1B1...R2G2B2...R3G2B2...)
      *                  1 = color-by-plane (R1R2R3...G1G2G3...B1B2B3...)
-     *                  (only applicable for multi-planar/color images, otherwise ignored)
+     *                  (only applicable to multi-planar/color images, otherwise ignored)
      *
      ** @return status code (true if successful)
      */
@@ -446,7 +446,7 @@ class DicomImage
     int hasSOPclassUID(const char *uid) const;
 
  // --- display function for output device characteristic (calibration):
- //     only applicable for grayscale images
+ //     only applicable to grayscale images
 
     /** get display function
      *
@@ -514,11 +514,11 @@ class DicomImage
             Image->getMonoImagePtr()->convertPValueToDDL(pvalue, ddl, bits) : 0;
     }
 
- // --- windowing (voi): only applicable for grayscale images
+ // --- windowing (voi): only applicable to grayscale images
  //                      return true if successful (see also 'dimoimg.cc')
 
     /** unset all VOI transformations (windows and LUTs).
-     *  only applicable for monochrome images
+     *  only applicable to monochrome images
      *
      ** @return true if successful (1 = previous window/LUT has been valid,
      *                              2 = otherwise),
@@ -645,6 +645,8 @@ class DicomImage
 
     /** set VOI LUT (given by dcmdata elements).
      *  possibly active window/center is implicitly disabled.
+     *  Given data is only referenced and not copied! Make sure that the corresponding DcmXXX
+     *  objects exist as long as the VOI LUT is set.
      *
      ** @param  data         contains LUT data
      *  @param  descriptor   describes LUT structure
@@ -780,7 +782,7 @@ class DicomImage
             Image->getMonoImagePtr()->setHardcopyParameters(min, max, reflect, illumin) : 0;
     }
 
- // --- presentation LUT: only applicable for grayscale images
+ // --- presentation LUT: only applicable to grayscale images
 
     /** get shape for presentation transformation.
      *  possible values are: ESP_Default, ESP_Identity, ESP_Inverse, ESP_LinOD.
@@ -813,6 +815,8 @@ class DicomImage
 
     /** set LUT for presentation transformation.
      *  possibly active presentation LUT is implicitly disabled.
+     *  Given data is only referenced and not copied! Make sure that the corresponding DcmXXX
+     *  objects exist as long as the presentation LUT is set.
      *
      ** @param  data         contains LUT data
      *  @param  descriptor   describes LUT structure
@@ -855,7 +859,7 @@ class DicomImage
     }
 
  // --- overlays: return true (!0) if successful (see also 'diovlay.cc')
- //               only applicable for grayscale images
+ //               only applicable to grayscale images
 
     /** add specified plane to group of additional overlay planes.
      *  replaces old overlay plane if group number already exists.
@@ -1521,7 +1525,7 @@ class DicomImage
      *  @param  frame    number of frame to be rendered (0..n-1)
      *  @param  planar   0 = color-by-pixel (R1G1B1...R2G2B2...R3G2B2...)
      *                   1 = color-by-plane (R1R2R3...G1G2G3...B1B2B3...)
-     *                   (only applicable for multi-planar/color images, otherwise ignored)
+     *                   (only applicable to multi-planar/color images, otherwise ignored)
      *
      ** @return true if successful, false otherwise
      */
@@ -1744,7 +1748,10 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.40  2002-06-26 16:00:25  joergr
+ * Revision 1.41  2002-07-05 10:37:47  joergr
+ * Added comments.
+ *
+ * Revision 1.40  2002/06/26 16:00:25  joergr
  * Added support for polarity flag to color images.
  * Added new method to write a selected frame to a DICOM dataset (incl. required
  * attributes from the "Image Pixel Module").
