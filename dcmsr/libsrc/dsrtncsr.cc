@@ -23,8 +23,8 @@
  *    classes: DSRTreeNodeCursor
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-26 14:35:39 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2000-11-07 18:29:45 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -117,6 +117,15 @@ void DSRTreeNodeCursor::clearNodeCursorStack()
 {
     while (!NodeCursorStack.empty())
         NodeCursorStack.pop();
+}
+
+
+const DSRTreeNode *DSRTreeNodeCursor::getParentNode()
+{
+    DSRTreeNode *node = NULL;
+    if (!NodeCursorStack.empty())
+        node = NodeCursorStack.top();
+    return node;
 }
 
 
@@ -359,19 +368,13 @@ const OFString &DSRTreeNodeCursor::getPosition(OFString &position,
 }
 
 
-const DSRTreeNode *DSRTreeNodeCursor::getParentNode()
-{
-    DSRTreeNode *node = NULL;
-    if (!NodeCursorStack.empty())
-        node = NodeCursorStack.top();
-    return node;
-}
-
-
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtncsr.cc,v $
- *  Revision 1.3  2000-10-26 14:35:39  joergr
+ *  Revision 1.4  2000-11-07 18:29:45  joergr
+ *  Moved some protected method to public part.
+ *
+ *  Revision 1.3  2000/10/26 14:35:39  joergr
  *  Generalized routine to get and search for position strings ("1.2.3").
  *
  *  Revision 1.2  2000/10/16 12:09:55  joergr
