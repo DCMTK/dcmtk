@@ -31,14 +31,15 @@ dviface.o: dviface.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dcvrus.h ../../dcmdata/include/dcvrsl.h \
  ../../dcmdata/include/dcvrfl.h ../../dcmdata/include/dcvrfd.h \
  ../../dcmdata/include/cmdlnarg.h ../include/dvpstat.h \
- ../include/dvpstyp.h ../include/dvpsovl.h ../include/dvpsgll.h \
- ../include/dvpsrsl.h ../include/dvpsall.h ../include/dvpsgal.h \
- ../include/dvpscul.h ../include/dvpsvll.h ../include/dvpsvwl.h \
+ ../../ofstd/include/ofstring.h ../include/dvpstyp.h \
+ ../include/dvpsovl.h ../include/dvpsgll.h ../include/dvpsrsl.h \
+ ../include/dvpsall.h ../include/dvpsgal.h ../include/dvpscul.h \
+ ../include/dvpsvll.h ../include/dvpsvwl.h \
  ../../imagectn/include/dbpriv.h ../../imagectn/include/imagedb.h \
  ../../dcmnet/include/dicom.h ../../dcmnet/include/dcompat.h \
  ../../dcmnet/include/cond.h ../../dcmnet/include/dimse.h \
  ../../dcmnet/include/lst.h ../../dcmnet/include/dul.h \
- ../../dcmnet/include/assoc.h ../../ofstd/include/ofstring.h \
+ ../../dcmnet/include/assoc.h ../../imagectn/include/dbstore.h \
  ../include/dvpsconf.h ../../ofstd/include/ofstack.h \
  ../../ofstd/include/ofbmanip.h
 dvpsal.o: dvpsal.cc ../../config/include/osconfig.h \
@@ -424,7 +425,9 @@ dvpsov.o: dvpsov.cc ../../config/include/osconfig.h \
  ../../dcmimgle/include/diobjcou.h ../../dcmimgle/include/diovpln.h \
  ../../dcmimgle/include/diutils.h ../../dcmimgle/include/dimopx.h \
  ../../dcmimgle/include/dipixel.h ../../dcmimgle/include/dimomod.h \
- ../../dcmimgle/include/diluptab.h
+ ../../dcmimgle/include/diluptab.h ../../dcmimgle/include/dibaslut.h \
+ ../../dcmimgle/include/dimoopx.h ../../dcmimgle/include/didispfn.h \
+ ../../dcmimgle/include/dibarlut.h
 dvpsovl.o: dvpsovl.cc ../../config/include/osconfig.h \
  ../include/dvpsovl.h ../../ofstd/include/oflist.h \
  ../../ofstd/include/oftypes.h ../../dcmdata/include/dctk.h \
@@ -624,18 +627,19 @@ dvpstat.o: dvpstat.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dcvrat.h ../../dcmdata/include/dcvrss.h \
  ../../dcmdata/include/dcvrus.h ../../dcmdata/include/dcvrsl.h \
  ../../dcmdata/include/dcvrfl.h ../../dcmdata/include/dcvrfd.h \
- ../../dcmdata/include/cmdlnarg.h ../include/dvpstyp.h \
- ../include/dvpsovl.h ../include/dvpsgll.h ../include/dvpsrsl.h \
- ../include/dvpsall.h ../include/dvpsgal.h ../include/dvpscul.h \
- ../include/dvpsvll.h ../include/dvpsvwl.h \
- ../../ofstd/include/ofstring.h ../../dcmimgle/include/dcmimage.h \
- ../../dcmimgle/include/dimoimg.h ../../dcmimgle/include/diimage.h \
- ../../dcmimgle/include/diovlay.h ../../dcmimgle/include/diobjcou.h \
- ../../dcmimgle/include/diovpln.h ../../dcmimgle/include/diutils.h \
- ../../dcmimgle/include/dimopx.h ../../dcmimgle/include/dipixel.h \
- ../../dcmimgle/include/dimomod.h ../../dcmimgle/include/diluptab.h \
- ../include/dvpscu.h ../include/dvpsvl.h ../include/dvpsvw.h \
- ../include/dvpsov.h
+ ../../dcmdata/include/cmdlnarg.h ../../ofstd/include/ofstring.h \
+ ../include/dvpstyp.h ../include/dvpsovl.h ../include/dvpsgll.h \
+ ../include/dvpsrsl.h ../include/dvpsall.h ../include/dvpsgal.h \
+ ../include/dvpscul.h ../include/dvpsvll.h ../include/dvpsvwl.h \
+ ../../dcmimgle/include/dcmimage.h ../../dcmimgle/include/dimoimg.h \
+ ../../dcmimgle/include/diimage.h ../../dcmimgle/include/diovlay.h \
+ ../../dcmimgle/include/diobjcou.h ../../dcmimgle/include/diovpln.h \
+ ../../dcmimgle/include/diutils.h ../../dcmimgle/include/dimopx.h \
+ ../../dcmimgle/include/dipixel.h ../../dcmimgle/include/dimomod.h \
+ ../../dcmimgle/include/diluptab.h ../../dcmimgle/include/dibaslut.h \
+ ../../dcmimgle/include/dimoopx.h ../../dcmimgle/include/didispfn.h \
+ ../../dcmimgle/include/dibarlut.h ../include/dvpscu.h \
+ ../include/dvpsvl.h ../include/dvpsvw.h ../include/dvpsov.h
 dvpstx.o: dvpstx.cc ../../config/include/osconfig.h \
  ../include/dvpstx.h ../../dcmdata/include/dctk.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
