@@ -22,14 +22,14 @@
  *  Purpose: Convert dicom file encoding
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 15:50:52 $
+ *  Update Date:      $Date: 2001-11-28 12:42:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmconv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
- */                        
+ */
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
@@ -78,9 +78,9 @@ int main(int argc, char *argv[])
 
   SetDebugLevel(( 0 ));
 
-  const char *opt_ifname = NULL; 
-  const char *opt_ofname = NULL; 
-  
+  const char *opt_ifname = NULL;
+  const char *opt_ofname = NULL;
+
   int opt_debugMode = 0;
   OFBool opt_verbose = OFFalse;
   OFBool opt_iDataset = OFFalse;
@@ -97,15 +97,15 @@ int main(int argc, char *argv[])
   OFCommandLine cmd;
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
   cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
-  
+
   cmd.addParam("dcmfile-in",  "DICOM input filename to be converted");
   cmd.addParam("dcmfile-out", "DICOM output filename");
-  
+
   cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
    cmd.addOption("--help",                      "-h",        "print this help text and exit");
    cmd.addOption("--verbose",                   "-v",        "verbose mode, print processing details");
    cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
- 
+
   cmd.addGroup("input options:");
     cmd.addSubGroup("input file format:");
       cmd.addOption("--read-file",              "+f",        "read file format or data set (default)");
@@ -141,7 +141,7 @@ int main(int argc, char *argv[])
       cmd.addOption("--padding-create",         "+p",    2,  "[f]ile-pad [i]tem-pad: integer",
                                                              "align file on multiple of f bytes\nand items on multiple of i bytes");
 
-    /* evaluate command line */                           
+    /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
     {
@@ -150,7 +150,7 @@ int main(int argc, char *argv[])
 
       if (cmd.findOption("--verbose")) opt_verbose = OFTrue;
       if (cmd.findOption("--debug")) opt_debugMode = 5;
-      
+
       cmd.beginOptionBlock();
       if (cmd.findOption("--read-file")) opt_iDataset = OFFalse;
       if (cmd.findOption("--read-dataset")) opt_iDataset = OFTrue;
@@ -159,23 +159,23 @@ int main(int argc, char *argv[])
       cmd.beginOptionBlock();
       if (cmd.findOption("--read-xfer-auto"))
       {
-        if (! opt_iDataset) app.printError("--read-xfer-auto only allowed with --read-dataset");
-        opt_ixfer = EXS_Unknown;
+          if (! opt_iDataset) app.printError("--read-xfer-auto only allowed with --read-dataset");
+          opt_ixfer = EXS_Unknown;
       }
       if (cmd.findOption("--read-xfer-little"))
       {
-        if (! opt_iDataset) app.printError("--read-xfer-little only allowed with --read-dataset");
-        opt_ixfer = EXS_LittleEndianExplicit;
+          if (! opt_iDataset) app.printError("--read-xfer-little only allowed with --read-dataset");
+          opt_ixfer = EXS_LittleEndianExplicit;
       }
       if (cmd.findOption("--read-xfer-big"))
       {
-        if (! opt_iDataset) app.printError("--read-xfer-big only allowed with --read-dataset");
-        opt_ixfer = EXS_BigEndianExplicit;
+          if (! opt_iDataset) app.printError("--read-xfer-big only allowed with --read-dataset");
+          opt_ixfer = EXS_BigEndianExplicit;
       }
       if (cmd.findOption("--read-xfer-implicit"))
       {
-        if (! opt_iDataset) app.printError("--read-xfer-implicit only allowed with --read-dataset");
-        opt_ixfer = EXS_LittleEndianImplicit;
+          if (! opt_iDataset) app.printError("--read-xfer-implicit only allowed with --read-dataset");
+          opt_ixfer = EXS_LittleEndianImplicit;
       }
       cmd.endOptionBlock();
 
@@ -192,15 +192,15 @@ int main(int argc, char *argv[])
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--enable-new-vr")) 
+      if (cmd.findOption("--enable-new-vr"))
       {
-        dcmEnableUnknownVRGeneration.set(OFTrue);
-        dcmEnableUnlimitedTextVRGeneration.set(OFTrue);
+          dcmEnableUnknownVRGeneration.set(OFTrue);
+          dcmEnableUnlimitedTextVRGeneration.set(OFTrue);
       }
       if (cmd.findOption("--disable-new-vr"))
       {
-        dcmEnableUnknownVRGeneration.set(OFFalse);
-        dcmEnableUnlimitedTextVRGeneration.set(OFFalse);
+          dcmEnableUnknownVRGeneration.set(OFFalse);
+          dcmEnableUnlimitedTextVRGeneration.set(OFFalse);
       }
       cmd.endOptionBlock();
 
@@ -216,13 +216,13 @@ int main(int argc, char *argv[])
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--padding-retain")) 
+      if (cmd.findOption("--padding-retain"))
       {
-        if (opt_oDataset) app.printError("--padding-retain not allowed with --write-dataset");
-        opt_opadenc = EPD_noChange;
+          if (opt_oDataset) app.printError("--padding-retain not allowed with --write-dataset");
+          opt_opadenc = EPD_noChange;
       }
       if (cmd.findOption("--padding-off")) opt_opadenc = EPD_withoutPadding;
-      if (cmd.findOption("--padding-create")) 
+      if (cmd.findOption("--padding-create"))
       {
           if (opt_oDataset) app.printError("--padding-create not allowed with --write-dataset");
           app.checkValue(cmd.getValueAndCheckMin(opt_filepad, 0));
@@ -232,7 +232,7 @@ int main(int argc, char *argv[])
       cmd.endOptionBlock();
 
     }
-    
+
     SetDebugLevel((opt_debugMode));
 
     /* make sure data dictionary is loaded */
@@ -242,61 +242,61 @@ int main(int argc, char *argv[])
              << "check environment variable: "
              << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
     }
-    
+
     // open inputfile
     if ((opt_ifname == NULL) || (strlen(opt_ifname) == 0))
     {
-        CERR << "invalid filename: <empty string>" << endl;
+        CERR << "Error: invalid filename: <empty string>" << endl;
         return 1;
     }
 
-    if (opt_verbose) 
+    if (opt_verbose)
         COUT << "open input file " << opt_ifname << endl;
 
     DcmFileStream inf(opt_ifname, DCM_ReadMode);
     if ( inf.Fail() )
     {
-        CERR << "cannot open file: " << opt_ifname << endl;
+        CERR << "Error: cannot open file: " << opt_ifname << endl;
         return 1;
     }
-       
+
     DcmFileFormat *fileformat = NULL;
     DcmDataset * dataset = NULL;
     OFCondition error = EC_Normal;
 
     if (opt_iDataset)
     {
-    dataset = new DcmDataset;
-    if (!dataset)
-    {
-        CERR << "memory exhausted\n";
-        return 1;
-    }
-    if (opt_verbose)
-        COUT << "read and interpret DICOM dataset " << opt_ifname << endl;
-    dataset->transferInit();
-    error = dataset -> read(inf, opt_ixfer, EGL_noChange);
-    dataset->transferEnd();
+        dataset = new DcmDataset;
+        if (!dataset)
+        {
+            CERR << "Error: memory exhausted" << endl;
+            return 1;
+        }
+        if (opt_verbose)
+            COUT << "read and interpret DICOM dataset " << opt_ifname << endl;
+        dataset->transferInit();
+        error = dataset -> read(inf, opt_ixfer, EGL_noChange);
+        dataset->transferEnd();
     }
     else
     {
-    fileformat = new DcmFileFormat;
-    if (!fileformat)
-    {
-        CERR << "memory exhausted\n";
-        return 1;
-    }
-    if (opt_verbose)
-        COUT << "read and interpret DICOM file with metaheader " 
-             << opt_ifname << endl;
-    fileformat->transferInit();
-    error = fileformat -> read(inf, opt_ixfer, EGL_noChange);
-    fileformat->transferEnd();
+        fileformat = new DcmFileFormat;
+        if (!fileformat)
+        {
+            CERR << "Error: memory exhausted" << endl;
+            return 1;
+        }
+        if (opt_verbose)
+            COUT << "read and interpret DICOM file with metaheader "
+                 << opt_ifname << endl;
+        fileformat->transferInit();
+        error = fileformat -> read(inf, opt_ixfer, EGL_noChange);
+        fileformat->transferEnd();
     }
 
-    if (error != EC_Normal) 
+    if (error != EC_Normal)
     {
-        CERR << "Error: "  
+        CERR << "Error: "
              << error.text()
              << ": reading file: " <<  opt_ifname << endl;
         return 1;
@@ -305,63 +305,68 @@ int main(int argc, char *argv[])
     if (fileformat)
     {
         if (opt_oDataset && opt_verbose)
-            COUT << "get dataset of DICOM file with metaheader\n";
+            COUT << "get dataset of DICOM file with metaheader" << endl;
         dataset = fileformat -> getDataset();
     }
-    
+
+    if (opt_verbose)
+        COUT << "load all data into memory" << endl;
+    /* make sure that pixel data is loaded before output file is created */
+    dataset->loadAllDataIntoMemory();
+
     if (!fileformat && !opt_oDataset)
     {
         if (opt_verbose)
-            COUT << "create new Metaheader for dataset\n";
+            COUT << "create new Metaheader for dataset" << endl;
         fileformat = new DcmFileFormat(dataset);
     }
 
     if (opt_verbose)
         COUT << "create output file " << opt_ofname << endl;
- 
+
     DcmFileStream outf( opt_ofname, DCM_WriteMode );
     if ( outf.Fail() )
     {
-        CERR << "cannot create file: " << opt_ofname << endl;
+        CERR << "Error: cannot create file: " << opt_ofname << endl;
         return 1;
     }
 
     if (opt_oxfer == EXS_Unknown)
     {
         if (opt_verbose)
-            COUT << "set output transfer syntax to input transfer syntax\n";
+            COUT << "set output transfer syntax to input transfer syntax" << endl;
         opt_oxfer = dataset->getOriginalXfer();
     }
 
     if (opt_verbose)
-        COUT << "Check if new output transfer syntax is possible\n";
- 
+        COUT << "check if new output transfer syntax is possible" << endl;
+
     DcmXfer opt_oxferSyn(opt_oxfer);
- 
+
     dataset->chooseRepresentation(opt_oxfer, NULL);
- 
+
     if (dataset->canWriteXfer(opt_oxfer))
     {
         if (opt_verbose)
-            COUT << "Output transfer syntax " << opt_oxferSyn.getXferName() 
-                 << " can be written\n";
+            COUT << "output transfer syntax " << opt_oxferSyn.getXferName()
+                 << " can be written" << endl;
     } else {
-        CERR << "No conversion to transfer syntax " << opt_oxferSyn.getXferName()
-             << " possible!\n";
+        CERR << "Error: no conversion to transfer syntax " << opt_oxferSyn.getXferName()
+             << " possible!" << endl;
         return 1;
     }
 
     if (opt_oDataset)
     {
-        if (opt_verbose) 
-            COUT << "write converted DICOM dataset\n";
-    
+        if (opt_verbose)
+            COUT << "write converted DICOM dataset" << endl;
+
         dataset->transferInit();
         error = dataset->write(outf, opt_oxfer, opt_oenctype, opt_oglenc, EPD_withoutPadding);
         dataset->transferEnd();
     } else {
         if (opt_verbose)
-            COUT << "write converted DICOM file with metaheader\n";
+            COUT << "write converted DICOM file with metaheader" << endl;
 
         fileformat->transferInit();
         error = fileformat->write(outf, opt_oxfer, opt_oenctype, opt_oglenc,
@@ -369,24 +374,30 @@ int main(int argc, char *argv[])
         fileformat->transferEnd();
     }
 
-    if (error != EC_Normal) 
+    if (error != EC_Normal)
     {
-        CERR << "Error: "  
+        CERR << "Error: "
              << error.text()
              << ": writing file: " <<  opt_ofname << endl;
         return 1;
     }
 
-    if (opt_verbose) 
-        COUT << "conversion successful\n";
+    if (opt_verbose)
+        COUT << "conversion successful" << endl;
 
     return 0;
 }
 
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
-** Revision 1.32  2001-11-09 15:50:52  joergr
+** Revision 1.33  2001-11-28 12:42:30  joergr
+** Fixed bug in dcmconv that caused problems in cases where the same filename
+** was used for input and output (e.g. pixel data was removed without any
+** warnings).
+**
+** Revision 1.32  2001/11/09 15:50:52  joergr
 ** Renamed some of the getValue/getParam methods to avoid ambiguities reported
 ** by certain compilers.
 **
@@ -523,4 +534,3 @@ int main(int argc, char *argv[])
 ** Updated for loadable data dictionary.
 **
 */
-
