@@ -22,9 +22,9 @@
  *  Purpose: (Partially) abstract class for connecting to an arbitrary data source.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2004-01-02 13:56:17 $
+ *  Update Date:      $Date: 2004-01-07 08:32:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlds.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,7 +65,8 @@ WlmDataSource::WlmDataSource()
     identifiers( NULL ), errorElements( NULL ), offendingElements( NULL ), errorComment( NULL ),
     foundUnsupportedOptionalKey( OFFalse ), readLockSetOnDataSource( OFFalse ), logStream( NULL ),
     noSequenceExpansion( OFFalse ), returnedCharacterSet( RETURN_NO_CHARACTER_SET ), matchingDatasets( NULL ),
-    numOfMatchingDatasets( 0 ), specificCharacterSet( "" )
+    numOfMatchingDatasets( 0 ), specificCharacterSet( "" ), superiorSequenceArray( NULL ),
+    numOfSuperiorSequences( 0 )
 {
   char msg[200];
 
@@ -295,7 +296,7 @@ void WlmDataSource::CheckNonSequenceElementInSearchMask( DcmDataset *searchMask,
     {
       // in case the current element is not the "Specific Character Set" attribute, we need to check
       // if the current element (a supported return key attribute) does not contain a value. According
-      // to the 2001 DICOM standard part 4, section K.2.2.1.2. a return key attribute which is NOT a
+      // to the DICOM standard part 4, section K.2.2.1.2. a return key attribute which is NOT a
       // a matching key attribute must not contain a value. If one such attribute does contain a value,
       // i.e. if the current element's length does not equal 0, we want to dump a warning message.
       if( element->getLength() != 0 )
@@ -353,7 +354,7 @@ void WlmDataSource::CheckSequenceElementInSearchMask( DcmDataset *searchMask, in
 //                                                   the currently processed element is an attribute.
 // Return Value : none.
 {
-  // Be aware of the following remark: the 2001 DICOM standard specifies in part 4, section C.2.2.2.6
+  // Be aware of the following remark: the DICOM standard specifies in part 4, section C.2.2.2.6
   // that if a search mask contains a sequence attribute which contains no item or a single empty item,
   // all attributes from that particular sequence are in fact queried and shall be returned by the SCP.
   // This implementation accounts for this specification by expanding the search mask correspondingly.
@@ -394,14 +395,21 @@ void WlmDataSource::CheckSequenceElementInSearchMask( DcmDataset *searchMask, in
         // we want to dump an error message and we want to increase the corresponding counter.
         PutOffendingElements(tag);
         errorComment->putString("More than 1 item in sequence.");
-        sprintf( msg, "WlmDataSource::CheckSequenceElementInSearchMask : Error: More than one item in sequence %s (in the search mask) encountered.", tag.getTagName() );
+        sprintf( msg, "Error: More than one item in sequence %s within the query encountered.\nDiscarding all items except for the first one.", tag.getTagName() );
         DumpMessage( msg );
         invalidMatchingKeyAttributeCount++;
+
+        // also, we want to delete all items except the first one
+        unsigned long numOfItems = sequenceElement->card();
+        for( unsigned long i=1 ; i<numOfItems ; i++ )
+        {
+          delete sequenceElement->remove( i );
+        }
       }
 
       // (now, even though we might have encountered an error, we go on scrutinizing the search mask)
 
-      // get the first item in the sequence of items
+      // get the first (and only) item in the sequence of items
       DcmItem *item = sequenceElement->getItem(0);
 
       // determine the cardinality of this item
@@ -469,7 +477,7 @@ void WlmDataSource::CheckSequenceElementInSearchMask( DcmDataset *searchMask, in
 void WlmDataSource::ExpandEmptySequenceInSearchMask( DcmElement *&element )
 // Date         : March 8, 2002
 // Author       : Thomas Wilkens
-// Task         : According to the 2001 DICOM standard (part 4, section C.2.2.2.6), if a search mask
+// Task         : According to the DICOM standard (part 4, section C.2.2.2.6), if a search mask
 //                contains a sequence attribute which contains no item or a single empty item, all
 //                attributes from that particular sequence are in fact queried and shall be returned
 //                by the SCP. This implementation accounts for this specification by inserting a
@@ -509,15 +517,11 @@ void WlmDataSource::ExpandEmptySequenceInSearchMask( DcmElement *&element )
     // at this point, the current element contains exactly one item, which is empty, i.e. does not
     // contain any attributes. Now we have to insert the required attributes into this item.
 
-    // depending on what kind of supported sequence attribute was passed, we have to
-    // insert different attributes. The DICOM standard requires the support of three
-    // different sequence attributes: the Scheduled Procedure Step Sequence, the
-    // Referenced Study Sequence, and the Referenced Patient Sequence
+    // depending on what kind of supported sequence attribute
+    // was passed, we have to insert different attributes
     DcmTagKey key = element->getTag().getXTag();
     if( key == DCM_ScheduledProcedureStepSequence )
     {
-      // if we are currently dealing with a scheduled procedure step sequence attribute,
-      // we need to insert 11 different required attributes (see 2001 DICOM standard, Table K.6-1.)
       newElement = new DcmApplicationEntity( DcmTag( DCM_ScheduledStationAETitle ) );      if( item->insert( newElement ) != EC_Normal ) delete newElement;
       newElement = new DcmDate( DcmTag( DCM_ScheduledProcedureStepStartDate ) );           if( item->insert( newElement ) != EC_Normal ) delete newElement;
       newElement = new DcmTime( DcmTag( DCM_ScheduledProcedureStepStartTime ) );           if( item->insert( newElement ) != EC_Normal ) delete newElement;
@@ -529,26 +533,46 @@ void WlmDataSource::ExpandEmptySequenceInSearchMask( DcmElement *&element )
       newElement = new DcmLongString( DcmTag( DCM_PreMedication ) );                       if( item->insert( newElement ) != EC_Normal ) delete newElement;
       newElement = new DcmShortString( DcmTag( DCM_ScheduledProcedureStepID ) );           if( item->insert( newElement ) != EC_Normal ) delete newElement;
       newElement = new DcmLongString( DcmTag( DCM_RequestedContrastAgent ) );              if( item->insert( newElement ) != EC_Normal ) delete newElement;
-      // and we also add one supported optional attributes
       newElement = new DcmLongString( DcmTag( DCM_CommentsOnTheScheduledProcedureStep ) ); if( item->insert( newElement ) != EC_Normal ) delete newElement;
+      newElement = new DcmCodeString( DcmTag( DCM_ScheduledProcedureStepStatus ) );        if( item->insert( newElement ) != EC_Normal ) delete newElement;
+      newElement = new DcmDate( DcmTag( DCM_ScheduledProcedureStepEndDate ) );             if( item->insert( newElement ) != EC_Normal ) delete newElement;
+      newElement = new DcmTime( DcmTag( DCM_ScheduledProcedureStepEndTime ) );             if( item->insert( newElement ) != EC_Normal ) delete newElement;
+      newElement = new DcmSequenceOfItems( DcmTag( DCM_ScheduledProtocolCodeSequence ) );
+      if( item->insert( newElement ) != EC_Normal )
+        delete newElement;
+      else
+      {
+        DcmItem *item2 = new DcmItem();
+        if( ((DcmSequenceOfItems*)newElement)->insert( item2 ) != EC_Normal )
+        {
+          delete item2;
+          item2 = NULL;
+        }
+        else
+        {
+          DcmElement *newElement2 = NULL;
+          newElement2 = new DcmShortString( DcmTag( DCM_CodeValue ) );               if( item2->insert( newElement2 ) != EC_Normal ) delete newElement2;
+          newElement2 = new DcmShortString( DcmTag( DCM_CodingSchemeVersion ) );     if( item2->insert( newElement2 ) != EC_Normal ) delete newElement2;
+          newElement2 = new DcmShortString( DcmTag( DCM_CodingSchemeDesignator ) );  if( item2->insert( newElement2 ) != EC_Normal ) delete newElement2;
+          newElement2 = new DcmLongString( DcmTag( DCM_CodeMeaning ) );              if( item2->insert( newElement2 ) != EC_Normal ) delete newElement2;
+        }
+      }
     }
-    else if( key == DCM_ReferencedStudySequence )
+    else if( key == DCM_ScheduledProtocolCodeSequence || key == DCM_RequestedProcedureCodeSequence )
     {
-      // if we are currently dealing with a referenced study sequence attribute,
-      // we need to insert 2 different attributes (see 2001 DICOM standard, Table K.6-1.)
-      newElement = new DcmUniqueIdentifier( DcmTag( DCM_ReferencedSOPClassUID ) );       if( item->insert( newElement ) != EC_Normal ) delete newElement;
-      newElement = new DcmUniqueIdentifier( DcmTag( DCM_ReferencedSOPInstanceUID ) );    if( item->insert( newElement ) != EC_Normal ) delete newElement;
+      newElement = new DcmShortString( DcmTag( DCM_CodeValue ) );               if( item->insert( newElement ) != EC_Normal ) delete newElement;
+      newElement = new DcmShortString( DcmTag( DCM_CodingSchemeVersion ) );     if( item->insert( newElement ) != EC_Normal ) delete newElement;
+      newElement = new DcmShortString( DcmTag( DCM_CodingSchemeDesignator ) );  if( item->insert( newElement ) != EC_Normal ) delete newElement;
+      newElement = new DcmLongString( DcmTag( DCM_CodeMeaning ) );              if( item->insert( newElement ) != EC_Normal ) delete newElement;
     }
-    else if( key == DCM_ReferencedPatientSequence )
+    else if( key == DCM_ReferencedStudySequence || key == DCM_ReferencedPatientSequence )
     {
-      // if we are currently dealing with a referenced patient sequence attribute,
-      // we need to insert 2 different attributes (see 2001 DICOM standard, Table K.6-1.)
       newElement = new DcmUniqueIdentifier( DcmTag( DCM_ReferencedSOPClassUID ) );       if( item->insert( newElement ) != EC_Normal ) delete newElement;
       newElement = new DcmUniqueIdentifier( DcmTag( DCM_ReferencedSOPInstanceUID ) );    if( item->insert( newElement ) != EC_Normal ) delete newElement;
     }
     else
     {
-      // this code should never be executed. if it is, there is a logical error
+      // this code should never be executed; if it is, there is a logical error
       // in the source code and we want to dump a warning message
       DumpMessage( "WlmDataSource::ExpandEmptySequenceInSearchMask : Error: Unsupported sequence attribute encountered." );
     }
@@ -1396,12 +1420,17 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
 //                    > DCM_ScheduledProcedureStepStatus                   (0040,0020)  CS  O  3
 //                    > DCM_ScheduledProcedureStepEndDate                  (0040,0004)  DA  O  3  (from the Scheduled Procedure Step Module)
 //                    > DCM_ScheduledProcedureStepEndTime                  (0040,0005)  TM  O  3  (from the Scheduled Procedure Step Module)
+//                    > DCM_ScheduledProtocolCodeSequence                  (0040,0008)  SQ  O  1C
+//                    >  > DCM_CodeValue                                   (0008,0100)  SH  O  1C
+//                    >  > DCM_CodingSchemeVersion                         (0008,0103)  SH  O  3
+//                    >  > DCM_CodingSchemeDesignator                      (0080,0102)  SH  O  1C
+//                    >  > DCM_CodeMeaning                                 (0080,0104)  LO  O  3
 //                   DCM_RequestedProcedureID                              (0040,1001)  SH  O  1
 //                   DCM_RequestedProcedureDescription                     (0032,1060)  LO  O  1
 //                   DCM_StudyInstanceUID                                  (0020,000d)  UI  O  1
 //                   DCM_ReferencedStudySequence                           (0008,1110)  SQ  O  2
-//                    > DCM_ReferencedSOPClassUID                          (0008,1150)  UI  O  1  Note that the standard specifies this attribute as 1. unfortunately, this implementation only supports this attribute as 2. Also note that currently there are two ReferencedSOPClassUID attributes in two different sequences. For these two attributes, always the same values will be returned by this SCP.
-//                    > DCM_ReferencedSOPInstanceUID                       (0008,1155)  UI  O  1  Note that the standard specifies this attribute as 1. unfortunately, this implementation only supports this attribute as 2. Also note that currently there are two ReferencedSOPClassUID attributes in two different sequences. For these two attributes, always the same values will be returned by this SCP.
+//                    > DCM_ReferencedSOPClassUID                          (0008,1150)  UI  O  1
+//                    > DCM_ReferencedSOPInstanceUID                       (0008,1155)  UI  O  1
 //                   DCM_RequestedProcedurePriority                        (0040,1003)  SH  O  2
 //                   DCM_PatientTransportArrangements                      (0040,1004)  LO  O  2
 //                   DCM_AccessionNumber                                   (0008,0050)  SH  O  2
@@ -1410,8 +1439,8 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
 //                   DCM_AdmissionID                                       (0038,0010)  LO  O  2
 //                   DCM_CurrentPatientLocation                            (0038,0300)  LO  O  2
 //                   DCM_ReferencedPatientSequence                         (0008,1120)  SQ  O  2
-//                    > DCM_ReferencedSOPClassUID                          (0008,1150)  UI  O  2  Note that currently there are two ReferencedSOPClassUID attributes in two different sequences. For these two attributes, always the same values will be returned by this SCP.
-//                    > DCM_ReferencedSOPInstanceUID                       (0008,1155)  UI  O  2  Note that currently there are two ReferencedSOPClassUID attributes in two different sequences. For these two attributes, always the same values will be returned by this SCP.
+//                    > DCM_ReferencedSOPClassUID                          (0008,1150)  UI  O  2
+//                    > DCM_ReferencedSOPInstanceUID                       (0008,1155)  UI  O  2
 //                   DCM_PatientsName                                      (0010,0010)  PN  R  1
 //                   DCM_PatientID                                         (0010,0020)  LO  R  1
 //                   DCM_PatientsBirthDate                                 (0010,0030)  DA  O  2
@@ -1453,6 +1482,11 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
 //                   DCM_PlacerOrderNumberImagingServiceRequest            (0040,2016)  LO  O  3  (from the Imaging Service Request Module)
 //                   DCM_FillerOrderNumberImagingServiceRequest            (0040,2017)  LO  O  3  (from the Imaging Service Request Module)
 //                   DCM_ImagingServiceRequestComments                     (0040,2400)  LT  O  3  (from the Imaging Service Request Module)
+//                   DCM_RequestedProcedureCodeSequence                    (0032,1064)  SQ  O  3  (from the Requested Procedure Module)
+//                    > DCM_CodeValue                                      (0008,0100)  SH  O  1C
+//                    > DCM_CodingSchemeVersion                            (0008,0103)  SH  O  3
+//                    > DCM_CodingSchemeDesignator                         (0080,0102)  SH  O  1C
+//                    > DCM_CodeMeaning                                    (0080,0104)  LO  O  3
 // Parameters   : element            - [in] Pointer to the element which shall be checked.
 //                supSequenceElement - [in] Pointer to the superordinate sequence element of which
 //                                     the currently processed element is an attribute, or NULL if
@@ -1476,27 +1510,38 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
   if( supSequenceElement != NULL )
   {
     if( ( supSequenceElementKey == DCM_ScheduledProcedureStepSequence &&
-          ( elementKey == DCM_ScheduledStationAETitle                 ||
-            elementKey == DCM_ScheduledProcedureStepStartDate         ||
-            elementKey == DCM_ScheduledProcedureStepStartTime         ||
-            elementKey == DCM_Modality                                ||
-            elementKey == DCM_ScheduledPerformingPhysiciansName       ||
-            elementKey == DCM_ScheduledProcedureStepDescription       ||
-            elementKey == DCM_ScheduledStationName                    ||
-            elementKey == DCM_ScheduledProcedureStepLocation          ||
-            elementKey == DCM_PreMedication                           ||
-            elementKey == DCM_ScheduledProcedureStepID                ||
-            elementKey == DCM_RequestedContrastAgent                  ||
-            elementKey == DCM_CommentsOnTheScheduledProcedureStep     ||
-            elementKey == DCM_ScheduledProcedureStepStatus            ||
-            elementKey == DCM_ScheduledProcedureStepEndDate           ||
-            elementKey == DCM_ScheduledProcedureStepEndTime ) )     ||
+          ( elementKey == DCM_ScheduledStationAETitle                    ||
+            elementKey == DCM_ScheduledProcedureStepStartDate            ||
+            elementKey == DCM_ScheduledProcedureStepStartTime            ||
+            elementKey == DCM_Modality                                   ||
+            elementKey == DCM_ScheduledPerformingPhysiciansName          ||
+            elementKey == DCM_ScheduledProcedureStepDescription          ||
+            elementKey == DCM_ScheduledStationName                       ||
+            elementKey == DCM_ScheduledProcedureStepLocation             ||
+            elementKey == DCM_PreMedication                              ||
+            elementKey == DCM_ScheduledProcedureStepID                   ||
+            elementKey == DCM_RequestedContrastAgent                     ||
+            elementKey == DCM_CommentsOnTheScheduledProcedureStep        ||
+            elementKey == DCM_ScheduledProcedureStepStatus               ||
+            elementKey == DCM_ScheduledProcedureStepEndDate              ||
+            elementKey == DCM_ScheduledProcedureStepEndTime              ||
+            elementKey == DCM_ScheduledProtocolCodeSequence ) )             ||
         ( supSequenceElementKey == DCM_ReferencedStudySequence        &&
-          ( elementKey == DCM_ReferencedSOPClassUID             ||
-            elementKey == DCM_ReferencedSOPInstanceUID ) )                ||
+          ( elementKey == DCM_ReferencedSOPClassUID                      ||
+            elementKey == DCM_ReferencedSOPInstanceUID ) )                  ||
         ( supSequenceElementKey == DCM_ReferencedPatientSequence      &&
-          ( elementKey == DCM_ReferencedSOPClassUID             ||
-            elementKey == DCM_ReferencedSOPInstanceUID ) ) )
+          ( elementKey == DCM_ReferencedSOPClassUID                      ||
+            elementKey == DCM_ReferencedSOPInstanceUID ) )                  ||
+        ( supSequenceElementKey == DCM_ScheduledProtocolCodeSequence  &&
+          ( elementKey == DCM_CodeValue                                  ||
+            elementKey == DCM_CodingSchemeVersion                        ||
+            elementKey == DCM_CodingSchemeDesignator                     ||
+            elementKey == DCM_CodeMeaning ) )                               ||
+        ( supSequenceElementKey == DCM_RequestedProcedureCodeSequence &&
+          ( elementKey == DCM_CodeValue                                  ||
+            elementKey == DCM_CodingSchemeVersion                        ||
+            elementKey == DCM_CodingSchemeDesignator                     ||
+            elementKey == DCM_CodeMeaning ) ) )
       isSupportedReturnKeyAttribute = OFTrue;
   }
   else
@@ -1555,7 +1600,8 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
         elementKey == DCM_OrderCallbackPhoneNumber                          ||
         elementKey == DCM_PlacerOrderNumberImagingServiceRequest            ||
         elementKey == DCM_FillerOrderNumberImagingServiceRequest            ||
-        elementKey == DCM_ImagingServiceRequestComments )
+        elementKey == DCM_ImagingServiceRequestComments                     ||
+        elementKey == DCM_RequestedProcedureCodeSequence )
       isSupportedReturnKeyAttribute = OFTrue;
   }
 
@@ -1568,7 +1614,13 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
 /*
 ** CVS Log
 ** $Log: wlds.cc,v $
-** Revision 1.14  2004-01-02 13:56:17  wilkens
+** Revision 1.15  2004-01-07 08:32:34  wilkens
+** Added new sequence type return key attributes to wlmscpfs. Fixed bug that for
+** equally named attributes in sequences always the same value will be returned.
+** Added functionality that also more than one item will be returned in sequence
+** type return key attributes.
+**
+** Revision 1.14  2004/01/02 13:56:17  wilkens
 ** Integrated new return key attributes into wlmscpfs and updated function that
 ** checks integrity of matching key attribute values (added support for new VR).
 **

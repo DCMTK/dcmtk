@@ -22,9 +22,9 @@
  *  Purpose: (Partially) abstract class for connecting to an arbitrary data source.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2004-01-02 13:56:14 $
+ *  Update Date:      $Date: 2004-01-07 08:32:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wlds.h,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -84,6 +84,10 @@ class WlmDataSource
     unsigned long numOfMatchingDatasets;
     /// potentially specified specific character set (in search mask)
     OFString specificCharacterSet;
+    /// information about superior sequence elements; necessary for inserting values into resultDataset
+    WlmSuperiorSequenceInfoType *superiorSequenceArray;
+    /// number of elements in above array
+    unsigned long numOfSuperiorSequences;
 
       /** This function checks if the search mask has a correct format. It returns OFTrue if this
        *  is the case, OFFalse if this is not the case.
@@ -172,12 +176,17 @@ class WlmDataSource
        *     > DCM_ScheduledProcedureStepStatus                   (0040,0020)  CS  O  3
        *     > DCM_ScheduledProcedureStepEndDate                  (0040,0004)  DA  O  3  (from the Scheduled Procedure Step Module)
        *     > DCM_ScheduledProcedureStepEndTime                  (0040,0005)  TM  O  3  (from the Scheduled Procedure Step Module)
+       *     > DCM_ScheduledProtocolCodeSequence                  (0040,0008)  SQ  O  1C
+       *     >  > DCM_CodeValue                                   (0008,0100)  SH  O  1C
+       *     >  > DCM_CodingSchemeVersion                         (0008,0103)  SH  O  3
+       *     >  > DCM_CodingSchemeDesignator                      (0080,0102)  SH  O  1C
+       *     >  > DCM_CodeMeaning                                 (0080,0104)  LO  O  3
        *    DCM_RequestedProcedureID                              (0040,1001)  SH  O  1
        *    DCM_RequestedProcedureDescription                     (0032,1060)  LO  O  1
        *    DCM_StudyInstanceUID                                  (0020,000d)  UI  O  1
        *    DCM_ReferencedStudySequence                           (0008,1110)  SQ  O  2
-       *     > DCM_ReferencedSOPClassUID                          (0008,1150)  UI  O  1  Note that the standard specifies this attribute as 1. unfortunately, this implementation only supports this attribute as 2. Also note that currently there are two ReferencedSOPClassUID attributes in two different sequences. For these two attributes, always the same values will be returned by this SCP.
-       *     > DCM_ReferencedSOPInstanceUID                       (0008,1155)  UI  O  1  Note that the standard specifies this attribute as 1. unfortunately, this implementation only supports this attribute as 2. Also note that currently there are two ReferencedSOPClassUID attributes in two different sequences. For these two attributes, always the same values will be returned by this SCP.
+       *     > DCM_ReferencedSOPClassUID                          (0008,1150)  UI  O  1
+       *     > DCM_ReferencedSOPInstanceUID                       (0008,1155)  UI  O  1
        *    DCM_RequestedProcedurePriority                        (0040,1003)  SH  O  2
        *    DCM_PatientTransportArrangements                      (0040,1004)  LO  O  2
        *    DCM_AccessionNumber                                   (0008,0050)  SH  O  2
@@ -186,8 +195,8 @@ class WlmDataSource
        *    DCM_AdmissionID                                       (0038,0010)  LO  O  2
        *    DCM_CurrentPatientLocation                            (0038,0300)  LO  O  2
        *    DCM_ReferencedPatientSequence                         (0008,1120)  SQ  O  2
-       *     > DCM_ReferencedSOPClassUID                          (0008,1150)  UI  O  2  Note that currently there are two ReferencedSOPClassUID attributes in two different sequences. For these two attributes, always the same values will be returned by this SCP.
-       *     > DCM_ReferencedSOPInstanceUID                       (0008,1155)  UI  O  2  Note that currently there are two ReferencedSOPClassUID attributes in two different sequences. For these two attributes, always the same values will be returned by this SCP.
+       *     > DCM_ReferencedSOPClassUID                          (0008,1150)  UI  O  2
+       *     > DCM_ReferencedSOPInstanceUID                       (0008,1155)  UI  O  2
        *    DCM_PatientsName                                      (0010,0010)  PN  R  1
        *    DCM_PatientID                                         (0010,0020)  LO  R  1
        *    DCM_PatientsBirthDate                                 (0010,0030)  DA  O  2
@@ -229,6 +238,11 @@ class WlmDataSource
        *    DCM_PlacerOrderNumberImagingServiceRequest            (0040,2016)  LO  O  3  (from the Imaging Service Request Module)
        *    DCM_FillerOrderNumberImagingServiceRequest            (0040,2017)  LO  O  3  (from the Imaging Service Request Module)
        *    DCM_ImagingServiceRequestComments                     (0040,2400)  LT  O  3  (from the Imaging Service Request Module)
+       *    DCM_RequestedProcedureCodeSequence                    (0032,1064)  SQ  O  3  (from the Requested Procedure Module)
+       *     > DCM_CodeValue                                      (0008,0100)  SH  O  1C
+       *     > DCM_CodingSchemeVersion                            (0008,0103)  SH  O  3
+       *     > DCM_CodingSchemeDesignator                         (0080,0102)  SH  O  1C
+       *     > DCM_CodeMeaning                                    (0080,0104)  LO  O  3
        *  @param element            Pointer to the element which shall be checked.
        *  @param supSequenceElement Pointer to the superordinate sequence element of which
        *                            the currently processed element is an attribute, or NULL if
@@ -523,7 +537,13 @@ class WlmDataSource
 /*
 ** CVS Log
 ** $Log: wlds.h,v $
-** Revision 1.16  2004-01-02 13:56:14  wilkens
+** Revision 1.17  2004-01-07 08:32:28  wilkens
+** Added new sequence type return key attributes to wlmscpfs. Fixed bug that for
+** equally named attributes in sequences always the same value will be returned.
+** Added functionality that also more than one item will be returned in sequence
+** type return key attributes.
+**
+** Revision 1.16  2004/01/02 13:56:14  wilkens
 ** Integrated new return key attributes into wlmscpfs and updated function that
 ** checks integrity of matching key attribute values (added support for new VR).
 **

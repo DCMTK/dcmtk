@@ -22,9 +22,9 @@
 *  Purpose: Class for managing file system interaction.
 *
 *  Last Update:      $Author: wilkens $
-*  Update Date:      $Date: 2003-12-23 13:03:55 $
+*  Update Date:      $Date: 2004-01-07 08:32:34 $
 *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlfsim.cc,v $
-*  CVS/RCS Revision: $Revision: 1.11 $
+*  CVS/RCS Revision: $Revision: 1.12 $
 *  Status:           $State: Exp $
 *
 *  CVS/RCS Log at end of file
@@ -313,58 +313,153 @@ unsigned long WlmFileSystemInteractionManager::DetermineMatchingRecords( DcmData
 
 // ----------------------------------------------------------------------------
 
-void WlmFileSystemInteractionManager::GetAttributeValueForMatchingRecord( DcmTagKey tag, unsigned long idx, char *&value )
+unsigned long WlmFileSystemInteractionManager::GetNumberOfSequenceItemsForMatchingRecord( DcmTagKey sequenceTag, WlmSuperiorSequenceInfoType *superiorSequenceArray, unsigned long numOfSuperiorSequences, unsigned long idx )
+// Date         : January 6, 2004
+// Author       : Thomas Wilkens
+// Task         : For the matching record that is identified through idx, this function returns the number
+//                of items that are contained in the sequence element that is referred to by sequenceTag.
+//                In case this sequence element is itself contained in a certain item of another superior
+//                sequence, superiorSequenceArray contains information about where to find the correct
+//                sequence element.
+// Parameters   : sequenceTag            - [in] The tag of the sequence element for which the number of items
+//                                              shall be determined.
+//                superiorSequenceArray  - [in] Array which contains information about superior sequence elements
+//                                              the given sequence element is contained in.
+//                numOfSuperiorSequences - [in] The number of elements in the above array.
+//                idx                    - [in] Identifies the record from which the number of sequence items
+//                                              shall be determined.
+// Return Value : The number of items that are contained in the sequence element that is referred to by
+//                sequenceTag and that can be found in sequence items which are specified in superiorSequenceArray.
+{
+  OFCondition cond;
+  DcmSequenceOfItems *sequenceElement = NULL, *tmp = NULL;
+  unsigned long i;
+
+  // initialize result variable
+  unsigned long numOfItems = 0;
+
+  // if the sequence in question is not contained in another sequence
+  if( numOfSuperiorSequences == 0 )
+  {
+    // simply find and get this sequence in the matching dataset (on the main level)
+    cond = matchingRecords[idx]->findAndGetSequence( sequenceTag, sequenceElement, OFFalse );
+  }
+  else
+  {
+    // if it is contained in (an)other sequence(s), find it
+    cond = matchingRecords[idx]->findAndGetSequence( superiorSequenceArray[0].sequenceTag, sequenceElement, OFFalse );
+    for( i=1 ; i<numOfSuperiorSequences && cond.good() ; i++ )
+    {
+      cond = sequenceElement->getItem( superiorSequenceArray[i-1].currentItem )->findAndGetSequence( superiorSequenceArray[i].sequenceTag, tmp, OFFalse );
+      if( cond.good() )
+        sequenceElement = tmp;
+    }
+
+    if( cond.good() )
+    {
+      cond = sequenceElement->getItem( superiorSequenceArray[ numOfSuperiorSequences - 1 ].currentItem )->findAndGetSequence( sequenceTag, tmp, OFFalse );
+      if( cond.good() )
+        sequenceElement = tmp;
+    }
+  }
+
+  // determine number of items for the sequence in question
+  if( cond.good() )
+    numOfItems = sequenceElement->card();
+
+  // return result
+  return( numOfItems );
+}
+
+// ----------------------------------------------------------------------------
+
+void WlmFileSystemInteractionManager::GetAttributeValueForMatchingRecord( DcmTagKey tag, WlmSuperiorSequenceInfoType *superiorSequenceArray, unsigned long numOfSuperiorSequences, unsigned long idx, char *&value )
 // Date         : July 11, 2002
 // Author       : Thomas Wilkens
 // Task         : This function determines an attribute value of a matching record
 //                and returns this value in a newly created string to the caller.
-// Parameters   : tag   - [in] Attribute tag. Specifies which attribute's value shall be returned.
-//                idx   - [in] Identifies the record from which the attribute value shall be retrieved.
-//                value - [out] Pointer to a newly created string that contains the requested value.
-//                        If value was not found an emtpy string will be returned.
+// Parameters   : tag                    - [in] Attribute tag. Specifies which attribute's value shall be returned.
+//                superiorSequenceArray  - [in] Array which contains information about superior sequence elements
+//                                              the given element is contained in.
+//                numOfSuperiorSequences - [in] The number of elements in the above array.
+//                idx                    - [in] Identifies the record from which the attribute value shall be retrieved.
+//                value                  - [out] Pointer to a newly created string that contains the requested value.
+//                                               If value was not found an emtpy string will be returned.
 // Return Value : none.
 {
-  // determine value of attribute tag in dataset matchingRecords[idx];
-  // (note that all values of supported return key attributes are strings
-  // except for attribute DCM_PregnancyStatus; this attribute is actually
-  // an int which has to be converted to a string before it can be returned)
-  // (### also note that for attributes DCM_ReferencedSOPClassUID and DCM_Refe-
-  // rencedSOPInstanceUID always the same values will be returned; see comment
-  // in wldsfs.cxx)
-  if( tag == DCM_PregnancyStatus )
-  {
-    Uint16 v;
-    OFCondition cond = matchingRecords[idx]->findAndGetUint16( tag, v, 0, OFTrue );
+  OFCondition cond;
+  DcmSequenceOfItems *sequenceElement = NULL, *tmp = NULL;
+  unsigned long i;
+  const char *val = NULL;
+  Uint16 v;
 
-    // if value was found
-    if( cond.good() )
+  // if the element in question is not contained in another sequence
+  if( numOfSuperiorSequences == 0 )
+  {
+    // simply find and get this element in the matching dataset (on the main level);
+    // here, we have to distinguish two cases: attribute PregnancyStatus has to be re-
+    // trieved as a Uint16 value (also note for this case, that this attribute can only
+    // occur on the main level, it will never be contained in a sequence), all other
+    // attributes have to be retrieved as strings
+    if( tag == DCM_PregnancyStatus )
     {
-      // copy value
-      value = new char[20];
-      sprintf( value, "%u", v );
+      cond = matchingRecords[idx]->findAndGetUint16( tag, v, 0, OFFalse );
+      if( cond.good() )
+      {
+        value = new char[20];
+        sprintf( value, "%u", v );
+      }
+      else
+      {
+        value = new char[ 2 ];
+        strcpy( value, "4" );           // a value of "4" in attribute PregnancyStatus means "unknown" in DICOM
+      }
     }
     else
     {
-      // assign empty string to val
-      value = new char[ 2 ];
-      strcpy( value, "4" );
+      cond = matchingRecords[idx]->findAndGetString( tag, val, OFFalse );
+      if( cond.good() && val != NULL )
+      {
+        value = new char[ strlen( val ) + 1 ];
+        strcpy( value, val );
+      }
+      else
+      {
+        value = new char[ 1 ];
+        strcpy( value, "" );
+      }
     }
   }
   else
   {
-    const char *val = NULL;
-    matchingRecords[idx]->findAndGetString( tag, val, OFTrue );
-
-    // if value was found
-    if( val != NULL )
+    // if it is contained in (an)other sequence(s), go through all corresponding sequence items
+    cond = matchingRecords[idx]->findAndGetSequence( superiorSequenceArray[0].sequenceTag, sequenceElement, OFFalse );
+    for( i=1 ; i<numOfSuperiorSequences && cond.good() ; i++ )
     {
-      // copy value
-      value = new char[ strlen( val ) + 1 ];
-      strcpy( value, val );
+      cond = sequenceElement->getItem( superiorSequenceArray[i-1].currentItem )->findAndGetSequence( superiorSequenceArray[i].sequenceTag, tmp, OFFalse );
+      if( cond.good() )
+        sequenceElement = tmp;
+    }
+
+    // now sequenceElement points to the sequence element in which the attribute
+    // in question can be found; retrieve a value for this attribute (note that
+    // all attributes in sequences can actually be retrieved as strings)
+    if( cond.good() )
+    {
+      cond = sequenceElement->getItem( superiorSequenceArray[ numOfSuperiorSequences - 1 ].currentItem )->findAndGetString( tag, val, OFFalse );
+      if( cond.good() && val != NULL )
+      {
+        value = new char[ strlen( val ) + 1 ];
+        strcpy( value, val );
+      }
+      else
+      {
+        value = new char[ 1 ];
+        strcpy( value, "" );
+      }
     }
     else
     {
-      // assign empty string to val
       value = new char[ 1 ];
       strcpy( value, "" );
     }
@@ -1861,7 +1956,13 @@ void WlmFileSystemInteractionManager::ExtractValuesFromRange( const char *range,
 /*
 ** CVS Log
 ** $Log: wlfsim.cc,v $
-** Revision 1.11  2003-12-23 13:03:55  wilkens
+** Revision 1.12  2004-01-07 08:32:34  wilkens
+** Added new sequence type return key attributes to wlmscpfs. Fixed bug that for
+** equally named attributes in sequences always the same value will be returned.
+** Added functionality that also more than one item will be returned in sequence
+** type return key attributes.
+**
+** Revision 1.11  2003/12/23 13:03:55  wilkens
 ** Integrated new matching key attributes into wlmscpfs.
 ** Updated matching algorithm in wlmscpfs so that universal matching key
 ** attributes will also lead to a match in case the corresponding attribute does

@@ -22,9 +22,9 @@
  *  Purpose: Class for connecting to a file-based data source.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2003-08-21 13:38:55 $
+ *  Update Date:      $Date: 2004-01-07 08:32:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wldsfs.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -77,15 +77,12 @@ class WlmDataSourceFileSystem : public WlmDataSource
        */
     void HandleNonSequenceElementInResultDataset( DcmElement *element, unsigned long idx );
 
-      /** This function takes care of handling a certain sequence element whithin the
-       *  structure of a certain result dataset. This function assumes that all elements
-       *  in the result dataset are supported. It also assumes that there are no sequence
-       *  elements with length == 0 in the result dataset, and that each sequence element
-       *  contains one single non-empty item. In case there is more than one item in a
-       *  sequence element, the sequence element in the result data set will completely
-       *  be left unchanged. In detail, a value for the current element with regard to
-       *  the currently processed matching record will be requested from the fileSystem-
-       *  InteractionManager and this value will be set in the element.
+      /** This function takes care of handling a certain sequence element within the structure
+       *  of a certain result dataset. On the basis of the matching record from the data source,
+       *  this function will add items and values for all elements in these items to the current
+       *  sequence element in the result dataset. This function assumes that all elements in the
+       *  result dataset are supported. In case the current sequence element contains no items or
+       *  more than one item, this element will be left unchanged.
        *  @param element Pointer to the currently processed element.
        *  @param idx     Index of the matching record (identifies this record).
        */
@@ -168,7 +165,13 @@ class WlmDataSourceFileSystem : public WlmDataSource
 /*
 ** CVS Log
 ** $Log: wldsfs.h,v $
-** Revision 1.11  2003-08-21 13:38:55  wilkens
+** Revision 1.12  2004-01-07 08:32:28  wilkens
+** Added new sequence type return key attributes to wlmscpfs. Fixed bug that for
+** equally named attributes in sequences always the same value will be returned.
+** Added functionality that also more than one item will be returned in sequence
+** type return key attributes.
+**
+** Revision 1.11  2003/08/21 13:38:55  wilkens
 ** Moved declaration and initialization of member variables matchingDatasets and
 ** NumOfMatchingDatasets to base class.
 **

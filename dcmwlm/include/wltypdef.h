@@ -22,9 +22,9 @@
  *  Purpose: Type definitions and macros for dcmwlm project.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2003-12-23 13:04:36 $
+ *  Update Date:      $Date: 2004-01-07 08:32:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wltypdef.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +35,7 @@
 #define WlmTypeDefinitions_h
 
 #include "osconfig.h"
+#include "dctagkey.h"
 
   /// Data source status types
 enum WlmDataSourceStatusType
@@ -137,13 +138,30 @@ const OFCondition WLM_EC_CannotConnectToDataSource                 ( WLM_ECC_Can
   /// number of currently supported matching key attributes
 #define NUMBER_OF_SUPPORTED_MATCHING_KEY_ATTRIBUTES 14
 
+  /// structure for handling arbitrary types of superior sequences in query result datasets
+struct WlmSuperiorSequenceInfoType
+{
+  /// pointer to sequence element
+  DcmTagKey sequenceTag;
+  /// number of items within this sequence element
+  unsigned long numOfItems;
+  /// currently processed item
+  unsigned long currentItem;
+};
+
 
 #endif
 
 /*
 ** CVS Log
 ** $Log: wltypdef.h,v $
-** Revision 1.8  2003-12-23 13:04:36  wilkens
+** Revision 1.9  2004-01-07 08:32:28  wilkens
+** Added new sequence type return key attributes to wlmscpfs. Fixed bug that for
+** equally named attributes in sequences always the same value will be returned.
+** Added functionality that also more than one item will be returned in sequence
+** type return key attributes.
+**
+** Revision 1.8  2003/12/23 13:04:36  wilkens
 ** Integrated new matching key attributes into wlmscpfs.
 **
 ** Revision 1.7  2003/07/02 09:17:55  wilkens

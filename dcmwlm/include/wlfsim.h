@@ -22,9 +22,9 @@
 *  Purpose: Class for managing file system interaction.
 *
 *  Last Update:      $Author: wilkens $
-*  Update Date:      $Date: 2003-12-23 13:04:36 $
+*  Update Date:      $Date: 2004-01-07 08:32:28 $
 *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wlfsim.h,v $
-*  CVS/RCS Revision: $Revision: 1.6 $
+*  CVS/RCS Revision: $Revision: 1.7 $
 *  Status:           $State: Exp $
 *
 *  CVS/RCS Log at end of file
@@ -365,14 +365,34 @@ class WlmFileSystemInteractionManager
        */
     unsigned long DetermineMatchingRecords( DcmDataset *searchMask );
 
+      /** For the matching record that is identified through idx, this function returns the number
+       *  of items that are contained in the sequence element that is referred to by sequenceTag.
+       *  In case this sequence element is itself contained in a certain item of another superior
+       *  sequence, superiorSequenceArray contains information about where to find the correct
+       *  sequence element.
+       *  @param sequenceTag            The tag of the sequence element for which the number of items
+       *                                shall be determined.
+       *  @param superiorSequenceArray  Array which contains information about superior sequence elements
+       *                                the given sequence element is contained in.
+       *  @param numOfSuperiorSequences The number of elements in the above array.
+       *  @param idx                    Identifies the record from which the number of sequence items
+       *                                shall be determined.
+       *  @return The number of items that are contained in the sequence element that is referred to by
+       *          sequenceTag and that can be found in sequence items which are specified in superiorSequenceArray.
+       */
+    unsigned long GetNumberOfSequenceItemsForMatchingRecord( DcmTagKey sequenceTag, WlmSuperiorSequenceInfoType *superiorSequenceArray, unsigned long numOfSuperiorSequences, unsigned long idx );
+
       /** This function determines an attribute value of a matching record
        *  and returns this value in a newly created string to the caller.
-       *  @param tag   Attribute tag; specifies which attribute's value shall be returned.
-       *  @param idx   Identifies the record from which the attribute value shall be retrieved.
-       *  @param value Pointer to a newly created string that contains the requested value.
-       *               If value was not found an emtpy string will be returned.
+       *  @param tag                    Attribute tag. Specifies which attribute's value shall be returned.
+       *  @param superiorSequenceArray  Array which contains information about superior sequence elements
+       *                                the given element is contained in.
+       *  @param numOfSuperiorSequences The number of elements in the above array.
+       *  @param idx                    Identifies the record from which the attribute value shall be retrieved.
+       *  @param value                  Pointer to a newly created string that contains the requested value.
+       *                                If value was not found an emtpy string will be returned.
        */
-    void GetAttributeValueForMatchingRecord( DcmTagKey tag, unsigned long idx, char *&value );
+    void GetAttributeValueForMatchingRecord( DcmTagKey tag, WlmSuperiorSequenceInfoType *superiorSequenceArray, unsigned long numOfSuperiorSequences, unsigned long idx, char *&value );
 
       /** This function frees the memory which was occupied by matchingRecords.
        *  It shall be called when the matching records are no longer needed.
@@ -385,7 +405,13 @@ class WlmFileSystemInteractionManager
 /*
 ** CVS Log
 ** $Log: wlfsim.h,v $
-** Revision 1.6  2003-12-23 13:04:36  wilkens
+** Revision 1.7  2004-01-07 08:32:28  wilkens
+** Added new sequence type return key attributes to wlmscpfs. Fixed bug that for
+** equally named attributes in sequences always the same value will be returned.
+** Added functionality that also more than one item will be returned in sequence
+** type return key attributes.
+**
+** Revision 1.6  2003/12/23 13:04:36  wilkens
 ** Integrated new matching key attributes into wlmscpfs.
 **
 ** Revision 1.5  2003/07/02 09:17:55  wilkens

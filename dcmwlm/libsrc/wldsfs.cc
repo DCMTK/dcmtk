@@ -22,9 +22,9 @@
  *  Purpose: Class for connecting to a file-based data source.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2003-08-21 13:40:01 $
+ *  Update Date:      $Date: 2004-01-07 08:32:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wldsfs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -413,7 +413,7 @@ DcmDataset *WlmDataSourceFileSystem::NextFindResponse( WlmDataSourceStatusType &
 void WlmDataSourceFileSystem::HandleNonSequenceElementInResultDataset( DcmElement *element, unsigned long idx )
 // Date         : July 11, 2002
 // Author       : Thomas Wilkens
-// Task         : This function takes care of handling a certain non-sequence element whithin
+// Task         : This function takes care of handling a certain non-sequence element within
 //                the structure of a certain result dataset. This function assumes that all
 //                elements in the result dataset are supported. In detail, a value for the
 //                current element with regard to the currently processed matching record will
@@ -425,11 +425,11 @@ void WlmDataSourceFileSystem::HandleNonSequenceElementInResultDataset( DcmElemen
 {
   OFCondition cond;
 
-  // Determine the current elements tag.
-  DcmTagKey tag( element->getTag() );
+  // determine the current elements tag.
+  DcmTagKey tag( element->getTag().getXTag() );
 
-  // check if the current element is the "Specific Character Set" (0008,0005) attribute.
-  // We do not want to deal with this attribute here, this attribute will be taken care
+  // check if the current element is the "Specific Character Set" (0008,0005) attribute;
+  // we do not want to deal with this attribute here, this attribute will be taken care
   // of when the entire result dataset is completed.
   if( tag != DCM_SpecificCharacterSet )
   {
@@ -437,13 +437,13 @@ void WlmDataSourceFileSystem::HandleNonSequenceElementInResultDataset( DcmElemen
     // get a value for the current element from database; note that all values for return key
     // attributes are returned as strings by GetAttributeValueForMatchingRecord().
     char *value = NULL;
-    fileSystemInteractionManager->GetAttributeValueForMatchingRecord( tag, idx, value );
+    fileSystemInteractionManager->GetAttributeValueForMatchingRecord( tag, superiorSequenceArray, numOfSuperiorSequences, idx, value );
 
     // put value in element
-    // Note that there is currently one attribute (DCM_PregnancyStatus) in which the value must not
-    // be set as a string but as an unsigned integer, because this attribute is of type US. Hence,
-    // in case we are dealing with the attribute DCM_PregnancyStatus, we have to convert the returned
-    // value into an unsigned integer and set it correspondingly in the element variable.
+    // (note that there is currently one attribute (DCM_PregnancyStatus) for which the value must not
+    // be set as a string but as an unsigned integer, because this attribute is of type US. Hence, in
+    // case we are dealing with the attribute DCM_PregnancyStatus, we have to convert the returned
+    // value into an unsigned integer and set it correspondingly in the element variable)
     if( tag == DCM_PregnancyStatus )
     {
       Uint16 uintValue = atoi( value );
@@ -464,71 +464,117 @@ void WlmDataSourceFileSystem::HandleNonSequenceElementInResultDataset( DcmElemen
 void WlmDataSourceFileSystem::HandleSequenceElementInResultDataset( DcmElement *element, unsigned long idx )
 // Date         : July 11, 2002
 // Author       : Thomas Wilkens
-// Task         : This function takes care of handling a certain sequence element whithin the
-//                structure of a certain result dataset. This function assumes that all elements
-//                in the result dataset are supported. It also assumes that there are no sequence
-//                elements with length == 0 in the result dataset, and that each sequence element
-//                contains one single non-empty item. In case there is more than one item in a
-//                sequence element, the sequence element in the result data set will completely
-//                be left unchanged. In detail, a value for the current element with regard to
-//                the currently processed matching record will be requested from the fileSystem-
-//                InteractionManager and this value will be set in the element.
+// Task         : This function takes care of handling a certain sequence element within the structure
+//                of a certain result dataset. On the basis of the matching record from the data source,
+//                this function will add items and values for all elements in these items to the current
+//                sequence element in the result dataset. This function assumes that all elements in the
+//                result dataset are supported. In case the current sequence element contains no items or
+//                more than one item, this element will be left unchanged.
 // Parameters   : element - [in] Pointer to the currently processed element.
 //                idx     - [in] Index of the matching record (identifies this record).
 // Return Value : none.
 {
-  // Consider this element as a sequence of items.
+  unsigned long i, k, numOfItemsInResultSequence;
+  WlmSuperiorSequenceInfoType *tmp;
+
+  // consider this element as a sequence of items.
   DcmSequenceOfItems *sequenceOfItemsElement = (DcmSequenceOfItems*)element;
 
-  // Get the sequence of items element's cardinality
-  unsigned long numOfItemsInSequence = sequenceOfItemsElement->card();
-
-  // according to the 2001 DICOM standard, part 4, section C.2.2.2.6, a sequence in the search mask
-  // (and we made a copy of the search mask that we update here, so that it represents a result value)
-  // must have exactly one item which in turn can be empty. Hence, if numOfItemsInSequence does not
-  // equal 1 here, we want to dump a warning and do nothing here.
-  if( numOfItemsInSequence != 1 )
+  // according to the DICOM standard, part 4, section C.2.2.2.6, a sequence in the search
+  // mask (and we made a copy of the search mask that we update here, so that it represents
+  // a result value) must have exactly one item which in turn can be empty
+  if( sequenceOfItemsElement->card() != 1 )
   {
+    // if the sequence's cardinality does not equal 1, we want to dump a warning and do nothing here
     DumpMessage( "    - Sequence with not exactly one item encountered in the search mask.\n      The corresponding sequence of the currently processed result data set will show the exact same structure as in the given search mask." );
   }
   else
   {
-    // ### Note that at the moment we do not account for having more than one item in a sequence
-    // ### in the result dataset, since we only support the sequences "Scheduled Procedure Step
-    // ### Sequence" (which shall only have one item anyway), "Referenced Study Sequence"
-    // ### and "Referenced Patient Sequence". According to the comment in the head of function
-    // ### bla, the latter two are not fully supported in this implementation, because
-    // ### they contain equally named attributes for which the same values will always be returned
-    // ### by this SCP. We decided to choose this approach because the latter two sequences might
-    // ### be removed from the standard in the near future anyhow. Also, if there is the need to
-    // ### create additional sequence items within a sequence and set corresponding values in the
-    // ### attributes of these sequences, the following code has to change.
+    // if the sequence's cardinality does equal 1, we want to process this sequence and
+    // add all information from the matching record in the data source to this sequence
 
-    // Determine the sequence of items element's one and only item.
-    DcmItem *itemInSequence = sequenceOfItemsElement->getItem(0);
+    // determine the current sequence elements tag.
+    DcmTagKey sequenceTag( sequenceOfItemsElement->getTag().getXTag() );
 
-    // Get its cardinality.
-    unsigned long numOfElementsInItem = itemInSequence->card();
+    // determine how many items this sequence has in the matching record in the data source
+    numOfItemsInResultSequence = fileSystemInteractionManager->GetNumberOfSequenceItemsForMatchingRecord( sequenceTag, superiorSequenceArray, numOfSuperiorSequences, idx );
 
-    // (note that it _is_ possible that a sequence item does not contain any attributes at this point:
-    // if the original search mask contained a sequence with a single item which did only contain un-
-    // supported attributes, all those unsupported attributes were removed from the item in CheckSearchMask(),
-    // leaving the item empty. This is not significant though because the following for-loop does not affect
-    // items with no attributes; the SCP will simply not return any values for such empty items.)
-
-    // Start a loop and go through all elements of this item.
-    for( unsigned long k=0 ; k<numOfElementsInItem ; k++ )
+    // remember all relevant information about this and all
+    // superior sequence elements in superiorSequenceArray
+    tmp = new WlmSuperiorSequenceInfoType[ numOfSuperiorSequences + 1 ];
+    for( i=0 ; i<numOfSuperiorSequences ; i++ )
     {
-      // Get the current element.
-      DcmElement *elementInItem = itemInSequence->getElement(k);
+      tmp[i].sequenceTag = superiorSequenceArray[i].sequenceTag;
+      tmp[i].numOfItems  = superiorSequenceArray[i].numOfItems;
+      tmp[i].currentItem = superiorSequenceArray[i].currentItem;
+    }
+    tmp[numOfSuperiorSequences].sequenceTag = sequenceTag;
+    tmp[numOfSuperiorSequences].numOfItems = numOfItemsInResultSequence;
+    tmp[numOfSuperiorSequences].currentItem = 0;
 
-      // Depending on if the current element is a sequence or not, process this element.
-      // (Note that through the recursive call to HandleSequenceElementInResultDataset()
-      // sequences of arbitrary depth are supported.)
-      if( elementInItem->ident() != EVR_SQ )
-        HandleNonSequenceElementInResultDataset( elementInItem, idx );
-      else
-        HandleSequenceElementInResultDataset( elementInItem, idx );
+    if( superiorSequenceArray != NULL )
+      delete superiorSequenceArray;
+
+    superiorSequenceArray = tmp;
+
+    numOfSuperiorSequences++;
+
+    // in case this sequence has more than one item in the database, copy the first item
+    // an appropriate number of times and insert all items into the result dataset
+    DcmItem *firstItem = sequenceOfItemsElement->getItem(0);
+    for( i=1 ; i<numOfItemsInResultSequence ; i++ )
+    {
+      DcmItem *newItem = new DcmItem( *firstItem );
+      sequenceOfItemsElement->append( newItem );
+    }
+
+    // go through all items of the result dataset
+    for( i=0 ; i<numOfItemsInResultSequence ; i++ )
+    {
+      // determine current item
+      DcmItem *itemInSequence = sequenceOfItemsElement->getItem(i);
+
+      // get its cardinality.
+      unsigned long numOfElementsInItem = itemInSequence->card();
+
+      // update current item indicator in superiorSequenceArray
+      superiorSequenceArray[ numOfSuperiorSequences - 1 ].currentItem = i;
+
+      // go through all elements in this item
+      for( k=0 ; k<numOfElementsInItem ; k++ )
+      {
+        // get the current element.
+        DcmElement *elementInItem = itemInSequence->getElement(k);
+
+        // depending on if the current element is a sequence or not, process this element
+        if( elementInItem->ident() != EVR_SQ )
+          HandleNonSequenceElementInResultDataset( elementInItem, idx );
+        else
+          HandleSequenceElementInResultDataset( elementInItem, idx );
+      }
+    }
+
+    // delete information about current sequence from superiorSequenceArray
+    if( numOfSuperiorSequences == 1 )
+    {
+      delete superiorSequenceArray;
+      superiorSequenceArray = NULL;
+      numOfSuperiorSequences = 0;
+    }
+    else
+    {
+      tmp = new WlmSuperiorSequenceInfoType[ numOfSuperiorSequences - 1 ];
+      for( i=0 ; i<numOfSuperiorSequences - 1; i++ )
+      {
+        tmp[i].sequenceTag = superiorSequenceArray[i].sequenceTag;
+        tmp[i].numOfItems  = superiorSequenceArray[i].numOfItems;
+        tmp[i].currentItem = superiorSequenceArray[i].currentItem;
+      }
+
+      delete superiorSequenceArray;
+      superiorSequenceArray = tmp;
+
+      numOfSuperiorSequences--;
     }
   }
 }
@@ -685,7 +731,13 @@ int WlmDataSourceFileSystem::ReleaseReadlock()
 /*
 ** CVS Log
 ** $Log: wldsfs.cc,v $
-** Revision 1.13  2003-08-21 13:40:01  wilkens
+** Revision 1.14  2004-01-07 08:32:34  wilkens
+** Added new sequence type return key attributes to wlmscpfs. Fixed bug that for
+** equally named attributes in sequences always the same value will be returned.
+** Added functionality that also more than one item will be returned in sequence
+** type return key attributes.
+**
+** Revision 1.13  2003/08/21 13:40:01  wilkens
 ** Moved declaration and initialization of member variables matchingDatasets and
 ** numOfMatchingDatasets to base class.
 **
