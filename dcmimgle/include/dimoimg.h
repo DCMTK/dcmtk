@@ -22,9 +22,8 @@
  *  Purpose: DicomMonochromeImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-06-12 15:08:34 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoimg.h,v $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  Update Date:      $Date: 2003-12-08 18:30:16 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,11 +31,12 @@
  */
 
 
-#ifndef __DIMOIMG_H
-#define __DIMOIMG_H
+#ifndef DIMOIMG_H
+#define DIMOIMG_H
 
 #include "osconfig.h"
 #include "dctypes.h"
+#include "ofcast.h"
 
 #include "diimage.h"
 #include "dimopx.h"
@@ -339,7 +339,7 @@ class DiMonoImage
      */
     inline const char *getModalityLutExplanation() const
     {
-        return (InterData != NULL) ? InterData->getModalityLutExplanation() : (const char *)NULL;
+        return (InterData != NULL) ? InterData->getModalityLutExplanation() : OFstatic_cast(const char *, NULL);
     }
 
     /** set hardcopy parameters. (used to display LinOD images)
@@ -410,7 +410,7 @@ class DiMonoImage
      */
     inline const char *getPresentationLutExplanation() const
     {
-        return (PresLutData != NULL) ? PresLutData->getExplanation() : (const char *)NULL;
+        return (PresLutData != NULL) ? PresLutData->getExplanation() : OFstatic_cast(const char *, NULL);
     }
 
     /** add specified plane to group of additional overlay planes.
@@ -455,7 +455,7 @@ class DiMonoImage
      */
     inline DiOverlay *getOverlayPtr(const unsigned int idx)
     {
-        return (idx < 2) ? Overlays[idx] : (DiOverlay *)NULL;
+        return (idx < 2) ? Overlays[idx] : OFstatic_cast(DiOverlay *, NULL);
     }
 
     /** get pointer to current monochrome image (this)
@@ -1120,7 +1120,12 @@ class DiMonoImage
  *
  * CVS/RCS Log:
  * $Log: dimoimg.h,v $
- * Revision 1.39  2003-06-12 15:08:34  joergr
+ * Revision 1.40  2003-12-08 18:30:16  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated CVS header.
+ *
+ * Revision 1.39  2003/06/12 15:08:34  joergr
  * Fixed inconsistent API documentation reported by Doxygen.
  *
  * Revision 1.38  2003/05/20 09:20:21  joergr
