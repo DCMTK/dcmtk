@@ -22,9 +22,9 @@
  *  Purpose: network conditions and helper class
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-10-12 10:18:25 $
+ *  Update Date:      $Date: 2002-12-10 11:00:57 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/cond.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -140,7 +140,7 @@ const unsigned short DULC_INCORRECTBUFFERLENGTH            = 0x30d;
 const unsigned short DULC_INSUFFICIENTBUFFERLENGTH         = 0x30e;
 const unsigned short DULC_LISTERROR                        = 0x30f;
 const unsigned short DULC_NETWORKCLOSED                    = 0x310;
-const unsigned short DULC_NETWORKINITIALIZED               = 0x311;
+// 0x311 was NETWORKINITIALIZED (Network already initialized) in previous releases
 const unsigned short DULC_NOASSOCIATIONREQUEST             = 0x312;
 const unsigned short DULC_NOPDVS                           = 0x313;
 const unsigned short DULC_NULLKEY                          = 0x314;
@@ -171,7 +171,6 @@ extern const OFCondition DUL_INCORRECTBUFFERLENGTH;     /* DUL Incorrect buffer 
 extern const OFCondition DUL_INSUFFICIENTBUFFERLENGTH;  /* DUL Insufficient buffer space allocated for data */
 extern const OFCondition DUL_LISTERROR;                 /* DUL List error */
 extern const OFCondition DUL_NETWORKCLOSED;             /* DUL network closed */
-extern const OFCondition DUL_NETWORKINITIALIZED;        /* Network already initialized */
 extern const OFCondition DUL_NOASSOCIATIONREQUEST;      /* No requests for associations for this server */
 extern const OFCondition DUL_NOPDVS;                    /* DUL No PDVs available in current buffer */
 extern const OFCondition DUL_NULLKEY;                   /* NULL key passed to routine */
@@ -268,7 +267,10 @@ typedef OFCondition CONDITION;
 /*
  * CVS Log
  * $Log: cond.h,v $
- * Revision 1.6  2001-10-12 10:18:25  meichel
+ * Revision 1.7  2002-12-10 11:00:57  meichel
+ * Removed error code DUL_NETWORKINITIALIZED which is not used anymore
+ *
+ * Revision 1.6  2001/10/12 10:18:25  meichel
  * Replaced the CONDITION types, constants and functions in the dcmnet module
  *   by an OFCondition based implementation which eliminates the global condition
  *   stack.  This is a major change, caveat emptor!

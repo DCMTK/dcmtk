@@ -22,9 +22,9 @@
  *  Purpose: network conditions and helper class
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 13:04:37 $
+ *  Update Date:      $Date: 2002-12-10 11:00:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/cond.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -88,7 +88,6 @@ const OFConditionConst DULE_INCORRECTBUFFERLENGTH(    OFM_dcmnet, DULC_INCORRECT
 const OFConditionConst DULE_INSUFFICIENTBUFFERLENGTH( OFM_dcmnet, DULC_INSUFFICIENTBUFFERLENGTH, OF_error, "DUL Insufficient buffer space allocated for data");
 const OFConditionConst DULE_LISTERROR(                OFM_dcmnet, DULC_LISTERROR               , OF_error, "DUL List error");
 const OFConditionConst DULE_NETWORKCLOSED(            OFM_dcmnet, DULC_NETWORKCLOSED           , OF_error, "DUL network closed");
-const OFConditionConst DULE_NETWORKINITIALIZED(       OFM_dcmnet, DULC_NETWORKINITIALIZED      , OF_error, "Network already initialized");
 const OFConditionConst DULE_NOASSOCIATIONREQUEST(     OFM_dcmnet, DULC_NOASSOCIATIONREQUEST    , OF_error, "No requests for associations for this server");
 const OFConditionConst DULE_NOPDVS(                   OFM_dcmnet, DULC_NOPDVS                  , OF_error, "DUL No PDVs available in current buffer");
 const OFConditionConst DULE_NULLKEY(                  OFM_dcmnet, DULC_NULLKEY                 , OF_error, "NULL key passed to routine");
@@ -112,7 +111,6 @@ const OFCondition DUL_INCORRECTBUFFERLENGTH(    DULE_INCORRECTBUFFERLENGTH);
 const OFCondition DUL_INSUFFICIENTBUFFERLENGTH( DULE_INSUFFICIENTBUFFERLENGTH);
 const OFCondition DUL_LISTERROR(                DULE_LISTERROR);
 const OFCondition DUL_NETWORKCLOSED(            DULE_NETWORKCLOSED);
-const OFCondition DUL_NETWORKINITIALIZED(       DULE_NETWORKINITIALIZED);
 const OFCondition DUL_NOASSOCIATIONREQUEST(     DULE_NOASSOCIATIONREQUEST);
 const OFCondition DUL_NOPDVS(                   DULE_NOPDVS);
 const OFCondition DUL_NULLKEY(                  DULE_NULLKEY);
@@ -164,7 +162,10 @@ OFCondition DimseCondition::push(
 /*
  * CVS Log
  * $Log: cond.cc,v $
- * Revision 1.11  2002-11-27 13:04:37  meichel
+ * Revision 1.12  2002-12-10 11:00:59  meichel
+ * Removed error code DUL_NETWORKINITIALIZED which is not used anymore
+ *
+ * Revision 1.11  2002/11/27 13:04:37  meichel
  * Adapted module dcmnet to use of new header file ofstdinc.h
  *
  * Revision 1.10  2002/05/02 14:07:37  joergr
