@@ -151,10 +151,10 @@ diovlimg.o: diovlimg.cc ../../config/include/osconfig.h \
 diovpln.o: diovpln.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
  ../../dcmdata/include/dcdeftag.h ../../dcmdata/include/dctagkey.h \
- ../include/diovpln.h ../../ofstd/include/ofstring.h \
- ../include/diutils.h ../include/didocu.h \
- ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
- ../include/diobjcou.h
+ ../../ofstd/include/ofbmanip.h ../include/diovpln.h \
+ ../../ofstd/include/ofstring.h ../include/diutils.h \
+ ../include/didocu.h ../../dcmdata/include/dcxfer.h \
+ ../../dcmdata/include/dcvr.h ../include/diobjcou.h
 diutils.o: diutils.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
  ../include/diutils.h
