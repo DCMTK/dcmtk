@@ -22,9 +22,9 @@
  *  Purpose: abstract codec class for JPEG encoders.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-13 15:58:24 $
+ *  Update Date:      $Date: 2001-11-14 09:30:47 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djcodece.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,9 +58,9 @@
 // dcmimgle includes
 #include "dcmimage.h"  /* for class DicomImage */
 
-BEGIN_EXTERN_C
+// inclusion of math.h must not be extern "C" on Visual C++ 
+// because the file defines C++ templates
 #include <math.h>      /* for floor() and ceil() */
-END_EXTERN_C
 
 
 DJCodecEncoder::DJCodecEncoder()
@@ -175,7 +175,7 @@ OFCondition DJCodecEncoder::encode(
     
     // update derivation description
     if (result.good()) result = updateDerivationDescription((DcmItem *)dataset, toRepParam, 
-      djcp, compressedBits, compressionRatio);
+      djcp, (Uint8)compressedBits, compressionRatio);
     
     if (result.good())
     {
@@ -1251,7 +1251,10 @@ OFCondition DJCodecEncoder::convertToSecondaryCapture(DcmItem *dataset)
 /*
  * CVS/RCS Log
  * $Log: djcodece.cc,v $
- * Revision 1.1  2001-11-13 15:58:24  meichel
+ * Revision 1.2  2001-11-14 09:30:47  meichel
+ * Minor modifications for Visual C++
+ *
+ * Revision 1.1  2001/11/13 15:58:24  meichel
  * Initial release of module dcmjpeg
  *
  *
