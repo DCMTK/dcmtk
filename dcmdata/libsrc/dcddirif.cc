@@ -22,8 +22,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-11-05 18:32:23 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2003-11-10 10:39:49 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1082,7 +1082,8 @@ OFBool DicomDirInterface::isFilenameValid(const char *filename,
     } else {
         size_t invalidChar = 0;
         /* check whether the file name path is ok and in local format */
-        if (locateInvalidFilenameChars(filename, invalidChar, MapFilenamesMode))
+        if ((filename[0] == PATH_SEPARATOR) /* absolute path? */ ||
+            locateInvalidFilenameChars(filename, invalidChar, MapFilenamesMode))
         {
             /* create error message */
             OFOStringStream oss;
@@ -4080,13 +4081,16 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
- *  Revision 1.2  2003-11-05 18:32:23  joergr
+ *  Revision 1.3  2003-11-10 10:39:49  joergr
+ *  Enhanced detection of invalid filenames: forbid leading path separator, i.e.
+ *  absolute pathnames.
+ *
+ *  Revision 1.2  2003/11/05 18:32:23  joergr
  *  Fixed bug that prevented the addition of DICOM files missing the "sort key"
  *  (e.g. InstanceNumber).
  *
  *  Revision 1.1  2003/08/12 14:37:36  joergr
  *  Added new interface class for simplified creation of a DICOMDIR.
- *
  *
  *
  */
