@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSOverlay
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:13 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2003-08-27 14:59:41 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -90,7 +90,7 @@ public:
   /** get group number of overlay repeating group managed by this object.
    *  @return the lower byte of the overlay group
    */
-  Uint8 getOverlayGroup() { return overlayGroup; }
+  Uint8 getOverlayGroup() const { return overlayGroup; }
 
   /** sets the group number for the overlay repeating group managed
    *  by this object.
@@ -123,16 +123,28 @@ public:
    *  @return OFTrue if overlay is ROI, OFFalse if overlay is Graphic.
    */
   OFBool isROI();
-  
-  /** copies this overlay into the DicomImage data structure.
-   *  @param image the DicomImage to which the overlay is copied
-   *  @param asShutter optional flag defining whether the overlay
-   *    should be activated as bitmap shutter. Default: no.
-   *  @param pvalue optional shutter presentation value when used
-   *    as bitmap shutter. Default: 0=black.
-   *  @return EC_Normal if successful, an error code otherwise.
+
+  /** retrieve origin and size values for this overlay
+   *  @param originX horizontal origin returned in this parameter
+   *  @param originY vertical origin returned in this parameter
+   *  @param sizeX horizontal size returned in this parameter
+   *  @param sizeY vertical size returned in this parameter
+   *  @return EC_Normal if successful, an error code otherwise
    */
-  OFCondition activate(DicomImage &image, OFBool asShutter=OFFalse, Uint16 pvalue=0);
+  OFCondition getValues(
+    Sint16& originX,
+    Sint16& originY,
+    Uint16& sizeX,
+    Uint16& sizeY);
+
+  /// return reference to overlay data
+  DcmOverlayData& getData() { return overlayData; }
+
+  /// return reference to overlay label
+  DcmLongString& getLabel() { return overlayLabel; }
+
+  /// return reference to overlay description
+  DcmLongString& getDescription() { return overlayDescription; }
 
   /** sets a new log stream
    *  @param stream new log stream, NULL for default logstream
@@ -185,7 +197,10 @@ private:
 
 /*
  *  $Log: dvpsov.h,v $
- *  Revision 1.8  2001-09-26 15:36:13  meichel
+ *  Revision 1.9  2003-08-27 14:59:41  meichel
+ *  Changed API of class DVPSOverlay to avoid dependency on module dcmimgle
+ *
+ *  Revision 1.8  2001/09/26 15:36:13  meichel
  *  Adapted dcmpstat to class OFCondition
  *
  *  Revision 1.7  2001/06/01 15:50:18  meichel

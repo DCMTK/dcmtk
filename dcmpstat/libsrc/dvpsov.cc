@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSOverlay
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-09 13:28:16 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-08-27 14:59:42 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,7 +34,6 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dvpsov.h"
 #include "ofstring.h"
-#include "dcmimage.h"
 #include "dvpsdef.h"     /* for constants and macros */
 
 
@@ -309,35 +308,16 @@ OFBool DVPSOverlay::isROI()
   return OFFalse;
 }
 
-
-OFCondition DVPSOverlay::activate(DicomImage &image, OFBool asShutter, Uint16 pvalue)
+OFCondition DVPSOverlay::getValues(
+  Sint16& originX,
+  Sint16& originY,
+  Uint16& sizeX,
+  Uint16& sizeY)
 {
-  Sint16 originX=0;
-  Sint16 originY=0;
-  Uint16 sizeX=0;
-  Uint16 sizeY=0;
-  unsigned int group = overlayGroup + 0x6000;
-  EM_Overlay mode=EMO_Graphic;
-  if (asShutter) mode=EMO_BitmapShutter; else if (isROI()) mode=EMO_RegionOfInterest;
-
   OFCondition result = overlayOrigin.getSint16(originX,1);
-  if (result==EC_Normal) result = overlayOrigin.getSint16(originY,0);
-  if (result==EC_Normal) result = overlayColumns.getUint16(sizeX,0);
-  if (result==EC_Normal) result = overlayRows.getUint16(sizeY,0);
-  if (result==EC_Normal)
-  {
-    signed int left_pos = (signed int) originX;
-    signed int top_pos = (signed int) originY;
-    unsigned int columns = (unsigned int)sizeX;
-    unsigned int rows = (unsigned int)sizeY;
-    if (0 == image.addOverlay(group, left_pos, top_pos, columns, rows,
-      overlayData, overlayLabel, overlayDescription, mode))
-        result = EC_IllegalCall;
-    if ((asShutter)&&(EC_Normal==result))
-    {
-      if (0 == image.showOverlay(group, pvalue)) result = EC_IllegalCall;
-    }
-  }
+  if (result.good()) result = overlayOrigin.getSint16(originY,0);
+  if (result.good()) result = overlayColumns.getUint16(sizeX,0);
+  if (result.good()) result = overlayRows.getUint16(sizeY,0);
   return result;
 }
 
@@ -351,7 +331,10 @@ void DVPSOverlay::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
 
 /*
  *  $Log: dvpsov.cc,v $
- *  Revision 1.14  2002-12-09 13:28:16  joergr
+ *  Revision 1.15  2003-08-27 14:59:42  meichel
+ *  Changed API of class DVPSOverlay to avoid dependency on module dcmimgle
+ *
+ *  Revision 1.14  2002/12/09 13:28:16  joergr
  *  Renamed parameter/local variable to avoid name clashes with global
  *  declaration left and/or right (used for as iostream manipulators).
  *
