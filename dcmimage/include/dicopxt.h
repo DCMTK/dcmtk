@@ -22,9 +22,9 @@
  *  Purpose: DicomColorPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:44:35 $
+ *  Update Date:      $Date: 2001-12-11 14:23:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -171,7 +171,7 @@ class DiColorPixelTemplate
             if (mode == 24)     // 24 bits per pixel
             {
                 const unsigned long wid3 = (unsigned long)width * 3;
-                const int gap = (4 - wid3 & 0x3) & 0x3;                             // each line has to start at 32-bit-address
+                const int gap = (int)((4 - wid3 & 0x3) & 0x3);                      // each line has to start at 32-bit-address
                 unsigned long fsize = (wid3 + gap) * (unsigned long)height;
                 if ((data == NULL) || (size >= fsize))
                 {
@@ -442,7 +442,10 @@ class DiColorPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dicopxt.h,v $
- * Revision 1.13  2001-11-09 16:44:35  joergr
+ * Revision 1.14  2001-12-11 14:23:44  joergr
+ * Added type cast to keep old Sun compilers quiet.
+ *
+ * Revision 1.13  2001/11/09 16:44:35  joergr
  * Enhanced and renamed createTrueColorDIB() method.
  *
  * Revision 1.12  2001/06/01 15:49:29  meichel
