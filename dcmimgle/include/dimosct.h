@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: DicomMonochromeScaleTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-09 13:32:54 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimosct.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2003-12-09 10:04:45 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,11 +31,12 @@
  */
 
 
-#ifndef __DIMOSCT_H
-#define __DIMOSCT_H
+#ifndef DIMOSCT_H
+#define DIMOSCT_H
 
 #include "osconfig.h"
 #include "dctypes.h"
+#include "ofcast.h"
 
 #include "dimopxt.h"
 #include "discalet.h"
@@ -83,14 +83,14 @@ class DiMonoScaleTemplate
                         const Uint32 frames,
                         const int interpolate,
                         const Uint16 pvalue)
-      : DiMonoPixelTemplate<T>(pixel, (unsigned long)dest_cols * (unsigned long)dest_rows * frames),
+      : DiMonoPixelTemplate<T>(pixel, OFstatic_cast(unsigned long, dest_cols) * OFstatic_cast(unsigned long, dest_rows) * frames),
         DiScaleTemplate<T>(1, columns, rows, left_pos, top_pos, src_cols, src_rows, dest_cols, dest_rows, frames)
     {
         if ((pixel != NULL) && (pixel->getCount() > 0))
         {
-            if (pixel->getCount() == (unsigned long)columns * (unsigned long)rows * frames)
+            if (pixel->getCount() == OFstatic_cast(unsigned long, columns) * OFstatic_cast(unsigned long, rows) * frames)
             {
-                scale((const T *)pixel->getData(), pixel->getBits(), interpolate, pvalue);
+                scale(OFstatic_cast(const T *, pixel->getData()), pixel->getBits(), interpolate, pvalue);
                 determineMinMax();
             } else {
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
@@ -128,8 +128,8 @@ class DiMonoScaleTemplate
             Data = new T[getCount()];
             if (Data != NULL)
             {
-                const T value = (T)((double)DicomImageClass::maxval(bits) * (double)pvalue /
-                    (double)DicomImageClass::maxval(WIDTH_OF_PVALUES));
+                const T value = OFstatic_cast(T, OFstatic_cast(double, DicomImageClass::maxval(bits)) *
+                    OFstatic_cast(double, pvalue) / OFstatic_cast(double, DicomImageClass::maxval(WIDTH_OF_PVALUES)));
                 scaleData(&pixel, &Data, interpolate, value);
              }
         }
@@ -144,7 +144,12 @@ class DiMonoScaleTemplate
  *
  * CVS/RCS Log:
  * $Log: dimosct.h,v $
- * Revision 1.11  2002-12-09 13:32:54  joergr
+ * Revision 1.12  2003-12-09 10:04:45  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated copyright header.
+ *
+ * Revision 1.11  2002/12/09 13:32:54  joergr
  * Renamed parameter/local variable to avoid name clashes with global
  * declaration left and/or right (used for as iostream manipulators).
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: DicomMonochromePixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-09 13:32:54 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Update Date:      $Date: 2003-12-09 10:02:04 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,14 +31,16 @@
  */
 
 
-#ifndef __DIMOPXT_H
-#define __DIMOPXT_H
+#ifndef DIMOPXT_H
+#define DIMOPXT_H
 
 #include "osconfig.h"
 #include "ofconsol.h"
+#include "ofbmanip.h"
+#include "ofcast.h"
+
 #include "dctypes.h"
 #include "dcdefine.h"
-#include "ofbmanip.h"
 
 #include "dimopx.h"
 #include "dipxrept.h"
@@ -102,7 +103,7 @@ class DiMonoPixelTemplate
     DiMonoPixelTemplate(const DiMonoOutputPixel *pixel,
                         DiMonoModality *modality)
       : DiMonoPixel(pixel, modality),
-        Data((T *)pixel->getData())
+        Data(OFstatic_cast(T *, pixel->getData()))
     {
         MinValue[0] = 0;
         MinValue[1] = 0;
@@ -132,7 +133,7 @@ class DiMonoPixelTemplate
      */
     inline void *getData() const
     {
-        return (void *)Data;
+        return OFstatic_cast(void *, Data);
     }
 
     /** get reference to pointer to pixel data
@@ -141,7 +142,7 @@ class DiMonoPixelTemplate
      */
     inline void *getDataPtr()
     {
-        return (void *)(&Data);
+        return OFstatic_cast(void *, &Data);
     }
 
     /** get minimum and maximum pixel values
@@ -179,9 +180,9 @@ class DiMonoPixelTemplate
             /* suppl. 33: "A Window Center of 2^n-1 and a Window Width of 2^n
                            selects the range of input values from 0 to 2^n-1."
             */
-            center = ((double)MinValue[idx] + (double)MaxValue[idx] + 1) / 2;   // type cast to avoid overflows !
-            width = (double)MaxValue[idx] - (double)MinValue[idx] + 1;
-            result = (width > 0);                                               // valid value ?
+            center = (OFstatic_cast(double, MinValue[idx]) + OFstatic_cast(double, MaxValue[idx]) + 1) / 2;  // type cast to avoid overflows !
+            width = OFstatic_cast(double, MaxValue[idx]) - OFstatic_cast(double, MinValue[idx]) + 1;
+            result = (width > 0);                                               // check for valid value
         }
         return result;
     }
@@ -237,9 +238,9 @@ class DiMonoPixelTemplate
             /* suppl. 33: "A Window Center of 2^n-1 and a Window Width of 2^n
                            selects the range of input values from 0 to 2^n-1."
             */
-            voiCenter = ((double)min + (double)max + 1) / 2;    // type cast to avoid overflows !
-            voiWidth = (double)max - (double)min + 1;
-            result = (width > 0);                               // valid value ?
+            voiCenter = (OFstatic_cast(double, min) + OFstatic_cast(double, max) + 1) / 2;  // type cast to avoid overflows !
+            voiWidth = OFstatic_cast(double, max) - OFstatic_cast(double, min) + 1;
+            result = (width > 0);                               // check for valid value
         }
         return result;
     }
@@ -258,7 +259,7 @@ class DiMonoPixelTemplate
     {
         if ((Data != NULL) && (MinValue[0] < MaxValue[0]))
         {
-            const Uint32 count = (Uint32)(MaxValue[0] - MinValue[0] + 1);
+            const Uint32 count = OFstatic_cast(Uint32, MaxValue[0] - MinValue[0] + 1);
             Uint32 *quant = new Uint32[count];
             if (quant != NULL)
             {
@@ -267,7 +268,7 @@ class DiMonoPixelTemplate
                 for (i = 0; i < Count; i++)
                 {
                     if ((Data[i] >= MinValue[0]) && (Data[i] <= MaxValue[0]))       // only for stability !
-                        quant[(Uint32)(Data[i] - MinValue[0])]++;                   // count values
+                        quant[OFstatic_cast(Uint32, Data[i] - MinValue[0])]++;      // count values
 #ifdef DEBUG
                     else if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                     {
@@ -277,25 +278,25 @@ class DiMonoPixelTemplate
                     }
 #endif
                 }
-                const Uint32 threshvalue = (Uint32)(thresh * (double)Count);
+                const Uint32 threshvalue = OFstatic_cast(Uint32, thresh * OFstatic_cast(double, Count));
                 register Uint32 t = 0;
                 i = 0;
                 while ((i < count) && (t < threshvalue))
                     t += quant[i++];
-                const T minvalue = (i < count) ? (T)(MinValue[0] + i) : 0;
+                const T minvalue = (i < count) ? OFstatic_cast(T, MinValue[0] + i) : 0;
                 t = 0;
                 i = count;
                 while ((i > 0) && (t < threshvalue))
                     t += quant[--i];
-                const T maxvalue = (i > 0) ? (T)(MinValue[0] + i) : 0;
+                const T maxvalue = (i > 0) ? OFstatic_cast(T, MinValue[0] + i) : 0;
                 delete[] quant;
                 if (minvalue < maxvalue)
                 {
                     /* suppl. 33: "A Window Center of 2^n-1 and a Window Width of 2^n
                                    selects the range of input values from 0 to 2^n-1."
                     */
-                    center = ((double)minvalue + (double)maxvalue + 1) / 2;
-                    width = (double)maxvalue - (double)minvalue + 1;
+                    center = (OFstatic_cast(double, minvalue) + OFstatic_cast(double, maxvalue) + 1) / 2;
+                    width = OFstatic_cast(double, maxvalue) - OFstatic_cast(double, minvalue) + 1;
                     return (width > 0);
                 }
             }
@@ -427,7 +428,12 @@ class DiMonoPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimopxt.h,v $
- * Revision 1.21  2002-12-09 13:32:54  joergr
+ * Revision 1.22  2003-12-09 10:02:04  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated copyright header.
+ *
+ * Revision 1.21  2002/12/09 13:32:54  joergr
  * Renamed parameter/local variable to avoid name clashes with global
  * declaration left and/or right (used for as iostream manipulators).
  *
