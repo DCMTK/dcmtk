@@ -23,8 +23,8 @@
  *    classes: DSRSpatialCoordinatesValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-01 16:23:24 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-11-06 11:18:09 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -100,6 +100,56 @@ class DSRSpatialCoordinatesValue
      */
     virtual OFBool isShort(const size_t flags) const;
 
+    /** print spatial coordinates.
+     *  The output of a typical spatial coordinates value looks like this: (CIRCLE,0/0,255/255).
+     ** @param  stream  output stream to which the spatial coordinates value should be printed
+     *  @param  flags   flag used to customize the output (see DSRTypes::PF_xxx)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual E_Condition print(ostream &stream,
+                              const size_t flags) const;
+
+    /** read spatial coordinates value from dataset
+     ** @param  dataset    DICOM dataset from which the value should be read
+     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual E_Condition read(DcmItem &dataset,
+                             OFConsole *logStream);
+
+    /** write spatial coordinates reference value to dataset
+     ** @param  dataset    DICOM dataset to which the value should be written
+     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual E_Condition write(DcmItem &dataset,
+                              OFConsole *logStream) const;
+                              
+    /** write spatial coordinates value in XML format
+     ** @param  stream     output stream to which the XML document is written
+     *  @param  flags      flag used to customize the output (see DSRTypes::XF_xxx)
+     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual E_Condition writeXML(ostream &stream,
+                                 const size_t flags,
+                                 OFConsole *logStream) const;
+
+    /** render spatial coordinates value in HTML format
+     ** @param  docStream    output stream to which the main HTML document is written
+     *  @param  annexStream  output stream to which the HTML document annex is written
+     *  @param  annexNumber  reference to the variable where the current annex number is stored.
+     *                       Value is increased automatically by 1 after a new entry has been added.
+     *  @param  flags        flag used to customize the output (see DSRTypes::HF_xxx)
+     *  @param  logStream    pointer to error/warning output stream (output disabled if NULL)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual E_Condition renderHTML(ostream &docStream,
+                                   ostream &annexStream,
+                                   size_t &annexNumber,
+                                   const size_t flags,
+                                   OFConsole *logStream) const;
+
     /** get reference to spatial coordinates value
      ** @return reference to spatial coordinates value
      */
@@ -161,56 +211,6 @@ class DSRSpatialCoordinatesValue
         return this;
     }
 
-    /** print spatial coordinates.
-     *  The output of a typical spatial coordinates value looks like this: (CIRCLE,0/0,255/255).
-     ** @param  stream  output stream to which the spatial coordinates value should be printed
-     *  @param  flags   flag used to customize the output (see DSRTypes::PF_xxx)
-     ** @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual E_Condition print(ostream &stream,
-                              const size_t flags) const;
-
-    /** read spatial coordinates value from dataset
-     ** @param  dataset    DICOM dataset from which the value should be read
-     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
-     ** @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual E_Condition read(DcmItem &dataset,
-                             OFConsole *logStream);
-
-    /** write spatial coordinates reference value to dataset
-     ** @param  dataset    DICOM dataset to which the value should be written
-     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
-     ** @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual E_Condition write(DcmItem &dataset,
-                              OFConsole *logStream) const;
-                              
-    /** write spatial coordinates value in XML format
-     ** @param  stream     output stream to which the XML document is written
-     *  @param  flags      flag used to customize the output (see DSRTypes::XF_xxx)
-     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
-     ** @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual E_Condition writeXML(ostream &stream,
-                                 const size_t flags,
-                                 OFConsole *logStream) const;
-
-    /** render spatial coordinates value in HTML format
-     ** @param  docStream    output stream to which the main HTML document is written
-     *  @param  annexStream  output stream to which the HTML document annex is written
-     *  @param  annexNumber  reference to the variable where the current annex number is stored.
-     *                       Value is increased automatically by 1 after a new entry has been added.
-     *  @param  flags        flag used to customize the output (see DSRTypes::HF_xxx)
-     *  @param  logStream    pointer to error/warning output stream (output disabled if NULL)
-     ** @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual E_Condition renderHTML(ostream &docStream,
-                                   ostream &annexStream,
-                                   size_t &annexNumber,
-                                   const size_t flags,
-                                   OFConsole *logStream) const;
-
     /** check the graphic type and data for validity.
      *  If 'graphicType' is valid the number of entries in the 'graphicDatalist' are checked.
      *  A POINT needs exactly 1 value pair (column,row), a MULTIPOINT at least 1?, a closed 
@@ -241,7 +241,10 @@ class DSRSpatialCoordinatesValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscovl.h,v $
- *  Revision 1.4  2000-11-01 16:23:24  joergr
+ *  Revision 1.5  2000-11-06 11:18:09  joergr
+ *  Moved some protected methods to public part.
+ *
+ *  Revision 1.4  2000/11/01 16:23:24  joergr
  *  Added support for conversion to XML.
  *
  *  Revision 1.3  2000/10/18 17:07:30  joergr

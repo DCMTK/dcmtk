@@ -23,8 +23,8 @@
  *    classes: DSRNumericMeasurementValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-01 16:23:22 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2000-11-06 11:17:40 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -101,6 +101,62 @@ class DSRNumericMeasurementValue
      */
     virtual OFBool isEmpty() const;
 
+    /** print numeric measurement value.
+     *  The output of a typical numeric measurement value looks like this:
+     *  "3" (cm,99_OFFIS_DCMTK,"Length Unit").  If the value is empty the text "empty" is
+     *  printed instead.
+     ** @param  stream  output stream to which the numeric measurement value should be printed
+     *  @param  flags   flag used to customize the output (not used)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual E_Condition print(ostream &stream,
+                              const size_t flags) const;
+
+    /** write numeric measurement value in XML format
+     ** @param  stream     output stream to which the XML document is written
+     *  @param  flags      flag used to customize the output (see DSRTypes::XF_xxx)
+     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual E_Condition writeXML(ostream &stream,
+                                 const size_t flags,
+                                 OFConsole *logStream) const;
+
+    /** read measured value sequence from dataset.
+     *  The number of items within the sequence is checked.  If error/warning output are
+     *  enabled a warning message is printed if the sequence is absent or contains more than
+     *  one item.
+     ** @param  dataset    DICOM dataset from which the sequence should be read
+     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual E_Condition readSequence(DcmItem &dataset,
+                                     OFConsole *logStream);
+
+    /** write measured value sequence to dataset.
+     *  If the value is empty an empty sequence (without any items) is written.
+     ** @param  dataset    DICOM dataset to which the sequence should be written
+     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual E_Condition writeSequence(DcmItem &dataset,
+                                      OFConsole *logStream) const;
+
+    /** render numeric measurement value in HTML format
+     ** @param  docStream    output stream to which the main HTML document is written
+     *  @param  annexStream  output stream to which the HTML document annex is written
+     *  @param  annexNumber  reference to the variable where the current annex number is stored.
+     *                       Value is increased automatically by 1 after a new entry has been added.
+     *  @param  flags        flag used to customize the output (see DSRTypes::HF_xxx)
+     *  @param  logStream    pointer to error/warning output stream (output disabled if NULL)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual E_Condition renderHTML(ostream &docStream,
+                                   ostream &annexStream,
+                                   size_t &annexNumber,
+                                   const size_t flags,
+                                   OFConsole *logStream) const;
+
     /** get reference to numeric measurement value
      ** @return reference to numeric measurement value
      */
@@ -174,62 +230,6 @@ class DSRNumericMeasurementValue
 
   protected:
 
-    /** print numeric measurement value.
-     *  The output of a typical numeric measurement value looks like this:
-     *  "3" (cm,99_OFFIS_DCMTK,"Length Unit").  If the value is empty the text "empty" is
-     *  printed instead.
-     ** @param  stream  output stream to which the numeric measurement value should be printed
-     *  @param  flags   flag used to customize the output (not used)
-     ** @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual E_Condition print(ostream &stream,
-                              const size_t flags) const;
-
-    /** write numeric measurement value in XML format
-     ** @param  stream     output stream to which the XML document is written
-     *  @param  flags      flag used to customize the output (see DSRTypes::XF_xxx)
-     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
-     ** @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual E_Condition writeXML(ostream &stream,
-                                 const size_t flags,
-                                 OFConsole *logStream) const;
-
-    /** read measured value sequence from dataset.
-     *  The number of items within the sequence is checked.  If error/warning output are
-     *  enabled a warning message is printed if the sequence is absent or contains more than
-     *  one item.
-     ** @param  dataset    DICOM dataset from which the sequence should be read
-     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
-     ** @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual E_Condition readSequence(DcmItem &dataset,
-                                     OFConsole *logStream);
-
-    /** write measured value sequence to dataset.
-     *  If the value is empty an empty sequence (without any items) is written.
-     ** @param  dataset    DICOM dataset to which the sequence should be written
-     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
-     ** @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual E_Condition writeSequence(DcmItem &dataset,
-                                      OFConsole *logStream) const;
-
-    /** render numeric measurement value in HTML format
-     ** @param  docStream    output stream to which the main HTML document is written
-     *  @param  annexStream  output stream to which the HTML document annex is written
-     *  @param  annexNumber  reference to the variable where the current annex number is stored.
-     *                       Value is increased automatically by 1 after a new entry has been added.
-     *  @param  flags        flag used to customize the output (see DSRTypes::HF_xxx)
-     *  @param  logStream    pointer to error/warning output stream (output disabled if NULL)
-     ** @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual E_Condition renderHTML(ostream &docStream,
-                                   ostream &annexStream,
-                                   size_t &annexNumber,
-                                   const size_t flags,
-                                   OFConsole *logStream) const;
-
     /** get pointer to numeric measurement value
      ** @return pointer to numeric measurement value (never NULL)
      */
@@ -285,7 +285,10 @@ class DSRNumericMeasurementValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrnumvl.h,v $
- *  Revision 1.3  2000-11-01 16:23:22  joergr
+ *  Revision 1.4  2000-11-06 11:17:40  joergr
+ *  Moved some protected methods to public part.
+ *
+ *  Revision 1.3  2000/11/01 16:23:22  joergr
  *  Added support for conversion to XML.
  *
  *  Revision 1.2  2000/10/18 17:05:12  joergr

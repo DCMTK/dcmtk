@@ -23,8 +23,8 @@
  *    classes: DSRStringValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-01 16:23:25 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-11-06 11:18:48 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -89,26 +89,6 @@ class DSRStringValue
      */
     virtual OFBool isValid() const;
 
-    /** get string value
-     ** @return reference to string value
-     */
-    inline const OFString &getValue() const
-    {
-        return Value;
-    }
-
-    /** set string value.
-     *  Before setting the string value it is checked (see checkValue()).  If the value is
-     *  invalid the current value is not replaced and remains unchanged.  Use clear() to
-     *  empty the string value (which becomes invalid afterwards).
-     ** @param  stringValue  value to be set
-     ** @return status, EC_Normal if successful, an error code otherwise
-     */
-    E_Condition setValue(const OFString &stringValue);
-
-
-  protected:
-
     /** print string value.
      *  The output of a typical string value looks like this: "Short text" or "Very long t..."
      *  (incl. the quotation marks).
@@ -154,6 +134,26 @@ class DSRStringValue
                            const size_t flags,
                            OFConsole *logStream) const;
 
+    /** get string value
+     ** @return reference to string value
+     */
+    inline const OFString &getValue() const
+    {
+        return Value;
+    }
+
+    /** set string value.
+     *  Before setting the string value it is checked (see checkValue()).  If the value is
+     *  invalid the current value is not replaced and remains unchanged.  Use clear() to
+     *  empty the string value (which becomes invalid afterwards).
+     ** @param  stringValue  value to be set
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    E_Condition setValue(const OFString &stringValue);
+
+
+  protected:
+
     /** check the specified string value for validity.
      *  This base class just checks that the string value is not empty (since all corresponding
      *  DICOM attributes are type 1).  Derived classes might overwrite this method to perform
@@ -177,7 +177,10 @@ class DSRStringValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrstrvl.h,v $
- *  Revision 1.4  2000-11-01 16:23:25  joergr
+ *  Revision 1.5  2000-11-06 11:18:48  joergr
+ *  Moved some protected methods to public part.
+ *
+ *  Revision 1.4  2000/11/01 16:23:25  joergr
  *  Added support for conversion to XML.
  *
  *  Revision 1.3  2000/10/23 15:12:55  joergr
