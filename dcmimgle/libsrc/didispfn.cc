@@ -22,9 +22,9 @@
  *  Purpose: DicomDisplayFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-29 13:49:37 $
+ *  Update Date:      $Date: 1999-05-03 11:05:29 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/didispfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -374,7 +374,7 @@ int DiDisplayFunction::createSortedTable(const Uint16 *ddl_tab,
                     sort_tab[ddl_tab[i]] = i;
             }
             ValueCount = 0;
-            for (i = 0; i < MaxDDLValue + 1; i++)                                   // sort ascending
+            for (i = 0; i <= MaxDDLValue; i++)                                      // sort ascending
             {
                 if (sort_tab[i] >= 0)
                 {
@@ -537,7 +537,10 @@ double DiDisplayFunction::getJNDIndex(const double lum) const
  *
  * CVS/RCS Log:
  * $Log: didispfn.cc,v $
- * Revision 1.12  1999-04-29 13:49:37  joergr
+ * Revision 1.13  1999-05-03 11:05:29  joergr
+ * Minor code purifications to keep Sun CC 2.0.1 quiet.
+ *
+ * Revision 1.12  1999/04/29 13:49:37  joergr
  * Renamed class CubicSpline to DiCubicSpline.
  *
  * Revision 1.11  1999/04/28 15:01:44  joergr

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSOverlay
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-02-09 15:59:08 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-05-03 11:01:37 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -314,8 +314,8 @@ E_Condition DVPSOverlay::activate(DicomImage &image, OFBool asShutter, Uint16 pv
   {
     signed int left = (signed int) originX;
     signed int top  = (signed int) originY;
-    unsigned long columns = (unsigned long)sizeX;
-    unsigned long rows = (unsigned long)sizeY;
+    unsigned int columns = (unsigned int)sizeX;
+    unsigned int rows = (unsigned int)sizeY;
     if (0 == image.addOverlay(group, left, top, columns, rows,
       overlayData, overlayLabel, overlayDescription, mode))
       result = EC_IllegalCall;
@@ -329,7 +329,10 @@ E_Condition DVPSOverlay::activate(DicomImage &image, OFBool asShutter, Uint16 pv
 
 /*
  *  $Log: dvpsov.cc,v $
- *  Revision 1.5  1999-02-09 15:59:08  meichel
+ *  Revision 1.6  1999-05-03 11:01:37  joergr
+ *  Minor code purifications to keep Sun CC 2.0.1 quiet.
+ *
+ *  Revision 1.5  1999/02/09 15:59:08  meichel
  *  Implemented bitmap shutter activation amd method for
  *    exchanging graphic layers.
  *

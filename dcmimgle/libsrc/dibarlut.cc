@@ -22,9 +22,9 @@
  *  Purpose: DicomBartenLUT (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-29 13:49:36 $
+ *  Update Date:      $Date: 1999-05-03 11:05:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/Attic/dibarlut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -119,7 +119,7 @@ int DiBartenLUT::createLUT(const Uint16 *ddl_tab,
                 double *gsdf = new double[Count];                       // interpolated GSDF
                 if (gsdf != NULL)
                 {     
-                    if (DiCubicSpline<double, double>::Interpolation(jnd_idx, gsdf_tab, gsdf_spl, gsdf_cnt, jidx, gsdf, Count))
+                    if (DiCubicSpline<double, double>::Interpolation(jnd_idx, gsdf_tab, gsdf_spl, gsdf_cnt, jidx, gsdf, (unsigned int)Count))
                     {
                         DataBuffer = new Uint16[Count];
                         if (DataBuffer != NULL)
@@ -129,7 +129,7 @@ int DiBartenLUT::createLUT(const Uint16 *ddl_tab,
                             register Uint16 j = 0;
                             for (i = 0; i < Count; i++, r++)
                             {
-                                while ((j + 1 < ddl_cnt) && (lum_tab[j]  + AmbientLight < *r))  // search for closest index, assuming monotony
+                                while (((Uint16)(j + 1) < ddl_cnt) && (lum_tab[j]  + AmbientLight < *r))  // search for closest index, assuming monotony
                                     j++;
                                 if ((j > 0) && (fabs(lum_tab[j - 1] + AmbientLight - *r) < fabs(lum_tab[j] + AmbientLight - *r)))
                                     j--;
@@ -172,7 +172,10 @@ int DiBartenLUT::createLUT(const Uint16 *ddl_tab,
  *
  * CVS/RCS Log:
  * $Log: dibarlut.cc,v $
- * Revision 1.9  1999-04-29 13:49:36  joergr
+ * Revision 1.10  1999-05-03 11:05:27  joergr
+ * Minor code purifications to keep Sun CC 2.0.1 quiet.
+ *
+ * Revision 1.9  1999/04/29 13:49:36  joergr
  * Renamed class CubicSpline to DiCubicSpline.
  *
  * Revision 1.8  1999/04/28 15:01:42  joergr

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-04-28 11:34:29 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-05-03 11:01:38 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -3075,20 +3075,20 @@ Uint16 DVPresentationState::findOverlayGroup(Uint16 currentGroup)
   for (i=0; i<max; i++)
   { // mark all group numbers used in presentation state
     group = getOverlayInPresentationStateGroup(i);
-    if ((group >= 0x6000)&&(group <= 0x601F)) allocated[(group - 0x6000) >> 1] = 2;
+    if ((group >= 0x6000)&&(group <= 0x601F)) allocated[(Uint16)(group - 0x6000) >> 1] = 2;
   }
   max = getNumberOfOverlaysInImage();
   for (i=0; i<max; i++)
   { // mark all group numbers used in image
     group = getOverlayInImageGroup(i);
-    if ((group >= 0x6000)&&(group <= 0x601F)) allocated[(group - 0x6000) >> 1] += 1;
+    if ((group >= 0x6000)&&(group <= 0x601F)) allocated[(Uint16)(group - 0x6000) >> 1] += 1;
   }
   // now we have 0=unused, 1=used in image, 2=used in pstate, 3=used in both.
   
   // check if the current group can be left unchanged
   if ((currentGroup >= 0x6000)&&(currentGroup <= 0x601F))
   {
-    if (allocated[(group - 0x6000) >> 1] == 2) return currentGroup;
+    if (allocated[(Uint16)(group - 0x6000) >> 1] == 2) return currentGroup;
   }
   // find a free group
   for (i=0; i<16; i++) if (allocated[i]==0) return 0x6000+(i<<1);
@@ -3651,7 +3651,10 @@ void DVPresentationState::changeDisplayFunction(DiDisplayFunction *dispFunction)
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.20  1999-04-28 11:34:29  meichel
+ *  Revision 1.21  1999-05-03 11:01:38  joergr
+ *  Minor code purifications to keep Sun CC 2.0.1 quiet.
+ *
+ *  Revision 1.20  1999/04/28 11:34:29  meichel
  *  When creating a presentation state for an image, modality rescale/slope
  *    without rescale type is handled now in a more lenient way.
  *

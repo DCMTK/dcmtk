@@ -22,9 +22,9 @@
  *  Purpose: Classes for caching of the image database (Header/Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-29 15:25:36 $
+ *  Update Date:      $Date: 1999-05-03 11:01:08 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/include/Attic/dvcache.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -123,53 +123,53 @@ class DVInstanceCache
 
     inline OFBool gotoItem(Uint32 idx)
     {
+        OFBool result = OFFalse;
         Iterator = List.begin();
         OFListIterator(ItemStruct *) last = List.end();
         while (Iterator != last)
         {
             if (idx == 0)
-                return OFTrue;
+            {
+                result = OFTrue;
+                break;
+            }
             idx--;
             ++Iterator;
         }
-        return OFFalse;
+        return result;
     }
     
     inline OFBool gotoFirst()
     {
         OldIterator = Iterator;
         Iterator = List.begin();
-        if (Iterator != List.end())
-            return OFTrue;
-        return OFFalse;
+        return (Iterator != List.end());
     }
     
     inline OFBool gotoNext()
     {
         OFListIterator(ItemStruct *) last = List.end();
         if (Iterator != last)
-        {
             Iterator++;
-            if (Iterator != last)
-                return OFTrue;
-        }
-        return OFFalse;
+        return (Iterator != last);
     }
     
     inline OFBool reset()
     {
+        OFBool result = OFFalse;
         OFListIterator(ItemStruct *) last = List.end();
         if (OldIterator != last)
         {
             Iterator = OldIterator;
             OldIterator = last;
-            return OFTrue;
+            result = OFTrue;
         }
-        return OFFalse;
+        return result;
     }
     
     inline OFBool isElem(const OFString &uid)
     {
+        OFBool result = OFFalse;
         Iterator = List.begin();
         OFListIterator(ItemStruct *) last = List.end();
         while (Iterator != last)
@@ -178,58 +178,49 @@ class DVInstanceCache
             if (item != NULL)
             {
                 if (item->UID == uid)
-                    return OFTrue;
+                {
+                    result = OFTrue;
+                    break;
+                }
             }
             ++Iterator;
         }
-        return OFFalse;
+        return result;
     }
 
     inline int getPos() const
     {
         const ItemStruct *item = getItem();
-        if (item != NULL)
-            return item->Pos;
-        return 0;
+        return (item != NULL) ? item->Pos : 0;
     }
 
     inline DVIFhierarchyStatus getStatus() const
     {
         const ItemStruct *item = getItem();
-        if (item != NULL)
-            return item->Status;
-        return DVIF_objectIsNew;
+        return (item != NULL) ? item->Status : DVIF_objectIsNew;
     }
 
     inline OFBool getPState() const
     {
         const ItemStruct *item = getItem();
-        if (item != NULL)
-            return item->PState;
-        return OFFalse;
+        return (item != NULL) ? item->PState : OFFalse;
     }
 
     inline OFBool getImageSize() const
     {
         const ItemStruct *item = getItem();
-        if (item != NULL)
-            return item->ImageSize;
-        return OFFalse;
+        return (item != NULL) ? item->ImageSize : OFFalse;
     }
 
     inline const char *getFilename() const
     {
         const ItemStruct *item = getItem();
-        if (item != NULL)
-            return item->Filename.c_str();
-        return NULL;
+        return (item != NULL) ? item->Filename.c_str() : (const char *)NULL;
     }
 
     inline ItemStruct *getItem() const
     {
-        if (Iterator != List.end())
-            return (*Iterator);
-        return NULL;
+        return (Iterator != List.end()) ? (*Iterator) : (ItemStruct *)NULL;
     }
 
     inline void addItem(const OFString &uid,
@@ -349,53 +340,53 @@ class DVSeriesCache
 
     inline OFBool gotoItem(Uint32 idx)
     {
+        OFBool result = OFFalse;
         Iterator = List.begin();
         OFListIterator(ItemStruct *) last = List.end();
         while (Iterator != last)
         {
             if (idx == 0)
-                return OFTrue;
+            {
+                result = OFTrue;
+                break;
+            }
             idx--;
             ++Iterator;
         }
-        return OFFalse;
+        return result;
     }
     
     inline OFBool gotoFirst()
     {
         OldIterator = Iterator;
         Iterator = List.begin();
-        if (Iterator != List.end())
-            return OFTrue;
-        return OFFalse;
+        return (Iterator != List.end());
     }
     
     inline OFBool gotoNext()
     {
         OFListIterator(ItemStruct *) last = List.end();
         if (Iterator != last)
-        {
             Iterator++;
-            if (Iterator != last)
-                return OFTrue;
-        }
-        return OFFalse;
+        return (Iterator != last);
     }
     
     inline OFBool reset()
     {
+        OFBool result = OFFalse;
         OFListIterator(ItemStruct *) last = List.end();
         if (OldIterator != last)
         {
             Iterator = OldIterator;
             OldIterator = last;
-            return OFTrue;
+            result = OFTrue;
         }
-        return OFFalse;
+        return result;
     }
     
     inline OFBool isElem(const OFString &uid)
     {
+        OFBool result = OFFalse;
         Iterator = List.begin();
         OFListIterator(ItemStruct *) last = List.end();
         while (Iterator != last)
@@ -404,34 +395,31 @@ class DVSeriesCache
             if (item != NULL)
             {
                 if (item->UID == uid)
-                    return OFTrue;
+                {
+                    result = OFTrue;
+                    break;
+                }
             }
             ++Iterator;
         }
-        return OFFalse;
+        return result;
     }
 
     inline DVIFhierarchyStatus getStatus() const
     {
         const ItemStruct *item = getItem();
-        if (item != NULL)
-            return item->Status;
-        return DVIF_objectIsNew;
+        return (item != NULL) ? item->Status : DVIF_objectIsNew;
     }
 
     inline OFBool getPState() const
     {
         const ItemStruct *item = getItem();
-        if (item != NULL)
-            return item->PState;
-        return OFFalse;
+        return (item != NULL) ? item->PState : OFFalse;
     }
 
     inline ItemStruct *getItem() const
     {
-        if (Iterator != List.end())
-            return (*Iterator);
-        return NULL;
+        return (Iterator != List.end()) ? (*Iterator) : (ItemStruct *)NULL;
     }
 
     inline void addItem(const OFString &uid,
@@ -546,20 +534,25 @@ class DVStudyCache
 
     inline OFBool gotoItem(Uint32 idx)
     {
+        OFBool result = OFFalse;
         Iterator = List.begin();
         OFListIterator(ItemStruct *) last = List.end();
         while (Iterator != last)
         {
             if (idx == 0)
-                return OFTrue;
+            {
+                result = OFTrue;
+                break;
+            }
             idx--;
             ++Iterator;
         }
-        return OFFalse;
+        return result;
     }
     
     inline OFBool isElem(const OFString &uid)
     {
+        OFBool result = OFFalse;
         Iterator = List.begin();
         OFListIterator(ItemStruct *) last = List.end();
         while (Iterator != last)
@@ -568,26 +561,25 @@ class DVStudyCache
             if (item != NULL)
             {
                 if (item->UID == uid)
-                    return OFTrue;
+                {
+                    result= OFTrue;
+                    break;
+                }
             }
             ++Iterator;
         }
-        return OFFalse;
+        return result;
     }
 
     inline DVIFhierarchyStatus getStatus() const
     {
         const ItemStruct *item = getItem();
-        if (item != NULL)
-            return item->Status;
-        return DVIF_objectIsNew;
+        return (item != NULL) ? item->Status : DVIF_objectIsNew;
     }
 
     inline ItemStruct *getItem() const
     {
-        if (Iterator != List.end())
-            return (*Iterator);
-        return NULL;
+        return (Iterator != List.end()) ? (*Iterator) : (ItemStruct *)NULL;
     }
 
     inline void addItem(const OFString &uid,
@@ -626,7 +618,10 @@ class DVStudyCache
  *
  * CVS/RCS Log:
  * $Log: dvcache.h,v $
- * Revision 1.6  1999-04-29 15:25:36  joergr
+ * Revision 1.7  1999-05-03 11:01:08  joergr
+ * Minor code purifications to keep Sun CC 2.0.1 quiet.
+ *
+ * Revision 1.6  1999/04/29 15:25:36  joergr
  * Added PresentationLabel to index file.
  *
  * Revision 1.5  1999/04/27 11:20:49  joergr

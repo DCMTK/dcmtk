@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-28 15:03:50 $
+ *  Update Date:      $Date: 1999-05-03 11:05:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -986,22 +986,34 @@ int DiMonoImage::flip(const int horz, const int vert)
     switch (InterData->getRepresentation())
     {
         case EPR_Uint8:
-            DiFlipTemplate<Uint8>(InterData, Columns, Rows, NumberOfFrames, horz, vert);
+            {
+                DiFlipTemplate<Uint8> dummy(InterData, Columns, Rows, NumberOfFrames, horz, vert);
+            }
             break;
         case EPR_Sint8:
-            DiFlipTemplate<Sint8>(InterData, Columns, Rows, NumberOfFrames, horz, vert);
+            {
+                DiFlipTemplate<Sint8> dummy(InterData, Columns, Rows, NumberOfFrames, horz, vert);
+            }
             break;
         case EPR_Uint16:
-            DiFlipTemplate<Uint16>(InterData, Columns, Rows, NumberOfFrames, horz, vert);
+            {
+                DiFlipTemplate<Uint16> dummy(InterData, Columns, Rows, NumberOfFrames, horz, vert);
+            }
             break;
         case EPR_Sint16:
-            DiFlipTemplate<Sint16>(InterData, Columns, Rows, NumberOfFrames, horz, vert);
+            {
+                DiFlipTemplate<Sint16> dummy(InterData, Columns, Rows, NumberOfFrames, horz, vert);
+            }
             break;
         case EPR_Uint32:
-            DiFlipTemplate<Uint32>(InterData, Columns, Rows, NumberOfFrames, horz, vert);
+            {
+                DiFlipTemplate<Uint32> dummy(InterData, Columns, Rows, NumberOfFrames, horz, vert);
+            }
             break;
         case EPR_Sint32:
-            DiFlipTemplate<Sint32>(InterData, Columns, Rows, NumberOfFrames, horz, vert);
+            {
+                DiFlipTemplate<Sint32> dummy(InterData, Columns, Rows, NumberOfFrames, horz, vert);
+            }
             break;
     }
     for (int i = 0; i < 2; i++)
@@ -1027,22 +1039,34 @@ int DiMonoImage::rotate(const int degree)
         switch (InterData->getRepresentation())
         {
             case EPR_Uint8:
-                DiRotateTemplate<Uint8>(InterData, old_cols, old_rows, Columns, Rows, NumberOfFrames, degree);
+                {
+                    DiRotateTemplate<Uint8> dummy(InterData, old_cols, old_rows, Columns, Rows, NumberOfFrames, degree);
+                }
                 break;
             case EPR_Sint8:
-                DiRotateTemplate<Sint8>(InterData, old_cols, old_rows, Columns, Rows, NumberOfFrames, degree);
+                {
+                    DiRotateTemplate<Sint8> dummy(InterData, old_cols, old_rows, Columns, Rows, NumberOfFrames, degree);
+                }
                 break;
             case EPR_Uint16:
-                DiRotateTemplate<Uint16>(InterData, old_cols, old_rows, Columns, Rows, NumberOfFrames, degree);
+                {
+                    DiRotateTemplate<Uint16> dummy(InterData, old_cols, old_rows, Columns, Rows, NumberOfFrames, degree);
+                }
                 break;
             case EPR_Sint16:
-                DiRotateTemplate<Sint16>(InterData, old_cols, old_rows, Columns, Rows, NumberOfFrames, degree);
+                {
+                    DiRotateTemplate<Sint16> dummy(InterData, old_cols, old_rows, Columns, Rows, NumberOfFrames, degree);
+                }
                 break;
             case EPR_Uint32:
-                DiRotateTemplate<Uint32>(InterData, old_cols, old_rows, Columns, Rows, NumberOfFrames, degree);
+                {
+                    DiRotateTemplate<Uint32> dummy(InterData, old_cols, old_rows, Columns, Rows, NumberOfFrames, degree);
+                }
                 break;
             case EPR_Sint32:
-                DiRotateTemplate<Sint32>(InterData, old_cols, old_rows, Columns, Rows, NumberOfFrames, degree);
+                {
+                    DiRotateTemplate<Sint32> dummy(InterData, old_cols, old_rows, Columns, Rows, NumberOfFrames, degree);   
+                }
                 break;
         }
     }
@@ -1442,7 +1466,10 @@ int DiMonoImage::writeRawPPM(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.18  1999-04-28 15:03:50  joergr
+ * Revision 1.19  1999-05-03 11:05:30  joergr
+ * Minor code purifications to keep Sun CC 2.0.1 quiet.
+ *
+ * Revision 1.18  1999/04/28 15:03:50  joergr
  * Added experimental support to create grayscale images with more than 256
  * shades of gray to be displayed on a consumer monitor (use pastel colors).
  * Introduced new scheme for the debug level variable: now each level can be

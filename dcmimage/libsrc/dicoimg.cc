@@ -22,9 +22,9 @@
  *  Purpose: DicomColorImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-28 13:19:28 $
+ *  Update Date:      $Date: 1999-05-03 11:03:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dicoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -369,22 +369,34 @@ int DiColorImage::flip(const int horz,
     switch (InterData->getRepresentation())
     {
         case EPR_Uint8:
-            DiFlipTemplate<Uint8>(InterData, Columns, Rows, NumberOfFrames, horz, vert);
+            {
+                DiFlipTemplate<Uint8> dummy(InterData, Columns, Rows, NumberOfFrames, horz, vert);
+            }
             break;
         case EPR_Sint8:
-            DiFlipTemplate<Sint8>(InterData, Columns, Rows, NumberOfFrames, horz, vert);
+            {
+                DiFlipTemplate<Sint8> dummy(InterData, Columns, Rows, NumberOfFrames, horz, vert);
+            }
             break;
         case EPR_Uint16:
-            DiFlipTemplate<Uint16>(InterData, Columns, Rows, NumberOfFrames, horz, vert);
+            {
+                DiFlipTemplate<Uint16> dummy(InterData, Columns, Rows, NumberOfFrames, horz, vert);
+            }
             break;
         case EPR_Sint16:
-            DiFlipTemplate<Sint16>(InterData, Columns, Rows, NumberOfFrames, horz, vert);
+            {
+                DiFlipTemplate<Sint16> dummy(InterData, Columns, Rows, NumberOfFrames, horz, vert);
+            }
             break;
         case EPR_Uint32:
-            DiFlipTemplate<Uint32>(InterData, Columns, Rows, NumberOfFrames, horz, vert);
+            {
+                DiFlipTemplate<Uint32> dummy(InterData, Columns, Rows, NumberOfFrames, horz, vert);
+            }
             break;
         case EPR_Sint32:
-            DiFlipTemplate<Sint32>(InterData, Columns, Rows, NumberOfFrames, horz, vert);
+            {
+                DiFlipTemplate<Sint32> dummy(InterData, Columns, Rows, NumberOfFrames, horz, vert);
+            }
             break;
     }
     return 1;
@@ -499,7 +511,10 @@ int DiColorImage::writeRawPPM(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dicoimg.cc,v $
- * Revision 1.8  1999-04-28 13:19:28  joergr
+ * Revision 1.9  1999-05-03 11:03:21  joergr
+ * Minor code purifications to keep Sun CC 2.0.1 quiet.
+ *
+ * Revision 1.8  1999/04/28 13:19:28  joergr
  * Introduced new scheme for the debug level variable: now each level can be
  * set separately (there is no "include" relationship).
  *

@@ -22,9 +22,9 @@
  *  Purpose: DicomLookupTable (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-28 15:01:42 $
+ *  Update Date:      $Date: 1999-05-03 11:05:29 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diluptab.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -134,7 +134,7 @@ void DiLookupTable::Init(const DiDocument *docu,
     ok &= (docu->getValue(descriptor, FirstEntry, 1, obj) > 0);             // can be SS or US (will be type casted later) !?
     ok &= (docu->getValue(descriptor, us, 2, obj) > 0);                     // bits per entry (only informational)
     unsigned long count = docu->getValue(data, Data, obj);
-    if (explanation != DcmTagKey(0,0))
+    if (explanation != DcmTagKey(0, 0))
         docu->getValue(explanation, Explanation);                           // explanation (free form text)
     checkTable(ok, count, us, status);
 }
@@ -219,7 +219,7 @@ void DiLookupTable::checkTable(const int ok,
                 checkBits(bits, MAX_TABLE_ENTRY_SIZE, MIN_TABLE_ENTRY_SIZE);
         }
         Uint16 mask = (Uint16)DicomImageClass::maxval(Bits);                  // mask lo-byte (8) or full word (16)
-        if ((MinValue & mask != MinValue) || (MaxValue & mask != MaxValue))
+        if (((MinValue & mask) != MinValue) || ((MaxValue & mask) != MaxValue))
         {                                                                     // mask table entries and copy them to new LUT
             MinValue &= mask;
             MaxValue &= mask;
@@ -286,7 +286,10 @@ void DiLookupTable::checkBits(const Uint16 bits,
  *
  * CVS/RCS Log:
  * $Log: diluptab.cc,v $
- * Revision 1.6  1999-04-28 15:01:42  joergr
+ * Revision 1.7  1999-05-03 11:05:29  joergr
+ * Minor code purifications to keep Sun CC 2.0.1 quiet.
+ *
+ * Revision 1.6  1999/04/28 15:01:42  joergr
  * Introduced new scheme for the debug level variable: now each level can be
  * set separately (there is no "include" relationship).
  *

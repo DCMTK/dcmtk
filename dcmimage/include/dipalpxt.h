@@ -22,9 +22,9 @@
  *  Purpose: DicomPalettePixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-28 12:52:01 $
+ *  Update Date:      $Date: 1999-05-03 11:03:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dipalpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -77,7 +77,7 @@ class DiPalettePixelTemplate
         if (Init(pixel))
         {
             register const T1 *p;
-            register T2 value;
+            register T2 value = 0;
             register unsigned long i;
             if (PlanarConfiguration)
             {
@@ -134,7 +134,10 @@ class DiPalettePixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dipalpxt.h,v $
- * Revision 1.8  1999-04-28 12:52:01  joergr
+ * Revision 1.9  1999-05-03 11:03:06  joergr
+ * Minor code purifications to keep Sun CC 2.0.1 quiet.
+ *
+ * Revision 1.8  1999/04/28 12:52:01  joergr
  * Corrected some typos, comments and formatting.
  *
  * Revision 1.7  1999/01/20 14:46:30  joergr

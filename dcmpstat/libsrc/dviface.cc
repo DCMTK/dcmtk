@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-29 15:26:14 $
- *  CVS/RCS Revision: $Revision: 1.51 $
+ *  Update Date:      $Date: 1999-05-03 11:01:36 $
+ *  CVS/RCS Revision: $Revision: 1.52 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -362,8 +362,8 @@ E_Condition DVInterface::savePState()
     }
     if ((pDicomImage !=NULL) && (!imageInDatabase))
     {
-        DIC_UI sopClass = "";
-        DIC_UI sopInstance = "";
+        DIC_UI sopClass;
+        DIC_UI sopInstance;
         DU_findSOPClassAndInstanceInDataSet(pDicomImage->getDataset(), sopClass, sopInstance);
         if (DB_NORMAL == DB_makeNewStoreFileName(handle, sopClass, sopInstance, imageFileName))
         {
@@ -2171,7 +2171,10 @@ void DVInterface::cleanChildren()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.51  1999-04-29 15:26:14  joergr
+ *  Revision 1.52  1999-05-03 11:01:36  joergr
+ *  Minor code purifications to keep Sun CC 2.0.1 quiet.
+ *
+ *  Revision 1.51  1999/04/29 15:26:14  joergr
  *  Added PresentationLabel to index file.
  *
  *  Revision 1.50  1999/04/28 17:00:17  joergr
