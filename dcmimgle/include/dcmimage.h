@@ -22,9 +22,9 @@
  *  Purpose: Provides main interface to the "dicom image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-14 17:14:07 $
+ *  Update Date:      $Date: 1998-12-16 16:26:17 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dcmimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,7 +40,7 @@
 #define OFFIS_DCMIMAGE_VERSION     "1.0.2"
 #define OFFIS_DCMIMAGE_RELEASEDATE "1998/02/17"
 
-#include "diimage.h"
+#include "dimoimg.h"
 #include "diutils.h"
 
 
@@ -141,6 +141,7 @@ class DicomImage
                E_TransferSyntax xfer,
                const DcmUnsignedShort &data,
                const DcmUnsignedShort &descriptor,
+               const DcmLongString *explanation = NULL,
                const unsigned long flags = 0,
                const unsigned long fstart = 0,
                const unsigned long fcount = 0);
@@ -317,9 +318,11 @@ class DicomImage
      *
      ** @return
      */
-    inline int setNoVOITransformation() 
+    inline int setNoVoiTransformation() 
     {
-        return (Image != NULL) ? Image->setNoVOITransformation() : 0;
+        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
+            return Image->getMonoImagePtr()->setNoVoiTransformation();
+        return 0;
     }
 
     /** .
@@ -330,7 +333,9 @@ class DicomImage
      */
     inline int setMinMaxWindow(const int idx = 1) 
     {
-        return (Image != NULL) ? Image->setMinMaxWindow(idx) : 0;
+        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
+            return Image->getMonoImagePtr()->setMinMaxWindow(idx);
+        return 0;
     }
 
     /** .
@@ -341,7 +346,9 @@ class DicomImage
      */
     inline int setHistogramWindow(const double thresh = 0.05)
     {
-        return (Image != NULL) ? Image->setHistogramWindow(thresh) : 0;
+        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
+            return Image->getMonoImagePtr()->setHistogramWindow(thresh);
+        return 0;
     }
 
     /** .
@@ -352,7 +359,9 @@ class DicomImage
      */
     inline int setWindow(const unsigned long window) 
     {
-        return (Image != NULL) ? Image->setWindow(window) : 0;
+        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
+            return Image->getMonoImagePtr()->setWindow(window);
+        return 0;
     }
 
     /** .
@@ -364,7 +373,9 @@ class DicomImage
     inline int setWindow(const double center,
                          const double width) 
     {
-        return (Image != NULL) ? Image->setWindow(center, width) : 0;
+        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
+            return Image->getMonoImagePtr()->setWindow(center, width);
+        return 0;
     }
 
     /** .
@@ -376,7 +387,9 @@ class DicomImage
     inline int getWindow(double &center,
                          double &width) 
     {
-        return (Image != NULL) ? Image->getWindow(center, width) : 0;
+        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
+            return Image->getMonoImagePtr()->getWindow(center, width);
+        return 0;
     }
 
     /** .
@@ -387,7 +400,9 @@ class DicomImage
      */
     inline unsigned long getWindowCount() const 
     {
-        return (Image != NULL) ? Image->getWindowCount() : 0;
+        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
+            return Image->getMonoImagePtr()->getWindowCount();
+        return 0;
     }
     
     /** .
@@ -397,9 +412,12 @@ class DicomImage
      ** @return
      */
     inline int setVoiLut(const DcmUnsignedShort &data,
-                         const DcmUnsignedShort &descriptor) 
+                         const DcmUnsignedShort &descriptor,
+                         const DcmLongString *explanation = NULL)
     {
-        return (Image != NULL) ? Image->setVoiLut(data, descriptor) : 0;
+        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
+            return Image->getMonoImagePtr()->setVoiLut(data, descriptor, explanation);
+        return 0;
     }
 
     /** .
@@ -408,20 +426,44 @@ class DicomImage
      *
      ** @return
      */
-    inline int setVoiLut(const unsigned long table) 
+    inline int setVoiLut(const unsigned long table)
     {
-        return (Image != NULL) ? Image->setVoiLut(table) : 0;
+        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
+            return Image->getMonoImagePtr()->setVoiLut(table);
+        return 0;
     }
 
     /** .
      *
-     ** @param
+     ** @return
+     */
+    inline unsigned long getVoiLutCount() const
+    {
+        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
+            return Image->getMonoImagePtr()->getVoiLutCount();
+        return 0;
+    }
+
+    /** !! UNTESTED !!
      *
      ** @return
      */
-    inline unsigned long getVoiLutCount() const 
+    inline const char *getVoiTransformationExplanation()
     {
-        return (Image != NULL) ? Image->getVoiLutCount() : 0;
+        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
+            return Image->getMonoImagePtr()->getVoiTransformationExplanation();
+        return NULL;
+    }
+
+    /** !! UNTESTED !!
+     *
+     ** @return
+     */
+    inline const char *getModalityLutExplanation()
+    {
+        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
+            return Image->getMonoImagePtr()->getModalityLutExplanation();
+        return NULL;
     }
 
  // --- presentation LUT:
@@ -434,19 +476,35 @@ class DicomImage
      */
     inline int setPresentationLutShape(const ES_PresentationLut shape = ESP_Identity)
     {
-        return (Image != NULL) ? Image->setPresentationLutShape(shape) : 0;
+        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
+            return Image->getMonoImagePtr()->setPresentationLutShape(shape);
+        return 0;
     }
 
-    /** .
+    /** !! NOT FULLY IMPLEMENTED !!
      *
      ** @param
      *
      ** @return
      */
     inline int setPresentationLut(const DcmUnsignedShort &data,
-                                  const DcmUnsignedShort &descriptor)
+                                  const DcmUnsignedShort &descriptor,
+                                  const DcmLongString *explanation = NULL)
     {
-        return (Image != NULL) ? Image->setPresentationLut(data, descriptor) : 0;
+        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
+            return Image->getMonoImagePtr()->setPresentationLut(data, descriptor, explanation);
+        return 0;
+    }
+
+    /** !! UNTESTED !!
+     *
+     ** @return
+     */
+    inline const char *getPresentationLutExplanation() const
+    {
+        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
+            return Image->getMonoImagePtr()->getPresentationLutExplanation();
+        return NULL;
     }
 
  // --- overlays: return true ('1') if successful (see also 'diovlay.cc')
@@ -467,7 +525,9 @@ class DicomImage
                           const DcmLongString &label,
                           const DcmLongString &description)
     {
-        return (Image != NULL) ? Image->addOverlay(group, rows, columns, mode, left, top, data, label, description) : 0;
+        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
+            Image->getMonoImagePtr()->addOverlay(group, rows, columns, mode, left, top, data, label, description);
+        return 0;
     }
 
     /** !! UNTESTED !!
@@ -478,7 +538,9 @@ class DicomImage
      */
     inline int removeOverlay(const unsigned int group)
     {
-        return (Image != NULL) ? Image->removeOverlay(group) : 0;
+        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
+            return Image->getMonoImagePtr()->removeOverlay(group);
+        return 0;
     }
 
     /** activate specified overlay plane.
@@ -624,12 +686,26 @@ class DicomImage
      *
      ** @return pointer to overlay plane data
      */
-    const Uint8 *getOverlayData(const unsigned int plane,
-                                const unsigned int &width,
-                                const unsigned int &height,
-                                const unsigned int &left,
-                                const unsigned int &top) const;
-
+    inline const Uint8 *getOverlayData(const unsigned int plane,
+                                       unsigned int &width,
+                                       unsigned int &height,
+                                       unsigned int &left,
+                                       unsigned int &top,
+                                       const unsigned long frame = 0) const
+    {
+        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
+            return Image->getMonoImagePtr()->getOverlayData(frame, plane, width, height, left, top);
+        return NULL;
+    }
+    
+    /** .
+     */
+    inline void deleteOverlayData() const 
+    {
+        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
+            Image->getMonoImagePtr()->deleteOverlayData();
+    }
+    
     // --- create...Image: return pointer to new 'DicomImage' object, memory isn't handled internally !
     
     /** Method:
@@ -900,7 +976,15 @@ class DicomImage
 **
 ** CVS/RCS Log:
 ** $Log: dcmimage.h,v $
-** Revision 1.2  1998-12-14 17:14:07  joergr
+** Revision 1.3  1998-12-16 16:26:17  joergr
+** Added explanation string to LUT class (retrieved from dataset).
+** Added explanation string for VOI transformations.
+** Added method to export overlay planes (create 8-bit bitmap).
+** Renamed 'setNoVoiLutTransformation' method ('Voi' instead of 'VOI').
+** Removed several methods used for monochrome images only in base class
+** 'DiImage'. Introduced mechanism to use the methods directly.
+**
+** Revision 1.2  1998/12/14 17:14:07  joergr
 ** Added methods to add and remove additional overlay planes (still untested).
 ** Added methods to support overlay labels and descriptions.
 **
