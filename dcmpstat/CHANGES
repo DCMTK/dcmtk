@@ -1,4 +1,28 @@
 
+**** Changes from 1999.03.27 (riesmeier)
+
+- Rebuild Makefile dependencies.
+  Affects: dcmpstat/apps/Makefile.dep
+           dcmpstat/libsrc/Makefile.dep
+  
+- Added new entry to index file: Presentation Description.
+  Affects: dcmpstat/apps/listdb.cc
+           dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+
+- Add remaining member variables to member initialization list to avoid
+  compiler warnings.
+  Affects: dcmpstat/include/dvcache.h
+  
+- Enhanced savePState() method: now image file is also added to index file
+  and stored in image directory (if not already there).
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+
+- Added method to check whether current image is inverse or not.
+  Affects: dcmpstat/include/dvpstat.h
+           dcmpstat/libsrc/dvpstat.cc
+
 **** Changes from 1999.03.22 (eichelberg)
 
 - Reworked data dictionary based on the 1998 DICOM edition and the latest
