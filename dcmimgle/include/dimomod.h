@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeModality (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-16 16:34:37 $
+ *  Update Date:      $Date: 1998-12-22 14:31:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimomod.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -91,6 +91,16 @@ class DiMonoModality : public DiObjectCounter
         return MaxValue;
     }
     
+    inline double getAbsMinimum() const
+    {
+        return AbsMinimum;
+    }
+    
+    inline double getAbsMaximum() const
+    {
+        return AbsMaximum;
+    }
+    
     inline double getRescaleIntercept() const
     {
         return RescaleIntercept;
@@ -121,11 +131,6 @@ class DiMonoModality : public DiObjectCounter
         return Rescaling;
     }
 
-    inline int isPotentiallySigned() const
-    {
-        return PotentialSignedRange;
-    }
-
 
  protected:
 
@@ -143,13 +148,15 @@ class DiMonoModality : public DiObjectCounter
     
     double MinValue;
     double MaxValue;
+
+    double AbsMinimum;
+    double AbsMaximum;
     
     double RescaleIntercept;
     double RescaleSlope;
     
     int LookupTable;
     int Rescaling;
-    int PotentialSignedRange;
     
     DiLookupTable *TableData;
 
@@ -164,27 +171,31 @@ class DiMonoModality : public DiObjectCounter
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: dimomod.h,v $
-** Revision 1.3  1998-12-16 16:34:37  joergr
-** Added explanation string to LUT class (retrieved from dataset).
-**
-** Revision 1.2  1998/12/14 17:23:52  joergr
-** Added support for correct scaling of input/output values for grayscale
-** transformations.
-**
-** Revision 1.1  1998/11/27 15:25:15  joergr
-** Added copyright message.
-** Added constructors to use external modality transformations.
-**
-** Revision 1.5  1998/07/01 08:39:23  joergr
-** Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
-** options), e.g. add copy constructors.
-**
-** Revision 1.4  1998/05/11 14:53:21  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: dimomod.h,v $
+ * Revision 1.4  1998-12-22 14:31:01  joergr
+ * Changed calculation of AbsMinimum/Maximum.
+ * Removed member variable and method for isPotentiallySigned.
+ *
+ * Revision 1.3  1998/12/16 16:34:37  joergr
+ * Added explanation string to LUT class (retrieved from dataset).
+ *
+ * Revision 1.2  1998/12/14 17:23:52  joergr
+ * Added support for correct scaling of input/output values for grayscale
+ * transformations.
+ *
+ * Revision 1.1  1998/11/27 15:25:15  joergr
+ * Added copyright message.
+ * Added constructors to use external modality transformations.
+ *
+ * Revision 1.5  1998/07/01 08:39:23  joergr
+ * Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
+ * options), e.g. add copy constructors.
+ *
+ * Revision 1.4  1998/05/11 14:53:21  joergr
+ * Added CVS/RCS header to each file.
+ *
+ * 
+ */
 
