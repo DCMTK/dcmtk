@@ -22,9 +22,9 @@
  *  Purpose: DicomFlipTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-24 17:20:00 $
+ *  Update Date:      $Date: 1999-04-28 14:46:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diflipt.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,10 +40,6 @@
 
 #include "dipixel.h"
 #include "ditranst.h"
-
-#ifdef DEBUG
- #include "oftimer.h"
-#endif
 
 
 /*---------------------*
@@ -293,7 +289,10 @@ class DiFlipTemplate
  *
  * CVS/RCS Log:
  * $Log: diflipt.h,v $
- * Revision 1.5  1999-03-24 17:20:00  joergr
+ * Revision 1.6  1999-04-28 14:46:54  joergr
+ * Removed debug code.
+ *
+ * Revision 1.5  1999/03/24 17:20:00  joergr
  * Added/Modified comments and formatting.
  *
  * Revision 1.4  1999/02/03 17:01:16  joergr
