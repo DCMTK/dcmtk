@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlay (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-23 13:22:24 $
+ *  Update Date:      $Date: 1999-02-03 17:42:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diovlay.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -369,6 +369,15 @@ int DiOverlay::showPlane(unsigned int plane,
 }
 
 
+int DiOverlay::showPlane(unsigned int plane,
+                         const Uint16 pvalue)
+{
+    if (convertToPlaneNumber(plane, AdditionalPlanes) > 1)
+        return Data->Planes[plane]->show(pvalue);
+    return 0;
+}
+
+
 int DiOverlay::showAllPlanes()
 {
     if ((Data != NULL) && (Data->Planes != NULL))
@@ -600,7 +609,11 @@ Uint8 *DiOverlay::getPlaneData(const unsigned long frame,
 F *
  * CVS/RCS Log:
  * $Log: diovlay.cc,v $
- * Revision 1.6  1998-12-23 13:22:24  joergr
+ * Revision 1.7  1999-02-03 17:42:30  joergr
+ * Added support for calibration according to Barten transformation (incl.
+ * a DISPLAY file describing the monitor characteristic).
+ *
+ * Revision 1.6  1998/12/23 13:22:24  joergr
  * Changed parameter type (long to int) to avoid warning reported by MSVC5.
  *
  * Revision 1.5  1998/12/23 11:27:09  joergr

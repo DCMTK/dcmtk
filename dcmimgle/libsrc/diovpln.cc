@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlayPlane (Source) - Multiframe Overlays UNTESTED !
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-01-20 14:57:12 $
+ *  Update Date:      $Date: 1999-02-03 17:44:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diovpln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,8 +40,6 @@
 
 #include "diovpln.h"
 #include "didocu.h"
-
-//#include <string.h>
 
 
 /*----------------*
@@ -63,6 +61,7 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
     BitPosition(0),
     Foreground(1),
     Threshold(1),
+    PValue(0),
     Mode(EMO_Graphic),
     DefaultMode(EMO_Graphic),
     Label(),
@@ -160,6 +159,7 @@ DiOverlayPlane::DiOverlayPlane(const unsigned int group,
     BitPosition(1),
     Foreground(1),
     Threshold(1),
+    PValue(0),
     Mode(mode),
     DefaultMode(mode),
     Label(),
@@ -204,6 +204,7 @@ DiOverlayPlane::DiOverlayPlane(DiOverlayPlane *plane,
     BitPosition(bit),
     Foreground(plane->Foreground),
     Threshold(plane->Threshold),
+    PValue(0),
     Mode(plane->Mode),
     DefaultMode(plane->DefaultMode),
     Label(plane->Label),
@@ -306,6 +307,18 @@ void DiOverlayPlane::show(const double fore,
 }
 
 
+int DiOverlayPlane::show(const Uint16 pvalue)
+{
+    if (Mode == EMO_BitmapShutter)
+    {
+        PValue = pvalue;
+        Visible = 1;
+        return 1;
+    }
+    return 0;
+}
+
+
 void DiOverlayPlane::setScaling(const double xfactor,
                                 const double yfactor)
 {
@@ -374,7 +387,11 @@ void DiOverlayPlane::setRotation(const int degree,
  *
  * CVS/RCS Log:
  * $Log: diovpln.cc,v $
- * Revision 1.7  1999-01-20 14:57:12  joergr
+ * Revision 1.8  1999-02-03 17:44:05  joergr
+ * Added support for calibration according to Barten transformation (incl.
+ * a DISPLAY file describing the monitor characteristic).
+ *
+ * Revision 1.7  1999/01/20 14:57:12  joergr
  * Added new overlay plane mode for bitmap shutters.
  *
  * Revision 1.6  1998/12/23 13:22:26  joergr
