@@ -22,9 +22,9 @@
  *  Purpose: Template class for bit manipulations (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-08-25 16:44:44 $
+ *  Update Date:      $Date: 1999-09-17 11:46:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofbmanip.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -84,7 +84,7 @@ class OFBitmanipTemplate
         register unsigned long i;
         register const T *p = src;
         register T *q = dest;
-        for (i = count; i > 0; i--)
+        for (i = count; i != 0; i--)
             *q++ = *p++;
 #endif
     }
@@ -96,7 +96,9 @@ class OFBitmanipTemplate
      *  @param  value  value to be set
      *  @param  count  number of elements to be set
      */
-    static void setMem(T *dest, const T value, const unsigned long count)
+    static void setMem(T *dest,
+                       const T value,
+                       const unsigned long count)
     {
 #ifdef HAVE_MEMSET
         if ((value == 0) || (sizeof(T) == sizeof(unsigned char)))
@@ -106,7 +108,7 @@ class OFBitmanipTemplate
         {
             register unsigned long i;
             register T *q = dest;
-            for (i = count; i > 0; i--)
+            for (i = count; i != 0; i--)
                 *q++ = value;
         }
     }
@@ -117,7 +119,8 @@ class OFBitmanipTemplate
      ** @param  dest   pointer to destination memory
      *  @param  count  number of elements to be set to zero
      */
-    static void zeroMem(T *dest, const unsigned long count)
+    static void zeroMem(T *dest,
+                        const unsigned long count)
     {
 #ifdef HAVE_BZERO
         // some platforms, e.g. OSF1, require the first parameter to be char *.
@@ -136,7 +139,10 @@ class OFBitmanipTemplate
  *
  * CVS/RCS Log:
  * $Log: ofbmanip.h,v $
- * Revision 1.7  1999-08-25 16:44:44  joergr
+ * Revision 1.8  1999-09-17 11:46:34  joergr
+ * Enhanced efficiency of "for" loops.
+ *
+ * Revision 1.7  1999/08/25 16:44:44  joergr
  * Enhanced efficiency of inner loops (count loop variable down).
  *
  * Revision 1.6  1999/04/30 16:34:07  meichel
