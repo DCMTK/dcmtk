@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRImageTreeNode
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-04 14:26:54 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-08-07 13:37:22 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -78,7 +78,7 @@ OFCondition DSRImageTreeNode::print(ostream &stream,
         stream << "=";
         result = DSRImageReferenceValue::print(stream, flags);
     }
-    return result; 
+    return result;
 }
 
 
@@ -89,7 +89,9 @@ OFCondition DSRImageTreeNode::writeXML(ostream &stream,
     OFCondition result = EC_Normal;
     writeXMLItemStart(stream, flags);
     result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
+    stream << "<value>" << endl;
     DSRImageReferenceValue::writeXML(stream, flags, logStream);
+    stream << "</value>" << endl;
     writeXMLItemEnd(stream, flags);
     return result;
 }
@@ -99,7 +101,7 @@ OFCondition DSRImageTreeNode::readContentItem(DcmItem &dataset,
                                               OFConsole *logStream)
 {
     /* read ReferencedSOPSequence */
-    return DSRImageReferenceValue::readSequence(dataset, "1" /* type */, logStream);
+    return DSRImageReferenceValue::readSequence(dataset, "1" /*type*/, logStream);
 }
 
 
@@ -111,9 +113,17 @@ OFCondition DSRImageTreeNode::writeContentItem(DcmItem &dataset,
 }
 
 
+OFCondition DSRImageTreeNode::readXMLContentItem(const DSRXMLDocument &doc,
+                                                 DSRXMLCursor cursor)
+{
+    /* retrieve value from XML element "value" */
+    return DSRImageReferenceValue::readXML(doc, doc.getNamedNode(cursor.gotoChild(), "value"));
+}
+
+
 OFCondition DSRImageTreeNode::renderHTMLContentItem(ostream &docStream,
                                                     ostream &annexStream,
-                                                    const size_t /* nestingLevel */,
+                                                    const size_t /*nestingLevel*/,
                                                     size_t &annexNumber,
                                                     const size_t flags,
                                                     OFConsole *logStream) const
@@ -143,7 +153,7 @@ OFBool DSRImageTreeNode::canAddNode(const E_DocumentType documentType,
             case RT_hasAcqContext:
                 switch (valueType)
                 {
-                    case VT_Text:                
+                    case VT_Text:
                     case VT_Code:
                     case VT_DateTime:
                     case VT_Date:
@@ -176,7 +186,11 @@ OFBool DSRImageTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgtn.cc,v $
- *  Revision 1.13  2003-06-04 14:26:54  meichel
+ *  Revision 1.14  2003-08-07 13:37:22  joergr
+ *  Added readXML functionality.
+ *  Modified writeXML() output (introduced new "<value>...</value>" element).
+ *
+ *  Revision 1.13  2003/06/04 14:26:54  meichel
  *  Simplified include structure to avoid preprocessor limitation
  *    (max 32 #if levels) on MSVC5 with STL.
  *
