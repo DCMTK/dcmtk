@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2002, OFFIS
+ *  Copyright (C) 2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,10 +22,10 @@
  *  Purpose: Template class for administrating an ordered set of elements
  *           of an arbitrary type.
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-07-09 18:29:45 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-09 13:03:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofoset.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -167,19 +167,19 @@ template <class T> class OFOrderedSet : public OFSet<T>
 
 
       /** Inserts a new item at a certain position into the set.
-       *  @param item  Item which shall be inserted into the set.
-       *  @param index Index of the position at which the item shall be inserted.
-       *               The first position has index 0. Note that in case index
-       *               is greater than the index of the last item, the new item will
-       *               be inserted right behind the last item of the set.
+       *  @param item Item which shall be inserted into the set.
+       *  @param idx  Index of the position at which the item shall be inserted.
+       *              The first position has index 0. Note that in case index
+       *              is greater than the index of the last item, the new item will
+       *              be inserted right behind the last item of the set.
        */
-    virtual void InsertAt( const T &item, unsigned int index )
+    virtual void InsertAt( const T &item, unsigned int idx )
       {
         unsigned int i;
 
         // in case index is greater than the index of the last item,
         // insert the new item right behind the last item of the set
-        if( index > num - 1 )
+        if( idx > num - 1 )
           Insert( item );
         else
         {
@@ -193,12 +193,12 @@ template <class T> class OFOrderedSet : public OFSet<T>
           // create a new temporary array and assign all pointers correspondingly
           T **tmp = new T*[size];
 
-          for( i=0 ; i<index ; i++ )
+          for( i=0 ; i<idx ; i++ )
             tmp[i] = items[i];
 
-          tmp[index] = newItem;
+          tmp[idx] = newItem;
 
-          for( i=index ; i<size - 1 ; i++ )
+          for( i=idx ; i<size - 1 ; i++ )
           {
             if( i<num )
               tmp[i+1] = items[i];
@@ -262,23 +262,23 @@ template <class T> class OFOrderedSet : public OFSet<T>
 
 
       /** Removes one item from the set.
-       *  @param index Index of the item which shall be removed from the set.
+       *  @param idx Index of the item which shall be removed from the set.
        */
-    virtual void RemoveByIndex( unsigned int index )
+    virtual void RemoveByIndex( unsigned int idx )
       {
         // do something only if the given index is not out of range
-        if( index < num )
+        if( idx < num )
         {
           // delete item with given index
-          delete items[index];
+          delete items[idx];
 
           // and - so that there are no holes in the array - move all elements
           // behind the current element up one array field; only do so in case
           // we did _not_ delete the last item
-          if( index != num - 1 )
+          if( idx != num - 1 )
           {
             unsigned int j;
-            for( j=index+1 ; j<num ; j++ )
+            for( j=idx+1 ; j<num ; j++ )
             {
               items[j-1] = items[j];
             }
@@ -286,7 +286,7 @@ template <class T> class OFOrderedSet : public OFSet<T>
             items[j-1] = NULL;
           }
           else
-            items[index] = NULL;
+            items[idx] = NULL;
 
           // reduce counter
           num--;
@@ -503,7 +503,10 @@ template <class T> class OFOrderedSet : public OFSet<T>
 /*
 ** CVS/RCS Log:
 ** $Log: ofoset.h,v $
-** Revision 1.4  2002-07-09 18:29:45  wilkens
+** Revision 1.5  2002-12-09 13:03:55  joergr
+** Renamed parameter to avoid name clash with global function index().
+**
+** Revision 1.4  2002/07/09 18:29:45  wilkens
 ** Added some more functionality.
 **
 ** Revision 1.2  2002/07/02 15:41:33  wilkens
