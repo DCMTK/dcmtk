@@ -10,9 +10,9 @@
 ** routines for finding and created UIDs.
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1998-02-06 09:05:16 $
+** Update Date:		$Date: 1998-02-06 09:41:56 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcuid.cc,v $
-** CVS/RCS Revision:	$Revision: 1.13 $
+** CVS/RCS Revision:	$Revision: 1.14 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -249,7 +249,7 @@ const char* dcmStorageSOPClassUIDs[] = {
     UID_VLImageStorage,
     UID_VLMultiFrameImageStorage,
 
-    UID_PageDescriptionStorage
+    UID_PageDescriptionStorage,
 
     UID_SRTextStorage, 
     UID_SRAudioStorage, 
@@ -562,7 +562,10 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.13  1998-02-06 09:05:16  hewett
+** Revision 1.14  1998-02-06 09:41:56  hewett
+** Corrected typo in UID table.
+**
+** Revision 1.13  1998/02/06 09:05:16  hewett
 ** Updated support for Supplements 15 (Visible Light),
 ** 16 (Postscript Print Management), 17 (Modality Performed Procedure Step),
 ** 22 (Presentation Look Up Table (LUT)), 23 (Structured Reporting),
