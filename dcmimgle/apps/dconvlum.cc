@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: convert VeriLUM CCx_xx.dat files to DCMTK display files
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 14:08:00 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/apps/dconvlum.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-08 19:24:24 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -125,7 +124,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dconvlum.cc,v $
- * Revision 1.16  2002-11-27 14:08:00  meichel
+ * Revision 1.17  2003-12-08 19:24:24  joergr
+ * Updated copyright header.
+ *
+ * Revision 1.16  2002/11/27 14:08:00  meichel
  * Adapted module dcmimgle to use of new header file ofstdinc.h
  *
  * Revision 1.15  2002/07/18 12:22:37  joergr

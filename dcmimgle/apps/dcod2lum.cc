@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002, OFFIS
+ *  Copyright (C) 2002-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: convert hardcopy characteristic curve file to softcopy format
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 14:08:00 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/apps/dcod2lum.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-08 19:24:03 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -189,7 +188,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcod2lum.cc,v $
- * Revision 1.2  2002-11-27 14:08:00  meichel
+ * Revision 1.3  2003-12-08 19:24:03  joergr
+ * Updated copyright header.
+ *
+ * Revision 1.2  2002/11/27 14:08:00  meichel
  * Adapted module dcmimgle to use of new header file ofstdinc.h
  *
  * Revision 1.1  2002/07/18 12:23:54  joergr
