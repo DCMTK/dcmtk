@@ -23,8 +23,8 @@
  *    classes: DcmTransportConnection, DcmTCPConnection
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-10-10 12:06:56 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-12-12 16:44:49 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,6 +33,7 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtrans.h"
+#include "dcompat.h"     /* compatibility code for certain Unix dialects such as SunOS */
 
 #ifdef HAVE_STDLIB_H
 #ifndef  _BCB4
@@ -299,7 +300,10 @@ const char *DcmTCPConnection::errorString(DcmTransportLayerStatus code)
 
 /*
  *  $Log: dcmtrans.cc,v $
- *  Revision 1.4  2000-10-10 12:06:56  meichel
+ *  Revision 1.5  2000-12-12 16:44:49  meichel
+ *  Minor changes to keep gcc 2.7.x on SunOS 4.1.3 happy
+ *
+ *  Revision 1.4  2000/10/10 12:06:56  meichel
  *  Updated transport layer error codes and routines for printing
  *    connection parameters.
  *

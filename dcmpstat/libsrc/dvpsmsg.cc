@@ -23,8 +23,8 @@
  *    classes: DVPSIPCMessage
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-11-14 13:27:15 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2000-12-12 16:45:40 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,6 +57,7 @@ END_EXTERN_C
 #include "ofbmanip.h"    /* for OFBitmanipTemplate<> */
 #include "dcswap.h"      /* for swapIfNecessary() */
 #include "dcmtrans.h"    /* for class DcmTransportConnection */
+#include "dcompat.h"     /* compatibility code for certain Unix dialects such as SunOS */
 
 /* --------------- class DVPSIPCMessage --------------- */
 
@@ -436,7 +437,10 @@ void DVPSIPCClient::notifySentDICOMObject(Uint32 status, const char *txt)
 
 /*
  *  $Log: dvpsmsg.cc,v $
- *  Revision 1.6  2000-11-14 13:27:15  meichel
+ *  Revision 1.7  2000-12-12 16:45:40  meichel
+ *  Minor changes to keep gcc 2.7.x on SunOS 4.1.3 happy
+ *
+ *  Revision 1.6  2000/11/14 13:27:15  meichel
  *  Fixed system include files for Linux.
  *
  *  Revision 1.5  2000/11/08 18:38:23  meichel

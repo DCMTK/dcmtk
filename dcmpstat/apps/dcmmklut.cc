@@ -24,10 +24,10 @@
  *    The LUT has a gamma curve shape or can be imported from an external
  *    file.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-12-11 18:18:09 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-12-12 16:45:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmklut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -507,6 +507,13 @@ void applyInverseGSDF(const unsigned int numberOfBits,
     }
 }
 
+#ifndef RAND_MAX
+/* some brain-dead systems such as SunOS 4.1.3 do not define any constant
+ * for the upper limit of rand() calls. We hope that such systems at least
+ * keep within the SysV specs and return values up to 2^15-1.
+ */
+#define RAND_MAX 32767
+#endif
 
 void mixingUpLUT(const unsigned long numberOfEntries,
                  const OFBool byteAlign,
@@ -1083,7 +1090,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmmklut.cc,v $
- * Revision 1.19  2000-12-11 18:18:09  joergr
+ * Revision 1.20  2000-12-12 16:45:35  meichel
+ * Minor changes to keep gcc 2.7.x on SunOS 4.1.3 happy
+ *
+ * Revision 1.19  2000/12/11 18:18:09  joergr
  * Added explicit typecast to keep SunCC 2.0.1 quiet.
  *
  * Revision 1.18  2000/10/16 12:26:05  joergr

@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: meichel $, $Date: 2000-10-10 12:06:56 $
+** Last Update:		$Author: meichel $, $Date: 2000-12-12 16:44:49 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.32 $
+** Revision:		$Revision: 1.33 $
 ** Status:		$State: Exp $
 */
 
@@ -1514,7 +1514,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
         timeout;
 #ifdef HAVE_DECLARATION_SOCKLEN_T
     socklen_t len;
-#elif HAVE_INTP_ACCEPT
+#elif !defined(HAVE_PROTOTYPE_ACCEPT) || defined(HAVE_INTP_ACCEPT)
     int len;
 #else
     size_t len;
@@ -1791,7 +1791,7 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
 
 #ifdef HAVE_DECLARATION_SOCKLEN_T
     socklen_t length;
-#elif HAVE_INTP_ACCEPT
+#elif !defined(HAVE_PROTOTYPE_ACCEPT) || defined(HAVE_INTP_ACCEPT)
     int length;
 #else
     size_t length;
@@ -2433,7 +2433,10 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, ostream& outs
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.32  2000-10-10 12:06:56  meichel
+** Revision 1.33  2000-12-12 16:44:49  meichel
+** Minor changes to keep gcc 2.7.x on SunOS 4.1.3 happy
+**
+** Revision 1.32  2000/10/10 12:06:56  meichel
 ** Updated transport layer error codes and routines for printing
 **   connection parameters.
 **

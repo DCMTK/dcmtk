@@ -22,9 +22,9 @@
  *  Purpose: Sample message server for class DVPSIPCClient
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-11-08 18:38:32 $
+ *  Update Date:      $Date: 2000-12-12 16:45:41 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/tests/msgserv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -220,7 +220,7 @@ int main(int argc, char *argv[])
         struct sockaddr from;
 #ifdef HAVE_DECLARATION_SOCKLEN_T
         socklen_t len = sizeof(from);
-#elif HAVE_INTP_ACCEPT
+#elif !defined(HAVE_PROTOTYPE_ACCEPT) || defined(HAVE_INTP_ACCEPT)
         int len = sizeof(from);
 #else
         size_t len = sizeof(from);
@@ -359,7 +359,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: msgserv.cc,v $
- * Revision 1.2  2000-11-08 18:38:32  meichel
+ * Revision 1.3  2000-12-12 16:45:41  meichel
+ * Minor changes to keep gcc 2.7.x on SunOS 4.1.3 happy
+ *
+ * Revision 1.2  2000/11/08 18:38:32  meichel
  * Updated dcmpstat IPC protocol for additional message parameters
  *
  * Revision 1.1  2000/10/10 12:24:13  meichel

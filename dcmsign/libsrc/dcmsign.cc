@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DcmSignature
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-07 18:07:07 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-12-12 16:46:32 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -840,13 +840,18 @@ SI_E_Condition DcmSignature::getCurrentDataElementsSigned(DcmAttributeTag& desig
 
 #else /* WITH_OPENSSL */
 
-const int dcmsign_cc_dummy_to_keep_linker_from_moaning = 0;
+void dcmsign_cc_dummy_to_keep_linker_from_moaning()
+{
+}
 
 #endif
 
 /*
  *  $Log: dcmsign.cc,v $
- *  Revision 1.2  2000-11-07 18:07:07  joergr
+ *  Revision 1.3  2000-12-12 16:46:32  meichel
+ *  Minor changes to keep gcc 2.7.x on SunOS 4.1.3 happy
+ *
+ *  Revision 1.2  2000/11/07 18:07:07  joergr
  *  Minor code purifications to keep Sun CC 2.0.1 quiet.
  *
  *  Revision 1.1  2000/11/07 16:49:02  meichel
