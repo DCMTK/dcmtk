@@ -24,9 +24,9 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-12 08:19:05 $
+ *  Update Date:      $Date: 2000-11-16 12:49:11 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -159,6 +159,7 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define OFFIS_UID_ROOT                          "1.2.276.0.7230010.3"
 #define OFFIS_DCMTK_VERSION                     "3.4.1"
 #define OFFIS_IMPLEMENTATION_CLASS_UID          OFFIS_UID_ROOT ".0." OFFIS_DCMTK_VERSION
+#define OFFIS_INSTANCE_CREATOR_UID              OFFIS_IMPLEMENTATION_CLASS_UID
 
 #define OFFIS_PRIVATE_CODING_SCHEME_UID_ROOT    OFFIS_UID_ROOT ".0.0."
 #define OFFIS_PRIVATE_CODING_SCHEME_VERSION     "1"
@@ -414,7 +415,10 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.38  2000-10-12 08:19:05  joergr
+** Revision 1.39  2000-11-16 12:49:11  joergr
+** Added definition of InstanceCreatorUID.
+**
+** Revision 1.38  2000/10/12 08:19:05  joergr
 ** Updated data dictionary to reflect the changes made in supplement 23
 ** (Structured Reporting) final text.
 ** Added private coding scheme creator UID for SR codes.  Restructured scheme
