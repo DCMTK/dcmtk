@@ -22,9 +22,9 @@
  *  Purpose: DicomRotateTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-14 17:30:49 $
+ *  Update Date:      $Date: 1998-12-16 16:38:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dirotat.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -85,6 +85,20 @@ class DiRotateTemplate
 
     virtual ~DiRotateTemplate()
     {
+    }
+
+    inline void rotateData(const T *src[],
+                           T *dest[],
+                           const int degree)
+    {
+        if (degree == 90)
+            rotateRight(src, dest);
+        else if (degree == 180)
+            rotateTopDown(src, dest);
+        else if (degree == 270)
+            rotateLeft(src, dest);
+        else
+            copyPixel(src, dest);
     }
 
 
@@ -282,7 +296,10 @@ class DiRotateTemplate
 **
 ** CVS/RCS Log:
 ** $Log: dirotat.h,v $
-** Revision 1.2  1998-12-14 17:30:49  joergr
+** Revision 1.3  1998-12-16 16:38:49  joergr
+** Added additional case to copy pixels.
+**
+** Revision 1.2  1998/12/14 17:30:49  joergr
 ** Added (missing) implementation of methods to rotate images/frames without
 ** creating a new DicomImage.
 **
