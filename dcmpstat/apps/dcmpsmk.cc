@@ -24,8 +24,8 @@
  *    a matching presentation state.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-04-28 15:45:07 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 1999-07-27 15:41:33 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -94,6 +94,10 @@ int main(int argc, char *argv[])
     OFBool                presentationActivation = OFTrue;
     DVPSGraphicLayering   layering               = DVPSG_twoLayers;
 
+    const char *          opt_aetitle            = NULL;
+    const char *          opt_filesetID          = NULL;
+    const char *          opt_filesetUID         = NULL;
+
     SetDebugLevel(0);
 
   OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Create DICOM grayscale softcopy presentation state", rcsid);
@@ -141,6 +145,12 @@ int main(int argc, char *argv[])
      cmd.addOption("--layer-single",            "+l1",       "all curves and overlays are in one layer");
      cmd.addOption("--layer-double",            "+l2",       "one layer for curves, one for overlays (default)");
      cmd.addOption("--layer-separate",          "+ls",       "separate layers for each curve and overlay");
+    cmd.addSubGroup("location of referenced image:");
+     cmd.addOption("--location-none",           "-lx",       "image reference without location (default)");
+     cmd.addOption("--location-network",        "-ln",    1, "[a]etitle: string",
+                                                             "image located at application entity a");
+     cmd.addOption("--location-media",          "-lm",    2, "[f]ilesetID, fileset[UID]: string",
+                                                             "image located on storage medium");
 
   cmd.addGroup("output options:");
     cmd.addSubGroup("output transfer syntax:");
@@ -218,6 +228,16 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--layer-single")) layering = DVPSG_oneLayer;
       if (cmd.findOption("--layer-double")) layering = DVPSG_twoLayers;
       if (cmd.findOption("--layer-separate")) layering = DVPSG_separateLayers;
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--location-none")) { /* nothing */ }
+      if (cmd.findOption("--location-network")) app.checkValue(cmd.getValue(opt_aetitle));
+      if (cmd.findOption("--location-media"))
+      {
+          app.checkValue(cmd.getValue(opt_filesetID));
+          app.checkValue(cmd.getValue(opt_filesetUID));
+      }
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
@@ -316,7 +336,7 @@ int main(int argc, char *argv[])
     }
         
     error = state.createFromImage(*dataset, overlayActivation, voiActivation, 
-      curveActivation, shutterActivation, presentationActivation, layering);
+      curveActivation, shutterActivation, presentationActivation, layering, opt_aetitle, opt_filesetID, opt_filesetUID);
     if (error != EC_Normal) 
     {
 	cerr << "Error: "  
@@ -410,7 +430,7 @@ int main(int argc, char *argv[])
     }
 
     if (verbosemode) 
-	cout << "conversion successfull\n";
+	cout << "conversion successful\n";
 
     return 0;
 }
@@ -419,7 +439,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmpsmk.cc,v $
-** Revision 1.3  1999-04-28 15:45:07  meichel
+** Revision 1.4  1999-07-27 15:41:33  meichel
+** Adapted dcmpstat tools to supplement 33 letter ballot changes.
+**
+** Revision 1.3  1999/04/28 15:45:07  meichel
 ** Cleaned up module dcmpstat apps, adapted to new command line class
 **   and added short documentation.
 **

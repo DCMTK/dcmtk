@@ -25,10 +25,10 @@
  *    of the presentation state. Non-grayscale transformations are
  *    ignored. If no presentation state is loaded, a default is created.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-05-03 14:16:37 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-07-27 15:41:32 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmp2pgm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -162,8 +162,7 @@ int main(int argc, char *argv[])
             {
               if (opt_dicom_mode)
               {
-                double pixelAspectRatio = 0.0;
-                if (EC_Normal != dvi.getCurrentPState().getImageAspectRatio(pixelAspectRatio)) pixelAspectRatio = 1.0;
+                double pixelAspectRatio = dvi.getCurrentPState().getDisplayedAreaPresentationPixelAspectRatio();
                 if (opt_debugMode > 0) cerr << "writing DICOM SC file: " << opt_pgmName << endl;
                 if (EC_Normal != dvi.saveDICOMImage(opt_pgmName, pixelData, width, height, pixelAspectRatio))
                 {
@@ -255,10 +254,39 @@ void dumpPresentationState(DVInterface& dvi)
   cout << endl;
   cout << "Flip: ";
   if (ps.getFlip()) cout << "yes" << endl; else cout << "no" << endl;
-  cout << "Displayed area: TLHC=" << ps.getDisplayedAreaTLHC_x() << "\\"
-       << ps.getDisplayedAreaTLHC_y() << " BRHC=" << ps.getDisplayedAreaBRHC_x()
-       << "\\" << ps.getDisplayedAreaBRHC_y() << endl;
   
+  Sint32 tlhcX=0;
+  Sint32 tlhcY=0;
+  Sint32 brhcX=0;
+  Sint32 brhcY=0;
+  cout << "Displayed area:" << endl;
+  
+  DVPSPresentationSizeMode sizemode = ps.getDisplayedAreaPresentationSizeMode();
+  double factor=1.0;
+  switch (sizemode)
+  {
+    case DVPSD_scaleToFit:
+      cout << "  presentation size mode: SCALE TO FIT" << endl;
+      break;
+    case DVPSD_trueSize:
+      cout << "  presentation size mode: TRUE SIZE" << endl;
+      break;
+    case DVPSD_magnify:
+      ps.getDisplayedAreaPresentationPixelMagnificationRatio(factor);
+      cout << "  presentation size mode: MAGNIFY factor=" << factor << endl;
+      break;    
+  }
+  ps.getDisplayedArea(tlhcX, tlhcY, brhcX, brhcY);
+  cout << "  displayed area TLHC=" << tlhcX << "\\" << tlhcY << " BRHC=" << brhcX << "\\" << brhcY << endl;
+
+  double x, y;
+  if (EC_Normal == ps.getDisplayedAreaPresentationPixelSpacing(x,y))
+  {
+    cout << "  presentation pixel spacing: X=" << x << "mm Y=" << y << " mm" << endl;
+  } else {
+    cout << "  presentation pixel aspect ratio: " << ps.getDisplayedAreaPresentationPixelAspectRatio() << endl;
+  }
+    
   cout << "Rectangular shutter: ";
   if (ps.haveShutter(DVPSU_rectangular))
   {
@@ -310,20 +338,16 @@ void dumpPresentationState(DVInterface& dvi)
     if (ps.haveGraphicLayerRecommendedDisplayValue(layer))
     {
       Uint16 r, g, b;
-      if (ps.isGrayGraphicLayerRecommendedDisplayValue(layer))
+      cout << "gray ";
+      if (EC_Normal == ps.getGraphicLayerRecommendedDisplayValueGray(layer, g))
       {
-      	cout << "gray ";
-      	if (EC_Normal == ps.getGraphicLayerRecommendedDisplayValueGray(layer, g))
-      	{
       	  cout << "0x" << hex << g << dec << endl;
-      	} else cout << "error" << endl;
-      } else {
-      	cout << "color ";
-      	if (EC_Normal == ps.getGraphicLayerRecommendedDisplayValueRGB(layer, r, g, b))
-      	{
+      } else cout << "error" << endl;
+      cout << "color ";
+      if (EC_Normal == ps.getGraphicLayerRecommendedDisplayValueRGB(layer, r, g, b))
+      {
       	  cout << "0x" << hex << r << "\\0x" << g << "\\0x" << b << dec << endl;
-      	} else cout << "error" << endl;
-      }
+      } else cout << "error" << endl;
     } else cout << "none" << endl;
 
     // text objects
@@ -354,24 +378,23 @@ void dumpPresentationState(DVInterface& dvi)
                << " BRHC=" << ptext->getBoundingBoxBRHC_x() << "\\" << ptext->getBoundingBoxBRHC_y()
                << " units=";
           if (ptext->getBoundingBoxAnnotationUnits()==DVPSA_display) cout << "display"; else cout << "pixel";
+          
+          DVPSTextJustification justification = ptext->getBoundingBoxHorizontalJustification();
+          cout << " justification=";
+          switch (justification)
+          {
+            case DVPSX_left:
+              cout << "left";
+              break;
+            case DVPSX_right:
+              cout << "right";
+              break;
+            case DVPSX_center:
+              cout << "center";
+              break;
+          }
           cout << endl;
         } else cout << "none" << endl;
-        cout << "        specific character set: ";
-        switch (ptext->getCharset(ps.getCharset())) 
-        {
-          case DVPSC_ascii: cout << "ASCII 7-bit" << endl; break;
-          case DVPSC_latin1: cout << "Latin 1" << endl; break;
-          case DVPSC_latin2: cout << "Latin 2" << endl; break;
-          case DVPSC_latin3: cout << "Latin 3" << endl; break;
-          case DVPSC_latin4: cout << "Latin 4" << endl; break;
-          case DVPSC_latin5: cout << "Latin 5" << endl; break;
-          case DVPSC_cyrillic: cout << "Cyrillic" << endl; break;
-          case DVPSC_arabic: cout << "Arabic" << endl; break;
-          case DVPSC_greek: cout << "Greek" << endl; break;
-          case DVPSC_hebrew: cout << "Hebrew" << endl; break;
-          case DVPSC_japanese: cout << "Japanese" << endl; break;
-          default: cout << "Unknown: " << ptext->getCharsetString() << endl; break;
-        }
       }
     }
 
@@ -393,6 +416,7 @@ void dumpPresentationState(DVInterface& dvi)
           case DVPST_interpolated: cout << "interpolated filled="; break;
           case DVPST_circle: cout << "circle filled="; break;
           case DVPST_ellipse: cout << "ellipse filled="; break;
+          case DVPST_point: cout << "point filled="; break;
         }
         if (pgraphic->isFilled()) cout << "yes units="; else cout << "no units=";
         if (pgraphic->getAnnotationUnits()==DVPSA_display) cout << "display"; else cout << "pixel";
@@ -547,7 +571,10 @@ void dumpPresentationState(DVInterface& dvi)
 /*
  * CVS/RCS Log:
  * $Log: dcmp2pgm.cc,v $
- * Revision 1.14  1999-05-03 14:16:37  joergr
+ * Revision 1.15  1999-07-27 15:41:32  meichel
+ * Adapted dcmpstat tools to supplement 33 letter ballot changes.
+ *
+ * Revision 1.14  1999/05/03 14:16:37  joergr
  * Minor code purifications to keep Sun CC 2.0.1 quiet.
  *
  * Revision 1.13  1999/04/30 16:40:45  meichel
