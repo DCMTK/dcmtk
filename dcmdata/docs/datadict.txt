@@ -1,5 +1,5 @@
 
-DICOM Data Dictionary
+-- DICOM Data Dictionary
 
 The dcmdata library uses a loadable data dictionary.  The data dictionary
 is loaded within a C++ constructor (prior to main) into the global 
@@ -45,15 +45,59 @@ standard DICOM tags (including those found in supplements 1, 2, 3, 4, 5,
 the tags used by Papyrus version 3.  An early version of this data 
 dictionary was based on a data dictionary put together by David Clunie.
 
-The include file dcmdata/include/dcdeftag.h can be generated from a data
+-- Tag names for use in applications
+
+The include file dcmtk/dcmdata/include/dcdeftag.h can be generated from a data
 dictionary by the program mkdeftag.  The include file defines tag names
 for use in application programs.  The names are generated from the names
 specified in the data dictionary.  Duplicate names in the data dictionary
 will result in compiler warnings due to duplicate #define's when compiling
 code which includes the dcdeftag.h header file.  Thus, when adding new 
 entries to the data dictionary, care should be taken to ensure that 
-attribute names are not duplicated for distinct tags.
+attribute names are not duplicated for distinct tags.  
+The dcmdata library makefile (dcmtk/dcmdata/libsrc/Makefile.in) includes
+a target (gendeftag) which generates the dcmtk/dcmdata/include/dcdeftag.h 
+header file.  The header file should be regenerated whenever additions or
+name modifications are made to the data dictionary.  Care should be taken
+before modifying any tag names since existing application programs may 
+already use the old name and might subsequently fail to compile.
+
+-- Using a built-in data dictionary
+
+By default the data dictionary is loaded from a text file as described
+above.  However, it is possible to use a built-in data dictionary and
+avoid loading the text file at each application start.  You can even have 
+the best of both worlds and have the main data dictionary built-in with 
+additions loaded from text files (via the DCMDICTPATH environment variable).  
+
+The default built-in data dictionary code (dcmtk/dcmdata/libsrc/dcdictbi.cc)
+currently does nothing.  The code for a useful built-in data dictionary can 
+be regenerated at any time by the mkdictbi program (in 
+dcmtk/dcmdata/libsrc/mkdictbi) and the dcmdata library makefile 
+(dcmtk/dcmdata/libsrc/Makefile.in) includes a target (builtindict) for 
+this purpose.  The makefile also includes a target (nobuiltindict) to 
+reset back to an empty built-in data dictionary.  By making the built-in data
+dictionary, rebuilding the libdcmdata.a library and relinking all your 
+applications will ensure that the built-in data dictionary is used.
+
+Also included in the sources is a pre-created built-in data dictionary which
+can be used instead (dcmtk/dcmdata/libsrc/dcdictzz.cc).  For example, the
+Visual C++ project makefiles for the Windows95/NT platform use this file
+instead of the default (empty) built-in data dictionary.  Under Unix
+environments it should also be possible to selectively use a built-in
+data dictionary for specific applications by including dcdictzz.o earlier
+in the link path than libdcmdata.a (if your linker allows this).
+
+NOTE: Using a built-in data dictionary together with a default 
+data dictionary installed (e.g. in /usr/local/dicom/lib/dicom.dic) will
+actually make your programs start up slower.  The data dictionary will
+be loaded twice.  Once from the built-in version and again from file.
+The same is true of the DCMDICTPATH environment variable.  However, this 
+can be a useful technique if you want to override built-in data dictionary 
+values.
+
 
 ------------
 
 March 1996, Andrew Hewett, Kuratorium OFFIS e.V., Oldenburg, Germany
+- Updated September 1997, Andrew Hewett
