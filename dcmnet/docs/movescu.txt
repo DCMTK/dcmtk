@@ -1,0 +1,192 @@
+NAME
+
+    movescu
+
+SYNOPSIS
+
+movescu [options] peer port queryfile ...
+
+SUMMARY
+
+The movescu application implements both an SCU for the Query/Retrieve
+Service Class and an SCP for the Storage Service Class.  Movescu supports 
+retreive functionality using the C-MOVE message.  It sends query keys to 
+an SCP and awaits responses.  It will accept associations for the purpose 
+of receiving images sent as a result of the C-MOVE request. The 
+application can be used to test SCPs of the Query/Retrieve Service Class.  
+The movescu application can initiate the transfer of images to a third 
+party or can retrieve images to itself.  Note that the use of the term 
+"move" is a misnomer.  The C-MOVE operation actually performs an image 
+copy (no images will be deleted from the SCP).
+
+USAGE
+
+Invoking the movescu application without any parameters will 
+cause it to display an invocation syntax summary.
+
+The movescu application accepts the following command line
+parameters and options:
+
+movescu [-k key][-P|-S|-O][-r n][-p portnum][-m moveDestination][-i]
+        [-v][-d][-a][-C n][-b n][-t ourAETitle][-c theirAETitle]
+        peer port queryfile ...
+
+parameters:
+    peer        hostname of dicom peer
+    port        tcp/ip port number of peer
+    queryfile   query keys file (dicom file)
+options:
+    -k key      override matching key (gggg,eeee="string")
+    -P          use patient root query model (default)
+    -S          use study root query model
+    -O          use patient/study only query model
+    -r n        repeat n times
+    -p portnum  tcp/ip port number for receiving move sub-operations
+    -m title    move destination AE title (default is me: MOVESCU)
+    -v          verbose mode
+    -d          debug mode
+    -a          abort association
+    -i          ignore retreived images
+    -C n        cancel after n responses (default: never)
+    -b n        set max receive pdu to n bytes (default: 16384)
+    -t title    my calling AE title (default: MOVESCU)
+    -c title    called AE title of peer (default: ANY-SCP)
+
+
+Each file supplied on the command line will be sent to the SCP
+as part of a C-MOVE request.  Care must be taken to ensure
+that attributes specified in the queryfile are permissable as part
+of a C-MOVE request.  
+
+Individual attributes of each file sent can be modified or
+supplemented using the "-k key" option.  For example the 
+command:
+
+    movescu -k '0010,0020=M1234H' caesar 5678 patqry.dcm
+
+will, when sent to the SCP caesar at TCP/IP port 5678, cause any
+PatientID attribute in patqry.dcm to have the value 'M1234H'. 
+If such an attribute is present it will be replaced, if absent it
+will be inserted.  The -k option can be present more than once.  
+The value part (after the =) may be absent causing the attribute to
+be sent with zero length.  It is not possible to replace or insert
+attributes within sequences using the -k option.
+
+For all uses of movescu, the SCP must be configured to "know" about
+the AE title where the images are to be transmitted.  This is required
+since the C-MOVE request only contains the AE Title of the target and 
+the SCP must be able to convert this AE Title into TCP/IP address and 
+port number in order to actually send the images over a separate 
+association.
+
+The C-MOVE operation of the Query/Retrieve Service Class is able 
+retrieve images or to initiate a copy of images to a third party.
+
+EXAMPLE
+
+   movescu -v -P -p 9876 -m TEST_AE -t TEST_AE -c ARCHIVE caesar 104 q.dcm
+   
+sends the attributes contained in the dicom file q.dcm as part of a
+C-MOVE request to application entity ARCHIVE on the host caesar at 
+port 104 using the Patient Root query model.  Verbose mode is activated.  
+movescu itself uses the AE title TEST_AE.  The C-MOVE request will 
+specifiy that images should be transferred to the destination AE title 
+TEST_AE (via the -m option).  How the SCP interprets this request depends 
+on its configuration.  movescu will listen on part 9876 for incoming 
+associations in order to receive the requested images from the SCP.
+
+Images can be copied to a third party by using a different destination
+AE title (e.g. -m ANOTHER_AE).  Of course the SCP must "know" this AE title
+and the destination must be acting as an SCP of the Storage Service Class
+(the storescp application can be used for this purpose).  
+
+KNOWN PROBLEMS
+
+movescu is intended to be used as a testing tool for DICOM software
+developers.  The query keys file must be created by hand based upon
+the contents of the SCP.
+
+Even when using a third-party move it may be necessary to set the TCP/IP 
+port number to a reasonable value (via the -p option).  Per default, 
+port number 104 is used which is a restricted port on many systems.  
+movescu always tries to listen for incoming associations 
+
+The movescu application makes no attempt to prevent incorrect queries.  
+In particular, the query keys of a C-MOVE request should only contain 
+the QueryRetrieveLevel attribute and one or more of the so-called 
+"unique key attributes" (PatientID, StudyInstanceUID, SeriesInstanceUID 
+and SOPInstanceUID).
+
+DICOM CONFORMANCE
+
+The movescu application supports the following SOP Classes 
+as an SCU:
+
+    MOVEPatientRootQueryRetrieveInformationModel "1.2.840.10008.5.1.4.1.2.1.1"
+    MOVEStudyRootQueryRetrieveInformationModel	"1.2.840.10008.5.1.4.1.2.2.1"
+    MOVEPatientStudyOnlyQueryRetrieveInformationModel "1.2.840.10008.5.1.4.1.2.3.1"
+
+The movescu application will propose presentation contexts for
+one of the abovementioned supported SOP Classes depending
+on command line options (-P, -S, or -O).  Each proposed
+presentation context will propose the transfer syntaxes:
+
+    LittleEndianImplicitTransferSyntax	"1.2.840.10008.1.2"
+    LittleEndianExplicitTransferSyntax	"1.2.840.10008.1.2.1"
+    BigEndianExplicitTransferSyntax	"1.2.840.10008.1.2.2"
+
+The movescu application supports the following SOP Classes
+as an SCP:
+
+    VerificationSOPClass			"1.2.840.10008.1.1"
+    ComputedRadiographyImageStorage		"1.2.840.10008.5.1.4.1.1.1"
+    CTImageStorage				"1.2.840.10008.5.1.4.1.1.2"
+    MRImageStorage				"1.2.840.10008.5.1.4.1.1.4"
+    NuclearMedicineImageStorage			"1.2.840.10008.5.1.4.1.1.20"
+    RETIRED_NuclearMedicineImageStorage		"1.2.840.10008.5.1.4.1.1.5"
+    UltrasoundImageStorage			"1.2.840.10008.5.1.4.1.1.6.1"
+    RETIRED_UltrasoundImageStorage		"1.2.840.10008.5.1.4.1.1.6"
+    UltrasoundMultiframeImageStorage		"1.2.840.10008.5.1.4.1.1.3.1"
+    RETIRED_UltrasoundMultiframeImageStorage	"1.2.840.10008.5.1.4.1.1.3"
+    SecondaryCaptureImageStorage		"1.2.840.10008.5.1.4.1.1.7"
+    XRayAngiographicImageStorage		"1.2.840.10008.5.1.4.1.1.12.1"
+    XRayAngiographicBiPlaneImageStorage		"1.2.840.10008.5.1.4.1.1.12.3"
+    XRayFluoroscopyImageStorage			"1.2.840.10008.5.1.4.1.1.12.2"
+    StandaloneOverlayStorage			"1.2.840.10008.5.1.4.1.1.8"
+    StandaloneCurveStorage			"1.2.840.10008.5.1.4.1.1.9"
+    StandaloneModalityLUTStorage		"1.2.840.10008.5.1.4.1.1.10"
+    StandaloneVOILUTStorage			"1.2.840.10008.5.1.4.1.1.11"
+
+The movescu application will accept presentation contexts for
+all of the abovementioned supported SOP Classes using any
+of the transfer syntaxes:
+
+    LittleEndianImplicitTransferSyntax	"1.2.840.10008.1.2"
+    LittleEndianExplicitTransferSyntax	"1.2.840.10008.1.2.1"
+    BigEndianExplicitTransferSyntax	"1.2.840.10008.1.2.2"
+
+When acting as an SCP, the movescu application will prefer transfer syntaxes 
+having an explicit encoding over the default implicit transfer syntax.
+If movescu is running on big-endian hardware it will prefer
+BigEndianExplicitTransferSyntax to LittleEndianExplicitTransferSyntax 
+(and vice versa).
+
+The movescu application does not support extended negotiation.
+
+ENVIRONMENT
+
+The movescu application will attempt to load DICOM data dictionaries
+specified in the DCMDICTPATH environment variable.  By default, if
+the DCMDICTPATH environment variable is not set, the file
+/usr/local/dicom/lib/dicom.dic will be loaded.  The default behaviour
+should be preferred and the DCMDICTPATH environment variable only used
+when alternative data dictionaries are required.  The DCMDICTPATH 
+environment variable has the same format as the shell PATH variable in
+that a colon (":") separates entries.  The data dictionary code will
+attempt to load each file specified in the DCMDICTPATH environment 
+variable.  It is an error if no data dictionary can be loaded.
+
+AUTHOR
+
+Andrew Hewett, Kuratorium OFFIS e.V., Oldenburg, Germany
+
