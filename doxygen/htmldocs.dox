@@ -2,9 +2,9 @@
 
 \mainpage
 
-This DICOM ToolKit (DCMTK) package consists of source code, documentation
-and installation instructions for a set of software libraries and
-applications implementing part of the DICOM/MEDICOM Standard.
+This DICOM ToolKit (DCMTK) package consists of source code, documentation and
+installation instructions for a set of software libraries and applications
+implementing part of the DICOM/MEDICOM Standard.
 
 DCMTK contains the following sub-packages, each in its own sub-directory:
 
@@ -29,18 +29,15 @@ application source code (apps), library source code (libsrc), library
 include files (include), documentation (docs) and optional test programs
 (tests).
 
-To build and install the DCMTK package see the \ref install.
-For copyright information see the \ref copyright.
-For information about the history of this software see the \ref history.
-For answers to some frequently asked questions see the \ref faq.
+To build and install the DCMTK package see the \ref install.  For copyright
+information see the \ref copyright.  For information about the history of
+this software see the \ref history.  For answers to some frequently asked
+questions see the \ref faq.
 
 If you find bugs or other problems with this software we would appreciate
-hearing about them.  Please send electronic mail to:
-
-        dicom-bugs@offis.de
-
-Please try to describe the problem in detail and if possible give a
-suggested fix.
+hearing about them.  Please send electronic mail to \b dicom-bugs@offis.de.
+Please try to describe the problem in detail and if possible give a suggested
+fix.
 
 */
 
