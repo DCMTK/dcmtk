@@ -64,15 +64,18 @@
 ** 
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-04-25 16:11:12 $
+** Update Date:		$Date: 1996-06-20 07:35:48 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dcompat.cc,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
 */
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
+
+#include "dcompat.h"
+#include "dicom.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -89,6 +92,9 @@
 #ifdef HAVE_FCNTL_H
 #include <fcntl.h>
 #endif
+
+BEGIN_EXTERN_C
+
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
@@ -102,8 +108,7 @@
 #include <sys/utsname.h>
 #endif
 
-#include "dcompat.h"
-#include "dicom.h"
+END_EXTERN_C
 
 /*
  * On DEC alpha the linker moans if a library is empty.
@@ -305,7 +310,11 @@ tempnam(char *dir, char *pfx)
 /*
 ** CVS Log
 ** $Log: dcompat.cc,v $
-** Revision 1.2  1996-04-25 16:11:12  hewett
+** Revision 1.3  1996-06-20 07:35:48  hewett
+** Removed inclusion of system header already included by dcompat.h
+** and made sure that dcompat.h is always included (via dicom.h).
+**
+** Revision 1.2  1996/04/25 16:11:12  hewett
 ** Added parameter casts to char* for bzero calls.  Replaced some declarations
 ** of DIC_UL with unsigned long (reduces mismatch problems with 32 & 64 bit
 ** architectures).  Added some protection to inclusion of sys/socket.h (due

@@ -49,9 +49,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-1993
 ** Intent:		This file contains functions for construction of
 **			DICOM Upper Layer (DUL) Protocol Data Units (PDUs).
-** Last Update:		$Author: hewett $, $Date: 1996-03-26 18:38:46 $
+** Last Update:		$Author: hewett $, $Date: 1996-06-20 07:35:49 $
 ** Source File:		$RCSfile: dulconst.cc,v $
-** Revision:		$Revision: 1.1 $
+** Revision:		$Revision: 1.2 $
 ** Status:		$State: Exp $
 */
 
@@ -63,12 +63,7 @@
 #ifdef HAVE_STDLIB_H
 #include <stdlib.h>
 #endif
-#ifdef HAVE_SYS_TIME_H
-#include <sys/time.h>
-#endif
-#ifdef HAVE_MALLOC_H
-#include <malloc.h>
-#endif
+
 #include "dicom.h"
 #include "cond.h"
 #include "lst.h"
@@ -1404,8 +1399,12 @@ streamSCUSCPRole(PRV_SCUSCPROLE * scuscpRole, unsigned char *b,
 /*
 ** CVS Log
 ** $Log: dulconst.cc,v $
-** Revision 1.1  1996-03-26 18:38:46  hewett
-** Initial revision
+** Revision 1.2  1996-06-20 07:35:49  hewett
+** Removed inclusion of system header already included by dcompat.h
+** and made sure that dcompat.h is always included (via dicom.h).
+**
+** Revision 1.1.1.1  1996/03/26 18:38:46  hewett
+** Initial Release.
 **
 **
 */

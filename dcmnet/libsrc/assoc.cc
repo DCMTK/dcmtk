@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-05-06 07:32:05 $
+** Update Date:		$Date: 1996-06-20 07:35:47 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -92,12 +92,6 @@
 #include <stdarg.h>
 #endif
 #include <errno.h>
-#ifdef HAVE_SYS_TYPES_H
-#include <sys/types.h>
-#endif
-#ifdef HAVE_SYS_FILE_H
-#include <sys/file.h>
-#endif
 
 #include "dicom.h"
 #include "cond.h"
@@ -611,7 +605,7 @@ dulRole2ascRole(DUL_SC_ROLE role)
     default: ar = ASC_SC_ROLE_DEFAULT; break;
     }
     return ar;
-};
+}
 
 static DUL_SC_ROLE
 ascRole2dulRole(T_ASC_SC_ROLE role)
@@ -1782,7 +1776,11 @@ ASC_dropAssociation(T_ASC_Association * association)
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
-** Revision 1.6  1996-05-06 07:32:05  hewett
+** Revision 1.7  1996-06-20 07:35:47  hewett
+** Removed inclusion of system header already included by dcompat.h
+** and made sure that dcompat.h is always included (via dicom.h).
+**
+** Revision 1.6  1996/05/06 07:32:05  hewett
 ** Fixed problem whereby only the first presentation context was being
 ** recognised as having been accepted.
 **

@@ -54,9 +54,9 @@
 **	Supplementary DUL functions.
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-05-03 10:31:54 $
+** Update Date:		$Date: 1996-06-20 07:35:50 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dulextra.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -71,12 +71,6 @@
 #include <stdlib.h>
 #endif
 #include <errno.h>
-#ifdef HAVE_SYS_TYPES_H
-#include <sys/types.h>
-#endif
-#ifdef HAVE_SYS_FILE_H
-#include <sys/file.h>
-#endif
 
 #include "dicom.h"
 #include "lst.h"
@@ -198,7 +192,11 @@ DUL_associationWaiting(DUL_NETWORKKEY * callerNet, int timeout)
 /*
 ** CVS Log
 ** $Log: dulextra.cc,v $
-** Revision 1.3  1996-05-03 10:31:54  hewett
+** Revision 1.4  1996-06-20 07:35:50  hewett
+** Removed inclusion of system header already included by dcompat.h
+** and made sure that dcompat.h is always included (via dicom.h).
+**
+** Revision 1.3  1996/05/03 10:31:54  hewett
 ** Move some common system include files out to include/dcompat.h which were
 ** causing problems due to multiple inclusion on some machines.
 **

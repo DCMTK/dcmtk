@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: hewett $, $Date: 1996-05-03 10:31:55 $
+** Last Update:		$Author: hewett $, $Date: 1996-06-20 07:35:51 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.4 $
+** Revision:		$Revision: 1.5 $
 ** Status:		$State: Exp $
 */
 
@@ -66,20 +66,6 @@
 
 #ifdef HAVE_GUSI_H
 #include <GUSI.h>	/* Use the Grand Unified Sockets Interface (GUSI) on Macintosh */
-#endif
-
-#ifdef HAVE_SYS_TYPES_H
-#include <sys/types.h>
-#endif
-#ifdef HAVE_SYS_FILE_H
-#include <sys/file.h>
-#endif
-#ifdef HAVE_SYS_SELECT_H
-#include <sys/select.h>
-#endif
-
-#ifdef HAVE_MALLOC_H
-#include <malloc.h>
 #endif
 
 #include "dicom.h"
@@ -2166,18 +2152,20 @@ AA_6_IgnorePDU(PRIVATE_NETWORKKEY ** /*network*/,
         buffer[1024],
         PDUType,
         PDUReserved;
+    long
+        PDULength;
     unsigned long
-        PDULength,
         l;
     CONDITION
 	cond;
 
     (*association)->protocolState = nextState;
     cond = readPDUHead(association, buffer, sizeof(buffer), DUL_NOBLOCK,
-		    PRV_DEFAULTTIMEOUT, &PDUType, &PDUReserved, &PDULength);
+		    PRV_DEFAULTTIMEOUT, &PDUType, &PDUReserved, &l);
     if (cond != DUL_NORMAL) {
 	return cond;
     }
+    PDULength = l;
     while (PDULength > 0 && cond == DUL_NORMAL) {
 	if (strcmp((*association)->networkType, DUL_NETWORK_TCP) == 0) {
 	    cond = defragmentTCP((*association)->networkSpecific.TCP.socket,
@@ -2439,14 +2427,14 @@ sendAssociationRQTCP(PRIVATE_NETWORKKEY ** /*network*/,
 	int fd;
 	if (debug) {
 	    fd = open("associate_rq", O_WRONLY | O_CREAT, 0666);
-	    (void) write(fd, b, associateRequest.length + 6);
+	    (void) write(fd, (char*)b, associateRequest.length + 6);
 	    (void) fprintf(DEBUG_DEVICE, "%d %d\n", length, associateRequest.length + 6);
 	    (void) close(fd);
 	}
     }
 #endif
 
-    nbytes = write((*association)->networkSpecific.TCP.socket, b,
+    nbytes = write((*association)->networkSpecific.TCP.socket, (char*)b,
 		   associateRequest.length + 6);
     if ((unsigned long) nbytes != associateRequest.length + 6) {
 	return COND_PushCondition(DUL_TCPIOERROR, DUL_Message(DUL_TCPIOERROR),
@@ -2530,14 +2518,14 @@ sendAssociationACTCP(PRIVATE_NETWORKKEY ** /*network*/,
 	int fd;
 	if (debug) {
 	    fd = open("associate_rp", O_WRONLY | O_CREAT, 0666);
-	    (void) write(fd, b, associateReply.length + 6);
+	    (void) write(fd, (char*)b, associateReply.length + 6);
 	    (void) fprintf(DEBUG_DEVICE, "%d %d\n", length, associateReply.length + 6);
 	    (void) close(fd);
 	}
     }
 #endif
 
-    nbytes = write((*association)->networkSpecific.TCP.socket, b,
+    nbytes = write((*association)->networkSpecific.TCP.socket, (char*)b,
 		   associateReply.length + 6);
     if ((unsigned long) nbytes != associateReply.length + 6) {
 	return COND_PushCondition(DUL_TCPIOERROR, DUL_Message(DUL_TCPIOERROR),
@@ -2606,7 +2594,7 @@ sendAssociationRJTCP(PRIVATE_NETWORKKEY ** /*network*/,
     cond = streamRejectReleaseAbortPDU(&pdu, b, pdu.length + 6, &length);
 
     if (cond == DUL_NORMAL) {
-	nbytes = write((*association)->networkSpecific.TCP.socket, b,
+	nbytes = write((*association)->networkSpecific.TCP.socket, (char*)b,
 		       pdu.length + 6);
 	if ((unsigned long) nbytes != pdu.length + 6) {
 	    cond = COND_PushCondition(DUL_TCPIOERROR, strerror(errno),
@@ -2672,7 +2660,7 @@ sendAbortTCP(DUL_ABORTITEMS * abortItems,
     }
     cond = streamRejectReleaseAbortPDU(&pdu, b, pdu.length + 6, &length);
     if (cond == DUL_NORMAL) {
-	nbytes = write((*association)->networkSpecific.TCP.socket, b,
+	nbytes = write((*association)->networkSpecific.TCP.socket, (char*)b,
 		       pdu.length + 6);
 	if ((unsigned long) nbytes != pdu.length + 6) {
 	    cond = COND_PushCondition(DUL_TCPIOERROR, strerror(errno),
@@ -2738,7 +2726,7 @@ sendReleaseRQTCP(PRIVATE_ASSOCIATIONKEY ** association)
     }
     cond = streamRejectReleaseAbortPDU(&pdu, b, pdu.length + 6, &length);
     if (cond == DUL_NORMAL) {
-	nbytes = write((*association)->networkSpecific.TCP.socket, b,
+	nbytes = write((*association)->networkSpecific.TCP.socket, (char*)b,
 		       pdu.length + 6);
 	if ((unsigned long) nbytes != pdu.length + 6) {
 	    cond = COND_PushCondition(DUL_TCPIOERROR, strerror(errno),
@@ -2804,7 +2792,7 @@ sendReleaseRPTCP(PRIVATE_ASSOCIATIONKEY ** association)
     }
     cond = streamRejectReleaseAbortPDU(&pdu, b, pdu.length + 6, &length);
     if (cond == DUL_NORMAL) {
-	nbytes = write((*association)->networkSpecific.TCP.socket, b,
+	nbytes = write((*association)->networkSpecific.TCP.socket, (char*)b,
 		       pdu.length + 6);
 	if ((unsigned long) nbytes != pdu.length + 6) {
 	    cond = COND_PushCondition(DUL_TCPIOERROR, strerror(errno),
@@ -2932,13 +2920,14 @@ writeDataPDU(PRIVATE_ASSOCIATIONKEY ** association,
 			   pdu->presentationDataValue.length - 2);
 	}
 #endif
-	nbytes = write((*association)->networkSpecific.TCP.socket, head, length);
+	nbytes = write((*association)->networkSpecific.TCP.socket, 
+		       (char*)head, length);
 	if ((unsigned long) nbytes != length)
 	    return COND_PushCondition(DUL_TCPIOERROR,
 			       DUL_Message(DUL_TCPIOERROR), strerror(errno),
 				      "writeDataPDU");
 	nbytes = write((*association)->networkSpecific.TCP.socket,
-		       pdu->presentationDataValue.data,
+		       (char*)pdu->presentationDataValue.data,
 		       pdu->presentationDataValue.length - 2);
 	if ((unsigned long) nbytes != pdu->presentationDataValue.length - 2)
 	    return COND_PushCondition(DUL_TCPIOERROR,
@@ -3480,7 +3469,7 @@ defragmentTCP(int sock, DUL_BLOCKOPTIONS block, time_t timerStart,
 	    return DUL_READTIMEOUT;
     }
     while (l > 0) {
-	bytesRead = read(sock, b, l);
+	bytesRead = read(sock, (char*)b, l);
 	if (bytesRead > 0) {
 	    b += bytesRead;
 	    l -= (unsigned long) bytesRead;
@@ -3960,7 +3949,11 @@ DULPRV_translateAssocReq(unsigned char *buffer,
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.4  1996-05-03 10:31:55  hewett
+** Revision 1.5  1996-06-20 07:35:51  hewett
+** Removed inclusion of system header already included by dcompat.h
+** and made sure that dcompat.h is always included (via dicom.h).
+**
+** Revision 1.4  1996/05/03 10:31:55  hewett
 ** Move some common system include files out to include/dcompat.h which were
 ** causing problems due to multiple inclusion on some machines.
 **

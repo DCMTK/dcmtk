@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: hewett $, $Date: 1996-05-03 10:31:53 $
+** Last Update:		$Author: hewett $, $Date: 1996-06-20 07:35:48 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.3 $
+** Revision:		$Revision: 1.4 $
 ** Status:		$State: Exp $
 */
 
@@ -74,10 +74,6 @@
 
 #ifdef HAVE_GUSI_H
 #include <GUSI.h>	/* Use the Grand Unified Sockets Interface (GUSI) on Macintosh */
-#endif
-
-#ifdef HAVE_MALLOC_H
-#include <malloc.h>
 #endif
 
 #include "dicom.h"
@@ -2200,7 +2196,11 @@ clearPresentationContext(LST_HEAD ** l)
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.3  1996-05-03 10:31:53  hewett
+** Revision 1.4  1996-06-20 07:35:48  hewett
+** Removed inclusion of system header already included by dcompat.h
+** and made sure that dcompat.h is always included (via dicom.h).
+**
+** Revision 1.3  1996/05/03 10:31:53  hewett
 ** Move some common system include files out to include/dcompat.h which were
 ** causing problems due to multiple inclusion on some machines.
 **

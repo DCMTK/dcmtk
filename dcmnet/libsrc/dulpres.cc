@@ -43,9 +43,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		This module contains routines for the user to
 **			build and manipulate the public DUL structures.
-** Last Update:		$Author: hewett $, $Date: 1996-05-03 10:31:56 $
+** Last Update:		$Author: hewett $, $Date: 1996-06-20 07:35:52 $
 ** Source File:		$RCSfile: dulpres.cc,v $
-** Revision:		$Revision: 1.3 $
+** Revision:		$Revision: 1.4 $
 ** Status:		$State: Exp $
 */
 
@@ -61,9 +61,6 @@
 #include <stdarg.h>
 #endif
 #include <signal.h>
-#ifdef HAVE_MALLOC_H
-#include <malloc.h>
-#endif
 
 #include "dicom.h"
 #include "cond.h"
@@ -162,7 +159,11 @@ DUL_MakePresentationCtx(DUL_PRESENTATIONCONTEXT ** ctx,
 /*
 ** CVS Log
 ** $Log: dulpres.cc,v $
-** Revision 1.3  1996-05-03 10:31:56  hewett
+** Revision 1.4  1996-06-20 07:35:52  hewett
+** Removed inclusion of system header already included by dcompat.h
+** and made sure that dcompat.h is always included (via dicom.h).
+**
+** Revision 1.3  1996/05/03 10:31:56  hewett
 ** Move some common system include files out to include/dcompat.h which were
 ** causing problems due to multiple inclusion on some machines.
 **
