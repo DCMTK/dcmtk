@@ -1,4 +1,0 @@
-# !/bin/sh
-configdir=.
-export configdir
-autoheader

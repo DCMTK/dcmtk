@@ -16,18 +16,18 @@ include \$(configdir)/Makefile.def
 
 EOF
 if test -f "$modulesfile" ; then
-	tmp=`cat modules`
-	modules=`(cd ${topdir}; ls -d $tmp)`
+	tmpmodules=`cat $modulesfile`
 else
-	for dir in `(cd $topdir; ls)`; do
-		if test -d $topdir/$dir ; then
-			modules="$modules $dir"
-		fi
-	done
+	tmpmodules=`(cd $topdir; ls)`
 fi
-modules=`echo $modules | sed -e "s/config//g"`
-modules="$modules config"
-for module in $modules; do
+for dir in $tmpmodules; do
+	if test -d $topdir/$dir ; then
+		modules="$modules $dir"
+	fi
+done
+
+modules=`echo $modules | sed -e "s/config//g" | sed -e "s/CVS//g"` 
+for module in config $modules; do
 	makeall="$makeall ${module}-all"
 	makeinstall="$makeinstall ${module}-install"
 done
@@ -39,7 +39,7 @@ install: $makeinstall
 
 EOF
 
-for module in $modules; do
+for module in config $modules; do
 	cat >> $output <<EOF
 ${module}-all:
 	(cd $module; \$(MAKE) ARCH="\$(ARCH)" all)
@@ -52,12 +52,9 @@ done
 for tag in dependencies clean distclean ; do
 	echo "${tag}:" >> $output
 	for module in $modules; do
-		if test $module = config ; then
-			echo "	-(cd ${module}; \$(MAKE) ${tag})" >> $output
-		else
-			echo "	(cd ${module}; \$(MAKE) ${tag})" >> $output
-		fi
+		echo "	(cd ${module}; \$(MAKE) ${tag})" >> $output
 	done
+	echo "	-(cd config; \$(MAKE) ${tag})" >> $output
 	if test $tag = clean ; then
 		echo "	rm -f \$(TRASH)" >> $output
 	elif test $tag = distclean ; then
@@ -80,16 +77,18 @@ if test -d config ; then
 			fi
 		done
 	fi
-	configdir=../config
-	modules=\`echo \$modules | sed -e "s/config//g"\`
+	modules=\`echo \$modules | sed -e "s/config//g" | sed -e "s/CVS//g"\`
+	modules="config \$modules"
 else    
 	echo "Cannot find configure directory (config or ../config)"
 	exit 1
 fi
 for module in \$modules ; do
-	(cd \$module; \$configdir/configure --srcdir=. --cache-file=\$configdir/config.cache \$* )
+	echo "Run configure for module \$module."
+	(cd \$module; configure \$* )
 done
 EOF
 chmod 755 $output
-echo "Please start configure in the dcmtk directory!"
+
+
 

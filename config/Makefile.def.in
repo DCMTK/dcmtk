@@ -62,7 +62,7 @@ LIBS= @LIBS@
 #	for clean and distclean
 #
 TRASH= *~ "\#*\#" *.bak core
-DISTTRASH= $(TRASH) Makefile Makefile.def config.h config.cache config.log config.status 
+DISTTRASH= $(TRASH) Makefile *.cache *.log *.status 
 
 includes= -I. -I$(srcdir) -I$(top_srcdir)/include -I$(configdir)/include $(LOCALINCLUDES)
 defines= $(GLOBALDEFS) $(LOCALDEFS) $(DEBUG) $(LOCALDEBUG)
@@ -78,6 +78,12 @@ defines= $(GLOBALDEFS) $(LOCALDEFS) $(DEBUG) $(LOCALDEBUG)
 .c.o:
 	$(CC) $(defines) -c $(includes) $(ARCH) \
 		$(CPPFLAGS) $(CFLAGS) $<
+
+
+
+
+
+
 
 
 

@@ -1,0 +1,5 @@
+# !/bin/sh
+
+autoheader
+autoconf
+autoconf confmod.in > confmod
