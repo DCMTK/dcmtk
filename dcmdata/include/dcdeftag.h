@@ -4,7 +4,7 @@
 **
 **   User: hewett
 **   Host: caesar
-**   Date: Wed Mar 20 17:15:37 1996
+**   Date: Thu Apr 18 11:43:40 1996
 **   Prog: /home/hewett/dicom/dcmtk/dcmdata/libsrc/mkdeftag
 **
 ** From: /home/hewett/dicom/dcmtk/dcmdata/libsrc/dicom.dic
@@ -16,7 +16,7 @@
 
 #include "dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "Wed Mar 20 17:15:37 1996"
+#define DCM_DICT_DEFTAG_BUILD_DATE "Thu Apr 18 11:43:40 1996"
 
 
 /*
@@ -614,11 +614,11 @@
 #define DCM_CommentsOnTheScheduledProcedureStep  DcmTagKey(0x0040, 0x0400)
 #define DCM_RequestedProcedureID                 DcmTagKey(0x0040, 0x1001)
 #define DCM_ReasonForTheRequestedProcedure       DcmTagKey(0x0040, 0x1002)
-#define DCM_RequestedProcedurePriority_          DcmTagKey(0x0040, 0x1003)
+#define DCM_RequestedProcedurePriority           DcmTagKey(0x0040, 0x1003)
 #define DCM_PatientTransportArrangements         DcmTagKey(0x0040, 0x1004)
 #define DCM_RequestedProcedureLocation           DcmTagKey(0x0040, 0x1005)
 #define DCM_PlacerOrderNumberProcedure           DcmTagKey(0x0040, 0x1006)
-#define DCM_FillerOrderNumber_Procedure          DcmTagKey(0x0040, 0x1007)
+#define DCM_FillerOrderNumberProcedure           DcmTagKey(0x0040, 0x1007)
 #define DCM_ConfidentialityCode                  DcmTagKey(0x0040, 0x1008)
 #define DCM_ReportingPriority                    DcmTagKey(0x0040, 0x1009)
 #define DCM_NamesOfIntendedRecipientsOfResults   DcmTagKey(0x0040, 0x1010)
