@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 2001-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Convert DICOM color images palette color
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-01-25 13:32:01 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-01-25 17:50:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcmquant.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -71,8 +71,8 @@ END_EXTERN_C
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
-#define SHORTCOL 4
-#define LONGCOL 20
+#define SHORTCOL 3
+#define LONGCOL 21
 
 
 // ********************************************
@@ -553,7 +553,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmquant.cc,v $
- * Revision 1.1  2002-01-25 13:32:01  meichel
+ * Revision 1.2  2002-01-25 17:50:34  joergr
+ * Corrected wrong table spacing in the syntax output of the dcmquant tool.
+ *
+ * Revision 1.1  2002/01/25 13:32:01  meichel
  * Initial release of new color quantization classes and
  *   the dcmquant tool in module dcmimage.
  *
