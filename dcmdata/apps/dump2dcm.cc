@@ -50,10 +50,10 @@
 **
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-03-22 12:38:44 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1996-04-27 12:13:01 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dump2dcm.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -318,7 +318,7 @@ parseValue(char * & s, char * & value)
 	len = searchLastClose(s, DCM_DumpCloseString);
 	if (len == 0)
 	    ok = FALSE;
-	else if (len < 2)
+	else if (len > 2)
 	{
 	    value = new char[len-1];
 	    strncpy(value, s+1, len-2);
@@ -843,7 +843,12 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
-** Revision 1.3  1996-03-22 12:38:44  andreas
+** Revision 1.4  1996-04-27 12:13:01  hewett
+** Corrected bug in last bug-fix.  A tag value [some text] was being
+** parsed as an empty string.  Now both [] and [some text] appear to
+** work as intended.
+**
+** Revision 1.3  1996/03/22 12:38:44  andreas
 ** Correct some mistakes: handling [] as empty string (no value field)
 **                        handling =Name correct if Name is not correct
 **
