@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2003, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,15 +21,15 @@
  *
  *  Purpose: class DcmVR: Value Representation
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-04 12:41:07 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvr.cc,v $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-02-04 16:47:59 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
+
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "ofconsol.h"
@@ -38,6 +38,7 @@
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTRING
 #include "ofstdinc.h"
+
 
 /*
 ** Global flag to enable/disable the generation of VR=UN
@@ -183,7 +184,7 @@ const DcmVRDict_checker DcmVRDict_startup_check();
 void
 DcmVR::setVR(DcmEVR evr)
 {
-    if ( ((int)evr >= 0) && ((int)evr < DcmVRDict_DIM)) {
+    if ( (OFstatic_cast(int, evr) >= 0) && (OFstatic_cast(int, evr) < DcmVRDict_DIM)) {
         vr = evr;
     } else {
         vr = EVR_UNKNOWN;
@@ -361,10 +362,15 @@ OFBool DcmVR::isEquivalent(const DcmVR& avr) const
     return result;
 }
 
+
 /*
  * CVS/RCS Log:
  * $Log: dcvr.cc,v $
- * Revision 1.29  2003-06-04 12:41:07  meichel
+ * Revision 1.30  2004-02-04 16:47:59  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ * Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ * Revision 1.29  2003/06/04 12:41:07  meichel
  * Cleaned up usage of boolean constants
  *
  * Revision 1.28  2003/03/21 13:08:04  meichel
@@ -378,8 +384,6 @@ OFBool DcmVR::isEquivalent(const DcmVR& avr) const
  *
  * Revision 1.25  2002/04/16 13:43:23  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
- * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- * contribution.
  *
  * Revision 1.24  2001/11/02 13:18:52  meichel
  * Removed character sequences that could be interpreted as ISO C++ trigraphs

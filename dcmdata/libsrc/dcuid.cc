@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2003, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -24,9 +24,8 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-10-09 12:50:25 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcuid.cc,v $
- *  CVS/RCS Revision: $Revision: 1.47 $
+ *  Update Date:      $Date: 2004-02-04 16:47:04 $
+ *  CVS/RCS Revision: $Revision: 1.48 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1032,7 +1031,7 @@ addUIDComponent(char* uid, const char* s)
 inline static unsigned long
 forcePositive(long i)
 {
-    return (i < 0) ? (unsigned long)-i : (unsigned long)i;
+    return (i < 0) ? OFstatic_cast(unsigned long, -i) : OFstatic_cast(unsigned long, i);
 }
 
 char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
@@ -1045,7 +1044,7 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
     uidCounterMutex.lock();
 #endif
     if (hostIdentifier == 0)
-        hostIdentifier = (unsigned long)gethostid();
+        hostIdentifier = OFstatic_cast(unsigned long, gethostid());
     unsigned int counter = counterOfCurrentUID++;
 #ifdef _REENTRANT
     uidCounterMutex.unlock();
@@ -1077,7 +1076,11 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.47  2003-10-09 12:50:25  joergr
+** Revision 1.48  2004-02-04 16:47:04  joergr
+** Adapted type casts to new-style typecast operators defined in ofcast.h.
+** Removed acknowledgements with e-mail addresses from CVS log.
+**
+** Revision 1.47  2003/10/09 12:50:25  joergr
 ** Added support for SOP Class "Procedure Log" (Supplement 66).
 **
 ** Revision 1.46  2003/07/03 14:25:30  meichel
@@ -1114,8 +1117,6 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 **
 ** Revision 1.37  2002/04/16 13:43:22  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
-** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
-** contribution.
 **
 ** Revision 1.36  2002/01/08 11:16:58  joergr
 ** Enhanced algorithm to create unique identifiers (i.e. a unique suffix for

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2003, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: class DcmTag
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-03-21 13:08:04 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dctag.cc,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-02-04 16:45:38 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,9 +58,9 @@ DcmTag::DcmTag(const DcmTagKey& akey)
 {
     lookupVRinDictionary();
 }
-    
+
 DcmTag::DcmTag(Uint16 g, Uint16 e)
-  : DcmTagKey(g, e), 
+  : DcmTagKey(g, e),
     vr(EVR_UNKNOWN),
     tagName(NULL),
     privateCreator(NULL),
@@ -118,7 +117,7 @@ DcmTag& DcmTag::operator= ( const DcmTag& tag )
     if (this != &tag)
     {
       updateTagName(tag.tagName);
-      updatePrivateCreator(tag.privateCreator);      
+      updatePrivateCreator(tag.privateCreator);
       DcmTagKey::set(tag);
       vr = tag.vr;
       errorFlag = tag.errorFlag;
@@ -159,7 +158,7 @@ DcmVR DcmTag::setVR( const DcmVR& avr )    // resolve ambiguous VR
 const char *DcmTag::getTagName()
 {
   if (tagName) return tagName;
-  
+
   const char *newTagName = NULL;
   const DcmDataDictionary& globalDataDict = dcmDataDict.rdlock();
   const DcmDictEntry *dictRef = globalDataDict.findEntry(*this, privateCreator);
@@ -211,7 +210,7 @@ OFCondition DcmTag::findTagFromName(const char *name,
         if (sscanf(name, "%x,%x", &grp, &elm) == 2)
         {
             /* store resulting tag value */
-            value.set((Uint16)grp, (Uint16)elm);
+            value.set(OFstatic_cast(Uint16, grp), OFstatic_cast(Uint16, elm));
         } else {
             /* it is a name: look up in the dictionary */
             const DcmDataDictionary &globalDataDict = dcmDataDict.rdlock();
@@ -262,10 +261,15 @@ void DcmTag::updatePrivateCreator(const char *c)
     } else privateCreator = NULL;
 }
 
+
 /*
 ** CVS/RCS Log:
 ** $Log: dctag.cc,v $
-** Revision 1.19  2003-03-21 13:08:04  meichel
+** Revision 1.20  2004-02-04 16:45:38  joergr
+** Adapted type casts to new-style typecast operators defined in ofcast.h.
+** Removed acknowledgements with e-mail addresses from CVS log.
+**
+** Revision 1.19  2003/03/21 13:08:04  meichel
 ** Minor code purifications for warnings reported by MSVC in Level 4
 **
 ** Revision 1.18  2002/11/27 12:06:52  meichel
@@ -283,8 +287,6 @@ void DcmTag::updatePrivateCreator(const char *c)
 **
 ** Revision 1.14  2002/04/16 13:43:22  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
-** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
-** contribution.
 **
 ** Revision 1.13  2001/11/19 15:23:29  meichel
 ** Cleaned up signature code to avoid some gcc warnings.

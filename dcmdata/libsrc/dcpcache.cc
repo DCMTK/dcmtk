@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2003, OFFIS
+ *  Copyright (C) 2002-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,8 @@
  *           Code is based on the CRC32 implementation (C)1986 Gary S. Brown
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-06-12 18:22:23 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpcache.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2004-02-04 16:40:48 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,10 +79,10 @@ void DcmPrivateTagCache::clear()
   OFListIterator(DcmPrivateTagCacheEntry *) first = begin();
   OFListIterator(DcmPrivateTagCacheEntry *) last = end();
   while (first != last)
-  {     
+  {
     delete (*first);
     first = erase(first);
-  }  
+  }
 }
 
 
@@ -92,10 +91,10 @@ const char *DcmPrivateTagCache::findPrivateCreator(const DcmTagKey& tk) const
   OFListConstIterator(DcmPrivateTagCacheEntry *) first = begin();
   OFListConstIterator(DcmPrivateTagCacheEntry *) last = end();
   while (first != last)
-  {     
+  {
     if ((*first)->isPrivateCreatorFor(tk)) return (*first)->getPrivateCreator();
     ++first;
-  }  
+  }
   return NULL;
 }
 
@@ -109,10 +108,10 @@ void DcmPrivateTagCache::updateCache(DcmObject *dobj)
     {
       // dobj is DcmElement containing private creator
       char *c = NULL;
-      if ((((DcmElement *)dobj)->getString(c)).good() && c)
+      if ((OFstatic_cast(DcmElement *, dobj)->getString(c)).good() && c)
       {
         push_back(new DcmPrivateTagCacheEntry(tag, c));
-      }      
+      }
     }
   }
 }
@@ -121,9 +120,12 @@ void DcmPrivateTagCache::updateCache(DcmObject *dobj)
 /*
  * CVS/RCS Log:
  * $Log: dcpcache.cc,v $
- * Revision 1.2  2003-06-12 18:22:23  joergr
+ * Revision 1.3  2004-02-04 16:40:48  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ * Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ * Revision 1.2  2003/06/12 18:22:23  joergr
  * Modified code to use const_iterators where appropriate (required for STL).
- * Thanks to Henning Meyer <Henning-Meyer@web.de> for the report.
  *
  * Revision 1.1  2002/07/23 14:21:34  meichel
  * Added support for private tag data dictionaries to dcmdata

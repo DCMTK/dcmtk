@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2003, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: Implementation of class DcmAttributeTag
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-10-09 13:51:52 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrat.cc,v $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Update Date:      $Date: 2004-02-04 16:48:43 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -82,7 +81,7 @@ DcmEVR DcmAttributeTag::ident() const
 unsigned long DcmAttributeTag::getVM()
 {
     /* attribute tags store pairs of 16 bit values */
-    return (unsigned long)(Length / (2 * sizeof(Uint16)));
+    return OFstatic_cast(unsigned long, Length / (2 * sizeof(Uint16)));
 }
 
 
@@ -169,7 +168,7 @@ OFCondition DcmAttributeTag::getTagVal(DcmTagKey &tagVal,
 
 OFCondition DcmAttributeTag::getUint16Array(Uint16 *&uintVals)
 {
-    uintVals = (Uint16 *)getValue();
+    uintVals = OFstatic_cast(Uint16 *, getValue());
     return errorFlag;
 }
 
@@ -207,7 +206,7 @@ OFCondition DcmAttributeTag::putTagVal(const DcmTagKey &tagVal,
     uintVals[0] = tagVal.getGroup();
     uintVals[1] = tagVal.getElement();
     /* change element value */
-    errorFlag = changeValue(uintVals, 2 * sizeof(Uint16) * (Uint32)pos, 2 * sizeof(Uint16));
+    errorFlag = changeValue(uintVals, 2 * sizeof(Uint16) * OFstatic_cast(Uint32, pos), 2 * sizeof(Uint16));
     return errorFlag;
 }
 
@@ -289,12 +288,15 @@ OFCondition DcmAttributeTag::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrat.cc,v $
-** Revision 1.25  2003-10-09 13:51:52  joergr
+** Revision 1.26  2004-02-04 16:48:43  joergr
+** Adapted type casts to new-style typecast operators defined in ofcast.h.
+** Removed acknowledgements with e-mail addresses from CVS log.
+**
+** Revision 1.25  2003/10/09 13:51:52  joergr
 ** Fixed issue with the order of group and element number in print method.
 **
 ** Revision 1.24  2003/03/25 17:11:34  joergr
 ** Fixed bug in print method: wrong position of setw() operators.
-** Thanks to Syam Gadde <gadde@biac.duke.edu> for the bug report and fix.
 **
 ** Revision 1.23  2002/12/06 13:12:37  joergr
 ** Enhanced "print()" function by re-working the implementation and replacing
@@ -309,8 +311,6 @@ OFCondition DcmAttributeTag::verify(const OFBool autocorrect)
 **
 ** Revision 1.20  2002/04/16 13:43:23  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
-** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
-** contribution.
 **
 ** Revision 1.19  2001/09/25 17:19:55  meichel
 ** Adapted dcmdata to class OFCondition

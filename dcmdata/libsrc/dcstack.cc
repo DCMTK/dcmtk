@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: stack class
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-02 16:52:26 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcstack.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-02-04 16:44:23 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -120,7 +119,7 @@ DcmStack::~DcmStack()
 void DcmStack::clear()
 {
     DcmStackNode *node;
-    while (topNode_ != (DcmStackNode*)NULL)
+    while (topNode_ != NULL)
     {
         node = topNode_;
         topNode_ = topNode_->link;
@@ -135,7 +134,7 @@ void DcmStack::clear()
 
 DcmObject* DcmStack::push( DcmObject *obj )
 {
-    if ( obj != (DcmObject*)NULL )
+    if ( obj != NULL )
     {
         DcmStackNode *node = new DcmStackNode( obj );
         node->link = topNode_;
@@ -153,7 +152,7 @@ DcmObject* DcmStack::pop()
 {
     DcmObject *obj;
     DcmStackNode *node;
-    if ( topNode_ != (DcmStackNode*)NULL )
+    if ( topNode_ != NULL )
     {
         obj = topNode_->value();
         node = topNode_;
@@ -162,7 +161,7 @@ DcmObject* DcmStack::pop()
         cardinality_--;
     }
     else
-        obj = (DcmObject*)NULL;
+        obj = NULL;
     return obj;
 }
 
@@ -175,13 +174,13 @@ DcmObject* DcmStack::elem(const unsigned long number) const
     unsigned long num = number;
     DcmObject *obj;
     DcmStackNode *node = topNode_;
-    while ( num-- > 0 && node != (DcmStackNode*)NULL )
+    while ( num-- > 0 && node != NULL )
          node = node->link;
 
-    if ( node != (DcmStackNode*)NULL )
+    if ( node != NULL )
         obj = node->value();
     else
-        obj = (DcmObject*)NULL;
+        obj = NULL;
     return obj;
 }
 
@@ -192,10 +191,10 @@ DcmObject* DcmStack::elem(const unsigned long number) const
 DcmObject* DcmStack::top() const
 {
     DcmObject *obj;
-    if ( topNode_ != (DcmStackNode*)NULL )
+    if ( topNode_ != NULL )
         obj = topNode_->value();
     else
-        obj = (DcmObject*)NULL;
+        obj = NULL;
     return obj;
 }
 
@@ -214,7 +213,7 @@ unsigned long DcmStack::card() const
 
 OFBool DcmStack::empty() const
 {
-    return (OFBool)( topNode_ == (DcmStackNode*)NULL );
+    return OFstatic_cast(OFBool, topNode_ == NULL );
 }
 
 
@@ -235,7 +234,7 @@ DcmStack& DcmStack::operator=(const DcmStack& arg)
             oldPtr = oldPtr->link;
             newPtr = newPtr->link;
         }
-    }    
+    }
   }
   return *this;
 }
@@ -272,14 +271,18 @@ OFBool DcmStack::operator==(const DcmStack& arg) const
       thisPtr = thisPtr->link;
       argPtr = argPtr->link;
   }
-  return OFTrue;  
+  return OFTrue;
 }
 
 
 /*
  * CVS/RCS Log:
  * $Log: dcstack.cc,v $
- * Revision 1.16  2003-06-02 16:52:26  meichel
+ * Revision 1.17  2004-02-04 16:44:23  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ * Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ * Revision 1.16  2003/06/02 16:52:26  meichel
  * Cleaned up implementation of DcmStack, added doc++ comments
  *
  * Revision 1.15  2002/11/27 12:06:52  meichel
@@ -287,8 +290,6 @@ OFBool DcmStack::operator==(const DcmStack& arg) const
  *
  * Revision 1.14  2002/04/16 13:43:21  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
- * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- * contribution.
  *
  * Revision 1.13  2001/06/01 15:49:09  meichel
  * Updated copyright header

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2003, OFFIS
+ *  Copyright (C) 2002-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: encoder codec class for RLE
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-08-14 09:01:06 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-02-04 16:43:42 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcrlecce.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -118,7 +118,7 @@ OFCondition DcmRLECodecEncoder::encode(
   DcmStack localStack(objStack);
   (void)localStack.pop();             // pop pixel data element from stack
   DcmObject *dataset = localStack.pop(); // this is the item in which the pixel data is located
-  Uint8 *pixelData8 = (Uint8 *) pixelData;
+  Uint8 *pixelData8 = OFreinterpret_cast(Uint8 *, OFconst_cast(Uint16 *, pixelData));
   Uint8 *pixelPointer = NULL;
   DcmOffsetList offsetList;
   DcmRLEEncoderList rleEncoderList;
@@ -194,7 +194,7 @@ OFCondition DcmRLECodecEncoder::encode(
     // byte swap pixel data to little endian
     if (gLocalByteOrder == EBO_BigEndian)
     {
-       swapIfNecessary(EBO_LittleEndian, gLocalByteOrder, (void *)pixelData, length, sizeof(Uint16));
+       swapIfNecessary(EBO_LittleEndian, gLocalByteOrder, OFstatic_cast(void *, OFconst_cast(Uint16 *, pixelData)), length, sizeof(Uint16));
     }
 
     // create RLE stripe sets
@@ -380,7 +380,7 @@ OFCondition DcmRLECodecEncoder::encode(
   // byte swap pixel data back to local endian if necessary
   if (byteSwapped)
   {
-    swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, (void *)pixelData, length, sizeof(Uint16));
+    swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, OFstatic_cast(void *, OFconst_cast(Uint16 *, pixelData)), length, sizeof(Uint16));
   }
   return result;
 }
@@ -419,7 +419,11 @@ OFCondition DcmRLECodecEncoder::updateDerivationDescription(
 /*
  * CVS/RCS Log
  * $Log: dcrlecce.cc,v $
- * Revision 1.8  2003-08-14 09:01:06  meichel
+ * Revision 1.9  2004-02-04 16:43:42  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ * Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ * Revision 1.8  2003/08/14 09:01:06  meichel
  * Adapted type casts to new-style typecast operators defined in ofcast.h
  *
  * Revision 1.7  2003/03/21 13:08:04  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2003, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: Implementation of class DcmPixelItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-06-12 18:21:46 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpxitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Update Date:      $Date: 2004-02-04 16:42:42 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -136,7 +135,7 @@ OFCondition DcmPixelItem::createOffsetTable(const DcmOffsetList &offsetList)
             result = swapIfNecessary(EBO_LittleEndian, gLocalByteOrder,
                 array, numEntries * sizeof(Uint32), sizeof(Uint32));
             if (result.good())
-                result = putUint8Array((Uint8 *)array, numEntries * sizeof(Uint32));
+                result = putUint8Array(OFreinterpret_cast(Uint8 *, array), numEntries * sizeof(Uint32));
             delete[] array;
         } else
             result = EC_MemoryExhausted;
@@ -171,7 +170,7 @@ OFCondition DcmPixelItem::writeXML(ostream &out,
         if (flags & DCMTypes::XF_encodeBase64)
         {
             /* pixel items always contain 8 bit data, therefore, byte swapping not required */
-            out << OFStandard::encodeBase64((Uint8 *)getValue(), (size_t)Length, value);
+            out << OFStandard::encodeBase64(OFstatic_cast(Uint8 *, getValue()), OFstatic_cast(size_t, Length), value);
         } else {
             /* encode as sequence of hexadecimal numbers */
             if (getOFStringArray(value).good())
@@ -188,9 +187,12 @@ OFCondition DcmPixelItem::writeXML(ostream &out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpxitem.cc,v $
-** Revision 1.26  2003-06-12 18:21:46  joergr
+** Revision 1.27  2004-02-04 16:42:42  joergr
+** Adapted type casts to new-style typecast operators defined in ofcast.h.
+** Removed acknowledgements with e-mail addresses from CVS log.
+**
+** Revision 1.26  2003/06/12 18:21:46  joergr
 ** Modified code to use const_iterators where appropriate (required for STL).
-** Thanks to Henning Meyer <Henning-Meyer@web.de> for the report.
 **
 ** Revision 1.25  2002/12/06 13:16:59  joergr
 ** Enhanced "print()" function by re-working the implementation and replacing
@@ -216,8 +218,6 @@ OFCondition DcmPixelItem::writeXML(ostream &out,
 **
 ** Revision 1.19  2002/04/16 13:43:20  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
-** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
-** contribution.
 **
 ** Revision 1.18  2001/11/16 15:55:04  meichel
 ** Adapted digital signature code to final text of supplement 41.

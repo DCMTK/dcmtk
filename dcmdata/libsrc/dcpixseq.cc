@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2003, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Implementation of class DcmPixelSequence
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-03-21 13:08:04 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixseq.cc,v $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-02-04 16:41:37 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -210,7 +209,7 @@ OFCondition DcmPixelSequence::getItem(DcmPixelItem *&item,
                                       const unsigned long num)
 {
     errorFlag = EC_Normal;
-    item = (DcmPixelItem*)(itemList->seek_to(num));  // read item from list
+    item = OFstatic_cast(DcmPixelItem*, itemList->seek_to(num));  // read item from list
     if (item == NULL)
         errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -224,8 +223,8 @@ OFCondition DcmPixelSequence::remove(DcmPixelItem *&item,
                                      const unsigned long num)
 {
     errorFlag = EC_Normal;
-    item = (DcmPixelItem*)(itemList->seek_to(num));  // read item from list
-    if (item != (DcmPixelItem*)NULL)
+    item = OFstatic_cast(DcmPixelItem*, itemList->seek_to(num));  // read item from list
+    if (item != NULL)
         itemList->remove();
     else
         errorFlag = EC_IllegalCall;
@@ -377,7 +376,11 @@ OFCondition DcmPixelSequence::storeCompressedFrame(DcmOffsetList &offsetList,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.cc,v $
-** Revision 1.32  2003-03-21 13:08:04  meichel
+** Revision 1.33  2004-02-04 16:41:37  joergr
+** Adapted type casts to new-style typecast operators defined in ofcast.h.
+** Removed acknowledgements with e-mail addresses from CVS log.
+**
+** Revision 1.32  2003/03/21 13:08:04  meichel
 ** Minor code purifications for warnings reported by MSVC in Level 4
 **
 ** Revision 1.31  2003/01/06 09:29:49  joergr
@@ -401,8 +404,6 @@ OFCondition DcmPixelSequence::storeCompressedFrame(DcmOffsetList &offsetList,
 **
 ** Revision 1.26  2002/04/16 13:43:19  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
-** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
-** contribution.
 **
 ** Revision 1.25  2001/09/25 17:19:52  meichel
 ** Adapted dcmdata to class OFCondition

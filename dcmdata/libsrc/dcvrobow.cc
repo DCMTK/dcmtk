@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: Implementation of class DcmOtherByteOtherWord
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-04-17 15:59:45 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrobow.cc,v $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  Update Date:      $Date: 2004-02-04 16:49:49 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -141,9 +140,9 @@ void DcmOtherByteOtherWord::print(ostream &out,
                         out << "\\" << setw(vrSize) << (*(wordValues++));
                 } else {
                     /* print byte values in hex mode */
-                    out << setw(vrSize) << (int)(*(byteValues++));
+                    out << setw(vrSize) << OFstatic_cast(int, *(byteValues++));
                     for (unsigned long i = 1; i < printCount; i++)
-                        out << "\\" << setw(vrSize) << (int)(*(byteValues++));
+                        out << "\\" << setw(vrSize) << OFstatic_cast(int, *(byteValues++));
                 }
                 /* reset i/o manipulators */
                 out << dec << setfill(' ');
@@ -177,7 +176,7 @@ void DcmOtherByteOtherWord::printPixel(ostream &out,
         if (pixelCounter != NULL)
         {
             char num[20];
-            sprintf(num, "%ld", (long)((*pixelCounter)++));
+            sprintf(num, "%ld", OFstatic_cast(long, (*pixelCounter)++));
             fname += num;
         }
         fname += ".raw";
@@ -200,14 +199,14 @@ void DcmOtherByteOtherWord::printPixel(ostream &out,
                     if (data != NULL)
                     {
                         swapIfNecessary(EBO_LittleEndian, gLocalByteOrder, data, Length, sizeof(Uint16));
-                        fwrite(data, sizeof(Uint16), (size_t)(Length / sizeof(Uint16)), file);
+                        fwrite(data, sizeof(Uint16), OFstatic_cast(size_t, Length / sizeof(Uint16)), file);
                         swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, data, Length, sizeof(Uint16));
                     }
                 } else {
                     Uint8 *data = NULL;
                     getUint8Array(data);
                     if (data != NULL)
-                        fwrite(data, sizeof(Uint8), (size_t)Length, file);
+                        fwrite(data, sizeof(Uint8), OFstatic_cast(size_t, Length), file);
                 }
                 fclose(file);
             } else {
@@ -233,7 +232,7 @@ OFCondition DcmOtherByteOtherWord::alignValue()
     if ((Tag.getEVR() != EVR_OW) && (Length > 0))
     {
         Uint8 *bytes = NULL;
-        bytes = (Uint8 *)getValue(fByteOrder);
+        bytes = OFstatic_cast(Uint8 *, getValue(fByteOrder));
         /* check for odd length */
         if ((bytes != NULL) && ((Length & 1) != 0))
         {
@@ -264,7 +263,7 @@ OFCondition DcmOtherByteOtherWord::putUint8Array(const Uint8 *byteValue,
         /* check for valid 8 bit data */
         if ((byteValue != NULL) && (Tag.getEVR() != EVR_OW))
         {
-            errorFlag = putValue(byteValue, sizeof(Uint8) * (Uint32)numBytes);
+            errorFlag = putValue(byteValue, sizeof(Uint8) * OFstatic_cast(Uint32, numBytes));
             alignValue();
         } else
             errorFlag = EC_CorruptedData;
@@ -282,7 +281,7 @@ OFCondition DcmOtherByteOtherWord::putUint16Array(const Uint16 *wordValue,
     {
         /* check for valid 16 bit data */
         if ((wordValue != NULL) && (Tag.getEVR() == EVR_OW))
-            errorFlag = putValue(wordValue, sizeof(Uint16) * (Uint32)numWords);
+            errorFlag = putValue(wordValue, sizeof(Uint16) * OFstatic_cast(Uint32, numWords));
         else
             errorFlag = EC_CorruptedData;
     }
@@ -326,9 +325,9 @@ OFCondition DcmOtherByteOtherWord::putString(const char *stringVal)
                     if (sscanf(value, "%hx", &intVal) != 1)
                         errorFlag = EC_CorruptedData;
                     else if (evr == EVR_OW)
-                        wordField[i] = (Uint16)intVal;
+                        wordField[i] = OFstatic_cast(Uint16, intVal);
                     else
-                        byteField[i] = (Uint8)intVal;
+                        byteField[i] = OFstatic_cast(Uint8, intVal);
                     delete[] value;
                 } else
                     errorFlag = EC_CorruptedData;
@@ -382,7 +381,7 @@ OFCondition DcmOtherByteOtherWord::getUint8Array(Uint8 *&byteVals)
 {
     errorFlag = EC_Normal;
     if (Tag.getEVR() != EVR_OW)
-        byteVals = (Uint8 *)getValue();
+        byteVals = OFstatic_cast(Uint8 *, getValue());
     else
         errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -418,7 +417,7 @@ OFCondition DcmOtherByteOtherWord::getUint16Array(Uint16 *&wordVals)
 {
     errorFlag = EC_Normal;
     if (Tag.getEVR() == EVR_OW)
-        wordVals = (Uint16 *)getValue();
+        wordVals = OFstatic_cast(Uint16 *, getValue());
     else
         errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -468,13 +467,13 @@ OFCondition DcmOtherByteOtherWord::getOFStringArray(OFString &stringVal,
     if (Tag.getEVR() == EVR_OW)
     {
         /* get array of 16 bit values */
-        Uint16 *uint16Vals = (Uint16 *)getValue();
-        const size_t count = (size_t)(getLength() / sizeof(Uint16));
+        Uint16 *uint16Vals = OFstatic_cast(Uint16 *, getValue());
+        const size_t count = OFstatic_cast(size_t, getLength() / sizeof(Uint16));
         if ((uint16Vals != NULL) && (count > 0))
         {
             /* reserve number of bytes expected */
             stringVal.reserve(5 * count);
-            char *bufPtr = (char *)stringVal.c_str();
+            char *bufPtr = OFconst_cast(char *, stringVal.c_str());
             /* for all array elements ... */
             for (size_t i = 0; i < count; i++)
             {
@@ -489,13 +488,13 @@ OFCondition DcmOtherByteOtherWord::getOFStringArray(OFString &stringVal,
             errorFlag = EC_IllegalCall;
     } else {
         /* get array of 8 bit values */
-        Uint8 *uint8Vals = (Uint8 *)getValue();
-        const size_t count = (size_t)getLength();
+        Uint8 *uint8Vals = OFstatic_cast(Uint8 *, getValue());
+        const size_t count = OFstatic_cast(size_t, getLength());
         if ((uint8Vals != NULL) && (count > 0))
         {
             /* reserve number of bytes expected */
             stringVal.reserve(3 * count);
-            char *bufPtr = (char *)stringVal.c_str();
+            char *bufPtr = OFconst_cast(char *, stringVal.c_str());
             /* for all array elements ... */
             for (size_t i = 0; i < count; i++)
             {
@@ -591,13 +590,13 @@ OFCondition DcmOtherByteOtherWord::writeXML(ostream &out,
         /* encode binary data as Base64 */
         if (flags & DCMTypes::XF_encodeBase64)
         {
-            Uint8 *byteValues = (Uint8 *)getValue();
+            Uint8 *byteValues = OFstatic_cast(Uint8 *, getValue());
             if (Tag.getEVR() == EVR_OW)
             {
                 /* Base64 encoder requires big endian input data */
                 swapIfNecessary(gLocalByteOrder, EBO_BigEndian, byteValues, Length, sizeof(Uint16));
             }
-            out << OFStandard::encodeBase64(byteValues, (size_t)Length, value);
+            out << OFStandard::encodeBase64(byteValues, OFstatic_cast(size_t, Length), value);
         } else {
             /* encode as sequence of hexadecimal numbers */
             if (getOFStringArray(value).good())
@@ -614,7 +613,11 @@ OFCondition DcmOtherByteOtherWord::writeXML(ostream &out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
-** Revision 1.42  2003-04-17 15:59:45  joergr
+** Revision 1.43  2004-02-04 16:49:49  joergr
+** Adapted type casts to new-style typecast operators defined in ofcast.h.
+** Removed acknowledgements with e-mail addresses from CVS log.
+**
+** Revision 1.42  2003/04/17 15:59:45  joergr
 ** Use method OFString::c_str() instead of OFString::operator[] to avoid range
 ** checking (which implies an "expensive" strlen() call).
 **
@@ -646,8 +649,6 @@ OFCondition DcmOtherByteOtherWord::writeXML(ostream &out,
 **
 ** Revision 1.35  2002/04/16 13:43:25  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
-** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
-** contribution.
 **
 ** Revision 1.34  2001/10/02 11:48:33  joergr
 ** Added getUint8/16 routines to class DcmOtherByteOtherWord.
