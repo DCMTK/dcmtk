@@ -10,9 +10,9 @@
 ** Implementation of class DcmUniqueIdentifier
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-05-30 17:19:33 $
+** Update Date:		$Date: 1996-05-31 09:09:51 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrui.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -126,16 +126,24 @@ E_Condition DcmUniqueIdentifier::put(const char * value)
 E_Condition DcmUniqueIdentifier::makeMachineByteString(void)
 {
     char * value = (char *)this -> getValue();
-    int len = 0;
     if (value) {
-    	len = strlen(value);
+    	int len = strlen(value);
 
-	/* strip any trailing white space characters */
-	size_t i = 0;
-	for(i = len;
-	    i > 0 && isspace(value[i-1]);
-	    i--)
-	    value[i-1] = '\0';
+	/*
+	** Remove any leading, embedded, or trailing white space.
+	** This manipulation attempts to correct problems with 
+	** incorrectly encoded UIDs which have been observed in
+	** some images.
+	*/
+	int k = 0;
+	int i = 0;
+	for (i=0; i<len; i++) {
+	    if (!isspace(value[i])) {
+		value[k] = value[i];
+		k++;
+	    }
+	}
+	value[k] = '\0';
     }
 
     return DcmByteString::makeMachineByteString();
@@ -146,7 +154,11 @@ E_Condition DcmUniqueIdentifier::makeMachineByteString(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrui.cc,v $
-** Revision 1.5  1996-05-30 17:19:33  hewett
+** Revision 1.6  1996-05-31 09:09:51  hewett
+** Unique Identifiers which are incorrectly encoded with leading, embedded
+** or trailing white space are now corrected.
+**
+** Revision 1.5  1996/05/30 17:19:33  hewett
 ** Added a makeMachineByteString() method to strip and trailing whitespace
 ** from a UID.
 **
