@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSPresentationLUT
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-07-11 14:53:06 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-09-06 08:55:38 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -569,7 +569,8 @@ OFBool DVPSPresentationLUT::printSCPCreate(
     {
       intoSub = OFFalse;
       const DcmTagKey& currentTag = (stack.top())->getTag();
-      if (currentTag == DCM_PresentationLUTShape) /* OK */ ;
+      if (currentTag.getElement() == 0x0000) /* group length */ ;
+      else if (currentTag == DCM_PresentationLUTShape) /* OK */ ;
       else if (currentTag == DCM_PresentationLUTSequence) /* OK */ ;
       else
       {
@@ -647,7 +648,10 @@ void DVPSPresentationLUT::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgM
 
 /*
  *  $Log: dvpspl.cc,v $
- *  Revision 1.18  2000-07-11 14:53:06  joergr
+ *  Revision 1.19  2000-09-06 08:55:38  meichel
+ *  Updated Print SCP to accept and silently ignore group length attributes.
+ *
+ *  Revision 1.18  2000/07/11 14:53:06  joergr
  *  Corrected rendering of presentation LUT shape LIN OD.
  *
  *  Revision 1.17  2000/07/07 14:15:14  joergr

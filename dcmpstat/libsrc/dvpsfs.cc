@@ -23,8 +23,8 @@
  *    classes: DVPSFilmSession
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-08 10:44:34 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2000-09-06 08:55:36 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -386,7 +386,8 @@ OFBool DVPSFilmSession::printSCPCreate(
     {
       intoSub = OFFalse;
       const DcmTagKey& currentTag = (stack.top())->getTag();
-      if (currentTag == DCM_NumberOfCopies) /* OK */ ;
+      if (currentTag.getElement() == 0x0000) /* group length */ ;
+      else if (currentTag == DCM_NumberOfCopies) /* OK */ ;
       else if (currentTag == DCM_PrintPriority) /* OK */ ;
       else if (currentTag == DCM_MediumType) /* OK */ ;
       else if (currentTag == DCM_FilmDestination) /* OK */ ;
@@ -822,7 +823,8 @@ OFBool DVPSFilmSession::printSCPSet(
     {
       intoSub = OFFalse;
       const DcmTagKey& currentTag = (stack.top())->getTag();
-      if (currentTag == DCM_NumberOfCopies) /* OK */ ;
+      if (currentTag.getElement() == 0x0000) /* group length */ ;
+      else if (currentTag == DCM_NumberOfCopies) /* OK */ ;
       else if (currentTag == DCM_PrintPriority) /* OK */ ;
       else if (currentTag == DCM_MediumType) /* OK */ ;
       else if (currentTag == DCM_FilmDestination) /* OK */ ;
@@ -967,7 +969,10 @@ void DVPSFilmSession::copyPresentationLUTSettings(DVPSStoredPrint& sp)
 
 /*
  *  $Log: dvpsfs.cc,v $
- *  Revision 1.5  2000-06-08 10:44:34  meichel
+ *  Revision 1.6  2000-09-06 08:55:36  meichel
+ *  Updated Print SCP to accept and silently ignore group length attributes.
+ *
+ *  Revision 1.5  2000/06/08 10:44:34  meichel
  *  Implemented Referenced Presentation LUT Sequence on Basic Film Session level.
  *    Empty film boxes (pages) are not written to file anymore.
  *

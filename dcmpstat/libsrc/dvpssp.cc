@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSStoredPrint
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-07-18 16:06:27 $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-09-06 08:55:39 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2770,7 +2770,8 @@ OFBool DVPSStoredPrint::printSCPCreate(
     {
       intoSub = OFFalse;
       const DcmTagKey& currentTag = (stack.top())->getTag();
-      if (currentTag == DCM_ImageDisplayFormat) /* OK */ ;
+      if (currentTag.getElement() == 0x0000) /* group length */ ;
+      else if (currentTag == DCM_ImageDisplayFormat) /* OK */ ;
       else if (currentTag == DCM_FilmOrientation) /* OK */ ;
       else if (currentTag == DCM_FilmSizeID) /* OK */ ;
       else if (currentTag == DCM_MagnificationType) /* OK */ ;
@@ -3407,7 +3408,8 @@ OFBool DVPSStoredPrint::printSCPSet(
     {
       intoSub = OFFalse;
       const DcmTagKey& currentTag = (stack.top())->getTag();
-      if (currentTag == DCM_MagnificationType) /* OK */ ;
+      if (currentTag.getElement() == 0x0000) /* group length */ ;
+      else if (currentTag == DCM_MagnificationType) /* OK */ ;
       else if (currentTag == DCM_SmoothingType) /* OK */ ;
       else if (currentTag == DCM_BorderDensity) /* OK */ ;
       else if (currentTag == DCM_EmptyImageDensity) /* OK */ ;
@@ -3534,7 +3536,10 @@ void DVPSStoredPrint::overridePresentationLUTSettings(
 
 /*
  *  $Log: dvpssp.cc,v $
- *  Revision 1.38  2000-07-18 16:06:27  joergr
+ *  Revision 1.39  2000-09-06 08:55:39  meichel
+ *  Updated Print SCP to accept and silently ignore group length attributes.
+ *
+ *  Revision 1.38  2000/07/18 16:06:27  joergr
  *  Moved method convertODtoLum/PValue from class DVInterface to DVPSStoredPrint
  *  and corrected implementation.
  *  Changed behaviour of methods getMin/MaxDensityValue (return default value if

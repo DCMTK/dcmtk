@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSImageBoxContent
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-07-04 16:06:47 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-09-06 08:55:37 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1040,7 +1040,8 @@ OFBool DVPSImageBoxContent::printSCPSet(
     {
       intoSub = OFFalse;
       const DcmTagKey& currentTag = (stack.top())->getTag();
-      if (currentTag == DCM_ImageBoxPosition) /* OK */ ;
+      if (currentTag.getElement() == 0x0000) /* group length */ ;
+      else if (currentTag == DCM_ImageBoxPosition) /* OK */ ;
       else if (currentTag == DCM_Polarity) /* OK */ ;
       else if (currentTag == DCM_RequestedDecimateCropBehavior) /* OK */ ;
       else if (currentTag == DCM_RequestedImageSize) /* OK */ ;
@@ -1461,7 +1462,8 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
     {
       intoSub = OFFalse;
       const DcmTagKey& currentTag = (stack.top())->getTag();
-      if (currentTag == DCM_SamplesPerPixel) /* OK */ ;
+      if (currentTag.getElement() == 0x0000) /* group length */ ;
+      else if (currentTag == DCM_SamplesPerPixel) /* OK */ ;
       else if (currentTag == DCM_PhotometricInterpretation) /* OK */ ;
       else if (currentTag == DCM_Rows) /* OK */ ;
       else if (currentTag == DCM_Columns) /* OK */ ;
@@ -1549,7 +1551,10 @@ void DVPSImageBoxContent::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgM
 
 /*
  *  $Log: dvpsib.cc,v $
- *  Revision 1.22  2000-07-04 16:06:47  joergr
+ *  Revision 1.23  2000-09-06 08:55:37  meichel
+ *  Updated Print SCP to accept and silently ignore group length attributes.
+ *
+ *  Revision 1.22  2000/07/04 16:06:47  joergr
  *  Added support for overriding the presentation LUT settings made for the
  *  image boxes.
  *

@@ -23,8 +23,8 @@
  *    classes: DVPSPrintSCP
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-07-12 16:39:42 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2000-09-06 08:55:38 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -796,6 +796,10 @@ void DVPSPrintSCP::printerNGet(T_DIMSE_Message& rq, T_DIMSE_Message& rsp, DcmDat
       {
        if (EC_Normal != DVPSHelper::putStringValue(rspDataset, DCM_PrinterStatusInfo, DEFAULT_printerStatusInfo)) result = OFFalse;
       }
+      else if (element == 0x0000)
+      {
+      	/* group length */
+      }
       else
       {
         if (verboseMode)
@@ -1015,7 +1019,17 @@ void DVPSPrintSCP::filmBoxNCreate(DcmDataset *rqDataset, T_DIMSE_Message& rsp, D
 
 void DVPSPrintSCP::presentationLUTNCreate(DcmDataset *rqDataset, T_DIMSE_Message& rsp, DcmDataset *& rspDataset)
 {
-  if (presentationLUTList.findPresentationLUT(rsp.msg.NCreateRSP.AffectedSOPInstanceUID))
+  if ((assoc==NULL) || (0 == ASC_findAcceptedPresentationContextID(assoc, UID_PresentationLUTSOPClass)))
+  {
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "error: cannot create presentation LUT, not negotiated." << endl;
+      logstream->unlockCerr();
+    }
+    rsp.msg.NCreateRSP.DimseStatus = STATUS_N_NoSuchSOPClass;
+    rsp.msg.NCreateRSP.opts = 0;  // don't include affected SOP instance UID
+  }
+  else if (presentationLUTList.findPresentationLUT(rsp.msg.NCreateRSP.AffectedSOPInstanceUID))
   {
     if (verboseMode)
     {
@@ -1226,7 +1240,10 @@ void DVPSPrintSCP::dumpNMessage(T_DIMSE_Message &msg, DcmItem *dataset, OFBool o
 
 /*
  *  $Log: dvpsprt.cc,v $
- *  Revision 1.5  2000-07-12 16:39:42  meichel
+ *  Revision 1.6  2000-09-06 08:55:38  meichel
+ *  Updated Print SCP to accept and silently ignore group length attributes.
+ *
+ *  Revision 1.5  2000/07/12 16:39:42  meichel
  *  Print SCP now writes PrinterCharacteristicsSequence when saving Stored Prints.
  *
  *  Revision 1.4  2000/06/08 10:44:36  meichel
