@@ -4376,6 +4376,122 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
+echo $ac_n "checking prototype for usleep (in libc.h)""... $ac_c" 1>&6
+ac_includes=""
+for ac_header in libc.h
+do
+  ac_includes="$ac_includes
+#include<$ac_header>"
+done
+if eval "test \"`echo '$''{'ac_cv_prototype_usleep'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  cat > conftest.$ac_ext <<EOF
+#line 4391 "configure"
+#include "confdefs.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+$ac_includes
+
+#ifdef __cplusplus
+}
+#endif
+
+typedef union { int member; } dummyStruct;
+#ifdef __cplusplus
+extern "C"
+#endif
+
+dummyStruct usleep(dummyStruct);
+
+
+int main() { return 0; }
+int t() {
+
+; return 0; }
+EOF
+if eval $ac_compile; then
+  rm -rf conftest*
+  eval "ac_cv_prototype_usleep=no"
+else
+  rm -rf conftest*
+  eval "ac_cv_prototype_usleep=yes"
+fi
+rm -f conftest*
+
+fi
+if eval "test \"`echo '$ac_cv_prototype_'usleep`\" = yes"; then
+  echo "$ac_t""yes" 1>&6
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo usleep | tr '[a-z]' '[A-Z]'`
+  cat >> confdefs.h <<EOF
+#define $ac_tr_prototype 1
+EOF
+
+  :
+else
+  echo "$ac_t""no" 1>&6
+fi
+
+echo $ac_n "checking prototype for strncasecmp (in string.h)""... $ac_c" 1>&6
+ac_includes=""
+for ac_header in string.h
+do
+  ac_includes="$ac_includes
+#include<$ac_header>"
+done
+if eval "test \"`echo '$''{'ac_cv_prototype_strncasecmp'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  cat > conftest.$ac_ext <<EOF
+#line 4449 "configure"
+#include "confdefs.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+$ac_includes
+
+#ifdef __cplusplus
+}
+#endif
+
+typedef union { int member; } dummyStruct;
+#ifdef __cplusplus
+extern "C"
+#endif
+
+dummyStruct strncasecmp(dummyStruct);
+
+
+int main() { return 0; }
+int t() {
+
+; return 0; }
+EOF
+if eval $ac_compile; then
+  rm -rf conftest*
+  eval "ac_cv_prototype_strncasecmp=no"
+else
+  rm -rf conftest*
+  eval "ac_cv_prototype_strncasecmp=yes"
+fi
+rm -f conftest*
+
+fi
+if eval "test \"`echo '$ac_cv_prototype_'strncasecmp`\" = yes"; then
+  echo "$ac_t""yes" 1>&6
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo strncasecmp | tr '[a-z]' '[A-Z]'`
+  cat >> confdefs.h <<EOF
+#define $ac_tr_prototype 1
+EOF
+
+  :
+else
+  echo "$ac_t""no" 1>&6
+fi
+
 if test $ac_cv_header_libc_h = yes ; then
 echo $ac_n "checking prototype for mktemp (in stdlib.h libc.h)""... $ac_c" 1>&6
 ac_includes=""
@@ -4388,7 +4504,7 @@ if eval "test \"`echo '$''{'ac_cv_prototype_mktemp'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 4392 "configure"
+#line 4508 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
@@ -4447,7 +4563,7 @@ if eval "test \"`echo '$''{'ac_cv_prototype_mktemp'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 4451 "configure"
+#line 4567 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
@@ -4508,7 +4624,7 @@ if eval "test \"`echo '$''{'$ac_cv_declaration'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 4512 "configure"
+#line 4628 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
@@ -4563,7 +4679,7 @@ if eval "test \"`echo '$''{'$ac_cv_declaration'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 4567 "configure"
+#line 4683 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
