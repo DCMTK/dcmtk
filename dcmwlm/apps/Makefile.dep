@@ -13,15 +13,15 @@ wlcefs.o: wlcefs.cc ../../config/include/osconfig.h \
  ../../dcmnet/include/dul.h ../../dcmnet/include/extneg.h \
  ../../dcmdata/include/cmdlnarg.h ../../dcmnet/include/dimse.h \
  ../../dcmdata/include/dcdatset.h ../../dcmdata/include/dcitem.h \
- ../../dcmdata/include/dcobject.h ../../dcmdata/include/dcstream.h \
- ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
- ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
- ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
- ../../dcmdata/include/dcelem.h ../../dcmdata/include/dcpcache.h \
- ../../dcmdata/include/dcdebug.h ../../dcmdata/include/dcvrat.h \
- ../../dcmdata/include/dcvrlo.h ../../dcmdata/include/dcchrstr.h \
- ../include/wlds.h ../../dcmdata/include/dcsequen.h \
- ../include/wldsfs.h ../include/wlmactmg.h wlcefs.h
+ ../../dcmdata/include/dcobject.h ../../dcmdata/include/dctag.h \
+ ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dclist.h \
+ ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
+ ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
+ ../../dcmdata/include/dcpcache.h ../../dcmdata/include/dcdebug.h \
+ ../../dcmdata/include/dcvrat.h ../../dcmdata/include/dcvrlo.h \
+ ../../dcmdata/include/dcchrstr.h ../include/wlds.h \
+ ../../dcmdata/include/dcsequen.h ../include/wldsfs.h \
+ ../include/wlmactmg.h wlcefs.h
 wlmscpfs.o: wlmscpfs.cc ../../config/include/osconfig.h \
  ../../dcmnet/include/dicom.h ../../dcmnet/include/cond.h \
  ../../ofstd/include/ofconsol.h ../../ofstd/include/ofstream.h \
