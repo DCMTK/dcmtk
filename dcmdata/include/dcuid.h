@@ -24,9 +24,9 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-13 14:10:30 $
+ *  Update Date:      $Date: 2004-03-16 13:43:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
- *  CVS/RCS Revision: $Revision: 1.60 $
+ *  CVS/RCS Revision: $Revision: 1.61 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -410,8 +410,8 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 
 // Other
 #define UID_VerificationSOPClass                                   "1.2.840.10008.1.1"
-// official name in DICOM standard: Media Storage Directory Storage
-#define UID_BasicDirectoryStorageSOPClass                          "1.2.840.10008.1.3.10"
+// was UID_BasicDirectoryStorageSOPClass in DCMTK versions prior to 3.5.3
+#define UID_MediaStorageDirectoryStorage                           "1.2.840.10008.1.3.10"
 #define UID_BasicStudyContentNotificationSOPClass                  "1.2.840.10008.1.9"
 #define UID_StudyComponentManagementSOPClass                       "1.2.840.10008.3.1.2.3.2"
 
@@ -474,7 +474,10 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.60  2004-02-13 14:10:30  joergr
+** Revision 1.61  2004-03-16 13:43:26  joergr
+** Renamed UID_BasicDirectoryStorageSOPClass to UID_MediaStorageDirectoryStorage.
+**
+** Revision 1.60  2004/02/13 14:10:30  joergr
 ** Fixed wrong spelling of "SpatialFiducialsStorage".
 **
 ** Revision 1.59  2004/02/13 11:42:43  joergr

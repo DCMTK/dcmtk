@@ -22,8 +22,8 @@
  *  Purpose: class DcmDicomDir
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-04 16:25:41 $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  Update Date:      $Date: 2004-03-16 13:44:03 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -785,7 +785,7 @@ OFCondition DcmDicomDir::insertMediaSOPUID( DcmMetaInfo &metaInfo )  // inout
     OFCondition l_error = EC_Normal;
     DcmTag medSOPClassTag( DCM_MediaStorageSOPClassUID );
     DcmUniqueIdentifier *mediaStorageSOPClassUID = new DcmUniqueIdentifier( medSOPClassTag );
-    const char* valueUID = UID_BasicDirectoryStorageSOPClass;
+    const char* valueUID = UID_MediaStorageDirectoryStorage;
     mediaStorageSOPClassUID->putString( valueUID );
     metaInfo.insert( mediaStorageSOPClassUID, OFTrue );
     return l_error;
@@ -1335,7 +1335,10 @@ Cdebug(1, refCounter[k].fileOffset==refMRDR->numberOfReferences,
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
-** Revision 1.42  2004-02-04 16:25:41  joergr
+** Revision 1.43  2004-03-16 13:44:03  joergr
+** Renamed UID_BasicDirectoryStorageSOPClass to UID_MediaStorageDirectoryStorage.
+**
+** Revision 1.42  2004/02/04 16:25:41  joergr
 ** Adapted type casts to new-style typecast operators defined in ofcast.h.
 ** Removed acknowledgements with e-mail addresses from CVS log.
 ** Translated remaining German comments.

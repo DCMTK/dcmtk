@@ -24,8 +24,8 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-13 14:11:54 $
- *  CVS/RCS Revision: $Revision: 1.51 $
+ *  Update Date:      $Date: 2004-03-16 13:43:08 $
+ *  CVS/RCS Revision: $Revision: 1.52 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -285,7 +285,7 @@ static const UIDNameMap uidNameMap[] = {
     { UID_TalairachBrainAtlasFrameOfReference,                "TalairachBrainAtlasFrameOfReference" },
 
     // other
-    { UID_BasicDirectoryStorageSOPClass,                      "BasicDirectoryStorageSOPClass" },
+    { UID_MediaStorageDirectoryStorage,                       "MediaStorageDirectoryStorage" },
     { UID_BasicStudyContentNotificationSOPClass,              "BasicStudyContentNotificationSOPClass" },
     { UID_StudyComponentManagementSOPClass,                   "StudyComponentManagementSOPClass" },
     { UID_VerificationSOPClass,                               "VerificationSOPClass" },
@@ -1107,11 +1107,14 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.51  2004-02-13 14:11:54  joergr
+** Revision 1.52  2004-03-16 13:43:08  joergr
+** Renamed UID_BasicDirectoryStorageSOPClass to UID_MediaStorageDirectoryStorage.
+**
+** Revision 1.51  2004/02/13 14:11:54  joergr
 ** Fixed wrong spelling of "SpatialFiducialsStorage".
 **
 ** Revision 1.50  2004/02/13 11:46:44  joergr
-** orrected order of UIDs, modified comments and other minor corrections.
+** Corrected order of UIDs, modified comments and other minor corrections.
 ** Changed filename prefix for some storage SOP classes (array "modalities").
 ** Replaced non-Unix newline characters.
 **
