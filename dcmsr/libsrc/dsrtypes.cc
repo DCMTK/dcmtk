@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-05-02 14:08:36 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Update Date:      $Date: 2002-05-07 12:54:28 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -187,27 +187,31 @@ struct S_CharacterSetNameMap
  *---------------------------------*/
 
 // conditions
-const OFConditionConst ECC_UnknownDocumentType            (OFM_dcmsr,  1, OF_error, "Unknown Document Type");
-const OFConditionConst ECC_InvalidDocument                (OFM_dcmsr,  2, OF_error, "Invalid Document");
-const OFConditionConst ECC_InvalidDocumentTree            (OFM_dcmsr,  3, OF_error, "Invalid Document Tree");
-const OFConditionConst ECC_MandatoryAttributeMissing      (OFM_dcmsr,  4, OF_error, "Mandatory Attribute missing");
-const OFConditionConst ECC_InvalidValue                   (OFM_dcmsr,  5, OF_error, "Invalid Value");
-const OFConditionConst ECC_UnsupportedValue               (OFM_dcmsr,  6, OF_error, "Unsupported Value");
-const OFConditionConst ECC_UnknownValueType               (OFM_dcmsr,  7, OF_error, "Unknown Value Type");
-const OFConditionConst ECC_UnknownRelationshipType        (OFM_dcmsr,  8, OF_error, "Unknown Relationship Type");
-const OFConditionConst ECC_InvalidByValueRelationship     (OFM_dcmsr,  9, OF_error, "Invalid by-value Relationship");
-const OFConditionConst ECC_InvalidByReferenceRelationship (OFM_dcmsr, 10, OF_error, "Invalid by-reference Relationship");
+const OFConditionConst ECC_UnknownDocumentType              (OFM_dcmsr,  1, OF_error, "Unknown Document Type");
+const OFConditionConst ECC_InvalidDocument                  (OFM_dcmsr,  2, OF_error, "Invalid Document");
+const OFConditionConst ECC_InvalidDocumentTree              (OFM_dcmsr,  3, OF_error, "Invalid Document Tree");
+const OFConditionConst ECC_MandatoryAttributeMissing        (OFM_dcmsr,  4, OF_error, "Mandatory Attribute missing");
+const OFConditionConst ECC_InvalidValue                     (OFM_dcmsr,  5, OF_error, "Invalid Value");
+const OFConditionConst ECC_UnsupportedValue                 (OFM_dcmsr,  6, OF_error, "Unsupported Value");
+const OFConditionConst ECC_UnknownValueType                 (OFM_dcmsr,  7, OF_error, "Unknown Value Type");
+const OFConditionConst ECC_UnknownRelationshipType          (OFM_dcmsr,  8, OF_error, "Unknown Relationship Type");
+const OFConditionConst ECC_InvalidByValueRelationship       (OFM_dcmsr,  9, OF_error, "Invalid by-value Relationship");
+const OFConditionConst ECC_InvalidByReferenceRelationship   (OFM_dcmsr, 10, OF_error, "Invalid by-reference Relationship");
+const OFConditionConst ECC_SOPInstanceNotFound              (OFM_dcmsr, 11, OF_error, "SOP Instance not found");
+const OFConditionConst ECC_DifferentSOPClassesForAnInstance (OFM_dcmsr, 12, OF_error, "Different SOP Classes for an Instance");
 
-const OFCondition SR_EC_UnknownDocumentType               (ECC_UnknownDocumentType);
-const OFCondition SR_EC_InvalidDocument                   (ECC_InvalidDocument);
-const OFCondition SR_EC_InvalidDocumentTree               (ECC_InvalidDocumentTree);
-const OFCondition SR_EC_MandatoryAttributeMissing         (ECC_MandatoryAttributeMissing);
-const OFCondition SR_EC_InvalidValue                      (ECC_InvalidValue);
-const OFCondition SR_EC_UnsupportedValue                  (ECC_UnsupportedValue);
-const OFCondition SR_EC_UnknownValueType                  (ECC_UnknownValueType);
-const OFCondition SR_EC_UnknownRelationshipType           (ECC_UnknownRelationshipType);
-const OFCondition SR_EC_InvalidByValueRelationship        (ECC_InvalidByValueRelationship);
-const OFCondition SR_EC_InvalidByReferenceRelationship    (ECC_InvalidByReferenceRelationship);
+const OFCondition SR_EC_UnknownDocumentType                 (ECC_UnknownDocumentType);
+const OFCondition SR_EC_InvalidDocument                     (ECC_InvalidDocument);
+const OFCondition SR_EC_InvalidDocumentTree                 (ECC_InvalidDocumentTree);
+const OFCondition SR_EC_MandatoryAttributeMissing           (ECC_MandatoryAttributeMissing);
+const OFCondition SR_EC_InvalidValue                        (ECC_InvalidValue);
+const OFCondition SR_EC_UnsupportedValue                    (ECC_UnsupportedValue);
+const OFCondition SR_EC_UnknownValueType                    (ECC_UnknownValueType);
+const OFCondition SR_EC_UnknownRelationshipType             (ECC_UnknownRelationshipType);
+const OFCondition SR_EC_InvalidByValueRelationship          (ECC_InvalidByValueRelationship);
+const OFCondition SR_EC_InvalidByReferenceRelationship      (ECC_InvalidByReferenceRelationship);
+const OFCondition SR_EC_SOPInstanceNotFound                 (ECC_SOPInstanceNotFound);
+const OFCondition SR_EC_DifferentSOPClassesForAnInstance    (ECC_DifferentSOPClassesForAnInstance);
 
 
 static const S_DocumentTypeNameMap DocumentTypeNameMap[] =
@@ -776,7 +780,7 @@ OFBool DSRTypes::checkElementValue(DcmElement &delem,
         message += module;
         result = OFFalse;
     }
-    else if ((type == "1") && (vm == "1-n") && (vmNum != 1))
+    else if ((type == "1") && (vm == "1-n") && (vmNum < 1))
     {
         message += vmText;
         message += " != 1-n in ";
@@ -1330,7 +1334,11 @@ OFCondition DSRTypes::appendStream(ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
- *  Revision 1.25  2002-05-02 14:08:36  joergr
+ *  Revision 1.26  2002-05-07 12:54:28  joergr
+ *  Added support for the Current Requested Procedure Evidence Sequence and the
+ *  Pertinent Other Evidence Sequence to the dcmsr module.
+ *
+ *  Revision 1.25  2002/05/02 14:08:36  joergr
  *  Added support for standard and non-standard string streams (which one is
  *  supported is detected automatically via the configure mechanism).
  *  Thanks again to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his

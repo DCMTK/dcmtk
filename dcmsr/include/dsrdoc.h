@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2001, OFFIS
+ *  Copyright (C) 2000-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:50:52 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Update Date:      $Date: 2002-05-07 12:49:31 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,8 +39,7 @@
 
 #include "ofstream.h"
 #include "dsrdoctr.h"
-
-
+#include "dsrsoprf.h"
 
 
 /*---------------------*
@@ -302,6 +301,24 @@ class DSRDocument
                                        OFString &seriesInstanceUID,
                                        OFString &sopClassUID,
                                        OFString &sopInstanceUID);
+
+    /** get list of referenced SOP instances (Current Requested Procedure Evidence).
+     *  PS 3.3 - 2001 states: "The intent of the Current Requested Procedure Evidence Sequence
+     *  is to reference all evidence created in order to satisfy the current Requested Procedure(s)
+     *  for this SR Document. This shall include, but is not limited to, all current evidence
+     *  referenced in the content tree."
+     ** @return reference to list object
+     */
+    DSRSOPInstanceReferenceList &getCurrentRequestedProcedureEvidence();
+
+    /** get list of referenced SOP instances (Pertinent Other Evidence).
+     *  PS 3.3 - 2001 states: "The Pertinent Other Evidence Sequence attribute is used to reference
+     *  all other evidence considered pertinent for this SR Document that is not listed in the Current
+     *  Requested Procedure Evidence Sequence. This requires that the same SOP Instance shall not be
+     *  referenced in both of these Sequences."
+     ** @return reference to list object
+     */
+    DSRSOPInstanceReferenceList &getPertinentOtherEvidence();
 
 
   // --- get DICOM string attributes (C string) ---
@@ -886,7 +903,7 @@ class DSRDocument
 
     /// output stream for error messages, NULL for no messages
     OFConsole *LogStream;
-    
+
     /// flag indicating whether is document is finalized or not
     OFBool             FinalizedFlag;
 
@@ -897,7 +914,7 @@ class DSRDocument
     /// defined term: see DSRTypes
     E_CharacterSet     SpecificCharacterSetEnum;
 
-    // DICOM attributes are listed here ordered by module.
+    // DICOM attributes are listed ordered by module.
     // The comments for each attribute describe the Name: (VR, VM, Type).
 
     // --- SOP Common Module (M) ---
@@ -990,10 +1007,10 @@ class DSRDocument
         // -- not supported --
     //  Performed Procedure Code Sequence: (SQ, 1, 2)
     DcmSequenceOfItems  PerformedProcedureCode;
-    //  Current Requested Procedure Evidence Sequence: (SQ, 1, 1C)
-        // -- not supported --
-    //  Pertinent Other Evidence Sequence: (SQ, 1, 1C)
-        // -- not supported --
+    /// Current Requested Procedure Evidence Sequence: (SQ, 1, 1C)
+    DSRSOPInstanceReferenceList CurrentRequestedProcedureEvidence;
+    /// Pertinent Other Evidence Sequence: (SQ, 1, 1C)
+    DSRSOPInstanceReferenceList PertinentOtherEvidence;
 
  // --- declaration copy constructor and assignment operator
 
@@ -1008,7 +1025,11 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
- *  Revision 1.25  2002-04-16 13:50:52  joergr
+ *  Revision 1.26  2002-05-07 12:49:31  joergr
+ *  Added support for the Current Requested Procedure Evidence Sequence and the
+ *  Pertinent Other Evidence Sequence to the dcmsr module.
+ *
+ *  Revision 1.25  2002/04/16 13:50:52  joergr
  *  Added configurable support for C++ ANSI standard includes (e.g. streams).
  *  Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
  *  contribution.

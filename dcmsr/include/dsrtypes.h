@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-05-02 14:08:23 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Update Date:      $Date: 2002-05-07 12:49:32 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -101,6 +101,12 @@ extern const OFCondition SR_EC_InvalidByValueRelationship;
 
 /// error: the by-reference relationship between two content items is not allowed
 extern const OFCondition SR_EC_InvalidByReferenceRelationship;
+
+/// error: the specified SOP instance could not be found
+extern const OFCondition SR_EC_SOPInstanceNotFound;
+
+/// error: a SOP instance has different SOP classes
+extern const OFCondition SR_EC_DifferentSOPClassesForAnInstance;
 //@}
 
 
@@ -1102,7 +1108,11 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
- *  Revision 1.25  2002-05-02 14:08:23  joergr
+ *  Revision 1.26  2002-05-07 12:49:32  joergr
+ *  Added support for the Current Requested Procedure Evidence Sequence and the
+ *  Pertinent Other Evidence Sequence to the dcmsr module.
+ *
+ *  Revision 1.25  2002/05/02 14:08:23  joergr
  *  Added support for standard and non-standard string streams (which one is
  *  supported is detected automatically via the configure mechanism).
  *  Thanks again to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
