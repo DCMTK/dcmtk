@@ -67,7 +67,6 @@ clean:
 	(cd wwwapps; $(MAKE) clean)
 	(cd docs; $(MAKE) clean)
 	(cd tests; $(MAKE) clean)
-	(cd htmldocs; $(MAKE) clean)
 	rm -f $(TRASH)
 
 distclean:
@@ -77,7 +76,6 @@ distclean:
 	(cd wwwapps; $(MAKE) distclean)
 	(cd docs; $(MAKE) distclean)
 	(cd tests; $(MAKE) distclean)
-	(cd htmldocs; $(MAKE) distclean)
 	rm -f $(DISTTRASH)
 
 dependencies:
@@ -85,6 +83,3 @@ dependencies:
 	(cd apps; touch $(DEP); $(MAKE) dependencies)
 	(cd wwwapps; touch $(DEP); $(MAKE) dependencies)
 	(cd tests; touch $(DEP); $(MAKE) dependencies)
-
-html:
-	(doc++ -d htmldocs -p -i -B /dev/null include/*.h libsrc/*.cc apps/*.h apps/*.cc)
