@@ -22,9 +22,9 @@
  *  Purpose: Utilities (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 15:51:45 $
+ *  Update Date:      $Date: 1998-12-16 16:40:15 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diutils.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -188,14 +188,16 @@ const SP_Interpretation PhotometricInterpretationNames[] =
  *  function declarations  *
  *-------------------------*/
 
-EP_Representation determineRepresentation(double minvalue, double maxvalue);
+EP_Representation determineRepresentation(double minvalue,
+                                          double maxvalue);
 
 
 /*-------------------*
  *  inline functions *
  *-------------------*/
 
-inline unsigned long maxval(int bits, unsigned long pos = 1)
+inline unsigned long maxval(const int bits,
+                            const unsigned long pos = 1)
 {
     return (bits < MAX_BITS) ? ((unsigned long)1 << bits) - pos : (Uint32)-1;
 }
@@ -225,7 +227,10 @@ class DicomImageClass
 **
 ** CVS/RCS Log:
 ** $Log: diutils.h,v $
-** Revision 1.1  1998-11-27 15:51:45  joergr
+** Revision 1.2  1998-12-16 16:40:15  joergr
+** Some layouting.
+**
+** Revision 1.1  1998/11/27 15:51:45  joergr
 ** Added copyright message.
 ** Introduced global debug level for dcmimage module to control error output.
 ** Moved type definitions to diutils.h.
