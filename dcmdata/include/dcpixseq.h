@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmPixelSequence
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-03 14:05:25 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-03-03 14:41:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpixseq.h,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -87,6 +87,9 @@ public:
                        const int level = 0, const char *pixelFileName = NULL,
 		               size_t *pixelCounter = NULL);
 
+    virtual Uint32 calcElementLength(const E_TransferSyntax xfer,
+                                     const E_EncodingType enctype);
+
     virtual E_Condition insert(DcmPixelItem* item,
                                unsigned long where = DCM_EndOfListIndex);
 
@@ -117,7 +120,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.h,v $
-** Revision 1.15  2000-03-03 14:05:25  meichel
+** Revision 1.16  2000-03-03 14:41:56  joergr
+** Corrected bug related to padding of file and item size.
+**
+** Revision 1.15  2000/03/03 14:05:25  meichel
 ** Implemented library support for redirecting error messages into memory
 **   instead of printing them to stdout/stderr for GUI applications.
 **
