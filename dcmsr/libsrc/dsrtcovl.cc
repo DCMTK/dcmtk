@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2002, OFFIS
+ *  Copyright (C) 2000-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRTemporalCoordinatesValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-05 13:53:30 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2003-08-07 14:08:24 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +35,7 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dsrtcovl.h"
+#include "dsrxmld.h"
 
 
 DSRTemporalCoordinatesValue::DSRTemporalCoordinatesValue()
@@ -120,9 +121,46 @@ OFCondition DSRTemporalCoordinatesValue::print(ostream &stream,
 }
 
 
+OFCondition DSRTemporalCoordinatesValue::readXML(const DSRXMLDocument &doc,
+                                                 DSRXMLCursor cursor)
+{
+    OFCondition result = SR_EC_CorruptedXMLStructure;
+    if (cursor.valid())
+    {
+        /* graphic data (required) */
+        cursor = doc.getNamedNode(cursor.getChild(), "data");
+        if (cursor.valid())
+        {
+            OFString tmpString, typeString;
+            /* read 'type' and check validity */
+            doc.getStringFromAttribute(cursor, typeString, "type");
+            if (typeString == "SAMPLE POSITION")
+            {
+                /* put value to the sample position list */
+                result = SamplePositionList.putString(doc.getStringFromNodeContent(cursor, tmpString).c_str());
+            }
+            else if (typeString == "TIME OFFSET")
+            {
+                /* put value to the time offset list */
+                result = TimeOffsetList.putString(doc.getStringFromNodeContent(cursor, tmpString).c_str());
+            }
+            else if (typeString == "DATETIME")
+            {
+                /* put value to the datetime list */
+                result = DatetimeList.putString(doc.getStringFromNodeContent(cursor, tmpString).c_str());
+            } else {
+                DSRTypes::printUnknownValueWarningMessage(doc.getLogStream(), "TCOORD data type", typeString.c_str());
+                result = SR_EC_InvalidValue;
+            }
+        }
+    }
+    return result;
+}
+
+
 OFCondition DSRTemporalCoordinatesValue::writeXML(ostream &stream,
                                                   const size_t flags,
-                                                  OFConsole * /* logStream */) const
+                                                  OFConsole * /*logStream*/) const
 {
     /* TemporalRangeType is written in TreeNode class */
     if ((flags & DSRTypes::XF_writeEmptyTags) || !SamplePositionList.isEmpty() ||
@@ -134,7 +172,8 @@ OFCondition DSRTemporalCoordinatesValue::writeXML(ostream &stream,
         {
             stream << "SAMPLE POSITION\">";
             SamplePositionList.print(stream);
-        } else if (!TimeOffsetList.isEmpty())
+        }
+        else if (!TimeOffsetList.isEmpty())
         {
             stream << "TIME OFFSET\">";
             TimeOffsetList.print(stream);
@@ -152,24 +191,21 @@ OFCondition DSRTemporalCoordinatesValue::read(DcmItem &dataset,
                                               OFConsole *logStream)
 {
     /* read TemporalRangeType */
-    OFString string;
-    OFCondition result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_TemporalRangeType, string, "1", "1", logStream, "TCOORD content item");
+    OFString tmpString;
+    OFCondition result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_TemporalRangeType, tmpString, "1", "1", logStream, "TCOORD content item");
     if (result.good())
     {
-        TemporalRangeType = DSRTypes::enumeratedValueToTemporalRangeType(string);
+        TemporalRangeType = DSRTypes::enumeratedValueToTemporalRangeType(tmpString);
         /* check TemporalRangeType */
         if (TemporalRangeType == DSRTypes::TRT_invalid)
-        {
-            OFString message = "Reading unknown TemporalRangeType ";
-            message += string;
-            DSRTypes::printWarningMessage(logStream, message.c_str());
-        }
-        /* read data (all three lists) */
+            DSRTypes::printUnknownValueWarningMessage(logStream, "TemporalRangeType", tmpString.c_str());
+        /* first read data (all three lists) */
         SamplePositionList.read(dataset, logStream);
         TimeOffsetList.read(dataset, logStream);
         DatetimeList.read(dataset, logStream);
-        /* check data and report warnings if any */
-        checkData(TemporalRangeType, SamplePositionList, TimeOffsetList, DatetimeList, logStream);
+        /* then check data and report warnings if any */
+        if (!checkData(TemporalRangeType, SamplePositionList, TimeOffsetList, DatetimeList, logStream))
+            result = SR_EC_InvalidValue;
     }
     return result;
 }
@@ -200,7 +236,7 @@ OFCondition DSRTemporalCoordinatesValue::renderHTML(ostream &docStream,
                                                     ostream &annexStream,
                                                     size_t &annexNumber,
                                                     const size_t flags,
-                                                    OFConsole * /* logStream */) const
+                                                    OFConsole * /*logStream*/) const
 {
     /* render TemporalRangeType */
     docStream << DSRTypes::temporalRangeTypeToReadableName(TemporalRangeType);
@@ -317,7 +353,11 @@ OFBool DSRTemporalCoordinatesValue::checkData(const DSRTypes::E_TemporalRangeTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcovl.cc,v $
- *  Revision 1.8  2002-12-05 13:53:30  joergr
+ *  Revision 1.9  2003-08-07 14:08:24  joergr
+ *  Added readXML functionality.
+ *  Renamed parameters/variables "string" to avoid name clash with STL class.
+ *
+ *  Revision 1.8  2002/12/05 13:53:30  joergr
  *  Added further checks when reading SR documents (e.g. value of VerificationFlag,
  *  CompletionsFlag, ContinuityOfContent and SpecificCharacterSet).
  *
