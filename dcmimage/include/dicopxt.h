@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomColorPixelTemplate (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-09 13:37:24 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-12-10 17:39:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -371,7 +371,7 @@ class DiColorPixelTemplate
                 register const T *r = Data[0] + start;
                 register const T *g = Data[1] + start;
                 register const T *b = Data[2] + start;
-                register Uint32 *q = data;
+                register Uint32 *q = (Uint32 *)data;
                 register unsigned long i;
                 if (fromBits == toBits)
                 {
@@ -479,7 +479,10 @@ class DiColorPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dicopxt.h,v $
- * Revision 1.19  2002-12-09 13:37:24  joergr
+ * Revision 1.20  2002-12-10 17:39:50  meichel
+ * Added explicit type cast to avoid compilation error on gcc 3.2
+ *
+ * Revision 1.19  2002/12/09 13:37:24  joergr
  * Added private undefined copy constructor and/or assignment operator.
  * Fixed bug that caused method createAWTBitmap() to return always empty pixel
  * data.
