@@ -24,9 +24,9 @@
  *           DVPSPresentationLUTType, DVPSRotationType, 
  *           DVPSShutterType
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:28:58 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-05-30 13:48:00 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -412,12 +412,37 @@ enum DVPSDisplayTransform
   DVPSD_max=DVPSD_none
 };
 
+/** describes the different status levels used for the log file messages
+ */
+enum DVPSLogMessageLevel
+{
+  /** no log messages (only used as a filter)
+   */  
+  DVPSM_none,
+  /** informational messages
+   */  
+  DVPSM_informational,
+  /** warning messages (includes DVPSM_none)
+   */  
+  DVPSM_warning,
+  /** error messages (includes DVPSM_warning)
+   */  
+  DVPSM_error,
+  /** debug messages (includes DVPSM_error)
+   */  
+  DVPSM_debug
+};
+
 
 #endif
 
 /*
  *  $Log: dvpstyp.h,v $
- *  Revision 1.8  2000-03-08 16:28:58  meichel
+ *  Revision 1.9  2000-05-30 13:48:00  joergr
+ *  Added interface methods to support the following new features:
+ *    - write/filter log messages (not yet implemented)
+ *
+ *  Revision 1.8  2000/03/08 16:28:58  meichel
  *  Updated copyright header.
  *
  *  Revision 1.7  1999/09/10 09:02:33  joergr
