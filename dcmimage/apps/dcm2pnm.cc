@@ -22,9 +22,9 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-09-28 13:52:40 $
+ *  Update Date:      $Date: 2001-11-09 16:35:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.49 $
+ *  CVS/RCS Revision: $Revision: 1.50 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,7 +80,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 
 int main(int argc, char *argv[])
 {
-    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "Convert DICOM images to PGM or PNM", rcsid);
+    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "Convert DICOM images to PGM, PNM or BMP", rcsid);
     OFCommandLine cmd;
 
     char buf[1024];
@@ -127,9 +127,10 @@ int main(int argc, char *argv[])
 
     int                 opt_verboseMode = 1;              /* default: be more or less quiet */
     int                 opt_imageInfo = 0;                /* default: no info */
-    int                 opt_debugMode   = 0;              /* default: no debug */
+    int                 opt_debugMode = 0;                /* default: no debug */
     int                 opt_suppressOutput = 0;           /* default: create output */
-    int                 opt_fileType = 1;                 /* default: 8-bit binary PGM/PPM */
+    int                 opt_fileType = 0;                 /* default: 8-bit PGM/PPM */
+                                                          /* (binary for file output and ASCII for stdout) */
                         /* 2=8-bit-ASCII, 3=16-bit-ASCII, 4=n-bit-ASCII, 5=pastel color */
     OFCmdUnsignedInt    opt_fileBits = 0;                 /* default: 0 */
     const char *        opt_ifname = NULL;
@@ -146,7 +147,7 @@ int main(int argc, char *argv[])
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
 
     cmd.addParam("dcmfile-in",  "DICOM input filename to be converted");
-    cmd.addParam("pnmfile-out", "PGM/PNM output file name to be written", OFCmdParam::PM_Optional);
+    cmd.addParam("pnmfile-out", "PGM/PNM/BMP output file name to be written (default: stdout)", OFCmdParam::PM_Optional);
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
      cmd.addOption("--help",                "-h",      "print this help text and exit");
@@ -253,269 +254,274 @@ int main(int argc, char *argv[])
 
     cmd.addGroup("output options:", LONGCOL, SHORTCOL + 2);
      cmd.addOption("--no-output",           "-o",      "do not create any output (useful with -im)");
-     cmd.addOption("--write-raw-pnm",       "+ob",     "write 8-bit binary PGM/PPM (default)");
-     cmd.addOption("--write-8-bit-pnm",     "+oa",     "write 8-bit ASCII PGM/PPM");
-     cmd.addOption("--write-16-bit-pnm",    "+oA",     "write 16-bit ASCII PGM/PPM");
-     cmd.addOption("--write-n-bit-pnm",     "+oN",  1, "[n]umber : integer",
+     cmd.addOption("--write-raw-pnm",       "+op",     "write 8-bit binary PGM/PPM (default for files)");
+     cmd.addOption("--write-8-bit-pnm",     "+opb",    "write 8-bit ASCII PGM/PPM (default for stdout)");
+     cmd.addOption("--write-16-bit-pnm",    "+opw",    "write 16-bit ASCII PGM/PPM");
+     cmd.addOption("--write-n-bit-pnm",     "+opn", 1, "[n]umber : integer",
                                                        "write n-bit ASCII PGM/PPM (1..32)");
+     cmd.addOption("--write-bmp",           "+ob",     "write 8-bit (monochrome) or 24-bit (color) BMP");
+     cmd.addOption("--write-8-bit-bmp",     "+obp",    "write 8-bit palette BMP (monochrome only)");
+     cmd.addOption("--write-24-bit-bmp",    "+obt",    "write 24-bit truecolor BMP");
+
 #ifdef PASTEL_COLOR_OUTPUT
      cmd.addOption("--write-pastel-pnm",    "+op",     "write 8-bit binary PPM with pastel colors\n(early experimental version)");
 #endif
 
     if (app.parseCommandLine(cmd, argc, argv))
     {
-        if ((cmd.getParamCount() == 1) && (!cmd.findOption("--no-output")))
-            app.printError("Missing output file");
-        else
+        cmd.getParam(1, opt_ifname);
+        cmd.getParam(2, opt_ofname);
+
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--verbose"))
+            opt_verboseMode = 2;
+        if (cmd.findOption("--quiet"))
         {
-            cmd.getParam(1, opt_ifname);
-            cmd.getParam(2, opt_ofname);
-
-            cmd.beginOptionBlock();
-            if (cmd.findOption("--verbose"))
-                opt_verboseMode = 2;
-            if (cmd.findOption("--quiet"))
-            {
-                opt_verboseMode = 0;
-                app.setQuietMode();
-            }
-            cmd.endOptionBlock();
-
-            if (cmd.findOption("--debug"))
-                opt_debugMode = 1;
-            if (cmd.findOption("--image-info"))
-                opt_imageInfo = 1;
-
-            cmd.beginOptionBlock();
-            if (cmd.findOption("--read-dataset"))
-                opt_readAsDataset = 1;
-            if (cmd.findOption("--read-file"))
-                opt_readAsDataset = 0;
-            cmd.endOptionBlock();
-
-            cmd.beginOptionBlock();
-            if (cmd.findOption("--read-xfer-auto"))
-                opt_transferSyntax = EXS_Unknown;
-            if (cmd.findOption("--read-xfer-implicit"))
-                opt_transferSyntax = EXS_LittleEndianImplicit;
-            if (cmd.findOption("--read-xfer-little"))
-                opt_transferSyntax = EXS_LittleEndianExplicit;
-            if (cmd.findOption("--read-xfer-big"))
-                opt_transferSyntax = EXS_BigEndianExplicit;
-            cmd.endOptionBlock();
-
-            if (cmd.findOption("--accept-acr-nema"))
-                opt_compatibilityMode |= CIF_AcrNemaCompatibility;
-            if (cmd.findOption("--accept-palettes"))
-                opt_compatibilityMode |= CIF_WrongPaletteAttributeTags;
-
-            cmd.beginOptionBlock();
-            if (cmd.findOption("--frame"))
-                app.checkValue(cmd.getValue(opt_frame, 1));
-            if (cmd.findOption("--frame-range"))
-            {
-                app.checkValue(cmd.getValue(opt_frame, 1));
-                app.checkValue(cmd.getValue(opt_frameCount, 1));
-                opt_multiFrame = 1;
-            }
-            if (cmd.findOption("--all-frames"))
-            {
-                opt_frameCount = 0;
-                opt_multiFrame = 1;
-            }
-            cmd.endOptionBlock();
-
-            if (cmd.findOption("--grayscale"))
-                opt_convertToGrayscale = 1;
-            if (cmd.findOption("--change-polarity"))
-                opt_changePolarity = 1;
-
-            if (cmd.findOption("--clip-region"))
-            {
-                app.checkValue(cmd.getValue(opt_left));
-                app.checkValue(cmd.getValue(opt_top));
-                app.checkValue(cmd.getValue(opt_width, 1));
-                app.checkValue(cmd.getValue(opt_height, 1));
-                opt_useClip = 1;
-            }
-
-            cmd.beginOptionBlock();
-            if (cmd.findOption("--rotate-left"))
-                opt_rotateDegree = 270;
-            if (cmd.findOption("--rotate-right"))
-                opt_rotateDegree = 90;
-            if (cmd.findOption("--rotate-top-down"))
-                opt_rotateDegree = 180;
-            cmd.endOptionBlock();
-
-            cmd.beginOptionBlock();
-            if (cmd.findOption("--flip-horizontally"))
-                opt_flipType = 1;
-            if (cmd.findOption("--flip-vertically"))
-                opt_flipType = 2;
-            if (cmd.findOption("--flip-both-axes"))
-                opt_flipType = 3;
-            cmd.endOptionBlock();
-
-            cmd.beginOptionBlock();
-            if (cmd.findOption("--recognize-aspect"))
-                opt_useAspectRatio = 1;
-            if (cmd.findOption("--ignore-aspect"))
-                opt_useAspectRatio = 0;
-            cmd.endOptionBlock();
-
-            cmd.beginOptionBlock();
-            if (cmd.findOption("--interpolate"))
-                app.checkValue(cmd.getValue(opt_useInterpolation, 1, 2));
-            if (cmd.findOption("--no-interpolation"))
-                opt_useInterpolation = 0;
-            cmd.endOptionBlock();
-
-            cmd.beginOptionBlock();
-            if (cmd.findOption("--no-scaling"))
-                opt_scaleType = 0;
-            if (cmd.findOption("--scale-x-factor"))
-            {
-                opt_scaleType = 1;
-                app.checkValue(cmd.getValue(opt_scale_factor, 0.0, OFFalse));
-            }
-            if (cmd.findOption("--scale-y-factor"))
-            {
-                opt_scaleType = 2;
-                app.checkValue(cmd.getValue(opt_scale_factor, 0.0, OFFalse));
-            }
-            if (cmd.findOption("--scale-x-size"))
-            {
-                opt_scaleType = 3;
-                app.checkValue(cmd.getValue(opt_scale_size, 1));
-            }
-            if (cmd.findOption("--scale-y-size"))
-            {
-                opt_scaleType = 4;
-                app.checkValue(cmd.getValue(opt_scale_size, 1));
-            }
-            cmd.endOptionBlock();
-
-            cmd.beginOptionBlock();
-            if (cmd.findOption("--no-windowing"))
-                opt_windowType = 0;
-            if (cmd.findOption("--use-window"))
-            {
-                opt_windowType = 1;
-                app.checkValue(cmd.getValue(opt_windowParameter, 1));
-            }
-            if (cmd.findOption("--use-voi-lut"))
-            {
-                opt_windowType = 2;
-                app.checkValue(cmd.getValue(opt_windowParameter, 1));
-            }
-            if (cmd.findOption("--min-max-window"))
-                opt_windowType = 3;
-            if (cmd.findOption("--min-max-window-n"))
-                opt_windowType = 6;
-            if (cmd.findOption("--roi-min-max-window"))
-            {
-                opt_windowType = 7;
-                app.checkValue(cmd.getValue(opt_roiLeft));
-                app.checkValue(cmd.getValue(opt_roiTop));
-                app.checkValue(cmd.getValue(opt_roiWidth, 1));
-                app.checkValue(cmd.getValue(opt_roiHeight, 1));
-            }
-            if (cmd.findOption("--histogram-window"))
-            {
-                opt_windowType = 4;
-                app.checkValue(cmd.getValue(opt_windowParameter, 0, 100));
-            }
-            if (cmd.findOption("--set-window"))
-            {
-                opt_windowType = 5;
-                app.checkValue(cmd.getValue(opt_windowCenter));
-                app.checkValue(cmd.getValue(opt_windowWidth, 1.0));
-            }
-            cmd.endOptionBlock();
-
-            cmd.beginOptionBlock();
-            if (cmd.findOption("--identity-shape"))
-                opt_presShape = ESP_Identity;
-            if (cmd.findOption("--inverse-shape"))
-                opt_presShape = ESP_Inverse;
-            if (cmd.findOption("--lin-od-shape"))
-                opt_presShape = ESP_LinOD;
-            cmd.endOptionBlock();
-
-            if (cmd.findOption("--display-file"))
-                app.checkValue(cmd.getValue(opt_displayFile));
-            cmd.beginOptionBlock();
-            if (cmd.findOption("--gsd-function"))
-                opt_displayFunction = 0;
-            if (cmd.findOption("--cielab-function"))
-                opt_displayFunction = 1;
-            cmd.endOptionBlock();
-
-            cmd.beginOptionBlock();
-            if (cmd.findOption("--no-overlays"))
-            {
-                opt_O_used = 1;
-                for (i = 0; i < 16; i++)
-                    opt_Overlay[i] = 0;
-            }
-            if (cmd.findOption("--display-overlay", 0, OFCommandLine::FOM_First))
-            {
-                do {
-                    unsigned long l;
-                    app.checkValue(cmd.getValue(l, 1, 16));
-                    if (!opt_O_used)
-                    {
-                        for (i = 0; i < 16; i++) opt_Overlay[i] = 0;
-                        opt_O_used = 1;
-                    }
-                    if (l > 0)
-                        opt_Overlay[l - 1]=1;
-                    else
-                    {
-                        for (i = 0; i < 16; i++)
-                            opt_Overlay[i] = 2;
-                    }
-                } while (cmd.findOption("--display-overlay", 0, OFCommandLine::FOM_Next));
-            }
-            cmd.endOptionBlock();
-
-            cmd.beginOptionBlock();
-            if (cmd.findOption("--ovl-replace"))
-                opt_OverlayMode = 1;
-            if (cmd.findOption("--ovl-threshold"))
-                opt_OverlayMode = 2;
-            if (cmd.findOption("--ovl-complement"))
-                opt_OverlayMode = 3;
-            if (cmd.findOption("--ovl-roi"))
-                opt_OverlayMode = 4;
-            cmd.endOptionBlock();
-
-            if (cmd.findOption("--set-foreground"))
-                app.checkValue(cmd.getValue(opt_foregroundDensity, 0.0, 1.0));
-            if (cmd.findOption("--set-threshold"))
-                app.checkValue(cmd.getValue(opt_thresholdDensity, 0.0, 1.0));
-
-            cmd.beginOptionBlock();
-            if (cmd.findOption("--no-output"))
-                opt_suppressOutput = 1;
-            if (cmd.findOption("--write-raw-pnm"))
-                opt_fileType = 1;
-            if (cmd.findOption("--write-8-bit-pnm"))
-                opt_fileType = 2;
-            if (cmd.findOption("--write-16-bit-pnm"))
-                opt_fileType = 3;
-            if (cmd.findOption("--write-n-bit-pnm"))
-            {
-                opt_fileType = 4;
-                app.checkValue(cmd.getValue(opt_fileBits, 1, 32));
-            }
-#ifdef PASTEL_COLOR_OUTPUT
-            if (cmd.findOption("--write-pastel-pnm"))
-                opt_fileType = 5;
-#endif
-            cmd.endOptionBlock();
+            opt_verboseMode = 0;
+            app.setQuietMode();
         }
+        cmd.endOptionBlock();
+
+        if (cmd.findOption("--debug"))
+            opt_debugMode = 1;
+        if (cmd.findOption("--image-info"))
+            opt_imageInfo = 1;
+
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--read-dataset"))
+            opt_readAsDataset = 1;
+        if (cmd.findOption("--read-file"))
+            opt_readAsDataset = 0;
+        cmd.endOptionBlock();
+
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--read-xfer-auto"))
+            opt_transferSyntax = EXS_Unknown;
+        if (cmd.findOption("--read-xfer-implicit"))
+            opt_transferSyntax = EXS_LittleEndianImplicit;
+        if (cmd.findOption("--read-xfer-little"))
+            opt_transferSyntax = EXS_LittleEndianExplicit;
+        if (cmd.findOption("--read-xfer-big"))
+            opt_transferSyntax = EXS_BigEndianExplicit;
+        cmd.endOptionBlock();
+
+        if (cmd.findOption("--accept-acr-nema"))
+            opt_compatibilityMode |= CIF_AcrNemaCompatibility;
+        if (cmd.findOption("--accept-palettes"))
+            opt_compatibilityMode |= CIF_WrongPaletteAttributeTags;
+
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--frame"))
+            app.checkValue(cmd.getValueAndCheckMin(opt_frame, 1));
+        if (cmd.findOption("--frame-range"))
+        {
+            app.checkValue(cmd.getValueAndCheckMin(opt_frame, 1));
+            app.checkValue(cmd.getValueAndCheckMin(opt_frameCount, 1));
+            opt_multiFrame = 1;
+        }
+        if (cmd.findOption("--all-frames"))
+        {
+            opt_frameCount = 0;
+            opt_multiFrame = 1;
+        }
+        cmd.endOptionBlock();
+
+        if (cmd.findOption("--grayscale"))
+            opt_convertToGrayscale = 1;
+        if (cmd.findOption("--change-polarity"))
+            opt_changePolarity = 1;
+
+        if (cmd.findOption("--clip-region"))
+        {
+            app.checkValue(cmd.getValue(opt_left));
+            app.checkValue(cmd.getValue(opt_top));
+            app.checkValue(cmd.getValueAndCheckMin(opt_width, 1));
+            app.checkValue(cmd.getValueAndCheckMin(opt_height, 1));
+            opt_useClip = 1;
+        }
+
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--rotate-left"))
+            opt_rotateDegree = 270;
+        if (cmd.findOption("--rotate-right"))
+            opt_rotateDegree = 90;
+        if (cmd.findOption("--rotate-top-down"))
+            opt_rotateDegree = 180;
+        cmd.endOptionBlock();
+
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--flip-horizontally"))
+            opt_flipType = 1;
+        if (cmd.findOption("--flip-vertically"))
+            opt_flipType = 2;
+        if (cmd.findOption("--flip-both-axes"))
+            opt_flipType = 3;
+        cmd.endOptionBlock();
+
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--recognize-aspect"))
+            opt_useAspectRatio = 1;
+        if (cmd.findOption("--ignore-aspect"))
+            opt_useAspectRatio = 0;
+        cmd.endOptionBlock();
+
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--interpolate"))
+            app.checkValue(cmd.getValueAndCheckMinMax(opt_useInterpolation, 1, 2));
+        if (cmd.findOption("--no-interpolation"))
+            opt_useInterpolation = 0;
+        cmd.endOptionBlock();
+
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--no-scaling"))
+            opt_scaleType = 0;
+        if (cmd.findOption("--scale-x-factor"))
+        {
+            opt_scaleType = 1;
+            app.checkValue(cmd.getValueAndCheckMin(opt_scale_factor, 0.0, OFFalse));
+        }
+        if (cmd.findOption("--scale-y-factor"))
+        {
+            opt_scaleType = 2;
+            app.checkValue(cmd.getValueAndCheckMin(opt_scale_factor, 0.0, OFFalse));
+        }
+        if (cmd.findOption("--scale-x-size"))
+        {
+            opt_scaleType = 3;
+            app.checkValue(cmd.getValueAndCheckMin(opt_scale_size, 1));
+        }
+        if (cmd.findOption("--scale-y-size"))
+        {
+            opt_scaleType = 4;
+            app.checkValue(cmd.getValueAndCheckMin(opt_scale_size, 1));
+        }
+        cmd.endOptionBlock();
+
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--no-windowing"))
+            opt_windowType = 0;
+        if (cmd.findOption("--use-window"))
+        {
+            opt_windowType = 1;
+            app.checkValue(cmd.getValueAndCheckMin(opt_windowParameter, 1));
+        }
+        if (cmd.findOption("--use-voi-lut"))
+        {
+            opt_windowType = 2;
+            app.checkValue(cmd.getValueAndCheckMin(opt_windowParameter, 1));
+        }
+        if (cmd.findOption("--min-max-window"))
+            opt_windowType = 3;
+        if (cmd.findOption("--min-max-window-n"))
+            opt_windowType = 6;
+        if (cmd.findOption("--roi-min-max-window"))
+        {
+            opt_windowType = 7;
+            app.checkValue(cmd.getValue(opt_roiLeft));
+            app.checkValue(cmd.getValue(opt_roiTop));
+            app.checkValue(cmd.getValueAndCheckMin(opt_roiWidth, 1));
+            app.checkValue(cmd.getValueAndCheckMin(opt_roiHeight, 1));
+        }
+        if (cmd.findOption("--histogram-window"))
+        {
+            opt_windowType = 4;
+            app.checkValue(cmd.getValueAndCheckMinMax(opt_windowParameter, 0, 100));
+        }
+        if (cmd.findOption("--set-window"))
+        {
+            opt_windowType = 5;
+            app.checkValue(cmd.getValue(opt_windowCenter));
+            app.checkValue(cmd.getValueAndCheckMin(opt_windowWidth, 1.0));
+        }
+        cmd.endOptionBlock();
+
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--identity-shape"))
+            opt_presShape = ESP_Identity;
+        if (cmd.findOption("--inverse-shape"))
+            opt_presShape = ESP_Inverse;
+        if (cmd.findOption("--lin-od-shape"))
+            opt_presShape = ESP_LinOD;
+        cmd.endOptionBlock();
+
+        if (cmd.findOption("--display-file"))
+            app.checkValue(cmd.getValue(opt_displayFile));
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--gsd-function"))
+            opt_displayFunction = 0;
+        if (cmd.findOption("--cielab-function"))
+            opt_displayFunction = 1;
+        cmd.endOptionBlock();
+
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--no-overlays"))
+        {
+            opt_O_used = 1;
+            for (i = 0; i < 16; i++)
+                opt_Overlay[i] = 0;
+        }
+        if (cmd.findOption("--display-overlay", 0, OFCommandLine::FOM_First))
+        {
+            do {
+                unsigned long l;
+                app.checkValue(cmd.getValueAndCheckMinMax(l, 1, 16));
+                if (!opt_O_used)
+                {
+                    for (i = 0; i < 16; i++) opt_Overlay[i] = 0;
+                    opt_O_used = 1;
+                }
+                if (l > 0)
+                    opt_Overlay[l - 1]=1;
+                else
+                {
+                    for (i = 0; i < 16; i++)
+                        opt_Overlay[i] = 2;
+                }
+            } while (cmd.findOption("--display-overlay", 0, OFCommandLine::FOM_Next));
+        }
+        cmd.endOptionBlock();
+
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--ovl-replace"))
+            opt_OverlayMode = 1;
+        if (cmd.findOption("--ovl-threshold"))
+            opt_OverlayMode = 2;
+        if (cmd.findOption("--ovl-complement"))
+            opt_OverlayMode = 3;
+        if (cmd.findOption("--ovl-roi"))
+            opt_OverlayMode = 4;
+        cmd.endOptionBlock();
+
+        if (cmd.findOption("--set-foreground"))
+            app.checkValue(cmd.getValueAndCheckMinMax(opt_foregroundDensity, 0.0, 1.0));
+        if (cmd.findOption("--set-threshold"))
+            app.checkValue(cmd.getValueAndCheckMinMax(opt_thresholdDensity, 0.0, 1.0));
+
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--no-output"))
+            opt_suppressOutput = 1;
+        if (cmd.findOption("--write-raw-pnm"))
+            opt_fileType = 1;
+        if (cmd.findOption("--write-8-bit-pnm"))
+            opt_fileType = 2;
+        if (cmd.findOption("--write-16-bit-pnm"))
+            opt_fileType = 3;
+        if (cmd.findOption("--write-n-bit-pnm"))
+        {
+            opt_fileType = 4;
+            app.checkValue(cmd.getValueAndCheckMinMax(opt_fileBits, 1, 32));
+        }
+        if (cmd.findOption("--write-bmp"))
+            opt_fileType = 5;
+        if (cmd.findOption("--write-8-bit-bmp"))
+            opt_fileType = 6;
+        if (cmd.findOption("--write-24-bit-bmp"))
+            opt_fileType = 7;
+#ifdef PASTEL_COLOR_OUTPUT
+        if (cmd.findOption("--write-pastel-pnm"))
+            opt_fileType = 8;
+#endif
+        cmd.endOptionBlock();
     }
 
 
@@ -949,7 +955,7 @@ int main(int argc, char *argv[])
     FILE *ofile = NULL;
     char ofname[255];
     unsigned int fcount = (unsigned int)(((opt_frameCount > 0) && (opt_frameCount <= di->getFrameCount())) ? opt_frameCount : di->getFrameCount());
-    const char *ofext = di->isMonochrome() ? "pgm" : "ppm";
+    const char *ofext = (opt_fileType >= 5) && (opt_fileType <= 7) ? "bmp" : (di->isMonochrome() ? "pgm" : "ppm");
     
     if (fcount < opt_frameCount)
     {
@@ -961,6 +967,7 @@ int main(int argc, char *argv[])
     {
         if (opt_ofname)
         {
+            /* output to file */
             if (opt_multiFrame)
                 sprintf(ofname, "%s.%d.%s", opt_ofname, frame, ofext);
             else
@@ -974,15 +981,18 @@ int main(int argc, char *argv[])
                 app.printError(oss.str());
             }
         } else {
+            /* output to stdout */
             ofile = stdout;
             if (opt_verboseMode > 1)
-                 OUTPUT << "writing frame " << (opt_frame + frame) << " to stderr" << endl;
+                 OUTPUT << "writing frame " << (opt_frame + frame) << " to stdout" << endl;
         }
 
-        /* finally create PPM/PGM file */
+        /* finally create PPM/PGM or BMP file */
 
         switch (opt_fileType)
         {
+            case 1:
+                status = di->writeRawPPM(ofile, 8, frame);
             case 2:
                 status = di->writePPM(ofile, 8, frame);
                 break;
@@ -992,14 +1002,25 @@ int main(int argc, char *argv[])
             case 4:
                 status = di->writePPM(ofile, (int)opt_fileBits, frame);
                 break;
-    #ifdef PASTEL_COLOR_OUTPUT
             case 5:
+                status = di->writeBMP(ofile, 0, frame);
+                break;
+            case 6:
+                status = di->writeBMP(ofile, 8, frame);
+                break;
+            case 7:
+                status = di->writeBMP(ofile, 24, frame);
+                break;
+    #ifdef PASTEL_COLOR_OUTPUT
+            case 8:
                 status = di->writePPM(ofile, MI_PastelColor, frame);
                 break;
     #endif
-            case 1:
             default:
-                status = di->writeRawPPM(ofile, 8, frame);
+                if (opt_ofname)
+                    status = di->writeRawPPM(ofile, 8, frame);
+                else /* stdout */
+                    status = di->writePPM(ofile, 8, frame);
                 break;
         }
 
@@ -1023,7 +1044,14 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.49  2001-09-28 13:52:40  joergr
+ * Revision 1.50  2001-11-09 16:35:20  joergr
+ * Renamed some of the getValue/getParam methods to avoid ambiguities reported
+ * by certain compilers.
+ * Added support for Windows BMP file format.
+ * Added support for the direct output of the converted PNM/PGM/BMP image to
+ * the 'stdout' stream (not yet tested under Windows).
+ *
+ * Revision 1.49  2001/09/28 13:52:40  joergr
  * Added method setRoiWindow() which automatically calculates a min-max VOI
  * window for a specified rectangular region of the image.
  *
