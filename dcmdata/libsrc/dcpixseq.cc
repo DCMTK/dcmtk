@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-03 15:10:02 $
+** Update Date:		$Date: 1997-07-07 07:51:36 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixseq.cc,v $
-** CVS/RCS Revision:	$Revision: 1.10 $
+** CVS/RCS Revision:	$Revision: 1.11 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -42,7 +42,7 @@ DcmPixelSequence::DcmPixelSequence(const DcmTag &tag,
 				   const Uint32 len)
 : DcmSequenceOfItems(tag, len)
 {
-    Tag->setVR(EVR_pixelSQ);
+    Tag.setVR(EVR_pixelSQ);
     xfer = EXS_Unknown;
 }
 
@@ -70,7 +70,7 @@ DcmPixelSequence::~DcmPixelSequence()
 void DcmPixelSequence::print(ostream & out, const BOOL showFullData,
 			     const int level )
 {
-    Tag->setVR( EVR_OB );
+    Tag.setVR(EVR_OB);
     char *info = new char[200];
     char *title = (char*)NULL;
     if ( Length == DCM_UndefinedLength)
@@ -268,7 +268,12 @@ E_Condition DcmPixelSequence::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.cc,v $
-** Revision 1.10  1997-07-03 15:10:02  andreas
+** Revision 1.11  1997-07-07 07:51:36  andreas
+** - Changed type for Tag attribute in DcmObject from prointer to value
+** - Enhanced (faster) byte swapping routine. swapIfNecessary moved from
+**   a method in DcmObject to a general function.
+**
+** Revision 1.10  1997/07/03 15:10:02  andreas
 ** - removed debugging functions Bdebug() and Edebug() since
 **   they write a static array and are not very useful at all.
 **   Cdebug and Vdebug are merged since they have the same semantics.

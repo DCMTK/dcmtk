@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-03 15:10:15 $
+** Update Date:		$Date: 1997-07-07 07:51:35 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrobow.cc,v $
-** CVS/RCS Revision:	$Revision: 1.16 $
+** CVS/RCS Revision:	$Revision: 1.17 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -75,9 +75,8 @@ DcmOtherByteOtherWord::~DcmOtherByteOtherWord()
 
 E_Condition DcmOtherByteOtherWord::setVR(DcmEVR vr)
 {
-    errorFlag = EC_Normal;
-    Tag -> setVR(vr);
-    return errorFlag;
+    Tag.setVR(vr);
+    return EC_Normal;
 }
 
 
@@ -87,7 +86,7 @@ E_Condition DcmOtherByteOtherWord::setVR(DcmEVR vr)
 
 DcmEVR DcmOtherByteOtherWord::ident(void) const
 {
-    return Tag->getEVR();
+    return Tag.getEVR();
 }
 
 
@@ -99,7 +98,7 @@ void DcmOtherByteOtherWord::print(ostream & out, const BOOL showFullData,
 {
     if (this -> valueLoaded())
     {
-	const DcmEVR evr = Tag -> getEVR();
+	const DcmEVR evr = Tag.getEVR();
 	Uint16 * wordValues = NULL;
 	Uint8 * byteValues = NULL;
 
@@ -177,7 +176,7 @@ void DcmOtherByteOtherWord::print(ostream & out, const BOOL showFullData,
 E_Condition DcmOtherByteOtherWord::alignValue(void)
 {
     errorFlag = EC_Normal;
-    if ( Tag->getEVR() != EVR_OW && Length != 0L)
+    if ( Tag.getEVR() != EVR_OW && Length != 0L)
     {
 	Uint8 * bytes = NULL;
 	bytes = (Uint8 *)getValue(fByteOrder);
@@ -206,7 +205,7 @@ E_Condition DcmOtherByteOtherWord::putUint8Array(const Uint8 * byteValue,
     errorFlag = EC_Normal;
     if (numBytes)
     {
-	if (Tag->getEVR() != EVR_OW)
+	if (Tag.getEVR() != EVR_OW)
 	{
 	    if (byteValue)
 	    {
@@ -235,7 +234,7 @@ E_Condition DcmOtherByteOtherWord::putUint16Array(const Uint16 * wordValue,
     errorFlag = EC_Normal;
     if (numWords)
     {
-	if (Tag->getEVR() == EVR_OW)
+	if (Tag.getEVR() == EVR_OW)
 	{
 	    if (wordValue)
 		errorFlag = putValue(wordValue, sizeof(Uint16)*Uint32(numWords));
@@ -263,7 +262,7 @@ E_Condition DcmOtherByteOtherWord::putString(const char * val)
 	unsigned long vm = getVMFromString(val);
 	if (vm)
 	{
-	    const DcmEVR evr = Tag -> getEVR();
+	    const DcmEVR evr = Tag.getEVR();
 	    Uint16 * wordField = NULL;
 	    Uint8 * byteField = NULL;
 
@@ -321,7 +320,7 @@ E_Condition DcmOtherByteOtherWord::putString(const char * val)
 E_Condition DcmOtherByteOtherWord::getUint8Array(Uint8 * & bytes)
 {
     errorFlag = EC_Normal;
-    if ( Tag->getEVR() != EVR_OW )
+    if ( Tag.getEVR() != EVR_OW )
         bytes = (Uint8 *)this -> getValue();
     else
         errorFlag = EC_IllegalCall;
@@ -334,7 +333,7 @@ E_Condition DcmOtherByteOtherWord::getUint8Array(Uint8 * & bytes)
 E_Condition DcmOtherByteOtherWord::getUint16Array(Uint16 * & words)
 {
     errorFlag = EC_Normal;
-    if ( Tag->getEVR() == EVR_OW )
+    if ( Tag.getEVR() == EVR_OW )
         words = (Uint16 *)this -> getValue();
     else
         errorFlag = EC_IllegalCall;
@@ -359,7 +358,7 @@ BOOL DcmOtherByteOtherWord::canWriteXfer(const E_TransferSyntax newXfer,
 					 const E_TransferSyntax /*oldXfer*/)
 {
     DcmXfer newXferSyn(newXfer);
-    return *Tag != DCM_PixelData || !newXferSyn.isEncapsulated();
+    return Tag != DCM_PixelData || !newXferSyn.isEncapsulated();
 }
     
 
@@ -386,7 +385,12 @@ E_Condition DcmOtherByteOtherWord::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
-** Revision 1.16  1997-07-03 15:10:15  andreas
+** Revision 1.17  1997-07-07 07:51:35  andreas
+** - Changed type for Tag attribute in DcmObject from prointer to value
+** - Enhanced (faster) byte swapping routine. swapIfNecessary moved from
+**   a method in DcmObject to a general function.
+**
+** Revision 1.16  1997/07/03 15:10:15  andreas
 ** - removed debugging functions Bdebug() and Edebug() since
 **   they write a static array and are not very useful at all.
 **   Cdebug and Vdebug are merged since they have the same semantics.
