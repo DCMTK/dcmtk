@@ -47,9 +47,9 @@ LIBDIRS = -L$(top_srcdir)/libsrc $(dcmpstatlibdir) $(imagectnlibdir) $(dcmnetlib
 	$(dcmdatalibdir) $(ofstdlibdir) $(dcmimglelibdir) -L$(libdir)
 LOCALLIBS = $(dcmpstatlib) $(dcmimglelib) $(imagectnlib) $(dcmnetlib) $(dcmdatalib) $(ofstdlib) -lm
 
-objs= dcmpsmk.o dcmp2pgm.o dcmmklut.o dcmmkcrv.o dcmpssnd.o dcmpsrcv.o dcmpsprt.o dconvmap.o
+objs= dcmpsmk.o dcmp2pgm.o dcmmklut.o dcmmkcrv.o dcmpssnd.o dcmpsrcv.o dcmpsprt.o dconvmap.o dcmprtsv.o
 
-progs= dcmpsmk dcmp2pgm dcmmklut dcmmkcrv dcmpssnd dcmpsrcv dcmpsprt dconvmap
+progs= dcmpsmk dcmp2pgm dcmmklut dcmmkcrv dcmpssnd dcmpsrcv dcmpsprt dconvmap dcmprtsv
 
 all: $(progs)
 
@@ -76,6 +76,9 @@ dcmpsprt: dcmpsprt.o
 
 dconvmap: dconvmap.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dconvmap.o $(LOCALLIBS) $(LIBS)  
+
+dcmprtsv: dcmprtsv.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmprtsv.o $(LOCALLIBS) $(LIBS)  
 
 install: all
 	$(configdir)/mkinstalldirs $(bindir)
