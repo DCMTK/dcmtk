@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmCodeString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 12:49:14 $
+ *  Update Date:      $Date: 2003-06-12 13:30:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrcs.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -85,6 +85,20 @@ class DcmCodeString
     virtual OFCondition getOFString(OFString &stringVal,
                                     const unsigned long pos,
                                     OFBool normalize = OFTrue);
+
+    /* --- static helper functions --- */
+
+    /** check whether given value conforms to value representation CS (Code String).
+     *  Valid characters are: A-Z, 0-9, _ and ' ' (space).  The maximum length is 16.
+     *  @param value string value to be checked
+     *  @param pos returns index of first invalid character (0..n-1) if not NULL.
+     *    Points to trailing zero byte (eos) if value is valid.
+     *  @param checkLength check maximum length if OFTrue, ignore length if OFFalse
+     *  @return OFTrue if value is valid, OFFalse otherwise
+     */
+    static OFBool checkVR(const OFString &value,
+                          size_t *pos = NULL,
+                          const OFBool checkLength = OFTrue);
 };
 
 
@@ -94,7 +108,10 @@ class DcmCodeString
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrcs.h,v $
-** Revision 1.13  2002-12-06 12:49:14  joergr
+** Revision 1.14  2003-06-12 13:30:58  joergr
+** Added static function checkVR().
+**
+** Revision 1.13  2002/12/06 12:49:14  joergr
 ** Enhanced "print()" function by re-working the implementation and replacing
 ** the boolean "showFullData" parameter by a more general integer flag.
 ** Added doc++ documentation.
