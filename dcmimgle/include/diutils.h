@@ -21,10 +21,10 @@
  *
  *  Purpose: Utilities (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-04-30 16:33:19 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-07-23 14:16:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diutils.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -69,6 +69,9 @@ const unsigned long CIF_MayDetachPixelData        = 0x0000004;
 
 /// use presentation state instead of 'built-in' LUTs & overlays
 const unsigned long CIF_UsePresentationState      = 0x0000008;
+
+/// don't convert color images to RGB (NOT IMPLEMENTED !)
+const unsigned long CIF_KeepOriginalColorModel    = 0x0000010;
 
 //@}
 
@@ -248,7 +251,11 @@ class DicomImageClass
  *
  * CVS/RCS Log:
  * $Log: diutils.h,v $
- * Revision 1.8  1999-04-30 16:33:19  meichel
+ * Revision 1.9  1999-07-23 14:16:16  joergr
+ * Added flag to avoid color space conversion for color images (not yet
+ * implemented).
+ *
+ * Revision 1.8  1999/04/30 16:33:19  meichel
  * Now including stdio.h in diutils.h, required on SunOS
  *
  * Revision 1.7  1999/04/28 14:55:41  joergr
