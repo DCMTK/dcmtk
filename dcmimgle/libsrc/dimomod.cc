@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2003, OFFIS
+ *  Copyright (C) 1996-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomMonochromeModality (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-17 16:18:34 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2005-03-09 17:37:08 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -253,8 +253,8 @@ void DiMonoModality::checkRescaling(const DiInputPixel *pixel)
                     MaxValue = MaxValue * RescaleSlope + RescaleIntercept;
                     AbsMinimum = pixel->getAbsMinimum() * RescaleSlope + RescaleIntercept;
                     AbsMaximum = pixel->getAbsMaximum() * RescaleSlope + RescaleIntercept;
-                }
-                Bits = DicomImageClass::tobits(OFstatic_cast(unsigned long, AbsMaximum - AbsMinimum), 0);
+                }                
+                Bits = DicomImageClass::rangeToBits(AbsMinimum, AbsMaximum);
             }
         }
     }
@@ -265,7 +265,10 @@ void DiMonoModality::checkRescaling(const DiInputPixel *pixel)
  *
  * CVS/RCS Log:
  * $Log: dimomod.cc,v $
- * Revision 1.19  2003-12-17 16:18:34  joergr
+ * Revision 1.20  2005-03-09 17:37:08  joergr
+ * Fixed bug in calculation of bits stored value after modality transformation.
+ *
+ * Revision 1.19  2003/12/17 16:18:34  joergr
  * Added new compatibility flag that allows to ignore the third value of LUT
  * descriptors and to determine the bits per table entry automatically.
  *
