@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-02-23 13:31:10 $
- *  CVS/RCS Revision: $Revision: 1.128 $
+ *  Update Date:      $Date: 2001-02-23 14:57:55 $
+ *  CVS/RCS Revision: $Revision: 1.129 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -4266,6 +4266,8 @@ E_Condition DVInterface::verifyAndSignStructuredReport(const char *userID, const
                 /* replace report in memory */
                 delete pReport;
                 pReport = newReport;
+                if (pSignatureHandler)
+                  pSignatureHandler->updateDigitalSignatureInformation(dataset, DVPSS_structuredReport, OFFalse /* onRead? */);
                 if (mode == DVPSY_verifyAndSign_finalize)
                   result = pReport->finalizeDocument();
                 else
@@ -4330,7 +4332,11 @@ void DVInterface::disableImageAndPState()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.128  2001-02-23 13:31:10  joergr
+ *  Revision 1.129  2001-02-23 14:57:55  joergr
+ *  Update signature status when signing a structured report (not only when
+ *  saving/storing the report).
+ *
+ *  Revision 1.128  2001/02/23 13:31:10  joergr
  *  Changed behaviour of method verifyAndSignStructuredReport() with 'finalize'.
  *  Now the entire document is always signed independently from the tree items
  *  marked.
