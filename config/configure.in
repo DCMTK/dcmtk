@@ -86,6 +86,7 @@ AC_CHECK_HEADERS(malloc.h)
 AC_CHECK_HEADERS(sys/ipc.h)
 AC_CHECK_HEADERS(sys/sem.h)
 AC_CHECK_HEADERS(sys/shm.h)
+AC_CHECK_HEADERS(sys/param.h)
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_INLINE
@@ -115,6 +116,7 @@ AC_CHECK_FUNCS(uname cuserid getlogin)
 AC_CHECK_FUNCS(usleep)
 AC_CHECK_FUNCS(semctl semget semop)
 AC_CHECK_FUNCS(shmat shmdt shmctl shmget)
+AC_CHECK_FUNCS(getwd getcwd)
 dnl Checks for prototypes
 
 AC_CHECK_PROTOTYPE(bzero)

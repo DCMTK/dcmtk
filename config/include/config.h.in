@@ -73,6 +73,9 @@
 /* Define if you have the cuserid function.  */
 #undef HAVE_CUSERID
 
+/* Define if you have the getcwd function.  */
+#undef HAVE_GETCWD
+
 /* Define if you have the getenv function.  */
 #undef HAVE_GETENV
 
@@ -87,6 +90,9 @@
 
 /* Define if you have the getpid function.  */
 #undef HAVE_GETPID
+
+/* Define if you have the getwd function.  */
+#undef HAVE_GETWD
 
 /* Define if you have the index function.  */
 #undef HAVE_INDEX
@@ -195,6 +201,9 @@
 
 /* Define if you have the <sys/ipc.h> header file.  */
 #undef HAVE_SYS_IPC_H
+
+/* Define if you have the <sys/param.h> header file.  */
+#undef HAVE_SYS_PARAM_H
 
 /* Define if you have the <sys/select.h> header file.  */
 #undef HAVE_SYS_SELECT_H
