@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-04-17 18:57:38 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Update Date:      $Date: 2003-08-07 13:05:26 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,8 +54,17 @@
 // protocol, hostname and CGI script name used for HTML hyperlinks to composite objects
 #define HTML_HYPERLINK_PREFIX_FOR_CGI "http://localhost/dicom.cgi"
 
+// URL of the DICOM toolkit DCMTK
+#define DCMTK_INTERNET_URL "http://dicom.offis.de/dcmtk"
+
 // XML namespace URI for dcmsr module
 #define DCMSR_XML_NAMESPACE_URI "http://dicom.offis.de/dcmsr"
+
+// XML Schema file for dcmsr module
+#define DCMSR_XML_XSD_FILE "dsr2xml.xsd"
+
+// XML Schema Instance URI
+#define XML_SCHEMA_INSTANCE_URI "http://www.w3.org/2001/XMLSchema-instance"
 
 
 /*-----------------------*
@@ -110,6 +119,9 @@ extern const OFCondition SR_EC_SOPInstanceNotFound;
 
 /// error: a SOP instance has different SOP classes
 extern const OFCondition SR_EC_DifferentSOPClassesForAnInstance;
+
+/// error: the XML structure is corrupted (XML parser error)
+extern const OFCondition SR_EC_CorruptedXMLStructure;
 //@}
 
 
@@ -218,26 +230,38 @@ class DSRTypes
     //@}
 
 
-    /** @name writeXML() flags.
-     *  These flags can be combined and passed to the writeXML() methods.
+    /** @name read/writeXML() flags.
+     *  These flags can be combined and passed to the read/writeXML() methods.
      *  The 'shortcut' flags can be used for common cobinations.
      */
     //@{
 
-    /// write all tags even if their value is empty
+    /// write: write all tags even if their value is empty
     static const size_t XF_writeEmptyTags;
 
-    /// encode code value, coding scheme designator and coding scheme version as attribute instead of element text
+    /// write: encode code value, coding scheme designator and coding scheme version as attribute instead of element text
     static const size_t XF_codeComponentsAsAttribute;
 
-    /// encode relationship type as attribute instead of element text
+    /// write: encode relationship type as attribute instead of element text
     static const size_t XF_relationshipTypeAsAttribute;
 
-    /// encode value type as attribute instead of element text
+    /// write: encode value type as attribute instead of element text
     static const size_t XF_valueTypeAsAttribute;
 
-    /// add DCMSR namespace declaration to the XML output
+    /// write: add DCMSR namespace declaration to the XML output
     static const size_t XF_useDcmsrNamespace;
+
+    /// write: add Schema reference to XML document
+    static const size_t XF_addSchemaReference;
+
+    /// read: validate content of XML document against Schema
+    static const size_t XF_validateSchema;
+
+    /// read: output 'libxml' error and warning messages
+    static const size_t XF_enableLibxmlErrorOutput;
+
+    /// shortcut: combines all XF_xxxAsAttribute write flags (see above)
+    static const size_t XF_encodeEverythingAsAttribute;
     //@}
 
 
@@ -287,8 +311,10 @@ class DSRTypes
         DT_KeyObjectDoc,
         /// DICOM SOP Class: Mammography CAD SR
         DT_MammographyCadSR,
+        /// DICOM SOP Class: Chest CAD SR
+        DT_ChestCadSR,
         /// internal type used to mark the last entry
-        DT_last = DT_MammographyCadSR
+        DT_last = DT_ChestCadSR
     };
 
     /** SR relationship types
@@ -642,6 +668,12 @@ class DSRTypes
      */
     static E_ValueType definedTermToValueType(const OFString &definedTerm);
 
+    /** convert XML tag name to value type
+     ** @param  xmlTagName  XML tag name to be converted
+     ** @return value type if successful, VT_invalid/unknown otherwise
+     */
+    static E_ValueType xmlTagNameToValueType(const OFString &xmlTagName);
+
     /** convert DICOM enumerated value to graphic type
      ** @param  enumeratedValue  enumerated value to be converted
      ** @return graphic type if successful, GT_invalid otherwise
@@ -682,20 +714,26 @@ class DSRTypes
   // --- misc helper functions ---
 
     /** check whether specified SR document type is supported by this library.
-     *  Currently all three general SOP classes, the Key Object Selection Document and the
-     *  Mammography CAD SR class as defined in the DICOM 2001 standard are supported.
+     *  Currently all three general SOP classes, the Key Object Selection Document, the
+     *  Mammography and Chest CAD SR class as defined in the DICOM 2003 standard are supported.
      ** @param  documentType  SR document type to be checked
      ** @return status, OFTrue if SR document type is supported, OFFalse otherwise
      */
     static OFBool isDocumentTypeSupported(const E_DocumentType documentType);
 
     /** check whether contraint checking is supported for the specified SR document type.
-     *  Currently all three general SOP classes and the Key Object Selection Document
-     *  as defined in the DICOM 2001 standard are supported.
+     *  Currently all three general SOP classes and the Key Object Selection Document as
+     *  defined in the DICOM 2003 standard are supported (Mammography and Chest CAD SR are not).
      ** @param  documentType  SR document type to be checked
      ** @return status, OFTrue if constraint checking is supported, OFFalse otherwise
      */
     static OFBool isConstraintCheckingSupported(const E_DocumentType documentType);
+
+    /** check whether by-reference relationships are allowed for the specified document type
+     ** @param  documentType  SR document type to be checked
+     ** @return status, OFTrue if by-reference relationships are allowed, OFFalse otherwise
+     */
+    static OFBool isByReferenceAllowed(const E_DocumentType documentType);
 
     /** get current date in DICOM 'DA' format. (YYYYMMDD)
      ** @param  dateString  string used to store the current date.
@@ -779,18 +817,18 @@ class DSRTypes
                                                 const OFBool writeEmptyValue = OFFalse);
 
     /** convert unsigned integer number to character string
-     ** @param  number  unsigned integer number to be converted
-     *  @param  string  character string used to store the result
+     ** @param  number       unsigned integer number to be converted
+     *  @param  stringValue  character string used to store the result
      ** @return pointer to the first character of the resulting string (may be NULL if 'string' was NULL)
      */
     static const char *numberToString(const size_t number,
-                                      char *string);
+                                      char *stringValue);
 
     /** convert string to unsigned integer number
-     ** @param  string  character string to be converted
+     ** @param  stringValue  character string to be converted
      ** @return resulting unsigned integer number if successful, 0 otherwise
      */
-    static size_t stringToNumber(const char *string);
+    static size_t stringToNumber(const char *stringValue);
 
     /** convert character string to print string.
      *  This method is used to convert character strings for text "print" output.  Newline characters
@@ -830,10 +868,10 @@ class DSRTypes
      *  the first and the last character of the string are always figures (0..9). Example: 1 or 1.2.3.
      *  Please note that this test is not as strict as specified for value representation UI in the
      *  DICOM standard (e.g. regarding even length padding or leading '0' for the numbers).
-     ** @param  string  character string to be checked
+     ** @param  stringValue  character string to be checked
      ** @result OFTrue if 'string' conforms to UID format, OFFalse otherwise
      */
-    static OFBool checkForValidUIDFormat(const OFString &string);
+    static OFBool checkForValidUIDFormat(const OFString &stringValue);
 
     /** create specified document tree node.
      *  This is a shortcut and the only location where document tree nodes are created.
@@ -861,8 +899,8 @@ class DSRTypes
 
     /** remove given attribute from the sequence.
      *  All occurrences of the attribute in all items of the sequence are removed.
-     ** @param  dataset  reference to DICOM sequence from which the attribute should be removed
-     *  @param  tagKey   DICOM tag specifying the attribute which should be removed
+     ** @param  sequence  reference to DICOM sequence from which the attribute should be removed
+     *  @param  tagKey    DICOM tag specifying the attribute which should be removed
      */
     static void removeAttributeFromSequence(DcmSequenceOfItems &sequence,
                                             const DcmTagKey &tagKey);
@@ -1005,19 +1043,27 @@ class DSRTypes
                                                          OFConsole *stream = NULL,
                                                          const char *moduleName = NULL);
 
-
   // --- output functions ---
+
+    /** print a message
+     ** @param  stream   output stream to which the warning message is printed
+     *  @param  message  message to be printed
+     */
+    static void printMessage(OFConsole *stream,
+                             const char *message);
 
     /** print a warning message.
      *  The prefix 'DCMSR - Warning: ' is automatically added to the message text.
-     ** @param  stream  output stream to which the warning message is printed
+     ** @param  stream   output stream to which the warning message is printed
+     *  @param  message  warning message to be printed
      */
     static void printWarningMessage(OFConsole *stream,
                                     const char *message);
 
     /** print a error message.
      *  The prefix 'DCMSR - Error: ' is automatically added to the message text.
-     ** @param  stream  output stream to which the error message is printed
+     ** @param  stream   output stream to which the error message is printed
+     *  @param  message  error message to be printed
      */
     static void printErrorMessage(OFConsole *stream,
                                   const char *message);
@@ -1047,6 +1093,17 @@ class DSRTypes
                                              const OFCondition &result,
                                              const DSRDocumentTreeNode *node,
                                              const char *location = NULL);
+
+    /** print a warning message that an unknown/unsupported value has been determined
+     ** @param  stream     output stream to which the warning message is printed (no message if NULL)
+     *  @param  valueName  name of the unknown/unsupported value
+     *  @param  readValue  value that has been read (optional)
+     *  @param  action     text describing the current action (default: 'Reading'), 'Processing' if NULL
+     */
+    static void printUnknownValueWarningMessage(OFConsole *stream,
+                                                const char *valueName,
+                                                const char *readValue = NULL,
+                                                const char *action = "Reading");
 
     /** write string value to XML output stream.
      *  The output looks like this: "<" tagName ">" stringValue "</" tagName ">"
@@ -1123,7 +1180,12 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
- *  Revision 1.31  2003-04-17 18:57:38  joergr
+ *  Revision 1.32  2003-08-07 13:05:26  joergr
+ *  Added readXML functionality. Added support for Chest CAD SR.
+ *  Added new option --add-schema-reference to command line tool dsr2xml.
+ *  Renamed parameters/variables "string" to avoid name clash with STL class.
+ *
+ *  Revision 1.31  2003/04/17 18:57:38  joergr
  *  Replace LF and CR by &#10; and &#13; in XML mode instead of &#182; (para).
  *
  *  Revision 1.30  2003/04/01 14:59:13  joergr
