@@ -57,7 +57,7 @@
   Affects: dcmimage/libsrc/diregist.cc
   
 - Added experimental support to create grayscale images with more than 256
-  shades of gray to be display an a consumer monitor (use pastel colors).
+  shades of gray to be displayed on a consumer monitor (use pastel colors).
   Affects: dcmimage/libsrc/dcm2pnm.cc
   
 - Modified some command line options (not yet finished).
