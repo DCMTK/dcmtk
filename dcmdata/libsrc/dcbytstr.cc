@@ -10,9 +10,9 @@
 ** Implementation of class DcmByteString
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-09-11 15:18:16 $
+** Update Date:		$Date: 1997-10-13 11:33:48 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcbytstr.cc,v $
-** CVS/RCS Revision:	$Revision: 1.17 $
+** CVS/RCS Revision:	$Revision: 1.18 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -137,7 +137,7 @@ DcmByteString::getOFString(OFString & str,
 			   OFBool /*normalize*/)
 {
     errorFlag = EC_Normal;
-    if (getVM() > pos)
+    if (pos >= getVM())
 	errorFlag = EC_IllegalCall;
     else
     {
@@ -497,7 +497,13 @@ normalizeString(
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
-** Revision 1.17  1997-09-11 15:18:16  hewett
+** Revision 1.18  1997-10-13 11:33:48  hewett
+** Fixed bug in DcmByteString::getOFString due to inverse logic causing
+** a string to be retrieved for all illegal values of pos while the errorFlag
+** was set to EC_IllegalCall for all legal values of pos (thanks to Phil Liao
+** <phil@eeg.com> for suggesting the bugfix).
+**
+** Revision 1.17  1997/09/11 15:18:16  hewett
 ** Added a putOFStringArray method.
 **
 ** Revision 1.16  1997/08/29 08:32:53  andreas
