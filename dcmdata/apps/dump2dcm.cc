@@ -51,9 +51,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-04-27 12:13:01 $
+** Update Date:		$Date: 1996-05-02 15:55:11 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dump2dcm.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -345,7 +345,7 @@ parseValue(char * & s, char * & value)
 	    value = new char[len+1];
 	    strncpy(value, s, len);
 	    value[len] = '\0';
-	    stripWhitespace(value);
+	    stripTrailingWhitespace(value);
 	}
 	break;
     }
@@ -843,7 +843,12 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
-** Revision 1.4  1996-04-27 12:13:01  hewett
+** Revision 1.5  1996-05-02 15:55:11  hewett
+** Stopped whitespace being stripped from inside value strings when
+** no [] delimiter present.  Now only leading and trailing whitespace
+** is stripped.
+**
+** Revision 1.4  1996/04/27 12:13:01  hewett
 ** Corrected bug in last bug-fix.  A tag value [some text] was being
 ** parsed as an empty string.  Now both [] and [some text] appear to
 ** work as intended.
