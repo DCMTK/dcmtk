@@ -22,9 +22,9 @@
  *  Purpose: DicomLookupTable (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-16 16:31:30 $
+ *  Update Date:      $Date: 1998-12-22 14:24:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diluptab.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -91,7 +91,7 @@ class DiLookupTable : public DiObjectCounter
     DiLookupTable(const DcmUnsignedShort &data,
                   const DcmUnsignedShort &descriptor,
                   const DcmLongString *explanation = NULL,
-                  const signed int first = -1,
+                  const signed long first = -1,
                   EI_Status *status = NULL);
 
     virtual ~DiLookupTable();
@@ -131,6 +131,9 @@ class DiLookupTable : public DiObjectCounter
 
     inline Uint16 getMaxValue() const
         { return MaxValue; }
+
+    inline Uint32 getAbsMaxRange() const
+        { return maxval(Bits, 0); }
 
     inline int isValid() const
         { return Valid; }
@@ -187,28 +190,32 @@ class DiLookupTable : public DiObjectCounter
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: diluptab.h,v $
-** Revision 1.3  1998-12-16 16:31:30  joergr
-** Added explanation string to LUT class (retrieved from dataset).
-**
-** Revision 1.2  1998/12/14 17:19:19  joergr
-** Added support for signed values as second entry in look-up tables
-** (= first value mapped).
-**
-** Revision 1.1  1998/11/27 15:10:21  joergr
-** Added copyright message.
-** Added support of object counter class.
-** Added constructors to use external modality transformations.
-** Added methods to support presentation LUTs and shapes.
-**
-** Revision 1.3  1998/07/01 08:39:22  joergr
-** Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
-** options), e.g. add copy constructors.
-**
-** Revision 1.2  1998/05/11 14:53:18  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: diluptab.h,v $
+ * Revision 1.4  1998-12-22 14:24:36  joergr
+ * Changed parameter type.
+ * Added method getAbsMaxRange.
+ *
+ * Revision 1.3  1998/12/16 16:31:30  joergr
+ * Added explanation string to LUT class (retrieved from dataset).
+ *
+ * Revision 1.2  1998/12/14 17:19:19  joergr
+ * Added support for signed values as second entry in look-up tables
+ * (= first value mapped).
+ *
+ * Revision 1.1  1998/11/27 15:10:21  joergr
+ * Added copyright message.
+ * Added support of object counter class.
+ * Added constructors to use external modality transformations.
+ * Added methods to support presentation LUTs and shapes.
+ *
+ * Revision 1.3  1998/07/01 08:39:22  joergr
+ * Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
+ * options), e.g. add copy constructors.
+ *
+ * Revision 1.2  1998/05/11 14:53:18  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */
