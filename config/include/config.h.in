@@ -418,6 +418,12 @@
 /* Define if your system has a prototype for mktemp */
 #undef HAVE_PROTOTYPE_MKTEMP
 
+/* Define if your system has a prototype for getcwd */
+#undef HAVE_PROTOTYPE_GETCWD
+
+/* Define if your system has a prototype for getwd */
+#undef HAVE_PROTOTYPE_GETWD
+
 /* Define if your system has a prototype for union semun */
 #undef HAVE_DECLARATION_UNION_SEMUN
 

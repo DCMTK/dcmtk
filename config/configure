@@ -7351,8 +7351,482 @@ fi
 
 fi
 
+if test $ac_cv_header_libc_h = yes ; then
+if test $ac_cv_header_unistd_h = yes ; then
+echo $ac_n "checking prototype for getcwd (in libc.h unistd.h)""... $ac_c" 1>&6
+echo "configure:7358: checking prototype for getcwd (in libc.h unistd.h)" >&5
+ac_includes=""
+for ac_header in libc.h unistd.h
+do
+  ac_includes="$ac_includes
+#include<$ac_header>"
+done
+if eval "test \"`echo '$''{'ac_cv_prototype_getcwd'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  cat > conftest.$ac_ext <<EOF
+#line 7369 "configure"
+#include "confdefs.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+$ac_includes
+
+#ifdef __cplusplus
+}
+#endif
+
+typedef union { int member; } dummyStruct;
+#ifdef __cplusplus
+extern "C"
+#endif
+
+dummyStruct getcwd(dummyStruct);
+
+
+int main() {
+
+; return 0; }
+EOF
+if { (eval echo configure:7393: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+  rm -rf conftest*
+  eval "ac_cv_prototype_getcwd=no"
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -rf conftest*
+  eval "ac_cv_prototype_getcwd=yes"
+fi
+rm -f conftest*
+fi
+if eval "test \"`echo '$ac_cv_prototype_'getcwd`\" = yes"; then
+  echo "$ac_t""yes" 1>&6
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo getcwd | tr '[a-z]' '[A-Z]'`
+  cat >> confdefs.h <<EOF
+#define $ac_tr_prototype 1
+EOF
+
+  :
+else
+  echo "$ac_t""no" 1>&6
+fi
+
+echo $ac_n "checking prototype for getwd (in libc.h unistd.h)""... $ac_c" 1>&6
+echo "configure:7417: checking prototype for getwd (in libc.h unistd.h)" >&5
+ac_includes=""
+for ac_header in libc.h unistd.h
+do
+  ac_includes="$ac_includes
+#include<$ac_header>"
+done
+if eval "test \"`echo '$''{'ac_cv_prototype_getwd'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  cat > conftest.$ac_ext <<EOF
+#line 7428 "configure"
+#include "confdefs.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+$ac_includes
+
+#ifdef __cplusplus
+}
+#endif
+
+typedef union { int member; } dummyStruct;
+#ifdef __cplusplus
+extern "C"
+#endif
+
+dummyStruct getwd(dummyStruct);
+
+
+int main() {
+
+; return 0; }
+EOF
+if { (eval echo configure:7452: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+  rm -rf conftest*
+  eval "ac_cv_prototype_getwd=no"
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -rf conftest*
+  eval "ac_cv_prototype_getwd=yes"
+fi
+rm -f conftest*
+fi
+if eval "test \"`echo '$ac_cv_prototype_'getwd`\" = yes"; then
+  echo "$ac_t""yes" 1>&6
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo getwd | tr '[a-z]' '[A-Z]'`
+  cat >> confdefs.h <<EOF
+#define $ac_tr_prototype 1
+EOF
+
+  :
+else
+  echo "$ac_t""no" 1>&6
+fi
+
+else
+echo $ac_n "checking prototype for getcwd (in libc.h)""... $ac_c" 1>&6
+echo "configure:7477: checking prototype for getcwd (in libc.h)" >&5
+ac_includes=""
+for ac_header in libc.h
+do
+  ac_includes="$ac_includes
+#include<$ac_header>"
+done
+if eval "test \"`echo '$''{'ac_cv_prototype_getcwd'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  cat > conftest.$ac_ext <<EOF
+#line 7488 "configure"
+#include "confdefs.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+$ac_includes
+
+#ifdef __cplusplus
+}
+#endif
+
+typedef union { int member; } dummyStruct;
+#ifdef __cplusplus
+extern "C"
+#endif
+
+dummyStruct getcwd(dummyStruct);
+
+
+int main() {
+
+; return 0; }
+EOF
+if { (eval echo configure:7512: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+  rm -rf conftest*
+  eval "ac_cv_prototype_getcwd=no"
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -rf conftest*
+  eval "ac_cv_prototype_getcwd=yes"
+fi
+rm -f conftest*
+fi
+if eval "test \"`echo '$ac_cv_prototype_'getcwd`\" = yes"; then
+  echo "$ac_t""yes" 1>&6
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo getcwd | tr '[a-z]' '[A-Z]'`
+  cat >> confdefs.h <<EOF
+#define $ac_tr_prototype 1
+EOF
+
+  :
+else
+  echo "$ac_t""no" 1>&6
+fi
+
+echo $ac_n "checking prototype for getwd (in libc.h)""... $ac_c" 1>&6
+echo "configure:7536: checking prototype for getwd (in libc.h)" >&5
+ac_includes=""
+for ac_header in libc.h
+do
+  ac_includes="$ac_includes
+#include<$ac_header>"
+done
+if eval "test \"`echo '$''{'ac_cv_prototype_getwd'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  cat > conftest.$ac_ext <<EOF
+#line 7547 "configure"
+#include "confdefs.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+$ac_includes
+
+#ifdef __cplusplus
+}
+#endif
+
+typedef union { int member; } dummyStruct;
+#ifdef __cplusplus
+extern "C"
+#endif
+
+dummyStruct getwd(dummyStruct);
+
+
+int main() {
+
+; return 0; }
+EOF
+if { (eval echo configure:7571: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+  rm -rf conftest*
+  eval "ac_cv_prototype_getwd=no"
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -rf conftest*
+  eval "ac_cv_prototype_getwd=yes"
+fi
+rm -f conftest*
+fi
+if eval "test \"`echo '$ac_cv_prototype_'getwd`\" = yes"; then
+  echo "$ac_t""yes" 1>&6
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo getwd | tr '[a-z]' '[A-Z]'`
+  cat >> confdefs.h <<EOF
+#define $ac_tr_prototype 1
+EOF
+
+  :
+else
+  echo "$ac_t""no" 1>&6
+fi
+
+fi
+else
+if test $ac_cv_header_unistd_h = yes ; then
+echo $ac_n "checking prototype for getcwd (in unistd.h)""... $ac_c" 1>&6
+echo "configure:7598: checking prototype for getcwd (in unistd.h)" >&5
+ac_includes=""
+for ac_header in unistd.h
+do
+  ac_includes="$ac_includes
+#include<$ac_header>"
+done
+if eval "test \"`echo '$''{'ac_cv_prototype_getcwd'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  cat > conftest.$ac_ext <<EOF
+#line 7609 "configure"
+#include "confdefs.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+$ac_includes
+
+#ifdef __cplusplus
+}
+#endif
+
+typedef union { int member; } dummyStruct;
+#ifdef __cplusplus
+extern "C"
+#endif
+
+dummyStruct getcwd(dummyStruct);
+
+
+int main() {
+
+; return 0; }
+EOF
+if { (eval echo configure:7633: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+  rm -rf conftest*
+  eval "ac_cv_prototype_getcwd=no"
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -rf conftest*
+  eval "ac_cv_prototype_getcwd=yes"
+fi
+rm -f conftest*
+fi
+if eval "test \"`echo '$ac_cv_prototype_'getcwd`\" = yes"; then
+  echo "$ac_t""yes" 1>&6
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo getcwd | tr '[a-z]' '[A-Z]'`
+  cat >> confdefs.h <<EOF
+#define $ac_tr_prototype 1
+EOF
+
+  :
+else
+  echo "$ac_t""no" 1>&6
+fi
+
+echo $ac_n "checking prototype for getwd (in unistd.h)""... $ac_c" 1>&6
+echo "configure:7657: checking prototype for getwd (in unistd.h)" >&5
+ac_includes=""
+for ac_header in unistd.h
+do
+  ac_includes="$ac_includes
+#include<$ac_header>"
+done
+if eval "test \"`echo '$''{'ac_cv_prototype_getwd'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  cat > conftest.$ac_ext <<EOF
+#line 7668 "configure"
+#include "confdefs.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+$ac_includes
+
+#ifdef __cplusplus
+}
+#endif
+
+typedef union { int member; } dummyStruct;
+#ifdef __cplusplus
+extern "C"
+#endif
+
+dummyStruct getwd(dummyStruct);
+
+
+int main() {
+
+; return 0; }
+EOF
+if { (eval echo configure:7692: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+  rm -rf conftest*
+  eval "ac_cv_prototype_getwd=no"
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -rf conftest*
+  eval "ac_cv_prototype_getwd=yes"
+fi
+rm -f conftest*
+fi
+if eval "test \"`echo '$ac_cv_prototype_'getwd`\" = yes"; then
+  echo "$ac_t""yes" 1>&6
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo getwd | tr '[a-z]' '[A-Z]'`
+  cat >> confdefs.h <<EOF
+#define $ac_tr_prototype 1
+EOF
+
+  :
+else
+  echo "$ac_t""no" 1>&6
+fi
+
+else
+echo $ac_n "checking predefined prototype for getcwd""... $ac_c" 1>&6
+echo "configure:7717: checking predefined prototype for getcwd" >&5
+ac_includes=""
+
+if eval "test \"`echo '$''{'ac_cv_prototype_getcwd'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  cat > conftest.$ac_ext <<EOF
+#line 7724 "configure"
+#include "confdefs.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+$ac_includes
+
+#ifdef __cplusplus
+}
+#endif
+
+typedef union { int member; } dummyStruct;
+#ifdef __cplusplus
+extern "C"
+#endif
+
+dummyStruct getcwd(dummyStruct);
+
+
+int main() {
+
+; return 0; }
+EOF
+if { (eval echo configure:7748: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+  rm -rf conftest*
+  eval "ac_cv_prototype_getcwd=no"
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -rf conftest*
+  eval "ac_cv_prototype_getcwd=yes"
+fi
+rm -f conftest*
+fi
+if eval "test \"`echo '$ac_cv_prototype_'getcwd`\" = yes"; then
+  echo "$ac_t""yes" 1>&6
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo getcwd | tr '[a-z]' '[A-Z]'`
+  cat >> confdefs.h <<EOF
+#define $ac_tr_prototype 1
+EOF
+
+  :
+else
+  echo "$ac_t""no" 1>&6
+fi
+
+echo $ac_n "checking predefined prototype for getwd""... $ac_c" 1>&6
+echo "configure:7772: checking predefined prototype for getwd" >&5
+ac_includes=""
+
+if eval "test \"`echo '$''{'ac_cv_prototype_getwd'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  cat > conftest.$ac_ext <<EOF
+#line 7779 "configure"
+#include "confdefs.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+$ac_includes
+
+#ifdef __cplusplus
+}
+#endif
+
+typedef union { int member; } dummyStruct;
+#ifdef __cplusplus
+extern "C"
+#endif
+
+dummyStruct getwd(dummyStruct);
+
+
+int main() {
+
+; return 0; }
+EOF
+if { (eval echo configure:7803: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+  rm -rf conftest*
+  eval "ac_cv_prototype_getwd=no"
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -rf conftest*
+  eval "ac_cv_prototype_getwd=yes"
+fi
+rm -f conftest*
+fi
+if eval "test \"`echo '$ac_cv_prototype_'getwd`\" = yes"; then
+  echo "$ac_t""yes" 1>&6
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo getwd | tr '[a-z]' '[A-Z]'`
+  cat >> confdefs.h <<EOF
+#define $ac_tr_prototype 1
+EOF
+
+  :
+else
+  echo "$ac_t""no" 1>&6
+fi
+
+fi
+fi
+
 echo $ac_n "checking declaration for union semun (in sys/types.h sys/ipc.h sys/sem.h)""... $ac_c" 1>&6
-echo "configure:7356: checking declaration for union semun (in sys/types.h sys/ipc.h sys/sem.h)" >&5
+echo "configure:7830: checking declaration for union semun (in sys/types.h sys/ipc.h sys/sem.h)" >&5
 ac_includes=""
 for ac_header in sys/types.h sys/ipc.h sys/sem.h
 do
@@ -7364,7 +7838,7 @@ if eval "test \"`echo '$''{'$ac_cv_declaration'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 7368 "configure"
+#line 7842 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
@@ -7383,7 +7857,7 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:7387: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:7861: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   eval "$ac_cv_declaration=yes"
 else
@@ -7408,7 +7882,7 @@ fi
 unset ac_cv_declaration
 
 echo $ac_n "checking declaration for struct sembuf (in sys/types.h sys/ipc.h sys/sem.h)""... $ac_c" 1>&6
-echo "configure:7412: checking declaration for struct sembuf (in sys/types.h sys/ipc.h sys/sem.h)" >&5
+echo "configure:7886: checking declaration for struct sembuf (in sys/types.h sys/ipc.h sys/sem.h)" >&5
 ac_includes=""
 for ac_header in sys/types.h sys/ipc.h sys/sem.h
 do
@@ -7420,7 +7894,7 @@ if eval "test \"`echo '$''{'$ac_cv_declaration'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 7424 "configure"
+#line 7898 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
@@ -7439,7 +7913,7 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:7443: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:7917: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   eval "$ac_cv_declaration=yes"
 else
