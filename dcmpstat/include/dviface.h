@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVInterface
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-14 16:35:16 $
- *  CVS/RCS Revision: $Revision: 1.81 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-01-25 15:18:04 $
+ *  CVS/RCS Revision: $Revision: 1.82 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,7 +56,7 @@ class DiDisplayFunction;
 class DVPSStoredPrint;
 class DVPSPrintMessageHandler;
 class DSRDocument;
-
+class DVSignatureHandler;
 
 /** Interface class for the Softcopy Presentation State viewer.
  *  This class manages the database facilities, allows to start and stop
@@ -1497,6 +1497,34 @@ class DVInterface: public DVConfiguration
       const char *module,
       const char *message);
 
+    /* digital signatures */
+
+    /** returns a string containing a complete HTML page with the
+     *  signature validation results for the last object of the 
+     *  given type. Never returns NULL.
+     *  @param objtype object type
+     *  @return pointer to string with HTML page
+     */
+    const char *getCurrentSignatureValidationHTML(DVPSObjectType objtype) const;
+    
+    /** returns a string containing a complete HTML page with the
+     *  signature validation overview. Never returns NULL.
+     *  @return pointer to string with HTML page
+     */
+    const char *getCurrentSignatureValidationOverview() const;
+
+    /** returns the status flag for the current object of given type.
+     *  @param objtype object type
+     *  @return digital signature status for object
+     */
+    DVPSSignatureStatus getCurrentSignatureStatus(DVPSObjectType objtype) const;
+  
+    /** returns the combined status flag for the current image and presentation state.
+     *  @return digital signature status for image and presentation state
+     */
+    DVPSSignatureStatus getCombinedImagePStateSignatureStatus() const;
+
+
 private:
 
     /** private undefined copy constructor
@@ -1573,6 +1601,10 @@ private:
      */
     DSRDocument *pReport;
 
+    /** pointer to the handler object for digital signatures
+     */
+    DVSignatureHandler *pSignatureHandler;
+    
     /** pointer to the stored presentation state object (if any)
      */
     DVPresentationState *pStoredPState;
@@ -1809,7 +1841,11 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.81  2000-11-14 16:35:16  joergr
+ *  Revision 1.82  2001-01-25 15:18:04  meichel
+ *  Added initial support for verification of digital signatures
+ *    in presentation states, images and structured reports to module dcmpstat.
+ *
+ *  Revision 1.81  2000/11/14 16:35:16  joergr
  *  Added creation of new UIDs and setting of content date/time when starting
  *  a new SR document from a "template".
  *

@@ -25,8 +25,8 @@
  *           DVPSShutterType
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-10-10 12:23:41 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2001-01-25 15:18:05 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -491,11 +491,49 @@ enum DVPSCertificateVerificationType
   DVPSQ_ignore
 };
 
+
+/** describes the types of objects handled by the dcmpstat signature routines
+ */
+enum DVPSObjectType
+{
+  /** structured report
+   */
+  DVPSS_structuredReport,
+  /** image
+   */
+  DVPSS_image,
+  /** grayscale softcopy presentation state
+   */
+  DVPSS_presentationState
+};
+
+
+/** describes the types of objects handled by the dcmpstat signature routines
+ */
+enum DVPSSignatureStatus
+{
+  /** no digital signatures are present
+   */
+  DVPSW_unsigned,
+  /** one or more digital signatures are present and have been successfully verified
+   */
+  DVPSW_signed_OK,
+  /** one or more digital signatures are present and at least one of them 
+   *  could not be successfully verified because it was corrupt or created
+   *  with a certificate issued by an unknown CA.
+   */
+  DVPSW_signed_corrupt
+};
+
 #endif
 
 /*
  *  $Log: dvpstyp.h,v $
- *  Revision 1.13  2000-10-10 12:23:41  meichel
+ *  Revision 1.14  2001-01-25 15:18:05  meichel
+ *  Added initial support for verification of digital signatures
+ *    in presentation states, images and structured reports to module dcmpstat.
+ *
+ *  Revision 1.13  2000/10/10 12:23:41  meichel
  *  Added extensions for TLS encrypted communication
  *
  *  Revision 1.12  2000/07/07 13:38:45  joergr

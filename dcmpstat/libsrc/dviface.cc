@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-12-13 13:30:22 $
- *  CVS/RCS Revision: $Revision: 1.124 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-01-25 15:18:09 $
+ *  CVS/RCS Revision: $Revision: 1.125 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,6 +55,8 @@ END_EXTERN_C
 #include "dvpssp.h"      /* for class DVPSStoredPrint */
 #include "dvpshlp.h"     /* for class DVPSHelper */
 #include "dcmimage.h"    /* for class DicomImage */
+#include "dvsighdl.h"    /* for class DVSignatureHandler */
+#include "dcmsign.h"     /* for class DcmSignature */
 #include <stdio.h>
 #include <ctype.h>       /* for toupper() */
 #include <iostream.h>
@@ -108,6 +110,7 @@ DVInterface::DVInterface(const char *config_file, OFBool useLog)
 , pPrint(NULL)
 , pState(NULL)
 , pReport(NULL)
+, pSignatureHandler(NULL)
 , pStoredPState(NULL)
 , pDicomImage(NULL)
 , pDicomPState(NULL)
@@ -147,6 +150,10 @@ DVInterface::DVInterface(const char *config_file, OFBool useLog)
 , annotationText()
 , logFile(NULL)
 {
+#ifdef WITH_OPENSSL
+    DcmSignature::initializeLibrary(); // initializes OpenSSL for dcmsign and dcmtls
+#endif
+
     clearIndexRecord(idxRec, idxRecPos);
     if (config_file) configPath = config_file;
 
@@ -190,6 +197,7 @@ DVInterface::DVInterface(const char *config_file, OFBool useLog)
       minimumPrintBitmapWidth, minimumPrintBitmapHeight, maximumPrintBitmapWidth, maximumPrintBitmapHeight,
       maximumPreviewImageWidth, maximumPreviewImageHeight);
     pReport = new DSRDocument();
+    pSignatureHandler = new DVSignatureHandler(*this);
 
     if (pPrint) pPrint->setLog(logstream, verboseMode, debugMode);
     if (pState) pState->setLog(logstream, verboseMode, debugMode);
@@ -206,12 +214,6 @@ DVInterface::DVInterface(const char *config_file, OFBool useLog)
     /* initialize reference time with "yesterday" */
     if (referenceTime >= 86400) referenceTime -= 86400; // subtract one day
     setCurrentPrinter(getTargetID(0, DVPSE_printAny));
-
-#ifdef WITH_OPENSSL
-    // initialize OpenSSL libraries
-    OpenSSL_add_all_algorithms();
-    ERR_load_crypto_strings();
-#endif
 
     if (useLog)
     {
@@ -241,6 +243,7 @@ DVInterface::~DVInterface()
     delete pPrint;
     delete pState;
     delete pReport;
+    delete pSignatureHandler;
     delete pStoredPState;
     delete pDicomImage;
     delete pDicomPState;
@@ -585,6 +588,10 @@ E_Condition DVInterface::loadStructuredReport(const char * /*filename*/)
                 {
                     delete pReport;
                     pReport = newReport;
+                    if (pSignatureHandler)
+                    {
+                       pSignatureHandler->updateDigitalSignatureInformation(*dataset, DVPSS_structuredReport, OFTrue);
+                    }
                 }
             } else
                 status = EC_CorruptedData;
@@ -752,6 +759,10 @@ E_Condition DVInterface::savePState(const char *filename, OFBool replaceSOPInsta
           delete pDicomPState;
           pDicomPState = fileformat;
           fileformat = NULL; // make sure we don't delete fileformat later
+          if (pSignatureHandler)
+          {
+            pSignatureHandler->updateDigitalSignatureInformation(*pDicomPState->getDataset(), DVPSS_presentationState, OFFalse);
+          }
         }
         if (status != EC_Normal)
             writeLogMessage(DVPSM_error, "DCMPSTAT", "Save presentation state to file failed: could not write fileformat.");
@@ -851,7 +862,13 @@ E_Condition DVInterface::saveStructuredReport(const char *filename, OFBool /*exp
     if (dataset)
     {
         if ((status = pReport->write(*dataset)) == EC_Normal)
+        {
             status = DVPSHelper::saveFileFormat(filename, fileformat, explicitVR);
+            if (pSignatureHandler)
+            {
+              pSignatureHandler->updateDigitalSignatureInformation(*dataset, DVPSS_structuredReport, OFFalse);
+            }
+        }
         if (status != EC_Normal)
             writeLogMessage(DVPSM_error, "DCMPSTAT", "Save structured report to file failed: could not write fileformat.");
     } else {
@@ -927,11 +944,20 @@ E_Condition DVInterface::exchangeImageAndPState(DVPresentationState *newState, D
         pState = newState;
         pStoredPState = NULL;
         pDicomPState = state;
+        if (pSignatureHandler)
+        {
+          if (pDicomPState) pSignatureHandler->updateDigitalSignatureInformation(*pDicomPState->getDataset(), DVPSS_presentationState, OFTrue);
+          else pSignatureHandler->disableDigitalSignatureInformation(DVPSS_presentationState);
+        }
     }
     if (pDicomImage != image)
     {
         delete pDicomImage;       // delete only if different
         pDicomImage = image;
+        if (pSignatureHandler)
+        {
+          pSignatureHandler->updateDigitalSignatureInformation(*pDicomImage->getDataset(), DVPSS_image, OFTrue);
+        }
     }
     return EC_Normal;
 }
@@ -4180,10 +4206,35 @@ OFBool DVInterface::verifyUserPassword(const char * /*userID*/, const char * /*p
   return result;
 }
 
+
+const char *DVInterface::getCurrentSignatureValidationHTML(DVPSObjectType objtype) const
+{
+  return pSignatureHandler->getCurrentSignatureValidationHTML(objtype);
+}
+
+const char *DVInterface::getCurrentSignatureValidationOverview() const
+{
+  return pSignatureHandler->getCurrentSignatureValidationOverview();
+}
+
+DVPSSignatureStatus DVInterface::getCurrentSignatureStatus(DVPSObjectType objtype) const
+{
+  return pSignatureHandler->getCurrentSignatureStatus(objtype);
+}
+
+DVPSSignatureStatus DVInterface::getCombinedImagePStateSignatureStatus() const
+{
+  return pSignatureHandler->getCombinedImagePStateSignatureStatus();
+}
+
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.124  2000-12-13 13:30:22  joergr
+ *  Revision 1.125  2001-01-25 15:18:09  meichel
+ *  Added initial support for verification of digital signatures
+ *    in presentation states, images and structured reports to module dcmpstat.
+ *
+ *  Revision 1.124  2000/12/13 13:30:22  joergr
  *  Added explicit typecast to keep gcc 2.5.8 (NeXTSTEP) quiet.
  *
  *  Revision 1.123  2000/12/13 13:24:23  meichel

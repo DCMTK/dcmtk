@@ -17,12 +17,13 @@ dcmimgledir=$(top_srcdir)/../dcmimgle
 dcmsrdir=$(top_srcdir)/../dcmsr
 imagectndir=$(top_srcdir)/../imagectn
 dcmnetdir=$(top_srcdir)/../dcmnet
+dcmsigndir=$(top_srcdir)/../dcmsign
 
 LOCALINCLUDES=-I$(ofstddir)/include -I$(dcmdatadir)/include -I$(dcmimgledir)/include \
   -I$(dcmsrdir)/include -I$(imagectndir)/include -I$(dcmnetdir)/include \
-  -I$(includedir)/ofstd -I$(includedir)/dcmdata -I$(includedir)/dcmimgle \
-  -I$(includedir)/dcmsr -I$(includedir)/imagectn -I$(includedir)/dcmnet
-
+  -I$(dcmsigndir)/include -I$(includedir)/ofstd -I$(includedir)/dcmdata \
+  -I$(includedir)/dcmimgle -I$(includedir)/dcmsr -I$(includedir)/imagectn \
+  -I$(includedir)/dcmnet -I$(includedir)/dcmsign
 
 LOCALDEFS= 
 
@@ -35,7 +36,7 @@ objs =  dvpsal.o   dvpsgal.o  dvpsgr.o   dvpsovl.o  dvpsrs.o   dvpstx.o \
         dvpsconf.o dvpsda.o   dvpsdal.o  dvpssv.o   dvpssvl.o  dvpspl.o  \
         dvpsib.o   dvpsibl.o  dvpssp.o   dvpspr.o   dvpscf.o   dvpshlp.o \
         dvpspll.o  dvpsab.o   dvpsabl.o  dvpsspl.o  dvpsprt.o  dvpsfs.o  \
-        dvpsmsg.o
+        dvpsmsg.o  dvsighdl.o
 
 all: libdcmpstat.$(LIBEXT)
 
