@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: DicomYBRPart422PixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-06-26 16:21:01 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diyp2pxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2003-12-23 12:35:00 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +31,8 @@
  */
 
 
-#ifndef __DIYP2PXT_H
-#define __DIYP2PXT_H
+#ifndef DIYP2PXT_H
+#define DIYP2PXT_H
 
 #include "osconfig.h"
 
@@ -54,6 +53,13 @@ class DiYBRPart422PixelTemplate
 
  public:
 
+    /** constructor
+     *
+     ** @param  docu    pointer to DICOM document
+     *  @param  pixel   pointer to input pixel representation
+     *  @param  status  reference to status variable
+     *  @param  bits    number of bits per sample
+     */
     DiYBRPart422PixelTemplate(const DiDocument *docu,
                               const DiInputPixel *pixel,
                               EI_Status &status,
@@ -73,10 +79,12 @@ class DiYBRPart422PixelTemplate
                 }
             }
             else
-                convert((const T1 *)pixel->getData() + pixel->getPixelStart(), bits);
-        }   
+                convert(OFstatic_cast(const T1 *, pixel->getData()) + pixel->getPixelStart(), bits);
+        }
     }
 
+    /** destructor
+     */
     virtual ~DiYBRPart422PixelTemplate()
     {
     }
@@ -84,6 +92,11 @@ class DiYBRPart422PixelTemplate
 
  private:
 
+    /** convert input pixel data to intermediate representation
+     *
+     ** @param  pixel      pointer to input pixel data
+     *  @param  bits       number of bits per sample
+     */
     void convert(const T1 *pixel,
                  const int bits)
     {
@@ -93,20 +106,20 @@ class DiYBRPart422PixelTemplate
             register T2 *g = Data[1];
             register T2 *b = Data[2];
             register unsigned long i;
-            const T2 maxvalue = (T2)DicomImageClass::maxval(bits);
-            const T1 offset = (T1)DicomImageClass::maxval(bits - 1);
+            const T2 maxvalue = OFstatic_cast(T2, DicomImageClass::maxval(bits));
+            const T1 offset = OFstatic_cast(T1, DicomImageClass::maxval(bits - 1));
             // use the number of input pixels derived from the length of the 'PixelData'
             // attribute), but not more than the size of the intermediate buffer
             const unsigned long count = (InputCount < Count) ? InputCount : Count;
-            
+
             register const T1 *p = pixel;
             register T2 y1;
             register T2 y2;
             register T2 cb;
             register T2 cr;
-            for (i = count / 2; i != 0; i--)
+            for (i = count / 2; i != 0; --i)
             {
-                y1 = removeSign(*(p++), offset); 
+                y1 = removeSign(*(p++), offset);
                 y2 = removeSign(*(p++), offset);
                 cb = removeSign(*(p++), offset);
                 cr = removeSign(*(p++), offset);
@@ -116,6 +129,8 @@ class DiYBRPart422PixelTemplate
         }
     }
 
+    /** convert a single YCbCr value to RGB
+     */
     inline void convertValue(T2 &red,
                              T2 &green,
                              T2 &blue,
@@ -124,12 +139,12 @@ class DiYBRPart422PixelTemplate
                              const T2 cr,
                              const T2 maxvalue)
     {
-        double dr = 1.1631 * (double)y + 1.5969 * (double)cr - 0.8713 * double(maxvalue);
-        double dg = 1.1631 * (double)y - 0.3913 * (double)cb - 0.8121 * (double)cr + 0.5290 * double(maxvalue);
-        double db = 1.1631 * (double)y + 2.0177 * (double)cb - 1.0820 * double(maxvalue);
-        red   = (dr < 0.0) ? 0 : (dr > (double)maxvalue) ? maxvalue : (T2)dr;
-        green = (dg < 0.0) ? 0 : (dg > (double)maxvalue) ? maxvalue : (T2)dg;
-        blue  = (db < 0.0) ? 0 : (db > (double)maxvalue) ? maxvalue : (T2)db;
+        double dr = 1.1631 * OFstatic_cast(double, y) + 1.5969 * OFstatic_cast(double, cr) - 0.8713 * OFstatic_cast(double, maxvalue);
+        double dg = 1.1631 * OFstatic_cast(double, y) - 0.3913 * OFstatic_cast(double, cb) - 0.8121 * OFstatic_cast(double, cr) + 0.5290 * OFstatic_cast(double, maxvalue);
+        double db = 1.1631 * OFstatic_cast(double, y) + 2.0177 * OFstatic_cast(double, cb) - 1.0820 * OFstatic_cast(double, maxvalue);
+        red   = (dr < 0.0) ? 0 : (dr > OFstatic_cast(double, maxvalue)) ? maxvalue : OFstatic_cast(T2, dr);
+        green = (dg < 0.0) ? 0 : (dg > OFstatic_cast(double, maxvalue)) ? maxvalue : OFstatic_cast(T2, dg);
+        blue  = (db < 0.0) ? 0 : (db > OFstatic_cast(double, maxvalue)) ? maxvalue : OFstatic_cast(T2, db);
     }
 };
 
@@ -141,7 +156,14 @@ class DiYBRPart422PixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diyp2pxt.h,v $
- * Revision 1.14  2002-06-26 16:21:01  joergr
+ * Revision 1.15  2003-12-23 12:35:00  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated copyright header. Added missing API documentation.
+ * Replaced post-increment/decrement operators by pre-increment/decrement
+ * operators where appropriate (e.g. 'i++' by '++i').
+ *
+ * Revision 1.14  2002/06/26 16:21:01  joergr
  * Enhanced handling of corrupted pixel data and/or length.
  *
  * Revision 1.13  2001/11/09 16:47:03  joergr
