@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmMetaInfo
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:49:30 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2001-11-01 14:55:40 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcmetinf.cc,v $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -475,15 +475,40 @@ void DcmMetaInfo::transferEnd()
 OFCondition DcmMetaInfo::write(DcmStream & outStream,
                                const E_TransferSyntax /*oxfer*/,
                                const E_EncodingType enctype)
+    /*
+     * This function writes all data elements which make up the meta header to the stream.
+     * For a specification of the elements that make up the meta header see DICOM standard
+     * (year 2000) part 10, section 7.1) )or the corresponding section in a later version of
+     * the standard).
+     *
+     * Parameters:
+     *   outStream - [inout] The stream that the information will be written to.
+     *   oxfer     - [in] The transfer syntax which shall be used. (is not necessary since the meta header
+     *                    shall always be encoded in the explicit VR little endian transfer syntax)
+     *   enctype   - [in] Encoding type for sequences. Specifies how sequences will be handled.
+     */
 {
+    /* if the transfer state of this is not initialized, this is an illegal call */
     if (fTransferState == ERW_notInitialized)
         errorFlag = EC_IllegalCall;
     else
     {
+        /* if this is not an illegal call, do something */
+
+        /* determine the (default) transfer syntax which shall be used (always explicit VR little endian) */
         E_TransferSyntax outxfer = META_HEADER_DEFAULT_TRANSFERSYNTAX;
+
+        /* check if the stream reported an error so far */
         errorFlag = outStream.GetError();
+
+        /* if the stream did not report any error and the transfer state is ERW_ready, */
+        /* go ahead and write the meta header information to the out stream */
         if (errorFlag == EC_Normal && fTransferState != ERW_ready)
         {
+
+            /* if some particular conditions are met we need to write the file preamble (128 byte wide) and */
+            /* the DICOM prefix "DICM" to the stream. Always check if there is enough space in the stream and */
+            /* set the transfer state of certain elements to indicate that they have already been written. */
             if (fTransferState == ERW_init)
             {
                 if ( preambleUsed || !elementList->empty() )
@@ -519,11 +544,16 @@ OFCondition DcmMetaInfo::write(DcmStream & outStream,
 
                 }
             }
-                        
-            // elementList->get() should never be NULL, but lets play the game safe here...
+
+            /* if the file premable and the DICOM prefix have been written, go */
+            /* ahead and write the meta header's data elements to the stream. */
+            /* (note that at this point elementList->get() should never be NULL, */
+            /* but lets play the game safe here...) */
             if (!elementList->empty() && (fTransferState == ERW_inWork) && (elementList->get() != NULL))
             {
                 DcmObject *dO;
+
+                /* iterate over the list of data elements and write them to the stream */
                 do 
                 {
                     dO = elementList->get();
@@ -531,10 +561,14 @@ OFCondition DcmMetaInfo::write(DcmStream & outStream,
                 } while (errorFlag == EC_Normal && elementList->seek(ELP_next));
             }
 
+            /* if the error flag equals ok and the transfer state equals ERW_inWork, all data elements of the meta */
+            /* header have been written to the stream. Indicate this by setting the transfer state to ERW_ready */
             if (errorFlag == EC_Normal && fTransferState == ERW_inWork)
                 fTransferState = ERW_ready;
         }
     }
+
+    /* return result value */
     return errorFlag;
 }
 
@@ -545,7 +579,10 @@ OFCondition DcmMetaInfo::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.cc,v $
-** Revision 1.25  2001-09-26 15:49:30  meichel
+** Revision 1.26  2001-11-01 14:55:40  wilkens
+** Added lots of comments.
+**
+** Revision 1.25  2001/09/26 15:49:30  meichel
 ** Modified debug messages, required by OFCondition
 **
 ** Revision 1.24  2001/09/25 17:19:51  meichel

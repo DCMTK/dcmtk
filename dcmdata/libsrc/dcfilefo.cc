@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmFileFormat
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-09-28 14:20:26 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2001-11-01 14:55:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcfilefo.cc,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -158,10 +158,27 @@ OFCondition DcmFileFormat::checkValue(DcmMetaInfo * metainfo,
                                       const DcmTagKey & atagkey,
                                       DcmObject* obj,
                                       const E_TransferSyntax oxfer )
+    /*
+     * This function checks if a particular data element of the meta header information is existent
+     * in metainfo. If the element is not existent, it will be inserted. Additionally, this function
+     * makes sure that the corresponding data element will contain a correct value.
+     *
+     * Parameters:
+     *   metainfo - [in] The meta header information.
+     *   dataset  - [in] The data set information.
+     *   atagkey  - [in] Tag of the data element which shall be checked.
+     *   obj      - [in] Data object from metainfo which represents the data element that shall be checked.
+     *                   Equals NULL, if this data element is not existent in the meta header information.
+     *   oxfer    - [in] The transfer syntax which shall be used.
+     */
 {
+    /* initialize result value */
     OFCondition l_error = EC_Normal;
+
+    /* if there is meta header information and also data set information, do something */
     if ( metainfo != (DcmMetaInfo*)NULL && dataset != (DcmDataset*)NULL )
     {
+        /* intitialize variables */
         DcmStack stack;
         DcmTag tag( atagkey );
         if ( obj != (DcmObject*)NULL )
@@ -170,6 +187,7 @@ OFCondition DcmFileFormat::checkValue(DcmMetaInfo * metainfo,
         DcmTagKey xtag = tag.getXTag();
         DcmElement *elem = (DcmElement*)obj;
 
+        /* go ahaed and scrutinize one particular data element (depending on xtag) */
         if ( xtag == DCM_MetaElementGroupLength ) {     // (0002,0000)
             if ( elem == (DcmElement*)NULL )
             {
@@ -179,7 +197,7 @@ OFCondition DcmFileFormat::checkValue(DcmMetaInfo * metainfo,
             Uint32 temp = 0;
             if ( elem->getLength() == 0 && elem->ident() == EVR_UL )
                 ((DcmUnsignedLong*)elem)->putUint32Array( &temp, 1 );
-            // Laengenberechnung erfolgt in validateMetaInfo()
+            // the calculation of actual group length value is contained in validateMetaInfo()
         } else if ( xtag == DCM_FileMetaInformationVersion ) {  // (0002,0001)
             if ( elem == (DcmElement*)NULL )
             {
@@ -190,7 +208,7 @@ OFCondition DcmFileFormat::checkValue(DcmMetaInfo * metainfo,
             if ( elem->getLength() == 0 && elem->ident() == EVR_OB )
                 ((DcmOtherByteOtherWord*)elem)->putUint8Array( version, 2 );
 
-            // ueberpruefe Version des MetaHeaders
+            // check version of meta header
             Uint8 *currVers;
             l_error = ((DcmOtherByteOtherWord*)elem)->getUint8Array(currVers);
             if (((currVers[0] & version[0] & 0xff) == version[0]) &&
@@ -199,8 +217,8 @@ OFCondition DcmFileFormat::checkValue(DcmMetaInfo * metainfo,
                         currVers[1], currVers[0] ));
 
             } else {
-                currVers[0] = currVers[0] | version[0]; // direkte Daten-
-                currVers[1] = currVers[1] | version[1]; // Manipulation
+                currVers[0] = currVers[0] | version[0]; // direct manipulation
+                currVers[1] = currVers[1] | version[1]; // of data
                 ostream& localCerr = ofConsole.lockCerr();
                 localCerr << "Warning: dcfilefo: unknown Version of MetaHeader detected: 0x";
                 localCerr.width(2); localCerr.fill('0'); localCerr << hex << (int)currVers[1];
@@ -328,10 +346,15 @@ Cdebug(2,  uidtmp != (char*)NULL,
             ofConsole.lockCerr() << "Warning: dcfilefo: I don't know how to handle " << tag.getTagName() << endl;
             ofConsole.unlockCerr();
         }
+
+        /* if at this point elem still equals NULL, something is fishy */
         if ( elem == (DcmElement*)NULL ) l_error = EC_InvalidVR;
     } else {
+    /* (i.e. there is either no meta header information or no data set information */
         l_error = EC_IllegalCall;
     }
+
+    /* return result value */
     return l_error;
 }
 
@@ -341,13 +364,25 @@ Cdebug(2,  uidtmp != (char*)NULL,
 
 
 OFCondition DcmFileFormat::validateMetaInfo(E_TransferSyntax oxfer)
+    /*
+     * This function makes sure that all data elements of the meta header information are existent
+     * in metainfo and contain correct values.
+     *
+     * Parameters:
+     *   oxfer          - [in] The transfer syntax which shall be used.
+     */
 {
+    /* initialize some variables */
     OFCondition l_error = EC_Normal;
     DcmMetaInfo *metinf = getMetaInfo();
     DcmDataset *datset = getDataset();
 
+    /* if there is meta header information and data set information, do something */
     if (metinf != (DcmMetaInfo*)NULL && datset != (DcmDataset*)NULL) {
         DcmStack stack;
+
+        /* in the following, we want to make sure all elements of the meta header */
+        /* are existent in metinf and contain correct values */
 
         /* DCM_MetaElementGroupLength */
         metinf->search(DCM_MetaElementGroupLength, stack, ESM_fromHere, OFFalse );
@@ -377,10 +412,11 @@ OFCondition DcmFileFormat::validateMetaInfo(E_TransferSyntax oxfer)
         metinf->search(DCM_ImplementationVersionName, stack, ESM_fromHere, OFFalse );
         checkValue( metinf, datset, DCM_ImplementationVersionName, stack.top(), oxfer );
 
+        /* dump some information if reuqired */
         debug(2, ( "DcmFileFormat: found %ld Elements in DcmMetaInfo metinf.",
                 metinf->card() ));
 
-        // berechne neue GroupLength
+        /* calculate new GroupLength for meta header */
         if (metinf->computeGroupLengthAndPadding
              (EGL_withGL, EPD_noChange, META_HEADER_DEFAULT_TRANSFERSYNTAX, 
               EET_UndefinedLength) != EC_Normal )
@@ -390,8 +426,11 @@ OFCondition DcmFileFormat::validateMetaInfo(E_TransferSyntax oxfer)
         }
     }
     else {
+    /* (i.e. there is either no meta header information or no data set information, or both are missing) */
         l_error = EC_CorruptedData;
     }
+
+    /* return result value */
     return l_error;
 }
 
@@ -538,25 +577,56 @@ OFCondition DcmFileFormat::write(DcmStream & outStream,
                                  const Uint32 padlen,
                                  const Uint32 subPadlen,
                                  Uint32 instanceLength)
+    /*
+     * This function writes data values which are contained in this to the stream which is
+     * passed as first argument. With regard to the writing of information, the other parameters
+     * which are passed are accounted for. The function will return EC_Normal, if the information
+     * from all elements of this data set has been written to the buffer, and it will return some
+     * other (error) value if there was an error.
+     *
+     * Parameters:
+     *   outStream      - [inout] The stream that the information will be written to.
+     *   oxfer          - [in] The transfer syntax which shall be used.
+     *   enctype        - [in] Encoding type for sequences. Specifies how sequences will be handled.
+     *   glenc          - [in] Encoding type for group length. Specifies what will be done with group length tags.
+     *   padenc         - [in] Encoding type for padding. Specifies what will be done with padding tags.
+     *   padlen         - [in] [optional parameter, default = 0]. 
+     *   subPadlen      - [in] [optional parameter, default = 0]. 
+     *   instanceLength - [in] [optional parameter, default = 0]. 
+     */
 {
+    /* if the transfer state of this is not initialized, this is an illegal call */
     if (fTransferState == ERW_notInitialized)
         errorFlag = EC_IllegalCall;
     else
     {
+        /* if this is not an illegal call, do something */
+
+        /* assign data set and the meta information header to local variables */
         DcmDataset * dataset = this -> getDataset();
         DcmMetaInfo * metainfo = this -> getMetaInfo();
 
+        /* Determine the transfer syntax which shall be used. Either we use the one which was passed, */
+        /* or (if it's an unknown tranfer syntax) we use the data set's original transfer syntax. */
         E_TransferSyntax outxfer = oxfer;
         if (outxfer == EXS_Unknown && dataset)
             outxfer = dataset->getOriginalXfer();
 
+        /* check if the stream reported an error so far */
         errorFlag = outStream.GetError();
+
+        /* check if we can actually write data to the stream; in certain cases we cannot. */
         if (outxfer == EXS_Unknown || outxfer == EXS_BigEndianImplicit)
             errorFlag = EC_IllegalCall;
         else if (itemList->empty())
             errorFlag = EC_CorruptedData;
         else if (errorFlag == EC_Normal && fTransferState != ERW_ready)
         {
+            /* in this case we can write data to the stream */
+
+            /* if this function was called for the first time for the dataset object, the transferState is */
+            /* still set to ERW_init. In this case, we need to validate the meta header information, set the */
+            /* item list pointer to the fist element and we need to set the transfer state to ERW_inWork. */
             if (fTransferState == ERW_init)
             {
                 validateMetaInfo(outxfer);
@@ -564,28 +634,40 @@ OFCondition DcmFileFormat::write(DcmStream & outStream,
                 fTransferState = ERW_inWork;
             }
 
+            /* if the transfer state is set to ERW_inWork, we need to write the */
+            /* information which is included in this to the buffer which was passed. */
             if (fTransferState == ERW_inWork)
             {
+                /* write meta header information */
                 errorFlag = 
                     metainfo -> write(outStream, outxfer, enctype);
+
+                /* recalculate the instance length */
                 instanceLength += 
                     metainfo -> calcElementLength(outxfer, enctype);
 
+                /* if everything is ok, write the data set */
                 if (errorFlag == EC_Normal)
                     errorFlag = dataset -> write(outStream, outxfer, enctype, 
                                                  glenc, padenc, padlen, 
                                                  subPadlen, instanceLength);
+
+                /* if everything is ok, set the transfer state to ERW_ready */
                 if (errorFlag == EC_Normal)
                     fTransferState = ERW_ready;
             }
         }
 
+        /* in case the transfer syntax which shall be used is indeed the */
+        /* BigEndianImplicit transfer syntax dump some error information */
         if ( outxfer == EXS_BigEndianImplicit )
         {
             ofConsole.lockCerr() << "Error: DcmFileFormat::write() illegal TransferSyntax(BI) used" << endl;
             ofConsole.unlockCerr();
         }
     }
+
+    /* return result value */
     return errorFlag;
 }
 
@@ -698,7 +780,10 @@ DcmDataset* DcmFileFormat::getAndRemoveDataset()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
-** Revision 1.23  2001-09-28 14:20:26  joergr
+** Revision 1.24  2001-11-01 14:55:37  wilkens
+** Added lots of comments.
+**
+** Revision 1.23  2001/09/28 14:20:26  joergr
 ** Added "#include <iomanip.h>" to keep gcc 3.0 quiet.
 **
 ** Revision 1.22  2001/09/25 17:19:50  meichel

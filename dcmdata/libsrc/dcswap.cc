@@ -21,10 +21,10 @@
  *
  *  Purpose: byte order functions
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:19:54 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2001-11-01 14:55:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcswap.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,11 +38,28 @@ OFCondition swapIfNecessary(const E_ByteOrder newByteOrder,
 			    const E_ByteOrder oldByteOrder,
 			    void * value, const Uint32 byteLength,
 			    const size_t valWidth)
+    /*
+     * This function swaps byteLength bytes in value if newByteOrder and oldByteOrder
+     * differ from each other. In case bytes have to be swapped, these bytes are seperated
+     * in valWidth elements which will be swapped seperately.
+     *
+     * Parameters:
+     *   newByteOrder - [in] The new byte ordering (little or big endian).
+     *   oldByteOrder - [in] The current old byte ordering (little or big endian).
+     *   value        - [in] Array that contains the actual bytes which might have to be swapped.
+     *   byteLength   - [in] Length of the above array.
+     *   valWidth     - [in] Specifies how many bytes shall be treated together as one element.
+     */
 {
+    /* if the two byte orderings are unknown this is an illegal call */
     if(oldByteOrder != EBO_unknown && newByteOrder != EBO_unknown )
     {
+        /* and if they differ from each other and valWidth is not 1 */
 	if (oldByteOrder != newByteOrder && valWidth != 1)
 	{
+            /* in case the array length equals valWidth and only 2 or 4 bytes have to be swapped */
+            /* we can swiftly swap these bytes by calling the corresponding functions. If this is */
+            /* not the case we have to call a more sophisticated function. */
 	    if (byteLength == valWidth)
 	    {
 		if (valWidth == 2)
@@ -64,9 +81,20 @@ OFCondition swapIfNecessary(const E_ByteOrder newByteOrder,
 
 void swapBytes(void * value, const Uint32 byteLength, 
 			   const size_t valWidth)
+    /*
+     * This function swaps byteLength bytes in value. These bytes are seperated
+     * in valWidth elements which will be swapped seperately.
+     *
+     * Parameters:
+     *   value        - [in] Array that contains the actual bytes which might have to be swapped.
+     *   byteLength   - [in] Length of the above array.
+     *   valWidth     - [in] Specifies how many bytes shall be treated together as one element.
+     */
 {
+    /* use register (if available) to increase speed */
     register Uint8 save;
 
+    /* in case valWidth equals 2, swap correspondingly */
     if (valWidth == 2)
     {
 	register Uint8 * first = &((Uint8*)value)[0];
@@ -81,6 +109,7 @@ void swapBytes(void * value, const Uint32 byteLength,
 	    second +=2;
 	}
     }
+    /* if valWidth is greater than 2, swap correspondingly */
     else if (valWidth > 2)
     {
 	register size_t i; 
@@ -121,7 +150,10 @@ Uint16 swapShort(const Uint16 toSwap)
 /*
  * CVS/RCS Log:
  * $Log: dcswap.cc,v $
- * Revision 1.12  2001-09-25 17:19:54  meichel
+ * Revision 1.13  2001-11-01 14:55:43  wilkens
+ * Added lots of comments.
+ *
+ * Revision 1.12  2001/09/25 17:19:54  meichel
  * Adapted dcmdata to class OFCondition
  *
  * Revision 1.11  2001/06/01 15:49:10  meichel

@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmDataset
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:49:29 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2001-11-01 14:55:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdatset.cc,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -140,35 +140,73 @@ OFCondition DcmDataset::read(DcmStream & inStream,
                              const E_TransferSyntax xfer,
                              const E_GrpLenEncoding glenc,
                              const Uint32 maxReadLength)
+    /*
+     * This function reads the information of all attributes which are captured in the
+     * input stream and captures this information in this->elementList. Each attribute
+     * is represented as an element in this list. Having read all information for this
+     * particular data set or command, this function will also take care of group length
+     * (according to what is specified in glenc) and padding elements (don't change
+     * anything).
+     *
+     * Parameters:
+     *   inStream      - [in] The stream which contains the information.
+     *   xfer          - [in] [optional parameter, default = EXS_Unknown] The transfer syntax which
+     *                        was used to encode the information in inStream.
+     *   glenc         - [in] [optional parameter, default = EGL_noChange] Encoding type for group
+     *                        length. Specifies what will be done with group length tags.
+     *   maxReadLength - [in] [optional parameter, default = DCM_MaxReadLength]. 
+     */
 {
+    /* check if the stream variable reported an error */
     errorFlag = inStream.GetError();
 
+    /* if the stream did not report an error but the stream */
+    /* is empty, set the error flag correspondingly */
     if (errorFlag == EC_Normal && inStream.EndOfStream())
         errorFlag = EC_EndOfStream;
+    /* else if the stream did not report an error but the transfer */
+    /* state does not equal ERW_ready, go ahead and do something */
     else if (errorFlag == EC_Normal && fTransferState != ERW_ready )
     {
+        /* if the transfer state is ERW_init, go ahead and check the transfer syntax which was passed */
         if (fTransferState == ERW_init)
         {
+            /* if the transfer syntax which was passed equals EXS_Unknown we want to */
+            /* determine the transfer syntax from the information in the stream itself. */
+            /* If the transfer syntax is given, we want to use it. */
             if (xfer == EXS_Unknown)
                 Xfer = checkTransferSyntax(inStream); 
             else
                 Xfer = xfer;
 
-            //  This is a problem since DcmItem::read needs the ERW_init state
+            //  The following line is a problem since DcmItem::read needs the ERW_init state
             //                          fTransferState = ERW_inWork; 
         }
-        // uebergebe Kontrolle an DcmItem
+        /* pass processing the task to class DcmItem */
         errorFlag = DcmItem::read(inStream, Xfer, glenc, maxReadLength);
 
     } 
 
+    /* if the error flag shows ok or that the end of the stream was encountered, */
+    /* we have read information for this particular data set or command; in this */
+    /* case, we need to do something for the current dataset object */
     if ( errorFlag == EC_Normal || errorFlag == EC_EndOfStream )
     {
+        /* set the error flag to ok */
         errorFlag = EC_Normal;
+
+        /* take care of group length (according to what is specified */
+        /* in glenc) and padding elements (don't change anything) */
         computeGroupLengthAndPadding(glenc, EPD_noChange, Xfer);
-        fTransferState = ERW_ready;              // Dataset ist komplett
+
+        /* and set the transfer state to ERW_ready to indicate that the data set is complete */
+        fTransferState = ERW_ready;
     }
+
+    /* dump information if required */
     debug(3, ( "DcmDataset::read: At End: errorFlag = %s", errorFlag.text() ));
+
+    /* return result flag */
     return errorFlag;
 }
 
@@ -192,27 +230,63 @@ OFCondition DcmDataset::write(DcmStream & outStream,
                               const Uint32 padlen,
                               const Uint32 subPadlen,
                               Uint32 instanceLength)
+    /*
+     * This function writes data values which are contained in this DcmDataset object to the stream
+     * which is passed as first argument. With regard to the writing of information, the other
+     * parameters which are passed are accounted for. The function will return EC_Normal, if the
+     * information from all elements of this data set has been written to the buffer, it will return
+     * EC_StreamNotifyClient, if there is no more space in the buffer and _not_ all elements have been
+     * written to it, and it will return some other (error) value if there was an error.
+     *
+     * Parameters:
+     *   outStream      - [out] The stream that the information will be written to.
+     *   oxfer          - [in] The transfer syntax which shall be used.
+     *   enctype        - [in] Encoding type for sequences. Specifies how sequences will be handled.
+     *   glenc          - [in] Encoding type for group length. Specifies what will be done with group length tags.
+     *   padenc         - [in] Encoding type for padding. Specifies what will be done with padding tags.
+     *   padlen         - [in] [optional parameter, default = 0]. 
+     *   subPadlen      - [in] [optional parameter, default = 0]. 
+     *   instanceLength - [in] [optional parameter, default = 0]. 
+     */
 {
+  /* if the transfer state of this is not initialized, this is an illegal call */
   if (fTransferState == ERW_notInitialized) errorFlag = EC_IllegalCall;
   else
   {
+    /* if this is not an illegal call, do something */
+
+    /* Determine the transfer syntax which shall be used. Either we use the one which was passed, */
+    /* or (if it's an unknown tranfer syntax) we use the one which is contained in this->Xfer. */
     E_TransferSyntax newXfer = oxfer;
     if (newXfer == EXS_Unknown) newXfer = Xfer;
+
+    /* check if the stream reported an error so far; if not, we can go ahead and write some data to it */
     errorFlag = outStream.GetError();
     if (errorFlag == EC_Normal && fTransferState != ERW_ready)
     {
+      /* if this function was called for the first time for the dataset object, the transferState is still */
+      /* set to ERW_init. In this case, we need to take care of group length and padding elements according */
+      /* to the strategies which are specified in glenc and padenc. Additionally, we need to set the element */
+      /* list pointer of this data set to the fist element and we need to set the transfer state to ERW_inWork */
+      /* so that this scenario will only be executed once for this data set object. */
       if (fTransferState == ERW_init)
       {
+        /* take care of group length and padding elements, according to what is specified in glenc and padenc */
         computeGroupLengthAndPadding(glenc, padenc, newXfer, enctype, padlen, subPadlen, instanceLength);
         elementList->seek( ELP_first );
         fTransferState = ERW_inWork;
       }
+
+      /* if the transfer state is set to ERW_inWork, we need to write the information which */
+      /* is included in this data set's element list into the buffer which was passed. */
       if (fTransferState == ERW_inWork)
       {
-      	// elementList->get() can be NULL if buffer was full after
-      	// writing the last item but before writing the sequence delimitation.
+        // Remember that elementList->get() can be NULL if buffer was full after
+        // writing the last item but before writing the sequence delimitation.
         if (!elementList->empty() && (elementList->get() != NULL)) 
         {
+          /* as long as everything is ok, go through all elements of this data */
+          /* set and write the corresponding information to the buffer */
           DcmObject *dO;
           do 
           {
@@ -220,10 +294,15 @@ OFCondition DcmDataset::write(DcmStream & outStream,
             errorFlag = dO->write(outStream, newXfer, enctype);
           } while (errorFlag == EC_Normal && elementList->seek(ELP_next));
         }
+
+        /* if all the information in this has been written to the */
+        /* buffer set this data set's transfer state to ERW_ready */
         if ( errorFlag == EC_Normal ) fTransferState = ERW_ready;
       }
     }
   }
+
+    /* return the corresponding result value */
   return errorFlag;
 }
 
@@ -362,7 +441,10 @@ DcmDataset::removeAllButOriginalRepresentations()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.cc,v $
-** Revision 1.22  2001-09-26 15:49:29  meichel
+** Revision 1.23  2001-11-01 14:55:35  wilkens
+** Added lots of comments.
+**
+** Revision 1.22  2001/09/26 15:49:29  meichel
 ** Modified debug messages, required by OFCondition
 **
 ** Revision 1.21  2001/09/25 17:19:47  meichel

@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmItem
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-10 15:19:51 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2001-11-01 14:55:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.60 $
+ *  CVS/RCS Revision: $Revision: 1.61 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -165,59 +165,119 @@ OFBool DcmItem::foundVR( char* atposition )
 
 // ********************************
 
-/*
-   wird in DcmDataset und in DcmMetaInfo benutzt
-*/
 
 E_TransferSyntax DcmItem::checkTransferSyntax(DcmStream & inStream)
+    /*
+     * This function reads the first 6 bytes from the input stream and determines the transfer syntax
+     * which was used to code the information in the stream. The decision is based on two questions:
+     * a) Did we encounter a valid tag? and b) Do the last 2 bytes which were read from the stream
+     * represent a valid VR? In certain special cases, where the transfer syntax cannot be determined
+     * without doubt, we want to guess the most likely transfer syntax (see code).
+     * 
+     * This function is used in the classes DcmDataset and DcmMetaInfo.
+     *
+     * Parameters:
+     *   inStream      - [in] The stream which contains the coded information.
+     */
 {
     E_TransferSyntax transferSyntax;
     char tagAndVR[6];
+
+    /* read 6 bytes from the input stream (try to read tag and VR (data type)) */
     inStream.SetPutbackMark();
     inStream.ReadBytes(tagAndVR, 6);               // check Tag & VR
     inStream.Putback();
 
+    /* create two tag variables (one for little, one for big */
+    /* endian) in order to figure out, if there is a valid tag */
     char c1 = tagAndVR[0];
     char c2 = tagAndVR[1];
     char c3 = tagAndVR[2];
     char c4 = tagAndVR[3];
-    Uint16 t1 = (c1 & 0xff) + ((c2 & 0xff) << 8);  // explizite little endian
-    Uint16 t2 = (c3 & 0xff) + ((c4 & 0xff) << 8);  // Konversion
+    Uint16 t1 = (c1 & 0xff) + ((c2 & 0xff) << 8);  // explicit little endian
+    Uint16 t2 = (c3 & 0xff) + ((c4 & 0xff) << 8);  // conversion
     DcmTag taglittle(t1, t2);
     DcmTag tagbig(swapShort(t1), swapShort(t2));
 
-    if ((taglittle.error() != EC_Normal) && (tagbig.error() != EC_Normal)) {      // no valid tag
-        if (foundVR( &tagAndVR[4])) {               // assume little-endian
+    /* now we want to determine the transfer syntax which was used to code the information in the stream. */
+    /* The decision is based on two questions: a) Did we encounter a valid tag? and b) Do the last 2 bytes */
+    /* which were read from the stream represent a valid VR? In certain special cases, where the transfer */
+    /* cannot be determined without doubt, we want to guess the most probable transfer syntax. */
+
+    /* if both tag variables show an error, we encountered an invalid tag */
+    if ((taglittle.error() != EC_Normal) && (tagbig.error() != EC_Normal))
+    {
+        /* in case we encounterd an invalid tag, we want to assume that the used transfer syntax */
+        /* is a little endian transfer syntax. Now we have to figure out, if it is an implicit or */
+        /* explicit transfer syntax. Hence, check if the last 2 bytes represent a valid VR. */
+        if (foundVR( &tagAndVR[4]))
+        {
+            /* if the last 2 bytes represent a valid VR, we assume that the used */
+            /* transfer syntax is the little endian explicit transfer syntax. */
             transferSyntax = EXS_LittleEndianExplicit;
         } else {
+            /* if the last 2 bytes did not represent a valid VR, we assume that the */
+            /* used transfer syntax is the little endian implicit transfer syntax. */
             transferSyntax = EXS_LittleEndianImplicit;
         }
-    } else {
-        if ( foundVR( &tagAndVR[4] ) )  {           // explicit VR
-            if ( taglittle.error() != EC_Normal) {
+    }
+    /* if at least one tag variable did not show an error, we encountered a valid tag */
+    else
+    {
+        /* in case we encounterd a valid tag, we want to figure out, if it is an implicit or */
+        /* explicit transfer syntax. Hence, check if the last 2 bytes represent a valid VR. */
+        if ( foundVR( &tagAndVR[4] ) )
+        {
+            /* having figured out that the last 2 bytes represent a valid */
+            /* VR, we need to find out which of the two tags was valid */
+            if ( taglittle.error() != EC_Normal)
+            {
+                /* if the litte endian tag was invalid, the transfer syntax is big endian explicit */
                 transferSyntax = EXS_BigEndianExplicit;
-            } else if ( tagbig.error() != EC_Normal) {
+            }
+            else if ( tagbig.error() != EC_Normal)
+            {
+                /* if the big endian tag was invalid, the transfer syntax is little endian explicit */
                 transferSyntax = EXS_LittleEndianExplicit;
-            } else { /* both are error-free */
+            }
+            else
+            {
+                /* if both tags were valid, we take a look at the group numbers. Since */
                 /* group 0008 is much more probable than group 0800 for the first tag */
+                /* we specify the following: */
                 if ((taglittle.getGTag() > 0xff)&&(tagbig.getGTag() <= 0xff)) transferSyntax = EXS_BigEndianExplicit;
                 else transferSyntax = EXS_LittleEndianExplicit;
             }
-        } else  {                                   // implicit VR
-            if ( taglittle.error() != EC_Normal) {
+        }
+        else
+        {
+            /* having figured out that the last 2 bytes do not represent a */
+            /* valid VR, we need to find out which of the two tags was valid */
+            if ( taglittle.error() != EC_Normal)
+            {
+                /* if the litte endian tag was invalid, the transfer syntax is big endian implicit */
                 transferSyntax = EXS_BigEndianImplicit;
-            } else if ( tagbig.error() != EC_Normal) {
+            }
+            else if ( tagbig.error() != EC_Normal)
+            {
+                /* if the big endian tag was invalid, the transfer syntax is little endian implicit */
                 transferSyntax = EXS_LittleEndianImplicit;
-            } else { /* both are error-free */
+            }
+            else
+            {
+                /* if both tags were valid, we take a look at the group numbers. Since */
                 /* group 0008 is much more probable than group 0800 for the first tag */
+                /* we specify the following: */
                 if ((taglittle.getGTag() > 0xff)&&(tagbig.getGTag() <= 0xff)) transferSyntax = EXS_BigEndianImplicit;
                 else transferSyntax = EXS_LittleEndianImplicit;
             }
         }
-    }                                               // gueltige TransferSyntax
+    }
 
+    /* dump information on a certain debug level */
     debug(3, ( "found TransferSyntax=(%s)", DcmXfer(transferSyntax).getXferName()));
 
+    /* return determined transfer syntax */
     return transferSyntax;
 } // DcmItem::checkTransferSyntax
 
@@ -472,18 +532,43 @@ OFCondition DcmItem::computeGroupLengthAndPadding
                              const Uint32 padlen,
                              const Uint32 subPadlen,
                              Uint32 instanceLength)
+    /*
+     * This function takes care of group length and padding elements in the current element list according
+     * to what is specified in glenc and padenc. If required, this function does the following two things:
+     *  a) it calculates the group length of all groups which are contained in this item and sets the 
+     *     calculated values in the corresponding group length elements and 
+     *  b) it inserts a corresponding padding element (or, in case of sequences: padding elements)
+     *     with a corresponding correct size into the element list.
+     *
+     * Parameters:
+     *   glenc          - [in] Encoding type for group length. Specifies what shall be done with group length tags.
+     *   padenc         - [in] Encoding type for padding. Specifies what shall be done with padding tags.
+     *   oxfer          - [in] The transfer syntax that shall be used.
+     *   enctype        - [in] Encoding type for sequences. Specifies how sequences will be handled.
+     *   padlen         - [in] The length up to which shall be padded, if padding is desired.
+     *   subPadlen      - [in] For sequences (i.e. sub elements), the length up to which shall be padded,
+     *                         if padding is desired.
+     *   instanceLength - [in] 
+     */
 {
+    /* if certain conditions are met, this is considered to be an illegal call. */
     if ((padenc == EPD_withPadding && (padlen % 2 || subPadlen % 2)) ||
         ((glenc == EGL_recalcGL || glenc == EGL_withGL ||
           padenc == EPD_withPadding) && xfer == EXS_Unknown))
         return EC_IllegalCall;
 
+    /* if the caller specified that group length tags and padding */
+    /* tags are not supposed to be changed, there is nothing to do. */
     if (glenc == EGL_noChange && padenc == EPD_noChange)
         return EC_Normal;
 
+    /* if we get to this point, we need to do something. First of all, set the error indicator to normal. */
     OFCondition l_error = EC_Normal;
+
+    /* if there are elements in this item... */
     if ( !elementList->empty() )
     {
+        /* initialize some variables */
         DcmObject *dO;
         OFBool beginning = OFTrue;
         Uint16 lastGrp = 0x0000;
@@ -493,14 +578,20 @@ OFCondition DcmItem::computeGroupLengthAndPadding
         Uint32 grplen = 0L;
         DcmXfer xferSyn(xfer);
 
+        /* determine the current seek mode and set the list pointer to the first element */
         E_ListPos seekmode = ELP_next;
         elementList->seek( ELP_first );
+
+        /* start a loop: we want to go through all elements as long as everything is okay */
         do
         {
+            /* set the seek mode to "next" again, in case it has been modified in the last iteration */
             seekmode = ELP_next;
+
+            /* get the current element and assign it to a local variable */
             dO = elementList->get();
 
-            // compute GroupLength and padding in subSequence
+            /* if the current element is a sequence, compute group length and padding for the sub sequence */
             if ( dO->getVR() == EVR_SQ )
             {
                 Uint32 templen = instanceLength +
@@ -511,28 +602,45 @@ OFCondition DcmItem::computeGroupLengthAndPadding
                      templen);
             }
 
+            /* if everything is ok so far */
             if (l_error == EC_Normal)
             {
+                /* in case one of the following two conditions is met */
+                /*  (i) the caller specified that we want to add or remove group length elements and the current */
+                /*      element's tag shows that it is a group length element (tag's element number equals 0x0000) */
+                /*  (ii) the caller specified that we want to add or remove padding elements and the current */
+                /*      element's tag shows that it is a padding element (tag is (0xfffc,0xfffc) */
+                /* then we want to delete the current (group length or padding) element */
                 if (((glenc ==  EGL_withGL || glenc == EGL_withoutGL) &&
                      dO->getETag() == 0x0000) ||
                     (padenc != EPD_noChange &&
                      dO->getTag() == DCM_DataSetTrailingPadding))
-                    // delete GroupLength or Padding Element
                 {
                     delete elementList->remove();
                     seekmode = ELP_atpos;           // remove = 1 forward
                     dO = NULL;
                 }
+                /* if the above mentioned conditions are not met but the caller specified that we want to add group */
+                /* length tags for every group or that we want to recalculate values for existing group length tags */
                 else  if (glenc == EGL_withGL || glenc == EGL_recalcGL)
-                    // recognize new group
                 {
+                    /* we need to determine the current element's group number */
                     actGrp = dO->getGTag();
+
+                    /* and if the group number is different from the last remembered group number or */
+                    /* if this id the very first element that is treated then we've found a new group */
                     if (actGrp!=lastGrp || beginning) // new Group found
                     {
+                        /* set beginning to false in order to specify that the */
+                        /* very first element has already been treated */
                         beginning = OFFalse;
-                        if (dO->getETag() == 0x0000 && // GroupLength (xxxx,0000)
-                            dO->ident() != EVR_UL)     // no UL Element
-                        { // replace with UL
+
+                        /* if the current element is a group length element) and it's data type */
+                        /* is not UL replace this element with one that has a UL datatype since */
+                        /* group length elements are supposed to have this data type */
+                        if (dO->getETag() == 0x0000 &&
+                            dO->ident() != EVR_UL)
+                        {
                             delete elementList->remove();
                             DcmTag tagUL(actGrp, 0x0000, EVR_UL);
                             DcmUnsignedLong *dUL = new DcmUnsignedLong(tagUL);
@@ -542,6 +650,8 @@ OFCondition DcmItem::computeGroupLengthAndPadding
                                 " Group Length with VR other than UL found, corrected." << endl;
                             ofConsole.unlockCerr();
                         }
+                        /* if the above mentioned condition is not met but the caller specified */
+                        /* that we want to add group length elements, we need to add such an element */
                         else if (glenc == EGL_withGL)
                         {
                             // Create GroupLength element
@@ -551,39 +661,60 @@ OFCondition DcmItem::computeGroupLengthAndPadding
                             elementList->insert( dUL, ELP_prev );
                             dO = dUL;
                         }
-                        // Store GroupLength of group 0xfffc later
-                        // access if padding is enabled
+
+                        /* in case we want to add padding elements and the current element is a */
+                        /* padding element we want to remember the padding element so that the */
+                        /* group length of this element can be stored later */
                         if (padenc == EPD_withPadding && actGrp == 0xfffc)
                             paddingGL = (DcmUnsignedLong *)dO;
 
-                        // Write computed length of group into GroupLength
-                        // Element of previous group
+                        /* if actGLElem conatins a valid pointer it was set in one of the last iterations */
+                        /* to the group lenght element of the last group. We need to write the current computed */
+                        /* group length value to this element. */
                         if (actGLElem != (DcmUnsignedLong*)NULL )
                         {
                             actGLElem->putUint32(grplen);
                             debug(2, ( "DcmItem::computeGroupLengthAndPadding() Length of Group 0x%4.4x len=%lu", actGLElem->getGTag(), grplen ));
                         }
+
+                        /* set the group length value to 0 since it is the beginning of the new group */
                         grplen = 0L;
+
+                        /* if the current element is a group length element, remember its address for later */
+                        /* (we need to assign the group length value to this element in a subsequent iteration) */
+                        /* in case the current element (at the beginning of the group) is not a group length */
+                        /* element, set the actGLElem pointer to NULL. */
                         if (dO -> getETag() == 0x0000)
                             actGLElem = (DcmUnsignedLong*)dO;
                         else
                             actGLElem = NULL;
                     }
-                    else // no GroupLengthElement
+                    /* if this is not a new group, calculate the element's length and add it */
+                    /* to the currently computed group length value */
+                    else
                         grplen += dO->calcElementLength(xfer, enctype );
+
+                    /* remember the current element's group number so that it is possible to */
+                    /* figure out if a new group is treated in the following iteration */
                     lastGrp = actGrp;
                 }
             }
         } while (l_error == EC_Normal && elementList->seek(seekmode) );
 
-        // die letzte Group Length des Items eintragen
+        /* if there was no error and the caller specified that we want to add or recalculate */
+        /* group length tags and if actGLElem has a valid value, we need to add the above */
+        /* computed group length value to the last group's group length element */
         if (l_error == EC_Normal &&
             (glenc == EGL_withGL || glenc == EGL_recalcGL) &&
             actGLElem)
             actGLElem->putUint32(grplen);
 
+        /* if the caller specified that we want to add padding elements and */
+        /* if the length up to which shall be padded does not equal 0 we might */
+        /* have to add a padding element */
         if (padenc == EPD_withPadding && padlen)
         {
+            /* calculate how much space the entire padding element is supposed to occupy */
             Uint32 padding;
             if (ident() == EVR_dataset)
             {
@@ -591,25 +722,44 @@ OFCondition DcmItem::computeGroupLengthAndPadding
                 padding = padlen - (instanceLength % padlen);
             } else
                 padding = padlen - (getLength(xfer, enctype) % padlen);
+
+            /* if now padding does not equal padlen we need to create a padding element. (if both values are equal */
+            /* the element does have the exact required padlen length and does not need a padding element.) */
             if (padding != padlen)
             {
-                // Create new padding
+                /* Create new padding element */
                 DcmOtherByteOtherWord * paddingEl =
                     new DcmOtherByteOtherWord(DCM_DataSetTrailingPadding);
+
+                /* calculate the length of the new element */
                 Uint32 tmplen = paddingEl -> calcElementLength(xfer, enctype);
 
-                // padding smaller than header of padding Element
+                /* in case padding is smaller than the header of the padding element, we */
+                /* need to increase padding (the value which specifies how much space the */
+                /* entire padding element is supposed to occupy) until it is no longer smaller */
                 while (tmplen > padding)
                     padding += padlen;
+
+                /* determine the amount of bytes that have to be added to the */
+                /* padding element so that it has the correct size */
                 padding -= tmplen;
+
+                /* create an array of a corresponding size and set the arrayfields */
                 Uint8 * padBytes = new Uint8[padding];
                 memzero(padBytes, size_t(padding));
+
+                /* set information in the above created padding element (size and actual value) */
                 paddingEl -> putUint8Array(padBytes, padding);
+
+                /* delete the above created array */
                 delete[] padBytes;
+
+                /* insert the padding element into this */
                 this -> insert(paddingEl);
 
+                /* finally we need to update the group length for the padding element if it exists */
                 if (paddingGL)
-                {   // Update GroupLength for Padding if it exists
+                {
                     Uint32 len;
                     paddingGL -> getUint32(len);
                     len += paddingEl->calcElementLength(xfer, enctype);
@@ -630,6 +780,22 @@ OFCondition DcmItem::readTagAndLength(DcmStream & inStream,
                                       DcmTag &tag,
                                       Uint32 & length,
                                       Uint32 & bytesRead)
+    /*
+     * This function reads tag and length information from inStream and returns this information
+     * to the caller. When reading information, the transfer syntax which was passed is accounted
+     * for. If the transfer syntax shows an explicit value representation, the data type of this
+     * object is also read from the stream. In general, this function follows the rules which are
+     * specified in the DICOM standard (see DICOM standard (year 2000) part 5, section 7) (or the
+     * corresponding section in a later version of the standard) concerning the encoding of a data
+     * set.
+     *
+     * Parameters:
+     *   inStream  - [in] The stream which contains the information.
+     *   xfer      - [in] The transfer syntax which was used to encode the information in inStream.
+     *   tag       - [out] Contains in the end the tag that was read.
+     *   length    - [out] Contains in the end the length value that was read.
+     *   bytesRead - [out] Contains in the end the amount of bytes which were read from inStream.
+     */
 {
     OFCondition l_error = EC_Normal;
     Uint32 valueLength = 0;
@@ -637,15 +803,25 @@ OFCondition DcmItem::readTagAndLength(DcmStream & inStream,
     Uint16 groupTag = 0xffff;
     Uint16 elementTag = 0xffff;
 
+    /* Create a DcmXfer object based on the transfer syntax which was passed */
     DcmXfer xferSyn(xfer);
+
+    /* dump some information if required */
     debug(4, ("DcmItem::readTagAndLength() read transfer syntax %s", xferSyn.getXferName()));
+
+    /* check if either 4 (for implicit transfer syntaxes) or 6 (for explicit transfer */
+    /* syntaxes) bytes are available in (i.e. can be read from) inStream. if an error */
+    /* occured while performing this check return this error */
     if ((l_error = inStream.Avail(xferSyn.isExplicitVR() ? 6:4)) != EC_Normal)
         return l_error;
 
+    /* determine the byte ordering of the transfer syntax which was passed; */
+    /* if the byte ordering is unknown, this is an illegal call. */
     const E_ByteOrder byteOrder = xferSyn.getByteOrder();
     if (byteOrder == EBO_unknown)
         return EC_IllegalCall;
 
+    /* read tag information (4 bytes) from inStream and create a corresponding DcmTag object */
     inStream.SetPutbackMark();
     inStream.ReadBytes(&groupTag, 2);
     inStream.ReadBytes(&elementTag, 2);
@@ -655,16 +831,24 @@ OFCondition DcmItem::readTagAndLength(DcmStream & inStream,
     bytesRead = 4;
     DcmTag newTag(groupTag, elementTag );
 
+    /* if the transfer syntax which was passed is an explicit VR syntax and if the current */
+    /* item is not a delimitation item (note that delimitation items do not have a VR), go */
+    /* ahead and read 2 bytes from inStream. These 2 bytes contain this item's VR value. */
     if (xferSyn.isExplicitVR() &&
-        newTag.getEVR() != EVR_na)      // Delimitation Items do not have a VR
+        newTag.getEVR() != EVR_na)
     {
         char vrstr[3];
         vrstr[2] = '\0';
-        inStream.ReadBytes(vrstr, 2);  // 2 Byte Laenge:VR als string
-        DcmVR vr(vrstr);            // class DcmVR
+
+        /* read 2 bytes */
+        inStream.ReadBytes(vrstr, 2);
+
+        /* create a corresponding DcmVR object */
+        DcmVR vr(vrstr);
+
+        /* if the VR which was read is not a standard VR, print a warning */
         if (!vr.isStandard())
         {
-          /* this VR is unknown (e.g. "??").  print a warning. */
           ostream &localCerr = ofConsole.lockCerr();
           localCerr << "WARNING: parsing attribute: " << newTag.getXTag() <<
               " non-standard VR encountered: '" << vrstr << "', assuming ";
@@ -673,38 +857,46 @@ OFCondition DcmItem::readTagAndLength(DcmStream & inStream,
             else localCerr << "2 byte length field" << endl;
           ofConsole.unlockCerr();
         }
-        newTag.setVR(vr);     // VR in newTag anpassen, falls Element
-        // nicht fehlerhaft kodiert ist.
+
+        /* set the VR which was read in the above created tag object. */
+        newTag.setVR(vr);
+
+        /* increase counter by 2 */
         bytesRead += 2;
     }
 
-    nxtobj = newTag.getEVR();       // VR aus Tag bestimmen
+    /* determine this item's VR */
+    nxtobj = newTag.getEVR();
 
-
+    /* the next thing we want to do is read the value in the length field from inStream. */
+    /* determine if there is a corresponging amount of bytes (for the length field) still */
+    /* abvailable in inStream. if not, return an error. */
     if ((l_error = inStream.Avail(xferSyn.sizeofTagHeader(nxtobj)-bytesRead))
         != EC_Normal)
     {
-        inStream.Putback();
+        inStream.Putback();    // the UnsetPutbackMark is in readSubElement
         bytesRead = 0;
         return l_error;
     }
-    // The UnsetPutbackMark is in readSubElement
 
+    /* read the value in the length field. In some cases, it is 4 bytes wide, in other */
+    /* cases only 2 bytes (see DICOM standard (year 2000) part 5, section 7.1.1) (or the */
+    /* corresponding section in a later version of the standard) */
     if (xferSyn.isImplicitVR() ||
-        nxtobj == EVR_na)           // DelimitationItems besitzen keine VR!
+        nxtobj == EVR_na)   //note that delimitation items don't have a VR
     {
-        inStream.ReadBytes(&valueLength, 4);
+        inStream.ReadBytes(&valueLength, 4);            //length field is 4 bytes wide
         swapIfNecessary(gLocalByteOrder, byteOrder, &valueLength, 4, 4);
         bytesRead += 4;
     }
-    else if (xferSyn.isExplicitVR())
+    else                                               //the transfer syntax is explicit VR
     {
         DcmVR vr(newTag.getEVR());
         if (vr.usesExtendedLengthEncoding())
         {
             Uint16 reserved;
-            inStream.ReadBytes(&reserved, 2);  // 2 Byte Laenge
-            inStream.ReadBytes(&valueLength, 4);
+            inStream.ReadBytes(&reserved, 2);           // 2 reserved bytes
+            inStream.ReadBytes(&valueLength, 4);        // length field is 4 bytes wide
             swapIfNecessary(gLocalByteOrder, byteOrder,
                                     &valueLength, 4, 4);
             bytesRead += 6;
@@ -712,27 +904,30 @@ OFCondition DcmItem::readTagAndLength(DcmStream & inStream,
         else
         {
             Uint16 tmpValueLength;
-            inStream.ReadBytes(&tmpValueLength, 2);
+            inStream.ReadBytes(&tmpValueLength, 2);     // length field is 2 bytes wide
             swapIfNecessary(gLocalByteOrder, byteOrder, &tmpValueLength, 2, 2);
             bytesRead += 2;
             valueLength = tmpValueLength;
         }
-    } // else if ( xfer = EXS..Explicit ...
-    else
-    {
-        l_error = EC_IllegalCall;
     }
+
+    /* dump information if required */
     debug(3, ( "TagAndLength read of: (0x%4.4x,0x%4.4x) \"%s\" [0x%8.8x] \"%s\"",
             newTag.getGTag(), newTag.getETag(),
             newTag.getVRName(), valueLength, newTag.getTagName() ));
 
+    /* if the value in length is odd, print an error message */
     if ((valueLength & 1)&&(valueLength != (Uint32) -1))
     {
         ofConsole.lockCerr() << "Error Parsing DICOM object: Length of Tag " << newTag << "is odd" << endl;
         ofConsole.unlockCerr();
     }
-    length = valueLength;        // Rueckgabewert
-    tag = newTag;                   // Rueckgabewert
+
+    /* assign values to out parameter */
+    length = valueLength;
+    tag = newTag;
+
+    /* return return value */
     return l_error;
 }
 
@@ -746,15 +941,34 @@ OFCondition DcmItem::readSubElement(DcmStream & inStream,
                                     const E_TransferSyntax xfer,
                                     const E_GrpLenEncoding glenc,
                                     const Uint32 maxReadLength)
+    /*
+     * This function creates a new DcmElement object on the basis of the newTag and newLength information
+     * which was passed, inserts this new element into elementList, reads the actual data value which
+     * belongs to this element (attribute) from the inStream and also assigns this information to the
+     * object which was created at the beginning.
+     *
+     * Parameters:
+     *   inStream      - [in] The stream which contains the information.
+     *   newTag        - [in] The tag of the element of which the information is being read.
+     *   newLength     - [in] The length of the information which is being read.
+     *   xfer          - [in] The transfer syntax which was used to encode the information in inStream.
+     *   glenc         - [in] Encoding type for group length. Specifies what will be done with group length tags.
+     *   maxReadLength - [in] [optional parameter, default = DCM_MaxReadLength]. 
+     */
 {
     DcmElement *subElem = NULL;
+
+    /* create a new DcmElement* object with corresponding tag and */
+    /* length; the object will be accessible through subElem */
     OFCondition l_error = newDicomElement(subElem, newTag, newLength);
 
+    /* if no error occured and subElem does not equal NULL, go ahead */
     if ( l_error == EC_Normal && subElem != (DcmElement*)NULL )
     {
+        /* insert the new element into the (sorted) element list and */
+        /* assign information which was read from the instream to it */
         inStream.UnsetPutbackMark();
-        // DcmItem::elementList->insert( subElem, ELP_next );  // bit faster
-        if (insert( subElem ) == EC_Normal)  // but this is better
+        if (insert( subElem ) == EC_Normal)            //note that "DcmItem::elementList->insert( subElem, ELP_next );" would be faster, but this is better since this insert-function creates a sorted element list
         {
             subElem->transferInit();
             l_error = subElem->read(inStream, xfer, glenc, maxReadLength);
@@ -763,11 +977,12 @@ OFCondition DcmItem::readSubElement(DcmStream & inStream,
             delete subElem;
         }
     }
-    else if ( l_error == EC_InvalidTag )  // try error recovery
+    /* else if an error occured, try to recover from this error */
+    else if ( l_error == EC_InvalidTag )
     {
-        // This is the second Putback operation on the putback mark in
-        // readTagAndLength but it is impossible that both can be executed
-        // without setting the Mark twice.
+        /* This is the second Putback operation on the putback mark in */
+        /* readTagAndLength but it is impossible that both can be executed */
+        /* without setting the Mark twice. */
         inStream.Putback();
         ofConsole.lockCerr() << "Warning: DcmItem::readSubElement(): parse error occurred: " <<  newTag << endl;
         ofConsole.unlockCerr();
@@ -788,6 +1003,7 @@ OFCondition DcmItem::readSubElement(DcmStream & inStream,
         inStream.UnsetPutbackMark();
     }
 
+    /* return result value */
     return l_error;
 }
 
@@ -799,58 +1015,112 @@ OFCondition DcmItem::read(DcmStream & inStream,
                           const E_TransferSyntax xfer,
                           const E_GrpLenEncoding glenc,
                           const Uint32 maxReadLength)
+    /*
+     * This function reads the information of all attributes which are captured in the
+     * input stream and captures this information in this->elementList. Each attribute
+     * is represented as an element in this list. If not all information for an attribute
+     * could be read from the stream, the function returns EC_StreamNotifyClient.
+     *
+     * Parameters:
+     *   inStream      - [in] The stream which contains the information.
+     *   xfer          - [in] The transfer syntax which was used to encode the information in inStream.
+     *   glenc         - [in] [optional parameter, default = EGL_noChange] Encoding type for group
+     *                        length. Specifies what will be done with group length tags.
+     *   maxReadLength - [in] [optional parameter, default = DCM_MaxReadLength]. 
+     */
 {
+    /* check if this is an illegal call; if so set the error flag and do nothing, else go ahead */
     if (fTransferState == ERW_notInitialized)
         errorFlag = EC_IllegalCall;
     else
     {
+        /* figure out if the stream reported an error */
         errorFlag = inStream.GetError();
+
+        /* if the stream reported an error or if it is the end of the */
+        /* stream, set the error flag correspondingly; else go ahead */
         if (errorFlag == EC_Normal && inStream.EndOfStream())
             errorFlag = EC_EndOfStream;
         else if (errorFlag == EC_Normal && fTransferState != ERW_ready)
         {
+            /* if the transfer state of this item is ERW_init, get its start */
+            /* position in the stream and set the transfer state to ERW_inWork */
             if (fTransferState == ERW_init )
             {
-                fStartPosition = inStream.Tell();  // Position von Item-Start
+                fStartPosition = inStream.Tell();  // start position of this item
                 fTransferState = ERW_inWork;
             }
 
             DcmTag newTag;
+            /* start a loop in order to read all elements (attributes) which are contained in the inStream */
             while (inStream.GetError() == EC_Normal &&
                    (fTransferredBytes < Length || !lastElementComplete))
             {
+                /* initialize variables */
                 Uint32 newValueLength = 0;
                 Uint32 bytes_tagAndLen = 0;
+
+                /* if the reading of the last element was complete, go ahead and read the next element */
                 if (lastElementComplete)
                 {
+                    /* read this element's tag and length information (and */
+                    /* possibly also VR information) from the inStream */
                     errorFlag = readTagAndLength(inStream, xfer, newTag,
                                                  newValueLength,
                                                  bytes_tagAndLen );
-                    fTransferredBytes += bytes_tagAndLen;
-                    if ( errorFlag != EC_Normal )
-                        break;                  // beende while-Schleife
 
+                    /* increase counter correpsondingly */
+                    fTransferredBytes += bytes_tagAndLen;
+
+                    /* if there was an error while we were reading from the stream, terminate the while-loop */
+                    /* (note that if the last element had been read from the instream in the last iteration, */
+                    /* another iteration will be started, and of course then readTagAndLength(...) above will */
+                    /* return that it encountered the end of the stream. It is only then (and here) when the */
+                    /* while loop will be terminated.) */
+                    if ( errorFlag != EC_Normal )
+                        break;
+
+                    /* If we get to this point, we just started reading the first part */
+                    /* of an element; hence, lastElementComplete is not longer true */
                     lastElementComplete = OFFalse;
+
+                    /* read the actual data value which belongs to this element */
+                    /* (attribute) and insert this information into the elementList */
                     errorFlag = readSubElement(inStream, newTag,
                                                newValueLength,
                                                xfer, glenc, maxReadLength);
 
+                    /* if reading was successful, we read the entire data value information */
+                    /* for this element; hence lastElementComplete is true again */
                     if ( errorFlag == EC_Normal )
                         lastElementComplete = OFTrue;
                 }
                 else
                 {
+                    /* if lastElementComplete is false, we have only read the current element's */
+                    /* tag and length (and possibly VR) information as well as maybe some data */
+                    /* data value information. We need to continue reading the data value */
+                    /* information for this particular element. */
                     errorFlag = elementList->get()->read(inStream, xfer, glenc,
                                                          maxReadLength) ;
+
+                    /* if reading was successful, we read the entire information */
+                    /* for this element; hence lastElementComplete is true */
                     if ( errorFlag == EC_Normal )
                         lastElementComplete = OFTrue;
                 }
+
+                /* remember how many bytes were read */
                 fTransferredBytes = inStream.Tell() - fStartPosition;
 
+                /* if some error was encountered terminate the while-loop */
                 if ( errorFlag != EC_Normal )
-                    break;                              // beende while-Schleife
-
+                    break;
             } //while
+
+            /* determine an appropriate result value; note that if the above called read function */
+            /* encountered the end of the stream before all information for this element could be */
+            /* read from the stream, the errorFlag has already been set to EC_StreamNotifyClient. */
             if ((fTransferredBytes < Length || !lastElementComplete) &&
                 errorFlag == EC_Normal)
                 errorFlag = EC_StreamNotifyClient;
@@ -858,11 +1128,19 @@ OFCondition DcmItem::read(DcmStream & inStream,
                 errorFlag = EC_EndOfStream;
         } // else errorFlag
 
+        /* modify the result value: two kinds of special error codes do not count as an error */
         if (errorFlag == EC_ItemEnd || errorFlag == EC_EndOfStream)
             errorFlag = EC_Normal;
+
+        /* if at this point the error flag indicates success, the item has */
+        /* been read completely; hence, set the transfer state to ERW_ready. */
+        /* Note that all information for this element could be read from the */
+        /* stream, the errorFlag is still set to EC_StreamNotifyClient. */
         if ( errorFlag == EC_Normal )
-            fTransferState = ERW_ready;      // Item ist komplett
+            fTransferState = ERW_ready;
     }
+
+    /* return result value */
     return errorFlag;
 } // DcmItem::read()
 
@@ -1036,67 +1314,115 @@ unsigned long DcmItem::card()
 
 OFCondition DcmItem::insert( DcmElement* elem,
                              OFBool replaceOld )
-{                                                 // geordnetes Einfuegen
+    /*
+     * This function inserts a new element into elementList. The new element will be inserted in
+     * a way so that the elements in elementList are sorted ascendingly based on their tag values.
+     * The parameter replaceOld specifies if an old element (which shows the same tag as the new
+     * element and which at the same time differs from the new element) shall be removed from the
+     * element list or not.
+     *
+     * Parameters:
+     *   elem       - [in] Pointer to the object which shall be inserted.
+     *   replaceOld - [in] [optional parameter, default=OFFalse] Specifies if an old element shall be
+     *                     removed or not (see above).
+     */
+{
+    /* intialize error flag with ok */
     errorFlag = EC_Normal;
+
+    /* do something only if the pointer which was passed does not equal NULL */
     if ( elem != (DcmElement*)NULL )
     {
         DcmElement *dE;
         E_ListPos seekmode = ELP_last;
-        do {
+
+        /* iterate through elementList (from the last element to the first) */
+        do
+        {
+            /* get current element from elementList */
             dE = (DcmElement*)(elementList->seek( seekmode ));
-            if ( dE == (DcmElement*)NULL )     // elementList ist leer
-                // oder elem hat kleinstes Tag
+
+            /* if there is no element, i.e. elementList is empty */
+            if ( dE == (DcmElement*)NULL )
             {
+                /* insert new element at the beginning of elementList */
                 elementList->insert( elem, ELP_first );
+
+                /* dump some information if required */
                 debug(3, ("DcmItem::Insert() element (0x%4.4x,0x%4.4x) / VR=\"%s\" at beginning inserted",
                         elem->getGTag(), elem->getETag(), DcmVR(elem->getVR()).getVRName() ));
 
+                /* terminate do-while-loop */
                 break;
             }
+            /* else if the new element's tag is greater than the current element's tag */
+            /* (i.e. we have found the position where the new element shall be inserted) */
             else if ( elem->getTag() > dE->getTag() )
-                // Position gefunden
             {
+                /* insert the new element after the current element */
                 elementList->insert( elem, ELP_next );
+
+                /* dump some information if required */
                 debug(3, ( "DcmItem::Insert() element (0x%4.4x,0x%4.4x) / VR=\"%s\" inserted",
                         elem->getGTag(), elem->getETag(),
                         DcmVR(elem->getVR()).getVRName() ));
 
+                /* terminate do-while-loop */
                 break;
             }
+            /* else if the current element and the new element show the same tag */
             else if ( elem->getTag() == dE->getTag() )
-            {                                  // Tag ist schon vorhanden.
-                if ( elem != dE )              // Altes und neues Element
-                {                              // sind verschieden.
-                    if ( replaceOld )          // Altes Elem. wird geloescht.
+            {
+                /* if new and current element are not identical */
+                if ( elem != dE )
+                {
+                    /* if the current (old) element shall be replaced */
+                    if ( replaceOld )
                     {
+                        /* remove current element from list */
                         DcmObject *remObj = elementList->remove();
-                        // Es gilt: remObj == dE
-                        // Liste zeigt auf naechsten
+
+                        /* now the following holds: remObj == dE and elementList */
+                        /* points to the element after the former current element. */
+
+                        /* dump some information if required */
                         debug(3, ( "DcmItem::insert:element (0x%4.4x,0x%4.4x) VR=\"%s\" p=%p removed",
                                 remObj->getGTag(), remObj->getETag(),
                                 DcmVR(remObj->getVR()).getVRName(), remObj ));
 
+                        /* if the pointer to the removed object does not */
+                        /* equal NULL (the usual case), delete this object */
+                        /* and dump some information if required */
                         if ( remObj != (DcmObject*)NULL )
                         {
-                            delete remObj; // loesche "abgehaengtes" Element
+                            delete remObj;
                             debug(3, ( "DcmItem::insert:element p=%p deleted", remObj ));
-
                         }
+
+                        /* insert the new element before the current element */
                         elementList->insert( elem, ELP_prev );
+
+                        /* dump some information if required */
                         debug(3, ( "DcmItem::insert() element (0x%4.4x,0x%4.4x) VR=\"%s\" p=%p replaced older one",
                                 elem->getGTag(), elem->getETag(),
                                 DcmVR(elem->getVR()).getVRName(), elem ));
 
                     }   // if ( replaceOld )
+                    /* or else, i.e. the current element shall not be replaced by the new element */
                     else
                     {
+                        /* dump some information if required */
                         debug(1, ( "DcmItem::insert() element with (0x%4.4x,0x%4.4x) VR=\"%s\" is already inserted:",
                                 elem->getGTag(), elem->getETag(),
                                 DcmVR(elem->getVR()).getVRName() ));
+                        /* and set the error flag correspondingly; we do not */
+                        /* allow two elements with the same tag in elementList */
                         errorFlag = EC_DoubledTag;
                     }   // if ( !replaceOld )
                 }   // if ( elem != dE )
-                else         // Versuch, Listen-Element nochmals einzufuegen
+                /* if the new and the current element are identical, the caller tries to insert */
+                /* one element twice. print a warning and set the error flag correspondingly */
+                else
                 {
                     ofConsole.lockCerr() << "Warning: DcmItem::insert(): element "
                          << elem->getTag() << "VR=\""
@@ -1105,14 +1431,20 @@ OFCondition DcmItem::insert( DcmElement* elem,
                     ofConsole.unlockCerr();
                     errorFlag = EC_DoubledTag;
                 }
+
+                /* terminate do-while-loop */
                 break;
             }
-            // else : nicht noetig!
+
+            /* set the seek mode to "get the previous element" */
             seekmode = ELP_prev;
         } while ( dE );
     }
+    /* if the pointer which was passed equals NULL, this is an illegal call */
     else
         errorFlag = EC_IllegalCall;
+
+    /* return result value */
     return errorFlag;
 }
 
@@ -1534,13 +1866,24 @@ DcmElement * newDicomElement(const DcmTag & tag,
 OFCondition newDicomElement(DcmElement * & newElement,
                             const DcmTag & tag,
                             const Uint32 length)
+    /*
+     * This function creates a new DcmElement object based on the tag and length information which was
+     * passed and returns a pointer to this object in newElement.
+     *
+     * Parameters:
+     *   newElement - [inout] Contains in the end a pointer to the object which was created.
+     *   tag        - [in] The tag which shall be set in the object.
+     *   length     - [in] The length which shall be set in the object.
+     */
 {
+    /* initialize variables */
     OFCondition l_error = EC_Normal;
     newElement = NULL;
 
+    /* depending on the VR of the tag which was passed, create the new object */
     switch (tag.getEVR())
     {
-        // Byte-Strings:
+    // byte-strings:
     case EVR_AE :
         newElement = new DcmApplicationEntity( tag, length);
         break;
@@ -1569,7 +1912,7 @@ OFCondition newDicomElement(DcmElement * & newElement,
         newElement = new DcmUniqueIdentifier( tag, length);
         break;
 
-        // Charakter-Strings:
+    // character-strings:
     case EVR_LO :
         newElement = new DcmLongString( tag, length);
         break;
@@ -1589,24 +1932,24 @@ OFCondition newDicomElement(DcmElement * & newElement,
         newElement = new DcmUnlimitedText( tag, length);
         break;
 
-        // abhaengig von ByteOrder:
+    // dependent on ByteOrder:
     case EVR_AT :
         newElement = new DcmAttributeTag( tag, length);
         break;
     case EVR_SS :
         newElement = new DcmSignedShort( tag, length);
         break;
-    case EVR_xs : // laut Dicom-Standard V3.0
+    case EVR_xs : // according to Dicom-Standard V3.0
     case EVR_US :
         newElement = new DcmUnsignedShort( tag, length);
         break;
     case EVR_SL :
         newElement = new DcmSignedLong( tag, length);
         break;
-    case EVR_up : // fuer (0004,eeee) laut Dicom-Standard V3.0
+    case EVR_up : // for (0004,eeee) according to Dicom-Standard V3.0
     case EVR_UL :
     {
-        // generiere Tag mit VR aus Dictionary!
+        // generate Tag with VR from dictionary!
         DcmTag ulupTag(tag.getXTag());
         if ( ulupTag.getEVR() == EVR_up )
             newElement = new DcmUnsignedLongOffset(ulupTag, length);
@@ -1621,7 +1964,7 @@ OFCondition newDicomElement(DcmElement * & newElement,
         newElement = new DcmFloatingPointDouble( tag, length);
         break;
 
-        // Sequences and Items
+    // sequences and items
     case EVR_SQ :
         newElement = new DcmSequenceOfItems( tag, length);
         break;
@@ -1636,7 +1979,7 @@ OFCondition newDicomElement(DcmElement * & newElement,
             l_error = EC_InvalidTag;
         break;
 
-        // nicht-eindeutig 8- oder 16-Bit:
+        // unclear 8- or 16-bit:
 
     case EVR_ox :
         if (tag == DCM_PixelData)
@@ -1668,7 +2011,7 @@ OFCondition newDicomElement(DcmElement * & newElement,
             }
         break;
 
-        // Unbekannte Typen als Byte-String lesen:
+    // read unknown types as byte-string:
     case EVR_UNKNOWN :
     case EVR_UNKNOWN2B :
     case EVR_UN :
@@ -1684,6 +2027,7 @@ OFCondition newDicomElement(DcmElement * & newElement,
         break;
     }
 
+    /* return result value */
     return l_error;
 }
 
@@ -2487,7 +2831,10 @@ DcmItem::putAndInsertFloat64(const DcmTag& tag,
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.60  2001-10-10 15:19:51  joergr
+** Revision 1.61  2001-11-01 14:55:39  wilkens
+** Added lots of comments.
+**
+** Revision 1.60  2001/10/10 15:19:51  joergr
 ** Changed parameter DcmTagKey to DcmTag in DcmItem::putAndInsert... methods
 ** to support elements which are not in the data dictionary (e.g. private
 ** extensions).

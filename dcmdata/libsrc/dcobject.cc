@@ -23,10 +23,10 @@
  *  This file contains the interface to routines which provide
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:19:52 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2001-11-01 14:55:41 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcobject.cc,v $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -201,19 +201,39 @@ void DcmObject::printInfoLine(ostream & out, const OFBool showFullData,
 
 OFCondition DcmObject::writeTag(DcmStream & outStream, const DcmTag & tag, 
                                 const E_TransferSyntax oxfer)
+    /*
+     * This function writes the tag information which was passed to the stream. When
+     * writing information, the transfer syntax which was passed is accounted for.
+     *
+     * Parameters:
+     *   outStream - [out] The stream that the information will be written to.
+     *   tag       - [in] The tag which shall be written.
+     *   oxfer     - [in] The transfer syntax which shall be used.
+     */
 {
+  /* create an object which represents the transfer syntax */
   DcmXfer outXfer(oxfer);
+
+  /* determine the byte ordering */
   const E_ByteOrder outByteOrder = outXfer.getByteOrder();
+
+  /* if the byte ordering is unknown, this is an illegal call (return error) */
   if (outByteOrder == EBO_unknown)
       return EC_IllegalCall;
 
-  Uint16 groupTag = tag.getGTag();              // 2 Byte Laenge; 
+  /* determine the group number, mind the transfer syntax and */
+  /* write the group number value (2 bytes) to the stream */
+  Uint16 groupTag = tag.getGTag();
   swapIfNecessary(outByteOrder, gLocalByteOrder, &groupTag, 2, 2);
   outStream.WriteBytes(&groupTag, 2);
-        
+
+  /* determine the element number, mind the transfer syntax and */
+  /* write the element number value (2 bytes) to the stream */
   Uint16 elementTag = tag.getETag();    // 2 Byte Laenge; 
   swapIfNecessary(outByteOrder, gLocalByteOrder, &elementTag, 2, 2);
   outStream.WriteBytes(&elementTag, 2);
+
+  /* if the stream reports an error return this error, else return ok */
   if (outStream.GetError() != EC_Normal)
     return outStream.GetError();
   else
@@ -224,54 +244,108 @@ OFCondition DcmObject::writeTag(DcmStream & outStream, const DcmTag & tag,
 OFCondition DcmObject::writeTagAndLength(DcmStream & outStream, 
                                          const E_TransferSyntax oxfer,  
                                          Uint32 & writtenBytes) 
+    /*
+     * This function writes this DICOM object's tag and length information to the stream. When
+     * writing information, the transfer syntax which was passed is accounted for. If the transfer
+     * syntax shows an explicit value representation, the data type of this object is also written
+     * to the stream. In general, this function follows the rules which are specified in the DICOM
+     * standard (see DICOM standard (year 2000) part 5, section 7) (or the corresponding section
+     * in a later version of the standard) concerning the encoding of a data set which shall be
+     * transmitted.
+     *
+     * Parameters:
+     *   outStream    - [out] The stream that the information will be written to.
+     *   oxfer        - [in] The transfer syntax which shall be used.
+     *   writtenBytes - [out] Contains in the end the amount of bytes which have been written to the stream.
+     */
 {
+  /* check the error status of the stream. If it is not ok, nothing can be done */
   OFCondition l_error = outStream.GetError();
   if (l_error != EC_Normal)
     writtenBytes = 0;
   else
-    {
+  {
+      /* if the stream is ok, we need to do something */
+
+      /* write the tag information (a total of 4 bytes, group number and element */
+      /* number) to the stream. Mind the transfer syntax's byte ordering. */
       l_error = this -> writeTag(outStream, Tag, oxfer);
       writtenBytes = 4;
 
+      /* create an object which represents the transfer syntax */
       DcmXfer oxferSyn(oxfer);
+
+      /* determine the byte ordering */
       const E_ByteOrder oByteOrder = oxferSyn.getByteOrder();
+
+      /* if the byte ordering is unknown, this is an illegal call (return error) */
       if (oByteOrder == EBO_unknown)
           return EC_IllegalCall;
 
+      /* if the transfer syntax is one with explicit value representation */
+      /* this value's data type also has to be written to the stream. Do so */
+      /* and also write the length information to the stream. */
       if (oxferSyn.isExplicitVR())
         {
-          // Umwandlung in gueltige VR
-          DcmVR myvr(getVR()); // what VR should it be
-          // getValidEVR() will convert UN to OB if generation of UN disabled
+          /* Create an object that represents this object's data type */
+          DcmVR myvr(getVR());
+          
+          /* getValidEVR() will convert datatype "UN" to "OB" if generation of "UN" is disabled */
           DcmEVR vr = myvr.getValidEVR();
-          // convert to a valid string
+
+          /* get name of data type */
           const char *vrname = myvr.getValidVRName();
-          outStream.WriteBytes(vrname, 2);    // 2 Bytes of VR name 
+
+          /* write data type name to the stream (a total of 2 bytes) */
+          outStream.WriteBytes(vrname, 2);
           writtenBytes += 2;
+
+          /* create another data type object on the basis of the above created object */
           DcmVR outvr(vr);
 
-          if (outvr.usesExtendedLengthEncoding()) {
-              Uint16 reserved = 0;
-              outStream.WriteBytes(&reserved, 2); // 2 Byte Laenge
-              Uint32 valueLength = Length;
-              swapIfNecessary(oByteOrder, gLocalByteOrder, &valueLength, 4, 4);
-              outStream.WriteBytes(&valueLength, 4); // 4 Byte Laenge
-              writtenBytes += 6;
-          } else {
-              Uint16 valueLength = (Uint16)Length;
-              swapIfNecessary(oByteOrder, gLocalByteOrder, &valueLength, 2, 2);
-              outStream.WriteBytes(&valueLength, 2); // 2 Byte Laenge
-              writtenBytes += 2;
-            }
-
-        } else {
-          // is the implicit vr transfer syntax
-          Uint32 valueLength = Length;
-          swapIfNecessary(oByteOrder, gLocalByteOrder, &valueLength, 4, 4);
-          outStream.WriteBytes(&valueLength, 4); // 4 Byte Laenge
-          writtenBytes += 4;
+          /* in case we are dealing with a transfer syntax with explicit VR (see if above) */
+          /* and the actual VR uses extended length encoding (see DICOM standard (year 2000) */
+          /* part 5, section 7.1.2) (or the corresponding section in a later version of the */
+          /* standard) we have to add 2 reserved bytes (set to a value of 00H) to the data */
+          /* type field and the actual length field is 4 bytes wide. Write the corresponding */
+          /* information to the stream. */
+          if (outvr.usesExtendedLengthEncoding())
+          {
+            Uint16 reserved = 0;
+            outStream.WriteBytes(&reserved, 2);                                 // write 2 reserved bytes to stream
+            Uint32 valueLength = Length;                                        // determine length
+            swapIfNecessary(oByteOrder, gLocalByteOrder, &valueLength, 4, 4);   // mind transfer syntax
+            outStream.WriteBytes(&valueLength, 4);                              // write length, 4 bytes wide
+            writtenBytes += 6;                                                  // remember that 6 bytes were written in total
+          }
+          /* in case that we are dealing with a transfer syntax with explicit VR (see if above) and */
+          /* the actual VR does not use extended length encoding (see DICOM standard (year 2000) */
+          /* part 5, section 7.1.2) (or the corresponding section in a later version of the standard) */
+          /* we do not have to add reserved bytes to the data type field and the actual length field */
+          /* is 2 bytes wide. Write the corresponding information to the stream. */
+          else
+          {
+            Uint16 valueLength = (Uint16)Length;                                // determine length
+            swapIfNecessary(oByteOrder, gLocalByteOrder, &valueLength, 2, 2);   // mind transfer syntax
+            outStream.WriteBytes(&valueLength, 2);                              // write length, 2 bytes wide
+            writtenBytes += 2;                                                  // remember that 2 bytes were written in total
+          }
+        }
+        /* if the transfer syntax is one with implicit value representation this value's data type */
+        /* does not have to be written to the stream. Only the length information has to be written */
+        /* to the stream. According to the DICOM standard the length field is in this case always 4 */
+        /* byte wide. (see DICOM standard (year 2000) part 5, section 7.1.2) (or the corresponding */
+        /* section in a later version of the standard) */
+        else
+        {
+          Uint32 valueLength = Length;                                          // determine length
+          swapIfNecessary(oByteOrder, gLocalByteOrder, &valueLength, 4, 4);     // mind transfer syntax
+          outStream.WriteBytes(&valueLength, 4);                                // write length, 4 bytes wide
+          writtenBytes += 4;                                                    // remember that 4 bytes were written in total
         }
     }
+
+  /* return result */
   return l_error;
 }
 
@@ -279,7 +353,10 @@ OFCondition DcmObject::writeTagAndLength(DcmStream & outStream,
 /*
  * CVS/RCS Log:
  * $Log: dcobject.cc,v $
- * Revision 1.29  2001-09-25 17:19:52  meichel
+ * Revision 1.30  2001-11-01 14:55:41  wilkens
+ * Added lots of comments.
+ *
+ * Revision 1.29  2001/09/25 17:19:52  meichel
  * Adapted dcmdata to class OFCondition
  *
  * Revision 1.28  2001/06/01 15:49:06  meichel

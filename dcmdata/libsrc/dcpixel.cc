@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmPixelData
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:18:36 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2001-11-01 14:55:42 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixel.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -345,17 +345,33 @@ DcmPixelData::chooseRepresentation(
 void
 DcmPixelData::clearRepresentationList(
     DcmRepresentationListIterator leaveInList)
+    /*
+     * This function removes all pixel representations from the list of pixel representations
+     * except the one which was passed. Note that if parameter leaveInList equals repListEnd,
+     * all representations will be removed from the list.
+     *
+     * Parameters:
+     *   leaveInList - [in] Iterator to a representation which shall not be removed from the list
+     *                      of representations.
+     */
 {
+    /* define iterators to go through all representations in the list */
     DcmRepresentationListIterator it(repList.begin());
     DcmRepresentationListIterator del;
+
+    /* as long as we have not encountered the end of the */
+    /* representation list, go through all representations */
     while (it != repListEnd)
     {
+        /* if this representation shall not be left in the list */
         if (it != leaveInList)
         {
+            /* delete representation and move it to the next representation */
             delete *it;
             del = it++;
             repList.erase(del);
         }
+        /* else leave this representation in the list and just go to the next */
         else
             ++it;
     }
@@ -707,17 +723,45 @@ DcmPixelData::read(
     const E_TransferSyntax ixfer,
     const E_GrpLenEncoding glenc,
     const Uint32 maxReadLength)
+    /*
+     * This function reads the data value of a pixel data attribute which is captured in the input
+     * stream and captures this information in this. This function takes into account, if the pixel
+     * data is captured in native (uncompressed) or encapsulated (compressed) format.
+     *
+     * Parameters:
+     *   inStream      - [in] The stream which contains the information.
+     *   ixfer         - [in] The transfer syntax which was used to encode the information in inStream.
+     *   glenc         - [in] [optional parameter, default = EGL_noChange]. Encoding type for group length.
+     *                        Specifies what will be done with group length tags.
+     *   maxReadLength - [in] [optional parameter, default = DCM_MaxReadLength]. 
+     */
 {
+    /* if this element's transfer state shows ERW_notInitialized, this is an illegal call */
     if (fTransferState == ERW_notInitialized)
         errorFlag = EC_IllegalCall;
     else
     {
+        /* if this is not an illegal call, go ahead */
+
+        /* if the transfer state is ERW_init, we need to prepare the reading of the pixel */
+        /* data from the stream: remove all representations from the representation list. */
         if (fTransferState == ERW_init)
             clearRepresentationList(repListEnd);
 
+        /* create a DcmXfer object based on the transfer syntax which was passed */
         DcmXfer ixferSyn(ixfer);
+
+        /* determine if the pixel data is captured in native (uncompressed) or encapsulated */
+        /* (compressed) format. (The type of format is specified by the transfer syntax.) The */
+        /* reading process depends on the answer to this question, since native and encapsulated */
+        /* formats differ from each other significantly. (see DICOM standard (year 2000) part 7, */
+        /* annex F) (or the corresponding section in a later version of the standard.) */
         if (!ixferSyn.isEncapsulated())
         {
+            /* the pixel data is captured in native (uncompressed) format */
+
+            /* if the transfer state is ERW_init, we need to prepare */
+            /* the reading of the pixel data from the stream. */
             if (fTransferState == ERW_init)
             {
                 current = original = repListEnd;
@@ -725,11 +769,17 @@ DcmPixelData::read(
                 recalcVR();
                 existUnencapsulated = OFTrue;
             }
+
+            /* conduct the reading process */
             errorFlag = 
                 DcmPolymorphOBOW::read(inStream, ixfer, glenc, maxReadLength);
         }
         else
         {
+            /* the pixel data is captured in encapsulated (compressed) format */
+
+            /* if the transfer state is ERW_init, we need to prepare */
+            /* the reading of the pixel data from the stream. */
             if (fTransferState == ERW_init)
             {
                 current = insertRepresentationEntry(
@@ -741,12 +791,18 @@ DcmPixelData::read(
                 fTransferState = ERW_inWork;
             }
 
+            /* conduct the reading process */
             errorFlag = 
                 (*current)->pixSeq->read(inStream, ixfer, glenc, maxReadLength);
+
+            /* if the errorFlag equals EC_Normal, all pixel data has been */
+            /* read; hence, the transfer state has to be set to ERW_ready */
             if (errorFlag == EC_Normal)
                 fTransferState = ERW_ready;
         }
     }
+
+    /* return result value */
     return errorFlag;
 }
 
@@ -1001,7 +1057,10 @@ OFCondition DcmPixelData::loadAllDataIntoMemory(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.cc,v $
-** Revision 1.18  2001-09-25 17:18:36  meichel
+** Revision 1.19  2001-11-01 14:55:42  wilkens
+** Added lots of comments.
+**
+** Revision 1.18  2001/09/25 17:18:36  meichel
 ** Updated abstract class DcmRepresentationParameter for use with dcmjpeg
 **
 ** Revision 1.17  2001/06/01 15:49:07  meichel
