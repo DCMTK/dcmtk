@@ -19,12 +19,12 @@
  *
  *  Author:  Joerg Riesmeier
  *
- *  Purpose: Classes for caching of image database (Header)
+ *  Purpose: Classes for caching of the image database (Header/Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-18 18:50:18 $
+ *  Update Date:      $Date: 1999-02-19 09:45:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/include/Attic/dvcache.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -191,7 +191,7 @@ class DVInstanceCache
     {
         ItemStruct *item = new ItemStruct(uid, pos, status, pstate, filename);
         List.push_back(item);
-        Iterator = --List.end();                // set to current position
+        Iterator = --List.end();                // set to new position
     }
 
     inline DVIFhierarchyStatus updateStatus()
@@ -357,7 +357,7 @@ class DVSeriesCache
     {
         ItemStruct *item = new ItemStruct(uid, status);
         List.push_back(item);
-        Iterator = --List.end();                // set to current position
+        Iterator = --List.end();                // set to new position
     }
 
     inline DVIFhierarchyStatus updateStatus()
@@ -523,7 +523,7 @@ class DVStudyCache
     {
         ItemStruct *item = new ItemStruct(uid, status);
         List.push_back(item);
-        Iterator = --List.end();                // set to current position
+        Iterator = --List.end();                // set to new position
     }
 
     inline void updateStatus()
@@ -554,10 +554,12 @@ class DVStudyCache
  *
  * CVS/RCS Log:
  * $Log: dvcache.h,v $
- * Revision 1.1  1999-02-18 18:50:18  joergr
+ * Revision 1.2  1999-02-19 09:45:19  joergr
+ * Changed some comments, corrected typos and formatting.
+ *
+ * Revision 1.1  1999/02/18 18:50:18  joergr
  * Re-implemented methods to access index file (delete methods are still
  * missing).
- *
  *
  *
  */
