@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: meichel $, $Date: 2003-06-04 14:27:46 $
+** Last Update:		$Author: meichel $, $Date: 2003-07-03 14:21:10 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.50 $
+** Revision:		$Revision: 1.51 $
 ** Status:		$State: Exp $
 */
 
@@ -2240,7 +2240,12 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
         // we're in non-blocking mode. Prepare to wait for timeout.
         fd_set fdSet;
         FD_ZERO(&fdSet);
-        FD_SET(s,&fdSet);
+#ifdef __MINGW32__
+        // on MinGW, FD_SET expects an unsigned first argument
+        FD_SET((unsigned int) s, &fdSet);
+#else
+        FD_SET(s, &fdSet);
+#endif
 
         struct timeval timeout;
         timeout.tv_sec = connectTimeout;
@@ -3872,7 +3877,11 @@ destroyUserInformationLists(DUL_USERINFO * userInfo)
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.50  2003-06-04 14:27:46  meichel
+** Revision 1.51  2003-07-03 14:21:10  meichel
+** Added special handling for FD_SET() on MinGW, which expects an
+**   unsigned first argument.
+**
+** Revision 1.50  2003/06/04 14:27:46  meichel
 ** Cleaned up usage of boolean constants
 **
 ** Revision 1.49  2003/06/02 16:44:11  meichel

@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2003-06-02 16:44:11 $
+** Update Date:         $Date: 2003-07-03 14:21:10 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:    $Revision: 1.40 $
+** CVS/RCS Revision:    $Revision: 1.41 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1477,7 +1477,12 @@ ASC_associationWaiting(T_ASC_Network * network, int timeout)
         return OFFalse;
 
     FD_ZERO(&fdset);
+#ifdef __MINGW32__
+    // on MinGW, FD_SET expects an unsigned first argument
+    FD_SET((unsigned int) s, &fdset);
+#else
     FD_SET(s, &fdset);
+#endif
     t.tv_sec = timeout;
     t.tv_usec = 0;
 #ifdef HAVE_INTP_SELECT
@@ -1957,7 +1962,11 @@ unsigned long ASC_getPeerCertificate(T_ASC_Association *assoc, void *buf, unsign
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
-** Revision 1.40  2003-06-02 16:44:11  meichel
+** Revision 1.41  2003-07-03 14:21:10  meichel
+** Added special handling for FD_SET() on MinGW, which expects an
+**   unsigned first argument.
+**
+** Revision 1.40  2003/06/02 16:44:11  meichel
 ** Renamed local variables to avoid name clashes with STL
 **
 ** Revision 1.39  2002/11/28 17:15:23  meichel

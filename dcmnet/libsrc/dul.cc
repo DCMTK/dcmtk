@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: meichel $, $Date: 2003-06-10 13:37:43 $
+** Last Update:		$Author: meichel $, $Date: 2003-07-03 14:21:10 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.56 $
+** Revision:		$Revision: 1.57 $
 ** Status:		$State: Exp $
 */
 
@@ -1478,7 +1478,13 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
         {
             connected = 0;
             FD_ZERO(&fdset);
+#ifdef __MINGW32__
+            // on MinGW, FD_SET expects an unsigned first argument
+            FD_SET((unsigned int)((*network)->networkSpecific.TCP.listenSocket), &fdset);
+#else
             FD_SET((*network)->networkSpecific.TCP.listenSocket, &fdset);
+#endif
+
             timeout_val.tv_sec = timeout;
             timeout_val.tv_usec = 0;
 #ifdef HAVE_INTP_SELECT
@@ -1499,7 +1505,12 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
             connected = 0;
             do {
                 FD_ZERO(&fdset);
+#ifdef __MINGW32__
+                // on MinGW, FD_SET expects an unsigned first argument
+                FD_SET((unsigned int)((*network)->networkSpecific.TCP.listenSocket), &fdset);
+#else
                 FD_SET((*network)->networkSpecific.TCP.listenSocket, &fdset);
+#endif
 
                 timeout_val.tv_sec = 5;
                 timeout_val.tv_usec = 0;
@@ -2388,7 +2399,11 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, ostream& outs
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.56  2003-06-10 13:37:43  meichel
+** Revision 1.57  2003-07-03 14:21:10  meichel
+** Added special handling for FD_SET() on MinGW, which expects an
+**   unsigned first argument.
+**
+** Revision 1.56  2003/06/10 13:37:43  meichel
 ** Added support for TCP wrappers in DICOM network layer
 **
 ** Revision 1.55  2003/06/06 13:07:30  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2002, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DcmTransportConnection, DcmTCPConnection
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 13:04:38 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2003-07-03 14:21:10 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -134,7 +134,13 @@ OFBool DcmTransportConnection::fastSelectReadableAssociation(DcmTransportConnect
     if (connections[i])
     {
       socketfd = connections[i]->getSocket();
+#ifdef __MINGW32__
+      // on MinGW, FD_SET expects an unsigned first argument
+      FD_SET((unsigned int)socketfd, &fdset);
+#else
       FD_SET(socketfd, &fdset);
+#endif
+
       if (socketfd > maxsocketfd) maxsocketfd = socketfd;
     }
   }
@@ -240,7 +246,14 @@ OFBool DcmTCPConnection::networkDataAvailable(int timeout)
   int nfound;
 
   FD_ZERO(&fdset);
+
+#ifdef __MINGW32__
+  // on MinGW, FD_SET expects an unsigned first argument
+  FD_SET((unsigned int) getSocket(), &fdset);
+#else
   FD_SET(getSocket(), &fdset);
+#endif
+
   t.tv_sec = timeout;
   t.tv_usec = 0;
 
@@ -292,7 +305,11 @@ const char *DcmTCPConnection::errorString(DcmTransportLayerStatus code)
 
 /*
  *  $Log: dcmtrans.cc,v $
- *  Revision 1.7  2002-11-27 13:04:38  meichel
+ *  Revision 1.8  2003-07-03 14:21:10  meichel
+ *  Added special handling for FD_SET() on MinGW, which expects an
+ *    unsigned first argument.
+ *
+ *  Revision 1.7  2002/11/27 13:04:38  meichel
  *  Adapted module dcmnet to use of new header file ofstdinc.h
  *
  *  Revision 1.6  2001/06/01 15:50:05  meichel

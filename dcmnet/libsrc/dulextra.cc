@@ -54,9 +54,9 @@
 **      Supplementary DUL functions.
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2002-11-27 13:04:44 $
+** Update Date:         $Date: 2003-07-03 14:21:10 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dulextra.cc,v $
-** CVS/RCS Revision:    $Revision: 1.13 $
+** CVS/RCS Revision:    $Revision: 1.14 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -129,7 +129,13 @@ DUL_associationWaiting(DUL_NETWORKKEY * callerNet, int timeout)
     s = net->networkSpecific.TCP.listenSocket;
 
     FD_ZERO(&fdset);
+#ifdef __MINGW32__
+    // on MinGW, FD_SET expects an unsigned first argument
+    FD_SET((unsigned int) s, &fdset);
+#else
     FD_SET(s, &fdset);
+#endif
+
     t.tv_sec = timeout;
     t.tv_usec = 0;
 #ifdef HAVE_INTP_SELECT
@@ -152,7 +158,11 @@ DUL_associationWaiting(DUL_NETWORKKEY * callerNet, int timeout)
 /*
 ** CVS Log
 ** $Log: dulextra.cc,v $
-** Revision 1.13  2002-11-27 13:04:44  meichel
+** Revision 1.14  2003-07-03 14:21:10  meichel
+** Added special handling for FD_SET() on MinGW, which expects an
+**   unsigned first argument.
+**
+** Revision 1.13  2002/11/27 13:04:44  meichel
 ** Adapted module dcmnet to use of new header file ofstdinc.h
 **
 ** Revision 1.12  2001/10/12 10:18:38  meichel
