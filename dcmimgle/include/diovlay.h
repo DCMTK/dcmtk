@@ -22,9 +22,8 @@
  *  Purpose: DicomOverlay (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-06-12 15:08:34 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diovlay.h,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2003-12-08 19:32:14 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,11 +31,12 @@
  */
 
 
-#ifndef __DIOVLAY_H
-#define __DIOVLAY_H
+#ifndef DIOVLAY_H
+#define DIOVLAY_H
 
 #include "osconfig.h"
 #include "dctypes.h"
+#include "ofcast.h"
 
 #include "diobjcou.h"
 #include "diovdat.h"
@@ -308,7 +308,7 @@ class DiOverlay
 
     inline DiOverlayPlane *getPlane(const unsigned int plane) const
     {
-        return ((Data != NULL) && (Data->Planes != NULL) && (plane < Data->Count)) ? Data->Planes[plane] : (DiOverlayPlane *)NULL;
+        return ((Data != NULL) && (Data->Planes != NULL) && (plane < Data->Count)) ? Data->Planes[plane] : OFstatic_cast(DiOverlayPlane *, NULL);
     }
 
     /** check whether specified plane exists
@@ -489,7 +489,12 @@ class DiOverlay
  *
  * CVS/RCS Log:
  * $Log: diovlay.h,v $
- * Revision 1.22  2003-06-12 15:08:34  joergr
+ * Revision 1.23  2003-12-08 19:32:14  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated CVS header.
+ *
+ * Revision 1.22  2003/06/12 15:08:34  joergr
  * Fixed inconsistent API documentation reported by Doxygen.
  *
  * Revision 1.21  2002/12/09 13:32:55  joergr
