@@ -93,8 +93,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 11:43:12 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Update Date:      $Date: 2003-08-12 13:11:10 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -359,12 +359,19 @@ OFString &OFStandard::normalizeDirName(OFString &result,
                                        const OFBool allowEmptyDirName)
 {
     result = dirName;
-    /* remove trailing path separators (keep it if at the beginning of the string) */
+    /* remove trailing path separators (keep it if appearing at the beginning of the string) */
     while ((result.length() > 1) && (result.at(result.length() - 1) == PATH_SEPARATOR))
         result.erase(result.length() - 1, 1);
-    /* avoid empty directory name (use "." instead) */
-    if (result.empty() && !allowEmptyDirName)
-        result = ".";
+    if (allowEmptyDirName)
+    {
+        /* avoid "." as a directory name, use empty string instead */
+        if (result == ".")
+            result.clear();
+    } else {
+        /* avoid empty directory name (use "." instead) */
+        if (result.empty())
+            result = ".";
+    }
     return result;
 }
 
@@ -374,6 +381,8 @@ OFString &OFStandard::combineDirAndFilename(OFString &result,
                                             const OFString &fileName,
                                             const OFBool allowEmptyDirName)
 {
+    // ## might use system function realpath() in the future to resolve paths including ".."?
+
     /* check whether 'fileName' contains absolute path */
     if (!fileName.empty() && (fileName.at(0) == PATH_SEPARATOR))
         result = fileName;
@@ -443,7 +452,7 @@ size_t OFStandard::searchDirectoryRecursively(const OFString &directory,
                         combineDirAndFilename(pathname, directory, data.cFileName, OFTrue /*allowEmptyDirName*/);
                     /* recursively search sub directories */
                     if (dirExists(combineDirAndFilename(tmpString, dirPrefix, pathname, OFTrue /*allowEmptyDirName*/)))
-                        searchDirectoryRecursively(pathname, fileList, pattern, dirPrefix);            
+                        searchDirectoryRecursively(pathname, fileList, pattern, dirPrefix);
                     /* add filename to the list (if no pattern is given) */
                     else if (pattern.empty())
                         fileList.push_back(pathname);
@@ -1111,6 +1120,7 @@ static char *ftoa_exponent(char *p, int exponent, char fmtch)
   return p;
 }
 
+
 /** round given fraction and adjust text string if round up.
  *  @param fract  fraction to round
  *  @param expon  pointer to exponent, may be NULL
@@ -1163,6 +1173,7 @@ static char *ftoa_round(double fract, int *expon, char *start, char *end, char c
 
   return start;
 }
+
 
 /** convert double value to string, without padding
  *  @param val double value to be formatted
@@ -1513,7 +1524,6 @@ void OFStandard::ftoa(
 #endif /* DISABLE_OFSTD_FTOA */
 
 
-
 OFBool OFStandard::stringMatchesCharacterSet( const char *str, const char *charset )
 {
   if( charset == NULL || str == NULL )
@@ -1538,6 +1548,7 @@ OFBool OFStandard::stringMatchesCharacterSet( const char *str, const char *chars
   return( result );
 }
 
+
 unsigned int OFStandard::my_sleep(unsigned int seconds)
 {
 #ifdef HAVE_WINDOWS_H
@@ -1557,9 +1568,13 @@ unsigned int OFStandard::my_sleep(unsigned int seconds)
 #endif
 }
 
+
 /*
  *  $Log: ofstd.cc,v $
- *  Revision 1.23  2003-08-07 11:43:12  joergr
+ *  Revision 1.24  2003-08-12 13:11:10  joergr
+ *  Improved implementation of normalizeDirName().
+ *
+ *  Revision 1.23  2003/08/07 11:43:12  joergr
  *  Improved implementation of combineDirAndFilename().
  *
  *  Revision 1.22  2003/07/17 14:57:34  joergr

@@ -22,9 +22,9 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-07-17 14:53:24 $
+ *  Update Date:      $Date: 2003-08-12 13:10:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstd.h,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -162,7 +162,9 @@ class OFStandard
     /** normalize the given directory name.
      *  Removes trailing path separators from the directory name. If the resulting
      *  directory name is an empty string and the flag 'allowEmptyDirName' is OFFalse
-     *  the directory name is to "." (current directory).
+     *  the directory name is set to "." (current directory). If the resulting directory
+     *  name is "." and the flag 'allowEmptyDirName' is OFTrue the directory name is set
+     *  to an empty string.
      *  @param result string variable in which the resulting directory name is stored
      *  @param dirName directory name to be normalized
      *  @param allowEmptyDirName flag indicating whether an empty directory name is allowed
@@ -175,8 +177,9 @@ class OFStandard
     /** combine the given directory and file name.
      *  Normalizes the directory name and appends the file name (with a path separator)
      *  if not empty. If both 'dirName' and 'fileName' are empty strings and the flag
-     *  'allowEmptyDirName' is OFFalse the resulting path name is set "." (current
-     *  directory).
+     *  'allowEmptyDirName' is OFFalse the resulting path name is set to "." (current
+     *  directory). If 'dirName' is "." and the flag 'allowEmptyDirName' is OFTrue an
+     *  empty directory name is used.
      *  NB: This function neither checks whether the given 'dirName' exists nor whether
      *      the resulting path name points to a valid or existing file name.
      *  @param result string variable in which the resulting path name is stored
@@ -195,7 +198,8 @@ class OFStandard
      *  @param fileList list to which the filenames are added.
      *    Please note that the list is not not cleared automatically.
      *  @param pattern optional wildcard pattern used to match the filenames against.
-     *    By default all files match.
+     *    By default all files match. In order to work under Unix the system function
+     *    fnmatch() is required.
      *  @param dirPrefix optional prefix added to the directory name.
      *    This prefix will, however, not be part of the filenames added to the list.
      *  @return number of new files added to the list
@@ -424,7 +428,10 @@ class OFStandard
  *
  * CVS/RCS Log:
  * $Log: ofstd.h,v $
- * Revision 1.18  2003-07-17 14:53:24  joergr
+ * Revision 1.19  2003-08-12 13:10:10  joergr
+ * Improved implementation of normalizeDirName().
+ *
+ * Revision 1.18  2003/07/17 14:53:24  joergr
  * Added new function searchDirectoryRecursively().
  * Updated documentation to get rid of doxygen warnings.
  *
