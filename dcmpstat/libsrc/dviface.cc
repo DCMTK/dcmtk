@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-08 16:41:41 $
- *  CVS/RCS Revision: $Revision: 1.63 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-09-08 17:11:43 $
+ *  CVS/RCS Revision: $Revision: 1.64 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -553,7 +553,7 @@ Uint32 DVInterface::getNumberOfPStates()
     if (createPStateCache())
     {
         DVInstanceCache::ItemStruct *instance = getInstanceStruct();
-        if ((instance != NULL) && (!instance->PState))
+        if ((instance != NULL) && (instance->Type == DVPSI_image))
             return instance->List.size();
     }
     return 0;
@@ -565,7 +565,7 @@ E_Condition DVInterface::selectPState(Uint32 idx, OFBool changeStatus)
     if (createPStateCache())
     {
         DVInstanceCache::ItemStruct *instance = getInstanceStruct();
-        if ((instance != NULL) && (!instance->PState))
+        if ((instance != NULL) && (instance->Type == DVPSI_image))
         {
             OFListIterator(DVInstanceCache::ItemStruct *) iter = instance->List.begin();
             OFListIterator(DVInstanceCache::ItemStruct *) last = instance->List.end();
@@ -600,7 +600,7 @@ const char *DVInterface::getPStateDescription(Uint32 idx)
     if (createPStateCache())
     {
         DVInstanceCache::ItemStruct *instance = getInstanceStruct();
-        if ((instance != NULL) && (!instance->PState))
+        if ((instance != NULL) && (instance->Type == DVPSI_image))
         {
             OFListIterator(DVInstanceCache::ItemStruct *) iter = instance->List.begin();
             OFListIterator(DVInstanceCache::ItemStruct *) last = instance->List.end();
@@ -626,7 +626,7 @@ const char *DVInterface::getPStateLabel(Uint32 idx)
     if (createPStateCache())
     {
         DVInstanceCache::ItemStruct *instance = getInstanceStruct();
-        if ((instance != NULL) && (!instance->PState))
+        if ((instance != NULL) && (instance->Type == DVPSI_image))
         {
             OFListIterator(DVInstanceCache::ItemStruct *) iter = instance->List.begin();
             OFListIterator(DVInstanceCache::ItemStruct *) last = instance->List.end();
@@ -914,10 +914,19 @@ OFBool DVInterface::createIndexCache()
                     {
                         if (!series->List.isElem(record.SOPInstanceUID))
                         {
-                            const OFBool pstate = (record.Modality != NULL) && (strcmp(record.Modality, "PR") == 0);
-                            series->List.addItem(record.SOPInstanceUID, counter, record.hstat, pstate, record.ImageSize, record.filename);
-                            if (pstate)
-                                series->PState = OFTrue;                // series contains PState(s)
+                            DVPSInstanceType type = DVPSI_image;
+                            if (record.Modality != NULL)
+                            {
+                                if (strcmp(record.Modality, "PR") == 0)
+                                    type = DVPSI_presentationState;
+                                else if (strcmp(record.Modality, "HC") == 0)
+                                    type =DVPSI_grayscaleHardcopy;
+                                else if (strcmp(record.Modality, "STORED_PRINT") == 0)
+                                    type = DVPSI_storedPrint;
+                            }
+                            series->List.addItem(record.SOPInstanceUID, counter, record.hstat, type, record.ImageSize, record.filename);
+                            if (series->Type == DVPSI_image)
+                                series->Type = type;                // series contains only one type of instances
                         }
                     }
                 }
@@ -939,7 +948,7 @@ OFBool DVInterface::createPStateCache()
         if (series != NULL)
         {
             DVInstanceCache::ItemStruct *instance = series->List.getItem();
-            if ((instance != NULL) && (!instance->PState))
+            if ((instance != NULL) && (instance->Type == DVPSI_image))
             {
                 if (!instance->Checked)                             // is current instance already checked?
                 {
@@ -950,7 +959,7 @@ OFBool DVInterface::createPStateCache()
                         if (study->List.gotoFirst())
                         {
                             do { /* for all series */
-                                if (study->List.getPState())
+                                if (study->List.getType() == DVPSI_presentationState)
                                 {
                                     series = study->List.getItem();
                                     if (series != NULL)
@@ -958,7 +967,7 @@ OFBool DVInterface::createPStateCache()
                                         if (series->List.gotoFirst())
                                         {
                                             do { /* for all instances */
-                                                if (series->List.getPState())
+                                                if (series->List.getType() == DVPSI_presentationState)
                                                 {
                                                     DcmFileFormat *pstate = NULL;
                                                     if ((loadFileFormat(series->List.getFilename(), pstate) == EC_Normal) && pstate)
@@ -1161,16 +1170,37 @@ DVIFhierarchyStatus DVInterface::getInstanceStatus()
 }
 
 
-OFBool DVInterface::isPresentationStateSeries()
+DVPSInstanceType DVInterface::getSeriesType()
+{
+    DVStudyCache::ItemStruct *study = idxCache.getItem();
+    if (study != NULL)
+        return study->List.getType();
+    return DVPSI_image;
+}
+
+
+DVPSInstanceType DVInterface::getInstanceType()
 {
     DVStudyCache::ItemStruct *study = idxCache.getItem();
     if (study != NULL)
     {
         DVSeriesCache::ItemStruct *series = study->List.getItem();
         if (series != NULL)
-            return series->PState;
+            return series->List.getType();
     }
-    return OFFalse;
+    return DVPSI_image;
+}
+
+
+OFBool DVInterface::isPresentationStateSeries()
+{
+    return (getSeriesType() == DVPSI_presentationState);
+}
+
+
+OFBool DVInterface::isPresentationState()
+{
+    return (getInstanceType() == DVPSI_presentationState);
 }
 
 
@@ -1345,13 +1375,6 @@ const char *DVInterface::getPresentationDescription()
 const char *DVInterface::getPresentationLabel()
 { 
     return idxRec.PresentationLabel;
-}
-
-
-OFBool DVInterface::isPresentationState()
-{
-    const char *str = getModality();
-    return ((str != NULL) && (strcmp(str, "PR") == 0));
 }
 
 
@@ -2255,7 +2278,11 @@ void DVInterface::cleanChildren()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.63  1999-09-08 16:41:41  meichel
+ *  Revision 1.64  1999-09-08 17:11:43  joergr
+ *  Added support for new instance types in database (grayscale hardcopy and
+ *  stored print).
+ *
+ *  Revision 1.63  1999/09/08 16:41:41  meichel
  *  Moved configuration file evaluation to separate class.
  *
  *  Revision 1.62  1999/09/01 16:15:06  meichel
