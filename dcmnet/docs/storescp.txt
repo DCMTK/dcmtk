@@ -96,7 +96,7 @@ options are:
       +p n m  pad file to x*n bytes and items to y*m bytes
     unknown VR (not with +B):
       -u      disable generation of unknown VR (UN)
-      +u      enable generation of unkniwn VR (UN) (default)
+      +u      enable generation of unknown VR (UN) (default)
       
   other options:
       -h      print this usage string

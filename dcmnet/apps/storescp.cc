@@ -35,9 +35,9 @@
 **		Kuratorium OFFIS e.V., Oldenburg, Germany
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-05-23 10:44:20 $
+** Update Date:		$Date: 1997-05-27 15:44:53 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
-** CVS/RCS Revision:	$Revision: 1.10 $
+** CVS/RCS Revision:	$Revision: 1.11 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -109,7 +109,7 @@ static void usage()
 "      +p n m  pad file to x*n bytes and items to y*m bytes\n"
 "    unknown VR (not with +B):\n"
 "      -u      disable generation of unknown VR (UN)\n"
-"      +u      enable generation of unkniwn VR (UN) (default)\n"
+"      +u      enable generation of unknown VR (UN) (default)\n"
 "  other options:\n"
 "      -h      print this usage string\n"
 "      +V      verbose mode, print actions\n"
@@ -1078,7 +1078,10 @@ static CONDITION storeSCP(
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.10  1997-05-23 10:44:20  meichel
+** Revision 1.11  1997-05-27 15:44:53  meichel
+** Corrected typo in storescp help texts.
+**
+** Revision 1.10  1997/05/23 10:44:20  meichel
 ** Major rewrite of storescp application. See CHANGES for details.
 ** Changes to interfaces of some DIMSE functions.
 **
