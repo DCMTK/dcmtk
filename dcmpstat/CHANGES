@@ -1,4 +1,11 @@
 
+**** Changes from 1999.01.19 (vorwerk)
+
+- additional methods for attributes in the indexfile of imagectn added.
+- method getFilname implemented
+ Affects: dcmpstat/include/dviface.h
+	  dcmpstat/libsrc/dviface.cc
+
 **** Changes from 1999.01.18 (eichelberg)
 
 - minor syntax purifications to keep VC++ happy
