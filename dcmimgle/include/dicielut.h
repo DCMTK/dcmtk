@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,12 +21,12 @@
  *
  *  Purpose: DicomCIELABLUT (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:39 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-07-02 16:23:41 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dicielut.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
- * 
+ *
  *  CVS/RCS Log at end of file
  *
  */
@@ -57,10 +57,10 @@ class DiCIELABLUT
      ** @param  count    number of values to be stored
      *  @param  max      maximum value to be stored
      *  @param  ddl_tab  array of DDL values
-     *  @param  lum_tab  array of luminance values
+     *  @param  val_tab  array of values
      *  @param  ddl_cnt  number of DDL values
-     *  @param  lum_min  minimum luminance
-     *  @param  lum_max  maximum luminance
+     *  @param  val_min  minimum value
+     *  @param  val_max  maximum value
      *  @param  amb      ambient light value
      *  @param  stream   output stream (used to write curve data to a file)
      *  @param  mode     write CC and PSC to stream if OFTrue
@@ -68,10 +68,10 @@ class DiCIELABLUT
     DiCIELABLUT(const unsigned long count,
                 const Uint16 max,
                 const Uint16 *ddl_tab,
-                const double *lum_tab,
+                const double *val_tab,
                 const unsigned long ddl_cnt,
-                const double lum_min,
-                const double lum_max,
+                const double val_min,
+                const double val_max,
                 const double amb,
                 ostream *stream = NULL,
                 const OFBool mode = OFTrue);
@@ -82,24 +82,24 @@ class DiCIELABLUT
 
 
  protected:
- 
+
     /** create lookup table
      *
      ** @param  ddl_tab  array of DDL values
-     *  @param  lum_tab  array of luminance values
+     *  @param  val_tab  array of values
      *  @param  ddl_cnt  number of DDL values
-     *  @param  lum_min  minimum luminance
-     *  @param  lum_max  maximum luminance
+     *  @param  val_min  minimum value
+     *  @param  val_max  maximum value
      *  @param  stream   output stream (used to write curve data to a file)
      *  @param  mode     write CC and PSC to stream if OFTrue
      *
      ** @return status, true if successful, false otherwise
      */
     int createLUT(const Uint16 *ddl_tab,
-                  const double *lum_tab,
+                  const double *val_tab,
                   const unsigned long ddl_cnt,
-                  const double lum_min,
-                  const double lum_max,
+                  const double val_min,
+                  const double val_max,
                   ostream *stream = NULL,
                   const OFBool mode = OFTrue);
 };
@@ -112,7 +112,10 @@ class DiCIELABLUT
  *
  * CVS/RCS Log:
  * $Log: dicielut.h,v $
- * Revision 1.5  2001-06-01 15:49:39  meichel
+ * Revision 1.6  2002-07-02 16:23:41  joergr
+ * Added support for hardcopy devices to the calibrated output routines.
+ *
+ * Revision 1.5  2001/06/01 15:49:39  meichel
  * Updated copyright header
  *
  * Revision 1.4  2000/03/08 16:24:14  meichel

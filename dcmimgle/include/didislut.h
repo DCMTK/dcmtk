@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,12 +21,12 @@
  *
  *  Purpose: DicomDisplayLUT (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:40 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-07-02 16:23:41 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/didislut.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
- * 
+ *
  *  CVS/RCS Log at end of file
  *
  */
@@ -57,10 +57,12 @@ class DiDisplayLUT
      ** @param  count  number of values to be stored
      *  @param  max    maximum value to be stored
      *  @param  amb    ambient light value
+     *  @param  illum  illumination value (optional)
      */
     DiDisplayLUT(const unsigned long count,
                  const Uint16 max,
-                 const double amb);
+                 const double amb,
+                 const double illum = 0);
 
     /** destructor
      */
@@ -75,11 +77,22 @@ class DiDisplayLUT
         return AmbientLight;
     }
 
+    /** get illumination value
+     *
+     ** @return illumination value
+     */
+    inline double getIlluminationValue() const
+    {
+        return Illumination;
+    }
+
 
  private:
- 
+
     /// ambient light value (measured in cd/m^2)
-    double AmbientLight;
+    const double AmbientLight;
+    /// illumination value (measured in cd/m^2)
+    const double Illumination;
 };
 
 
@@ -90,7 +103,10 @@ class DiDisplayLUT
  *
  * CVS/RCS Log:
  * $Log: didislut.h,v $
- * Revision 1.5  2001-06-01 15:49:40  meichel
+ * Revision 1.6  2002-07-02 16:23:41  joergr
+ * Added support for hardcopy devices to the calibrated output routines.
+ *
+ * Revision 1.5  2001/06/01 15:49:40  meichel
  * Updated copyright header
  *
  * Revision 1.4  2000/03/08 16:24:14  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: export display curves to a text file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:22:29 $
+ *  Update Date:      $Date: 2002-07-02 16:21:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/apps/dcmdspfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,7 +53,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
 #define SHORTCOL 3
-#define LONGCOL  11
+#define LONGCOL  15
 
 #define OUTPUT CERR
 
@@ -72,36 +72,44 @@ int main(int argc, char *argv[])
     int opt_debugMode = 0;
     int opt_outputMode = 0;
     OFCmdUnsignedInt opt_ddlCount = 256;
-    OFCmdFloat opt_ambLight = 0;
-    OFCmdFloat opt_minLum = 0;
-    OFCmdFloat opt_maxLum = 0;
+    OFCmdFloat opt_ambLight = -1;
+    OFCmdFloat opt_illum = -1;
+    OFCmdFloat opt_minVal = 0;
+    OFCmdFloat opt_maxVal = 0;
+    DiDisplayFunction::E_DeviceType deviceType = DiDisplayFunction::EDT_Monitor;
 
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
 
     cmd.addGroup("general options:");
-     cmd.addOption("--help",       "-h",     "print this help text and exit");
-     cmd.addOption("--verbose",    "-v",     "verbose mode, print processing details");
-     cmd.addOption("--quiet",      "-q",     "quiet mode, print no warnings and errors");
-     cmd.addOption("--debug",      "-d",     "debug mode, print debug information");
+     cmd.addOption("--help",          "-h",     "print this help text and exit");
+     cmd.addOption("--verbose",       "-v",     "verbose mode, print processing details");
+     cmd.addOption("--quiet",         "-q",     "quiet mode, print no warnings and errors");
+     cmd.addOption("--debug",         "-d",     "debug mode, print debug information");
 
-    cmd.addGroup("input options:");
-     cmd.addOption("--lut-file",   "+If", 1, "[f]ilename : string",
-                                             "text file describing the monitor characteristic");
-     cmd.addOption("--lum-range",  "+Il", 2, "[m]in max : float",
-                                             "minimum and maximum luminance (cd/m^2)");
+    cmd.addGroup("input options: (mutually exclusive)");
+     cmd.addOption("--monitor-file",  "+Im", 1, "[f]ilename : string",
+                                                "text file describing the monitor characteristics");
+     cmd.addOption("--printer-file",  "+Ip", 1, "[f]ilename : string",
+                                                "text file describing the printer characteristics");
+     cmd.addOption("--lum-range",     "+Il", 2, "[m]in max : float",
+                                                "minimum and maximum luminance (cd/m^2)");
+     cmd.addOption("--od-range",      "+Io", 2, "[m]in max : float",
+                                                "minimum and maximum optical density (OD),\nautomatically converted to luminance");
 
     cmd.addGroup("creation options:");
-     cmd.addOption("--amb-light",  "+Ca", 1, "[a]mbient light : float",
-                                             "ambient light value (cd/m^2, default: 0)");
-     cmd.addOption("--ddl-count",  "+Cd", 1, "[n]umber of DDLs : integer",
-                                             "number of Device Driving Levels (def.: 256, only with +Il)");
+     cmd.addOption("--ambient-light", "+Ca", 1, "[a]mbient light : float",
+                                                "ambient light value (cd/m^2, default: not set)");
+     cmd.addOption("--illumination",  "+Ci", 1, "[i]llumination : float",
+                                                "illumination value (cd/m^2, default: not set)");
+     cmd.addOption("--ddl-count",     "+Cd", 1, "[n]umber of DDLs : integer",
+                                                "number of Device Driving Levels\n(default: 256, only with --lum/od-range)");
 
     cmd.addGroup("output options:");
-     cmd.addOption("--gsdf",       "+Og", 1, "[f]ilename : string",
-                                             "write GSDF curve data to file f");
-     cmd.addOption("--cielab",     "+Oc", 1, "[f]ilename : string",
-                                             "write CIELAB curve data to file f");
+     cmd.addOption("--gsdf",          "+Og", 1, "[f]ilename : string",
+                                                "write GSDF curve data to file f");
+     cmd.addOption("--cielab",        "+Oc", 1, "[f]ilename : string",
+                                                "write CIELAB curve data to file f");
 
     if (app.parseCommandLine(cmd, argc, argv))
     {
@@ -118,42 +126,74 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--debug"))
             opt_debugMode = 1;
 
-        cmd.beginOptionBlock();
-        if (cmd.findOption("--lut-file"))
-            app.checkValue(cmd.getValue(opt_ifname));
-        if (cmd.findOption("--lum-range"))
-        {
-            app.checkValue(cmd.getValueAndCheckMin(opt_minLum, 0));
-            app.checkValue(cmd.getValueAndCheckMin(opt_maxLum, opt_minLum, OFFalse));
-        }
-        cmd.endOptionBlock();
-
-        if (cmd.findOption("--amb-light"))
+        if (cmd.findOption("--ambient-light"))
             app.checkValue(cmd.getValueAndCheckMin(opt_ambLight, 0));
+        if (cmd.findOption("--illumination"))
+            app.checkValue(cmd.getValueAndCheckMin(opt_illum, 0));
         if (cmd.findOption("--ddl-count"))
         {
             if (opt_ifname != NULL)
-                app.checkConflict("--ddl-count", "--lut-file", OFTrue);
-            else
+            {
+                app.checkConflict("--ddl-count", "--monitor-file", OFTrue);
+                app.checkConflict("--ddl-count", "--printer-file", OFTrue);
+            } else
                 app.checkValue(cmd.getValueAndCheckMinMax(opt_ddlCount, 2, 65536));
         }
-        
+
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--monitor-file"))
+        {
+            app.checkValue(cmd.getValue(opt_ifname));
+            deviceType = DiDisplayFunction::EDT_Monitor;
+        }
+        if (cmd.findOption("--printer-file"))
+        {
+            app.checkValue(cmd.getValue(opt_ifname));
+            deviceType = DiDisplayFunction::EDT_Printer;
+        }
+        if (cmd.findOption("--lum-range"))
+        {
+            app.checkValue(cmd.getValueAndCheckMin(opt_minVal, 0));
+            app.checkValue(cmd.getValueAndCheckMin(opt_maxVal, opt_minVal, OFFalse));
+            deviceType = DiDisplayFunction::EDT_Monitor;
+        }
+        if (cmd.findOption("--od-range"))
+        {
+            OFCmdFloat minVal = 0;
+            OFCmdFloat maxVal = 0;
+            app.checkValue(cmd.getValueAndCheckMin(minVal, 0));
+            app.checkValue(cmd.getValueAndCheckMin(maxVal, minVal, OFFalse));
+            deviceType = DiDisplayFunction::EDT_Printer;
+            /* convert given optical density to luminance */
+            opt_minVal = DiDisplayFunction::convertODtoLum(maxVal, opt_ambLight, opt_illum);
+            opt_maxVal = DiDisplayFunction::convertODtoLum(minVal, opt_ambLight, opt_illum);
+        }
+        cmd.endOptionBlock();
+
         if (cmd.findOption("--gsdf"))
             opt_outputMode++;
         if (cmd.findOption("--cielab"))
             opt_outputMode++;
     }
 
+    /* init verbose and debug mode */
     if (opt_verboseMode < 1)
         DicomImageClass::setDebugLevel(0);
     else if (opt_debugMode > 0)
-        DicomImageClass::setDebugLevel(DicomImageClass::getDebugLevel() | DicomImageClass::DL_DebugMessages | DicomImageClass::DL_Informationals);
+        DicomImageClass::setDebugLevel(DicomImageClass::getDebugLevel() |
+                                       DicomImageClass::DL_DebugMessages |
+                                       DicomImageClass::DL_Informationals);
+
+    /* print syntax usage */
+    if (cmd.getArgCount() == 0)
+        app.printUsage();
 
     if (opt_outputMode > 0)
     {
         if ((opt_verboseMode > 1) && (opt_ifname != NULL))
             OUTPUT << "reading LUT file: " << opt_ifname << endl;
 
+        /* Grayscale Standard Display Function */
         if (cmd.findOption("--gsdf"))
         {
             if (opt_verboseMode > 1)
@@ -161,16 +201,22 @@ int main(int argc, char *argv[])
             app.checkValue(cmd.getValue(opt_ofname));
             DiGSDFunction *disp = NULL;
             if (opt_ifname != NULL)
-                disp = new DiGSDFunction(opt_ifname);
+                disp = new DiGSDFunction(opt_ifname, deviceType);
             else
-                disp = new DiGSDFunction(opt_minLum, opt_maxLum, opt_ddlCount);
+                disp = new DiGSDFunction(opt_minVal, opt_maxVal, opt_ddlCount);
             if ((disp != NULL) && disp->isValid())
-            {                
-                if (opt_ambLight > 0)
+            {
+                if (opt_ambLight >= 0)
                 {
                     if (opt_verboseMode > 1)
                         OUTPUT << "setting ambient light value ..." << endl;
                     disp->setAmbientLightValue(opt_ambLight);
+                }
+                if (opt_illum >= 0)
+                {
+                    if (opt_verboseMode > 1)
+                        OUTPUT << "setting illumination value ..." << endl;
+                    disp->setIlluminationValue(opt_illum);
                 }
                 if (opt_verboseMode > 1)
                     OUTPUT << "writing output file: " << opt_ofname << endl;
@@ -181,6 +227,7 @@ int main(int argc, char *argv[])
             delete disp;
         }
 
+        /* CIELAB display function */
         if (cmd.findOption("--cielab"))
         {
             if (opt_verboseMode > 1)
@@ -188,9 +235,9 @@ int main(int argc, char *argv[])
             app.checkValue(cmd.getValue(opt_ofname));
             DiCIELABFunction *disp = NULL;
             if (opt_ifname != NULL)
-                disp = new DiCIELABFunction(opt_ifname);
+                disp = new DiCIELABFunction(opt_ifname, deviceType);
             else
-                disp = new DiCIELABFunction(opt_minLum, opt_maxLum, opt_ddlCount);
+                disp = new DiCIELABFunction(opt_minVal, opt_maxVal, opt_ddlCount);
             if ((disp != NULL) && disp->isValid())
             {
                 if (opt_ambLight > 0)
@@ -219,7 +266,10 @@ int main(int argc, char *argv[])
  *
  * CVS/RCS Log:
  * $Log: dcmdspfn.cc,v $
- * Revision 1.8  2001-11-09 16:22:29  joergr
+ * Revision 1.9  2002-07-02 16:21:52  joergr
+ * Added support for hardcopy devices to the calibrated output routines.
+ *
+ * Revision 1.8  2001/11/09 16:22:29  joergr
  * Renamed some of the getValue/getParam methods to avoid ambiguities reported
  * by certain compilers.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,12 +21,12 @@
  *
  *  Purpose: DicomCIELABFunction (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:39 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-07-02 16:23:41 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diciefn.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
- * 
+ *
  *  CVS/RCS Log at end of file
  *
  */
@@ -53,54 +53,64 @@ class DiCIELABFunction
 
  public:
 
-    /** constructor, read monitor characteristics file
+    /** constructor, read monitor/printer characteristics file.
+     *  Supported keywords: "max" for maximum DDL (Device Driving Level, required)
+     *                      "amb" for ambient light and "lum" for illumination (both optional)
      *
-     ** @param  filename  name of the monitor characteristics file (luminance for each DDL)
+     ** @param  filename    name of the characteristics file (luminance/OD for each DDL)
+     *  @param  deviceType  type of the output device (default: monitor)
      */
-    DiCIELABFunction(const char *filename);
+    DiCIELABFunction(const char *filename,
+                     const E_DeviceType deviceType = EDT_Monitor);
 
-    /** constructor, use given array of luminance values. UNTESTED
+    /** constructor, use given array of luminance/OD values. UNTESTED
      *  Values must be sorted and complete (i.e. there must be an entry for each DDL)
      *
-     ** @param  lum_tab  pointer to array with luminance values (measuredin cd/m^2)
-     *  @param  count    number of array elements (should be equal to 'max + 1')
-     *  @param  max      maximum DDL (device driving level)
+     ** @param  val_tab     pointer to array with luminance/OD values
+     *  @param  count       number of array elements (should be equal to 'max + 1')
+     *  @param  max         maximum DDL (device driving level)
+     *  @param  deviceType  type of the output device (default: monitor)
      */
-    DiCIELABFunction(const double *lum_tab,
+    DiCIELABFunction(const double *val_tab,
                      const unsigned long count,
-                     const Uint16 max = 255);
+                     const Uint16 max = 255,
+                     const E_DeviceType deviceType = EDT_Monitor);
 
     /** constructor, use given array of DDL and luminance values. UNTESTED
      *  Values will be automatically sorted and missing values will be calculated by means of
      *  a cubic spline interpolation.
      *
-     ** @param  ddl_tab  pointer to array with DDL values (must be with the interval 0..max)
-     *  @param  lum_tab  pointer to array with luminance values (measuredin cd/m^2)
-     *  @param  count    number of array elements
-     *  @param  max      maximum DDL (device driving level)
+     ** @param  ddl_tab     pointer to array with DDL values (must be with the interval 0..max)
+     *  @param  val_tab     pointer to array with luminance/OD values
+     *  @param  count       number of array elements
+     *  @param  max         maximum DDL (device driving level)
+     *  @param  deviceType  type of the output device (default: monitor)
      */
     DiCIELABFunction(const Uint16 *ddl_tab,
-                     const double *lum_tab,
+                     const double *val_tab,
                      const unsigned long count,
-                     const Uint16 max = 255);
+                     const Uint16 max = 255,
+                     const E_DeviceType deviceType = EDT_Monitor);
 
-    /** constructor, compute luminance values automatically within the specified range.
+    /** constructor, compute luminance/OD values automatically within the specified range.
      *
-     ** @param  lum_min  minimum luminance value
-     *  @param  lum_max  maximum luminance value
-     *  @param  count    number of DDLs (device driving level)
+     ** @param  val_min     minimum luminance/OD value
+     *  @param  val_max     maximum luminance/OD value
+     *  @param  count       number of DDLs (device driving level)
+     *  @param  deviceType  type of the output device (default: monitor)
      */
-    DiCIELABFunction(const double lum_min,
-                     const double lum_max,
-                     const unsigned long count = 256);
+    DiCIELABFunction(const double val_min,
+                     const double val_max,
+                     const unsigned long count = 256,
+                     const E_DeviceType deviceType = EDT_Monitor);
 
     /** destructor
      */
     virtual ~DiCIELABFunction();
-    
+
     /** write curve data to a text file
      *
-     ** @param  filename  name of the text fileto which the data should be written
+     ** @param  filename  name of the text file to which the data should be written
      *  @param  mode      write CC and PSC to file if OFTrue
      *
      ** @return status, true if successful, false otherwise
@@ -123,7 +133,7 @@ class DiCIELABFunction
  private:
 
  // --- declarations to avoid compiler warnings
- 
+
     DiCIELABFunction(const DiDisplayFunction &);
     DiCIELABFunction &operator=(const DiDisplayFunction &);
 };
@@ -136,7 +146,10 @@ class DiCIELABFunction
  *
  * CVS/RCS Log:
  * $Log: diciefn.h,v $
- * Revision 1.7  2001-06-01 15:49:39  meichel
+ * Revision 1.8  2002-07-02 16:23:41  joergr
+ * Added support for hardcopy devices to the calibrated output routines.
+ *
+ * Revision 1.7  2001/06/01 15:49:39  meichel
  * Updated copyright header
  *
  * Revision 1.6  2000/03/08 16:24:13  meichel

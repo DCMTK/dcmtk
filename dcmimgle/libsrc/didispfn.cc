@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DicomDisplayFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:53:31 $
+ *  Update Date:      $Date: 2002-07-02 16:24:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/didispfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,6 +47,8 @@ BEGIN_EXTERN_C
 #endif
 END_EXTERN_C
 
+#include <math.h>     /* for pow() */
+
 
 /*----------------------------*
  *  constant initializations  *
@@ -60,46 +62,52 @@ const int DiDisplayFunction::MaxBits = 16;
  *  constructors  *
  *----------------*/
 
-DiDisplayFunction::DiDisplayFunction(const char *filename)
+DiDisplayFunction::DiDisplayFunction(const char *filename,
+                                     const E_DeviceType deviceType)
   : Valid(0),
+    DeviceType(deviceType),
     ValueCount(0),
     MaxDDLValue(0),
     AmbientLight(0),
+    Illumination(0),
     DDLValue(NULL),
-    LumValue(NULL),
-    MinLumValue(0),
-    MaxLumValue(0)
+    LODValue(NULL),
+    MinValue(0),
+    MaxValue(0)
 {
     OFBitmanipTemplate<DiDisplayLUT *>::zeroMem(LookupTable, MAX_NUMBER_OF_TABLES);
     if (readConfigFile(filename))
-        Valid = createSortedTable(DDLValue, LumValue) && calculateMinMax() && interpolateValues();
+        Valid = createSortedTable(DDLValue, LODValue) && calculateMinMax() && interpolateValues();
 }
 
 
-DiDisplayFunction::DiDisplayFunction(const double *lum_tab,             // UNTESTED !!
+DiDisplayFunction::DiDisplayFunction(const double *val_tab,             // UNTESTED !!
                                      const unsigned long count,
-                                     const Uint16 max)
+                                     const Uint16 max,
+                                     const E_DeviceType deviceType)
   : Valid(0),
+    DeviceType(deviceType),
     ValueCount(count),
     MaxDDLValue(max),
     AmbientLight(0),
+    Illumination(0),
     DDLValue(NULL),
-    LumValue(NULL),
-    MinLumValue(0),
-    MaxLumValue(0)
+    LODValue(NULL),
+    MinValue(0),
+    MaxValue(0)
 {
     OFBitmanipTemplate<DiDisplayLUT *>::zeroMem(LookupTable, MAX_NUMBER_OF_TABLES);
     if ((ValueCount > 0) && (ValueCount == (unsigned long)MaxDDLValue + 1))
     {
         DDLValue = new Uint16[ValueCount];
-        LumValue = new double[ValueCount];
-        if ((DDLValue != NULL) && (LumValue != NULL))
+        LODValue = new double[ValueCount];
+        if ((DDLValue != NULL) && (LODValue != NULL))
         {
             register Uint16 i;
             for (i = 0; i <= MaxDDLValue; i++)
             {
                 DDLValue[i] = i;                            // set DDL values
-                LumValue[i] = lum_tab[i];                   // copy table
+                LODValue[i] = val_tab[i];                   // copy table
             }
             Valid = calculateMinMax();
         }
@@ -108,54 +116,59 @@ DiDisplayFunction::DiDisplayFunction(const double *lum_tab,             // UNTES
 
 
 DiDisplayFunction::DiDisplayFunction(const Uint16 *ddl_tab,             // UNTESTED !!
-                                     const double *lum_tab,
+                                     const double *val_tab,
                                      const unsigned long count,
-                                     const Uint16 max)
+                                     const Uint16 max,
+                                     const E_DeviceType deviceType)
   : Valid(0),
+    DeviceType(deviceType),
     ValueCount(count),
     MaxDDLValue(max),
     AmbientLight(0),
+    Illumination(0),
     DDLValue(NULL),
-    LumValue(NULL),
-    MinLumValue(0),
-    MaxLumValue(0)
+    LODValue(NULL),
+    MinValue(0),
+    MaxValue(0)
 {
     OFBitmanipTemplate<DiDisplayLUT *>::zeroMem(LookupTable, MAX_NUMBER_OF_TABLES);
-    Valid = createSortedTable(ddl_tab, lum_tab) && calculateMinMax() && interpolateValues();
+    Valid = createSortedTable(ddl_tab, val_tab) && calculateMinMax() && interpolateValues();
 }
 
 
-DiDisplayFunction::DiDisplayFunction(const double lum_min,
-                                     const double lum_max,
-                                     const unsigned long count)
+DiDisplayFunction::DiDisplayFunction(const double val_min,
+                                     const double val_max,
+                                     const unsigned long count,
+                                     const E_DeviceType deviceType)
   : Valid(0),
     ValueCount(count),
     MaxDDLValue(0),
     AmbientLight(0),
+    Illumination(0),
     DDLValue(NULL),
-    LumValue(NULL),
-    MinLumValue(lum_min),
-    MaxLumValue(lum_max)
+    LODValue(NULL),
+    MinValue(val_min),
+    MaxValue(val_max)
 {
     OFBitmanipTemplate<DiDisplayLUT *>::zeroMem(LookupTable, MAX_NUMBER_OF_TABLES);
-    if ((ValueCount > 1) && (MinLumValue < MaxLumValue))
+    if ((ValueCount > 1) && (MinValue < MaxValue))
     {
         MaxDDLValue = (Uint16)(count - 1);
         DDLValue = new Uint16[ValueCount];
-        LumValue = new double[ValueCount];
-        if ((DDLValue != NULL) && (LumValue != NULL))
+        LODValue = new double[ValueCount];
+        if ((DDLValue != NULL) && (LODValue != NULL))
         {
             register Uint16 i;
-            const double lum = (lum_max - lum_min) / (double)MaxDDLValue;
+            const double val = (val_max - val_min) / (double)MaxDDLValue;
             DDLValue[0] = 0;
-            LumValue[0] = lum_min;
+            LODValue[0] = val_min;
             for (i = 1; i < MaxDDLValue; i++)
             {
                 DDLValue[i] = i;                            // set DDL values
-                LumValue[i] = LumValue[i - 1] + lum;        // compute luminance value
+                LODValue[i] = LODValue[i - 1] + val;        // compute luminance/OD value
             }
             DDLValue[MaxDDLValue] = MaxDDLValue;
-            LumValue[MaxDDLValue] = lum_max;
+            LODValue[MaxDDLValue] = val_max;
             Valid = 1;
         }
     }
@@ -169,7 +182,7 @@ DiDisplayFunction::DiDisplayFunction(const double lum_min,
 DiDisplayFunction::~DiDisplayFunction()
 {
     delete[] DDLValue;
-    delete[] LumValue;
+    delete[] LODValue;
     register unsigned int i;
     for (i = 0; i < MAX_NUMBER_OF_TABLES; i++)
         delete LookupTable[i];
@@ -185,10 +198,13 @@ const DiDisplayLUT *DiDisplayFunction::getLookupTable(const int bits,
     if (Valid && (bits >= MinBits) && (bits <= MaxBits))
     {
         const int idx = bits - MinBits;
+        /* automatically compute number of entries */
         if (count == 0)
             count = DicomImageClass::maxval(bits, 0);
+        /* check whether existing LUT is still valid */
         if ((LookupTable[idx] != NULL) && ((count != LookupTable[idx]->getCount()) ||
-            (AmbientLight != LookupTable[idx]->getAmbientLightValue())))
+            (AmbientLight != LookupTable[idx]->getAmbientLightValue()) ||
+            (Illumination != LookupTable[idx]->getIlluminationValue())))
         {
             delete LookupTable[idx];
             LookupTable[idx] = NULL;
@@ -239,6 +255,17 @@ int DiDisplayFunction::setAmbientLightValue(const double value)
 }
 
 
+int DiDisplayFunction::setIlluminationValue(const double value)
+{
+    if (value >= 0)
+    {
+        Illumination = value;
+        return 1;
+    }
+    return 0;
+}
+
+
 /********************************************************************/
 
 
@@ -273,8 +300,8 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                             if (MaxDDLValue > 0)
                             {
                                 DDLValue = new Uint16[MaxDDLValue + 1];
-                                LumValue = new double[MaxDDLValue + 1];
-                                if ((DDLValue == NULL) || (LumValue == NULL))
+                                LODValue = new double[MaxDDLValue + 1];
+                                if ((DDLValue == NULL) || (LODValue == NULL))
                                     return 0;
                             } else {
                                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
@@ -317,16 +344,41 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                             }
                             return 0;                                       // abort
                         }
+                    }
+                    else if ((Illumination == 0.0) && (c == 'l'))           // read ambient light value (optional)
+                    {
+                        char str[4];
+                        file.get(str, sizeof(str));
+                        if (strcmp(str, "lum") == 0)                        // check for key word: lum
+                        {
+                            file >> Illumination;
+                            if (Illumination < 0)
+                            {
+                                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
+                                {
+                                    ofConsole.lockCerr() << "WARNING: invalid value for illumination in DISPLAY file ...ignoring !" << endl;
+                                    ofConsole.unlockCerr();
+                                }
+                                Illumination = 0;
+                            }
+                        } else {
+                            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
+                            {
+                                ofConsole.lockCerr() << "ERROR: invalid DISPLAY file ... ignoring !" << endl;
+                                ofConsole.unlockCerr();
+                            }
+                            return 0;                                       // abort
+                        }
                     } else {
                         if (ValueCount <= (unsigned long)MaxDDLValue)
                         {
                             file >> DDLValue[ValueCount];                   // read DDL value
-                            file >> LumValue[ValueCount];                   // read luminance value
+                            file >> LODValue[ValueCount];                   // read luminance/OD value
                             if (file.fail())
                             {
                                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                                 {
-                                    ofConsole.lockCerr() << "WARNING: missing luminance value in DISPLAY file ... "
+                                    ofConsole.lockCerr() << "WARNING: missing luminance/OD value in DISPLAY file ... "
                                                          << "ignoring last entry !" << endl;
                                     ofConsole.unlockCerr();
                                 }
@@ -356,7 +408,7 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                 }
             }
             if ((MaxDDLValue > 0) && (ValueCount > 0))
-                return ((DDLValue != NULL) && (LumValue != NULL));
+                return ((DDLValue != NULL) && (LODValue != NULL));
             else {
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                 {
@@ -377,17 +429,17 @@ int DiDisplayFunction::readConfigFile(const char *filename)
 
 
 int DiDisplayFunction::createSortedTable(const Uint16 *ddl_tab,
-                                         const double *lum_tab)
+                                         const double *val_tab)
 {
     int status = 0;
     Uint16 *old_ddl = DDLValue;
-    double *old_lum = LumValue;
-    if ((ValueCount > 0) && (ddl_tab != NULL) && (lum_tab != NULL))
+    double *old_val = LODValue;
+    if ((ValueCount > 0) && (ddl_tab != NULL) && (val_tab != NULL))
     {
         DDLValue = new Uint16[ValueCount];
-        LumValue = new double[ValueCount];
+        LODValue = new double[ValueCount];
         Sint32 *sort_tab = new Sint32[MaxDDLValue + 1];                             // auxilliary array (temporary)
-        if ((DDLValue != NULL) && (LumValue != NULL) && (sort_tab != NULL))
+        if ((DDLValue != NULL) && (LODValue != NULL) && (sort_tab != NULL))
         {
             OFBitmanipTemplate<Sint32>::setMem(sort_tab, -1, MaxDDLValue + 1);      // initialize array
             register unsigned long i;
@@ -402,19 +454,35 @@ int DiDisplayFunction::createSortedTable(const Uint16 *ddl_tab,
                 if (sort_tab[i] >= 0)
                 {
                     DDLValue[ValueCount] = ddl_tab[sort_tab[i]];
-                    LumValue[ValueCount] = (lum_tab[sort_tab[i]] > 0) ? lum_tab[sort_tab[i]] : 0;
+                    LODValue[ValueCount] = (val_tab[sort_tab[i]] > 0) ? val_tab[sort_tab[i]] : 0;
                     ValueCount++;                                                   // re-count to ignore values exceeding max
                 }
             }
             i = 1;
-            while ((i < ValueCount) && (LumValue[i - 1] <= LumValue[i]))            // check monotony
-                i++;
-            if (i < ValueCount)                                                     // invalid luminance value(s)
+            if (DeviceType == EDT_Printer)
             {
-                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
+                /* hardcopy device: check for monotonous descending OD values */
+                while ((i < ValueCount) && (LODValue[i - 1] >= LODValue[i]))
+                    i++;
+                if (i < ValueCount)
                 {
-                    ofConsole.lockCerr() << "WARNING: luminance values (ordered by DDLs) don't ascend monotonously !" << endl;
-                    ofConsole.unlockCerr();
+                    if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
+                    {
+                        ofConsole.lockCerr() << "WARNING: OD values (ordered by DDLs) don't descend monotonously !" << endl;
+                        ofConsole.unlockCerr();
+                    }
+                }
+            } else {
+                /* softcopy device: check for monotonous ascending luminance values*/
+                while ((i < ValueCount) && (LODValue[i - 1] <= LODValue[i]))
+                    i++;
+                if (i < ValueCount)
+                {
+                    if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
+                    {
+                        ofConsole.lockCerr() << "WARNING: luminance values (ordered by DDLs) don't ascend monotonously !" << endl;
+                        ofConsole.unlockCerr();
+                    }
                 }
             }
             status = (ValueCount > 0);
@@ -422,7 +490,7 @@ int DiDisplayFunction::createSortedTable(const Uint16 *ddl_tab,
         delete[] sort_tab;
     }
     delete[] old_ddl;
-    delete[] old_lum;
+    delete[] old_val;
     return status;
 }
 
@@ -434,24 +502,24 @@ int DiDisplayFunction::interpolateValues()
         int status = 0;
         double *spline = new double[ValueCount];
         if ((spline != NULL) &&
-            (DiCubicSpline<Uint16, double>::Function(DDLValue, LumValue, (unsigned int)ValueCount, spline)))
+            (DiCubicSpline<Uint16, double>::Function(DDLValue, LODValue, (unsigned int)ValueCount, spline)))
         {
             const unsigned long count = ValueCount;
             Uint16 *old_ddl = DDLValue;
-            double *old_lum = LumValue;
+            double *old_val = LODValue;
             ValueCount = (unsigned long)MaxDDLValue + 1;
             DDLValue = new Uint16[ValueCount];
-            LumValue = new double[ValueCount];
-            if ((DDLValue != NULL) && (LumValue != NULL))
+            LODValue = new double[ValueCount];
+            if ((DDLValue != NULL) && (LODValue != NULL))
             {
                 register Uint16 i;
                 for (i = 0; i <= MaxDDLValue; i++)                          // set all DDL values, from 0 to max
                     DDLValue[i] = i;
-                status = DiCubicSpline<Uint16, double>::Interpolation(old_ddl, old_lum, spline, (unsigned int)count,
-                                                                      DDLValue, LumValue, (unsigned int)ValueCount);
+                status = DiCubicSpline<Uint16, double>::Interpolation(old_ddl, old_val, spline, (unsigned int)count,
+                                                                      DDLValue, LODValue, (unsigned int)ValueCount);
             }
             delete[] old_ddl;
-            delete[] old_lum;
+            delete[] old_val;
         }
         delete[] spline;
         return status;
@@ -462,17 +530,17 @@ int DiDisplayFunction::interpolateValues()
 
 int DiDisplayFunction::calculateMinMax()
 {
-    if ((LumValue != NULL) && (ValueCount > 0))
+    if ((LODValue != NULL) && (ValueCount > 0))
     {
-        MinLumValue = LumValue[0];
-        MaxLumValue = LumValue[0];
+        MinValue = LODValue[0];
+        MaxValue = LODValue[0];
         register unsigned long i;
         for (i = 1; i < ValueCount; i++)
         {
-            if (LumValue[i] < MinLumValue)
-                MinLumValue = LumValue[i];
-            if (LumValue[i] > MaxLumValue)
-                MaxLumValue = LumValue[i];
+            if (LODValue[i] < MinValue)
+                MinValue = LODValue[i];
+            if (LODValue[i] > MaxValue)
+                MaxValue = LODValue[i];
         }
         return 1;
     }
@@ -480,11 +548,49 @@ int DiDisplayFunction::calculateMinMax()
 }
 
 
+double *DiDisplayFunction::convertODtoLumTable(const double *od_tab,
+                                               const unsigned long count)
+{
+    double *lum_tab = NULL;
+    if ((od_tab != NULL) && (count > 0))
+    {
+        /* create a table for the luminance values */
+        lum_tab = new double[count];
+        if (lum_tab != NULL)
+        {
+            /* compute luminance values from optical density */
+            register unsigned int i;
+            for (i = 0; i < count; i++)
+                lum_tab[i] = AmbientLight + Illumination * pow(10, -od_tab[i]);
+        }
+    }
+    return lum_tab;
+}
+
+
+double DiDisplayFunction::convertODtoLum(const double value) const
+{
+    return convertODtoLum(value, AmbientLight, Illumination);
+}
+
+
+double DiDisplayFunction::convertODtoLum(const double value,
+                                         const double ambient,
+                                         const double illum)
+{
+    /* formula from DICOM PS3.14: L = La + L0 * 10^-D */
+    return (value >= 0) && (ambient >= 0) && (illum >= 0) ? ambient + illum * pow(10, -value) : -1 /*invalid*/;
+}
+
+
 /*
  *
  * CVS/RCS Log:
  * $Log: didispfn.cc,v $
- * Revision 1.29  2002-04-16 13:53:31  joergr
+ * Revision 1.30  2002-07-02 16:24:37  joergr
+ * Added support for hardcopy devices to the calibrated output routines.
+ *
+ * Revision 1.29  2002/04/16 13:53:31  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
  * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
  * contribution.

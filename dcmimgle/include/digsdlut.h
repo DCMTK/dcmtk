@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,12 +21,12 @@
  *
  *  Purpose: DicomGSDFLUT (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:41 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-07-02 16:23:42 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/digsdlut.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
- * 
+ *
  *  CVS/RCS Log at end of file
  *
  */
@@ -57,21 +57,22 @@ class DiGSDFLUT
      ** @param  count     number of values to be stored
      *  @param  max       maximum value to be stored
      *  @param  ddl_tab   array of DDL values
-     *  @param  lum_tab   array of luminance values
+     *  @param  val_tab   array of values
      *  @param  ddl_cnt   number of DDL values
      *  @param  gsdf_tab  array with GSDF
      *  @param  gsdf_spl  array with helper function used for interpolation
      *  @param  gsdf_cnt  number of values in GSDF
      *  @param  jnd_min   minimum JND index value
      *  @param  jnd_max   maximum JND index value
-     *  @param  amb       ambient light value
+     *  @param  amb       (reflected) ambient light value
+     *  @param  illum     illumination value
      *  @param  stream    output stream (used to write curve data to a file)
      *  @param  mode      write CC and PSC to stream if OFTrue
      */
     DiGSDFLUT(const unsigned long count,
               const Uint16 max,
               const Uint16 *ddl_tab,
-              const double *lum_tab,
+              const double *val_tab,
               const unsigned long ddl_cnt,
               const double *gsdf_tab,
               const double *gsdf_spl,
@@ -79,6 +80,7 @@ class DiGSDFLUT
               const double jnd_min,
               const double jnd_max,
               const double amb,
+              const double illum,
               ostream *stream = NULL,
               const OFBool mode = OFTrue);
 
@@ -88,11 +90,11 @@ class DiGSDFLUT
 
 
  protected:
- 
+
     /** create lookup table
      *
      ** @param  ddl_tab   array of DDL values
-     *  @param  lum_tab   array of luminance values
+     *  @param  val_tab   array of values
      *  @param  ddl_cnt   number of DDL values
      *  @param  gsdf_tab  array with GSDF
      *  @param  gsdf_spl  array with helper function used for interpolation
@@ -105,7 +107,7 @@ class DiGSDFLUT
      ** @return status, true if successful, false otherwise
      */
     int createLUT(const Uint16 *ddl_tab,
-                  const double *lum_tab,
+                  const double *val_tab,
                   const unsigned long ddl_cnt,
                   const double *gsdf_tab,
                   const double *gsdf_spl,
@@ -124,7 +126,10 @@ class DiGSDFLUT
  *
  * CVS/RCS Log:
  * $Log: digsdlut.h,v $
- * Revision 1.5  2001-06-01 15:49:41  meichel
+ * Revision 1.6  2002-07-02 16:23:42  joergr
+ * Added support for hardcopy devices to the calibrated output routines.
+ *
+ * Revision 1.5  2001/06/01 15:49:41  meichel
  * Updated copyright header
  *
  * Revision 1.4  2000/03/08 16:24:16  meichel

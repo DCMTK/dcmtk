@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomGSDFLUT (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:55 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-07-02 16:24:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/digsdlut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,7 +48,7 @@
 DiGSDFLUT::DiGSDFLUT(const unsigned long count,
                      const Uint16 max,
                      const Uint16 *ddl_tab,
-                     const double *lum_tab,
+                     const double *val_tab,
                      const unsigned long ddl_cnt,
                      const double *gsdf_tab,
                      const double *gsdf_spl,
@@ -56,9 +56,10 @@ DiGSDFLUT::DiGSDFLUT(const unsigned long count,
                      const double jnd_min,
                      const double jnd_max,
                      const double amb,
+                     const double illum,
                      ostream *stream,
                      const OFBool mode)
-  : DiDisplayLUT(count, max, amb)
+  : DiDisplayLUT(count, max, amb, illum)
 {
     if ((Count > 0) && (Bits > 0))
     {
@@ -70,9 +71,9 @@ DiGSDFLUT::DiGSDFLUT(const unsigned long count,
             ofConsole.unlockCerr();
         }
 #endif
-        Valid = createLUT(ddl_tab, lum_tab, ddl_cnt, gsdf_tab, gsdf_spl, gsdf_cnt, jnd_min, jnd_max, stream, mode);
+        Valid = createLUT(ddl_tab, val_tab, ddl_cnt, gsdf_tab, gsdf_spl, gsdf_cnt, jnd_min, jnd_max, stream, mode);
     }
-} 
+}
 
 
 /*--------------*
@@ -88,7 +89,7 @@ DiGSDFLUT::~DiGSDFLUT()
 
 
 int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
-                         const double *lum_tab,
+                         const double *val_tab,
                          const unsigned long ddl_cnt,
                          const double *gsdf_tab,
                          const double *gsdf_spl,
@@ -98,7 +99,7 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
                          ostream *stream,
                          const OFBool mode)
 {
-    if ((ddl_tab != NULL) && (lum_tab != NULL) && (ddl_cnt > 0) && (gsdf_tab != NULL) && (gsdf_spl != NULL) && (gsdf_cnt > 0))
+    if ((ddl_tab != NULL) && (val_tab != NULL) && (ddl_cnt > 0) && (gsdf_tab != NULL) && (gsdf_spl != NULL) && (gsdf_cnt > 0))
     {
         int status = 0;
         double *jidx = new double[Count];
@@ -122,7 +123,7 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
                     *(r++) = i + 1;
                 double *gsdf = new double[Count];                       // interpolated GSDF
                 if (gsdf != NULL)
-                {     
+                {
                     if (DiCubicSpline<double, double>::Interpolation(jnd_idx, gsdf_tab, gsdf_spl, gsdf_cnt, jidx, gsdf, (unsigned int)Count))
                     {
                         DataBuffer = new Uint16[Count];
@@ -131,12 +132,11 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
                             r = gsdf;
                             register Uint16 *q = DataBuffer;
                             register unsigned long j = 0;
-                            const double amb = getAmbientLightValue();
                             for (i = Count; i != 0; i--, r++)
                             {
-                                while ((j + 1 < ddl_cnt) && (lum_tab[j]  + amb < *r))  // search for closest index, assuming monotony
+                                while ((j + 1 < ddl_cnt) && (val_tab[j] < *r))  // search for closest index, assuming monotony
                                     j++;
-                                if ((j > 0) && (fabs(lum_tab[j - 1] + amb - *r) < fabs(lum_tab[j] + amb - *r)))
+                                if ((j > 0) && (fabs(val_tab[j - 1] - *r) < fabs(val_tab[j] - *r)))
                                     j--;
                                 *(q++) = ddl_tab[j];
                             }
@@ -147,13 +147,13 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
                                 {
                                     for (i = 0; i < ddl_cnt; i++)
                                     {
-                                        (*stream) << ddl_tab[i]; 
+                                        (*stream) << ddl_tab[i];
                                         stream->setf(ios::fixed, ios::floatfield);
                                         if (mode)
-                                            (*stream) << "\t" << lum_tab[i] + amb;
+                                            (*stream) << "\t" << val_tab[i];
                                         (*stream) << "\t" << gsdf[i];
                                         if (mode)
-                                            (*stream) << "\t" << lum_tab[Data[i]] + amb;
+                                            (*stream) << "\t" << val_tab[Data[i]];
                                         (*stream) << endl;
                                     }
                                 } else {
@@ -184,7 +184,10 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
  *
  * CVS/RCS Log:
  * $Log: digsdlut.cc,v $
- * Revision 1.9  2001-06-01 15:49:55  meichel
+ * Revision 1.10  2002-07-02 16:24:38  joergr
+ * Added support for hardcopy devices to the calibrated output routines.
+ *
+ * Revision 1.9  2001/06/01 15:49:55  meichel
  * Updated copyright header
  *
  * Revision 1.8  2000/05/03 09:47:23  joergr

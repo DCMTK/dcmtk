@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomCIELABLUT (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:53 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-07-02 16:24:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dicielut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,25 +47,26 @@
 DiCIELABLUT::DiCIELABLUT(const unsigned long count,
                          const Uint16 max,
                          const Uint16 *ddl_tab,
-                         const double *lum_tab,
+                         const double *val_tab,
                          const unsigned long ddl_cnt,
-                         const double lum_min,
-                         const double lum_max,
+                         const double val_min,
+                         const double val_max,
                          const double amb,
                          ostream *stream,
                          const OFBool mode)
-  : DiDisplayLUT(count, max, amb)
+  : DiDisplayLUT(count, max, amb /*, 'illum' not used*/)
 {
     if ((Count > 0) && (Bits > 0))
     {
 #ifdef DEBUG
         if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
         {
-            ofConsole.lockCerr() << "INFO: new CIELAB LUT with " << Bits << " bits output and " << Count << " entries created !" << endl;
+            ofConsole.lockCerr() << "INFO: new CIELAB LUT with " << Bits << " bits output and "
+                                 << Count << " entries created !" << endl;
             ofConsole.unlockCerr();
         }
 #endif
-        Valid = createLUT(ddl_tab, lum_tab, ddl_cnt, lum_min, lum_max, stream, mode);
+        Valid = createLUT(ddl_tab, val_tab, ddl_cnt, val_min, val_max, stream, mode);
     }
 }
 
@@ -83,15 +84,15 @@ DiCIELABLUT::~DiCIELABLUT()
 
 
 int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
-                           const double *lum_tab,
+                           const double *val_tab,
                            const unsigned long ddl_cnt,
-                           const double lum_min,
-                           const double lum_max,
+                           const double val_min,
+                           const double val_max,
                            ostream *stream,
                            const OFBool mode)
 {
     int status = 0;
-    if ((ddl_tab != NULL) && (lum_tab != NULL) && (ddl_cnt > 0) && (lum_max > 0))
+    if ((ddl_tab != NULL) && (val_tab != NULL) && (ddl_cnt > 0) && (val_max > 0))
     {
         double *cielab = new double[Count];
         if (cielab != NULL)
@@ -99,9 +100,8 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
             register unsigned long i;
             register double llin = 0;
             register double cub = 0;
-            const double amb = getAmbientLightValue();
-            const double min = lum_min + amb;
-            const double max = lum_max + amb;
+            const double min = val_min;
+            const double max = val_max;
             const double lmin = min / max;
             const double hmin = (lmin > 0.008856) ? 116.0 * pow(lmin, 1.0 / 3.0) - 16 : 903.3 * lmin;
             const double lfac = (100.0 - hmin) / ((double)(Count - 1) * 903.3);
@@ -122,9 +122,9 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
                 register unsigned long j = 0;
                 for (i = Count; i != 0; i--, r++)
                 {
-                    while ((j + 1 < ddl_cnt) && (lum_tab[j]  + amb < *r))  // search for closest index, assuming monotony
+                    while ((j + 1 < ddl_cnt) && (val_tab[j] < *r))  // search for closest index, assuming monotony
                         j++;
-                    if ((j > 0) && (fabs(lum_tab[j - 1] + amb - *r) < fabs(lum_tab[j] + amb - *r)))
+                    if ((j > 0) && (fabs(val_tab[j - 1] - *r) < fabs(val_tab[j] - *r)))
                         j--;
                     *(q++) = ddl_tab[j];
                 }
@@ -138,10 +138,10 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
                             (*stream) << ddl_tab[i];
                             stream->setf(ios::fixed, ios::floatfield);
                             if (mode)
-                                (*stream) << "\t" << lum_tab[i] + amb;
+                                (*stream) << "\t" << val_tab[i];
                             (*stream) << "\t" << cielab[i];
                             if (mode)
-                                (*stream) << "\t" << lum_tab[Data[i]] + amb;
+                                (*stream) << "\t" << val_tab[Data[i]];
                             (*stream) << endl;
                         }
                     } else {
@@ -165,7 +165,10 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
  *
  * CVS/RCS Log:
  * $Log: dicielut.cc,v $
- * Revision 1.11  2001-06-01 15:49:53  meichel
+ * Revision 1.12  2002-07-02 16:24:36  joergr
+ * Added support for hardcopy devices to the calibrated output routines.
+ *
+ * Revision 1.11  2001/06/01 15:49:53  meichel
  * Updated copyright header
  *
  * Revision 1.10  2000/05/03 09:47:22  joergr
