@@ -23,8 +23,8 @@
  *    classes: DVPSConfig
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-01-15 17:26:33 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 1999-04-30 16:40:48 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,11 +65,21 @@ DVPSConfigNode::~DVPSConfigNode()
   if (brother) delete brother;
 }
 
+DVPSConfigCursor::DVPSConfigCursor(const DVPSConfigCursor& source)
+{
+  for (int i=0; i<=DVPSConfig_MaxLevel; i++) ptr[i]=source.ptr[i];
+}
+
+DVPSConfigCursor& DVPSConfigCursor::operator=(const DVPSConfigCursor& source)
+{
+  for (int i=0; i<=DVPSConfig_MaxLevel; i++) ptr[i]=source.ptr[i];
+  return *this;
+}
+
 void DVPSConfigCursor::invalidate()
 {
   for (int i=0; i<= DVPSConfig_MaxLevel; i++) ptr[i]=NULL;
 }
-
 
 const char *DVPSConfig::get_keyword(unsigned int level)
 {
@@ -457,7 +467,10 @@ DVPSConfig::~DVPSConfig()
 
 /*
  *  $Log: dvpsconf.cc,v $
- *  Revision 1.1  1999-01-15 17:26:33  meichel
+ *  Revision 1.2  1999-04-30 16:40:48  meichel
+ *  Minor code purifications to keep Sun CC 2.0.1 quiet
+ *
+ *  Revision 1.1  1999/01/15 17:26:33  meichel
  *  added configuration file facility (derived from dcmprint)
  *    and a sample config file.
  *

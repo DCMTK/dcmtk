@@ -23,10 +23,10 @@
  *  Make a General Purpose DICOMDIR according to the General Purpose 
  *  CD-R Image Interchange Profile (former Supplement 19).
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-27 17:50:51 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-04-30 16:40:02 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1596,10 +1596,12 @@ compareBinaryValues(DcmElement* elem1, DcmElement* elem2, OFString& reason)
         break;    
     /* currently cannot handle any other VR types */
     default:
-        DcmVR vr1(elem1->getVR());
-        reason = "INTERNAL ERROR: Unexpected VR encountered: ";
-        reason += vr1.getVRName();
-        reason += "(" + constructTagName(elem1) + ")"; 
+        {
+          DcmVR vr1(elem1->getVR());
+          reason = "INTERNAL ERROR: Unexpected VR encountered: ";
+          reason += vr1.getVRName();
+          reason += "(" + constructTagName(elem1) + ")";
+        } 
         return OFFalse;
     }
 
@@ -1662,7 +1664,7 @@ compareAttributes(DcmElement* elem1, DcmElement* elem2, DcmSequenceOfItems* from
     /* are the lengths the same? */
     if (elem1->getLength() != elem2->getLength()) {
         reason = "different value lengths: " + 
-            intToOFString(elem1->getLength()) + "!=" + intToOFString(elem2->getLength()) +
+            intToOFString((int)(elem1->getLength())) + "!=" + intToOFString((int)(elem2->getLength())) +
             " (" + constructTagNameWithSQ(elem1, fromSequence, itemNumber) + ")"; 
         return OFFalse;
     }
@@ -1713,8 +1715,8 @@ compareItems(DcmItem* item1, DcmItem* item2, DcmSequenceOfItems* fromSequence, i
     }
 
 
-    int n1 = item1->card();
-    int n2 = item2->card();
+    int n1 = (int)(item1->card());
+    int n2 = (int)(item2->card());
 
     if (n1 != n2) {
         reason = "different number attributes in items: " + constructTagName(fromSequence) + 
@@ -1758,8 +1760,8 @@ compareSQAttributes(DcmSequenceOfItems* sq1, DcmSequenceOfItems* sq2, OFString& 
         return OFFalse;
     }
 
-    int n1 = sq1->card();
-    int n2 = sq2->card();
+    int n1 = (int)(sq1->card());
+    int n2 = (int)(sq2->card());
 
     if (n1 != n2) {
         reason = "different number of items in sequence: " + constructTagName(sq1);
@@ -2757,7 +2759,10 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 /*
 ** CVS/RCS Log:
 ** $Log: dcmgpdir.cc,v $
-** Revision 1.33  1999-04-27 17:50:51  joergr
+** Revision 1.34  1999-04-30 16:40:02  meichel
+** Minor code purifications to keep Sun CC 2.0.1 quiet
+**
+** Revision 1.33  1999/04/27 17:50:51  joergr
 ** Adapted console applications to new OFCommandLine and OFConsoleApplication
 ** functionality.
 **

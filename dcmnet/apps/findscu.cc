@@ -22,9 +22,9 @@
  *  Purpose: Query/Retrieve Service Class User (C-FIND operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-04-29 10:02:45 $
+ *  Update Date:      $Date: 1999-04-30 16:40:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/findscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -114,7 +114,16 @@ addOverrideKey(OFConsoleApplication& app, const char* s)
       app.printError(msg.c_str());
     }
 
-    char* spos = index(s, '=');
+    const char* spos = s;
+    char ccc;
+    do
+    {
+      ccc = *spos;
+      if (ccc == '=') break;
+      if (ccc == 0) { spos = NULL; break; }
+      spos++;
+    } while(1);
+        
     if (spos && *(spos+1)) {
         strcpy(val, spos+1);
     }
@@ -684,7 +693,7 @@ static CONDITION
 cfind(T_ASC_Association * assoc, const char *fname)
 {
     CONDITION cond = DIMSE_NORMAL;
-    int n = opt_repeatCount;
+    int n = (int)opt_repeatCount;
 
     while (cond == DIMSE_NORMAL && n--) {
 	cond = findSCU(assoc, fname);
@@ -695,7 +704,10 @@ cfind(T_ASC_Association * assoc, const char *fname)
 /*
 ** CVS Log
 ** $Log: findscu.cc,v $
-** Revision 1.20  1999-04-29 10:02:45  meichel
+** Revision 1.21  1999-04-30 16:40:21  meichel
+** Minor code purifications to keep Sun CC 2.0.1 quiet
+**
+** Revision 1.20  1999/04/29 10:02:45  meichel
 ** Adapted findscu to new command line option scheme
 **
 ** Revision 1.19  1999/04/19 08:43:53  meichel

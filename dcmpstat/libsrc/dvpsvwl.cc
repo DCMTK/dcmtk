@@ -23,8 +23,8 @@
  *    classes: DVPSVOIWindow_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-12-22 17:57:22 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 1999-04-30 16:40:50 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -95,7 +95,7 @@ E_Condition DVPSVOIWindow_PList::read(DcmItem &dset)
   DcmLongString *expl=NULL;
   if (windowCenterWidthExplanation.getVM() > 0) expl = &windowCenterWidthExplanation;
   
-  size_t vm = windowCenter.getVM();
+  size_t vm = (size_t)windowCenter.getVM();
   for (size_t i=0; i<vm; i++)
   {
       newObject = new DVPSVOIWindow();
@@ -124,7 +124,10 @@ DVPSVOIWindow *DVPSVOIWindow_PList::getVOIWindow(size_t idx)
 
 /*
  *  $Log: dvpsvwl.cc,v $
- *  Revision 1.1  1998-12-22 17:57:22  meichel
+ *  Revision 1.2  1999-04-30 16:40:50  meichel
+ *  Minor code purifications to keep Sun CC 2.0.1 quiet
+ *
+ *  Revision 1.1  1998/12/22 17:57:22  meichel
  *  Implemented Presentation State interface for overlays,
  *    VOI LUTs, VOI windows, curves. Added test program that
  *    allows to add curve data to DICOM images.

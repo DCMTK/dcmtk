@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-04-27 17:24:24 $
+ *  Update Date:      $Date: 1999-04-30 16:40:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -757,38 +757,45 @@ replaceSOPInstanceInformation(DcmDataset* dataset)
     static OFCmdUnsignedInt studyCounter = 0;
     static OFCmdUnsignedInt seriesCounter = 0;
     static OFCmdUnsignedInt imageCounter = 0;
+    static OFString seriesInstanceUID;
+    static OFString seriesNumber;
+    static OFString studyInstanceUID;
+    static OFString studyID;
+    static OFString accessionNumber;
+    static OFString patientID;
+    static OFString patientName;
 
-    static OFString seriesInstanceUID = makeUID(SITE_SERIES_UID_ROOT, seriesCounter);
-    static OFString seriesNumber = intToString(seriesCounter);
-    static OFString studyInstanceUID = makeUID(SITE_STUDY_UID_ROOT, studyCounter);
-    static OFString studyID = studyIDPrefix + intToString(secondsSince1970()) + intToString(studyCounter);
-    static OFString accessionNumber = accessionNumberPrefix + intToString(secondsSince1970()) + intToString(studyCounter);
-    static OFString patientID = patientIDPrefix + intToString(secondsSince1970()) + intToString(patientCounter);
-    static OFString patientName = patientNamePrefix + intToString(secondsSince1970()) + intToString(patientCounter);
+    if (seriesInstanceUID.length() == 0) seriesInstanceUID=makeUID(SITE_SERIES_UID_ROOT, (int)seriesCounter);
+    if (seriesNumber.length() == 0) seriesNumber = intToString((int)seriesCounter);
+    if (studyInstanceUID.length() == 0) studyInstanceUID = makeUID(SITE_STUDY_UID_ROOT, (int)studyCounter);
+    if (studyID.length() == 0) studyID = studyIDPrefix + intToString((int)secondsSince1970()) + intToString((int)studyCounter);
+    if (accessionNumber.length() == 0) accessionNumber = accessionNumberPrefix + intToString(secondsSince1970()) + intToString((int)studyCounter);
+    if (patientID.length() == 0) patientID = patientIDPrefix + intToString(secondsSince1970()) + intToString((int)patientCounter);
+    if (patientName.length() == 0) patientName = patientNamePrefix + intToString(secondsSince1970()) + intToString((int)patientCounter);
 
     if (imageCounter >= opt_inventSeriesCount) {
         imageCounter = 0;
         seriesCounter++;
-        seriesInstanceUID = makeUID(SITE_SERIES_UID_ROOT, seriesCounter);
-        seriesNumber = intToString(seriesCounter);
+        seriesInstanceUID = makeUID(SITE_SERIES_UID_ROOT, (int)seriesCounter);
+        seriesNumber = intToString((int)seriesCounter);
     }
     if (seriesCounter >= opt_inventStudyCount) {
         seriesCounter = 0;
         studyCounter++;
-        studyInstanceUID = makeUID(SITE_STUDY_UID_ROOT, studyCounter);
-        studyID = studyIDPrefix + intToString(secondsSince1970()) + intToString(studyCounter);
-        accessionNumber = accessionNumberPrefix + intToString(secondsSince1970()) + intToString(studyCounter);
+        studyInstanceUID = makeUID(SITE_STUDY_UID_ROOT, (int)studyCounter);
+        studyID = studyIDPrefix + intToString(secondsSince1970()) + intToString((int)studyCounter);
+        accessionNumber = accessionNumberPrefix + intToString(secondsSince1970()) + intToString((int)studyCounter);
     }
     if (studyCounter >= opt_inventPatientCount) {
         // we create as many patients as necessary */
         studyCounter = 0;
         patientCounter++;
-        patientID = patientIDPrefix + intToString(secondsSince1970()) + intToString(patientCounter);
-        patientName = patientNamePrefix + intToString(secondsSince1970()) + intToString(patientCounter);
+        patientID = patientIDPrefix + intToString(secondsSince1970()) + intToString((int)patientCounter);
+        patientName = patientNamePrefix + intToString(secondsSince1970()) + intToString((int)patientCounter);
     }
 
-    OFString sopInstanceUID = makeUID(SITE_INSTANCE_UID_ROOT, imageCounter);
-    OFString imageNumber = intToString(imageCounter);
+    OFString sopInstanceUID = makeUID(SITE_INSTANCE_UID_ROOT, (int)imageCounter);
+    OFString imageNumber = intToString((int)imageCounter);
 
     if (opt_verbose) {
         cout << "Inventing Identifying Information (" << 
@@ -950,7 +957,7 @@ static CONDITION
 cstore(T_ASC_Association * assoc, const OFString& fname)
 {
     CONDITION cond = DIMSE_NORMAL;
-    int n = opt_repeatCount;
+    int n = (int)opt_repeatCount;
 
     while ((cond == DIMSE_NORMAL) && n-- && !(opt_haltOnUnsuccessfulStore && unsuccessfulStoreEncountered)) {
 	cond = storeSCU(assoc, fname.c_str());
@@ -961,7 +968,10 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.23  1999-04-27 17:24:24  meichel
+** Revision 1.24  1999-04-30 16:40:23  meichel
+** Minor code purifications to keep Sun CC 2.0.1 quiet
+**
+** Revision 1.23  1999/04/27 17:24:24  meichel
 ** Updated storescu and storescp for minor changes is command line class.
 **
 ** Revision 1.22  1999/04/27 12:27:00  meichel

@@ -22,9 +22,9 @@
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-04-29 12:01:02 $
+ *  Update Date:      $Date: 1999-04-30 16:40:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -154,7 +154,16 @@ addOverrideKey(OFConsoleApplication& app, const char* s)
       app.printError(msg.c_str());
     }
 
-    char* spos = index(s, '=');
+    const char* spos = s;
+    char ccc;
+    do
+    {
+      ccc = *spos;
+      if (ccc == '=') break;
+      if (ccc == 0) { spos = NULL; break; }
+      spos++;
+    } while(1);
+
     if (spos && *(spos+1)) {
         strcpy(val, spos+1);
     }
@@ -525,7 +534,7 @@ main(int argc, char *argv[])
 #endif
 
     /* network for move request and responses */
-    cond = ASC_initializeNetwork(NET_ACCEPTORREQUESTOR, opt_retrievePort, 
+    cond = ASC_initializeNetwork(NET_ACCEPTORREQUESTOR, (int)opt_retrievePort, 
 				 1000, &net);
     if (!SUCCESS(cond))
     {
@@ -1323,7 +1332,7 @@ static CONDITION
 cmove(T_ASC_Association * assoc, const char *fname)
 {
     CONDITION cond = DIMSE_NORMAL;
-    int n = opt_repeatCount;
+    int n = (int)opt_repeatCount;
 
     while (cond == DIMSE_NORMAL && n--) {
 	cond = moveSCU(assoc, fname);
@@ -1335,7 +1344,10 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.23  1999-04-29 12:01:02  meichel
+** Revision 1.24  1999-04-30 16:40:22  meichel
+** Minor code purifications to keep Sun CC 2.0.1 quiet
+**
+** Revision 1.23  1999/04/29 12:01:02  meichel
 ** Adapted movescu to new command line option scheme.
 **   Added support for transmission of compressed images.
 **

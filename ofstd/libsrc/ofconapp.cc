@@ -21,10 +21,10 @@
  *
  *  Purpose: Handle console applications (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-27 17:48:54 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-04-30 16:41:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofconapp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -69,20 +69,24 @@ OFBool OFConsoleApplication::parseCommandLine(OFCommandLine &cmd,
 {
     CmdLine = &cmd;                                                     // store reference to cmdline object
     OFCommandLine::E_ParseStatus status = cmd.parseLine(argCount, argValue, flags, startPos);
+    OFBool result = OFFalse;
     switch (status)    
     {
         case OFCommandLine::PS_NoArguments:
             printUsage();
             break;
         case OFCommandLine::PS_Normal:
-            return OFTrue;
+            result =  OFTrue;
+            break;
         default:
-            OFString str;
-            cmd.getStatusString(status, str);
-            printError(str.c_str());
+            {
+              OFString str;
+              cmd.getStatusString(status, str);
+              printError(str.c_str());
+            }
             break;
     }
-    return OFFalse;
+    return result;
 }
 
 
@@ -190,7 +194,10 @@ void OFConsoleApplication::checkConflict(const char *firstOpt,
  *
  * CVS/RCS Log:
  * $Log: ofconapp.cc,v $
- * Revision 1.6  1999-04-27 17:48:54  joergr
+ * Revision 1.7  1999-04-30 16:41:03  meichel
+ * Minor code purifications to keep Sun CC 2.0.1 quiet
+ *
+ * Revision 1.6  1999/04/27 17:48:54  joergr
  * Corrected bug: option '--help' could not be used when mandatory parameters
  * were missing.
  * Changed output of usage text (moved some newlines to support output when

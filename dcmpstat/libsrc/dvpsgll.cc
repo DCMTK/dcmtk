@@ -23,8 +23,8 @@
  *    classes: DVPSGraphicLayer_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-02-09 15:59:07 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 1999-04-30 16:40:50 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -316,7 +316,8 @@ E_Condition DVPSGraphicLayer_PList::setGraphicLayerName(size_t idx, const char *
   {
     layer->setGL(name);
     return EC_Normal;
-  } else return EC_IllegalCall;
+  }
+  return EC_IllegalCall;
 }  
 
 
@@ -327,7 +328,8 @@ E_Condition DVPSGraphicLayer_PList::setGraphicLayerDescription(size_t idx, const
   {
     layer->setGLDescription(descr);
     return EC_Normal;
-  } else return EC_IllegalCall;
+  } 
+  return EC_IllegalCall;
 }
 
 
@@ -429,7 +431,10 @@ void DVPSGraphicLayer_PList::cleanupLayers(
 
 /*
  *  $Log: dvpsgll.cc,v $
- *  Revision 1.3  1999-02-09 15:59:07  meichel
+ *  Revision 1.4  1999-04-30 16:40:50  meichel
+ *  Minor code purifications to keep Sun CC 2.0.1 quiet
+ *
+ *  Revision 1.3  1999/02/09 15:59:07  meichel
  *  Implemented bitmap shutter activation amd method for
  *    exchanging graphic layers.
  *

@@ -26,9 +26,9 @@
  *    ignored. If no presentation state is loaded, a default is created.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-04-28 15:45:06 $
+ *  Update Date:      $Date: 1999-04-30 16:40:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmp2pgm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -480,7 +480,7 @@ void dumpPresentationState(DVInterface& dvi)
       {
       	cout << "        columns=" << overlayWidth << " rows=" << overlayHeight << " left="
       	<< overlayLeft << " top=" << overlayTop << endl;
-      	sprintf(overlayfile, "ovl_%02d%02d.pgm", layer+1, ovlidx+1);
+      	sprintf(overlayfile, "ovl_%02d%02d.pgm", (int)layer+1, (int)ovlidx+1);
       	cout << "        filename=\"" << overlayfile << "\"";
       	
         ofile = fopen(overlayfile, "wb");
@@ -547,7 +547,10 @@ void dumpPresentationState(DVInterface& dvi)
 /*
  * CVS/RCS Log:
  * $Log: dcmp2pgm.cc,v $
- * Revision 1.12  1999-04-28 15:45:06  meichel
+ * Revision 1.13  1999-04-30 16:40:45  meichel
+ * Minor code purifications to keep Sun CC 2.0.1 quiet
+ *
+ * Revision 1.12  1999/04/28 15:45:06  meichel
  * Cleaned up module dcmpstat apps, adapted to new command line class
  *   and added short documentation.
  *
