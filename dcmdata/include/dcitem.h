@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmItem
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-07-23 14:21:26 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-08-02 08:42:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcitem.h,v $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -420,11 +420,13 @@ public:
      *  Applicable to the following VRs: US
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element
+     *  @param pos index of the value to be set (0..vm-1)
      *  @param replaceOld flag indicating whether to replace an existing element or not
      *  @return EC_Normal upon success, an error code otherwise.
      */
     OFCondition putAndInsertUint16(const DcmTag& tag,
                                    const Uint16 value,
+                                   const unsigned long pos = 0,
                                    const OFBool replaceOld = OFTrue);
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
@@ -444,11 +446,13 @@ public:
      *  Applicable to the following VRs: SS
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element
+     *  @param pos index of the value to be set (0..vm-1)
      *  @param replaceOld flag indicating whether to replace an existing element or not
      *  @return EC_Normal upon success, an error code otherwise.
      */
     OFCondition putAndInsertSint16(const DcmTag& tag,
                                    const Sint16 value,
+                                   const unsigned long pos = 0,
                                    const OFBool replaceOld = OFTrue);
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
@@ -468,44 +472,52 @@ public:
      *  Applicable to the following VRs: UL
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element
+     *  @param pos index of the value to be set (0..vm-1)
      *  @param replaceOld flag indicating whether to replace an existing element or not
      *  @return EC_Normal upon success, an error code otherwise.
      */
     OFCondition putAndInsertUint32(const DcmTag& tag,
                                    const Uint32 value,
+                                   const unsigned long pos = 0,
                                    const OFBool replaceOld = OFTrue);
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
      *  Applicable to the following VRs: SL
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element
+     *  @param pos index of the value to be set (0..vm-1)
      *  @param replaceOld flag indicating whether to replace an existing element or not
      *  @return EC_Normal upon success, an error code otherwise.
      */
     OFCondition putAndInsertSint32(const DcmTag& tag,
                                    const Sint32 value,
+                                   const unsigned long pos = 0,
                                    const OFBool replaceOld = OFTrue);
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
      *  Applicable to the following VRs: FL
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element
+     *  @param pos index of the value to be set (0..vm-1)
      *  @param replaceOld flag indicating whether to replace an existing element or not
      *  @return EC_Normal upon success, an error code otherwise.
      */
     OFCondition putAndInsertFloat32(const DcmTag& tag,
                                     const Float32 value,
+                                    const unsigned long pos = 0,
                                     const OFBool replaceOld = OFTrue);
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
      *  Applicable to the following VRs: FD
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element
+     *  @param pos index of the value to be set (0..vm-1)
      *  @param replaceOld flag indicating whether to replace an existing element or not
      *  @return EC_Normal upon success, an error code otherwise.
      */
     OFCondition putAndInsertFloat64(const DcmTag& tag,
                                     const Float64 value,
+                                    const unsigned long pos = 0,
                                     const OFBool replaceOld = OFTrue);
 
     /** create a new element (with no value) and insert it into the dataset/item.
@@ -614,7 +626,10 @@ OFCondition nextUp(DcmStack & stack);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
-** Revision 1.37  2002-07-23 14:21:26  meichel
+** Revision 1.38  2002-08-02 08:42:44  joergr
+** Added optional 'pos' parameter to the putAndInsertXXX() methods.
+**
+** Revision 1.37  2002/07/23 14:21:26  meichel
 ** Added support for private tag data dictionaries to dcmdata
 **
 ** Revision 1.36  2002/06/26 15:47:40  joergr

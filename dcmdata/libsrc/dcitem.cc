@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmItem
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-07-23 14:21:33 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-08-02 08:42:33 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.74 $
+ *  CVS/RCS Revision: $Revision: 1.75 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1171,13 +1171,13 @@ OFCondition DcmItem::read(DcmStream & inStream,
 
                 /* remember how many bytes were read */
                 fTransferredBytes = inStream.Tell() - fStartPosition;
-                
+
                 if (errorFlag.good())
                 {
                   // If we completed one element, update the private tag cache.
-                  if (lastElementComplete) 
+                  if (lastElementComplete)
                     privateCreatorCache.updateCache(elementList->get());
-                } 
+                }
                 else break; // if some error was encountered terminate the while-loop
             } //while
 
@@ -2107,7 +2107,7 @@ OFCondition newDicomElement(DcmElement * & newElement,
         {
             // The attribute is unknown but is encoded with undefined
             // length.  Assume it is really a sequence so that we can
-            // catch the sequence delimitation item.           
+            // catch the sequence delimitation item.
             DcmVR sqVR(EVR_SQ); // we handle this element as SQ, not UN
             DcmTag newTag(tag.getXTag(), sqVR);
             newElement = new DcmSequenceOfItems(newTag, length);
@@ -2779,6 +2779,7 @@ DcmItem::putAndInsertOFStringArray(const DcmTag& tag,
 OFCondition
 DcmItem::putAndInsertUint16(const DcmTag& tag,
                             const Uint16 value,
+                            const unsigned long pos,
                             const OFBool replaceOld)
 {
     OFCondition status = EC_IllegalCall;
@@ -2792,7 +2793,7 @@ DcmItem::putAndInsertUint16(const DcmTag& tag,
             status = elem->putUint16(value);
             /* insert into dataset/item */
             if (status.good())
-                status = insert(elem, replaceOld);
+                status = insert(elem, replaceOld, pos);
             /* could not be inserted, therefore, delete it immediately */
             if (status.bad())
                 delete elem;
@@ -2886,6 +2887,7 @@ DcmItem::putAndInsertUint16Array(const DcmTag& tag,
 OFCondition
 DcmItem::putAndInsertSint16(const DcmTag& tag,
                             const Sint16 value,
+                            const unsigned long pos,
                             const OFBool replaceOld)
 {
     OFCondition status = EC_IllegalCall;
@@ -2896,7 +2898,7 @@ DcmItem::putAndInsertSint16(const DcmTag& tag,
         if (elem != NULL)
         {
             /* put value */
-            status = elem->putSint16(value);
+            status = elem->putSint16(value, pos);
             /* insert into dataset/item */
             if (status.good())
                 status = insert(elem, replaceOld);
@@ -2941,6 +2943,7 @@ DcmItem::putAndInsertSint16Array(const DcmTag& tag,
 OFCondition
 DcmItem::putAndInsertUint32(const DcmTag& tag,
                             const Uint32 value,
+                            const unsigned long pos,
                             const OFBool replaceOld)
 {
     OFCondition status = EC_IllegalCall;
@@ -2951,7 +2954,7 @@ DcmItem::putAndInsertUint32(const DcmTag& tag,
         if (elem != NULL)
         {
             /* put value */
-            status = elem->putUint32(value);
+            status = elem->putUint32(value, pos);
             /* insert into dataset/item */
             if (status.good())
                 status = insert(elem, replaceOld);
@@ -2968,6 +2971,7 @@ DcmItem::putAndInsertUint32(const DcmTag& tag,
 OFCondition
 DcmItem::putAndInsertSint32(const DcmTag& tag,
                             const Sint32 value,
+                            const unsigned long pos,
                             const OFBool replaceOld)
 {
     OFCondition status = EC_IllegalCall;
@@ -2978,7 +2982,7 @@ DcmItem::putAndInsertSint32(const DcmTag& tag,
         if (elem != NULL)
         {
             /* put value */
-            status = elem->putSint32(value);
+            status = elem->putSint32(value, pos);
             /* insert into dataset/item */
             if (status.good())
                 status = insert(elem, replaceOld);
@@ -2995,6 +2999,7 @@ DcmItem::putAndInsertSint32(const DcmTag& tag,
 OFCondition
 DcmItem::putAndInsertFloat32(const DcmTag& tag,
                              const Float32 value,
+                             const unsigned long pos,
                              const OFBool replaceOld)
 {
     OFCondition status = EC_IllegalCall;
@@ -3005,7 +3010,7 @@ DcmItem::putAndInsertFloat32(const DcmTag& tag,
         if (elem != NULL)
         {
             /* put value */
-            status = elem->putFloat32(value);
+            status = elem->putFloat32(value, pos);
             /* insert into dataset/item */
             if (status.good())
                 status = insert(elem, replaceOld);
@@ -3022,6 +3027,7 @@ DcmItem::putAndInsertFloat32(const DcmTag& tag,
 OFCondition
 DcmItem::putAndInsertFloat64(const DcmTag& tag,
                              const Float64 value,
+                             const unsigned long pos,
                              const OFBool replaceOld)
 {
     OFCondition status = EC_IllegalCall;
@@ -3148,7 +3154,10 @@ OFBool DcmItem::containsUnknownVR() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.74  2002-07-23 14:21:33  meichel
+** Revision 1.75  2002-08-02 08:42:33  joergr
+** Added optional 'pos' parameter to the putAndInsertXXX() methods.
+**
+** Revision 1.74  2002/07/23 14:21:33  meichel
 ** Added support for private tag data dictionaries to dcmdata
 **
 ** Revision 1.73  2002/07/08 16:15:40  meichel
