@@ -1,17 +1,17 @@
 /*
 **
-** Author: Andrew Hewett	Created: 4.11.95
+** Author: Andrew Hewett        Created: 4.11.95
 **
 ** Program: mkdeftag.cc
 **
 ** Purpose:
 ** Generate a C++ header defining symbolic names for DICOM Tags.
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-08-26 14:03:19 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/mkdeftag.cc,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
-** Status:		$State: Exp $
+** Last Update:         $Author: joergr $
+** Update Date:         $Date: 1998-07-15 14:08:49 $
+** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/mkdeftag.cc,v $
+** CVS/RCS Revision:    $Revision: 1.8 $
+** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
 **
@@ -22,6 +22,9 @@
 #include <stdio.h>
 #ifdef HAVE_STDLIB_H
 #include <stdlib.h>
+#endif
+#ifdef HAVE_LIBC_H
+#include <libc.h>
 #endif
 #include <string.h>
 #include <ctype.h>
@@ -46,17 +49,17 @@ static char*
 convertToIdentifier(char* s)
 {
     if (s == NULL) {
-	return s;
+        return s;
     }
     int len = strlen(s);
     int i=0;
     char c;
 
     for (i=0; i<len; i++) {
-	c = s[i];
-	if (!(isalnum(c) || (c == '_'))) {
-	    /* replace char with '_' */
-	    s[i] = '_';
+        c = s[i];
+        if (!(isalnum(c) || (c == '_'))) {
+            /* replace char with '_' */
+            s[i] = '_';
         }
     }
     return s;
@@ -67,11 +70,11 @@ rangeRestriction2char(DcmDictRangeRestriction r)
 {
     char c = ' ';
     if (r == DcmDictRange_Odd) {
-	c = 'o';
+        c = 'o';
     } else if (r == DcmDictRange_Even) {
-	c = 'e';
+        c = 'e';
     } else if (r == DcmDictRange_Unspecified) {
-	c = 'u';
+        c = 'u';
     }
     return c;
 }
@@ -84,7 +87,7 @@ printDefined(FILE* fout, const DcmDictEntry* e)
     const char* tagPrefix;
 
     if (e == NULL || e->getTagName() == NULL) 
-	return;
+        return;
 
     strcpy(buf, e->getTagName());
 
@@ -96,30 +99,30 @@ printDefined(FILE* fout, const DcmDictEntry* e)
 
     int n = 48 - (strlen(tagPrefix) + strlen(buf));
     for (i=0; i<n; i++) {
-	    putc(' ', fout);
+            putc(' ', fout);
     }
 
     fprintf(fout, " DcmTagKey(0x%04x, 0x%04x)",
-	    e->getGroup(), e->getElement());
+            e->getGroup(), e->getElement());
 
     if (e->isRepeating()) {
-	fprintf(fout, " /* (0x%04x", e->getGroup());
-	if (e->isRepeatingGroup()) {
-	    if (e->getGroupRangeRestriction() != DcmDictRange_Even) {
-		fprintf(fout, "-%c", 
-			rangeRestriction2char(e->getGroupRangeRestriction()));
-	    }
-	    fprintf(fout, "-0x%04x", e->getUpperGroup());
-	}
-	fprintf(fout, ",0x%04x", e->getElement());
-	if (e->isRepeatingElement()) {
-	    if (e->getElementRangeRestriction() != DcmDictRange_Even) {
-		fprintf(fout, "-%c", 
-			rangeRestriction2char(e->getElementRangeRestriction()));
-	    }
-	    fprintf(fout, "-0x%04x", e->getUpperElement());
-	}
-	fprintf(fout, ") */");
+        fprintf(fout, " /* (0x%04x", e->getGroup());
+        if (e->isRepeatingGroup()) {
+            if (e->getGroupRangeRestriction() != DcmDictRange_Even) {
+                fprintf(fout, "-%c", 
+                        rangeRestriction2char(e->getGroupRangeRestriction()));
+            }
+            fprintf(fout, "-0x%04x", e->getUpperGroup());
+        }
+        fprintf(fout, ",0x%04x", e->getElement());
+        if (e->isRepeatingElement()) {
+            if (e->getElementRangeRestriction() != DcmDictRange_Even) {
+                fprintf(fout, "-%c", 
+                        rangeRestriction2char(e->getElementRangeRestriction()));
+            }
+            fprintf(fout, "-0x%04x", e->getUpperElement());
+        }
+        fprintf(fout, ") */");
     }
     fputs("\n", fout);
 }
@@ -199,7 +202,7 @@ getHostName(char* hostString, int maxLen)
 
 int main(int argc, char* argv[])
 {
-    char* progname = "mkdeftag";
+    const char* progname = "mkdeftag";
     DcmDictEntry* e = NULL;
     int i = 0;
     FILE* fout = NULL;
@@ -244,10 +247,10 @@ int main(int argc, char* argv[])
     fprintf(fout, "**   Prog: %s\n", progname);
     fputs("**\n", fout);
     if (argc > 1) {
-	fprintf(fout, "** From: %s\n", argv[1]);
-	for (i=2; i<argc; i++) {
-	    fprintf(fout, "**       %s\n", argv[i]);
-	}
+        fprintf(fout, "** From: %s\n", argv[1]);
+        for (i=2; i<argc; i++) {
+            fprintf(fout, "**       %s\n", argv[i]);
+        }
     }
     fputs("**\n", fout);
     fputs("*/\n\n", fout);
@@ -262,7 +265,7 @@ int main(int argc, char* argv[])
     fputs("\n/*\n", fout);
     fputs("** Fixed Tags in assending (gggg,eeee) order.\n", fout);
     fprintf(fout, "** Number of entries: %d\n", 
-	   dcmDataDict.numberOfNormalTagEntries());
+           dcmDataDict.numberOfNormalTagEntries());
     fputs("** Tags with a repeating component (repeating tags) are listed later.\n", fout);
     fputs("*/\n", fout);
 
@@ -274,27 +277,27 @@ int main(int argc, char* argv[])
     DcmHashDictIterator iter(dcmDataDict.normalBegin());
     DcmHashDictIterator end(dcmDataDict.normalEnd());
     for (; iter != end; ++iter) {
-	e = new DcmDictEntry(*(*iter));
-	list.insertAndReplace(e);
+        e = new DcmDictEntry(*(*iter));
+        list.insertAndReplace(e);
     }
     /* output the list contents */
     DcmDictEntryListIterator listIter(list.begin());
     DcmDictEntryListIterator listLast(list.end());
     for (; listIter != listLast; ++listIter) {
-	printDefined(fout, *listIter);
+        printDefined(fout, *listIter);
     }
 
     fputs("\n/*\n", fout);
     fputs("** Tags where the group/element can vary (repeating tags).\n", 
-	  fout);
+          fout);
     fprintf(fout, "** Number of entries: %d\n", 
-	   dcmDataDict.numberOfRepeatingTagEntries());
+           dcmDataDict.numberOfRepeatingTagEntries());
     fputs("*/\n", fout);
 
     DcmDictEntryListIterator repIter(dcmDataDict.repeatingBegin());
     DcmDictEntryListIterator repLast(dcmDataDict.repeatingEnd());
     for (; repIter != repLast; ++repIter) {
-	printDefined(fout, *repIter);
+        printDefined(fout, *repIter);
     }
     fputs("\n#endif /* !DCDEFTAG_H */\n", fout);
 
@@ -304,7 +307,12 @@ int main(int argc, char* argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: mkdeftag.cc,v $
-** Revision 1.7  1997-08-26 14:03:19  hewett
+** Revision 1.8  1998-07-15 14:08:49  joergr
+** Including of <libc.h> to support getlogin() on NeXTSTEP.
+** Replaced tabs by spaces. Added const to char pointer to avoid warnings
+** (gcc 2.8.1 with additional options).
+**
+** Revision 1.7  1997/08/26 14:03:19  hewett
 ** New data structures for data-dictionary.  The main part of the
 ** data-dictionary is now stored in an hash table using an optimized
 ** hash function.  This new data structure reduces data-dictionary
