@@ -34,10 +34,10 @@
 ** Author: 	Marco Eichelberg
 **		Kuratorium OFFIS e.V., Oldenburg, Germany
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-05-05 10:30:19 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1997-05-13 14:44:55 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/tests/Attic/assctest.cc,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -125,7 +125,6 @@ static const char* abstractSyntaxes[] = {
        UID_RTImageStorage,
        UID_RTDoseStorage,
        UID_RTStructureSetStorage,
-       UID_RTTreatmentRecordStorage,
        UID_RTPlanStorage,
        UID_BasicDirectoryStorageSOPClass,
        UID_DetachedPatientManagementMetaSOPClass,
@@ -569,7 +568,12 @@ cecho(T_ASC_Association * assoc)
 /*
 ** CVS Log
 ** $Log: assctest.cc,v $
-** Revision 1.1  1997-05-05 10:30:19  meichel
+** Revision 1.2  1997-05-13 14:44:55  hewett
+** Removed reference to UID_RTTreatmentRecordStorage.  This UID appeared in
+** an earlier draft of the Radiotherapy object.  It no longer appears in
+** the final text version.
+**
+** Revision 1.1  1997/05/05 10:30:19  meichel
 ** Fixed bugs related to association negotiation in the DICOM upper layer module.
 ** Added application tests/assctest.cc to examine handling of large A-ASSOCIATE
 ** PDUs. See CHANGES file for details.
