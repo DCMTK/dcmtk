@@ -10,9 +10,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-03 15:09:56 $
+** Update Date:		$Date: 1997-07-07 07:49:59 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdirrec.cc,v $
-** CVS/RCS Revision:	$Revision: 1.15 $
+** CVS/RCS Revision:	$Revision: 1.16 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1156,7 +1156,7 @@ E_Condition DcmDirectoryRecord::verify(const BOOL autocorrect )
 // ********************************
 
 
-E_Condition DcmDirectoryRecord::search( const DcmTag &tag,
+E_Condition DcmDirectoryRecord::search( const DcmTagKey &tag,
 					DcmStack &resultStack,
 					E_SearchMode mode,
 					BOOL searchIntoSub )
@@ -1179,23 +1179,6 @@ debug(5, ( "DcmDirectoryRecord::search() no element found: err(%d, %s). now sear
 	if ( l_error != EC_Normal )
 	    resultStack.pop();
     }
-    return l_error;
-}
-
-
-// ********************************
-
-
-E_Condition DcmDirectoryRecord::search( const DcmTagKey &xtag,
-					DcmStack &resultStack,
-					E_SearchMode mode,
-					BOOL searchIntoSub )
-{
-    DcmTag tag( xtag );
-    E_Condition l_error = DcmDirectoryRecord::search( tag,
-						      resultStack,
-						      mode,
-						      searchIntoSub );
     return l_error;
 }
 
