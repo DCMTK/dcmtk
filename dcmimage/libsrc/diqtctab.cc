@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: class DcmQuantColorTable
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-20 12:20:24 $
+ *  Update Date:      $Date: 2002-11-27 14:16:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/diqtctab.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,9 +45,8 @@
 #include "dcdeftag.h"  /* for tag constants */
 #include "dcuid.h"     /* for OFFIS_DCMTK_VERSION */
 
-BEGIN_EXTERN_C
-#include <stdio.h>
-END_EXTERN_C
+#define INCLUDE_CSTDIO
+#include "ofstdinc.h"
 
 /* ------------------------------------------------------------ */
 
@@ -564,7 +563,10 @@ void DcmQuantColorTable::setDescriptionString(OFString& str) const
  *
  * CVS/RCS Log:
  * $Log: diqtctab.cc,v $
- * Revision 1.3  2002-08-20 12:20:24  meichel
+ * Revision 1.4  2002-11-27 14:16:58  meichel
+ * Adapted module dcmimage to use of new header file ofstdinc.h
+ *
+ * Revision 1.3  2002/08/20 12:20:24  meichel
  * Adapted code to new loadFile and saveFile methods, thus removing direct
  *   use of the DICOM stream classes.
  *

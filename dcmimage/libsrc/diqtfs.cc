@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: class DcmQuantFloydSteinberg
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-01-25 13:32:10 $
+ *  Update Date:      $Date: 2002-11-27 14:16:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/diqtfs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,9 +35,11 @@
 #include "diqtfs.h"
 #include "offname.h"    /* for OFFilenameCreator::myrand_r */
 
+#define INCLUDE_CTIME
+#include "ofstdinc.h"
+
 BEGIN_EXTERN_C
 #include <sys/types.h> // needed for time()
-#include <time.h>      // needed for time()
 END_EXTERN_C
 
 
@@ -111,7 +113,10 @@ OFCondition DcmQuantFloydSteinberg::initialize(unsigned long cols)
  *
  * CVS/RCS Log:
  * $Log: diqtfs.cc,v $
- * Revision 1.1  2002-01-25 13:32:10  meichel
+ * Revision 1.2  2002-11-27 14:16:58  meichel
+ * Adapted module dcmimage to use of new header file ofstdinc.h
+ *
+ * Revision 1.1  2002/01/25 13:32:10  meichel
  * Initial release of new color quantization classes and
  *   the dcmquant tool in module dcmimage.
  *

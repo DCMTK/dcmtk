@@ -22,9 +22,9 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-26 08:44:55 $
+ *  Update Date:      $Date: 2002-11-27 14:16:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.67 $
+ *  CVS/RCS Revision: $Revision: 1.68 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,13 +34,12 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
-BEGIN_EXTERN_C
-#include <stdio.h>
-#include <string.h>
-END_EXTERN_C
+#define INCLUDE_CSTDIO
+#define INCLUDE_CSTRING
+#include "ofstdinc.h"
 
 #ifdef HAVE_GUSI_H
-# include <GUSI.h>
+#include <GUSI.h>
 #endif
 
 #include "dctk.h"          /* for various dcmdata headers */
@@ -1374,7 +1373,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.67  2002-11-26 08:44:55  meichel
+ * Revision 1.68  2002-11-27 14:16:52  meichel
+ * Adapted module dcmimage to use of new header file ofstdinc.h
+ *
+ * Revision 1.67  2002/11/26 08:44:55  meichel
  * Replaced all includes for "zlib.h" with <zlib.h>
  *   to avoid inclusion of zlib.h in the makefile dependencies.
  *

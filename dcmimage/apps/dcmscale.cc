@@ -22,9 +22,9 @@
  *  Purpose: Scale DICOM images
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-26 08:44:57 $
+ *  Update Date:      $Date: 2002-11-27 14:16:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcmscale.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,13 +34,12 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
-BEGIN_EXTERN_C
-#include <stdio.h>
-#include <string.h>
-END_EXTERN_C
+#define INCLUDE_CSTDIO
+#define INCLUDE_CSTRING
+#include "ofstdinc.h"
 
 #ifdef HAVE_GUSI_H
-# include <GUSI.h>
+#include <GUSI.h>
 #endif
 
 #include "dctk.h"          /* for various dcmdata headers */
@@ -567,7 +566,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmscale.cc,v $
- * Revision 1.5  2002-11-26 08:44:57  meichel
+ * Revision 1.6  2002-11-27 14:16:53  meichel
+ * Adapted module dcmimage to use of new header file ofstdinc.h
+ *
+ * Revision 1.5  2002/11/26 08:44:57  meichel
  * Replaced all includes for "zlib.h" with <zlib.h>
  *   to avoid inclusion of zlib.h in the makefile dependencies.
  *

@@ -1,191 +1,196 @@
 diargimg.o: diargimg.cc ../../config/include/osconfig.h \
  ../../config/include/cfunix.h ../../dcmdata/include/dctypes.h \
- ../../ofstd/include/oftypes.h ../../dcmdata/include/dcdeftag.h \
- ../../dcmdata/include/dctagkey.h ../../ofstd/include/ofstream.h \
- ../../ofstd/include/ofstring.h ../include/diargimg.h \
- ../include/dicoimg.h ../../dcmimgle/include/diimage.h \
- ../../dcmdata/include/dcitem.h ../../ofstd/include/ofconsol.h \
+ ../../ofstd/include/oftypes.h ../../ofstd/include/ofstdinc.h \
+ ../../dcmdata/include/dcdeftag.h ../../dcmdata/include/dctagkey.h \
+ ../../ofstd/include/ofstream.h ../../ofstd/include/ofstring.h \
+ ../include/diargimg.h ../include/dicoimg.h \
+ ../../dcmimgle/include/diimage.h ../../dcmdata/include/dcitem.h \
+ ../../ofstd/include/ofconsol.h ../../ofstd/include/ofthread.h \
+ ../../dcmdata/include/dcobject.h ../../ofstd/include/ofglobal.h \
+ ../../dcmdata/include/dcerror.h ../../ofstd/include/ofcond.h \
+ ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
+ ../../dcmdata/include/dctag.h ../../dcmdata/include/dclist.h \
+ ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
+ ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
+ ../../dcmdata/include/dcpcache.h ../../ofstd/include/oflist.h \
+ ../../dcmimgle/include/diovlay.h ../../dcmimgle/include/diobjcou.h \
+ ../../dcmimgle/include/diovdat.h ../../dcmimgle/include/diovpln.h \
+ ../../dcmimgle/include/diutils.h ../include/diargpxt.h \
+ ../include/dicopxt.h ../../ofstd/include/ofbmanip.h \
+ ../include/dicopx.h ../../dcmimgle/include/dipixel.h \
+ ../../dcmimgle/include/dipxrept.h ../../dcmimgle/include/diluptab.h \
+ ../../dcmimgle/include/dibaslut.h ../../dcmimgle/include/diinpx.h
+dicmyimg.o: dicmyimg.cc ../../config/include/osconfig.h \
+ ../../config/include/cfunix.h ../../dcmdata/include/dctypes.h \
+ ../../ofstd/include/oftypes.h ../../ofstd/include/ofstdinc.h \
+ ../include/dicmyimg.h ../include/dicoimg.h \
+ ../../dcmimgle/include/diimage.h ../../dcmdata/include/dcitem.h \
+ ../../ofstd/include/ofconsol.h ../../ofstd/include/ofstream.h \
  ../../ofstd/include/ofthread.h ../../dcmdata/include/dcobject.h \
  ../../ofstd/include/ofglobal.h ../../dcmdata/include/dcerror.h \
- ../../ofstd/include/ofcond.h ../../dcmdata/include/dcxfer.h \
- ../../dcmdata/include/dcvr.h ../../dcmdata/include/dctag.h \
+ ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
+ ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
+ ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
  ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
  ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
  ../../dcmdata/include/dcelem.h ../../dcmdata/include/dcpcache.h \
  ../../ofstd/include/oflist.h ../../dcmimgle/include/diovlay.h \
  ../../dcmimgle/include/diobjcou.h ../../dcmimgle/include/diovdat.h \
  ../../dcmimgle/include/diovpln.h ../../dcmimgle/include/diutils.h \
- ../include/diargpxt.h ../include/dicopxt.h \
+ ../include/dicmypxt.h ../include/dicopxt.h \
  ../../ofstd/include/ofbmanip.h ../include/dicopx.h \
  ../../dcmimgle/include/dipixel.h ../../dcmimgle/include/dipxrept.h \
- ../../dcmimgle/include/diluptab.h ../../dcmimgle/include/dibaslut.h \
  ../../dcmimgle/include/diinpx.h
-dicmyimg.o: dicmyimg.cc ../../config/include/osconfig.h \
- ../../config/include/cfunix.h ../../dcmdata/include/dctypes.h \
- ../../ofstd/include/oftypes.h ../include/dicmyimg.h \
- ../include/dicoimg.h ../../dcmimgle/include/diimage.h \
- ../../dcmdata/include/dcitem.h ../../ofstd/include/ofconsol.h \
- ../../ofstd/include/ofstream.h ../../ofstd/include/ofthread.h \
- ../../dcmdata/include/dcobject.h ../../ofstd/include/ofglobal.h \
- ../../dcmdata/include/dcerror.h ../../ofstd/include/ofcond.h \
- ../../ofstd/include/ofstring.h ../../dcmdata/include/dcxfer.h \
- ../../dcmdata/include/dcvr.h ../../dcmdata/include/dctag.h \
- ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dclist.h \
- ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
- ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
- ../../dcmdata/include/dcpcache.h ../../ofstd/include/oflist.h \
- ../../dcmimgle/include/diovlay.h ../../dcmimgle/include/diobjcou.h \
- ../../dcmimgle/include/diovdat.h ../../dcmimgle/include/diovpln.h \
- ../../dcmimgle/include/diutils.h ../include/dicmypxt.h \
- ../include/dicopxt.h ../../ofstd/include/ofbmanip.h \
- ../include/dicopx.h ../../dcmimgle/include/dipixel.h \
- ../../dcmimgle/include/dipxrept.h ../../dcmimgle/include/diinpx.h
 dicoimg.o: dicoimg.cc ../../config/include/osconfig.h \
  ../../config/include/cfunix.h ../../dcmdata/include/dctypes.h \
- ../../ofstd/include/oftypes.h ../../dcmdata/include/dcdeftag.h \
- ../../dcmdata/include/dctagkey.h ../../ofstd/include/ofstream.h \
- ../../ofstd/include/ofstring.h ../../dcmdata/include/dcpixel.h \
- ../../ofstd/include/ofconsol.h ../../ofstd/include/ofthread.h \
- ../../dcmdata/include/dcvrpobw.h ../../dcmdata/include/dcvrobow.h \
- ../../dcmdata/include/dcerror.h ../../ofstd/include/ofcond.h \
- ../../dcmdata/include/dcelem.h ../../dcmdata/include/dcobject.h \
- ../../ofstd/include/ofglobal.h ../../dcmdata/include/dcxfer.h \
- ../../dcmdata/include/dcvr.h ../../dcmdata/include/dctag.h \
- ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
- ../../ofstd/include/oflist.h ../include/dicoimg.h \
- ../../dcmimgle/include/diimage.h ../../dcmdata/include/dcitem.h \
- ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
- ../../dcmdata/include/dcpcache.h ../../dcmimgle/include/diovlay.h \
- ../../dcmimgle/include/diobjcou.h ../../dcmimgle/include/diovdat.h \
- ../../dcmimgle/include/diovpln.h ../../dcmimgle/include/diutils.h \
- ../../dcmimgle/include/dimo2img.h ../../dcmimgle/include/dimoimg.h \
- ../../dcmimgle/include/dimopx.h ../../dcmimgle/include/dipixel.h \
- ../../dcmimgle/include/dimomod.h ../../dcmimgle/include/diluptab.h \
- ../../dcmimgle/include/dibaslut.h ../../dcmimgle/include/dimoopx.h \
- ../../dcmimgle/include/didispfn.h ../../dcmimgle/include/didislut.h \
- ../include/dicopxt.h ../../ofstd/include/ofbmanip.h \
- ../include/dicopx.h ../../dcmimgle/include/dipxrept.h \
- ../include/dicocpt.h ../include/dicosct.h \
- ../../dcmimgle/include/discalet.h ../../dcmimgle/include/ditranst.h \
- ../include/dicoflt.h ../../dcmimgle/include/diflipt.h \
- ../include/dicorot.h ../../dcmimgle/include/dirotat.h \
- ../include/dicoopxt.h ../include/dicoopx.h
+ ../../ofstd/include/oftypes.h ../../ofstd/include/ofstdinc.h \
+ ../../dcmdata/include/dcdeftag.h ../../dcmdata/include/dctagkey.h \
+ ../../ofstd/include/ofstream.h ../../ofstd/include/ofstring.h \
+ ../../dcmdata/include/dcpixel.h ../../ofstd/include/ofconsol.h \
+ ../../ofstd/include/ofthread.h ../../dcmdata/include/dcvrpobw.h \
+ ../../dcmdata/include/dcvrobow.h ../../dcmdata/include/dcerror.h \
+ ../../ofstd/include/ofcond.h ../../dcmdata/include/dcelem.h \
+ ../../dcmdata/include/dcobject.h ../../ofstd/include/ofglobal.h \
+ ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
+ ../../dcmdata/include/dctag.h ../../dcmdata/include/dclist.h \
+ ../../dcmdata/include/dcstack.h ../../ofstd/include/oflist.h \
+ ../include/dicoimg.h ../../dcmimgle/include/diimage.h \
+ ../../dcmdata/include/dcitem.h ../../dcmdata/include/dcvrui.h \
+ ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcpcache.h \
+ ../../dcmimgle/include/diovlay.h ../../dcmimgle/include/diobjcou.h \
+ ../../dcmimgle/include/diovdat.h ../../dcmimgle/include/diovpln.h \
+ ../../dcmimgle/include/diutils.h ../../dcmimgle/include/dimo2img.h \
+ ../../dcmimgle/include/dimoimg.h ../../dcmimgle/include/dimopx.h \
+ ../../dcmimgle/include/dipixel.h ../../dcmimgle/include/dimomod.h \
+ ../../dcmimgle/include/diluptab.h ../../dcmimgle/include/dibaslut.h \
+ ../../dcmimgle/include/dimoopx.h ../../dcmimgle/include/didispfn.h \
+ ../../dcmimgle/include/didislut.h ../include/dicopxt.h \
+ ../../ofstd/include/ofbmanip.h ../include/dicopx.h \
+ ../../dcmimgle/include/dipxrept.h ../include/dicocpt.h \
+ ../include/dicosct.h ../../dcmimgle/include/discalet.h \
+ ../../dcmimgle/include/ditranst.h ../include/dicoflt.h \
+ ../../dcmimgle/include/diflipt.h ../include/dicorot.h \
+ ../../dcmimgle/include/dirotat.h ../include/dicoopxt.h \
+ ../include/dicoopx.h
 dicoopx.o: dicoopx.cc ../../config/include/osconfig.h \
  ../../config/include/cfunix.h ../include/dicoopx.h \
  ../../dcmimgle/include/diutils.h ../../dcmdata/include/dctypes.h \
- ../../ofstd/include/oftypes.h ../../ofstd/include/ofglobal.h \
- ../../ofstd/include/ofthread.h ../../ofstd/include/ofstream.h \
- ../../dcmimgle/include/dipixel.h
+ ../../ofstd/include/oftypes.h ../../ofstd/include/ofstdinc.h \
+ ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
+ ../../ofstd/include/ofstream.h ../../dcmimgle/include/dipixel.h
 dicopx.o: dicopx.cc ../../config/include/osconfig.h \
  ../../config/include/cfunix.h ../../dcmdata/include/dctypes.h \
- ../../ofstd/include/oftypes.h ../../dcmdata/include/dcdeftag.h \
- ../../dcmdata/include/dctagkey.h ../../ofstd/include/ofstream.h \
- ../../ofstd/include/ofstring.h ../include/dicopx.h \
- ../../dcmimgle/include/dipixel.h ../../dcmimgle/include/diutils.h \
- ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
- ../../dcmimgle/include/dimopx.h ../../dcmimgle/include/dimomod.h \
- ../../dcmimgle/include/diluptab.h ../../dcmimgle/include/dibaslut.h \
- ../../dcmimgle/include/diobjcou.h ../../dcmimgle/include/diinpx.h \
- ../../ofstd/include/ofconsol.h ../../dcmimgle/include/didocu.h \
- ../../dcmdata/include/dcfilefo.h ../../dcmdata/include/dcerror.h \
- ../../ofstd/include/ofcond.h ../../dcmdata/include/dcsequen.h \
- ../../dcmdata/include/dcobject.h ../../dcmdata/include/dcxfer.h \
- ../../dcmdata/include/dcvr.h ../../dcmdata/include/dctag.h \
- ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
- ../../dcmdata/include/dcitem.h ../../dcmdata/include/dcvrui.h \
- ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
- ../../dcmdata/include/dcpcache.h ../../ofstd/include/oflist.h \
- ../../dcmdata/include/dcdatset.h
-dihsvimg.o: dihsvimg.cc ../../config/include/osconfig.h \
- ../../config/include/cfunix.h ../../dcmdata/include/dctypes.h \
- ../../ofstd/include/oftypes.h ../include/dihsvimg.h \
- ../include/dicoimg.h ../../dcmimgle/include/diimage.h \
- ../../dcmdata/include/dcitem.h ../../ofstd/include/ofconsol.h \
- ../../ofstd/include/ofstream.h ../../ofstd/include/ofthread.h \
- ../../dcmdata/include/dcobject.h ../../ofstd/include/ofglobal.h \
- ../../dcmdata/include/dcerror.h ../../ofstd/include/ofcond.h \
- ../../ofstd/include/ofstring.h ../../dcmdata/include/dcxfer.h \
- ../../dcmdata/include/dcvr.h ../../dcmdata/include/dctag.h \
- ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dclist.h \
- ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
- ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
- ../../dcmdata/include/dcpcache.h ../../ofstd/include/oflist.h \
- ../../dcmimgle/include/diovlay.h ../../dcmimgle/include/diobjcou.h \
- ../../dcmimgle/include/diovdat.h ../../dcmimgle/include/diovpln.h \
- ../../dcmimgle/include/diutils.h ../include/dihsvpxt.h \
- ../include/dicopxt.h ../../ofstd/include/ofbmanip.h \
+ ../../ofstd/include/oftypes.h ../../ofstd/include/ofstdinc.h \
+ ../../dcmdata/include/dcdeftag.h ../../dcmdata/include/dctagkey.h \
+ ../../ofstd/include/ofstream.h ../../ofstd/include/ofstring.h \
  ../include/dicopx.h ../../dcmimgle/include/dipixel.h \
- ../../dcmimgle/include/dipxrept.h ../../dcmimgle/include/diinpx.h
-dipalimg.o: dipalimg.cc ../../config/include/osconfig.h \
- ../../config/include/cfunix.h ../../dcmdata/include/dctypes.h \
- ../../ofstd/include/oftypes.h ../../dcmdata/include/dcdeftag.h \
- ../../dcmdata/include/dctagkey.h ../../ofstd/include/ofstream.h \
- ../../ofstd/include/ofstring.h ../../dcmdata/include/dctag.h \
- ../../ofstd/include/ofcond.h ../../dcmdata/include/dcvr.h \
- ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
+ ../../dcmimgle/include/diutils.h ../../ofstd/include/ofglobal.h \
+ ../../ofstd/include/ofthread.h ../../dcmimgle/include/dimopx.h \
+ ../../dcmimgle/include/dimomod.h ../../dcmimgle/include/diluptab.h \
+ ../../dcmimgle/include/dibaslut.h ../../dcmimgle/include/diobjcou.h \
+ ../../dcmimgle/include/diinpx.h ../../ofstd/include/ofconsol.h \
  ../../dcmimgle/include/didocu.h ../../dcmdata/include/dcfilefo.h \
- ../../ofstd/include/ofconsol.h ../../dcmdata/include/dcerror.h \
+ ../../dcmdata/include/dcerror.h ../../ofstd/include/ofcond.h \
  ../../dcmdata/include/dcsequen.h ../../dcmdata/include/dcobject.h \
- ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dclist.h \
+ ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
+ ../../dcmdata/include/dctag.h ../../dcmdata/include/dclist.h \
  ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcitem.h \
  ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
  ../../dcmdata/include/dcelem.h ../../dcmdata/include/dcpcache.h \
- ../../ofstd/include/oflist.h ../../dcmdata/include/dcdatset.h \
- ../../dcmimgle/include/diobjcou.h ../include/dipalimg.h \
- ../include/dicoimg.h ../../dcmimgle/include/diimage.h \
- ../../dcmimgle/include/diovlay.h ../../dcmimgle/include/diovdat.h \
- ../../dcmimgle/include/diovpln.h ../../dcmimgle/include/diutils.h \
- ../include/dipalpxt.h ../include/dicopxt.h \
- ../../ofstd/include/ofbmanip.h ../include/dicopx.h \
- ../../dcmimgle/include/dipixel.h ../../dcmimgle/include/dipxrept.h \
- ../../dcmimgle/include/diluptab.h ../../dcmimgle/include/dibaslut.h \
- ../../dcmimgle/include/diinpx.h
-dipitiff.o: dipitiff.cc ../../config/include/osconfig.h \
+ ../../ofstd/include/oflist.h ../../dcmdata/include/dcdatset.h
+dihsvimg.o: dihsvimg.cc ../../config/include/osconfig.h \
  ../../config/include/cfunix.h ../../dcmdata/include/dctypes.h \
- ../../ofstd/include/oftypes.h ../../dcmimgle/include/diimage.h \
- ../../dcmdata/include/dcitem.h ../../ofstd/include/ofconsol.h \
- ../../ofstd/include/ofstream.h ../../ofstd/include/ofthread.h \
- ../../dcmdata/include/dcobject.h ../../ofstd/include/ofglobal.h \
- ../../dcmdata/include/dcerror.h ../../ofstd/include/ofcond.h \
- ../../ofstd/include/ofstring.h ../../dcmdata/include/dcxfer.h \
- ../../dcmdata/include/dcvr.h ../../dcmdata/include/dctag.h \
- ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dclist.h \
- ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
- ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
- ../../dcmdata/include/dcpcache.h ../../ofstd/include/oflist.h \
- ../../dcmimgle/include/diovlay.h ../../dcmimgle/include/diobjcou.h \
- ../../dcmimgle/include/diovdat.h ../../dcmimgle/include/diovpln.h \
- ../../dcmimgle/include/diutils.h ../include/dipitiff.h \
- ../../dcmimgle/include/diplugin.h
-diqtctab.o: diqtctab.cc ../../config/include/osconfig.h \
- ../../config/include/cfunix.h ../include/diqtctab.h \
- ../../ofstd/include/oftypes.h ../../ofstd/include/ofcond.h \
- ../../ofstd/include/ofstring.h ../../ofstd/include/ofstream.h \
- ../include/diqtpix.h ../include/diqttype.h ../include/diqtstab.h \
- ../include/diqthash.h ../include/diqthitl.h \
- ../../ofstd/include/oflist.h ../include/diqthitm.h \
- ../../ofstd/include/ofconsol.h ../../ofstd/include/ofthread.h \
- ../include/diqtpbox.h ../../dcmdata/include/dcerror.h \
- ../../dcmdata/include/dcelem.h ../../dcmdata/include/dctypes.h \
- ../../dcmdata/include/dcobject.h ../../ofstd/include/ofglobal.h \
+ ../../ofstd/include/oftypes.h ../../ofstd/include/ofstdinc.h \
+ ../include/dihsvimg.h ../include/dicoimg.h \
+ ../../dcmimgle/include/diimage.h ../../dcmdata/include/dcitem.h \
+ ../../ofstd/include/ofconsol.h ../../ofstd/include/ofstream.h \
+ ../../ofstd/include/ofthread.h ../../dcmdata/include/dcobject.h \
+ ../../ofstd/include/ofglobal.h ../../dcmdata/include/dcerror.h \
+ ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
  ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
  ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
+ ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
+ ../../dcmdata/include/dcelem.h ../../dcmdata/include/dcpcache.h \
+ ../../ofstd/include/oflist.h ../../dcmimgle/include/diovlay.h \
+ ../../dcmimgle/include/diobjcou.h ../../dcmimgle/include/diovdat.h \
+ ../../dcmimgle/include/diovpln.h ../../dcmimgle/include/diutils.h \
+ ../include/dihsvpxt.h ../include/dicopxt.h \
+ ../../ofstd/include/ofbmanip.h ../include/dicopx.h \
+ ../../dcmimgle/include/dipixel.h ../../dcmimgle/include/dipxrept.h \
+ ../../dcmimgle/include/diinpx.h
+dipalimg.o: dipalimg.cc ../../config/include/osconfig.h \
+ ../../config/include/cfunix.h ../../dcmdata/include/dctypes.h \
+ ../../ofstd/include/oftypes.h ../../ofstd/include/ofstdinc.h \
+ ../../dcmdata/include/dcdeftag.h ../../dcmdata/include/dctagkey.h \
+ ../../ofstd/include/ofstream.h ../../ofstd/include/ofstring.h \
+ ../../dcmdata/include/dctag.h ../../ofstd/include/ofcond.h \
+ ../../dcmdata/include/dcvr.h ../../ofstd/include/ofglobal.h \
+ ../../ofstd/include/ofthread.h ../../dcmimgle/include/didocu.h \
+ ../../dcmdata/include/dcfilefo.h ../../ofstd/include/ofconsol.h \
+ ../../dcmdata/include/dcerror.h ../../dcmdata/include/dcsequen.h \
+ ../../dcmdata/include/dcobject.h ../../dcmdata/include/dcxfer.h \
+ ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
  ../../dcmdata/include/dcitem.h ../../dcmdata/include/dcvrui.h \
- ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcpcache.h \
- ../../dcmdata/include/dcvrus.h ../../dcmdata/include/dcvrobow.h \
- ../../dcmdata/include/dcswap.h ../../dcmdata/include/dcdeftag.h \
- ../../dcmdata/include/dcuid.h
+ ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
+ ../../dcmdata/include/dcpcache.h ../../ofstd/include/oflist.h \
+ ../../dcmdata/include/dcdatset.h ../../dcmimgle/include/diobjcou.h \
+ ../include/dipalimg.h ../include/dicoimg.h \
+ ../../dcmimgle/include/diimage.h ../../dcmimgle/include/diovlay.h \
+ ../../dcmimgle/include/diovdat.h ../../dcmimgle/include/diovpln.h \
+ ../../dcmimgle/include/diutils.h ../include/dipalpxt.h \
+ ../include/dicopxt.h ../../ofstd/include/ofbmanip.h \
+ ../include/dicopx.h ../../dcmimgle/include/dipixel.h \
+ ../../dcmimgle/include/dipxrept.h ../../dcmimgle/include/diluptab.h \
+ ../../dcmimgle/include/dibaslut.h ../../dcmimgle/include/diinpx.h
+dipitiff.o: dipitiff.cc ../../config/include/osconfig.h \
+ ../../config/include/cfunix.h ../../dcmdata/include/dctypes.h \
+ ../../ofstd/include/oftypes.h ../../ofstd/include/ofstdinc.h \
+ ../../dcmimgle/include/diimage.h ../../dcmdata/include/dcitem.h \
+ ../../ofstd/include/ofconsol.h ../../ofstd/include/ofstream.h \
+ ../../ofstd/include/ofthread.h ../../dcmdata/include/dcobject.h \
+ ../../ofstd/include/ofglobal.h ../../dcmdata/include/dcerror.h \
+ ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
+ ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
+ ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
+ ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
+ ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
+ ../../dcmdata/include/dcelem.h ../../dcmdata/include/dcpcache.h \
+ ../../ofstd/include/oflist.h ../../dcmimgle/include/diovlay.h \
+ ../../dcmimgle/include/diobjcou.h ../../dcmimgle/include/diovdat.h \
+ ../../dcmimgle/include/diovpln.h ../../dcmimgle/include/diutils.h \
+ ../include/dipitiff.h ../../dcmimgle/include/diplugin.h
+diqtctab.o: diqtctab.cc ../../config/include/osconfig.h \
+ ../../config/include/cfunix.h ../include/diqtctab.h \
+ ../../ofstd/include/oftypes.h ../../ofstd/include/ofcond.h \
+ ../../ofstd/include/ofstring.h ../../ofstd/include/ofstdinc.h \
+ ../../ofstd/include/ofstream.h ../include/diqtpix.h \
+ ../include/diqttype.h ../include/diqtstab.h ../include/diqthash.h \
+ ../include/diqthitl.h ../../ofstd/include/oflist.h \
+ ../include/diqthitm.h ../../ofstd/include/ofconsol.h \
+ ../../ofstd/include/ofthread.h ../include/diqtpbox.h \
+ ../../dcmdata/include/dcerror.h ../../dcmdata/include/dcelem.h \
+ ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcobject.h \
+ ../../ofstd/include/ofglobal.h ../../dcmdata/include/dcxfer.h \
+ ../../dcmdata/include/dcvr.h ../../dcmdata/include/dctag.h \
+ ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dclist.h \
+ ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcitem.h \
+ ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
+ ../../dcmdata/include/dcpcache.h ../../dcmdata/include/dcvrus.h \
+ ../../dcmdata/include/dcvrobow.h ../../dcmdata/include/dcswap.h \
+ ../../dcmdata/include/dcdeftag.h ../../dcmdata/include/dcuid.h
 diqtfs.o: diqtfs.cc ../../config/include/osconfig.h \
  ../../config/include/cfunix.h ../include/diqtfs.h \
  ../include/diqtpix.h ../../ofstd/include/oftypes.h \
  ../include/diqttype.h ../include/diqtstab.h \
- ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
- ../../ofstd/include/ofstream.h ../../ofstd/include/offname.h
+ ../../ofstd/include/ofstdinc.h ../../ofstd/include/ofcond.h \
+ ../../ofstd/include/ofstring.h ../../ofstd/include/ofstream.h \
+ ../../ofstd/include/offname.h
 diqthash.o: diqthash.cc ../../config/include/osconfig.h \
  ../../config/include/cfunix.h ../include/diqthash.h \
  ../include/diqtpix.h ../../ofstd/include/oftypes.h \
- ../include/diqttype.h ../include/diqtstab.h ../include/diqthitl.h \
+ ../include/diqttype.h ../include/diqtstab.h \
+ ../../ofstd/include/ofstdinc.h ../include/diqthitl.h \
  ../../ofstd/include/oflist.h ../include/diqthitm.h \
  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dctypes.h \
  ../../dcmdata/include/dcvr.h ../../ofstd/include/ofglobal.h \
@@ -208,18 +213,20 @@ diqthash.o: diqthash.cc ../../config/include/osconfig.h \
 diqthitl.o: diqthitl.cc ../../config/include/osconfig.h \
  ../../config/include/cfunix.h ../include/diqthitl.h \
  ../../ofstd/include/oflist.h ../../ofstd/include/oftypes.h \
- ../include/diqthitm.h ../include/diqtpix.h ../include/diqttype.h \
- ../include/diqtstab.h
+ ../../ofstd/include/ofstdinc.h ../include/diqthitm.h \
+ ../include/diqtpix.h ../include/diqttype.h ../include/diqtstab.h
 diqtpbox.o: diqtpbox.cc ../../config/include/osconfig.h \
- ../../config/include/cfunix.h ../include/diqtpbox.h
+ ../../config/include/cfunix.h ../include/diqtpbox.h \
+ ../../ofstd/include/ofstdinc.h
 diquant.o: diquant.cc ../../config/include/osconfig.h \
  ../../config/include/cfunix.h ../include/diquant.h \
  ../../ofstd/include/ofcond.h ../../ofstd/include/oftypes.h \
- ../../ofstd/include/ofstring.h ../../ofstd/include/ofstream.h \
- ../../dcmdata/include/dctypes.h ../include/diqttype.h \
- ../../ofstd/include/ofconsol.h ../../ofstd/include/ofthread.h \
- ../include/diqtid.h ../include/diqtcmap.h ../include/diqtpix.h \
- ../include/diqtstab.h ../include/diqthash.h ../include/diqthitl.h \
+ ../../ofstd/include/ofstring.h ../../ofstd/include/ofstdinc.h \
+ ../../ofstd/include/ofstream.h ../../dcmdata/include/dctypes.h \
+ ../include/diqttype.h ../../ofstd/include/ofconsol.h \
+ ../../ofstd/include/ofthread.h ../include/diqtid.h \
+ ../include/diqtcmap.h ../include/diqtpix.h ../include/diqtstab.h \
+ ../include/diqthash.h ../include/diqthitl.h \
  ../../ofstd/include/oflist.h ../include/diqthitm.h \
  ../include/diqtctab.h ../include/diqtfs.h \
  ../../dcmdata/include/dcswap.h ../../dcmdata/include/dcerror.h \
@@ -245,11 +252,39 @@ diregist.o: diregist.cc ../../config/include/osconfig.h \
  ../../config/include/cfunix.h ../include/diregist.h \
  ../../dcmimgle/include/diregbas.h ../../dcmimgle/include/diutils.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
- ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
- ../include/dipalimg.h ../include/dicoimg.h \
+ ../../ofstd/include/ofstdinc.h ../../ofstd/include/ofglobal.h \
+ ../../ofstd/include/ofthread.h ../include/dipalimg.h \
+ ../include/dicoimg.h ../../dcmimgle/include/diimage.h \
+ ../../dcmdata/include/dcitem.h ../../ofstd/include/ofconsol.h \
+ ../../ofstd/include/ofstream.h ../../dcmdata/include/dcobject.h \
+ ../../dcmdata/include/dcerror.h ../../ofstd/include/ofcond.h \
+ ../../ofstd/include/ofstring.h ../../dcmdata/include/dcxfer.h \
+ ../../dcmdata/include/dcvr.h ../../dcmdata/include/dctag.h \
+ ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dclist.h \
+ ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
+ ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
+ ../../dcmdata/include/dcpcache.h ../../ofstd/include/oflist.h \
+ ../../dcmimgle/include/diovlay.h ../../dcmimgle/include/diobjcou.h \
+ ../../dcmimgle/include/diovdat.h ../../dcmimgle/include/diovpln.h \
+ ../include/dirgbimg.h ../include/dihsvimg.h ../include/diargimg.h \
+ ../include/dicmyimg.h ../include/diybrimg.h ../include/diyf2img.h \
+ ../include/diyp2img.h ../include/dicomot.h \
+ ../../dcmimgle/include/dimopxt.h ../../dcmdata/include/dcdefine.h \
+ ../../ofstd/include/ofbmanip.h ../../dcmimgle/include/dimopx.h \
+ ../../dcmimgle/include/dipixel.h ../../dcmimgle/include/dimomod.h \
+ ../../dcmimgle/include/diluptab.h ../../dcmimgle/include/dibaslut.h \
+ ../../dcmimgle/include/dipxrept.h ../../dcmimgle/include/diinpx.h \
+ ../../dcmimgle/include/dimoopx.h ../include/dicopx.h \
+ ../../dcmimgle/include/didocu.h ../../dcmdata/include/dcfilefo.h \
+ ../../dcmdata/include/dcsequen.h ../../dcmdata/include/dcdatset.h
+dirgbimg.o: dirgbimg.cc ../../config/include/osconfig.h \
+ ../../config/include/cfunix.h ../../dcmdata/include/dctypes.h \
+ ../../ofstd/include/oftypes.h ../../ofstd/include/ofstdinc.h \
+ ../include/dirgbimg.h ../include/dicoimg.h \
  ../../dcmimgle/include/diimage.h ../../dcmdata/include/dcitem.h \
  ../../ofstd/include/ofconsol.h ../../ofstd/include/ofstream.h \
- ../../dcmdata/include/dcobject.h ../../dcmdata/include/dcerror.h \
+ ../../ofstd/include/ofthread.h ../../dcmdata/include/dcobject.h \
+ ../../ofstd/include/ofglobal.h ../../dcmdata/include/dcerror.h \
  ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
  ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
@@ -258,99 +293,75 @@ diregist.o: diregist.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dcelem.h ../../dcmdata/include/dcpcache.h \
  ../../ofstd/include/oflist.h ../../dcmimgle/include/diovlay.h \
  ../../dcmimgle/include/diobjcou.h ../../dcmimgle/include/diovdat.h \
- ../../dcmimgle/include/diovpln.h ../include/dirgbimg.h \
- ../include/dihsvimg.h ../include/diargimg.h ../include/dicmyimg.h \
- ../include/diybrimg.h ../include/diyf2img.h ../include/diyp2img.h \
- ../include/dicomot.h ../../dcmimgle/include/dimopxt.h \
- ../../dcmdata/include/dcdefine.h ../../ofstd/include/ofbmanip.h \
- ../../dcmimgle/include/dimopx.h ../../dcmimgle/include/dipixel.h \
- ../../dcmimgle/include/dimomod.h ../../dcmimgle/include/diluptab.h \
- ../../dcmimgle/include/dibaslut.h ../../dcmimgle/include/dipxrept.h \
- ../../dcmimgle/include/diinpx.h ../../dcmimgle/include/dimoopx.h \
- ../include/dicopx.h ../../dcmimgle/include/didocu.h \
- ../../dcmdata/include/dcfilefo.h ../../dcmdata/include/dcsequen.h \
- ../../dcmdata/include/dcdatset.h
-dirgbimg.o: dirgbimg.cc ../../config/include/osconfig.h \
- ../../config/include/cfunix.h ../../dcmdata/include/dctypes.h \
- ../../ofstd/include/oftypes.h ../include/dirgbimg.h \
- ../include/dicoimg.h ../../dcmimgle/include/diimage.h \
- ../../dcmdata/include/dcitem.h ../../ofstd/include/ofconsol.h \
- ../../ofstd/include/ofstream.h ../../ofstd/include/ofthread.h \
- ../../dcmdata/include/dcobject.h ../../ofstd/include/ofglobal.h \
- ../../dcmdata/include/dcerror.h ../../ofstd/include/ofcond.h \
- ../../ofstd/include/ofstring.h ../../dcmdata/include/dcxfer.h \
- ../../dcmdata/include/dcvr.h ../../dcmdata/include/dctag.h \
- ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dclist.h \
- ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
- ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
- ../../dcmdata/include/dcpcache.h ../../ofstd/include/oflist.h \
- ../../dcmimgle/include/diovlay.h ../../dcmimgle/include/diobjcou.h \
- ../../dcmimgle/include/diovdat.h ../../dcmimgle/include/diovpln.h \
- ../../dcmimgle/include/diutils.h ../include/dirgbpxt.h \
- ../include/dicopxt.h ../../ofstd/include/ofbmanip.h \
- ../include/dicopx.h ../../dcmimgle/include/dipixel.h \
- ../../dcmimgle/include/dipxrept.h ../../dcmimgle/include/diinpx.h
+ ../../dcmimgle/include/diovpln.h ../../dcmimgle/include/diutils.h \
+ ../include/dirgbpxt.h ../include/dicopxt.h \
+ ../../ofstd/include/ofbmanip.h ../include/dicopx.h \
+ ../../dcmimgle/include/dipixel.h ../../dcmimgle/include/dipxrept.h \
+ ../../dcmimgle/include/diinpx.h
 diybrimg.o: diybrimg.cc ../../config/include/osconfig.h \
  ../../config/include/cfunix.h ../../dcmdata/include/dctypes.h \
- ../../ofstd/include/oftypes.h ../include/diybrimg.h \
- ../include/dicoimg.h ../../dcmimgle/include/diimage.h \
- ../../dcmdata/include/dcitem.h ../../ofstd/include/ofconsol.h \
- ../../ofstd/include/ofstream.h ../../ofstd/include/ofthread.h \
- ../../dcmdata/include/dcobject.h ../../ofstd/include/ofglobal.h \
- ../../dcmdata/include/dcerror.h ../../ofstd/include/ofcond.h \
- ../../ofstd/include/ofstring.h ../../dcmdata/include/dcxfer.h \
- ../../dcmdata/include/dcvr.h ../../dcmdata/include/dctag.h \
- ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dclist.h \
- ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
- ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
- ../../dcmdata/include/dcpcache.h ../../ofstd/include/oflist.h \
- ../../dcmimgle/include/diovlay.h ../../dcmimgle/include/diobjcou.h \
- ../../dcmimgle/include/diovdat.h ../../dcmimgle/include/diovpln.h \
- ../../dcmimgle/include/diutils.h ../include/diybrpxt.h \
- ../include/dicopxt.h ../../ofstd/include/ofbmanip.h \
- ../include/dicopx.h ../../dcmimgle/include/dipixel.h \
- ../../dcmimgle/include/dipxrept.h ../../dcmimgle/include/diinpx.h \
- ../../dcmimgle/include/didocu.h ../../dcmdata/include/dcfilefo.h \
- ../../dcmdata/include/dcsequen.h ../../dcmdata/include/dcdatset.h
+ ../../ofstd/include/oftypes.h ../../ofstd/include/ofstdinc.h \
+ ../include/diybrimg.h ../include/dicoimg.h \
+ ../../dcmimgle/include/diimage.h ../../dcmdata/include/dcitem.h \
+ ../../ofstd/include/ofconsol.h ../../ofstd/include/ofstream.h \
+ ../../ofstd/include/ofthread.h ../../dcmdata/include/dcobject.h \
+ ../../ofstd/include/ofglobal.h ../../dcmdata/include/dcerror.h \
+ ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
+ ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
+ ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
+ ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
+ ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
+ ../../dcmdata/include/dcelem.h ../../dcmdata/include/dcpcache.h \
+ ../../ofstd/include/oflist.h ../../dcmimgle/include/diovlay.h \
+ ../../dcmimgle/include/diobjcou.h ../../dcmimgle/include/diovdat.h \
+ ../../dcmimgle/include/diovpln.h ../../dcmimgle/include/diutils.h \
+ ../include/diybrpxt.h ../include/dicopxt.h \
+ ../../ofstd/include/ofbmanip.h ../include/dicopx.h \
+ ../../dcmimgle/include/dipixel.h ../../dcmimgle/include/dipxrept.h \
+ ../../dcmimgle/include/diinpx.h ../../dcmimgle/include/didocu.h \
+ ../../dcmdata/include/dcfilefo.h ../../dcmdata/include/dcsequen.h \
+ ../../dcmdata/include/dcdatset.h
 diyf2img.o: diyf2img.cc ../../config/include/osconfig.h \
  ../../config/include/cfunix.h ../../dcmdata/include/dctypes.h \
- ../../ofstd/include/oftypes.h ../include/diyf2img.h \
- ../include/dicoimg.h ../../dcmimgle/include/diimage.h \
- ../../dcmdata/include/dcitem.h ../../ofstd/include/ofconsol.h \
- ../../ofstd/include/ofstream.h ../../ofstd/include/ofthread.h \
- ../../dcmdata/include/dcobject.h ../../ofstd/include/ofglobal.h \
- ../../dcmdata/include/dcerror.h ../../ofstd/include/ofcond.h \
- ../../ofstd/include/ofstring.h ../../dcmdata/include/dcxfer.h \
- ../../dcmdata/include/dcvr.h ../../dcmdata/include/dctag.h \
- ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dclist.h \
- ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
- ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
- ../../dcmdata/include/dcpcache.h ../../ofstd/include/oflist.h \
- ../../dcmimgle/include/diovlay.h ../../dcmimgle/include/diobjcou.h \
- ../../dcmimgle/include/diovdat.h ../../dcmimgle/include/diovpln.h \
- ../../dcmimgle/include/diutils.h ../include/diyf2pxt.h \
- ../include/dicopxt.h ../../ofstd/include/ofbmanip.h \
- ../include/dicopx.h ../../dcmimgle/include/dipixel.h \
- ../../dcmimgle/include/dipxrept.h ../../dcmimgle/include/diinpx.h \
- ../../dcmimgle/include/didocu.h ../../dcmdata/include/dcfilefo.h \
- ../../dcmdata/include/dcsequen.h ../../dcmdata/include/dcdatset.h
+ ../../ofstd/include/oftypes.h ../../ofstd/include/ofstdinc.h \
+ ../include/diyf2img.h ../include/dicoimg.h \
+ ../../dcmimgle/include/diimage.h ../../dcmdata/include/dcitem.h \
+ ../../ofstd/include/ofconsol.h ../../ofstd/include/ofstream.h \
+ ../../ofstd/include/ofthread.h ../../dcmdata/include/dcobject.h \
+ ../../ofstd/include/ofglobal.h ../../dcmdata/include/dcerror.h \
+ ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
+ ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
+ ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
+ ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
+ ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
+ ../../dcmdata/include/dcelem.h ../../dcmdata/include/dcpcache.h \
+ ../../ofstd/include/oflist.h ../../dcmimgle/include/diovlay.h \
+ ../../dcmimgle/include/diobjcou.h ../../dcmimgle/include/diovdat.h \
+ ../../dcmimgle/include/diovpln.h ../../dcmimgle/include/diutils.h \
+ ../include/diyf2pxt.h ../include/dicopxt.h \
+ ../../ofstd/include/ofbmanip.h ../include/dicopx.h \
+ ../../dcmimgle/include/dipixel.h ../../dcmimgle/include/dipxrept.h \
+ ../../dcmimgle/include/diinpx.h ../../dcmimgle/include/didocu.h \
+ ../../dcmdata/include/dcfilefo.h ../../dcmdata/include/dcsequen.h \
+ ../../dcmdata/include/dcdatset.h
 diyp2img.o: diyp2img.cc ../../config/include/osconfig.h \
  ../../config/include/cfunix.h ../../dcmdata/include/dctypes.h \
- ../../ofstd/include/oftypes.h ../include/diyp2img.h \
- ../include/dicoimg.h ../../dcmimgle/include/diimage.h \
- ../../dcmdata/include/dcitem.h ../../ofstd/include/ofconsol.h \
- ../../ofstd/include/ofstream.h ../../ofstd/include/ofthread.h \
- ../../dcmdata/include/dcobject.h ../../ofstd/include/ofglobal.h \
- ../../dcmdata/include/dcerror.h ../../ofstd/include/ofcond.h \
- ../../ofstd/include/ofstring.h ../../dcmdata/include/dcxfer.h \
- ../../dcmdata/include/dcvr.h ../../dcmdata/include/dctag.h \
- ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dclist.h \
- ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
- ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
- ../../dcmdata/include/dcpcache.h ../../ofstd/include/oflist.h \
- ../../dcmimgle/include/diovlay.h ../../dcmimgle/include/diobjcou.h \
- ../../dcmimgle/include/diovdat.h ../../dcmimgle/include/diovpln.h \
- ../../dcmimgle/include/diutils.h ../include/diyp2pxt.h \
- ../include/dicopxt.h ../../ofstd/include/ofbmanip.h \
- ../include/dicopx.h ../../dcmimgle/include/dipixel.h \
- ../../dcmimgle/include/dipxrept.h ../../dcmimgle/include/diinpx.h
+ ../../ofstd/include/oftypes.h ../../ofstd/include/ofstdinc.h \
+ ../include/diyp2img.h ../include/dicoimg.h \
+ ../../dcmimgle/include/diimage.h ../../dcmdata/include/dcitem.h \
+ ../../ofstd/include/ofconsol.h ../../ofstd/include/ofstream.h \
+ ../../ofstd/include/ofthread.h ../../dcmdata/include/dcobject.h \
+ ../../ofstd/include/ofglobal.h ../../dcmdata/include/dcerror.h \
+ ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
+ ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
+ ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
+ ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
+ ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
+ ../../dcmdata/include/dcelem.h ../../dcmdata/include/dcpcache.h \
+ ../../ofstd/include/oflist.h ../../dcmimgle/include/diovlay.h \
+ ../../dcmimgle/include/diobjcou.h ../../dcmimgle/include/diovdat.h \
+ ../../dcmimgle/include/diovpln.h ../../dcmimgle/include/diutils.h \
+ ../include/diyp2pxt.h ../include/dicopxt.h \
+ ../../ofstd/include/ofbmanip.h ../include/dicopx.h \
+ ../../dcmimgle/include/dipixel.h ../../dcmimgle/include/dipxrept.h \
+ ../../dcmimgle/include/diinpx.h

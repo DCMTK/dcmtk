@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomColorOutputPixel (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:54:42 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-27 14:16:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicoopx.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,24 +37,11 @@
 
 #include "osconfig.h"
 #include "diutils.h"
-
-#ifdef HAVE_STDLIB_H
-#ifndef  _BCB4
-/* workaround for bug in Borland C++ Builder 4 */
-BEGIN_EXTERN_C
-#endif
-#include <stdlib.h>
-#ifndef  _BCB4
-END_EXTERN_C
-#endif
-#endif
-
-BEGIN_EXTERN_C
-#include <stdio.h>
-END_EXTERN_C
-
 #include "ofstream.h"
 
+#define INCLUDE_CSTDLIB
+#define INCLUDE_CSTDIO
+#include "ofstdinc.h"
 
 /*------------------------*
  *  forward declarations  *
@@ -112,7 +99,10 @@ class DiColorOutputPixel
  *
  * CVS/RCS Log:
  * $Log: dicoopx.h,v $
- * Revision 1.14  2002-04-16 13:54:42  joergr
+ * Revision 1.15  2002-11-27 14:16:56  meichel
+ * Adapted module dcmimage to use of new header file ofstdinc.h
+ *
+ * Revision 1.14  2002/04/16 13:54:42  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
  * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
  * contribution.

@@ -22,9 +22,9 @@
  *  Purpose: class DcmQuantScaleTable
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-01-25 13:32:07 $
+ *  Update Date:      $Date: 2002-11-27 14:16:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diqtstab.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,10 +37,9 @@
 #include "osconfig.h"
 #include "diqttype.h"  /* for DcmQuantComponent */
 
-BEGIN_EXTERN_C
-#include <stdlib.h>
-#include <assert.h>
-END_EXTERN_C
+#define INCLUDE_CSTDLIB
+#define INCLUDE_CASSERT
+#include "ofstdinc.h"
 
 /** this is a helper class used for temporarily reducing the image bit depth
  *  during calculation of an image histogram.  An object of this class
@@ -126,7 +125,10 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: diqtstab.h,v $
- * Revision 1.1  2002-01-25 13:32:07  meichel
+ * Revision 1.2  2002-11-27 14:16:56  meichel
+ * Adapted module dcmimage to use of new header file ofstdinc.h
+ *
+ * Revision 1.1  2002/01/25 13:32:07  meichel
  * Initial release of new color quantization classes and
  *   the dcmquant tool in module dcmimage.
  *
