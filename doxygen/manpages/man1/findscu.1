@@ -1,4 +1,4 @@
-.TH "findscu" 1 "13 Feb 2004" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "findscu" 1 "5 Mar 2004" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 findscu \- DICOM query (C-FIND) SCU
@@ -93,6 +93,9 @@ other network options:
 
         --abort
           abort association instead of releasing it
+
+        --cancel  [n]umber: integer
+          cancel after n responses (default: never)
 
   -X    --extract
           extract responses to file (rsp0001.dcm, ...)

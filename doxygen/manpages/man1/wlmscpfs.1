@@ -1,4 +1,4 @@
-.TH "wlmscpfs" 1 "13 Feb 2004" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "wlmscpfs" 1 "5 Mar 2004" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 wlmscpfs \- DICOM Basic Worklist Management SCP (based on data files)
@@ -84,6 +84,9 @@ network host access control (tcp wrapper) options:
           enforce host access control rules
 
 other network options:
+
+        --max-associations  [a]ssocs: integer (default: 50)
+          limit maximum number of parallel associations
 
         --refuse
           refuse association
