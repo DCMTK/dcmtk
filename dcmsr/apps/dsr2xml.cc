@@ -23,9 +23,9 @@
  *           XML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-10-30 17:43:54 $
+ *  Update Date:      $Date: 2003-10-31 13:31:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/dsr2xml.cc,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -151,6 +151,7 @@ int main(int argc, char *argv[])
                                                       
     cmd.addGroup("output options:");                  
       cmd.addSubGroup("encoding:");                   
+        cmd.addOption("--attr-all",             "+Ea", "encode everything as XML attribute\n(shortcut for +Ec, +Er and +Er)");
         cmd.addOption("--attr-code",            "+Ec", "encode code value, coding scheme designator\nand coding scheme version as XML attribute");
         cmd.addOption("--attr-relationship",    "+Er", "encode relationship type as XML attribute");
         cmd.addOption("--attr-value-type",      "+Ev", "encode value type as XML attribute");
@@ -219,7 +220,9 @@ int main(int argc, char *argv[])
             xfer = EXS_LittleEndianImplicit;
         }
         cmd.endOptionBlock();
-
+        
+        if (cmd.findOption("--attr-all"))
+            opt_writeFlags |= DSRTypes::XF_encodeEverythingAsAttribute;
         if (cmd.findOption("--attr-code"))
             opt_writeFlags |= DSRTypes::XF_codeComponentsAsAttribute;
         if (cmd.findOption("--attr-relationship"))
@@ -284,7 +287,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2xml.cc,v $
- * Revision 1.17  2003-10-30 17:43:54  joergr
+ * Revision 1.18  2003-10-31 13:31:04  joergr
+ * Added command line option +Ea (--attr-all), a shortcut for +Ec, +Er and +Er.
+ *
+ * Revision 1.17  2003/10/30 17:43:54  joergr
  * Added new command line option which allows to write the template
  * identification of a content item in XML format.
  *

@@ -50,6 +50,8 @@ input options:
     -ti  --read-xfer-implicit    read with implicit VR little endian TS
 output options:
   encoding:
+    +Ea  --attr-all              encode everything as XML attribute
+                                 (shortcut for +Ec, +Er and +Er)
     +Ec  --attr-code             encode code value, coding scheme designator
                                  and coding scheme version as XML attribute
     +Er  --attr-relationship     encode relationship type as XML attribute
