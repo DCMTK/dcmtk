@@ -1,3 +1,8 @@
+- Include function getFloat64 into DcmDecimalString and getSint32 into
+  DcmIntegerString. Remove derived classes for this purpose in the dcmimage
+  module.
+  Removed: dcmimage/include/didecstr.h
+           dcmimage/include/diintstr.h
 
 - Removed files contained both in libsrc/ and apps/.
   Removed: dcmimage/libsrc/dcm2mono.cc
