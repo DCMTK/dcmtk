@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-05-31 13:02:40 $
- *  CVS/RCS Revision: $Revision: 1.57 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-06-02 12:48:04 $
+ *  CVS/RCS Revision: $Revision: 1.58 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2046,6 +2046,9 @@ E_Condition DVPresentationState::removeImageReference(
   studyInstanceUID.getOFString(study,0);
   if (study != studyUID) return EC_IllegalCall;
   referencedSeriesList.removeImageReference(seriesUID, instanceUID);
+
+  /* still need to remove references from displayed area list, etc. */
+
   return EC_Normal;
 }
 
@@ -2073,6 +2076,9 @@ E_Condition DVPresentationState::removeImageReference(DcmItem &dset)
   imageUID.getOFString(ofimageUID,0);
   studyUID.getOFString(ofstudyUID,0);
   referencedSeriesList.removeImageReference(ofseriesUID.c_str(), ofimageUID.c_str());
+
+  /* still need to remove references from displayed area list, etc. */
+
   return EC_Normal;
 }
 
@@ -3811,9 +3817,9 @@ E_Condition DVPresentationState::getImageNumberOfFrames(unsigned long &frames)
 
 E_Condition DVPresentationState::selectImageFrameNumber(unsigned long frame)
 {
-  if ((frame > 0) && currentImage)
+  if ((frame > 0) && currentImage && (frame <= currentImage->getFrameCount()))
   {
-    if (frame <= currentImage->getFrameCount()) currentImageSelectedFrame=frame;
+    currentImageSelectedFrame=frame;
     return EC_Normal;
   }
   return EC_IllegalCall;
@@ -3962,7 +3968,10 @@ const char *DVPresentationState::getCurrentImageModality()
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.57  2000-05-31 13:02:40  meichel
+ *  Revision 1.58  2000-06-02 12:48:04  joergr
+ *  Reject invalid frame numbers in method selectImageFrameNumber().
+ *
+ *  Revision 1.57  2000/05/31 13:02:40  meichel
  *  Moved dcmpstat macros and constants into a common header file
  *
  *  Revision 1.56  2000/05/30 14:22:14  joergr
