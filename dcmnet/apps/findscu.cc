@@ -36,9 +36,9 @@
 ** Created:	03/96
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1999-03-29 11:19:53 $
+** Update Date:		$Date: 1999-04-19 08:43:53 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/findscu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.18 $
+** CVS/RCS Revision:	$Revision: 1.19 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -89,6 +89,7 @@ static OFBool debug = OFFalse;
 static OFBool abortAssociation = OFFalse;
 static int maxReceivePDULength = ASC_DEFAULTMAXPDU;
 static int repeatCount = 1;
+static OFBool extractResponsesToFile = OFFalse;
 
 static const char *abstractSyntax = UID_FINDModalityWorklistInformationModel;
 
@@ -122,6 +123,7 @@ options:\n\
     -v		verbose mode\n\
     -d		debug mode\n\
     -a		abort association\n\
+    -X          extract responses to file (rsp0001.dcm, ...)\n\
     -b n	set max receive pdu to n bytes (default: %d)\n\
     -P		use Patient Root Q/R Information Model\n\
     -S		use Study Root Q/R Information Model\n\
@@ -167,6 +169,11 @@ addOverrideKey(char* s)
     if (n < 2) {
 	errmsg("bad key format: %s", s);
 	usage(); /* does not return */
+    }
+
+    char* spos = index(s, '=');
+    if (spos && *(spos+1)) {
+        strcpy(val, spos+1);
     }
 
     DcmTag tag(g,e);
@@ -219,6 +226,12 @@ main(int argc, char *argv[])
     T_ASC_Association *assoc;
     const char *peerTitle = PEERAPPLICATIONTITLE;
     const char *ourTitle = APPLICATIONTITLE;
+
+    /*
+    ** Don't let dcmdata remove tailing blank padding or perform other
+    ** maipulations.  We want to see the real data.
+    */
+    dcmEnableAutomaticInputDataCorrection = OFFalse;
 
 #ifdef HAVE_GUSI_H
     GUSISetup(GUSIwithSIOUXSockets);
@@ -279,6 +292,9 @@ main(int argc, char *argv[])
 		usage();
 	    }
 	    break;
+        case 'X':
+            extractResponsesToFile = OFTrue;
+            break;
 	case 'b':
 	    if (((i + 1) < argc) && 
 		(sscanf(argv[i + 1], "%d", &maxReceivePDULength) == 1)) {
@@ -564,19 +580,59 @@ substituteOverrideKeys(DcmDataset *dset)
     }
 }
 
+static OFBool writeToFile(const char* ofname, DcmDataset *dataset)
+{
+
+    DcmFileStream os(ofname, DCM_WriteMode);
+
+    if (os.Fail()) {
+	cerr << "cannot create output file: " << ofname << endl;
+	return OFFalse;
+    }
+
+    /* write out as a file format */
+
+    DcmFileFormat fileformat(dataset);
+    E_Condition ec1 = fileformat.error();
+    if (ec1 != EC_Normal) {
+        errmsg("error writing file: %s: %s", ofname, dcmErrorConditionToString(ec1));
+        return OFFalse;
+    }
+
+    fileformat.transferInit();
+
+    E_Condition ec2 = fileformat.write(os, dataset->getOriginalXfer(), EET_ExplicitLength);
+    if (ec2 != EC_Normal) {
+        errmsg("error writing file: %s: %s", ofname, dcmErrorConditionToString(ec2));
+        return OFFalse;
+    }
+
+    fileformat.transferEnd();
+
+    os.Close();
+
+    return OFTrue;
+}
+
 static void
 progressCallback(
 	/* in */
 	void * /*callbackData*/ , 
 	T_DIMSE_C_FindRQ * /*request*/ , 	/* original find request */
 	int responseCount, 
-	T_DIMSE_C_FindRSP * /*response*/ ,	/* pending response received */
+	T_DIMSE_C_FindRSP *rsp,	/* pending response received */
 	DcmDataset *responseIdentifiers /* pending response identifiers */
 	)
 {
-    printf("RESPONSE: %d\n", responseCount);
+    printf("RESPONSE: %d (%s)\n", responseCount,
+        DU_cfindStatusString(rsp->DimseStatus));
     responseIdentifiers->print();
     printf("--------\n");
+    if (extractResponsesToFile) {
+        char rspIdsFileName[1024];
+        sprintf(rspIdsFileName, "rsp%04d.dcm", responseCount);
+        writeToFile(rspIdsFileName, responseIdentifiers);
+    }
 }
 
 static CONDITION 
@@ -628,7 +684,7 @@ findSCU(T_ASC_Association * assoc, const char *fname)
 
     if (verbose) {
 	printf("Find SCU RQ: MsgID %d\n", msgId);
-	printf("Request:\n");
+	printf("REQUEST:\n");
 	dcmff.getDataset()->print();
 	printf("--------\n");
     }
@@ -680,7 +736,11 @@ cfind(T_ASC_Association * assoc, const char *fname)
 /*
 ** CVS Log
 ** $Log: findscu.cc,v $
-** Revision 1.18  1999-03-29 11:19:53  meichel
+** Revision 1.19  1999-04-19 08:43:53  meichel
+** Added new option to findscu which allows to extract all
+**   C-FIND-RSP messages to file as received over network.
+**
+** Revision 1.18  1999/03/29 11:19:53  meichel
 ** Cleaned up dcmnet code for char* to const char* assignments.
 **
 ** Revision 1.17  1998/08/10 08:53:34  meichel
