@@ -36,9 +36,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-09-03 11:39:03 $
+** Update Date:		$Date: 1996-09-24 16:21:17 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -59,6 +59,10 @@
 #include <sys/file.h>
 #endif
 #include <errno.h>
+
+#ifdef HAVE_GUSI_H
+#include <GUSI.h>
+#endif
 
 #include "dimse.h"
 #include "diutil.h"
@@ -155,12 +159,12 @@ main(int argc, char *argv[])
     char *peerTitle = PEERAPPLICATIONTITLE;
     char *ourTitle = APPLICATIONTITLE;
 
-    prepareCmdLineArgs(argc, argv);
-
 #ifdef HAVE_GUSI_H
     GUSISetup(GUSIwithSIOUXSockets);
     GUSISetup(GUSIwithInternetSockets);
 #endif
+
+    prepareCmdLineArgs(argc, argv, "storescu");
 
     /* strip any leading path from program name */
     if ((progname = (char*)strrchr(argv[0], PATHSEPARATOR)) != NULL) {
@@ -405,25 +409,6 @@ static CONDITION
 addAllStoragePresentationContexts(T_ASC_Parameters *params)
 {
     CONDITION cond = ASC_NORMAL;
-    char* storeSOPs[] = {
-	UID_ComputedRadiographyImageStorage,
-	UID_StandaloneModalityLUTStorage,
-	UID_StandaloneVOILUTStorage,
-	UID_CTImageStorage,
-	UID_MRImageStorage,
-	UID_NuclearMedicineImageStorage,
-	UID_RETIRED_NuclearMedicineImageStorage,
-	UID_UltrasoundImageStorage,
-	UID_RETIRED_UltrasoundImageStorage,
-	UID_UltrasoundMultiframeImageStorage,
-	UID_RETIRED_UltrasoundMultiframeImageStorage,
-	UID_SecondaryCaptureImageStorage,
-	UID_StandaloneOverlayStorage,
-	UID_StandaloneCurveStorage,
-	UID_XRayAngiographicImageStorage,
-	UID_XRayAngiographicBiPlaneImageStorage,
-	UID_XRayFluoroscopyImageStorage
-    };
     int i;
     int pid = 1;
 
@@ -451,12 +436,14 @@ addAllStoragePresentationContexts(T_ASC_Parameters *params)
 	transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
     }
 
-    for (i=0; i<(int)DIM_OF(storeSOPs) && SUCCESS(cond); i++) {
+    /* the array of Storage SOP Class UIDs comes from dcuid.h */
+    for (i=0; i<numberOfDcmStorageSOPClassUIDs && SUCCESS(cond); i++) {
 	cond = ASC_addPresentationContext(
-	    params, pid, storeSOPs[i],
+	    params, pid, dcmStorageSOPClassUIDs[i],
 	    transferSyntaxes, DIM_OF(transferSyntaxes));
 	pid += 2;	/* only odd presentation context id's */
     }
+
     return cond;
 }
 
@@ -572,7 +559,11 @@ cstore(T_ASC_Association * assoc, const char *fname)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.4  1996-09-03 11:39:03  hewett
+** Revision 1.5  1996-09-24 16:21:17  hewett
+** Now uses global table of Storage SOP Class UIDs (from dcuid.h).
+** Added preliminary support for the Macintosh environment (GUSI library).
+**
+** Revision 1.4  1996/09/03 11:39:03  hewett
 ** Added copyright information.
 **
 ** Revision 1.3  1996/04/25 16:19:18  hewett

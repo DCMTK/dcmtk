@@ -35,9 +35,9 @@
 **		Kuratorium OFFIS e.V., Oldenburg, Germany
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-09-03 11:39:03 $
+** Update Date:		$Date: 1996-09-24 16:20:32 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -52,6 +52,10 @@
 #endif
 #ifdef HAVE_STDARG_H
 #include <stdarg.h>
+#endif
+
+#ifdef HAVE_GUSI_H
+#include <GUSI.h>
 #endif
 
 #include "dimse.h"
@@ -135,12 +139,13 @@ main(int argc, char *argv[])
     int i;
     int port;
 
-    prepareCmdLineArgs(argc, argv);
-
 #ifdef HAVE_GUSI_H
+    /* needed for Macintosh */
     GUSISetup(GUSIwithSIOUXSockets);
     GUSISetup(GUSIwithInternetSockets);
 #endif
+
+    prepareCmdLineArgs(argc, argv, "storescp");
 
     /* strip any leading path from program name */
     if ((progname = (char *)strrchr(argv[0], PATHSEPARATOR)) != NULL) {
@@ -218,6 +223,7 @@ main(int argc, char *argv[])
     DIMSE_debug(debug);
     SetDebugLevel(((debug)?3:0));	/* dcmdata debugging */
 
+#ifdef HAVE_GETEUID
     /* if port is privileged we must be as well */
     if (port < 1024) {
         if (geteuid() != 0) {
@@ -225,6 +231,7 @@ main(int argc, char *argv[])
 	    usage();
 	}
     }
+#endif
 
     /* make sure data dictionary is loaded */
     if (dcmDataDict.numberOfEntries() == 0) {
@@ -238,12 +245,14 @@ main(int argc, char *argv[])
 	exit(1);
     }
 
+#ifdef HAVE_GETUID
     /* return to normal uid so that we can't do too much damage in case
-     * things go very wrong.   Only works if the program is setuid root,
-     * and run by another user.  Running as root user may be
+     * things go very wrong.   Only does someting if the program is setuid 
+     * root, and run by another user.  Running as root user may be
      * potentially disasterous if this program screws up badly.
      */
     setuid(getuid());
+#endif
 
     while (SUCCESS(cond)) {
 
@@ -268,23 +277,6 @@ acceptAssociation(T_ASC_Network * net)
 
     const char* knownAbstractSyntaxes[] = {
 	UID_VerificationSOPClass,
-	UID_ComputedRadiographyImageStorage,
-	UID_StandaloneModalityLUTStorage,
-	UID_StandaloneVOILUTStorage,
-	UID_CTImageStorage,
-	UID_MRImageStorage,
-	UID_NuclearMedicineImageStorage,
-	UID_RETIRED_NuclearMedicineImageStorage,
-	UID_UltrasoundImageStorage,
-	UID_RETIRED_UltrasoundImageStorage,
-	UID_UltrasoundMultiframeImageStorage,
-	UID_RETIRED_UltrasoundMultiframeImageStorage,
-	UID_SecondaryCaptureImageStorage,
-	UID_StandaloneOverlayStorage,
-	UID_StandaloneCurveStorage,
-	UID_XRayAngiographicImageStorage,
-	UID_XRayAngiographicBiPlaneImageStorage,
-	UID_XRayFluoroscopyImageStorage
     };
     const char* transferSyntaxes[] = { 
 	NULL, NULL, UID_LittleEndianImplicitTransferSyntax };
@@ -340,9 +332,22 @@ acceptAssociation(T_ASC_Network * net)
 	transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
     }
 
+    /* accept the Verification SOP Class if presented */
     cond = ASC_acceptContextsWithPreferredTransferSyntaxes(
 	assoc->params, 
 	knownAbstractSyntaxes, DIM_OF(knownAbstractSyntaxes),
+	transferSyntaxes, DIM_OF(transferSyntaxes));
+    if (!SUCCESS(cond)) {
+	if (verbose)
+	    COND_DumpConditions();
+
+	goto cleanup;
+    }
+
+    /* the array of Storage SOP Class UIDs comes from dcuid.h */
+    cond = ASC_acceptContextsWithPreferredTransferSyntaxes(
+	assoc->params, 
+	dcmStorageSOPClassUIDs, numberOfDcmStorageSOPClassUIDs,
 	transferSyntaxes, DIM_OF(transferSyntaxes));
     if (!SUCCESS(cond)) {
 	if (verbose)
@@ -674,7 +679,11 @@ storeSCP(T_ASC_Association * assoc, T_DIMSE_Message * msg,
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.2  1996-09-03 11:39:03  hewett
+** Revision 1.3  1996-09-24 16:20:32  hewett
+** Now uses global table of Storage SOP Class UIDs (from dcuid.h).
+** Added preliminary support for the Macintosh environment (GUSI library).
+**
+** Revision 1.2  1996/09/03 11:39:03  hewett
 ** Added copyright information.
 **
 ** Revision 1.1.1.1  1996/03/26 18:38:44  hewett
