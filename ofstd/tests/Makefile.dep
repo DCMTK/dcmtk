@@ -1,3 +1,6 @@
+ofcndvar.o: ofcndvar.cc ../../config/include/osconfig.h \
+ ../include/oftypes.h ../include/ofthread.h ../include/ofconsol.h \
+ ../include/ofstring.h
 tlist.o: tlist.cc ../include/oflist.h ../../config/include/osconfig.h \
  ../include/oftypes.h ../include/ofalgo.h ../include/ofconsol.h
 tstcmdln.o: tstcmdln.cc ../include/ofcmdln.h \
@@ -12,3 +15,6 @@ tstring.o: tstring.cc ../include/ofstring.h \
 tststack.o: tststack.cc ../include/ofstack.h \
  ../../config/include/osconfig.h ../include/oftypes.h \
  ../include/ofconsol.h
+tstthred.o: tstthred.cc ../../config/include/osconfig.h \
+ ../include/ofconsol.h ../include/ofthread.h ../include/oftypes.h \
+ ../include/ofstring.h
