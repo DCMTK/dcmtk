@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Utilities (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 14:08:08 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-05-20 09:19:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diutils.h,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,23 +60,25 @@ END_EXTERN_C
 //@{
 
 /// compatibility with old ACR-NEMA images
-const unsigned long CIF_AcrNemaCompatibility      = 0x0000001;
+const unsigned long CIF_AcrNemaCompatibility         = 0x0000001;
 
 /// accept wrong palette attribute tags
-const unsigned long CIF_WrongPaletteAttributeTags = 0x0000002;
+const unsigned long CIF_WrongPaletteAttributeTags    = 0x0000002;
 
 /// element pixel data may be detached if it is no longer needed by dcmimage
-const unsigned long CIF_MayDetachPixelData        = 0x0000004;
+const unsigned long CIF_MayDetachPixelData           = 0x0000004;
 
 /// use presentation state instead of 'built-in' LUTs & overlays
-const unsigned long CIF_UsePresentationState      = 0x0000008;
+const unsigned long CIF_UsePresentationState         = 0x0000008;
 
 /// don't convert YCbCr (Full and Full 4:2:2) color images to RGB
-const unsigned long CIF_KeepYCbCrColorModel       = 0x0000010;
+const unsigned long CIF_KeepYCbCrColorModel          = 0x0000010;
 
 /// take responsibility for the given external DICOM dataset, i.e. delete it on destruction
-const unsigned long CIF_TakeOverExternalDataset   = 0x0000020;
+const unsigned long CIF_TakeOverExternalDataset      = 0x0000020;
 
+/// ignore modality transformation (rescale slope/intercept or LUT) stored in the dataset
+const unsigned long CIF_IgnoreModalityTransformation = 0x0000040;
 //@}
 
 
@@ -412,7 +414,11 @@ class DicomImageClass
  *
  * CVS/RCS Log:
  * $Log: diutils.h,v $
- * Revision 1.21  2002-11-27 14:08:08  meichel
+ * Revision 1.22  2003-05-20 09:19:51  joergr
+ * Added new configuration/compatibility flag that allows to ignore the
+ * modality transform stored in the dataset.
+ *
+ * Revision 1.21  2002/11/27 14:08:08  meichel
  * Adapted module dcmimgle to use of new header file ofstdinc.h
  *
  * Revision 1.20  2002/06/26 16:08:14  joergr
