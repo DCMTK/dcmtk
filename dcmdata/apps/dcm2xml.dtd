@@ -22,7 +22,7 @@
 <!ATTLIST sequence len NMTOKEN #IMPLIED >
 <!ATTLIST sequence name CDATA #IMPLIED >
 <!ATTLIST sequence tag CDATA #REQUIRED >
-<!ATTLIST sequence vr NMTOKEN #FIXED "SQ" >
+<!ATTLIST sequence vr NMTOKEN #REQUIRED >
 
 <!ELEMENT item ( element | sequence )* >
 <!ATTLIST item card NMTOKEN #REQUIRED >
