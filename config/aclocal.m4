@@ -7,13 +7,17 @@ dnl
 dnl Authors: Andreas Barth, Marco Eichelberg
 dnl
 dnl Last Update:  $Author: meichel $
-dnl Revision:     $Revision: 1.30 $
+dnl Revision:     $Revision: 1.31 $
 dnl Status:       $State: Exp $
 dnl
-dnl $Id: aclocal.m4,v 1.30 2003-12-17 17:36:18 meichel Exp $
+dnl $Id: aclocal.m4,v 1.31 2004-01-21 11:57:56 meichel Exp $
 dnl
 dnl $Log: aclocal.m4,v $
-dnl Revision 1.30  2003-12-17 17:36:18  meichel
+dnl Revision 1.31  2004-01-21 11:57:56  meichel
+dnl Fixed AC_CHECK_PROTOTYPE autoconf macro to support names containing
+dnl   space or colon characters.
+dnl
+dnl Revision 1.30  2003/12/17 17:36:18  meichel
 dnl Added configure test that checks if libtiff supports LZW compression
 dnl
 dnl Revision 1.29  2003/12/11 13:38:57  meichel
@@ -195,7 +199,8 @@ do
 #include<$ac_header>"
   fi
 done])
-AC_CACHE_VAL(ac_cv_prototype_$1,
+tmp_save_1=`echo $1 | tr ' :' '__'`
+AC_CACHE_VAL(ac_cv_prototype_$tmp_save_1,
 [AC_TRY_COMPILE(
 [#ifdef __cplusplus
 extern "C" {
@@ -210,11 +215,11 @@ extern "C"
 #endif
 dummyStruct $1(dummyStruct);
 ]
-, ,eval "ac_cv_prototype_$1=no", eval "ac_cv_prototype_$1=yes")])dnl
-if eval "test \"`echo '$ac_cv_prototype_'$1`\" = yes"; then
+, ,eval "ac_cv_prototype_$tmp_save_1=no", eval "ac_cv_prototype_$tmp_save_1=yes")])dnl
+if eval "test \"`echo '$''{'ac_cv_prototype_$tmp_save_1'}'`\" = yes"; then
   AC_MSG_RESULT(yes)
 changequote(, )dnl
-  ac_tr_prototype=HAVE_PROTOTYPE_`echo $1 | tr '[a-z]' '[A-Z]'`
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo $tmp_save_1 | tr '[a-z]' '[A-Z]'`
 changequote([, ])dnl
   AC_DEFINE_UNQUOTED([$ac_tr_prototype])
   ifelse([$3], , :, [$3])
