@@ -22,9 +22,9 @@
  *  Purpose: DicomInputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-01-20 15:01:31 $
+ *  Update Date:      $Date: 1999-02-03 17:04:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diinpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -133,18 +133,18 @@ class DiInputPixelTemplate
                          const Uint16 high,
                          const unsigned long start,
                          const unsigned long count)
-      : DiInputPixel(),
+      : DiInputPixel(stored),
         Data(NULL),
         MinValue(0),
         MaxValue(0)
     {
         if (isSigned())
         {
-            AbsMinimum = -(double)maxval(stored - 1, 0);
-            AbsMaximum = (double)maxval(stored - 1);
+            AbsMinimum = -(double)DicomImageClass::maxval(Bits - 1, 0);
+            AbsMaximum = (double)DicomImageClass::maxval(Bits - 1);
         } else {
             AbsMinimum = 0;
-            AbsMaximum = (double)maxval(stored);
+            AbsMaximum = (double)DicomImageClass::maxval(Bits);
         }
         if (pixel != NULL)
             convert(pixel, alloc, stored, high, start, count);
@@ -416,7 +416,11 @@ class DiInputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diinpxt.h,v $
- * Revision 1.6  1999-01-20 15:01:31  joergr
+ * Revision 1.7  1999-02-03 17:04:37  joergr
+ * Moved global functions maxval() and determineRepresentation() to class
+ * DicomImageClass (as static methods).
+ *
+ * Revision 1.6  1999/01/20 15:01:31  joergr
  * Replaced invocation of getCount() by member variable Count where possible.
  *
  * Revision 1.5  1999/01/11 09:34:28  joergr
