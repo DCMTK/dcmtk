@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: SiSecurityProfile
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-16 15:50:50 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2003-06-04 14:21:03 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,12 +35,11 @@
 #define SISPROF_H
 
 #include "osconfig.h"
+#include "sitypes.h"  /* for E_KeyType */
 
 #ifdef WITH_OPENSSL
 
-#include "oftypes.h"  /* for OFBool */
 #include "dcxfer.h"   /* for E_TransferSyntax */
-#include "sitypes.h"  /* for E_KeyType */
 
 class SiAlgorithm;
 class DcmItem;
@@ -143,7 +142,11 @@ private:
 
 /*
  *  $Log: sisprof.h,v $
- *  Revision 1.4  2001-11-16 15:50:50  meichel
+ *  Revision 1.5  2003-06-04 14:21:03  meichel
+ *  Simplified include structure to avoid preprocessor limitation
+ *    (max 32 #if levels) on MSVC5 with STL.
+ *
+ *  Revision 1.4  2001/11/16 15:50:50  meichel
  *  Adapted digital signature code to final text of supplement 41.
  *
  *  Revision 1.3  2001/09/26 14:30:22  meichel

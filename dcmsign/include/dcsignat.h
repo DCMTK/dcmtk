@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2002, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DcmSignature
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-12-20 14:53:08 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-06-04 14:21:03 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,11 +35,11 @@
 #define DCMSIGN_H
 
 #include "osconfig.h"
+#include "sitypes.h"
 
 #ifdef WITH_OPENSSL
 
 #include "dcxfer.h"  /* for E_TransferSyntax */
-#include "sitypes.h"
 
 #define INCLUDE_CSTDIO
 #include "ofstdinc.h"
@@ -275,7 +275,11 @@ private:
 
 /*
  *  $Log: dcsignat.h,v $
- *  Revision 1.1  2002-12-20 14:53:08  wilkens
+ *  Revision 1.2  2003-06-04 14:21:03  meichel
+ *  Simplified include structure to avoid preprocessor limitation
+ *    (max 32 #if levels) on MSVC5 with STL.
+ *
+ *  Revision 1.1  2002/12/20 14:53:08  wilkens
  *  Modified name clash resulting in a compiler error on Solaris 2.5.1 using
  *  compiler SC 2.0.1.
  *

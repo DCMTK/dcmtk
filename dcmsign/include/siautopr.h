@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: SiAuthorizationProfile
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-16 15:50:49 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2003-06-04 14:21:03 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,10 +35,9 @@
 #define SIAUTOPR_H
 
 #include "osconfig.h"
+#include "sibrsapr.h"   /* for SiBaseRSAProfile */
 
 #ifdef WITH_OPENSSL
-
-#include "sibrsapr.h"   /* for SiBaseRSAProfile */
 
 /** Authorization Digital Signature Profile
  */
@@ -66,7 +65,11 @@ public:
 
 /*
  *  $Log: siautopr.h,v $
- *  Revision 1.3  2001-11-16 15:50:49  meichel
+ *  Revision 1.4  2003-06-04 14:21:03  meichel
+ *  Simplified include structure to avoid preprocessor limitation
+ *    (max 32 #if levels) on MSVC5 with STL.
+ *
+ *  Revision 1.3  2001/11/16 15:50:49  meichel
  *  Adapted digital signature code to final text of supplement 41.
  *
  *  Revision 1.2  2001/06/01 15:50:47  meichel

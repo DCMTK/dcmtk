@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2002, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: SiMACConstructor
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 14:53:40 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2003-06-04 14:21:03 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,12 +35,12 @@
 #define SIMACCON_H
 
 #include "osconfig.h"
+#include "sitypes.h"
 
 #ifdef WITH_OPENSSL
 
 #include "dcostrmb.h"  /* for DcmOutputBufferStream */
 #include "dcxfer.h"    /* for E_TransferSyntax */
-#include "sitypes.h"
 #include "dcdeftag.h"
 
 #define INCLUDE_CSTDIO
@@ -176,7 +176,11 @@ private:
 
 /*
  *  $Log: simaccon.h,v $
- *  Revision 1.7  2002-11-27 14:53:40  meichel
+ *  Revision 1.8  2003-06-04 14:21:03  meichel
+ *  Simplified include structure to avoid preprocessor limitation
+ *    (max 32 #if levels) on MSVC5 with STL.
+ *
+ *  Revision 1.7  2002/11/27 14:53:40  meichel
  *  Adapted module dcmsign to use of new header file ofstdinc.h
  *
  *  Revision 1.6  2002/08/27 17:21:00  meichel
