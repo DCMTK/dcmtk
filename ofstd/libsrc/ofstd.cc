@@ -93,8 +93,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-05-26 10:14:47 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Update Date:      $Date: 2004-08-03 11:45:48 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -110,14 +110,12 @@
 #define INCLUDE_CSTRING
 #define INCLUDE_CSTDIO
 #define INCLUDE_CCTYPE
+#define INCLUDE_UNISTD
 #include "ofstdinc.h"
 
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_STAT_H
 #include <sys/stat.h>    /* for stat() */
-#endif
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>      /* for access() */
 #endif
 #ifdef HAVE_IO_H
 #include <io.h>          /* for access() on Win32 */
@@ -1626,7 +1624,10 @@ unsigned int OFStandard::my_sleep(unsigned int seconds)
 
 /*
  *  $Log: ofstd.cc,v $
- *  Revision 1.31  2004-05-26 10:14:47  meichel
+ *  Revision 1.32  2004-08-03 11:45:48  meichel
+ *  Headers libc.h and unistd.h are now included via ofstdinc.h
+ *
+ *  Revision 1.31  2004/05/26 10:14:47  meichel
  *  Completed isinf() workaround for MacOS X
  *
  *  Revision 1.30  2004/05/07 11:25:38  meichel

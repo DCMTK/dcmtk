@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPresentationState
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-04 15:57:49 $
- *  CVS/RCS Revision: $Revision: 1.79 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-08-03 11:43:18 $
+ *  CVS/RCS Revision: $Revision: 1.80 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,16 +60,9 @@
 #define INCLUDE_CSTRING
 #define INCLUDE_CMATH
 #define INCLUDE_CTIME
+#define INCLUDE_LIBC
+#define INCLUDE_UNISTD
 #include "ofstdinc.h"
-
-BEGIN_EXTERN_C
-#ifdef HAVE_LIBC_H
-#include <libc.h>
-#endif
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-END_EXTERN_C
 
 /* --------------- class DVPresentationState --------------- */
 
@@ -2231,7 +2224,10 @@ OFCondition DVPresentationState::createFromImage(
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.79  2004-02-04 15:57:49  joergr
+ *  Revision 1.80  2004-08-03 11:43:18  meichel
+ *  Headers libc.h and unistd.h are now included via ofstdinc.h
+ *
+ *  Revision 1.79  2004/02/04 15:57:49  joergr
  *  Removed acknowledgements with e-mail addresses from CVS log.
  *
  *  Revision 1.78  2003/09/05 14:30:08  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Generate a C++ header defining symbolic names for DICOM Tags.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 12:07:01 $
+ *  Update Date:      $Date: 2004-08-03 11:41:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/mkdeftag.cc,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,11 +37,9 @@
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
 #define INCLUDE_CCTYPE
+#define INCLUDE_LIBC
 #include "ofstdinc.h"
 
-#ifdef HAVE_LIBC_H
-#include <libc.h>
-#endif
 #ifdef HAVE_SYS_UTSNAME_H
 #include <sys/utsname.h>
 #endif
@@ -357,7 +355,10 @@ int main(int argc, char* argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: mkdeftag.cc,v $
-** Revision 1.21  2002-11-27 12:07:01  meichel
+** Revision 1.22  2004-08-03 11:41:10  meichel
+** Headers libc.h and unistd.h are now included via ofstdinc.h
+**
+** Revision 1.21  2002/11/27 12:07:01  meichel
 ** Adapted module dcmdata to use of new header file ofstdinc.h
 **
 ** Revision 1.20  2002/07/23 14:21:35  meichel

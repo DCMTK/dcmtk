@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmFileFormat
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-04 16:32:01 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-08-03 11:41:09 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,11 +36,8 @@
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
 #define INCLUDE_CTIME
+#define INCLUDE_UNISTD
 #include "ofstdinc.h"
-
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
 
 #include "ofstream.h"
 #include "dcfilefo.h"
@@ -861,7 +858,10 @@ DcmDataset *DcmFileFormat::getAndRemoveDataset()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
-** Revision 1.36  2004-02-04 16:32:01  joergr
+** Revision 1.37  2004-08-03 11:41:09  meichel
+** Headers libc.h and unistd.h are now included via ofstdinc.h
+**
+** Revision 1.36  2004/02/04 16:32:01  joergr
 ** Adapted type casts to new-style typecast operators defined in ofcast.h.
 ** Removed acknowledgements with e-mail addresses from CVS log.
 **

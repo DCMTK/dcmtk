@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -24,9 +24,9 @@
  *  the dcmdata library.  
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 12:07:02 $
+ *  Update Date:      $Date: 2004-08-03 11:41:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/mkdictbi.cc,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,11 +39,9 @@
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
 #define INCLUDE_CCTYPE
+#define INCLUDE_LIBC
 #include "ofstdinc.h"
 
-#ifdef HAVE_LIBC_H
-#include <libc.h>
-#endif
 #ifdef HAVE_SYS_UTSNAME_H
 #include <sys/utsname.h>
 #endif
@@ -362,7 +360,10 @@ main(int argc, char* argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: mkdictbi.cc,v $
-** Revision 1.24  2002-11-27 12:07:02  meichel
+** Revision 1.25  2004-08-03 11:41:10  meichel
+** Headers libc.h and unistd.h are now included via ofstdinc.h
+**
+** Revision 1.24  2002/11/27 12:07:02  meichel
 ** Adapted module dcmdata to use of new header file ofstdinc.h
 **
 ** Revision 1.23  2002/08/02 09:47:33  meichel

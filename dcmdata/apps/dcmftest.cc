@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2003, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Test if a file uses DICOM Part 10 format.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-11-13 10:53:26 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-08-03 11:41:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmftest.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,14 +36,9 @@
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
+#define INCLUDE_LIBC
+#define INCLUDE_UNISTD
 #include "ofstdinc.h"
-
-#ifdef HAVE_LIBC_H
-#include <libc.h>
-#endif
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
 
 #include "dcmetinf.h"
 #include "ofconapp.h"
@@ -107,7 +102,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmftest.cc,v $
-** Revision 1.16  2003-11-13 10:53:26  joergr
+** Revision 1.17  2004-08-03 11:41:04  meichel
+** Headers libc.h and unistd.h are now included via ofstdinc.h
+**
+** Revision 1.16  2003/11/13 10:53:26  joergr
 ** Made help text consistent with revised man page. Replaced tabs by spaces.
 **
 ** Revision 1.15  2002/11/27 12:07:17  meichel

@@ -64,9 +64,9 @@
 ** 
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2002-11-27 13:04:38 $
+** Update Date:		$Date: 2004-08-03 11:42:47 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dcompat.cc,v $
-** CVS/RCS Revision:	$Revision: 1.26 $
+** CVS/RCS Revision:	$Revision: 1.27 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -83,11 +83,9 @@
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
 #define INCLUDE_CERRNO
+#define INCLUDE_UNISTD
 #include "ofstdinc.h"
 
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
 #ifdef HAVE_UNIX_H
 #if defined(macintosh) && defined (HAVE_WINSOCK_H)
 /* unix.h defines timeval incompatible with winsock.h */
@@ -464,7 +462,10 @@ tempnam(char *dir, char *pfx)
 /*
 ** CVS Log
 ** $Log: dcompat.cc,v $
-** Revision 1.26  2002-11-27 13:04:38  meichel
+** Revision 1.27  2004-08-03 11:42:47  meichel
+** Headers libc.h and unistd.h are now included via ofstdinc.h
+**
+** Revision 1.26  2002/11/27 13:04:38  meichel
 ** Adapted module dcmnet to use of new header file ofstdinc.h
 **
 ** Revision 1.25  2001/06/05 10:05:46  joergr

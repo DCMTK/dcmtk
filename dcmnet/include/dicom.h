@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2002-11-27 13:04:35 $
+** Update Date:		$Date: 2004-08-03 11:42:43 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/dicom.h,v $
-** CVS/RCS Revision:	$Revision: 1.10 $
+** CVS/RCS Revision:	$Revision: 1.11 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -84,14 +84,9 @@
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
+#define INCLUDE_LIBC
+#define INCLUDE_UNISTD
 #include "ofstdinc.h"
-
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-#ifdef HAVE_LIBC_H
-#include <libc.h>
-#endif
 
 #include "cond.h"       /* condition typedefs */
 #include "dcompat.h"	/* compatability routines */
@@ -173,7 +168,10 @@ typedef char	DIC_NODENAME[DIC_NODENAME_LEN + 1];
 /*
 ** CVS Log
 ** $Log: dicom.h,v $
-** Revision 1.10  2002-11-27 13:04:35  meichel
+** Revision 1.11  2004-08-03 11:42:43  meichel
+** Headers libc.h and unistd.h are now included via ofstdinc.h
+**
+** Revision 1.10  2002/11/27 13:04:35  meichel
 ** Adapted module dcmnet to use of new header file ofstdinc.h
 **
 ** Revision 1.9  2001/10/12 10:18:26  meichel

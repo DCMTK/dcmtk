@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmDirectoryRecord
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-13 17:36:54 $
- *  CVS/RCS Revision: $Revision: 1.49 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-08-03 11:41:09 $
+ *  CVS/RCS Revision: $Revision: 1.50 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,16 +38,9 @@
 #define INCLUDE_CSTRING
 #define INCLUDE_CERRNO
 #define INCLUDE_CCTYPE
+#define INCLUDE_LIBC
+#define INCLUDE_UNISTD
 #include "ofstdinc.h"
-
-BEGIN_EXTERN_C
-#ifdef HAVE_LIBC_H
-#include <libc.h>
-#endif
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-END_EXTERN_C
 
 #include "ofstream.h"
 #include "ofcast.h"
@@ -1458,7 +1451,10 @@ const char* DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
- * Revision 1.49  2004-02-13 17:36:54  joergr
+ * Revision 1.50  2004-08-03 11:41:09  meichel
+ * Headers libc.h and unistd.h are now included via ofstdinc.h
+ *
+ * Revision 1.49  2004/02/13 17:36:54  joergr
  * Added support for new directory records RAW DATA and SPECTROSCOPY introduced
  * with CP 343.
  *

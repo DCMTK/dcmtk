@@ -21,9 +21,9 @@
  *
  *  Purpose: Class for various helper functions
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-04-16 12:43:26 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-08-03 11:45:42 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,14 +42,12 @@
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
+#define INCLUDE_UNISTD
 #include "ofstdinc.h"
 
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>  /* for size_t */
-#endif
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>     /* for sleep */
 #endif
 END_EXTERN_C
 
@@ -427,7 +425,10 @@ class OFStandard
  *
  * CVS/RCS Log:
  * $Log: ofstd.h,v $
- * Revision 1.21  2004-04-16 12:43:26  joergr
+ * Revision 1.22  2004-08-03 11:45:42  meichel
+ * Headers libc.h and unistd.h are now included via ofstdinc.h
+ *
+ * Revision 1.21  2004/04/16 12:43:26  joergr
  * Restructured code to avoid default parameter values for "complex types" like
  * OFString. Required for Sun CC 2.0.1.
  *

@@ -56,10 +56,10 @@
 **
 **      Module Prefix: DIMSE_
 **
-** Last Update:         $Author: joergr $
-** Update Date:         $Date: 2004-02-04 15:35:17 $
+** Last Update:         $Author: meichel $
+** Update Date:         $Date: 2004-08-03 11:42:47 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimse.cc,v $
-** CVS/RCS Revision:    $Revision: 1.38 $
+** CVS/RCS Revision:    $Revision: 1.39 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -76,11 +76,9 @@
 #define INCLUDE_CSTRING
 #define INCLUDE_CSTDARG
 #define INCLUDE_CERRNO
+#define INCLUDE_UNISTD
 #include "ofstdinc.h"
 
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
 #ifdef HAVE_UNIX_H
 #if defined(macintosh) && defined (HAVE_WINSOCK_H)
 /* unix.h defines timeval incompatible with winsock.h */
@@ -1761,7 +1759,10 @@ void DIMSE_warning(T_ASC_Association *assoc,
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
-** Revision 1.38  2004-02-04 15:35:17  joergr
+** Revision 1.39  2004-08-03 11:42:47  meichel
+** Headers libc.h and unistd.h are now included via ofstdinc.h
+**
+** Revision 1.38  2004/02/04 15:35:17  joergr
 ** Removed acknowledgements with e-mail addresses from CVS log.
 **
 ** Revision 1.37  2003/10/22 16:48:47  meichel

@@ -23,10 +23,10 @@
  *  Definitions of "well known" DICOM Unique Indentifiers,
  *  routines for finding and creating UIDs.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-05-27 10:31:39 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-08-03 11:41:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
- *  CVS/RCS Revision: $Revision: 1.64 $
+ *  CVS/RCS Revision: $Revision: 1.65 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,14 +40,8 @@
 #include "dctypes.h"
 
 #define INCLUDE_CSTDLIB
+#define INCLUDE_UNISTD
 #include "ofstdinc.h"
-
-#ifdef HAVE_UNISTD_H
-BEGIN_EXTERN_C
-#include <unistd.h> /* for NULL */
-END_EXTERN_C
-#endif
-
 
 /*
 ** dcmFindNameOfUID(const char* uid)
@@ -481,7 +475,10 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.64  2004-05-27 10:31:39  joergr
+** Revision 1.65  2004-08-03 11:41:07  meichel
+** Headers libc.h and unistd.h are now included via ofstdinc.h
+**
+** Revision 1.64  2004/05/27 10:31:39  joergr
 ** Updated version name and implementation name to reflect release 3.5.3.
 **
 ** Revision 1.63  2004/04/14 11:49:28  joergr

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DcmPresentationState
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-13 11:49:36 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-08-03 11:43:18 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,16 +59,9 @@
 #define INCLUDE_CSTRING
 #define INCLUDE_CMATH
 #define INCLUDE_CTIME
+#define INCLUDE_LIBC
+#define INCLUDE_UNISTD
 #include "ofstdinc.h"
-
-BEGIN_EXTERN_C
-#ifdef HAVE_LIBC_H
-#include <libc.h>
-#endif
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-END_EXTERN_C
 
 /* --------------- class DcmPresentationState --------------- */
 
@@ -2169,7 +2162,10 @@ void DcmPresentationState::setLog(OFConsole *stream, OFBool verbMode, OFBool dbg
 
 /*
  *  $Log: dcmpstat.cc,v $
- *  Revision 1.6  2004-02-13 11:49:36  joergr
+ *  Revision 1.7  2004-08-03 11:43:18  meichel
+ *  Headers libc.h and unistd.h are now included via ofstdinc.h
+ *
+ *  Revision 1.6  2004/02/13 11:49:36  joergr
  *  Adapted code for changed tag names (e.g. PresentationLabel -> ContentLabel).
  *
  *  Revision 1.5  2004/02/04 15:57:48  joergr

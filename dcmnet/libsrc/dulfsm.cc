@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: meichel $, $Date: 2004-02-25 12:31:17 $
+** Last Update:		$Author: meichel $, $Date: 2004-08-03 11:42:47 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.54 $
+** Revision:		$Revision: 1.55 $
 ** Status:		$State: Exp $
 */
 
@@ -61,6 +61,7 @@
 #define INCLUDE_CERRNO
 #define INCLUDE_CSIGNAL
 #define INCLUDE_CTIME
+#define INCLUDE_UNISTD
 #include "ofstdinc.h"
 
 #ifdef HAVE_SYS_TIME_H
@@ -71,9 +72,6 @@
 #endif
 #ifdef HAVE_SYS_SELECT_H
 #include <sys/select.h>
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
 #ifdef HAVE_FCNTL_H
 #include <fcntl.h>
 #endif
@@ -3918,7 +3916,10 @@ destroyUserInformationLists(DUL_USERINFO * userInfo)
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.54  2004-02-25 12:31:17  meichel
+** Revision 1.55  2004-08-03 11:42:47  meichel
+** Headers libc.h and unistd.h are now included via ofstdinc.h
+**
+** Revision 1.54  2004/02/25 12:31:17  meichel
 ** Added global option flag for compatibility with very old DCMTK releases in the
 **   DICOM upper layer and ACSE code. Default is automatic handling, which should
 **   work in most cases.

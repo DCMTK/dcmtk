@@ -21,9 +21,9 @@
  *
  *  Purpose: A simple string class
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-16 10:30:12 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-08-03 11:45:42 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,16 +56,9 @@
 #define INCLUDE_CASSERT
 #define INCLUDE_CSTRING
 #define INCLUDE_CSTDLIB
+#define INCLUDE_LIBC
+#define INCLUDE_UNISTD
 #include "ofstdinc.h"
-
-BEGIN_EXTERN_C
-#ifdef HAVE_UNISTD_H
-#include <unistd.h> /* for NULL */
-#endif
-#ifdef HAVE_LIBC_H
-#include <libc.h>
-#endif
-END_EXTERN_C
 
 #include "ofstream.h"
 #include "oftypes.h"
@@ -1084,7 +1077,10 @@ OFBool operator>= (const OFString& lhs, char rhs);
 /*
 ** CVS/RCS Log:
 ** $Log: ofstring.h,v $
-** Revision 1.18  2004-01-16 10:30:12  joergr
+** Revision 1.19  2004-08-03 11:45:42  meichel
+** Headers libc.h and unistd.h are now included via ofstdinc.h
+**
+** Revision 1.18  2004/01/16 10:30:12  joergr
 ** Removed acknowledgements with e-mail addresses from CVS log.
 **
 ** Revision 1.17  2003/08/07 11:44:55  joergr

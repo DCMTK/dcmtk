@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2003, OFFIS
+ *  Copyright (C) 1998-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DcmTransportConnection, DcmTCPConnection
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-05 10:39:45 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-08-03 11:42:43 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,11 +39,8 @@
 #include "dcmlayer.h"    /* for DcmTransportLayerStatus */
 #include "ofstream.h"    /* for ostream */
 
-BEGIN_EXTERN_C
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-END_EXTERN_C
+#define INCLUDE_UNISTD
+#include "ofstdinc.h"
 
 /** this class represents a TCP/IP based transport connection
  *  which can be a transparent TCP/IP socket communication or a
@@ -334,7 +331,10 @@ private:
 
 /*
  *  $Log: dcmtrans.h,v $
- *  Revision 1.5  2003-12-05 10:39:45  joergr
+ *  Revision 1.6  2004-08-03 11:42:43  meichel
+ *  Headers libc.h and unistd.h are now included via ofstdinc.h
+ *
+ *  Revision 1.5  2003/12/05 10:39:45  joergr
  *  Removed leading underscore characters from preprocessor symbols (reserved
  *  symbols).
  *

@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-13 11:49:36 $
- *  CVS/RCS Revision: $Revision: 1.149 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-08-03 11:43:18 $
+ *  CVS/RCS Revision: $Revision: 1.150 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,6 +73,7 @@
 #define INCLUDE_CSTDIO
 #define INCLUDE_CCTYPE
 #define INCLUDE_CMATH
+#define INCLUDE_UNISTD
 #include "ofstdinc.h"
 
 BEGIN_EXTERN_C
@@ -87,9 +88,6 @@ BEGIN_EXTERN_C
 #endif
 #ifdef HAVE_SYS_RESOURCE_H
 #include <sys/resource.h> /* for wait3 */
-#endif
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>      /* for execl, fork */
 #endif
 #ifdef HAVE_SYS_STAT_H
 #include <sys/stat.h>    /* for stat, fstat */
@@ -4415,7 +4413,10 @@ void DVInterface::disableImageAndPState()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.149  2004-02-13 11:49:36  joergr
+ *  Revision 1.150  2004-08-03 11:43:18  meichel
+ *  Headers libc.h and unistd.h are now included via ofstdinc.h
+ *
+ *  Revision 1.149  2004/02/13 11:49:36  joergr
  *  Adapted code for changed tag names (e.g. PresentationLabel -> ContentLabel).
  *
  *  Revision 1.148  2004/02/04 15:57:48  joergr

@@ -62,9 +62,9 @@
 ** 
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2003-12-17 16:33:26 $
+** Update Date:		$Date: 2004-08-03 11:42:43 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/dcompat.h,v $
-** CVS/RCS Revision:	$Revision: 1.21 $
+** CVS/RCS Revision:	$Revision: 1.22 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -81,6 +81,8 @@
 #define INCLUDE_CTIME
 #define INCLUDE_CSTRING
 #define INCLUDE_CERRNO
+#define INCLUDE_LIBC
+#define INCLUDE_UNISTD
 #include "ofstdinc.h"
 
 #ifdef HAVE_GUSI_H
@@ -105,13 +107,6 @@ typedef u_short WORD;
 #endif
 
 BEGIN_EXTERN_C
-
-#ifdef HAVE_LIBC_H
-#include <libc.h>
-#endif
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
 #endif
@@ -149,7 +144,6 @@ BEGIN_EXTERN_C
 #ifdef HAVE_SYS_FILE_H
 #include <sys/file.h>
 #endif
-
 END_EXTERN_C
 
 #ifdef _WIN32
@@ -401,7 +395,10 @@ char *tempnam(char *dir, char *pfx);
 /*
 ** CVS Log
 ** $Log: dcompat.h,v $
-** Revision 1.21  2003-12-17 16:33:26  meichel
+** Revision 1.22  2004-08-03 11:42:43  meichel
+** Headers libc.h and unistd.h are now included via ofstdinc.h
+**
+** Revision 1.21  2003/12/17 16:33:26  meichel
 ** Removed unused macros
 **
 ** Revision 1.20  2003/06/06 09:44:56  meichel

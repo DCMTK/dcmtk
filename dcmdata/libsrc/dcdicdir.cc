@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmDicomDir
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-03-16 13:44:03 $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-08-03 11:41:09 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,13 +35,9 @@
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
 #define INCLUDE_CERRNO
+#define INCLUDE_LIBC
+#define INCLUDE_UNISTD
 #include "ofstdinc.h"
-
-BEGIN_EXTERN_C
-#ifdef HAVE_LIBC_H
-#include <libc.h>
-#endif
-END_EXTERN_C
 
 #if defined(HAVE_MKTEMP) && !defined(HAVE_PROTOTYPE_MKTEMP)
 extern "C" {
@@ -63,10 +59,6 @@ int mkstemp(char *);
 #endif
 #include <unix.h>       /* for unlink() under Metrowerks C++ (Macintosh) */
 #undef timeval
-#endif
-
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
 #endif
 
 #include "ofstream.h"
@@ -1335,7 +1327,10 @@ Cdebug(1, refCounter[k].fileOffset==refMRDR->numberOfReferences,
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
-** Revision 1.43  2004-03-16 13:44:03  joergr
+** Revision 1.44  2004-08-03 11:41:09  meichel
+** Headers libc.h and unistd.h are now included via ofstdinc.h
+**
+** Revision 1.43  2004/03/16 13:44:03  joergr
 ** Renamed UID_BasicDirectoryStorageSOPClass to UID_MediaStorageDirectoryStorage.
 **
 ** Revision 1.42  2004/02/04 16:25:41  joergr

@@ -21,10 +21,10 @@
  *
  *  Purpose: Worklist Database Test Program
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-11 09:49:06 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-08-03 11:43:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/tests/wltest.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,13 +37,8 @@
 #define INCLUDE_CSTRING
 #define INCLUDE_CSTDARG
 #define INCLUDE_CERRNO
+#define INCLUDE_UNISTD
 #include "ofstdinc.h"
-
-BEGIN_EXTERN_C
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-END_EXTERN_C
 
 #include "dicom.h"
 #include "wltypdef.h"
@@ -379,7 +374,10 @@ queryWorklistDB(WlmDataSourceFileSystem& wdb,
 /*
 ** CVS Log
 ** $Log: wltest.cc,v $
-** Revision 1.2  2004-02-11 09:49:06  joergr
+** Revision 1.3  2004-08-03 11:43:39  meichel
+** Headers libc.h and unistd.h are now included via ofstdinc.h
+**
+** Revision 1.2  2004/02/11 09:49:06  joergr
 ** Fixed usage output formatting.
 **
 ** Revision 1.1  2002/12/03 12:16:37  wilkens
