@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlay (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-08-25 16:43:09 $
+ *  Update Date:      $Date: 1999-09-17 13:18:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diovlay.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,8 @@
 #include "dctypes.h"
 
 #include "diovlay.h"
+#include "diovdat.h"
+#include "diovpln.h"
 #include "discalet.h"
 #include "diflipt.h"
 #include "dirotat.h"
@@ -48,39 +50,6 @@
 
 const unsigned int DiOverlay::MaxOverlayCount   = 16;
 const unsigned int DiOverlay::FirstOverlayGroup = 0x6000;
-
-
-/*-----------------------------------*
- *  con-/destructor of helper class  *
- *-----------------------------------*/
-
-DiOverlayData::DiOverlayData(unsigned int entries,
-                             unsigned int count)
-  : Count(count),
-    ArrayEntries(entries),
-    Planes(NULL),
-    DataBuffer(NULL)
-{
-    if ((entries > 0) && (entries <= DiOverlay::MaxOverlayCount))
-    {
-        Planes = new DiOverlayPlane *[entries];
-        if (Planes != NULL)
-            OFBitmanipTemplate<DiOverlayPlane *>::zeroMem(Planes, entries);
-    }
-}
-
-
-DiOverlayData::~DiOverlayData()
-{
-    if (Planes != NULL)
-    {
-        register unsigned int i;
-        for (i = 0; i < ArrayEntries; i++)
-            delete Planes[i];
-    }
-    delete[] Planes;
-    delete[] DataBuffer;
-}
 
 
 /*----------------*
@@ -118,7 +87,7 @@ DiOverlay::DiOverlay(const DiDocument *docu,
 }
 
 
-// --- scale overlay
+// --- scale/clip overlay
 
 DiOverlay::DiOverlay(const DiOverlay *overlay,
                      const signed long left,
@@ -380,8 +349,10 @@ int DiOverlay::showAllPlanes()
     {
         register unsigned int i; 
         for (i = 0; i < Data->ArrayEntries; i++)
-            if ((Data->Planes[i] != NULL))
+        {
+            if (Data->Planes[i] != NULL)
                 Data->Planes[i]->show();
+        }
         if (Data->Count > 0)
             return 1;
         return 2;
@@ -398,8 +369,10 @@ int DiOverlay::showAllPlanes(const double fore,
     {
         register unsigned int i; 
         for (i = 0; i < Data->ArrayEntries; i++)
+        {
             if ((Data->Planes[i] != NULL))
                 Data->Planes[i]->show(fore, tresh, mode);
+        }
         if (Data->Count > 0)
             return 1;
         return 2;
@@ -427,8 +400,10 @@ int DiOverlay::hideAllPlanes()
     {
         register unsigned int i; 
         for (i = 0; i < Data->ArrayEntries; i++)
-            if ((Data->Planes[i] != NULL))
+        {
+            if (Data->Planes[i] != NULL)
                 Data->Planes[i]->hide();
+        }
         if (Data->Count > 0)
             return 1;
         return 2;
@@ -551,27 +526,6 @@ int DiOverlay::removePlane(const unsigned int group)
     return 0;
 }
 
-/*
-int DiOverlay::removeAllPlanes()
-{
-    if (AdditionalPlanes && (Data != NULL) && (Data->Planes != NULL))
-    {
-        register unsigned int i;
-        for (i = 0; i < Data->ArrayEntries; i++)
-        {
-            delete Data->Planes[i];
-            Data->Planes[i] = NULL;
-        }
-        if (Data->Count != 0)
-        {
-            Data->Count = 0;
-            return 1;                                                         // all planes have been deleted
-        }
-        return 2;                                                             // nothing has been deleted
-    }
-    return 0;                                                                 // an error occurred
-}
-*/
 
 Uint8 *DiOverlay::getPlaneData(const unsigned long frame,
                                unsigned int plane,
@@ -605,11 +559,16 @@ Uint8 *DiOverlay::getPlaneData(const unsigned long frame,
     return NULL;
 }
 
+
 /*
-F *
+ *
  * CVS/RCS Log:
  * $Log: diovlay.cc,v $
- * Revision 1.12  1999-08-25 16:43:09  joergr
+ * Revision 1.13  1999-09-17 13:18:30  joergr
+ * Splitted file diovlay.h into two files (one for each class).
+ * Enhanced efficiency of some "for" loops.
+ *
+ * Revision 1.12  1999/08/25 16:43:09  joergr
  * Added new feature: Allow clipping region to be outside the image
  * (overlapping).
  *
