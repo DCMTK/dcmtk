@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2001, OFFIS
+ *  Copyright (C) 1997-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -15,13 +15,13 @@
  *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
  *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
- *  As an exception of the above notice, the code for OFStandard::strlcpy 
- *  and OFStandard::strlcat in this file have been derived from the BSD 
+ *  As an exception of the above notice, the code for OFStandard::strlcpy
+ *  and OFStandard::strlcat in this file have been derived from the BSD
  *  implementation which carries the following copyright notice:
  *
  *  Copyright (c) 1998 Todd C. Miller <Todd.Miller@courtesan.com>
  *  All rights reserved.
- *  
+ *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
  *  are met:
@@ -32,7 +32,7 @@
  *     documentation and/or other materials provided with the distribution.
  *  3. The name of the author may not be used to endorse or promote products
  *     derived from this software without specific prior written permission.
- *  
+ *
  *  THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
  *  INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
  *  AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL
@@ -43,25 +43,60 @@
  *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
  *  OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  *  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  *  Module: ofstd
  *
- *  Author: Jörg Riesmeier, Marco Eichelberg
+ *  Author: Joerg Riesmeier, Marco Eichelberg
  *
- *  Purpose:
- *    Class for various helper functions
+ *  Purpose: Class for various helper functions
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-12-04 16:57:18 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-11 12:08:06 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
+
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "ofstd.h"
+
+
+BEGIN_EXTERN_C
+#include <stdio.h>       /* for fopen() and fclose() */
+#ifdef HAVE_SYS_STAT_H
+#include <sys/stat.h>    /* for stat() */
+#endif
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>      /* for access() */
+#endif
+#ifdef HAVE_IO_H
+#include <io.h>          /* for access() on Win32 */
+#endif
+END_EXTERN_C
+
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>   /* for opendir() and closedir() */
+#endif
+#ifdef HAVE_DIRENT_H
+#include <dirent.h>      /* for opendir() and closedir() */
+#endif /* HAVE_SYS_TYPES_H */
+
+#ifdef HAVE_WINDOWS_H
+#include <windows.h>     /* for GetFileAttributes() */
+
+#ifndef R_OK /* windows defines access but not the constants */
+#define W_OK 02 /* Write permission */
+#define R_OK 04 /* Read permission */
+#define F_OK 00 /* Existance only */
+#endif /* R_OK */
+
+#endif /* HAVE_WINDOWS_H */
+
+
+// --- string functions ---
 
 #ifndef HAVE_STRLCPY
 /*
@@ -95,7 +130,8 @@ size_t OFStandard::my_strlcpy(char *dst, const char *src, size_t siz)
 
   return(s - src - 1);    /* count does not include NUL */
 }
-#endif
+#endif /* HAVE_STRLCPY */
+
 
 #ifndef HAVE_STRLCAT
 /*
@@ -131,23 +167,166 @@ size_t OFStandard::my_strlcat(char *dst, const char *src, size_t siz)
 
   return(dlen + (s - src));       /* count does not include NUL */
 }
-#endif
+#endif /* HAVE_STRLCAT */
 
 
-#if !defined(HAVE_STRLCPY) && !defined(HAVE_STRLCAT)
+// --- file system functions ---
 
-void ofstd_cc_dummy_to_keep_linker_from_moaning()
+OFBool OFStandard::pathExists(const OFString &pathName)
 {
+    OFBool result = OFFalse;
+    /* check for valid path name */
+    if (pathName.length() > 0)
+    {
+#if HAVE_ACCESS
+        /* check whether path exists */
+        result = (access(pathName.c_str(), F_OK) == 0);
+#else        
+#ifdef HAVE_WINDOWS_H
+        /* check whether path exists */
+        result = (GetFileAttributes(pathName.c_str()) != 0xffffffff);
+#else
+#ifdef HAVE_SYS_STAT_H
+        /* check existence with "stat()" */
+        struct stat stat_buf;
+        result = (stat(pathName.c_str(), &stat_buf) == 0);
+#else
+        /* try to open the given "file" (or directory) in read-only mode */
+        FILE* filePtr = fopen(pathName.c_str(), "r");
+        result = (filePtr != NULL);
+        fclose(filePtr);
+#endif /* HAVE_SYS_STAT_H */
+#endif /* HAVE_WINDOWS_H */
+#endif /* HAVE_ACCESS */
+    }
+    return result;
 }
 
-#endif
+
+OFBool OFStandard::fileExists(const OFString &fileName)
+{
+    OFBool result = OFFalse;
+    /* check for valid file name */
+    if (fileName.length() > 0)
+    {
+#ifdef HAVE_WINDOWS_H
+        /* get file attributes */
+        DWORD fileAttr = GetFileAttributes(fileName.c_str());
+        if (fileAttr != 0xffffffff)
+        {
+            /* check file type (not a directory?) */
+            result = ((fileAttr & FILE_ATTRIBUTE_DIRECTORY) == 0);
+        }
+#else
+        /* check whether path exists (but does not point to a directory) */
+        result = pathExists(fileName) && !dirExists(fileName);
+#endif /* HAVE_WINDOWS_H */
+    }
+    return result;
+}
+
+
+OFBool OFStandard::dirExists(const OFString &dirName)
+{
+    OFBool result = OFFalse;
+    /* check for valid directory name */
+    if (dirName.length() > 0)
+    {
+#ifdef HAVE_WINDOWS_H
+        /* get file attributes of the directory */
+        DWORD fileAttr = GetFileAttributes(dirName.c_str());
+        if (fileAttr != 0xffffffff)
+        {
+            /* check file type (is a directory?) */
+            result = ((fileAttr & FILE_ATTRIBUTE_DIRECTORY) != 0);
+        }
+#else
+        /* try to open the given directory */
+        DIR *dirPtr = opendir(dirName.c_str());
+        if (dirPtr != NULL)
+        {
+            result = OFTrue;
+            closedir(dirPtr);
+        }
+#endif /* HAVE_WINDOWS_H */
+    }
+    return result;
+}
+
+
+OFBool OFStandard::isReadable(const OFString &pathName)
+{
+#if HAVE_ACCESS
+    return (access(pathName.c_str(), R_OK) == 0);
+#else
+    OFBool result = OFFalse;
+    /* try to open the given "file" (or directory) in read-only mode */
+    FILE* filePtr = fopen(pathName.c_str(), "r");
+    result = (filePtr != NULL);
+    fclose(filePtr);
+    return result;
+#endif /* HAVE_ACCESS */
+}
+
+    
+OFBool OFStandard::isWriteable(const OFString &pathName)
+{
+#if HAVE_ACCESS
+    return (access(pathName.c_str(), W_OK) == 0);
+#else
+    OFBool result = OFFalse;
+    /* try to open the given "file" (or directory) in write mode */
+    FILE* filePtr = fopen(pathName.c_str(), "w");
+    result = (filePtr != NULL);
+    fclose(filePtr);
+    return result;
+#endif /* HAVE_ACCESS */
+}
+
+
+OFString &OFStandard::normalizeDirName(OFString &result,
+                                       const OFString &dirName,
+                                       const OFBool allowEmptyDirName)
+{
+    result = dirName;
+    /* remove trailing path separators (keep it if at the beginning of the string) */
+    while ((result.length() > 1) && (result[result.length() - 1] == PATH_SEPARATOR))
+        result.erase(result.length() - 1, 1);
+    /* avoid empty directory name (use "." instead) */
+    if ((result.length() == 0) && !allowEmptyDirName)
+        result = ".";
+    return result;
+}
+
+
+OFString &OFStandard::combineDirAndFilename(OFString &result,
+                                            const OFString &dirName,
+                                            const OFString &fileName,
+                                            const OFBool allowEmptyDirName)
+{
+    /* normalize the directory name */
+    normalizeDirName(result, dirName, allowEmptyDirName);
+    /* check file name */
+    if (fileName.length() > 0)
+    {
+        /* add path separator (if required) ... */
+        if ((result.length() > 0) && (result[result.length() - 1] != PATH_SEPARATOR))
+            result += PATH_SEPARATOR;
+        /* ...and file name */
+        result += fileName;
+    }
+    return result;
+}
+
 
 /*
  *  $Log: ofstd.cc,v $
- *  Revision 1.1  2001-12-04 16:57:18  meichel
+ *  Revision 1.2  2002-04-11 12:08:06  joergr
+ *  Added general purpose routines to check whether a file exists, a path points
+ *  to a directory or a file, etc.
+ *
+ *  Revision 1.1  2001/12/04 16:57:18  meichel
  *  Implemented strlcpy and strlcat routines compatible with the
  *    corresponding BSD libc routines in class OFStandard
  *
- *
  */
-
