@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: andreas $, $Date: 1997-08-06 12:20:14 $
+** Last Update:		$Author: hewett $, $Date: 1997-09-11 15:58:47 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.16 $
+** Revision:		$Revision: 1.17 $
 ** Status:		$State: Exp $
 */
 
@@ -3848,17 +3848,29 @@ setTCPBufferLength(int sock)
     char
        *TCPBufferLength;
     int
-        bufLen,
-        optLen;
+        bufLen;
 
 #ifdef HAVE_GUSI_H
     /* GUSI always returns an error for setsockopt(...) */
 #else
     if ((TCPBufferLength = getenv("TCP_BUFFER_LENGTH")) != NULL) {
 	if (sscanf(TCPBufferLength, "%d", &bufLen) == 1) {
-	    optLen = sizeof(bufLen);
-	    (void) setsockopt(sock, SOL_SOCKET, SO_SNDBUF, (char *) &bufLen, optLen);
-	    (void) setsockopt(sock, SOL_SOCKET, SO_RCVBUF, (char *) &bufLen, optLen);
+#ifdef SO_SNDBUF
+	    (void) setsockopt(sock, SOL_SOCKET, SO_SNDBUF, (char *) &bufLen,
+			      sizeof(bufLen));
+#else
+	    fprintf(stderr, "DULFSM: setTCPBufferLength: "
+		    "cannot set TCP buffer length socket option: "
+		    "code disabled because SO_SNDBUF constant is unknown\n");
+#endif
+#ifdef SO_RCVBUF
+	    (void) setsockopt(sock, SOL_SOCKET, SO_RCVBUF, (char *) &bufLen,
+			      sizeof(bufLen));
+#else
+	    fprintf(stderr, "DULFSM: setTCPBufferLength: "
+		    "cannot set TCP buffer length socket option: "
+		    "code disabled because SO_RCVBUF constant is unknown\n");
+#endif
 	}
     }
 #endif
@@ -4119,7 +4131,15 @@ DULPRV_translateAssocReq(unsigned char *buffer,
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.16  1997-08-06 12:20:14  andreas
+** Revision 1.17  1997-09-11 15:58:47  hewett
+** DUL code now only tries to set the send/receive TCP buffer length
+** socket options if the SO_SNDBUF and SO_RCVBUF preprocessor macros
+** are defined.  Attempts to set these socket options will generate an
+** error message on stderr if unavailable.  This modification was
+** needed to compiled the dcmnet code under the Signus GnuWin32
+** environment.
+**
+** Revision 1.16  1997/08/06 12:20:14  andreas
 ** - Using Windows NT with Visual C++ 4.x the standard open mode for files
 **   is TEXT with conversions. For binary files (image files, imagectn database
 **   index) this must be changed (e.g. fopen(filename, "...b"); or

@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: andreas $, $Date: 1997-08-05 07:38:18 $
+** Last Update:		$Author: hewett $, $Date: 1997-09-11 15:58:46 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.11 $
+** Revision:		$Revision: 1.12 $
 ** Status:		$State: Exp $
 */
 
@@ -1928,10 +1928,22 @@ setTCPBufferLength(int sock)
 #else
     if ((TCPBufferLength = getenv("TCP_BUFFER_LENGTH")) != NULL) {
 	if (sscanf(TCPBufferLength, "%d", &bufLen) == 1) {
+#ifdef SO_SNDBUF
 	    (void) setsockopt(sock, SOL_SOCKET, SO_SNDBUF, (char *) &bufLen,
 			      sizeof(bufLen));
+#else
+	    fprintf(stderr, "DUL: setTCPBufferLength: "
+		    "cannot set TCP buffer length socket option: "
+		    "code disabled because SO_SNDBUF constant is unknown\n");
+#endif
+#ifdef SO_RCVBUF
 	    (void) setsockopt(sock, SOL_SOCKET, SO_RCVBUF, (char *) &bufLen,
 			      sizeof(bufLen));
+#else
+	    fprintf(stderr, "DUL: setTCPBufferLength: "
+		    "cannot set TCP buffer length socket option: "
+		    "code disabled because SO_RCVBUF constant is unknown\n");
+#endif
 	}
     }
 #endif
@@ -2240,7 +2252,15 @@ clearPresentationContext(LST_HEAD ** l)
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.11  1997-08-05 07:38:18  andreas
+** Revision 1.12  1997-09-11 15:58:46  hewett
+** DUL code now only tries to set the send/receive TCP buffer length
+** socket options if the SO_SNDBUF and SO_RCVBUF preprocessor macros
+** are defined.  Attempts to set these socket options will generate an
+** error message on stderr if unavailable.  This modification was
+** needed to compiled the dcmnet code under the Signus GnuWin32
+** environment.
+**
+** Revision 1.11  1997/08/05 07:38:18  andreas
 ** Corrected error in DUL finite state machine
 ** SCPs shall close sockets after the SCU have closed the socket in
 ** a normal association release. Therfore, an ARTIM timer is described
