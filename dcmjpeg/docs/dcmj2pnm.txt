@@ -11,11 +11,11 @@ SYNOPSIS
 
 SUMMARY
 
-The dcmj2pnm utility reads a DICOM image, converts the pixel data 
-according to the selected image processing options and writes back an 
-image in the well-known PPM/PGM file format (portable pix map / portable 
-gray map), PNG, Windows BMP, TIFF or JPEG (Joint Photographic Experts 
-Group) format.  This utility supports uncompressed as well as JPEG and 
+The dcmj2pnm utility reads a DICOM image, converts the pixel data
+according to the selected image processing options and writes back an
+image in the well-known PPM/PGM file format (portable pix map / portable
+gray map), PNG, Windows BMP, TIFF or JPEG (Joint Photographic Experts
+Group) format.  This utility supports uncompressed as well as JPEG and
 RLE compressed DICOM images.
 
 
@@ -134,6 +134,10 @@ image processing options:
                                 interpretation
     +Mp   --accept-palettes     accept incorrect palette attribute tags
                                 (0028,111x) and (0028,121x)
+    +Mm   --ignore-mlut-depth   ignore 3rd value of the modality LUT descriptor
+                                determine bits per table entry automatically
+    +Mv   --ignore-vlut-depth   ignore 3rd value of the VOI LUT descriptor,
+                                determine bits per table entry automatically
   TIFF options:
     +Tl   --compr-lzw           LZW compression (default)
     +Tr   --compr-rle           RLE compression
@@ -185,7 +189,7 @@ configuration.  In particular, the patented LZW algorithm may not be
 available.
 
 The --write-png option is only available when DCMTK has been configured
-and compiled with support for the external "libpng" PNG library.  
+and compiled with support for the external "libpng" PNG library.
 Interlace enables progressive image view while loading the PNG file.
 Only a few applications take care of the metainfo (TEXT) in a png file.
 
