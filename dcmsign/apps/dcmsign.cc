@@ -22,8 +22,8 @@
  *  Purpose: Create and Verify DICOM Digital Signatures
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-16 15:50:45 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2001-12-10 16:44:22 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -106,8 +106,8 @@ enum DcmSignOperation
 static OFBool addTag(const char *c, DcmAttributeTag& tagList)
 {
   OFBool result = OFFalse;
-  int group = 0xffff;
-  int elem = 0xffff;
+  unsigned int group = 0xffff;
+  unsigned int elem = 0xffff;
   if (sscanf(c, "%x,%x", &group, &elem ) != 2 )
   {
     /* it is a name */
@@ -160,8 +160,8 @@ static int readNextToken(const char *c, int& pos, DcmTagKey& key, Uint32& idx)
     spos = ++lpos;
     while ((c[lpos] != ')')&&(c[lpos] != '\0')) ++lpos;
     if (c[lpos] != ')') return 0; // parse error
-    int group=0;
-    int elem=0;
+    unsigned int group=0;
+    unsigned int elem=0;
     if (2 != sscanf(c+spos,"%x,%x", &group, &elem)) return 0; // parse error
     key = DcmTagKey(group,elem);
     pos = ++lpos;
@@ -1151,7 +1151,10 @@ int main(int, char *[])
 
 /*
  *  $Log: dcmsign.cc,v $
- *  Revision 1.9  2001-11-16 15:50:45  meichel
+ *  Revision 1.10  2001-12-10 16:44:22  meichel
+ *  Fixed warnings from Sun CC 4.2
+ *
+ *  Revision 1.9  2001/11/16 15:50:45  meichel
  *  Adapted digital signature code to final text of supplement 41.
  *
  *  Revision 1.8  2001/09/28 14:00:49  joergr
