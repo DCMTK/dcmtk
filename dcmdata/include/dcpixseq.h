@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmPixelSequence
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:17 $
+ *  Update Date:      $Date: 2000-04-14 16:02:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpixseq.h,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -83,7 +83,7 @@ public:
     DcmPixelSequence &operator=(const DcmPixelSequence &obj);
 
     virtual DcmEVR ident(void) const { return EVR_pixelSQ; }
-    virtual void print(ostream & out = COUT, const OFBool showFullData = OFTrue,
+    virtual void print(ostream & out, const OFBool showFullData = OFTrue,
                        const int level = 0, const char *pixelFileName = NULL,
 		               size_t *pixelCounter = NULL);
 
@@ -120,7 +120,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.h,v $
-** Revision 1.18  2000-03-08 16:26:17  meichel
+** Revision 1.19  2000-04-14 16:02:23  meichel
+** Removed default value from output stream passed to print() method.
+**   Required for use in multi-thread environments.
+**
+** Revision 1.18  2000/03/08 16:26:17  meichel
 ** Updated copyright header.
 **
 ** Revision 1.17  2000/03/06 18:11:30  joergr
