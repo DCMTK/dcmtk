@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1999-04-19 08:36:48 $
+** Update Date:		$Date: 2000-01-31 17:14:17 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/dimse.h,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -536,6 +536,18 @@ typedef struct {
 extern E_GrpLenEncoding  g_dimse_send_groupLength_encoding;    /* default: EGL_recalcGL */
 extern E_EncodingType    g_dimse_send_sequenceType_encoding;   /* default: EET_ExplicitLength */
 
+/*
+ * If this global flag is set to OFTrue, all DIMSE messages sent or received
+ * are stored in files with the name
+ * "dimse-TTT-DDD-XXXX.dcm" or "dimse-TTT-DDD-XXXX-YY.dcm", where
+ *   TTT is "cmd" for a command set, or "dat" for a data set
+ *   DDD is "snd" for data sent, or "rcv" for data received
+ *   XXXX is a counter, starting at 1 (global for all associations)
+ *   YY is an additional counter used if multiple datasets follow a single command set
+ * The files are in implicit VR little endian encoding, without meta-header.
+ */
+
+extern OFBool            g_dimse_save_dimse_data;              /* default: OFFalse */
 
 /*
  * Public Function Prototypes
@@ -1010,7 +1022,12 @@ void DIMSE_printNDeleteRSP(FILE * f, T_DIMSE_N_DeleteRSP * rsp);
 /*
 ** CVS Log
 ** $Log: dimse.h,v $
-** Revision 1.7  1999-04-19 08:36:48  meichel
+** Revision 1.8  2000-01-31 17:14:17  meichel
+** ntroduced new flag g_dimse_save_dimse_data. If enabled, all DIMSE messages
+** and data sets sent or received are stored in files.
+** This facilitates debugging of DIMSE problems.
+**
+** Revision 1.7  1999/04/19 08:36:48  meichel
 ** Added support for C-FIND-CANCEL/C-MOVE-CANCEL in DIMSE_storeUser().
 **
 ** Revision 1.6  1998/08/10 08:53:40  meichel
