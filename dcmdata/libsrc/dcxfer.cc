@@ -21,10 +21,10 @@
  *
  *  Purpose: handling of transfer syntaxes
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 12:07:01 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-11-29 17:06:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcxfer.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,9 +39,11 @@
 #define INCLUDE_CSTRING
 #include "ofstdinc.h"
 
-typedef struct {
-    const char          *xferID;
-    const char          *xferName;
+
+typedef struct
+{
+    const char         *xferID;
+    const char         *xferName;
     E_TransferSyntax    xfer;
     E_ByteOrder         byteOrder;
     E_VRType            vrType;
@@ -57,7 +59,7 @@ typedef struct {
 
 const S_XferNames XferNames[] =
 {
-    { UID_LittleEndianImplicitTransferSyntax,                    
+    { UID_LittleEndianImplicitTransferSyntax,
       "LittleEndianImplicit",
       EXS_LittleEndianImplicit,
       EBO_LittleEndian,
@@ -65,7 +67,7 @@ const S_XferNames XferNames[] =
       EJE_NotEncapsulated,
       0L, 0L,
       ESC_none },
-    { "",  // illegaler Typ
+    { "",  // illegal type
       "VirtualBigEndianImplicit",
       EXS_BigEndianImplicit,
       EBO_BigEndian,
@@ -73,7 +75,7 @@ const S_XferNames XferNames[] =
       EJE_NotEncapsulated,
       0L, 0L,
       ESC_none },
-    { UID_LittleEndianExplicitTransferSyntax,         
+    { UID_LittleEndianExplicitTransferSyntax,
       "LittleEndianExplicit",
       EXS_LittleEndianExplicit,
       EBO_LittleEndian,
@@ -81,7 +83,7 @@ const S_XferNames XferNames[] =
       EJE_NotEncapsulated,
       0L, 0L,
       ESC_none },
-    { UID_BigEndianExplicitTransferSyntax,                // definiert in dctypes.h
+    { UID_BigEndianExplicitTransferSyntax,  // defined in dctypes.h
       "BigEndianExplicit",
       EXS_BigEndianExplicit,
       EBO_BigEndian,
@@ -265,10 +267,11 @@ const S_XferNames XferNames[] =
       EJE_NotEncapsulated,
       0L, 0L,
 #ifdef WITH_ZLIB
-      ESC_zlib },
+      ESC_zlib
 #else
-      ESC_unsupported },
+      ESC_unsupported
 #endif
+    },
     { UID_JPEG2000LosslessOnlyTransferSyntax,
       "JPEG 2000 (Lossless only)",
       EXS_JPEG2000LosslessOnly,
@@ -286,7 +289,7 @@ const S_XferNames XferNames[] =
       0L, 0L,
       ESC_none }
 
-    // Enter further transfer syntaxes here:
+    // enter further transfer syntaxes here ...
 };
 
 const int DIM_OF_XferNames = (sizeof(XferNames) / sizeof(S_XferNames));
@@ -295,7 +298,7 @@ const int DIM_OF_XferNames = (sizeof(XferNames) / sizeof(S_XferNames));
 // ********************************
 
 
-DcmXfer::DcmXfer( E_TransferSyntax xfer )
+DcmXfer::DcmXfer(E_TransferSyntax xfer)
   : xferID(""),
     xferName(ERROR_XferName),
     xferSyn(EXS_Unknown),
@@ -307,12 +310,9 @@ DcmXfer::DcmXfer( E_TransferSyntax xfer )
     streamCompression(ESC_none)
 {
     int i = 0;
-    while (    (i < DIM_OF_XferNames)
-               && XferNames[i].xfer != xfer
-        )
+    while ((i < DIM_OF_XferNames) && XferNames[i].xfer != xfer)
         i++;
-    if ( (i < DIM_OF_XferNames)
-         && XferNames[i].xfer == xfer)
+    if ((i < DIM_OF_XferNames) && (XferNames[i].xfer == xfer))
     {
         xferSyn           = XferNames[i].xfer;
         xferID            = XferNames[i].xferID;
@@ -330,7 +330,7 @@ DcmXfer::DcmXfer( E_TransferSyntax xfer )
 // ********************************
 
 
-DcmXfer::DcmXfer( const char* xferName_xferID )
+DcmXfer::DcmXfer(const char* xferName_xferID)
   : xferID(""),
     xferName(ERROR_XferName),
     xferSyn(EXS_Unknown),
@@ -342,15 +342,12 @@ DcmXfer::DcmXfer( const char* xferName_xferID )
     streamCompression(ESC_none)
 {
     const char* xname = xferName_xferID;
-    if ( xname != (char*)NULL )
+    if (xname != (char*)NULL)
     {
         int i = 0;
-        while ( (i < DIM_OF_XferNames)
-                && (strcmp(XferNames[i].xferID, xname) != 0) )
+        while ((i < DIM_OF_XferNames) && (strcmp(XferNames[i].xferID, xname) != 0))
             i++;
-
-        if ( (i < DIM_OF_XferNames)
-             && (strcmp(XferNames[i].xferID, xname) == 0) )
+        if ((i < DIM_OF_XferNames) && (strcmp(XferNames[i].xferID, xname) == 0))
         {
             xferSyn           = XferNames[i].xfer;
             xferID            = XferNames[i].xferID;
@@ -365,12 +362,9 @@ DcmXfer::DcmXfer( const char* xferName_xferID )
         else
         {
             i = 0;
-            while ( (i < DIM_OF_XferNames)
-                    && (strcmp(XferNames[i].xferName, xname) != 0) )
+            while ((i < DIM_OF_XferNames) && (strcmp(XferNames[i].xferName, xname) != 0))
                 i++;
-
-            if ( (i < DIM_OF_XferNames)
-                 && (strcmp(XferNames[i].xferName, xname) == 0) )
+            if ((i < DIM_OF_XferNames) && (strcmp(XferNames[i].xferName, xname) == 0))
             {
                 xferSyn           = XferNames[i].xfer;
                 xferID            = XferNames[i].xferID;
@@ -390,7 +384,7 @@ DcmXfer::DcmXfer( const char* xferName_xferID )
 // ********************************
 
 
-DcmXfer::DcmXfer( const DcmXfer &newXfer )
+DcmXfer::DcmXfer(const DcmXfer &newXfer)
   : xferID(newXfer.xferID),
     xferName(newXfer.xferName),
     xferSyn(newXfer.xferSyn),
@@ -415,17 +409,12 @@ DcmXfer::~DcmXfer()
 // ********************************
 
 
-DcmXfer & DcmXfer::operator = ( const E_TransferSyntax xfer )
+DcmXfer &DcmXfer::operator=(const E_TransferSyntax xfer)
 {
     int i = 0;
-    while (    (i < DIM_OF_XferNames)
-               && XferNames[i].xfer != xfer
-        )
+    while ((i < DIM_OF_XferNames) && (XferNames[i].xfer != xfer))
         i++;
-
-    if (    (i < DIM_OF_XferNames)
-            && XferNames[i].xfer == xfer
-        )
+    if ((i < DIM_OF_XferNames) && (XferNames[i].xfer == xfer))
     {
         xferSyn           = XferNames[i].xfer;
         xferID            = XferNames[i].xferID;
@@ -436,9 +425,7 @@ DcmXfer & DcmXfer::operator = ( const E_TransferSyntax xfer )
         JPEGProcess8      = XferNames[i].JPEGProcess8;
         JPEGProcess12     = XferNames[i].JPEGProcess12;
         streamCompression = XferNames[i].streamCompression;
-    }
-    else
-    {
+    } else {
         xferSyn           = EXS_Unknown;
         xferID            = "";
         xferName          = ERROR_XferName;
@@ -456,9 +443,9 @@ DcmXfer & DcmXfer::operator = ( const E_TransferSyntax xfer )
 // ********************************
 
 
-DcmXfer & DcmXfer::operator = ( const DcmXfer &newXfer )
+DcmXfer &DcmXfer::operator=(const DcmXfer &newXfer)
 {
-    if ( this != &newXfer )
+    if (this != &newXfer)
     {
         xferSyn           = newXfer.xferSyn;
         xferID            = newXfer.xferID;
@@ -481,7 +468,7 @@ Uint32 DcmXfer::sizeofTagHeader(DcmEVR evr)
     Uint32 len = 0;
     if (isExplicitVR())
     {
-        // some VR's have an extended format
+        // some VRs have an extended format
         DcmVR vr(evr);
         if (vr.usesExtendedLengthEncoding()) {
             len = 12;  // for Tag, Length, VR und reserved
@@ -489,15 +476,15 @@ Uint32 DcmXfer::sizeofTagHeader(DcmEVR evr)
             len = 8;   // for Tag, Length und VR
         }
     } else {
-        // all VR's have the same format
-        len = 8;           // for Tag und Length
+        // all implicit VRs have the same format
+        len = 8;       // for Tag und Length
     }
     return len;
 }
 
 // ********************************
 
-static E_ByteOrder FindMachineTransferSyntax()   
+static E_ByteOrder FindMachineTransferSyntax()
 {
     E_ByteOrder localByteOrderFlag;
     union
@@ -515,11 +502,9 @@ static E_ByteOrder FindMachineTransferSyntax()
     tl.ul = 1;
     ts.us = 1;
 
-    if (tl.uc[0] == 1 && !(tl.uc[1] | tl.uc[2] | tl.uc[3])
-        && ts.uc[0] == 1 && !(ts.uc[1]) )
+    if (tl.uc[0] == 1 && !(tl.uc[1] | tl.uc[2] | tl.uc[3]) && ts.uc[0] == 1 && !(ts.uc[1]))
         localByteOrderFlag = EBO_LittleEndian;
-    else if (tl.uc[3] == 1 && !(tl.uc[0] | tl.uc[1] | tl.uc[2])
-             && ts.uc[1] == 1 && !(ts.uc[0]) )
+    else if (tl.uc[3] == 1 && !(tl.uc[0] | tl.uc[1] | tl.uc[2]) && ts.uc[1] == 1 && !(ts.uc[0]))
         localByteOrderFlag = EBO_BigEndian;
     else
         localByteOrderFlag = EBO_unknown;
@@ -527,13 +512,18 @@ static E_ByteOrder FindMachineTransferSyntax()
     return localByteOrderFlag;
 }
 
+// global constant: local byte order (little or big endian)
 const E_ByteOrder gLocalByteOrder = FindMachineTransferSyntax();
 
 
 /*
  * CVS/RCS Log:
  * $Log: dcxfer.cc,v $
- * Revision 1.20  2002-11-27 12:07:01  meichel
+ * Revision 1.21  2002-11-29 17:06:50  joergr
+ * Fixed doc++ warning about different number of opening and closing brackets.
+ * Replaced German comments by English translations.
+ *
+ * Revision 1.20  2002/11/27 12:07:01  meichel
  * Adapted module dcmdata to use of new header file ofstdinc.h
  *
  * Revision 1.19  2002/08/27 16:56:01  meichel
