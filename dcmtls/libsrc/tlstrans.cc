@@ -23,8 +23,8 @@
  *    classes: DcmTLSConnection
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-10-19 08:12:29 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-12-19 12:24:27 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -72,6 +72,7 @@ END_EXTERN_C
 #include <GUSI.h>	/* Use the Grand Unified Sockets Interface (GUSI) on Macintosh */
 #endif
 
+#include "ofbmanip.h"
 #include "tlstrans.h"
 #include "tlslayer.h"
 #include "ofconsol.h"
@@ -348,7 +349,10 @@ void tlstrans_dummy_function()
 
 /*
  *  $Log: tlstrans.cc,v $
- *  Revision 1.4  2000-10-19 08:12:29  meichel
+ *  Revision 1.5  2000-12-19 12:24:27  meichel
+ *  updated tlstrans for Irix 5 compatibility issues.
+ *
+ *  Revision 1.4  2000/10/19 08:12:29  meichel
  *  Fixed dcmtls module so that openssl headers are includes only
  *    if the symbol WITH_OPENSSL is defined.
  *
