@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2000, OFFIS
+ *  Copyright (C) 1996-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomGSDFunction (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-07-17 14:37:12 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-06-01 15:49:41 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/digsdfn.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -184,7 +184,10 @@ class DiGSDFunction
  *
  * CVS/RCS Log:
  * $Log: digsdfn.h,v $
- * Revision 1.7  2000-07-17 14:37:12  joergr
+ * Revision 1.8  2001-06-01 15:49:41  meichel
+ * Updated copyright header
+ *
+ * Revision 1.7  2000/07/17 14:37:12  joergr
  * Moved method getJNDIndex to public part of the interface.
  *
  * Revision 1.6  2000/03/08 16:24:15  meichel

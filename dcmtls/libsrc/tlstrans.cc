@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2000, OFFIS
+ *  Copyright (C) 1998-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DcmTLSConnection
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-12-19 12:24:27 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2001-06-01 15:51:13 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -349,7 +349,10 @@ void tlstrans_dummy_function()
 
 /*
  *  $Log: tlstrans.cc,v $
- *  Revision 1.5  2000-12-19 12:24:27  meichel
+ *  Revision 1.6  2001-06-01 15:51:13  meichel
+ *  Updated copyright header
+ *
+ *  Revision 1.5  2000/12/19 12:24:27  meichel
  *  updated tlstrans for Irix 5 compatibility issues.
  *
  *  Revision 1.4  2000/10/19 08:12:29  meichel

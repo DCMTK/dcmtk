@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2000, OFFIS
+ *  Copyright (C) 1994-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: class DcmPixelData
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-05-25 09:53:54 $
+ *  Update Date:      $Date: 2001-06-01 15:49:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixel.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1001,7 +1001,10 @@ E_Condition DcmPixelData::loadAllDataIntoMemory(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.cc,v $
-** Revision 1.16  2001-05-25 09:53:54  meichel
+** Revision 1.17  2001-06-01 15:49:07  meichel
+** Updated copyright header
+**
+** Revision 1.16  2001/05/25 09:53:54  meichel
 ** Modified DcmCodec::decode() interface, required for future dcmjpeg module.
 **
 ** Revision 1.15  2000/11/07 16:56:21  meichel

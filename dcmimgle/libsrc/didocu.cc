@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2000, OFFIS
+ *  Copyright (C) 1996-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomDocument (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-09-12 10:06:14 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-06-01 15:49:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/didocu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -360,7 +360,10 @@ unsigned long DiDocument::getElemValue(const DcmElement *elem,
  *
  * CVS/RCS Log:
  * $Log: didocu.cc,v $
- * Revision 1.9  2000-09-12 10:06:14  joergr
+ * Revision 1.10  2001-06-01 15:49:54  meichel
+ * Updated copyright header
+ *
+ * Revision 1.9  2000/09/12 10:06:14  joergr
  * Corrected bug: wrong parameter for attribute search routine led to crashes
  * when multiple pixel data attributes were contained in the dataset (e.g.
  * IconImageSequence).

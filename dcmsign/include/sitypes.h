@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2000, OFFIS
+ *  Copyright (C) 1998-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    consts, typedefs and enums for dcmsign
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-01-25 15:11:44 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2001-06-01 15:50:51 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -173,7 +173,10 @@ const char *siErrorConditionToString(SI_E_Condition cond);
 
 /*
  *  $Log: sitypes.h,v $
- *  Revision 1.2  2001-01-25 15:11:44  meichel
+ *  Revision 1.3  2001-06-01 15:50:51  meichel
+ *  Updated copyright header
+ *
+ *  Revision 1.2  2001/01/25 15:11:44  meichel
  *  Added class SiCertificateVerifier in dcmsign which allows to check
  *    whether a certificate from a digital signature is trusted, i.e. issued
  *    by a known CA and not contained in a CRL.

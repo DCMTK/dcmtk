@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2000, OFFIS
+ *  Copyright (C) 1998-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    definitions of constants and macros for pstat module
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-13 10:42:40 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-06-01 15:50:15 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -181,7 +181,10 @@ if (result==EC_Normal)                                              \
 
 /*
  *  $Log: dvpsdef.h,v $
- *  Revision 1.4  2000-11-13 10:42:40  joergr
+ *  Revision 1.5  2001-06-01 15:50:15  meichel
+ *  Updated copyright header
+ *
+ *  Revision 1.4  2000/11/13 10:42:40  joergr
  *  Added support for Structured Reporting "templates".
  *
  *  Revision 1.3  2000/06/07 13:16:37  meichel

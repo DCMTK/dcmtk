@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2000, OFFIS
+ *  Copyright (C) 1994-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: 
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-12 08:15:48 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-06-01 15:49:02 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdictbi.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,7 +52,10 @@ DcmDataDictionary::loadBuiltinDictionary()
 /*
  * CVS/RCS Log:
  * $Log: dcdictbi.cc,v $
- * Revision 1.7  2000-10-12 08:15:48  joergr
+ * Revision 1.8  2001-06-01 15:49:02  meichel
+ * Updated copyright header
+ *
+ * Revision 1.7  2000/10/12 08:15:48  joergr
  * Updated data dictionary to reflect the changes made in supplement 23
  * (Structured Reporting) final text.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2000, OFFIS
+ *  Copyright (C) 1994-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Interface for loadable DICOM data dictionary
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-05-03 14:19:08 $
+ *  Update Date:      $Date: 2001-06-01 15:48:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdict.h,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -245,7 +245,10 @@ extern GlobalDcmDataDictionary dcmDataDict;
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.h,v $
-** Revision 1.15  2000-05-03 14:19:08  meichel
+** Revision 1.16  2001-06-01 15:48:38  meichel
+** Updated copyright header
+**
+** Revision 1.15  2000/05/03 14:19:08  meichel
 ** Added new class GlobalDcmDataDictionary which implements read/write lock
 **   semantics for safe access to the DICOM dictionary from multiple threads
 **   in parallel. The global dcmDataDict now uses this class.

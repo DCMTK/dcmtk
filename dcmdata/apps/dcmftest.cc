@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2000, OFFIS
+ *  Copyright (C) 1994-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Test if a file uses DICOM Part 10 format.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:05 $
+ *  Update Date:      $Date: 2001-06-01 15:48:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmftest.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -117,7 +117,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmftest.cc,v $
-** Revision 1.13  2000-03-08 16:26:05  meichel
+** Revision 1.14  2001-06-01 15:48:28  meichel
+** Updated copyright header
+**
+** Revision 1.13  2000/03/08 16:26:05  meichel
 ** Updated copyright header.
 **
 ** Revision 1.12  2000/03/03 14:05:15  meichel

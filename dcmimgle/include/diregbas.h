@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2000, OFFIS
+ *  Copyright (C) 1996-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -112,7 +112,10 @@ class DiRegisterBase
  *
  * CVS/RCS Log:
  * $Log: diregbas.h,v $
- * Revision 1.4  2000-03-08 16:24:23  meichel
+ * Revision 1.5  2001-06-01 15:49:50  meichel
+ * Updated copyright header
+ *
+ * Revision 1.4  2000/03/08 16:24:23  meichel
  * Updated copyright header.
  *
  * Revision 1.3  1999/09/17 12:48:28  joergr

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2000, OFFIS
+ *  Copyright (C) 1994-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,10 +23,10 @@
  *  Make a General Purpose DICOMDIR according to the General Purpose
  *  CD-R Image Interchange Profile (former Supplement 19).
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-12-14 12:49:34 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-06-01 15:48:29 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -3211,7 +3211,10 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 /*
 ** CVS/RCS Log:
 ** $Log: dcmgpdir.cc,v $
-** Revision 1.46  2000-12-14 12:49:34  joergr
+** Revision 1.47  2001-06-01 15:48:29  meichel
+** Updated copyright header
+**
+** Revision 1.46  2000/12/14 12:49:34  joergr
 ** Updated for 2000 edition of the DICOM standard (added: SR, PR, WV, SP, RT).
 **
 ** Revision 1.45  2000/10/12 10:26:47  meichel

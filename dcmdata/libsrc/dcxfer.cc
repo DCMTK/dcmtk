@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2000, OFFIS
+ *  Copyright (C) 1994-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: handling of transfer syntaxes
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-01-17 10:20:38 $
+ *  Update Date:      $Date: 2001-06-01 15:49:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcxfer.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -469,7 +469,10 @@ const E_ByteOrder gLocalByteOrder = FindMachineTransferSyntax();
 /*
  * CVS/RCS Log:
  * $Log: dcxfer.cc,v $
- * Revision 1.15  2001-01-17 10:20:38  meichel
+ * Revision 1.16  2001-06-01 15:49:23  meichel
+ * Updated copyright header
+ *
+ * Revision 1.15  2001/01/17 10:20:38  meichel
  * Added toolkit support for JPEG-LS transfer syntaxes
  *
  * Revision 1.14  2000/04/14 16:10:35  meichel

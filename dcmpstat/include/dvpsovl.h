@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2000, OFFIS
+ *  Copyright (C) 1998-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSOverlay_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-02 16:00:49 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2001-06-01 15:50:19 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -172,7 +172,10 @@ private:
 
 /*
  *  $Log: dvpsovl.h,v $
- *  Revision 1.6  2000-06-02 16:00:49  meichel
+ *  Revision 1.7  2001-06-01 15:50:19  meichel
+ *  Updated copyright header
+ *
+ *  Revision 1.6  2000/06/02 16:00:49  meichel
  *  Adapted all dcmpstat classes to use OFConsole for log and error output
  *
  *  Revision 1.5  2000/03/08 16:28:54  meichel

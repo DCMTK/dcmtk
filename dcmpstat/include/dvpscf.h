@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2000, OFFIS
+ *  Copyright (C) 1998-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVConfiguration
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-13 14:20:54 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-06-01 15:50:12 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1109,7 +1109,10 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.h,v $
- *  Revision 1.27  2000-11-13 14:20:54  joergr
+ *  Revision 1.28  2001-06-01 15:50:12  meichel
+ *  Updated copyright header
+ *
+ *  Revision 1.27  2000/11/13 14:20:54  joergr
  *  Updated comments.
  *
  *  Revision 1.26  2000/11/13 11:52:41  meichel

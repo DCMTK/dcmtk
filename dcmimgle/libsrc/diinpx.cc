@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2000, OFFIS
+ *  Copyright (C) 1996-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomInputPixel (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-04-27 13:10:28 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-06-01 15:49:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diinpx.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,7 +67,10 @@ DiInputPixel::~DiInputPixel()
  *
  * CVS/RCS Log:
  * $Log: diinpx.cc,v $
- * Revision 1.4  2000-04-27 13:10:28  joergr
+ * Revision 1.5  2001-06-01 15:49:56  meichel
+ * Updated copyright header
+ *
+ * Revision 1.4  2000/04/27 13:10:28  joergr
  * Dcmimgle library code now consistently uses ofConsole for error output.
  *
  * Revision 1.3  2000/03/08 16:24:29  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2000, OFFIS
+ *  Copyright (C) 1994-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Definition of the DcmVR class for Value Representation
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-04-14 15:42:56 $
+ *  Update Date:      $Date: 2001-06-01 15:48:47 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvr.h,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -167,7 +167,10 @@ public:
 /*
  * CVS/RCS Log:
  * $Log: dcvr.h,v $
- * Revision 1.16  2000-04-14 15:42:56  meichel
+ * Revision 1.17  2001-06-01 15:48:47  meichel
+ * Updated copyright header
+ *
+ * Revision 1.16  2000/04/14 15:42:56  meichel
  * Global VR generation flags are now derived from OFGlobal and, thus,
  *   safe for use in multi-thread applications.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2000, OFFIS
+ *  Copyright (C) 1994-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: class DcmAgeString
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:45 $
+ *  Update Date:      $Date: 2001-06-01 15:49:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvras.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -69,7 +69,10 @@ DcmAgeString::~DcmAgeString()
 /*
 ** CVS/RCS Log:
 ** $Log: dcvras.cc,v $
-** Revision 1.7  2000-03-08 16:26:45  meichel
+** Revision 1.8  2001-06-01 15:49:14  meichel
+** Updated copyright header
+**
+** Revision 1.7  2000/03/08 16:26:45  meichel
 ** Updated copyright header.
 **
 ** Revision 1.6  1999/03/31 09:25:46  meichel

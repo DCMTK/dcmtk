@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2000, OFFIS
+ *  Copyright (C) 1994-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Generate a C++ header defining symbolic names for DICOM Tags.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-05-03 14:19:10 $
+ *  Update Date:      $Date: 2001-06-01 15:49:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/mkdeftag.cc,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -364,7 +364,10 @@ int main(int argc, char* argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: mkdeftag.cc,v $
-** Revision 1.17  2000-05-03 14:19:10  meichel
+** Revision 1.18  2001-06-01 15:49:24  meichel
+** Updated copyright header
+**
+** Revision 1.17  2000/05/03 14:19:10  meichel
 ** Added new class GlobalDcmDataDictionary which implements read/write lock
 **   semantics for safe access to the DICOM dictionary from multiple threads
 **   in parallel. The global dcmDataDict now uses this class.

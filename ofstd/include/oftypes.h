@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2000, OFFIS
+ *  Copyright (C) 1997-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -24,9 +24,9 @@
  *      supported by all C++ Compilers
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-10-10 12:01:22 $
+ *  Update Date:      $Date: 2001-06-01 15:51:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/oftypes.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -68,7 +68,10 @@ typedef int OFBool;
 /*
  * CVS/RCS Log:
  * $Log: oftypes.h,v $
- * Revision 1.4  2000-10-10 12:01:22  meichel
+ * Revision 1.5  2001-06-01 15:51:36  meichel
+ * Updated copyright header
+ *
+ * Revision 1.4  2000/10/10 12:01:22  meichel
  * Created/updated doc++ comments
  *
  * Revision 1.3  2000/03/08 16:36:03  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2000, OFFIS
+ *  Copyright (C) 1999-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -52,10 +52,10 @@
  *  Caveat 2: The direct use of the COUT and CERR macros is unsafe
  *  in multithread applications. Use ofConsole instead.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-12-13 15:14:25 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-06-01 15:51:33 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofconsol.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -296,7 +296,10 @@ extern OFConsole ofConsole;
  *
  * CVS/RCS Log:
  * $Log: ofconsol.h,v $
- * Revision 1.7  2000-12-13 15:14:25  joergr
+ * Revision 1.8  2001-06-01 15:51:33  meichel
+ * Updated copyright header
+ *
+ * Revision 1.7  2000/12/13 15:14:25  joergr
  * Introduced dummy parameter for "default" constructor of class OFConsole
  * to "convince" linker of gcc 2.5.8 (NeXTSTEP) to allocate memory for global
  * variable 'ofConsole'.

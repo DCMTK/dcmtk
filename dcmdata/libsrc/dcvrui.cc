@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2000, OFFIS
+ *  Copyright (C) 1994-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: class DcmUniqueIdentifier
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-04-14 16:10:10 $
+ *  Update Date:      $Date: 2001-06-01 15:49:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrui.cc,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -158,7 +158,10 @@ E_Condition DcmUniqueIdentifier::makeMachineByteString(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrui.cc,v $
-** Revision 1.17  2000-04-14 16:10:10  meichel
+** Revision 1.18  2001-06-01 15:49:21  meichel
+** Updated copyright header
+**
+** Revision 1.17  2000/04/14 16:10:10  meichel
 ** Global flag dcmEnableAutomaticInputDataCorrection now derived from OFGlobal
 **   and, thus, safe for use in multi-thread applications.
 **

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2000, OFFIS
+ *  Copyright (C) 1997-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -25,10 +25,10 @@
  *           of these classes supports the Solaris, POSIX and Win32 
  *           multi-thread APIs.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-26 09:27:26 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-06-01 15:51:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofthread.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -493,7 +493,10 @@ private:
  *
  * CVS/RCS Log:
  * $Log: ofthread.h,v $
- * Revision 1.2  2000-06-26 09:27:26  joergr
+ * Revision 1.3  2001-06-01 15:51:36  meichel
+ * Updated copyright header
+ *
+ * Revision 1.2  2000/06/26 09:27:26  joergr
  * Replaced _WIN32 by HAVE_WINDOWS_H to avoid compiler errors using CygWin-32.
  *
  * Revision 1.1  2000/03/29 16:41:23  meichel

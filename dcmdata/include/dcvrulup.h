@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2000, OFFIS
+ *  Copyright (C) 1994-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmUnsignedLongOffset
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-04-14 15:31:36 $
+ *  Update Date:      $Date: 2001-06-01 15:48:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrulup.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,7 +73,10 @@ class DcmUnsignedLongOffset : public DcmUnsignedLong
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrulup.h,v $
-** Revision 1.11  2000-04-14 15:31:36  meichel
+** Revision 1.12  2001-06-01 15:48:54  meichel
+** Updated copyright header
+**
+** Revision 1.11  2000/04/14 15:31:36  meichel
 ** Removed default value from output stream passed to print() method.
 **   Required for use in multi-thread environments.
 **

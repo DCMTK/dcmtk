@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2000, OFFIS
+ *  Copyright (C) 1996-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomMonochromeImage (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-05-14 09:49:17 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-06-01 15:49:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoimg.h,v $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1013,7 +1013,10 @@ class DiMonoImage
  *
  * CVS/RCS Log:
  * $Log: dimoimg.h,v $
- * Revision 1.28  2001-05-14 09:49:17  joergr
+ * Revision 1.29  2001-06-01 15:49:44  meichel
+ * Updated copyright header
+ *
+ * Revision 1.28  2001/05/14 09:49:17  joergr
  * Added support for "1 bit output" of overlay planes; useful to extract
  * overlay planes from the pixel data and store them separately in the dataset.
  *

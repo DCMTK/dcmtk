@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2000, OFFIS
+ *  Copyright (C) 1998-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: SiAuthorizationProfile
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-07 18:07:08 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-06-01 15:50:52 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -134,7 +134,10 @@ const int siautopr_cc_dummy_to_keep_linker_from_moaning = 0;
 
 /*
  *  $Log: siautopr.cc,v $
- *  Revision 1.2  2000-11-07 18:07:08  joergr
+ *  Revision 1.3  2001-06-01 15:50:52  meichel
+ *  Updated copyright header
+ *
+ *  Revision 1.2  2000/11/07 18:07:08  joergr
  *  Minor code purifications to keep Sun CC 2.0.1 quiet.
  *
  *  Revision 1.1  2000/11/07 16:49:03  meichel

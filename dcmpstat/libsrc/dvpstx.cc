@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2000, OFFIS
+ *  Copyright (C) 1998-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSTextObject
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-02 16:01:09 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2001-06-01 15:50:40 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -511,7 +511,10 @@ void DVPSTextObject::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
 
 /*
  *  $Log: dvpstx.cc,v $
- *  Revision 1.9  2000-06-02 16:01:09  meichel
+ *  Revision 1.10  2001-06-01 15:50:40  meichel
+ *  Updated copyright header
+ *
+ *  Revision 1.9  2000/06/02 16:01:09  meichel
  *  Adapted all dcmpstat classes to use OFConsole for log and error output
  *
  *  Revision 1.8  2000/05/31 13:02:41  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2000, OFFIS
+ *  Copyright (C) 1994-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -24,9 +24,9 @@
  *  the dcmdata library.  
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-05-03 14:19:10 $
+ *  Update Date:      $Date: 2001-06-01 15:49:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/mkdictbi.cc,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -362,7 +362,10 @@ main(int argc, char* argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: mkdictbi.cc,v $
-** Revision 1.19  2000-05-03 14:19:10  meichel
+** Revision 1.20  2001-06-01 15:49:25  meichel
+** Updated copyright header
+**
+** Revision 1.19  2000/05/03 14:19:10  meichel
 ** Added new class GlobalDcmDataDictionary which implements read/write lock
 **   semantics for safe access to the DICOM dictionary from multiple threads
 **   in parallel. The global dcmDataDict now uses this class.

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2000, OFFIS
+ *  Copyright (C) 1994-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -24,9 +24,9 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-05-25 09:50:17 $
+ *  Update Date:      $Date: 2001-06-01 15:48:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -426,7 +426,10 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.43  2001-05-25 09:50:17  meichel
+** Revision 1.44  2001-06-01 15:48:46  meichel
+** Updated copyright header
+**
+** Revision 1.43  2001/05/25 09:50:17  meichel
 ** Updated data dictionary and UID list (again).
 **
 ** Revision 1.42  2001/05/10 16:10:36  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000, OFFIS
+ *  Copyright (C) 2000-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRTemporalCoordinatesValue
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-06 11:20:32 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-06-01 15:51:05 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -267,7 +267,10 @@ class DSRTemporalCoordinatesValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcovl.h,v $
- *  Revision 1.3  2000-11-06 11:20:32  joergr
+ *  Revision 1.4  2001-06-01 15:51:05  meichel
+ *  Updated copyright header
+ *
+ *  Revision 1.3  2000/11/06 11:20:32  joergr
  *  Moved some protected methods to public part.
  *
  *  Revision 1.2  2000/11/01 16:23:26  joergr

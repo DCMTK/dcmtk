@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2000, OFFIS
+ *  Copyright (C) 1998-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSOverlayCurveActivationLayer
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-02 16:00:43 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2001-06-01 15:50:12 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -142,7 +142,10 @@ private:
 
 /*
  *  $Log: dvpsal.h,v $
- *  Revision 1.3  2000-06-02 16:00:43  meichel
+ *  Revision 1.4  2001-06-01 15:50:12  meichel
+ *  Updated copyright header
+ *
+ *  Revision 1.3  2000/06/02 16:00:43  meichel
  *  Adapted all dcmpstat classes to use OFConsole for log and error output
  *
  *  Revision 1.2  2000/03/08 16:28:48  meichel

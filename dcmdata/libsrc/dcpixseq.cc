@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2000, OFFIS
+ *  Copyright (C) 1994-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: class DcmPixelSequence
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-11-07 16:56:22 $
+ *  Update Date:      $Date: 2001-06-01 15:49:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixseq.cc,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -322,7 +322,10 @@ E_Condition DcmPixelSequence::writeSignatureFormat(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.cc,v $
-** Revision 1.23  2000-11-07 16:56:22  meichel
+** Revision 1.24  2001-06-01 15:49:07  meichel
+** Updated copyright header
+**
+** Revision 1.23  2000/11/07 16:56:22  meichel
 ** Initial release of dcmsign module for DICOM Digital Signatures
 **
 ** Revision 1.22  2000/03/08 16:26:39  meichel

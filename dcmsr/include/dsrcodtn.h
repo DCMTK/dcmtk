@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000, OFFIS
+ *  Copyright (C) 2000-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRCodeTreeNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-07 18:11:51 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-06-01 15:50:58 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -167,7 +167,10 @@ class DSRCodeTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodtn.h,v $
- *  Revision 1.4  2000-11-07 18:11:51  joergr
+ *  Revision 1.5  2001-06-01 15:50:58  meichel
+ *  Updated copyright header
+ *
+ *  Revision 1.4  2000/11/07 18:11:51  joergr
  *  Enhanced support for by-reference relationships.
  *
  *  Revision 1.3  2000/11/01 16:12:31  joergr

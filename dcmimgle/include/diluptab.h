@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2000, OFFIS
+ *  Copyright (C) 1996-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomLookupTable (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-07-07 13:42:30 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-06-01 15:49:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diluptab.h,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -254,7 +254,10 @@ class DiLookupTable
  *
  * CVS/RCS Log:
  * $Log: diluptab.h,v $
- * Revision 1.18  2000-07-07 13:42:30  joergr
+ * Revision 1.19  2001-06-01 15:49:43  meichel
+ * Updated copyright header
+ *
+ * Revision 1.18  2000/07/07 13:42:30  joergr
  * Added support for LIN OD presentation LUT shape.
  *
  * Revision 1.17  2000/03/08 16:24:17  meichel

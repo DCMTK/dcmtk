@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2000, OFFIS
+ *  Copyright (C) 1994-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmPixelSequence
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-11-07 16:56:08 $
+ *  Update Date:      $Date: 2001-06-01 15:48:42 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpixseq.h,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -127,7 +127,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.h,v $
-** Revision 1.20  2000-11-07 16:56:08  meichel
+** Revision 1.21  2001-06-01 15:48:42  meichel
+** Updated copyright header
+**
+** Revision 1.20  2000/11/07 16:56:08  meichel
 ** Initial release of dcmsign module for DICOM Digital Signatures
 **
 ** Revision 1.19  2000/04/14 16:02:23  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2000, OFFIS
+ *  Copyright (C) 1998-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Network Send Component (Store SCU)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-11-08 18:38:04 $
+ *  Update Date:      $Date: 2001-06-01 15:50:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpssnd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -984,7 +984,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpssnd.cc,v $
- * Revision 1.18  2000-11-08 18:38:04  meichel
+ * Revision 1.19  2001-06-01 15:50:10  meichel
+ * Updated copyright header
+ *
+ * Revision 1.18  2000/11/08 18:38:04  meichel
  * Updated dcmpstat IPC protocol for additional message parameters
  *
  * Revision 1.17  2000/10/10 12:23:45  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2000, OFFIS
+ *  Copyright (C) 1996-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomMonochromeCopyTemplate (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-09-12 10:04:44 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-06-01 15:49:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimocpt.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -107,7 +107,10 @@ class DiMonoCopyTemplate
  *
  * CVS/RCS Log:
  * $Log: dimocpt.h,v $
- * Revision 1.7  2000-09-12 10:04:44  joergr
+ * Revision 1.8  2001-06-01 15:49:44  meichel
+ * Updated copyright header
+ *
+ * Revision 1.7  2000/09/12 10:04:44  joergr
  * Corrected bug: wrong parameter for attribute search routine led to crashes
  * when multiple pixel data attributes were contained in the dataset (e.g.
  * IconImageSequence). Added new checking routines to avoid crashes when

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2000, OFFIS
+ *  Copyright (C) 1994-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Hash table interface for DICOM data dictionary
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-05-03 14:19:08 $
+ *  Update Date:      $Date: 2001-06-01 15:48:40 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dchashdi.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -188,7 +188,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dchashdi.h,v $
-** Revision 1.9  2000-05-03 14:19:08  meichel
+** Revision 1.10  2001-06-01 15:48:40  meichel
+** Updated copyright header
+**
+** Revision 1.9  2000/05/03 14:19:08  meichel
 ** Added new class GlobalDcmDataDictionary which implements read/write lock
 **   semantics for safe access to the DICOM dictionary from multiple threads
 **   in parallel. The global dcmDataDict now uses this class.

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000, OFFIS
+ *  Copyright (C) 2000-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRCompositeReferenceValue
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-01 16:13:55 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-06-01 15:50:59 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -281,7 +281,10 @@ class DSRCompositeReferenceValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcomvl.h,v $
- *  Revision 1.2  2000-11-01 16:13:55  joergr
+ *  Revision 1.3  2001-06-01 15:50:59  meichel
+ *  Updated copyright header
+ *
+ *  Revision 1.2  2000/11/01 16:13:55  joergr
  *  Added support for conversion to XML.
  *
  *  Revision 1.1  2000/10/20 10:13:26  joergr

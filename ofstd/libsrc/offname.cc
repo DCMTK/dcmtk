@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2000, OFFIS
+ *  Copyright (C) 1997-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: OFFilenameCreator
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-12 08:13:17 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-06-01 15:51:38 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -165,7 +165,10 @@ int OFFilenameCreator::myrand_r(unsigned int *seed)
 
 /*
  *  $Log: offname.cc,v $
- *  Revision 1.7  2000-10-12 08:13:17  joergr
+ *  Revision 1.8  2001-06-01 15:51:38  meichel
+ *  Updated copyright header
+ *
+ *  Revision 1.7  2000/10/12 08:13:17  joergr
  *  Added explicit typecast to avoid compiler warnings.
  *
  *  Revision 1.6  2000/10/10 12:01:07  meichel

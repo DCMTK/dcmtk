@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2000, OFFIS
+ *  Copyright (C) 1998-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Sample message server for class DVPSIPCClient
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-12-12 16:45:41 $
+ *  Update Date:      $Date: 2001-06-01 15:50:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/tests/msgserv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -359,7 +359,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: msgserv.cc,v $
- * Revision 1.3  2000-12-12 16:45:41  meichel
+ * Revision 1.4  2001-06-01 15:50:43  meichel
+ * Updated copyright header
+ *
+ * Revision 1.3  2000/12/12 16:45:41  meichel
  * Minor changes to keep gcc 2.7.x on SunOS 4.1.3 happy
  *
  * Revision 1.2  2000/11/08 18:38:32  meichel

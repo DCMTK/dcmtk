@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2000, OFFIS
+ *  Copyright (C) 1996-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -77,7 +77,10 @@ static DiRegister Init_dcmimage_Module;        // registration pointer is initia
  *
  * CVS/RCS Log:
  * $Log: diregist.h,v $
- * Revision 1.5  2000-03-10 13:15:08  meichel
+ * Revision 1.6  2001-06-01 15:49:31  meichel
+ * Updated copyright header
+ *
+ * Revision 1.5  2000/03/10 13:15:08  meichel
  * Release 1.1.1 (Release date - 2000-03-10)
  *
  * Revision 1.4  2000/03/08 16:21:53  meichel

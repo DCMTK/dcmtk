@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2000, OFFIS
+ *  Copyright (C) 1998-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSStoredPrint
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-07-18 16:03:44 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-06-01 15:50:21 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1149,7 +1149,10 @@ class DVPSStoredPrint
 
 /*
  *  $Log: dvpssp.h,v $
- *  Revision 1.33  2000-07-18 16:03:44  joergr
+ *  Revision 1.34  2001-06-01 15:50:21  meichel
+ *  Updated copyright header
+ *
+ *  Revision 1.33  2000/07/18 16:03:44  joergr
  *  Moved method convertODtoLum/PValue from class DVInterface to DVPSStoredPrint
  *  and corrected implementation.
  *  Changed behaviour of methods getMin/MaxDensityValue (return default value if

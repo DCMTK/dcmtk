@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2000, OFFIS
+ *  Copyright (C) 1998-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DcmSignature
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-12-12 16:46:32 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2001-06-01 15:50:52 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -848,7 +848,10 @@ void dcmsign_cc_dummy_to_keep_linker_from_moaning()
 
 /*
  *  $Log: dcmsign.cc,v $
- *  Revision 1.3  2000-12-12 16:46:32  meichel
+ *  Revision 1.4  2001-06-01 15:50:52  meichel
+ *  Updated copyright header
+ *
+ *  Revision 1.3  2000/12/12 16:46:32  meichel
  *  Minor changes to keep gcc 2.7.x on SunOS 4.1.3 happy
  *
  *  Revision 1.2  2000/11/07 18:07:07  joergr

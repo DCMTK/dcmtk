@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000, OFFIS
+ *  Copyright (C) 2000-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRUIDRefTreeNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-07 18:14:32 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-06-01 15:51:06 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -174,7 +174,10 @@ class DSRUIDRefTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsruidtn.h,v $
- *  Revision 1.4  2000-11-07 18:14:32  joergr
+ *  Revision 1.5  2001-06-01 15:51:06  meichel
+ *  Updated copyright header
+ *
+ *  Revision 1.4  2000/11/07 18:14:32  joergr
  *  Enhanced support for by-reference relationships.
  *
  *  Revision 1.3  2000/11/01 16:23:28  joergr

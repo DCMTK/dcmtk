@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000, OFFIS
+ *  Copyright (C) 2000-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRReferencedTimeOffsetList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-06 11:34:25 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-06-01 15:51:10 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -140,7 +140,10 @@ E_Condition DSRReferencedTimeOffsetList::write(DcmItem &dataset,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcoto.cc,v $
- *  Revision 1.2  2000-11-06 11:34:25  joergr
+ *  Revision 1.3  2001-06-01 15:51:10  meichel
+ *  Updated copyright header
+ *
+ *  Revision 1.2  2000/11/06 11:34:25  joergr
  *  Added parameter to print() method specifying the item separator character.
  *
  *  Revision 1.1  2000/10/26 14:40:28  joergr

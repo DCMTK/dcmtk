@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2000, OFFIS
+ *  Copyright (C) 1994-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,9 @@
  *  for OS environments which cannot pass arguments on the command line.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-04-14 16:01:22 $
+ *  Update Date:      $Date: 2001-06-01 15:48:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/cmdlnarg.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,7 +55,10 @@ void prepareCmdLineArgs(int& argc, char** argv,
 /*
 ** CVS/RCS Log:
 ** $Log: cmdlnarg.h,v $
-** Revision 1.5  2000-04-14 16:01:22  meichel
+** Revision 1.6  2001-06-01 15:48:31  meichel
+** Updated copyright header
+**
+** Revision 1.5  2000/04/14 16:01:22  meichel
 ** Minor changes for thread safety.
 **
 ** Revision 1.4  2000/03/08 16:26:10  meichel

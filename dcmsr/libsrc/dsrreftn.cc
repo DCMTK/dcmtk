@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000, OFFIS
+ *  Copyright (C) 2000-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRByReferenceTreeNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-07 18:33:31 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-06-01 15:51:09 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -196,7 +196,10 @@ OFBool DSRByReferenceTreeNode::canAddNode(const E_DocumentType /* documentType *
 /*
  *  CVS/RCS Log:
  *  $Log: dsrreftn.cc,v $
- *  Revision 1.3  2000-11-07 18:33:31  joergr
+ *  Revision 1.4  2001-06-01 15:51:09  meichel
+ *  Updated copyright header
+ *
+ *  Revision 1.3  2000/11/07 18:33:31  joergr
  *  Enhanced support for by-reference relationships.
  *
  *  Revision 1.2  2000/11/01 16:37:02  joergr

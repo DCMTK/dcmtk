@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2000, OFFIS
+ *  Copyright (C) 1998-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSIPCMessage
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-11-08 18:38:15 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2001-06-01 15:50:18 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -284,7 +284,10 @@ private:
 
 /*
  *  $Log: dvpsmsg.h,v $
- *  Revision 1.2  2000-11-08 18:38:15  meichel
+ *  Revision 1.3  2001-06-01 15:50:18  meichel
+ *  Updated copyright header
+ *
+ *  Revision 1.2  2000/11/08 18:38:15  meichel
  *  Updated dcmpstat IPC protocol for additional message parameters
  *
  *  Revision 1.1  2000/10/10 12:24:36  meichel

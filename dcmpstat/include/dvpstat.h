@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2000, OFFIS
+ *  Copyright (C) 1998-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-11-13 15:50:43 $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  Update Date:      $Date: 2001-06-01 15:50:23 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2177,7 +2177,10 @@ private:
 
 /*
  *  $Log: dvpstat.h,v $
- *  Revision 1.38  2000-11-13 15:50:43  meichel
+ *  Revision 1.39  2001-06-01 15:50:23  meichel
+ *  Updated copyright header
+ *
+ *  Revision 1.38  2000/11/13 15:50:43  meichel
  *  Added dcmpstat support methods for creating image references
  *    in SR documents.
  *

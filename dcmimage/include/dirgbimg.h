@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2000, OFFIS
+ *  Copyright (C) 1996-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DicomRGBImage (Header)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:21:53 $
+ *  Update Date:      $Date: 2001-06-01 15:49:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dirgbimg.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,7 +66,10 @@ class DiRGBImage
  *
  * CVS/RCS Log:
  * $Log: dirgbimg.h,v $
- * Revision 1.5  2000-03-08 16:21:53  meichel
+ * Revision 1.6  2001-06-01 15:49:31  meichel
+ * Updated copyright header
+ *
+ * Revision 1.5  2000/03/08 16:21:53  meichel
  * Updated copyright header.
  *
  * Revision 1.4  1999/04/28 12:52:02  joergr

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2000, OFFIS
+ *  Copyright (C) 1997-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: test programm for class OfCommandLine
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:36:07 $
+ *  Update Date:      $Date: 2001-06-01 15:51:41 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/tests/Attic/tstcmdln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -113,7 +113,10 @@ int main(int argc, char *argv[])
 **
 ** CVS/RCS Log:
 ** $Log: tstcmdln.cc,v $
-** Revision 1.3  2000-03-08 16:36:07  meichel
+** Revision 1.4  2001-06-01 15:51:41  meichel
+** Updated copyright header
+**
+** Revision 1.3  2000/03/08 16:36:07  meichel
 ** Updated copyright header.
 **
 ** Revision 1.2  2000/03/03 14:02:52  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2000, OFFIS
+ *  Copyright (C) 1996-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DicomColorMonochromeTemplate (Header)
  *
  *  Last Update:         $Author: meichel $
- *  Update Date:         $Date: 2000-03-08 16:21:50 $
+ *  Update Date:         $Date: 2001-06-01 15:49:28 $
  *  Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicomot.h,v $
- *  CVS/RCS Revision:    $Revision: 1.9 $
+ *  CVS/RCS Revision:    $Revision: 1.10 $
  *  Status:              $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -106,7 +106,10 @@ class DiColorMonoTemplate
  *
  * CVS/RCS Log:
  * $Log: dicomot.h,v $
- * Revision 1.9  2000-03-08 16:21:50  meichel
+ * Revision 1.10  2001-06-01 15:49:28  meichel
+ * Updated copyright header
+ *
+ * Revision 1.9  2000/03/08 16:21:50  meichel
  * Updated copyright header.
  *
  * Revision 1.8  1999/09/17 14:03:42  joergr

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2000, OFFIS
+ *  Copyright (C) 1996-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DicomCIELABLUT (Header)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:24:14 $
+ *  Update Date:      $Date: 2001-06-01 15:49:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dicielut.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -112,7 +112,10 @@ class DiCIELABLUT
  *
  * CVS/RCS Log:
  * $Log: dicielut.h,v $
- * Revision 1.4  2000-03-08 16:24:14  meichel
+ * Revision 1.5  2001-06-01 15:49:39  meichel
+ * Updated copyright header
+ *
+ * Revision 1.4  2000/03/08 16:24:14  meichel
  * Updated copyright header.
  *
  * Revision 1.3  1999/10/18 15:05:50  joergr

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2000, OFFIS
+ *  Copyright (C) 1994-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -25,9 +25,9 @@
  *  not be used directly in applications. No identification exists.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-05-10 12:52:58 $
+ *  Update Date:      $Date: 2001-06-01 15:49:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrpobw.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -289,7 +289,10 @@ E_Condition DcmPolymorphOBOW::writeSignatureFormat(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrpobw.cc,v $
-** Revision 1.10  2001-05-10 12:52:58  meichel
+** Revision 1.11  2001-06-01 15:49:19  meichel
+** Updated copyright header
+**
+** Revision 1.10  2001/05/10 12:52:58  meichel
 ** Added public createUint16Array() method in class DcmPolymorphOBOW.
 **
 ** Revision 1.9  2000/11/07 16:56:25  meichel

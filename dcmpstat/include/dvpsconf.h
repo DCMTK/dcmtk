@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2000, OFFIS
+ *  Copyright (C) 1998-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSConfig
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:28:49 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2001-06-01 15:50:13 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -270,7 +270,10 @@ private:
 
 /*
  *  $Log: dvpsconf.h,v $
- *  Revision 1.3  2000-03-08 16:28:49  meichel
+ *  Revision 1.4  2001-06-01 15:50:13  meichel
+ *  Updated copyright header
+ *
+ *  Revision 1.3  2000/03/08 16:28:49  meichel
  *  Updated copyright header.
  *
  *  Revision 1.2  1999/04/30 16:40:47  meichel

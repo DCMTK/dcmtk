@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2000, OFFIS
+ *  Copyright (C) 1994-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -24,9 +24,9 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-05-25 09:50:24 $
+ *  Update Date:      $Date: 2001-06-01 15:49:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcuid.cc,v $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -781,7 +781,10 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.32  2001-05-25 09:50:24  meichel
+** Revision 1.33  2001-06-01 15:49:12  meichel
+** Updated copyright header
+**
+** Revision 1.32  2001/05/25 09:50:24  meichel
 ** Updated data dictionary and UID list (again).
 **
 ** Revision 1.31  2001/05/10 16:10:41  meichel

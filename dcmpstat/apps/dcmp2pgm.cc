@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2000, OFFIS
+ *  Copyright (C) 1998-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -26,9 +26,9 @@
  *    ignored. If no presentation state is loaded, a default is created.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-11-13 15:50:39 $
+ *  Update Date:      $Date: 2001-06-01 15:50:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmp2pgm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -576,7 +576,10 @@ void dumpPresentationState(DVInterface& dvi)
 /*
  * CVS/RCS Log:
  * $Log: dcmp2pgm.cc,v $
- * Revision 1.23  2000-11-13 15:50:39  meichel
+ * Revision 1.24  2001-06-01 15:50:07  meichel
+ * Updated copyright header
+ *
+ * Revision 1.23  2000/11/13 15:50:39  meichel
  * Added dcmpstat support methods for creating image references
  *   in SR documents.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2000, OFFIS
+ *  Copyright (C) 1998-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Create and Verify DICOM Digital Signatures
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-05-25 10:08:56 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2001-06-01 15:50:45 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1218,7 +1218,10 @@ int main(int, char *[])
 
 /*
  *  $Log: dcmsign.cc,v $
- *  Revision 1.5  2001-05-25 10:08:56  meichel
+ *  Revision 1.6  2001-06-01 15:50:45  meichel
+ *  Updated copyright header
+ *
+ *  Revision 1.5  2001/05/25 10:08:56  meichel
  *  Added warning to dcmsign application that current version is incompatible
  *    to final text of Supplement 41.
  *

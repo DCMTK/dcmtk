@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2000, OFFIS
+ *  Copyright (C) 1996-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomImage (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-05-25 10:35:02 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-06-01 15:49:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diimage.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -582,7 +582,10 @@ int DiImage::setRowColumnRatio(const double ratio)
  *
  * CVS/RCS Log:
  * $Log: diimage.cc,v $
- * Revision 1.12  2000-05-25 10:35:02  joergr
+ * Revision 1.13  2001-06-01 15:49:55  meichel
+ * Updated copyright header
+ *
+ * Revision 1.12  2000/05/25 10:35:02  joergr
  * Removed ununsed variable from parameter list (avoid compiler warnings).
  *
  * Revision 1.11  2000/05/03 09:47:23  joergr

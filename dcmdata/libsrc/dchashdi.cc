@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2000, OFFIS
+ *  Copyright (C) 1994-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Hash table interface for DICOM data dictionary
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-10-12 10:26:52 $
+ *  Update Date:      $Date: 2001-06-01 15:49:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dchashdi.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -512,7 +512,10 @@ DcmHashDict::loadSummary(ostream& out)
 /*
 ** CVS/RCS Log:
 ** $Log: dchashdi.cc,v $
-** Revision 1.13  2000-10-12 10:26:52  meichel
+** Revision 1.14  2001-06-01 15:49:04  meichel
+** Updated copyright header
+**
+** Revision 1.13  2000/10/12 10:26:52  meichel
 ** Updated data dictionary for 2000 edition of the DICOM standard
 **
 ** Revision 1.12  2000/05/03 14:19:09  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2000, OFFIS
+ *  Copyright (C) 1996-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomObjectCounter (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-07-12 12:47:47 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-06-01 15:49:48 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diobjcou.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -129,7 +129,10 @@ class DiObjectCounter
  *
  * CVS/RCS Log:
  * $Log: diobjcou.h,v $
- * Revision 1.7  2000-07-12 12:47:47  joergr
+ * Revision 1.8  2001-06-01 15:49:48  meichel
+ * Updated copyright header
+ *
+ * Revision 1.7  2000/07/12 12:47:47  joergr
  * Correct bug in destructor of ObjectCounter class.
  *
  * Revision 1.6  2000/05/25 10:35:23  joergr

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000, OFFIS
+ *  Copyright (C) 2000-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRImageFrameList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-06 11:16:06 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-06-01 15:51:01 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -107,7 +107,10 @@ class DSRImageFrameList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgfr.h,v $
- *  Revision 1.4  2000-11-06 11:16:06  joergr
+ *  Revision 1.5  2001-06-01 15:51:01  meichel
+ *  Updated copyright header
+ *
+ *  Revision 1.4  2000/11/06 11:16:06  joergr
  *  Added parameter to print() method specifying the item separator character.
  *
  *  Revision 1.3  2000/11/01 16:19:20  joergr

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2000, OFFIS
+ *  Copyright (C) 1998-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Classes for caching of the image database (Header/Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-16 11:39:10 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-06-01 15:50:11 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/include/Attic/dvcache.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -910,7 +910,10 @@ class DVStudyCache
  *
  * CVS/RCS Log:
  * $Log: dvcache.h,v $
- * Revision 1.13  2000-10-16 11:39:10  joergr
+ * Revision 1.14  2001-06-01 15:50:11  meichel
+ * Updated copyright header
+ *
+ * Revision 1.13  2000/10/16 11:39:10  joergr
  * Added method allowing to select an instance by instance UID and SOP class
  * UID (without series and study UID). Required for composite references in
  * DICOM SR.

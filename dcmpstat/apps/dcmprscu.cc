@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2000, OFFIS
+ *  Copyright (C) 1998-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Print Spooler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-12-13 13:23:02 $
+ *  Update Date:      $Date: 2001-06-01 15:50:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmprscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -991,7 +991,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprscu.cc,v $
- * Revision 1.4  2000-12-13 13:23:02  meichel
+ * Revision 1.5  2001-06-01 15:50:07  meichel
+ * Updated copyright header
+ *
+ * Revision 1.4  2000/12/13 13:23:02  meichel
  * Including dcompat.h, needed on MacOS X
  *
  * Revision 1.3  2000/06/20 14:50:05  meichel

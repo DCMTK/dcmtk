@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2000, OFFIS
+ *  Copyright (C) 1994-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: include most dcmdata files that are usually required
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:19 $
+ *  Update Date:      $Date: 2001-06-01 15:48:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dctk.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -112,7 +112,10 @@
 /*
  * CVS/RCS Log:
  * $Log: dctk.h,v $
- * Revision 1.10  2000-03-08 16:26:19  meichel
+ * Revision 1.11  2001-06-01 15:48:45  meichel
+ * Updated copyright header
+ *
+ * Revision 1.10  2000/03/08 16:26:19  meichel
  * Updated copyright header.
  *
  * Revision 1.9  2000/02/29 11:48:38  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2000, OFFIS
+ *  Copyright (C) 1994-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: class DcmMetaInfo
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-05-10 12:46:52 $
+ *  Update Date:      $Date: 2001-06-01 15:49:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcmetinf.cc,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -545,7 +545,10 @@ E_Condition DcmMetaInfo::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.cc,v $
-** Revision 1.22  2001-05-10 12:46:52  meichel
+** Revision 1.23  2001-06-01 15:49:06  meichel
+** Updated copyright header
+**
+** Revision 1.22  2001/05/10 12:46:52  meichel
 ** Fixed minor bug in DcmMetaInfo::transferEnd()
 **
 ** Revision 1.21  2001/05/03 08:15:22  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2000, OFFIS
+ *  Copyright (C) 1996-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomRotateTemplate (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-09-12 10:04:45 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-06-01 15:49:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dirotat.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -366,7 +366,10 @@ class DiRotateTemplate
  *
  * CVS/RCS Log:
  * $Log: dirotat.h,v $
- * Revision 1.9  2000-09-12 10:04:45  joergr
+ * Revision 1.10  2001-06-01 15:49:50  meichel
+ * Updated copyright header
+ *
+ * Revision 1.9  2000/09/12 10:04:45  joergr
  * Corrected bug: wrong parameter for attribute search routine led to crashes
  * when multiple pixel data attributes were contained in the dataset (e.g.
  * IconImageSequence). Added new checking routines to avoid crashes when

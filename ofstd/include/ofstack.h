@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2000, OFFIS
+ *  Copyright (C) 1997-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,10 +22,10 @@
  *  Purpose:
  *	    Defines a template stack class with interfaces similar to the C++ Standard
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-12 08:11:35 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-06-01 15:51:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstack.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -242,7 +242,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: ofstack.h,v $
-** Revision 1.9  2000-10-12 08:11:35  joergr
+** Revision 1.10  2001-06-01 15:51:35  meichel
+** Updated copyright header
+**
+** Revision 1.9  2000/10/12 08:11:35  joergr
 ** Added assignment operator to class OFStack.
 ** Declared (unimplemented) copy constructor and assignment operator in class
 ** OFStackLink to avoid compiler warnings (e.g. on Sun CC 2.0.1).

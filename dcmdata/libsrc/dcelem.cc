@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2000, OFFIS
+ *  Copyright (C) 1994-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: class DcmElement
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-05-10 12:50:23 $
+ *  Update Date:      $Date: 2001-06-01 15:49:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcelem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -938,7 +938,10 @@ E_Condition DcmElement::writeSignatureFormat(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
-** Revision 1.33  2001-05-10 12:50:23  meichel
+** Revision 1.34  2001-06-01 15:49:03  meichel
+** Updated copyright header
+**
+** Revision 1.33  2001/05/10 12:50:23  meichel
 ** Added protected createEmptyValue() method in class DcmElement.
 **
 ** Revision 1.32  2000/11/07 16:56:19  meichel

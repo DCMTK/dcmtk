@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2000, OFFIS
+ *  Copyright (C) 1997-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Class for measurement of time (Header)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:36:03 $
+ *  Update Date:      $Date: 2001-06-01 15:51:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/oftimer.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -121,7 +121,10 @@ class OFTimer
  *
  * CVS/RCS Log:
  * $Log: oftimer.h,v $
- * Revision 1.7  2000-03-08 16:36:03  meichel
+ * Revision 1.8  2001-06-01 15:51:36  meichel
+ * Updated copyright header
+ *
+ * Revision 1.7  2000/03/08 16:36:03  meichel
  * Updated copyright header.
  *
  * Revision 1.6  2000/02/02 10:56:25  joergr

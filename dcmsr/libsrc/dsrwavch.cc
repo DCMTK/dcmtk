@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000, OFFIS
+ *  Copyright (C) 2000-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRWaveformChannelList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-06 11:34:25 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-06-01 15:51:11 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -169,7 +169,10 @@ void DSRWaveformChannelList::addItem(const Uint16 multiplexGroupNumber,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavch.cc,v $
- *  Revision 1.6  2000-11-06 11:34:25  joergr
+ *  Revision 1.7  2001-06-01 15:51:11  meichel
+ *  Updated copyright header
+ *
+ *  Revision 1.6  2000/11/06 11:34:25  joergr
  *  Added parameter to print() method specifying the item separator character.
  *
  *  Revision 1.5  2000/10/26 14:37:23  joergr

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2000, OFFIS
+ *  Copyright (C) 1999-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Define general purpose facility for log file output
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-12-12 17:19:57 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-06-01 15:51:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/oflogfil.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -206,7 +206,10 @@ class OFLogFile
  *
  * CVS/RCS Log:
  * $Log: oflogfil.h,v $
- * Revision 1.3  2000-12-12 17:19:57  joergr
+ * Revision 1.4  2001-06-01 15:51:34  meichel
+ * Updated copyright header
+ *
+ * Revision 1.3  2000/12/12 17:19:57  joergr
  * Changed type of stream 'open_mode' from long to int to avoid compiler
  * warnings reported by SunCC 2.0.1.
  *

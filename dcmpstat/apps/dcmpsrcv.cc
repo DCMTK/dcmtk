@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2000, OFFIS
+ *  Copyright (C) 1998-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 11:02:06 $
+ *  Update Date:      $Date: 2001-06-01 15:50:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsrcv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1475,7 +1475,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsrcv.cc,v $
- * Revision 1.28  2001-06-01 11:02:06  meichel
+ * Revision 1.29  2001-06-01 15:50:09  meichel
+ * Updated copyright header
+ *
+ * Revision 1.28  2001/06/01 11:02:06  meichel
  * Implemented global flag and command line option to disable reverse
  *   DNS hostname lookup using gethostbyaddr when accepting associations.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2000, OFFIS
+ *  Copyright (C) 1994-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: class DcmLongString
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:48 $
+ *  Update Date:      $Date: 2001-06-01 15:49:17 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrlo.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -99,7 +99,10 @@ DcmLongString::getOFStringArray(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrlo.cc,v $
-** Revision 1.9  2000-03-08 16:26:48  meichel
+** Revision 1.10  2001-06-01 15:49:17  meichel
+** Updated copyright header
+**
+** Revision 1.9  2000/03/08 16:26:48  meichel
 ** Updated copyright header.
 **
 ** Revision 1.8  1999/03/31 09:25:53  meichel

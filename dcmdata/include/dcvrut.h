@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2000, OFFIS
+ *  Copyright (C) 1994-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -24,9 +24,9 @@
  *  Value Representation UT is defined in Correction Proposal 101
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:28 $
+ *  Update Date:      $Date: 2001-06-01 15:48:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrut.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -70,7 +70,10 @@ class DcmUnlimitedText : public DcmCharString
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrut.h,v $
-** Revision 1.4  2000-03-08 16:26:28  meichel
+** Revision 1.5  2001-06-01 15:48:55  meichel
+** Updated copyright header
+**
+** Revision 1.4  2000/03/08 16:26:28  meichel
 ** Updated copyright header.
 **
 ** Revision 1.3  1999/03/31 09:25:12  meichel

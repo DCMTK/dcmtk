@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2000, OFFIS
+ *  Copyright (C) 1998-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DcmTLSTransportLayer
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-11-14 13:54:29 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2001-06-01 15:51:13 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -447,7 +447,10 @@ void tlslayer_dummy_function()
 
 /*
  *  $Log: tlslayer.cc,v $
- *  Revision 1.6  2000-11-14 13:54:29  meichel
+ *  Revision 1.7  2001-06-01 15:51:13  meichel
+ *  Updated copyright header
+ *
+ *  Revision 1.6  2000/11/14 13:54:29  meichel
  *  Renamed callback functions to avoid linker name clashes
  *
  *  Revision 1.5  2000/11/08 11:21:13  meichel

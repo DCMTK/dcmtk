@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2000, OFFIS
+ *  Copyright (C) 1999-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Define alias for cout, cerr and clog
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-12-13 15:14:35 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-06-01 15:51:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofconsol.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -137,7 +137,10 @@ OFBool OFConsole::isJoined()
  *
  * CVS/RCS Log:
  * $Log: ofconsol.cc,v $
- * Revision 1.3  2000-12-13 15:14:35  joergr
+ * Revision 1.4  2001-06-01 15:51:38  meichel
+ * Updated copyright header
+ *
+ * Revision 1.3  2000/12/13 15:14:35  joergr
  * Introduced dummy parameter for "default" constructor of class OFConsole
  * to "convince" linker of gcc 2.5.8 (NeXTSTEP) to allocate memory for global
  * variable 'ofConsole'.

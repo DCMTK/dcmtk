@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2000, OFFIS
+ *  Copyright (C) 1996-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DicomCIELABFunction (Header)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:24:13 $
+ *  Update Date:      $Date: 2001-06-01 15:49:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diciefn.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -136,7 +136,10 @@ class DiCIELABFunction
  *
  * CVS/RCS Log:
  * $Log: diciefn.h,v $
- * Revision 1.6  2000-03-08 16:24:13  meichel
+ * Revision 1.7  2001-06-01 15:49:39  meichel
+ * Updated copyright header
+ *
+ * Revision 1.6  2000/03/08 16:24:13  meichel
  * Updated copyright header.
  *
  * Revision 1.5  2000/03/06 18:18:59  joergr

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2000, OFFIS
+ *  Copyright (C) 1997-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -26,9 +26,9 @@
  * 
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-10-10 12:01:21 $
+ *  Update Date:      $Date: 2001-06-01 15:51:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofglobal.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -144,7 +144,10 @@ private:
  *
  * CVS/RCS Log:
  * $Log: ofglobal.h,v $
- * Revision 1.3  2000-10-10 12:01:21  meichel
+ * Revision 1.4  2001-06-01 15:51:34  meichel
+ * Updated copyright header
+ *
+ * Revision 1.3  2000/10/10 12:01:21  meichel
  * Created/updated doc++ comments
  *
  * Revision 1.2  2000/05/30 17:03:38  meichel

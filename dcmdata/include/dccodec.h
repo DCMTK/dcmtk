@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2000, OFFIS
+ *  Copyright (C) 1994-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Interface of abstract class DcmCodec and the class DcmCodecStruct
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-05-25 09:53:51 $
+ *  Update Date:      $Date: 2001-06-01 15:48:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dccodec.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -140,7 +140,10 @@ const DcmCodecStruct * searchGlobalCodec(const E_TransferSyntax repType);
 /*
 ** CVS/RCS Log:
 ** $Log: dccodec.h,v $
-** Revision 1.8  2001-05-25 09:53:51  meichel
+** Revision 1.9  2001-06-01 15:48:34  meichel
+** Updated copyright header
+**
+** Revision 1.8  2001/05/25 09:53:51  meichel
 ** Modified DcmCodec::decode() interface, required for future dcmjpeg module.
 **
 ** Revision 1.7  2000/09/27 08:19:54  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2000, OFFIS
+ *  Copyright (C) 1998-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPSHelper
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-12-19 13:45:49 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-06-01 15:50:32 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -270,7 +270,10 @@ E_Condition DVPSHelper::addReferencedUIDItem(DcmSequenceOfItems& seq, const char
 /*
  *  CVS/RCS Log:
  *  $Log: dvpshlp.cc,v $
- *  Revision 1.7  2000-12-19 13:45:49  joergr
+ *  Revision 1.8  2001-06-01 15:50:32  meichel
+ *  Updated copyright header
+ *
+ *  Revision 1.7  2000/12/19 13:45:49  joergr
  *  Added #include statement to keep gcc 2.5.8 (NeXTSTEP) quiet.
  *
  *  Revision 1.6  2000/10/16 11:46:15  joergr

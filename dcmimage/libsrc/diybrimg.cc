@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2000, OFFIS
+ *  Copyright (C) 1996-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DicomYBRImage (Source)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:21:58 $
+ *  Update Date:      $Date: 2001-06-01 15:49:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/diybrimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -89,7 +89,10 @@ DiYBRImage::~DiYBRImage()
 **
 ** CVS/RCS Log:
 ** $Log: diybrimg.cc,v $
-** Revision 1.4  2000-03-08 16:21:58  meichel
+** Revision 1.5  2001-06-01 15:49:36  meichel
+** Updated copyright header
+**
+** Revision 1.4  2000/03/08 16:21:58  meichel
 ** Updated copyright header.
 **
 ** Revision 1.3  1998/11/27 14:35:29  joergr

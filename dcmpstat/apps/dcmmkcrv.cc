@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2000, OFFIS
+ *  Copyright (C) 1998-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: This application reads a DICOM image, adds a Curve and writes it back.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:28:40 $
+ *  Update Date:      $Date: 2001-06-01 15:50:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmkcrv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -417,7 +417,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmmkcrv.cc,v $
-** Revision 1.6  2000-03-08 16:28:40  meichel
+** Revision 1.7  2001-06-01 15:50:06  meichel
+** Updated copyright header
+**
+** Revision 1.6  2000/03/08 16:28:40  meichel
 ** Updated copyright header.
 **
 ** Revision 1.5  2000/03/06 18:21:44  joergr

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2000, OFFIS
+ *  Copyright (C) 1994-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: buffer class
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:10 $
+ *  Update Date:      $Date: 2001-06-01 15:48:32 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcbuf.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -255,7 +255,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcbuf.h,v $
-** Revision 1.8  2000-03-08 16:26:10  meichel
+** Revision 1.9  2001-06-01 15:48:32  meichel
+** Updated copyright header
+**
+** Revision 1.8  2000/03/08 16:26:10  meichel
 ** Updated copyright header.
 **
 ** Revision 1.7  2000/02/02 14:31:15  joergr

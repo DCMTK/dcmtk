@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000, OFFIS
+ *  Copyright (C) 2000-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRTreeNode, DSRTree
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-01 16:22:11 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-06-01 15:51:06 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -203,7 +203,10 @@ class DSRTree
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtree.h,v $
- *  Revision 1.4  2000-11-01 16:22:11  joergr
+ *  Revision 1.5  2001-06-01 15:51:06  meichel
+ *  Updated copyright header
+ *
+ *  Revision 1.4  2000/11/01 16:22:11  joergr
  *  Now derive "protected" from base class DSRTypes instead of "public".
  *
  *  Revision 1.3  2000/10/18 17:09:29  joergr
