@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSFilmSession
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-05-31 12:58:11 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-06-02 12:45:05 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -88,10 +88,10 @@ OFBool DVPSFilmSession::printSCPCreate(DVConfiguration& cfg, const char *cfgname
     else
     {
       Sint32 numCopies=0;
-      const char *numCopiesString=NULL;
+      char *numCopiesString=NULL;
       if ((EC_Normal != numberOfCopies.getSint32(numCopies)) || (numCopies < 1))
       {
-        numberOfCopies.getString((char *)numCopiesString);
+        numberOfCopies.getString(numCopiesString);
         if (numCopiesString==NULL) numCopiesString = "";
         CERR << "cannot create Basic Film Session: illegal number of copies: '" << numCopiesString << "'" << endl;
         rsp.msg.NCreateRSP.DimseStatus = 0x0106; // invalid attribute value
@@ -315,10 +315,10 @@ OFBool DVPSFilmSession::printSCPSet(DVConfiguration& cfg, const char *cfgname, D
     {
       numberOfCopies = *((DcmIntegerString *)(stack.top()));
       Sint32 numCopies=0;
-      const char *numCopiesString=NULL;
+      char *numCopiesString=NULL;
       if ((EC_Normal != numberOfCopies.getSint32(numCopies)) || (numCopies < 1))
       {
-        numberOfCopies.getString((char *)numCopiesString);
+        numberOfCopies.getString(numCopiesString);
         if (numCopiesString==NULL) numCopiesString = "";
         CERR << "cannot update Basic Film Session: illegal number of copies: '" << numCopiesString << "'" << endl;
         rsp.msg.NSetRSP.DimseStatus = 0x0106; // invalid attribute value
@@ -479,7 +479,10 @@ OFBool DVPSFilmSession::printSCPSet(DVConfiguration& cfg, const char *cfgname, D
 
 /*
  *  $Log: dvpsfs.cc,v $
- *  Revision 1.1  2000-05-31 12:58:11  meichel
+ *  Revision 1.2  2000-06-02 12:45:05  joergr
+ *  Removed const type specifier to avoid compiler warnings reported by MSVC.
+ *
+ *  Revision 1.1  2000/05/31 12:58:11  meichel
  *  Added initial Print SCP support
  *
  *
