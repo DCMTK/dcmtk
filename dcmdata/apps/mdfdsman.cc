@@ -22,9 +22,9 @@
  *  Purpose: Class for modifying DICOM-Files and Datasets
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2003-12-10 16:19:20 $
+ *  Update Date:      $Date: 2003-12-17 17:07:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/mdfdsman.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,7 +44,7 @@
 
 
 MdfDatasetManager::MdfDatasetManager(const OFBool &debug)
-:dfile(NULL), dset(NULL), debug_option(OFFalse)
+:act_file(""),dfile(NULL), dset(NULL), debug_option(OFFalse)
 // Date         : May, 13th, 2003
 // Author       : Michael Onken
 // Task         : Constructor, initializes member-variables
@@ -63,8 +63,9 @@ OFCondition MdfDatasetManager::loadFile(const char *file_name)
 // Return Value : An OFCondition, wheter loading was succesfull or not
 {
     OFCondition cond;
-    //delete old dfile and free memory
+    //delete old dfile and free memory and reset act_file
     delete dfile;
+    act_file="";
     dfile = new DcmFileFormat();
     //load File into Attribute dfile
     if (debug_option)
@@ -90,6 +91,8 @@ OFCondition MdfDatasetManager::loadFile(const char *file_name)
          *meanwhile
          */
         dset->loadAllDataIntoMemory();
+        //save filename to member variable
+        act_file=file_name;
     }
     return cond;
 }
@@ -495,6 +498,16 @@ OFCondition MdfDatasetManager::saveFile(const char *file)
 }
 
 
+OFCondition MdfDatasetManager::saveFile()
+// Date         : December, 17th, 2003
+// Author       : Michael Onken
+// Task         : Saves current Dataset back to a file using original filename
+// Return Value : returns EC_normal if everything is ok, else an error
+{
+    return saveFile(act_file.c_str());
+}
+
+
 OFCondition MdfDatasetManager::startInsert(DcmItem *item,
                                            DcmTagKey &search_key,
                                            const OFString &value)
@@ -554,6 +567,16 @@ DcmDataset* MdfDatasetManager::getDataset()
 }
 
 
+// Date         : December, 17st, 2003
+// Author       : Michael Onken
+// Task         : Returns filename of the file, that's loaded actually.
+// Return Value : returns filename and "" if no file is loaded.
+OFString MdfDatasetManager::getFilename()
+{
+    return act_file;
+}
+
+
 void MdfDatasetManager::debugMsg(const OFString &s1,
                                  const OFString &s2,
                                  const OFString &s3)
@@ -588,7 +611,11 @@ MdfDatasetManager::~MdfDatasetManager()
 /*
 ** CVS/RCS Log:
 ** $Log: mdfdsman.cc,v $
-** Revision 1.7  2003-12-10 16:19:20  onken
+** Revision 1.8  2003-12-17 17:07:22  onken
+** MdfDatasetManager now remembers loaded filename. Additional save function
+** added.
+**
+** Revision 1.7  2003/12/10 16:19:20  onken
 ** Changed API of MdfDatasetManager, so that its transparent for user, whether
 ** he wants to modify itemtags or tags at 1. level.
 **

@@ -22,9 +22,9 @@
  *  Purpose: Class for modifying DICOM-Files and Datasets
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2003-12-10 16:19:20 $
+ *  Update Date:      $Date: 2003-12-17 17:07:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/mdfdsman.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -100,6 +100,11 @@ public:
      */
     OFCondition saveFile(const char *file);
 
+    /** Saves current Dataset back to file using original filename
+     *  @return returns EC_normal if everything is ok, else an error
+     */
+    OFCondition saveFile();
+
     /** Returns the Dataset, that this MdfDatasetManager handles.
      *  You should use the returned Dataset readonly to avoid
      *  sideeffects with other class-methods, that modify this Dataset.
@@ -107,6 +112,11 @@ public:
      *          no Dataset is loaded
      */
     DcmDataset* getDataset();
+
+    /** Returns filename of the file, that's loaded actually.
+     *  @return returns filename and "" if no file is loaded.
+     */
+    OFString getFilename();
 
     /** prints error message to console using global locking mechanism.
      *  The function handles two strings for more flexibility. The second is
@@ -138,7 +148,9 @@ protected:
     OFCondition startInsert(DcmItem *item, DcmTagKey &search_key,
                             const OFString &value);
 
-    ///file to modify
+    ///name of file, that is loaded actually
+    OFString act_file;
+    ///will hold file to modify
     DcmFileFormat *dfile;
     ///will hold dset, we want to modify
     DcmDataset *dset;
@@ -162,7 +174,11 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: mdfdsman.h,v $
-** Revision 1.7  2003-12-10 16:19:20  onken
+** Revision 1.8  2003-12-17 17:07:22  onken
+** MdfDatasetManager now remembers loaded filename. Additional save function
+** added.
+**
+** Revision 1.7  2003/12/10 16:19:20  onken
 ** Changed API of MdfDatasetManager, so that its transparent for user, whether
 ** he wants to modify itemtags or tags at 1. level.
 **
