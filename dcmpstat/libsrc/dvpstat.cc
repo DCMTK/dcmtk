@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPresentationState
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-25 18:46:07 $
- *  CVS/RCS Revision: $Revision: 1.48 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-11-12 16:51:54 $
+ *  CVS/RCS Revision: $Revision: 1.49 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2339,7 +2339,7 @@ E_Condition DVPresentationState::setCircularShutter(Sint32 centerX, Sint32 cente
   E_Condition result=EC_Normal;
   char buf[80];
 
-  sprintf(buf, "%ld\\%ld", (long)centerX, (long)centerY);
+  sprintf(buf, "%ld\\%ld", (long)centerY, (long)centerX);
   result = centerOfCircularShutter.putString(buf);
   sprintf(buf, "%ld", (long)radius);
   if (EC_Normal==result) result = radiusOfCircularShutter.putString(buf);
@@ -3849,7 +3849,10 @@ const char *DVPresentationState::getCurrentImageModality()
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.48  1999-10-25 18:46:07  joergr
+ *  Revision 1.49  1999-11-12 16:51:54  meichel
+ *  Corrected creation of circular shutters, X/Y coordinates were swapped.
+ *
+ *  Revision 1.48  1999/10/25 18:46:07  joergr
  *  Fixed bug caused by the incorrect order of x/y coordinates for circular
  *  and polygonal shutters (the DICOM standard is somehow inconsistent in this
  *  respect).
