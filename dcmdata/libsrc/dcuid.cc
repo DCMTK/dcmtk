@@ -23,10 +23,10 @@
  *  Definitions of "well known" DICOM Unique Indentifiers,
  *  routines for finding and creating UIDs.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-03-21 13:08:04 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-05-20 09:06:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcuid.cc,v $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -134,6 +134,7 @@ static const UIDNameMap uidNameMap[] = {
     { UID_BasicVoiceAudioWaveformStorage,                     "BasicVoiceAudioWaveformStorage" },
     { UID_CTImageStorage,                                     "CTImageStorage" },
     { UID_CardiacElectrophysiologyWaveformStorage,            "CardiacElectrophysiologyWaveformStorage" },
+    { UID_ChestCADSR,                                         "ChestCADSR" },
     { UID_ComprehensiveSR,                                    "ComprehensiveSR" },
     { UID_ComputedRadiographyImageStorage,                    "ComputedRadiographyImageStorage" },
     { UID_DigitalIntraOralXRayImageStorageForPresentation,    "DigitalIntraOralXRayImageStorageForPresentation" },
@@ -293,6 +294,7 @@ const char* dcmStorageSOPClassUIDs[] = {
     UID_BasicVoiceAudioWaveformStorage,
     UID_CTImageStorage,
     UID_CardiacElectrophysiologyWaveformStorage,
+    UID_ChestCADSR,
     UID_ComprehensiveSR,
     UID_ComputedRadiographyImageStorage,
 /* disabled draft storage SOP classes to keep the number of storage transfer
@@ -454,6 +456,7 @@ static const DcmModalityTable modalities[] = {
     { UID_BasicVoiceAudioWaveformStorage,                      "AUV", 4096 },
     { UID_CTImageStorage,                                      "CT",  2 *  512 *  512 },
     { UID_CardiacElectrophysiologyWaveformStorage,             "WVc", 4096 },
+    { UID_ChestCADSR,                                          "SRx", 4096 },
     { UID_ComprehensiveSR,                                     "SRc", 4096 },
     { UID_ComputedRadiographyImageStorage,                     "CR",  2 * 2048 * 2048 },
     { UID_DRAFT_SRAudioStorage,                                "SRw", 4096 },
@@ -1067,7 +1070,10 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.44  2003-03-21 13:08:04  meichel
+** Revision 1.45  2003-05-20 09:06:28  joergr
+** Added support for SOP Class "Chest CAD SR" (Supplement 65).
+**
+** Revision 1.44  2003/03/21 13:08:04  meichel
 ** Minor code purifications for warnings reported by MSVC in Level 4
 **
 ** Revision 1.43  2002/12/09 13:14:07  joergr
