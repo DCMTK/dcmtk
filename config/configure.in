@@ -808,6 +808,48 @@ AC_ARG_WITH(libxml,
 )
 
 dnl -------------------------------------------------------
+dnl Check for libwrap (TCP wrapper) support
+dnl -------------------------------------------------------
+
+TCPWRAPPERLIBS=""
+AC_MSG_CHECKING(whether to include libwrap support)
+AC_ARG_WITH(libwrap,
+[  --with-libwrap          include libwrap (TCP wrapper) support
+  --without-libwrap       don't include libwrap support (default)
+  --with-libwrapinc=DIR   location of libwrap includes and libraries],
+[ case "$withval" in
+  yes)
+    AC_MSG_RESULT(yes)
+    AC_DEFINE(WITH_TCPWRAPPER)
+    TCPWRAPPERLIBS="-lwrap"
+
+    if test "${with_libwrapinc+set}" = set; then
+
+        case "$with_libwrapinc" in
+        yes|no)
+          echo "configure: warning: --with-libwrapinc called without argument - will use default" 1>&2
+        ;;
+        * )
+          if test ! -d ${with_libwrapinc}; then
+            echo "configure: warning: called with --with-libwrapinc, but libwrap base directory ${withval} does not exist or is not a directory." 1>&2
+            exit 1
+          fi
+          CFLAGS="-I${with_libwrapinc}/include $CFLAGS"
+          CXXFLAGS="-I${with_libwrapinc}/include $CXXFLAGS"
+          LDFLAGS="-L${with_libwrapinc}/lib $LDFLAGS"
+        ;;
+        esac
+
+    fi
+    ;;
+  *)
+    AC_MSG_RESULT(no)
+    ;;
+  esac ],
+  AC_MSG_RESULT(no)
+)
+
+dnl -------------------------------------------------------
 dnl Set optimizer and debug compiler flags
 dnl -------------------------------------------------------
 CFLAGS="$DEBUGCFLAGS $CFLAGS"
@@ -823,6 +865,7 @@ AC_SUBST(PNGLIBS)
 AC_SUBST(MATHLIBS)
 AC_SUBST(ZLIBLIBS)
 AC_SUBST(XMLLIBS)
+AC_SUBST(TCPWRAPPERLIBS)
 AC_SUBST(DEBUG)
 AC_SUBST(INSTALL_PRIVATE_DICTIONARY)
 

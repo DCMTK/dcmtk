@@ -627,6 +627,9 @@
 /* Define if we are compiling with libxml support */
 /* #undef WITH_LIBXML /
 
+/* Define if we are compiling with libwrap (TCP wrapper) support */
+/* #undef WITH_TCPWRAPPER*/
+
 /* Define if we are compiling with any type of Multi-thread support */
 #define WITH_THREADS
 
