@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeModality (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-22 13:41:04 $
+ *  Update Date:      $Date: 1999-02-03 17:41:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimomod.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,6 +49,7 @@ DiMonoModality::DiMonoModality(const DiDocument *docu,
   : Representation(EPR_MaxSigned),
     MinValue(0),
     MaxValue(0),
+    Bits(0),
     AbsMinimum(0),
     AbsMaximum(0),
     RescaleIntercept(0),
@@ -67,7 +68,7 @@ DiMonoModality::DiMonoModality(const DiDocument *docu,
             Rescaling &= (docu->getValue(DCM_RescaleSlope, RescaleSlope) > 0);
             checkRescaling(pixel);
         }
-        Representation = determineRepresentation(MinValue, MaxValue);
+        Representation = DicomImageClass::determineRepresentation(MinValue, MaxValue);
     }
 }
 
@@ -79,6 +80,7 @@ DiMonoModality::DiMonoModality(const DiDocument *docu,
   : Representation(EPR_MaxSigned),
     MinValue(0),
     MaxValue(0),
+    Bits(0),
     AbsMinimum(0),
     AbsMaximum(0),
     RescaleIntercept(intercept),
@@ -91,7 +93,7 @@ DiMonoModality::DiMonoModality(const DiDocument *docu,
     {
         Rescaling = 1;
         checkRescaling(pixel);
-        Representation = determineRepresentation(MinValue, MaxValue);
+        Representation = DicomImageClass::determineRepresentation(MinValue, MaxValue);
     }
 }
 
@@ -104,6 +106,7 @@ DiMonoModality::DiMonoModality(const DiDocument *docu,
   : Representation(EPR_MaxSigned),
     MinValue(0),
     MaxValue(0),
+    Bits(0),
     AbsMinimum(0),
     AbsMaximum(0),
     RescaleIntercept(0),
@@ -116,7 +119,7 @@ DiMonoModality::DiMonoModality(const DiDocument *docu,
     {
         TableData = new DiLookupTable(data, descriptor, explanation);
         checkTable();
-        Representation = determineRepresentation(MinValue, MaxValue);
+        Representation = DicomImageClass::determineRepresentation(MinValue, MaxValue);
     }
 }
 
@@ -142,6 +145,7 @@ int DiMonoModality::Init(const DiDocument *docu,
         pixel->determineMinMax();
         MinValue = pixel->getMinValue(); 
         MaxValue = pixel->getMaxValue();
+        Bits = pixel->getBits();
         AbsMinimum = pixel->getAbsMinimum(); 
         AbsMaximum = pixel->getAbsMaximum();
         Uint16 us;
@@ -165,8 +169,9 @@ void DiMonoModality::checkTable()
         {
             MinValue = TableData->getMinValue();
             MaxValue = TableData->getMaxValue();
+            Bits = TableData->getBits();
             AbsMinimum = 0;
-            AbsMaximum = maxval(TableData->getBits());
+            AbsMaximum = DicomImageClass::maxval(Bits);
         }
     }
 }
@@ -206,6 +211,7 @@ void DiMonoModality::checkRescaling(const DiInputPixel *pixel)
                     AbsMinimum = pixel->getAbsMinimum() * RescaleSlope + RescaleIntercept;
                     AbsMaximum = pixel->getAbsMaximum() * RescaleSlope + RescaleIntercept;
                 }
+                Bits = DicomImageClass::tobits((unsigned long)(AbsMaximum - AbsMinimum), 0);
             }
         }
     }
@@ -216,7 +222,13 @@ void DiMonoModality::checkRescaling(const DiInputPixel *pixel)
  *
  * CVS/RCS Log:
  * $Log: dimomod.cc,v $
- * Revision 1.4  1998-12-22 13:41:04  joergr
+ * Revision 1.5  1999-02-03 17:41:45  joergr
+ * Moved global functions maxval() and determineRepresentation() to class
+ * DicomImageClass (as static methods).
+ * Added member variable and related methods to store number of bits used for
+ * pixel data.
+ *
+ * Revision 1.4  1998/12/22 13:41:04  joergr
  * Changed calculation of AbsMinimum/Maximum.
  * Removed member variable and method for isPotentiallySigned.
  *
