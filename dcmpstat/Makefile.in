@@ -52,6 +52,7 @@ clean:
 	(cd apps; $(MAKE) clean)
 	(cd jni; $(MAKE) clean)
 	(cd docs; $(MAKE) clean)
+	(cd htmldocs; $(MAKE) clean)
 	rm -f $(TRASH)
 
 distclean:
@@ -60,6 +61,7 @@ distclean:
 	(cd apps; $(MAKE) distclean)
 	(cd jni; $(MAKE) distclean)
 	(cd docs; $(MAKE) distclean)
+	(cd htmldocs; $(MAKE) distclean)
 	rm -f $(DISTTRASH)
 
 dependencies:
