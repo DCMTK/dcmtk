@@ -23,8 +23,8 @@
  *    classes: DSRContainerTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:14:10 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2002-11-25 12:00:34 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -181,7 +181,7 @@ OFBool DSRContainerTreeNode::canAddNode(const E_DocumentType documentType,
             case RT_contains:
                 switch (valueType)
                 {
-                    case VT_Text:                
+                    case VT_Text:
                     case VT_Image:
                     case VT_Waveform:
                     case VT_Composite:
@@ -208,7 +208,7 @@ OFBool DSRContainerTreeNode::canAddNode(const E_DocumentType documentType,
             case RT_hasObsContext:
                 switch (valueType)
                 {
-                    case VT_Text:                
+                    case VT_Text:
                     case VT_Code:
                     case VT_UIDRef:
                     case VT_PName:
@@ -217,6 +217,7 @@ OFBool DSRContainerTreeNode::canAddNode(const E_DocumentType documentType,
                     case VT_DateTime:
                     case VT_Date:
                     case VT_Time:
+                    case VT_Composite:          /* allow COMPOSITE according to CP 286 */
                         result = (documentType != DT_KeyObjectDoc);
                         break;
                     case VT_Num:
@@ -229,7 +230,7 @@ OFBool DSRContainerTreeNode::canAddNode(const E_DocumentType documentType,
             case RT_hasAcqContext:
                 switch (valueType)
                 {
-                    case VT_Text:                
+                    case VT_Text:
                     case VT_Code:
                     case VT_DateTime:
                     case VT_Date:
@@ -274,7 +275,11 @@ OFCondition DSRContainerTreeNode::setContinuityOfContent(const E_ContinuityOfCon
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcontn.cc,v $
- *  Revision 1.17  2001-11-09 16:14:10  joergr
+ *  Revision 1.18  2002-11-25 12:00:34  joergr
+ *  Adapted code according to CP 286, i.e. allow a COMPOSITE content item to be
+ *  the target of a HAS OBS CONTEXT relationship with a CONTAINER item.
+ *
+ *  Revision 1.17  2001/11/09 16:14:10  joergr
  *  Added preliminary support for Mammography CAD SR.
  *
  *  Revision 1.16  2001/10/10 15:29:50  joergr
