@@ -22,9 +22,9 @@
  *  Purpose: class OFCondition and helper classes
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-08-23 16:08:37 $
+ *  Update Date:      $Date: 2001-09-25 17:07:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofcond.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -295,6 +295,9 @@ private:
 };
 
 
+// global constant used by OFCondition default constructor.
+extern const OFConditionConst ECC_Normal;
+
 
 /* General purpose class for condition codes. Objects of this class can be 
  * efficiently passed by value since they only contain a single pointer and 
@@ -321,7 +324,7 @@ public:
    *     to exist for the lifetime of this (and every derived) object 
    *     since it is only referenced but not copied.
    */
-  OFCondition(const OFConditionConst& base)
+  OFCondition(const OFConditionConst& base = ECC_Normal)
   : theCondition(&base)
   {
     assert(theCondition);
@@ -396,6 +399,12 @@ public:
     return (s != OF_ok);    
   }
 
+#ifdef OFCONDITION_IMPLICIT_BOOL_CONVERSION
+  /* Implicit conversion from OFCondition to bool might 
+   * not always be a good idea since it can hide unwanted constructs.
+   * Therefore, we disable this operator by default.
+   */
+
   /** conversion operator to bool. 
    *  @return true if status is OK, false otherwise
    */
@@ -403,6 +412,7 @@ public:
   {
     return good();
   }
+#endif
 
   /** comparison operator. Compares status, code and module
    *  but not error text.
@@ -457,7 +467,11 @@ extern const OFCondition EC_MemoryExhausted;
 /*
  * CVS/RCS Log:
  * $Log: ofcond.h,v $
- * Revision 1.1  2001-08-23 16:08:37  meichel
+ * Revision 1.2  2001-09-25 17:07:24  meichel
+ * Disabled implicit conversion to bool, added default constructor
+ *   to class OFCondition.
+ *
+ * Revision 1.1  2001/08/23 16:08:37  meichel
  * Initial release of class OFCondition, a generic approach for condition codes
  *
  *

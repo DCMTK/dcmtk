@@ -22,9 +22,9 @@
  *  Purpose: class OFCondition and helper classes
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-08-23 16:08:41 $
+ *  Update Date:      $Date: 2001-09-25 17:07:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofcond.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,7 +44,6 @@ const OFConditionConst ECC_MemoryExhausted( 0, 2, OF_failure, "Virtual Memory ex
 const OFCondition EC_Normal(ECC_Normal);
 const OFCondition EC_IllegalParameter(ECC_IllegalParameter);
 const OFCondition EC_MemoryExhausted(ECC_MemoryExhausted);
-
 
 /* ---------- class OFConditionConst ---------- */
 
@@ -108,7 +107,11 @@ OFBool OFConditionString::deletable() const
  *
  * CVS/RCS Log:
  * $Log: ofcond.cc,v $
- * Revision 1.1  2001-08-23 16:08:41  meichel
+ * Revision 1.2  2001-09-25 17:07:27  meichel
+ * Disabled implicit conversion to bool, added default constructor
+ *   to class OFCondition.
+ *
+ * Revision 1.1  2001/08/23 16:08:41  meichel
  * Initial release of class OFCondition, a generic approach for condition codes
  *
  *
