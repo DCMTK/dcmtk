@@ -1,4 +1,10 @@
 
+**** Changes from 1999.05.10 (riesmeier)
+
+- Moved dcm2pnm version definition from module dcmimgle to dcmimage.
+  Affects: dcmimage/apps/dcm2pnm.cc
+           dcmimage/include/diregist.h
+
 **** Changes from 1999.05.03 (riesmeier)
 
 - Minor code purifications to keep Sun CC 2.0.1 quiet.
