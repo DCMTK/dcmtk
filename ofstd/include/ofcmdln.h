@@ -22,9 +22,9 @@
  *  Purpose: Handle command line arguments (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-30 12:27:02 $
+ *  Update Date:      $Date: 1998-11-30 12:30:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofcmdln.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -358,7 +358,7 @@ class OFCommandLine
     E_ValueStatus getValue(OFCmdString &value);
 
 
- // --- parsing
+ // --- parsing command line
 
     E_ParseStatus parseLine(int argCount,
                             char *argValue[],
@@ -408,7 +408,11 @@ class OFCommandLine
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.h,v $
- * Revision 1.2  1998-11-30 12:27:02  joergr
+ * Revision 1.3  1998-11-30 12:30:18  joergr
+ * Use lists of pointers (!) to internal data structures to avoid errors with
+ * MSVC5 (operator '==' was not defined to compare structures).
+ *
+ * Revision 1.2  1998/11/30 12:27:02  joergr
  * Introduced additional type definition to avoid errors with MSVC5 when
  * using ListIterators of ListIterators (syntax problems?).
  *

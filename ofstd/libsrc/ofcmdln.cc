@@ -22,9 +22,9 @@
  *  Purpose: Template class for command line arguments (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-30 12:27:21 $
+ *  Update Date:      $Date: 1998-11-30 12:31:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofcmdln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,6 +49,7 @@ OFCommandLine::OFCommandLine()
     OptionChars("+-")
 {
 }
+
 
 OFCommandLine::~OFCommandLine()
 {
@@ -639,7 +640,11 @@ void OFCommandLine::getStatusString(const E_ValueStatus status,
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.cc,v $
- * Revision 1.2  1998-11-30 12:27:21  joergr
+ * Revision 1.3  1998-11-30 12:31:16  joergr
+ * Use lists of pointers (!) to internal data structures to avoid errors with
+ * MSVC5 (operator '==' was not defined to compare structures).
+ *
+ * Revision 1.2  1998/11/30 12:27:21  joergr
  * Introduced additional type definition to avoid errors with MSVC5 when
  * using ListIterators of ListIterators (syntax problems?).
  *
