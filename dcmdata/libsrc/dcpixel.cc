@@ -22,9 +22,9 @@
  *  Purpose: class DcmPixelData
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-03-31 09:25:35 $
+ *  Update Date:      $Date: 1999-04-21 15:48:15 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixel.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -495,37 +495,35 @@ DcmPixelData::findConformingEncapsulatedRepresentation(
     E_TransferSyntax repType = repTypeSyn.getXfer();
     result = repListEnd;
     E_Condition l_error = EC_RepresentationNotFound;
-
+    // we are looking for an encapsulated representation
+    // of this pixel data element which meets both
+    // the transfer syntax and (if given) the representation
+    // parameter (i.e. quality factor for lossy JPEG).
     if (repTypeSyn.isEncapsulated())
     {
-        if ((*current)->repType == repType &&
-            (repParam == NULL || 
-             ((*current)->repParam != NULL && 
-              *(*current)->repParam == *repParam)))
+    	// first we check the current (active) representation if any.
+    	if ((current != repListEnd) && ((*current)->repType == repType) &&
+    	    ((repParam==NULL) || (((*current)->repParam != NULL)&&(*(*current)->repParam == *repParam))))
         {
             result = current;
             l_error = EC_Normal;
         }
         else
         {
+            // now we check all representations
             DcmRepresentationListIterator it(repList.begin());
-            while (it != repListEnd && (*it)->repType != repType)
-                ++it;
-          
             OFBool found = OFFalse;
-            while (it != repListEnd && (*it)->repType == repType &&
-                   !found)
+            while (!found && (it != repListEnd))
             {
-                if (repParam)
-                    found = *repParam == *(*it)->repParam;
-                else
-                    found = (*it)->repParam == NULL;
-                if (!found) ++it;
-            }
-            if (found) 
-            {
-                result = it;
-                l_error = EC_Normal;
+              if ((*it)->repType == repType)
+              {
+                if ((repParam == NULL) || (((*it)->repParam != NULL)&&(*(*it)->repParam == *repParam)))
+                {
+                  // repParam is NULL or matches the one we are comparing with
+                  found = OFTrue;
+                  result = it;
+                } else ++it;
+              } else ++it;
             }
         }
     }
@@ -959,7 +957,11 @@ DcmPixelData::write(
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.cc,v $
-** Revision 1.7  1999-03-31 09:25:35  meichel
+** Revision 1.8  1999-04-21 15:48:15  meichel
+** Fixed bug in DcmPixelData::findConformingEncapsulatedRepresentation
+**   leading to an assertion failure when working with compressed data.
+**
+** Revision 1.7  1999/03/31 09:25:35  meichel
 ** Updated copyright header in module dcmdata
 **
 ** Revision 1.6  1998/11/12 16:48:17  meichel
