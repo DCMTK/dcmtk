@@ -81,7 +81,7 @@ dcmprscu: dcmprscu.o
 dcmprscp: dcmprscp.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmprscp.o $(LOCALLIBS) $(LIBS)  
 
-dcmpschk: dcmpschk.o
+dcmpschk: dcmpschk.o vrscan.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmpschk.o vrscan.o $(LOCALLIBS) $(LIBS)  
 
 install: all
