@@ -22,9 +22,9 @@
  *  Purpose: Template class for command line arguments (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-05-20 08:47:50 $
+ *  Update Date:      $Date: 2003-06-12 13:25:57 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofcmdln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,11 +42,131 @@
 #endif
 
 
+/*---------------------*
+ *  macro definitions  *
+ *---------------------*/
+
+#define COMMAND_FILE_PREFIX '@'
+
+
 /*----------------------------*
  *  constant initializations  *
  *----------------------------*/
 
 const int OFCommandLine::ExpandWildcards = 0x0001;
+const int OFCommandLine::NoCommandFiles  = 0x0002;
+
+
+/*-----------------------*
+ *  struct declarations  *
+ *-----------------------*/
+
+/*  Internal structure to store valid command line options.
+ *  Options are command line arguments to use optional functions and to specify optional properties of a program.
+ *  They are all starting with one or more special characters and can therefore be detected.
+ */
+struct OFCmdOption
+{
+
+    /** constructor
+     *
+     ** @param  longOpt     long option name
+     *  @param  shortOpt    short option name
+     *  @param  valueCount  number of additional values
+     *  @param  valueDescr  description of optional values
+     *  @param  optDescr    description of command line option
+     *  @param  exclusive   exclusive option which cannot be combined with any other command
+     *                      line argument if OFTrue, e.g. "--help" or "--version"
+     */
+    OFCmdOption(const char *longOpt,
+                const char *shortOpt,
+                const int valueCount,
+                const char *valueDescr,
+                const char *optDescr,
+                const OFBool exclusive)
+      : LongOption(longOpt),
+        ShortOption(shortOpt),
+        ValueCount(valueCount),
+        ValueDescription(valueDescr),
+        OptionDescription(optDescr),
+        ExclusiveOption(exclusive),
+        Checked(OFFalse)
+    {
+    }
+
+    /** destructor
+     */
+    ~OFCmdOption()
+    {
+#ifdef DEBUG
+        if (!Checked && !ExclusiveOption && (LongOption.length() > 0))
+        {
+            ofConsole.lockCerr() << "WARNING: option " << LongOption << " has never been checked !" << endl;
+            ofConsole.unlockCerr();
+        }
+#endif
+    }
+
+    /// long option name
+    const OFString LongOption;
+    /// short option name
+    const OFString ShortOption;
+    /// number of additional values
+    const int ValueCount;
+    /// description of optional values
+    const OFString ValueDescription;
+    /// description of command line option
+    const OFString OptionDescription;
+    /// exclusive option cannot be combined with any other command line argument
+    const OFBool ExclusiveOption;
+    /// OFTrue if findOption has been applied to this option
+    OFBool Checked;
+
+private:
+
+    /// private undefined copy assignment operator
+    OFCmdOption& operator=(const OFCmdOption& arg);
+};
+
+
+/*  Internal structure to handle position of command line parameters.
+ *  Parameters are all command line arguments which are no options (e.g. file names).
+ */
+struct OFCmdParamPos
+{
+
+    /** constructor
+     *
+     ** @param  parIter    iterator pointing to a specific parameter
+     *  @param  optIter    iterator pointing to first option iterator in front of the parameter
+     *  @param  optCount   number of options in front of the parameter
+     *  @param  directOpt  number of options which are direct predecessor in the argument list
+     */
+    OFCmdParamPos(const OFListIterator(OFString) &parIter,
+                  const OFListIterator(OFListIterator_OFString) &optIter,
+                  const int optCount,
+                  const int directOpt)
+      : ParamIter(parIter),
+        OptionIter(optIter),
+        OptionCount(optCount),
+        DirectOption(directOpt)
+    {
+    }
+
+    /// iterator pointing to a specific parameter
+    const OFListIterator(OFString) ParamIter;
+    /// iterator pointing to first option iterator in front of the parameter
+    const OFListIterator(OFListIterator_OFString) OptionIter;
+    /// number of options in front of the parameter
+    const int OptionCount;
+    /// number of options which are direct predecessor in the argument list
+    const int DirectOption;
+
+private:
+
+    /// private undefined copy assignment operator
+    OFCmdParamPos& operator=(const OFCmdParamPos& arg);
+};
 
 
 /*------------------*
@@ -79,21 +199,21 @@ OFCommandLine::OFCommandLine()
 OFCommandLine::~OFCommandLine()
 {
     OFListIterator(OFCmdOption *) first_o = ValidOptionList.begin();
-    OFListIterator(OFCmdOption *) last_o = ValidOptionList.end();
+    const OFListIterator(OFCmdOption *) last_o = ValidOptionList.end();
     while (first_o != last_o)
     {
         delete (*first_o);
         first_o = ValidOptionList.erase(first_o);
     }
     OFListIterator(OFCmdParam *) first_p = ValidParamList.begin();
-    OFListIterator(OFCmdParam *) last_p = ValidParamList.end();
+    const OFListIterator(OFCmdParam *) last_p = ValidParamList.end();
     while (first_p != last_p)
     {
         delete (*first_p);
         first_p = ValidParamList.erase(first_p);
     }
     OFListIterator(OFCmdParamPos *) first_pp = ParamPosList.begin();
-    OFListIterator(OFCmdParamPos *) last_pp = ParamPosList.end();
+    const OFListIterator(OFCmdParamPos *) last_pp = ParamPosList.end();
     while (first_pp != last_pp)
     {
         delete (*first_pp);
@@ -122,22 +242,27 @@ void OFCommandLine::setParamColumn(const int column)
 }
 
 
-OFBool OFCommandLine::checkOption(const char *option,
+OFBool OFCommandLine::checkOption(const OFString &option,
                                   const OFBool mode) const
 {
-    if (option != NULL)
+    OFBool result = mode;
+    const size_t optionLen = option.length();
+    if (optionLen > 0)                                                   // empty strings are allowed to support (sub)groups
     {
-        if (strlen(option) > 0)                                                       // empty strings are allowed to support (sub)groups
+        result = OFFalse;
+        if (optionLen >= 2)
         {
-            if ((strlen(option) < 2) || (OptionChars.find(option[0]) == OFString_npos) ||  // options have to start with one of the defined chars
-                (((option[0] == '-') || (option[0] == '+')) &&                             // but when starting with sign character ...
-                (option[1] >= '0') && (option[1] <= '9')))                                 // ... don't allow a number as the following character
-                   return OFFalse;
-            return OFTrue;
+            if (OptionChars.find(option.at(0)) != OFString_npos)         // options have to start with one of the defined chars
+            {
+                if (((option.at(0) != '-') && (option.at(0) != '+')) ||  // but when starting with sign character ...
+                    (option.at(1) < '0') || (option.at(1) > '9'))        // ... don't allow a number as the following character
+                {
+                    result = OFTrue;
+                }
+            }
         }
-        return mode;
     }
-    return OFFalse;
+    return result;
 }
 
 
@@ -154,7 +279,7 @@ OFBool OFCommandLine::addOption(const char *longOpt,
         if (strlen(longOpt) > 0)
         {
             OFListIterator(OFCmdOption *) iter = ValidOptionList.begin();
-            OFListIterator(OFCmdOption *) last = ValidOptionList.end();
+            const OFListIterator(OFCmdOption *) last = ValidOptionList.end();
             while (iter != last)
             {
                 if ((*iter)->LongOption == longOpt)
@@ -337,7 +462,7 @@ OFBool OFCommandLine::findParam(int pos,
     if ((pos > 0) && (pos <= getParamCount()))
     {
         pos_iter = ParamPosList.begin();
-        OFListIterator(OFCmdParamPos *) pos_last = ParamPosList.end();
+        const OFListIterator(OFCmdParamPos *) pos_last = ParamPosList.end();
         while (pos_iter != pos_last)
         {
             ArgumentIterator = (*pos_iter)->ParamIter;
@@ -506,7 +631,6 @@ OFCommandLine::E_ParamValueStatus OFCommandLine::getParam(const int pos,
     if (findParam(pos))
     {
         param = *ArgumentIterator;
-
         if (param.length() > 0)
             return PVS_Normal;
         return PVS_Empty;
@@ -521,7 +645,7 @@ OFBool OFCommandLine::findOption(const char *longOpt,
 {
 #ifdef DEBUG
     OFListIterator(OFCmdOption *) iter = ValidOptionList.begin();
-    OFListIterator(OFCmdOption *) last = ValidOptionList.end();
+    const OFListIterator(OFCmdOption *) last = ValidOptionList.end();
     while (iter != last)
     {
         if ((*iter)->LongOption == longOpt)
@@ -539,7 +663,7 @@ OFBool OFCommandLine::findOption(const char *longOpt,
     }
 #endif
     OFListIterator(OFListIterator_OFString) pos_iter = (mode == FOM_Next) ? OptionPosIterator : OptionPosList.end();
-    OFListIterator(OFListIterator_OFString) pos_first = OptionPosList.begin();
+    const OFListIterator(OFListIterator_OFString) pos_first = OptionPosList.begin();
     OFListIterator(OFCmdParamPos *) param_iter;
     int diropt = 0;
     if (findParam(abs(pos), param_iter))                               // go to specified parameter position
@@ -754,10 +878,10 @@ OFCommandLine::E_ValueStatus OFCommandLine::getValue(OFCmdString &value)
 }
 
 
-const OFCmdOption *OFCommandLine::findCmdOption(const char *option) const
+const OFCmdOption *OFCommandLine::findCmdOption(const OFString &option) const
 {
-    OFListIterator(OFCmdOption *) iter = ValidOptionList.begin();
-    OFListIterator(OFCmdOption *) last = ValidOptionList.end();
+    OFListConstIterator(OFCmdOption *) iter = ValidOptionList.begin();
+    OFListConstIterator(OFCmdOption *) last = ValidOptionList.end();
     while (iter != last)
     {
         if (((*iter)->LongOption == option) || ((*iter)->ShortOption == option))
@@ -768,14 +892,14 @@ const OFCmdOption *OFCommandLine::findCmdOption(const char *option) const
 }
 
 
-void OFCommandLine::storeParameter(const char *param,
+void OFCommandLine::storeParameter(const OFString &param,
                                    const int directOpt)
 {
-    ArgumentList.push_back((OFString)param);
+    ArgumentList.push_back(param);
     const OFListIterator(OFListIterator_OFString) iter = (OptionPosList.size() == 0) ? OptionPosList.end() : --OptionPosList.end();
-    OFCmdParamPos *parm = new OFCmdParamPos(--ArgumentList.end(), iter, OptionPosList.size(), directOpt);
-    if (parm != NULL)
-        ParamPosList.push_back(parm);
+    OFCmdParamPos *paramPos = new OFCmdParamPos(--ArgumentList.end(), iter, OptionPosList.size(), directOpt);
+    if (paramPos != NULL)
+        ParamPosList.push_back(paramPos);
 }
 
 
@@ -800,49 +924,45 @@ void OFCommandLine::unpackColumnValues(const int value,
 
 
 #ifdef HAVE_WINDOWS_H
-void OFCommandLine::expandWildcards(const char *param,
+void OFCommandLine::expandWildcards(const OFString &param,
                                     int directOpt)
 {
-    if (param != NULL)
+    const size_t paramLen = param.length();
+    if ((paramLen >= 2) && (param.at(0) == '"') && (param.at(paramLen - 1) == '"'))
+        storeParameter(param.substr(1, paramLen - 2).c_str(), directOpt);  // remove quotations
+    else
     {
-        OFString str(param);                                         // create OFString copy
-        const size_t strLength = str.length();
-        if ((strLength >= 2) && (str.at(0) == '"') && (str.at(strLength - 1) == '"'))
-            storeParameter(str.substr(1, strLength - 2).c_str(), directOpt);  // remove quotations
-        else
+        size_t pos1 = param.find_first_of("*?");                 // search for wildcards
+        if (pos1 != OFString_npos)
         {
-            size_t pos1 = str.find_first_of("*?");                   // search for wildcards
-            if (pos1 != OFString_npos)
+            OFString name;
+            WIN32_FIND_DATA data;
+            size_t pos2 = param.find_first_of(":\\", pos1);      // search for next separator (":" or "\")
+            HANDLE handle = FindFirstFile(param.substr(0, pos2).c_str(), &data);
+            if (handle != INVALID_HANDLE_VALUE)                  // find first file/dir matching the wildcards
             {
-                OFString name;
-                WIN32_FIND_DATA data;
-                size_t pos2 = str.find_first_of(":\\", pos1);        // search for next separator (":" or "\")
-                HANDLE handle = FindFirstFile(str.substr(0, pos2).c_str(), &data);
-                if (handle != INVALID_HANDLE_VALUE)                  // find first file/dir matching the wildcards
-                {
-                    do {
-                        if ((strcmp(data.cFileName, ".") != 0) && (strcmp(data.cFileName, "..") != 0))
-                        {                                            // skip "." and ".."
-                            size_t pos3 = str.find_last_of(":\\", pos1);
-                            if (pos3 != OFString_npos)
-                                name = str.substr(0, pos3 + 1) + data.cFileName;
-                            else
-                                name = data.cFileName;               // no path specified
-                            if (pos2 != OFString_npos)
-                                name += str.substr(pos2);
-                            if (GetFileAttributes(name.c_str()) != 0xFFFFFFFF)
-                            {
-                                storeParameter(name.c_str(), directOpt);   // file/dir does exist
-                                directOpt = 0;                             // only valid for first expanded parameter (tbt!)
-                            } else
-                                expandWildcards(name.c_str(), directOpt);  // recursively expand further wildcards
-                        }
-                    } while (FindNextFile(handle, &data));           // while further files/dirs exist ... add them
-                    FindClose(handle);
-                }
-            } else
-                storeParameter(param, directOpt);                    // parameter contains no wildcards, just add it
-        }
+                do {
+                    if ((strcmp(data.cFileName, ".") != 0) && (strcmp(data.cFileName, "..") != 0))
+                    {                                            // skip "." and ".."
+                        size_t pos3 = param.find_last_of(":\\", pos1);
+                        if (pos3 != OFString_npos)
+                            name = param.substr(0, pos3 + 1) + data.cFileName;
+                        else
+                            name = data.cFileName;               // no path specified
+                        if (pos2 != OFString_npos)
+                            name += param.substr(pos2);
+                        if (GetFileAttributes(name.c_str()) != 0xFFFFFFFF)
+                        {
+                            storeParameter(name.c_str(), directOpt);   // file/dir does exist
+                            directOpt = 0;                             // only valid for first expanded parameter (tbt!)
+                        } else
+                            expandWildcards(name.c_str(), directOpt);  // recursively expand further wildcards
+                    }
+                } while (FindNextFile(handle, &data));           // while further files/dirs exist ... add them
+                FindClose(handle);
+            }
+        } else
+            storeParameter(param, directOpt);                    // parameter contains no wildcards, just add it
     }
 }
 #endif
@@ -853,7 +973,7 @@ OFCommandLine::E_ParseStatus OFCommandLine::checkParamCount()
     MinParamCount = 0;
     MaxParamCount = 0;
     OFListIterator(OFCmdParam *) iter = ValidParamList.begin();
-    OFListIterator(OFCmdParam *) last = ValidParamList.end();
+    const OFListIterator(OFCmdParam *) last = ValidParamList.end();
     while (iter != last)
     {
         if ((*iter)->ParamName.length() > 0)
@@ -890,13 +1010,41 @@ OFCommandLine::E_ParseStatus OFCommandLine::checkParamCount()
 }
 
 
+OFCommandLine::E_ParseStatus OFCommandLine::parseCommandFile(const char *argValue,
+                                                             OFList<OFString> &argList)
+{
+    E_ParseStatus result = PS_NoArguments;
+    /* check for command file parameter (syntax: "@filename") */
+    if ((argValue != NULL) && (strlen(argValue) > 1) && (argValue[0] == COMMAND_FILE_PREFIX))
+    {
+        /* open command file */
+#ifdef HAVE_IOS_NOCREATE
+        ifstream cmdFile(argValue + 1, ios::in|ios::nocreate);
+#else
+        ifstream cmdFile(argValue + 1, ios::in);
+#endif
+        if (cmdFile)
+        {
+            OFString value;
+            /* append comand file content to the list of arguments */
+            while (!cmdFile.eof())
+            {
+                /* read formatted input (ignore whitespaces) */
+                cmdFile >> value;
+                if (!value.empty())
+                    argList.push_back(value);
+            }
+            result = PS_Normal;
+        } else
+            result = PS_CannotOpenCommandFile;
+    }
+    return result;
+}
+
+
 OFCommandLine::E_ParseStatus OFCommandLine::parseLine(int argCount,
                                                       char *argValue[],
-#ifdef HAVE_WINDOWS_H
                                                       const int flags,
-#else
-                                                      const int /*flags*/,
-#endif
                                                       const int startPos)
 {
     ArgumentList.clear();                                                // initialize lists
@@ -905,20 +1053,44 @@ OFCommandLine::E_ParseStatus OFCommandLine::parseLine(int argCount,
     ExclusiveOption = OFFalse;
     if (argCount > startPos)                                             // any command line arguments?
     {
+        int i;
         int directOption = 0;                                            // number of direct predecessor
-        for (int i = startPos; i < argCount; i++)                        // skip program name (argValue[0])
+        OFList<OFString> argList;                                        // "expanded" list of arguments
+        /* expand command files (if any) */
+        for (i = startPos; i < argCount; i++)                            // skip program name (argValue[0])
         {
-            if (!checkOption(argValue[i], OFFalse))                      // arg = parameter
+            if (flags & NoCommandFiles)                                  // do not try to detect command files
+                argList.push_back(argValue[i]);
+            else
+            {
+                /* parse command file content */
+                E_ParseStatus status = parseCommandFile(argValue[i], argList);
+                if (status == PS_NoArguments)
+                    argList.push_back(argValue[i]);                      // store parameter as is
+                else if (status != PS_Normal)
+                {
+                    ArgumentList.push_back(argValue[i] + 1);             // store filename for error message
+                    return status;
+                }
+            }
+        }
+        i = argList.size();
+        OFListIterator(OFString) argIter = argList.begin();
+        const OFListIterator(OFString) argEnd = argList.end();
+        /* iterate over all command line arguments */
+        while (argIter != argEnd)
+        {
+            if (!checkOption(*argIter, OFFalse))                         // arg = parameter
             {
 #ifdef HAVE_WINDOWS_H
                 if (flags & ExpandWildcards)                             // expand wildcards
-                    expandWildcards(argValue[i], directOption);
+                    expandWildcards(*argIter, directOption);
                 else
 #endif
-                    storeParameter(argValue[i], directOption);
+                    storeParameter(*argIter, directOption);
                 directOption = 0;
             } else {                                                     // arg = option
-                const OFCmdOption *opt = findCmdOption(argValue[i]);
+                const OFCmdOption *opt = findCmdOption(*argIter);
                 if (opt != NULL)
                 {
                     ArgumentList.push_back((OFString)(opt->LongOption)); // convert argument to long format
@@ -926,16 +1098,21 @@ OFCommandLine::E_ParseStatus OFCommandLine::parseLine(int argCount,
                     if (opt->ExclusiveOption)                            // check for an "exclusive" option
                         ExclusiveOption = OFTrue;
                     directOption++;
-                    int j = opt->ValueCount;
-                    if (i + j >= argCount)                               // expecting more values than present
-                        return PS_MissingValue;
-                    while (j-- > 0)                                      // skip option values
-                        ArgumentList.push_back((OFString)argValue[++i]); // add values to argument list
+                    int j = opt->ValueCount;                             // number of expected values
+                    if (j >= i)
+                        return PS_MissingValue;                          // expecting more values than present
+                    while (j-- > 0)
+                    {
+                        ArgumentList.push_back(*(++argIter));            // add values to argument list
+                        i--;
+                    }
                 } else {                                                 // unknown
-                    ArgumentList.push_back(argValue[i]);                 // store argument
+                    ArgumentList.push_back(*argIter);                    // store argument
                     return PS_UnknownOption;
                 }
             }
+            ++argIter;
+            i--;
         }
     }
     return checkParamCount();
@@ -949,8 +1126,8 @@ void OFCommandLine::getSyntaxString(OFString &syntaxStr) const
         syntaxStr += " [options]";
     if (!ValidParamList.empty())
     {
-        OFListIterator(OFCmdParam *) iter = ValidParamList.begin();
-        OFListIterator(OFCmdParam *) last = ValidParamList.end();
+        OFListConstIterator(OFCmdParam *) iter = ValidParamList.begin();
+        OFListConstIterator(OFCmdParam *) last = ValidParamList.end();
         while (iter != last)
         {
             if ((*iter)->ParamName.length() > 0)
@@ -989,8 +1166,8 @@ void OFCommandLine::getOptionString(OFString &optionStr) const
     optionStr.clear();
     if (!ValidOptionList.empty())
     {
-        OFListIterator(OFCmdOption *) iter = ValidOptionList.begin();
-        OFListIterator(OFCmdOption *) last = ValidOptionList.end();
+        OFListConstIterator(OFCmdOption *) iter = ValidOptionList.begin();
+        OFListConstIterator(OFCmdOption *) last = ValidOptionList.end();
         OFString str;
         int newGrp = 1;
         unsigned int shortSize = ShortColumn;
@@ -1003,7 +1180,7 @@ void OFCommandLine::getOptionString(OFString &optionStr) const
         {
             if (newGrp)
             {
-                OFListIterator(OFCmdOption *) i = iter;
+                OFListConstIterator(OFCmdOption *) i = iter;
                 while ((i != last) && ((*i)->LongOption.length() > 0))
                 {
                     if ((*i)->ShortOption.length() > shortSize)
@@ -1067,8 +1244,8 @@ void OFCommandLine::getParamString(OFString &paramStr) const
     paramStr.clear();
     if (!ValidParamList.empty())
     {
-        OFListIterator(OFCmdParam *) iter = ValidParamList.begin();
-        OFListIterator(OFCmdParam *) last = ValidParamList.end();
+        OFListConstIterator(OFCmdParam *) iter = ValidParamList.begin();
+        OFListConstIterator(OFCmdParam *) last = ValidParamList.end();
         OFString str;
         unsigned int columnSize = ParamColumn;
         const unsigned int lineIndent = 2;
@@ -1109,7 +1286,7 @@ OFBool OFCommandLine::getMissingParam(OFString &param)
     if (!ValidParamList.empty() && (getParamCount() < MinParamCount))
     {
         OFListIterator(OFCmdParam *) iter = ValidParamList.begin();
-        OFListIterator(OFCmdParam *) last = ValidParamList.end();
+        const OFListIterator(OFCmdParam *) last = ValidParamList.end();
         int i = getParamCount();
         while ((iter != last) && (i-- > 0))
             iter++;
@@ -1146,6 +1323,11 @@ void OFCommandLine::getStatusString(const E_ParseStatus status,
             break;
         case PS_TooManyParameters:
             statusStr = "Too many parameters";
+            break;
+        case PS_CannotOpenCommandFile:
+            statusStr = "Cannot open command file ";
+            if (getLastArg(str))
+                statusStr += str;
             break;
         default:
             statusStr.clear();
@@ -1250,7 +1432,12 @@ void OFCommandLine::getStatusString(const E_ValueStatus status,
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.cc,v $
- * Revision 1.31  2003-05-20 08:47:50  joergr
+ * Revision 1.32  2003-06-12 13:25:57  joergr
+ * Added support for so-called command files ("@filename") which can be used to
+ * summarize command line options and parameters.
+ * Introduced macro OFListConstIterator() to support STL const_iterators.
+ *
+ * Revision 1.31  2003/05/20 08:47:50  joergr
  * Renamed parameters/variables "string" to avoid name clash with STL class.
  * Enhanced use of OFString routines.
  *
