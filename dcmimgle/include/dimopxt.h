@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomMonochromePixelTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:47 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-09-28 13:09:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -177,9 +177,68 @@ class DiMonoPixelTemplate
         { 
             if ((idx == 1) && (MinValue[1] == 0) && (MaxValue[1] == 0))            
                 determineMinMax(0, 0, 0x2);                                     // determine on demand
-            center = ((double)MinValue[idx] + (double)MaxValue[idx]) / 2;       // type cast to avoid overflows !
-            width = (double)MaxValue[idx] - (double)MinValue[idx];
-            result = (width > 0);
+            /* suppl. 33: "A Window Center of 2^n-1 and a Window Width of 2^n
+                           selects the range of input values from 0 to 2^n-1."
+            */
+            center = ((double)MinValue[idx] + (double)MaxValue[idx] + 1) / 2;   // type cast to avoid overflows !
+            width = (double)MaxValue[idx] - (double)MinValue[idx] + 1;
+            result = (width > 0);                                               // valid value ?
+        }
+        return result;
+    }
+
+    /** get automatically computed Region of Interest (ROI) window
+     *
+     ** @param  left       x-coordinate of the top left-hand corner of the ROI (starting from 0)
+     *  @param  top        y-coordinate of the top left-hand corner of the ROI (starting from 0)
+     *  @param  width      width in pixels of the rectangular ROI (minimum: 1)
+     *  @param  height     height in pixels of the rectangular ROI (minimum: 1)
+     *  @param  columns    number of columns (width) of the associated image
+     *  @param  rows       number of rows (height) of the associated image
+     *  @param  voiCenter  reference to storage area for window center value
+     *  @param  voiWidth   reference to storage area for window width value
+     *
+     ** @return status, true if successful, false otherwise
+     */
+    virtual int getRoiWindow(const unsigned long left,
+                             const unsigned long top,
+                             const unsigned long width,
+                             const unsigned long height,
+                             const unsigned long columns,
+                             const unsigned long rows,
+                             double &voiCenter,
+                             double &voiWidth)
+    {
+        int result = 0;
+        if ((Data != NULL) && (left < columns) && (top < rows))
+        {
+            register T *p = Data + (top * columns) + left;
+            const unsigned long right = (left + width < columns) ? left + width : columns;
+            const unsigned long bottom = (top + height < rows) ? top + height : rows;
+            const unsigned long skip_x = left + (columns - right);
+            register unsigned long x;
+            register unsigned long y;
+            register T value = 0;
+            register T min = *p;                    // get first pixel as initial value for min ...
+            register T max = min;                   // ... and max
+            for (y = top; y < bottom; y++)
+            {
+                for (x = left; x < right; x++)
+                {
+                    value = *(p++);
+                    if (value < min)
+                        min = value;
+                    else if (value > max)
+                        max = value;
+                }
+                p += skip_x;                        // skip rest of current line and beginning of next
+            }
+            /* suppl. 33: "A Window Center of 2^n-1 and a Window Width of 2^n
+                           selects the range of input values from 0 to 2^n-1."
+            */
+            voiCenter = ((double)min + (double)max + 1) / 2;    // type cast to avoid overflows !
+            voiWidth = (double)max - (double)min + 1;
+            result = (width > 0);                               // valid value ?
         }
         return result;
     }
@@ -231,8 +290,11 @@ class DiMonoPixelTemplate
                 delete[] quant;
                 if (minvalue < maxvalue)
                 {
-                    center = ((double)minvalue + (double)maxvalue) / 2;
-                    width = (double)maxvalue - (double)minvalue;
+                    /* suppl. 33: "A Window Center of 2^n-1 and a Window Width of 2^n
+                                   selects the range of input values from 0 to 2^n-1."
+                    */
+                    center = ((double)minvalue + (double)maxvalue + 1) / 2;
+                    width = (double)maxvalue - (double)minvalue + 1;
                     return (width > 0);
                 }
             }
@@ -302,13 +364,13 @@ class DiMonoPixelTemplate
                         value = *(++p);
                         if (value < minvalue)
                             minvalue = value;
-                        if (value > maxvalue)
+                        else if (value > maxvalue)
                             maxvalue = value;
                     }
                 }
                 MinValue[0] = minvalue;                         // global minimum
                 MaxValue[0] = maxvalue;                         // global maximum
-                MinValue[1] = 0;
+                MinValue[1] = 0;                                // invalidate value
                 MaxValue[1] = 0;
             } else {
                 minvalue = MinValue[0];
@@ -364,7 +426,13 @@ class DiMonoPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimopxt.h,v $
- * Revision 1.16  2001-06-01 15:49:47  meichel
+ * Revision 1.17  2001-09-28 13:09:30  joergr
+ * Added method setRoiWindow() which automatically calculates a min-max VOI
+ * window for a specified rectangular region of the image.
+ * Made min-max window calculation consistent with latest release of the DICOM
+ * standard (supplement 33).
+ *
+ * Revision 1.16  2001/06/01 15:49:47  meichel
  * Updated copyright header
  *
  * Revision 1.15  2000/05/03 09:46:29  joergr
