@@ -1,6 +1,10 @@
 /*!
 
+\if MANPAGES
 \page dcmodify Modify DICOM files
+\else
+\page dcmodify dcmodify: Modify DICOM files
+\endif
 
 \section synopsis SYNOPSIS
 

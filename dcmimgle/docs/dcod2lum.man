@@ -1,6 +1,10 @@
 /*!
 
+\if MANPAGES
 \page dcod2lum Convert hardcopy characteristic curve file to softcopy format
+\else
+\page dcod2lum dcod2lum: Convert hardcopy characteristic curve file to softcopy format
+\endif
 
 \section synopsis SYNOPSIS
 
@@ -19,10 +23,11 @@ formula:
   L = La + L0 * 10^(-D)
 \endverbatim
 
-where 'L' is the resulting luminance, 'La' is the reflected ambient light and
-'L0' the illumination (both measured in cd/m^2), 'D' the optical density (OD).
-Please note that if no illumination value is specified in the input file
-(keyword "lum") all optical density values are mapped to a constant luminance.
+where \e L is the resulting luminance, \e La is the reflected ambient light
+and \e L0 the illumination (both measured in cd/m^2), 'D' the optical density
+(OD).  Please note that if no illumination value is specified in the input
+file (keyword \e lum) all optical density values are mapped to a constant
+luminance.
 
 \section parameters PARAMETERS
 
@@ -40,9 +45,9 @@ sample characteristics file monitors, cameras, printers and scanners.
 \section files FILES
 
 \e camera.lut  sample characteristics file of a camera
-<br>\e monitor.lut  sample characteristics file of a monitor
-<br>\e printer.lut  sample characteristics file of a printer
-<br>\e scanner.lut  sample characteristics file of a scanner
+\n\e monitor.lut  sample characteristics file of a monitor
+\n\e printer.lut  sample characteristics file of a printer
+\n\e scanner.lut  sample characteristics file of a scanner
 
 \section see_also SEE ALSO
 

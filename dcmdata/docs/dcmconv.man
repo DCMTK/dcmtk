@@ -1,6 +1,10 @@
 /*!
 
+\if MANPAGES
 \page dcmconv Convert DICOM file encoding
+\else
+\page dcmconv dcmconv: Convert DICOM file encoding
+\endif
 
 \section synopsis SYNOPSIS
 

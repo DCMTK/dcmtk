@@ -1,20 +1,21 @@
 /*!
 
-\page dcmimage Module dcmimage
+\page mod_dcmimage dcmimage: adds support for color images to dcmimgle
 
 This module contains classes to access and render DICOM color images.  Support
-for monochrome images is provided by the \ref dcmimgle.  Support for JPEG
-compressed images is provide by the \ref dcmjpeg.
+for monochrome images is provided by the module \ref mod_dcmimgle "dcmimgle".
+Support for JPEG compressed images is provide by the module
+\ref mod_dcmjpeg "dcmjpeg".
 
 The main interface class is:
-\li \b DicomImage (from \ref dcmimgle)
+\li \b DicomImage (from module \ref mod_dcmimgle "dcmimgle")
 
 \section Tools
 
 This module contains the following command line tools:
-\li \b dcm2pnm:  \ref dcm2pnm
-\li \b dcmquant: \ref dcmquant
-\li \b dcmscale: \ref dcmscale
+\li \ref dcm2pnm
+\li \ref dcmquant
+\li \ref dcmscale
 
 \section Examples
 

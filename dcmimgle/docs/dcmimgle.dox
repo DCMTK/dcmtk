@@ -1,10 +1,11 @@
 /*!
 
-\page dcmimgle Module dcmimgle
+\page mod_dcmimgle dcmimgle: an image processing library and utility apps
 
 This module contains classes to access and render DICOM monochrome images.
-Support for color images is provided by the \ref dcmimage.  Support for JPEG
-compressed images is provide by the \ref dcmjpeg.
+Support for color images is provided by the module
+\ref mod_dcmimage "dcmimage".  Support for JPEG compressed images is provided
+by the module \ref mod_dcmjpeg "dcmjpeg".
 
 The main interface classes are:
 \li \b DicomImage
@@ -13,9 +14,9 @@ The main interface classes are:
 \section Tools
 
 This module contains the following command line tools:
-\li \b dcmdspfn: \ref dcmdspfn
-\li \b dcod2lum: \ref dcod2lum
-\li \b dconvlum: \ref dconvlum
+\li \ref dcmdspfn
+\li \ref dcod2lum
+\li \ref dconvlum
 
 \section Examples
 

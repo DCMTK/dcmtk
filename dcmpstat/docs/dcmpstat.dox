@@ -1,6 +1,6 @@
 /*!
 
-\page dcmpstat Module dcmpstat
+\page mod_dcmpstat dcmpstat: a presentation state library and utility apps
 
 This module contains classes that implement a high-level API for the DICOM 
 Softcopy Grayscale Presentation State Storage SOP Class. It also contains various
@@ -15,16 +15,16 @@ The main interface classes are:
 \section Tools
 
 This module contains the following command line tools:
-\li \b dcmmkcrv: \ref dcmmkcrv
-\li \b dcmmklut: \ref dcmmklut
-\li \b dcmp2pgm: \ref dcmp2pgm
-\li \b dcmprscp: \ref dcmprscp
-\li \b dcmprscu: \ref dcmprscu
-\li \b dcmpschk: \ref dcmpschk
-\li \b dcmpsmk:  \ref dcmpsmk
-\li \b dcmpsprt: \ref dcmpsprt
-\li \b dcmpsrcv: \ref dcmpsrcv
-\li \b dcmpssnd: \ref dcmpssnd
+\li \ref dcmmkcrv
+\li \ref dcmmklut
+\li \ref dcmp2pgm
+\li \ref dcmprscp
+\li \ref dcmprscu
+\li \ref dcmpschk
+\li \ref dcmpsmk
+\li \ref dcmpsprt
+\li \ref dcmpsrcv
+\li \ref dcmpssnd
 
 \section Examples
 

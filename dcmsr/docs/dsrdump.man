@@ -1,6 +1,10 @@
 /*!
 
+\if MANPAGES
 \page dsrdump Dump DICOM SR file and data set
+\else
+\page dsrdump dsrdump: Dump DICOM SR file and data set
+\endif
 
 \section synopsis SYNOPSIS
 

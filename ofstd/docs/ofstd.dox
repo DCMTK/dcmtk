@@ -1,6 +1,6 @@
 /*!
 
-\page ofstd Module ofstd
+\page mod_ofstd ofstd: a library of general purpose classes
 
 This module contains general purpose classes which are not specific to the
 DICOM standard. They are used extensively throughout the toolkit.

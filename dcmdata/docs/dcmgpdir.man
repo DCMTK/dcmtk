@@ -1,6 +1,10 @@
 /*!
 
+\if MANPAGES
 \page dcmgpdir Create a general purpose DICOMDIR
+\else
+\page dcmgpdir dcmgpdir: Create a general purpose DICOMDIR
+\endif
 
 \section synopsis SYNOPSIS
 

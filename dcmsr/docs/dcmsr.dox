@@ -1,6 +1,6 @@
 /*!
 
-\page dcmsr Module dcmsr
+\page mod_dcmsr dcmsr: a structured report library and utility apps
 
 This module contains classes to read, write, create, modify, access, print and
 render DICOM Structured Reporting documents (formerly Supplement 23). The list
@@ -15,10 +15,10 @@ The main interface classes are:
 \section Tools
 
 This module contains the following command line tools:
-\li \b dsr2html: \ref dsr2html
-\li \b dsr2xml:  \ref dsr2xml
-\li \b dsrdump:  \ref dsrdump
-\li \b xml2dsr:  \ref xml2dsr
+\li \ref dsr2html
+\li \ref dsr2xml
+\li \ref dsrdump
+\li \ref xml2dsr
 
 \section Examples
 
@@ -44,7 +44,7 @@ if (status.good())
 \endcode
 
 The following example shows how to create a DICOM Structured Report and save
-it to a file (see \ref mkreport for details):
+it to a file (see \ref src_mkreport "mkreport" source file for details):
 
 \code
 DSRDocument document;
@@ -91,6 +91,6 @@ if (imagePtr != NULL)
 */
 
 /*!
-    \page mkreport mkreport source code
+    \page src_mkreport mkreport source code
     \include mkreport.cc
 */

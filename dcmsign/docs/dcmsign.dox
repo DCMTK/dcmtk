@@ -1,6 +1,6 @@
 /*!
 
-\page dcmsign Module dcmsign
+\page mod_dcmsign dcmsign: a digital signature library and utility apps
 
 This module contains classes to create digital signatures in DICOM data sets, to 
 verify and to remove signatures. Signatures are conforming to the DICOM "Digital 
@@ -17,7 +17,7 @@ The main interface classes are:
 \section Tools
 
 This module contains the following command line tool:
-\li \b dcmsign: \ref dcmsign_app
+\li \ref dcmsign
 
 \section Examples
 

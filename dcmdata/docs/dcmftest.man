@@ -1,6 +1,10 @@
 /*!
 
+\if MANPAGES
 \page dcmftest Test if file uses DICOM part 10 format
+\else
+\page dcmftest dcmftest: Test if file uses DICOM part 10 format
+\endif
 
 \section synopsis SYNOPSIS
 

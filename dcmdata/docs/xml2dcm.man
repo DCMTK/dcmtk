@@ -1,6 +1,10 @@
 /*!
 
+\if MANPAGES
 \page xml2dcm Convert XML document to DICOM file or data set
+\else
+\page xml2dcm xml2dcm: Convert XML document to DICOM file or data set
+\endif
 
 \section synopsis SYNOPSIS
 

@@ -1,6 +1,10 @@
 /*!
 
+\if MANPAGES
 \page dcmdrle Decode RLE-compressed DICOM file
+\else
+\page dcmdrle dcmdrle: Decode RLE-compressed DICOM file
+\endif
 
 \section synopsis SYNOPSIS
 

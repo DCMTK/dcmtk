@@ -1,6 +1,10 @@
 /*!
 
+\if MANPAGES
 \page dcmcrle Encode DICOM file to RLE transfer syntax
+\else
+\page dcmcrle dcmcrle: Encode DICOM file to RLE transfer syntax
+\endif
 
 \section synopsis SYNOPSIS
 

@@ -1,6 +1,10 @@
 /*!
 
+\if MANPAGES
 \page dump2dcm Convert ASCII dump to DICOM file
+\else
+\page dump2dcm dump2dcm: Convert ASCII dump to DICOM file
+\endif
 
 \section synopsis SYNOPSIS
 

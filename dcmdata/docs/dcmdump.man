@@ -1,6 +1,10 @@
 /*!
 
+\if MANPAGES
 \page dcmdump Dump DICOM file and data set
+\else
+\page dcmdump dcmdump: Dump DICOM file and data set
+\endif
 
 \section synopsis SYNOPSIS
 

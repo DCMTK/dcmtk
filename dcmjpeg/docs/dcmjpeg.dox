@@ -1,6 +1,6 @@
 /*!
 
-\page dcmjpeg Module dcmjpeg
+\page mod_dcmjpeg dcmjpeg: a compression/decompression library and utility apps
 
 This module contains classes that convert between uncompressed and JPEG 
 compressed representations (transfer syntaxes) of a DICOM image object.
@@ -17,10 +17,10 @@ The main interface classes are:
 \section Tools
 
 This module contains the following command line tools:
-\li \b dcmcjpeg: \ref dcmcjpeg
-\li \b dcmdjpeg: \ref dcmdjpeg
-\li \b dcmj2pnm: \ref dcmj2pnm
-\li \b dcmmkdir: \ref dcmmkdir
+\li \ref dcmcjpeg
+\li \ref dcmdjpeg
+\li \ref dcmj2pnm
+\li \ref dcmmkdir
 
 \section Examples
 

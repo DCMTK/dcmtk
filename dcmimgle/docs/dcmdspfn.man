@@ -1,6 +1,10 @@
 /*!
 
+\if MANPAGES
 \page dcmdspfn Export standard display curves to a text file
+\else
+\page dcmdspfn dcmdspfn: Export standard display curves to a text file
+\endif
 
 \section synopsis SYNOPSIS
 
@@ -149,9 +153,9 @@ lines (an example is provided in file <em>dcmdata/apps/dumppat.txt</em>).
 \section files FILES
 
 \e camera.lut  sample characteristics file of a camera
-<br>\e monitor.lut  sample characteristics file of a monitor
-<br>\e printer.lut  sample characteristics file of a printer
-<br>\e scanner.lut  sample characteristics file of a scanner
+\n\e monitor.lut  sample characteristics file of a monitor
+\n\e printer.lut  sample characteristics file of a printer
+\n\e scanner.lut  sample characteristics file of a scanner
 
 \section see_also SEE ALSO
 

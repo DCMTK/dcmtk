@@ -1,6 +1,6 @@
 /*!
 
-\page dcmdata Module dcmdata
+\page mod_dcmdata dcmdata: a data encoding/decoding library and utility apps
 
 This module contains classes to manage DICOM data structures and files. It
 also provides support for DICOMDIR files as required for DICOM storage media.
@@ -14,16 +14,16 @@ The main interface classes are:
 \section Tools
 
 This module contains the following command line tools:
-\li \b dcm2xml:  \ref dcm2xml
-\li \b dcmconv:  \ref dcmconv
-\li \b dcmcrle:  \ref dcmcrle
-\li \b dcmdrle:  \ref dcmdrle
-\li \b dcmdump:  \ref dcmdump
-\li \b dcmftest: \ref dcmftest
-\li \b dcmgpdir: \ref dcmgpdir
-\li \b dcmodify: \ref dcmodify
-\li \b dump2dcm: \ref dump2dcm
-\li \b xml2dcm:  \ref xml2dcm
+\li \ref dcm2xml
+\li \ref dcmconv
+\li \ref dcmcrle
+\li \ref dcmdrle
+\li \ref dcmdump
+\li \ref dcmftest
+\li \ref dcmgpdir
+\li \ref dcmodify
+\li \ref dump2dcm
+\li \ref xml2dcm
 
 \section Examples
 

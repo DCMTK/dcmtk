@@ -1,6 +1,6 @@
 /*!
 
-\page dcmtls Module dcmtls
+\page mod_dcmtls dcmtls: security extensions for the network library
 
 This module contains classes that implement DICOM network communication tunneled 
 through a Transport Layer Security (TLS) connection, conforming to the DICOM 

@@ -1,6 +1,10 @@
 /*!
 
+\if MANPAGES
 \page dsr2xml Convert DICOM SR file and data set to XML
+\else
+\page dsr2xml dsr2xml: Convert DICOM SR file and data set to XML
+\endif
 
 \section synopsis SYNOPSIS
 

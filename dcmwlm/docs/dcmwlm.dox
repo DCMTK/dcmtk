@@ -1,6 +1,6 @@
 /*!
 
-\page dcmwlm Module dcmwlm
+\page mod_dcmwlm dcmwlm: a modality worklist database server
 
 This module contains ...
 
@@ -12,7 +12,7 @@ The main interface classes are:
 \section Tools
 
 This module contains the following command line tool:
-\li \b wlmscpfs: \ref wlmscpfs
+\li \ref wlmscpfs
 
 \section Examples
 

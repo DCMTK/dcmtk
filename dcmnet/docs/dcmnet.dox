@@ -1,6 +1,6 @@
 /*!
 
-\page dcmnet Module dcmnet
+\page mod_dcmnet dcmnet: a networking library and utility apps
 
 This module contains a collection of functions that implement DICOM network 
 communication, i.e. the DICOM Upper Layer Finite State Machine, the Association
@@ -12,11 +12,11 @@ dimse.h.
 \section Tools
 
 This module contains the following command line tools:
-\li \b echoscu:  \ref echoscu
-\li \b findscu:  \ref findscu
-\li \b movescu:  \ref movescu
-\li \b storescp: \ref storescp
-\li \b storescu: \ref storescu
+\li \ref echoscu
+\li \ref findscu
+\li \ref movescu
+\li \ref storescp
+\li \ref storescu
 
 \section Examples
 

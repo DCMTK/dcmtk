@@ -1,6 +1,10 @@
 /*!
 
+\if MANPAGES
 \page dsr2html Render DICOM SR file and data set to HTML
+\else
+\page dsr2html dsr2html: Render DICOM SR file and data set to HTML
+\endif
 
 \section synopsis SYNOPSIS
 
