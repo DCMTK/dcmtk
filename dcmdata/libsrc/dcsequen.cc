@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmSequenceOfItems
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-01 10:12:10 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-02-03 16:29:40 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcsequen.cc,v $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -268,7 +268,7 @@ Uint32 DcmSequenceOfItems::calcElementLength(const E_TransferSyntax xfer,
                                              const E_EncodingType enctype)
 {
     Uint32 seqlen = DcmElement::calcElementLength(xfer, enctype);
-    if (enctype == EET_UndefinedLength)
+    if (Length == DCM_UndefinedLength)
         seqlen += 8;     // for Sequence Delimitation Tag
     return seqlen;
 }
@@ -1093,7 +1093,11 @@ E_Condition DcmSequenceOfItems::loadAllDataIntoMemory()
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.28  2000-02-01 10:12:10  meichel
+** Revision 1.29  2000-02-03 16:29:40  joergr
+** Corrected bug that caused wrong calculation of group length for sequence
+** of items (e.g. encapsulated pixel data).
+**
+** Revision 1.28  2000/02/01 10:12:10  meichel
 ** Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
 **   workaround for bug in compiler header files.
 **
