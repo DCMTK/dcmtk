@@ -22,9 +22,9 @@
  *  Purpose: DicomMonoOutputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 15:29:53 $
+ *  Update Date:      $Date: 1998-12-14 17:25:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,15 +49,18 @@
  *  class declaration  *
  *---------------------*/
 
-template<class T1, class T2>
+template<class T1, class T2, class T3>
 class DiMonoOutputPixelTemplate
   : public DiMonoOutputPixel,
-    public DiPixelRepresentationTemplate<T2>
+    public DiPixelRepresentationTemplate<T3>
 {
+
  public:
+
     DiMonoOutputPixelTemplate(const DiMonoPixel *pixel,
-                              const DiOverlay *overlays,
-                              const DiLookupTable *table,
+                              DiOverlay *overlays[2],
+                              const DiLookupTable *vlut,
+                              const DiLookupTable *plut,
                               const double center,
                               const double width,
                               const int bits,
@@ -72,14 +75,14 @@ class DiMonoOutputPixelTemplate
     {
         if ((pixel != NULL) && (getCount() > 0))
         {
-            if ((table != NULL) && (table->isValid()))
-                voilut((const T1 *)pixel->getData(), frame * getCount(), table, (T2)low, (T2)high);
+            if ((vlut != NULL) && (vlut->isValid()))
+                voilut((const T1 *)pixel->getData(), frame * getCount(), vlut, plut, (T3)low, (T3)high);
             else
             {
-                if (width < 0)                                                      // no valid window
-                    window((const T1 *)pixel->getData(), frame * getCount(), bits, (T2)low, (T2)high);
+                if (width <= 0)                            // no valid window according to Cor Loef (author of suppl. 33)
+                    window(pixel, frame * getCount(), plut, bits, (T3)low, (T3)high);
                 else
-                    window((const T1 *)pixel->getData(), frame * getCount(), center, width, (T2)low, (T2)high);
+                    window(pixel, frame * getCount(), plut, center, width, (T3)low, (T3)high);
             }
             overlay(overlays, columns, rows, frame);
         }
@@ -92,12 +95,12 @@ class DiMonoOutputPixelTemplate
 
     inline EP_Representation getRepresentation() const
     {
-        return DiPixelRepresentationTemplate<T2>::getRepresentation();
+        return DiPixelRepresentationTemplate<T3>::getRepresentation();
     }
 
     inline size_t getItemSize() const
     {
-        return sizeof(T2);
+        return sizeof(T3);
     }
 
     inline void *getData() const
@@ -129,125 +132,197 @@ class DiMonoOutputPixelTemplate
         return 0;
     }
 
+
  private:
+
     inline void voilut(const T1 *pixel,
                        const Uint32 start,
-                       const DiLookupTable *table,
-                       const T2 low,
-                       const T2 high)
+                       const DiLookupTable *vlut,
+                       const DiLookupTable *plut,
+                       const T3 low,
+                       const T3 high)
     {
-        if ((pixel != NULL) && (table != NULL))
+        if ((pixel != NULL) && (vlut != NULL))
         {
-            Data = new T2[getCount()];
+            Data = new T3[getCount()];
             if (Data != NULL)
             {
-                const T1 min = (T1)table->getFirstEntry();
-                const T1 max = (T1)table->getLastEntry();
-                const double minvalue = (double)table->getMinValue();
-                const double maxvalue = (double)table->getMaxValue();
-                const double gradient = ((double)high - (double)low) / (maxvalue - minvalue);
-                register const T1 *p = pixel + start;
-                register T2 *q = Data;
-                register T1 value;
+                const double minvalue = (double)vlut->getMinValue();
+                const double maxvalue = (double)vlut->getMaxValue();
                 register unsigned long i;
-                for (i = 0; i < getCount(); i++)
+                if (minvalue == maxvalue)                                             // LUT has only one entry or all entries are equal
                 {
-                    value = *(p++);
-                    if (value <= min)
-                        *(q++) = low;
-                    else if (value >= max)
-                        *(q++) = high;
-                    else
-                        *(q++) = (T2)((double)low + ((double)table->getValue(value) - minvalue) * gradient);
+                    const T3 value = (T3)((double)low + (minvalue / (double)maxval(vlut->getBits(), 0)) * ((double)high - (double)low + 1));
+                    OFBitmanipTemplate<T3>::setMem(Data, value, getCount());          // set output pixels to LUT value
+                        
+                    /* presentation LUT ? */
+                    
+                } else {
+                    register T2 value;
+                    const T2 firstentry = vlut->getFirstEntry(value);                 // choose signed/unsigned method
+                    const T2 lastentry = vlut->getLastEntry(value);
+                    const double gradient = ((double)high - (double)low + 1) / (maxvalue - minvalue + 1);                    
+                    const T3 firstvalue = (T3)((double)low + ((double)vlut->getFirstValue() - minvalue) * gradient);
+                    const T3 lastvalue = (T3)((double)low + ((double)vlut->getLastValue() - minvalue) * gradient);
+                    register const T1 *p = pixel + start;
+                    register T3 *q = Data;
+                    if ((plut != NULL) && (plut->isValid()))                          // has presentation LUT
+                    {
+                        
+                        /* merge both tables ? */
+                        
+                    } else {
+                        for (i = 0; i < getCount(); i++)
+                        {
+                            value = (T2)(*(p++));
+                            if (value <= firstentry)
+                                *(q++) = firstvalue;
+                            else if (value >= lastentry)
+                                *(q++) = lastvalue;
+                            else
+                                *(q++) = (T3)((double)low + ((double)vlut->getValue(value) - minvalue) * gradient);
+                        }
+                    }
                 }
             } 
         }
     }
 
-    inline void window(const T1 *pixel,
+    inline void window(const DiMonoPixel *inter,
                        const Uint32 start,
+                       const DiLookupTable *plut,
                        const int bits,
-                       const T2 low,
-                       const T2 high)
+                       const T3 low,
+                       const T3 high)
     {
+        const T1 *pixel = (const T1 *)inter->getData();
         if (pixel != NULL)
         {
-            Data = new T2[getCount()];
+            Data = new T3[getCount()];
             if (Data != NULL)
             {
-                register const T1 *p = pixel + start;
-                register T2 *q = Data;
                 const DiPixelRepresentationTemplate<T1> rep;
-                const double offset = (rep.isSigned()) ? (double)(maxval(bits - 1, 0)) : 0;
+                const double offset = (rep.isSigned()) ? maxval(bits - 1, 0) : 0;
+                register const T1 *p = pixel + start;
+                register T3 *q = Data;
                 register unsigned long i;
-                register const double gradient = ((double)high - (double)low + 1) / (double)maxval(bits, 0);
-                for (i = 0; i < getCount(); i++)
-                    *(q++) = (T2)((double)low + (offset + (double)(*(p++))) * gradient);
+                if ((plut != NULL) && (plut->isValid()))                              // has presentation LUT
+                {
+/*
+                    const Uint16 lastentry = (Uint16)plut->getLastEntry();
+                    const double minentry = (double)plut->getMinValue();
+                    const double maxentry = (double)plut->getMaxValue();
+                    const double gradient1 = ((double)high - (double)low + 1) / (double)maxval(plut->getBits(), 0);
+                    const double gradient2 = ((double)high - (double)low + 1) / (maxentry - minentry);
+                    register Uint16 value;
+                    for (i = 0; i < getCount(); i++)
+                    {
+                        value = (Uint16)((offset + (double)(*(p++))) * gradient1);     // scale to LUT input range
+                        if (value >= lastentry)
+                            *(q++) = high;
+                        else
+                            *(q++) = (T3)((double)low + ((double)plut->getValue(value) - minentry) * gradient2);
+                    }
+*/
+                } else {            
+                    register const double gradient = ((double)high - (double)low + 1) / ((double)maxval(bits) + 1);
+                    for (i = 0; i < getCount(); i++)
+                        *(q++) = (T3)((double)low + (offset + (double)(*(p++))) * gradient);
+                }
             }
         }
     }
 
-    inline void window(const T1 *pixel,
+    inline void window(const DiMonoPixel *inter,
                        const Uint32 start,
+                       const DiLookupTable *plut,
                        const double center,
                        const double width,
-                       const T2 low,
-                       const T2 high)
+                       const T3 low,
+                       const T3 high)
     {
+        const T1 *pixel = (const T1 *)inter->getData();
         if (pixel != NULL)
         {
-            Data = new T2[getCount()];
+            Data = new T3[getCount()];
             if (Data != NULL)
             {
                 register const T1 *p = pixel + start;
-                register T2 *q = Data;
-                register double value;
+                register T3 *q = Data;
                 register unsigned long i;
                 const double left = center - width / 2;
                 const double right = center + width / 2;
-                const double gradient = ((double)high - (double)low) / width;
-                for (i = 0; i < getCount(); i++)
+                if ((plut != NULL) && (plut->isValid()))                               // has presentation LUT
                 {
-                    value = (double)*(p++);
-                    if (value <= left)
-                        *(q++) = low;
-                    else if (value >= right)
-                        *(q++) = high;
-                    else
-                        *(q++) = (T2)((double)low + (value - left) * gradient);
+/*
+                    const Uint16 lastentry = (Uint16)plut->getLastEntry();
+                    const Uint16 min = 0;                                              // first value mapped
+                    const Uint16 max = maxval(plut->getBits());                        // last value mapped?
+                    const double gradient1 = ((double)max + 1) / width;
+                    const double gradient2 = ((double)high - (double)low + 1) / ((double)max + 1);
+                    register double value1;
+                    register Uint16 value2;
+                    for (i = 0; i < getCount(); i++)
+                    {
+                        value1 = (double)*(p++);                                       // input pixel
+                        if (value1 <= left)
+                            value2 = min;                                              // minimum window value
+                        else if (value1 >= right)
+                            value2 = max;                                              // maximum value
+                        else
+                            value2 = (Uint16)((value1 - left) * gradient1);            // scale to LUT input width
+                        if (value2 >= lastentry)
+                            *(q++) = high;                                             // maximum output value
+                        else
+                            *(q++) = (T3)((double)low + (double)plut->getValue(value2) * gradient2);
+                    }
+*/
+                } else {
+                    const double gradient = ((double)high - (double)low + 1) / width;
+                    register double value;
+                    for (i = 0; i < getCount(); i++)
+                    {
+                        value = (double)*(p++);
+                        if (value <= left)
+                            *(q++) = low;
+                        else if (value >= right)
+                            *(q++) = high;
+                        else
+                            *(q++) = (T3)((double)low + (value - left) * gradient);
+                    }
                 } 
             }   
         }
     }
 
-    inline void overlay(const DiOverlay *overlays,
+    inline void overlay(DiOverlay *overlays[2],
                         const Uint16 columns,
                         const Uint16 rows,
                         const unsigned long frame)
     {
-        if ((Data != NULL) && (overlays != NULL))
+        if ((Data != NULL) && (overlays != NULL) && (overlays[0] != NULL))
         {
-            const Uint16 left = overlays->getLeft();
-            const Uint16 top = overlays->getTop();
+            const Uint16 left = overlays[0]->getLeft();
+            const Uint16 top = overlays[0]->getTop();
             register DiOverlayPlane *plane;
-            for (unsigned int i = 0; i < overlays->getCount(); i++)
+            for (unsigned int i = 0; i < overlays[0]->getCount(); i++)
             {
-                plane = overlays->getPlane(i);
+                plane = overlays[0]->getPlane(i);
                 if ((plane != NULL) && plane->isVisible() && plane->reset(frame))
                 {
-                    register T2 *q;
+                    register T3 *q;
                     register Uint16 x;
                     register Uint16 y;
                     const Uint16 xmin = (plane->getLeft(left) > 0) ? plane->getLeft(left) : 0;
                     const Uint16 ymin = (plane->getTop(top) > 0) ? plane->getTop(top) : 0;
                     const Uint16 xmax = (plane->getRight(left) < columns) ? plane->getRight(left) : columns;
                     const Uint16 ymax = (plane->getBottom(top) < rows) ? plane->getBottom(top) : rows;
-                    const T2 maxvalue = (T2)maxval(bitsof(T2));
+                    const T3 maxvalue = (T3)maxval(bitsof(T3));
                     switch (plane->getMode())
                     {
                         case EMO_Replace:
                         {
-                            const T2 fore = (T2)(plane->getForeground() * maxvalue);
+                            const T3 fore = (T3)(plane->getForeground() * maxvalue);
                             for (y = ymin; y < ymax; y++)
                             {
                                 plane->setStart(left + xmin, top + y);
@@ -262,8 +337,8 @@ class DiMonoOutputPixelTemplate
                         }
                         case EMO_ThresholdReplace:
                         {
-                            const T2 fore = (T2)(plane->getForeground() * maxvalue);
-                            const T2 thresh = (T2)(plane->getThreshold() * maxvalue);
+                            const T3 fore = (T3)(plane->getForeground() * maxvalue);
+                            const T3 thresh = (T3)(plane->getThreshold() * maxvalue);
                             for (y = ymin; y < ymax; y++)
                             {
                                 plane->setStart(left + xmin, top + y);
@@ -278,7 +353,7 @@ class DiMonoOutputPixelTemplate
                         }
                         case EMO_Complement:
                         {
-                            const T2 thresh = (T2)maxval(bitsof(T2) / 2);
+                            const T3 thresh = (T3)maxval(bitsof(T3) / 2);
                             for (y = ymin; y < ymax; y++)
                             {
                                 plane->setStart(left + xmin, top + y);
@@ -293,7 +368,7 @@ class DiMonoOutputPixelTemplate
                         }
                         case EMO_RegionOfInterest:
                         {
-                            const int dim = bitsof(T2) / 2;
+                            const int dim = bitsof(T3) / 2;
                             for (y = ymin; y < ymax; y++)
                             {
                                 plane->setStart(left + xmin, top + y);
@@ -315,7 +390,7 @@ class DiMonoOutputPixelTemplate
         }
     }
 
-    T2 *Data;
+    T3 *Data;
 
  // --- declarations to avoid compiler warnings
  
@@ -327,13 +402,15 @@ class DiMonoOutputPixelTemplate
 #endif
 
 
-
-
 /*
 **
 ** CVS/RCS Log:
 ** $Log: dimoopxt.h,v $
-** Revision 1.1  1998-11-27 15:29:53  joergr
+** Revision 1.2  1998-12-14 17:25:55  joergr
+** Added support for correct scaling of input/output values for grayscale
+** transformations.
+**
+** Revision 1.1  1998/11/27 15:29:53  joergr
 ** Added copyright message.
 ** Introduced global debug level for dcmimage module to control error output.
 ** Corrected bug in VOI LUT transformation method.

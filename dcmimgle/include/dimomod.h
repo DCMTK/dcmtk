@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeModality (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 15:25:15 $
+ *  Update Date:      $Date: 1998-12-14 17:23:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimomod.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -76,23 +76,49 @@ class DiMonoModality : public DiObjectCounter
     virtual ~DiMonoModality();
     
     inline EP_Representation getRepresentation() const
-        { return Representation; }
+    {
+        return Representation;
+    }
 
     inline double getMinValue() const
-        { return MinValue; }
+    {
+        return MinValue;
+    }
+    
     inline double getMaxValue() const
-        { return MaxValue; }
+    {
+        return MaxValue;
+    }
+    
     inline double getRescaleIntercept() const
-        { return RescaleIntercept; }
+    {
+        return RescaleIntercept;
+    }
+    
     inline double getRescaleSlope() const
-        { return RescaleSlope; }
+    {
+        return RescaleSlope;
+    }
+    
     inline const DiLookupTable *getTableData() const
-        { return TableData; }
+    {
+        return TableData;
+    }
 
     inline int hasLookupTable() const
-        { return LookupTable; }
+    {
+        return LookupTable;
+    }
+    
     inline int hasRescaling() const
-        { return Rescaling; }
+    {
+        return Rescaling;
+    }
+
+    inline int isPotentiallySigned() const
+    {
+        return PotentialSignedRange;
+    }
 
 
  protected:
@@ -102,7 +128,7 @@ class DiMonoModality : public DiObjectCounter
  
     void checkTable();
 
-    void checkRescaling();
+    void checkRescaling(const DiInputPixel *pixel);
 
  
  private:
@@ -117,6 +143,7 @@ class DiMonoModality : public DiObjectCounter
     
     int LookupTable;
     int Rescaling;
+    int PotentialSignedRange;
     
     DiLookupTable *TableData;
 
@@ -134,7 +161,11 @@ class DiMonoModality : public DiObjectCounter
 **
 ** CVS/RCS Log:
 ** $Log: dimomod.h,v $
-** Revision 1.1  1998-11-27 15:25:15  joergr
+** Revision 1.2  1998-12-14 17:23:52  joergr
+** Added support for correct scaling of input/output values for grayscale
+** transformations.
+**
+** Revision 1.1  1998/11/27 15:25:15  joergr
 ** Added copyright message.
 ** Added constructors to use external modality transformations.
 **
