@@ -23,8 +23,8 @@
  *    classes: DSRCodedEntryValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-11 17:14:28 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2003-12-16 15:56:53 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -109,7 +109,7 @@ class DSRCodedEntryValue
 
     /** comparison operator.
      *  Two codes are equal if the code value, coding scheme designator and the (optional)
-     *  coding scheme version are equal.  The code meaning is not important for this.
+     *  coding scheme version are equal.  The code meaning is not relevant for this check.
      ** @param  codedEntryValue  code which should be compared to the current one
      ** @return OFTrue if both codes are equal, OFFalse otherwise
      */
@@ -232,7 +232,9 @@ class DSRCodedEntryValue
 
     /** get coding scheme designator.
      *  This is a textual identifier of the table where the code value is linked to its
-     *  code meaning.
+     *  code meaning.  Designators beginning with "99" and the designator "L" are defined
+     *  to be private or local coding schemes.  More details on the coding scheme might be
+     *  retrieved via the DSRDocument::getCodingSchemeIdentification() method.
      ** @return current coding scheme designator (might be invalid or an empty string)
      */
     inline const OFString &getCodingSchemeDesignator() const
@@ -270,11 +272,15 @@ class DSRCodedEntryValue
 
     /** set code value.
      *  Before setting the code it is checked (see checkCode()).  If the code is invalid
-     *  the current code is not replaced and remains unchanged.
+     *  the current code is not replaced and remains unchanged.  Additional information on
+     *  the coding scheme can be provided via the getCodingSchemeIdentification() method in
+     *  the main interface class DSRDocument (highly recommended for private coding schemes).
      ** @param  codeValue               identifier of the code to be set that is unambiguous
      *                                  within the coding scheme. (VR=SH, mandatory)
      *  @param  codingSchemeDesignator  textual identifier of the table where the 'codeValue'
      *                                  is linked to its 'codeMeaning'. (VR=SH, mandatory)
+     *                                  Designators beginning with "99" and the designator
+     *                                  "L" are defined to be private or local coding schemes.
      *  @param  codeMeaning             human-readable translation of the 'codeValue'.  Used
      *                                  for display when code dictionary is not available.
      *                                  (VR=LO, mandatory)
@@ -286,11 +292,15 @@ class DSRCodedEntryValue
 
     /** set code value.
      *  Before setting the specified code it is checked (see checkCode()).  If the code is
-     *  invalid the current code is not replaced and remains unchanged.
+     *  invalid the current code is not replaced and remains unchanged.  Additional
+     *  information on the coding scheme can be provided via the getCodingSchemeIdentification()
+     *  method in the main class DSRDocument (highly recommended for private coding schemes).
      ** @param  codeValue               identifier of the code to be set that is unambiguous
      *                                  within the coding scheme. (VR=SH, mandatory)
      *  @param  codingSchemeDesignator  textual identifier of the table where the 'codeValue'
      *                                  is linked to its 'codeMeaning'. (VR=SH, mandatory)
+     *                                  Designators beginning with "99" and the designator
+     *                                  "L" are defined to be private or local coding schemes.
      *  @param  codingSchemeVersion     version of the coding scheme.  Used when a coding
      *                                  scheme has multiple versions and the 'codingScheme
      *                                  Designator' does not explicitly (or adequately)
@@ -367,7 +377,10 @@ class DSRCodedEntryValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodvl.h,v $
- *  Revision 1.13  2003-12-11 17:14:28  joergr
+ *  Revision 1.14  2003-12-16 15:56:53  joergr
+ *  Added note on coding scheme identfication and private coding schemes.
+ *
+ *  Revision 1.13  2003/12/11 17:14:28  joergr
  *  Adapted documentation of print() method to new output format of CodingScheme
  *  Version (square brackets instead of comma to separate from CodingScheme).
  *
