@@ -23,8 +23,8 @@
  *    classes: DVInterface
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-24 20:17:48 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Update Date:      $Date: 1999-02-25 18:38:58 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -869,14 +869,14 @@ class DVInterface
      *  If called twice, an error code is returned.
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition disablePresentationState();
+    E_Condition disablePState();
 
     /** restores the stored presentation state (see disablePresentationState)
      *  and deletes the temporary presentation state.
      *  If no stored presentation state exists, returns an error.
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition enablePresentationState();
+    E_Condition enablePState();
     
     /** returns number of presentation states referencing the currently selected image.
      *  If no instance is currently selected or the selected instance is a presentation
@@ -1052,22 +1052,24 @@ private:
      */
     OFBool createPStateCache();
 
-    /** clears index cache
+    /** clears index cache (includes pstate cache)
      */
     void clearIndexCache();
 
-    /** clears specified index record
+    /** clears specified index record (and makes pos invalid)
      */
     void clearIndexRecord(IdxRecord &record,
                           int &recpos);
 
-    /** reads specified index record
+    /** reads specified index record (comparing pos with oldpos to avoid redundant
+     *  loading)
      */
     OFBool readIndexRecord(const int pos,
                            IdxRecord &record,
                            int *oldpos = NULL);
 
-    /** updates (hierarchical) status cache
+    /** updates (hierarchical) status cache (propagates status information from instances
+     *  to series and from series to studies)
      */
     void updateStatusCache();
     
@@ -1097,7 +1099,7 @@ private:
      */
     int deleteImageFile(const char *filename);
 
-    /** reset index file modification time to reference time (yesterday)
+    /** resets index file modification time to reference time (yesterday)
      */
     void resetDatabaseReferenceTime();
 };
@@ -1109,7 +1111,11 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.30  1999-02-24 20:17:48  joergr
+ *  Revision 1.31  1999-02-25 18:38:58  joergr
+ *  Added some comments.
+ *  Renamed methods enable/disablePState().
+ *
+ *  Revision 1.30  1999/02/24 20:17:48  joergr
  *  Added methods to get a list of presentation states referencing the
  *  currently selected image.
  *  Added support for exchanging current presentation state (load from file)
