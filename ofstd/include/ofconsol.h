@@ -53,9 +53,9 @@
  *  in multithread applications. Use ofConsole instead.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-21 15:47:54 $
+ *  Update Date:      $Date: 2000-09-26 13:46:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofconsol.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -163,7 +163,7 @@ public:
 #endif
       return *currentCout;
     }
-    return *currentCerr;
+    else return *currentCerr;
   }
 
   /** returns a reference to the current cerr stream.
@@ -174,7 +174,7 @@ public:
   ostream& getCerr()
   {
     if (joined) return *currentCout;
-    return *currentCerr;
+    else return *currentCerr;
   }
 
   /** releases the lock on the cerr stream.
@@ -294,7 +294,10 @@ extern OFConsole ofConsole;
  *
  * CVS/RCS Log:
  * $Log: ofconsol.h,v $
- * Revision 1.4  2000-06-21 15:47:54  meichel
+ * Revision 1.5  2000-09-26 13:46:12  meichel
+ * Simplified inline code in ofconsol.h, required by Sun CC 2.x
+ *
+ * Revision 1.4  2000/06/21 15:47:54  meichel
  * Including stdlib.h, required for Sun CC 4.2
  *
  * Revision 1.3  2000/04/14 15:41:40  meichel
