@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomColorOutputPixelTemplate (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-29 09:31:13 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-04-30 16:12:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicoopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -245,8 +245,8 @@ class DiColorOutputPixelTemplate
 
  // --- declarations to avoid compiler warnings
  
-    DiColorOutputPixelTemplate(const DiColorOutputPixelTemplate &);
-    DiColorOutputPixelTemplate &operator=(const DiColorOutputPixelTemplate &);
+    DiColorOutputPixelTemplate(const DiColorOutputPixelTemplate<T1,T2> &);
+    DiColorOutputPixelTemplate<T1,T2> &operator=(const DiColorOutputPixelTemplate<T1,T2> &);
 };
 
 
@@ -257,7 +257,10 @@ class DiColorOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dicoopxt.h,v $
- * Revision 1.10  1999-04-29 09:31:13  joergr
+ * Revision 1.11  1999-04-30 16:12:03  meichel
+ * Minor code purifications to keep IBM xlC quiet
+ *
+ * Revision 1.10  1999/04/29 09:31:13  joergr
  * Moved color related image files back to non-public part.
  *
  * Revision 1.1  1999/04/28 14:57:31  joergr

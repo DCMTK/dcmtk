@@ -22,9 +22,9 @@
  *  Purpose: DicomMonoOutputPixelTemplate (Header)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-04-29 16:46:46 $
+ *  Update Date:      $Date: 1999-04-30 16:10:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -964,8 +964,8 @@ class DiMonoOutputPixelTemplate
 
  // --- declarations to avoid compiler warnings
  
-    DiMonoOutputPixelTemplate(const DiMonoOutputPixelTemplate &);
-    DiMonoOutputPixelTemplate &operator=(const DiMonoOutputPixelTemplate &);
+    DiMonoOutputPixelTemplate(const DiMonoOutputPixelTemplate<T1,T2,T3> &);
+    DiMonoOutputPixelTemplate<T1,T2,T3> &operator=(const DiMonoOutputPixelTemplate<T1,T2,T3> &);
 };
 
 
@@ -976,7 +976,10 @@ class DiMonoOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoopxt.h,v $
- * Revision 1.17  1999-04-29 16:46:46  meichel
+ * Revision 1.18  1999-04-30 16:10:50  meichel
+ * Minor code purifications to keep IBM xlC quiet
+ *
+ * Revision 1.17  1999/04/29 16:46:46  meichel
  * Minor code purifications to keep DEC cxx 6 quiet.
  *
  * Revision 1.16  1999/04/29 09:38:34  joergr

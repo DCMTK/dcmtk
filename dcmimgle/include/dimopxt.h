@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomMonochromePixelTemplate (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-28 14:52:12 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-04-30 16:10:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -250,8 +250,8 @@ class DiMonoPixelTemplate
 
  // --- declarations to avoid compiler warnings
  
-    DiMonoPixelTemplate(const DiMonoPixelTemplate &);
-    DiMonoPixelTemplate &operator=(const DiMonoPixelTemplate &);
+    DiMonoPixelTemplate(const DiMonoPixelTemplate<T> &);
+    DiMonoPixelTemplate<T> &operator=(const DiMonoPixelTemplate<T> &);
 };
 
 
@@ -262,7 +262,10 @@ class DiMonoPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimopxt.h,v $
- * Revision 1.6  1999-04-28 14:52:12  joergr
+ * Revision 1.7  1999-04-30 16:10:51  meichel
+ * Minor code purifications to keep IBM xlC quiet
+ *
+ * Revision 1.6  1999/04/28 14:52:12  joergr
  * Introduced new scheme for the debug level variable: now each level can be
  * set separately (there is no "include" relationship).
  *
