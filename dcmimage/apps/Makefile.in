@@ -12,9 +12,10 @@ configdir=@top_srcdir@/@configdir@
 
 include $(configdir)/@common_makefile@
 
-LOCALINCLUDES = -I../../ofstd/include -I../../dcmdata/include
-LIBDIRS = -L$(top_srcdir)/libsrc -L../../dcmdata/libsrc -L../../ofstd/libsrc -L$(libdir)
-LOCALLIBS = -ldcmimage -ldcmdata -lofstd
+LOCALINCLUDES = -I@top_srcdir@/../dcmimgle/include -I@top_srcdir@/../ofstd/include -I@top_srcdir@/../dcmdata/include
+LIBDIRS = -L$(top_srcdir)/libsrc -L$(top_srcdir)/../dcmimgle/libsrc \
+	-L@top_srcdir@/../dcmdata/libsrc -L@top_srcdir@/../ofstd/libsrc -L$(libdir)
+LOCALLIBS = -ldcmimage -ldcmimgle -ldcmdata -lofstd
 
 objs = dcm2pnm.o
 
