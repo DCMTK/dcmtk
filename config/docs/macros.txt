@@ -85,9 +85,9 @@ DONT_DISABLE_NAGLE_ALGORITHM
     for environment variable TCP_NODELAY in config/docs/envvars.txt
 
 NO_GET_SUPPORT
-  Affected: imagectn
+  Affected: dcmqrdb
   Type of modification: Disables feature
-  Explanation: Disables the experimental C-GET support in imagectn
+  Explanation: Disables the experimental C-GET support in dcmqrdb
 
 NO_IOS_BASE_ASSIGN
   Affected: all command line tools
@@ -98,10 +98,10 @@ NO_IOS_BASE_ASSIGN
     macro.
 
 NO_PATIENTSTUDYONLY_SUPPORT
-  Affected: imagectn
+  Affected: dcmqrdb
   Type of modification: Disables feature
   Explanation: Disables support for the Patient/Study Only 
-    Query/Retrieve Model in imagectn
+    Query/Retrieve Model in dcmqrdb
 
 NO_WINDOWS95_ADDRESS_TRANSLATION_WORKAROUND
   Affected: dcmnet
@@ -198,9 +198,9 @@ STARVIEW
     Star Division.
 
 STRICT_COMPARE
-  Affected: imagectn
+  Affected: dcmqrdb
   Type of modification: Activates experimental or rarely used feature
-  Explanation: By default, imagectn ignores illegal leading and trailing 
+  Explanation: By default, dcmqrdb ignores illegal leading and trailing 
     space characters when comparing UIDs. This behaviour can be modified 
     by defining this macro.
 
@@ -211,7 +211,7 @@ SUPRESS_CREATE_STAMP
     comment when re-generating dcdeftag.h and dcdictzz.cc
 
 USE__LOCKING
-  Affected: dcmnet and related (imagectn, dcmpstat)
+  Affected: dcmnet and related (dcmqrdb, dcmpstat)
   Type of modification: Activates alternative implementation
   Explanation: Activates an alternative emulation of flock() on Win32 
     platforms using _locking(). This version should only be used on 
