@@ -23,8 +23,8 @@
  *    classes: DcmSignature
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-16 15:50:52 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2001-12-04 18:41:08 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -319,7 +319,7 @@ OFCondition DcmSignature::createSignature(
     if (macParametersSq == NULL) result = EC_MemoryExhausted; 
     else
     {
-      result = currentItem->insert(macParametersSq);
+      result = currentItem->insert(macParametersSq, OFTrue);
     }
   }
 
@@ -330,7 +330,7 @@ OFCondition DcmSignature::createSignature(
     if (signatureSq == NULL) result = EC_MemoryExhausted; 
     else
     {
-      result = currentItem->insert(signatureSq);
+      result = currentItem->insert(signatureSq, OFTrue);
     }
   }
 
@@ -353,7 +353,7 @@ OFCondition DcmSignature::createSignature(
         if (elemMacID)
         {
           result = elemMacID->putUint16(macID);
-          if (result.good()) result = seqItem->insert(elemMacID);
+          if (result.good()) result = seqItem->insert(elemMacID, OFTrue);
           if (result.bad())
           {
             delete elemMacID;
@@ -370,7 +370,7 @@ OFCondition DcmSignature::createSignature(
         if (elemSigUID)
         {
           result = elemSigUID->putString(newUID);
-          if (result.good()) result = seqItem->insert(elemSigUID);
+          if (result.good()) result = seqItem->insert(elemSigUID, OFTrue);
           if (result.bad())
           {
             delete elemSigUID;
@@ -387,7 +387,7 @@ OFCondition DcmSignature::createSignature(
         if (elemDT)
         {
           result = elemDT->putOFStringArray(aString);
-          if (result.good()) result = seqItem->insert(elemDT);
+          if (result.good()) result = seqItem->insert(elemDT, OFTrue);
           if (result.bad())
           {
             delete elemDT;
@@ -462,7 +462,7 @@ OFCondition DcmSignature::createSignature(
         {
           elemSig->setVR(EVR_OB);
           result = elemSig->putUint8Array((Uint8 *) signature, sigLength);
-          if (result.good()) result = seqItem->insert(elemSig);
+          if (result.good()) result = seqItem->insert(elemSig, OFTrue);
           if (result.bad())
           {
             delete elemSig;
@@ -508,7 +508,7 @@ OFCondition DcmSignature::createSignature(
         if (elemMacID)
         {
           result = elemMacID->putUint16(macID);
-          if (result.good()) result = macItem->insert(elemMacID);
+          if (result.good()) result = macItem->insert(elemMacID, OFTrue);
           if (result.bad())
           {
             delete elemMacID;
@@ -524,7 +524,7 @@ OFCondition DcmSignature::createSignature(
         {
           DcmXfer xid(xfer);
           result = elemXferUID->putString(xid.getXferID());
-          if (result.good()) result = macItem->insert(elemXferUID);
+          if (result.good()) result = macItem->insert(elemXferUID, OFTrue);
           if (result.bad())
           {
             delete elemXferUID;
@@ -539,7 +539,7 @@ OFCondition DcmSignature::createSignature(
         if (elemMacAlgo)
         {
           result = elemMacAlgo->putString(mac.getDefinedTerm());
-          if (result.good()) result = macItem->insert(elemMacAlgo);
+          if (result.good()) result = macItem->insert(elemMacAlgo, OFTrue);
           if (result.bad())
           {
             delete elemMacAlgo;
@@ -550,7 +550,7 @@ OFCondition DcmSignature::createSignature(
       // Data Elements Signed
       if (result.good())
       {
-      	result = macItem->insert(tagListOut);
+      	result = macItem->insert(tagListOut, OFTrue);
         if (result.good())
         {
           tagListOut = NULL; // make sure we don't delete tagListOut later
@@ -845,7 +845,11 @@ void dcmsign_cc_dummy_to_keep_linker_from_moaning()
 
 /*
  *  $Log: dcmsign.cc,v $
- *  Revision 1.6  2001-11-16 15:50:52  meichel
+ *  Revision 1.7  2001-12-04 18:41:08  meichel
+ *  Updated DcmItem::insert() calls to always remove old element if present
+ *    (which should never be the case anyway).
+ *
+ *  Revision 1.6  2001/11/16 15:50:52  meichel
  *  Adapted digital signature code to final text of supplement 41.
  *
  *  Revision 1.5  2001/09/26 14:30:23  meichel
