@@ -22,9 +22,9 @@
  *  Purpose: Interface of abstract class DcmCodec and the class DcmCodecStruct
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-08 16:19:39 $
+ *  Update Date:      $Date: 2001-11-12 16:29:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dccodec.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -332,6 +332,9 @@ private:
   /// read/write lock guarding access to singleton list
   static OFReadWriteLock codecLock;
 
+  // dummy friend declaration to prevent gcc from complaining
+  // that this class only defines private constructors and has no friends.
+  friend class DcmCodecListDummyFriend;
 };
  
 
@@ -340,7 +343,11 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dccodec.h,v $
-** Revision 1.11  2001-11-08 16:19:39  meichel
+** Revision 1.12  2001-11-12 16:29:51  meichel
+** Added dummy friend class declaration to singleton class DcmCodecList
+**   to keep gcc from squawking.
+**
+** Revision 1.11  2001/11/08 16:19:39  meichel
 ** Changed interface for codec registration. Now everything is thread-safe
 **   and multiple codecs can be registered for a single transfer syntax (e.g.
 **   one encoder and one decoder).
