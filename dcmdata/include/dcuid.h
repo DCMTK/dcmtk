@@ -24,9 +24,9 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-05-30 13:02:24 $
+ *  Update Date:      $Date: 2000-10-12 08:19:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -154,17 +154,21 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
  */
 #define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME   "OFFIS_DCMTK_341"
 #define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME2  "OFFIS_DCMBP_341"
-#define OFFIS_DCMTK_RELEASEDATE        "2000/03/10"
+#define OFFIS_DCMTK_RELEASEDATE                 "2000/03/10"
 
-#define OFFIS_UID_ROOT                 "1.2.276.0.7230010.3"
-#define OFFIS_DCMTK_VERSION            "3.4.1"
-#define OFFIS_IMPLEMENTATION_CLASS_UID OFFIS_UID_ROOT ".0." OFFIS_DCMTK_VERSION
+#define OFFIS_UID_ROOT                          "1.2.276.0.7230010.3"
+#define OFFIS_DCMTK_VERSION                     "3.4.1"
+#define OFFIS_IMPLEMENTATION_CLASS_UID          OFFIS_UID_ROOT ".0." OFFIS_DCMTK_VERSION
+
+#define OFFIS_PRIVATE_CODING_SCHEME_UID_ROOT    OFFIS_UID_ROOT ".0.0."
+#define OFFIS_PRIVATE_CODING_SCHEME_VERSION     "1"
+#define OFFIS_PRIVATE_CODING_SCHEME_CREATOR_UID OFFIS_PRIVATE_CODING_SCHEME_UID_ROOT OFFIS_PRIVATE_CODING_SCHEME_VERSION
 
 /*
 ** Each site should define its own SITE_UID_ROOT
 */
 #ifndef SITE_UID_ROOT
-#define SITE_UID_ROOT   OFFIS_UID_ROOT  /* default */
+#define SITE_UID_ROOT                           OFFIS_UID_ROOT  /* default */
 #endif
 
 /*
@@ -175,27 +179,16 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 ** Do _not_ assume any semantics when using these suffixes.
 **
 */
-#define SITE_SOFTWARE_UID_ROOT                          SITE_UID_ROOT ".0"
-#define SITE_PRIVATE_UID_ROOT                           SITE_UID_ROOT ".1"
-#define SITE_STUDY_UID_ROOT                             SITE_UID_ROOT ".2"
-#define SITE_SERIES_UID_ROOT                            SITE_UID_ROOT ".3"
-#define SITE_INSTANCE_UID_ROOT                          SITE_UID_ROOT ".4"
-#define SITE_FRAMEOFREFERENCE_UID_ROOT                  SITE_UID_ROOT ".5"
-#define SITE_INSTANCECREATOR_UID_ROOT                   SITE_UID_ROOT ".6"
-#define SITE_FILESET_UID_ROOT                           SITE_UID_ROOT ".7"
-#define SITE_DETACHED_PATIENT_MGMT_UID_ROOT             SITE_UID_ROOT ".8"
-#define SITE_DETACHED_VISIT_MGMT_UID_ROOT               SITE_UID_ROOT ".9"
-#define SITE_DETACHED_STUDY_MGMT_UID_ROOT               SITE_UID_ROOT ".10"
-#define SITE_STUDY_COMPONENT_MGMT_UID_ROOT              SITE_UID_ROOT ".11"
-#define SITE_DETACHED_RESULTS_MGMT_UID_ROOT             SITE_UID_ROOT ".12"
-#define SITE_DETACHED_INTERPRETATION_MGMT_UID_ROOT      SITE_UID_ROOT ".13"
 
+#define SITE_STUDY_UID_ROOT                     SITE_UID_ROOT ".1.2"
+#define SITE_SERIES_UID_ROOT                    SITE_UID_ROOT ".1.3"
+#define SITE_INSTANCE_UID_ROOT                  SITE_UID_ROOT ".1.4"
 
 /*
 ** A private SOP Class UID which can be used in a file meta-header when
 ** no real SOP Class is stored in the file. -- NON-STANDARD
 */
-#define UID_PrivateGenericFileSOPClass  SITE_PRIVATE_UID_ROOT ".0.1"
+#define UID_PrivateGenericFileSOPClass  SITE_UID_ROOT ".1.0.1"
 
 
 /*
@@ -369,6 +362,14 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_PrivateShutdownSOPClass                             "1.2.276.0.7230010.3.4.1915765545.18030.917282194.0"
 
 /*
+ * Supplement 23: Structured Reporting Storage SOP Classes
+ * Final Text - 6 April 2000
+ */
+#define UID_BasicTextSR                                         "1.2.840.10008.5.1.4.1.1.88.11"
+#define UID_EnhancedSR                                          "1.2.840.10008.5.1.4.1.1.88.22" 
+#define UID_ComprehensiveSR                                     "1.2.840.10008.5.1.4.1.1.88.33" 
+
+/*
  * Supplement 33: Grayscale Softcopy Presentation State Storage
  * Final Text - 21 September 1999
  */
@@ -397,14 +398,6 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_DRAFT_WaveformStorage                               "1.2.840.10008.5.1.4.1.1.9.1"
 
 /*
- * Supplement 23: Structured Reporting
- * Revised Letter Ballot Text, January 28, 2000
- */
-#define UID_BasicTextSR                                         "1.2.840.10008.5.1.4.1.1.88.11"
-#define UID_EnhancedSR                                          "1.2.840.10008.5.1.4.1.1.88.22" 
-#define UID_ComprehensiveSR                                     "1.2.840.10008.5.1.4.1.1.88.33" 
-
-/*
  * Supplement 30: Waveform Interchange
  * Letter Ballot Text, 1 November 1999
  */
@@ -421,7 +414,13 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.37  2000-05-30 13:02:24  joergr
+** Revision 1.38  2000-10-12 08:19:05  joergr
+** Updated data dictionary to reflect the changes made in supplement 23
+** (Structured Reporting) final text.
+** Added private coding scheme creator UID for SR codes.  Restructured scheme
+** for site UIDs.
+**
+** Revision 1.37  2000/05/30 13:02:24  joergr
 ** Added new private SOP class (UID definition) to allow external shutdown
 ** of console applications via negotiation of this special SOP class
 ** (currently used for imagectn and dcmpsrcv).
