@@ -161,7 +161,7 @@ The basic structure of the XML input expected looks like the following:
 
 The "file-format" and "meta-header" tags maybe absent for DICOM data sets.
 
-\subsection character_encoding Character Endoding
+\subsection character_encoding Character Encoding
 
 The DICOM character encoding is determined automatically from the element with
 tag "0008,0005" (Specific Character Set) - if present.  The following
@@ -186,6 +186,27 @@ Multiple character sets are not supported (only the first value of the
 multiplicity).
 
 See \b dcm2xml documentation for more details on the XML structure.
+
+\section command_line COMMAND LINE
+
+All command line tools use the following notation for parameters: square
+brackets enclose optional values (0-1), three trailing dots indicate that
+multiple values are allowed (1-n), a combination of both means 0 to n values.
+
+Command line options are distinguished from parameters by a leading '+' or '-'
+sign, respectively.  Usually, order and position of command line options are
+arbitrary (i.e. they can appear anywhere).  However, if options are mutually
+exclusive the rightmost appearance is used.  This behaviour conforms to the
+standard evaluation rules of common Unix shells.
+
+In addition, one or more command files can be specified using an '@' sign as a
+prefix to the filename (e.g. <em>\@command.txt</em>).  Such a command argument
+is replaced by the content of the corresponding text file (multiple
+whitespaces are treated as a single separator) prior to any further
+evaluation.  Please note that a command file cannot contain another command
+file. This simple but effective approach allows to summarize common
+combinations of options/parameters and avoids longish and confusing command
+lines (an example is provided in file <em>dcmdata/apps/dumppat.txt</em>).
 
 \section environment ENVIRONMENT
 
