@@ -23,8 +23,8 @@
  *    classes: DSRWaveformReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-13 07:52:30 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-10-16 12:11:41 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -92,17 +92,22 @@ OFBool DSRWaveformReferenceValue::isShort(const size_t flags) const
 E_Condition DSRWaveformReferenceValue::print(ostream &stream,
                                              const size_t flags) const
 {
-    E_Condition result = DSRReferenceValue::print(stream, flags);
-    if (result == EC_Normal)
+    const char *string = dcmFindNameOfUID(SOPClassUID.c_str());
+    stream << "(";
+    if (string != NULL)
+        stream << string;
+    else
+        stream << "\"" << SOPClassUID << "\"";
+    stream << ",";
+    if (flags & DSRTypes::PF_printSOPInstanceUID)
+        stream << "\"" << SOPInstanceUID << "\"";
+    if (!ChannelList.isEmpty())
     {
-        if (!ChannelList.isEmpty())
-        {
-            stream << ", \"";
-            result = ChannelList.print(stream, flags);
-            stream << "\"";
-        }
+        stream << ",";
+        ChannelList.print(stream, flags);
     }
-    return result;
+    stream << ")";
+    return EC_Normal;
 }
 
 
@@ -180,6 +185,16 @@ E_Condition DSRWaveformReferenceValue::setValue(const DSRWaveformReferenceValue 
 }
 
 
+OFBool DSRWaveformReferenceValue::appliesToChannel(const Uint16 multiplexGroupNumber,
+                                                   const Uint16 channelNumber) const
+{
+    OFBool result = OFTrue;
+    if (!ChannelList.isEmpty())
+        result = ChannelList.isElement(multiplexGroupNumber, channelNumber);
+    return result;
+}
+
+
 OFBool DSRWaveformReferenceValue::checkSOPClassUID(const OFString &sopClassUID) const
 {
     OFBool result = OFFalse;
@@ -203,7 +218,14 @@ OFBool DSRWaveformReferenceValue::checkSOPClassUID(const OFString &sopClassUID) 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavvl.cc,v $
- *  Revision 1.1  2000-10-13 07:52:30  joergr
+ *  Revision 1.2  2000-10-16 12:11:41  joergr
+ *  Reformatted print output.
+ *  Added new method checking whether a waveform content item applies to a
+ *  certain channel.
+ *  Added new options: number nested items instead of indenting them, print SOP
+ *  instance UID of referenced composite objects.
+ *
+ *  Revision 1.1  2000/10/13 07:52:30  joergr
  *  Added new module 'dcmsr' providing access to DICOM structured reporting
  *  documents (supplement 23).  Doc++ documentation not yet completed.
  *
