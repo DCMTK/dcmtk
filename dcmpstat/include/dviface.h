@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVInterface
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-10-10 12:23:39 $
- *  CVS/RCS Revision: $Revision: 1.76 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-10-16 11:39:43 $
+ *  CVS/RCS Revision: $Revision: 1.77 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,15 +49,13 @@
 #include "dvcache.h"    /* for index file caching */
 
 
-//#define NEW_GENERAL_PURPOSE_INSTANCE_DESCRIPTION
-
-
 class OFLogFile;
 class DVPSConfig;
 class DicomImage;
 class DiDisplayFunction;
 class DVPSStoredPrint;
 class DVPSPrintMessageHandler;
+class DSRDocument;
 
 
 /** Interface class for the Softcopy Presentation State viewer.
@@ -84,7 +82,7 @@ class DVInterface: public DVConfiguration
      */
     virtual ~DVInterface();
 
-    /* load images and presentation states */
+    /* load images, presentation states and structured reports */
 
     /** loads an image which is contained in the database
      *  and creates a default presentation state for the image.
@@ -113,7 +111,7 @@ class DVInterface: public DVConfiguration
      *  @return EC_Normal upon success, an error code otherwise.
      */
     E_Condition loadReferencedImage(size_t idx, OFBool changeStatus = OFFalse);
-    
+
     /** loads a presentation state which is contained in the database.
      *  The first image referenced in presentation state is also looked up in the
      *  database, loaded, and attached to the presentation state.
@@ -135,6 +133,23 @@ class DVInterface: public DVConfiguration
      *  @return EC_Normal upon success, an error code otherwise.
      */
     E_Condition loadPState(const char *pstName, const char *imgName = NULL);
+
+    /** loads a structured report which is contained in the database.
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  @param studyUID study instance UID of the structured report
+     *  @param seriesUID series instance UID of the structured report
+     *  @param instanceUID SOP instance UID of the structured report
+     *  @param changeStatus if true the structured report file is marked 'reviewed' (not new)
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    E_Condition loadStructuredReport(const char *studyUID, const char *seriesUID, const char *instanceUID, OFBool changeStatus = OFFalse);
+
+    /** loads a structured report (which need not be contained in the database).
+     *  This method does not acquire a database lock.
+     *  @param filename path and filename of the structured report to be loaded
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    E_Condition loadStructuredReport(const char *filename);
 
     /** saves the current presentation state in the same directory
      *  in which the database index file resides. The filename is generated automatically.
@@ -168,6 +183,33 @@ class DVInterface: public DVConfiguration
      */
     E_Condition saveCurrentImage(const char *filename, OFBool explicitVR=OFTrue);
 
+    /** saves the current structured report in the same directory in which the database index
+     *  file resides.  The filename is generated automatically.  A new SOP Instance UID is not
+     *  assigned automatically unless the method getStructuredReport().createRevisedVersion()
+     *  is called (see documentation in file dcmsr/dsrdoc.h).  This is not required for the
+     *  first version of a document (i.e. directly after program start or calling the method
+     *  getStructuredReport().createNewDocument()).
+     *  After successfully storing the structured report, the database index is updated
+     *  to include the new object.
+     *  This method releases under any circumstances the database lock if it exists.
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    E_Condition saveStructuredReport();
+
+    /** saves the current structured report in a file with the given path and filename.
+     *  A new SOP Instance UID is not assigned automatically unless the method
+     *  getStructuredReport().createRevisedVersion() is called (see documentation in file
+     *  dcmsr/dsrdoc.h).  This is not required for the first version of a document (i.e.
+     *  directly after program start or calling the method getStructuredReport().createNewDocument()).
+     *  This method does not acquire a database lock and does not register the saved structured
+     *  report in the database.
+     *  @param filename path and filename under which the structured report is to be saved
+     *  @param explicitVR selects the transfer syntax to be written. True (the default) selects
+     *    Explicit VR Little Endian, False selects Implicit VR Little Endian.
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    E_Condition saveStructuredReport(const char *filename, OFBool explicitVR=OFTrue);
+
     /** adds an image which is contained in the database
      *  to the list of referenced images of the current presentation state.
      *  This method acquires a database lock which must be explicitly freed by the user.
@@ -178,11 +220,11 @@ class DVInterface: public DVConfiguration
      */
     E_Condition addImageReferenceToPState(const char *studyUID, const char *seriesUID, const char *instanceUID);
 
-  /** gets the number of image references contained in the current presentation state.
-   *  @return number of image references, 0 if an error occurred.
-   */
+    /** gets the number of image references contained in the current presentation state.
+     *  @return number of image references, 0 if an error occurred.
+     */
     size_t getNumberOfImageReferences();
-    
+
     /** returns a reference to the current presentation state.
      *  This reference will become invalid when the DVInterface object is deleted,
      *  a different image or presentation state is loaded
@@ -192,6 +234,16 @@ class DVInterface: public DVConfiguration
     DVPresentationState& getCurrentPState()
     {
       return *pState;
+    }
+
+    /** returns a reference to the current structured report.
+     *  This reference will become invalid when the DVInterface object is deleted or
+     *  a different structured report is loaded (using loadStructuredReport).
+     *  @return reference to the current structured report
+     */
+    DSRDocument& getCurrentReport()
+    {
+      return *pReport;
     }
 
     /** returns a reference to the print handler.
@@ -534,21 +586,39 @@ class DVInterface: public DVConfiguration
      *  This method acquires a database lock which must be explicitly freed by the user.
      *  The selection remains valid until the database lock is removed or the database
      *  is modified (see comments for getNumberOfStudies).
-     *  @param instanceUID SOP instance UID of the image
+     *  @param instanceUID SOP instance UID of the instance
      *  @return EC_Normal upon success, an error code otherwise.
      */
     E_Condition selectInstance(const char *instanceUID);
+
+    /** selects the instance with the given UID and SOP class over all studies and series.
+     *  Please note that in worst case all studies, series and instances are examined.
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  The selection remains valid until the database lock is removed or the database
+     *  is modified (see comments for getNumberOfStudies).
+     *  @param instanceUID SOP instance UID of the instance
+     *  @param sopClassUID SOP class UID of the instance (might be NULL to be not compared)
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    E_Condition selectInstance(const char *instanceUID, const char *sopClassUID);
 
     /** selects the instance with the given UIDs.
      *  This method acquires a database lock which must be explicitly freed by the user.
      *  The selection remains valid until the database lock is removed or the database
      *  is modified (see comments for getNumberOfStudies).
-     *  @param studyUID study instance UID of the image
-     *  @param seriesUID series instance UID of the image
-     *  @param instanceUID SOP instance UID of the image
+     *  @param studyUID study instance UID of the instance
+     *  @param seriesUID series instance UID of the instance
+     *  @param instanceUID SOP instance UID of the instance
      *  @return EC_Normal upon success, an error code otherwise.
      */
     E_Condition selectInstance(const char *studyUID, const char *seriesUID, const char *instanceUID);
+
+    /** returns the SOP class UID of the currently selected instance.
+     *  May be called only if a valid instance selection exists - see selectInstance().
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  @return SOP Instance UID or NULL if absent or not selected.
+     */
+    const char *getSOPClassUID();
 
     /** returns the SOP Instance UID of the currently selected instance.
      *  May be called only if a valid instance selection exists - see selectInstance().
@@ -583,11 +653,7 @@ class DVInterface: public DVConfiguration
      *  This method acquires a database lock which must be explicitly freed by the user.
      *  @return Instance Description or NULL if absent or not selected.
      */
-#ifdef NEW_GENERAL_PURPOSE_INSTANCE_DESCRIPTION
     const char *getInstanceDescription();
-#else
-    const char *getPresentationDescription();
-#endif
 
     /** returns the Presentation Label of the currently selected instance.
      *  May be called only if a valid instance selection exists - see selectInstance().
@@ -918,11 +984,11 @@ class DVInterface: public DVConfiguration
       unsigned long height,
       double aspectRatio=1.0);
 
-    /** saves a DICOM object into a file in the same directory in which the 
-     *  database index file resides. The object must contain a SOP Class 
-     *  UID and SOP Instance UID. The filename is generated automatically. 
-     *  When the image is stored successfully, the database index is 
-     *  updated to include the new object. This method releases under any 
+    /** saves a DICOM object into a file in the same directory in which the
+     *  database index file resides. The object must contain a SOP Class
+     *  UID and SOP Instance UID. The filename is generated automatically.
+     *  When the image is stored successfully, the database index is
+     *  updated to include the new object. This method releases under any
      *  circumstances the database lock if it exists.
      *  @param fileformat the complete DICOM file object to be written
      *  @return EC_Normal upon success, an error code otherwise.
@@ -994,17 +1060,17 @@ class DVInterface: public DVConfiguration
      *  @return EC_Normal if successful, an error code otherwise.
      */
     E_Condition loadPrintPreview(size_t idx, OFBool printLUT = OFTrue, OFBool changeStatus = OFFalse);
-  
+
     /** removes a currently loaded Hardcopy Grayscale image from memory.
      */
     void unloadPrintPreview();
-  
+
     /** gets number of bytes used for the print preview bitmap.
      *  (depends on width, height and depth)
      *  @return number of bytes used for the preview bitmap
      */
     unsigned long getPrintPreviewSize();
-      
+
     /** sets the maximum print preview bitmap width and height.
      *  Larger images are scaled down (according to the pixel aspect ratio) to fit into
      *  the specified rectangle.
@@ -1014,7 +1080,7 @@ class DVInterface: public DVConfiguration
      *  @param height maximum height of preview bitmap (in pixels)
      */
     void setMaxPrintPreviewWidthHeight(unsigned long width, unsigned long height);
-      
+
     /** gets width and height of print preview bitmap.
      *  The return values depend on the current maximum preview bitmap width/height values!
      *  @param width upon success, the bitmap width (in pixels) is returned in this parameter
@@ -1022,7 +1088,7 @@ class DVInterface: public DVConfiguration
      *  @return EC_Normal upon success, an error code otherwise
      */
     E_Condition getPrintPreviewWidthHeight(unsigned long &width, unsigned long &height);
-      
+
     /** writes the bitmap data of the print preview image into the given buffer.
      *  The storage area must be allocated and deleted from the calling method.
      *  @param bitmap pointer to storage area where the pixel data is copied to (array of 8 bit values)
@@ -1030,7 +1096,7 @@ class DVInterface: public DVConfiguration
      *  @return EC_Normal upon success, an error code otherwise
      */
     E_Condition getPrintPreviewBitmap(void *bitmap, unsigned long size);
-  
+
     /** stores the current presentation state in a temporary place
      *  and creates a new presentation state that corresponds with an
      *  image displayed "without" presentation state.
@@ -1254,7 +1320,7 @@ class DVInterface: public DVConfiguration
     E_Condition terminatePrintSpooler();
 
     /** starts the print server process (Basic Grayscale Print Management SCP).
-     *  The print server process will wait for incoming DICOM associations, handle the     
+     *  The print server process will wait for incoming DICOM associations, handle the
      *  DICOM print protcol, store data in file and register stored print and grayscale
      *  image objects in the database index file.
      *  Attention: Successful return of this method is no guarantee that the print
@@ -1317,7 +1383,7 @@ class DVInterface: public DVConfiguration
      *  @return OFTrue if annotation is on, OFFalse otherwise.
      */
     OFBool isActiveAnnotation() { return activateAnnotation; }
-    
+
     /** gets the current setting of the Prepend Date/Time annotation flag.
      *  @return OFTrue if Prepend Date/Time is on, OFFalse otherwise.
      */
@@ -1362,7 +1428,7 @@ class DVInterface: public DVConfiguration
      *  @param value new text, may be NULL.
      */
     void setAnnotationText(const char *value);
-    
+
     /* log file interface */
 
     /** sets a new log stream
@@ -1465,6 +1531,10 @@ private:
     /** pointer to the current presentation state object
      */
     DVPresentationState *pState;
+
+    /** pointer to the current structured reporting object (should never be NULL)
+     */
+    DSRDocument *pReport;
 
     /** pointer to the stored presentation state object (if any)
      */
@@ -1673,7 +1743,7 @@ private:
     /** true if annotation should be created when spooling print job
      */
     OFBool activateAnnotation;
-    
+
     /** true if date and time should be prepended to annotation text
      */
     OFBool prependDateTime;
@@ -1689,7 +1759,7 @@ private:
     /** annotation text (if any)
      */
     OFString annotationText;
-    
+
     /** general application log file
      */
     OFLogFile *logFile;
@@ -1702,7 +1772,13 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.76  2000-10-10 12:23:39  meichel
+ *  Revision 1.77  2000-10-16 11:39:43  joergr
+ *  Added support for new structured reports.
+ *  Added method allowing to select an instance by instance UID and SOP class
+ *  UID (without series and study UID). Required for composite references in
+ *  DICOM SR.
+ *
+ *  Revision 1.76  2000/10/10 12:23:39  meichel
  *  Added extensions for TLS encrypted communication
  *
  *  Revision 1.75  2000/07/18 16:02:35  joergr
