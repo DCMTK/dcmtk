@@ -3,8 +3,8 @@
 ** It was generated automatically by:
 **
 **   User: hewett
-**   Host: livius
-**   Date: Fri Feb  6 09:59:50 1998
+**   Host: sulla
+**   Date: Wed Feb 25 14:00:35 1998
 **   Prog: /home/hewett/dicom/dcmtk/dcmdata/libsrc/mkdictbi
 **
 ** From: /home/hewett/dicom/dcmtk/dcmdata/libsrc/dicom.dic
@@ -13,7 +13,7 @@
 
 #include "dcdict.h"
 
-char* dcmBuiltinDictBuildDate = "Fri Feb  6 09:59:50 1998";
+char* dcmBuiltinDictBuildDate = "Wed Feb 25 14:00:35 1998";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -853,7 +853,7 @@ static DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_LO, "SecondaryCaptureDeviceID", 1, 1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0018, 0x1011, 0x0018, 0x1011,
-      EVR_LO, "CreationDeviceID", 1, 1, "DICOM",
+      EVR_LO, "HardcopyCreationDeviceID", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0018, 0x1012, 0x0018, 0x1012,
       EVR_DA, "DateOfSecondaryCapture", 1, 1, "DICOM3",
@@ -865,16 +865,19 @@ static DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_LO, "SecondaryCaptureDeviceManufacturer", 1, 1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0018, 0x1017, 0x0018, 0x1017,
-      EVR_LO, "DeviceManufacturer", 1, 1, "DICOM",
+      EVR_LO, "HardcopyDeviceManufacturer", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0018, 0x1018, 0x0018, 0x1018,
       EVR_LO, "SecondaryCaptureDeviceManufacturerModelName", 1, 1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0018, 0x1019, 0x0018, 0x1019,
-      EVR_LO, "DeviceManfuacturersModelName", 1, 1, "DICOM",
+      EVR_LO, "SecondaryCaptureDeviceSoftwareVersion", 1, -1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0018, 0x101a, 0x0018, 0x101a,
-      EVR_LO, "DeviceSoftwareVersion", 1, -1, "DICOM",
+      EVR_LO, "HardcopyDeviceSoftwareVersion", 1, -1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified },
+    { 0x0018, 0x101b, 0x0018, 0x101b,
+      EVR_LO, "HardcopyDeviceManfuacturersModelName", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0018, 0x1020, 0x0018, 0x1020,
       EVR_LO, "SoftwareVersion", 1, -1, "DICOM3",

@@ -3,8 +3,8 @@
 ** It was generated automatically by:
 **
 **   User: hewett
-**   Host: livius
-**   Date: Fri Feb  6 09:58:54 1998
+**   Host: sulla
+**   Date: Wed Feb 25 14:04:38 1998
 **   Prog: /home/hewett/dicom/dcmtk/dcmdata/libsrc/mkdeftag
 **
 ** From: /home/hewett/dicom/dcmtk/dcmdata/libsrc/dicom.dic
@@ -16,12 +16,12 @@
 
 #include "dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "Fri Feb  6 09:58:54 1998"
+#define DCM_DICT_DEFTAG_BUILD_DATE "Wed Feb 25 14:04:38 1998"
 
 
 /*
 ** Fixed Tags in assending (gggg,eeee) order.
-** Number of entries: 1503
+** Number of entries: 1504
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -298,14 +298,15 @@
 #define DCM_DeviceSerialNumber                   DcmTagKey(0x0018, 0x1000)
 #define DCM_PlateID                              DcmTagKey(0x0018, 0x1004)
 #define DCM_SecondaryCaptureDeviceID             DcmTagKey(0x0018, 0x1010)
-#define DCM_CreationDeviceID                     DcmTagKey(0x0018, 0x1011)
+#define DCM_HardcopyCreationDeviceID             DcmTagKey(0x0018, 0x1011)
 #define DCM_DateOfSecondaryCapture               DcmTagKey(0x0018, 0x1012)
 #define DCM_TimeOfSecondaryCapture               DcmTagKey(0x0018, 0x1014)
 #define DCM_SecondaryCaptureDeviceManufacturer   DcmTagKey(0x0018, 0x1016)
-#define DCM_DeviceManufacturer                   DcmTagKey(0x0018, 0x1017)
+#define DCM_HardcopyDeviceManufacturer           DcmTagKey(0x0018, 0x1017)
 #define DCM_SecondaryCaptureDeviceManufacturerModelName DcmTagKey(0x0018, 0x1018)
-#define DCM_DeviceManfuacturersModelName         DcmTagKey(0x0018, 0x1019)
-#define DCM_DeviceSoftwareVersion                DcmTagKey(0x0018, 0x101a)
+#define DCM_SecondaryCaptureDeviceSoftwareVersion DcmTagKey(0x0018, 0x1019)
+#define DCM_HardcopyDeviceSoftwareVersion        DcmTagKey(0x0018, 0x101a)
+#define DCM_HardcopyDeviceManfuacturersModelName DcmTagKey(0x0018, 0x101b)
 #define DCM_SoftwareVersion                      DcmTagKey(0x0018, 0x1020)
 #define DCM_VideoImageFormatAcquired             DcmTagKey(0x0018, 0x1022)
 #define DCM_DigitalImageFormatAcquired           DcmTagKey(0x0018, 0x1023)

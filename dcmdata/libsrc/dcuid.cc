@@ -10,9 +10,9 @@
 ** routines for finding and created UIDs.
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1998-02-06 09:41:56 $
+** Update Date:		$Date: 1998-02-25 14:29:02 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcuid.cc,v $
-** CVS/RCS Revision:	$Revision: 1.14 $
+** CVS/RCS Revision:	$Revision: 1.15 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -194,10 +194,10 @@ static UIDNameMap uidNameMap[] = {
     { UID_SRDetailStorage, "SRDetailStorage" },
     { UID_SRComprehensiveStorage, "SRComprehensiveStorage" },
 
-    { UID_BasicGrayscalePrintStorage, "BasicGrayscalePrintStorage" },
-    { UID_BasicColorPrintStorage, "BasicColorPrintStorage" },
-    { UID_ReferencedGrayscalePrintStorage, "ReferencedGrayscalePrintStorage" },
-    { UID_ReferencedColorPrintStorage, "ReferencedColorPrintStorage" },
+    { UID_PullPrintRequestSOPClass, "PullPrintRequestSOPClass" },
+    { UID_HardcopyGrayscaleImageStorage, "HardcopyGrayscaleImageStorage" },
+    { UID_HardcopyColorImageStorage, "HardcopyColorImageStorage" },
+    { UID_StoredPrintStorage, "StoredPrintStorage" },
 
     { UID_WaveformStorage, "WaveformStorage" },
     { UID_ECGWaveformStorage, "ECGWaveformStorage" },
@@ -256,10 +256,9 @@ const char* dcmStorageSOPClassUIDs[] = {
     UID_SRDetailStorage, 
     UID_SRComprehensiveStorage, 
 
-    UID_BasicGrayscalePrintStorage, 
-    UID_BasicColorPrintStorage, 
-    UID_ReferencedGrayscalePrintStorage, 
-    UID_ReferencedColorPrintStorage, 
+    UID_HardcopyGrayscaleImageStorage, 
+    UID_HardcopyColorImageStorage, 
+    UID_StoredPrintStorage, 
 
     UID_WaveformStorage, 
     UID_ECGWaveformStorage, 
@@ -326,10 +325,10 @@ const char* dcmImageSOPClassUIDs[] = {
 
 // The print objects are not really images
 //    UID_PageDescriptionStorage
-//    UID_BasicGrayscalePrintStorage, 
-//    UID_BasicColorPrintStorage, 
-//    UID_ReferencedGrayscalePrintStorage, 
-//    UID_ReferencedColorPrintStorage, 
+//    UID_HardcopyGrayscaleImageStorage, 
+//    UID_HardcopyColorImageStorage, 
+//    UID_StoredPrintStorage, 
+
 
     NULL
 };
@@ -562,7 +561,13 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.14  1998-02-06 09:41:56  hewett
+** Revision 1.15  1998-02-25 14:29:02  hewett
+** Updated data dictionary and UID information to reflect changes in
+** Supplement 24 (Stored Print Related SOP Classes).  Some data dictionary
+** attibutes and UIDs have changed between the Letter Ballot version and
+** the Final Text version.
+**
+** Revision 1.14  1998/02/06 09:41:56  hewett
 ** Corrected typo in UID table.
 **
 ** Revision 1.13  1998/02/06 09:05:16  hewett
