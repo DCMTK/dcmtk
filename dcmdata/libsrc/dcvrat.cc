@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: class DcmAttributeTag
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:43:23 $
+ *  Update Date:      $Date: 2002-04-25 10:27:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrat.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,51 +73,51 @@ DcmAttributeTag::~DcmAttributeTag()
 
 
 void DcmAttributeTag::print(ostream & out, const OFBool showFullData,
-			  const int level, const char * /*pixelFileName*/,
-		      size_t * /*pixelCounter*/)
+              const int level, const char * /*pixelFileName*/,
+              size_t * /*pixelCounter*/)
 {
     if (this -> valueLoaded())
     {
-	Uint16 * attributeTags;
-	this -> getUint16Array(attributeTags);
-
-	if (!attributeTags)
-	    printInfoLine(out, showFullData, level, "(no value available)" );
-	else
-	{
-	    const Uint32 valueLength = Length/sizeof(Uint16);
-	    const Uint32 maxCount = 
-		!showFullData && 
-		DCM_OptPrintLineLength/6 <  valueLength ?
-		DCM_OptPrintLineLength/6 : valueLength;
-	    char *ch_words;
-	    char *tmp = ch_words = new char[maxCount*6 + 9 ];
-	    if (ch_words)
-	    {
-		for (unsigned long i=0; i< maxCount/2; i++ )
-		{
-		    sprintf( tmp, "(%4.4x,%4.4x)\\", 
-			     *attributeTags, *(attributeTags+1));
-		    tmp += 12;
-		    attributeTags += 2;
-		}
-			
-		if (maxCount> 0)
-		    tmp--;
-			
-		*tmp = '\0';
-
-		if (maxCount < valueLength)
-		    strcat(tmp, "...");
-		printInfoLine(out, showFullData, level, ch_words );
-		delete[] ch_words;
-	    }
-	    else
-		printInfoLine(out, showFullData, level, "(no value available)" );
-	}
+        Uint16 * attributeTags;
+        this -> getUint16Array(attributeTags);
+    
+        if (!attributeTags)
+            printInfoLine(out, showFullData, level, "(no value available)" );
+        else
+        {
+            const Uint32 valueLength = Length/sizeof(Uint16);
+            const Uint32 maxCount = 
+            !showFullData && 
+            DCM_OptPrintLineLength/6 <  valueLength ?
+            DCM_OptPrintLineLength/6 : valueLength;
+            char *ch_words;
+            char *tmp = ch_words = new char[maxCount*6 + 9 ];
+            if (ch_words)
+            {
+                for (unsigned long i=0; i< maxCount/2; i++ )
+                {
+                    sprintf( tmp, "(%4.4x,%4.4x)\\", 
+                         *attributeTags, *(attributeTags+1));
+                    tmp += 12;
+                    attributeTags += 2;
+                }
+                    
+                if (maxCount> 0)
+                    tmp--;
+                    
+                *tmp = '\0';
+        
+                if (maxCount < valueLength)
+                    strcat(tmp, "...");
+                printInfoLine(out, showFullData, level, ch_words );
+                delete[] ch_words;
+            }
+            else
+                printInfoLine(out, showFullData, level, "(no value available)" );
+        }
     }
     else
-	printInfoLine(out, showFullData, level, "(not loaded)");
+        printInfoLine(out, showFullData, level, "(not loaded)");
 }
 
 
@@ -134,18 +134,18 @@ unsigned long DcmAttributeTag::getVM()
 
 
 OFCondition DcmAttributeTag::putUint16Array(const Uint16 * attrValue, 
-					    const unsigned long tagNum)
+                        const unsigned long tagNum)
 {
     errorFlag = EC_Normal;
     if (tagNum)
     {
-	if (attrValue)
-	    errorFlag = this -> putValue(attrValue, 2*sizeof(Uint16)*Uint32(tagNum));
-	else
-	    errorFlag = EC_CorruptedData;
+        if (attrValue)
+            errorFlag = this -> putValue(attrValue, 2*sizeof(Uint16)*Uint32(tagNum));
+        else
+            errorFlag = EC_CorruptedData;
     }
     else
-	errorFlag = this -> putValue(NULL, 0);
+        errorFlag = this -> putValue(NULL, 0);
 
     return errorFlag;
 }
@@ -155,15 +155,15 @@ OFCondition DcmAttributeTag::putUint16Array(const Uint16 * attrValue,
 
 
 OFCondition DcmAttributeTag::putTagVal(const DcmTagKey &attrTag, 
-				       const unsigned long position)
+                       const unsigned long position)
 {
     Uint16 attributeTag[2];
     attributeTag[0] = attrTag.getGroup();
     attributeTag[1] = attrTag.getElement();
 
     errorFlag = this -> changeValue(attributeTag, 
-				    2*sizeof(Uint16)* Uint32(position), 
-				    2*sizeof(Uint16));
+                    2*sizeof(Uint16)* Uint32(position), 
+                    2*sizeof(Uint16));
     return errorFlag;
 }
 
@@ -176,30 +176,30 @@ OFCondition DcmAttributeTag::putString(const char * val)
     errorFlag = EC_Normal;
     if (val && val[0] != 0)
     {
-	unsigned long vm = getVMFromString(val);
-	if (vm)
-	{
-	    Uint16 * field = new Uint16[2*vm];
-	    const char * s = val;
-	    
-	    for(unsigned long i = 0; i < 2*vm && errorFlag == EC_Normal; i+=2)
-	    {
-		char * value = getFirstValueFromString(s);
-		if (!value || sscanf(value, "(%hx,%hx)", &field[i], &field[i+1]) != 2)
-		    errorFlag = EC_CorruptedData;
-		else if (value)
-		    delete[] value;
-	    }
-	
-	    if (errorFlag == EC_Normal)
-		errorFlag = this -> putUint16Array(field, vm);
-	    delete[] field;
-	}
-	else
-	    this -> putValue(NULL,0);
+        unsigned long vm = getVMFromString(val);
+        if (vm)
+        {
+            Uint16 * field = new Uint16[2*vm];
+            const char * s = val;
+        
+            for(unsigned long i = 0; i < 2*vm && errorFlag == EC_Normal; i+=2)
+            {
+                char * value = getFirstValueFromString(s);
+                if (!value || sscanf(value, "(%hx,%hx)", &field[i], &field[i+1]) != 2)
+                    errorFlag = EC_CorruptedData;
+                else if (value)
+                    delete[] value;
+            }
+        
+            if (errorFlag == EC_Normal)
+                errorFlag = this -> putUint16Array(field, vm);
+            delete[] field;
+        }
+        else
+            this -> putValue(NULL,0);
     }
     else
-	this -> putValue(NULL, 0);
+        this -> putValue(NULL, 0);
 
     return errorFlag;
 }
@@ -210,8 +210,8 @@ OFCondition DcmAttributeTag::putString(const char * val)
 
 OFCondition DcmAttributeTag::getUint16Array(Uint16 * & attributeTags)
 {
-	attributeTags = (Uint16 *)this -> getValue();
-	return errorFlag;
+    attributeTags = (Uint16 *)this -> getValue();
+    return errorFlag;
 }
 
 
@@ -223,21 +223,40 @@ OFCondition DcmAttributeTag::getTagVal(DcmTagKey & attrTag, const unsigned long 
     Uint16 * attributeTags;
     errorFlag = this -> getUint16Array(attributeTags);
 
-    if (attributeTags && errorFlag == EC_Normal &&
-	pos < Length / (2*sizeof(Uint16)))
+    if (attributeTags && errorFlag == EC_Normal && pos < Length / (2*sizeof(Uint16)))
     {
         DcmTagKey returnTag(attributeTags[2*pos], attributeTags[2*pos+1]);
         attrTag = returnTag;
     }
     else if (attributeTags == NULL)
-	errorFlag = EC_IllegalCall;
+        errorFlag = EC_IllegalCall;
     else if (errorFlag == EC_Normal)
         errorFlag = EC_CorruptedData;
         
     if (errorFlag != EC_Normal)
     {
-	DcmTag returnTag;
-	attrTag = returnTag;
+        DcmTag returnTag;
+        attrTag = returnTag;
+    }
+    return errorFlag;
+}
+
+// ********************************
+
+OFCondition DcmAttributeTag::getOFString(OFString &value,
+                                         const unsigned long pos,
+                                         OFBool /*normalize*/)
+{
+    DcmTagKey tagVal;
+    /* get the specified tag value */
+    errorFlag = getTagVal(tagVal, pos);
+    if (errorFlag.good())
+    {
+        /* ... and convert it to a character string */
+        char buffer[32];
+        sprintf(buffer, "(%4.4x,%4.4x)", tagVal.getGroup(), tagVal.getElement());
+        /* assign result */
+        value = buffer;
     }
     return errorFlag;
 }
@@ -249,12 +268,12 @@ OFCondition DcmAttributeTag::verify(const OFBool autocorrect)
     errorFlag = EC_Normal;
     if ( Length % (2*sizeof(Uint16)) != 0 )
     {
-		errorFlag = EC_CorruptedData;
-		if (autocorrect)
-		{
-					    // auf gueltige Laenge kuerzen
+        errorFlag = EC_CorruptedData;
+        if (autocorrect)
+        {
+            // auf gueltige Laenge kuerzen
             Length = Length - (Length % (2*sizeof(Uint16)));
-		}
+        }
     }
     return errorFlag;
 }
@@ -266,7 +285,10 @@ OFCondition DcmAttributeTag::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrat.cc,v $
-** Revision 1.20  2002-04-16 13:43:23  joergr
+** Revision 1.21  2002-04-25 10:27:43  joergr
+** Added getOFString() implementation.
+**
+** Revision 1.20  2002/04/16 13:43:23  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
 ** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
 ** contribution.

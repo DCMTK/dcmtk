@@ -22,9 +22,9 @@
  *  Purpose: class DcmSignedLong
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:43:25 $
+ *  Update Date:      $Date: 2002-04-25 10:33:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrsl.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -230,6 +230,26 @@ OFCondition DcmSignedLong::getSint32(Sint32 & sintVal,
 
 // ********************************
 
+OFCondition DcmSignedLong::getOFString(OFString &value,
+                                       const unsigned long pos,
+                                       OFBool /*normalize*/)
+{
+    Sint32 sintVal;
+    /* get the specified numeric value */
+    errorFlag = getSint32(sintVal, pos);
+    if (errorFlag.good())
+    {
+        /* ... and convert it to a character string */
+        char buffer[32];
+        sprintf(buffer, "%li", sintVal);
+        /* assign result */
+        value = buffer;
+    }
+    return errorFlag;
+}
+
+// ********************************
+
 
 OFCondition DcmSignedLong::verify(const OFBool autocorrect )
 {
@@ -252,7 +272,10 @@ OFCondition DcmSignedLong::verify(const OFBool autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrsl.cc,v $
-** Revision 1.20  2002-04-16 13:43:25  joergr
+** Revision 1.21  2002-04-25 10:33:20  joergr
+** Added getOFString() implementation.
+**
+** Revision 1.20  2002/04/16 13:43:25  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
 ** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
 ** contribution.

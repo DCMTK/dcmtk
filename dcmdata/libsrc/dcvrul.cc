@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: class DcmUnsignedLong
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:43:26 $
+ *  Update Date:      $Date: 2002-04-25 10:35:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrul.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -234,6 +234,27 @@ OFCondition DcmUnsignedLong::getUint32(Uint32 & uintVal,
 
 // ********************************
 
+OFCondition DcmUnsignedLong::getOFString(OFString &value,
+                                          const unsigned long pos,
+                                          OFBool /*normalize*/)
+{
+    Uint32 uintVal;
+    /* get the specified numeric value */
+    errorFlag = getUint32(uintVal, pos);
+    if (errorFlag.good())
+    {
+        /* ... and convert it to a character string */
+        char buffer[32];
+        sprintf(buffer, "%lu", uintVal);
+        /* assign result */
+        value = buffer;
+    }
+    return errorFlag;
+}
+
+
+// ********************************
+
 OFCondition DcmUnsignedLong::verify(const OFBool autocorrect )
 {
     errorFlag = EC_Normal;
@@ -255,7 +276,10 @@ OFCondition DcmUnsignedLong::verify(const OFBool autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrul.cc,v $
-** Revision 1.20  2002-04-16 13:43:26  joergr
+** Revision 1.21  2002-04-25 10:35:04  joergr
+** Added getOFString() implementation.
+**
+** Revision 1.20  2002/04/16 13:43:26  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
 ** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
 ** contribution.

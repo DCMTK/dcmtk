@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: class DcmFloatingPointDouble
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:43:24 $
+ *  Update Date:      $Date: 2002-04-25 10:29:40 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrfd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -226,6 +226,26 @@ OFCondition DcmFloatingPointDouble::getFloat64(Float64 & doubleVal,
 
 // ********************************
 
+OFCondition DcmFloatingPointDouble::getOFString(OFString &value,
+                                                const unsigned long pos,
+                                                OFBool /*normalize*/)
+{
+    Float64 floatVal;
+    /* get the specified numeric value */
+    errorFlag = getFloat64(floatVal, pos);
+    if (errorFlag.good())
+    {
+        /* ... and convert it to a character string */
+        char buffer[32];
+        sprintf(buffer, "%f", floatVal);
+        /* assign result */
+        value = buffer;
+    }
+    return errorFlag;
+}
+
+// ********************************
+
 OFCondition DcmFloatingPointDouble::verify(const OFBool autocorrect )
 {
     errorFlag = EC_Normal;
@@ -242,10 +262,14 @@ OFCondition DcmFloatingPointDouble::verify(const OFBool autocorrect )
 
 // ********************************
 
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrfd.cc,v $
-** Revision 1.20  2002-04-16 13:43:24  joergr
+** Revision 1.21  2002-04-25 10:29:40  joergr
+** Added getOFString() implementation.
+**
+** Revision 1.20  2002/04/16 13:43:24  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
 ** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
 ** contribution.

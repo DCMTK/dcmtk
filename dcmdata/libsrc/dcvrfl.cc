@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: class DcmFloatingPointSingle
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:43:24 $
+ *  Update Date:      $Date: 2002-04-25 10:30:02 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrfl.cc,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,8 +50,6 @@ DcmFloatingPointSingle::DcmFloatingPointSingle(const DcmTag &tag,
 : DcmElement(tag, len)
 {
 }
-
-
 
 
 // ********************************
@@ -226,6 +224,25 @@ OFCondition DcmFloatingPointSingle::getFloat32(Float32 & singleVal,
     return errorFlag;
 }
 
+// ********************************
+
+OFCondition DcmFloatingPointSingle::getOFString(OFString &value,
+                                                const unsigned long pos,
+                                                OFBool /*normalize*/)
+{
+    Float32 floatVal;
+    /* get the specified numeric value */
+    errorFlag = getFloat32(floatVal, pos);
+    if (errorFlag.good())
+    {
+        /* ... and convert it to a character string */
+        char buffer[32];
+        sprintf(buffer, "%f", floatVal);
+        /* assign result */
+        value = buffer;
+    }
+    return errorFlag;
+}
 
 // ********************************
 
@@ -248,7 +265,10 @@ OFCondition DcmFloatingPointSingle::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrfl.cc,v $
-** Revision 1.21  2002-04-16 13:43:24  joergr
+** Revision 1.22  2002-04-25 10:30:02  joergr
+** Added getOFString() implementation.
+**
+** Revision 1.21  2002/04/16 13:43:24  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
 ** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
 ** contribution.

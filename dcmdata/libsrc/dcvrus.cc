@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: class DcmUnsignedShort
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:43:27 $
+ *  Update Date:      $Date: 2002-04-25 10:35:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrus.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -70,49 +70,47 @@ DcmUnsignedShort::~DcmUnsignedShort(void)
 
 
 void DcmUnsignedShort::print(ostream & out, const OFBool showFullData,
-			     const int level, const char * /*pixelFileName*/,
-                 size_t * /*pixelCounter*/)
+                             const int level, const char * /*pixelFileName*/,
+                             size_t * /*pixelCounter*/)
 {
     if (this -> valueLoaded())
     {
-	Uint16 * uintVals;
-	errorFlag = this -> getUint16Array(uintVals);
+        Uint16 * uintVals;
+        errorFlag = this -> getUint16Array(uintVals);
 
-	if (!uintVals)
-	    printInfoLine(out, showFullData, level, "(no value available)" );
-	else
-	{
-	    const Uint32 valueLength = Length/sizeof(Uint16);
-	    const Uint32 maxCount =
-		!showFullData && DCM_OptPrintLineLength/8 < valueLength ?
-		DCM_OptPrintLineLength/8 : valueLength;
-	    char *ch_words;
-	    char *tmp = ch_words = new char[maxCount*8+6];
+        if (!uintVals)
+            printInfoLine(out, showFullData, level, "(no value available)" );
+        else
+        {
+            const Uint32 valueLength = Length/sizeof(Uint16);
+            const Uint32 maxCount =
+                !showFullData && DCM_OptPrintLineLength/8 < valueLength ?
+                DCM_OptPrintLineLength/8 : valueLength;
+            char *ch_words;
+            char *tmp = ch_words = new char[maxCount*8+6];
 
-	    for (unsigned long i=0; i<maxCount; i++ )
-	    {
-		sprintf( tmp, "%hu\\", *uintVals );
-		tmp += strlen(tmp);
-		uintVals++;
-	    }
-	    if (maxCount > 0)
-		tmp--;
-	    *tmp = '\0';
+            for (unsigned long i=0; i<maxCount; i++ )
+            {
+                sprintf( tmp, "%hu\\", *uintVals );
+                tmp += strlen(tmp);
+                uintVals++;
+            }
+            if (maxCount > 0)
+                tmp--;
+            *tmp = '\0';
 
-	    if (maxCount < valueLength)
-		strcat(tmp, "...");
+            if (maxCount < valueLength)
+                strcat(tmp, "...");
 
-	    printInfoLine(out, showFullData, level, ch_words);
-	    delete[] ch_words;
-	}
+            printInfoLine(out, showFullData, level, ch_words);
+            delete[] ch_words;
+        }
     }
     else
-	printInfoLine(out, showFullData, level, "(not loaded)" );
+        printInfoLine(out, showFullData, level, "(not loaded)" );
 }
 
-
 // ********************************
-
 
 unsigned long DcmUnsignedShort::getVM()
 {
@@ -124,19 +122,19 @@ unsigned long DcmUnsignedShort::getVM()
 
 
 OFCondition DcmUnsignedShort::putUint16Array(const Uint16 * uintVal,
-					     const unsigned long numUints)
+                                             const unsigned long numUints)
 {
     errorFlag = EC_Normal;
     if (numUints)
     {
-	if (uintVal)
-	    errorFlag = this -> putValue(uintVal, 
-					 sizeof(Uint16)*Uint32(numUints));
-	else
-	    errorFlag = EC_CorruptedData;
+        if (uintVal)
+            errorFlag = this -> putValue(uintVal, 
+                                         sizeof(Uint16)*Uint32(numUints));
+        else
+            errorFlag = EC_CorruptedData;
     }
     else
-	errorFlag = this -> putValue(NULL, 0);
+        errorFlag = this -> putValue(NULL, 0);
 
     return errorFlag;
 }
@@ -146,12 +144,12 @@ OFCondition DcmUnsignedShort::putUint16Array(const Uint16 * uintVal,
 
 
 OFCondition DcmUnsignedShort::putUint16(const Uint16 uintVal,
-					const unsigned long position)
+                                        const unsigned long position)
 {
     Uint16 val = uintVal;
 
     errorFlag = this -> changeValue(&val, sizeof(Uint16)*position,
-				    sizeof(Uint16));
+                                    sizeof(Uint16));
     return errorFlag;
 }
 
@@ -164,30 +162,30 @@ OFCondition DcmUnsignedShort::putString(const char * val)
     errorFlag = EC_Normal;
     if (val && val[0] != '\0')
     {
-	unsigned long vm = getVMFromString(val);
-	if (vm)
-	{
-	    Uint16 * field = new Uint16[vm];
-	    const char * s = val;
-	    
-	    for(unsigned long i = 0; i < vm && errorFlag == EC_Normal; i++)
-	    {
-		char * value = getFirstValueFromString(s);
-		if (!value || sscanf(value, "%hu", &field[i]) != 1)
-		    errorFlag = EC_CorruptedData;
-		else if (value)
-		    delete[] value;
-	    }
-	
-	    if (errorFlag == EC_Normal)
-		errorFlag = this -> putUint16Array(field, vm);
-	    delete[] field;
-	}
-	else
-	    errorFlag = this -> putValue(NULL, 0);
+        unsigned long vm = getVMFromString(val);
+        if (vm)
+        {
+            Uint16 * field = new Uint16[vm];
+            const char * s = val;
+            
+            for(unsigned long i = 0; i < vm && errorFlag == EC_Normal; i++)
+            {
+                char * value = getFirstValueFromString(s);
+                if (!value || sscanf(value, "%hu", &field[i]) != 1)
+                    errorFlag = EC_CorruptedData;
+                else if (value)
+                    delete[] value;
+            }
+        
+            if (errorFlag == EC_Normal)
+                errorFlag = this -> putUint16Array(field, vm);
+            delete[] field;
+        }
+        else
+            errorFlag = this -> putValue(NULL, 0);
     }
     else
-	errorFlag = this -> putValue(NULL, 0);
+        errorFlag = this -> putValue(NULL, 0);
 
     return errorFlag;
 }
@@ -197,18 +195,18 @@ OFCondition DcmUnsignedShort::putString(const char * val)
 
 
 OFCondition DcmUnsignedShort::getUint16(Uint16 & uintVal, 
-					const unsigned long pos)
+                                        const unsigned long pos)
 {
     Uint16 * uintVals = NULL;
     errorFlag = this -> getUint16Array(uintVals);
 
     if (uintVals && errorFlag == EC_Normal &&
-	pos < this -> getVM())
-	uintVal = uintVals[pos];
+        pos < this -> getVM())
+        uintVal = uintVals[pos];
     else
     {
-	errorFlag = EC_IllegalCall;
-	uintVal = 0;
+        errorFlag = EC_IllegalCall;
+        uintVal = 0;
     }
     return errorFlag;
 }
@@ -223,6 +221,25 @@ OFCondition DcmUnsignedShort::getUint16Array(Uint16 * & uintVals)
     return errorFlag;
 }
 
+// ********************************
+
+OFCondition DcmUnsignedShort::getOFString(OFString &value,
+                                          const unsigned long pos,
+                                          OFBool /*normalize*/)
+{
+    Uint16 uintVal;
+    /* get the specified numeric value */
+    errorFlag = getUint16(uintVal, pos);
+    if (errorFlag.good())
+    {
+        /* ... and convert it to a character string */
+        char buffer[32];
+        sprintf(buffer, "%u", uintVal);
+        /* assign result */
+        value = buffer;
+    }
+    return errorFlag;
+}
 
 // ********************************
 
@@ -231,12 +248,12 @@ OFCondition DcmUnsignedShort::verify(const OFBool autocorrect )
     errorFlag = EC_Normal;
     if ( Length % (sizeof(Uint16)) != 0 )
     {
-	errorFlag = EC_CorruptedData;
-	if (autocorrect)
-	{
-	    // auf gueltige Laenge kuerzen
-	    Length = Length - ( Length % (sizeof(Uint16)) );
-	}
+        errorFlag = EC_CorruptedData;
+        if (autocorrect)
+        {
+            // auf gueltige Laenge kuerzen
+            Length = Length - ( Length % (sizeof(Uint16)) );
+        }
     }
     return errorFlag;
 }
@@ -247,7 +264,10 @@ OFCondition DcmUnsignedShort::verify(const OFBool autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrus.cc,v $
-** Revision 1.20  2002-04-16 13:43:27  joergr
+** Revision 1.21  2002-04-25 10:35:04  joergr
+** Added getOFString() implementation.
+**
+** Revision 1.20  2002/04/16 13:43:27  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
 ** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
 ** contribution.
