@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-22 13:36:08 $
+ *  Update Date:      $Date: 1998-12-23 11:24:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -882,19 +882,19 @@ int DiMonoImage::setPresentationLut(const DcmUnsignedShort &data,
 
 
 int DiMonoImage::addOverlay(const unsigned int group,
-                            const unsigned long rows,
-                            const unsigned long columns,
-                            const EM_Overlay mode,
                             const signed int left,
                             const signed int top,
+                            const unsigned long columns,
+                            const unsigned long rows,
                             const DcmOverlayData &data,
                             const DcmLongString &label,
-                            const DcmLongString &description)
+                            const DcmLongString &description,
+                            const EM_Overlay mode)
 {
     if (Overlays[1] == NULL)
         Overlays[1] = new DiOverlay();
     if (Overlays[1] != NULL)
-        return Overlays[1]->addPlane(group, rows, columns, mode, left, top, data, label, description);
+        return Overlays[1]->addPlane(group, left, top, columns, rows, data, label, description, mode);
     return 0;
 }
 
@@ -1138,10 +1138,10 @@ void *DiMonoImage::getData(const unsigned long frame,
 
 const Uint8 *DiMonoImage::getOverlayData(const unsigned long frame,
                                          const unsigned int plane,
-                                         unsigned int &width,
-                                         unsigned int &height,
                                          unsigned int &left,
                                          unsigned int &top,
+                                         unsigned int &width,
+                                         unsigned int &height,
                                          EM_Overlay &mode,
                                          const unsigned int idx,
                                          const Uint8 value)
@@ -1154,10 +1154,10 @@ const Uint8 *DiMonoImage::getOverlayData(const unsigned long frame,
             start = end = idx;
         for (int i = start; i >= end; i--)                          // start searching with additional overlay planes
         {
-            if ((Overlays[i] != NULL) && (Overlays[i]->hasPlane(plane, 1)))
+            if ((Overlays[i] != NULL) && (Overlays[i]->hasPlane(plane)))
             {
                 deleteOverlayData();
-                OverlayData = Overlays[i]->getPlaneData(frame, plane, width, height, left, top, mode, Columns, Rows, value);
+                OverlayData = Overlays[i]->getPlaneData(frame, plane, left, top, width, height, mode, Columns, Rows, value);
                 return (const Uint8 *)OverlayData;
             }
         }
@@ -1318,41 +1318,36 @@ int DiMonoImage::writeRawPPM(FILE *stream, const unsigned long frame, const int 
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: dimoimg.cc,v $
-** Revision 1.4  1998-12-22 13:36:08  joergr
-** Check descriptor value 'first input value mapped' for presentation LUTs
-** (shall always be 0).
-** Added support for 'potentially' signed input ranges for different kinds
-** of grayscale transformations (according to supplement 33 from Cor Loef).
-** Changed behaviour of getOverlayData() method (new parameter to choose
-** overlay plane group: dataset, additional, overlap).
-**
-** Revision 1.3  1998/12/16 16:15:55  joergr
-** Added explanation string for VOI transformations.
-** Added method to export overlay planes (create 8-bit bitmap).
-** Renamed 'setNoVoiLutTransformation' method ('Voi' instead of 'VOI').
-**
-** Revision 1.2  1998/12/14 17:37:15  joergr
-** Added methods to add and remove additional overlay planes (still untested).
-** Added support for presentation shapes.
-**
-** Revision 1.1  1998/11/27 16:12:48  joergr
-** Added copyright message.
-** Added methods and constructors for flipping and rotating, changed for
-** scaling and clipping.
-** Added method to directly create java AWT bitmaps.
-** Introduced global debug level for dcmimage module to control error output.
-** Renamed variable 'Status' to 'ImageStatus' because of possible conflicts
-** with X windows systems.
-** Added constructors to use external modality transformations.
-** Added methods to support presentation LUTs and shapes.
-** Changed behaviour: now window width of 0 is valid and negative width
-** is invalid.
-**
-** Revision 1.6  1998/05/11 14:52:32  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: dimoimg.cc,v $
+ * Revision 1.5  1998-12-23 11:24:14  joergr
+ * Change order of parameters for addOverlay() and getOverlayData().
+ *
+ * Revision 1.3  1998/12/16 16:15:55  joergr
+ * Added explanation string for VOI transformations.
+ * Added method to export overlay planes (create 8-bit bitmap).
+ * Renamed 'setNoVoiLutTransformation' method ('Voi' instead of 'VOI').
+ *
+ * Revision 1.2  1998/12/14 17:37:15  joergr
+ * Added methods to add and remove additional overlay planes (still untested).
+ * Added support for presentation shapes.
+ *
+ * Revision 1.1  1998/11/27 16:12:48  joergr
+ * Added copyright message.
+ * Added methods and constructors for flipping and rotating, changed for
+ * scaling and clipping.
+ * Added method to directly create java AWT bitmaps.
+ * Introduced global debug level for dcmimage module to control error output.
+ * Renamed variable 'Status' to 'ImageStatus' because of possible conflicts
+ * with X windows systems.
+ * Added constructors to use external modality transformations.
+ * Added methods to support presentation LUTs and shapes.
+ * Changed behaviour: now window width of 0 is valid and negative width
+ * is invalid.
+ *
+ * Revision 1.6  1998/05/11 14:52:32  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */
