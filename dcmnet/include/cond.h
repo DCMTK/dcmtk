@@ -65,6 +65,8 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
+#include "dicom.h"
+
 typedef BOOLEAN (*CALLBACK_TYPE)();
 
 CONDITION COND_PushCondition(CONDITION cond, char *controlString, ...);
