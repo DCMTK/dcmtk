@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-01 16:15:06 $
- *  CVS/RCS Revision: $Revision: 1.62 $
+ *  Update Date:      $Date: 1999-09-08 16:41:41 $
+ *  CVS/RCS Revision: $Revision: 1.63 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -144,74 +144,14 @@ static void currentTime(OFString &str)
   return;
 }
 
-static DVPSPeerType getConfigTargetType(const char *val)
-{
-  DVPSPeerType result = DVPSE_storage; /* default */
-
-  if (val==NULL) return result; 
-  OFString pstring(val);
-  OFString ostring;
-  size_t len = pstring.length();
-  char c;
-  for (size_t i=0; i<len; i++)
-  {
-    c = pstring[i];
-    if ((c>='a') && (c <= 'z')) ostring += (char)(toupper(c));
-    else if ((c>='A') && (c <= 'Z')) ostring += c;
-    else if ((c>='0') && (c <= '9')) ostring += c;
-    else if (c=='_')  ostring += c;
-  }  
-  if (ostring=="PRINTER")  result=DVPSE_print; else
-  if (ostring=="STORAGE")  result=DVPSE_storage; else
-  {
-#ifdef DEBUG
-    cerr << "warning: unsupported peer type in config file: '" << val << "', ignoring." << endl;
-#endif  
-  }
-  return result;
-}
-
-static Uint32 countValues(const char *str)
-{
-  if (str)
-  {
-    Uint32 result = 0;
-    if (*str) result++;
-    char c;
-    while ((c = *str++)) if (c == '\\') result++;
-    return result;
-  }
-  return 0;
-}
-
-static void copyValue(const char *str, Uint32 idx, OFString& target)
-{
-  target.clear();
-  if (str)
-  {
-    char c = '\\';
-    while (idx)
-    {
-      c = *str++;
-      if (c == 0) idx=0; else if (c == '\\') idx--;
-    }
-    if (c=='\\')
-    {
-      const char *endstr = str;
-      while ((*endstr) && (*endstr != '\\')) endstr++;
-      target.assign(str,(endstr-str));
-    }
-  }
-  return;
-}
 
 DVInterface::DVInterface(const char *config_file)
-: pPrint(NULL)
+: DVConfiguration(config_file)
+, pPrint(NULL)
 , pState(NULL)
 , pStoredPState(NULL)
 , pDicomImage(NULL)
 , pDicomPState(NULL)
-, pConfig(NULL)
 , configPath()
 , databaseIndexFile()
 , referenceTime(0)
@@ -224,15 +164,6 @@ DVInterface::DVInterface(const char *config_file)
 , imageInDatabase(OFFalse)
 {
     clearIndexRecord(idxRec, idxRecPos);
-    if (config_file)
-    {
-        FILE *cfgfile = fopen(config_file, "rb");
-        if (cfgfile)
-        {
-            pConfig = new DVPSConfig(cfgfile);
-            fclose(cfgfile);
-        }
-    }
     if (config_file) configPath = config_file;
 
     /* initialize Barten transform (only on low-cost systems) */
@@ -270,7 +201,6 @@ DVInterface::~DVInterface()
     if (pState) delete pState;
     if (pStoredPState) delete pStoredPState;
     if (displayFunction) delete displayFunction;
-    if (pConfig) delete pConfig;
     if (pHandle) releaseDatabase();
     // refresh database index file access time
     if (databaseIndexFile.length() > 0) utime(databaseIndexFile.c_str(), NULL);
@@ -1846,348 +1776,6 @@ E_Condition DVInterface::terminateReceiver()
 }
 
 
-Uint32 DVInterface::getNumberOfTargets(DVPSPeerType peerType)
-{
-  Uint32 result = 0;
-  DVPSPeerType currentType;
-  
-  if (pConfig)
-  {
-    pConfig->set_section(2, L2_COMMUNICATION);
-    if (pConfig->section_valid(2))
-    {
-       pConfig->first_section(1);
-       while (pConfig->section_valid(1))
-       {
-         currentType = getConfigTargetType(pConfig->get_entry(L0_TYPE));
-         switch (peerType)
-         {
-           case DVPSE_storage:
-             if (currentType==DVPSE_storage) result++;
-             break;
-           case DVPSE_print:
-             if (currentType==DVPSE_print) result++;
-             break;
-           case DVPSE_any:
-             result++;
-             break;
-         }
-         pConfig->next_section(1);
-       }
-    }
-  }
-  return result;
-}
-
-
-const char *DVInterface::getTargetID(Uint32 idx, DVPSPeerType peerType)
-{
-  const char *result=NULL; 
-  DVPSPeerType currentType;
-  OFBool found = OFFalse;
-  
-  if (pConfig)
-  {
-    pConfig->set_section(2, L2_COMMUNICATION);
-    if (pConfig->section_valid(2))
-    {
-       pConfig->first_section(1);
-       while ((! found)&&(pConfig->section_valid(1)))
-       {
-         currentType = getConfigTargetType(pConfig->get_entry(L0_TYPE));
-         switch (peerType)
-         {
-           case DVPSE_storage:
-             if (currentType==DVPSE_storage) 
-             {
-             	if (idx==0) found=OFTrue; else idx--;
-             }
-             break;
-           case DVPSE_print:
-             if (currentType==DVPSE_print) 
-             {
-             	if (idx==0) found=OFTrue; else idx--;
-             }
-             break;
-           case DVPSE_any:
-             if (idx==0) found=OFTrue; else idx--;
-             break;
-         }
-         if (!found) pConfig->next_section(1);
-       }
-       if (pConfig->section_valid(1)) result = pConfig->get_keyword(1);
-    }
-  }
-  return result;
-}
-
-
-const char *DVInterface::getConfigEntry(const char *l2_key, const char *l1_key, const char *l0_key)
-{
-  const char *result=NULL; 
-  if (l2_key && l1_key && l0_key && pConfig)
-  {
-    pConfig->select_section(l1_key, l2_key);
-    if (pConfig->section_valid(1)) result = pConfig->get_entry(l0_key);
-  }
-  return result;
-}
-
-OFBool DVInterface::getConfigBoolEntry(const char *l2_key, const char *l1_key, const char *l0_key, OFBool deflt)
-{
-  OFBool result=deflt; 
-  if (l2_key && l1_key && l0_key && pConfig)
-  {
-    pConfig->select_section(l1_key, l2_key);
-    if (pConfig->section_valid(1)) 
-    {
-      pConfig->set_section(0,l0_key);
-      result = pConfig->get_bool_value(deflt);
-    }
-  }
-  return result;
-}
-
-const char *DVInterface::getTargetDescription(const char *targetID)
-{
-  return getConfigEntry(L2_COMMUNICATION, targetID, L0_DESCRIPTION);
-}
-
-const char *DVInterface::getTargetHostname(const char *targetID)
-{
-  return getConfigEntry(L2_COMMUNICATION, targetID, L0_HOSTNAME);
-}
-
-unsigned short DVInterface::getTargetPort(const char *targetID)
-{
-  const char *c = getConfigEntry(L2_COMMUNICATION, targetID, L0_PORT);
-  unsigned short result = 0;
-  if (c)
-  {
-    if (1 != sscanf(c, "%hu", &result)) result=0;
-  }
-  return result;
-}
-
-const char *DVInterface::getTargetAETitle(const char *targetID)
-{
-  return getConfigEntry(L2_COMMUNICATION, targetID, L0_AETITLE);
-}
-
-unsigned long DVInterface::getTargetMaxPDU(const char *targetID)
-{
-  const char *c = getConfigEntry(L2_COMMUNICATION, targetID, L0_MAXPDU);
-  unsigned long result = 0;
-  if (c)
-  {
-    if (1 != sscanf(c, "%lu", &result)) result=0;
-  }
-  return result;
-}
-
-OFBool DVInterface::getTargetImplicitOnly(const char *targetID)
-{
-  return getConfigBoolEntry(L2_COMMUNICATION, targetID, L0_IMPLICITONLY, OFFalse);
-}
-
-OFBool DVInterface::getTargetDisableNewVRs(const char *targetID)
-{
-  return getConfigBoolEntry(L2_COMMUNICATION, targetID, L0_DISABLENEWVRS, OFFalse);
-}
-
-DVPSPeerType DVInterface::getTargetType(const char *targetID)
-{
-  return getConfigTargetType(getConfigEntry(L2_COMMUNICATION, targetID, L0_TYPE));
-}
-
-const char *DVInterface::getNetworkAETitle()
-{
-  const char *result = getConfigEntry(L2_GENERAL, L1_NETWORK, L0_AETITLE);
-  if (result==NULL) result = PSTAT_AETITLE;
-  return result;
-}
-
-
-OFBool DVInterface::getNetworkImplicitVROnly()
-{
-  return getConfigBoolEntry(L2_GENERAL, L1_NETWORK, L0_IMPLICITONLY, OFFalse);
-}
-
-OFBool DVInterface::getNetworkDisableNewVRs()
-{
-  return getConfigBoolEntry(L2_GENERAL, L1_NETWORK, L0_DISABLENEWVRS, OFFalse);
-}
-
-OFBool DVInterface::getNetworkBitPreserving()
-{
-  return getConfigBoolEntry(L2_GENERAL, L1_NETWORK, L0_BITPRESERVINGMODE, OFFalse);
-}
-
-unsigned short DVInterface::getNetworkPort()
-{
-  const char *c = getConfigEntry(L2_GENERAL, L1_NETWORK, L0_PORT);
-  unsigned short result = 0;
-  if (c)
-  {
-    if (1 != sscanf(c, "%hu", &result)) result=0;
-  }
-  return result;
-}
-
-unsigned long DVInterface::getNetworkMaxPDU()
-{
-  const char *c = getConfigEntry(L2_GENERAL, L1_NETWORK, L0_MAXPDU);
-  unsigned long result = 0;
-  if (c)
-  {
-    if (1 != sscanf(c, "%lu", &result)) result=0;
-  }
-  return result;
-}
-
-
-const char *DVInterface::getDatabaseFolder()
-{
-  const char *result = getConfigEntry(L2_GENERAL, L1_DATABASE, L0_DIRECTORY);
-  if (result==NULL) result = PSTAT_DBFOLDER;
-  return result;
-}
-
-const char *DVInterface::getSenderName()
-{
-  return getConfigEntry(L2_GENERAL, L1_NETWORK, L0_SENDER);
-}
-
-const char *DVInterface::getReceiverName()
-{
-  return getConfigEntry(L2_GENERAL, L1_NETWORK, L0_RECEIVER);
-}
-
-const char *DVInterface::getMonitorCharacteristicsFile()
-{
-  return getConfigEntry(L2_GENERAL, L1_MONITOR, L0_CHARACTERISTICS);
-}
-
-const char *DVInterface::getGUIConfigEntry(const char *key)
-{
-  return getConfigEntry(L2_GENERAL, L1_GUI, key);
-}
-
-OFBool DVInterface::getGUIConfigEntryBool(const char *key, OFBool dfl)
-{
-  return getConfigBoolEntry(L2_GENERAL, L1_GUI, key, dfl);
-}
-
-OFBool DVInterface::getTargetPrinterSupportsPresentationLUT(const char *targetID)
-{
-  return getConfigBoolEntry(L2_COMMUNICATION, targetID, L0_SUPPORTSPRESENTATIONLUT, OFFalse);
-}
-
-OFBool DVInterface::getTargetPrinterSupports12BitTransmission(const char *targetID)
-{
-  return getConfigBoolEntry(L2_COMMUNICATION, targetID, L0_SUPPORTS12BIT, OFTrue);
-}
-    
-OFBool DVInterface::getTargetPrinterSupportsRequestedImageSize(const char *targetID)
-{
-  return getConfigBoolEntry(L2_COMMUNICATION, targetID, L0_SUPPORTSIMAGESIZE, OFFalse);
-}
-
-OFBool DVInterface::getTargetPrinterSupportsDecimateCrop(const char *targetID)
-{
-  return getConfigBoolEntry(L2_COMMUNICATION, targetID, L0_SUPPORTSDECIMATECROP, OFFalse);
-}
-
-OFBool DVInterface::getTargetPrinterSupportsTrim(const char *targetID)
-{
-  return getConfigBoolEntry(L2_COMMUNICATION, targetID, L0_SUPPORTSTRIM, OFFalse);
-}
-
-Uint32 DVInterface::getTargetPrinterMaxDisplayFormatColumns(const char *targetID)
-{
-  Uint32 result = (Uint32) -1;
-  unsigned long val = 0;
-  const char *c = getConfigEntry(L2_COMMUNICATION, targetID, L0_MAXCOLUMNS);
-  if (c)
-  {
-    if (1 == sscanf(c, "%lu", &val)) result=(Uint32)val;
-  }
-  return result;
-}
-
-Uint32 DVInterface::getTargetPrinterMaxDisplayFormatRows(const char *targetID)
-{
-  Uint32 result = (Uint32) -1;
-  unsigned long val = 0;
-  const char *c = getConfigEntry(L2_COMMUNICATION, targetID, L0_MAXROWS);
-  if (c)
-  {
-    if (1 == sscanf(c, "%lu", &val)) result=(Uint32)val;
-  }
-  return result;
-}
-
-Uint32 DVInterface::getTargetPrinterNumberOfFilmSizeIDs(const char *targetID)
-{
-  return countValues(getConfigEntry(L2_COMMUNICATION, targetID, L0_FILMSIZEID));
-}
-
-const char *DVInterface::getTargetPrinterFilmSizeID(const char *targetID, Uint32 idx, OFString& value)
-{
-  copyValue(getConfigEntry(L2_COMMUNICATION, targetID, L0_FILMSIZEID), idx, value);
-  if (value.length()) return value.c_str(); else return NULL;
-}
-
-Uint32 DVInterface::getTargetPrinterNumberOfMediumTypes(const char *targetID)
-{
-  return countValues(getConfigEntry(L2_COMMUNICATION, targetID, L0_MEDIUMTYPE));
-}
-
-const char *DVInterface::getTargetPrinterMediumType(const char *targetID, Uint32 idx, OFString& value)
-{
-  copyValue(getConfigEntry(L2_COMMUNICATION, targetID, L0_MEDIUMTYPE), idx, value);
-  if (value.length()) return value.c_str(); else return NULL;
-}
-
-Uint32 DVInterface::getTargetPrinterNumberOfPrinterResolutionIDs(const char *targetID)
-{
-  return countValues(getConfigEntry(L2_COMMUNICATION, targetID, L0_RESOLUTIONID));
-}
-
-const char *DVInterface::getTargetPrinterResolutionID(const char *targetID, Uint32 idx, OFString& value)
-{
-  copyValue(getConfigEntry(L2_COMMUNICATION, targetID, L0_RESOLUTIONID), idx, value);
-  if (value.length()) return value.c_str(); else return NULL;
-}
-
-Uint32 DVInterface::getTargetPrinterNumberOfMagnificationTypes(const char *targetID)
-{
-  return countValues(getConfigEntry(L2_COMMUNICATION, targetID, L0_MAGNIFICATIONTYPE));
-}
-
-const char *DVInterface::getTargetPrinterMagnificationType(const char *targetID, Uint32 idx, OFString& value)
-{
-  copyValue(getConfigEntry(L2_COMMUNICATION, targetID, L0_MAGNIFICATIONTYPE), idx, value);
-  if (value.length()) return value.c_str(); else return NULL;
-}
-
-Uint32 DVInterface::getTargetPrinterNumberOfSmoothingTypes(const char *targetID)
-{
-  return countValues(getConfigEntry(L2_COMMUNICATION, targetID, L0_SMOOTHINGTYPE));
-}
-
-const char *DVInterface::getTargetPrinterSmoothingType(const char *targetID, Uint32 idx, OFString& value)
-{
-  copyValue(getConfigEntry(L2_COMMUNICATION, targetID, L0_SMOOTHINGTYPE), idx, value);
-  if (value.length()) return value.c_str(); else return NULL;
-}
-
-const char *DVInterface::getTargetPrinterConfigurationSetting(const char *targetID)
-{
-  return getConfigEntry(L2_COMMUNICATION, targetID, L0_CONFIGURATION);
-}
-
-
 E_Condition DVInterface::loadFileFormat(const char *filename,
                                         DcmFileFormat *&fileformat)
 {
@@ -2667,7 +2255,10 @@ void DVInterface::cleanChildren()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.62  1999-09-01 16:15:06  meichel
+ *  Revision 1.63  1999-09-08 16:41:41  meichel
+ *  Moved configuration file evaluation to separate class.
+ *
+ *  Revision 1.62  1999/09/01 16:15:06  meichel
  *  Added support for requested image size to print routines
  *
  *  Revision 1.61  1999/08/31 16:54:46  meichel

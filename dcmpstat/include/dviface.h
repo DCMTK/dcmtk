@@ -23,8 +23,8 @@
  *    classes: DVInterface
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-01 16:14:39 $
- *  CVS/RCS Revision: $Revision: 1.41 $
+ *  Update Date:      $Date: 1999-09-08 16:42:01 $
+ *  CVS/RCS Revision: $Revision: 1.42 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,7 @@
 
 #include "osconfig.h"   /* make sure OS specific configuration is included first */
 #include "dctk.h"
+#include "dvpscf.h"     /* for class DVConfiguration */
 #include "dvpstat.h"    /* for class DVPresentationState */
 #include "dbpriv.h"     /* for struct IdxRecord */
 #include "dbstore.h"    /* for filedeletion */
@@ -49,10 +50,6 @@
 #define PSTAT_MAXSTUDYCOUNT 200
 /* study size for DB handle creation */
 #define PSTAT_STUDYSIZE DB_UpperMaxBytesPerStudy
-/* default AETitle for the Presentation State viewer */
-#define PSTAT_AETITLE "DCMPSTAT"
-/* default path for database folder */
-#define PSTAT_DBFOLDER "."
 /* private SOP Class UID used to shutdown the Presentation State network receiver */
 #define PSTAT_PRIVATESOPCLASSUID "1.2.276.0.7230010.3.4.1915765545.18030.917282194.0"
 
@@ -64,7 +61,7 @@ class DVPSStoredPrint;
  *  This class manages the database facilities, allows to start and stop
  *  network transactions and gives access to images and presentation states.
  */
-class DVInterface
+class DVInterface: public DVConfiguration
 {
  
  public:
@@ -660,331 +657,6 @@ class DVInterface
      */
     E_Condition sendIOD(const char *targetID, const char *studyUID, const char *seriesUID, const char *instanceUID);
  
-    /* here follow the Config interface methods */
-
-    /** returns the number of communication partners (send targets)
-     *  in the configuration file. 
-     *  @param peerType defines a filter for the peer service type. Default: handle only storage peers.
-     *  @return number of communication partners
-     */
-    Uint32 getNumberOfTargets(DVPSPeerType peerType=DVPSE_storage);
-
-    /** returns the target identifier of the communication partner
-     *  with the given index. The target identifier is unique within the configuration file 
-     *  @param idx index, must be < getNumberOfTargets()
-     *  @param peerType defines a filter for the peer service type. Default: handle only storage peers.
-     *  @return target identifier if found, NULL otherwise.
-     */
-    const char *getTargetID(Uint32 idx, DVPSPeerType peerType=DVPSE_storage);
-    
-    /** returns the DESCRIPTION entry for the communication partner with the given
-     *  target ID from the configuration file. 
-     *  @param targetID communication target ID, must be one of the target 
-     *    identifiers returned by getTargetID().
-     *  @return entry if present in the config file, NULL otherwise.
-     */
-    const char *getTargetDescription(const char *targetID);
-
-    /** returns the HOSTNAME entry for the communication partner with the given
-     *  target ID from the configuration file. 
-     *  @param targetID communication target ID, must be one of the target 
-     *    identifiers returned by getTargetID().
-     *  @return entry if present in the config file, NULL otherwise.
-     */
-    const char *getTargetHostname(const char *targetID);
-
-    /** returns the PORT entry for the communication partner with the given
-     *  target ID from the configuration file. 
-     *  @param targetID communication target ID, must be one of the target 
-     *    identifiers returned by getTargetID().
-     *  @return entry if present and parsable in the config file, 0 otherwise.
-     */
-    unsigned short getTargetPort(const char *targetID);
-
-    /** returns the TYPE entry for the communication partner with the given
-     *  target ID from the configuration file. 
-     *  @param targetID communication target ID, must be one of the target 
-     *    identifiers returned by getTargetID().
-     *  @return entry if present and parsable in the config file, DVPSE_storage otherwise.
-     */
-    DVPSPeerType getTargetType(const char *targetID);
-
-    /** returns the HOSTNAME entry for the communication partner with the given
-     *  target ID from the configuration file. 
-     *  @param targetID communication target ID, must be one of the target 
-     *    identifiers returned by getTargetID().
-     *  @return entry if present in the config file, NULL otherwise.
-     */
-    const char *getTargetAETitle(const char *targetID);
-
-    /** returns the MAXPDU entry for the communication partner with the given
-     *  target ID from the configuration file. 
-     *  @param targetID communication target ID, must be one of the target 
-     *    identifiers returned by getTargetID().
-     *  @return entry if present and parsable in the config file, 0 otherwise.
-     */
-    unsigned long getTargetMaxPDU(const char *targetID);
-
-    /** returns the IMPLICITONLY entry for the communication partner with the given
-     *  target ID from the configuration file. 
-     *  @param targetID communication target ID, must be one of the target 
-     *    identifiers returned by getTargetID().
-     *  @return entry if present in the config file, OFFalse otherwise.
-     */
-    OFBool getTargetImplicitOnly(const char *targetID);
-
-    /** returns the DISABLENEWVRS entry for the communication partner with the given
-     *  target ID from the configuration file. 
-     *  @param targetID communication target ID, must be one of the target 
-     *    identifiers returned by getTargetID().
-     *  @return entry if present in the config file, OFFalse otherwise.
-     */
-    OFBool getTargetDisableNewVRs(const char *targetID);
-
-    /** returns the SUPPORTSPRESENTATIONLUT entry for the printer with the given
-     *  target ID from the configuration file.
-     *  @param targetID communication target ID, must be one of the target 
-     *    identifiers returned by getTargetID() for peer type DVPSE_printer.
-     *  @return entry if present in the config file, OFFalse otherwise.
-     */     
-    OFBool getTargetPrinterSupportsPresentationLUT(const char *targetID);
-
-    /** returns the SUPPORTS12BIT entry for the printer with the given
-     *  target ID from the configuration file.
-     *  @param targetID communication target ID, must be one of the target 
-     *    identifiers returned by getTargetID() for peer type DVPSE_printer.
-     *  @return entry if present in the config file, OFTrue otherwise
-     *   (default is 12 bit supported).
-     */     
-    OFBool getTargetPrinterSupports12BitTransmission(const char *targetID);
-    
-    /** returns the SUPPORTSIMAGESIZE entry for the printer with the given
-     *  target ID from the configuration file.
-     *  @param targetID communication target ID, must be one of the target 
-     *    identifiers returned by getTargetID() for peer type DVPSE_printer.
-     *  @return entry if present in the config file, OFFalse otherwise.
-     */     
-    OFBool getTargetPrinterSupportsRequestedImageSize(const char *targetID);
-
-    /** returns the SUPPORTSDECIMATECROP entry for the printer with the given
-     *  target ID from the configuration file.
-     *  @param targetID communication target ID, must be one of the target 
-     *    identifiers returned by getTargetID() for peer type DVPSE_printer.
-     *  @return entry if present in the config file, OFFalse otherwise.
-     */     
-    OFBool getTargetPrinterSupportsDecimateCrop(const char *targetID);
-
-    /** returns the SUPPORTSTRIM entry for the printer with the given
-     *  target ID from the configuration file.
-     *  @param targetID communication target ID, must be one of the target 
-     *    identifiers returned by getTargetID() for peer type DVPSE_printer.
-     *  @return entry if present in the config file, OFFalse otherwise.
-     */     
-    OFBool getTargetPrinterSupportsTrim(const char *targetID);
-
-    /** returns the MAXCOLUMNS entry for the printer with the given
-     *  target ID from the configuration file.
-     *  @param targetID communication target ID, must be one of the target 
-     *    identifiers returned by getTargetID() for peer type DVPSE_printer.
-     *  @return entry if present in the config file, 0xFFFFFFFF otherwise.
-     */     
-    Uint32 getTargetPrinterMaxDisplayFormatColumns(const char *targetID);
-
-    /** returns the MAXROWS entry for the printer with the given
-     *  target ID from the configuration file.
-     *  @param targetID communication target ID, must be one of the target 
-     *    identifiers returned by getTargetID() for peer type DVPSE_printer.
-     *  @return entry if present in the config file, 0xFFFFFFFF otherwise.
-     */     
-    Uint32 getTargetPrinterMaxDisplayFormatRows(const char *targetID);
-
-    /** returns the number of distinct values (separated by backslash characters)
-     *  in the FILMSIZEID entry for the printer with the given
-     *  target ID from the configuration file.
-     *  @param targetID communication target ID, must be one of the target 
-     *    identifiers returned by getTargetID() for peer type DVPSE_printer.
-     *  @return number of values if entry present in the config file, 0 otherwise.
-     */     
-    Uint32 getTargetPrinterNumberOfFilmSizeIDs(const char *targetID);
-
-    /** returns one value from the FILMSIZEID entry for the printer 
-     *  with the given target ID from the configuration file.
-     *  @param targetID communication target ID, must be one of the target 
-     *    identifiers returned by getTargetID() for peer type DVPSE_printer.
-     *  @param idx index of the value, must be < getTargetPrinterNumberOfFilmSizeIDs(targetID)
-     *  @param value the result is both stored in this object and returned as return value.
-     *  @return value if present, NULL otherwise.
-     */     
-    const char *getTargetPrinterFilmSizeID(const char *targetID, Uint32 idx, OFString& value);
-
-    /** returns the number of distinct values (separated by backslash characters)
-     *  in the MEDIUMTYPE entry for the printer with the given
-     *  target ID from the configuration file.
-     *  @param targetID communication target ID, must be one of the target 
-     *    identifiers returned by getTargetID() for peer type DVPSE_printer.
-     *  @return number of values if entry present in the config file, 0 otherwise.
-     */     
-    Uint32 getTargetPrinterNumberOfMediumTypes(const char *targetID);
-
-    /** returns one value from the MEDIUMTYPE entry for the printer 
-     *  with the given target ID from the configuration file.
-     *  @param targetID communication target ID, must be one of the target 
-     *    identifiers returned by getTargetID() for peer type DVPSE_printer.
-     *  @param idx index of the value, must be < getTargetPrinterNumberOfMediumTypes(targetID)
-     *  @param value the result is both stored in this object and returned as return value.
-     *  @return value if present, NULL otherwise.
-     */     
-    const char *getTargetPrinterMediumType(const char *targetID, Uint32 idx, OFString& value);
-
-    /** returns the number of distinct values (separated by backslash characters)
-     *  in the RESOLUTIONID entry for the printer with the given
-     *  target ID from the configuration file.
-     *  @param targetID communication target ID, must be one of the target 
-     *    identifiers returned by getTargetID() for peer type DVPSE_printer.
-     *  @return number of values if entry present in the config file, 0 otherwise.
-     */     
-    Uint32 getTargetPrinterNumberOfPrinterResolutionIDs(const char *targetID);
-
-    /** returns one value from the RESOLUTIONID entry for the printer 
-     *  with the given target ID from the configuration file.
-     *  @param targetID communication target ID, must be one of the target 
-     *    identifiers returned by getTargetID() for peer type DVPSE_printer.
-     *  @param idx index of the value, must be < getTargetPrinterNumberOfPrinterResolutionIDs(targetID)
-     *  @param value the result is both stored in this object and returned as return value.
-     *  @return value if present, NULL otherwise.
-     */     
-    const char *getTargetPrinterResolutionID(const char *targetID, Uint32 idx, OFString& value);
-
-    /** returns the number of distinct values (separated by backslash characters)
-     *  in the MAGNIFICATIONTYPE entry for the printer with the given
-     *  target ID from the configuration file.
-     *  @param targetID communication target ID, must be one of the target 
-     *    identifiers returned by getTargetID() for peer type DVPSE_printer.
-     *  @return number of values if entry present in the config file, 0 otherwise.
-     */     
-    Uint32 getTargetPrinterNumberOfMagnificationTypes(const char *targetID);
-
-    /** returns one value from the MAGNIFICATIONTYPE entry for the printer 
-     *  with the given target ID from the configuration file.
-     *  @param targetID communication target ID, must be one of the target 
-     *    identifiers returned by getTargetID() for peer type DVPSE_printer.
-     *  @param idx index of the value, must be < getTargetPrinterNumberOfMagnificationTypes(targetID)
-     *  @param value the result is both stored in this object and returned as return value.
-     *  @return value if present, NULL otherwise.
-     */     
-    const char *getTargetPrinterMagnificationType(const char *targetID, Uint32 idx, OFString& value);
-
-    /** returns the number of distinct values (separated by backslash characters)
-     *  in the SMOOTHINGTYPE entry for the printer with the given
-     *  target ID from the configuration file.
-     *  @param targetID communication target ID, must be one of the target 
-     *    identifiers returned by getTargetID() for peer type DVPSE_printer.
-     *  @return number of values if entry present in the config file, 0 otherwise.
-     */     
-    Uint32 getTargetPrinterNumberOfSmoothingTypes(const char *targetID);
-
-    /** returns one value from the SMOOTHINGTYPE entry for the printer 
-     *  with the given target ID from the configuration file.
-     *  @param targetID communication target ID, must be one of the target 
-     *    identifiers returned by getTargetID() for peer type DVPSE_printer.
-     *  @param idx index of the value, must be < getTargetPrinterNumberOfSmoothingTypes(targetID)
-     *  @param value the result is both stored in this object and returned as return value.
-     *  @return value if present, NULL otherwise.
-     */     
-    const char *getTargetPrinterSmoothingType(const char *targetID, Uint32 idx, OFString& value);
-
-    /** returns the CONFIGURATION entry for the printer with the given
-     *  target ID from the configuration file.
-     *  @param targetID communication target ID, must be one of the target 
-     *    identifiers returned by getTargetID() for peer type DVPSE_printer.
-     *  @return entry if present in the config file, NULL otherwise.
-     */     
-    const char *getTargetPrinterConfigurationSetting(const char *targetID);
-
-    /** returns the AETitle with which this application should identify itself.
-     *  The AETitle is taken from the section GENERAL/NETWORK in the
-     *  config file. If absent, a default value is returned.
-     *  @return AETitle for this application. Never returns NULL.
-     */
-    const char *getNetworkAETitle();
-
-    /** returns the IMPLICITONLY entry for the network receiver
-     *  from the section GENERAL/NETWORK in the config file.
-     *  @return entry if present in the config file, OFFalse otherwise.
-     */
-    OFBool getNetworkImplicitVROnly();
-
-    /** returns the DISABLENEWVRS entry for the network receiver
-     *  from the section GENERAL/NETWORK in the config file.
-     *  @return entry if present in the config file, OFFalse otherwise.
-     */
-    OFBool getNetworkDisableNewVRs();
-
-    /** returns the BITPRESERVINGMODE entry for the network receiver
-     *  from the section GENERAL/NETWORK in the config file.
-     *  @return entry if present in the config file, OFFalse otherwise.
-     */
-    OFBool getNetworkBitPreserving();
-
-    /** returns the PORT entry for the network receiver
-     *  from the section GENERAL/NETWORK in the config file.
-     *  @return entry if present and parsable in the config file, 0 otherwise.
-     */
-    unsigned short getNetworkPort();
-
-    /** returns the MAXPDU entry for the network receiver
-     *  from the section GENERAL/NETWORK in the config file.
-     *  @return entry if present and parsable in the config file, 0 otherwise.
-     */
-    unsigned long getNetworkMaxPDU();
-     
-    /** returns the database folder to be used for sending/receiving/browsing.
-     *  Value is taken from the section GENERAL/DATABASE/DIRECTORY
-     *  in the config file. If absent, a default value is returned.
-     *  @return database folder path. Never returns NULL.
-     */
-    const char *getDatabaseFolder();
-
-    /** returns the filename (path) of the DICOM Store SCU application used
-     *  for sending images, as configured in section
-     *  GENERAL/NETWORK/SENDER in the config file.
-     *  @return send application path name or NULL if absent.
-     */
-    const char *getSenderName();
-
-    /** returns the filename (path) of the DICOM Store SCP application used
-     *  for receiving images, as configured in section
-     *  GENERAL/NETWORK/RECEIVER in the config file.
-     *  @return receive application path name or NULL if absent.
-     */
-    const char *getReceiverName();
-   
-    /** returns the filename (path) of the monitor characteristics file
-     *  used to implement that Barten transform, as configured in section
-     *  GENERAL/MONITOR/CHARACTERISTICS in the config file.
-     *  @return monitor characteristics path name or NULL if absent.
-     */
-    const char *getMonitorCharacteristicsFile();
-    
-    /** returns the value of configuration file entry key=value
-     *  in the section GENERAL/GUI of the config file.
-     *  Specified key must be upper case.
-     *  If the entry is absent, NULL is returned.
-     *  @param key the entry key
-     *  @return entry value or NULL.
-     */
-    const char *getGUIConfigEntry(const char *key);
-
-    /** returns the value of configuration file entry key=value
-     *  in the section GENERAL/GUI of the config file.
-     *  Specified key must be upper case.
-     *  If the entry is absent or cannot be parsed, the default dfl
-     *  is returned.
-     *  @param key the entry key
-     *  @param dfl the default to be used if the value is absent or incorrect
-     *  @return entry value or default.
-     */
-    OFBool getGUIConfigEntryBool(const char *key, OFBool dfl);
     
     /** saves a monochrome bitmap as a DICOM Secondary Capture image.
      *  The bitmap must use one byte per pixel, left to right, top to bottom
@@ -1203,6 +875,84 @@ class DVInterface
      */
     E_Condition getAmbientLightValue(double &value);
 
+    /* print related methods */
+   
+    /** UNIMPLEMENTED - selects the current printer. No further
+     *  adjustments are made within the Stored Print object.
+     *  @param targetID one of the printer target IDs returned by getTargetID().
+     *  @return EC_Normal if successful, an error code otherwise.
+     */
+    E_Condition setCurrentPrinter(const char *targetID);
+
+    /** UNIMPLEMENTED - gets the current printer's target ID.
+     *  @return printer target ID, can be NULL if no printer is defined
+     *   in the configuration file.
+     */
+    const char *getCurrentPrinter();
+
+    /** UNIMPLEMENTED - sets the (optional) print medium type.
+     *  @param value new attribute value, may be NULL.
+     *    The caller is responsible for making sure
+     *    that the value is valid for the selected printer.
+     *  @return EC_Normal if successful, an error code otherwise.
+     */
+    E_Condition setPrinterMediumType(const char *value);
+
+    /** UNIMPLEMENTED - gets the (optional) print medium type.
+     *  @return medium type, may be NULL.
+     */
+    const char *getPrinterMediumType();
+
+    /** UNIMPLEMENTED - sets the illumination to be used
+     *  with the print Presentation LUT SOP Class.
+     *  @param value new attribute value, in cd/m2.
+     *    The caller is responsible for making sure
+     *    that the value is valid for the selected printer.
+     *  @return EC_Normal if successful, an error code otherwise.
+     */
+    E_Condition setPrintIllumination(Uint16 value);
+
+    /** UNIMPLEMENTED - gets the current illumination setting
+     *  used with the print Presentation LUT SOP Class.
+     *  @return illumination in cd/m2
+     */
+    Uint16 getPrintIllumination();
+
+    /** UNIMPLEMENTED - sets the reflected ambient light to be used
+     *  with the print Presentation LUT SOP Class.
+     *  @param value new attribute value, in cd/m2.
+     *    The caller is responsible for making sure
+     *    that the value is valid for the selected printer.
+     *  @return EC_Normal if successful, an error code otherwise.
+     */
+    E_Condition setPrintReflectedAmbientLight(Uint16 value);
+
+    /** UNIMPLEMENTED - gets the current reflected ambient light setting
+     *  used with the print Presentation LUT SOP Class.
+     *  @return reflected ambient light in cd/m2
+     */
+    Uint16 getPrintReflectedAmbientLight();
+
+    /** UNIMPLEMENTED - sets the LUT with the given identifier
+     *  in the Stored Print object as current Presentation LUT.
+     *  @param lutID LUT identifier, as returned by getLUTID().
+     *  @return EC_Normal if successful, an error code otherwise.
+     */
+    E_Condition selectPrintPresentationLUT(const char *lutID);
+    
+    /** UNIMPLEMENTED - if the Stored Print object contains an active
+     *  Presentation LUT that was set with selectPrintPresentationLUT(),
+     *  return the corresponding LUT identifier.
+     *  @return lutID if found, NULL otherwise.
+     */
+    const char *getPrintPresentationLUTID();
+
+    /** UNIMPLEMENTED - start spooling of print job with current settings.
+     *  @param deletePrintedImages if true, delete printed images from queue.
+      *  @return EC_Normal if successful, an error code otherwise.
+     */
+    E_Condition spoolPrintJob(OFBool deletePrintedImages=OFTrue);    
+    
 
 private:
 
@@ -1232,23 +982,6 @@ private:
      */
     E_Condition exchangeImageAndPState(DVPresentationState *newState, DcmFileFormat *image, DcmFileFormat *state=NULL);
  
-    /** returns the entry with the given keys.
-     *  @param l2_key level 2 key
-     *  @param l1_key level 1 key
-     *  @param l0_key level 0 key (entry name)
-     *  @return value assigned to the key if present, NULL otherwise.
-     */
-    const char *getConfigEntry(const char *l2_key, const char *l1_key, const char *l0_key);
-
-    /** returns the entry with the given keys as bool.
-     *  @param l2_key level 2 key
-     *  @param l1_key level 1 key
-     *  @param l0_key level 0 key (entry name)
-     *  @param deflt default to be returned if entry is not present or syntax error.
-     *  @return value assigned to the key if present, default otherwise.
-     */
-    OFBool getConfigBoolEntry(const char *l2_key, const char *l1_key, const char *l0_key, OFBool deflt);
-
     /** helper function that cleans up pending processes under Unix.
      *  No function if used on Windows.
      */ 
@@ -1297,16 +1030,11 @@ private:
      *  Is NULL when the presentation state has been created "on the fly" from image.
      */
     DcmFileFormat *pDicomPState;
-    
-    /** pointer to the configuration file data if the configuration file was found.
-     *  NULL otherwise.
-     */
-    DVPSConfig *pConfig;
 
     /** string containing the path name of the config file as passed to the ctor.
      */
     OFString configPath;
- 
+     
     /** string containing the path name of the database index file
      *  after a database lock has been acquired for the first time
      */
@@ -1420,7 +1148,10 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.41  1999-09-01 16:14:39  meichel
+ *  Revision 1.42  1999-09-08 16:42:01  meichel
+ *  Moved configuration file evaluation to separate class.
+ *
+ *  Revision 1.41  1999/09/01 16:14:39  meichel
  *  Added support for requested image size to print routines
  *
  *  Revision 1.40  1999/08/31 16:54:44  meichel

@@ -1,0 +1,629 @@
+/*
+ *
+ *  Copyright (C) 1998-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmpstat
+ *
+ *  Author:  Joerg Riesmeier, Marco Eichelberg
+ *
+ *  Purpose: DVConfiguration
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-09-08 16:41:42 $
+ *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
+
+
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dvpscf.h"      /* for DVConfiguration */
+#include "dvpsconf.h"    /* for class DVPSConfig */
+#include <stdio.h>
+#include <ctype.h>       /* for toupper() */
+
+/* default AETitle for the Presentation State viewer */
+#define PSTAT_AETITLE "DCMPSTAT"
+/* default path for database folder */
+#define PSTAT_DBFOLDER "."
+
+/* keywords for configuration file */
+#define L0_AETITLE           "AETITLE"
+#define L0_BITPRESERVINGMODE "BITPRESERVINGMODE"
+#define L0_CHARACTERISTICS   "CHARACTERISTICS"
+#define L0_DESCRIPTION       "DESCRIPTION"
+#define L0_DIRECTORY         "DIRECTORY"
+#define L0_DISABLENEWVRS     "DISABLENEWVRS"
+#define L0_FILENAME          "FILENAME"
+#define L0_FILMSIZEID        "FILMSIZEID"
+#define L0_HOSTNAME          "HOSTNAME"
+#define L0_IMPLICITONLY      "IMPLICITONLY"
+#define L0_MAGNIFICATIONTYPE "MAGNIFICATIONTYPE"
+#define L0_MAXCOLUMNS        "MAXCOLUMNS"
+#define L0_MAXPDU            "MAXPDU"
+#define L0_MAXROWS           "MAXROWS"
+#define L0_MEDIUMTYPE        "MEDIUMTYPE"
+#define L0_PORT              "PORT"
+#define L0_RECEIVER          "RECEIVER"
+#define L0_RESOLUTION        "RESOLUTION"
+#define L0_RESOLUTIONID      "RESOLUTIONID"
+#define L0_SCREENSIZE        "SCREENSIZE"
+#define L0_SENDER            "SENDER"
+#define L0_SMOOTHINGTYPE     "SMOOTHINGTYPE"
+#define L0_SUPPORTS12BIT           "SUPPORTS12BIT"
+#define L0_SUPPORTSDECIMATECROP    "SUPPORTSDECIMATECROP"
+#define L0_SUPPORTSIMAGESIZE       "SUPPORTSIMAGESIZE"
+#define L0_SUPPORTSPRESENTATIONLUT "SUPPORTSPRESENTATIONLUT"
+#define L0_SUPPORTSTRIM      "SUPPORTSTRIM"
+#define L0_TYPE              "TYPE"
+#define L1_DATABASE          "DATABASE"
+#define L1_GUI               "GUI"
+#define L1_MONITOR           "MONITOR"
+#define L1_NETWORK           "NETWORK"
+#define L2_COMMUNICATION     "COMMUNICATION"
+#define L2_GENERAL           "GENERAL"
+#define L2_HIGHENDSYSTEM     "HIGHENDSYSTEM"
+#define L2_LUT               "LUT"
+
+/* --------------- static helper functions --------------- */
+
+static DVPSPeerType getConfigTargetType(const char *val)
+{
+  DVPSPeerType result = DVPSE_storage; /* default */
+
+  if (val==NULL) return result; 
+  OFString pstring(val);
+  OFString ostring;
+  size_t len = pstring.length();
+  char c;
+  for (size_t i=0; i<len; i++)
+  {
+    c = pstring[i];
+    if ((c>='a') && (c <= 'z')) ostring += (char)(toupper(c));
+    else if ((c>='A') && (c <= 'Z')) ostring += c;
+    else if ((c>='0') && (c <= '9')) ostring += c;
+    else if (c=='_')  ostring += c;
+  }  
+  if (ostring=="PRINTER")  result=DVPSE_print; else
+  if (ostring=="STORAGE")  result=DVPSE_storage; else
+  {
+#ifdef DEBUG
+    cerr << "warning: unsupported peer type in config file: '" << val << "', ignoring." << endl;
+#endif  
+  }
+  return result;
+}
+
+static Uint32 countValues(const char *str)
+{
+  if (str)
+  {
+    Uint32 result = 0;
+    if (*str) result++;
+    char c;
+    while ((c = *str++)) if (c == '\\') result++;
+    return result;
+  }
+  return 0;
+}
+
+static void copyValue(const char *str, Uint32 idx, OFString& target)
+{
+  target.clear();
+  if (str)
+  {
+    char c = '\\';
+    while (idx)
+    {
+      c = *str++;
+      if (c == 0) idx=0; else if (c == '\\') idx--;
+    }
+    if (c=='\\')
+    {
+      const char *endstr = str;
+      while ((*endstr) && (*endstr != '\\')) endstr++;
+      target.assign(str,(endstr-str));
+    }
+  }
+  return;
+}
+
+DVConfiguration::DVConfiguration(const char *config_file)
+: pConfig(NULL)
+{
+  if (config_file)
+  {
+      FILE *cfgfile = fopen(config_file, "rb");
+      if (cfgfile)
+      {
+          pConfig = new DVPSConfig(cfgfile);
+          fclose(cfgfile);
+      }
+  }
+}
+
+
+DVConfiguration::~DVConfiguration()
+{
+  if (pConfig) delete pConfig;
+}
+
+
+Uint32 DVConfiguration::getNumberOfTargets(DVPSPeerType peerType)
+{
+  Uint32 result = 0;
+  DVPSPeerType currentType;
+  
+  if (pConfig)
+  {
+    pConfig->set_section(2, L2_COMMUNICATION);
+    if (pConfig->section_valid(2))
+    {
+       pConfig->first_section(1);
+       while (pConfig->section_valid(1))
+       {
+         currentType = getConfigTargetType(pConfig->get_entry(L0_TYPE));
+         switch (peerType)
+         {
+           case DVPSE_storage:
+             if (currentType==DVPSE_storage) result++;
+             break;
+           case DVPSE_print:
+             if (currentType==DVPSE_print) result++;
+             break;
+           case DVPSE_any:
+             result++;
+             break;
+         }
+         pConfig->next_section(1);
+       }
+    }
+  }
+  return result;
+}
+
+
+const char *DVConfiguration::getTargetID(Uint32 idx, DVPSPeerType peerType)
+{
+  const char *result=NULL; 
+  DVPSPeerType currentType;
+  OFBool found = OFFalse;
+  
+  if (pConfig)
+  {
+    pConfig->set_section(2, L2_COMMUNICATION);
+    if (pConfig->section_valid(2))
+    {
+       pConfig->first_section(1);
+       while ((! found)&&(pConfig->section_valid(1)))
+       {
+         currentType = getConfigTargetType(pConfig->get_entry(L0_TYPE));
+         switch (peerType)
+         {
+           case DVPSE_storage:
+             if (currentType==DVPSE_storage) 
+             {
+             	if (idx==0) found=OFTrue; else idx--;
+             }
+             break;
+           case DVPSE_print:
+             if (currentType==DVPSE_print) 
+             {
+             	if (idx==0) found=OFTrue; else idx--;
+             }
+             break;
+           case DVPSE_any:
+             if (idx==0) found=OFTrue; else idx--;
+             break;
+         }
+         if (!found) pConfig->next_section(1);
+       }
+       if (pConfig->section_valid(1)) result = pConfig->get_keyword(1);
+    }
+  }
+  return result;
+}
+
+
+const char *DVConfiguration::getConfigEntry(const char *l2_key, const char *l1_key, const char *l0_key)
+{
+  const char *result=NULL; 
+  if (l2_key && l1_key && l0_key && pConfig)
+  {
+    pConfig->select_section(l1_key, l2_key);
+    if (pConfig->section_valid(1)) result = pConfig->get_entry(l0_key);
+  }
+  return result;
+}
+
+OFBool DVConfiguration::getConfigBoolEntry(const char *l2_key, const char *l1_key, const char *l0_key, OFBool deflt)
+{
+  OFBool result=deflt; 
+  if (l2_key && l1_key && l0_key && pConfig)
+  {
+    pConfig->select_section(l1_key, l2_key);
+    if (pConfig->section_valid(1)) 
+    {
+      pConfig->set_section(0,l0_key);
+      result = pConfig->get_bool_value(deflt);
+    }
+  }
+  return result;
+}
+
+const char *DVConfiguration::getTargetDescription(const char *targetID)
+{
+  return getConfigEntry(L2_COMMUNICATION, targetID, L0_DESCRIPTION);
+}
+
+const char *DVConfiguration::getTargetHostname(const char *targetID)
+{
+  return getConfigEntry(L2_COMMUNICATION, targetID, L0_HOSTNAME);
+}
+
+unsigned short DVConfiguration::getTargetPort(const char *targetID)
+{
+  const char *c = getConfigEntry(L2_COMMUNICATION, targetID, L0_PORT);
+  unsigned short result = 0;
+  if (c)
+  {
+    if (1 != sscanf(c, "%hu", &result)) result=0;
+  }
+  return result;
+}
+
+const char *DVConfiguration::getTargetAETitle(const char *targetID)
+{
+  return getConfigEntry(L2_COMMUNICATION, targetID, L0_AETITLE);
+}
+
+unsigned long DVConfiguration::getTargetMaxPDU(const char *targetID)
+{
+  const char *c = getConfigEntry(L2_COMMUNICATION, targetID, L0_MAXPDU);
+  unsigned long result = 0;
+  if (c)
+  {
+    if (1 != sscanf(c, "%lu", &result)) result=0;
+  }
+  return result;
+}
+
+OFBool DVConfiguration::getTargetImplicitOnly(const char *targetID)
+{
+  return getConfigBoolEntry(L2_COMMUNICATION, targetID, L0_IMPLICITONLY, OFFalse);
+}
+
+OFBool DVConfiguration::getTargetDisableNewVRs(const char *targetID)
+{
+  return getConfigBoolEntry(L2_COMMUNICATION, targetID, L0_DISABLENEWVRS, OFFalse);
+}
+
+DVPSPeerType DVConfiguration::getTargetType(const char *targetID)
+{
+  return getConfigTargetType(getConfigEntry(L2_COMMUNICATION, targetID, L0_TYPE));
+}
+
+const char *DVConfiguration::getNetworkAETitle()
+{
+  const char *result = getConfigEntry(L2_GENERAL, L1_NETWORK, L0_AETITLE);
+  if (result==NULL) result = PSTAT_AETITLE;
+  return result;
+}
+
+
+OFBool DVConfiguration::getNetworkImplicitVROnly()
+{
+  return getConfigBoolEntry(L2_GENERAL, L1_NETWORK, L0_IMPLICITONLY, OFFalse);
+}
+
+OFBool DVConfiguration::getNetworkDisableNewVRs()
+{
+  return getConfigBoolEntry(L2_GENERAL, L1_NETWORK, L0_DISABLENEWVRS, OFFalse);
+}
+
+OFBool DVConfiguration::getNetworkBitPreserving()
+{
+  return getConfigBoolEntry(L2_GENERAL, L1_NETWORK, L0_BITPRESERVINGMODE, OFFalse);
+}
+
+unsigned short DVConfiguration::getNetworkPort()
+{
+  const char *c = getConfigEntry(L2_GENERAL, L1_NETWORK, L0_PORT);
+  unsigned short result = 0;
+  if (c)
+  {
+    if (1 != sscanf(c, "%hu", &result)) result=0;
+  }
+  return result;
+}
+
+unsigned long DVConfiguration::getNetworkMaxPDU()
+{
+  const char *c = getConfigEntry(L2_GENERAL, L1_NETWORK, L0_MAXPDU);
+  unsigned long result = 0;
+  if (c)
+  {
+    if (1 != sscanf(c, "%lu", &result)) result=0;
+  }
+  return result;
+}
+
+
+const char *DVConfiguration::getDatabaseFolder()
+{
+  const char *result = getConfigEntry(L2_GENERAL, L1_DATABASE, L0_DIRECTORY);
+  if (result==NULL) result = PSTAT_DBFOLDER;
+  return result;
+}
+
+const char *DVConfiguration::getSenderName()
+{
+  return getConfigEntry(L2_GENERAL, L1_NETWORK, L0_SENDER);
+}
+
+const char *DVConfiguration::getReceiverName()
+{
+  return getConfigEntry(L2_GENERAL, L1_NETWORK, L0_RECEIVER);
+}
+
+const char *DVConfiguration::getMonitorCharacteristicsFile()
+{
+  return getConfigEntry(L2_GENERAL, L1_MONITOR, L0_CHARACTERISTICS);
+}
+
+double DVConfiguration::getMonitorPixelWidth()
+{
+  const char *resolution = getConfigEntry(L2_GENERAL, L1_MONITOR, L0_RESOLUTION);
+  const char *screensize = getConfigEntry(L2_GENERAL, L1_MONITOR, L0_SCREENSIZE);
+
+  if (resolution && screensize)
+  {
+    double rX, rY, sX, sY;
+    if ((2 == sscanf(resolution, "%lf\\%lf", &rX, &rY)) && (2 == sscanf(screensize, "%lf\\%lf", &sX, &sY)))
+    {
+      if ((rX > 0) && (rY > 0) && (sX > 0) && (sY > 0))
+      {
+      	// everything OK, return pixel width
+        return sX/rX;
+      }
+    }
+  }
+  return 0.0;
+}
+    
+double DVConfiguration::getMonitorPixelHeight()
+{
+  const char *resolution = getConfigEntry(L2_GENERAL, L1_MONITOR, L0_RESOLUTION);
+  const char *screensize = getConfigEntry(L2_GENERAL, L1_MONITOR, L0_SCREENSIZE);
+
+  if (resolution && screensize)
+  {
+    double rX, rY, sX, sY;
+    if ((2 == sscanf(resolution, "%lf\\%lf", &rX, &rY)) && (2 == sscanf(screensize, "%lf\\%lf", &sX, &sY)))
+    {
+      if ((rX > 0) && (rY > 0) && (sX > 0) && (sY > 0))
+      {
+      	// everything OK, return pixel height
+        return sY/rY;
+      }
+    }
+  }
+  return 0.0;
+}
+
+const char *DVConfiguration::getGUIConfigEntry(const char *key)
+{
+  return getConfigEntry(L2_GENERAL, L1_GUI, key);
+}
+
+OFBool DVConfiguration::getGUIConfigEntryBool(const char *key, OFBool dfl)
+{
+  return getConfigBoolEntry(L2_GENERAL, L1_GUI, key, dfl);
+}
+
+OFBool DVConfiguration::getTargetPrinterSupportsPresentationLUT(const char *targetID)
+{
+  return getConfigBoolEntry(L2_COMMUNICATION, targetID, L0_SUPPORTSPRESENTATIONLUT, OFFalse);
+}
+
+OFBool DVConfiguration::getTargetPrinterSupports12BitTransmission(const char *targetID)
+{
+  return getConfigBoolEntry(L2_COMMUNICATION, targetID, L0_SUPPORTS12BIT, OFTrue);
+}
+    
+OFBool DVConfiguration::getTargetPrinterSupportsRequestedImageSize(const char *targetID)
+{
+  return getConfigBoolEntry(L2_COMMUNICATION, targetID, L0_SUPPORTSIMAGESIZE, OFFalse);
+}
+
+OFBool DVConfiguration::getTargetPrinterSupportsDecimateCrop(const char *targetID)
+{
+  return getConfigBoolEntry(L2_COMMUNICATION, targetID, L0_SUPPORTSDECIMATECROP, OFFalse);
+}
+
+OFBool DVConfiguration::getTargetPrinterSupportsTrim(const char *targetID)
+{
+  return getConfigBoolEntry(L2_COMMUNICATION, targetID, L0_SUPPORTSTRIM, OFFalse);
+}
+
+Uint32 DVConfiguration::getTargetPrinterMaxDisplayFormatColumns(const char *targetID)
+{
+  Uint32 result = (Uint32) -1;
+  unsigned long val = 0;
+  const char *c = getConfigEntry(L2_COMMUNICATION, targetID, L0_MAXCOLUMNS);
+  if (c)
+  {
+    if (1 == sscanf(c, "%lu", &val)) result=(Uint32)val;
+  }
+  return result;
+}
+
+Uint32 DVConfiguration::getTargetPrinterMaxDisplayFormatRows(const char *targetID)
+{
+  Uint32 result = (Uint32) -1;
+  unsigned long val = 0;
+  const char *c = getConfigEntry(L2_COMMUNICATION, targetID, L0_MAXROWS);
+  if (c)
+  {
+    if (1 == sscanf(c, "%lu", &val)) result=(Uint32)val;
+  }
+  return result;
+}
+
+Uint32 DVConfiguration::getTargetPrinterNumberOfFilmSizeIDs(const char *targetID)
+{
+  return countValues(getConfigEntry(L2_COMMUNICATION, targetID, L0_FILMSIZEID));
+}
+
+const char *DVConfiguration::getTargetPrinterFilmSizeID(const char *targetID, Uint32 idx, OFString& value)
+{
+  copyValue(getConfigEntry(L2_COMMUNICATION, targetID, L0_FILMSIZEID), idx, value);
+  if (value.length()) return value.c_str(); else return NULL;
+}
+
+Uint32 DVConfiguration::getTargetPrinterNumberOfMediumTypes(const char *targetID)
+{
+  return countValues(getConfigEntry(L2_COMMUNICATION, targetID, L0_MEDIUMTYPE));
+}
+
+const char *DVConfiguration::getTargetPrinterMediumType(const char *targetID, Uint32 idx, OFString& value)
+{
+  copyValue(getConfigEntry(L2_COMMUNICATION, targetID, L0_MEDIUMTYPE), idx, value);
+  if (value.length()) return value.c_str(); else return NULL;
+}
+
+Uint32 DVConfiguration::getTargetPrinterNumberOfPrinterResolutionIDs(const char *targetID)
+{
+  return countValues(getConfigEntry(L2_COMMUNICATION, targetID, L0_RESOLUTIONID));
+}
+
+const char *DVConfiguration::getTargetPrinterResolutionID(const char *targetID, Uint32 idx, OFString& value)
+{
+  copyValue(getConfigEntry(L2_COMMUNICATION, targetID, L0_RESOLUTIONID), idx, value);
+  if (value.length()) return value.c_str(); else return NULL;
+}
+
+Uint32 DVConfiguration::getTargetPrinterNumberOfMagnificationTypes(const char *targetID)
+{
+  return countValues(getConfigEntry(L2_COMMUNICATION, targetID, L0_MAGNIFICATIONTYPE));
+}
+
+const char *DVConfiguration::getTargetPrinterMagnificationType(const char *targetID, Uint32 idx, OFString& value)
+{
+  copyValue(getConfigEntry(L2_COMMUNICATION, targetID, L0_MAGNIFICATIONTYPE), idx, value);
+  if (value.length()) return value.c_str(); else return NULL;
+}
+
+Uint32 DVConfiguration::getTargetPrinterNumberOfSmoothingTypes(const char *targetID)
+{
+  return countValues(getConfigEntry(L2_COMMUNICATION, targetID, L0_SMOOTHINGTYPE));
+}
+
+const char *DVConfiguration::getTargetPrinterSmoothingType(const char *targetID, Uint32 idx, OFString& value)
+{
+  copyValue(getConfigEntry(L2_COMMUNICATION, targetID, L0_SMOOTHINGTYPE), idx, value);
+  if (value.length()) return value.c_str(); else return NULL;
+}
+
+
+Uint32 DVConfiguration::getTargetPrinterNumberOfConfigurationSettings(const char *targetID)
+{
+  Uint32 result = 0;
+  
+  if (pConfig)
+  {
+
+    pConfig->select_section(targetID, L2_COMMUNICATION);
+    if (pConfig->section_valid(1)) 
+    {
+      int counter = 1;
+      char l0_key[80];
+      do
+      {
+        sprintf(l0_key, "CONFIGURATION_%d", counter++);
+      } while (NULL != pConfig->get_entry(l0_key));
+      result = counter - 2;
+    }
+  }  
+  return result;  
+}
+
+const char *DVConfiguration::getTargetPrinterConfigurationSetting(const char *targetID, Uint32 idx)
+{
+  char l0_key[80];
+  sprintf(l0_key, "CONFIGURATION_%d", (int)idx);
+  return getConfigEntry(L2_COMMUNICATION, targetID, l0_key);
+}
+
+Uint32 DVConfiguration::getNumberOfLUTs()
+{
+  Uint32 result = 0;  
+  if (pConfig)
+  {
+    pConfig->set_section(2, L2_LUT);
+    if (pConfig->section_valid(2))
+    {
+       pConfig->first_section(1);
+       while (pConfig->section_valid(1))
+       {
+       	  result++;
+          pConfig->next_section(1);
+       }
+    }
+  }
+  return result;
+}
+
+const char *DVConfiguration::getLUTID(Uint32 idx)
+{
+  OFBool found = OFFalse;
+  const char *result=NULL;   
+  if (pConfig)
+  {
+    pConfig->set_section(2, L2_LUT);
+    if (pConfig->section_valid(2))
+    {
+       pConfig->first_section(1);
+       while ((! found)&&(pConfig->section_valid(1)))
+       {
+         if (idx==0) found=OFTrue; else idx--;
+       }
+       if (pConfig->section_valid(1)) result = pConfig->get_keyword(1);
+    }
+  }
+  return result;
+}
+    
+const char *DVConfiguration::getLUTDescription(const char *lutID)
+{
+  return getConfigEntry(L2_LUT, lutID, L0_DESCRIPTION);
+}
+
+const char *DVConfiguration::getLUTFilename(const char *lutID)
+{
+  return getConfigEntry(L2_LUT, lutID, L0_FILENAME);
+}
+
+/*
+ *  CVS/RCS Log:
+ *  $Log: dvpscf.cc,v $
+ *  Revision 1.1  1999-09-08 16:41:42  meichel
+ *  Moved configuration file evaluation to separate class.
+ *
+ *
+ */
