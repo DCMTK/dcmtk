@@ -22,9 +22,9 @@
  *  Purpose: DiCubicSpline Function/Interpolation (Header/Implementation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-07-23 14:11:25 $
+ *  Update Date:      $Date: 1999-10-01 13:25:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/displint.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -44,7 +44,7 @@
 
 /** Template class for cubic spline interpolation 
  */
-template <class T1, class T2>
+template <class T1, class T2, class T3 = double>
 class DiCubicSpline
 {
 
@@ -53,6 +53,7 @@ class DiCubicSpline
     /** calculate spline function for given points
      *  T1 = type of x coordinates
      *  T2 = type of y coordinates
+     *  T3 = type of y coordinates of the spline function
      *
      ** @param  x    array with x coordinates of given points
      *  @param  y    array with y coordinates of given points
@@ -66,38 +67,38 @@ class DiCubicSpline
     static int Function(const T1 *x,
                         const T2 *y,
                         const unsigned int n,
-                        T2 *y2,
-                        const T2 yp1 = 1.0e30,
-                        const T2 ypn = 1.0e30)
+                        T3 *y2,
+                        const T3 yp1 = 1.0e30,
+                        const T3 ypn = 1.0e30)
     {
         if ((x != NULL) && (y != NULL) && (n > 0) && (y2 != NULL))
         {
-            T2 *u = new T2[n];                              // temporary vector
+            T3 *u = new T3[n];                              // temporary vector
             if (u != NULL)
             {
                 register unsigned int i;
-                T2 p, qn, sig, un;
+                T3 p, qn, sig, un;
                 if (yp1 > 0.99e30)                          // ignore value for first derivative at point 1
                     y2[0] = u[0] = 0.0;
                 else
                 {
                     y2[0] = -0.5;
-                    u[0] = (3.0 / ((T2)x[1] - (T2)x[0])) * ((y[1] - y[0]) / ((T2)x[1] - (T2)x[0]) - yp1);
+                    u[0] = (3.0 / ((T3)x[1] - (T3)x[0])) * (((T3)y[1] - (T3)y[0]) / ((T3)x[1] - (T3)x[0]) - yp1);
                 }
                 for (i = 1; i < n - 1; i++)
                 {
-                    sig = ((T2)x[i] - (T2)x[i - 1]) / ((T2)x[i + 1] - (T2)x[i - 1]);
+                    sig = ((T3)x[i] - (T3)x[i - 1]) / ((T3)x[i + 1] - (T3)x[i - 1]);
                     p = sig * y2[i - 1] + 2.0;
                     y2[i] = (sig - 1.0) / p;
-                    u[i] = (y[i + 1] - y[i]) / ((T2)x[i + 1] - (T2)x[i]) - (y[i] - y[i - 1]) / ((T2)x[i] - (T2)x[i - 1]);
-                    u[i] = (6.0 * u[i] / ((T2)x[i + 1] - (T2)x[i - 1]) - sig * u[i - 1]) / p;
+                    u[i] = ((T3)y[i + 1] - (T3)y[i]) / ((T3)x[i + 1] - (T3)x[i]) - ((T3)y[i] - (T3)y[i - 1]) / ((T3)x[i] - (T3)x[i - 1]);
+                    u[i] = (6.0 * u[i] / ((T3)x[i + 1] - (T3)x[i - 1]) - sig * u[i - 1]) / p;
                 }
                 if (ypn > 0.99e30)                          // ignore value for first derivative at point 1
                     qn = un = 0.0;
                 else
                 {
                     qn = 0.5;
-                    un = (3.0 / ((T2)x[n - 1] - (T2)x[n - 2])) * (ypn - (y[n - 1] - y[n - 2]) / ((T2)x[n - 1] - (T2)x[n - 2]));
+                    un = (3.0 / ((T3)x[n - 1] - (T3)x[n - 2])) * (ypn - ((T3)y[n - 1] - (T3)y[n - 2]) / ((T3)x[n - 1] - (T3)x[n - 2]));
                 }
                 y2[n - 1] = (un - qn * u[n - 2]) / (qn * y2[n - 2] + 1.0);
                 for (i = n - 1; i > 0; i--)
@@ -113,6 +114,7 @@ class DiCubicSpline
     /** perform cubic spline interpolation for given points
      *  T1 = type of x coordinates
      *  T2 = type of y coordinates
+     *  T3 = type of y coordinates of the spline function
      *
      ** @param  xa   array with x coordinates of given points
      *  @param  ya   array with y coordinates of given points
@@ -126,7 +128,7 @@ class DiCubicSpline
      */
     static int Interpolation(const T1 *xa,
                              const T2 *ya,
-                             const T2 *y2a,
+                             const T3 *y2a,
                              const unsigned int na,
                              const T1 *x,
                              T2 *y,             
@@ -137,7 +139,7 @@ class DiCubicSpline
             register unsigned int k, i;
             register unsigned int klo = 0;
             register unsigned int khi = na - 1;
-            T2 h, b, a;
+            T3 h, b, a;
             for (i = 0; i < n; i++)
             {
                 if ((xa[klo] > x[i]) || (xa[khi] < x[i]))       // optimization
@@ -157,12 +159,12 @@ class DiCubicSpline
                     y[i] = ya[khi];
                 else
                 {
-                    h = (T2)xa[khi] - (T2)xa[klo];
+                    h = (T3)xa[khi] - (T3)xa[klo];
                     if (h == 0.0)                               // bad xa input, values must be distinct !
                         return 0;
-                    a = ((T2)xa[khi] - (T2)x[i]) / h;
-                    b = ((T2)x[i] - (T2)xa[klo]) / h;
-                    y[i] = a * ya[klo] + b * ya[khi] + ((a * a * a - a) * y2a[klo] + (b * b * b - b) * y2a[khi]) * (h * h) / 6.0;
+                    a = ((T3)xa[khi] - (T3)x[i]) / h;
+                    b = ((T3)x[i] - (T3)xa[klo]) / h;
+                    y[i] = (T2)(a * (T3)ya[klo] + b * (T3)ya[khi] + ((a * a * a - a) * y2a[klo] + (b * b * b - b) * y2a[khi]) * (h * h) / 6.0);
                 }    
             }
             return 1;
@@ -226,7 +228,11 @@ class DiCubicSpline
  *
  * CVS/RCS Log:
  * $Log: displint.h,v $
- * Revision 1.7  1999-07-23 14:11:25  joergr
+ * Revision 1.8  1999-10-01 13:25:35  joergr
+ * Enhanced template class for cubic spline interpolation to support
+ * non-floating point classes/types as y-coordinates.
+ *
+ * Revision 1.7  1999/07/23 14:11:25  joergr
  * Added preliminary support for 2D bi-cubic spline interpolation (currently
  * not used).
  *
