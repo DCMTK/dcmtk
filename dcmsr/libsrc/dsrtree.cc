@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2001, OFFIS
+ *  Copyright (C) 2000-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRTree
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-03-28 09:07:42 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2003-08-07 14:11:57 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,7 @@
 #include "dsrtree.h"
 
 
+// initialize tree node counter (ID)
 size_t DSRTreeNode::IdentCounter = 1;
 
 
@@ -90,7 +91,7 @@ size_t DSRTree::gotoNode(const OFString &reference,
                          const OFBool startFromRoot)
 {
     size_t nodeID = 0;
-    if (reference.length() > 0)
+    if (!reference.empty())
     {
         if (startFromRoot)
             gotoRoot();
@@ -254,7 +255,10 @@ size_t DSRTree::removeNode()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtree.cc,v $
- *  Revision 1.5  2001-03-28 09:07:42  joergr
+ *  Revision 1.6  2003-08-07 14:11:57  joergr
+ *  Added comment.
+ *
+ *  Revision 1.5  2001/03/28 09:07:42  joergr
  *  Fixed bug in cycle/loop detection "algorithm".
  *
  *  Revision 1.4  2001/02/16 16:58:50  joergr
