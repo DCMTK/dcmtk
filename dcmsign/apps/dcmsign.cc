@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2002, OFFIS
+ *  Copyright (C) 2000-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Create and Verify DICOM Digital Signatures
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-12-20 14:54:09 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-02-10 17:01:02 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1122,7 +1122,10 @@ int main(int, char *[])
 
 /*
  *  $Log: dcmsign.cc,v $
- *  Revision 1.16  2002-12-20 14:54:09  wilkens
+ *  Revision 1.17  2004-02-10 17:01:02  joergr
+ *  Updated copyright header.
+ *
+ *  Revision 1.16  2002/12/20 14:54:09  wilkens
  *  Modified name clash resulting in a compiler error on Solaris 2.5.1 using
  *  compiler SC 2.0.1.
  *
