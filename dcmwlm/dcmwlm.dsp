@@ -41,7 +41,7 @@ RSC=rc.exe
 # PROP Intermediate_Dir "Release"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GX /O2 /I "include" /I "..\config\include" /I "..\ofstd\include" /I "..\dcmdata\include" /I "..\dcmnet\include" /I "..\ExternDB\include" /D "NDEBUG" /D "_WINDOWS" /D "WIN32" /D "_REENTRANT" /D "WITH_DATABASE" /YX /FD /c
+# ADD CPP /nologo /MT /W3 /GX /O2 /I "include" /I "..\config\include" /I "..\ofstd\include" /I "..\dcmdata\include" /I "..\dcmnet\include" /D "NDEBUG" /D "_WINDOWS" /D "WIN32" /D "_REENTRANT" /YX /FD /c
 # ADD BASE RSC /l 0x407 /d "NDEBUG"
 # ADD RSC /l 0x407 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -64,7 +64,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "Debug"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
-# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /I "include" /I "..\config\include" /I "..\ofstd\include" /I "..\dcmdata\include" /I "..\dcmnet\include" /I "..\ExternDB\include" /D "_DEBUG" /D "DEBUG" /D "_WINDOWS" /D "WIN32" /D "_REENTRANT" /D "WITH_DATABASE" /YX /FD /GZ /c
+# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /I "include" /I "..\config\include" /I "..\ofstd\include" /I "..\dcmdata\include" /I "..\dcmnet\include" /D "_DEBUG" /D "DEBUG" /D "_WINDOWS" /D "WIN32" /D "_REENTRANT" /YX /FD /GZ /c
 # ADD BASE RSC /l 0x407 /d "_DEBUG"
 # ADD RSC /l 0x407 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -85,19 +85,7 @@ LIB32=link.exe -lib
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=.\libsrc\wldbim.cxx
-# End Source File
-# Begin Source File
-
 SOURCE=.\libsrc\wlds.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=.\libsrc\wldsdb.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=.\libsrc\wldsfs.cxx
 # End Source File
 # Begin Source File
 
@@ -109,19 +97,7 @@ SOURCE=.\libsrc\wlmactmg.cxx
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=.\include\wldbim.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\include\wlds.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\wldsdb.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\wldsfs.h
 # End Source File
 # Begin Source File
 
