@@ -103,6 +103,10 @@ LIB32=link.exe -lib
 # Name "dcmjpeg - Win32 Release OpenSSL"
 # Begin Source File
 
+SOURCE=.\libsrc\dipiimpl.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=.\libsrc\dipijpeg.cxx
 # End Source File
 # Begin Source File
