@@ -21,10 +21,10 @@
  *
  *  Purpose: Class for measurement of time (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-04-21 13:01:44 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-04-29 13:45:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/oftimer.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,26 +56,45 @@ class OFTimer
 
  public:
 
+    /** constructor
+     */
     OFTimer()
       : Start(getTime())
     {
     }
     
+    /** reset start time
+     */
     inline void reset()
     {
         Start = getTime();
     }
     
+    /** get elapsed time.
+     *  i.e. difference between current and start time
+     *
+     ** @return elapsed time in seconds
+     */
     inline double getDiff() const
     {
         return getTime() - Start;
     }
 
+    /** get difference between current time and specified time
+     *
+     ** @param  start  reference time (in seconds)
+     *
+     ** @return difference between the two times (in seconds)
+     */
     inline static double getDiff(double start)
     {
         return getTime() - start;
     }
 
+    /** get current time
+     *
+     ** @return current time in seconds
+     */
     inline static double getTime()
     {
 #ifdef HAVE_WINDOWS_H
@@ -90,6 +109,7 @@ class OFTimer
 
  private:
 
+    /// reference/start time
     double Start; 
 };
 
@@ -101,7 +121,10 @@ class OFTimer
  *
  * CVS/RCS Log:
  * $Log: oftimer.h,v $
- * Revision 1.4  1999-04-21 13:01:44  meichel
+ * Revision 1.5  1999-04-29 13:45:00  joergr
+ * Added DOC++ comments.
+ *
+ * Revision 1.4  1999/04/21 13:01:44  meichel
  * ofstd/include/oftimer.h
  *
  * Revision 1.3  1999/02/05 14:07:23  joergr
