@@ -22,9 +22,9 @@
  *  Purpose: Scale DICOM images
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-20 12:20:21 $
+ *  Update Date:      $Date: 2002-08-21 09:54:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcmscale.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -508,7 +508,7 @@ int main(int argc, char *argv[])
     if (opt_verbose)
         COUT << "create output file " << opt_ofname << endl;
 
-    error = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc, EPD_withoutPadding, opt_oDataset);
+    error = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc, EPD_withoutPadding, 0, 0, opt_oDataset);
     if (error != EC_Normal) 
     {
         CERR << "Error: "  
@@ -534,7 +534,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmscale.cc,v $
- * Revision 1.2  2002-08-20 12:20:21  meichel
+ * Revision 1.3  2002-08-21 09:54:07  meichel
+ * Fixed argument lists for loadFile and saveFile
+ *
+ * Revision 1.2  2002/08/20 12:20:21  meichel
  * Adapted code to new loadFile and saveFile methods, thus removing direct
  *   use of the DICOM stream classes.
  *
