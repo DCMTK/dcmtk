@@ -19,7 +19,7 @@ dcmnetdir = $(top_srcdir)/../dcmnet
 imagectndir = $(top_srcdir)/../imagectn
 dcmimgledir = $(top_srcdir)/../dcmimgle
 
-LOCALINCLUDES = -I$(dcmnetdir)/include -I$(dcmdatadir)/include -I$(ofstddir)/include \
+LOCALINCLUDES = -I$(dcmnetdir)/include -I$(dcmdatadir)/include \
 	-I$(ofstddir)/include -I$(imagectndir)/include -I$(dcmimgledir)/include
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(dcmnetdir)/libsrc -L$(ofstddir)/libsrc \
 	-L$(dcmdatadir)/libsrc -L$(dcmimgledir)/libsrc -L$(imagectndir)/libsrc
