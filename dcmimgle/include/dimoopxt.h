@@ -22,9 +22,9 @@
  *  Purpose: DicomMonoOutputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-22 14:32:49 $
+ *  Update Date:      $Date: 1998-12-23 12:40:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -63,7 +63,6 @@ class DiMonoOutputPixelTemplate
                               const DiLookupTable *plut,
                               const double center,
                               const double width,
-                              const int bits,
                               const Uint32 low,
                               const Uint32 high,
                               const Uint16 columns,
@@ -80,7 +79,7 @@ class DiMonoOutputPixelTemplate
             else
             {
                 if (width <= 0)                            // no valid window according to Cor Loef (author of suppl. 33)
-                    nowindow(pixel, frame * getCount(), plut, bits, (T3)low, (T3)high);
+                    nowindow(pixel, frame * getCount(), plut, (T3)low, (T3)high);
                 else
                     window(pixel, frame * getCount(), plut, center, width, (T3)low, (T3)high);
             }
@@ -209,7 +208,6 @@ class DiMonoOutputPixelTemplate
     inline void nowindow(const DiMonoPixel *inter,
                          const Uint32 start,
                          const DiLookupTable *plut,
-                         const int bits,
                          const T3 low,
                          const T3 high)
     {
@@ -409,7 +407,10 @@ class DiMonoOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoopxt.h,v $
- * Revision 1.3  1998-12-22 14:32:49  joergr
+ * Revision 1.4  1998-12-23 12:40:01  joergr
+ * Removed unused parameter (BitsPerSample).
+ *
+ * Revision 1.3  1998/12/22 14:32:49  joergr
  * Improved implementation of presentation LUT application (and other gray
  * scale transformations). Tested with ECR test images from David Clunie.
  *
