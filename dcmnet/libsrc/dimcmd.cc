@@ -55,10 +55,10 @@
 **
 **	Module Prefix: DIMSE_
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-16 08:18:34 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1997-06-30 14:07:00 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimcmd.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -453,6 +453,8 @@ buildCommonRSP(DcmDataset *obj, Uint16 command,
 {
     CONDITION cond;
 
+    // insert group length but calculate later
+    cond = addUL(obj, DCM_CommandGroupLength, 0); RET(cond);
     cond = addUS(obj, DCM_CommandField, command); RET(cond);
     cond = addUS(obj, DCM_MessageIDBeingRespondedTo, 
     	messageIDBeingRespondedTo); RET(cond);
@@ -2093,7 +2095,12 @@ DIMSE_countElements(DcmDataset *obj)
 /*
 ** CVS Log
 ** $Log: dimcmd.cc,v $
-** Revision 1.4  1997-05-16 08:18:34  andreas
+** Revision 1.5  1997-06-30 14:07:00  meichel
+** Fixed bug in DIMSE module - the mandatory tag (0000,0000)
+** (command group length) was created only for DIMSE-RQ messages
+** but not for DIMSE-RSP messages.
+**
+** Revision 1.4  1997/05/16 08:18:34  andreas
 ** - Reactivate addUL in dimcmd.cc to add group length attribute explicit
 **   to command dataset.
 **
