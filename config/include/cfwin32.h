@@ -160,6 +160,9 @@
 /* Define if you have the index function.  */
 /* #undef HAVE_INDEX */
 
+/* Define if you have the isinf function.  */
+/* #undef HAVE_ISINF */
+
 /* Define if you have the itoa function.  */
 #define HAVE_ITOA 1
 
@@ -279,6 +282,9 @@
 
 /* Define if you have the <fstream.h> header file.  */
 #define HAVE_FSTREAM_H 1
+
+/* Define if you have the <ieeefp.h> header file.  */
+/* #undef HAVE_IEEEFP_H */
 
 /* Define if you have the <io.h> header file.  */
 #define HAVE_IO_H 1

@@ -244,6 +244,7 @@ AC_CHECK_HEADERS(float.h)
 AC_CHECK_HEADERS(fnmatch.h)
 AC_CHECK_HEADERS(fstream)
 AC_CHECK_HEADERS(fstream.h)
+AC_CHECK_HEADERS(ieeefp.h)
 AC_CHECK_HEADERS(io.h)
 AC_CHECK_HEADERS(iomanip)
 AC_CHECK_HEADERS(iomanip.h)
@@ -476,6 +477,7 @@ AC_CHECK_FUNCS(getuid geteuid setuid)
 AC_CHECK_FUNCS(sleep fork)
 AC_CHECK_FUNCS(_findfirst)
 AC_CHECK_FUNCS(strlcpy strlcat)
+AC_CHECK_FUNCS(isinf)
 
 dnl -------------------------------------------------------
 dnl Checks for prototypes
