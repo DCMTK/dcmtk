@@ -92,9 +92,9 @@
  *
  *  Purpose: Class for various helper functions
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-12 13:11:10 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-10-22 15:04:40 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -142,6 +142,9 @@ BEGIN_EXTERN_C
 #ifdef HAVE_FNMATCH_H
 #include <fnmatch.h>     /* for fnmatch() */
 #endif
+#ifdef HAVE_IEEEFP_H
+#include <ieeefp.h>     /* for finite() on Solaris 2.5.1 */
+#endif
 END_EXTERN_C
 
 #ifdef HAVE_WINDOWS_H
@@ -165,6 +168,17 @@ const unsigned int OFStandard::ftoa_alternate = 0x08;
 const unsigned int OFStandard::ftoa_leftadj   = 0x10;
 const unsigned int OFStandard::ftoa_zeropad   = 0x20;
 
+#ifndef HAVE_ISINF
+static int isinf(double x)
+{
+#ifdef HAVE_WINDOWS_H
+  return (! _finite(x)) && (! _isnan(x));
+#else
+  // Solaris 2.5.1 has finite() and isnan() but not isinf().
+  return (! finite(x)) && (! isnan(x));
+#endif
+}
+#endif
 
 // --- string functions ---
 
@@ -978,11 +992,7 @@ void OFStandard::ftoa(
   }
 
   // check if val is infinity
-#ifdef HAVE_WINDOWS_H
-  if (! _finite(val))
-#else
   if (isinf(val))
-#endif
   {
     if (val < 0)
         OFStandard::strlcpy(dst, "-inf", siz);
@@ -1411,11 +1421,7 @@ void OFStandard::ftoa(
   }
 
   // check if val is infinity
-#ifdef HAVE_WINDOWS_H
-  if (! _finite(val))
-#else
   if (isinf(val))
-#endif
   {
     if (val < 0)
         OFStandard::strlcpy(dst, "-inf", siz);
@@ -1571,7 +1577,11 @@ unsigned int OFStandard::my_sleep(unsigned int seconds)
 
 /*
  *  $Log: ofstd.cc,v $
- *  Revision 1.24  2003-08-12 13:11:10  joergr
+ *  Revision 1.25  2003-10-22 15:04:40  meichel
+ *  Added private implementation of isinf on platforms that have finite()
+ *    and isnan() but not isinf(), such as Solaris 2.5.1.
+ *
+ *  Revision 1.24  2003/08/12 13:11:10  joergr
  *  Improved implementation of normalizeDirName().
  *
  *  Revision 1.23  2003/08/07 11:43:12  joergr
