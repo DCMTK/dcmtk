@@ -22,9 +22,9 @@
  *  Purpose: Convert XML document to DICOM file or data set
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-06-17 17:36:04 $
+ *  Update Date:      $Date: 2003-08-08 14:46:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/xml2dcm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -440,6 +440,7 @@ static OFCondition validateXmlDocument(xmlDocPtr doc,
     OFCondition result = EC_Normal;
     if (verbose)
         COUT << "validating XML document ..." << endl;
+    xmlGenericError(xmlGenericErrorContext, "--- libxml validating ---\n");
     /* create context for document validation */
 	xmlValidCtxt cvp;
 	if (debug)
@@ -447,7 +448,6 @@ static OFCondition validateXmlDocument(xmlDocPtr doc,
         cvp.userData = (void *)stderr;
         cvp.error = (xmlValidityErrorFunc) fprintf;
         cvp.warning = (xmlValidityWarningFunc) fprintf;
-        CERR << "--- Validation Start ---" << endl;
     } else {
         cvp.userData = NULL;
         cvp.error = NULL;
@@ -455,8 +455,7 @@ static OFCondition validateXmlDocument(xmlDocPtr doc,
     }
     /* validate the document */
 	const int valid = xmlValidateDocument(&cvp, doc);
-	if (debug)
-	    CERR << "---- Validation End ----" << endl;
+    xmlGenericError(xmlGenericErrorContext, "-------------------------\n");
     if (!valid)
 	{
         CERR << "Error: document does not validate" << endl;
@@ -476,12 +475,10 @@ static OFCondition readXmlFile(const char *ifname,
 {
     OFCondition result = EC_Normal;
     xfer = EXS_Unknown;
-	if (debug)
-        CERR << "--- Reading Start ---" << endl;
+    xmlGenericError(xmlGenericErrorContext, "--- libxml parsing ------\n");
     /* build an XML tree from the file */
     xmlDocPtr doc = xmlParseFile(ifname);
-	if (debug)
-        CERR << "---- Reading End ----" << endl;
+    xmlGenericError(xmlGenericErrorContext, "-------------------------\n");
     if (doc != NULL)
     {
         /* validate document */
@@ -741,9 +738,13 @@ int main(int argc, char *argv[])
     xmlInitParser();
     /* substitute default entities (XML mnenonics) */
     xmlSubstituteEntitiesDefault(1);
-    /* disable libxml warnings and error messages in non-debug mode */
-    if (!opt_debug)
+    if (opt_debug)
     {
+        /* add line number to debug messages */
+        xmlLineNumbersDefault(1);
+        xmlGetWarningsDefaultValue = 1;
+    } else {
+        /* disable libxml warnings and error messages in non-debug mode */
         xmlGetWarningsDefaultValue = 0;
         xmlSetGenericErrorFunc(NULL, noErrorFunction);
     }
@@ -826,7 +827,10 @@ int main(int, char *[])
 /*
  * CVS/RCS Log:
  * $Log: xml2dcm.cc,v $
- * Revision 1.4  2003-06-17 17:36:04  joergr
+ * Revision 1.5  2003-08-08 14:46:24  joergr
+ * Made libxml output consistent with new xml2dsr command line tool.
+ *
+ * Revision 1.4  2003/06/17 17:36:04  joergr
  * Distinguish more strictly between OFBool and int (required when HAVE_CXX_BOOL
  * is defined).
  *
