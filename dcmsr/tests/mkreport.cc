@@ -22,8 +22,8 @@
  *  Purpose: Create sample structured reports using the dcmsr API
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-05-07 13:02:12 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2002-05-14 08:17:47 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -64,6 +64,13 @@ static void generate_17(DSRDocument *doc);
 static void generate_18(DSRDocument *doc);
 static void generate_19(DSRDocument *doc);
 
+// make all reports
+const int num_reports = 24;
+const char *all_reports[num_reports] = {"mkreport",
+                                        "ki", "si", "fk", "lp",
+                                        "01", "02", "03", "04", "05", "06", "07", "08",
+                                        "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19"};
+
 
 int main(int argc, char *argv[])
 {
@@ -71,32 +78,33 @@ int main(int argc, char *argv[])
     {
         COUT << "mkreport: Create DICOM SR documents" << endl;
         COUT << "----------------------------------------------------" << endl;
-        COUT << "ki = IHE Year 2 key image note (empty)" << endl;
-        COUT << "si = IHE Year 2 simple image report (empty)" << endl;
-        COUT << "fk = Fake report, C. Iulius Caesar: De bello Gallico" << endl;
-        COUT << "lp = Valid comprehensive report with loop/cycle" << endl;
+        COUT << " ki = IHE Year 2 key image note (empty)" << endl;
+        COUT << " si = IHE Year 2 simple image report (empty)" << endl;
+        COUT << " fk = Fake report, C. Iulius Caesar: De bello Gallico" << endl;
+        COUT << " lp = Valid comprehensive report with loop/cycle" << endl;
         COUT << endl;
-        COUT << "01 = Consultation report (text only)" << endl;
-        COUT << "02 = Same as 01 but with NUM and PNAME items" << endl;
-        COUT << "03 = Very short report (text only)" << endl;
-        COUT << "04 = Text report with several sections (history)" << endl;
-        COUT << "05 = Text report with several blocks (discharge)" << endl;
-        COUT << "06 = Radiology report with image reference (dentist)" << endl;
-        COUT << "07 = Same as 06 with image/pstate reference" << endl;
-        COUT << "08 = Same as 06 with composite (pstate) reference" << endl;
+        COUT << " 01 = Consultation report (text only)" << endl;
+        COUT << " 02 = Same as 01 but with NUM and PNAME items" << endl;
+        COUT << " 03 = Very short report (text only)" << endl;
+        COUT << " 04 = Text report with several sections (history)" << endl;
+        COUT << " 05 = Text report with several blocks (discharge)" << endl;
+        COUT << " 06 = Radiology report with image reference (dentist)" << endl;
+        COUT << " 07 = Same as 06 with image/pstate reference" << endl;
+        COUT << " 08 = Same as 06 with composite (pstate) reference" << endl;
         COUT << endl;
-        COUT << "09 = RSNA '95: Picker, CT, #3" << endl;
-        COUT << "10 = RSNA '95: Picker, MR, #4" << endl;
-        COUT << "11 = RSNA '95: Kodak, CR, #8" << endl;
-        COUT << "12 = RSNA '95: Acuson, US, #11" << endl;
-        COUT << "13 = RSNA '95: GE, CT, #17" << endl;
-        COUT << "14 = RSNA '95: GE, MR, #21" << endl;
-        COUT << "15 = RSNA '95: Siemens, MR, #26" << endl;
-        COUT << "16 = RSNA '95: Siemens, DS, #29" << endl;
-        COUT << "17 = RSNA '95: Siemens, DR, #31" << endl;
-        COUT << "18 = RSNA '95: Fuji, CR, #32" << endl;
-        COUT << "19 = RSNA '95: ATL, US, #36" << endl;
+        COUT << " 09 = RSNA '95: Picker, CT, #3" << endl;
+        COUT << " 10 = RSNA '95: Picker, MR, #4" << endl;
+        COUT << " 11 = RSNA '95: Kodak, CR, #8" << endl;
+        COUT << " 12 = RSNA '95: Acuson, US, #11" << endl;
+        COUT << " 13 = RSNA '95: GE, CT, #17" << endl;
+        COUT << " 14 = RSNA '95: GE, MR, #21" << endl;
+        COUT << " 15 = RSNA '95: Siemens, MR, #26" << endl;
+        COUT << " 16 = RSNA '95: Siemens, DS, #29" << endl;
+        COUT << " 17 = RSNA '95: Siemens, DR, #31" << endl;
+        COUT << " 18 = RSNA '95: Fuji, CR, #32" << endl;
+        COUT << " 19 = RSNA '95: ATL, US, #36" << endl;
         COUT << "----------------------------------------------------" << endl;
+        COUT << "all = create all abovementioned DICOM SR documents" << endl;
     } else {
         /* make sure data dictionary is loaded */
         if (!dcmDataDict.isDictionaryLoaded())
@@ -111,65 +119,68 @@ int main(int argc, char *argv[])
         {
             OFString studyUID_ki, studyUID_01;
             OFBool writeFile = OFTrue;
+            /* check whether to create all reports or only selected ones */
+            const int count = (strcmp(argv[1], "all") == 0) ? num_reports : argc;
+            const char **array = (strcmp(argv[1], "all") == 0) ? (const char **)all_reports : (const char **)argv;
             doc->setLogStream(&ofConsole);
-            for (int i = 1; i < argc; i++)
+            for (int i = 1; i < count; i++)
             {
                 writeFile = OFTrue;
-                if (strcmp(argv[i], "ki") == 0)
+                if (strcmp(array[i], "ki") == 0)
                     generate_ki(doc, studyUID_ki);
-                else if (strcmp(argv[i], "si") == 0)
+                else if (strcmp(array[i], "si") == 0)
                     generate_si(doc, studyUID_ki);
-                else if (strcmp(argv[i], "fk") == 0)
+                else if (strcmp(array[i], "fk") == 0)
                     generate_fk(doc);
-                else if (strcmp(argv[i], "lp") == 0)
+                else if (strcmp(array[i], "lp") == 0)
                     generate_lp(doc);
-                else if (strcmp(argv[i], "01") == 0)
+                else if (strcmp(array[i], "01") == 0)
                     generate_01(doc, studyUID_01);
-                else if (strcmp(argv[i], "02") == 0)
+                else if (strcmp(array[i], "02") == 0)
                     generate_02(doc, studyUID_01);
-                else if (strcmp(argv[i], "03") == 0)
+                else if (strcmp(array[i], "03") == 0)
                     generate_03(doc);
-                else if (strcmp(argv[i], "04") == 0)
+                else if (strcmp(array[i], "04") == 0)
                     generate_04(doc);
-                else if (strcmp(argv[i], "05") == 0)
+                else if (strcmp(array[i], "05") == 0)
                     generate_05(doc);
-                else if (strcmp(argv[i], "06") == 0)
+                else if (strcmp(array[i], "06") == 0)
                     generate_06(doc);
-                else if (strcmp(argv[i], "07") == 0)
+                else if (strcmp(array[i], "07") == 0)
                     generate_07(doc);
-                else if (strcmp(argv[i], "08") == 0)
+                else if (strcmp(array[i], "08") == 0)
                     generate_08(doc);
-                else if (strcmp(argv[i], "09") == 0)
+                else if (strcmp(array[i], "09") == 0)
                     generate_09(doc);
-                else if (strcmp(argv[i], "10") == 0)
+                else if (strcmp(array[i], "10") == 0)
                     generate_10(doc);
-                else if (strcmp(argv[i], "11") == 0)
+                else if (strcmp(array[i], "11") == 0)
                     generate_11(doc);
-                else if (strcmp(argv[i], "12") == 0)
+                else if (strcmp(array[i], "12") == 0)
                     generate_12(doc);
-                else if (strcmp(argv[i], "13") == 0)
+                else if (strcmp(array[i], "13") == 0)
                     generate_13(doc);
-                else if (strcmp(argv[i], "14") == 0)
+                else if (strcmp(array[i], "14") == 0)
                     generate_14(doc);
-                else if (strcmp(argv[i], "15") == 0)
+                else if (strcmp(array[i], "15") == 0)
                     generate_15(doc);
-                else if (strcmp(argv[i], "16") == 0)
+                else if (strcmp(array[i], "16") == 0)
                     generate_16(doc);
-                else if (strcmp(argv[i], "17") == 0)
+                else if (strcmp(array[i], "17") == 0)
                     generate_17(doc);
-                else if (strcmp(argv[i], "18") == 0)
+                else if (strcmp(array[i], "18") == 0)
                     generate_18(doc);
-                else if (strcmp(argv[i], "19") == 0)
+                else if (strcmp(array[i], "19") == 0)
                     generate_19(doc);
                 else {
                     writeFile = OFFalse;
-                    CERR << "WARNING: unknown document identifier \"" << argv[i] << "\" ... ignoring" << endl;
+                    CERR << "WARNING: unknown document identifier \"" << array[i] << "\" ... ignoring" << endl;
                 }
 
                 if (writeFile)
                 {
                     COUT << OFString(79, '-') << endl;
-                    COUT << "mkreport: report" << argv[i] << ".dcm" << endl << endl;
+                    COUT << "mkreport: report" << array[i] << ".dcm" << endl << endl;
                     doc->print(COUT, DSRTypes::PF_shortenLongItemValues);
                     COUT << endl;
 
@@ -182,7 +193,7 @@ int main(int argc, char *argv[])
                         if (doc->write(*dataset).good())
                         {
                             OFString filename = "report";
-                            filename += argv[i];
+                            filename += array[i];
                             filename += ".dcm";
                             fileformat->saveFile(filename.c_str(), EXS_LittleEndianExplicit);
                         } else
@@ -1254,7 +1265,10 @@ static void generate_19(DSRDocument *doc)
 /*
  *  CVS/RCS Log:
  *  $Log: mkreport.cc,v $
- *  Revision 1.19  2002-05-07 13:02:12  joergr
+ *  Revision 1.20  2002-05-14 08:17:47  joergr
+ *  Added new command line option to create "all" reports with one call.
+ *
+ *  Revision 1.19  2002/05/07 13:02:12  joergr
  *  Added support for the Current Requested Procedure Evidence Sequence and the
  *  Pertinent Other Evidence Sequence to the dcmsr module.
  *
