@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-07-17 12:05:29 $
- *  CVS/RCS Revision: $Revision: 1.108 $
+ *  Update Date:      $Date: 2000-07-17 14:48:21 $
+ *  CVS/RCS Revision: $Revision: 1.109 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -776,7 +776,7 @@ Uint32 DVInterface::getNumberOfPStates()
     if (createPStateCache())
     {
         DVInstanceCache::ItemStruct *instance = getInstanceStruct();
-        if ((instance != NULL) && (instance->Type == DVPSI_image))
+        if ((instance != NULL) && ((instance->Type == DVPSI_image) || (instance->Type == DVPSI_hardcopyGrayscale)))
             return instance->List.size();
     }
     return 0;
@@ -788,7 +788,7 @@ E_Condition DVInterface::selectPState(Uint32 idx, OFBool changeStatus)
     if (createPStateCache())
     {
         DVInstanceCache::ItemStruct *instance = getInstanceStruct();
-        if ((instance != NULL) && (instance->Type == DVPSI_image))
+        if ((instance != NULL) && ((instance->Type == DVPSI_image) || (instance->Type == DVPSI_hardcopyGrayscale)))
         {
             OFListIterator(DVInstanceCache::ItemStruct *) iter = instance->List.begin();
             OFListIterator(DVInstanceCache::ItemStruct *) last = instance->List.end();
@@ -823,7 +823,7 @@ const char *DVInterface::getPStateDescription(Uint32 idx)
     if (createPStateCache())
     {
         DVInstanceCache::ItemStruct *instance = getInstanceStruct();
-        if ((instance != NULL) && (instance->Type == DVPSI_image))
+        if ((instance != NULL) && ((instance->Type == DVPSI_image) || (instance->Type == DVPSI_hardcopyGrayscale)))
         {
             OFListIterator(DVInstanceCache::ItemStruct *) iter = instance->List.begin();
             OFListIterator(DVInstanceCache::ItemStruct *) last = instance->List.end();
@@ -849,7 +849,7 @@ const char *DVInterface::getPStateLabel(Uint32 idx)
     if (createPStateCache())
     {
         DVInstanceCache::ItemStruct *instance = getInstanceStruct();
-        if ((instance != NULL) && (instance->Type == DVPSI_image))
+        if ((instance != NULL) && ((instance->Type == DVPSI_image) || (instance->Type == DVPSI_hardcopyGrayscale)))
         {
             OFListIterator(DVInstanceCache::ItemStruct *) iter = instance->List.begin();
             OFListIterator(DVInstanceCache::ItemStruct *) last = instance->List.end();
@@ -1176,7 +1176,7 @@ OFBool DVInterface::createPStateCache()
         if (series != NULL)
         {
             DVInstanceCache::ItemStruct *instance = series->List.getItem();
-            if ((instance != NULL) && (instance->Type == DVPSI_image))
+            if ((instance != NULL) && ((instance->Type == DVPSI_image) || (instance->Type == DVPSI_hardcopyGrayscale)))
             {
                 if (!instance->Checked)                             // is current instance already checked?
                 {
@@ -3851,7 +3851,11 @@ E_Condition DVInterface::checkIOD(const char *studyUID, const char *seriesUID, c
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.108  2000-07-17 12:05:29  joergr
+ *  Revision 1.109  2000-07-17 14:48:21  joergr
+ *  Added support for presentation states referencing to hardcopy grayscale
+ *  images.
+ *
+ *  Revision 1.108  2000/07/17 12:05:29  joergr
  *  Added methods to select objects from the database directly.
  *
  *  Revision 1.107  2000/07/14 17:10:10  joergr
