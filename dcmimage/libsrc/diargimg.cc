@@ -21,10 +21,10 @@
  *
  *  Purpose: DiARGBImage (Source) - UNTESTED !!! 
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:34 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-06-26 16:22:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/diargimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -69,39 +69,41 @@ DiARGBImage::DiARGBImage(const DiDocument *docu,
                     if (palette[jj]->getBits() > (Uint16)BitsPerSample)
                         BitsPerSample = palette[jj]->getBits();  
                 }
+                /* number of pixels per plane */
+                const unsigned long planeSize = (unsigned long)Columns * (unsigned long)Rows;
                 switch (InputData->getRepresentation())
                 {
                     case EPR_Uint8:
                         if (BitsPerSample <= 8)
                             InterData = new DiARGBPixelTemplate<Uint8, Uint32, Uint8>(Document, InputData, palette, ImageStatus,
-                                BitsStored);
+                                planeSize, BitsStored);
                         else
                             InterData = new DiARGBPixelTemplate<Uint8, Uint32, Uint16>(Document, InputData, palette, ImageStatus,
-                                BitsStored);
+                                planeSize, BitsStored);
                         break;
                     case EPR_Sint8:
                         if (BitsPerSample <= 8)
                             InterData = new DiARGBPixelTemplate<Sint8, Sint32, Uint8>(Document, InputData, palette, ImageStatus,
-                                BitsStored);
+                                planeSize, BitsStored);
                         else
                             InterData = new DiARGBPixelTemplate<Sint8, Sint32, Uint16>(Document, InputData, palette, ImageStatus,
-                                BitsStored);
+                                planeSize, BitsStored);
                         break;
                     case EPR_Uint16:
                         if (BitsPerSample <= 8)
                             InterData = new DiARGBPixelTemplate<Uint16, Uint32, Uint8>(Document, InputData, palette, ImageStatus,
-                                BitsStored);
+                                planeSize, BitsStored);
                         else
                             InterData = new DiARGBPixelTemplate<Uint16, Uint32, Uint16>(Document, InputData, palette, ImageStatus,
-                                BitsStored);
+                                planeSize, BitsStored);
                         break;
                     case EPR_Sint16:
                         if (BitsPerSample <= 8)
                             InterData = new DiARGBPixelTemplate<Sint16, Sint32, Uint8>(Document, InputData, palette, ImageStatus,
-                                BitsStored);
+                                planeSize, BitsStored);
                         else
                             InterData = new DiARGBPixelTemplate<Sint16, Sint32, Uint16>(Document, InputData, palette, ImageStatus,
-                                BitsStored);
+                                planeSize, BitsStored);
                         break;
                     default: 
                         if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
@@ -144,7 +146,10 @@ DiARGBImage::~DiARGBImage()
  *
  * CVS/RCS Log:
  * $Log: diargimg.cc,v $
- * Revision 1.13  2001-06-01 15:49:34  meichel
+ * Revision 1.14  2002-06-26 16:22:52  joergr
+ * Corrected decoding of multi-frame, planar images.
+ *
+ * Revision 1.13  2001/06/01 15:49:34  meichel
  * Updated copyright header
  *
  * Revision 1.12  2000/04/28 12:40:02  joergr

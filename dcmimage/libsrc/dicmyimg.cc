@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomCMYKImage (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:34 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-06-26 16:23:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dicmyimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,25 +50,27 @@ DiCMYKImage::DiCMYKImage(const DiDocument *docu,
 {
     if ((Document != NULL) && (InputData != NULL) && (ImageStatus == EIS_Normal))
     {
+        /* number of pixels per plane */
+        const unsigned long planeSize = (unsigned long)Columns * (unsigned long)Rows;
         switch (InputData->getRepresentation())
         {
             case EPR_Uint8:
-                InterData = new DiCMYKPixelTemplate<Uint8, Uint8>(Document, InputData, ImageStatus, BitsPerSample);
+                InterData = new DiCMYKPixelTemplate<Uint8, Uint8>(Document, InputData, ImageStatus, planeSize, BitsPerSample);
                 break;
             case EPR_Sint8:
-                InterData = new DiCMYKPixelTemplate<Sint8, Uint8>(Document, InputData, ImageStatus, BitsPerSample);
+                InterData = new DiCMYKPixelTemplate<Sint8, Uint8>(Document, InputData, ImageStatus, planeSize, BitsPerSample);
                 break;
             case EPR_Uint16:
-                InterData = new DiCMYKPixelTemplate<Uint16, Uint16>(Document, InputData, ImageStatus, BitsPerSample);
+                InterData = new DiCMYKPixelTemplate<Uint16, Uint16>(Document, InputData, ImageStatus, planeSize, BitsPerSample);
                 break;
             case EPR_Sint16:
-                InterData = new DiCMYKPixelTemplate<Sint16, Uint16>(Document, InputData, ImageStatus, BitsPerSample);
+                InterData = new DiCMYKPixelTemplate<Sint16, Uint16>(Document, InputData, ImageStatus, planeSize, BitsPerSample);
                 break;
             case EPR_Uint32:
-                InterData = new DiCMYKPixelTemplate<Uint32, Uint32>(Document, InputData, ImageStatus, BitsPerSample);
+                InterData = new DiCMYKPixelTemplate<Uint32, Uint32>(Document, InputData, ImageStatus, planeSize, BitsPerSample);
                 break;
             case EPR_Sint32:
-                InterData = new DiCMYKPixelTemplate<Sint32, Uint32>(Document, InputData, ImageStatus, BitsPerSample);
+                InterData = new DiCMYKPixelTemplate<Sint32, Uint32>(Document, InputData, ImageStatus, planeSize, BitsPerSample);
                 break;
         }
         deleteInputData();
@@ -90,7 +92,10 @@ DiCMYKImage::~DiCMYKImage()
  *
  * CVS/RCS Log:
  * $Log: dicmyimg.cc,v $
- * Revision 1.7  2001-06-01 15:49:34  meichel
+ * Revision 1.8  2002-06-26 16:23:24  joergr
+ * Corrected decoding of multi-frame, planar images.
+ *
+ * Revision 1.7  2001/06/01 15:49:34  meichel
  * Updated copyright header
  *
  * Revision 1.6  2000/03/08 16:21:56  meichel
