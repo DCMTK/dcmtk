@@ -23,8 +23,8 @@
  *    classes: DSRWaveformReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-13 07:49:37 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-10-16 11:52:29 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -83,6 +83,11 @@ class DSRWaveformReferenceValue
         return *this;
     }
 
+    DSRWaveformReferenceValue *getValuePtr()
+    {
+        return this;
+    }
+
     E_Condition getValue(DSRWaveformReferenceValue &referenceValue) const;
 
 
@@ -93,6 +98,9 @@ class DSRWaveformReferenceValue
         return ChannelList;
     }
     
+    OFBool appliesToChannel(const Uint16 multiplexGroupNumber,
+                            const Uint16 channelNumber) const;
+
 
   protected:
 
@@ -117,7 +125,11 @@ class DSRWaveformReferenceValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavvl.h,v $
- *  Revision 1.1  2000-10-13 07:49:37  joergr
+ *  Revision 1.2  2000-10-16 11:52:29  joergr
+ *  Added new method checking whether a waveform content item applies to a
+ *  certain channel.
+ *
+ *  Revision 1.1  2000/10/13 07:49:37  joergr
  *  Added new module 'dcmsr' providing access to DICOM structured reporting
  *  documents (supplement 23).  Doc++ documentation not yet completed.
  *

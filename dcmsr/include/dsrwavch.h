@@ -23,8 +23,8 @@
  *    classes: DSRWaveformChannelList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-13 07:49:36 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-10-16 11:52:29 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -95,6 +95,9 @@ class DSRWaveformChannelList
     E_Condition write(DcmItem &dataset,
                       OFConsole *logStream) const;
                       
+    OFBool isElement(const Uint16 multiplexGroupNumber,
+                     const Uint16 channelNumber) const;
+
     E_Condition getItem(const size_t idx,
                         Uint16 &multiplexGroupNumber,
                         Uint16 &channelNumber) const;
@@ -110,7 +113,11 @@ class DSRWaveformChannelList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavch.h,v $
- *  Revision 1.1  2000-10-13 07:49:36  joergr
+ *  Revision 1.2  2000-10-16 11:52:29  joergr
+ *  Added new method checking whether a waveform content item applies to a
+ *  certain channel.
+ *
+ *  Revision 1.1  2000/10/13 07:49:36  joergr
  *  Added new module 'dcmsr' providing access to DICOM structured reporting
  *  documents (supplement 23).  Doc++ documentation not yet completed.
  *
