@@ -19,12 +19,12 @@
  *
  *  Author:  Thomas Wilkens
  *
- *  Purpose: Class for connecting to a database-based data source.
+ *  Purpose: Class for connecting to a pki-file-based data source.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-04-18 10:15:49 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/Attic/wldsdb.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2002-04-18 10:30:09 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/Attic/wldspf.cc,v $
+ *  CVS/RCS Revision: $Revision: 1.1 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,62 +48,55 @@
 #include "dcvrpn.h"
 #include "dcvrtm.h"
 #include "dcvrsh.h"
-#define OTL_ORA7
-#include <otlv32.h>
-#include "wldbim.h"
+#include "wlpfim.h"
 #include "wlds.h"
 #include "ofconsol.h"
 
-#include "wldsdb.h"
+#include "wldspf.h"
 
 // ----------------------------------------------------------------------------
 
-WlmDataSourceDatabase::WlmDataSourceDatabase()
-// Date         : December 10, 2001
+WlmDataSourcePkiFile::WlmDataSourcePkiFile()
+// Date         : March 18, 2002
 // Author       : Thomas Wilkens
 // Task         : Constructor.
 // Parameters   : none.
 // Return Value : none.
-  : WlmDataSource(), databaseInteractionManager( NULL ), matchingDatasets( NULL ), numOfMatchingDatasets( 0 ),
-    dbDsn( NULL ), dbUserName( NULL ), dbUserPassword( NULL ), serialNumber( 0 ), cfgFileMatchRecords( NULL ),
-    cfgFileSelectValues( NULL ), databaseType( DATABASE_TYPE_UNKNOWN )
+  : WlmDataSource(), pkiFileInteractionManager( NULL ), matchingDatasets( NULL ), numOfMatchingDatasets( 0 ),
+    pfFileName( NULL ), serialNumber( 0 )
 {
-  databaseInteractionManager = new WlmDatabaseInteractionManager();
+  pkiFileInteractionManager = new WlmPkiFileInteractionManager();
 }
 
 // ----------------------------------------------------------------------------
 
-WlmDataSourceDatabase::~WlmDataSourceDatabase()
-// Date         : December 10, 2001
+WlmDataSourcePkiFile::~WlmDataSourcePkiFile()
+// Date         : March 18, 2001
 // Author       : Thomas Wilkens
 // Task         : Destructor.
 // Parameters   : none.
 // Return Value : none.
 {
   //free memory
-  delete databaseInteractionManager;
-  if( dbDsn != NULL ) delete dbDsn;
-  if( dbUserName != NULL ) delete dbUserName;
-  if( dbUserPassword != NULL ) delete dbUserPassword;
-  if( cfgFileMatchRecords != NULL ) delete cfgFileMatchRecords;
-  if( cfgFileSelectValues != NULL ) delete cfgFileSelectValues;
+  delete pkiFileInteractionManager;
+  if( pfFileName != NULL ) delete pfFileName;
 }
 
 // ----------------------------------------------------------------------------
 
-OFCondition WlmDataSourceDatabase::ConnectToDataSource()
-// Date         : March 14, 2002
+OFCondition WlmDataSourcePkiFile::ConnectToDataSource()
+// Date         : March 18, 2001
 // Author       : Thomas Wilkens
 // Task         : Connects to the data source.
 // Parameters   : none.
 // Return Value : Indicates if the connection was established succesfully.
 {
-  // set variables in databaseInteractionManager object
-  databaseInteractionManager->SetLogStream( logStream );
-  databaseInteractionManager->SetVerbose( verbose );
+  // set variables in pkiFileInteractionManager object
+  pkiFileInteractionManager->SetLogStream( logStream );
+  pkiFileInteractionManager->SetVerbose( verbose );
 
-  // connect to database
-  OFCondition cond = databaseInteractionManager->ConnectToDatabase( dbDsn, dbUserName, dbUserPassword, serialNumber, cfgFileMatchRecords, cfgFileSelectValues, databaseType );
+  // connect to pki-file
+  OFCondition cond = pkiFileInteractionManager->ConnectToPkiFile( pfFileName, serialNumber );
 
   // return result
   return( cond );
@@ -111,15 +104,15 @@ OFCondition WlmDataSourceDatabase::ConnectToDataSource()
 
 // ----------------------------------------------------------------------------
 
-OFCondition WlmDataSourceDatabase::DisconnectFromDataSource()
-// Date         : March 14, 2002
+OFCondition WlmDataSourcePkiFile::DisconnectFromDataSource()
+// Date         : March 18, 2001
 // Author       : Thomas Wilkens
 // Task         : Disconnects from the data source.
 // Parameters   : none.
 // Return Value : Indicates if the disconnection was completed succesfully.
 {
-  // disconnect from database
-  OFCondition cond = databaseInteractionManager->DisconnectFromDatabase();
+  // disconnect from pki-file
+  OFCondition cond = pkiFileInteractionManager->DisconnectFromPkiFile();
 
   // return result
   return( cond );
@@ -127,8 +120,8 @@ OFCondition WlmDataSourceDatabase::DisconnectFromDataSource()
 
 // ----------------------------------------------------------------------------
 
-void WlmDataSourceDatabase::SetDbDsn( const char *value )
-// Date         : March 14, 2002
+void WlmDataSourcePkiFile::SetPfFileName( const char *value )
+// Date         : March 18, 2001
 // Author       : Thomas Wilkens
 // Task         : Set member variable.
 // Parameters   : value - Value for member variable.
@@ -136,50 +129,16 @@ void WlmDataSourceDatabase::SetDbDsn( const char *value )
 {
   if( value != NULL )
   {
-    if( dbDsn != NULL ) delete dbDsn;
-    dbDsn = new char[ strlen(value) + 1 ];
-    strcpy( dbDsn, value );
+    if( pfFileName != NULL ) delete pfFileName;
+    pfFileName = new char[ strlen(value) + 1 ];
+    strcpy( pfFileName, value );
   }
 }
 
 // ----------------------------------------------------------------------------
 
-void WlmDataSourceDatabase::SetDbUserName( const char *value )
-// Date         : March 14, 2002
-// Author       : Thomas Wilkens
-// Task         : Set member variable.
-// Parameters   : value - Value for member variable.
-// Return Value : none.
-{
-  if( value != NULL )
-  {
-    if( dbUserName != NULL ) delete dbUserName;
-    dbUserName = new char[ strlen(value) + 1 ];
-    strcpy( dbUserName, value );
-  }
-}
-
-// ----------------------------------------------------------------------------
-
-void WlmDataSourceDatabase::SetDbUserPassword( const char *value )
-// Date         : March 14, 2002
-// Author       : Thomas Wilkens
-// Task         : Set member variable.
-// Parameters   : value - Value for member variable.
-// Return Value : none.
-{
-  if( value != NULL )
-  {
-    if( dbUserPassword != NULL ) delete dbUserPassword;
-    dbUserPassword = new char[ strlen(value) + 1 ];
-    strcpy( dbUserPassword, value );
-  }
-}
-
-// ----------------------------------------------------------------------------
-
-void WlmDataSourceDatabase::SetSerialNumber( const int value )
-// Date         : March 14, 2002
+void WlmDataSourcePkiFile::SetSerialNumber( const int value )
+// Date         : March 18, 2001
 // Author       : Thomas Wilkens
 // Task         : Set member variable.
 // Parameters   : value - Value for member variable.
@@ -190,70 +149,12 @@ void WlmDataSourceDatabase::SetSerialNumber( const int value )
 
 // ----------------------------------------------------------------------------
 
-void WlmDataSourceDatabase::SetCfgFileMatchRecords( const char *value )
-// Date         : March 19, 2002
-// Author       : Thomas Wilkens
-// Task         : Set member variable.
-// Parameters   : value - Value for member variable.
-// Return Value : none.
-{
-  if( value != NULL )
-  {
-    if( cfgFileMatchRecords != NULL ) delete cfgFileMatchRecords;
-    cfgFileMatchRecords = new char[ strlen(value) + 1 ];
-    strcpy( cfgFileMatchRecords, value );
-  }
-}
-
-// ----------------------------------------------------------------------------
-
-void WlmDataSourceDatabase::SetCfgFileSelectValues( const char *value )
-// Date         : March 19, 2002
-// Author       : Thomas Wilkens
-// Task         : Set member variable.
-// Parameters   : value - Value for member variable.
-// Return Value : none.
-{
-  if( value != NULL )
-  {
-    if( cfgFileSelectValues != NULL ) delete cfgFileSelectValues;
-    cfgFileSelectValues = new char[ strlen(value) + 1 ];
-    strcpy( cfgFileSelectValues, value );
-  }
-}
-
-// ----------------------------------------------------------------------------
-
-void WlmDataSourceDatabase::SetDatabaseType( WlmDatabaseType value )
-// Date         : March 19, 2002
-// Author       : Thomas Wilkens
-// Task         : Set member variable.
-// Parameters   : value - Value for member variable.
-// Return Value : none.
-{
-  databaseType = value;
-}
-
-// ----------------------------------------------------------------------------
-
-void WlmDataSourceDatabase::SetReturnedCharacterSet( WlmReturnedCharacterSetType value )
-// Date         : March 21, 2002
-// Author       : Thomas Wilkens
-// Task         : Set member variable.
-// Parameters   : value - Value for member variable.
-// Return Value : none.
-{
-  returnedCharacterSet = value;
-}
-
-// ----------------------------------------------------------------------------
-
-OFBool WlmDataSourceDatabase::CheckSearchMask( DcmDataset *searchMask )
-// Date         : March 8, 2002
+OFBool WlmDataSourcePkiFile::CheckSearchMask( DcmDataset *searchMask )
+// Date         : March 18, 2001
 // Author       : Thomas Wilkens
 // Task         : This function checks if the search mask has a correct format. It returns OFTrue if this
 //                is the case, OFFalse if this is not the case. (Note that this function corresponds to
-//                WlmDataSourceFiles::CheckIdentifiers.)
+//                WlmDataSourceFiles::CheckIdentifiers and it should be the same as WlmDataSourceDatabase::CheckSearchMask.)
 // Parameters   : searchMask - [in] Contains the search mask.
 // Return Value : OFTrue  - The search mask has a correct format.
 //                OFFalse - The search mask does not have a correct format.
@@ -307,8 +208,8 @@ OFBool WlmDataSourceDatabase::CheckSearchMask( DcmDataset *searchMask )
 
 // ----------------------------------------------------------------------------
 
-void WlmDataSourceDatabase::CheckNonSequenceElementInSearchMask( DcmDataset *searchMask, int &invalidMatchingKeyAttributeCount, DcmElement *element, DcmSequenceOfItems *supSequenceElement )
-// Date         : March 8, 2002
+void WlmDataSourcePkiFile::CheckNonSequenceElementInSearchMask( DcmDataset *searchMask, int &invalidMatchingKeyAttributeCount, DcmElement *element, DcmSequenceOfItems *supSequenceElement )
+// Date         : March 18, 2001
 // Author       : Thomas Wilkens
 // Task         : This function checks if a non-sequence element in the search mask has a correct format.
 //                Note that if the current element is an unsupported element, the entire element will be re-
@@ -335,7 +236,7 @@ void WlmDataSourceDatabase::CheckNonSequenceElementInSearchMask( DcmDataset *sea
     {
       // if there is a problem with the current element, increase the corresponding counter and dump an error message.
       invalidMatchingKeyAttributeCount++;
-      sprintf( msg, "WlmDataSourceDatabase::CheckNonSequenceElementInSearchMask : Error: Matching key attribute (%s) with invalid value encountered in the search mask.", tag.getTagName() );
+      sprintf( msg, "WlmDataSourcePkiFile::CheckNonSequenceElementInSearchMask : Error: Matching key attribute (%s) with invalid value encountered in the search mask.", tag.getTagName() );
       DumpMessage( msg );
     }
   }
@@ -343,20 +244,15 @@ void WlmDataSourceDatabase::CheckNonSequenceElementInSearchMask( DcmDataset *sea
   // if the current element is a supported return key attribute.
   else if( IsSupportedReturnKeyAttribute( element, supSequenceElement ) )
   {
-    // check if the current supported return key attribute is not the "Specific Character Set" (0008,0005) attribute.
-    // (For this specific attribute there is nothing to do here.)
-    if( element->getTag().getXTag() != DCM_SpecificCharacterSet )
+    // if the current element is a supported return key attribute everything is okay as long as
+    // this attribute does not contain a value. According to the 2001 DICOM standard part 4,
+    // section K.2.2.1.2. a return key attribute which is NOT a matching key attribute must not
+    // contain a value. If one such attribute does contain a value, i.e. if the current element's
+    // length does not equal 0, we want to dump a warning message (only in verbose mode).
+    if( element->getLength() != 0 )
     {
-      // in case the current element is not the "Specific Character Set" attribute, we need to check
-      // if the current element (a supported return key attribute) does not contain a value. According
-      // to the 2001 DICOM standard part 4, section K.2.2.1.2. a return key attribute which is NOT a
-      // a matching key attribute must not contain a value. If one such attribute does contain a value,
-      // i.e. if the current element's length does not equal 0, we want to dump a warning message.
-      if( element->getLength() != 0 )
-      {
-        if( verbose )
-          DumpMessage( "  - Non-empty return key attribute encountered in the search mask.\n    The specified value will be overridden." );
-      }
+      if( verbose )
+        DumpMessage( "  - Non-empty return key attribute encountered in the search mask.\n    The specified value will be overridden." );
     }
   }
   // if current element is neither a supported matching key attribute nor a supported return key
@@ -392,8 +288,8 @@ void WlmDataSourceDatabase::CheckNonSequenceElementInSearchMask( DcmDataset *sea
 
 // ----------------------------------------------------------------------------
 
-void WlmDataSourceDatabase::CheckSequenceElementInSearchMask( DcmDataset *searchMask, int &invalidMatchingKeyAttributeCount, DcmElement *element, DcmSequenceOfItems *supSequenceElement )
-// Date         : March 8, 2002
+void WlmDataSourcePkiFile::CheckSequenceElementInSearchMask( DcmDataset *searchMask, int &invalidMatchingKeyAttributeCount, DcmElement *element, DcmSequenceOfItems *supSequenceElement )
+// Date         : March 18, 2001
 // Author       : Thomas Wilkens
 // Task         : This function checks if a sequence element in the search mask has a correct format.
 //                Note that if the current element is an unsupported element, the entire element will be re-
@@ -442,7 +338,7 @@ void WlmDataSourceDatabase::CheckSequenceElementInSearchMask( DcmDataset *search
         // we want to dump an error message and we want to increase the corresponding counter.
         PutOffendingElements(tag);
         errorComment->putString("More than 1 item in sequence.");
-        sprintf( msg, "WlmDataSourceDatabase::CheckSearchMask : Error: More than one item in sequence %s (in the search mask) encountered.", tag.getTagName() );
+        sprintf( msg, "WlmDataSourcePkiFile::CheckSearchMask : Error: More than one item in sequence %s (in the search mask) encountered.", tag.getTagName() );
         DumpMessage( msg );
         invalidMatchingKeyAttributeCount++;
       }
@@ -514,8 +410,8 @@ void WlmDataSourceDatabase::CheckSequenceElementInSearchMask( DcmDataset *search
 
 // ----------------------------------------------------------------------------
 
-void WlmDataSourceDatabase::ExpandEmptySequenceInSearchMask( DcmElement *&element )
-// Date         : March 8, 2002
+void WlmDataSourcePkiFile::ExpandEmptySequenceInSearchMask( DcmElement *&element )
+// Date         : March 18, 2001
 // Author       : Thomas Wilkens
 // Task         : According to the 2001 DICOM standard (part 4, section C.2.2.2.6), if a search mask
 //                contains a sequence attribute which contains no item or a single empty item, all
@@ -596,20 +492,20 @@ void WlmDataSourceDatabase::ExpandEmptySequenceInSearchMask( DcmElement *&elemen
     {
       // this code should never be executed. if it is, there is a logical error
       // in the source code and we want to dump a warning message
-      DumpMessage( "WlmDataSourceDatabase::ExpandEmptySequenceInSearchMask : Error: Unsupported sequence attribute encountered." );
+      DumpMessage( "WlmDataSourcePkiFile::ExpandEmptySequenceInSearchMask : Error: Unsupported sequence attribute encountered." );
     }
   }
   else
   {
     // this code should never be executed. if it is, we want to dump a warning message
-    DumpMessage( "WlmDataSourceDatabase::ExpandEmptySequenceInSearchMask : Error: Unable to find item in sequence." );
+    DumpMessage( "WlmDataSourcePkiFile::ExpandEmptySequenceInSearchMask : Error: Unable to find item in sequence." );
   }
 }
 
 // ----------------------------------------------------------------------------
 
-OFBool WlmDataSourceDatabase::IsCalledApplicationEntityTitleSupported()
-// Date         : December 10, 2001
+OFBool WlmDataSourcePkiFile::IsCalledApplicationEntityTitleSupported()
+// Date         : March 18, 2001
 // Author       : Thomas Wilkens
 // Task         : Checks if the called application entity title is supported. This function expects
 //                that the called application entity title was made available for this instance through
@@ -623,16 +519,16 @@ OFBool WlmDataSourceDatabase::IsCalledApplicationEntityTitleSupported()
   if( calledApplicationEntityTitle == NULL )
     return( OFFalse );
   else
-    return( databaseInteractionManager->IsCalledApplicationEntityTitleSupported( calledApplicationEntityTitle ) );
+    return( pkiFileInteractionManager->IsCalledApplicationEntityTitleSupported( calledApplicationEntityTitle ) );
 }
 
 // ----------------------------------------------------------------------------
 
-WlmDataSourceStatusType WlmDataSourceDatabase::StartFindRequest( DcmDataset &findRequestIdentifiers )
-// Date         : December 10, 2001
+WlmDataSourceStatusType WlmDataSourcePkiFile::StartFindRequest( DcmDataset &findRequestIdentifiers )
+// Date         : March 18, 2001
 // Author       : Thomas Wilkens
 // Task         : Based on the search mask which was passed, this function determines all the records
-//                in the database which match the values of matching key attributes in the search mask.
+//                in the pki-file which match the values of matching key attributes in the search mask.
 //                For each matching record, a DcmDataset structure is generated which will later be
 //                returned to the SCU as a result of query. The DcmDataset structures for all matching
 //                records will be stored in the protected member variable matchingDatasets.
@@ -645,7 +541,6 @@ WlmDataSourceStatusType WlmDataSourceDatabase::StartFindRequest( DcmDataset &fin
 //                                      application.
 //                WLM_FAILED_IDENTIFIER_DOES_NOT_MATCH_SOP_CLASS - Error in the search mask encountered.
 {
-  DcmElement *element;
   unsigned long i, j;
   char msg[200];
 
@@ -701,7 +596,7 @@ WlmDataSourceStatusType WlmDataSourceDatabase::StartFindRequest( DcmDataset &fin
     logStream->unlockCout();
   }
 
-  // Set a read lock on the database tables which shall be read from.
+  // Set a read lock on the pki-file which shall be read from.
   SetReadlock();
 
   // Determine the values of the matching key attributes in the search mask.
@@ -710,12 +605,14 @@ WlmDataSourceStatusType WlmDataSourceDatabase::StartFindRequest( DcmDataset &fin
   DetermineMatchingKeyAttributeValues( matchingKeyAttrValues, numOfMatchingKeyAttrValues );
 
   if( verbose )
-    DumpMessage( "Determining matching database records." );
+    DumpMessage( "Determining matching pki-file record." );
 
-  // Determine the ids of the database records that match the search mask
+  // Determine the id of the pki-file record that matches the search mask. The pki-file in reality contains
+  // exactly one record which is always supposed to match the search mask. The following call should therefore
+  // always return one if of a matching record.
   long *matchingRecordIDs = NULL;
   unsigned long numOfMatchingRecordIDs = 0;
-  databaseInteractionManager->GetMatchingRecordIDs( matchingKeyAttrValues, numOfMatchingKeyAttrValues, matchingRecordIDs, numOfMatchingRecordIDs );
+  pkiFileInteractionManager->GetMatchingRecordIDs( matchingKeyAttrValues, numOfMatchingKeyAttrValues, matchingRecordIDs, numOfMatchingRecordIDs );
 
   // free memory, reset variables
   delete matchingKeyAttrValues;
@@ -725,7 +622,7 @@ WlmDataSourceStatusType WlmDataSourceDatabase::StartFindRequest( DcmDataset &fin
   // dump some information if required
   if( verbose )
   {
-    sprintf( msg, "Matching results: %d matching records found in database.", numOfMatchingRecordIDs );
+    sprintf( msg, "Matching results: %lu matching records found in pki-file.", numOfMatchingRecordIDs );
     DumpMessage( msg );
   }
 
@@ -733,7 +630,7 @@ WlmDataSourceStatusType WlmDataSourceDatabase::StartFindRequest( DcmDataset &fin
   // were found, WLM_SUCCESS shall be returned. This is our assumption.
   WlmDataSourceStatusType status = WLM_SUCCESS;
 
-  // Check if matching records were found in the database.
+  // Check if matching records were found in the pki-file.
   // If that is the case, do the following:
   if( numOfMatchingRecordIDs != 0 )
   {
@@ -744,13 +641,10 @@ WlmDataSourceStatusType WlmDataSourceDatabase::StartFindRequest( DcmDataset &fin
     // for each matching record do the following
     for( i=0 ; i<numOfMatchingRecordIDs ; i++ )
     {
-      // this variable is needed later, it must be initialized with NULL
-      DcmElement *specificCharacterSetElement = NULL;
-
       // dump some information if required
       if( verbose )
       {
-        sprintf( msg, "  Processing matching result no. %d.", i );
+        sprintf( msg, "  Processing matching result no. %lu.", i );
         DumpMessage( msg );
       }
 
@@ -764,54 +658,13 @@ WlmDataSourceStatusType WlmDataSourceDatabase::StartFindRequest( DcmDataset &fin
       for( j=0 ; j < numOfElementsInDataset ; j++ )
       {
         // Determine the current element.
-        element = matchingDatasets[i]->getElement(j);
+        DcmElement *element = matchingDatasets[i]->getElement(j);
 
         // Depending on if the current element is a sequence or not, process this element.
         if( element->ident() != EVR_SQ )
           HandleNonSequenceElementInResultDataset( element, matchingRecordIDs[i] );
         else
           HandleSequenceElementInResultDataset( element, matchingRecordIDs[i] );
-
-        // in case the current element is the "Specific Character Set" attribute, remember this element for later
-        if( element->getTag().getXTag() == DCM_SpecificCharacterSet )
-          specificCharacterSetElement = element;
-      }
-
-      // after having created the entire returned data set, deal with the "Specific Character Set" attribute.
-      // If it shall not be contained in the returned data set
-      if( returnedCharacterSet == RETURN_NO_CHARACTER_SET )
-      {
-        // and it is already included, delete it
-        if( specificCharacterSetElement != NULL )
-        {
-          DcmElement *elem = matchingDatasets[i]->remove( specificCharacterSetElement );
-          delete elem;
-        }
-      }
-      else
-      {
-        // if it shall be contained in the returned data set, check if it is not already included
-        if( specificCharacterSetElement == NULL )
-        {
-          // if it is not included in the returned dataset, create a new element and insert it
-          specificCharacterSetElement = new DcmCodeString( DcmTag( DCM_SpecificCharacterSet ) );
-          if( matchingDatasets[i]->insert( specificCharacterSetElement ) != EC_Normal )
-          {
-            delete specificCharacterSetElement;
-            specificCharacterSetElement = NULL;
-            DumpMessage( "WlmDataSourceDatabase::StartFindRequest: Could not insert specific character set element into dataset.\n" );
-          }
-        }
-        // and set the value of the attribute accordingly
-        if( specificCharacterSetElement != NULL )
-        {
-          if( returnedCharacterSet == RETURN_CHARACTER_SET_ISO_IR_100 )
-          {
-            OFCondition cond = specificCharacterSetElement->putString( "ISO_IR 100" );
-            if( cond.bad() )
-              DumpMessage( "WlmDataSourceDatabase::StartFindRequest: Could not set value in result element.\n" );
-          }
-        }
       }
     }
 
@@ -832,7 +685,7 @@ WlmDataSourceStatusType WlmDataSourceDatabase::StartFindRequest( DcmDataset &fin
   // Now all the resulting data sets are contained in the member array matchingDatasets.
   // The variable numOfMatchingDatasets specifies the number of array fields.
 
-  // Release the read lock which was set on the database tables.
+  // Release the read lock which was set on the pki-file.
   ReleaseReadlock();
 
   // return result
@@ -841,8 +694,8 @@ WlmDataSourceStatusType WlmDataSourceDatabase::StartFindRequest( DcmDataset &fin
 
 // ----------------------------------------------------------------------------
 
-DcmDataset *WlmDataSourceDatabase::NextFindResponse( WlmDataSourceStatusType &rStatus )
-// Date         : December 10, 2001
+DcmDataset *WlmDataSourcePkiFile::NextFindResponse( WlmDataSourceStatusType &rStatus )
+// Date         : March 18, 2001
 // Author       : Thomas Wilkens
 // Task         : This function will return the next dataset that matches the given search mask, if
 //                there is one more resulting dataset to return. In such a case, rstatus will be set
@@ -852,7 +705,7 @@ DcmDataset *WlmDataSourceDatabase::NextFindResponse( WlmDataSourceStatusType &rS
 // Parameters   : rStatus - [out] A value of type WlmDataSourceStatusType that can be used to
 //                          decide if there are still elements that have to be returned.
 // Return Value : The next dataset that matches the given search mask, or an empty dataset if
-//                there are no more matching datasets in the database.
+//                there are no more matching datasets in the pki-file.
 {
   DcmDataset *resultDataset = NULL;
 
@@ -892,16 +745,16 @@ DcmDataset *WlmDataSourceDatabase::NextFindResponse( WlmDataSourceStatusType &rS
 
 // ----------------------------------------------------------------------------
 
-void WlmDataSourceDatabase::HandleNonSequenceElementInResultDataset( DcmElement *element, long matchingRecordID )
-// Date         : December 20, 2001
+void WlmDataSourcePkiFile::HandleNonSequenceElementInResultDataset( DcmElement *element, long matchingRecordID )
+// Date         : March 18, 2001
 // Author       : Thomas Wilkens
 // Task         : This function takes care of handling a certain non-sequence element whithin
 //                the structure of a certain result dataset. This function assumes that all
 //                elements in the result dataset are supported. In detail, a value for the
 //                current element with regard to the currently processed matching record will
-//                be requested from the database, and this value will be set in the element.
+//                be requested from the pki-file, and this value will be set in the element.
 // Parameters   : element          - [in] Pointer to the currently processed element.
-//                matchingRecordID - [in] Identifies the matching record in the database.
+//                matchingRecordID - [in] Identifies the matching record in the pki-file.
 // Return Value : none.
 {
   OFCondition cond;
@@ -909,17 +762,16 @@ void WlmDataSourceDatabase::HandleNonSequenceElementInResultDataset( DcmElement 
   // Determine the current elements tag.
   DcmTagKey tag( element->getTag() );
 
-  // check if the current element is the "Specific Character Set" (0008,0005) attribute.
-  // We do not want to deal with this attribute here, this attribute will be taken care
-  // of when the entire result dataset is completed.
-  if( tag != DCM_SpecificCharacterSet )
-  {
-    // in case the current element is not the "Specific Character Set" (0008,0005) attribute,
-    // get a value for the current element from database; note that all values for return key
-    // attributes are returned as strings by GetAttributeValueForMatchingRecord().
-    char *value = NULL;
-    databaseInteractionManager->GetAttributeValueForMatchingRecord( tag, matchingRecordID, value );
+  // get value from pki-file; note that all values for return key attributes are returned as strings.
+  char *value = NULL;
+  pkiFileInteractionManager->GetAttributeValueForMatchingRecord( tag, matchingRecordID, value );
 
+  // work-around for pki interface: since the pki-file does not contain values for Scheduled Station
+  // AE Title or Modality, do not update the values for these attributes fields in the result dataset
+  if( ( value == NULL || strlen(value) == 0 ) && ( tag == DCM_ScheduledStationAETitle || tag == DCM_Modality ) )
+    ;
+  else
+  {
     // put value in element
     // Note that there is currently one attribute (DCM_PregnancyStatus) in which the value must not
     // be set as a string but as an unsigned integer, because this attribute is of type US. Hence,
@@ -933,17 +785,17 @@ void WlmDataSourceDatabase::HandleNonSequenceElementInResultDataset( DcmElement 
     else
       cond = element->putString( value );
     if( cond.bad() )
-      DumpMessage( "WlmDataSourceDatabase::HandleNonSequenceElementInResultDataset: Could not set value in result element.\n" );
-
-    // free memory
-    delete value;
+      DumpMessage( "WlmDataSourcePkiFile::HandleNonSequenceElementInResultDataset: Could not set value in result element.\n" );
   }
+
+  // free memory
+  delete value;
 }
 
 // ----------------------------------------------------------------------------
 
-void WlmDataSourceDatabase::HandleSequenceElementInResultDataset( DcmElement *element, long matchingRecordID )
-// Date         : December 20, 2001
+void WlmDataSourcePkiFile::HandleSequenceElementInResultDataset( DcmElement *element, long matchingRecordID )
+// Date         : March 18, 2001
 // Author       : Thomas Wilkens
 // Task         : This function takes care of handling a certain sequence element whithin the
 //                structure of a certain result dataset. This function assumes that all elements
@@ -952,15 +804,12 @@ void WlmDataSourceDatabase::HandleSequenceElementInResultDataset( DcmElement *el
 //                contains one single non-empty item. In case there are more than one item in a
 //                sequence element, the sequence element in the result data set will completely
 //                be left unchanged. In detail, a value for the current element with regard to
-//                the currently processed matching record will be requested from the database,
+//                the currently processed matching record will be requested from the pki-file,
 //                and this value will be set in the element.
 // Parameters   : element          - [in] Pointer to the currently processed element.
-//                matchingRecordID - [in] Identifies the matching record in the database.
+//                matchingRecordID - [in] Identifies the matching record in the pki-file.
 // Return Value : none.
 {
-  // Determine the current elements length
-  Uint32 length = element->getLength();
-
   // Consider this element as a sequence of items.
   DcmSequenceOfItems *sequenceOfItemsElement = (DcmSequenceOfItems*)element;
 
@@ -1019,8 +868,8 @@ void WlmDataSourceDatabase::HandleSequenceElementInResultDataset( DcmElement *el
 
 // ----------------------------------------------------------------------------
 
-void WlmDataSourceDatabase::DetermineMatchingKeyAttributeValues( const char **&matchingKeyAttrValues, unsigned long &numOfMatchingKeyAttrValues )
-// Date         : December 19, 2001
+void WlmDataSourcePkiFile::DetermineMatchingKeyAttributeValues( const char **&matchingKeyAttrValues, unsigned long &numOfMatchingKeyAttrValues )
+// Date         : March 18, 2001
 // Author       : Thomas Wilkens
 // Task         : This function determines the values of the matching key attributes in the search mask.
 // Parameters   : matchingKeyAttrValues      - [out] Contains in the end the values of the matching key
@@ -1061,10 +910,10 @@ void WlmDataSourceDatabase::DetermineMatchingKeyAttributeValues( const char **&m
 
 // ----------------------------------------------------------------------------
 
-int WlmDataSourceDatabase::SetReadlock()
-// Date         : December 12, 2001
+int WlmDataSourcePkiFile::SetReadlock()
+// Date         : March 18, 2001
 // Author       : Thomas Wilkens
-// Task         : This function sets a read lock on certain tables of the database.
+// Task         : This function sets a read lock on the pki-file.
 // Parameters   : none.
 // Return Value : 0 - The read lock has been set successfully.
 //                1 - The read lock has not been set successfully.
@@ -1075,10 +924,10 @@ int WlmDataSourceDatabase::SetReadlock()
 
 // ----------------------------------------------------------------------------
 
-int WlmDataSourceDatabase::ReleaseReadlock()
-// Date         : December 12, 2001
+int WlmDataSourcePkiFile::ReleaseReadlock()
+// Date         : March 18, 2001
 // Author       : Thomas Wilkens
-// Task         : This function releases a read lock that was set on certain tables of the database.
+// Task         : This function releases a read lock that was set on the pki-file.
 // Parameters   : none.
 // Return Value : 0 - The read lock has been released successfully.
 //                1 - The read lock has not been released successfully.
@@ -1089,8 +938,8 @@ int WlmDataSourceDatabase::ReleaseReadlock()
 
 // ----------------------------------------------------------------------------
 
-OFBool WlmDataSourceDatabase::IsSupportedMatchingKeyAttribute( DcmElement *element, DcmSequenceOfItems *supSequenceElement )
-// Date         : December 12, 2001
+OFBool WlmDataSourcePkiFile::IsSupportedMatchingKeyAttribute( DcmElement *element, DcmSequenceOfItems *supSequenceElement )
+// Date         : March 18, 2001
 // Author       : Thomas Wilkens
 // Task         : This function checks if the given element refers to an attribute which is a supported
 //                matching key attribute. If this is the case OFTrue is returned, else OFFalse.
@@ -1151,13 +1000,12 @@ OFBool WlmDataSourceDatabase::IsSupportedMatchingKeyAttribute( DcmElement *eleme
 
 // ----------------------------------------------------------------------------
 
-OFBool WlmDataSourceDatabase::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSequenceOfItems *supSequenceElement )
-// Date         : December 12, 2001
+OFBool WlmDataSourcePkiFile::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSequenceOfItems *supSequenceElement )
+// Date         : March 18, 2001
 // Author       : Thomas Wilkens
 // Task         : This function checks if the given element refers to an attribute which is a supported
 //                return key attribute. If this is the case OFTrue is returned, else OFFalse.
 //                Currently, the following required return key attributes are supported:
-//                 - DCM_SpecificCharacterSet                              (0008,0005)  CS  O  1
 //                 - DCM_ScheduledProcedureStepSequence                    (0040,0100)  SQ  R  1
 //                    > DCM_ScheduledStationAETitle                        (0040,0001)  AE  R  1
 //                    > DCM_ScheduledProcedureStepStartDate                (0040,0002)  DA  R  1
@@ -1254,8 +1102,7 @@ OFBool WlmDataSourceDatabase::IsSupportedReturnKeyAttribute( DcmElement *element
   }
   else
   {
-    if( elementKey == DCM_SpecificCharacterSet                              ||
-        elementKey == DCM_ScheduledProcedureStepSequence                    ||
+    if( elementKey == DCM_ScheduledProcedureStepSequence                    ||
         elementKey == DCM_RequestedProcedureID                              ||
         elementKey == DCM_RequestedProcedureDescription                     ||
         elementKey == DCM_StudyInstanceUID                                  ||
@@ -1299,18 +1146,10 @@ OFBool WlmDataSourceDatabase::IsSupportedReturnKeyAttribute( DcmElement *element
 
 /*
 ** CVS Log
-** $Log: wldsdb.cc,v $
-** Revision 1.5  2002-04-18 10:15:49  wilkens
-** Corrected recognition of non-standard characters, added new supported return
-** key attributes, updated checking the search mask.
+** $Log: wldspf.cc,v $
+** Revision 1.1  2002-04-18 10:30:09  wilkens
+** Performed split between db-variant and pki-variant.
 **
-** Revision 1.4  2002/01/08 17:46:03  joergr
-** Reformatted source files (replaced Windows newlines by Unix ones, replaced
-** tabulator characters by spaces, etc.)
-**
-** Revision 1.3  2002/01/08 17:31:23  joergr
-** Reworked database support after trials at the hospital (modfied by MC/JR on
-** 2002-01-08).
 **
 **
 */

@@ -22,9 +22,9 @@
  *  Purpose: Class for connecting to a file-based data source.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-04-18 10:15:49 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wldsfs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2002-04-18 10:26:48 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/Attic/wldsfs.cc,v $
+ *  CVS/RCS Revision: $Revision: 1.1 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2419,7 +2419,10 @@ OFBool WlmDataSourceFileSystem::IsSupportedReturnKeyAttribute( const DcmTagKey &
 /*
 ** CVS Log
 ** $Log: wldsfs.cc,v $
-** Revision 1.6  2002-04-18 10:15:49  wilkens
+** Revision 1.1  2002-04-18 10:26:48  wilkens
+** Performed split between db-variant and pki-variant.
+**
+** Revision 1.6  2002/04/18 10:15:49  wilkens
 ** Corrected recognition of non-standard characters, added new supported return
 ** key attributes, updated checking the search mask.
 **

@@ -22,9 +22,9 @@
  *  Purpose: Class for connecting to a file-based data source.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-04-18 10:15:08 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wldsfs.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2002-04-18 10:26:19 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/Attic/wldsfs.h,v $
+ *  CVS/RCS Revision: $Revision: 1.1 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -128,7 +128,10 @@ class WlmDataSourceFileSystem : public WlmDataSource
 /*
 ** CVS Log
 ** $Log: wldsfs.h,v $
-** Revision 1.4  2002-04-18 10:15:08  wilkens
+** Revision 1.1  2002-04-18 10:26:19  wilkens
+** Performed split between db-variant and pki-variant.
+**
+** Revision 1.4  2002/04/18 10:15:08  wilkens
 ** **** Changes from 2002.04.18 (wilkens)
 **
 ** - Corrected recognition of non-standard characters, added new supported return

@@ -22,9 +22,9 @@
 *  Purpose: Class for managing database interaction.
 *
 *  Last Update:      $Author: wilkens $
-*  Update Date:      $Date: 2002-04-18 10:15:48 $
-*  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/Attic/wldbim.cc,v $
-*  CVS/RCS Revision: $Revision: 1.6 $
+*  Update Date:      $Date: 2002-04-18 10:24:49 $
+*  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/Attic/wldbim.cc,v $
+*  CVS/RCS Revision: $Revision: 1.1 $
 *  Status:           $State: Exp $
 *
 *  CVS/RCS Log at end of file
@@ -932,7 +932,10 @@ OFBool WlmDatabaseInteractionManager::IsFileExistent( char *fileName )
 /*
 ** CVS Log
 ** $Log: wldbim.cc,v $
-** Revision 1.6  2002-04-18 10:15:48  wilkens
+** Revision 1.1  2002-04-18 10:24:49  wilkens
+** Performed split between db-variant and pki-variant.
+**
+** Revision 1.6  2002/04/18 10:15:48  wilkens
 ** Corrected recognition of non-standard characters, added new supported return
 ** key attributes, updated checking the search mask.
 **
