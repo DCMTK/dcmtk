@@ -22,9 +22,9 @@
  *  Purpose: Class for modifying DICOM-Files from comandline
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2003-10-13 14:51:49 $
+ *  Update Date:      $Date: 2003-11-11 10:55:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/mdfconen.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -101,7 +101,8 @@ protected:
     OFBool erase_all_tags_option;
     ///verbose mode
     OFBool verbose_option;
-
+    ///debug mode
+    OFBool debug_option;
     ///most options need a value to work
     const char *option_value;
     ///list of files to be modified
@@ -191,7 +192,12 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: mdfconen.h,v $
-** Revision 1.5  2003-10-13 14:51:49  onken
+** Revision 1.6  2003-11-11 10:55:51  onken
+** - debug-mechanism doesn't use debug(..) any more
+** - comments purified
+** - headers adjustet to debug-modifications
+**
+** Revision 1.5  2003/10/13 14:51:49  onken
 ** improved backup-strategy
 **
 ** Revision 1.4  2003/10/01 14:04:03  onken

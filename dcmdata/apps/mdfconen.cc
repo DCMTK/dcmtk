@@ -22,9 +22,9 @@
  *  Purpose: Class for modifying DICOM-Files from comandline
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2003-10-13 14:51:49 $
+ *  Update Date:      $Date: 2003-11-11 10:55:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/mdfconen.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,7 +35,6 @@
 #include "mdfconen.h"
 #include "oftypes.h"
 #include "dctk.h"
-#include "dcdebug.h"
 #include "cmdlnarg.h"
 #include "ofconapp.h"
 #include "dcuid.h"       /* for dcmtk version name */
@@ -59,7 +58,8 @@ MdfConsoleEngine::MdfConsoleEngine(int argc, char *argv[],
     insert_item_tag_option(OFFalse), batch_mode_option(OFFalse),
     ask_option(OFFalse), insert_tag_option(OFFalse),erase_tag_option(OFFalse),
     erase_item_tag_option(OFFalse), erase_all_tags_option(OFFalse),
-    verbose_option(OFFalse), option_value(NULL), option_count(0)
+    verbose_option(OFFalse), debug_option(OFFalse), option_value(NULL),
+    option_count(0)
 // Date         : May 13th, 2003
 // Author       : Michael Onken
 // Task         : Constructor.
@@ -152,7 +152,7 @@ MdfConsoleEngine::MdfConsoleEngine(int argc, char *argv[],
         // check and enable debug/verbose-options
         if( cmd->findOption("--debug") )
         {
-            SetDebugLevel(3);
+            debug_option=OFTrue;
             verbose_option=OFTrue;
             COUT << "DEBUG-mode enabled" << endl;
         }
@@ -339,12 +339,12 @@ int MdfConsoleEngine::startTagAction(DcmTagKey mod_key, char* tag_value)
     int result2=0;
     //file_it will iterate through the files saved in a List
     OFListIterator(const char*) file_it;
-    //begin with the first...suprise;)
+    //begin with the first
     file_it=files->begin();
     //iterate over all files
     for (unsigned int i=0; i<files->size(); i++)
     {
-        ds_man = new MdfDataSetManager();
+        ds_man = new MdfDataSetManager(debug_option);
         if (verbose_option) COUT << "Processing File " << *file_it << endl;
         //load file into DataSetManager
         result=ds_man->loadFile(*file_it);
@@ -356,12 +356,22 @@ int MdfConsoleEngine::startTagAction(DcmTagKey mod_key, char* tag_value)
             //different calls for modify/insert/erase/modify-all
             if (modify_tag_option)
             {
-                debug(3,("--modify-tag found: Starting action\n"));
+                if (debug_option)
+                {
+                    ofConsole.lockCerr()
+                        << "--modify-tag found: Starting action" << endl;
+                    ofConsole.unlockCerr();
+                }
                 result=ds_man->modifyOrInsertTag(mod_key,tag_value,OFTrue);
             }
             if (insert_tag_option)
             {
-                debug(3,("--insert-tag found: Starting action\n"));
+                if (debug_option)
+                {
+                    ofConsole.lockCerr()
+                        << "--insert-tag found: Starting action" << endl;
+                    ofConsole.unlockCerr();
+                }
                 if (verbose_option)
                     printf("trying to insert %x,%x with value %s\n",
                         mod_key.getGroup(),mod_key.getElement(),tag_value);
@@ -370,15 +380,27 @@ int MdfConsoleEngine::startTagAction(DcmTagKey mod_key, char* tag_value)
             }
             if (erase_tag_option || erase_all_tags_option)
             {
-                debug(3,("--erase-(all)-tag(s) found: Starting action\n"));
+                if (debug_option)
+                {
+                    ofConsole.lockCerr()
+                        << "--erase-(all)-tag(s) found: Starting action"<< endl;
+                    ofConsole.unlockCerr();
+                }
                 if (verbose_option)
+                {
                     printf("trying to delete %x,%x\n",
                         mod_key.getGroup(),mod_key.getElement());
+                }
                 result=ds_man->deleteTag(mod_key,erase_all_tags_option);
             }
             if (modify_all_tags_option)
             {
-                debug(3,("--modify-all-tags found: Starting action\n"));
+                if (debug_option)
+                {
+                    ofConsole.lockCerr()
+                        << "--modify-all-tags found: Starting action"  << endl;
+                    ofConsole.unlockCerr();
+                }
                 if (verbose_option)
                     printf("trying to modify all tags %x,%x to %s\n",
                         mod_key.getGroup(),mod_key.getElement(), tag_value);
@@ -444,14 +466,14 @@ int MdfConsoleEngine::startItemTagAction(char *tag_path, char *tag_value)
     int error_count=0;
     OFCondition result, backup_result;
     OFString backup;
-    //file_it will iterate through the files saved in a List
+    //file_it will iterate through the files saved in a list
     OFListIterator(const char*) file_it;
-    //begin with the first...suprise;)
+    //begin with the first
     file_it=files->begin();
 
     for (unsigned int i=0; i<files->size(); i++)
     {
-        ds_man=new MdfDataSetManager();
+        ds_man=new MdfDataSetManager(debug_option);
         //load -> backup -> modify -> save:
         backup=*file_it;
         backup+=".bak";
@@ -536,7 +558,7 @@ int MdfConsoleEngine::delegateTagAction()
         CERR << "Can not parse tag!" << endl;
          error_count++;
     }
-    //now get the new tag-value, if erase is set, this is not a good idea...
+    //now get the new tag-value, if erase is set, there is none
     if (!erase_tag_option && !erase_all_tags_option)
     {
         temp=strpbrk(option_value,"=");
@@ -626,7 +648,11 @@ int MdfConsoleEngine::delegateBatchMode()
 // Return Value : An Integer whether modifying was successful(0) or not (!=0)
 {
     int error_count=0;
-    debug(3,("Entered batchmode\n"));
+    if (debug_option)
+    {
+        ofConsole.lockCerr() << "Entered batchmode" << endl;
+        ofConsole.unlockCerr();
+    }
     unsigned int group = 0xffff;
     unsigned int elem = 0xffff;
     //key to be changed
@@ -636,7 +662,7 @@ int MdfConsoleEngine::delegateBatchMode()
     int line_count=0;
     files->clear();
     batch_file=fopen(option_value, "r");
-    //a filename should not be longer than 1026 (?!)
+    //a filename should not be longer than 1025 chars
     char* line=new char[1025];
     //iterate from line to line
     OFString tag_value;
@@ -645,10 +671,20 @@ int MdfConsoleEngine::delegateBatchMode()
     OFString tag_path;
     size_t pos=0;
     OFString test;
-    debug(3,("Starting to read lines from batchfile:%s",option_value));
+    if (debug_option)
+    {
+        ofConsole.lockCerr() << "Starting to read lines from batchfile: "
+                             << option_value << endl;
+        ofConsole.unlockCerr();
+    }
     while( readLine( batch_file, rest2parse ) != -1 )
     {
-        debug(3,("Whole read line is:%s",rest2parse.c_str()));
+        if (debug_option)
+        {
+            ofConsole.lockCerr() << "Whole read line is:"
+                                 << rest2parse << endl;
+            ofConsole.unlockCerr();
+        }
         line_count++;
         if (rest2parse.length()!=0 && rest2parse.at(0)!='#' &&
             rest2parse.at(0)!=' ')
@@ -656,57 +692,99 @@ int MdfConsoleEngine::delegateBatchMode()
             //---------------------read filename----------------------------
             pos=rest2parse.find(" ",0);
             OFString file_name=rest2parse.substr(0,pos);
-            debug(3,("Found filename:%s",file_name.c_str()));
+            if (debug_option)
+            {
+                ofConsole.lockCerr() << "Found filename: "
+                                     << file_name << endl;
+                ofConsole.unlockCerr();
+            }
             files->push_back(file_name.c_str());
             rest2parse.erase(0,pos+1);
             pos=0;
             //---------------------read option-------------------------------
             if (rest2parse.substr(0,2)=="i ")
             {
-                debug(3,("Found insert-tag option"));
+                if (debug_option)
+                {
+                    ofConsole.lockCerr() << "Found insert-tag option" << endl;
+                    ofConsole.unlockCerr();
+                }
                 insert_tag_option=OFTrue;
                 rest2parse.erase(0,2);
             }
             if (rest2parse.substr(0,3)=="ii ")
             {
-                debug(3,("Found insert-item-tag option"));
+                if (debug_option)
+                {
+                    ofConsole.lockCerr() << "Found insert-item-tag option"
+                                         << endl;
+                    ofConsole.unlockCerr();
+                }
                 insert_item_tag_option=OFTrue;
                 rest2parse.erase(0,3);
             }
             if (rest2parse.substr(0,2)=="m ")
             {
-                debug(3,("Found modify-tag option"));
+                if (debug_option)
+                {
+                    ofConsole.lockCerr() << "Found modify-tag option" << endl;
+                    ofConsole.unlockCerr();
+                }
                 modify_tag_option=OFTrue;
                 rest2parse.erase(0,2);
             }
             if (rest2parse.substr(0,3)=="mi ")
             {
-                debug(3,("Found modify-item-tag option"));
+                if (debug_option)
+                {
+                    ofConsole.lockCerr() << "Found modify-item-tag option"
+                                         << endl;
+                    ofConsole.unlockCerr();
+                }
                 modify_item_tag_option=OFTrue;
                 rest2parse.erase(0,3);
             }
             if (rest2parse.substr(0,3)=="ma ")
             {
-                debug(3,("Found modify-all-tags option"));
+                if (debug_option)
+                {
+                    ofConsole.lockCerr() << "Found modify-all-tags option"
+                                         << endl;
+                    ofConsole.unlockCerr();
+                }
                 modify_all_tags_option=OFTrue;
                 rest2parse.erase(0,3);
             }
             if (rest2parse.substr(0,2)=="e ")
             {
-                debug(3,("Found erase-tag option"));
+                if (debug_option)
+                {
+                    ofConsole.lockCerr() << "Found erase-tag option" << endl;
+                    ofConsole.unlockCerr();
+                }
                 erase_tag_option=OFTrue;
                 rest2parse.erase(0,2);
             }
             if (rest2parse.substr(0,3)=="ei ")
             {
-                debug(3,("Found erase-item-tag option"));
+                if (debug_option)
+                {
+                    ofConsole.lockCerr() << "Found erase-item-tag option"
+                                         << endl;
+                    ofConsole.unlockCerr();
+                }
                 erase_item_tag_option=OFTrue;
                 rest2parse.erase(0,3);
             }
 
             if (rest2parse.substr(0,3)=="ea ")
             {
-                debug(3,("Found erase-all-tags-option"));
+                if (debug_option)
+                {
+                    ofConsole.lockCerr() << "Found erase-all-tags option"
+                                         << endl;
+                    ofConsole.unlockCerr();
+                }
                 erase_all_tags_option=OFTrue;
                 rest2parse.erase(0,3);
             }
@@ -721,8 +799,13 @@ int MdfConsoleEngine::delegateBatchMode()
             rest2parse.erase(0,pos+1);
             //rest is tag_value
             tag_value=rest2parse.substr(0,rest2parse.size());
-            debug(3,("tag-path is:%s",tag_path.c_str()));
-            debug(3,("tag-value is:%s",tag_value.c_str()));
+            if (debug_option)
+            {
+                ofConsole.lockCerr() << "tag-path is: "
+                                     << tag_path << endl;
+                ofConsole.unlockCerr();
+            }
+
             //------------------delegate tag-actions-------------------------
             if (modify_tag_option || insert_tag_option
                || erase_tag_option || erase_all_tags_option
@@ -732,17 +815,32 @@ int MdfConsoleEngine::delegateBatchMode()
                 sscanf(tag_path.c_str(),"%x,%x", &group,&elem);
                 search_key.setGroup(group);
                 search_key.setElement(elem);
-                debug(3,("searchkey:%x,%x",
-                    search_key.getGroup(),search_key.getElement()));
+                if (debug_option)
+                {
+                    ofConsole.lockCerr() << "search-key is: "
+                                         << hex << search_key.getGroup() << ","
+                                         << hex << search_key.getElement()
+                                         << endl;
+                    ofConsole.unlockCerr();
+                }
                 char* tag=(char*)tag_value.c_str();
-                debug(3,("Starting tag-action"));
+                if (debug_option)
+                {
+                    ofConsole.lockCerr() << "starting tag-action: " << endl;
+                    ofConsole.unlockCerr();
+                }
                 error_count+=startTagAction(search_key,tag);
 
             }
             if (modify_item_tag_option || insert_item_tag_option
                || erase_item_tag_option)
             {
-                debug(3,("Starting item-tag-action"));
+                if (debug_option)
+                {
+                    ofConsole.lockCerr() << "starting item-tag-action: "
+                                         << endl;
+                    ofConsole.unlockCerr();
+                }
                 error_count+=startItemTagAction((char*)tag_path.c_str(),
                                                 (char*)tag_value.c_str());
             }
@@ -916,7 +1014,11 @@ MdfConsoleEngine::~MdfConsoleEngine()
 // Parameters   : none
 // Return Value : none
 {
-    debug(3,("Deleting member-variables from memory"));
+    if (debug_option)
+    {
+        ofConsole.lockCerr() << "Deleting member-variables from memory" << endl;
+        ofConsole.unlockCerr();
+    }
     delete app_name;
     delete app;
     delete cmd;
@@ -926,7 +1028,12 @@ MdfConsoleEngine::~MdfConsoleEngine()
 /*
 ** CVS/RCS Log:
 ** $Log: mdfconen.cc,v $
-** Revision 1.6  2003-10-13 14:51:49  onken
+** Revision 1.7  2003-11-11 10:55:51  onken
+** - debug-mechanism doesn't use debug(..) any more
+** - comments purified
+** - headers adjustet to debug-modifications
+**
+** Revision 1.6  2003/10/13 14:51:49  onken
 ** improved backup-strategy
 **
 ** Revision 1.5  2003/10/13 13:28:28  meichel

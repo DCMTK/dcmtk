@@ -22,9 +22,9 @@
  *  Purpose: Class for modifying DICOM-Files and Datasets
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2003-10-13 14:46:50 $
+ *  Update Date:      $Date: 2003-11-11 10:55:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/mdfdsman.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,8 +50,9 @@ class MdfDataSetManager
 {
 public:
     /** Constructor, just initializes member-variables
+     *@param debug enables/disables debug-messages (off per default)
      */
-    MdfDataSetManager();
+    MdfDataSetManager(OFBool debug);
 
     /** Destructor
      */
@@ -177,6 +178,8 @@ protected:
     DcmFileFormat *dfile;
     ///will hold dset, we want to modify
     DcmDataset *dset;
+    ///enable debug-messages
+    OFBool debug_option;
 
 private:
 
@@ -195,7 +198,12 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: mdfdsman.h,v $
-** Revision 1.5  2003-10-13 14:46:50  onken
+** Revision 1.6  2003-11-11 10:55:51  onken
+** - debug-mechanism doesn't use debug(..) any more
+** - comments purified
+** - headers adjustet to debug-modifications
+**
+** Revision 1.5  2003/10/13 14:46:50  onken
 ** startModify(...) simplified (uses only putString to put element-values),
 ** this also allows now inserting and modifying of elements with VRM>1.
 ** Method getDataset() added.

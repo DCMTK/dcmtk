@@ -22,9 +22,9 @@
  *  Purpose: Class for modifying DICOM-Files and Datasets
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2003-10-13 14:46:50 $
+ *  Update Date:      $Date: 2003-11-11 10:55:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/mdfdsman.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,13 +42,15 @@
 #include "ofstdinc.h"
 
 
-MdfDataSetManager::MdfDataSetManager()
-:dfile(NULL), dset(NULL)
+MdfDataSetManager::MdfDataSetManager(OFBool debug)
+:dfile(NULL), dset(NULL), debug_option(OFFalse)
 // Date         : May, 13th, 2003
 // Author       : Michael Onken
 // Task         : Constructor, just initializes members-variables
+// Parameters   : debug - [in] enables/disables debug-messages (off per default)
 // Return Value : none
 {
+    debug_option=debug;
 }
 
 
@@ -64,19 +66,34 @@ OFCondition MdfDataSetManager::loadFile(const char *file_name)
     delete dfile;
     dfile = new DcmFileFormat();
     //load File into Attribute dfile
-    debug(3,("Loading %s into Datasetmanager",file_name));
+    if (debug_option)
+    {
+        ofConsole.lockCerr() << "Loading into Datasetmanager: " << file_name
+                             << endl;
+        ofConsole.unlockCerr();
+    }
     cond=dfile->loadFile(file_name);
     //if there are errors:
     if (cond.bad())
     {
-        debug(3,("Failed loading file %s",file_name));
+        if (debug_option)
+        {
+            ofConsole.lockCerr() << "Failed loading file: " << file_name
+                                 << endl;
+            ofConsole.unlockCerr();
+        }
         dset=NULL;
     }
     //file susccessfully loaded into dfile:
     else
     {
         //get dataset from file
-        debug(3,("Getting Dataset from loaded file %s",file_name));
+        if (debug_option)
+        {
+            ofConsole.lockCerr() << "Getting Dataset from loaded file"
+                                 << file_name << endl;
+            ofConsole.unlockCerr();
+        }
         dset=dfile->getDataset();
         /*load also pixel-data into memory:
          *Without this line pixel-data can't be included into the file
@@ -107,13 +124,22 @@ OFCondition MdfDataSetManager::modifyOrInsertTag(DcmTagKey search_key,
     DcmElement *elem;
 
     //look for the tag to be modified/inserted
-    debug(3,("Searching for tag %x,%x", search_key.getGroup(),
-                                        search_key.getElement()));
+    if (debug_option)
+    {
+        ofConsole.lockCerr() << "Searching for tag: "
+                             << hex << search_key.getGroup() << ","
+                             << hex << search_key.getElement() << endl;
+        ofConsole.unlockCerr();
+    }
     //if tag can be found, try to modify it
     if (dset->findAndGetElement(search_key, elem, OFFalse).good())
     {
-        //just an ordinary modify...
-        debug(3,("Tag found, trying to modify"));
+        //just a modify, no insert
+        if (debug_option)
+        {
+            ofConsole.lockCerr() << "Tag found, tying to modify" << endl;
+            ofConsole.unlockCerr();
+        }
         result=startModify(elem, value);
     }
     //if the tag could not be found, try to insert it:
@@ -122,7 +148,12 @@ OFCondition MdfDataSetManager::modifyOrInsertTag(DcmTagKey search_key,
         //but only insert it, if allowed per !only_modify
         if (!only_modify)
         {
-            debug(3,("Tag not found, trying to insert new one"));
+            if (debug_option)
+            {
+                ofConsole.lockCerr() << "Tag not found, trying to insert new one"
+                                     << endl;
+                ofConsole.unlockCerr();
+            }
             result=startInsert(dset, search_key, value);
         }
         //only_modify is selected and tag is not in dataset, return errors
@@ -152,11 +183,21 @@ OFCondition MdfDataSetManager::modifyAllTags(DcmTagKey search_key,
     DcmStack *result_stack=new DcmStack();
     DcmObject *elem;
     //get references to all matching tags in dataset and store them in stack
-    debug(3,("Trying to find all references to tag matching %x,%x",
-             search_key.getGroup(), search_key.getElement()));
+    if (debug_option)
+    {
+        ofConsole.lockCerr() << "Trying to find all references to tag matching:"
+                             << hex << search_key.getGroup() << ","
+                             << hex << search_key.getElement() << endl;
+        ofConsole.unlockCerr();
+    }
     result=dset->findAndGetElements(search_key,result_stack);
     //as long there are matching elements left on the stack
-    debug(3,("Found %i occurences", result_stack->card()));
+    if (debug_option)
+    {
+        ofConsole.lockCerr() << "Found " << result_stack->card()
+                             << " occurences" << endl;
+        ofConsole.unlockCerr();
+    }
     while(result_stack->card()>0 && result.good())
     {
         //get the top-one
@@ -165,10 +206,14 @@ OFCondition MdfDataSetManager::modifyAllTags(DcmTagKey search_key,
         if (elem->isLeaf())
         {
             //and put new value to element
-            debug(3,("Accessing existing tag for modifying"));
+            if (debug_option)
+            {
+                ofConsole.lockCerr() << "Accessing existing tag for modifying"
+                                     << endl;
+                ofConsole.unlockCerr();
+            }
+
             result=startModify(OFstatic_cast(DcmElement*,elem),value);
-            //result=startModify((DcmElement *)elem,value);
-            //if an error occurs we better go home;)
             if (result.good()) count++;
         }
         //if user gave "unchangable" tag:
@@ -193,8 +238,13 @@ OFCondition MdfDataSetManager::deleteTag(DcmTagKey search_key,
     if (dfile==NULL)
         return makeOFCondition(0,0,OF_error,"No file loaded yet!");
     OFCondition result;
-    debug(3,("Trying to delete tag %x,%x",
-        search_key.getGroup(), search_key.getElement()));
+    if (debug_option)
+    {
+        ofConsole.lockCerr() << "Trying to delete tag:"
+                             << hex << search_key.getGroup() << ","
+                             << hex << search_key.getElement() << endl;
+        ofConsole.unlockCerr();
+    }
     result=dset->findAndDeleteElement(search_key, all_tags, all_tags);
     return result;
 }
@@ -225,7 +275,12 @@ OFCondition MdfDataSetManager::deleteItemTag(char *tag_path)
             //generate key from parsed information
             search_key.set(group, elem);
             //Here we reached our tag and try to modify!
-            debug(3,("Trying to delete tag"));
+            if (debug_option)
+            {
+                ofConsole.lockCerr() << "Trying to delete tag" << endl;
+                ofConsole.unlockCerr();
+            }
+
             //(OFFalse, OFFalse) means: not allOccurences,not diveIntoSub
             result=item->findAndDeleteElement(search_key,OFFalse,OFFalse);
         }
@@ -268,10 +323,20 @@ OFCondition MdfDataSetManager::modifyOrInsertItemTag(char* tag_path,
         {
             //generate key from parsed information
             search_key.set(group, elem);
-            debug(3,("walked whole tag-path, reached tag %x,%x",
-                search_key.getGroup(),search_key.getElement()));
+            if (debug_option)
+            {
+                ofConsole.lockCerr() << "walked whole tag-path, reached tag:"
+                                     << hex << search_key.getGroup() << ","
+                                     << hex << search_key.getElement() << endl;
+                ofConsole.unlockCerr();
+            }
+
             //Here we reached our tag and try to modify!
-            debug(3,("Trying to modify tag"));
+            if (debug_option)
+            {
+                ofConsole.lockCerr() << "Trying to modify tag" << endl;
+                ofConsole.unlockCerr();
+            }
 
             //if only_modify is selected (no overwrite!) or you get here
             //per insert-option and tag is in actual item:
@@ -335,7 +400,12 @@ OFCondition MdfDataSetManager::saveFile(const char *file)
         return makeOFCondition(0,0,OF_error,"No file loaded yet!");
     OFCondition result;
     //saving the file with metaheader to file (to save changes)
-    debug(3,("Saving actual dataset to file %s",file));
+    if (debug_option)
+    {
+        ofConsole.lockCerr() << "Saving actual dataset to file: "
+                             << file << endl;
+        ofConsole.unlockCerr();
+    }
     if (dfile!=NULL)
     {
         result=dfile->saveFile(file);
@@ -416,8 +486,13 @@ OFCondition MdfDataSetManager::getItemFromPath(DcmItem *&result_item,
         if (sscanf(tag_path, "%x,%x", &group, &elem) == 2 && strlen(tag_path)>9)
         {
             //generate key from parsed information
-            debug(3,("Next tag-key in path beeing processed is %x,%x",
-                     search_key.getGroup(), search_key.getElement()));
+            if (debug_option)
+            {
+                ofConsole.lockCerr() << "Next tag-key in path is: "
+                                     << hex << group << "," << hex << elem
+                                     << endl;
+                ofConsole.unlockCerr();
+            }
             search_key.set(group, elem);
             //path is like gggg,eeee[n], so jump to the "["
             tag_path+=9;
@@ -433,6 +508,12 @@ OFCondition MdfDataSetManager::getItemFromPath(DcmItem *&result_item,
             //now parse item_nr, therefore skip the '['
             tag_path++; // go to next char, now we should get the item-number
             //now parse the item-nr itself
+            if (debug_option)
+            {
+                ofConsole.lockCerr() << "Now scanning for item-nr in [] "
+                                     << endl;
+                ofConsole.unlockCerr();
+            }
             debug(3,("Now scanning for item-nr in []"));
             if (sscanf(tag_path, "%i%n", &item_nr, &length) == 1)
             {
@@ -449,7 +530,13 @@ OFCondition MdfDataSetManager::getItemFromPath(DcmItem *&result_item,
             if (result.good())
             {
                  //look up parsed sequence
-                debug(3,("Now we've got seq.+item-tag, now lookup in dataset"));
+                if (debug_option)
+                {
+                    ofConsole.lockCerr() << "After parsing sequence and item-nr"
+                                         << " , we look them up in dataset"
+                                         << endl;
+                    ofConsole.unlockCerr();
+                }
                 if (item_copy==NULL)
                     found=dset->
                         findAndGetSequenceItem(search_key,item_copy,item_nr);
@@ -500,14 +587,24 @@ MdfDataSetManager::~MdfDataSetManager()
 // Return Value : none
 {
     //cleanup
-    debug(3,("Deleting member-variables from memory"));
-    delete dfile;
+    if (debug_option)
+    {
+        ofConsole.lockCerr() << "Deleting member-variables from memory"
+                             << endl;
+        ofConsole.unlockCerr();
+    }
+     delete dfile;
 }
 
 /*
 ** CVS/RCS Log:
 ** $Log: mdfdsman.cc,v $
-** Revision 1.5  2003-10-13 14:46:50  onken
+** Revision 1.6  2003-11-11 10:55:51  onken
+** - debug-mechanism doesn't use debug(..) any more
+** - comments purified
+** - headers adjustet to debug-modifications
+**
+** Revision 1.5  2003/10/13 14:46:50  onken
 ** startModify(...) simplified (uses only putString to put element-values),
 ** this also allows now inserting and modifying of elements with VRM>1.
 ** Method getDataset() added.
