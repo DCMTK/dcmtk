@@ -21,10 +21,10 @@
  *
  *  Purpose: List the contents of a dicom file
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-05-03 14:19:05 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-06-14 11:26:47 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmdump.cc,v $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -381,11 +381,14 @@ static int dumpFile(ostream & out,
         if (writePixelData)
         {
             OFString str = ifname;
+            OFString rname = pixelDirectory;
+            if ((rname.length() > 0) && (rname[rname.length() - 1] != PATH_SEPARATOR))
+             	rname += PATH_SEPARATOR;
             size_t pos = str.find_last_of(PATH_SEPARATOR);
             if (pos == OFString_npos)
-                pos = 0;
-            OFString rname = pixelDirectory;
-            rname += str.substr(pos);
+            	rname += str;
+            else
+            	rname += str.substr(pos + 1);
             size_t counter = 0;
             dfile->print(out, showFullData, 0 /*level*/, rname.c_str(), &counter);
         } else
@@ -428,7 +431,10 @@ static int dumpFile(ostream & out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
- * Revision 1.30  2000-05-03 14:19:05  meichel
+ * Revision 1.31  2000-06-14 11:26:47  joergr
+ * Corrected wrong filename creation for option +W.
+ *
+ * Revision 1.30  2000/05/03 14:19:05  meichel
  * Added new class GlobalDcmDataDictionary which implements read/write lock
  *   semantics for safe access to the DICOM dictionary from multiple threads
  *   in parallel. The global dcmDataDict now uses this class.
