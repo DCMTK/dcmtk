@@ -22,9 +22,9 @@
  *  Purpose: DicomHSVPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-28 12:47:04 $
+ *  Update Date:      $Date: 1999-09-17 14:03:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dihsvpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,7 +86,7 @@ class DiHSVPixelTemplate
                 register const T1 *h = pixel;
                 register const T1 *s = h + Count;
                 register const T1 *v = s + Count;
-                for (i = 0; i < Count; i++)
+                for (i = Count; i != 0; i--)
                     convertValue(*(r++), *(g++), *(b++), removeSign(*(h++), offset), removeSign(*(s++), offset),
                         removeSign(*(v++), offset), maxvalue);
             } 
@@ -96,7 +96,7 @@ class DiHSVPixelTemplate
                 register T2 h;
                 register T2 s;
                 register T2 v;
-                for (i = 0; i < Count; i++)
+                for (i = Count; i != 0; i--)
                 {
                     h = removeSign(*(p++), offset); 
                     s = removeSign(*(p++), offset);
@@ -183,7 +183,10 @@ class DiHSVPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dihsvpxt.h,v $
- * Revision 1.8  1999-04-28 12:47:04  joergr
+ * Revision 1.9  1999-09-17 14:03:45  joergr
+ * Enhanced efficiency of some "for" loops.
+ *
+ * Revision 1.8  1999/04/28 12:47:04  joergr
  * Introduced new scheme for the debug level variable: now each level can be
  * set separately (there is no "include" relationship).
  *

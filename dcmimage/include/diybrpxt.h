@@ -22,9 +22,9 @@
  *  Purpose: DicomYBRPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-28 12:52:04 $
+ *  Update Date:      $Date: 1999-09-17 14:03:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diybrpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -108,7 +108,7 @@ class DiYBRPixelTemplate
                     register const T1 *y = pixel;
                     register const T1 *cb = y + Count;
                     register const T1 *cr = cb + Count;
-                    for (i = 0; i < Count; i++, y++, cb++, cr++)
+                    for (i = Count; i != 0; i--, y++, cb++, cr++)
                     {
                      	sr = (Sint32)*y + (Sint32)rcr_tab[*cr];
                     	sg = (Sint32)*y - (Sint32)gcb_tab[*cb] - (Sint32)gcr_tab[*cr];
@@ -124,7 +124,7 @@ class DiYBRPixelTemplate
                     register T1 y;
                     register T1 cb;
                     register T1 cr;
-                    for (i = 0; i < Count; i++)
+                    for (i = Count; i != 0; i--)
                     {
                         y  = *(p++); 
                         cb = *(p++);
@@ -145,7 +145,7 @@ class DiYBRPixelTemplate
                     register const T1 *y = pixel;
                     register const T1 *cb = y + Count;
                     register const T1 *cr = cb + Count;
-                    for (i = 0; i < Count; i++)
+                    for (i = Count; i != 0; i--)
                         convertValue(*(r++), *(g++), *(b++), removeSign(*(y++), offset), removeSign(*(cb++), offset),
                             removeSign(*(cr++), offset), maxvalue);
                 } 
@@ -155,7 +155,7 @@ class DiYBRPixelTemplate
                     register T2 y;
                     register T2 cb;
                     register T2 cr;
-                    for (i = 0; i < Count; i++)
+                    for (i = Count; i != 0; i--)
                     {
                         y = removeSign(*(p++), offset); 
                         cb = removeSign(*(p++), offset);
@@ -186,7 +186,10 @@ class DiYBRPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diybrpxt.h,v $
- * Revision 1.6  1999-04-28 12:52:04  joergr
+ * Revision 1.7  1999-09-17 14:03:46  joergr
+ * Enhanced efficiency of some "for" loops.
+ *
+ * Revision 1.6  1999/04/28 12:52:04  joergr
  * Corrected some typos, comments and formatting.
  *
  * Revision 1.5  1999/02/03 16:55:29  joergr

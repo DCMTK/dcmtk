@@ -22,9 +22,9 @@
  *  Purpose: DicomColorMonochromeTemplate (Header)
  *
  *  Last Update:         $Author: joergr $
- *  Update Date:         $Date: 1999-05-31 13:01:13 $
+ *  Update Date:         $Date: 1999-09-17 14:03:42 $
  *  Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicomot.h,v $
- *  CVS/RCS Revision:    $Revision: 1.7 $
+ *  CVS/RCS Revision:    $Revision: 1.8 $
  *  Status:              $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -91,7 +91,7 @@ class DiColorMonoTemplate
                 register const T *b = pixel[2];
                 register T *q = Data;
                 register unsigned long i;
-                for (i = 0; i < Count; i++)
+                for (i = Count; i != 0; i--)
                     *(q++) = (T)((double)*(r++) * red + (double)*(g++) * green + (double)*(b++) * blue);
             }
         }
@@ -106,7 +106,10 @@ class DiColorMonoTemplate
  *
  * CVS/RCS Log:
  * $Log: dicomot.h,v $
- * Revision 1.7  1999-05-31 13:01:13  joergr
+ * Revision 1.8  1999-09-17 14:03:42  joergr
+ * Enhanced efficiency of some "for" loops.
+ *
+ * Revision 1.7  1999/05/31 13:01:13  joergr
  * Corrected bug concerning the conversion of color images to grayscale.
  *
  * Revision 1.6  1999/04/28 12:51:58  joergr

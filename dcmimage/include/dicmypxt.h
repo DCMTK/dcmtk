@@ -22,9 +22,9 @@
  *  Purpose: DicomCMYKPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-28 12:51:56 $
+ *  Update Date:      $Date: 1999-09-17 14:03:42 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicmypxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -87,7 +87,7 @@ class DiCMYKPixelTemplate
                 {
                     q = Data[j];
                     k = pixel + 3 * Count;                     // beginning of 'black' plane
-                    for (i = 0; i < Count; i++)
+                    for (i = Count; i != 0; i--)
                         *(q++) = maxvalue - removeSign(*(p++), offset) - removeSign(*(k++), offset);
                 }
             } 
@@ -115,7 +115,10 @@ class DiCMYKPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dicmypxt.h,v $
- * Revision 1.8  1999-04-28 12:51:56  joergr
+ * Revision 1.9  1999-09-17 14:03:42  joergr
+ * Enhanced efficiency of some "for" loops.
+ *
+ * Revision 1.8  1999/04/28 12:51:56  joergr
  * Corrected some typos, comments and formatting.
  *
  * Revision 1.7  1999/02/03 16:48:32  joergr

@@ -22,9 +22,9 @@
  *  Purpose: DicomColorOutputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-08-17 10:28:47 $
+ *  Update Date:      $Date: 1999-09-17 14:03:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicoopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -138,8 +138,8 @@ class DiColorOutputPixelTemplate
             register T2 *p = Data;
             register unsigned long i;
             register int j;
-            for (i = 0; i < FrameSize; i++)
-                for (j = 0; j < 3; j++)
+            for (i = FrameSize; i != 0; i--)
+                for (j = 3; j != 0; j--)
                     stream << (unsigned long)*(p++) << " ";     // typecast to resolve problems with 'char'
             return 1;
         }
@@ -153,8 +153,8 @@ class DiColorOutputPixelTemplate
             register T2 *p = Data;
             register unsigned long i;
             register int j;
-            for (i = 0; i < FrameSize; i++)
-                for (j = 0; j < 3; j++)
+            for (i = FrameSize; i != 0; i--)
+                for (j = 3; j != 0; j--)
                     fprintf(stream, "%lu ", (unsigned long)*(p++));
             return 1;
         }
@@ -191,7 +191,7 @@ class DiColorOutputPixelTemplate
                         for (int j = 0; j < 3; j++)
                         {
                             p = pixel[j] + start;
-                            for (i = 0; i < Count; i++)
+                            for (i = Count; i != 0; i--)
                                 *(q++) = (T2)*(p++);                            // copy
                             if (Count < FrameSize)
                             {
@@ -216,7 +216,7 @@ class DiColorOutputPixelTemplate
                             for (int j = 0; j < 3; j++)
                             {
                                 p = pixel[j] + start;
-                                for (i = 0; i < Count; i++)
+                                for (i = Count; i != 0; i--)
                                 {                                               // expand depth: 1001 -> 10011001 !!
                                     b = -shift;
                                     pv = qv = (T2)(*(p++));
@@ -238,7 +238,7 @@ class DiColorOutputPixelTemplate
                         for (int j = 0; j < 3; j++)
                         {
                             p = pixel[j] + start;
-                            for (i = 0; i < Count; i++)
+                            for (i = Count; i != 0; i--)
                                 *(q++) = (T2)(*(p++) << shift);                 // expand depth: simple left shift is not correct !!
                             if (Count < FrameSize)
                             {
@@ -252,7 +252,7 @@ class DiColorOutputPixelTemplate
                         for (int j = 0; j < 3; j++)
                         {
                             p = pixel[j] + start;
-                            for (i = 0; i < Count; i++)
+                            for (i = Count; i != 0; i--)
                                 *(q++) = (T2)(*(p++) >> shift);                 // reduce depth: correct ?
                             if (Count < FrameSize)
                             {
@@ -309,7 +309,10 @@ class DiColorOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dicoopxt.h,v $
- * Revision 1.13  1999-08-17 10:28:47  joergr
+ * Revision 1.14  1999-09-17 14:03:43  joergr
+ * Enhanced efficiency of some "for" loops.
+ *
+ * Revision 1.13  1999/08/17 10:28:47  joergr
  * Commented unused parameter name to avoid compiler warnings.
  * Removed unused parameter.
  *

@@ -22,9 +22,9 @@
  *  Purpose: DicomRGBPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-28 12:52:02 $
+ *  Update Date:      $Date: 1999-09-17 14:03:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dirgbpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -84,7 +84,7 @@ class DiRGBPixelTemplate
                 for (int j = 0; j < 3; j++)                         /* for all planes ... */
                 {
                     q = Data[j];
-                    for (i = 0; i < Count; i++)
+                    for (i = Count; i != 0; i--)
                         *(q++) = removeSign(*(p++), offset);        /* ... copy pixel */
                 }
             } 
@@ -107,7 +107,10 @@ class DiRGBPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dirgbpxt.h,v $
- * Revision 1.8  1999-04-28 12:52:02  joergr
+ * Revision 1.9  1999-09-17 14:03:46  joergr
+ * Enhanced efficiency of some "for" loops.
+ *
+ * Revision 1.8  1999/04/28 12:52:02  joergr
  * Corrected some typos, comments and formatting.
  *
  * Revision 1.7  1999/02/03 16:54:27  joergr

@@ -22,9 +22,9 @@
  *  Purpose: DicomYBRPart422PixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-28 12:45:22 $
+ *  Update Date:      $Date: 1999-09-17 14:03:47 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diyp2pxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -96,7 +96,7 @@ class DiYBRPart422PixelTemplate
             register T2 y2;
             register T2 cb;
             register T2 cr;
-            for (i = 0; i < Count / 2; i++)
+            for (i = Count / 2; i != 0; i--)
             {
                 y1 = removeSign(*(p++), offset); 
                 y2 = removeSign(*(p++), offset);
@@ -133,7 +133,10 @@ class DiYBRPart422PixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diyp2pxt.h,v $
- * Revision 1.6  1999-04-28 12:45:22  joergr
+ * Revision 1.7  1999-09-17 14:03:47  joergr
+ * Enhanced efficiency of some "for" loops.
+ *
+ * Revision 1.6  1999/04/28 12:45:22  joergr
  * Introduced new scheme for the debug level variable: now each level can be
  * set separately (there is no "include" relationship).
  *

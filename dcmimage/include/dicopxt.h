@@ -22,9 +22,9 @@
  *  Purpose: DicomColorPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-07-23 13:22:29 $
+ *  Update Date:      $Date: 1999-09-17 14:03:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -167,9 +167,9 @@ class DiColorPixelTemplate
                 register Uint16 y;
                 if (shift == 0)
                 {
-                    for (y = 0; y < height; y++)
+                    for (y = height; y != 0; y--)
                     {
-                        for (x = 0; x < width; x++)
+                        for (x = width; x != 0; x--)
                         {
                             *(q++) = (Uint8)(*(b++));
                             *(q++) = (Uint8)(*(g++));
@@ -181,9 +181,9 @@ class DiColorPixelTemplate
                 else if (shift < 0)
                 {
                     shift = -shift;
-                    for (y = 0; y < height; y++)
+                    for (y = height; y != 0; y--)
                     {
-                        for (x = 0; x < width; x++)
+                        for (x = width; x != 0; x--)
                         {
                             *(q++) = (Uint8)(*(b++) << shift);
                             *(q++) = (Uint8)(*(g++) << shift);
@@ -194,9 +194,9 @@ class DiColorPixelTemplate
                 }
                 else
                 {
-                    for (y = 0; y < height; y++)
+                    for (y = height; y != 0; y--)
                     {
-                        for (x = 0; x < width; x++)
+                        for (x = width; x != 0; x--)
                         {
                             *(q++) = (Uint8)(*(b++) >> shift);
                             *(q++) = (Uint8)(*(g++) >> shift);
@@ -230,26 +230,26 @@ class DiColorPixelTemplate
                 register Uint16 y;
                 if (shift == 0)
                 {
-                    for (y = 0; y < height; y++)
+                    for (y = height; y != 0; y--)
                     {
-                        for (x = 0; x < width; x++)
+                        for (x = width; x != 0; x--)
                             *(q++) = (((Uint32)(*(r++))) << 24) | (((Uint32)(*(g++))) << 16) | (((Uint32)(*(b++))) << 8);
                     }
                 }
                 else if (shift < 0)
                 {
                     shift = -shift;
-                    for (y = 0; y < height; y++)
+                    for (y = height; y != 0; y--)
                     {
-                        for (x = 0; x < width; x++)
+                        for (x = width; x != 0; x--)
                             *(q++) = (((Uint32)(*(r++) << shift)) << 24) | (((Uint32)(*(g++) << shift)) << 16) | (((Uint32)(*(b++) << shift)) << 8);
                     }
                 }
                 else
                 {
-                    for (y = 0; y < height; y++)
+                    for (y = height; y != 0; y--)
                     {
-                        for (x = 0; x < width; x++)
+                        for (x = width; x != 0; x--)
                             *(q++) = (((Uint32)(*(r++) >> shift)) << 24) | (((Uint32)(*(g++) >> shift)) << 16) | (((Uint32)(*(b++) >> shift)) << 8);
                     }
                 }
@@ -303,7 +303,10 @@ class DiColorPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dicopxt.h,v $
- * Revision 1.9  1999-07-23 13:22:29  joergr
+ * Revision 1.10  1999-09-17 14:03:44  joergr
+ * Enhanced efficiency of some "for" loops.
+ *
+ * Revision 1.9  1999/07/23 13:22:29  joergr
  * emoved inline method 'removeSign'which is no longer needed.
  *
  * Revision 1.8  1999/04/28 12:51:58  joergr

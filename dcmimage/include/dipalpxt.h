@@ -22,9 +22,9 @@
  *  Purpose: DicomPalettePixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-05-03 11:03:06 $
+ *  Update Date:      $Date: 1999-09-17 14:03:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dipalpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -92,7 +92,7 @@ class DiPalettePixelTemplate
                     max = pal[j]->getLastEntry(value);
                     const T3 minvalue = (T3)pal[j]->getFirstValue();
                     const T3 maxvalue = (T3)pal[j]->getLastValue();
-                    for (i = 0; i < Count; i++)
+                    for (i = Count; i != 0; i--)
                     {
                         value = (T2)(*(p++));
                         if (value <= min)
@@ -134,7 +134,10 @@ class DiPalettePixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dipalpxt.h,v $
- * Revision 1.9  1999-05-03 11:03:06  joergr
+ * Revision 1.10  1999-09-17 14:03:45  joergr
+ * Enhanced efficiency of some "for" loops.
+ *
+ * Revision 1.9  1999/05/03 11:03:06  joergr
  * Minor code purifications to keep Sun CC 2.0.1 quiet.
  *
  * Revision 1.8  1999/04/28 12:52:01  joergr
