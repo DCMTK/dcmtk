@@ -21,10 +21,10 @@
  *
  *  Purpose: byte order functions
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:19:29 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2001-11-01 14:41:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcswap.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,6 +65,7 @@ void swapBytes(void * value, const Uint32 byteLength,
 Uint16 swapShort(const Uint16 toSwap);
 
 inline void swap2Bytes(Uint8 * toSwap)
+// swaps [byte0][byte1] to [byte1][byte0]
 {
     Uint8 tmp = toSwap[0];
     toSwap[0] = toSwap[1];
@@ -72,6 +73,7 @@ inline void swap2Bytes(Uint8 * toSwap)
 }
 
 inline void swap4Bytes(Uint8 * toSwap)
+// swaps [byte0][byte1][byte2][byte3] to [byte3][byte2][byte1][byte0]
 {
     Uint8 tmp = toSwap[0];
     toSwap[0] = toSwap[3];
@@ -86,7 +88,10 @@ inline void swap4Bytes(Uint8 * toSwap)
 /*
  * CVS/RCS Log:
  * $Log: dcswap.h,v $
- * Revision 1.12  2001-09-25 17:19:29  meichel
+ * Revision 1.13  2001-11-01 14:41:43  wilkens
+ * Added lots of comments.
+ *
+ * Revision 1.12  2001/09/25 17:19:29  meichel
  * Adapted dcmdata to class OFCondition
  *
  * Revision 1.11  2001/06/01 15:48:44  meichel

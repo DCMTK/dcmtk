@@ -21,10 +21,10 @@
  *
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-10-12 10:18:22 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2001-11-01 14:38:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -157,7 +157,7 @@ main(int argc, char *argv[])
     const char *opt_peerTitle = PEERAPPLICATIONTITLE;
     const char *opt_ourTitle = APPLICATIONTITLE;
 
-    OFList<OFString> fileNameList;
+    OFList<OFString> fileNameList;       // list of files to transfer to SCP
     OFList<OFString> sopClassUIDList; // the list of sop classes
     OFList<OFString> sopInstanceUIDList; // the list of sop instances
 
@@ -512,6 +512,7 @@ main(int argc, char *argv[])
 		DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
+    /* initialize network, i.e. create an instance of T_ASC_Network*. */
     OFCondition cond = ASC_initializeNetwork(NET_REQUESTOR, 0, 1000, &net);
     if (cond.bad()) {
 	DimseCondition::dump(cond);
@@ -600,34 +601,47 @@ main(int argc, char *argv[])
 
 #endif
 
+    /* initialize asscociation parameters, i.e. create an instance of T_ASC_Parameters*. */
     cond = ASC_createAssociationParameters(&params, opt_maxReceivePDULength);
     if (cond.bad()) {
 	DimseCondition::dump(cond);
 	return 1;
     }
+    /* sets this application's title and the called application's title in the params */
+    /* structure. The default values to be set here are "STORESCU" and "ANY-SCP". */
     ASC_setAPTitles(params, opt_ourTitle, opt_peerTitle, NULL);
 
+    /* Set the transport layer type (type of network connection) in the params */
+    /* strucutre. The default is an insecure connection; where OpenSSL is  */
+    /* available the user is able to request an encrypted,secure connection. */
     cond = ASC_setTransportLayerType(params, opt_secureConnection);
     if (cond.bad()) {
 	DimseCondition::dump(cond);
 	return 1;
     }
 
+    /* Figure out the presentation addresses and copy the */
+    /* corresponding values into the association parameters.*/
     gethostname(localHost, sizeof(localHost) - 1);
     sprintf(peerHost, "%s:%d", opt_peer, (int)opt_port);
     ASC_setPresentationAddresses(params, localHost, peerHost);
 
+    /* Set the presentation contexts which will be negotiated */
+    /* when the network connection will be established */
     cond = addStoragePresentationContexts(params, sopClassUIDList);        
     if (cond.bad()) {
 	DimseCondition::dump(cond);
 	return 1;
     }
+
+    /* dump presentation contexts if required */
     if (opt_showPresentationContexts || opt_debug) {
 	printf("Request Parameters:\n");
 	ASC_dumpParameters(params, COUT);
     }
 
-    /* create association */
+    /* create association, i.e. try to establish a network connection to another */
+    /* DICOM application. This call creates an instance of T_ASC_Association*. */
     if (opt_verbose)
 	printf("Requesting Association\n");
     cond = ASC_requestAssociation(net, params, &assoc);
@@ -645,23 +659,28 @@ main(int argc, char *argv[])
 	    return 1;
 	}
     }
-    /* what has been accepted/refused ? */
+
+    /* dump the presentation contexts which have been accepted/refused */
     if (opt_showPresentationContexts || opt_debug) {
 	printf("Association Parameters Negotiated:\n");
 	ASC_dumpParameters(params, COUT);
     }
 
+    /* count the presentation contexts which have been accepted by the SCP */
+    /* If there are none, finish the execution */
     if (ASC_countAcceptedPresentationContexts(params) == 0) {
 	errmsg("No Acceptable Presentation Contexts");
 	return 1;
     }
 
+    /* dump general information concerning the establishment of the network connection if required */
     if (opt_verbose) {
 	printf("Association Accepted (Max Send PDV: %lu)\n",
 		assoc->sendPDVLength);
     }
 
-    /* do the real work */
+    /* do the real work, i.e. for all files which were specified in the */
+    /* command line, transmit the encapsulated DICOM objects to the SCP. */
     cond = EC_Normal;
     OFListIterator(OFString) iter = fileNameList.begin();
     OFListIterator(OFString) enditer = fileNameList.end();
@@ -672,7 +691,7 @@ main(int argc, char *argv[])
         ++iter;
     }
 
-    /* tear down association */
+    /* tear down association, i.e. terminate network connection to SCP */
     if (cond == EC_Normal)
     {
 	if (opt_abortAssociation) {
@@ -727,11 +746,15 @@ main(int argc, char *argv[])
 	}
     }
 
+    /* destroy the association, i.e. free memory of T_ASC_Association* structure. This */
+    /* call is the counterpart of ASC_requestAssociation(...) which was called above. */
     cond = ASC_destroyAssociation(&assoc);
     if (cond.bad()) {
 	DimseCondition::dump(cond);
 	return 1;
     }
+    /* drop the network, i.e. free memory of T_ASC_Network* structure. This call */
+    /* is the counterpart of ASC_initializeNetwork(...) which was called above. */
     cond = ASC_dropNetwork(&net);
     if (cond.bad()) {
 	DimseCondition::dump(cond);
@@ -1101,6 +1124,16 @@ progressCallback(void * /*callbackData*/,
 
 static OFCondition 
 storeSCU(T_ASC_Association * assoc, const char *fname)
+    /*
+     * This function will read all the information from the given file,
+     * figure out a corresponding presentation context which will be used
+     * to transmit the information over the network to the SCP, and it
+     * will finally initiate the transmission of all data to the SCP.
+     *
+     * Parameters:
+     *   assoc - [in] The association (network connection to another DICOM application).
+     *   fname - [in] Name of the file which shall be processed.
+     */
 {
     DIC_US msgId = assoc->nextMsgID++;
     T_ASC_PresentationContextID presId;
@@ -1117,34 +1150,41 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
         printf("Sending file: %s\n", fname);
     }
 
+    /* try to open the specified file and associate it with a stream */
     DcmFileStream inf(fname, DCM_ReadMode);
     if ( inf.Fail() ) {
 	errmsg("Cannot open file: %s: %s", fname, strerror(errno));
 	return DIMSE_BADDATA;
     }
 
+    /* read information from file. After the call to DcmFileFormat::read(...) the information */
+    /* which is encapsulated in the file will be available through the DcmFileFormat object. */
+    /* In detail, it will be available through calls to DcmFileFormat::getMetaInfo() (for */
+    /* meta header information) and DcmFileFormat::getDataset() (for data set information). */
     DcmFileFormat dcmff;
     dcmff.transferInit();
     dcmff.read(inf, EXS_Unknown);
     dcmff.transferEnd();
 
+    /* figure out if an error occured while the file was read*/
     if (dcmff.error() != EC_Normal) {
 	errmsg("Bad DICOM file: %s: %s", fname, dcmff.error().text());
 	return DIMSE_BADDATA;
     }
 
+    /* if required, invent new SOP instance information for the current data set (user option) */
     if (opt_inventSOPInstanceInformation) {
         replaceSOPInstanceInformation(dcmff.getDataset());
     }
 
-    /* which SOP class and SOP instance ? */
+    /* figure out which SOP class and SOP instance is encapsulated in the file */
     if (!DU_findSOPClassAndInstanceInDataSet(dcmff.getDataset(), 
 	sopClass, sopInstance)) {
 	errmsg("No SOP Class & Instance UIDs in file: %s", fname);
 	return DIMSE_BADDATA;
     }
 
-    /* which presentation context should be used */
+    /* figure out which of the accepted presentation contexts should be used */
     DcmXfer filexfer(dcmff.getDataset()->getOriginalXfer());
     if (filexfer.getXfer() != EXS_Unknown) presId = ASC_findAcceptedPresentationContextID(assoc, sopClass, filexfer.getXferID());
     else presId = ASC_findAcceptedPresentationContextID(assoc, sopClass);
@@ -1156,6 +1196,7 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
 	return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
     }
 
+    /* if required, dump general information concerning transfer syntaxes */
     if (opt_verbose) {
         DcmXfer fileTransfer(dcmff.getDataset()->getOriginalXfer());
         T_ASC_PresentationContext pc;
@@ -1165,6 +1206,7 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
             dcmFindNameOfUID(fileTransfer.getXferID()), dcmFindNameOfUID(netTransfer.getXferID()));
     }
 
+    /* prepare the transmission of data */
     bzero((char*)&req, sizeof(req));
     req.MessageID = msgId;
     strcpy(req.AffectedSOPClassUID, sopClass);
@@ -1172,10 +1214,12 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
     req.DataSetType = DIMSE_DATASET_PRESENT;
     req.Priority = DIMSE_PRIORITY_LOW;
 
+    /* if required, dump some more general information */
     if (opt_verbose) {
 	printf("Store SCU RQ: MsgID %d, (%s)\n", msgId, dcmSOPClassUIDToModality(sopClass));
     }
 
+    /* finally conduct transmission of data */
     OFCondition cond = DIMSE_storeUser(assoc, presId, &req,
         NULL, dcmff.getDataset(), progressCallback, NULL, 
 	DIMSE_BLOCKING, 0, 
@@ -1189,8 +1233,10 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
         unsuccessfulStoreEncountered = OFFalse;
     }
 
+    /* remember the response's status for later transmissions of data */
     lastStatusCode = rsp.DimseStatus;
 		
+    /* dump some more general information */
     if (cond == EC_Normal)
     {
         if (opt_verbose) {
@@ -1202,32 +1248,51 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
         errmsg("Store Failed, file: %s:", fname);
 	DimseCondition::dump(cond);
     }
+
+    /* dump status detail information if there is some */
     if (statusDetail != NULL) {
         printf("  Status Detail:\n");
 	statusDetail->print(COUT);
 	delete statusDetail;
     }
+    /* return */
     return cond;
 }
 
 
 static OFCondition
 cstore(T_ASC_Association * assoc, const OFString& fname)
+    /*
+     * This function will process the given file as often as is specified by opt_repeatCount.
+     * "Process" in this case means "read file, send C-STORE-RQ, receive C-STORE-RSP".
+     *
+     * Parameters:
+     *   assoc - [in] The association (network connection to another DICOM application).
+     *   fname - [in] Name of the file which shall be processed.
+     */
 {
     OFCondition cond = EC_Normal;
+
+    /* opt_repeatCount specifies how many times a certain file shall be processed */
     int n = (int)opt_repeatCount;
 
+    /* as long as no error occured and the counter does not equal 0 */
     while ((cond.good()) && n-- && !(opt_haltOnUnsuccessfulStore && unsuccessfulStoreEncountered))
     {
+        /* process file (read file, send C-STORE-RQ, receive C-STORE-RSP) */
 	cond = storeSCU(assoc, fname.c_str());
     }
+    /* return result value */
     return cond;
 }
 
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.40  2001-10-12 10:18:22  meichel
+** Revision 1.41  2001-11-01 14:38:59  wilkens
+** Added lots of comments.
+**
+** Revision 1.40  2001/10/12 10:18:22  meichel
 ** Replaced the CONDITION types, constants and functions in the dcmnet module
 **   by an OFCondition based implementation which eliminates the global condition
 **   stack.  This is a major change, caveat emptor!

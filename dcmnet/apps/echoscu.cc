@@ -21,10 +21,10 @@
  *
  *  Purpose: Verification Service Class User (C-ECHO operation)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-10-12 10:18:20 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2001-11-01 14:38:57 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/echoscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -227,22 +227,32 @@ main(int argc, char *argv[])
 		DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
+    /* initialize network, i.e. create an instance of T_ASC_Network*. */
     OFCondition cond = ASC_initializeNetwork(NET_REQUESTOR, 0, 1000, &net);
     if (cond.bad()) {
 	DimseCondition::dump(cond);
 	exit(1);
     }
+
+    /* initialize asscociation parameters, i.e. create an instance of T_ASC_Parameters*. */
     cond = ASC_createAssociationParameters(&params, opt_maxReceivePDULength);
     if (cond.bad()) {
 	DimseCondition::dump(cond);
 	exit(1);
     }
+
+    /* sets this application's title and the called application's title in the params */
+    /* structure. The default values to be set here are "STORESCU" and "ANY-SCP". */
     ASC_setAPTitles(params, opt_ourTitle, opt_peerTitle, NULL);
 
+    /* Figure out the presentation addresses and copy the */
+    /* corresponding values into the association parameters.*/
     gethostname(localHost, sizeof(localHost) - 1);
     sprintf(peerHost, "%s:%d", opt_peer, (int)opt_port);
     ASC_setPresentationAddresses(params, localHost, peerHost);
 
+    /* Set the presentation contexts which will be negotiated */
+    /* when the network connection will be established */
     int presentationContextID = 1; /* odd byte value 1, 3, 5, .. 255 */
     for (unsigned long ii=0; ii<opt_numPresentationCtx; ii++)
     {
@@ -256,12 +266,14 @@ main(int argc, char *argv[])
       }
     }
 
+    /* dump presentation contexts if required */
     if (opt_debug) {
 	printf("Request Parameters:\n");
 	ASC_dumpParameters(params, COUT);
     }
 
-    /* create association */
+    /* create association, i.e. try to establish a network connection to another */
+    /* DICOM application. This call creates an instance of T_ASC_Association*. */
     if (opt_verbose)
 	printf("Requesting Association\n");
     cond = ASC_requestAssociation(net, params, &assoc);
@@ -280,27 +292,32 @@ main(int argc, char *argv[])
 	    exit(1);
 	}
     }
-    /* what has been accepted/refused ? */
+
+    /* dump the presentation contexts which have been accepted/refused */
     if (opt_debug) {
 	printf("Association Parameters Negotiated:\n");
 	ASC_dumpParameters(params, COUT);
     }
 
+    /* count the presentation contexts which have been accepted by the SCP */
+    /* If there are none, finish the execution */
     if (ASC_countAcceptedPresentationContexts(params) == 0) {
 	errmsg("No Acceptable Presentation Contexts");
 	exit(1);
     }
 
+    /* dump general information concerning the establishment of the network connection if required */
     if (opt_verbose) {
 	printf("Association Accepted (Max Send PDV: %lu)\n",
 		assoc->sendPDVLength);
     }
 
 
-    /* do the real work */
+    /* ###do the real work, i.e. for all files which were specified in the */
+    /* command line, transmit the encapsulated DICOM objects to the SCP. */
     cond = cecho(assoc, opt_repeatCount);
 
-    /* tear down association */
+    /* tear down association, i.e. terminate network connection to SCP */
     if (cond == EC_Normal)
     {
 	if (opt_abortAssociation) {
@@ -356,11 +373,16 @@ main(int argc, char *argv[])
 	}
     }
 
+    /* destroy the association, i.e. free memory of T_ASC_Association* structure. This */
+    /* call is the counterpart of ASC_requestAssociation(...) which was called above. */
     cond = ASC_destroyAssociation(&assoc);
     if (cond.bad()) {
 	DimseCondition::dump(cond);
 	exit(1);
     }
+
+    /* drop the network, i.e. free memory of T_ASC_Network* structure. This call */
+    /* is the counterpart of ASC_initializeNetwork(...) which was called above. */
     cond = ASC_dropNetwork(&net);
     if (cond.bad()) {
 	DimseCondition::dump(cond);
@@ -376,19 +398,29 @@ main(int argc, char *argv[])
 
 static OFCondition 
 echoSCU(T_ASC_Association * assoc)
+    /*
+     * This function will send a C-ECHO-RQ over the network to another DICOM application
+     * and handle the response.
+     *
+     * Parameters:
+     *   assoc - [in] The association (network connection to another DICOM application).
+     */
 {
     DIC_US msgId = assoc->nextMsgID++;
     DIC_US status;
     DcmDataset *statusDetail = NULL;
 
+    /* dump information if required */
     if (opt_verbose) {
 	printf("Echo [%d], ", msgId);
 	fflush(stdout);
     }
 
+    /* send C-ECHO-RQ and handle response */
     OFCondition cond = DIMSE_echoUser(assoc, msgId, DIMSE_BLOCKING, 0,
     	&status, &statusDetail);
 
+    /* depending on if a response was received, dump some information */
     if (cond.good()) {
         if (opt_verbose) {
 	    printf("Complete [Status: %s]\n",
@@ -398,27 +430,46 @@ echoSCU(T_ASC_Association * assoc)
         errmsg("Failed:");
 	DimseCondition::dump(cond);
     }
+
+    /* check for status detail information, there should never be any */
     if (statusDetail != NULL) {
         printf("  Status Detail (should never be any):\n");
 	statusDetail->print(COUT);
         delete statusDetail;
     }
+
+    /* return result value */
     return cond;
 }
 
 static OFCondition
 cecho(T_ASC_Association * assoc, unsigned long num_repeat)
+    /*
+     * This function will send num_repeat C-ECHO-RQ messages to the DICOM application
+     * this application is connected with and handle corresponding C-ECHO-RSP messages.
+     *
+     * Parameters:
+     *   assoc      - [in] The association (network connection to another DICOM application).
+     *   num_repeat - [in] The amount of C-ECHO-RQ messages which shall be sent.
+     */
 {
     OFCondition cond = EC_Normal;
     unsigned long n = num_repeat;
+
+    /* as long as no error occured and the counter does not equal 0 */
+    /* send an C-ECHO-RQ and handle the response */
     while (cond == EC_Normal && n--) cond = echoSCU(assoc); // compare with EC_Normal since DUL_PEERREQUESTEDRELEASE is also good()
+
     return cond;
 }
 
 /*
 ** CVS Log
 ** $Log: echoscu.cc,v $
-** Revision 1.23  2001-10-12 10:18:20  meichel
+** Revision 1.24  2001-11-01 14:38:57  wilkens
+** Added lots of comments.
+**
+** Revision 1.23  2001/10/12 10:18:20  meichel
 ** Replaced the CONDITION types, constants and functions in the dcmnet module
 **   by an OFCondition based implementation which eliminates the global condition
 **   stack.  This is a major change, caveat emptor!

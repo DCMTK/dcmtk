@@ -21,10 +21,10 @@
  *
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-10-12 10:18:21 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2001-11-01 14:39:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -510,6 +510,7 @@ int main(int argc, char *argv[])
 	  DCM_DICT_ENVIRONMENT_VARIABLE);
   }
 
+    /* initialize network, i.e. create an instance of T_ASC_Network*. */
   OFCondition cond = ASC_initializeNetwork(NET_ACCEPTOR, (int)opt_port, 1000, &net);
   if (cond.bad())
   {
@@ -605,6 +606,8 @@ int main(int argc, char *argv[])
 
   while (cond.good()) 
   {
+        /* receive an association and acknowledge or reject it. If the association was */
+        /* acknowledged, offer corresponding services and invoke one or more if required. */
     cond = acceptAssociation(net);
 #ifdef WITH_OPENSSL
     /* since storescp is usually terminated with SIGTERM or the like,
@@ -626,6 +629,8 @@ int main(int argc, char *argv[])
 
   }
 
+    /* drop the network, i.e. free memory of T_ASC_Network* structure. This call */
+    /* is the counterpart of ASC_initializeNetwork(...) which was called above. */
   cond = ASC_dropNetwork(&net);
   if (cond.bad())
   {
@@ -856,7 +861,9 @@ acceptAssociation(T_ASC_Network * net)
   }
 #endif
   
-  /* now do the real work */
+    /* now do the real work, i.e. receive DIMSE commmands over the network connection */
+    /* which was established and handle these commands correspondingly. In case of */
+    /* storscp only C-ECHO-RQ and C-STORE-RQ commands can be processed. */
   cond = processCommands(assoc);
 
 
@@ -894,16 +901,29 @@ cleanup:
 
 static OFCondition
 processCommands(T_ASC_Association * assoc)
+    /*
+     * This function receives DIMSE commmands over the network connection
+     * and handles these commands correspondingly. Note that in case of
+     * storscp only C-ECHO-RQ and C-STORE-RQ commands can be processed.
+     * 
+     * Parameters:
+     *   assoc                - [in] The association (network connection to another DICOM application).
+     */
 {
   OFCondition cond = EC_Normal;
   T_DIMSE_Message msg;
   T_ASC_PresentationContextID presID = 0;
   DcmDataset *statusDetail = NULL;
 
+  /* start a loop to be able to receive more than one DIMSE command */
   while (cond == EC_Normal) // compare with EC_Normal since DUL_PEERREQUESTEDRELEASE is also good()
   {
+    /* receive a DIMSE command over the network */
     cond = DIMSE_receiveCommand(assoc, DIMSE_BLOCKING, 0, &presID,
         &msg, &statusDetail);
+
+    /* if the command which was received has extra status */
+    /* detail information, dump this information */
     if (statusDetail != NULL)
     {
       printf("Extra Status Detail: \n");
@@ -911,16 +931,19 @@ processCommands(T_ASC_Association * assoc)
       delete statusDetail;
     }
 
-    /* did peer release, abort, or do we have a valid message ? */
+    /* check if peer did release or abort, or if we have a valid message */
     if (cond == EC_Normal)
     {
-        /* process command */
+        /* in case we received a valid message, process this command */
+        /* note that storescp can only process a C-ECHO-RQ and a C-STORE-RQ */
         switch (msg.CommandField)
         {
           case DIMSE_C_ECHO_RQ:
+            /* process C-ECHO-Request */
             cond = echoSCP(assoc, &msg, presID);
             break;
           case DIMSE_C_STORE_RQ:
+            /* process C-STORE-Request */
             cond = storeSCP(assoc, &msg, presID);
             break;
           default:
@@ -965,18 +988,35 @@ struct StoreCallbackData
 
 static void 
 storeSCPCallback(
-    /* in */
     void *callbackData, 
-    T_DIMSE_StoreProgress *progress,    /* progress state */
-    T_DIMSE_C_StoreRQ *req,             /* original store request */
-    char *imageFileName, DcmDataset **imageDataSet, /* being received into */
-    /* out */
-    T_DIMSE_C_StoreRSP *rsp,            /* final store response */
+    T_DIMSE_StoreProgress *progress,
+    T_DIMSE_C_StoreRQ *req,
+    char *imageFileName, DcmDataset **imageDataSet,
+    T_DIMSE_C_StoreRSP *rsp,
     DcmDataset **statusDetail)
+    /*
+     * This function.is used to indicate progress when storescp receives instance data over the
+     * network. On the final call to this function (identified by progress->state == DIMSE_StoreEnd)
+     * this function will store the data set which was received over the network to a file.
+     * Earlier calls to this function will simply cause some information to be dumped to stdout.
+     * 
+     * Parameters:
+     *   callbackData  - [in] data for this callback function
+     *   progress      - [in] The state of progress. (identifies if this is the initial or final call
+     *                   to this function, or a call in between these two calls.
+     *   req           - [in] The original store request message.
+     *   imageFileName - [in] The name of the file the information shall be written to.
+     *   imageDataSet  - [in] The data set which shall be stored in the image file
+     *   rsp           - [inout] the C-STORE-RSP message (will be sent after the call to this function)
+     *   statusDetail  - [inout] This variable can be used to capture detailed information with regard to
+     *                   the status information which is captured in the status element (0000,0900). Note
+     *                   that this function does specify any such information, the pointer will be set to NULL.
+     */
 {
     DIC_UI sopClass;
     DIC_UI sopInstance;
 
+    /* determine if the association shall be aborted */
     if ((opt_abortDuringStore > 0 && progress->state != DIMSE_StoreBegin) ||
         (opt_abortAfterStore > 0 && progress->state == DIMSE_StoreEnd)) {
         if (opt_verbose) {
@@ -987,11 +1027,14 @@ storeSCPCallback(
         return;
     }
 
+    /* if opt_sleepAfter is set, the user requires that the application shall */
+    /* sleep a certain amount of seconds after having received one PDU. */
     if (opt_sleepDuring > 0)
     {
       sleep((unsigned int)opt_sleepDuring);
     }
     
+    /* dump some information if required (depending on the progress state) */
     if (opt_verbose)
     {
       switch (progress->state)
@@ -1009,35 +1052,44 @@ storeSCPCallback(
       fflush(stdout);
     }
     
+    /* if this is the final call of this function, save the data which was received to a file */
+    /* (note that we could also save the image somewhere else, put it in database, etc.) */
     if (progress->state == DIMSE_StoreEnd)
     {
-       *statusDetail = NULL;    /* no status detail */
+        /* do not send status detail information */
+       *statusDetail = NULL;
 
-       /* could save the image somewhere else, put it in database, etc */
        /* 
-        * An appropriate status code is already set in the resp structure, it need not be success.
-        * For example, if the caller has already detected an out of resources problem then the
-        * status will reflect this.  The callback function is still called to allow cleanup.
+        * Concerning the following line: an appropriate status code is already set in the resp structure,
+        * it need not be success. For example, if the caller has already detected an out of resources problem
+        * then the status will reflect this.  The callback function is still called to allow cleanup.
         */
        // rsp->DimseStatus = STATUS_Success;
 
+        /* we want to write the received information to a file only if this information */
+        /* is present and the options opt_bitPreserving and opt_ignore are not set. */
        if ((imageDataSet)&&(*imageDataSet)&&(!opt_bitPreserving)&&(!opt_ignore))
        {
          StoreCallbackData *cbdata = (StoreCallbackData*) callbackData;
          const char* fileName = cbdata->imageFileName;
 
+         /* create a corresponding filestream that we can write to. */
          DcmFileStream outf(fileName, DCM_WriteMode);
          if (outf.Fail())
          {
            fprintf(stderr, "storescp: Cannot write image file: %s\n", fileName);
            rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
          } else {
+           /* if the creation of the filestream was successful go ahead */
+
+           /* determine the transfer syntax which shall be used to write the information to the file */
            E_TransferSyntax xfer = opt_writeTransferSyntax;
            if (xfer == EXS_Unknown) xfer = (*imageDataSet)->getOriginalXfer();
 
+           /* if the user required that the resulting file shall have DICOM format (i.e. a */
+           /* meta infomation header) go ahead and write the information correspondingly. */
            if (opt_useMetaheader)
            {
-             /* write as fileformat */
              cbdata->dcmff->transferInit();
              cbdata->dcmff->write(outf, xfer, opt_sequenceType, opt_groupLength,
                opt_paddingType, (Uint32)opt_filepad, (Uint32)opt_itempad);
@@ -1048,7 +1100,7 @@ storeSCPCallback(
                rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
              }
            } else {
-             /* write as dataset */
+             /* if not, just write the information as a data set */
              (*imageDataSet)->transferInit();
              (*imageDataSet)->write(outf, xfer, opt_sequenceType, opt_groupLength,
                opt_paddingType, (Uint32)opt_filepad, (Uint32)opt_itempad);
@@ -1061,10 +1113,8 @@ storeSCPCallback(
            }
          }
       
-        /* should really check the image to make sure it is consistent,
-         * that its sopClass and sopInstance correspond with those in
-         * the request.
-         */
+            /* check the image to make sure it is consistent, i.e. that its sopClass and sopInstance correspond */
+            /* to those mentioned in the request. If not, set the status in the response message variable. */
         if ((rsp->DimseStatus == STATUS_Success)&&(!opt_ignore))
         {
           /* which SOP class and SOP instance ? */
@@ -1084,6 +1134,7 @@ storeSCPCallback(
         }
       }
     }
+    /* return */
     return;
 }
 
@@ -1091,12 +1142,27 @@ static OFCondition storeSCP(
   T_ASC_Association *assoc,
   T_DIMSE_Message *msg,
   T_ASC_PresentationContextID presID)
+    /*
+     * This function processes a DIMSE C-STORE-RQ commmand that was
+     * received over the network connection.
+     * 
+     * Parameters:
+     *   assoc  - [in] The association (network connection to another DICOM application).
+     *   msg    - [in] The DIMSE C-STORE-RQ message that was received.
+     *   presID - [in] The ID of the presentation context which was specified in the PDV which contained
+     *                 the DIMSE command.
+     */
 {
     OFCondition cond = EC_Normal;
     T_DIMSE_C_StoreRQ *req;
     char imageFileName[2048];
 
+    /* assign the actual information of the C-STORE-RQ command to a local variable */
     req = &msg->msg.CStoreRQ;
+
+    /* if opt_ignore is set, the user requires that the data shall be received but not stored. in */
+    /* this case, we want to create a corresponding temporary filename for a file in which the data */
+    /* shall be stored temporarily. If this is not the case, create a real filename for a real file. */
     if (opt_ignore)
     {
 #ifdef _WIN32
@@ -1110,20 +1176,26 @@ static OFCondition storeSCP(
         req->AffectedSOPInstanceUID);
     }
 
+    /* dump some information if required */
     if (opt_verbose)
     {
       printf("Received ");
       DIMSE_printCStoreRQ(stdout, req);
     }
 
+    /* intialize some variables */
     StoreCallbackData callbackData;
     callbackData.assoc = assoc;
     callbackData.imageFileName = imageFileName;
     DcmFileFormat dcmff;
     callbackData.dcmff = &dcmff;
 
+    /* define an address where the information which will be received over the network will be stored */
     DcmDataset *dset = dcmff.getDataset();
 
+    /* if opt_bitPreserving is set, the user requires that the data shall be */
+    /* written exactly as it was read. Depending on this option, function */
+    /* DIMSE_storeProvider must be called with certain parameters. */
     if (opt_bitPreserving)
     {
       cond = DIMSE_storeProvider(assoc, presID, req, imageFileName, opt_useMetaheader,
@@ -1133,6 +1205,7 @@ static OFCondition storeSCP(
         &dset, storeSCPCallback, (void*)&callbackData, DIMSE_BLOCKING, 0);
     }
 
+    /* if some error occured, dump corresponding information and remove the outfile if necessary */
     if (cond.bad())
     {
       fprintf(stderr, "storescp: Store SCP Failed:\n");
@@ -1148,10 +1221,13 @@ static OFCondition storeSCP(
 #endif
     }
 
+    /* if opt_sleepAfter is set, the user requires that the application shall */
+    /* sleep a certain amount of seconds after storing the instance data. */
     if (opt_sleepAfter > 0)
     {
       sleep((unsigned int)opt_sleepAfter);
     }
+    /* return return value */
     return cond;
 }
 
@@ -1159,7 +1235,10 @@ static OFCondition storeSCP(
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.39  2001-10-12 10:18:21  meichel
+** Revision 1.40  2001-11-01 14:39:01  wilkens
+** Added lots of comments.
+**
+** Revision 1.39  2001/10/12 10:18:21  meichel
 ** Replaced the CONDITION types, constants and functions in the dcmnet module
 **   by an OFCondition based implementation which eliminates the global condition
 **   stack.  This is a major change, caveat emptor!
