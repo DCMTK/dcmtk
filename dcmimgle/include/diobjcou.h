@@ -22,9 +22,9 @@
  *  Purpose: DicomObjectCounter (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-04-28 12:30:51 $
+ *  Update Date:      $Date: 2000-05-25 10:35:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diobjcou.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -89,6 +89,9 @@ class DiObjectCounter
      */
     DiObjectCounter()
       : Counter(1)
+#ifdef _REENTRANT
+       ,theMutex()
+#endif
     {
     }
 
@@ -101,15 +104,15 @@ class DiObjectCounter
 
  private:
 
+    /// internal counter
+    unsigned long Counter;
+
 #ifdef _REENTRANT
     /** if compiled for multi-thread operation, the Mutex protecting
      *  access to the value of this object.
      */
     OFMutex theMutex;
 #endif
-
-    /// internal counter
-    unsigned long Counter;
 };
 
 
@@ -120,7 +123,11 @@ class DiObjectCounter
  *
  * CVS/RCS Log:
  * $Log: diobjcou.h,v $
- * Revision 1.5  2000-04-28 12:30:51  joergr
+ * Revision 1.6  2000-05-25 10:35:23  joergr
+ * Added member variable to member initialization list (avoid compiler
+ * warnings).
+ *
+ * Revision 1.5  2000/04/28 12:30:51  joergr
  * ObjectCounter uses now class OFMutex to be MT-safe.
  *
  * Revision 1.4  2000/03/08 16:24:21  meichel
