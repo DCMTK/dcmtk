@@ -19,19 +19,21 @@
  *
  *  Authors: Marco Eichelberg
  *
- *  Purpose: This application reads a DICOM image, adds a Modality LUT or
- *    a VOI LUT to the image and writes it back. The LUT has a gamma curve shape.
+ *  Purpose: This application reads a DICOM image, adds a Modality LUT,
+ *    a VOI LUT or a Presentation LUT to the image and writes it back.
+ *    The LUT has a gamma curve shape or can be imported from an external
+ *    file.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-07-28 11:21:07 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-10-14 19:08:48 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmklut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
- 
+
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
@@ -41,10 +43,28 @@
 
 #include <math.h>
 #include <stdio.h>
+#include <fstream.h>
 #include "dctk.h"
 #include "cmdlnarg.h"
-#include "ofconapp.h"
 #include "dcuid.h"    /* for dcmtk version name */
+
+#include "ofconapp.h"
+#include "ofstring.h"
+
+#include "dicrvfit.h"
+#include "diutils.h"
+
+BEGIN_EXTERN_C
+#ifdef HAVE_CTYPE_H
+ #include <ctype.h>
+#endif
+END_EXTERN_C
+
+#ifdef _WIN32
+ #include <strstrea.h>     /* for ostrstream */
+#else
+ #include <strstream.h>    /* for ostrstream */
+#endif
 
 #define OFFIS_CONSOLE_APPLICATION "dcmmklut"
 
@@ -53,453 +73,838 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 
 OFBool opt_verbose = OFFalse;
 
+
 // ********************************************
 
-E_Condition createLUT(
-  double windowCenter,
-  double windowWidth,
-  Uint16 numberOfBits,
-  double gammaValue,
-  OFBool byteAlign,
-  DcmEVR lutVR,
-  DcmItem& item)
-{	
-  E_Condition result = EC_Normal;
 
-  // create LUT descriptor
-  unsigned long descriptor_numEntries = (unsigned long) windowWidth;
-  long          descriptor_firstMapped = (long)(windowCenter - (windowWidth*0.5));
-  Uint16        descriptor_numBits = numberOfBits;
-  Uint16        descriptor_numEntries16 = 0;
-  
-  if (opt_verbose)
-  {
-    if (byteAlign) cerr << "creating 8 bit LUT with" << endl;
-    else           cerr << "creating 16 bit LUT with" << endl;
-    cerr << "  window center  = " << windowCenter << endl
-         << "  window width   = " << windowWidth << endl
-         << "  number of bits = " << numberOfBits << endl
-         << "  gamma          = " << gammaValue << endl
-         << "  descriptor VR  = ";
-    if (descriptor_firstMapped < 0) cerr << "SS" << endl; else cerr << "US" << endl;
-    cerr << "  lut data VR    = ";
+enum LUT_Type
+{
+    LUT_Modality,
+    LUT_Presentation,
+    LUT_VOI
+};
+
+
+E_Condition readMapFile(const char *filename,
+                        double *&inputXData,
+                        double *&inputYData,
+                        unsigned long &count,
+                        double &inputXMax,
+                        double &inputYMax)
+{
+    E_Condition result = EC_IllegalCall;
+    if ((filename != NULL) && (strlen(filename) > 0))
+    {
+        if (opt_verbose)
+            cerr << "reading map file ..." << endl;
+        unsigned char buffer[1000];
+        FILE *inf = fopen(filename, "rb");
+        if (inf != NULL)
+        {
+            if (fread(buffer, 1, 264, inf) == 264)
+            {
+                if (fread(buffer + 264, 1, 1, inf) == 0)
+                {
+                    if ((buffer[0] == 0x8a) && (buffer[1] == 0x3f) && (buffer[2] == 0x0) && (buffer[3] == 0x0))
+                    {
+                        count = 256;
+                        inputXMax = 255;
+                        inputYMax = 255;
+                        inputXData = new double[count];
+                        inputYData = new double[count];
+                        if ((inputXData != NULL) && (inputYData != NULL))
+                        {
+                            for (unsigned long i = 0; i < count; i++)
+                            {
+                                inputXData[i] = i;
+                                inputYData[i] = (double)buffer[i + 8];
+                            }
+                            result = EC_Normal;
+                        }
+                    } else
+                        cerr << "Error: magic word wrong, not a map file ... ignoring !" << endl;
+                } else
+                    cerr << "Error: file too large, not a map file ... ignoring !" << endl;
+            } else
+                cerr << "Error: read error in map file ... ignoring !" << endl;
+            fclose(inf);
+        } else
+            cerr << "Error: cannot open map file ... ignoring !" << endl;
+    }
+    return result;
+}
+
+
+E_Condition readTextFile(const char *filename,
+                         double *&inputXData,
+                         double *&inputYData,
+                         unsigned long &count,
+                         double &inputXMax,
+                         double &inputYMax)
+{
+    if ((filename != NULL) && (strlen(filename) > 0))
+    {
+        if (opt_verbose)
+            cerr << "reading text file ..." << endl;
+        ifstream file(filename, ios::in|ios::nocreate);
+        if (file)
+        {
+            count = 0;
+            inputXMax = 0;
+            inputYMax = 0;
+            double ymax = 0;
+            char c;
+            while (file.get(c))
+            {
+                if (c == '#')                                               // comment character
+                {
+                    while (file.get(c) && (c != '\n') && (c != '\r'));      // skip comments
+                }
+                else if (!isspace(c))                                       // skip whitespaces
+                {
+                    file.putback(c);
+                    if (inputXMax == 0)                                     // read x maxvalue
+                    {
+                        char str[5];
+                        file.get(str, sizeof(str));
+                        if (strcmp(str, "xMax") == 0)                       // check for key word: xMax
+                        {
+                            file >> inputXMax;
+                            if (inputXMax > 0)
+                            {
+                                inputXData = new double[inputXMax + 1];
+                                inputYData = new double[inputXMax + 1];
+                                if ((inputXData == NULL) || (inputYData == NULL))
+                                    return EC_IllegalCall;
+                            } else {
+                                cerr << "Error: invalid or missing value for maximum x value in text file ... ignoring !" << endl;
+                                return EC_IllegalCall;                      // abort
+                            }
+                        } else {
+                            cerr << "Error: missing keyword 'xMax' for maximum x value in text file ... ignoring !" << endl;
+                            return EC_IllegalCall;                          // abort
+                        }
+                    }
+                    else if ((inputYMax == 0.0) && (c == 'y'))              // read y maxvalue (optional)
+                    {
+                        char str[5];
+                        file.get(str, sizeof(str));
+                        if (strcmp(str, "yMax") == 0)                       // check for key word: yMax
+                        {
+                            file >> inputYMax;
+                            if (inputYMax <= 0)
+                                cerr << "Warning: invalid value for yMax in text file ...ignoring !" << endl;
+                        } else {
+                            cerr << "Error: invalid text file ... ignoring !" << endl;
+                            return EC_IllegalCall;                          // abort
+                        }
+                    } else {
+                        if (count <= inputXMax)
+                        {
+                            file >> inputXData[count];                      // read x value
+                            file >> inputYData[count];                      // read y value
+                            if (inputYData[count] > ymax)
+                                ymax = inputYData[count];
+                            if (file.fail())
+                                cerr << "Warning: missing y value in text file ... ignoring last entry !" << endl;
+                            else if (inputXData[count] > inputXMax)
+                            {
+                                cerr << "Warning: x value (" << inputXData[count] << ") exceeds maximum value (";
+                                cerr << inputXMax << ") in text file ..." << endl << "         ... ignoring value !" << endl;
+                            } else
+                                count++;
+                        } else {
+                            cerr << "Warning: too many values in text file ... ignoring last line(s) !" << endl;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (inputYMax == 0)                                             // automatic calculation
+                inputYMax = ymax ;
+            if ((inputXMax > 0) && (inputYMax > 0) && (count > 0) && (inputXData != NULL) && (inputYData != NULL))
+                return EC_Normal;
+            else
+                cerr << "Warning: invalid text file ... ignoring !" << endl;
+        } else
+            cerr << "Warning: can't open text file ... ignoring !" << endl;
+    }
+    return EC_IllegalCall;
+}
+
+
+E_Condition writeTextOutput(const char *filename,
+                            const unsigned long numberOfEntries,
+                            const signed long firstMapped,
+                            const Uint16 *outputData,
+                            const OFString &header)
+{
+    E_Condition result = EC_IllegalCall;
+    if ((filename != NULL) && (strlen(filename) >0))
+    {
+        if ((outputData != NULL) && (numberOfEntries > 0))
+        {
+            if (opt_verbose)
+                cerr << "writing text file ..." << endl;
+            ofstream file(filename);
+            if (file)
+            {
+                file << header << endl;
+                for (unsigned long i = 0; i < numberOfEntries; i++)
+                    file << (firstMapped + (signed long)i) << "\t" << outputData[i] << endl;
+            } else
+               cerr << "Warning: can't create output text file ... ignoring !" << endl;
+        }
+    }
+    return result;
+}
+
+
+E_Condition convertInputLUT(const Uint16 numberOfBits,
+                            const unsigned long numberOfEntries,
+                            const signed long firstMapped,
+                            double *inputXData,
+                            double *inputYData,
+                            const unsigned long inputEntries,
+                            const double inputXMax,
+                            const double inputYMax,
+                            const unsigned int order,
+                            Uint16 *outputData,
+                            OFString &header,
+                            char *explanation)
+{
+    E_Condition result = EC_IllegalCall;
+    if ((inputXData != NULL) && (inputYData != NULL) && (inputEntries > 0) && (inputYMax > 0) && (outputData != NULL))
+    {
+        char buf[1024];
+        ostrstream oss(buf, 1024);
+        if (explanation !=NULL)
+        {
+            if (strlen(explanation) == 0)
+            {
+                sprintf(explanation, "LUT created from %u->%u bit data, descriptor %u/%ld/%u",
+                    DicomImageClass::tobits((int)inputXMax), DicomImageClass::tobits((int)inputYMax),
+                    (numberOfEntries < 65536) ? (Uint16)numberOfEntries : 0, firstMapped, numberOfBits);
+            }
+            oss << "# " << explanation << endl;
+        }
+        const double factor = (double)(DicomImageClass::maxval(numberOfBits)) / inputYMax;
+        if (factor != 1.0)
+        {
+            if (opt_verbose)
+            {
+                cerr.setf(ios::fixed, ios::floatfield);
+                cerr << "multiplying input values by " << factor << " ..." << endl;            
+            }
+            for (unsigned long i = 0; i < inputEntries; i++)
+                inputYData[i] *= factor;
+        }
+        if (numberOfEntries == inputEntries)
+        {
+            for (unsigned long i = 0; i < numberOfEntries; i++)
+                outputData[i] = (Uint16)inputYData[i];
+            result = EC_Normal;
+        } else {
+            if (opt_verbose)
+                cerr << "using polynomial curve fitting algorithm ..." << endl;            
+            double *coeff = new double[order + 1];
+            if (DiCurveFitting<double, double>::calculateCoefficients(inputXData, inputYData, inputEntries, order, coeff))
+            {
+                if (DiCurveFitting<double, Uint16>::calculateValues(0, inputXMax, outputData, numberOfEntries, order, coeff))
+                {
+                    oss << "# using polynomial curve fitting algorithm (order = " << order << ")" << endl;
+                    oss << "# equation: y = C0 + C1*x + C2*x^2 + C3*x^3 + ... + Cn*x^n" << endl;
+                    oss << "# where: ";
+                    for (unsigned int i = 0; i <= order; i++)
+                    {
+                        oss << "C" << i << " = ";
+                        oss.setf(ios::fixed, ios::floatfield);
+                        //oss.setf(ios::showpos);
+                        oss.precision(5);
+                        oss.width(10);
+                        oss << coeff[i] << endl;
+                        if (i < order)
+                        {
+                            oss << "#       ";
+                            if (i < 9)
+                                oss << " ";
+                        }
+                    }
+                    result = EC_Normal;
+                }
+            }
+            delete[] coeff;
+        }
+        if (result == EC_Normal)
+        {
+            oss << ends;
+            header += oss.str();
+        } else
+            cerr << "Warning: can't create lookup table from text file ... ignoring !" << endl;        
+    }
+    return result;
+}
+
+
+void gammaLUT(const Uint16 numberOfBits,
+              const unsigned long numberOfEntries,
+              const signed long firstMapped,
+              const OFBool byteAlign,
+              const double gammaValue,
+              Uint16 *outputData,
+              OFString &header,
+              char *explanation)
+{
+    if (outputData != NULL)
+    {
+        if (opt_verbose)
+            cerr << "computing gamma function ..." << endl;
+        char buf[1024];
+        ostrstream oss(buf, 1024);
+        if (explanation !=NULL)
+        {
+            if (strlen(explanation) == 0)
+            {
+                sprintf(explanation, "LUT with gamma %3.1f, descriptor %u/%ld/%u", gammaValue,
+                    (numberOfEntries < 65536) ? (Uint16)numberOfEntries : 0, firstMapped, numberOfBits);
+            }
+            oss << "# " << explanation << endl;
+        }
+        Uint16 maxValue = 0xFFFF >> (16 - numberOfBits);
+        double step = (double)maxValue / ((double)numberOfEntries - 1.0);
+        double gammaExp = 1.0 / gammaValue;
+        double factor = (double)maxValue / pow(maxValue, gammaExp);
+        double val;
+        unsigned long i = 0;
+        if (byteAlign)
+        {
+            Uint8 *data8 = (Uint8 *)outputData;
+            for (i = 0; i < numberOfEntries; i++)
+            {
+                val = factor * pow(i * step, gammaExp);
+                data8[i] = (Uint8)val;
+            }
+            data8[numberOfEntries]=0; //create padding value
+        } else {
+            for (i = 0; i < numberOfEntries; i++)
+            {
+                val = factor * pow(i * step, gammaExp);
+                outputData[i]= (Uint16)val;
+            }
+        }
+        oss << ends;
+        header += oss.str();
+    }
+}
+
+
+E_Condition createLUT(const Uint16 numberOfBits,
+                      const unsigned long numberOfEntries,
+                      const signed long firstMapped,
+                      const OFBool byteAlign,
+                      DcmEVR lutVR,
+                      DcmItem &item,
+                      Uint16 *data,
+                      const char *explanation = NULL)
+{
+    E_Condition result = EC_Normal;
+    Uint16 numEntries16 = 0;
+
+    if (numberOfEntries == 0)
+        cerr << "Warning: creating LUT without LUT data" << endl;
+    if (numberOfEntries > 65536)
+    {
+        cerr << "Error: cannot create LUT with more than 65536 entries" << endl;
+        return EC_IllegalCall;
+    }
+    if (numberOfEntries < 65536)
+        numEntries16 = (Uint16)numberOfEntries;
+    if ((numberOfBits < 8) || (numberOfBits > 16))
+    {
+        cerr << "Error: cannot create LUT with " << numberOfBits << " bit entries, only 8..16" << endl;
+        return EC_IllegalCall;
+    }
+
+    DcmElement *descriptor = NULL;
+    if (firstMapped < 0)
+    {
+        // LUT Descriptor is SS
+        if (firstMapped < -32768)
+        {
+            cerr << "Error: cannot create LUT - first value mapped < -32768" << endl;
+            return EC_IllegalCall;
+        }
+        descriptor = new DcmSignedShort(DcmTag(DCM_LUTDescriptor, EVR_SS));
+        if (descriptor)
+        {
+            if (EC_Normal==result) result = descriptor->putSint16((Sint16)numEntries16, 0);
+            if (EC_Normal==result) result = descriptor->putSint16((Sint16)firstMapped, 1);
+            if (EC_Normal==result) result = descriptor->putSint16((Sint16)numberOfBits, 2);
+            if (EC_Normal==result) result = item.insert(descriptor);
+        } else
+            return EC_MemoryExhausted;
+    } else {
+        // LUT Descriptor is US
+        if (firstMapped > 0xFFFF)
+        {
+            cerr << "Error: cannot create LUT - first value mapped > 65535" << endl;
+            return EC_IllegalCall;
+        }
+        descriptor = new DcmUnsignedShort(DcmTag(DCM_LUTDescriptor, EVR_US));
+        if (descriptor)
+        {
+            if (EC_Normal==result) result = descriptor->putUint16(numEntries16, 0);
+            if (EC_Normal==result) result = descriptor->putUint16((Uint16)firstMapped, 1);
+            if (EC_Normal==result) result = descriptor->putUint16(numberOfBits, 2);
+            if (EC_Normal==result) result = item.insert(descriptor);
+        } else
+            return EC_MemoryExhausted;
+    }
+
+    unsigned long wordsToWrite = 0;
+    if (byteAlign)
+    {
+        // the array is now in little endian byte order. Swap to local byte order if neccessary.
+        swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, (Uint8 *)data, numberOfEntries + 1, sizeof(Uint16));
+        wordsToWrite = (numberOfEntries + 1) / 2;
+    } else
+        wordsToWrite = numberOfEntries;
+    if ((wordsToWrite > 32767) && (lutVR != EVR_OW))
+    {
+        cerr << "Warning: LUT data >= 64K, writing as OW" << endl;
+        lutVR = EVR_OW;
+    }
+
+    // write LUT Data as OW, US, or SS
+    DcmElement *lutdata = NULL;
     switch (lutVR)
     {
-      case EVR_US:
-        cerr << "US" << endl;
-        break;
-      case EVR_OW:
-        cerr << "OW" << endl;
-        break;
-      case EVR_SS:
-        cerr << "SS" << endl;
-        break;
-      default:
-        cerr << "unknown" << endl;
-        break;
-    }    
-  }
-  if (descriptor_numEntries==0) cerr << "Warning: creating LUT without LUT data" << endl;
-  
-  if (descriptor_numEntries > 65536)
-  {
-    cerr << "Error: cannot create LUT with more than 65536 entries" << endl;
-    return EC_IllegalCall;
-  }
-  if (descriptor_numEntries < 65536) descriptor_numEntries16 = (Uint16)descriptor_numEntries;
-  
-  if ((descriptor_numBits<8)||(descriptor_numBits>16))
-  {
-    cerr << "Error: cannot create LUT with " << numberOfBits << " bit entries, only 8..16" << endl;
-    return EC_IllegalCall;
-  }
-  
-  DcmElement *descriptor = NULL;
-  if (descriptor_firstMapped < 0)
-  {
-    // LUT Descriptor is SS
-    if (descriptor_firstMapped < -32768)
-    {
-      cerr << "Error: cannot create LUT - first value mapped < -32768" << endl;
-      return EC_IllegalCall;
-    }
-    descriptor = new DcmSignedShort(DcmTag(DCM_LUTDescriptor, EVR_SS));
-    if (descriptor)
-    {  
-      if (EC_Normal==result) result = descriptor->putSint16((Sint16)descriptor_numEntries16,0);
-      if (EC_Normal==result) result = descriptor->putSint16((Sint16)descriptor_firstMapped,1);
-      if (EC_Normal==result) result = descriptor->putSint16((Sint16)descriptor_numBits,2);
-      if (EC_Normal==result) result = item.insert(descriptor);
-    } else return EC_MemoryExhausted;
-  } else {
-    // LUT Descriptor is US
-    if (descriptor_firstMapped > 0xFFFF)
-    {
-      cerr << "Error: cannot create LUT - first value mapped > 65535" << endl;
-      return EC_IllegalCall;
-    }
-    descriptor = new DcmUnsignedShort(DcmTag(DCM_LUTDescriptor, EVR_US));
-    if (descriptor)
-    {
-      if (EC_Normal==result) result = descriptor->putUint16(descriptor_numEntries16,0);
-      if (EC_Normal==result) result = descriptor->putUint16((Uint16)descriptor_firstMapped,1);
-      if (EC_Normal==result) result = descriptor->putUint16(descriptor_numBits,2);
-      if (EC_Normal==result) result = item.insert(descriptor);
-    } else return EC_MemoryExhausted;
+        case EVR_US:
+            lutdata = new DcmUnsignedShort(DcmTag(DCM_LUTData, EVR_US));
+            if (lutdata)
+            {
+                if (EC_Normal==result) result = lutdata->putUint16Array(data, wordsToWrite);
+                if (EC_Normal==result) result = item.insert(lutdata);
+            } else
+                return EC_MemoryExhausted;
+            break;
+        case EVR_OW:
+            lutdata = new DcmOtherByteOtherWord(DcmTag(DCM_LUTData, EVR_OW));
+            if (lutdata)
+            {
+                if (EC_Normal==result) result = lutdata->putUint16Array(data, wordsToWrite);
+                if (EC_Normal==result) result = item.insert(lutdata);
+            } else
+                return EC_MemoryExhausted;
+            break;
+        case EVR_SS:
+            lutdata = new DcmSignedShort(DcmTag(DCM_LUTData, EVR_SS));
+            if (lutdata)
+            {
+                if (EC_Normal==result) result = lutdata->putSint16Array((Sint16 *)data, wordsToWrite);
+                if (EC_Normal==result) result = item.insert(lutdata);
+            } else
+                return EC_MemoryExhausted;
+            break;
+        default:
+            cerr << "Error: unsupported VR for LUT Data" << endl;
+            return EC_IllegalCall;
+            break;
   }
 
-  // create LUT
-  Uint16 maxValue = 0xFFFF >> (16-numberOfBits);
-  double step = (double)maxValue / ((double)descriptor_numEntries-1.0);
-  double gammaExp = 1.0/gammaValue;
-  double factor = (double)maxValue / pow(maxValue, gammaExp);
-  double val;
-  unsigned long i = 0;
-  unsigned long wordsToWrite = 0;
-  Uint16 *array = new Uint16[65536]; // max size for LUT
-  if (array==NULL) return EC_MemoryExhausted;
-
-  if (byteAlign)
-  {
-    Uint8 *array8 = (Uint8 *)array;
-    for (i=0; i<descriptor_numEntries; i++)
-    {
-      val = factor * pow(i*step, gammaExp);
-      array8[i] = (Uint8)val;
-    }
-    array8[descriptor_numEntries]=0; //create padding value
-    
-    // the array is now in little endian byte order. Swap to local byte order if neccessary.
-    if (result==EC_Normal) result = swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, array8, descriptor_numEntries+1, sizeof(Uint16));
-    wordsToWrite = (descriptor_numEntries+1)/2;
-  } else {
-    for (i=0; i<descriptor_numEntries; i++)
-    {
-      val = factor * pow(i*step, gammaExp);
-      array[i]= (Uint16)val;
-    }
-    wordsToWrite = descriptor_numEntries;
-  }
-
-  if ((wordsToWrite > 32767)&&(lutVR != EVR_OW))
-  {
-    cerr << "Warning: LUT data >= 64K, writing as OW" << endl;
-    lutVR = EVR_OW;
-  }
-
-  // write LUT Data as OW, US, or SS
-  DcmElement *lutdata = NULL;
-  switch (lutVR)
-  {
-    case EVR_US:
-      lutdata = new DcmUnsignedShort(DcmTag(DCM_LUTData, EVR_US));
-      if (lutdata)
-      {
-        if (EC_Normal==result) result = lutdata->putUint16Array(array, wordsToWrite);
-        if (EC_Normal==result) result = item.insert(lutdata);
-      } else return EC_MemoryExhausted;
-      break;
-    case EVR_OW:
-      lutdata = new DcmOtherByteOtherWord(DcmTag(DCM_LUTData, EVR_OW));
-      if (lutdata)
-      {
-        if (EC_Normal==result) result = lutdata->putUint16Array(array, wordsToWrite);
-        if (EC_Normal==result) result = item.insert(lutdata);
-      } else return EC_MemoryExhausted;
-      break;
-    case EVR_SS:
-      lutdata = new DcmSignedShort(DcmTag(DCM_LUTData, EVR_SS));
-      if (lutdata)
-      {
-        if (EC_Normal==result) result = lutdata->putSint16Array((Sint16 *)array, wordsToWrite);
-        if (EC_Normal==result) result = item.insert(lutdata);
-      } else return EC_MemoryExhausted;
-      break;
-    default:
-      cerr << "Error: unsupported VR for LUT Data" << endl;
-      return EC_IllegalCall;
-      break;
-  }
-  delete[] array;
-  
   // create LUT explanation
-  DcmElement *explanation = new DcmLongString(DCM_LUTExplanation);
-  if (explanation)
+  if (explanation != NULL)
   {
-    char buf[100];
-    if (descriptor_firstMapped < 0)
-    {
-      sprintf(buf, "LUT with gamma %3.1f, descriptor %u/%ld/%u", gammaValue, 
-        descriptor_numEntries16, descriptor_firstMapped, numberOfBits);
-    } else {
-      sprintf(buf, "LUT with gamma %3.1f, descriptor %u/%ld/%u", gammaValue, 
-        descriptor_numEntries16, descriptor_firstMapped, numberOfBits);
-    }
-    if (result==EC_Normal) result = explanation->putString(buf);
-    if (EC_Normal==result) result = item.insert(explanation);
-  } else return EC_MemoryExhausted;
-  
+      DcmElement *explItem = new DcmLongString(DCM_LUTExplanation);
+      if (explItem)
+      {
+          if (result == EC_Normal) result = explItem->putString(explanation);
+          if (EC_Normal == result) result = item.insert(explItem);
+      } else
+        return EC_MemoryExhausted;
+  }
   return result;
 }
 
+
 // ********************************************
 
+
 #define SHORTCOL 3
-#define LONGCOL 12
+#define LONGCOL 14
 
 int main(int argc, char *argv[])
 {
-    OFString str;   
+    OFString str;
     const char *opt_inName = NULL;                     /* in file name */
     const char *opt_outName = NULL;                    /* out file name */
-    OFCmdFloat gammaValue=1.0;
-    OFCmdFloat windowCenter=0.0;
-    OFCmdFloat windowWidth=0.0;
-    OFCmdUnsignedInt bits=16;
-    OFBool byteAlign = OFFalse;
-    OFBool replaceMode = OFTrue;
-    OFBool createMLUT = OFFalse;
-    DcmEVR lutVR = EVR_OW;
-            
+    const char *opt_outText = NULL;
+    const char *opt_mapName = NULL;
+    const char *opt_textName = NULL;
+    const char *opt_explanation = NULL;
+    OFCmdFloat opt_gammaValue = 1.0;
+    OFCmdUnsignedInt opt_bits = 16;
+    OFCmdUnsignedInt opt_entries = 256;
+    OFCmdSignedInt opt_firstMapped = 0;
+    OFCmdUnsignedInt opt_order = 5;
+    LUT_Type opt_lutType = LUT_VOI;
+    OFBool opt_byteAlign = OFFalse;
+    OFBool opt_replaceMode = OFTrue;
+    DcmEVR opt_lutVR = EVR_OW;
+
     SetDebugLevel(( 0 ));
 
-    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Add modality or VOI LUT to image", rcsid);
     OFCommandLine cmd;
+    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Create DICOM look-up tables", rcsid);
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
     cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
-  
-    cmd.addParam("window-center",  "window center equivalent of LUT to be created");
-    cmd.addParam("window-width",   "window width equivalent of LUT to be created");
-    cmd.addParam("dcmimg-in",      "DICOM input image file");
-    cmd.addParam("dcmimg-out",     "DICOM output filename");
+
+    cmd.addParam("dcmimg-out",                   "DICOM output filename");
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-     cmd.addOption("--help",                      "-h",        "print this help text and exit");
-     cmd.addOption("--verbose",                   "-v",        "verbose mode, print processing details");
-     cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
+     cmd.addOption("--help",           "-h",     "print this help text and exit");
+     cmd.addOption("--verbose",        "-v",     "verbose mode, print processing details");
+     cmd.addOption("--debug",          "-d",     "debug mode, print debug information");
     cmd.addGroup("LUT creation options:");
       cmd.addSubGroup("LUT type:");
-       cmd.addOption("--modality",    "+Tm",    "create as Modality LUT");
-       cmd.addOption("--voi",         "+Tv",    "create as VOI LUT (default)");
+       cmd.addOption("--modality",     "+Tm",    "create as Modality LUT");
+       cmd.addOption("--presentation", "+Tp",    "create as Presentation LUT");
+       cmd.addOption("--voi",          "+Tv",    "create as VOI LUT (default)");
       cmd.addSubGroup("LUT placement:");
-       cmd.addOption("--add",         "+Pa",    "add to existing transform\n(default for +Tv, only with +Tv)");
-       cmd.addOption("--replace",     "+Pr",    "replace existing transform (default for +Tm)");
+       cmd.addOption("--add",          "+Pa",    "add to existing transform (def. for and only with +Tv)");
+       cmd.addOption("--replace",      "+Pr",    "replace existing transform (default for +Tm and +Tp)");
       cmd.addSubGroup("LUT content:");
-       cmd.addOption("--gamma",       "-g", 1, "gamma: float",
-                                               "use gamma value (default: 1.0)");
-       cmd.addOption("--bits",        "-b", 1, "[n]umber : integer",
-                                               "create LUT with n bit values (8..16, default: 16)");
-       cmd.addOption("--byte-align",  "-a",    "create byte-aligned LUT (implies -b 8)");
+       cmd.addOption("--gamma",        "+Cg", 1, "[g]amma : float",
+                                                 "use gamma value (default: 1.0)");
+       cmd.addOption("--map-file",     "+Cm", 1, "[f]ilename : string",
+                                                 "read input data from MAP file");
+       cmd.addOption("--text-file",    "+Ct", 1, "[f]ilename : string",
+                                                 "read input data from text file");
+      cmd.addSubGroup("LUT structure:");
+       cmd.addOption("--bits",         "-b", 1,  "[n]umber : integer",
+                                                 "create LUT with n bit values (8..16, default: 16)");
+       cmd.addOption("--entries",      "-e", 1,  "[n]umber : integer",
+                                                 "create LUT with n entries (1..65536, default: 256)");
+       cmd.addOption("--first-mapped", "-f", 1,  "[n]umber : integer",
+                                                 "first input value mapped (-31768..65535, default: 0)");
+       cmd.addOption("--order",        "-o", 1,  "[n]umber : integer",
+                                                 "use polynomial curve fitting algorithm with order n\n(0..99, default: 5)");
+       cmd.addOption("--explanation",  "-E", 1,  "[n]ame : string",
+                                                 "LUT explanation (default: automatically created)");
+       cmd.addOption("--byte-align",   "-a",     "create byte-aligned LUT (implies -b 8)");
       cmd.addSubGroup("LUT data VR:");
-       cmd.addOption("--data-ow",     "+Dw",    "write LUT Data as OW (default)");
-       cmd.addOption("--data-us",     "+Du",    "write LUT Data as US");
-       cmd.addOption("--data-ss",     "+Ds",    "write LUT Data as SS");
+       cmd.addOption("--data-ow",      "+Dw",    "write LUT Data as OW (default)");
+       cmd.addOption("--data-us",      "+Du",    "write LUT Data as US");
+       cmd.addOption("--data-ss",      "+Ds",    "write LUT Data as SS (minimal support)");
+    cmd.addGroup("file options:", LONGCOL, SHORTCOL + 2);
+     cmd.addOption("--dicom-input",    "+Fi", 1, "[f]ilename : string",
+                                                 "read dataset from DICOM file f");
+     cmd.addOption("--text-output",    "+Fo", 1, "[f]ilename : string",
+                                                 "write LUT data to tabbed text file f");
 
-    /* evaluate command line */                           
+    /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
     {
-      app.checkParam(cmd.getParam(1, windowCenter));
-      app.checkParam(cmd.getParam(2, windowWidth,0.0));
-      cmd.getParam(3, opt_inName);
-      cmd.getParam(4, opt_outName);
+        cmd.getParam(1, opt_outName);
 
-      if (cmd.findOption("--verbose")) opt_verbose=OFTrue;
-      if (cmd.findOption("--debug")) SetDebugLevel(3);
-      cmd.beginOptionBlock();
-      if (cmd.findOption("--modality")) createMLUT = OFTrue;
-      if (cmd.findOption("--voi")) createMLUT = OFFalse;                
-      cmd.endOptionBlock();
-      if (createMLUT) replaceMode=OFTrue; else replaceMode=OFFalse;                
+        if (cmd.findOption("--verbose"))
+            opt_verbose = OFTrue;
+        if (cmd.findOption("--debug"))
+        {
+            SetDebugLevel(3);
+            DicomImageClass::DebugLevel =  DicomImageClass::DL_Warnings | DicomImageClass::DL_Errors |  DicomImageClass::DL_Informationals;
+        }
 
-      cmd.beginOptionBlock();
-      if (cmd.findOption("--add"))
-      {
-      	app.checkConflict("--add","--modality", createMLUT);
-        replaceMode = OFFalse;
-      }
-      if (cmd.findOption("--replace")) replaceMode = OFTrue;
-      cmd.endOptionBlock();
-      if (cmd.findOption("--gamma")) app.checkValue(cmd.getValue(gammaValue));
-      if (cmd.findOption("--byte-align"))
-      {
-      	 byteAlign = OFTrue;
-      	 bits = 8;
-      }
-      if (cmd.findOption("--bits")) app.checkValue(cmd.getValue(bits,8,16));
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--modality"))
+          opt_lutType = LUT_Modality;
+        if (cmd.findOption("--presentation"))
+          opt_lutType = LUT_Presentation;
+        if (cmd.findOption("--voi"))
+          opt_lutType = LUT_VOI;
+        cmd.endOptionBlock();
 
-      cmd.beginOptionBlock();
-      if (cmd.findOption("--data-ow")) lutVR = EVR_OW;
-      if (cmd.findOption("--data-us")) lutVR = EVR_US;
-      if (cmd.findOption("--data-ss")) lutVR = EVR_SS;
-      cmd.endOptionBlock();
+        if ((opt_lutType == LUT_Modality) || (opt_lutType == LUT_Presentation))
+            opt_replaceMode = OFTrue;
+        else
+            opt_replaceMode = OFFalse;
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--add"))
+        {
+            app.checkConflict("--add","--modality", (opt_lutType = LUT_Modality));
+            app.checkConflict("--add","--presentation", (opt_lutType = LUT_Presentation));
+            opt_replaceMode = OFFalse;
+        }
+        if (cmd.findOption("--replace"))
+            opt_replaceMode = OFTrue;
+        cmd.endOptionBlock();
+
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--gamma"))
+            app.checkValue(cmd.getValue(opt_gammaValue));
+        if (cmd.findOption("--map-file"))
+            app.checkValue(cmd.getValue(opt_mapName));
+        if (cmd.findOption("--text-file"))
+            app.checkValue(cmd.getValue(opt_textName));
+        cmd.endOptionBlock();
+
+        if (cmd.findOption("--bits"))
+            app.checkValue(cmd.getValue(opt_bits, 8, 16));
+        if (cmd.findOption("--entries"))
+            app.checkValue(cmd.getValue(opt_entries, 1, 65536));
+        if (cmd.findOption("--first-mapped"))
+            app.checkValue(cmd.getValue(opt_firstMapped, -32768, 65535));
+        if (cmd.findOption("--explanation"))
+            app.checkValue(cmd.getValue(opt_explanation));
+        if (cmd.findOption("--order"))
+            app.checkValue(cmd.getValue(opt_order, 0, 99));
+        if (cmd.findOption("--byte-align"))
+        {
+            opt_byteAlign = OFTrue;
+            opt_bits = 8;
+        }
+
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--data-ow"))
+            opt_lutVR = EVR_OW;
+        if (cmd.findOption("--data-us"))
+            opt_lutVR = EVR_US;
+        if (cmd.findOption("--data-ss"))
+            opt_lutVR = EVR_SS;
+        cmd.endOptionBlock();
+
+        if (cmd.findOption("--dicom-input"))
+            app.checkValue(cmd.getValue(opt_inName));
+        if (cmd.findOption("--text-output"))
+            app.checkValue(cmd.getValue(opt_outText));
     }
 
-    if (createMLUT && (bits != 8) && (bits != 16))
+    if ((opt_lutType == LUT_Modality) && (opt_bits != 8) && (opt_bits != 16))
     {
-	cerr << "error: --modality cannot be used with --bits other than 8 or 16" << endl;
-	return 1;
+        cerr << "Error: --modality cannot be used with --bits other than 8 or 16" << endl;
+        return 1;
     }
-    if ((bits != 8) && byteAlign)
+    if ((opt_bits != 8) && opt_byteAlign)
     {
-	cerr << "error: --byte-align cannot be used with --bits other than 8" << endl;
-	return 1;
-    }
-
-    /* make sure data dictionary is loaded */
-    if (!dcmDataDict.isDictionaryLoaded()) {
-	cerr << "Warning: no data dictionary loaded, "
-	     << "check environment variable: "
-	     << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
-    }
- 
-    DcmFileStream inf(opt_inName, DCM_ReadMode);
-    if ( inf.Fail() ) {
-	cerr << "cannot open file: " << opt_inName << endl;
+        cerr << "Error: --byte-align cannot be used with --bits other than 8" << endl;
         return 1;
     }
 
-    DcmFileFormat *fileformat = new DcmFileFormat;
-    E_Condition error = EC_Normal;
+    /* make sure data dictionary is loaded */
+    if (!dcmDataDict.isDictionaryLoaded())
+        cerr << "Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
+
+    E_TransferSyntax Xfer= EXS_LittleEndianExplicit;
+    E_Condition result = EC_Normal;
+    DcmFileFormat *fileformat = new DcmFileFormat();
+    DcmDataset *dataset = fileformat->getDataset();
     if (!fileformat)
     {
-      cerr << "memory exhausted\n";
-      return 1;
+        cerr << "Error: memory exhausted" << endl;
+        return 1;
     }
 
-    fileformat->transferInit();
-    error = fileformat -> read(inf);
-    fileformat->transferEnd();
-
-    if (error != EC_Normal) 
+    if (opt_inName != NULL)
     {
-	cerr << "Error: "  
-	     << dcmErrorConditionToString(error)
-	     << ": reading file: " <<  opt_inName << endl;
-	return 1;
+        DcmFileStream inf(opt_inName, DCM_ReadMode);
+        if (inf.Fail())
+        {
+            cerr << "Error: cannot open file: " << opt_inName << endl;
+            return 1;
+        }
+        fileformat->transferInit();
+        result = fileformat->read(inf);
+        fileformat->transferEnd();
+        if (result != EC_Normal)
+        {
+            cerr << "Error: " << dcmErrorConditionToString(result) << ": reading file: " <<  opt_inName << endl;
+            return 1;
+        }
+        Xfer = dataset->getOriginalXfer();
     }
-    
-    /* create LUT */
-    DcmDataset *dataset = fileformat -> getDataset();
-
-    DcmLongString modalityLUTType(DCM_ModalityLUTType);
-    modalityLUTType.putString("US"); // unspecified Modality LUT
-    
-    E_Condition result = EC_Normal;
 
     /* create Item with LUT */
     DcmItem *ditem = new DcmItem();
     if (ditem)
     {
-      if (byteAlign)
-      {
-        result = createLUT(windowCenter, windowWidth, 8, gammaValue, OFTrue, lutVR, *ditem);
-      } else {
-        result = createLUT(windowCenter, windowWidth, (Uint16)bits, gammaValue, OFFalse, lutVR, *ditem);
-      }
-      if (EC_Normal != result) 
-      {
-        cerr << "could not create LUT, bailing out." << endl;
-        return 1;
-      }
-      if (createMLUT)
-      {
-        DcmElement *delem = new DcmLongString(modalityLUTType);
-        if (delem) ditem->insert(delem); else result=EC_MemoryExhausted;
-      }
-    } else result = EC_MemoryExhausted;
-    
+        Uint16 *outputData = new Uint16[opt_entries];
+        if (outputData == NULL)
+            result = EC_MemoryExhausted;
+        else
+        {
+            char explStr[1024];
+            if (opt_explanation != NULL)
+                strcpy(explStr, opt_explanation);
+            else
+                explStr[0] = 0;
+            OFString headerStr;
+            double *inputXData = NULL;
+            double *inputYData = NULL;
+            unsigned long inputEntries = 0;
+            double inputXMax = 0;
+            double inputYMax = 0;
+            if (readMapFile(opt_mapName, inputXData, inputYData, inputEntries, inputXMax, inputYMax) == EC_Normal)
+            {
+                result = convertInputLUT(opt_bits, opt_entries, opt_firstMapped, inputXData, inputYData, inputEntries,
+                    inputXMax, inputYMax, opt_order, outputData, headerStr, explStr);
+            }
+            else if (readTextFile(opt_textName, inputXData, inputYData, inputEntries, inputXMax, inputYMax) == EC_Normal)
+            {
+                result = convertInputLUT(opt_bits, opt_entries, opt_firstMapped, inputXData, inputYData, inputEntries,
+                    inputXMax, inputYMax, opt_order, outputData, headerStr, explStr);
+            } else {
+                gammaLUT(opt_bits, opt_entries, opt_firstMapped, opt_byteAlign, opt_gammaValue, outputData, headerStr, explStr);
+            }
+            if (result == EC_Normal)
+            {
+                result = createLUT((Uint16)opt_bits, opt_entries, opt_firstMapped, opt_byteAlign, opt_lutVR, *ditem,
+                    outputData, explStr);
+            }
+            delete[] inputXData;
+            delete[] inputYData;
+            writeTextOutput(opt_outText, opt_entries, opt_firstMapped, outputData, headerStr);
+        }
+        delete[] outputData;
+        if (EC_Normal != result)
+        {
+            cerr << "Error: could not create LUT, bailing out." << endl;
+            return 1;
+        }
+    } else
+        result = EC_MemoryExhausted;
+
     DcmSequenceOfItems *dseq = NULL;
     if (EC_Normal==result)
     {
-      if (createMLUT)
-      {
-        dseq = new DcmSequenceOfItems(DCM_ModalityLUTSequence);
-        if (dseq)
+        switch (opt_lutType)
         {
-          dataset->insert(dseq, OFTrue);
-          dseq->insert(ditem);
-        } else result = EC_MemoryExhausted;
-        delete dataset->remove(DCM_RescaleIntercept);
-        delete dataset->remove(DCM_RescaleSlope);
-        delete dataset->remove(DCM_RescaleType);
-      } else {
-        if (!replaceMode)
-        {
-          // search existing sequence
-          DcmStack stack;
-          if (EC_Normal == dataset->search(DCM_VOILUTSequence, stack, ESM_fromHere, OFFalse)) 
-            dseq=(DcmSequenceOfItems *)stack.top();
+            case LUT_Modality:
+                {
+                    DcmLongString modalityLUTType(DCM_ModalityLUTType);
+                    modalityLUTType.putString("US"); // unspecified Modality LUT
+                    DcmElement *delem = new DcmLongString(modalityLUTType);
+                    if (delem)
+                    {
+                        ditem->insert(delem);
+                        dseq = new DcmSequenceOfItems(DCM_ModalityLUTSequence);
+                        if (dseq)
+                        {
+                            dataset->insert(dseq, OFTrue);
+                            dseq->insert(ditem);
+                        } else
+                            result = EC_MemoryExhausted;
+                        delete dataset->remove(DCM_RescaleIntercept);
+                        delete dataset->remove(DCM_RescaleSlope);
+                        delete dataset->remove(DCM_RescaleType);
+                    } else
+                        result = EC_MemoryExhausted;
+                }
+                break;
+            case LUT_Presentation:
+                if (!opt_replaceMode)
+                {
+                    // search existing sequence
+                    DcmStack stack;
+                    if (EC_Normal == dataset->search(DCM_PresentationLUTSequence, stack, ESM_fromHere, OFFalse))
+                        dseq=(DcmSequenceOfItems *)stack.top();
+                }
+                if (dseq==NULL)
+                {
+                    dseq = new DcmSequenceOfItems(DCM_PresentationLUTSequence);
+                    if (dseq)
+                        dataset->insert(dseq, OFTrue);
+                    else
+                        result = EC_MemoryExhausted;
+                }
+                if (dseq)
+                    dseq->insert(ditem);
+                if (opt_replaceMode)
+                    delete dataset->remove(DCM_PresentationLUTShape);
+                break;
+            case LUT_VOI:
+                if (!opt_replaceMode)
+                {
+                    // search existing sequence
+                    DcmStack stack;
+                    if (EC_Normal == dataset->search(DCM_VOILUTSequence, stack, ESM_fromHere, OFFalse))
+                        dseq=(DcmSequenceOfItems *)stack.top();
+                }
+                if (dseq==NULL)
+                {
+                    dseq = new DcmSequenceOfItems(DCM_VOILUTSequence);
+                    if (dseq)
+                        dataset->insert(dseq, OFTrue);
+                    else
+                        result = EC_MemoryExhausted;
+                }
+                if (dseq)
+                    dseq->insert(ditem);
+                if (opt_replaceMode)
+                {
+                    delete dataset->remove(DCM_WindowCenter);
+                    delete dataset->remove(DCM_WindowWidth);
+                    delete dataset->remove(DCM_WindowCenterWidthExplanation);
+                }
+                break;
         }
-        if (dseq==NULL)
-        {
-          dseq = new DcmSequenceOfItems(DCM_VOILUTSequence);
-          if (dseq) dataset->insert(dseq, OFTrue); else result = EC_MemoryExhausted;
-        }
-        if (dseq) dseq->insert(ditem);
-        if (replaceMode)
-        {
-          delete dataset->remove(DCM_WindowCenter);
-          delete dataset->remove(DCM_WindowWidth);
-          delete dataset->remove(DCM_WindowCenterWidthExplanation);
-        }
-      }
     }
-    
+
     if (result != EC_Normal)
     {
-      cerr << "error while adding LUT to image dataset. Bailing out."<< endl;
-      return 1;
-    }
-    
-    DcmFileStream outf( opt_outName, DCM_WriteMode );
-    if ( outf.Fail() ) {
-	cerr << "cannot create file: " << opt_outName << endl;
-	return 1;
+        cerr << "error while adding LUT to image dataset. Bailing out."<< endl;
+        return 1;
     }
 
-    fileformat->transferInit();
-    error = fileformat->write(outf, dataset->getOriginalXfer());
-    fileformat->transferEnd();
-
-    if (error != EC_Normal) 
+    DcmFileStream outf(opt_outName, DCM_WriteMode);
+    if (outf.Fail())
     {
-	cerr << "Error: "  
-	     << dcmErrorConditionToString(error)
-	     << ": writing file: " <<  opt_outName << endl;
-	return 1;
+        cerr << "Error: cannot create file: " << opt_outName << endl;
+        return 1;
     }
-
+    if (opt_verbose)
+        cerr << "writing DICOM file ..." << endl;
+    fileformat->transferInit();
+    result = fileformat->write(outf, Xfer);
+    fileformat->transferEnd();
+    if (result != EC_Normal)
+    {
+        cerr << "Error: " << dcmErrorConditionToString(result) << ": writing file: " <<  opt_outName << endl;
+        return 1;
+    }
 
     return 0;
-
 }
 
 
 /*
-** CVS/RCS Log:
-** $Log: dcmmklut.cc,v $
-** Revision 1.5  1999-07-28 11:21:07  meichel
-** New options in dcmmklut:
-** - creation of LUTs with 65536 entries
-** - creation of LUT data with VR=OW, US or SS
-** - creation of LUT descriptor with VR=US or SS
-**
-** Revision 1.4  1999/05/04 15:27:22  meichel
-** Minor code purifications to keep gcc on OSF1 quiet.
-**
-** Revision 1.3  1999/05/03 14:16:37  joergr
-** Minor code purifications to keep Sun CC 2.0.1 quiet.
-**
-** Revision 1.2  1999/04/28 15:45:05  meichel
-** Cleaned up module dcmpstat apps, adapted to new command line class
-**   and added short documentation.
-**
-** Revision 1.1  1998/12/14 16:05:48  meichel
-** Added sample application that creates Modality and VOI LUTs
-**   with gamma curve characteristics.
-**
-** Revision 1.1  1998/11/27 14:50:19  meichel
-** Initial Release.
-**
-*/
+ * CVS/RCS Log:
+ * $Log: dcmmklut.cc,v $
+ * Revision 1.6  1999-10-14 19:08:48  joergr
+ * Merged command line tool 'dconvmap' into 'dcmmklut' and enhanced its
+ * facilities (e.g. integrated new polynomial curve fitting algorithm).
+ *
+ * Revision 1.5  1999/07/28 11:21:07  meichel
+ * New options in dcmmklut:
+ * - creation of LUTs with 65536 entries
+ * - creation of LUT data with VR=OW, US or SS
+ * - creation of LUT descriptor with VR=US or SS
+ *
+ * Revision 1.4  1999/05/04 15:27:22  meichel
+ * Minor code purifications to keep gcc on OSF1 quiet.
+ *
+ * Revision 1.3  1999/05/03 14:16:37  joergr
+ * Minor code purifications to keep Sun CC 2.0.1 quiet.
+ *
+ * Revision 1.2  1999/04/28 15:45:05  meichel
+ * Cleaned up module dcmpstat apps, adapted to new command line class
+ *   and added short documentation.
+ *
+ * Revision 1.1  1998/12/14 16:05:48  meichel
+ * Added sample application that creates Modality and VOI LUTs
+ *   with gamma curve characteristics.
+ *
+ * Revision 1.1  1998/11/27 14:50:19  meichel
+ * Initial Release.
+ *
+ */
