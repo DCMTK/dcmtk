@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-07-03 14:04:01 $
- *  CVS/RCS Revision: $Revision: 1.63 $
+ *  Update Date:      $Date: 2000-07-12 12:49:05 $
+ *  CVS/RCS Revision: $Revision: 1.64 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1832,16 +1832,14 @@ E_Condition DVPresentationState::createPreviewImage(unsigned long maxWidth,
     renderPixelData();
     unsigned long width = maxWidth;
     unsigned long height = maxHeight;
-    double ratio = getPrintBitmapPixelAspectRatio();
+    double ratio = getPrintBitmapPixelAspectRatio();    // never 0 !
     if ((double)renderedImageWidth / (double)maxWidth * ratio < (double)renderedImageHeight / (double)maxHeight)
       width = 0;
     else
       height = 0;
     if (clipMode)
     {
-
       /* not yet implemented: clip preview image to current displayed area */
-
     }
     double oldRatio = currentImage->getWidthHeightRatio();
     currentImage->setWidthHeightRatio(ratio);
@@ -4123,7 +4121,10 @@ void DVPresentationState::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgM
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.63  2000-07-03 14:04:01  joergr
+ *  Revision 1.64  2000-07-12 12:49:05  joergr
+ *  Added comment.
+ *
+ *  Revision 1.63  2000/07/03 14:04:01  joergr
  *  Fixed bug: VOI LUT transform defined per frame was not supported by the
  *  method renderPixelData().
  *
