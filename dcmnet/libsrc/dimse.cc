@@ -56,10 +56,10 @@
 **
 **      Module Prefix: DIMSE_
 **
-** Last Update:         $Author: wilkens $
-** Update Date:         $Date: 2001-11-01 13:49:03 $
+** Last Update:         $Author: meichel $
+** Update Date:         $Date: 2001-12-19 09:43:46 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimse.cc,v $
-** CVS/RCS Revision:    $Revision: 1.27 $
+** CVS/RCS Revision:    $Revision: 1.28 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1409,37 +1409,51 @@ DIMSE_receiveDataSetInFile(T_ASC_Association *assoc,
 
     while (!last)
     {
-          cond = DIMSE_readNextPDV(assoc, blocking, timeout, &pdv);
-          if (cond != EC_Normal) break;
+        cond = DIMSE_readNextPDV(assoc, blocking, timeout, &pdv);
+        if (cond != EC_Normal) last = OFTrue; // terminate loop
+
+        if (!last)
+        {
           if (pdv.pdvType != DUL_DATASETPDV)
           {
             cond = DIMSE_UNEXPECTEDPDVTYPE;
-            break;
+            last = OFTrue;
           }
+        }
+
+        if (!last)
+        {
           if (pdvCount == 0)
           {
             pid = pdv.presentationContextID;
             /* is this a valid presentation context ? */
             cond = getTransferSyntax(assoc, pid, &xferSyntax);
-            if (cond.bad()) break;
+            if (cond.bad()) last = OFTrue; // terminate loop
           }
           else if (pdv.presentationContextID != pid)
           {
-
             char buf1[256]; 
             sprintf(buf1, "DIMSE: Different PIDs inside Data Set: %d != %d", pid, pdv.presentationContextID);
             OFCondition subCond = makeDcmnetCondition(DIMSEC_INVALIDPRESENTATIONCONTEXTID, OF_error, buf1);
             cond = makeDcmnetSubCondition(DIMSEC_RECEIVEFAILED, OF_error, "DIMSE Failed to receive message", subCond);
-            break;
+            last = OFTrue; // terminate loop
           }
+        }
+
+        if (!last)
+        {
           if ((pdv.fragmentLength % 2) != 0)
           {
             /* This should NEVER happen.  See Part 7, Annex F. */
             char buf2[256]; 
             sprintf(buf2, "DIMSE: Odd Fragment Length: %lu", pdv.fragmentLength);
             cond = makeDcmnetCondition(DIMSEC_RECEIVEFAILED, OF_error, buf2);
-            break;
+            last = OFTrue; // terminate loop
           }
+        }
+
+        if (!last)
+        {
           filestream->WriteBytes((void *)(pdv.data), (Uint32)(pdv.fragmentLength));
           if (filestream->Fail())
           {
@@ -1448,20 +1462,25 @@ DIMSE_receiveDataSetInFile(T_ASC_Association *assoc,
               {
                 cond = makeDcmnetCondition(DIMSEC_OUTOFRESOURCES, OF_error, "DIMSE_receiveDataSetInFile: Cannot write to file");
               }
-             break;
+              last = OFTrue; // terminate loop
           }
+        }
+
+        if (!last)
+        {
           bytesRead += pdv.fragmentLength;
           pdvCount++;
           last = pdv.lastPDV;
           if (debug)
           {
              COUT << "DIMSE receiveFileData: " << pdv.fragmentLength
-            << " bytes read (last: " << ((last)?("YES"):("NO")) << ")" << endl;
+             << " bytes read (last: " << ((last)?("YES"):("NO")) << ")" << endl;
           }
           if (callback)
           { /* execute callback function */
             callback(callbackData, bytesRead);
           }
+        }
     }
 
     /* set the Presentation Context ID we received */
@@ -1543,7 +1562,8 @@ DIMSE_receiveDataSetInMemory(T_ASC_Association * assoc,
 
     /* start a loop in which we want to read the data set from the incoming socket stream. */
     /* Since the data set could stretch over more than one PDU, the use of a loop is mandatory. */
-    while (!last && cond == EC_Normal) {
+    while (!last && cond == EC_Normal)
+    {
     
         /* make the stream remember any unread bytes */
         dataBuf.ReleaseBuffer();
@@ -1553,15 +1573,17 @@ DIMSE_receiveDataSetInMemory(T_ASC_Association * assoc,
         cond = DIMSE_readNextPDV(assoc, blocking, timeout, &pdv);
 
         /* if some error occurred, end the loop */
-        if (cond != EC_Normal) {
-            break;
-        }
+        if (cond != EC_Normal) last = OFTrue;
 
         /* we are expecting to see a data set PDV; if the PDV which was received does not refer */
         /* to a data set, set the error indicating variable correspondingly and end the loop. */
-        if (pdv.pdvType != DUL_DATASETPDV) {
+        if (!last)
+        {
+          if (pdv.pdvType != DUL_DATASETPDV)
+          {
             cond = DIMSE_UNEXPECTEDPDVTYPE;
-            break;
+            last = OFTrue;
+          }
         }
 
         /* if this is the first loop iteration, get the presentation context ID which is captured */
@@ -1569,72 +1591,90 @@ DIMSE_receiveDataSetInMemory(T_ASC_Association * assoc,
         /* to (this is also a check concerning the question if the presentation context ID is valid). */
         /* If this is not the first loop iteration, check if the presentation context IDs in the */
         /* current PDV and in the last PDV are identical. If they are not, return an error. */
-        if (pdvCount == 0) {
-            pid = pdv.presentationContextID;
-
-            cond = getTransferSyntax(assoc, pid, &xferSyntax);
-            if (cond.bad()) 
-                break;
-                
-        } else if (pdv.presentationContextID != pid) {
-            char buf1[256];
-            sprintf(buf1, "DIMSE: Different PIDs inside Data Set: %d != %d", pid, pdv.presentationContextID);
-            OFCondition subCond = makeDcmnetCondition(DIMSEC_INVALIDPRESENTATIONCONTEXTID, OF_error, buf1);
-            cond = makeDcmnetSubCondition(DIMSEC_RECEIVEFAILED, OF_error, "DIMSE Failed to receive message", subCond);
-            break;
-        }
-
-        /* check if the fragment length of the current PDV is odd. This should */
-        /* never happen (see DICOM standard (year 2000) part 7, annex F) (or */
-        /* the corresponding section in a later version of the standard.) */
-        if ((pdv.fragmentLength % 2) != 0) {
-            char buf2[256];
-            sprintf(buf2, "DIMSE: Odd Fragment Length: %lu", pdv.fragmentLength);
-            cond = makeDcmnetCondition(DIMSEC_RECEIVEFAILED, OF_error, buf2);
-            break;
-        }
-
-        /* if information is contained the PDVs fragment, we want to insert this information into the buffer */
-        if (pdv.fragmentLength > 0) {
-            dataBuf.SetBuffer(pdv.data, pdv.fragmentLength);
-        }
-
-        /* if this fragment contains the last fragment of the data set, set the end of the stream */
-        if (pdv.lastPDV) {
-            dataBuf.SetEndOfStream();
-        }
-        
-        /* insert the information which is contained in the buffer into the DcmDataset variable. Mind the */
-        /* transfer syntax which was specified through the presentation context ID of the first PDV. */
-        econd = dset->read(dataBuf, xferSyntax);
-        if (econd != EC_Normal && econd != EC_StreamNotifyClient)
+        if (!last)
         {
-            DIMSE_warning(assoc, "DIMSE_receiveDataSetInMemory: dset->read() Failed (%s)", econd.text());
-            cond = DIMSE_RECEIVEFAILED;
-            break;
+            if (pdvCount == 0)
+            {
+                pid = pdv.presentationContextID;
+            
+                cond = getTransferSyntax(assoc, pid, &xferSyntax);
+                if (cond.bad()) last = OFTrue;
+            } 
+            else if (pdv.presentationContextID != pid) 
+            {
+                char buf1[256];
+                sprintf(buf1, "DIMSE: Different PIDs inside Data Set: %d != %d", pid, pdv.presentationContextID);
+                OFCondition subCond = makeDcmnetCondition(DIMSEC_INVALIDPRESENTATIONCONTEXTID, OF_error, buf1);
+                cond = makeDcmnetSubCondition(DIMSEC_RECEIVEFAILED, OF_error, "DIMSE Failed to receive message", subCond);
+                last = OFTrue;
+            }
         }
 
-        /* update the counter that counts how many bytes were read from the incoming socket */
-        /* stream. This variable will only be used for dumpimg general information. */
-        bytesRead += pdv.fragmentLength;
-
-        /* update the counter that counts how many PDVs were received on the incoming */
-        /* socket stream. This variable will be used for determining the first */
-        /* loop iteration and dumpimg general information. */
-        pdvCount++;
-
-        /* update the variable which will be evaluated at the beginning of each loop iteration. */
-        last = pdv.lastPDV;
-
-        /* dump information if required */
-        if (debug) {
-            COUT << "DIMSE receiveFileData: " << pdv.fragmentLength
-            << " bytes read (last: " << ((last)?("YES"):("NO")) << ")" << endl;
+        if (!last)
+        {
+            /* check if the fragment length of the current PDV is odd. This should */
+            /* never happen (see DICOM standard (year 2000) part 7, annex F) (or */
+            /* the corresponding section in a later version of the standard.) */
+            if ((pdv.fragmentLength % 2) != 0) 
+            {
+                char buf2[256];
+                sprintf(buf2, "DIMSE: Odd Fragment Length: %lu", pdv.fragmentLength);
+                cond = makeDcmnetCondition(DIMSEC_RECEIVEFAILED, OF_error, buf2);
+                last = OFTrue;
+            }
         }
 
-        /* execute callback function after each received PDV */
-        if (callback) {
-            callback(callbackData, bytesRead);
+        if (!last)
+        {
+            /* if information is contained the PDVs fragment, we want to insert this information into the buffer */
+            if (pdv.fragmentLength > 0) 
+            {
+                dataBuf.SetBuffer(pdv.data, pdv.fragmentLength);
+            }
+            
+            /* if this fragment contains the last fragment of the data set, set the end of the stream */
+            if (pdv.lastPDV) 
+            {
+                dataBuf.SetEndOfStream();
+            }
+            
+            /* insert the information which is contained in the buffer into the DcmDataset variable. Mind the */
+            /* transfer syntax which was specified through the presentation context ID of the first PDV. */
+            econd = dset->read(dataBuf, xferSyntax);
+            if (econd != EC_Normal && econd != EC_StreamNotifyClient)
+            {
+                DIMSE_warning(assoc, "DIMSE_receiveDataSetInMemory: dset->read() Failed (%s)", econd.text());
+                cond = DIMSE_RECEIVEFAILED;
+                last = OFTrue;
+            }
+        }
+
+        if (!last)
+        {
+            /* update the counter that counts how many bytes were read from the incoming socket */
+            /* stream. This variable will only be used for dumpimg general information. */
+            bytesRead += pdv.fragmentLength;
+            
+            /* update the counter that counts how many PDVs were received on the incoming */
+            /* socket stream. This variable will be used for determining the first */
+            /* loop iteration and dumpimg general information. */
+            pdvCount++;
+            
+            /* update the variable which will be evaluated at the beginning of each loop iteration. */
+            last = pdv.lastPDV;
+            
+            /* dump information if required */
+            if (debug) 
+            {
+                COUT << "DIMSE receiveFileData: " << pdv.fragmentLength
+                << " bytes read (last: " << ((last)?("YES"):("NO")) << ")" << endl;
+            }
+            
+            /* execute callback function after each received PDV */
+            if (callback) 
+            {
+                callback(callbackData, bytesRead);
+            }
         }
     }
 
@@ -1686,7 +1726,11 @@ void DIMSE_warning(T_ASC_Association *assoc,
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
-** Revision 1.27  2001-11-01 13:49:03  wilkens
+** Revision 1.28  2001-12-19 09:43:46  meichel
+** Restructured functions DIMSE_receiveDataSetInMemory and
+**   DIMSE_receiveDataSetInFile to avoid warnings on Sun CC 2.0.1
+**
+** Revision 1.27  2001/11/01 13:49:03  wilkens
 ** Added lots of comments.
 **
 ** Revision 1.26  2001/10/12 10:18:35  meichel
