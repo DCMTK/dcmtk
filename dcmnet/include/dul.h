@@ -44,9 +44,9 @@
 ** Intent:		This file defines the public structures and constants
 **			and the function prototypes for the DUL (DICOM Upper
 **			Layer) facility.
-** Last Update:		$Author: hewett $, $Date: 1997-01-13 15:53:02 $
+** Last Update:		$Author: andreas $, $Date: 1997-07-21 08:40:11 $
 ** Source File:		$RCSfile: dul.h,v $
-** Revision:		$Revision: 1.2 $
+** Revision:		$Revision: 1.3 $
 ** Status:		$State: Exp $
 */
 
@@ -163,7 +163,7 @@ typedef struct {
     unsigned long fragmentLength;
     unsigned char presentationContextID;
     DUL_DATAPDV pdvType;
-    CTNBOOLEAN lastPDV;
+    OFBool lastPDV;
     void *data;
 }   DUL_PDV;
 
@@ -344,7 +344,7 @@ DUL_RegPDUCall(void (*callback) (), int callbackType, void *ctx);
 /* Miscellaneous functions.
 */
 char *DUL_Message(CONDITION cond);
-void DUL_Debug(CTNBOOLEAN flag);
+void DUL_Debug(OFBool flag);
 CONDITION
 DUL_AssociationParameter(DUL_ASSOCIATIONKEY ** association,
 			 DUL_ASSOCIATION_PARAMETER param, DUL_DATA_TYPE type,
@@ -357,7 +357,7 @@ DUL_PRESENTATIONCONTEXTID ctxID, unsigned char reason, char *abstractSyntax,
 void DUL_DumpParams(DUL_ASSOCIATESERVICEPARAMETERS * params);
 CONDITION DUL_ClearServiceParameters(DUL_ASSOCIATESERVICEPARAMETERS * params);
 void DUL_DefaultServiceParameters(DUL_ASSOCIATESERVICEPARAMETERS * params);
-void DUL_Blog(CTNBOOLEAN flag);
+void DUL_Blog(OFBool flag);
 
 /*
 ** Additional functions (from dulextra.cc) needed to support 
@@ -367,11 +367,11 @@ void DUL_Blog(CTNBOOLEAN flag);
 
 int
 DUL_associationSocket(DUL_ASSOCIATIONKEY * callerAssociation);
-BOOLEAN 
+OFBool 
 DUL_dataWaiting(DUL_ASSOCIATIONKEY * callerAssociation, int timeout);
 int 
 DUL_networkSocket(DUL_NETWORKKEY * callerNet);
-BOOLEAN 
+OFBool 
 DUL_associationWaiting(DUL_NETWORKKEY * callerNet, int timeout);
 
 /*
@@ -449,7 +449,11 @@ DUL_associationWaiting(DUL_NETWORKKEY * callerNet, int timeout);
 /*
 ** CVS Log
 ** $Log: dul.h,v $
-** Revision 1.2  1997-01-13 15:53:02  hewett
+** Revision 1.3  1997-07-21 08:40:11  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.2  1997/01/13 15:53:02  hewett
 ** Added missing function prototypes (required for CodeWarrior 10).
 **
 ** Revision 1.1.1.1  1996/03/26 18:38:44  hewett

@@ -67,10 +67,10 @@
 **	Module Prefix: ASC_
 **
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-05-05 13:05:53 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-07-21 08:40:08 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/assoc.h,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -373,13 +373,13 @@ ASC_dumpPresentationContext(T_ASC_PresentationContext * presentationContext);
  * Association Inquiries
  */
 
-BOOLEAN
+OFBool
 ASC_associationWaiting(T_ASC_Network * network, int timeout);
 
-BOOLEAN
+OFBool
 ASC_dataWaiting(T_ASC_Association * association, int timeout);
 
-BOOLEAN
+OFBool
 ASC_selectReadableAssociation(
     T_ASC_Association* assocs[], 
     int assocCount, int timeout);
@@ -482,7 +482,11 @@ ASC_destroyAssociation(T_ASC_Association ** association);
 /*
 ** CVS Log
 ** $Log: assoc.h,v $
-** Revision 1.4  1997-05-05 13:05:53  meichel
+** Revision 1.5  1997-07-21 08:40:08  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.4  1997/05/05 13:05:53  meichel
 ** Removed unused constant DICOM_MAXPRESENTATIONCONTEXTS.
 **
 ** Revision 1.3  1997/05/05 10:30:08  meichel

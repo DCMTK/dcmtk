@@ -67,16 +67,16 @@
 
 #include "dicom.h"
 
-typedef BOOLEAN (*CALLBACK_TYPE)();
+typedef OFBool (*CALLBACK_TYPE)();
 
 CONDITION COND_PushCondition(CONDITION cond, char *controlString, ...);
 CONDITION COND_ExtractConditions(CALLBACK_TYPE callback) ;
 CONDITION COND_TopCondition(CONDITION *condition, char *text,
 	unsigned long maxlength);
-CONDITION COND_PopCondition(BOOLEAN clearstack);
+CONDITION COND_PopCondition(OFBool clearstack);
 CONDITION COND_EstablishError(CALLBACK_TYPE callback);
 void COND_DumpConditions(void);
-CONDITION COND_ExtractConditions(BOOLEAN (*callback)(CONDITION cond, char *str));
+CONDITION COND_ExtractConditions(OFBool (*callback)(CONDITION cond, char *str));
 CONDITION COND_EstablishCallback(void (* callback)(CONDITION cond, char *str));
 
 /*  Now define the fixed values for conditions returned by this

@@ -35,10 +35,10 @@
 **		Kuratorium OFFIS e.V., Oldenburg, Germany
 ** Created:	03/96
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-05-30 07:33:21 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-07-21 08:37:02 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/findscu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.13 $
+** CVS/RCS Revision:	$Revision: 1.14 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -84,9 +84,9 @@ static char rcsid[] = "$dcmtk: findscu v"
 
 
 static char *progname = NULL;
-static BOOLEAN verbose = FALSE;
-static BOOLEAN debug = FALSE;
-static BOOLEAN abortAssociation = FALSE;
+static OFBool verbose = OFFalse;
+static OFBool debug = OFFalse;
+static OFBool abortAssociation = OFFalse;
 static int maxReceivePDULength = ASC_DEFAULTMAXPDU;
 static int repeatCount = 1;
 
@@ -191,7 +191,7 @@ addOverrideKey(char* s)
 	overrideKeys = new DcmDataset;
     }
 
-    overrideKeys->insert(elem, TRUE);
+    overrideKeys->insert(elem, OFTrue);
     if (overrideKeys->error() != EC_Normal) {
 	errmsg("cannot insert tag: (%04x,%04x)", g, e);
 	usage();
@@ -250,17 +250,17 @@ main(int argc, char *argv[])
     for (i = 1; i < argc && argv[i][0] == '-'; i++) {
 	switch (argv[i][1]) {
 	case 'u':
-	    dcmEnableUnknownVRGeneration = TRUE;
+	    dcmEnableUnknownVRGeneration = OFTrue;
 	    break;
 	case 'v':
-	    verbose = TRUE;
+	    verbose = OFTrue;
 	    break;
 	case 'd':
-	    debug = TRUE;
-	    verbose = TRUE;
+	    debug = OFTrue;
+	    verbose = OFTrue;
 	    break;
 	case 'a':
-	    abortAssociation = TRUE;
+	    abortAssociation = OFTrue;
 	    break;
 	case 'r':
 	    if (((i + 1) < argc) && (argv[i + 1][0] != '-') &&
@@ -558,7 +558,7 @@ substituteOverrideKeys(DcmDataset *dset)
     for (unsigned long i=0; i<elemCount; i++) {
 	DcmElement *elem = keys.remove((unsigned long)0);
 
-	dset->insert(elem, TRUE);
+	dset->insert(elem, OFTrue);
     }
 }
 
@@ -678,7 +678,11 @@ cfind(T_ASC_Association * assoc, const char *fname)
 /*
 ** CVS Log
 ** $Log: findscu.cc,v $
-** Revision 1.13  1997-05-30 07:33:21  meichel
+** Revision 1.14  1997-07-21 08:37:02  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.13  1997/05/30 07:33:21  meichel
 ** Added space characters around comments and simplified
 ** some inlining code (needed for SunCC 2.0.1).
 **

@@ -67,10 +67,10 @@
 **	OFFIS/University of Oldenburg, Germany.
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-02-06 12:15:41 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-07-21 08:40:09 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/dicom.h,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -135,12 +135,6 @@ typedef unsigned long CONDITION;
 #define FAC_CNF		13
 #define FAC_APP 	0x0fff	/* for stand-alone programs	*/
 
-#ifndef TRUE
-#define TRUE	1
-#define	FALSE	0
-#endif
-
-
 
 /*
  * Useful Types
@@ -150,11 +144,6 @@ typedef unsigned long CONDITION;
 typedef Uint16	U_SHORT;	/* normal unsigned short*/
 typedef Uint32	U_LONG;		/* normal unsigned long */
 typedef Uint32	MASK_32;	/* For bit masks	*/
-#ifndef windows
-/* The Windows include files define their own version of BOOLEAN */
-typedef BOOL	BOOLEAN;	/* for boolean ops	*/
-#endif
-typedef BOOL    CTNBOOLEAN;
 
 
 #define DICOM_STDAPPLICATIONCONTEXT UID_StandardApplicationContext
@@ -219,7 +208,11 @@ typedef char	DIC_NODENAME[DIC_NODENAME_LEN + 1];
 /*
 ** CVS Log
 ** $Log: dicom.h,v $
-** Revision 1.3  1997-02-06 12:15:41  hewett
+** Revision 1.4  1997-07-21 08:40:09  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.3  1997/02/06 12:15:41  hewett
 ** Updated preliminary Apple Macintosh support for the Metrowerks CodeWarrior
 ** version 11 compiler and environment.
 **

@@ -14,11 +14,12 @@ configdir=@top_srcdir@/@configdir@
 include $(configdir)/@common_makefile@
 
 dcmdatadir=$(top_srcdir)/../dcmdata
+ofstddir=$(top_srcdir)/../ofstd
 
-LOCALINCLUDES=-I$(dcmdatadir)/include -I$(includedir)/dcmdata
+LOCALINCLUDES=-I$(ofstddir)/include -I$(dcmdatadir)/include -I$(includedir)/ofstd -I$(includedir)/dcmdata
 
-LIBDIRS = -L$(top_srcdir)/libsrc -L$(dcmdatadir)/libsrc -L$(libdir)
-LOCALLIBS = -ldcmnet -ldcmdata
+LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(dcmdatadir)/libsrc -L$(libdir)
+LOCALLIBS = -ldcmnet -ldcmdata -lofstd
 
 objs= echoscu.o storescu.o storescp.o findscu.o movescu.o
 

@@ -56,10 +56,10 @@
 **
 **	Module Prefix: DIMSE_
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-05-23 10:47:06 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-07-21 08:40:10 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/dimse.h,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -657,7 +657,7 @@ DIMSE_findUser(
 typedef void (*DIMSE_FindProviderCallback)(
 	/* in */ 
 	void *callbackData,  
-	BOOLEAN cancelled, T_DIMSE_C_FindRQ *request, 
+	OFBool cancelled, T_DIMSE_C_FindRQ *request, 
 	DcmDataset *requestIdentifiers, int responseCount,
 	/* out */
 	T_DIMSE_C_FindRSP *response,
@@ -714,7 +714,7 @@ DIMSE_moveUser(
 typedef void (*DIMSE_MoveProviderCallback)(
 	/* in */ 
 	void *callbackData,  
-	BOOLEAN cancelled, T_DIMSE_C_MoveRQ *request, 
+	OFBool cancelled, T_DIMSE_C_MoveRQ *request, 
 	DcmDataset *requestIdentifiers, int responseCount,
 	/* out */
 	T_DIMSE_C_MoveRSP *response, DcmDataset **statusDetail,	
@@ -927,7 +927,11 @@ void DIMSE_printNDeleteRSP(FILE * f, T_DIMSE_N_DeleteRSP * rsp);
 /*
 ** CVS Log
 ** $Log: dimse.h,v $
-** Revision 1.3  1997-05-23 10:47:06  meichel
+** Revision 1.4  1997-07-21 08:40:10  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.3  1997/05/23 10:47:06  meichel
 ** Major rewrite of storescp application. See CHANGES for details.
 ** Changes required to interfaces of some DIMSE functions.
 **

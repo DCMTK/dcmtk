@@ -36,9 +36,9 @@
 ** Created:	03/96
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-06-26 12:53:08 $
+** Update Date:		$Date: 1997-07-21 08:37:03 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.16 $
+** CVS/RCS Revision:	$Revision: 1.17 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -100,14 +100,14 @@ typedef struct {
 T_ASC_Network *net = NULL; /* the global DICOM network */
 
 static char *progname = NULL;
-static BOOLEAN verbose = FALSE;
-static BOOLEAN debug = FALSE;
-static BOOLEAN abortAssociation = FALSE;
+static OFBool verbose = OFFalse;
+static OFBool debug = OFFalse;
+static OFBool abortAssociation = OFFalse;
 static int maxReceivePDULength = ASC_DEFAULTMAXPDU;
 static int repeatCount = 1;
 static int cancelAfterNResponses = -1;
 static int retrievePort = 104;
-static BOOLEAN ignoreStoreData = FALSE;
+static OFBool ignoreStoreData = OFFalse;
 static char *moveDestination = NULL;
 static QueryModel queryModel = QMPatientRoot;
 
@@ -222,7 +222,7 @@ addOverrideKey(char* s)
 	overrideKeys = new DcmDataset;
     }
 
-    overrideKeys->insert(elem, TRUE);
+    overrideKeys->insert(elem, OFTrue);
     if (overrideKeys->error() != EC_Normal) {
 	errmsg("cannot insert tag: (%04x,%04x)", g, e);
 	usage();
@@ -281,7 +281,7 @@ main(int argc, char *argv[])
     for (i = 1; i < argc && argv[i][0] == '-'; i++) {
 	switch (argv[i][1]) {
 	case 'u':
-	    dcmEnableUnknownVRGeneration = TRUE;
+	    dcmEnableUnknownVRGeneration = OFTrue;
 	    break;
 	case 'P':
 	    queryModel = QMPatientRoot;
@@ -293,17 +293,17 @@ main(int argc, char *argv[])
 	    queryModel = QMPatientStudyOnly;
 	    break;
 	case 'v':
-	    verbose = TRUE;
+	    verbose = OFTrue;
 	    break;
 	case 'd':
-	    debug = TRUE;
-	    verbose = TRUE;
+	    debug = OFTrue;
+	    verbose = OFTrue;
 	    break;
 	case 'a':
-	    abortAssociation = TRUE;
+	    abortAssociation = OFTrue;
 	    break;
 	case 'i':
-	    ignoreStoreData = TRUE;
+	    ignoreStoreData = OFTrue;
 	    break;
 	case 'r':
 	    if (((i + 1) < argc) && (argv[i + 1][0] != '-') &&
@@ -868,11 +868,11 @@ subOpSCP(T_ASC_Association **subAssoc)
     /* clean up on association termination */
     if (cond == DIMSE_PEERREQUESTEDRELEASE) {
         /* pop only the peer requested release condition from the stack */
-	COND_PopCondition(FALSE);	
+	COND_PopCondition(OFFalse);	
 	cond = ASC_acknowledgeRelease(*subAssoc);
     } else if (cond == DIMSE_PEERABORTEDASSOCIATION) {
-	COND_PopCondition(FALSE);	/* pop DIMSE abort */
-	COND_PopCondition(FALSE);	/* pop DUL abort */
+	COND_PopCondition(OFFalse);	/* pop DIMSE abort */
+	COND_PopCondition(OFFalse);	/* pop DUL abort */
     } else if (cond != DIMSE_NORMAL) {
 	errmsg("DIMSE Failure (aborting sub-association):\n");
 	COND_DumpConditions();
@@ -946,7 +946,7 @@ substituteOverrideKeys(DcmDataset *dset)
     for (unsigned long i=0; i<elemCount; i++) {
 	DcmElement *elem = keys.remove((unsigned long)0);
 
-	dset->insert(elem, TRUE);
+	dset->insert(elem, OFTrue);
     }
 }
 
@@ -1065,7 +1065,11 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.16  1997-06-26 12:53:08  andreas
+** Revision 1.17  1997-07-21 08:37:03  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.16  1997/06/26 12:53:08  andreas
 ** - Include tests for changing of user IDs and the using of fork
 **   in code since Windows NT/95 do not support this
 ** - Corrected error interchanged parameters in a call

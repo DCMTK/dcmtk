@@ -34,10 +34,10 @@
 ** Author: Andrew Hewett
 **		Kuratorium OFFIS e.V., Oldenburg, Germany
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-05-29 15:52:57 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-07-21 08:37:04 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
-** CVS/RCS Revision:	$Revision: 1.12 $
+** CVS/RCS Revision:	$Revision: 1.13 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -196,7 +196,7 @@ int main(int argc, char *argv[])
     return 1;
   }
   
-  dcmEnableUnknownVRGeneration = TRUE;
+  dcmEnableUnknownVRGeneration = OFTrue;
   char *arg = NULL;
   for (i=1; i<argc; i++)
   {
@@ -344,8 +344,8 @@ int main(int argc, char *argv[])
                fprintf(stderr, "options +B and %s are mutually exclusive\n",arg);
                return 1;
              } else {
-               if (arg[0] == '-') dcmEnableUnknownVRGeneration = FALSE;
-               else dcmEnableUnknownVRGeneration = TRUE;
+               if (arg[0] == '-') dcmEnableUnknownVRGeneration = OFFalse;
+               else dcmEnableUnknownVRGeneration = OFTrue;
                opt_bypassDisabled = arg;
              }
            } else {
@@ -784,7 +784,7 @@ acceptAssociation(T_ASC_Network * net)
 
   if (cond == DIMSE_PEERREQUESTEDRELEASE)
   {
-    COND_PopCondition(FALSE); 
+    COND_PopCondition(OFFalse); 
       /* pop only the peer requested
        * release condition from the stack */
     if (opt_verbose) printf("Association Release\n");
@@ -792,8 +792,8 @@ acceptAssociation(T_ASC_Network * net)
   } 
   else if (cond == DIMSE_PEERABORTEDASSOCIATION)
   {
-    COND_PopCondition(FALSE);  /* pop DIMSE abort */
-    COND_PopCondition(FALSE);  /* pop DUL abort */
+    COND_PopCondition(OFFalse);  /* pop DIMSE abort */
+    COND_PopCondition(OFFalse);  /* pop DUL abort */
     if (opt_verbose) printf("Association Aborted\n");
   } else {
     fprintf(stderr, "storescp: DIMSE Failure (aborting association):\n");
@@ -1084,7 +1084,11 @@ static CONDITION storeSCP(
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.12  1997-05-29 15:52:57  meichel
+** Revision 1.13  1997-07-21 08:37:04  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.12  1997/05/29 15:52:57  meichel
 ** Added constant for dcmtk release date in dcuid.h.
 ** All dcmtk applications now contain a version string
 ** which is displayed with the command line options ("usage" message)

@@ -34,10 +34,10 @@
 ** Author: 	Andrew Hewett
 **		Kuratorium OFFIS e.V., Oldenburg, Germany
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-05-29 15:52:55 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-07-21 08:37:02 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/echoscu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.9 $
+** CVS/RCS Revision:	$Revision: 1.10 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -75,9 +75,9 @@ static char rcsid[] = "$dcmtk: echoscu v"
 #define PEERAPPLICATIONTITLE	"ANY-SCP"
 
 static char *progname = NULL;
-static BOOLEAN verbose = FALSE;
-static BOOLEAN debug = FALSE;
-static BOOLEAN abortAssociation = FALSE;
+static OFBool verbose = OFFalse;
+static OFBool debug = OFFalse;
+static OFBool abortAssociation = OFFalse;
 static int maxReceivePDULength = ASC_DEFAULTMAXPDU;
 static int repeatCount = 1;
 
@@ -178,14 +178,14 @@ main(int argc, char *argv[])
     for (i = 1; i < argc && argv[i][0] == '-'; i++) {
 	switch (argv[i][1]) {
 	case 'v':
-	    verbose = TRUE;
+	    verbose = OFTrue;
 	    break;
 	case 'd':
-	    debug = TRUE;
-	    verbose = TRUE;
+	    debug = OFTrue;
+	    verbose = OFTrue;
 	    break;
 	case 'a':
-	    abortAssociation = TRUE;
+	    abortAssociation = OFTrue;
 	    break;
 	case 'r':
 	    if (((i + 1) < argc) && (argv[i + 1][0] != '-') &&
@@ -449,7 +449,11 @@ cecho(T_ASC_Association * assoc)
 /*
 ** CVS Log
 ** $Log: echoscu.cc,v $
-** Revision 1.9  1997-05-29 15:52:55  meichel
+** Revision 1.10  1997-07-21 08:37:02  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.9  1997/05/29 15:52:55  meichel
 ** Added constant for dcmtk release date in dcuid.h.
 ** All dcmtk applications now contain a version string
 ** which is displayed with the command line options ("usage" message)

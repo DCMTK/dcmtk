@@ -57,10 +57,10 @@
 ** Module Prefix: DU_
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-26 18:38:45 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-07-21 08:40:11 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/diutil.h,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -78,7 +78,7 @@
 const char* 
 DU_sopClassToModality(const char *sopClassUID);
 
-BOOLEAN 
+OFBool 
 DU_isStorageSOPClass(const char *sopClassUID);
 
 unsigned long
@@ -91,23 +91,23 @@ DU_stripLeadingSpaces(char *s);
 char*
 DU_stripLeadingAndTrailingSpaces(char *s);
 
-BOOLEAN
+OFBool
 DU_getStringDOElement(DcmItem *obj, DcmTagKey t, char *s);
 
-BOOLEAN
+OFBool
 DU_putStringDOElement(DcmItem *obj, DcmTagKey t, char *s);
 
-BOOLEAN
+OFBool
 DU_getShortDOElement(DcmItem *obj, DcmTagKey t, Uint16 *us);
-BOOLEAN
+OFBool
 DU_putShortDOElement(DcmItem *obj, DcmTagKey t, Uint16 us);
 
 
-BOOLEAN
+OFBool
 DU_findSOPClassAndInstanceInDataSet(DcmItem *obj,
 			      char* sopClass, char* sopInstance);
 
-BOOLEAN
+OFBool
 DU_findSOPClassAndInstanceInFile(const char *fname,
 			      char* sopClass, char* sopInstance);
  
@@ -131,8 +131,12 @@ DU_cgetStatusString(Uint16 statusCode);
 /*
 ** CVS Log
 ** $Log: diutil.h,v $
-** Revision 1.1  1996-03-26 18:38:45  hewett
-** Initial revision
+** Revision 1.2  1997-07-21 08:40:11  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.1.1.1  1996/03/26 18:38:45  hewett
+** Initial Release.
 **
 **
 */
