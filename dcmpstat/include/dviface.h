@@ -23,8 +23,8 @@
  *    classes: DVInterface
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-15 17:43:25 $
- *  CVS/RCS Revision: $Revision: 1.49 $
+ *  Update Date:      $Date: 1999-09-17 14:33:55 $
+ *  CVS/RCS Revision: $Revision: 1.50 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,6 +60,7 @@
 class DVPSConfig;
 class DiDisplayFunction;
 class DVPSStoredPrint;
+class DVPSPrintMessageHandler;
 
 /** Interface class for the Softcopy Presentation State viewer.
  *  This class manages the database facilities, allows to start and stop
@@ -804,38 +805,6 @@ class DVInterface: public DVConfiguration
      */
     E_Condition saveStoredPrint(OFBool writeRequestedImageSize);
 
-    /** helper function which saves a DICOM object to file.
-     *  @param filename name of DICOM file to be created
-     *  @param fileformat DICOM object to be saved
-     *  @param explicitVR selects the transfer syntax to be written. 
-     *    True selects Explicit VR Little Endian, False selects Implicit VR Little Endian.
-     *  @return EC_Normal upon success, an error code otherwise.
-     */
-    static E_Condition saveFileFormat(const char *filename,
-                                      DcmFileFormat *fileformat,
-                                      OFBool explicitVR);
-
-    /** helper function that inserts a new element into a DICOM dataset.
-     *  A new DICOM element of the type determined by the tag is created.
-     *  The string value (if any) is assigned and the element is inserted
-     *  into the dataset. Only tags corresponding to string VRs may be passed.
-     *  @param item the dataset into which the new element is inserted
-     *  @param tag the tag key of the new DICOM element, must have string VR.
-     *  @param value the value to be inserted. If omitted, an empty element is created.
-     *  @return EC_Normal upon success, an error code otherwise.
-     */
-    static E_Condition putStringValue(DcmItem *item, DcmTagKey tag, const char *value=NULL);
-
-    /** helper function that inserts a new element into a DICOM dataset.
-     *  A new DICOM element of type "US" is created, the value is assigned 
-     *  and the element is inserted into the dataset. 
-     *  @param item the dataset into which the new element is inserted
-     *  @param tag the tag key of the new DICOM element, must have "US" VR.
-     *  @param value the value to be inserted.
-     *  @return EC_Normal upon success, an error code otherwise.
-     */
-    static E_Condition putUint16Value(DcmItem *item, DcmTagKey tag, Uint16 value);
-
     /** stores the current presentation state in a temporary place
      *  and creates a new presentation state that corresponds with an
      *  image displayed "without" presentation state.
@@ -1036,13 +1005,14 @@ class DVInterface: public DVConfiguration
      */
     E_Condition spoolStoredPrintFromDB(const char *studyUID, const char *seriesUID, const char *instanceUID);
 
-    /** helper function which loads a DICOM file and returns a
-     *  pointer to a DcmFileFormat object if loading succeeds.
-     *  @param filename name of DICOM file to be loaded
-     *  @param fileformat pointer to DcmFileFormat object passed back here
+    /** Initiates the creation of a DICOM Basic Film Session SOP Instance in the printer.
+     *  This method stores all Basic Film Session related attributes that are managed by this object
+     *  in a DICOM dataset and passes the result to the embedded Stored Print object which manages
+     *  the further communication.
+     *  @param printHandler print communication handler, association must be open.
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    static E_Condition loadFileFormat(const char *filename, DcmFileFormat *&fileformat);
+    E_Condition printSCUcreateBasicFilmSession(DVPSPrintMessageHandler& printHandler);
 
 private:
 
@@ -1063,11 +1033,6 @@ private:
      */
     E_Condition exchangeImageAndPState(DVPresentationState *newState, DcmFileFormat *image, DcmFileFormat *state=NULL);
  
-    /** helper function that cleans up pending processes under Unix.
-     *  No function if used on Windows.
-     */ 
-    static void cleanChildren();
-
     /** creates a database handle if none exists yet (this method may
      *  be called multiple times without interference) and puts a shared lock
      *  on the database.
@@ -1282,7 +1247,10 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.49  1999-09-15 17:43:25  meichel
+ *  Revision 1.50  1999-09-17 14:33:55  meichel
+ *  Completed print spool functionality including Supplement 22 support
+ *
+ *  Revision 1.49  1999/09/15 17:43:25  meichel
  *  Implemented print job dispatcher code for dcmpstat, adapted dcmprtsv
  *    and dcmpsprt applications.
  *

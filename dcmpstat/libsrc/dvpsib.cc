@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-15 17:43:33 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 1999-09-17 14:33:51 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -409,6 +409,22 @@ E_Condition DVPSImageBoxContent::write(DcmItem &dset, OFBool writeRequestedImage
   return result;
 }
 
+E_Condition DVPSImageBoxContent::prepareBasicImageBox(DcmItem &dset)
+{
+  E_Condition result = EC_Normal;
+  DcmElement *delem=NULL;
+
+  ADD_TO_DATASET(DcmUnsignedShort, imageBoxPosition)
+  if (polarity.getLength() > 0) { ADD_TO_DATASET(DcmCodeString, polarity) }
+  if (magnificationType.getLength() > 0) { ADD_TO_DATASET(DcmCodeString, magnificationType) }
+  if (configurationInformation.getLength() > 0) { ADD_TO_DATASET(DcmShortText, configurationInformation) }
+  if (smoothingType.getLength() > 0) { ADD_TO_DATASET(DcmCodeString, smoothingType) }
+  if (requestedImageSize.getLength() > 0) { ADD_TO_DATASET(DcmDecimalString, requestedImageSize) }
+  if (requestedDecimateCropBehavior.getLength() > 0) { ADD_TO_DATASET(DcmCodeString, requestedDecimateCropBehavior) }
+
+  return result;
+}
+
 E_Condition DVPSImageBoxContent::createDefaultValues(OFBool renumber, unsigned long number)
 {
   E_Condition result = EC_Normal;
@@ -542,6 +558,18 @@ E_Condition DVPSImageBoxContent::setConfigurationInformation(const char *value)
   return configurationInformation.putString(value);
 }
 
+E_Condition DVPSImageBoxContent::setSOPInstanceUID(const char *value)
+{
+  if ((value==NULL)||(strlen(value)==0)) return EC_IllegalCall;
+  return sOPInstanceUID.putString(value);
+}
+
+const char *DVPSImageBoxContent::getSOPInstanceUID()
+{
+  char *c = NULL;
+  if (EC_Normal == sOPInstanceUID.getString(c)) return c; else return NULL;
+}
+
 E_Condition DVPSImageBoxContent::setDefault()
 {
   magnificationType.clear();
@@ -560,7 +588,10 @@ OFBool DVPSImageBoxContent::hasAdditionalSettings()
 
 /*
  *  $Log: dvpsib.cc,v $
- *  Revision 1.9  1999-09-15 17:43:33  meichel
+ *  Revision 1.10  1999-09-17 14:33:51  meichel
+ *  Completed print spool functionality including Supplement 22 support
+ *
+ *  Revision 1.9  1999/09/15 17:43:33  meichel
  *  Implemented print job dispatcher code for dcmpstat, adapted dcmprtsv
  *    and dcmpsprt applications.
  *

@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-15 17:43:27 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 1999-09-17 14:33:56 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -156,6 +156,11 @@ public:
    */
   const char *getConfigurationInformation();
 
+  /** gets the current SOP Instance UID.
+   *  @return SOP Instance UID, may be NULL.
+   */
+  const char *getSOPInstanceUID();
+
   /** sets the (optional) magnification type.
    *  @param value new attribute value, may be NULL.
    *    The caller is responsible for making sure
@@ -180,6 +185,12 @@ public:
    */
   E_Condition setConfigurationInformation(const char *value);
 
+  /** sets the SOP instance UID (which is returned by the Print SCP).
+   *  @param value new attribute value, must not be NULL.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition setSOPInstanceUID(const char *value);
+
   /** sets magnification type, smoothing type and configuration information back to default.
    *  @return EC_Normal if successful, an error code otherwise.
    */
@@ -192,6 +203,15 @@ public:
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition getImageReference(const char *&studyUID, const char *&seriesUID, const char *&instanceUID);
+
+  /** writes the attributes managed by this objects that are part of a 
+   *  basic grayscale image box N-SET request into the DICOM dataset.
+   *  Copies of the DICOM element managed by this object are inserted into
+   *  the DICOM dataset.
+   *  @param dset the dataset to which the data is written
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition prepareBasicImageBox(DcmItem &dset);
  
 private:
   /// private undefined assignment operator
@@ -241,7 +261,10 @@ private:
 
 /*
  *  $Log: dvpsib.h,v $
- *  Revision 1.8  1999-09-15 17:43:27  meichel
+ *  Revision 1.9  1999-09-17 14:33:56  meichel
+ *  Completed print spool functionality including Supplement 22 support
+ *
+ *  Revision 1.8  1999/09/15 17:43:27  meichel
  *  Implemented print job dispatcher code for dcmpstat, adapted dcmprtsv
  *    and dcmpsprt applications.
  *

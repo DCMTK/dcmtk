@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-15 17:43:36 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 1999-09-17 14:33:54 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,23 +36,12 @@
 #include "dvpssp.h"
 #include "dcuid.h"
 #include "dvpsib.h"
+#include "dvpshlp.h"
+#include "dcmimage.h"
+
 #ifdef HAVE_TIME_H
 #include <time.h>
 #endif
-
-// Helper class
-class MyPrintEventHandler : public DVPSPrintEventHandler
-{
-public:
-   virtual DIC_US handleEvent(
-    T_DIMSE_N_EventReportRQ& /* eventMessage */, 
-    DcmDataset * /* eventInformation */, 
-    DcmDataset * /* statusDetail */)
-   {
-      cerr<<"Event"<<endl;
-      return 0;
-   }
-};
 
 
 /* some defaults for creating Stored Print objects */
@@ -93,175 +82,6 @@ stack.clear();                                                      \
 if (EC_Normal == item->search((DcmTagKey &)a_name.getTag(), stack, ESM_fromHere, OFFalse)) \
 {                                                                   \
   a_name = *((a_type *)(stack.top()));                              \
-}
-
-/* --------------- static helper functions --------------- */
-
-
-static const char *printStatusString(int status)
-{
-  static char errormessage[100]; // THREAD UNSAFE!
-  const char *out = NULL;
-  switch(status)
-  {
-    case 0x0000:
-      out="0x0000: Sucess";
-      break;
-    case 0xFE00:
-      out="0xFE00: Cancel";
-      break;
-    case 0x0107:
-      out="0x0107: Attribute list error";
-      break;
-    case 0x0122:
-      out="0x0122: SOP class not supported";
-      break;
-    case 0x0119:
-      out="0x0119: Class/instance conflict";
-      break;
-    case 0x0111:
-      out="0x0111: Duplicate SOP instance";
-      break;
-    case 0x0210:
-      out="0x0210: Duplicate invocation";
-      break;
-    case 0x0115:
-      out="0x0115: Invalid argument value";
-      break;
-    case 0x0106:
-      out="0x0106: Invalid attribute value";
-      break;
-    case 0x0117:
-      out="0x0117: Invalid object instance";
-      break;
-    case 0x0120:
-      out="0x0120: Missing attribute";
-      break;
-    case 0x0121:
-      out="0x0121: Missing attribute value";
-      break;
-    case 0x0212:
-      out="0x0212: Mistyped argument";
-      break;
-    case 0x0114:
-      out="0x0114: No such argument";
-      break;
-    case 0x0105:
-      out="0x0105: No such attribute";
-      break;
-    case 0x0113:
-      out="0x0113: No such event type";
-      break;
-    case 0x0112:
-      out="0x0112: No such object instance";
-      break;
-    case 0x0118:
-      out="0x0118: No such SOP class";
-      break;
-    case 0x0110:
-      out="0x0110: Processing failure";
-      break;
-    case 0x0213:
-      out="0x0213: Resource limitation";
-      break;
-    case 0x0211:
-      out="0x0211: Unrecognized operation";
-      break;
-   
-    case 0xB600:
-      out="0xB600: Basic film session warning - memory allocation";
-      break;
-    case 0xB601:
-      out="0xB601: Basic film session warning - no session printing";
-      break;
-    case 0xB602:
-      out="0xB602: Basic film session warning - empty page";
-      break;
-    case 0xB603:
-      out="0xB603: Basic film box warning - empty page";
-      break;
-    case 0xC600:
-      out="0xC600: Basic film session failure - no film box";
-      break;
-    case 0xC601:
-      out="0xC601: Basic film session failure - print queue full";
-      break;
-    case 0xC602:
-      out="0xC602: Basic film box failure - print queue full";
-      break;
-    case 0xC603:
-      out="0xC603: Basic film session/box failure - Image size";
-      break;
-    case 0xC604:
-      out="0xC604: Basic film session/box failure - Position collision";
-      break;
-    case 0xC605:
-      out="0xC605: Image box failure - Insufficient memory";
-      break;
-    case 0xC606:
-      out="0xC606: Image box failure - More than one VOI LUT";
-      break;
-    default:
-      sprintf(errormessage,"0x%04X: Unknown Status Code", (int)status);
-      out = errormessage;
-      break;
-  }
-  return out;
-}
-
-static DcmElement * getThisElement(DcmItem * in,Uint16 g, Uint16 e)
-{
-  DcmElement *elem;
-  for (unsigned int i=0;in->card()>i;i++)
-    {
-      elem=in->getElement(i);
-      if (elem->getGTag()==g && elem->getETag()==e ) 
-  {
-    return elem;
-  }
-    }
-  return NULL;
-}
-
-static CONDITION addCopyElement(DcmItem *src,DcmItem *target,Uint16 g, Uint16 e)
-{
-   // arrgh! we are creating a memory aliasing problem here !!
-   return (target->insert(getThisElement(src,g,e)));
-}
-
-static CONDITION addThisValue(DcmItem *in,Uint16 g, Uint16 e,const char * instring)
-{
-  DcmElement * elem;
-  newDicomElement(elem,DcmTag(g,e));
-  elem->putString(instring);
-  return (in->insert(elem));
-}
-
-static void currentDate(OFString &str)
-{
-  char buf[32];
-  time_t tt = time(NULL);
-  struct tm *ts = localtime(&tt);
-  if (ts)
-  {
-    int year = 1900 + ts->tm_year;
-    sprintf(buf, "%04d%02d%02d", year, ts->tm_mon + 1, ts->tm_mday);
-    str = buf;
-  } else str = "19000101";
-  return;
-}
-
-static void currentTime(OFString &str)
-{
-  char buf[32];
-  time_t tt = time(NULL);
-  struct tm *ts = localtime(&tt);
-  if (ts)
-  {
-    sprintf(buf, "%02d%02d%02d", ts->tm_hour, ts->tm_min, ts->tm_sec);
-    str = buf;
-  } else str = "000000";
-  return;
 }
 
 /* --------------- class DVPSStoredPrint --------------- */
@@ -308,12 +128,8 @@ DVPSStoredPrint::DVPSStoredPrint()
 , currentNumCols(0)
 , currentNumRows(0)
 , decimateCropBehaviour(DVPSI_default)
-, currentPrintHandler(NULL)
 , filmSessionInstanceUID()
 , filmBoxInstanceUID()
-, imageBoxInstanceUID(NULL)
-, currentImageBox()
-, nextImage(0)
 {
 }
 
@@ -359,12 +175,8 @@ DVPSStoredPrint::DVPSStoredPrint(const DVPSStoredPrint& copy)
 , currentNumCols(copy.currentNumCols)
 , currentNumRows(copy.currentNumRows)
 , decimateCropBehaviour(copy.decimateCropBehaviour)
-, currentPrintHandler(copy.currentPrintHandler)
 , filmSessionInstanceUID(copy.filmSessionInstanceUID)
 , filmBoxInstanceUID(copy.filmBoxInstanceUID)
-, imageBoxInstanceUID(NULL)
-, currentImageBox(copy.currentImageBox)
-, nextImage(copy.nextImage)
 {
 }
 
@@ -413,14 +225,8 @@ void DVPSStoredPrint::clear()
   imageSeriesInstanceUID.clear();
   invalidateCache();
   decimateCropBehaviour = DVPSI_default;
-  currentPrintHandler = NULL;
   filmSessionInstanceUID.clear();
   filmBoxInstanceUID.clear();
-  if (imageBoxInstanceUID) free (imageBoxInstanceUID);
-  imageBoxInstanceUID = NULL;
-  currentImageBox = imageBoxContentList.end();
-  nextImage=0;
-
 }
 
 void DVPSStoredPrint::invalidateCache()
@@ -769,18 +575,18 @@ E_Condition DVPSStoredPrint::createDefaultValues()
   if ((result==EC_Normal)&&(sOPInstanceUID.getLength()==0))
   {
     result = sOPInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
-    currentDate(aString);
+    DVPSHelper::currentDate(aString);
     if (result==EC_Normal) result = instanceCreationDate.putString(aString.c_str());
-    currentTime(aString);
+    DVPSHelper::currentTime(aString);
     if (result==EC_Normal) result = instanceCreationTime.putString(aString.c_str());
   }
 
   if ((result==EC_Normal)&&(studyInstanceUID.getLength()==0))
   {
     result = studyInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
-    currentDate(aString);
+    DVPSHelper::currentDate(aString);
     if (result==EC_Normal) result = studyDate.putString(aString.c_str());
-    currentTime(aString);
+    DVPSHelper::currentTime(aString);
     if (result==EC_Normal) result = studyTime.putString(aString.c_str());
   }
 
@@ -957,13 +763,13 @@ E_Condition DVPSStoredPrint::write(DcmItem &dset, OFBool writeRequestedImageSize
   dseq = new DcmSequenceOfItems(DCM_PrintManagementCapabilitiesSequence);
   if (dseq)
   {
-    if (EC_Normal == result) result = imageBoxContentList.addReferencedUIDItem(*dseq, UID_BasicFilmSessionSOPClass);
-    if (EC_Normal == result) result = imageBoxContentList.addReferencedUIDItem(*dseq, UID_BasicFilmBoxSOPClass);
-    if (EC_Normal == result) result = imageBoxContentList.addReferencedUIDItem(*dseq, UID_BasicGrayscaleImageBoxSOPClass);
+    if (EC_Normal == result) result = DVPSHelper::addReferencedUIDItem(*dseq, UID_BasicFilmSessionSOPClass);
+    if (EC_Normal == result) result = DVPSHelper::addReferencedUIDItem(*dseq, UID_BasicFilmBoxSOPClass);
+    if (EC_Normal == result) result = DVPSHelper::addReferencedUIDItem(*dseq, UID_BasicGrayscaleImageBoxSOPClass);
     if (EC_Normal == result) result = imageBoxContentList.addImageSOPClasses(*dseq, writeImageBoxes);
     if ((result == EC_Normal)&&(presentationLUTInstanceUID.getLength() > 0))
     {
-      result = imageBoxContentList.addReferencedUIDItem(*dseq, UID_PresentationLUTSOPClass);
+      result = DVPSHelper::addReferencedUIDItem(*dseq, UID_PresentationLUTSOPClass);
     }
     if (result==EC_Normal) dset.insert(dseq); else delete dseq;
   } else result = EC_MemoryExhausted;
@@ -1324,325 +1130,6 @@ const char *DVPSStoredPrint::getCurrentPresentationLUTExplanation()
 
 
 
-E_Condition DVPSStoredPrint::startPrint(DVPSPrintMessageHandler *printHandler)
- {
-    E_Condition result=EC_Normal;
-  
-   
-    CONDITION cond;
-    Uint16 status;
-  
-    DcmDataset *listOut; 
-    DcmDataset *listOut2;
-  
-    OFString ImageBoxInstanceUID;
-    OFString tmpString;
-    listOut=new DcmDataset();
-    const Uint16 list[18] = { 0x2110,0x10,0x2110,0x20,0x2110,0x30,0x8,0x70,0x8,0x1090,0x18,0x1000,0x18,0x1020,0x18,0x1200,0x18,0x1201};
-    DcmDataset * listIn=new DcmDataset();
-    DcmItem * sqitem=new DcmItem();
-    DcmElement *elem=NULL;
-  
-    currentPrintHandler=printHandler;
-
-    MyPrintEventHandler myeve;
-
-    currentPrintHandler->setEventHandler(&myeve);
-
-
-    cond=currentPrintHandler->getRQ(UID_PrinterSOPClass,"1.2.840.10008.5.1.1.17",
-          list,18,status,listOut);
- 
-#ifdef DEBUG 
-    cerr << "Response PrinterSOPClass " << endl;
-    if (listOut) listOut->print(cerr,0,1);
-    cerr << "PrinterSOPCLass "<< printStatusString(status)<<endl;
-#endif
-    if (!SUCCESS(cond))
-      {
-  
-      COND_DumpConditions();
-      result= EC_CorruptedData;
-      return(result);
-      
-    }
-
-#ifdef DEBUG
-    cerr << "CREATE Filmsession" << endl;
-#endif
-    
-    filmSessionInstanceUID.clear();
-    if (listOut) listOut->clear();
-    if (listIn) listIn->clear();
-    addThisValue(listIn,0x2000,0x10,"1");//Number of Copies
-
-    cond=currentPrintHandler->createRQ((const char *)UID_BasicFilmSessionSOPClass,
-             filmSessionInstanceUID,listIn,status,listOut);
-    if (!SUCCESS(cond))
-      {
-        COND_DumpConditions(); 
-        result= EC_CorruptedData;
-        return(result);
-  
-      }
-#ifdef DEBUG  
-    cerr << "Response FilmSession " << endl;
-    cerr << "FilmSessionInstanceUID: " << filmSessionInstanceUID << endl;
-    if (listOut) listOut->print(cerr,0,1);
-    cerr << "Session "<<printStatusString(status)<<endl;
-#endif
-    
-    if (presentationLUTInstanceUID.getLength() != 0) {
-#ifdef DEBUG
-
-      cerr << "Setting Presentation LUT" << endl;
-#endif
-      if (currentPrintHandler->printerSupportsPresentationLUT()){
-        listIn->clear();
-        presentationLUT.write(*(DcmItem *)listIn);
-#ifdef DEBUG
-        cerr << "Creating Presentation LUT"<< endl;
-        listIn->print(cerr,0,1);
-#endif
-        cond=currentPrintHandler->createRQ((const char *)UID_PresentationLUTSOPClass,
-             tmpString,listIn,status,listOut);
-            if (!SUCCESS(cond))
-        {
-          COND_DumpConditions(); 
-          result= EC_CorruptedData;
-          return(result);
-        }
-#ifdef DEBUG
-        presentationLUTInstanceUID.putString(tmpString.c_str());
-        cerr << "Response  Presentation LUT" << endl;
-        cerr << "presentationLUTInstanceUID: " << tmpString << endl;
-
-        if (listOut) listOut->print(cerr,0,1);
-        cerr << "Presentation LUT "<<printStatusString(status)<<endl;
-
-#endif
-    
-      }else{
-        cerr << "Warning Printer does not support Presentation LUT" << endl;
-      }
-    }   
-    DcmSequenceOfItems *seq = new DcmSequenceOfItems(DcmTag(0x2010,0x500),0);
-    addThisValue(sqitem,0x0008,0x1150,"=BasicFilmSessionSOPClass");
-    addThisValue(sqitem,0x0008,0x1155,filmSessionInstanceUID.c_str());
-    seq->append(sqitem);
-    
-        DcmDataset dset;
-        DcmElement *delem;
-        ADD_TO_DATASET(DcmShortText, imageDisplayFormat)
-          if (currentPrintHandler->printerSupportsPresentationLUT()){//###workaround for old printer
-        ADD_TO_DATASET(DcmCodeString, filmOrientation)
-        ADD_TO_DATASET(DcmCodeString, filmSizeID)
-        ADD_TO_DATASET(DcmCodeString, magnificationType)
-        ADD_TO_DATASET(DcmUnsignedShort, maxDensity)
-        ADD_TO_DATASET(DcmShortText, configurationInformation)
-        if (annotationDisplayFormatID.getLength() > 0) { ADD_TO_DATASET(DcmCodeString, annotationDisplayFormatID) }
-        if (smoothingType.getLength() > 0) { ADD_TO_DATASET(DcmCodeString, smoothingType) }
-        if (borderDensity.getLength() > 0) { ADD_TO_DATASET(DcmCodeString, borderDensity) }
-        if (emptyImageDensity.getLength() > 0) { ADD_TO_DATASET(DcmCodeString, emptyImageDensity) }
-        if (minDensity.getLength() > 0) { ADD_TO_DATASET(DcmUnsignedShort, minDensity) }
-        if (trim.getLength() > 0) { ADD_TO_DATASET(DcmCodeString, trim) }
-        if (requestedResolutionID.getLength() > 0) { ADD_TO_DATASET(DcmCodeString, requestedResolutionID) }
-          }
-        if (presentationLUTInstanceUID.getLength() > 0)
-        {
-          if (currentPrintHandler->printerSupportsPresentationLUT()){
-            ADD_TO_DATASET(DcmUnsignedShort, illumination)
-            ADD_TO_DATASET(DcmUnsignedShort, reflectedAmbientLight)
-            if (EC_Normal == result) result = addReferencedPLUTSQ(*(DcmItem*)&dset);
-          }else{
-            cerr << "Warning Presentation LUT not included in Box" << endl;
-          }
-        }
-        dset.insert((DcmElement*)seq,0);
-    
-#ifdef DEBUG
-      cerr << "Sending Create BasicFilmBox" << endl;
-      dset.print();
-#endif  
-
-
-    cond=currentPrintHandler->createRQ((const char *)UID_BasicFilmBoxSOPClass,
-            filmBoxInstanceUID,&dset,status,listOut2);
-  
-    if (!SUCCESS(cond))
-      {
-        COND_DumpConditions();
-        cond=currentPrintHandler->deleteRQ((const char *)UID_BasicFilmSessionSOPClass,
-          filmSessionInstanceUID.c_str(),status);   
- 
-        result= EC_CorruptedData;
-        return(result);
-      }
-
-#ifdef DEBUG
-    cerr << "Response create BasicFilmBox"<<endl;
-    if (listOut2) listOut2->print();
-    cerr<<"Film Box  "<<printStatusString(status)<<endl;
-
-#endif
-    if (listOut2==NULL)
-    {
-      cerr << "No imageBoxInstanceUID created" << endl;
-      return EC_CorruptedData;
-    }
-    elem = getThisElement(listOut2,0x2010,0x510);
-    seq=(DcmSequenceOfItems *)elem;
-    imageBoxInstanceUID=(char **)malloc(sizeof(char *)*(imageBoxContentList.size()+1));
-    
-    for (unsigned int i=0;i<imageBoxContentList.size();i++){
-      DcmItem *item=seq->getItem(i);
-      elem = getThisElement((DcmDataset* ) item,0x0008,0x1155);
-      elem->getString(imageBoxInstanceUID[i]);
-    }  
-
-    currentImageBox = imageBoxContentList.begin();
-
-    return result;
- }
-
-
-E_Condition DVPSStoredPrint::getNextImageReference(
-  const char *&studyUID, 
-  const char *&seriesUID, 
-  const char *&instanceUID)
-{
-  E_Condition result=EC_Normal;
-  static int flag=0;
-  static OFListIterator(DVPSImageBoxContent *) last = imageBoxContentList.end();
-  if ((currentImageBox != last))
-  {     
-    if (flag) ++currentImageBox; else flag=1;
-    result = (*currentImageBox)->getImageReference(studyUID, seriesUID, instanceUID);
-    nextImage++;
-    if (EC_Normal != result) return result;
-  }
-  return result;
-}
-
-E_Condition DVPSStoredPrint::setImage(DcmItem *image)
-{
-  E_Condition result;
-  DcmItem * sqitem=new DcmItem();
-  DcmSequenceOfItems *seq=new DcmSequenceOfItems(DcmTag(0x2020,0x110),0);
-  DcmDataset * listIn=new DcmDataset();
-  DcmDataset * listOut=new DcmDataset();
-  DcmItem ditem;
-    CONDITION cond;
-    Uint16 status;
-  
-    (*currentImageBox)->write(ditem,OFTrue);
-    ditem.print();
- 
-    char buf[10];
-    sprintf(buf,"%d",nextImage);
-  
-    addCopyElement(&ditem,(DcmItem *)listIn,0x2010,0x60);
-    addCopyElement(&ditem,(DcmItem *)listIn,0x2010,0x80);
-    addCopyElement(&ditem,(DcmItem *)listIn,0x2010,0x120);
-    addCopyElement(&ditem,(DcmItem *)listIn,0x2010,0x130);
-    addCopyElement(&ditem,(DcmItem *)listIn,0x2010,0x150);
-
-
-    addCopyElement(&ditem,(DcmItem *)listIn,0x2020,0x20);
-    addCopyElement(&ditem,(DcmItem *)listIn,0x2020,0x30);
-    addCopyElement(&ditem,(DcmItem *)listIn,0x2020,0x40);
-
-    //###Missing PresentationLUT
-
-  
-    addThisValue(listIn,0x2020,0x10,  buf);
- 
-    addCopyElement(image,sqitem,0x28,0x2);
-    addCopyElement(image,sqitem,0x28,0x4);
-    addCopyElement(image,sqitem,0x28,0x10);
-    addCopyElement(image,sqitem,0x28,0x11);
-    addCopyElement(image,sqitem,0x28,0x34);
-    addCopyElement(image,sqitem,0x28,0x100);
-    addCopyElement(image,sqitem,0x28,0x101);
-    addCopyElement(image,sqitem,0x28,0x102);
-    addCopyElement(image,sqitem,0x28,0x103);
-    addCopyElement(image,sqitem,0x7fe0,0x10);
-    seq->append(sqitem);
-    listIn->insert((DcmElement*)seq,0);
-
-#ifdef DEBUG
-    cerr<< "Send Set RQ :" << endl;
-    if (listIn) listIn->print(cerr,0,0);
-#endif
-    cond=currentPrintHandler->setRQ(UID_BasicGrayscaleImageBoxSOPClass,
-           imageBoxInstanceUID[nextImage-1],listIn,status,listOut);
-
-    if (!SUCCESS(cond))
-      {
-        COND_DumpConditions();
-        result= EC_CorruptedData;
-    }else{
-      result=EC_Normal;
-
-#ifdef DEBUG
-
-    cerr<<"set ImageBox " << printStatusString(status )<< endl; 
-#endif
-    }
-  if (sqitem) delete sqitem;
-
-  if (!printPending()){
-    //doPrint();
-    if (listOut) listOut->clear();
-       currentPrintHandler->actionRQ(UID_BasicFilmBoxSOPClass,
-        filmBoxInstanceUID.c_str(),1,NULL,status,listOut);
-    if (!SUCCESS(cond))
-      {
-        COND_DumpConditions();
-        result=EC_CorruptedData;
-      }
-#ifdef DEBUG
-    cerr << "print Action " << printStatusString(status )<< endl;
-    cerr<<"Delete"<<endl;
-#endif
-/*
-    cond=printHandler.deleteRQ((const char *)UID_BasicFilmBoxSOPClass,
-            FilmBoxInstanceUID.c_str(),status);   
-    if (!SUCCESS(cond))
-      {
-        COND_DumpConditions();
-        return 1;
-      }
-    cond=printHandler.deleteRQ((const char *)UID_BasicFilmSessionSOPClass,
-             FilmSessionInstanceUID.c_str(),status);   
-    if (!SUCCESS(cond))
-     {
-       COND_DumpConditions();
-       return 1;
-     }
-   cerr << "ReleaseAssoc" << endl;
-    
-   cond=printHandler.releaseAssociation();
-   if (!SUCCESS(cond))
-     {
-       COND_DumpConditions();
-       return 1;
-     }
-*/
-    }
-  return result;
-}
-
-OFBool DVPSStoredPrint::printPending()
- {
-    if ((unsigned)nextImage<imageBoxContentList.size())
-      return (OFTrue);
-
-    return(OFFalse);
- }
-  
-
-
 E_Condition DVPSStoredPrint::setBorderDensity(const char *value)
 {
   if ((value==NULL)||(strlen(value)==0)) 
@@ -1688,9 +1175,373 @@ E_Condition DVPSStoredPrint::deleteSpooledImages()
   return EC_IllegalCall;
 }
 
+E_Condition DVPSStoredPrint::printSCUgetPrinterInstance(DVPSPrintMessageHandler& printHandler)
+{ 
+  DcmDataset *attributeListOut=NULL; 
+  Uint16 status=0;
+  CONDITION cond=printHandler.getRQ(UID_PrinterSOPClass, UID_PrinterSOPInstance, NULL, 0, status, attributeListOut);
+
+  /* the N-GET response has been dumped somewhere else, we only need to delete it */
+  delete attributeListOut;
+  
+  if (!SUCCESS(cond)) return EC_IllegalCall;
+  return EC_Normal;
+}
+
+E_Condition DVPSStoredPrint::printSCUpreparePresentationLUT(DVPSPrintMessageHandler& printHandler)
+{
+  if (presentationLUTInstanceUID.getLength() == 0) return EC_Normal; // print job does not contain any P-LUT.
+  
+  if (! printHandler.printerSupportsPresentationLUT())
+  {
+  	cerr << "spooler: warning: printer does not support Presentation LUT SOP Class," << endl
+  	     << "  presentation LUT related print job settings will be ignored." << endl;
+  	return EC_Normal; // we only issue a warning but continue printing.
+  }
+
+  DcmDataset dset;
+  E_Condition result = presentationLUT.write(dset);  
+  DcmDataset *attributeListOut=NULL; 
+  Uint16 status=0;
+  OFString sopinstanceUID;
+
+  if (result==EC_Normal)
+  {
+    CONDITION cond = printHandler.createRQ(UID_PresentationLUTSOPClass, sopinstanceUID, &dset, status, attributeListOut);
+    if ((SUCCESS(cond))&&((status==0)||((status & 0xf000)==0xb000)))
+    {
+      result = presentationLUTInstanceUID.putString(sopinstanceUID.c_str());
+    } else {
+      presentationLUTInstanceUID.clear();
+      result = EC_IllegalCall;
+    }
+    delete attributeListOut;
+  }
+  return result;  
+}
+
+E_Condition DVPSStoredPrint::printSCUcreateBasicFilmSession(
+   DVPSPrintMessageHandler& printHandler, 
+   DcmDataset& dset,
+   Uint16 illumin,
+   Uint16 reflection)
+{
+  if (filmSessionInstanceUID.size() > 0) return EC_IllegalCall;
+
+  DcmElement *delem=NULL;
+  DcmDataset *attributeListOut=NULL; 
+  Uint16 status=0;
+  E_Condition result = EC_Normal;
+
+  // we expect 'number of copies', 'print priority', 'medium type' and 'film destination' in dset
+  // now add supplement 22 attributes if necessary
+  if ((presentationLUTInstanceUID.getLength() > 0)&&(printHandler.printerSupportsPresentationLUT()))
+  {
+  	illumination.clear();
+  	reflectedAmbientLight.clear();
+  	if (EC_Normal==result) result=illumination.putUint16(illumin,0);
+  	if (EC_Normal==result) result=reflectedAmbientLight.putUint16(reflection,0);
+    ADD_TO_DATASET(DcmUnsignedShort, illumination)
+    ADD_TO_DATASET(DcmUnsignedShort, reflectedAmbientLight)
+
+    char *c = NULL;
+    DcmUniqueIdentifier refsopclassuid(DCM_ReferencedSOPClassUID);
+    DcmUniqueIdentifier refsopinstanceuid(DCM_ReferencedSOPInstanceUID);
+    if (result==EC_Normal) result = presentationLUTInstanceUID.getString(c);
+    if (result==EC_Normal) result = refsopclassuid.putString(UID_PresentationLUTSOPClass);
+    if (result==EC_Normal) result = refsopinstanceuid.putString(c);  
+    DcmSequenceOfItems *dseq = new DcmSequenceOfItems(DCM_ReferencedPresentationLUTSequence);
+    DcmItem *ditem = new DcmItem();
+    if ((result == EC_Normal) && ditem && dseq)
+    {
+       ADD_TO_DATASET2(DcmUniqueIdentifier, refsopclassuid)
+       ADD_TO_DATASET2(DcmUniqueIdentifier, refsopinstanceuid)
+       if (result==EC_Normal)
+       {
+         dseq->insert(ditem);
+         dset.insert(dseq);
+       } else {
+        delete dseq;
+        delete ditem;
+       }
+    } else {
+      delete dseq;
+      delete ditem;
+      result = EC_MemoryExhausted;
+    }
+  }
+    
+  if (result==EC_Normal)
+  {
+    CONDITION cond = printHandler.createRQ(UID_BasicFilmSessionSOPClass, filmSessionInstanceUID, &dset, status, attributeListOut);
+    if ((! SUCCESS(cond))||((status!=0)&&((status & 0xf000)!=0xb000))) 
+    {
+      result = EC_IllegalCall;
+      filmSessionInstanceUID.clear();
+    }
+    delete attributeListOut;
+  }
+
+  return result;
+}
+
+E_Condition DVPSStoredPrint::printSCUcreateBasicFilmBox(DVPSPrintMessageHandler& printHandler)
+{
+  if ((filmSessionInstanceUID.size() == 0)||(filmBoxInstanceUID.size() > 0)) return EC_IllegalCall;
+
+  E_Condition result = EC_Normal;  
+  DcmDataset dset;
+  DcmElement *delem=NULL;
+  DcmSequenceOfItems *dseq=NULL;
+  DcmSequenceOfItems *seq=NULL;
+  DcmItem *ditem=NULL;
+  DcmItem *item=NULL;
+  DcmDataset *attributeListOut=NULL; 
+  char *c = NULL;
+  Uint16 status=0;
+  DcmStack stack;
+  OFString grayscaleIB(UID_BasicGrayscaleImageBoxSOPClass);
+  
+  ADD_TO_DATASET(DcmShortText, imageDisplayFormat)
+  if (filmOrientation.getLength() > 0)           { ADD_TO_DATASET(DcmCodeString, filmOrientation) }
+  if (filmSizeID.getLength() > 0)                { ADD_TO_DATASET(DcmCodeString, filmSizeID) }
+  if (magnificationType.getLength() > 0)         { ADD_TO_DATASET(DcmCodeString, magnificationType) }
+  if (maxDensity.getLength() > 0)                { ADD_TO_DATASET(DcmUnsignedShort, maxDensity) }
+  if (configurationInformation.getLength() > 0)  { ADD_TO_DATASET(DcmShortText, configurationInformation) }
+  if (annotationDisplayFormatID.getLength() > 0) { ADD_TO_DATASET(DcmCodeString, annotationDisplayFormatID) }
+  if (smoothingType.getLength() > 0)             { ADD_TO_DATASET(DcmCodeString, smoothingType) }
+  if (borderDensity.getLength() > 0)             { ADD_TO_DATASET(DcmCodeString, borderDensity) }
+  if (emptyImageDensity.getLength() > 0)         { ADD_TO_DATASET(DcmCodeString, emptyImageDensity) }
+  if (minDensity.getLength() > 0)                { ADD_TO_DATASET(DcmUnsignedShort, minDensity) }
+  if (trim.getLength() > 0)                      { ADD_TO_DATASET(DcmCodeString, trim) }
+  if (requestedResolutionID.getLength() > 0)     { ADD_TO_DATASET(DcmCodeString, requestedResolutionID) }
+  
+  // add Referenced Film Session SQ
+  DcmUniqueIdentifier refsopclassuid(DCM_ReferencedSOPClassUID);
+  DcmUniqueIdentifier refsopinstanceuid(DCM_ReferencedSOPInstanceUID);
+  if (result==EC_Normal) result = refsopclassuid.putString(UID_BasicFilmSessionSOPClass);
+  if (result==EC_Normal) result = refsopinstanceuid.putString(filmSessionInstanceUID.c_str());  
+  if (result==EC_Normal)
+  {
+    ditem = new DcmItem();
+    if (ditem)
+    {
+      dseq = new DcmSequenceOfItems(DCM_ReferencedFilmSessionSequence);
+      if (dseq)
+      {
+        ADD_TO_DATASET2(DcmUniqueIdentifier, refsopclassuid)
+        ADD_TO_DATASET2(DcmUniqueIdentifier, refsopinstanceuid)
+        if (result==EC_Normal)
+        {
+          dseq->insert(ditem);
+          dset.insert(dseq);
+        } else {
+          // out of memory during creation of sequence contents.
+          delete dseq;
+          delete ditem;
+          result = EC_MemoryExhausted;
+        }
+      } else {
+        // could allocate item but not sequence. Bail out.
+        delete ditem;
+        result = EC_MemoryExhausted;
+      }
+    }
+    else result = EC_MemoryExhausted;
+  }
+
+  if (result==EC_Normal)
+  {
+    CONDITION cond = printHandler.createRQ(UID_BasicFilmBoxSOPClass, filmBoxInstanceUID, &dset, status, attributeListOut);
+    if ((SUCCESS(cond))&&((status==0)||((status & 0xf000)==0xb000))&& attributeListOut)
+    {
+      // N-CREATE was successful, now evaluate Referenced Image Box SQ
+      stack.clear();
+      if (EC_Normal == attributeListOut->search(DCM_ReferencedImageBoxSequence, stack, ESM_fromHere, OFFalse))
+      {
+        seq=(DcmSequenceOfItems *)stack.top();
+        size_t numItems = seq->card();
+        if (numItems > imageBoxContentList.size()) numItems = imageBoxContentList.size();
+        for (size_t i=0; i<numItems; i++)
+        {
+           item = seq->getItem(i);
+           stack.clear();
+           READ_FROM_DATASET2(DcmUniqueIdentifier, refsopclassuid)
+           READ_FROM_DATASET2(DcmUniqueIdentifier, refsopinstanceuid)
+           if (EC_Normal==result) result = refsopclassuid.getString(c);
+           if ((EC_Normal==result) && c && (grayscaleIB == c))
+           {
+             result = refsopinstanceuid.getString(c);
+           	 if (EC_Normal==result) result = imageBoxContentList.setImageSOPInstanceUID(i, c);
+           } else result = EC_IllegalCall; /* wrong SOP class or unable to read UID */     
+        }
+      } else result=EC_TagNotFound;
+    } else {
+      filmBoxInstanceUID.clear();
+      result = EC_IllegalCall;
+    }
+    delete attributeListOut;
+  }
+  return result;
+}
+
+
+E_Condition DVPSStoredPrint::printSCUprintBasicFilmBox(DVPSPrintMessageHandler& printHandler)
+{
+  if (filmBoxInstanceUID.size() == 0) return EC_IllegalCall;
+  DcmDataset *attributeListOut=NULL; 
+  Uint16 status=0;
+ 
+  CONDITION cond = printHandler.actionRQ(UID_BasicFilmBoxSOPClass, filmBoxInstanceUID.c_str(), 
+    1 /* action type ID 1 = print */, NULL /* no action information */, status, attributeListOut);
+  delete attributeListOut; // should be empty anyway
+
+  if ((SUCCESS(cond))&&((status==0)||((status & 0xf000)==0xb000))) return EC_Normal;
+  return EC_IllegalCall; // otherwise
+}
+
+E_Condition DVPSStoredPrint::printSCUdelete(DVPSPrintMessageHandler& printHandler)
+{  
+  CONDITION cond;
+  Uint16 status=0;
+  E_Condition result = EC_Normal;
+    
+  // delete basic film box
+  if (filmBoxInstanceUID.size() > 0)
+  {
+  	cond = printHandler.deleteRQ(UID_BasicFilmBoxSOPClass, filmBoxInstanceUID.c_str(), status);
+    if ((! SUCCESS(cond))||((status!=0)&&((status & 0xf000)!=0xb000))) result = EC_IllegalCall;
+    filmBoxInstanceUID.clear();
+  }
+  
+  // delete basic film session
+  if (filmSessionInstanceUID.size() > 0)
+  {
+  	cond = printHandler.deleteRQ(UID_BasicFilmSessionSOPClass, filmSessionInstanceUID.c_str(), status);
+    if ((! SUCCESS(cond))||((status!=0)&&((status & 0xf000)!=0xb000))) result = EC_IllegalCall;
+    filmSessionInstanceUID.clear();
+  }
+
+  // delete presentation LUT
+  if ((presentationLUTInstanceUID.getLength() > 0)&&(printHandler.printerSupportsPresentationLUT()))
+  {
+  	char *c=NULL;
+    if (EC_Normal != presentationLUTInstanceUID.getString(c)) result = EC_IllegalCall;
+  	else
+  	{
+  	  cond = printHandler.deleteRQ(UID_PresentationLUTSOPClass, c, status);
+      if ((! SUCCESS(cond))||((status!=0)&&((status & 0xf000)!=0xb000))) result = EC_IllegalCall;
+      // don't clear this UID, is required as flag indicating that we have a Presentation LUT.
+    }
+  }
+  return result;  
+}
+
+E_Condition DVPSStoredPrint::printSCUsetBasicImageBox(
+    DVPSPrintMessageHandler& printHandler,
+    size_t idx,
+    OFBool supports12bit,
+    DicomImage& image)
+{
+  DcmDataset dataset;
+  DcmItem *ditem = NULL;
+  DcmSequenceOfItems *dseq = NULL;
+  char str[100];
+  DcmPolymorphOBOW *pxData = NULL;
+  const void *pxDataVoid;
+  unsigned long width = image.getWidth();
+  unsigned long height = image.getHeight();
+  DcmDataset *attributeListOut=NULL; 
+  Uint16 status=0;
+  
+  const char *imageSopInstanceUID = imageBoxContentList.getSOPInstanceUID(idx);  
+  if (imageSopInstanceUID==NULL) return EC_IllegalCall;
+
+  E_Condition result = imageBoxContentList.prepareBasicImageBox(idx, dataset);
+  if (EC_Normal == result)
+  {
+    ditem = new DcmItem();
+    if (ditem)
+    {
+      dseq = new DcmSequenceOfItems(DCM_BasicGrayscaleImageSequence);
+      if (dseq)
+      {
+        if (EC_Normal==result) result = DVPSHelper::putUint16Value(ditem, DCM_SamplesPerPixel, 1);
+        if (EC_Normal==result) result = DVPSHelper::putStringValue(ditem, DCM_PhotometricInterpretation, "MONOCHROME2");
+        if (EC_Normal==result) result = DVPSHelper::putUint16Value(ditem, DCM_PixelRepresentation, 0);
+        if (EC_Normal==result) result = DVPSHelper::putUint16Value(ditem, DCM_Rows, (Uint16)height);
+        if (EC_Normal==result) result = DVPSHelper::putUint16Value(ditem, DCM_Columns, (Uint16)width);
+        double aspectRatio = image.getHeightWidthRatio();
+        if ((aspectRatio != 1.0)&&(aspectRatio != 0))
+        {
+          sprintf(str, "10000\\%ld", (long)(aspectRatio*10000.0));
+          if (EC_Normal==result) result = DVPSHelper::putStringValue(ditem, DCM_Columns, str);
+        }
+        if (supports12bit)
+        {
+          if (EC_Normal==result) result = DVPSHelper::putUint16Value(ditem, DCM_BitsAllocated, 16);
+          if (EC_Normal==result) result = DVPSHelper::putUint16Value(ditem, DCM_BitsStored, 12);
+          if (EC_Normal==result) result = DVPSHelper::putUint16Value(ditem, DCM_HighBit, 11);
+          if (EC_Normal==result)
+          {
+             pxDataVoid = image.getOutputData(12);
+          	 pxData = new DcmPolymorphOBOW(DCM_PixelData);
+             if (pxData && pxDataVoid)
+             {
+               result = pxData->putUint16Array((Uint16 *)pxDataVoid, (width*height));
+               if (EC_Normal==result) result = ditem->insert(pxData); else delete pxData;
+            } else status = EC_IllegalCall;
+          }
+        } else {
+          if (EC_Normal==result) result = DVPSHelper::putUint16Value(ditem, DCM_BitsAllocated, 8);
+          if (EC_Normal==result) result = DVPSHelper::putUint16Value(ditem, DCM_BitsStored, 8);
+          if (EC_Normal==result) result = DVPSHelper::putUint16Value(ditem, DCM_HighBit, 7);
+          if (EC_Normal==result)
+          {
+             pxDataVoid = image.getOutputData(8);
+          	 pxData = new DcmPolymorphOBOW(DCM_PixelData);
+             if (pxData && pxDataVoid)
+             {
+               result = pxData->putUint8Array((Uint8 *)pxDataVoid, (width*height));
+               if (EC_Normal==result) result = ditem->insert(pxData); else delete pxData;
+            } else status = EC_IllegalCall;
+          }
+        }
+        
+        if (result==EC_Normal)
+        {
+          dseq->insert(ditem);
+          dataset.insert(dseq);
+        } else {
+          // out of memory during creation of sequence contents.
+          delete dseq;
+          delete ditem;
+          result = EC_MemoryExhausted;
+        }
+      } else {
+        // could allocate item but not sequence. Bail out.
+        delete ditem;
+        result = EC_MemoryExhausted;
+      }
+  	} else result = EC_MemoryExhausted;
+  }
+  
+  if (EC_Normal == result)
+  {
+    CONDITION cond = printHandler.setRQ(UID_BasicGrayscaleImageBoxSOPClass, imageSopInstanceUID, &dataset, status, attributeListOut);
+    if ((! SUCCESS(cond))||((status!=0)&&((status & 0xf000)!=0xb000))) result = EC_IllegalCall;
+  }
+  delete attributeListOut;
+  return result;
+}    
+
+
 /*
  *  $Log: dvpssp.cc,v $
- *  Revision 1.14  1999-09-15 17:43:36  meichel
+ *  Revision 1.15  1999-09-17 14:33:54  meichel
+ *  Completed print spool functionality including Supplement 22 support
+ *
+ *  Revision 1.14  1999/09/15 17:43:36  meichel
  *  Implemented print job dispatcher code for dcmpstat, adapted dcmprtsv
  *    and dcmpsprt applications.
  *

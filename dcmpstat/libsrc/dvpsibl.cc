@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-15 17:43:34 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 1999-09-17 14:33:52 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,6 +34,7 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dvpsibl.h"
 #include "dvpsib.h"      /* for DVPSImageBoxContent */
+#include "dvpshlp.h"     /* for class DVPSHelper */
 
 /* --------------- class DVPSImageBoxContent_PList --------------- */
 
@@ -149,55 +150,6 @@ E_Condition DVPSImageBoxContent_PList::createDefaultValues(OFBool renumber)
   return result;
 }
 
-OFBool DVPSImageBoxContent_PList::haveReferencedUIDItem(DcmSequenceOfItems& seq, const char *uid)
-{
-  if (uid==NULL) return OFFalse;
-
-  DcmItem *item = NULL;
-  DcmUniqueIdentifier *refuid = NULL;
-  unsigned long numItems = seq.card();
-  DcmStack stack;
-  OFString aString;
-  for (unsigned long i=0; i<numItems; i++)
-  {
-    item = seq.getItem(i);
-    stack.clear();
-    if (EC_Normal == item->search(DCM_ReferencedSOPClassUID, stack, ESM_fromHere, OFFalse))
-    {
-      refuid = (DcmUniqueIdentifier *)(stack.top());
-      if (refuid) refuid->getOFString(aString,0);
-      if (aString == uid) return OFTrue;
-    }
-  }    
-  return OFFalse;
-}
-
-E_Condition DVPSImageBoxContent_PList::addReferencedUIDItem(DcmSequenceOfItems& seq, const char *uid)
-{
-  if (uid==NULL) return EC_IllegalCall;
-  E_Condition result = EC_Normal;
-
-  DcmElement *delem = new DcmUniqueIdentifier(DCM_ReferencedSOPClassUID);
-  if (delem)
-  {
-    result = delem->putString(uid);
-    if (EC_Normal==result)
-    {
-      DcmItem *ditem = new DcmItem();
-      if (ditem)
-      {
-        ditem->insert(delem);
-        seq.insert(ditem);
-      } else {
-      	delete delem;
-      	result=EC_MemoryExhausted;
-      }
-    }
-  } else result=EC_MemoryExhausted;
-  return result;  
-}
-
-
 E_Condition DVPSImageBoxContent_PList::addImageSOPClasses(DcmSequenceOfItems& seq, size_t numItems)
 {
   E_Condition result = EC_Normal;
@@ -210,7 +162,7 @@ E_Condition DVPSImageBoxContent_PList::addImageSOPClasses(DcmSequenceOfItems& se
     if (EC_Normal == result)
     {
       c = (*first)->getSOPClassUID();
-      if (c && (! haveReferencedUIDItem(seq, c))) result = addReferencedUIDItem(seq, c);
+      if (c && (! DVPSHelper::haveReferencedUIDItem(seq, c))) result = DVPSHelper::addReferencedUIDItem(seq, c);
     }
     ++first;
     if (numItems && (--numItems==0)) working=OFFalse;
@@ -327,6 +279,13 @@ E_Condition DVPSImageBoxContent_PList::setImageConfigurationInformation(size_t i
   return EC_IllegalCall; 
 }
 
+E_Condition DVPSImageBoxContent_PList::setImageSOPInstanceUID(size_t idx, const char *value)
+{
+  DVPSImageBoxContent *box = getImageBox(idx);
+  if (box) return box->setSOPInstanceUID(value);
+  return EC_IllegalCall; 
+}
+
 const char *DVPSImageBoxContent_PList::getImageMagnificationType(size_t idx)
 {
   DVPSImageBoxContent *box = getImageBox(idx);
@@ -348,6 +307,13 @@ const char *DVPSImageBoxContent_PList::getImageConfigurationInformation(size_t i
   return NULL; 
 }
 
+const char *DVPSImageBoxContent_PList::getSOPInstanceUID(size_t idx)
+{
+  DVPSImageBoxContent *box = getImageBox(idx);
+  if (box) return box->getSOPInstanceUID();
+  return NULL; 
+}
+
 E_Condition DVPSImageBoxContent_PList::setAllImagesToDefault()
 {
   E_Condition result = EC_Normal;
@@ -362,9 +328,26 @@ E_Condition DVPSImageBoxContent_PList::setAllImagesToDefault()
   return result;  
 }
 
+E_Condition DVPSImageBoxContent_PList::getImageReference(size_t idx, const char *&studyUID, const char *&seriesUID, const char *&instanceUID)
+{
+  DVPSImageBoxContent *box = getImageBox(idx);
+  if (box) return box->getImageReference(studyUID, seriesUID, instanceUID);
+  return EC_IllegalCall; 
+}
+
+E_Condition DVPSImageBoxContent_PList::prepareBasicImageBox(size_t idx, DcmItem &dset)
+{
+  DVPSImageBoxContent *box = getImageBox(idx);
+  if (box) return box->prepareBasicImageBox(dset);
+  return EC_IllegalCall; 
+}
+
 /*
  *  $Log: dvpsibl.cc,v $
- *  Revision 1.7  1999-09-15 17:43:34  meichel
+ *  Revision 1.8  1999-09-17 14:33:52  meichel
+ *  Completed print spool functionality including Supplement 22 support
+ *
+ *  Revision 1.7  1999/09/15 17:43:34  meichel
  *  Implemented print job dispatcher code for dcmpstat, adapted dcmprtsv
  *    and dcmpsprt applications.
  *

@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-15 17:43:28 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 1999-09-17 14:33:57 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -113,22 +113,6 @@ public:
    *  @return EC_Normal if successful, an error code otherwise.
    */   
   E_Condition addImageSOPClasses(DcmSequenceOfItems& seq, size_t numItems=0);
-
-  /** static helper method that checks whether the given sequence contains an
-   *  item with a ReferencedSOPClassUID element that matches the given UID string.
-   *  @param seq sequence to be searched, should be a PrintManagementCapabilitiesSequence.
-   *  @param uid UID string
-   *  @return OFTrue if found, OFFalse otherwise. Returns OFFalse if uid is NULL.
-   */
-  static OFBool haveReferencedUIDItem(DcmSequenceOfItems& seq, const char *uid);
-
-  /** static helper method that adds an item to the given sequence. The item
-   *  contains a ReferencedSOPClassUID element with the given UID string as value.
-   *  @param seq sequence to be added to, should be a PrintManagementCapabilitiesSequence.
-   *  @param uid UID string, must not be NULL
-   *  @return EC_Normal if successful, an error code otherwise.
-   */   
-  static E_Condition addReferencedUIDItem(DcmSequenceOfItems& seq, const char *uid);
   
   /** creates a new image box object and sets the content of this image box object.
    *  @param instanceuid SOP instance UID of this image box
@@ -206,6 +190,13 @@ public:
    */
   E_Condition setImageConfigurationInformation(size_t idx, const char *value);
 
+  /** sets the SOP instance UID for the given image box.
+   *  @param idx index, must be < getNumberOfImages()
+   *  @param value new attribute value, must not be NULL.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition setImageSOPInstanceUID(size_t idx, const char *value);
+
   /** sets magnification type, smoothing type and configuration information back to default
    *  for all registered images.
    *  @return EC_Normal if successful, an error code otherwise.
@@ -230,6 +221,31 @@ public:
    */
   const char *getImageConfigurationInformation(size_t idx);
 
+  /** gets the current SOP Instance UID for the given registered image box..
+   *  @param idx index, must be < getNumberOfImages()
+   *  @return SOP Instance UID, may be NULL.
+   */
+  const char *getSOPInstanceUID(size_t idx);
+
+  /** returns the image UIDs that are required to look up the referenced image in the database
+   *  @param idx index, must be < getNumberOfImages()
+   *  @param studyUID Study UID of the image
+   *  @param seriesUID series UID of the image 
+   *  @param instanceUID instance UID of the image
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition getImageReference(size_t idx, const char *&studyUID, const char *&seriesUID, const char *&instanceUID);
+
+  /** writes the attributes managed by the referenced object that are part of a 
+   *  basic grayscale image box N-SET request into the DICOM dataset.
+   *  Copies of the DICOM element managed by this object are inserted into
+   *  the DICOM dataset.
+   *  @param idx index, must be < getNumberOfImages()
+   *  @param dset the dataset to which the data is written
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition prepareBasicImageBox(size_t idx, DcmItem &dset);
+
 private:
 
   /** returns a pointer to the image box with the given
@@ -246,7 +262,10 @@ private:
 
 /*
  *  $Log: dvpsibl.h,v $
- *  Revision 1.8  1999-09-15 17:43:28  meichel
+ *  Revision 1.9  1999-09-17 14:33:57  meichel
+ *  Completed print spool functionality including Supplement 22 support
+ *
+ *  Revision 1.8  1999/09/15 17:43:28  meichel
  *  Implemented print job dispatcher code for dcmpstat, adapted dcmprtsv
  *    and dcmpsprt applications.
  *

@@ -23,8 +23,8 @@
  *    classes: DVPSPrintMessageHandler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-07-30 13:34:49 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 1999-09-17 14:33:58 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -222,7 +222,15 @@ public:
    *  @return true if presentation context for presentation LUT exists, false otherwise.
    */
   OFBool printerSupportsPresentationLUT();
-  
+
+  /** sets an ostream to which all network communication is dumped.
+   *  @param stream output stream, default: no output
+   */
+  void setDumpStream(ostream *stream=NULL)
+  {
+  	dumpStream = stream;
+  }
+    
 private:
 
   /// private undefined copy constructor
@@ -261,6 +269,13 @@ private:
    */
   T_ASC_PresentationContextID findAcceptedPC(const char *sopclassuid);
   
+  /** dumps the given message to the dump stream if it exists.
+   *  @param msg message to be dumped, should be DIMSE-N
+   *  @param dataset option dataset to be dumped, may be NULL
+   *  @param outgoing OFTrue if message is outgoing, OFFalse if incoming.
+   */
+  void dumpNMessage(T_DIMSE_Message &msg, DcmItem *dataset, OFBool outgoing);
+  
   /// the association to be used for message communication. Can be NULL.
   T_ASC_Association *assoc;
   
@@ -276,13 +291,18 @@ private:
   /// timeout for receive
   int timeout;
 
+  /// if not NULL, dump all network communication
+  ostream *dumpStream;
 };
 
 #endif
 
 /*
  *  $Log: dvpspr.h,v $
- *  Revision 1.1  1999-07-30 13:34:49  meichel
+ *  Revision 1.2  1999-09-17 14:33:58  meichel
+ *  Completed print spool functionality including Supplement 22 support
+ *
+ *  Revision 1.1  1999/07/30 13:34:49  meichel
  *  Added new classes managing Stored Print objects
  *
  *

@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-15 17:43:29 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 1999-09-17 14:33:59 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,6 +43,8 @@
 #include "dvpsibl.h"     /* for class DVPSImageBoxContent_PList */
 #include "dvpstat.h"		 /* for class DVPresentationState */
 #include "dvpspr.h"			 /* for class DVPrintMessageHandler */
+
+class DicomImage;
 
 /** the representation of a Stored Print object
  */  
@@ -495,35 +497,81 @@ class DVPSStoredPrint
    *  @return a string pointer
    */
   const char *getPresentationLUTExplanation() { return presentationLUT.getLUTExplanation(); }
-      
-  /** starts a print job
-   *  @param printJob a already connected DICOM association to a remote printer
-   *  @return EC_Normal if successful, an error code otherwise.
-   */
-  E_Condition startPrint(DVPSPrintMessageHandler *printJob);
-  
+
   /** returns the image UIDs that are required to look up the referenced image in the database
+   *  @param idx index, must be < getNumberOfImages()
    *  @param studyUID Study UID of the image
    *  @param seriesUID series UID of the image 
    *  @param instanceUID instance UID of the image
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition getNextImageReference(const char *&studyUID, const char *&seriesUID, const char *&instanceUID);
-  
-  /** transfer the preformatted image to the print job
-   *  @param image the preformatted image, used in combination with getNextImageReference
-   *  @return EC_Normal if successful, an error code otherwise.
+  E_Condition getImageReference(size_t idx, const char *&studyUID, const char *&seriesUID, const char *&instanceUID)
+  {
+    return imageBoxContentList.getImageReference(idx, studyUID, seriesUID, instanceUID);
+  }
+          
+  /** Requests the properties of the printer (Printer SOP Instance N-GET).
+   *  The properties are not returned, but if the message handler is switched to "dump mode",
+   *  the DIMSE communication will be printed. 
+   *  @param printHandler print communication handler, association must be open.
+   *  @return EC_Normal upon success, an error code otherwise.
    */
-  E_Condition setImage(DcmItem *image);
-  
-  /** test if the print job is done
-   *
-   *  @return true if the job is still printing and needs images
+  E_Condition printSCUgetPrinterInstance(DVPSPrintMessageHandler& printHandler);
+
+  /** checks whether a presentation LUT or LUT shape is active in this stored print object.
+   *  In this case, if the printer supports the Presentation LUT SOP class,
+   *  a Presentation LUT SOP Instance is created in the printer.  
+   *  @param printHandler print communication handler, association must be open.
+   *  @return EC_Normal upon success, an error code otherwise.
    */
+  E_Condition printSCUpreparePresentationLUT(DVPSPrintMessageHandler& printHandler);
+
+  /** Creates a DICOM Basic Film Session SOP Instance in the printer.
+   *  @param printHandler print communication handler, association must be open.
+   *  @param dset DICOM dataset containing all Basic Film Session attributes managed outside this class
+   *  @param illumin Illumination setting to be used if Presentation LUT SOP Class is negotiated
+   *  @param reflection Reflected Ambient Light setting to be used if Presentation LUT SOP Class is negotiated
+   *  @return EC_Normal upon success, an error code otherwise.
+   */
+  E_Condition printSCUcreateBasicFilmSession(
+    DVPSPrintMessageHandler& printHandler, 
+    DcmDataset& dset,
+    Uint16 illumin,
+    Uint16 reflection);
+
+  /** Creates a DICOM Basic Film Box SOP Instance in the printer. 
+   *  This method only allows one basic film box to exist at any time -
+   *  collation is not supported.
+   *  @param printHandler print communication handler, association must be open.
+   *  @return EC_Normal upon success, an error code otherwise.
+   */
+  E_Condition printSCUcreateBasicFilmBox(DVPSPrintMessageHandler& printHandler);
+
+  /** Transmits a DICOM image to the printer (Basic Grayscale Image Box N-SET).
+   *  @param printHandler print communication handler, association must be open.
+   *  @param idx index of the image reference from which the Image Box settings are taken,
+   *     must be < getNumberOfImages().
+   *  @param supports12bit flag defining whether the printer supports 12-bit transmission.
+   *  @param image DICOM image to be printed
+   *  @return EC_Normal upon success, an error code otherwise.
+   */
+  E_Condition printSCUsetBasicImageBox(
+    DVPSPrintMessageHandler& printHandler,
+    size_t idx,
+    OFBool supports12bit,
+    DicomImage& image);
   
-  OFBool printPending();
-  
-  
+  /** Prints the current DICOM Basic Film Box SOP Instance.
+   *  @param printHandler print communication handler, association must be open.
+   *  @return EC_Normal upon success, an error code otherwise.
+   */
+  E_Condition printSCUprintBasicFilmBox(DVPSPrintMessageHandler& printHandler);
+
+  /** Deletes all objects currently present in the print association.
+   *  @param printHandler print communication handler, association must be open.
+   *  @return EC_Normal upon success, an error code otherwise.
+   */
+  E_Condition printSCUdelete(DVPSPrintMessageHandler& printHandler);
 
  private:
 
@@ -673,22 +721,11 @@ class DVPSStoredPrint
   /// requested decimate/crop behaviour used in all image boxes
   DVPSDecimateCropBehaviour decimateCropBehaviour;
 
-  /// connection to a printer
-  DVPSPrintMessageHandler *currentPrintHandler;
-	  
   /// the current filmsessioninstance
   OFString filmSessionInstanceUID;
 			
   /// the current filmboxinstance
   OFString filmBoxInstanceUID;
-
-  /// the list of imagebox instances
-  char **imageBoxInstanceUID;
-
-  OFListIterator(DVPSImageBoxContent *) currentImageBox ;
-
-  /// next wanted image
-  int nextImage;
 
 };
 
@@ -696,7 +733,10 @@ class DVPSStoredPrint
 
 /*
  *  $Log: dvpssp.h,v $
- *  Revision 1.11  1999-09-15 17:43:29  meichel
+ *  Revision 1.12  1999-09-17 14:33:59  meichel
+ *  Completed print spool functionality including Supplement 22 support
+ *
+ *  Revision 1.11  1999/09/15 17:43:29  meichel
  *  Implemented print job dispatcher code for dcmpstat, adapted dcmprtsv
  *    and dcmpsprt applications.
  *

@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-15 17:43:31 $
- *  CVS/RCS Revision: $Revision: 1.69 $
+ *  Update Date:      $Date: 1999-09-17 14:33:50 $
+ *  CVS/RCS Revision: $Revision: 1.70 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,6 +41,7 @@
 #include "diciefn.h"     /* for DiCIELABFunction */
 #include "diutil.h"      /* for DU_getStringDOElement */
 #include "dvpssp.h"      /* for class DVPSStoredPrint */
+#include "dvpshlp.h"     /* for class DVPSHelper */
 #include <stdio.h>
 #include <ctype.h>       /* for toupper() */
 
@@ -81,69 +82,7 @@ END_EXTERN_C
 
 #define DEFAULT_MAXPDU 16384
 
-/* keywords for configuration file */
-#define L2_HIGHENDSYSTEM     "HIGHENDSYSTEM"
-#define L2_COMMUNICATION     "COMMUNICATION"
-#define L2_GENERAL           "GENERAL"
-#define L1_NETWORK           "NETWORK"
-#define L1_DATABASE          "DATABASE"
-#define L1_GUI               "GUI"
-#define L1_MONITOR           "MONITOR"
-#define L0_DIRECTORY         "DIRECTORY"
-#define L0_HOSTNAME          "HOSTNAME"
-#define L0_PORT              "PORT"
-#define L0_DESCRIPTION       "DESCRIPTION"
-#define L0_AETITLE           "AETITLE"
-#define L0_IMPLICITONLY      "IMPLICITONLY"
-#define L0_DISABLENEWVRS     "DISABLENEWVRS"
-#define L0_MAXPDU            "MAXPDU"
-#define L0_SENDER            "SENDER"
-#define L0_RECEIVER          "RECEIVER"
-#define L0_BITPRESERVINGMODE "BITPRESERVINGMODE"
-#define L0_CHARACTERISTICS   "CHARACTERISTICS"
-#define L0_TYPE              "TYPE"
-#define L0_SUPPORTSPRESENTATIONLUT "SUPPORTSPRESENTATIONLUT"
-#define L0_SUPPORTS12BIT     "SUPPORTS12BIT"
-#define L0_SUPPORTSIMAGESIZE "SUPPORTSIMAGESIZE"
-#define L0_SUPPORTSDECIMATECROP "SUPPORTSDECIMATECROP"
-#define L0_SUPPORTSTRIM      "SUPPORTSTRIM"
-#define L0_MAXCOLUMNS        "MAXCOLUMNS"
-#define L0_MAXROWS           "MAXROWS"
-#define L0_FILMSIZEID        "FILMSIZEID"
-#define L0_MEDIUMTYPE        "MEDIUMTYPE"
-#define L0_RESOLUTIONID      "RESOLUTIONID"
-#define L0_MAGNIFICATIONTYPE "MAGNIFICATIONTYPE"
-#define L0_SMOOTHINGTYPE     "SMOOTHINGTYPE"
-#define L0_CONFIGURATION     "CONFIGURATION"
-
-/* --------------- static helper functions --------------- */
-
-static void currentDate(OFString &str)
-{
-  char buf[32];
-  time_t tt = time(NULL);
-  struct tm *ts = localtime(&tt);
-  if (ts)
-  {
-    int year = 1900 + ts->tm_year;
-    sprintf(buf, "%04d%02d%02d", year, ts->tm_mon + 1, ts->tm_mday);
-    str = buf;
-  } else str = "19000101";
-  return;
-}
-
-static void currentTime(OFString &str)
-{
-  char buf[32];
-  time_t tt = time(NULL);
-  struct tm *ts = localtime(&tt);
-  if (ts)
-  {
-    sprintf(buf, "%02d%02d%02d", ts->tm_hour, ts->tm_min, ts->tm_sec);
-    str = buf;
-  } else str = "000000";
-  return;
-}
+#define L2_HIGHENDSYSTEM           "HIGHENDSYSTEM"
 
 
 DVInterface::DVInterface(const char *config_file)
@@ -269,7 +208,7 @@ E_Condition DVInterface::loadImage(const char *imgName)
     DVPresentationState *newState = new DVPresentationState((DiDisplayFunction **)displayFunction, minimumPrintBitmapWidth, 
       minimumPrintBitmapHeight, maximumPrintBitmapWidth, maximumPrintBitmapHeight);
     if (newState==NULL) return EC_MemoryExhausted;
-    if ((status = loadFileFormat(imgName, image)) == EC_Normal)
+    if ((status = DVPSHelper::loadFileFormat(imgName, image)) == EC_Normal)
     {
         if (image)
         {
@@ -315,7 +254,7 @@ E_Condition DVInterface::loadPState(const char *studyUID,
       minimumPrintBitmapHeight, maximumPrintBitmapWidth, maximumPrintBitmapHeight);
     if (newState==NULL) return EC_MemoryExhausted;
     
-    if ((EC_Normal == (status = loadFileFormat(filename, pstate)))&&(pstate))
+    if ((EC_Normal == (status = DVPSHelper::loadFileFormat(filename, pstate)))&&(pstate))
     {
         DcmDataset *dataset = pstate->getDataset();
         if (dataset) status = newState->read(*dataset); else status = EC_CorruptedData;
@@ -339,7 +278,7 @@ E_Condition DVInterface::loadPState(const char *studyUID,
             if (imagefilename)
             {
                 DcmFileFormat *fimage = NULL; 
-                if ((EC_Normal == (status = loadFileFormat(imagefilename, fimage)))&&(fimage))
+                if ((EC_Normal == (status = DVPSHelper::loadFileFormat(imagefilename, fimage)))&&(fimage))
                 {
                     DcmDataset *dataset = pstate->getDataset();
                     if (dataset)
@@ -381,8 +320,8 @@ E_Condition DVInterface::loadPState(const char *pstName,
     DVPresentationState *newState = new DVPresentationState((DiDisplayFunction **)displayFunction, minimumPrintBitmapWidth, 
       minimumPrintBitmapHeight, maximumPrintBitmapWidth, maximumPrintBitmapHeight);
     if (newState==NULL) return EC_MemoryExhausted;
-    if (((status = loadFileFormat(pstName, pstate)) == EC_Normal) &&
-        ((imgName == NULL) || ((status = loadFileFormat(imgName, image)) == EC_Normal)))
+    if (((status = DVPSHelper::loadFileFormat(pstName, pstate)) == EC_Normal) &&
+        ((imgName == NULL) || ((status = DVPSHelper::loadFileFormat(imgName, image)) == EC_Normal)))
     {
         if ((pstate)&&(image))
         {
@@ -501,7 +440,7 @@ E_Condition DVInterface::savePState(const char *filename, OFBool explicitVR)
           DcmFileFormat *fileformat = new DcmFileFormat(dataset);
           if (fileformat != NULL) 
           {
-            status = saveFileFormat(filename, fileformat, explicitVR);
+            status = DVPSHelper::saveFileFormat(filename, fileformat, explicitVR);
             
             // replace the stored data for resetPresentationState()
             if (pDicomPState) delete pDicomPState;
@@ -519,7 +458,7 @@ E_Condition DVInterface::saveCurrentImage(const char *filename, OFBool explicitV
 {
     if (filename==NULL) return EC_IllegalCall;
     if (pDicomImage==NULL) return EC_IllegalCall;
-    return saveFileFormat(filename, pDicomImage, explicitVR);
+    return DVPSHelper::saveFileFormat(filename, pDicomImage, explicitVR);
 }
 
 E_Condition DVInterface::exchangeImageAndPState(DVPresentationState *newState, DcmFileFormat *image, DcmFileFormat *state)
@@ -1008,7 +947,7 @@ OFBool DVInterface::createPStateCache()
                                                 if (series->List.getType() == DVPSI_presentationState)
                                                 {
                                                     DcmFileFormat *pstate = NULL;
-                                                    if ((loadFileFormat(series->List.getFilename(), pstate) == EC_Normal) && pstate)
+                                                    if ((DVPSHelper::loadFileFormat(series->List.getFilename(), pstate) == EC_Normal) && pstate)
                                                     {
                                                         DcmDataset *dataset = pstate->getDataset();
                                                         DVPSReferencedSeries_PList plist;
@@ -1692,7 +1631,7 @@ E_Condition DVInterface::sendIOD(const char * targetID,
   if (sender_application==NULL) return EC_IllegalCall;
   if (configPath.length()==0) return EC_IllegalCall;
   
-  cleanChildren(); // clean up old child processes before creating new ones
+  DVPSHelper::cleanChildren(); // clean up old child processes before creating new ones
   
 #ifdef HAVE_FORK
   // Unix version - call fork() and execl()
@@ -1752,7 +1691,7 @@ E_Condition DVInterface::startReceiver()
   if (receiver_application==NULL) return EC_IllegalCall;
   if (configPath.length()==0) return EC_IllegalCall;
   
-  cleanChildren(); // clean up old child processes before creating new ones
+  DVPSHelper::cleanChildren(); // clean up old child processes before creating new ones
   
 #ifdef HAVE_FORK
   // Unix version - call fork() and execl()
@@ -1852,100 +1791,6 @@ E_Condition DVInterface::terminateReceiver()
   return result;
 }
 
-
-E_Condition DVInterface::loadFileFormat(const char *filename,
-                                        DcmFileFormat *&fileformat)
-{
-    DcmFileStream stream(filename, DCM_ReadMode);
-    if (!stream.Fail())
-    {
-        fileformat = new DcmFileFormat;
-        if (fileformat != NULL)
-        {
-            E_Condition status;
-            fileformat->transferInit();
-            if ((status = fileformat->read(stream)) == EC_Normal)
-                fileformat->transferEnd();
-            return status;
-        }
-        return EC_MemoryExhausted;
-    }
-    return stream.GetError();
-}
-
-
-E_Condition DVInterface::saveFileFormat(const char *filename,
-                                        DcmFileFormat *fileformat, OFBool explicitVR)
-{
-    E_TransferSyntax xfer = EXS_LittleEndianImplicit;
-    if (explicitVR) xfer = EXS_LittleEndianExplicit;
-    
-    DcmFileStream stream(filename, DCM_WriteMode);
-    if (!stream.Fail())
-    {
-        if (fileformat != NULL)
-        {
-            E_Condition status;
-            fileformat->transferInit();
-            status = fileformat->write(stream, xfer, EET_ExplicitLength, EGL_recalcGL, EPD_withoutPadding);
-            fileformat->transferEnd();
-            return status;
-        }
-        return EC_IllegalCall;
-    }
-    return stream.GetError();
-}
-
-
-E_Condition DVInterface::putStringValue(DcmItem *item, DcmTagKey tag, const char *value)
-{
-    E_Condition result = EC_Normal;
-    DcmTag localTag(tag);
-    if (item)
-    {
-        DcmElement *elem = NULL;
-        switch(localTag.getEVR())
-        {
-          case EVR_AE: elem = new DcmApplicationEntity(localTag); break;
-          case EVR_AS: elem = new DcmAgeString(localTag); break;
-          case EVR_CS: elem = new DcmCodeString(localTag); break;
-          case EVR_DA: elem = new DcmDate(localTag); break;
-          case EVR_DS: elem = new DcmDecimalString(localTag); break;
-          case EVR_DT: elem = new DcmDateTime(localTag); break;
-          case EVR_IS: elem = new DcmIntegerString(localTag); break;
-          case EVR_TM: elem = new DcmTime(localTag); break;
-          case EVR_UI: elem = new DcmUniqueIdentifier(localTag); break;
-          case EVR_LO: elem = new DcmLongString(localTag); break;
-          case EVR_LT: elem = new DcmLongText(localTag); break;
-          case EVR_PN: elem = new DcmPersonName(localTag); break;
-          case EVR_SH: elem = new DcmShortString(localTag); break;
-          case EVR_ST: elem = new DcmShortText(localTag); break;
-          default: result=EC_IllegalCall; break;
-        }
-        if (elem)
-        {
-          if (value) result = elem->putString(value);
-        } else if (result==EC_Normal) result = EC_MemoryExhausted;
-        if (EC_Normal==result) item->insert(elem, OFTrue);
-    } else result = EC_IllegalCall;
-    return result;
-}
-
-
-E_Condition DVInterface::putUint16Value(DcmItem *item, DcmTagKey tag, Uint16 value)
-{
-    E_Condition result = EC_Normal;
-    DcmTag localTag(tag);
-    if (item)
-    {
-        DcmElement *elem = new DcmUnsignedShort(localTag);
-        if (elem) result = elem->putUint16(value); else result=EC_MemoryExhausted;
-        if (EC_Normal==result) item->insert(elem, OFTrue);
-    } else result = EC_IllegalCall;
-    return result;
-}
-
-
 E_Condition DVInterface::saveDICOMImage(
   const char *filename, 
   const void *pixelData,
@@ -1969,39 +1814,39 @@ E_Condition DVInterface::saveDICOMImage(
 
     if (dataset)
     {
-      if (EC_Normal==status) status = putStringValue(dataset, DCM_PatientsName);
-      if (EC_Normal==status) status = putStringValue(dataset, DCM_PatientID);
-      if (EC_Normal==status) status = putStringValue(dataset, DCM_PatientsBirthDate);
-      if (EC_Normal==status) status = putStringValue(dataset, DCM_PatientsSex);
-      if (EC_Normal==status) status = putStringValue(dataset, DCM_StudyDate);
-      if (EC_Normal==status) status = putStringValue(dataset, DCM_StudyTime);
-      if (EC_Normal==status) status = putStringValue(dataset, DCM_ReferringPhysiciansName);
-      if (EC_Normal==status) status = putStringValue(dataset, DCM_StudyID);
-      if (EC_Normal==status) status = putStringValue(dataset, DCM_AccessionNumber);
-      if (EC_Normal==status) status = putStringValue(dataset, DCM_SeriesNumber);
-      if (EC_Normal==status) status = putStringValue(dataset, DCM_InstanceNumber);
-      if (EC_Normal==status) status = putStringValue(dataset, DCM_PatientOrientation);
-      if (EC_Normal==status) status = putStringValue(dataset, DCM_SOPClassUID, UID_SecondaryCaptureImageStorage);
-      if (EC_Normal==status) status = putStringValue(dataset, DCM_Modality, "OT");
-      if (EC_Normal==status) status = putStringValue(dataset, DCM_ConversionType, "WSD");
-      if (EC_Normal==status) status = putStringValue(dataset, DCM_PhotometricInterpretation, "MONOCHROME2");
+      if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_PatientsName);
+      if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_PatientID);
+      if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_PatientsBirthDate);
+      if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_PatientsSex);
+      if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_StudyDate);
+      if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_StudyTime);
+      if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_ReferringPhysiciansName);
+      if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_StudyID);
+      if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_AccessionNumber);
+      if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_SeriesNumber);
+      if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_InstanceNumber);
+      if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_PatientOrientation);
+      if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_SOPClassUID, UID_SecondaryCaptureImageStorage);
+      if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_Modality, "OT");
+      if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_ConversionType, "WSD");
+      if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_PhotometricInterpretation, "MONOCHROME2");
       dcmGenerateUniqueIdentifer(newuid);
-      if (EC_Normal==status) status = putStringValue(dataset, DCM_SOPInstanceUID, (instanceUID ? instanceUID : newuid));
+      if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_SOPInstanceUID, (instanceUID ? instanceUID : newuid));
       dcmGenerateUniqueIdentifer(newuid);
-      if (EC_Normal==status) status = putStringValue(dataset, DCM_SeriesInstanceUID, newuid);
+      if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_SeriesInstanceUID, newuid);
       dcmGenerateUniqueIdentifer(newuid);
-      if (EC_Normal==status) status = putStringValue(dataset, DCM_StudyInstanceUID, newuid);
-      if (EC_Normal==status) status = putUint16Value(dataset, DCM_SamplesPerPixel, 1);
-      if (EC_Normal==status) status = putUint16Value(dataset, DCM_Rows, rows);
-      if (EC_Normal==status) status = putUint16Value(dataset, DCM_Columns, columns);
-      if (EC_Normal==status) status = putUint16Value(dataset, DCM_BitsAllocated, 8);
-      if (EC_Normal==status) status = putUint16Value(dataset, DCM_BitsStored, 8);
-      if (EC_Normal==status) status = putUint16Value(dataset, DCM_HighBit, 7);
-      if (EC_Normal==status) status = putUint16Value(dataset, DCM_PixelRepresentation, 0);
+      if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_StudyInstanceUID, newuid);
+      if (EC_Normal==status) status = DVPSHelper::putUint16Value(dataset, DCM_SamplesPerPixel, 1);
+      if (EC_Normal==status) status = DVPSHelper::putUint16Value(dataset, DCM_Rows, rows);
+      if (EC_Normal==status) status = DVPSHelper::putUint16Value(dataset, DCM_Columns, columns);
+      if (EC_Normal==status) status = DVPSHelper::putUint16Value(dataset, DCM_BitsAllocated, 8);
+      if (EC_Normal==status) status = DVPSHelper::putUint16Value(dataset, DCM_BitsStored, 8);
+      if (EC_Normal==status) status = DVPSHelper::putUint16Value(dataset, DCM_HighBit, 7);
+      if (EC_Normal==status) status = DVPSHelper::putUint16Value(dataset, DCM_PixelRepresentation, 0);
       if ((EC_Normal==status)&&(aspectRatio != 1.0))
       {
         sprintf(newuid, "%ld\\%ld", 1000L, (long)(aspectRatio*1000.0));
-        status = putStringValue(dataset, DCM_PixelAspectRatio, newuid);
+        status = DVPSHelper::putStringValue(dataset, DCM_PixelAspectRatio, newuid);
       }
       DcmPolymorphOBOW *pxData = new DcmPolymorphOBOW(DCM_PixelData);
       if (pxData)
@@ -2015,7 +1860,7 @@ E_Condition DVInterface::saveDICOMImage(
           DcmFileFormat *fileformat = new DcmFileFormat(dataset);
           if (fileformat) 
           {
-            status = saveFileFormat(filename, fileformat, explicitVR);
+            status = DVPSHelper::saveFileFormat(filename, fileformat, explicitVR);
             delete fileformat;
           } else {
             status = EC_MemoryExhausted;
@@ -2103,39 +1948,39 @@ E_Condition DVInterface::saveGrayscaleHardcopyImage(
       if (EC_Normal==status) status = pPrint->writeHardcopyImageAttributes(*dataset);
       
       // Hardcopy Equipment Module
-      if (EC_Normal==status) status = putStringValue(dataset, DCM_HardcopyDeviceManufacturer, "OFFIS");
-      if (EC_Normal==status) status = putStringValue(dataset, DCM_HardcopyDeviceSoftwareVersion, OFFIS_DTK_IMPLEMENTATION_VERSION_NAME);
+      if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_HardcopyDeviceManufacturer, "OFFIS");
+      if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_HardcopyDeviceSoftwareVersion, OFFIS_DTK_IMPLEMENTATION_VERSION_NAME);
       
       // General Image Module
-      if (EC_Normal==status) status = putStringValue(dataset, DCM_InstanceNumber);
-      if (EC_Normal==status) status = putStringValue(dataset, DCM_PatientOrientation);
-      if (EC_Normal==status) status = putStringValue(dataset, DCM_ImageType, "DERIVED\\SECONDARY");
-      if (EC_Normal==status) status = putStringValue(dataset, DCM_DerivationDescription, "Hardcopy rendered using Presentation State");
+      if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_InstanceNumber);
+      if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_PatientOrientation);
+      if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_ImageType, "DERIVED\\SECONDARY");
+      if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_DerivationDescription, "Hardcopy rendered using Presentation State");
       // source image sequence is written in pState->writeHardcopyImageAttributes().
    
       // SOP Common Module
-      if (EC_Normal==status) status = putStringValue(dataset, DCM_SOPClassUID, UID_HardcopyGrayscaleImageStorage);
+      if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_SOPClassUID, UID_HardcopyGrayscaleImageStorage);
       dcmGenerateUniqueIdentifer(newuid);
       theInstanceUID = (instanceUID ? instanceUID : newuid);
-      if (EC_Normal==status) status = putStringValue(dataset, DCM_SOPInstanceUID, theInstanceUID.c_str());
-      currentDate(aString);
-      if (EC_Normal==status) status = putStringValue(dataset, DCM_InstanceCreationDate, aString.c_str());
-      currentTime(aString);
-      if (EC_Normal==status) status = putStringValue(dataset, DCM_InstanceCreationTime, aString.c_str());
+      if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_SOPInstanceUID, theInstanceUID.c_str());
+      DVPSHelper::currentDate(aString);
+      if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_InstanceCreationDate, aString.c_str());
+      DVPSHelper::currentTime(aString);
+      if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_InstanceCreationTime, aString.c_str());
 
       // Hardcopy Grayscale Image Module
-      if (EC_Normal==status) status = putStringValue(dataset, DCM_PhotometricInterpretation, "MONOCHROME2");
-      if (EC_Normal==status) status = putUint16Value(dataset, DCM_SamplesPerPixel, 1);
-      if (EC_Normal==status) status = putUint16Value(dataset, DCM_Rows, rows);
-      if (EC_Normal==status) status = putUint16Value(dataset, DCM_Columns, columns);
-      if (EC_Normal==status) status = putUint16Value(dataset, DCM_BitsAllocated, 16);
-      if (EC_Normal==status) status = putUint16Value(dataset, DCM_BitsStored, 12);
-      if (EC_Normal==status) status = putUint16Value(dataset, DCM_HighBit, 11);
-      if (EC_Normal==status) status = putUint16Value(dataset, DCM_PixelRepresentation, 0);
+      if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_PhotometricInterpretation, "MONOCHROME2");
+      if (EC_Normal==status) status = DVPSHelper::putUint16Value(dataset, DCM_SamplesPerPixel, 1);
+      if (EC_Normal==status) status = DVPSHelper::putUint16Value(dataset, DCM_Rows, rows);
+      if (EC_Normal==status) status = DVPSHelper::putUint16Value(dataset, DCM_Columns, columns);
+      if (EC_Normal==status) status = DVPSHelper::putUint16Value(dataset, DCM_BitsAllocated, 16);
+      if (EC_Normal==status) status = DVPSHelper::putUint16Value(dataset, DCM_BitsStored, 12);
+      if (EC_Normal==status) status = DVPSHelper::putUint16Value(dataset, DCM_HighBit, 11);
+      if (EC_Normal==status) status = DVPSHelper::putUint16Value(dataset, DCM_PixelRepresentation, 0);
       if ((EC_Normal==status)&&(aspectRatio != 1.0))
       {
         sprintf(newuid, "%ld\\%ld", 1000L, (long)(aspectRatio*1000.0));
-        status = putStringValue(dataset, DCM_PixelAspectRatio, newuid);
+        status = DVPSHelper::putStringValue(dataset, DCM_PixelAspectRatio, newuid);
       }
 
       DcmPolymorphOBOW *pxData = new DcmPolymorphOBOW(DCM_PixelData);
@@ -2151,7 +1996,7 @@ E_Condition DVInterface::saveGrayscaleHardcopyImage(
           DcmFileFormat *fileformat = new DcmFileFormat(dataset);
           if (fileformat) 
           {
-            status = saveFileFormat(filename, fileformat, explicitVR);
+            status = DVPSHelper::saveFileFormat(filename, fileformat, explicitVR);
             delete fileformat;
           } else {
             status = EC_MemoryExhausted;
@@ -2247,7 +2092,7 @@ E_Condition DVInterface::saveStoredPrint(
           DcmFileFormat *fileformat = new DcmFileFormat(dataset);
           if (fileformat) 
           {
-            status = saveFileFormat(filename, fileformat, explicitVR);
+            status = DVPSHelper::saveFileFormat(filename, fileformat, explicitVR);
             delete fileformat;
           } else {
             status = EC_MemoryExhausted;
@@ -2294,40 +2139,6 @@ E_Condition DVInterface::saveStoredPrint(OFBool writeRequestedImageSize)
   COND_PopCondition(OFTrue); // clear condition stack
   return result;
 }
-
-
-void DVInterface::cleanChildren()
-{
-#ifdef HAVE_WAITPID
-    int stat_loc;
-#elif HAVE_WAIT3
-    struct rusage rusage;
-#if defined(__NeXT__)
-    /* some systems need a union wait as argument to wait3 */
-    union wait status;
-#else
-    int        status;
-#endif
-#endif
-
-#if defined(HAVE_WAITPID) || defined(HAVE_WAIT3)
-    int child = 1;
-    int options = WNOHANG;
-    while (child > 0)
-    {
-#ifdef HAVE_WAITPID
-    child = (int)(waitpid(-1, &stat_loc, options));
-#elif defined(HAVE_WAIT3)
-    child = wait3(&status, options, &rusage);
-#endif
-        if (child < 0)
-    {
-       if (errno != ECHILD) cerr << "wait for child failed: " << strerror(errno) << endl;
-    }
-    }
-#endif
-}
-
 
 E_Condition DVInterface::setCurrentPrinter(const char *targetID)
 {
@@ -2387,7 +2198,7 @@ E_Condition DVInterface::selectPrintPresentationLUT(const char *lutID)
        filename += PATH_SEPARATOR; 
        filename += lutfile;
        DcmFileFormat *ff = NULL;
-       result = loadFileFormat(filename.c_str(), ff);
+       result = DVPSHelper::loadFileFormat(filename.c_str(), ff);
        if ((EC_Normal == result) && ff)
        {
          DcmDataset *dataset = ff->getDataset();
@@ -2431,7 +2242,7 @@ E_Condition DVInterface::startPrintSpooler()
   char sleepStr[20];
   sprintf(sleepStr, "%lu", sleepingTime);
   
-  cleanChildren(); // clean up old child processes before creating new ones
+  DVPSHelper::cleanChildren(); // clean up old child processes before creating new ones
 
   Uint32 numberOfPrinters = getNumberOfTargets(DVPSE_print);
   if (numberOfPrinters > 0) for (Uint32 i=0; i < numberOfPrinters; i++)
@@ -2504,7 +2315,7 @@ E_Condition DVInterface::createPrintJobFilenames(const char *printer, OFString& 
 E_Condition DVInterface::terminatePrintSpooler()
 {
   if (configPath.length()==0) return EC_IllegalCall;
-  cleanChildren(); // clean up old child processes before creating new ones
+  DVPSHelper::cleanChildren(); // clean up old child processes before creating new ones
   OFString spoolFilename;
   OFString tempFilename;
     
@@ -2567,11 +2378,31 @@ E_Condition DVInterface::spoolStoredPrintFromDB(const char *studyUID, const char
   return EC_Normal;
 }
 
+E_Condition DVInterface::printSCUcreateBasicFilmSession(DVPSPrintMessageHandler& printHandler)
+{
+  if (! pPrint) return EC_IllegalCall;
+  E_Condition result = EC_Normal;
+  DcmDataset dset;
+  DcmElement *delem = NULL;
+  
+  if ((EC_Normal==result)&&(printerMediumType))
+  {
+    delem = new DcmCodeString(DCM_MediumType);
+  	if (delem) result = delem->putString(printerMediumType); else result=EC_IllegalCall;
+  	if (EC_Normal==result) result = dset.insert(delem);
+  }
+  // add code for handling number of copies, print priority and film destination here.
+  if (EC_Normal==result) result = pPrint->printSCUcreateBasicFilmSession(printHandler, dset, printIllumination, printReflectedAmbientLight);
+  return result;
+}
 
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.69  1999-09-15 17:43:31  meichel
+ *  Revision 1.70  1999-09-17 14:33:50  meichel
+ *  Completed print spool functionality including Supplement 22 support
+ *
+ *  Revision 1.69  1999/09/15 17:43:31  meichel
  *  Implemented print job dispatcher code for dcmpstat, adapted dcmprtsv
  *    and dcmpsprt applications.
  *
