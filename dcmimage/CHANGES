@@ -48,6 +48,7 @@
            dcmimgle/libsrc/diovpln.cc
   Added:   dcmimgle/include/dibarlut.h
            dcmimgle/include/didispfn.h
+           dcmimgle/include/displine.h
            dcmimgle/libsrc/dibarlut.cc
            dcmimgle/libsrc/didispfn.cc
 
