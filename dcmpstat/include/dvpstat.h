@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-10-13 14:11:57 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Update Date:      $Date: 1999-10-19 16:24:50 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -289,12 +289,20 @@ public:
    */
   E_Condition setCurrentPresentationLUT(DVPSPresentationLUTType newType);
  
+  /** resets the Presentation LUT to the default LUT shape
+   *  which is DVPSP_identity for MONOCHROME2 images and DVPSP_inverse for MONOCHROME1.
+   *  DVPSP_table can only be used if the presentation state
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition setDefaultPresentationLUTShape();
+
   /** stores a presentation lookup table in the presentation state.
    *  This method stores a presentation lookup table in the
    *  presentation state and activates it. The LUT is copied to
    *  the presentation state. If the method returns EC_Normal,
    *  any old presentation LUT in the presentation state is overwritten.
-   *  If the method returns an error code, an old LUT is left unchanged.
+   *  This method keeps the inverse/not inverse status intact,
+   *  i.e. inverses the LUT if necessary.
    *  @param lutDescriptor the LUT Descriptor in DICOM format (VM=3)
    *  @param lutData the LUT Data in DICOM format
    *  @param lutExplanation the LUT Explanation in DICOM format, may be empty.
@@ -310,6 +318,8 @@ public:
    *  presentation state and activates it. The LUT is copied to
    *  the presentation state. Overwrites old LUT. If unsuccessful,
    *  LUT is set to DVPSP_identity.
+   *  This method keeps the inverse/not inverse status intact,
+   *  i.e. inverses the LUT if necessary.
    *  @param dset dataset from which the Presentation LUT SQ or Shape is read.
    *  @return EC_Normal if successful, an error code otherwise.
    */ 
@@ -333,11 +343,12 @@ public:
 
   /** writes the current Presentation LUT to a DICOM dataset.
    *  Copies of the DICOM element managed by this object are inserted into
-   *  the DICOM dataset.
+   *  the DICOM dataset. In the case of a MONOCHROME1 image an inverted
+   *  LUT is written to dataset because the print bitmap is always MONOCHROME2.
    *  @param dset the dataset to which the Presentation LUT SQ/Shape is written
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition writePresentationLUT(DcmItem &dset);
+  E_Condition writePresentationLUTforPrint(DcmItem &dset);
 
   /** gets the current Presentation LUT object.
    *  @return the current presentation LUT object
@@ -1994,6 +2005,10 @@ private:
   /** modality of currently attached image (if any)
    */
   DcmCodeString currentImageModality;
+
+  /** true if attached image is MONOCHROME1
+   */
+  OFBool currentImageMonochrome1;  
   
   /** flag indicating the currently selected display transform
    *  DVPSD_none if switched off
@@ -2029,7 +2044,10 @@ private:
 
 /*
  *  $Log: dvpstat.h,v $
- *  Revision 1.25  1999-10-13 14:11:57  meichel
+ *  Revision 1.26  1999-10-19 16:24:50  meichel
+ *  Corrected handling of MONOCHROME1 images when used with P-LUTs
+ *
+ *  Revision 1.25  1999/10/13 14:11:57  meichel
  *  Added config file entries and access methods
  *    for user-defined VOI presets, log directory, verbatim logging
  *    and an explicit list of image display formats for each printer.

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPresentationState
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-18 10:18:52 $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-10-19 16:24:58 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -178,6 +178,7 @@ DVPresentationState::DVPresentationState(
 , currentImageVOILUTList()
 , currentImageVOIWindowList()
 , currentImageModality(DCM_Modality)
+, currentImageMonochrome1(OFFalse)
 , displayTransform(DVPSD_GSDF)
 , imageInverse(OFFalse)
 , displayFunction(dispFunction)
@@ -209,6 +210,8 @@ void DVPresentationState::detachImage()
   currentImageVOILUTList.clear();
   currentImageVOIWindowList.clear();
   currentImageModality.clear();
+  currentImageMonochrome1 = OFFalse;
+  
   // reset flags
   currentImageWidth = 0;
   currentImageHeight = 0;
@@ -1677,7 +1680,8 @@ E_Condition DVPresentationState::getPrintBitmap(void *bitmap,
         if (presentationLUT.getType() == DVPSP_table)
         {
           // we never render a presentation LUT into the print bitmap at this stage.
-          currentImage->setPresentationLutShape(ESP_Identity);
+          if (currentImageMonochrome1) currentImage->setPresentationLutShape(ESP_Inverse);
+          else currentImage->setPresentationLutShape(ESP_Identity);
           // make sure the presentation LUT is re-activated for on-screen display
           currentImagePLUTValid = OFFalse;
         }
@@ -1758,6 +1762,7 @@ E_Condition DVPresentationState::attachImage(DcmDataset *dataset, OFBool transfe
   {
     if (EIS_Normal == image->getStatus())
     {
+      OFString aString;
       DcmStack stack;
       detachImage();
       currentImage = image;
@@ -1774,6 +1779,19 @@ E_Condition DVPresentationState::attachImage(DcmDataset *dataset, OFBool transfe
       }
       stack.clear();
       
+      // determine default Presentation LUT Shape
+      if (EC_Normal == dataset->search(DCM_PhotometricInterpretation, stack, ESM_fromHere, OFFalse))
+      {
+         DcmCodeString *photometricInterpretation = (DcmCodeString *)(stack.top());         
+         if (photometricInterpretation->getVM() == 1)
+         {
+           aString.clear();
+           photometricInterpretation->getOFString(aString,0);
+           if ((aString == "MONOCHROME1")||(aString == "MONOCHROME 1")) currentImageMonochrome1 = OFTrue;
+         }
+      }
+      stack.clear();
+            
       // get SOP class UID and SOP instance UID.
       if ((EC_Normal == result)&&(EC_Normal == dataset->search(DCM_SOPClassUID, stack, ESM_fromHere, OFFalse)))
       {
@@ -1990,7 +2008,17 @@ E_Condition DVPresentationState::getImageReference(
 E_Condition DVPresentationState::setCurrentPresentationLUT(DVPSPresentationLUTType newType)
 {
   E_Condition result = presentationLUT.setType(newType);
-  if (EC_Normal==result) currentImagePLUTValid = OFFalse; // PLUT has changed
+  currentImagePLUTValid = OFFalse; // PLUT has changed
+  imageInverse = presentationLUT.isInverse();
+  return result;
+}
+
+E_Condition DVPresentationState::setDefaultPresentationLUTShape()
+{
+  E_Condition result = EC_Normal;
+  if (currentImageMonochrome1) result=presentationLUT.setType(DVPSP_inverse); else result=presentationLUT.setType(DVPSP_identity);
+  currentImagePLUTValid = OFFalse; // PLUT has changed
+  imageInverse = presentationLUT.isInverse();
   return result;
 }
 
@@ -2000,7 +2028,12 @@ E_Condition DVPresentationState::setPresentationLookupTable(
     DcmLongString& lutExplanation)
 {
   E_Condition result = presentationLUT.setLUT(lutDescriptor, lutData, lutExplanation);
-  if (EC_Normal == result) currentImagePLUTValid = OFFalse; // PLUT has changed
+  currentImagePLUTValid = OFFalse; // PLUT has changed
+  OFBool wasInverse = imageInverse;
+  imageInverse = presentationLUT.isInverse();
+
+  // keep inverse/normal status as before
+  if ((wasInverse && (! imageInverse))||(imageInverse && (! wasInverse))) result = invertImage();
   return result;
 }
 
@@ -2009,6 +2042,11 @@ E_Condition DVPresentationState::setPresentationLookupTable(DcmItem &dset)
   E_Condition result = presentationLUT.read(dset, OFFalse);
   if (EC_Normal != result) presentationLUT.setType(DVPSP_identity); // set to well-defined default in case of error
   currentImagePLUTValid = OFFalse; // PLUT has changed
+  OFBool wasInverse = imageInverse;
+  imageInverse = presentationLUT.isInverse();
+
+  // keep inverse/normal status as before
+  if ((wasInverse && (! imageInverse))||(imageInverse && (! wasInverse))) result = invertImage();
   return result;
 }
 
@@ -3439,11 +3477,8 @@ OFBool DVPresentationState::isInverse()
 E_Condition DVPresentationState::invertImage()
 {
   E_Condition status = presentationLUT.invert();
-  if (status == EC_Normal)
-  {
-      currentImagePLUTValid = OFFalse; // PLUT has changed
-      imageInverse = (imageInverse ? OFFalse : OFTrue);
-  }
+  currentImagePLUTValid = OFFalse; // PLUT has changed
+  imageInverse = (imageInverse ? OFFalse : OFTrue);
   return status;
 }
 
@@ -3639,9 +3674,16 @@ E_Condition DVPresentationState::getPrintBitmapRequestedImageSize(OFString& requ
   return EC_IllegalCall;
 }
 
-E_Condition DVPresentationState::writePresentationLUT(DcmItem &dset)
+E_Condition DVPresentationState::writePresentationLUTforPrint(DcmItem &dset)
 {
-  return presentationLUT.write(dset, OFFalse);
+  E_Condition result = EC_Normal;
+  if (currentImageMonochrome1)
+  {
+  	// write inverted LUT because image is also converted to MONOCHROME2
+  	presentationLUT.invert();
+  	if (EC_Normal==result) result = presentationLUT.write(dset, OFFalse);
+  	presentationLUT.invert();      	
+  } else result = presentationLUT.write(dset, OFFalse);
 }
 
 const char *DVPresentationState::getCurrentImageModality()
@@ -3652,7 +3694,10 @@ const char *DVPresentationState::getCurrentImageModality()
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.43  1999-10-18 10:18:52  joergr
+ *  Revision 1.44  1999-10-19 16:24:58  meichel
+ *  Corrected handling of MONOCHROME1 images when used with P-LUTs
+ *
+ *  Revision 1.43  1999/10/18 10:18:52  joergr
  *  Use the current display shutter P-value for the border area of print
  *  bitmaps.
  *  Switch off time consuming interpolation for implicite scaling of print

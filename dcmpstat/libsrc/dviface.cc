@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-10-19 14:48:21 $
- *  CVS/RCS Revision: $Revision: 1.77 $
+ *  Update Date:      $Date: 1999-10-19 16:24:56 $
+ *  CVS/RCS Revision: $Revision: 1.78 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2000,7 +2000,7 @@ E_Condition DVInterface::saveGrayscaleHardcopyImage(
       // add Presentation LUT to hardcopy file if present, making it a Standard Extended SOP Class
       if ((EC_Normal==status)&&(pState->getPresentationLUT() == DVPSP_table))
       {
-        status = pState->writePresentationLUT(*dataset);
+        status = pState->writePresentationLUTforPrint(*dataset);
       }
 
       // save image file
@@ -2631,7 +2631,10 @@ void DVInterface::setAnnotationText(const char *value)
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.77  1999-10-19 14:48:21  meichel
+ *  Revision 1.78  1999-10-19 16:24:56  meichel
+ *  Corrected handling of MONOCHROME1 images when used with P-LUTs
+ *
+ *  Revision 1.77  1999/10/19 14:48:21  meichel
  *  added support for the Basic Annotation Box SOP Class
  *    as well as access methods for Max Density and Min Density.
  *
