@@ -22,9 +22,9 @@
  *  Purpose: Convert DICOM color images palette color
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-20 12:20:21 $
+ *  Update Date:      $Date: 2002-08-27 17:19:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcmquant.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -146,6 +146,10 @@ int main(int argc, char *argv[])
       cmd.addOption("--read-xfer-implicit", "-ti",     "read with implicit VR little endian TS");
 
     cmd.addGroup("image processing and encoding options:");
+     cmd.addSubGroup("frame selection:");
+      cmd.addOption("--frame",              "+fr",  1, "[n]umber : integer",
+                                                       "select specified frame (default: 1)");
+      cmd.addOption("--all-frames",         "+fa",     "select all frames");
 
 #ifdef BUILD_WITH_DCMJPEG_SUPPORT
      cmd.addSubGroup("color space conversion options (compressed images only):");
@@ -477,7 +481,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmquant.cc,v $
- * Revision 1.3  2002-08-20 12:20:21  meichel
+ * Revision 1.4  2002-08-27 17:19:07  meichel
+ * Added options --frame and --all-frames
+ *
+ * Revision 1.3  2002/08/20 12:20:21  meichel
  * Adapted code to new loadFile and saveFile methods, thus removing direct
  *   use of the DICOM stream classes.
  *

@@ -39,6 +39,10 @@ input options:
     -tb  --read-xfer-big        read with explicit VR big endian TS
     -ti  --read-xfer-implicit   read with implicit VR little endian TS
 image processing and encoding options:
+  frame selection:
+    +fr  --frame                [n]umber : integer
+                                select specified frame (default: 1)
+    +fa  --all-frames           select all frames
   compatibility options:
     +Mp  --accept-palettes      accept incorrect palette attribute tags
                                 (0028,111x) and (0028,121x)
