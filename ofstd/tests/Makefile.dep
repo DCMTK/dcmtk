@@ -1,6 +1,3 @@
-ofcndvar.o: ofcndvar.cc ../../config/include/osconfig.h \
- ../include/oftypes.h ../include/ofthread.h ../include/ofconsol.h \
- ../include/ofstring.h
 tlist.o: tlist.cc ../include/oflist.h ../../config/include/osconfig.h \
  ../include/oftypes.h ../include/ofalgo.h ../include/ofconsol.h \
  ../include/ofthread.h

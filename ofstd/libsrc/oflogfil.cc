@@ -1,0 +1,121 @@
+/*
+ *
+ *  Copyright (C) 1999-2000, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  ofstd
+ *
+ *  Author:  Joerg Riesmeier
+ *
+ *  Purpose: Define general purpose facility for log file output
+ *
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-06-05 16:16:40 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/Attic/oflogfil.cc,v $
+ *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
+
+#include "osconfig.h"
+#include "oflogfil.h"
+#include "ofstring.h"
+
+#include <stdio.h>
+
+BEGIN_EXTERN_C
+#ifdef HAVE_TIME_H
+#include <time.h>
+#endif
+END_EXTERN_C
+
+
+OFLogFile::OFLogFile(const char *filename, long flags)
+  : File(filename, flags)
+#ifdef DEBUG
+  , Filter(LL_debug)
+#else
+  , Filter(LL_error)
+#endif
+#ifdef _REENTRANT
+  , Mutex()
+#endif
+{
+}
+
+
+ofstream &OFLogFile::lockFile(LF_Level level, const char *module)
+{
+#ifdef _REENTRANT
+    Mutex.lock();
+#endif
+    if (checkFilter(level))
+    {
+        char buf[64];
+        time_t tt = time(NULL);
+        struct tm *ts = localtime(&tt);
+        if (ts)
+        {
+            sprintf(buf, "%04d-%02d-%02d %02d:%02d:%02d", 1900 + ts->tm_year, ts->tm_mon + 1, ts->tm_mday,
+                ts->tm_hour, ts->tm_min, ts->tm_sec);
+        } else
+            strcpy(buf, "1900-01-01 00:00:00");
+        File << buf << ", Level: ";
+        switch (level)
+        {
+          case LL_warning:
+             File << "WARNING";
+              break;
+          case LL_error:
+             File << "ERROR";
+              break;
+          case LL_debug:
+             File << "DEBUG";
+              break;
+          default:
+             File << "INFO";
+        }
+        if ((module != NULL) && (strlen(module) > 0))
+            File << ", Module: " << module << endl; 
+    }
+    return File;
+}
+
+
+void OFLogFile::writeMessage(const char *message, int indent)
+{
+    if (message != NULL)
+    {
+        size_t pos = 0;
+        OFString msgStr = message;
+        while (((pos = (msgStr.find('\n', pos))) != OFString_npos) && (pos < msgStr.length()))
+            msgStr.insert(++pos, OFString(indent, ' '));
+        File << OFString(indent, ' ') << msgStr << endl;
+    }
+}
+
+
+/*
+ *
+ * CVS/RCS Log:
+ * $Log: oflogfil.cc,v $
+ * Revision 1.1  2000-06-05 16:16:40  joergr
+ * Added new class for writing standardized status messages to a log file.
+ *
+ *
+ *
+ */
