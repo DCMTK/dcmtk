@@ -52,7 +52,7 @@ input file format:
     -f   --read-dataset
            read data set without file meta information
 
-  input transfer syntax (only with --read-dataset):
+input transfer syntax (only with --read-dataset):
 
     -t=  --read-xfer-auto
            use TS recognition (default)
@@ -66,7 +66,7 @@ input file format:
     -ti  --read-xfer-implicit
            read with implicit VR little endian TS
 
-  long tag values:
+long tag values:
 
     +M   --load-all
            load very long tag values (e.g. pixel data)
