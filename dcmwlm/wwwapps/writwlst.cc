@@ -23,10 +23,10 @@
  *   Program to create a worklist file from a WWW CGI perl script generated 
  *   hexedecimal encoded string.
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-12-03 12:17:37 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-12-13 13:43:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/wwwapps/writwlst.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -407,7 +407,7 @@ int main(int argc, char *argv[])
     E_GrpLenEncoding ogltype = EGL_withoutGL;
     OFBool verifymode = OFFalse;
     OFBool verbosemode = OFFalse;
-    OFBool createFileFormat = OFTrue;
+    // OFBool createFileFormat = OFTrue;
     int localDebugLevel = 0;
     OFBool keepOverride = OFFalse;
 
@@ -423,11 +423,13 @@ int main(int argc, char *argv[])
 	    }
 	    switch (arg[1]) {
 	    case 'f':
+                /*
 		if (arg[0] == '-') {
 		    createFileFormat = OFFalse;
 		} else {
 		    createFileFormat = OFTrue;
 		}
+                */
 		break;
 	    case 'g':
 		if (arg[0] == '-') {
@@ -588,7 +590,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log
  *   $Log: writwlst.cc,v $
- *   Revision 1.1  2002-12-03 12:17:37  wilkens
+ *   Revision 1.2  2002-12-13 13:43:26  meichel
+ *   Removed unused code reported by the MIPSpro 7.3 optimizer
+ *
+ *   Revision 1.1  2002/12/03 12:17:37  wilkens
  *   Added files und functionality from the dcmtk/wlisctn folder to dcmtk/dcmwlm
  *   so that dcmwlm can now completely replace wlistctn in the public domain part
  *   of dcmtk. Pertaining to this replacement requirement, another optional return
