@@ -23,8 +23,8 @@
  *    classes: DSRCompositeReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-10 15:29:50 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2002-05-07 12:51:30 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -119,7 +119,12 @@ OFCondition DSRCompositeReferenceValue::writeXML(ostream &stream,
     stream << "<reference>" << endl;
     if ((flags & DSRTypes::XF_writeEmptyTags) || !isEmpty())
     {
-        stream << "<sopclass uid=\"" << SOPClassUID << "\"/>" << endl;
+        stream << "<sopclass uid=\"" << SOPClassUID << "\">";
+        /* retrieve name of SOP class */
+        const char *sopClass = dcmFindNameOfUID(SOPClassUID.c_str());
+        if (sopClass != NULL)
+            stream << sopClass;
+        stream << "</sopclass>" << endl;
         stream << "<instance uid=\"" << SOPInstanceUID << "\"/>" << endl;
     }
     stream << "</reference>" << endl;
@@ -287,7 +292,10 @@ OFBool DSRCompositeReferenceValue::checkSOPInstanceUID(const OFString &sopInstan
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcomvl.cc,v $
- *  Revision 1.11  2001-10-10 15:29:50  joergr
+ *  Revision 1.12  2002-05-07 12:51:30  joergr
+ *  Added output of SOP class name to XML document.
+ *
+ *  Revision 1.11  2001/10/10 15:29:50  joergr
  *  Additonal adjustments for new OFCondition class.
  *
  *  Revision 1.10  2001/10/02 12:07:07  joergr
