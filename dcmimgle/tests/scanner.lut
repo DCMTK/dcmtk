@@ -1,0 +1,34 @@
+# Scanner characteristic file
+
+# maximum DDL value
+
+  max   4095
+
+# illumination (optional)
+
+  lum   2000
+
+# reflected ambient light (optional)
+
+  amb   10
+
+# DDL   OD Val
+
+     0   3.10
+    16   2.46
+    32   2.17
+    48   1.94
+    96   1.74
+   145   1.59
+   241   1.44
+   353   1.30
+   514   1.15
+   723   1.02
+   996   0.90
+  1461   0.76
+  2023   0.62
+  2794   0.49
+  3758   0.37
+  4095   0.24
+
+# eof of file
