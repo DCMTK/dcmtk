@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-25 18:44:08 $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  Update Date:      $Date: 1999-02-27 16:59:20 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -474,7 +474,12 @@ E_Condition DVInterface::selectPState(Uint32 idx)
                 {
                     DVInstanceCache::ItemStruct *pstate = (*iter);
                     if (pstate != NULL)
-                        return loadPState(pstate->Filename.c_str());
+                    {
+                        if (pDicomImage == NULL)
+                            return loadPState(pstate->Filename.c_str(), instance->Filename.c_str());
+                        else
+                            return loadPState(pstate->Filename.c_str());
+                    }
                 }
                 idx--;
                 ++iter;
@@ -795,61 +800,64 @@ OFBool DVInterface::createPStateCache()
         if (series != NULL)
         {
             DVInstanceCache::ItemStruct *instance = series->List.getItem();
-            if ((instance != NULL) && (!instance->PState) && (!instance->Checked))
+            if ((instance != NULL) && (!instance->PState))
             {
-                if (instance->List.empty())
+                if (!instance->Checked)                             // is current instance already checked?
                 {
-                    OFString seriesUID = series->UID;
-                    OFString instanceUID = instance->UID;
-                    if (study->List.gotoFirst())
+                    if (instance->List.empty())
                     {
-                        do { /* for all series */
-                            if (study->List.getPState())
-                            {
-                                DVSeriesCache::ItemStruct *series = study->List.getItem();
-                                if (series != NULL)
+                        OFString seriesUID = series->UID;
+                        OFString instanceUID = instance->UID;
+                        if (study->List.gotoFirst())
+                        {
+                            do { /* for all series */
+                                if (study->List.getPState())
                                 {
-                                    if (series->List.gotoFirst())
+                                    DVSeriesCache::ItemStruct *series = study->List.getItem();
+                                    if (series != NULL)
                                     {
-                                        do { /* for all instances */
-                                            if (series->List.getPState())
-                                            {
-                                                DcmFileFormat *pstate = NULL;
-                                                if ((loadFileFormat(series->List.getFilename(), pstate) == EC_Normal) && pstate)
+                                        if (series->List.gotoFirst())
+                                        {
+                                            do { /* for all instances */
+                                                if (series->List.getPState())
                                                 {
-                                                    DcmDataset *dataset = pstate->getDataset();
-                                                    DVPSReferencedSeries_PList plist;
-                                                    if (dataset && (plist.read(*dataset) == EC_Normal) && plist.isValid())
+                                                    DcmFileFormat *pstate = NULL;
+                                                    if ((loadFileFormat(series->List.getFilename(), pstate) == EC_Normal) && pstate)
                                                     {
-                                                        if (plist.findImageReference(seriesUID.c_str(), instanceUID.c_str()))
+                                                        DcmDataset *dataset = pstate->getDataset();
+                                                        DVPSReferencedSeries_PList plist;
+                                                        if (dataset && (plist.read(*dataset) == EC_Normal) && plist.isValid())
                                                         {
-                                                            DVInstanceCache::ItemStruct *reference = series->List.getItem();
-                                                            if (reference != NULL)
+                                                            if (plist.findImageReference(seriesUID.c_str(), instanceUID.c_str()))
                                                             {
-                                                                DcmStack stack;
-                                                                if (dataset->search(DCM_PresentationDescription, stack, ESM_fromHere, OFFalse) == EC_Normal)
+                                                                DVInstanceCache::ItemStruct *reference = series->List.getItem();
+                                                                if (reference != NULL)
                                                                 {
-                                                                    char *value = NULL;
-                                                                    if ((*((DcmLongString *)(stack.top()))).getString(value) == EC_Normal)
-                                                                        reference->Description = value;
+                                                                    DcmStack stack;
+                                                                    if (dataset->search(DCM_PresentationDescription, stack, ESM_fromHere, OFFalse) == EC_Normal)
+                                                                    {
+                                                                        char *value = NULL;
+                                                                        if ((*((DcmLongString *)(stack.top()))).getString(value) == EC_Normal)
+                                                                            reference->Description = value;
+                                                                    }
+                                                                    instance->List.push_back(reference);
                                                                 }
-                                                                instance->List.push_back(reference);
                                                             }
                                                         }
                                                     }
+                                                    delete pstate;
                                                 }
-                                                delete pstate;
-                                            }
-                                        } while (series->List.gotoNext());
+                                            } while (series->List.gotoNext());
+                                        }
+                                        series->List.reset();                    // set iterator to old position
                                     }
-                                    series->List.reset();                    // set iterator to old position
                                 }
-                            }
-                        } while (study->List.gotoNext());
+                            } while (study->List.gotoNext());
+                        }
+                        study->List.reset();                                     // set iterator to old position
                     }
-                    study->List.reset();                                     // set iterator to old position
+                    instance->Checked = OFTrue;                                  // do not check twice
                 }
-                instance->Checked = OFTrue;                                  // do not check twice
                 return OFTrue;
             }
         }
@@ -1247,8 +1255,9 @@ int DVInterface::deleteImageFile(const char *filename)
         if (((pos = strrchr(filename, (int)PATH_SEPARATOR)) == NULL) ||   // check whether image file resides in index.dat directory
             (strncmp(filename, pHandle->storageArea, pos - filename) == 0))
         {
-            DB_deleteImageFile((/*const */char *)filename);
-            return 1;                                                     // image file has been deleted
+//            DB_deleteImageFile((/*const */char *)filename);
+            if (unlink(filename) == 0)
+                return 1;                                                 // image file has been deleted
         }
         return 2;                                                         // image file has not been deleted
     }
@@ -2035,7 +2044,14 @@ void DVInterface::cleanChildren()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.43  1999-02-25 18:44:08  joergr
+ *  Revision 1.44  1999-02-27 16:59:20  joergr
+ *  Changed implementation of deleteImageFile (imagectn method doesn't function
+ *  under Window NT).
+ *  Removed bug in createPStateCache (cache was reported invalid on second call).
+ *  Modified method selectPState (image file is now implicitly loaded if
+ *  necessary).
+ *
+ *  Revision 1.43  1999/02/25 18:44:08  joergr
  *  Renamed methods enable/disablePState().
  *  Performed some modifications in the implementation of enable/disablePState
  *  to avoid dmalloc warnings (not yet finished).
