@@ -22,9 +22,9 @@
  *  Purpose: class DcmSequenceOfItems
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-05-03 08:15:23 $
+ *  Update Date:      $Date: 2001-05-10 12:46:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcsequen.cc,v $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -395,7 +395,7 @@ E_Condition DcmSequenceOfItems::readTagAndLength(DcmStream & inStream,
             ofConsole.unlockCerr();
         }
         length = valueLength;
-        tag = newTag;                  // Rueckgabewert: assignment-operator
+        tag = newTag; // return value: assignment-operator
     }
 
     debug(4, ( "errorFlag=(%d) in Sequ.readTag..", l_error ));
@@ -421,11 +421,11 @@ E_Condition DcmSequenceOfItems::readSubItem(DcmStream & inStream,
     {
         inStream.UnsetPutbackMark();
         itemList->insert(subObject, ELP_next);
-        // hier wird Subitem eingelesen
-        l_error = subObject->read(inStream, xfer, glenc, maxReadLength);
+        l_error = subObject->read(inStream, xfer, glenc, maxReadLength); // read sub-item        
+        return l_error; // prevent subObject from getting deleted
     }
-    else if ( l_error == EC_InvalidTag )  // versuche das Parsing wieder
-    {                                     // einzurenken
+    else if ( l_error == EC_InvalidTag )  // try to recover parsing
+    {
         inStream.Putback();
         ofConsole.lockCerr() << "Warning: DcmSequenceOfItems::readSubItem(): parse error occured: " << newTag << endl;
         ofConsole.unlockCerr();
@@ -443,6 +443,7 @@ E_Condition DcmSequenceOfItems::readSubItem(DcmStream & inStream,
     else
         inStream.UnsetPutbackMark();
 
+    if (subObject) delete subObject; // only executed if makeSubObject() has returned an error
     return l_error;
 }
 
@@ -470,7 +471,7 @@ E_Condition DcmSequenceOfItems::read(DcmStream & inStream,
                 fTransferState = ERW_inWork;
             }
 
-            itemList->seek( ELP_last ); // Die Daten werden ans Ende gehaengt
+            itemList->seek( ELP_last ); // append data at end
             while (!inStream.Fail() && 
                    (fTransferredBytes < Length || !lastItemComplete ))
             {
@@ -483,7 +484,7 @@ E_Condition DcmSequenceOfItems::read(DcmStream & inStream,
                                                          newTag, newValueLength );
 
                     if ( errorFlag != EC_Normal )
-                        break;                  // beende while-Schleife
+                        break;                  // finish while loop
                     else
                         fTransferredBytes += 8;
 
@@ -514,7 +515,7 @@ E_Condition DcmSequenceOfItems::read(DcmStream & inStream,
         if ( errorFlag == EC_SequEnd )
             errorFlag = EC_Normal;
         if ( errorFlag == EC_Normal )
-            fTransferState = ERW_ready;      // Sequence ist komplett
+            fTransferState = ERW_ready;      // sequence is complete
     }
     return errorFlag;
 }
@@ -745,7 +746,7 @@ DcmItem* DcmSequenceOfItems::getItem(const unsigned long num)
 {
     errorFlag = EC_Normal;
     DcmItem *item;
-    item = (DcmItem*)( itemList->seek_to(num) );  // liest Item aus Liste
+    item = (DcmItem*)( itemList->seek_to(num) );  // read item from list
     if ( item == (DcmItem*)NULL )
         errorFlag = EC_IllegalCall;
     return item;
@@ -820,7 +821,7 @@ DcmItem* DcmSequenceOfItems::remove(const unsigned long num)
 {
     errorFlag = EC_Normal;
     DcmItem *item;
-    item = (DcmItem*)( itemList->seek_to(num) );  // liest Item aus Liste
+    item = (DcmItem*)( itemList->seek_to(num) );  // read item from list
     if ( item != (DcmItem*)NULL )
     {
         itemList->remove();
@@ -846,8 +847,7 @@ DcmItem* DcmSequenceOfItems::remove( DcmItem* item )
             dO = itemList->get();
             if ( dO == item )
             {
-                itemList->remove();         // entfernt Element aus Liste,
-                // aber loescht es nicht
+                itemList->remove();         // removes element from list but does not delete it
                 errorFlag = EC_Normal;
                 break;
             }
@@ -906,16 +906,13 @@ E_Condition DcmSequenceOfItems::verify(const OFBool autocorrect)
 }
 
 
-// ********************************
-
-    // Vorbedingung: itemList ist nicht leer!
-    // Ergebnis:     - return EC_Normal;
-    //                 gefundener Element-Zeiger auf resultStack
-    //               - return EC_TagNotFound;
-    //                 resultStack unveraendert
-    // Weitersuchen: schreibe Zeiger des Sub-Elementes auf resultStack und
-    //               starte dann Sub-Suche
-
+/*
+ * precondition: itemList not empty.
+ * result: 
+ *  - element pointer on resultStack if return value is EC_Normal
+ *  - unmodified resultStack if return value is EC_TagNotFound
+ * continue search: push pointer to sub-element onto resultStack and start sub-search
+ */
 
 E_Condition DcmSequenceOfItems::searchSubFromHere(const DcmTagKey &tag,
                                                   DcmStack &resultStack,
@@ -982,7 +979,7 @@ E_Condition DcmSequenceOfItems::search( const DcmTagKey &tag,
             if ( dO == this )
                 l_error = searchSubFromHere( tag, resultStack, searchIntoSub );
             else
-            {   // gehe direkt zu Sub-Baum und suche dort weiter
+            {   // continue directly in sub-tree
                 l_error = dO->search( tag, resultStack, mode, searchIntoSub );
 // The next two lines destroy the stack, delete them
 //                if ( l_error != EC_Normal ) // raeumt nur die oberste Stackebene
@@ -1007,28 +1004,28 @@ E_Condition DcmSequenceOfItems::search( const DcmTagKey &tag,
                 i--;
             }
             if ( dO != this && resultStack.card() > 0 )
-            {                          // oberste Ebene steht nie in resultStack
-                i = resultStack.card()+1;// zeige jetzt auf hoechste Ebene+1
-                dO = this;               // Treffer der hoechsten Ebene!
+            {                            // highest level is never in resultStack
+                i = resultStack.card()+1;// now points to highest level +1
+                dO = this;               // match in highest level
             }
             if ( dO == this )
             {
-                if ( i == 1 )                 // habe resultStack.top() gefunden
-                    l_error = EC_TagNotFound; // markiere als kein Treffer, s.o.
+                if ( i == 1 )                 // resultStack.top() found
+                    l_error = EC_TagNotFound; // don't mark as match, see above
                 else
                 {
                     E_SearchMode submode = mode;
                     OFBool searchNode = OFTrue;
                     DcmObject *dnO;
-                    dnO = resultStack.elem( i-2 ); // Knoten der naechsten Ebene
+                    dnO = resultStack.elem( i-2 ); // node of next level
                     itemList->seek( ELP_first );
                     do {
                         dO = itemList->get();
                         searchNode = searchNode ? ( dO != dnO ) : OFFalse;
                         if ( !searchNode )
-                        {                               // suche jetzt weiter
+                        {                               // continue search
                             if ( submode == ESM_fromStackTop )
-                                resultStack.push( dO ); // Stack aktualisieren
+                                resultStack.push( dO ); // update stack
                             if (    submode == ESM_fromStackTop
                                     && tag == dO->getTag()
                                 )
@@ -1042,12 +1039,12 @@ E_Condition DcmSequenceOfItems::search( const DcmTagKey &tag,
                                 resultStack.pop();
                             else
                                 break;
-                            submode = ESM_fromStackTop; // ab hier normale Suche
+                            submode = ESM_fromStackTop; // normal search from here
                         }
                     } while ( itemList->seek( ELP_next ) );
                 }
             }
-            else                              // wird vermutlich nie erreicht
+            else                              // probably never reached
                 l_error = EC_IllegalCall;
         } // ( mode == ESM_afterStackTop
         else
@@ -1108,7 +1105,10 @@ E_Condition DcmSequenceOfItems::loadAllDataIntoMemory()
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.37  2001-05-03 08:15:23  meichel
+** Revision 1.38  2001-05-10 12:46:28  meichel
+** Fixed memory leak that occured when parsing of a sequence failed.
+**
+** Revision 1.37  2001/05/03 08:15:23  meichel
 ** Fixed bug in dcmdata sequence handling code that could lead to application
 **   failure in rare cases during parsing of a correct DICOM dataset.
 **
