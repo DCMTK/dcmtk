@@ -1,6 +1,7 @@
 dsr2html.o: dsr2html.cc ../../config/include/osconfig.h \
- ../include/dsrdoc.h ../../ofstd/include/ofstream.h \
- ../include/dsrdoctr.h ../include/dsrtree.h ../include/dsrtypes.h \
+ ../../config/include/cfunix.h ../include/dsrdoc.h \
+ ../../ofstd/include/ofstream.h ../include/dsrdoctr.h \
+ ../include/dsrtree.h ../include/dsrtypes.h \
  ../../dcmdata/include/dctk.h ../../dcmdata/include/dctypes.h \
  ../../ofstd/include/oftypes.h ../../dcmdata/include/dcswap.h \
  ../../dcmdata/include/dcerror.h ../../ofstd/include/ofcond.h \
@@ -46,8 +47,9 @@ dsr2html.o: dsr2html.cc ../../config/include/osconfig.h \
  ../include/dsrwavch.h ../include/dsrsoprf.h \
  ../../ofstd/include/ofconapp.h ../../ofstd/include/ofcmdln.h
 dsr2xml.o: dsr2xml.cc ../../config/include/osconfig.h \
- ../include/dsrdoc.h ../../ofstd/include/ofstream.h \
- ../include/dsrdoctr.h ../include/dsrtree.h ../include/dsrtypes.h \
+ ../../config/include/cfunix.h ../include/dsrdoc.h \
+ ../../ofstd/include/ofstream.h ../include/dsrdoctr.h \
+ ../include/dsrtree.h ../include/dsrtypes.h \
  ../../dcmdata/include/dctk.h ../../dcmdata/include/dctypes.h \
  ../../ofstd/include/oftypes.h ../../dcmdata/include/dcswap.h \
  ../../dcmdata/include/dcerror.h ../../ofstd/include/ofcond.h \
@@ -93,8 +95,9 @@ dsr2xml.o: dsr2xml.cc ../../config/include/osconfig.h \
  ../include/dsrwavch.h ../include/dsrsoprf.h \
  ../../ofstd/include/ofconapp.h ../../ofstd/include/ofcmdln.h
 dsrdump.o: dsrdump.cc ../../config/include/osconfig.h \
- ../include/dsrdoc.h ../../ofstd/include/ofstream.h \
- ../include/dsrdoctr.h ../include/dsrtree.h ../include/dsrtypes.h \
+ ../../config/include/cfunix.h ../include/dsrdoc.h \
+ ../../ofstd/include/ofstream.h ../include/dsrdoctr.h \
+ ../include/dsrtree.h ../include/dsrtypes.h \
  ../../dcmdata/include/dctk.h ../../dcmdata/include/dctypes.h \
  ../../ofstd/include/oftypes.h ../../dcmdata/include/dcswap.h \
  ../../dcmdata/include/dcerror.h ../../ofstd/include/ofcond.h \
