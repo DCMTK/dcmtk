@@ -21,10 +21,10 @@
  *
  *  Purpose: test ...
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-01-29 16:01:37 $
+ *  Last Update:      $Author: vorwerk $
+ *  Update Date:      $Date: 1999-02-05 11:26:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/Attic/listdb.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -149,7 +149,6 @@ int main(int argc, char *argv[])
     Uint32 numInstances=0;
     Uint32 numStudies = dvi.getNumberOfStudies();
     cout << "Number of studies: " << numStudies << endl;
-    
     for (Uint32 ns=0; ns < numStudies; ns++)
     {
        cout << "Study #" << ns+1 << ":";
@@ -188,7 +187,8 @@ int main(int argc, char *argv[])
          }
          numSeries = dvi.getNumberOfSeries();
          cout << "  Number of series in Study " << ns+1 << ": " << numSeries << endl;
-         for (Uint32 nss=0; nss < numSeries; nss++)
+         
+    for (Uint32 nss=0; nss < numSeries; nss++)
          {
            cout << "  Series #" << nss+1 << ":";
            if (EC_Normal != dvi.selectSeries(nss))
@@ -222,7 +222,7 @@ int main(int argc, char *argv[])
              }
              numInstances = dvi.getNumberOfInstances();
              cout << "  Number of instances in series " << nss+1 << ": " << numInstances << endl;
-             for (Uint32 ni=0; ni < numSeries; ni++)
+             for (Uint32 ni=0; ni < numInstances; ni++)
              {
                cout << "  Instance #" << ni+1 << ":";
                if (EC_Normal != dvi.selectInstance(ni))
@@ -235,7 +235,7 @@ int main(int argc, char *argv[])
                  << "      instance is Presentation State =";
                  if (dvi.isPresentationState()) cout << "yes" << endl; else cout << "no" << endl;
                  cout << "      instance status=";
-                 switch (dvi.getSeriesStatus())
+                 switch (dvi.getInstanceStatus())
                  {
                    case DVIF_objectIsNotNew:
                      cout << "instance is not new" << endl;
@@ -253,6 +253,7 @@ int main(int argc, char *argv[])
          }
        }
     }
+dvi.releaseDatabase();
     return 0;
 }
 
@@ -260,7 +261,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: listdb.cc,v $
-** Revision 1.1  1999-01-29 16:01:37  meichel
+** Revision 1.2  1999-02-05 11:26:16  vorwerk
+** listdb for dviface updated
+**
+** Revision 1.1  1999/01/29 16:01:37  meichel
 ** Implemented small sample application that lists the
 **   contents of the database using DVInterface methods.
 **
