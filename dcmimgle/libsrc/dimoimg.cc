@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-08-25 16:43:08 $
+ *  Update Date:      $Date: 1999-09-10 08:54:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -786,10 +786,10 @@ int DiMonoImage::convertPValueToDDL(const Uint16 pvalue,
     const unsigned long maxvalue = DicomImageClass::maxval(bits);
     if ((DisplayFunction != NULL) && (DisplayFunction->isValid()) && (DisplayFunction->getMaxDDLValue() == maxvalue))
     {
-        const DiBartenLUT *blut = DisplayFunction->getBartenLUT(WIDTH_OF_PVALUES);
-        if ((blut != NULL) && (blut->isValid()))
+        const DiDisplayLUT *dlut = DisplayFunction->getLookupTable(WIDTH_OF_PVALUES);
+        if ((dlut != NULL) && (dlut->isValid()))
         {
-            ddl = blut->getValue(pvalue);                               // perform Barten transformation
+            ddl = dlut->getValue(pvalue);                               // perform display transformation
             return 1;
         }
     }
@@ -1145,7 +1145,7 @@ void *DiMonoImage::getData(void *buffer,
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
                 {
                    cerr << "WARNING: selected display function doesn't fit to requested output depth (" << bits << ")" << endl;
-                   cerr << "         ... ignoring Barten transformation !" << endl;
+                   cerr << "         ... ignoring display transformation !" << endl;
                 }
                 disp = NULL;
             }
@@ -1547,7 +1547,11 @@ int DiMonoImage::writeRawPPM(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.21  1999-08-25 16:43:08  joergr
+ * Revision 1.22  1999-09-10 08:54:50  joergr
+ * Added support for CIELAB display function. Restructured class hierarchy
+ * for display functions.
+ *
+ * Revision 1.21  1999/08/25 16:43:08  joergr
  * Added new feature: Allow clipping region to be outside the image
  * (overlapping).
  *

@@ -22,9 +22,9 @@
  *  Purpose: DicomDisplayFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-07-23 13:34:08 $
+ *  Update Date:      $Date: 1999-09-10 08:54:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/didispfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,10 +46,6 @@ BEGIN_EXTERN_C
 #endif
 END_EXTERN_C
 
-//BEGIN_EXTERN_C
- #include <math.h>
-//END_EXTERN_C
-
 
 /*----------------------------*
  *  constant initializations  *
@@ -57,7 +53,6 @@ END_EXTERN_C
 
 const int DiDisplayFunction::MinBits = 2;
 const int DiDisplayFunction::MaxBits = 16;
-const unsigned int DiDisplayFunction::GSDFCount = 1023;
 
 
 /*----------------*
@@ -68,25 +63,13 @@ DiDisplayFunction::DiDisplayFunction(const char *filename)
   : Valid(0),
     ValueCount(0),
     MaxDDLValue(0),
-    JNDMin(0),
-    JNDMax(0),
     AmbientLight(0),
     DDLValue(NULL),
-    LumValue(NULL),
-    GSDFValue(NULL),
-    GSDFSpline(NULL)
+    LumValue(NULL)
 {
-    OFBitmanipTemplate<DiBartenLUT *>::zeroMem(BartenLUT, MAX_NUMBER_OF_TABLES);
+    OFBitmanipTemplate<DiDisplayLUT *>::zeroMem(LookupTable, MAX_NUMBER_OF_TABLES);
     if (readConfigFile(filename))
-    {
-        if (createSortedTable(DDLValue, LumValue) && interpolateValues())
-            Valid = calculateGSDF() && calculateGSDFSpline() && calculateJNDBoundaries();
-        if (!Valid)
-        {
-            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-                cerr << "ERROR: invalid DISPLAY file ... ignoring !" << endl;
-        }
-    }
+        Valid = createSortedTable(DDLValue, LumValue) && interpolateValues();
 }
 
 
@@ -96,15 +79,11 @@ DiDisplayFunction::DiDisplayFunction(const double *lum_tab,             // UNTES
   : Valid(0),
     ValueCount(count),
     MaxDDLValue(max),
-    JNDMin(0),
-    JNDMax(0),
     AmbientLight(0),
     DDLValue(NULL),
-    LumValue(NULL),
-    GSDFValue(NULL),
-    GSDFSpline(NULL)
+    LumValue(NULL)
 {
-    OFBitmanipTemplate<DiBartenLUT *>::zeroMem(BartenLUT, MAX_NUMBER_OF_TABLES);
+    OFBitmanipTemplate<DiDisplayLUT *>::zeroMem(LookupTable, MAX_NUMBER_OF_TABLES);
     if ((ValueCount > 0) && (ValueCount == MaxDDLValue + 1))
     {
         DDLValue = new Uint16[ValueCount];
@@ -117,12 +96,7 @@ DiDisplayFunction::DiDisplayFunction(const double *lum_tab,             // UNTES
                 DDLValue[i] = i;                            // set DDL values
                 LumValue[i] = lum_tab[i];                   // copy table
             }
-            Valid = calculateGSDF() && calculateGSDFSpline() && calculateJNDBoundaries();
-            if (!Valid)
-            {
-                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-                    cerr << "ERROR: invalid DISPLAY file ... ignoring !" << endl;
-            }
+            Valid = 1;
         }
     }
 }
@@ -135,24 +109,12 @@ DiDisplayFunction::DiDisplayFunction(const Uint16 *ddl_tab,             // UNTES
   : Valid(0),
     ValueCount(count),
     MaxDDLValue(max),
-    JNDMin(0),
-    JNDMax(0),
     AmbientLight(0),
     DDLValue(NULL),
-    LumValue(NULL),
-    GSDFValue(NULL),
-    GSDFSpline(NULL)
+    LumValue(NULL)
 {
-    OFBitmanipTemplate<DiBartenLUT *>::zeroMem(BartenLUT, MAX_NUMBER_OF_TABLES);
-    if (createSortedTable(ddl_tab, lum_tab) && interpolateValues())
-    {
-        Valid = calculateGSDF() && calculateGSDFSpline() && calculateJNDBoundaries();
-        if (!Valid)
-        {
-            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-                cerr << "ERROR: invalid DISPLAY file ... ignoring !" << endl;
-        }
-    }
+    OFBitmanipTemplate<DiDisplayLUT *>::zeroMem(LookupTable, MAX_NUMBER_OF_TABLES);
+    Valid = createSortedTable(ddl_tab, lum_tab) && interpolateValues();
 }
 
 
@@ -164,90 +126,59 @@ DiDisplayFunction::~DiDisplayFunction()
 {
     delete[] DDLValue;
     delete[] LumValue;
-    delete[] GSDFValue;
-    delete[] GSDFSpline;
     register unsigned int i;
     for (i = 0; i < MAX_NUMBER_OF_TABLES; i++)
-        delete BartenLUT[i];
+        delete LookupTable[i];
 }
 
 
 /********************************************************************/
 
 
-const DiBartenLUT *DiDisplayFunction::getBartenLUT(const int bits,
-                                                   unsigned long count)
+const DiDisplayLUT *DiDisplayFunction::getLookupTable(const int bits,
+                                                      unsigned long count)
 {
     if (Valid && (bits >= MinBits) && (bits <= MaxBits))
     {
         const int idx = bits - MinBits;
         if (count == 0)
             count = DicomImageClass::maxval(bits, 0);
-        if ((BartenLUT[idx] != NULL) && ((count != BartenLUT[idx]->getCount()) ||
-            (AmbientLight != BartenLUT[idx]->getAmbientLightValue())))
+        if ((LookupTable[idx] != NULL) && ((count != LookupTable[idx]->getCount()) ||
+            (AmbientLight != LookupTable[idx]->getAmbientLightValue())))
         {
-            delete BartenLUT[idx];
-            BartenLUT[idx] = NULL;
+            delete LookupTable[idx];
+            LookupTable[idx] = NULL;
         }
-        if (BartenLUT[idx] == NULL)                             // first calculation of this LUT
-        {
-            if (count <= MAX_TABLE_ENTRY_COUNT)
-            {
-                BartenLUT[idx] = new DiBartenLUT(count, MaxDDLValue, DDLValue, LumValue, ValueCount,
-                    GSDFValue, GSDFSpline, GSDFCount, JNDMin, JNDMax, AmbientLight);
-            }
-        }
-        return BartenLUT[idx];
+        if (LookupTable[idx] == NULL)                             // first calculation of this LUT
+            LookupTable[idx] = getLookupTable(count);
+        return LookupTable[idx];
     }
     return NULL;
 }
 
 
-int DiDisplayFunction::deleteBartenLUT(const int bits)
+int DiDisplayFunction::deleteLookupTable(const int bits)
 {
     if (bits == 0)                          // delete all LUTs
     {
         register int i;
         for (i = 0; i < MAX_NUMBER_OF_TABLES; i++)
         {
-            delete BartenLUT[i];
-            BartenLUT[i] = NULL;
+            delete LookupTable[i];
+            LookupTable[i] = NULL;
         }
         return 1;
     }
     else if ((bits >= MinBits) && (bits <= MaxBits))
     {
         const int idx = bits - MinBits;
-        if (BartenLUT[idx] != NULL)
+        if (LookupTable[idx] != NULL)
         {
-            delete BartenLUT[idx];
-            BartenLUT[idx] = NULL;
+            delete LookupTable[idx];
+            LookupTable[idx] = NULL;
             return 1;
         }
         return 2;
-    }
-    return 0;
-}
-
-
-int DiDisplayFunction::writeCurveData(const char *filename)
-{
-    if ((filename != NULL) && (strlen(filename) > 0))
-    {
-        ofstream file(filename);
-        if (file)
-        {
-            file << "# Number of DDLs : " << ValueCount << endl;
-            file << "# Luminance range: " << LumValue[0] << " - " << LumValue[ValueCount - 1] << endl;
-            file << "# Ambient light  : " << AmbientLight << endl;
-            file << "# JND index range: " << JNDMin << " - " << JNDMax << endl << endl;
-            file << "DDL\tCC\tGSDF\tPSC" << endl;
-            DiBartenLUT *blut = new DiBartenLUT(ValueCount, MaxDDLValue, DDLValue, LumValue, ValueCount,
-                GSDFValue, GSDFSpline, GSDFCount, JNDMin, JNDMax, AmbientLight, &file);       // write curve data to file
-            int status = (blut !=NULL);
-            delete blut;
-            return status;
-        }
     }
     return 0;
 }
@@ -258,7 +189,6 @@ int DiDisplayFunction::setAmbientLightValue(const double value)
     if (value >= 0)
     {
         AmbientLight = value;
-        calculateJNDBoundaries();
         return 1;
     }
     return 0;
@@ -448,112 +378,15 @@ int DiDisplayFunction::interpolateValues()
 }
 
 
-int DiDisplayFunction::calculateGSDF()
-{
-    GSDFValue = new double[GSDFCount];
-    if (GSDFValue != NULL)
-    {
-        
-        /*
-         *  algorithm taken from DICOM part 14: Grayscale Standard Display Function (GSDF)
-         */ 
-        
-        const double a = -1.3011877;
-        const double b = -2.5840191e-2;
-        const double c =  8.0242636e-2;
-        const double d = -1.0320229e-1;
-        const double e =  1.3646699e-1;
-        const double f =  2.8745620e-2;
-        const double g = -2.5468404e-2;
-        const double h = -3.1978977e-3;
-        const double k =  1.2992634e-4;
-        const double m =  1.3635334e-3;
-        register unsigned int i;
-        register double ln;
-        register double ln2;
-        register double ln3;
-        register double ln4;
-        for (i = 0; i < GSDFCount; i++)
-        {
-            ln = log(i + 1);
-            ln2 = ln * ln;
-            ln3 = ln2 * ln;
-            ln4 = ln3 * ln;
-            GSDFValue[i] = pow(10, (a + c*ln + e*ln2 + g*ln3 + m*ln4) / (1 + b*ln + d*ln2 + f*ln3 + h*ln4 + k*(ln4*ln)));
-        }
-        return 1;
-    }
-    return 0;
-}
-
-
-int DiDisplayFunction::calculateGSDFSpline()
-{
-    int status = 0;
-    if ((GSDFValue != NULL) && (GSDFCount > 0))
-    {
-        GSDFSpline = new double[GSDFCount];
-        unsigned int *jidx = new unsigned int[GSDFCount];
-        if ((GSDFSpline != NULL) && (jidx != NULL))
-        {        
-            register unsigned int i;
-            register unsigned int *p = jidx;
-            for (i = 1; i <= GSDFCount; i++)
-                *(p++) = i;
-            status = DiCubicSpline<unsigned int, double>::Function(jidx, GSDFValue, GSDFCount, GSDFSpline);
-        }
-        delete[] jidx;
-    }
-    return status;
-}
-
-
-int DiDisplayFunction::calculateJNDBoundaries()
-{
-    if ((LumValue != NULL) && (ValueCount > 0))
-    {
-        JNDMin = getJNDIndex(LumValue[0] + AmbientLight);
-        JNDMax = getJNDIndex(LumValue[ValueCount - 1] + AmbientLight);
-        return (JNDMin >= 0) && (JNDMax >= 0);
-    }
-    return 0;
-}
-
-
-double DiDisplayFunction::getJNDIndex(const double lum) const
-{
-    if (lum > 0.0)
-    {
-        
-        /*
-         *  algorithm taken from DICOM part 14: Grayscale Standard Display Function (GSDF)
-         */ 
-        
-        const double a = 71.498068;
-        const double b = 94.593053;
-        const double c = 41.912053;
-        const double d =  9.8247004;
-        const double e =  0.28175407;
-        const double f = -1.1878455;
-        const double g = -0.18014349;
-        const double h =  0.14710899;
-        const double i = -0.017046845;
-        double lg10[8];
-        lg10[0] = log10(lum);
-        register unsigned int j;
-        for (j = 0; j < 7; j++)                         // reduce number of multiplications
-            lg10[j + 1] = lg10[j] * lg10[0];
-        return a + b*lg10[0] + c*lg10[1] + d*lg10[2] + e*lg10[3] + f*lg10[4] + g*lg10[5] + h*lg10[6] + i*lg10[7];
-    }
-    return -1;
-}
-
-
 /*
  *
  * CVS/RCS Log:
  * $Log: didispfn.cc,v $
- * Revision 1.14  1999-07-23 13:34:08  joergr
+ * Revision 1.15  1999-09-10 08:54:49  joergr
+ * Added support for CIELAB display function. Restructured class hierarchy
+ * for display functions.
+ *
+ * Revision 1.14  1999/07/23 13:34:08  joergr
  * Modified error reporting while reading calibration file.
  *
  * Revision 1.13  1999/05/03 11:05:29  joergr
