@@ -8,10 +8,10 @@
 ** Convert dicom file encoding
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1998-01-14 14:41:13 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-01-27 10:51:26 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmconv.cc,v $
-** CVS/RCS Revision:	$Revision: 1.16 $
+** CVS/RCS Revision:	$Revision: 1.17 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -273,7 +273,7 @@ int main(int argc, char *argv[])
 		    cerr << "unknown option: " << arg << endl;
 		    return 1;
 		}
-		break;
+		/* break; */ /* never reached after return */
 	    case 'V':
 		if (arg[0] == '+' && arg[2] == '\0') 
 		    verbosemode = OFTrue;
@@ -482,7 +482,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
-** Revision 1.16  1998-01-14 14:41:13  hewett
+** Revision 1.17  1998-01-27 10:51:26  meichel
+** Removed some unused variables, meaningless const modifiers
+**   and unreached statements.
+**
+** Revision 1.16  1998/01/14 14:41:13  hewett
 ** Modified existing -u command line option to also disable generation
 ** of UT and VS (previously just disabled generation of UN).
 **

@@ -56,10 +56,10 @@
 **
 **	Module Prefix: DIMSE_
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:47:18 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-01-27 10:51:44 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimfind.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -107,7 +107,6 @@ DIMSE_findUser(
 {
     CONDITION cond;
     T_DIMSE_Message req, rsp;
-    char *sopClass;
     DIC_US msgId;
     int responseCount = 0;
     DcmDataset *rspIds = NULL;
@@ -126,8 +125,6 @@ DIMSE_findUser(
     req.msg.CFindRQ = *request;
 
     msgId = request->MessageID;
-    sopClass = request->AffectedSOPClassUID;
-
 
     cond = DIMSE_sendMessageUsingMemoryData(assoc, presID, &req,
 					  NULL, requestIdentifiers, 
@@ -344,7 +341,11 @@ providerCleanup:
 /*
 ** CVS Log
 ** $Log: dimfind.cc,v $
-** Revision 1.4  1997-07-21 08:47:18  andreas
+** Revision 1.5  1998-01-27 10:51:44  meichel
+** Removed some unused variables, meaningless const modifiers
+**   and unreached statements.
+**
+** Revision 1.4  1997/07/21 08:47:18  andreas
 ** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
 **   with one unique boolean type OFBool.
 **

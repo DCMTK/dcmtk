@@ -8,10 +8,10 @@
 ** Implementation of class DcmDirectoryRecord
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-09-11 15:23:46 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-01-27 10:51:42 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdirrec.cc,v $
-** CVS/RCS Revision:	$Revision: 1.19 $
+** CVS/RCS Revision:	$Revision: 1.20 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1363,7 +1363,7 @@ E_Condition DcmDirectoryRecord::deleteSubAndPurgeFile(const unsigned long num )
 debug(2, ( "DcmDirectoryRecord::deleteSubAndPurgeFile() now purging lower records:" ));
 
 	while ( subDirRec->cardSub() > 0 )  // alle sub sub records loeschen
-	    subDirRec->deleteSubAndPurgeFile((const unsigned long)(0));
+	    subDirRec->deleteSubAndPurgeFile((unsigned long)(0));
 	delete subDirRec;		    // loesche sub directory record
     }
     return errorFlag;
@@ -1391,7 +1391,7 @@ E_Condition DcmDirectoryRecord::deleteSubAndPurgeFile( DcmDirectoryRecord* dirRe
 debug(2, ( "DcmDirectoryRecord::deleteSubAndPurgeFile() now purging lower records:" ));
 
 	while ( subDirRec->cardSub() > 0 )  // alle sub sub records loeschen
-	    subDirRec->deleteSubAndPurgeFile((const unsigned long)(0));
+	    subDirRec->deleteSubAndPurgeFile((unsigned long)(0));
 	delete subDirRec;		    // loesche sub directory record
     }
 

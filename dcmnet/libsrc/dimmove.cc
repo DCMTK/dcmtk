@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-09-18 08:10:58 $
+** Update Date:		$Date: 1998-01-27 10:51:45 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimmove.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -151,7 +151,6 @@ DIMSE_moveUser(
 {
     CONDITION cond;
     T_DIMSE_Message req, rsp;
-    char *sopClass;
     DIC_US msgId;
     int responseCount = 0;
     T_ASC_Association *subAssoc = NULL;
@@ -170,7 +169,6 @@ DIMSE_moveUser(
     req.msg.CMoveRQ = *request;
 
     msgId = request->MessageID;
-    sopClass = request->AffectedSOPClassUID;
 
     cond = DIMSE_sendMessageUsingMemoryData(assoc, presID, &req,
 					  NULL, requestIdentifiers, 
@@ -195,7 +193,7 @@ DIMSE_moveUser(
 	        return COND_PushCondition(DIMSE_NODATAAVAILABLE,
 		    "DIMSE_moveUser: receive timeout");
 	    }
-	    break;
+	    /* break; */ // never reached after continue or return.
 	case 1:
 	    /* main association readable */
 	    break;
@@ -440,7 +438,11 @@ providerCleanup:
 /*
 ** CVS Log
 ** $Log: dimmove.cc,v $
-** Revision 1.4  1997-09-18 08:10:58  meichel
+** Revision 1.5  1998-01-27 10:51:45  meichel
+** Removed some unused variables, meaningless const modifiers
+**   and unreached statements.
+**
+** Revision 1.4  1997/09/18 08:10:58  meichel
 ** Many minor type conflicts (e.g. long passed as int) solved.
 **
 ** Revision 1.3  1997/07/21 08:47:18  andreas

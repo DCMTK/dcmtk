@@ -9,10 +9,10 @@
 ** Loadable DICOM data dictionary
 ** 
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-08-26 14:03:17 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-01-27 10:51:40 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdict.cc,v $
-** CVS/RCS Revision:	$Revision: 1.12 $
+** CVS/RCS Revision:	$Revision: 1.13 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -374,8 +374,6 @@ DcmDataDictionary::loadDictionary(const char* fileName, OFBool errorIfAbsent)
     OFBool errorOnThisLine = OFFalse;
     int i;
 
-    Uint16 groupNumber, elementNumber;
-    Uint16 upperGroupNumber, upperElementNumber;
     DcmTagKey key, upperKey;
     DcmDictRangeRestriction groupRestriction;
     DcmDictRangeRestriction elementRestriction;
@@ -411,8 +409,6 @@ DcmDataDictionary::loadDictionary(const char* fileName, OFBool errorIfAbsent)
 				    DCM_DICT_FIELD_SEPARATOR_CHAR);
 
 	/* initialize dict entry fields */
-	groupNumber = elementNumber = 0xFFFF;
-	upperGroupNumber = upperElementNumber = 0xFFFF;
 	vrName = NULL;
 	tagName = NULL;
 	vmMin = vmMax = 1;
@@ -689,7 +685,11 @@ DcmDataDictionary::findEntry(const char *name)
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.cc,v $
-** Revision 1.12  1997-08-26 14:03:17  hewett
+** Revision 1.13  1998-01-27 10:51:40  meichel
+** Removed some unused variables, meaningless const modifiers
+**   and unreached statements.
+**
+** Revision 1.12  1997/08/26 14:03:17  hewett
 ** New data structures for data-dictionary.  The main part of the
 ** data-dictionary is now stored in an hash table using an optimized
 ** hash function.  This new data structure reduces data-dictionary

@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-09-18 08:10:59 $
+** Update Date:		$Date: 1998-01-27 10:51:46 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimse.cc,v $
-** CVS/RCS Revision:	$Revision: 1.12 $
+** CVS/RCS Revision:	$Revision: 1.13 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -239,8 +239,8 @@ checkPresentationContextForMessage(T_ASC_Association * assoc,
 	E_TransferSyntax * xferSyntax)
 {
     CONDITION cond;
-    char *as;	/* abstract syntax */
-    char *ts;	/* transfer syntax */
+    /* char *as; */	/* abstract syntax */
+    /* char *ts; */	/* transfer syntax */
     T_ASC_PresentationContext pc;
 
 
@@ -251,9 +251,11 @@ checkPresentationContextForMessage(T_ASC_Association * assoc,
 	cond = DIMSE_NORMAL;
     }
 
-    as = pc.abstractSyntax;
-    ts = pc.acceptedTransferSyntax;
-
+    /*
+     * as = pc.abstractSyntax;
+     * ts = pc.acceptedTransferSyntax;
+     */
+     
     if (cond == DIMSE_NORMAL) {
 
     switch (msg->CommandField) {
@@ -1304,7 +1306,11 @@ void DIMSE_warning(T_ASC_Association *assoc,
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
-** Revision 1.12  1997-09-18 08:10:59  meichel
+** Revision 1.13  1998-01-27 10:51:46  meichel
+** Removed some unused variables, meaningless const modifiers
+**   and unreached statements.
+**
+** Revision 1.12  1997/09/18 08:10:59  meichel
 ** Many minor type conflicts (e.g. long passed as int) solved.
 **
 ** Revision 1.11  1997/08/06 12:20:13  andreas

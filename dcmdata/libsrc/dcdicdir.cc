@@ -10,10 +10,10 @@
 ** Implementation of class DcmDicomDir
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-09-11 15:02:05 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-01-27 10:51:38 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdicdir.cc,v $
-** CVS/RCS Revision:	$Revision: 1.18 $
+** CVS/RCS Revision:	$Revision: 1.19 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1103,13 +1103,13 @@ E_Condition DcmDicomDir::write(const E_TransferSyntax oxfer,
 
     // entferne alle Records aus der Sequence localDirRecSeq
     while ( localDirRecSeq.card() > 0 )
-	localDirRecSeq.remove((const unsigned long)(0));
+	localDirRecSeq.remove((unsigned long)(0));
 
     // verschiebe Records, auf die kein Zeiger existiert, zurueck
     while ( localUnresRecs.card() > 0 )
     {
 	DcmItem *unresRecord = 
-	    localUnresRecs.remove((const unsigned long)(0));
+	    localUnresRecs.remove((unsigned long)(0));
 	localDirRecSeq.insert( unresRecord );
     }
     return errorFlag;
@@ -1299,7 +1299,11 @@ Cdebug(1, refCounter[k].fileOffset==refMRDR->numberOfReferences,
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
-** Revision 1.18  1997-09-11 15:02:05  hewett
+** Revision 1.19  1998-01-27 10:51:38  meichel
+** Removed some unused variables, meaningless const modifiers
+**   and unreached statements.
+**
+** Revision 1.18  1997/09/11 15:02:05  hewett
 ** Changed DcmDicomDir constructor to take const char* arguments.
 **
 ** Revision 1.17  1997/07/21 08:03:27  andreas
