@@ -381,7 +381,8 @@ dcvrdt.o: dcvrdt.cc ../../config/include/osconfig.h \
  ../include/dcobject.h ../../ofstd/include/ofglobal.h \
  ../include/dcxfer.h ../include/dcvr.h ../include/dcstream.h \
  ../include/dctag.h ../include/dctagkey.h ../include/dcdicent.h \
- ../include/dclist.h ../include/dcstack.h ../include/dcdebug.h
+ ../include/dclist.h ../include/dcstack.h ../include/dcvrda.h \
+ ../include/dcvrtm.h ../include/dcdebug.h
 dcvrfd.o: dcvrfd.cc ../../config/include/osconfig.h \
  ../include/dcvrfd.h ../../ofstd/include/ofconsol.h \
  ../../ofstd/include/ofthread.h ../../ofstd/include/oftypes.h \
