@@ -2,7 +2,10 @@
 
 \defgroup dcmsign dcmsign
 
-This module contains ...
+This module contains classes to create digital signatures in DICOM data sets, to 
+verify and to remove signatures. Signatures are conforming to the DICOM "Digital 
+Signatures" extension (formerly Supplement 41). This module requires the 
+external OpenSSL library.
 
 The main interface classes are:
 \li \b DcmSignature
@@ -18,10 +21,70 @@ This module contains the following command line tool:
 
 \section Examples
 
-The following example shows ...:
+The following example shows how to verify all signatures in a DICOM file:
 
 \code
-...
+DcmFileFormat fileformat;
+if (fileformat.loadFile("test.dcm").good())
+{
+  int counter = 0;          // counts the signatures in the DICOM file
+  int corrupt_counter = 0;  // counts signatures that failed verification
+
+  DcmDataset *dataset = fileformat.getDataset();
+  DcmStack stack;           // stores current location within file
+  DcmSignature signer;      // signature handler
+  DcmItem *sigItem = DcmSignature::findFirstSignatureItem(*dataset, stack);
+  while (sigItem) // browse through items that contain digital signatures
+  {
+    signer.attach(sigItem); // each item may contain multiple signatures
+    for (unsigned long l=0; l < signer.numberOfSignatures(); ++l)
+    {
+      if (signer.selectSignature(l).good())
+      {
+        ++counter;
+        if (signer.verifyCurrent().bad())  // verify signature
+            corrupt_counter++;
+      }
+    }
+    signer.detach();
+    sigItem = DcmSignature::findNextSignatureItem(*dataset, stack);
+  }
+  if (counter == 0) 
+      cerr << "no signatures found in dataset." << endl;
+  else 
+      cerr << counter << " signatures verified in dataset, " 
+           << corrupt_counter << " corrupted." << endl;
+}
+\endcode
+
+The following example shows how to sign a DICOM file:
+
+\code
+DcmFileFormat fileformat;
+if (fileformat.loadFile("test.dcm").good())
+{
+  DcmDataset *dataset = fileformat.getDataset();
+  SiCreatorProfile profile;  // select the "RSA Creator Profile"
+  SiRIPEMD160 mac;           // use RIPEMD160 as MAC algorithm
+  DcmSignature signer;       // signature handler
+  SiCertificate cert;        // our certificate
+  if (cert.loadCertificate("certificate.pem", X509_FILETYPE_PEM).bad())
+  {
+    cerr << "unable to load certificate" << endl;
+    return;
+  }
+  SiPrivateKey key;  // private key, must be unencrypted here
+  if (key.loadPrivateKey("privkey.pem", X509_FILETYPE_PEM).bad())
+  {
+    cerr << "unable to load private key" << endl;
+    return;
+  }
+  signer.attach(dataset); // connect handler to data set
+  if (signer.createSignature(key, cert, mac, profile).good())
+  {
+    fileformat.saveFile("test_signed.dcm");  // write back
+  }
+}
 \endcode
 
 */
