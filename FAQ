@@ -1,6 +1,20 @@
 DCMTK FAQ - Frequently Asked Questions
 
 ----
+2004-10-29
+
+Q: How do I access original pixel data (e.g. Hounsfield Units for CT) using
+   class DicomImage?
+
+A: There is currently no (official) way to access the internal pixel data
+   representation of DicomImage.  The main purpose of this class (and module
+   dcmimgle/dcmimage in general) is visualization and, therefore, you can
+   only access rendered pixel data.  However, starting with DCMTK 3.5.4 there
+   will be some means to access the internal representation directly.  Until
+   then you should use the lower level routines from module dcmdata, e.g.
+   findAndGetUint16Array().
+
+----
 2004-05-04
 
 Q: I am trying to compile DCMTK, but get linker errors for the tools dcm2pnm
