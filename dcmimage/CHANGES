@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 1999.08.25 (riesmeier)
+
+- Added new feature: Allow clipping region to be outside the image
+  (overlapping).
+  Affects: dcmimage/apps/dcm2pnm.cc
+           dcmimage/include/dicoimg.h
+           dcmimage/include/dicosct.h
+           dcmimage/libsrc/dicoimg.cc
+
 **** Changes from 1999.08.17 (riesmeier)
 
 - Commented unused parameter name to avoid compiler warnings.
