@@ -22,9 +22,9 @@
  *  Purpose: class DcmPixelData
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-04-01 12:35:17 $
+ *  Update Date:      $Date: 2003-04-03 14:30:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixel.cc,v $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -664,11 +664,7 @@ DcmPixelData::createUint8Array(
     const Uint32 numBytes,
     Uint8 * & bytes)
 {
-    // clear RepresentationList
-    clearRepresentationList(repListEnd);
     OFCondition l_error = DcmPolymorphOBOW::createUint8Array(numBytes, bytes);
-    original = current = repListEnd;
-    recalcVR();
     existUnencapsulated = OFTrue;
     return l_error;
 }
@@ -678,11 +674,7 @@ DcmPixelData::createUint16Array(
     const Uint32 numWords,
     Uint16 * & words)
 {
-    // clear RepresentationList
-    clearRepresentationList(repListEnd);
     OFCondition l_error = DcmPolymorphOBOW::createUint16Array(numWords, words);
-    original = current = repListEnd;
-    recalcVR();
     existUnencapsulated = OFTrue;
     return l_error;
 }
@@ -1066,7 +1058,10 @@ OFCondition DcmPixelData::loadAllDataIntoMemory(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.cc,v $
-** Revision 1.29  2003-04-01 12:35:17  joergr
+** Revision 1.30  2003-04-03 14:30:37  joergr
+** Fixed bug introduced in the context of the new createUint8/16Array() methods.
+**
+** Revision 1.29  2003/04/01 12:35:17  joergr
 ** Added implementation of createUint8/16Array() methods to DcmPixelData.
 ** Required to work properly with chooseRepresentation() for pixel compression.
 ** Thanks to Rick H. <rickh_2003@hotmail.com> for the original problem report.
