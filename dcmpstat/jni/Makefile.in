@@ -1,9 +1,12 @@
 #
-#	Makefile for dcmpstat jni
+#	Makefile for dcmpstat/jni
 #
-# The settings in this makefile are specific for Solaris 2 and the
-# Sun CC 4.2 compiler. If you want to compile for a different target,
-# you need to adapt javainc, soflags and solibs below
+# This makefile requires changes specific for the operating system
+# and compiler that are not automatically adjusted by "configure".
+#
+# In addition, the CXXFLAGS in config/Makefile.def must be adjusted
+# _before_ compiling dcmtk to create position independent code 
+# (e.g. -fPIC for gcc, -PIC for Sun CC)
 #
 
 @SET_MAKE@
@@ -16,12 +19,18 @@ configdir=@top_srcdir@/@configdir@
 
 include $(configdir)/@common_makefile@
 
-# Include path for JDK 1.2 on Solaris
+#
+# Settings for Solaris 2.x with Sun CC 4.2 compiler
+#
 javainc=-I/usr/java1.2/include -I/usr/java1.2/include/solaris
-# Instruct compiler to create a shared object
 soflags=-G
-# Additional libraries to be linked with the shared object
 solibs=-lC
+
+#
+# Settings for Linux (glibc) with egcs compiler
+#
+# javainc=-I/usr/jdk1.2/include -I/usr/jdk1.2/include/linux
+# soflags=-shared
 
 ofstddir=$(top_srcdir)/../ofstd
 ofstdinc=-I$(ofstddir)/include -I$(includedir)/ofstd
