@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVConfiguration
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-10-19 14:46:02 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-10-20 10:47:14 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -592,6 +592,18 @@ class DVConfiguration
      */
     double getMonitorPixelHeight();
 
+    /** returns the maximum horizontal preview image resolution, from
+     *  GENERAL/MONITOR/PREVIEW in the config file. Default: 0.
+     *  @return maximum horizontal preview resolution
+     */
+    Uint32 getMaxPreviewResolutionX();
+
+    /** returns the maximum vertical preview image resolution, from
+     *  GENERAL/MONITOR/PREVIEW in the config file. Default: 0.
+     *  @return maximum vertical preview resolution
+     */
+    Uint32 getMaxPreviewResolutionY();
+
     /** returns the value of configuration file entry key=value
      *  in the section GENERAL/GUI of the config file.
      *  Specified key must be upper case.
@@ -769,7 +781,11 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.h,v $
- *  Revision 1.10  1999-10-19 14:46:02  meichel
+ *  Revision 1.11  1999-10-20 10:47:14  joergr
+ *  Added support for a down-scaled preview image of the current DICOM image
+ *  (e.g. useful for online-windowing or print preview).
+ *
+ *  Revision 1.10  1999/10/19 14:46:02  meichel
  *  added support for the Basic Annotation Box SOP Class
  *    as well as access methods for Max Density and Min Density.
  *

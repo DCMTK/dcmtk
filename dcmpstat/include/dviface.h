@@ -22,16 +22,16 @@
  *  Purpose:
  *    classes: DVInterface
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-10-19 14:46:01 $
- *  CVS/RCS Revision: $Revision: 1.55 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-10-20 10:47:13 $
+ *  CVS/RCS Revision: $Revision: 1.56 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
- 
+
 #ifndef DVIFACE_H
 #define DVIFACE_H
 
@@ -69,9 +69,9 @@ class ostream;
  */
 class DVInterface: public DVConfiguration
 {
- 
+
  public:
- 
+
    /** constructor.
     *  @param config_file filename (path) of the config file to be used
     *     by the interface object. The caller should make sure that the config file
@@ -84,10 +84,10 @@ class DVInterface: public DVConfiguration
     /** destructor.
      */
     virtual ~DVInterface();
-    
+
     /* load images and presentation states */
-    
-    /** loads an image which is contained in the database 
+
+    /** loads an image which is contained in the database
      *  and creates a default presentation state for the image.
      *  This method acquires a database lock which must be explicitly freed by the user.
      *  @param studyUID study instance UID of the image
@@ -96,7 +96,7 @@ class DVInterface: public DVConfiguration
      *  @return EC_Normal upon success, an error code otherwise.
      */
     E_Condition loadImage(const char *studyUID, const char *seriesUID, const char *instanceUID);
-    
+
     /** loads an image (which need not be contained in the database)
      *  and creates a default presentation state for the image.
      *  This method does not acquire a database lock.
@@ -104,7 +104,7 @@ class DVInterface: public DVConfiguration
      *  @return EC_Normal upon success, an error code otherwise.
      */
     E_Condition loadImage(const char *filename);
-    
+
     /** loads a presentation state which is contained in the database.
      *  The first image referenced in presentation state is also looked up in the
      *  database, loaded, and attached to the presentation state.
@@ -126,7 +126,7 @@ class DVInterface: public DVConfiguration
      *  @return EC_Normal upon success, an error code otherwise.
      */
     E_Condition loadPState(const char *pstName, const char *imgName = NULL);
-    
+
     /** saves the current presentation state in the same directory
      *  in which the database index file resides. The filename is generated automatically.
      *  A new SOP Instance UID is assigned whenever a presentation state is saved.
@@ -136,7 +136,7 @@ class DVInterface: public DVConfiguration
      *  @return EC_Normal upon success, an error code otherwise.
      */
     E_Condition savePState();
-    
+
     /** saves the current presentation state in a file with the given path and filename.
      *  A new SOP Instance UID is assigned whenever a presentation state is saved.
      *  This method does not acquire a database lock and does not register
@@ -147,7 +147,7 @@ class DVInterface: public DVConfiguration
      *  @return EC_Normal upon success, an error code otherwise.
      */
     E_Condition savePState(const char *filename, OFBool explicitVR=OFTrue);
-    
+
     /** saves the DICOM image that is currently attached to the presentation state
      *  in a file with the given path and filename.
      *  This method does not acquire a database lock and does not register
@@ -158,13 +158,13 @@ class DVInterface: public DVConfiguration
      *  @return EC_Normal upon success, an error code otherwise.
      */
     E_Condition saveCurrentImage(const char *filename, OFBool explicitVR=OFTrue);
-    
+
     /** returns a reference to the current presentation state.
      *  This reference will become invalid when the DVInterface object is deleted,
      *  a different image or presentation state is loaded
      *  (using loadPState or loadImage) or when resetPresentationState() is called.
      *  @return reference to the current presentation state
-     */ 
+     */
     DVPresentationState& getCurrentPState()
     {
       return *pState;
@@ -173,7 +173,7 @@ class DVInterface: public DVConfiguration
     /** returns a reference to the print handler.
      *  This reference remains valid as long as the DVInterface object exists.
      *  @return reference to the current print handler
-     */ 
+     */
     DVPSStoredPrint& getPrintHandler()
     {
       return *pPrint;
@@ -196,7 +196,7 @@ class DVInterface: public DVConfiguration
      *  @return EC_Normal upon success, an error code otherwise.
      */
     E_Condition releaseDatabase();
-    
+
     /** searches in the database for a DICOM instance with the given
      *  study, series and instance UIDs and returns its pathname if found.
      *  If the given instance is not found in the database, NULL is returned.
@@ -207,7 +207,7 @@ class DVInterface: public DVConfiguration
      *  @return filename (path) if found, NULL otherwise
      */
     const char *getFilename(const char *studyUID, const char *seriesUID, const char *instanceUID);
-  
+
     /** returns the number of studies currently contained in the database.
      *  This method acquires a database lock which must be explicitly freed by the user.
      *  The number reported (returned) by this method remains valid as long
@@ -215,9 +215,9 @@ class DVInterface: public DVConfiguration
      *  Functions that modify the database are: Storing new presentation states,
      *  deleting data, modifying the 'reviewed' status flag of IODs.
      *  @return number of studies in the database.
-     */     
+     */
     Uint32 getNumberOfStudies();
-    
+
     /** selects the study with the given index in the database.
      *  This method acquires a database lock which must be explicitly freed by the user.
      *  The selection remains valid until the database lock is removed or the database
@@ -225,9 +225,9 @@ class DVInterface: public DVConfiguration
      *  Implicitly the first series and first instance within this study is selected, too.
      *  @param idx index to be selected, must be < getNumberOfStudies()
      *  @return EC_Normal upon success, an error code otherwise.
-     */     
+     */
     E_Condition selectStudy(Uint32 idx);
-    
+
     /** returns the review status of the currently selected study.
      *  May be called only if a valid study selection exists - see selectStudy().
      *  This method acquires a database lock which must be explicitly freed by the user.
@@ -242,49 +242,49 @@ class DVInterface: public DVConfiguration
      *  @return Study Instance UID or NULL if absent or not selected.
      */
     const char *getStudyUID();
-    
+
     /** returns the Study Description of the currently selected study.
      *  May be called only if a valid study selection exists - see selectStudy().
      *  This method acquires a database lock which must be explicitly freed by the user.
      *  @return Study Description or NULL if absent or not selected.
      */
     const char *getStudyDescription();
-    
+
     /** returns the Study Date of the currently selected study.
      *  May be called only if a valid study selection exists - see selectStudy().
      *  This method acquires a database lock which must be explicitly freed by the user.
      *  @return Study Date or NULL if absent or not selected.
      */
     const char *getStudyDate();
-    
+
     /** returns the Study Time of the currently selected study.
      *  May be called only if a valid study selection exists - see selectStudy().
      *  This method acquires a database lock which must be explicitly freed by the user.
      *  @return Study Time or NULL if absent or not selected.
      */
     const char *getStudyTime();
-    
+
     /** returns the Referring Physicians Name of the currently selected study.
      *  May be called only if a valid study selection exists - see selectStudy().
      *  This method acquires a database lock which must be explicitly freed by the user.
      *  @return Referring Physicians Name or NULL if absent or not selected.
      */
     const char *getReferringPhysiciansName();
-    
+
     /** returns the Accession Number of the currently selected study.
      *  May be called only if a valid study selection exists - see selectStudy().
      *  This method acquires a database lock which must be explicitly freed by the user.
      *  @return Accession Number or NULL if absent or not selected.
      */
     const char *getAccessionNumber();
-    
+
     /** returns the Name Of Physicians Reading Study of the currently selected study.
      *  May be called only if a valid study selection exists - see selectStudy().
      *  This method acquires a database lock which must be explicitly freed by the user.
      *  @return Name Of Physicians Reading Study or NULL if absent or not selected.
      */
     const char *getNameOfPhysiciansReadingStudy();
-    
+
     /** returns the Patient Name of the currently selected study.
      *  May be called only if a valid study selection exists - see selectStudy().
      *  Note: Since the database uses the Study Root model, patient data appears
@@ -293,7 +293,7 @@ class DVInterface: public DVConfiguration
      *  @return Patient Name or NULL if absent or not selected.
      */
     const char *getPatientName();
-    
+
     /** returns the Patient ID of the currently selected study.
      *  May be called only if a valid study selection exists - see selectStudy().
      *  Note: Since the database uses the Study Root model, patient data appears
@@ -302,7 +302,7 @@ class DVInterface: public DVConfiguration
      *  @return Patient ID or NULL if absent or not selected.
      */
     const char *getPatientID();
-    
+
     /** returns the Patient Birth Date of the currently selected study.
      *  May be called only if a valid study selection exists - see selectStudy().
      *  Note: Since the database uses the Study Root model, patient data appears
@@ -311,7 +311,7 @@ class DVInterface: public DVConfiguration
      *  @return Patient Birth Date or NULL if absent or not selected.
      */
     const char *getPatientBirthDate();
-    
+
     /** returns the Patient Sex of the currently selected study.
      *  May be called only if a valid study selection exists - see selectStudy().
      *  Note: Since the database uses the Study Root model, patient data appears
@@ -320,7 +320,7 @@ class DVInterface: public DVConfiguration
      *  @return Patient Sex or NULL if absent or not selected.
      */
     const char *getPatientSex();
-    
+
     /** returns the Patient Birth Time of the currently selected study.
      *  May be called only if a valid study selection exists - see selectStudy().
      *  Note: Since the database uses the Study Root model, patient data appears
@@ -329,7 +329,7 @@ class DVInterface: public DVConfiguration
      *  @return Patient Birth Time or NULL if absent or not selected.
      */
     const char *getPatientBirthTime();
-    
+
     /** returns the Other Patient Names of the currently selected study.
      *  May be called only if a valid study selection exists - see selectStudy().
      *  Note: Since the database uses the Study Root model, patient data appears
@@ -338,7 +338,7 @@ class DVInterface: public DVConfiguration
      *  @return Other Patient Names or NULL if absent or not selected.
      */
     const char *getOtherPatientNames();
-    
+
     /** returns the Other Patient ID of the currently selected study.
      *  May be called only if a valid study selection exists - see selectStudy().
      *  Note: Since the database uses the Study Root model, patient data appears
@@ -363,25 +363,25 @@ class DVInterface: public DVConfiguration
      *  See the comments for getNumberOfStudies() about the validity period
      *  of the returned number.
      *  @return number of series in the current study.
-     */     
+     */
     Uint32 getNumberOfSeries();
-    
+
     /** selects the series with the given index within the currently selected study.
      *  This method acquires a database lock which must be explicitly freed by the user.
      *  The selection remains valid until the database lock is removed or the database
      *  is modified (see comments for getNumberOfStudies).
      *  @param idx index to be selected, must be < getNumberOfSeries()
      *  @return EC_Normal upon success, an error code otherwise.
-     */     
+     */
     E_Condition selectSeries(Uint32 idx);
-    
+
     /** returns the Series Instance UID of the currently selected series.
      *  May be called only if a valid series selection exists - see selectSeries().
      *  This method acquires a database lock which must be explicitly freed by the user.
      *  @return Series Instance UID or NULL if absent or not selected.
      */
     const char *getSeriesUID();
-    
+
     /** returns the review status of the currently selected series.
      *  May be called only if a valid series selection exists - see selectSeries().
      *  This method acquires a database lock which must be explicitly freed by the user.
@@ -397,7 +397,7 @@ class DVInterface: public DVConfiguration
      *  @return instance type
      */
     DVPSInstanceType getSeriesType();
-    
+
     /** returns the type of the currently selected instance.
      *  May be called only if a valid instance selection exists - see selectInstance().
      *  This method acquires a database lock which must be explicitly freed by the user.
@@ -415,7 +415,7 @@ class DVInterface: public DVConfiguration
      *  @return OFTrue if series contains presentation states, OFFalse otherwise.
      */
     OFBool isPresentationStateSeries();
-    
+
     /** checks if the currently selected instance is a presentation state.
      *  May be called only if a valid instance selection exists - see selectInstance().
      *  This method acquires a database lock which must be explicitly freed by the user.
@@ -431,63 +431,63 @@ class DVInterface: public DVConfiguration
      *  @return Series Number or NULL if absent or not selected.
      */
     const char *getSeriesNumber();
-    
+
     /** returns the Series Date of the currently selected series.
      *  May be called only if a valid series selection exists - see selectSeries().
      *  This method acquires a database lock which must be explicitly freed by the user.
      *  @return Series Date or NULL if absent or not selected.
      */
     const char *getSeriesDate();
-    
+
     /** returns the Series Time of the currently selected series.
      *  May be called only if a valid series selection exists - see selectSeries().
      *  This method acquires a database lock which must be explicitly freed by the user.
      *  @return Series Time or NULL if absent or not selected.
      */
     const char *getSeriesTime();
-    
+
     /** returns the Series Description of the currently selected series.
      *  May be called only if a valid series selection exists - see selectSeries().
      *  This method acquires a database lock which must be explicitly freed by the user.
      *  @return Series Description or NULL if absent or not selected.
      */
     const char *getSeriesDescription();
-    
+
     /** returns the Series Performing Physicians Name of the currently selected series.
      *  May be called only if a valid series selection exists - see selectSeries().
      *  This method acquires a database lock which must be explicitly freed by the user.
      *  @return Series Performing Physicians Name or NULL if absent or not selected.
      */
     const char *getSeriesPerformingPhysiciansName();
-    
+
     /** returns the Series Protocol Name of the currently selected series.
      *  May be called only if a valid series selection exists - see selectSeries().
      *  This method acquires a database lock which must be explicitly freed by the user.
      *  @return Series Protocol Name or NULL if absent or not selected.
      */
     const char *getSeriesProtocolName();
-    
+
     /** returns the Series Operators Name of the currently selected series.
      *  May be called only if a valid series selection exists - see selectSeries().
      *  This method acquires a database lock which must be explicitly freed by the user.
      *  @return Series Operators Name or NULL if absent or not selected.
      */
     const char *getSeriesOperatorsName();
-    
+
     /** returns the Modality of the currently selected series.
      *  May be called only if a valid series selection exists - see selectSeries().
      *  This method acquires a database lock which must be explicitly freed by the user.
      *  @return Modality or NULL if absent or not selected.
      */
     const char *getModality();
- 
+
     /** returns the number of instances (IODs) within the currently selected series.
      *  May be called only if a valid series selection exists - see selectSeries().
      *  This method acquires a database lock which must be explicitly freed by the user.
      *  See the comments for getNumberOfStudies() about the validity period
      *  of the returned number.
      *  @return number of instances in the current series.
-     */     
+     */
     Uint32 getNumberOfInstances();
 
     /** selects the instance with the given index within the currently selected series.
@@ -496,9 +496,9 @@ class DVInterface: public DVConfiguration
      *  is modified (see comments for getNumberOfStudies).
      *  @param idx index to be selected, must be < getNumberOfInstances()
      *  @return EC_Normal upon success, an error code otherwise.
-     */     
+     */
     E_Condition selectInstance(Uint32 idx);
-    
+
     /** returns the SOP Instance UID of the currently selected instance.
      *  May be called only if a valid instance selection exists - see selectInstance().
      *  This method acquires a database lock which must be explicitly freed by the user.
@@ -526,7 +526,7 @@ class DVInterface: public DVConfiguration
      *  @return instance review status
      */
     DVIFhierarchyStatus getInstanceStatus() ;
-    
+
     /** returns the Presentation Description of the currently selected instance.
      *  May be called only if a valid instance selection exists - see selectInstance().
      *  This method acquires a database lock which must be explicitly freed by the user.
@@ -541,12 +541,12 @@ class DVInterface: public DVConfiguration
      */
     const char *getPresentationLabel();
 
-    
+
     /* methods modifying the database */
-    
+
     /** modifies the review flag for one instance in the database, which is set to
      *  'reviewed' state (DVIF_objectIsNotNew). The status of the corresponding series
-     *  and study is updated automatically. 
+     *  and study is updated automatically.
      *  This method acquires a database lock which must be explicitly freed by the user.
      *  The database is modified - any study, series or instance selection
      *  and the number of studies, series and instances reported will become invalid since
@@ -593,7 +593,7 @@ class DVInterface: public DVConfiguration
      *  @return EC_Normal upon success, an error code otherwise.
      */
     E_Condition deleteStudy(const char *studyUID);
-    
+
     /* here follow the Network interface methods */
 
     /** starts the network receiver process (Storage Service Class SCP).
@@ -606,9 +606,9 @@ class DVInterface: public DVConfiguration
      *  means that the fork() used to start the receiver was successful.
      *  On Win32 platforms, it means that the CreateProcess() call was successful.
      *  @return EC_Normal if the receiver process could be started, an error code otherwise.
-     */      
+     */
     E_Condition startReceiver();
-  
+
     /** terminates the network receiver process (Storage Service Class SCP).
      *  This method attempts to terminate the network receiver process by
      *  requesting a DICOM association with it and delivering a special "shutdown" command.
@@ -628,7 +628,7 @@ class DVInterface: public DVConfiguration
      *  @return OFTrue if the database has been modified since the last call to this method.
      */
     OFBool newInstancesReceived();
-    
+
     /** sends a complete study over network to a different DICOM peer.
      *  A separate application or process is launched to handle the send operation.
      *  This call returns when the send operation has successfully been launched.
@@ -683,8 +683,8 @@ class DVInterface: public DVConfiguration
      *     an error condition otherwise.
      */
     E_Condition sendIOD(const char *targetID, const char *studyUID, const char *seriesUID, const char *instanceUID);
- 
-    
+
+
     /** saves a monochrome bitmap as a DICOM Secondary Capture image.
      *  The bitmap must use one byte per pixel, left to right, top to bottom
      *  order of the pixels. 0 is interpreted as black, 255 as white.
@@ -695,7 +695,7 @@ class DVInterface: public DVConfiguration
      *  @param height the height of the image, must be <= 0xFFFF
      *  @aspectRatio the pixel aspect ratio as width/height. If omitted, a pixel
      *    aspect ratio of 1/1 is assumed.
-     *  @param explicitVR selects the transfer syntax to be written. 
+     *  @param explicitVR selects the transfer syntax to be written.
      *    True selects Explicit VR Little Endian, False selects Implicit VR Little Endian.
      *  @param instanceUID optional parameter containing the SOP Instance UID to be written.
      *    This parameter should be omitted unless the SOP Instance UID needs to be controlled
@@ -703,7 +703,7 @@ class DVInterface: public DVConfiguration
      *  @return EC_Normal upon success, an error code otherwise.
      */
     E_Condition saveDICOMImage(
-      const char *filename, 
+      const char *filename,
       const void *pixelData,
       unsigned long width,
       unsigned long height,
@@ -712,7 +712,7 @@ class DVInterface: public DVConfiguration
       const char *instanceUID=NULL);
 
     /** saves a monochrome bitmap as a DICOM Secondary Capture image
-     *  in the same directory in which the database index file resides. 
+     *  in the same directory in which the database index file resides.
      *  The filename is generated automatically.
      *  When the image is stored successfully, the database index is updated
      *  to include the new object.
@@ -741,7 +741,7 @@ class DVInterface: public DVConfiguration
      *  @param height the height of the image, must be <= 0xFFFF
      *  @aspectRatio the pixel aspect ratio as width/height. If omitted, a pixel
      *    aspect ratio of 1/1 is assumed.
-     *  @param explicitVR selects the transfer syntax to be written. 
+     *  @param explicitVR selects the transfer syntax to be written.
      *    True selects Explicit VR Little Endian, False selects Implicit VR Little Endian.
      *  @param instanceUID optional parameter containing the SOP Instance UID to be written.
      *    This parameter should be omitted unless the SOP Instance UID needs to be controlled
@@ -749,7 +749,7 @@ class DVInterface: public DVConfiguration
      *  @return EC_Normal upon success, an error code otherwise.
      */
     E_Condition saveGrayscaleHardcopyImage(
-      const char *filename, 
+      const char *filename,
       const void *pixelData,
       unsigned long width,
       unsigned long height,
@@ -758,7 +758,7 @@ class DVInterface: public DVConfiguration
       const char *instanceUID=NULL);
 
     /** saves a monochrome bitmap as a DICOM Grayscale Hardcopy image
-     *  in the same directory in which the database index file resides. 
+     *  in the same directory in which the database index file resides.
      *  The filename is generated automatically.
      *  When the image is stored successfully, the database index is updated
      *  to include the new object.
@@ -781,7 +781,7 @@ class DVInterface: public DVConfiguration
      *  @param filename the file name or path under which the image is saved.
      *  @param writeRequestedImageSize if false, the Requested Image Size attributes are not written,
      *    e. g. because they are not supported by the target printer.
-     *  @param explicitVR selects the transfer syntax to be written. 
+     *  @param explicitVR selects the transfer syntax to be written.
      *    True selects Explicit VR Little Endian, False selects Implicit VR Little Endian.
      *  @param instanceUID optional parameter containing the SOP Instance UID to be written.
      *    This parameter should be omitted unless the SOP Instance UID needs to be controlled
@@ -789,13 +789,13 @@ class DVInterface: public DVConfiguration
      *  @return EC_Normal upon success, an error code otherwise.
      */
     E_Condition saveStoredPrint(
-      const char *filename, 
+      const char *filename,
       OFBool writeRequestedImageSize,
       OFBool explicitVR=OFTrue,
       const char *instanceUID=NULL);
 
     /** saves the current print job as a Stored Print object
-     *  in the same directory in which the database index file resides. 
+     *  in the same directory in which the database index file resides.
      *  The filename is generated automatically.
      *  When the image is stored successfully, the database index is updated
      *  to include the new object.
@@ -820,7 +820,7 @@ class DVInterface: public DVConfiguration
      *  @return EC_Normal upon success, an error code otherwise.
      */
     E_Condition enablePState();
-    
+
     /** returns number of presentation states referencing the currently selected image.
      *  If no instance is currently selected or the selected instance is a presentation
      *  state, returns an error.
@@ -876,15 +876,15 @@ class DVInterface: public DVConfiguration
      *  @return EC_Normal upon success, an error code otherwise.
      */
     E_Condition setAmbientLightValue(double value);
-    
+
     /** returns ambient light value for the display transformation.
-     *  @param value returned ambient light value 
+     *  @param value returned ambient light value
      *  @return EC_Normal upon success, an error code otherwise.
      */
     E_Condition getAmbientLightValue(double &value);
 
     /* print related methods */
-   
+
     /** selects the current printer. No further
      *  adjustments are made within the Stored Print object.
      *  @param targetID one of the printer target IDs returned by getTargetID().
@@ -977,7 +977,7 @@ class DVInterface: public DVConfiguration
     unsigned long getPrinterNumberOfCopies();
 
     /* ----- for compatibility reasons only - use methods in class DVPSStoredPrint instead ---- */
-    
+
     /** sets the illumination to be used
      *  with the print Presentation LUT SOP Class.
      *  @param value new attribute value, in cd/m2.
@@ -1016,14 +1016,14 @@ class DVInterface: public DVConfiguration
      *  priority, owner ID, and number of copies.
      */
     void clearFilmSessionSettings();
-        
+
     /** sets the LUT with the given identifier
      *  in the Presentation State as current Presentation LUT.
      *  @param lutID LUT identifier, as returned by getLUTID().
      *  @return EC_Normal if successful, an error code otherwise.
      */
     E_Condition selectDisplayPresentationLUT(const char *lutID);
-    
+
     /** if the Presentation State contains an active
      *  Presentation LUT that was set with selectPrintPresentationLUT(),
      *  return the corresponding LUT identifier.
@@ -1035,8 +1035,8 @@ class DVInterface: public DVConfiguration
      *  @param deletePrintedImages if true, delete printed images from queue.
      *  @return EC_Normal if successful, an error code otherwise.
      */
-    E_Condition spoolPrintJob(OFBool deletePrintedImages=OFTrue);    
-    
+    E_Condition spoolPrintJob(OFBool deletePrintedImages=OFTrue);
+
     /** starts the print spooler process.
      *  The print spooler will wait for print jobs created with spoolPrintJob()
      *  and communicate them to the printer using the DICOM Print Management Service Class.
@@ -1047,18 +1047,18 @@ class DVInterface: public DVConfiguration
      *  means that the fork() used to start the spooler was successful.
      *  On Win32 platforms, it means that the CreateProcess() call was successful.
      *  @return EC_Normal if the spooler process could be started, an error code otherwise.
-     */      
+     */
     E_Condition startPrintSpooler();
-  
+
     /** terminates the print spooler process. This method creates a "dummy"
      *  print job that request the print spooler to shutdown as soon as all other pending
      *  print jobs are finished.
-     *  @return EC_Normal if the spooler process dummy print job could be written, 
+     *  @return EC_Normal if the spooler process dummy print job could be written,
      *    an error code otherwise.
      */
     E_Condition terminatePrintSpooler();
 
-    /** adds an existing DICOM image (should be Hardcopy Grayscale) 
+    /** adds an existing DICOM image (should be Hardcopy Grayscale)
      *  that is already present in the image database to the current print image queue
      *  without rendering it again.
      *  The "requested image size" option is not used - the bitmap is treated as if the
@@ -1073,7 +1073,7 @@ class DVInterface: public DVConfiguration
     /** requests the spooler process to print an old print job that is stored
      *  in the database as a "stored print" object. The Stored Print that is printed
      *  does not contain all parameters of a print job. The following parameters are taken from the
-     *  current settings in this object: Target printer, medium type, 
+     *  current settings in this object: Target printer, medium type,
      *  illumination and reflected ambient light.
      *  @param studyUID study instance UID of the Stored Print, as reported by getStudyUID()
      *  @param seriesUID series instance UID of the Stored Print, as reported by getSeriesUID()
@@ -1155,7 +1155,7 @@ private:
     /** private undefined copy constructor
      */
     DVInterface(const DVInterface&);
-    
+
     /** private undefined assignment operator
      */
     DVInterface& operator=(const DVInterface&);
@@ -1168,7 +1168,7 @@ private:
      *  @return EC_Normal upon success, an error code otherwise.
      */
     E_Condition exchangeImageAndPState(DVPresentationState *newState, DcmFileFormat *image, DcmFileFormat *state=NULL);
- 
+
     /** creates a database handle if none exists yet (this method may
      *  be called multiple times without interference) and puts a shared lock
      *  on the database.
@@ -1176,7 +1176,7 @@ private:
      *  @return EC_Normal upon success, an error code otherwise.
      */
     E_Condition lockDatabase();
-    
+
     /** creates an exlusive lock on the database if none exists.
      *  The lock will remain until explicitly released with releaseDatabase()
      *  or unlockExclusive().
@@ -1197,13 +1197,13 @@ private:
      *  @return EC_Normal upon success, an error code otherwise.
      */
     E_Condition createPrintJobFilenames(const char *printer, OFString& tempname, OFString& jobname);
-        
+
     /* member variables */
 
     /** pointer to the current print handler object
      */
     DVPSStoredPrint *pPrint;
-    
+
     /** pointer to the current presentation state object
      */
     DVPresentationState *pState;
@@ -1229,21 +1229,21 @@ private:
     /** a counter used for generating print job names.
      */
     unsigned long printJobCounter;
-   
+
     /** string containing the path name of the config file as passed to the ctor.
      */
     OFString configPath;
-     
+
     /** string containing the path name of the database index file
      *  after a database lock has been acquired for the first time
      */
     OFString databaseIndexFile;
-   
+
     /** initialized with construction time of the interface object
      *  minus one day. Used to check modifications of the database index file.
      */
     unsigned long referenceTime;
-    
+
     /** list of display function object
      */
     DiDisplayFunction *displayFunction[DVPSD_max];
@@ -1273,7 +1273,7 @@ private:
     OFBool imageInDatabase;
 
     /* private methods for database */
-    
+
     /** creates index cache to optimize reading of index file
      */
     OFBool createIndexCache();
@@ -1302,7 +1302,7 @@ private:
      *  to series and from series to studies)
      */
     void updateStatusCache();
-    
+
     /** returns pointer to study struct specified by given UIDs or to current study
      */
     DVStudyCache::ItemStruct *getStudyStruct(const char *studyUID = NULL,
@@ -1355,14 +1355,22 @@ private:
      */
     unsigned long maximumPrintBitmapHeight;
 
+    /** maximum width of (optional) preview image
+     */
+    unsigned long maximumPreviewImageWidth;
+
+    /** maximum height of (optional) preview image
+     */
+    unsigned long maximumPreviewImageHeight;
+
     /** target ID of current printer, empty if no printer exists in config file
      */
     OFString currentPrinter;
- 
+
      /** config file identifier of LUT currently selected as Display Presentation LUT
      */
     OFString displayCurrentLUTID;
-   
+
     /** printer medium type identifier, may be empty. VR=CS, VM=1
      */
     OFString printerMediumType;
@@ -1378,8 +1386,8 @@ private:
     /** printer number of copies
      */
     unsigned long printerNumberOfCopies;
-    
-    /** printer print priority, may be empty. VR=CS, VM=1, 
+
+    /** printer print priority, may be empty. VR=CS, VM=1,
      *  enumerated values: HIGH, MED, LOW
      */
     OFString printerPriority;
@@ -1416,7 +1424,11 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.55  1999-10-19 14:46:01  meichel
+ *  Revision 1.56  1999-10-20 10:47:13  joergr
+ *  Added support for a down-scaled preview image of the current DICOM image
+ *  (e.g. useful for online-windowing or print preview).
+ *
+ *  Revision 1.55  1999/10/19 14:46:01  meichel
  *  added support for the Basic Annotation Box SOP Class
  *    as well as access methods for Max Density and Min Density.
  *
