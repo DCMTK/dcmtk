@@ -22,9 +22,9 @@
  *  Purpose: DicomBartenLUT (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-03 12:05:14 $
+ *  Update Date:      $Date: 1999-03-04 09:43:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/Attic/dibarlut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,13 +58,14 @@ DiBartenLUT::DiBartenLUT(const unsigned long count,
                          const double jnd_max,
                          const double amb,
                          ostream *stream)
-  : DiBaseLUT(count, DicomImageClass::tobits(max, 0))
+  : DiBaseLUT(count, DicomImageClass::tobits(max, 0)),
+    AmbientLight(amb)
 {
     if ((Count > 0) && (Bits > 0))
     {
         if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Informationals)
             cerr << "INFO: new Barten LUT with " << Bits << " bits output and " << Count << " entries created !" << endl;
-        Valid = createLUT(ddl_tab, lum_tab, ddl_cnt, gsdf_tab, gsdf_spl, gsdf_cnt, jnd_min, jnd_max, amb, stream);
+        Valid = createLUT(ddl_tab, lum_tab, ddl_cnt, gsdf_tab, gsdf_spl, gsdf_cnt, jnd_min, jnd_max, stream);
     }
 } 
 
@@ -89,7 +90,6 @@ int DiBartenLUT::createLUT(const Uint16 *ddl_tab,
                            const unsigned int gsdf_cnt,
                            const double jnd_min,
                            const double jnd_max,
-                           const double amb,
                            ostream *stream)
 {
     if ((ddl_tab != NULL) && (lum_tab != NULL) && (ddl_cnt > 0) && (gsdf_tab != NULL) && (gsdf_spl != NULL) && (gsdf_cnt > 0))
@@ -129,9 +129,9 @@ int DiBartenLUT::createLUT(const Uint16 *ddl_tab,
                             register Uint16 j = 0;
                             for (i = 0; i < Count; i++, r++)
                             {
-                                while ((j + 1 < ddl_cnt) && (lum_tab[j]  + amb < *r))      // search for closest index, assuming monotony
+                                while ((j + 1 < ddl_cnt) && (lum_tab[j]  + AmbientLight < *r))  // search for closest index, assuming monotony
                                     j++;
-                                if ((j > 0) && (fabs(lum_tab[j - 1]  + amb - *r) < fabs(lum_tab[j]  + amb - *r)))
+                                if ((j > 0) && (fabs(lum_tab[j - 1] + AmbientLight - *r) < fabs(lum_tab[j] + AmbientLight - *r)))
                                     j--;
                                 *(q++) = ddl_tab[j];
                             }
@@ -144,9 +144,9 @@ int DiBartenLUT::createLUT(const Uint16 *ddl_tab,
                                     {
                                         (*stream) << ddl_tab[i] << "\t"; 
                                         stream->setf(ios::fixed, ios::floatfield);
-                                        (*stream) << lum_tab[i] + amb << "\t";
+                                        (*stream) << lum_tab[i] + AmbientLight << "\t";
                                         (*stream) << gsdf[i] << "\t";
-                                        (*stream) << lum_tab[Data[i]] + amb << endl;
+                                        (*stream) << lum_tab[Data[i]] + AmbientLight << endl;
                                     }
                                 } else {
                                     if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
@@ -172,7 +172,10 @@ int DiBartenLUT::createLUT(const Uint16 *ddl_tab,
  *
  * CVS/RCS Log:
  * $Log: dibarlut.cc,v $
- * Revision 1.6  1999-03-03 12:05:14  joergr
+ * Revision 1.7  1999-03-04 09:43:28  joergr
+ * Barten LUT is now be re-created when ambient light value has changed.
+ *
+ * Revision 1.6  1999/03/03 12:05:14  joergr
  * Added support to specify ambient light value (re: Barten transformation).
  *
  * Revision 1.5  1999/02/23 16:56:06  joergr
