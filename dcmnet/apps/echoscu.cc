@@ -22,9 +22,9 @@
  *  Purpose: Verification Service Class User (C-ECHO operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 13:04:29 $
+ *  Update Date:      $Date: 2002-11-28 16:58:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/echoscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -170,6 +170,8 @@ main(int argc, char *argv[])
       cmd.addOption("--propose-pc", "-ppc", 1, "[n]umber: integer (1..128)", "propose n presentation contexts");
 
     cmd.addSubGroup("other network options:");
+      cmd.addOption("--timeout",     "-to", 1, "[s]econds: integer (default: unlimited)", "timeout for connection requests");
+
       OFString opt3 = "set max receive pdu to n bytes (default: ";
       sprintf(tempstr, "%ld", (long)ASC_DEFAULTMAXPDU);
       opt3 += tempstr;
@@ -222,6 +224,14 @@ main(int argc, char *argv[])
 
       if (cmd.findOption("--aetitle")) app.checkValue(cmd.getValue(opt_ourTitle));
       if (cmd.findOption("--call")) app.checkValue(cmd.getValue(opt_peerTitle));
+
+      if (cmd.findOption("--timeout")) 
+      {
+        OFCmdSignedInt opt_timeout = 0;
+        app.checkValue(cmd.getValueAndCheckMin(opt_timeout, 0));
+        dcmConnectionTimeout.set((Sint32) opt_timeout);
+      }
+
       if (cmd.findOption("--max-pdu")) app.checkValue(cmd.getValueAndCheckMinMax(opt_maxReceivePDULength, ASC_MINIMUMPDUSIZE, ASC_MAXIMUMPDUSIZE));
       if (cmd.findOption("--repeat")) app.checkValue(cmd.getValueAndCheckMin(opt_repeatCount, 1));
       if (cmd.findOption("--abort")) opt_abortAssociation=OFTrue;
@@ -474,7 +484,11 @@ cecho(T_ASC_Association * assoc, unsigned long num_repeat)
 /*
 ** CVS Log
 ** $Log: echoscu.cc,v $
-** Revision 1.29  2002-11-27 13:04:29  meichel
+** Revision 1.30  2002-11-28 16:58:35  meichel
+** Introduced new command line option --timeout for controlling the
+**   connection request timeout.
+**
+** Revision 1.29  2002/11/27 13:04:29  meichel
 ** Adapted module dcmnet to use of new header file ofstdinc.h
 **
 ** Revision 1.28  2002/11/26 08:43:19  meichel
