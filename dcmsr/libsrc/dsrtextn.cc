@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRTextTreeNode
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 13:04:26 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-09-28 14:13:24 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -152,6 +152,23 @@ OFBool DSRTextTreeNode::canAddNode(const E_DocumentType documentType,
     {
         switch (relationshipType)
         {
+            case RT_hasObsContext:
+                switch (valueType)
+                {
+                    case VT_Text:                
+                    case VT_Code:
+                    case VT_Num:
+                    case VT_DateTime:
+                    case VT_Date:
+                    case VT_Time:
+                    case VT_UIDRef:
+                    case VT_PName:
+                        result = (documentType == DT_ComprehensiveSR);
+                        break;
+                    default:
+                        break;
+                }
+                break;
             case RT_hasConceptMod:
                 result = (valueType == VT_Text) || (valueType == VT_Code);
                 break;
@@ -194,7 +211,11 @@ OFBool DSRTextTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtextn.cc,v $
- *  Revision 1.11  2001-09-26 13:04:26  meichel
+ *  Revision 1.12  2001-09-28 14:13:24  joergr
+ *  Added missing relationship/target content item to text tree node. Thanks to
+ *  Gilles Mevel <Gilles.Mevel@etiam.com> and his co-workers for the bug report.
+ *
+ *  Revision 1.11  2001/09/26 13:04:26  meichel
  *  Adapted dcmsr to class OFCondition
  *
  *  Revision 1.10  2001/05/07 16:14:25  joergr
