@@ -22,9 +22,9 @@
  *  Purpose: Utilities (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-16 16:40:15 $
+ *  Update Date:      $Date: 1998-12-23 11:38:08 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diutils.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -135,6 +135,7 @@ enum EM_Overlay
 {
     EMO_Default,
     EMO_Replace,
+    EMO_Graphic = EMO_Replace,
     EMO_ThresholdReplace,
     EMO_Complement,
     EMO_RegionOfInterest
@@ -227,7 +228,10 @@ class DicomImageClass
 **
 ** CVS/RCS Log:
 ** $Log: diutils.h,v $
-** Revision 1.2  1998-12-16 16:40:15  joergr
+** Revision 1.3  1998-12-23 11:38:08  joergr
+** Introduced new overlay mode item EMO_Graphic (= EMO_Replace).
+**
+** Revision 1.2  1998/12/16 16:40:15  joergr
 ** Some layouting.
 **
 ** Revision 1.1  1998/11/27 15:51:45  joergr
