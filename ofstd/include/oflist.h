@@ -10,9 +10,9 @@
 **      C++ Standard
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1998-06-29 12:09:23 $
+** Update Date:		$Date: 1998-07-02 07:47:02 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/oflist.h,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -77,6 +77,10 @@ struct OFListLinkBase
     OFBool dummy;
     OFListLinkBase(): next(NULL), prev(NULL), dummy(OFFalse) { }
     virtual ~OFListLinkBase() {}
+
+  private:
+    /* undefined */ OFListLinkBase(const OFListLinkBase&);
+    /* undefined */ OFListLinkBase& operator=(const OFListLinkBase&);
 };
 
 
@@ -98,6 +102,10 @@ public:
     void base_splice(OFListLinkBase * pos, 
 		OFListLinkBase * begin, OFListLinkBase * end);
     void base_clear();
+
+  private:
+    /* undefined */ OFListBase(const OFListBase&);
+    /* undefined */ OFListBase& operator=(const OFListBase&);
 };  
 
 
@@ -108,6 +116,9 @@ struct OFListLink : public OFListLinkBase
     T info;
     OFListLink(const T & i) : OFListLinkBase(), info(i)  { }
     virtual ~OFListLink() {}
+  private:
+    /* undefined */ OFListLink(const OFListLink<T>&);
+    /* undefined */ OFListLink<T>& operator=(const OFListLink<T>&);
 };
 
 
@@ -401,7 +412,10 @@ void OF_ListRemoveIf(OFList<T> & c, Predicate pred)
 /*
 ** CVS/RCS Log:
 ** $Log: oflist.h,v $
-** Revision 1.7  1998-06-29 12:09:23  meichel
+** Revision 1.8  1998-07-02 07:47:02  meichel
+** Some code purifications to avoid gcc 2.8.1 -Weffc++ warnings.
+**
+** Revision 1.7  1998/06/29 12:09:23  meichel
 ** Removed some name clashes (e.g. local variable with same
 **   name as class member) to improve maintainability.
 **   Applied some code purifications proposed by the gcc 2.8.1 -Weffc++ option.

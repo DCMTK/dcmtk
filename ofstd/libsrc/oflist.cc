@@ -9,9 +9,9 @@
 **	Implementation of supplementary methods for a template list class 
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1998-02-06 15:07:41 $
+** Update Date:		$Date: 1998-07-02 07:47:05 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/oflist.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -30,7 +30,8 @@ void OF__DUMMY()    // to make the linker happy!
 #include "oflist.h"
 
 OFListBase::OFListBase()
-    : listSize(0)
+: afterLast(NULL)
+, listSize(0)
 {
     afterLast = new OFListLinkBase();
     afterLast->prev = afterLast->next = afterLast;
@@ -114,7 +115,10 @@ void OFListBase::base_recalcListSize()
 /*
 ** CVS/RCS Log:
 ** $Log: oflist.cc,v $
-** Revision 1.3  1998-02-06 15:07:41  meichel
+** Revision 1.4  1998-07-02 07:47:05  meichel
+** Some code purifications to avoid gcc 2.8.1 -Weffc++ warnings.
+**
+** Revision 1.3  1998/02/06 15:07:41  meichel
 ** Removed many minor problems (name clashes, unreached code)
 **   reported by Sun CC4 with "+w" or Sun CC2.
 **
