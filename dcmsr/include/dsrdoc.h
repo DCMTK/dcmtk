@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDocument
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 13:04:06 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-09 16:10:48 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,8 +59,8 @@ class DSRDocument
   // --- constructors and destructor ---
 
     /** default constructor.
-     *  The parameter documentType is optional and has a default value.
-     ** @param  documentType  type of the SR document (BasicText, Enhanced, Comprehensive)
+     *  The parameter 'documentType' is optional and has a default value.
+     ** @param  documentType  type of the SR document (see DSRTypes::E_DocumentType)
      */
     DSRDocument(const E_DocumentType documentType = DT_BasicTextSR);
 
@@ -760,7 +760,7 @@ class DSRDocument
     /** create a new document of the specified type.
      *  A new SOP instance is only created if the current document type was valid/supported.
      *  Please note that the current document is deleted.
-     ** @param  documentType  type of the SR document (BasicText, Enhanced, Comprehensive)
+     ** @param  documentType  type of the SR document (see DSRTypes::E_DocumentType)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition createNewDocument(const E_DocumentType documentType);
@@ -864,7 +864,7 @@ class DSRDocument
     /** check the given dataset before reading.
      *  This methods checks whether the dataset contains at least the DICOM attributes SOP class UID
      *  and modality.  Any incorrectness regarding these two attributes is reported to the log stream
-     *  (if valid).  Unsupported SOP classes are also reported as error (e.g. ComprehensiveSR).
+     *  (if valid).  Currently unsupported SOP classes are also reported as an error.
      ** @param  dataset  DICOM dataset to be checked
      ** @return status, EC_Normal if successful, an error code otherwise
      */
@@ -1007,7 +1007,10 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
- *  Revision 1.23  2001-09-26 13:04:06  meichel
+ *  Revision 1.24  2001-11-09 16:10:48  joergr
+ *  Added preliminary support for Mammography CAD SR.
+ *
+ *  Revision 1.23  2001/09/26 13:04:06  meichel
  *  Adapted dcmsr to class OFCondition
  *
  *  Revision 1.22  2001/04/03 08:24:01  joergr

@@ -23,8 +23,8 @@
  *    classes: DSRTextTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-10 15:30:05 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2001-11-09 16:19:36 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -148,7 +148,7 @@ OFBool DSRTextTreeNode::canAddNode(const E_DocumentType documentType,
                                    const OFBool byReference) const
 {
     OFBool result = OFFalse;
-    if (!byReference || (documentType == DT_ComprehensiveSR))
+    if ((!byReference && (documentType != DT_KeyObjectDoc)) || (documentType == DT_ComprehensiveSR))
     {
         switch (relationshipType)
         {
@@ -211,7 +211,10 @@ OFBool DSRTextTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtextn.cc,v $
- *  Revision 1.13  2001-10-10 15:30:05  joergr
+ *  Revision 1.14  2001-11-09 16:19:36  joergr
+ *  Added preliminary support for Mammography CAD SR.
+ *
+ *  Revision 1.13  2001/10/10 15:30:05  joergr
  *  Additonal adjustments for new OFCondition class.
  *
  *  Revision 1.12  2001/09/28 14:13:24  joergr

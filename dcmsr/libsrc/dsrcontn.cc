@@ -23,8 +23,8 @@
  *    classes: DSRContainerTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-10 15:29:50 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2001-11-09 16:14:10 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -182,17 +182,19 @@ OFBool DSRContainerTreeNode::canAddNode(const E_DocumentType documentType,
                 switch (valueType)
                 {
                     case VT_Text:                
+                    case VT_Image:
+                    case VT_Waveform:
+                    case VT_Composite:
+                        result = (!byReference);        /* only allowed for by-value relationships */;
+                        break;
                     case VT_Code:
                     case VT_DateTime:
                     case VT_Date:
                     case VT_Time:
                     case VT_UIDRef:
                     case VT_PName:
-                    case VT_Composite:
-                    case VT_Image:
-                    case VT_Waveform:
                     case VT_Container:
-                        result = (!byReference);        /* only allowed for by-value relationships */
+                        result = (!byReference) && (documentType != DT_KeyObjectDoc);
                         break;
                     case VT_Num:
                     case VT_SCoord:
@@ -208,12 +210,14 @@ OFBool DSRContainerTreeNode::canAddNode(const E_DocumentType documentType,
                 {
                     case VT_Text:                
                     case VT_Code:
-                    case VT_DateTime:
-                    case VT_Date:
-                    case VT_Time:
                     case VT_UIDRef:
                     case VT_PName:
                         result = OFTrue;
+                        break;
+                    case VT_DateTime:
+                    case VT_Date:
+                    case VT_Time:
+                        result = (documentType != DT_KeyObjectDoc);
                         break;
                     case VT_Num:
                         result = (documentType == DT_EnhancedSR) || (documentType == DT_ComprehensiveSR);
@@ -232,7 +236,7 @@ OFBool DSRContainerTreeNode::canAddNode(const E_DocumentType documentType,
                     case VT_Time:
                     case VT_UIDRef:
                     case VT_PName:
-                        result = OFTrue;
+                        result = (documentType != DT_KeyObjectDoc);
                         break;
                     case VT_Num:
                         result = (documentType == DT_EnhancedSR) || (documentType == DT_ComprehensiveSR);
@@ -245,7 +249,7 @@ OFBool DSRContainerTreeNode::canAddNode(const E_DocumentType documentType,
                 }
                 break;
             case RT_hasConceptMod:
-                result = (valueType == VT_Text) || (valueType == VT_Code);
+                result = (valueType == VT_Code) || ((valueType == VT_Text) && (documentType != DT_KeyObjectDoc));
                 break;
             default:
                 break;
@@ -270,7 +274,10 @@ OFCondition DSRContainerTreeNode::setContinuityOfContent(const E_ContinuityOfCon
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcontn.cc,v $
- *  Revision 1.16  2001-10-10 15:29:50  joergr
+ *  Revision 1.17  2001-11-09 16:14:10  joergr
+ *  Added preliminary support for Mammography CAD SR.
+ *
+ *  Revision 1.16  2001/10/10 15:29:50  joergr
  *  Additonal adjustments for new OFCondition class.
  *
  *  Revision 1.15  2001/09/26 13:04:18  meichel

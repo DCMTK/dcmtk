@@ -23,8 +23,8 @@
  *    classes: DSRImageTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-10 15:29:56 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2001-11-09 16:16:25 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -135,7 +135,7 @@ OFBool DSRImageTreeNode::canAddNode(const E_DocumentType documentType,
                                     const OFBool byReference) const
 {
     OFBool result = OFFalse;
-    if (!byReference || (documentType == DT_ComprehensiveSR))
+    if ((!byReference && (documentType != DT_KeyObjectDoc)) || (documentType == DT_ComprehensiveSR))
     {
         switch (relationshipType)
         {
@@ -175,7 +175,10 @@ OFBool DSRImageTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgtn.cc,v $
- *  Revision 1.11  2001-10-10 15:29:56  joergr
+ *  Revision 1.12  2001-11-09 16:16:25  joergr
+ *  Added preliminary support for Mammography CAD SR.
+ *
+ *  Revision 1.11  2001/10/10 15:29:56  joergr
  *  Additonal adjustments for new OFCondition class.
  *
  *  Revision 1.10  2001/09/26 13:04:21  meichel

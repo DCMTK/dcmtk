@@ -23,8 +23,8 @@
  *    classes: DSRTimeTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-10 15:30:06 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2001-11-09 16:19:36 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -143,7 +143,7 @@ OFBool DSRTimeTreeNode::canAddNode(const E_DocumentType documentType,
                                     const OFBool byReference) const
 {
     OFBool result = OFFalse;
-    if (!byReference || (documentType == DT_ComprehensiveSR))
+    if ((!byReference && (documentType != DT_KeyObjectDoc)) || (documentType == DT_ComprehensiveSR))
     {
         if (relationshipType == RT_hasConceptMod)
             result = (valueType == VT_Text) || (valueType == VT_Code);
@@ -155,7 +155,10 @@ OFBool DSRTimeTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtimtn.cc,v $
- *  Revision 1.11  2001-10-10 15:30:06  joergr
+ *  Revision 1.12  2001-11-09 16:19:36  joergr
+ *  Added preliminary support for Mammography CAD SR.
+ *
+ *  Revision 1.11  2001/10/10 15:30:06  joergr
  *  Additonal adjustments for new OFCondition class.
  *
  *  Revision 1.10  2001/09/26 13:04:27  meichel

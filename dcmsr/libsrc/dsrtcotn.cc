@@ -23,8 +23,8 @@
  *    classes: DSRTCoordTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-10 15:30:03 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2001-11-09 16:18:26 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -137,7 +137,7 @@ OFBool DSRTCoordTreeNode::canAddNode(const E_DocumentType documentType,
                                      const OFBool byReference) const
 {
     OFBool result = OFFalse;
-    if (!byReference || (documentType == DT_ComprehensiveSR))
+    if ((!byReference && (documentType != DT_KeyObjectDoc)) || (documentType == DT_ComprehensiveSR))
     {
         switch (relationshipType)
         {
@@ -166,7 +166,10 @@ OFBool DSRTCoordTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcotn.cc,v $
- *  Revision 1.7  2001-10-10 15:30:03  joergr
+ *  Revision 1.8  2001-11-09 16:18:26  joergr
+ *  Added preliminary support for Mammography CAD SR.
+ *
+ *  Revision 1.7  2001/10/10 15:30:03  joergr
  *  Additonal adjustments for new OFCondition class.
  *
  *  Revision 1.6  2001/09/26 13:04:25  meichel

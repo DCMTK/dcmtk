@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRUIDRefTreeNode
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 13:04:14 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-09 16:10:55 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -113,7 +113,7 @@ class DSRUIDRefTreeNode
      *  @param  valueType         value type of node to be checked/added
      *  @param  byReference       optional flag indicating whether the node/relationship
      *                            should be added by-value (default) or by-reference
-     *                            (only for Comprehensive SR)
+     *                            (only for Comprehensive SR and Mammography CAD SR)
      ** @return OFTrue if specified node can be added, OFFalse otherwise
      */
     virtual OFBool canAddNode(const E_DocumentType documentType,
@@ -174,7 +174,10 @@ class DSRUIDRefTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsruidtn.h,v $
- *  Revision 1.6  2001-09-26 13:04:14  meichel
+ *  Revision 1.7  2001-11-09 16:10:55  joergr
+ *  Added preliminary support for Mammography CAD SR.
+ *
+ *  Revision 1.6  2001/09/26 13:04:14  meichel
  *  Adapted dcmsr to class OFCondition
  *
  *  Revision 1.5  2001/06/01 15:51:06  meichel

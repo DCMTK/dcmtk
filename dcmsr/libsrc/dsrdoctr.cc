@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTree
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-10 15:29:54 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2001-11-09 16:15:42 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -275,7 +275,8 @@ OFBool DSRDocumentTree::canAddByReferenceRelationship(const E_RelationshipType r
         const DSRDocumentTreeNode *node = (const DSRDocumentTreeNode *)getNode();
         if (node != NULL)
             result = node->canAddNode(DocumentType, relationshipType, valueType, OFTrue /* byReference */);
-    }
+    } else 
+        result = OFTrue;    /* cannot check, therefore, allow everything */
     return result;
 }
 
@@ -499,7 +500,10 @@ OFCondition DSRDocumentTree::checkByReferenceRelationships(const OFBool updateSt
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.cc,v $
- *  Revision 1.15  2001-10-10 15:29:54  joergr
+ *  Revision 1.16  2001-11-09 16:15:42  joergr
+ *  Added preliminary support for Mammography CAD SR.
+ *
+ *  Revision 1.15  2001/10/10 15:29:54  joergr
  *  Additonal adjustments for new OFCondition class.
  *
  *  Revision 1.14  2001/10/02 12:07:09  joergr

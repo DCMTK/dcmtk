@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDocumentTree
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 13:04:07 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-09 16:10:49 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -166,7 +166,8 @@ class DSRDocumentTree
                              const E_AddMode addMode = AM_afterCurrent);
 
     /** check whether specified by-reference relationship can be added to the current
-     *  content item.  This method is only applicable to Comprehensive SR documents.
+     *  content item.  This method is only applicable to Comprehensive SR and Mammography
+     *  CAD SR documents.
      ** @param  relationshipType  type of relationship between current and target node
      *  @param  valueType         value type of the referenced target node
      ** @return OFTrue if specified by-reference relationship can be added, OFFalse otherwise
@@ -292,7 +293,10 @@ class DSRDocumentTree
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.h,v $
- *  Revision 1.9  2001-09-26 13:04:07  meichel
+ *  Revision 1.10  2001-11-09 16:10:49  joergr
+ *  Added preliminary support for Mammography CAD SR.
+ *
+ *  Revision 1.9  2001/09/26 13:04:07  meichel
  *  Adapted dcmsr to class OFCondition
  *
  *  Revision 1.8  2001/04/03 08:24:01  joergr

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDocumentTreeNode
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 13:04:07 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-09 16:10:49 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -300,7 +300,7 @@ class DSRDocumentTreeNode
      *  @param  valueType         value type of node to be checked/added
      *  @param  byReference       optional flag indicating whether the node/relationship
      *                            should be added by-value (default) or by-reference
-     *                            (only for Comprehensive SR)
+     *                            (only for Comprehensive SR and Mammography CAD SR)
      ** @return OFTrue if specified node can be added, OFFalse otherwise
      */
     virtual OFBool canAddNode(const E_DocumentType documentType,
@@ -564,7 +564,10 @@ class DSRDocumentTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.h,v $
- *  Revision 1.11  2001-09-26 13:04:07  meichel
+ *  Revision 1.12  2001-11-09 16:10:49  joergr
+ *  Added preliminary support for Mammography CAD SR.
+ *
+ *  Revision 1.11  2001/09/26 13:04:07  meichel
  *  Adapted dcmsr to class OFCondition
  *
  *  Revision 1.10  2001/04/03 08:24:01  joergr

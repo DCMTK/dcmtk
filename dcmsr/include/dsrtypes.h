@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-10 15:28:04 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Update Date:      $Date: 2001-11-09 16:10:54 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,6 +40,7 @@
 #include "dctk.h"
 
 #include "oftypes.h"
+#include "ofcond.h"
 
 #ifdef HAVE_STRSTREA_H
 #include <strstrea.h>      /* for ostrstream */
@@ -220,11 +221,14 @@ class DSRTypes
     /// write all tags even if their value is empty
     static const size_t XF_writeEmptyTags;
 
-    /// encode value type as attribute instead of element text
-    static const size_t XF_valueTypeAsAttribute;
+    /// encode code value, coding scheme designator and coding scheme version as attribute instead of element text
+    static const size_t XF_codeComponentsAsAttribute;
 
     /// encode relationship type as attribute instead of element text
     static const size_t XF_relationshipTypeAsAttribute;
+
+    /// encode value type as attribute instead of element text
+    static const size_t XF_valueTypeAsAttribute;
 
     //@}
 
@@ -270,8 +274,10 @@ class DSRTypes
         DT_ComprehensiveSR,
         // DICOM SOP Class: Key Object Selection Document
         DT_KeyObjectDoc,
+        // DICOM SOP Class: Mammography CAD SR
+        DT_MammographyCadSR,
         /// internal type used to mark the last entry
-        DT_last = DT_KeyObjectDoc
+        DT_last = DT_MammographyCadSR
     };
 
     /** SR relationship types
@@ -665,15 +671,16 @@ class DSRTypes
   // --- misc helper functions ---
 
     /** check whether specified SR document type is supported by this library.
-     *  Currently all three SOP classes defined in the DICOM 2000 standard and
-     *  the Key Object Selection Document (Supplement 59) are supported.
+     *  Currently all three general SOP classes, the Key Object Selection Document and the
+     *  Mammography CAD SR class as defined in the DICOM 2001 standard are supported.
      ** @param  documentType  SR document type to be checked
      ** @return status, OFTrue if SR document type is supported, OFFalse otherwise
      */
     static OFBool isDocumentTypeSupported(const E_DocumentType documentType);
 
     /** check whether contraint checking is supported for the specified SR document type.
-     *  Currently only BasicTextSR, EnhancedSR and Comprehensive SR are supported.
+     *  Currently all three general SOP classes and the Key Object Selection Document
+     *  as defined in the DICOM 2001 standard are supported.
      ** @param  documentType  SR document type to be checked
      ** @return status, OFTrue if constraint checking is supported, OFFalse otherwise
      */
@@ -941,7 +948,7 @@ class DSRTypes
                                     const OFString &vm,
                                     const OFString &type,
                                     OFConsole *stream = NULL,
-                                    const OFCondition searchCond = EC_Normal,
+                                    const OFCondition &searchCond = EC_Normal,
                                     const char *moduleName = NULL);
 
     /** get element from dataset and check it for correct value multipicity and type.
@@ -1023,7 +1030,7 @@ class DSRTypes
      */
     static void printContentItemErrorMessage(OFConsole *stream,
                                              const char *action,
-                                             const OFCondition result,
+                                             const OFCondition &result,
                                              const DSRDocumentTreeNode *node);
 
     /** write string value to XML output stream.
@@ -1101,7 +1108,10 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
- *  Revision 1.21  2001-10-10 15:28:04  joergr
+ *  Revision 1.22  2001-11-09 16:10:54  joergr
+ *  Added preliminary support for Mammography CAD SR.
+ *
+ *  Revision 1.21  2001/10/10 15:28:04  joergr
  *  Changed parameter DcmTagKey to DcmTag in DcmItem::putAndInsert... methods
  *  to support elements which are not in the data dictionary (e.g. private
  *  extensions).
