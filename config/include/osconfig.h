@@ -20,7 +20,14 @@
 **
 */
 
-#ifdef __MWERKS__
+#ifdef HAVE_CONFIG_H
+/*
+** Some sort of Unix platform supported by the GNU Configure utility.
+** Just include the automatically generated <config.h> 
+*/
+#include <config.h>
+
+#elif __MWERKS__
 /*
 ** Metrowerks C++ compiler for 68k and PowerPC Apple Macintosh
 */
@@ -31,13 +38,6 @@
 ** Visual C++ in a Windows 32 bit environment (WindowsNT/95)
 */
 #include "cfwin32.h"
-
-#elif HAVE_CONFIG_H
-/*
-** Some sort of Unix platform supported by the GNU Configure utility.
-** Just include the automatically generated <config.h> 
-*/
-#include <config.h>
 
 #else
 /*
