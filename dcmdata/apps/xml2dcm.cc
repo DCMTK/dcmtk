@@ -22,8 +22,8 @@
  *  Purpose: Convert XML document to DICOM file or data set
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-20 18:06:43 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2004-03-22 16:55:11 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -442,9 +442,9 @@ static OFCondition validateXmlDocument(xmlDocPtr doc,
         COUT << "validating XML document ..." << endl;
     xmlGenericError(xmlGenericErrorContext, "--- libxml validating ---\n");
     /* create context for document validation */
-	xmlValidCtxt cvp;
-	if (debug)
-	{
+    xmlValidCtxt cvp;
+    if (debug)
+    {
         cvp.userData = OFstatic_cast(void *, stderr);
         cvp.error = OFreinterpret_cast(xmlValidityErrorFunc, fprintf);
         cvp.warning = OFreinterpret_cast(xmlValidityWarningFunc, fprintf);
@@ -454,10 +454,10 @@ static OFCondition validateXmlDocument(xmlDocPtr doc,
         cvp.warning = NULL;
     }
     /* validate the document */
-	const int valid = xmlValidateDocument(&cvp, doc);
+    const int valid = xmlValidateDocument(&cvp, doc);
     xmlGenericError(xmlGenericErrorContext, "-------------------------\n");
     if (!valid)
-	{
+    {
         CERR << "Error: document does not validate" << endl;
         result = EC_IllegalCall;
     }
@@ -827,7 +827,10 @@ int main(int, char *[])
 /*
  * CVS/RCS Log:
  * $Log: xml2dcm.cc,v $
- * Revision 1.7  2004-02-20 18:06:43  joergr
+ * Revision 1.8  2004-03-22 16:55:11  joergr
+ * Replaced tabs by spaces.
+ *
+ * Revision 1.7  2004/02/20 18:06:43  joergr
  * Avoid wrong warning for LUTData (0028,3006) having a VR of US or SS.
  *
  * Revision 1.6  2004/01/16 10:53:53  joergr
