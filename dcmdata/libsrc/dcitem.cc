@@ -22,9 +22,9 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-05-20 09:17:46 $
+ *  Update Date:      $Date: 2003-06-02 17:25:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.82 $
+ *  CVS/RCS Revision: $Revision: 1.83 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2161,7 +2161,9 @@ OFCondition DcmItem::findAndGetUint8Array(const DcmTagKey& tagKey,
     if (status.good())
     {
         /* get the value */
-        status = elem->getUint8Array((Uint8 *)value);
+        Uint8 *array = NULL;
+        status = elem->getUint8Array(array);
+        value = array;
     }
     /* set optional count parameter */
     if (count != NULL)
@@ -2170,7 +2172,7 @@ OFCondition DcmItem::findAndGetUint8Array(const DcmTagKey& tagKey,
             *count = elem->getLength() / sizeof(Uint8);
         else
             *count = 0;
-    }            
+    }
     /* reset value */
     if (status.bad())
         value = NULL;
@@ -2209,7 +2211,9 @@ OFCondition DcmItem::findAndGetUint16Array(const DcmTagKey& tagKey,
     if (status.good())
     {
         /* get the value */
-        status = elem->getUint16Array((Uint16 *)value);
+        Uint16 *array = NULL;
+        status = elem->getUint16Array(array);
+        value = array;
     }
     /* set optional count parameter */
     if (count != NULL)
@@ -2218,7 +2222,7 @@ OFCondition DcmItem::findAndGetUint16Array(const DcmTagKey& tagKey,
             *count = elem->getLength() / sizeof(Uint16);
         else
             *count = 0;
-    }            
+    }
     /* reset value */
     if (status.bad())
         value = NULL;
@@ -2257,7 +2261,9 @@ OFCondition DcmItem::findAndGetSint16Array(const DcmTagKey& tagKey,
     if (status.good())
     {
         /* get the value */
-        status = elem->getSint16Array((Sint16 *)value);
+        Sint16 *array = NULL;
+        status = elem->getSint16Array(array);
+        value = array;
     }
     /* set optional count parameter */
     if (count != NULL)
@@ -2266,7 +2272,7 @@ OFCondition DcmItem::findAndGetSint16Array(const DcmTagKey& tagKey,
             *count = elem->getLength() / sizeof(Sint16);
         else
             *count = 0;
-    }            
+    }
     /* reset value */
     if (status.bad())
         value = NULL;
@@ -2305,7 +2311,9 @@ OFCondition DcmItem::findAndGetUint32Array(const DcmTagKey& tagKey,
     if (status.good())
     {
         /* get the value */
-        status = elem->getUint32Array((Uint32 *)value);
+        Uint32 *array = NULL;
+        status = elem->getUint32Array(array);
+        value = array;
     }
     /* set optional count parameter */
     if (count != NULL)
@@ -2314,7 +2322,7 @@ OFCondition DcmItem::findAndGetUint32Array(const DcmTagKey& tagKey,
             *count = elem->getLength() / sizeof(Uint32);
         else
             *count = 0;
-    }            
+    }
     /* reset value */
     if (status.bad())
         value = NULL;
@@ -2353,7 +2361,9 @@ OFCondition DcmItem::findAndGetSint32Array(const DcmTagKey& tagKey,
     if (status.good())
     {
         /* get the value */
-        status = elem->getSint32Array((Sint32 *)value);
+        Sint32 *array = NULL;
+        status = elem->getSint32Array(array);
+        value = array;
     }
     /* set optional count parameter */
     if (count != NULL)
@@ -2362,7 +2372,7 @@ OFCondition DcmItem::findAndGetSint32Array(const DcmTagKey& tagKey,
             *count = elem->getLength() / sizeof(Sint32);
         else
             *count = 0;
-    }            
+    }
     /* reset value */
     if (status.bad())
         value = NULL;
@@ -2449,7 +2459,9 @@ OFCondition DcmItem::findAndGetFloat32Array(const DcmTagKey& tagKey,
     if (status.good())
     {
         /* get the value */
-        status = elem->getFloat32Array((Float32 *)value);
+        Float32 *array = NULL;
+        status = elem->getFloat32Array(array);
+        value = array;
     }
     /* set optional count parameter */
     if (count != NULL)
@@ -2458,7 +2470,7 @@ OFCondition DcmItem::findAndGetFloat32Array(const DcmTagKey& tagKey,
             *count = elem->getLength() / sizeof(Float32);
         else
             *count = 0;
-    }            
+    }
     /* reset value */
     if (status.bad())
         value = NULL;
@@ -2497,7 +2509,9 @@ OFCondition DcmItem::findAndGetFloat64Array(const DcmTagKey& tagKey,
     if (status.good())
     {
         /* get the value */
-        status = elem->getFloat64Array((Float64 *)value);
+        Float64 *array = NULL;
+        status = elem->getFloat64Array(array);
+        value = array;
     }
     /* set optional count parameter */
     if (count != NULL)
@@ -2506,7 +2520,7 @@ OFCondition DcmItem::findAndGetFloat64Array(const DcmTagKey& tagKey,
             *count = elem->getLength() / sizeof(Float64);
         else
             *count = 0;
-    }            
+    }
     /* reset value */
     if (status.bad())
         value = NULL;
@@ -2647,7 +2661,7 @@ OFCondition DcmItem::findOrCreateSequenceItem(const DcmTag& seqTag,
 
 // ********************************
 
-/* --- findAndDelete functions: find an element and remove it from the dataset --- */
+/* --- findAndXXX functions: find an element and do something with it --- */
 
 OFCondition DcmItem::findAndDeleteElement(const DcmTagKey &tagKey,
                                           const OFBool allOccurrences,
@@ -2656,8 +2670,9 @@ OFCondition DcmItem::findAndDeleteElement(const DcmTagKey &tagKey,
     OFCondition status = EC_TagNotFound;
     DcmStack stack;
     DcmObject *object = NULL;
+    OFBool intoSub = OFTrue;
     /* iterate over all elements */
-    while (nextObject(stack, searchIntoSub || allOccurrences).good())
+    while (nextObject(stack, intoSub).good())
     {
         /* get element */
         object = stack.top();
@@ -2671,7 +2686,27 @@ OFCondition DcmItem::findAndDeleteElement(const DcmTagKey &tagKey,
             if (!allOccurrences)
                 break;
         }
+        intoSub = searchIntoSub || allOccurrences;
     }
+    return status;
+}
+
+
+OFCondition DcmItem::findAndCopyElement(const DcmTagKey &tagKey,
+                                        DcmElement *&newElement,
+                                        const OFBool searchIntoSub)
+{
+    DcmElement *elem = NULL;
+    /* find the element */
+    OFCondition status = findAndGetElement(tagKey, elem, searchIntoSub);
+    if (status.good())
+    {
+        /* create copy of element */
+        newElement = (DcmElement *)copyDcmObject(elem);
+        if (newElement == NULL)
+            status = EC_MemoryExhausted;
+    } else
+        newElement = NULL;
     return status;
 }
 
@@ -2882,7 +2917,14 @@ OFCondition DcmItem::putAndInsertUint8Array(const DcmTag& tag,
             elem = new DcmOtherByteOtherWord(tag);
             break;
         case EVR_ox:
-            elem = new DcmPolymorphOBOW(tag);
+            /* special handling for Pixel Data */
+            if (tag == DCM_PixelData)
+            {
+                elem = new DcmPixelData(tag);
+                if (elem != NULL)
+                    elem->setVR(EVR_OB);
+            } else
+                elem = new DcmPolymorphOBOW(tag);
             break;
         default:
             status = EC_IllegalCall;
@@ -2924,7 +2966,11 @@ OFCondition DcmItem::putAndInsertUint16Array(const DcmTag& tag,
             elem = new DcmUnsignedShort(tag);
             break;
         case EVR_ox:
-            elem = new DcmPolymorphOBOW(tag);
+            /* special handling for Pixel Data */
+            if (tag == DCM_PixelData)
+                elem = new DcmPixelData(tag);
+            else
+                elem = new DcmPolymorphOBOW(tag);
             break;
         default:
             status = EC_IllegalCall;
@@ -3223,7 +3269,13 @@ OFBool DcmItem::containsUnknownVR() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.82  2003-05-20 09:17:46  joergr
+** Revision 1.83  2003-06-02 17:25:28  joergr
+** Added new helper function DcmItem::findAndCopyElement().
+** Fixed bug in findAndDelete() implementation.
+** Added explicit support for class DcmPixelData to putAndInsertUintXXArray().
+** Changed implementation of findAndGetXXXArray() to avoid problems with MSVC5.
+**
+** Revision 1.82  2003/05/20 09:17:46  joergr
 ** Added new helper methods: findAndGetElement(), findAndGetUint32Array(),
 ** findAndGetSint32Array(), findAndGetFloat64Array(), findAndDeleteElement().
 ** Enhanced findAndGetSequenceItem() and findOrCreateSequenceItem() by checking
