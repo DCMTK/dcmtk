@@ -22,8 +22,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-12 14:37:36 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2003-11-05 18:32:23 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -714,27 +714,28 @@ static OFCondition insertWithISCriterion(DcmDirectoryRecord *parent,
     /* check parameters first */
     if ((parent != NULL) && (child != NULL))
     {
+        OFBool found = OFFalse;
         Sint32 childNumber = 0;
         Sint32 parentNumber = 0;
         /* retrieve numeric value */
         result = child->findAndGetSint32(criterionKey, childNumber);
+        /* if available search for proper position */
         if (result.good())
         {
-            OFBool found = OFFalse;
             DcmDirectoryRecord *record = NULL;
             /* iterate over all records in the parent list */
             while (!found && ((record = parent->nextSub(record)) != NULL))
             {
-                /* check for correct position */
+                /* check for proper position */
                 if (record->findAndGetSint32(criterionKey, parentNumber).good() && (parentNumber > childNumber))
                     found = OFTrue;
             }
-            /* insert child record at determined position or append at the end of the list */
-            if (found)
-                result = parent->insertSubAtCurrentPos(child, OFTrue /*before*/);
-            else
-                result = parent->insertSub(child); /* append */
         }
+        /* insert child record at determined position */
+        if (found)
+            result = parent->insertSubAtCurrentPos(child, OFTrue /*before*/);
+        else /* or append at the end of the list */
+            result = parent->insertSub(child);
     }
     return result;
 }
@@ -4079,7 +4080,11 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
- *  Revision 1.1  2003-08-12 14:37:36  joergr
+ *  Revision 1.2  2003-11-05 18:32:23  joergr
+ *  Fixed bug that prevented the addition of DICOM files missing the "sort key"
+ *  (e.g. InstanceNumber).
+ *
+ *  Revision 1.1  2003/08/12 14:37:36  joergr
  *  Added new interface class for simplified creation of a DICOMDIR.
  *
  *
