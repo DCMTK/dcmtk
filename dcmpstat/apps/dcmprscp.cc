@@ -21,10 +21,10 @@
  *
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 14:01:26 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-06-14 10:44:17 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmprscp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -69,7 +69,6 @@ static OFBool           opt_binaryLog       = OFFalse;
 static const char *     opt_cfgName         = NULL;                /* config file name */
 static const char *     opt_printer         = NULL;                /* printer name */
 static ostream *        logstream           = &CERR;
-static OFConsole *      logconsole          = &ofConsole;
 
 /* print scp data, taken from configuration file */
 static unsigned short targetPort            = 104;
@@ -90,10 +89,10 @@ static int errorCond(OFCondition cond, const char *message)
 
 void closeLog()
 {
+  ofConsole.setCout();
+  ofConsole.split();
   if (logstream != &CERR)
   {
-    if (logconsole != &ofConsole) delete logconsole;
-    logconsole = &ofConsole;
     *logstream << endl << OFDateTime::getCurrentDateTime() << endl << "terminating" << endl;
     delete logstream;
     logstream = &CERR;
@@ -249,12 +248,8 @@ int main(int argc, char *argv[])
       if (newstream && (newstream->good()))
       {
         logstream=newstream; 
-        logconsole = new OFConsole();
-        if (logconsole)
-        {
-          logconsole->setCout(logstream);
-          logconsole->join();
-        } else logconsole = &ofConsole;
+        ofConsole.setCout(logstream);
+        ofConsole.join();
       }
       else
       {
@@ -265,7 +260,7 @@ int main(int argc, char *argv[])
 
     *logstream << rcsid << endl << OFDateTime::getCurrentDateTime() << endl << "started" << endl;
 
-    dvi.setLog(logconsole, opt_verbose, opt_debugMode);
+    dvi.setLog(&ofConsole, opt_verbose, opt_debugMode);
     
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
@@ -330,7 +325,7 @@ int main(int argc, char *argv[])
     {
       DVPSPrintSCP printSCP(dvi, opt_printer); // use new print SCP object for each association     
       
-      printSCP.setLog(logconsole, opt_verbose, opt_debugMode, opt_dumpMode);
+      printSCP.setLog(&ofConsole, opt_verbose, opt_debugMode, opt_dumpMode);
       
       if (opt_binaryLog)
       {
@@ -388,7 +383,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprscp.cc,v $
- * Revision 1.9  2002-04-16 14:01:26  joergr
+ * Revision 1.10  2002-06-14 10:44:17  meichel
+ * Adapted log file handling to ofConsole singleton
+ *
+ * Revision 1.9  2002/04/16 14:01:26  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
  * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
  * contribution.

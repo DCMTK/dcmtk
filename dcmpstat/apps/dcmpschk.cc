@@ -23,9 +23,9 @@
  *    VR and IOD checker for Presentation States
  *    
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-05-02 14:10:04 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-06-14 10:44:18 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -71,7 +71,6 @@ static const char *     opt_filename        = NULL;
 static int              opt_debugMode       = 0;
 
 static ostream *        logstream           = &COUT;
-static OFConsole *      logconsole          = &ofConsole;
 
 // ********************************************
 
@@ -1021,10 +1020,10 @@ int checkfile(const char *filename, OFBool verbose, ostream& out, OFConsole *out
 
 void closeLog()
 {
+  ofConsole.setCout();
+  ofConsole.split();
   if (logstream != &COUT)
   {
-    if (logconsole != &ofConsole) delete logconsole;
-    logconsole = &ofConsole;
     delete logstream;
     logstream = &COUT;
   }
@@ -1084,12 +1083,8 @@ int main(int argc, char *argv[])
       if (newstream && (newstream->good()))
       {
         logstream=newstream; 
-        logconsole = new OFConsole();
-        if (logconsole)
-        {
-          logconsole->setCout(logstream);
-          logconsole->join();
-        } else logconsole = &ofConsole;
+        ofConsole.setCout(logstream);
+        ofConsole.join();
       }
       else
       {
@@ -1101,7 +1096,7 @@ int main(int argc, char *argv[])
     for (int param=1; param <= paramCount; param++)
     {
       cmd.getParam(param, opt_filename);
-      checkfile(opt_filename, opt_verbose, *logstream, logconsole, ((opt_debugMode>0) ? OFTrue : OFFalse));
+      checkfile(opt_filename, opt_verbose, *logstream, &ofConsole, ((opt_debugMode>0) ? OFTrue : OFFalse));
     }
 
     closeLog();
@@ -1115,7 +1110,10 @@ int main(int argc, char *argv[])
 /*     
  * CVS/RCS Log:
  * $Log: dcmpschk.cc,v $
- * Revision 1.7  2002-05-02 14:10:04  joergr
+ * Revision 1.8  2002-06-14 10:44:18  meichel
+ * Adapted log file handling to ofConsole singleton
+ *
+ * Revision 1.7  2002/05/02 14:10:04  joergr
  * Added support for standard and non-standard string streams (which one is
  * supported is detected automatically via the configure mechanism).
  * Thanks again to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his

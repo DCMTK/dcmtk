@@ -21,10 +21,10 @@
  *
  *  Purpose: Presentation State Viewer - Print Spooler
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 14:01:26 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-06-14 10:44:17 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmprscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -106,7 +106,6 @@ static const char *     opt_spoolPrefix     = NULL;
 static OFCmdUnsignedInt opt_sleep           = (OFCmdUnsignedInt) 1;
 static OFCmdUnsignedInt opt_copies          = (OFCmdUnsignedInt) 0;
 static ostream *        logstream           = &CERR;
-static OFConsole *      logconsole          = &ofConsole;
 
 /* print target data, taken from configuration file */
 static const char *   targetHostname        = NULL;
@@ -233,7 +232,7 @@ static OFCondition spoolStoredPrintFile(const char *filename, DVInterface &dvi)
     if (opt_dumpMode) 
     {
       printHandler.setDumpStream(logstream);
-      printHandler.setLog(logconsole, opt_verbose, opt_debugMode);      
+      printHandler.setLog(&ofConsole, opt_verbose, opt_debugMode);      
     }
     result = printHandler.negotiateAssociation(dvi.getNetworkAETitle(),
       targetAETitle, targetHostname, targetPort, targetMaxPDU, 
@@ -617,10 +616,10 @@ static OFCondition updateJobList(
 
 void closeLog()
 {
+  ofConsole.setCout();
+  ofConsole.split();
   if (logstream != &CERR)
   {
-    if (logconsole != &ofConsole) delete logconsole;
-    logconsole = &ofConsole;
     *logstream << endl << OFDateTime::getCurrentDateTime() << endl << "terminating" << endl;
     delete logstream;
     logstream = &CERR;
@@ -800,12 +799,8 @@ int main(int argc, char *argv[])
       if (newstream && (newstream->good()))
       {
         logstream=newstream; 
-        logconsole = new OFConsole();
-        if (logconsole)
-        {
-          logconsole->setCout(logstream);
-          logconsole->join();
-        } else logconsole = &ofConsole;
+        ofConsole.setCout(logstream);
+        ofConsole.join();
       }
       else
       {
@@ -815,7 +810,7 @@ int main(int argc, char *argv[])
       *logstream << rcsid << endl << OFDateTime::getCurrentDateTime() << endl << "started" << endl;
     }
 
-    dvi.setLog(logconsole, opt_verbose, opt_debugMode);
+    dvi.setLog(&ofConsole, opt_verbose, opt_debugMode);
     
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
@@ -989,7 +984,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprscu.cc,v $
- * Revision 1.10  2002-04-16 14:01:26  joergr
+ * Revision 1.11  2002-06-14 10:44:17  meichel
+ * Adapted log file handling to ofConsole singleton
+ *
+ * Revision 1.10  2002/04/16 14:01:26  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
  * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
  * contribution.
