@@ -35,9 +35,9 @@
 **		Kuratorium OFFIS e.V., Oldenburg, Germany
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:48:27 $
+** Update Date:		$Date: 1997-08-05 07:46:31 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/tests/Attic/assctest.cc,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -236,8 +236,8 @@ main(int argc, char *argv[])
 
 #ifdef HAVE_WINSOCK_H
     WSAData winSockData;
-    /* we need at least version 1.0 */
-    WORD winSockVersionNeeded = MAKEWORD( 1, 0 );
+    /* we need at least version 1.1 */
+    WORD winSockVersionNeeded = MAKEWORD( 1, 1 );
     WSAStartup(winSockVersionNeeded, &winSockData);
 #endif
 
@@ -573,7 +573,11 @@ cecho(T_ASC_Association * assoc)
 /*
 ** CVS Log
 ** $Log: assctest.cc,v $
-** Revision 1.6  1997-07-21 08:48:27  andreas
+** Revision 1.7  1997-08-05 07:46:31  andreas
+** - Change needed version number of WINSOCK to 1.1
+**   to support WINDOWS 95
+**
+** Revision 1.6  1997/07/21 08:48:27  andreas
 ** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
 **   with one unique boolean type OFBool.
 **
