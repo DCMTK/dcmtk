@@ -22,9 +22,9 @@
  *  Purpose: DicomDisplayFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-22 08:54:10 $
+ *  Update Date:      $Date: 1999-03-24 17:22:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/didispfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,7 +55,7 @@ END_EXTERN_C
  *  constant initializations  *
  *----------------------------*/
 
-const int DiDisplayFunction::MinBits = 8;
+const int DiDisplayFunction::MinBits = 2;
 const int DiDisplayFunction::MaxBits = 16;
 const unsigned int DiDisplayFunction::GSDFCount = 1023;
 
@@ -537,7 +537,10 @@ double DiDisplayFunction::getJNDIndex(const double lum) const
  *
  * CVS/RCS Log:
  * $Log: didispfn.cc,v $
- * Revision 1.9  1999-03-22 08:54:10  joergr
+ * Revision 1.10  1999-03-24 17:22:38  joergr
+ * Added support for Barten transformation from 2 to 7 bits input (now: 2-16).
+ *
+ * Revision 1.9  1999/03/22 08:54:10  joergr
  * Added/Changed comments.
  *
  * Revision 1.7  1999/03/04 09:43:28  joergr
