@@ -12,10 +12,7 @@ SUMMARY
 
 The dsr2html utility renders the contents of a DICOM Structured Reporting
 (SR) document (file format or raw data set) to HTML (Hyper Text Markup
-Language).  The output should be compliant to HTML version 3.2 as long
-as no Cascading Style Sheets (CSS) and Specific Character Sets are used -
-then it conforms to HTML version 4.0.  The HTML output does not include
-any reference to a certain DTD (Document Type Definition).
+Language) which is compatible with version 3.2 or 4.0.
 
 If dsr2html reads a raw data set (dicom data without a file format
 meta-header) it will attempt to guess the transfer syntax by examining
@@ -48,6 +45,19 @@ input options:
     -tb  --read-xfer-big        read with explicit VR big endian TS
     -ti  --read-xfer-implicit   read with implicit VR little endian TS
 output options:
+  HTML compatibility:
+    +H3  --html-3.2             use only HTML version 3.2 compatible features
+    +H4  --html-4.0             allow all HTML version 4.0 features (default)
+    +Hd  --add-document-type    add reference to SGML document type definition
+  cascading style sheet (CSS), only with HTML 4.0:
+    +Sr  --css-reference        URL : string
+                                add reference to specified CSS to HTML page
+    +Sf  --css-file             filename : string
+                                embed content of specified CSS into HTML page
+  general rendering:
+    +Ri  --expand-inline        expand short content items inline (default)
+    -Ri  --never-expand-inline  never expand content items inline
+    +Rd  --render-full-data     render full data of content items
   document rendering:
     +Dt  --document-type-title  use document type as document title (default)
     +Dp  --patient-info-title   use patient information as document title
@@ -59,15 +69,6 @@ output options:
     +Cv  --code-value-unit      use code value as measurement unit (default)
     +Cm  --code-meaning-unit    use code meaning as measurement unit
     +Ca  --render-all-codes     render all codes (+Ci, +Cn, +Cu)
-  general rendering:
-    +Ri  --expand-inline        expand short content items inline (default)
-    -Ri  --never-expand-inline  never expand content items inline
-    +Rd  --render-full-data     render full data of content items
-  cascading style sheet (CSS):
-    +Sr  --css-reference        URL : string
-                                add reference to specified CSS to HTML page
-    +Sf  --css-file             filename : string
-                                embed content of specified CSS into HTML page
 
 
 DICOM CONFORMANCE
