@@ -10,7 +10,7 @@
  *
  * 
  * Last Update:	  $Author: andreas $
- * Revision:      $Revision: 1.4 $
+ * Revision:      $Revision: 1.5 $
  * Status:        $State: Exp $
  *
  */
@@ -76,9 +76,10 @@
 #include "dcvrsh.h"
 #include "dcvrst.h"
 
-// element class for byte and word streams
+// element class for byte and word value representations
 #include "dcvrobow.h"
-#include "dcpxitem.h"
+#include "dcpixel.h"
+#include "dcovlay.h"
 
 // element classes for binary value fields
 #include "dcvrat.h"
