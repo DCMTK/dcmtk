@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-10-30 17:58:58 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Update Date:      $Date: 2003-12-01 15:47:28 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -163,29 +163,23 @@ OFCondition DSRDocumentTreeNode::readXML(const DSRXMLDocument &doc,
                 /* goto first child of the "template" element */
                 cursor.gotoChild();
             }
-            /* get SR value type from current XML node (optional) */
+            /* get SR value type from current XML node, also supports "by-reference" detection */
             E_ValueType valueType = doc.getValueTypeFromNode(cursor);
             /* invalid types are silently ignored */
-            if ((valueType != VT_invalid) || doc.matchNode(cursor, "reference"))
+            if (valueType != VT_invalid)
             {
                 /* get SR relationship type */
                 E_RelationshipType relationshipType = doc.getRelationshipTypeFromNode(cursor);
-                if (valueType != VT_invalid)
+                /* create new node (by-value or by-reference), do not check constraints */
+                result = createAndAppendNewNode(node, relationshipType, valueType);
+                if (result.good())
                 {
-                    /* create new node (by-value), do not check constraints */
-                    result = createAndAppendNewNode(node, relationshipType, valueType);
-                    if (result.good())
+                    if (valueType != VT_byReference)
                     {
                         /* set template identification (if any) */
                         if (node->setTemplateIdentification(templateIdentifier, mappingResource).bad())
                             printWarningMessage(doc.getLogStream(), "Content item has invalid/incomplete template identification");
                     }
-                } else {
-                    /* create new node (by-reference), constraints are checked later */
-                    result = createAndAppendNewNode(node, relationshipType, VT_byReference);
-                }
-                if (result.good())
-                {
                     /* proceed with reading child nodes */
                     result = node->readXML(doc, cursor, documentType, flags);
                     /* print node error message (if any) */
@@ -195,10 +189,7 @@ OFCondition DSRDocumentTreeNode::readXML(const DSRXMLDocument &doc,
                     OFString message = "Cannot add \"";
                     message += relationshipTypeToReadableName(relationshipType);
                     message += " ";
-                    if (valueType != VT_invalid)
-                        message += valueTypeToDefinedTerm(valueType /*target item*/);
-                    else
-                        message += "(by-reference)";
+                    message += valueTypeToDefinedTerm(valueType /*target item*/);
                     message += "\" to ";
                     message += valueTypeToDefinedTerm(ValueType /*source item*/);
                     message += " in ";
@@ -278,8 +269,11 @@ void DSRDocumentTreeNode::writeXMLItemStart(ostream &stream,
     }
     /* write content item */
     if (flags & XF_valueTypeAsAttribute)
-        stream << "<item valType=\"" << valueTypeToDefinedTerm(ValueType) << "\"";
-    else
+    {
+        stream << "<item";
+        if (ValueType != VT_byReference)
+            stream << " valType=\"" << valueTypeToDefinedTerm(ValueType) << "\"";
+    } else
         stream << "<" << valueTypeToXMLTagName(ValueType);
     if ((RelationshipType != RT_isRoot) && (flags & XF_relationshipTypeAsAttribute))
         stream << " relType=\"" << relationshipTypeToDefinedTerm(RelationshipType) << "\"";
@@ -1039,7 +1033,11 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
- *  Revision 1.33  2003-10-30 17:58:58  joergr
+ *  Revision 1.34  2003-12-01 15:47:28  joergr
+ *  Changed XML encoding of by-reference relationships if flag
+ *  XF_valueTypeAsAttribute is set.
+ *
+ *  Revision 1.33  2003/10/30 17:58:58  joergr
  *  Added full support for the ContentTemplateSequence (read/write, get/set
  *  template identification). Template constraints are not checked yet.
  *  Fixed bug in setConceptName() that caused to return EC_IllegalParameter

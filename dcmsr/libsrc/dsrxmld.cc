@@ -23,8 +23,8 @@
  *    classes: DSRXMLDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 15:21:53 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2003-12-01 15:47:28 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -534,12 +534,17 @@ DSRTypes::E_ValueType DSRXMLDocument::getValueTypeFromNode(const DSRXMLCursor &c
     {
         if (xmlStrcmp(cursor.Node->name, OFreinterpret_cast(const xmlChar *, "item")) == 0)
         {
-            /* get the XML attribute value */
-            xmlChar *attrVal = xmlGetProp(cursor.Node, OFreinterpret_cast(const xmlChar *, "valType"));
-            /* try to convert attribute value to SR value type */
-            valueType = definedTermToValueType(OFreinterpret_cast(const char *, attrVal));
-            /* free allocated memory */
-            xmlFree(attrVal);
+            /* check for "ref_id" attribute */
+            if (xmlHasProp(cursor.Node, OFreinterpret_cast(const xmlChar *, "ref_id")))
+                valueType = DSRTypes::VT_byReference;
+            else {
+                /* get the XML attribute value */
+                xmlChar *attrVal = xmlGetProp(cursor.Node, OFreinterpret_cast(const xmlChar *, "valType"));
+                /* try to convert attribute value to SR value type */
+                valueType = definedTermToValueType(OFreinterpret_cast(const char *, attrVal));
+                /* free allocated memory */
+                xmlFree(attrVal);
+            }
         } else {
             /* try to convert tag name to SR value type */
             valueType = xmlTagNameToValueType(OFreinterpret_cast(const char *, cursor.Node->name));
@@ -620,7 +625,11 @@ void DSRXMLDocument::printGeneralNodeError(const DSRXMLCursor &cursor,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrxmld.cc,v $
- *  Revision 1.2  2003-08-07 15:21:53  joergr
+ *  Revision 1.3  2003-12-01 15:47:28  joergr
+ *  Changed XML encoding of by-reference relationships if flag
+ *  XF_valueTypeAsAttribute is set.
+ *
+ *  Revision 1.2  2003/08/07 15:21:53  joergr
  *  Added brackets around "bitwise and" operator/operands to avoid warnings
  *  reported by MSVC5.
  *

@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-10-30 17:51:43 $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  Update Date:      $Date: 2003-12-01 15:47:28 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -272,21 +272,22 @@ static const S_RelationshipTypeNameMap RelationshipTypeNameMap[] =
 
 static const S_ValueTypeNameMap ValueTypeNameMap[] =
 {
-    {DSRTypes::VT_invalid,   "",          "item",      "invalid/unknown value type"},
-    {DSRTypes::VT_Text,      "TEXT",      "text",      "Text"},
-    {DSRTypes::VT_Code,      "CODE",      "code",      "Code"},
-    {DSRTypes::VT_Num,       "NUM",       "num",       "Number"},
-    {DSRTypes::VT_DateTime,  "DATETIME",  "datetime",  "Date/Time"},
-    {DSRTypes::VT_Date,      "DATE",      "date",      "Date"},
-    {DSRTypes::VT_Time,      "TIME",      "time",      "Time"},
-    {DSRTypes::VT_UIDRef,    "UIDREF",    "uidref",    "UID Reference"},
-    {DSRTypes::VT_PName,     "PNAME",     "pname",     "Person Name"},
-    {DSRTypes::VT_SCoord,    "SCOORD",    "scoord",    "Spatial Coordinates"},
-    {DSRTypes::VT_TCoord,    "TCOORD",    "tcoord",    "Temporal Coordinates"},
-    {DSRTypes::VT_Composite, "COMPOSITE", "composite", "Composite Object"},
-    {DSRTypes::VT_Image,     "IMAGE",     "image",     "Image"},
-    {DSRTypes::VT_Waveform,  "WAVEFORM",  "waveform",  "Waveform"},
-    {DSRTypes::VT_Container, "CONTAINER", "container", "Container"}
+    {DSRTypes::VT_invalid,     "",               "item",      "invalid/unknown value type"},
+    {DSRTypes::VT_Text,        "TEXT",           "text",      "Text"},
+    {DSRTypes::VT_Code,        "CODE",           "code",      "Code"},
+    {DSRTypes::VT_Num,         "NUM",            "num",       "Number"},
+    {DSRTypes::VT_DateTime,    "DATETIME",       "datetime",  "Date/Time"},
+    {DSRTypes::VT_Date,        "DATE",           "date",      "Date"},
+    {DSRTypes::VT_Time,        "TIME",           "time",      "Time"},
+    {DSRTypes::VT_UIDRef,      "UIDREF",         "uidref",    "UID Reference"},
+    {DSRTypes::VT_PName,       "PNAME",          "pname",     "Person Name"},
+    {DSRTypes::VT_SCoord,      "SCOORD",         "scoord",    "Spatial Coordinates"},
+    {DSRTypes::VT_TCoord,      "TCOORD",         "tcoord",    "Temporal Coordinates"},
+    {DSRTypes::VT_Composite,   "COMPOSITE",      "composite", "Composite Object"},
+    {DSRTypes::VT_Image,       "IMAGE",          "image",     "Image"},
+    {DSRTypes::VT_Waveform,    "WAVEFORM",       "waveform",  "Waveform"},
+    {DSRTypes::VT_Container,   "CONTAINER",      "container", "Container"},
+    {DSRTypes::VT_byReference, "(by-reference)", "reference", "(by-reference)"}
 };
 
 
@@ -1451,7 +1452,11 @@ OFCondition DSRTypes::appendStream(ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
- *  Revision 1.37  2003-10-30 17:51:43  joergr
+ *  Revision 1.38  2003-12-01 15:47:28  joergr
+ *  Changed XML encoding of by-reference relationships if flag
+ *  XF_valueTypeAsAttribute is set.
+ *
+ *  Revision 1.37  2003/10/30 17:51:43  joergr
  *  Added new command line options which allow to print/write the template
  *  identification of a content item.
  *

@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-10-30 17:51:00 $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  Update Date:      $Date: 2003-12-01 15:46:18 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -399,10 +399,10 @@ class DSRTypes
         VT_Waveform,
         /// DICOM Value Type: CONTAINER
         VT_Container,
-        /// internal type used to mark the last entry
-        VT_last = VT_Container,
         /// internal type used to indicate by-reference relationships
-        VT_byReference
+        VT_byReference,
+        /// internal type used to mark the last entry
+        VT_last = VT_byReference
     };
 
     /** SR graphic types.  Used for content item SCOORD.
@@ -1194,7 +1194,11 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
- *  Revision 1.38  2003-10-30 17:51:00  joergr
+ *  Revision 1.39  2003-12-01 15:46:18  joergr
+ *  Changed XML encoding of by-reference relationships if flag
+ *  XF_valueTypeAsAttribute is set.
+ *
+ *  Revision 1.38  2003/10/30 17:51:00  joergr
  *  Added new command line options which allow to print/write the template
  *  identification of a content item.
  *

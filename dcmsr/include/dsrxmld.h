@@ -23,8 +23,8 @@
  *    classes: DSRXMLDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 17:31:00 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2003-12-01 15:46:18 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -245,8 +245,10 @@ class DSRXMLDocument
 
     /** get value type from particular node.
      *  The value type is either stored as the element name or in the attribute "valType".
+     *  Additionally, by-reference relationships are also supported (either by attribute
+     *  "ref_id" being present or element named "reference").
      ** @param  cursor  cursor pointing to the particular node
-     ** @return value type if successful, VT_invalid/unknown otherwise
+     ** @return value type (incl. by-reference) if successful, VT_invalid/unknown otherwise
      */
     E_ValueType getValueTypeFromNode(const DSRXMLCursor &cursor) const;
 
@@ -326,7 +328,11 @@ class DSRXMLDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrxmld.h,v $
- *  Revision 1.2  2003-08-07 17:31:00  joergr
+ *  Revision 1.3  2003-12-01 15:46:18  joergr
+ *  Changed XML encoding of by-reference relationships if flag
+ *  XF_valueTypeAsAttribute is set.
+ *
+ *  Revision 1.2  2003/08/07 17:31:00  joergr
  *  Removed libxml dependency from header files. Simplifies linking (MSVC).
  *
  *  Revision 1.1  2003/08/07 12:16:37  joergr

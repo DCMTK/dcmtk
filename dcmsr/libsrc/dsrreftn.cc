@@ -23,8 +23,8 @@
  *    classes: DSRByReferenceTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-10-30 17:59:37 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2003-12-01 15:47:28 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -92,12 +92,11 @@ OFCondition DSRByReferenceTreeNode::writeXML(ostream &stream,
                                              OFConsole *logStream) const
 {
     OFCondition result = EC_Normal;
-    stream << "<reference";
-    if (flags & XF_relationshipTypeAsAttribute)
-        stream << " relType=\"" << relationshipTypeToDefinedTerm(getRelationshipType()) << "\"";
+    writeXMLItemStart(stream, flags, OFFalse /*closingBracket*/);
     stream << " ref_id=\"" << ReferencedNodeID << "\">" << endl;
+    /* basically, there should be no child content items but ... */
     result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
-    stream << "</reference>" << endl;
+    writeXMLItemEnd(stream, flags);
     return result;
 }
 
@@ -219,7 +218,11 @@ OFCondition DSRByReferenceTreeNode::setTemplateIdentification(const OFString & /
 /*
  *  CVS/RCS Log:
  *  $Log: dsrreftn.cc,v $
- *  Revision 1.12  2003-10-30 17:59:37  joergr
+ *  Revision 1.13  2003-12-01 15:47:28  joergr
+ *  Changed XML encoding of by-reference relationships if flag
+ *  XF_valueTypeAsAttribute is set.
+ *
+ *  Revision 1.12  2003/10/30 17:59:37  joergr
  *  Added full support for the ContentTemplateSequence (read/write, get/set
  *  template identification). Template constraints are not checked yet.
  *
