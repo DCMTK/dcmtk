@@ -23,9 +23,9 @@
  *    sample application that reads a DICOM image and creates 
  *    a matching presentation state.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:28:42 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-06-02 12:49:51 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,6 +56,7 @@ END_EXTERN_C
 #include "dctk.h"
 #include "dcdebug.h"
 #include "dvpstat.h"
+#include "dvpshlp.h"
 #include "cmdlnarg.h"
 #include "ofconapp.h"
 #include "dcuid.h"    /* for dcmtk version name */
@@ -115,7 +116,7 @@ int main(int argc, char *argv[])
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
     cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
     
-    cmd.addParam("dcmfile-in",  "DICOM image file to be read");
+    cmd.addParam("dcmfile-in",  "DICOM image file(s) to be read", OFCmdParam::PM_MultiMandatory);
     cmd.addParam("dcmfile-out", "DICOM presentation state file to be created");
     
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
@@ -174,7 +175,7 @@ int main(int argc, char *argv[])
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
     {
       cmd.getParam(1, opt_ifname);
-      cmd.getParam(2, opt_ofname);
+      cmd.getParam(cmd.getParamCount(), opt_ofname);
 
       if (cmd.findOption("--verbose")) verbosemode=OFTrue;
       if (cmd.findOption("--debug")) opt_debugMode=3;
@@ -357,6 +358,32 @@ int main(int argc, char *argv[])
         return 1;
     }
     
+    /* add additional image references to pstate */
+    if (cmd.getParamCount() > 2)
+    {
+        if (verbosemode)
+            COUT << "adding additonal image reference(s)" << endl;
+        const int count = cmd.getParamCount();
+        for (int i = 2; i < count; i++)
+        {
+            const char *fn = NULL;
+            if (cmd.getParam(i, fn) == OFCommandLine::PVS_Normal)
+            {
+                DcmFileFormat *ff = NULL;
+                if (DVPSHelper::loadFileFormat(fn, ff) == EC_Normal)
+                {
+                    if (ff)
+                    {
+                        DcmDataset *dset = ff->getDataset();
+                        if (dset)
+                            state.addImageReference(*dset);
+                    }
+                }
+                delete ff;
+            }
+        }
+    }
+    
     DcmDataset *dataset2 = new DcmDataset();
     error = state.write(*dataset2);
     if (error != EC_Normal) 
@@ -446,7 +473,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmpsmk.cc,v $
-** Revision 1.9  2000-03-08 16:28:42  meichel
+** Revision 1.10  2000-06-02 12:49:51  joergr
+** Added support for multiple image references.
+**
+** Revision 1.9  2000/03/08 16:28:42  meichel
 ** Updated copyright header.
 **
 ** Revision 1.8  2000/03/06 18:21:46  joergr
