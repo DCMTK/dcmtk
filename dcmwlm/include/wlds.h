@@ -22,9 +22,9 @@
  *  Purpose: (Partially) abstract class for connecting to an arbitrary data source.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2003-12-11 10:45:33 $
+ *  Update Date:      $Date: 2003-12-23 13:04:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wlds.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -126,19 +126,22 @@ class WlmDataSource
 
       /** This function checks if the given element refers to an attribute which is a supported
        *  matching key attribute. If this is the case OFTrue is returned, else OFFalse.
-       *  Currently, the following attributes are supported matching key attributes:
-       *  - DCM_ScheduledProcedureStepSequence         (0040,0100)  SQ  R  1
-       *     > DCM_ScheduledStationAETitle             (0040,0001)  AE  R  1
-       *     > DCM_ScheduledProcedureStepStartDate     (0040,0002)  DA  R  1
-       *     > DCM_ScheduledProcedureStepStartTime     (0040,0003)  TM  R  1
-       *     > DCM_Modality                            (0008,0060)  CS  R  1
-       *     > DCM_ScheduledPerformingPhysiciansName   (0040,0006)  PN  R  2
-       *  - DCM_PatientsName                           (0010,0010)  PN  R  1
-       *  - DCM_PatientID                              (0010,0020)  LO  R  1
-       *  The list of these attributes completely covers the required matching key attributes
-       *  which are specified in the 2001 DICOM standard, part 4, Table K.6-1, i.e. all matching
-       *  key attributes which (according to the 2001 DICOM standard) have to be supported by an
-       *  SCP are supported by this SCP.
+       *  Currently, the following attributes are supported as matching keys:
+       *    DCM_ScheduledProcedureStepSequence                    (0040,0100)  SQ  R  1
+       *     > DCM_ScheduledStationAETitle                        (0040,0001)  AE  R  1
+       *     > DCM_ScheduledProcedureStepStartDate                (0040,0002)  DA  R  1
+       *     > DCM_ScheduledProcedureStepStartTime                (0040,0003)  TM  R  1
+       *     > DCM_Modality                                       (0008,0060)  CS  R  1
+       *     > DCM_ScheduledPerformingPhysiciansName              (0040,0006)  PN  R  2
+       *    DCM_PatientsName                                      (0010,0010)  PN  R  1
+       *    DCM_PatientID                                         (0010,0020)  LO  R  1
+       *    DCM_AccessionNumber                                   (0008,0050)  SH  O  2
+       *    DCM_RequestedProcedureID                              (0040,1001)  SH  O  1
+       *    DCM_ReferringPhysiciansName                           (0008,0090)  PN  O  2
+       *    DCM_PatientsSex                                       (0010,0040)  CS  O  2
+       *    DCM_RequestingPhysician                               (0032,1032)  PN  O  2
+       *    DCM_AdmissionID                                       (0038,0010)  LO  O  2
+       *    DCM_RequestedProcedurePriority                        (0040,1003)  SH  O  2
        *  @param element            Pointer to the element which shall be checked.
        *  @param supSequenceElement Pointer to the superordinate sequence element of which
        *                            the currently processed element is an attribute, or NULL if
@@ -149,9 +152,9 @@ class WlmDataSource
 
       /** This function checks if the given element refers to an attribute which is a supported
        *  return key attribute. If this is the case OFTrue is returned, else OFFalse.
-       *  Currently, the following required return key attributes are supported:
-       *  - DCM_SpecificCharacterSet                              (0008,0005)  CS  O  1
-       *  - DCM_ScheduledProcedureStepSequence                    (0040,0100)  SQ  R  1
+       *  Currently, the following attributes are supported as return keys:
+       *    DCM_SpecificCharacterSet                              (0008,0005)  CS  O  1
+       *    DCM_ScheduledProcedureStepSequence                    (0040,0100)  SQ  R  1
        *     > DCM_ScheduledStationAETitle                        (0040,0001)  AE  R  1
        *     > DCM_ScheduledProcedureStepStartDate                (0040,0002)  DA  R  1
        *     > DCM_ScheduledProcedureStepStartTime                (0040,0003)  TM  R  1
@@ -163,48 +166,43 @@ class WlmDataSource
        *     > DCM_PreMedication                                  (0040,0012)  LO  O  2
        *     > DCM_ScheduledProcedureStepID                       (0040,0009)  SH  O  1
        *     > DCM_RequestedContrastAgent                         (0032,1070)  LO  O  2
-       *  - DCM_RequestedProcedureID                              (0040,1001)  SH  O  1
-       *  - DCM_RequestedProcedureDescription                     (0032,1060)  LO  O  1
-       *  - DCM_StudyInstanceUID                                  (0020,000d)  UI  O  1
-       *  - DCM_ReferencedStudySequence                           (0008,1110)  SQ  O  2
+       *     > DCM_CommentsOnTheScheduledProcedureStep            (0040,0400)  LT  O  3  (from the Scheduled Procedure Step Module)
+       *    DCM_RequestedProcedureID                              (0040,1001)  SH  O  1
+       *    DCM_RequestedProcedureDescription                     (0032,1060)  LO  O  1
+       *    DCM_StudyInstanceUID                                  (0020,000d)  UI  O  1
+       *    DCM_ReferencedStudySequence                           (0008,1110)  SQ  O  2
        *     > DCM_ReferencedSOPClassUID                          (0008,1150)  UI  O  1  Note that the standard specifies this attribute as 1. unfortunately, this implementation only supports this attribute as 2. Also note that currently there are two ReferencedSOPClassUID attributes in two different sequences. For these two attributes, always the same values will be returned by this SCP.
        *     > DCM_ReferencedSOPInstanceUID                       (0008,1155)  UI  O  1  Note that the standard specifies this attribute as 1. unfortunately, this implementation only supports this attribute as 2. Also note that currently there are two ReferencedSOPClassUID attributes in two different sequences. For these two attributes, always the same values will be returned by this SCP.
-       *  - DCM_RequestedProcedurePriority                        (0040,1003)  SH  O  2
-       *  - DCM_PatientTransportArrangements                      (0040,1004)  LO  O  2
-       *  - DCM_AccessionNumber                                   (0008,0050)  SH  O  2
-       *  - DCM_RequestingPhysician                               (0032,1032)  PN  O  2
-       *  - DCM_ReferringPhysiciansName                           (0008,0090)  PN  O  2
-       *  - DCM_AdmissionID                                       (0038,0010)  LO  O  2
-       *  - DCM_CurrentPatientLocation                            (0038,0300)  LO  O  2
-       *  - DCM_ReferencedPatientSequence                         (0008,1120)  SQ  O  2
+       *    DCM_RequestedProcedurePriority                        (0040,1003)  SH  O  2
+       *    DCM_PatientTransportArrangements                      (0040,1004)  LO  O  2
+       *    DCM_AccessionNumber                                   (0008,0050)  SH  O  2
+       *    DCM_RequestingPhysician                               (0032,1032)  PN  O  2
+       *    DCM_ReferringPhysiciansName                           (0008,0090)  PN  O  2
+       *    DCM_AdmissionID                                       (0038,0010)  LO  O  2
+       *    DCM_CurrentPatientLocation                            (0038,0300)  LO  O  2
+       *    DCM_ReferencedPatientSequence                         (0008,1120)  SQ  O  2
        *     > DCM_ReferencedSOPClassUID                          (0008,1150)  UI  O  2  Note that currently there are two ReferencedSOPClassUID attributes in two different sequences. For these two attributes, always the same values will be returned by this SCP.
        *     > DCM_ReferencedSOPInstanceUID                       (0008,1155)  UI  O  2  Note that currently there are two ReferencedSOPClassUID attributes in two different sequences. For these two attributes, always the same values will be returned by this SCP.
-       *  - DCM_PatientsName                                      (0010,0010)  PN  R  1
-       *  - DCM_PatientID                                         (0010,0020)  LO  R  1
-       *  - DCM_PatientsBirthDate                                 (0010,0030)  DA  O  2
-       *  - DCM_PatientsSex                                       (0010,0040)  CS  O  2
-       *  - DCM_PatientsWeight                                    (0010,1030)  DS  O  2
-       *  - DCM_ConfidentialityConstraintOnPatientDataDescription (0040,3001)  LO  O  2
-       *  - DCM_PatientState                                      (0038,0500)  LO  O  2
-       *  - DCM_PregnancyStatus                                   (0010,21c0)  US  O  2
-       *  - DCM_MedicalAlerts                                     (0010,2000)  LO  O  2
-       *  - DCM_ContrastAllergies                                 (0010,2110)  LO  O  2
-       *  - DCM_SpecialNeeds                                      (0038,0050)  LO  O  2
-       *  The list of these attributes completely covers the required return key attributes which are
-       *  specified in the 2001 DICOM standard, part 4, Table K.6-1, i.e. all return key attributes
-       *  which (according to the 2001 DICOM standard) have to be supported by an SCP are supported by
-       *  this SCP. Additionally, the following optional return key attributes are supported by this SCP:
-       *  - DCM_NamesOfIntendedRecipientsOfResults (from the Requested Procedure Module)    (0040,1010)  PN  O  3
-       *  - DCM_InstitutionName                    (from the Visit Identification Module)   (0008,0080)  LO  O  3
-       *  - DCM_AdmittingDiagnosesDescription      (from the Visit Admission Module)        (0008,1080)  LO  O  3
-       *  - DCM_OtherPatientIDs                    (from the Patient Identification Module) (0010,1000)  LO  O  3
-       *  - DCM_PatientsSize                       (from the Patient Demographic Module)    (0010,1020)  DS  O  3
-       *  - DCM_EthnicGroup                        (from the Patient Demographic Module)    (0010,2160)  SH  O  3
-       *  - DCM_PatientComments                    (from the Patient Demographic Module)    (0010,4000)  LT  O  3
-       *  - DCM_AdditionalPatientHistory           (from the Patient Medical Module)        (0010,21b0)  LT  O  3
-       *  - DCM_LastMenstrualDate                  (from the Patient Medical Module)        (0010,21d0)  DA  O  3
-       *  - DCM_ScheduledProcedureStepSequence
-       *     > DCM_CommentsOnTheScheduledProcedureStep (from the Scheduled Procedure Step Module)  (0040,0400)  LT  O  3
+       *    DCM_PatientsName                                      (0010,0010)  PN  R  1
+       *    DCM_PatientID                                         (0010,0020)  LO  R  1
+       *    DCM_PatientsBirthDate                                 (0010,0030)  DA  O  2
+       *    DCM_PatientsSex                                       (0010,0040)  CS  O  2
+       *    DCM_PatientsWeight                                    (0010,1030)  DS  O  2
+       *    DCM_ConfidentialityConstraintOnPatientDataDescription (0040,3001)  LO  O  2
+       *    DCM_PatientState                                      (0038,0500)  LO  O  2
+       *    DCM_PregnancyStatus                                   (0010,21c0)  US  O  2
+       *    DCM_MedicalAlerts                                     (0010,2000)  LO  O  2
+       *    DCM_ContrastAllergies                                 (0010,2110)  LO  O  2
+       *    DCM_SpecialNeeds                                      (0038,0050)  LO  O  2
+       *    DCM_NamesOfIntendedRecipientsOfResults                (0040,1010)  PN  O  3  (from the Requested Procedure Module)
+       *    DCM_InstitutionName                                   (0008,0080)  LO  O  3  (from the Visit Identification Module)
+       *    DCM_AdmittingDiagnosesDescription                     (0008,1080)  LO  O  3  (from the Visit Admission Module)
+       *    DCM_OtherPatientIDs                                   (0010,1000)  LO  O  3  (from the Patient Identification Module)
+       *    DCM_PatientsSize                                      (0010,1020)  DS  O  3  (from the Patient Demographic Module)
+       *    DCM_EthnicGroup                                       (0010,2160)  SH  O  3  (from the Patient Demographic Module)
+       *    DCM_PatientComments                                   (0010,4000)  LT  O  3  (from the Patient Demographic Module)
+       *    DCM_AdditionalPatientHistory                          (0010,21b0)  LT  O  3  (from the Patient Medical Module)
+       *    DCM_LastMenstrualDate                                 (0010,21d0)  DA  O  3  (from the Patient Medical Module)
        *  @param element            Pointer to the element which shall be checked.
        *  @param supSequenceElement Pointer to the superordinate sequence element of which
        *                            the currently processed element is an attribute, or NULL if
@@ -492,7 +490,10 @@ class WlmDataSource
 /*
 ** CVS Log
 ** $Log: wlds.h,v $
-** Revision 1.14  2003-12-11 10:45:33  wilkens
+** Revision 1.15  2003-12-23 13:04:36  wilkens
+** Integrated new matching key attributes into wlmscpfs.
+**
+** Revision 1.14  2003/12/11 10:45:33  wilkens
 ** Added function to Worklist Management Data Source Base Class. This function
 ** is needed in the private part of this toolkit.
 **

@@ -22,9 +22,9 @@
 *  Purpose: Class for managing file system interaction.
 *
 *  Last Update:      $Author: wilkens $
-*  Update Date:      $Date: 2003-07-02 09:17:55 $
+*  Update Date:      $Date: 2003-12-23 13:04:36 $
 *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wlfsim.h,v $
-*  CVS/RCS Revision: $Revision: 1.5 $
+*  CVS/RCS Revision: $Revision: 1.6 $
 *  Status:           $State: Exp $
 *
 *  CVS/RCS Log at end of file
@@ -160,6 +160,62 @@ class WlmFileSystemInteractionManager
        */
     OFBool PatientIdsMatch( const char *datasetValue, const char *searchMaskValue );
 
+      /** This function returns OFTrue if the dataset's and the search mask's values in
+       *  attribute accession number match; otherwise OFFalse will be returned.
+       *  @param datasetValue    Value for the corresponding attribute in the dataset; might be NULL.
+       *  @param searchMaskValue Value for the corresponding attribute in the search mask; never NULL.
+       *  @return OFTrue if the values match, OFFalse otherwise.
+       */
+    OFBool AccessionNumbersMatch( const char *datasetValue, const char *searchMaskValue );
+
+      /** This function returns OFTrue if the dataset's and the search mask's values in
+       *  attribute requested procedure id match; otherwise OFFalse will be returned.
+       *  @param datasetValue    Value for the corresponding attribute in the dataset; might be NULL.
+       *  @param searchMaskValue Value for the corresponding attribute in the search mask; never NULL.
+       *  @return OFTrue if the values match, OFFalse otherwise.
+       */
+    OFBool RequestedProcedureIdsMatch( const char *datasetValue, const char *searchMaskValue );
+
+      /** This function returns OFTrue if the dataset's and the search mask's values in
+       *  attribute referring physician's name match; otherwise OFFalse will be returned.
+       *  @param datasetValue    Value for the corresponding attribute in the dataset; might be NULL.
+       *  @param searchMaskValue Value for the corresponding attribute in the search mask; never NULL.
+       *  @return OFTrue if the values match, OFFalse otherwise.
+       */
+    OFBool ReferringPhysiciansNamesMatch( const char *datasetValue, const char *searchMaskValue );
+
+      /** This function returns OFTrue if the dataset's and the search mask's values in
+       *  attribute patient sex match; otherwise OFFalse will be returned.
+       *  @param datasetValue    Value for the corresponding attribute in the dataset; might be NULL.
+       *  @param searchMaskValue Value for the corresponding attribute in the search mask; never NULL.
+       *  @return OFTrue if the values match, OFFalse otherwise.
+       */
+    OFBool PatientsSexesMatch( const char *datasetValue, const char *searchMaskValue );
+
+      /** This function returns OFTrue if the dataset's and the search mask's values in
+       *  attribute requesting physician match; otherwise OFFalse will be returned.
+       *  @param datasetValue    Value for the corresponding attribute in the dataset; might be NULL.
+       *  @param searchMaskValue Value for the corresponding attribute in the search mask; never NULL.
+       *  @return OFTrue if the values match, OFFalse otherwise.
+       */
+    OFBool RequestingPhysiciansMatch( const char *datasetValue, const char *searchMaskValue );
+
+      /** This function returns OFTrue if the dataset's and the search mask's values in
+       *  attribute admission id match; otherwise OFFalse will be returned.
+       *  @param datasetValue    Value for the corresponding attribute in the dataset; might be NULL.
+       *  @param searchMaskValue Value for the corresponding attribute in the search mask; never NULL.
+       *  @return OFTrue if the values match, OFFalse otherwise.
+       */
+    OFBool AdmissionIdsMatch( const char *datasetValue, const char *searchMaskValue );
+
+      /** This function returns OFTrue if the dataset's and the search mask's values in
+       *  attribute requested procedure priorities match; otherwise OFFalse will be returned.
+       *  @param datasetValue    Value for the corresponding attribute in the dataset; might be NULL.
+       *  @param searchMaskValue Value for the corresponding attribute in the search mask; never NULL.
+       *  @return OFTrue if the values match, OFFalse otherwise.
+       */
+    OFBool RequestedProcedurePrioritiesMatch( const char *datasetValue, const char *searchMaskValue );
+
       /** This function performs a date time range match and returns OFTrue if the dataset's
        *  and the search mask's values in the corresponding attributes match; otherwise OFFalse
        *  will be returned.
@@ -212,7 +268,7 @@ class WlmFileSystemInteractionManager
       /** This function performs a time single value match and returns OFTrue if the dataset's
        *  and the search mask's values in the corresponding attributes match; otherwise OFFalse
        *  will be returned.
-       *  @param datasetTimeValue    Value for the corresponding attribute in the dataset; never NULL.
+       *  @param datasetTimeValue    Value for the corresponding attribute in the dataset; might be NULL.
        *  @param searchMaskTimeValue Value for the corresponding attribute in the search mask; never NULL.
        *  @return OFTrue if the values match, OFFalse otherwise.
        */
@@ -329,7 +385,10 @@ class WlmFileSystemInteractionManager
 /*
 ** CVS Log
 ** $Log: wlfsim.h,v $
-** Revision 1.5  2003-07-02 09:17:55  wilkens
+** Revision 1.6  2003-12-23 13:04:36  wilkens
+** Integrated new matching key attributes into wlmscpfs.
+**
+** Revision 1.5  2003/07/02 09:17:55  wilkens
 ** Updated documentation to get rid of doxygen warnings.
 **
 ** Revision 1.4  2002/12/16 11:08:35  wilkens

@@ -22,9 +22,9 @@
  *  Purpose: Type definitions and macros for dcmwlm project.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2003-07-02 09:17:55 $
+ *  Update Date:      $Date: 2003-12-23 13:04:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wltypdef.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -135,7 +135,7 @@ const OFCondition WLM_EC_DatabaseStatementConfigFilesNotExistent   ( WLM_ECC_Dat
 const OFCondition WLM_EC_CannotConnectToDataSource                 ( WLM_ECC_CannotConnectToDataSource );
 
   /// number of currently supported matching key attributes
-#define NUMBER_OF_SUPPORTED_MATCHING_KEY_ATTRIBUTES 7
+#define NUMBER_OF_SUPPORTED_MATCHING_KEY_ATTRIBUTES 14
 
 
 #endif
@@ -143,7 +143,10 @@ const OFCondition WLM_EC_CannotConnectToDataSource                 ( WLM_ECC_Can
 /*
 ** CVS Log
 ** $Log: wltypdef.h,v $
-** Revision 1.7  2003-07-02 09:17:55  wilkens
+** Revision 1.8  2003-12-23 13:04:36  wilkens
+** Integrated new matching key attributes into wlmscpfs.
+**
+** Revision 1.7  2003/07/02 09:17:55  wilkens
 ** Updated documentation to get rid of doxygen warnings.
 **
 ** Revision 1.6  2002/12/16 11:08:36  wilkens
