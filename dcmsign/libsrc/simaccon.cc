@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: SiMACConstructor
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-27 17:21:01 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2002-12-16 12:57:51 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -198,13 +198,17 @@ OFCondition SiMACConstructor::encodeDataset(
 
 #else /* WITH_OPENSSL */
 
-const int simaccon_cc_dummy_to_keep_linker_from_moaning = 0;
+int simaccon_cc_dummy_to_keep_linker_from_moaning = 0;
 
 #endif
 
 /*
  *  $Log: simaccon.cc,v $
- *  Revision 1.6  2002-08-27 17:21:01  meichel
+ *  Revision 1.7  2002-12-16 12:57:51  meichel
+ *  Minor modification to shut up linker on MacOS X when compiling
+ *    without OpenSSL support
+ *
+ *  Revision 1.6  2002/08/27 17:21:01  meichel
  *  Initial release of new DICOM I/O stream classes that add support for stream
  *    compression (deflated little endian explicit VR transfer syntax)
  *

@@ -21,10 +21,10 @@
  *
  *  Purpose: Implements TIFF interface for plugable image formats
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-09-19 08:34:07 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-12-16 12:58:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dipitiff.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -202,7 +202,7 @@ OFString DiTIFFPlugin::getLibraryVersionString()
 
 #else /* WITH_LIBTIFF */
 
-const int dipitiff_cc_dummy_to_keep_linker_from_moaning = 0;
+int dipitiff_cc_dummy_to_keep_linker_from_moaning = 0;
 
 #endif
 
@@ -210,7 +210,11 @@ const int dipitiff_cc_dummy_to_keep_linker_from_moaning = 0;
  *
  * CVS/RCS Log:
  * $Log: dipitiff.cc,v $
- * Revision 1.4  2002-09-19 08:34:07  joergr
+ * Revision 1.5  2002-12-16 12:58:21  meichel
+ * Minor modification to shut up linker on MacOS X when compiling
+ *   without OpenSSL support
+ *
+ * Revision 1.4  2002/09/19 08:34:07  joergr
  * Added static method getLibraryVersionString().
  *
  * Revision 1.3  2002/08/29 16:00:56  meichel

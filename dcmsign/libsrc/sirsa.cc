@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: SiRSA
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 14:30:26 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2002-12-16 12:57:53 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -131,13 +131,17 @@ E_KeyType SiRSA::keyType() const
 
 #else /* WITH_OPENSSL */
 
-const int sirsa_cc_dummy_to_keep_linker_from_moaning = 0;
+int sirsa_cc_dummy_to_keep_linker_from_moaning = 0;
 
 #endif
 
 /*
  *  $Log: sirsa.cc,v $
- *  Revision 1.4  2001-09-26 14:30:26  meichel
+ *  Revision 1.5  2002-12-16 12:57:53  meichel
+ *  Minor modification to shut up linker on MacOS X when compiling
+ *    without OpenSSL support
+ *
+ *  Revision 1.4  2001/09/26 14:30:26  meichel
  *  Adapted dcmsign to class OFCondition
  *
  *  Revision 1.3  2001/06/01 15:50:55  meichel

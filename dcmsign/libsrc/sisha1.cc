@@ -23,8 +23,8 @@
  *    classes: SiSHA1
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 14:53:42 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2002-12-16 12:57:53 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -95,13 +95,17 @@ const char *SiSHA1::getDefinedTerm() const
 
 #else /* WITH_OPENSSL */
 
-const int sisha1_cc_dummy_to_keep_linker_from_moaning = 0;
+int sisha1_cc_dummy_to_keep_linker_from_moaning = 0;
 
 #endif
 
 /*
  *  $Log: sisha1.cc,v $
- *  Revision 1.4  2002-11-27 14:53:42  meichel
+ *  Revision 1.5  2002-12-16 12:57:53  meichel
+ *  Minor modification to shut up linker on MacOS X when compiling
+ *    without OpenSSL support
+ *
+ *  Revision 1.4  2002/11/27 14:53:42  meichel
  *  Adapted module dcmsign to use of new header file ofstdinc.h
  *
  *  Revision 1.3  2001/09/26 14:30:26  meichel

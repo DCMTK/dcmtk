@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: SiAuthorizationProfile
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-16 15:50:52 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2002-12-16 12:57:49 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -85,13 +85,17 @@ OFBool SiAuthorizationProfile::attributeRequired(const DcmTagKey& key) const
 
 #else /* WITH_OPENSSL */
 
-const int siautopr_cc_dummy_to_keep_linker_from_moaning = 0;
+int siautopr_cc_dummy_to_keep_linker_from_moaning = 0;
 
 #endif
 
 /*
  *  $Log: siautopr.cc,v $
- *  Revision 1.4  2001-11-16 15:50:52  meichel
+ *  Revision 1.5  2002-12-16 12:57:49  meichel
+ *  Minor modification to shut up linker on MacOS X when compiling
+ *    without OpenSSL support
+ *
+ *  Revision 1.4  2001/11/16 15:50:52  meichel
  *  Adapted digital signature code to final text of supplement 41.
  *
  *  Revision 1.3  2001/06/01 15:50:52  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    consts, typedefs and enums for dcmsign
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 14:30:27 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2002-12-16 12:57:54 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -74,13 +74,17 @@ const OFCondition SI_EC_VerificationFailed_NoTrust(                 SI_ECC_Verif
 
 #else /* WITH_OPENSSL */
 
-const int sitypes_cc_dummy_to_keep_linker_from_moaning = 0;
+int sitypes_cc_dummy_to_keep_linker_from_moaning = 0;
 
 #endif
 
 /*
  *  $Log: sitypes.cc,v $
- *  Revision 1.4  2001-09-26 14:30:27  meichel
+ *  Revision 1.5  2002-12-16 12:57:54  meichel
+ *  Minor modification to shut up linker on MacOS X when compiling
+ *    without OpenSSL support
+ *
+ *  Revision 1.4  2001/09/26 14:30:27  meichel
  *  Adapted dcmsign to class OFCondition
  *
  *  Revision 1.3  2001/06/01 15:50:56  meichel
