@@ -14,7 +14,7 @@ all:
 	echo Nothing to do for all
 
 install: 
-	mkinstalldirs $(includedir)
+	./mkinstalldirs $(includedir)
 	$(INSTALL_DATA) include/osconfig.h include/config.h $(includedir)
 
 clean:
