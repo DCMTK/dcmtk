@@ -1,0 +1,30 @@
+#
+#	Makefile for dcmwlm/include
+#
+
+
+@SET_MAKE@
+
+SHELL = /bin/sh
+srcdir= @srcdir@
+top_srcdir= @top_srcdir@
+configdir= @top_srcdir@/@configdir@
+
+include $(configdir)/@common_makefile@
+
+
+all: 
+	echo Nothing to do for all
+
+install: 
+	$(configdir)/mkinstalldirs $(includedir)/dcmwlm
+	for file in *.h ; do $(INSTALL_DATA) $$file $(includedir)/dcmwlm ; done
+
+clean:
+	rm -f $(TRASH)
+
+distclean:
+	rm -f $(DISTTRASH)
+
+dependencies:
+	echo Nothing to do for dependencies
