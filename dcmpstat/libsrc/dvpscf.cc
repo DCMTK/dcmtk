@@ -21,9 +21,9 @@
  *
  *  Purpose: DVConfiguration
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-06-20 12:20:27 $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-06-26 17:21:10 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -655,7 +655,7 @@ double DVConfiguration::getMonitorPixelWidth()
       } else success = OFFalse;
     }
 
-    if (success);
+    if (success)
     {
       s = screensize;
       sX = OFStandard::atof(s.c_str(), &success);
@@ -699,7 +699,7 @@ double DVConfiguration::getMonitorPixelHeight()
       } else success = OFFalse;
     }
 
-    if (success);
+    if (success)
     {
       s = screensize;
       sX = OFStandard::atof(s.c_str(), &success);
@@ -1480,7 +1480,11 @@ const char *DVConfiguration::getUserCodeMeaning(const char *userID, OFString& va
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.cc,v $
- *  Revision 1.37  2002-06-20 12:20:27  meichel
+ *  Revision 1.38  2002-06-26 17:21:10  joergr
+ *  Removed superfluous semicolon at very awkward positions (this is a bug
+ *  fix!).
+ *
+ *  Revision 1.37  2002/06/20 12:20:27  meichel
  *  Changed toolkit to use OFStandard::atof instead of atof, strtod or
  *    sscanf for all string to double conversions that are supposed to
  *    be locale independent
