@@ -1,0 +1,94 @@
+NAME
+
+    dsr2html
+
+
+SYNOPSIS
+
+    dsr2html: Render DICOM SR file and data set to HTML
+
+
+SUMMARY
+
+The dsr2html utility renders the contents of a DICOM Structured Reporting
+(SR) document (file format or raw data set) to HTML (Hyper Text Markup
+Language).  The output should be compliant to HTML version 3.2 as long
+as no Cascading Style Sheets (CSS) and Specific Character Sets are used -
+then it conforms to HTML version 4.0.  The HTML output does not include
+any reference to a certain DTD (Document Type Definition).
+
+If dsr2html reads a raw data set (dicom data without a file format
+meta-header) it will attempt to guess the transfer syntax by examining
+the first few bytes of the file.  It is not always possible to correctly
+guess the transfer syntax and it is better to convert a data set to
+a file format whenever possible (using the dcmconv utility).  It is
+also possible to use the -f and -t[ieb] options to force dsr2html to read
+a dataset with a particular transfer syntax.
+
+
+USAGE
+
+dsr2html: Render DICOM SR file and data set to HTML
+usage: dsr2html [options] dsrfile-in [htmlfile-out]
+
+parameters:
+  dsrfile-in                    DICOM SR input filename to be rendered
+  htmlfile-out                  HTML output filename (default: stdout)
+
+general options:
+  -h     --help                 print this help text and exit
+  -d     --debug                debug mode, print debug information
+input options:
+  input file format:
+    +f   --read-file            read file format or data set (default)
+    -f   --read-dataset         read data set without file meta information
+  input transfer syntax (only with --read-dataset):
+    -t=  --read-xfer-auto       use TS recognition (default)
+    -te  --read-xfer-little     read with explicit VR little endian TS
+    -tb  --read-xfer-big        read with explicit VR big endian TS
+    -ti  --read-xfer-implicit   read with implicit VR little endian TS
+output options:
+  document rendering:
+    +Dt  --document-type-title  use document type as document title (default)
+    +Dp  --patient-info-title   use patient information as document title
+    -Dh  --no-document-header   do not render general document information
+  code rendering:
+    +Ci  --render-inline-codes  render codes in continuous text blocks
+    +Cn  --concept-name-codes   render code of concept names
+    +Cu  --numeric-unit-codes   render code of numeric measurement units
+    +Cv  --code-value-unit      use code value as measurement unit (default)
+    +Cm  --code-meaning-unit    use code meaning as measurement unit
+    +Ca  --render-all-codes     render all codes (+Ci, +Cn, +Cu)
+  general rendering:
+    +Ri  --expand-inline        expand short content items inline (default)
+    -Ri  --never-expand-inline  never expand content items inline
+    +Rd  --render-full-data     render full data of content items
+  cascading style sheet (CSS):
+    +Sr  --css-reference        URL : string
+                                add reference to specified CSS to HTML page
+    +Sf  --css-file             filename : string
+                                embed content of specified CSS into HTML page
+
+
+DICOM CONFORMANCE
+
+The dsr2html application supports the following SOP Classes (according to
+DICOM Supplement 23 Final Text - Structured Reporting Storage SOP Classes):
+
+    BasicTextSR            "1.2.840.10008.5.1.4.1.1.88.11"
+    EnhancedSR             "1.2.840.10008.5.1.4.1.1.88.22" 
+    ComprehensiveSR        "1.2.840.10008.5.1.4.1.1.88.33" 
+
+
+ENVIRONMENT
+
+The dsr2html utility will attempt to load DICOM data dictionaries
+specified in the DCMDICTPATH environment variable.  By default, if
+the DCMDICTPATH environment variable is not set, the file
+/usr/local/dicom/lib/dicom.dic will be loaded.  The default behaviour
+should be preferred and the DCMDICTPATH environment variable only used
+when alternative data dictionaries are required.  The DCMDICTPATH
+environment variable has the same format as the shell PATH variable in
+that a colon (":") separates entries.  The data dictionary code will
+attempt to load each file specified in the DCMDICTPATH environment
+variable.  It is an error if no data dictionary can be loaded.
