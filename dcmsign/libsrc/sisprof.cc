@@ -23,8 +23,8 @@
  *    classes: SiSecurityProfile
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-16 15:50:54 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2001-11-19 15:22:58 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -75,7 +75,7 @@ OFCondition SiSecurityProfile::updateAttributeList(DcmItem &item, DcmAttributeTa
   {
     elem = item.getElement(i);
     const DcmTagKey& key = elem->getTag();
-    if (key.isSignable())
+    if (key.isSignableTag())
     {
       if ((attributeRequired(key))||((containsTag(tagList, key))&&(! attributeForbidden(key))))
       {
@@ -115,7 +115,7 @@ OFBool SiSecurityProfile::checkAttributeList(DcmItem &item, DcmAttributeTag& tag
   {
     elem = item.getElement(i);
     const DcmTagKey& key = elem->getTag();
-    if (key.isSignable())
+    if (key.isSignableTag())
     {
       if (containsTag(tagList, key))
       {
@@ -151,7 +151,10 @@ const int sisprof_cc_dummy_to_keep_linker_from_moaning = 0;
 
 /*
  *  $Log: sisprof.cc,v $
- *  Revision 1.4  2001-11-16 15:50:54  meichel
+ *  Revision 1.5  2001-11-19 15:22:58  meichel
+ *  Cleaned up signature code to avoid some gcc warnings.
+ *
+ *  Revision 1.4  2001/11/16 15:50:54  meichel
  *  Adapted digital signature code to final text of supplement 41.
  *
  *  Revision 1.3  2001/09/26 14:30:26  meichel

@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmSequenceOfItems
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-16 15:54:39 $
+ *  Update Date:      $Date: 2001-11-19 15:23:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcsequen.h,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -175,7 +175,7 @@ private:
    * @param oxfer output transfer syntax
    * @return EC_Normal if successful, an error code otherwise
    */
-  static OFCondition DcmSequenceOfItems::writeTagAndVR(
+  static OFCondition writeTagAndVR(
     DcmStream & outStream, 
     const DcmTag & tag,
     DcmEVR vr,
@@ -190,7 +190,10 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.h,v $
-** Revision 1.24  2001-11-16 15:54:39  meichel
+** Revision 1.25  2001-11-19 15:23:10  meichel
+** Cleaned up signature code to avoid some gcc warnings.
+**
+** Revision 1.24  2001/11/16 15:54:39  meichel
 ** Adapted digital signature code to final text of supplement 41.
 **
 ** Revision 1.23  2001/09/25 17:19:28  meichel

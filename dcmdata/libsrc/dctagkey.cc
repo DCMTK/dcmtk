@@ -22,9 +22,9 @@
  *  Purpose: Basis class for dicom tags.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-02 13:18:52 $
+ *  Update Date:      $Date: 2001-11-19 15:23:29 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dctagkey.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,7 +53,7 @@ OFString DcmTagKey::toString() const
 }
 
 
-OFBool DcmTagKey::isSignable() const
+OFBool DcmTagKey::isSignableTag() const
 {
   //no group length tags (element number of 0000)
   if (element == 0) return OFFalse;
@@ -93,7 +93,10 @@ ostream& operator<<(ostream& s, const DcmTagKey& k)
 /*
 ** CVS/RCS Log:
 ** $Log: dctagkey.cc,v $
-** Revision 1.8  2001-11-02 13:18:52  meichel
+** Revision 1.9  2001-11-19 15:23:29  meichel
+** Cleaned up signature code to avoid some gcc warnings.
+**
+** Revision 1.8  2001/11/02 13:18:52  meichel
 ** Removed character sequences that could be interpreted as ISO C++ trigraphs
 **
 ** Revision 1.7  2001/06/01 15:49:11  meichel

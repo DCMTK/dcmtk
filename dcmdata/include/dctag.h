@@ -22,9 +22,9 @@
  *  Purpose: Definition of the class DcmTag
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-16 15:54:40 $
+ *  Update Date:      $Date: 2001-11-19 15:23:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dctag.h,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -85,11 +85,11 @@ public:
      *  can be digitally signed, false otherwise
      *  @return true if signable, false otherwise
      */
-    virtual OFBool isSignable() const;
+    OFBool isSignable() const;
 
     /** returns true if the VR used for writing is "UN"
      */
-    virtual OFBool isUnknownVR() const;
+    OFBool isUnknownVR() const;
 
 };
 
@@ -106,7 +106,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dctag.h,v $
-** Revision 1.15  2001-11-16 15:54:40  meichel
+** Revision 1.16  2001-11-19 15:23:10  meichel
+** Cleaned up signature code to avoid some gcc warnings.
+**
+** Revision 1.15  2001/11/16 15:54:40  meichel
 ** Adapted digital signature code to final text of supplement 41.
 **
 ** Revision 1.14  2001/09/25 17:19:29  meichel
