@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2002, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -24,8 +24,8 @@
  *    a matching presentation state.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 15:47:53 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2003-09-05 09:27:05 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,7 +46,7 @@
 
 #include "dctk.h"
 #include "dcdebug.h"
-#include "dvpstat.h"
+#include "dcmpstat.h"
 #include "dvpshlp.h"
 #include "cmdlnarg.h"
 #include "ofconapp.h"
@@ -318,7 +318,7 @@ int main(int argc, char *argv[])
     DcmDataset *dataset = fileformat.getDataset();
 
     /* create presentation state */
-    DVPresentationState state;
+    DcmPresentationState state;
     if (verbosemode)
     {
         COUT << "creating presentation state object" << endl;
@@ -419,7 +419,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmpsmk.cc,v $
-** Revision 1.17  2002-11-27 15:47:53  meichel
+** Revision 1.18  2003-09-05 09:27:05  meichel
+** Modified code to use class DcmPresentationState instead of DVPresentationState.
+**
+** Revision 1.17  2002/11/27 15:47:53  meichel
 ** Adapted module dcmpstat to use of new header file ofstdinc.h
 **
 ** Revision 1.16  2002/11/26 08:44:27  meichel

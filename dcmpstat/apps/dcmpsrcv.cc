@@ -21,10 +21,10 @@
  *
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-09-04 10:10:59 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-09-05 09:27:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsrcv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,7 +60,7 @@ END_EXTERN_C
 #include "dvpsmsg.h"     /* for class DVPSIPCClient */
 #include "dcmlayer.h"
 #include "dcfilefo.h"
-#include "dvpstat.h"
+#include "dcmpstat.h"
 
 #ifdef WITH_OPENSSL
 #include "tlstrans.h"
@@ -396,7 +396,7 @@ checkRequestAgainstDataset(
     else if (strcmp(sopClass, UID_GrayscaleSoftcopyPresentationStateStorage) == 0)
     {
       /* we have received a presentation state. Check if we can parse it! */
-      DVPresentationState pstate;
+      DcmPresentationState pstate;
       if (EC_Normal != pstate.read(*dataSet))
       {
         CERR << "Grayscale softcopy presentation state object cannot be displayed - rejected." << endl;
@@ -1491,7 +1491,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsrcv.cc,v $
- * Revision 1.43  2003-09-04 10:10:59  joergr
+ * Revision 1.44  2003-09-05 09:27:05  meichel
+ * Modified code to use class DcmPresentationState instead of DVPresentationState.
+ *
+ * Revision 1.43  2003/09/04 10:10:59  joergr
  * Converted variable opt_verbose from int into OFBool to fix warnings reported
  * by MSVC6.
  *

@@ -65,6 +65,8 @@ LIBDIRS = -L$(top_srcdir)/libsrc $(dcmpstatlibdir) $(imagectnlibdir) $(dcmnetlib
 LOCALLIBS = $(dcmpstatlib) $(dcmsignlib) $(dcmimglelib) $(dcmsrlib) $(imagectnlib) $(dcmnetlib) \
   $(dcmdatalib) $(ofstdlib) $(XMLLIBS) $(ZLIBLIBS) $(TCPWRAPPERLIBS) $(OPENSSLLIBS)
 DCMPSCHK_LIBS = $(dcmpstatlib) $(dcmdatalib) $(ofstdlib) $(XMLLIBS) $(ZLIBLIBS)
+DCMPSMK_LIBS = $(dcmpstatlib) $(dcmdatalib) $(ofstdlib) $(XMLLIBS) $(ZLIBLIBS)
+DCMPSRCV_LIBS = $(dcmpstatlib) $(dcmtlslib) $(dcmnetlib) $(imagectnlib) $(dcmdatalib) $(ofstdlib) $(XMLLIBS) $(ZLIBLIBS) $(TCPWRAPPERLIBS) $(OPENSSLLIBS)
 
 objs= dcmpsmk.o dcmp2pgm.o dcmmklut.o dcmmkcrv.o dcmpssnd.o dcmpsrcv.o \
       dcmpsprt.o dcmprscu.o dcmprscp.o vrscan.o dcmpschk.o
@@ -74,7 +76,7 @@ progs= dcmpsmk dcmp2pgm dcmmklut dcmmkcrv dcmpssnd dcmpsrcv dcmpsprt dcmprscu dc
 all: $(progs)
 
 dcmpsmk: dcmpsmk.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmpsmk.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmpsmk.o $(DCMPSMK_LIBS) $(MATHLIBS) $(LIBS)
 
 dcmp2pgm: dcmp2pgm.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmp2pgm.o  $(LOCALLIBS) $(MATHLIBS) $(LIBS)
@@ -89,7 +91,7 @@ dcmpssnd: dcmpssnd.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmpssnd.o  $(dcmtlslib) $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 dcmpsrcv: dcmpsrcv.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmpsrcv.o  $(dcmtlslib) $(LOCALLIBS) $(MATHLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmpsrcv.o $(DCMPSRCV_LIBS) $(MATHLIBS) $(LIBS)
 
 dcmpsprt: dcmpsprt.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmpsprt.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
