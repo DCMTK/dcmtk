@@ -436,6 +436,9 @@
 /* Define if your system has a prototype for getsockopt */
 #undef HAVE_PROTOTYPE_GETSOCKOPT
 
+/* Define if your system has a prototype for gettimeofday */
+#undef HAVE_PROTOTYPE_GETTIMEOFDAY
+
 /* Define if your system has a prototype for getsockname */
 #undef HAVE_PROTOTYPE_GETSOCKNAME
 
