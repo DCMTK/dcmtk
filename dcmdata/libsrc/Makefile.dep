@@ -508,8 +508,8 @@ dcvrst.o: dcvrst.cc ../include/dcvrst.h \
  ../include/dcstream.h ../include/dctag.h ../include/dctagkey.h \
  ../include/dcdicent.h ../include/dclist.h ../include/dcstack.h \
  ../include/dcdebug.h
-dcvrtm.o: dcvrtm.cc ../include/dcvrtm.h \
- ../../config/include/osconfig.h ../include/dctypes.h \
+dcvrtm.o: dcvrtm.cc ../../config/include/osconfig.h \
+ ../include/dcvrtm.h ../include/dctypes.h \
  ../../ofstd/include/oftypes.h ../include/dcbytstr.h \
  ../../ofstd/include/ofconsol.h ../../ofstd/include/ofthread.h \
  ../include/dcerror.h ../../ofstd/include/ofcond.h \
