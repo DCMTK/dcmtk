@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmItem
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-08-02 15:06:33 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-08-27 16:55:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.76 $
+ *  CVS/RCS Revision: $Revision: 1.77 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,6 +32,7 @@
  */
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcitem.h"
 
 #ifdef HAVE_STDLIB_H
 #ifndef  _BCB4
@@ -44,20 +45,50 @@ END_EXTERN_C
 #endif
 #endif
 
+BEGIN_EXTERN_C
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
+END_EXTERN_C
 
+#include "dcdebug.h"
+#include "dcdefine.h"    /* for memzero() */
+#include "dcdeftag.h"    /* for name constants */
+#include "dcistrma.h"    /* for class DcmInputStream */
+#include "dcobject.h"
+#include "dcostrma.h"    /* for class DcmOutputStream */
+#include "dcovlay.h"
+#include "dcpixel.h"
+#include "dcsequen.h"
+#include "dcswap.h"
+#include "dcvr.h"
+#include "dcvrae.h"
+#include "dcvras.h"
+#include "dcvrat.h"
+#include "dcvrcs.h"
+#include "dcvrda.h"
+#include "dcvrds.h"
+#include "dcvrdt.h"
+#include "dcvrfd.h"
+#include "dcvrfl.h"
+#include "dcvris.h"
+#include "dcvrlo.h"
+#include "dcvrlt.h"
+#include "dcvrobow.h"
+#include "dcvrpn.h"
+#include "dcvrsh.h"
+#include "dcvrsl.h"
+#include "dcvrss.h"
+#include "dcvrst.h"
+#include "dcvrtm.h"
+#include "dcvrui.h"
+#include "dcvrul.h"
+#include "dcvrulup.h"
+#include "dcvrus.h"
+#include "dcvrut.h"
+#include "dcxfer.h"
 #include "ofstream.h"
 #include "ofstring.h"
-#include "dctk.h"
-#include "dcitem.h"
-#include "dcobject.h"
-#include "dcvr.h"
-#include "dcxfer.h"
-#include "dcdebug.h"
-
-
 
 // ********************************
 
@@ -168,7 +199,7 @@ OFBool DcmItem::foundVR( char* atposition )
 // ********************************
 
 
-E_TransferSyntax DcmItem::checkTransferSyntax(DcmStream & inStream)
+E_TransferSyntax DcmItem::checkTransferSyntax(DcmInputStream & inStream)
     /*
      * This function reads the first 6 bytes from the input stream and determines the transfer syntax
      * which was used to code the information in the stream. The decision is based on two questions:
@@ -186,9 +217,9 @@ E_TransferSyntax DcmItem::checkTransferSyntax(DcmStream & inStream)
     char tagAndVR[6];
 
     /* read 6 bytes from the input stream (try to read tag and VR (data type)) */
-    inStream.SetPutbackMark();
-    inStream.ReadBytes(tagAndVR, 6);               // check Tag & VR
-    inStream.Putback();
+    inStream.mark();
+    inStream.read(tagAndVR, 6);               // check Tag & VR
+    inStream.putback();
 
     /* create two tag variables (one for little, one for big */
     /* endian) in order to figure out, if there is a valid tag */
@@ -811,7 +842,7 @@ OFCondition DcmItem::computeGroupLengthAndPadding
 // ********************************
 
 
-OFCondition DcmItem::readTagAndLength(DcmStream & inStream,
+OFCondition DcmItem::readTagAndLength(DcmInputStream & inStream,
                                       const E_TransferSyntax xfer,
                                       DcmTag &tag,
                                       Uint32 & length,
@@ -845,11 +876,16 @@ OFCondition DcmItem::readTagAndLength(DcmStream & inStream,
     /* dump some information if required */
     debug(4, ("DcmItem::readTagAndLength() read transfer syntax %s", xferSyn.getXferName()));
 
+    /* bail out if at end of stream */
+    if (inStream.eos()) return EC_EndOfStream;
+
     /* check if either 4 (for implicit transfer syntaxes) or 6 (for explicit transfer */
     /* syntaxes) bytes are available in (i.e. can be read from) inStream. if an error */
     /* occured while performing this check return this error */
-    if ((l_error = inStream.Avail(xferSyn.isExplicitVR() ? 6:4)) != EC_Normal)
-        return l_error;
+    if (inStream.avail() < (xferSyn.isExplicitVR() ? 6u:4u))
+    {
+      return EC_StreamNotifyClient;
+    }
 
     /* determine the byte ordering of the transfer syntax which was passed; */
     /* if the byte ordering is unknown, this is an illegal call. */
@@ -858,9 +894,9 @@ OFCondition DcmItem::readTagAndLength(DcmStream & inStream,
         return EC_IllegalCall;
 
     /* read tag information (4 bytes) from inStream and create a corresponding DcmTag object */
-    inStream.SetPutbackMark();
-    inStream.ReadBytes(&groupTag, 2);
-    inStream.ReadBytes(&elementTag, 2);
+    inStream.mark();
+    inStream.read(&groupTag, 2);
+    inStream.read(&elementTag, 2);
     swapIfNecessary(gLocalByteOrder, byteOrder, &groupTag, 2, 2);
     swapIfNecessary(gLocalByteOrder, byteOrder, &elementTag, 2, 2);
     // tag has been read
@@ -877,7 +913,7 @@ OFCondition DcmItem::readTagAndLength(DcmStream & inStream,
         vrstr[2] = '\0';
 
         /* read 2 bytes */
-        inStream.ReadBytes(vrstr, 2);
+        inStream.read(vrstr, 2);
 
         /* create a corresponding DcmVR object */
         DcmVR vr(vrstr);
@@ -923,12 +959,12 @@ OFCondition DcmItem::readTagAndLength(DcmStream & inStream,
 
     /* the next thing we want to do is read the value in the length field from inStream. */
     /* determine if there is a corresponging amount of bytes (for the length field) still */
-    /* abvailable in inStream. if not, return an error. */
-    if ((l_error = inStream.Avail(xferSyn.sizeofTagHeader(nxtobj)-bytesRead))
-        != EC_Normal)
+    /* available in inStream. if not, return an error. */
+    if (inStream.avail() < xferSyn.sizeofTagHeader(nxtobj)-bytesRead)
     {
-        inStream.Putback();    // the UnsetPutbackMark is in readSubElement
+        inStream.putback();    // the UnsetPutbackMark is in readSubElement
         bytesRead = 0;
+        l_error = EC_StreamNotifyClient;
         return l_error;
     }
 
@@ -938,7 +974,7 @@ OFCondition DcmItem::readTagAndLength(DcmStream & inStream,
     if (xferSyn.isImplicitVR() ||
         nxtobj == EVR_na)   //note that delimitation items don't have a VR
     {
-        inStream.ReadBytes(&valueLength, 4);            //length field is 4 bytes wide
+        inStream.read(&valueLength, 4);            //length field is 4 bytes wide
         swapIfNecessary(gLocalByteOrder, byteOrder, &valueLength, 4, 4);
         bytesRead += 4;
     }
@@ -948,8 +984,8 @@ OFCondition DcmItem::readTagAndLength(DcmStream & inStream,
         if (vr.usesExtendedLengthEncoding())
         {
             Uint16 reserved;
-            inStream.ReadBytes(&reserved, 2);           // 2 reserved bytes
-            inStream.ReadBytes(&valueLength, 4);        // length field is 4 bytes wide
+            inStream.read(&reserved, 2);           // 2 reserved bytes
+            inStream.read(&valueLength, 4);        // length field is 4 bytes wide
             swapIfNecessary(gLocalByteOrder, byteOrder,
                                     &valueLength, 4, 4);
             bytesRead += 6;
@@ -957,7 +993,7 @@ OFCondition DcmItem::readTagAndLength(DcmStream & inStream,
         else
         {
             Uint16 tmpValueLength;
-            inStream.ReadBytes(&tmpValueLength, 2);     // length field is 2 bytes wide
+            inStream.read(&tmpValueLength, 2);     // length field is 2 bytes wide
             swapIfNecessary(gLocalByteOrder, byteOrder, &tmpValueLength, 2, 2);
             bytesRead += 2;
             valueLength = tmpValueLength;
@@ -983,7 +1019,7 @@ OFCondition DcmItem::readTagAndLength(DcmStream & inStream,
 // ********************************
 
 
-OFCondition DcmItem::readSubElement(DcmStream & inStream,
+OFCondition DcmItem::readSubElement(DcmInputStream & inStream,
                                     DcmTag & newTag,
                                     const Uint32 newLength,
                                     const E_TransferSyntax xfer,
@@ -1012,10 +1048,11 @@ OFCondition DcmItem::readSubElement(DcmStream & inStream,
 
     /* if no error occured and subElem does not equal NULL, go ahead */
     if ( l_error == EC_Normal && subElem != (DcmElement*)NULL )
-    {
+    {        
+        // inStream.UnsetPutbackMark(); // not needed anymore with new stream architecture
+
         /* insert the new element into the (sorted) element list and */
         /* assign information which was read from the instream to it */
-        inStream.UnsetPutbackMark();
 
         subElem->transferInit();
 
@@ -1046,20 +1083,19 @@ OFCondition DcmItem::readSubElement(DcmStream & inStream,
         /* This is the second Putback operation on the putback mark in */
         /* readTagAndLength but it is impossible that both can be executed */
         /* without setting the Mark twice. */
-        inStream.Putback();
+        inStream.putback();
         ofConsole.lockCerr() << "Warning: DcmItem: parse error occurred: " <<  newTag << endl;
         ofConsole.unlockCerr();
     }
     else if ( l_error != EC_ItemEnd )
     {
-        // Very important: Unset the putback mark
-        inStream.UnsetPutbackMark();
+        // inStream.UnsetPutbackMark(); // not needed anymore with new stream architecture
         ofConsole.lockCerr() << "Error: DcmItem: cannot create SubElement: " <<  newTag << endl;
         ofConsole.unlockCerr();
     }
     else
     {
-        inStream.UnsetPutbackMark();
+        // inStream.UnsetPutbackMark(); // not needed anymore with new stream architecture
     }
 
     /* return result value */
@@ -1070,7 +1106,7 @@ OFCondition DcmItem::readSubElement(DcmStream & inStream,
 // ********************************
 
 
-OFCondition DcmItem::read(DcmStream & inStream,
+OFCondition DcmItem::read(DcmInputStream & inStream,
                           const E_TransferSyntax xfer,
                           const E_GrpLenEncoding glenc,
                           const Uint32 maxReadLength)
@@ -1094,11 +1130,11 @@ OFCondition DcmItem::read(DcmStream & inStream,
     else
     {
         /* figure out if the stream reported an error */
-        errorFlag = inStream.GetError();
+        errorFlag = inStream.status();
 
         /* if the stream reported an error or if it is the end of the */
         /* stream, set the error flag correspondingly; else go ahead */
-        if (errorFlag == EC_Normal && inStream.EndOfStream())
+        if (errorFlag == EC_Normal && inStream.eos())
             errorFlag = EC_EndOfStream;
         else if (errorFlag == EC_Normal && fTransferState != ERW_ready)
         {
@@ -1106,14 +1142,13 @@ OFCondition DcmItem::read(DcmStream & inStream,
             /* position in the stream and set the transfer state to ERW_inWork */
             if (fTransferState == ERW_init )
             {
-                fStartPosition = inStream.Tell();  // start position of this item
+                fStartPosition = inStream.tell();  // start position of this item
                 fTransferState = ERW_inWork;
             }
 
             DcmTag newTag;
             /* start a loop in order to read all elements (attributes) which are contained in the inStream */
-            while (inStream.GetError() == EC_Normal &&
-                   (fTransferredBytes < Length || !lastElementComplete))
+            while (inStream.good() && (fTransferredBytes < Length || !lastElementComplete))
             {
                 /* initialize variables */
                 Uint32 newValueLength = 0;
@@ -1170,7 +1205,7 @@ OFCondition DcmItem::read(DcmStream & inStream,
                 }
 
                 /* remember how many bytes were read */
-                fTransferredBytes = inStream.Tell() - fStartPosition;
+                fTransferredBytes = inStream.tell() - fStartPosition;
 
                 if (errorFlag.good())
                 {
@@ -1187,7 +1222,7 @@ OFCondition DcmItem::read(DcmStream & inStream,
             if ((fTransferredBytes < Length || !lastElementComplete) &&
                 errorFlag == EC_Normal)
                 errorFlag = EC_StreamNotifyClient;
-            if (errorFlag == EC_Normal && inStream.EndOfStream())
+            if (errorFlag == EC_Normal && inStream.eos())
                 errorFlag = EC_EndOfStream;
         } // else errorFlag
 
@@ -1211,19 +1246,19 @@ OFCondition DcmItem::read(DcmStream & inStream,
 // ********************************
 
 
-OFCondition DcmItem::write(DcmStream & outStream,
+OFCondition DcmItem::write(DcmOutputStream & outStream,
                            const E_TransferSyntax oxfer,
                            const E_EncodingType enctype)
 {
   if (fTransferState == ERW_notInitialized) errorFlag = EC_IllegalCall;
   else
   {
-    errorFlag = outStream.GetError();
-    if (errorFlag == EC_Normal && fTransferState != ERW_ready)
+    errorFlag = outStream.status();
+    if (errorFlag.good() && fTransferState != ERW_ready)
     {
       if (fTransferState == ERW_init)
       {
-        if ((errorFlag = outStream.Avail(8)) == EC_Normal)
+        if (outStream.avail() >= 8)
         {
           if (enctype == EET_ExplicitLength) Length = this->getLength(oxfer, enctype);
           else Length = DCM_UndefinedLength;
@@ -1234,10 +1269,10 @@ OFCondition DcmItem::write(DcmStream & outStream,
           const E_ByteOrder oByteOrder = outXfer.getByteOrder();
           if (oByteOrder == EBO_unknown) return EC_IllegalCall;
           swapIfNecessary(oByteOrder, gLocalByteOrder, &valueLength, 4, 4);
-          outStream.WriteBytes(&valueLength, 4); // 4 bytes length
+          outStream.write(&valueLength, 4); // 4 bytes length
           elementList->seek( ELP_first );
           fTransferState = ERW_inWork;
-        }
+        } else errorFlag = EC_StreamNotifyClient;
       }
       if (fTransferState == ERW_inWork)
       {
@@ -1255,42 +1290,46 @@ OFCondition DcmItem::write(DcmStream & outStream,
         if (errorFlag == EC_Normal)
         {
           fTransferState = ERW_ready;
-          if (Length == DCM_UndefinedLength && (errorFlag = outStream.Avail(8)) == EC_Normal)
+          if (Length == DCM_UndefinedLength)
           {
-              // write Item delimitation
-              DcmTag delim(DCM_ItemDelimitationItem);
-              errorFlag = this -> writeTag(outStream, delim, oxfer);
-              Uint32 delimLen = 0L;
-              outStream.WriteBytes(&delimLen, 4); // 4 bytes length
-          }
-          else if (errorFlag != EC_Normal)
-          {
-              // Every subelement of the item is written but it
-              // is not possible to write the delimination item into the buffer.
-              fTransferState = ERW_inWork;
+            if (outStream.avail() >= 8)
+            {
+                // write Item delimitation
+                DcmTag delim(DCM_ItemDelimitationItem);
+                errorFlag = this -> writeTag(outStream, delim, oxfer);
+                Uint32 delimLen = 0L;
+                outStream.write(&delimLen, 4); // 4 bytes length
+            }
+            else
+            {
+                // Every subelement of the item is written but it
+                // is not possible to write the delimination item into the buffer.
+                errorFlag = EC_StreamNotifyClient;
+                fTransferState = ERW_inWork;
+            }
           }
         }
-      }
-    }
-  }
+      } 
+    }   
+  }     
   return errorFlag;
-}
-
+}       
+        
 // ********************************
-
-OFCondition DcmItem::writeSignatureFormat(DcmStream & outStream,
+        
+OFCondition DcmItem::writeSignatureFormat(DcmOutputStream & outStream,
                                     const E_TransferSyntax oxfer,
                                     const E_EncodingType enctype)
-{
+{       
   if (fTransferState == ERW_notInitialized) errorFlag = EC_IllegalCall;
-  else
+  else  
   {
-    errorFlag = outStream.GetError();
-    if (errorFlag == EC_Normal && fTransferState != ERW_ready)
+    errorFlag = outStream.status();
+    if (errorFlag.good() && fTransferState != ERW_ready)
     {
       if (fTransferState == ERW_init)
       {
-        if ((errorFlag = outStream.Avail(4)) == EC_Normal)
+        if (outStream.avail() >= 4)
         {
           if (enctype == EET_ExplicitLength) Length = this->getLength(oxfer, enctype);
           else Length = DCM_UndefinedLength;
@@ -1298,7 +1337,7 @@ OFCondition DcmItem::writeSignatureFormat(DcmStream & outStream,
           /* we don't write the item length */
           elementList->seek( ELP_first );
           fTransferState = ERW_inWork;
-        }
+        } else errorFlag = EC_StreamNotifyClient;
       }
       if (fTransferState == ERW_inWork)
       {
@@ -3154,7 +3193,11 @@ OFBool DcmItem::containsUnknownVR() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.76  2002-08-02 15:06:33  joergr
+** Revision 1.77  2002-08-27 16:55:50  meichel
+** Initial release of new DICOM I/O stream classes that add support for stream
+**   compression (deflated little endian explicit VR transfer syntax)
+**
+** Revision 1.76  2002/08/02 15:06:33  joergr
 ** Fixed problems reported by Sun CC 2.0.1.
 **
 ** Revision 1.75  2002/08/02 08:42:33  joergr

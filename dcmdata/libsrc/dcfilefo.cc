@@ -22,9 +22,9 @@
  *  Purpose: class DcmFileFormat
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-20 12:18:48 $
+ *  Update Date:      $Date: 2002-08-27 16:55:47 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcfilefo.cc,v $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,6 +66,10 @@ END_EXTERN_C
 
 #include "dcdeftag.h"
 #include "dcuid.h"
+#include "dcostrma.h"    /* for class DcmOutputStream */
+#include "dcostrmf.h"    /* for class DcmOutputFileStream */
+#include "dcistrma.h"    /* for class DcmInputStream */
+#include "dcistrmf.h"    /* for class DcmInputFileStream */
 
 
 
@@ -512,7 +516,7 @@ OFBool DcmFileFormat::canWriteXfer(const E_TransferSyntax newXfer,
 // ********************************
 
 
-OFCondition DcmFileFormat::read(DcmStream & inStream,
+OFCondition DcmFileFormat::read(DcmInputStream & inStream,
                                 const E_TransferSyntax xfer,
                                 const E_GrpLenEncoding glenc,
                                 const Uint32 maxReadLength)
@@ -522,11 +526,12 @@ OFCondition DcmFileFormat::read(DcmStream & inStream,
         errorFlag = EC_IllegalCall;
     else
     {
-        errorFlag = inStream.GetError();
+        errorFlag = inStream.status();
+
         E_TransferSyntax newxfer = xfer;
         DcmDataset * dataset = NULL;
 
-        if (errorFlag == EC_Normal && inStream.EndOfStream())
+        if (errorFlag == EC_Normal && inStream.eos())
             errorFlag = EC_EndOfStream;
         else if (errorFlag == EC_Normal && fTransferState != ERW_ready)
         {
@@ -579,7 +584,7 @@ OFCondition DcmFileFormat::read(DcmStream & inStream,
 
 // ********************************
 
-OFCondition DcmFileFormat::write(DcmStream & outStream,
+OFCondition DcmFileFormat::write(DcmOutputStream & outStream,
                                  const E_TransferSyntax oxfer,
                                  const E_EncodingType enctype)
 {
@@ -589,7 +594,7 @@ OFCondition DcmFileFormat::write(DcmStream & outStream,
 
 // ********************************
 
-OFCondition DcmFileFormat::write(DcmStream & outStream,
+OFCondition DcmFileFormat::write(DcmOutputStream & outStream,
                                  const E_TransferSyntax oxfer,
                                  const E_EncodingType enctype,
                                  const E_GrpLenEncoding glenc,
@@ -636,7 +641,7 @@ OFCondition DcmFileFormat::write(DcmStream & outStream,
             outxfer = dataset->getOriginalXfer();
 
         /* check if the stream reported an error so far */
-        errorFlag = outStream.GetError();
+        errorFlag = outStream.status();
 
         /* check if we can actually write data to the stream; in certain cases we cannot. */
         if (outxfer == EXS_Unknown || outxfer == EXS_BigEndianImplicit)
@@ -710,9 +715,9 @@ OFCondition DcmFileFormat::loadFile(const char *fileName,
     if ((fileName != NULL) && (strlen(fileName) > 0))
     {
         /* open file for input */
-        DcmFileStream fileStream(fileName, DCM_ReadMode);
+        DcmInputFileStream fileStream(fileName);
         /* check stream status */
-        if (! fileStream.Fail()) l_error = EC_Normal; else l_error = EC_InvalidStream;
+        l_error = fileStream.status();
         if (l_error.good())
         {
             /* read data from file */
@@ -746,10 +751,10 @@ OFCondition DcmFileFormat::saveFile(const char *fileName,
     if ((fileName != NULL) && (strlen(fileName) > 0))
     {
         /* open file for output */
-        DcmFileStream fileStream(fileName, DCM_WriteMode);
+        DcmOutputFileStream fileStream(fileName);
 
         /* check stream status */
-        if (! fileStream.Fail()) l_error = EC_Normal; else l_error = EC_InvalidStream;
+        l_error = fileStream.status();
         if (l_error.good())
         {
             /* write data to file */
@@ -868,7 +873,11 @@ DcmDataset* DcmFileFormat::getAndRemoveDataset()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
-** Revision 1.30  2002-08-20 12:18:48  meichel
+** Revision 1.31  2002-08-27 16:55:47  meichel
+** Initial release of new DICOM I/O stream classes that add support for stream
+**   compression (deflated little endian explicit VR transfer syntax)
+**
+** Revision 1.30  2002/08/20 12:18:48  meichel
 ** Changed parameter list of loadFile and saveFile methods in class
 **   DcmFileFormat. Removed loadFile and saveFile from class DcmObject.
 **

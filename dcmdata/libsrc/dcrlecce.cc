@@ -21,10 +21,10 @@
  *
  *  Purpose: encoder codec class for RLE
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-18 12:15:40 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-08-27 16:55:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcrlecce.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,6 +40,10 @@
 #include "dcpixseq.h"  /* for class DcmPixelSequence */
 #include "dcpxitem.h"  /* for class DcmPixelItem */
 #include "dcswap.h"    /* for swapIfNecessary */
+
+BEGIN_EXTERN_C
+#include <stdio.h>
+END_EXTERN_C
 
 typedef OFList<DcmRLEEncoder *> DcmRLEEncoderList;
 typedef OFListIterator(DcmRLEEncoder *) DcmRLEEncoderListIterator;
@@ -414,7 +418,11 @@ OFCondition DcmRLECodecEncoder::updateDerivationDescription(
 /*
  * CVS/RCS Log
  * $Log: dcrlecce.cc,v $
- * Revision 1.3  2002-07-18 12:15:40  joergr
+ * Revision 1.4  2002-08-27 16:55:56  meichel
+ * Initial release of new DICOM I/O stream classes that add support for stream
+ *   compression (deflated little endian explicit VR transfer syntax)
+ *
+ * Revision 1.3  2002/07/18 12:15:40  joergr
  * Added explicit type casts to keep Sun CC 2.0.1 quiet.
  *
  * Revision 1.2  2002/06/27 15:15:43  meichel

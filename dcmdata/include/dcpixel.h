@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmPixelData
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-25 09:38:48 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-08-27 16:55:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpixel.h,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -209,7 +209,7 @@ public:
     // reads a representation and sets the current and orignal 
     // representation to the new representation
     // it deletes all old representations before reading!
-    virtual OFCondition read(DcmStream & inStream, 
+    virtual OFCondition read(DcmInputStream & inStream, 
                              const E_TransferSyntax ixfer,
                              const E_GrpLenEncoding glenc = EGL_noChange, 
                              const Uint32 maxReadLength = DCM_MaxReadLength);
@@ -219,7 +219,7 @@ public:
     // representation exists,  an error code is returned.
     // The written representation is the new current representation 
     virtual OFCondition write(
-        DcmStream & outStream,
+        DcmOutputStream & outStream,
         const E_TransferSyntax oxfer,
         const E_EncodingType enctype = EET_UndefinedLength);
 
@@ -234,7 +234,7 @@ public:
     /** special write method for creation of digital signatures
      */
     virtual OFCondition writeSignatureFormat(
-        DcmStream & outStream,
+        DcmOutputStream & outStream,
 	const E_TransferSyntax oxfer,
 	const E_EncodingType enctype = EET_UndefinedLength);
 
@@ -332,7 +332,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.h,v $
-** Revision 1.15  2002-04-25 09:38:48  joergr
+** Revision 1.16  2002-08-27 16:55:37  meichel
+** Initial release of new DICOM I/O stream classes that add support for stream
+**   compression (deflated little endian explicit VR transfer syntax)
+**
+** Revision 1.15  2002/04/25 09:38:48  joergr
 ** Added support for XML output of DICOM objects.
 **
 ** Revision 1.14  2001/09/25 17:18:34  meichel

@@ -25,9 +25,9 @@
  *  not be used directly in applications. No identification exists.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:19:59 $
+ *  Update Date:      $Date: 2002-08-27 16:56:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrpobw.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -192,7 +192,7 @@ DcmPolymorphOBOW::putUint16Array(
 
 OFCondition 
 DcmPolymorphOBOW::read(
-    DcmStream & inStream,
+    DcmInputStream & inStream,
     const E_TransferSyntax ixfer,
     const E_GrpLenEncoding glenc,
     const Uint32 maxReadLength)
@@ -221,7 +221,7 @@ DcmPolymorphOBOW::transferInit()
 }
 
 OFCondition DcmPolymorphOBOW::write(
-    DcmStream & outStream,
+    DcmOutputStream & outStream,
     const E_TransferSyntax oxfer,
     const E_EncodingType enctype)
 {
@@ -254,7 +254,7 @@ OFCondition DcmPolymorphOBOW::write(
 }
 
 OFCondition DcmPolymorphOBOW::writeSignatureFormat(
-    DcmStream & outStream,
+    DcmOutputStream & outStream,
     const E_TransferSyntax oxfer,
     const E_EncodingType enctype)
 {
@@ -289,7 +289,11 @@ OFCondition DcmPolymorphOBOW::writeSignatureFormat(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrpobw.cc,v $
-** Revision 1.12  2001-09-25 17:19:59  meichel
+** Revision 1.13  2002-08-27 16:56:00  meichel
+** Initial release of new DICOM I/O stream classes that add support for stream
+**   compression (deflated little endian explicit VR transfer syntax)
+**
+** Revision 1.12  2001/09/25 17:19:59  meichel
 ** Adapted dcmdata to class OFCondition
 **
 ** Revision 1.11  2001/06/01 15:49:19  meichel

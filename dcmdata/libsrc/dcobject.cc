@@ -24,9 +24,9 @@
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-20 12:18:48 $
+ *  Update Date:      $Date: 2002-08-27 16:55:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcobject.cc,v $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,6 +40,12 @@
 #include "dcxfer.h"
 #include "dcswap.h"
 #include "dcdebug.h"
+#include "dcistrma.h"    /* for class DcmInputStream */
+#include "dcostrma.h"    /* for class DcmOutputStream */
+
+BEGIN_EXTERN_C
+#include <stdio.h>
+END_EXTERN_C
 
 /*
 ** Should automatic correction be applied to input data (e.g. stripping
@@ -216,7 +222,7 @@ void DcmObject::printInfoLine(ostream & out, const OFBool showFullData,
 // ********************************
 
 
-OFCondition DcmObject::writeTag(DcmStream & outStream, const DcmTag & tag, 
+OFCondition DcmObject::writeTag(DcmOutputStream & outStream, const DcmTag & tag, 
                                 const E_TransferSyntax oxfer)
     /*
      * This function writes the tag information which was passed to the stream. When
@@ -242,23 +248,20 @@ OFCondition DcmObject::writeTag(DcmStream & outStream, const DcmTag & tag,
   /* write the group number value (2 bytes) to the stream */
   Uint16 groupTag = tag.getGTag();
   swapIfNecessary(outByteOrder, gLocalByteOrder, &groupTag, 2, 2);
-  outStream.WriteBytes(&groupTag, 2);
+  outStream.write(&groupTag, 2);
 
   /* determine the element number, mind the transfer syntax and */
   /* write the element number value (2 bytes) to the stream */
   Uint16 elementTag = tag.getETag();    // 2 Byte Laenge; 
   swapIfNecessary(outByteOrder, gLocalByteOrder, &elementTag, 2, 2);
-  outStream.WriteBytes(&elementTag, 2);
+  outStream.write(&elementTag, 2);
 
   /* if the stream reports an error return this error, else return ok */
-  if (outStream.GetError() != EC_Normal)
-    return outStream.GetError();
-  else
-    return EC_Normal;
+  return outStream.status();
 }
 
 
-OFCondition DcmObject::writeTagAndLength(DcmStream & outStream, 
+OFCondition DcmObject::writeTagAndLength(DcmOutputStream & outStream, 
                                          const E_TransferSyntax oxfer,  
                                          Uint32 & writtenBytes) const
     /*
@@ -277,9 +280,11 @@ OFCondition DcmObject::writeTagAndLength(DcmStream & outStream,
      */
 {
   /* check the error status of the stream. If it is not ok, nothing can be done */
-  OFCondition l_error = outStream.GetError();
-  if (l_error != EC_Normal)
+  OFCondition l_error = outStream.status();
+  if (l_error.bad())
+  {
     writtenBytes = 0;
+  }
   else
   {
       /* if the stream is ok, we need to do something */
@@ -314,7 +319,7 @@ OFCondition DcmObject::writeTagAndLength(DcmStream & outStream,
           const char *vrname = myvr.getValidVRName();
 
           /* write data type name to the stream (a total of 2 bytes) */
-          outStream.WriteBytes(vrname, 2);
+          outStream.write(vrname, 2);
           writtenBytes += 2;
 
           /* create another data type object on the basis of the above created object */
@@ -329,10 +334,10 @@ OFCondition DcmObject::writeTagAndLength(DcmStream & outStream,
           if (outvr.usesExtendedLengthEncoding())
           {
             Uint16 reserved = 0;
-            outStream.WriteBytes(&reserved, 2);                                 // write 2 reserved bytes to stream
+            outStream.write(&reserved, 2);                                 // write 2 reserved bytes to stream
             Uint32 valueLength = Length;                                        // determine length
             swapIfNecessary(oByteOrder, gLocalByteOrder, &valueLength, 4, 4);   // mind transfer syntax
-            outStream.WriteBytes(&valueLength, 4);                              // write length, 4 bytes wide
+            outStream.write(&valueLength, 4);                              // write length, 4 bytes wide
             writtenBytes += 6;                                                  // remember that 6 bytes were written in total
           }
           /* in case that we are dealing with a transfer syntax with explicit VR (see if above) and */
@@ -344,7 +349,7 @@ OFCondition DcmObject::writeTagAndLength(DcmStream & outStream,
           {
             Uint16 valueLength = (Uint16)Length;                                // determine length
             swapIfNecessary(oByteOrder, gLocalByteOrder, &valueLength, 2, 2);   // mind transfer syntax
-            outStream.WriteBytes(&valueLength, 2);                              // write length, 2 bytes wide
+            outStream.write(&valueLength, 2);                              // write length, 2 bytes wide
             writtenBytes += 2;                                                  // remember that 2 bytes were written in total
           }
         }
@@ -357,7 +362,7 @@ OFCondition DcmObject::writeTagAndLength(DcmStream & outStream,
         {
           Uint32 valueLength = Length;                                          // determine length
           swapIfNecessary(oByteOrder, gLocalByteOrder, &valueLength, 4, 4);     // mind transfer syntax
-          outStream.WriteBytes(&valueLength, 4);                                // write length, 4 bytes wide
+          outStream.write(&valueLength, 4);                                // write length, 4 bytes wide
           writtenBytes += 4;                                                    // remember that 4 bytes were written in total
         }
     }
@@ -379,7 +384,11 @@ OFBool DcmObject::containsUnknownVR() const
 /*
  * CVS/RCS Log:
  * $Log: dcobject.cc,v $
- * Revision 1.36  2002-08-20 12:18:48  meichel
+ * Revision 1.37  2002-08-27 16:55:52  meichel
+ * Initial release of new DICOM I/O stream classes that add support for stream
+ *   compression (deflated little endian explicit VR transfer syntax)
+ *
+ * Revision 1.36  2002/08/20 12:18:48  meichel
  * Changed parameter list of loadFile and saveFile methods in class
  *   DcmFileFormat. Removed loadFile and saveFile from class DcmObject.
  *

@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmByteString
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-25 10:05:14 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-08-27 16:55:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcbytstr.h,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -89,14 +89,14 @@ public:
         const E_TransferSyntax xfer = EXS_LittleEndianImplicit,
         const E_EncodingType enctype = EET_UndefinedLength);
 
-    virtual OFCondition write(DcmStream & outStream,
+    virtual OFCondition write(DcmOutputStream & outStream,
                               const E_TransferSyntax oxfer,
                               const E_EncodingType enctype 
                               = EET_UndefinedLength);
 
     /** special write method for creation of digital signatures
      */
-    virtual OFCondition writeSignatureFormat(DcmStream & outStream,
+    virtual OFCondition writeSignatureFormat(DcmOutputStream & outStream,
                                          const E_TransferSyntax oxfer,
                                          const E_EncodingType enctype 
                                          = EET_UndefinedLength);
@@ -149,7 +149,11 @@ void normalizeString(
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.h,v $
-** Revision 1.23  2002-04-25 10:05:14  joergr
+** Revision 1.24  2002-08-27 16:55:30  meichel
+** Initial release of new DICOM I/O stream classes that add support for stream
+**   compression (deflated little endian explicit VR transfer syntax)
+**
+** Revision 1.23  2002/04/25 10:05:14  joergr
 ** Removed getOFStringArray() implementation.
 ** Made makeMachineByteString() virtual to avoid ambiguities.
 **

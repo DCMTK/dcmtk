@@ -22,9 +22,9 @@
  *  Purpose: Handling of transfer syntaxes
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-08 16:17:30 $
+ *  Update Date:      $Date: 2002-08-27 16:55:41 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcxfer.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -94,20 +94,32 @@ typedef enum {
     EJE_Encapsulated = 1
 } E_JPEGEncapsulated;
 
+typedef enum
+{
+    /// no stream compression
+    ESC_none = 0
+    /// unsupported stream compression
+  , ESC_unsupported = 1
+#ifdef WITH_ZLIB
+    /// zlib stream compression
+  , ESC_zlib = 2
+#endif
+} E_StreamCompression;
 
 /*
 ** Class DcmXfer for lookup up Transfer Syntax properties and readable descriptions
 */
 
 class DcmXfer {
-    const char         *xferID;
-    const char         *xferName;
-    E_TransferSyntax   xferSyn;
-    E_ByteOrder        byteOrder;
-    E_VRType           vrType;
-    E_JPEGEncapsulated encapsulated;
-    Uint32             JPEGProcess8;
-    Uint32             JPEGProcess12;
+    const char          *xferID;
+    const char          *xferName;
+    E_TransferSyntax    xferSyn;
+    E_ByteOrder         byteOrder;
+    E_VRType            vrType;
+    E_JPEGEncapsulated  encapsulated;
+    Uint32              JPEGProcess8;
+    Uint32              JPEGProcess12;
+    E_StreamCompression streamCompression;
 
 public:
     DcmXfer( E_TransferSyntax xfer );
@@ -139,6 +151,7 @@ public:
     }
     inline Uint32 getJPEGProcess8Bit() const { return JPEGProcess8; }
     inline Uint32 getJPEGProcess12Bit() const { return JPEGProcess12;}
+    inline E_StreamCompression getStreamCompression() const { return streamCompression;}
 
     /* return the number of bytes needed to describe the tag, length, VR 
     ** and any reserved fields for this transfer syntax when encoding the 
@@ -156,7 +169,11 @@ extern const E_ByteOrder gLocalByteOrder;
 /*
  * CVS/RCS Log:
  * $Log: dcxfer.h,v $
- * Revision 1.14  2001-11-08 16:17:30  meichel
+ * Revision 1.15  2002-08-27 16:55:41  meichel
+ * Initial release of new DICOM I/O stream classes that add support for stream
+ *   compression (deflated little endian explicit VR transfer syntax)
+ *
+ * Revision 1.14  2001/11/08 16:17:30  meichel
  * Updated data dictionary, UIDs and transfer syntaxes for DICOM 2001 edition.
  *
  * Revision 1.13  2001/06/01 15:48:55  meichel

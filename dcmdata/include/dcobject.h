@@ -24,9 +24,9 @@
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-20 12:18:35 $
+ *  Update Date:      $Date: 2002-08-27 16:55:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcobject.h,v $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,11 +43,12 @@
 #include "dcerror.h"
 #include "dctypes.h"
 #include "dcxfer.h"
-#include "dcstream.h"
 #include "dctag.h"
 #include "dclist.h"
 #include "dcstack.h"
 
+class DcmOutputStream;
+class DcmInputStream;
 
 // Undefined Length Identifier now defined in dctypes.h
 
@@ -98,10 +99,10 @@ protected:
                                const int level, DcmTag &tag,
                                const Uint32 length, const char *info );
 
-    static OFCondition writeTag(DcmStream & outStream, const DcmTag & tag,
+    static OFCondition writeTag(DcmOutputStream & outStream, const DcmTag & tag,
                          const E_TransferSyntax oxfer); // in
 
-    virtual OFCondition writeTagAndLength(DcmStream & outStream,  
+    virtual OFCondition writeTagAndLength(DcmOutputStream & outStream,  
                                           const E_TransferSyntax oxfer, // in
                                           Uint32 & writtenBytes ) const; // out
                                           
@@ -156,12 +157,12 @@ public:
     virtual OFBool canWriteXfer(const E_TransferSyntax newXfer,
                                  const E_TransferSyntax oldXfer) = 0;
 
-    virtual OFCondition read(DcmStream & inStream,
+    virtual OFCondition read(DcmInputStream & inStream,
                              const E_TransferSyntax ixfer,
                              const E_GrpLenEncoding glenc = EGL_noChange,
                              const Uint32 maxReadLength = DCM_MaxReadLength) = 0;
 
-    virtual OFCondition write(DcmStream & outStream,
+    virtual OFCondition write(DcmOutputStream & outStream,
                               const E_TransferSyntax oxfer,
                               const E_EncodingType enctype = EET_UndefinedLength) = 0;
 
@@ -175,7 +176,7 @@ public:
 
     /** special write method for creation of digital signatures
      */
-    virtual OFCondition writeSignatureFormat(DcmStream & outStream,
+    virtual OFCondition writeSignatureFormat(DcmOutputStream & outStream,
 					 const E_TransferSyntax oxfer,
 					 const E_EncodingType enctype 
 					 = EET_UndefinedLength) = 0;
@@ -211,7 +212,11 @@ public:
 /*
  * CVS/RCS Log:
  * $Log: dcobject.h,v $
- * Revision 1.32  2002-08-20 12:18:35  meichel
+ * Revision 1.33  2002-08-27 16:55:35  meichel
+ * Initial release of new DICOM I/O stream classes that add support for stream
+ *   compression (deflated little endian explicit VR transfer syntax)
+ *
+ * Revision 1.32  2002/08/20 12:18:35  meichel
  * Changed parameter list of loadFile and saveFile methods in class
  *   DcmFileFormat. Removed loadFile and saveFile from class DcmObject.
  *

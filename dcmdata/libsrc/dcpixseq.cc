@@ -22,9 +22,9 @@
  *  Purpose: class DcmPixelSequence
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-05-24 14:51:50 $
+ *  Update Date:      $Date: 2002-08-27 16:55:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixseq.cc,v $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -284,7 +284,7 @@ OFBool DcmPixelSequence::canWriteXfer(const E_TransferSyntax newXfer,
 
 // ********************************
 
-OFCondition DcmPixelSequence::read(DcmStream & inStream,
+OFCondition DcmPixelSequence::read(DcmInputStream & inStream,
                                    const E_TransferSyntax ixfer,
                                    const E_GrpLenEncoding glenc,
                                    const Uint32 maxReadLength)
@@ -298,7 +298,7 @@ OFCondition DcmPixelSequence::read(DcmStream & inStream,
 
 // ********************************
 
-OFCondition DcmPixelSequence::write(DcmStream & outStream,
+OFCondition DcmPixelSequence::write(DcmOutputStream & outStream,
                                       const E_TransferSyntax oxfer,
                                       const E_EncodingType /*enctype*/)
 {
@@ -309,7 +309,7 @@ OFCondition DcmPixelSequence::write(DcmStream & outStream,
 
 // ********************************
 
-OFCondition DcmPixelSequence::writeSignatureFormat(DcmStream & outStream,
+OFCondition DcmPixelSequence::writeSignatureFormat(DcmOutputStream & outStream,
                                       const E_TransferSyntax oxfer,
                                       const E_EncodingType /*enctype*/)
 {
@@ -360,7 +360,11 @@ OFCondition DcmPixelSequence::storeCompressedFrame(
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.cc,v $
-** Revision 1.27  2002-05-24 14:51:50  meichel
+** Revision 1.28  2002-08-27 16:55:55  meichel
+** Initial release of new DICOM I/O stream classes that add support for stream
+**   compression (deflated little endian explicit VR transfer syntax)
+**
+** Revision 1.27  2002/05/24 14:51:50  meichel
 ** Moved helper methods that are useful for different compression techniques
 **   from module dcmjpeg to module dcmdata
 **

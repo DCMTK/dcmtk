@@ -22,9 +22,9 @@
  *  Purpose: handling of transfer syntaxes
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-06-19 15:35:01 $
+ *  Update Date:      $Date: 2002-08-27 16:56:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcxfer.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,14 +38,15 @@
 #include "dcdebug.h"
 
 typedef struct {
-    const char         *xferID;
-    const char         *xferName;
-    E_TransferSyntax   xfer;
-    E_ByteOrder        byteOrder;
-    E_VRType           vrType;
-    E_JPEGEncapsulated encapsulated;
-    Uint32             JPEGProcess8;
-    Uint32             JPEGProcess12;
+    const char          *xferID;
+    const char          *xferName;
+    E_TransferSyntax    xfer;
+    E_ByteOrder         byteOrder;
+    E_VRType            vrType;
+    E_JPEGEncapsulated  encapsulated;
+    Uint32              JPEGProcess8;
+    Uint32              JPEGProcess12;
+    E_StreamCompression streamCompression;
 } S_XferNames;
 
 
@@ -60,200 +61,228 @@ const S_XferNames XferNames[] =
       EBO_LittleEndian,
       EVT_Implicit,
       EJE_NotEncapsulated,
-      0L, 0L},
+      0L, 0L,
+      ESC_none },
     { "",  // illegaler Typ
       "VirtualBigEndianImplicit",
       EXS_BigEndianImplicit,
       EBO_BigEndian,
       EVT_Implicit,
       EJE_NotEncapsulated,
-      0L, 0L},
+      0L, 0L,
+      ESC_none },
     { UID_LittleEndianExplicitTransferSyntax,         
       "LittleEndianExplicit",
       EXS_LittleEndianExplicit,
       EBO_LittleEndian,
       EVT_Explicit,
       EJE_NotEncapsulated,
-      0L, 0L},
+      0L, 0L,
+      ESC_none },
     { UID_BigEndianExplicitTransferSyntax,                // definiert in dctypes.h
       "BigEndianExplicit",
       EXS_BigEndianExplicit,
       EBO_BigEndian,
       EVT_Explicit,
       EJE_NotEncapsulated,
-      0L, 0L},
-
+      0L, 0L,
+      ESC_none },
     { UID_JPEGProcess1TransferSyntax,
       "JPEG Baseline",
       EXS_JPEGProcess1TransferSyntax,
       EBO_LittleEndian,
       EVT_Explicit,
       EJE_Encapsulated,
-      1L, 1L},
+      1L, 1L,
+      ESC_none },
     { UID_JPEGProcess2_4TransferSyntax,
       "JPEG Extended, Process 2+4",
       EXS_JPEGProcess2_4TransferSyntax,
       EBO_LittleEndian,
       EVT_Explicit,
       EJE_Encapsulated,
-      2L ,4L },
+      2L ,4L,
+      ESC_none },
     { UID_JPEGProcess3_5TransferSyntax,
       "JPEG Extended, Process 3+5",
       EXS_JPEGProcess3_5TransferSyntax,
       EBO_LittleEndian,
       EVT_Explicit,
       EJE_Encapsulated,
-      3L ,5L },
+      3L ,5L,
+      ESC_none },
     { UID_JPEGProcess6_8TransferSyntax,
       "JPEG Spectral Selection, Non-hierarchical, Process 6+8",
       EXS_JPEGProcess6_8TransferSyntax,
       EBO_LittleEndian,
       EVT_Explicit,
       EJE_Encapsulated,
-      6L ,8L },
+      6L ,8L,
+      ESC_none },
     { UID_JPEGProcess7_9TransferSyntax,
       "JPEG Spectral Selection, Non-hierarchical, Process 7+9",
       EXS_JPEGProcess7_9TransferSyntax,
       EBO_LittleEndian,
       EVT_Explicit,
       EJE_Encapsulated,
-      7L ,9L },
+      7L ,9L,
+      ESC_none },
     { UID_JPEGProcess10_12TransferSyntax,
       "JPEG Full Progression, Non-hierarchical, Process 10+12",
       EXS_JPEGProcess10_12TransferSyntax,
       EBO_LittleEndian,
       EVT_Explicit,
       EJE_Encapsulated,
-      10L ,12L },
+      10L ,12L,
+      ESC_none },
     { UID_JPEGProcess11_13TransferSyntax,
       "JPEG Full Progression, Non-hierarchical, Process 11+13",
       EXS_JPEGProcess11_13TransferSyntax,
       EBO_LittleEndian,
       EVT_Explicit,
       EJE_Encapsulated,
-      11L ,13L },
+      11L ,13L,
+      ESC_none },
     { UID_JPEGProcess14TransferSyntax,
       "JPEG Lossless, Non-hierarchical, Process 14",
       EXS_JPEGProcess14TransferSyntax,
       EBO_LittleEndian,
       EVT_Explicit,
       EJE_Encapsulated,
-      14L ,14L },
+      14L ,14L,
+      ESC_none },
     { UID_JPEGProcess15TransferSyntax,
       "JPEG Lossless, Non-hierarchical, Process 15",
       EXS_JPEGProcess15TransferSyntax,
       EBO_LittleEndian,
       EVT_Explicit,
       EJE_Encapsulated,
-      15L ,15L },
+      15L ,15L,
+      ESC_none },
     { UID_JPEGProcess16_18TransferSyntax,
       "JPEG Extended, Hierarchical, Process 16+18",
       EXS_JPEGProcess16_18TransferSyntax,
       EBO_LittleEndian,
       EVT_Explicit,
       EJE_Encapsulated,
-      16L ,18L },
+      16L ,18L,
+      ESC_none },
     { UID_JPEGProcess17_19TransferSyntax,
       "JPEG Extended, Hierarchical, Process 17+19",
       EXS_JPEGProcess17_19TransferSyntax,
       EBO_LittleEndian,
       EVT_Explicit,
       EJE_Encapsulated,
-      17L ,19L },
+      17L ,19L,
+      ESC_none },
     { UID_JPEGProcess20_22TransferSyntax,
       "JPEG Spectral Selection, Hierarchical, Process 20+22",
       EXS_JPEGProcess20_22TransferSyntax,
       EBO_LittleEndian,
       EVT_Explicit,
       EJE_Encapsulated,
-      20L ,22L },
+      20L ,22L,
+      ESC_none },
     { UID_JPEGProcess21_23TransferSyntax,
       "JPEG Spectral Selection, Hierarchical, Process 21+23",
       EXS_JPEGProcess21_23TransferSyntax,
       EBO_LittleEndian,
       EVT_Explicit,
       EJE_Encapsulated,
-      21L ,23L },
+      21L ,23L,
+      ESC_none },
     { UID_JPEGProcess24_26TransferSyntax,
       "JPEG Full Progression, Hierarchical, Process 24+26",
       EXS_JPEGProcess24_26TransferSyntax,
       EBO_LittleEndian,
       EVT_Explicit,
       EJE_Encapsulated,
-      24L ,26L },
+      24L ,26L,
+      ESC_none },
     { UID_JPEGProcess25_27TransferSyntax,
       "JPEG Full Progression, Hierarchical, Process 25+27",
       EXS_JPEGProcess25_27TransferSyntax,
       EBO_LittleEndian,
       EVT_Explicit,
       EJE_Encapsulated,
-      25L ,27L },
+      25L ,27L,
+      ESC_none },
     { UID_JPEGProcess28TransferSyntax,
       "JPEG Lossless, Hierarchical, Process 28",
       EXS_JPEGProcess28TransferSyntax,
       EBO_LittleEndian,
       EVT_Explicit,
       EJE_Encapsulated,
-      28L ,28L },
+      28L ,28L,
+      ESC_none },
     { UID_JPEGProcess29TransferSyntax,
       "JPEG Lossless, Hierarchical, Process 29",
       EXS_JPEGProcess29TransferSyntax,
       EBO_LittleEndian,
       EVT_Explicit,
       EJE_Encapsulated,
-      29L ,29L },
+      29L ,29L,
+      ESC_none },
     { UID_JPEGProcess14SV1TransferSyntax,
       "JPEG Lossless, Non-hierarchical, 1st Order Prediction",
       EXS_JPEGProcess14SV1TransferSyntax,
       EBO_LittleEndian,
       EVT_Explicit,
       EJE_Encapsulated,
-      14L ,14L },
+      14L ,14L,
+      ESC_none },
     { UID_RLELossless,
       "RLE Lossless",
       EXS_RLELossless,
       EBO_LittleEndian,
       EVT_Explicit,
       EJE_Encapsulated,
-      0L, 0L },
+      0L, 0L,
+      ESC_none },
     { UID_JPEGLSLossless,
       "JPEG-LS Lossless",
       EXS_JPEGLSLossless,
       EBO_LittleEndian,
       EVT_Explicit,
       EJE_Encapsulated,
-      0L, 0L },
+      0L, 0L,
+      ESC_none },
     { UID_JPEGLSLossy,
       "JPEG-LS Lossy (Near-lossless)",
       EXS_JPEGLSLossy,
       EBO_LittleEndian,
       EVT_Explicit,
       EJE_Encapsulated,
-      0L, 0L },
-
+      0L, 0L,
+      ESC_none },
     { UID_DeflatedExplicitVRLittleEndianTransferSyntax,
       "Deflated Explicit VR Little Endian",
       EXS_DeflatedLittleEndianExplicit,
       EBO_LittleEndian,
       EVT_Explicit,
       EJE_NotEncapsulated,
-      0L, 0L },
-
+      0L, 0L,
+#ifdef WITH_ZLIB
+      ESC_zlib },
+#else
+      ESC_unsupported },
+#endif
     { UID_JPEG2000LosslessOnlyTransferSyntax,
       "JPEG 2000 (Lossless only)",
       EXS_JPEG2000LosslessOnly,
       EBO_LittleEndian,
       EVT_Explicit,
       EJE_Encapsulated,
-      0L, 0L },
-
+      0L, 0L,
+      ESC_none },
     { UID_JPEG2000TransferSyntax,
       "JPEG 2000 (Lossless or Lossy)",
       EXS_JPEG2000,
       EBO_LittleEndian,
       EVT_Explicit,
       EJE_Encapsulated,
-      0L, 0L }
+      0L, 0L,
+      ESC_none }
 
     // Enter further transfer syntaxes here:
 };
@@ -272,7 +301,8 @@ DcmXfer::DcmXfer( E_TransferSyntax xfer )
     vrType(EVT_Implicit),
     encapsulated(EJE_NotEncapsulated),
     JPEGProcess8(0L),
-    JPEGProcess12(0L)
+    JPEGProcess12(0L),
+    streamCompression(ESC_none)
 {
     int i = 0;
     while (    (i < DIM_OF_XferNames)
@@ -282,14 +312,15 @@ DcmXfer::DcmXfer( E_TransferSyntax xfer )
     if ( (i < DIM_OF_XferNames)
          && XferNames[i].xfer == xfer)
     {
-        xferSyn       = XferNames[i].xfer;
-        xferID        = XferNames[i].xferID;
-        xferName      = XferNames[i].xferName;
-        byteOrder     = XferNames[i].byteOrder;
-        vrType        = XferNames[i].vrType;
-        encapsulated  = XferNames[i].encapsulated;
-        JPEGProcess8  = XferNames[i].JPEGProcess8;
-        JPEGProcess12 = XferNames[i].JPEGProcess12;
+        xferSyn           = XferNames[i].xfer;
+        xferID            = XferNames[i].xferID;
+        xferName          = XferNames[i].xferName;
+        byteOrder         = XferNames[i].byteOrder;
+        vrType            = XferNames[i].vrType;
+        encapsulated      = XferNames[i].encapsulated;
+        JPEGProcess8      = XferNames[i].JPEGProcess8;
+        JPEGProcess12     = XferNames[i].JPEGProcess12;
+        streamCompression = XferNames[i].streamCompression;
     }
 }
 
@@ -305,7 +336,8 @@ DcmXfer::DcmXfer( const char* xferName_xferID )
     vrType(EVT_Implicit),
     encapsulated(EJE_NotEncapsulated),
     JPEGProcess8(0L),
-    JPEGProcess12(0L)
+    JPEGProcess12(0L),
+    streamCompression(ESC_none)
 {
     const char* xname = xferName_xferID;
     if ( xname != (char*)NULL )
@@ -318,14 +350,15 @@ DcmXfer::DcmXfer( const char* xferName_xferID )
         if ( (i < DIM_OF_XferNames)
              && (strcmp(XferNames[i].xferID, xname) == 0) )
         {
-            xferSyn       = XferNames[i].xfer;
-            xferID        = XferNames[i].xferID;
-            xferName      = XferNames[i].xferName;
-            byteOrder     = XferNames[i].byteOrder;
-            vrType        = XferNames[i].vrType;
-            encapsulated  = XferNames[i].encapsulated;
-            JPEGProcess8  = XferNames[i].JPEGProcess8;
-            JPEGProcess12 = XferNames[i].JPEGProcess12;
+            xferSyn           = XferNames[i].xfer;
+            xferID            = XferNames[i].xferID;
+            xferName          = XferNames[i].xferName;
+            byteOrder         = XferNames[i].byteOrder;
+            vrType            = XferNames[i].vrType;
+            encapsulated      = XferNames[i].encapsulated;
+            JPEGProcess8      = XferNames[i].JPEGProcess8;
+            JPEGProcess12     = XferNames[i].JPEGProcess12;
+            streamCompression = XferNames[i].streamCompression;
         }
         else
         {
@@ -337,14 +370,15 @@ DcmXfer::DcmXfer( const char* xferName_xferID )
             if ( (i < DIM_OF_XferNames)
                  && (strcmp(XferNames[i].xferName, xname) == 0) )
             {
-                xferSyn       = XferNames[i].xfer;
-                xferID        = XferNames[i].xferID;
-                xferName      = XferNames[i].xferName;
-                byteOrder     = XferNames[i].byteOrder;
-                vrType        = XferNames[i].vrType;
-                encapsulated  = XferNames[i].encapsulated;
-                JPEGProcess8  = XferNames[i].JPEGProcess8;
-                JPEGProcess12 = XferNames[i].JPEGProcess12;
+                xferSyn           = XferNames[i].xfer;
+                xferID            = XferNames[i].xferID;
+                xferName          = XferNames[i].xferName;
+                byteOrder         = XferNames[i].byteOrder;
+                vrType            = XferNames[i].vrType;
+                encapsulated      = XferNames[i].encapsulated;
+                JPEGProcess8      = XferNames[i].JPEGProcess8;
+                JPEGProcess12     = XferNames[i].JPEGProcess12;
+                streamCompression = XferNames[i].streamCompression;
             }
         }
     }
@@ -362,7 +396,8 @@ DcmXfer::DcmXfer( const DcmXfer &newXfer )
     vrType(newXfer.vrType),
     encapsulated(newXfer.encapsulated),
     JPEGProcess8(newXfer.JPEGProcess8),
-    JPEGProcess12(newXfer.JPEGProcess12)
+    JPEGProcess12(newXfer.JPEGProcess12),
+    streamCompression(newXfer.streamCompression)
 {
 }
 
@@ -390,25 +425,27 @@ DcmXfer & DcmXfer::operator = ( const E_TransferSyntax xfer )
             && XferNames[i].xfer == xfer
         )
     {
-        xferSyn       = XferNames[i].xfer;
-        xferID        = XferNames[i].xferID;
-        xferName      = XferNames[i].xferName;
-        byteOrder     = XferNames[i].byteOrder;
-        vrType        = XferNames[i].vrType;
-        encapsulated  = XferNames[i].encapsulated;
-        JPEGProcess8  = XferNames[i].JPEGProcess8;
-        JPEGProcess12 = XferNames[i].JPEGProcess12;
+        xferSyn           = XferNames[i].xfer;
+        xferID            = XferNames[i].xferID;
+        xferName          = XferNames[i].xferName;
+        byteOrder         = XferNames[i].byteOrder;
+        vrType            = XferNames[i].vrType;
+        encapsulated      = XferNames[i].encapsulated;
+        JPEGProcess8      = XferNames[i].JPEGProcess8;
+        JPEGProcess12     = XferNames[i].JPEGProcess12;
+        streamCompression = XferNames[i].streamCompression;
     }
     else
     {
-        xferSyn       = EXS_Unknown;
-        xferID        = "";
-        xferName      = ERROR_XferName;
-        byteOrder     = EBO_unknown;
-        vrType        = EVT_Implicit;
-        encapsulated  = EJE_NotEncapsulated;
-        JPEGProcess8  = 0L;
-        JPEGProcess12 = 0L;
+        xferSyn           = EXS_Unknown;
+        xferID            = "";
+        xferName          = ERROR_XferName;
+        byteOrder         = EBO_unknown;
+        vrType            = EVT_Implicit;
+        encapsulated      = EJE_NotEncapsulated;
+        JPEGProcess8      = 0L;
+        JPEGProcess12     = 0L;
+        streamCompression = ESC_none;
     }
     return *this;
 }
@@ -421,14 +458,15 @@ DcmXfer & DcmXfer::operator = ( const DcmXfer &newXfer )
 {
     if ( this != &newXfer )
     {
-        xferSyn       = newXfer.xferSyn;
-        xferID        = newXfer.xferID;
-        xferName      = newXfer.xferName;
-        byteOrder     = newXfer.byteOrder;
-        vrType        = newXfer.vrType;
-        encapsulated  = newXfer.encapsulated;
-        JPEGProcess8  = newXfer.JPEGProcess8;
-        JPEGProcess12 = newXfer.JPEGProcess12;
+        xferSyn           = newXfer.xferSyn;
+        xferID            = newXfer.xferID;
+        xferName          = newXfer.xferName;
+        byteOrder         = newXfer.byteOrder;
+        vrType            = newXfer.vrType;
+        encapsulated      = newXfer.encapsulated;
+        JPEGProcess8      = newXfer.JPEGProcess8;
+        JPEGProcess12     = newXfer.JPEGProcess12;
+        streamCompression = newXfer.streamCompression;
     }
     return *this;
 }
@@ -493,7 +531,11 @@ const E_ByteOrder gLocalByteOrder = FindMachineTransferSyntax();
 /*
  * CVS/RCS Log:
  * $Log: dcxfer.cc,v $
- * Revision 1.18  2002-06-19 15:35:01  meichel
+ * Revision 1.19  2002-08-27 16:56:01  meichel
+ * Initial release of new DICOM I/O stream classes that add support for stream
+ *   compression (deflated little endian explicit VR transfer syntax)
+ *
+ * Revision 1.18  2002/06/19 15:35:01  meichel
  * Fixed typo in transfer syntax name
  *
  * Revision 1.17  2001/11/08 16:17:34  meichel

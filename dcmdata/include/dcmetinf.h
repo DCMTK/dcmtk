@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmMetaInfo
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-25 09:40:56 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-08-27 16:55:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcmetinf.h,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,10 +57,10 @@ private:
     E_TransferSyntax Xfer;
 
     void setPreamble(void);
-    OFBool checkAndReadPreamble(DcmStream & inStream,
+    OFBool checkAndReadPreamble(DcmInputStream & inStream,
 			      E_TransferSyntax & newxfer);	 // out
-    OFBool nextTagIsMeta(DcmStream & inStream);
-    OFCondition readGroupLength(DcmStream & inStream,		// inout
+    OFBool nextTagIsMeta(DcmInputStream & inStream);
+    OFCondition readGroupLength(DcmInputStream & inStream,		// inout
 				const E_TransferSyntax xfer,    // in
                                 const DcmTagKey & xtag,         // in
 				const E_GrpLenEncoding glenc,   // in
@@ -86,12 +86,12 @@ public:
     virtual Uint32 calcElementLength(const E_TransferSyntax xfer,
 				     const E_EncodingType enctype);
 
-    virtual OFCondition read(DcmStream & inStream,
+    virtual OFCondition read(DcmInputStream & inStream,
 			     const E_TransferSyntax xfer = EXS_Unknown,
 			     const E_GrpLenEncoding glenc = EGL_noChange,
 			     const Uint32 maxReadLength = DCM_MaxReadLength);
 
-    virtual OFCondition write(DcmStream & outStream,
+    virtual OFCondition write(DcmOutputStream & outStream,
 			      const E_TransferSyntax oxfer,
 			      const E_EncodingType enctype 
 			      = EET_UndefinedLength);
@@ -110,7 +110,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.h,v $
-** Revision 1.16  2002-04-25 09:40:56  joergr
+** Revision 1.17  2002-08-27 16:55:35  meichel
+** Initial release of new DICOM I/O stream classes that add support for stream
+**   compression (deflated little endian explicit VR transfer syntax)
+**
+** Revision 1.16  2002/04/25 09:40:56  joergr
 ** Added support for XML output of DICOM objects.
 **
 ** Revision 1.15  2001/09/25 17:19:27  meichel

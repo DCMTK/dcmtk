@@ -22,9 +22,9 @@
  *  Purpose: include most dcmdata files that are usually required
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:48:45 $
+ *  Update Date:      $Date: 2002-08-27 16:55:40 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dctk.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,7 +39,8 @@
 // various headers
 #include "dctypes.h"
 #include "dcswap.h"
-#include "dcstream.h"
+#include "dcistrma.h"
+#include "dcostrma.h"
 #include "dcvr.h"
 #include "dcxfer.h"
 #include "dcuid.h"
@@ -112,7 +113,11 @@
 /*
  * CVS/RCS Log:
  * $Log: dctk.h,v $
- * Revision 1.11  2001-06-01 15:48:45  meichel
+ * Revision 1.12  2002-08-27 16:55:40  meichel
+ * Initial release of new DICOM I/O stream classes that add support for stream
+ *   compression (deflated little endian explicit VR transfer syntax)
+ *
+ * Revision 1.11  2001/06/01 15:48:45  meichel
  * Updated copyright header
  *
  * Revision 1.10  2000/03/08 16:26:19  meichel

@@ -22,9 +22,9 @@
  *  Purpose: class DcmSequenceOfItems
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-07-08 14:44:41 $
+ *  Update Date:      $Date: 2002-08-27 16:55:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcsequen.cc,v $
- *  CVS/RCS Revision: $Revision: 1.47 $
+ *  CVS/RCS Revision: $Revision: 1.48 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,6 +58,8 @@ END_EXTERN_C
 #include "dcdebug.h"
 #include "dcmetinf.h"
 #include "dcdeftag.h"
+#include "dcistrma.h"    /* for class DcmInputStream */
+#include "dcostrma.h"    /* for class DcmOutputStream */
 
 
 // ********************************
@@ -406,7 +408,7 @@ OFCondition DcmSequenceOfItems::makeSubObject(DcmObject * & subObject,
 // ********************************
 
 
-OFCondition DcmSequenceOfItems::readTagAndLength(DcmStream & inStream,
+OFCondition DcmSequenceOfItems::readTagAndLength(DcmInputStream & inStream,
                                                  const E_TransferSyntax xfer,
                                                  DcmTag &tag,
                                                  Uint32 & length)
@@ -414,16 +416,18 @@ OFCondition DcmSequenceOfItems::readTagAndLength(DcmStream & inStream,
     Uint16 groupTag = 0xffff;
     Uint16 elementTag = 0xffff;
 
-    OFCondition l_error = inStream.Avail(8);
-    if (l_error == EC_Normal)
+    OFCondition l_error = EC_Normal;
+    if (inStream.avail() < 8) l_error = EC_StreamNotifyClient;
+    
+    if (l_error.good())
     {
         DcmXfer iXfer(xfer);
         const E_ByteOrder iByteOrder = iXfer.getByteOrder();
         if (iByteOrder == EBO_unknown)
             return EC_IllegalCall;
-        inStream.SetPutbackMark();
-        inStream.ReadBytes(&groupTag, 2);
-        inStream.ReadBytes(&elementTag, 2);
+        inStream.mark();
+        inStream.read(&groupTag, 2);
+        inStream.read(&elementTag, 2);
         swapIfNecessary(gLocalByteOrder, iByteOrder, &groupTag, 2, 2);
         swapIfNecessary(gLocalByteOrder, iByteOrder, &elementTag, 2, 2);
         // Tag ist gelesen
@@ -431,7 +435,7 @@ OFCondition DcmSequenceOfItems::readTagAndLength(DcmStream & inStream,
         DcmTag newTag(groupTag, elementTag);
 
         Uint32 valueLength = 0;
-        inStream.ReadBytes(&valueLength, 4);
+        inStream.read(&valueLength, 4);
         swapIfNecessary(gLocalByteOrder, iByteOrder, &valueLength, 4, 4);
         if ((valueLength & 1)&&(valueLength != (Uint32) -1))
         {
@@ -450,7 +454,7 @@ OFCondition DcmSequenceOfItems::readTagAndLength(DcmStream & inStream,
 // ********************************
 
 
-OFCondition DcmSequenceOfItems::readSubItem(DcmStream & inStream,
+OFCondition DcmSequenceOfItems::readSubItem(DcmInputStream & inStream,
                                             const DcmTag &newTag,
                                             const Uint32 newLength,
                                             const E_TransferSyntax xfer,
@@ -461,16 +465,16 @@ OFCondition DcmSequenceOfItems::readSubItem(DcmStream & inStream,
     // For DcmPixelSequence, subObject is always inherited from DcmPixelItem
     DcmObject * subObject = NULL;
     OFCondition l_error = this -> makeSubObject(subObject, newTag, newLength);
-    if ( l_error == EC_Normal && subObject != NULL )
+    if ( l_error.good() && subObject != NULL )
     {
-        inStream.UnsetPutbackMark();
+        // inStream.UnsetPutbackMark(); // not needed anymore with new stream architecture
         itemList->insert(subObject, ELP_next);
         l_error = subObject->read(inStream, xfer, glenc, maxReadLength); // read sub-item        
         return l_error; // prevent subObject from getting deleted
     }
     else if ( l_error == EC_InvalidTag )  // try to recover parsing
     {
-        inStream.Putback();
+        inStream.putback();
         ofConsole.lockCerr() << "Warning: DcmSequenceOfItems::readSubItem(): parse error occured: " << newTag << endl;
         ofConsole.unlockCerr();
         debug(1, ( "Warning: DcmSequenceOfItems::readSubItem(): parse error occured:"
@@ -478,14 +482,16 @@ OFCondition DcmSequenceOfItems::readSubItem(DcmStream & inStream,
     }
     else if ( l_error != EC_SequEnd )
     {
-        inStream.UnsetPutbackMark();
+        // inStream.UnsetPutbackMark(); // not needed anymore with new stream architecture
         ofConsole.lockCerr() << "Error: DcmSequenceOfItems::readSubItem(): cannot create SubItem " << newTag << endl;
         ofConsole.unlockCerr();
         debug(1, ( "Error: DcmSequenceOfItems::readSubItem(): cannot create SubItem"
                 " (0x%4.4hx,0x%4.4hx)", newTag.getGTag(), newTag.getETag() ));
     }
     else
-        inStream.UnsetPutbackMark();
+    {
+        // inStream.UnsetPutbackMark(); // not needed anymore with new stream architecture
+    }
 
     if (subObject) delete subObject; // only executed if makeSubObject() has returned an error
     return l_error;
@@ -495,7 +501,7 @@ OFCondition DcmSequenceOfItems::readSubItem(DcmStream & inStream,
 // ********************************
 
 
-OFCondition DcmSequenceOfItems::read(DcmStream & inStream,
+OFCondition DcmSequenceOfItems::read(DcmInputStream & inStream,
                                      const E_TransferSyntax xfer,
                                      const E_GrpLenEncoding glenc,
                                      const Uint32 maxReadLength)
@@ -504,20 +510,20 @@ OFCondition DcmSequenceOfItems::read(DcmStream & inStream,
         errorFlag = EC_IllegalCall;
     else
     {
-        errorFlag = inStream.GetError();
-        if (errorFlag == EC_Normal && inStream.EndOfStream())
+        errorFlag = inStream.status();
+
+        if (errorFlag.good() && inStream.eos())
             errorFlag = EC_EndOfStream;
-        else if (errorFlag == EC_Normal && fTransferState != ERW_ready)
+        else if (errorFlag.good() && fTransferState != ERW_ready)
         {
             if (fTransferState == ERW_init)
             {
-                fStartPosition = inStream.Tell();   // Position Sequence-Value
+                fStartPosition = inStream.tell();   // Position Sequence-Value
                 fTransferState = ERW_inWork;
             }
 
             itemList->seek( ELP_last ); // append data at end
-            while (!inStream.Fail() && 
-                   (fTransferredBytes < Length || !lastItemComplete ))
+            while (inStream.good() && (fTransferredBytes < Length || !lastItemComplete ))
             {
                 DcmTag newTag;
                 Uint32 newValueLength = 0;
@@ -535,30 +541,30 @@ OFCondition DcmSequenceOfItems::read(DcmStream & inStream,
                     lastItemComplete = OFFalse;
                     errorFlag = readSubItem(inStream, newTag, newValueLength, 
                                             xfer, glenc, maxReadLength);
-                    if ( errorFlag == EC_Normal )
+                    if ( errorFlag.good() )
                         lastItemComplete = OFTrue;
                 }
                 else
                 {
                     errorFlag = itemList->get()->read(inStream, xfer, glenc,
                                                       maxReadLength);
-                    if ( errorFlag == EC_Normal )
+                    if ( errorFlag.good() )
                         lastItemComplete = OFTrue;
                 }
-                fTransferredBytes = inStream.Tell() - fStartPosition;
+                fTransferredBytes = inStream.tell() - fStartPosition;
                                 
                 if ( errorFlag != EC_Normal )
                     break;                      
 
             } //while 
             if ((fTransferredBytes < Length || !lastItemComplete) &&
-                errorFlag == EC_Normal)
+                errorFlag.good())
                 errorFlag = EC_StreamNotifyClient;
         } // else errorFlag
 
         if ( errorFlag == EC_SequEnd )
             errorFlag = EC_Normal;
-        if ( errorFlag == EC_Normal )
+        if ( errorFlag.good() )
             fTransferState = ERW_ready;      // sequence is complete
     }
     return errorFlag;
@@ -567,24 +573,24 @@ OFCondition DcmSequenceOfItems::read(DcmStream & inStream,
 
 // ********************************
 
-OFCondition DcmSequenceOfItems::write(DcmStream & outStream,
+OFCondition DcmSequenceOfItems::write(DcmOutputStream & outStream,
                                       const E_TransferSyntax oxfer,
                                       const E_EncodingType enctype)
 {
   if (fTransferState == ERW_notInitialized) errorFlag = EC_IllegalCall;
   else
   {
-    errorFlag = outStream.GetError();
-    if(errorFlag == EC_Normal && fTransferState != ERW_ready)
+    errorFlag = outStream.status();
+    if (errorFlag.good() && fTransferState != ERW_ready)
     {
       if (fTransferState == ERW_init )
       {
-        if (outStream.Avail() >= DCM_TagInfoLength) // header might be smaller than this
+        if (outStream.avail() >= DCM_TagInfoLength) // header might be smaller than this
         {
           if ( enctype == EET_ExplicitLength ) Length = this->getLength(oxfer, enctype); else Length = DCM_UndefinedLength;
           Uint32 written_bytes = 0;
           errorFlag = this -> writeTagAndLength(outStream, oxfer, written_bytes);
-          if ( errorFlag == EC_Normal )
+          if ( errorFlag.good() )
           {
             fTransferState = ERW_inWork;
             itemList->seek(ELP_first);
@@ -603,26 +609,28 @@ OFCondition DcmSequenceOfItems::write(DcmStream & outStream,
           {
             dO = itemList->get();
             if (dO->transferState() != ERW_ready) errorFlag = dO->write(outStream, oxfer, enctype);
-          } while (errorFlag == EC_Normal && itemList->seek(ELP_next));
+          } while (errorFlag.good() && itemList->seek(ELP_next));
         }
-        if (errorFlag == EC_Normal)
+        if (errorFlag.good())
         {
           fTransferState = ERW_ready;
-          if (Length == DCM_UndefinedLength && outStream.Avail() >= 8 )
+          if (Length == DCM_UndefinedLength)
           {
-            // write sequence delimitation item
-            DcmTag delim( DCM_SequenceDelimitationItem );
-            errorFlag = this -> writeTag(outStream, delim, oxfer);
-            Uint32 delimLen = 0L;
-            outStream.WriteBytes(&delimLen, 4); // 4 bytes length
-          }
-          else if (outStream.Avail() < 8)
-          {
-            // Every subelement of the item was written but it
-            // is not possible to write the delimination item 
-            // into the buffer. 
-            fTransferState = ERW_inWork;
-            errorFlag = EC_StreamNotifyClient;
+            if (outStream.avail() >= 8)
+            {
+                // write sequence delimitation item
+                DcmTag delim( DCM_SequenceDelimitationItem );
+                errorFlag = this->writeTag(outStream, delim, oxfer);
+                Uint32 delimLen = 0L;
+                outStream.write(&delimLen, 4); // 4 bytes length
+            }
+            else
+            {
+                // the complete sequence is written but it
+                // is not possible to write the delimination item into the buffer.
+                errorFlag = EC_StreamNotifyClient;
+                fTransferState = ERW_inWork;
+            }
           }
         }
       }
@@ -634,12 +642,12 @@ OFCondition DcmSequenceOfItems::write(DcmStream & outStream,
 // ********************************
 
 OFCondition DcmSequenceOfItems::writeTagAndVR(
-  DcmStream & outStream, 
+  DcmOutputStream & outStream, 
   const DcmTag & tag,
   DcmEVR vr,
   const E_TransferSyntax oxfer)
 {
-  OFCondition l_error = outStream.GetError();
+  OFCondition l_error = outStream.status();
   if (l_error.good())
   {
       /* write the tag information (a total of 4 bytes, group number and element */
@@ -662,7 +670,7 @@ OFCondition DcmSequenceOfItems::writeTagAndVR(
           const char *vrname = myvr.getValidVRName();
 
           /* write data type name to the stream (a total of 2 bytes) */
-          outStream.WriteBytes(vrname, 2);
+          outStream.write(vrname, 2);
 
           /* create another data type object on the basis of the above created object */
           DcmVR outvr(myvr.getValidEVR());
@@ -676,7 +684,7 @@ OFCondition DcmSequenceOfItems::writeTagAndVR(
           if (outvr.usesExtendedLengthEncoding())
           {
             Uint16 reserved = 0;
-            outStream.WriteBytes(&reserved, 2);                                 // write 2 reserved bytes to stream
+            outStream.write(&reserved, 2);  // write 2 reserved bytes to stream
           }
       }        
   }
@@ -685,24 +693,24 @@ OFCondition DcmSequenceOfItems::writeTagAndVR(
   return l_error;
 }
 
-OFCondition DcmSequenceOfItems::writeSignatureFormat(DcmStream & outStream,
+OFCondition DcmSequenceOfItems::writeSignatureFormat(DcmOutputStream & outStream,
                                       const E_TransferSyntax oxfer,
                                       const E_EncodingType enctype)
 {
   if (fTransferState == ERW_notInitialized) errorFlag = EC_IllegalCall;
   else
   {
-    errorFlag = outStream.GetError();
-    if(errorFlag == EC_Normal && fTransferState != ERW_ready)
+    errorFlag = outStream.status();
+    if (errorFlag.good() && fTransferState != ERW_ready)
     {
       if (fTransferState == ERW_init )
       {
-        if (outStream.Avail() >= DCM_TagInfoLength) // header might be smaller than this
+        if (outStream.avail() >= DCM_TagInfoLength) // header might be smaller than this
         {
           if ( enctype == EET_ExplicitLength ) Length = this->getLength(oxfer, enctype); else Length = DCM_UndefinedLength;
           errorFlag = writeTagAndVR(outStream, Tag, getVR(), oxfer);
           /* we don't write the sequence length */
-          if ( errorFlag == EC_Normal )
+          if ( errorFlag.good() )
           {
             fTransferState = ERW_inWork;
             itemList->seek(ELP_first);
@@ -721,13 +729,13 @@ OFCondition DcmSequenceOfItems::writeSignatureFormat(DcmStream & outStream,
           {
             dO = itemList->get();
             if (dO->transferState() != ERW_ready) errorFlag = dO->writeSignatureFormat(outStream, oxfer, enctype);
-          } while (errorFlag == EC_Normal && itemList->seek(ELP_next));
+          } while (errorFlag.good() && itemList->seek(ELP_next));
         }
-        if (errorFlag == EC_Normal)
+        if (errorFlag.good())
         {
           fTransferState = ERW_ready;
           /* we always write a sequence delimitation item tag, but no length */
-          if (outStream.Avail() >= 4 )
+          if (outStream.avail() >= 4 )
           {
             // write sequence delimitation item
             DcmTag delim( DCM_SequenceDelimitationItem );
@@ -1235,7 +1243,11 @@ OFBool DcmSequenceOfItems::containsUnknownVR() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.47  2002-07-08 14:44:41  meichel
+** Revision 1.48  2002-08-27 16:55:56  meichel
+** Initial release of new DICOM I/O stream classes that add support for stream
+**   compression (deflated little endian explicit VR transfer syntax)
+**
+** Revision 1.47  2002/07/08 14:44:41  meichel
 ** Improved dcmdata behaviour when reading odd tag length. Depending on the
 **   global boolean flag dcmAcceptOddAttributeLength, the parser now either accepts
 **   odd length attributes or implements the old behaviour, i.e. assumes a real

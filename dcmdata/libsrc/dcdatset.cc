@@ -22,9 +22,9 @@
  *  Purpose: class DcmDataset
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-07-10 11:47:45 $
+ *  Update Date:      $Date: 2002-08-27 16:55:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdatset.cc,v $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,7 +47,10 @@
 #include "dcdebug.h"
 #include "dcpixel.h"
 #include "dcdeftag.h"
-
+#include "dcostrma.h"    /* for class DcmOutputStream */
+#include "dcostrmf.h"    /* for class DcmOutputFileStream */
+#include "dcistrma.h"    /* for class DcmInputStream */
+#include "dcistrmf.h"    /* for class DcmInputFileStream */
 
 
 // ********************************
@@ -102,8 +105,11 @@ OFBool DcmDataset::canWriteXfer(const E_TransferSyntax newXfer,
     if (Xfer == EXS_Unknown)
         originalXfer = oldXfer;
 
-    return DcmItem::canWriteXfer(newXfer, originalXfer);
+    /* Check stream compression for this transfer syntax */
+    DcmXfer xf(newXfer);
+    if (xf.getStreamCompression() == ESC_unsupported) return OFFalse;
 
+    return DcmItem::canWriteXfer(newXfer, originalXfer);
 }
 
 // ********************************
@@ -163,7 +169,7 @@ OFCondition DcmDataset::writeXML(ostream &out,
 
 // ********************************
 
-OFCondition DcmDataset::read(DcmStream & inStream,
+OFCondition DcmDataset::read(DcmInputStream & inStream,
                              const E_TransferSyntax xfer,
                              const E_GrpLenEncoding glenc,
                              const Uint32 maxReadLength)
@@ -185,15 +191,15 @@ OFCondition DcmDataset::read(DcmStream & inStream,
      */
 {
     /* check if the stream variable reported an error */
-    errorFlag = inStream.GetError();
+    errorFlag = inStream.status();
 
     /* if the stream did not report an error but the stream */
     /* is empty, set the error flag correspondingly */
-    if (errorFlag == EC_Normal && inStream.EndOfStream())
+    if (errorFlag == EC_Normal && inStream.eos())
         errorFlag = EC_EndOfStream;
     /* else if the stream did not report an error but the transfer */
     /* state does not equal ERW_ready, go ahead and do something */
-    else if (errorFlag == EC_Normal && fTransferState != ERW_ready )
+    else if (errorFlag.good() && fTransferState != ERW_ready )
     {
         /* if the transfer state is ERW_init, go ahead and check the transfer syntax which was passed */
         if (fTransferState == ERW_init)
@@ -206,18 +212,35 @@ OFCondition DcmDataset::read(DcmStream & inStream,
             else
                 Xfer = xfer;
 
-            //  The following line is a problem since DcmItem::read needs the ERW_init state
-            //                          fTransferState = ERW_inWork; 
+            /* Check stream compression for this transfer syntax */
+            DcmXfer xf(Xfer);
+
+            E_StreamCompression sc = xf.getStreamCompression();
+            switch (sc)
+            {
+              case ESC_none:
+                // nothing to do
+                break;
+              case ESC_unsupported:
+                // stream compressed transfer syntax that we cannot create; bail out.
+                if (errorFlag.good()) errorFlag = EC_UnsupportedEncoding;
+                break;
+              default:
+                // supported stream compressed transfer syntax, install filter
+                errorFlag = inStream.installCompressionFilter(sc);
+                break;
+            }
+
         }
         /* pass processing the task to class DcmItem */
-        errorFlag = DcmItem::read(inStream, Xfer, glenc, maxReadLength);
+        if (errorFlag.good()) errorFlag = DcmItem::read(inStream, Xfer, glenc, maxReadLength);
 
     } 
 
     /* if the error flag shows ok or that the end of the stream was encountered, */
     /* we have read information for this particular data set or command; in this */
     /* case, we need to do something for the current dataset object */
-    if ( errorFlag == EC_Normal || errorFlag == EC_EndOfStream )
+    if ( errorFlag.good() || errorFlag == EC_EndOfStream )
     {
         /* set the error flag to ok */
         errorFlag = EC_Normal;
@@ -239,7 +262,7 @@ OFCondition DcmDataset::read(DcmStream & inStream,
 
 // ********************************
 
-OFCondition DcmDataset::write(DcmStream & outStream,
+OFCondition DcmDataset::write(DcmOutputStream & outStream,
                               const E_TransferSyntax oxfer,
                               const E_EncodingType enctype)
 {
@@ -248,7 +271,7 @@ OFCondition DcmDataset::write(DcmStream & outStream,
 
 // ********************************
 
-OFCondition DcmDataset::write(DcmStream & outStream,
+OFCondition DcmDataset::write(DcmOutputStream & outStream,
                               const E_TransferSyntax oxfer,
                               const E_EncodingType enctype,
                               const E_GrpLenEncoding glenc,
@@ -282,17 +305,16 @@ OFCondition DcmDataset::write(DcmStream & outStream,
   if (fTransferState == ERW_notInitialized) errorFlag = EC_IllegalCall;
   else
   {
-    /* if this is not an illegal call, do something */
-
-    /* Determine the transfer syntax which shall be used. Either we use the one which was passed, */
-    /* or (if it's an unknown tranfer syntax) we use the one which is contained in this->Xfer. */
-    E_TransferSyntax newXfer = oxfer;
-    if (newXfer == EXS_Unknown) newXfer = Xfer;
-
     /* check if the stream reported an error so far; if not, we can go ahead and write some data to it */
-    errorFlag = outStream.GetError();
-    if (errorFlag == EC_Normal && fTransferState != ERW_ready)
+    errorFlag = outStream.status();
+    
+    if (errorFlag.good() && fTransferState != ERW_ready)
     {
+      /* Determine the transfer syntax which shall be used. Either we use the one which was passed, */
+      /* or (if it's an unknown tranfer syntax) we use the one which is contained in this->Xfer. */
+      E_TransferSyntax newXfer = oxfer;
+      if (newXfer == EXS_Unknown) newXfer = Xfer;
+
       /* if this function was called for the first time for the dataset object, the transferState is still */
       /* set to ERW_init. In this case, we need to take care of group length and padding elements according */
       /* to the strategies which are specified in glenc and padenc. Additionally, we need to set the element */
@@ -300,6 +322,25 @@ OFCondition DcmDataset::write(DcmStream & outStream,
       /* so that this scenario will only be executed once for this data set object. */
       if (fTransferState == ERW_init)
       {
+
+        /* Check stream compression for this transfer syntax */
+        DcmXfer xf(newXfer);
+        E_StreamCompression sc = xf.getStreamCompression();
+        switch (sc)
+        {
+          case ESC_none:
+            // nothing to do
+            break;
+          case ESC_unsupported:
+            // stream compressed transfer syntax that we cannot create; bail out.
+            if (errorFlag.good()) errorFlag = EC_UnsupportedEncoding;
+            break;
+          default:
+            // supported stream compressed transfer syntax, install filter
+            errorFlag = outStream.installCompressionFilter(sc);
+            break;
+        }
+
         /* take care of group length and padding elements, according to what is specified in glenc and padenc */
         computeGroupLengthAndPadding(glenc, padenc, newXfer, enctype, padlen, subPadlen, instanceLength);
         elementList->seek( ELP_first );
@@ -331,7 +372,7 @@ OFCondition DcmDataset::write(DcmStream & outStream,
     }
   }
 
-    /* return the corresponding result value */
+  /* return the corresponding result value */
   return errorFlag;
 }
 
@@ -347,9 +388,11 @@ OFCondition DcmDataset::loadFile(const char *filename,
     if ((filename != NULL) && (strlen(filename) > 0))
     {
         /* open file for input */
-        DcmFileStream fileStream(filename, DCM_ReadMode);
+        DcmInputFileStream fileStream(filename);
+
         /* check stream status */
-        l_error = fileStream.GetError();
+        l_error = fileStream.status();
+
         if (l_error.good())
         {
             /* read data from file */
@@ -376,9 +419,10 @@ OFCondition DcmDataset::saveFile(const char *fileName,
     if ((fileName != NULL) && (strlen(fileName) > 0))
     {
         /* open file for output */
-        DcmFileStream fileStream(fileName, DCM_WriteMode);
+        DcmOutputFileStream fileStream(fileName);
+
         /* check stream status */
-        l_error = fileStream.GetError();
+        l_error = fileStream.status();
         if (l_error.good())
         {
             /* write data to file */
@@ -392,7 +436,7 @@ OFCondition DcmDataset::saveFile(const char *fileName,
 
 // ********************************
 
-OFCondition DcmDataset::writeSignatureFormat(DcmStream & outStream,
+OFCondition DcmDataset::writeSignatureFormat(DcmOutputStream & outStream,
 					 const E_TransferSyntax oxfer,
 					 const E_EncodingType enctype)
 {
@@ -401,8 +445,9 @@ OFCondition DcmDataset::writeSignatureFormat(DcmStream & outStream,
   {
     E_TransferSyntax newXfer = oxfer;
     if (newXfer == EXS_Unknown) newXfer = Xfer;
-    errorFlag = outStream.GetError();
-    if (errorFlag == EC_Normal && fTransferState != ERW_ready)
+
+    errorFlag = outStream.status();
+    if (errorFlag.good() && fTransferState != ERW_ready)
     {
       if (fTransferState == ERW_init)
       {
@@ -534,7 +579,11 @@ DcmDataset::removeAllButOriginalRepresentations()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.cc,v $
-** Revision 1.28  2002-07-10 11:47:45  meichel
+** Revision 1.29  2002-08-27 16:55:44  meichel
+** Initial release of new DICOM I/O stream classes that add support for stream
+**   compression (deflated little endian explicit VR transfer syntax)
+**
+** Revision 1.28  2002/07/10 11:47:45  meichel
 ** Added workaround for memory leak in handling of compressed representations
 **   Conditional compilation with PIXELSTACK_MEMORY_LEAK_WORKAROUND #defined.
 **

@@ -6,8 +6,7 @@ tvrdatim.o: tvrdatim.cc ../../config/include/osconfig.h \
  ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
  ../include/dcelem.h ../include/dcobject.h \
  ../../ofstd/include/ofglobal.h ../include/dcxfer.h ../include/dcvr.h \
- ../include/dcstream.h ../include/dctag.h ../include/dctagkey.h \
- ../include/dcdicent.h ../include/dclist.h ../include/dcstack.h \
- ../../ofstd/include/ofdate.h ../include/dcvrtm.h \
+ ../include/dctag.h ../include/dctagkey.h ../include/dclist.h \
+ ../include/dcstack.h ../../ofstd/include/ofdate.h ../include/dcvrtm.h \
  ../../ofstd/include/oftime.h ../include/dcvrdt.h \
  ../../ofstd/include/ofdatime.h ../include/dcdeftag.h

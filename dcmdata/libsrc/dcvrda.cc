@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmDate
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-11 12:31:34 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-08-27 16:55:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrda.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,9 @@
 #include "dcvrda.h"
 #include "dcdebug.h"
 
+BEGIN_EXTERN_C
+#include <stdio.h>
+END_EXTERN_C
 
 // ********************************
 
@@ -223,7 +226,11 @@ DcmDate::getISOFormattedDateFromString(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrda.cc,v $
-** Revision 1.12  2002-04-11 12:31:34  joergr
+** Revision 1.13  2002-08-27 16:55:58  meichel
+** Initial release of new DICOM I/O stream classes that add support for stream
+**   compression (deflated little endian explicit VR transfer syntax)
+**
+** Revision 1.12  2002/04/11 12:31:34  joergr
 ** Enhanced DICOM date, time and date/time classes. Added support for new
 ** standard date and time functions.
 **

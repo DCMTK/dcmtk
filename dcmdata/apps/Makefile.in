@@ -18,7 +18,7 @@ ofstddir=$(top_srcdir)/../ofstd
 LOCALINCLUDES=-I$(ofstddir)/include -I$(includedir)/ofstd
 
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(libdir)
-LOCALLIBS = -ldcmdata -lofstd
+LOCALLIBS = -ldcmdata -lofstd $(ZLIBLIBS)
 
 objs= dcmftest.o dcmconv.o dcmdump.o dump2dcm.o dcmgpdir.o dcm2xml.o dcmcrle.o dcmdrle.o
 

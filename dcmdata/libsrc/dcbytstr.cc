@@ -22,9 +22,9 @@
  *  Purpose: class DcmByteString
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-07-08 14:44:38 $
+ *  Update Date:      $Date: 2002-08-27 16:55:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcbytstr.cc,v $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -428,7 +428,7 @@ OFCondition DcmByteString::clear(void)
 
 // ********************************
 
-OFCondition DcmByteString::write(DcmStream & outStream,
+OFCondition DcmByteString::write(DcmOutputStream & outStream,
                                  const E_TransferSyntax oxfer,
                                  const E_EncodingType enctype)
 {
@@ -443,7 +443,7 @@ OFCondition DcmByteString::write(DcmStream & outStream,
 
 // ********************************
 
-OFCondition DcmByteString::writeSignatureFormat(DcmStream & outStream,
+OFCondition DcmByteString::writeSignatureFormat(DcmOutputStream & outStream,
                                  const E_TransferSyntax oxfer,
                                  const E_EncodingType enctype)
 {
@@ -547,7 +547,11 @@ normalizeString(
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
-** Revision 1.33  2002-07-08 14:44:38  meichel
+** Revision 1.34  2002-08-27 16:55:43  meichel
+** Initial release of new DICOM I/O stream classes that add support for stream
+**   compression (deflated little endian explicit VR transfer syntax)
+**
+** Revision 1.33  2002/07/08 14:44:38  meichel
 ** Improved dcmdata behaviour when reading odd tag length. Depending on the
 **   global boolean flag dcmAcceptOddAttributeLength, the parser now either accepts
 **   odd length attributes or implements the old behaviour, i.e. assumes a real

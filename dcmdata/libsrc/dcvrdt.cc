@@ -22,9 +22,9 @@
  *  Purpose: class DcmDateTime
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-06-20 12:06:17 $
+ *  Update Date:      $Date: 2002-08-27 16:55:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrdt.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,6 +39,10 @@
 #include "dcdebug.h"
 #include "ofstring.h"
 #include "ofstd.h"
+
+BEGIN_EXTERN_C
+#include <stdio.h>
+END_EXTERN_C
 
 // ********************************
 
@@ -307,7 +311,11 @@ DcmDateTime::getISOFormattedDateTimeFromString(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrdt.cc,v $
-** Revision 1.20  2002-06-20 12:06:17  meichel
+** Revision 1.21  2002-08-27 16:55:59  meichel
+** Initial release of new DICOM I/O stream classes that add support for stream
+**   compression (deflated little endian explicit VR transfer syntax)
+**
+** Revision 1.20  2002/06/20 12:06:17  meichel
 ** Changed toolkit to use OFStandard::atof instead of atof, strtod or
 **   sscanf for all string to double conversions that are supposed to
 **   be locale independent

@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmIntegerString
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-25 10:30:35 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-08-27 16:55:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvris.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,10 @@
 #include "dcvris.h"
 #include "dcdebug.h"
 #include "ofstring.h"
+
+BEGIN_EXTERN_C
+#include <stdio.h>
+END_EXTERN_C
 
 
 // ********************************
@@ -108,7 +112,11 @@ DcmIntegerString::getOFString(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvris.cc,v $
-** Revision 1.15  2002-04-25 10:30:35  joergr
+** Revision 1.16  2002-08-27 16:55:59  meichel
+** Initial release of new DICOM I/O stream classes that add support for stream
+**   compression (deflated little endian explicit VR transfer syntax)
+**
+** Revision 1.15  2002/04/25 10:30:35  joergr
 ** Removed getOFStringArray() implementation.
 **
 ** Revision 1.14  2001/09/25 17:19:57  meichel

@@ -21,10 +21,10 @@
  *
  *  Purpose: Error handling, codes and strings
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-08-12 09:56:59 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-08-27 16:55:32 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcerror.h,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -76,6 +76,9 @@ extern const OFCondition EC_WrongStreamMode;
 extern const OFCondition EC_ItemEnd;
 extern const OFCondition EC_RepresentationNotFound;
 extern const OFCondition EC_CannotChangeRepresentation;
+extern const OFCondition EC_UnsupportedEncoding;
+extern const OFCondition EC_PutbackFailed;
+extern const OFCondition EC_DoubleCompressionFilters;
 
 
 #ifndef OFCONDITION_STRICT_MODE
@@ -96,7 +99,11 @@ extern const char *dcmErrorConditionToString(OFCondition cond);
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.h,v $
-** Revision 1.16  2002-08-12 09:56:59  wilkens
+** Revision 1.17  2002-08-27 16:55:32  meichel
+** Initial release of new DICOM I/O stream classes that add support for stream
+**   compression (deflated little endian explicit VR transfer syntax)
+**
+** Revision 1.16  2002/08/12 09:56:59  wilkens
 ** Added module number (for error codes) for new module dcmppswm.
 **
 ** Revision 1.15  2002/05/28 08:44:21  wilkens

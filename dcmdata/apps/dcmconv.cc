@@ -22,9 +22,9 @@
  *  Purpose: Convert dicom file encoding
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-21 10:14:14 $
+ *  Update Date:      $Date: 2002-08-27 16:55:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmconv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,7 +55,9 @@ END_EXTERN_C
 #include "dcdebug.h"
 #include "cmdlnarg.h"
 #include "ofconapp.h"
-#include "dcuid.h"    /* for dcmtk version name */
+#include "dcuid.h"       /* for dcmtk version name */
+#include "dcostrmz.h"    /* for dcmZlibCompressionLevel */
+#include "dcistrmz.h"    /* for dcmZlibExpectRFC1950Encoding */
 
 #define OFFIS_CONSOLE_APPLICATION "dcmconv"
 
@@ -92,6 +94,7 @@ int main(int argc, char *argv[])
   E_PaddingEncoding opt_opadenc = EPD_noChange;
   OFCmdUnsignedInt opt_filepad = 0;
   OFCmdUnsignedInt opt_itempad = 0;
+  OFCmdUnsignedInt opt_compressionLevel = 0;
 
   OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Convert DICOM file encoding", rcsid);
   OFCommandLine cmd;
@@ -121,6 +124,11 @@ int main(int argc, char *argv[])
     cmd.addSubGroup("automatic data correction:");
      cmd.addOption("--enable-correction",       "+dc",       "enable automatic data correction (default)");
      cmd.addOption("--disable-correction",      "-dc",       "disable automatic data correction");
+#ifdef WITH_ZLIB
+    cmd.addSubGroup("bitstream format of deflated input:");
+     cmd.addOption("--bitstream-deflated",      "+bd",       "expect deflated bitstream (default)");
+     cmd.addOption("--bitstream-zlib",          "+bz",       "expect deflated zlib bitstream");
+#endif
 
   cmd.addGroup("output options:");
     cmd.addSubGroup("output file format:");
@@ -131,6 +139,9 @@ int main(int argc, char *argv[])
       cmd.addOption("--write-xfer-little",      "+te",       "write with explicit VR little endian TS");
       cmd.addOption("--write-xfer-big",         "+tb",       "write with explicit VR big endian TS");
       cmd.addOption("--write-xfer-implicit",    "+ti",       "write with implicit VR little endian TS");
+#ifdef WITH_ZLIB
+      cmd.addOption("--write-xfer-deflated",    "+td",       "write with deflated expl. VR little endian TS");
+#endif
     cmd.addSubGroup("post-1993 value representations:");
       cmd.addOption("--enable-new-vr",          "+u",        "enable support for new VRs (UN/UT) (default)");
       cmd.addOption("--disable-new-vr",         "-u",        "disable support for new VRs, convert to OB");
@@ -146,6 +157,11 @@ int main(int argc, char *argv[])
       cmd.addOption("--padding-off",            "-p",        "no padding (implicit if --write-dataset)");
       cmd.addOption("--padding-create",         "+p",    2,  "[f]ile-pad [i]tem-pad: integer",
                                                              "align file on multiple of f bytes\nand items on multiple of i bytes");
+#ifdef WITH_ZLIB
+    cmd.addSubGroup("deflate compression level (only with --write-xfer-deflated:");
+      cmd.addOption("--compression-level",      "+cl",   1,  "compression level: 0-9 (default 6)",
+                                                             "0=uncompressed, 1=fastest, 9=best compression");
+#endif
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -207,6 +223,19 @@ int main(int argc, char *argv[])
       }
       cmd.endOptionBlock();
 
+#ifdef WITH_ZLIB
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--bitstream-deflated"))
+      {
+        dcmZlibExpectRFC1950Encoding.set(OFFalse);
+      }
+      if (cmd.findOption("--bitstream-zlib"))
+      {
+        dcmZlibExpectRFC1950Encoding.set(OFTrue);
+      }
+      cmd.endOptionBlock();
+#endif
+
       cmd.beginOptionBlock();
       if (cmd.findOption("--write-file")) opt_oDataset = OFFalse;
       if (cmd.findOption("--write-dataset")) opt_oDataset = OFTrue;
@@ -217,6 +246,9 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--write-xfer-little")) opt_oxfer = EXS_LittleEndianExplicit;
       if (cmd.findOption("--write-xfer-big")) opt_oxfer = EXS_BigEndianExplicit;
       if (cmd.findOption("--write-xfer-implicit")) opt_oxfer = EXS_LittleEndianImplicit;
+#ifdef WITH_ZLIB
+      if (cmd.findOption("--write-xfer-deflated")) opt_oxfer = EXS_DeflatedLittleEndianExplicit;
+#endif
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
@@ -258,6 +290,19 @@ int main(int argc, char *argv[])
           opt_opadenc = EPD_withPadding;
       }
       cmd.endOptionBlock();
+
+#ifdef WITH_ZLIB
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--compression-level"))
+      {
+
+          if (opt_oxfer != EXS_DeflatedLittleEndianExplicit) 
+            app.printError("--compression-level only allowed with --write-xfer-deflated");
+          app.checkValue(cmd.getValueAndCheckMinMax(opt_compressionLevel, 0, 9));
+          dcmZlibCompressionLevel.set((int) opt_compressionLevel);
+      }
+      cmd.endOptionBlock();
+#endif
 
     }
 
@@ -348,7 +393,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
-** Revision 1.35  2002-08-21 10:14:14  meichel
+** Revision 1.36  2002-08-27 16:55:25  meichel
+** Initial release of new DICOM I/O stream classes that add support for stream
+**   compression (deflated little endian explicit VR transfer syntax)
+**
+** Revision 1.35  2002/08/21 10:14:14  meichel
 ** Adapted code to new loadFile and saveFile methods, thus removing direct
 **   use of the DICOM stream classes.
 **

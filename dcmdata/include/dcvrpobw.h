@@ -25,9 +25,9 @@
  *  not be used directly in applications. No identification exists.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:19:33 $
+ *  Update Date:      $Date: 2002-08-27 16:55:40 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrpobw.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,20 +59,20 @@ public:
     DcmPolymorphOBOW &operator=(const DcmPolymorphOBOW &obj);
 
     virtual OFCondition read(
-	DcmStream & inStream,
+	DcmInputStream & inStream,
 	const E_TransferSyntax ixfer,
 	const E_GrpLenEncoding glenc,
 	const Uint32 maxReadLength);
 
     virtual OFCondition write(
-	DcmStream & outStream,
+	DcmOutputStream & outStream,
 	const E_TransferSyntax oxfer,
 	const E_EncodingType enctype = EET_UndefinedLength);
 
     /** special write method for creation of digital signatures
      */
     virtual OFCondition writeSignatureFormat(
-        DcmStream & outStream,
+        DcmOutputStream & outStream,
 	const E_TransferSyntax oxfer,
 	const E_EncodingType enctype = EET_UndefinedLength);
 
@@ -107,7 +107,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrpobw.h,v $
-** Revision 1.9  2001-09-25 17:19:33  meichel
+** Revision 1.10  2002-08-27 16:55:40  meichel
+** Initial release of new DICOM I/O stream classes that add support for stream
+**   compression (deflated little endian explicit VR transfer syntax)
+**
+** Revision 1.9  2001/09/25 17:19:33  meichel
 ** Adapted dcmdata to class OFCondition
 **
 ** Revision 1.8  2001/06/01 15:48:52  meichel

@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2001-10-12 10:18:26 $
+** Update Date:		$Date: 2002-08-27 17:00:59 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/dimse.h,v $
-** CVS/RCS Revision:	$Revision: 1.11 $
+** CVS/RCS Revision:	$Revision: 1.12 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -84,10 +84,7 @@
 #include "dcdatset.h"
 #include "ofglobal.h"
 
-/*
- * Constant Definitions
- */
-
+class DcmOutputFileStream;
 
 /* Global flag to enable/disable workaround code for some buggy Store SCUs
  * in DIMSE_storeProvider().  If enabled, an illegal space-padding in the
@@ -968,13 +965,13 @@ DIMSE_createFilestream(
 		     T_ASC_PresentationContextID presIdCmd,
 		     int writeMetaheader,
 		     /* out */
-		     DcmFileStream **filestream);
+		     DcmOutputFileStream **filestream);
 
 OFCondition
 DIMSE_receiveDataSetInFile(T_ASC_Association *assoc,
 		     T_DIMSE_BlockingMode blocking, int timeout, 
 		     T_ASC_PresentationContextID *presID,
-		     DcmStream *filestream,
+		     DcmOutputStream *filestream,
 		     DIMSE_ProgressCallback callback, void *callbackData);
 
 /*
@@ -1020,7 +1017,11 @@ void DIMSE_printMessage(ostream& outstream, T_DIMSE_Message &msg, DcmItem *datas
 /*
 ** CVS Log
 ** $Log: dimse.h,v $
-** Revision 1.11  2001-10-12 10:18:26  meichel
+** Revision 1.12  2002-08-27 17:00:59  meichel
+** Initial release of new DICOM I/O stream classes that add support for stream
+**   compression (deflated little endian explicit VR transfer syntax)
+**
+** Revision 1.11  2001/10/12 10:18:26  meichel
 ** Replaced the CONDITION types, constants and functions in the dcmnet module
 **   by an OFCondition based implementation which eliminates the global condition
 **   stack.  This is a major change, caveat emptor!

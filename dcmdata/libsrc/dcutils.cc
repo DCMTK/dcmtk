@@ -22,9 +22,9 @@
  *  Purpose: Helper functions for accessing DICOM datasets
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:12 $
+ *  Update Date:      $Date: 2002-08-27 16:55:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dcutils.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,6 +32,7 @@
  */
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcutils.h"
 
 #ifdef HAVE_STDLIB_H
 #ifndef  _BCB4
@@ -44,11 +45,31 @@ END_EXTERN_C
 #endif
 #endif
 
+BEGIN_EXTERN_C
 #include <ctype.h>
-#include "ofstring.h"
-#include "dcutils.h"
-#include "dctk.h"
+END_EXTERN_C
 
+#include "ofstring.h"
+#include "dcitem.h"
+#include "dcvrae.h"
+#include "dcvras.h"
+#include "dcvrcs.h"
+#include "dcvrda.h"
+#include "dcvrds.h"
+#include "dcvrdt.h"
+#include "dcvris.h"
+#include "dcvrtm.h"
+#include "dcvrui.h"
+#include "dcvrlo.h"
+#include "dcvrlt.h"
+#include "dcvrpn.h"
+#include "dcvrsh.h"
+#include "dcvrst.h"
+#include "dcvrut.h"
+#include "dcvrss.h"
+#include "dcvrus.h"
+#include "dcvrsl.h"
+#include "dcvrul.h"
 
 // **********************************************
 
@@ -582,7 +603,11 @@ OFBool deleteAttribute( DcmItem *item, DcmObject *attribute )
 /*
  * CVS/RCS Log:
  * $Log: dcutils.cc,v $
- * Revision 1.11  2001-06-01 15:49:12  meichel
+ * Revision 1.12  2002-08-27 16:55:58  meichel
+ * Initial release of new DICOM I/O stream classes that add support for stream
+ *   compression (deflated little endian explicit VR transfer syntax)
+ *
+ * Revision 1.11  2001/06/01 15:49:12  meichel
  * Updated copyright header
  *
  * Revision 1.10  2000/03/08 16:26:43  meichel

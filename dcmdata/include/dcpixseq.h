@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmPixelSequence
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-05-24 14:51:42 $
+ *  Update Date:      $Date: 2002-08-27 16:55:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpixseq.h,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -103,19 +103,19 @@ public:
     virtual OFBool canWriteXfer(const E_TransferSyntax newXfer,
                               const E_TransferSyntax oldXfer);
 
-    virtual OFCondition read(DcmStream & inStream,
+    virtual OFCondition read(DcmInputStream & inStream,
                              const E_TransferSyntax ixfer,
                              const E_GrpLenEncoding glenc = EGL_noChange,
                              const Uint32 maxReadLength 
                              = DCM_MaxReadLength);
 
-    virtual OFCondition write(DcmStream & outStream,
+    virtual OFCondition write(DcmOutputStream & outStream,
                               const E_TransferSyntax oxfer,
                               const E_EncodingType /*enctype*/);
 
     /** special write method for creation of digital signatures
      */
-    virtual OFCondition writeSignatureFormat(DcmStream & outStream,
+    virtual OFCondition writeSignatureFormat(DcmOutputStream & outStream,
 					 const E_TransferSyntax oxfer,
 					 const E_EncodingType enctype 
 					 = EET_UndefinedLength);
@@ -141,7 +141,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.h,v $
-** Revision 1.23  2002-05-24 14:51:42  meichel
+** Revision 1.24  2002-08-27 16:55:38  meichel
+** Initial release of new DICOM I/O stream classes that add support for stream
+**   compression (deflated little endian explicit VR transfer syntax)
+**
+** Revision 1.23  2002/05/24 14:51:42  meichel
 ** Moved helper methods that are useful for different compression techniques
 **   from module dcmjpeg to module dcmdata
 **

@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmItem
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-08-02 08:42:44 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-08-27 16:55:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcitem.h,v $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -75,13 +75,13 @@ public:
     virtual OFBool canWriteXfer(const E_TransferSyntax newXfer,
                               const E_TransferSyntax oldXfer);
 
-    virtual OFCondition read(DcmStream & inStream,
+    virtual OFCondition read(DcmInputStream & inStream,
                              const E_TransferSyntax ixfer,
                              const E_GrpLenEncoding glenc = EGL_noChange,
                              const Uint32 maxReadLength
                              = DCM_MaxReadLength);
 
-    virtual OFCondition write(DcmStream & outStream,
+    virtual OFCondition write(DcmOutputStream & outStream,
                               const E_TransferSyntax oxfer,
                               const E_EncodingType enctype
                               = EET_UndefinedLength);
@@ -96,7 +96,7 @@ public:
 
     /** special write method for creation of digital signatures
      */
-    virtual OFCondition writeSignatureFormat(DcmStream & outStream,
+    virtual OFCondition writeSignatureFormat(DcmOutputStream & outStream,
 					 const E_TransferSyntax oxfer,
 					 const E_EncodingType enctype
 					 = EET_UndefinedLength);
@@ -546,20 +546,20 @@ protected:
      */
     Uint32 fStartPosition;
 
-    OFCondition readTagAndLength(DcmStream & inStream,           // inout
+    OFCondition readTagAndLength(DcmInputStream & inStream,           // inout
                                  const E_TransferSyntax newxfer, // in
                                  DcmTag   &tag,                  // out
                                  Uint32 & length,                // out
                                  Uint32 & bytesRead);            // out
 
-    OFCondition readSubElement(DcmStream & inStream,             // inout
+    OFCondition readSubElement(DcmInputStream & inStream,             // inout
                                DcmTag &newTag,                   // inout
                                const Uint32 newLength,           // in
                                const E_TransferSyntax xfer,      // in
                                const E_GrpLenEncoding glenc,     // in
                                const Uint32 maxReadLength = DCM_MaxReadLength);
 
-    E_TransferSyntax checkTransferSyntax(DcmStream & inStream);
+    E_TransferSyntax checkTransferSyntax(DcmInputStream & inStream);
 
 private:
 
@@ -626,7 +626,11 @@ OFCondition nextUp(DcmStack & stack);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
-** Revision 1.38  2002-08-02 08:42:44  joergr
+** Revision 1.39  2002-08-27 16:55:34  meichel
+** Initial release of new DICOM I/O stream classes that add support for stream
+**   compression (deflated little endian explicit VR transfer syntax)
+**
+** Revision 1.38  2002/08/02 08:42:44  joergr
 ** Added optional 'pos' parameter to the putAndInsertXXX() methods.
 **
 ** Revision 1.37  2002/07/23 14:21:26  meichel

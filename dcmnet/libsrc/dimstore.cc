@@ -56,10 +56,10 @@
 **
 **	Module Prefix: DIMSE_
 **
-** Last Update:		$Author: wilkens $
-** Update Date:		$Date: 2001-11-01 13:49:04 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 2002-08-27 17:00:52 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimstore.cc,v $
-** CVS/RCS Revision:	$Revision: 1.15 $
+** CVS/RCS Revision:	$Revision: 1.16 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -96,6 +96,7 @@ END_EXTERN_C
 #include "diutil.h"
 #include "dimse.h"		/* always include the module header */
 #include "cond.h"
+#include "dcostrmf.h"    /* for class DcmOutputFileStream */
 
 
 /* Global flag to enable/disable workaround code for some buggy Store SCUs
@@ -451,7 +452,7 @@ DIMSE_storeProvider( T_ASC_Association *assoc,
     /* be an error and will be handled correspondingly. */
     if (imageFileName != NULL) {
         /* create filestream */
-        DcmFileStream *filestream = NULL;
+        DcmOutputFileStream *filestream = NULL;
         if (EC_Normal != (cond = DIMSE_createFilestream(imageFileName, request, assoc, 
           presIdCmd, writeMetaheader, &filestream)))
         {
@@ -512,7 +513,11 @@ DIMSE_storeProvider( T_ASC_Association *assoc,
 /*
 ** CVS Log
 ** $Log: dimstore.cc,v $
-** Revision 1.15  2001-11-01 13:49:04  wilkens
+** Revision 1.16  2002-08-27 17:00:52  meichel
+** Initial release of new DICOM I/O stream classes that add support for stream
+**   compression (deflated little endian explicit VR transfer syntax)
+**
+** Revision 1.15  2001/11/01 13:49:04  wilkens
 ** Added lots of comments.
 **
 ** Revision 1.14  2001/10/12 10:18:36  meichel

@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmTime
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-16 14:33:08 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-08-27 16:56:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrtm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,10 @@
 #include "dcvrtm.h"
 #include "dcdebug.h"
 #include "ofstd.h"
+
+BEGIN_EXTERN_C
+#include <stdio.h>
+END_EXTERN_C
 
 // ********************************
 
@@ -334,7 +338,11 @@ DcmTime::getTimeZoneFromString(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrtm.cc,v $
-** Revision 1.22  2002-07-16 14:33:08  joergr
+** Revision 1.23  2002-08-27 16:56:00  meichel
+** Initial release of new DICOM I/O stream classes that add support for stream
+**   compression (deflated little endian explicit VR transfer syntax)
+**
+** Revision 1.22  2002/07/16 14:33:08  joergr
 ** Fixed bug in DcmTime::getCurrentTime().
 **
 ** Revision 1.21  2002/07/16 14:21:29  joergr

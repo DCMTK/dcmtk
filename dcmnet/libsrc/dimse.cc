@@ -57,9 +57,9 @@
 **      Module Prefix: DIMSE_
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2002-08-21 10:18:30 $
+** Update Date:         $Date: 2002-08-27 17:00:51 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimse.cc,v $
-** CVS/RCS Revision:    $Revision: 1.31 $
+** CVS/RCS Revision:    $Revision: 1.32 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -107,8 +107,16 @@ END_EXTERN_C
 #include "dimse.h"              /* always include the module header */
 #include "cond.h"
 #include "dimcmd.h"
-
-#include "dctk.h"
+#include "dcdeftag.h"    /* for tag names */
+#include "dcdict.h"      /* for dcmDataDict */
+#include "dcfilefo.h"    /* for class DcmFileFormat */
+#include "dcmetinf.h"    /* for class DcmMetaInfo */
+#include "dcistrmb.h"    /* for class DcmInputBufferStream */
+#include "dcostrmb.h"    /* for class DcmOutputBufferStream */
+#include "dcostrmf.h"    /* for class DcmOutputFileStream */
+#include "dcvrul.h"      /* for class DcmUnsignedLong */
+#include "dcvrobow.h"    /* for class DcmOtherByteOtherWord */
+#include "dcvrsh.h"      /* for class DcmShortString */
 
 /*
  * Type definitions
@@ -187,6 +195,7 @@ static void saveDimseFragment(DcmDataset *dset, OFBool isCommand, OFBool isRecei
     }
   }
 
+  /* write data to file */
   dset->saveFile(filename, EXS_LittleEndianImplicit, EET_ExplicitLength, EGL_recalcGL, EPD_withoutPadding);
   return;    
 }
@@ -335,6 +344,9 @@ getTransferSyntax(T_ASC_Association * assoc,
         case EXS_JPEGProcess29TransferSyntax:
         case EXS_JPEGProcess14SV1TransferSyntax:
         case EXS_RLELossless:
+#ifdef WITH_ZLIB
+        case EXS_DeflatedLittleEndianExplicit:
+#endif
         /* OK, these can be supported */
         break;
     default:
@@ -646,6 +658,7 @@ sendDcmDataset(T_ASC_Association * assoc, DcmDataset * obj,
     unsigned char *buf;
     unsigned long bufLen;
     int last = OFFalse;
+    OFBool written = OFFalse;
     Uint32 rtnLength;
     Uint32 bytesTransmitted = 0;
     DUL_PDVLIST pdvList;
@@ -658,18 +671,11 @@ sendDcmDataset(T_ASC_Association * assoc, DcmDataset * obj,
     bufLen = assoc->sendPDVLength;
 
     /* on the basis of the association's buffer, create a buffer variable that we can write to */
-    DcmBufferStream outBuf(buf, bufLen, DCM_WriteMode);
+    DcmOutputBufferStream outBuf(buf, bufLen);
 
     /* prepare all elements in the DcmDataset variable for transfer */
     obj->transferInit();
     
-/* wilkens 01/09/28: commented out, does not make any sense, if-condition never met
-    if (econd != EC_Normal) {
-            DIMSE_warning(assoc, "writeBlockInit Failed (%s)", econd.text());
-            return DIMSE_SENDFAILED;        
-    }
-*/
-
     /* initialize two more variables: groupLength_encoding specifies what will be done concerning */
     /* group length tags, sequenceType_encoding specifies how sequences will be handled */
     E_GrpLenEncoding groupLength_encoding = g_dimse_send_groupLength_encoding;
@@ -685,30 +691,64 @@ sendDcmDataset(T_ASC_Association * assoc, DcmDataset * obj,
     /* tion if there is more information than the buffer can take at a time), a PDV object */
     /* with the buffer's data will be created and assigned to a list, and finally the */
     /* list's information will be sent over the network to the other DICOM application. */
-    while (!last) {
+    while (!last)
+    {
         /* write data values which are contained in the DcmDataSet variable to the above created */
         /* buffer. Mind the transfer syntax, the sequence type encoding, the group length encoding */
         /* and remove all padding data elements. Depending on whether all information has been written */
         /* to the buffer, update the variable that determines the end of the while loop. (Note that */
         /* DcmDataset stores information about what of its content has already been sent to the buffer.) */
-        econd = obj->write(outBuf, xferSyntax, sequenceType_encoding, 
-                           groupLength_encoding, EPD_withoutPadding);
-        if (econd == EC_Normal)                   /* all contents have been written to the buffer */
-            last = OFTrue;
-        else if (econd == EC_StreamNotifyClient)  /* no more space in buffer, _not_ all elements have been written to it */
-            last = OFFalse;
-        else                                      /* some error has occurred */
+        if (! written)
         {
-            DIMSE_warning(assoc, "writeBlock Failed (%s)", econd.text());
-            return DIMSE_SENDFAILED;
+          econd = obj->write(outBuf, xferSyntax, sequenceType_encoding, 
+                             groupLength_encoding, EPD_withoutPadding);
+          if (econd == EC_Normal)                   /* all contents have been written to the buffer */
+          {
+              written = OFTrue;
+          }
+          else if (econd == EC_StreamNotifyClient)  /* no more space in buffer, _not_ all elements have been written to it */
+          {
+              // nothing to do
+          }
+          else                                      /* some error has occurred */
+          {
+              DIMSE_warning(assoc, "writeBlock Failed (%s)", econd.text());
+              return DIMSE_SENDFAILED;
+          }
         }
+
+        if (written) outBuf.flush(); // flush stream including embedded compression codec.
 
         /* get buffer and its length, assign to local variable */
         void *fullBuf = NULL;
-        outBuf.GetBuffer(fullBuf, rtnLength);
+        outBuf.flushBuffer(fullBuf, rtnLength);
+
+        last = written && outBuf.isFlushed();        
 
         /* if the buffer is not empty, do something with its contents */
-        if (rtnLength > 0) {
+        if (rtnLength > 0)
+        {
+            /* rtnLength could be odd */
+            if (rtnLength & 1)
+            {
+              /* this should only happen if we use a stream compressed transfer
+               * syntax and then only at the very end of the stream. Everything
+               * else is a failure.
+               */
+              if (!last)
+              {
+                return makeDcmnetCondition(DIMSEC_SENDFAILED, OF_error, 
+                  "DIMSE Failed to send message: odd block length encountered");
+              }
+
+              /* since the block size is always even, block size must be larger
+               * than rtnLength, so we can safely add a pad byte (and hope that
+               * the pad byte will not confuse the receiver's decompressor).
+               */
+              unsigned char *cbuf = (unsigned char *)fullBuf;
+              cbuf[rtnLength++] = 0; // add zero pad byte
+            }
+
             /* initialize a DUL_PDV variable with the buffer's data */
             pdv.fragmentLength = rtnLength;
             pdv.presentationContextID = presID;
@@ -1088,12 +1128,11 @@ DIMSE_receiveCommand(T_ASC_Association * assoc,
     cmdSet->transferInit();
 
     /* create a buffer variable which can be used to store the received information */
-    DcmBufferStream cmdBuf(DCM_ReadMode);
-    econd = cmdBuf.GetError();
-    if (econd != EC_Normal) 
+    DcmInputBufferStream cmdBuf;
+    if (! cmdBuf.good()) 
     {
         delete cmdSet;
-        return makeDcmnetSubCondition(DIMSEC_PARSEFAILED, OF_error, "DIMSE: receiveCommand: Failed to initialize cmdBuf (DCM_ReadMode)", econd);
+        return makeDcmnetCondition(DIMSEC_PARSEFAILED, OF_error, "DIMSE: receiveCommand: Failed to initialize cmdBuf");
     }
 
     /* start a loop in which we want to read a DIMSE command from the incoming socket stream. */
@@ -1102,7 +1141,7 @@ DIMSE_receiveCommand(T_ASC_Association * assoc,
          type == DUL_COMMANDPDV && !last;)
     {
         /* make the stream remember any unread bytes */
-        cmdBuf.ReleaseBuffer();
+        cmdBuf.releaseBuffer();
         
         /* get next PDV (in detail, in order to get this PDV, a */
         /* PDU has to be read from the incoming socket stream) */
@@ -1145,12 +1184,12 @@ DIMSE_receiveCommand(T_ASC_Association * assoc,
         
         /* if information is contained the PDVs fragment, we want to insert this information into the buffer */
         if (pdv.fragmentLength > 0) {
-            cmdBuf.SetBuffer(pdv.data, pdv.fragmentLength);
+            cmdBuf.setBuffer(pdv.data, pdv.fragmentLength);
         }
 
         /* if this fragment contains the last fragment of the DIMSE command, set the end of the stream */
         if (pdv.lastPDV) {
-            cmdBuf.SetEndOfStream();
+            cmdBuf.setEos();
         }
         
         /* insert the information which is contained in the buffer into the DcmDataset */
@@ -1262,7 +1301,7 @@ OFCondition DIMSE_createFilestream(
   const T_ASC_Association *assoc, 
   T_ASC_PresentationContextID presIdCmd,
   int writeMetaheader,
-  DcmFileStream **filestream)
+  DcmOutputFileStream **filestream)
 {
   OFCondition cond = EC_Normal;
   DcmElement *elem=NULL;
@@ -1344,8 +1383,8 @@ OFCondition DIMSE_createFilestream(
     }
   }
   
-  *filestream = new DcmFileStream(filename, DCM_WriteMode);
-  if ((*filestream == NULL)||((*filestream)->Fail()))
+  *filestream = new DcmOutputFileStream(filename);
+  if ((*filestream == NULL)||(! (*filestream)->good()))
   {
      if (metainfo) delete metainfo;
      if (*filestream)
@@ -1379,7 +1418,7 @@ OFCondition
 DIMSE_receiveDataSetInFile(T_ASC_Association *assoc,
         T_DIMSE_BlockingMode blocking, int timeout, 
         T_ASC_PresentationContextID *presID,
-        DcmStream *filestream,
+        DcmOutputStream *filestream,
         DIMSE_ProgressCallback callback, void *callbackData)
 {
     OFCondition cond = EC_Normal;
@@ -1441,8 +1480,8 @@ DIMSE_receiveDataSetInFile(T_ASC_Association *assoc,
 
         if (!last)
         {
-          filestream->WriteBytes((void *)(pdv.data), (Uint32)(pdv.fragmentLength));
-          if (filestream->Fail())
+          filestream->write((void *)(pdv.data), (Uint32)(pdv.fragmentLength));
+          if (! filestream->good())
           {
               cond = ignoreDataSet(assoc, blocking, timeout, &bytesRead, &pdvCount);
               if (cond == EC_Normal)
@@ -1542,7 +1581,7 @@ DIMSE_receiveDataSetInMemory(T_ASC_Association * assoc,
     }
     
     /* create a buffer variable which can be used to store the received information */
-    DcmBufferStream dataBuf(DCM_ReadMode);
+    DcmInputBufferStream dataBuf;
 
     /* prepare the DcmDataset variable for transfer of data */
     dset->transferInit();
@@ -1553,7 +1592,7 @@ DIMSE_receiveDataSetInMemory(T_ASC_Association * assoc,
     {
     
         /* make the stream remember any unread bytes */
-        dataBuf.ReleaseBuffer();
+        dataBuf.releaseBuffer();
         
         /* get next PDV (in detail, in order to get this PDV, a */
         /* PDU has to be read from the incoming socket stream) */
@@ -1616,13 +1655,13 @@ DIMSE_receiveDataSetInMemory(T_ASC_Association * assoc,
             /* if information is contained the PDVs fragment, we want to insert this information into the buffer */
             if (pdv.fragmentLength > 0) 
             {
-                dataBuf.SetBuffer(pdv.data, pdv.fragmentLength);
+                dataBuf.setBuffer(pdv.data, pdv.fragmentLength);
             }
             
             /* if this fragment contains the last fragment of the data set, set the end of the stream */
             if (pdv.lastPDV) 
             {
-                dataBuf.SetEndOfStream();
+                dataBuf.setEos();
             }
             
             /* insert the information which is contained in the buffer into the DcmDataset variable. Mind the */
@@ -1713,7 +1752,11 @@ void DIMSE_warning(T_ASC_Association *assoc,
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
-** Revision 1.31  2002-08-21 10:18:30  meichel
+** Revision 1.32  2002-08-27 17:00:51  meichel
+** Initial release of new DICOM I/O stream classes that add support for stream
+**   compression (deflated little endian explicit VR transfer syntax)
+**
+** Revision 1.31  2002/08/21 10:18:30  meichel
 ** Adapted code to new loadFile and saveFile methods, thus removing direct
 **   use of the DICOM stream classes.
 **

@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmDirectoryRecord
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:19:25 $
+ *  Update Date:      $Date: 2002-08-27 16:55:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdirrec.h,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -151,7 +151,7 @@ public:
                        const int level = 0, const char *pixelFileName = NULL,
                        size_t *pixelCounter = NULL);
 
-    virtual OFCondition read(DcmStream & inStream,
+    virtual OFCondition read(DcmInputStream & inStream,
                              const E_TransferSyntax xfer,
                              const E_GrpLenEncoding glenc = EGL_noChange,
                              const Uint32 maxReadLength = DCM_MaxReadLength);
@@ -195,7 +195,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdirrec.h,v $
-** Revision 1.20  2001-09-25 17:19:25  meichel
+** Revision 1.21  2002-08-27 16:55:31  meichel
+** Initial release of new DICOM I/O stream classes that add support for stream
+**   compression (deflated little endian explicit VR transfer syntax)
+**
+** Revision 1.20  2001/09/25 17:19:25  meichel
 ** Adapted dcmdata to class OFCondition
 **
 ** Revision 1.19  2001/06/20 14:59:15  joergr

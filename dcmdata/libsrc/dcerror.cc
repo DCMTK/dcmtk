@@ -22,9 +22,9 @@
  *  Purpose: Error handling, codes and strings
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:19:50 $
+ *  Update Date:      $Date: 2002-08-27 16:55:47 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcerror.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,11 +43,18 @@ const OFConditionConst ECC_CorruptedData(              OFM_dcmdata,  6, OF_error
 const OFConditionConst ECC_IllegalCall(                OFM_dcmdata,  7, OF_error, "Illegal Call, perhaps wrong parameters" );
 const OFConditionConst ECC_SequEnd(                    OFM_dcmdata,  8, OF_error, "Sequence End"                           );
 const OFConditionConst ECC_DoubledTag(                 OFM_dcmdata,  9, OF_error, "Doubled Tag"                            );
-const OFConditionConst ECC_StreamNotifyClient(         OFM_dcmdata, 10, OF_error, "Stream must be processed by client"     );
+const OFConditionConst ECC_StreamNotifyClient(         OFM_dcmdata, 10, OF_error, "I/O suspension or premature end of stream" );
 const OFConditionConst ECC_WrongStreamMode(            OFM_dcmdata, 11, OF_error, "Mode (R/W, random/sequence) is wrong"   );
 const OFConditionConst ECC_ItemEnd(                    OFM_dcmdata, 12, OF_error, "Item End"                               );
 const OFConditionConst ECC_RepresentationNotFound(     OFM_dcmdata, 13, OF_error, "Pixel representation not found"         );
-const OFConditionConst ECC_CannotChangeRepresentation( OFM_dcmdata, 14, OF_error, "Pixel representation connot be changed" );
+const OFConditionConst ECC_CannotChangeRepresentation( OFM_dcmdata, 14, OF_error, "Pixel representation cannot be changed" );
+const OFConditionConst ECC_UnsupportedEncoding(        OFM_dcmdata, 15, OF_error, "Unsupported compression or encryption"  );
+// error code 16 is reserved for zlib-related error messages
+const OFConditionConst ECC_PutbackFailed(              OFM_dcmdata, 17, OF_error, "Parser failure: Putback operation failed" );
+// error code 18 is reserved for file read error messages
+// error code 19 is reserved for file write error messages
+const OFConditionConst ECC_DoubleCompressionFilters(   OFM_dcmdata, 20, OF_error, "Too many compression filters"  );
+
 
 const OFCondition EC_InvalidTag(                 ECC_InvalidTag);
 const OFCondition EC_TagNotFound(                ECC_TagNotFound);
@@ -63,6 +70,9 @@ const OFCondition EC_WrongStreamMode(            ECC_WrongStreamMode);
 const OFCondition EC_ItemEnd(                    ECC_ItemEnd);
 const OFCondition EC_RepresentationNotFound(     ECC_RepresentationNotFound);
 const OFCondition EC_CannotChangeRepresentation( ECC_CannotChangeRepresentation);
+const OFCondition EC_UnsupportedEncoding(        ECC_UnsupportedEncoding);
+const OFCondition EC_PutbackFailed(              ECC_PutbackFailed);
+const OFCondition EC_DoubleCompressionFilters(   ECC_DoubleCompressionFilters);
 
 const char *dcmErrorConditionToString(OFCondition cond)
 {
@@ -73,7 +83,11 @@ const char *dcmErrorConditionToString(OFCondition cond)
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.cc,v $
-** Revision 1.12  2001-09-25 17:19:50  meichel
+** Revision 1.13  2002-08-27 16:55:47  meichel
+** Initial release of new DICOM I/O stream classes that add support for stream
+**   compression (deflated little endian explicit VR transfer syntax)
+**
+** Revision 1.12  2001/09/25 17:19:50  meichel
 ** Adapted dcmdata to class OFCondition
 **
 ** Revision 1.11  2001/06/01 15:49:04  meichel

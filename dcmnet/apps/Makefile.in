@@ -20,7 +20,7 @@ dcmtlsdir=$(top_srcdir)/../dcmtls
 LOCALINCLUDES=-I$(ofstddir)/include -I$(dcmdatadir)/include -I$(dcmtlsdir)/include\
   -I$(includedir)/ofstd -I$(includedir)/dcmdata -I$(includedir)/dcmtls
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(dcmdatadir)/libsrc -L$(dcmtlsdir)/libsrc -L$(libdir)
-LOCALLIBS = -ldcmnet -ldcmdata -lofstd
+LOCALLIBS = -ldcmnet -ldcmdata -lofstd $(ZLIBLIBS)
 DCMTLSLIBS = -ldcmtls
 
 objs= echoscu.o storescu.o storescp.o findscu.o movescu.o

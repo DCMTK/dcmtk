@@ -22,9 +22,9 @@
  *  Purpose: class DcmDirectoryRecord
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-21 10:14:20 $
+ *  Update Date:      $Date: 2002-08-27 16:55:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdirrec.cc,v $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,7 +44,9 @@ END_EXTERN_C
 #endif
 #endif
 
+BEGIN_EXTERN_C
 #include <stdio.h>
+#include <errno.h>
 #include <string.h>
 #ifdef HAVE_LIBC_H
 #include <libc.h>
@@ -53,6 +55,7 @@ END_EXTERN_C
 #include <unistd.h>
 #endif
 #include <ctype.h>
+END_EXTERN_C
 
 #include "ofstream.h"
 #include "dcdirrec.h"
@@ -1062,10 +1065,11 @@ debug(2, ( "DcmDirectoryRecord::purgeReferencedFile() trying to purge file %s fr
         {                               // Dateiname vorhanden
             if ( unlink( localFileName ) != 0 )
             {
-                l_error = EC_InvalidStream;
-                ofConsole.lockCerr() << "Error: DcmDirectoryRecord::purgeReferencedFile() cannot purge file [" << localFileName << "] from file system." << endl;
-                ofConsole.unlockCerr();
+              const char *text = strerror(errno);
+              if (text == NULL) text = "(unknown error code)";
+              errorFlag = makeOFCondition(OFM_dcmdata, 19, OF_error, text);
             }
+
             delete[] localFileName;
         }
         else                            // keine referenzierte Datei vorhanden
@@ -1140,7 +1144,7 @@ void DcmDirectoryRecord::print(ostream & out, const OFBool showFullData,
 // ********************************
 
 
-OFCondition DcmDirectoryRecord::read(DcmStream & inStream,
+OFCondition DcmDirectoryRecord::read(DcmInputStream & inStream,
                                      const E_TransferSyntax xfer,
                                      const E_GrpLenEncoding glenc,
                                      const Uint32 maxReadLength)
@@ -1473,7 +1477,11 @@ DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
- * Revision 1.40  2002-08-21 10:14:20  meichel
+ * Revision 1.41  2002-08-27 16:55:45  meichel
+ * Initial release of new DICOM I/O stream classes that add support for stream
+ *   compression (deflated little endian explicit VR transfer syntax)
+ *
+ * Revision 1.40  2002/08/21 10:14:20  meichel
  * Adapted code to new loadFile and saveFile methods, thus removing direct
  *   use of the DICOM stream classes.
  *

@@ -22,9 +22,9 @@
  *  Purpose: class DcmElement
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-07-08 14:44:39 $
+ *  Update Date:      $Date: 2002-08-27 16:55:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcelem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,47 +53,8 @@ END_EXTERN_C
 #include "dcdefine.h"
 #include "dcswap.h"
 #include "dcdebug.h"
-
-
-class DcmLoadValueType
-{
-
-    friend class DcmElement;
-        
-private:
-    DcmStreamConstructor * fStreamConstructor;
-    Uint32 fOffset;
-
- // --- declarations to avoid compiler warnings
- 
-    DcmLoadValueType &operator=(const DcmLoadValueType &);
-
-public:
-    DcmLoadValueType(DcmStreamConstructor * constructor,
-                     const Uint32 offset)
-      : fStreamConstructor(constructor),
-        fOffset(offset)
-    {
-    }
-
-
-    DcmLoadValueType(const DcmLoadValueType & old)
-      : fStreamConstructor(NULL),
-        fOffset(old.fOffset)
-    {
-        if (old.fStreamConstructor)
-            fStreamConstructor = old.fStreamConstructor->Copy();
-    }
-
-
-    ~DcmLoadValueType(void)
-    {
-        if (fStreamConstructor)
-            delete fStreamConstructor;
-    }
-};
-
-
+#include "dcistrma.h"    /* for class DcmInputStream */
+#include "dcostrma.h"    /* for class DcmOutputStream */
 
 
 // 
@@ -104,12 +65,9 @@ public:
 OFCondition DcmElement::clear(void)
 {
     errorFlag = EC_Normal;
-    if (fValue)
-        delete[] fValue;
+    delete[] fValue;
     fValue = NULL;
-
-    if (fLoadValue)
-        delete fLoadValue;
+    delete fLoadValue;
     fLoadValue = NULL;
     Length = 0;
     return errorFlag;
@@ -170,7 +128,7 @@ DcmElement::DcmElement(const DcmElement & elem)
     }
 
     if (elem.fLoadValue)
-        fLoadValue = new DcmLoadValueType(*elem.fLoadValue);
+        fLoadValue = elem.fLoadValue->clone();
 }
 
 
@@ -219,7 +177,7 @@ DcmElement &DcmElement::operator=(const DcmElement &obj)
     }
 
     if (obj.fLoadValue)
-        fLoadValue = new DcmLoadValueType(*obj.fLoadValue);
+        fLoadValue = obj.fLoadValue->clone();
 
     return *this;
 }
@@ -229,11 +187,8 @@ DcmElement &DcmElement::operator=(const DcmElement &obj)
 
 DcmElement::~DcmElement()
 {
-    if (fValue)
-        delete[] fValue;
-
-    if (fLoadValue)
-        delete fLoadValue;
+    delete[] fValue;
+    delete fLoadValue;
 }
 
 Uint32 DcmElement::calcElementLength(const E_TransferSyntax xfer,
@@ -489,7 +444,7 @@ OFCondition DcmElement::loadAllDataIntoMemory(void)
 }
 
 
-OFCondition DcmElement::loadValue(DcmStream * inStream)
+OFCondition DcmElement::loadValue(DcmInputStream * inStream)
     /*
      * This function reads the data value of an attribute and stores the information which was
      * read in this. The information is either read from the inStream or (if inStream is NULL)
@@ -507,7 +462,7 @@ OFCondition DcmElement::loadValue(DcmStream * inStream)
     /* only if the length of this element does not equal 0, read information */
     if (Length != 0)
     {
-        DcmStream * readStream = inStream;
+        DcmInputStream * readStream = inStream;
         OFBool isStreamNew = OFFalse;
 
         /* if the NULL pointer was passed and the fLoadValue contains a non NULL pointer */
@@ -515,13 +470,10 @@ OFCondition DcmElement::loadValue(DcmStream * inStream)
         {
             /* we need to read information from the stream which is */
             /* accessible through fLoadValue. Hence, reassign readStream */
-            readStream = fLoadValue -> fStreamConstructor -> NewDcmStream();
+            readStream = fLoadValue->create();
 
             /* set isStreamNew to OFTrue */
             isStreamNew = OFTrue;
-
-            /*set readStream to the position where we are supposed to start reading */
-            readStream -> Seek((Sint32)(fLoadValue -> fOffset));
 
             /* and delete the fLoadValue object which is superfluous now */
             delete fLoadValue;
@@ -532,13 +484,13 @@ OFCondition DcmElement::loadValue(DcmStream * inStream)
         if (readStream)
         {
             /* check if the stream reported an error */
-            errorFlag = readStream -> GetError();
+            errorFlag = readStream->status();
 
             /* if we encountered the end of the stream, set the error flag correspondingly */
-            if (errorFlag == EC_Normal && readStream -> EndOfStream())
+            if (errorFlag.good() && readStream->eos())
                 errorFlag = EC_EndOfStream;
             /* if we did not encounter the end of the stream and no error occured so far, go ahead */
-            else if (errorFlag == EC_Normal)
+            else if (errorFlag.good())
             {
                 /* if the object which holds this element's value does not yet exist, create it */
                 if (!fValue)
@@ -551,23 +503,12 @@ OFCondition DcmElement::loadValue(DcmStream * inStream)
                 /* value) we need to read a certain amount of bytes from the stream */
                 else
                 {
-                    /* determine how many bytes are available in the input stream */
-                    Uint32 readLength = readStream -> Avail();
-
-                    /* determine how many bytes shall be read from the stream: If the amount */
-                    /* of bytes that are available is greater than the amount of bytes that we */
-                    /* have to read to complete this element's value, read only the amount of */
-                    /* bytes that we have to read to complete this element's value; else read */
-                    /* all the bytes that are available. */
-                    readLength = readLength > Length - fTransferredBytes ? 
-                        Length - fTransferredBytes : readLength;
+                    /* determine how many bytes shall be read from the stream */
+                    Uint32 readLength = Length - fTransferredBytes;
 
                     /* read a corresponding amount of bytes from the stream, store the information in fvalue */
-                    readStream -> ReadBytes(&fValue[fTransferredBytes], 
-                                            readLength);
-
-                    /* increase the counter that counts how many bytes were read */
-                    fTransferredBytes += readStream -> TransferredBytes();
+                    /* increase the counter that counts how many bytes were actually read */
+                    fTransferredBytes += readStream->read(&fValue[fTransferredBytes], readLength);
 
                     /* if we have read all the bytes which make up this element's value */
                     if (Length == fTransferredBytes)
@@ -577,7 +518,7 @@ OFCondition DcmElement::loadValue(DcmStream * inStream)
                         errorFlag = EC_Normal;
                     }
                     /* else set the return value correspondingly */
-                    else if (readStream -> EndOfStream())
+                    else if (readStream->eos())
                         errorFlag = EC_InvalidStream;
                     else
                         errorFlag = EC_StreamNotifyClient;
@@ -890,7 +831,7 @@ OFCondition DcmElement::createEmptyValue(const Uint32 length)
     return errorFlag;
 }
 
-OFCondition DcmElement::read(DcmStream & inStream,
+OFCondition DcmElement::read(DcmInputStream & inStream,
                              const E_TransferSyntax ixfer,
                              const E_GrpLenEncoding /*glenc*/,
                              const Uint32 maxReadLength)
@@ -922,13 +863,13 @@ OFCondition DcmElement::read(DcmStream & inStream,
         fByteOrder = inXfer.getByteOrder();
 
         /* check if the stream reported an error */
-        errorFlag = inStream.GetError();
+        errorFlag = inStream.status();
 
         /* if we encountered the end of the stream, set the error flag correspondingly */
-        if (errorFlag == EC_Normal && inStream.EndOfStream())
-            errorFlag = EC_EndOfStream;
+        if (errorFlag.good() && inStream.eos()) errorFlag = EC_EndOfStream;
+
         /* if we did not encounter the end of the stream and no error occured so far, go ahead */
-        else if (errorFlag == EC_Normal)
+        else if (errorFlag.good())
         {
             /* if the transfer state is ERW_init, we need to prepare */
             /* the reading of this element's value from the stream */
@@ -936,45 +877,33 @@ OFCondition DcmElement::read(DcmStream & inStream,
             {
                 /* if the Length of this element's value is greater than the amount of bytes we */
                 /* can read from the stream and if the stream has random access, we want to create */
-                /* a DcmStreamConstructor object that enables us to read this element's value later. */
+                /* a DcmInputStreamFactory object that enables us to read this element's value later. */
                 /* This new object will be stored (together with the position where we have to start */
                 /* reading the value) in the member variable fLoadValue. */
-                if (Length > maxReadLength && inStream.HasRandomAccess())
+                if (Length > maxReadLength)
                 {
-                    /* create a stream constructor to read the value later */
-                    DcmStreamConstructor * streamConstructor = 
-                        inStream.NewConstructor();
+                    /* try to create a stream factory to read the value later */
+                    delete fLoadValue;
+                    fLoadValue = inStream.newFactory();
 
-                    /* get the current position in the stream where we are supposed to read information */
-                    Uint32 offset = inStream.Tell();
-
-                    /* if there is no DcmLoadValueType object yet, create one. This object */
-                    /* contains all the information that enables us to read the value later */
-                    if (!fLoadValue && streamConstructor && 
-                        inStream.GetError() == EC_Normal)
+                    if (fLoadValue) 
                     {
-                        fLoadValue = new DcmLoadValueType(streamConstructor, offset);
-                        if (!fLoadValue)
-                            errorFlag = EC_MemoryExhausted;
-                    }
+                      Uint32 skipped = inStream.skip(Length);
+                      if (skipped < Length)
+                      {
+                          errorFlag = EC_InvalidStream;
 
-                    /* check if there are enough bytes available in the stream */
-                    inStream.ClearError();
-                    inStream.Seek((Sint32)(offset+Length));
-                    errorFlag = inStream.GetError();
-                    if (errorFlag != EC_Normal)
-                    {
-                        /* Print an error message when too few bytes are available in the file in order to
-                         * distinguish this problem from any other generic "InvalidStream" problem. */
-                         ofConsole.lockCerr() << "ERROR: " << Tag.getTagName() << Tag.getXTag() << " larger ("
-                             << Length << ") that remaining bytes in file" << endl;
-                         ofConsole.unlockCerr();
+                          /* Print an error message when too few bytes are available in the file in order to
+                           * distinguish this problem from any other generic "InvalidStream" problem. */
+                           ofConsole.lockCerr() << "ERROR: " << Tag.getTagName() << Tag.getXTag() << " larger ("
+                               << Length << ") that remaining bytes in file" << endl;
+                           ofConsole.unlockCerr();
+                      }
                     }
                 }
 
                 /* if there is already a value for this element, delete this value */
-                if (fValue)
-                    delete[] fValue;
+                delete[] fValue;
 
                 /* set the transfer state to ERW_inWork */
                 fTransferState = ERW_inWork;
@@ -1019,7 +948,7 @@ void DcmElement::transferInit(void)
 }
 
 
-OFCondition DcmElement::write(DcmStream & outStream,
+OFCondition DcmElement::write(DcmOutputStream & outStream,
                               const E_TransferSyntax oxfer,
                               const E_EncodingType /*enctype*/)
     /*
@@ -1046,11 +975,11 @@ OFCondition DcmElement::write(DcmStream & outStream,
   {
     /* if this is not an illegal call, we need to do something. First */
     /* of all, check the error state of the stream that was passed */
-    errorFlag = outStream.GetError();
-
     /* only do something if the error state of the stream is ok */
-    if (errorFlag == EC_Normal)
-    {
+    if (outStream.good())
+    {      
+      errorFlag = EC_Normal;
+
       /* create an object that represents the transfer syntax */
       DcmXfer outXfer(oxfer);
 
@@ -1061,57 +990,44 @@ OFCondition DcmElement::write(DcmStream & outStream,
       /* if this element's transfer state is ERW_init (i.e. it has not yet been written to */
       /* the stream) and if the outstream provides enough space for tag and length information */
       /* write tag and length information to it, do something */
-      if (fTransferState == ERW_init && (errorFlag = outStream.Avail(DCM_TagInfoLength)) == EC_Normal)
+      if (fTransferState == ERW_init) 
       {
-          /* if there is no value, Length (member variable) shall be set to 0 */
-          if (!value) Length = 0;
-
-          /* remember how many bytes have been written to the stream, currently none so far */
-          Uint32 writtenBytes = 0;
-
-          /* write tag and length information (and possibly also data type information) to the stream, */
-          /* mind the transfer syntax and remember the amount of bytes that have been written */
-          errorFlag = this -> writeTagAndLength(outStream, oxfer, writtenBytes);
-
-          /* if the writing was successful, set this element's transfer */
-          /* state to ERW_inWork and the amount of transferred bytes to 0 */
-          if (errorFlag == EC_Normal)
+          if (outStream.avail() >= DCM_TagInfoLength)
           {
-              fTransferState = ERW_inWork;
-              fTransferredBytes = 0;
-          }
+              /* if there is no value, Length (member variable) shall be set to 0 */
+              if (!value) Length = 0;
+              
+              /* remember how many bytes have been written to the stream, currently none so far */
+              Uint32 writtenBytes = 0;
+              
+              /* write tag and length information (and possibly also data type information) to the stream, */
+              /* mind the transfer syntax and remember the amount of bytes that have been written */
+              errorFlag = this -> writeTagAndLength(outStream, oxfer, writtenBytes);
+              
+              /* if the writing was successful, set this element's transfer */
+              /* state to ERW_inWork and the amount of transferred bytes to 0 */
+              if (errorFlag.good())
+              {
+                  fTransferState = ERW_inWork;
+                  fTransferredBytes = 0;
+              }
+          } else errorFlag = EC_StreamNotifyClient;
       }
 
       /* if there is a value that has to be written to the stream */
       /* and if this element's transfer state is ERW_inWork */
       if (value && fTransferState == ERW_inWork)
       {
-          /* figure out how many bytes of the current element's value shall be written to */
-          /* the stream if there the total length of the value minus the amount of bytes */
-          /* which have already been transferred is lower than or equal to the amount of */
-          /* bytes which are available in the stream, go ahead and transfer all the remaining */
-          /* bytes of the element's value. If the above mentioned condition is not met, write */
-          /* only as many bytes of the element's value to the stream as are available in the stream. */
-          Uint32 len = (Length - fTransferredBytes) <= outStream.Avail() ? (Length - fTransferredBytes) : outStream.Avail();
+          /* write as many bytes as possible to the stream starting at value[fTransferredBytes] */
+          /* (note that the bytes value[0] to value[fTransferredBytes-1] have already been */
+          /* written to the stream) */            
+          Uint32 len = outStream.write(&value[fTransferredBytes], Length - fTransferredBytes);
 
-          /* if we figured out that we still can write value information to the stream, do so */
-          if (len)
-          {
-            /* write len amount of bytes to the stream starting at value[fTransferredBytes] */
-            /* (note that the bytes value[0] to value[fTransferredBytes-1] have already been */
-            /* written to the stream) */
-            outStream.WriteBytes(&value[fTransferredBytes], len);
+          /* increase the amount of bytes which have been transfered correspondingly */
+          fTransferredBytes += len;
 
-            /* increase the amount of bytes which have been transfered correspondingly */
-            fTransferredBytes += outStream.TransferredBytes();
-
-            /* see if there is something fishy with the stream */
-            errorFlag = outStream.GetError();
-          }
-          /* if we figured that no value information could be written to the stream, check if this */
-          /* is because there is no value information (Length==0) or because there was no more space */
-          /* in the stream. If the latter condition is met, set a corresponding return value. */
-          else if (len != Length) errorFlag = EC_StreamNotifyClient;
+          /* see if there is something fishy with the stream */
+          errorFlag = outStream.status();
           
           /* if the amount of transferred bytes equals the length of the element's value, the */
           /* entire value has been written to the stream. Thus, this element's transfer state */
@@ -1121,15 +1037,15 @@ OFCondition DcmElement::write(DcmStream & outStream,
           if (fTransferredBytes == Length) fTransferState = ERW_ready;
           else if (errorFlag == EC_Normal) errorFlag = EC_StreamNotifyClient;
       }
-    }
+    } else errorFlag = EC_InvalidStream;
   }
 
-    /* return result value */
+  /* return result value */
   return errorFlag;
 }
 
 
-OFCondition DcmElement::writeSignatureFormat(DcmStream & outStream,
+OFCondition DcmElement::writeSignatureFormat(DcmOutputStream & outStream,
                                        const E_TransferSyntax oxfer,
                                        const E_EncodingType enctype)
 {
@@ -1208,7 +1124,11 @@ OFCondition DcmElement::writeXML(ostream &out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
-** Revision 1.39  2002-07-08 14:44:39  meichel
+** Revision 1.40  2002-08-27 16:55:46  meichel
+** Initial release of new DICOM I/O stream classes that add support for stream
+**   compression (deflated little endian explicit VR transfer syntax)
+**
+** Revision 1.39  2002/07/08 14:44:39  meichel
 ** Improved dcmdata behaviour when reading odd tag length. Depending on the
 **   global boolean flag dcmAcceptOddAttributeLength, the parser now either accepts
 **   odd length attributes or implements the old behaviour, i.e. assumes a real

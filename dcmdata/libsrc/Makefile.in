@@ -40,8 +40,8 @@ support_objs= mkdeftag.o mkdictbi.o dcdictzz.o
 dictobjs=	dctagkey.o dcdicent.o dcdict.o dcdictbi.o \
 		dcvr.o dchashdi.o
 
-objs= 	dcpixseq.o dcpxitem.o dcuid.o dcerror.o dcbuf.o \
-	dcstack.o dclist.o dcswap.o dcstream.o dctag.o dcxfer.o \
+objs= 	dcpixseq.o dcpxitem.o dcuid.o dcerror.o \
+	dcstack.o dclist.o dcswap.o dctag.o dcxfer.o \
 	dcdebug.o dcobject.o dcelem.o dcitem.o dcmetinf.o dcdatset.o \
 	dcsequen.o dcfilefo.o dcbytstr.o dcpixel.o dcvrae.o dcvras.o dcvrcs.o \
 	dccodec.o dcvrda.o dcvrds.o dcvrdt.o dcvris.o dcvrtm.o dcvrui.o \
@@ -49,7 +49,9 @@ objs= 	dcpixseq.o dcpxitem.o dcuid.o dcerror.o dcbuf.o \
 	dcvrat.o dcvrss.o dcvrus.o dcvrsl.o dcvrul.o dcvrulup.o dcvrfl.o \
 	dcvrfd.o dcvrpobw.o dcdirrec.o dcdicdir.o dcvm.o dcutils.o \
 	dcrleccd.o dcrlecce.o dcrlecp.o dcrlerp.o dcrledrg.o dcrleerg.o \
-	$(dictobjs) cmdlnarg.o dcvrut.o dctypes.o dcpcache.o
+	$(dictobjs) cmdlnarg.o dcvrut.o dctypes.o dcpcache.o \
+        dcistrma.o dcistrmb.o dcistrmf.o dcistrmz.o \
+        dcostrma.o dcostrmb.o dcostrmf.o dcostrmz.o
 
 all: libdcmdata.$(LIBEXT)
 

@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmPixelItem
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-05-24 14:51:42 $
+ *  Update Date:      $Date: 2002-08-27 16:55:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpxitem.h,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,7 +50,7 @@ class DcmPixelItem : public DcmOtherByteOtherWord
 
 {
   protected:
-    virtual OFCondition writeTagAndLength(DcmStream & outStream, 
+    virtual OFCondition writeTagAndLength(DcmOutputStream & outStream, 
 					  const E_TransferSyntax oxfer,	
 					  Uint32 & writtenBytes) const;
   public:
@@ -89,7 +89,11 @@ class DcmPixelItem : public DcmOtherByteOtherWord
 /*
 ** CVS/RCS Log:
 ** $Log: dcpxitem.h,v $
-** Revision 1.16  2002-05-24 14:51:42  meichel
+** Revision 1.17  2002-08-27 16:55:38  meichel
+** Initial release of new DICOM I/O stream classes that add support for stream
+**   compression (deflated little endian explicit VR transfer syntax)
+**
+** Revision 1.16  2002/05/24 14:51:42  meichel
 ** Moved helper methods that are useful for different compression techniques
 **   from module dcmjpeg to module dcmdata
 **

@@ -22,9 +22,9 @@
  *  Purpose: class DcmPixelData
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-07-10 11:49:30 $
+ *  Update Date:      $Date: 2002-08-27 16:55:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixel.cc,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -687,7 +687,7 @@ DcmPixelData::putOriginalRepresentation(
 
 OFCondition
 DcmPixelData::read(
-    DcmStream & inStream,
+    DcmInputStream & inStream,
     const E_TransferSyntax ixfer,
     const E_GrpLenEncoding glenc,
     const Uint32 maxReadLength)
@@ -933,7 +933,7 @@ DcmPixelData::transferInit()
 }
 
 OFCondition DcmPixelData::write(
-    DcmStream & outStream,
+    DcmOutputStream & outStream,
     const E_TransferSyntax oxfer,
     const E_EncodingType enctype)
 {
@@ -988,7 +988,7 @@ OFCondition DcmPixelData::writeXML(
 }
 
 OFCondition DcmPixelData::writeSignatureFormat(
-    DcmStream & outStream,
+    DcmOutputStream & outStream,
     const E_TransferSyntax oxfer,
     const E_EncodingType enctype)
 {
@@ -1039,7 +1039,11 @@ OFCondition DcmPixelData::loadAllDataIntoMemory(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.cc,v $
-** Revision 1.22  2002-07-10 11:49:30  meichel
+** Revision 1.23  2002-08-27 16:55:54  meichel
+** Initial release of new DICOM I/O stream classes that add support for stream
+**   compression (deflated little endian explicit VR transfer syntax)
+**
+** Revision 1.22  2002/07/10 11:49:30  meichel
 ** Fixed memory leak that occured when compression of an image failed in
 **   a compression codec.
 **

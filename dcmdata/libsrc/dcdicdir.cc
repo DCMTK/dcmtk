@@ -22,9 +22,9 @@
  *  Purpose: class DcmDicomDir
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-21 10:14:20 $
+ *  Update Date:      $Date: 2002-08-27 16:55:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdicdir.cc,v $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,11 +44,13 @@ END_EXTERN_C
 #endif
 #endif
 
+BEGIN_EXTERN_C
 #include <stdio.h>
-
+#include <errno.h>
 #ifdef HAVE_LIBC_H
 #include <libc.h>
 #endif
+END_EXTERN_C
 
 #if defined(HAVE_MKTEMP) && !defined(HAVE_PROTOTYPE_MKTEMP)
 extern "C" {
@@ -72,12 +74,17 @@ char * mktemp(char *);
 #include "ofstream.h"
 #include "dcdefine.h"
 #include "dcdicdir.h"
-#include "dctk.h"
 #include "dcuid.h"
 #include "dcdirrec.h"
 #include "dcxfer.h"
 #include "dcdebug.h"
 #include "dcdeftag.h"
+#include "dcostrma.h"    /* for class DcmOutputStream */
+#include "dcostrmf.h"    /* for class DcmOutputFileStream */
+#include "dcistrmf.h"    /* for class DcmInputFileStream */
+#include "dcvrcs.h"
+#include "dcvrus.h"
+#include "dcmetinf.h"
 
 
 // ********************************
@@ -1067,30 +1074,32 @@ OFCondition DcmDicomDir::write(const E_TransferSyntax oxfer,
     insertMediaSOPUID( metainfo );
 
     this->getDirFileFormat().validateMetaInfo( outxfer );
-    DcmFileStream outStream(newname, DCM_WriteMode);
-    if (outStream.Fail())
-    {
-        ofConsole.lockCerr() << "ERROR: cannot create DICOMDIR temporary file: " << newname << endl;
-        ofConsole.unlockCerr();
+    
+    { // block is intended to make sure outStream is closed a.s.a.p.
+        DcmOutputFileStream outStream(newname);
+        if (! outStream.good())
+        {
+            ofConsole.lockCerr() << "ERROR: cannot create DICOMDIR temporary file: " << newname << endl;
+            ofConsole.unlockCerr();
+        }
+        
+        metainfo.transferInit();
+        metainfo.write(outStream, META_HEADER_DEFAULT_TRANSFERSYNTAX, enctype);
+        metainfo.transferEnd();
+        
+        Uint32 beginOfDataset = outStream.tell();
+       
+        // convert to writable format
+        errorFlag = convertTreeToLinear(beginOfDataset, outxfer, 
+                                        enctype, glenc, localUnresRecs);
+        
+        dset.transferInit();
+        // do not calculate GroupLength and Padding twice!
+        dset.write(outStream, outxfer, enctype, EGL_noChange);
+        dset.transferEnd();
+
+        // outStream is closed here
     }
-
-    metainfo.transferInit();
-    metainfo.write(outStream, META_HEADER_DEFAULT_TRANSFERSYNTAX, enctype);
-    metainfo.transferEnd();
-
-    Uint32 beginOfDataset = outStream.Tell();
-    Uint32 bODset = beginOfDataset;
-
-    // in schreibbares Format umwandeln
-    errorFlag = convertTreeToLinear(bODset, outxfer, 
-                                    enctype, glenc, localUnresRecs);
-
-    dset.transferInit();
-    // do not calculate GroupLength and Padding twice!
-    dset.write(outStream, outxfer, enctype, EGL_noChange);
-    dset.transferEnd();
-
-    outStream.Close();
 
     char* backupname = NULL;
     if ( !mustCreateNewDir )
@@ -1109,18 +1118,29 @@ OFCondition DcmDicomDir::write(const E_TransferSyntax oxfer,
         strcat( backupname, DICOMDIR_BACKUP_SUFFIX );
         unlink( backupname );
         if (errorFlag == EC_Normal) {
-            if (rename(dicomDirFileName, backupname) != 0) {
-                errorFlag = EC_InvalidStream;
+            if (rename(dicomDirFileName, backupname) != 0)
+            {
+              const char *text = strerror(errno);
+              if (text == NULL) text = "(unknown error code)";
+              errorFlag = makeOFCondition(OFM_dcmdata, 19, OF_error, text);
             }
         }
 #else
         if ( unlink( dicomDirFileName ) != 0 )
-            errorFlag = EC_InvalidStream;
+        {
+          const char *text = strerror(errno);
+          if (text == NULL) text = "(unknown error code)";
+          errorFlag = makeOFCondition(OFM_dcmdata, 19, OF_error, text);
+        }
 #endif
     }
-    if (errorFlag == EC_Normal &&
-        rename( newname, dicomDirFileName ) != 0)
-        errorFlag = EC_InvalidStream;
+    if (errorFlag == EC_Normal && rename( newname, dicomDirFileName ) != 0)
+    {
+      const char *text = strerror(errno);
+      if (text == NULL) text = "(unknown error code)";
+      errorFlag = makeOFCondition(OFM_dcmdata, 19, OF_error, text);
+    }
+
     delete[] newname;
     modified = OFFalse;
 
@@ -1326,7 +1346,11 @@ Cdebug(1, refCounter[k].fileOffset==refMRDR->numberOfReferences,
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
-** Revision 1.36  2002-08-21 10:14:20  meichel
+** Revision 1.37  2002-08-27 16:55:44  meichel
+** Initial release of new DICOM I/O stream classes that add support for stream
+**   compression (deflated little endian explicit VR transfer syntax)
+**
+** Revision 1.36  2002/08/21 10:14:20  meichel
 ** Adapted code to new loadFile and saveFile methods, thus removing direct
 **   use of the DICOM stream classes.
 **

@@ -22,9 +22,9 @@
  *  Purpose: class DcmPixelItem
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-05-24 14:51:51 $
+ *  Update Date:      $Date: 2002-08-27 16:55:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpxitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,6 +53,8 @@ END_EXTERN_C
 #include "dcdebug.h"
 #include "ofstring.h"
 #include "ofstd.h"
+#include "dcistrma.h"    /* for class DcmInputStream */
+#include "dcostrma.h"    /* for class DcmOutputStream */
 
 
 // ********************************
@@ -83,13 +85,15 @@ DcmPixelItem::~DcmPixelItem()
 
 // ********************************
 
-OFCondition DcmPixelItem::writeTagAndLength(DcmStream & outStream, 
+OFCondition DcmPixelItem::writeTagAndLength(DcmOutputStream & outStream, 
 					 const E_TransferSyntax oxfer,	
 					 Uint32 & writtenBytes)	const
 {
-    OFCondition l_error = outStream.GetError();
-    if (l_error != EC_Normal)
+    OFCondition l_error = outStream.status();
+    if (l_error.bad())
+    {
 	writtenBytes = 0;
+    }
     else
     {
 	l_error = this -> writeTag(outStream, Tag, oxfer);
@@ -103,8 +107,10 @@ OFCondition DcmPixelItem::writeTagAndLength(DcmStream & outStream,
 	    return EC_IllegalCall;
 	}
 	swapIfNecessary(oByteOrder, gLocalByteOrder, &valueLength, 4, 4);
-	outStream.WriteBytes(&valueLength, 4); // 4 Byte Laenge
-	writtenBytes += 4;
+
+        // availability of four bytes space in output buffer 
+        // has been checked by caller.
+	writtenBytes += outStream.write(&valueLength, 4);
     }
 
     return l_error;
@@ -199,7 +205,11 @@ DcmPixelItem::writeXML(ostream &out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpxitem.cc,v $
-** Revision 1.22  2002-05-24 14:51:51  meichel
+** Revision 1.23  2002-08-27 16:55:55  meichel
+** Initial release of new DICOM I/O stream classes that add support for stream
+**   compression (deflated little endian explicit VR transfer syntax)
+**
+** Revision 1.22  2002/05/24 14:51:51  meichel
 ** Moved helper methods that are useful for different compression techniques
 **   from module dcmjpeg to module dcmdata
 **

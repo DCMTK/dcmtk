@@ -22,9 +22,9 @@
  *  Purpose: List the contents of a dicom file
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-20 12:19:57 $
+ *  Update Date:      $Date: 2002-08-27 16:55:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmdump.cc,v $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,6 +51,7 @@ END_EXTERN_C
 #include "cmdlnarg.h"
 #include "ofconapp.h"
 #include "dcuid.h"    /* for dcmtk version name */
+#include "dcistrmz.h"    /* for dcmZlibExpectRFC1950Encoding */
 
 #define OFFIS_CONSOLE_APPLICATION "dcmdump"
 
@@ -173,6 +174,11 @@ int main(int argc, char *argv[])
       cmd.addSubGroup("automatic data correction:");
         cmd.addOption("--enable-correction",  "+dc",       "enable automatic data correction (default)");
         cmd.addOption("--disable-correction", "-dc",       "disable automatic data correction");
+#ifdef WITH_ZLIB
+    cmd.addSubGroup("bitstream format of deflated input:");
+     cmd.addOption("--bitstream-deflated",      "+bd",       "expect deflated bitstream (default)");
+     cmd.addOption("--bitstream-zlib",          "+bz",       "expect deflated zlib bitstream");
+#endif
 
     cmd.addGroup("output options:");
       cmd.addSubGroup("printing:");
@@ -255,6 +261,19 @@ int main(int argc, char *argv[])
         dcmEnableAutomaticInputDataCorrection.set(OFFalse);
       }
       cmd.endOptionBlock();
+
+#ifdef WITH_ZLIB
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--bitstream-deflated"))
+      {
+        dcmZlibExpectRFC1950Encoding.set(OFFalse);
+      }
+      if (cmd.findOption("--bitstream-zlib"))
+      {
+        dcmZlibExpectRFC1950Encoding.set(OFTrue);
+      }
+      cmd.endOptionBlock();
+#endif
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--load-all")) loadIntoMemory = OFTrue;
@@ -470,7 +489,11 @@ static int dumpFile(ostream & out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
- * Revision 1.39  2002-08-20 12:19:57  meichel
+ * Revision 1.40  2002-08-27 16:55:26  meichel
+ * Initial release of new DICOM I/O stream classes that add support for stream
+ *   compression (deflated little endian explicit VR transfer syntax)
+ *
+ * Revision 1.39  2002/08/20 12:19:57  meichel
  * Adapted code to new loadFile and saveFile methods, thus removing direct
  *   use of the DICOM stream classes.
  *

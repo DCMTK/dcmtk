@@ -22,9 +22,9 @@
  *  Purpose: class DcmOtherByteOtherWord for data VR OB or OW
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-07-08 14:44:42 $
+ *  Update Date:      $Date: 2002-08-27 16:55:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrobow.cc,v $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,7 +52,6 @@ END_EXTERN_C
 #include "dcvrobow.h"
 #include "dcdeftag.h"
 #include "dcswap.h"
-#include "dcstream.h"
 #include "dcvm.h"
 #include "dcdebug.h"
 
@@ -544,7 +543,7 @@ OFBool DcmOtherByteOtherWord::canWriteXfer(const E_TransferSyntax newXfer,
 
 // ********************************
 
-OFCondition DcmOtherByteOtherWord::write(DcmStream & outStream,
+OFCondition DcmOtherByteOtherWord::write(DcmOutputStream & outStream,
                      const E_TransferSyntax oxfer,
                      const E_EncodingType enctype)
 {
@@ -559,7 +558,7 @@ OFCondition DcmOtherByteOtherWord::write(DcmStream & outStream,
 
 // ********************************
 
-OFCondition DcmOtherByteOtherWord::writeSignatureFormat(DcmStream & outStream,
+OFCondition DcmOtherByteOtherWord::writeSignatureFormat(DcmOutputStream & outStream,
                      const E_TransferSyntax oxfer,
                      const E_EncodingType enctype)
 {
@@ -616,7 +615,11 @@ OFCondition DcmOtherByteOtherWord::writeXML(ostream &out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
-** Revision 1.38  2002-07-08 14:44:42  meichel
+** Revision 1.39  2002-08-27 16:55:59  meichel
+** Initial release of new DICOM I/O stream classes that add support for stream
+**   compression (deflated little endian explicit VR transfer syntax)
+**
+** Revision 1.38  2002/07/08 14:44:42  meichel
 ** Improved dcmdata behaviour when reading odd tag length. Depending on the
 **   global boolean flag dcmAcceptOddAttributeLength, the parser now either accepts
 **   odd length attributes or implements the old behaviour, i.e. assumes a real

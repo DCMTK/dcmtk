@@ -10,16 +10,15 @@ echoscu.o: echoscu.cc ../../config/include/osconfig.h \
  ../../ofstd/include/ofglobal.h ../include/extneg.h ../include/assoc.h \
  ../../dcmdata/include/dcdatset.h ../../dcmdata/include/dcitem.h \
  ../../dcmdata/include/dcobject.h ../../dcmdata/include/dcxfer.h \
- ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
- ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
- ../../dcmdata/include/dcdicent.h ../../dcmdata/include/dclist.h \
+ ../../dcmdata/include/dcvr.h ../../dcmdata/include/dctag.h \
+ ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dclist.h \
  ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
  ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
- ../include/diutil.h ../../dcmdata/include/dcfilefo.h \
- ../../dcmdata/include/dcsequen.h ../../dcmdata/include/dcdebug.h \
- ../../dcmdata/include/dcdict.h ../../dcmdata/include/dchashdi.h \
- ../../dcmdata/include/cmdlnarg.h ../../ofstd/include/ofconapp.h \
- ../../ofstd/include/ofcmdln.h
+ ../../dcmdata/include/dcpcache.h ../include/diutil.h \
+ ../../dcmdata/include/dcfilefo.h ../../dcmdata/include/dcsequen.h \
+ ../../dcmdata/include/dcdebug.h ../../dcmdata/include/dcdict.h \
+ ../../dcmdata/include/dchashdi.h ../../dcmdata/include/cmdlnarg.h \
+ ../../ofstd/include/ofconapp.h ../../ofstd/include/ofcmdln.h
 findscu.o: findscu.cc ../../config/include/osconfig.h \
  ../include/dimse.h ../include/dicom.h ../include/cond.h \
  ../../ofstd/include/ofconsol.h ../../ofstd/include/ofstream.h \
@@ -32,16 +31,15 @@ findscu.o: findscu.cc ../../config/include/osconfig.h \
  ../../ofstd/include/ofglobal.h ../include/extneg.h ../include/assoc.h \
  ../../dcmdata/include/dcdatset.h ../../dcmdata/include/dcitem.h \
  ../../dcmdata/include/dcobject.h ../../dcmdata/include/dcxfer.h \
- ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
- ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
- ../../dcmdata/include/dcdicent.h ../../dcmdata/include/dclist.h \
+ ../../dcmdata/include/dcvr.h ../../dcmdata/include/dctag.h \
+ ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dclist.h \
  ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
  ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
- ../include/diutil.h ../../dcmdata/include/dcfilefo.h \
- ../../dcmdata/include/dcsequen.h ../../dcmdata/include/dcdebug.h \
- ../../dcmdata/include/dcdict.h ../../dcmdata/include/dchashdi.h \
- ../../dcmdata/include/cmdlnarg.h ../../ofstd/include/ofconapp.h \
- ../../ofstd/include/ofcmdln.h
+ ../../dcmdata/include/dcpcache.h ../include/diutil.h \
+ ../../dcmdata/include/dcfilefo.h ../../dcmdata/include/dcsequen.h \
+ ../../dcmdata/include/dcdebug.h ../../dcmdata/include/dcdict.h \
+ ../../dcmdata/include/dchashdi.h ../../dcmdata/include/cmdlnarg.h \
+ ../../ofstd/include/ofconapp.h ../../ofstd/include/ofcmdln.h
 movescu.o: movescu.cc ../../config/include/osconfig.h \
  ../include/dicom.h ../include/cond.h ../../ofstd/include/ofconsol.h \
  ../../ofstd/include/ofstream.h ../../ofstd/include/ofthread.h \
@@ -54,15 +52,15 @@ movescu.o: movescu.cc ../../config/include/osconfig.h \
  ../include/assoc.h ../../dcmdata/include/dcdatset.h \
  ../../dcmdata/include/dcitem.h ../../dcmdata/include/dcobject.h \
  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
- ../../dcmdata/include/dcstream.h ../../dcmdata/include/dctag.h \
- ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dcdicent.h \
+ ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
  ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
  ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
- ../../dcmdata/include/dcelem.h ../include/diutil.h \
- ../../dcmdata/include/dcfilefo.h ../../dcmdata/include/dcsequen.h \
- ../../dcmdata/include/dcdebug.h ../../dcmdata/include/dcdict.h \
- ../../dcmdata/include/dchashdi.h ../../dcmdata/include/cmdlnarg.h \
- ../../ofstd/include/ofconapp.h ../../ofstd/include/ofcmdln.h
+ ../../dcmdata/include/dcelem.h ../../dcmdata/include/dcpcache.h \
+ ../include/diutil.h ../../dcmdata/include/dcfilefo.h \
+ ../../dcmdata/include/dcsequen.h ../../dcmdata/include/dcdebug.h \
+ ../../dcmdata/include/dcdict.h ../../dcmdata/include/dchashdi.h \
+ ../../dcmdata/include/cmdlnarg.h ../../ofstd/include/ofconapp.h \
+ ../../ofstd/include/ofcmdln.h
 storescp.o: storescp.cc ../../config/include/osconfig.h \
  ../include/dimse.h ../include/dicom.h ../include/cond.h \
  ../../ofstd/include/ofconsol.h ../../ofstd/include/ofstream.h \
@@ -75,20 +73,20 @@ storescp.o: storescp.cc ../../config/include/osconfig.h \
  ../../ofstd/include/ofglobal.h ../include/extneg.h ../include/assoc.h \
  ../../dcmdata/include/dcdatset.h ../../dcmdata/include/dcitem.h \
  ../../dcmdata/include/dcobject.h ../../dcmdata/include/dcxfer.h \
- ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
- ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
- ../../dcmdata/include/dcdicent.h ../../dcmdata/include/dclist.h \
+ ../../dcmdata/include/dcvr.h ../../dcmdata/include/dctag.h \
+ ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dclist.h \
  ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
  ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
- ../include/diutil.h ../../dcmdata/include/dcfilefo.h \
- ../../dcmdata/include/dcsequen.h ../../dcmdata/include/dcdebug.h \
- ../../dcmdata/include/dcdict.h ../../dcmdata/include/dchashdi.h \
- ../../dcmdata/include/cmdlnarg.h ../../ofstd/include/ofconapp.h \
- ../../ofstd/include/ofcmdln.h ../../ofstd/include/ofstd.h \
- ../../ofstd/include/ofdatime.h ../../ofstd/include/ofdate.h \
- ../../ofstd/include/oftime.h ../../dcmdata/include/dcdeftag.h \
- ../../dcmtls/include/tlstrans.h ../include/dcmtrans.h \
- ../include/dcmlayer.h ../../dcmtls/include/tlslayer.h
+ ../../dcmdata/include/dcpcache.h ../include/diutil.h \
+ ../../dcmdata/include/dcfilefo.h ../../dcmdata/include/dcsequen.h \
+ ../../dcmdata/include/dcdebug.h ../../dcmdata/include/dcdict.h \
+ ../../dcmdata/include/dchashdi.h ../../dcmdata/include/cmdlnarg.h \
+ ../../ofstd/include/ofconapp.h ../../ofstd/include/ofcmdln.h \
+ ../../ofstd/include/ofstd.h ../../ofstd/include/ofdatime.h \
+ ../../ofstd/include/ofdate.h ../../ofstd/include/oftime.h \
+ ../../dcmdata/include/dcdeftag.h ../../dcmtls/include/tlstrans.h \
+ ../include/dcmtrans.h ../include/dcmlayer.h \
+ ../../dcmtls/include/tlslayer.h
 storescu.o: storescu.cc ../../config/include/osconfig.h \
  ../../ofstd/include/ofstring.h ../../ofstd/include/ofstream.h \
  ../../ofstd/include/oftypes.h ../include/dimse.h ../include/dicom.h \
@@ -101,16 +99,16 @@ storescu.o: storescu.cc ../../config/include/osconfig.h \
  ../../ofstd/include/ofglobal.h ../include/extneg.h ../include/assoc.h \
  ../../dcmdata/include/dcdatset.h ../../dcmdata/include/dcitem.h \
  ../../dcmdata/include/dcobject.h ../../dcmdata/include/dcxfer.h \
- ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
- ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
- ../../dcmdata/include/dcdicent.h ../../dcmdata/include/dclist.h \
+ ../../dcmdata/include/dcvr.h ../../dcmdata/include/dctag.h \
+ ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dclist.h \
  ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
  ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
- ../include/diutil.h ../../dcmdata/include/dcmetinf.h \
- ../../dcmdata/include/dcfilefo.h ../../dcmdata/include/dcsequen.h \
- ../../dcmdata/include/dcdebug.h ../../dcmdata/include/dcdict.h \
- ../../dcmdata/include/dchashdi.h ../../dcmdata/include/dcdeftag.h \
- ../../dcmdata/include/cmdlnarg.h ../../ofstd/include/ofconapp.h \
- ../../ofstd/include/ofcmdln.h ../../dcmtls/include/tlstrans.h \
- ../include/dcmtrans.h ../include/dcmlayer.h \
- ../../dcmtls/include/tlslayer.h
+ ../../dcmdata/include/dcpcache.h ../include/diutil.h \
+ ../../dcmdata/include/dcmetinf.h ../../dcmdata/include/dcfilefo.h \
+ ../../dcmdata/include/dcsequen.h ../../dcmdata/include/dcdebug.h \
+ ../../dcmdata/include/dcdict.h ../../dcmdata/include/dchashdi.h \
+ ../../dcmdata/include/dcdeftag.h ../../dcmdata/include/cmdlnarg.h \
+ ../../ofstd/include/ofconapp.h ../../ofstd/include/ofcmdln.h \
+ ../../dcmdata/include/dcostrmz.h ../../dcmdata/include/dcostrma.h \
+ ../../dcmtls/include/tlstrans.h ../include/dcmtrans.h \
+ ../include/dcmlayer.h ../../dcmtls/include/tlslayer.h

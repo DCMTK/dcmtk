@@ -22,9 +22,9 @@
  *  Purpose: 
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:02 $
+ *  Update Date:      $Date: 2002-08-27 16:55:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdictbi.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,12 +52,12 @@ DcmDataDictionary::loadBuiltinDictionary()
 /*
  * CVS/RCS Log:
  * $Log: dcdictbi.cc,v $
- * Revision 1.8  2001-06-01 15:49:02  meichel
- * Updated copyright header
+ * Revision 1.9  2002-08-27 16:55:45  meichel
+ * Initial release of new DICOM I/O stream classes that add support for stream
+ *   compression (deflated little endian explicit VR transfer syntax)
  *
- * Revision 1.7  2000/10/12 08:15:48  joergr
- * Updated data dictionary to reflect the changes made in supplement 23
- * (Structured Reporting) final text.
+ * Revision 1.5  2001/06/01 15:49:02  meichel
+ * Updated copyright header
  *
  * Revision 1.4  2000/04/14 16:14:46  meichel
  * Minor changes for thread safety.
