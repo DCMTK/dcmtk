@@ -10,9 +10,9 @@
 ** routines for finding and created UIDs.
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1999-03-22 13:41:24 $
+** Update Date:		$Date: 1999-03-29 10:13:40 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcuid.cc,v $
-** CVS/RCS Revision:	$Revision: 1.17 $
+** CVS/RCS Revision:	$Revision: 1.18 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -184,8 +184,7 @@ static UIDNameMap uidNameMap[] = {
     { UID_FINDPatientStudyOnlyQueryRetrieveInformationModel,  "FINDPatientStudyOnlyQueryRetrieveInformationModel" },
     { UID_MOVEPatientStudyOnlyQueryRetrieveInformationModel,  "MOVEPatientStudyOnlyQueryRetrieveInformationModel" },
     { UID_GETPatientStudyOnlyQueryRetrieveInformationModel,   "GETPatientStudyOnlyQueryRetrieveInformationModel" },
-    { UID_FINDModalityWorklistInformationModel,               "FINDModalityWorklistInformationModel" },
-    
+    { UID_FINDModalityWorklistInformationModel,               "FINDModalityWorklistInformationModel" },    
     { UID_DigitalXRayImageStorageForPresentation,              "DigitalXRayImageStorageForPresentation" },
     { UID_DigitalXRayImageStorageForProcessing,                "DigitalXRayImageStorageForProcessing" },
     { UID_DigitalMammographyXRayImageStorageForPresentation,   "DigitalMammographyXRayImageStorageForPresentation" },
@@ -239,7 +238,6 @@ const char* dcmStorageSOPClassUIDs[] = {
     UID_StoredPrintStorage,
     UID_HardcopyGrayscaleImageStorage,
     UID_HardcopyColorImageStorage,
-
     UID_ComputedRadiographyImageStorage,
     UID_CTImageStorage,
     UID_RETIRED_UltrasoundMultiframeImageStorage,
@@ -263,16 +261,12 @@ const char* dcmStorageSOPClassUIDs[] = {
     UID_RTDoseStorage,
     UID_RTStructureSetStorage,
     UID_RTPlanStorage,
-    
     UID_DigitalXRayImageStorageForPresentation,
     UID_DigitalXRayImageStorageForProcessing,
     UID_DigitalMammographyXRayImageStorageForPresentation,
     UID_DigitalMammographyXRayImageStorageForProcessing,
     UID_DigitalIntraOralXRayImageStorageForPresentation,
     UID_DigitalIntraOralXRayImageStorageForProcessing,
-    UID_PrinterConfigurationRetrievalSOPClass,
-    UID_PrinterConfigurationRetrievalSOPInstance,
-    UID_BasicPrintImageOverlayBoxSOPClass,
     UID_DRAFT_VLImageStorage,
     UID_DRAFT_VLMultiFrameImageStorage,
     UID_VLEndoscopicImageStorage,
@@ -580,7 +574,10 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.17  1999-03-22 13:41:24  meichel
+** Revision 1.18  1999-03-29 10:13:40  meichel
+** Corrected list of image SOP classes
+**
+** Revision 1.17  1999/03/22 13:41:24  meichel
 ** Reworked UID list based on the 1998 DICOM edition and the latest
 **   supplement versions.
 **
