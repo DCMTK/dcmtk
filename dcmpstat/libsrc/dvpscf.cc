@@ -22,8 +22,8 @@
  *  Purpose: DVConfiguration
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-01 13:33:18 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 1999-10-01 15:34:33 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,7 +52,7 @@
 /* keywords for configuration file */
 #define L0_PRESENTATIONLUTINFILMSESSION "PRESENTATIONLUTINFILMSESSION"
 #define L0_AETITLE                      "AETITLE"
-#define L0_ALWAYSDELETETERMINATEJOBS    "DELETEPRINTJOBS"
+#define L0_ALWAYSDELETETERMINATEJOBS    "ALWAYSDELETETERMINATEJOBS"
 #define L0_BITPRESERVINGMODE            "BITPRESERVINGMODE"
 #define L0_BORDERDENSITY                "BORDERDENSITY"
 #define L0_CHARACTERISTICS              "CHARACTERISTICS"
@@ -785,7 +785,10 @@ Uint16 DVConfiguration::getDefaultPrintReflection()
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.cc,v $
- *  Revision 1.10  1999-10-01 13:33:18  joergr
+ *  Revision 1.11  1999-10-01 15:34:33  joergr
+ *  Fixed "copy and paste" error.
+ *
+ *  Revision 1.10  1999/10/01 13:33:18  joergr
  *  Added new option to config file: AlwaysDeleteTerminateJobs.
  *
  *  Revision 1.9  1999/09/27 12:49:27  meichel
