@@ -22,8 +22,8 @@
  *  Purpose: DicomRegister (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-17 18:18:08 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2003-12-23 12:22:02 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,19 +43,47 @@
  *  class declaration  *
  *---------------------*/
 
+/** Class to register color support to dcmimgle library
+ */
 class DiRegister
   : public DiRegisterBase
 {
 
  public:
 
+    /** constructor
+     */
     DiRegister();
 
+    /** destructor
+     */
     virtual ~DiRegister();
 
-    virtual DiImage *createImage(const DiDocument *, const EI_Status, const EP_Interpretation);
+    /** create color image representation
+     *
+     ** @param  docu    pointer to dataset (encapsulated)
+     *  @param  status  image status
+     *  @param  photo   photometric interpretation
+     *
+     ** @return pointer to new DiImage object (NULL if an error occurred)
+     */
+    virtual DiImage *createImage(const DiDocument *docu,
+                                 const EI_Status status,
+                                 const EP_Interpretation photo);
 
-    virtual DiMonoPixel *createMonoImageData(const DiColorImage *, const double, const double, const double);
+    /** create monochrome pixel data from color image
+     *
+     ** @param  image  pointer to color image
+     *  @param  red    coefficient by which the red component is weighted
+     *  @param  green  coefficient by which the green component is weighted
+     *  @param  blue   coefficient by which the blue component is weighted
+     *
+     ** @return pointer to new DiImage object (NULL if an error occurred)
+     */
+    virtual DiMonoPixel *createMonoImageData(const DiColorImage *image,
+                                             const double red,
+                                             const double green,
+                                             const double blue);
 };
 
 
@@ -73,7 +101,10 @@ static DiRegister Init_dcmimage_Module;        // registration pointer is initia
  *
  * CVS/RCS Log:
  * $Log: diregist.h,v $
- * Revision 1.8  2003-12-17 18:18:08  joergr
+ * Revision 1.9  2003-12-23 12:22:02  joergr
+ * Added missing API documentation.
+ *
+ * Revision 1.8  2003/12/17 18:18:08  joergr
  * Removed leading underscore characters from preprocessor symbols (reserved
  * symbols).
  *
