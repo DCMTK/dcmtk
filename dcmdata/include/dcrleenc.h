@@ -22,9 +22,9 @@
  *  Purpose: RLE compressor
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-06-06 14:52:37 $
+ *  Update Date:      $Date: 2002-06-27 15:15:42 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcrleenc.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,6 +39,21 @@
 
 #define DcmRLEEncoder_BLOCKSIZE 16384
 
+/** abstract class that defines an interface through which
+ *  encoder classes (such as DcmRLEEncoder) may export their
+ *  encoded data
+ */
+class DcmEncoderOutputStream
+{
+public:
+  /** write the given buffer into the output stream
+   *  @param buf pointer to buffer
+   *  @bufsize number of bytes in buffer
+   */
+  virtual void write(const unsigned char *buf, size_t bufsize) =0;
+};
+
+
 /** this class implements an RLE compressor conforming to the DICOM standard.
  *  The class is loosely based on an implementation by Phil Norman <forrey@eh.org>
  */
@@ -46,9 +61,12 @@ class DcmRLEEncoder
 {
 public:
 
-  /// default constructor
-  DcmRLEEncoder()
+  /** default constructor
+   *  @param doPad if true, RLE codec will pad output data to even number of bytes
+   */
+  DcmRLEEncoder(int doPad)
   : fail_(0)
+  , pad_(doPad)
   , currentBlock_(new unsigned char[DcmRLEEncoder_BLOCKSIZE])
   , offset_(0)
   , blockList_()
@@ -151,6 +169,19 @@ public:
     }
   }
 
+  /** this method adds a block of bytes to the byte stream to be 
+   *  compressed with the RLE compressor.
+   *  @param buf buffer to be added
+   *  @param bufcount number of bytes in buffer
+   */
+  inline void add(const unsigned char *buf, size_t bufcount)
+  {
+  	if (buf)
+  	{
+  	  while (bufcount--) add(*buf++);
+  	}
+  }
+
   /** this method finalizes the compressed RLE stream, i.e. flushes all
    *  pending literal or repeat runs. This method can be called at any
    *  time; however, it must be called before size() or write()
@@ -221,7 +252,7 @@ public:
   inline size_t size() const
   {
     size_t result = blockList_.size() * DcmRLEEncoder_BLOCKSIZE + offset_;
-    if (result & 1) result++; // enforce even number of bytes
+    if (pad_ && (result & 1)) result++; // enforce even number of bytes
     return result;
   }
 
@@ -258,10 +289,39 @@ public:
       }
 
       // pad to even number of bytes if necessary
-      if ((blockList_.size() * DcmRLEEncoder_BLOCKSIZE + offset_) & 1)
+      if (pad_ && ((blockList_.size() * DcmRLEEncoder_BLOCKSIZE + offset_) & 1))
       {
         target8 += offset_;
         *target8 = 0;
+      }
+    }
+  }
+
+  /** copies the compressed RLE byte stream into an
+   *  output stream
+   *  @param target pointer to array of at least size() bytes, must not be NULL.
+   */
+  inline void write(DcmEncoderOutputStream& os) const
+  {
+    if (!fail_)
+    {
+      OFListIterator(unsigned char *) first = blockList_.begin();
+      OFListIterator(unsigned char *) last = blockList_.end();
+      while (first != last)
+      {
+        os.write(*first, DcmRLEEncoder_BLOCKSIZE);
+        ++first;
+      }
+      if (offset_ > 0)
+      {
+        os.write(currentBlock_, offset_);
+      }
+
+      // pad to even number of bytes if necessary
+      if (pad_ && ((blockList_.size() * DcmRLEEncoder_BLOCKSIZE + offset_) & 1))
+      {
+        unsigned char c = 0;
+        os.write(&c, 1);
       }
     }
   }
@@ -308,6 +368,12 @@ private:
    */
   int fail_;
 
+  /** this flag indicates whether the RLE codec must pad encoded
+   *  data to an even number of bytes (as required by DICOM).
+   *  True if padding is required, false otherwise
+   */
+  int pad_;
+  
   /** this member points to a block of size DcmRLEEncoder_BLOCKSIZE
    *  (unless fail_ is true). This is the current block of data to
    *  which the RLE stream is written
@@ -353,7 +419,11 @@ private:
 /*
  * CVS/RCS Log
  * $Log: dcrleenc.h,v $
- * Revision 1.1  2002-06-06 14:52:37  meichel
+ * Revision 1.2  2002-06-27 15:15:42  meichel
+ * Modified RLE encoder to make it usable for other purposes than
+ *   DICOM encoding as well (e.g. PostScript, TIFF)
+ *
+ * Revision 1.1  2002/06/06 14:52:37  meichel
  * Initial release of the new RLE codec classes
  *   and the dcmcrle/dcmdrle tools in module dcmdata
  *

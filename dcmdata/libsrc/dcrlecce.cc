@@ -22,9 +22,9 @@
  *  Purpose: encoder codec class for RLE
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-06-06 14:52:41 $
+ *  Update Date:      $Date: 2002-06-27 15:15:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcrlecce.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -235,7 +235,7 @@ OFCondition DcmRLECodecEncoder::encode(
             pixelPointer = pixelData8 + frameOffset + sampleOffset + bytesAllocated - byte - 1;
 
             // initialize new RLE codec for this stripe
-            rleEncoder = new DcmRLEEncoder();
+            rleEncoder = new DcmRLEEncoder(1 /* DICOM padding required */);
             if (rleEncoder)
             {
               rleEncoderList.push_back(rleEncoder);
@@ -414,7 +414,11 @@ OFCondition DcmRLECodecEncoder::updateDerivationDescription(
 /*
  * CVS/RCS Log
  * $Log: dcrlecce.cc,v $
- * Revision 1.1  2002-06-06 14:52:41  meichel
+ * Revision 1.2  2002-06-27 15:15:43  meichel
+ * Modified RLE encoder to make it usable for other purposes than
+ *   DICOM encoding as well (e.g. PostScript, TIFF)
+ *
+ * Revision 1.1  2002/06/06 14:52:41  meichel
  * Initial release of the new RLE codec classes
  *   and the dcmcrle/dcmdrle tools in module dcmdata
  *
