@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2003, OFFIS
+ *  Copyright (C) 1996-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-12-17 17:37:30 $
- *  CVS/RCS Revision: $Revision: 1.79 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-01-05 14:46:53 $
+ *  CVS/RCS Revision: $Revision: 1.80 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -494,9 +494,9 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--accept-palettes"))
             opt_compatibilityMode |= CIF_WrongPaletteAttributeTags;
         if (cmd.findOption("--ignore-mlut-depth"))
-            opt_compatibilityMode |= CIF_IgnoreModalityLutBitDepth;            
+            opt_compatibilityMode |= CIF_IgnoreModalityLutBitDepth;
         if (cmd.findOption("--ignore-vlut-depth"))
-            opt_ignoreVoiLutDepth = OFTrue;            
+            opt_ignoreVoiLutDepth = OFTrue;
 
         /* image processing options: frame selection */
 
@@ -1445,7 +1445,7 @@ int main(int argc, char *argv[])
                     {
                         /* initialize JPEG plugin */
                         DiJPEGPlugin plugin;
-                        plugin.setQuality((unsigned int) opt_quality);
+                        plugin.setQuality(OFstatic_cast(unsigned int, opt_quality));
                         plugin.setSampling(opt_sampling);
                         result = di->writePluginFormat(&plugin, ofile, frame);
                     }
@@ -1458,7 +1458,7 @@ int main(int argc, char *argv[])
                         DiTIFFPlugin tiffPlugin;
                         tiffPlugin.setCompressionType(opt_tiffCompression);
                         tiffPlugin.setLZWPredictor(opt_lzwPredictor);
-                        tiffPlugin.setRowsPerStrip((unsigned long)opt_rowsPerStrip);
+                        tiffPlugin.setRowsPerStrip(OFstatic_cast(unsigned long, opt_rowsPerStrip));
                         result = di->writePluginFormat(&tiffPlugin, ofile, frame);
                     }
                     break;
@@ -1515,7 +1515,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.79  2003-12-17 17:37:30  meichel
+ * Revision 1.80  2004-01-05 14:46:53  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ * Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ * Revision 1.79  2003/12/17 17:37:30  meichel
  * Command line options for and defaults for TIFF export now depend on
  *   whether or not libtiff supports LZW compression
  *
@@ -1587,13 +1591,9 @@ int main(int argc, char *argv[])
  * Revision 1.61  2002/05/02 14:09:19  joergr
  * Added support for standard and non-standard string streams (which one is
  * supported is detected automatically via the configure mechanism).
- * Thanks again to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- * contribution.
  *
  * Revision 1.60  2002/04/16 13:54:28  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
- * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- * contribution.
  *
  * Revision 1.59  2002/04/11 12:44:47  joergr
  * Use the new loadFile() and saveFile() routines from the dcmdata library.
