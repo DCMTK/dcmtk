@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2000-06-07 08:57:55 $
+** Update Date:		$Date: 2001-03-28 15:46:08 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimse.cc,v $
-** CVS/RCS Revision:	$Revision: 1.23 $
+** CVS/RCS Revision:	$Revision: 1.24 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -911,7 +911,9 @@ DIMSE_receiveCommand(T_ASC_Association * assoc,
 
     DcmBufferStream cmdBuf(DCM_ReadMode);
     econd = cmdBuf.GetError();
-    if (econd != EC_Normal) {
+    if (econd != EC_Normal) 
+    {
+    	delete cmdSet;
 	return COND_PushCondition(DIMSE_PARSEFAILED, 
 	    "DIMSE: receiveCommand: Failed to initialize cmdBuf(DCM_ReadMode)");
     }
@@ -923,6 +925,7 @@ DIMSE_receiveCommand(T_ASC_Association * assoc,
 	
 	cond = DIMSE_readNextPDV(assoc, blocking, timeout, &pdv);
 	if (cond != DIMSE_NORMAL) {
+       	    delete cmdSet;
 	    if (cond == DIMSE_READPDVFAILED)
 		return COND_PushCondition(DIMSE_RECEIVEFAILED,
 					DIMSE_Message(DIMSE_RECEIVEFAILED));
@@ -935,6 +938,7 @@ DIMSE_receiveCommand(T_ASC_Association * assoc,
 	if (pdvCount == 0) {
 	    pid = pdv.presentationContextID;
 	} else if (pdv.presentationContextID != pid) {
+       	    delete cmdSet;
 	    cond = DIMSE_INVALIDPRESENTATIONCONTEXTID;
 	    COND_PushCondition(cond, 
 	        "DIMSE: Different PIDs inside Command Set: %d != %d", 
@@ -982,10 +986,14 @@ DIMSE_receiveCommand(T_ASC_Association * assoc,
 
     /* is this a valid presentation context ? */
     cond = getTransferSyntax(assoc, pid, &xferSyntax);
-    if (!SUCCESS(cond)) 
+    if (!SUCCESS(cond))
+    {
+        delete cmdSet;
         return cond;
-
+    }
+    
     if (type != DUL_COMMANDPDV) {
+        delete cmdSet;
         cond = DIMSE_UNEXPECTEDPDVTYPE;
 	COND_PushCondition(cond, "DIMSE: Command PDV Expected");
 	return DIMSE_RECEIVEFAILED;
@@ -1024,7 +1032,7 @@ DIMSE_receiveCommand(T_ASC_Association * assoc,
 	    /* nothing left or the caller does not want status detail */
 	    delete cmdSet;
 	}
-    }
+    } else delete cmdSet;
 
     /* set the Presentation Context ID we received */
     *presID = pid;
@@ -1420,7 +1428,11 @@ void DIMSE_warning(T_ASC_Association *assoc,
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
-** Revision 1.23  2000-06-07 08:57:55  meichel
+** Revision 1.24  2001-03-28 15:46:08  meichel
+** Fixed memory leak: for each terminated connection, an empty
+**   DcmDataset remained in memory.
+**
+** Revision 1.23  2000/06/07 08:57:55  meichel
 ** dcmnet DIMSE routines now allow to retrieve raw command sets as DcmDataset
 **   objects, e.g. for logging purposes. Added enhanced message dump functions.
 **
