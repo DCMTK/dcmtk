@@ -22,9 +22,9 @@
  *  Purpose: Class for modifying DICOM-Files and Datasets
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2003-09-19 12:41:11 $
+ *  Update Date:      $Date: 2003-10-01 14:04:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/mdfdsman.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,15 +58,15 @@ public:
     ~MdfDataSetManager();
 
     /** Loads a file into Datasetmanager (this class)
-     *@param file_name - [in] file to be loaded
+     *@param file_name file to be loaded
      *@return returns EC_normal if everything is ok, else an error
      */
     OFCondition loadFile(const char *file_name);
 
     /** Modifies a tag to a specific value, works only at 1. level!
      * It does not insert non-existing tag
-     *@param tag_key - [in] holds tag-key to be modified
-     *@param value - [in] denotes new value of tag
+     *@param tag_key holds tag-key to be modified
+     *@param value denotes new value of tag
      *@return returns EC_normal if everything is ok, else an error
      */
     OFCondition modifyTag(DcmTagKey tag_key,
@@ -74,9 +74,9 @@ public:
 
     /** Modifies a tag to a specific value, works only at 1. level!
      * Inserts new tag, if tag does not exist so far
-     *@param tag_key - [in] holds tag-key to be modified
-     *@param value - [in] denotes new value of tag
-     *@param only_modify - [in] if true, only existing tags are processed.
+     *@param tag_key holds tag-key to be modified
+     *@param value denotes new value of tag
+     *@param only_modify if true, only existing tags are processed.
      * if false, a tag with specified value is inserted
      *@return returns EC_normal if everything is ok, else an error
      */
@@ -85,8 +85,8 @@ public:
                                   OFBool only_modify);
 
     /** Deletes tag in dataset
-     *@param tag_key - [in] holds tag-key to be modified
-     *@param all_tags - [in] If true, tag is deletet at all levels of dataset,
+     *@param tag_key holds tag-key to be modified
+     *@param all_tags If true, tag is deletet at all levels of dataset,
      * else only 1. level is accessed
      *@return returns EC_normal if everything is ok, else an error
      */
@@ -94,16 +94,16 @@ public:
                           OFBool all_tags);
 
     /** Deletes tag stored in a sequence/item
-     *@param tag_path - [in] path to item
+     *@param tag_path path to item
      *@return returns EC_normal if everything is ok, else an error
      */
     OFCondition deleteItemTag(char *tag_path);
 
     /** Modifies a tag in an item to a specific value
-     *@param tag_path - [in] holds path to item-tag. The path should look like this:
+     *@param tag_path holds path to item-tag. The path should look like this:
      * gggg,eeee[0].gggg,eeee[3].gggg,eeee
-     *@param value - [in] denotes new value of tag
-     *@param only_modify - [in] if true, only existing tags are modified. If
+     *@param value denotes new value of tag
+     *@param only_modify if true, only existing tags are modified. If
      * its false, a non existing tag is inserted with specified value
 
      *@return returns EC_normal if everything is ok, else an error
@@ -113,9 +113,9 @@ public:
                                       OFBool only_modify);
 
     /** Modifies all matching tags in dataset to a new value
-     *@param tag_key - [in] denotes, which tag to modify
-     *@param value - [in] denotes new value of tag
-     *@param count - [out] holds the number of tags, that were affected from this
+     *@param tag_key denotes, which tag to modify
+     *@param value denotes new value of tag
+     *@param count holds the number of tags, that were affected from this
      * function
      *@return returns EC_normal if everything is ok, else an error
      */
@@ -124,7 +124,7 @@ public:
                               int &count);
 
     /** Saves current dataset back to a file
-     *@param file - [in] file is saved to this filename
+     *@param file file is saved to this filename
      *@return returns EC_normal if everything is ok, else an error
      */
     OFCondition saveFile(const char *file);
@@ -132,8 +132,8 @@ public:
     /** get next Object from internal dataset. if intoSub true, scan
      * complete hierarchy, false scan only elements direct in this
      * item (not deeper).
-     *@param result_stack - [out] the result of nextObject is stored here
-     *@param intoSub - [in] dive into sub
+     *@param result_stack the result of nextObject is stored here
+     *@param intoSub dive into sub
      *@return returns EC_normal if everything is ok, else an error
      */
     OFCondition getElements(DcmStack &result_stack, OFBool intoSub=OFTrue);
@@ -141,24 +141,24 @@ public:
 protected:
 
     /** modifies element a specific value
-     *@param elem - [in/out] element, that should be changed
-     *@param value - [in] value, the element should be changed to
+     *@param elem element, that should be changed
+     *@param value this is the value, the element should be changed to
      *@return returns an error-code as OFCondition, if an error occurs
      */
     OFCondition startModify(DcmElement *elem, const char *value);
 
     /** inserts tag into item with a specific value
-     *@param item - [in/out] item, where tag is inserted
-     *@param search_key - [in] specifies tag to be inserted
-     *@param value - [in] value that should be inserted in item
+     *@param item - item, where tag is inserted
+     *@param search_key specifies tag to be inserted
+     *@param value value that should be inserted in item
      *@return returns an error-code as OFCondition, if an error occurs
      */
     OFCondition startInsert(DcmItem *item, const DcmTagKey &search_key,
                             const char *value);
 
     /** walks along a tag path like gggg,eeee[0].gggg,eeee=gggg,eeee
-     *@param result_item - [in/out] pointer to item, thats the last in path
-     *@param tag_path - [in/out] complete path to tag, after returning,
+     *@param result_item pointer to item, thats the last in path
+     *@param tag_path complete path to tag, after returning,
      *                  tag_path only consists of the last tag! This is the
      *                  "destination tag"!
      *@return returns OFCondition containing an error-code if error occurs
@@ -187,7 +187,10 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: mdfdsman.h,v $
-** Revision 1.3  2003-09-19 12:41:11  onken
+** Revision 1.4  2003-10-01 14:04:03  onken
+** Corrected doxygen-information in headerfiles
+**
+** Revision 1.3  2003/09/19 12:41:11  onken
 ** major bugfixes, new code structure, better error-handling, corrections for "dcmtk-coding-style",Handling of VR's corrected
 **
 ** Revision 1.2  2003/07/09 12:13:13  meichel

@@ -22,9 +22,9 @@
  *  Purpose: Class for modifying DICOM-Files from comandline
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2003-09-19 12:43:54 $
+ *  Update Date:      $Date: 2003-10-01 14:04:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/mdfconen.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,9 +50,9 @@ class MdfConsoleEngine
 public:
 
     /** Constructor
-     *  @param argc - [in] Number of commandline-arguments
-     *  @param argv - [in] Array holding the Commandline-arguments
-     *  @param appl_name - [in] Name of calling applic., that instantiates this class
+     *  @param argc Number of commandline-arguments
+     *  @param argv Array holding the Commandline-arguments
+     *  @param appl_name Name of calling applic., that instantiates this class
      */
     MdfConsoleEngine(int argc, char *argv[],
                      const char* appl_name);
@@ -111,8 +111,8 @@ protected:
 
     /** This function reads the next line (until '\\n' or '\r') from the open
      *   filestream fp and returns this line (excluding '\n' and '\r') in str.
-     *@param  fp - [in] Filepointer (must have been previously opened for reading with fopen())
-     *@param  str - [out] Line which was read, excluding '\n' and '\r'.
+     *@param  fp Filepointer (must have been previously opened for reading with fopen())
+     *@param  str Line which was read, excluding '\\n' and '\r'.
      *@return case a string could be read and is returned, this function
      *        will always return the number of characters in that string.
      *        In case no string could be read (i.e. if an error occurred or
@@ -123,8 +123,8 @@ protected:
     /** This function is responsible for delegating all actions on simple
      *  tags, that does not contain a "path" to be searched for.
      *  It uses the other member-variables to decide which action to perform
-     *  @param search_key - [in] tag to be worked on
-     *  @param tag_value - [in] new value of tag
+     *  @param search_key tag to be worked on
+     *  @param tag_value new value of tag
      *  @return An Integer value denoting how many errors occured while
      *           providing the service
      */
@@ -133,8 +133,8 @@ protected:
     /** This function is responsible for delegating all actions on simple
      *  tags, that does not contain a "path" to be searched for.
      *  It uses the other member-variables to decide which action to perform
-     *  @param tag_path - [in] path to tag, that should be worked on
-     *  @param tag_value - [in] new value of tag
+     *  @param tag_path path to tag, that should be worked on
+     *  @param tag_value new value of tag
      *  @return An Integer value denoting how many errors occured while
      *           providing the service
      */
@@ -179,7 +179,10 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: mdfconen.h,v $
-** Revision 1.3  2003-09-19 12:43:54  onken
+** Revision 1.4  2003-10-01 14:04:03  onken
+** Corrected doxygen-information in headerfiles
+**
+** Revision 1.3  2003/09/19 12:43:54  onken
 ** major bug fixes, corrections for "dcmtk-coding-style", better error-handling
 **
 ** Revision 1.2  2003/07/09 12:13:13  meichel
