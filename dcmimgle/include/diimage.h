@@ -22,9 +22,9 @@
  *  Purpose: DicomImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-03 17:01:45 $
+ *  Update Date:      $Date: 1999-02-08 12:38:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -150,7 +150,7 @@ class DiImage
 
     virtual void deleteOutputData() = 0;
     
-    virtual DiOverlay *getOverlayPtr(const unsigned int /*idx*/ = 0)
+    virtual DiOverlay *getOverlayPtr(const unsigned int /*idx*/)
     {
         return NULL;
     }
@@ -276,7 +276,11 @@ class DiImage
  *
  * CVS/RCS Log:
  * $Log: diimage.h,v $
- * Revision 1.9  1999-02-03 17:01:45  joergr
+ * Revision 1.10  1999-02-08 12:38:12  joergr
+ * Added parameter 'idx' to some overlay methods to distinguish between
+ * built-in and additional overlay planes.
+ *
+ * Revision 1.9  1999/02/03 17:01:45  joergr
  * Added BEGIN_EXTERN_C and END_EXTERN_C to some C includes.
  *
  * Revision 1.8  1999/01/20 14:59:37  joergr
