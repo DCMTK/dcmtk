@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTree
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-06-07 14:35:01 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2001-06-20 15:05:48 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -125,6 +125,8 @@ E_Condition DSRDocumentTree::read(DcmItem &dataset,
     /* check document type */
     if (isDocumentTypeSupported(DocumentType))
     {
+        if (!isConstraintCheckingSupported(DocumentType))
+            printWarningMessage(LogStream, "Check for relationship content constraints not yet supported");
         /* first try to read value type */
         OFString string;
         if (getAndCheckStringValueFromDataset(dataset, DCM_ValueType, string, "1", "1", LogStream) == EC_Normal)
@@ -247,13 +249,17 @@ OFBool DSRDocumentTree::canAddContentItem(const E_RelationshipType relationshipT
     const DSRDocumentTreeNode *node = (const DSRDocumentTreeNode *)getNode();
     if (node != NULL)
     {
-        if ((addMode == AM_beforeCurrent) || (addMode == AM_afterCurrent))
-        {     /* check parent node */
-            node = (const DSRDocumentTreeNode *)getParentNode();
-            if (node != NULL)
+        if (isConstraintCheckingSupported(DocumentType))
+        {
+            if ((addMode == AM_beforeCurrent) || (addMode == AM_afterCurrent))
+            {     /* check parent node */
+                node = (const DSRDocumentTreeNode *)getParentNode();
+                if (node != NULL)
+                    result = node->canAddNode(DocumentType, relationshipType, valueType);
+            } else
                 result = node->canAddNode(DocumentType, relationshipType, valueType);
         } else
-            result = node->canAddNode(DocumentType, relationshipType, valueType);
+            result = OFTrue;
     } else    /* root node */
         result = (relationshipType == RT_isRoot) && (valueType == VT_Container);
     return result;
@@ -264,9 +270,12 @@ OFBool DSRDocumentTree::canAddByReferenceRelationship(const E_RelationshipType r
                                                       const E_ValueType valueType)
 {
     OFBool result = OFFalse;
-    const DSRDocumentTreeNode *node = (const DSRDocumentTreeNode *)getNode();
-    if (node != NULL)
-        result = node->canAddNode(DocumentType, relationshipType, valueType, OFTrue /* byReference */);
+    if (isConstraintCheckingSupported(DocumentType))
+    {
+        const DSRDocumentTreeNode *node = (const DSRDocumentTreeNode *)getNode();
+        if (node != NULL)
+            result = node->canAddNode(DocumentType, relationshipType, valueType, OFTrue /* byReference */);
+    }
     return result;
 }
 
@@ -490,7 +499,11 @@ E_Condition DSRDocumentTree::checkByReferenceRelationships(const OFBool updateSt
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.cc,v $
- *  Revision 1.11  2001-06-07 14:35:01  joergr
+ *  Revision 1.12  2001-06-20 15:05:48  joergr
+ *  Added minimal support for new SOP class Key Object Selection Document
+ *  (suppl. 59).
+ *
+ *  Revision 1.11  2001/06/07 14:35:01  joergr
  *  Removed unused variable (reported by gcc 2.5.8 on NeXTSTEP).
  *
  *  Revision 1.10  2001/04/03 08:25:19  joergr

@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-05-22 13:14:40 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Update Date:      $Date: 2001-06-20 15:03:45 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -160,7 +160,7 @@ E_Condition DSRDocument::print(ostream &stream,
         // --- print some general document information ---
 
         /* document type/title */
-        stream << documentTypeToReadableName(getDocumentType()) << " Document" << endl << endl;
+        stream << documentTypeToDocumentTitle(getDocumentType(), string) << endl << endl;
         /* patient related information */
         if (PatientsName.getLength() > 0)
         {
@@ -224,7 +224,7 @@ E_Condition DSRDocument::print(ostream &stream,
             stream <<                            getPrintStringFromElement(ContentTime, string) << endl;
         }
         stream << endl;
-        
+
         // --- dump document tree to stream ---
         result = DocumentTree.print(stream, flags);
     }
@@ -236,13 +236,14 @@ E_Condition DSRDocument::checkDatasetForReading(DcmItem &dataset)
 {
     E_Condition result = EC_Normal;
     OFString string;
+    E_DocumentType documentType = DT_invalid;
     DcmUniqueIdentifier sopClassUID(DCM_SOPClassUID);
     DcmCodeString modality(DCM_Modality);
     /* check SOP class UID */
     result = getAndCheckElementFromDataset(dataset, sopClassUID, "1", "1", LogStream);
     if (result == EC_Normal)
     {
-        E_DocumentType documentType = sopClassUIDToDocumentType(getStringValueFromElement(sopClassUID, string));
+        documentType = sopClassUIDToDocumentType(getStringValueFromElement(sopClassUID, string));
         if (documentType == DT_invalid)
         {
             printErrorMessage(LogStream, "SOP Class UID does not match one of the known SR document classes");
@@ -260,9 +261,13 @@ E_Condition DSRDocument::checkDatasetForReading(DcmItem &dataset)
         result = getAndCheckElementFromDataset(dataset, modality, "1", "1", LogStream);
         if (result == EC_Normal)
         {
-            if (getStringValueFromElement(modality, string) != "SR")
+            if (getStringValueFromElement(modality, string) != documentTypeToModality(documentType))
             {
-                printErrorMessage(LogStream, "Modality does not match 'SR' for structured reporting");
+                OFString message = "Modality does not match '";
+                message += documentTypeToModality(documentType);
+                message += "' for ";
+                message += documentTypeToReadableName(documentType);
+                printErrorMessage(LogStream, message.c_str());
                 result = EC_IllegalCall;
             }
         }
@@ -416,8 +421,8 @@ E_Condition DSRDocument::write(DcmItem &dataset,
         addElementToDataset(result, dataset, new DcmCodeString(Modality));
         addElementToDataset(result, dataset, new DcmUniqueIdentifier(SeriesInstanceUID));
         addElementToDataset(result, dataset, new DcmIntegerString(SeriesNumber));
-        /* always write empty sequence since not yet fully supported */ 
-        ReferencedStudyComponent.clear();        
+        /* always write empty sequence since not yet fully supported */
+        ReferencedStudyComponent.clear();
         addElementToDataset(result, dataset, new DcmSequenceOfItems(ReferencedStudyComponent));
 
         // --- SR Document General Module (M) ---
@@ -432,8 +437,8 @@ E_Condition DSRDocument::write(DcmItem &dataset,
             addElementToDataset(result, dataset, new DcmSequenceOfItems(VerifyingObserver));
         if (PredecessorDocuments.card() > 0)             /* optional */
             addElementToDataset(result, dataset, new DcmSequenceOfItems(PredecessorDocuments));
-        /* always write empty sequence since not yet fully supported */ 
-        PerformedProcedureCode.clear();        
+        /* always write empty sequence since not yet fully supported */
+        PerformedProcedureCode.clear();
         addElementToDataset(result, dataset, new DcmSequenceOfItems(PerformedProcedureCode));
 
         /* write SR document tree */
@@ -664,7 +669,7 @@ E_Condition DSRDocument::renderHTML(ostream &stream,
         if (newFlags & HF_renderPatientTitle)
             renderHTMLPatientData(stream, convertNonASCII);
         else
-            stream << documentTypeToReadableName(getDocumentType()) << " Document";
+            stream << documentTypeToDocumentTitle(getDocumentType(), string);
         stream << "</title>" << endl;
         if (!(newFlags & HF_version32Compatibility))
         {
@@ -780,7 +785,7 @@ E_Condition DSRDocument::renderHTML(ostream &stream,
                     {
                         stream << "<td><a href=\"" << HTML_HYPERLINK_PREFIX_FOR_CGI;
                         stream << "?composite=" << sopClass << "+" << sopInstance << "\">";
-                        stream << documentTypeToReadableName(sopClassUIDToDocumentType(sopClass)) << " Document";
+                        stream << documentTypeToDocumentTitle(sopClassUIDToDocumentType(sopClass), string);
                         stream << "</a></td>" << endl;
                     } else
                         stream << "<td><i>invalid document reference</i></td>" << endl;
@@ -1723,7 +1728,7 @@ void DSRDocument::removeVerification()
 {
     /* clear list of verifying observers and set flag to UNVERIFIED */
     VerifyingObserver.clear();
-    VerificationFlagEnum = VF_Unverified;    
+    VerificationFlagEnum = VF_Unverified;
     /* reset FinalizedFlag */
     FinalizedFlag = OFFalse;
 }
@@ -1758,16 +1763,16 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
     {
         /* retrieve SOP class UID from internal document type */
         SOPClassUID.putString(documentTypeToSOPClassUID(getDocumentType()));
-        /* put static modality string */
-        Modality.putString("SR");
-    
+        /* put modality string depending on document type */
+        Modality.putString(documentTypeToModality(getDocumentType()));
+
         /* create new instance number if required (type 1) */
         if (InstanceNumber.getLength() == 0)
             InstanceNumber.putString("1");
         /* create new series number if required (type 1) */
         if (SeriesNumber.getLength() == 0)
             SeriesNumber.putString("1");
-    
+
         char uid[100];
         /* create new SOP instance UID if required */
         if (SOPInstanceUID.getLength() == 0)
@@ -1787,7 +1792,7 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
         /* create new series instance UID if required */
         if (SeriesInstanceUID.getLength() == 0)
             SeriesInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
-    
+
         /* check and set content date if required */
         if (ContentDate.getLength() == 0)
             ContentDate.putString(getStringValueFromElement(InstanceCreationDate));
@@ -1801,7 +1806,7 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
     CompletionFlag.putString(completionFlagToEnumeratedValue(CompletionFlagEnum));
     /* check and adjust verification flag if required */
     if (VerificationFlagEnum == VF_invalid)
-        VerificationFlagEnum = VF_Unverified;    
+        VerificationFlagEnum = VF_Unverified;
     VerificationFlag.putString(verificationFlagToEnumeratedValue(VerificationFlagEnum));
 }
 
@@ -1809,7 +1814,11 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.25  2001-05-22 13:14:40  joergr
+ *  Revision 1.26  2001-06-20 15:03:45  joergr
+ *  Added minimal support for new SOP class Key Object Selection Document
+ *  (suppl. 59).
+ *
+ *  Revision 1.25  2001/05/22 13:14:40  joergr
  *  Clear unsupported type 2 sequences before writing them to a dataset.
  *
  *  Revision 1.24  2001/04/03 08:25:20  joergr
