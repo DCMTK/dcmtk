@@ -23,8 +23,8 @@
  *    classes: DVPSIPCMessage
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-12-12 16:45:40 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2000-12-19 12:12:53 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,19 +33,9 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
+#include "dcompat.h"
+
 BEGIN_EXTERN_C
-#ifdef HAVE_SYS_TYPES_H
-#include <sys/types.h>
-#endif
-#ifdef HAVE_SYS_SOCKET_H
-#include <sys/socket.h>
-#endif
-#ifdef HAVE_NETDB_H
-#include <netdb.h>
-#endif
-#ifdef HAVE_NETINET_IN_H
-#include <netinet/in.h>  /* for struct sockaddr_in on Linux */
-#endif
 #ifdef _WIN32
 #include <windows.h>
 #include <winbase.h>
@@ -57,7 +47,6 @@ END_EXTERN_C
 #include "ofbmanip.h"    /* for OFBitmanipTemplate<> */
 #include "dcswap.h"      /* for swapIfNecessary() */
 #include "dcmtrans.h"    /* for class DcmTransportConnection */
-#include "dcompat.h"     /* compatibility code for certain Unix dialects such as SunOS */
 
 /* --------------- class DVPSIPCMessage --------------- */
 
@@ -437,7 +426,10 @@ void DVPSIPCClient::notifySentDICOMObject(Uint32 status, const char *txt)
 
 /*
  *  $Log: dvpsmsg.cc,v $
- *  Revision 1.7  2000-12-12 16:45:40  meichel
+ *  Revision 1.8  2000-12-19 12:12:53  meichel
+ *  Inclusion of TCP header files now protected by extern "C", needed on Ultrix
+ *
+ *  Revision 1.7  2000/12/12 16:45:40  meichel
  *  Minor changes to keep gcc 2.7.x on SunOS 4.1.3 happy
  *
  *  Revision 1.6  2000/11/14 13:27:15  meichel
