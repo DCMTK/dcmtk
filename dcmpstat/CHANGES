@@ -1,4 +1,17 @@
 
+**** Changes from 1999.02.10 (eichelberg)
+
+- Added subdirectory dcmpstat/jni containing a makefile
+  for the shared object required by the ECR '99 viewer
+  when used on Unix platforms.
+  Added:   dcmpstat/jni/Makefile.dep
+           dcmpstat/jni/Makefile.in
+           dcmpstat/jni/make_stub.sh
+  
+- Fixed memory leak in dviface.cc - Config file contents
+  were never deleted.
+  Affects: dcmpstat/libsrc/dviface.cc
+  
 **** Changes from 1999.02.09 (eichelberg)
 
 - Changed some bool consts from true to OFTrue.
@@ -9,7 +22,7 @@
   Affects: dcmpstat/include/dviface.h
            dcmpstat/libsrc/dviface.cc
 
-- Implemented bitmap shutter activation amd method for
+- Implemented bitmap shutter activation and method for
   exchanging graphic layers.
   Affects: dcmpstat/include/dvpsgll.h
            dcmpstat/include/dvpsov.h

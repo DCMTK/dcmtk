@@ -1,0 +1,91 @@
+#
+#	Makefile for dcmpstat jni
+#
+# The settings in this makefile are specific for Solaris 2 and the
+# Sun CC 4.2 compiler. If you want to compile for a different target,
+# you need to adapt javainc, soflags and solibs below
+#
+
+@SET_MAKE@
+
+SHELL = /bin/sh
+VPATH= @srcdir@:@top_srcdir@/include:@top_srcdir@/@configdir@/include
+srcdir= @srcdir@
+top_srcdir= @top_srcdir@
+configdir=@top_srcdir@/@configdir@
+
+include $(configdir)/@common_makefile@
+
+# Include path for JDK 1.2 on Solaris
+javainc=-I/usr/java1.2/include -I/usr/java1.2/include/solaris
+# Instruct compiler to create a shared object
+soflags=-G
+# Additional libraries to be linked with the shared object
+solibs=-lC
+
+ofstddir=$(top_srcdir)/../ofstd
+ofstdinc=-I$(ofstddir)/include -I$(includedir)/ofstd
+ofstdlibdir=-L$(ofstddir)/libsrc 
+ofstdlib=-lofstd
+
+dcmdatadir=$(top_srcdir)/../dcmdata
+dcmdatainc=-I$(dcmdatadir)/include -I$(includedir)/dcmdata
+dcmdatalibdir=-L$(dcmdatadir)/libsrc 
+dcmdatalib=-ldcmdata
+
+dcmnetdir=$(top_srcdir)/../dcmnet
+dcmnetinc=-I$(dcmnetdir)/include -I$(includedir)/dcmnet 
+dcmnetlibdir=-L$(dcmnetdir)/libsrc 
+dcmnetlib=-ldcmnet
+
+dcmimgledir=$(top_srcdir)/../dcmimgle
+dcmimgleinc=-I$(dcmimgledir)/include -I$(includedir)/dcmimgle
+dcmimglelibdir=-L$(dcmimgledir)/libsrc
+dcmimglelib=-ldcmimgle
+
+dcmpstatdir=$(top_srcdir)/../dcmpstat
+dcmpstatinc=-I$(dcmpstatdir)/include -I$(includedir)/dcmpstat
+dcmpstatlibdir=-L$(dcmpstatdir)/libsrc
+dcmpstatlib=-ldcmpstat
+
+imagectndir=$(top_srcdir)/../imagectn
+imagectninc=-I$(imagectndir)/include -I$(includedir)/imagectn
+imagectnlibdir=-L$(imagectndir)/libsrc
+imagectnlib=-limagedb
+
+LOCALINCLUDES=$(dcmpstatinc) $(ofstdinc) $(dcmnetinc) $(dcmdatainc) $(dcmimgleinc) $(imagectninc) $(javainc)
+LIBDIRS = -L$(top_srcdir)/libsrc $(dcmpstatlibdir) $(imagectnlibdir) $(dcmnetlibdir) \
+	$(dcmdatalibdir) $(ofstdlibdir) $(dcmimglelibdir) -L$(libdir)
+LOCALLIBS = $(dcmpstatlib) $(dcmimglelib) $(imagectnlib) $(dcmnetlib) $(dcmdatalib) $(ofstdlib) $(solibs)
+
+objs= DVInterface.o DVPSGraphicObject.o DVPresentationState.o \
+      DVPSCurve.o DVPSTextObject.o
+
+progs= libjInterface.so
+
+all: $(progs)
+
+libjInterface.so: $(objs)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) $(soflags) -o $@ $(objs) $(LOCALLIBS) $(LIBS)  
+
+install: all
+	$(configdir)/mkinstalldirs $(bindir)
+	for prog in $(progs); do \
+		$(INSTALL_PROGRAM) $$prog $(bindir); strip $(bindir)/$$prog ;\
+	done
+
+clean:
+	rm -f $(objs) $(progs) $(TRASH)
+
+distclean: 
+	rm -f $(objs) $(progs) $(DISTTRASH)
+
+
+dependencies:
+	$(CXX) -MM $(defines) $(includes) $(CPPFLAGS) $(CXXFLAGS) *.cc  > $(DEP)
+
+$(objs): config.h
+
+
+include $(DEP)
+
