@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:40:08 $
+** Update Date:		$Date: 1997-08-05 07:38:08 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/assoc.h,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -421,6 +421,9 @@ CONDITION
 ASC_abortAssociation(T_ASC_Association * association);
 
 CONDITION 
+ASC_dropSCPAssociation(T_ASC_Association * association);
+
+CONDITION 
 ASC_dropAssociation(T_ASC_Association * association);
 
 CONDITION 
@@ -482,7 +485,16 @@ ASC_destroyAssociation(T_ASC_Association ** association);
 /*
 ** CVS Log
 ** $Log: assoc.h,v $
-** Revision 1.5  1997-07-21 08:40:08  andreas
+** Revision 1.6  1997-08-05 07:38:08  andreas
+** Corrected error in DUL finite state machine
+** SCPs shall close sockets after the SCU have closed the socket in
+** a normal association release. Therfore, an ARTIM timer is described
+** in DICOM part 8 that is not implemented correctly in the
+** DUL. Since the whole DUL finite state machine is affected, we
+** decided to solve the proble outside the fsm. Now it is necessary to call the
+** ASC_DropSCPAssociation() after the calling ASC_acknowledgeRelease().
+**
+** Revision 1.5  1997/07/21 08:40:08  andreas
 ** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
 **   with one unique boolean type OFBool.
 **

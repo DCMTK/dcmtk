@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-24 13:10:56 $
+** Update Date:		$Date: 1997-08-05 07:38:17 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:	$Revision: 1.14 $
+** CVS/RCS Revision:	$Revision: 1.15 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1790,6 +1790,27 @@ ASC_abortAssociation(T_ASC_Association * association)
     return ASC_NORMAL;
 }
 
+
+CONDITION
+ASC_dropSCPAssociation(T_ASC_Association * association)
+{
+    CONDITION cond;
+
+    /* if already dead don't worry */
+    if (association == NULL) return ASC_NORMAL;
+    if (association->DULassociation == NULL) return ASC_NORMAL;
+
+	ASC_dataWaiting(association, DUL_TIMEOUT);
+    cond = DUL_DropAssociation(&association->DULassociation);
+
+    if (cond != DUL_NORMAL)
+	return convertDULtoASCCondition(cond);
+
+    return ASC_NORMAL;
+}
+
+
+
 CONDITION
 ASC_dropAssociation(T_ASC_Association * association)
 {
@@ -1811,7 +1832,16 @@ ASC_dropAssociation(T_ASC_Association * association)
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
-** Revision 1.14  1997-07-24 13:10:56  andreas
+** Revision 1.15  1997-08-05 07:38:17  andreas
+** Corrected error in DUL finite state machine
+** SCPs shall close sockets after the SCU have closed the socket in
+** a normal association release. Therfore, an ARTIM timer is described
+** in DICOM part 8 that is not implemented correctly in the
+** DUL. Since the whole DUL finite state machine is affected, we
+** decided to solve the proble outside the fsm. Now it is necessary to call the
+** ASC_DropSCPAssociation() after the calling ASC_acknowledgeRelease().
+**
+** Revision 1.14  1997/07/24 13:10:56  andreas
 ** - Removed Warnings from SUN CC 2.0.1
 **
 ** Revision 1.13  1997/07/21 08:47:14  andreas

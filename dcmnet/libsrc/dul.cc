@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: andreas $, $Date: 1997-07-24 13:10:58 $
+** Last Update:		$Author: andreas $, $Date: 1997-08-05 07:38:18 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.10 $
+** Revision:		$Revision: 1.11 $
 ** Status:		$State: Exp $
 */
 
@@ -882,8 +882,8 @@ DUL_AcknowledgeRelease(DUL_ASSOCIATIONKEY ** callerAssociation)
 		       A_RELEASE_RESP, (*association)->protocolState, NULL);
     if (!SUCCESS(cond))
 	return cond;
-    cond = PRV_StateMachine(NULL, association,
-		  ARTIM_TIMER_EXPIRED, (*association)->protocolState, NULL);
+//    cond = PRV_StateMachine(NULL, association,
+//		  ARTIM_TIMER_EXPIRED, (*association)->protocolState, NULL);
     return cond;
 }
 
@@ -2240,7 +2240,16 @@ clearPresentationContext(LST_HEAD ** l)
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.10  1997-07-24 13:10:58  andreas
+** Revision 1.11  1997-08-05 07:38:18  andreas
+** Corrected error in DUL finite state machine
+** SCPs shall close sockets after the SCU have closed the socket in
+** a normal association release. Therfore, an ARTIM timer is described
+** in DICOM part 8 that is not implemented correctly in the
+** DUL. Since the whole DUL finite state machine is affected, we
+** decided to solve the proble outside the fsm. Now it is necessary to call the
+** ASC_DropSCPAssociation() after the calling ASC_acknowledgeRelease().
+**
+** Revision 1.10  1997/07/24 13:10:58  andreas
 ** - Removed Warnings from SUN CC 2.0.1
 **
 ** Revision 1.9  1997/07/21 08:47:20  andreas
