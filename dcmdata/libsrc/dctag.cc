@@ -8,10 +8,10 @@
 ** Purpose:
 ** Implementation of the class DcmTag
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:27:44 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1996-03-12 15:24:21 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dctag.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -63,6 +63,19 @@ DcmTag::DcmTag(Uint16 g, Uint16 e) : DcmTagKey(g, e)
     	errorFlag = EC_Normal;
     } else {
     	vr.setVR(EVR_UNKNOWN);
+	errorFlag = EC_InvalidTag;
+    }
+#ifdef DEBUG
+    testConstructDestruct = 1; // for debugging
+#endif
+}
+
+DcmTag::DcmTag(Uint16 g, Uint16 e, const DcmVR& avr) : DcmTagKey(g, e), vr(avr) 
+{
+    dictRef = dcmDataDict.findEntry(DcmTagKey(g, e));
+    if (dictRef != NULL) {
+    	errorFlag = EC_Normal;
+    } else {
 	errorFlag = EC_InvalidTag;
     }
 #ifdef DEBUG
@@ -164,7 +177,10 @@ DcmVR DcmTag::setVR( const DcmVR& avr )    // nicht-eindeutige VR aufloesen
 /*
 ** CVS/RCS Log:
 ** $Log: dctag.cc,v $
-** Revision 1.3  1996-01-05 13:27:44  andreas
+** Revision 1.4  1996-03-12 15:24:21  hewett
+** Added constructor to allow direct setting of the VR.
+**
+** Revision 1.3  1996/01/05 13:27:44  andreas
 ** - changed to support new streaming facilities
 ** - unique read/write methods for file and block transfer
 ** - more cleanups
