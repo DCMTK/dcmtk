@@ -4,7 +4,7 @@
 **
 **  author   : Joerg Riesmeier
 **  created  : 12.12.96
-**  modified : 25.05.97
+**  modified : 02.03.98 
 **
 *********************************************************************/
 
@@ -505,7 +505,7 @@ int DiMonoImage::setVoiLut(const unsigned long pos)					// UNTESTED !!
  *   create output data of 'frame' with depth of 'bits' and min/max values of 'low' and 'high' (support mono1/2)
  */
 
-void *DiMonoImage::getOutputData(const unsigned long frame, const int bits, const Uint32 low, const Uint32 high)
+void *DiMonoImage::getData(const unsigned long frame, const int bits, const Uint32 low, const Uint32 high)
 {
 	if ((InterData != NULL) && (Status == EIS_Normal) && (frame < NumberOfFrames) && (bits > 0) && (bits <= MAX_BITS))
 	{

@@ -4,7 +4,7 @@
 **
 **  author   : Joerg Riesmeier
 **  created  : 10.01.97
-**  modified : 25.05.97
+**  modified : 02.03.98 
 **
 *********************************************************************/
 
@@ -89,7 +89,7 @@ DiOverlay::DiOverlay(const DiOverlay *overlay, const double xfactor, const doubl
 				Data->Planes[i] = new DiOverlayPlane(overlay->Data->Planes[i], i, Data->Data, temp, overlay->Width,
 					overlay->Height, Width, Height, xfactor, yfactor);
 			DiScaleTemplate<Uint16> scale(1, overlay->Width, overlay->Height, Width, Height, Frames);
-			scale.scale((const Uint16 **)&temp, &(Data->Data), 0);
+			scale.scaleData((const Uint16 **)&temp, &(Data->Data), 0);
 		}
 		else
 			Data->Count = 0;

@@ -4,7 +4,7 @@
 **
 **  author   : Joerg Riesmeier
 **  created  : 30.12.96
-**  modified : 13.02.97
+**  modified : 02.03.98 
 **
 *********************************************************************/
 
@@ -65,7 +65,7 @@ DiMono2Image::~DiMono2Image()
 
 void *DiMono2Image::getOutputData(const unsigned long frame, const int bits, const int)
 {
-	return DiMonoImage::getOutputData(frame, bits, 0, maxval(bits)); 
+	return DiMonoImage::getData(frame, bits, 0, maxval(bits)); 
 }
 
 
