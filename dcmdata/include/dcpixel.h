@@ -9,9 +9,9 @@
 ** Interface of class DcmPixelData
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 07:54:57 $
+** Update Date:		$Date: 1997-07-24 13:08:24 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpixel.h,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 **
 ** CVS/RCS Log at end of file
 **
@@ -40,7 +40,7 @@ public:
     
     // this methods creates a copy of type DcmRepresentationParameter *
     // it must be overweritten in every subclass.
-    virtual const DcmRepresentationParameter * copy() const
+    virtual DcmRepresentationParameter * copy() const
     { 
 	return new DcmRepresentationParameter(*this); 
     }
@@ -285,7 +285,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.h,v $
-** Revision 1.1  1997-07-21 07:54:57  andreas
+** Revision 1.2  1997-07-24 13:08:24  andreas
+** - Removed const for method DcmRepresentationParameter::copy
+**
+** Revision 1.1  1997/07/21 07:54:57  andreas
 ** - New environment for encapsulated pixel representations. DcmPixelData
 **   can contain different representations and uses codecs to convert
 **   between them. Codecs are derived from the DcmCodec class. New error

@@ -9,9 +9,9 @@
 ** Implementation of class DcmPixelData
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 07:55:05 $
+** Update Date:		$Date: 1997-07-24 13:08:28 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixel.cc,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 **
 ** CVS/RCS Log at end of file
 **
@@ -34,7 +34,7 @@ class DcmRepresentationEntry
 friend class DcmPixelData;
 private:
     E_TransferSyntax repType;
-    const DcmRepresentationParameter * repParam;
+    DcmRepresentationParameter * repParam;
     DcmPixelSequence * pixSeq;
 
     DcmRepresentationEntry(
@@ -87,7 +87,7 @@ DcmRepresentationEntry::~DcmRepresentationEntry()
 OFBool
 DcmRepresentationEntry::operator==(const DcmRepresentationEntry & x) const
 {
-    return repType == x.repType &&
+    return (repType == x.repType) &&
 	((x.repParam == NULL && repParam == NULL) ||
 	 (x.repParam != NULL && repParam != NULL & *(x.repParam) == *repParam));
 }
@@ -901,7 +901,10 @@ DcmPixelData::write(
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.cc,v $
-** Revision 1.1  1997-07-21 07:55:05  andreas
+** Revision 1.2  1997-07-24 13:08:28  andreas
+** - Removed const for method DcmRepresentationParameter::copy
+**
+** Revision 1.1  1997/07/21 07:55:05  andreas
 ** - New environment for encapsulated pixel representations. DcmPixelData
 **   can contain different representations and uses codecs to convert
 **   between them. Codecs are derived from the DcmCodec class. New error
