@@ -22,9 +22,9 @@
  *  Purpose: DicomImage-Interface (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-03 17:37:55 $
+ *  Update Date:      $Date: 1999-03-24 17:22:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dcmimage.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -436,6 +436,11 @@ DicomImage *DicomImage::createScaledImage(const unsigned long left,
             clip_width = gw - left;
         if ((clip_height == 0) || (top + clip_height > gh))          // same for 'height'
             clip_height = gh - top;
+        if ((scale_width == 0) && (scale_height == 0))
+        {
+            scale_width = clip_width;                                // auto-set width/height
+            scale_height = clip_height;
+        }
         if (aspect)                                                  // maintain pixel aspect ratio
         {
             if (scale_width == 0)
@@ -505,7 +510,8 @@ DicomImage *DicomImage::createClippedImage(const unsigned long left,
                                            unsigned long width,
                                            unsigned long height) const
 {
-    return createScaledImage(left, top, width, height, width, height);
+    
+    return createScaledImage(left, top, width, height);
 }
 
 
@@ -720,7 +726,11 @@ int DicomImage::writeRawPPM(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dcmimage.cc,v $
- * Revision 1.6  1999-02-03 17:37:55  joergr
+ * Revision 1.7  1999-03-24 17:22:03  joergr
+ * Removed bug when scaling and clipping images where the clipping area exceeds
+ * the original images.
+ *
+ * Revision 1.6  1999/02/03 17:37:55  joergr
  * Added BEGIN_EXTERN_C and END_EXTERN_C to some C includes.
  *
  * Revision 1.5  1999/01/20 14:52:03  joergr
