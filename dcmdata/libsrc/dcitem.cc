@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-12 15:23:27 $
+** Update Date:		$Date: 1996-03-28 18:52:39 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
+** CVS/RCS Revision:	$Revision: 1.9 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1679,6 +1679,76 @@ E_Condition newDicomElement(DcmElement * & newElement,
 }
 
 
+/* 
+** simplified search&get functions 
+*/
+
+E_Condition 
+DcmItem::findString(const DcmTagKey& xtag,
+		    char* aString, int maxStringLength,
+		    BOOL searchIntoSub)
+{
+    DcmElement *elem;
+    DcmStack stack;
+    E_Condition ec = EC_Normal;
+    char* s;
+    
+    aString[0] = '\0';
+    ec = search(xtag, stack, ESM_fromHere, searchIntoSub);
+    elem = (DcmElement*) stack.top();
+    if (ec == EC_Normal && elem != NULL) {
+	if (elem->getLength() != 0) {
+            ec =  elem->get(s);
+	    if (ec == EC_Normal) {
+		strncpy(aString, s, maxStringLength);
+	    }
+        }
+    }
+
+    return ec;
+}
+
+E_Condition 
+DcmItem::findInt(const DcmTagKey& xtag,
+		 int* anInt, 
+		 BOOL searchIntoSub)
+{
+    DcmElement *elem;
+    DcmStack stack;
+    E_Condition ec = EC_Normal;
+
+    ec = search(xtag, stack, ESM_fromHere, searchIntoSub);
+    elem = (DcmElement*) stack.top();
+    if (ec == EC_Normal && elem != NULL) {
+	switch (elem->ident()) {
+	case EVR_UL:
+	    Uint32 ul;
+	    ec = elem->get(ul, 0);
+	    *anInt = ul;
+	    break;
+	case EVR_SL:
+	    Sint32 sl;
+	    ec = elem->get(sl, 0);
+	    *anInt = sl;
+	    break;
+	case EVR_US:
+	    Uint16 us;
+	    ec = elem->get(us, 0);
+	    *anInt = us;
+	    break;
+	case EVR_SS:
+	    Sint16 ss;
+	    ec = elem->get(ss, 0);
+	    *anInt = ss;
+	    break;
+	default:
+	    ec = EC_IllegalCall;
+	    break;
+	}
+    }
+
+    return ec;
+}
 
 
 // ********************************
@@ -1686,7 +1756,10 @@ E_Condition newDicomElement(DcmElement * & newElement,
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.8  1996-03-12 15:23:27  hewett
+** Revision 1.9  1996-03-28 18:52:39  hewett
+** Added 2 simple find&get methods (findString & findInt).
+**
+** Revision 1.8  1996/03/12 15:23:27  hewett
 ** When generating group length tags, the VR of a tag is now explicity
 ** set to be EVR_UL.  Group length tags not in the dictionary (e.g. for
 ** private groups) were getting coded incorrectly.

@@ -10,10 +10,10 @@
 ** Interface of class DcmItem
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-29 13:38:12 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1996-03-28 18:52:30 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcitem.h,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 */
@@ -121,6 +121,16 @@ public:
     virtual E_Condition addGroupLengthElements(const E_TransferSyntax xfer,
 					       const E_EncodingType enctype );
     virtual E_Condition removeGroupLengthElements();
+
+    /* simplified search&get functions */
+    virtual E_Condition findString(const DcmTagKey& xtag,
+				   char* aString, int maxStringLength,
+				   BOOL searchIntoSub = FALSE);
+    virtual E_Condition findInt(const DcmTagKey& xtag,
+				int* anInt, 
+				BOOL searchIntoSub = FALSE);
+
+
 };
 
 //
@@ -167,7 +177,10 @@ DcmElement * newDicomElement(DcmTag & tag,
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
-** Revision 1.5  1996-01-29 13:38:12  andreas
+** Revision 1.6  1996-03-28 18:52:30  hewett
+** Added 2 simple find&get methods (findString & findInt).
+**
+** Revision 1.5  1996/01/29 13:38:12  andreas
 ** - new put method for every VR to put value as a string
 ** - better and unique print methods
 **
