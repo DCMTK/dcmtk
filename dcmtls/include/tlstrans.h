@@ -23,8 +23,8 @@
  *    classes: DcmTransportConnection
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-08-10 14:50:27 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-10-10 12:13:32 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -134,6 +134,18 @@ public:
    */
   virtual OFBool isTransparentConnection();
 
+  /** prints the characteristics of the current connection
+   *  on the given output stream.
+   *  @param out output stream
+   */
+  virtual void dumpConnectionParameters(ostream &out);
+
+  /** returns an error string for a given error code.
+   *  @param code error code
+   *  @return description for error code
+   */
+  virtual const char *errorString(DcmTransportLayerStatus code);
+
 private:
 
   /// private undefined copy constructor
@@ -145,6 +157,8 @@ private:
   /// pointer to the TLS connection structure used by the OpenSSL library
   SSL *tlsConnection;
 
+  /// last error code returned by the OpenSSL library
+  unsigned long lastError;
 };
 
 #endif /* WITH_OPENSSL */
@@ -153,7 +167,10 @@ private:
 
 /*
  *  $Log: tlstrans.h,v $
- *  Revision 1.1  2000-08-10 14:50:27  meichel
+ *  Revision 1.2  2000-10-10 12:13:32  meichel
+ *  Added routines for printing certificates and connection parameters.
+ *
+ *  Revision 1.1  2000/08/10 14:50:27  meichel
  *  Added initial OpenSSL support.
  *
  *

@@ -23,8 +23,8 @@
  *    classes: DcmTLSTransportLayer
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-08-10 14:50:26 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-10-10 12:13:31 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -185,6 +185,13 @@ public:
    */
   void seedPRNG(const char *randFile);
 
+  /** modifies the PRNG by adding random data from the given buffer
+   *  to the PRNG state.
+   *  @param buf pointer to buffer containing random data
+   *  @bufSize number of bytes in buffer
+   */
+  void addPRNGseed(void *buf, size_t bufSize);
+
   /** defines how peer certificates should be treated when
    *  negotiating a TLS connection. 
    *  @param vtype certificate verification mode
@@ -211,6 +218,13 @@ public:
    */
   OFBool setTempDHParameters(const char *filename);
 
+  /** prints the most important attributes of the given X.509 certificate
+   *  to the given output stream.
+   *  @param out output stream
+   *  @param peerCertificate X.509 certificate, may be NULL
+   */
+  static void printX509Certificate(ostream &out, X509 *peerCertificate);
+
 private:
 
   /// private undefined copy constructor
@@ -236,7 +250,10 @@ private:
 
 /*
  *  $Log: tlslayer.h,v $
- *  Revision 1.1  2000-08-10 14:50:26  meichel
+ *  Revision 1.2  2000-10-10 12:13:31  meichel
+ *  Added routines for printing certificates and connection parameters.
+ *
+ *  Revision 1.1  2000/08/10 14:50:26  meichel
  *  Added initial OpenSSL support.
  *
  *

@@ -23,8 +23,8 @@
  *    classes: DcmTLSConnection
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-08-10 14:50:29 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-10-10 12:13:36 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -69,12 +69,14 @@ END_EXTERN_C
 #endif
 
 #include "tlstrans.h"
+#include "tlslayer.h"
 #include "ofconsol.h"
 
 
 DcmTLSConnection::DcmTLSConnection(int openSocket, SSL *newTLSConnection)
 : DcmTransportConnection(openSocket)
 , tlsConnection(newTLSConnection)
+, lastError(0)
 {
 }
 
@@ -86,79 +88,110 @@ DcmTLSConnection::~DcmTLSConnection()
 DcmTransportLayerStatus DcmTLSConnection::serverSideHandshake()
 {
   if (tlsConnection == NULL) return TCS_noConnection;
+  DcmTransportLayerStatus result = TCS_ok;
+  lastError = 0;
   switch (SSL_get_error(tlsConnection, SSL_accept(tlsConnection)))
   {
     case SSL_ERROR_NONE:
+      /* success */
+      break;
+    case SSL_ERROR_SYSCALL:
+    case SSL_ERROR_SSL:
+      lastError = ERR_peek_error();
+      result = TCS_tlsError;
       break;
     default:
-      return TCS_unspecifiedError;
-      /* break; */
+      // case SSL_ERROR_WANT_READ:
+      // case SSL_ERROR_WANT_WRITE:
+      // case SSL_ERROR_WANT_X509_LOOKUP:
+      // case SSL_ERROR_WANT_CONNECT:
+      // case SSL_ERROR_ZERO_RETURN:
+      result = TCS_tlsError;
+      break;
   }
-  // we should examine our peer's certificates here
 
-  return TCS_ok;
+  // if the certificate verification has failed, the certificate is already
+  // unavailable at this point. We know that something has gone wrong, but
+  // OpenSSL does not tell us who tried to connect.
+
+  return result;
 }
 
 DcmTransportLayerStatus DcmTLSConnection::clientSideHandshake()
 {
   if (tlsConnection == NULL) return TCS_noConnection;
+  lastError = 0;
+  DcmTransportLayerStatus result = TCS_ok;
   switch (SSL_get_error(tlsConnection, SSL_connect(tlsConnection)))
   {
     case SSL_ERROR_NONE:
+      /* success */
       break;
-    case SSL_ERROR_SSL:
-      cerr << ERR_error_string(ERR_peek_error(), NULL) << endl;
-      return TCS_unspecifiedError;
-      /* break; */
-    case SSL_ERROR_WANT_READ:
-      return TCS_unspecifiedError;
-      /* break; */
-    case SSL_ERROR_WANT_WRITE:
-      return TCS_unspecifiedError;
-      /* break; */
-    case SSL_ERROR_WANT_X509_LOOKUP:
-      return TCS_unspecifiedError;
-      /* break; */
     case SSL_ERROR_SYSCALL:
-      return TCS_unspecifiedError;
-      /* break; */
-    case SSL_ERROR_ZERO_RETURN:
-      return TCS_unspecifiedError;
-      /* break; */
-    case SSL_ERROR_WANT_CONNECT:
-      return TCS_unspecifiedError;
-      /* break; */
+    case SSL_ERROR_SSL:
+      lastError = ERR_peek_error();
+      result = TCS_tlsError;
+      break;
     default:
-      return TCS_unspecifiedError;
-      /* break; */
+      // case SSL_ERROR_WANT_READ:
+      // case SSL_ERROR_WANT_WRITE:
+      // case SSL_ERROR_WANT_X509_LOOKUP:
+      // case SSL_ERROR_WANT_CONNECT:
+      // case SSL_ERROR_ZERO_RETURN:
+      result = TCS_tlsError;
+      break;
   }
-  // we should examine our peer's certificates here
-
-  return TCS_ok;
+  return result;
 }
 
 DcmTransportLayerStatus DcmTLSConnection::renegotiate(const char *newSuite)
 {
   if (tlsConnection == NULL) return TCS_noConnection;
-  if (newSuite == NULL) return TCS_unspecifiedError;
+  if (newSuite == NULL) return TCS_illegalCall;
+  DcmTransportLayerStatus result = TCS_ok;
   
   switch (SSL_get_error(tlsConnection, SSL_set_cipher_list(tlsConnection, newSuite)))
   {
     case SSL_ERROR_NONE:
+      /* success */
+      break;
+    case SSL_ERROR_SYSCALL:
+    case SSL_ERROR_SSL:
+      lastError = ERR_peek_error();
+      result = TCS_tlsError;
       break;
     default:
-      return TCS_unspecifiedError;
-      /* break; */
+      // case SSL_ERROR_WANT_READ:
+      // case SSL_ERROR_WANT_WRITE:
+      // case SSL_ERROR_WANT_X509_LOOKUP:
+      // case SSL_ERROR_WANT_CONNECT:
+      // case SSL_ERROR_ZERO_RETURN:
+      result = TCS_tlsError;
+      break;
   }
+  if (result != TCS_ok) return result;
+
   switch (SSL_get_error(tlsConnection, SSL_renegotiate(tlsConnection)))
   {
     case SSL_ERROR_NONE:
+      /* success */
+      break;
+    case SSL_ERROR_SYSCALL:
+    case SSL_ERROR_SSL:
+      lastError = ERR_peek_error();
+      result = TCS_tlsError;
       break;
     default:
-      return TCS_unspecifiedError;
-      /* break; */
+      // case SSL_ERROR_WANT_READ:
+      // case SSL_ERROR_WANT_WRITE:
+      // case SSL_ERROR_WANT_X509_LOOKUP:
+      // case SSL_ERROR_WANT_CONNECT:
+      // case SSL_ERROR_ZERO_RETURN:
+      result = TCS_tlsError;
+      break;
   }
-  return TCS_ok;
+
+  return result;
 }
 
 ssize_t DcmTLSConnection::read(void *buf, size_t nbyte)
@@ -255,22 +288,66 @@ OFBool DcmTLSConnection::isTransparentConnection()
   return OFFalse;
 }
 
+void DcmTLSConnection::dumpConnectionParameters(ostream &out)
+{
+  out << "Transport connection: TLS/SSL over TCP/IP" << endl
+      << "  Protocol: " << SSL_get_version(tlsConnection) << endl 
+      << "  Ciphersuite: " << SSL_CIPHER_get_name(SSL_get_current_cipher(tlsConnection))
+      << ", version: " << SSL_CIPHER_get_version(SSL_get_current_cipher(tlsConnection))
+      << ", encryption: " << SSL_CIPHER_get_bits(SSL_get_current_cipher(tlsConnection), NULL) << " bits" << endl;
+  DcmTLSTransportLayer::printX509Certificate(out, SSL_get_peer_certificate(tlsConnection));
+  // out << "Certificate verification: " << X509_verify_cert_error_string(SSL_get_verify_result(tlsConnection)) << endl;
+  return;
+}
+
+const char *DcmTLSConnection::errorString(DcmTransportLayerStatus code)
+{
+  switch (code)
+  {
+    case TCS_ok:
+      return "no error";
+      /* break; */
+    case TCS_noConnection:
+      return "no secure connection in place";
+      /* break; */
+    case TCS_tlsError:
+      if (lastError)
+      {
+        const char *result = ERR_reason_error_string(lastError);
+        if (result) return result;
+      } 
+      return "unspecified TLS error";
+      /* break; */
+    case TCS_illegalCall:
+      return "illegal call";
+      /* break; */
+    case TCS_unspecifiedError:
+      return "unspecified error";
+      /* break; */
+  }
+  return "unknown error code";
+}
+
 #else  /* WITH_OPENSSL */
 
 /* make sure that the object file is not completely empty if compiled 
  * without OpenSSL because some linkers might fail otherwise.
  */
-static void tlstrans_dummy_function()
+void tlstrans_dummy_function()
 {
   return;
 }
+
 
 #endif /* WITH_OPENSSL */
 
 
 /*
  *  $Log: tlstrans.cc,v $
- *  Revision 1.1  2000-08-10 14:50:29  meichel
+ *  Revision 1.2  2000-10-10 12:13:36  meichel
+ *  Added routines for printing certificates and connection parameters.
+ *
+ *  Revision 1.1  2000/08/10 14:50:29  meichel
  *  Added initial OpenSSL support.
  *
  *

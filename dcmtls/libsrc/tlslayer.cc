@@ -23,8 +23,8 @@
  *    classes: DcmTLSTransportLayer
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-08-10 14:50:29 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-10-10 12:13:35 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,10 +43,14 @@ BEGIN_EXTERN_C
 #include <openssl/rand.h>
 END_EXTERN_C
 
-extern "C" int certificateValidationCallback(int ok, X509_STORE_CTX * /* storeContext */);
+extern "C" int certificateValidationCallback(int ok, X509_STORE_CTX *storeContext);
+
 
 int certificateValidationCallback(int ok, X509_STORE_CTX * /* storeContext */)
 {
+  // this callback is called whenever OpenSSL has validated a X.509 certificate.
+  // we could for example print it:
+  // DcmTLSTransportLayer::printX509Certificate(cout, storeContext->cert);
   return ok;
 }
 
@@ -238,8 +242,8 @@ DcmTransportLayerStatus DcmTLSTransportLayer::setCipherSuites(const char *suites
 {
   if (transportLayerContext && suites)
   {
-    if (!SSL_CTX_set_cipher_list(transportLayerContext, suites)) return TCS_unspecifiedError;
-  } else return TCS_unspecifiedError;
+    if (!SSL_CTX_set_cipher_list(transportLayerContext, suites)) return TCS_tlsError;
+  } else return TCS_illegalCall;
   return TCS_ok;
 }
 
@@ -253,8 +257,8 @@ DcmTransportLayerStatus DcmTLSTransportLayer::setPrivateKeyFile(const char *file
   /* fileType should be SSL_FILETYPE_ASN1 or SSL_FILETYPE_PEM */
   if (transportLayerContext)
   {
-    if (0 >= SSL_CTX_use_PrivateKey_file(transportLayerContext, fileName, fileType)) return TCS_unspecifiedError;
-  } else return TCS_unspecifiedError;
+    if (0 >= SSL_CTX_use_PrivateKey_file(transportLayerContext, fileName, fileType)) return TCS_tlsError;
+  } else return TCS_illegalCall;
   return TCS_ok;
 }
 
@@ -263,8 +267,8 @@ DcmTransportLayerStatus DcmTLSTransportLayer::setCertificateFile(const char *fil
   /* fileType should be SSL_FILETYPE_ASN1 or SSL_FILETYPE_PEM */
   if (transportLayerContext)
   {
-    if (0 >= SSL_CTX_use_certificate_file(transportLayerContext, fileName, fileType)) return TCS_unspecifiedError;
-  } else return TCS_unspecifiedError;
+    if (0 >= SSL_CTX_use_certificate_file(transportLayerContext, fileName, fileType)) return TCS_tlsError;
+  } else return TCS_illegalCall;
   return TCS_ok;
 }
 
@@ -283,9 +287,9 @@ DcmTransportLayerStatus DcmTLSTransportLayer::addTrustedCertificateFile(const ch
   if (transportLayerContext)
   {
     X509_LOOKUP *x509_lookup = X509_STORE_add_lookup(transportLayerContext->cert_store, X509_LOOKUP_file());
-    if (x509_lookup == NULL) return TCS_unspecifiedError;
-    if (! X509_LOOKUP_load_file(x509_lookup, fileName, fileType)) return TCS_unspecifiedError;
-  } else return TCS_unspecifiedError;
+    if (x509_lookup == NULL) return TCS_tlsError;
+    if (! X509_LOOKUP_load_file(x509_lookup, fileName, fileType)) return TCS_tlsError;
+  } else return TCS_illegalCall;
   return TCS_ok;
 }
 
@@ -295,9 +299,9 @@ DcmTransportLayerStatus DcmTLSTransportLayer::addTrustedCertificateDir(const cha
   if (transportLayerContext)
   {
     X509_LOOKUP *x509_lookup = X509_STORE_add_lookup(transportLayerContext->cert_store, X509_LOOKUP_hash_dir());
-    if (x509_lookup == NULL) return TCS_unspecifiedError;
-    if (! X509_LOOKUP_add_dir(x509_lookup, pathName, fileType)) return TCS_unspecifiedError;
-  } else return TCS_unspecifiedError;
+    if (x509_lookup == NULL) return TCS_tlsError;
+    if (! X509_LOOKUP_add_dir(x509_lookup, pathName, fileType)) return TCS_tlsError;
+  } else return TCS_illegalCall;
   return TCS_ok;
 }
       
@@ -340,6 +344,11 @@ void DcmTLSTransportLayer::seedPRNG(const char *randFile)
   }
 }
 
+void DcmTLSTransportLayer::addPRNGseed(void *buf, size_t bufSize)
+{
+  RAND_seed(buf,(int) bufSize);
+}
+
 OFBool DcmTLSTransportLayer::writeRandomSeed(const char *randFile)
 {
   if (canWriteRandseed && randFile)
@@ -349,12 +358,80 @@ OFBool DcmTLSTransportLayer::writeRandomSeed(const char *randFile)
   return OFFalse;
 }
 
+void DcmTLSTransportLayer::printX509Certificate(ostream &out, X509 *peerCertificate)
+{
+  if (peerCertificate)
+  {
+    long certVersion = 0;                     /* certificate type */
+    long certSerialNumber = -1;               /* certificate serial number */
+    OFString certValidNotBefore;              /* certificate validity - not before */
+    OFString certValidNotAfter;               /* certificate validity - not after */
+    char certSubjectName[1024];               /* certificate subject name (DN) */
+    char certIssuerName[1024];                /* certificate issuer name (DN) */
+    const char *certPubKeyType = "unknown";   /* certificate public key type */
+    int certPubKeyBits = 0;                   /* certificate number of bits in public key */
+    certSubjectName[0]= '\0';
+    certIssuerName[0]= '\0';
+    certVersion = X509_get_version(peerCertificate) +1;
+    certSerialNumber = ASN1_INTEGER_get(X509_get_serialNumber(peerCertificate));
+    BIO *certValidNotBeforeBIO = BIO_new(BIO_s_mem());
+    char *bufptr = NULL;
+    if (certValidNotBeforeBIO)
+    {
+      ASN1_UTCTIME_print(certValidNotBeforeBIO, X509_get_notBefore(peerCertificate));
+      BIO_get_mem_data(certValidNotBeforeBIO, (char *)(&bufptr));
+      if (bufptr) certValidNotBefore = bufptr;
+      BIO_free(certValidNotBeforeBIO);
+    }
+    bufptr = NULL;
+    BIO *certValidNotAfterBIO  = BIO_new(BIO_s_mem());
+    if (certValidNotAfterBIO)
+    {
+      ASN1_UTCTIME_print(certValidNotAfterBIO, X509_get_notAfter(peerCertificate));
+      BIO_get_mem_data(certValidNotAfterBIO, (char *)(&bufptr));
+      if (bufptr) certValidNotAfter = bufptr;
+      BIO_free(certValidNotAfterBIO);
+    }
+    X509_NAME_oneline(X509_get_subject_name(peerCertificate), certSubjectName, 1024);
+    X509_NAME_oneline(X509_get_issuer_name(peerCertificate), certIssuerName, 1024);
+    EVP_PKEY *pubkey = X509_get_pubkey(peerCertificate); // creates copy of public key
+    if (pubkey)
+    {
+      switch (EVP_PKEY_type(pubkey->type))
+      {
+        case EVP_PKEY_RSA:
+          certPubKeyType = "RSA";
+          break;
+        case EVP_PKEY_DSA:
+          certPubKeyType = "DSA";
+          break;
+        case EVP_PKEY_DH:
+          certPubKeyType = "DH";
+          break;
+        default:
+          /* nothing */
+          break;
+      }
+      certPubKeyBits = EVP_PKEY_bits(pubkey);
+      EVP_PKEY_free(pubkey);
+    } 
+    out << "X.509v" << certVersion << " Certificate" << endl
+         << "  Subject      : " << certSubjectName << endl
+         << "  Issued by    : " << certIssuerName << endl
+         << "  Serial no.   : " << certSerialNumber << endl
+         << "  Validity     : not before " << certValidNotBefore << ", not after " << certValidNotAfter << endl
+         << "  Public key   : " << certPubKeyType << ", " << certPubKeyBits << " bits" << endl;
+  } else {
+    out << "No X.509 Certificate." << endl;
+  }
+}
+
 #else  /* WITH_OPENSSL */
 
 /* make sure that the object file is not completely empty if compiled 
  * without OpenSSL because some linkers might fail otherwise.
  */
-static void tlslayer_dummy_function()
+void tlslayer_dummy_function()
 {
   return;
 }
@@ -363,7 +440,10 @@ static void tlslayer_dummy_function()
 
 /*
  *  $Log: tlslayer.cc,v $
- *  Revision 1.1  2000-08-10 14:50:29  meichel
+ *  Revision 1.2  2000-10-10 12:13:35  meichel
+ *  Added routines for printing certificates and connection parameters.
+ *
+ *  Revision 1.1  2000/08/10 14:50:29  meichel
  *  Added initial OpenSSL support.
  *
  *
