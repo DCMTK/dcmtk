@@ -1,3 +1,14 @@
+**** Unreleased Changes from 97.05.16 (barth)
+
+- Revised handling of GroupLength elements and support of 
+  DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
+  got additional enumeration values (for a description see dctypes.h).
+  addGroupLength and removeGroupLength methods are replaced by 
+  computeGroupLengthAndPadding. To support Padding, the parameters of
+  element and sequence write functions changed.
+  Affects: dcmimage/apps/dcm2pnm.cc
+
+**** Unreleased Changes from 97.05.13 (eichelberg)
 
 - Added new application dcm2pnm.
   dcm2pnm allows to convert DICOM images to the widely used
@@ -19,12 +30,16 @@
   Affects: dcmimage/include/dcmimage.h
            dcmimage/libsrc/dcmimage.cc
 
+**** Unreleased Changes from 97.05.12 (barth)
+
 - Include function getFloat64 into DcmDecimalString and getSint32 into
   DcmIntegerString. Remove derived classes for this purpose in the dcmimage
   module.
   Removed: dcmimage/include/didecstr.h
            dcmimage/include/diintstr.h
   Affects: dcmimage/libsrc/didocu.cc
+
+**** Unreleased Changes from 97.05.06 (eichelberg)
 
 - Removed files contained both in libsrc/ and apps/.
   Removed: dcmimage/libsrc/dcm2mono.cc
@@ -38,7 +53,7 @@
 
 -------------------------------------------------------------------
 
-30 April 1997
+30 April 1997 (riesmeier)
 
 - Initial Release
 
