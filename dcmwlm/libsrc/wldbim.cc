@@ -22,9 +22,9 @@
 *  Purpose: Class for managing database interaction.
 *
 *  Last Update:      $Author: joergr $
-*  Update Date:      $Date: 2002-01-08 17:46:02 $
+*  Update Date:      $Date: 2002-01-08 19:14:52 $
 *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/Attic/wldbim.cc,v $
-*  CVS/RCS Revision: $Revision: 1.4 $
+*  CVS/RCS Revision: $Revision: 1.5 $
 *  Status:           $State: Exp $
 *
 *  CVS/RCS Log at end of file
@@ -271,6 +271,7 @@ WlmDatabaseInteractionManager::WlmDatabaseInteractionManager( OFConsole *logStre
 {
     useDBConnect = OFTrue;
     myDcmTagAnker = 0;
+    /* add serial number to OFFIS GO-Kard UID root */
     sprintf(uidPrefix, "1.2.276.0.7230010.8.%d", serialNumberv);
     if (strcmp( dbDsnv, "text" ) != 0) {
         if (dbDsnv[0])
@@ -716,7 +717,12 @@ void WlmDatabaseInteractionManager::GetAttributeValueForMatchingRecord( DcmTagKe
 /*
 ** CVS Log
 ** $Log: wldbim.cc,v $
-** Revision 1.4  2002-01-08 17:46:02  joergr
+** Revision 1.5  2002-01-08 19:14:52  joergr
+** Minor adaptations to keep the gcc compiler on Linux and Solaris happy.
+** Currently only the "file version" of the worklist SCP is supported on
+** Unix systems.
+**
+** Revision 1.4  2002/01/08 17:46:02  joergr
 ** Reformatted source files (replaced Windows newlines by Unix ones, replaced
 ** tabulator characters by spaces, etc.)
 **

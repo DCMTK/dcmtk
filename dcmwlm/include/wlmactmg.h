@@ -23,9 +23,9 @@
  *           class provider engines.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-08 17:45:34 $
+ *  Update Date:      $Date: 2002-01-08 19:10:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wlmactmg.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,10 +47,6 @@ class WlmActivityManager
 {
   protected:
     WlmDataSourceType dataSourceType;
-    WlmProcessTableType processTable;
-    char **supportedAbstractSyntaxes;
-    int numberOfSupportedAbstractSyntaxes;
-    WlmDataSource *dataSource;
     char *opt_dbDsn;
     char *opt_dbUserName;
     char *opt_dbUserPassword;
@@ -69,6 +65,10 @@ class WlmActivityManager
     OFBool opt_failInvalidQuery;
     OFBool opt_singleProcess;
     int opt_maxAssociations;
+    WlmProcessTableType processTable;
+    char **supportedAbstractSyntaxes;
+    int numberOfSupportedAbstractSyntaxes;
+    WlmDataSource *dataSource;
     OFConsole *logStream;
     const int opt_serialNumber;
 
@@ -103,7 +103,12 @@ class WlmActivityManager
 /*
 ** CVS Log
 ** $Log: wlmactmg.h,v $
-** Revision 1.3  2002-01-08 17:45:34  joergr
+** Revision 1.4  2002-01-08 19:10:04  joergr
+** Minor adaptations to keep the gcc compiler on Linux and Solaris happy.
+** Currently only the "file version" of the worklist SCP is supported on
+** Unix systems.
+**
+** Revision 1.3  2002/01/08 17:45:34  joergr
 ** Reformatted source files (replaced Windows newlines by Unix ones, replaced
 ** tabulator characters by spaces, etc.)
 **

@@ -30,16 +30,13 @@ dcmnetlib=-ldcmnet
 
 LOCALINCLUDES=$(dcmnetinc) $(dcmdatainc) $(ofstdinc)
 LIBDIRS = -L$(top_srcdir)/libsrc $(dcmnetlibdir) $(dcmdatalibdir) $(ofstdlibdir) -L$(libdir)
-LOCALLIBS = -lwrklstdb $(dcmnetlib) $(dcmdatalib) $(ofstdlib)
+LOCALLIBS = -ldcmwlm $(dcmnetlib) $(dcmdatalib) $(ofstdlib)
 
-objs= wlmceng.o wlmscpdb.o wlmscpfs.o 
+objs= wlmceng.o wlmscpfs.o 
 
-progs= wlmscpdb wlmscpfs
+progs= wlmscpfs
 
 all: $(progs)
-
-wlmscpdb: $(objs)
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $(objs) $(LOCALLIBS) $(LIBS)  
 
 wlmscpfs: $(objs)
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $(objs) $(LOCALLIBS) $(LIBS)  

@@ -22,9 +22,9 @@ LOCALDEFS=
 
 include $(configdir)/@common_makefile@
 
-objs=wldbim.o wlds.o wldsdb.o wldsfs.o wlmactmg.o
+objs=wlds.o wldsfs.o wlmactmg.o
 
-LIB=libwrklstdb.$(LIBEXT)
+LIB=libdcmwlm.$(LIBEXT)
 
 all: $(LIB)
 

@@ -22,9 +22,9 @@
  *  Purpose: Class for connecting to a file-based data source.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-08 17:46:04 $
+ *  Update Date:      $Date: 2002-01-08 19:14:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wldsfs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,6 +41,15 @@ BEGIN_EXTERN_C
 #endif
 #ifdef HAVE_IO_H
 #include <io.h>        // for access() on Win32
+#endif
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
+#ifdef HAVE_SYS_FILE_H
+#include <sys/file.h>  // for struct DIR, opendir()
+#endif
+#ifdef HAVE_DIRENT_H
+#include <dirent.h>    // for struct DIR, opendir()
 #endif
 END_EXTERN_C
 
@@ -241,7 +250,7 @@ WlmDataSourceStatusType WlmDataSourceFiles::StartFindRequest( DcmDataset &findRe
     return( WLM_REFUSED_OUT_OF_RESOURCES );
 
   // Set a read lock on the LOCKFILE in the given directory.
-  int error = SetReadlock();
+  /*int error =*/ SetReadlock();
 
 /* wilkens: Das hier hab ich mal auskommentiert, weil es im alten wlistctn auch nicht
    gemacht wird. Manchmal klappt ein Readlock nicht, dann soll aber weitergearbeitet
@@ -304,7 +313,7 @@ WlmDataSourceStatusType WlmDataSourceFiles::StartFindRequest( DcmDataset &findRe
       {
         // Create a string that contains path and filename of the current worklist file.
         char file1[200];
-        sprintf( file1, "%s%c%s", path, PATH_SEPARATOR, dp->d_name );
+        sprintf( file1, "%s%c%s", path.c_str(), PATH_SEPARATOR, dp->d_name );
 #endif
 
         // Dump current file specification (path and filename).
@@ -2172,7 +2181,12 @@ OFBool WlmDataSourceFiles::IsSupportedReturnKeyAttribute( const DcmTagKey &key, 
 /*
 ** CVS Log
 ** $Log: wldsfs.cc,v $
-** Revision 1.3  2002-01-08 17:46:04  joergr
+** Revision 1.4  2002-01-08 19:14:53  joergr
+** Minor adaptations to keep the gcc compiler on Linux and Solaris happy.
+** Currently only the "file version" of the worklist SCP is supported on
+** Unix systems.
+**
+** Revision 1.3  2002/01/08 17:46:04  joergr
 ** Reformatted source files (replaced Windows newlines by Unix ones, replaced
 ** tabulator characters by spaces, etc.)
 **

@@ -23,9 +23,9 @@
  *           class providers.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-08 17:46:04 $
+ *  Update Date:      $Date: 2002-01-08 19:14:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlmactmg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -63,7 +63,7 @@
 // findCallback() needs to be global. Function addStatusDetail() is used in findCallback() that's why
 // it is also defined as global.
 
-void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ * /*request*/, DcmDataset *requestIdentifiers, int responseCount, T_DIMSE_C_FindRSP *response, DcmDataset **responseIdentifiers, DcmDataset **statusDetail );
+static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ * /*request*/, DcmDataset *requestIdentifiers, int responseCount, T_DIMSE_C_FindRSP *response, DcmDataset **responseIdentifiers, DcmDataset **statusDetail );
 // Task         : This function will try to select another record from a database which matches the
 //                search mask that was passed. In certain circumstances, the selected information
 //                will be dumped to stdout.
@@ -83,7 +83,7 @@ void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ * /*re
 //                                      status element (0000,0900) of the C-FIND-RSP message.
 // Return Value : OFCondition value denoting success or error.
 
-void AddStatusDetail( DcmDataset **statusDetail, const DcmElement *elem, OFConsole *logStream );
+static void AddStatusDetail( DcmDataset **statusDetail, const DcmElement *elem, OFConsole *logStream );
 // Task         : This function adds information to the status detail information container.
 // Parameters   : statusDetail - [inout] This variable can be used to capture detailed information
 //                               with regard to the status information which is captured in the
@@ -179,9 +179,12 @@ WlmActivityManager::WlmActivityManager( WlmDataSourceType dataSourceTypev, const
 
   // Initialize object that makes the data source available
   dataSource = NULL;
+#ifdef WITH_DATABASE
   if( dataSourceType == DATA_SOURCE_IS_DATABASE )
     dataSource = new WlmDataSourceDatabase( logStream, opt_verbose, opt_dbDsn, opt_dbUserName, opt_dbUserPassword, opt_serialNumber );
-  else if( dataSourceType == DATA_SOURCE_IS_DATA_FILES )
+  else
+#endif
+  if( dataSourceType == DATA_SOURCE_IS_DATA_FILES )
     dataSource = new WlmDataSourceFiles( logStream, opt_verbose, opt_dfPath );
 }
 
@@ -250,7 +253,7 @@ OFCondition WlmActivityManager::StartProvidingService()
 #ifdef HAVE_GETEUID
   // If port is privileged we must be as well.
   if( opt_port < 1024 && geteuid() != 0 )
-    return( WLM_EC_InsufficientPortPrivileges )
+    return( WLM_EC_InsufficientPortPrivileges );
 #endif
 
   // Initialize network, i.e. create an instance of T_ASC_Network*.
@@ -1004,7 +1007,7 @@ void WlmActivityManager::CleanChildren()
       // dump some information if required
       if( opt_verbose )
       {
-        sprinf( msg, "Cleaned up after child (%d)\n", child );
+        sprintf( msg, "Cleaned up after child (%d)\n", child );
         DumpMessage( msg );
       }
 
@@ -1105,7 +1108,7 @@ static void AddStatusDetail( DcmDataset **statusDetail, const DcmElement *elem, 
       lo = new DcmLongString( *((DcmLongString*)elem) );
       if( lo->getLength() > vr.getMaxValueLength() && logStream != NULL )
       {
-        sprintf( msg, "AddStatusDetail: INTERNAL ERROR: value too large (max %d) for %s: ", vr.getMaxValueLength(), vr.getVRName() );
+        sprintf( msg, "AddStatusDetail: INTERNAL ERROR: value too large (max %lu) for %s: ", vr.getMaxValueLength(), vr.getVRName() );
         logStream->lockCout();
         logStream->getCout() << msg << endl;
         logStream->unlockCout();
@@ -1122,7 +1125,7 @@ static void AddStatusDetail( DcmDataset **statusDetail, const DcmElement *elem, 
       at = new DcmAttributeTag( *((DcmAttributeTag*)elem) );
       if( at->getLength() > vr.getMaxValueLength() )
       {
-        sprintf( msg, "AddStatusDetail: INTERNAL ERROR: value too large (max %d) for %s: ", vr.getMaxValueLength(), vr.getVRName() );
+        sprintf( msg, "AddStatusDetail: INTERNAL ERROR: value too large (max %lu) for %s: ", vr.getMaxValueLength(), vr.getVRName() );
         logStream->lockCout();
         logStream->getCout() << msg << endl;
         logStream->unlockCout();
@@ -1335,7 +1338,12 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
 /*
 ** CVS Log
 ** $Log: wlmactmg.cc,v $
-** Revision 1.4  2002-01-08 17:46:04  joergr
+** Revision 1.5  2002-01-08 19:14:54  joergr
+** Minor adaptations to keep the gcc compiler on Linux and Solaris happy.
+** Currently only the "file version" of the worklist SCP is supported on
+** Unix systems.
+**
+** Revision 1.4  2002/01/08 17:46:04  joergr
 ** Reformatted source files (replaced Windows newlines by Unix ones, replaced
 ** tabulator characters by spaces, etc.)
 **
