@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Network Send Component (Store SCU)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-10-10 12:23:45 $
+ *  Update Date:      $Date: 2000-11-08 18:38:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpssnd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -114,6 +114,14 @@ static CONDITION sendImage(T_ASC_Association *assoc, const char *sopClass, const
     if (presId == 0)
     {
       if (opt_verbose) CERR << "error: no presentation context for: (" << dcmSOPClassUIDToModality(sopClass) << ") " << sopClass << endl;
+      if (messageClient)
+      {
+        OFString buf("unable to send image: no presentation context for ");
+      	const char *sopClassName = dcmFindNameOfUID(sopClass);
+        if (sopClassName == NULL) buf.append(sopClass); else buf.append(sopClassName);
+        buf.append("\n");      
+      	messageClient->notifySentDICOMObject(DVPSIPCMessage::statusWarning, buf.c_str());
+      }
       return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
     }
 
@@ -148,7 +156,36 @@ static CONDITION sendImage(T_ASC_Association *assoc, const char *sopClass, const
        COND_PopCondition(OFTrue);
     }
     if (statusDetail) delete statusDetail;
-    if (messageClient && (SUCCESS(cond))) messageClient->notifySentDICOMObject();
+ 
+    if (messageClient)
+    {
+      ostrstream out;
+      Uint32 operationStatus = DVPSIPCMessage::statusError;
+      if (SUCCESS(cond))
+      {
+        if (rsp.DimseStatus == STATUS_Success) operationStatus = DVPSIPCMessage::statusOK; 
+        else operationStatus = DVPSIPCMessage::statusWarning;        
+      }
+      const char *sopClassName = dcmFindNameOfUID(sopClass);
+      const char *successName = "failed";
+      if (operationStatus == DVPSIPCMessage::statusOK) successName = "successful";
+      if (sopClassName==NULL) sopClassName = sopClass;
+      unsigned long fileSize = 0;
+      struct stat fileStat;      
+      if (0 == stat(imgFile, &fileStat)) fileSize = fileStat.st_size;      
+      out << "DICOM C-STORE transmission " << successName << ": " << endl
+          << "\tSOP class UID          : " << sopClassName << endl
+          << "\tSOP instance UID       : " << sopInstance << endl
+          << "\tSource file path       : " << imgFile << endl
+          << "\tSource file size (kB)  : " << (fileSize+1023)/1024 << endl
+          << "\tDIMSE presentation ctx : " << (int)presId << endl
+          << "\tDIMSE message ID       : " << req.MessageID << endl
+          << "\tDIMSE status           : " << DU_cstoreStatusString(rsp.DimseStatus) << endl
+          << ends;
+      char *theString = out.str();
+      messageClient->notifySentDICOMObject(operationStatus, theString);
+      delete[] theString;
+    }
     return cond;
 }
 
@@ -518,55 +555,57 @@ int main(int argc, char *argv[])
       dcmEnableUnknownVRGeneration.set(OFFalse);
       dcmEnableUnlimitedTextVRGeneration.set(OFFalse);
     }
-    
-    if (opt_verbose)
-    {
-      CERR << "Send target parameters:" << endl
-           << "  hostname        : " << targetHostname << endl
-           << "  port            : " << targetPort << endl
-           << "  description     : ";
-      if (targetDescription) CERR << targetDescription; else CERR << "(none)";
-      CERR << endl
-           << "  aetitle         : " << targetAETitle << endl
-           << "  max pdu         : " << targetMaxPDU << endl
-           << "  options         : ";
-      if (targetImplicitOnly && targetDisableNewVRs) CERR << "implicit xfer syntax only, disable post-1993 VRs";
-      else if (targetImplicitOnly) CERR << "implicit xfer syntax only";
-      else if (targetDisableNewVRs) CERR << "disable post-1993 VRs";
-      else CERR << "none.";
-      CERR << endl;
 
-      CERR << "  TLS             : ";
-      if (useTLS) CERR << "enabled" << endl; else CERR << "disabled" << endl;
+    ostrstream verboseParameters;
+        
+    verboseParameters << "Send target parameters:" << endl
+         << "\thostname        : " << targetHostname << endl
+         << "\tport            : " << targetPort << endl
+         << "\tdescription     : ";
+    if (targetDescription) verboseParameters << targetDescription; else verboseParameters << "(none)";
+    verboseParameters << endl
+         << "\taetitle         : " << targetAETitle << endl
+         << "\tmax pdu         : " << targetMaxPDU << endl
+         << "\toptions         : ";
+    if (targetImplicitOnly && targetDisableNewVRs) verboseParameters << "implicit xfer syntax only, disable post-1993 VRs";
+    else if (targetImplicitOnly) verboseParameters << "implicit xfer syntax only";
+    else if (targetDisableNewVRs) verboseParameters << "disable post-1993 VRs";
+    else verboseParameters << "none.";
+    verboseParameters << endl;
+
+    verboseParameters << "\tTLS             : ";
+    if (useTLS) verboseParameters << "enabled" << endl; else verboseParameters << "disabled" << endl;
 
 #ifdef WITH_OPENSSL
-      if (useTLS)
+    if (useTLS)
+    {
+      verboseParameters << "\tTLS certificate : " << tlsCertificateFile << endl
+           << "\tTLS key file    : " << tlsPrivateKeyFile << endl
+           << "\tTLS DH params   : " << tlsDHParametersFile << endl
+           << "\tTLS PRNG seed   : " << tlsRandomSeedFile << endl
+           << "\tTLS CA directory: " << tlsCACertificateFolder << endl
+           << "\tTLS ciphersuites: " << tlsCiphersuites << endl
+           << "\tTLS key format  : ";
+      if (keyFileFormat == SSL_FILETYPE_PEM) verboseParameters << "PEM" << endl; else verboseParameters << "DER" << endl;
+      verboseParameters << "\tTLS cert verify : ";
+      switch (tlsCertVerification)
       {
-        CERR << "  TLS certificate : " << tlsCertificateFile << endl
-             << "  TLS key file    : " << tlsPrivateKeyFile << endl
-             << "  TLS DH params   : " << tlsDHParametersFile << endl
-             << "  TLS PRNG seed   : " << tlsRandomSeedFile << endl
-             << "  TLS CA directory: " << tlsCACertificateFolder << endl
-             << "  TLS ciphersuites: " << tlsCiphersuites << endl
-             << "  TLS key format  : ";
-        if (keyFileFormat == SSL_FILETYPE_PEM) CERR << "PEM" << endl; else CERR << "DER" << endl;
-        CERR << "  TLS cert verify : ";
-        switch (tlsCertVerification)
-        {
-            case DCV_checkCertificate:
-              cerr << "verify" << endl;
-              break;
-            case DCV_ignoreCertificate:
-              cerr << "ignore" << endl;
-              break;
-            default:
-              cerr << "require" << endl;
-              break;
-        }
+          case DCV_checkCertificate:
+            verboseParameters << "verify" << endl;
+            break;
+          case DCV_ignoreCertificate:
+            verboseParameters << "ignore" << endl;
+            break;
+          default:
+            verboseParameters << "require" << endl;
+            break;
       }
-      CERR << endl;
-#endif
     }
+#endif
+
+    verboseParameters << ends;
+    char *verboseParametersString = verboseParameters.str();
+    if (opt_verbose) CERR << verboseParametersString << endl;
     
     /* open database */
     const char *dbfolder = dvi.getDatabaseFolder();
@@ -694,12 +733,14 @@ int main(int argc, char *argv[])
 
     if (messagePort > 0)
     {
-      messageClient = new DVPSIPCClient(messagePort, keepMessagePortOpen); 
+      messageClient = new DVPSIPCClient(DVPSIPCMessage::clientStoreSCU, verboseParametersString, messagePort, keepMessagePortOpen); 
       if (! messageClient->isServerActive())
       {
         CERR << "Warning: no IPC message server found at port " << messagePort << ", disabling IPC." << endl;
       }
     }
+    delete[] verboseParametersString;
+    verboseParametersString = NULL;
 
     /* create association */
     if (opt_verbose) CERR << "Requesting Association" << endl;
@@ -719,17 +760,19 @@ int main(int argc, char *argv[])
               // notify about rejected association
               ostrstream out;
               out << "DIMSE Association Rejected:" << endl
-                  << "  ";
+                  << "\t";
               ASC_printRejectParameters(out, &rej);
-              out << "  called presentation address: " << assoc->params->DULparams.calledPresentationAddress << endl
-                  << "  calling AE title: " << assoc->params->DULparams.callingAPTitle << endl
-                  << "  called AE title: " << assoc->params->DULparams.calledAPTitle << endl;
+              out << "\tcalled presentation address: " << assoc->params->DULparams.calledPresentationAddress << endl
+                  << "\tcalling AE title: " << assoc->params->DULparams.callingAPTitle << endl
+                  << "\tcalled AE title: " << assoc->params->DULparams.calledAPTitle << endl;
               ASC_dumpConnectionParameters(assoc, out);
               out << ends;
+              char *theString = out.str();              
               if (useTLS) 
-                messageClient->notifyRequestedEncryptedDICOMConnection(out.str());
-                else messageClient->notifyRequestedUnencryptedDICOMConnection(out.str());
-              messageClient->notifyApplicationTerminates();
+                messageClient->notifyRequestedEncryptedDICOMConnection(DVPSIPCMessage::statusError, theString);
+                else messageClient->notifyRequestedUnencryptedDICOMConnection(DVPSIPCMessage::statusError, theString);
+              messageClient->notifyApplicationTerminates(DVPSIPCMessage::statusError);
+              delete[] theString;
               delete messageClient;
             }
             return 1;
@@ -741,16 +784,18 @@ int main(int argc, char *argv[])
               // notify about rejected association
               ostrstream out;
               out << "DIMSE Association Request Failed:" << endl;
-              out << "  called presentation address: " << assoc->params->DULparams.calledPresentationAddress << endl
-                  << "  calling AE title: " << assoc->params->DULparams.callingAPTitle << endl
-                  << "  called AE title: " << assoc->params->DULparams.calledAPTitle << endl;
+              out << "\tcalled presentation address: " << assoc->params->DULparams.calledPresentationAddress << endl
+                  << "\tcalling AE title: " << assoc->params->DULparams.callingAPTitle << endl
+                  << "\tcalled AE title: " << assoc->params->DULparams.calledAPTitle << endl;
               ASC_dumpConnectionParameters(assoc, out);
               COND_DumpConditions(out); 
               out << ends;
+              char *theString = out.str();              
               if (useTLS) 
-                messageClient->notifyRequestedEncryptedDICOMConnection(out.str());
-                else messageClient->notifyRequestedUnencryptedDICOMConnection(out.str());
-              messageClient->notifyApplicationTerminates();
+                messageClient->notifyRequestedEncryptedDICOMConnection(DVPSIPCMessage::statusError, theString);
+                else messageClient->notifyRequestedUnencryptedDICOMConnection(DVPSIPCMessage::statusError, theString);
+              messageClient->notifyApplicationTerminates(DVPSIPCMessage::statusError);
+              delete[] theString;
               delete messageClient;
             }
             return 1;
@@ -771,16 +816,17 @@ int main(int argc, char *argv[])
         // notify about rejected association
         ostrstream out;
         out << "DIMSE association accepted, but no acceptable presentation contexts - aborting." << endl
-            << "  called presentation address: " << assoc->params->DULparams.calledPresentationAddress << endl
-            << "  calling AE title: " << assoc->params->DULparams.callingAPTitle << endl
-            << "  called AE title: " << assoc->params->DULparams.calledAPTitle << endl;
+            << "\tcalled presentation address: " << assoc->params->DULparams.calledPresentationAddress << endl
+            << "\tcalling AE title: " << assoc->params->DULparams.callingAPTitle << endl
+            << "\tcalled AE title: " << assoc->params->DULparams.calledAPTitle << endl;
         ASC_dumpConnectionParameters(assoc, out);
         out << ends;
+        char *theString = out.str();              
         if (useTLS) 
-          messageClient->notifyRequestedEncryptedDICOMConnection(out.str());
-          else messageClient->notifyRequestedUnencryptedDICOMConnection(out.str());
-
-        messageClient->notifyApplicationTerminates();
+          messageClient->notifyRequestedEncryptedDICOMConnection(DVPSIPCMessage::statusError, theString);
+          else messageClient->notifyRequestedUnencryptedDICOMConnection(DVPSIPCMessage::statusError, theString);
+        messageClient->notifyApplicationTerminates(DVPSIPCMessage::statusError);
+        delete[] theString;
         delete messageClient;
       }
       return 1;
@@ -793,16 +839,18 @@ int main(int argc, char *argv[])
       // notify about successfully negotiated association
       ostrstream out;
       out << "DIMSE Association Accepted:" << endl
-          << "  called presentation address: " << assoc->params->DULparams.calledPresentationAddress << endl
-          << "  calling AE title: " << assoc->params->DULparams.callingAPTitle << endl
-          << "  called AE title: " << assoc->params->DULparams.calledAPTitle << endl
-          << "  max send PDV: " << assoc->sendPDVLength << endl
-          << "  presentation contexts: " << ASC_countAcceptedPresentationContexts(assoc->params) << endl;
+          << "\tcalled presentation address: " << assoc->params->DULparams.calledPresentationAddress << endl
+          << "\tcalling AE title: " << assoc->params->DULparams.callingAPTitle << endl
+          << "\tcalled AE title: " << assoc->params->DULparams.calledAPTitle << endl
+          << "\tmax send PDV: " << assoc->sendPDVLength << endl
+          << "\tpresentation contexts: " << ASC_countAcceptedPresentationContexts(assoc->params) << endl;
       ASC_dumpConnectionParameters(assoc, out);
       out << ends;
+      char *theString = out.str();              
       if (useTLS) 
-        messageClient->notifyRequestedEncryptedDICOMConnection(out.str());
-        else messageClient->notifyRequestedUnencryptedDICOMConnection(out.str());
+        messageClient->notifyRequestedEncryptedDICOMConnection(DVPSIPCMessage::statusOK, theString);
+        else messageClient->notifyRequestedUnencryptedDICOMConnection(DVPSIPCMessage::statusOK, theString);
+      delete[] theString;
     }
 
 
@@ -823,12 +871,12 @@ int main(int argc, char *argv[])
           COND_DumpConditions();
           if (messageClient) 
           {
-            messageClient->notifyApplicationTerminates();
+            messageClient->notifyApplicationTerminates(DVPSIPCMessage::statusError);
             delete messageClient;
           }
           return 1;
         }
-        if (messageClient) messageClient->notifyConnectionClosed();
+        if (messageClient) messageClient->notifyConnectionClosed(DVPSIPCMessage::statusOK);
         break;
       case DIMSE_PEERREQUESTEDRELEASE:
         CERR << "Protocol Error: peer requested release (Aborting)" << endl;
@@ -840,16 +888,16 @@ int main(int argc, char *argv[])
             COND_DumpConditions();
             if (messageClient) 
             {
-              messageClient->notifyApplicationTerminates();
+              messageClient->notifyApplicationTerminates(DVPSIPCMessage::statusError);
               delete messageClient;
             }
             return 1;
         }
-        if (messageClient) messageClient->notifyConnectionAborted("Protocol error: peer requested release, aborting association.");
+        if (messageClient) messageClient->notifyConnectionAborted(DVPSIPCMessage::statusError, "Protocol error: peer requested release, aborting association.");
         break;
       case DIMSE_PEERABORTEDASSOCIATION:
         if (opt_verbose) CERR << "Peer Aborted Association" << endl;
-        if (messageClient) messageClient->notifyConnectionAborted("Peer aborted association.");
+        if (messageClient) messageClient->notifyConnectionAborted(DVPSIPCMessage::statusError, "Peer aborted association.");
         break;
       default:
         CERR << "SCU Failed" << endl;
@@ -862,12 +910,12 @@ int main(int argc, char *argv[])
             COND_DumpConditions();
             if (messageClient) 
             {
-              messageClient->notifyApplicationTerminates();
+              messageClient->notifyApplicationTerminates(DVPSIPCMessage::statusError);
               delete messageClient;
             }
             return 1;
         }
-        if (messageClient) messageClient->notifyConnectionAborted("Storage SCU failed, aborting association.");
+        if (messageClient) messageClient->notifyConnectionAborted(DVPSIPCMessage::statusError, "Storage SCU failed, aborting association.");
         break;
     }
 
@@ -877,7 +925,7 @@ int main(int argc, char *argv[])
       COND_DumpConditions();
       if (messageClient) 
       {
-        messageClient->notifyApplicationTerminates();
+        messageClient->notifyApplicationTerminates(DVPSIPCMessage::statusError);
         delete messageClient;
       }
       return 1;
@@ -888,7 +936,7 @@ int main(int argc, char *argv[])
       COND_DumpConditions();
       if (messageClient) 
       {
-        messageClient->notifyApplicationTerminates();
+        messageClient->notifyApplicationTerminates(DVPSIPCMessage::statusError);
         delete messageClient;
       }
       return 1;
@@ -901,7 +949,7 @@ int main(int argc, char *argv[])
     // We need to do this before we shutdown WinSock.
     if (messageClient) 
     {
-      messageClient->notifyApplicationTerminates();
+      messageClient->notifyApplicationTerminates(DVPSIPCMessage::statusOK);
       delete messageClient;
     }
     
@@ -936,7 +984,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpssnd.cc,v $
- * Revision 1.17  2000-10-10 12:23:45  meichel
+ * Revision 1.18  2000-11-08 18:38:04  meichel
+ * Updated dcmpstat IPC protocol for additional message parameters
+ *
+ * Revision 1.17  2000/10/10 12:23:45  meichel
  * Added extensions for TLS encrypted communication
  *
  * Revision 1.16  2000/05/31 13:02:25  meichel

@@ -23,8 +23,8 @@
  *    classes: DVPSIPCMessage
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-10-10 12:24:36 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-11-08 18:38:15 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -129,6 +129,19 @@ public:
   static const Uint32 receivedDICOMObject;
   static const Uint32 sentDICOMObject;
 
+  // message status constants
+  static const Uint32 statusOK;      // OK
+  static const Uint32 statusWarning; // warning
+  static const Uint32 statusError;   // error
+
+  // client type constants
+  static const Uint32 clientOther;    // client is of unspecified type
+  static const Uint32 clientStoreSCP; // client is Store SCP
+  static const Uint32 clientStoreSCU; // client is Store SCU
+  static const Uint32 clientPrintSCP; // client is Print SCP
+  static const Uint32 clientPrintSCU; // client is Print SCU
+  static const Uint32 clientQRSCP;    // client is Query/Retrieve (Find/Move/Get) SCP
+  
 private:
 
   /** resize payload if necessary such that at least i bytes can be written
@@ -161,55 +174,68 @@ class DVPSIPCClient
 public:
 
   /** constructor
+   *  @param clientType type of client application, see constants defined in DVPSIPCMessage
+   *  @param txt textual description of client application
    *  @param thePort TCP/IP port on which the server is listening
    *  @param keepOpen flag indicating whether the connection should be kept
    *    open all the time or should be opened/closed for each transaction.
    */
-  DVPSIPCClient(int thePort, OFBool keepOpen);
+  DVPSIPCClient(Uint32 clientType, const char *txt, int thePort, OFBool keepOpen);
   
   /// destructor
   virtual ~DVPSIPCClient();
 
   /** sends ApplicationTerminates notification to server.
+   *  @param Uint32 message status, see constants defined in DVPSIPCMessage
    */
-  void notifyApplicationTerminates();
+  void notifyApplicationTerminates(Uint32 status);
 
   /** sends ReceivedUnencryptedDICOMConnection notification to server.
+   *  @param Uint32 message status, see constants defined in DVPSIPCMessage
    *  @param txt textual description of notification for server
    */
-  void notifyReceivedUnencryptedDICOMConnection(const char *txt);
+  void notifyReceivedUnencryptedDICOMConnection(Uint32 status, const char *txt);
 
   /** sends ReceivedEncryptedDICOMConnection notification to server.
+   *  @param Uint32 message status, see constants defined in DVPSIPCMessage
    *  @param txt textual description of notification for server
    */
-  void notifyReceivedEncryptedDICOMConnection(const char *txt);
+  void notifyReceivedEncryptedDICOMConnection(Uint32 status, const char *txt);
 
   /** sends ConnectionClosed notification to server.
+   *  @param Uint32 message status, see constants defined in DVPSIPCMessage
    */
-  void notifyConnectionClosed();
+  void notifyConnectionClosed(Uint32 status);
 
   /** sends ConnectionAborted notification to server.
+   *  @param Uint32 message status, see constants defined in DVPSIPCMessage
    *  @param txt textual description of notification for server
    */
-  void notifyConnectionAborted(const char *txt);
+  void notifyConnectionAborted(Uint32 status, const char *txt);
 
   /** sends RequestedUnencryptedDICOMConnection notification to server.
+   *  @param Uint32 message status, see constants defined in DVPSIPCMessage
    *  @param txt textual description of notification for server
    */
-  void notifyRequestedUnencryptedDICOMConnection(const char *txt);
+  void notifyRequestedUnencryptedDICOMConnection(Uint32 status, const char *txt);
 
   /** sends RequestedEncryptedDICOMConnection notification to server.
+   *  @param Uint32 message status, see constants defined in DVPSIPCMessage
    *  @param txt textual description of notification for server
    */
-  void notifyRequestedEncryptedDICOMConnection(const char *txt);
+  void notifyRequestedEncryptedDICOMConnection(Uint32 status, const char *txt);
 
   /** sends ReceivedDICOMObject notification to server.
+   *  @param Uint32 message status, see constants defined in DVPSIPCMessage
+   *  @param txt textual description of DICOM object
    */
-  void notifyReceivedDICOMObject();
+  void notifyReceivedDICOMObject(Uint32 status, const char *txt);
 
   /** sends SentDICOMObject notification to server.
+   *  @param Uint32 message status, see constants defined in DVPSIPCMessage
+   *  @param txt textual description of DICOM object
    */
-  void notifySentDICOMObject();
+  void notifySentDICOMObject(Uint32 status, const char *txt);
 
   /** checks whether the message server has been found active
    *  upon creation of this object.
@@ -258,7 +284,10 @@ private:
 
 /*
  *  $Log: dvpsmsg.h,v $
- *  Revision 1.1  2000-10-10 12:24:36  meichel
+ *  Revision 1.2  2000-11-08 18:38:15  meichel
+ *  Updated dcmpstat IPC protocol for additional message parameters
+ *
+ *  Revision 1.1  2000/10/10 12:24:36  meichel
  *  Added extensions for IPC message communication
  *
  *

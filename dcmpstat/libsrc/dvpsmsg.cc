@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSIPCMessage
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-23 12:19:52 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-11-08 18:38:23 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,6 +73,20 @@ const Uint32 DVPSIPCMessage::requestedUnencryptedDICOMConnection        = 13;
 const Uint32 DVPSIPCMessage::requestedEncryptedDICOMConnection          = 15;
 const Uint32 DVPSIPCMessage::receivedDICOMObject                        = 17;
 const Uint32 DVPSIPCMessage::sentDICOMObject                            = 19;
+
+// message status constants
+const Uint32 DVPSIPCMessage::statusOK                                   = 0;
+const Uint32 DVPSIPCMessage::statusWarning                              = 1;
+const Uint32 DVPSIPCMessage::statusError                                = 2;
+
+// client type constants
+const Uint32 DVPSIPCMessage::clientOther                                = 0;
+const Uint32 DVPSIPCMessage::clientStoreSCP                             = 1;
+const Uint32 DVPSIPCMessage::clientStoreSCU                             = 2;
+const Uint32 DVPSIPCMessage::clientPrintSCP                             = 3;
+const Uint32 DVPSIPCMessage::clientPrintSCU                             = 4;
+const Uint32 DVPSIPCMessage::clientQRSCP                                = 5;
+
 
 DVPSIPCMessage::DVPSIPCMessage()
 : messageType(OK)
@@ -245,7 +259,7 @@ OFBool DVPSIPCMessage::receive(DcmTransportConnection &connection)
 
 /* --------------- class DVPSIPCClient --------------- */
 
-DVPSIPCClient::DVPSIPCClient(int thePort, OFBool keepOpen)
+DVPSIPCClient::DVPSIPCClient(Uint32 clientType, const char *txt, int thePort, OFBool keepOpen)
 : port(thePort)
 , serverActive(OFTrue)
 , applicationID(0)
@@ -254,6 +268,9 @@ DVPSIPCClient::DVPSIPCClient(int thePort, OFBool keepOpen)
 {
   DVPSIPCMessage msg;
   msg.setMessageType(DVPSIPCMessage::requestApplicationID);
+  msg.addIntToPayload(clientType);
+  msg.addIntToPayload(DVPSIPCMessage::statusOK);
+  msg.addStringToPayload(txt);
   if (performTransaction(msg))
   {
     if ((msg.getMessageType() != DVPSIPCMessage::assignApplicationID) || (! msg.extractIntFromPayload(applicationID)))
@@ -325,87 +342,101 @@ OFBool DVPSIPCClient::performTransaction(DVPSIPCMessage& msg)
   return result;
 }
 
-void DVPSIPCClient::notifyApplicationTerminates()
+void DVPSIPCClient::notifyApplicationTerminates(Uint32 status)
 {
   DVPSIPCMessage msg;
   msg.setMessageType(DVPSIPCMessage::applicationTerminates);
   msg.addIntToPayload(applicationID);
+  msg.addIntToPayload(status);
   performTransaction(msg);
 }
 
-void DVPSIPCClient::notifyReceivedUnencryptedDICOMConnection(const char *txt)
+void DVPSIPCClient::notifyReceivedUnencryptedDICOMConnection(Uint32 status, const char *txt)
 {
   DVPSIPCMessage msg;
   msg.setMessageType(DVPSIPCMessage::receivedUnencryptedDICOMConnection);
   msg.addIntToPayload(applicationID);
+  msg.addIntToPayload(status);
   msg.addStringToPayload(txt);
   performTransaction(msg);
 }
 
-void DVPSIPCClient::notifyReceivedEncryptedDICOMConnection(const char *txt)
+void DVPSIPCClient::notifyReceivedEncryptedDICOMConnection(Uint32 status, const char *txt)
 {
   DVPSIPCMessage msg;
   msg.setMessageType(DVPSIPCMessage::receivedEncryptedDICOMConnection);
   msg.addIntToPayload(applicationID);
+  msg.addIntToPayload(status);
   msg.addStringToPayload(txt);
   performTransaction(msg);
 }
 
-void DVPSIPCClient::notifyConnectionClosed()
+void DVPSIPCClient::notifyConnectionClosed(Uint32 status)
 {
   DVPSIPCMessage msg;
   msg.setMessageType(DVPSIPCMessage::connectionClosed);
   msg.addIntToPayload(applicationID);
+  msg.addIntToPayload(status);
   performTransaction(msg);
 }
 
-void DVPSIPCClient::notifyConnectionAborted(const char *txt)
+void DVPSIPCClient::notifyConnectionAborted(Uint32 status, const char *txt)
 {
   DVPSIPCMessage msg;
   msg.setMessageType(DVPSIPCMessage::connectionAborted);
   msg.addIntToPayload(applicationID);
+  msg.addIntToPayload(status);
   msg.addStringToPayload(txt);
   performTransaction(msg);
 }
 
-void DVPSIPCClient::notifyRequestedUnencryptedDICOMConnection(const char *txt)
+void DVPSIPCClient::notifyRequestedUnencryptedDICOMConnection(Uint32 status, const char *txt)
 {
   DVPSIPCMessage msg;
   msg.setMessageType(DVPSIPCMessage::requestedUnencryptedDICOMConnection);
   msg.addIntToPayload(applicationID);
+  msg.addIntToPayload(status);
   msg.addStringToPayload(txt);
   performTransaction(msg);
 }
 
-void DVPSIPCClient::notifyRequestedEncryptedDICOMConnection(const char *txt)
+void DVPSIPCClient::notifyRequestedEncryptedDICOMConnection(Uint32 status, const char *txt)
 {
   DVPSIPCMessage msg;
   msg.setMessageType(DVPSIPCMessage::requestedEncryptedDICOMConnection);
   msg.addIntToPayload(applicationID);
+  msg.addIntToPayload(status);
   msg.addStringToPayload(txt);
   performTransaction(msg);
 }
 
-void DVPSIPCClient::notifyReceivedDICOMObject()
+void DVPSIPCClient::notifyReceivedDICOMObject(Uint32 status, const char *txt)
 {
   DVPSIPCMessage msg;
   msg.setMessageType(DVPSIPCMessage::receivedDICOMObject);
   msg.addIntToPayload(applicationID);
+  msg.addIntToPayload(status);
+  msg.addStringToPayload(txt);
   performTransaction(msg);
 }
 
-void DVPSIPCClient::notifySentDICOMObject()
+void DVPSIPCClient::notifySentDICOMObject(Uint32 status, const char *txt)
 {
   DVPSIPCMessage msg;
   msg.setMessageType(DVPSIPCMessage::sentDICOMObject);
   msg.addIntToPayload(applicationID);
+  msg.addIntToPayload(status);
+  msg.addStringToPayload(txt);
   performTransaction(msg);
 }
 
 
 /*
  *  $Log: dvpsmsg.cc,v $
- *  Revision 1.4  2000-10-23 12:19:52  joergr
+ *  Revision 1.5  2000-11-08 18:38:23  meichel
+ *  Updated dcmpstat IPC protocol for additional message parameters
+ *
+ *  Revision 1.4  2000/10/23 12:19:52  joergr
  *  Replaced non-Unix style newline in preprocessor statement.
  *
  *  Revision 1.3  2000/10/16 11:43:38  joergr

@@ -22,9 +22,9 @@
  *  Purpose: Sample message server for class DVPSIPCClient
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-10-10 12:24:13 $
+ *  Update Date:      $Date: 2000-11-08 18:38:32 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/tests/msgserv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -69,6 +69,25 @@ END_EXTERN_C
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
+
+static const char *statusString(Uint32 i)
+{
+  if (i==DVPSIPCMessage::statusOK) return "OK";
+  if (i==DVPSIPCMessage::statusWarning) return "Warning";
+  if (i==DVPSIPCMessage::statusError) return "Error";
+  return "unknown status code";
+}
+
+static const char *applicationType(Uint32 i)
+{
+  if (i==DVPSIPCMessage::clientOther) return "unspecified";
+  if (i==DVPSIPCMessage::clientStoreSCP) return "Receiver (Store SCP)";
+  if (i==DVPSIPCMessage::clientStoreSCU) return "Sender (Store SCU)";
+  if (i==DVPSIPCMessage::clientPrintSCP) return "Printer (Print SCP)";
+  if (i==DVPSIPCMessage::clientPrintSCU) return "Print Client (Print SCU)";
+  if (i==DVPSIPCMessage::clientQRSCP) return "Database (Query/Retrieve SCP)";
+  return "unknown application type";
+}
 
 #define SHORTCOL 2
 #define LONGCOL 9
@@ -227,20 +246,6 @@ int main(int argc, char *argv[])
           return 10;
         }
 #endif
-
-     /*
-      * struct hostent *remote = gethostbyaddr(&from.sa_data[2], 4, 2);
-      * if (remote == NULL)
-      * {
-      *   COUT << "incoming connection from " 
-      *        << (((int) from.sa_data[2]) & 0xff) << "."
-      *        << (((int) from.sa_data[3]) & 0xff) << "."
-      *        << (((int) from.sa_data[4]) & 0xff) << "."
-      *        << (((int) from.sa_data[5]) & 0xff) << endl << endl;
-      * } else {
-      *   COUT << "incoming connection from " << remote->h_name << endl << endl;
-      * }
-      */
       
         // now we can handle the incoming connection
         DcmTCPConnection connection(sock);
@@ -267,44 +272,59 @@ int main(int argc, char *argv[])
             {
                 COUT << "received 'OK' (should not happen)" << endl;
             } else if (msgType == DVPSIPCMessage::requestApplicationID) {
-                COUT << "New client requests application ID, assigning #" << clientID+1 << endl;
+                COUT << "New client requests application ID, assigning #" << clientID+1 << endl
+                     << "Application Type: ";
+                if (msg.extractIntFromPayload(i)) COUT << applicationType(i) << endl; else COUT << "(none)" << endl;
+                if (msg.extractStringFromPayload(str)) COUT << str << endl; else COUT << "No description (should not happen)." << endl;
             } else if (msgType == DVPSIPCMessage::assignApplicationID) {
                 COUT << "received 'AssignApplicationID' (should not happen)." << endl;
             } else if (msgType == DVPSIPCMessage::applicationTerminates) {
                 if (msg.extractIntFromPayload(i)) COUT << "#" << i << ": "; else COUT << "unknown client: ";
-                COUT << "Application Terminates." << endl;
+                COUT << "Application Terminates, status: ";
+                if (msg.extractIntFromPayload(i)) COUT << statusString(i) << endl; else COUT << "(none)" << endl;
             } else if (msgType == DVPSIPCMessage::receivedUnencryptedDICOMConnection) {
                 if (msg.extractIntFromPayload(i)) COUT << "#" << i << ": "; else COUT << "unknown client: ";
-                COUT << "Received Unencrypted DICOM Connection:" << endl;
+                COUT << "Received Unencrypted DICOM Connection, status: ";
+                if (msg.extractIntFromPayload(i)) COUT << statusString(i) << endl; else COUT << "(none)" << endl;
                 if (msg.extractStringFromPayload(str)) COUT << str << endl; else COUT << "No description (should not happen)." << endl;
             } else if (msgType == DVPSIPCMessage::receivedEncryptedDICOMConnection) {
                 if (msg.extractIntFromPayload(i)) COUT << "#" << i << ": "; else COUT << "unknown client: ";
-                COUT << "Received Encrypted DICOM Connection:" << endl;
+                COUT << "Received Encrypted DICOM Connection, status: ";
+                if (msg.extractIntFromPayload(i)) COUT << statusString(i) << endl; else COUT << "(none)" << endl;
                 if (msg.extractStringFromPayload(str)) COUT << str << endl; else COUT << "No description (should not happen)." << endl;
             } else if (msgType == DVPSIPCMessage::connectionClosed) {
                 if (msg.extractIntFromPayload(i)) COUT << "#" << i << ": "; else COUT << "unknown client: ";
-                COUT << "Connection Closed." << endl;
+                COUT << "Connection Closed, status: ";
+                if (msg.extractIntFromPayload(i)) COUT << statusString(i) << endl; else COUT << "(none)" << endl;
             } else if (msgType == DVPSIPCMessage::connectionAborted) {
                 if (msg.extractIntFromPayload(i)) COUT << "#" << i << ": "; else COUT << "unknown client: ";
-                COUT << "Connection Aborted:" << endl;
+                COUT << "Connection Aborted, status: ";
+                if (msg.extractIntFromPayload(i)) COUT << statusString(i) << endl; else COUT << "(none)" << endl;
                 if (msg.extractStringFromPayload(str)) COUT << str << endl; else COUT << "No description (should not happen)." << endl;
             } else if (msgType == DVPSIPCMessage::requestedUnencryptedDICOMConnection) {
                 if (msg.extractIntFromPayload(i)) COUT << "#" << i << ": "; else COUT << "unknown client: ";
-                COUT << "Requested Unencrypted DICOM Connection:" << endl;
+                COUT << "Requested Unencrypted DICOM Connection, status: ";
+                if (msg.extractIntFromPayload(i)) COUT << statusString(i) << endl; else COUT << "(none)" << endl;
                 if (msg.extractStringFromPayload(str)) COUT << str << endl; else COUT << "No description (should not happen)." << endl;
             } else if (msgType == DVPSIPCMessage::requestedEncryptedDICOMConnection) {
                 if (msg.extractIntFromPayload(i)) COUT << "#" << i << ": "; else COUT << "unknown client: ";
-                COUT << "Requested Encrypted DICOM Connection:" << endl;
+                COUT << "Requested Encrypted DICOM Connection, status: ";
+                if (msg.extractIntFromPayload(i)) COUT << statusString(i) << endl; else COUT << "(none)" << endl;
                 if (msg.extractStringFromPayload(str)) COUT << str << endl; else COUT << "No description (should not happen)." << endl;
             } else if (msgType == DVPSIPCMessage::receivedDICOMObject) {
                 if (msg.extractIntFromPayload(i)) COUT << "#" << i << ": "; else COUT << "unknown client: ";
-                COUT << "Received DICOM Object." << endl;
+                COUT << "Received DICOM Object, status: ";
+                if (msg.extractIntFromPayload(i)) COUT << statusString(i) << endl; else COUT << "(none)" << endl;
+                if (msg.extractStringFromPayload(str)) COUT << str << endl; else COUT << "No description (should not happen)." << endl;
             } else if (msgType == DVPSIPCMessage::sentDICOMObject) {
                 if (msg.extractIntFromPayload(i)) COUT << "#" << i << ": "; else COUT << "unknown client: ";
-                COUT << "Sent DICOM Object." << endl;
+                COUT << "Sent DICOM Object, status: ";
+                if (msg.extractIntFromPayload(i)) COUT << statusString(i) << endl; else COUT << "(none)" << endl;
+                if (msg.extractStringFromPayload(str)) COUT << str << endl; else COUT << "No description (should not happen)." << endl;
             } else {
                 if (msg.extractIntFromPayload(i)) COUT << "#" << i << ": "; else COUT << "unknown client: ";
-                COUT << "received unknown message type " << msg.getMessageType() << endl;
+                COUT << "received unknown message type " << msg.getMessageType() << ", status: ";
+                if (msg.extractIntFromPayload(i)) COUT << statusString(i) << endl; else COUT << "(none)" << endl;
             }
             COUT << endl;
             msg.erasePayload();
@@ -339,9 +359,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: msgserv.cc,v $
- * Revision 1.1  2000-10-10 12:24:13  meichel
+ * Revision 1.2  2000-11-08 18:38:32  meichel
+ * Updated dcmpstat IPC protocol for additional message parameters
+ *
+ * Revision 1.1  2000/10/10 12:24:13  meichel
  * Implemented test server for IPC message communication
- *
- *
  *
  */
