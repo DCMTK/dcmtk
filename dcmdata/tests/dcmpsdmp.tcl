@@ -7,7 +7,11 @@ exec wish4.2 "$0" "$@"
 proc insertTagValue {w s} {
     set sp [string index $s 0]
     if {$sp == "("} {
-        $w insert end $s tag_val1
+      if {[string match {*\,*} $s] == 0} {
+        $w insert end $s tag_val1        
+      } else {
+        $w insert end $s tag_val2
+      }
     } elseif {$sp == "\["} {
         $w insert end $s tag_val2
     } elseif {$sp == "="} {
