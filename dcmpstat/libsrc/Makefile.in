@@ -36,7 +36,7 @@ objs =  dvpsal.o   dvpsgal.o  dvpsgr.o   dvpsovl.o  dvpsrs.o   dvpstx.o \
         dvpsda.o   dvpsdal.o  dvpssv.o   dvpssvl.o  dvpspl.o  \
         dvpsib.o   dvpsibl.o  dvpssp.o   dvpspr.o   dvpscf.o   dvpshlp.o \
         dvpspll.o  dvpsab.o   dvpsabl.o  dvpsspl.o  dvpsprt.o  dvpsfs.o  \
-        dvpsmsg.o  dvsighdl.o
+        dvpsmsg.o  dvsighdl.o dcmpstat.o dvpspl2.o
 
 all: libdcmpstat.$(LIBEXT)
 
