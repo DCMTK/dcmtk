@@ -22,9 +22,9 @@
  *  Purpose: test ...
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-12-22 17:57:02 $
+ *  Update Date:      $Date: 1999-01-14 17:50:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmp2pgm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -432,6 +432,7 @@ int main(int argc, char *argv[])
     OFCmdUnsignedInt opt_debugMode      = 0;           /* default: no debug */
     int              opt_suppressOutput = 0;           /* default: create output */
     int              opt_dump_pstate    = 0;           /* default: do not dump presentation state */
+    int              opt_dicom_mode     = 0;           /* default: create PGM, not DICOM SC */
     const char *opt_pstName = NULL;                    /* pstate file name */
     const char *opt_imgName = NULL;                    /* image file name */
     const char *opt_pgmName = NULL;                    /* pgm file name */
@@ -452,6 +453,7 @@ int main(int argc, char *argv[])
      cmd.addOption("--no-output",   "-f",    "do not create any output (useful with +V)");
      cmd.addOption("--save-pstate", "+S", 1, "[f]ilename",
                                              "save presentation state to file");
+     cmd.addOption("--dicom",       "+D",    "save image as DICOM SC instead of PGM");
      cmd.addOption("--dump",        "-d",    "dump presentation state contents");
      
     switch (cmd.parseLine(argc, argv))    
@@ -498,6 +500,8 @@ int main(int argc, char *argv[])
                     checkValue(cmd, cmd.getValue(opt_savName));
                 if (cmd.findOption("--dump"))
                     opt_dump_pstate = 1;
+                if (cmd.findOption("--dicom"))
+                    opt_dicom_mode = 1;
             }
     }
 
@@ -529,10 +533,19 @@ int main(int argc, char *argv[])
             const void *pixelData = NULL;
             unsigned long width = 0;
             unsigned long height = 0;
-            if (opt_debugMode > 0)
-                cerr << "creating pixel data" << endl;
+            if (opt_debugMode > 0) cerr << "creating pixel data" << endl;
             if ((dvi.getCurrentPState().getPixelData(pixelData, width, height) == EC_Normal) && (pixelData != NULL))
             {
+              if (opt_dicom_mode)
+              {
+                double pixelAspectRatio = 0.0;
+                if (EC_Normal != dvi.getCurrentPState().getImageAspectRatio(pixelAspectRatio)) pixelAspectRatio = 1.0;
+                if (opt_debugMode > 0) cerr << "writing DICOM SC file: " << opt_pgmName << endl;
+                if (EC_Normal != dvi.saveDICOMImage(opt_pgmName, pixelData, width, height, pixelAspectRatio))
+                {
+                  cerr << "error during creation of DICOM file" << endl;
+                }
+              } else {  
                 FILE *outfile = fopen(opt_pgmName, "wb");
                 if (outfile)
                 {
@@ -541,10 +554,9 @@ int main(int argc, char *argv[])
                     fprintf(outfile, "P5\n%ld %ld 255\n", width, height);
                     fwrite(pixelData, width, height, outfile);
                     fclose(outfile);
-                } else
-                    printError("Can't create output file.");
-            } else
-                printError("Can't create output data.");
+                } else printError("Can't create output file.");
+              }
+            } else printError("Can't create output data.");
         }
         if (opt_savName != NULL)
         {
@@ -563,7 +575,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmp2pgm.cc,v $
-** Revision 1.3  1998-12-22 17:57:02  meichel
+** Revision 1.4  1999-01-14 17:50:55  meichel
+** added new command line option --dicom to test application
+**   dcmp2pgm. This demonstrates DVInterface::saveDICOMImage().
+**
+** Revision 1.3  1998/12/22 17:57:02  meichel
 ** Implemented Presentation State interface for overlays,
 **   VOI LUTs, VOI windows, curves. Added test program that
 **   allows to add curve data to DICOM images.

@@ -1,4 +1,15 @@
 
+**** Changes from 1999.01.14 (eichelberg)
+
+- added new method saveDICOMImage() to class DVInterface.
+  Allows to store a bitmap as a DICOM image.
+  Affects: dcmpstat/libsrc/dviface.cc
+           dcmpstat/include/dviface.h
+
+- added new command line option --dicom to test application
+  dcmp2pgm. This demonstrates DVInterface::saveDICOMImage().
+  Affects: dcmpstat/apps/dcmp2pgm.cc
+  
 **** Changes from 1999.01.11 (eichelberg)
 
 - added new methods getImageAspectRatio, getImageMinMaxPixelRange and
