@@ -37,6 +37,8 @@ general options:
   -v      --verbose              verbose mode, print processing details
   -d      --debug                debug mode, print debug information
   -s      --single-process       single process mode
+  -nse    --no-sq-expansion      disable expansion of empty sequences
+                                 in C-FIND request messages
   -dfp    --data-files-path      [p]ath: string
                                  path to worklist data files
                                  (default: /home/www/wlist)
