@@ -22,9 +22,9 @@
  *  Purpose: Handling of transfer syntaxes
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:28 $
+ *  Update Date:      $Date: 2000-04-14 16:01:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcxfer.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -144,14 +144,17 @@ public:
 };
 
 
-extern E_ByteOrder gLocalByteOrder;
+extern const E_ByteOrder gLocalByteOrder;
 
 #endif // DCXFER_H
 
 /*
  * CVS/RCS Log:
  * $Log: dcxfer.h,v $
- * Revision 1.10  2000-03-08 16:26:28  meichel
+ * Revision 1.11  2000-04-14 16:01:23  meichel
+ * Minor changes for thread safety.
+ *
+ * Revision 1.10  2000/03/08 16:26:28  meichel
  * Updated copyright header.
  *
  * Revision 1.9  1999/03/31 09:25:13  meichel
