@@ -22,9 +22,9 @@
  *  Purpose: DicomImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 15:06:08 $
+ *  Update Date:      $Date: 1998-11-30 12:24:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -207,10 +207,10 @@ class DiImage
 
     virtual DiImage *createScale(const unsigned long left,
                                  const unsigned long top,
-                                 unsigned long clip_width,
-                                 unsigned long clip_height,
-                                 unsigned long scale_width,
-                                 unsigned long scale_height,
+                                 const unsigned long clip_width,
+                                 const unsigned long clip_height,
+                                 const unsigned long scale_width,
+                                 const unsigned long scale_height,
                                  const int interpolate,
                                  const int aspect) const = 0;
 
@@ -312,7 +312,11 @@ class DiImage
 **
 ** CVS/RCS Log:
 ** $Log: diimage.h,v $
-** Revision 1.1  1998-11-27 15:06:08  joergr
+** Revision 1.2  1998-11-30 12:24:07  joergr
+** Added const type qualifier to some parameters to avoid errors with MSVC5
+** (couldn't create instance of abstract class).
+**
+** Revision 1.1  1998/11/27 15:06:08  joergr
 ** Added copyright message.
 ** Added methods and constructors for flipping and rotating, changed for
 ** scaling and clipping.
