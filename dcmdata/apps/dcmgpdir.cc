@@ -10,10 +10,10 @@
 ** CD-R Image Interchange Profile (Supplement 19).
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-08-06 12:20:02 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1997-09-12 11:29:20 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
-** CVS/RCS Revision:	$Revision: 1.16 $
+** CVS/RCS Revision:	$Revision: 1.17 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -78,6 +78,8 @@ END_EXTERN_C
 #include <GUSI.h>
 #endif
 
+#include "ofstring.h"
+#include "oflist.h"
 #include "dctk.h"
 #include "dcdebug.h"
 #include "cmdlnarg.h"
@@ -99,15 +101,15 @@ static char rcsid[] = "$dcmtk: dcmgpdir v"
 /* DICOM only allows max 8 path components in a file name */
 #define MAX_FNAME_COMPONENTS 8
 
-char *progname = "dcmgpdir";
-char *ofname = "DICOMDIR";
+OFString progname = "dcmgpdir";
+OFString ofname = "DICOMDIR";
 
 /* actual File-Set ID */
-char *fsid = DEFAULT_FSID;
+OFString fsid = DEFAULT_FSID;
 /* actual File-Set Descriptor File ID */
-char *fsdfid = NULL; /* can be set to DEFAULT_FSDFID during option handling */
+OFString fsdfid = NULL; /* can be set to DEFAULT_FSDFID during option handling */
 /* actual Specific Character Set of File-Set Descriptor File */
-char *scsfsdf = DEFAULT_SCSFSDF;
+OFString scsfsdf = DEFAULT_SCSFSDF;
 
 OFBool verbosemode = OFFalse;
 OFBool writeDicomdir = OFTrue;
@@ -119,113 +121,13 @@ OFBool recurseFilesystem = OFFalse;
 E_EncodingType lengthEncoding = EET_ExplicitLength;
 E_GrpLenEncoding groupLengthEncoding = EGL_withoutGL;
 
-
-// ********************************************
-
-class StrListNode {
-private:
-    friend class StrList;
-    friend class StrListIterator;
-    char* str;
-    StrListNode* next;
-public:
-    const char* getValue() { return str; }
-    void setValue(const char* s) {
-	if (str) {
-	    delete str;
-	    str = NULL;
-	}
-	if (s == NULL) {
-	    str = NULL;
-	} else {
-	    str = new char[strlen(s) + 1];
-	    strcpy(str, s);
-	} 
-    }
-    StrListNode(const char* s = NULL, StrListNode* n = NULL) {
-	str = NULL;
-	setValue(s);
-	next = n; 
-    }
-    ~StrListNode() { delete str; }
-};
-
-class StrList {
-private:
-    friend class StrListIterator;
-    StrListNode* head;
-    StrListNode* tail;
-    int count;
-public:
-    StrList() {
-	head = tail = NULL;
-	count = 0;
-    }
-    
-    int size() {
-	return count;
-    }
-
-    void append(const char* s) {
-	StrListNode* sn = new StrListNode(s);
-	if (tail != NULL) {
-	    tail->next = sn;
-	}
-	tail = sn;
-	if (head == NULL) {
-	    head = sn;
-	}
-	count++;
-    }
-
-    void clear() {
-	StrListNode* sn = head;
-	while (sn) {
-	    StrListNode* n = sn->next;
-	    delete sn;
-	    sn = n;
-	}
-	head = tail = NULL;
-    }
-
-    ~StrList() {
-	clear();
-    }
-};
-
-class StrListIterator {
-private:
-    StrListNode* current;
-public:
-    StrListIterator() {
-	current = NULL;
-    }
-    StrListIterator(StrList& list) { 
-	start(list);
-    }
-    void start(StrList& list) {
-	current = list.head;
-    }
-    OFBool hasMore() {
-	return (current != NULL);
-    }
-    const char* next() {
-	const char* s = NULL;
-	if (current != NULL) {
-	    s = current->str;
-	    current = current->next;
-	}
-	return s;
-    }
-};
-
 // ********************************************
 
 static OFBool
-expandFileNames(StrList& fileNames, StrList& expandedNames);
+expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames);
 
 static OFBool
-createDicomdirFromFiles(StrList& fileNames);
+createDicomdirFromFiles(OFList<OFString>& fileNames);
 
 // ********************************************
 
@@ -267,7 +169,7 @@ usage()
 }
 
 static OFBool
-isaValidCharSetName(const char* cs)
+isaValidCharSetName(const OFString& cs)
 {
     char* dcmCharSetNames[] = {
 	"ISO_IR 100",
@@ -285,21 +187,20 @@ isaValidCharSetName(const char* cs)
 
     OFBool found = OFFalse;
     for (int i=0; i<numberOfDcmCharSetNames && !found; i++) {
-	found = (strcmp(cs, dcmCharSetNames[i]) == 0);
+	found = (strcmp(cs.c_str(), dcmCharSetNames[i]) == 0);
     }
     return found;
 }
 
-static char*
-basename(char* path)
+static OFString
+basename(const OFString& path)
 {
-    char* s = strrchr(path, PATH_SEPARATOR);
-    if (s == NULL) {
-	s = path;
-    } else if (s[0] == '/') {
-	s++;
+    OFString base(path);
+    size_t pos = path.rfind(PATH_SEPARATOR);
+    if (pos != OFString_npos) {
+	base = path.substr(pos+1);
     }
-    return s;
+    return base;
 }
 
 int main(int argc, char *argv[])
@@ -312,7 +213,7 @@ int main(int argc, char *argv[])
 
     SetDebugLevel(0);
 
-    prepareCmdLineArgs(argc, argv, progname);
+    prepareCmdLineArgs(argc, argv, progname.c_str());
     progname = basename(argv[0]);
 
     int localDebugLevel = 0;
@@ -324,7 +225,7 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    StrList fnames;
+    OFList<OFString> fnames;
 
     for (int i=1; i<argc; i++) {
 	char* arg = argv[i];
@@ -461,7 +362,8 @@ int main(int argc, char *argv[])
 		return 1;
 	    }
 	} else {
-	    fnames.append(arg);
+	    OFString fname(arg);
+	    fnames.push_back(fname);
 	}
     }
 
@@ -476,14 +378,14 @@ int main(int argc, char *argv[])
     SetDebugLevel(localDebugLevel);
 
     OFBool ok = OFTrue;
-    StrList expandedNames;
-    StrList* slist = &fnames;
     if (recurseFilesystem) {
+	OFList<OFString> expandedNames;
 	ok = expandFileNames(fnames, expandedNames);
-	slist = &expandedNames;
-    }
-    if (ok) {
-	ok = createDicomdirFromFiles(*slist);
+	if (ok) {
+	    ok = createDicomdirFromFiles(expandedNames);
+	}
+    } else {
+	ok = createDicomdirFromFiles(fnames);
     }
     return (ok)?(0):(1);
 }
@@ -534,37 +436,31 @@ dcmTagExistsWithValue(DcmItem* d, const DcmTagKey& xtag,
     return (ec == EC_Normal) && (len > 0);
 }
 
-static const char* 
-dcmFindString(DcmItem* d, const DcmTagKey& xtag, OFBool searchIntoSub = OFFalse)
+static OFString
+dcmFindString(DcmItem* d, const DcmTagKey& key, 
+	      OFBool searchIntoSub = OFFalse)
 {
-    DcmElement *elem = NULL;
-    DcmStack stack;
-    E_Condition ec = EC_Normal;
-    char* s = NULL;
-    
-    ec = d->search(xtag, stack, ESM_fromHere, searchIntoSub);
-    elem = (DcmElement*) stack.top();
-    if (ec == EC_Normal && elem != NULL) {
-	ec = elem->getString(s);
+    OFString s;
+
+    E_Condition ec = d->findOFStringArray(key, s, searchIntoSub);
+    if (ec != EC_Normal && ec != EC_TagNotFound) {
+	DcmTag tag(key);
+	cerr << "dcmFindString: error while finding " << tag.getTagName() 
+	     << " " << key << ": "
+	     << dcmErrorConditionToString(ec) << endl;
     }
 
     return s;
 }
 
-static const char* 
-dcmFindStringInFile(const char* fname, const DcmTagKey& xtag, 
+static OFString
+dcmFindStringInFile(const OFString& fname, const DcmTagKey& xtag, 
 		    OFBool searchIntoSub = OFFalse)
 {
-    /*
-    ** This function copies the requested value into a static string 
-    ** which is returned.  Callers should not modify the string.
-    ** This is necesary because the DcmFileFormat is deleted.
-    */
-
     if (verbosemode) {
 	cout << "investigating file: " << fname << endl;
     }
-    DcmFileStream myin(fname, DCM_ReadMode);
+    DcmFileStream myin(fname.c_str(), DCM_ReadMode);
     if ( myin.GetError() != EC_Normal ) {
 	cerr << "error : cannot open file: " << fname << endl;
 	return OFFalse;
@@ -584,33 +480,14 @@ dcmFindStringInFile(const char* fname, const DcmTagKey& xtag,
 
     DcmDataset *d = ff.getDataset();
 
-    DcmElement *elem = NULL;
-    DcmStack stack;
-    E_Condition ec = EC_Normal;
-    char* s = NULL;
-    
-    ec = d->search(xtag, stack, ESM_fromHere, searchIntoSub);
-    elem = (DcmElement*) stack.top();
-    if (ec == EC_Normal && elem != NULL) {
-	ec = elem->getString(s);
-    }
+    OFString s = dcmFindString(d, xtag, searchIntoSub);
 
-    static char* staticstr = NULL;
-    if (staticstr != NULL) {
-	delete staticstr;
-	staticstr = NULL;
-    }
-    if (s != NULL) {
-	staticstr = new char[strlen(s)+1];
-	strcpy(staticstr, s);
-    }
-
-    return staticstr;
+    return s;
 }
 
 static OFBool 
 dcmInsertString(DcmItem* d, const DcmTagKey& xtag, 
-		const char* s, OFBool replaceOld = OFTrue)
+		const OFString& s, OFBool replaceOld = OFTrue)
 {
     if (d == NULL) {
 	cerr << "error: dcmInsertString: null DcmItem argument" << endl;
@@ -626,7 +503,7 @@ dcmInsertString(DcmItem* d, const DcmTagKey& xtag,
 	return OFFalse;
     }
     if (s != NULL) {
-	cond = elem->putString(s);
+	cond = elem->putOFStringArray(s);
 	if (cond != EC_Normal) {
 	    cerr << "error: dcmInsertString: cannot put string" << endl;
 	    return OFFalse;
@@ -710,10 +587,10 @@ dcmCopyOptSequence(DcmItem* sink, const DcmTagKey& xtag, DcmItem* source)
     return ok;
 }
 
-static const char*
+static OFString
 currentDate() 
 {
-    static char dateBuf[32];
+    char dateBuf[32];
     time_t tt = time(NULL);
     struct tm *ts = localtime(&tt);
     if (ts == NULL) {
@@ -725,10 +602,10 @@ currentDate()
     return dateBuf;
 }
 
-static const char*
+static OFString
 currentTime() 
 {
-    static char timeBuf[32];
+    char timeBuf[32];
     time_t tt = time(NULL);
     struct tm *ts = localtime(&tt);
     if (ts == NULL) {
@@ -739,54 +616,53 @@ currentTime()
     return timeBuf;
 }
 
-static const char* 
+static OFString
 alternativeStudyDate(DcmItem* d)
 {
     /* use another date if present */
-    const char* date = dcmFindString(d, DCM_SeriesDate);
-    if (date != NULL) return date;
+    OFString date = dcmFindString(d, DCM_SeriesDate);
+    if (!date.empty()) return date;
     date = dcmFindString(d, DCM_AcquisitionDate);
-    if (date != NULL) return date;
+    if (!date.empty()) return date;
     date = dcmFindString(d, DCM_ImageDate);
-    if (date != NULL) return date;
+    if (!date.empty()) return date;
     /* use current date */
     return currentDate();
 }
 
-static const char* 
+static OFString
 alternativeStudyTime(DcmItem* d)
 {
     /* use another time if present */
-    const char* time = dcmFindString(d, DCM_SeriesTime);
-    if (time != NULL) return time;
+    OFString time = dcmFindString(d, DCM_SeriesTime);
+    if (!time.empty()) return time;
     time = dcmFindString(d, DCM_AcquisitionTime);
-    if (time != NULL) return time;
+    if (!time.empty()) return time;
     time = dcmFindString(d, DCM_ImageTime);
-    if (time != NULL) return time;
+    if (!time.empty()) return time;
     /* use current time */
     return currentTime();
 }
 
-
-static const char*
-defaultID(const char* prefix, int number) 
-{
-    static char idbuf[128];
-    unsigned long ul = (unsigned long)number;
-    char cappedPrefix[11];
-    memset(cappedPrefix, 0, 11);
-    strncpy(cappedPrefix, prefix, 10); /* use a most 10 chars from prefix */
-    sprintf(idbuf, "%s%06lu", cappedPrefix, ul);
-    return idbuf;
-}
-
-static const char*
+static OFString
 defaultNumber(int number) 
 {
-    static char numbuf[64];
+    char numbuf[64];
     unsigned long ul = (unsigned long)number;
     sprintf(numbuf, "%lu", ul);
     return numbuf;
+}
+
+static OFString
+defaultID(const OFString& prefix, int number) 
+{
+    /* use a most 10 chars from prefix */
+    OFString idbuf(prefix, 0, 10);
+    unsigned long ul = (unsigned long)number;
+    char nbuf[16];
+    sprintf(nbuf, "%06lu", ul);
+    idbuf.append(nbuf);
+    return idbuf;
 }
 
 
@@ -795,35 +671,35 @@ defaultNumber(int number)
 */
 
 static void 
-hostToDicomFilename(char* fname)
+hostToDicomFilename(OFString& fname)
 {
     /*
     ** Massage filename into dicom format 
     ** (dos conventions for path separators)
     */
-    int len = strlen(fname);
-    int k = 0;
+    OFString newname;
+    int len = fname.size();
     for (int i=0; i<len; i++) {
 	char c = fname[i];
 	/* the PATH_SEPARATOR depends on the OS (see <osconfig.h>) */
 	if (c == PATH_SEPARATOR) {
-	    fname[k++] = '\\';
+	    newname += '\\';
 	} else if (isalpha(c) || isdigit(c) || (c == '_') || (c == '\\')) {
 	    /* filenames in DICOM must always be in uppercase */
-	    fname[k++] = toupper(c);
+	    newname += toupper(c);
 	}
     }
-    fname[k] = '\0';
+    fname = newname;
 }
 
 static void 
-dicomToHostFilename(char* fname, OFBool mapToLower = OFFalse)
+dicomToHostFilename(OFString& fname, OFBool mapToLower = OFFalse)
 {
     /*
     ** Massage filename into machine format 
     ** (replace dos conventions for path separators)
     */
-    int len = strlen(fname);
+    int len = fname.size();
     for (int i=0; i<len; i++) {
 	char c = fname[i];
 	/* the PATH_SEPARATOR depends on the OS (see <osconfig.h>) */
@@ -839,11 +715,11 @@ dicomToHostFilename(char* fname, OFBool mapToLower = OFFalse)
 }
 
 static int 
-componentCount(const char* fname, char separator = PATH_SEPARATOR)
+componentCount(const OFString& fname, char separator = PATH_SEPARATOR)
 {
-    if (fname == NULL) return 0;
+    if (fname.empty()) return 0;
     int n = 1;
-    int len = strlen(fname);
+    int len = fname.size();
     for (int i=0; i<len; i++) {
 	if (fname[i] == separator) {
 	    n++;
@@ -853,13 +729,13 @@ componentCount(const char* fname, char separator = PATH_SEPARATOR)
 }
 
 static OFBool 
-isComponentTooLarge(const char* fname,
+isComponentTooLarge(const OFString& fname,
 		    int componentLimit,
 		    char separator = PATH_SEPARATOR)
 {
-    if (fname == NULL) return -1;
+    if (fname.empty()) return -1;
     int n = 0;
-    const char* s = fname;
+    const char*  s = fname.c_str();
     const char* ss = (const char*)strchr(s, separator);
     while (ss) {
 	int diff = (ss - s);
@@ -887,9 +763,9 @@ isComponentTooLarge(const char* fname,
 */
 
 static OFBool
-fileExists(const char* fname) 
+fileExists(const OFString& fname) 
 {
-    FILE* f = fopen(fname, "r");
+    FILE* f = fopen(fname.c_str(), "r");
     if (f == NULL) {
 	return OFFalse;
     }
@@ -899,16 +775,16 @@ fileExists(const char* fname)
 
 
 static OFBool
-cmp(const char* s1, const char* s2)
+cmp(const OFString& s1, const OFString& s2)
 {
-    if (s1 == NULL || s2 == NULL) {
+    if (s1.empty() || s2.empty()) {
 	return OFFalse;
     }
-    return (strcmp(s1,s2) == 0)?(OFTrue):(OFFalse);
+    return (s1.compare(s2) == 0)?(OFTrue):(OFFalse);
 }
 
 static OFBool
-checkExists(DcmItem* d, const DcmTagKey& key, const char* fname)
+checkExists(DcmItem* d, const DcmTagKey& key, const OFString& fname)
 {
     if (!dcmTagExists(d, key)) {
 	DcmTag tag(key);
@@ -921,13 +797,13 @@ checkExists(DcmItem* d, const DcmTagKey& key, const char* fname)
 }
 
 static OFBool
-checkExistsWithValue(DcmItem* d, const DcmTagKey& key, const char* fname)
+checkExistsWithValue(DcmItem* d, const DcmTagKey& key, const OFString& fname)
 {
     if (!checkExists(d, key, fname)) {
 	return OFFalse;
     }
-    const char* s = NULL;
-    if ((s = dcmFindString(d, key)) == NULL) {
+    OFString s = dcmFindString(d, key);
+    if (s.empty()) {
 	DcmTag tag(key);
 	cerr << "error: required attribute " << tag.getTagName() 
 	     << " " << key << " has no value in file: "
@@ -937,7 +813,7 @@ checkExistsWithValue(DcmItem* d, const DcmTagKey& key, const char* fname)
     return OFTrue;
 }
 
-static const char*
+static OFString
 recordTypeToName(E_DirRecType t)
 {
     const char* s = NULL;
@@ -994,7 +870,7 @@ recordTypeToName(E_DirRecType t)
 */
 
 static OFBool 
-checkImage(const char* fname, DcmFileFormat *ff)
+checkImage(const OFString& fname, DcmFileFormat *ff)
 {
     /*
     ** Do some sanity checks on the file.
@@ -1024,12 +900,11 @@ checkImage(const char* fname, DcmFileFormat *ff)
 	return OFFalse;
     }
 
-    /* 
+    /*
     ** Is sop classs ok?
     */
-    const char* mediaSOPClassUID = 
-	dcmFindString(m, DCM_MediaStorageSOPClassUID);
-    if (mediaSOPClassUID == NULL) {
+    OFString mediaSOPClassUID = dcmFindString(m, DCM_MediaStorageSOPClassUID);
+    if (mediaSOPClassUID.empty()) {
 	cerr << "error: MediaStorageSOPClassUID missing in meta-header: "
 	     << fname << endl;
 	ok = OFFalse;
@@ -1056,8 +931,8 @@ checkImage(const char* fname, DcmFileFormat *ff)
     /* 
     ** Is transfer syntax ok?
     */
-    const char* transferSyntax = dcmFindString(m, DCM_TransferSyntaxUID);
-    if (transferSyntax == NULL) {
+    OFString transferSyntax = dcmFindString(m, DCM_TransferSyntaxUID);
+    if (transferSyntax.empty()) {
 	cerr << "error: TransferSyntaxUID missing in meta-header: "
 	     << fname << endl;
 	ok = OFFalse;
@@ -1147,12 +1022,12 @@ checkImage(const char* fname, DcmFileFormat *ff)
 
 static
 DcmDirectoryRecord* buildPatientRecord(
-    const char * referencedFileName, 
+    const OFString& referencedFileName, 
     DcmItem* d,
-    const char * sourceFileName)
+    const OFString& sourceFileName)
 {
     DcmDirectoryRecord* rec = new DcmDirectoryRecord(
-	ERT_Patient, referencedFileName, sourceFileName);
+	ERT_Patient, referencedFileName.c_str(), sourceFileName.c_str());
     if (rec == NULL) {
 	cerr << "error: out of memory (creating patient record)" << endl;
 	return NULL;
@@ -1173,11 +1048,11 @@ DcmDirectoryRecord* buildPatientRecord(
 }
 
 DcmDirectoryRecord* 
-buildStudyRecord(const char* referencedFileName, DcmItem* d, 
-		 const char* sourceFileName)
+buildStudyRecord(const OFString& referencedFileName, DcmItem* d, 
+		 const OFString& sourceFileName)
 {
     DcmDirectoryRecord* rec = new DcmDirectoryRecord(
-	ERT_Study, referencedFileName, sourceFileName);
+	ERT_Study, referencedFileName.c_str(), sourceFileName.c_str());
     if (rec == NULL) {
 	cerr << "error: out of memory (creating study record)" << endl;
 	return NULL;
@@ -1194,7 +1069,7 @@ buildStudyRecord(const char* referencedFileName, DcmItem* d,
     if (dcmTagExistsWithValue(d, DCM_StudyDate)) {
 	dcmCopyString(rec, DCM_StudyDate, d);
     } else {
-	const char* altDate = alternativeStudyDate(d);
+	OFString altDate = alternativeStudyDate(d);
 	cerr << "warning: " << sourceFileName 
 	     << ": StudyDate missing: using alternative: "
 	     << altDate << endl;
@@ -1203,7 +1078,7 @@ buildStudyRecord(const char* referencedFileName, DcmItem* d,
     if (dcmTagExistsWithValue(d, DCM_StudyTime)) {
 	dcmCopyString(rec, DCM_StudyTime, d);
     } else {
-	const char* altTime = alternativeStudyTime(d);
+	OFString altTime = alternativeStudyTime(d);
 	cerr << "warning: " << sourceFileName
 	     << ": StudyTime missing: using alternative: "
 	     << altTime << endl;
@@ -1219,12 +1094,12 @@ buildStudyRecord(const char* referencedFileName, DcmItem* d,
 
 DcmDirectoryRecord* 
 buildSeriesRecord(
-    const char* referencedFileName, 
+    const OFString& referencedFileName, 
     DcmItem* d,
-    const char * sourceFileName)
+    const OFString& sourceFileName)
 {
     DcmDirectoryRecord* rec = new DcmDirectoryRecord(
-	ERT_Series, referencedFileName, sourceFileName);
+	ERT_Series, referencedFileName.c_str(), sourceFileName.c_str());
     if (rec == NULL) {
 	cerr << "error: out of memory (creating series record)" << endl;
 	return NULL;
@@ -1247,12 +1122,12 @@ buildSeriesRecord(
 
 DcmDirectoryRecord* 
 buildImageRecord(
-    const char* referencedFileName, 
+    const OFString& referencedFileName, 
     DcmItem* d, 
-    const char * sourceFileName)
+    const OFString& sourceFileName)
 {
     DcmDirectoryRecord* rec = new DcmDirectoryRecord(
-	ERT_Image, referencedFileName, sourceFileName);
+	ERT_Image, referencedFileName.c_str(), sourceFileName.c_str());
     if (rec == NULL) {
 	cerr << "error: out of memory (creating image record)" << endl;
 	return NULL;
@@ -1277,12 +1152,12 @@ buildImageRecord(
 
 DcmDirectoryRecord* 
 buildOverlayRecord(
-    const char* referencedFileName, 
+    const OFString& referencedFileName, 
     DcmItem* d,
-    const char * sourceFileName)
+    const OFString& sourceFileName)
 {
     DcmDirectoryRecord* rec = new DcmDirectoryRecord(
-	ERT_Overlay, referencedFileName, sourceFileName);
+	ERT_Overlay, referencedFileName.c_str(), sourceFileName.c_str());
     if (rec == NULL) {
 	cerr << "error: out of memory (creating overlay record)" << endl;
 	return NULL;
@@ -1303,12 +1178,12 @@ buildOverlayRecord(
 
 DcmDirectoryRecord* 
 buildModalityLutRecord(
-    const char* referencedFileName, 
+    const OFString& referencedFileName, 
     DcmItem* d,
-    const char * sourceFileName)
+    const OFString& sourceFileName)
 {
     DcmDirectoryRecord* rec = new DcmDirectoryRecord(
-	ERT_ModalityLut, referencedFileName, sourceFileName);
+	ERT_ModalityLut, referencedFileName.c_str(), sourceFileName.c_str());
     if (rec == NULL) {
 	cerr << "error: out of memory (creating modality lut record)" << endl;
 	return NULL;
@@ -1329,12 +1204,12 @@ buildModalityLutRecord(
 
 DcmDirectoryRecord* 
 buildVoiLutRecord(
-    const char* referencedFileName, 
+    const OFString& referencedFileName, 
     DcmItem* d,
-    const char * sourceFileName)
+    const OFString& sourceFileName)
 {
     DcmDirectoryRecord* rec = new DcmDirectoryRecord(
-	ERT_VoiLut, referencedFileName, sourceFileName);
+	ERT_VoiLut, referencedFileName.c_str(), sourceFileName.c_str());
     if (rec == NULL) {
 	cerr << "error: out of memory (creating voi lut record)" << endl;
 	return NULL;
@@ -1355,12 +1230,12 @@ buildVoiLutRecord(
 
 DcmDirectoryRecord* 
 buildCurveRecord(
-    const char* referencedFileName, 
+    const OFString& referencedFileName, 
     DcmItem* d,
-    const char * sourceFileName)
+    const OFString& sourceFileName)
 {
     DcmDirectoryRecord* rec = new DcmDirectoryRecord(
-	ERT_Curve, referencedFileName, sourceFileName);
+	ERT_Curve, referencedFileName.c_str(), sourceFileName.c_str());
     if (rec == NULL) {
 	cerr << "error: out of memory (creating curve record)" << endl;
 	return NULL;
@@ -1379,37 +1254,34 @@ buildCurveRecord(
     return rec;
 }
 
-static char*
-locateDicomFile(const char* fname)
+static OFString
+locateDicomFile(const OFString& fname)
 {
-    char* fn = new char[strlen(fname) + 2];
-    strcpy(fn, fname);
+    OFString fn = fname;
     dicomToHostFilename(fn);
     if (fileExists(fn)) {
 	return fn;
     }
     /* trailing period */
-    strcpy(fn, fname);
-    strcat(fn, ".");
+    fn = fname + '.';
     dicomToHostFilename(fn);
     if (fileExists(fn)) {
 	return fn;
     }
     /* lowercase */
-    strcpy(fn, fname);
+    fn = fname;
     dicomToHostFilename(fn, OFTrue);
     if (fileExists(fn)) {
 	return fn;
     }
     /* lowercase with trailing period */
-    strcpy(fn, fname);
-    strcat(fn, ".");
+    fn = fname + '.';
     dicomToHostFilename(fn, OFTrue);
     if (fileExists(fn)) {
 	return fn;
     }
 
-    return NULL;
+    return "";
 }
 
 static OFBool
@@ -1437,10 +1309,10 @@ recordMatchesDataset(DcmDirectoryRecord *rec, DcmItem* dataset)
 			dcmFindString(dataset, DCM_StudyInstanceUID));
 	} else {
 	    /* the Study Instance UID can be in the referenced file instead */
-	    const char *reffname = dcmFindString(rec, DCM_ReferencedFileID);
-	    if (reffname != NULL) {
-		char* fname = locateDicomFile(reffname);
-		if (fname != NULL) {
+	    OFString reffname = dcmFindString(rec, DCM_ReferencedFileID);
+	    if (!reffname.empty()) {
+		OFString fname = locateDicomFile(reffname);
+		if (!fname.empty()) {
 		    match = cmp(dcmFindStringInFile(fname, 
 						    DCM_StudyInstanceUID),
 				dcmFindString(dataset, DCM_StudyInstanceUID));
@@ -1448,7 +1320,6 @@ recordMatchesDataset(DcmDirectoryRecord *rec, DcmItem* dataset)
 		    cerr << "error: cannot locate referenced file: " 
 			 << reffname << endl;
 		}
-		delete fname;
 	    }
 	}
 	break;
@@ -1499,8 +1370,8 @@ findExistingRecord(DcmDirectoryRecord *root, E_DirRecType dirtype,
 }
 
 static DcmDirectoryRecord*
-buildRecord(E_DirRecType dirtype, const char* referencedFileName, 
-	    DcmItem* dataset, const char* sourceFileName)
+buildRecord(E_DirRecType dirtype, const OFString& referencedFileName, 
+	    DcmItem* dataset, const OFString& sourceFileName)
 {
     DcmDirectoryRecord *rec = NULL;
 
@@ -1538,21 +1409,18 @@ buildRecord(E_DirRecType dirtype, const char* referencedFileName,
 }
 
 static void 
-printAttribute(ostream& o, DcmTagKey& key, const char* s)
+printAttribute(ostream& o, DcmTagKey& key, const OFString& s)
 {
-    if (s == NULL) {
-	s = "<null>";
-    }
     DcmTag tag(key);
     o << tag.getTagName() << " " << key << "=\"" << s << "\"";
 }
 
 static OFBool
 compareStringAttributes(DcmTagKey& tag, DcmDirectoryRecord *rec, 
-			DcmItem* dataset, const char* sourceFileName)
+			DcmItem* dataset, const OFString& sourceFileName)
 {
-    const char* s1 = dcmFindString(rec, tag);
-    const char* s2 = dcmFindString(dataset, tag);
+    OFString s1 = dcmFindString(rec, tag);
+    OFString s2 = dcmFindString(dataset, tag);
     OFBool equals = cmp(s1, s2);
 
     if (!equals) {
@@ -1573,7 +1441,8 @@ compareStringAttributes(DcmTagKey& tag, DcmDirectoryRecord *rec,
 
 static void
 warnAboutInconsistantAttributes(DcmDirectoryRecord *rec, 
-				DcmItem* dataset, const char* sourceFileName)
+				DcmItem* dataset, 
+				const OFString& sourceFileName)
 {
     /*
     ** See if all the attributes in rec match the values in dataset
@@ -1620,9 +1489,9 @@ static int
 getISNumber(DcmItem *i, const DcmTagKey& key) 
 {
     int num = 0;
-    const char* s = dcmFindString(i, key);
+    OFString s = dcmFindString(i, key);
     if (s != NULL) {
-	sscanf(s, "%d", &num);
+	sscanf(s.c_str(), "%d", &num);
     }
     return num;
 }
@@ -1696,8 +1565,8 @@ insertSortedUnder(DcmDirectoryRecord *parent, DcmDirectoryRecord *child)
 
 static DcmDirectoryRecord*
 includeRecord(DcmDirectoryRecord *parentRec, E_DirRecType dirtype, 
-	      DcmItem* dataset, const char* referencedFileName,
-	      const char* sourceFileName)
+	      DcmItem* dataset, const OFString& referencedFileName,
+	      const OFString& sourceFileName)
 {
     DcmDirectoryRecord *rec = 
 	findExistingRecord(parentRec, dirtype, dataset);
@@ -1719,16 +1588,14 @@ includeRecord(DcmDirectoryRecord *parentRec, E_DirRecType dirtype,
 }
 
 static OFBool 
-addToDir(DcmDirectoryRecord* rootRec, const char* ifname)
+addToDir(DcmDirectoryRecord* rootRec, const OFString& ifname)
 {
-    char fname[1024];
-
-    strcpy(fname, ifname);
+    OFString fname = ifname;
 
     if (verbosemode) {
 	cout << "adding: " << fname << endl;
     }
-    DcmFileStream myin(fname, DCM_ReadMode);
+    DcmFileStream myin(fname.c_str(), DCM_ReadMode);
     if ( myin.GetError() != EC_Normal ) {
 	cerr << "cannot open file: " << fname << endl;
 	return OFFalse;
@@ -1755,8 +1622,7 @@ addToDir(DcmDirectoryRecord* rootRec, const char* ifname)
     DcmMetaInfo* metainfo = ff.getMetaInfo();
     DcmDataset* dataset = ff.getDataset();
     /* what kind of object (SOP Class) is stored in the file */
-    const char* sopClass = 
-	dcmFindString(metainfo, DCM_MediaStorageSOPClassUID);
+    OFString sopClass = dcmFindString(metainfo, DCM_MediaStorageSOPClassUID);
 
     /*
     ** Build the necessary dicomdir records
@@ -1772,13 +1638,13 @@ addToDir(DcmDirectoryRecord* rootRec, const char* ifname)
     }
     if (patientRec->getRecordsOriginFile() == NULL) {
 	// not yet noted
-	patientRec->setRecordsOriginFile(ifname);
+	patientRec->setRecordsOriginFile(ifname.c_str());
     }
     warnAboutInconsistantAttributes(patientRec, dataset, ifname);
 
     /* if PatientMgmgt file then attach it to Patient Record and stop */
     if (cmp(sopClass, UID_DetachedPatientManagementMetaSOPClass)) {
-	cond = patientRec->assignToSOPFile(fname, ifname);
+	cond = patientRec->assignToSOPFile(fname.c_str(), ifname.c_str());
 	if (cond != EC_Normal) {
 	    cerr << "error: " << dcmErrorConditionToString(cond) 
 		 << ": cannot assign patient record to file: " 
@@ -1799,7 +1665,7 @@ addToDir(DcmDirectoryRecord* rootRec, const char* ifname)
     }
     if (studyRec->getRecordsOriginFile() == NULL) {
 	// not yet noted
-	studyRec->setRecordsOriginFile(ifname);
+	studyRec->setRecordsOriginFile(ifname.c_str());
     }
     warnAboutInconsistantAttributes(studyRec, dataset, ifname);
 
@@ -1813,7 +1679,7 @@ addToDir(DcmDirectoryRecord* rootRec, const char* ifname)
     }
     if (seriesRec->getRecordsOriginFile() == NULL) {
 	// not yet noted
-	seriesRec->setRecordsOriginFile(ifname);
+	seriesRec->setRecordsOriginFile(ifname.c_str());
     }
     warnAboutInconsistantAttributes(seriesRec, dataset, ifname);
 
@@ -1856,7 +1722,7 @@ addToDir(DcmDirectoryRecord* rootRec, const char* ifname)
     }
     if (rec->getRecordsOriginFile() == NULL) {
 	// not yet noted
-	rec->setRecordsOriginFile(ifname);
+	rec->setRecordsOriginFile(ifname.c_str());
     }
     warnAboutInconsistantAttributes(rec, dataset, ifname);
 
@@ -1864,9 +1730,9 @@ addToDir(DcmDirectoryRecord* rootRec, const char* ifname)
 }
 
 static OFBool 
-areCSCharsValid(const char* fname)
+areCSCharsValid(const OFString& fname)
 {
-    int len = strlen(fname);
+    int len = fname.size();
     for (int i=0; i<len; i++) {
 	char c = fname[i];
 	if ((c != ' ') && (c != '_') && !isdigit(c) && 
@@ -1880,10 +1746,10 @@ areCSCharsValid(const char* fname)
 }
 
 static OFBool 
-areFileNameCharsValid(const char* fname,
+areFileNameCharsValid(const OFString& fname,
 		      char separator = PATH_SEPARATOR)
 {
-    int len = strlen(fname);
+    int len = fname.size();
     if (mapFilenames && fname[len-1] == '.') {
 	/* disregard trailing point */
 	len--;
@@ -1914,7 +1780,7 @@ areFileNameCharsValid(const char* fname,
 }
 
 static OFBool
-isaValidFileName(const char* fname,
+isaValidFileName(const OFString& fname,
 		 char sep = PATH_SEPARATOR)
 {
     OFBool ok = OFTrue;
@@ -1950,10 +1816,10 @@ isaValidFileName(const char* fname,
 }
 
 static OFBool
-isaValidFileSetID(const char* fsid)
+isaValidFileSetID(const OFString& fsid)
 {
     OFBool ok = OFTrue;
-    if (fsid == NULL) {
+    if (fsid.empty()) {
 	return OFFalse;
     }
     /*
@@ -1985,7 +1851,7 @@ isaValidFileSetID(const char* fsid)
 
 
 static OFBool
-checkFileCanBeUsed(const char* fname) 
+checkFileCanBeUsed(const OFString& fname) 
 {
     OFBool ok = OFTrue;
     if (verbosemode) {
@@ -1999,7 +1865,7 @@ checkFileCanBeUsed(const char* fname)
     /*
     ** Does the file exist??
     */
-    DcmFileStream myin(fname, DCM_ReadMode);
+    DcmFileStream myin(fname.c_str(), DCM_ReadMode);
     if ( myin.GetError() != EC_Normal ) {
 	cerr << "error: cannot open file: " << fname << endl;
 	/* cannot continue checking */
@@ -2042,7 +1908,7 @@ inventMissingImageLevelAttributes(DcmDirectoryRecord *parent)
 	switch (rec->getRecordType()) {
 	case ERT_Image:
 	    if (!dcmTagExistsWithValue(rec, DCM_ImageNumber)) {
-		const char* defNum = defaultNumber(imageNumber++);
+		OFString defNum = defaultNumber(imageNumber++);
 		cerr << "warning: " <<  recordTypeToName(rec->getRecordType())
 		     << "Record (origin: " << rec->getRecordsOriginFile() 
 		     << ") inventing ImageNumber: "
@@ -2052,7 +1918,7 @@ inventMissingImageLevelAttributes(DcmDirectoryRecord *parent)
 	    break;
 	case ERT_Overlay:
 	    if (!dcmTagExistsWithValue(rec, DCM_OverlayNumber)) {
-		const char* defNum = defaultNumber(overlayNumber++);
+		OFString defNum = defaultNumber(overlayNumber++);
 		cerr << "warning: " <<  recordTypeToName(rec->getRecordType())
 		     << "Record (origin: " << rec->getRecordsOriginFile() 
 		     << ") inventing OverlayNumber: "
@@ -2063,7 +1929,7 @@ inventMissingImageLevelAttributes(DcmDirectoryRecord *parent)
 	case ERT_ModalityLut:
 	case ERT_VoiLut:
 	    if (!dcmTagExistsWithValue(rec, DCM_LUTNumber)) {
-		const char* defNum = defaultNumber(lutNumber++);
+		OFString defNum = defaultNumber(lutNumber++);
 		cerr << "warning: " <<  recordTypeToName(rec->getRecordType())
 		     << "Record (origin: " << rec->getRecordsOriginFile() 
 		     << ") inventing LutNumber: "
@@ -2073,7 +1939,7 @@ inventMissingImageLevelAttributes(DcmDirectoryRecord *parent)
 	    break;
 	case ERT_Curve:
 	    if (!dcmTagExistsWithValue(rec, DCM_CurveNumber)) {
-		const char* defNum = defaultNumber(curveNumber++);
+		OFString defNum = defaultNumber(curveNumber++);
 		cerr << "warning: " <<  recordTypeToName(rec->getRecordType())
 		     << "Record (origin: " << rec->getRecordsOriginFile() 
 		     << ") inventing CurveNumber: "
@@ -2099,7 +1965,7 @@ inventMissingSeriesLevelAttributes(DcmDirectoryRecord *parent)
     for (int i=0; i<count; i++) {
 	DcmDirectoryRecord* rec = parent->getSub(i);
 	if (!dcmTagExistsWithValue(rec, DCM_SeriesNumber)) {
-	    const char* defNum = defaultNumber(seriesNumber++);
+	    OFString defNum = defaultNumber(seriesNumber++);
 	    cerr << "warning: Series Record (origin: " 
 		 << rec->getRecordsOriginFile() << ") inventing SeriesNumber: "
 		 << defNum << endl;
@@ -2119,7 +1985,7 @@ inventMissingStudyLevelAttributes(DcmDirectoryRecord *parent)
     for (int i=0; i<count; i++) {
 	DcmDirectoryRecord* rec = parent->getSub(i);
 	if (!dcmTagExistsWithValue(rec, DCM_StudyID)) {
-	    const char* defId = defaultID("DCMTKSTUDY", studyNumber++);
+	    OFString defId = defaultID("DCMTKSTUDY", studyNumber++);
 	    cerr << "warning: Study Record (origin: " 
 		 << rec->getRecordsOriginFile() << ") inventing StudyID: "
 		 << defId << endl;
@@ -2138,7 +2004,7 @@ inventMissingAttributes(DcmDirectoryRecord *root)
     for (int i=0; i<count; i++) {
 	DcmDirectoryRecord* rec = root->getSub(i);
 	if (!dcmTagExistsWithValue(rec, DCM_PatientID)) {
-	    const char* defId = defaultID("DCMTKPAT", patientNumber++);
+	    OFString defId = defaultID("DCMTKPAT", patientNumber++);
 	    cerr << "warning: Patient Record (origin: " 
 		 << rec->getRecordsOriginFile() << ") inventing PatientID: "
 		 << defId << endl;
@@ -2149,15 +2015,15 @@ inventMissingAttributes(DcmDirectoryRecord *root)
 }
 
 static OFBool
-copyFile(const char* fromfname, const char* tofname)
+copyFile(const OFString& fromfname, const OFString& tofname)
 {
     FILE* fromf = NULL;
     FILE* tof = NULL;
-    if ((fromf = fopen(fromfname, "rb")) == NULL) {
+    if ((fromf = fopen(fromfname.c_str(), "rb")) == NULL) {
 	cerr << "error: copying files: cannot open: " << fromfname << endl;
 	return OFFalse;
     }
-    if ((tof = fopen(tofname, "wb")) == NULL) {
+    if ((tof = fopen(tofname.c_str(), "wb")) == NULL) {
 	cerr << "error: copying files: cannot create: " << tofname << endl;
 	fclose(fromf);
 	return OFFalse;
@@ -2178,7 +2044,7 @@ copyFile(const char* fromfname, const char* tofname)
 }
 
 static OFBool
-createDicomdirFromFiles(StrList& fileNames)
+createDicomdirFromFiles(OFList<OFString>& fileNames)
 {
     OFBool ok = OFTrue;
 
@@ -2191,13 +2057,13 @@ createDicomdirFromFiles(StrList& fileNames)
 	ok = OFFalse;
     }
 
-    if (fsdfid && !isaValidFileName(fsdfid)) {
+    if (!fsdfid.empty() && !isaValidFileName(fsdfid)) {
 	cerr << "       bad FileSetDescriptorFileID: " 
 	     << fsdfid << endl;
 	ok = OFFalse;
     }
 
-    if (fsdfid && !fileExists(fsdfid)) {
+    if (!fsdfid.empty() && !fileExists(fsdfid)) {
 	cerr << "error: cannot find FileSetDescriptorFileID: " 
 	     << fsdfid << endl;
 	ok = OFFalse;
@@ -2209,14 +2075,14 @@ createDicomdirFromFiles(StrList& fileNames)
 
     int badFileCount = 0;
     int goodFileCount = 0;
-    StrListIterator iter(fileNames);
-    while (iter.hasMore()) {
-	const char* fname = iter.next();
-	if (checkFileCanBeUsed(fname)) {
+    OFListIterator(OFString) iter = fileNames.begin();
+    while (iter != fileNames.end()) {
+	if (checkFileCanBeUsed((*iter).c_str())) {
 	    goodFileCount++;
 	} else {
 	    badFileCount++;
 	}
+	++iter;
     }
     if (badFileCount > 0) {
 	cerr << "error: " << badFileCount << " bad files (" << goodFileCount
@@ -2233,11 +2099,8 @@ createDicomdirFromFiles(StrList& fileNames)
 
     if (writeDicomdir && fileExists(ofname)) {
 	/* rename existing DICOMDIR */
-	char* suffix = ".BAK";
-	backupName = new char[strlen(ofname) + strlen(suffix) + 1];
-	strcpy(backupName, ofname);
-	strcat(backupName, suffix);
-	unlink(backupName);
+	OFString backupName = ofname + ".BAK";
+	unlink(backupName.c_str());
 	if (verbosemode) {
 	    cout << "creating backup dicomdir: " << backupName << endl;
 	}
@@ -2253,14 +2116,14 @@ createDicomdirFromFiles(StrList& fileNames)
 	** delete existing DICOMDIR because otherwise DcmDicomDir 
 	** will parse it and try to append to existing records
 	*/
-	unlink(ofname);
+	unlink(ofname.c_str());
     }
 
     /*
     ** Create the DICOMDIR object
     */
 
-    DcmDicomDir *dicomdir = new DcmDicomDir( ofname, fsid );
+    DcmDicomDir *dicomdir = new DcmDicomDir( ofname.c_str(), fsid.c_str() );
     DcmDirectoryRecord& rootRecord = dicomdir->getRootRecord();
 
     /* 
@@ -2273,12 +2136,12 @@ createDicomdirFromFiles(StrList& fileNames)
 			DCM_FileSetCharacterSet, scsfsdf);
     }
 
-    iter.start(fileNames);
-    while (iter.hasMore()) {
-	const char* fname = iter.next();
-	if (addToDir(&rootRecord, fname) == OFFalse) {
+    iter = fileNames.begin();
+    while (iter != fileNames.end()) {
+	if (addToDir(&rootRecord, *iter) == OFFalse) {
 	    return OFFalse;
 	}
+	++iter;
     }
 
     if (inventAttributes) {
@@ -2312,79 +2175,80 @@ createDicomdirFromFiles(StrList& fileNames)
 
 
 #if HAVE__FINDFIRST
+/*
+** For Win32 and its evil associates.
+*/
 static OFBool
-expandFileNames(StrList & fileNames, StrList & expandedNames)
+expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 {
     OFBool ok = OFTrue;
     struct _finddata_t fileData;
-	long hFile;
+    long hFile;
 
-    StrListIterator iter(fileNames);
-    while (iter.hasMore()) {
-	const char* fname = iter.next();
-	if (hFile = _findfirst(fname, &fileData) == -1L) {
+    OFListIterator(OFString) iter = fileNames.begin();
+    while (iter != fileNames.end()) {
+	OFString fname(*iter);
+	++iter;
+	if (hFile = _findfirst(fname.c_str(), &fileData) == -1L) {
 	    cerr << "error: cannot access: " << fname << endl;
 		_findclose(hFile);
 	    ok = OFFalse;
 	} else if (fileData.attrib & _A_SUBDIR) {
 	    /* it is a directory */
-	    StrList subList;
-		char * newSearchname = new char[strlen(fname)+3];
-		strcpy(newSearchname, fname);
-		strcat(newSearchname, "\\*");
+	    OFList<OFString> subList;
+	    OFString newSearchname(fname);
+	    newSearchname += "\\*";
 	    _findclose(hFile);
-		int ret = 0;
-	    for (hFile = _findfirst(newSearchname, &fileData); 
+	    int ret = 0;
+	    for (hFile = _findfirst(newSearchname.c_str(), &fileData); 
 			 hFile != -1L && ret == 0; ret = _findnext(hFile, &fileData)) {
 		/* filter out current and parent directory */
 		if (!cmp(fileData.name, ".") && !cmp(fileData.name, "..")) {
-		    char* subname = 
-			new char[strlen(fname)+strlen(fileData.name)+2];
-		    sprintf(subname, "%s%c%s", fname, PATH_SEPARATOR, 
-			    fileData.name);
-		    subList.append(subname);
-		    delete subname;
+		    OFString subname(fname);
+		    subname += PATH_SEPARATOR;
+		    subname += fileData.name;
+		    subList.push_back(subname);
 		}
 	    }
-		delete newSearchname;
-		_findclose(hFile);
-		/* recurse */
+	    _findclose(hFile);
+	    /* recurse */
 	    expandFileNames(subList, expandedNames);
 	} else {
 	    /* add to expanded list  */
-		_findclose(hFile);
-	    expandedNames.append(fname);
+	    _findclose(hFile);
+	    expandedNames.push_back(fname);
 	}
     }
     return ok;
 }
 #else
-
+/*
+** Unix-like environments
+*/
 static OFBool
-expandFileNames(StrList& fileNames, StrList& expandedNames)
+expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 {
     OFBool ok = OFTrue;
     DIR *dirp = NULL;
 
-    StrListIterator iter(fileNames);
-    while (iter.hasMore()) {
-	const char* fname = iter.next();
+    OFListIterator(OFString) iter = fileNames.begin();
+    while (iter != fileNames.end()) {
+	OFString fname(*iter);
+	++iter;
 	if (!fileExists(fname)) {
 	    cerr << "error: cannot access: " << fname << endl;
 	    ok = OFFalse;
-	} else if ((dirp = opendir(fname)) != NULL) {
+	} else if ((dirp = opendir(fname.c_str())) != NULL) {
 	    /* it is a directory */
-	    StrList subList;
+	    OFList<OFString> subList;
 	    struct dirent *dp = NULL;
 	    for (dp=readdir(dirp); dp!=NULL; dp=readdir(dirp)) {
 		/* filter out current and parent directory */
 		if (!cmp(dp->d_name, ".") && !cmp(dp->d_name, "..")) {
-		    char* subname = 
-			new char[strlen(fname)+strlen(dp->d_name)+2];
-		    sprintf(subname, "%s%c%s", fname, PATH_SEPARATOR, 
-			    dp->d_name);
-		    subList.append(subname);
-		    delete subname;
+		    OFString subname(fname);
+		    subname += PATH_SEPARATOR;
+		    subname += dp->d_name;
+		    subList.push_back(subname);
 		}
 	    }
 	    closedir(dirp);
@@ -2392,7 +2256,7 @@ expandFileNames(StrList& fileNames, StrList& expandedNames)
 	    expandFileNames(subList, expandedNames);
 	} else {
 	    /* add to expanded list  */
-	    expandedNames.append(fname);
+	    expandedNames.push_back(fname);
 	}
     }
     return ok;
@@ -2403,7 +2267,11 @@ expandFileNames(StrList& fileNames, StrList& expandedNames)
 /*
 ** CVS/RCS Log:
 ** $Log: dcmgpdir.cc,v $
-** Revision 1.16  1997-08-06 12:20:02  andreas
+** Revision 1.17  1997-09-12 11:29:20  hewett
+** Modified to use the OFString and OFList classes.  Removed program
+** specific String and StringList classes.
+**
+** Revision 1.16  1997/08/06 12:20:02  andreas
 ** - Using Windows NT with Visual C++ 4.x the standard open mode for files
 **   is TEXT with conversions. For binary files (image files, imagectn database
 **   index) this must be changed (e.g. fopen(filename, "...b"); or
