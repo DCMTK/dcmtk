@@ -10,6 +10,15 @@ dnl -------------------------------------------------------
 AC_CANONICAL_HOST
 AC_DEFINE_UNQUOTED(CANONICAL_HOST_TYPE, "${host}")
 
+case "${host}" in
+	*-*-cygwin)
+	  BINEXT=".exe"
+	  ;;
+	*)
+	  BINEXT=""
+	  ;;
+esac
+
 dnl -------------------------------------------------------
 dnl Configuration Utilities
 dnl -------------------------------------------------------
