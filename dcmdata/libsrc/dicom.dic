@@ -21,18 +21,18 @@
 #  Purpose: 
 #  This is the global DICOM data dictionary for the dcmtk class library.
 #
-#  Last Update:      $Author: meichel $
-#  Update Date:      $Date: 2000-03-08 16:26:54 $
+#  Last Update:      $Author: joergr $
+#  Update Date:      $Date: 2000-10-12 08:15:51 $
 #  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dicom.dic,v $
-#  CVS/RCS Revision: $Revision: 1.34 $
+#  CVS/RCS Revision: $Revision: 1.35 $
 #  Status:           $State: Exp $
 #
 #  This dictionary contains
 #   - the complete dictionary from the 1999 DICOM publication
 #     which includes supplements 1-22 (except 16 and 21 which are cancelled),
 #     24-25, 27-29, 32 and 35-39 and CP packages 1-5
-#   - the final text of supplement 33 and CP package 6
-#   - the letter ballot texts of supplements 23, 30 and 31
+#   - the final text of supplement 23 and 33 and CP package 6
+#   - the letter ballot texts of supplements 30 and 31
 #
 # Each line represents an entry in the data dictionary.  Each line
 # has 5 fields (Tag, VR, Name, VM, Version).  Entries need not be
@@ -1726,6 +1726,56 @@
 #
 #---------------------------------------------------------------------------
 #
+# Supplement 23: Structured Reporting Storage SOP Classes
+# Final Text - 6 April 2000
+#
+# Attribute (0008,0110) removed from final text
+# (0008,0110)	ST	OverridingCodeMeaning	1	Supp23_lb
+(0040,A010)	CS	RelationshipType	1	Supp23_ft
+(0040,A027)	LO	VerifyingOrganization	1	Supp23_ft
+(0040,A030)	DT	VerificationDateTime	1	Supp23_ft
+(0040,A032)	DT	ObservationDateTime	1	Supp23_ft
+(0040,A040)	CS	ValueType	1	Supp23_ft
+# ConceptNameCodeSequence is already defined in 1999 base text
+# (0040,A043)	SQ	ConceptNameCodeSequence	1	Supp23_ft
+# ContinuationFlag renamed to ContinuityOfContent in final text
+(0040,A050)	CS	ContinuityOfContent	1	Supp23_ft
+(0040,A073)	SQ	VerifyingObserverSequence	1	Supp23_ft
+(0040,A075)	PN	VerifyingObserverName	1	Supp23_ft
+(0040,A088)	SQ	VerifyingObserverIdentificationCodeSequence	1	Supp23_ft
+# Changed VR from SQ to DT in final text
+(0040,A120)	DT	DateTime	1	Supp23_ft
+# Changed VR from SQ to UI in final text
+(0040,A124)	UI	UID	1	Supp23_ft
+# Attribute (0040,A168) is already defined in the 1999 base text as "ConceptCodeSequence".
+# leaving the original definition for now.
+# (0040,A168)	SQ	CodeValueSequence	1	Supp23_lb
+(0040,A300)	SQ	MeasuredValueSequence	1	Supp23_ft
+# Attribute (0040,A301) removed from final text
+# (0040,A301)	DS	NumericMeasurementValue	1	Supp23_lb
+(0040,A360)	SQ	PredecessorDocumentsSequence	1	Supp23_ft
+(0040,A370)	SQ	ReferencedRequestSequence	1	Supp23_ft
+(0040,A372)	SQ	PerformedProcedureCodeSequence	1	Supp23_ft
+(0040,A375)	SQ	CurrentRequestedProcedureEvidenceSequence	1	Supp23_ft
+(0040,A385)	SQ	PertinentOtherEvidenceSequence	1	Supp23_ft
+# Attribute (0040,A450) removed from final text
+# (0040,A450)	SQ	PurposeofReferenceCodeSequence	1	Supp23_lb
+(0040,A491)	CS	CompletionFlag	1	Supp23_ft
+(0040,A492)	LO	CompletionFlagDescription	1	Supp23_ft
+(0040,A493)	CS	VerificationFlag	1	Supp23_ft
+(0040,A504)	SQ	ContentTemplateSequence	1	Supp23_ft
+(0040,A525)	SQ	IdenticalDocumentsSequence	1	Supp23_ft
+(0040,A730)	SQ	ContentSequence	1	Supp23_ft
+(0040,DB00)	CS	TemplateIdentifier	1	Supp23_ft
+(0040,DB06)	DT	TemplateVersion	1	Supp23_ft
+(0040,DB07)	DT	TemplateLocalVersion	1	Supp23_ft
+(0040,DB0B)	CS	TemplateExtensionFlag	1	Supp23_ft
+(0040,DB0C)	UI	TemplateExtensionOrganizationUID	1	Supp23_ft
+(0040,DB0D)	UI	TemplateExtensionCreatorUID	1	Supp23_ft
+(0040,DB73)	US	ReferencedContentItemIdentifier	1-n	Supp23_ft
+#
+#---------------------------------------------------------------------------
+#
 # Supplement 33: Grayscale Softcopy Presentation State Storage
 # Final Text - 21 September 1999
 #
@@ -1801,54 +1851,6 @@
 #
 # CP 171
 (3002,000D)	DS	XRayImageReceptorTranslation	3	CP_6
-#
-#---------------------------------------------------------------------------
-#
-# Supplement 23: Structured Reporting
-# Revised Letter Ballot Text, January 28, 2000
-#
-# WARNING: These data dictionary attributes come from a DRAFT 
-# document and are likely to change.  Included for experimental
-# purposes only.
-#
-(0008,0110)	ST	OverridingCodeMeaning	1	Supp23_lb
-(0040,A010)	CS	RelationshipType	1	Supp23_lb
-(0040,A027)	LO	VerifyingOrganization	1	Supp23_lb
-(0040,A030)	DT	VerificationDateTime	1	Supp23_lb
-(0040,A032)	DT	ObservationDateTime	1	Supp23_lb
-(0040,A040)	CS	ValueType	1	Supp23_lb
-# ConceptNameCodeSequence is already defined in 1999 base text
-# (0040,A043)	SQ	ConceptNameCodeSequence	1	Supp23_lb
-(0040,A050)	CS	ContinuationFlag	1	Supp23_lb
-(0040,A073)	SQ	VerifyingObserverSequence	1	Supp23_lb
-(0040,A075)	PN	VerifyingObserverName	1	Supp23_lb
-(0040,A088)	SQ	VerifyingObserverIdentificationCodeSequence	1	Supp23_lb
-(0040,A120)	SQ	DateTime	1	Supp23_lb
-(0040,A124)	SQ	UID	1	Supp23_lb
-# Attribute (0040,A168) is already defined in the 1999 base text as "ConceptCodeSequence".
-# leaving the original definition for now.
-#(0040,A168)	SQ	CodeValueSequence	1	Supp23_lb
-(0040,A300)	SQ	MeasuredValueSequence	1	Supp23_lb
-(0040,A301)	DS	NumericMeasurementValue	1	Supp23_lb
-(0040,A360)	SQ	PredecessorDocumentsSequence	1	Supp23_lb
-(0040,A370)	SQ	ReferencedRequestSequence	1	Supp23_lb
-(0040,A372)	SQ	PerformedProcedureCodeSequence	1	Supp23_lb
-(0040,A375)	SQ	CurrentRequestedProcedureEvidenceSequence	1	Supp23_lb
-(0040,A385)	SQ	PertinentOtherEvidenceSequence	1	Supp23_lb
-(0040,A450)	SQ	PurposeofReferenceCodeSequence	1	Supp23_lb
-(0040,A491)	CS	CompletionFlag	1	Supp23_lb
-(0040,A492)	LO	CompletionFlagDescription	1	Supp23_lb
-(0040,A493)	CS	VerificationFlag	1	Supp23_lb
-(0040,A504)	SQ	ContentTemplateSequence	1	Supp23_lb
-(0040,A525)	SQ	IdenticalDocumentsSequence	1	Supp23_lb
-(0040,A730)	SQ	ContentSequence	1	Supp23_lb
-(0040,DB00)	CS	TemplateIdentifier	1	Supp23_lb
-(0040,DB06)	DT	TemplateVersion	1	Supp23_lb
-(0040,DB07)	DT	TemplateLocalVersion	1	Supp23_lb
-(0040,DB0B)	CS	TemplateExtensionFlag	1	Supp23_lb
-(0040,DB0C)	UI	TemplateExtensionOrganizationUID	1	Supp23_lb
-(0040,DB0D)	UI	TemplateExtensionCreatorUID	1	Supp23_lb
-(0040,DB73)	US	ReferencedContentItemIdentifier	1-n	Supp23_lb
 #
 #---------------------------------------------------------------------------
 #

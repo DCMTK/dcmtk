@@ -21,10 +21,10 @@
  *
  *  Purpose: 
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-04-14 16:15:46 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-10-12 08:15:48 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdictbi.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,8 +52,9 @@ DcmDataDictionary::loadBuiltinDictionary()
 /*
  * CVS/RCS Log:
  * $Log: dcdictbi.cc,v $
- * Revision 1.6  2000-04-14 16:15:46  meichel
- * Minor changes for thread safety.
+ * Revision 1.7  2000-10-12 08:15:48  joergr
+ * Updated data dictionary to reflect the changes made in supplement 23
+ * (Structured Reporting) final text.
  *
  * Revision 1.4  2000/04/14 16:14:46  meichel
  * Minor changes for thread safety.
