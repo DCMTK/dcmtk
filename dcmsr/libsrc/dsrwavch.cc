@@ -23,8 +23,8 @@
  *    classes: DSRWaveformChannelList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-26 14:37:23 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2000-11-06 11:34:25 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,20 +66,22 @@ DSRWaveformChannelList &DSRWaveformChannelList::operator=(const DSRWaveformChann
 
 
 E_Condition DSRWaveformChannelList::print(ostream &stream,
-                                          const size_t flags) const
+                                          const size_t flags,
+                                          const char pairSeparator,
+                                          const char itemSeparator) const
 {
     const OFListIterator(DSRWaveformChannelItem) endPos = OFList<DSRWaveformChannelItem>::end();
     OFListIterator(DSRWaveformChannelItem) iterator = OFList<DSRWaveformChannelItem>::begin();
     while (iterator != endPos)
     {
-        stream << (*iterator).MultiplexGroupNumber << "/" << (*iterator).ChannelNumber;
+        stream << (*iterator).MultiplexGroupNumber << pairSeparator << (*iterator).ChannelNumber;
         iterator++;
         if (flags & DSRTypes::PF_shortenLongItemValues)
         {
-            stream << ",...";
+            stream << itemSeparator << "...";
             iterator = endPos;
         } else if (iterator != endPos)
-            stream << ",";
+            stream << itemSeparator;
     }
     return EC_Normal;
 }
@@ -167,7 +169,10 @@ void DSRWaveformChannelList::addItem(const Uint16 multiplexGroupNumber,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavch.cc,v $
- *  Revision 1.5  2000-10-26 14:37:23  joergr
+ *  Revision 1.6  2000-11-06 11:34:25  joergr
+ *  Added parameter to print() method specifying the item separator character.
+ *
+ *  Revision 1.5  2000/10/26 14:37:23  joergr
  *  Reworked read() method.
  *
  *  Revision 1.4  2000/10/19 16:07:14  joergr

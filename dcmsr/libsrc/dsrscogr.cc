@@ -23,8 +23,8 @@
  *    classes: DSRGraphicDataList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-26 14:33:31 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-11-06 11:34:24 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,20 +66,22 @@ DSRGraphicDataList &DSRGraphicDataList::operator=(const DSRGraphicDataList &list
 
 
 E_Condition DSRGraphicDataList::print(ostream &stream,
-                                      const size_t flags) const
+                                      const size_t flags,
+                                      const char pairSeparator,
+                                      const char itemSeparator) const
 {
     const OFListIterator(DSRGraphicDataItem) endPos = OFList<DSRGraphicDataItem>::end();
     OFListIterator(DSRGraphicDataItem) iterator = OFList<DSRGraphicDataItem>::begin();
     while (iterator != endPos)
     {
-        stream << (*iterator).Column << "/" << (*iterator).Row;
+        stream << (*iterator).Column << pairSeparator << (*iterator).Row;
         iterator++;
         if (flags & DSRTypes::PF_shortenLongItemValues)
         {
-            stream << ",...";
+            stream << itemSeparator << "...";
             iterator = endPos;
         } else if (iterator != endPos)
-            stream << ",";
+            stream << itemSeparator;
     }
     return EC_Normal;
 }
@@ -167,7 +169,10 @@ void DSRGraphicDataList::addItem(const Float32 column,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscogr.cc,v $
- *  Revision 1.4  2000-10-26 14:33:31  joergr
+ *  Revision 1.5  2000-11-06 11:34:24  joergr
+ *  Added parameter to print() method specifying the item separator character.
+ *
+ *  Revision 1.4  2000/10/26 14:33:31  joergr
  *  Reworked read() method.
  *
  *  Revision 1.3  2000/10/19 16:06:19  joergr

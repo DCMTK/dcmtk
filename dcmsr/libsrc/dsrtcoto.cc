@@ -23,8 +23,8 @@
  *    classes: DSRReferencedTimeOffsetList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-26 14:40:28 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-11-06 11:34:25 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,7 +66,8 @@ DSRReferencedTimeOffsetList &DSRReferencedTimeOffsetList::operator=(const DSRRef
 
 
 E_Condition DSRReferencedTimeOffsetList::print(ostream &stream,
-                                                   const size_t flags) const
+                                               const size_t flags,
+                                               const char separator) const
 {
     const OFListIterator(Float64) endPos = OFList<Float64>::end();
     OFListIterator(Float64) iterator = OFList<Float64>::begin();
@@ -76,11 +77,11 @@ E_Condition DSRReferencedTimeOffsetList::print(ostream &stream,
         iterator++;
         if (flags & DSRTypes::PF_shortenLongItemValues)
         {
-            stream << ",...";
+            stream << separator << "...";
             /* goto last item */
             iterator = endPos;
         } else if (iterator != endPos)
-            stream << ",";
+            stream << separator;
     }
     return EC_Normal;
 }
@@ -139,9 +140,11 @@ E_Condition DSRReferencedTimeOffsetList::write(DcmItem &dataset,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcoto.cc,v $
- *  Revision 1.1  2000-10-26 14:40:28  joergr
- *  Added support for TCOORD content item.
+ *  Revision 1.2  2000-11-06 11:34:25  joergr
+ *  Added parameter to print() method specifying the item separator character.
  *
+ *  Revision 1.1  2000/10/26 14:40:28  joergr
+ *  Added support for TCOORD content item.
  *
  *
  */

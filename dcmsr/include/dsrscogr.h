@@ -23,8 +23,8 @@
  *    classes: DSRGraphicDataList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-01 16:21:16 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2000-11-06 11:31:04 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -109,12 +109,16 @@ class DSRGraphicDataList
 
     /** print list of graphic data.
      *  The output of a typical list looks like this: 0/0,127/127,255/255
-     ** @param  stream  output stream to which the list should be printed
-     *  @param  flags   flag used to customize the output (see DSRTypes::PF_xxx)
+     ** @param  stream         output stream to which the list should be printed
+     *  @param  flags          flag used to customize the output (see DSRTypes::PF_xxx)
+     *  @param  pairSeparator  character specifying the separator between the value pairs
+     *  @param  itemSeparator  character specifying the separator between the list items
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition print(ostream &stream,
-                      const size_t flags = 0) const;
+                      const size_t flags = 0,
+                      const char pairSeparator = '/',
+                      const char itemSeparator = ',') const;
 
     /** read list of graphic data
      ** @param  dataset    DICOM dataset from which the list should be read
@@ -163,7 +167,10 @@ class DSRGraphicDataList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscogr.h,v $
- *  Revision 1.3  2000-11-01 16:21:16  joergr
+ *  Revision 1.4  2000-11-06 11:31:04  joergr
+ *  Added parameter to print() method specifying the item separator character.
+ *
+ *  Revision 1.3  2000/11/01 16:21:16  joergr
  *  Updated comments/formatting.
  *
  *  Revision 1.2  2000/10/18 17:06:51  joergr

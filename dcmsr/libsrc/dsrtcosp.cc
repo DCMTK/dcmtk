@@ -23,8 +23,8 @@
  *    classes: DSRReferencedSamplePositionList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-26 14:40:28 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-11-06 11:34:25 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,7 +66,8 @@ DSRReferencedSamplePositionList &DSRReferencedSamplePositionList::operator=(cons
 
 
 E_Condition DSRReferencedSamplePositionList::print(ostream &stream,
-                                                   const size_t flags) const
+                                                   const size_t flags,
+                                                   const char separator) const
 {
     const OFListIterator(Uint32) endPos = OFList<Uint32>::end();
     OFListIterator(Uint32) iterator = OFList<Uint32>::begin();
@@ -76,11 +77,11 @@ E_Condition DSRReferencedSamplePositionList::print(ostream &stream,
         iterator++;
         if (flags & DSRTypes::PF_shortenLongItemValues)
         {
-            stream << ",...";
+            stream << separator << "...";
             /* goto last item */
             iterator = endPos;
         } else if (iterator != endPos)
-            stream << ",";
+            stream << separator;
     }
     return EC_Normal;
 }
@@ -134,7 +135,10 @@ E_Condition DSRReferencedSamplePositionList::write(DcmItem &dataset,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcosp.cc,v $
- *  Revision 1.1  2000-10-26 14:40:28  joergr
+ *  Revision 1.2  2000-11-06 11:34:25  joergr
+ *  Added parameter to print() method specifying the item separator character.
+ *
+ *  Revision 1.1  2000/10/26 14:40:28  joergr
  *  Added support for TCOORD content item.
  *
  *

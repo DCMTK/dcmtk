@@ -23,8 +23,8 @@
  *    classes: DSRReferencedDatetimeList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-26 14:40:27 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-11-06 11:34:24 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,7 +66,8 @@ DSRReferencedDatetimeList &DSRReferencedDatetimeList::operator=(const DSRReferen
 
 
 E_Condition DSRReferencedDatetimeList::print(ostream &stream,
-                                             const size_t flags) const
+                                             const size_t flags,
+                                             const char separator) const
 {
     const OFListIterator(OFString) endPos = OFList<OFString>::end();
     OFListIterator(OFString) iterator = OFList<OFString>::begin();
@@ -76,11 +77,11 @@ E_Condition DSRReferencedDatetimeList::print(ostream &stream,
         iterator++;
         if (flags & DSRTypes::PF_shortenLongItemValues)
         {
-            stream << ",...";
+            stream << separator << "...";
             /* goto last item */
             iterator = endPos;
         } else if (iterator != endPos)
-            stream << ",";
+            stream << separator;
     }
     return EC_Normal;
 }
@@ -137,9 +138,11 @@ E_Condition DSRReferencedDatetimeList::write(DcmItem &dataset,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcodt.cc,v $
- *  Revision 1.1  2000-10-26 14:40:27  joergr
- *  Added support for TCOORD content item.
+ *  Revision 1.2  2000-11-06 11:34:24  joergr
+ *  Added parameter to print() method specifying the item separator character.
  *
+ *  Revision 1.1  2000/10/26 14:40:27  joergr
+ *  Added support for TCOORD content item.
  *
  *
  */

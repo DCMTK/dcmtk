@@ -23,8 +23,8 @@
  *    classes: DSRImageFrameList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-18 17:18:24 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-11-06 11:32:04 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,7 +66,8 @@ DSRImageFrameList &DSRImageFrameList::operator=(const DSRImageFrameList &list)
 
 
 E_Condition DSRImageFrameList::print(ostream &stream,
-                                     const size_t flags) const
+                                     const size_t flags,
+                                     const char separator) const
 {
     const OFListIterator(Sint32) endPos = OFList<Sint32>::end();
     OFListIterator(Sint32) iterator = OFList<Sint32>::begin();
@@ -76,11 +77,11 @@ E_Condition DSRImageFrameList::print(ostream &stream,
         iterator++;
         if (flags & DSRTypes::PF_shortenLongItemValues)
         {
-            stream << ",...";
+            stream << separator << "...";
             /* goto last item */
             iterator = endPos;
         } else if (iterator != endPos)
-            stream << ",";
+            stream << separator;
     }
     return EC_Normal;
 }
@@ -143,7 +144,10 @@ E_Condition DSRImageFrameList::write(DcmItem &dataset,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgfr.cc,v $
- *  Revision 1.2  2000-10-18 17:18:24  joergr
+ *  Revision 1.3  2000-11-06 11:32:04  joergr
+ *  Added parameter to print() method specifying the item separator character.
+ *
+ *  Revision 1.2  2000/10/18 17:18:24  joergr
  *  Added comments.
  *
  *  Revision 1.1  2000/10/13 07:52:20  joergr
