@@ -394,8 +394,8 @@
    sys/socket.h */
 #define HAVE_PROTOTYPE_SOCKET 1
 
-/* Define if your system has a prototype for std::fprintf in stdio.h */
-/* #undef HAVE_PROTOTYPE_STD__FPRINTF  */
+/* Define if your system has a prototype for std::vfprintf in stdarg.h */
+/* #undef HAVE_PROTOTYPE_STD__VFPRINTF  */
 
 /* Define if your system has a prototype for strcasecmp in string.h */
 /* #undef  HAVE_PROTOTYPE_STRCASECMP */
