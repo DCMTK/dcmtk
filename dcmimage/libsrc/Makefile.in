@@ -35,12 +35,12 @@ $(libdir)/libdcmimage.$(LIBEXT):	libdcmimage.$(LIBEXT)
 	$(INSTALL_DATA) libdcmimage.$(LIBEXT) $(libdir)/libdcmimage.$(LIBEXT)
 
 clean:
-	rm -f $(objs) 
+	rm -f $(objs)
 	rm -f libdcmimage.$(LIBEXT)
 	rm -f $(TRASH)
 
 distclean: clean
-	rm -f $(DISTTRASH) 
+	rm -f $(DISTTRASH)
 
 libdcmimage.$(LIBEXT): $(objs)
 	$(AR) $(ARFLAGS) $@ $(objs)
@@ -49,7 +49,4 @@ libdcmimage.$(LIBEXT): $(objs)
 dependencies:
 	$(CXX) -MM $(defines) $(includes) $(CPPFLAGS) $(CXXFLAGS) *.cc  > $(DEP)
 
-$(objs): config.h
-
 include $(DEP)
-
