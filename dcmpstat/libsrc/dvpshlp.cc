@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DVPSHelper
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-20 12:22:03 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2002-11-27 15:48:11 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,8 +36,11 @@
 #include "dcompat.h"     /* compatability routines */
 #include "dcvrda.h"
 #include "dcvrtm.h"
-#include <stdio.h>
-#include <errno.h>
+
+#define INCLUDE_CSTDIO
+#define INCLUDE_CERRNO
+#define INCLUDE_CTIME
+#include "ofstdinc.h"
 
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_TYPES_H
@@ -51,9 +54,6 @@ BEGIN_EXTERN_C
 #endif
 #ifdef HAVE_SYS_RESOURCE_H
 #include <sys/resource.h> /* for wait3 */
-#endif
-#ifdef HAVE_TIME_H
-#include <time.h>
 #endif
 END_EXTERN_C
 
@@ -237,7 +237,10 @@ OFCondition DVPSHelper::addReferencedUIDItem(DcmSequenceOfItems& seq, const char
 /*
  *  CVS/RCS Log:
  *  $Log: dvpshlp.cc,v $
- *  Revision 1.12  2002-08-20 12:22:03  meichel
+ *  Revision 1.13  2002-11-27 15:48:11  meichel
+ *  Adapted module dcmpstat to use of new header file ofstdinc.h
+ *
+ *  Revision 1.12  2002/08/20 12:22:03  meichel
  *  Adapted code to new loadFile and saveFile methods, thus removing direct
  *    use of the DICOM stream classes.
  *

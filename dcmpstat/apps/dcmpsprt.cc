@@ -26,9 +26,9 @@
  *    Non-grayscale transformations in the presentation state are ignored.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-26 08:44:28 $
+ *  Update Date:      $Date: 2002-11-27 15:47:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsprt.cc,v $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,15 +38,12 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
+#define INCLUDE_CCTYPE
+#include "ofstdinc.h"
+
 #ifdef HAVE_GUSI_H
 #include <GUSI.h>
 #endif
-
-BEGIN_EXTERN_C
-#ifdef HAVE_CTYPE_H
-#include <ctype.h>
-#endif
-END_EXTERN_C
 
 #include "ofstream.h"
 #include "dviface.h"
@@ -697,7 +694,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsprt.cc,v $
- * Revision 1.31  2002-11-26 08:44:28  meichel
+ * Revision 1.32  2002-11-27 15:47:54  meichel
+ * Adapted module dcmpstat to use of new header file ofstdinc.h
+ *
+ * Revision 1.31  2002/11/26 08:44:28  meichel
  * Replaced all includes for "zlib.h" with <zlib.h>
  *   to avoid inclusion of zlib.h in the makefile dependencies.
  *

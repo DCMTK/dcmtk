@@ -25,9 +25,9 @@
  *    file.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-26 08:44:25 $
+ *  Update Date:      $Date: 2002-11-27 15:47:48 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmklut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,29 +41,22 @@
 #include <GUSI.h>
 #endif
 
-#include <math.h>     /* for pow() */
-#include <stdio.h>
-#include <stdlib.h>   /* for srand/rand() */
-
 #include "ofstream.h"
 #include "dctk.h"
 #include "cmdlnarg.h"
 #include "dcuid.h"    /* for dcmtk version name */
-
 #include "ofconapp.h"
 #include "ofstring.h"
-
 #include "dicrvfit.h"
 #include "digsdfn.h"
 #include "diutils.h"
-
-BEGIN_EXTERN_C
-#ifdef HAVE_CTYPE_H
-#include <ctype.h>
-#endif
-END_EXTERN_C
-
 #include "ofstream.h"
+
+#define INCLUDE_CSTDLIB
+#define INCLUDE_CSTDIO
+#define INCLUDE_CMATH
+#define INCLUDE_CCTYPE
+#include "ofstdinc.h"
 
 #ifdef WITH_ZLIB
 #include <zlib.h>        /* for zlibVersion() */
@@ -1095,7 +1088,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmmklut.cc,v $
- * Revision 1.32  2002-11-26 08:44:25  meichel
+ * Revision 1.33  2002-11-27 15:47:48  meichel
+ * Adapted module dcmpstat to use of new header file ofstdinc.h
+ *
+ * Revision 1.32  2002/11/26 08:44:25  meichel
  * Replaced all includes for "zlib.h" with <zlib.h>
  *   to avoid inclusion of zlib.h in the makefile dependencies.
  *

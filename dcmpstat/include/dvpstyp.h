@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -24,9 +24,9 @@
  *           DVPSPresentationLUTType, DVPSRotationType, 
  *           DVPSShutterType
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-01-29 17:32:31 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-27 15:48:01 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,7 +37,9 @@
 #define __DVPSTYP_H__
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include <stdio.h>       /* for size_t */
+
+#define INCLUDE_CSTDIO
+#include "ofstdinc.h"
 
 /** describes how to handle overlays when creating a default presentation state
  *  for an image. 
@@ -555,7 +557,10 @@ enum DVPSVerifyAndSignMode
 
 /*
  *  $Log: dvpstyp.h,v $
- *  Revision 1.16  2001-01-29 17:32:31  joergr
+ *  Revision 1.17  2002-11-27 15:48:01  meichel
+ *  Adapted module dcmpstat to use of new header file ofstdinc.h
+ *
+ *  Revision 1.16  2001/01/29 17:32:31  joergr
  *  Added method to verify and digitally sign structured reports.
  *
  *  Revision 1.15  2001/01/26 10:43:11  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DVConfiguration
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-25 18:27:41 $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  Update Date:      $Date: 2002-11-27 15:48:07 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,11 +38,10 @@
 #include "dvpsdef.h"     /* for constants */
 #include "ofstd.h"       /* for class OFStandard */
 
-BEGIN_EXTERN_C
-#include <stdio.h>
-#include <ctype.h>       /* for toupper() */
-#include <string.h>
-END_EXTERN_C
+#define INCLUDE_CSTDIO
+#define INCLUDE_CSTRING
+#define INCLUDE_CCTYPE
+#include "ofstdinc.h"
 
 #ifndef HAVE_WINDOWS_H
 /* some Unix operating systems do not define a prototype for strncasecmp
@@ -1486,7 +1485,10 @@ const char *DVConfiguration::getUserCodeMeaning(const char *userID, OFString& va
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.cc,v $
- *  Revision 1.39  2002-11-25 18:27:41  meichel
+ *  Revision 1.40  2002-11-27 15:48:07  meichel
+ *  Adapted module dcmpstat to use of new header file ofstdinc.h
+ *
+ *  Revision 1.39  2002/11/25 18:27:41  meichel
  *  Converted compile time option to leniently handle space padded UIDs
  *    in the Storage Service Class into command line / config file option.
  *

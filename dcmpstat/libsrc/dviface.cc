@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 14:02:20 $
- *  CVS/RCS Revision: $Revision: 1.138 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-27 15:48:05 $
+ *  CVS/RCS Revision: $Revision: 1.139 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,15 +33,6 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dviface.h"
-
-#ifdef WITH_OPENSSL
-BEGIN_EXTERN_C
-#include <openssl/evp.h>
-#include <openssl/x509.h>
-#include <openssl/pem.h>
-#include <openssl/err.h>
-END_EXTERN_C
-#endif
 
 #include "dvpsdef.h"     /* for constants */
 #include "ofstring.h"    /* for class OFString */
@@ -58,13 +49,14 @@ END_EXTERN_C
 #include "dcmimage.h"    /* for class DicomImage */
 #include "dvsighdl.h"    /* for class DVSignatureHandler */
 #include "dcmsign.h"     /* for class DcmSignature */
-#include <stdio.h>
-#include <ctype.h>       /* for toupper() */
-#include <math.h>        /* for pow() */
-
 #include "ofstream.h"
 #include "dsrdoc.h"      /* for class DSRDocument */
 #include "dsrcodvl.h"
+
+#define INCLUDE_CSTDIO
+#define INCLUDE_CCTYPE
+#define INCLUDE_CMATH
+#include "ofstdinc.h"
 
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_TYPES_H
@@ -96,6 +88,15 @@ END_EXTERN_C
 #ifdef HAVE_WINDOWS_H
 #include <windows.h>
 #include <winbase.h>     /* for CreateProcess */
+#endif
+
+#ifdef WITH_OPENSSL
+BEGIN_EXTERN_C
+#include <openssl/evp.h>
+#include <openssl/x509.h>
+#include <openssl/pem.h>
+#include <openssl/err.h>
+END_EXTERN_C
 #endif
 
 
@@ -4277,7 +4278,10 @@ void DVInterface::disableImageAndPState()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.138  2002-04-16 14:02:20  joergr
+ *  Revision 1.139  2002-11-27 15:48:05  meichel
+ *  Adapted module dcmpstat to use of new header file ofstdinc.h
+ *
+ *  Revision 1.138  2002/04/16 14:02:20  joergr
  *  Added configurable support for C++ ANSI standard includes (e.g. streams).
  *  Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
  *  contribution.

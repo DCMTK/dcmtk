@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPresentationState
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 14:02:22 $
- *  CVS/RCS Revision: $Revision: 1.71 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-27 15:48:15 $
+ *  CVS/RCS Revision: $Revision: 1.72 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,30 +46,21 @@
 #include "dvpssv.h"      /* for DVPSSoftcopyVOI */
 #include "dvpshlp.h"     /* for class DVPSHelper */
 
-#ifdef HAVE_STDLIB_H
-#ifndef  _BCB4
-/* workaround for bug in Borland C++ Builder 4 */
-BEGIN_EXTERN_C
-#endif
-#include <stdlib.h>
-#ifndef  _BCB4
-END_EXTERN_C
-#endif
-#endif
+#define INCLUDE_CSTDLIB
+#define INCLUDE_CSTDIO
+#define INCLUDE_CSTRING
+#define INCLUDE_CMATH
+#define INCLUDE_CTIME
+#include "ofstdinc.h"
 
-#include <math.h>
-#include <stdio.h>
-#include <string.h>
-#ifdef HAVE_TIME_H
-#include <time.h>
-#endif
+BEGIN_EXTERN_C
 #ifdef HAVE_LIBC_H
 #include <libc.h>
 #endif
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-
+END_EXTERN_C
 
 /* --------------- class DVPresentationState --------------- */
 
@@ -4144,7 +4135,10 @@ const char *DVPresentationState::getAttachedImageSOPInstanceUID()
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.71  2002-04-16 14:02:22  joergr
+ *  Revision 1.72  2002-11-27 15:48:15  meichel
+ *  Adapted module dcmpstat to use of new header file ofstdinc.h
+ *
+ *  Revision 1.71  2002/04/16 14:02:22  joergr
  *  Added configurable support for C++ ANSI standard includes (e.g. streams).
  *  Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
  *  contribution.

@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Print Spooler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-26 08:44:26 $
+ *  Update Date:      $Date: 2002-11-27 15:47:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmprscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,9 @@
 #ifdef HAVE_GUSI_H
 #include <GUSI.h>
 #endif
+
+#define INCLUDE_CCTYPE
+#include "ofstdinc.h"
 
 BEGIN_EXTERN_C
 /* This #if code is suggested by the gnu autoconf documentation */
@@ -61,9 +64,6 @@ BEGIN_EXTERN_C
 #endif
 #ifdef HAVE_FCNTL_H
 #include <fcntl.h>      /* for O_RDONLY */
-#endif
-#ifdef HAVE_CTYPE_H
-#include <ctype.h>      /* for isspace() */
 #endif
 END_EXTERN_C
 
@@ -1006,7 +1006,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprscu.cc,v $
- * Revision 1.13  2002-11-26 08:44:26  meichel
+ * Revision 1.14  2002-11-27 15:47:50  meichel
+ * Adapted module dcmpstat to use of new header file ofstdinc.h
+ *
+ * Revision 1.13  2002/11/26 08:44:26  meichel
  * Replaced all includes for "zlib.h" with <zlib.h>
  *   to avoid inclusion of zlib.h in the makefile dependencies.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSReferencedImage
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-20 12:41:01 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2002-11-27 15:48:12 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,9 +36,8 @@
 #include "dvpsri.h"
 #include "dvpsdef.h"     /* for constants and macros */
 
-BEGIN_EXTERN_C
-#include <stdio.h>
-END_EXTERN_C
+#define INCLUDE_CSTDIO
+#include "ofstdinc.h"
 
 
 /* --------------- class DVPSReferencedImage --------------- */
@@ -304,7 +303,10 @@ void DVPSReferencedImage::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgM
 
 /*
  *  $Log: dvpsri.cc,v $
- *  Revision 1.13  2002-08-20 12:41:01  meichel
+ *  Revision 1.14  2002-11-27 15:48:12  meichel
+ *  Adapted module dcmpstat to use of new header file ofstdinc.h
+ *
+ *  Revision 1.13  2002/08/20 12:41:01  meichel
  *  Added explicit includes for header files included implicitly
  *    via dcstream before.
  *

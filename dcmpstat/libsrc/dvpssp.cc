@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSStoredPrint
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-08 10:39:56 $
- *  CVS/RCS Revision: $Revision: 1.47 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-27 15:48:13 $
+ *  CVS/RCS Revision: $Revision: 1.48 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,11 +42,9 @@
 #include "digsdfn.h"
 #include "dvpscf.h"
 
-#include <math.h>        /* for pow() */
-
-#ifdef HAVE_TIME_H
-#include <time.h>
-#endif
+#define INCLUDE_CMATH
+#define INCLUDE_CTIME
+#include "ofstdinc.h"
 
 /* --------------- class DVPSStoredPrint --------------- */
 
@@ -3535,7 +3533,10 @@ void DVPSStoredPrint::overridePresentationLUTSettings(
 
 /*
  *  $Log: dvpssp.cc,v $
- *  Revision 1.47  2002-01-08 10:39:56  joergr
+ *  Revision 1.48  2002-11-27 15:48:13  meichel
+ *  Adapted module dcmpstat to use of new header file ofstdinc.h
+ *
+ *  Revision 1.47  2002/01/08 10:39:56  joergr
  *  Corrected spelling of function dcmGenerateUniqueIdentifier().
  *  Changed prefix of UIDs created for series and studies (now using constants
  *  SITE_SERIES_UID_ROOT and SITE_STUDY_UID_ROOT which are supposed to be used

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSFilmSession
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-28 13:56:53 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-27 15:48:09 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,7 +42,8 @@
 #include "dvpssp.h"
 #include "dvpsspl.h"
 
-#include <string.h>
+#define INCLUDE_CSTRING
+#include "ofstdinc.h"
 
 /* --------------- class DVPSFilmSession --------------- */
 
@@ -969,7 +970,10 @@ void DVPSFilmSession::copyPresentationLUTSettings(DVPSStoredPrint& sp)
 
 /*
  *  $Log: dvpsfs.cc,v $
- *  Revision 1.10  2001-11-28 13:56:53  joergr
+ *  Revision 1.11  2002-11-27 15:48:09  meichel
+ *  Adapted module dcmpstat to use of new header file ofstdinc.h
+ *
+ *  Revision 1.10  2001/11/28 13:56:53  joergr
  *  Check return value of DcmItem::insert() statements where appropriate to
  *  avoid memory leaks when insert procedure fails.
  *

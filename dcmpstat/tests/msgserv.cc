@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Sample message server for class DVPSIPCClient
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:43 $
+ *  Update Date:      $Date: 2002-11-27 15:48:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/tests/msgserv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,9 +37,12 @@
 #include <GUSI.h>
 #endif
 
+#define INCLUDE_CSTDIO
+#define INCLUDE_CERRNO
+#define INCLUDE_CTIME
+#include "ofstdinc.h"
+
 BEGIN_EXTERN_C
-#include <stdio.h>
-#include <errno.h>
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
@@ -51,9 +54,6 @@ BEGIN_EXTERN_C
 #endif
 #ifdef HAVE_NETDB_H
 #include <netdb.h>
-#endif
-#ifdef HAVE_TIME_H
-#include <time.h>
 #endif
 END_EXTERN_C
 
@@ -359,7 +359,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: msgserv.cc,v $
- * Revision 1.4  2001-06-01 15:50:43  meichel
+ * Revision 1.5  2002-11-27 15:48:19  meichel
+ * Adapted module dcmpstat to use of new header file ofstdinc.h
+ *
+ * Revision 1.4  2001/06/01 15:50:43  meichel
  * Updated copyright header
  *
  * Revision 1.3  2000/12/12 16:45:41  meichel
