@@ -10,7 +10,7 @@
 **
 **  author   : Joerg Riesmeier
 **  created  : 09.12.96
-**  modified : 25.05.97
+**  modified : 31.05.97
 **
 *********************************************************************/
 
@@ -121,11 +121,9 @@ class DicomImage
 	inline int setHistogramWindow(const double thresh = 0.05)
 		{ return (Image != NULL) ? Image->setHistogramWindow(thresh) : 0; }
 
-	inline int setWindow() 
-		{ return (Image != NULL) ? Image->setWindow(0, 0) : 0; }
 	inline int setWindow(const unsigned long window) 
 		{ return (Image != NULL) ? Image->setWindow(window) : 0; }
-	inline int setWindow(const double center, const double width) 
+	inline int setWindow(const double center = 0, const double width = 0) 
 		{ return (Image != NULL) ? Image->setWindow(center, width) : 0; }
 	inline int getWindow(double &center, double &width) 
 		{ return (Image != NULL) ? Image->getWindow(center, width) : 0; }

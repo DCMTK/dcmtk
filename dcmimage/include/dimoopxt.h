@@ -4,7 +4,7 @@
 **
 **  author   : Joerg Riesmeier
 **  created  : 19.12.96
-**  modified : 25.04.97
+**  modified : 31.05.97
 **
 *********************************************************************/
 
@@ -136,10 +136,12 @@ class DiMonoOutputPixelTemplate : public DiMonoOutputPixel, public DiPixelRepres
 			{
 				register const T1 *p = pixel + start;
 				register T2 *q = Data;
+				const DiPixelRepresentationTemplate<T1> rep;
+				const double offset = (rep.isSigned()) ? (const double)(maxval(bits - 1, 0)) : 0;
 				register unsigned long i;
-				register const double gradient = ((double)high - (double)low) / (double)maxval(bits);
+				register const double gradient = ((double)high - (double)low + 1) / (double)maxval(bits, 0);
 				for (i = 0; i < getCount(); i++)
-					*(q++) = (T2)((double)low + (double)(*(p++)) * gradient);
+					*(q++) = (T2)((double)low + (offset + (double)(*(p++))) * gradient);
 			}
 		}
 	}
@@ -192,10 +194,6 @@ class DiMonoOutputPixelTemplate : public DiMonoOutputPixel, public DiPixelRepres
 					const Uint16 ymin = (plane->getTop(top) > 0) ? plane->getTop(top) : 0;
 					const Uint16 xmax = (plane->getRight(left) < columns) ? plane->getRight(left) : columns;
 					const Uint16 ymax = (plane->getBottom(top) < rows) ? plane->getBottom(top) : rows;
-/*
-cout << xmin << "/" << ymin << " " << xmax << "/" << ymax << endl;
-cout << left << "/" << top << endl;
-*/
 					const T2 maxvalue = (const T2)maxval(bitsof(T2));
 					switch (plane->getMode())
 					{
@@ -260,6 +258,8 @@ cout << left << "/" << top << endl;
 							}
 							break;
 						}
+						default: /* e.g. EMO_Default */
+							cerr << "WARNING: unhandled overlay mode (" << plane->getMode() << ") !" << endl;
 					}
 				} 
 			}

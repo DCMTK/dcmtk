@@ -4,7 +4,7 @@
 **
 **  author   : Joerg Riesmeier
 **  created  : 10.12.96
-**  modified : 10.02.97
+**  modified : 31.05.97
 **
 *********************************************************************/
 
@@ -47,6 +47,7 @@ enum EI_Status
 
 enum EM_Overlay
 {
+	EMO_Default,
     EMO_Replace,
     EMO_ThresholdReplace,
     EMO_Complement,

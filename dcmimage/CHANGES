@@ -1,4 +1,17 @@
 
+**** Unreleased Changes from 97.06.01 (riesmeier)
+
+- cleaned up setWindow() methods. Only one with default parameters remains.
+- Added overlay mode EMO_Default. This is identical to EMO_Replace for "G"
+  (graphical) overlays and to EMO_RegionOfInterest for "R" (ROI) overlays.
+- Fixed bug leading to incorrect images when sign-extended pixel data
+  was "normalized" without any VOI transformation.
+  Affects: dcmimage/include/diutils.h
+           dcmimage/include/diovlpln.h
+           dcmimage/include/dimoopxt.h
+           dcmimage/include/dcmimage.h
+           dcmimage/libsrc/diovlpln.cc
+
 **** Unreleased Changes from 97.05.29 (eichelberg)
 
 - All dcmtk applications now contain a version string

@@ -4,7 +4,7 @@
 **
 **  author   : Joerg Riesmeier
 **  created  : 10.01.97
-**  modified : 09.02.97
+**  modified : 31.05.97
 **
 *********************************************************************/
 
@@ -38,6 +38,7 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu, const unsigned int plane,
 	Foreground(1),
 	Threshold(1),
 	Mode(EMO_Replace),
+	DefaultMode(EMO_Replace),
 	Valid(0),
 	Visible(0),
 	BitPos(0),
@@ -52,7 +53,7 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu, const unsigned int plane,
 		const char *str;
 		tag.setElement(DCM_OverlayType.getElement());
 		if (docu->getValue(tag, str) && (strcmp(str, "R") == 0))
-			Mode = EMO_RegionOfInterest;
+			DefaultMode = Mode = EMO_RegionOfInterest;
 		Sint32 sl = 0;
 		tag.setElement(DCM_OverlayNumberOfFrames.getElement());
 		docu->getValue(tag, sl);
@@ -107,6 +108,7 @@ DiOverlayPlane::DiOverlayPlane(DiOverlayPlane *plane, const unsigned int bit, Ui
 	Foreground(plane->Foreground),
 	Threshold(plane->Threshold),
 	Mode(plane->Mode),
+	DefaultMode(plane->DefaultMode),
 	Valid(0),
 	Visible(plane->Visible),
 	BitPos(0),
@@ -117,24 +119,12 @@ DiOverlayPlane::DiOverlayPlane(DiOverlayPlane *plane, const unsigned int bit, Ui
 {
 	if (temp != NULL)
 	{
-/*
-cout << xfactor << " " << yfactor << endl;
-cout << plane->Width << "/" << plane->Height << endl;
-cout << plane->Columns << "/" << plane->Rows << endl;
-cout << Width << "/" << Height << endl;
-cout << Columns << "/" << Rows << endl;
-cout << width << "/" << height << endl;
-cout << endl;
-*/
 		register Uint16 x;
 		register Uint16 y;
 		register Uint16 *q = temp;
 		register const Uint16 mask = 1 << bit;
 		const Uint16 skip_x = width - plane->Columns;
 		const unsigned long skip_f = (unsigned long)(height - plane->Rows) * (unsigned long)width;
-/*
-cout << skip_x << " " << skip_f << endl;
-*/
 		for (unsigned long f = 0; f < NumberOfFrames; f++)
 		{
 			if (plane->reset(f + ImageFrameOrigin))
@@ -174,6 +164,6 @@ void DiOverlayPlane::show(const double fore, const double thresh, const EM_Overl
 {
 	Foreground = (fore < 0) ? 0 : (fore > 1) ? 1 : fore;
 	Threshold = (thresh < 0) ? 0 : (thresh > 1) ? 1 : thresh;
-	Mode = mode;
+	Mode = (mode == EMO_Default) ? DefaultMode : mode;
 	Visible = 1;
 }

@@ -4,7 +4,7 @@
 **
 **  author   : Joerg Riesmeier
 **  created  : 10.01.97
-**  modified : 09.02.97
+**  modified : 31.05.97
 **
 *********************************************************************/
 
@@ -97,6 +97,7 @@ class DiOverlayPlane
 	double Foreground;				// color of overlay plane ('0.0' = dark, '1.0' = bright)
 	double Threshold;				// threshold value
 	EM_Overlay Mode;				// overlay mode
+	EM_Overlay DefaultMode;			// default overlay mode
 
 	int Valid;						// validity status
 	int Visible;					// visibility status
