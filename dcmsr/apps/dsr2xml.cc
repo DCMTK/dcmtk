@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000, OFFIS
+ *  Copyright (C) 2000-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,9 @@
  *           XML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-02-02 14:36:27 $
+ *  Update Date:      $Date: 2001-05-07 16:12:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/dsr2xml.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -158,6 +158,7 @@ int main(int argc, char *argv[])
         cmd.addOption("--read-xfer-little",    "-te",       "read with explicit VR little endian TS");
         cmd.addOption("--read-xfer-big",       "-tb",       "read with explicit VR big endian TS");
         cmd.addOption("--read-xfer-implicit",  "-ti",       "read with implicit VR little endian TS");
+
     cmd.addGroup("output options:");
       cmd.addSubGroup("encoding:");
         cmd.addOption("--attr-value-type",     "+Ev",       "encode value type as XML attribute");
@@ -247,7 +248,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2xml.cc,v $
- * Revision 1.3  2001-02-02 14:36:27  joergr
+ * Revision 1.4  2001-05-07 16:12:51  joergr
+ * Updated CVS header.
+ *
+ * Revision 1.3  2001/02/02 14:36:27  joergr
  * Added new option to dsr2xml allowing to specify whether value and/or
  * relationship type are to be encoded as XML attributes or elements.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000, OFFIS
+ *  Copyright (C) 2000-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRCodeTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-02-02 14:41:55 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2001-05-07 16:14:22 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -196,7 +196,10 @@ OFBool DSRCodeTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodtn.cc,v $
- *  Revision 1.9  2001-02-02 14:41:55  joergr
+ *  Revision 1.10  2001-05-07 16:14:22  joergr
+ *  Updated CVS header.
+ *
+ *  Revision 1.9  2001/02/02 14:41:55  joergr
  *  Added new option to dsr2xml allowing to specify whether value and/or
  *  relationship type are to be encoded as XML attributes or elements.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000, OFFIS
+ *  Copyright (C) 2000-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRImageReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-02-13 16:35:28 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2001-05-07 16:14:24 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -329,7 +329,10 @@ OFBool DSRImageReferenceValue::checkPresentationState(const DSRCompositeReferenc
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgvl.cc,v $
- *  Revision 1.11  2001-02-13 16:35:28  joergr
+ *  Revision 1.12  2001-05-07 16:14:24  joergr
+ *  Updated CVS header.
+ *
+ *  Revision 1.11  2001/02/13 16:35:28  joergr
  *  Minor corrections in XML output (newlines, etc.).
  *
  *  Revision 1.10  2000/11/06 11:32:51  joergr

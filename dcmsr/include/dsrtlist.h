@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000, OFFIS
+ *  Copyright (C) 2000-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRListOfItems
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-01-25 11:48:11 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2001-05-07 16:13:24 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -270,7 +270,10 @@ class DSRListOfItems
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtlist.h,v $
- *  Revision 1.5  2001-01-25 11:48:11  joergr
+ *  Revision 1.6  2001-05-07 16:13:24  joergr
+ *  Updated CVS header.
+ *
+ *  Revision 1.5  2001/01/25 11:48:11  joergr
  *  Added method to insert item into a list.
  *
  *  Revision 1.4  2000/12/12 14:17:13  joergr

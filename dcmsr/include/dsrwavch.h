@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000, OFFIS
+ *  Copyright (C) 2000-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRWaveformChannelItem, DSRWaveformChannelList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-01-25 11:48:44 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2001-05-07 16:13:24 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -169,7 +169,10 @@ class DSRWaveformChannelList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavch.h,v $
- *  Revision 1.6  2001-01-25 11:48:44  joergr
+ *  Revision 1.7  2001-05-07 16:13:24  joergr
+ *  Updated CVS header.
+ *
+ *  Revision 1.6  2001/01/25 11:48:44  joergr
  *  Corrected typos / enhanced comments.
  *
  *  Revision 1.5  2000/11/06 11:21:26  joergr

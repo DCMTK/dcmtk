@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000, OFFIS
+ *  Copyright (C) 2000-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRContentItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-01-18 15:53:32 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2001-05-07 16:13:23 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -422,7 +422,10 @@ class DSRContentItem
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcitem.h,v $
- *  Revision 1.12  2001-01-18 15:53:32  joergr
+ *  Revision 1.13  2001-05-07 16:13:23  joergr
+ *  Updated CVS header.
+ *
+ *  Revision 1.12  2001/01/18 15:53:32  joergr
  *  Added support for digital signatures.
  *
  *  Revision 1.11  2000/11/13 14:19:05  joergr

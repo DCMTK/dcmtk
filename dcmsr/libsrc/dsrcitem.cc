@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000, OFFIS
+ *  Copyright (C) 2000-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRContentItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-01-18 15:54:12 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2001-05-07 16:14:21 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -627,7 +627,10 @@ E_Condition DSRContentItem::setObservationDateTime(const OFString &observationDa
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcitem.cc,v $
- *  Revision 1.9  2001-01-18 15:54:12  joergr
+ *  Revision 1.10  2001-05-07 16:14:21  joergr
+ *  Updated CVS header.
+ *
+ *  Revision 1.9  2001/01/18 15:54:12  joergr
  *  Added support for digital signatures.
  *
  *  Revision 1.8  2000/11/20 13:22:23  joergr
