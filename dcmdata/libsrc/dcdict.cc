@@ -22,9 +22,9 @@
  *  Purpose: loadable DICOM data dictionary
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-04-14 15:55:03 $
+ *  Update Date:      $Date: 2000-05-03 14:19:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdict.cc,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,7 +66,7 @@ END_EXTERN_C
 ** THE Global DICOM Data Dictionary
 */
  
-DcmDataDictionary dcmDataDict(OFTrue, OFTrue);
+GlobalDcmDataDictionary dcmDataDict(OFTrue, OFTrue);
 
 
 /*
@@ -645,7 +645,7 @@ DcmDataDictionary::deleteEntry(const DcmDictEntry& entry)
 }
 
 const DcmDictEntry* 
-DcmDataDictionary::findEntry(const DcmDictEntry& entry)
+DcmDataDictionary::findEntry(const DcmDictEntry& entry) const
 {
     const DcmDictEntry* e = NULL;
 
@@ -666,7 +666,7 @@ DcmDataDictionary::findEntry(const DcmDictEntry& entry)
 }
 
 const DcmDictEntry* 
-DcmDataDictionary::findEntry(const DcmTagKey& key)
+DcmDataDictionary::findEntry(const DcmTagKey& key) const
 {
     /* search first in the normal tags dictionary and if not found
      * then search in the repeating tags list.
@@ -690,7 +690,7 @@ DcmDataDictionary::findEntry(const DcmTagKey& key)
 }
 
 const DcmDictEntry* 
-DcmDataDictionary::findEntry(const char *name)
+DcmDataDictionary::findEntry(const char *name) const
 {
     const DcmDictEntry* e = NULL;
 
@@ -718,10 +718,65 @@ DcmDataDictionary::findEntry(const char *name)
     return e;
 }
 
+
+/* ================================================================== */
+
+GlobalDcmDataDictionary::GlobalDcmDataDictionary(OFBool loadBuiltin, OFBool loadExternal)
+: dataDict(loadBuiltin, loadExternal)
+, dataDictLock()
+{
+}
+
+GlobalDcmDataDictionary::~GlobalDcmDataDictionary()
+{
+}
+  
+const DcmDataDictionary& GlobalDcmDataDictionary::rdlock()
+{
+#ifdef _REENTRANT
+  dataDictLock.rdlock();
+#endif
+  return dataDict;
+}
+  
+DcmDataDictionary& GlobalDcmDataDictionary::wrlock()
+{
+#ifdef _REENTRANT
+  dataDictLock.wrlock();
+#endif
+  return dataDict;
+}
+  
+void GlobalDcmDataDictionary::unlock()
+{
+#ifdef _REENTRANT
+  dataDictLock.unlock();
+#endif
+}
+  
+OFBool GlobalDcmDataDictionary::isDictionaryLoaded()
+{
+  OFBool result = rdlock().isDictionaryLoaded();
+  unlock();
+  return result;
+}
+  
+void GlobalDcmDataDictionary::clear()
+{
+  wrlock().clear();
+  unlock();
+}
+  
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.cc,v $
-** Revision 1.22  2000-04-14 15:55:03  meichel
+** Revision 1.23  2000-05-03 14:19:09  meichel
+** Added new class GlobalDcmDataDictionary which implements read/write lock
+**   semantics for safe access to the DICOM dictionary from multiple threads
+**   in parallel. The global dcmDataDict now uses this class.
+**
+** Revision 1.22  2000/04/14 15:55:03  meichel
 ** Dcmdata library code now consistently uses ofConsole for error output.
 **
 ** Revision 1.21  2000/03/08 16:26:32  meichel

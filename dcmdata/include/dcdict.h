@@ -22,9 +22,9 @@
  *  Purpose: Interface for loadable DICOM data dictionary
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:13 $
+ *  Update Date:      $Date: 2000-05-03 14:19:08 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdict.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -61,53 +61,25 @@
 
 
 class DcmDataDictionary {
-private:
-    DcmHashDict hashDict;    /* dictionary of normal tags */
-    DcmDictEntryList repDict; /* dictionary of repeating tags */
-    int skeletonCount; /* the number of skeleton entries */
-    OFBool dictionaryLoaded; /* is a dictionary loaded (more than skeleton) */
-
- // --- declarations to avoid compiler warnings
- 
-    DcmDataDictionary &operator=(const DcmDataDictionary &);
-    DcmDataDictionary(const DcmDataDictionary &);
-
-protected:
-    /* Load external dictionaries defined via environment variables */
-    OFBool loadExternalDictionaries();
-
-    /* Load a builtin (compiled) data dictionary.
-    ** Depending on which code is in use, this function may not
-    ** do anything.
-    */
-    void loadBuiltinDictionary();
-
-    /* Load skeleton dictionary (the bare minimum needed to run) */
-    OFBool loadSkeletonDictionary();
-
-
-    const DcmDictEntry* findEntry(const DcmDictEntry& entry);
-    void deleteEntry(const DcmDictEntry& entry);
-
 public:
     /* constructor/destructor */
     DcmDataDictionary(OFBool loadBuiltin=OFFalse, OFBool loadExternal=OFFalse);
     ~DcmDataDictionary();
 
     /* is a data dictionary loaded (excluding the skeleton dictionary) */
-    OFBool isDictionaryLoaded() { return dictionaryLoaded; }
+    OFBool isDictionaryLoaded() const { return dictionaryLoaded; }
 
     /* the number of normal/repeating tag entries  */
-    int numberOfNormalTagEntries() { return hashDict.size(); }
-    int numberOfRepeatingTagEntries() { return repDict.size(); }
+    int numberOfNormalTagEntries() const { return hashDict.size(); }
+    int numberOfRepeatingTagEntries() const { return repDict.size(); }
 
     /* total number of dictionary entries  */
-    int numberOfEntries() 
+    int numberOfEntries() const
         { return numberOfNormalTagEntries() 
               + numberOfRepeatingTagEntries() - skeletonCount; }
 
     /* the number of skeleton entries */
-    int numberOfSkeletonEntries() { return skeletonCount; }
+    int numberOfSkeletonEntries() const { return skeletonCount; }
 
     /*
      * Load a particular dictionary from file.
@@ -121,8 +93,8 @@ public:
      * First the normal tag dictionary is searched.  If not found
      * then the repeating tag dictionary is searched.
      */
-    const DcmDictEntry* findEntry(const DcmTagKey& key);
-    const DcmDictEntry* findEntry(const char *name); /* by name also */
+    const DcmDictEntry* findEntry(const DcmTagKey& key) const;
+    const DcmDictEntry* findEntry(const char *name) const; /* by name also */
 
     void clear(); /* delete all entries */
 
@@ -141,26 +113,131 @@ public:
     DcmDictEntryListIterator repeatingBegin() { return repDict.begin(); }
     DcmDictEntryListIterator repeatingEnd() { return repDict.end(); }
 
+protected:
+    /* Load external dictionaries defined via environment variables */
+    OFBool loadExternalDictionaries();
+
+    /* Load a builtin (compiled) data dictionary.
+    ** Depending on which code is in use, this function may not
+    ** do anything.
+    */
+    void loadBuiltinDictionary();
+
+    /* Load skeleton dictionary (the bare minimum needed to run) */
+    OFBool loadSkeletonDictionary();
+
+
+    const DcmDictEntry* findEntry(const DcmDictEntry& entry) const;
+    void deleteEntry(const DcmDictEntry& entry);
+
+private:
+  /** dictionary of normal tags
+   */
+  DcmHashDict hashDict;
+
+  /** dictionary of repeating tags
+   */
+  DcmDictEntryList repDict;
+
+  /** the number of skeleton entries
+   */
+  int skeletonCount;
+
+  /** is a dictionary loaded (more than skeleton)
+   */
+  OFBool dictionaryLoaded;
+
+  /** private undefined assignment operator
+   */ 
+  DcmDataDictionary &operator=(const DcmDataDictionary &);
+
+  /** private undefined copy constructor
+   */
+  DcmDataDictionary(const DcmDataDictionary &);
+
 };
 
 
-/*
-** THE Global DICOM Data Dictionary.
-**
-** Will be created before main() starts.  
-**
-** Tries to load a builtin data dictionary (if compiled in).
-** Tries to load data dictionaries from files specified by
-** the DCMDICTPATH environment variable.  If this environment
-** variable does not exist then a default file is loaded (if
-** it exists).  
-**
-** It is possible that no data dictionary gets loaded.  This
-** is likely to cause unexpected behaviour in the dcmdata
-** toolkit classes.
-*/
+/** encapsulates a data dictionary with access methods which allow safe
+ *  read and write access from multiple threads in parallel.
+ *  A read/write lock is used to protect threads from each other.
+ *  This allows parallel read-only access by multiple threads, which is
+ *  the most common case.
+ */
+class GlobalDcmDataDictionary
+{
+public:
+  /** constructor.
+   *  @param loadBuiltin if true, the dictionary constructor calls loadBuiltinDictionary().
+   *  @param loadExternal if true, the dictionary constructor calls loadExternalDictionaries().
+   */
+  GlobalDcmDataDictionary(OFBool loadBuiltin, OFBool loadExternal);
+  
+  /** destructor
+   */
+  ~GlobalDcmDataDictionary();
 
-extern DcmDataDictionary dcmDataDict;
+  /** acquires a read lock and returns a const reference to
+   *  the dictionary.
+   *  @return const reference to dictionary
+   */
+  const DcmDataDictionary& rdlock();
+  
+  /** acquires a write lock and returns a non-const reference
+   *  to the dictionary.
+   *  @return non-const reference to dictionary.
+   */
+  DcmDataDictionary& wrlock();
+  
+  /** unlocks the read or write lock which must have been acquired previously.
+   */
+  void unlock();
+
+  /** checks if a data dictionary has been loaded. This method acquires and
+   *  releases a read lock. It must not be called with another lock on the 
+   *  dictionary being held by the calling thread.
+   *  @return OFTrue if dictionary has been loaded, OFFalse otherwise.
+   */
+  OFBool isDictionaryLoaded();
+
+  /** erases the contents of the dictionary. This method acquires and
+   *  releases a write lock. It must not be called with another lock on the 
+   *  dictionary being held by the calling thread.  This method is intended
+   *  as a help for debugging memory leaks.
+   */
+  void clear();
+
+private:
+  /** private undefined assignment operator
+   */
+  GlobalDcmDataDictionary &operator=(const GlobalDcmDataDictionary &);
+
+  /** private undefined copy constructor
+   */
+  GlobalDcmDataDictionary(const GlobalDcmDataDictionary &);
+
+  /** the data dictionary managed by this class
+   */
+  DcmDataDictionary dataDict;
+
+  /** the read/write lock used to protect access from multiple threads
+   */
+  OFReadWriteLock dataDictLock;
+};
+
+
+/** The Global DICOM Data Dictionary.
+ *  Will be created before main() starts.  
+ *  Tries to load a builtin data dictionary (if compiled in).
+ *  Tries to load data dictionaries from files specified by
+ *  the DCMDICTPATH environment variable.  If this environment
+ *  variable does not exist then a default file is loaded (if
+ *  it exists).  
+ *  It is possible that no data dictionary gets loaded.  This
+ *  is likely to cause unexpected behaviour in the dcmdata
+ *  toolkit classes.
+ */
+extern GlobalDcmDataDictionary dcmDataDict;
 
 #endif
 
@@ -168,7 +245,12 @@ extern DcmDataDictionary dcmDataDict;
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.h,v $
-** Revision 1.14  2000-03-08 16:26:13  meichel
+** Revision 1.15  2000-05-03 14:19:08  meichel
+** Added new class GlobalDcmDataDictionary which implements read/write lock
+**   semantics for safe access to the DICOM dictionary from multiple threads
+**   in parallel. The global dcmDataDict now uses this class.
+**
+** Revision 1.14  2000/03/08 16:26:13  meichel
 ** Updated copyright header.
 **
 ** Revision 1.13  1999/03/31 09:24:35  meichel

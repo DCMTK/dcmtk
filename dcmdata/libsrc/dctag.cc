@@ -22,9 +22,9 @@
  *  Purpose: class DcmTag
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-04-14 16:01:00 $
+ *  Update Date:      $Date: 2000-05-03 14:19:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dctag.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,12 +57,14 @@ DcmTag::DcmTag(const DcmTagKey& akey)
     tagName(NULL),
     errorFlag(EC_InvalidTag)
 {
-    const DcmDictEntry *dictRef = dcmDataDict.findEntry(akey);
+    const DcmDataDictionary& globalDataDict = dcmDataDict.rdlock();
+    const DcmDictEntry *dictRef = globalDataDict.findEntry(akey);
     if (dictRef)
     {
         vr = dictRef->getVR();
         errorFlag = EC_Normal;
     }
+    dcmDataDict.unlock();
 }
     
 DcmTag::DcmTag(Uint16 g, Uint16 e)
@@ -71,12 +73,14 @@ DcmTag::DcmTag(Uint16 g, Uint16 e)
     tagName(NULL),
     errorFlag(EC_InvalidTag)
 {
-    const DcmDictEntry *dictRef = dcmDataDict.findEntry(DcmTagKey(g, e));
+    const DcmDataDictionary& globalDataDict = dcmDataDict.rdlock();
+    const DcmDictEntry *dictRef = globalDataDict.findEntry(DcmTagKey(g, e));
     if (dictRef)
     {
         vr = dictRef->getVR();
         errorFlag = EC_Normal;
     }
+    dcmDataDict.unlock();
 }
 
 DcmTag::DcmTag(Uint16 g, Uint16 e, const DcmVR& avr)
@@ -148,7 +152,8 @@ DcmTag& DcmTag::operator= ( const DcmTagKey& key )
     delete[] tagName;
     tagName = NULL;
 
-    const DcmDictEntry *dictRef = dcmDataDict.findEntry(key);
+    const DcmDataDictionary& globalDataDict = dcmDataDict.rdlock();
+    const DcmDictEntry *dictRef = globalDataDict.findEntry(key);
     if (dictRef)
     {
         vr = dictRef->getVR();
@@ -157,6 +162,7 @@ DcmTag& DcmTag::operator= ( const DcmTagKey& key )
         vr.setVR(EVR_UNKNOWN);
         errorFlag = EC_InvalidTag;
     }
+    dcmDataDict.unlock();
     return *this;
 }
 
@@ -181,22 +187,30 @@ const char *DcmTag::getTagName()
   if (tagName) return tagName;
   
   const char *newTagName = NULL;
-  const DcmDictEntry *dictRef = dcmDataDict.findEntry(*this);
+  const DcmDataDictionary& globalDataDict = dcmDataDict.rdlock();
+  const DcmDictEntry *dictRef = globalDataDict.findEntry(*this);
   if (dictRef) newTagName=dictRef->getTagName();
   if (newTagName==NULL) newTagName = DcmTag_ERROR_TagName;
   tagName = new char[strlen(newTagName)+1];
   if (tagName) 
   {  
     strcpy(tagName,newTagName);
+    dcmDataDict.unlock();
     return tagName;
   }
+  dcmDataDict.unlock();
   return DcmTag_ERROR_TagName;
 }
 
 /*
 ** CVS/RCS Log:
 ** $Log: dctag.cc,v $
-** Revision 1.9  2000-04-14 16:01:00  meichel
+** Revision 1.10  2000-05-03 14:19:10  meichel
+** Added new class GlobalDcmDataDictionary which implements read/write lock
+**   semantics for safe access to the DICOM dictionary from multiple threads
+**   in parallel. The global dcmDataDict now uses this class.
+**
+** Revision 1.9  2000/04/14 16:01:00  meichel
 ** Restructured class DcmTag. Instances don't keep a permanent pointer
 **   to a data dictionary entry anymore. Required for MT applications.
 **

@@ -22,9 +22,9 @@
  *  Purpose: Hash table interface for DICOM data dictionary
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:15 $
+ *  Update Date:      $Date: 2000-05-03 14:19:08 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dchashdi.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -84,19 +84,19 @@ public:
 */
 class DcmHashDictIterator {
 private:
-    DcmHashDict* dict;
+    const DcmHashDict* dict;
     int hindex;
     OFBool iterating;
     DcmDictEntryListIterator iter;
     
-    void init(DcmHashDict *d, OFBool atEnd = OFFalse);
+    void init(const DcmHashDict *d, OFBool atEnd = OFFalse);
     void stepUp();
 
 public:
     DcmHashDictIterator()
       : dict(NULL), hindex(0), iterating(OFFalse), iter()
           { init(NULL); }
-    DcmHashDictIterator(DcmHashDict* d, OFBool atEnd = OFFalse)
+    DcmHashDictIterator(const DcmHashDict* d, OFBool atEnd = OFFalse)
       : dict(NULL), hindex(0), iterating(OFFalse), iter()
           { init(d, atEnd); }
     DcmHashDictIterator(const DcmHashDictIterator& i) 
@@ -143,10 +143,10 @@ private:
 
 protected:
     // calculate the hash function
-    int hash(const DcmTagKey* k);
+    int hash(const DcmTagKey* k) const;
     // bucket access
     DcmDictEntry* insertInList(DcmDictEntryList& list, DcmDictEntry* e);
-    DcmDictEntry* findInList(DcmDictEntryList& list, const DcmTagKey& k);
+    DcmDictEntry* findInList(DcmDictEntryList& list, const DcmTagKey& k) const;
     DcmDictEntry* removeInList(DcmDictEntryList& list, const DcmTagKey& k);
 
 public:
@@ -158,7 +158,7 @@ public:
     ~DcmHashDict();
 
     // count total number of entries
-    int size() { return entryCount; }
+    int size() const { return entryCount; }
 
     // clear the hash table of all entries
     void clear();
@@ -167,16 +167,16 @@ public:
     void put(DcmDictEntry* e);
 
     // lookup a key
-    const DcmDictEntry* get(const DcmTagKey& k);
+    const DcmDictEntry* get(const DcmTagKey& k) const;
 
     // delete a key's entry
     void del(const DcmTagKey& k);
 
     // iterator over the contents of the hash table
     friend class DcmHashDictIterator;
-    DcmHashDictIterator begin() 
+    DcmHashDictIterator begin() const
         { DcmHashDictIterator iter(this); return iter; }
-    DcmHashDictIterator end()   
+    DcmHashDictIterator end() const
         { DcmHashDictIterator iter(this, OFTrue); return iter; }
 
     // print some information about hash table bucket utilization
@@ -188,7 +188,12 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dchashdi.h,v $
-** Revision 1.8  2000-03-08 16:26:15  meichel
+** Revision 1.9  2000-05-03 14:19:08  meichel
+** Added new class GlobalDcmDataDictionary which implements read/write lock
+**   semantics for safe access to the DICOM dictionary from multiple threads
+**   in parallel. The global dcmDataDict now uses this class.
+**
+** Revision 1.8  2000/03/08 16:26:15  meichel
 ** Updated copyright header.
 **
 ** Revision 1.7  1999/03/31 09:24:39  meichel

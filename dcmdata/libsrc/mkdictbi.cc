@@ -24,9 +24,9 @@
  *  the dcmdata library.  
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-04-14 16:17:21 $
+ *  Update Date:      $Date: 2000-05-03 14:19:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/mkdictbi.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -229,13 +229,15 @@ main(int argc, char* argv[])
 
     prepareCmdLineArgs(argc, argv, "mkdictbi");
 
+    DcmDataDictionary& globalDataDict = dcmDataDict.wrlock();
+
     /* clear out any preloaded dictionary */
-    dcmDataDict.clear();
+    globalDataDict.clear();
 
     progname = argv[0];
     int i;
     for (i=1; i<argc; i++) { 
-        dcmDataDict.loadDictionary(argv[i]);
+        globalDataDict.loadDictionary(argv[i]);
     }
     
     fout = stdout;
@@ -301,8 +303,8 @@ main(int argc, char* argv[])
     ** all the entries into a sorted list.
     */
     DcmDictEntryList list;
-    DcmHashDictIterator iter(dcmDataDict.normalBegin());
-    DcmHashDictIterator last(dcmDataDict.normalEnd());
+    DcmHashDictIterator iter(globalDataDict.normalBegin());
+    DcmHashDictIterator last(globalDataDict.normalEnd());
     for (; iter != last; ++iter) {
         e = new DcmDictEntry(*(*iter));
         list.insertAndReplace(e);
@@ -314,8 +316,8 @@ main(int argc, char* argv[])
         printSimpleEntry(fout, *listIter, lastEntry);
     }
 
-    DcmDictEntryListIterator repIter(dcmDataDict.repeatingBegin());
-    DcmDictEntryListIterator repLast(dcmDataDict.repeatingEnd());
+    DcmDictEntryListIterator repIter(globalDataDict.repeatingBegin());
+    DcmDictEntryListIterator repLast(globalDataDict.repeatingEnd());
     DcmDictEntryListIterator nextIter;
     for (; repIter != repLast; ++repIter) {
         e = *repIter;
@@ -353,13 +355,19 @@ main(int argc, char* argv[])
     fprintf(fout, "\n");
     fprintf(fout, "\n");
 
+    dcmDataDict.unlock();
     return 0;
 }
 
 /*
 ** CVS/RCS Log:
 ** $Log: mkdictbi.cc,v $
-** Revision 1.18  2000-04-14 16:17:21  meichel
+** Revision 1.19  2000-05-03 14:19:10  meichel
+** Added new class GlobalDcmDataDictionary which implements read/write lock
+**   semantics for safe access to the DICOM dictionary from multiple threads
+**   in parallel. The global dcmDataDict now uses this class.
+**
+** Revision 1.18  2000/04/14 16:17:21  meichel
 ** Minor changes for thread safety.
 **
 ** Revision 1.17  2000/03/08 16:26:55  meichel

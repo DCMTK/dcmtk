@@ -22,9 +22,9 @@
  *  Purpose: Hash table interface for DICOM data dictionary
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-04-14 16:16:22 $
+ *  Update Date:      $Date: 2000-05-03 14:19:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dchashdi.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -110,7 +110,7 @@ DcmDictEntryList::find(const DcmTagKey& k)
 */
 
 void
-DcmHashDictIterator::init(DcmHashDict* d, OFBool atEnd)
+DcmHashDictIterator::init(const DcmHashDict* d, OFBool atEnd)
 {
     dict = d;
     hindex = 0;
@@ -202,7 +202,7 @@ DcmHashDict::clear()
 }
 
 int
-DcmHashDict::hash(const DcmTagKey* k) 
+DcmHashDict::hash(const DcmTagKey* k) const
 {
     /*
     ** Use a hash function based upon the relative number of 
@@ -422,13 +422,13 @@ DcmHashDict::put(DcmDictEntry* e)
 }
 
 DcmDictEntry* 
-DcmHashDict::findInList(DcmDictEntryList& list, const DcmTagKey& k)
+DcmHashDict::findInList(DcmDictEntryList& list, const DcmTagKey& k) const
 {
     return list.find(k);
 }
 
 const DcmDictEntry* 
-DcmHashDict::get(const DcmTagKey& k)
+DcmHashDict::get(const DcmTagKey& k) const
 {
     const DcmDictEntry* entry = NULL;
     Uint32 idx = hash(&k);
@@ -508,7 +508,12 @@ DcmHashDict::loadSummary(ostream& out)
 /*
 ** CVS/RCS Log:
 ** $Log: dchashdi.cc,v $
-** Revision 1.11  2000-04-14 16:16:22  meichel
+** Revision 1.12  2000-05-03 14:19:09  meichel
+** Added new class GlobalDcmDataDictionary which implements read/write lock
+**   semantics for safe access to the DICOM dictionary from multiple threads
+**   in parallel. The global dcmDataDict now uses this class.
+**
+** Revision 1.11  2000/04/14 16:16:22  meichel
 ** Dcmdata library code now consistently uses ofConsole for error output.
 **
 ** Revision 1.10  2000/03/08 16:26:36  meichel

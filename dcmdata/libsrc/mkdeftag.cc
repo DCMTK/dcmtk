@@ -22,9 +22,9 @@
  *  Purpose: Generate a C++ header defining symbolic names for DICOM Tags.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-04-14 16:17:21 $
+ *  Update Date:      $Date: 2000-05-03 14:19:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/mkdeftag.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -268,12 +268,14 @@ int main(int argc, char* argv[])
 
     prepareCmdLineArgs(argc, argv, "mkdeftag");
 
+    DcmDataDictionary& globalDataDict = dcmDataDict.wrlock();
+
     /* clear out global data dictionary */
-    dcmDataDict.clear();
+    globalDataDict.clear();
 
     progname = argv[0];
     for (i=1; i<argc; i++) { 
-        dcmDataDict.loadDictionary(argv[i]);
+        globalDataDict.loadDictionary(argv[i]);
     }
 
     fout = stdout;
@@ -319,7 +321,7 @@ int main(int argc, char* argv[])
     fputs("\n/*\n", fout);
     fputs("** Fixed Tags in ascending (gggg,eeee) order.\n", fout);
     fprintf(fout, "** Number of entries: %d\n", 
-           dcmDataDict.numberOfNormalTagEntries());
+           globalDataDict.numberOfNormalTagEntries());
     fputs("** Tags with a repeating component (repeating tags) are listed later.\n", fout);
     fputs("*/\n", fout);
 
@@ -328,8 +330,8 @@ int main(int argc, char* argv[])
     ** all the entries into a sorted list.
     */
     DcmDictEntryList list;
-    DcmHashDictIterator iter(dcmDataDict.normalBegin());
-    DcmHashDictIterator end(dcmDataDict.normalEnd());
+    DcmHashDictIterator iter(globalDataDict.normalBegin());
+    DcmHashDictIterator end(globalDataDict.normalEnd());
     for (; iter != end; ++iter) {
         e = new DcmDictEntry(*(*iter));
         list.insertAndReplace(e);
@@ -345,23 +347,29 @@ int main(int argc, char* argv[])
     fputs("** Tags where the group/element can vary (repeating tags).\n", 
           fout);
     fprintf(fout, "** Number of entries: %d\n", 
-           dcmDataDict.numberOfRepeatingTagEntries());
+           globalDataDict.numberOfRepeatingTagEntries());
     fputs("*/\n", fout);
 
-    DcmDictEntryListIterator repIter(dcmDataDict.repeatingBegin());
-    DcmDictEntryListIterator repLast(dcmDataDict.repeatingEnd());
+    DcmDictEntryListIterator repIter(globalDataDict.repeatingBegin());
+    DcmDictEntryListIterator repLast(globalDataDict.repeatingEnd());
     for (; repIter != repLast; ++repIter) {
         printDefined(fout, *repIter);
     }
     fputs("\n#endif /* !DCDEFTAG_H */\n", fout);
 
+    dcmDataDict.unlock();
     return 0;
 }
 
 /*
 ** CVS/RCS Log:
 ** $Log: mkdeftag.cc,v $
-** Revision 1.16  2000-04-14 16:17:21  meichel
+** Revision 1.17  2000-05-03 14:19:10  meichel
+** Added new class GlobalDcmDataDictionary which implements read/write lock
+**   semantics for safe access to the DICOM dictionary from multiple threads
+**   in parallel. The global dcmDataDict now uses this class.
+**
+** Revision 1.16  2000/04/14 16:17:21  meichel
 ** Minor changes for thread safety.
 **
 ** Revision 1.15  2000/03/08 16:26:54  meichel

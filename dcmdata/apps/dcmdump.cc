@@ -22,9 +22,9 @@
  *  Purpose: List the contents of a dicom file
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:05 $
+ *  Update Date:      $Date: 2000-05-03 14:19:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmdump.cc,v $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,7 +80,7 @@ static OFBool prependSequenceHierarchy = OFFalse;
 static int printTagCount = 0;
 static const int MAX_PRINT_TAG_NAMES = 1024;
 static const char* printTagNames[MAX_PRINT_TAG_NAMES];
-static const DcmDictEntry* printTagDictEntries[MAX_PRINT_TAG_NAMES];
+static const DcmTagKey* printTagKeys[MAX_PRINT_TAG_NAMES];
 
 static OFBool addPrintTagName(const char* tagName)
 {
@@ -92,20 +92,24 @@ static OFBool addPrintTagName(const char* tagName)
 
     int group = 0xffff;
     int elem = 0xffff;
-    if (sscanf( tagName, "%x,%x", &group, &elem ) != 2 ) {
+    if (sscanf( tagName, "%x,%x", &group, &elem ) != 2 )
+    {
 	/* it is a name */
-	const DcmDictEntry *dicent = dcmDataDict.findEntry(tagName);
+        const DcmDataDictionary& globalDataDict = dcmDataDict.rdlock();
+	const DcmDictEntry *dicent = globalDataDict.findEntry(tagName);
 	if( dicent == NULL ) {
 	    CERR << "error: unrecognised tag name: '" << tagName << "'\n";
+ 	    dcmDataDict.unlock();
 	    return OFFalse;
 	} else {
 	    /* note for later */
-	    printTagDictEntries[printTagCount] = dicent;
+	    printTagKeys[printTagCount] = new DcmTagKey(dicent->getKey());
 	}
+	dcmDataDict.unlock();
     } else {
 	/* tag name has format xxxx,xxxx */
 	/* do not lookup in dictionary, tag could be private */
-	printTagDictEntries[printTagCount] = NULL;
+	printTagKeys[printTagCount] = NULL;
     }
 
     printTagNames[printTagCount] = strcpy((char*)malloc(strlen(tagName)+1),tagName);
@@ -394,10 +398,8 @@ static int dumpFile(ostream & out,
     	    int elem = 0xffff;
     	    DcmTagKey searchKey;
     	    const char* tagName = printTagNames[i];
-    	    const DcmDictEntry* dictEntry = printTagDictEntries[i];
-
-    	    if (dictEntry != NULL) searchKey = dictEntry->getKey();
-	        else if (sscanf( tagName, "%x,%x", &group, &elem ) == 2 ) searchKey.set(group, elem);
+    	    if (printTagKeys[i]) searchKey = *printTagKeys[i];
+            else if (sscanf( tagName, "%x,%x", &group, &elem ) == 2 ) searchKey.set(group, elem);
             else {
         		CERR << "Internal ERROR in File " << __FILE__ << ", Line "
         		     << __LINE__ << endl 
@@ -426,7 +428,12 @@ static int dumpFile(ostream & out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
- * Revision 1.29  2000-03-08 16:26:05  meichel
+ * Revision 1.30  2000-05-03 14:19:05  meichel
+ * Added new class GlobalDcmDataDictionary which implements read/write lock
+ *   semantics for safe access to the DICOM dictionary from multiple threads
+ *   in parallel. The global dcmDataDict now uses this class.
+ *
+ * Revision 1.29  2000/03/08 16:26:05  meichel
  * Updated copyright header.
  *
  * Revision 1.28  2000/03/06 18:09:37  joergr
