@@ -22,9 +22,9 @@
  *  Purpose: DicomDocument (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-04-28 12:33:42 $
+ *  Update Date:      $Date: 2000-09-12 10:06:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/didocu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,11 +49,11 @@ DiDocument::DiDocument(const char *filename,
                        const unsigned long fstart,
                        const unsigned long fcount)
   : Object(NULL),
+    FileFormat(NULL),
     Xfer(EXS_Unknown),
     FrameStart(fstart),
     FrameCount(fcount),
-    Flags(flags),
-    DeleteObject(1)
+    Flags(flags)
 {
     DcmFileStream stream(filename, DCM_ReadMode);
     if (stream.Fail())
@@ -73,11 +73,11 @@ DiDocument::DiDocument(DcmStream &stream,
                        const unsigned long fstart,
                        const unsigned long fcount)
   : Object(NULL),
+    FileFormat(NULL),
     Xfer(EXS_Unknown),
     FrameStart(fstart),
     FrameCount(fcount),
-    Flags(flags),
-    DeleteObject(1)
+    Flags(flags)
 {
     if (stream.Fail())
     {
@@ -96,38 +96,45 @@ DiDocument::DiDocument(DcmObject *object,
                        const unsigned long flags,
                        const unsigned long fstart,
                        const unsigned long fcount)
-  : Object(object),
+  : Object(NULL),
+    FileFormat(NULL),
     Xfer(xfer),
     FrameStart(fstart),
     FrameCount(fcount),
-    Flags(flags),
-    DeleteObject(0)
+    Flags(flags)
 {
+    if (object != NULL)
+    {
+        if (object->ident() == EVR_fileFormat)
+            Object = ((DcmFileFormat *)object)->getDataset();
+        else
+            Object = object;
+    }
 }
 
 
 void DiDocument::Init(DcmStream &stream)
 {
-    Object = new DcmFileFormat;
-    if (Object != NULL)
+    FileFormat = new DcmFileFormat();
+    if (FileFormat != NULL)
     {
-        Object->transferInit();
-        if (((DcmFileFormat *)Object)->read(stream) != EC_Normal)
+        FileFormat->transferInit();
+        if (FileFormat->read(stream) != EC_Normal)
         {
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
             {
                 ofConsole.lockCerr() << "ERROR: can't read DICOM stream !" << endl;
                 ofConsole.unlockCerr();
             }
-            delete Object;
-            Object = NULL;
+            delete FileFormat;
+            FileFormat = NULL;
         }
         else
         {
-            Object->transferEnd();
-            DcmDataset *dataset = ((DcmFileFormat *)Object)->getDataset();
-            if (dataset != NULL)
-                Xfer = dataset->getOriginalXfer();
+            FileFormat->transferEnd();
+            Object = FileFormat->getDataset();
+            if (Object != NULL)
+                Xfer = ((DcmDataset *)Object)->getOriginalXfer();
         }
     }
 }
@@ -139,8 +146,7 @@ void DiDocument::Init(DcmStream &stream)
 
 DiDocument::~DiDocument()
 {
-    if (DeleteObject)
-        delete Object;
+    delete FileFormat;
 }
 
 
@@ -152,8 +158,9 @@ DcmElement *DiDocument::search(const DcmTagKey &tag,
     DcmStack stack;
     if (obj == NULL)
         obj = Object;
-    if ((obj != NULL) && (obj->search(tag, stack) == EC_Normal) && (stack.top()->getLength(Xfer) > 0))
-        return (DcmElement *)stack.top();
+    if ((obj != NULL) && (obj->search(tag, stack, ESM_fromHere, OFFalse /* searchIntoSub */) == EC_Normal) &&
+        (stack.top()->getLength(Xfer) > 0))
+            return (DcmElement *)stack.top();
     return NULL;
 }
 
@@ -166,8 +173,9 @@ int DiDocument::search(const DcmTagKey &tag,
     if (pstack.empty())
         pstack.push(Object);
     DcmObject *obj = pstack.top();
-    if ((obj != NULL) && (obj->search(tag, pstack) == EC_Normal) && (pstack.top()->getLength(Xfer) > 0))
-        return 1;
+    if ((obj != NULL) && (obj->search(tag, pstack, ESM_fromHere, OFFalse /* searchIntoSub */) == EC_Normal) &&
+        (pstack.top()->getLength(Xfer) > 0))
+            return 1;
     return 0;
 }
 
@@ -352,7 +360,12 @@ unsigned long DiDocument::getElemValue(const DcmElement *elem,
  *
  * CVS/RCS Log:
  * $Log: didocu.cc,v $
- * Revision 1.8  2000-04-28 12:33:42  joergr
+ * Revision 1.9  2000-09-12 10:06:14  joergr
+ * Corrected bug: wrong parameter for attribute search routine led to crashes
+ * when multiple pixel data attributes were contained in the dataset (e.g.
+ * IconImageSequence).
+ *
+ * Revision 1.8  2000/04/28 12:33:42  joergr
  * DebugLevel - global for the module - now derived from OFGlobal (MF-safe).
  *
  * Revision 1.7  2000/04/27 13:10:26  joergr
