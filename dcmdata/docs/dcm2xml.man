@@ -1,11 +1,11 @@
 /*!
 
-\anchor dcm2xml
-
 \page dcm2xml Convert DICOM file and data set to XML
+
 \section synopsis SYNOPSIS
+
 \verbatim
-    dcm2xml [options] dcmfile-in [xmlfile-out]
+dcm2xml [options] dcmfile-in [xmlfile-out]
 \endverbatim
 
 \section description DESCRIPTION
@@ -19,126 +19,122 @@ meta-header) it will attempt to guess the transfer syntax by examining the
 first few bytes of the file.  It is not always possible to correctly guess the
 transfer syntax and it is better to convert a data set to a file format
 whenever possible (using the \b dcmconv utility).  It is also possible to use
-the -f and -t[ieb] options to force \b dcm2xml to read a data set with a
+the \e -f and \e -t[ieb] options to force \b dcm2xml to read a data set with a
 particular transfer syntax.
-
 
 \section parameters PARAMETERS
 
 \verbatim
-dcmfile-in                   DICOM input filename to be converted
-xmlfile-out                  XML output filename (default: stdout)
+dcmfile-in   DICOM input filename to be converted
+xmlfile-out  XML output filename (default: stdout)
 \endverbatim
 
 \section options OPTIONS
 
 \subsection general_options general options:
 \verbatim
--h  --help
-      print this help text and exit
-    --version
-      print version information and exit
--d  --debug
-      debug mode, print debug information
+  -h   --help
+         print this help text and exit
+       --version
+         print version information and exit
+  -d   --debug
+         debug mode, print debug information
 \endverbatim
 
 \subsection input_options input options:
 \verbatim
 input file format:
 
-    +f   --read-file
-           read file format or data set (default)
+  +f   --read-file
+         read file format or data set (default)
 
-    -f   --read-dataset
-           read data set without file meta information
+  -f   --read-dataset
+         read data set without file meta information
 
 input transfer syntax (only with --read-dataset):
 
-    -t=  --read-xfer-auto
-           use TS recognition (default)
+  -t=  --read-xfer-auto
+         use TS recognition (default)
 
-    -te  --read-xfer-little
-           read with explicit VR little endian TS
+  -te  --read-xfer-little
+         read with explicit VR little endian TS
 
-    -tb  --read-xfer-big
-           read with explicit VR big endian TS
+  -tb  --read-xfer-big
+         read with explicit VR big endian TS
 
-    -ti  --read-xfer-implicit
-           read with implicit VR little endian TS
+  -ti  --read-xfer-implicit
+         read with implicit VR little endian TS
 
 long tag values:
 
-    +M   --load-all
-           load very long tag values (e.g. pixel data)
+  +M   --load-all
+         load very long tag values (e.g. pixel data)
 
-    -M   --load-short
-           do not load very long values (default)
+  -M   --load-short
+         do not load very long values (default)
 \endverbatim
 
 \subsection output_options output options:
 \verbatim
-   XML structure:
+XML structure:
 
-    +Xd  --add-dtd-reference
-           add reference to document type definition (DTD)
+  +Xd  --add-dtd-reference
+         add reference to document type definition (DTD)
 
-    +Xe  --embed-dtd-content
-           embed document type definition into XML document
+  +Xe  --embed-dtd-content
+         embed document type definition into XML document
 
-    +Xn  --use-xml-namespace
-           add XML namespace declaration to root element
+  +Xn  --use-xml-namespace
+         add XML namespace declaration to root element
 
-  DICOM elements:
+DICOM elements:
 
-    +Wb  --write-binary-data
-           write binary data of OB and OW elements
-           (default: off, be careful with --load-all)
+  +Wb  --write-binary-data
+         write binary data of OB and OW elements
+         (default: off, be careful with --load-all)
 
-    +Eb  --encode-base64
-           encode binary data as Base64 (RFC 2045, MIME)
+  +Eb  --encode-base64
+         encode binary data as Base64 (RFC 2045, MIME)
 \endverbatim
 
 \section notes NOTES
-\verbatim
+
 The basic structure of the XML output created from a DICOM image file looks
 like the following:
 
-  <?xml version="1.0" encoding="ISO-8859-1"?>
-  <!DOCTYPE file-format SYSTEM "dcm2xml.dtd">
-  <file-format xmlns="http://dicom.offis.de/dcmtk">
-    <meta-header xfer="1.2.840.10008.1.2.1" name="LittleEndianExplicit">
-      <element tag="0002,0000" vr="UL" vm="1" len="4"
-               name="MetaElementGroupLength">
-        166
-      </element>
-      ...
-      <element tag="0002,0013" vr="SH" vm="1" len="16"
-               name="ImplementationVersionName">
-        OFFIS_DCMTK_351
-      </element>
-    </meta-header>
-    <data-set xfer="1.2.840.10008.1.2" name="LittleEndianImplicit">
-      <element tag="0008,0005" vr="CS" vm="1" len="10"
-               name="SpecificCharacterSet">
-        ISO_IR 100
-      </element>
-      ...
-      <sequence tag="0028,3010" vr="SQ" card="2" name="VOILUTSequence">
-        <item card="3">
-          <element tag="0028,3002" vr="xs" vm="3" len="6"
-                   name="LUTDescriptor">
-            256\\0\\8
-          </element>
-          ...
-        </item>
+\verbatim
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE file-format SYSTEM "dcm2xml.dtd">
+<file-format xmlns="http://dicom.offis.de/dcmtk">
+  <meta-header xfer="1.2.840.10008.1.2.1" name="LittleEndianExplicit">
+    <element tag="0002,0000" vr="UL" vm="1" len="4" name="MetaElementGroupLength">
+      166
+    </element>
+    ...
+    <element tag="0002,0013" vr="SH" vm="1" len="16" name="ImplementationVersionName">
+      OFFIS_DCMTK_351
+    </element>
+  </meta-header>
+  <data-set xfer="1.2.840.10008.1.2" name="LittleEndianImplicit">
+    <element tag="0008,0005" vr="CS" vm="1" len="10" name="SpecificCharacterSet">
+      ISO_IR 100
+    </element>
+    ...
+    <sequence tag="0028,3010" vr="SQ" card="2" name="VOILUTSequence">
+      <item card="3">
+        <element tag="0028,3002" vr="xs" vm="3" len="6" name="LUTDescriptor">
+          256\\0\\8
+        </element>
         ...
-      </sequence>
+      </item>
       ...
-      <element tag="7fe0,0010" vr="OW" vm="1" len="262144"
-               name="PixelData" loaded="no" binary="hidden">
-      </element>
-    </data-set>
-  </file-format>
+    </sequence>
+    ...
+    <element tag="7fe0,0010" vr="OW" vm="1" len="262144" name="PixelData" loaded="no" binary="hidden">
+    </element>
+  </data-set>
+</file-format>
+\endverbatim
 
 The "file-format" and "meta-header" tags are absent for DICOM data sets.
 
@@ -146,6 +142,7 @@ The XML encoding is determined automatically from the DICOM attribute
 (0008,0005) "Specific Character Set" (if present) using the following
 mapping:
 
+\verbatim
 ASCII         "ISO_IR 6"    =>  "UTF-8"
 ISO Latin 1   "ISO_IR 100"  =>  "ISO-8859-1"
 ISO Latin 2   "ISO_IR 101"  =>  "ISO-8859-2"
@@ -156,34 +153,31 @@ Cyrillic      "ISO_IR 144"  =>  "ISO-8859-5"
 Arabic        "ISO_IR 127"  =>  "ISO-8859-6"
 Greek         "ISO_IR 126"  =>  "ISO-8859-7"
 Hebrew        "ISO_IR 138"  =>  "ISO-8859-8"
-
-Multiple character sets are not supported (only the first attribute
-value is mapped in case of value multiplicity).
-
-Attributes with very large value fields (e.g. pixel data) are not
-loaded by default.  They can be identified by the additional
-attribute "loaded" with a value of "no" (see example above).
-The command line option "--load-all" forces to load all value
-fields including the very long ones.
-
-Furthermore, binary information of OB and OW attributes are not
-written to the XML output file by default.  These elements can be
-identified by the additional attribute "binary" with a value of
-"hidden" (default is "no").  The command line option
-"--write-binary-data" causes also binary value fields to be printed
-(attribute value is "yes" or "base64").  But, be careful when using
-this option together with "--load-all" because of the large amounts
-of pixel data that might be printed to the output.
-
-Multiple values (i.e. where the DICOM value multiplicity is greater
-than 1) are separated by a backslash "\" (except for Base64 encoded
-data).  The "len" attribute indicates the number of bytes for the
-particular value field as stored in the DICOM data set, i.e. it might
-deviate from the XML encoded value length e.g. because of
-non-significant padding that has been removed.  If this attribute is
-missing in "sequence" or "item" start tags, the corresponding DICOM
-element has been stored with undefined length.
 \endverbatim
+
+Multiple character sets are not supported (only the first attribute value is
+mapped in case of value multiplicity).
+
+Attributes with very large value fields (e.g. pixel data) are not loaded by
+default.  They can be identified by the additional attribute "loaded" with a
+value of "no" (see example above).  The command line option \e --load-all
+forces to load all value fields including the very long ones.
+
+Furthermore, binary information of OB and OW attributes are not written to the
+XML output file by default.  These elements can be identified by the
+additional attribute "binary" with a value of "hidden" (default is "no").  The
+command line option \e --write-binary-data causes also binary value fields to
+be printed (attribute value is "yes" or "base64").  But, be careful when using
+this option together with \e --load-all because of the large amounts of pixel
+data that might be printed to the output.
+
+Multiple values (i.e. where the DICOM value multiplicity is greater than 1)
+are separated by a backslash "\" (except for Base64 encoded data).  The "len"
+attribute indicates the number of bytes for the particular value field as
+stored in the DICOM data set, i.e. it might deviate from the XML encoded value
+length e.g. because of non-significant padding that has been removed.  If this
+attribute is missing in "sequence" or "item" start tags, the corresponding
+DICOM element has been stored with undefined length.
 
 \section command_line COMMAND LINE
 
@@ -208,15 +202,27 @@ lines (an example is provided in file <em>dcmdata/apps/dumppat.txt</em>).
 
 \section environment ENVIRONMENT
 
-The dcm2xml utility will attempt to load DICOM data dictionaries specified in
-the \e DCMDICTPATH environment variable.  By default, if the \e DCMDICTPATH
-environment variable is not set, the file <em>/usr/local/dicom/lib/dicom.dic</em>
-will be loaded.  The default behaviour should be preferred and the
-\e DCMDICTPATH environment variable only used when alternative data
-dictionaries are required.  The \e DCMDICTPATH environment variable has the
-same format as the shell PATH variable in that a colon (":") separates
-entries.  The data dictionary code will attempt to load each file specified in
-the \e DCMDICTPATH environment variable.  It is an error if no data dictionary
-can be loaded.
+The \b dcm2xml utility will attempt to load DICOM data dictionaries specified
+in the \e DCMDICTPATH environment variable.  By default, i.e. if the
+\e DCMDICTPATH environment variable is not set, the file
+<em>/usr/local/dicom/lib/dicom.dic</em> (in fact the \e PREFIX as defined
+during \b configure is used) will be loaded unless the dictionary is built
+into the application (default for Windows).
+
+The default behaviour should be preferred and the \e DCMDICTPATH environment
+variable only used when alternative data dictionaries are required.  The
+\e DCMDICTPATH environment variable has the same format as the Unix shell
+\e PATH variable in that a colon (":") separates entries.  The data dictionary
+code will attempt to load each file specified in the \e DCMDICTPATH
+environment variable.  It is an error if no data dictionary can be loaded.
+
+\section see_also SEE ALSO
+
+<b>xml2dcm</b>(1)
+
+\section copyright COPYRIGHT
+
+Copyright (C) 2002-2003 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
+Germany.
 
 */

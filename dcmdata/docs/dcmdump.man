@@ -1,7 +1,5 @@
 /*!
 
-\anchor dcmdump
-
 \page dcmdump Dump DICOM file and data set
 
 \section synopsis SYNOPSIS
@@ -12,19 +10,19 @@ dcmdump [options] dcmfile-in...
 
 \section description DESCRIPTION
 
-The \b dcmdump utility dumps the contents of a DICOM file (file format or raw 
-data set) to stdout in textual form.  Attributes with very large value fields 
-(e.g. pixel data) can be described as "(not loaded)". String value fields will 
-be delimited with square breackets ([]).  Known UIDs will be displayed by 
-their names prefixed by an equals sign (e.g. =MRImageStorage).  Empty value 
+The \b dcmdump utility dumps the contents of a DICOM file (file format or raw
+data set) to stdout in textual form.  Attributes with very large value fields
+(e.g. pixel data) can be described as "(not loaded)". String value fields will
+be delimited with square breackets ([]).  Known UIDs will be displayed by
+their names prefixed by an equals sign (e.g. "=MRImageStorage").  Empty value
 fields are described as "(no value available)".
 
 If \b dcmdump reads a raw data set (DICOM data without a file format meta-
-header) it will attempt to guess the transfer syntax by examining the first 
-few bytes of the file.  It is not always possible to correctly guess the 
-transfer syntax and it is better to convert a data set to a file format 
-whenever possible (using the \b dcmconv utility).  It is also possible to use 
-the -f and -t[ieb] options to force \b dcmdump to read a dataset with a 
+header) it will attempt to guess the transfer syntax by examining the first
+few bytes of the file.  It is not always possible to correctly guess the
+transfer syntax and it is better to convert a data set to a file format
+whenever possible (using the \b dcmconv utility).  It is also possible to use
+the \e -f and \e -t[ieb] options to force \b dcmdump to read a dataset with a
 particular transfer syntax.
 
 \section parameters PARAMETERS
@@ -37,13 +35,13 @@ dcmfile-in  DICOM input filename to be dumped
 
 \subsection general_options general options
 \verbatim
--h     --help
+  -h   --help
          print this help text and exit
 
        --version
          print version information and exit
 
--d     --debug
+  -d   --debug
          debug mode, print debug information
 \endverbatim
 
@@ -102,9 +100,8 @@ error handling:
 searching:
 
   +P   --search  [t]ag: "xxxx,xxxx" or a data dictionary name
-         print the value of tag t
-         this option can be specified multiple times
-         (default: the complete file is printed)
+         print the value of tag t this option can be specified
+         multiple times (default: the complete file is printed)
 
   +s   --search-all
          print all instances of searched tags (default)
@@ -129,36 +126,44 @@ writing:
 
 \section command_line COMMAND LINE
 
-All command line tools use the following notation for parameters: square 
-brackets enclose optional values (0-1), three trailing dots indicate that 
+All command line tools use the following notation for parameters: square
+brackets enclose optional values (0-1), three trailing dots indicate that
 multiple values are allowed (1-n), a combination of both means 0 to n values.
 
-Command line options are distinguished from parameters by a leading '+' or '-' 
-sign, respectively.  Usually, order and position of command line options are 
-arbitrary (i.e. they can appear anywhere).  However, if options are mutually 
-exclusive the rightmost appearance is used.  This behaviour conforms to the 
+Command line options are distinguished from parameters by a leading '+' or '-'
+sign, respectively.  Usually, order and position of command line options are
+arbitrary (i.e. they can appear anywhere).  However, if options are mutually
+exclusive the rightmost appearance is used.  This behaviour conforms to the
 standard evaluation rules of common Unix shells.
 
-In addition, one or more command files can be specified using an '@' sign as a 
-prefix to the filename (e.g. <em>\@command.txt</em>).  Such a command argument 
-is replaced by the content of the corresponding text file (multiple 
-whitespaces are treated as a single separator) prior to any further 
-evaluation.  Please note that a command file cannot contain another command 
-file. This simple but effective approach allows to summarize common 
-combinations of options/parameters and avoids longish and confusing command 
+In addition, one or more command files can be specified using an '@' sign as a
+prefix to the filename (e.g. <em>\@command.txt</em>).  Such a command argument
+is replaced by the content of the corresponding text file (multiple
+whitespaces are treated as a single separator) prior to any further
+evaluation.  Please note that a command file cannot contain another command
+file. This simple but effective approach allows to summarize common
+combinations of options/parameters and avoids longish and confusing command
 lines (an example is provided in file <em>dcmdata/apps/dumppat.txt</em>).
 
 \section environment ENVIRONMENT
 
-The \b dcmdump utility will attempt to load DICOM data dictionaries specified 
-in the \e DCMDICTPATH environment variable.  By default, if the \e DCMDICTPATH 
-environment variable is not set, the file <em>/usr/local/dicom/lib/dicom.dic 
-</em> will be loaded.  The default behaviour should be preferred and the \e 
-DCMDICTPATH environment variable only used when alternative data dictionaries 
-are required. The \e DCMDICTPATH environment variable has the same format as 
-the shell \e PATH variable in that a colon (":") separates entries.  The data 
-dictionary code will attempt to load each file specified in the \e DCMDICTPATH 
+The \b dcmdump utility will attempt to load DICOM data dictionaries specified
+in the \e DCMDICTPATH environment variable.  By default, i.e. if the
+\e DCMDICTPATH environment variable is not set, the file
+<em>/usr/local/dicom/lib/dicom.dic</em> (in fact the \e PREFIX as defined
+during \b configure is used) will be loaded unless the dictionary is built
+into the application (default for Windows).
+
+The default behaviour should be preferred and the \e DCMDICTPATH environment
+variable only used when alternative data dictionaries are required.  The
+\e DCMDICTPATH environment variable has the same format as the Unix shell
+\e PATH variable in that a colon (":") separates entries.  The data dictionary
+code will attempt to load each file specified in the \e DCMDICTPATH
 environment variable.  It is an error if no data dictionary can be loaded.
+
+\section see_also SEE ALSO
+
+<b>dump2dcm</b>(1), <b>dcmconv</b>(1)
 
 \section copyright COPYRIGHT
 

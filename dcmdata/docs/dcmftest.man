@@ -1,55 +1,37 @@
 /*!
 
-\anchor dcmftest
-
 \page dcmftest Test if file uses dicom part 10 format
 
 \section synopsis SYNOPSIS
+
 \verbatim
 dcmftest file...
 \endverbatim
 
 \section description DESCRIPTION
+
 The \b dcmftest utility checks whether the files specified on the command line
 are DICOM files in part 10 format (with meta-header).
 
 \section parameters PARAMETERS
+
 \verbatim
 dcmfile-in  DICOM input filename to be dumped
 \endverbatim
 
 \section notes NOTES
+
 All files specified on the command line are checked for the presence of the
 DICOM "magic word" 'DICM' at byte position 128.  No attempt is made to parse
-the complete data set.  For each file the test result is printed to stdout in
+the complete data set.  For each file the test result is printed to \e stdout in
 the form "yes: <filename>\n" or "no: <filename>\n".  The utility terminates
 with a return code corresponding to the number of files found to be non-DICOM,
 i.e. if all files pass as DICOM files, the return value is 0.  This behaviour
 is intended for use in shell script programming.
 
-\section command_line COMMAND LINE
+\section see_also SEE ALSO
 
-All command line tools use the following notation for parameters: square
-brackets enclose optional values (0-1), three trailing dots indicate that
-multiple values are allowed (1-n), a combination of both means 0 to n values.
-
-Command line options are distinguished from parameters by a leading '+' or '-'
-sign, respectively.  Usually, order and position of command line options are
-arbitrary (i.e. they can appear anywhere).  However, if options are mutually
-exclusive the rightmost appearance is used.  This behaviour conforms to the
-standard evaluation rules of common Unix shells.
-
-In addition, one or more command files can be specified using an '@' sign as a
-prefix to the filename (e.g. <em>\@command.txt</em>).  Such a command argument
-is replaced by the content of the corresponding text file (multiple
-whitespaces are treated as a single separator) prior to any further
-evaluation.  Please note that a command file cannot contain another command
-file. This simple but effective approach allows to summarize common
-combinations of options/parameters and avoids longish and confusing command
-lines (an example is provided in file <em>dcmdata/apps/dumppat.txt</em>).
-
-\section environment ENVIRONMENT
-none
+<b>dcmgpdir</b>(1), <b>dcmmkdir</b>(1)
 
 \section copyright COPYRIGHT
 
