@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlayPlane (Header) - Multiframe Overlays UNTESTED !
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-22 14:36:30 $
+ *  Update Date:      $Date: 1998-12-23 11:37:42 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diovpln.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -69,14 +69,14 @@ class DiOverlayPlane
                    const Uint16 alloc);
                    
     DiOverlayPlane(const unsigned int group,
-                   const unsigned long rows,
-                   const unsigned long columns,
-                   const EM_Overlay mode,
                    const signed int left,
                    const signed int top,
+                   const unsigned long columns,
+                   const unsigned long rows,
                    const DcmOverlayData &data,
                    const DcmLongString &label,
-                   const DcmLongString &description);
+                   const DcmLongString &description,
+                   const EM_Overlay mode);
 
     DiOverlayPlane(DiOverlayPlane *plane,
                    const unsigned int bit,
@@ -157,7 +157,9 @@ class DiOverlayPlane
                      const Uint16 columns,
                      const Uint16 rows);
 
-    void show(const double, const double, const EM_Overlay);
+    void show(const double fore,
+              const double thresh,
+              const EM_Overlay mode);
 
     inline unsigned long getNumberOfFrames() const
     {
@@ -186,12 +188,16 @@ class DiOverlayPlane
     
     const char *getLabel() const
     {
-        return Label.c_str();
+        if (!Label.empty())
+            return Label.c_str();
+        return NULL;
     }
 
     const char *getDescription() const
     {
-        return Description.c_str();
+        if (!Description.empty())
+            return Description.c_str();
+        return NULL;
     }
 
     const Uint16 getGroupNumber() const
@@ -230,6 +236,7 @@ class DiOverlayPlane
     
     double Foreground;              // color of overlay plane ('0.0' = dark, '1.0' = bright)
     double Threshold;               // threshold value
+
     EM_Overlay Mode;                // overlay mode
     EM_Overlay DefaultMode;         // default overlay mode
 
@@ -240,8 +247,10 @@ class DiOverlayPlane
 
     int Valid;                      // validity status
     int Visible;                    // visibility status
-    
+
+
  private:
+
     unsigned long BitPos;           // current bit position
     unsigned long StartBitPos;      // starting bit position of current frame
 
@@ -308,34 +317,38 @@ inline void DiOverlayPlane::setStart(const Uint16 x,
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: diovpln.h,v $
-** Revision 1.4  1998-12-22 14:36:30  joergr
-** Added method to check whether plane is visible, to get plane mode and to
-** remove all planes. Set 'value' used for getOverlay/PlaneData().
-**
-** Revision 1.3  1998/12/16 16:37:51  joergr
-** Added method to export overlay planes (create 8-bit bitmap).
-** Implemented flipping and rotation of overlay planes.
-**
-** Revision 1.2  1998/12/14 17:28:18  joergr
-** Added methods to add and remove additional overlay planes (still untested).
-** Added methods to support overlay labels and descriptions.
-**
-** Revision 1.1  1998/11/27 15:45:09  joergr
-** Added copyright message.
-** Added method to detach pixel data if it is no longer needed.
-** Added methods and constructors for flipping and rotating, changed for
-** scaling and clipping.
-**
-** Revision 1.7  1998/07/01 08:39:26  joergr
-** Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
-** options), e.g. add copy constructors.
-**
-** Revision 1.6  1998/05/11 14:53:26  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
-
+ *
+ * CVS/RCS Log:
+ * $Log: diovpln.h,v $
+ * Revision 1.5  1998-12-23 11:37:42  joergr
+ * Changed order of parameters for addOverlay() and getOverlayData().
+ * Changed behaviour of getLabel/Description/Explanation() methods: return
+ * NULL if string empty, no empty string "".
+ *
+ * Revision 1.4  1998/12/22 14:36:30  joergr
+ * Added method to check whether plane is visible, to get plane mode and to
+ * remove all planes. Set 'value' used for getOverlay/PlaneData().
+ *
+ * Revision 1.3  1998/12/16 16:37:51  joergr
+ * Added method to export overlay planes (create 8-bit bitmap).
+ * Implemented flipping and rotation of overlay planes.
+ *
+ * Revision 1.2  1998/12/14 17:28:18  joergr
+ * Added methods to add and remove additional overlay planes (still untested).
+ * Added methods to support overlay labels and descriptions.
+ *
+ * Revision 1.1  1998/11/27 15:45:09  joergr
+ * Added copyright message.
+ * Added method to detach pixel data if it is no longer needed.
+ * Added methods and constructors for flipping and rotating, changed for
+ * scaling and clipping.
+ *
+ * Revision 1.7  1998/07/01 08:39:26  joergr
+ * Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
+ * options), e.g. add copy constructors.
+ *
+ * Revision 1.6  1998/05/11 14:53:26  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */
