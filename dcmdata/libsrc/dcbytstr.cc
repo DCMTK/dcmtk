@@ -9,10 +9,10 @@
 ** Purpose:
 ** Implementation of class DcmByteString
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-09 11:06:42 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1996-03-11 13:17:23 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcbytstr.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -118,17 +118,7 @@ E_Condition DcmByteString::get(char * & byteStringValue)
 // ********************************
 
 
-E_Condition DcmByteString::get(unsigned char * & byteStringValue)
-{
-    byteStringValue = (unsigned char *)this -> get();
-    return errorFlag;
-}
-
-
-// ********************************
-
-
-char * DcmByteString::get()
+char * DcmByteString::get(void)
 {
     char * value = (char *)this -> getValue();
 
@@ -369,7 +359,10 @@ E_Condition DcmByteString::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
-** Revision 1.4  1996-01-09 11:06:42  andreas
+** Revision 1.5  1996-03-11 13:17:23  hewett
+** Removed get function for unsigned char*
+**
+** Revision 1.4  1996/01/09 11:06:42  andreas
 ** New Support for Visual C++
 ** Correct problems with inconsistent const declarations
 ** Correct error in reading Item Delimitation Elements
