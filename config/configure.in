@@ -88,17 +88,27 @@ AC_SUBST(ARFLAGS)
 AC_SUBST(LIBEXT)
 
 dnl -------------------------------------------------------
-dnl Perform remaining tests with C++ compiler
-dnl -------------------------------------------------------
-AC_LANG_CPLUSPLUS
-
-dnl -------------------------------------------------------
 dnl Check special systems
 dnl -------------------------------------------------------
 
 AC_AIX
 AC_ISC_POSIX
 AC_SYS_LONG_FILE_NAMES
+
+dnl -------------------------------------------------------
+dnl Perform some tests with the C compiler, needed for dcmjpeg
+dnl -------------------------------------------------------
+
+AC_MY_C_INLINE
+AC_MY_C_CONST
+AC_MY_C_CHAR_UNSIGNED
+AC_MY_C_RIGHTSHIFT_UNSIGNED
+
+dnl -------------------------------------------------------
+dnl Perform remaining tests with C++ compiler
+dnl -------------------------------------------------------
+AC_LANG_CPLUSPLUS
+
 
 dnl -------------------------------------------------------
 dnl Check for Debug Mode

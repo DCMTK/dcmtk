@@ -7,13 +7,16 @@ dnl
 dnl Authors: Andreas Barth, Marco Eichelberg
 dnl
 dnl Last Update:  $Author: meichel $
-dnl Revision:     $Revision: 1.14 $
+dnl Revision:     $Revision: 1.15 $
 dnl Status:       $State: Exp $
 dnl
-dnl $Id: aclocal.m4,v 1.14 2000-12-20 09:54:29 meichel Exp $
+dnl $Id: aclocal.m4,v 1.15 2001-08-23 16:29:11 meichel Exp $
 dnl
 dnl $Log: aclocal.m4,v $
-dnl Revision 1.14  2000-12-20 09:54:29  meichel
+dnl Revision 1.15  2001-08-23 16:29:11  meichel
+dnl Added configure tests required by dcmjpeg module
+dnl
+dnl Revision 1.14  2000/12/20 09:54:29  meichel
 dnl Fixed remaining problems with configure on FreeBSD.
 dnl
 dnl Revision 1.13  2000/12/19 12:15:45  meichel
@@ -780,5 +783,151 @@ if test $REQUIRES_PTHREAD_OPTION = yes ; then
   CFLAGS="-pthread $CFLAGS"
 else
   AC_MSG_RESULT([no])
+fi
+])
+
+
+
+dnl AC_MY_C_INLINE works like the standard script AC_C_INLINE
+dnl but defines C_INLINE instead of redefining "inline" directly.
+
+AC_DEFUN(AC_MY_C_INLINE,
+[AC_CACHE_CHECK([for inline], ac_cv_my_c_inline,
+[ac_cv_my_c_inline=no
+for ac_kw in inline __inline__ __inline; do
+  AC_TRY_COMPILE(, [} $ac_kw foo() {], [ac_cv_my_c_inline=$ac_kw; break])
+done
+])
+case "$ac_cv_my_c_inline" in
+  inline | yes) AC_DEFINE(C_INLINE, inline) ;;
+  no) AC_DEFINE(C_INLINE, ) ;;
+  *)  AC_DEFINE_UNQUOTED(C_INLINE, $ac_cv_my_c_inline) ;;
+esac
+])
+
+
+dnl AC_MY_C_CONST works like the standard script AC_C_CONST
+dnl but defines C_CONST instead of redefining "inline" directly.
+
+AC_DEFUN(AC_MY_C_CONST,
+[dnl This message is consistent in form with the other checking messages,
+dnl and with the result message.
+AC_CACHE_CHECK([for working const], ac_cv_my_c_const,
+[AC_TRY_COMPILE(,
+changequote(<<, >>)dnl
+<<
+/* Ultrix mips cc rejects this.  */
+typedef int charset[2]; const charset x;
+/* SunOS 4.1.1 cc rejects this.  */
+char const *const *ccp;
+char **p;
+/* NEC SVR4.0.2 mips cc rejects this.  */
+struct point {int x, y;};
+static struct point const zero = {0,0};
+/* AIX XL C 1.02.0.0 rejects this.
+   It does not let you subtract one const X* pointer from another in an arm
+   of an if-expression whose if-part is not a constant expression */
+const char *g = "string";
+ccp = &g + (g ? g-g : 0);
+/* HPUX 7.0 cc rejects these. */
+++ccp;
+p = (char**) ccp;
+ccp = (char const *const *) p;
+{ /* SCO 3.2v4 cc rejects this.  */
+  char *t;
+  char const *s = 0 ? (char *) 0 : (char const *) 0;
+
+  *t++ = 0;
+}
+{ /* Someone thinks the Sun supposedly-ANSI compiler will reject this.  */
+  int x[] = {25, 17};
+  const int *foo = &x[0];
+  ++foo;
+}
+{ /* Sun SC1.0 ANSI compiler rejects this -- but not the above. */
+  typedef const int *iptr;
+  iptr p = 0;
+  ++p;
+}
+{ /* AIX XL C 1.02.0.0 rejects this saying
+     "k.c", line 2.27: 1506-025 (S) Operand must be a modifiable lvalue. */
+  struct s { int j; const int *ap[3]; };
+  struct s *b; b->j = 5;
+}
+{ /* ULTRIX-32 V3.1 (Rev 9) vcc rejects this */
+  const int foo = 10;
+}
+>>,
+changequote([, ])dnl
+ac_cv_my_c_const=yes, ac_cv_my_c_const=no)])
+if test $ac_cv_my_c_const = no; then
+  AC_DEFINE(C_CONST, )
+else
+  AC_DEFINE_UNQUOTED(C_CONST, const)
+fi
+])
+
+
+dnl AC_MY_C_CHAR_UNSIGNED works like the standard script AC_C_CHAR_UNSIGNED
+dnl but defines C_CHAR_UNSIGNED instead of __CHAR_UNSIGNED__.
+
+AC_DEFUN(AC_MY_C_CHAR_UNSIGNED,
+[AC_CACHE_CHECK(whether char is unsigned, ac_cv_my_c_char_unsigned,
+[if test "$GCC" = yes; then
+  # GCC predefines this symbol on systems where it applies.
+AC_EGREP_CPP(yes,
+[#ifdef __CHAR_UNSIGNED__
+  yes
+#endif
+], ac_cv_my_c_char_unsigned=yes, ac_cv_my_c_char_unsigned=no)
+else
+AC_TRY_RUN(
+[/* volatile prevents gcc2 from optimizing the test away on sparcs.  */
+#if !defined(__STDC__) || __STDC__ != 1
+#define volatile
+#endif
+main() {
+  volatile char c = 255; exit(c < 0);
+}], ac_cv_my_c_char_unsigned=yes, ac_cv_my_c_char_unsigned=no)
+fi])
+if test $ac_cv_my_c_char_unsigned = yes ; then
+  AC_DEFINE(C_CHAR_UNSIGNED)
+fi
+])
+
+
+dnl AC_MY_C_RIGHTSHIFT_UNSIGNED checks whether the right shift operation
+dnl is unsigned and, if yes, defines C_RIGHTSHIFT_UNSIGNED.
+
+AC_DEFUN(AC_MY_C_RIGHTSHIFT_UNSIGNED,
+[AC_CACHE_CHECK(whether right shift is unsigned, ac_cv_my_c_rightshift_unsigned,
+[
+AC_TRY_RUN(
+[/* See whether right-shift on a long is signed or not. */
+int is_shifting_signed (long arg)
+{
+  long res = arg >> 4;
+
+  if (res == -0x7F7E80CL) {	/* expected result for signed shift */
+    return 1;			/* right shift is signed */
+  }
+  /* see if unsigned-shift hack will fix it. */
+  /* we can't just test exact value since it depends on width of long... */
+  res |= (~0L) << (32-4);
+  if (res == -0x7F7E80CL) {	/* expected result now? */
+    return 0;			/* right shift is unsigned */
+  }
+  /* Right shift isn't acting as I expect it to, try it with unsigned anyway */
+  return 0;
+}
+
+int main()
+{
+  exit(is_shifting_signed(-0x7F7E80B1L));
+}
+], ac_cv_my_c_rightshift_unsigned=yes, ac_cv_my_c_rightshift_unsigned=no)
+])
+if test $ac_cv_my_c_rightshift_unsigned = yes ; then
+  AC_DEFINE(C_CHAR_UNSIGNED)
 fi
 ])

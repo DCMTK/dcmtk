@@ -576,6 +576,18 @@
 /* Define if we are compiling with any type of Multi-thread support */
 #define WITH_THREADS
 
+/* Define to the inline keyword supported by the C compiler, if any, or to the empty string */
+#define C_INLINE __inline
+
+/* Define to const if supported by the C compiler, or to the empty string */
+#define C_CONST const
+
+/* Define if char is unsigned on the C compiler */
+/* #undef C_CHAR_UNSIGNED */
+
+/* Define if >> is unsigned on the C compiler */
+/* #undef C_RIGHTSHIFT_UNSIGNED */
+
 #endif /* _WIN32 */
 
 #endif /* CFWIN32_H */
