@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-12-22 17:57:13 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: vorwerk $
+ *  Update Date:      $Date: 1999-01-04 13:10:30 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -297,7 +297,7 @@ DVInterface::getSeriesTime(){
 
 
 const char *
-DVInterface::getSeriesPerformingPhysicainsName(){
+DVInterface::getSeriesPerformingPhysiciansName(){
   if ((selectedSeries==NULL) || (selectedStudy==NULL)) return NULL; 
   getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec, selectedStudy, selectedSeries);
   return idxRec.PerformingPhysiciansName;
@@ -680,7 +680,10 @@ E_Condition DVInterface::saveFileFormat(const char *filename,
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.3  1998-12-22 17:57:13  meichel
+ *  Revision 1.4  1999-01-04 13:10:30  vorwerk
+ *  getSeriesPerformingPhysicainsName() changed in getSeriesPerformingPhysiciansName()
+ *
+ *  Revision 1.3  1998/12/22 17:57:13  meichel
  *  Implemented Presentation State interface for overlays,
  *    VOI LUTs, VOI windows, curves. Added test program that
  *    allows to add curve data to DICOM images.
