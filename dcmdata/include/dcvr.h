@@ -22,9 +22,9 @@
  *  Purpose: Definition of the DcmVR class for Value Representation
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-03-31 09:24:54 $
+ *  Update Date:      $Date: 1999-06-10 10:44:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvr.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,7 +36,7 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
-#if HAVE_STDLIB_H
+#ifdef HAVE_STDLIB_H
 #include <stdlib.h>
 #endif
 #include "dctypes.h"
@@ -164,7 +164,10 @@ public:
 /*
  * CVS/RCS Log:
  * $Log: dcvr.h,v $
- * Revision 1.10  1999-03-31 09:24:54  meichel
+ * Revision 1.11  1999-06-10 10:44:51  meichel
+ * Replaced some #if statements by more robust #ifdef
+ *
+ * Revision 1.10  1999/03/31 09:24:54  meichel
  * Updated copyright header in module dcmdata
  *
  *

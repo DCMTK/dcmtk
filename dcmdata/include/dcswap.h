@@ -22,9 +22,9 @@
  *  Purpose: byte order functions
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-03-31 09:24:48 $
+ *  Update Date:      $Date: 1999-06-10 10:44:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcswap.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,7 +36,7 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
-#if HAVE_STDLIB_H
+#ifdef HAVE_STDLIB_H
 #include <stdlib.h>
 #endif
 #include "dctypes.h"
@@ -78,7 +78,10 @@ inline void swap4Bytes(Uint8 * toSwap)
 /*
  * CVS/RCS Log:
  * $Log: dcswap.h,v $
- * Revision 1.6  1999-03-31 09:24:48  meichel
+ * Revision 1.7  1999-06-10 10:44:50  meichel
+ * Replaced some #if statements by more robust #ifdef
+ *
+ * Revision 1.6  1999/03/31 09:24:48  meichel
  * Updated copyright header in module dcmdata
  *
  *
