@@ -21,10 +21,10 @@
  *
  *  Purpose: Handle console applications (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-03 14:02:50 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-03-07 15:38:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofconapp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -74,7 +74,7 @@ OFBool OFConsoleApplication::parseCommandLine(OFCommandLine &cmd,
     switch (status)    
     {
         case OFCommandLine::PS_NoArguments:
-            if (cmd.getMinParamCount() > 0)
+            if ((cmd.getMinParamCount() > 0) || cmd.findOption("--help"))
                 printUsage();
             else
                 result = OFTrue;
@@ -222,7 +222,12 @@ void OFConsoleApplication::checkConflict(const char *firstOpt,
  *
  * CVS/RCS Log:
  * $Log: ofconapp.cc,v $
- * Revision 1.11  2000-03-03 14:02:50  meichel
+ * Revision 1.12  2000-03-07 15:38:54  joergr
+ * Changed behaviour of class OFConsoleApplication to support automatic
+ * evaluation of "--help" option for command line application with no
+ * mandatory parameter.
+ *
+ * Revision 1.11  2000/03/03 14:02:50  meichel
  * Implemented library support for redirecting error messages into memory
  *   instead of printing them to stdout/stderr for GUI applications.
  *

@@ -22,9 +22,9 @@
  *  Purpose: Handle console applications (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-13 16:37:15 $
+ *  Update Date:      $Date: 2000-03-07 15:38:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofconapp.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,7 +80,10 @@ class OFConsoleApplication
      */
     ~OFConsoleApplication();
     
-    /** parse command line
+    /** parse command line.
+     *  If the command line has no argument (in case at least one argument is required) and
+     *  if the command line has only one argument, namely "--help" or the specified shortcut,
+     *  (in all cases) the usage is printed (see printUsage).
      *
      ** @param  cmd       application name
      *  @param  argCount  number of arguments (argc)
@@ -201,7 +204,12 @@ class OFConsoleApplication
  *
  * CVS/RCS Log:
  * $Log: ofconapp.h,v $
- * Revision 1.7  1999-09-13 16:37:15  joergr
+ * Revision 1.8  2000-03-07 15:38:50  joergr
+ * Changed behaviour of class OFConsoleApplication to support automatic
+ * evaluation of "--help" option for command line application with no
+ * mandatory parameter.
+ *
+ * Revision 1.7  1999/09/13 16:37:15  joergr
  * Added methods for output of warning and other messages.
  * Added method to switch on/off all output messages (quiet mode).
  *

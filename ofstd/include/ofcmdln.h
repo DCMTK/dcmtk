@@ -21,10 +21,10 @@
  *
  *  Purpose: Handle command line arguments (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-03 14:02:46 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-03-07 15:38:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofcmdln.h,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -821,7 +821,8 @@ class OFCommandLine
 
     /** parses specified command line arguments (argc, argv).
      *  Additionally create internal structures for evaluation and return status indicating any errors
-     *  occuring during the parse process.
+     *  occuring during the parse process. If "--help" or the specified shortcut is the only command
+     *  line argument, the status code PS_NoArguments is returned.
      *
      ** @param  argCount  number of command line arguments stored in argValue
      *  @param  argValue  array where the command line arguments are stored
@@ -990,7 +991,12 @@ class OFCommandLine
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.h,v $
- * Revision 1.21  2000-03-03 14:02:46  meichel
+ * Revision 1.22  2000-03-07 15:38:49  joergr
+ * Changed behaviour of class OFConsoleApplication to support automatic
+ * evaluation of "--help" option for command line application with no
+ * mandatory parameter.
+ *
+ * Revision 1.21  2000/03/03 14:02:46  meichel
  * Implemented library support for redirecting error messages into memory
  *   instead of printing them to stdout/stderr for GUI applications.
  *
