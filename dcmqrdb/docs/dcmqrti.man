@@ -16,7 +16,7 @@ dcmqrti [options] peer...
 
 The \b dcmqrti program (telnet initiator) is an interactive character based program
 intended to be used for examining the dcmqrdb image databases and sending images
-contained withing these databases to Vendor nodes.  During a DICOM
+contained within these databases to Vendor nodes.  During a DICOM
 Demonstration the \b dcmqrti program can be activated by a Vendor by logging onto
 the computer running the \b dcmqrdb program.  Each vendor will have their own
 login account and the \b dcmqrti program will be started instead of a normal shell
@@ -24,10 +24,10 @@ when they login.
 
 The \b dcmqrti program takes one main argument, the hostname or vendor symbolic name
 (from the VendorTable in the configuration file) of a Vendor.  It then searches
-in the configuration file for all AE titles associated with this hostname/
-vendorname, and all storage areas accessable to these AE titles.  Thus only the
-accessable databases and peer applications discovered in the configuration file
-are available as choices within the \b dcmqrti user interface.
+in the configuration file for all AE titles associated with this hostname or
+vendor name, and all storage areas accessable to these AE titles.  Thus only
+the accessable databases and peer applications discovered in the configuration
+file are available as choices within the \b dcmqrti user interface.
 
 \section parameters PARAMETERS
 
@@ -400,7 +400,7 @@ environment variable.  It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1993-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
+Copyright (C) 1993-2005 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
 Germany.
 
 */
