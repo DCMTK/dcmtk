@@ -23,10 +23,10 @@
  *  Definitions of "well known" DICOM Unique Indentifiers,
  *  routines for finding and creating UIDs.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-07-03 14:25:30 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-10-09 12:50:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcuid.cc,v $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -161,6 +161,7 @@ static const UIDNameMap uidNameMap[] = {
     { UID_NuclearMedicineImageStorage,                        "NuclearMedicineImageStorage" },
     { UID_PETCurveStorage,                                    "PETCurveStorage" },
     { UID_PETImageStorage,                                    "PETImageStorage" },
+    { UID_ProcedureLog,                                       "ProcedureLog" },
     { UID_RETIRED_NuclearMedicineImageStorage,                "RETIRED_NuclearMedicineImageStorage" },
     { UID_RETIRED_UltrasoundImageStorage,                     "RETIRED_UltrasoundImageStorage" },
     { UID_RETIRED_UltrasoundMultiframeImageStorage,           "RETIRED_UltrasoundMultiframeImageStorage" },
@@ -333,6 +334,7 @@ const char* dcmStorageSOPClassUIDs[] = {
     UID_NuclearMedicineImageStorage,
     UID_PETCurveStorage,
     UID_PETImageStorage,
+    UID_ProcedureLog,
     UID_RETIRED_NuclearMedicineImageStorage,
     UID_RETIRED_UltrasoundImageStorage,
     UID_RETIRED_UltrasoundMultiframeImageStorage,
@@ -481,13 +483,14 @@ static const DcmModalityTable modalities[] = {
     { UID_MRImageStorage,                                      "MR",  2 * 256 * 256 },
     { UID_MRSpectroscopyStorage,                               "MRs", 512 * 512 * 256 },
     { UID_MammographyCADSR,                                    "SRm", 4096 },
-    { UID_MultiframeGrayscaleByteSecondaryCaptureImageStorage, "SCb",  1 * 512 * 512 },
-    { UID_MultiframeGrayscaleWordSecondaryCaptureImageStorage, "SCw",  2 * 512 * 512 },
-    { UID_MultiframeSingleBitSecondaryCaptureImageStorage,     "SCs",  1024 * 1024 },  /* roughly an A4 300dpi scan */
-    { UID_MultiframeTrueColorSecondaryCaptureImageStorage,     "SCc",  3 * 512 * 512 },
+    { UID_MultiframeGrayscaleByteSecondaryCaptureImageStorage, "SCb", 1 * 512 * 512 },
+    { UID_MultiframeGrayscaleWordSecondaryCaptureImageStorage, "SCw", 2 * 512 * 512 },
+    { UID_MultiframeSingleBitSecondaryCaptureImageStorage,     "SCs", 1024 * 1024 },  /* roughly an A4 300dpi scan */
+    { UID_MultiframeTrueColorSecondaryCaptureImageStorage,     "SCc", 3 * 512 * 512 },
     { UID_NuclearMedicineImageStorage,                         "NM",  2 * 64 * 64 },
     { UID_PETCurveStorage,                                     "PC",  4096 },
     { UID_PETImageStorage,                                     "PI",  512*512*2 },
+    { UID_ProcedureLog,                                        "SRp", 4096 },
     { UID_RETIRED_NuclearMedicineImageStorage,                 "NMr", 2 * 64 * 64 },
     { UID_RETIRED_UltrasoundImageStorage,                      "USr", 1 * 512 * 512 },
     { UID_RETIRED_UltrasoundMultiframeImageStorage,            "USr", 1 * 512 * 512 },
@@ -1074,7 +1077,10 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.46  2003-07-03 14:25:30  meichel
+** Revision 1.47  2003-10-09 12:50:25  joergr
+** Added support for SOP Class "Procedure Log" (Supplement 66).
+**
+** Revision 1.46  2003/07/03 14:25:30  meichel
 ** Added special handling for MinGW where getMacAddress() cannot
 **   be compiled because the <snmp.h> header file is not (yet) available.
 **
