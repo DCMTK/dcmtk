@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2003, OFFIS
+ *  Copyright (C) 1998-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: This application reads a DICOM image, adds a Curve and writes it back.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-29 08:41:17 $
+ *  Update Date:      $Date: 2004-02-04 15:44:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmkcrv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -420,7 +420,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmmkcrv.cc,v $
-** Revision 1.16  2003-08-29 08:41:17  joergr
+** Revision 1.17  2004-02-04 15:44:38  joergr
+** Removed acknowledgements with e-mail addresses from CVS log.
+**
+** Revision 1.16  2003/08/29 08:41:17  joergr
 ** Replaced wrong getValueAndCheckMin() by getValueAndCheckMinMax().
 ** Adapted type casts to new-style typecast operators defined in ofcast.h.
 **
@@ -439,8 +442,6 @@ int main(int argc, char *argv[])
 **
 ** Revision 1.12  2002/04/16 14:01:24  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
-** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
-** contribution.
 **
 ** Revision 1.11  2001/11/09 16:06:02  joergr
 ** Renamed some of the getValue/getParam methods to avoid ambiguities reported

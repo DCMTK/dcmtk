@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVInterface
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-04-29 10:13:56 $
- *  CVS/RCS Revision: $Revision: 1.88 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-02-04 15:48:23 $
+ *  CVS/RCS Revision: $Revision: 1.89 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -170,7 +170,7 @@ class DVInterface: public DVConfiguration
      *  After successfully storing the presentation state, the database index is updated
      *  to include the new object.
      *  This method releases under any circumstances the database lock if it exists.
-     *  @param replaceSOPInstanceUID flag indicating whether the 
+     *  @param replaceSOPInstanceUID flag indicating whether the
      *    SOP Instance UID should be replaced by a new UID.
      *    If true, a new UID is always generated. If false, a new
      *    UID is generated only if no UID has been assigned before.
@@ -183,7 +183,7 @@ class DVInterface: public DVConfiguration
      *  This method does not acquire a database lock and does not register
      *  the saved presentation state in the database.
      *  @param filename path and filename under which the presentation state is to be saved
-     *  @param replaceSOPInstanceUID flag indicating whether the 
+     *  @param replaceSOPInstanceUID flag indicating whether the
      *    SOP Instance UID should be replaced by a new UID.
      *    If true, a new UID is always generated. If false, a new
      *    UID is generated only if no UID has been assigned before.
@@ -1452,7 +1452,7 @@ class DVInterface: public DVConfiguration
 
     /* user management interface */
 
-    /** verifies the given password for the given user ID. This method tries 
+    /** verifies the given password for the given user ID. This method tries
      *  to load and decrypt the private key for the given user with the
      *  given password. If this fails, the password verification fails,
      *  otherwise the password verification succeeds.
@@ -1525,13 +1525,13 @@ class DVInterface: public DVConfiguration
     /* digital signatures */
 
     /** returns a string containing a complete HTML page with the
-     *  signature validation results for the last object of the 
+     *  signature validation results for the last object of the
      *  given type. Never returns NULL.
      *  @param objtype object type
      *  @return pointer to string with HTML page
      */
     const char *getCurrentSignatureValidationHTML(DVPSObjectType objtype) const;
-    
+
     /** returns a string containing a complete HTML page with the
      *  signature validation overview. Never returns NULL.
      *  @return pointer to string with HTML page
@@ -1543,7 +1543,7 @@ class DVInterface: public DVConfiguration
      *  @return digital signature status for object
      */
     DVPSSignatureStatus getCurrentSignatureStatus(DVPSObjectType objtype) const;
-  
+
     /** returns the combined status flag for the current image and presentation state.
      *  @return digital signature status for image and presentation state
      */
@@ -1554,19 +1554,19 @@ class DVInterface: public DVConfiguration
      *  @return number of digital signatures
      */
     unsigned long getNumberOfCorrectSignatures(DVPSObjectType objtype) const;
-  
+
     /** returns number of untrustworthy signatures for given object type.
      *  @param objtype object type
      *  @return number of digital signatures
      */
     unsigned long getNumberOfUntrustworthySignatures(DVPSObjectType objtype) const;
-  
+
     /** returns number of corrupt signatures for given object type.
      *  @param objtype object type
      *  @return number of digital signatures
      */
     unsigned long getNumberOfCorruptSignatures(DVPSObjectType objtype) const;
-  
+
     /** disables internal settings for image and presentation state.
      *  Called when a new SR object is loaded and the current
      *  image/presentation state are hidden consequently.
@@ -1652,7 +1652,7 @@ private:
     /** pointer to the handler object for digital signatures
      */
     DVSignatureHandler *pSignatureHandler;
-    
+
     /** pointer to the stored presentation state object (if any)
      */
     DVPresentationState *pStoredPState;
@@ -1889,14 +1889,15 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.88  2003-04-29 10:13:56  meichel
+ *  Revision 1.89  2004-02-04 15:48:23  joergr
+ *  Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ *  Revision 1.88  2003/04/29 10:13:56  meichel
  *  Moved configuration file parser from module dcmpstat to ofstd and renamed
  *    class to OFConfigFile. Cleaned up implementation (no more friend declarations).
  *
  *  Revision 1.87  2002/04/16 14:02:02  joergr
  *  Added configurable support for C++ ANSI standard includes (e.g. streams).
- *  Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- *  contribution.
  *
  *  Revision 1.86  2001/09/26 15:36:06  meichel
  *  Adapted dcmpstat to class OFCondition

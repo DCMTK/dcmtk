@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2003, OFFIS
+ *  Copyright (C) 2000-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,9 @@
  *    VR and IOD checker for Presentation States
  *
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-09-05 09:00:49 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-02-04 15:44:38 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1086,7 +1086,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpschk.cc,v $
- * Revision 1.15  2003-09-05 09:00:49  meichel
+ * Revision 1.16  2004-02-04 15:44:38  joergr
+ * Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ * Revision 1.15  2003/09/05 09:00:49  meichel
  * Updated presentation state checker to use class DcmPresentationState
  *   instead of DVPresentationState. Imported updated VR checking code
  *   from module dcmcheck.
@@ -1119,13 +1122,9 @@ int main(int argc, char *argv[])
  * Revision 1.7  2002/05/02 14:10:04  joergr
  * Added support for standard and non-standard string streams (which one is
  * supported is detected automatically via the configure mechanism).
- * Thanks again to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- * contribution.
  *
  * Revision 1.6  2002/04/16 14:01:27  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
- * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- * contribution.
  *
  * Revision 1.5  2001/11/09 16:04:51  joergr
  * Changed type of variable to avoid compiler warnings (comparison of signed

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2002, OFFIS
+ *  Copyright (C) 1998-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -24,10 +24,10 @@
  *    The LUT has a gamma curve shape or can be imported from an external
  *    file.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-09-03 16:01:01 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-02-04 15:44:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmklut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1092,7 +1092,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmmklut.cc,v $
- * Revision 1.36  2003-09-03 16:01:01  meichel
+ * Revision 1.37  2004-02-04 15:44:38  joergr
+ * Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ * Revision 1.36  2003/09/03 16:01:01  meichel
  * Fixed bug in command line evaluation
  *
  * Revision 1.35  2003/04/14 14:28:02  meichel
@@ -1121,13 +1124,9 @@ int main(int argc, char *argv[])
  * Revision 1.29  2002/05/02 14:10:03  joergr
  * Added support for standard and non-standard string streams (which one is
  * supported is detected automatically via the configure mechanism).
- * Thanks again to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- * contribution.
  *
  * Revision 1.28  2002/04/16 14:01:25  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
- * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- * contribution.
  *
  * Revision 1.27  2001/11/28 13:58:42  joergr
  * Check return value of DcmItem::insert() statements where appropriate to

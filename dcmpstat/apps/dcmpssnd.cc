@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2002, OFFIS
+ *  Copyright (C) 1999-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Presentation State Viewer - Network Send Component (Store SCU)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-29 13:16:28 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-02-04 15:44:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpssnd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1017,7 +1017,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpssnd.cc,v $
- * Revision 1.31  2002-11-29 13:16:28  meichel
+ * Revision 1.32  2004-02-04 15:44:38  joergr
+ * Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ * Revision 1.31  2002/11/29 13:16:28  meichel
  * Introduced new command line option --timeout for controlling the
  *   connection request timeout.
  *
@@ -1040,13 +1043,9 @@ int main(int argc, char *argv[])
  * Revision 1.26  2002/05/02 14:10:05  joergr
  * Added support for standard and non-standard string streams (which one is
  * supported is detected automatically via the configure mechanism).
- * Thanks again to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- * contribution.
  *
  * Revision 1.25  2002/04/16 14:01:28  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
- * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- * contribution.
  *
  * Revision 1.24  2002/01/08 10:31:47  joergr
  * Corrected spelling of function dcmGenerateUniqueIdentifier().

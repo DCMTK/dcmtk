@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2003, OFFIS
+ *  Copyright (C) 1999-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Presentation State Viewer - Print Spooler
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-09-05 14:31:32 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-02-04 15:44:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmprscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -205,7 +205,7 @@ printJob::printJob(const printJob& copy)
 /* static helper functions */
 
 static OFCondition spoolStoredPrintFile(
-  const char *filename, 
+  const char *filename,
   DVInterface &dvi,
   DcmTransportLayer *tlayer)
 {
@@ -360,7 +360,7 @@ static OFCondition spoolStoredPrintFile(
 }
 
 static OFCondition spoolJobList(
-  OFList<printJob *>&jobList, 
+  OFList<printJob *>&jobList,
   DVInterface &dvi,
   DcmTransportLayer *tlayer)
 {
@@ -1019,7 +1019,7 @@ int main(int argc, char *argv[])
       dcmGenerateUniqueIdentifier(randomUID);
       tLayer->addPRNGseed(randomUID, strlen(randomUID));
     }
-  
+
 #else
     DcmTransportLayer *tLayer = NULL;
     if (useTLS)
@@ -1126,7 +1126,7 @@ int main(int argc, char *argv[])
                break;
          }
        }
-#endif   
+#endif
        *logstream << endl;
     }
 
@@ -1228,7 +1228,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprscu.cc,v $
- * Revision 1.18  2003-09-05 14:31:32  meichel
+ * Revision 1.19  2004-02-04 15:44:38  joergr
+ * Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ * Revision 1.18  2003/09/05 14:31:32  meichel
  * Print SCU now supports TLS connections.
  *
  * Revision 1.17  2003/09/04 10:09:16  joergr
@@ -1259,8 +1262,6 @@ int main(int argc, char *argv[])
  *
  * Revision 1.10  2002/04/16 14:01:26  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
- * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- * contribution.
  *
  * Revision 1.9  2002/04/11 13:15:38  joergr
  * Replaced direct call of system routines by new standard date and time

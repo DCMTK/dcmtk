@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2003, OFFIS
+ *  Copyright (C) 1998-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -25,10 +25,10 @@
  *    of the presentation state. Non-grayscale transformations are
  *    ignored. If no presentation state is loaded, a default is created.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-09-05 14:30:08 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-02-04 15:44:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmp2pgm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -585,7 +585,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmp2pgm.cc,v $
- * Revision 1.33  2003-09-05 14:30:08  meichel
+ * Revision 1.34  2004-02-04 15:44:38  joergr
+ * Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ * Revision 1.33  2003/09/05 14:30:08  meichel
  * Introduced new API methods that allow Displayed Areas to be queried
  *   and set either relative to the image (ignoring rotation and flip) or
  *   in absolute values as defined in the standard.  Rotate and flip methods
@@ -605,8 +608,6 @@ int main(int argc, char *argv[])
  *
  * Revision 1.29  2002/04/16 14:01:25  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
- * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- * contribution.
  *
  * Revision 1.28  2001/11/09 16:06:04  joergr
  * Renamed some of the getValue/getParam methods to avoid ambiguities reported

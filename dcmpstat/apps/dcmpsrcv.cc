@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2003, OFFIS
+ *  Copyright (C) 1999-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-09-05 09:27:05 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-02-04 15:44:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsrcv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -640,10 +640,10 @@ static OFCondition storeSCP(
 }
 
 static void handleClient(
-  T_ASC_Association **assoc, 
-  const char *dbfolder, 
-  OFBool opt_verbose, 
-  OFBool opt_bitpreserving, 
+  T_ASC_Association **assoc,
+  const char *dbfolder,
+  OFBool opt_verbose,
+  OFBool opt_bitpreserving,
   OFBool useTLS,
   OFBool opt_correctUIDPadding)
 {
@@ -1491,7 +1491,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsrcv.cc,v $
- * Revision 1.44  2003-09-05 09:27:05  meichel
+ * Revision 1.45  2004-02-04 15:44:38  joergr
+ * Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ * Revision 1.44  2003/09/05 09:27:05  meichel
  * Modified code to use class DcmPresentationState instead of DVPresentationState.
  *
  * Revision 1.43  2003/09/04 10:10:59  joergr
@@ -1525,13 +1528,9 @@ int main(int argc, char *argv[])
  * Revision 1.36  2002/05/02 14:10:04  joergr
  * Added support for standard and non-standard string streams (which one is
  * supported is detected automatically via the configure mechanism).
- * Thanks again to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- * contribution.
  *
  * Revision 1.35  2002/04/16 14:01:28  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
- * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- * contribution.
  *
  * Revision 1.34  2002/01/08 10:31:46  joergr
  * Corrected spelling of function dcmGenerateUniqueIdentifier().
