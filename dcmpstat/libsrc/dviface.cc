@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-02 13:38:17 $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  Update Date:      $Date: 1999-03-03 13:29:33 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1427,6 +1427,34 @@ E_Condition DVInterface::deleteInstance(const char *studyUID,
 }
 
 
+OFBool DVInterface::isBartenTransformPossible()
+{
+    return (displayFunction != NULL);
+}
+
+
+E_Condition DVInterface::setAmbientLightValue(double value)
+{
+    if (displayFunction != NULL)
+    {
+        if (displayFunction->setAmbientLightValue(value))
+            return EC_Normal;
+    }
+    return EC_IllegalCall;
+}
+
+    
+E_Condition DVInterface::getAmbientLightValue(double &value)
+{
+    if (displayFunction != NULL)
+    {
+        value = displayFunction->getAmbientLightValue();
+        return EC_Normal;
+    }
+    return EC_IllegalCall;
+}
+
+
 E_Condition DVInterface::sendIOD(const char * targetID,
                                  const char * studyUID,
                                  const char * seriesUID,
@@ -2057,7 +2085,12 @@ void DVInterface::cleanChildren()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.46  1999-03-02 13:38:17  joergr
+ *  Revision 1.47  1999-03-03 13:29:33  joergr
+ *  Added methods to get and set ambient light value (re: Barten transformation).
+ *  Moved method 'isBartenTransformPossible()' from presentation state class to
+ *  interface class.
+ *
+ *  Revision 1.46  1999/03/02 13:38:17  joergr
  *  Corrected typo (E_Normal instead of EC_Normal).
  *
  *  Revision 1.45  1999/03/02 13:02:20  joergr
