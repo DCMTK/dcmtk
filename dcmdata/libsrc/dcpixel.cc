@@ -22,9 +22,9 @@
  *  Purpose: class DcmPixelData
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-27 16:55:54 $
+ *  Update Date:      $Date: 2002-09-10 15:24:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixel.cc,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -719,30 +719,13 @@ DcmPixelData::read(
         /* create a DcmXfer object based on the transfer syntax which was passed */
         DcmXfer ixferSyn(ixfer);
 
-        /* determine if the pixel data is captured in native (uncompressed) or encapsulated */
-        /* (compressed) format. (The type of format is specified by the transfer syntax.) The */
-        /* reading process depends on the answer to this question, since native and encapsulated */
-        /* formats differ from each other significantly. (see DICOM standard (year 2000) part 7, */
-        /* annex F) (or the corresponding section in a later version of the standard.) */
-        if (!ixferSyn.isEncapsulated())
-        {
-            /* the pixel data is captured in native (uncompressed) format */
-
-            /* if the transfer state is ERW_init, we need to prepare */
-            /* the reading of the pixel data from the stream. */
-            if (fTransferState == ERW_init)
-            {
-                current = original = repListEnd;
-                unencapsulatedVR = Tag.getEVR();
-                recalcVR();
-                existUnencapsulated = OFTrue;
-            }
-
-            /* conduct the reading process */
-            errorFlag = 
-                DcmPolymorphOBOW::read(inStream, ixfer, glenc, maxReadLength);
-        }
-        else
+        /* determine if the pixel data is captured in native (uncompressed) or encapsulated
+         * (compressed) format.  We only derive this information from the length field
+         * which is set to undefined length for encapsulated data because even in
+         * compressed transfer syntaxes the Icon Image Sequence may contain an
+         * uncompressed image. 
+         */
+        if (Length == DCM_UndefinedLength)
         {
             /* the pixel data is captured in encapsulated (compressed) format */
 
@@ -757,6 +740,17 @@ DcmPixelData::read(
                 original = current;
                 existUnencapsulated = OFFalse;
                 fTransferState = ERW_inWork;
+
+                if (! ixferSyn.isEncapsulated())
+                {
+                  /* Special case: we have encountered a compressed image 
+                   * although we're decoding an uncompressed transfer syntax.
+                   * This could be a compressed image stored without meta-header.
+                   * For now, we just accept the data element; however, any attempt
+                   * to write the dataset will fail because no suitable decoder
+                   * is known.
+                   */
+                }
             }
 
             /* conduct the reading process */
@@ -767,6 +761,32 @@ DcmPixelData::read(
             /* read; hence, the transfer state has to be set to ERW_ready */
             if (errorFlag == EC_Normal)
                 fTransferState = ERW_ready;
+        }
+        else
+        {
+            /* the pixel data is captured in native (uncompressed) format */
+
+            /* if the transfer state is ERW_init, we need to prepare */
+            /* the reading of the pixel data from the stream. */
+            if (fTransferState == ERW_init)
+            {
+                current = original = repListEnd;
+                unencapsulatedVR = Tag.getEVR();
+                recalcVR();
+                existUnencapsulated = OFTrue;
+
+                if (ixferSyn.isEncapsulated())
+                {
+                  /* Special case: we have encountered an uncompressed image 
+                   * although we're decoding an encapsulated transfer syntax.
+                   * This is probably an icon image.
+                   */
+                }
+            }
+
+            /* conduct the reading process */
+            errorFlag = 
+                DcmPolymorphOBOW::read(inStream, ixfer, glenc, maxReadLength);
         }
     }
 
@@ -1039,7 +1059,14 @@ OFCondition DcmPixelData::loadAllDataIntoMemory(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.cc,v $
-** Revision 1.23  2002-08-27 16:55:54  meichel
+** Revision 1.24  2002-09-10 15:24:04  meichel
+** Fixed two issues in parser. Dcmdata will now correctly parse compressed
+**   data sets containing uncompressed pixel data (e.g. icon images) and
+**   uncompressed data sets containing compressed pixel data (e.g. compressed
+**   file but meta-header missing). Note that write-back of such datasets will
+**   fail unless appropriate compression codecs are registered.
+**
+** Revision 1.23  2002/08/27 16:55:54  meichel
 ** Initial release of new DICOM I/O stream classes that add support for stream
 **   compression (deflated little endian explicit VR transfer syntax)
 **
