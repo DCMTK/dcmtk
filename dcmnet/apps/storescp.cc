@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-12-11 14:11:49 $
+ *  Update Date:      $Date: 2001-12-11 15:12:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1398,9 +1398,8 @@ storeSCPCallback(
           char *tmpstr2 = cbdata->imageFileName;
           char *tmpstr3 = strrchr( tmpstr2, PATH_SEPARATOR );
           int position = tmpstr3 - tmpstr2;
-          const int maxLen = strlen( tmpstr2 ) + strlen( subdirectoryName ) + 1 + 1;
-          subdirectoryPathAndName = new char[ maxLen ];
-          OFStandard::strlcpy( subdirectoryPathAndName, tmpstr2, maxLen );
+          subdirectoryPathAndName = new char[ strlen( tmpstr2 ) + strlen( subdirectoryName ) + 1 + 1 ];
+          OFStandard::strlcpy( subdirectoryPathAndName, tmpstr2, position+2 );
           strcat( subdirectoryPathAndName, subdirectoryName );
           delete subdirectoryName;
 
@@ -1941,7 +1940,10 @@ static void executeCommand( const OFString &cmd )
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.46  2001-12-11 14:11:49  joergr
+** Revision 1.47  2001-12-11 15:12:01  joergr
+** Fixed warning reported by cygwin gcc compiler.
+**
+** Revision 1.46  2001/12/11 14:11:49  joergr
 ** Replaced occurrences of strncpy by more secure strlcpy (see ofstd.h).
 ** Added type cast to keep old Sun compilers quiet.
 ** Modified description of command line option -tos.
