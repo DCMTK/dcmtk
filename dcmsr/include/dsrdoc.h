@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-05-07 12:49:31 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Update Date:      $Date: 2002-05-14 08:15:24 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,7 +48,7 @@
 
 /** Interface class for 'dcmsr' (DICOM Structured Reporting Documents).
  *  This class supports reading, writing, creation, printing and rendering of
- *  DICOM SR documents (according to supplement 23 final text).
+ *  DICOM SR documents (according to supplement 23 final text, PS 3.x - 2001).
  */
 class DSRDocument
   : protected DSRTypes
@@ -452,7 +452,7 @@ class DSRDocument
 
 
   // --- get DICOM string attributes (C++ string) ---
-  // --- (these functions return only return the first
+  // --- (these functions return only the first
   // ---  component of multi-valued attributes)
 
     /** get modality
@@ -609,15 +609,16 @@ class DSRDocument
   // --- set DICOM string attributes ---
 
     /** set specific character set.
-     *  The passed string must be a valid DICOM Code String (CS).  The
-     *  internal enumerated value is set accordingly.
+     *  The passed string must be a valid DICOM Code String (CS).  The internal enumerated
+     *  value is set accordingly.
      ** @param  string  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition setSpecificCharacterSet(const OFString &string);
 
     /** set document completion flag description.
-     *  The description can be removed from the DICOM dataset (type 3) by setting an empty string.
+     *  The description can be removed from the DICOM dataset (type 3) by setting an empty
+     *  string.
      ** @param  string  explanation of the value set for completion flag (optional, VR=LO)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
@@ -857,10 +858,9 @@ class DSRDocument
     void removeVerification();
 
     /** finalize the current state of the document.
-     *  A new document is originally not finalized but can be finalized using the method
-     *  finalizeDocument().  This flag is e.g. used to indicate whether the entire document
-     *  is digitally signed and, therefore, each newly added verifying observer would corrupt
-     *  all previous signatures.
+     *  A new document is originally not finalized but can be finalized using this method.
+     *  The flag is e.g. used to indicate whether the entire document is digitally signed and,
+     *  therefore, each newly added verifying observer would corrupt all previous signatures.
      *  NB: A document needs to be completed first in order to be finalized.  Some of the above
      *      document management functions do reset the flag (i.e. set the FinalizedFlag to OFFalse),
      *      other methods (e.g. the setXXX) do not change the flag though the state of the document
@@ -915,7 +915,7 @@ class DSRDocument
     E_CharacterSet     SpecificCharacterSetEnum;
 
     // DICOM attributes are listed ordered by module.
-    // The comments for each attribute describe the Name: (VR, VM, Type).
+    // The comments for each attribute describe "Name: (VR, VM, Type)".
 
     // --- SOP Common Module (M) ---
     // (see SR Document General Module)
@@ -1025,7 +1025,10 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
- *  Revision 1.26  2002-05-07 12:49:31  joergr
+ *  Revision 1.27  2002-05-14 08:15:24  joergr
+ *  Updated comments.
+ *
+ *  Revision 1.26  2002/05/07 12:49:31  joergr
  *  Added support for the Current Requested Procedure Evidence Sequence and the
  *  Pertinent Other Evidence Sequence to the dcmsr module.
  *

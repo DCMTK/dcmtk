@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-05-07 12:49:32 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Update Date:      $Date: 2002-05-14 08:14:51 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -239,7 +239,7 @@ class DSRTypes
      */
     //@{
 
-    /// print item position ("1.2.3") instead of line indention
+    /// print item position ("1.2.3") instead of line indentation
     static const size_t PF_printItemPosition;
 
     /// shorten long item value (e.g. long texts)
@@ -1108,7 +1108,10 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
- *  Revision 1.26  2002-05-07 12:49:32  joergr
+ *  Revision 1.27  2002-05-14 08:14:51  joergr
+ *  Updated comments.
+ *
+ *  Revision 1.26  2002/05/07 12:49:32  joergr
  *  Added support for the Current Requested Procedure Evidence Sequence and the
  *  Pertinent Other Evidence Sequence to the dcmsr module.
  *

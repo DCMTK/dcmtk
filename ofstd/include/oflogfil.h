@@ -22,9 +22,9 @@
  *  Purpose: Define general purpose facility for log file output
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:36:03 $
+ *  Update Date:      $Date: 2002-05-14 08:12:29 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/oflogfil.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -132,7 +132,7 @@ class OFLogFile
     }
 
     /** writes a message to the log file stream.
-     *  Each line has an indent of the specified number of spaces.
+     *  Each line has an indentation of the specified number of spaces.
      *  This method neither locks nor unlocks the stream - the called
      *  must ensure that the stream is locked and unlocked appropriately.
      *  @param message text to be written to the stream (newline with '\n')
@@ -205,7 +205,10 @@ class OFLogFile
  *
  * CVS/RCS Log:
  * $Log: oflogfil.h,v $
- * Revision 1.5  2002-04-16 13:36:03  joergr
+ * Revision 1.6  2002-05-14 08:12:29  joergr
+ * Updated comments.
+ *
+ * Revision 1.5  2002/04/16 13:36:03  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
  * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
  * contribution.
