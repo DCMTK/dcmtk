@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2003, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,10 +23,10 @@
  *  This file contains the interface to routines which provide
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2004-04-27 09:21:01 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-07-01 12:28:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcobject.h,v $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -112,6 +112,11 @@ class DcmObject
     /** destructor
      */
     virtual ~DcmObject();
+
+    /** clone method
+     *  @return deep copy of this object
+     */
+    virtual DcmObject *clone() const = 0;
 
     /** assignment operator
      *  @param obj object to be assigned/copied
@@ -319,7 +324,10 @@ class DcmObject
 /*
  * CVS/RCS Log:
  * $Log: dcobject.h,v $
- * Revision 1.36  2004-04-27 09:21:01  wilkens
+ * Revision 1.37  2004-07-01 12:28:25  meichel
+ * Introduced virtual clone method for DcmObject and derived classes.
+ *
+ * Revision 1.36  2004/04/27 09:21:01  wilkens
  * Fixed a bug in dcelem.cc which occurs when one is serializing a dataset
  * (that contains an attribute whose length value is coded with 2 bytes) into
  * a given buffer. Although the number of available bytes in the buffer was

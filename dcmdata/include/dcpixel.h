@@ -22,8 +22,8 @@
  *  Purpose: Interface of class DcmPixelData
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-04-07 13:55:56 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Update Date:      $Date: 2004-07-01 12:28:25 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -241,6 +241,14 @@ public:
 
     DcmPixelData &operator=(const DcmPixelData &obj);
 
+    /** clone method
+     *  @return deep copy of this object
+     */
+    virtual DcmObject *clone() const
+    {
+      return new DcmPixelData(*this);
+    }
+
     virtual OFCondition setVR(DcmEVR vr);
     virtual DcmEVR ident() const { return EVR_PixelData; }
 
@@ -441,7 +449,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.h,v $
-** Revision 1.25  2004-04-07 13:55:56  meichel
+** Revision 1.26  2004-07-01 12:28:25  meichel
+** Introduced virtual clone method for DcmObject and derived classes.
+**
+** Revision 1.25  2004/04/07 13:55:56  meichel
 ** Compressed image datasets containing uncompressed icon images
 **   are now correctly handled by the parser.
 **

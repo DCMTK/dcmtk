@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmItem
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-03-10 10:25:36 $
- *  CVS/RCS Revision: $Revision: 1.89 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-07-01 12:28:27 $
+ *  CVS/RCS Revision: $Revision: 1.90 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -130,7 +130,7 @@ DcmItem::DcmItem(const DcmItem &old)
                 old.elementList->seek(ELP_first);
                 do {
                     oldDO = old.elementList->get();
-                    newDO = copyDcmObject(oldDO);
+                    newDO = oldDO->clone();
                     elementList->insert(newDO, ELP_next);
                 } while (old.elementList->seek(ELP_next));
             }
@@ -279,133 +279,6 @@ E_TransferSyntax DcmItem::checkTransferSyntax(DcmInputStream & inStream)
     /* return determined transfer syntax */
     return transferSyntax;
 } // DcmItem::checkTransferSyntax
-
-
-// ********************************
-
-
-DcmObject* DcmItem::copyDcmObject(DcmObject *oldObj)
-{
-    DcmObject *newObj = NULL;
-    switch (oldObj->ident())
-    {
-         // byte strings:
-        case EVR_AE :
-            newObj = new DcmApplicationEntity(*OFstatic_cast(DcmApplicationEntity *, oldObj));
-            break;
-        case EVR_AS :
-            newObj = new DcmAgeString(*OFstatic_cast(DcmAgeString *, oldObj));
-            break;
-        case EVR_CS :
-            newObj = new DcmCodeString(*OFstatic_cast(DcmCodeString *, oldObj));
-            break;
-        case EVR_DA :
-            newObj = new DcmDate(*OFstatic_cast(DcmDate *, oldObj));
-            break;
-        case EVR_DS :
-            newObj = new DcmDecimalString(*OFstatic_cast(DcmDecimalString *, oldObj));
-            break;
-        case EVR_DT :
-            newObj = new DcmDateTime(*OFstatic_cast(DcmDateTime *, oldObj));
-            break;
-        case EVR_IS :
-            newObj = new DcmIntegerString(*OFstatic_cast(DcmIntegerString *, oldObj));
-            break;
-        case EVR_TM :
-            newObj = new DcmTime(*OFstatic_cast(DcmTime *, oldObj));
-            break;
-        case EVR_UI :
-            newObj = new DcmUniqueIdentifier(*OFstatic_cast(DcmUniqueIdentifier *, oldObj));
-            break;
-
-        // character strings:
-        case EVR_LO :
-            newObj = new DcmLongString(*OFstatic_cast(DcmLongString *, oldObj));
-            break;
-        case EVR_LT :
-            newObj = new DcmLongText(*OFstatic_cast(DcmLongText *, oldObj));
-            break;
-        case EVR_PN :
-            newObj = new DcmPersonName(*OFstatic_cast(DcmPersonName *, oldObj));
-            break;
-        case EVR_SH :
-            newObj = new DcmShortString(*OFstatic_cast(DcmShortString *, oldObj));
-            break;
-        case EVR_ST :
-            newObj = new DcmShortText(*OFstatic_cast(DcmShortText *, oldObj));
-            break;
-        case EVR_UT:
-            newObj = new DcmUnlimitedText(*OFstatic_cast(DcmUnlimitedText *, oldObj));
-            break;
-
-        // depending on byte order:
-        case EVR_AT :
-            newObj = new DcmAttributeTag(*OFstatic_cast(DcmAttributeTag *, oldObj));
-            break;
-        case EVR_SS :
-            newObj = new DcmSignedShort(*OFstatic_cast(DcmSignedShort *, oldObj));
-            break;
-        case EVR_xs :
-        case EVR_US :
-            newObj = new DcmUnsignedShort(*OFstatic_cast(DcmUnsignedShort *, oldObj));
-            break;
-        case EVR_SL :
-            newObj = new DcmSignedLong(*OFstatic_cast(DcmSignedLong *, oldObj));
-            break;
-        case EVR_up : // for (0004,eeee)
-            newObj = new DcmUnsignedLongOffset(*OFstatic_cast(DcmUnsignedLongOffset *, oldObj));
-            break;
-        case EVR_UL :
-            newObj = new DcmUnsignedLong(*OFstatic_cast(DcmUnsignedLong *, oldObj));
-            break;
-        case EVR_FL :
-            newObj = new DcmFloatingPointSingle(*OFstatic_cast(DcmFloatingPointSingle *, oldObj));
-            break;
-        case EVR_FD :
-            newObj = new DcmFloatingPointDouble(*OFstatic_cast(DcmFloatingPointDouble *, oldObj));
-            break;
-        case EVR_OF :
-            newObj = new DcmOtherFloat(*OFstatic_cast(DcmOtherFloat *, oldObj));
-            break;
-
-        // sequence:
-        case EVR_SQ :
-            newObj = new DcmSequenceOfItems(*OFstatic_cast(DcmSequenceOfItems *, oldObj));
-            break;
-
-        // 8 or 16 bit data:
-        case EVR_OB :
-        case EVR_OW :
-        case EVR_ox :
-        case EVR_UN :
-        case EVR_UNKNOWN :   // treat unknown elements as OB
-        case EVR_UNKNOWN2B : // treat unknown elements as OB
-            newObj = new DcmOtherByteOtherWord(*OFstatic_cast(DcmOtherByteOtherWord *, oldObj));
-            break;
-
-        // pixel data
-        case EVR_PixelData:
-            newObj = new DcmPixelData(*OFstatic_cast(DcmPixelData *, oldObj));
-            break;
-
-        // overlay data
-        case EVR_OverlayData:
-            newObj = new DcmOverlayData(*OFstatic_cast(DcmOverlayData *, oldObj));
-            break;
-
-        case EVR_na :
-        default :
-            ofConsole.lockCerr() << "DcmItem: Unable to copy unsupported element ("
-                 << hex << setfill('0')
-                 << setw(4) << oldObj->getGTag() << ","
-                 << setw(4) << oldObj->getETag()
-                 << dec << setfill(' ')
-                 << ") with ident()=" << DcmVR(oldObj->ident()).getVRName() << endl;
-            ofConsole.unlockCerr();
-            break;
-    }
-    return newObj;
-}
 
 
 // ********************************
@@ -2755,7 +2628,7 @@ OFCondition DcmItem::findAndCopyElement(const DcmTagKey &tagKey,
     if (status.good())
     {
         /* create copy of element */
-        newElement = OFstatic_cast(DcmElement *, copyDcmObject(elem));
+        newElement = OFstatic_cast(DcmElement *, elem->clone());
         if (newElement == NULL)
             status = EC_MemoryExhausted;
     } else
@@ -3337,7 +3210,10 @@ OFBool DcmItem::containsUnknownVR() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.89  2004-03-10 10:25:36  joergr
+** Revision 1.90  2004-07-01 12:28:27  meichel
+** Introduced virtual clone method for DcmObject and derived classes.
+**
+** Revision 1.89  2004/03/10 10:25:36  joergr
 ** Translated remaining German comments.
 **
 ** Revision 1.88  2004/02/04 16:02:56  joergr

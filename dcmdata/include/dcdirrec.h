@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmDirectoryRecord
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-13 17:36:46 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-07-01 12:28:25 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -149,6 +149,14 @@ public:
     DcmDirectoryRecord(const DcmDirectoryRecord &oldDirRec);
     virtual ~DcmDirectoryRecord();
 
+    /** clone method
+     *  @return deep copy of this object
+     */
+    virtual DcmObject *clone() const
+    {
+      return new DcmDirectoryRecord(*this);
+    }
+
     virtual DcmEVR ident() const;
 
     virtual void print(ostream &out,
@@ -219,7 +227,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdirrec.h,v $
-** Revision 1.26  2004-02-13 17:36:46  joergr
+** Revision 1.27  2004-07-01 12:28:25  meichel
+** Introduced virtual clone method for DcmObject and derived classes.
+**
+** Revision 1.26  2004/02/13 17:36:46  joergr
 ** Added support for new directory records RAW DATA and SPECTROSCOPY introduced
 ** with CP 343.
 **

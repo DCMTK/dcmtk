@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmCharString
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 12:49:08 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-07-01 12:28:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcchrstr.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -83,6 +83,15 @@ class DcmCharString
      *  @return reference to this object
      */
     DcmCharString &operator=(const DcmCharString &obj);
+
+    /** clone method
+     *  @return deep copy of this object
+     */
+    virtual DcmObject *clone() const
+    {
+      return new DcmCharString(*this);
+    }
+    
 };
 
 
@@ -92,7 +101,10 @@ class DcmCharString
 /*
  * CVS/RCS Log:
  * $Log: dcchrstr.h,v $
- * Revision 1.8  2002-12-06 12:49:08  joergr
+ * Revision 1.9  2004-07-01 12:28:25  meichel
+ * Introduced virtual clone method for DcmObject and derived classes.
+ *
+ * Revision 1.8  2002/12/06 12:49:08  joergr
  * Enhanced "print()" function by re-working the implementation and replacing
  * the boolean "showFullData" parameter by a more general integer flag.
  * Added doc++ documentation.

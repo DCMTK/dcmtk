@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2003, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmSequenceOfItems
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-08 13:29:13 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-07-01 12:28:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcsequen.h,v $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,6 +86,14 @@ public:
     virtual ~DcmSequenceOfItems();
 
     DcmSequenceOfItems &operator=(const DcmSequenceOfItems &obj);
+
+    /** clone method
+     *  @return deep copy of this object
+     */
+    virtual DcmObject *clone() const
+    {
+      return new DcmSequenceOfItems(*this);
+    }
 
     virtual DcmEVR ident() const { return EVR_SQ; }
     virtual OFBool isLeaf() const { return OFFalse; }
@@ -208,7 +216,10 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.h,v $
-** Revision 1.29  2003-08-08 13:29:13  joergr
+** Revision 1.30  2004-07-01 12:28:25  meichel
+** Introduced virtual clone method for DcmObject and derived classes.
+**
+** Revision 1.29  2003/08/08 13:29:13  joergr
 ** Added new method insertAtCurrentPos() which allows for a much more efficient
 ** insertion (avoids re-searching for the correct position).
 **

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmShortString
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 12:49:18 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-07-01 12:28:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrsh.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -71,6 +71,14 @@ class DcmShortString
      */
     DcmShortString &operator=(const DcmShortString &obj);
 
+    /** clone method
+     *  @return deep copy of this object
+     */
+    virtual DcmObject *clone() const
+    {
+      return new DcmShortString(*this);
+    }
+
     /** get element type identifier
      *  @return type identifier of this class (EVR_SH)
      */
@@ -94,7 +102,10 @@ class DcmShortString
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrsh.h,v $
-** Revision 1.12  2002-12-06 12:49:18  joergr
+** Revision 1.13  2004-07-01 12:28:25  meichel
+** Introduced virtual clone method for DcmObject and derived classes.
+**
+** Revision 1.12  2002/12/06 12:49:18  joergr
 ** Enhanced "print()" function by re-working the implementation and replacing
 ** the boolean "showFullData" parameter by a more general integer flag.
 ** Added doc++ documentation.

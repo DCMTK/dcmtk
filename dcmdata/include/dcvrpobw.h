@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -24,10 +24,10 @@
  *  between OB and OW (e.g. Tag PixelData, OverlayData). This class shall
  *  not be used directly in applications. No identification exists.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-09-12 14:07:16 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-07-01 12:28:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrpobw.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,6 +58,14 @@ public:
 
     DcmPolymorphOBOW &operator=(
         const DcmPolymorphOBOW &obj);
+
+    /** clone method
+     *  @return deep copy of this object
+     */
+    virtual DcmObject *clone() const
+    {
+      return new DcmPolymorphOBOW(*this);
+    }
 
     virtual OFCondition read(
         DcmInputStream & inStream,
@@ -113,7 +121,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrpobw.h,v $
-** Revision 1.11  2002-09-12 14:07:16  joergr
+** Revision 1.12  2004-07-01 12:28:25  meichel
+** Introduced virtual clone method for DcmObject and derived classes.
+**
+** Revision 1.11  2002/09/12 14:07:16  joergr
 ** Added method "createUint8Array" which works similar to the 16 bit variant.
 **
 ** Revision 1.10  2002/08/27 16:55:40  meichel

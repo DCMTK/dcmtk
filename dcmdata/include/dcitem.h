@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmItem
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-04 16:02:08 $
- *  CVS/RCS Revision: $Revision: 1.49 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-07-01 12:28:25 $
+ *  CVS/RCS Revision: $Revision: 1.50 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -77,6 +77,14 @@ class DcmItem
     /** destructor
      */
     virtual ~DcmItem();
+
+    /** clone method
+     *  @return deep copy of this object
+     */
+    virtual DcmObject *clone() const
+    {
+      return new DcmItem(*this);
+    }
 
     /** get type identifier
      *  @return type identifier of this class (EVR_item)
@@ -842,8 +850,6 @@ class DcmItem
     /// private unimplemented copy assignment operator
     DcmItem &operator=(const DcmItem &);
 
-    DcmObject*  copyDcmObject(DcmObject *oldObj);
-
     OFCondition searchSubFromHere(const DcmTagKey &tag,          // in
                                   DcmStack &resultStack,         // inout
                                   OFBool searchIntoSub );        // in
@@ -901,7 +907,10 @@ OFCondition nextUp(DcmStack &st);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
-** Revision 1.49  2004-02-04 16:02:08  joergr
+** Revision 1.50  2004-07-01 12:28:25  meichel
+** Introduced virtual clone method for DcmObject and derived classes.
+**
+** Revision 1.49  2004/02/04 16:02:08  joergr
 ** Removed pointer declaration from parameter "resultStack" in method
 ** findAndGetElements().
 **

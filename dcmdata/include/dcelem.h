@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2003, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmElement
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-07-04 13:25:35 $
+ *  Update Date:      $Date: 2004-07-01 12:28:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcelem.h,v $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,7 +46,7 @@
 class DcmInputStreamFactory;
 
 
-/** base class for all DICOM elements
+/** abstract base class for all DICOM elements
  */
 class DcmElement
   : public DcmObject
@@ -325,7 +325,10 @@ class DcmElement
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.h,v $
-** Revision 1.27  2003-07-04 13:25:35  meichel
+** Revision 1.28  2004-07-01 12:28:25  meichel
+** Introduced virtual clone method for DcmObject and derived classes.
+**
+** Revision 1.27  2003/07/04 13:25:35  meichel
 ** Replaced forward declarations for OFString with explicit includes,
 **   needed when compiling with HAVE_STD_STRING
 **

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002, OFFIS
+ *  Copyright (C) 2002-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmOtherFloat
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 12:06:39 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-07-01 12:28:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrof.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -71,6 +71,14 @@ class DcmOtherFloat
      */
     DcmOtherFloat &operator=(const DcmOtherFloat &obj);
 
+    /** clone method
+     *  @return deep copy of this object
+     */
+    virtual DcmObject *clone() const
+    {
+      return new DcmOtherFloat(*this);
+    }
+
     /** get element type identifier
      *  @return type identifier of this class (EVR_OF)
      */
@@ -89,7 +97,10 @@ class DcmOtherFloat
 /*
  * CVS/RCS Log:
  * $Log: dcvrof.h,v $
- * Revision 1.1  2002-12-06 12:06:39  joergr
+ * Revision 1.2  2004-07-01 12:28:25  meichel
+ * Introduced virtual clone method for DcmObject and derived classes.
+ *
+ * Revision 1.1  2002/12/06 12:06:39  joergr
  * Added support for new value representation Other Float String (OF).
  *
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2003, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmSignedLong
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-06-12 13:29:06 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-07-01 12:28:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrsl.h,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -70,6 +70,14 @@ class DcmSignedLong
      *  @return reference to this object
      */
     DcmSignedLong &operator=(const DcmSignedLong &obj);
+
+    /** clone method
+     *  @return deep copy of this object
+     */
+    virtual DcmObject *clone() const
+    {
+      return new DcmSignedLong(*this);
+    }
 
     /** get element type identifier
      *  @return type identifier of this class (EVR_SL)
@@ -158,7 +166,10 @@ class DcmSignedLong
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrsl.h,v $
-** Revision 1.18  2003-06-12 13:29:06  joergr
+** Revision 1.19  2004-07-01 12:28:25  meichel
+** Introduced virtual clone method for DcmObject and derived classes.
+**
+** Revision 1.18  2003/06/12 13:29:06  joergr
 ** Fixed inconsistent API documentation reported by Doxygen.
 **
 ** Revision 1.17  2002/12/06 12:49:18  joergr

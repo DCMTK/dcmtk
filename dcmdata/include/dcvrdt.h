@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmDateTime
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-04-16 12:49:25 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-07-01 12:28:25 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -70,6 +70,14 @@ class DcmDateTime
      *  @return reference to this object
      */
     DcmDateTime &operator=(const DcmDateTime &obj);
+
+    /** clone method
+     *  @return deep copy of this object
+     */
+    virtual DcmObject *clone() const
+    {
+      return new DcmDateTime(*this);
+    }
 
     /** get element type identifier
      *  @return type identifier of this class (EVR_DT)
@@ -285,7 +293,10 @@ class DcmDateTime
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrdt.h,v $
-** Revision 1.17  2004-04-16 12:49:25  joergr
+** Revision 1.18  2004-07-01 12:28:25  meichel
+** Introduced virtual clone method for DcmObject and derived classes.
+**
+** Revision 1.17  2004/04/16 12:49:25  joergr
 ** Restructured code to avoid default parameter values for "complex types" like
 ** OFString. Required for Sun CC 2.0.1.
 **
