@@ -32,6 +32,7 @@ int main(int argc, char *argv[])
     if (argc < 2)
     {
         cout << "mkreport: Create DICOM SR documents" << endl;
+        cout << "----------------------------------------------------" << endl;
         cout << "ki = IHE Year 2 key image note (empty)" << endl;
         cout << "si = IHE Year 2 simple image report (empty)" << endl;
         cout << "01 = Consultation Report (text only)" << endl;
@@ -42,10 +43,12 @@ int main(int argc, char *argv[])
         cout << "06 = Radiology report with image reference (dentist)" << endl;
         cout << "07 = Same as 06 with image/pstate reference" << endl;
         cout << "08 = Same as 06 with composite (pstate) reference" << endl;
+        cout << "----------------------------------------------------" << endl;
     } else {
         DSRDocument *doc = new DSRDocument();
         if (doc != NULL)
         {
+            OFString studyUID_ki, studyUID_01, studyUID_06;
             OFBool writeFile = OFTrue;
             doc->setLogStream(&ofConsole);
             for (int i = 1; i < argc; i++)
@@ -54,12 +57,15 @@ int main(int argc, char *argv[])
                 if (strcmp(argv[i], "ki") == 0)
                 {
                     doc->createNewDocument(DSRTypes::DT_BasicTextSR);
+                    doc->getStudyInstanceUID(studyUID_ki);
+                    doc->setStudyDescription("OFFIS Structured Reporting Templates");
+                    doc->setSeriesDescription("IHE Year 2 - Key Image Note");
                     doc->setSpecificCharacterSetType(DSRTypes::CS_Latin1);
 
-                    doc->setPatientsName("IHE^Year 2^Key^Image^Note");
+                    doc->setPatientsName("Last Name^First Name");
                     doc->setPatientsSex("O");
                     doc->setManufacturer("Kuratorium OFFIS e.V.");
-                    doc->setReferringPhysiciansName("Riesmeier^Jörg");
+                    doc->setReferringPhysiciansName("Last Name^First Name");
 
                     doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
                     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("0000", OFFIS_CODING_SCHEME_DESIGNATOR, "Document Title"));
@@ -88,12 +94,16 @@ int main(int argc, char *argv[])
                 } else if (strcmp(argv[i], "si") == 0)
                 {
                     doc->createNewDocument(DSRTypes::DT_BasicTextSR);
+                    if (studyUID_ki.length() > 0)
+                        doc->createNewSeries(studyUID_ki);
+                    doc->setStudyDescription("OFFIS Structured Reporting Templates");
+                    doc->setSeriesDescription("IHE Year 2 - Simple Image Report");
                     doc->setSpecificCharacterSetType(DSRTypes::CS_Latin1);
 
-                    doc->setPatientsName("IHE^Year 2^Simple^Image^Report");
+                    doc->setPatientsName("Last Name^First Name");
                     doc->setPatientsSex("O");
                     doc->setManufacturer("Kuratorium OFFIS e.V.");
-                    doc->setReferringPhysiciansName("Riesmeier^Jörg");
+                    doc->setReferringPhysiciansName("Last Name^First Name");
 
                     doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
                     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("0000", OFFIS_CODING_SCHEME_DESIGNATOR, "Document Title"));
@@ -131,6 +141,9 @@ int main(int argc, char *argv[])
                 } else if (strcmp(argv[i], "01") == 0)
                 {
                     doc->createNewDocument(DSRTypes::DT_BasicTextSR);
+                    doc->setStudyDescription("OFFIS Structured Reporting Samples");
+                    doc->getStudyInstanceUID(studyUID_01);
+                    doc->setSeriesDescription("Basic Text Report");
 
                     doc->setPatientsName("Osterman^Phillip^B.");
                     doc->setPatientsBirthDate("19220909");
@@ -162,6 +175,10 @@ int main(int argc, char *argv[])
                 } else if (strcmp(argv[i], "02") == 0)
                 {
                     doc->createNewDocument(DSRTypes::DT_EnhancedSR);
+                    if (studyUID_01.length() > 0)
+                        doc->createNewSeries(studyUID_01);
+                    doc->setStudyDescription("OFFIS Structured Reporting Samples");
+                    doc->setSeriesDescription("Text Report with CODE, NUM and PNAME content items");
 
                     doc->setPatientsName("Osterman^Phillip B.");
                     doc->setPatientsBirthDate("19220909");
@@ -254,6 +271,8 @@ int main(int argc, char *argv[])
                 } else if (strcmp(argv[i], "03") == 0)
                 {
                     doc->createNewDocument(DSRTypes::DT_BasicTextSR);
+                    doc->setStudyDescription("OFFIS Structured Reporting Samples");
+                    doc->setSeriesDescription("Text Report with different sections");
 
                     doc->setPatientsName("Silverman^Elaine J.");
                     doc->setPatientsBirthDate("19811010");
@@ -289,6 +308,8 @@ int main(int argc, char *argv[])
                 } else if (strcmp(argv[i], "04") == 0)
                 {
                     doc->createNewDocument(DSRTypes::DT_BasicTextSR);
+                    doc->setStudyDescription("OFFIS Structured Reporting Samples");
+                    doc->setSeriesDescription("Text Report with hierarchical structure");
 
                     doc->setPatientsName("Mars^Verna Marie^de");
                     doc->setPatientsBirthDate("19320810");
@@ -355,6 +376,8 @@ int main(int argc, char *argv[])
                 } else if (strcmp(argv[i], "05") == 0)
                 {
                     doc->createNewDocument(DSRTypes::DT_BasicTextSR);
+                    doc->setStudyDescription("OFFIS Structured Reporting Samples");
+                    doc->setSeriesDescription("Text Report with different sections");
 
                     doc->setPatientsName("Silverman^Elaine J.");
                     doc->setPatientsBirthDate("19811010");
@@ -398,6 +421,9 @@ int main(int argc, char *argv[])
                 } else if (strcmp(argv[i], "06") == 0)
                 {
                     doc->createNewDocument(DSRTypes::DT_BasicTextSR);
+                    doc->getStudyInstanceUID(studyUID_06);
+                    doc->setStudyDescription("OFFIS Structured Reporting Samples");
+                    doc->setSeriesDescription("Report with Image Reference");
 
                     doc->setPatientsName("Russel^William");
                     doc->setPatientsBirthDate("19900808");
@@ -432,6 +458,10 @@ int main(int argc, char *argv[])
                 } else if (strcmp(argv[i], "07") == 0)
                 {
                     doc->createNewDocument(DSRTypes::DT_BasicTextSR);
+                    if (studyUID_06.length() > 0)
+                        doc->createNewSeries(studyUID_06);
+                    doc->setStudyDescription("OFFIS Structured Reporting Samples");
+                    doc->setSeriesDescription("Report with Image and Presentation State Reference");
 
                     doc->setPatientsName("Russel^William");
                     doc->setPatientsBirthDate("19900808");
@@ -466,6 +496,10 @@ int main(int argc, char *argv[])
                 } else if (strcmp(argv[i], "08") == 0)
                 {
                     doc->createNewDocument(DSRTypes::DT_BasicTextSR);
+                    if (studyUID_06.length() > 0)
+                        doc->createNewSeries(studyUID_06);
+                    doc->setStudyDescription("OFFIS Structured Reporting Samples");
+                    doc->setSeriesDescription("Report with Presentation State Reference");
 
                     doc->setPatientsName("Russel^William");
                     doc->setPatientsBirthDate("19900808");
