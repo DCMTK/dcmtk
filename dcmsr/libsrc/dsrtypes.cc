@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-13 07:52:27 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-10-13 08:53:33 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -82,7 +82,7 @@ const size_t DSRTypes::PF_printAllCodes            = DSRTypes::PF_printConceptNa
  *  type declarations  *
  *---------------------*/
 
-typedef struct S_DocumentTypeNameMap
+struct S_DocumentTypeNameMap
 {
     DSRTypes::E_DocumentType Type;
     const char *SOPClassUID;
@@ -90,7 +90,7 @@ typedef struct S_DocumentTypeNameMap
 };
 
 
-typedef struct S_RelationshipTypeNameMap
+struct S_RelationshipTypeNameMap
 {
     DSRTypes::E_RelationshipType Type;
     const char *DefinedTerm;
@@ -98,7 +98,7 @@ typedef struct S_RelationshipTypeNameMap
 };
 
 
-typedef struct S_ValueTypeNameMap
+struct S_ValueTypeNameMap
 {
     DSRTypes::E_ValueType Type;
     const char *DefinedTerm;
@@ -106,7 +106,7 @@ typedef struct S_ValueTypeNameMap
 };
 
 
-typedef struct S_GraphicTypeNameMap
+struct S_GraphicTypeNameMap
 {
     DSRTypes::E_GraphicType Type;
     const char *EnumeratedValue;
@@ -114,21 +114,21 @@ typedef struct S_GraphicTypeNameMap
 };
 
 
-typedef struct S_ContinuityOfContentNameMap
+struct S_ContinuityOfContentNameMap
 {
     DSRTypes::E_ContinuityOfContent Type;
     const char *EnumeratedValue;
 };
 
 
-typedef struct S_CompletionFlagNameMap
+struct S_CompletionFlagNameMap
 {
     DSRTypes::E_CompletionFlag Type;
     const char *EnumeratedValue;
 };
 
 
-typedef struct S_VerificationFlagNameMap
+struct S_VerificationFlagNameMap
 {
     DSRTypes::E_VerificationFlag Type;
     const char *EnumeratedValue;
@@ -873,7 +873,10 @@ E_Condition DSRTypes::appendStream(ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
- *  Revision 1.1  2000-10-13 07:52:27  joergr
+ *  Revision 1.2  2000-10-13 08:53:33  joergr
+ *  Removed typedef statements to keep MSVC++ quiet.
+ *
+ *  Revision 1.1  2000/10/13 07:52:27  joergr
  *  Added new module 'dcmsr' providing access to DICOM structured reporting
  *  documents (supplement 23).  Doc++ documentation not yet completed.
  *
