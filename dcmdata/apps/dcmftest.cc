@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Test if a file uses DICOM Part 10 format.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 12:07:17 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-11-13 10:53:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmftest.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,43 +58,43 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 
 int main(int argc, char *argv[])
 {
-    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "test if file uses dicom part 10 format", rcsid);
+    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Test if file uses DICOM part 10 format", rcsid);
     OFCommandLine cmd;
 
     /* evaluate command line */
     cmd.addParam("file", OFCmdParam::PM_MultiMandatory);
     app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards);
-	
+    
     int badCount = 0;
     int count = cmd.getParamCount();
     const char *fname = NULL;
     for (int i=1; i<=count; i++) {
         cmd.getParam(i, fname);
-	OFBool ok = OFFalse;
-	FILE* f = NULL;
+        OFBool ok = OFFalse;
+        FILE* f = NULL;
 
         if (fname && (strlen(fname) > 0)) f = fopen(fname, "rb");
-	if (f == 0) {
-	    ok = OFFalse;
-	} else {
-	    char signature[4];
-	    if ((fseek(f, DCM_PreambleLen, SEEK_SET) < 0) || 
-		(fread(signature, 1, DCM_MagicLen, f) != DCM_MagicLen)) {
-		ok = OFFalse;
-	    } else if (strncmp(signature, DCM_Magic, DCM_MagicLen) != 0) {
-		ok = OFFalse;
-	    } else {
-		/* looks ok */
-		ok = OFTrue;
-	    }
-	    fclose(f);
-	}
-	if (ok) {
-	    COUT << "yes: " << fname << endl;
-	} else {
-	    COUT << "no: " << fname << endl;
-	    badCount++;
-	}
+        if (f == 0) {
+            ok = OFFalse;
+        } else {
+            char signature[4];
+            if ((fseek(f, DCM_PreambleLen, SEEK_SET) < 0) || 
+                (fread(signature, 1, DCM_MagicLen, f) != DCM_MagicLen)) {
+                ok = OFFalse;
+            } else if (strncmp(signature, DCM_Magic, DCM_MagicLen) != 0) {
+                ok = OFFalse;
+            } else {
+                /* looks ok */
+                ok = OFTrue;
+            }
+            fclose(f);
+        }
+        if (ok) {
+            COUT << "yes: " << fname << endl;
+        } else {
+            COUT << "no: " << fname << endl;
+            badCount++;
+        }
     }
 
     /* 
@@ -107,7 +107,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmftest.cc,v $
-** Revision 1.15  2002-11-27 12:07:17  meichel
+** Revision 1.16  2003-11-13 10:53:26  joergr
+** Made help text consistent with revised man page. Replaced tabs by spaces.
+**
+** Revision 1.15  2002/11/27 12:07:17  meichel
 ** Adapted module dcmdata to use of new header file ofstdinc.h
 **
 ** Revision 1.14  2001/06/01 15:48:28  meichel
