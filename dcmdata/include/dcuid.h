@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2003, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,10 +23,10 @@
  *  Definitions of "well known" DICOM Unique Indentifiers,
  *  routines for finding and creating UIDs.
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2004-02-11 15:53:08 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-02-13 11:42:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
- *  CVS/RCS Revision: $Revision: 1.58 $
+ *  CVS/RCS Revision: $Revision: 1.59 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -344,7 +344,7 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_SpatialRegistrationStorage                             "1.2.840.10008.5.1.4.1.1.66.1"
 #define UID_SpatialFinducialsStorage                               "1.2.840.10008.5.1.4.1.1.66.2"
 
-// Query/Retrieve
+// Worklist and Query/Retrieve
 #define UID_FINDPatientRootQueryRetrieveInformationModel           "1.2.840.10008.5.1.4.1.2.1.1"
 #define UID_MOVEPatientRootQueryRetrieveInformationModel           "1.2.840.10008.5.1.4.1.2.1.2"
 #define UID_GETPatientRootQueryRetrieveInformationModel            "1.2.840.10008.5.1.4.1.2.1.3"
@@ -355,8 +355,7 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_MOVEPatientStudyOnlyQueryRetrieveInformationModel      "1.2.840.10008.5.1.4.1.2.3.2"
 #define UID_GETPatientStudyOnlyQueryRetrieveInformationModel       "1.2.840.10008.5.1.4.1.2.3.3"
 #define UID_FINDModalityWorklistInformationModel                   "1.2.840.10008.5.1.4.31"
-// Supplement 52 (final text)
-#define UID_FINDGeneralPurposeWorklistInformationModel "1.2.840.10008.5.1.4.32.1"
+#define UID_FINDGeneralPurposeWorklistInformationModel             "1.2.840.10008.5.1.4.32.1"
 
 // Print
 #define UID_BasicFilmSessionSOPClass                               "1.2.840.10008.5.1.1.1"
@@ -404,7 +403,7 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_DetachedStudyManagementMetaSOPClass                    "1.2.840.10008.3.1.2.5.5"
 #define UID_DetachedInterpretationManagementSOPClass               "1.2.840.10008.3.1.2.6.1"
 
-// General Purpose Worklist (Supplement 52 final text)
+// General Purpose Worklist
 #define UID_GeneralPurposeScheduledProcedureStepSOPClass           "1.2.840.10008.5.1.4.32.2"
 #define UID_GeneralPurposePerformedProcedureStepSOPClass           "1.2.840.10008.5.1.4.32.3"
 #define UID_GeneralPurposeWorklistManagementMetaSOPClass           "1.2.840.10008.5.1.4.32"
@@ -446,6 +445,7 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_ICBMSingleSubjectMRIFrameOfReference                   "1.2.840.10008.1.4.2.2"
 
 // Private DCMTK UIDs
+
 // Private SOP Class UID used to shutdown external network applications
 #define UID_PrivateShutdownSOPClass                                "1.2.276.0.7230010.3.4.1915765545.18030.917282194.0"
 
@@ -470,10 +470,14 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 
 #endif /* DCUID_H */
 
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.58  2004-02-11 15:53:08  wilkens
+** Revision 1.59  2004-02-13 11:42:43  joergr
+** Corrected order of tags, modified comments and other minor corrections.
+**
+** Revision 1.58  2004/02/11 15:53:08  wilkens
 ** Updated attribute and UID specification (update before dcmtk 3.5.3 release).
 **
 ** Revision 1.57  2003/11/07 13:57:19  meichel
