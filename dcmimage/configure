@@ -29,7 +29,7 @@ if test $# != 0;  then
 	-a)
 		shift
 		cd $configdir
-		echo "running configure in config-direktory"
+		echo "running configure in config-directory"
 		./configure $*
 		cd $thisdir
 		echo "running configure for this module"
@@ -38,7 +38,7 @@ if test $# != 0;  then
 	-c)
 		shift
 		cd $configdir
-		echo "running configure in config-direktory"
+		echo "running configure in config-directory"
 		./configure $*
 		;;
 	*)
