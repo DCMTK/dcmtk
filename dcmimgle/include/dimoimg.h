@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-16 16:34:06 $
+ *  Update Date:      $Date: 1998-12-22 14:26:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoimg.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -173,7 +173,10 @@ class DiMonoImage
                                 unsigned int &width,
                                 unsigned int &height,
                                 unsigned int &left,
-                                unsigned int &top);
+                                unsigned int &top,
+                                EM_Overlay &mode,
+                                const unsigned int idx,
+                                const Uint8 value = 0xff);
 
     void deleteOverlayData();
 
@@ -265,7 +268,10 @@ class DiMonoImage
 **
 ** CVS/RCS Log:
 ** $Log: dimoimg.h,v $
-** Revision 1.3  1998-12-16 16:34:06  joergr
+** Revision 1.4  1998-12-22 14:26:19  joergr
+** Added new parameters to method addOverlay().
+**
+** Revision 1.3  1998/12/16 16:34:06  joergr
 ** Added explanation string to LUT class (retrieved from dataset).
 ** Added explanation string for VOI transformations.
 ** Renamed 'setNoVoiLutTransformation' method ('Voi' instead of 'VOI').
