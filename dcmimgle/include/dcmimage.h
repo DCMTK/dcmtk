@@ -22,9 +22,9 @@
  *  Purpose: Provides main interface to the "dicom image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-05-10 09:33:54 $
+ *  Update Date:      $Date: 1999-07-23 13:50:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dcmimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -191,6 +191,17 @@ class DicomImage
             Image->getNumberOfFrames() : 0;
     }
 
+    /** get number of representative frame.
+     *  This attribute is optionally stored in the dataset (type 3).
+     *
+     ** @return number of representative frame (0..n-1)
+     */
+    inline unsigned long getRepresentativeFrame() const
+    {
+        return (Image != NULL) ?
+            Image->getRepresentativeFrame() : 0;
+    }
+
     /** get image width in pixels
      *
      ** @return number of pixels in one row
@@ -259,7 +270,31 @@ class DicomImage
         return (Image != NULL) ?
             Image->getRowColumnRatio() : 0;
     }
-    
+
+    /** set width height ratio (pixel aspect ratio: x/y)
+     *
+     ** @param  ratio  pixel aspect ratio (x/y)
+     *
+     ** @return status code (true if successful)
+     */
+    inline double setWidthHeightRatio(const double ratio) const
+    {
+        return (Image != NULL) ?
+            Image->setColumnRowRatio(ratio) : 0;
+    }
+
+    /** set height width ratio (pixel aspect ratio: y/x)
+     *
+     ** @param  ratio  pixel aspect ratio (y/x)
+     *
+     ** @return status code (true if successful)
+     */
+    inline double setHeightWidthRatio(const double ratio) const
+    {
+        return (Image != NULL) ?
+            Image->setRowColumnRatio(ratio) : 0;
+    }
+
     /** check whether given output value is unused 
      *
      ** @param  value  output value to be checked
@@ -275,11 +310,12 @@ class DicomImage
  // --- output: return pointer to output data if successful
     
     /** render pixel data and return pointer to internal memory buffer.
-     *  apply VOI/PLUT transformation and (visible) overlay planes
+     *  apply VOI/PLUT transformation and (visible) overlay planes.
+     *  internal memory buffer will be delete for the next getBitmap/Output operation.
      *
      ** @param  bits    number of bits per sample (image depth)
      *                  (MI_PastelColor = -1 for true color pastel mode, EXPERIMENTAL)
-     *  @param  frame   number of frame to be rendered
+     *  @param  frame   number of frame to be rendered (0..n-1)
      *  @param  planar  0 = color-by-pixel (R1G1B1...R2G2B2...R3G2B2...)
      *                  1 = color-by-plane (R1R2R3...G1G2G3...B1B2B3...)
      *                  (only applicable for multi-planar/color images, otherwise ignored)
@@ -301,7 +337,7 @@ class DicomImage
      *  @param  size    size of memory buffer (will be checked whether it is sufficient)
      *  @param  bits    number of bits per sample (image depth)
      *                  (MI_PastelColor = -1 for true color pastel mode, EXPERIMENTAL)
-     *  @param  frame   number of frame to be rendered
+     *  @param  frame   number of frame to be rendered (0..n-1)
      *  @param  planar  0 = color-by-pixel (R1G1B1...R2G2B2...R3G2B2...)
      *                  1 = color-by-plane (R1R2R3...G1G2G3...B1B2B3...)
      *                  (only applicable for multi-planar/color images, otherwise ignored)
@@ -318,8 +354,9 @@ class DicomImage
             Image->getOutputData(buffer, size, frame, Image->getBits(bits), planar) : 0;
     }
 
-    /** render pixel data and return pointer to given plane.
+    /** render pixel data and return pointer to given plane (internal memory buffer).
      *  apply VOI/PLUT transformation and (visible) overlay planes
+     *  internal memory buffer will be delete for the next getBitmap/Output operation.
      *
      ** @param  plane  number of plane to be rendered
      *
@@ -366,6 +403,16 @@ class DicomImage
 
  // --- display function for output device characteristic (calibration)
  
+    /** get display function
+     *
+     ** @return pointer to current display function, NULL if absent
+     */
+    inline DiDisplayFunction *getDisplayFunction() const
+    {
+        return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
+            Image->getMonoImagePtr()->getDisplayFunction() : NULL;
+    }
+
     /** set display function
      *
      ** @param  display  object describing the output device characteristic (only referenced!)
@@ -379,7 +426,7 @@ class DicomImage
     }
 
     /** set no display function.
-     *  disables Barten transformation.
+     *  disables Barten transformation, object is not deleted!
      *
      ** @return true if successful, false otherwise
      */
@@ -621,6 +668,21 @@ class DicomImage
             Image->getMonoImagePtr()->getPresentationLutExplanation() : (const char *)NULL;
     }
 
+    /** set inverse LUT for presentation transformation.
+     *  this LUT transform is used for DICOM print (12->8, 8->12 bit)
+     *  possibly active presentation LUT not considered !?
+     *
+     ** @param  data         contains LUT data
+     *  @param  descriptor   describes LUT structure
+     *
+     ** @return true if successful, false otherwise
+     */
+    inline int setInversePresentationLut(const DcmUnsignedShort &data,
+                                         const DcmUnsignedShort &descriptor)
+    {
+        return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
+            Image->getMonoImagePtr()->setInversePresentationLut(data, descriptor) : 0;
+    }
 
  // --- overlays: return true (!0) if successful (see also 'diovlay.cc')
 
@@ -948,7 +1010,7 @@ class DicomImage
      ** @param  width        width of new image (in pixels)
      *  @param  height       height of new image (in pixels)
      *  @param  interpolate  specifies whether scaling algorithm should use interpolation (if necessary)
-     *                       default: no interpolation
+     *                       default: no interpolation (0), 1 = pbmplus algorithm, 2 = c't algorithm
      *  @param  aspect       specifies whether pixel aspect ratio should be taken into consideration
      *                       (if true, width OR height should be 0, i.e. this component will be calculated
      *                        automatically)
@@ -966,7 +1028,7 @@ class DicomImage
      ** @param  xfactor      width of new image is multiplied with this factor (> 0)
      *  @param  yfactor      height of new image is multiplied with this factor (> 0)
      *  @param  interpolate  specifies whether scaling algorithm should use interpolation (if necessary)
-     *                       default: no interpolation
+     *                       default: no interpolation (0), 1 = pbmplus algorithm, 2 = c't algorithm
      *  @param  aspect       specifies whether pixel aspect ratio should be taken into consideration
      *                       (if true, width OR height should be 0, i.e. this component will be calculated
      *                        automatically)
@@ -989,7 +1051,7 @@ class DicomImage
      *  @param  scale_width   width of scaled image (in pixels)
      *  @param  scale_height  height of scaled image (in pixels)
      *  @param  interpolate   specifies whether scaling algorithm should use interpolation (if necessary)
-     *                        default: no interpolation
+     *                        default: no interpolation (0), 1 = pbmplus algorithm, 2 = c't algorithm
      *  @param  aspect        specifies whether pixel aspect ratio should be taken into consideration
      *                        (if true, width OR height should be 0, i.e. this component will be calculated
      *                         automatically)
@@ -1016,7 +1078,7 @@ class DicomImage
      *  @param  xfactor      width of new image is multiplied with this factor (> 0)
      *  @param  yfactor      height of new image is multiplied with this factor (> 0)
      *  @param  interpolate  specifies whether scaling algorithm should use interpolation (if necessary)
-     *                       default: no interpolation
+     *                       default: no interpolation (0), 1 = pbmplus algorithm, 2 = c't algorithm
      *  @param  aspect       specifies whether pixel aspect ratio should be taken into consideration
      *                       (if true, width OR height should be 0, i.e. this component will be calculated
      *                        automatically)
@@ -1131,6 +1193,23 @@ class DicomImage
             Image->createAWTBitmap(frame, bits) : NULL;
     }
 
+    /** create 12 bit packed bitmap for DICOM printers.
+     *  Memory is not handled internally - must be deleted from calling program.
+     *
+     ** @param  buffer  pointer to input memory buffer (16 bits allocated, 12 bits stored)
+     *  @param  size    size of memory buffer (will be checked whether it is sufficient)
+     *  @param  count   number of entries (pixels) in input buffer
+     *
+     ** @return pointer to memory buffer containing the packed output bitmap data
+     */
+    static void *create12BitPackedBitmap(const void *buffer,
+                                         const unsigned long size,
+                                         const unsigned long count)
+    {
+        return DiMonoImage::createPackedBitmap(buffer, size, count, 16, 12);
+    }
+
+
  // --- output ppm file: return true ('1') if successful
 
     /** write pixel data to PPM file (specified by filename).
@@ -1140,7 +1219,7 @@ class DicomImage
      *  @param  bits      number of bits used for output of pixel data
      *                    (default: full resolution, max: 32;
      *                     MI_PastelColor = -1 for true color pastel mode, EXPERIMENTAL)
-     *  @param  frame     index of frame used for output (default: first frame)
+     *  @param  frame     index of frame used for output (default: first frame = 0)
      *
      ** @return true if successful, false otherwise
      */
@@ -1155,7 +1234,7 @@ class DicomImage
      *  @param  bits    number of bits used for output of pixel data
      *                  (default: full resolution, max: 32;
      *                   MI_PastelColor = -1 for true color pastel mode, EXPERIMENTAL)
-     *  @param  frame   index of frame used for output (default: first frame)
+     *  @param  frame   index of frame used for output (default: first frame = 0)
      *
      ** @return true if successful, false otherwise
      */
@@ -1170,7 +1249,7 @@ class DicomImage
      *  @param  bits    number of bits used for output of pixel data
      *                  (default: full resolution, max: 32;
      *                   MI_PastelColor = -1 for true color pastel mode, EXPERIMENTAL)
-     *  @param  frame   index of frame used for output (default: first frame)
+     *  @param  frame   index of frame used for output (default: first frame = 0)
      *
      ** @return true if successful, false otherwise
      */
@@ -1185,7 +1264,7 @@ class DicomImage
      *  @param  bits      number of bits used for output of pixel data
      *                    (default: full resolution, max: 8;
      *                     MI_PastelColor = -1 for true color pastel mode, EXPERIMENTAL)
-     *  @param  frame     index of frame used for output (default: first frame)
+     *  @param  frame     index of frame used for output (default: first frame = 0)
      *
      ** @return true if successful, false otherwise
      */
@@ -1200,7 +1279,7 @@ class DicomImage
      *  @param  bits    number of bits used for output of pixel data
      *                  (default: full resolution, max: 8;
      *                   MI_PastelColor = -1 for true color pastel mode, EXPERIMENTAL)
-     *  @param  frame   index of frame used for output (default: first frame)
+     *  @param  frame   index of frame used for output (default: first frame = 0)
      *
      ** @return true if successful, false otherwise
      */
@@ -1275,7 +1354,15 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.18  1999-05-10 09:33:54  joergr
+ * Revision 1.19  1999-07-23 13:50:07  joergr
+ * Added methods to set 'PixelAspectRatio'.
+ * Added dummy method (no implementation yet) to create inverse LUTs.
+ * Added method to create 12 bit packed bitmap data (used for grayscale print
+ * storage).
+ * Added method to return pointer to currently used display function.
+ * Added new interpolation algorithm for scaling.
+ *
+ * Revision 1.18  1999/05/10 09:33:54  joergr
  * Moved dcm2pnm version definition from module dcmimgle to dcmimage.
  *
  * Revision 1.17  1999/05/03 11:09:27  joergr
