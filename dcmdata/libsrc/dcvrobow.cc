@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-07 07:51:35 $
+** Update Date:		$Date: 1997-07-21 08:11:43 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrobow.cc,v $
-** CVS/RCS Revision:	$Revision: 1.17 $
+** CVS/RCS Revision:	$Revision: 1.18 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -52,8 +52,10 @@ DcmOtherByteOtherWord::DcmOtherByteOtherWord(const DcmTag &tag,
 DcmOtherByteOtherWord::DcmOtherByteOtherWord( const DcmOtherByteOtherWord& old )
     : DcmElement( old )
 {
-    if (old.ident() != EVR_OW && old.ident() != EVR_OB && old.ident() != EVR_ox && 
-    	old.ident() != EVR_UNKNOWN && old.ident() != EVR_UN)
+    if (old.ident() != EVR_OW && old.ident() != EVR_OB && 
+	old.ident() != EVR_ox && old.ident() != EVR_UNKNOWN && 
+	old.ident() != EVR_UN && old.ident() != EVR_PixelData &&
+	old.ident() != EVR_OverlayData)
     {
 	errorFlag = EC_IllegalCall;
         cerr << "Warning: DcmOtherByteOtherWord: wrong use of Copy-Constructor"
@@ -93,7 +95,7 @@ DcmEVR DcmOtherByteOtherWord::ident(void) const
 // ********************************
 
 
-void DcmOtherByteOtherWord::print(ostream & out, const BOOL showFullData,
+void DcmOtherByteOtherWord::print(ostream & out, const OFBool showFullData,
 				  const int level )
 {
     if (this -> valueLoaded())
@@ -205,18 +207,13 @@ E_Condition DcmOtherByteOtherWord::putUint8Array(const Uint8 * byteValue,
     errorFlag = EC_Normal;
     if (numBytes)
     {
-	if (Tag.getEVR() != EVR_OW)
+	if (byteValue && Tag.getEVR() == EVR_OB)
 	{
-	    if (byteValue)
-	    {
-		errorFlag = putValue(byteValue, sizeof(Uint8)*Uint32(numBytes));
-		this -> alignValue();
-	    }
-	    else
-		errorFlag = EC_CorruptedData;
+	    errorFlag = putValue(byteValue, sizeof(Uint8)*Uint32(numBytes));
+	    this -> alignValue();
 	}
 	else
-	    errorFlag = EC_IllegalCall;
+	    errorFlag = EC_CorruptedData;
     }
     else
 	this -> putValue(NULL, 0);
@@ -234,15 +231,10 @@ E_Condition DcmOtherByteOtherWord::putUint16Array(const Uint16 * wordValue,
     errorFlag = EC_Normal;
     if (numWords)
     {
-	if (Tag.getEVR() == EVR_OW)
-	{
-	    if (wordValue)
-		errorFlag = putValue(wordValue, sizeof(Uint16)*Uint32(numWords));
-	    else
-		errorFlag = EC_CorruptedData;
-	}
+	if (wordValue && Tag.getEVR() == EVR_OW)
+	    errorFlag = putValue(wordValue, sizeof(Uint16)*Uint32(numWords));
 	else
-	    errorFlag = EC_IllegalCall;
+	    errorFlag = EC_CorruptedData;
     }
     else
 	errorFlag = this -> putValue(NULL, 0);
@@ -343,7 +335,7 @@ E_Condition DcmOtherByteOtherWord::getUint16Array(Uint16 * & words)
 // ********************************
 
 
-E_Condition DcmOtherByteOtherWord::verify(const BOOL autocorrect)
+E_Condition DcmOtherByteOtherWord::verify(const OFBool autocorrect)
 {
     errorFlag = EC_Normal;
     if (autocorrect)
@@ -354,7 +346,7 @@ E_Condition DcmOtherByteOtherWord::verify(const BOOL autocorrect)
 
 // ********************************
 
-BOOL DcmOtherByteOtherWord::canWriteXfer(const E_TransferSyntax newXfer,
+OFBool DcmOtherByteOtherWord::canWriteXfer(const E_TransferSyntax newXfer,
 					 const E_TransferSyntax /*oldXfer*/)
 {
     DcmXfer newXferSyn(newXfer);
@@ -385,7 +377,19 @@ E_Condition DcmOtherByteOtherWord::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
-** Revision 1.17  1997-07-07 07:51:35  andreas
+** Revision 1.18  1997-07-21 08:11:43  andreas
+** - Support for CP 14. PixelData and OverlayData can have VR OW or OB
+**   (depending on the transfer syntax). New internal value
+**   representation (only for ident()) for OverlayData.
+** - New environment for encapsulated pixel representations. DcmPixelData
+**   can contain different representations and uses codecs to convert
+**   between them. Codecs are derived from the DcmCodec class. New error
+**   codes are introduced for handling of representations. New internal
+**   value representation (only for ident()) for PixelData
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.17  1997/07/07 07:51:35  andreas
 ** - Changed type for Tag attribute in DcmObject from prointer to value
 ** - Enhanced (faster) byte swapping routine. swapIfNecessary moved from
 **   a method in DcmObject to a general function.

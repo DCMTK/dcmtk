@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-07 07:43:59 $
+** Update Date:		$Date: 1997-07-21 08:11:42 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.30 $
+** CVS/RCS Revision:	$Revision: 1.31 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -45,7 +45,7 @@ DcmItem::DcmItem()
     : DcmObject( ItemTag )
 {
     elementList = new DcmList;
-    lastElementComplete = TRUE;
+    lastElementComplete = OFTrue;
     fStartPosition = 0;
 }
 
@@ -57,7 +57,7 @@ DcmItem::DcmItem(const DcmTag &tag, const Uint32 len)
     : DcmObject(tag, len)
 {
     elementList = new DcmList;
-    lastElementComplete = TRUE;
+    lastElementComplete = OFTrue;
     fStartPosition = 0;
 }
 
@@ -68,7 +68,7 @@ DcmItem::DcmItem(const DcmTag &tag, const Uint32 len)
 DcmItem::DcmItem( const DcmItem& old )
     : DcmObject( old )
 {
-    lastElementComplete = TRUE;
+    lastElementComplete = OFTrue;
     fStartPosition = old.fStartPosition;
     elementList = new DcmList;
 
@@ -116,11 +116,11 @@ DcmItem::~DcmItem()
 // ********************************
 
 
-BOOL DcmItem::foundVR( char* atposition )
+OFBool DcmItem::foundVR( char* atposition )
 {
     char c1 =  atposition[0];
     char c2 = atposition[1];
-    BOOL valid = FALSE;
+    OFBool valid = OFFalse;
         
     if (isalpha(c1) && isalpha(c2)) {
         char vrName[3];
@@ -133,7 +133,7 @@ BOOL DcmItem::foundVR( char* atposition )
     	valid = vr.isStandard();
     } else {
         /* cannot be a valid VR name since non-characters */
-        valid = FALSE;
+        valid = OFFalse;
     }
     return valid;    
 }
@@ -287,11 +287,16 @@ DcmObject* DcmItem::copyDcmObject( DcmObject *oldObj )
 	newObj = new DcmOtherByteOtherWord( *(DcmOtherByteOtherWord*)oldObj );
 	break;
 
-
-	// Gekapselte Pixeldaten als spezielle Sequenz:
-    case EVR_pixelSQ :
-	newObj = new DcmPixelSequence( *(DcmPixelSequence*)oldObj );
+	// pixel data
+    case EVR_PixelData:
+	newObj = new DcmPixelData(*(DcmPixelData *)oldObj);
 	break;
+	
+	// overlay data
+    case EVR_OverlayData:
+	newObj = new DcmOverlayData(*(DcmOverlayData *)oldObj);
+	break;
+	
 
 	// Treat unknown elements as Byte-String:
     case EVR_UNKNOWN :
@@ -324,7 +329,7 @@ DcmEVR DcmItem::ident() const
 // ********************************
 
 
-void DcmItem::print(ostream & out, const BOOL showFullData,
+void DcmItem::print(ostream & out, const OFBool showFullData,
 		    const int level)
 {
     char *info = new char[200];
@@ -369,13 +374,13 @@ unsigned long DcmItem::getVM()
 // ********************************
 
 
-BOOL DcmItem::canWriteXfer(const E_TransferSyntax newXfer, 
+OFBool DcmItem::canWriteXfer(const E_TransferSyntax newXfer, 
 			      const E_TransferSyntax oldXfer)
 {
-    BOOL canWrite = TRUE;
+    OFBool canWrite = OFTrue;
 
     if (newXfer == EXS_Unknown)
-	canWrite = FALSE;
+	canWrite = OFFalse;
     else if ( !elementList->empty() )
     {
 	DcmObject *dO;
@@ -451,7 +456,7 @@ E_Condition DcmItem::computeGroupLengthAndPadding
     if ( !elementList->empty() )
     {
 	DcmObject *dO;
-	BOOL beginning = TRUE;
+	OFBool beginning = OFTrue;
 	Uint16 lastGrp = 0x0000;
 	Uint16 actGrp;
 	DcmUnsignedLong * actGLElem = NULL;
@@ -495,7 +500,7 @@ E_Condition DcmItem::computeGroupLengthAndPadding
 		    actGrp = dO->getGTag();
 		    if (actGrp!=lastGrp || beginning) // new Group found
 		    {
-			beginning = FALSE;
+			beginning = OFFalse;
 			if (dO->getETag() == 0x0000 && // GroupLength (xxxx,0000)
 			    dO->ident() != EVR_UL)     // no UL Element
 			{ // replace with UL
@@ -628,12 +633,9 @@ E_Condition DcmItem::readTagAndLength(DcmStream & inStream,
 	bytesRead += 2;
     }
 
-    if (xferSyn.isEncapsulated() && newTag.getXTag() == DCM_PixelData) 
-	newTag.setVR(EVR_pixelSQ);
-
     nxtobj = newTag.getEVR();	    // VR aus Tag bestimmen
 
-
+ 
     if ((l_error = inStream.Avail(xferSyn.sizeofTagHeader(nxtobj)-bytesRead))
 	!= EC_Normal)
     {
@@ -652,9 +654,8 @@ E_Condition DcmItem::readTagAndLength(DcmStream & inStream,
     }
     else if (xferSyn.isExplicitVR())
     {
-	if (nxtobj == EVR_OB || nxtobj == EVR_OW 
-	    || nxtobj == EVR_SQ || nxtobj == EVR_UN || 
-	    nxtobj == EVR_pixelSQ)
+	if (nxtobj == EVR_OB || nxtobj == EVR_OW || 
+	    nxtobj == EVR_SQ || nxtobj == EVR_UN)
 	{
 	    Uint16 reserved;
 	    inStream.ReadBytes(&reserved, 2);  // 2 Byte Laenge
@@ -698,21 +699,6 @@ E_Condition DcmItem::readSubElement(DcmStream & inStream,
 {
     DcmElement *subElem = NULL;
     E_Condition l_error = newDicomElement(subElem, newTag, newLength);
-
-
-    if (l_error == EC_Normal && subElem == NULL && 
-	newTag.getXTag() == DCM_PixelData) 
-    {
-	DcmXfer xferSyn(xfer);
-	if (xferSyn.isEncapsulated())
-	    subElem = new DcmPixelSequence(newTag, newLength);
-	else
-	{
-	    if ( xferSyn.isImplicitVR() )
-		newTag.setVR(EVR_OW);
-	    subElem = new DcmOtherByteOtherWord(newTag, newLength);
-	}
-    }
 
     if ( l_error == EC_Normal && subElem != (DcmElement*)NULL )
     {
@@ -791,20 +777,20 @@ E_Condition DcmItem::read(DcmStream & inStream,
 		    if ( errorFlag != EC_Normal )
 			break;			// beende while-Schleife
 
-		    lastElementComplete = FALSE;
+		    lastElementComplete = OFFalse;
 		    errorFlag = readSubElement(inStream, newTag, 
 					       newValueLength,
 					       xfer, glenc, maxReadLength);
 
 		    if ( errorFlag == EC_Normal )
-			lastElementComplete = TRUE;
+			lastElementComplete = OFTrue;
 		}
  		else
 		{
 		    errorFlag = elementList->get()->read(inStream, xfer, glenc,
 							 maxReadLength) ;
 		    if ( errorFlag == EC_Normal )
-			lastElementComplete = TRUE;
+			lastElementComplete = OFTrue;
 		}
 		fTransferredBytes = inStream.Tell() - fStartPosition;
 
@@ -848,7 +834,6 @@ E_Condition DcmItem::write(DcmStream & outStream,
 		{
 		    if (enctype == EET_ExplicitLength)
 			Length = this->getLength(oxfer, enctype);
-		    // getLength kann u.U. auch DCM_UndefinedLength liefern
 		    else
 			Length = DCM_UndefinedLength;
 
@@ -861,8 +846,8 @@ E_Condition DcmItem::write(DcmStream & outStream,
 		    swapIfNecessary(oByteOrder, gLocalByteOrder, 
 				    &valueLength, 4, 4);
 		    outStream.WriteBytes(&valueLength, 4); // 4 Byte Laenge
-		    fTransferState = ERW_inWork;
 		    elementList->seek( ELP_first );
+		    fTransferState = ERW_inWork;
 		}
 	    }
 
@@ -914,7 +899,7 @@ void DcmItem::transferInit(void)
 {
     DcmObject::transferInit();
     fStartPosition = 0;
-    lastElementComplete = TRUE;
+    lastElementComplete = OFTrue;
     if ( !elementList->empty() )
     {
 	elementList->seek( ELP_first );
@@ -958,7 +943,7 @@ unsigned long DcmItem::card()
 
 
 E_Condition DcmItem::insert( DcmElement* elem,
-			     BOOL replaceOld )
+			     OFBool replaceOld )
 {						  // geordnetes Einfuegen
     errorFlag = EC_Normal;
     if ( elem != (DcmElement*)NULL )
@@ -1076,18 +1061,18 @@ DcmObject * DcmItem::nextInContainer(const DcmObject * obj)
 
 // ********************************
 
-E_Condition DcmItem::nextObject(DcmStack & stack, const BOOL intoSub)
+E_Condition DcmItem::nextObject(DcmStack & stack, const OFBool intoSub)
 {
     E_Condition l_error = EC_Normal;
     DcmObject * container = NULL;
     DcmObject * obj = NULL;
     DcmObject * result = NULL;
-    BOOL examSub = intoSub;
+    OFBool examSub = intoSub;
 
     if (stack.empty())
     {
 	stack.push(this);
-	examSub = TRUE;
+	examSub = OFTrue;
     }
 
     obj = stack.top();
@@ -1213,7 +1198,7 @@ E_Condition DcmItem::clear()
 // ********************************
 
 
-E_Condition DcmItem::verify(const BOOL autocorrect )
+E_Condition DcmItem::verify(const OFBool autocorrect )
 {
     debug(3, ( "DcmItem::verify() Tag=(0x%4.4x,0x%4.4x) \"%s\" \"%s\"",
 	    getGTag(), getETag(),
@@ -1230,7 +1215,7 @@ E_Condition DcmItem::verify(const BOOL autocorrect )
 		errorFlag = EC_CorruptedData;
 	} while ( elementList->seek( ELP_next ) );
     }
-    if ( autocorrect == TRUE )
+    if ( autocorrect == OFTrue )
 	Length = this->getLength();
     return errorFlag;
 }
@@ -1249,7 +1234,7 @@ E_Condition DcmItem::verify(const BOOL autocorrect )
 
 E_Condition DcmItem::searchSubFromHere( const DcmTagKey &tag,
 					DcmStack &resultStack,
-					BOOL searchIntoSub )
+					OFBool searchIntoSub )
 {
     DcmObject *dO;
     E_Condition l_error = EC_TagNotFound;
@@ -1267,7 +1252,7 @@ E_Condition DcmItem::searchSubFromHere( const DcmTagKey &tag,
                     l_error = dO->search( tag,
                                           resultStack,
                                           ESM_fromStackTop,
-                                          TRUE );
+                                          OFTrue );
                 if ( l_error != EC_Normal )
                     resultStack.pop();
             }
@@ -1295,7 +1280,7 @@ E_Condition DcmItem::searchSubFromHere( const DcmTagKey &tag,
 E_Condition DcmItem::search(const DcmTagKey &tag,
 			    DcmStack &resultStack,
 			    E_SearchMode mode,
-			    BOOL searchIntoSub)
+			    OFBool searchIntoSub)
 {
     DcmObject *dO = (DcmObject*)NULL;
     E_Condition l_error = EC_TagNotFound;
@@ -1364,7 +1349,7 @@ E_Condition DcmItem::search(const DcmTagKey &tag,
                 else                          //   siehe oben
 		{
 		    E_SearchMode submode = mode;
-		    BOOL searchNode = TRUE;
+		    OFBool searchNode = OFTrue;
 		    DcmObject *dnO;
 		    dnO = resultStack.elem( i-2 ); // Knoten der naechsten Ebene
 		    debug(5, ( "DcmItem::search() elementList: dnO=%p", dnO ));
@@ -1372,7 +1357,7 @@ E_Condition DcmItem::search(const DcmTagKey &tag,
 		    elementList->seek( ELP_first );
 		    do {
 			dO = elementList->get();
-			searchNode = searchNode ? ( dO != dnO ) : FALSE;
+			searchNode = searchNode ? ( dO != dnO ) : OFFalse;
 			Cdebug(5, searchNode,  ("DcmItem::search() --searching Node dnO=%p, found: dO=%p", dnO, dO ));
 			Cdebug(5, !searchNode && submode==ESM_afterStackTop,
 				("DcmItem::search() --searching Node dnO=%p found!", dO ));
@@ -1391,7 +1376,7 @@ E_Condition DcmItem::search(const DcmTagKey &tag,
                                 l_error = dO->search( tag,
                                                       resultStack,
                                                       submode,
-                                                      TRUE );
+                                                      OFTrue );
 			    if ( l_error != EC_Normal )
 				resultStack.pop();
 			    else
@@ -1578,33 +1563,32 @@ E_Condition newDicomElement(DcmElement * & newElement,
 	// nicht-eindeutig 8- oder 16-Bit:
 
     case EVR_ox :
-	// We cannot handle EVR_ox here because we do not know the
-	// transfer syntax
+	if (tag == DCM_PixelData)
+	    newElement = new DcmPixelData(tag, length);
+	else if (tag == DCM_OverlayData)
+	    newElement = new DcmOverlayData(tag, length);
+	// In gerneral we cannot handle EVR_ox here because we do not 
+	// know the transfer syntax
 	break;
 
     case EVR_OB :
     case EVR_OW :
-	if (length == DCM_UndefinedLength) {
-	    // The attribute is OB or OW but is encoded with undefined
-	    // length.  Assume it is really a sequence so that we can
-	    // catch the sequence delimitation item.
-	    newElement = new DcmSequenceOfItems(tag, length);
-	} else {
-	    newElement = new DcmOtherByteOtherWord(tag, length);
-	}
+	if (tag == DCM_PixelData)
+	    newElement = new DcmPixelData(tag, length);
+	else if (tag == DCM_OverlayData)
+	    newElement = new DcmOverlayData(tag, length);
+	else
+	    if (length == DCM_UndefinedLength) {
+		// The attribute is OB or OW but is encoded with undefined
+		// length.  Assume it is really a sequence so that we can
+		// catch the sequence delimitation item.
+		newElement = new DcmSequenceOfItems(tag, length);
+	    } else {
+		newElement = new DcmOtherByteOtherWord(tag, length);
+	    }
 	break;
 
-    // Gekapselte Pixeldaten als spezielle Sequenz:
-    case EVR_pixelSQ :
-	newElement = new DcmPixelSequence( tag, length);
-	break;
-
-	// Falls das Parsing nicht so ganz funktionieren sollte:
-    case EVR_pixelItem :
-	l_error = EC_InvalidTag;
-	break;
-
-        // Unbekannte Typen als Byte-String lesen:
+	// Unbekannte Typen als Byte-String lesen:
     case EVR_UNKNOWN :
     case EVR_UN :
     default :
@@ -1616,9 +1600,6 @@ E_Condition newDicomElement(DcmElement * & newElement,
 	} else {
 	    newElement = new DcmOtherByteOtherWord(tag, length);
 	}
-	debug(1, 
-	       ("Warning: newDicomElement(): unknown Tag detected: (%04x,%04x)",
-	       tag.getGTag(), tag.getETag()));
 	break;
     }
 
@@ -1654,7 +1635,7 @@ E_Condition nextUp(DcmStack & stack)
 E_Condition 
 DcmItem::findString(const DcmTagKey& xtag,
 		    char* aString, int maxStringLength,
-		    BOOL searchIntoSub)
+		    OFBool searchIntoSub)
 {
     DcmElement *elem;
     DcmStack stack;
@@ -1679,7 +1660,7 @@ DcmItem::findString(const DcmTagKey& xtag,
 E_Condition 
 DcmItem::findLong(const DcmTagKey& xtag,
 		  long& aLong, 
-		  BOOL searchIntoSub)
+		  OFBool searchIntoSub)
 {
     DcmElement *elem;
     DcmStack stack;
@@ -1724,7 +1705,19 @@ DcmItem::findLong(const DcmTagKey& xtag,
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.30  1997-07-07 07:43:59  andreas
+** Revision 1.31  1997-07-21 08:11:42  andreas
+** - Support for CP 14. PixelData and OverlayData can have VR OW or OB
+**   (depending on the transfer syntax). New internal value
+**   representation (only for ident()) for OverlayData.
+** - New environment for encapsulated pixel representations. DcmPixelData
+**   can contain different representations and uses codecs to convert
+**   between them. Codecs are derived from the DcmCodec class. New error
+**   codes are introduced for handling of representations. New internal
+**   value representation (only for ident()) for PixelData
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.30  1997/07/07 07:43:59  andreas
 ** - Changed type for Tag attribute in DcmObject from prointer to value
 ** - Changed parameter type DcmTag & to DcmTagKey & in all search functions
 **   in DcmItem, DcmSequenceOfItems, DcmDirectoryRecord and DcmObject
@@ -1804,7 +1797,7 @@ DcmItem::findLong(const DcmTagKey& xtag,
 ** Corrected erroneous setting of an error flag when inserting an
 ** attribute into an Item (via Item::insert(...)) and the attribute
 ** was already present.  Now the error flag is only set if replaceOld
-** is FALSE and an attribute already exists.
+** is OFFalse and an attribute already exists.
 **
 ** Revision 1.18  1996/09/13 12:04:12  hewett
 ** Corrected missing () in function call (stack.card()) used in nextObject(...)
@@ -1813,7 +1806,7 @@ DcmItem::findLong(const DcmTagKey& xtag,
 ** Some more testing in nextObject
 **
 ** Revision 1.16  1996/08/08 10:06:23  andreas
-** Correct error for intoSub=FALSE
+** Correct error for intoSub=OFFalse
 **
 ** Revision 1.15  1996/08/05 08:46:12  andreas
 ** new print routine with additional parameters:

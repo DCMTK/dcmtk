@@ -9,8 +9,8 @@
 ** Definition of the DcmVR class for Value Representation
 **
 **
-** Last Update:   $Author: hewett $
-** Revision:      $Revision: 1.4 $
+** Last Update:   $Author: andreas $
+** Revision:      $Revision: 1.5 $
 ** Status:	  $State: Exp $
 **
 */
@@ -29,7 +29,7 @@
 /*
 ** Global flag to enable/disable the generation of VR=UN
 */
-extern BOOL dcmEnableUnknownVRGeneration; /* default TRUE */
+extern OFBool dcmEnableUnknownVRGeneration; /* default OFTrue */
 
 /*
 ** VR Enumerations
@@ -78,7 +78,9 @@ enum DcmEVR
     EVR_pixelItem=35,	/* used internally */
 
     EVR_UNKNOWN=36,	/* used internally */
-    EVR_UN=37		/* Unknown Value Representation - defined in supplement 14 */
+    EVR_UN=37,		/* Unknown Value Representation - defined in supplement 14 */
+    EVR_PixelData=38,   /* used internally */
+    EVR_OverlayData=39    /* used internally */
 };
 
 

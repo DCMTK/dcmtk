@@ -15,6 +15,10 @@ configdir=@top_srcdir@/@configdir@
 #   DICOMDIR_WITHOUT_BACKUP
 #	no Backup for DICOMDIR files. default: not defined
 
+ofstddir=$(top_srcdir)/../ofstd
+
+LOCALINCLUDES=-I$(ofstddir)/include -I$(includedir)/ofstd
+
 LOCALDEFS= 
 
 DICTFILE=dicom.dic
@@ -31,11 +35,11 @@ dictobjs=	dctagkey.o dcdicent.o dcdict.o dcdictbi.o \
 objs= 	dcpixseq.o dcpxitem.o dcuid.o dcerror.o dcbuf.o \
 	dcstack.o dclist.o dcswap.o dcstream.o dctag.o dcxfer.o \
 	dcdebug.o dcobject.o dcelem.o dcitem.o dcmetinf.o dcdatset.o \
-	dcsequen.o dcfilefo.o dcbytstr.o dcvrae.o dcvras.o dcvrcs.o \
-	dcvrda.o dcvrds.o dcvrdt.o dcvris.o dcvrtm.o dcvrui.o \
+	dcsequen.o dcfilefo.o dcbytstr.o dcpixel.o dcvrae.o dcvras.o dcvrcs.o \
+	dccodec.o dcvrda.o dcvrds.o dcvrdt.o dcvris.o dcvrtm.o dcvrui.o \
 	dcchrstr.o dcvrlo.o dcvrlt.o dcvrpn.o dcvrsh.o dcvrst.o dcvrobow.o \
 	dcvrat.o dcvrss.o dcvrus.o dcvrsl.o dcvrul.o dcvrulup.o dcvrfl.o \
-	dcvrfd.o dcdirrec.o dcdicdir.o dcvm.o dcutils.o \
+	dcvrfd.o dcvrpobw.o dcdirrec.o dcdicdir.o dcvm.o dcutils.o \
 	$(dictobjs) cmdlnarg.o
 
 
