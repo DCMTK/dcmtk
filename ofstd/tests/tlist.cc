@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2002, OFFIS
+ *  Copyright (C) 1997-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: test programm for classes OFList and OFListIterator
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 11:23:13 $
+ *  Update Date:      $Date: 2003-08-14 09:01:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/tests/tlist.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -81,7 +81,9 @@ int old_rand = 9999;
 
 int get_rand()
 {
-    old_rand = (int)(((long)old_rand * (long)1243) % (long)971);
+    old_rand = OFstatic_cast(int,
+      (OFstatic_cast(long, old_rand) * OFstatic_cast(long, 1243)) 
+      % OFstatic_cast(long, 971));
     return old_rand;
 }
 
@@ -180,7 +182,10 @@ int main()
 **
 ** CVS/RCS Log:
 ** $Log: tlist.cc,v $
-** Revision 1.7  2002-11-27 11:23:13  meichel
+** Revision 1.8  2003-08-14 09:01:20  meichel
+** Adapted type casts to new-style typecast operators defined in ofcast.h
+**
+** Revision 1.7  2002/11/27 11:23:13  meichel
 ** Adapted module ofstd to use of new header file ofstdinc.h
 **
 ** Revision 1.6  2002/04/16 13:37:00  joergr

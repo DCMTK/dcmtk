@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2002, OFFIS
+ *  Copyright (C) 1997-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -24,9 +24,9 @@
  *
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-06 09:44:14 $
+ *  Update Date:      $Date: 2003-08-14 09:01:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/tests/tstthred.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -352,7 +352,7 @@ public:
       void *result = NULL;
       if (0== tsdata->get(result))
       {
-        if (result == (void *)this) tsd_cond3 = 1;
+        if (result == OFstatic_cast(void *, this)) tsd_cond3 = 1;
       }
     }    
   }  
@@ -374,7 +374,7 @@ public:
       void *result = NULL;
       if (0== tsdata->get(result))
       {
-        if (result == (void *)this) tsd_cond4 = 1;
+        if (result == OFstatic_cast(void *, this)) tsd_cond4 = 1;
       }
     }    
   }  
@@ -458,7 +458,10 @@ int main()
  *
  * CVS/RCS Log:
  * $Log: tstthred.cc,v $
- * Revision 1.7  2003-06-06 09:44:14  meichel
+ * Revision 1.8  2003-08-14 09:01:20  meichel
+ * Adapted type casts to new-style typecast operators defined in ofcast.h
+ *
+ * Revision 1.7  2003/06/06 09:44:14  meichel
  * Added static sleep function in class OFStandard. This replaces the various
  *   calls to sleep(), Sleep() and usleep() throughout the toolkit.
  *

@@ -22,9 +22,9 @@
  *  Purpose: encoder codec class for RLE
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-03-21 13:08:04 $
+ *  Update Date:      $Date: 2003-08-14 09:01:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcrlecce.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -114,11 +114,11 @@ OFCondition DcmRLECodecEncoder::encode(
   OFCondition result = EC_Normal;
 
   // assume we can cast the codec parameter to what we need
-  const DcmRLECodecParameter *djcp = (const DcmRLECodecParameter *)cp;
+  const DcmRLECodecParameter *djcp = OFstatic_cast(const DcmRLECodecParameter *, cp);
   DcmStack localStack(objStack);
   (void)localStack.pop();             // pop pixel data element from stack
   DcmObject *dataset = localStack.pop(); // this is the item in which the pixel data is located
-  Uint8 *pixelData8 = (Uint8 *)pixelData;
+  Uint8 *pixelData8 = (Uint8 *) pixelData;
   Uint8 *pixelPointer = NULL;
   DcmOffsetList offsetList;
   DcmRLEEncoderList rleEncoderList;
@@ -131,7 +131,7 @@ OFCondition DcmRLECodecEncoder::encode(
   if ((!dataset)||((dataset->ident()!= EVR_dataset) && (dataset->ident()!= EVR_item))) result = EC_InvalidTag;
   else
   {
-    DcmItem *ditem = (DcmItem *)dataset;
+    DcmItem *ditem = OFstatic_cast(DcmItem *, dataset);
     Uint16 bitsAllocated = 0;
     Uint16 bytesAllocated = 0;
     Uint16 samplesPerPixel = 0;
@@ -160,7 +160,7 @@ OFCondition DcmRLECodecEncoder::encode(
     if (result.good())
     {
       // check if bitsAllocated is a multiple of 8 - we don't handle anything else
-      bytesAllocated = (Uint16)(bitsAllocated / 8);
+      bytesAllocated = OFstatic_cast(Uint16, bitsAllocated / 8);
       if ((bitsAllocated < 8)||(bitsAllocated % 8 != 0)) result = EC_CannotChangeRepresentation;
 
       // make sure that all the descriptive attributes have sensible values
@@ -221,7 +221,7 @@ OFCondition DcmRLECodecEncoder::encode(
          else offsetBetweenSamples = bytesAllocated;
 
       // loop through all frames of the image
-      for (Uint32 currentFrame = 0; ((currentFrame < (Uint32)numberOfFrames) && result.good()); currentFrame++)
+      for (Uint32 currentFrame = 0; ((currentFrame < OFstatic_cast(Uint32, numberOfFrames)) && result.good()); currentFrame++)
       {
         // offset to start of frame, in bytes
         frameOffset = frameSize * currentFrame;
@@ -354,18 +354,18 @@ OFCondition DcmRLECodecEncoder::encode(
             // create new UID if mode is true or if we're converting to Secondary Capture
             if (djcp->getConvertToSC() || djcp->getUIDCreation())
             {
-                result = DcmCodec::newInstance((DcmItem *)dataset);
+                result = DcmCodec::newInstance(OFstatic_cast(DcmItem *, dataset));
 
                 // set image type to DERIVED\\SECONDARY
-                if (result.good()) result = updateImageType((DcmItem *)dataset);
+                if (result.good()) result = updateImageType(OFstatic_cast(DcmItem *, dataset));
 
                 // update derivation description
                 if (result.good())
                 {
                   // compute original image size in bytes, ignoring any padding bits.
                   double compressionRatio = 0.0;
-                  if (compressedSize > 0) compressionRatio = ((double)(columns * rows * bitsAllocated * (Uint32)numberOfFrames * samplesPerPixel) / 8.0) / compressedSize;
-                  result = updateDerivationDescription((DcmItem *)dataset, compressionRatio);
+                  if (compressedSize > 0) compressionRatio = (OFstatic_cast(double, columns * rows * bitsAllocated * OFstatic_cast(Uint32, numberOfFrames) * samplesPerPixel) / 8.0) / compressedSize;
+                  result = updateDerivationDescription(OFstatic_cast(DcmItem *, dataset), compressionRatio);
                 }
             }
         }
@@ -373,7 +373,7 @@ OFCondition DcmRLECodecEncoder::encode(
         // convert to Secondary Capture if requested by user.
         // This method creates a new SOP class UID, so it should be executed
         // after the call to newInstance() which creates a Source Image Sequence.
-        if (result.good() && djcp->getConvertToSC()) result = DcmCodec::convertToSecondaryCapture((DcmItem *)dataset);
+        if (result.good() && djcp->getConvertToSC()) result = DcmCodec::convertToSecondaryCapture(OFstatic_cast(DcmItem *, dataset));
     }
   }
 
@@ -419,7 +419,10 @@ OFCondition DcmRLECodecEncoder::updateDerivationDescription(
 /*
  * CVS/RCS Log
  * $Log: dcrlecce.cc,v $
- * Revision 1.7  2003-03-21 13:08:04  meichel
+ * Revision 1.8  2003-08-14 09:01:06  meichel
+ * Adapted type casts to new-style typecast operators defined in ofcast.h
+ *
+ * Revision 1.7  2003/03/21 13:08:04  meichel
  * Minor code purifications for warnings reported by MSVC in Level 4
  *
  * Revision 1.6  2002/12/04 10:41:01  meichel

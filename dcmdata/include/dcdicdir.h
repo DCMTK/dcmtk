@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmDicomDir
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 12:49:09 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-08-14 09:00:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdicdir.h,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -135,7 +135,7 @@ class DcmDicomDir
 public:
     DcmDicomDir();
     DcmDicomDir( const char *fileName,
-                 const char *fileSetID = (char*)NULL );  // only used for new DICOMDIR
+                 const char *fileSetID = NULL );  // only used for new DICOMDIR
     DcmDicomDir( const DcmDicomDir &newDir );
     virtual ~DcmDicomDir();
 
@@ -167,7 +167,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.h,v $
-** Revision 1.16  2002-12-06 12:49:09  joergr
+** Revision 1.17  2003-08-14 09:00:56  meichel
+** Adapted type casts to new-style typecast operators defined in ofcast.h
+**
+** Revision 1.16  2002/12/06 12:49:09  joergr
 ** Enhanced "print()" function by re-working the implementation and replacing
 ** the boolean "showFullData" parameter by a more general integer flag.
 ** Added doc++ documentation.

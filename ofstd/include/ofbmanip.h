@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2002, OFFIS
+ *  Copyright (C) 1997-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Template class for bit manipulations (Header)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 11:23:04 $
+ *  Update Date:      $Date: 2003-08-14 09:01:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofbmanip.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,7 @@
 #define __OFBMANIP_H
 
 #include "osconfig.h"
+#include "ofcast.h"
 
 #define INCLUDE_CSTRING
 #include "ofstdinc.h"
@@ -74,9 +75,9 @@ class OFBitmanipTemplate
                         const unsigned long count)
     {
 #ifdef HAVE_MEMCPY
-        memcpy((void *)dest, (const void *)src, (size_t)count * sizeof(T));
+        memcpy(OFstatic_cast(void *, dest), OFstatic_cast(const void *, src), OFstatic_cast(size_t, count) * sizeof(T));
 #elif HAVE_BCOPY
-        bcopy((const void *)src, (void *)dest, (size_t)count * sizeof(T));
+        bcopy(OFstatic_cast(const void *, src), OFstatic_cast(void *, dest), OFstatic_cast(size_t, count) * sizeof(T));
 #else
         register unsigned long i;
         register const T *p = src;
@@ -99,7 +100,7 @@ class OFBitmanipTemplate
     {
 #ifdef HAVE_MEMSET
         if ((value == 0) || (sizeof(T) == sizeof(unsigned char)))
-            memset((void *)dest, (int)value, (size_t)count * sizeof(T));
+            memset(OFstatic_cast(void *, dest), OFstatic_cast(int, value), OFstatic_cast(size_t, count) * sizeof(T));
         else
 #endif
         {
@@ -121,7 +122,7 @@ class OFBitmanipTemplate
     {
 #ifdef HAVE_BZERO
         // some platforms, e.g. OSF1, require the first parameter to be char *.
-        bzero((char *)dest, (size_t)count * sizeof(T));
+        bzero(OFreinterpret_cast(char *, dest), OFstatic_cast(size_t, count) * sizeof(T));
 #else        
         setMem(dest, 0, count);
 #endif        
@@ -136,7 +137,10 @@ class OFBitmanipTemplate
  *
  * CVS/RCS Log:
  * $Log: ofbmanip.h,v $
- * Revision 1.12  2002-11-27 11:23:04  meichel
+ * Revision 1.13  2003-08-14 09:01:18  meichel
+ * Adapted type casts to new-style typecast operators defined in ofcast.h
+ *
+ * Revision 1.12  2002/11/27 11:23:04  meichel
  * Adapted module ofstd to use of new header file ofstdinc.h
  *
  * Revision 1.11  2001/06/01 15:51:31  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Definition of the class DcmTag
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-07-23 14:21:27 $
+ *  Update Date:      $Date: 2003-08-14 09:00:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dctag.h,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -126,7 +126,10 @@ public:
     /** returns a copy of the tag key by value
      *  @return copy of tag key, by value
      */
-    DcmTagKey getXTag() const { return *((DcmTagKey*)(this)); }
+    DcmTagKey getXTag() const
+    { 
+      return * OFstatic_cast(const DcmTagKey *, this);
+    }
     
     /** returns name of attribute tag.
      *  If name has not been accessed before, a dictionary lookup
@@ -224,7 +227,10 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dctag.h,v $
-** Revision 1.19  2002-07-23 14:21:27  meichel
+** Revision 1.20  2003-08-14 09:00:56  meichel
+** Adapted type casts to new-style typecast operators defined in ofcast.h
+**
+** Revision 1.19  2002/07/23 14:21:27  meichel
 ** Added support for private tag data dictionaries to dcmdata
 **
 ** Revision 1.18  2002/05/24 09:49:13  joergr

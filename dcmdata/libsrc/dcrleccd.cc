@@ -22,9 +22,9 @@
  *  Purpose: decoder codec class for RLE
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-03-21 13:08:04 $
+ *  Update Date:      $Date: 2003-08-14 09:01:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcrleccd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,7 +80,7 @@ OFCondition DcmRLECodecDecoder::decode(
   OFCondition result = EC_Normal;
 
   // assume we can cast the codec parameter to what we need
-  const DcmRLECodecParameter *djcp = (const DcmRLECodecParameter *)cp;
+  const DcmRLECodecParameter *djcp = OFstatic_cast(const DcmRLECodecParameter *, cp);
 
   DcmStack localStack(objStack);
   (void)localStack.pop();             // pop pixel data element from stack
@@ -96,23 +96,24 @@ OFCondition DcmRLECodecDecoder::decode(
     Uint16 imageBytesAllocated = 0;
     Uint16 imagePlanarConfiguration = 0;
     Uint32 rleHeader[16];
+    DcmItem *ditem = OFstatic_cast(DcmItem *, dataset);
 
-    if (result.good()) result = ((DcmItem *)dataset)->findAndGetUint16(DCM_SamplesPerPixel, imageSamplesPerPixel);
-    if (result.good()) result = ((DcmItem *)dataset)->findAndGetUint16(DCM_Rows, imageRows);
-    if (result.good()) result = ((DcmItem *)dataset)->findAndGetUint16(DCM_Columns, imageColumns);
-    if (result.good()) result = ((DcmItem *)dataset)->findAndGetUint16(DCM_BitsAllocated, imageBitsAllocated);
+    if (result.good()) result = ditem->findAndGetUint16(DCM_SamplesPerPixel, imageSamplesPerPixel);
+    if (result.good()) result = ditem->findAndGetUint16(DCM_Rows, imageRows);
+    if (result.good()) result = ditem->findAndGetUint16(DCM_Columns, imageColumns);
+    if (result.good()) result = ditem->findAndGetUint16(DCM_BitsAllocated, imageBitsAllocated);
     if (result.good())
     {
-      imageBytesAllocated = (Uint16)(imageBitsAllocated / 8);
+      imageBytesAllocated = OFstatic_cast(Uint16, imageBitsAllocated / 8);
       if ((imageBitsAllocated < 8)||(imageBitsAllocated % 8 != 0)) result = EC_CannotChangeRepresentation;
     }
     if (result.good() && (imageSamplesPerPixel > 1))
     {
-      result = ((DcmItem *)dataset)->findAndGetUint16(DCM_PlanarConfiguration, imagePlanarConfiguration);
+      result = ditem->findAndGetUint16(DCM_PlanarConfiguration, imagePlanarConfiguration);
     }
 
     // number of frames is an optional attribute - we don't mind if it isn't present.
-    if (result.good()) (void) ((DcmItem *)dataset)->findAndGetSint32(DCM_NumberOfFrames, imageFrames);
+    if (result.good()) (void) ditem->findAndGetSint32(DCM_NumberOfFrames, imageFrames);
     if (imageFrames < 1) imageFrames = 1; // default in case this attribute contains garbage
 
     if (result.good())
@@ -138,7 +139,7 @@ OFCondition DcmRLECodecDecoder::decode(
         result = uncompressedPixelData.createUint16Array(totalSize/sizeof(Uint16), imageData16);
         if (result.good())
         {
-          Uint8 *imageData8 = (Uint8 *)imageData16;
+          Uint8 *imageData8 = OFreinterpret_cast(Uint8 *, imageData16);
 
           while ((currentFrame < imageFrames) && result.good())
           {
@@ -167,7 +168,7 @@ OFCondition DcmRLECodecDecoder::decode(
 
               // check that number of stripes in RLE header matches our expectation
               if ((numberOfStripes < 1) || (numberOfStripes > 15) ||
-                  (numberOfStripes != (Uint32)imageBytesAllocated * imageSamplesPerPixel))
+                  (numberOfStripes != OFstatic_cast(Uint32, imageBytesAllocated) * imageSamplesPerPixel))
                   result = EC_CannotChangeRepresentation;
             }
 
@@ -238,7 +239,7 @@ OFCondition DcmRLECodecDecoder::decode(
                   {
                     // feed complete remaining content of fragment to RLE codec and
                     // switch to next fragment
-                    result = rledecoder.decompress(rleData + byteOffset, (size_t)(fragmentLength - byteOffset));
+                    result = rledecoder.decompress(rleData + byteOffset, OFstatic_cast(size_t, fragmentLength - byteOffset));
 
                     // special handling for zero pad byte at the end of the RLE stream
                     // which results in an EC_StreamNotifyClient return code
@@ -276,7 +277,7 @@ OFCondition DcmRLECodecDecoder::decode(
                     {
                       // feed complete remaining content of fragment to RLE codec and
                       // switch to next fragment
-                      result = rledecoder.decompress(rleData + byteOffset, (size_t)(fragmentLength - byteOffset));
+                      result = rledecoder.decompress(rleData + byteOffset, OFstatic_cast(size_t, fragmentLength - byteOffset));
 
                       if (result.good() || result == EC_StreamNotifyClient)
                         result = pixSeq->getItem(pixItem, currentItem++);
@@ -291,7 +292,7 @@ OFCondition DcmRLECodecDecoder::decode(
                     } /* while */
 
                     // last fragment for this RLE stripe
-                    result = rledecoder.decompress(rleData + byteOffset, (size_t)inputBytes);
+                    result = rledecoder.decompress(rleData + byteOffset, OFstatic_cast(size_t, inputBytes));
 
                     // special handling for zero pad byte at the end of the RLE stream
                     // which results in an EC_StreamNotifyClient return code
@@ -317,7 +318,7 @@ OFCondition DcmRLECodecDecoder::decode(
                   byte = i % imageBytesAllocated;
 
                   // raw buffer containing bytesPerStripe bytes of uncompressed data
-                  outputBuffer = (Uint8 *) rledecoder.getOutputBuffer();
+                  outputBuffer = OFstatic_cast(Uint8 *, rledecoder.getOutputBuffer());
 
                   // compute byte offsets
                   if (imagePlanarConfiguration == 0)
@@ -366,7 +367,7 @@ OFCondition DcmRLECodecDecoder::decode(
     if (dataset->ident() == EVR_dataset)
     {
         // create new SOP instance UID if codec parameters require so
-        if (result.good() && djcp->getUIDCreation()) result = DcmCodec::newInstance((DcmItem *)dataset);
+        if (result.good() && djcp->getUIDCreation()) result = DcmCodec::newInstance(OFstatic_cast(DcmItem *, dataset));
     }
   }
   return result;
@@ -403,7 +404,10 @@ OFCondition DcmRLECodecDecoder::encode(
 /*
  * CVS/RCS Log
  * $Log: dcrleccd.cc,v $
- * Revision 1.3  2003-03-21 13:08:04  meichel
+ * Revision 1.4  2003-08-14 09:01:06  meichel
+ * Adapted type casts to new-style typecast operators defined in ofcast.h
+ *
+ * Revision 1.3  2003/03/21 13:08:04  meichel
  * Minor code purifications for warnings reported by MSVC in Level 4
  *
  * Revision 1.2  2002/07/18 12:15:39  joergr

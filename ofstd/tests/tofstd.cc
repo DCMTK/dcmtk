@@ -21,10 +21,10 @@
  *
  *  Purpose: test program for class OFStandard
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-12 13:11:46 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-08-14 09:01:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/tests/tofstd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -110,24 +110,24 @@ int main()
 
     COUT << "original data: ";
     for (i = 0; i < bin_len; i++)
-        COUT << (int)bin_data[i] << " ";
+        COUT << OFstatic_cast(int, bin_data[i]) << " ";
     COUT << endl;
     COUT << "base64 encoded: " << OFStandard::encodeBase64(bin_data, bin_len, string) << endl;
     length = OFStandard::decodeBase64(string, buffer);
     COUT << "base64 decoded: ";
     for (i = 0; i < length; i++)
-        COUT << (int)buffer[i] << " ";
+        COUT << OFstatic_cast(int, buffer[i]) << " ";
     COUT << endl << endl;
     delete[] buffer;
 
     buffer = new unsigned char[511];
     for (i = 0; i < 256; i++)
-        buffer[i] = (unsigned char)i;
+        buffer[i] = OFstatic_cast(unsigned char, i);
     for (i = 256; i < 511; i++)
-        buffer[i] = (unsigned char)(510 - i);
+        buffer[i] = OFstatic_cast(unsigned char, 510 - i);
     COUT << "original data: ";
     for (i = 0; i < 511; i++)
-        COUT << (int)buffer[i] << " ";
+        COUT << OFstatic_cast(int, buffer[i]) << " ";
     COUT << endl;
     COUT << "base64 encoded: " << OFStandard::encodeBase64(buffer, 511, string) << endl;
     COUT << "base64 with line breaks:" << endl;
@@ -136,7 +136,7 @@ int main()
     length = OFStandard::decodeBase64(string, buffer);
     COUT << "base64 decoded: ";
     for (i = 0; i < length; i++)
-        COUT << (int)buffer[i] << " ";
+        COUT << OFstatic_cast(int, buffer[i]) << " ";
     COUT << endl << endl;
     delete[] buffer;
 
@@ -144,7 +144,7 @@ int main()
     length = OFStandard::decodeBase64(txt_data1, buffer);
     COUT << "base64 decoded: ";
     for (i = 0; i < length; i++)
-        COUT << (int)buffer[i] << " ";
+        COUT << OFstatic_cast(int, buffer[i]) << " ";
     COUT << endl << endl;
     delete[] buffer;
 
@@ -152,7 +152,7 @@ int main()
     length = OFStandard::decodeBase64(txt_data2, buffer);
     COUT << "base64 decoded: ";
     for (i = 0; i < length; i++)
-        COUT << (int)buffer[i] << " ";
+        COUT << OFstatic_cast(int, buffer[i]) << " ";
     COUT << endl << endl;
     delete[] buffer;
 
@@ -164,7 +164,10 @@ int main()
  *
  * CVS/RCS Log:
  * $Log: tofstd.cc,v $
- * Revision 1.4  2003-08-12 13:11:46  joergr
+ * Revision 1.5  2003-08-14 09:01:20  meichel
+ * Adapted type casts to new-style typecast operators defined in ofcast.h
+ *
+ * Revision 1.4  2003/08/12 13:11:46  joergr
  * Improved implementation of normalizeDirName().
  *
  * Revision 1.3  2002/05/14 08:13:55  joergr

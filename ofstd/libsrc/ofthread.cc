@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2002, OFFIS
+ *  Copyright (C) 1997-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -26,9 +26,9 @@
  *           multi-thread APIs.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 11:23:11 $
+ *  Update Date:      $Date: 2003-08-14 09:01:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofthread.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -75,6 +75,12 @@ extern "C" {
 #include "ofconsol.h"
 #include "ofstring.h"
 
+// The Posix interfaces are not always correctly declared as volatile,
+// so we need a two-step cast from our internal representation 
+// as a volatile void * to the Posix representation such as pthread_key_t *
+
+#define OFthread_cast(x,y) OFstatic_cast(x, OFconst_cast(void *, y))
+
 /* ------------------------------------------------------------------------- */
 
 /* Thread stub function - called by the thread creation system function.
@@ -85,13 +91,13 @@ extern "C" {
 #ifdef HAVE_WINDOWS_H
 unsigned int __stdcall thread_stub(void *arg)
 {
-  ((OFThread *)arg)->run();
+  OFstatic_cast(OFThread *, arg)->run();
   return 0; // thread terminates
 }
 #else
 void *thread_stub(void *arg)
 {
-  ((OFThread *)arg)->run();
+  OFstatic_cast(OFThread *, arg)->run();
   return NULL; // thread terminates
 }
 #endif
@@ -135,13 +141,13 @@ int OFThread::start()
   }
 #elif defined(POSIX_INTERFACE)
   pthread_t tid=0;
-  int result = pthread_create(&tid, NULL, thread_stub, (void *)this);
-  if (0 == result) theThread = (unsigned long) tid; else theThread = 0;      
+  int result = pthread_create(&tid, NULL, thread_stub, OFstatic_cast(void *, this));
+  if (0 == result) theThread = OFstatic_cast(unsigned long, tid); else theThread = 0;      
   return result;     
 #elif defined(SOLARIS_INTERFACE)
   thread_t tid=0;
-  int result = thr_create(NULL, 0, thread_stub, (void *)this, 0, &tid);
-  if (0 == result) theThread = (unsigned long) tid; else theThread = 0;      
+  int result = thr_create(NULL, 0, thread_stub, OFstatic_cast(void *, this), 0, &tid);
+  if (0 == result) theThread = OFstatic_cast(unsigned long, tid); else theThread = 0;      
   return result;     
 #else
   return -1;
@@ -155,10 +161,10 @@ int OFThread::join()
   else return (int)GetLastError();
 #elif defined(POSIX_INTERFACE)
   void *retcode=NULL;
-  return pthread_join((pthread_t)theThread, &retcode);
+  return pthread_join(OFreinterpret_cast(pthread_t, theThread), &retcode);
 #elif defined(SOLARIS_INTERFACE)
   void *retcode=NULL;
-  return thr_join((thread_t)theThread, NULL, &retcode);
+  return thr_join(OFreinterpret_cast(thread_t, theThread), NULL, &retcode);
 #else
   return -1;
 #endif
@@ -178,9 +184,9 @@ OFBool OFThread::equal(unsigned long /* tID */ )
 #ifdef WINDOWS_INTERFACE
   if (theThread == tID) return OFTrue; else return OFFalse;
 #elif defined(POSIX_INTERFACE)
-  if (pthread_equal((pthread_t)theThread, (pthread_t)tID)) return OFTrue; else return OFFalse;
+  if (pthread_equal(OFstatic_cast(pthread_t, theThread), OFstatic_cast(pthread_t, tID))) return OFTrue; else return OFFalse;
 #elif defined(SOLARIS_INTERFACE)
-  if ((thread_t)theThread == (thread_t)tID) return OFTrue; else return OFFalse;
+  if (OFstatic_cast(thread_t, theThread) == OFstatic_cast(thread_t, tID)) return OFTrue; else return OFFalse;
 #else
   return 0;
 #endif
@@ -202,11 +208,11 @@ void OFThread::thread_exit()
 unsigned long OFThread::self()
 {
 #ifdef WINDOWS_INTERFACE
-  return (unsigned long) GetCurrentThreadId();
+  return OFstatic_cast(unsigned long, GetCurrentThreadId());
 #elif defined(POSIX_INTERFACE)
-  return (unsigned long) pthread_self();
+  return OFstatic_cast(unsigned long, pthread_self());
 #elif defined(SOLARIS_INTERFACE)
-  return (unsigned long) thr_self();
+  return OFstatic_cast(unsigned long, thr_self());
 #else
   return 0;
 #endif
@@ -273,11 +279,11 @@ OFThreadSpecificData::OFThreadSpecificData()
 OFThreadSpecificData::~OFThreadSpecificData()
 {
 #ifdef WINDOWS_INTERFACE
-  if (theKey) TlsFree(*((DWORD *)theKey));
+  if (theKey) TlsFree(* OFthread_cast(DWORD *, theKey));
 #elif defined(POSIX_INTERFACE)
-  delete (pthread_key_t *)theKey;
+  delete OFthread_cast(pthread_key_t *, theKey);
 #elif defined(SOLARIS_INTERFACE)
-  delete (thread_key_t *)theKey;
+  delete OFthread_cast(thread_key_t *, theKey);
 #else
 #endif
 }
@@ -303,9 +309,9 @@ int OFThreadSpecificData::set(void * /* value */ )
     if (0 == TlsSetValue(*((DWORD *)theKey), value)) return (int)GetLastError(); else return 0;
   } else return ERROR_INVALID_HANDLE;    
 #elif defined(POSIX_INTERFACE)
-  if (theKey) return pthread_setspecific(*((pthread_key_t *)theKey), value); else return EINVAL;
+  if (theKey) return pthread_setspecific(* OFthread_cast(pthread_key_t *, theKey), value); else return EINVAL;
 #elif defined(SOLARIS_INTERFACE)
-  if (theKey) return thr_setspecific(*((thread_key_t *)theKey), value); else return EINVAL;
+  if (theKey) return thr_setspecific(* OFthread_cast(thread_key_t *, theKey), value); else return EINVAL;
 #else
   return -1;
 #endif
@@ -325,7 +331,7 @@ int OFThreadSpecificData::get(void *&value)
 #elif defined(POSIX_INTERFACE)
   if (theKey) 
   {
-    value = pthread_getspecific(*((pthread_key_t *)theKey));
+    value = pthread_getspecific(* OFthread_cast(pthread_key_t *, theKey));
     return 0;
   } else {
     value = NULL;
@@ -333,7 +339,7 @@ int OFThreadSpecificData::get(void *&value)
   }
 #elif defined(SOLARIS_INTERFACE)
   value = NULL;
-  if (theKey) return thr_getspecific(*((thread_key_t *)theKey), &value); else return EINVAL;
+  if (theKey) return thr_getspecific(* OFthread_cast(thread_key_t *, theKey), &value); else return EINVAL;
 #else
   value = NULL;
   return -1;
@@ -409,11 +415,11 @@ OFSemaphore::~OFSemaphore()
 #ifdef WINDOWS_INTERFACE
   CloseHandle((HANDLE)theSemaphore);
 #elif defined(POSIX_INTERFACE)
-  if (theSemaphore) sem_destroy((sem_t *)theSemaphore);
-  delete (sem_t *)theSemaphore;
+  if (theSemaphore) sem_destroy(OFthread_cast(sem_t *, theSemaphore));
+  delete OFthread_cast(sem_t *, theSemaphore);
 #elif defined(SOLARIS_INTERFACE)
-  if (theSemaphore) sema_destroy((sema_t *)theSemaphore);
-  delete (sema_t *)theSemaphore;
+  if (theSemaphore) sema_destroy(OFthread_cast(sema_t *, theSemaphore));
+  delete OFthread_cast(sema_t *, theSemaphore);
 #else
 #endif
 }
@@ -435,10 +441,10 @@ int OFSemaphore::wait()
 #elif defined(POSIX_INTERFACE)
   if (theSemaphore)
   {
-    if (sem_wait((sem_t *)theSemaphore)) return errno; else return 0;
+    if (sem_wait(OFthread_cast(sem_t *, theSemaphore))) return errno; else return 0;
   } else return EINVAL;
 #elif defined(SOLARIS_INTERFACE)
-  if (theSemaphore) return sema_wait((sema_t *)theSemaphore); else return EINVAL;
+  if (theSemaphore) return sema_wait(OFthread_cast(sema_t *, theSemaphore)); else return EINVAL;
 #else
   return -1;
 #endif
@@ -454,10 +460,10 @@ int OFSemaphore::trywait()
 #elif defined(POSIX_INTERFACE)
   if (theSemaphore)
   {
-    if (sem_trywait((sem_t *)theSemaphore)) return errno; else return 0; // may return EAGAIN
+    if (sem_trywait(OFthread_cast(sem_t *, theSemaphore))) return errno; else return 0; // may return EAGAIN
   } else return EINVAL;  
 #elif defined(SOLARIS_INTERFACE)
-  if (theSemaphore) return sema_trywait((sema_t *)theSemaphore); else return EINVAL; // may return EBUSY
+  if (theSemaphore) return sema_trywait(OFthread_cast(sema_t *, theSemaphore)); else return EINVAL; // may return EBUSY
 #else
   return -1;
 #endif
@@ -470,10 +476,10 @@ int OFSemaphore::post()
 #elif defined(POSIX_INTERFACE)
   if (theSemaphore)
   {
-    if (sem_post((sem_t *)theSemaphore)) return errno; else return 0;
+    if (sem_post(OFthread_cast(sem_t *, theSemaphore))) return errno; else return 0;
   } else return EINVAL;  
 #elif defined(SOLARIS_INTERFACE)
-  if (theSemaphore) return sema_post((sema_t *)theSemaphore); else return EINVAL; 
+  if (theSemaphore) return sema_post(OFthread_cast(sema_t *, theSemaphore)); else return EINVAL; 
 #else
   return -1;
 #endif
@@ -546,11 +552,11 @@ OFMutex::~OFMutex()
 #ifdef WINDOWS_INTERFACE
   CloseHandle((HANDLE)theMutex);
 #elif defined(POSIX_INTERFACE)
-  if (theMutex) pthread_mutex_destroy((pthread_mutex_t *)theMutex);
-  delete (pthread_mutex_t *)theMutex;
+  if (theMutex) pthread_mutex_destroy(OFthread_cast(pthread_mutex_t *, theMutex));
+  delete OFthread_cast(pthread_mutex_t *, theMutex);
 #elif defined(SOLARIS_INTERFACE)
-  if (theMutex) mutex_destroy((mutex_t *)theMutex);
-  delete (mutex_t *)theMutex;
+  if (theMutex) mutex_destroy(OFthread_cast(mutex_t *, theMutex));
+  delete OFthread_cast(mutex_t *, theMutex);
 #else
 #endif
 }
@@ -572,9 +578,9 @@ int OFMutex::lock()
   if (WaitForSingleObject((HANDLE)theMutex, INFINITE) == WAIT_OBJECT_0) return 0;
   else return (int)GetLastError();
 #elif defined(POSIX_INTERFACE)
-  if (theMutex) return pthread_mutex_lock((pthread_mutex_t *)theMutex); else return EINVAL;
+  if (theMutex) return pthread_mutex_lock(OFthread_cast(pthread_mutex_t *, theMutex)); else return EINVAL;
 #elif defined(SOLARIS_INTERFACE)
-  if (theMutex) return mutex_lock((mutex_t *)theMutex); else return EINVAL;
+  if (theMutex) return mutex_lock(OFthread_cast(mutex_t *, theMutex)); else return EINVAL;
 #else
   return -1;
 #endif
@@ -588,9 +594,9 @@ int OFMutex::trylock()
   else if (result == WAIT_TIMEOUT) return OFMutex::busy;
   else return (int)GetLastError();
 #elif defined(POSIX_INTERFACE)
-  if (theMutex) return pthread_mutex_trylock((pthread_mutex_t *)theMutex); else return EINVAL; // may return EBUSY.
+  if (theMutex) return pthread_mutex_trylock(OFthread_cast(pthread_mutex_t *, theMutex)); else return EINVAL; // may return EBUSY.
 #elif defined(SOLARIS_INTERFACE)
-  if (theMutex) return mutex_trylock((mutex_t *)theMutex); else return EINVAL; // may return EBUSY.
+  if (theMutex) return mutex_trylock(OFthread_cast(mutex_t *, theMutex)); else return EINVAL; // may return EBUSY.
 #else
   return -1;
 #endif
@@ -601,9 +607,9 @@ int OFMutex::unlock()
 #ifdef WINDOWS_INTERFACE
   if (ReleaseMutex((HANDLE)theMutex)) return 0; else return (int)GetLastError();
 #elif defined(POSIX_INTERFACE)
-  if (theMutex) return pthread_mutex_unlock((pthread_mutex_t *)theMutex); else return EINVAL;
+  if (theMutex) return pthread_mutex_unlock(OFthread_cast(pthread_mutex_t *, theMutex)); else return EINVAL;
 #elif defined(SOLARIS_INTERFACE)
-  if (theMutex) return mutex_unlock((mutex_t *)theMutex); else return EINVAL;
+  if (theMutex) return mutex_unlock(OFthread_cast(mutex_t *, theMutex)); else return EINVAL;
 #else
   return -1;
 #endif
@@ -695,13 +701,13 @@ OFReadWriteLock::OFReadWriteLock()
 OFReadWriteLock::~OFReadWriteLock()
 {
 #if defined(WINDOWS_INTERFACE) || defined(POSIX_INTERFACE_WITHOUT_RWLOCK)
-  delete (OFReadWriteLockHelper *)theLock;
+  delete OFthread_cast(OFReadWriteLockHelper *, theLock);
 #elif defined(POSIX_INTERFACE)
-  if (theLock) pthread_rwlock_destroy((pthread_rwlock_t *)theLock);
-  delete (pthread_rwlock_t *)theLock;
+  if (theLock) pthread_rwlock_destroy(OFthread_cast(pthread_rwlock_t *, theLock));
+  delete OFthread_cast(pthread_rwlock_t *, theLock);
 #elif defined(SOLARIS_INTERFACE)
-  if (theLock) rwlock_destroy((rwlock_t *)theLock);
-  delete (rwlock_t *)theLock;
+  if (theLock) rwlock_destroy(OFthread_cast(rwlock_t *, theLock));
+  delete OFthread_cast(rwlock_t *, theLock);
 #else
 #endif
 }
@@ -745,9 +751,9 @@ int OFReadWriteLock::rdlock()
     }
   } else return EINVAL;
 #elif defined(POSIX_INTERFACE)
-  if (theLock) return pthread_rwlock_rdlock((pthread_rwlock_t *)theLock); else return EINVAL;
+  if (theLock) return pthread_rwlock_rdlock(OFthread_cast(pthread_rwlock_t *, theLock)); else return EINVAL;
 #elif defined(SOLARIS_INTERFACE)
-  if (theLock) return rw_rdlock((rwlock_t *)theLock); else return EINVAL;
+  if (theLock) return rw_rdlock(OFthread_cast(rwlock_t *, theLock)); else return EINVAL;
 #else
   return -1;
 #endif
@@ -781,9 +787,9 @@ int OFReadWriteLock::wrlock()
     }
   } else return EINVAL;
 #elif defined(POSIX_INTERFACE)
-  if (theLock) return pthread_rwlock_wrlock((pthread_rwlock_t *)theLock); else return EINVAL;
+  if (theLock) return pthread_rwlock_wrlock(OFthread_cast(pthread_rwlock_t *, theLock)); else return EINVAL;
 #elif defined(SOLARIS_INTERFACE)
-  if (theLock) return rw_wrlock((rwlock_t *)theLock); else return EINVAL;
+  if (theLock) return rw_wrlock(OFthread_cast(rwlock_t *, theLock)); else return EINVAL;
 #else
   return -1;
 #endif
@@ -815,9 +821,9 @@ int OFReadWriteLock::tryrdlock()
     if (result) return result; else return OFReadWriteLock::busy;
   } else return EINVAL;
 #elif defined(POSIX_INTERFACE)
-  if (theLock) return pthread_rwlock_tryrdlock((pthread_rwlock_t *)theLock); else return EINVAL; // may return EBUSY.
+  if (theLock) return pthread_rwlock_tryrdlock(OFthread_cast(pthread_rwlock_t *, theLock)); else return EINVAL; // may return EBUSY.
 #elif defined(SOLARIS_INTERFACE)
-  if (theLock) return rw_tryrdlock((rwlock_t *)theLock); else return EINVAL; // may return EBUSY.
+  if (theLock) return rw_tryrdlock(OFthread_cast(rwlock_t *, theLock)); else return EINVAL; // may return EBUSY.
 #else
   return -1;
 #endif
@@ -845,9 +851,9 @@ int OFReadWriteLock::trywrlock()
     if (result) return result; else return OFReadWriteLock::busy;
   } else return EINVAL;
 #elif defined(POSIX_INTERFACE)
-  if (theLock) return pthread_rwlock_trywrlock((pthread_rwlock_t *)theLock); else return EINVAL; // may return EBUSY.
+  if (theLock) return pthread_rwlock_trywrlock(OFthread_cast(pthread_rwlock_t *, theLock)); else return EINVAL; // may return EBUSY.
 #elif defined(SOLARIS_INTERFACE)
-  if (theLock) return rw_trywrlock((rwlock_t *)theLock); else return EINVAL; // may return EBUSY.
+  if (theLock) return rw_trywrlock(OFthread_cast(rwlock_t *, theLock)); else return EINVAL; // may return EBUSY.
 #else
   return -1;
 #endif
@@ -871,9 +877,9 @@ int OFReadWriteLock::unlock()
     return rwl->accessMutex.unlock();
   } else return EINVAL;
 #elif defined(POSIX_INTERFACE)
-  if (theLock) return pthread_rwlock_unlock((pthread_rwlock_t *)theLock); else return EINVAL;
+  if (theLock) return pthread_rwlock_unlock(OFthread_cast(pthread_rwlock_t *, theLock)); else return EINVAL;
 #elif defined(SOLARIS_INTERFACE)
-  if (theLock) return rw_unlock((rwlock_t *)theLock); else return EINVAL;
+  if (theLock) return rw_unlock(OFthread_cast(rwlock_t *, theLock)); else return EINVAL;
 #else
   return -1;
 #endif
@@ -911,7 +917,10 @@ void OFReadWriteLock::errorstr(OFString& description, int /* code */ )
  *
  * CVS/RCS Log:
  * $Log: ofthread.cc,v $
- * Revision 1.9  2002-11-27 11:23:11  meichel
+ * Revision 1.10  2003-08-14 09:01:20  meichel
+ * Adapted type casts to new-style typecast operators defined in ofcast.h
+ *
+ * Revision 1.9  2002/11/27 11:23:11  meichel
  * Adapted module ofstd to use of new header file ofstdinc.h
  *
  * Revision 1.8  2002/02/27 14:13:22  meichel

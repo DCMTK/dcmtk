@@ -44,9 +44,9 @@
 ** Intent:		This file defines the public structures and constants
 **			and the function prototypes for the DUL (DICOM Upper
 **			Layer) facility.
-** Last Update:		$Author: meichel $, $Date: 2003-06-10 13:37:36 $
+** Last Update:		$Author: meichel $, $Date: 2003-08-14 09:01:37 $
 ** Source File:		$RCSfile: dul.h,v $
-** Revision:		$Revision: 1.17 $
+** Revision:		$Revision: 1.18 $
 ** Status:		$State: Exp $
 */
 
@@ -57,6 +57,7 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "ofglobal.h"
 #include "oftypes.h"
+#include "ofcast.h"
 #include "extneg.h"
 
 class DcmTransportConnection;
@@ -104,23 +105,23 @@ typedef unsigned char DUL_PRESENTATIONCONTEXTID;
  *  about node names, but the DUL_ package needs them.
  */
 
-#define DUL_LEN_TITLE  ((size_t)16)	/* required by DICOM protocol	 */
-#define DUL_LEN_NAME   ((size_t)64)	/* required by DICOM protocol	 */
-#define DUL_LEN_UID    ((size_t)64)	/* required by DICOM protocol	 */
-#define DUL_LEN_NODE  ((size_t)127)	/* should be "big enough"	 */
+#define DUL_LEN_TITLE  OFstatic_cast(size_t, 16)	/* required by DICOM protocol	 */
+#define DUL_LEN_NAME   OFstatic_cast(size_t, 64)	/* required by DICOM protocol	 */
+#define DUL_LEN_UID    OFstatic_cast(size_t, 64)	/* required by DICOM protocol	 */
+#define DUL_LEN_NODE   OFstatic_cast(size_t, 127)	/* should be "big enough"	 */
 
 
 /* DICOM PDU Types */
 
-#define DUL_TYPEASSOCIATERQ		(unsigned char)0x01
-#define DUL_TYPEASSOCIATEAC		(unsigned char)0x02
-#define	DUL_TYPEASSOCIATERJ		(unsigned char)0x03
-#define	DUL_TYPEDATA			(unsigned char)0x04
-#define	DUL_TYPERELEASERQ		(unsigned char)0x05
-#define	DUL_TYPERELEASERP		(unsigned char)0x06
-#define	DUL_TYPEABORT			(unsigned char)0x07
+#define DUL_TYPEASSOCIATERQ		OFstatic_cast(unsigned char, 0x01)
+#define DUL_TYPEASSOCIATEAC		OFstatic_cast(unsigned char, 0x02)
+#define	DUL_TYPEASSOCIATERJ		OFstatic_cast(unsigned char, 0x03)
+#define	DUL_TYPEDATA			OFstatic_cast(unsigned char, 0x04)
+#define	DUL_TYPERELEASERQ		OFstatic_cast(unsigned char, 0x05)
+#define	DUL_TYPERELEASERP		OFstatic_cast(unsigned char, 0x06)
+#define	DUL_TYPEABORT			OFstatic_cast(unsigned char, 0x07)
 
-#define DUL_MAXTYPE			(unsigned char)0x07
+#define DUL_MAXTYPE			OFstatic_cast(unsigned char, 0x07)
 
 typedef struct {
     char applicationContextName[DUL_LEN_NAME + 1];
@@ -422,7 +423,10 @@ unsigned long DUL_getPeerCertificate(DUL_ASSOCIATIONKEY *dulassoc, void *buf, un
 /*
 ** CVS Log
 ** $Log: dul.h,v $
-** Revision 1.17  2003-06-10 13:37:36  meichel
+** Revision 1.18  2003-08-14 09:01:37  meichel
+** Adapted type casts to new-style typecast operators defined in ofcast.h
+**
+** Revision 1.17  2003/06/10 13:37:36  meichel
 ** Added support for TCP wrappers in DICOM network layer
 **
 ** Revision 1.16  2003/06/06 13:07:29  meichel

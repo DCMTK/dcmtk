@@ -21,10 +21,10 @@
  *
  *  Purpose: RLE compressor
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-06-12 18:21:24 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-08-14 09:00:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcrleenc.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -107,7 +107,7 @@ public:
       // if the current byte equals the last byte read
       // (which is initialized with the "impossible" value -1),
       // just increase the repeat counter
-      if ((int)ch == RLE_prev_) RLE_pcount_++;
+      if (OFstatic_cast(int, ch) == RLE_prev_) RLE_pcount_++;
       else
       {
           // byte is different from last byte read.
@@ -119,11 +119,11 @@ public:
               break;
             case 2:
               // two bytes in repeat buffer. Convert to literal run
-              RLE_buff_[RLE_bindex_++] = (unsigned char)RLE_prev_;
+              RLE_buff_[RLE_bindex_++] = OFstatic_cast(unsigned char, RLE_prev_);
               // no break. Fall-through into next case statement is intended.
             case 1:
               // one (or two) bytes in repeat buffer. Convert to literal run
-              RLE_buff_[RLE_bindex_++] = (unsigned char)RLE_prev_;
+              RLE_buff_[RLE_bindex_++] = OFstatic_cast(unsigned char, RLE_prev_);
               break;
             default:
               // more than two bytes in repeat buffer. Convert to replicate run
@@ -131,11 +131,11 @@ public:
               {
                   // there is a literal run in the buffer that must be flushed
                   // before the replicate run.  Flush literal run now.
-                  RLE_buff_[0] = (unsigned char)(RLE_bindex_-2);
+                  RLE_buff_[0] = OFstatic_cast(unsigned char, RLE_bindex_-2);
                   move(RLE_bindex_);
               }
               // this is the byte value for the repeat run
-              RLE_buff_[1] = (unsigned char)RLE_prev_;
+              RLE_buff_[1] = OFstatic_cast(unsigned char, RLE_prev_);
               // write as many repeat runs as necessary
               for (; RLE_pcount_>0; RLE_pcount_-=128)
               {
@@ -144,7 +144,7 @@ public:
                   // to represent replicate runs.
                   // DICOM instead uses 257 - RLE_pcount_
                   if (RLE_pcount_ > 128) RLE_buff_[0] = 0x81;
-                    else RLE_buff_[0] = (unsigned char)(257 - RLE_pcount_);
+                    else RLE_buff_[0] = OFstatic_cast(unsigned char, 257 - RLE_pcount_);
                   move(2);
               }
               // now the buffer is guaranteed to be empty
@@ -198,7 +198,7 @@ public:
       // if there are max 1 bytes in the repeat counter, convert to literal run
       if (RLE_pcount_ < 2)
       {
-        for (; RLE_pcount_>0; --RLE_pcount_) RLE_buff_[RLE_bindex_++] = (unsigned char)RLE_prev_;
+        for (; RLE_pcount_>0; --RLE_pcount_) RLE_buff_[RLE_bindex_++] = OFstatic_cast(unsigned char, RLE_prev_);
       }
 
       // if we have 128 or more bytes in the literal run, flush buffer
@@ -216,14 +216,14 @@ public:
       // if there is still a literal run in the buffer, flush literal run
       if (RLE_bindex_ > 1)
       {
-          RLE_buff_[0] = (unsigned char)(RLE_bindex_-2);
+          RLE_buff_[0] = OFstatic_cast(unsigned char, RLE_bindex_-2);
           move(RLE_bindex_);
       }
 
       // if there is a remaining repeat run, flush this one as well
       if (RLE_pcount_ >= 2)
       {
-          RLE_buff_[1] = (unsigned char)(RLE_prev_);
+          RLE_buff_[1] = OFstatic_cast(unsigned char, RLE_prev_);
           // write as many repeat runs as necessary
           for (; RLE_pcount_>0; RLE_pcount_-=128)
           {
@@ -232,7 +232,7 @@ public:
             // to represent replicate runs.
             // DICOM instead uses 257 - RLE_pcount_
             if (RLE_pcount_ > 128) RLE_buff_[0] = 0x81;
-              else RLE_buff_[0] = (unsigned char)(257 - RLE_pcount_);
+              else RLE_buff_[0] = OFstatic_cast(unsigned char, 257 - RLE_pcount_);
             move(2);
           }
       }
@@ -276,7 +276,7 @@ public:
     if ((!fail_) && target)
     {
       unsigned char *current = NULL;
-      unsigned char *target8 = (unsigned char *)target;
+      unsigned char *target8 = OFstatic_cast(unsigned char *, target);
       OFListConstIterator(unsigned char *) first = blockList_.begin();
       OFListConstIterator(unsigned char *) last = blockList_.end();
       while (first != last)
@@ -422,7 +422,10 @@ private:
 /*
  * CVS/RCS Log
  * $Log: dcrleenc.h,v $
- * Revision 1.8  2003-06-12 18:21:24  joergr
+ * Revision 1.9  2003-08-14 09:00:56  meichel
+ * Adapted type casts to new-style typecast operators defined in ofcast.h
+ *
+ * Revision 1.8  2003/06/12 18:21:24  joergr
  * Modified code to use const_iterators where appropriate (required for STL).
  * Thanks to Henning Meyer <Henning-Meyer@web.de> for the report.
  *

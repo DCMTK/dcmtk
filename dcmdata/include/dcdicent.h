@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Interface for a dictionary entry in the loadable DICOM data dictionary
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 12:07:21 $
+ *  Update Date:      $Date: 2003-08-14 09:00:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdicent.h,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -181,21 +181,21 @@ public:
     /// returns true if element has a single valid VM value
     OFBool isFixedSingleVM() const
     {
-        return (OFBool)((valueMultiplicityMin != DcmVariableVM) &&
+        return ((valueMultiplicityMin != DcmVariableVM) &&
                       (valueMultiplicityMin == valueMultiplicityMax));
     }
 
     /// returns true if element has a fixed VM range
     OFBool isFixedRangeVM() const
     {
-        return (OFBool)((valueMultiplicityMin != DcmVariableVM) &&
+        return ((valueMultiplicityMin != DcmVariableVM) &&
                       (valueMultiplicityMax != DcmVariableVM));
     }
 
     /// returns true if element has a variable VM range (no upper limit)
     OFBool isVariableRangeVM() const
     {
-        return (OFBool)((valueMultiplicityMin != DcmVariableVM) &&
+        return ((valueMultiplicityMin != DcmVariableVM) &&
                       (valueMultiplicityMax == DcmVariableVM));
     }
 
@@ -241,7 +241,7 @@ public:
     /// returns attribute tag as DcmTagKey object by value
     DcmTagKey getKey() const
     {
-        return *(DcmTagKey*)(this);
+        return * OFstatic_cast(const DcmTagKey *, this);
     }
 
     /// returns upper limits for attribute tag as DcmTagKey object by value
@@ -412,7 +412,10 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicent.h,v $
-** Revision 1.17  2002-11-27 12:07:21  meichel
+** Revision 1.18  2003-08-14 09:00:56  meichel
+** Adapted type casts to new-style typecast operators defined in ofcast.h
+**
+** Revision 1.17  2002/11/27 12:07:21  meichel
 ** Adapted module dcmdata to use of new header file ofstdinc.h
 **
 ** Revision 1.16  2002/07/23 14:21:25  meichel

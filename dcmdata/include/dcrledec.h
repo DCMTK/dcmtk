@@ -22,9 +22,9 @@
  *  Purpose: RLE decompressor
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-03-21 13:06:46 $
+ *  Update Date:      $Date: 2003-08-14 09:00:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcrledec.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -95,13 +95,13 @@ public:
       result = EC_Normal;
       unsigned char ch;
       unsigned char nbytes;
-      unsigned char *cp = (unsigned char *) compressedData;
+      unsigned char *cp = OFstatic_cast(unsigned char *, compressedData);
 
       // check if we suspended last time, clean up
       if (suspendInfo_ > 128)
       {
         // DICOM packbit scheme uses 257 - nbytes to represent replicate runs
-        nbytes = (unsigned char)(257 - suspendInfo_);
+        nbytes = OFstatic_cast(unsigned char, 257 - suspendInfo_);
 
         // suspended replicate run. compressedSize cannot be zero now.
         suspendInfo_ = 128;
@@ -113,13 +113,13 @@ public:
       else if (suspendInfo_ < 128)
       {
         // suspended literal run
-        nbytes = (unsigned char)((suspendInfo_ & 0x7f) + 1);
+        nbytes = OFstatic_cast(unsigned char, (suspendInfo_ & 0x7f) + 1);
         suspendInfo_ = 128;
         if (compressedSize < nbytes)
         {
           // we're going to suspend again (oops?), prepare everything
-          suspendInfo_ = (unsigned char)(nbytes - compressedSize - 1);
-          nbytes = (unsigned char)compressedSize;
+          suspendInfo_ = OFstatic_cast(unsigned char, nbytes - compressedSize - 1);
+          nbytes = OFstatic_cast(unsigned char, compressedSize);
           result = EC_StreamNotifyClient;
         }
 
@@ -140,7 +140,7 @@ public:
           if (compressedSize)
           {
             // DICOM packbit scheme uses 257 - nbytes to represent replicate runs
-            nbytes = (unsigned char)(257 - ch);
+            nbytes = OFstatic_cast(unsigned char, 257 - ch);
             ch = *cp++;
             --compressedSize;
             replicate(ch, nbytes);
@@ -155,12 +155,12 @@ public:
         else
         {
           // literal run
-          nbytes = (unsigned char)((ch & 0x7f) + 1);
+          nbytes = OFstatic_cast(unsigned char, (ch & 0x7f) + 1);
           if (compressedSize < nbytes)
           {
             // we're going to suspend, prepare everything
-            suspendInfo_ = (unsigned char)(nbytes - compressedSize - 1);
-            nbytes = (unsigned char)compressedSize;
+            suspendInfo_ = OFstatic_cast(unsigned char, nbytes - compressedSize - 1);
+            nbytes = OFstatic_cast(unsigned char, compressedSize);
             result = EC_StreamNotifyClient;
           }
 
@@ -219,7 +219,7 @@ private:
      {
        // output buffer overflow
        fail_ = 1;
-       nbytes = (unsigned char)(outputBufferSize_ - offset_);
+       nbytes = OFstatic_cast(unsigned char, outputBufferSize_ - offset_);
      }
 
      while (nbytes--) outputBuffer_[offset_++] = ch;
@@ -236,7 +236,7 @@ private:
      {
        // output buffer overflow
        fail_ = 1;
-       nbytes = (unsigned char)(outputBufferSize_ - offset_);
+       nbytes = OFstatic_cast(unsigned char, outputBufferSize_ - offset_);
      }
 
      while (nbytes--) outputBuffer_[offset_++] = *cp++;
@@ -278,7 +278,10 @@ private:
 /*
  * CVS/RCS Log
  * $Log: dcrledec.h,v $
- * Revision 1.2  2003-03-21 13:06:46  meichel
+ * Revision 1.3  2003-08-14 09:00:56  meichel
+ * Adapted type casts to new-style typecast operators defined in ofcast.h
+ *
+ * Revision 1.2  2003/03/21 13:06:46  meichel
  * Minor code purifications for warnings reported by MSVC in Level 4
  *
  * Revision 1.1  2002/06/06 14:52:36  meichel
