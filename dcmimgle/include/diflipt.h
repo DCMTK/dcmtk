@@ -22,9 +22,9 @@
  *  Purpose: DicomFlipTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-05-03 11:09:28 $
+ *  Update Date:      $Date: 1999-09-17 12:10:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diflipt.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,6 +56,16 @@ class DiFlipTemplate
 
  public:
 
+    /** constructor.
+     *  This method is used to flip an image and store the result in the same storage area.
+     *
+     ** @param  pixel    pointer to object where the pixel data are stored
+     *  @param  columns  width of the image
+     *  @param  rows     height of the image
+     *  @param  frames   number of frames
+     *  @param  horz     flags indicating whether to flip horizontally or not
+     *  @param  vert     flags indicating whether to flip vertically or not
+     */
     DiFlipTemplate(DiPixel *pixel,
                    const Uint16 columns,
                    const Uint16 rows,
@@ -75,6 +85,14 @@ class DiFlipTemplate
         }
     }
 
+    /** constructor.
+     *  This method is used to perform only the preparation and to start flipping later with method 'flipData()'
+     *
+     ** @param  planes   number of planes (1 or 3)
+     *  @param  columns  width of the image
+     *  @param  rows     height of the image
+     *  @param  frames   number of frames
+     */
     DiFlipTemplate(const int planes,
                    const Uint16 columns,
                    const Uint16 rows,
@@ -83,10 +101,19 @@ class DiFlipTemplate
     {
     }
 
+    /** destructor
+     */
     virtual ~DiFlipTemplate()
     {
     }
 
+    /** choose algorithm depending on flipping mode
+     *
+     ** @param  src   array of pointers to source image pixels
+     *  @param  dest  array of pointers to destination image pixels
+     *  @param  horz  flags indicating whether to flip horizontally or not
+     *  @param  vert  flags indicating whether to flip vertically or not
+     */
     inline void flipData(const T *src[],
                          T *dest[],
                          const int horz,
@@ -108,6 +135,11 @@ class DiFlipTemplate
 
  protected:
 
+   /** flip source image horizontally and store result in destination image
+    *
+    ** @param  src   array of pointers to source image pixels
+    *  @param  dest  array of pointers to destination image pixels
+    */
     inline void flipHorz(const T *src[],
                          T *dest[])
     {
@@ -122,12 +154,12 @@ class DiFlipTemplate
             {
                 p = src[j];
                 r = dest[j];
-                for (Uint32 f = 0; f < Frames; f++)
+                for (Uint32 f = Frames; f != 0; f--)
                 {               
-                    for (y = 0; y < Src_Y; y++)
+                    for (y = Src_Y; y != 0; y--)
                     {
                         q = r + Dest_X;
-                        for (x = 0; x < Src_X; x++)
+                        for (x = Src_X; x != 0; x--)
                             *--q = *p++;
                         r += Dest_X;
                     }
@@ -136,6 +168,11 @@ class DiFlipTemplate
         }
     }
  
+   /** flip source image vertically and store result in destination image
+    *
+    ** @param  src   array of pointers to source image pixels
+    *  @param  dest  array of pointers to destination image pixels
+    */
     inline void flipVert(const T *src[],
                          T *dest[])
     {
@@ -151,13 +188,13 @@ class DiFlipTemplate
             {
                 p = src[j];
                 r = dest[j];
-                for (Uint32 f = 0; f < Frames; f++)
+                for (Uint32 f = Frames; f != 0; f--)
                 {          
                     r += count;     
-                    for (y = 0; y < Src_Y; y++)
+                    for (y = Src_Y; y != 0; y--)
                     {
                         q = r - Dest_X;
-                        for (x = 0; x < Src_X; x++)
+                        for (x = Src_X; x != 0; x--)
                             *q++ = *p++;
                         r -= Dest_X;
                     }
@@ -167,6 +204,11 @@ class DiFlipTemplate
         }
     }
 
+   /** flip source image horizontally and vertically and store result in destination image
+    *
+    ** @param  src   array of pointers to source image pixels
+    *  @param  dest  array of pointers to destination image pixels
+    */
     inline void flipHorzVert(const T *src[],
                              T *dest[])
     {
@@ -180,10 +222,10 @@ class DiFlipTemplate
             {
                 p = src[j];
                 q = dest[j];
-                for (Uint32 f = 0; f < Frames; f++)
+                for (Uint32 f = Frames; f != 0; f--)
                 {
                     q += count;
-                    for (i = 0; i < count; i++)
+                    for (i = count; i != 0; i--)
                         *--q = *p++;
                     q += count;
                 }
@@ -193,6 +235,10 @@ class DiFlipTemplate
 
  private:
 
+   /** flip image horizontally and store result in the same storage area
+    *
+    ** @param  data  array of pointers to source/destination image pixels
+    */
     inline void flipHorz(T *data[])
     {
         register Uint16 x;
@@ -204,14 +250,14 @@ class DiFlipTemplate
         for (int j = 0; j < Planes; j++)
         {
             r = data[j];
-            for (Uint32 f = 0; f < Frames; f++)
+            for (Uint32 f = Frames; f != 0; f--)
             {               
-                for (y = 0; y < Src_Y; y++)
+                for (y = Src_Y; y != 0; y--)
                 {
                     p = r;
                     r += Dest_X;
                     q = r;
-                    for (x = 0; x < (Uint16)(Src_X / 2); x++)
+                    for (x = Src_X / 2; x != 0; x--)
                     {
                         t = *p;
                         *p++ = *--q;
@@ -222,6 +268,10 @@ class DiFlipTemplate
         }
     }
 
+   /** flip image vertically and store result in the same storage area
+    *
+    ** @param  data  array of pointers to source/destination image pixels
+    */
     inline void flipVert(T *data[])
     {
         register Uint16 x;
@@ -235,16 +285,16 @@ class DiFlipTemplate
         for (int j = 0; j < Planes; j++)
         {
             s = data[j];
-            for (Uint32 f = 0; f < Frames; f++)
+            for (Uint32 f = Frames; f != 0; f--)
             {              
                 p = s; 
                 s += count;
                 r = s; 
-                for (y = 0; y < (Uint16)(Src_Y / 2); y++)
+                for (y = Src_Y / 2; y != 0; y--)
                 {
                     r -= Dest_X;
                     q = r;
-                    for (x = 0; x < Src_X; x++)
+                    for (x = Src_X; x != 0; x--)
                     {
                         t = *p;
                         *p++ = *q;
@@ -255,6 +305,10 @@ class DiFlipTemplate
         }
     }
 
+   /** flip image horizontally and vertically and store result in the same storage area
+    *
+    ** @param  data  array of pointers to source/destination image pixels
+    */
     inline void flipHorzVert(T *data[])
     {
         register unsigned long i;
@@ -266,11 +320,11 @@ class DiFlipTemplate
         for (int j = 0; j < Planes; j++)
         {
             s = data[j];
-            for (Uint32 f = 0; f < Frames; f++)
+            for (Uint32 f = Frames; f != 0; f--)
             {               
                 p = s;
                 q = s + count;
-                for (i = 0; i < (unsigned long)(count / 2); i++)
+                for (i = count / 2; i != 0; i--)
                 {
                     t = *p;
                     *p++ = *--q;
@@ -289,7 +343,11 @@ class DiFlipTemplate
  *
  * CVS/RCS Log:
  * $Log: diflipt.h,v $
- * Revision 1.7  1999-05-03 11:09:28  joergr
+ * Revision 1.8  1999-09-17 12:10:55  joergr
+ * Added/changed/completed DOC++ style comments in the header files.
+ * Enhanced efficiency of some "for" loops.
+ *
+ * Revision 1.7  1999/05/03 11:09:28  joergr
  * Minor code purifications to keep Sun CC 2.0.1 quiet.
  *
  * Revision 1.6  1999/04/28 14:46:54  joergr
