@@ -56,7 +56,7 @@ given below:
     Linux 2.4.21   / Intel x86    / GNU gcc 3.3.1
     Linux 2.6.4    / Intel x86    / GNU gcc 3.3.3
     MacOS X 10.1.5 / Power Mac G4 / Apple gcc-934.3  (gcc 2.95.2, see note *5)
-??  MacOS X 10.3.3 / Power Mac G4 / Apple gcc-1640   (gcc 3.3)
+    MacOS X 10.3.3 / Power Mac G4 / Apple gcc-1640   (gcc 3.3)
     NetBSD 1.6.1   / Intel x86    / GNU gcc 2.95.3
     OSF/1 4.0      / DEC Alpha    / Compaq C++ V6.3-002 (see note *6)
     OSF/1 4.0      / DEC Alpha    / GNU gcc 2.95.3
@@ -129,9 +129,9 @@ Starting with release 3.4.2, DCMTK supports the "DICOM Security Enhancements
 One", i.e. DICOM network transmission "tunneled" through a secure TLSv1
 transport connection.  DCMTK relies on the OpenSSL toolkit (www.openssl.org)
 for the underlying cryptographic routines and the TLS protocol implementation.
-This release of DCMTK is known to compile with all 0.9.6x OpenSSL releases.
-Due to security considerations we recommend that DCMTK should be compiled with
-OpenSSL 0.9.6g or newer.  This release also compiles with OpenSSL 0.9.7d.
+This release of DCMTK is known to compile with all 0.9.6x and 0.9.7x OpenSSL 
+releases. Due to security considerations we recommend that DCMTK should be 
+compiled with OpenSSL 0.9.6m or OpenSSL 0.9.7d or newer.
 
 On Unix platforms, if support for security enhancements is desired, a compiled
 version of the OpenSSL libraries and include files must be available during
@@ -178,6 +178,9 @@ of the libtiff libraries and include files must be available during compilation
 of DCMTK, and the libtiff support must be switched on explicitly.  By default,
 DCMTK checks whether libtiff is installed in the standard path and enables
 support automatically if present.
+
+See FAQ for details on compiling DCMTK with libtiff support when the libtiff 
+library has been compiled with the non-standard JPEG option.
 
 On Windows platforms, the Visual C++ project files which are provided as part
 of the toolkit expect a directory named "tiff-3.6.1" to be present in the same
@@ -232,15 +235,18 @@ library (libwrap) which is freely available for most Unix platforms and part
 of the default installation of most recent Linux distributions.  This library
 allows to enforce host-based access control via the "/etc/hosts_deny" and
 "/etc/hosts_allow" configuration files.  See hosts_access(5) man page for
-details.  This release of DCMTK is known to compile with the current TCP
-wrappers release 7.6, although older releases may work as well.  The TCP
-wrappers library is available for download from
-ftp://ftp.porcupine.org/pub/security/tcp_wrappers_7.6.tar.gz
+details.  
 
 On Unix platforms, if support for TCP wrappers is desired, a compiled version
-of the libwrap library and include file (tcpd.h) must be available during
+of the libwrap library and include file <tcpd.h> must be available during
 compilation of DCMTK.  By default, DCMTK checks whether libwrap is installed
 in the standard path and enables support automatically if present.
+
+Since DCMTK uses the TCP wrappers from C++ code, an ANSI C compatible header 
+file <tcpd.h> is required. The official release 7.6 of the TCP wrappers library 
+is not ANSI C compatible and does not work with DCMTK (i.e. will not be 
+recognized by DCMTK's configure script). However, many current Linux and BSD 
+distributions ship with a ANSI C compatible header file.
 
 On Windows platforms, TCP wrappers are currently not supported.
 
@@ -336,7 +342,7 @@ following commands:
     ./rootconf
     cd ..
 
-This generate a new Makefile and configure script in the top level toolkit
+This generates a new Makefile and configure script in the top level toolkit
 directory.
 
 Solving configuration and compilation problems:
@@ -585,4 +591,4 @@ Have fun.
 Marco Eichelberg, Joerg Riesmeier, Thomas Wilkens
 Kuratorium OFFIS e.V., Oldenburg, Germany.
 
-Last revised: 2004-05-25 (Riesmeier).
+Last revised: 2004-05-26 (Eichelberg).
