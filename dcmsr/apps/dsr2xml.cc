@@ -23,8 +23,8 @@
  *           XML format
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-11-22 16:45:07 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2004-11-22 17:05:19 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -121,8 +121,6 @@ static OFCondition writeFile(ostream &out,
                     else if (charset == "arabic") dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Arabic);
                     else if (charset == "greek") dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Greek);
                     else if (charset == "hebrew") dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Hebrew);
-                    else if (charset == "thai") dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Thai);
-                    else if (charset == "katakana") dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Japanese);
                   }
                 }
                 if (result.good()) result = dsrdoc->writeXML(out, writeFlags);
@@ -183,8 +181,8 @@ int main(int argc, char *argv[])
     cmd.addGroup("processing options:");
       cmd.addSubGroup("character set:");
         cmd.addOption("--charset-require",     "+Cr",    "require declaration of ext. charset (default)");
-        cmd.addOption("--charset-assume",      "+Ca", 1, "charset: string constant (latin-1 to -5, greek,",
-                                                         "cyrillic, arabic, hebrew, thai, katakana)\n"
+        cmd.addOption("--charset-assume",      "+Ca", 1, "charset: string constant (latin-1 to -5,",
+                                                         "greek, cyrillic, arabic, hebrew)\n"
                                                          "assume charset if undeclared ext. charset found");     
     cmd.addGroup("output options:");
       cmd.addSubGroup("encoding:");
@@ -273,10 +271,9 @@ int main(int argc, char *argv[])
           OFString charset(opt_defaultCharset);
           if (charset != "latin-1" && charset != "latin-2" && charset != "latin-3" && 
               charset != "latin-4" && charset != "latin-5" && charset != "cyrillic" && 
-              charset != "arabic" && charset != "greek" && charset != "hebrew" &&
-              charset != "thai" && charset != "katakana")
+              charset != "arabic" && charset != "greek" && charset != "hebrew")
           {
-            app.printError("unknown value for --charset-assume. known values are latin-1 to -5, cyrillic, arabic, greek, hebrew, thai, katakana.");
+            app.printError("unknown value for --charset-assume. known values are latin-1 to -5, cyrillic, arabic, greek, hebrew.");
           }
         }
         cmd.endOptionBlock();
@@ -358,7 +355,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2xml.cc,v $
- * Revision 1.24  2004-11-22 16:45:07  meichel
+ * Revision 1.25  2004-11-22 17:05:19  meichel
+ * Removed command lin option for Thai and Katakana character sets
+ *   which cannot currently be converted to XML
+ *
+ * Revision 1.24  2004/11/22 16:45:07  meichel
  * Now checking whether extended characters are present in a DICOM SR document,
  *   preventing generation of incorrect XML if undeclared extended charset used.
  *
