@@ -21,10 +21,10 @@
  *
  *  Purpose: encoder codec class for RLE
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-04 16:43:42 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-08-24 14:54:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcrlecce.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -354,9 +354,9 @@ OFCondition DcmRLECodecEncoder::encode(
             // create new UID if mode is true or if we're converting to Secondary Capture
             if (djcp->getConvertToSC() || djcp->getUIDCreation())
             {
-                result = DcmCodec::newInstance(OFstatic_cast(DcmItem *, dataset));
-
-                // set image type to DERIVED\\SECONDARY
+                result = DcmCodec::newInstance(OFstatic_cast(DcmItem *, dataset), "DCM", "121320", "Uncompressed predecessor");
+                
+                // set image type to DERIVED
                 if (result.good()) result = updateImageType(OFstatic_cast(DcmItem *, dataset));
 
                 // update derivation description
@@ -419,7 +419,11 @@ OFCondition DcmRLECodecEncoder::updateDerivationDescription(
 /*
  * CVS/RCS Log
  * $Log: dcrlecce.cc,v $
- * Revision 1.9  2004-02-04 16:43:42  joergr
+ * Revision 1.10  2004-08-24 14:54:20  meichel
+ *  Updated compression helper methods. Image type is not set to SECONDARY
+ *   any more, support for the purpose of reference code sequence added.
+ *
+ * Revision 1.9  2004/02/04 16:43:42  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  * Removed acknowledgements with e-mail addresses from CVS log.
  *

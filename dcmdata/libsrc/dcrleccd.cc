@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2003, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: decoder codec class for RLE
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-08-14 09:01:06 $
+ *  Update Date:      $Date: 2004-08-24 14:54:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcrleccd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -367,7 +367,8 @@ OFCondition DcmRLECodecDecoder::decode(
     if (dataset->ident() == EVR_dataset)
     {
         // create new SOP instance UID if codec parameters require so
-        if (result.good() && djcp->getUIDCreation()) result = DcmCodec::newInstance(OFstatic_cast(DcmItem *, dataset));
+        if (result.good() && djcp->getUIDCreation()) result = 
+          DcmCodec::newInstance(OFstatic_cast(DcmItem *, dataset), NULL, NULL, NULL);
     }
   }
   return result;
@@ -404,7 +405,11 @@ OFCondition DcmRLECodecDecoder::encode(
 /*
  * CVS/RCS Log
  * $Log: dcrleccd.cc,v $
- * Revision 1.4  2003-08-14 09:01:06  meichel
+ * Revision 1.5  2004-08-24 14:54:20  meichel
+ *  Updated compression helper methods. Image type is not set to SECONDARY
+ *   any more, support for the purpose of reference code sequence added.
+ *
+ * Revision 1.4  2003/08/14 09:01:06  meichel
  * Adapted type casts to new-style typecast operators defined in ofcast.h
  *
  * Revision 1.3  2003/03/21 13:08:04  meichel

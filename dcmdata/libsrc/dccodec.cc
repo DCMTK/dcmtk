@@ -21,9 +21,9 @@
  *
  *  Purpose: abstract class DcmCodec and the class DcmCodecStruct
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-04 16:11:42 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-08-24 14:54:20 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -99,8 +99,42 @@ OFCondition DcmCodec::convertToSecondaryCapture(DcmItem *dataset)
   return result;
 }
 
-OFCondition DcmCodec::newInstance(DcmItem *dataset)
+OFCondition DcmCodec::insertCodeSequence(
+    DcmItem *dataset,
+    const DcmTagKey &tagKey,
+    const char *codingSchemeDesignator,
+    const char *codeValue,
+    const char *codeMeaning)
 {
+  if (dataset == NULL || codingSchemeDesignator == NULL || 
+     codeValue == NULL || codeMeaning == NULL) return EC_IllegalCall;
+
+  OFCondition result = EC_Normal;
+  DcmSequenceOfItems *dseq = new DcmSequenceOfItems(tagKey);
+  if (dseq)
+  {
+    DcmItem *ditem = new DcmItem();
+    if (ditem)
+    {
+      dseq->insert(ditem);
+      result = ditem->putAndInsertString(DCM_CodingSchemeDesignator, codingSchemeDesignator);
+      if (result.good()) result = ditem->putAndInsertString(DCM_CodeValue, codeValue);
+      if (result.good()) result = ditem->putAndInsertString(DCM_CodeMeaning, codeMeaning);
+    } else result = EC_MemoryExhausted;
+ 
+    // insert sequence into dataset if everything went well
+    if (result.good()) dataset->insert(dseq, OFTrue /*replaceOld*/); else delete dseq;
+  } else result = EC_MemoryExhausted;
+
+  return result;                
+}
+      
+OFCondition DcmCodec::newInstance(
+  DcmItem *dataset, 
+  const char *purposeOfReferenceCodingScheme,
+  const char *purposeOfReferenceCodeValue,
+  const char *purposeOfReferenceCodeMeaning)  
+{     
   if (dataset == NULL) return EC_IllegalCall;
   OFCondition result = EC_Normal;
 
@@ -136,6 +170,14 @@ OFCondition DcmCodec::newInstance(DcmItem *dataset)
             } else result = EC_MemoryExhausted;
           }
         } else result = EC_MemoryExhausted;
+        
+        if (result.good() && purposeOfReferenceCodingScheme && 
+           purposeOfReferenceCodeValue && purposeOfReferenceCodeMeaning)
+        {
+          // add purpose of reference code sequence
+          result = DcmCodec::insertCodeSequence(ditem, DCM_PurposeOfReferenceCodeSequence, 
+            purposeOfReferenceCodingScheme, purposeOfReferenceCodeValue, purposeOfReferenceCodeMeaning);
+        }
       } else result = EC_MemoryExhausted;
       if (result.good()) dataset->insert(dseq, OFTrue); else delete dseq;
     } else result = EC_MemoryExhausted;
@@ -163,7 +205,7 @@ OFCondition DcmCodec::updateImageType(DcmItem *dataset)
   if (dataset == NULL) return EC_IllegalCall;
 
   DcmStack stack;
-  OFString imageType("DERIVED\\SECONDARY");
+  OFString imageType("DERIVED");
   OFString a;
 
   /* find existing Image Type element */
@@ -171,9 +213,9 @@ OFCondition DcmCodec::updateImageType(DcmItem *dataset)
   if (status.good())
   {
     DcmElement *elem = OFstatic_cast(DcmElement *, stack.top());
-    unsigned long pos = 2;
+    unsigned long pos = 1;
 
-    // append old image type information beginning with third entry
+    // append old image type information beginning with second entry
     while ((elem->getOFString(a, pos++)).good())
     {
       imageType += "\\";
@@ -451,7 +493,11 @@ OFBool DcmCodecList::canChangeCoding(
 /*
 ** CVS/RCS Log:
 ** $Log: dccodec.cc,v $
-** Revision 1.12  2004-02-04 16:11:42  joergr
+** Revision 1.13  2004-08-24 14:54:20  meichel
+**  Updated compression helper methods. Image type is not set to SECONDARY
+**   any more, support for the purpose of reference code sequence added.
+**
+** Revision 1.12  2004/02/04 16:11:42  joergr
 ** Adapted type casts to new-style typecast operators defined in ofcast.h.
 **
 ** Revision 1.11  2002/06/27 15:15:53  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2003, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of abstract class DcmCodec and the class DcmCodecStruct
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-06-12 13:35:23 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-08-24 14:54:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dccodec.h,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -191,15 +191,37 @@ public:
   /** create new SOP instance UID and Source Image Sequence
    *  referencing the old SOP instance (if present)
    *  @param dataset dataset to be modified
+   *  @param purposeOfReferenceCodingScheme coding scheme designator for purpose of reference code sequence
+   *  @param purposeOfReferenceCodeValue code value for purpose of reference code sequence
+   *  @param purposeOfReferenceCodeMeaning code meaning for purpose of reference code sequence
    *  @return EC_Normal if successful, an error code otherwise
    */
-  static OFCondition newInstance(DcmItem *dataset);
+  static OFCondition newInstance(
+    DcmItem *dataset, 
+    const char *purposeOfReferenceCodingScheme = NULL,
+    const char *purposeOfReferenceCodeValue = NULL,
+    const char *purposeOfReferenceCodeMeaning = NULL);
 
-  /** set first two values of Image Type to DERIVED\SECONDARY.
+  /** set first value of Image Type to DERIVED.
    *  @param dataset dataset to be modified
    *  @return EC_Normal if successful, an error code otherwise
    */
   static OFCondition updateImageType(DcmItem *dataset);
+
+  /** insert code sequence into the given dataset
+   *  @param dataset dataset to insert into
+   *  @param tagKey tag of the code sequence
+   *  @param codingSchemeDesignator coding scheme designator for the sequence item
+   *  @param codeValue code value for the sequence item
+   *  @param codeMeaning code meaning for the sequence item
+   *  @return EC_Normal if successul, an error code otherwise
+   */
+  static OFCondition insertCodeSequence(
+    DcmItem *dataset,
+    const DcmTagKey &tagKey,
+    const char *codingSchemeDesignator,
+    const char *codeValue,
+    const char *codeMeaning);
 
 };
 
@@ -383,7 +405,11 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dccodec.h,v $
-** Revision 1.15  2003-06-12 13:35:23  joergr
+** Revision 1.16  2004-08-24 14:54:18  meichel
+**  Updated compression helper methods. Image type is not set to SECONDARY
+**   any more, support for the purpose of reference code sequence added.
+**
+** Revision 1.15  2003/06/12 13:35:23  joergr
 ** Fixed inconsistent API documentation reported by Doxygen.
 **
 ** Revision 1.14  2002/05/24 14:51:41  meichel
