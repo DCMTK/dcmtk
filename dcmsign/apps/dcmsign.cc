@@ -21,9 +21,9 @@
  *
  *  Purpose: Create and Verify DICOM Digital Signatures
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 14:53:38 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2002-12-20 14:54:09 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,7 +60,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 
 #ifdef WITH_OPENSSL
 
-#include "dcmsign.h"
+#include "dcsignat.h"
 #include "sinullpr.h"
 #include "sibrsapr.h"
 #include "siautopr.h"
@@ -1122,7 +1122,11 @@ int main(int, char *[])
 
 /*
  *  $Log: dcmsign.cc,v $
- *  Revision 1.15  2002-11-27 14:53:38  meichel
+ *  Revision 1.16  2002-12-20 14:54:09  wilkens
+ *  Modified name clash resulting in a compiler error on Solaris 2.5.1 using
+ *  compiler SC 2.0.1.
+ *
+ *  Revision 1.15  2002/11/27 14:53:38  meichel
  *  Adapted module dcmsign to use of new header file ofstdinc.h
  *
  *  Revision 1.14  2002/11/26 08:45:20  meichel

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVSignatureHandler
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-05-02 14:10:22 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2002-12-20 14:52:00 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,7 +34,7 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dvsighdl.h"
 #include "dcdeftag.h"
-#include "dcmsign.h"
+#include "dcsignat.h"
 #include "dcobject.h"
 #include "dcsequen.h"
 #include "dcvrat.h"
@@ -877,7 +877,11 @@ OFCondition DVSignatureHandler::createSignature(
 
 /*
  *  $Log: dvsighdl.cc,v $
- *  Revision 1.11  2002-05-02 14:10:22  joergr
+ *  Revision 1.12  2002-12-20 14:52:00  wilkens
+ *  Modified name clash resulting in a compiler error on Solaris 2.5.1 using
+ *  compiler SC 2.0.1.
+ *
+ *  Revision 1.11  2002/05/02 14:10:22  joergr
  *  Added support for standard and non-standard string streams (which one is
  *  supported is detected automatically via the configure mechanism).
  *  Thanks again to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his

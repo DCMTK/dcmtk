@@ -103,7 +103,7 @@ LIB32=link.exe -lib
 # Name "dcmsign - Win32 Release OpenSSL"
 # Begin Source File
 
-SOURCE=.\libsrc\dcmsign.cxx
+SOURCE=.\libsrc\dcsignat.cxx
 # End Source File
 # Begin Source File
 

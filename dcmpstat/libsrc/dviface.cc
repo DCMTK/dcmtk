@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-29 13:16:32 $
- *  CVS/RCS Revision: $Revision: 1.140 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2002-12-20 14:51:58 $
+ *  CVS/RCS Revision: $Revision: 1.141 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,7 +48,7 @@
 #include "dvpshlp.h"     /* for class DVPSHelper */
 #include "dcmimage.h"    /* for class DicomImage */
 #include "dvsighdl.h"    /* for class DVSignatureHandler */
-#include "dcmsign.h"     /* for class DcmSignature */
+#include "dcsignat.h"    /* for class DcmSignature */
 #include "ofstream.h"
 #include "dsrdoc.h"      /* for class DSRDocument */
 #include "dsrcodvl.h"
@@ -4300,7 +4300,11 @@ void DVInterface::disableImageAndPState()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.140  2002-11-29 13:16:32  meichel
+ *  Revision 1.141  2002-12-20 14:51:58  wilkens
+ *  Modified name clash resulting in a compiler error on Solaris 2.5.1 using
+ *  compiler SC 2.0.1.
+ *
+ *  Revision 1.140  2002/11/29 13:16:32  meichel
  *  Introduced new command line option --timeout for controlling the
  *    connection request timeout.
  *

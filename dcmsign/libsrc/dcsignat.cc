@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DcmSignature
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-12-16 12:57:48 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2002-12-20 14:53:35 $
+ *  CVS/RCS Revision: $Revision: 1.1 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,7 +35,7 @@
 
 #ifdef WITH_OPENSSL
 
-#include "dcmsign.h"
+#include "dcsignat.h"
 #include "dcstack.h"
 #include "dcitem.h"
 #include "dcvrat.h"
@@ -828,8 +828,12 @@ int dcmsign_cc_dummy_to_keep_linker_from_moaning = 0;
 #endif
 
 /*
- *  $Log: dcmsign.cc,v $
- *  Revision 1.12  2002-12-16 12:57:48  meichel
+ *  $Log: dcsignat.cc,v $
+ *  Revision 1.1  2002-12-20 14:53:35  wilkens
+ *  Modified name clash resulting in a compiler error on Solaris 2.5.1 using
+ *  compiler SC 2.0.1.
+ *
+ *  Revision 1.12  2002/12/16 12:57:48  meichel
  *  Minor modification to shut up linker on MacOS X when compiling
  *    without OpenSSL support
  *

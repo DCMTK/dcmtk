@@ -64,7 +64,7 @@ dviface.o: dviface.cc ../../config/include/osconfig.h \
  ../../dcmimgle/include/dipixel.h ../../dcmimgle/include/dimomod.h \
  ../../dcmimgle/include/diluptab.h ../../dcmimgle/include/dimoopx.h \
  ../include/dvsighdl.h ../../dcmsign/include/sicertvf.h \
- ../../dcmsign/include/sitypes.h ../../dcmsign/include/dcmsign.h \
+ ../../dcmsign/include/sitypes.h ../../dcmsign/include/dcsignat.h \
  ../../dcmsr/include/dsrdoc.h ../../dcmsr/include/dsrdoctr.h \
  ../../dcmsr/include/dsrtree.h ../../dcmsr/include/dsrtypes.h \
  ../../dcmsr/include/dsrtncsr.h ../../dcmsr/include/dsrdoctn.h \
@@ -1798,7 +1798,7 @@ dvsighdl.o: dvsighdl.cc ../../config/include/osconfig.h \
  ../../dcmsign/include/sitypes.h ../../ofstd/include/ofcond.h \
  ../../dcmdata/include/dcerror.h ../../dcmdata/include/dcdeftag.h \
  ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dctypes.h \
- ../../dcmsign/include/dcmsign.h ../../dcmdata/include/dcxfer.h \
+ ../../dcmsign/include/dcsignat.h ../../dcmdata/include/dcxfer.h \
  ../../dcmdata/include/dcvr.h ../../ofstd/include/ofglobal.h \
  ../../ofstd/include/ofthread.h ../../dcmdata/include/dcobject.h \
  ../../ofstd/include/ofconsol.h ../../dcmdata/include/dctag.h \

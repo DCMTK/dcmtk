@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DcmSignature
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 14:53:40 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2002-12-20 14:53:08 $
+ *  CVS/RCS Revision: $Revision: 1.1 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -274,8 +274,12 @@ private:
 #endif
 
 /*
- *  $Log: dcmsign.h,v $
- *  Revision 1.5  2002-11-27 14:53:40  meichel
+ *  $Log: dcsignat.h,v $
+ *  Revision 1.1  2002-12-20 14:53:08  wilkens
+ *  Modified name clash resulting in a compiler error on Solaris 2.5.1 using
+ *  compiler SC 2.0.1.
+ *
+ *  Revision 1.5  2002/11/27 14:53:40  meichel
  *  Adapted module dcmsign to use of new header file ofstdinc.h
  *
  *  Revision 1.4  2001/11/16 15:50:49  meichel
