@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSFilmSession
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:24 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-28 13:56:53 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -774,7 +774,7 @@ OFBool DVPSFilmSession::printSCPSet(
                       // referenced presentation LUT sequence is OK                      
                       overrideFilmBoxPLUTSettings = OFTrue;
                       DcmSequenceOfItems *newSeq = new DcmSequenceOfItems(*seq);
-                      if (newSeq) rspDataset->insert(newSeq);
+                      if (newSeq) rspDataset->insert(newSeq, OFTrue /*replaceOld*/);
                       else 
                       {
                         writeresult = EC_MemoryExhausted;
@@ -947,7 +947,7 @@ OFCondition DVPSFilmSession::addPresentationLUTReference(DcmItem& dset)
        if (result==EC_Normal)
        {
          dseq->insert(ditem);
-         dset.insert(dseq);
+         dset.insert(dseq, OFTrue /*replaceOld*/);
        } else {
         delete dseq;
         delete ditem;
@@ -969,7 +969,11 @@ void DVPSFilmSession::copyPresentationLUTSettings(DVPSStoredPrint& sp)
 
 /*
  *  $Log: dvpsfs.cc,v $
- *  Revision 1.9  2001-09-26 15:36:24  meichel
+ *  Revision 1.10  2001-11-28 13:56:53  joergr
+ *  Check return value of DcmItem::insert() statements where appropriate to
+ *  avoid memory leaks when insert procedure fails.
+ *
+ *  Revision 1.9  2001/09/26 15:36:24  meichel
  *  Adapted dcmpstat to class OFCondition
  *
  *  Revision 1.8  2001/06/01 15:50:30  meichel

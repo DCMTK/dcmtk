@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSDisplayedArea_PList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:24 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-28 13:56:52 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -130,7 +130,7 @@ OFCondition DVPSDisplayedArea_PList::write(DcmItem &dset)
       }
       ++first;
     }
-    if (result==EC_Normal) dset.insert(dseq); else delete dseq;
+    if (result==EC_Normal) dset.insert(dseq, OFTrue /*replaceOld*/); else delete dseq;
   } else result = EC_MemoryExhausted;
   return result;
 }
@@ -219,7 +219,11 @@ void DVPSDisplayedArea_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool 
 
 /*
  *  $Log: dvpsdal.cc,v $
- *  Revision 1.5  2001-09-26 15:36:24  meichel
+ *  Revision 1.6  2001-11-28 13:56:52  joergr
+ *  Check return value of DcmItem::insert() statements where appropriate to
+ *  avoid memory leaks when insert procedure fails.
+ *
+ *  Revision 1.5  2001/09/26 15:36:24  meichel
  *  Adapted dcmpstat to class OFCondition
  *
  *  Revision 1.4  2001/06/01 15:50:29  meichel

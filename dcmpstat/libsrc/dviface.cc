@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-10-12 13:46:54 $
- *  CVS/RCS Revision: $Revision: 1.134 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-28 13:56:50 $
+ *  CVS/RCS Revision: $Revision: 1.135 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2664,7 +2664,7 @@ OFCondition DVInterface::saveDICOMImage(
       if (pxData)
       {
         status = pxData->putUint8Array((Uint8 *)pixelData, (unsigned long)(width*height));
-        if (EC_Normal==status) status = dataset->insert(pxData); else delete pxData;
+        if (EC_Normal==status) status = dataset->insert(pxData, OFTrue /*replaceOld*/); else delete pxData;
       } else status = EC_MemoryExhausted;
 
       if (status != EC_Normal)
@@ -2809,7 +2809,7 @@ OFCondition DVInterface::saveHardcopyGrayscaleImage(
       if (pxData)
       {
         status = pxData->putUint16Array((Uint16 *)pixelData, (unsigned long)(width*height));
-        if (EC_Normal==status) status = dataset->insert(pxData); else delete pxData;
+        if (EC_Normal==status) status = dataset->insert(pxData, OFTrue /*replaceOld*/); else delete pxData;
       } else status = EC_MemoryExhausted;
 
       // add Presentation LUT to hardcopy file if present, making it a Standard Extended SOP Class
@@ -3888,35 +3888,35 @@ OFCondition DVInterface::printSCUcreateBasicFilmSession(DVPSPrintMessageHandler&
   {
     delem = new DcmCodeString(DCM_MediumType);
     if (delem) result = delem->putString(printerMediumType.c_str()); else result=EC_IllegalCall;
-    if (EC_Normal==result) result = dset.insert(delem);
+    if (EC_Normal==result) result = dset.insert(delem, OFTrue /*replaceOld*/);
   }
 
   if ((EC_Normal==result)&&(printerFilmDestination.size() > 0))
   {
     delem = new DcmCodeString(DCM_FilmDestination);
     if (delem) result = delem->putString(printerFilmDestination.c_str()); else result=EC_IllegalCall;
-    if (EC_Normal==result) result = dset.insert(delem);
+    if (EC_Normal==result) result = dset.insert(delem, OFTrue /*replaceOld*/);
   }
 
   if ((EC_Normal==result)&&(printerFilmSessionLabel.size() > 0))
   {
     delem = new DcmLongString(DCM_FilmSessionLabel);
     if (delem) result = delem->putString(printerFilmSessionLabel.c_str()); else result=EC_IllegalCall;
-    if (EC_Normal==result) result = dset.insert(delem);
+    if (EC_Normal==result) result = dset.insert(delem, OFTrue /*replaceOld*/);
   }
 
   if ((EC_Normal==result)&&(printerPriority.size() > 0))
   {
     delem = new DcmCodeString(DCM_PrintPriority);
     if (delem) result = delem->putString(printerPriority.c_str()); else result=EC_IllegalCall;
-    if (EC_Normal==result) result = dset.insert(delem);
+    if (EC_Normal==result) result = dset.insert(delem, OFTrue /*replaceOld*/);
   }
 
   if ((EC_Normal==result)&&(printerOwnerID.size() > 0))
   {
     delem = new DcmShortString(DCM_OwnerID);
     if (delem) result = delem->putString(printerOwnerID.c_str()); else result=EC_IllegalCall;
-    if (EC_Normal==result) result = dset.insert(delem);
+    if (EC_Normal==result) result = dset.insert(delem, OFTrue /*replaceOld*/);
   }
 
   if ((EC_Normal==result)&&(printerNumberOfCopies > 0))
@@ -3924,7 +3924,7 @@ OFCondition DVInterface::printSCUcreateBasicFilmSession(DVPSPrintMessageHandler&
     sprintf(buf, "%lu", printerNumberOfCopies);
     delem = new DcmIntegerString(DCM_NumberOfCopies);
     if (delem) result = delem->putString(buf); else result=EC_IllegalCall;
-    if (EC_Normal==result) result = dset.insert(delem);
+    if (EC_Normal==result) result = dset.insert(delem, OFTrue /*replaceOld*/);
   }
 
   if (EC_Normal==result) result = pPrint->printSCUcreateBasicFilmSession(printHandler, dset, plutInSession);
@@ -4284,7 +4284,11 @@ void DVInterface::disableImageAndPState()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.134  2001-10-12 13:46:54  meichel
+ *  Revision 1.135  2001-11-28 13:56:50  joergr
+ *  Check return value of DcmItem::insert() statements where appropriate to
+ *  avoid memory leaks when insert procedure fails.
+ *
+ *  Revision 1.134  2001/10/12 13:46:54  meichel
  *  Adapted dcmpstat to OFCondition based dcmnet module (supports strict mode).
  *
  *  Revision 1.133  2001/09/26 15:36:21  meichel

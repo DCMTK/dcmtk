@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSImageBoxContent
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:27 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-28 13:56:56 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -421,26 +421,26 @@ OFCondition DVPSImageBoxContent::write(DcmItem &dset, OFBool writeRequestedImage
       if (dseq)
       {
         delem = new DcmApplicationEntity(retrieveAETitle);
-        if (delem) ditem->insert(delem); else result=EC_MemoryExhausted;
+        if (delem) ditem->insert(delem, OFTrue /*replaceOld*/); else result=EC_MemoryExhausted;
         delem = new DcmUniqueIdentifier(referencedSOPClassUID);
-        if (delem) ditem->insert(delem); else result=EC_MemoryExhausted;
+        if (delem) ditem->insert(delem, OFTrue /*replaceOld*/); else result=EC_MemoryExhausted;
         delem = new DcmUniqueIdentifier(referencedSOPInstanceUID);
-        if (delem) ditem->insert(delem); else result=EC_MemoryExhausted;
+        if (delem) ditem->insert(delem, OFTrue /*replaceOld*/); else result=EC_MemoryExhausted;
         delem = new DcmUniqueIdentifier(studyInstanceUID);
-        if (delem) ditem->insert(delem); else result=EC_MemoryExhausted;
+        if (delem) ditem->insert(delem, OFTrue /*replaceOld*/); else result=EC_MemoryExhausted;
         delem = new DcmUniqueIdentifier(seriesInstanceUID);
-        if (delem) ditem->insert(delem); else result=EC_MemoryExhausted;
+        if (delem) ditem->insert(delem, OFTrue /*replaceOld*/); else result=EC_MemoryExhausted;
         if (referencedFrameNumber.getLength() >0)
         {
           delem = new DcmIntegerString(referencedFrameNumber);
-          if (delem) ditem->insert(delem); else result=EC_MemoryExhausted;
+          if (delem) ditem->insert(delem, OFTrue /*replaceOld*/); else result=EC_MemoryExhausted;
         }
         delem = new DcmLongString(patientID);
-        if (delem) ditem->insert(delem); else result=EC_MemoryExhausted;
+        if (delem) ditem->insert(delem, OFTrue /*replaceOld*/); else result=EC_MemoryExhausted;
         if (result==EC_Normal)
         {
           dseq->insert(ditem);
-          dset.insert(dseq);
+          dset.insert(dseq, OFTrue /*replaceOld*/);
         } else {
           // out of memory during creation of sequence contents.
           delete dseq;
@@ -477,7 +477,7 @@ OFCondition DVPSImageBoxContent::addReferencedPLUTSQ(DcmItem &dset)
      if (result==EC_Normal)
      {
        dseq->insert(ditem);
-       dset.insert(dseq);
+       dset.insert(dseq, OFTrue /*replaceOld*/);
      } else {
       delete dseq;
       delete ditem;
@@ -1425,12 +1425,12 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
         if ((EC_Normal == oldPxData->getUint16Array(pxdata16)) && pxdata16)
         {
           pixelData->putUint16Array(pxdata16, oldPxData->getLength()/sizeof(Uint16));
-          rspDataset->insert(pixelData);         	
+          rspDataset->insert(pixelData, OFTrue /*replaceOld*/);         	
         } 
         else if ((EC_Normal == oldPxData->getUint8Array(pxdata8)) && pxdata8)
         {
           pixelData->putUint8Array(pxdata8, oldPxData->getLength()/sizeof(Uint8));
-          rspDataset->insert(pixelData);         	
+          rspDataset->insert(pixelData, OFTrue /*replaceOld*/);         	
         } else {
           if (verboseMode)
           {
@@ -1550,7 +1550,11 @@ void DVPSImageBoxContent::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgM
 
 /*
  *  $Log: dvpsib.cc,v $
- *  Revision 1.27  2001-09-26 15:36:27  meichel
+ *  Revision 1.28  2001-11-28 13:56:56  joergr
+ *  Check return value of DcmItem::insert() statements where appropriate to
+ *  avoid memory leaks when insert procedure fails.
+ *
+ *  Revision 1.27  2001/09/26 15:36:27  meichel
  *  Adapted dcmpstat to class OFCondition
  *
  *  Revision 1.26  2001/06/07 14:31:34  joergr

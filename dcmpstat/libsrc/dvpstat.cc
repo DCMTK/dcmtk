@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-09-28 13:50:14 $
- *  CVS/RCS Revision: $Revision: 1.68 $
+ *  Update Date:      $Date: 2001-11-28 13:57:05 $
+ *  CVS/RCS Revision: $Revision: 1.69 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1524,20 +1524,20 @@ OFCondition DVPresentationState::write(DcmItem &dset, OFBool replaceSOPInstanceU
         if (dseq)
         {
           delem = new DcmUnsignedShort(modalityLUTDescriptor);
-          if (delem) ditem->insert(delem); else result=EC_MemoryExhausted;
+          if (delem) ditem->insert(delem, OFTrue /*replaceOld*/); else result=EC_MemoryExhausted;
           delem = new DcmUnsignedShort(modalityLUTData);
-          if (delem) ditem->insert(delem); else result=EC_MemoryExhausted;
+          if (delem) ditem->insert(delem, OFTrue /*replaceOld*/); else result=EC_MemoryExhausted;
           delem = new DcmLongString(modalityLUTType);
-          if (delem) ditem->insert(delem); else result=EC_MemoryExhausted;
+          if (delem) ditem->insert(delem, OFTrue /*replaceOld*/); else result=EC_MemoryExhausted;
           if (modalityLUTExplanation.getLength() >0)
           {
             delem = new DcmLongString(modalityLUTExplanation);
-            if (delem) ditem->insert(delem); else result=EC_MemoryExhausted;
+            if (delem) ditem->insert(delem, OFTrue /*replaceOld*/); else result=EC_MemoryExhausted;
           }
           if (result==EC_Normal)
           {
             dseq->insert(ditem);
-            dset.insert(dseq);
+            dset.insert(dseq, OFTrue /*replaceOld*/);
           } else {
             // out of memory during creation of sequence contents.
             delete dseq;
@@ -1587,13 +1587,13 @@ OFCondition DVPresentationState::writeHardcopyImageAttributes(DcmItem &dset)
           if (delem)
           {
             result = delem->putString(currentImageSOPClassUID);
-            ditem->insert(delem);
+            ditem->insert(delem, OFTrue /*replaceOld*/);
           } else result=EC_MemoryExhausted;
           delem = new DcmUniqueIdentifier(DCM_SOPInstanceUID);
           if (delem)
           {
             result = delem->putString(currentImageSOPInstanceUID);
-            ditem->insert(delem);
+            ditem->insert(delem, OFTrue /*replaceOld*/);
           } else result=EC_MemoryExhausted;
           if (EC_Normal == result) dseq->insert(ditem);  else delete ditem;
         } else result = EC_MemoryExhausted;
@@ -1603,17 +1603,17 @@ OFCondition DVPresentationState::writeHardcopyImageAttributes(DcmItem &dset)
       if (ditem)
       {
         delem = new DcmUniqueIdentifier(sOPInstanceUID);
-        if (delem) ditem->insert(delem); else result=EC_MemoryExhausted;
+        if (delem) ditem->insert(delem, OFTrue /*replaceOld*/); else result=EC_MemoryExhausted;
         delem = new DcmUniqueIdentifier(DCM_SOPClassUID);
         if (delem)
         {
           result = delem->putString(UID_GrayscaleSoftcopyPresentationStateStorage);
-          ditem->insert(delem);
+          ditem->insert(delem, OFTrue /*replaceOld*/);
         } else result=EC_MemoryExhausted;
         if (EC_Normal == result) dseq->insert(ditem);  else delete ditem;
        }
     } else result = EC_MemoryExhausted;
-    if (EC_Normal == result) dset.insert(dseq); else delete dseq;
+    if (EC_Normal == result) dset.insert(dseq, OFTrue /*replaceOld*/); else delete dseq;
   }
 
   return result;
@@ -4143,7 +4143,11 @@ const char *DVPresentationState::getAttachedImageSOPInstanceUID()
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.68  2001-09-28 13:50:14  joergr
+ *  Revision 1.69  2001-11-28 13:57:05  joergr
+ *  Check return value of DcmItem::insert() statements where appropriate to
+ *  avoid memory leaks when insert procedure fails.
+ *
+ *  Revision 1.68  2001/09/28 13:50:14  joergr
  *  Added "#include <iomanip.h>" to keep gcc 3.0 quiet.
  *
  *  Revision 1.67  2001/09/26 15:36:34  meichel

@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPSHelper
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:27 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-28 13:56:55 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -255,7 +255,7 @@ OFCondition DVPSHelper::addReferencedUIDItem(DcmSequenceOfItems& seq, const char
       DcmItem *ditem = new DcmItem();
       if (ditem)
       {
-        ditem->insert(delem);
+        ditem->insert(delem, OFTrue /*replaceOld*/);
         seq.insert(ditem);
       } else {
         delete delem;
@@ -270,7 +270,11 @@ OFCondition DVPSHelper::addReferencedUIDItem(DcmSequenceOfItems& seq, const char
 /*
  *  CVS/RCS Log:
  *  $Log: dvpshlp.cc,v $
- *  Revision 1.9  2001-09-26 15:36:27  meichel
+ *  Revision 1.10  2001-11-28 13:56:55  joergr
+ *  Check return value of DcmItem::insert() statements where appropriate to
+ *  avoid memory leaks when insert procedure fails.
+ *
+ *  Revision 1.9  2001/09/26 15:36:27  meichel
  *  Adapted dcmpstat to class OFCondition
  *
  *  Revision 1.8  2001/06/01 15:50:32  meichel

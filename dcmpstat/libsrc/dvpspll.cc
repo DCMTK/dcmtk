@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSImageBoxContent_PList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:30 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-28 13:56:58 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -137,7 +137,7 @@ OFCondition DVPSPresentationLUT_PList::write(DcmItem &dset)
       }
       ++first;
     }
-    if (result==EC_Normal) dset.insert(dseq); else delete dseq;
+    if (result==EC_Normal) dset.insert(dseq, OFTrue /*replaceOld*/); else delete dseq;
   } else result = EC_MemoryExhausted;
   return result;
 }
@@ -286,7 +286,11 @@ void DVPSPresentationLUT_PList::printSCPDelete(T_DIMSE_Message& rq, T_DIMSE_Mess
 
 /*
  *  $Log: dvpspll.cc,v $
- *  Revision 1.10  2001-09-26 15:36:30  meichel
+ *  Revision 1.11  2001-11-28 13:56:58  joergr
+ *  Check return value of DcmItem::insert() statements where appropriate to
+ *  avoid memory leaks when insert procedure fails.
+ *
+ *  Revision 1.10  2001/09/26 15:36:30  meichel
  *  Adapted dcmpstat to class OFCondition
  *
  *  Revision 1.9  2001/06/01 15:50:35  meichel

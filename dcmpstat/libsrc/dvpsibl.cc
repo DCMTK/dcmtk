@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSImageBoxContent_PList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:28 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-28 13:56:57 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -147,7 +147,7 @@ OFCondition DVPSImageBoxContent_PList::write(
       if (numItems && (--numItems==0)) working=OFFalse;
     }
     // we're not allowed to store SP objects with empty image box list sequence
-    if ((result==EC_Normal) && (numWritten > 0)) dset.insert(dseq); else delete dseq;
+    if ((result==EC_Normal) && (numWritten > 0)) dset.insert(dseq, OFTrue /*replaceOld*/); else delete dseq;
   } else result = EC_MemoryExhausted;
   return result;
 }
@@ -522,19 +522,19 @@ OFCondition DVPSImageBoxContent_PList::writeReferencedImageBoxSQ(DcmItem &dset)
         {
           uid = new DcmUniqueIdentifier(DCM_ReferencedSOPClassUID);
           if (uid) result = uid->putString(UID_BasicGrayscaleImageBoxSOPClass); else result = EC_MemoryExhausted; 
-          if (EC_Normal == result) result = ditem->insert(uid); else delete uid;
+          if (EC_Normal == result) result = ditem->insert(uid, OFTrue /*replaceOld*/); else delete uid;
            
           uid = new DcmUniqueIdentifier(DCM_ReferencedSOPInstanceUID);
           instanceUID = (*first)->getSOPInstanceUID();
           if (uid && instanceUID) result = uid->putString(instanceUID); else result = EC_MemoryExhausted; 
-          if (EC_Normal == result) result = ditem->insert(uid); else delete uid;
+          if (EC_Normal == result) result = ditem->insert(uid, OFTrue /*replaceOld*/); else delete uid;
 
           if (result==EC_Normal) dseq->insert(ditem); else delete ditem;
         } else result = EC_MemoryExhausted;
       }
       ++first;
     }
-    if (result==EC_Normal) dset.insert(dseq); else delete dseq;
+    if (result==EC_Normal) dset.insert(dseq, OFTrue /*replaceOld*/); else delete dseq;
   } else result = EC_MemoryExhausted;
   return result;
 }
@@ -618,7 +618,11 @@ OFBool DVPSImageBoxContent_PList::emptyPageWarning()
 
 /*
  *  $Log: dvpsibl.cc,v $
- *  Revision 1.22  2001-09-26 15:36:28  meichel
+ *  Revision 1.23  2001-11-28 13:56:57  joergr
+ *  Check return value of DcmItem::insert() statements where appropriate to
+ *  avoid memory leaks when insert procedure fails.
+ *
+ *  Revision 1.22  2001/09/26 15:36:28  meichel
  *  Adapted dcmpstat to class OFCondition
  *
  *  Revision 1.21  2001/06/01 15:50:33  meichel

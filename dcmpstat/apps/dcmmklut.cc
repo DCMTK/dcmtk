@@ -25,9 +25,9 @@
  *    file.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:06:03 $
+ *  Update Date:      $Date: 2001-11-28 13:58:42 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmklut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -606,7 +606,7 @@ OFCondition createLUT(const unsigned int numberOfBits,
             if (EC_Normal==result) result = descriptor->putSint16((Sint16)numEntries16, 0);
             if (EC_Normal==result) result = descriptor->putSint16((Sint16)firstMapped, 1);
             if (EC_Normal==result) result = descriptor->putSint16((Sint16)numberOfBits, 2);
-            if (EC_Normal==result) result = item.insert(descriptor);
+            if (EC_Normal==result) result = item.insert(descriptor, OFTrue /*replaceOld*/);
         } else
             return EC_MemoryExhausted;
     } else {
@@ -622,7 +622,7 @@ OFCondition createLUT(const unsigned int numberOfBits,
             if (EC_Normal==result) result = descriptor->putUint16(numEntries16, 0);
             if (EC_Normal==result) result = descriptor->putUint16((Uint16)firstMapped, 1);
             if (EC_Normal==result) result = descriptor->putUint16(numberOfBits, 2);
-            if (EC_Normal==result) result = item.insert(descriptor);
+            if (EC_Normal==result) result = item.insert(descriptor, OFTrue /*replaceOld*/);
         } else
             return EC_MemoryExhausted;
     }
@@ -650,7 +650,7 @@ OFCondition createLUT(const unsigned int numberOfBits,
             if (lutdata)
             {
                 if (EC_Normal==result) result = lutdata->putUint16Array(data, wordsToWrite);
-                if (EC_Normal==result) result = item.insert(lutdata);
+                if (EC_Normal==result) result = item.insert(lutdata, OFTrue /*replaceOld*/);
             } else
                 return EC_MemoryExhausted;
             break;
@@ -659,7 +659,7 @@ OFCondition createLUT(const unsigned int numberOfBits,
             if (lutdata)
             {
                 if (EC_Normal==result) result = lutdata->putUint16Array(data, wordsToWrite);
-                if (EC_Normal==result) result = item.insert(lutdata);
+                if (EC_Normal==result) result = item.insert(lutdata, OFTrue /*replaceOld*/);
             } else
                 return EC_MemoryExhausted;
             break;
@@ -668,7 +668,7 @@ OFCondition createLUT(const unsigned int numberOfBits,
             if (lutdata)
             {
                 if (EC_Normal==result) result = lutdata->putSint16Array((Sint16 *)data, wordsToWrite);
-                if (EC_Normal==result) result = item.insert(lutdata);
+                if (EC_Normal==result) result = item.insert(lutdata, OFTrue /*replaceOld*/);
             } else
                 return EC_MemoryExhausted;
             break;
@@ -685,7 +685,7 @@ OFCondition createLUT(const unsigned int numberOfBits,
       if (explItem)
       {
           if (result == EC_Normal) result = explItem->putString(explanation);
-          if (EC_Normal == result) result = item.insert(explItem);
+          if (EC_Normal == result) result = item.insert(explItem, OFTrue /*replaceOld*/);
       } else
         return EC_MemoryExhausted;
   }
@@ -994,7 +994,7 @@ int main(int argc, char *argv[])
                         DcmElement *delem = new DcmLongString(modalityLUTType);
                         if (delem)
                         {
-                            ditem->insert(delem);
+                            ditem->insert(delem, OFTrue /*replaceOld*/);
                             dseq = new DcmSequenceOfItems(DCM_ModalityLUTSequence);
                             if (dseq)
                             {
@@ -1089,7 +1089,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmmklut.cc,v $
- * Revision 1.26  2001-11-09 16:06:03  joergr
+ * Revision 1.27  2001-11-28 13:58:42  joergr
+ * Check return value of DcmItem::insert() statements where appropriate to
+ * avoid memory leaks when insert procedure fails.
+ *
+ * Revision 1.26  2001/11/09 16:06:03  joergr
  * Renamed some of the getValue/getParam methods to avoid ambiguities reported
  * by certain compilers.
  *

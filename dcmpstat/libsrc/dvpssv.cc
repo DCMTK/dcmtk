@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSSoftcopyVOI
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:33 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-28 13:57:03 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -225,18 +225,18 @@ OFCondition DVPSSoftcopyVOI::write(DcmItem &dset)
       if (dseq)
       {
         delem = new DcmUnsignedShort(voiLUTDescriptor);
-        if (delem) ditem->insert(delem); else result=EC_MemoryExhausted;
+        if (delem) ditem->insert(delem, OFTrue /*replaceOld*/); else result=EC_MemoryExhausted;
         delem = new DcmUnsignedShort(voiLUTData);
-        if (delem) ditem->insert(delem); else result=EC_MemoryExhausted;
+        if (delem) ditem->insert(delem, OFTrue /*replaceOld*/); else result=EC_MemoryExhausted;
         if (voiLUTExplanation.getLength() >0)
         {
           delem = new DcmLongString(voiLUTExplanation);
-          if (delem) ditem->insert(delem); else result=EC_MemoryExhausted;
+          if (delem) ditem->insert(delem, OFTrue /*replaceOld*/); else result=EC_MemoryExhausted;
         }
         if (result==EC_Normal)
         {
           dseq->insert(ditem);
-          dset.insert(dseq);
+          dset.insert(dseq, OFTrue /*replaceOld*/);
         } else {
           // out of memory during creation of sequence contents.
           delete dseq;
@@ -390,7 +390,11 @@ void DVPSSoftcopyVOI::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
 
 /*
  *  $Log: dvpssv.cc,v $
- *  Revision 1.8  2001-09-26 15:36:33  meichel
+ *  Revision 1.9  2001-11-28 13:57:03  joergr
+ *  Check return value of DcmItem::insert() statements where appropriate to
+ *  avoid memory leaks when insert procedure fails.
+ *
+ *  Revision 1.8  2001/09/26 15:36:33  meichel
  *  Adapted dcmpstat to class OFCondition
  *
  *  Revision 1.7  2001/06/01 15:50:39  meichel

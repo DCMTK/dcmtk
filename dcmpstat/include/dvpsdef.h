@@ -22,9 +22,9 @@
  *  Purpose:
  *    definitions of constants and macros for pstat module
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:15 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-28 13:59:31 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -115,7 +115,7 @@
 if (result==EC_Normal)                                              \
 {                                                                   \
   delem = new a_type(a_name);                                       \
-  if (delem) dset.insert(delem); else result=EC_MemoryExhausted;    \
+  if (delem) dset.insert(delem, OFTrue); else result=EC_MemoryExhausted;    \
 }
 
 // inserts a copy of a dicom data element into an item
@@ -123,7 +123,7 @@ if (result==EC_Normal)                                              \
 if (result==EC_Normal)                                              \
 {                                                                   \
   delem = new a_type(a_name);                                       \
-  if (delem) ditem->insert(delem); else result=EC_MemoryExhausted;  \
+  if (delem) ditem->insert(delem, OFTrue); else result=EC_MemoryExhausted;  \
 }
 
 // inserts a copy of a dicom data element into an item
@@ -131,7 +131,7 @@ if (result==EC_Normal)                                              \
 if (writeresult==EC_Normal)                                         \
 {                                                                   \
   delem = new a_type(a_name);                                       \
-  if (delem) rspDataset->insert(delem); else writeresult=EC_MemoryExhausted; \
+  if (delem) rspDataset->insert(delem, OFTrue); else writeresult=EC_MemoryExhausted; \
 }
 
 // inserts a copy of a repeating element into a dataset, assigns group number
@@ -142,7 +142,7 @@ if (result==EC_Normal)                                              \
   if (delem)                                                        \
   {                                                                 \
     delem->setGTag(a_group);                                        \
-    dset.insert(delem);                                             \
+    dset.insert(delem, OFTrue);                                     \
   } else result=EC_MemoryExhausted;                                 \
 }
 
@@ -181,7 +181,11 @@ if (result==EC_Normal)                                              \
 
 /*
  *  $Log: dvpsdef.h,v $
- *  Revision 1.5  2001-06-01 15:50:15  meichel
+ *  Revision 1.6  2001-11-28 13:59:31  joergr
+ *  Check return value of DcmItem::insert() statements where appropriate to
+ *  avoid memory leaks when insert procedure fails.
+ *
+ *  Revision 1.5  2001/06/01 15:50:15  meichel
  *  Updated copyright header
  *
  *  Revision 1.4  2000/11/13 10:42:40  joergr

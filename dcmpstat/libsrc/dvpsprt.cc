@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSPrintSCP
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-10-12 13:46:56 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-28 13:56:59 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -230,7 +230,7 @@ DVPSAssociationNegotiationResult DVPSPrintSCP::negotiateAssociation(T_ASC_Networ
       if (assocData)
       {
         assocData->putUint8Array((Uint8 *) associatePDU, associatePDUlength);    
-        newItem->insert(assocData);
+        newItem->insert(assocData, OFTrue /*replaceOld*/);
         acseSequence->insert(newItem);
       } else delete newItem;
     }    
@@ -279,7 +279,7 @@ OFCondition DVPSPrintSCP::refuseAssociation(OFBool isBadContext)
       if (assocData)
       {
         assocData->putUint8Array((Uint8 *) associatePDU, associatePDUlength);    
-        newItem->insert(assocData);
+        newItem->insert(assocData, OFTrue /*replaceOld*/);
         acseSequence->insert(newItem);
       } else delete newItem;
     }    
@@ -326,7 +326,7 @@ void DVPSPrintSCP::handleClient()
       if (assocData)
       {
         assocData->putUint8Array((Uint8 *) associatePDU, associatePDUlength);    
-        newItem->insert(assocData);
+        newItem->insert(assocData, OFTrue /*replaceOld*/);
         acseSequence->insert(newItem);
       } else delete newItem;
     }    
@@ -1130,7 +1130,7 @@ void DVPSPrintSCP::addLogEntry(DcmSequenceOfItems *seq, const char *text)
   if (logEntryType)
   {
     logEntryType->putString(text);
-    newItem->insert(logEntryType);
+    newItem->insert(logEntryType, OFTrue /*replaceOld*/);
   }
 
   DVPSHelper::currentDate(aString);
@@ -1138,7 +1138,7 @@ void DVPSPrintSCP::addLogEntry(DcmSequenceOfItems *seq, const char *text)
   if (logDate)
   {
     logDate->putString(aString.c_str());
-    newItem->insert(logDate);
+    newItem->insert(logDate, OFTrue /*replaceOld*/);
   }
 
   DVPSHelper::currentTime(aString);
@@ -1146,7 +1146,7 @@ void DVPSPrintSCP::addLogEntry(DcmSequenceOfItems *seq, const char *text)
   if (logTime)
   {
     logTime->putString(aString.c_str());
-    newItem->insert(logTime);
+    newItem->insert(logTime, OFTrue /*replaceOld*/);
   }
   seq->insert(newItem);
 }
@@ -1174,9 +1174,9 @@ void DVPSPrintSCP::saveDimseLog()
   DcmDataset *dset = fformat.getDataset();  
   if (! dset) return;
 
-  dset->insert(logSequence);  
+  dset->insert(logSequence, OFTrue /*replaceOld*/);  
   logSequence = NULL;
-  if (acseSequence) dset->insert(acseSequence);
+  if (acseSequence) dset->insert(acseSequence, OFTrue /*replaceOld*/);
   acseSequence = NULL;
 
   char uid[80];
@@ -1192,7 +1192,7 @@ void DVPSPrintSCP::saveDimseLog()
   if (logReserve)
   {
     logReserve->putString(aString.c_str());
-    dset->insert(logReserve);
+    dset->insert(logReserve, OFTrue /*replaceOld*/);
   }
     
   DVPSHelper::putStringValue(dset, DCM_SOPClassUID, PSTAT_DIMSE_LOG_STORAGE_UID);
@@ -1237,7 +1237,11 @@ void DVPSPrintSCP::dumpNMessage(T_DIMSE_Message &msg, DcmItem *dataset, OFBool o
 
 /*
  *  $Log: dvpsprt.cc,v $
- *  Revision 1.11  2001-10-12 13:46:56  meichel
+ *  Revision 1.12  2001-11-28 13:56:59  joergr
+ *  Check return value of DcmItem::insert() statements where appropriate to
+ *  avoid memory leaks when insert procedure fails.
+ *
+ *  Revision 1.11  2001/10/12 13:46:56  meichel
  *  Adapted dcmpstat to OFCondition based dcmnet module (supports strict mode).
  *
  *  Revision 1.10  2001/09/28 13:49:37  joergr

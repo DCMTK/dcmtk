@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSSoftcopyVOI_PList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:33 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-28 13:57:04 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -133,7 +133,7 @@ OFCondition DVPSSoftcopyVOI_PList::write(DcmItem &dset)
       }
       ++first;
     }
-    if (result==EC_Normal) dset.insert(dseq); else delete dseq;
+    if (result==EC_Normal) dset.insert(dseq, OFTrue /*replaceOld*/); else delete dseq;
   } else result = EC_MemoryExhausted;
   return result;
 }
@@ -339,7 +339,11 @@ void DVPSSoftcopyVOI_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool db
 
 /*
  *  $Log: dvpssvl.cc,v $
- *  Revision 1.6  2001-09-26 15:36:33  meichel
+ *  Revision 1.7  2001-11-28 13:57:04  joergr
+ *  Check return value of DcmItem::insert() statements where appropriate to
+ *  avoid memory leaks when insert procedure fails.
+ *
+ *  Revision 1.6  2001/09/26 15:36:33  meichel
  *  Adapted dcmpstat to class OFCondition
  *
  *  Revision 1.5  2001/06/01 15:50:39  meichel

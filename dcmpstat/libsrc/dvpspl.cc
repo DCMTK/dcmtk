@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSPresentationLUT
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:29 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-28 13:56:58 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -235,18 +235,18 @@ OFCondition DVPSPresentationLUT::write(DcmItem &dset, OFBool withSOPInstance)
         if (dseq)
         {
           delem = new DcmUnsignedShort(presentationLUTDescriptor);
-          if (delem) ditem->insert(delem); else result=EC_MemoryExhausted;
+          if (delem) ditem->insert(delem, OFTrue /*replaceOld*/); else result=EC_MemoryExhausted;
           delem = new DcmUnsignedShort(presentationLUTData);
-          if (delem) ditem->insert(delem); else result=EC_MemoryExhausted;
+          if (delem) ditem->insert(delem, OFTrue /*replaceOld*/); else result=EC_MemoryExhausted;
           if (presentationLUTExplanation.getLength() >0)
           {
             delem = new DcmLongString(presentationLUTExplanation);
-            if (delem) ditem->insert(delem); else result=EC_MemoryExhausted;
+            if (delem) ditem->insert(delem, OFTrue /*replaceOld*/); else result=EC_MemoryExhausted;
           }
           if (result==EC_Normal)
           {
             dseq->insert(ditem);
-            dset.insert(dseq);
+            dset.insert(dseq, OFTrue /*replaceOld*/);
           } else {
             // out of memory during creation of sequence contents.
             delete dseq;
@@ -648,7 +648,11 @@ void DVPSPresentationLUT::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgM
 
 /*
  *  $Log: dvpspl.cc,v $
- *  Revision 1.22  2001-09-26 15:36:29  meichel
+ *  Revision 1.23  2001-11-28 13:56:58  joergr
+ *  Check return value of DcmItem::insert() statements where appropriate to
+ *  avoid memory leaks when insert procedure fails.
+ *
+ *  Revision 1.22  2001/09/26 15:36:29  meichel
  *  Adapted dcmpstat to class OFCondition
  *
  *  Revision 1.21  2001/06/01 15:50:34  meichel

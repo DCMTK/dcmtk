@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSStoredPrint
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-10-12 13:46:56 $
- *  CVS/RCS Revision: $Revision: 1.45 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-28 13:57:01 $
+ *  CVS/RCS Revision: $Revision: 1.46 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -719,7 +719,7 @@ OFCondition DVPSStoredPrint::write(
         if (result==EC_Normal)
         {
           dseq->insert(ditem);
-          dset.insert(dseq);
+          dset.insert(dseq, OFTrue /*replaceOld*/);
         } else {
           // out of memory during creation of sequence contents.
           delete dseq;
@@ -773,7 +773,7 @@ OFCondition DVPSStoredPrint::write(
                 if (result == EC_Normal) dseq->insert(ditem); else delete ditem;
             } else result = EC_MemoryExhausted;
         } else result = EC_MemoryExhausted;
-        if (result == EC_Normal) dset.insert(dseq); else delete dseq;
+        if (result == EC_Normal) dset.insert(dseq, OFTrue /*replaceOld*/); else delete dseq;
     } else {
         // write presentation LUT list
         result = presentationLUTList.write(dset);
@@ -804,7 +804,7 @@ OFCondition DVPSStoredPrint::write(
       result = DVPSHelper::addReferencedUIDItem(*dseq, UID_BasicAnnotationBoxSOPClass);
     }
     
-    if (result==EC_Normal) dset.insert(dseq); else delete dseq;
+    if (result==EC_Normal) dset.insert(dseq, OFTrue /*replaceOld*/); else delete dseq;
   } else result = EC_MemoryExhausted;
 
   // write PrinterCharacteristicsSequence (Type 2)
@@ -824,7 +824,7 @@ OFCondition DVPSStoredPrint::write(
          if (result == EC_Normal) result = dseq->insert(ditem); else delete ditem;
        } else result = EC_MemoryExhausted;
      } 
-     if (result == EC_Normal) dset.insert(dseq); else delete dseq;
+     if (result == EC_Normal) dset.insert(dseq, OFTrue /*replaceOld*/); else delete dseq;
     } else result = EC_MemoryExhausted;    
   } 
 
@@ -1445,7 +1445,7 @@ OFCondition DVPSStoredPrint::addReferencedPLUTSQ(DcmItem &dset)
      if (result==EC_Normal)
      {
        dseq->insert(ditem);
-       dset.insert(dseq);
+       dset.insert(dseq, OFTrue /*replaceOld*/);
      } else {
       delete dseq;
       delete ditem;
@@ -1482,7 +1482,7 @@ OFCondition DVPSStoredPrint::addPresentationLUTReference(DcmItem& dset)
        if (result==EC_Normal)
        {
          dseq->insert(ditem);
-         dset.insert(dseq);
+         dset.insert(dseq, OFTrue /*replaceOld*/);
        } else {
         delete dseq;
         delete ditem;
@@ -1577,7 +1577,7 @@ OFCondition DVPSStoredPrint::printSCUcreateBasicFilmBox(DVPSPrintMessageHandler&
         if (result==EC_Normal)
         {
           dseq->insert(ditem);
-          dset.insert(dseq);
+          dset.insert(dseq, OFTrue /*replaceOld*/);
         } else {
           // out of memory during creation of sequence contents.
           delete dseq;
@@ -1809,7 +1809,7 @@ OFCondition DVPSStoredPrint::printSCUsetBasicImageBox(
              if (pxData && pxDataVoid)
              {
                result = pxData->putUint16Array((Uint16 *)pxDataVoid, (width*height));
-               if (EC_Normal==result) result = ditem->insert(pxData); else delete pxData;
+               if (EC_Normal==result) result = ditem->insert(pxData, OFTrue /*replaceOld*/); else delete pxData;
             } else result = EC_IllegalCall;
           }
         } else {
@@ -1823,7 +1823,7 @@ OFCondition DVPSStoredPrint::printSCUsetBasicImageBox(
              if (pxData && pxDataVoid)
              {
                result = pxData->putUint8Array((Uint8 *)pxDataVoid, (width*height));
-               if (EC_Normal==result) result = ditem->insert(pxData); else delete pxData;
+               if (EC_Normal==result) result = ditem->insert(pxData, OFTrue /*replaceOld*/); else delete pxData;
             } else result = EC_IllegalCall;
           }
         }
@@ -1831,7 +1831,7 @@ OFCondition DVPSStoredPrint::printSCUsetBasicImageBox(
         if (result==EC_Normal)
         {
           dseq->insert(ditem);
-          dataset.insert(dseq);
+          dataset.insert(dseq, OFTrue /*replaceOld*/);
         } else {
           // out of memory during creation of sequence contents.
           delete dseq;
@@ -2855,7 +2855,7 @@ OFBool DVPSStoredPrint::printSCPCreate(
       if (refFilmSessionSequence) // should never be NULL if we get this far
       {      
         DcmSequenceOfItems *newRefFilmSessionSequence = new DcmSequenceOfItems(*refFilmSessionSequence);
-        if (newRefFilmSessionSequence) rspDataset->insert(newRefFilmSessionSequence);
+        if (newRefFilmSessionSequence) rspDataset->insert(newRefFilmSessionSequence, OFTrue /*replaceOld*/);
         else writeresult = EC_MemoryExhausted;
       }
 
@@ -3357,7 +3357,7 @@ OFBool DVPSStoredPrint::printSCPSet(
                       presentationLUTInstanceUID.clear();
                       referencedPresentationLUTInstanceUID.getOFString(presentationLUTInstanceUID,0);          
                       DcmSequenceOfItems *newSeq = new DcmSequenceOfItems(*seq);
-                      if (newSeq) rspDataset->insert(newSeq);
+                      if (newSeq) rspDataset->insert(newSeq, OFTrue /*replaceOld*/);
                       else 
                       {
                         writeresult = EC_MemoryExhausted;
@@ -3535,7 +3535,11 @@ void DVPSStoredPrint::overridePresentationLUTSettings(
 
 /*
  *  $Log: dvpssp.cc,v $
- *  Revision 1.45  2001-10-12 13:46:56  meichel
+ *  Revision 1.46  2001-11-28 13:57:01  joergr
+ *  Check return value of DcmItem::insert() statements where appropriate to
+ *  avoid memory leaks when insert procedure fails.
+ *
+ *  Revision 1.45  2001/10/12 13:46:56  meichel
  *  Adapted dcmpstat to OFCondition based dcmnet module (supports strict mode).
  *
  *  Revision 1.44  2001/09/28 13:50:54  joergr
