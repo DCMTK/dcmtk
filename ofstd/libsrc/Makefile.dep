@@ -4,6 +4,8 @@ ofcmdln.o: ofcmdln.cc ../../config/include/osconfig.h \
 ofconapp.o: ofconapp.cc ../../config/include/osconfig.h \
  ../include/ofconapp.h ../include/oftypes.h ../include/ofcmdln.h \
  ../include/oflist.h ../include/ofstring.h
+offname.o: offname.cc ../../config/include/osconfig.h \
+ ../include/offname.h ../include/oftypes.h ../include/ofstring.h
 oflist.o: oflist.cc ../../config/include/osconfig.h \
  ../include/oflist.h ../include/oftypes.h
 ofstring.o: ofstring.cc ../../config/include/osconfig.h \
