@@ -1,6 +1,6 @@
 /*
 *
-*  Copyright (C) 1996-2001, OFFIS
+*  Copyright (C) 1996-2002, OFFIS
 *
 *  This software and supporting documentation were developed by
 *
@@ -21,10 +21,10 @@
 *
 *  Purpose: Class for managing file system interaction.
 *
-*  Last Update:      $Author: wilkens $
-*  Update Date:      $Date: 2002-08-12 10:56:08 $
+*  Last Update:      $Author: joergr $
+*  Update Date:      $Date: 2002-12-09 13:41:43 $
 *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wlfsim.h,v $
-*  CVS/RCS Revision: $Revision: 1.2 $
+*  CVS/RCS Revision: $Revision: 1.3 $
 *  Status:           $State: Exp $
 *
 *  CVS/RCS Log at end of file
@@ -45,6 +45,11 @@ class OFCondition;
  */
 class WlmFileSystemInteractionManager
 {
+  private:
+    /// private undefined copy constructor and assignment operator
+    WlmFileSystemInteractionManager(const WlmFileSystemInteractionManager &old);
+    WlmFileSystemInteractionManager &operator=(const WlmFileSystemInteractionManager &obj);
+
   protected:
     OFBool verboseMode;
     OFBool debugMode;
@@ -132,11 +137,11 @@ class WlmFileSystemInteractionManager
       /** This function determines an attribute value of a matching record
        *  and returns this value in a newly created string to the caller.
        *  @param tag   Attribute tag; specifies which attribute's value shall be returned.
-       *  @param index Identifies the record from which the attribute value shall be retrieved.
+       *  @param idx   Identifies the record from which the attribute value shall be retrieved.
        *  @param value Pointer to a newly created string that contains the requested value.
        *               If value was not found an emtpy string will be returned.
        */
-    void GetAttributeValueForMatchingRecord( DcmTagKey tag, unsigned long index, char *&value );
+    void GetAttributeValueForMatchingRecord( DcmTagKey tag, unsigned long idx, char *&value );
 
       /** This function frees the memory which was occupied by matchingRecords.
        *  It shall be called when the matching records are no longer needed.
@@ -149,7 +154,11 @@ class WlmFileSystemInteractionManager
 /*
 ** CVS Log
 ** $Log: wlfsim.h,v $
-** Revision 1.2  2002-08-12 10:56:08  wilkens
+** Revision 1.3  2002-12-09 13:41:43  joergr
+** Renamed parameter to avoid name clash with global function index().
+** Added private undefined copy constructor and/or assignment operator.
+**
+** Revision 1.2  2002/08/12 10:56:08  wilkens
 ** Made some modifications in in order to be able to create a new application
 ** which contains both wlmscpdb and ppsscpdb and another application which
 ** contains both wlmscpfs and ppsscpfs.
