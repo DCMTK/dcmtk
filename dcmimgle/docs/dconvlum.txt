@@ -46,8 +46,3 @@ FORMAT
 
     See DICOM standard part 14 for more details on display calibration and
     Bartens model (including GSDF).
-
-
-AUTHOR
-
-    Joerg Riesmeier, Kuratorium OFFIS e.V., Oldenburg, Germany
