@@ -1,21 +1,35 @@
 /*
-**
-** Author:  Joerg Riesmeier
-** Created: 06.01.97
-**
-** Module:  diargpxt.h
-**
-** Purpose: DicomARGBPixelTemplate (Header) - UNTESTED !!!
-**
-** Last Update:      $Author: joergr $
-** Update Date:      $Date: 1998-07-01 08:39:18 $
-** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diargpxt.h,v $
-** CVS/RCS Revision: $Revision: 1.5 $
-** Status:           $State: Exp $
-**
-** CVS/RCS Log at end of file
-**
-*/
+ *
+ *  Copyright (C) 1997-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmimage
+ *
+ *  Author:  Joerg Riesmeier
+ *
+ *  Purpose: DicomARGBPixelTemplate (Header) - UNTESTED !!!
+ *
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1998-11-27 13:40:11 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diargpxt.h,v $
+ *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
 
 
 #ifndef __DIARGPXT_H
@@ -125,7 +139,10 @@ class DiARGBPixelTemplate : public DiColorPixelTemplate<T2>
 **
 ** CVS/RCS Log:
 ** $Log: diargpxt.h,v $
-** Revision 1.5  1998-07-01 08:39:18  joergr
+** Revision 1.6  1998-11-27 13:40:11  joergr
+** Added copyright message.
+**
+** Revision 1.5  1998/07/01 08:39:18  joergr
 ** Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
 ** options), e.g. add copy constructors.
 **
