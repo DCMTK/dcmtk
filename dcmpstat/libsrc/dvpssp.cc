@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-10-19 14:48:26 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 1999-11-19 10:58:40 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1536,7 +1536,7 @@ E_Condition DVPSStoredPrint::printSCUsetBasicImageBox(
         if ((aspectRatio != 1.0)&&(aspectRatio != 0))
         {
           sprintf(str, "10000\\%ld", (long)(aspectRatio*10000.0));
-          if (EC_Normal==result) result = DVPSHelper::putStringValue(ditem, DCM_Columns, str);
+          if (EC_Normal==result) result = DVPSHelper::putStringValue(ditem, DCM_PixelAspectRatio, str);
         }
         if (transmitImagesIn12Bit)
         {
@@ -1725,7 +1725,10 @@ void DVPSStoredPrint::deleteAnnotations()
 
 /*
  *  $Log: dvpssp.cc,v $
- *  Revision 1.19  1999-10-19 14:48:26  meichel
+ *  Revision 1.20  1999-11-19 10:58:40  meichel
+ *  Fixed bug in dcmpstat module that prevented printing of images
+ *
+ *  Revision 1.19  1999/10/19 14:48:26  meichel
  *  added support for the Basic Annotation Box SOP Class
  *    as well as access methods for Max Density and Min Density.
  *
