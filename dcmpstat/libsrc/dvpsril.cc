@@ -23,8 +23,8 @@
  *    classes: DVPSReferencedImage_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:29:09 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2000-06-02 16:01:05 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,11 +39,18 @@
 
 DVPSReferencedImage_PList::DVPSReferencedImage_PList()
 : OFList<DVPSReferencedImage *>()
+, logstream(&ofConsole)
+, verboseMode(OFFalse)
+, debugMode(OFFalse)
+
 {
 }
 
 DVPSReferencedImage_PList::DVPSReferencedImage_PList(const DVPSReferencedImage_PList &arg)
 : OFList<DVPSReferencedImage *>()
+, logstream(arg.logstream)
+, verboseMode(arg.verboseMode)
+, debugMode(arg.debugMode)
 {
   OFListIterator(DVPSReferencedImage *) first = arg.begin();
   OFListIterator(DVPSReferencedImage *) last = arg.end();
@@ -133,9 +140,11 @@ OFBool DVPSReferencedImage_PList::isValid(OFString& sopclassuid)
 {
   if (size() == 0) 
   {
-#ifdef DEBUG
-    CERR << "referenced image SQ contains empty item in presentation state" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "referenced image SQ contains empty item in presentation state" << endl;
+      logstream->unlockCerr();
+    }
     return OFFalse;
   }
   OFBool result = OFTrue;
@@ -341,9 +350,27 @@ OFBool DVPSReferencedImage_PList::matchesApplicability(const char *instanceUID, 
   return OFFalse;
 }
 
+
+void DVPSReferencedImage_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
+{
+  if (stream) logstream = stream; else logstream = &ofConsole;
+  verboseMode = verbMode;
+  debugMode = dbgMode;
+  OFListIterator(DVPSReferencedImage *) first = begin();
+  OFListIterator(DVPSReferencedImage *) last = end();
+  while (first != last)
+  {
+    (*first)->setLog(logstream, verbMode, dbgMode);
+    ++first;
+  }	
+}
+
 /*
  *  $Log: dvpsril.cc,v $
- *  Revision 1.7  2000-03-08 16:29:09  meichel
+ *  Revision 1.8  2000-06-02 16:01:05  meichel
+ *  Adapted all dcmpstat classes to use OFConsole for log and error output
+ *
+ *  Revision 1.7  2000/03/08 16:29:09  meichel
  *  Updated copyright header.
  *
  *  Revision 1.6  2000/03/06 18:24:08  joergr

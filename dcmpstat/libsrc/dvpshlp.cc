@@ -22,8 +22,8 @@
  *  Purpose: DVPSHelper
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:29:06 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-06-02 16:01:02 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -171,7 +171,7 @@ E_Condition DVPSHelper::putUint16Value(DcmItem *item, DcmTagKey tag, Uint16 valu
     return result;
 }
 
-void DVPSHelper::cleanChildren()
+void DVPSHelper::cleanChildren(OFConsole *logconsole)
 {
 #ifdef HAVE_WAITPID
     int stat_loc;
@@ -196,9 +196,16 @@ void DVPSHelper::cleanChildren()
     child = wait3(&status, options, &rusage);
 #endif
         if (child < 0)
-    {
-       if (errno != ECHILD) CERR << "wait for child failed: " << strerror(errno) << endl;
-    }
+        {
+          if (errno != ECHILD) 
+          {
+            if (logconsole) 
+            {
+              logconsole->lockCerr() << "wait for child failed: " << strerror(errno) << endl;
+              logconsole->unlockCerr();
+            }
+          }
+        }
     }
 #endif
 }
@@ -250,8 +257,8 @@ E_Condition DVPSHelper::addReferencedUIDItem(DcmSequenceOfItems& seq, const char
         ditem->insert(delem);
         seq.insert(ditem);
       } else {
-      	delete delem;
-      	result=EC_MemoryExhausted;
+        delete delem;
+        result=EC_MemoryExhausted;
       }
     }
   } else result=EC_MemoryExhausted;

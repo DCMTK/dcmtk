@@ -23,8 +23,8 @@
  *    classes: DVPSPrintSCP
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-05-31 12:56:36 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-06-02 16:00:50 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,12 +65,16 @@ class DVPSPrintSCP
   /// destructor
   virtual ~DVPSPrintSCP();
 
-  void handleClient(OFBool opt_verbose);
+  void handleClient();
 
-  DVPSAssociationNegotiationResult negotiateAssociation(
-    T_ASC_Network &net,
-    OFBool opt_verbose);
+  DVPSAssociationNegotiationResult negotiateAssociation(T_ASC_Network &net);
 
+  /** sets a new log stream
+   *  @param stream new log stream, NULL for default logstream
+   *  @param verbMode verbose mode flag
+   *  @param dbgMode debug mode flag
+   */
+  void setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode);
 
 private:
 
@@ -161,13 +165,27 @@ private:
   /// series UID for hardcopy image objects
   DcmUniqueIdentifier      imageSeriesInstanceUID;
 
+  /** output stream for error messages, never NULL
+   */
+  OFConsole *logstream;
+
+  /** flag indicating whether we're operating in verbose mode
+   */
+  OFBool verboseMode;
+   
+  /** flag indicating whether we're operating in debug mode
+   */
+  OFBool debugMode;
 };
 
 #endif
 
 /*
  *  $Log: dvpsprt.h,v $
- *  Revision 1.1  2000-05-31 12:56:36  meichel
+ *  Revision 1.2  2000-06-02 16:00:50  meichel
+ *  Adapted all dcmpstat classes to use OFConsole for log and error output
+ *
+ *  Revision 1.1  2000/05/31 12:56:36  meichel
  *  Added initial Print SCP support
  *
  *

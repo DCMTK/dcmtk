@@ -23,8 +23,8 @@
  *    classes: DVPSOverlayCurveActivationLayer
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:28:49 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-06-02 16:00:43 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -173,13 +173,39 @@ public:
    */   
   Uint16 getActivationGroup(const char *layer, size_t idx, OFBool isCurve);
 
+  /** sets a new log stream
+   *  @param stream new log stream, NULL for default logstream
+   *  @param verbMode verbose mode flag
+   *  @param dbgMode debug mode flag
+   */
+  void setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode);
+
+private:
+
+  /// private undefined assignment operator
+  DVPSOverlayCurveActivationLayer_PList& operator=(const DVPSOverlayCurveActivationLayer_PList&);
+
+  /** output stream for error messages, never NULL
+   */
+  OFConsole *logstream;
+
+  /** flag indicating whether we're operating in verbose mode
+   */
+  OFBool verboseMode;
+   
+  /** flag indicating whether we're operating in debug mode
+   */
+  OFBool debugMode;
 };
 
 #endif
 
 /*
  *  $Log: dvpsall.h,v $
- *  Revision 1.4  2000-03-08 16:28:49  meichel
+ *  Revision 1.5  2000-06-02 16:00:43  meichel
+ *  Adapted all dcmpstat classes to use OFConsole for log and error output
+ *
+ *  Revision 1.4  2000/03/08 16:28:49  meichel
  *  Updated copyright header.
  *
  *  Revision 1.3  1998/12/22 17:57:04  meichel

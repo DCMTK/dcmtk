@@ -23,8 +23,8 @@
  *    classes: DVPSGraphicLayer
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:28:51 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-06-02 16:00:46 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -156,7 +156,18 @@ public:
    */
   void setGLDescription(const char *glDescription);
 
+  /** sets a new log stream
+   *  @param stream new log stream, NULL for default logstream
+   *  @param verbMode verbose mode flag
+   *  @param dbgMode debug mode flag
+   */
+  void setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode);
+
 private:
+
+  /// private undefined assignment operator
+  DVPSGraphicLayer& operator=(const DVPSGraphicLayer&);
+
   /// VR=CS, VM=1, Type 1
   DcmCodeString            graphicLayer;
   /// VR=IS, VM=1, Type 1
@@ -167,13 +178,28 @@ private:
   DcmUnsignedShort         graphicLayerRecommendedDisplayRGBValue;
   /// VR=LO, VM=1, Type 3
   DcmLongString            graphicLayerDescription;
+
+  /** output stream for error messages, never NULL
+   */
+  OFConsole *logstream;
+
+  /** flag indicating whether we're operating in verbose mode
+   */
+  OFBool verboseMode;
+   
+  /** flag indicating whether we're operating in debug mode
+   */
+  OFBool debugMode;
 };
 
 #endif
 
 /*
  *  $Log: dvpsgl.h,v $
- *  Revision 1.4  2000-03-08 16:28:51  meichel
+ *  Revision 1.5  2000-06-02 16:00:46  meichel
+ *  Adapted all dcmpstat classes to use OFConsole for log and error output
+ *
+ *  Revision 1.4  2000/03/08 16:28:51  meichel
  *  Updated copyright header.
  *
  *  Revision 1.3  1999/07/22 16:39:08  meichel

@@ -23,8 +23,8 @@
  *    classes: DVPSAnnotationContent
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-05-31 13:02:35 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-06-02 16:00:56 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,7 +43,9 @@ DVPSAnnotationContent::DVPSAnnotationContent()
 : sOPInstanceUID(DCM_SOPInstanceUID)
 , annotationPosition(DCM_AnnotationPosition)
 , textString(DCM_TextString)
-, logstream(&CERR)
+, logstream(&ofConsole)
+, verboseMode(OFFalse)
+, debugMode(OFFalse)
 {
 }
 
@@ -52,6 +54,8 @@ DVPSAnnotationContent::DVPSAnnotationContent(const DVPSAnnotationContent& copy)
 , annotationPosition(copy.annotationPosition)
 , textString(copy.textString)
 , logstream(copy.logstream)
+, verboseMode(copy.verboseMode)
+, debugMode(copy.debugMode)
 {
 }
 
@@ -100,23 +104,29 @@ E_Condition DVPSAnnotationContent::read(DcmItem &dset)
     if ((sOPInstanceUID.getLength() == 0)||(sOPInstanceUID.getVM() != 1))
     {
         result=EC_TagNotFound;
-#ifdef DEBUG
-        *logstream << "Error: SOPInstanceUID missing or incorrect in Stored Print Annotation" << endl;
-#endif
+        if (verboseMode)
+        {
+          logstream->lockCerr() << "Error: SOPInstanceUID missing or incorrect in Stored Print Annotation" << endl;
+          logstream->unlockCerr();
+        }
     }
     if ((annotationPosition.getLength() == 0)||(annotationPosition.getVM() != 1))
     {
         result=EC_TagNotFound;
-#ifdef DEBUG
-        *logstream << "Error: AnnotationPosition missing or incorrect in Stored Print Annotation" << endl;
-#endif
+        if (verboseMode)
+        {
+          logstream->lockCerr() << "Error: AnnotationPosition missing or incorrect in Stored Print Annotation" << endl;
+          logstream->unlockCerr();
+        }
     }
     if ((textString.getLength() == 0)||(textString.getVM() != 1))
     {
         result=EC_TagNotFound;
-#ifdef DEBUG
-        *logstream << "Error: TextString missing or incorrect in Stored Print Annotation" << endl;
-#endif
+        if (verboseMode)
+        {
+          logstream->lockCerr() << "Error: TextString missing or incorrect in Stored Print Annotation" << endl;
+          logstream->unlockCerr();
+        }
     }
   }
 
@@ -132,23 +142,29 @@ E_Condition DVPSAnnotationContent::write(DcmItem &dset)
   if (sOPInstanceUID.getLength() == 0)
   {
     result=EC_TagNotFound;
-#ifdef DEBUG
-    *logstream << "Error: cannot write Stored Print Annotation: SOPInstanceUID empty" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: cannot write Stored Print Annotation: SOPInstanceUID empty" << endl;
+      logstream->unlockCerr();
+    }
   }
   if (annotationPosition.getLength() == 0)
   {
     result=EC_TagNotFound;
-#ifdef DEBUG
-    *logstream << "Error: cannot write Stored Print Annotation: AnnotationPosition empty" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: cannot write Stored Print Annotation: AnnotationPosition empty" << endl;
+      logstream->unlockCerr();
+    }
   }
   if (textString.getLength() == 0)
   {
     result=EC_TagNotFound;
-#ifdef DEBUG
-    *logstream << "Error: cannot write Stored Print Annotation: TextString empty" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: cannot write Stored Print Annotation: TextString empty" << endl;
+      logstream->unlockCerr();
+    }
   }
 
   ADD_TO_DATASET(DcmUniqueIdentifier, sOPInstanceUID)
@@ -184,10 +200,19 @@ const char *DVPSAnnotationContent::getSOPInstanceUID()
   if (EC_Normal == sOPInstanceUID.getString(c)) return c; else return NULL;
 }
 
+void DVPSAnnotationContent::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
+{
+  if (stream) logstream = stream; else logstream = &ofConsole;
+  verboseMode = verbMode;
+  debugMode = dbgMode;
+}
 
 /*
  *  $Log: dvpsab.cc,v $
- *  Revision 1.4  2000-05-31 13:02:35  meichel
+ *  Revision 1.5  2000-06-02 16:00:56  meichel
+ *  Adapted all dcmpstat classes to use OFConsole for log and error output
+ *
+ *  Revision 1.4  2000/05/31 13:02:35  meichel
  *  Moved dcmpstat macros and constants into a common header file
  *
  *  Revision 1.3  2000/03/08 16:29:01  meichel

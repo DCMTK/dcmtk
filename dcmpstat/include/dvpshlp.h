@@ -23,8 +23,8 @@
  *    classes: DVPSHelper
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:28:53 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-06-02 16:00:47 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,8 +86,9 @@ class DVPSHelper
 
     /** helper function that cleans up pending processes under Unix.
      *  No function if used on Windows.
+     *  @param logconsole console for error output. Default: quiet operation
      */ 
-    static void cleanChildren();
+    static void cleanChildren(OFConsole *logconsole=NULL);
 
     /** helper function that writes the current date in DICOM format (YYYYMMDD)
      *  @param str current date is written to this string
@@ -132,7 +133,10 @@ class DVPSHelper
 /*
  *  CVS/RCS Log:
  *  $Log: dvpshlp.h,v $
- *  Revision 1.2  2000-03-08 16:28:53  meichel
+ *  Revision 1.3  2000-06-02 16:00:47  meichel
+ *  Adapted all dcmpstat classes to use OFConsole for log and error output
+ *
+ *  Revision 1.2  2000/03/08 16:28:53  meichel
  *  Updated copyright header.
  *
  *  Revision 1.1  1999/09/17 14:28:00  meichel

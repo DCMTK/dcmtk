@@ -23,8 +23,8 @@
  *    classes: DVPSSoftcopyVOI
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-05-31 13:02:39 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2000-06-02 16:01:07 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,6 +50,9 @@ DVPSSoftcopyVOI::DVPSSoftcopyVOI()
 , windowCenter(DCM_WindowCenter)
 , windowWidth(DCM_WindowWidth)
 , windowCenterWidthExplanation(DCM_WindowCenterWidthExplanation)
+, logstream(&ofConsole)
+, verboseMode(OFFalse)
+, debugMode(OFFalse)
 {
 }
 
@@ -62,6 +65,9 @@ DVPSSoftcopyVOI::DVPSSoftcopyVOI(const DVPSSoftcopyVOI& copy)
 , windowCenter(copy.windowCenter)
 , windowWidth(copy.windowWidth)
 , windowCenterWidthExplanation(copy.windowCenterWidthExplanation)
+, logstream(copy.logstream)
+, verboseMode(copy.verboseMode)
+, debugMode(copy.debugMode)
 {
 }
 
@@ -110,9 +116,11 @@ E_Condition DVPSSoftcopyVOI::read(DcmItem &dset)
          }
       } else {
         result=EC_TagNotFound;
-#ifdef DEBUG
-        CERR << "Error: VOI LUT SQ does not have exactly one item in presentation state" << endl;
-#endif
+        if (verboseMode)
+        {
+          logstream->lockCerr() << "Error: VOI LUT SQ does not have exactly one item in presentation state" << endl;
+          logstream->unlockCerr();
+        }
       } 
     }
   }
@@ -130,23 +138,29 @@ E_Condition DVPSSoftcopyVOI::read(DcmItem &dset)
       if (windowWidth.getLength() == 0)
       {
         result=EC_IllegalCall;
-#ifdef DEBUG
-        CERR << "Error: windowCenter present but windowWidth absent or empty in presentation state" << endl;
-#endif
+        if (verboseMode)
+        {
+          logstream->lockCerr() << "Error: windowCenter present but windowWidth absent or empty in presentation state" << endl;
+          logstream->unlockCerr();
+        }
       }
       else if (windowWidth.getVM() != 1)
       {
         result=EC_IllegalCall;
-#ifdef DEBUG
-        CERR << "Error: windowCenter present but windowWidth VM != 1 in presentation state" << endl;
-#endif
+        if (verboseMode)
+        {
+          logstream->lockCerr() << "Error: windowCenter present but windowWidth VM != 1 in presentation state" << endl;
+          logstream->unlockCerr();
+        }
       }
       if (windowCenter.getVM() != 1)
       {
         result=EC_IllegalCall;
-#ifdef DEBUG
-        CERR << "Error: windowCenter present but VM != 1 in presentation state" << endl;
-#endif
+        if (verboseMode)
+        {
+          logstream->lockCerr() << "Error: windowCenter present but VM != 1 in presentation state" << endl;
+          logstream->unlockCerr();
+        }
       }
     } else useLUT = OFTrue;
     
@@ -156,32 +170,40 @@ E_Condition DVPSSoftcopyVOI::read(DcmItem &dset)
       if (! useLUT)
       {
         result=EC_IllegalCall;
-#ifdef DEBUG
-        CERR << "Error: both VOI window and LUT present in presentation state" << endl;
-#endif
+        if (verboseMode)
+        {
+          logstream->lockCerr() << "Error: both VOI window and LUT present in presentation state" << endl;
+          logstream->unlockCerr();
+        }
       }
 
       if (voiLUTDescriptor.getLength() == 0)
       {
         result=EC_IllegalCall;
-#ifdef DEBUG
-        CERR << "Error: voiLUTData present but voiLUTDescriptor absent or empty in presentation state" << endl;
-#endif
+        if (verboseMode)
+        {
+          logstream->lockCerr() << "Error: voiLUTData present but voiLUTDescriptor absent or empty in presentation state" << endl;
+          logstream->unlockCerr();
+        }
       }
       else if (voiLUTDescriptor.getVM() != 3)
       {
         result=EC_IllegalCall;
-#ifdef DEBUG
-        CERR << "Error: voiLUTData present but voiLUTDescriptor VM != 3 in presentation state" << endl;
-#endif
+        if (verboseMode)
+        {
+          logstream->lockCerr() << "Error: voiLUTData present but voiLUTDescriptor VM != 3 in presentation state" << endl;
+          logstream->unlockCerr();
+        }
       }
     } 
     else if (useLUT)
     {
         result=EC_IllegalCall;
-#ifdef DEBUG
-        CERR << "Error: neither VOI window nor LUT present in presentation state" << endl;
-#endif
+        if (verboseMode)
+        {
+          logstream->lockCerr() << "Error: neither VOI window nor LUT present in presentation state" << endl;
+          logstream->unlockCerr();
+        }
     }
   }
   return result;
@@ -312,9 +334,11 @@ E_Condition DVPSSoftcopyVOI::setVOIWindow(double wCenter, double wWidth, const c
 {
   if (wWidth < 1.0) 
   {
-#ifdef DEBUG
-        CERR << "Error: Window Width < 1 not allowed." << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: Window Width < 1 not allowed." << endl;
+      logstream->unlockCerr();
+    }
     return EC_IllegalCall;
   }
   DcmDecimalString wc(DCM_WindowCenter);
@@ -357,9 +381,19 @@ E_Condition DVPSSoftcopyVOI::setVOILUT(
   return EC_Normal;
 }
 
+void DVPSSoftcopyVOI::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
+{
+  if (stream) logstream = stream; else logstream = &ofConsole;
+  verboseMode = verbMode;
+  debugMode = dbgMode;
+}
+
 /*
  *  $Log: dvpssv.cc,v $
- *  Revision 1.5  2000-05-31 13:02:39  meichel
+ *  Revision 1.6  2000-06-02 16:01:07  meichel
+ *  Adapted all dcmpstat classes to use OFConsole for log and error output
+ *
+ *  Revision 1.5  2000/05/31 13:02:39  meichel
  *  Moved dcmpstat macros and constants into a common header file
  *
  *  Revision 1.4  2000/03/08 16:29:11  meichel

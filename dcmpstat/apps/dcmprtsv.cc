@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Print Spooler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-05-31 13:02:24 $
+ *  Update Date:      $Date: 2000-06-02 16:00:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/Attic/dcmprtsv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -103,6 +103,7 @@ static const char *     opt_spoolPrefix     = NULL;
 static OFCmdUnsignedInt opt_sleep           = (OFCmdUnsignedInt) 1;
 static OFCmdUnsignedInt opt_copies          = (OFCmdUnsignedInt) 0;
 static ostream *        logstream           = &CERR;
+static OFConsole *      logconsole          = &ofConsole;
 
 /* print target data, taken from configuration file */
 static const char *   targetHostname        = NULL;
@@ -230,13 +231,11 @@ static E_Condition spoolStoredPrintFile(const char *filename, DVInterface &dvi)
     if (opt_dumpMode) 
     {
       printHandler.setDumpStream(logstream);
-      printHandler.setLog(logstream);
-      
+      printHandler.setLog(logconsole, opt_verbose, opt_debugMode);      
     }
     if (!SUCCESS(printHandler.negotiateAssociation(dvi.getNetworkAETitle(),
       targetAETitle, targetHostname, targetPort, targetMaxPDU, 
-      targetSupportsPLUT, targetSupportsAnnotation,
-      targetImplicitOnly, opt_verbose)))
+      targetSupportsPLUT, targetSupportsAnnotation, targetImplicitOnly)))
     {
       *logstream << "spooler: connection setup with printer failed." << endl;
       COND_DumpConditions();
@@ -610,6 +609,8 @@ void closeLog()
   time_t now = time(NULL);
   if (logstream != &CERR)
   {
+    if (logconsole != &ofConsole) delete logconsole;
+    logconsole = &ofConsole;
     *logstream << endl << asctime(localtime(&now)) << "terminating" << endl;
     delete logstream;
     logstream = &CERR;
@@ -780,7 +781,16 @@ int main(int argc, char *argv[])
       logfilename += opt_printer;
       logfilename += ".log";
       ofstream *newstream = new ofstream(logfilename.c_str());
-      if (newstream && (newstream->good())) logstream=newstream; 
+      if (newstream && (newstream->good()))
+      {
+        logstream=newstream; 
+        logconsole = new OFConsole();
+        if (logconsole)
+        {
+          logconsole->setCout(logstream);
+          logconsole->join();
+        } else logconsole = &ofConsole;
+      }
       else
       {
       	delete newstream;
@@ -789,7 +799,7 @@ int main(int argc, char *argv[])
       *logstream << rcsid << endl << asctime(localtime(&now)) << "started" << endl;
     }
 
-    dvi.setLog(logstream);
+    dvi.setLog(logconsole, opt_verbose, opt_debugMode);
     
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
@@ -963,7 +973,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprtsv.cc,v $
- * Revision 1.21  2000-05-31 13:02:24  meichel
+ * Revision 1.22  2000-06-02 16:00:38  meichel
+ * Adapted all dcmpstat classes to use OFConsole for log and error output
+ *
+ * Revision 1.21  2000/05/31 13:02:24  meichel
  * Moved dcmpstat macros and constants into a common header file
  *
  * Revision 1.20  2000/05/03 14:27:27  meichel

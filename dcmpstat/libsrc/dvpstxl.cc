@@ -23,8 +23,8 @@
  *    classes: DVPSTextObject_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:29:13 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2000-06-02 16:01:09 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,11 +38,17 @@
 
 DVPSTextObject_PList::DVPSTextObject_PList()
 : OFList<DVPSTextObject *>()
+, logstream(&ofConsole)
+, verboseMode(OFFalse)
+, debugMode(OFFalse)
 {
 }
 
 DVPSTextObject_PList::DVPSTextObject_PList(const DVPSTextObject_PList &arg)
 : OFList<DVPSTextObject *>()
+, logstream(arg.logstream)
+, verboseMode(arg.verboseMode)
+, debugMode(arg.debugMode)
 {
   OFListIterator(DVPSTextObject *) first = arg.begin();
   OFListIterator(DVPSTextObject *) last = arg.end();
@@ -89,6 +95,7 @@ E_Condition DVPSTextObject_PList::read(DcmItem &dset)
         newObject = new DVPSTextObject();
         if (newObject && ditem)
         {
+          newObject->setLog(logstream, verboseMode, debugMode);
           result = newObject->read(*ditem);
           push_back(newObject);
         } else result = EC_MemoryExhausted;
@@ -167,9 +174,27 @@ DVPSTextObject *DVPSTextObject_PList::removeTextObject(size_t idx)
   return NULL;
 }
 
+void DVPSTextObject_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
+{
+  if (stream) logstream = stream; else logstream = &ofConsole;
+  verboseMode = verbMode;
+  debugMode = dbgMode;
+  OFListIterator(DVPSTextObject *) first = begin();
+  OFListIterator(DVPSTextObject *) last = end();
+  while (first != last)
+  {
+    (*first)->setLog(logstream, verbMode, dbgMode);
+    ++first;
+  }	
+}
+
+
 /*
  *  $Log: dvpstxl.cc,v $
- *  Revision 1.3  2000-03-08 16:29:13  meichel
+ *  Revision 1.4  2000-06-02 16:01:09  meichel
+ *  Adapted all dcmpstat classes to use OFConsole for log and error output
+ *
+ *  Revision 1.3  2000/03/08 16:29:13  meichel
  *  Updated copyright header.
  *
  *  Revision 1.2  1998/12/14 16:10:49  meichel

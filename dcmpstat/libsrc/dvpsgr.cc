@@ -23,8 +23,8 @@
  *    classes: DVPSGraphicObject
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-05-31 13:02:37 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2000-06-02 16:01:01 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,6 +44,9 @@ DVPSGraphicObject::DVPSGraphicObject()
 , graphicData(DCM_GraphicData)
 , graphicType(DCM_GraphicType)
 , graphicFilled(DCM_GraphicFilled)
+, logstream(&ofConsole)
+, verboseMode(OFFalse)
+, debugMode(OFFalse)
 {
 }
 
@@ -53,6 +56,9 @@ DVPSGraphicObject::DVPSGraphicObject(const DVPSGraphicObject& copy)
 , graphicData(copy.graphicData)
 , graphicType(copy.graphicType)
 , graphicFilled(copy.graphicFilled)
+, logstream(copy.logstream)
+, verboseMode(copy.verboseMode)
+, debugMode(copy.debugMode)
 {
 }
 
@@ -78,86 +84,108 @@ E_Condition DVPSGraphicObject::read(DcmItem &dset)
   if (graphicAnnotationUnits.getLength() == 0)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a graphic object SQ item with graphicAnnotationUnits absent or empty" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a graphic object SQ item with graphicAnnotationUnits absent or empty" << endl;
+      logstream->unlockCerr();
+    }
   }
   else if (graphicAnnotationUnits.getVM() != 1)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a graphic object SQ item with graphicAnnotationUnits VM != 1" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a graphic object SQ item with graphicAnnotationUnits VM != 1" << endl;
+      logstream->unlockCerr();
+    }
   }
 
   if (graphicDimensions.getVM() != 1)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a graphic object SQ item with graphicDimensions VM != 1" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a graphic object SQ item with graphicDimensions VM != 1" << endl;
+      logstream->unlockCerr();
+    }
   } else {
     Uint16 dimension=0;
     if ((EC_Normal != graphicDimensions.getUint16(dimension,0))||(dimension != 2))
     {
       result=EC_IllegalCall;
-#ifdef DEBUG
-      CERR << "Error: presentation state contains a graphic object SQ item with graphicDimensions != 2" << endl;
-#endif
+      if (verboseMode)
+      {
+        logstream->lockCerr() << "Error: presentation state contains a graphic object SQ item with graphicDimensions != 2" << endl;
+        logstream->unlockCerr();
+      }
     }
   }
   
   if (numberOfGraphicPoints.getLength() == 0)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a graphic object SQ item with numberOfGraphicPoints absent or empty" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a graphic object SQ item with numberOfGraphicPoints absent or empty" << endl;
+      logstream->unlockCerr();
+    }
   }
   else if (numberOfGraphicPoints.getVM() != 1)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a graphic object SQ item with numberOfGraphicPoints VM != 1" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a graphic object SQ item with numberOfGraphicPoints VM != 1" << endl;
+      logstream->unlockCerr();
+    }
   }
   
   if (graphicData.getLength() == 0)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a graphic object SQ item with graphicData absent or empty" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a graphic object SQ item with graphicData absent or empty" << endl;
+      logstream->unlockCerr();
+    }
   }
   else if (graphicData.getVM() < 2)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a graphic object SQ item with graphicData VM < 2" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a graphic object SQ item with graphicData VM < 2" << endl;
+      logstream->unlockCerr();
+    }
   }
   
   if (graphicType.getLength() == 0)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a graphic object SQ item with graphicType absent or empty" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a graphic object SQ item with graphicType absent or empty" << endl;
+      logstream->unlockCerr();
+    }
   }
   else if (graphicType.getVM() != 1)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a graphic object SQ item with graphicType VM != 1" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a graphic object SQ item with graphicType VM != 1" << endl;
+      logstream->unlockCerr();
+    }
   }
   
   if ((graphicFilled.getLength() > 0)&&(graphicFilled.getVM() != 1))
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a graphic object SQ item with graphicFilled present but VM != 1" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a graphic object SQ item with graphicFilled present but VM != 1" << endl;
+      logstream->unlockCerr();
+    }
   }
   
   return result;
@@ -291,10 +319,20 @@ E_Condition DVPSGraphicObject::setFilled(OFBool filled)
   return result;
 }
 
+void DVPSGraphicObject::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
+{
+  if (stream) logstream = stream; else logstream = &ofConsole;
+  verboseMode = verbMode;
+  debugMode = dbgMode;
+}
+
 
 /*
  *  $Log: dvpsgr.cc,v $
- *  Revision 1.7  2000-05-31 13:02:37  meichel
+ *  Revision 1.8  2000-06-02 16:01:01  meichel
+ *  Adapted all dcmpstat classes to use OFConsole for log and error output
+ *
+ *  Revision 1.7  2000/05/31 13:02:37  meichel
  *  Moved dcmpstat macros and constants into a common header file
  *
  *  Revision 1.6  2000/03/08 16:29:05  meichel

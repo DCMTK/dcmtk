@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPresentationState
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-02 12:48:04 $
- *  CVS/RCS Revision: $Revision: 1.58 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-06-02 16:01:08 $
+ *  CVS/RCS Revision: $Revision: 1.59 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -172,6 +172,9 @@ DVPresentationState::DVPresentationState(
 , maximumPrintBitmapHeight(maxPrintBitmapY)
 , maximumPreviewImageWidth(maxPreviewImageX)
 , maximumPreviewImageHeight(maxPreviewImageY)
+, logstream(&ofConsole)
+, verboseMode(OFFalse)
+, debugMode(OFFalse)
 {
 }
 
@@ -387,49 +390,61 @@ E_Condition DVPresentationState::read(DcmItem &dset)
   if (sopclassuid.getLength() == 0)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: SOPClassUID absent or empty in presentation state" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: SOPClassUID absent or empty in presentation state" << endl;
+      logstream->unlockCerr();
+    }
   }
   else if (sopclassuid.getVM() != 1)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: SOPClassUID VM != 1 in presentation state" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: SOPClassUID VM != 1 in presentation state" << endl;
+      logstream->unlockCerr();
+    }
   }
 
   if (modality.getLength() == 0)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: Modality absent or empty in presentation state" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: Modality absent or empty in presentation state" << endl;
+      logstream->unlockCerr();
+    }
   }
   else if (modality.getVM() != 1)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: Modality VM != 1 in presentation state" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: Modality VM != 1 in presentation state" << endl;
+      logstream->unlockCerr();
+    }
   }
 
   sopclassuid.getOFString(aString,0);
   if (aString != UID_GrayscaleSoftcopyPresentationStateStorage)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: SOP Class UID does not match GrayscaleSoftcopyPresentationStateStorage" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: SOP Class UID does not match GrayscaleSoftcopyPresentationStateStorage" << endl;
+      logstream->unlockCerr();
+    }
   }
 
   modality.getOFString(aString,0);
   if (aString != "PR")
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: Modality does not match 'PR' for presentation state" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: Modality does not match 'PR' for presentation state" << endl;
+      logstream->unlockCerr();
+    }
   }
 
   if (result==EC_Normal)
@@ -511,9 +526,11 @@ E_Condition DVPresentationState::read(DcmItem &dset)
          }
       } else {
         result=EC_TagNotFound;
-#ifdef DEBUG
-        CERR << "Error: Modality LUT SQ does not have exactly one item in presentation state" << endl;
-#endif
+        if (verboseMode)
+        {
+          logstream->lockCerr() << "Error: Modality LUT SQ does not have exactly one item in presentation state" << endl;
+          logstream->unlockCerr();
+        }
       }
     }
   }
@@ -535,114 +552,144 @@ E_Condition DVPresentationState::read(DcmItem &dset)
   if (patientName.getLength() == 0)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: patientName absent or empty in presentation state" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: patientName absent or empty in presentation state" << endl;
+      logstream->unlockCerr();
+    }
   }
   else if (patientName.getVM() != 1)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: patientName VM != 1 in presentation state" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: patientName VM != 1 in presentation state" << endl;
+      logstream->unlockCerr();
+    }
   }
 
   if (studyInstanceUID.getLength() == 0)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: studyInstanceUID absent or empty in presentation state" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: studyInstanceUID absent or empty in presentation state" << endl;
+      logstream->unlockCerr();
+    }
   }
   else if (studyInstanceUID.getVM() != 1)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: studyInstanceUID VM != 1 in presentation state" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: studyInstanceUID VM != 1 in presentation state" << endl;
+      logstream->unlockCerr();
+    }
   }
 
   if (displayedAreaSelectionList.size() == 0)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: displayedAreaSelectionSQ absent or empty in presentation state" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: displayedAreaSelectionSQ absent or empty in presentation state" << endl;
+      logstream->unlockCerr();
+    }
   }
 
   if (imageNumber.getLength() == 0)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: instanceNumber absent or empty in presentation state" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: instanceNumber absent or empty in presentation state" << endl;
+      logstream->unlockCerr();
+    }
   }
   else if (imageNumber.getVM() != 1)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: instanceNumber VM != 1 in presentation state" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: instanceNumber VM != 1 in presentation state" << endl;
+      logstream->unlockCerr();
+    }
   }
 
   if (presentationLabel.getLength() == 0)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentationLabel absent or empty in presentation state" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentationLabel absent or empty in presentation state" << endl;
+      logstream->unlockCerr();
+    }
   }
   else if (presentationLabel.getVM() != 1)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentationLabel VM != 1 in presentation state" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentationLabel VM != 1 in presentation state" << endl;
+      logstream->unlockCerr();
+    }
   }
 
   if (presentationCreationDate.getLength() == 0)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentationCreationDate absent or empty in presentation state" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentationCreationDate absent or empty in presentation state" << endl;
+      logstream->unlockCerr();
+    }
   }
   else if (presentationCreationDate.getVM() != 1)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentationCreationDate VM != 1 in presentation state" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentationCreationDate VM != 1 in presentation state" << endl;
+      logstream->unlockCerr();
+    }
   }
 
   if (presentationCreationTime.getLength() == 0)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentationCreationTime absent or empty in presentation state" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentationCreationTime absent or empty in presentation state" << endl;
+      logstream->unlockCerr();
+    }
   }
   else if (presentationCreationTime.getVM() != 1)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentationCreationTime VM != 1 in presentation state" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentationCreationTime VM != 1 in presentation state" << endl;
+      logstream->unlockCerr();
+    }
   }
 
   if (sOPInstanceUID.getLength() == 0)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: sOPInstanceUID absent or empty in presentation state" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: sOPInstanceUID absent or empty in presentation state" << endl;
+      logstream->unlockCerr();
+    }
   }
   else if (sOPInstanceUID.getVM() != 1)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: sOPInstanceUID VM != 1 in presentation state" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: sOPInstanceUID VM != 1 in presentation state" << endl;
+      logstream->unlockCerr();
+    }
   }
 
   imageInverse = presentationLUT.isInverse();
@@ -651,17 +698,21 @@ E_Condition DVPresentationState::read(DcmItem &dset)
     if ((imageRotation.getLength() > 0)&&(imageHorizontalFlip.getLength() == 0))
     {
       result=EC_IllegalCall;
-#ifdef DEBUG
-      CERR << "Error: imageRotation present but imageHorizontalFlip absent or empty in presentation state" << endl;
-#endif
+      if (verboseMode)
+      {
+        logstream->lockCerr() << "Error: imageRotation present but imageHorizontalFlip absent or empty in presentation state" << endl;
+        logstream->unlockCerr();
+      }
     }
 
     if ((imageRotation.getLength() == 0)&&(imageHorizontalFlip.getLength() > 0))
     {
       result=EC_IllegalCall;
-#ifdef DEBUG
-      CERR << "Error: imageHorizontalFlip present but imageRotation absent or empty in presentation state" << endl;
-#endif
+      if (verboseMode)
+      {
+        logstream->lockCerr() << "Error: imageHorizontalFlip present but imageRotation absent or empty in presentation state" << endl;
+        logstream->unlockCerr();
+      }
     }
 
     /* Modality LUT */
@@ -672,37 +723,47 @@ E_Condition DVPresentationState::read(DcmItem &dset)
       if (rescaleSlope.getLength() == 0)
       {
         result=EC_IllegalCall;
-#ifdef DEBUG
-        CERR << "Error: rescaleIntercept present but rescaleSlope absent or empty in presentation state" << endl;
-#endif
+        if (verboseMode)
+        {
+          logstream->lockCerr() << "Error: rescaleIntercept present but rescaleSlope absent or empty in presentation state" << endl;
+          logstream->unlockCerr();
+        }
       }
       else if (rescaleSlope.getVM() != 1)
       {
         result=EC_IllegalCall;
-#ifdef DEBUG
-        CERR << "Error: rescaleIntercept present but rescaleSlope VM != 1 in presentation state" << endl;
-#endif
+        if (verboseMode)
+        {
+          logstream->lockCerr() << "Error: rescaleIntercept present but rescaleSlope VM != 1 in presentation state" << endl;
+          logstream->unlockCerr();
+        }
       }
       if (rescaleType.getLength() == 0)
       {
         result=EC_IllegalCall;
-#ifdef DEBUG
-        CERR << "Error: rescaleIntercept present but rescaleType absent or empty in presentation state" << endl;
-#endif
+        if (verboseMode)
+        {
+          logstream->lockCerr() << "Error: rescaleIntercept present but rescaleType absent or empty in presentation state" << endl;
+          logstream->unlockCerr();
+        }
       }
       else if (rescaleType.getVM() != 1)
       {
         result=EC_IllegalCall;
-#ifdef DEBUG
-        CERR << "Error: rescaleIntercept present but rescaleType VM != 1 in presentation state" << endl;
-#endif
+        if (verboseMode)
+        {
+          logstream->lockCerr() << "Error: rescaleIntercept present but rescaleType VM != 1 in presentation state" << endl;
+          logstream->unlockCerr();
+        }
       }
       if (rescaleIntercept.getVM() != 1)
       {
         result=EC_IllegalCall;
-#ifdef DEBUG
-        CERR << "Error: rescaleIntercept present but VM != 1 in presentation state" << endl;
-#endif
+        if (verboseMode)
+        {
+          logstream->lockCerr() << "Error: rescaleIntercept present but VM != 1 in presentation state" << endl;
+          logstream->unlockCerr();
+        }
       }
     } else useModalityRescale = OFFalse;
     if (modalityLUTData.getLength() > 0)
@@ -712,16 +773,20 @@ E_Condition DVPresentationState::read(DcmItem &dset)
       if (modalityLUTDescriptor.getLength() == 0)
       {
         result=EC_IllegalCall;
-#ifdef DEBUG
-        CERR << "Error: modalityLUTData present but modalityLUTDescriptor absent or empty in presentation state" << endl;
-#endif
+        if (verboseMode)
+        {
+          logstream->lockCerr() << "Error: modalityLUTData present but modalityLUTDescriptor absent or empty in presentation state" << endl;
+          logstream->unlockCerr();
+        }
       }
       else if (modalityLUTDescriptor.getVM() != 3)
       {
         result=EC_IllegalCall;
-#ifdef DEBUG
-        CERR << "Error: modalityLUTData present but modalityLUTDescriptor VM != 3 in presentation state" << endl;
-#endif
+        if (verboseMode)
+        {
+          logstream->lockCerr() << "Error: modalityLUTData present but modalityLUTDescriptor VM != 3 in presentation state" << endl;
+          logstream->unlockCerr();
+        }
       }
 
     } else useModalityLUT = OFFalse;
@@ -729,9 +794,11 @@ E_Condition DVPresentationState::read(DcmItem &dset)
     if (useModalityRescale && useModalityLUT)
     {
       result=EC_IllegalCall;
-#ifdef DEBUG
-      CERR << "Error: both modality rescale and LUT present in presentation state" << endl;
-#endif
+      if (verboseMode)
+      {
+        logstream->lockCerr() << "Error: both modality rescale and LUT present in presentation state" << endl;
+        logstream->unlockCerr();
+      }
     }
 
   } /* end result==EC_Normal */
@@ -761,30 +828,38 @@ E_Condition DVPresentationState::read(DcmItem &dset)
       if ((shutterLeftVerticalEdge.getLength() == 0)||(shutterLeftVerticalEdge.getVM() != 1))
       {
         result=EC_IllegalCall;
-#ifdef DEBUG
-        CERR << "Error: rectangular shutter used but shutterLeftVerticalEdge absent or VM != 1 in presentation state" << endl;
-#endif
+        if (verboseMode)
+        {
+          logstream->lockCerr() << "Error: rectangular shutter used but shutterLeftVerticalEdge absent or VM != 1 in presentation state" << endl;
+          logstream->unlockCerr();
+        }
       }
       if ((shutterRightVerticalEdge.getLength() == 0)||(shutterRightVerticalEdge.getVM() != 1))
       {
         result=EC_IllegalCall;
-#ifdef DEBUG
-        CERR << "Error: rectangular shutter used but shutterRightVerticalEdge absent or VM != 1 in presentation state" << endl;
-#endif
+        if (verboseMode)
+        {
+          logstream->lockCerr() << "Error: rectangular shutter used but shutterRightVerticalEdge absent or VM != 1 in presentation state" << endl;
+          logstream->unlockCerr();
+        }
       }
       if ((shutterUpperHorizontalEdge.getLength() == 0)||(shutterUpperHorizontalEdge.getVM() != 1))
       {
         result=EC_IllegalCall;
-#ifdef DEBUG
-        CERR << "Error: rectangular shutter used but shutterUpperHorizontalEdge absent or VM != 1 in presentation state" << endl;
-#endif
+        if (verboseMode)
+        {
+          logstream->lockCerr() << "Error: rectangular shutter used but shutterUpperHorizontalEdge absent or VM != 1 in presentation state" << endl;
+          logstream->unlockCerr();
+        }
       }
       if ((shutterLowerHorizontalEdge.getLength() == 0)||(shutterLowerHorizontalEdge.getVM() != 1))
       {
         result=EC_IllegalCall;
-#ifdef DEBUG
-        CERR << "Error: rectangular shutter used but shutterLowerHorizontalEdge absent or VM != 1 in presentation state" << endl;
-#endif
+        if (verboseMode)
+        {
+          logstream->lockCerr() << "Error: rectangular shutter used but shutterLowerHorizontalEdge absent or VM != 1 in presentation state" << endl;
+          logstream->unlockCerr();
+        }
       }
     }
     if (useShutterCircular)
@@ -792,16 +867,20 @@ E_Condition DVPresentationState::read(DcmItem &dset)
       if ((centerOfCircularShutter.getLength() == 0)||(centerOfCircularShutter.getVM() != 2))
       {
         result=EC_IllegalCall;
-#ifdef DEBUG
-        CERR << "Error: circular shutter used but centerOfCircularShutter absent or VM != 2 in presentation state" << endl;
-#endif
+        if (verboseMode)
+        {
+          logstream->lockCerr() << "Error: circular shutter used but centerOfCircularShutter absent or VM != 2 in presentation state" << endl;
+          logstream->unlockCerr();
+        }
       }
       if ((radiusOfCircularShutter.getLength() == 0)||(radiusOfCircularShutter.getVM() != 1))
       {
         result=EC_IllegalCall;
-#ifdef DEBUG
-        CERR << "Error: circular shutter used but radiusOfCircularShutter absent or VM != 1 in presentation state" << endl;
-#endif
+        if (verboseMode)
+        {
+          logstream->lockCerr() << "Error: circular shutter used but radiusOfCircularShutter absent or VM != 1 in presentation state" << endl;
+          logstream->unlockCerr();
+        }
       }
     }
     if (useShutterPolygonal)
@@ -812,9 +891,11 @@ E_Condition DVPresentationState::read(DcmItem &dset)
           ((verticesOfThePolygonalShutter.getVM() % 2) != 0))
       {
         result=EC_IllegalCall;
-#ifdef DEBUG
-        CERR << "Error: polygonal shutter used but verticesOfThePolygonalShutter absent or VM != 2-2n in presentation state" << endl;
-#endif
+        if (verboseMode)
+        {
+          logstream->lockCerr() << "Error: polygonal shutter used but verticesOfThePolygonalShutter absent or VM != 2-2n in presentation state" << endl;
+          logstream->unlockCerr();
+        }
       }
     }
     if (useShutterBitmap)
@@ -822,9 +903,11 @@ E_Condition DVPresentationState::read(DcmItem &dset)
       if ((shutterOverlayGroup.getLength() == 0)||(shutterOverlayGroup.getVM() != 1))
       {
         result=EC_IllegalCall;
-#ifdef DEBUG
-        CERR << "Error: bitmap shutter used but shutterOverlayGroup absent or VM != 1 in presentation state" << endl;
-#endif
+        if (verboseMode)
+        {
+          logstream->lockCerr() << "Error: bitmap shutter used but shutterOverlayGroup absent or VM != 1 in presentation state" << endl;
+          logstream->unlockCerr();
+        }
       }
     }
     if (useShutterRectangular || useShutterCircular || useShutterPolygonal || useShutterBitmap)
@@ -832,18 +915,22 @@ E_Condition DVPresentationState::read(DcmItem &dset)
       if ((shutterPresentationValue.getLength() == 0)||(shutterPresentationValue.getVM() != 1))
       {
         result=EC_IllegalCall;
-#ifdef DEBUG
-        CERR << "Error: shutter used but shutterPresentationValue absent or VM != 1 in presentation state" << endl;
-#endif
+        if (verboseMode)
+        {
+          logstream->lockCerr() << "Error: shutter used but shutterPresentationValue absent or VM != 1 in presentation state" << endl;
+          logstream->unlockCerr();
+        }
       }
     }
     /* we can either have rect/circ/poly shutter or bitmap shutter but not both */
     if (useShutterBitmap && (useShutterRectangular || useShutterCircular || useShutterPolygonal))
     {
       result=EC_IllegalCall;
-#ifdef DEBUG
-      CERR << "Error: both bitmap and rect/circ/poly shutter specified in presentation state" << endl;
-#endif
+      if (verboseMode)
+      {
+        logstream->lockCerr() << "Error: both bitmap and rect/circ/poly shutter specified in presentation state" << endl;
+        logstream->unlockCerr();
+      }
     }
   }
 
@@ -857,15 +944,19 @@ E_Condition DVPresentationState::read(DcmItem &dset)
       if (!overlayList.haveOverlayGroup(shuttergroup))
       {
         result=EC_IllegalCall;
-#ifdef DEBUG
-        CERR << "Error: bitmap shutter specified but referenced overlay group missing in presentation state" << endl;
-#endif
+        if (verboseMode)
+        {
+          logstream->lockCerr() << "Error: bitmap shutter specified but referenced overlay group missing in presentation state" << endl;
+          logstream->unlockCerr();
+        }
       }
     } else {
         result=EC_IllegalCall;
-#ifdef DEBUG
-        CERR << "Error: wrong overlay group specified for bitmap shutter in presentation state" << endl;
-#endif
+        if (verboseMode)
+        {
+          logstream->lockCerr() << "Error: wrong overlay group specified for bitmap shutter in presentation state" << endl;
+          logstream->unlockCerr();
+        }
     }
   }
 
@@ -879,18 +970,22 @@ E_Condition DVPresentationState::read(DcmItem &dset)
   stack.clear();
   if (EC_Normal == dset.search(DCM_MaskSubtractionSequence, stack, ESM_fromHere, OFFalse))
   {
-     result=EC_IllegalCall;
-#ifdef DEBUG
-     CERR << "Error: mask module present in presentation state, but unsupported" << endl;
-#endif
+      result=EC_IllegalCall;
+      if (verboseMode)
+      {
+        logstream->lockCerr() << "Error: mask module present in presentation state, but unsupported" << endl;
+        logstream->unlockCerr();
+      }
   }
   stack.clear();
   if (EC_Normal == dset.search(DCM_RecommendedViewingMode, stack, ESM_fromHere, OFFalse))
   {
-     result=EC_IllegalCall;
-#ifdef DEBUG
-     CERR << "Error: mask module present in presentation state, but unsupported" << endl;
-#endif
+      result=EC_IllegalCall;
+      if (verboseMode)
+      {
+        logstream->lockCerr() << "Error: mask module present in presentation state, but unsupported" << endl;
+        logstream->unlockCerr();
+      }
   }
 
   return result;
@@ -1094,9 +1189,11 @@ E_Condition DVPresentationState::createFromImage(
     else if ((aString != "MONOCHROME2")&&(aString != "MONOCHROME 2"))
     {
       result = EC_IllegalCall;
-#ifdef DEBUG
-      CERR << "Error: Wrong image photometric interpretation - not MONOCHROME1/2" << endl;
-#endif
+      if (verboseMode)
+      {
+        logstream->lockCerr() << "Error: Wrong image photometric interpretation - not MONOCHROME1/2" << endl;
+        logstream->unlockCerr();
+      }
     }
   }
 
@@ -1142,10 +1239,11 @@ E_Condition DVPresentationState::createFromImage(
       if (aString == "INVERSE") presentationLUT.setType(DVPSP_inverse);
       if (aString == "LIN OD")
       {
-#ifdef DEBUG
-    CERR << "Warning LIN OD found in prsentation state; set to IDENTITY" << endl;
-#endif
-
+        if (verboseMode)
+        {
+          logstream->lockCerr() << "Warning LIN OD found in prsentation state; set to IDENTITY" << endl;
+          logstream->unlockCerr();
+        }
         presentationLUT.setType(DVPSP_identity);
       }
     }
@@ -1826,16 +1924,20 @@ E_Condition DVPresentationState::attachImage(DcmDataset *dataset, OFBool transfe
 
     if (EC_Normal != rescaleSlope.getFloat64(slope, 0))
     {
-#ifdef DEBUG
-      CERR << "warning: unable to evaluate Modality Rescale Slope, ignoring." << endl;
-#endif
+      if (verboseMode)
+      {
+        logstream->lockCerr() << "warning: unable to evaluate Modality Rescale Slope, ignoring." << endl;
+        logstream->unlockCerr();
+      }
       slope = 1.0;
     }
     if (EC_Normal != rescaleIntercept.getFloat64(intercept, 0))
     {
-#ifdef DEBUG
-      CERR << "warning: unable to evaluate Modality Rescale Slope, ignoring." << endl;
-#endif
+      if (verboseMode)
+      {
+        logstream->lockCerr() << "warning: unable to evaluate Modality Rescale Slope, ignoring." << endl;
+        logstream->unlockCerr();
+      }
       intercept = 0.0;
     }
     image = new DicomImage(dataset, dataset->getOriginalXfer(),
@@ -1959,9 +2061,11 @@ E_Condition DVPresentationState::addImageReference(
   studyInstanceUID.getOFString(study,0);
   if (study != studyUID)
   {
-#ifdef DEBUG
-    CERR << "Error: cannot add reference to image with different Study Instance UID." << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: cannot add reference to image with different Study Instance UID." << endl;
+      logstream->unlockCerr();
+    }
     return EC_IllegalCall;
   }
   return referencedSeriesList.addImageReference(seriesUID, sopclassUID, instanceUID, frames, aetitle, filesetID, filesetUID);
@@ -3439,9 +3543,11 @@ void DVPresentationState::renderPixelData(OFBool display)
        if (previewImage != NULL)
          previewImage->setNoVoiTransformation();
      }
-#ifdef DEBUG
-     if (!result) CERR << "warning: unable to set VOI transformation, ignoring." << endl;
-#endif
+     if ((!result) && verboseMode)
+     {
+       logstream->lockCerr() << "warning: unable to set VOI transformation, ignoring." << endl;
+       logstream->unlockCerr();
+     }
   } /* VOI transform */
 
   if (! currentImagePLUTValid)
@@ -3484,11 +3590,12 @@ void DVPresentationState::renderPixelData(OFBool display)
     if (currentImageFlip)
     {
       result = currentImage->flipImage();
-      if (previewImage != NULL)
-        previewImage->flipImage();
-#ifdef DEBUG
-      if (!result) CERR << "warning: unable to flip image horizontally, ignoring." << endl;
-#endif
+      if (previewImage != NULL) previewImage->flipImage();
+      if ((!result) && verboseMode)
+      {
+        logstream->lockCerr() << "warning: unable to flip image horizontally, ignoring." << endl;
+        logstream->unlockCerr();
+      }
       currentImageFlip = OFFalse;
     }
     signed int srot=0;
@@ -3504,17 +3611,21 @@ void DVPresentationState::renderPixelData(OFBool display)
       result = currentImage->rotateImage(srot);
       if (previewImage != NULL)
         previewImage->rotateImage(srot);
-#ifdef DEBUG
-      if (!result) CERR << "warning: unable to rotate image by " << srot << " degrees, ignoring." << endl;
-#endif
+      if ((!result) && verboseMode)
+      {
+        logstream->lockCerr() << "warning: unable to rotate image by " << srot << " degrees, ignoring." << endl;
+        logstream->unlockCerr();
+      }
     }
     currentImageRotation = DVPSR_0_deg;
 
     // deactivate all overlays first
     result = currentImage->removeAllOverlays();
-#ifdef DEBUG
-    if (!result) CERR << "warning: unable to disable external overlays, ignoring." << endl;
-#endif
+    if ((!result) && verboseMode)
+    {
+      logstream->lockCerr() << "warning: unable to disable external overlays, ignoring." << endl;
+      logstream->unlockCerr();
+    }
 
     size_t numOverlays = overlayList.size();
     DVPSOverlay *overlay = NULL;
@@ -3529,10 +3640,12 @@ void DVPresentationState::renderPixelData(OFBool display)
         {
           if (EC_Normal != overlay->activate(*currentImage))
           {
-#ifdef DEBUG
-       if (!result) CERR << "warning: unable to set external overlay group 0x"
-                         << hex << ovgroup << dec << ", ignoring." << endl;
-#endif
+            if ((!result) && verboseMode)
+            {
+              logstream->lockCerr() << "warning: unable to set external overlay group 0x"
+                << hex << ovgroup << dec << ", ignoring." << endl;
+              logstream->unlockCerr();
+            }
           }
         }
         else if ((useShutterBitmap)&&(ovgroup == bitmapShutterGroup))
@@ -3540,10 +3653,12 @@ void DVPresentationState::renderPixelData(OFBool display)
           //activate bitmap overlay
           if (EC_Normal != overlay->activate(*currentImage, OFTrue, bitmapShutterPValue))
           {
-#ifdef DEBUG
-            if (!result) CERR << "warning: unable to activate bitmap shutter 0x"
-                              << hex << ovgroup << dec << ", ignoring." << endl;
-#endif
+            if ((!result) && verboseMode)
+            {
+              logstream->lockCerr() << "warning: unable to activate bitmap shutter 0x"
+                << hex << ovgroup << dec << ", ignoring." << endl;
+              logstream->unlockCerr();
+            }
           }
         }
       }
@@ -3667,21 +3782,23 @@ void DVPresentationState::renderPixelData(OFBool display)
   if (rot != 0)
   {
     result = currentImage->rotateImage(rot);
-    if (previewImage != NULL)
-      previewImage->rotateImage(rot);
-#ifdef DEBUG
-    if (!result) CERR << "warning: unable to rotate image by " << rot << " degrees, ignoring." << endl;
-#endif
+    if (previewImage != NULL) previewImage->rotateImage(rot);
+    if ((!result) && verboseMode)
+    {
+      logstream->lockCerr() << "warning: unable to rotate image by " << rot << " degrees, ignoring." << endl;
+      logstream->unlockCerr();
+    }
   }
 
   if (flp)
   {
     result = currentImage->flipImage();
-    if (previewImage != NULL)
-      previewImage->flipImage();
-#ifdef DEBUG
-    if (!result) CERR << "warning: unable to flip image horizontally, ignoring." << endl;
-#endif
+    if (previewImage != NULL) previewImage->flipImage();
+    if ((!result) && verboseMode)
+    {
+      logstream->lockCerr() << "warning: unable to flip image horizontally, ignoring." << endl;
+      logstream->unlockCerr();
+    }
   }
 
   currentImageRotation = pstateRotation;
@@ -3841,13 +3958,15 @@ DVPSDisplayedArea *DVPresentationState::getDisplayedAreaSelection()
   DVPSDisplayedArea * area = displayedAreaSelectionList.findDisplayedArea(currentImageSOPInstanceUID, currentImageSelectedFrame);
   if (area==NULL)
   {
-#ifdef DEBUG
-     CERR << "Warning: no displayed area selection item for current image found, creating default." << endl;
-#endif
-     if ((currentImageDataset)&&(EC_Normal == createDefaultDisplayedArea(*currentImageDataset)))
-     {
-      area = displayedAreaSelectionList.findDisplayedArea(currentImageSOPInstanceUID, currentImageSelectedFrame);
-     }
+      if (verboseMode)
+      {
+        logstream->lockCerr() << "Warning: no displayed area selection item for current image found, creating default." << endl;
+        logstream->unlockCerr();
+      }
+      if ((currentImageDataset)&&(EC_Normal == createDefaultDisplayedArea(*currentImageDataset)))
+      {
+        area = displayedAreaSelectionList.findDisplayedArea(currentImageSOPInstanceUID, currentImageSelectedFrame);
+      }
   }
   return area;
 }
@@ -3965,10 +4084,32 @@ const char *DVPresentationState::getCurrentImageModality()
   if (EC_Normal == currentImageModality.getString(c)) return c; else return NULL;
 }
 
+void DVPresentationState::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
+{
+  if (stream) logstream = stream; else logstream = &ofConsole;
+  verboseMode = verbMode;
+  debugMode = dbgMode;
+  displayedAreaSelectionList.setLog(logstream, verbMode, dbgMode);
+  presentationLUT.setLog(logstream, verbMode, dbgMode);
+  referencedSeriesList.setLog(logstream, verbMode, dbgMode);
+  overlayList.setLog(logstream, verbMode, dbgMode);
+  activationLayerList.setLog(logstream, verbMode, dbgMode);
+  graphicAnnotationList.setLog(logstream, verbMode, dbgMode);
+  graphicLayerList.setLog(logstream, verbMode, dbgMode);
+  softcopyVOIList.setLog(logstream, verbMode, dbgMode);
+  currentImageCurveList.setLog(logstream, verbMode, dbgMode);  
+  currentImageVOILUTList.setLog(logstream, verbMode, dbgMode);
+  currentImageVOIWindowList.setLog(logstream, verbMode, dbgMode);  
+}
+
+
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.58  2000-06-02 12:48:04  joergr
+ *  Revision 1.59  2000-06-02 16:01:08  meichel
+ *  Adapted all dcmpstat classes to use OFConsole for log and error output
+ *
+ *  Revision 1.58  2000/06/02 12:48:04  joergr
  *  Reject invalid frame numbers in method selectImageFrameNumber().
  *
  *  Revision 1.57  2000/05/31 13:02:40  meichel

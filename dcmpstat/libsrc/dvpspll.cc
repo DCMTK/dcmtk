@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-05-31 12:58:16 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2000-06-02 16:01:04 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,18 +37,23 @@
 #include "dvpshlp.h"     /* for class DVPSHelper */
 #include "dvpsibl.h"     /* for class DVPSImageBoxContent_PList */
 #include "diluptab.h"    /* for class DiLookupTable */
+#include "dvpsdef.h"
 
 /* --------------- class DVPSImageBoxContent_PList --------------- */
 
 DVPSPresentationLUT_PList::DVPSPresentationLUT_PList()
 : OFList<DVPSPresentationLUT *>()
-, logstream(&CERR)
+, logstream(&ofConsole)
+, verboseMode(OFFalse)
+, debugMode(OFFalse)
 {
 }
 
 DVPSPresentationLUT_PList::DVPSPresentationLUT_PList(const DVPSPresentationLUT_PList &arg)
 : OFList<DVPSPresentationLUT *>()
 , logstream(arg.logstream)
+, verboseMode(arg.verboseMode)
+, debugMode(arg.debugMode)
 {
   OFListIterator(DVPSPresentationLUT *) first = arg.begin();
   OFListIterator(DVPSPresentationLUT *) last = arg.end();
@@ -95,7 +100,7 @@ E_Condition DVPSPresentationLUT_PList::read(DcmItem &dset)
         newLUT = new DVPSPresentationLUT();
         if (newLUT && ditem)
         {
-          newLUT->setLog(logstream);
+          newLUT->setLog(logstream, verboseMode, debugMode);
           result = newLUT->read(*ditem, OFTrue);
           push_back(newLUT);
         } else result = EC_MemoryExhausted;
@@ -137,19 +142,18 @@ E_Condition DVPSPresentationLUT_PList::write(DcmItem &dset)
   return result;
 }
 
-void DVPSPresentationLUT_PList::setLog(ostream *o)
+void DVPSPresentationLUT_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
 {
-  if (o)
+  if (stream) logstream = stream; else logstream = &ofConsole;
+  verboseMode = verbMode;
+  debugMode = dbgMode;
+  OFListIterator(DVPSPresentationLUT *) first = begin();
+  OFListIterator(DVPSPresentationLUT *) last = end();
+  while (first != last)
   {
-  	logstream = o;
-    OFListIterator(DVPSPresentationLUT *) first = begin();
-    OFListIterator(DVPSPresentationLUT *) last = end();
-    while (first != last)
-    {
-      (*first)->setLog(o);
-      ++first;
-    }	
-  }
+    (*first)->setLog(logstream, verbMode, dbgMode);
+    ++first;
+  }	
 }
 
 void DVPSPresentationLUT_PList::cleanup(const char *filmBox, DVPSImageBoxContent_PList& imageBoxes)
@@ -270,15 +274,22 @@ void DVPSPresentationLUT_PList::printSCPDelete(T_DIMSE_Message& rq, T_DIMSE_Mess
     erase(first);
   } else {
     // presentation LUT does not exist or wrong instance UID
-    *logstream << "error: cannot delete presentation LUT with instance UID '" << rq.msg.NDeleteRQ.RequestedSOPInstanceUID << "': object does not exist." << endl;
-    rsp.msg.NDeleteRSP.DimseStatus = 0x0112; // no such object instance
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "error: cannot delete presentation LUT with instance UID '" << rq.msg.NDeleteRQ.RequestedSOPInstanceUID << "': object does not exist." << endl;
+      logstream->unlockCerr();
+    }
+    rsp.msg.NDeleteRSP.DimseStatus = DIMSE_N_NoSuchObjectInstance;
   }
 }
 
 
 /*
  *  $Log: dvpspll.cc,v $
- *  Revision 1.6  2000-05-31 12:58:16  meichel
+ *  Revision 1.7  2000-06-02 16:01:04  meichel
+ *  Adapted all dcmpstat classes to use OFConsole for log and error output
+ *
+ *  Revision 1.6  2000/05/31 12:58:16  meichel
  *  Added initial Print SCP support
  *
  *  Revision 1.5  2000/03/08 16:29:08  meichel

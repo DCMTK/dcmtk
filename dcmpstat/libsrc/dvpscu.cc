@@ -23,8 +23,8 @@
  *    classes: DVPSCurve
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:29:03 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-06-02 16:00:58 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,6 +45,9 @@ DVPSCurve::DVPSCurve()
 , curveLabel()
 , axisUnitsX()
 , axisUnitsY()
+, logstream(&ofConsole)
+, verboseMode(OFFalse)
+, debugMode(OFFalse)
 {
 }
 
@@ -58,6 +61,9 @@ DVPSCurve::DVPSCurve(const DVPSCurve& copy)
 , curveLabel(copy.curveLabel)
 , axisUnitsX(copy.axisUnitsX)
 , axisUnitsY(copy.axisUnitsY)
+, logstream(copy.logstream)
+, verboseMode(copy.verboseMode)
+, debugMode(copy.debugMode)
 {
   if (copy.curveData)
   {
@@ -354,11 +360,20 @@ E_Condition DVPSCurve::getPoint(size_t idx, double& x, double& y)
   return EC_Normal;
 }
 
+void DVPSCurve::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
+{
+  if (stream) logstream = stream; else logstream = &ofConsole;
+  verboseMode = verbMode;
+  debugMode = dbgMode;
+}
 
 
 /*
  *  $Log: dvpscu.cc,v $
- *  Revision 1.2  2000-03-08 16:29:03  meichel
+ *  Revision 1.3  2000-06-02 16:00:58  meichel
+ *  Adapted all dcmpstat classes to use OFConsole for log and error output
+ *
+ *  Revision 1.2  2000/03/08 16:29:03  meichel
  *  Updated copyright header.
  *
  *  Revision 1.1  1998/12/22 17:57:14  meichel

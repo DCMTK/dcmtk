@@ -23,8 +23,8 @@
  *    classes: DVPSReferencedSeries_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:29:10 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2000-06-02 16:01:06 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,11 +38,17 @@
 
 DVPSReferencedSeries_PList::DVPSReferencedSeries_PList()
 : OFList<DVPSReferencedSeries *>()
+, logstream(&ofConsole)
+, verboseMode(OFFalse)
+, debugMode(OFFalse)
 {
 }
 
 DVPSReferencedSeries_PList::DVPSReferencedSeries_PList(const DVPSReferencedSeries_PList &arg)
 : OFList<DVPSReferencedSeries *>()
+, logstream(arg.logstream)
+, verboseMode(arg.verboseMode)
+, debugMode(arg.debugMode)
 {
   OFListIterator(DVPSReferencedSeries *) first = arg.begin();
   OFListIterator(DVPSReferencedSeries *) last = arg.end();
@@ -132,9 +138,11 @@ OFBool DVPSReferencedSeries_PList::isValid()
 {
   if (size() == 0) 
   {
-#ifdef DEBUG
-    CERR << "referenced series SQ is empty in presentation state" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "referenced series SQ is empty in presentation state" << endl;
+      logstream->unlockCerr();
+    }
     return OFFalse;
   }
   
@@ -281,9 +289,26 @@ E_Condition DVPSReferencedSeries_PList::getImageReference(
   return EC_IllegalCall;
 }
 
+void DVPSReferencedSeries_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
+{
+  if (stream) logstream = stream; else logstream = &ofConsole;
+  verboseMode = verbMode;
+  debugMode = dbgMode;
+  OFListIterator(DVPSReferencedSeries *) first = begin();
+  OFListIterator(DVPSReferencedSeries *) last = end();
+  while (first != last)
+  {
+    (*first)->setLog(logstream, verbMode, dbgMode);
+    ++first;
+  }	
+}
+
 /*
  *  $Log: dvpsrsl.cc,v $
- *  Revision 1.6  2000-03-08 16:29:10  meichel
+ *  Revision 1.7  2000-06-02 16:01:06  meichel
+ *  Adapted all dcmpstat classes to use OFConsole for log and error output
+ *
+ *  Revision 1.6  2000/03/08 16:29:10  meichel
  *  Updated copyright header.
  *
  *  Revision 1.5  2000/03/03 14:14:04  meichel

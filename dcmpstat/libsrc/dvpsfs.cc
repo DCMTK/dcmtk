@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSFilmSession
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-02 12:45:05 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-06-02 16:00:59 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,6 +50,9 @@ DVPSFilmSession::DVPSFilmSession()
 , filmDestination(DCM_FilmDestination)
 , filmSessionLabel(DCM_FilmSessionLabel)
 , ownerID(DCM_OwnerID)
+, logstream(&ofConsole)
+, verboseMode(OFFalse)
+, debugMode(OFFalse)
 {
 }
 
@@ -61,6 +64,9 @@ DVPSFilmSession::DVPSFilmSession(const DVPSFilmSession& copy)
 , filmDestination(copy.filmDestination)
 , filmSessionLabel(copy.filmSessionLabel)
 , ownerID(copy.ownerID)
+, logstream(copy.logstream)
+, verboseMode(copy.verboseMode)
+, debugMode(copy.debugMode)
 {
 }
 
@@ -92,9 +98,13 @@ OFBool DVPSFilmSession::printSCPCreate(DVConfiguration& cfg, const char *cfgname
       if ((EC_Normal != numberOfCopies.getSint32(numCopies)) || (numCopies < 1))
       {
         numberOfCopies.getString(numCopiesString);
-        if (numCopiesString==NULL) numCopiesString = "";
-        CERR << "cannot create Basic Film Session: illegal number of copies: '" << numCopiesString << "'" << endl;
-        rsp.msg.NCreateRSP.DimseStatus = 0x0106; // invalid attribute value
+        if (numCopiesString==NULL) numCopiesString = (char *)"";
+        if (verboseMode)
+        {
+          logstream->lockCerr() << "cannot create Basic Film Session: illegal number of copies: '" << numCopiesString << "'" << endl; 
+          logstream->unlockCerr();
+        }
+        rsp.msg.NCreateRSP.DimseStatus = DIMSE_N_InvalidAttributeValue;
         result = OFFalse;
       }
     }
@@ -111,8 +121,12 @@ OFBool DVPSFilmSession::printSCPCreate(DVConfiguration& cfg, const char *cfgname
       printPriority.getOFString(aString, 0, OFTrue);
       if ((aString != "HIGH")&&(aString != "MED")&&(aString != "LOW"))
       {
-        CERR << "cannot create Basic Film Session: illegal print priority: '" << aString.c_str() << "'" << endl;
-        rsp.msg.NCreateRSP.DimseStatus = 0x0106; // invalid attribute value
+        if (verboseMode)
+        {
+          logstream->lockCerr() << "cannot create Basic Film Session: illegal print priority: '" << aString.c_str() << "'" << endl;
+          logstream->unlockCerr();
+        }
+        rsp.msg.NCreateRSP.DimseStatus = DIMSE_N_InvalidAttributeValue;
         result = OFFalse;
       }
     }
@@ -150,8 +164,12 @@ OFBool DVPSFilmSession::printSCPCreate(DVConfiguration& cfg, const char *cfgname
       }
       if (! found)
       {
-        CERR << "cannot create Basic Film Session: illegal medium type: '" << theMedium.c_str() << "'" << endl;
-        rsp.msg.NCreateRSP.DimseStatus = 0x0106; // invalid attribute value
+        if (verboseMode)
+        {
+          logstream->lockCerr() << "cannot create Basic Film Session: illegal medium type: '" << theMedium.c_str() << "'" << endl;
+          logstream->unlockCerr();
+        }
+        rsp.msg.NCreateRSP.DimseStatus = DIMSE_N_InvalidAttributeValue;
         result = OFFalse;
       }
     }
@@ -189,8 +207,12 @@ OFBool DVPSFilmSession::printSCPCreate(DVConfiguration& cfg, const char *cfgname
       }
       if (! found)
       {
-        CERR << "cannot create Basic Film Session: illegal film destination: '" << theDestination.c_str() << "'" << endl;
-        rsp.msg.NCreateRSP.DimseStatus = 0x0106; // invalid attribute value
+        if (verboseMode)
+        {
+          logstream->lockCerr() << "cannot create Basic Film Session: illegal film destination: '" << theDestination.c_str() << "'" << endl;
+          logstream->unlockCerr();
+        }
+        rsp.msg.NCreateRSP.DimseStatus = DIMSE_N_InvalidAttributeValue;
         result = OFFalse;
       }
     }
@@ -245,15 +267,25 @@ OFBool DVPSFilmSession::printSCPCreate(DVConfiguration& cfg, const char *cfgname
       else if (currentTag == DCM_OwnerID) /* OK */ ;
       else if (currentTag == DCM_MemoryAllocation)
       {
-        CERR << "warning while creating Basic Film Session: memory allocation not supported" << endl;
-        (stack.top())->print(CERR, OFFalse);
-      	if (rsp.msg.NCreateRSP.DimseStatus == 0) rsp.msg.NCreateRSP.DimseStatus = 0xB600; // memory allocation not supported
+        if (verboseMode)
+        {
+          ostream &mycerr = logstream->lockCerr();
+          mycerr << "warning while creating Basic Film Session: memory allocation not supported" << endl;
+          (stack.top())->print(mycerr, OFFalse);
+          logstream->unlockCerr();
+        }
+      	if (rsp.msg.NCreateRSP.DimseStatus == 0) rsp.msg.NCreateRSP.DimseStatus = DIMSE_N_BFS_Warn_MemoryAllocation;
       }
       else
       {
-        CERR << "cannot create Basic Film Session: unsupported attribute received:" << endl;
-        (stack.top())->print(CERR, OFFalse);
-      	rsp.msg.NCreateRSP.DimseStatus = 0x0107; // attribute list error
+        if (verboseMode)
+        {
+          ostream &mycerr = logstream->lockCerr();
+          mycerr << "cannot create Basic Film Session: unsupported attribute received:" << endl;
+          (stack.top())->print(mycerr, OFFalse);
+          logstream->unlockCerr();
+        }
+      	rsp.msg.NCreateRSP.DimseStatus = DIMSE_N_AttributeListError;
         result = OFFalse;
       }
     }
@@ -281,11 +313,11 @@ OFBool DVPSFilmSession::printSCPCreate(DVConfiguration& cfg, const char *cfgname
       } else {
       	delete rspDataset;
       	rspDataset = NULL;
-        rsp.msg.NCreateRSP.DimseStatus = 0x0110; // processing failure
+        rsp.msg.NCreateRSP.DimseStatus = DIMSE_N_ProcessingFailure;
         result = OFFalse;
       }     
     } else {
-      rsp.msg.NCreateRSP.DimseStatus = 0x0110; // processing failure
+      rsp.msg.NCreateRSP.DimseStatus = DIMSE_N_ProcessingFailure;
       result = OFFalse;
     }
   }
@@ -303,7 +335,7 @@ OFBool DVPSFilmSession::printSCPSet(DVConfiguration& cfg, const char *cfgname, D
   rspDataset = new DcmDataset;    
   if ((rqDataset == NULL)||(rspDataset == NULL))
   {
-    rsp.msg.NSetRSP.DimseStatus = 0x0110; // processing failure
+    rsp.msg.NSetRSP.DimseStatus = DIMSE_N_ProcessingFailure;
     result = OFFalse;
   }
   
@@ -319,9 +351,13 @@ OFBool DVPSFilmSession::printSCPSet(DVConfiguration& cfg, const char *cfgname, D
       if ((EC_Normal != numberOfCopies.getSint32(numCopies)) || (numCopies < 1))
       {
         numberOfCopies.getString(numCopiesString);
-        if (numCopiesString==NULL) numCopiesString = "";
-        CERR << "cannot update Basic Film Session: illegal number of copies: '" << numCopiesString << "'" << endl;
-        rsp.msg.NSetRSP.DimseStatus = 0x0106; // invalid attribute value
+        if (numCopiesString==NULL) numCopiesString = (char *)"";
+        if (verboseMode)
+        {
+          logstream->lockCerr() << "cannot update Basic Film Session: illegal number of copies: '" << numCopiesString << "'" << endl;
+          logstream->unlockCerr();
+        }
+        rsp.msg.NSetRSP.DimseStatus = DIMSE_N_InvalidAttributeValue;
         result = OFFalse;
       } else {
         ADD_TO_PDATASET(DcmIntegerString, numberOfCopies)
@@ -340,8 +376,12 @@ OFBool DVPSFilmSession::printSCPSet(DVConfiguration& cfg, const char *cfgname, D
       printPriority.getOFString(aString, 0, OFTrue);
       if ((aString != "HIGH")&&(aString != "MED")&&(aString != "LOW"))
       {
-        CERR << "cannot update Basic Film Session: illegal print priority: '" << aString.c_str() << "'" << endl;
-        rsp.msg.NSetRSP.DimseStatus = 0x0106; // invalid attribute value
+        if (verboseMode)
+        {
+          logstream->lockCerr() << "cannot update Basic Film Session: illegal print priority: '" << aString.c_str() << "'" << endl;
+          logstream->unlockCerr();
+        }
+        rsp.msg.NSetRSP.DimseStatus = DIMSE_N_InvalidAttributeValue;
         result = OFFalse;
       } else {
         ADD_TO_PDATASET(DcmCodeString, printPriority)
@@ -372,8 +412,12 @@ OFBool DVPSFilmSession::printSCPSet(DVConfiguration& cfg, const char *cfgname, D
       }
       if (! found)
       {
-        CERR << "cannot update Basic Film Session: illegal medium type: '" << theMedium.c_str() << "'" << endl;
-        rsp.msg.NSetRSP.DimseStatus = 0x0106; // invalid attribute value
+        if (verboseMode)
+        {
+          logstream->lockCerr() << "cannot update Basic Film Session: illegal medium type: '" << theMedium.c_str() << "'" << endl;
+          logstream->unlockCerr();
+        }
+        rsp.msg.NSetRSP.DimseStatus = DIMSE_N_InvalidAttributeValue;
         result = OFFalse;
       } else {
         ADD_TO_PDATASET(DcmCodeString, mediumType)
@@ -404,8 +448,12 @@ OFBool DVPSFilmSession::printSCPSet(DVConfiguration& cfg, const char *cfgname, D
       }
       if (! found)
       {
-        CERR << "cannot update Basic Film Session: illegal film destination: '" << theDestination.c_str() << "'" << endl;
-        rsp.msg.NSetRSP.DimseStatus = 0x0106; // invalid attribute value
+        if (verboseMode)
+        {
+          logstream->lockCerr() << "cannot update Basic Film Session: illegal film destination: '" << theDestination.c_str() << "'" << endl;
+          logstream->unlockCerr();
+        }
+        rsp.msg.NSetRSP.DimseStatus = DIMSE_N_InvalidAttributeValue;
         result = OFFalse;
       } else {
         ADD_TO_PDATASET(DcmCodeString, filmDestination)
@@ -450,15 +498,25 @@ OFBool DVPSFilmSession::printSCPSet(DVConfiguration& cfg, const char *cfgname, D
       else if (currentTag == DCM_OwnerID) /* OK */ ;
       else if (currentTag == DCM_MemoryAllocation)
       {
-        CERR << "warning while updating Basic Film Session: memory allocation not supported" << endl;
-        (stack.top())->print(CERR, OFFalse);
-      	if (rsp.msg.NSetRSP.DimseStatus == 0) rsp.msg.NSetRSP.DimseStatus = 0xB600; // memory allocation not supported
+        if (verboseMode)
+        {
+          ostream &mycerr = logstream->lockCerr();
+          mycerr << "warning while updating Basic Film Session: memory allocation not supported" << endl;
+          (stack.top())->print(mycerr, OFFalse);
+          logstream->unlockCerr();
+        }
+      	if (rsp.msg.NSetRSP.DimseStatus == 0) rsp.msg.NSetRSP.DimseStatus = DIMSE_N_BFS_Warn_MemoryAllocation;
       }
       else
       {
-        CERR << "cannot update Basic Film Session: unsupported attribute received:" << endl;
-        (stack.top())->print(CERR, OFFalse);
-      	rsp.msg.NSetRSP.DimseStatus = 0x0107; // attribute list error
+        if (verboseMode)
+        {
+          ostream &mycerr = logstream->lockCerr();
+          mycerr << "cannot update Basic Film Session: unsupported attribute received:" << endl;
+          (stack.top())->print(mycerr, OFFalse);
+          logstream->unlockCerr();
+        }
+      	rsp.msg.NSetRSP.DimseStatus = DIMSE_N_AttributeListError;
         result = OFFalse;
       }
     }
@@ -471,15 +529,25 @@ OFBool DVPSFilmSession::printSCPSet(DVConfiguration& cfg, const char *cfgname, D
   } else {
     delete rspDataset;
     rspDataset = NULL;
-    if (rsp.msg.NSetRSP.DimseStatus == 0) rsp.msg.NSetRSP.DimseStatus = 0x0110; // processing failure
+    if (rsp.msg.NSetRSP.DimseStatus == 0) rsp.msg.NSetRSP.DimseStatus = DIMSE_N_ProcessingFailure;
     result = OFFalse;
   }
   return result;
 }
 
+void DVPSFilmSession::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
+{
+  if (stream) logstream = stream; else logstream = &ofConsole;
+  verboseMode = verbMode;
+  debugMode = dbgMode;
+}
+
 /*
  *  $Log: dvpsfs.cc,v $
- *  Revision 1.2  2000-06-02 12:45:05  joergr
+ *  Revision 1.3  2000-06-02 16:00:59  meichel
+ *  Adapted all dcmpstat classes to use OFConsole for log and error output
+ *
+ *  Revision 1.2  2000/06/02 12:45:05  joergr
  *  Removed const type specifier to avoid compiler warnings reported by MSVC.
  *
  *  Revision 1.1  2000/05/31 12:58:11  meichel

@@ -23,8 +23,8 @@
  *    classes: DVPSOverlayCurveActivationLayer
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-05-31 13:02:35 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-06-02 16:00:57 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,12 +41,18 @@
 DVPSOverlayCurveActivationLayer::DVPSOverlayCurveActivationLayer()
 : repeatingGroup(0)
 , activationLayer(DCM_OverlayActivationLayer) // default is Overlay not Curve
+, logstream(&ofConsole)
+, verboseMode(OFFalse)
+, debugMode(OFFalse)
 {
 }
 
 DVPSOverlayCurveActivationLayer::DVPSOverlayCurveActivationLayer(const DVPSOverlayCurveActivationLayer& copy)
 : repeatingGroup(copy.repeatingGroup)
 , activationLayer(copy.activationLayer)
+, logstream(copy.logstream)
+, verboseMode(copy.verboseMode)
+, debugMode(copy.debugMode)
 {
 }
 
@@ -66,9 +72,11 @@ E_Condition DVPSOverlayCurveActivationLayer::read(DcmItem &dset, Uint16 ovGroup)
   if (activationLayer.getVM() > 1)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a curve or overlay activation layer with VM > 1" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a curve or overlay activation layer with VM > 1" << endl;
+      logstream->unlockCerr();
+    }
   }
 
   return result;
@@ -112,9 +120,20 @@ OFBool DVPSOverlayCurveActivationLayer::isRepeatingGroup(Uint16 rGroup)
   if (rGroup==repeatingGroup) return OFTrue; else return OFFalse;
 }
 
+void DVPSOverlayCurveActivationLayer::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
+{
+  if (stream) logstream = stream; else logstream = &ofConsole;
+  verboseMode = verbMode;
+  debugMode = dbgMode;
+}
+
+
 /*
  *  $Log: dvpsal.cc,v $
- *  Revision 1.4  2000-05-31 13:02:35  meichel
+ *  Revision 1.5  2000-06-02 16:00:57  meichel
+ *  Adapted all dcmpstat classes to use OFConsole for log and error output
+ *
+ *  Revision 1.4  2000/05/31 13:02:35  meichel
  *  Moved dcmpstat macros and constants into a common header file
  *
  *  Revision 1.3  2000/03/08 16:29:01  meichel

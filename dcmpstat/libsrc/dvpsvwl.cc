@@ -23,8 +23,8 @@
  *    classes: DVPSVOIWindow_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-05-31 13:02:42 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-06-02 16:01:11 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,11 +39,17 @@
 
 DVPSVOIWindow_PList::DVPSVOIWindow_PList()
 : OFList<DVPSVOIWindow *>()
+, logstream(&ofConsole)
+, verboseMode(OFFalse)
+, debugMode(OFFalse)
 {
 }
 
 DVPSVOIWindow_PList::DVPSVOIWindow_PList(const DVPSVOIWindow_PList &arg)
 : OFList<DVPSVOIWindow *>()
+, logstream(arg.logstream)
+, verboseMode(arg.verboseMode)
+, debugMode(arg.debugMode)
 {
   OFListIterator(DVPSVOIWindow *) first = arg.begin();
   OFListIterator(DVPSVOIWindow *) last = arg.end();
@@ -114,9 +120,26 @@ DVPSVOIWindow *DVPSVOIWindow_PList::getVOIWindow(size_t idx)
   return NULL;
 }
 
+void DVPSVOIWindow_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
+{
+  if (stream) logstream = stream; else logstream = &ofConsole;
+  verboseMode = verbMode;
+  debugMode = dbgMode;
+  OFListIterator(DVPSVOIWindow *) first = begin();
+  OFListIterator(DVPSVOIWindow *) last = end();
+  while (first != last)
+  {
+    (*first)->setLog(logstream, verbMode, dbgMode);
+    ++first;
+  }	
+}
+
 /*
  *  $Log: dvpsvwl.cc,v $
- *  Revision 1.4  2000-05-31 13:02:42  meichel
+ *  Revision 1.5  2000-06-02 16:01:11  meichel
+ *  Adapted all dcmpstat classes to use OFConsole for log and error output
+ *
+ *  Revision 1.4  2000/05/31 13:02:42  meichel
  *  Moved dcmpstat macros and constants into a common header file
  *
  *  Revision 1.3  2000/03/08 16:29:14  meichel

@@ -23,8 +23,8 @@
  *    classes: DVPSPrintMessageHandler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:29:08 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2000-06-02 16:01:04 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,6 +33,7 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "ofstring.h"
+#include "dvpsdef.h"
 #include "dvpspr.h"
 
 static void printStatusString(ostream& dumpStream, int status)
@@ -40,100 +41,100 @@ static void printStatusString(ostream& dumpStream, int status)
   char buf[20];
   switch(status)
   {
-    case 0x0000:
+    case DIMSE_N_Success:
       dumpStream << "0x0000: Success";
       break;
-    case 0xFE00:
+    case DIMSE_N_Cancel:
       dumpStream << "0xFE00: Cancel";
       break;
-    case 0x0107:
+    case DIMSE_N_AttributeListError:
       dumpStream << "0x0107: Attribute list error";
       break;
-    case 0x0122:
+    case DIMSE_N_SOPClassNotSupported:
       dumpStream << "0x0122: SOP class not supported";
       break;
-    case 0x0119:
+    case DIMSE_N_ClassInstanceConflict:
       dumpStream << "0x0119: Class/instance conflict";
       break;
-    case 0x0111:
+    case DIMSE_N_DuplicateSOPInstance:
       dumpStream << "0x0111: Duplicate SOP instance";
       break;
-    case 0x0210:
+    case DIMSE_N_DuplicateInvocation:
       dumpStream << "0x0210: Duplicate invocation";
       break;
-    case 0x0115:
+    case DIMSE_N_InvalidArgumentValue:
       dumpStream << "0x0115: Invalid argument value";
       break;
-    case 0x0106:
+    case DIMSE_N_InvalidAttributeValue:
       dumpStream << "0x0106: Invalid attribute value";
       break;
-    case 0x0117:
+    case DIMSE_N_InvalidObjectInstance:
       dumpStream << "0x0117: Invalid object instance";
       break;
-    case 0x0120:
+    case DIMSE_N_MissingAttribute:
       dumpStream << "0x0120: Missing attribute";
       break;
-    case 0x0121:
+    case DIMSE_N_MissingAttributeValue:
       dumpStream << "0x0121: Missing attribute value";
       break;
-    case 0x0212:
+    case DIMSE_N_MistypedArgument:
       dumpStream << "0x0212: Mistyped argument";
       break;
-    case 0x0114:
+    case DIMSE_N_NoSuchArgument:
       dumpStream << "0x0114: No such argument";
       break;
-    case 0x0105:
+    case DIMSE_N_NoSuchAttribute:
       dumpStream << "0x0105: No such attribute";
       break;
-    case 0x0113:
+    case DIMSE_N_NoSuchEventType:
       dumpStream << "0x0113: No such event type";
       break;
-    case 0x0112:
+    case DIMSE_N_NoSuchObjectInstance:
       dumpStream << "0x0112: No such object instance";
       break;
-    case 0x0118:
+    case DIMSE_N_NoSuchSOPClass:
       dumpStream << "0x0118: No such SOP class";
       break;
-    case 0x0110:
+    case DIMSE_N_ProcessingFailure:
       dumpStream << "0x0110: Processing failure";
       break;
-    case 0x0213:
+    case DIMSE_N_ResourceLimitation:
       dumpStream << "0x0213: Resource limitation";
       break;
-    case 0x0211:
+    case DIMSE_N_UnrecognizedOperation:
       dumpStream << "0x0211: Unrecognized operation";
       break;
-    case 0xB600:
+    case DIMSE_N_BFS_Warn_MemoryAllocation:
       dumpStream << "0xB600: Basic film session warning - memory allocation";
       break;
-    case 0xB601:
+    case DIMSE_N_BFS_Warn_NoSessionPrinting:
       dumpStream << "0xB601: Basic film session warning - no session printing";
       break;
-    case 0xB602:
+    case DIMSE_N_BFS_Warn_EmptyPage:
       dumpStream << "0xB602: Basic film session warning - empty page";
       break;
-    case 0xB603:
+    case DIMSE_N_BFB_Warn_EmptyPage:
       dumpStream << "0xB603: Basic film box warning - empty page";
       break;
-    case 0xC600:
+    case DIMSE_N_BFS_Fail_NoFilmBox:
       dumpStream << "0xC600: Basic film session failure - no film box";
       break;
-    case 0xC601:
+    case DIMSE_N_BFS_Fail_PrintQueueFull:
       dumpStream << "0xC601: Basic film session failure - print queue full";
       break;
-    case 0xC602:
+    case DIMSE_N_BSB_Fail_PrintQueueFull:
       dumpStream << "0xC602: Basic film box failure - print queue full";
       break;
-    case 0xC603:
+    case DIMSE_N_BFS_BFB_Fail_ImageSize:
       dumpStream << "0xC603: Basic film session/box failure - Image size";
       break;
-    case 0xC604:
+    case DIMSE_N_BFS_BFB_Fail_PositionCollision:
       dumpStream << "0xC604: Basic film session/box failure - Position collision";
       break;
-    case 0xC605:
+    case DIMSE_N_IB_Fail_InsufficientMemory:
       dumpStream << "0xC605: Image box failure - Insufficient memory";
       break;
-    case 0xC606:
+    case DIMSE_N_IB_Fail_MoreThanOneVOILUT:
       dumpStream << "0xC606: Image box failure - More than one VOI LUT";
       break;
     default:
@@ -153,7 +154,9 @@ DVPSPrintMessageHandler::DVPSPrintMessageHandler()
 , blockMode(DIMSE_BLOCKING)
 , timeout(0)
 , dumpStream(NULL)
-, logstream(&CERR)
+, logstream(&ofConsole)
+, verboseMode(OFFalse)
+, debugMode(OFFalse)
 {
 }
 
@@ -457,7 +460,7 @@ CONDITION DVPSPrintMessageHandler::sendNRequest(
           }
           T_DIMSE_DataSetType responseDataset = DIMSE_DATASET_NULL;
           DIC_US responseMessageID = 0;
-	  /** change request to response */     
+          /** change request to response */     
           switch(expectedResponse)
           {
             case DIMSE_N_GET_RSP:
@@ -767,8 +770,7 @@ CONDITION DVPSPrintMessageHandler::negotiateAssociation(
   long peerMaxPDU,
   OFBool negotiatePresentationLUT,
   OFBool negotiateAnnotationBox,
-  OFBool implicitOnly,
-  OFBool verbose)
+  OFBool implicitOnly)
 {
   if (assoc)
   {
@@ -786,10 +788,10 @@ CONDITION DVPSPrintMessageHandler::negotiateAssociation(
   CONDITION cond = ASC_initializeNetwork(NET_REQUESTOR, 0, 1000, &net);
   if (!SUCCESS(cond)) 
   {
-		return cond;
-		}
-		
-	cond = ASC_createAssociationParameters(&params, peerMaxPDU);
+                return cond;
+                }
+                
+        cond = ASC_createAssociationParameters(&params, peerMaxPDU);
 
   ASC_setAPTitles(params, myAEtitle, peerAEtitle, NULL);
   gethostname(dnlocalHost, sizeof(dnlocalHost) - 1);
@@ -832,7 +834,11 @@ CONDITION DVPSPrintMessageHandler::negotiateAssociation(
   }
   
   /* create association */
-  if (verbose) *logstream << "Requesting Association" << endl;
+  if (verboseMode)
+  {
+    logstream->lockCerr() << "Requesting Association" << endl;
+    logstream->unlockCerr();
+  }
     
   if (SUCCESS(cond)) 
   {
@@ -842,33 +848,42 @@ CONDITION DVPSPrintMessageHandler::negotiateAssociation(
     {
       T_ASC_RejectParameters rej;
       ASC_getRejectParameters(params, &rej);
-      if (verbose)
+      if (verboseMode)
       {
-        *logstream << "Association Rejected" << endl;
+        logstream->lockCerr() << "Association Rejected" << endl;
+        logstream->unlockCerr();
         ASC_printRejectParameters(stderr, &rej);
       }
     }else{
-			if (!SUCCESS(cond)) 
-			{
-				if (params) ASC_destroyAssociationParameters(&params);
-				if (net) ASC_dropNetwork(&net);
-				assoc = NULL;
-				net = NULL;
-				return cond;
-			}
-		}
-  }
-
+      if (!SUCCESS(cond)) 
+      {
+        if (params) ASC_destroyAssociationParameters(&params);
+        if (net) ASC_dropNetwork(&net);
+        assoc = NULL;
+        net = NULL;
+        return cond;
+      }
+    }       
+  }                     
+                        
   if ((SUCCESS(cond)) && (0 == ASC_findAcceptedPresentationContextID(assoc, UID_BasicGrayscalePrintManagementMetaSOPClass)))
-  {
+  {                     
     cond = COND_PushCondition(DIMSE_NOVALIDPRESENTATIONCONTEXTID, "DVPSPrintMessageHandler::negotiateAssociation: Peer does not support Basic Grayscale Print Management");
-    if (verbose) *logstream << "Peer does not support Basic Grayscale Print Management, aborting association." << endl;
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Peer does not support Basic Grayscale Print Management, aborting association." << endl;
+      logstream->unlockCerr();
+    }
     abortAssociation();
   }
   
   if (SUCCESS(cond))
   {
-    if (verbose) *logstream << "Association accepted (Max Send PDV: " << assoc->sendPDVLength << ")" << endl;
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Association accepted (Max Send PDV: " << assoc->sendPDVLength << ")" << endl;
+      logstream->unlockCerr();
+    }
   } else {
     if (params) ASC_destroyAssociationParameters(&params);
     if (assoc) ASC_destroyAssociation(&assoc);
@@ -891,9 +906,19 @@ OFBool DVPSPrintMessageHandler::printerSupportsAnnotationBox()
   return OFFalse;
 }
 
+void DVPSPrintMessageHandler::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
+{
+  if (stream) logstream = stream; else logstream = &ofConsole;
+  verboseMode = verbMode;
+  debugMode = dbgMode;
+}
+
 /*
  *  $Log: dvpspr.cc,v $
- *  Revision 1.10  2000-03-08 16:29:08  meichel
+ *  Revision 1.11  2000-06-02 16:01:04  meichel
+ *  Adapted all dcmpstat classes to use OFConsole for log and error output
+ *
+ *  Revision 1.10  2000/03/08 16:29:08  meichel
  *  Updated copyright header.
  *
  *  Revision 1.9  2000/03/07 16:24:56  joergr

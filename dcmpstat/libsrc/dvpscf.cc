@@ -21,9 +21,9 @@
  *
  *  Purpose: DVConfiguration
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-02 13:54:36 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-06-02 16:00:58 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,7 +34,7 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dvpscf.h"      /* for DVConfiguration */
 #include "dvpsconf.h"    /* for class DVPSConfig */
-#include "ofconsol.h"    /* for CERR, COUT */
+#include "ofconsol.h"    /* for OFConsole */
 #include <stdio.h>
 #include <ctype.h>       /* for toupper() */
 #include "dvpsdef.h"     /* for constants */
@@ -114,11 +114,7 @@
 
 /* --------------- static helper functions --------------- */
 
-#ifdef DEBUG
-static DVPSPeerType getConfigTargetType(const char *val, ostream *logstream)
-#else
-static DVPSPeerType getConfigTargetType(const char *val, ostream * /* logstream */)
-#endif
+static DVPSPeerType getConfigTargetType(const char *val, OFConsole *logstream, OFBool verboseMode)
 {
   DVPSPeerType result = DVPSE_storage; /* default */
 
@@ -139,9 +135,11 @@ static DVPSPeerType getConfigTargetType(const char *val, ostream * /* logstream 
   if (ostring=="LOCALPRINTER")  result=DVPSE_printLocal; else
   if (ostring=="STORAGE")  result=DVPSE_storage; else
   {
-#ifdef DEBUG
-    *logstream << "warning: unsupported peer type in config file: '" << val << "', ignoring." << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "warning: unsupported peer type in config file: '" << val << "', ignoring." << endl;
+      logstream->unlockCerr();
+    }
   }
   return result;
 }
@@ -181,7 +179,9 @@ static void copyValue(const char *str, Uint32 idx, OFString& target)
 }
 
 DVConfiguration::DVConfiguration(const char *config_file)
-: logstream(&CERR)
+: logstream(&ofConsole)
+, verboseMode(OFFalse)
+, debugMode(OFFalse)
 , pConfig(NULL)
 {
   if (config_file)
@@ -215,7 +215,7 @@ Uint32 DVConfiguration::getNumberOfTargets(DVPSPeerType peerType)
        pConfig->first_section(1);
        while (pConfig->section_valid(1))
        {
-         currentType = getConfigTargetType(pConfig->get_entry(L0_TYPE), logstream);
+         currentType = getConfigTargetType(pConfig->get_entry(L0_TYPE), logstream, verboseMode);
          switch (peerType)
          {
            case DVPSE_storage:
@@ -257,7 +257,7 @@ const char *DVConfiguration::getTargetID(Uint32 idx, DVPSPeerType peerType)
        pConfig->first_section(1);
        while ((! found)&&(pConfig->section_valid(1)))
        {
-         currentType = getConfigTargetType(pConfig->get_entry(L0_TYPE), logstream);
+         currentType = getConfigTargetType(pConfig->get_entry(L0_TYPE), logstream, verboseMode);
          switch (peerType)
          {
            case DVPSE_storage:
@@ -372,7 +372,7 @@ OFBool DVConfiguration::getTargetDisableNewVRs(const char *targetID)
 
 DVPSPeerType DVConfiguration::getTargetType(const char *targetID)
 {
-  return getConfigTargetType(getConfigEntry(L2_COMMUNICATION, targetID, L0_TYPE), logstream);
+  return getConfigTargetType(getConfigEntry(L2_COMMUNICATION, targetID, L0_TYPE), logstream, verboseMode);
 }
 
 const char *DVConfiguration::getNetworkAETitle()
@@ -1102,10 +1102,20 @@ Uint16 DVConfiguration::getTargetPrinterAnnotationPosition(const char *targetID)
   return 0;
 }
 
+void DVConfiguration::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
+{
+  if (stream) logstream = stream; else logstream = &ofConsole;
+  verboseMode = verbMode;
+  debugMode = dbgMode;
+}
+
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.cc,v $
- *  Revision 1.24  2000-06-02 13:54:36  joergr
+ *  Revision 1.25  2000-06-02 16:00:58  meichel
+ *  Adapted all dcmpstat classes to use OFConsole for log and error output
+ *
+ *  Revision 1.24  2000/06/02 13:54:36  joergr
  *  Implemented start/terminatePrintServer methods.
  *
  *  Revision 1.23  2000/05/31 12:58:14  meichel

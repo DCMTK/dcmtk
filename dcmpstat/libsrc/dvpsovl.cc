@@ -23,8 +23,8 @@
  *    classes: DVPSOverlay_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:29:07 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-06-02 16:01:03 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,11 +38,17 @@
 
 DVPSOverlay_PList::DVPSOverlay_PList()
 : OFList<DVPSOverlay *>()
+, logstream(&ofConsole)
+, verboseMode(OFFalse)
+, debugMode(OFFalse)
 {
 }
 
 DVPSOverlay_PList::DVPSOverlay_PList(const DVPSOverlay_PList &arg)
 : OFList<DVPSOverlay *>()
+, logstream(arg.logstream)
+, verboseMode(arg.verboseMode)
+, debugMode(arg.debugMode)
 {
   OFListIterator(DVPSOverlay *) first = arg.begin();
   OFListIterator(DVPSOverlay *) last = arg.end();
@@ -196,9 +202,26 @@ E_Condition DVPSOverlay_PList::addOverlay(DcmItem& overlayIOD, Uint16 groupInIte
   return result;
 }
 
+void DVPSOverlay_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
+{
+  if (stream) logstream = stream; else logstream = &ofConsole;
+  verboseMode = verbMode;
+  debugMode = dbgMode;
+  OFListIterator(DVPSOverlay *) first = begin();
+  OFListIterator(DVPSOverlay *) last = end();
+  while (first != last)
+  {
+    (*first)->setLog(logstream, verbMode, dbgMode);
+    ++first;
+  }	
+}
+
 /*
  *  $Log: dvpsovl.cc,v $
- *  Revision 1.4  2000-03-08 16:29:07  meichel
+ *  Revision 1.5  2000-06-02 16:01:03  meichel
+ *  Adapted all dcmpstat classes to use OFConsole for log and error output
+ *
+ *  Revision 1.4  2000/03/08 16:29:07  meichel
  *  Updated copyright header.
  *
  *  Revision 1.3  1998/12/22 17:57:17  meichel

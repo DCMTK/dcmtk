@@ -23,8 +23,8 @@
  *    classes: DVPSReferencedSeries
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-05-31 13:02:38 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2000-06-02 16:01:06 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,6 +44,9 @@ DVPSReferencedSeries::DVPSReferencedSeries()
 , retrieveAETitle(DCM_RetrieveAETitle)
 , storageMediaFileSetID(DCM_StorageMediaFileSetID)
 , storageMediaFileSetUID(DCM_StorageMediaFileSetUID)
+, logstream(&ofConsole)
+, verboseMode(OFFalse)
+, debugMode(OFFalse)
 {
 }
 
@@ -53,6 +56,9 @@ DVPSReferencedSeries::DVPSReferencedSeries(const DVPSReferencedSeries& copy)
 , retrieveAETitle(copy.retrieveAETitle)
 , storageMediaFileSetID(copy.storageMediaFileSetID)
 , storageMediaFileSetUID(copy.storageMediaFileSetUID)
+, logstream(copy.logstream)
+, verboseMode(copy.verboseMode)
+, debugMode(copy.debugMode)
 {
 }
 
@@ -76,37 +82,47 @@ E_Condition DVPSReferencedSeries::read(DcmItem &dset)
   if (seriesInstanceUID.getLength() == 0)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a referenced series SQ item with seriesInstanceUID absent or empty" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a referenced series SQ item with seriesInstanceUID absent or empty" << endl;
+      logstream->unlockCerr();
+    }
   }
   else if (seriesInstanceUID.getVM() != 1)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a referenced series SQ item with seriesInstanceUID VM != 1" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a referenced series SQ item with seriesInstanceUID VM != 1" << endl;
+      logstream->unlockCerr();
+    }
   }
   else if (retrieveAETitle.getVM() > 1)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a referenced series SQ item with retrieveAETitle VM > 1" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a referenced series SQ item with retrieveAETitle VM > 1" << endl;
+      logstream->unlockCerr();
+    }
   }
   else if (storageMediaFileSetID.getVM() > 1)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a referenced series SQ item with storageMediaFileSetID VM > 1" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a referenced series SQ item with storageMediaFileSetID VM > 1" << endl;
+      logstream->unlockCerr();
+    }
   }
   else if (storageMediaFileSetUID.getVM() > 1)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a referenced series SQ item with storageMediaFileSetUID VM > 1" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a referenced series SQ item with storageMediaFileSetUID VM > 1" << endl;
+      logstream->unlockCerr();
+    }
   }
 
   return result;
@@ -219,9 +235,20 @@ E_Condition DVPSReferencedSeries::getImageReference(
   return result;
 }
 
+void DVPSReferencedSeries::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
+{
+  if (stream) logstream = stream; else logstream = &ofConsole;
+  verboseMode = verbMode;
+  debugMode = dbgMode;
+  referencedImageList.setLog(logstream, verbMode, dbgMode);
+}
+
 /*
  *  $Log: dvpsrs.cc,v $
- *  Revision 1.8  2000-05-31 13:02:38  meichel
+ *  Revision 1.9  2000-06-02 16:01:06  meichel
+ *  Adapted all dcmpstat classes to use OFConsole for log and error output
+ *
+ *  Revision 1.8  2000/05/31 13:02:38  meichel
  *  Moved dcmpstat macros and constants into a common header file
  *
  *  Revision 1.7  2000/03/08 16:29:09  meichel

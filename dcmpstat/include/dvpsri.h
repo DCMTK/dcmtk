@@ -23,8 +23,8 @@
  *    classes: DVPSReferencedImage
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:28:55 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2000-06-02 16:00:50 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -153,7 +153,18 @@ public:
    */
   void removeFrameReference(unsigned long frame, unsigned long numberOfFrames);
 
+  /** sets a new log stream
+   *  @param stream new log stream, NULL for default logstream
+   *  @param verbMode verbose mode flag
+   *  @param dbgMode debug mode flag
+   */
+  void setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode);
+
 private:
+
+  /** undefined private assignment operator
+   */
+  DVPSReferencedImage& operator=(const DVPSReferencedImage& source);
 
   /** flushes the frame cache.
    */
@@ -161,10 +172,6 @@ private:
   /** updated the frame cache.
    */
   void updateCache();
-
-  /** undefined private assignment operator
-   */
-  DVPSReferencedImage& operator=(const DVPSReferencedImage& source);
   
   /// VR=UI, VM=1, Type 1c
   DcmUniqueIdentifier      referencedSOPClassUID;
@@ -177,13 +184,28 @@ private:
   /// describes array size of frameCache
   unsigned long frameCacheEntries;
 
+  /** output stream for error messages, never NULL
+   */
+  OFConsole *logstream;
+
+  /** flag indicating whether we're operating in verbose mode
+   */
+  OFBool verboseMode;
+   
+  /** flag indicating whether we're operating in debug mode
+   */
+  OFBool debugMode;
+
 };
 
 #endif
 
 /*
  *  $Log: dvpsri.h,v $
- *  Revision 1.5  2000-03-08 16:28:55  meichel
+ *  Revision 1.6  2000-06-02 16:00:50  meichel
+ *  Adapted all dcmpstat classes to use OFConsole for log and error output
+ *
+ *  Revision 1.5  2000/03/08 16:28:55  meichel
  *  Updated copyright header.
  *
  *  Revision 1.4  1999/07/22 16:39:09  meichel

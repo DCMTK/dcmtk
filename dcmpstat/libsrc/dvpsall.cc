@@ -23,8 +23,8 @@
  *    classes: DVPSOverlayCurveActivationLayer_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-05-31 13:02:36 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2000-06-02 16:00:57 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,11 +43,17 @@
 
 DVPSOverlayCurveActivationLayer_PList::DVPSOverlayCurveActivationLayer_PList()
 : OFList<DVPSOverlayCurveActivationLayer *>()
+, logstream(&ofConsole)
+, verboseMode(OFFalse)
+, debugMode(OFFalse)
 {
 }
 
 DVPSOverlayCurveActivationLayer_PList::DVPSOverlayCurveActivationLayer_PList(const DVPSOverlayCurveActivationLayer_PList &arg)
 : OFList<DVPSOverlayCurveActivationLayer *>()
+, logstream(arg.logstream)
+, verboseMode(arg.verboseMode)
+, debugMode(arg.debugMode)
 {
   OFListIterator(DVPSOverlayCurveActivationLayer *) first = arg.begin();
   OFListIterator(DVPSOverlayCurveActivationLayer *) last = arg.end();
@@ -464,9 +470,27 @@ Uint16 DVPSOverlayCurveActivationLayer_PList::getActivationGroup(const char *lay
   return 0;
 }
 
+void DVPSOverlayCurveActivationLayer_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
+{
+  if (stream) logstream = stream; else logstream = &ofConsole;
+  verboseMode = verbMode;
+  debugMode = dbgMode;
+  OFListIterator(DVPSOverlayCurveActivationLayer *) first = begin();
+  OFListIterator(DVPSOverlayCurveActivationLayer *) last = end();
+  while (first != last)
+  {
+    (*first)->setLog(logstream, verbMode, dbgMode);
+    ++first;
+  }	
+}
+
+
 /*
  *  $Log: dvpsall.cc,v $
- *  Revision 1.5  2000-05-31 13:02:36  meichel
+ *  Revision 1.6  2000-06-02 16:00:57  meichel
+ *  Adapted all dcmpstat classes to use OFConsole for log and error output
+ *
+ *  Revision 1.5  2000/05/31 13:02:36  meichel
  *  Moved dcmpstat macros and constants into a common header file
  *
  *  Revision 1.4  2000/03/08 16:29:02  meichel

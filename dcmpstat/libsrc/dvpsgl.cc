@@ -23,8 +23,8 @@
  *    classes: DVPSGraphicLayer
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-05-31 13:02:36 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2000-06-02 16:01:00 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,6 +43,9 @@ DVPSGraphicLayer::DVPSGraphicLayer()
 , graphicLayerRecommendedDisplayGrayscaleValue(DCM_GraphicLayerRecommendedDisplayGrayscaleValue)
 , graphicLayerRecommendedDisplayRGBValue(DCM_GraphicLayerRecommendedDisplayRGBValue)
 , graphicLayerDescription(DCM_GraphicLayerDescription)
+, logstream(&ofConsole)
+, verboseMode(OFFalse)
+, debugMode(OFFalse)
 {
 }
 
@@ -52,6 +55,9 @@ DVPSGraphicLayer::DVPSGraphicLayer(const DVPSGraphicLayer& copy)
 , graphicLayerRecommendedDisplayGrayscaleValue(copy.graphicLayerRecommendedDisplayGrayscaleValue)
 , graphicLayerRecommendedDisplayRGBValue(copy.graphicLayerRecommendedDisplayRGBValue)
 , graphicLayerDescription(copy.graphicLayerDescription)
+, logstream(copy.logstream)
+, verboseMode(copy.verboseMode)
+, debugMode(copy.debugMode)
 {
 }
 
@@ -75,55 +81,69 @@ E_Condition DVPSGraphicLayer::read(DcmItem &dset)
   if (graphicLayer.getLength() == 0)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a graphic layer SQ item with graphicLayer absent or empty" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a graphic layer SQ item with graphicLayer absent or empty" << endl;
+      logstream->unlockCerr();
+    }
   }
   else if (graphicLayer.getVM() != 1)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a graphic layer SQ item with graphicLayer VM != 1" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a graphic layer SQ item with graphicLayer VM != 1" << endl;
+      logstream->unlockCerr();
+    }
   }
  
   if (graphicLayerOrder.getLength() == 0)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a graphic layer SQ item with graphicLayerOrder absent or empty" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a graphic layer SQ item with graphicLayerOrder absent or empty" << endl;
+      logstream->unlockCerr();
+    }
   }
   else if (graphicLayerOrder.getVM() != 1)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a graphic layer SQ item with graphicLayerOrder VM != 1" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a graphic layer SQ item with graphicLayerOrder VM != 1" << endl;
+      logstream->unlockCerr();
+    }
   }
 
   if (graphicLayerRecommendedDisplayGrayscaleValue.getVM()>1)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a graphic layer SQ item with graphicLayerRecommendedDisplayGrayscaleValue VM != 1" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a graphic layer SQ item with graphicLayerRecommendedDisplayGrayscaleValue VM != 1" << endl;
+      logstream->unlockCerr();
+    }
   }
 
   if ((graphicLayerRecommendedDisplayRGBValue.getVM()>0)&&(graphicLayerRecommendedDisplayRGBValue.getVM() != 3))
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a graphic layer SQ item with graphicLayerRecommendedDisplayRGBValue VM != 3" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a graphic layer SQ item with graphicLayerRecommendedDisplayRGBValue VM != 3" << endl;
+      logstream->unlockCerr();
+    }
   }
 
   if (graphicLayerDescription.getVM() > 1)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a graphic layer SQ item with graphicLayerDescription VM > 1" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a graphic layer SQ item with graphicLayerDescription VM > 1" << endl;
+      logstream->unlockCerr();
+    }
   }
 
   return result;
@@ -274,9 +294,19 @@ void DVPSGraphicLayer::removeRecommendedDisplayValue(OFBool rgb, OFBool monochro
   return;
 }
 
+void DVPSGraphicLayer::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
+{
+  if (stream) logstream = stream; else logstream = &ofConsole;
+  verboseMode = verbMode;
+  debugMode = dbgMode;
+}
+
 /*
  *  $Log: dvpsgl.cc,v $
- *  Revision 1.7  2000-05-31 13:02:36  meichel
+ *  Revision 1.8  2000-06-02 16:01:00  meichel
+ *  Adapted all dcmpstat classes to use OFConsole for log and error output
+ *
+ *  Revision 1.7  2000/05/31 13:02:36  meichel
  *  Moved dcmpstat macros and constants into a common header file
  *
  *  Revision 1.6  2000/03/08 16:29:05  meichel

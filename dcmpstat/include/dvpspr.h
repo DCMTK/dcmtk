@@ -23,8 +23,8 @@
  *    classes: DVPSPrintMessageHandler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:28:55 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2000-06-02 16:00:50 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -185,7 +185,6 @@ public:
    *  @param negotiateAnnotationBox if true, Basic Annotation Box SOP Class is negotiated
    *  @param implicitOnly if true, only the default implicit VR transfer syntax is proposed,
    *    otherwise all uncompressed transfer syntaxes are proposed.
-   *  @param verbose if true, messages are printed to cerr.
    *  @return status code that can be checked with the SUCCESS macro. If successful, an association
    *    is established. If unsuccessful, no association is established.
    */
@@ -197,8 +196,7 @@ public:
     long peerMaxPDU,
     OFBool negotiatePresentationLUT,
     OFBool negotiateAnnotationBox,
-    OFBool implicitOnly,
-    OFBool verbose);
+    OFBool implicitOnly);
   
   /** releases the current association.
    *  @return ASC_NORMAL or ASC_RELEASECONFIRMED upon success, an error code otherwise.
@@ -242,12 +240,11 @@ public:
   }
 
   /** sets a new log stream
-   *  @param o new log stream, must not be NULL
+   *  @param stream new log stream, NULL for default logstream
+   *  @param verbMode verbose mode flag
+   *  @param dbgMode debug mode flag
    */
-  void setLog(ostream *o)
-  {
-    if (o) logstream = o;
-  }
+  void setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode);
     
 private:
 
@@ -314,14 +311,26 @@ private:
 
   /** output stream for error messages, never NULL
    */
-  ostream *logstream;
+  OFConsole *logstream;
+
+  /** flag indicating whether we're operating in verbose mode
+   */
+  OFBool verboseMode;
+   
+  /** flag indicating whether we're operating in debug mode
+   */
+  OFBool debugMode;
+
 };
 
 #endif
 
 /*
  *  $Log: dvpspr.h,v $
- *  Revision 1.6  2000-03-08 16:28:55  meichel
+ *  Revision 1.7  2000-06-02 16:00:50  meichel
+ *  Adapted all dcmpstat classes to use OFConsole for log and error output
+ *
+ *  Revision 1.6  2000/03/08 16:28:55  meichel
  *  Updated copyright header.
  *
  *  Revision 1.5  1999/10/28 08:18:56  meichel

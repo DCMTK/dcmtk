@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-05-31 12:59:28 $
+ *  Update Date:      $Date: 2000-06-02 16:00:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmprscp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,6 +65,7 @@ static OFBool           opt_dumpMode        = OFFalse;
 static const char *     opt_cfgName         = NULL;                /* config file name */
 static const char *     opt_printer         = NULL;                /* printer name */
 static ostream *        logstream           = &CERR;
+static OFConsole *      logconsole          = &ofConsole;
 
 /* print scp data, taken from configuration file */
 static unsigned short targetPort            = 104;
@@ -83,11 +84,13 @@ static int errorCond(CONDITION cond, const char *message)
   return result;
 }
 
-static void closeLog()
+void closeLog()
 {
   time_t now = time(NULL);
   if (logstream != &CERR)
   {
+    if (logconsole != &ofConsole) delete logconsole;
+    logconsole = &ofConsole;
     *logstream << endl << asctime(localtime(&now)) << "terminating" << endl;
     delete logstream;
     logstream = &CERR;
@@ -220,7 +223,16 @@ int main(int argc, char *argv[])
     logfilename += opt_printer;
     logfilename += ".log";
     ofstream *newstream = new ofstream(logfilename.c_str());
-    if (newstream && (newstream->good())) logstream=newstream; 
+    if (newstream && (newstream->good()))
+    {
+      logstream=newstream; 
+      logconsole = new OFConsole();
+      if (logconsole)
+      {
+        logconsole->setCout(logstream);
+        logconsole->join();
+      } else logconsole = &ofConsole;
+    }
     else
     {
     	delete newstream;
@@ -228,7 +240,7 @@ int main(int argc, char *argv[])
     }
     *logstream << rcsid << endl << asctime(localtime(&now)) << "started" << endl;
 
-    dvi.setLog(logstream);
+    dvi.setLog(logconsole, opt_verbose, opt_debugMode);
     
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
@@ -292,13 +304,14 @@ int main(int argc, char *argv[])
     while (!finished)
     {
       DVPSPrintSCP printSCP(dvi, opt_printer); // use new print SCP object for each association      
+      printSCP.setLog(logconsole, opt_verbose, opt_debugMode);
       connected = 0;
       while (!connected)
       {
          connected = ASC_associationWaiting(net, timeout);
          if (!connected) cleanChildren();
       }
-      switch (printSCP.negotiateAssociation(*net, opt_verbose))
+      switch (printSCP.negotiateAssociation(*net))
       {
         case DVPSJ_error:
           // association has already been deleted, we just wait for the next client to connect.
@@ -310,7 +323,7 @@ int main(int argc, char *argv[])
           break;
         case DVPSJ_success:
           haveHandledClients = OFTrue;
-          printSCP.handleClient(opt_verbose);
+          printSCP.handleClient();
           break;
       }
     } // finished
@@ -339,7 +352,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprscp.cc,v $
- * Revision 1.1  2000-05-31 12:59:28  meichel
+ * Revision 1.2  2000-06-02 16:00:38  meichel
+ * Adapted all dcmpstat classes to use OFConsole for log and error output
+ *
+ * Revision 1.1  2000/05/31 12:59:28  meichel
  * Added initial Print SCP support
  *
  *

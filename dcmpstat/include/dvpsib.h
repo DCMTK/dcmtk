@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-05-31 12:56:38 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2000-06-02 16:00:47 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -232,12 +232,11 @@ public:
   E_Condition prepareBasicImageBox(DcmItem &dset);
 
   /** sets a new log stream
-   *  @param o new log stream, must not be NULL
+   *  @param stream new log stream, NULL for default logstream
+   *  @param verbMode verbose mode flag
+   *  @param dbgMode debug mode flag
    */
-  void setLog(ostream *o)
-  {
-    if (o) logstream = o;
-  }
+  void setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode);
 
   /** checks whether the given Presentation LUT type could be used together
    *  with this image box on a Print SCP that requires a matching alignment
@@ -365,7 +364,15 @@ private:
 
   /** output stream for error messages, never NULL
    */
-  ostream *logstream;
+  OFConsole *logstream;
+
+  /** flag indicating whether we're operating in verbose mode
+   */
+  OFBool verboseMode;
+   
+  /** flag indicating whether we're operating in debug mode
+   */
+  OFBool debugMode;
 
 };
 
@@ -373,7 +380,10 @@ private:
 
 /*
  *  $Log: dvpsib.h,v $
- *  Revision 1.13  2000-05-31 12:56:38  meichel
+ *  Revision 1.14  2000-06-02 16:00:47  meichel
+ *  Adapted all dcmpstat classes to use OFConsole for log and error output
+ *
+ *  Revision 1.13  2000/05/31 12:56:38  meichel
  *  Added initial Print SCP support
  *
  *  Revision 1.12  2000/03/08 16:28:53  meichel

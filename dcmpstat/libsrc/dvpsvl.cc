@@ -23,8 +23,8 @@
  *    classes: DVPSVOILUT
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-05-31 13:02:41 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-06-02 16:01:10 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,6 +43,9 @@ DVPSVOILUT::DVPSVOILUT()
 : voiLUTDescriptor(DCM_LUTDescriptor)
 , voiLUTExplanation(DCM_LUTExplanation)
 , voiLUTData(DCM_LUTData)
+, logstream(&ofConsole)
+, verboseMode(OFFalse)
+, debugMode(OFFalse)
 {
 }
 
@@ -50,6 +53,9 @@ DVPSVOILUT::DVPSVOILUT(const DVPSVOILUT& copy)
 : voiLUTDescriptor(copy.voiLUTDescriptor)
 , voiLUTExplanation(copy.voiLUTExplanation)
 , voiLUTData(copy.voiLUTData)
+, logstream(copy.logstream)
+, verboseMode(copy.verboseMode)
+, debugMode(copy.debugMode)
 {
 }
 
@@ -102,9 +108,19 @@ E_Condition DVPSVOILUT::assign(DVPSSoftcopyVOI& voi)
   return voi.setVOILUT(voiLUTDescriptor, voiLUTData, voiLUTExplanation);
 }
 
+void DVPSVOILUT::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
+{
+  if (stream) logstream = stream; else logstream = &ofConsole;
+  verboseMode = verbMode;
+  debugMode = dbgMode;
+}
+
 /*
  *  $Log: dvpsvl.cc,v $
- *  Revision 1.4  2000-05-31 13:02:41  meichel
+ *  Revision 1.5  2000-06-02 16:01:10  meichel
+ *  Adapted all dcmpstat classes to use OFConsole for log and error output
+ *
+ *  Revision 1.4  2000/05/31 13:02:41  meichel
  *  Moved dcmpstat macros and constants into a common header file
  *
  *  Revision 1.3  2000/03/08 16:29:13  meichel

@@ -23,8 +23,8 @@
  *    classes: DVPSOverlayCurveActivationLayer
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:28:48 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-06-02 16:00:43 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -108,18 +108,44 @@ public:
    */
   OFBool isRepeatingGroup(Uint16 rGroup);
   
+  /** sets a new log stream
+   *  @param stream new log stream, NULL for default logstream
+   *  @param verbMode verbose mode flag
+   *  @param dbgMode debug mode flag
+   */
+  void setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode);
+
 private:
+
+  /// private undefined assignment operator
+  DVPSOverlayCurveActivationLayer& operator=(const DVPSOverlayCurveActivationLayer&);
+
   /// the repeating group managed by this object
   Uint16                   repeatingGroup;
   /// VR=CS, VM=1, Type 2c
   DcmCodeString            activationLayer;
+
+  /** output stream for error messages, never NULL
+   */
+  OFConsole *logstream;
+
+  /** flag indicating whether we're operating in verbose mode
+   */
+  OFBool verboseMode;
+   
+  /** flag indicating whether we're operating in debug mode
+   */
+  OFBool debugMode;
 };
 
 #endif
 
 /*
  *  $Log: dvpsal.h,v $
- *  Revision 1.2  2000-03-08 16:28:48  meichel
+ *  Revision 1.3  2000-06-02 16:00:43  meichel
+ *  Adapted all dcmpstat classes to use OFConsole for log and error output
+ *
+ *  Revision 1.2  2000/03/08 16:28:48  meichel
  *  Updated copyright header.
  *
  *  Revision 1.1  1998/11/27 14:50:24  meichel

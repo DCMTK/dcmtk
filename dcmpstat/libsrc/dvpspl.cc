@@ -23,8 +23,8 @@
  *    classes: DVPSPresentationLUT
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-05-31 12:58:15 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2000-06-02 16:01:03 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,7 +45,9 @@ DVPSPresentationLUT::DVPSPresentationLUT()
 , presentationLUTExplanation(DCM_LUTExplanation)
 , presentationLUTData(DCM_LUTData)
 , sOPInstanceUID(DCM_SOPInstanceUID)
-, logstream(&CERR)
+, logstream(&ofConsole)
+, verboseMode(OFFalse)
+, debugMode(OFFalse)
 {
 }
 
@@ -56,6 +58,8 @@ DVPSPresentationLUT::DVPSPresentationLUT(const DVPSPresentationLUT& copy)
 , presentationLUTData(copy.presentationLUTData)
 , sOPInstanceUID(copy.sOPInstanceUID)
 , logstream(copy.logstream)
+, verboseMode(copy.verboseMode)
+, debugMode(copy.debugMode)
 {
 }
 
@@ -116,9 +120,11 @@ E_Condition DVPSPresentationLUT::read(DcmItem &dset, OFBool withSOPInstance)
          }
       } else {
         result=EC_TagNotFound;
-#ifdef DEBUG
-        *logstream << "Error: found Presentation LUT SQ with number of items != 1" << endl;
-#endif
+        if (verboseMode)
+        {
+          logstream->lockCerr() << "Error: found Presentation LUT SQ with number of items != 1" << endl;
+          logstream->unlockCerr();
+        }
       } 
     }
   }
@@ -133,31 +139,39 @@ E_Condition DVPSPresentationLUT::read(DcmItem &dset, OFBool withSOPInstance)
     if (presentationLUTDescriptor.getLength() == 0)
     {
       result=EC_IllegalCall;
-#ifdef DEBUG
-      *logstream << "Error: presentationLUTShape and presentationLUTDescriptor absent or empty" << endl;
-#endif
+      if (verboseMode)
+      {
+        logstream->lockCerr() << "Error: presentationLUTShape and presentationLUTDescriptor absent or empty" << endl;
+        logstream->unlockCerr();
+      }
     }
     else if (presentationLUTDescriptor.getVM() != 3)
     {
       result=EC_IllegalCall;
-#ifdef DEBUG
-      *logstream << "Error: presentationLUTDescriptor present but VM != 3 in presentation state" << endl;
-#endif
+      if (verboseMode)
+      {
+        logstream->lockCerr() << "Error: presentationLUTDescriptor present but VM != 3 in presentation state" << endl;
+        logstream->unlockCerr();
+      }
     }
     if (presentationLUTData.getLength() == 0)
     {
       result=EC_IllegalCall;
-#ifdef DEBUG
-      *logstream << "Error: presentationLUTShape and presentationLUTData absent or empty" << endl;
-#endif
+      if (verboseMode)
+      {
+        logstream->lockCerr() << "Error: presentationLUTShape and presentationLUTData absent or empty" << endl;
+        logstream->unlockCerr();
+      }
     }
   } else {
     if (presentationLUTShape.getVM() != 1)
     {
       result=EC_IllegalCall;
-#ifdef DEBUG
-      *logstream << "Error: presentationLUTShape present but VM != 1" << endl;
-#endif
+      if (verboseMode)
+      {
+        logstream->lockCerr() << "Error: presentationLUTShape present but VM != 1" << endl;
+        logstream->unlockCerr();
+      }
     } else {
       // check presentation LUT shape
       aString.clear();
@@ -168,9 +182,11 @@ E_Condition DVPSPresentationLUT::read(DcmItem &dset, OFBool withSOPInstance)
       else
       {
         result=EC_IllegalCall;
-#ifdef DEBUG
-        *logstream << "Error: unknown presentationLUTShape keyword: " << aString << endl;
-#endif
+        if (verboseMode)
+        {
+          logstream->lockCerr() << "Error: unknown presentationLUTShape keyword: " << aString << endl;
+          logstream->unlockCerr();
+        }
       }
     }
   }
@@ -180,16 +196,20 @@ E_Condition DVPSPresentationLUT::read(DcmItem &dset, OFBool withSOPInstance)
     if (sOPInstanceUID.getLength() == 0)
     {
       result=EC_IllegalCall;
-#ifdef DEBUG
-      *logstream << "Error: sOPInstanceUID absent in Presentation LUT Content Sequence" << endl;
-#endif
+      if (verboseMode)
+      {
+        logstream->lockCerr() << "Error: sOPInstanceUID absent in Presentation LUT Content Sequence" << endl;
+        logstream->unlockCerr();
+      }
     }
     else if (sOPInstanceUID.getVM() != 1)
     {
       result=EC_IllegalCall;
-#ifdef DEBUG
-      *logstream << "Error: sOPInstanceUID VM != 1 in Presentation LUT Content Sequence" << endl;
-#endif
+      if (verboseMode)
+      {
+        logstream->lockCerr() << "Error: sOPInstanceUID VM != 1 in Presentation LUT Content Sequence" << endl;
+        logstream->unlockCerr();
+      }
     }
   }
   
@@ -300,7 +320,7 @@ const char *DVPSPresentationLUT::getCurrentExplanation()
       value = "Inverse Presentation LUT Shape";
       break;
     case DVPSP_lin_od:
-      value = "Lineare Optical Density Presentation LUT Shape";
+      value = "Linear Optical Density Presentation LUT Shape";
       break;
     case DVPSP_table:
       value = getLUTExplanation();
@@ -376,30 +396,38 @@ OFBool DVPSPresentationLUT::activate(DicomImage *image)
   {   
     case DVPSP_identity:
       result = image->setPresentationLutShape(ESP_Identity);
-#ifdef DEBUG
-      if (!result) *logstream << "warning: unable to set identity presentation LUT shape, ignoring." << endl;
-#endif
+      if ((!result) && verboseMode)
+      {
+        logstream->lockCerr() << "warning: unable to set identity presentation LUT shape, ignoring." << endl;
+        logstream->unlockCerr();
+      }
       break;
     case DVPSP_inverse:
       result = image->setPresentationLutShape(ESP_Inverse);
-#ifdef DEBUG
-      if (!result) *logstream << "warning: unable to set inverse presentation LUT shape, ignoring." << endl;
-#endif
+      if ((!result) && verboseMode)
+      {
+        logstream->lockCerr() << "warning: unable to set inverse presentation LUT shape, ignoring." << endl;
+        logstream->unlockCerr();
+      }
       break;
       
     case DVPSP_lin_od:
-    //  make no sense at the moment
-    //  result = image->setPresentationLutShape(ESP_Lin_od);
-#ifdef DEBUG
-      if (!result) *logstream << "warning: unable to set lineare optical density presentation LUT shape, ignoring." << endl;
-#endif
+      //  make no sense at the moment
+      //  result = image->setPresentationLutShape(ESP_Lin_od);
+      if (verboseMode)
+      {
+        logstream->lockCerr() << "warning: unable to set linear optical density presentation LUT shape, ignoring." << endl;
+        logstream->unlockCerr();
+      }
       break;
     case DVPSP_table:
       result = image->setPresentationLut(presentationLUTData, presentationLUTDescriptor,
         &presentationLUTExplanation);
-#ifdef DEBUG
-      if (!result) *logstream << "warning: unable to set identity presentation LUT shape, ignoring." << endl;
-#endif
+      if ((!result) && verboseMode)
+      {
+        logstream->lockCerr() << "warning: unable to set identity presentation LUT shape, ignoring." << endl;
+        logstream->unlockCerr();
+      }
       break;
   }
   if (result) return OFTrue; else return OFFalse;
@@ -500,15 +528,19 @@ OFBool DVPSPresentationLUT::printSCPCreate(
   
   if ((rqDataset==NULL)||(EC_Normal != read(*rqDataset, OFFalse)))
   {
-    *logstream << "cannot create Presentation LUT: attribute list error." << endl;
-    rsp.msg.NCreateRSP.DimseStatus = 0x0107; // attribute list error
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "cannot create Presentation LUT: attribute list error." << endl;
+      logstream->unlockCerr();
+    }
+    rsp.msg.NCreateRSP.DimseStatus = DIMSE_N_AttributeListError;
     result = OFFalse;
   }
 
   // read() has cleared sOPInstanceUID; assign UID now.
   if (EC_Normal != setSOPInstanceUID(rsp.msg.NCreateRSP.AffectedSOPInstanceUID))
   {
-    rsp.msg.NCreateRSP.DimseStatus = 0x0110; // processing failure
+    rsp.msg.NCreateRSP.DimseStatus = DIMSE_N_ProcessingFailure;
     result = OFFalse;
   }
 
@@ -523,9 +555,14 @@ OFBool DVPSPresentationLUT::printSCPCreate(
       else if (currentTag == DCM_PresentationLUTSequence) /* OK */ ;
       else
       {
-        *logstream << "cannot create Presentation LUT: unsupported attribute received:" << endl;
-        (stack.top())->print(*logstream, OFFalse);
-      	rsp.msg.NCreateRSP.DimseStatus = 0x0107; // attribute list error
+        if (verboseMode)
+        {
+          ostream &mycerr = logstream->lockCerr();
+          mycerr << "cannot create Presentation LUT: unsupported attribute received:" << endl;
+          (stack.top())->print(mycerr, OFFalse);
+          logstream->unlockCerr();
+        }
+      	rsp.msg.NCreateRSP.DimseStatus = DIMSE_N_AttributeListError;
         result = OFFalse;
       }
     }
@@ -550,9 +587,13 @@ OFBool DVPSPresentationLUT::printSCPCreate(
     }
     if (!matches)
     {
-        *logstream << "cannot create Presentation LUT: Mismatch between LUT entries and image pixel depth." << endl;
-      	rsp.msg.NCreateRSP.DimseStatus = 0x0107; // attribute list error
-        result = OFFalse;
+      if (verboseMode)
+      {
+        logstream->lockCerr() << "cannot create Presentation LUT: Mismatch between LUT entries and image pixel depth." << endl;
+        logstream->unlockCerr();
+      }
+      rsp.msg.NCreateRSP.DimseStatus = DIMSE_N_AttributeListError;
+      result = OFFalse;
     }
   }
 
@@ -568,21 +609,30 @@ OFBool DVPSPresentationLUT::printSCPCreate(
       } else {
       	delete rspDataset;
       	rspDataset = NULL;
-        rsp.msg.NCreateRSP.DimseStatus = 0x0110; // processing failure
+        rsp.msg.NCreateRSP.DimseStatus = DIMSE_N_ProcessingFailure;
         result = OFFalse;
       }     
     } else {
-      rsp.msg.NCreateRSP.DimseStatus = 0x0110; // processing failure
+      rsp.msg.NCreateRSP.DimseStatus = DIMSE_N_ProcessingFailure;
       result = OFFalse;
     }
   }
   return result;
 }
 
+void DVPSPresentationLUT::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
+{
+  if (stream) logstream = stream; else logstream = &ofConsole;
+  verboseMode = verbMode;
+  debugMode = dbgMode;
+}
 
 /*
  *  $Log: dvpspl.cc,v $
- *  Revision 1.10  2000-05-31 12:58:15  meichel
+ *  Revision 1.11  2000-06-02 16:01:03  meichel
+ *  Adapted all dcmpstat classes to use OFConsole for log and error output
+ *
+ *  Revision 1.10  2000/05/31 12:58:15  meichel
  *  Added initial Print SCP support
  *
  *  Revision 1.9  2000/03/08 16:29:07  meichel

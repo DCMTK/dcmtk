@@ -23,8 +23,8 @@
  *    classes: DVPSGraphicObject_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:29:06 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2000-06-02 16:01:01 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,11 +38,17 @@
 
 DVPSGraphicObject_PList::DVPSGraphicObject_PList()
 : OFList<DVPSGraphicObject *>()
+, logstream(&ofConsole)
+, verboseMode(OFFalse)
+, debugMode(OFFalse)
 {
 }
 
 DVPSGraphicObject_PList::DVPSGraphicObject_PList(const DVPSGraphicObject_PList &arg)
 : OFList<DVPSGraphicObject *>()
+, logstream(arg.logstream)
+, verboseMode(arg.verboseMode)
+, debugMode(arg.debugMode)
 {
   OFListIterator(DVPSGraphicObject *) first = arg.begin();
   OFListIterator(DVPSGraphicObject *) last = arg.end();
@@ -167,9 +173,26 @@ DVPSGraphicObject *DVPSGraphicObject_PList::removeGraphicObject(size_t idx)
   return NULL;
 }
 
+void DVPSGraphicObject_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
+{
+  if (stream) logstream = stream; else logstream = &ofConsole;
+  verboseMode = verbMode;
+  debugMode = dbgMode;
+  OFListIterator(DVPSGraphicObject *) first = begin();
+  OFListIterator(DVPSGraphicObject *) last = end();
+  while (first != last)
+  {
+    (*first)->setLog(logstream, verbMode, dbgMode);
+    ++first;
+  }
+}
+
 /*
  *  $Log: dvpsgrl.cc,v $
- *  Revision 1.3  2000-03-08 16:29:06  meichel
+ *  Revision 1.4  2000-06-02 16:01:01  meichel
+ *  Adapted all dcmpstat classes to use OFConsole for log and error output
+ *
+ *  Revision 1.3  2000/03/08 16:29:06  meichel
  *  Updated copyright header.
  *
  *  Revision 1.2  1998/12/14 16:10:44  meichel

@@ -23,8 +23,8 @@
  *    classes: DVPSSoftcopyVOI_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:28:57 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2000-06-02 16:00:52 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -160,6 +160,30 @@ public:
     unsigned long numberOfFrames, 
     DVPSObjectApplicability applicability);
 
+  /** sets a new log stream
+   *  @param stream new log stream, NULL for default logstream
+   *  @param verbMode verbose mode flag
+   *  @param dbgMode debug mode flag
+   */
+  void setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode);
+
+private:
+
+  /// private undefined assignment operator
+  DVPSSoftcopyVOI_PList& operator=(const DVPSSoftcopyVOI_PList&);
+
+  /** output stream for error messages, never NULL
+   */
+  OFConsole *logstream;
+
+  /** flag indicating whether we're operating in verbose mode
+   */
+  OFBool verboseMode;
+   
+  /** flag indicating whether we're operating in debug mode
+   */
+  OFBool debugMode;
+
 };
 
 
@@ -167,7 +191,10 @@ public:
 
 /*
  *  $Log: dvpssvl.h,v $
- *  Revision 1.3  2000-03-08 16:28:57  meichel
+ *  Revision 1.4  2000-06-02 16:00:52  meichel
+ *  Adapted all dcmpstat classes to use OFConsole for log and error output
+ *
+ *  Revision 1.3  2000/03/08 16:28:57  meichel
  *  Updated copyright header.
  *
  *  Revision 1.2  1999/07/30 13:34:51  meichel

@@ -23,8 +23,8 @@
  *    classes: DVPSVOIWindow
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:29:13 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-06-02 16:01:10 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,6 +41,9 @@ DVPSVOIWindow::DVPSVOIWindow()
 : windowCenter(0.0)
 , windowWidth(0.0)
 , windowCenterWidthExplanation()
+, logstream(&ofConsole)
+, verboseMode(OFFalse)
+, debugMode(OFFalse)
 {
 }
 
@@ -48,6 +51,9 @@ DVPSVOIWindow::DVPSVOIWindow(const DVPSVOIWindow& copy)
 : windowCenter(copy.windowCenter)
 , windowWidth(copy.windowWidth)
 , windowCenterWidthExplanation(copy.windowCenterWidthExplanation)
+, logstream(copy.logstream)
+, verboseMode(copy.verboseMode)
+, debugMode(copy.debugMode)
 {
 }
 
@@ -91,10 +97,20 @@ const char *DVPSVOIWindow::getExplanation()
   return windowCenterWidthExplanation.c_str();
 }
 
+void DVPSVOIWindow::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
+{
+  if (stream) logstream = stream; else logstream = &ofConsole;
+  verboseMode = verbMode;
+  debugMode = dbgMode;
+}
+
 
 /*
  *  $Log: dvpsvw.cc,v $
- *  Revision 1.2  2000-03-08 16:29:13  meichel
+ *  Revision 1.3  2000-06-02 16:01:10  meichel
+ *  Adapted all dcmpstat classes to use OFConsole for log and error output
+ *
+ *  Revision 1.2  2000/03/08 16:29:13  meichel
  *  Updated copyright header.
  *
  *  Revision 1.1  1998/12/22 17:57:21  meichel

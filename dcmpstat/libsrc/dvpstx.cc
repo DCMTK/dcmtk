@@ -23,8 +23,8 @@
  *    classes: DVPSTextObject
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-05-31 13:02:41 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2000-06-02 16:01:09 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,6 +50,9 @@ DVPSTextObject::DVPSTextObject()
 , boundingBoxTextHorizontalJustification(DCM_BoundingBoxTextHorizontalJustification)
 , anchorPoint(DCM_AnchorPoint)
 , anchorPointVisibility(DCM_AnchorPointVisibility)
+, logstream(&ofConsole)
+, verboseMode(OFFalse)
+, debugMode(OFFalse)
 {
 }
 
@@ -62,6 +65,9 @@ DVPSTextObject::DVPSTextObject(const DVPSTextObject& copy)
 , boundingBoxTextHorizontalJustification(copy.boundingBoxTextHorizontalJustification)
 , anchorPoint(copy.anchorPoint)
 , anchorPointVisibility(copy.anchorPointVisibility)
+, logstream(copy.logstream)
+, verboseMode(copy.verboseMode)
+, debugMode(copy.debugMode)
 {
 }
 
@@ -88,93 +94,117 @@ E_Condition DVPSTextObject::read(DcmItem &dset)
   if (unformattedTextValue.getLength() == 0)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a text object SQ item with unformattedTextValue absent or empty" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a text object SQ item with unformattedTextValue absent or empty" << endl;
+      logstream->unlockCerr();
+    }
   }
   else if (unformattedTextValue.getVM() != 1)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a text object SQ item with unformattedTextValue VM != 1" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a text object SQ item with unformattedTextValue VM != 1" << endl;
+      logstream->unlockCerr();
+    }
   }
 
   if (boundingBoxAnnotationUnits.getVM() > 1)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a text object SQ item with boundingBoxAnnotationUnits VM > 1" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a text object SQ item with boundingBoxAnnotationUnits VM > 1" << endl;
+      logstream->unlockCerr();
+    }
   }
 
   if (anchorPointAnnotationUnits.getVM() > 1)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a text object SQ item with anchorPointAnnotationUnits VM > 1" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a text object SQ item with anchorPointAnnotationUnits VM > 1" << endl;
+      logstream->unlockCerr();
+    }
   }
 
   if (anchorPointVisibility.getVM() > 1)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a text object SQ item with anchorPointVisibility VM > 1" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a text object SQ item with anchorPointVisibility VM > 1" << endl;
+      logstream->unlockCerr();
+    }
   }
 
   if (boundingBoxTLHC.getVM() ==1)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a text object SQ item with boundingBoxTLHC VM == 1" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a text object SQ item with boundingBoxTLHC VM == 1" << endl;
+      logstream->unlockCerr();
+    }
   }
   else if (boundingBoxTLHC.getVM() > 2)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a text object SQ item with boundingBoxTLHC VM > 2" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a text object SQ item with boundingBoxTLHC VM > 2" << endl;
+      logstream->unlockCerr();
+    }
   }
 
   if (boundingBoxBRHC.getVM() ==1)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a text object SQ item with boundingBoxBRHC VM == 1" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a text object SQ item with boundingBoxBRHC VM == 1" << endl;
+      logstream->unlockCerr();
+    }
   }
   else if (boundingBoxBRHC.getVM() > 2)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a text object SQ item with boundingBoxBRHC VM > 2" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a text object SQ item with boundingBoxBRHC VM > 2" << endl;
+      logstream->unlockCerr();
+    }
   }
 
   if (boundingBoxTextHorizontalJustification.getVM() > 1)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a text object SQ item with boundingBoxTextHorizontalJustification VM > 1" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a text object SQ item with boundingBoxTextHorizontalJustification VM > 1" << endl;
+      logstream->unlockCerr();
+    }
   }
 
   if (anchorPoint.getVM() ==1)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a text object SQ item with anchorPoint VM == 1" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a text object SQ item with anchorPoint VM == 1" << endl;
+      logstream->unlockCerr();
+    }
   }
   else if (anchorPoint.getVM() > 2)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a text object SQ item with anchorPoint VM > 2" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a text object SQ item with anchorPoint VM > 2" << endl;
+      logstream->unlockCerr();
+    }
   }
 
   /* test for the various type 1c conditions */
@@ -183,50 +213,62 @@ E_Condition DVPSTextObject::read(DcmItem &dset)
      && ((boundingBoxTLHC.getVM() >0) || (boundingBoxBRHC.getVM() >0)))
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a text object SQ item with bounding box but boundingBoxAnnotationUnits absent or empty" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a text object SQ item with bounding box but boundingBoxAnnotationUnits absent or empty" << endl;
+      logstream->unlockCerr();
+    }
   }
 
   if ((boundingBoxTextHorizontalJustification.getVM() == 0)
      && ((boundingBoxTLHC.getVM() >0) || (boundingBoxBRHC.getVM() >0)))
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a text object SQ item with bounding box but boundingBoxTextHorizontalJustification absent or empty" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a text object SQ item with bounding box but boundingBoxTextHorizontalJustification absent or empty" << endl;
+      logstream->unlockCerr();
+    }
   }
 
   if ((anchorPointAnnotationUnits.getVM() == 0) && (anchorPoint.getVM() >0)) 
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a text object SQ item with anchor point but anchorPointAnnotationUnits absent or empty" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a text object SQ item with anchor point but anchorPointAnnotationUnits absent or empty" << endl;
+      logstream->unlockCerr();
+    }
   }
 
   if ((anchorPointVisibility.getVM() == 0) && (anchorPoint.getVM() >0)) 
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a text object SQ item with anchor point but anchorPointVisibility absent or empty" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a text object SQ item with anchor point but anchorPointVisibility absent or empty" << endl;
+      logstream->unlockCerr();
+    }
   }
 
   if ((boundingBoxTLHC.getVM() == 0) && (anchorPoint.getVM() == 0)) 
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a text object SQ item without bounding box and anchor point" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a text object SQ item without bounding box and anchor point" << endl;
+      logstream->unlockCerr();
+    }
   }
 
   if ((boundingBoxBRHC.getVM() == 0) && (anchorPoint.getVM() == 0)) 
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a text object SQ item without bounding box and anchor point" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a text object SQ item without bounding box and anchor point" << endl;
+      logstream->unlockCerr();
+    }
   }
 
   return result;
@@ -460,9 +502,19 @@ DVPSannotationUnit DVPSTextObject::getAnchorPointAnnotationUnits()
   return aresult;
 }
 
+void DVPSTextObject::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
+{
+  if (stream) logstream = stream; else logstream = &ofConsole;
+  verboseMode = verbMode;
+  debugMode = dbgMode;
+}
+
 /*
  *  $Log: dvpstx.cc,v $
- *  Revision 1.8  2000-05-31 13:02:41  meichel
+ *  Revision 1.9  2000-06-02 16:01:09  meichel
+ *  Adapted all dcmpstat classes to use OFConsole for log and error output
+ *
+ *  Revision 1.8  2000/05/31 13:02:41  meichel
  *  Moved dcmpstat macros and constants into a common header file
  *
  *  Revision 1.7  2000/03/08 16:29:12  meichel

@@ -23,8 +23,8 @@
  *    classes: DVPSFilmSession
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-05-31 12:56:35 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-06-02 16:00:45 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -110,7 +110,18 @@ public:
    */
   const char *getUID() { return sopInstanceUID.c_str(); }
 
+  /** sets a new log stream
+   *  @param stream new log stream, NULL for default logstream
+   *  @param verbMode verbose mode flag
+   *  @param dbgMode debug mode flag
+   */
+  void setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode);
+
 private:
+
+  /// private undefined assignment operator
+  DVPSFilmSession& operator=(const DVPSFilmSession&);
+
   /// SOP instance UID of basic film session object
   OFString                 sopInstanceUID;
   /// VR=IS, VM=1
@@ -125,13 +136,29 @@ private:
   DcmLongString            filmSessionLabel;
   /// VR=SH, VM=1
   DcmShortString           ownerID;  
+
+  /** output stream for error messages, never NULL
+   */
+  OFConsole *logstream;
+
+  /** flag indicating whether we're operating in verbose mode
+   */
+  OFBool verboseMode;
+   
+  /** flag indicating whether we're operating in debug mode
+   */
+  OFBool debugMode;
+
 };
 
 #endif
 
 /*
  *  $Log: dvpsfs.h,v $
- *  Revision 1.1  2000-05-31 12:56:35  meichel
+ *  Revision 1.2  2000-06-02 16:00:45  meichel
+ *  Adapted all dcmpstat classes to use OFConsole for log and error output
+ *
+ *  Revision 1.1  2000/05/31 12:56:35  meichel
  *  Added initial Print SCP support
  *
  *

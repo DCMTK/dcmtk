@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-05-31 12:56:39 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2000-06-02 16:00:51 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -783,9 +783,11 @@ class DVPSStoredPrint
   void updatePresentationLUTList(DVPSPresentationLUT_PList& globalPresentationLUTList);
   
   /** sets a new log stream
-   *  @param o new log stream, must not be NULL
+   *  @param stream new log stream, NULL for default logstream
+   *  @param verbMode verbose mode flag
+   *  @param dbgMode debug mode flag
    */
-  void setLog(ostream *o);
+  void setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode);
 
  private:
 
@@ -981,14 +983,26 @@ class DVPSStoredPrint
 
   /** output stream for error messages, never NULL
    */
-  ostream *logstream;
+  OFConsole *logstream;
+
+  /** flag indicating whether we're operating in verbose mode
+   */
+  OFBool verboseMode;
+   
+  /** flag indicating whether we're operating in debug mode
+   */
+  OFBool debugMode;
+
 };
 
 #endif
 
 /*
  *  $Log: dvpssp.h,v $
- *  Revision 1.22  2000-05-31 12:56:39  meichel
+ *  Revision 1.23  2000-06-02 16:00:51  meichel
+ *  Adapted all dcmpstat classes to use OFConsole for log and error output
+ *
+ *  Revision 1.22  2000/05/31 12:56:39  meichel
  *  Added initial Print SCP support
  *
  *  Revision 1.21  2000/05/31 07:54:24  joergr

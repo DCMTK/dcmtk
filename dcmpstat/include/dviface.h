@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVInterface
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-02 13:53:53 $
- *  CVS/RCS Revision: $Revision: 1.64 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-06-02 16:00:41 $
+ *  CVS/RCS Revision: $Revision: 1.65 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1308,11 +1308,13 @@ class DVInterface: public DVConfiguration
     void setAnnotationText(const char *value);
     
     /* log file interface */
-    
+
     /** sets a new log stream
-     *  @param o new log stream, must not be NULL
+     *  @param stream new log stream, NULL for default logstream
+     *  @param verbMode verbose mode flag
+     *  @param dbgMode debug mode flag
      */
-    void setLog(ostream *o);
+    virtual void setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode);
 
     /** NOT YET IMPLEMENTED - sets a filter to specify which messages are actually written to the application
      *  wide log file.
@@ -1628,7 +1630,10 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.64  2000-06-02 13:53:53  joergr
+ *  Revision 1.65  2000-06-02 16:00:41  meichel
+ *  Adapted all dcmpstat classes to use OFConsole for log and error output
+ *
+ *  Revision 1.64  2000/06/02 13:53:53  joergr
  *  Implemented start/terminatePrintServer methods.
  *
  *  Revision 1.63  2000/06/02 12:41:50  joergr

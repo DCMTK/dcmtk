@@ -23,8 +23,8 @@
  *    classes: DVPSReferencedSeries
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:28:56 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2000-06-02 16:00:51 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -183,7 +183,18 @@ public:
     OFString& filesetID,
     OFString& filesetUID);
   
+  /** sets a new log stream
+   *  @param stream new log stream, NULL for default logstream
+   *  @param verbMode verbose mode flag
+   *  @param dbgMode debug mode flag
+   */
+  void setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode);
+
 private:
+
+  /// private undefined assignment operator
+  DVPSReferencedSeries& operator=(const DVPSReferencedSeries&);
+
   /// Referenced Image Sequence
   DVPSReferencedImage_PList referencedImageList;
   /// VR=UI, VM=1, Type 1c
@@ -194,13 +205,29 @@ private:
   DcmShortString            storageMediaFileSetID;
   /// VR=UI, VM=1, Type 3
   DcmUniqueIdentifier       storageMediaFileSetUID;
+
+  /** output stream for error messages, never NULL
+   */
+  OFConsole *logstream;
+
+  /** flag indicating whether we're operating in verbose mode
+   */
+  OFBool verboseMode;
+   
+  /** flag indicating whether we're operating in debug mode
+   */
+  OFBool debugMode;
+
 };
 
 #endif
 
 /*
  *  $Log: dvpsrs.h,v $
- *  Revision 1.5  2000-03-08 16:28:56  meichel
+ *  Revision 1.6  2000-06-02 16:00:51  meichel
+ *  Adapted all dcmpstat classes to use OFConsole for log and error output
+ *
+ *  Revision 1.5  2000/03/08 16:28:56  meichel
  *  Updated copyright header.
  *
  *  Revision 1.4  1999/07/22 16:39:10  meichel

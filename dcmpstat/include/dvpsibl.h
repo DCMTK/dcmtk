@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-05-31 12:56:39 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2000-06-02 16:00:48 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -265,9 +265,11 @@ public:
   E_Condition prepareBasicImageBox(size_t idx, DcmItem &dset);
 
   /** sets a new log stream
-   *  @param o new log stream, must not be NULL
+   *  @param stream new log stream, NULL for default logstream
+   *  @param verbMode verbose mode flag
+   *  @param dbgMode debug mode flag
    */
-  void setLog(ostream *o);
+  void setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode);
 
   /** checks whether the given SOP instance UID is used as 
    *  referenced Presentation LUT SOP Instance UID inside the list of
@@ -354,7 +356,15 @@ private:
 
   /** output stream for error messages, never NULL
    */
-  ostream *logstream;
+  OFConsole *logstream;
+
+  /** flag indicating whether we're operating in verbose mode
+   */
+  OFBool verboseMode;
+   
+  /** flag indicating whether we're operating in debug mode
+   */
+  OFBool debugMode;
   
 };
 
@@ -363,7 +373,10 @@ private:
 
 /*
  *  $Log: dvpsibl.h,v $
- *  Revision 1.14  2000-05-31 12:56:39  meichel
+ *  Revision 1.15  2000-06-02 16:00:48  meichel
+ *  Adapted all dcmpstat classes to use OFConsole for log and error output
+ *
+ *  Revision 1.14  2000/05/31 12:56:39  meichel
  *  Added initial Print SCP support
  *
  *  Revision 1.13  2000/03/08 16:28:53  meichel

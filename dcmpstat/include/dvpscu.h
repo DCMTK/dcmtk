@@ -23,8 +23,8 @@
  *    classes: DVPSCurve
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:28:50 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-06-02 16:00:44 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,6 +41,7 @@
 #include "dcerror.h"
 
 class DcmItem;
+class OFConsole;
 
 /** the representation of one Curve in a DICOM image.
  */  
@@ -122,6 +123,13 @@ public:
    */
   const char *getCurveAxisUnitsY() { return axisUnitsY.c_str(); }
   
+  /** sets a new log stream
+   *  @param stream new log stream, NULL for default logstream
+   *  @param verbMode verbose mode flag
+   *  @param dbgMode debug mode flag
+   */
+  void setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode);
+
 private:
   /// private undefined assignment operator
   DVPSCurve& operator=(const DVPSCurve&);
@@ -142,13 +150,28 @@ private:
   OFString axisUnitsX;
   /// axis units Y if present
   OFString axisUnitsY;
+
+  /** output stream for error messages, never NULL
+   */
+  OFConsole *logstream;
+
+  /** flag indicating whether we're operating in verbose mode
+   */
+  OFBool verboseMode;
+   
+  /** flag indicating whether we're operating in debug mode
+   */
+  OFBool debugMode;
 };
 
 #endif
 
 /*
  *  $Log: dvpscu.h,v $
- *  Revision 1.2  2000-03-08 16:28:50  meichel
+ *  Revision 1.3  2000-06-02 16:00:44  meichel
+ *  Adapted all dcmpstat classes to use OFConsole for log and error output
+ *
+ *  Revision 1.2  2000/03/08 16:28:50  meichel
  *  Updated copyright header.
  *
  *  Revision 1.1  1998/12/22 17:57:04  meichel

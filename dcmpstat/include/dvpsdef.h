@@ -23,8 +23,8 @@
  *    definitions of constants and macros for pstat module
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-05-31 12:56:59 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-06-02 16:00:45 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -93,6 +93,43 @@
 
 /* config file facility constant for high resolution graphics */
 #define L2_HIGHRESOLUTIONGRAPHICS       "HIGHRESOLUTIONGRAPHICS"
+
+
+/* ----- DIMSE-N Status Codes, General and Print Specific */
+
+#define DIMSE_N_Success                           0x0000
+#define DIMSE_N_Cancel                            0xFE00
+#define DIMSE_N_AttributeListError                0x0107
+#define DIMSE_N_SOPClassNotSupported              0x0122
+#define DIMSE_N_ClassInstanceConflict             0x0119
+#define DIMSE_N_DuplicateSOPInstance              0x0111
+#define DIMSE_N_DuplicateInvocation               0x0210
+#define DIMSE_N_InvalidArgumentValue              0x0115
+#define DIMSE_N_InvalidAttributeValue             0x0106
+#define DIMSE_N_InvalidObjectInstance             0x0117
+#define DIMSE_N_MissingAttribute                  0x0120
+#define DIMSE_N_MissingAttributeValue             0x0121
+#define DIMSE_N_MistypedArgument                  0x0212
+#define DIMSE_N_NoSuchArgument                    0x0114
+#define DIMSE_N_NoSuchAttribute                   0x0105
+#define DIMSE_N_NoSuchEventType                   0x0113
+#define DIMSE_N_NoSuchObjectInstance              0x0112
+#define DIMSE_N_NoSuchSOPClass                    0x0118
+#define DIMSE_N_ProcessingFailure                 0x0110
+#define DIMSE_N_ResourceLimitation                0x0213
+#define DIMSE_N_UnrecognizedOperation             0x0211
+
+#define DIMSE_N_BFS_Warn_MemoryAllocation         0xB600
+#define DIMSE_N_BFS_Warn_NoSessionPrinting        0xB601
+#define DIMSE_N_BFS_Warn_EmptyPage                0xB602
+#define DIMSE_N_BFB_Warn_EmptyPage                0xB603
+#define DIMSE_N_BFS_Fail_NoFilmBox                0xC600
+#define DIMSE_N_BFS_Fail_PrintQueueFull           0xC601
+#define DIMSE_N_BSB_Fail_PrintQueueFull           0xC602
+#define DIMSE_N_BFS_BFB_Fail_ImageSize            0xC603
+#define DIMSE_N_BFS_BFB_Fail_PositionCollision    0xC604
+#define DIMSE_N_IB_Fail_InsufficientMemory        0xC605
+#define DIMSE_N_IB_Fail_MoreThanOneVOILUT         0xC606
 
 
 /* --------------- a few macros which avoid copy/paste code --------------- */
@@ -168,7 +205,10 @@ if (result==EC_Normal)                                              \
 
 /*
  *  $Log: dvpsdef.h,v $
- *  Revision 1.1  2000-05-31 12:56:59  meichel
+ *  Revision 1.2  2000-06-02 16:00:45  meichel
+ *  Adapted all dcmpstat classes to use OFConsole for log and error output
+ *
+ *  Revision 1.1  2000/05/31 12:56:59  meichel
  *  Moved dcmpstat macros and constants into a common header file
  *
  *

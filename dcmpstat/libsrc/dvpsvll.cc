@@ -23,8 +23,8 @@
  *    classes: DVPSVOILUT_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:29:13 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-06-02 16:01:10 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,11 +38,17 @@
 
 DVPSVOILUT_PList::DVPSVOILUT_PList()
 : OFList<DVPSVOILUT *>()
+, logstream(&ofConsole)
+, verboseMode(OFFalse)
+, debugMode(OFFalse)
 {
 }
 
 DVPSVOILUT_PList::DVPSVOILUT_PList(const DVPSVOILUT_PList &arg)
 : OFList<DVPSVOILUT *>()
+, logstream(arg.logstream)
+, verboseMode(arg.verboseMode)
+, debugMode(arg.debugMode)
 {
   OFListIterator(DVPSVOILUT *) first = arg.begin();
   OFListIterator(DVPSVOILUT *) last = arg.end();
@@ -112,9 +118,27 @@ DVPSVOILUT *DVPSVOILUT_PList::getVOILUT(size_t idx)
   return NULL;
 }
 
+void DVPSVOILUT_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
+{
+  if (stream) logstream = stream; else logstream = &ofConsole;
+  verboseMode = verbMode;
+  debugMode = dbgMode;
+  OFListIterator(DVPSVOILUT *) first = begin();
+  OFListIterator(DVPSVOILUT *) last = end();
+  while (first != last)
+  {
+    (*first)->setLog(logstream, verbMode, dbgMode);
+    ++first;
+  }	
+}
+
+
 /*
  *  $Log: dvpsvll.cc,v $
- *  Revision 1.2  2000-03-08 16:29:13  meichel
+ *  Revision 1.3  2000-06-02 16:01:10  meichel
+ *  Adapted all dcmpstat classes to use OFConsole for log and error output
+ *
+ *  Revision 1.2  2000/03/08 16:29:13  meichel
  *  Updated copyright header.
  *
  *  Revision 1.1  1998/12/22 17:57:21  meichel

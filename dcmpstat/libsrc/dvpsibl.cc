@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-05-31 12:58:15 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2000-06-02 16:01:02 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,13 +40,17 @@
 
 DVPSImageBoxContent_PList::DVPSImageBoxContent_PList()
 : OFList<DVPSImageBoxContent *>()
-, logstream(&CERR)
+, logstream(&ofConsole)
+, verboseMode(OFFalse)
+, debugMode(OFFalse)
 {
 }
 
 DVPSImageBoxContent_PList::DVPSImageBoxContent_PList(const DVPSImageBoxContent_PList &arg)
 : OFList<DVPSImageBoxContent *>()
 , logstream(arg.logstream)
+, verboseMode(arg.verboseMode)
+, debugMode(arg.debugMode)
 {
   OFListIterator(DVPSImageBoxContent *) first = arg.begin();
   OFListIterator(DVPSImageBoxContent *) last = arg.end();
@@ -93,7 +97,7 @@ E_Condition DVPSImageBoxContent_PList::read(DcmItem &dset, DVPSPresentationLUT_P
         newImage = new DVPSImageBoxContent();
         if (newImage && ditem)
         {
-          newImage->setLog(logstream);
+          newImage->setLog(logstream, verboseMode, debugMode);
           result = newImage->read(*ditem, presentationLUTList);
           push_back(newImage);
         } else result = EC_MemoryExhausted;
@@ -188,7 +192,7 @@ E_Condition DVPSImageBoxContent_PList::addImageBox(
   DVPSImageBoxContent *newImage = new DVPSImageBoxContent();
   if (newImage)
   {
-    newImage->setLog(logstream);  	
+    newImage->setLog(logstream, verboseMode, debugMode);  	
     result = newImage->setContent(instanceuid, retrieveaetitle, refstudyuid,
                refseriesuid, refsopclassuid, refsopinstanceuid,
                requestedimagesize, patientid, presentationlutuid);
@@ -354,19 +358,19 @@ E_Condition DVPSImageBoxContent_PList::prepareBasicImageBox(size_t idx, DcmItem 
   return EC_IllegalCall; 
 }
 
-void DVPSImageBoxContent_PList::setLog(ostream *o)
+
+void DVPSImageBoxContent_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
 {
-  if (o)
+  if (stream) logstream = stream; else logstream = &ofConsole;
+  verboseMode = verbMode;
+  debugMode = dbgMode;
+  OFListIterator(DVPSImageBoxContent *) first = begin();
+  OFListIterator(DVPSImageBoxContent *) last = end();
+  while (first != last)
   {
-  	logstream = o;
-    OFListIterator(DVPSImageBoxContent *) first = begin();
-    OFListIterator(DVPSImageBoxContent *) last = end();
-    while (first != last)
-    {
-      (*first)->setLog(o);
-      ++first;
-    }	
-  }
+    (*first)->setLog(logstream, verbMode, dbgMode);
+    ++first;
+  }	
 }
 
 OFBool DVPSImageBoxContent_PList::presentationLUTInstanceUIDisUsed(const char *uid)
@@ -562,7 +566,10 @@ void DVPSImageBoxContent_PList::replace(DVPSImageBoxContent *newImageBox)
 
 /*
  *  $Log: dvpsibl.cc,v $
- *  Revision 1.15  2000-05-31 12:58:15  meichel
+ *  Revision 1.16  2000-06-02 16:01:02  meichel
+ *  Adapted all dcmpstat classes to use OFConsole for log and error output
+ *
+ *  Revision 1.15  2000/05/31 12:58:15  meichel
  *  Added initial Print SCP support
  *
  *  Revision 1.14  2000/03/08 16:29:07  meichel

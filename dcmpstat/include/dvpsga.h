@@ -23,8 +23,8 @@
  *    classes: DVPSGraphicAnnotation
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:28:51 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-06-02 16:00:45 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -177,8 +177,19 @@ public:
    *  @return pointer to graphic object or NULL
    */
   DVPSGraphicObject *removeGraphicObject(size_t idx);
+
+  /** sets a new log stream
+   *  @param stream new log stream, NULL for default logstream
+   *  @param verbMode verbose mode flag
+   *  @param dbgMode debug mode flag
+   */
+  void setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode);
   
 private:
+
+  /// private undefined assignment operator
+  DVPSGraphicAnnotation& operator=(const DVPSGraphicAnnotation&);
+
   /// ReferencedImageSequence, Type 1c
   DVPSReferencedImage_PList referencedImageList;
   /// VR=CS, VM=1, Type 1 
@@ -187,13 +198,29 @@ private:
   DVPSTextObject_PList      textObjectList;
   /// GraphicObjectSequence, Type 1c   
   DVPSGraphicObject_PList   graphicObjectList;
+
+  /** output stream for error messages, never NULL
+   */
+  OFConsole *logstream;
+
+  /** flag indicating whether we're operating in verbose mode
+   */
+  OFBool verboseMode;
+   
+  /** flag indicating whether we're operating in debug mode
+   */
+  OFBool debugMode;
+
 };
 
 #endif
 
 /*
  *  $Log: dvpsga.h,v $
- *  Revision 1.4  2000-03-08 16:28:51  meichel
+ *  Revision 1.5  2000-06-02 16:00:45  meichel
+ *  Adapted all dcmpstat classes to use OFConsole for log and error output
+ *
+ *  Revision 1.4  2000/03/08 16:28:51  meichel
  *  Updated copyright header.
  *
  *  Revision 1.3  1999/07/22 16:39:06  meichel

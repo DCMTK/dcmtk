@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-02 13:54:35 $
- *  CVS/RCS Revision: $Revision: 1.90 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-06-02 16:00:55 $
+ *  CVS/RCS Revision: $Revision: 1.91 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -148,9 +148,11 @@ DVInterface::DVInterface(const char *config_file)
             else
             {
                 if (df) delete df;
-#ifdef DEBUG
-                *logstream << "warning: unable to load monitor characterics file '" << displayFunctionFile << "', ignoring." << endl;
-#endif
+                if (verboseMode)
+                {
+                  logstream->lockCerr() << "warning: unable to load monitor characterics file '" << displayFunctionFile << "', ignoring." << endl;
+                  logstream->unlockCerr();
+                }
             }
         }
     }
@@ -167,6 +169,8 @@ DVInterface::DVInterface(const char *config_file)
       minimumPrintBitmapWidth, minimumPrintBitmapHeight, maximumPrintBitmapWidth, maximumPrintBitmapHeight,
       maximumPreviewImageWidth, maximumPreviewImageHeight);
 
+    if (pPrint) pPrint->setLog(logstream, verboseMode, debugMode);
+    if (pState) pState->setLog(logstream, verboseMode, debugMode);
     referenceTime = (unsigned long)time(NULL);
     /* initialize printJobIdentifier with a string comprising the current time */
     char buf[20];
@@ -224,6 +228,8 @@ E_Condition DVInterface::loadImage(const char *imgName)
       minimumPrintBitmapWidth, minimumPrintBitmapHeight, maximumPrintBitmapWidth, maximumPrintBitmapHeight,
       maximumPreviewImageWidth, maximumPreviewImageHeight);
     if (newState==NULL) return EC_MemoryExhausted;
+
+    newState->setLog(logstream, verboseMode, debugMode);
     if ((status = DVPSHelper::loadFileFormat(imgName, image)) == EC_Normal)
     {
         if (image)
@@ -285,7 +291,7 @@ E_Condition DVInterface::loadReferencedImage(size_t idx)
                         delete image;
                 } else status = EC_IllegalCall;
             }
-        }        
+        }
     }
     return status;
 }
@@ -310,6 +316,7 @@ E_Condition DVInterface::loadPState(const char *studyUID,
       maximumPreviewImageWidth, maximumPreviewImageHeight);
     if (newState==NULL) return EC_MemoryExhausted;
 
+    newState->setLog(logstream, verboseMode, debugMode);
     if ((EC_Normal == (status = DVPSHelper::loadFileFormat(filename, pstate)))&&(pstate))
     {
         DcmDataset *dataset = pstate->getDataset();
@@ -377,6 +384,8 @@ E_Condition DVInterface::loadPState(const char *pstName,
       minimumPrintBitmapWidth, minimumPrintBitmapHeight, maximumPrintBitmapWidth, maximumPrintBitmapHeight,
       maximumPreviewImageWidth, maximumPreviewImageHeight);
     if (newState==NULL) return EC_MemoryExhausted;
+
+    newState->setLog(logstream, verboseMode, debugMode);
     if (((status = DVPSHelper::loadFileFormat(pstName, pstate)) == EC_Normal) &&
         ((imgName == NULL) || ((status = DVPSHelper::loadFileFormat(imgName, image)) == EC_Normal)))
     {
@@ -410,7 +419,7 @@ E_Condition DVInterface::savePState()
 {
     // release database lock since we are using the DB module directly
     releaseDatabase();
-    
+
     if (pState==NULL) return EC_IllegalCall;
     const char *instanceUID = pState->createInstanceUID();
     if (instanceUID==NULL) return EC_IllegalCall;
@@ -433,10 +442,13 @@ E_Condition DVInterface::savePState()
                 instanceUID, imageFileName, &dbStatus))
             {
                 result = EC_IllegalCall;
-#ifdef DEBUG
-                *logstream << "unable to register presentation state '" << imageFileName << "' in database." << endl;
-                COND_DumpConditions();
-#endif
+                if (verboseMode)
+                {
+                  ostream &mycerr = logstream->lockCerr();
+                  mycerr << "unable to register presentation state '" << imageFileName << "' in database." << endl;
+                  COND_DumpConditions(/* mycerr */);
+                  logstream->unlockCerr();
+                }
             }
         }
     }
@@ -450,9 +462,9 @@ E_Condition DVInterface::savePState()
             DIC_UI seriesUID;
             DIC_UI studyUID;
             if (DU_getStringDOElement(dset, DCM_SOPClassUID, sopClass) &&
-	            DU_getStringDOElement(dset, DCM_SOPInstanceUID, instanceUID2) &&
-	            DU_getStringDOElement(dset, DCM_SeriesInstanceUID, seriesUID) &&
-	            DU_getStringDOElement(dset, DCM_StudyInstanceUID, studyUID) &&
+                    DU_getStringDOElement(dset, DCM_SOPInstanceUID, instanceUID2) &&
+                    DU_getStringDOElement(dset, DCM_SeriesInstanceUID, seriesUID) &&
+                    DU_getStringDOElement(dset, DCM_StudyInstanceUID, studyUID) &&
                 ((!imageInDatabase) || (getSeriesStruct(studyUID, seriesUID, instanceUID2) == NULL)))
             {
                 releaseDatabase();   /* avoid deadlocks */
@@ -465,10 +477,13 @@ E_Condition DVInterface::savePState()
                         if (DB_NORMAL != DB_storeRequest(handle, sopClass, instanceUID2, imageFileName, &dbStatus))
                         {
                             result = EC_IllegalCall;
-#ifdef DEBUG
-                            *logstream << "unable to register image '" << imageFileName << "' in database." << endl;
-                            COND_DumpConditions();
-#endif
+                            if (verboseMode)
+                            {
+                              ostream &mycerr = logstream->lockCerr();
+                              mycerr << "unable to register image '" << imageFileName << "' in database." << endl;
+                              COND_DumpConditions(/* mycerr */);
+                              logstream->unlockCerr();
+                            }
                         } else {
                             imageInDatabase = OFTrue;
                         }
@@ -492,7 +507,7 @@ E_Condition DVInterface::savePState(const char *filename, OFBool explicitVR)
     DcmFileFormat *fileformat = new DcmFileFormat();
     DcmDataset *dataset = NULL;
     if (fileformat) dataset=fileformat->getDataset();
-    
+
     if (dataset)
     {
         if ((status = pState->write(*dataset)) == EC_Normal)
@@ -505,7 +520,7 @@ E_Condition DVInterface::savePState(const char *filename, OFBool explicitVR)
           fileformat = NULL; // make sure we don't delete fileformat later
         }
     } else status = EC_MemoryExhausted;
-    
+
     delete fileformat;
     return status;
 }
@@ -586,6 +601,7 @@ E_Condition DVInterface::resetPresentationState()
       maximumPreviewImageWidth, maximumPreviewImageHeight);
     if (newState==NULL) return EC_MemoryExhausted;
 
+    newState->setLog(logstream, verboseMode, debugMode);
     E_Condition status = EC_Normal;
     if ((pDicomImage)&&(pDicomPState))
     {
@@ -725,34 +741,35 @@ const char *DVInterface::getPStateLabel(Uint32 idx)
 
 E_Condition DVInterface::disablePState()
 {
-    E_Condition status = EC_IllegalCall;
-    if ((pState != NULL) && (pStoredPState == NULL))
+  E_Condition status = EC_IllegalCall;
+  if ((pState != NULL) && (pStoredPState == NULL))
+  {
+    if (pDicomImage != NULL)
     {
-        if (pDicomImage != NULL)
+      DcmDataset *dataset = pDicomImage->getDataset();
+      if (dataset != NULL)
+      {
+        DVPresentationState *newState = new DVPresentationState(displayFunction,
+          minimumPrintBitmapWidth, minimumPrintBitmapHeight, maximumPrintBitmapWidth, maximumPrintBitmapHeight,
+          maximumPreviewImageWidth, maximumPreviewImageHeight);
+        if (newState != NULL)
         {
-            DcmDataset *dataset = pDicomImage->getDataset();
-            if (dataset != NULL)
+          newState->setLog(logstream, verboseMode, debugMode);
+          if ((status = newState->createFromImage(*dataset)) == EC_Normal)
+          {
+            if ((status = newState->attachImage(pDicomImage, OFFalse)) == EC_Normal)
             {
-                DVPresentationState *newState = new DVPresentationState(displayFunction,
-                  minimumPrintBitmapWidth, minimumPrintBitmapHeight, maximumPrintBitmapWidth, maximumPrintBitmapHeight,
-                  maximumPreviewImageWidth, maximumPreviewImageHeight);
-                if (newState != NULL)
-                {
-                    if ((status = newState->createFromImage(*dataset)) == EC_Normal)
-                    {
-                        if ((status = newState->attachImage(pDicomImage, OFFalse)) == EC_Normal)
-                        {
-                            pStoredPState = pState;
-                            pState = newState;
-                            return EC_Normal;
-                        }
-                    }
-                    delete newState;
-                }
+              pStoredPState = pState;
+              pState = newState;
+              return EC_Normal;
             }
+          }
+          delete newState;
         }
+      }
     }
-    return status;
+  }
+  return status;
 }
 
 
@@ -924,9 +941,11 @@ void DVInterface::resetDatabaseReferenceTime()
     if (0 != utime((char *)databaseIndexFile.c_str(), utime_buf))
 #endif
     {
-#ifdef DEBUG
-      *logstream << "warning: cannot set database index file modification time" << endl;
-#endif
+      if (verboseMode)
+      {
+        logstream->lockCerr() << "warning: cannot set database index file modification time" << endl;
+        logstream->unlockCerr();
+      }
     } else {
       struct stat stat_buf;
       if (0 == stat(databaseIndexFile.c_str(), &stat_buf))
@@ -1707,7 +1726,7 @@ E_Condition DVInterface::sendIOD(const char * targetID,
   if (sender_application==NULL) return EC_IllegalCall;
   if (configPath.length()==0) return EC_IllegalCall;
 
-  DVPSHelper::cleanChildren(); // clean up old child processes before creating new ones
+  DVPSHelper::cleanChildren(logstream); // clean up old child processes before creating new ones
 
 #ifdef HAVE_FORK
   // Unix version - call fork() and execl()
@@ -1725,7 +1744,11 @@ E_Condition DVInterface::sendIOD(const char * targetID,
     if (execl(sender_application, sender_application, configPath.c_str(),
             targetID, studyUID, seriesUID, instanceUID, NULL) < 0)
     {
-      *logstream << "error: unable to execute '" << sender_application << "'" << endl;
+      if (verboseMode)
+      {
+        logstream->lockCerr() << "error: unable to execute '" << sender_application << "'" << endl;
+        logstream->unlockCerr();
+      }
     }
     // if execl succeeds, this part will not get executed.
     // if execl fails, there is not much we can do except bailing out.
@@ -1753,7 +1776,11 @@ E_Condition DVInterface::sendIOD(const char * targetID,
   {
     return EC_Normal;
   } else {
-      *logstream << "error: unable to execute '" << sender_application << "'" << endl;
+      if (verboseMode)
+      {
+        logstream->lockCerr() << "error: unable to execute '" << sender_application << "'" << endl;
+        logstream->unlockCerr();
+      }
   }
 
 #endif
@@ -1767,7 +1794,7 @@ E_Condition DVInterface::startReceiver()
   if (receiver_application==NULL) return EC_IllegalCall;
   if (configPath.length()==0) return EC_IllegalCall;
 
-  DVPSHelper::cleanChildren(); // clean up old child processes before creating new ones
+  DVPSHelper::cleanChildren(logstream); // clean up old child processes before creating new ones
 
 #ifdef HAVE_FORK
   // Unix version - call fork() and execl()
@@ -1784,7 +1811,11 @@ E_Condition DVInterface::startReceiver()
     // we are the child process
     if (execl(receiver_application, receiver_application, configPath.c_str(), NULL) < 0)
     {
-      *logstream << "error: unable to execute '" << receiver_application << "'" << endl;
+      if (verboseMode)
+      {
+        logstream->lockCerr() << "error: unable to execute '" << receiver_application << "'" << endl;
+        logstream->unlockCerr();
+      }
     }
     // if execl succeeds, this part will not get executed.
     // if execl fails, there is not much we can do except bailing out.
@@ -1807,7 +1838,11 @@ E_Condition DVInterface::startReceiver()
   {
     return EC_Normal;
   } else {
-      *logstream << "error: unable to execute '" << receiver_application << "'" << endl;
+      if (verboseMode)
+      {
+        logstream->lockCerr() << "error: unable to execute '" << receiver_application << "'" << endl;
+        logstream->unlockCerr();
+      }
   }
 #endif
   return EC_IllegalCall;
@@ -1878,7 +1913,7 @@ E_Condition DVInterface::startQueryRetrieveServer()
   if (server_application==NULL) return EC_IllegalCall;
   if (configPath.length()==0) return EC_IllegalCall;
 
-  DVPSHelper::cleanChildren(); // clean up old child processes before creating new ones
+  DVPSHelper::cleanChildren(logstream); // clean up old child processes before creating new ones
 
 #ifdef HAVE_FORK
   // Unix version - call fork() and execl()
@@ -1895,7 +1930,11 @@ E_Condition DVInterface::startQueryRetrieveServer()
     // we are the child process
     if (execl(server_application, server_application, "-c", config_filename.c_str(), "--allow-shutdown", NULL) < 0)
     {
-      *logstream << "error: unable to execute '" << server_application << "'" << endl;
+      if (verboseMode)
+      {
+        logstream->lockCerr() << "error: unable to execute '" << server_application << "'" << endl;
+        logstream->unlockCerr();
+      }
     }
     // if execl succeeds, this part will not get executed.
     // if execl fails, there is not much we can do except bailing out.
@@ -1918,7 +1957,11 @@ E_Condition DVInterface::startQueryRetrieveServer()
   {
     return EC_Normal;
   } else {
-      *logstream << "error: unable to execute '" << server_application << "'" << endl;
+      if (verboseMode)
+      {
+        logstream->lockCerr() << "error: unable to execute '" << server_application << "'" << endl;
+        logstream->unlockCerr();
+      }
   }
 #endif
   return EC_IllegalCall;
@@ -2043,7 +2086,7 @@ E_Condition DVInterface::saveDICOMImage(
     E_Condition status = EC_Normal;
     DcmFileFormat *fileformat = new DcmFileFormat();
     DcmDataset *dataset = NULL;
-    if (fileformat) dataset=fileformat->getDataset();    
+    if (fileformat) dataset=fileformat->getDataset();
     char newuid[70];
 
     if (dataset)
@@ -2091,7 +2134,7 @@ E_Condition DVInterface::saveDICOMImage(
 
       if (EC_Normal == status) status = DVPSHelper::saveFileFormat(filename, fileformat, explicitVR);
     } else status = EC_MemoryExhausted;
-    
+
     delete fileformat;
     return status;
 }
@@ -2126,10 +2169,13 @@ E_Condition DVInterface::saveDICOMImage(
        if (DB_NORMAL != DB_storeRequest(handle, UID_SecondaryCaptureImageStorage, uid, imageFileName, &dbStatus))
        {
          result = EC_IllegalCall;
-#ifdef DEBUG
-         *logstream << "unable to register secondary capture image '" << imageFileName << "' in database." << endl;
-         COND_DumpConditions();
-#endif
+         if (verboseMode)
+         {
+           ostream &mycerr = logstream->lockCerr();
+           mycerr << "unable to register secondary capture image '" << imageFileName << "' in database." << endl;
+           COND_DumpConditions(/* mycerr */);
+           logstream->unlockCerr();
+         }
        }
      }
   }
@@ -2240,7 +2286,7 @@ E_Condition DVInterface::saveHardcopyGrayscaleImage(
        */
       status = pPrint->addImageBox(getNetworkAETitle(), theInstanceUID.c_str(), reqImageSize, NULL, presLUT, pState->isMonochrome1Image());
     }
-    
+
     delete fileformat;
     return status;
 }
@@ -2274,10 +2320,13 @@ E_Condition DVInterface::saveHardcopyGrayscaleImage(
        if (DB_NORMAL != DB_storeRequest(handle, UID_HardcopyGrayscaleImageStorage, uid, imageFileName, &dbStatus))
        {
          result = EC_IllegalCall;
-#ifdef DEBUG
-         *logstream << "unable to register hardcopy grayscale image '" << imageFileName << "' in database." << endl;
-         COND_DumpConditions();
-#endif
+         if (verboseMode)
+         {
+           ostream &mycerr = logstream->lockCerr();
+           mycerr << "unable to register hardcopy grayscale image '" << imageFileName << "' in database." << endl;
+           COND_DumpConditions(/* mycerr */);
+           logstream->unlockCerr();
+         }
        }
      }
   }
@@ -2308,7 +2357,7 @@ E_Condition DVInterface::saveFileFormatToDB(DcmFileFormat &fileformat)
     {
       ((DcmElement *)(stack.top()))->getString(classUID);
     }
-  }    
+  }
   if ((instanceUID==NULL)||(classUID==NULL)) return EC_IllegalCall;
 
   DB_Status dbStatus;
@@ -2328,10 +2377,13 @@ E_Condition DVInterface::saveFileFormatToDB(DcmFileFormat &fileformat)
        if (DB_NORMAL != DB_storeRequest(handle, classUID, instanceUID, imageFileName, &dbStatus))
        {
          result = EC_IllegalCall;
-#ifdef DEBUG
-         *logstream << "unable to register grayscale hardcopy image '" << imageFileName << "' in database." << endl;
-         COND_DumpConditions();
-#endif
+         if (verboseMode)
+         {
+           ostream &mycerr = logstream->lockCerr();
+           mycerr << "unable to register grayscale hardcopy image '" << imageFileName << "' in database." << endl;
+           COND_DumpConditions(/* mycerr */);
+           logstream->unlockCerr();
+         }
        }
      }
   }
@@ -2361,6 +2413,8 @@ E_Condition DVInterface::loadStoredPrint(const char *filename)
     DcmFileFormat *fileformat = NULL;
     DVPSStoredPrint *print = new DVPSStoredPrint(getDefaultPrintIllumination(), getDefaultPrintReflection());
     if (print==NULL) return EC_MemoryExhausted;
+
+    print->setLog(logstream, verboseMode, debugMode);
     if ((status = DVPSHelper::loadFileFormat(filename, fileformat)) == EC_Normal)
     {
         if (fileformat)
@@ -2401,7 +2455,7 @@ E_Condition DVInterface::saveStoredPrint(
     DcmDataset *dataset = NULL;
     if (fileformat)
         dataset = fileformat->getDataset();
-    
+
     char newuid[70];
     OFString aString;
     OFString theInstanceUID;
@@ -2410,7 +2464,7 @@ E_Condition DVInterface::saveStoredPrint(
     /* set annotation if active */
     if (activateAnnotation)
     {
-  	  OFString text;
+          OFString text;
       OFString dummy;
       if (prependDateTime)
       {
@@ -2421,9 +2475,9 @@ E_Condition DVInterface::saveStoredPrint(
           sprintf(buf, "%04d-%02d-%02d %02d:%02d ", 1900 + ts->tm_year, ts->tm_mon + 1, ts->tm_mday, ts->tm_hour, ts->tm_min);
           text = buf;
         }
-      }        
+      }
       if (prependPrinterName)
-      { 
+      {
         text += currentPrinter;
         text += " ";
       }
@@ -2448,7 +2502,7 @@ E_Condition DVInterface::saveStoredPrint(
     } else {
       pPrint->deleteAnnotations();
     }
- 
+
     if (dataset)
     {
       if (instanceUID) status = pPrint->setInstanceUID(instanceUID); else
@@ -2491,10 +2545,13 @@ E_Condition DVInterface::saveStoredPrint(OFBool writeRequestedImageSize)
        if (DB_NORMAL != DB_storeRequest(handle, UID_StoredPrintStorage, uid, imageFileName, &dbStatus))
        {
          result = EC_IllegalCall;
-#ifdef DEBUG
-         *logstream << "unable to register stored print object '" << imageFileName << "' in database." << endl;
-         COND_DumpConditions();
-#endif
+         if (verboseMode)
+         {
+           ostream &mycerr = logstream->lockCerr();
+           mycerr << "unable to register stored print object '" << imageFileName << "' in database." << endl;
+           COND_DumpConditions(/* mycerr */);
+           logstream->unlockCerr();
+         }
        }
      }
   }
@@ -2531,12 +2588,12 @@ E_Condition DVInterface::loadPrintPreview(size_t idx)
           {
 
             /* still need to set presentation LUT etc. */
-  
+
             unsigned long width = maximumPrintPreviewWidth;
             unsigned long height = maximumPrintPreviewHeight;
-            
+
             /* consider aspect ratio of the display ?? */
-            
+
             if ((double)image->getWidth() / (double)width < (double)image->getHeight() / (double)height)
               width = 0;
             else
@@ -2550,7 +2607,7 @@ E_Condition DVInterface::loadPrintPreview(size_t idx)
               } else {
                 unloadPrintPreview();
               }
-            }          
+            }
           }
           delete image;
         }
@@ -2575,7 +2632,7 @@ unsigned long DVInterface::getPrintPreviewSize()
     result = width * height;
   return result;
 }
-    
+
 void DVInterface::setMaxPrintPreviewWidthHeight(unsigned long width, unsigned long height)
 {
   if ((width != maximumPrintPreviewWidth) || (height != maximumPrintPreviewHeight))
@@ -2585,7 +2642,7 @@ void DVInterface::setMaxPrintPreviewWidthHeight(unsigned long width, unsigned lo
     maximumPrintPreviewHeight = height;
   }
 }
-   
+
 E_Condition DVInterface::getPrintPreviewWidthHeight(unsigned long &width, unsigned long &height)
 {
   E_Condition result = EC_IllegalCall;
@@ -2733,7 +2790,7 @@ E_Condition DVInterface::setPrintPresentationLUTShape(DVPSPresentationLUTType sh
 {
   return EC_IllegalCall;
 }
-   
+
 E_Condition DVInterface::setPrintPresentationLookupTable(
       DcmUnsignedShort& lutDescriptor,
       DcmUnsignedShort& lutData,
@@ -2741,7 +2798,7 @@ E_Condition DVInterface::setPrintPresentationLookupTable(
 {
   return EC_IllegalCall;
 }
-  
+
 E_Condition DVInterface::setPrintPresentationLookupTable(DcmItem &dset)
 {
   return EC_IllegalCall;
@@ -2751,7 +2808,7 @@ E_Condition DVInterface::spoolPrintJob(OFBool deletePrintedImages)
 {
   if (pPrint==NULL) return EC_IllegalCall;
   if (currentPrinter.size()==0) return EC_IllegalCall;
- 
+
   E_Condition result = saveStoredPrint(getTargetPrinterSupportsRequestedImageSize(currentPrinter.c_str()));
   if (EC_Normal == result)
   {
@@ -2775,12 +2832,12 @@ E_Condition DVInterface::startPrintSpooler()
 
   E_Condition result = EC_Normal;
 
-  DVPSHelper::cleanChildren(); // clean up old child processes before creating new ones
+  DVPSHelper::cleanChildren(logstream); // clean up old child processes before creating new ones
 
   Uint32 numberOfPrinters = getNumberOfTargets(DVPSE_printAny);
   if (numberOfPrinters > 0) for (Uint32 i=0; i < numberOfPrinters; i++)
   {
-  	printer = getTargetID(i, DVPSE_printAny);
+        printer = getTargetID(i, DVPSE_printAny);
 
 #ifdef HAVE_FORK
     // Unix version - call fork() and execl()
@@ -2795,13 +2852,21 @@ E_Condition DVInterface::startPrintSpooler()
         if (execl(spooler_application, spooler_application, "--verbose", "--dump", "--spool", printJobIdentifier.c_str(),
           "--printer", printer, "--config", configPath.c_str(), "--sleep", sleepStr, NULL) < 0)
         {
-          *logstream << "error: unable to execute '" << spooler_application << "'" << endl;
+          if (verboseMode)
+          {
+            logstream->lockCerr() << "error: unable to execute '" << spooler_application << "'" << endl;
+            logstream->unlockCerr();
+          }
         }
       } else {
         if (execl(spooler_application, spooler_application, "--spool", printJobIdentifier.c_str(),
           "--printer", printer, "--config", configPath.c_str(), "--sleep", sleepStr, NULL) < 0)
         {
-          *logstream << "error: unable to execute '" << spooler_application << "'" << endl;
+          if (verboseMode)
+          {
+            logstream->lockCerr() << "error: unable to execute '" << spooler_application << "'" << endl;
+            logstream->unlockCerr();
+          }
         }
       }
 
@@ -2831,7 +2896,11 @@ E_Condition DVInterface::startPrintSpooler()
     if (0 == CreateProcess(NULL, commandline, NULL, NULL, 0, DETACHED_PROCESS, NULL, NULL, &sinfo, &procinfo))
 #endif
     {
-      *logstream << "error: unable to execute '" << spooler_application << "'" << endl;
+      if (verboseMode)
+      {
+        logstream->lockCerr() << "error: unable to execute '" << spooler_application << "'" << endl;
+        logstream->unlockCerr();
+      }
       result = EC_IllegalCall;
     }
 #endif
@@ -2863,7 +2932,7 @@ E_Condition DVInterface::createPrintJobFilenames(const char *printer, OFString& 
 E_Condition DVInterface::terminatePrintSpooler()
 {
   if (configPath.length()==0) return EC_IllegalCall;
-  DVPSHelper::cleanChildren(); // clean up old child processes before creating new ones
+  DVPSHelper::cleanChildren(logstream); // clean up old child processes before creating new ones
   OFString spoolFilename;
   OFString tempFilename;
   const char *prt = NULL;
@@ -2872,22 +2941,30 @@ E_Condition DVInterface::terminatePrintSpooler()
   if (numberOfPrinters > 0) for (Uint32 i=0; i < numberOfPrinters; i++)
   {
     prt = getTargetID(i, DVPSE_printAny);
-  	if (EC_Normal != createPrintJobFilenames(prt, tempFilename, spoolFilename)) return EC_IllegalCall;
-  	FILE *outf = fopen(tempFilename.c_str(),"wb");
-  	if (outf)
-	{
+        if (EC_Normal != createPrintJobFilenames(prt, tempFilename, spoolFilename)) return EC_IllegalCall;
+        FILE *outf = fopen(tempFilename.c_str(),"wb");
+        if (outf)
+        {
       time_t now = time(NULL);
-  	  fprintf(outf,"#\n# print job created %s", asctime(localtime(&now)));
-  	  fprintf(outf,"# target printer: [%s]\n#\n", (prt ? prt : "none"));
-	  fprintf(outf,"terminate\n");
-	  fclose(outf);
+          fprintf(outf,"#\n# print job created %s", asctime(localtime(&now)));
+          fprintf(outf,"# target printer: [%s]\n#\n", (prt ? prt : "none"));
+          fprintf(outf,"terminate\n");
+          fclose(outf);
       if (0 != rename(tempFilename.c_str(), spoolFilename.c_str()))
       {
-        *logstream << "error: unable to activate spooler termination request '" << spoolFilename.c_str() << "'" << endl;
+        if (verboseMode)
+        {
+          logstream->lockCerr() << "error: unable to activate spooler termination request '" << spoolFilename.c_str() << "'" << endl;
+          logstream->unlockCerr();
+        }
         return EC_IllegalCall;
       }
     } else {
-      *logstream << "error: unable to create spooler termination request '" << tempFilename.c_str() << "'" << endl;
+      if (verboseMode)
+      {
+        logstream->lockCerr() << "error: unable to create spooler termination request '" << tempFilename.c_str() << "'" << endl;
+        logstream->unlockCerr();
+      }
       return EC_IllegalCall;
     }
   }
@@ -2924,12 +3001,20 @@ E_Condition DVInterface::startPrintServer()
         if (execl(application, application, "--verbose", "--dump", "--printer", printer, "--config",
             configPath.c_str(), NULL) < 0)
         {
-          *logstream << "error: unable to execute '" << application << "'" << endl;
+          if (verboseMode)
+          {
+            logstream->lockCerr() << "error: unable to execute '" << application << "'" << endl;
+            logstream->unlockCerr();
+          }
         }
       } else {
         if (execl(application, application, "--printer", printer, "--config", configPath.c_str(), NULL) < 0)
         {
-          *logstream << "error: unable to execute '" << application << "'" << endl;
+          if (verboseMode)
+          {
+            logstream->lockCerr() << "error: unable to execute '" << application << "'" << endl;
+            logstream->unlockCerr();
+          }
         }
       }
 
@@ -2957,7 +3042,11 @@ E_Condition DVInterface::startPrintServer()
     if (0 == CreateProcess(NULL, commandline, NULL, NULL, 0, DETACHED_PROCESS, NULL, NULL, &sinfo, &procinfo))
 #endif
     {
-      *logstream << "error: unable to execute '" << application << "'" << endl;
+      if (verboseMode)
+      {
+        logstream->lockCerr() << "error: unable to execute '" << application << "'" << endl;
+        logstream->unlockCerr();
+      }
       result = EC_IllegalCall;
     }
 #endif
@@ -3045,8 +3134,8 @@ E_Condition DVInterface::addToPrintHardcopyFromDB(const char *studyUID, const ch
           {
             DcmStack stack;
             DVPSPresentationLUT presentationLUT;
-          	if (EC_Normal != presentationLUT.read(*dataset, OFFalse)) presentationLUT.setType(DVPSP_identity);
-          	result = dataset->search((DcmTagKey &)sopclassuid.getTag(), stack, ESM_fromHere, OFFalse);
+                if (EC_Normal != presentationLUT.read(*dataset, OFFalse)) presentationLUT.setType(DVPSP_identity);
+                result = dataset->search((DcmTagKey &)sopclassuid.getTag(), stack, ESM_fromHere, OFFalse);
             if (EC_Normal == result)
             {
               char *sopclass = NULL;
@@ -3078,9 +3167,9 @@ E_Condition DVInterface::spoolStoredPrintFromDB(const char *studyUID, const char
   FILE *outf = fopen(tempFilename.c_str(),"wb");
   if (outf)
   {
-  	time_t now = time(NULL);
-  	fprintf(outf,"#\n# print job created %s", asctime(localtime(&now)));
-  	fprintf(outf,"# target printer: [%s]\n#\n", (prt ? prt : "none"));
+        time_t now = time(NULL);
+        fprintf(outf,"#\n# print job created %s", asctime(localtime(&now)));
+        fprintf(outf,"# target printer: [%s]\n#\n", (prt ? prt : "none"));
     fprintf(outf,"study        %s\nseries       %s\ninstance     %s\n", studyUID, seriesUID, instanceUID);
     if (printerMediumType.size() >0)       fprintf(outf,"mediumtype   %s\n", printerMediumType.c_str());
     if (printerFilmDestination.size() >0)  fprintf(outf,"destination  %s\n", printerFilmDestination.c_str());
@@ -3092,11 +3181,19 @@ E_Condition DVInterface::spoolStoredPrintFromDB(const char *studyUID, const char
     fclose(outf);
     if (0 != rename(tempFilename.c_str(), spoolFilename.c_str()))
     {
-      *logstream << "error: unable to activate print job '" << spoolFilename.c_str() << "'" << endl;
+      if (verboseMode)
+      {
+        logstream->lockCerr() << "error: unable to activate print job '" << spoolFilename.c_str() << "'" << endl;
+        logstream->unlockCerr();
+      }
       return EC_IllegalCall;
     }
   } else {
-    *logstream << "error: unable to create print job '" << tempFilename.c_str() << "'" << endl;
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "error: unable to create print job '" << tempFilename.c_str() << "'" << endl;
+      logstream->unlockCerr();
+    }
     return EC_IllegalCall;
   }
   return EC_Normal;
@@ -3113,44 +3210,44 @@ E_Condition DVInterface::printSCUcreateBasicFilmSession(DVPSPrintMessageHandler&
   if ((EC_Normal==result)&&(printerMediumType.size() > 0))
   {
     delem = new DcmCodeString(DCM_MediumType);
-  	if (delem) result = delem->putString(printerMediumType.c_str()); else result=EC_IllegalCall;
-  	if (EC_Normal==result) result = dset.insert(delem);
+        if (delem) result = delem->putString(printerMediumType.c_str()); else result=EC_IllegalCall;
+        if (EC_Normal==result) result = dset.insert(delem);
   }
 
   if ((EC_Normal==result)&&(printerFilmDestination.size() > 0))
   {
     delem = new DcmCodeString(DCM_FilmDestination);
-  	if (delem) result = delem->putString(printerFilmDestination.c_str()); else result=EC_IllegalCall;
-  	if (EC_Normal==result) result = dset.insert(delem);
+        if (delem) result = delem->putString(printerFilmDestination.c_str()); else result=EC_IllegalCall;
+        if (EC_Normal==result) result = dset.insert(delem);
   }
 
   if ((EC_Normal==result)&&(printerFilmSessionLabel.size() > 0))
   {
     delem = new DcmLongString(DCM_FilmSessionLabel);
-  	if (delem) result = delem->putString(printerFilmSessionLabel.c_str()); else result=EC_IllegalCall;
-  	if (EC_Normal==result) result = dset.insert(delem);
+        if (delem) result = delem->putString(printerFilmSessionLabel.c_str()); else result=EC_IllegalCall;
+        if (EC_Normal==result) result = dset.insert(delem);
   }
 
   if ((EC_Normal==result)&&(printerPriority.size() > 0))
   {
     delem = new DcmCodeString(DCM_PrintPriority);
-  	if (delem) result = delem->putString(printerPriority.c_str()); else result=EC_IllegalCall;
-  	if (EC_Normal==result) result = dset.insert(delem);
+        if (delem) result = delem->putString(printerPriority.c_str()); else result=EC_IllegalCall;
+        if (EC_Normal==result) result = dset.insert(delem);
   }
 
   if ((EC_Normal==result)&&(printerOwnerID.size() > 0))
   {
     delem = new DcmShortString(DCM_OwnerID);
-  	if (delem) result = delem->putString(printerOwnerID.c_str()); else result=EC_IllegalCall;
-  	if (EC_Normal==result) result = dset.insert(delem);
+        if (delem) result = delem->putString(printerOwnerID.c_str()); else result=EC_IllegalCall;
+        if (EC_Normal==result) result = dset.insert(delem);
   }
 
   if ((EC_Normal==result)&&(printerNumberOfCopies > 0))
   {
-  	sprintf(buf, "%lu", printerNumberOfCopies);
+        sprintf(buf, "%lu", printerNumberOfCopies);
     delem = new DcmIntegerString(DCM_NumberOfCopies);
-  	if (delem) result = delem->putString(buf); else result=EC_IllegalCall;
-  	if (EC_Normal==result) result = dset.insert(delem);
+        if (delem) result = delem->putString(buf); else result=EC_IllegalCall;
+        if (EC_Normal==result) result = dset.insert(delem);
   }
 
   if (EC_Normal==result) result = pPrint->printSCUcreateBasicFilmSession(printHandler, dset, plutInSession);
@@ -3168,24 +3265,22 @@ void DVInterface::clearFilmSessionSettings()
   return;
 }
 
-void DVInterface::setLog(ostream *o)
+void DVInterface::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
 {
-  DVConfiguration::setLog(o);
-  if (pPrint) pPrint->setLog(o);
+  DVConfiguration::setLog(stream, verbMode, dbgMode);
+  if (pPrint) pPrint->setLog(stream, verbMode, dbgMode);
 }
 
 void DVInterface::setLogFilter(DVPSLogMessageLevel level)
 {
-    
   // to be implemented ...
-    
 }
 
 E_Condition DVInterface::writeLogMessage(DVPSLogMessageLevel level, const char *module, const char *message)
 {
-    
+
   // to be implemented ...
-    
+
   return EC_IllegalCall;
 }
 
@@ -3200,7 +3295,7 @@ E_Condition DVInterface::dumpIOD(const char *filename)
   const char *application = getDumpToolName();
   if ((filename==NULL)||(application==NULL)) return EC_IllegalCall;
 
-  DVPSHelper::cleanChildren(); // clean up old child processes before creating new ones
+  DVPSHelper::cleanChildren(logstream); // clean up old child processes before creating new ones
 
 #ifdef HAVE_FORK
   // Unix version - call fork() and execl()
@@ -3212,7 +3307,11 @@ E_Condition DVInterface::dumpIOD(const char *filename)
     // we are the child process
     if (execl(application, application, filename, NULL) < 0)
     {
-      *logstream << "error: unable to execute '" << application << "'" << endl;
+      if (verboseMode)
+      {
+        logstream->lockCerr() << "error: unable to execute '" << application << "'" << endl;
+        logstream->unlockCerr();
+      }
     }
     // if execl succeeds, this part will not get executed.
     // if execl fails, there is not much we can do except bailing out.
@@ -3236,7 +3335,11 @@ E_Condition DVInterface::dumpIOD(const char *filename)
   {
     return EC_Normal;
   } else {
-      *logstream << "error: unable to execute '" << application << "'" << endl;
+      if (verboseMode)
+      {
+        logstream->lockCerr() << "error: unable to execute '" << application << "'" << endl;
+        logstream->unlockCerr();
+      }
   }
 #endif
   return EC_IllegalCall;
@@ -3270,7 +3373,10 @@ E_Condition DVInterface::checkIOD(const char *studyUID, const char *seriesUID, c
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.90  2000-06-02 13:54:35  joergr
+ *  Revision 1.91  2000-06-02 16:00:55  meichel
+ *  Adapted all dcmpstat classes to use OFConsole for log and error output
+ *
+ *  Revision 1.90  2000/06/02 13:54:35  joergr
  *  Implemented start/terminatePrintServer methods.
  *
  *  Revision 1.89  2000/05/31 12:58:13  meichel

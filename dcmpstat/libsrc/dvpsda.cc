@@ -23,8 +23,8 @@
  *    classes: DVPSDisplayedArea
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-05-31 13:02:36 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2000-06-02 16:00:59 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,6 +48,9 @@ DVPSDisplayedArea::DVPSDisplayedArea()
 , presentationPixelSpacing(DCM_PresentationPixelSpacing)
 , presentationPixelAspectRatio(DCM_PresentationPixelAspectRatio)
 , presentationPixelMagnificationRatio(DCM_PresentationPixelMagnificationRatio)
+, logstream(&ofConsole)
+, verboseMode(OFFalse)
+, debugMode(OFFalse)
 {
 }
 
@@ -59,6 +62,9 @@ DVPSDisplayedArea::DVPSDisplayedArea(const DVPSDisplayedArea& copy)
 , presentationPixelSpacing(copy.presentationPixelSpacing)
 , presentationPixelAspectRatio(copy.presentationPixelAspectRatio)
 , presentationPixelMagnificationRatio(copy.presentationPixelMagnificationRatio)
+, logstream(copy.logstream)
+, verboseMode(copy.verboseMode)
+, debugMode(copy.debugMode)
 {
 }
 
@@ -86,46 +92,58 @@ E_Condition DVPSDisplayedArea::read(DcmItem &dset)
   if (displayedAreaTopLeftHandCorner.getLength() == 0)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a display area selection SQ item with displayedAreaTopLeftHandCorner absent or empty" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a display area selection SQ item with displayedAreaTopLeftHandCorner absent or empty" << endl;
+      logstream->unlockCerr();
+    }
   }
   else if (displayedAreaTopLeftHandCorner.getVM() != 2)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a display area selection SQ item with displayedAreaTopLeftHandCorner VM != 2" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a display area selection SQ item with displayedAreaTopLeftHandCorner VM != 2" << endl;
+      logstream->unlockCerr();
+    }
   }
 
   if (displayedAreaBottomRightHandCorner.getLength() == 0)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a display area selection SQ item with displayedAreaBottomRightHandCorner absent or empty" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a display area selection SQ item with displayedAreaBottomRightHandCorner absent or empty" << endl;
+      logstream->unlockCerr();
+    }
   }
   else if (displayedAreaBottomRightHandCorner.getVM() != 2)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a display area selection SQ item with displayedAreaBottomRightHandCorner VM != 2" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a display area selection SQ item with displayedAreaBottomRightHandCorner VM != 2" << endl;
+      logstream->unlockCerr();
+    }
   }
 
   if (presentationSizeMode.getLength() == 0)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a display area selection SQ item with presentationSizeMode absent or empty" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a display area selection SQ item with presentationSizeMode absent or empty" << endl;
+      logstream->unlockCerr();
+    }
   }
   else if (presentationSizeMode.getVM() != 1)
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a display area selection SQ item with presentationSizeMode VM != 1" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a display area selection SQ item with presentationSizeMode VM != 1" << endl;
+      logstream->unlockCerr();
+    }
   } else {
     aString.clear();
     presentationSizeMode.getOFString(aString,0);
@@ -134,58 +152,72 @@ E_Condition DVPSDisplayedArea::read(DcmItem &dset)
       if (presentationPixelSpacing.getVM() != 2)
       {
         result=EC_IllegalCall;
-#ifdef DEBUG
-        CERR << "Error: presentation state contains a display area selection SQ item with mode 'TRUE SIZE' but presentationPixelSpacing VM != 2" << endl;
-#endif
+        if (verboseMode)
+        {
+          logstream->lockCerr() << "Error: presentation state contains a display area selection SQ item with mode 'TRUE SIZE' but presentationPixelSpacing VM != 2" << endl;
+          logstream->unlockCerr();
+        }
       }
     } else if (aString == "MAGNIFY")
     {
       if (presentationPixelMagnificationRatio.getVM() != 1)
       {
         result=EC_IllegalCall;
-#ifdef DEBUG
-        CERR << "Error: presentation state contains a display area selection SQ item with mode 'MAGNIFY' but presentationPixelSpacing VM != 1" << endl;
-#endif
+        if (verboseMode)
+        {
+          logstream->lockCerr() << "Error: presentation state contains a display area selection SQ item with mode 'MAGNIFY' but presentationPixelSpacing VM != 1" << endl;
+          logstream->unlockCerr();
+        }
       }
     } else if (aString != "SCALE TO FIT")
     {
       result=EC_IllegalCall;
-#ifdef DEBUG
-      CERR << "Error: presentation state contains a display area selection SQ item with unknown presentation size mode: " << aString << endl;
-#endif
+      if (verboseMode)
+      {
+        logstream->lockCerr() << "Error: presentation state contains a display area selection SQ item with unknown presentation size mode: " << aString << endl;
+        logstream->unlockCerr();
+      }
     }
   }
 
   if ((presentationPixelSpacing.getLength() > 0)&&(presentationPixelSpacing.getVM() != 2))
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a display area selection SQ item with presentationPixelSpacing VM != 2" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a display area selection SQ item with presentationPixelSpacing VM != 2" << endl;
+      logstream->unlockCerr();
+    }
 }
 
   if ((presentationPixelAspectRatio.getLength() > 0)&&(presentationPixelAspectRatio.getVM() != 2))
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a display area selection SQ item with presentationPixelAspectRatio VM != 2" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a display area selection SQ item with presentationPixelAspectRatio VM != 2" << endl;
+      logstream->unlockCerr();
+    }
   }
 
   if ((presentationPixelMagnificationRatio.getLength() > 0)&&(presentationPixelMagnificationRatio.getVM() != 1))
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a display area selection SQ item with presentationPixelMagnificationRatio VM != 1" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a display area selection SQ item with presentationPixelMagnificationRatio VM != 1" << endl;
+      logstream->unlockCerr();
+    }
   }
 
   if ((presentationPixelSpacing.getLength() == 0)&&(presentationPixelAspectRatio.getVM() != 2))
   {
     result=EC_IllegalCall;
-#ifdef DEBUG
-    CERR << "Error: presentation state contains a display area selection SQ item with both presentationPixelSpacing and presentationPixelAspectRatio missing/incorrect" << endl;
-#endif
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "Error: presentation state contains a display area selection SQ item with both presentationPixelSpacing and presentationPixelAspectRatio missing/incorrect" << endl;
+      logstream->unlockCerr();
+    }
   }
 
   return result;
@@ -398,10 +430,21 @@ E_Condition DVPSDisplayedArea::setDisplayedArea(
   return result;
 }
 
+void DVPSDisplayedArea::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
+{
+  if (stream) logstream = stream; else logstream = &ofConsole;
+  verboseMode = verbMode;
+  debugMode = dbgMode;
+}
+
+
 
 /*
  *  $Log: dvpsda.cc,v $
- *  Revision 1.5  2000-05-31 13:02:36  meichel
+ *  Revision 1.6  2000-06-02 16:00:59  meichel
+ *  Adapted all dcmpstat classes to use OFConsole for log and error output
+ *
+ *  Revision 1.5  2000/05/31 13:02:36  meichel
  *  Moved dcmpstat macros and constants into a common header file
  *
  *  Revision 1.4  2000/03/08 16:29:03  meichel

@@ -23,8 +23,8 @@
  *    classes: DVPSVOILUT_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:28:59 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-06-02 16:00:54 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -92,6 +92,31 @@ public:
    *  @return pointer to VOI LUT or NULL
    */
   DVPSVOILUT *getVOILUT(size_t idx);
+
+  /** sets a new log stream
+   *  @param stream new log stream, NULL for default logstream
+   *  @param verbMode verbose mode flag
+   *  @param dbgMode debug mode flag
+   */
+  void setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode);
+
+private:
+
+  /// private undefined assignment operator
+  DVPSVOILUT_PList& operator=(const DVPSVOILUT_PList&);
+
+  /** output stream for error messages, never NULL
+   */
+  OFConsole *logstream;
+
+  /** flag indicating whether we're operating in verbose mode
+   */
+  OFBool verboseMode;
+   
+  /** flag indicating whether we're operating in debug mode
+   */
+  OFBool debugMode;
+
   
 };
 
@@ -99,7 +124,10 @@ public:
 
 /*
  *  $Log: dvpsvll.h,v $
- *  Revision 1.2  2000-03-08 16:28:59  meichel
+ *  Revision 1.3  2000-06-02 16:00:54  meichel
+ *  Adapted all dcmpstat classes to use OFConsole for log and error output
+ *
+ *  Revision 1.2  2000/03/08 16:28:59  meichel
  *  Updated copyright header.
  *
  *  Revision 1.1  1998/12/22 17:57:09  meichel

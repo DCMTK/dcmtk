@@ -23,8 +23,8 @@
  *    classes: DVPSGraphicAnnotation_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:29:04 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2000-06-02 16:01:00 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,11 +40,17 @@
 
 DVPSGraphicAnnotation_PList::DVPSGraphicAnnotation_PList()
 : OFList<DVPSGraphicAnnotation *>()
+, logstream(&ofConsole)
+, verboseMode(OFFalse)
+, debugMode(OFFalse)
 {
 }
 
 DVPSGraphicAnnotation_PList::DVPSGraphicAnnotation_PList(const DVPSGraphicAnnotation_PList &arg)
 : OFList<DVPSGraphicAnnotation *>()
+, logstream(arg.logstream)
+, verboseMode(arg.verboseMode)
+, debugMode(arg.debugMode)
 {
   OFListIterator(DVPSGraphicAnnotation *) first = arg.begin();
   OFListIterator(DVPSGraphicAnnotation *) last = arg.end();
@@ -251,7 +257,11 @@ DVPSTextObject *DVPSGraphicAnnotation_PList::addTextObject(
 {
   if (layer==NULL) return NULL;
 
-  if (text==NULL) text = new DVPSTextObject();
+  if (text==NULL)
+  {
+    text = new DVPSTextObject();
+    if (text) text->setLog(logstream, verboseMode, debugMode);
+  }
   if (text==NULL) return NULL;
   
   DVPSGraphicAnnotation *annotation = NULL;
@@ -508,9 +518,27 @@ E_Condition DVPSGraphicAnnotation_PList::moveGraphicObject(
   return EC_IllegalCall;
 }
 
+void DVPSGraphicAnnotation_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
+{
+  if (stream) logstream = stream; else logstream = &ofConsole;
+  verboseMode = verbMode;
+  debugMode = dbgMode;
+  OFListIterator(DVPSGraphicAnnotation *) first = begin();
+  OFListIterator(DVPSGraphicAnnotation *) last = end();
+  while (first != last)
+  {
+    (*first)->setLog(logstream, verbMode, dbgMode);
+    ++first;
+  }	
+}
+
+
 /*
  *  $Log: dvpsgal.cc,v $
- *  Revision 1.5  2000-03-08 16:29:04  meichel
+ *  Revision 1.6  2000-06-02 16:01:00  meichel
+ *  Adapted all dcmpstat classes to use OFConsole for log and error output
+ *
+ *  Revision 1.5  2000/03/08 16:29:04  meichel
  *  Updated copyright header.
  *
  *  Revision 1.4  1999/07/22 16:39:57  meichel

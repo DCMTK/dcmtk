@@ -23,8 +23,8 @@
  *    classes: DVPSAnnotationContent_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:29:01 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2000-06-02 16:00:57 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,13 +40,17 @@
 
 DVPSAnnotationContent_PList::DVPSAnnotationContent_PList()
 : OFList<DVPSAnnotationContent *>()
-, logstream(&CERR)
+, logstream(&ofConsole)
+, verboseMode(OFFalse)
+, debugMode(OFFalse)
 {
 }
 
 DVPSAnnotationContent_PList::DVPSAnnotationContent_PList(const DVPSAnnotationContent_PList &arg)
 : OFList<DVPSAnnotationContent *>()
 , logstream(arg.logstream)
+, verboseMode(arg.verboseMode)
+, debugMode(arg.debugMode)
 {
   OFListIterator(DVPSAnnotationContent *) first = arg.begin();
   OFListIterator(DVPSAnnotationContent *) last = arg.end();
@@ -93,7 +97,7 @@ E_Condition DVPSAnnotationContent_PList::read(DcmItem &dset)
         newAnnotation = new DVPSAnnotationContent();
         if (newAnnotation && ditem)
         {
-          newAnnotation->setLog(logstream);
+          newAnnotation->setLog(logstream, verboseMode, debugMode);
           result = newAnnotation->read(*ditem);
           push_back(newAnnotation);
         } else result = EC_MemoryExhausted;
@@ -145,7 +149,7 @@ E_Condition DVPSAnnotationContent_PList::addAnnotationBox(
   DVPSAnnotationContent *newAnnotation = new DVPSAnnotationContent();
   if (newAnnotation)
   {
-    newAnnotation->setLog(logstream);  	
+    newAnnotation->setLog(logstream, verboseMode, debugMode);  	
     result = newAnnotation->setContent(instanceuid, text, position);
     if (EC_Normal == result) push_back(newAnnotation); else delete newAnnotation;
   } else result = EC_MemoryExhausted;
@@ -213,19 +217,18 @@ E_Condition DVPSAnnotationContent_PList::prepareBasicAnnotationBox(size_t idx, D
   return EC_IllegalCall; 
 }
 
-void DVPSAnnotationContent_PList::setLog(ostream *o)
+void DVPSAnnotationContent_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
 {
-  if (o)
+  if (stream) logstream = stream; else logstream = &ofConsole;
+  verboseMode = verbMode;
+  debugMode = dbgMode;
+  OFListIterator(DVPSAnnotationContent *) first = begin();
+  OFListIterator(DVPSAnnotationContent *) last = end();
+  while (first != last)
   {
-  	logstream = o;
-    OFListIterator(DVPSAnnotationContent *) first = begin();
-    OFListIterator(DVPSAnnotationContent *) last = end();
-    while (first != last)
-    {
-      (*first)->setLog(o);
-      ++first;
-    }	
-  }
+    (*first)->setLog(logstream, verbMode, dbgMode);
+    ++first;
+  }	
 }
 
 void DVPSAnnotationContent_PList::clearAnnotationSOPInstanceUIDs()
@@ -241,7 +244,10 @@ void DVPSAnnotationContent_PList::clearAnnotationSOPInstanceUIDs()
 
 /*
  *  $Log: dvpsabl.cc,v $
- *  Revision 1.3  2000-03-08 16:29:01  meichel
+ *  Revision 1.4  2000-06-02 16:00:57  meichel
+ *  Adapted all dcmpstat classes to use OFConsole for log and error output
+ *
+ *  Revision 1.3  2000/03/08 16:29:01  meichel
  *  Updated copyright header.
  *
  *  Revision 1.2  2000/03/03 14:13:57  meichel
