@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: meichel $, $Date: 1999-04-21 15:49:49 $
+** Last Update:		$Author: meichel $, $Date: 1999-04-22 11:39:58 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.26 $
+** Revision:		$Revision: 1.27 $
 ** Status:		$State: Exp $
 */
 
@@ -2602,14 +2602,10 @@ sendAssociationACTCP(PRIVATE_NETWORKKEY ** /*network*/,
     unsigned char
         buffer[4096],
        *b;
-    unsigned long
-        length;
-    int
-        nbytes;
-    CONDITION
-	cond;
-    DUL_ASSOCIATESERVICEPARAMETERS
-	localService;
+    unsigned long length = 0;
+    int nbytes;
+    CONDITION cond;
+    DUL_ASSOCIATESERVICEPARAMETERS localService;
 
     OFBitmanipTemplate<char>::zeroMem((char *)&associateReply, sizeof(PRV_ASSOCIATEPDU)); // initialize PDU
     // associateReply.presentationContextList = NULL;
@@ -2617,26 +2613,24 @@ sendAssociationACTCP(PRIVATE_NETWORKKEY ** /*network*/,
     localService = *params;
     cond = constructAssociatePDU(&localService, DUL_TYPEASSOCIATEAC,
 				 &associateReply);
-    if (cond != DUL_NORMAL)
-	return cond;
+    if (cond != DUL_NORMAL) return cond;
 
-    if (associateReply.length + 2 <= sizeof(buffer))
-	b = buffer;
+    // we need to have length+6 bytes in buffer, but 4 bytes reserve won't hurt
+    if (associateReply.length + 10 <= sizeof(buffer)) b = buffer;
     else {
-	b = (unsigned char*)malloc(size_t(associateReply.length + 2));
+	b = (unsigned char*)malloc(size_t(associateReply.length + 10));
 	if (b == NULL) {
 	    return COND_PushCondition(DUL_MALLOCERROR,
 			DUL_Message(DUL_MALLOCERROR), "ReplyAssociationTCP",
-				      associateReply.length + 2);
+				      associateReply.length + 10);
 	}
     }
     cond = streamAssociatePDU(&associateReply, b,
-			      associateReply.length + 2, &length);
+			      associateReply.length + 10, &length);
     destroyPresentationContextList(&associateReply.presentationContextList);
     destroyUserInformationLists(&associateReply.userInfo);
 
-    if (cond != DUL_NORMAL)
-	return cond;
+    if (cond != DUL_NORMAL) return cond;
 
 #ifdef VERBOSE
     {
@@ -2667,8 +2661,7 @@ sendAssociationACTCP(PRIVATE_NETWORKKEY ** /*network*/,
 	return COND_PushCondition(DUL_TCPIOERROR, DUL_Message(DUL_TCPIOERROR),
 				  strerror(errno), "ReplyAssociationTCP");
     }
-    if (b != buffer)
-	free(b);
+    if (b != buffer) free(b);
     return DUL_NORMAL;
 }
 
@@ -4197,7 +4190,11 @@ DULPRV_translateAssocReq(unsigned char *buffer,
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.26  1999-04-21 15:49:49  meichel
+** Revision 1.27  1999-04-22 11:39:58  meichel
+** Corrected bug (buffer overflow) in DICOM upper layer module causing
+**   application crash when large A-ASSOCIATE-RSP PDUs were assembled.
+**
+** Revision 1.26  1999/04/21 15:49:49  meichel
 ** Fixed use of OFBitmanipTemplate<>::zeroMem in sendAssociationRQTCP().
 **
 ** Revision 1.25  1999/04/19 08:38:59  meichel
