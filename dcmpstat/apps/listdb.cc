@@ -22,9 +22,9 @@
  *  Purpose: List the contents of database index file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-25 18:36:04 $
+ *  Update Date:      $Date: 1999-04-27 10:57:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/Attic/listdb.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -222,7 +222,12 @@ int main(int argc, char *argv[])
                  << "      instance no=" << guard(dvi.getImageNumber()) << endl
                  << "      instance filename=" << guard(dvi.getFilename()) << endl
                  << "      instance is Presentation State =";
-                 if (dvi.isPresentationState()) cout << "yes" << endl; else cout << "no" << endl;
+                 if (dvi.isPresentationState())
+                 {
+                     cout << "yes" << endl;
+                     cout << "      presentation description=" << guard(dvi.getPresentationDescription()) << endl;
+                 }  else
+                     cout << "no" << endl;
                  cout << "      instance status=";
                  switch (dvi.getInstanceStatus())
                  {
@@ -254,7 +259,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: listdb.cc,v $
- * Revision 1.6  1999-02-25 18:36:04  joergr
+ * Revision 1.7  1999-04-27 10:57:14  joergr
+ * Added new entry to index file: Presentation Description.
+ *
+ * Revision 1.6  1999/02/25 18:36:04  joergr
  * Added setting of debug level in DicomImageClass (avoids compiler warnings).
  *
  * Revision 1.5  1999/02/19 09:50:06  joergr

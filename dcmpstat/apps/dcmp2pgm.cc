@@ -22,9 +22,9 @@
  *  Purpose: test ...
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-22 09:04:57 $
+ *  Update Date:      $Date: 1999-04-27 10:57:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmp2pgm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -262,6 +262,8 @@ void dumpPresentationState(DVInterface& dvi)
         }
       }
     }
+    
+    
 
     // graphic objects
     max = ps.getNumberOfGraphicObjects(layer);
@@ -604,7 +606,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmp2pgm.cc,v $
- * Revision 1.10  1999-03-22 09:04:57  joergr
+ * Revision 1.11  1999-04-27 10:57:13  joergr
+ * Added new entry to index file: Presentation Description.
+ *
+ * Revision 1.10  1999/03/22 09:04:57  joergr
  * Added parameter to get value of (transparent) background color for method
  * getOverlayData.
  *
