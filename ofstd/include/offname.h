@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-99, OFFIS
+ *  Copyright (C) 1999, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: OFFilenameCreator
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-03-03 13:58:04 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-03-22 09:00:50 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,7 +38,7 @@
 #include "oftypes.h"
 #include "ofstring.h"
 
-/** the representation of one Curve in a DICOM image.
+/** A class for automatically creating filenames.
  */  
 
 class OFFilenameCreator
@@ -65,7 +65,7 @@ public:
    */
   OFBool makeFilename(unsigned int seed, const char *dir, const char *prefix, const char *postfix, OFString &filename);
 
-  /** creates hash value (i.e. random seed) from character string.
+  /** creates hash value. (i.e. random seed) from character string.
    *  @param str null-terminated string
    *  @return hash value
    */
@@ -82,7 +82,10 @@ private:
 
 /*
  *  $Log: offname.h,v $
- *  Revision 1.1  1999-03-03 13:58:04  meichel
+ *  Revision 1.2  1999-03-22 09:00:50  joergr
+ *  Added/Changed comments.
+ *
+ *  Revision 1.1  1999/03/03 13:58:04  meichel
  *  Implemented new class for automatically creating filenames.
  *
  *

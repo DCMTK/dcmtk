@@ -22,9 +22,9 @@
  *  Purpose: Handle console applications (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-08 12:00:41 $
+ *  Update Date:      $Date: 1999-03-22 09:00:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofconapp.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,6 +54,8 @@ class OFString;
  *  class declaration  *
  *---------------------*/
 
+/** A class to handle console application
+ */  
 class OFConsoleApplication
 {
 
@@ -148,10 +150,12 @@ class OFConsoleApplication
  *
  * CVS/RCS Log:
  * $Log: ofconapp.h,v $
- * Revision 1.1  1999-02-08 12:00:41  joergr
+ * Revision 1.2  1999-03-22 09:00:49  joergr
+ * Added/Changed comments.
+ *
+ * Revision 1.1  1999/02/08 12:00:41  joergr
  * Added class to handle console applications (with or w/o command line
  * arguments).
- *
  *
  *
  */
