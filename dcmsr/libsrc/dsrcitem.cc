@@ -23,8 +23,8 @@
  *    classes: DSRContentItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 13:11:03 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2003-10-30 17:59:37 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -625,10 +625,34 @@ OFCondition DSRContentItem::setObservationDateTime(const OFString &observationDa
 }
 
 
+OFCondition DSRContentItem::getTemplateIdentification(OFString &templateIdentifier,
+                                                      OFString &mappingResource) const
+{
+    OFCondition result = EC_IllegalCall;
+    if (TreeNode != NULL)
+        result = TreeNode->getTemplateIdentification(templateIdentifier, mappingResource);
+    return result;
+}
+
+
+OFCondition DSRContentItem::setTemplateIdentification(const OFString &templateIdentifier,
+                                                      const OFString &mappingResource)
+{
+    OFCondition result = EC_IllegalCall;
+    if (TreeNode != NULL)
+        result = TreeNode->setTemplateIdentification(templateIdentifier, mappingResource);
+    return result;
+}
+
+
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcitem.cc,v $
- *  Revision 1.12  2003-08-07 13:11:03  joergr
+ *  Revision 1.13  2003-10-30 17:59:37  joergr
+ *  Added full support for the ContentTemplateSequence (read/write, get/set
+ *  template identification). Template constraints are not checked yet.
+ *
+ *  Revision 1.12  2003/08/07 13:11:03  joergr
  *  Adapted type casts to new-style typecast operators defined in ofcast.h.
  *
  *  Revision 1.11  2001/09/26 13:04:17  meichel

@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTree
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-09-15 14:13:42 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Update Date:      $Date: 2003-10-30 17:59:37 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -115,9 +115,21 @@ OFCondition DSRDocumentTree::print(ostream &stream,
                     if (level > 0)  // valid ?
                         stream << OFString((level - 1) * 2, ' ');
                 }
+                /* print node content */
                 stream << "<";
                 result = node->print(stream, flags);
-                stream << ">" << endl;
+                stream << ">";
+                if (flags & PF_printTemplateIdentification)
+                {
+                    /* check for template identification */
+                    OFString templateIdentifier, mappingResource;
+                    if (node->getTemplateIdentification(templateIdentifier, mappingResource).good())
+                    {
+                        if (!templateIdentifier.empty() && !mappingResource.empty())
+                            stream << "  # TID " << templateIdentifier << " (" << mappingResource << ")";
+                    }
+                }                    
+                stream << endl;
             } else
                 result = SR_EC_InvalidDocumentTree;
         } while (result.good() && cursor.iterate());
@@ -190,6 +202,16 @@ OFCondition DSRDocumentTree::readXML(const DSRXMLDocument &doc,
     /* we assume that 'cursor' points to the "content" element */
     if (cursor.valid())
     {
+        OFString templateIdentifier, mappingResource;
+        /* check for optional root template identification */
+        const DSRXMLCursor childCursor = doc.getNamedNode(cursor, "template", OFFalse /*required*/);
+        if (childCursor.valid())
+        {
+            doc.getStringFromAttribute(childCursor, templateIdentifier, "tid");
+            doc.getStringFromAttribute(childCursor, mappingResource, "resource");
+            /* get first child of the "template" element */
+            cursor = childCursor.getChild();
+        }
         E_ValueType valueType = doc.getValueTypeFromNode(cursor);
         /* proceed to first valid container (if any) */
         while (cursor.getNext().valid() && (valueType != VT_Container))
@@ -204,6 +226,9 @@ OFCondition DSRDocumentTree::readXML(const DSRXMLDocument &doc,
                 /* ... insert it into the (empty) tree - checking is not required here */
                 if (addNode(node))
                 {
+                    /* set template identification (if any) */
+                    if (node->setTemplateIdentification(templateIdentifier, mappingResource).bad())
+                        printWarningMessage(LogStream, "Root content item has invalid/incomplete template identification");
                     /* ... and let the node read the rest of the document */
                     result = node->readXML(doc, cursor, DocumentType, flags);
                     /* check and update by-reference relationships (if applicable) */
@@ -572,7 +597,11 @@ OFCondition DSRDocumentTree::checkByReferenceRelationships(const OFBool updateSt
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.cc,v $
- *  Revision 1.20  2003-09-15 14:13:42  joergr
+ *  Revision 1.21  2003-10-30 17:59:37  joergr
+ *  Added full support for the ContentTemplateSequence (read/write, get/set
+ *  template identification). Template constraints are not checked yet.
+ *
+ *  Revision 1.20  2003/09/15 14:13:42  joergr
  *  Introduced new class to facilitate checking of SR IOD relationship content
  *  constraints. Replaced old implementation distributed over numerous classes.
  *
