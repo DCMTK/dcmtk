@@ -22,9 +22,9 @@
  *  Purpose: DicomPaletteImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-16 16:04:01 $
+ *  Update Date:      $Date: 1999-04-28 13:22:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dipalimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,7 +48,8 @@
  *  constructors  *
  *----------------*/
 
-DiPaletteImage::DiPaletteImage(const DiDocument *docu, const EI_Status status)
+DiPaletteImage::DiPaletteImage(const DiDocument *docu,
+                               const EI_Status status)
   : DiColorImage(docu, status, 1)
 {
     if ((Document != NULL) && (InputData != NULL) && (ImageStatus == EIS_Normal))
@@ -108,7 +109,7 @@ DiPaletteImage::DiPaletteImage(const DiDocument *docu, const EI_Status status)
                             InterData = new DiPalettePixelTemplate<Sint16, Sint32, Uint16>(Document, InputData, palette, ImageStatus);
                         break;
                     default:
-                        if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+                        if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
                             cerr << "WARNING: invalid value for inter-representation !" << endl;
                 }
                 deleteInputData();
@@ -121,7 +122,7 @@ DiPaletteImage::DiPaletteImage(const DiDocument *docu, const EI_Status status)
         else
         {
             ImageStatus = EIS_InvalidValue;
-            if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
+            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
             {
                 cerr << "ERROR: invalid value for 'BitsStored' (" << BitsStored << ") ";
                 cerr << "... exceeds maximum palette entry size of " << MAX_TABLE_ENTRY_SIZE << " bits !" << endl;
@@ -140,41 +141,37 @@ DiPaletteImage::~DiPaletteImage()
 }
 
 
-
-
 /*
-
-**
-
-** CVS/RCS Log:
-
-** $Log: dipalimg.cc,v $
-** Revision 1.8  1998-12-16 16:04:01  joergr
-** Added explanation string to LUT class (retrieved from dataset).
-**
-** Revision 1.7  1998/12/14 17:09:34  joergr
-** Added support for signed values as second entry in look-up tables
-** (= first value mapped).
-**
-** Revision 1.6  1998/11/27 14:32:19  joergr
-** Added copyright message.
-** Introduced global debug level for dcmimage module to control error output.
-** Renamed variable 'Status' to 'ImageStatus' because of possible conflicts
-** with X windows systems.
-**
-** Revision 1.5  1998/07/01 08:39:35  joergr
-** Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
-** options), e.g. add copy constructors.
-**
-** Revision 1.4  1998/06/25 08:52:06  joergr
-** Added compatibility mode to support ACR-NEMA images and wrong
-** palette attribute tags.
-**
-** Revision 1.3  1998/05/11 14:52:36  joergr
-** Added CVS/RCS header to each file.
-**
-
-**
-
-*/
-
+ *
+ * CVS/RCS Log:
+ * $Log: dipalimg.cc,v $
+ * Revision 1.9  1999-04-28 13:22:59  joergr
+ * Introduced new scheme for the debug level variable: now each level can be
+ * set separately (there is no "include" relationship).
+ *
+ * Revision 1.8  1998/12/16 16:04:01  joergr
+ * Added explanation string to LUT class (retrieved from dataset).
+ *
+ * Revision 1.7  1998/12/14 17:09:34  joergr
+ * Added support for signed values as second entry in look-up tables
+ * (= first value mapped).
+ *
+ * Revision 1.6  1998/11/27 14:32:19  joergr
+ * Added copyright message.
+ * Introduced global debug level for dcmimage module to control error output.
+ * Renamed variable 'Status' to 'ImageStatus' because of possible conflicts
+ * with X windows systems.
+ *
+ * Revision 1.5  1998/07/01 08:39:35  joergr
+ * Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
+ * options), e.g. add copy constructors.
+ *
+ * Revision 1.4  1998/06/25 08:52:06  joergr
+ * Added compatibility mode to support ACR-NEMA images and wrong
+ * palette attribute tags.
+ *
+ * Revision 1.3  1998/05/11 14:52:36  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */

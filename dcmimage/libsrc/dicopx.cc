@@ -22,9 +22,9 @@
  *  Purpose: DicomColorPixel (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 14:29:32 $
+ *  Update Date:      $Date: 1999-04-28 13:20:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dicopx.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,8 +46,11 @@
  *  constructors  *
  *----------------*/
 
-DiColorPixel::DiColorPixel(const DiDocument *docu, const DiInputPixel *pixel, const Uint16 samples, EI_Status &status,
-    const Uint16 sample_rate)
+DiColorPixel::DiColorPixel(const DiDocument *docu,
+                           const DiInputPixel *pixel,
+                           const Uint16 samples,
+                           EI_Status &status,
+                           const Uint16 sample_rate)
   : DiPixel(0),
     PlanarConfiguration(0)
 {
@@ -58,7 +61,7 @@ DiColorPixel::DiColorPixel(const DiDocument *docu, const DiInputPixel *pixel, co
         {
             if (us != samples)
             {
-                if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
                 {
                     cerr << "WARNING: invalid value for 'SamplesPerPixel' (" << us;
                     cerr << ") ... assuming " << samples << " !" << endl;
@@ -69,7 +72,7 @@ DiColorPixel::DiColorPixel(const DiDocument *docu, const DiInputPixel *pixel, co
                 PlanarConfiguration = (us == 1);
                 if ((us != 0) && (us != 1))
                 {
-                    if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+                    if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
                     {
                         cerr << "WARNING: invalid value for 'PlanarConfiguration' (" << us;
                         cerr << ") ... assuming 'color-by-pixel' (0) !" << endl;
@@ -79,7 +82,7 @@ DiColorPixel::DiColorPixel(const DiDocument *docu, const DiInputPixel *pixel, co
             else if (samples > 1)
             {
                 status = EIS_MissingAttribute;
-                if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
+                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
                     cerr << "ERROR: mandatory attribute 'PlanarConfiguration' is missing !" << endl;
                 return;
             }
@@ -89,7 +92,7 @@ DiColorPixel::DiColorPixel(const DiDocument *docu, const DiInputPixel *pixel, co
         else
         {
             status = EIS_MissingAttribute;
-            if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
+            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
                 cerr << "ERROR: mandatory attribute 'SamplesPerPixel' is missing !" << endl;
         }
     }
@@ -103,7 +106,8 @@ DiColorPixel::DiColorPixel(const DiMonoPixel *pixel)
 }
 
 
-DiColorPixel::DiColorPixel(const DiColorPixel *pixel, const unsigned long count)
+DiColorPixel::DiColorPixel(const DiColorPixel *pixel,
+                           const unsigned long count)
   : DiPixel(count),
     PlanarConfiguration(pixel->PlanarConfiguration)
 {
@@ -120,15 +124,19 @@ DiColorPixel::~DiColorPixel()
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: dicopx.cc,v $
-** Revision 1.4  1998-11-27 14:29:32  joergr
-** Added copyright message.
-** Introduced global debug level for dcmimage module to control error output.
-**
-** Revision 1.3  1998/05/11 14:52:27  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: dicopx.cc,v $
+ * Revision 1.5  1999-04-28 13:20:13  joergr
+ * Introduced new scheme for the debug level variable: now each level can be
+ * set separately (there is no "include" relationship).
+ *
+ * Revision 1.4  1998/11/27 14:29:32  joergr
+ * Added copyright message.
+ * Introduced global debug level for dcmimage module to control error output.
+ *
+ * Revision 1.3  1998/05/11 14:52:27  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */
