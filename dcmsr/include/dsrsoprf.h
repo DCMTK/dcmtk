@@ -24,8 +24,8 @@
  *             - InstanceStruct, SeriesStruct, StudyStruct
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-05-14 08:16:07 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2002-08-30 14:16:59 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,6 +58,8 @@
 class DSRSOPInstanceReferenceList
   : public DSRTypes
 {
+
+  public:
 
     /** Internal structure defining the instance list items
      */
@@ -224,13 +226,6 @@ class DSRSOPInstanceReferenceList
         OFListIterator(SeriesStruct *) Iterator;
     };
 
-    // friend declarations required for MSVC compiler
-    friend struct InstanceStruct;
-    friend struct SeriesStruct;
-    friend struct StudyStruct;
-
-
-  public:
 
     /** constructor
      ** @param  tagKey  DICOM tag specifying the attribute (sequence) of the reference list
@@ -445,7 +440,11 @@ class DSRSOPInstanceReferenceList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrsoprf.h,v $
- *  Revision 1.3  2002-05-14 08:16:07  joergr
+ *  Revision 1.4  2002-08-30 14:16:59  joergr
+ *  Removed "friend" statements from class declaration and moved sub-classes to
+ *  the "public" section (required for Sun CC 6).
+ *
+ *  Revision 1.3  2002/05/14 08:16:07  joergr
  *  Added removeItem() methods.
  *
  *  Revision 1.2  2002/05/07 14:04:44  joergr
