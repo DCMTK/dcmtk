@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-10-09 12:58:19 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Update Date:      $Date: 2003-10-30 17:51:43 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -108,13 +108,14 @@ const size_t DSRTypes::HF_internalUseOnly                = DSRTypes::HF_renderIt
 
 /* read/writeXML flags */
 const size_t DSRTypes::XF_writeEmptyTags                 = 1 << 0;
-const size_t DSRTypes::XF_codeComponentsAsAttribute      = 1 << 1;
-const size_t DSRTypes::XF_relationshipTypeAsAttribute    = 1 << 2;
-const size_t DSRTypes::XF_valueTypeAsAttribute           = 1 << 3;
-const size_t DSRTypes::XF_useDcmsrNamespace              = 1 << 4;
-const size_t DSRTypes::XF_addSchemaReference             = 1 << 5;
-const size_t DSRTypes::XF_validateSchema                 = 1 << 6;
-const size_t DSRTypes::XF_enableLibxmlErrorOutput        = 1 << 7;
+const size_t DSRTypes::XF_writeTemplateIdentification    = 1 << 1;
+const size_t DSRTypes::XF_codeComponentsAsAttribute      = 1 << 2;
+const size_t DSRTypes::XF_relationshipTypeAsAttribute    = 1 << 3;
+const size_t DSRTypes::XF_valueTypeAsAttribute           = 1 << 4;
+const size_t DSRTypes::XF_useDcmsrNamespace              = 1 << 5;
+const size_t DSRTypes::XF_addSchemaReference             = 1 << 6;
+const size_t DSRTypes::XF_validateSchema                 = 1 << 7;
+const size_t DSRTypes::XF_enableLibxmlErrorOutput        = 1 << 8;
 /* shortcuts */
 const size_t DSRTypes::XF_encodeEverythingAsAttribute    = DSRTypes::XF_codeComponentsAsAttribute |
                                                            DSRTypes::XF_relationshipTypeAsAttribute |
@@ -126,6 +127,7 @@ const size_t DSRTypes::PF_shortenLongItemValues          = 1 << 1;
 const size_t DSRTypes::PF_printSOPInstanceUID            = 1 << 2;
 const size_t DSRTypes::PF_printConceptNameCodes          = 1 << 3;
 const size_t DSRTypes::PF_printNoDocumentHeader          = 1 << 4;
+const size_t DSRTypes::PF_printTemplateIdentification    = 1 << 5;
 const size_t DSRTypes::PF_printAllCodes                  = DSRTypes::PF_printConceptNameCodes;
 
 
@@ -1449,7 +1451,11 @@ OFCondition DSRTypes::appendStream(ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
- *  Revision 1.36  2003-10-09 12:58:19  joergr
+ *  Revision 1.37  2003-10-30 17:51:43  joergr
+ *  Added new command line options which allow to print/write the template
+ *  identification of a content item.
+ *
+ *  Revision 1.36  2003/10/09 12:58:19  joergr
  *  Added support for Procedure Log.
  *
  *  Revision 1.35  2003/10/06 09:55:35  joergr

@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-10-09 12:53:12 $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  Update Date:      $Date: 2003-10-30 17:51:00 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -249,6 +249,9 @@ class DSRTypes
     /// write: write all tags even if their value is empty
     static const size_t XF_writeEmptyTags;
 
+    /// write: write template identification information (TID and mapping resource)
+    static const size_t XF_writeTemplateIdentification;
+
     /// write: encode code value, coding scheme designator and coding scheme version as attribute instead of element text
     static const size_t XF_codeComponentsAsAttribute;
 
@@ -295,6 +298,9 @@ class DSRTypes
 
     /// print no general document information (header)
     static const size_t PF_printNoDocumentHeader;
+
+    /// print template identification (TID and mapping resource)
+    static const size_t PF_printTemplateIdentification;
 
     /// shortcut: print all codes
     static const size_t PF_printAllCodes;
@@ -1188,7 +1194,11 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
- *  Revision 1.37  2003-10-09 12:53:12  joergr
+ *  Revision 1.38  2003-10-30 17:51:00  joergr
+ *  Added new command line options which allow to print/write the template
+ *  identification of a content item.
+ *
+ *  Revision 1.37  2003/10/09 12:53:12  joergr
  *  Added support for Procedure Log.
  *
  *  Revision 1.36  2003/10/06 09:52:58  joergr
