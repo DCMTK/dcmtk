@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-10-07 17:21:58 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2000-02-03 11:48:27 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -257,11 +257,11 @@ E_Condition DVPSImageBoxContent::read(DcmItem &dset, DVPSPresentationLUT_PList& 
   if (result==EC_Normal)
   {
     stack.clear();
-    if (EC_Normal == dset.search(DCM_ReferencedImageOverlayBoxSequence, stack, ESM_fromHere, OFFalse))
+    if (EC_Normal == dset.search(DCM_RETIRED_ReferencedImageOverlayBoxSequence, stack, ESM_fromHere, OFFalse))
     {
       result=EC_IllegalCall;
 #ifdef DEBUG
-      *logstream << "Error: Stored Print: ReferencedImageOverlayBoxSequence not supported" << endl;
+      *logstream << "Error: Stored Print: retired ReferencedImageOverlayBoxSequence not supported" << endl;
 #endif
     }
   }
@@ -660,7 +660,11 @@ OFBool DVPSImageBoxContent::hasAdditionalSettings()
 
 /*
  *  $Log: dvpsib.cc,v $
- *  Revision 1.12  1999-10-07 17:21:58  meichel
+ *  Revision 1.13  2000-02-03 11:48:27  meichel
+ *  Rebuilt data dictionary based on 1999 standard text,
+ *    latest supplements and CP packet 6.
+ *
+ *  Revision 1.12  1999/10/07 17:21:58  meichel
  *  Reworked management of Presentation LUTs in order to create tighter
  *    coupling between Softcopy and Print.
  *

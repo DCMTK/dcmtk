@@ -19,21 +19,20 @@
 #  Author:  Andrew Hewett, Marco Eichelberg
 #
 #  Purpose: 
-#  This is the global DICOM data dictionary for the dcm toolkit dcmdata
-#  class library.
+#  This is the global DICOM data dictionary for the dcmtk class library.
 #
 #  Last Update:      $Author: meichel $
-#  Update Date:      $Date: 1999-07-14 16:26:46 $
+#  Update Date:      $Date: 2000-02-03 11:47:29 $
 #  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dicom.dic,v $
-#  CVS/RCS Revision: $Revision: 1.32 $
+#  CVS/RCS Revision: $Revision: 1.33 $
 #  Status:           $State: Exp $
 #
-#  The dictionary contains
-#   - the complete dictionary from the 1998 DICOM publication
-#     which already includes supplements 1-14, 17-20, 22, 24-25, 27-28
-#   - the final text of supplements 29, 32, 35-39
-#   - the final texts of CP packets 4 and 5
-#   - working drafts of supplements 15, 23, 33 (experimental support only!)
+#  This dictionary contains
+#   - the complete dictionary from the 1999 DICOM publication
+#     which includes supplements 1-22 (except 16 and 21 which are cancelled),
+#     24-25, 27-29, 32 and 35-39 and CP packages 1-5
+#   - the final text of supplement 33 and CP package 6
+#   - the letter ballot texts of supplements 23, 30 and 31
 #
 # Each line represents an entry in the data dictionary.  Each line
 # has 5 fields (Tag, VR, Name, VM, Version).  Entries need not be
@@ -53,7 +52,6 @@
 #
 # Tag		VR	Name			VM	Version
 #
-
 (0000,0000)	UL	CommandGroupLength	1	dicom98
 (0000,0002)	UI	AffectedSOPClassUID	1	dicom98
 (0000,0003)	UI	RequestedSOPClassUID	1	dicom98
@@ -135,6 +133,7 @@
 (0008,0060)	CS	Modality	1	dicom98
 (0008,0061)	CS	ModalitiesInStudy	1-n	dicom98
 (0008,0064)	CS	ConversionType	1	dicom98
+(0008,0068)	CS	PresentationIntentType	1	dicom99
 (0008,0070)	LO	Manufacturer	1	dicom98
 (0008,0080)	LO	InstitutionName	1	dicom98
 (0008,0081)	ST	InstitutionAddress	1	dicom98
@@ -144,7 +143,15 @@
 (0008,0094)	SH	ReferringPhysiciansTelephoneNumbers	1-n	dicom98
 (0008,0100)	SH	CodeValue	1	dicom98
 (0008,0102)	SH	CodingSchemeDesignator	1	dicom98
+(0008,0103)	SH	CodingSchemeVersion	1	dicom99
 (0008,0104)	LO	CodeMeaning	1	dicom98
+(0008,0105)	CS	MappingResource	1	dicom99
+(0008,0106)	DT	ContextGroupVersion	1	dicom99
+(0008,0107)	DT	ContextGroupLocalVersion	1	dicom99
+(0008,010B)	CS	CodeSetExtensionFlag	1	dicom99
+(0008,010C)	UI	PrivateCodingSchemeCreatorUID	1	dicom99
+(0008,010D)	UI	CodeSetExtensionCreatorUID	1	dicom99
+(0008,010F)	CS	ContextIdentifier	1	dicom99
 (0008,1010)	SH	StationName	1	dicom98
 (0008,1030)	LO	StudyDescription	1	dicom98
 (0008,1032)	SQ	ProcedureCodeSequence	1	dicom98
@@ -168,6 +175,7 @@
 (0008,1145)	SQ	ReferencedCurveSequence	1	dicom98
 (0008,1150)	UI	ReferencedSOPClassUID	1	dicom98
 (0008,1155)	UI	ReferencedSOPInstanceUID	1	dicom98
+(0008,115A)	UI	SOPClassesSupported	1-n	dicom99
 (0008,1160)	IS	ReferencedFrameNumber	1	dicom98
 (0008,1195)	UI	TransactionUID	1	dicom98
 (0008,1197)	US	FailureReason	1	dicom98
@@ -346,6 +354,7 @@
 (0018,1136)	DS	TableLateralIncrement	1-n	dicom98
 (0018,1137)	DS	TableLongitudinalIncrement	1-n	dicom98
 (0018,1138)	DS	TableAngle	1	dicom98
+(0018,113A)	CS	TableType	1	dicom99
 (0018,1140)	CS	RotationDirection	1	dicom98
 (0018,1141)	DS	AngularPosition	1	dicom98
 (0018,1142)	DS	RadialPosition	1-n	dicom98
@@ -360,6 +369,7 @@
 (0018,1153)	IS	ExposureinuAs	1	dicom98
 (0018,1154)	DS	AveragePulseWidth	1	dicom98
 (0018,1155)	CS	RadiationSetting	1	dicom98
+(0018,1156)	CS	RectificationType	1	dicom99
 (0018,115A)	CS	RadiationMode	1	dicom98
 (0018,115E)	DS	ImageAreaDoseProduct	1	dicom98
 (0018,1160)	SH	FilterType	1	dicom98
@@ -377,6 +387,9 @@
 # VM for (0018,1184) YFocusCenter was 1 in DICOM93. Changed in DICOM96 (Supplement 7).
 (0018,1184)	DS	YFocusCenter	1-2	dicom98
 (0018,1190)	DS	FocalSpots	1-n	dicom98
+(0018,1191)	CS	AnodeTargetMaterial	1	dicom99
+(0018,11A0)	DS	BodyPartThickness	1	dicom99
+(0018,11A2)	DS	CompressionForce	1	dicom99
 (0018,1200)	DA	DateOfLastCalibration	1-n	dicom98
 (0018,1201)	TM	TimeOfLastCalibration	1-n	dicom98
 (0018,1210)	SH	ConvolutionKernel	1-n	dicom98
@@ -407,7 +420,11 @@
 (0018,1460)	DS	TomoLayerHeight	1	dicom98
 (0018,1470)	DS	TomoAngle	1	dicom98
 (0018,1480)	DS	TomoTime	1	dicom98
+(0018,1490)	CS	TomoType	1	dicom99
+(0018,1491)	CS	TomoClass	1	dicom99
+(0018,1495)	IS	NumberofTomosynthesisSourceImages	1	dicom99
 (0018,1500)	CS	PositionerMotion	1	dicom98
+(0018,1508)	CS	PositionerType	1	dicom99
 (0018,1510)	DS	PositionerPrimaryAngle	1	dicom98
 (0018,1511)	DS	PositionerSecondaryAngle	1	dicom98
 (0018,1520)	DS	PositionerPrimaryAngleIncrement	1-n	dicom98
@@ -445,6 +462,7 @@
 (0018,5050)	IS	DepthOfScanField	1	dicom98
 (0018,5100)	CS	PatientPosition	1	dicom98
 (0018,5101)	CS	ViewPosition	1	dicom98
+(0018,5104)	SQ	ProjectionEponymousNameCodeSequence	1	dicom99
 (0018,5210)	DS	ImageTransformationMatrix	6	dicom98
 (0018,5212)	DS	ImageTranslationVector	3	dicom98
 (0018,6000)	DS	Sensitivity	1	dicom98
@@ -487,6 +505,43 @@
 (0018,6056)	UL	NumberOfTableEntries	1	dicom98
 (0018,6058)	UL	TableOfPixelValues	1-n	dicom98
 (0018,605A)	FL	TableOfParameterValues	1-n	dicom98
+(0018,7000)	CS	DetectorConditionsNominalFlag	1	dicom99
+(0018,7001)	DS	DetectorTemperature	1	dicom99
+(0018,7004)	CS	DetectorType	1	dicom99
+(0018,7005)	CS	DetectorConfiguration	1	dicom99
+(0018,7006)	LT	DetectorDescription	1	dicom99
+(0018,7008)	LT	DetectorMode	1	dicom99
+(0018,700A)	SH	DetectorID	1	dicom99
+(0018,700C)	DA	DateofLastDetectorCalibration	1	dicom99
+(0018,700E)	TM	TimeofLastDetectorCalibration	1	dicom99
+(0018,7010)	IS	ExposuresOnDetectorSinceLastCalibration	1	dicom99
+(0018,7011)	IS	ExposuresOnDetectorSinceManufactured	1	dicom99
+(0018,7012)	DS	DetectorTimeSinceLastExposure	1	dicom99
+(0018,7014)	DS	DetectorActiveTime	1	dicom99
+(0018,7016)	DS	DetectorActivationOffsetFromExposure	1	dicom99
+(0018,701A)	DS	DetectorBinning	2	dicom99
+(0018,7020)	DS	DetectorElementPhysicalSize	2	dicom99
+(0018,7022)	DS	DetectorElementSpacing	2	dicom99
+(0018,7024)	CS	DetectorActiveShape	1	dicom99
+(0018,7026)	DS	DetectorActiveDimensions	1-2	dicom99
+(0018,7028)	DS	DetectorActiveOrigin	2	dicom99
+(0018,7030)	DS	FieldofViewOrigin	2	dicom99
+(0018,7032)	DS	FieldofViewRotation	1	dicom99
+(0018,7034)	CS	FieldofViewHorizontalFlip	1	dicom99
+(0018,7040)	LT	GridAbsorbingMaterial	1	dicom99
+(0018,7041)	LT	GridSpacingMaterial	1	dicom99
+(0018,7042)	DS	GridThickness	1	dicom99
+(0018,7044)	DS	GridPitch	1	dicom99
+(0018,7046)	IS	GridAspectRatio	2	dicom99
+(0018,7048)	DS	GridPeriod	1	dicom99
+(0018,704C)	DS	GridFocalDistance	1	dicom99
+(0018,7050)	LT	FilterMaterial	1-n	dicom99
+(0018,7052)	DS	FilterThicknessMinimum	1-n	dicom99
+(0018,7054)	DS	FilterThicknessMaximum	1-n	dicom99
+(0018,7060)	CS	ExposureControlMode	1	dicom99
+(0018,7062)	LT	ExposureControlModeDescription	1	dicom99
+(0018,7064)	CS	ExposureStatus	1	dicom99
+(0018,7065)	DS	PhototimerSetting	1	dicom99
 (0020,0000)	UL	ImageGroupLength	1	dicom98
 (0020,000D)	UI	StudyInstanceUID	1	dicom98
 (0020,000E)	UI	SeriesInstanceUID	1	dicom98
@@ -495,6 +550,7 @@
 (0020,0012)	IS	AcquisitionNumber	1	dicom98
 # InstanceNumber was named ImageNumber, renamed in CP 99 (09/1998)
 (0020,0013)	IS	InstanceNumber	1	dicom98
+(0020,0019)	IS	ItemNumber	1	dicom99
 (0020,0020)	CS	PatientOrientation	2	dicom98
 (0020,0022)	IS	OverlayNumber	1	dicom98
 (0020,0024)	IS	CurveNumber	1	dicom98
@@ -503,6 +559,7 @@
 (0020,0037)	DS	ImageOrientationPatient	6	dicom98
 (0020,0052)	UI	FrameOfReferenceUID	1	dicom98
 (0020,0060)	CS	Laterality	1	dicom98
+(0020,0062)	CS	ImageLaterality	1	dicom99
 (0020,0100)	IS	TemporalPositionIdentifier	1	dicom98
 (0020,0105)	IS	NumberOfTemporalPositions	1	dicom98
 (0020,0110)	DS	TemporalResolution	1	dicom98
@@ -550,7 +607,10 @@
 (0028,0110)	xs	SmallestImagePixelValueInPlane	1	dicom98
 (0028,0111)	xs	LargestImagePixelValueInPlane	1	dicom98
 (0028,0120)	xs	PixelPaddingValue	1	dicom98
+(0028,0300)	CS	QualityControlImage	1	dicom99
+(0028,0301)	CS	BurnedInAnnotation	1	dicom99
 (0028,1040)	CS	PixelIntensityRelationship	1	dicom98
+(0028,1041)	SS	PixelIntensityRelationshipSign	1	dicom99
 (0028,1050)	DS	WindowCenter	1-n	dicom98
 (0028,1051)	DS	WindowWidth	1-n	dicom98
 (0028,1052)	DS	RescaleIntercept	1	dicom98
@@ -574,7 +634,9 @@
 (0028,1221)	OW	SegmentedRedPaletteColorLookupTableData	1	dicom98
 (0028,1222)	OW	SegmentedGreenPaletteColorLookupTableData	1	dicom98
 (0028,1223)	OW	SegmentedBluePaletteColorLookupTableData	1	dicom98
+(0028,1300)	CS	ImplantPresent	1	dicom99
 (0028,2110)	CS	LossyImageCompression	1	dicom98
+(0028,2112)	DS	LossyImageCompressionRatio	1-n	dicom99
 (0028,3000)	SQ	ModalityLUTSequence	1	dicom98
 (0028,3002)	xs	LUTDescriptor	3	dicom98
 (0028,3003)	LO	LUTExplanation	1	dicom98
@@ -683,13 +745,28 @@
 (0040,0302)	US	EntranceDose	1	dicom98
 (0040,0303)	US	ExposedArea	1-2	dicom98
 (0040,0306)	DS	DistanceSourceToEntrance	1	dicom98
+(0040,0307)	DS	DistanceSourceToSupport	1	dicom99
 (0040,0310)	ST	CommentsOnRadiationDose	1	dicom98
+(0040,0312)	DS	XRayOutput	1	dicom99
+(0040,0314)	DS	HalfValueLayer	1	dicom99
+(0040,0316)	DS	OrganDose	1	dicom99
+(0040,0318)	CS	OrganExposed	1	dicom99
 (0040,0320)	SQ	BillingProcedureStepSequence	1	dicom98
 (0040,0321)	SQ	FilmConsumptionSequence	1	dicom98
 (0040,0324)	SQ	BillingSuppliesAndDevicesSequence	1	dicom98
 (0040,0330)	SQ	ReferencedProcedureStepSequence	1	dicom98
 (0040,0340)	SQ	PerformedSeriesSequence	1	dicom98
 (0040,0400)	LT	CommentsOnTheScheduledProcedureStep	1	dicom98
+(0040,0555)	SQ	AcquisitionContextSequence	1	dicom99
+(0040,0556)	ST	AcquisitionContextDescription	1	dicom99
+(0040,06FA)	LO	SlideIdentifier	1	dicom99
+(0040,071A)	SQ	ImageCenterPointCoordinatesSequence	1	dicom99
+(0040,072A)	DS	XOffsetInSlideCoordinateSystem	1	dicom99
+(0040,073A)	DS	YOffsetInSlideCoordinateSystem	1	dicom99
+(0040,074A)	DS	ZOffsetInSlideCoordinateSystem	1	dicom99
+(0040,08D8)	SQ	PixelSpacingSequence	1	dicom99
+(0040,08DA)	SQ	CoordinateSystemAxisCodeSequence	1	dicom99
+(0040,08EA)	SQ	MeasurementUnitsCodeSequence	1	dicom99
 (0040,1001)	SH	RequestedProcedureID	1	dicom98
 (0040,1002)	LO	ReasonForTheRequestedProcedure	1	dicom98
 (0040,1003)	SH	RequestedProcedurePriority	1	dicom98
@@ -711,8 +788,18 @@
 (0040,2008)	PN	OrderEnteredBy	1	dicom98
 (0040,2009)	SH	OrderEnterersLocation	1	dicom98
 (0040,2010)	SH	OrderCallbackPhoneNumber	1	dicom98
+(0040,2016)	LO	PlacerOrderNumberImagingServiceRequest	1	dicom99
+(0040,2017)	LO	FillerOrderNumberImagingServiceRequest	1	dicom99
 (0040,2400)	LT	ImagingServiceRequestComments	1	dicom98
 (0040,3001)	LO	ConfidentialityConstraintOnPatientDataDescription	1	dicom98
+(0040,A043)	SQ	ConceptNameCodeSequence	1	dicom99
+(0040,A121)	DA	Date	1	dicom99
+(0040,A122)	TM	Time	1	dicom99
+(0040,A123)	PN	PersonName	1	dicom99
+(0040,A136)	US	ReferencedFrameNumbers	1-n	dicom99
+(0040,A160)	UT	TextValue	1	dicom99
+(0040,A168)	SQ	ConceptCodeSequence	1	dicom99
+(0040,A30A)	DS	NumericValue	1-n	dicom99
 (0050,0000)	UL	XRayAngioDeviceGroupLength	1	dicom98
 # name for (0050,0004) was CalibrationObject in DICOM96. Name changed to CalibrationImage in DICOM98.
 (0050,0004)	CS	CalibrationImage	1	dicom98
@@ -803,6 +890,14 @@
 (0054,1330)	US	ImageIndex	1	dicom98
 (0054,1400)	CS	CountsIncluded	1-n	dicom98
 (0054,1401)	CS	DeadTimeCorrectionFlag	1	dicom98
+(0060,0000)	UL	HistogramGroupLength	1	dicom99
+(0060,3000)	SQ	HistogramSequence	1	dicom99
+(0060,3002)	US	HistogramNumberofBins	1	dicom99
+(0060,3004)	xs	HistogramFirstBinValue	1	dicom99
+(0060,3006)	xs	HistogramLastBinValue	1	dicom99
+(0060,3008)	US	HistogramBinWidth	1	dicom99
+(0060,3010)	LO	HistogramExplanation	1	dicom99
+(0060,3020)	UL	HistogramData	1-n	dicom99
 (0088,0000)	UL	StorageGroupLength	1	dicom98
 (0088,0130)	SH	StorageMediaFileSetID	1	dicom98
 (0088,0140)	UI	StorageMediaFileSetUID	1	dicom98
@@ -813,17 +908,25 @@
 (0088,0912)	LO	TopicKeyWords	1-32	dicom98
 (2000,0000)	UL	FilmSessionGroupLength	1	dicom98
 (2000,0010)	IS	NumberOfCopies	1	dicom98
+(2000,001E)	SQ	PrinterConfigurationSequence	1	dicom99
 (2000,0020)	CS	PrintPriority	1	dicom98
 (2000,0030)	CS	MediumType	1	dicom98
 (2000,0040)	CS	FilmDestination	1	dicom98
 (2000,0050)	LO	FilmSessionLabel	1	dicom98
 (2000,0060)	IS	MemoryAllocation	1	dicom98
+# MaximumMemoryAllocation is corrected in CP 164, was (2000,0062) in Supp37 which is already in use.
+(2000,0061)	IS	MaximumMemoryAllocation	1	dicom99
 (2000,0062)	CS	ColorImagePrintingFlag	1	dicom98
 (2000,0063)	CS	CollationFlag	1	dicom98
 (2000,0065)	CS	AnnotationFlag	1	dicom98
 (2000,0067)	CS	ImageOverlayFlag	1	dicom98
 (2000,0069)	CS	PresentationLUTFlag	1	dicom98
 (2000,006A)	CS	ImageBoxPresentationLUTFlag	1	dicom98
+(2000,00A0)	US	MemoryBitDepth	1	dicom99
+(2000,00A1)	US	PrintingBitDepth	1	dicom99
+(2000,00A2)	SQ	MediaInstalledSequence	1	dicom99
+(2000,00A4)	SQ	OtherMediaAvailableSequence	1	dicom99
+(2000,00A8)	SQ	SupportedImageDisplayFormatsSequence	1	dicom99
 (2000,0500)	SQ	ReferencedFilmBoxSequence	1	dicom98
 (2000,0510)	SQ	ReferencedStoredPrintSequence	1	dicom98
 (2010,0000)	UL	FilmBoxGroupLength	1	dicom98
@@ -831,16 +934,25 @@
 (2010,0030)	CS	AnnotationDisplayFormatID	1	dicom98
 (2010,0040)	CS	FilmOrientation	1	dicom98
 (2010,0050)	CS	FilmSizeID	1	dicom98
+(2010,0052)	CS	PrinterResolutionID	1	dicom99
+(2010,0054)	CS	DefaultPrinterResolutionID	1	dicom99
 (2010,0060)	CS	MagnificationType	1	dicom98
 (2010,0080)	CS	SmoothingType	1	dicom98
+(2010,00A6)	CS	DefaultMagnificationType	1	dicom99
+(2010,00A7)	CS	OtherMagnificationTypesAvailable	1-n	dicom99
+(2010,00A8)	CS	DefaultSmoothingType	1	dicom99
+(2010,00A9)	CS	OtherSmoothingTypesAvailable	1-n	dicom99
 (2010,0100)	CS	BorderDensity	1	dicom98
 (2010,0110)	CS	EmptyImageDensity	1	dicom98
 (2010,0120)	US	MinDensity	1	dicom98
 (2010,0130)	US	MaxDensity	1	dicom98
 (2010,0140)	CS	Trim	1	dicom98
 (2010,0150)	ST	ConfigurationInformation	1	dicom98
+(2010,0152)	LT	ConfigurationInformationDescription	1	dicom99
+(2010,0154)	IS	MaximumCollatedFilms	1	dicom99
 (2010,015E)	US	Illumination	1	dicom98
 (2010,0160)	US	ReflectedAmbientLight	1	dicom98
+(2010,0376)	DS	PrinterPixelSpacing	2	dicom99
 (2010,0500)	SQ	ReferencedFilmSessionSequence	1	dicom98
 (2010,0510)	SQ	ReferencedImageBoxSequence	1	dicom98
 (2010,0520)	SQ	ReferencedBasicAnnotationBoxSequence	1	dicom98
@@ -850,21 +962,31 @@
 (2020,0010)	US	ImageBoxPosition	1	dicom98
 (2020,0020)	CS	Polarity	1	dicom98
 (2020,0030)	DS	RequestedImageSize	1	dicom98
+(2020,0040)	CS	RequestedDecimateCropBehavior	1	dicom99
+(2020,0050)	CS	RequestedResolutionID	1	dicom99
+(2020,00A0)	CS	RequestedImageSizeFlag	1	dicom99
+(2020,00A2)	CS	DecimateCropResult	1	dicom99
 # name for (2020,0110) was PreformattedGrayscaleImageSequence in DICOM96. Name changed to BasicGrayscaleImageSequence in DICOM98.
 (2020,0110)	SQ	BasicGrayscaleImageSequence	1	dicom98
 # name for (2020,0110) was PreformattedColorImageSequence in DICOM96. Name changed to BasicColorImageSequence in DICOM98.
 (2020,0111)	SQ	BasicColorImageSequence	1	dicom98
-(2020,0130)	SQ	ReferencedImageOverlayBoxSequence	1	dicom98
-(2020,0140)	SQ	ReferencedVOILUTBoxSequence	1	dicom98
+# (2020,0130) ReferencedOverlayBoxSequence was retired in Supplement 35 (1999)
+(2020,0130)	SQ	RETIRED_ReferencedImageOverlayBoxSequence	1	dicom98
+# (2020,0140) ReferencedVOILUTSequence was retired in Supplement 35 (1999)
+(2020,0140)	SQ	RETIRED_ReferencedVOILUTBoxSequence	1	dicom98
 (2030,0000)	UL	AnnotationGroupLength	1	dicom98
 (2030,0010)	US	AnnotationPosition	1	dicom98
 (2030,0020)	LO	TextString	1	dicom98
 (2040,0000)	UL	OverlayBoxGroupLength	1	dicom98
 (2040,0010)	SQ	ReferencedOverlayPlaneSequence	1	dicom98
 (2040,0011)	US	ReferencedOverlayPlaneGroups	1-99	dicom98
+(2040,0020)	SQ	OverlayPixelDataSequence	1	dicom99
 (2040,0060)	CS	OverlayMagnificationType	1	dicom98
 (2040,0070)	CS	OverlaySmoothingType	1	dicom98
+(2040,0072)	CS	OverlayOrImageMagnification	1	dicom99
+(2040,0074)	US	MagnifyToNumberOfColumns	1	dicom99
 (2040,0080)	CS	OverlayForegroundDensity	1	dicom98
+(2040,0082)	CS	OverlayBackgroundDensity	1	dicom99
 (2040,0090)	CS	OverlayMode	1	dicom98
 (2040,0100)	CS	ThresholdDensity	1	dicom98
 (2050,0000)	UL	PresentationLUTGroupLength	1	dicom98
@@ -988,6 +1110,83 @@
 (3006,00C4)	CS	FrameOfReferenceTransformationType	1	dicom98
 (3006,00C6)	DS	FrameOfReferenceTransformationMatrix	16	dicom98
 (3006,00C8)	LO	FrameOfReferenceTransformationComment	1	dicom98
+(3008,0010)	SQ	MeasuredDoseReferenceSequence	1	dicom99
+(3008,0012)	ST	MeasuredDoseDescription	1	dicom99
+(3008,0014)	CS	MeasuredDoseType	1	dicom99
+(3008,0016)	DS	MeasuredDoseValue	1	dicom99
+(3008,0020)	SQ	TreatmentSessionBeamSequence	1	dicom99
+(3008,0022)	IS	CurrentFractionNumber	1	dicom99
+(3008,0024)	DA	TreatmentControlPointDate	1	dicom99
+(3008,0025)	TM	TreatmentControlPointTime	1	dicom99
+(3008,002A)	CS	TreatmentTerminationStatus	1	dicom99
+(3008,002B)	SH	TreatmentTerminationCode	1	dicom99
+(3008,002C)	CS	TreatmentVerificationStatus	1	dicom99
+(3008,0030)	SQ	ReferencedTreatmentRecordSequence	1	dicom99
+(3008,0032)	DS	SpecifiedPrimaryMeterset	1	dicom99
+(3008,0033)	DS	SpecifiedSecondaryMeterset	1	dicom99
+(3008,0036)	DS	DeliveredPrimaryMeterset	1	dicom99
+(3008,0037)	DS	DeliveredSecondaryMeterset	1	dicom99
+(3008,003A)	DS	SpecifiedTreatmentTime	1	dicom99
+(3008,003B)	DS	DeliveredTreatmentTime	1	dicom99
+(3008,0040)	SQ	ControlPointDeliverySequence	1	dicom99
+(3008,0042)	DS	SpecifiedMeterset	1	dicom99
+(3008,0044)	DS	DeliveredMeterset	1	dicom99
+(3008,0048)	DS	DoseRateDelivered	1	dicom99
+(3008,0050)	SQ	TreatmentSummaryCalculatedDoseReferenceSequence	1	dicom99
+(3008,0052)	DS	CumulativeDosetoDoseReference	1	dicom99
+(3008,0054)	DA	FirstTreatmentDate	1	dicom99
+(3008,0056)	DA	MostRecentTreatmentDate	1	dicom99
+(3008,005A)	IS	NumberofFractionsDelivered	1	dicom99
+(3008,0060)	SQ	OverrideSequence	1	dicom99
+(3008,0062)	AT	OverrideParameterPointer	1	dicom99
+(3008,0064)	IS	MeasuredDoseReferenceNumber	1	dicom99
+(3008,0066)	ST	OverrideReason	1	dicom99
+(3008,0070)	SQ	CalculatedDoseReferenceSequence	1	dicom99
+(3008,0072)	IS	CalculatedDoseReferenceNumber	1	dicom99
+(3008,0074)	ST	CalculatedDoseReferenceDescription	1	dicom99
+(3008,0076)	DS	CalculatedDoseReferenceDoseValue	1	dicom99
+(3008,0078)	DS	StartMeterset	1	dicom99
+(3008,007A)	DS	EndMeterset	1	dicom99
+(3008,0080)	SQ	ReferencedMeasuredDoseReferenceSequence	1	dicom99
+(3008,0082)	IS	ReferencedMeasuredDoseReferenceNumber	1	dicom99
+(3008,0090)	SQ	ReferencedCalculatedDoseReferenceSequence	1	dicom99
+(3008,0092)	IS	ReferencedCalculatedDoseReferenceNumber	1	dicom99
+(3008,00A0)	SQ	BeamLimitingDeviceLeafPairsSequence	1	dicom99
+(3008,00B0)	SQ	RecordedWedgeSequence	1	dicom99
+(3008,00C0)	SQ	RecordedCompensatorSequence	1	dicom99
+(3008,00D0)	SQ	RecordedBlockSequence	1	dicom99
+(3008,00E0)	SQ	TreatmentSummaryMeasuredDoseReferenceSequence	1	dicom99
+(3008,0100)	SQ	RecordedSourceSequence	1	dicom99
+(3008,0105)	LO	SourceSerialNumber	1	dicom99
+(3008,0110)	SQ	TreatmentSessionApplicationSetupSequence	1	dicom99
+(3008,0116)	CS	ApplicationSetupCheck	1	dicom99
+(3008,0120)	SQ	RecordedBrachyAccessoryDeviceSequence	1	dicom99
+(3008,0122)	IS	ReferencedBrachyAccessoryDeviceNumber	1	dicom99
+(3008,0130)	SQ	RecordedChannelSequence	1	dicom99
+(3008,0132)	DS	SpecifiedChannelTotalTime	1	dicom99
+(3008,0134)	DS	DeliveredChannelTotalTime	1	dicom99
+(3008,0136)	IS	SpecifiedNumberofPulses	1	dicom99
+(3008,0138)	IS	DeliveredNumberofPulses	1	dicom99
+(3008,013A)	DS	SpecifiedPulseRepetitionInterval	1	dicom99
+(3008,013C)	DS	DeliveredPulseRepetitionInterval	1	dicom99
+(3008,0140)	SQ	RecordedSourceApplicatorSequence	1	dicom99
+(3008,0142)	IS	ReferencedSourceApplicatorNumber	1	dicom99
+(3008,0150)	SQ	RecordedChannelShieldSequence	1	dicom99
+(3008,0152)	IS	ReferencedChannelShieldNumber	1	dicom99
+(3008,0160)	SQ	BrachyControlPointDeliveredSequence	1	dicom99
+(3008,0162)	DA	SafePositionExitDate	1	dicom99
+(3008,0164)	TM	SafePositionExitTime	1	dicom99
+(3008,0166)	DA	SafePositionReturnDate	1	dicom99
+(3008,0168)	TM	SafePositionReturnTime	1	dicom99
+(3008,0200)	CS	CurrentTreatmentStatus	1	dicom99
+(3008,0202)	ST	TreatmentStatusComment	1	dicom99
+(3008,0220)	SQ	FractionGroupSummarySequence	1	dicom99
+(3008,0223)	IS	ReferencedFractionNumber	1	dicom99
+(3008,0224)	CS	FractionGroupType	1	dicom99
+(3008,0230)	CS	BeamStopperPosition	1	dicom99
+(3008,0240)	SQ	FractionStatusSummarySequence	1	dicom99
+(3008,0250)	DA	TreatmentDate	1	dicom99
+(3008,0251)	TM	TreatmentTime	1	dicom99
 (300A,0000)	UL	RTPlanGroupLength	1	dicom98
 (300A,0002)	SH	RTPlanLabel	1	dicom98
 (300A,0003)	LO	RTPlanName	1	dicom98
@@ -1002,6 +1201,7 @@
 (300A,0010)	SQ	DoseReferenceSequence	1	dicom98
 (300A,0012)	IS	DoseReferenceNumber	1	dicom98
 (300A,0014)	CS	DoseReferenceStructureType	1	dicom98
+(300A,0015)	CS	NominalBeamEnergyUnit	1	dicom99
 (300A,0016)	LO	DoseReferenceDescription	1	dicom98
 (300A,0018)	DS	DoseReferencePointCoordinates	3	dicom98
 (300A,001A)	DS	NominalPriorDose	1	dicom98
@@ -1084,6 +1284,7 @@
 (300A,00EB)	DS	CompensatorTransmissionData	1-n	dicom98
 (300A,00EC)	DS	CompensatorThicknessData	1-n	dicom98
 (300A,00ED)	IS	NumberOfBoli	1	dicom98
+(300A,00EE)	CS	CompensatorType	1	dicom99
 (300A,00F0)	IS	NumberOfBlocks	1	dicom98
 (300A,00F2)	DS	TotalBlockTrayFactor	1	dicom98
 (300A,00F4)	SQ	BlockSequence	1	dicom98
@@ -1525,416 +1726,226 @@
 #
 #---------------------------------------------------------------------------
 #
-# Supplement 29: Radiotherapy Treatment Records and Radiotherapy Media Extensions
-# Final Text - 27 May 1999
+# Supplement 33: Grayscale Softcopy Presentation State Storage
+# Final Text - 21 September 1999
 #
-(3008,0010)	SQ	MeasuredDoseReferenceSequence	1	Supp29_ft
-(3008,0012)	ST	MeasuredDoseDescription	1	Supp29_ft
-(3008,0014)	CS	MeasuredDoseType	1	Supp29_ft
-(3008,0016)	DS	MeasuredDoseValue	1	Supp29_ft
-(3008,0020)	SQ	TreatmentSessionBeamSequence	1	Supp29_ft
-(3008,0022)	IS	CurrentFractionNumber	1	Supp29_ft
-(3008,0024)	DA	TreatmentControlPointDate	1	Supp29_ft
-(3008,0025)	TM	TreatmentControlPointTime	1	Supp29_ft
-(3008,002A)	CS	TreatmentTerminationStatus	1	Supp29_ft
-(3008,002B)	SH	TreatmentTerminationCode	1	Supp29_ft
-(3008,002C)	CS	TreatmentVerificationStatus	1	Supp29_ft
-(3008,0030)	SQ	ReferencedTreatmentRecordSequence	1	Supp29_ft
-(3008,0032)	DS	SpecifiedPrimaryMeterset	1	Supp29_ft
-(3008,0033)	DS	SpecifiedSecondaryMeterset	1	Supp29_ft
-(3008,0036)	DS	DeliveredPrimaryMeterset	1	Supp29_ft
-(3008,0037)	DS	DeliveredSecondaryMeterset	1	Supp29_ft
-(3008,003A)	DS	SpecifiedTreatmentTime	1	Supp29_ft
-(3008,003B)	DS	DeliveredTreatmentTime	1	Supp29_ft
-(3008,0040)	SQ	ControlPointDeliverySequence	1	Supp29_ft
-(3008,0042)	DS	SpecifiedMeterset	1	Supp29_ft
-(3008,0044)	DS	DeliveredMeterset	1	Supp29_ft
-(3008,0048)	DS	DoseRateDelivered	1	Supp29_ft
-(3008,0050)	SQ	TreatmentSummaryCalculatedDoseReferenceSequence	1	Supp29_ft
-(3008,0052)	DS	CumulativeDosetoDoseReference	1	Supp29_ft
-(3008,0054)	DA	FirstTreatmentDate	1	Supp29_ft
-(3008,0056)	DA	MostRecentTreatmentDate	1	Supp29_ft
-(3008,005A)	IS	NumberofFractionsDelivered	1	Supp29_ft
-(3008,0060)	SQ	OverrideSequence	1	Supp29_ft
-(3008,0062)	AT	OverrideParameterPointer	1	Supp29_ft
-(3008,0064)	IS	MeasuredDoseReferenceNumber	1	Supp29_ft
-(3008,0066)	ST	OverrideReason	1	Supp29_ft
-(3008,0070)	SQ	CalculatedDoseReferenceSequence	1	Supp29_ft
-(3008,0072)	IS	CalculatedDoseReferenceNumber	1	Supp29_ft
-(3008,0074)	ST	CalculatedDoseReferenceDescription	1	Supp29_ft
-(3008,0076)	DS	CalculatedDoseReferenceDoseValue	1	Supp29_ft
-(3008,0078)	DS	StartMeterset	1	Supp29_ft
-(3008,007A)	DS	EndMeterset	1	Supp29_ft
-(3008,0080)	SQ	ReferencedMeasuredDoseReferenceSequence	1	Supp29_ft
-(3008,0082)	IS	ReferencedMeasuredDoseReferenceNumber	1	Supp29_ft
-(3008,0090)	SQ	ReferencedCalculatedDoseReferenceSequence	1	Supp29_ft
-(3008,0092)	IS	ReferencedCalculatedDoseReferenceNumber	1	Supp29_ft
-(3008,00A0)	SQ	BeamLimitingDeviceLeafPairsSequence	1	Supp29_ft
-(3008,00B0)	SQ	RecordedWedgeSequence	1	Supp29_ft
-(3008,00C0)	SQ	RecordedCompensatorSequence	1	Supp29_ft
-(3008,00D0)	SQ	RecordedBlockSequence	1	Supp29_ft
-(3008,00E0)	SQ	TreatmentSummaryMeasuredDoseReferenceSequence	1	Supp29_ft
-(3008,0100)	SQ	RecordedSourceSequence	1	Supp29_ft
-(3008,0105)	LO	SourceSerialNumber	1	Supp29_ft
-(3008,0110)	SQ	TreatmentSessionApplicationSetupSequence	1	Supp29_ft
-(3008,0116)	CS	ApplicationSetupCheck	1	Supp29_ft
-(3008,0120)	SQ	RecordedBrachyAccessoryDeviceSequence	1	Supp29_ft
-(3008,0122)	IS	ReferencedBrachyAccessoryDeviceNumber	1	Supp29_ft
-(3008,0130)	SQ	RecordedChannelSequence	1	Supp29_ft
-(3008,0132)	DS	SpecifiedChannelTotalTime	1	Supp29_ft
-(3008,0134)	DS	DeliveredChannelTotalTime	1	Supp29_ft
-(3008,0136)	IS	SpecifiedNumberofPulses	1	Supp29_ft
-(3008,0138)	IS	DeliveredNumberofPulses	1	Supp29_ft
-(3008,013A)	DS	SpecifiedPulseRepetitionInterval	1	Supp29_ft
-(3008,013C)	DS	DeliveredPulseRepetitionInterval	1	Supp29_ft
-(3008,0140)	SQ	RecordedSourceApplicatorSequence	1	Supp29_ft
-(3008,0142)	IS	ReferencedSourceApplicatorNumber	1	Supp29_ft
-(3008,0150)	SQ	RecordedChannelShieldSequence	1	Supp29_ft
-(3008,0152)	IS	ReferencedChannelShieldNumber	1	Supp29_ft
-(3008,0160)	SQ	BrachyControlPointDeliveredSequence	1	Supp29_ft
-(3008,0162)	DA	SafePositionExitDate	1	Supp29_ft
-(3008,0164)	TM	SafePositionExitTime	1	Supp29_ft
-(3008,0166)	DA	SafePositionReturnDate	1	Supp29_ft
-(3008,0168)	TM	SafePositionReturnTime	1	Supp29_ft
-(3008,0200)	CS	CurrentTreatmentStatus	1	Supp29_ft
-(3008,0202)	ST	TreatmentStatusComment	1	Supp29_ft
-(3008,0220)	SQ	FractionGroupSummarySequence	1	Supp29_ft
-(3008,0223)	IS	ReferencedFractionNumber	1	Supp29_ft
-(3008,0224)	CS	FractionGroupType	1	Supp29_ft
-(3008,0230)	CS	BeamStopperPosition	1	Supp29_ft
-(3008,0240)	SQ	FractionStatusSummarySequence	1	Supp29_ft
-(3008,0250)	DA	TreatmentDate	1	Supp29_ft
-(3008,0251)	TM	TreatmentTime	1	Supp29_ft
-(300A,0015)	CS	NominalBeamEnergyUnit	1	Supp29_ft
-(300A,00EE)	CS	CompensatorType	1	Supp29_ft
+# ReferencedFrameNumber is redefined here (VM now 1-n).
+(0008,1160)	IS	ReferencedFrameNumber	1-n	Supp33_ft
+# LUTData is redefined here as US/SS/OW where OW is the only VR that allows to encode 64K LUTs
+(0028,3006)	OW	LUTData	1-n	Supp33_ft
+# OverlayData is redefined here as OW/OB
+(6000-60ff,3000)	ox	OverlayData	1	Supp33_ft
+#
+(0018,1622)	US	ShutterPresentationValue	1	Supp33_ft
+(0018,1623)	US	ShutterOverlayGroup	1	Supp33_ft
+(0028,3110)	SQ	SoftcopyVOILUTSequence	1	Supp33_ft
+(0070,0001)	SQ	GraphicAnnotationSequence	1	Supp33_ft
+(0070,0002)	CS	GraphicLayer	1	Supp33_ft
+(0070,0003)	CS	BoundingBoxAnnotationUnits	1	Supp33_ft
+(0070,0004)	CS	AnchorPointAnnotationUnits	1	Supp33_ft
+(0070,0005)	CS	GraphicAnnotationUnits	1	Supp33_ft
+(0070,0006)	ST	UnformattedTextValue	1	Supp33_ft
+(0070,0008)	SQ	TextObjectSequence	1	Supp33_ft
+(0070,0009)	SQ	GraphicObjectSequence	1	Supp33_ft
+(0070,0010)	FL	BoundingBoxTopLeftHandCorner	2	Supp33_ft
+(0070,0011)	FL	BoundingBoxBottomRightHandCorner	2	Supp33_ft
+(0070,0012)	CS	BoundingBoxTextHorizontalJustification	1	Supp33_ft
+(0070,0014)	FL	AnchorPoint	2	Supp33_ft
+(0070,0015)	CS	AnchorPointVisibility	1	Supp33_ft
+(0070,0020)	US	GraphicDimensions	1	Supp33_ft
+(0070,0021)	US	NumberOfGraphicPoints	1	Supp33_ft
+(0070,0022)	FL	GraphicData	2-n	Supp33_ft
+(0070,0023)	CS	GraphicType	1	Supp33_ft
+(0070,0024)	CS	GraphicFilled	1	Supp33_ft
+(0070,0041)	CS	ImageHorizontalFlip	1	Supp33_ft
+(0070,0042)	US	ImageRotation	1	Supp33_ft
+(0070,0052)	SL	DisplayedAreaTopLeftHandCorner	2	Supp33_ft
+(0070,0053)	SL	DisplayedAreaBottomRightHandCorner	2	Supp33_ft
+(0070,005A)	SQ	DisplayedAreaSelectionSequence	1	Supp33_ft
+(0070,0060)	SQ	GraphicLayerSequence	1	Supp33_ft
+(0070,0062)	IS	GraphicLayerOrder	1	Supp33_ft
+(0070,0066)	US	GraphicLayerRecommendedDisplayGrayscaleValue	1	Supp33_ft
+(0070,0067)	US	GraphicLayerRecommendedDisplayRGBValue	3	Supp33_ft
+(0070,0068)	LO	GraphicLayerDescription	1	Supp33_ft
+(0070,0080)	CS	PresentationLabel	1	Supp33_ft
+(0070,0081)	LO	PresentationDescription	1	Supp33_ft
+(0070,0082)	DA	PresentationCreationDate	1	Supp33_ft
+(0070,0083)	TM	PresentationCreationTime	1	Supp33_ft
+(0070,0084)	PN	PresentationCreatorsName	1	Supp33_ft
+(0070,0100)	CS	PresentationSizeMode	1	Supp33_ft
+(0070,0101)	DS	PresentationPixelSpacing	2	Supp33_ft
+(0070,0102)	IS	PresentationPixelAspectRatio	2	Supp33_ft
+(0070,0103)	FL	PresentationPixelMagnificationRatio	1	Supp33_ft
+(5000-50ff,1001)	CS	CurveActivationLayer	1	Supp33_ft
+(6000-60ff,1001)	CS	OverlayActivationLayer	1	Supp33_ft
 #
 #---------------------------------------------------------------------------
+# 
+# Correction Proposal Package #6 (Final Texts, January 2000)
 #
-# Supplement 32: Digital X-Ray Supplement
-# Revised Final Text - 1 September 1998
+# CP 131
+(0008,0201)	SH	TimezoneOffsetFromUTC	1	CP_6
 #
-(0008,0068)	CS	PresentationIntentType	1	Supp32_ft
-(0018,113A)	CS	TableType	1	Supp32_ft
-(0018,1156)	CS	RectificationType	1	Supp32_ft
-(0018,1191)	CS	AnodeTargetMaterial	1	Supp32_ft
-(0018,11A0)	DS	BodyPartThickness	1	Supp32_ft
-(0018,11A2)	DS	CompressionForce	1	Supp32_ft
-(0018,1490)	CS	TomoType	1	Supp32_ft
-(0018,1491)	CS	TomoClass	1	Supp32_ft
-(0018,1495)	IS	NumberofTomosynthesisSourceImages	1	Supp32_ft
-(0018,1508)	CS	PositionerType	1	Supp32_ft
-(0018,5104)	SQ	ProjectionEponymousNameCodeSequence	1	Supp32_ft
-(0018,7000)	CS	DetectorConditionsNominalFlag	1	Supp32_ft
-(0018,7001)	DS	DetectorTemperature	1	Supp32_ft
-(0018,7004)	CS	DetectorType	1	Supp32_ft
-(0018,7005)	CS	DetectorConfiguration	1	Supp32_ft
-(0018,7006)	LT	DetectorDescription	1	Supp32_ft
-(0018,7008)	LT	DetectorMode	1	Supp32_ft
-(0018,700A)	SH	DetectorID	1	Supp32_ft
-(0018,700C)	DA	DateofLastDetectorCalibration	1	Supp32_ft
-(0018,700E)	TM	TimeofLastDetectorCalibration	1	Supp32_ft
-(0018,7010)	IS	ExposuresOnDetectorSinceLastCalibration	1	Supp32_ft
-(0018,7011)	IS	ExposuresOnDetectorSinceManufactured	1	Supp32_ft
-(0018,7012)	DS	DetectorTimeSinceLastExposure	1	Supp32_ft
-(0018,7014)	DS	DetectorActiveTime	1	Supp32_ft
-(0018,7016)	DS	DetectorActivationOffsetFromExposure	1	Supp32_ft
-(0018,701A)	DS	DetectorBinning	2	Supp32_ft
-(0018,7020)	DS	DetectorElementPhysicalSize	2	Supp32_ft
-(0018,7022)	DS	DetectorElementSpacing	2	Supp32_ft
-(0018,7024)	CS	DetectorActiveShape	1	Supp32_ft
-(0018,7026)	DS	DetectorActiveDimensions	1-2	Supp32_ft
-(0018,7028)	DS	DetectorActiveOrigin	2	Supp32_ft
-(0018,7030)	DS	FieldofViewOrigin	2	Supp32_ft
-(0018,7032)	DS	FieldofViewRotation	1	Supp32_ft
-(0018,7034)	CS	FieldofViewHorizontalFlip	1	Supp32_ft
-(0018,7040)	LT	GridAbsorbingMaterial	1	Supp32_ft
-(0018,7041)	LT	GridSpacingMaterial	1	Supp32_ft
-(0018,7042)	DS	GridThickness	1	Supp32_ft
-(0018,7044)	DS	GridPitch	1	Supp32_ft
-(0018,7046)	IS	GridAspectRatio	2	Supp32_ft
-(0018,7048)	DS	GridPeriod	1	Supp32_ft
-(0018,704C)	DS	GridFocalDistance	1	Supp32_ft
-(0018,7050)	LT	FilterMaterial	1-n	Supp32_ft
-(0018,7052)	DS	FilterThicknessMinimum	1-n	Supp32_ft
-(0018,7054)	DS	FilterThicknessMaximum	1-n	Supp32_ft
-(0018,7060)	CS	ExposureControlMode	1	Supp32_ft
-(0018,7062)	LT	ExposureControlModeDescription	1	Supp32_ft
-(0018,7064)	CS	ExposureStatus	1	Supp32_ft
-(0018,7065)	DS	PhototimerSetting	1	Supp32_ft
-(0020,0062)	CS	ImageLaterality	1	Supp32_ft
-(0028,0300)	CS	QualityControlImage	1	Supp32_ft
-(0028,0301)	CS	BurnedInAnnotation	1	Supp32_ft
-(0028,1041)	SS	PixelIntensityRelationshipSign	1	Supp32_ft
-(0028,1300)	CS	ImplantPresent	1	Supp32_ft
-(0028,2112)	DS	LossyImageCompressionRatio	1-n	Supp32_ft
-# (0040,0306) DistanceSourceToEntrance is already defined in DICOM98.
-#(0040,0306)	DS	DistanceSourceToEntrance	1	Supp32_ft
-(0040,0307)	DS	DistanceSourceToSupport	1	Supp32_ft
-(0040,0312)	DS	XRayOutput	1	Supp32_ft
-(0040,0314)	DS	HalfValueLayer	1	Supp32_ft
-(0040,0316)	DS	OrganDose	1	Supp32_ft
-(0040,0318)	CS	OrganExposed	1	Supp32_ft
-(0040,0555)	SQ	AcquisitionContextSequence	1	Supp32_ft
-(0040,0556)	ST	AcquisitionContextDescription	1	Supp32_ft
-(0040,08EA)	SQ	MeasurementUnitsCodeSequence	1	Supp32_ft
-(0040,A043)	SQ	ConceptNameCodeSequence	1	Supp32_ft
-(0040,A121)	DA	Date	1	Supp32_ft
-(0040,A122)	TM	Time	1	Supp32_ft
-(0040,A123)	PN	PersonName	1	Supp32_ft
-(0040,A136)	US	ReferencedFrameNumbers	1-n	Supp32_ft
-(0040,A160)	UT	TextValue	1	Supp32_ft
-(0040,A168)	SQ	ConceptCodeSequence	1	Supp32_ft
-(0040,A30A)	DS	NumericValue	1-n	Supp32_ft
-# (0054,0222) ViewAngulationModifierCodeSequence is already defined in DICOM98.
-#(0054,0222)	SQ	ViewAngulationModifierCodeSequence	1	Supp32_ft
-(0060,3000)	SQ	HistogramSequence	1	Supp32_ft
-(0060,3002)	US	HistogramNumberofBins	1	Supp32_ft
-(0060,3004)	xs	HistogramFirstBinValue	1	Supp32_ft
-(0060,3006)	xs	HistogramLastBinValue	1	Supp32_ft
-(0060,3008)	US	HistogramBinWidth	1	Supp32_ft
-(0060,3010)	LO	HistogramExplanation	1	Supp32_ft
-(0060,3020)	UL	HistogramData	1-n	Supp32_ft
-#---------------------------------------------------------------------------
+# CP 133
+(3006,0048)	IS	ContourNumber	1	CP_6
+(3006,0049)	IS	AttachedContours	1-n	CP_6
 #
-# Supplement 35: Retire Referenced Print
-# Final Text - January 30, 1999
+# CP 143 changes the definitions for Palette Color LUTs.
+# The new definitions are in line with the entries we had in the dictionary anyway.
+# (0028,1101)	xs	RedPaletteColorLookupTableDescriptor	3	CP_6
+# (0028,1102)	xs	GreenPaletteColorLookupTableDescriptor	3	CP_6
+# (0028,1103)	xs	BluePaletteColorLookupTableDescriptor	3	CP_6
+# (0028,1201)	OW	RedPaletteColorLookupTableData	1	CP_6 
+# (0028,1202)	OW	GreenPaletteColorLookupTableData	1	CP_6 
+# (0028,1203)	OW	BluePaletteColorLookupTableData	1	CP_6 
 #
-# retires (2020,0130) ReferencedOverlayBoxSequence
-# retires (2020,0140) ReferencedVOILUTSequence
+# CP 171
+(3002,000D)	DS	XRayImageReceptorTranslation	3	CP_6
 #
-#---------------------------------------------------------------------------
-#
-# Supplement 36: Codes and Controlled Terminology
-# Final Text - September 1, 1998
-#
-(0008,0103)	SH	CodingSchemeVersion	1	Supp36_ft
-(0008,0105)	CS	MappingResource	1	Supp36_ft
-(0008,0106)	DT	ContextGroupVersion	1	Supp36_ft
-(0008,0107)	DT	ContextGroupLocalVersion	1	Supp36_ft
-(0008,010B)	CS	CodeSetExtensionFlag	1	Supp36_ft
-(0008,010C)	UI	PrivateCodingSchemeCreatorUID	1	Supp36_ft
-(0008,010D)	UI	CodeSetExtensionCreatorUID	1	Supp36_ft
-(0008,010F)	CS	ContextIdentifier	1	Supp36_ft
-#
-#---------------------------------------------------------------------------
-#
-# Supplement 37: Printer Configuration Retrieval SOP Class
-#                and New Optional Attributes for Basic Print
-# Final Text - September 1, 1998
-#
-(0008,115A)	UI	SOPClassesSupported	1-n	Supp37_ft
-(0020,0019)	IS	ItemNumber	1	Supp37_ft
-# MaximumMemoryAllocation is corrected in CP 164, was (2000,0062) in Supp37 which is already in use.
-(2000,0061)	IS	MaximumMemoryAllocation	1	Supp37_ft
-(2000,001E)	SQ	PrinterConfigurationSequence	1	Supp37_ft
-(2000,00A0)	US	MemoryBitDepth	1	Supp37_ft
-(2000,00A1)	US	PrintingBitDepth	1	Supp37_ft
-(2000,00A2)	SQ	MediaInstalledSequence	1	Supp37_ft
-(2000,00A4)	SQ	OtherMediaAvailableSequence	1	Supp37_ft
-(2000,00A8)	SQ	SupportedImageDisplayFormatsSequence	1	Supp37_ft
-(2010,0052)	CS	PrinterResolutionID	1	Supp37_ft
-(2010,0054)	CS	DefaultPrinterResolutionID	1	Supp37_ft
-(2010,00A6)	CS	DefaultMagnificationType	1	Supp37_ft
-(2010,00A7)	CS	OtherMagnificationTypesAvailable	1-n	Supp37_ft
-(2010,00A8)	CS	DefaultSmoothingType	1	Supp37_ft
-(2010,00A9)	CS	OtherSmoothingTypesAvailable	1-n	Supp37_ft
-(2010,0152)	LT	ConfigurationInformationDescription	1	Supp37_ft
-(2010,0154)	IS	MaximumCollatedFilms	1	Supp37_ft
-(2010,0376)	DS	PrinterPixelSpacing	2	Supp37_ft
-(2020,0040)	CS	RequestedDecimateCropBehavior	1	Supp37_ft
-(2020,0050)	CS	RequestedResolutionID	1	Supp37_ft
-(2020,00A0)	CS	RequestedImageSizeFlag	1	Supp37_ft
-(2020,00A2)	CS	DecimateCropResult	1	Supp37_ft
-#
-#---------------------------------------------------------------------------
-#
-# Supplement 38: Basic Print Image Overlay Box SOP Class
-#                Retire Print Image Overlay Box SOP Class
-#                Changes to Stored Print SOP Classes
-# Final Text - January 30, 1999
-#
-# retires (2040,0090) OverlayMode
-# retires (2040,0100) ThresholdDensity
-#
-(2040,0020)	SQ	OverlayPixelDataSequence	1	Supp38_ft
-(2040,0072)	CS	OverlayOrImageMagnification	1	Supp38_ft
-(2040,0074)	US	MagnifyToNumberOfColumns	1	Supp38_ft
-(2040,0082)	CS	OverlayBackgroundDensity	1	Supp38_ft
-#
-#---------------------------------------------------------------------------
-#
-# CP 163: HL7 Placer Order Number and Filler Order Number
-# Final Text, CP Packet 5, 1999
-(0040,2016)	LO	PlacerOrderNumberImagingServiceRequest	1	CP163
-(0040,2017)	LO	FillerOrderNumberImagingServiceRequest	1	CP163
-#
-#---------------------------------------------------------------------------
-#
-# Supplement 15: Visible Light Image for Endoscopy, Microscopy, and Photography
-# Draft Version 07, January 30th, 1999
-#
-# WARNING: These data dictionary attributes come from a DRAFT 
-# document and are likely to change.  Included for experimental
-# purposes only.
-#
-(0040,06FA)	LO	SlideIdentifier	1	Supp15_07
-(0040,071A)	SQ	ImageCenterPointCoordinatesSequence	1	Supp15_07
-(0040,072A)	DS	XOffsetInSlideCoordinateSystem	1	Supp15_07
-(0040,073A)	DS	YOffsetInSlideCoordinateSystem	1	Supp15_07
-(0040,074A)	DS	ZOffsetInSlideCoordinateSystem	1	Supp15_07
-(0040,08D8)	SQ	PixelSpacingSequence	1	Supp15_07
-(0040,08DA)	SQ	CoordinateSystemAxisCodeSequence	1	Supp15_07
 #---------------------------------------------------------------------------
 #
 # Supplement 23: Structured Reporting
-# Draft Version 0.97, Frozen Draft, November 20, 1997
+# Revised Letter Ballot Text, January 28, 2000
 #
 # WARNING: These data dictionary attributes come from a DRAFT 
 # document and are likely to change.  Included for experimental
 # purposes only.
 #
-(0020,00AA)	IS	ReportNumber	1	Supp23_fz
-(0040,A007)	CS	FindingsFlag	1	Supp23_fz
-(0040,A020)	SQ	FindingsSequence	1	Supp23_fz
-(0040,A021)	UI	FindingsGroupUID	1	Supp23_fz
-(0040,A022)	UI	ReferencedFindingsGroupUID	1	Supp23_fz
-(0040,A023)	DA	FindingsGroupRecordingDate	1	Supp23_fz
-(0040,A024)	TM	FindingsGroupRecordingTime	1	Supp23_fz
-(0040,A026)	SQ	FindingsSourceCategoryCodeSequence	1	Supp23_fz
-(0040,A027)	LO	DocumentingOrganization	1	Supp23_fz
-(0040,A028)	SQ	DocumentingOrganizationIdentifierCodeSequence	1	Supp23_fz
-(0040,A032)	LO	HistoryReliabilityQualifierDescription	1	Supp23_fz
-# ConceptNameCodeSequence is also defined in Supplement 32.
-# (0040,A043)	SQ	ConceptNameCodeSequence	1	Supp23_fz
-(0040,A047)	LO	MeasurementPrecisionDescription	1	Supp23_fz
-(0040,A057)	CS	UrgencyOrPriorityAlerts	1-n	Supp23_fz
-(0040,A060)	LO	SequencingIndicator	1	Supp23_fz
-(0040,A066)	SQ	DocumentIdentifierCodeSequence	1	Supp23_fz
-(0040,A067)	PN	DocumentAuthor	1	Supp23_fz
-(0040,A068)	SQ	DocumentAuthorIdentifierCodeSequence	1	Supp23_fz
-(0040,A070)	SQ	IdentifierCodeSequence	1	Supp23_fz
-(0040,A073)	LO	ObjectStringIdentifier	1-n	Supp23_fz
-(0040,A074)	OB	ObjectBinaryIdentifier	1	Supp23_fz
-(0040,A075)	PN	DocumentingObserver	1	Supp23_fz
-(0040,A076)	SQ	DocumentingObserverIdentifierCodeSequence	1	Supp23_fz
-(0040,A078)	SQ	ObservationSubjectIdentifierCodeSequence	1	Supp23_fz
-(0040,A080)	SQ	PersonIdentifierCodeSequence	1	Supp23_fz
-(0040,A085)	SQ	ProcedureIdentifierCodeSequence	1	Supp23_fz
-(0040,A088)	LO	ObjectDirectoryStringIdentifier	1	Supp23_fz
-(0040,A089)	OB	ObjectDirectoryBinaryIdentifier	1	Supp23_fz
-(0040,A090)	CS	HistoryReliabilityQualifier	1	Supp23_fz
-(0040,A110)	DA	DateOfDocumentOrVerbalTransaction	1	Supp23_fz
-(0040,A112)	TM	TimeOfDocumentCreationOrVerbalTransaction	1	Supp23_fz
-# Date, Time, PersonName are also defined in Supplement 32.
-#(0040,A121)	DA	Date	1	Supp23_fz
-#(0040,A122)	TM	Time	1	Supp23_fz
-#(0040,A123)	PN	PersonName	1	Supp23_fz
-(0040,A124)	SQ	ReferencedPersonSequence	1	Supp23_fz
-(0040,A125)	CS	ReportStatusID	2	Supp23_fz
-# ReferencedFrameNumbers, TextValue is also defined in Supplement 32.
-#(0040,A136)	US	ReferencedFrameNumbers	1-n	Supp23_fz
-#(0040,A160)	UT	TextValue	1	Supp23_fz
-(0040,A167)	SQ	ObservationCategoryCodeSequence	1	Supp23_fz
-# ConceptCodeSequence is also defined in Supplement 32.
-#(0040,A168)	SQ	ConceptCodeSequence	1	Supp23_fz
-(0040,A16A)	ST	BibliographicCitation	1	Supp23_fz
-(0040,A170)	CS	ObservationClass	1	Supp23_fz
-(0040,A171)	UI	ObservationUID	1	Supp23_fz
-(0040,A172)	UI	ReferencedObservationUID	1	Supp23_fz
-(0040,A173)	CS	ReferencedObservationClass	1	Supp23_fz
-(0040,A174)	CS	ReferencedObjectObservationClass	1	Supp23_fz
-(0040,A192)	DA	ObservationDate	1	Supp23_fz
-(0040,A193)	TM	ObservationTime	1	Supp23_fz
-(0040,A194)	CS	MeasurementAutomation	1	Supp23_fz
-(0040,A195)	SQ	ConceptNameCodeSequenceModifier	1	Supp23_fz
-(0040,A224)	ST	IdentificationDescription	1	Supp23_fz
-(0040,A290)	CS	CoordinatesSetGeometricType	1	Supp23_fz
-(0040,A296)	SQ	AlgorithmCodeSequence	1	Supp23_fz
-(0040,A297)	ST	AlgorithmDescription	1	Supp23_fz
-(0040,A29A)	SL	PixelCoordinatesSet	2-2n	Supp23_fz
-(0040,A300)	SQ	MeasuredValueSequence	1	Supp23_fz
-(0040,A307)	PN	CurrentObserver	1	Supp23_fz
-# NumericValue is also defined in Supplement 32.
-#(0040,A30A)	DS	NumericValue	1-n	Supp23_fz
-(0040,A313)	SQ	ReferencedAccessionSequence	1	Supp23_fz
-(0040,A33A)	ST	ReportStatusComment	1	Supp23_fz
-(0040,A340)	SQ	ProcedureContextSequence	1	Supp23_fz
-(0040,A352)	PN	VerbalSource	1	Supp23_fz
-(0040,A358)	SQ	VerbalSourceIdentifierCodeSequence	1	Supp23_fz
-(0040,A380)	SQ	RequestDetailSequence	1	Supp23_fz
-(0040,A402)	UI	ObservationSubjectUID	1	Supp23_fz
-(0040,A403)	CS	ObservationSubjectClass	1	Supp23_fz
-(0040,A404)	SQ	ObservationSubjectTypeCodeSequence	1	Supp23_fz
-(0040,A600)	CS	ObservationSubjectContextFlag	1	Supp23_fz
-(0040,A601)	CS	ObserverContextFlag	1	Supp23_fz
-(0040,A603)	CS	ProcedureContextFlag	1	Supp23_fz
-(0040,A730)	SQ	ObservationsSequence	1	Supp23_fz
-(0040,A731)	SQ	RelationshipSequence	1	Supp23_fz
-(0040,A732)	SQ	RelationshipTypeCodeSequence	1	Supp23_fz
-(0040,A744)	SQ	LanguageCodeSequence	1	Supp23_fz
-(0040,A992)	ST	UniformResourceLocator	1	Supp23_fz
-(0040,DB73)	SQ	RelationshipTypeCodeSequenceModifier	1	Supp23_fz
-(4008,00FF)	CS	ReportProductionStatus	1	Supp23_fz
+(0008,0110)	ST	OverridingCodeMeaning	1	Supp23_lb
+(0040,A010)	CS	RelationshipType	1	Supp23_lb
+(0040,A027)	LO	VerifyingOrganization	1	Supp23_lb
+(0040,A030)	DT	VerificationDateTime	1	Supp23_lb
+(0040,A032)	DT	ObservationDateTime	1	Supp23_lb
+(0040,A040)	CS	ValueType	1	Supp23_lb
+# ConceptNameCodeSequence is already defined in 1999 base text
+# (0040,A043)	SQ	ConceptNameCodeSequence	1	Supp23_lb
+(0040,A050)	CS	ContinuationFlag	1	Supp23_lb
+(0040,A073)	SQ	VerifyingObserverSequence	1	Supp23_lb
+(0040,A075)	PN	VerifyingObserverName	1	Supp23_lb
+(0040,A088)	SQ	VerifyingObserverIdentificationCodeSequence	1	Supp23_lb
+(0040,A120)	SQ	DateTime	1	Supp23_lb
+(0040,A124)	SQ	UID	1	Supp23_lb
+# Attribute (0040,A168) is already defined in the 1999 base text as "ConceptCodeSequence".
+# leaving the original definition for now.
+#(0040,A168)	SQ	CodeValueSequence	1	Supp23_lb
+(0040,A300)	SQ	MeasuredValueSequence	1	Supp23_lb
+(0040,A301)	DS	NumericMeasurementValue	1	Supp23_lb
+(0040,A360)	SQ	PredecessorDocumentsSequence	1	Supp23_lb
+(0040,A370)	SQ	ReferencedRequestSequence	1	Supp23_lb
+(0040,A372)	SQ	PerformedProcedureCodeSequence	1	Supp23_lb
+(0040,A375)	SQ	CurrentRequestedProcedureEvidenceSequence	1	Supp23_lb
+(0040,A385)	SQ	PertinentOtherEvidenceSequence	1	Supp23_lb
+(0040,A450)	SQ	PurposeofReferenceCodeSequence	1	Supp23_lb
+(0040,A491)	CS	CompletionFlag	1	Supp23_lb
+(0040,A492)	LO	CompletionFlagDescription	1	Supp23_lb
+(0040,A493)	CS	VerificationFlag	1	Supp23_lb
+(0040,A504)	SQ	ContentTemplateSequence	1	Supp23_lb
+(0040,A525)	SQ	IdenticalDocumentsSequence	1	Supp23_lb
+(0040,A730)	SQ	ContentSequence	1	Supp23_lb
+(0040,DB00)	CS	TemplateIdentifier	1	Supp23_lb
+(0040,DB06)	DT	TemplateVersion	1	Supp23_lb
+(0040,DB07)	DT	TemplateLocalVersion	1	Supp23_lb
+(0040,DB0B)	CS	TemplateExtensionFlag	1	Supp23_lb
+(0040,DB0C)	UI	TemplateExtensionOrganizationUID	1	Supp23_lb
+(0040,DB0D)	UI	TemplateExtensionCreatorUID	1	Supp23_lb
+(0040,DB73)	US	ReferencedContentItemIdentifier	1-n	Supp23_lb
 #
 #---------------------------------------------------------------------------
 #
-# Supplement 33: Grayscale Softcopy Presentation State Storage
-# Letter Ballot Text - 1 July 1999 (revised 14 July 1999)
+# Supplement 30: Waveform Interchange
+# Letter Ballot Text, 1 November 1999
 #
 # WARNING: These data dictionary attributes come from a DRAFT 
 # document and are likely to change.  Included for experimental
 # purposes only.
 #
-
-# ReferencedFrameNumber is redefined here (VM now 1-n).
-(0008,1160)	IS	ReferencedFrameNumber	1-n	Supp33_lb
-# LUTData is redefined here as US/SS/OW where OW is the only VR that allows to encode 64K LUTs
-(0028,3006)	OW	LUTData	1-n	Supp33_lb
-# OverlayData is redefined here as OW/OB
-(6000-60ff,3000)	ox	OverlayData	1	Supp33_lb
-
-(0018,1622)	US	ShutterPresentationValue	1	Supp33_lb
-(0018,1623)	US	ShutterOverlayGroup	1	Supp33_lb
-(0028,3110)	SQ	SoftcopyVOILUTSequence	1	Supp33_lb
-(0070,0001)	SQ	GraphicAnnotationSequence	1	Supp33_lb
-(0070,0002)	CS	GraphicLayer	1	Supp33_lb
-(0070,0003)	CS	BoundingBoxAnnotationUnits	1	Supp33_lb
-(0070,0004)	CS	AnchorPointAnnotationUnits	1	Supp33_lb
-(0070,0005)	CS	GraphicAnnotationUnits	1	Supp33_lb
-(0070,0006)	ST	UnformattedTextValue	1	Supp33_lb
-(0070,0008)	SQ	TextObjectSequence	1	Supp33_lb
-(0070,0009)	SQ	GraphicObjectSequence	1	Supp33_lb
-(0070,0010)	FL	BoundingBoxTopLeftHandCorner	2	Supp33_lb
-(0070,0011)	FL	BoundingBoxBottomRightHandCorner	2	Supp33_lb
-(0070,0012)	CS	BoundingBoxTextHorizontalJustification	1	Supp33_lb
-(0070,0014)	FL	AnchorPoint	2	Supp33_lb
-(0070,0015)	CS	AnchorPointVisibility	1	Supp33_lb
-(0070,0020)	US	GraphicDimensions	1	Supp33_lb
-(0070,0021)	US	NumberOfGraphicPoints	1	Supp33_lb
-(0070,0022)	FL	GraphicData	2-n	Supp33_lb
-(0070,0023)	CS	GraphicType	1	Supp33_lb
-(0070,0024)	CS	GraphicFilled	1	Supp33_lb
-(0070,0041)	CS	ImageHorizontalFlip	1	Supp33_lb
-(0070,0042)	US	ImageRotation	1	Supp33_lb
-(0070,0052)	SL	DisplayedAreaTopLeftHandCorner	2	Supp33_lb
-(0070,0053)	SL	DisplayedAreaBottomRightHandCorner	2	Supp33_lb
-(0070,005A)	SQ	DisplayedAreaSelectionSequence	1	Supp33_lb
-(0070,0060)	SQ	GraphicLayerSequence	1	Supp33_lb
-(0070,0062)	IS	GraphicLayerOrder	1	Supp33_lb
-(0070,0066)	US	GraphicLayerRecommendedDisplayGrayscaleValue	1	Supp33_lb
-(0070,0067)	US	GraphicLayerRecommendedDisplayRGBValue	3	Supp33_lb
-(0070,0068)	LO	GraphicLayerDescription	1	Supp33_lb
-(0070,0080)	CS	PresentationLabel	1	Supp33_lb
-(0070,0081)	LO	PresentationDescription	1	Supp33_lb
-(0070,0082)	DA	PresentationCreationDate	1	Supp33_lb
-(0070,0083)	TM	PresentationCreationTime	1	Supp33_lb
-(0070,0084)	PN	PresentationCreatorsName	1	Supp33_lb
-(0070,0100)	CS	PresentationSizeMode	1	Supp33_lb
-(0070,0101)	DS	PresentationPixelSpacing	2	Supp33_lb
-(0070,0102)	IS	PresentationPixelAspectRatio	2	Supp33_lb
-(0070,0103)	FL	PresentationPixelMagnificationRatio	1	Supp33_lb
-(5000-50ff,1001)	CS	CurveActivationLayer	1	Supp33_lb
-(6000-60ff,1001)	CS	OverlayActivationLayer	1	Supp33_lb
+(0008,000A)	US	SequenceItemNumber	1	Supp30_lb
+# This redefines the name of "ImageDate" already defined in the 1999 base text.
+# Leaving the old name for now.
+#(0008,0023)	DA	ContentDate	1	Supp30_lb
+# This redefines the name of "ImageTime" already defined in the 1999 base text.
+# Leaving the old name for now.
+#(0008,0033)	TM	ContentTime	1	Supp30_lb
+(0008,114A)	SQ	ReferencedInstanceSequence	1	Supp30_lb
+(0008,114B)	LO	ReferenceDescription	1	Supp30_lb
+(0018,1067)	DS	ImageTriggerDelay	1	Supp30_lb
+(0018,1068)	DS	MultiplexGroupTimeOffset	1	Supp30_lb
+(0018,1069)	DS	TriggerTimeOffset	1	Supp30_lb
+(0018,106A)	CS	SynchronizationTrigger	1	Supp30_lb
+(0018,106C)	US	SynchronizationChannel	2	Supp30_lb
+(0018,106E)	UL	TriggerSamplePosition	1	Supp30_lb
+(0018,1800)	CS	AcquisitionTimeSynchronized	1	Supp30_lb
+(0018,1802)	CS	TimeDistributionProtocol	1	Supp30_lb
+(0018,1801)	SH	TimeSource	1	Supp30_lb
+(0018,1810)	DT	AcquisitionTimestamp	1	Supp30_lb
+(0020,0200)	UI	SynchronizationFrameofReferenceUID	1	Supp30_lb
+(003A,0004)	CS	WaveformOriginality	1	Supp30_lb
+(003A,0005)	US	NumberofChannels	1	Supp30_lb
+(003A,0010)	UL	NumberofSamples	1	Supp30_lb
+(003A,001A)	DS	SamplingFrequency	1	Supp30_lb
+(003A,0020)	SH	MultiplexGroupLabel	1	Supp30_lb
+(003A,0200)	SQ	ChannelDefinitionSequence	1	Supp30_lb
+# Name clash: (300A,0282) in the 1998 base text is also called Channel Number.
+(003A,0202)	IS	WVChannelNumber	1	Supp30_lb
+(003A,0203)	SH	ChannelLabel	1	Supp30_lb
+(003A,0205)	CS	ChannelStatus	1-n	Supp30_lb
+(003A,0208)	SQ	ChannelSourceSequence	1	Supp30_lb
+(003A,0209)	SQ	ChannelSourceModifiersSequence	1	Supp30_lb
+(003A,020A)	SQ	SourceWaveformSequence	1	Supp30_lb
+(003A,020C)	LO	ChannelDerivationDescription	1	Supp30_lb
+(003A,0210)	DS	ChannelSensitivity	1	Supp30_lb
+(003A,0211)	SQ	ChannelSensitivityUnits	1	Supp30_lb
+(003A,0212)	DS	ChannelSensitivityCorrectionFactor	1	Supp30_lb
+(003A,0213)	DS	ChannelBaseline	1	Supp30_lb
+(003A,0214)	DS	ChannelTimeSkew	1	Supp30_lb
+(003A,0215)	DS	ChannelSampleSkew	1	Supp30_lb
+(003A,0218)	DS	ChannelOffset	1	Supp30_lb
+(003A,021A)	US	WaveformBitsStored	1	Supp30_lb
+(003A,0220)	DS	FilterLowFrequency	1	Supp30_lb
+(003A,0221)	DS	FilterHighFrequency	1	Supp30_lb
+(003A,0222)	DS	NotchFilterFrequency	1	Supp30_lb
+(003A,0223)	DS	NotchFilterBandwidth	1	Supp30_lb
+(0040,A0B0)	US	ReferencedWaveformChannels	2-2n	Supp30_lb
+(0040,A130)	CS	TemporalRangeType	1	Supp30_lb
+(0040,A132)	UL	ReferencedSamplePositionsU	1-n	Supp30_lb
+(0040,A138)	DS	ReferencedTimeOffsets	1-n	Supp30_lb
+(0040,A13A)	DT	ReferencedDatetime	1-n	Supp30_lb
+(0040,A180)	US	AnnotationGroupNumber	1	Supp30_lb
+(0040,A195)	SQ	ConceptNameCodeSequenceModifier	1	Supp30_lb
+(0040,B020)	SQ	AnnotationSequence	1	Supp30_lb
+(5400,0100)	SQ	WaveformSequence	1	Supp30_lb
+(5400,0110)	ox	ChannelMinimumValue	1	Supp30_lb
+(5400,0112)	ox	ChannelMaximumValue	1	Supp30_lb
+(5400,1004)	US	WaveformBitsAllocated	1	Supp30_lb
+(5400,1006)	CS	WaveformSampleInterpretation	1	Supp30_lb
+(5400,100A)	ox	WaveformPaddingValue	1	Supp30_lb
+(5400,1010)	ox	WaveformData	1	Supp30_lb
+#
+#---------------------------------------------------------------------------
+#
+# Supplement 31: Security Enhancements One
+# Letter Ballot Text, 26 October 1999
+#
+# WARNING: These data dictionary attributes come from a DRAFT 
+# document and are likely to change.  Included for experimental
+# purposes only.
+#
+(0100,0410)	CS	SOPInstanceStatus	1	Supp31_lb
+(0100,0420)	DT	SOPAuthorizationDateandTime	1	Supp31_lb
+(0100,0424)	LT	SOPAuthorizationComment	1	Supp31_lb
+(0100,0426)	LO	AuthorizationEquipmentCertificationNumber	1	Supp31_lb
+#
+#---------------------------------------------------------------------------
+#
+# The following tags have been omitted from Supplement 15 and 32
+# (according to a posting in comp.protocols.dicom from 1999-12-20).
+# The VRs need to be confirmed by a CP.
+#
+(0040,050A)	LO	SpecimenAccessionNumber	1	CP_xxx
+(0040,0550)	SQ	SpecimenSequence	1	CP_xxx
+(0040,0551)	LO	SpecimenIdentifier	1	CP_xxx
+(0040,059A)	SQ	SpecimenTypeCodeSequence	1	CP_xxx
 #
 # EOF
 #
+

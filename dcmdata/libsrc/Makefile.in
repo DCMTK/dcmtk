@@ -19,6 +19,8 @@ LOCALLIBS = -lofstd
 # Special defines for the Library, define them in LOCALDEFS
 #   DICOMDIR_WITHOUT_BACKUP
 #	no Backup for DICOMDIR files. default: not defined
+#   PRINT_REPLACED_DICTIONARY_ENTRIES
+#       dump duplicate entries in the data dictionary to stderr
 
 ofstddir=$(top_srcdir)/../ofstd
 
