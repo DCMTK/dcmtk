@@ -10,9 +10,9 @@
 ** Interface of class DcmUnsignedLong
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-29 13:38:18 $
+** Update Date:		$Date: 1996-08-05 08:45:39 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrul.h,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -37,7 +37,8 @@ public:
     virtual ~DcmUnsignedLong(void);
 
     virtual DcmEVR ident(void) const { return EVR_UL; }
-    virtual void print(const int level = 0);
+    virtual void print(ostream & out = cout, const BOOL showFullData = TRUE,
+		       const int level = 0);
     virtual unsigned long getVM(void);
 
     virtual E_Condition put(const Uint32 * uintVal,
@@ -65,7 +66,13 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrul.h,v $
-** Revision 1.4  1996-01-29 13:38:18  andreas
+** Revision 1.5  1996-08-05 08:45:39  andreas
+** new print routine with additional parameters:
+**         - print into files
+**         - fix output length for elements
+** corrected error in search routine with parameter ESM_fromStackTop
+**
+** Revision 1.4  1996/01/29 13:38:18  andreas
 ** - new put method for every VR to put value as a string
 ** - better and unique print methods
 **

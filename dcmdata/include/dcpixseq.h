@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-29 13:38:13 $
+** Update Date:		$Date: 1996-08-05 08:45:27 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpixseq.h,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -44,9 +44,8 @@ public:
     virtual ~DcmPixelSequence();
 
     virtual DcmEVR ident(void) const { return EVR_pixelSQ; }
-    virtual void print(int level = 0);
-
-
+    virtual void print(ostream & out = cout, const BOOL showFullData = TRUE,
+		       const int level = 0);
     virtual E_Condition insert(DcmPixelItem* item,
 			       unsigned long where = DCM_EndOfListIndex);
     virtual E_Condition getItem(DcmPixelItem * & item, const unsigned long num);
@@ -73,7 +72,13 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.h,v $
-** Revision 1.5  1996-01-29 13:38:13  andreas
+** Revision 1.6  1996-08-05 08:45:27  andreas
+** new print routine with additional parameters:
+**         - print into files
+**         - fix output length for elements
+** corrected error in search routine with parameter ESM_fromStackTop
+**
+** Revision 1.5  1996/01/29 13:38:13  andreas
 ** - new put method for every VR to put value as a string
 ** - better and unique print methods
 **

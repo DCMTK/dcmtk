@@ -10,9 +10,9 @@
 ** Implementation of class DcmAttributeTag
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-05-20 13:27:50 $
+** Update Date:		$Date: 1996-08-05 08:46:18 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrat.cc,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -80,21 +80,27 @@ Edebug(());
 // ********************************
 
 
-void DcmAttributeTag::print(const int level)
+void DcmAttributeTag::print(ostream & out, const BOOL showFullData,
+			    const int level)
 {
     if (this -> valueLoaded())
     {
 	Uint16 * attributeTags = this -> get();
 
 	if (!attributeTags)
-	    printInfoLine( level, "(no value available)" );
+	    printInfoLine(out, showFullData, level, "(no value available)" );
 	else
 	{
+	    const Uint32 valueLength = Length/sizeof(Uint16);
+	    const Uint32 maxCount = 
+		!showFullData && 
+		DCM_OptPrintLineLength/6 <  valueLength ?
+		DCM_OptPrintLineLength/6 : valueLength;
 	    char *ch_words;
-	    char *tmp = ch_words = new char[ Length*6/sizeof(Uint16) + 9 ];
+	    char *tmp = ch_words = new char[maxCount*6 + 9 ];
 	    if (ch_words)
 	    {
-		for (unsigned long i=0; i<( Length/(2*sizeof(Uint16)) ); i++ )
+		for (unsigned long i=0; i< maxCount/2; i++ )
 		{
 		    sprintf( tmp, "(%4.4x,%4.4x)\\", 
 			     *attributeTags, *(attributeTags+1));
@@ -102,19 +108,22 @@ void DcmAttributeTag::print(const int level)
 		    attributeTags += 2;
 		}
 			
-		if ( Length > 0 )
+		if (maxCount> 0)
 		    tmp--;
 			
 		*tmp = '\0';
-		printInfoLine( level, ch_words );
+
+		if (maxCount < valueLength)
+		    strcat(tmp, "...");
+		printInfoLine(out, showFullData, level, ch_words );
 		delete ch_words;
 	    }
 	    else
-		printInfoLine( level, "(no value available)" );
+		printInfoLine(out, showFullData, level, "(no value available)" );
 	}
     }
     else
-	DcmObject::printInfoLine( level, "(not loaded)" );
+	printInfoLine(out, showFullData, level, "(not loaded)");
 }
 
 
@@ -308,7 +317,13 @@ E_Condition DcmAttributeTag::verify(const BOOL autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrat.cc,v $
-** Revision 1.7  1996-05-20 13:27:50  andreas
+** Revision 1.8  1996-08-05 08:46:18  andreas
+** new print routine with additional parameters:
+**         - print into files
+**         - fix output length for elements
+** corrected error in search routine with parameter ESM_fromStackTop
+**
+** Revision 1.7  1996/05/20 13:27:50  andreas
 ** correct minor bug in print routine
 **
 ** Revision 1.6  1996/04/16 16:04:04  andreas

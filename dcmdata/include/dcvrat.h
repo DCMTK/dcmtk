@@ -10,9 +10,9 @@
 ** Interface of class DcmAttributeTag
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-04-16 16:01:37 $
+** Update Date:		$Date: 1996-08-05 08:45:29 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrat.h,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -37,7 +37,8 @@ public:
     virtual ~DcmAttributeTag();
 
     virtual DcmEVR ident() const { return EVR_AT; }
-    virtual void print(const int level = 0);
+    virtual void print(ostream & out = cout, const BOOL showFullData = TRUE,
+		       const int level = 0);
     virtual unsigned long getVM();
 
     virtual E_Condition put(const Uint16 * attrValue,	  // Tags
@@ -64,7 +65,13 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrat.h,v $
-** Revision 1.6  1996-04-16 16:01:37  andreas
+** Revision 1.7  1996-08-05 08:45:29  andreas
+** new print routine with additional parameters:
+**         - print into files
+**         - fix output length for elements
+** corrected error in search routine with parameter ESM_fromStackTop
+**
+** Revision 1.6  1996/04/16 16:01:37  andreas
 ** - put methods for AttributeTag with DcmTagKey Parameter
 ** - better support for NULL values
 **

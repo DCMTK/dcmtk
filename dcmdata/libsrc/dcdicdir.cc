@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-29 13:38:24 $
+** Update Date:		$Date: 1996-08-05 08:46:09 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdicdir.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -900,29 +900,30 @@ Edebug(());
 // ********************************
 
 
-void DcmDicomDir::print( int level )
+void DcmDicomDir::print(ostream & out, const BOOL showFullData,
+			int level)
 {
     int i;
     for ( i=0; i<level; i++)
-	cout << "    ";
-    cout << "# Dicom DIR" << endl;
+	out << "    ";
+    out << "# Dicom DIR" << endl;
 
     for ( i=0; i<level; i++)
-	cout << "    ";
-    cout << "# Meta-Info and General Directory Information" << endl;
-    this->getDirFileFormat().print();
+	out << "    ";
+    out << "# Meta-Info and General Directory Information" << endl;
+    this->getDirFileFormat().print(out, showFullData);
 
-    cout << endl;
+    out << endl;
     for ( i=0; i<level; i++)
-	cout << "    ";
-    cout << "# Item Hierarchy (root Record not shown)" << endl;
-    this->getRootRecord().lowerLevelList->print( 1 );  // friend class
+	out << "    ";
+    out << "# Item Hierarchy (root Record not shown)" << endl;
+    this->getRootRecord().lowerLevelList->print(out, showFullData, 1);  // friend class
 
-    cout << endl;
+    out << endl;
     for ( i=0; i<level; i++)
-	cout << "    ";
-    cout << "# used Multi Referenced Directory Records" << endl;
-    this->getMRDRSequence().print( 1 );
+	out << "    ";
+    out << "# used Multi Referenced Directory Records" << endl;
+    this->getMRDRSequence().print(out, showFullData, 1 );
 }
 
 
@@ -1400,7 +1401,13 @@ Edebug(());
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
-** Revision 1.4  1996-01-29 13:38:24  andreas
+** Revision 1.5  1996-08-05 08:46:09  andreas
+** new print routine with additional parameters:
+**         - print into files
+**         - fix output length for elements
+** corrected error in search routine with parameter ESM_fromStackTop
+**
+** Revision 1.4  1996/01/29 13:38:24  andreas
 ** - new put method for every VR to put value as a string
 ** - better and unique print methods
 **

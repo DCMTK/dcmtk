@@ -9,10 +9,10 @@
 ** Purpose:
 ** Interface of class DcmByteString
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-12 15:26:52 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-08-05 08:45:15 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcbytstr.h,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -61,7 +61,8 @@ public:
     virtual ~DcmByteString();
 
     virtual DcmEVR ident(void) const { return EVR_UNKNOWN; } 
-    virtual void print(const int level = 0);
+    virtual void print(ostream & out = cout, const BOOL showFullData = TRUE,
+		       const int level = 0);
     virtual unsigned long getVM();
 
     Uint32 getRealLength(void);
@@ -86,7 +87,13 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.h,v $
-** Revision 1.6  1996-03-12 15:26:52  hewett
+** Revision 1.7  1996-08-05 08:45:15  andreas
+** new print routine with additional parameters:
+**         - print into files
+**         - fix output length for elements
+** corrected error in search routine with parameter ESM_fromStackTop
+**
+** Revision 1.6  1996/03/12 15:26:52  hewett
 ** Removed get method for unsigned char*
 **
 ** Revision 1.5  1996/01/29 13:38:11  andreas

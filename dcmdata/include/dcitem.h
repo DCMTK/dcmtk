@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-07-17 12:38:58 $
+** Update Date:		$Date: 1996-08-05 08:45:23 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcitem.h,v $
-** CVS/RCS Revision:	$Revision: 1.9 $
+** CVS/RCS Revision:	$Revision: 1.10 $
 ** Status:		$State: Exp $
 **
 */
@@ -77,8 +77,8 @@ public:
 
     virtual DcmEVR 	ident(void) const;
     virtual BOOL isLeaf(void) const { return FALSE; }
-    virtual void	print(const int level = 0);
-
+    virtual void print(ostream & out = cout, const BOOL showFullData = TRUE,
+		       const int level = 0);
     virtual unsigned long getVM();
     virtual Uint32 getLength(const E_TransferSyntax xfer 
 			     = EXS_LittleEndianImplicit,
@@ -192,7 +192,13 @@ E_Condition nextUp(DcmStack & stack);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
-** Revision 1.9  1996-07-17 12:38:58  andreas
+** Revision 1.10  1996-08-05 08:45:23  andreas
+** new print routine with additional parameters:
+**         - print into files
+**         - fix output length for elements
+** corrected error in search routine with parameter ESM_fromStackTop
+**
+** Revision 1.9  1996/07/17 12:38:58  andreas
 ** new nextObject to iterate a DicomDataset, DicomFileFormat, Item, ...
 **
 ** Revision 1.8  1996/04/29 15:08:53  hewett

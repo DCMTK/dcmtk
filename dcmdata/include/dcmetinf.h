@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-09 11:06:16 $
+** Update Date:		$Date: 1996-08-05 08:45:24 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcmetinf.h,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 */
@@ -61,8 +61,8 @@ public:
     virtual ~DcmMetaInfo();
 
     virtual DcmEVR ident(void) const { return EVR_metainfo; }
-    virtual void print(const int level = 0);
-
+    virtual void print(ostream & out = cout, const BOOL showFullData = TRUE,
+		       const int level = 0);
     virtual	void transferInit(void);
     virtual void transferEnd(void);
 
@@ -82,7 +82,13 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.h,v $
-** Revision 1.4  1996-01-09 11:06:16  andreas
+** Revision 1.5  1996-08-05 08:45:24  andreas
+** new print routine with additional parameters:
+**         - print into files
+**         - fix output length for elements
+** corrected error in search routine with parameter ESM_fromStackTop
+**
+** Revision 1.4  1996/01/09 11:06:16  andreas
 ** New Support for Visual C++
 ** Correct problems with inconsistent const declarations
 **

@@ -10,9 +10,9 @@
 ** Interface of class DcmUnsignedLongOffset
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:23:11 $
+** Update Date:		$Date: 1996-08-05 08:45:40 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrulup.h,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -39,8 +39,8 @@ class DcmUnsignedLongOffset : public DcmUnsignedLong
     virtual ~DcmUnsignedLongOffset(void);
 
     virtual DcmEVR ident(void) const;
-    virtual void print(const int level = 0);
-
+    virtual void print(ostream & out = cout, const BOOL showFullData = TRUE,
+		       const int level = 0);
     virtual DcmObject*  setNextRecord(DcmObject* record);
     virtual DcmObject*  getNextRecord();
     virtual E_Condition clear();
@@ -53,7 +53,13 @@ class DcmUnsignedLongOffset : public DcmUnsignedLong
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrulup.h,v $
-** Revision 1.3  1996-01-05 13:23:11  andreas
+** Revision 1.4  1996-08-05 08:45:40  andreas
+** new print routine with additional parameters:
+**         - print into files
+**         - fix output length for elements
+** corrected error in search routine with parameter ESM_fromStackTop
+**
+** Revision 1.3  1996/01/05 13:23:11  andreas
 ** - changed to support new streaming facilities
 ** - more cleanups
 ** - merged read / write methods for block and file transfer

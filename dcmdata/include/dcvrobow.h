@@ -10,9 +10,9 @@
 ** Interface of class DcmOtherByteOtherWord
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-29 13:38:17 $
+** Update Date:		$Date: 1996-08-05 08:45:33 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrobow.h,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -43,7 +43,8 @@ public:
 
     virtual E_Condition setVR(DcmEVR vr);
     virtual DcmEVR ident() const;
-    virtual void print(const int level = 0);
+    virtual void print(ostream & out = cout, const BOOL showFullData = TRUE,
+		       const int level = 0);
     virtual unsigned long getVM(void) { return 1L; }
 
     virtual E_Condition write(DcmStream & outStream,
@@ -74,7 +75,13 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.h,v $
-** Revision 1.4  1996-01-29 13:38:17  andreas
+** Revision 1.5  1996-08-05 08:45:33  andreas
+** new print routine with additional parameters:
+**         - print into files
+**         - fix output length for elements
+** corrected error in search routine with parameter ESM_fromStackTop
+**
+** Revision 1.4  1996/01/29 13:38:17  andreas
 ** - new put method for every VR to put value as a string
 ** - better and unique print methods
 **

@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-07-31 13:14:30 $
+** Update Date:		$Date: 1996-08-05 08:46:12 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.14 $
+** CVS/RCS Revision:	$Revision: 1.15 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -351,7 +351,8 @@ DcmEVR DcmItem::ident() const
 // ********************************
 
 
-void DcmItem::print(const int level)
+void DcmItem::print(ostream & out, const BOOL showFullData,
+		    const int level)
 {
     char *info = new char[200];
     char *title = (char*)NULL;
@@ -361,24 +362,24 @@ void DcmItem::print(const int level)
 	title = "Item with explicit Length";
 
     sprintf( info, "(%s  #=%ld)", title, (long)card() );
-    DcmObject::printInfoLine( level, info );
+    printInfoLine(out, showFullData, level, info );
     if ( !elementList->empty() )
     {
 	DcmObject *dO;
 	elementList->seek( ELP_first );
 	do {
 	    dO = elementList->get();
-	    dO->print( level + 1 );
+	    dO->print(out, showFullData, level + 1 );
 	} while ( elementList->seek( ELP_next ) );
     }
 
     DcmTag delimItemTag( DCM_ItemDelimitationItem );
     if ( Length == DCM_UndefinedLength)
-	DcmObject::printInfoLine( level, delimItemTag,
-				  0, "(ItemDelimitationItem)" );
+	printInfoLine(out, showFullData, level, delimItemTag,
+		      0, "(ItemDelimitationItem)" );
     else
-	DcmObject::printInfoLine( level, delimItemTag,
-				  0, "(ItemDelimitationItem for re-encoding)" );
+	printInfoLine(out, showFullData, level, delimItemTag,
+		      0, "(ItemDelimitationItem for re-encoding)" );
     delete info;
 }
 
@@ -1423,8 +1424,9 @@ E_Condition DcmItem::search( const DcmTag &tag,
 	    else
 	    {	// gehe direkt zu Sub-Baum und suche dort weiter
 		l_error = dO->search( tag, resultStack, mode, searchIntoSub );
-                if ( l_error != EC_Normal ) // raeumt nur die oberste Stackebene
-                    resultStack.pop();      // ab; der Rest ist unveraendert
+// The next two lines destroy the stack -> so delete them
+//                if ( l_error != EC_Normal ) // raeumt nur die oberste Stackebene
+//                    resultStack.pop();      // ab; der Rest ist unveraendert
 	    }
 	}
 	else if ( mode == ESM_afterStackTop && searchIntoSub )
@@ -1838,7 +1840,13 @@ DcmItem::findLong(const DcmTagKey& xtag,
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.14  1996-07-31 13:14:30  andreas
+** Revision 1.15  1996-08-05 08:46:12  andreas
+** new print routine with additional parameters:
+**         - print into files
+**         - fix output length for elements
+** corrected error in search routine with parameter ESM_fromStackTop
+**
+** Revision 1.14  1996/07/31 13:14:30  andreas
 ** - Minor corrections: error code for swapping to or from byteorder unknown
 **                      correct read of dataset in fileformat
 **

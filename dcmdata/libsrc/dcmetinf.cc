@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-07-31 13:14:31 $
+** Update Date:		$Date: 1996-08-05 08:46:13 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcmetinf.cc,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 */
@@ -93,24 +93,25 @@ DcmMetaInfo::~DcmMetaInfo()
 // ********************************
 
 
-void DcmMetaInfo::print(const int level)
+void DcmMetaInfo::print(ostream & out, const BOOL showFullData,
+			const int level)
 {
     int i;
-    cout << endl;
+    out << endl;
     for ( i=0; i<level; i++)
-	cout << "    ";
-    cout << "# Dicom-Meta-Information-Header" << endl;
+	out << "    ";
+    out << "# Dicom-Meta-Information-Header" << endl;
     for ( i=0; i<level; i++)
-	cout << "    ";
-    cout << "# Used TransferSyntax: " << DcmXfer( Xfer ).getXferName();
-    cout << endl;
+	out << "    ";
+    out << "# Used TransferSyntax: " << DcmXfer( Xfer ).getXferName();
+    out << endl;
     if ( !elementList->empty() )
     {
 	DcmObject *dO;
 	elementList->seek( ELP_first );
 	do {
 	    dO = elementList->get();
-	    dO->print( level + 1 );
+	    dO->print(out, showFullData, level + 1);
 	} while ( elementList->seek( ELP_next ) );
     }
 }
@@ -548,7 +549,13 @@ E_Condition DcmMetaInfo::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.cc,v $
-** Revision 1.7  1996-07-31 13:14:31  andreas
+** Revision 1.8  1996-08-05 08:46:13  andreas
+** new print routine with additional parameters:
+**         - print into files
+**         - fix output length for elements
+** corrected error in search routine with parameter ESM_fromStackTop
+**
+** Revision 1.7  1996/07/31 13:14:31  andreas
 ** - Minor corrections: error code for swapping to or from byteorder unknown
 **                      correct read of dataset in fileformat
 **

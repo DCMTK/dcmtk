@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:22:54 $
+** Update Date:		$Date: 1996-08-05 08:45:18 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdicdir.h,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -119,7 +119,8 @@ public:
     DcmDicomDir( const DcmDicomDir &newDir );
     virtual ~DcmDicomDir();
 
-    virtual void                print(  int level = 0 );
+    virtual void print(ostream & out = cout, const BOOL showFullData = TRUE,
+		       const int level = 0);
     virtual E_Condition         error();
     virtual DcmFileFormat&      getDirFileFormat();
     virtual DcmDirectoryRecord& getRootRecord();
@@ -141,7 +142,13 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.h,v $
-** Revision 1.2  1996-01-05 13:22:54  andreas
+** Revision 1.3  1996-08-05 08:45:18  andreas
+** new print routine with additional parameters:
+**         - print into files
+**         - fix output length for elements
+** corrected error in search routine with parameter ESM_fromStackTop
+**
+** Revision 1.2  1996/01/05 13:22:54  andreas
 ** - changed to support new streaming facilities
 ** - more cleanups
 ** - merged read / write methods for block and file transfer

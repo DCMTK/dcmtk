@@ -10,7 +10,7 @@
 ** DICOM object encoding/decoding, search and lookup facilities.
 **
 ** Last Update:   $Author: andreas $
-** Revision:      $Revision: 1.7 $
+** Revision:      $Revision: 1.8 $
 ** Status:	  $State: Exp $
 **
 */
@@ -29,6 +29,7 @@
 #include "dcstack.h"
 
 
+// Undefined Length Identifier
 const Uint32 DCM_UndefinedLength = 0xffffffff;
 
 // Maxinum number of read bytes for a Value Element
@@ -36,6 +37,9 @@ const Uint32 DCM_MaxReadLength = 4096;
 
 // Maximun Length of Tag and Length in a DICOM element
 const Uint32 DCM_TagInfoLength = 12;	
+
+// Optimum Line Length if not all data printed
+const Uint32 DCM_OptPrintLineLength = 70;
 
 
 class DcmObject 
@@ -49,9 +53,13 @@ protected:
     E_TransferState fTransferState;
     Uint32 fTransferredBytes;
 
-    virtual void printInfoLine(const int level, const char *info );
-    virtual void printInfoLine(const int level, const DcmTag &tag,
-			       const Uint32 length, const char *info );
+    // The next two functions require that the memory for the info
+    // field is minimum 4 chars longer than strlen(info)
+    virtual void printInfoLine(ostream & out, const BOOL showFullData,
+			       const int level, char *info );
+    virtual void printInfoLine(ostream & out, const BOOL showFullData,
+			       const int level, const DcmTag &tag,
+			       const Uint32 length, char *info );
 
     E_Condition writeTag(DcmStream & outStream,	const DcmTag & tag,
 			 const E_TransferSyntax oxfer); // in
@@ -74,7 +82,8 @@ public:
     virtual DcmEVR ident(void) const = 0;
     virtual BOOL isLeaf(void) const = 0;
     virtual DcmObject * nextInContainer(const DcmObject * obj);
-    virtual void print(const int level = 0) = 0;
+    virtual void print(ostream & out = cout, const BOOL showFullData = TRUE,
+		       const int level = 0) = 0;
     inline E_Condition error(void) const { return errorFlag; }
 
     inline E_TransferState transferState(void) const { return fTransferState; }

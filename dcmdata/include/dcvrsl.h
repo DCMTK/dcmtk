@@ -10,9 +10,9 @@
 ** Interface of class DcmSignedLong
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-29 13:38:17 $
+** Update Date:		$Date: 1996-08-05 08:45:35 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrsl.h,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -38,7 +38,8 @@ public:
     virtual ~DcmSignedLong(void);
 
     virtual DcmEVR ident(void) const { return EVR_SL; }
-    virtual void print(const int level = 0);
+    virtual void print(ostream & out = cout, const BOOL showFullData = TRUE,
+		       const int level = 0);
     virtual unsigned long getVM(void);
 
     virtual E_Condition put(const Sint32 * sintVal,
@@ -66,7 +67,13 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrsl.h,v $
-** Revision 1.4  1996-01-29 13:38:17  andreas
+** Revision 1.5  1996-08-05 08:45:35  andreas
+** new print routine with additional parameters:
+**         - print into files
+**         - fix output length for elements
+** corrected error in search routine with parameter ESM_fromStackTop
+**
+** Revision 1.4  1996/01/29 13:38:17  andreas
 ** - new put method for every VR to put value as a string
 ** - better and unique print methods
 **

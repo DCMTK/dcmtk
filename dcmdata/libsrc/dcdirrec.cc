@@ -9,10 +9,10 @@
 ** Implementation of class DcmDirectoryRecord
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-11 13:08:03 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-08-05 08:46:10 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdirrec.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1078,46 +1078,47 @@ DcmEVR DcmDirectoryRecord::ident() const
 // ********************************
 
 
-void DcmDirectoryRecord::print(const int level )
+void DcmDirectoryRecord::print(ostream & out, BOOL showFullData,
+			       const int level )
 {
     int i;
     char *type = DRTypeNames[ DirRecordType ];
     char *info = new char[ strlen(type) + 50 ];
 
     sprintf( info, "\"Directory Record\" %s #=%ld ", type, (long)card() );
-    DcmObject::printInfoLine( level, info );
+    printInfoLine(out, showFullData, level, info );
     delete info;
     const char* refFile = this->getReferencedFileName();
     for ( i=1; i<level; i++)
-	cout << "    ";
-    cout << "#    offset= $" << this->getFileOffset();
+	out << "    ";
+    out << "#    offset= $" << this->getFileOffset();
     if ( referencedMRDR != (DcmDirectoryRecord*)NULL )
-	cout << "   referenced MRDR=$"
+	out << "   referenced MRDR=$"
 	     << referencedMRDR->getFileOffset();
     if ( DirRecordType == ERT_Mrdr )
-	cout << "   No of references="
+	out << "   No of references="
 	     << numberOfReferences;
     if ( refFile != (char*)NULL )
-	cout << "   refFileID=\"" << refFile << "\"";
-    cout << endl;
+	out << "   refFileID=\"" << refFile << "\"";
+    out << endl;
     if ( !elementList->empty() )
     {
 	DcmObject *dO;
 	elementList->seek( ELP_first );
 	do {
 	    dO = elementList->get();
-	    dO->print( level + 1 );
+	    dO->print(out, showFullData, level + 1);
 	} while ( elementList->seek( ELP_next ) );
     }
     if ( lowerLevelList->card() > 0 )
-	lowerLevelList->print( level + 1 );
+	lowerLevelList->print(out, showFullData, level + 1);
     DcmTag delimItemTag( DCM_ItemDelimitationItem );
     if ( Length == DCM_UndefinedLength )
-	DcmObject::printInfoLine( level, delimItemTag,
-				  0, "\"ItemDelimitationItem\"" );
+	printInfoLine(out, showFullData, level, delimItemTag,
+		      0, "\"ItemDelimitationItem\"" );
     else
-	DcmObject::printInfoLine( level, delimItemTag,
-		   0, "\"ItemDelimitationItem for re-encoding\"" );
+	printInfoLine(out, showFullData, level, delimItemTag,
+		      0, "\"ItemDelimitationItem for re-encoding\"" );
 }
 
 

@@ -10,9 +10,9 @@
 ** Interface of class DcmFileFormat
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-07-29 15:46:23 $
+** Update Date:		$Date: 1996-08-05 08:45:21 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcfilefo.h,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -51,8 +51,8 @@ public:
     virtual E_Condition validateMetaInfo(E_TransferSyntax oxfer);
 
     virtual DcmEVR ident() const { return EVR_fileFormat; }
-    virtual void print(int level = 0);
-
+    virtual void print(ostream & out = cout, const BOOL showFullData = TRUE,
+		       const int level = 0);
     virtual E_Condition read(DcmStream & inStream,
 			     const E_TransferSyntax xfer = EXS_Unknown,
 			     const E_GrpLenEncoding gltype = EGL_withoutGL,
@@ -83,7 +83,13 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.h,v $
-** Revision 1.5  1996-07-29 15:46:23  andreas
+** Revision 1.6  1996-08-05 08:45:21  andreas
+** new print routine with additional parameters:
+**         - print into files
+**         - fix output length for elements
+** corrected error in search routine with parameter ESM_fromStackTop
+**
+** Revision 1.5  1996/07/29 15:46:23  andreas
 ** Add method getAndRemoveDataset to remove connection of dataset from fileformat
 **
 ** Revision 1.4  1996/01/09 11:06:15  andreas

@@ -10,7 +10,7 @@
 **
 **
 ** Last Update:   $Author: andreas $
-** Revision:      $Revision: 1.10 $
+** Revision:      $Revision: 1.11 $
 ** Status:	  $State: Exp $
 **
 */
@@ -255,40 +255,43 @@ E_Condition DcmObject::searchErrors( DcmStack &resultStack )
 // ***********************************************************
 
 
-void DcmObject::printInfoLine(const int level, const char *info )
+void DcmObject::printInfoLine(ostream & out, const BOOL showFullData,
+			      const int level, char *info )
 {
-  printInfoLine( level, *Tag, Length, info );
+  printInfoLine(out, showFullData, level, *Tag, Length, info );
 }
 
 
 // ********************************
 
 
-void DcmObject::printInfoLine(const int level, const DcmTag &tag, 
+void DcmObject::printInfoLine(ostream & out, const BOOL showFullData,
+			      const int level, const DcmTag &tag, 
 			      const Uint32 length,
-			      const char *info)
+			      char *info)
 {
     DcmVR vr( tag.getVR() );
 
     char output[100];
     for ( int i=1; i<level; i++)
-	cout << "    ";
+	out << "    ";
 
     if (strlen(info) <= 38)
     {
 	sprintf(output, "(%4.4x,%4.4x) %-5.5s %-38s #%6lu,%3lu",
 		tag.getGTag(), tag.getETag(), vr.getVRName(), info,
 		(unsigned long)length, getVM());
-	cout << output << "  " << tag.getTagName() << endl;
     }
-    else
+    else 
     {
 	sprintf(output, "(%4.4x,%4.4x) %-5.5s ",
 		tag.getGTag(), tag.getETag(), vr.getVRName());
-	cout << output << info;
+	if (!showFullData && DCM_OptPrintLineLength+10 <= strlen(info))
+	    strcpy(&info[DCM_OptPrintLineLength],"...");
+	out << output << info;
 	sprintf(output, " #%6lu,%3lu", (unsigned long)length, getVM());
-	cout << output << "  " << tag.getTagName() << endl;
     }
+    out << output << "  " << tag.getTagName() << endl;
 }
 
 

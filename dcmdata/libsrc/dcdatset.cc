@@ -10,10 +10,10 @@
 ** Implementation of the class DcmDataset
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-04-25 17:08:04 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-08-05 08:46:08 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdatset.cc,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -84,17 +84,18 @@ DcmDataset::~DcmDataset()
 // ********************************
 
 
-void DcmDataset::print(const int level)
+void DcmDataset::print(ostream & out, const BOOL showFullData,
+		       const int level)
 {
     int i;
-    cout << endl;
+    out << endl;
     for ( i=0; i<level; i++)
-	cout << "    ";
-    cout << "# Dicom-Data-Set" << endl;
+	out << "    ";
+    out << "# Dicom-Data-Set" << endl;
     for ( i=0; i<level; i++)
-	cout << "    ";
-    cout << "# Used TransferSyntax: " << DcmXfer( Xfer ).getXferName();
-    cout << endl;
+	out << "    ";
+    out << "# Used TransferSyntax: " << DcmXfer( Xfer ).getXferName();
+    out << endl;
     if ( !elementList->empty() )
     {
 	DcmObject *dO;
@@ -102,7 +103,7 @@ void DcmDataset::print(const int level)
 	do 
 	{
 	    dO = elementList->get();
-	    dO->print( level + 1 );
+	    dO->print(out, showFullData, level + 1 );
 	} while ( elementList->seek( ELP_next ) );
     }
 }
@@ -236,7 +237,13 @@ E_Condition DcmDataset::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.cc,v $
-** Revision 1.6  1996-04-25 17:08:04  hewett
+** Revision 1.7  1996-08-05 08:46:08  andreas
+** new print routine with additional parameters:
+**         - print into files
+**         - fix output length for elements
+** corrected error in search routine with parameter ESM_fromStackTop
+**
+** Revision 1.6  1996/04/25 17:08:04  hewett
 ** Removed out-of-date comment about RESOLVE_AMBIGOUS_VR_OF_PIXELDATA.
 **
 ** Revision 1.5  1996/03/13 14:44:23  hewett

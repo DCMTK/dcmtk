@@ -9,10 +9,10 @@
 ** Purpose:
 ** Interface of class DcmUniqueIdentifier
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-05-30 17:19:22 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-08-05 08:45:38 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrui.h,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -40,7 +40,8 @@ public:
     virtual ~DcmUniqueIdentifier(void);
  
     virtual DcmEVR ident(void) const { return EVR_UI; }
-    virtual void print(const int level = 0);
+    virtual void print(ostream & out = cout, const BOOL showFullData = TRUE,
+		       const int level = 0);
 
     virtual E_Condition put(const char * value);
 };
@@ -51,7 +52,13 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrui.h,v $
-** Revision 1.5  1996-05-30 17:19:22  hewett
+** Revision 1.6  1996-08-05 08:45:38  andreas
+** new print routine with additional parameters:
+**         - print into files
+**         - fix output length for elements
+** corrected error in search routine with parameter ESM_fromStackTop
+**
+** Revision 1.5  1996/05/30 17:19:22  hewett
 ** Added a makeMachineByteString() method to strip and trailing whitespace
 ** from a UID.
 **

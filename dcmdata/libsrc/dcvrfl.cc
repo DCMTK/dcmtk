@@ -10,9 +10,9 @@
 ** Implementation of class DcmFloatingPointSingle
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-05-20 13:27:51 $
+** Update Date:		$Date: 1996-08-05 08:46:20 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrfl.cc,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -83,34 +83,42 @@ Edebug(());
 // ********************************
 
 
-void DcmFloatingPointSingle::print(const int level)
+void DcmFloatingPointSingle::print(ostream & out, const BOOL showFullData,
+				   const int level)
 {
     if (this -> valueLoaded())
     {
 	Float32 * floatVals =  this -> get();
 
 	if (!floatVals)
-	    printInfoLine( level, "(no value available)" );
+	    printInfoLine(out, showFullData, level, "(no value available)" );
 	else
 	{
+	    const Uint32 valueLength = Length/sizeof(Float32);
+	    const Uint32 maxCount =
+		!showFullData && DCM_OptPrintLineLength/26 < valueLength ?
+		DCM_OptPrintLineLength/26 : valueLength;
 	    char *ch_words;
-	    char *tmp = ch_words = new char[Length*26/sizeof(Float32)+8];
+	    char *tmp = ch_words = new char[maxCount*26+8];
 
-	    for (unsigned long i=0; i<( Length/sizeof(Float32) ); i++ )
+	    for (unsigned long i=0; i<maxCount; i++ )
 	    {
 		sprintf( tmp, "%g\\", *floatVals );
 		tmp += strlen(tmp);
 		floatVals++;
 	    }
-	    if ( Length > 0 )
+	    if (maxCount> 0 )
 		tmp--;
 	    *tmp = '\0';
-	    printInfoLine(level, ch_words);
+
+	    if (maxCount < valueLength)
+		strcat(tmp, "...");
+	    printInfoLine(out, showFullData, level, ch_words);
 	    delete ch_words;
 	}
     }
     else
-	DcmObject::printInfoLine( level, "(not loaded)" );
+	printInfoLine(out, showFullData, level, "(not loaded)" );
 }
 
 
@@ -288,7 +296,13 @@ E_Condition DcmFloatingPointSingle::verify(const BOOL autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrfl.cc,v $
-** Revision 1.7  1996-05-20 13:27:51  andreas
+** Revision 1.8  1996-08-05 08:46:20  andreas
+** new print routine with additional parameters:
+**         - print into files
+**         - fix output length for elements
+** corrected error in search routine with parameter ESM_fromStackTop
+**
+** Revision 1.7  1996/05/20 13:27:51  andreas
 ** correct minor bug in print routine
 **
 ** Revision 1.6  1996/04/16 16:05:23  andreas

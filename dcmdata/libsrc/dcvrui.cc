@@ -9,10 +9,10 @@
 ** Purpose:
 ** Implementation of class DcmUniqueIdentifier
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-05-31 09:09:51 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-08-05 08:46:23 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrui.cc,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -73,7 +73,8 @@ Edebug(());
 // ********************************
 
 
-void DcmUniqueIdentifier::print(const int level)
+void DcmUniqueIdentifier::print(ostream & out, const BOOL showFullData,
+				const int level)
 {
     if (this -> valueLoaded())
     {
@@ -99,14 +100,14 @@ void DcmUniqueIdentifier::print(const int level)
 		tmp[ t_len + 1 ] = ']';
 		tmp[ t_len + 2 ] = '\0';
 	    }
-	    printInfoLine( level, tmp );
+	    printInfoLine(out, showFullData, level, tmp );
 	    delete tmp;
 	}
 	else
-	    printInfoLine( level, "(no value available)" );
+	    printInfoLine(out, showFullData, level, "(no value available)" );
     }
     else
-	printInfoLine( level, "(not loaded)" );
+	printInfoLine(out, showFullData, level, "(not loaded)" );
 }
 
 
@@ -154,7 +155,13 @@ E_Condition DcmUniqueIdentifier::makeMachineByteString(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrui.cc,v $
-** Revision 1.6  1996-05-31 09:09:51  hewett
+** Revision 1.7  1996-08-05 08:46:23  andreas
+** new print routine with additional parameters:
+**         - print into files
+**         - fix output length for elements
+** corrected error in search routine with parameter ESM_fromStackTop
+**
+** Revision 1.6  1996/05/31 09:09:51  hewett
 ** Unique Identifiers which are incorrectly encoded with leading, embedded
 ** or trailing white space are now corrected.
 **

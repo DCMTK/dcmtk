@@ -9,10 +9,10 @@
 ** Purpose:
 ** Implementation of class DcmByteString
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-05-31 09:09:08 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-08-05 08:46:07 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcbytstr.cc,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
+** CVS/RCS Revision:	$Revision: 1.9 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -82,26 +82,43 @@ DcmByteString::~DcmByteString(void)
 // ********************************
 
 
-void DcmByteString::print(const int level)
+void DcmByteString::print(ostream & out, const BOOL showFullData,
+			  const int level)
 {
     if (this -> valueLoaded())
     {
 	const char * byteStringValue = this -> get();
 	if (byteStringValue)
 	{
-	    char *tmp = new char[realLength + 3];
+	    Uint32 printLength;
+	    if (showFullData)
+		printLength = realLength;
+	    else
+		printLength = DCM_OptPrintLineLength-5 < realLength ? 
+		    DCM_OptPrintLineLength : realLength;
+
+	    char *tmp = new char[printLength + 5];
 	    tmp[0] = '[';
-	    strncpy( tmp+1, byteStringValue, realLength );
-	    tmp[realLength + 1 ] = ']';
-	    tmp[realLength + 2 ] = '\0';
-	    printInfoLine(level, tmp);
+	    strncpy( tmp+1, byteStringValue, printLength );
+	    if (showFullData || printLength == realLength)
+	    {
+		tmp[printLength + 1 ] = ']';
+		tmp[printLength + 2 ] = '\0';
+	    }
+	    else
+	    {
+		tmp[printLength+1] = '\0';
+		strcat(tmp, "...");
+	    }
+		
+	    printInfoLine(out, showFullData, level, tmp);
 	    delete tmp;
 	}
 	else
-	    printInfoLine( level, "(no value available)" );
+	    printInfoLine(out, showFullData, level, "(no value available)" );
     }
     else
-	printInfoLine( level, "(not loaded)" );
+	printInfoLine(out, showFullData, level, "(not loaded)" );
 }
 
 
@@ -361,7 +378,13 @@ E_Condition DcmByteString::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
-** Revision 1.8  1996-05-31 09:09:08  hewett
+** Revision 1.9  1996-08-05 08:46:07  andreas
+** new print routine with additional parameters:
+**         - print into files
+**         - fix output length for elements
+** corrected error in search routine with parameter ESM_fromStackTop
+**
+** Revision 1.8  1996/05/31 09:09:08  hewett
 ** The stripping of trailing padding characters has been restored (without
 ** the 8bit char removal bug).  Trailing padding characters are insignificant
 ** and if they are not removed problems arise with string comparisons since

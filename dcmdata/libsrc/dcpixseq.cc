@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-29 13:38:29 $
+** Update Date:		$Date: 1996-08-05 08:46:15 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixseq.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -81,7 +81,8 @@ Edebug(());
 }
 
 
-void DcmPixelSequence::print( int level )
+void DcmPixelSequence::print(ostream & out, const BOOL showFullData,
+			     const int level )
 {
     Tag->setVR( EVR_OB );
     char *info = new char[200];
@@ -92,7 +93,7 @@ void DcmPixelSequence::print( int level )
         title = "PixelSequence with explicit Length";
 
     sprintf( info, "(%s #=%ld)", title, (long)card() );
-    DcmObject::printInfoLine( level, info );
+    printInfoLine(out, showFullData, level, info );
     delete info;
 
     if ( !itemList->empty() )
@@ -101,16 +102,16 @@ void DcmPixelSequence::print( int level )
 	itemList->seek( ELP_first );
 	do {
 	    dO = itemList->get();
-	    dO->print( level + 1 );
+	    dO->print(out, showFullData, level + 1);
 	} while ( itemList->seek( ELP_next ) );
     }
     DcmTag delimItemTag( DCM_SequenceDelimitationItem );
 
     if ( Length == DCM_UndefinedLength )
-        DcmObject::printInfoLine( level, delimItemTag,
-				  0, "(SequenceDelimitationItem)" );
+        printInfoLine(out, showFullData, level, delimItemTag,
+				 0, "(SequenceDelimitationItem)");
     else
-        DcmObject::printInfoLine( level, delimItemTag,
+        printInfoLine(out, showFullData, level, delimItemTag,
 		   0, "(SequenceDelimitationItem for re-enc.)" );
 }
 
@@ -248,7 +249,13 @@ E_Condition DcmPixelSequence::remove(DcmPixelItem* item)
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.cc,v $
-** Revision 1.4  1996-01-29 13:38:29  andreas
+** Revision 1.5  1996-08-05 08:46:15  andreas
+** new print routine with additional parameters:
+**         - print into files
+**         - fix output length for elements
+** corrected error in search routine with parameter ESM_fromStackTop
+**
+** Revision 1.4  1996/01/29 13:38:29  andreas
 ** - new put method for every VR to put value as a string
 ** - better and unique print methods
 **

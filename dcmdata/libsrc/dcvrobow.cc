@@ -10,10 +10,10 @@
 ** Implementation of class DcmOtherByteOtherWord
 **
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1996-05-06 10:22:47 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-08-05 08:46:20 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrobow.cc,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
+** CVS/RCS Revision:	$Revision: 1.9 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -108,7 +108,8 @@ DcmEVR DcmOtherByteOtherWord::ident(void) const
 // ********************************
 
 
-void DcmOtherByteOtherWord::print(const int level )
+void DcmOtherByteOtherWord::print(ostream & out, const BOOL showFullData,
+				  const int level )
 {
     if (this -> valueLoaded())
     {
@@ -126,18 +127,28 @@ void DcmOtherByteOtherWord::print(const int level )
 	{
 	    char *ch_words = NULL;;
 	    char *tmp = NULL;
-
+	    Uint32 maxCount = 0; 
 	    if (evr == EVR_OW)
-		tmp = ch_words = new char[Length*5+6];
+	    {
+		maxCount = 
+		    !showFullData && DCM_OptPrintLineLength/5 < Length ? 
+		    DCM_OptPrintLineLength/5 : Length;
+		tmp = ch_words = new char[maxCount*5+6];
+	    }
 	    else
-		tmp = ch_words = new char[Length*3+6];
+	    {
+		maxCount = 
+		    !showFullData && DCM_OptPrintLineLength/3 < Length ? 
+		    DCM_OptPrintLineLength/3 : Length;
+		tmp = ch_words = new char[maxCount*3+6];
+	    }
 		
 	    if (tmp)
 	    {
 		const size_t bytePerValue = 
 		    (evr == EVR_OW ? sizeof(Uint16) : sizeof(Uint8));
 
-		for (unsigned int i=0; i<Length/bytePerValue; i++)
+		for (unsigned int i=0; i<maxCount/bytePerValue; i++)
 		{
 		    if (evr == EVR_OW)
 		    {
@@ -153,20 +164,24 @@ void DcmOtherByteOtherWord::print(const int level )
 		    }
 		}
 
-		if ( Length > 0 )
+		if (maxCount/bytePerValue> 0 )
 		    tmp--;
 		*tmp = '\0';
-		printInfoLine( level, ch_words );
+		if (maxCount < Length)
+		    strcat(tmp, "...");
+		    
+		printInfoLine(out, showFullData, level, ch_words );
 		delete[] ch_words;
 	    }
 	    else
 		errorFlag = EC_MemoryExhausted;
 	}
 	else
-	    DcmObject::printInfoLine( level, "(no value available)" );
+	    printInfoLine(out, showFullData, 
+				     level, "(no value available)" );
     }
     else
-	DcmObject::printInfoLine( level, "(not loaded)" );
+	printInfoLine(out, showFullData, level, "(not loaded)" );
 }
 
 
@@ -406,7 +421,13 @@ E_Condition DcmOtherByteOtherWord::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
-** Revision 1.8  1996-05-06 10:22:47  meichel
+** Revision 1.9  1996-08-05 08:46:20  andreas
+** new print routine with additional parameters:
+**         - print into files
+**         - fix output length for elements
+** corrected error in search routine with parameter ESM_fromStackTop
+**
+** Revision 1.8  1996/05/06 10:22:47  meichel
 ** Copy constructor now handles case when VR=unknown.
 **
 ** Revision 1.7  1996/04/16 16:05:24  andreas

@@ -10,9 +10,9 @@
 ** Implementation of class DcmFileFormat
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-07-29 15:47:00 $
+** Update Date:		$Date: 1996-08-05 08:46:11 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcfilefo.cc,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -120,13 +120,14 @@ DcmFileFormat::~DcmFileFormat()
 // ********************************
 
 
-void DcmFileFormat::print(int level)
+void DcmFileFormat::print(ostream & out, const BOOL showFullData, 
+			  const int level)
 {
     int i;
-    cout << endl;
+    out << endl;
     for ( i=0; i<level; i++)
-	cout << "    ";
-    cout << "# Dicom-File-Format" << endl;
+	out << "    ";
+    out << "# Dicom-File-Format" << endl;
     if ( !itemList->empty() )
     {
 	DcmObject *dO;
@@ -134,15 +135,15 @@ void DcmFileFormat::print(int level)
 	do 
 	{
 	    dO = itemList->get();
-	    dO->print( level );
+	    dO->print(out, showFullData, level);
 	} while ( itemList->seek( ELP_next ) );
     }
     else
     {
 	for ( i=0; i<level; i++)
-	    cout << "    ";
-	cout << "# Dicom-File-Format has been erased";
-	cout << endl;
+	    out << "    ";
+	out << "# Dicom-File-Format has been erased";
+	out << endl;
     }
 }
 
@@ -682,7 +683,13 @@ DcmDataset* DcmFileFormat::getAndRemoveDataset()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
-** Revision 1.6  1996-07-29 15:47:00  andreas
+** Revision 1.7  1996-08-05 08:46:11  andreas
+** new print routine with additional parameters:
+**         - print into files
+**         - fix output length for elements
+** corrected error in search routine with parameter ESM_fromStackTop
+**
+** Revision 1.6  1996/07/29 15:47:00  andreas
 ** add method getAndRemoveDataset to remove connection of dataset from fileformat
 **
 ** Revision 1.5  1996/04/12 13:17:22  andreas

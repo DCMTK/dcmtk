@@ -10,9 +10,9 @@
 ** Implementation of class DcmUnsignedLong
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-05-20 13:27:53 $
+** Update Date:		$Date: 1996-08-05 08:46:24 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrul.cc,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -77,20 +77,25 @@ Edebug(());
 // ********************************
 
 
-void DcmUnsignedLong::print(const int level)
+void DcmUnsignedLong::print(ostream & out, const BOOL showFullData, 
+			    const int level)
 {
     if (this -> valueLoaded())
     {
 	Uint32 * uintVals = this -> get();
 
 	if (!uintVals)
-	    printInfoLine( level, "(no value available)" );
+	    printInfoLine(out, showFullData, level, "(no value available)" );
 	else
 	{
+	    const Uint32 valueLength = Length/sizeof(Uint32);
+	    const Uint32 maxCount =
+		!showFullData && DCM_OptPrintLineLength/12 < valueLength ?
+		DCM_OptPrintLineLength/12 : valueLength;
 	    char *ch_words;
-	    char *tmp = ch_words = new char[Length*12/sizeof(Uint32)+4];
+	    char *tmp = ch_words = new char[maxCount*12+8];
 
-	    for (unsigned long i=0; i<( Length/sizeof(Uint32) ); i++ )
+	    for (unsigned long i=0; i<maxCount; i++ )
 	    {
 #if SIZEOF_LONG == 8
 		sprintf(tmp, "%u\\", *uintVals);
@@ -100,15 +105,19 @@ void DcmUnsignedLong::print(const int level)
 		tmp += strlen(tmp);
 		uintVals++;
 	    }
-	    if ( Length > 0 )
+	    if (maxCount > 0 )
 		tmp--;
 	    *tmp = '\0';
-	    printInfoLine(level, ch_words);
+
+	    if (maxCount < valueLength)
+		strcat(tmp, "...");
+
+	    printInfoLine(out, showFullData, level, ch_words);
 	    delete ch_words;
 	}
     }
     else
-	printInfoLine( level, "(not loaded)" );
+	printInfoLine(out, showFullData, level, "(not loaded)");
 }
 
 
@@ -284,7 +293,13 @@ E_Condition DcmUnsignedLong::verify(const BOOL autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrul.cc,v $
-** Revision 1.7  1996-05-20 13:27:53  andreas
+** Revision 1.8  1996-08-05 08:46:24  andreas
+** new print routine with additional parameters:
+**         - print into files
+**         - fix output length for elements
+** corrected error in search routine with parameter ESM_fromStackTop
+**
+** Revision 1.7  1996/05/20 13:27:53  andreas
 ** correct minor bug in print routine
 **
 ** Revision 1.6  1996/04/16 16:05:26  andreas
