@@ -1,6 +1,26 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2000.03.03 (eichelberg)
+
+- Implemented library support for redirecting error messages into memory
+  instead of printing them to stdout/stderr for GUI applications.
+  See ofstd/include/ofconsol for a description of this feature.
+  Thanks to Markus Mertens <markus@bifurc.uni-muenster.de> for this
+  contribution.
+  Affects: dcmimage/apps/Makefile.dep
+           dcmimage/apps/dcm2pnm.cc
+           dcmimage/include/dihsvpxt.h
+           dcmimage/include/diyf2img.h
+           dcmimage/include/diyf2pxt.h
+           dcmimage/include/diyp2pxt.h
+           dcmimage/libsrc/Makefile.dep
+           dcmimage/libsrc/diargimg.cc
+           dcmimage/libsrc/dicoimg.cc
+           dcmimage/libsrc/dicopx.cc
+           dcmimage/libsrc/dipalimg.cc
+           dcmimage/tests/test.cc
+
 **** Changes from 2000.02.29 (eichelberg)
 
 - Removed support for VS value representation. This was proposed in CP 101
