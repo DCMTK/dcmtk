@@ -1,0 +1,50 @@
+#
+#	Makefile for dcmimgle
+#
+
+
+@SET_MAKE@
+
+SHELL = /bin/sh
+VPATH= @srcdir@:@top_srcdir@/include:@configdir@/include
+srcdir= @srcdir@
+top_srcdir=@top_srcdir@
+include @configdir@/@common_makefile@
+
+
+all: include-all libsrc-all
+
+install: install-bin
+
+install-lib: libsrc-install-lib install-include
+
+install-include: include-install
+
+
+include-all:
+	(cd include; $(MAKE) ARCH="$(ARCH)" all)
+
+libsrc-all: include-all
+	(cd libsrc; $(MAKE) ARCH="$(ARCH)" all)
+
+include-install:
+	(cd include; $(MAKE) ARCH="$(ARCH)" install)
+
+libsrc-install-lib: include-all
+	(cd libsrc; $(MAKE) ARCH="$(ARCH)" install)
+
+clean:
+	(cd include; $(MAKE) clean)
+	(cd libsrc; $(MAKE) clean)
+	rm -f $(TRASH)
+
+distclean:
+	(cd include; $(MAKE) distclean)
+	(cd libsrc; $(MAKE) distclean)
+	rm -f $(DISTTRASH)
+
+dependencies:
+	(cd libsrc; touch $(DEP); $(MAKE) dependencies)
+
+html:
+	(doc++ -d htmldocs -p -B /dev/null include/*.h libsrc/*.cc)
