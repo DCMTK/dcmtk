@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmVR: Value Representation
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-02-03 16:35:12 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-02-29 11:49:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvr.cc,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,11 +44,6 @@ OFBool dcmEnableUnknownVRGeneration = OFTrue;
 ** Global flag to enable/disable the generation of VR=UT
 */
 OFBool dcmEnableUnlimitedTextVRGeneration = OFTrue; 
-
-/*
-** Global flag to enable/disable the generation of VR=VS
-*/
-OFBool dcmEnableVirtualStringVRGeneration = OFTrue;
 
 /*
 ** VR property table
@@ -134,10 +129,8 @@ static DcmVREntry DcmVRDict[] = {
     /* Overlay Data - only used in ident() */
     { EVR_OverlayData, "OverlayData", 0, DCMVR_PROP_INTERNAL, 0, DCM_UndefinedLength },
 
-    /* Unlimited Text - defined in CP 101 & CP 122 - needed for Structured Reporting (SR) */
+    /* Unlimited Text */
     { EVR_UT, "UT", sizeof(char), DCMVR_PROP_ISASTRING|DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
-    /* Virtual String - defined in CP 101 */
-    { EVR_VS, "VS", sizeof(char), DCMVR_PROP_ISASTRING, 0, 1024 },
 
     { EVR_UNKNOWN2B, "??", sizeof(Uint8), /* illegal VRs, we assume no extended length coding */
       DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL , 0, DCM_UndefinedLength },
@@ -263,13 +256,6 @@ DcmVR::getValidEVR() const
     if ((evr == EVR_UT)  && (!dcmEnableUnlimitedTextVRGeneration)) {
         evr = EVR_OB; /* handle UT as if OB */
     }
-    /*
-    ** If the generation of VS is not globally enabled then use OB instead.
-    ** We may not want to generate VS if other software cannot handle it.
-    */
-    if ((evr == EVR_VS)  && (!dcmEnableVirtualStringVRGeneration)) {
-        evr = EVR_OB; /* handle VS as if OB */
-    }
     return evr;
 }
 
@@ -371,7 +357,11 @@ int DcmVR::isEquivalent(const DcmVR& avr) const
 /*
  * CVS/RCS Log:
  * $Log: dcvr.cc,v $
- * Revision 1.17  2000-02-03 16:35:12  joergr
+ * Revision 1.18  2000-02-29 11:49:30  meichel
+ * Removed support for VS value representation. This was proposed in CP 101
+ *   but never became part of the standard.
+ *
+ * Revision 1.17  2000/02/03 16:35:12  joergr
  * Fixed bug: encapsulated data (pixel items) have never been loaded using
  * method 'loadAllDataIntoMemory'. Therefore, encapsulated pixel data was
  * never printed with 'dcmdump'.

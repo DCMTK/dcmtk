@@ -24,9 +24,9 @@
  *  CD-R Image Interchange Profile (former Supplement 19).
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-23 15:11:34 $
+ *  Update Date:      $Date: 2000-02-29 11:48:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -236,7 +236,7 @@ int main(int argc, char *argv[])
       cmd.addOption("--append",                 "+A",        "append to existing dicomdir");
       cmd.addOption("--discard",                "-w",        "do not write out dicomdir");
     cmd.addSubGroup("post-1993 value representations:");
-      cmd.addOption("--enable-new-vr",          "+u",        "enable support for new VRs (UN/UT/VS) (default)");
+      cmd.addOption("--enable-new-vr",          "+u",        "enable support for new VRs (UN/UT) (default)");
       cmd.addOption("--disable-new-vr",         "-u",        "disable support for new VRs, convert to OB");
     cmd.addSubGroup("group length encoding:");
       cmd.addOption("--group-length-remove",    "-g",        "write without group length elements (default)");
@@ -304,13 +304,11 @@ int main(int argc, char *argv[])
       {
         dcmEnableUnknownVRGeneration = OFTrue;
         dcmEnableUnlimitedTextVRGeneration = OFTrue;
-        dcmEnableVirtualStringVRGeneration = OFTrue;
       }
       if (cmd.findOption("--disable-new-vr"))
       {
         dcmEnableUnknownVRGeneration = OFFalse;
         dcmEnableUnlimitedTextVRGeneration = OFFalse;
-        dcmEnableVirtualStringVRGeneration = OFFalse;
       }
       cmd.endOptionBlock();
 
@@ -2774,7 +2772,11 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 /*
 ** CVS/RCS Log:
 ** $Log: dcmgpdir.cc,v $
-** Revision 1.39  2000-02-23 15:11:34  meichel
+** Revision 1.40  2000-02-29 11:48:50  meichel
+** Removed support for VS value representation. This was proposed in CP 101
+**   but never became part of the standard.
+**
+** Revision 1.39  2000/02/23 15:11:34  meichel
 ** Corrected macro for Borland C++ Builder 4 workaround.
 **
 ** Revision 1.38  2000/02/03 11:49:05  meichel

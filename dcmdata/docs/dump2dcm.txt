@@ -44,7 +44,7 @@ output options:
     +tb  --write-xfer-big       write with explicit VR big endian TS
     +ti  --write-xfer-implicit  write with implicit VR little endian TS
   post-1993 value representations:
-    +u   --enable-new-vr        enable support for new VRs (UN/UT/VS) (default)
+    +u   --enable-new-vr        enable support for new VRs (UN/UT) (default)
     -u   --disable-new-vr       disable support for new VRs, convert to OB
   group length encoding:
     +g=  --group-length-recalc  recalculate group lengths if present (default)

@@ -53,10 +53,10 @@ dcdicdir.o: dcdicdir.cc ../../config/include/osconfig.h \
  ../include/dcvris.h ../include/dcvrtm.h ../include/dcchrstr.h \
  ../include/dcvrlo.h ../include/dcvrlt.h ../include/dcvrpn.h \
  ../include/dcvrsh.h ../include/dcvrst.h ../include/dcvrut.h \
- ../include/dcvrvs.h ../include/dcvrobow.h ../include/dcpixel.h \
- ../include/dcvrpobw.h ../include/dcovlay.h ../include/dcvrat.h \
- ../include/dcvrss.h ../include/dcvrus.h ../include/dcvrsl.h \
- ../include/dcvrfl.h ../include/dcvrfd.h ../include/cmdlnarg.h
+ ../include/dcvrobow.h ../include/dcpixel.h ../include/dcvrpobw.h \
+ ../include/dcovlay.h ../include/dcvrat.h ../include/dcvrss.h \
+ ../include/dcvrus.h ../include/dcvrsl.h ../include/dcvrfl.h \
+ ../include/dcvrfd.h ../include/cmdlnarg.h
 dcdicent.o: dcdicent.cc ../../config/include/osconfig.h \
  ../include/dcdicent.h ../include/dctagkey.h ../include/dctypes.h \
  ../../ofstd/include/oftypes.h ../../ofstd/include/ofstring.h \
@@ -96,10 +96,10 @@ dcdirrec.o: dcdirrec.cc ../../config/include/osconfig.h \
  ../include/dcvris.h ../include/dcvrtm.h ../include/dcchrstr.h \
  ../include/dcvrlo.h ../include/dcvrlt.h ../include/dcvrpn.h \
  ../include/dcvrsh.h ../include/dcvrst.h ../include/dcvrut.h \
- ../include/dcvrvs.h ../include/dcvrobow.h ../include/dcpixel.h \
- ../include/dcvrpobw.h ../include/dcovlay.h ../include/dcvrat.h \
- ../include/dcvrss.h ../include/dcvrus.h ../include/dcvrsl.h \
- ../include/dcvrfl.h ../include/dcvrfd.h ../include/cmdlnarg.h
+ ../include/dcvrobow.h ../include/dcpixel.h ../include/dcvrpobw.h \
+ ../include/dcovlay.h ../include/dcvrat.h ../include/dcvrss.h \
+ ../include/dcvrus.h ../include/dcvrsl.h ../include/dcvrfl.h \
+ ../include/dcvrfd.h ../include/cmdlnarg.h
 dcelem.o: dcelem.cc ../../config/include/osconfig.h \
  ../include/dcelem.h ../include/dcerror.h ../include/dctypes.h \
  ../../ofstd/include/oftypes.h ../include/dcobject.h \
@@ -145,11 +145,11 @@ dcitem.o: dcitem.cc ../../config/include/osconfig.h \
  ../include/dcvrds.h ../include/dcvrdt.h ../include/dcvris.h \
  ../include/dcvrtm.h ../include/dcchrstr.h ../include/dcvrlo.h \
  ../include/dcvrlt.h ../include/dcvrpn.h ../include/dcvrsh.h \
- ../include/dcvrst.h ../include/dcvrut.h ../include/dcvrvs.h \
- ../include/dcvrobow.h ../include/dcpixel.h ../include/dcvrpobw.h \
- ../include/dcovlay.h ../include/dcvrat.h ../include/dcvrss.h \
- ../include/dcvrus.h ../include/dcvrsl.h ../include/dcvrfl.h \
- ../include/dcvrfd.h ../include/cmdlnarg.h
+ ../include/dcvrst.h ../include/dcvrut.h ../include/dcvrobow.h \
+ ../include/dcpixel.h ../include/dcvrpobw.h ../include/dcovlay.h \
+ ../include/dcvrat.h ../include/dcvrss.h ../include/dcvrus.h \
+ ../include/dcvrsl.h ../include/dcvrfl.h ../include/dcvrfd.h \
+ ../include/cmdlnarg.h
 dclist.o: dclist.cc ../../config/include/osconfig.h \
  ../include/dclist.h ../include/dcerror.h ../include/dctypes.h \
  ../../ofstd/include/oftypes.h ../include/dcdebug.h
@@ -251,10 +251,10 @@ dcutils.o: dcutils.cc ../../config/include/osconfig.h \
  ../include/dcvris.h ../include/dcvrtm.h ../include/dcchrstr.h \
  ../include/dcvrlo.h ../include/dcvrlt.h ../include/dcvrpn.h \
  ../include/dcvrsh.h ../include/dcvrst.h ../include/dcvrut.h \
- ../include/dcvrvs.h ../include/dcvrobow.h ../include/dcpixel.h \
- ../include/dcvrpobw.h ../include/dcovlay.h ../include/dcvrat.h \
- ../include/dcvrss.h ../include/dcvrus.h ../include/dcvrsl.h \
- ../include/dcvrfl.h ../include/dcvrfd.h ../include/cmdlnarg.h
+ ../include/dcvrobow.h ../include/dcpixel.h ../include/dcvrpobw.h \
+ ../include/dcovlay.h ../include/dcvrat.h ../include/dcvrss.h \
+ ../include/dcvrus.h ../include/dcvrsl.h ../include/dcvrfl.h \
+ ../include/dcvrfd.h ../include/cmdlnarg.h
 dcvm.o: dcvm.cc ../../config/include/osconfig.h ../include/dcvm.h
 dcvr.o: dcvr.cc ../../config/include/osconfig.h ../include/dcvr.h \
  ../include/dctypes.h ../../ofstd/include/oftypes.h
@@ -452,14 +452,6 @@ dcvrus.o: dcvrus.cc ../include/dcvrus.h \
  ../include/dcdebug.h ../include/dcvm.h
 dcvrut.o: dcvrut.cc ../../config/include/osconfig.h \
  ../include/dcvrut.h ../include/dctypes.h \
- ../../ofstd/include/oftypes.h ../include/dcchrstr.h \
- ../include/dcbytstr.h ../include/dcerror.h ../include/dcelem.h \
- ../include/dcobject.h ../include/dcxfer.h ../include/dcvr.h \
- ../include/dcstream.h ../include/dctag.h ../include/dctagkey.h \
- ../../ofstd/include/ofstring.h ../include/dcdicent.h \
- ../include/dclist.h ../include/dcstack.h ../include/dcdebug.h
-dcvrvs.o: dcvrvs.cc ../../config/include/osconfig.h \
- ../include/dcvrvs.h ../include/dctypes.h \
  ../../ofstd/include/oftypes.h ../include/dcchrstr.h \
  ../include/dcbytstr.h ../include/dcerror.h ../include/dcelem.h \
  ../include/dcobject.h ../include/dcxfer.h ../include/dcvr.h \

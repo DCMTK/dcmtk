@@ -47,7 +47,7 @@ objs= 	dcpixseq.o dcpxitem.o dcuid.o dcerror.o dcbuf.o \
 	dcchrstr.o dcvrlo.o dcvrlt.o dcvrpn.o dcvrsh.o dcvrst.o dcvrobow.o \
 	dcvrat.o dcvrss.o dcvrus.o dcvrsl.o dcvrul.o dcvrulup.o dcvrfl.o \
 	dcvrfd.o dcvrpobw.o dcdirrec.o dcdicdir.o dcvm.o dcutils.o \
-	$(dictobjs) cmdlnarg.o dcvrut.o dcvrvs.o
+	$(dictobjs) cmdlnarg.o dcvrut.o
 
 
 all: libdcmdata.$(LIBEXT)

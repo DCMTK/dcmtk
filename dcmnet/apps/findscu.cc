@@ -22,9 +22,9 @@
  *  Purpose: Query/Retrieve Service Class User (C-FIND operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-23 15:12:19 $
+ *  Update Date:      $Date: 2000-02-29 11:49:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/findscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -241,7 +241,7 @@ main(int argc, char *argv[])
       opt2 += ")";
       cmd.addOption("--call",                   "-aec",   1, "aetitle: string", opt2.c_str());
     cmd.addSubGroup("post-1993 value representations:");
-      cmd.addOption("--enable-new-vr",          "+u",        "enable support for new VRs (UN/UT/VS) (default)");
+      cmd.addOption("--enable-new-vr",          "+u",        "enable support for new VRs (UN/UT) (default)");
       cmd.addOption("--disable-new-vr",         "-u",        "disable support for new VRs, convert to OB");
     cmd.addSubGroup("other network options:");
       OFString opt3 = "set max receive pdu to n bytes (default: ";
@@ -301,13 +301,11 @@ main(int argc, char *argv[])
       {
         dcmEnableUnknownVRGeneration = OFTrue;
         dcmEnableUnlimitedTextVRGeneration = OFTrue;
-        dcmEnableVirtualStringVRGeneration = OFTrue;
       }
       if (cmd.findOption("--disable-new-vr"))
       {
         dcmEnableUnknownVRGeneration = OFFalse;
         dcmEnableUnlimitedTextVRGeneration = OFFalse;
-        dcmEnableVirtualStringVRGeneration = OFFalse;
       }
       cmd.endOptionBlock();
 
@@ -712,7 +710,11 @@ cfind(T_ASC_Association * assoc, const char *fname)
 /*
 ** CVS Log
 ** $Log: findscu.cc,v $
-** Revision 1.23  2000-02-23 15:12:19  meichel
+** Revision 1.24  2000-02-29 11:49:49  meichel
+** Removed support for VS value representation. This was proposed in CP 101
+**   but never became part of the standard.
+**
+** Revision 1.23  2000/02/23 15:12:19  meichel
 ** Corrected macro for Borland C++ Builder 4 workaround.
 **
 ** Revision 1.22  2000/02/01 10:24:02  meichel

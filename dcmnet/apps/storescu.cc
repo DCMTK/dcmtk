@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-23 15:12:22 $
+ *  Update Date:      $Date: 2000-02-29 11:49:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -197,7 +197,7 @@ main(int argc, char *argv[])
       cmd.addOption("--required",               "-R",        "propose only required presentation contexts\n(default: propose all supported)");
       cmd.addOption("--combine",                "+C",        "combine proposed transfer syntaxes\n(default: separate pres. context for each TS)");
     cmd.addSubGroup("post-1993 value representations:");
-      cmd.addOption("--enable-new-vr",          "+u",        "enable support for new VRs (UN/UT/VS) (default)");
+      cmd.addOption("--enable-new-vr",          "+u",        "enable support for new VRs (UN/UT) (default)");
       cmd.addOption("--disable-new-vr",         "-u",        "disable support for new VRs, convert to OB");
     cmd.addSubGroup("other network options:");
       OFString opt3 = "set max receive pdu to n bytes (default: ";
@@ -277,13 +277,11 @@ main(int argc, char *argv[])
       {
         dcmEnableUnknownVRGeneration = OFTrue;
         dcmEnableUnlimitedTextVRGeneration = OFTrue;
-        dcmEnableVirtualStringVRGeneration = OFTrue;
       }
       if (cmd.findOption("--disable-new-vr"))
       {
         dcmEnableUnknownVRGeneration = OFFalse;
         dcmEnableUnlimitedTextVRGeneration = OFFalse;
-        dcmEnableVirtualStringVRGeneration = OFFalse;
       }
       cmd.endOptionBlock();
 
@@ -975,7 +973,11 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.29  2000-02-23 15:12:22  meichel
+** Revision 1.30  2000-02-29 11:49:50  meichel
+** Removed support for VS value representation. This was proposed in CP 101
+**   but never became part of the standard.
+**
+** Revision 1.29  2000/02/23 15:12:22  meichel
 ** Corrected macro for Borland C++ Builder 4 workaround.
 **
 ** Revision 1.28  2000/02/03 11:50:09  meichel

@@ -51,7 +51,7 @@ output options:
     +A   --append               append to existing dicomdir
     -w   --discard              do not write out dicomdir
   post-1993 value representations:
-    +u   --enable-new-vr        enable support for new VRs (UN/UT/VS) (default)
+    +u   --enable-new-vr        enable support for new VRs (UN/UT) (default)
     -u   --disable-new-vr       disable support for new VRs, convert to OB
   group length encoding:
     -g   --group-length-remove  write without group length elements (default)

@@ -16,12 +16,12 @@ dcmconv.o: dcmconv.cc ../../config/include/osconfig.h \
  ../include/dcvrds.h ../include/dcvrdt.h ../include/dcvris.h \
  ../include/dcvrtm.h ../include/dcchrstr.h ../include/dcvrlo.h \
  ../include/dcvrlt.h ../include/dcvrpn.h ../include/dcvrsh.h \
- ../include/dcvrst.h ../include/dcvrut.h ../include/dcvrvs.h \
- ../include/dcvrobow.h ../include/dcpixel.h ../include/dcvrpobw.h \
- ../include/dcovlay.h ../include/dcvrat.h ../include/dcvrss.h \
- ../include/dcvrus.h ../include/dcvrsl.h ../include/dcvrfl.h \
- ../include/dcvrfd.h ../include/cmdlnarg.h \
- ../../ofstd/include/ofconapp.h ../../ofstd/include/ofcmdln.h
+ ../include/dcvrst.h ../include/dcvrut.h ../include/dcvrobow.h \
+ ../include/dcpixel.h ../include/dcvrpobw.h ../include/dcovlay.h \
+ ../include/dcvrat.h ../include/dcvrss.h ../include/dcvrus.h \
+ ../include/dcvrsl.h ../include/dcvrfl.h ../include/dcvrfd.h \
+ ../include/cmdlnarg.h ../../ofstd/include/ofconapp.h \
+ ../../ofstd/include/ofcmdln.h
 dcmdump.o: dcmdump.cc ../../config/include/osconfig.h \
  ../include/dctk.h ../include/dctypes.h ../../ofstd/include/oftypes.h \
  ../include/dcswap.h ../include/dcerror.h ../include/dcxfer.h \
@@ -40,12 +40,12 @@ dcmdump.o: dcmdump.cc ../../config/include/osconfig.h \
  ../include/dcvrds.h ../include/dcvrdt.h ../include/dcvris.h \
  ../include/dcvrtm.h ../include/dcchrstr.h ../include/dcvrlo.h \
  ../include/dcvrlt.h ../include/dcvrpn.h ../include/dcvrsh.h \
- ../include/dcvrst.h ../include/dcvrut.h ../include/dcvrvs.h \
- ../include/dcvrobow.h ../include/dcpixel.h ../include/dcvrpobw.h \
- ../include/dcovlay.h ../include/dcvrat.h ../include/dcvrss.h \
- ../include/dcvrus.h ../include/dcvrsl.h ../include/dcvrfl.h \
- ../include/dcvrfd.h ../include/cmdlnarg.h \
- ../../ofstd/include/ofconapp.h ../../ofstd/include/ofcmdln.h
+ ../include/dcvrst.h ../include/dcvrut.h ../include/dcvrobow.h \
+ ../include/dcpixel.h ../include/dcvrpobw.h ../include/dcovlay.h \
+ ../include/dcvrat.h ../include/dcvrss.h ../include/dcvrus.h \
+ ../include/dcvrsl.h ../include/dcvrfl.h ../include/dcvrfd.h \
+ ../include/cmdlnarg.h ../../ofstd/include/ofconapp.h \
+ ../../ofstd/include/ofcmdln.h
 dcmftest.o: dcmftest.cc ../../config/include/osconfig.h \
  ../include/dcmetinf.h ../include/dctypes.h \
  ../../ofstd/include/oftypes.h ../include/dcitem.h \
@@ -74,12 +74,11 @@ dcmgpdir.o: dcmgpdir.cc ../../config/include/osconfig.h \
  ../include/dcvrdt.h ../include/dcvris.h ../include/dcvrtm.h \
  ../include/dcchrstr.h ../include/dcvrlo.h ../include/dcvrlt.h \
  ../include/dcvrpn.h ../include/dcvrsh.h ../include/dcvrst.h \
- ../include/dcvrut.h ../include/dcvrvs.h ../include/dcvrobow.h \
- ../include/dcpixel.h ../include/dcvrpobw.h ../include/dcovlay.h \
- ../include/dcvrat.h ../include/dcvrss.h ../include/dcvrus.h \
- ../include/dcvrsl.h ../include/dcvrfl.h ../include/dcvrfd.h \
- ../include/cmdlnarg.h ../../ofstd/include/ofconapp.h \
- ../../ofstd/include/ofcmdln.h
+ ../include/dcvrut.h ../include/dcvrobow.h ../include/dcpixel.h \
+ ../include/dcvrpobw.h ../include/dcovlay.h ../include/dcvrat.h \
+ ../include/dcvrss.h ../include/dcvrus.h ../include/dcvrsl.h \
+ ../include/dcvrfl.h ../include/dcvrfd.h ../include/cmdlnarg.h \
+ ../../ofstd/include/ofconapp.h ../../ofstd/include/ofcmdln.h
 dump2dcm.o: dump2dcm.cc ../../config/include/osconfig.h \
  ../include/dctk.h ../include/dctypes.h ../../ofstd/include/oftypes.h \
  ../include/dcswap.h ../include/dcerror.h ../include/dcxfer.h \
@@ -98,9 +97,9 @@ dump2dcm.o: dump2dcm.cc ../../config/include/osconfig.h \
  ../include/dcvrds.h ../include/dcvrdt.h ../include/dcvris.h \
  ../include/dcvrtm.h ../include/dcchrstr.h ../include/dcvrlo.h \
  ../include/dcvrlt.h ../include/dcvrpn.h ../include/dcvrsh.h \
- ../include/dcvrst.h ../include/dcvrut.h ../include/dcvrvs.h \
- ../include/dcvrobow.h ../include/dcpixel.h ../include/dcvrpobw.h \
- ../include/dcovlay.h ../include/dcvrat.h ../include/dcvrss.h \
- ../include/dcvrus.h ../include/dcvrsl.h ../include/dcvrfl.h \
- ../include/dcvrfd.h ../include/cmdlnarg.h \
- ../../ofstd/include/ofconapp.h ../../ofstd/include/ofcmdln.h
+ ../include/dcvrst.h ../include/dcvrut.h ../include/dcvrobow.h \
+ ../include/dcpixel.h ../include/dcvrpobw.h ../include/dcovlay.h \
+ ../include/dcvrat.h ../include/dcvrss.h ../include/dcvrus.h \
+ ../include/dcvrsl.h ../include/dcvrfl.h ../include/dcvrfd.h \
+ ../include/cmdlnarg.h ../../ofstd/include/ofconapp.h \
+ ../../ofstd/include/ofcmdln.h

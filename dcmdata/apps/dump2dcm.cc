@@ -22,9 +22,9 @@
  *  Purpose: create a Dicom FileFormat or DataSet from an ASCII-dump
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-23 15:11:36 $
+ *  Update Date:      $Date: 2000-02-29 11:48:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dump2dcm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -754,7 +754,7 @@ int main(int argc, char *argv[])
       cmd.addOption("--write-xfer-big",         "+tb",       "write with explicit VR big endian TS");
       cmd.addOption("--write-xfer-implicit",    "+ti",       "write with implicit VR little endian TS");
     cmd.addSubGroup("post-1993 value representations:");
-      cmd.addOption("--enable-new-vr",          "+u",        "enable support for new VRs (UN/UT/VS) (default)");
+      cmd.addOption("--enable-new-vr",          "+u",        "enable support for new VRs (UN/UT) (default)");
       cmd.addOption("--disable-new-vr",         "-u",        "disable support for new VRs, convert to OB");
     cmd.addSubGroup("group length encoding:");
       cmd.addOption("--group-length-recalc",    "+g=",       "recalculate group lengths if present (default)");
@@ -813,13 +813,11 @@ int main(int argc, char *argv[])
       {
         dcmEnableUnknownVRGeneration = OFTrue;
         dcmEnableUnlimitedTextVRGeneration = OFTrue;
-        dcmEnableVirtualStringVRGeneration = OFTrue;
       }
       if (cmd.findOption("--disable-new-vr"))
       {
         dcmEnableUnknownVRGeneration = OFFalse;
         dcmEnableUnlimitedTextVRGeneration = OFFalse;
-        dcmEnableVirtualStringVRGeneration = OFFalse;
       }
       cmd.endOptionBlock();
 
@@ -954,7 +952,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
-** Revision 1.29  2000-02-23 15:11:36  meichel
+** Revision 1.30  2000-02-29 11:48:51  meichel
+** Removed support for VS value representation. This was proposed in CP 101
+**   but never became part of the standard.
+**
+** Revision 1.29  2000/02/23 15:11:36  meichel
 ** Corrected macro for Borland C++ Builder 4 workaround.
 **
 ** Revision 1.28  2000/02/10 16:02:51  joergr

@@ -22,9 +22,9 @@
  *  Purpose: Definition of the DcmVR class for Value Representation
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-23 15:11:42 $
+ *  Update Date:      $Date: 2000-02-29 11:48:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvr.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,11 +59,6 @@ extern OFBool dcmEnableUnknownVRGeneration; /* default OFTrue */
 ** Global flag to enable/disable the generation of VR=UT
 */
 extern OFBool dcmEnableUnlimitedTextVRGeneration; /* default OFTrue */
-
-/*
-** Global flag to enable/disable the generation of VR=VS
-*/
-extern OFBool dcmEnableVirtualStringVRGeneration; /* default OFTrue */
 
 /*
 ** VR Enumerations
@@ -114,11 +109,10 @@ enum DcmEVR
     EVR_UNKNOWN=36,     /* used internally */
     EVR_UN=37,          /* Unknown Value Representation - defined in supplement 14 */
     EVR_PixelData=38,   /* used internally */
-    EVR_OverlayData=39,    /* used internally */
+    EVR_OverlayData=39, /* used internally */
 
-    EVR_UT=40,          /* Unlimited Text - defined in CP 101 & CP 122 - needed for Structured Reporting (SR) */
-    EVR_VS=41,          /* Virtual String - defined in CP 101 */
-    EVR_UNKNOWN2B=42    /* like EVR_UNKNOWN but without extended length property in explicit VR */
+    EVR_UT=40,          /* Unlimited Text */
+    EVR_UNKNOWN2B=41    /* like EVR_UNKNOWN but without extended length property in explicit VR */
 };
 
 
@@ -172,7 +166,11 @@ public:
 /*
  * CVS/RCS Log:
  * $Log: dcvr.h,v $
- * Revision 1.13  2000-02-23 15:11:42  meichel
+ * Revision 1.14  2000-02-29 11:48:38  meichel
+ * Removed support for VS value representation. This was proposed in CP 101
+ *   but never became part of the standard.
+ *
+ * Revision 1.13  2000/02/23 15:11:42  meichel
  * Corrected macro for Borland C++ Builder 4 workaround.
  *
  * Revision 1.12  2000/02/01 10:12:03  meichel

@@ -22,9 +22,9 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-23 15:11:55 $
+ *  Update Date:      $Date: 2000-02-29 11:49:29 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.47 $
+ *  CVS/RCS Revision: $Revision: 1.48 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -275,16 +275,9 @@ DcmObject* DcmItem::copyDcmObject( DcmObject *oldObj )
     case EVR_ST :
         newObj = new DcmShortText( *(DcmShortText*)oldObj );
         break;
-
-    /* BEGIN- Correction Proposal 101 */
     case EVR_UT:
         newObj = new DcmUnlimitedText( *(DcmUnlimitedText*)oldObj );
         break;
-    case EVR_VS:
-        newObj = new DcmVirtualString( *(DcmVirtualString*)oldObj);
-        break;
-    /* END- Correction Proposal 101 */  
-
 
         // abhaengig von ByteOrder:
     case EVR_AT :
@@ -1558,15 +1551,9 @@ E_Condition newDicomElement(DcmElement * & newElement,
     case EVR_ST :
         newElement = new DcmShortText( tag, length);
         break;
-
-    /* BEGIN- Correction Proposal 101 */
     case EVR_UT:
         newElement = new DcmUnlimitedText( tag, length);
         break;
-    case EVR_VS:
-        newElement = new DcmVirtualString( tag, length);
-        break;
-    /* END- Correction Proposal 101 */  
 
         // abhaengig von ByteOrder:
     case EVR_AT :
@@ -1910,7 +1897,11 @@ DcmItem::findRealNumber(
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.47  2000-02-23 15:11:55  meichel
+** Revision 1.48  2000-02-29 11:49:29  meichel
+** Removed support for VS value representation. This was proposed in CP 101
+**   but never became part of the standard.
+**
+** Revision 1.47  2000/02/23 15:11:55  meichel
 ** Corrected macro for Borland C++ Builder 4 workaround.
 **
 ** Revision 1.46  2000/02/10 10:52:19  joergr

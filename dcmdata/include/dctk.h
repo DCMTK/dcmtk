@@ -22,9 +22,9 @@
  *  Purpose: include most dcmdata files that are usually required
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-03-31 09:24:50 $
+ *  Update Date:      $Date: 2000-02-29 11:48:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dctk.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -88,7 +88,6 @@
 #include "dcvrsh.h"
 #include "dcvrst.h"
 #include "dcvrut.h"
-#include "dcvrvs.h"
 
 // element class for byte and word value representations
 #include "dcvrobow.h"
@@ -113,7 +112,11 @@
 /*
  * CVS/RCS Log:
  * $Log: dctk.h,v $
- * Revision 1.8  1999-03-31 09:24:50  meichel
+ * Revision 1.9  2000-02-29 11:48:38  meichel
+ * Removed support for VS value representation. This was proposed in CP 101
+ *   but never became part of the standard.
+ *
+ * Revision 1.8  1999/03/31 09:24:50  meichel
  * Updated copyright header in module dcmdata
  *
  *

@@ -22,9 +22,9 @@
  *  Purpose: Helper functions for accessing DICOM datasets
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-23 15:12:05 $
+ *  Update Date:      $Date: 2000-02-29 11:49:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dcutils.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -532,11 +532,6 @@ OFBool putSingleValue( DcmItem *item,
 	    elem = new DcmUnlimitedText( localTag );
 	    ((DcmUnlimitedText*)elem)->putString( value );
 	}
-	else if ( localTag.getEVR() == EVR_VS )
-	{
-	    elem = new DcmVirtualString( localTag );
-	    ((DcmVirtualString*)elem)->putString( value );
-	}
 	else
 	    l_error = OFTrue;
 	item->insert( elem, OFTrue );  // NULL-Elemente werden nicht eingefuegt
@@ -587,7 +582,11 @@ OFBool deleteAttribute( DcmItem *item, DcmObject *attribute )
 /*
  * CVS/RCS Log:
  * $Log: dcutils.cc,v $
- * Revision 1.8  2000-02-23 15:12:05  meichel
+ * Revision 1.9  2000-02-29 11:49:30  meichel
+ * Removed support for VS value representation. This was proposed in CP 101
+ *   but never became part of the standard.
+ *
+ * Revision 1.8  2000/02/23 15:12:05  meichel
  * Corrected macro for Borland C++ Builder 4 workaround.
  *
  * Revision 1.7  2000/02/01 10:12:11  meichel

@@ -22,9 +22,9 @@
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-23 15:12:20 $
+ *  Update Date:      $Date: 2000-02-29 11:49:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -328,7 +328,7 @@ main(int argc, char *argv[])
       cmd.addOption("--write-xfer-big",         "+tb",       "write with explicit VR big endian TS");
       cmd.addOption("--write-xfer-implicit",    "+ti",       "write with implicit VR little endian TS");
     cmd.addSubGroup("post-1993 value representations (not with --bit-preserving):");
-      cmd.addOption("--enable-new-vr",          "+u",        "enable support for new VRs (UN/UT/VS) (default)");
+      cmd.addOption("--enable-new-vr",          "+u",        "enable support for new VRs (UN/UT) (default)");
       cmd.addOption("--disable-new-vr",         "-u",        "disable support for new VRs, convert to OB");
     cmd.addSubGroup("group length encoding (not with --bit-preserving):");
       cmd.addOption("--group-length-recalc",    "+g=",       "recalculate group lengths if present (default)");
@@ -447,14 +447,12 @@ main(int argc, char *argv[])
       	app.checkConflict("--enable-new-vr", "--bit-preserving", opt_bitPreserving);
         dcmEnableUnknownVRGeneration = OFTrue;
         dcmEnableUnlimitedTextVRGeneration = OFTrue;
-        dcmEnableVirtualStringVRGeneration = OFTrue;
       }
       if (cmd.findOption("--disable-new-vr"))
       {
       	app.checkConflict("--disable-new-vr", "--bit-preserving", opt_bitPreserving);
         dcmEnableUnknownVRGeneration = OFFalse;
         dcmEnableUnlimitedTextVRGeneration = OFFalse;
-        dcmEnableVirtualStringVRGeneration = OFFalse;
       }
       cmd.endOptionBlock();
 
@@ -1352,7 +1350,11 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.28  2000-02-23 15:12:20  meichel
+** Revision 1.29  2000-02-29 11:49:49  meichel
+** Removed support for VS value representation. This was proposed in CP 101
+**   but never became part of the standard.
+**
+** Revision 1.28  2000/02/23 15:12:20  meichel
 ** Corrected macro for Borland C++ Builder 4 workaround.
 **
 ** Revision 1.27  2000/02/03 11:50:08  meichel
