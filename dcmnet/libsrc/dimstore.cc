@@ -56,10 +56,10 @@
 **
 **	Module Prefix: DIMSE_
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2000-02-23 15:12:39 $
+** Last Update:		$Author: joergr $
+** Update Date:		$Date: 2000-03-02 12:46:34 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimstore.cc,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
+** CVS/RCS Revision:	$Revision: 1.9 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -222,7 +222,7 @@ DIMSE_storeUser(
 	    	    (unsigned)rsp.CommandField);
             }
     
-            *response = rsp.msg.CStoreRSP;
+            *response = rsp.msg.CStoreRSP;          // BoundsChecker warning !?
 	
             if (response->MessageIDBeingRespondedTo != request->MessageID) {
 	        return COND_PushCondition(DIMSE_UNEXPECTEDRESPONSE, 
@@ -398,7 +398,11 @@ DIMSE_storeProvider(/* in */
 /*
 ** CVS Log
 ** $Log: dimstore.cc,v $
-** Revision 1.8  2000-02-23 15:12:39  meichel
+** Revision 1.9  2000-03-02 12:46:34  joergr
+** Rewrote some memory related statements (memcpy, strcpy, etc.) to avoid
+** warnings reported by BoundsChecker.
+**
+** Revision 1.8  2000/02/23 15:12:39  meichel
 ** Corrected macro for Borland C++ Builder 4 workaround.
 **
 ** Revision 1.7  2000/02/03 11:50:12  meichel

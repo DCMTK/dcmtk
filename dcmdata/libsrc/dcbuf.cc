@@ -22,9 +22,9 @@
  *  Purpose: buffer class
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-02-02 14:32:46 $
+ *  Update Date:      $Date: 2000-03-02 12:49:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dcbuf.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -227,8 +227,11 @@ void DcmMemoryBuffer::InstallBackupBuffer(void)
         {
             // old backup buffer is big enough
             // Copy not definitely parsed information into it
-            memcpy(backup->fBuffer, &(*main)[copyIndex], 
-                   size_t(main->fFilled - copyIndex));
+            if (main->fFilled > copyIndex)              // check for number of bytes to be copied
+            {
+                memcpy(backup->fBuffer, &(*main)[copyIndex], 
+                       size_t(main->fFilled - copyIndex));
+            }
             backup->fFilled = main->fFilled - copyIndex;
         }
         // Set the new index due to the putback mark
@@ -488,7 +491,11 @@ Uint32 DcmMemoryBuffer::Write(const void * content,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbuf.cc,v $
-** Revision 1.7  2000-02-02 14:32:46  joergr
+** Revision 1.8  2000-03-02 12:49:52  joergr
+** Rewrote some memory related statements (memcpy, strcpy, etc.) to avoid
+** warnings reported by BoundsChecker.
+**
+** Revision 1.7  2000/02/02 14:32:46  joergr
 ** Replaced 'delete' statements by 'delete[]' for objects created with 'new[]'.
 **
 ** Revision 1.6  1999/03/31 09:25:15  meichel
