@@ -44,9 +44,9 @@
 ** Intent:		This file defines the public structures and constants
 **			and the function prototypes for the DUL (DICOM Upper
 **			Layer) facility.
-** Last Update:		$Author: meichel $, $Date: 2000-10-10 12:06:54 $
+** Last Update:		$Author: meichel $, $Date: 2001-06-01 11:02:02 $
 ** Source File:		$RCSfile: dul.h,v $
-** Revision:		$Revision: 1.9 $
+** Revision:		$Revision: 1.10 $
 ** Status:		$State: Exp $
 */
 
@@ -55,10 +55,21 @@
 #define DUL_IS_IN 1
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "ofglobal.h"
+#include "oftypes.h"
 #include "extneg.h"
 
 class DcmTransportConnection;
 class DcmTransportLayer;
+
+/* Global flag to enable/disable reverse DNS lookup when accepting
+ * associations.  If disabled, the numerical IP address instead of the symbolic hostname
+ * is stored in the callingPresentationAddress field of the association parameters
+ * structure.  Most DICOM applications (except imagectn) don't need the symbolic
+ * hostname anyway, and the reverse DNS lookup can cause a long timeout.
+ */
+extern OFGlobal<OFBool> dcmDisableGethostbyaddr; /* default OFFalse */
+
 
 #ifndef DUL_KEYS
 #define DUL_KEYS 1
@@ -494,7 +505,11 @@ unsigned long DUL_getPeerCertificate(DUL_ASSOCIATIONKEY *dulassoc, void *buf, un
 /*
 ** CVS Log
 ** $Log: dul.h,v $
-** Revision 1.9  2000-10-10 12:06:54  meichel
+** Revision 1.10  2001-06-01 11:02:02  meichel
+** Implemented global flag and command line option to disable reverse
+**   DNS hostname lookup using gethostbyaddr when accepting associations.
+**
+** Revision 1.9  2000/10/10 12:06:54  meichel
 ** Updated transport layer error codes and routines for printing
 **   connection parameters.
 **

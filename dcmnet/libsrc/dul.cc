@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: meichel $, $Date: 2001-03-28 15:44:37 $
+** Last Update:		$Author: meichel $, $Date: 2001-06-01 11:02:02 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.35 $
+** Revision:		$Revision: 1.36 $
 ** Status:		$State: Exp $
 */
 
@@ -120,6 +120,8 @@ END_EXTERN_C
 #include "dulfsm.h"
 #include "dcmtrans.h"
 #include "dcmlayer.h"
+
+OFGlobal<OFBool> dcmDisableGethostbyaddr(OFFalse);
 
 static int networkInitialized = 0;
 static OFBool debug = 0;
@@ -1522,8 +1524,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
         sock;
     struct sockaddr
         from;
-    struct hostent
-       *remote;
+    struct hostent *remote = NULL;
     struct linger
         sockarg;
     int
@@ -1629,14 +1630,18 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
     }
 #endif // DONT_DISABLE_NAGLE_ALGORITHM
 
-    remote = gethostbyaddr(&from.sa_data[2], 4, 2);
-    if (remote == NULL) {
+    if (! dcmDisableGethostbyaddr.get()) remote = gethostbyaddr(&from.sa_data[2], 4, 2);
+    if (remote == NULL)
+    {
+    	// reverse DNS lookup disabled or host not found, use numerical address
 	(void) sprintf(params->callingPresentationAddress, "%-d.%-d.%-d.%-d",
 		       ((int) from.sa_data[2]) & 0xff,
 		       ((int) from.sa_data[3]) & 0xff,
 		       ((int) from.sa_data[4]) & 0xff,
 		       ((int) from.sa_data[5]) & 0xff);
-    } else {
+    } 
+    else 
+    {
 	char node[128];
 	size_t size;
 
@@ -2431,7 +2436,11 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, ostream& outs
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.35  2001-03-28 15:44:37  meichel
+** Revision 1.36  2001-06-01 11:02:02  meichel
+** Implemented global flag and command line option to disable reverse
+**   DNS hostname lookup using gethostbyaddr when accepting associations.
+**
+** Revision 1.35  2001/03/28 15:44:37  meichel
 ** Fixed memory leak: a DcmTransportLayer instance was not deallocated upon
 **   destruction of a DUL_NETWORKKEY if the network was declared as
 **   DICOM_APPLICATION_REQUESTOR.

@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-07 13:17:42 $
+ *  Update Date:      $Date: 2001-06-01 11:02:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmprscp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -152,6 +152,7 @@ int main(int argc, char *argv[])
 #endif
 
     SetDebugLevel((0));
+    dcmDisableGethostbyaddr.set(OFTrue);  // disable hostname lookup
 
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "DICOM basic grayscale print management SCP", rcsid);
     OFCommandLine cmd;
@@ -388,7 +389,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprscp.cc,v $
- * Revision 1.4  2000-06-07 13:17:42  meichel
+ * Revision 1.5  2001-06-01 11:02:05  meichel
+ * Implemented global flag and command line option to disable reverse
+ *   DNS hostname lookup using gethostbyaddr when accepting associations.
+ *
+ * Revision 1.4  2000/06/07 13:17:42  meichel
  * added binary and textual log facilities to Print SCP.
  *
  * Revision 1.3  2000/06/06 09:44:07  joergr

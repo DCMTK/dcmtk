@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-12-15 13:28:14 $
+ *  Update Date:      $Date: 2001-06-01 11:01:57 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -184,6 +184,7 @@ int main(int argc, char *argv[])
       opt4 += tempstr;
       opt4 += "]";
       cmd.addOption("--max-pdu",                "-pdu",   1,  opt4.c_str(), opt3.c_str());
+      cmd.addOption("--disable-host-lookup",    "-dhl",      "disable hostname lookup");
       cmd.addOption("--refuse",                              "refuse association");
       cmd.addOption("--reject",                              "reject association if no implement. class UID");
       cmd.addOption("--ignore",                              "ignore store data, receive but do not store");
@@ -284,6 +285,7 @@ int main(int argc, char *argv[])
 
       if (cmd.findOption("--aetitle")) app.checkValue(cmd.getValue(opt_respondingaetitle));
       if (cmd.findOption("--max-pdu")) app.checkValue(cmd.getValue(opt_maxPDU, ASC_MINIMUMPDUSIZE, (OFCmdUnsignedInt)ASC_MAXIMUMPDUSIZE));
+      if (cmd.findOption("--disable-host-lookup")) dcmDisableGethostbyaddr.set(OFTrue);
       if (cmd.findOption("--refuse")) opt_refuseAssociation = OFTrue;
       if (cmd.findOption("--reject")) opt_rejectWithoutImplementationUID = OFTrue;
       if (cmd.findOption("--ignore")) opt_ignore = OFTrue;
@@ -1187,7 +1189,11 @@ static CONDITION storeSCP(
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.35  2000-12-15 13:28:14  meichel
+** Revision 1.36  2001-06-01 11:01:57  meichel
+** Implemented global flag and command line option to disable reverse
+**   DNS hostname lookup using gethostbyaddr when accepting associations.
+**
+** Revision 1.35  2000/12/15 13:28:14  meichel
 ** Global flag to enable/disable workaround code for some buggy Store SCUs
 **   in DIMSE_storeProvider().  If enabled, an illegal space-padding in the
 **   Affected SOP Instance UID field of the C-STORE-RQ message is retained

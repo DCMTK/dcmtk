@@ -22,9 +22,9 @@
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-11-10 18:07:42 $
+ *  Update Date:      $Date: 2001-06-01 11:01:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -311,6 +311,7 @@ main(int argc, char *argv[])
       opt4 += tempstr;
       opt4 += "]";
       cmd.addOption("--max-pdu",                "-pdu",   1,  opt4.c_str(), opt3.c_str());
+      cmd.addOption("--disable-host-lookup",    "-dhl",      "disable hostname lookup");
       cmd.addOption("--repeat",                           1,  "[n]umber: integer", "repeat n times");
       cmd.addOption("--abort",                                "abort association instead of releasing it");
       cmd.addOption("--ignore",                               "ignore store data, receive but do not store");
@@ -395,6 +396,7 @@ main(int argc, char *argv[])
 
       if (cmd.findOption("--port"))    app.checkValue(cmd.getValue(opt_retrievePort, 1, (OFCmdUnsignedInt)65535));
       if (cmd.findOption("--max-pdu")) app.checkValue(cmd.getValue(opt_maxPDU, ASC_MINIMUMPDUSIZE, (OFCmdUnsignedInt)ASC_MAXIMUMPDUSIZE));
+      if (cmd.findOption("--disable-host-lookup")) dcmDisableGethostbyaddr.set(OFTrue);
       if (cmd.findOption("--repeat"))  app.checkValue(cmd.getValue(opt_repeatCount, (OFCmdUnsignedInt)1));
       if (cmd.findOption("--abort"))   opt_abortAssociation = OFTrue;
       if (cmd.findOption("--ignore"))  opt_ignore = OFTrue;
@@ -1350,7 +1352,11 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.34  2000-11-10 18:07:42  meichel
+** Revision 1.35  2001-06-01 11:01:56  meichel
+** Implemented global flag and command line option to disable reverse
+**   DNS hostname lookup using gethostbyaddr when accepting associations.
+**
+** Revision 1.34  2000/11/10 18:07:42  meichel
 ** Mixed up strcmp and strcpy - oops.
 **
 ** Revision 1.33  2000/11/10 16:25:03  meichel
