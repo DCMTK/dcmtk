@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-16 16:30:23 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2000-10-17 12:35:05 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -166,6 +166,77 @@ class DSRDocument
      ** @return verification flag (might be VF_invalid if read from dataset)
      */
     E_VerificationFlag getVerificationFlag() const;
+
+    /** get number of verifying observers.
+     *  A document can be verified more than once.  The verification flag should be VERIFIED
+     *  if any verifying observer is specified.  The details on the observer can be retrieved
+     *  using the getVerifyingObserver() methods.
+     ** @return number of verifying observers (if any), 0 otherwise
+     */
+    size_t getNumberOfVerifyingObservers();
+    
+    /** get information about a verifying observer.
+     *  All reference variables are cleared before the information is retrieved, i.e. if an error
+     *  occurs (return value != EC_Normal) non-empty variables do contain correct data.
+     ** @param  idx           index of the verifying observer to be retrieved (starting with 1).
+     *                        Use getNumberOfVerifyingObservers() to get the maximum value.
+     *  @param  dateTime      reference to variable where the date and time when this document
+     *                        has been verified should be stored (required)
+     *  @param  observerName  reference to variable where the name of the person who has verified
+     *                        this document should be stored (required)
+     *  @param  organization  reference to variable where the name of the organization to which
+     *                        the observer belongs should be stored (required)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    E_Condition getVerifyingObserver(const size_t idx,
+                                     OFString &dateTime,
+                                     OFString &observerName,
+                                     OFString &organization);
+
+    /** get information about a verifying observer.
+     *  All reference variables are cleared before the information is retrieved, i.e. if an error
+     *  occurs (return value != EC_Normal) non-empty variables do contain correct data.
+     ** @param  idx           index of the verifying observer to be retrieved (starting with 1).
+     *                        Use getNumberOfVerifyingObservers() to get the maximum value.
+     *  @param  dateTime      reference to variable where the date and time when this document
+     *                        has been verified should be stored (required)
+     *  @param  observerName  reference to variable where the name of the person who has verified
+     *                        this document should be stored (required)
+     *  @param  observerCode  reference to variable where the observer code should be stored.
+     *                        code identifying the verifying observer (optional, see previous method)
+     *  @param  organization  reference to variable where the name of the organization to which
+     *                        the observer belongs should be stored (required)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    E_Condition getVerifyingObserver(const size_t idx,
+                                     OFString &dateTime,
+                                     OFString &observerName,
+                                     DSRCodedEntryValue &observerCode,
+                                     OFString &organization);
+
+    /** get number of predecessor documents.
+     *  A document can have more than one (direct) predecessor document.  This is the case
+     *  when two or more documents have been merged to created it.  The corresponding method
+     *  createRevisedVersion() creates only one reference to the current document (and 
+     *  replaces any existing referenced).
+     ** @return number of predecessor documents (if any), 0 otherwise
+     */
+    size_t getNumberOfPredecessorDocuments();
+    
+    /** get information about a predecessor document.
+     *  All reference variables are cleared before the information is retrieved, i.e. if an error
+     *  occurs (return value != EC_Normal) non-empty variables do contain correct data.
+     ** @param  idx             index of the predecessor document to be retrieved (starting with 1).
+     *                          Use getNumberOfPredecessorDocuments() to get the maximum value.
+     *  @param  sopClassUID     reference to variable where the SOP class UID of the predecessor
+     *                          document should be stored (required)
+     *  @param  sopInstanceUID  reference to variable where the SOP instance UID of the predecessor
+     *                          document should be stored (required)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    E_Condition getPredecessorDocument(const size_t idx,
+                                       OFString &sopClassUID,
+                                       OFString &sopInstanceUID);
 
 
   // --- get DICOM string attributes (C string) ---
@@ -760,7 +831,11 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
- *  Revision 1.3  2000-10-16 16:30:23  joergr
+ *  Revision 1.4  2000-10-17 12:35:05  joergr
+ *  Added methods to retrieve information on predecessor documents and
+ *  verifying observers.
+ *
+ *  Revision 1.3  2000/10/16 16:30:23  joergr
  *  Added missing get/setSeriesDescription() methods.
  *  Updated comments.
  *
