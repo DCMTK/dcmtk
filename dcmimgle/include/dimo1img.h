@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomMonochrome1Image (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:43 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-09 16:28:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimo1img.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -179,20 +179,20 @@ class DiMono1Image
 
     /** constructor, scale/clip
      *
-     ** @param  image   pointer to reference image
-     *  @param  left          x coordinate of top left corner of area to be scaled
-     *                        (referring to image origin, negative values create a border around the image)
-     *  @param  top           y coordinate of top left corner of area to be scaled
-     *  @param  src_cols      width of area to be scaled
-     *  @param  src_rows      height of area to be scaled
-     *  @param  dest_cols     width of scaled image (in pixels)
-     *  @param  dest_rows     height of scaled image (in pixels)
-     *  @param  interpolate   specifies whether scaling algorithm should use interpolation (if necessary)
-     *                        default: no interpolation (0), 1 = pbmplus algorithm, 2 = c't algorithm
-     *  @param  aspect        specifies whether pixel aspect ratio should be taken into consideration
-     *                        (if true, width OR height should be 0, i.e. this component will be calculated
-     *                         automatically)
-     *  @param  pvalue        P-value used for the border outside the image (0..65535)
+     ** @param  image        pointer to reference image
+     *  @param  left         x coordinate of top left corner of area to be scaled
+     *                       (referring to image origin, negative values create a border around the image)
+     *  @param  top          y coordinate of top left corner of area to be scaled
+     *  @param  src_cols     width of area to be scaled
+     *  @param  src_rows     height of area to be scaled
+     *  @param  dest_cols    width of scaled image (in pixels)
+     *  @param  dest_rows    height of scaled image (in pixels)
+     *  @param  interpolate  specifies whether scaling algorithm should use interpolation (if necessary)
+     *                       default: no interpolation (0), 1 = pbmplus algorithm, 2 = c't algorithm
+     *  @param  aspect       specifies whether pixel aspect ratio should be taken into consideration
+     *                       (if true, width OR height should be 0, i.e. this component will be calculated
+     *                       automatically)
+     *  @param  pvalue       P-value used for the border outside the image (0..65535)
      */
     DiMono1Image(const DiMonoImage *image,
                  const signed long left,
@@ -232,7 +232,10 @@ class DiMono1Image
  *
  * CVS/RCS Log:
  * $Log: dimo1img.h,v $
- * Revision 1.7  2001-06-01 15:49:43  meichel
+ * Revision 1.8  2001-11-09 16:28:03  joergr
+ * Updated comments.
+ *
+ * Revision 1.7  2001/06/01 15:49:43  meichel
  * Updated copyright header
  *
  * Revision 1.6  2000/03/08 16:24:17  meichel
