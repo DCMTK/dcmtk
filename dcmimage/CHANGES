@@ -1,4 +1,10 @@
 
+**** Changes from 1999.05.03 (riesmeier)
+
+- Minor code purifications to keep Sun CC 2.0.1 quiet.
+  Affects: dcmimage/include/dipalpxt.h
+           dcmimage/libsrc/dicoimg.cc
+
 **** Changes from 1999.04.30 (eichelberg)
 
 - Minor code purifications to keep IBM xlC quiet
