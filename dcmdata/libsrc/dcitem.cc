@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmItem
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-04 16:35:31 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-07-08 14:44:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.71 $
+ *  CVS/RCS Revision: $Revision: 1.72 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -952,7 +952,7 @@ OFCondition DcmItem::readTagAndLength(DcmStream & inStream,
     /* if the value in length is odd, print an error message */
     if ((valueLength & 1)&&(valueLength != (Uint32) -1))
     {
-        ofConsole.lockCerr() << "Error Parsing DICOM object: Length of Tag " << newTag << "is odd" << endl;
+        ofConsole.lockCerr() << "Warning: parse error in DICOM object: length of tag " << newTag << " is odd" << endl;
         ofConsole.unlockCerr();
     }
 
@@ -3124,7 +3124,13 @@ OFBool DcmItem::containsUnknownVR() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.71  2002-07-04 16:35:31  joergr
+** Revision 1.72  2002-07-08 14:44:39  meichel
+** Improved dcmdata behaviour when reading odd tag length. Depending on the
+**   global boolean flag dcmAcceptOddAttributeLength, the parser now either accepts
+**   odd length attributes or implements the old behaviour, i.e. assumes a real
+**   length larger by one.
+**
+** Revision 1.71  2002/07/04 16:35:31  joergr
 ** Fixed inconsistent formatting of the print() output.
 **
 ** Revision 1.70  2002/06/26 15:49:59  joergr

@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmOtherByteOtherWord for data VR OB or OW
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-05-14 08:22:56 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-07-08 14:44:42 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrobow.cc,v $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -263,7 +263,10 @@ OFCondition DcmOtherByteOtherWord::alignValue(void)
 
 void DcmOtherByteOtherWord::postLoadValue(void)
 {
-    this -> alignValue();
+    if (dcmEnableAutomaticInputDataCorrection.get())
+    {
+        alignValue();
+    }
 }
 
 // ********************************
@@ -613,7 +616,13 @@ OFCondition DcmOtherByteOtherWord::writeXML(ostream &out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
-** Revision 1.37  2002-05-14 08:22:56  joergr
+** Revision 1.38  2002-07-08 14:44:42  meichel
+** Improved dcmdata behaviour when reading odd tag length. Depending on the
+**   global boolean flag dcmAcceptOddAttributeLength, the parser now either accepts
+**   odd length attributes or implements the old behaviour, i.e. assumes a real
+**   length larger by one.
+**
+** Revision 1.37  2002/05/14 08:22:56  joergr
 ** Added support for Base64 (MIME) encoded binary data.
 **
 ** Revision 1.36  2002/04/25 10:32:16  joergr

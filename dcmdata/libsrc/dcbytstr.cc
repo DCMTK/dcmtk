@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmByteString
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-25 10:13:47 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-07-08 14:44:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcbytstr.cc,v $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -309,7 +309,12 @@ Uint8 * DcmByteString::newValueField(void)
         value = new Uint8[Length+2]; // protocol error: odd value length 
         if (value)
             value[Length] = 0;
-        Length++;               // make value length even
+
+        /* enforce old (pre DCMTK 3.5.2) behaviour ? */
+        if (! dcmAcceptOddAttributeLength.get()) 
+        {
+            Length++;  // make Length even
+        }
     }
     else
         value = new Uint8[Length+1];
@@ -325,6 +330,16 @@ Uint8 * DcmByteString::newValueField(void)
 void DcmByteString::postLoadValue(void)
 {
     fStringMode = DCM_UnknownString;
+
+    if (dcmEnableAutomaticInputDataCorrection.get())
+    {
+        if (Length & 1) 
+        {
+          // newValueField always allocates an even number of bytes
+          // and sets the pad byte to zero, so we can safely increase Length here
+          Length++;
+        }
+    }
 }
 
 // ********************************
@@ -529,11 +544,16 @@ normalizeString(
 }
 
 
-
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
-** Revision 1.32  2002-04-25 10:13:47  joergr
+** Revision 1.33  2002-07-08 14:44:38  meichel
+** Improved dcmdata behaviour when reading odd tag length. Depending on the
+**   global boolean flag dcmAcceptOddAttributeLength, the parser now either accepts
+**   odd length attributes or implements the old behaviour, i.e. assumes a real
+**   length larger by one.
+**
+** Revision 1.32  2002/04/25 10:13:47  joergr
 ** Removed getOFStringArray() implementation.
 **
 ** Revision 1.31  2002/04/16 13:43:14  joergr

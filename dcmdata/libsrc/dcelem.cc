@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmElement
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-25 10:15:09 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-07-08 14:44:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcelem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -619,8 +619,11 @@ Uint8 * DcmElement::newValueField(void)
         if (value)
             value[Length] = 0;
 
-        /* make Length even */
-        Length++;
+        /* enforce old (pre DCMTK 3.5.2) behaviour ? */
+        if (! dcmAcceptOddAttributeLength.get()) 
+        {
+            Length++;  // make Length even
+        }
     }
     /* if this element's length is even, create a corresponding array of Lenght bytes */
     else
@@ -637,6 +640,12 @@ Uint8 * DcmElement::newValueField(void)
 
 void DcmElement::postLoadValue(void)
 {
+    if (dcmEnableAutomaticInputDataCorrection.get())
+    {
+        // newValueField always allocates an even number of bytes
+        // and sets the pad byte to zero, so we can safely increase Length here
+        if (Length & 1) Length++;
+    }
 }
 
 
@@ -839,8 +848,13 @@ OFCondition DcmElement::putValue(const void * newValue,
 
     if (length != 0)
     {
-        fValue = this -> newValueField();
+        fValue = newValueField();
 
+        // newValueField always allocates an even number of bytes
+        // and sets the pad byte to zero, so we can safely increase Length here
+        if (Length & 1) Length++;
+
+        // copy length (which may be odd), not Length (which is always even)
         if (fValue)
             memcpy(fValue, newValue, size_t(length));
         else
@@ -862,6 +876,12 @@ OFCondition DcmElement::createEmptyValue(const Uint32 length)
     if (length != 0)
     {
       fValue = newValueField();
+
+      // newValueField always allocates an even number of bytes
+      // and sets the pad byte to zero, so we can safely increase Length here
+      if (Length & 1) Length++;
+
+      // initialize <length> bytes (which may be odd), not Length (which is always even)
       if (fValue) memzero(fValue, size_t(length));
       else errorFlag = EC_MemoryExhausted;
     }
@@ -1188,7 +1208,13 @@ OFCondition DcmElement::writeXML(ostream &out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
-** Revision 1.38  2002-04-25 10:15:09  joergr
+** Revision 1.39  2002-07-08 14:44:39  meichel
+** Improved dcmdata behaviour when reading odd tag length. Depending on the
+**   global boolean flag dcmAcceptOddAttributeLength, the parser now either accepts
+**   odd length attributes or implements the old behaviour, i.e. assumes a real
+**   length larger by one.
+**
+** Revision 1.38  2002/04/25 10:15:09  joergr
 ** Added/modified getOFStringArray() implementation.
 ** Added support for XML output of DICOM objects.
 **

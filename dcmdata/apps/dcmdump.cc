@@ -21,10 +21,10 @@
  *
  *  Purpose: List the contents of a dicom file
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:38:53 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-07-08 14:44:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmdump.cc,v $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -132,6 +132,7 @@ int main(int argc, char *argv[])
     const char *current = NULL;
     const char *pixelDirectory = NULL;
 
+
 #ifdef HAVE_GUSI_H
     /* needed for Macintosh */
     /* set options for the Metrowerks CodeWarrior SIOUX console */
@@ -166,6 +167,12 @@ int main(int argc, char *argv[])
         cmd.addOption("--read-xfer-little",   "-te",       "read with explicit VR little endian TS");
         cmd.addOption("--read-xfer-big",      "-tb",       "read with explicit VR big endian TS");
         cmd.addOption("--read-xfer-implicit", "-ti",       "read with implicit VR little endian TS");
+      cmd.addSubGroup("parsing of odd-length attributes:");
+        cmd.addOption("--accept-odd-length",  "+ao",       "accept odd length attributes (default)");
+        cmd.addOption("--assume-even-length", "+ae",       "assume real length is one byte larger");
+      cmd.addSubGroup("automatic data correction:");
+        cmd.addOption("--enable-correction",  "+dc",       "enable automatic data correction (default)");
+        cmd.addOption("--disable-correction", "-dc",       "disable automatic data correction");
 
     cmd.addGroup("output options:");
       cmd.addSubGroup("printing:");
@@ -224,6 +231,28 @@ int main(int argc, char *argv[])
       {
         app.checkDependence("--read-xfer-implicit", "--read-dataset", isDataset);
         xfer = EXS_LittleEndianImplicit;
+      }
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--accept-odd-length"))
+      {
+        dcmAcceptOddAttributeLength.set(OFTrue);
+      }
+      if (cmd.findOption("--assume-even-length"))
+      {
+        dcmAcceptOddAttributeLength.set(OFFalse);
+      }
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--enable-correction"))
+      {
+        dcmEnableAutomaticInputDataCorrection.set(OFTrue);
+      }
+      if (cmd.findOption("--disable-correction"))
+      {
+        dcmEnableAutomaticInputDataCorrection.set(OFFalse);
       }
       cmd.endOptionBlock();
 
@@ -443,7 +472,13 @@ static int dumpFile(ostream & out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
- * Revision 1.36  2002-04-16 13:38:53  joergr
+ * Revision 1.37  2002-07-08 14:44:54  meichel
+ * Improved dcmdata behaviour when reading odd tag length. Depending on the
+ *   global boolean flag dcmAcceptOddAttributeLength, the parser now either accepts
+ *   odd length attributes or implements the old behaviour, i.e. assumes a real
+ *   length larger by one.
+ *
+ * Revision 1.36  2002/04/16 13:38:53  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
  * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
  * contribution.

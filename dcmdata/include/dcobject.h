@@ -23,10 +23,10 @@
  *  This file contains the interface to routines which provide
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-25 09:38:47 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-07-08 14:45:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcobject.h,v $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,6 +66,17 @@ const Uint32 DCM_OptPrintLineLength = 70;
 */
 extern OFGlobal<OFBool> dcmEnableAutomaticInputDataCorrection; /* default OFTrue */
 
+/*
+** Handling of illegal odd-length attributes: If flag is true, odd lengths
+** are respected (i.e. an odd number of bytes is read from the input stream.)
+** After successful reading, padding to even number of bytes is enforced
+** by adding a zero pad byte if dcmEnableAutomaticInputDataCorrection is true.
+** Otherwise the odd number of bytes remains as read.
+**
+** If flag is false, old (pre DCMTK 3.5.2) behaviour applies: The length field
+** implicitly incremented and an even number of bytes is read from the stream.
+*/
+extern OFGlobal<OFBool> dcmAcceptOddAttributeLength; /* default OFTrue */
 
 /** The base DICOM object class
  */
@@ -233,7 +244,13 @@ public:
 /*
  * CVS/RCS Log:
  * $Log: dcobject.h,v $
- * Revision 1.30  2002-04-25 09:38:47  joergr
+ * Revision 1.31  2002-07-08 14:45:20  meichel
+ * Improved dcmdata behaviour when reading odd tag length. Depending on the
+ *   global boolean flag dcmAcceptOddAttributeLength, the parser now either accepts
+ *   odd length attributes or implements the old behaviour, i.e. assumes a real
+ *   length larger by one.
+ *
+ * Revision 1.30  2002/04/25 09:38:47  joergr
  * Added support for XML output of DICOM objects.
  *
  * Revision 1.29  2002/04/11 12:23:46  joergr

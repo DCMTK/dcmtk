@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmSequenceOfItems
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-25 10:26:10 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-07-08 14:44:41 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcsequen.cc,v $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -435,7 +435,7 @@ OFCondition DcmSequenceOfItems::readTagAndLength(DcmStream & inStream,
         swapIfNecessary(gLocalByteOrder, iByteOrder, &valueLength, 4, 4);
         if ((valueLength & 1)&&(valueLength != (Uint32) -1))
         {
-            ofConsole.lockCerr() << "Error: Length of sequence with Tag " << newTag << " is odd" << endl;
+            ofConsole.lockCerr() << "Warning: parse error in DICOM object: length of item in sequence " << this->Tag << " is odd" << endl;
             ofConsole.unlockCerr();
         }
         length = valueLength;
@@ -1235,7 +1235,13 @@ OFBool DcmSequenceOfItems::containsUnknownVR() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.46  2002-04-25 10:26:10  joergr
+** Revision 1.47  2002-07-08 14:44:41  meichel
+** Improved dcmdata behaviour when reading odd tag length. Depending on the
+**   global boolean flag dcmAcceptOddAttributeLength, the parser now either accepts
+**   odd length attributes or implements the old behaviour, i.e. assumes a real
+**   length larger by one.
+**
+** Revision 1.46  2002/04/25 10:26:10  joergr
 ** Added support for XML output of DICOM objects.
 **
 ** Revision 1.45  2002/04/16 13:43:20  joergr
