@@ -22,9 +22,9 @@
  *  Purpose: DicomScaleTemplates (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-28 14:55:05 $
+ *  Update Date:      $Date: 1999-07-23 14:09:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/discalet.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -158,12 +158,16 @@ class DiScaleTemplate
                 else
                     clipPixel(src, dest);                                       // clipping
             }
+            else if ((interpolate == 1) && (Bits <= MAX_INTERPOLATION_BITS))    // interpolation (pbmplus)
+                interpolatePixel(src, dest);
+            else if ((interpolate == 2) && (Dest_X >= Src_X) && (Dest_Y >= Src_Y))    // interpolated expansion (c't)
+                expandPixel(src, dest);
+            else if ((interpolate == 2) && (Src_X >= Dest_X) && (Src_Y >= Dest_Y))    // interpolated reduction (c't)
+                reducePixel(src, dest);
             else if ((Dest_X % Src_X == 0) && (Dest_Y % Src_Y == 0))            // replication
                 replicatePixel(src, dest);
             else if ((Src_X % Dest_X == 0) && (Src_Y % Dest_Y == 0))            // supression
                 suppressPixel(src, dest);
-            else if (interpolate && (Bits <= MAX_INTERPOLATION_BITS))           // interpolation (ignore flag for replication/suppresion)
-                interpolatePixel(src, dest);
             else                                                                // general scaling
                 scalePixel(src, dest);
         }
@@ -387,7 +391,7 @@ class DiScaleTemplate
         }
 
         /*
-         *   based on scaling algorithm of "Extended Portable Bitmap Toolkit" (pbmplus10dec91)
+         *   based on scaling algorithm from "Extended Portable Bitmap Toolkit" (pbmplus10dec91)
          *   (adapted to be used with signed pixel representation and inverse images - mono2)
          */
 
@@ -438,7 +442,7 @@ class DiScaleTemplate
                     for (y = 0; y < Dest_Y; y++)
                     {
                         if (Src_Y == Dest_Y)
-                            {
+                        {
                             sp = fp;
                             for (x = 0, p = sp, q = xtemp; x < Src_X; x++)
                                 *(q++) = *(p++);
@@ -541,8 +545,172 @@ class DiScaleTemplate
         delete[] xvalue;
     }
 
-};
 
+    void expandPixel(const T *src[],
+                     T *dest[])
+    {
+        /*
+         *   based on scaling algorithm from "c't - Magazin fuer Computertechnik" (c't 11/94)
+         *   (adapted to be used with signed pixel representation and inverse images - mono2)
+         */
+        if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
+            cerr << "INFO: expandPixel with interpolated c't algorithm" << endl;
+        const double x_factor = (double)Src_X / (double)Dest_X;
+        const double y_factor = (double)Src_Y / (double)Dest_Y;
+        const unsigned long f_size = (unsigned long)Rows * (unsigned long)Columns;
+        const T *sp;
+        double bx, ex;
+        double by, ey;
+        int bxi, exi;
+        int byi, eyi;
+        unsigned long offset;
+        double value, sum;
+        double x_part, y_part;
+        double l_factor, r_factor;
+        double t_factor, b_factor;
+        register Uint16 x, xi;
+        register Uint16 y, yi;
+        register const T *p;
+        register T *q;
+        for (int j = 0; j < Planes; j++)
+        {
+            sp = src[j] + (unsigned long)Top * (unsigned long)Columns + Left;
+            q = dest[j];
+            for (Uint32 f = 0; f < Frames; f++)
+            {
+                for (y = 0; y < Dest_Y; y++)
+                {
+                    by = y_factor * (double)y;
+                    ey = y_factor * (double)(y + 1);
+                    byi = (int)by;
+                    eyi = (int)ey;
+                    if ((double)eyi == ey) eyi--;
+                    y_part = (double)eyi / y_factor;
+                    b_factor = y_part - (double)y;
+                    t_factor = (double)(y + 1) - y_part;
+                    for (x = 0; x < Dest_X; x++)
+                    {
+                        value = 0;
+                        bx = x_factor * (double)x;
+                        ex = x_factor * (double)(x + 1);
+                        bxi = (int)bx;
+                        exi = (int)ex;
+                        if ((double)exi == ex) exi--;
+                        x_part = (double)exi / x_factor;
+                        l_factor = x_part - (double)x;
+                        r_factor = (double)(x + 1) - x_part;
+                        offset = ((unsigned long)(byi - 1)) * (unsigned long)Columns;
+                        for (yi = byi; yi <= eyi; yi++)
+                        {
+                            offset += Columns;
+                            p = sp + offset + (unsigned long)bxi;
+                            for (xi = bxi; xi <= exi; xi++)
+                            {
+                                sum = (double)*(p++);
+                                if (bxi != exi)
+                                {
+                                    if (xi == bxi)
+                                        sum *= l_factor;
+                                    else
+                                        sum *= r_factor;
+                                }
+                                if (byi != eyi)
+                                {
+                                    if (yi == byi)
+                                        sum *= b_factor;
+                                    else
+                                        sum *= t_factor;
+                                }
+                                value += sum;
+                            }
+                        }
+                        *(q++) = (T)(value + 0.5);
+                    }
+                }
+                sp += f_size;                                        // skip to next frame start: UNTESTED
+            }
+        }
+    }
+
+
+    void reducePixel(const T *src[],
+                          T *dest[])
+    {
+        /*
+         *   based on scaling algorithm from "c't - Magazin fuer Computertechnik" (c't 11/94)
+         *   (adapted to be used with signed pixel representation and inverse images - mono2)
+         */
+        if (DicomImageClass::DebugLevel & (DicomImageClass::DL_Informationals | DicomImageClass::DL_Warnings))
+            cerr << "INFO: reducePixel with interpolated c't algorithm ... still a little BUGGY !" << endl;
+        const double x_factor = (double)Src_X / (double)Dest_X;
+        const double y_factor = (double)Src_Y / (double)Dest_Y;
+        const double xy_factor = x_factor * y_factor;
+        const unsigned long f_size = (unsigned long)Rows * (unsigned long)Columns;
+        const T *sp;
+        double bx, ex;
+        double by, ey;
+        int bxi, exi;
+        int byi, eyi;
+        unsigned long offset;
+        double value, sum;
+        double l_factor, r_factor;
+        double t_factor, b_factor;
+        register Uint16 x, xi;
+        register Uint16 y, yi;
+        register const T *p;
+        register T *q;
+        for (int j = 0; j < Planes; j++)
+        {
+            sp = src[j] + (unsigned long)Top * (unsigned long)Columns + Left;
+            q = dest[j];
+            for (Uint32 f = 0; f < Frames; f++)
+            {
+                for (y = 0; y < Dest_Y; y++)
+                {
+                    by = y_factor * (double)y;
+                    ey = y_factor * (double)(y + 1);
+                    byi = (int)by;
+                    eyi = (int)ey;
+                    if ((double)eyi == ey) eyi--;
+                    b_factor = 1 + (double)byi - by;
+                    t_factor = ey - (double)eyi;
+                    for (x = 0; x < Dest_X; x++)
+                    {
+                        value = 0;
+                        bx = x_factor * (double)x;
+                        ex = x_factor * (double)(x + 1);
+                        bxi = (int)bx;
+                        exi = (int)ex;
+                        if ((double)exi == ex) exi--;
+                        l_factor = 1 + (double)bxi - bx;
+                        r_factor = ex - (double)exi;
+                        offset = ((unsigned long)(byi - 1)) * (unsigned long)Columns;
+                        for (yi = byi; yi <= eyi; yi++)
+                        {
+                            offset += Columns;
+                            p = sp + offset + (unsigned long)bxi;
+                            for (xi = bxi; xi <= exi; xi++)
+                            {
+                                sum = (double)*(p++) / xy_factor;
+                                if (xi == bxi)
+                                    sum *= l_factor;
+                                else if (xi = exi)
+                                    sum *= r_factor;
+                                if (yi == byi)
+                                    sum *= b_factor;
+                                else if (yi == eyi)
+                                    sum *= t_factor;
+                                value += sum;
+                            }
+                        }
+                        *(q++) = (T)(value + 0.5);
+                    }
+                }
+                sp += f_size;                                        // skip to next frame start: UNTESTED
+            }
+        }
+    }
+};
 
 #endif
 
@@ -551,7 +719,10 @@ class DiScaleTemplate
  *
  * CVS/RCS Log:
  * $Log: discalet.h,v $
- * Revision 1.7  1999-04-28 14:55:05  joergr
+ * Revision 1.8  1999-07-23 14:09:24  joergr
+ * Added new interpolation algorithm for scaling.
+ *
+ * Revision 1.7  1999/04/28 14:55:05  joergr
  * Introduced new scheme for the debug level variable: now each level can be
  * set separately (there is no "include" relationship).
  *
