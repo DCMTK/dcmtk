@@ -8,10 +8,10 @@
 ** Generate a builtin data dictionary which can be compiled into
 ** the dcmdata library.  
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-05-13 13:44:30 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-06-26 12:59:16 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/mkdictbi.cc,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -30,6 +30,11 @@
 #include <time.h>
 #ifdef HAVE_SYS_UTSNAME_H
 #include <sys/utsname.h>
+#endif
+
+#ifdef HAVE_WINSOCK_H
+/* Use the WinSock sockets library on Windows */
+#include <WINSOCK.H>
 #endif
 
 #ifdef HAVE_GUSI_H
@@ -284,7 +289,10 @@ main(int argc, char* argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: mkdictbi.cc,v $
-** Revision 1.7  1997-05-13 13:44:30  hewett
+** Revision 1.8  1997-06-26 12:59:16  andreas
+** - Include Additional headers (winsock.h, io.h) for Windows NT/95
+**
+** Revision 1.7  1997/05/13 13:44:30  hewett
 ** Fixed spelling in generated comments.
 **
 ** Revision 1.6  1997/03/26 17:14:04  hewett

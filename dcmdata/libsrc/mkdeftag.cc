@@ -7,10 +7,10 @@
 ** Purpose:
 ** Generate a C++ header defining symbolic names for DICOM Tags.
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-09-24 16:37:43 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-06-26 12:59:15 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/mkdeftag.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -28,6 +28,11 @@
 #include <time.h>
 #ifdef HAVE_SYS_UTSNAME_H
 #include <sys/utsname.h>
+#endif
+
+#ifdef HAVE_WINSOCK_H
+/* Use the WinSock sockets library on Windows */
+#include <WINSOCK.H>
 #endif
 
 #ifdef HAVE_GUSI_H
@@ -289,7 +294,10 @@ int main(int argc, char* argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: mkdeftag.cc,v $
-** Revision 1.5  1996-09-24 16:37:43  hewett
+** Revision 1.6  1997-06-26 12:59:15  andreas
+** - Include Additional headers (winsock.h, io.h) for Windows NT/95
+**
+** Revision 1.5  1996/09/24 16:37:43  hewett
 ** Now correctly includes cmdlnarg.h
 **
 ** Revision 1.4  1996/09/24 16:26:28  hewett
