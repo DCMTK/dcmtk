@@ -22,8 +22,8 @@
  *  Purpose: Utilities (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-11-29 11:15:16 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Update Date:      $Date: 2004-11-29 16:52:22 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -413,12 +413,14 @@ class DicomImageClass
  *
  * CVS/RCS Log:
  * $Log: diutils.h,v $
- * Revision 1.28  2004-11-29 11:15:16  joergr
+ * Revision 1.29  2004-11-29 16:52:22  joergr
+ * Removed email address from CVS log.
+ *
+ * Revision 1.28  2004/11/29 11:15:16  joergr
  * Introduced new integer type MAX_BITS_TYPE for internal use.
  *
  * Revision 1.27  2004/11/25 09:38:43  meichel
  * Fixed bug in DicomImageClass::maxval affecting 64-bit platforms.
- *   Thanks to Daniel Patel <daniel@cmr.no> for the bug report and fix.
  *
  * Revision 1.26  2004/08/03 11:41:50  meichel
  * Headers libc.h and unistd.h are now included via ofstdinc.h
