@@ -97,7 +97,7 @@ dcmpsprt: dcmpsprt.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmpsprt.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 dcmprscu: dcmprscu.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmprscu.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmprscu.o $(dcmtlslib) $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 dcmprscp: dcmprscp.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmprscp.o $(dcmtlslib) $(LOCALLIBS) $(MATHLIBS) $(LIBS)

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSPrintMessageHandler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-09-17 12:53:54 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2003-09-05 14:31:33 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,7 +35,6 @@
 #include "ofstring.h"
 #include "dvpsdef.h"
 #include "dvpspr.h"
-
 
 /* --------------- class DVPSPrintMessageHandler --------------- */
 
@@ -481,6 +480,7 @@ T_ASC_PresentationContextID DVPSPrintMessageHandler::findAcceptedPC(const char *
 
 
 OFCondition DVPSPrintMessageHandler::negotiateAssociation(
+  DcmTransportLayer *tlayer,
   const char *myAEtitle,
   const char *peerAEtitle,
   const char *peerHost,
@@ -504,11 +504,15 @@ OFCondition DVPSPrintMessageHandler::negotiateAssociation(
   DIC_NODENAME dnpeerHost;
 
   OFCondition cond = ASC_initializeNetwork(NET_REQUESTOR, 0, 1000, &net);
-  if (cond.bad()) 
+  if (cond.good()) cond = ASC_createAssociationParameters(&params, peerMaxPDU);
+
+  if (tlayer && cond.good())
   {
-    return cond;
+    cond = ASC_setTransportLayer(net, tlayer, 0);
+    if (cond.good()) cond = ASC_setTransportLayerType(params, OFTrue /* use TLS */);
   }
-  cond = ASC_createAssociationParameters(&params, peerMaxPDU);
+
+  if (cond.bad()) return cond;
 
   ASC_setAPTitles(params, myAEtitle, peerAEtitle, NULL);
   gethostname(dnlocalHost, sizeof(dnlocalHost) - 1);
@@ -612,6 +616,7 @@ OFCondition DVPSPrintMessageHandler::negotiateAssociation(
     assoc = NULL;
     net = NULL;
   }
+
   return cond;
 }
 
@@ -636,7 +641,10 @@ void DVPSPrintMessageHandler::setLog(OFConsole *stream, OFBool verbMode, OFBool 
 
 /*
  *  $Log: dvpspr.cc,v $
- *  Revision 1.17  2002-09-17 12:53:54  meichel
+ *  Revision 1.18  2003-09-05 14:31:33  meichel
+ *  Print SCU now supports TLS connections.
+ *
+ *  Revision 1.17  2002/09/17 12:53:54  meichel
  *  Fixed memory leak
  *
  *  Revision 1.16  2001/11/09 16:03:21  joergr

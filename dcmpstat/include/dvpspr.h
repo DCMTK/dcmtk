@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSPrintMessageHandler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-10-12 13:46:52 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2003-09-05 14:31:33 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -176,6 +176,8 @@ public:
    *  The Basic Grayscale Print Management Meta SOP Class and Presentation LUT SOP Class
    *  are requested. The association is only accepted if the remote printer supports
    *  at least the Basic Grayscale Print Management Meta SOP Class.
+   *  @param tlayer transport layer object, may be NULL.  If present, a transport
+   *    layer object for TLS transports is expected.
    *  @param myAEtitle the print client's own application entity title (calling aetitle)
    *  @param peerAEtitle the printer's called aetitle
    *  @param peerHost hostname/IP address of the printer
@@ -189,6 +191,7 @@ public:
    *    is established. If unsuccessful, no association is established.
    */
   OFCondition negotiateAssociation(
+    DcmTransportLayer *tlayer,
     const char *myAEtitle,
     const char *peerAEtitle,
     const char *peerHost,
@@ -327,7 +330,10 @@ private:
 
 /*
  *  $Log: dvpspr.h,v $
- *  Revision 1.9  2001-10-12 13:46:52  meichel
+ *  Revision 1.10  2003-09-05 14:31:33  meichel
+ *  Print SCU now supports TLS connections.
+ *
+ *  Revision 1.9  2001/10/12 13:46:52  meichel
  *  Adapted dcmpstat to OFCondition based dcmnet module (supports strict mode).
  *
  *  Revision 1.8  2001/06/01 15:50:19  meichel

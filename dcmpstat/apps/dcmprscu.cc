@@ -21,10 +21,10 @@
  *
  *  Purpose: Presentation State Viewer - Print Spooler
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-09-04 10:09:16 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-09-05 14:31:32 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmprscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -82,6 +82,11 @@ END_EXTERN_C
 #include "dvpshlp.h"     /* for class DVPSHelper */
 #include "ofstd.h"
 
+#ifdef WITH_OPENSSL
+#include "tlstrans.h"
+#include "tlslayer.h"
+#endif
+
 #ifdef WITH_ZLIB
 #include <zlib.h>        /* for zlibVersion() */
 #endif
@@ -130,6 +135,7 @@ static OFBool         deletePrintJobs       = OFFalse;
 static OFBool         deleteTerminateJobs   = OFFalse;
 static OFBool         haveRenderedPrintJobs = OFFalse;
 static OFBool         deleteUnusedLogs      = OFTrue;
+static OFBool         useTLS                = OFFalse;
 
 /* helper class printJob */
 
@@ -198,7 +204,10 @@ printJob::printJob(const printJob& copy)
 
 /* static helper functions */
 
-static OFCondition spoolStoredPrintFile(const char *filename, DVInterface &dvi)
+static OFCondition spoolStoredPrintFile(
+  const char *filename, 
+  DVInterface &dvi,
+  DcmTransportLayer *tlayer)
 {
   haveRenderedPrintJobs = OFTrue; // do not delete log when terminating
 
@@ -239,9 +248,12 @@ static OFCondition spoolStoredPrintFile(const char *filename, DVInterface &dvi)
       printHandler.setDumpStream(logstream);
       printHandler.setLog(&ofConsole, opt_verbose, opt_debugMode > 0);
     }
-    result = printHandler.negotiateAssociation(dvi.getNetworkAETitle(),
+
+    result = printHandler.negotiateAssociation(
+      tlayer, dvi.getNetworkAETitle(),
       targetAETitle, targetHostname, targetPort, targetMaxPDU,
       targetSupportsPLUT, targetSupportsAnnotation, targetImplicitOnly);
+
     if (result.bad())
     {
       *logstream << "spooler: connection setup with printer failed." << endl;
@@ -347,7 +359,10 @@ static OFCondition spoolStoredPrintFile(const char *filename, DVInterface &dvi)
   return result;
 }
 
-static OFCondition spoolJobList(OFList<printJob *>&jobList, DVInterface &dvi)
+static OFCondition spoolJobList(
+  OFList<printJob *>&jobList, 
+  DVInterface &dvi,
+  DcmTransportLayer *tlayer)
 {
   OFCondition result = EC_Normal;
   OFCondition result2 = EC_Normal;
@@ -378,7 +393,7 @@ static OFCondition spoolJobList(OFList<printJob *>&jobList, DVInterface &dvi)
       if (currentJob->illumination != (unsigned long)-1) dvi.setPrintIllumination((Uint16)(currentJob->illumination));
       if (currentJob->reflectedAmbientLight != (unsigned long)-1) dvi.setPrintReflectedAmbientLight((Uint16)(currentJob->reflectedAmbientLight));
 #endif
-      result2 = spoolStoredPrintFile(currentJob->storedPrintFilename.c_str(), dvi);
+      result2 = spoolStoredPrintFile(currentJob->storedPrintFilename.c_str(), dvi, tlayer);
       if (result2 != EC_Normal)
       {
         *logstream << "spooler: error occured during spooling of Stored Print object '" << currentJob->storedPrintFilename.c_str() << "'" << endl;
@@ -705,10 +720,16 @@ int main(int argc, char *argv[])
         {
             app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
             CERR << endl << "External libraries used:";
-#ifdef WITH_ZLIB
-            CERR << endl << "- ZLIB, Version " << zlibVersion() << endl;
-#else
+#if !defined(WITH_ZLIB) && !defined(WITH_OPENSSL)
             CERR << " none" << endl;
+#else
+            CERR << endl;
+#endif
+#ifdef WITH_ZLIB
+            CERR << "- ZLIB, Version " << zlibVersion() << endl;
+#endif
+#ifdef WITH_OPENSSL
+            CERR << "- " << OPENSSL_VERSION_TEXT << endl;
 #endif
             return 0;
          }
@@ -853,11 +874,161 @@ int main(int argc, char *argv[])
     targetPLUTinFilmSession     = dvi.getTargetPrinterPresentationLUTinFilmSession(opt_printer);
     targetRequiresMatchingLUT   = dvi.getTargetPrinterPresentationLUTMatchRequired(opt_printer);
     targetPreferSCPLUTRendering = dvi.getTargetPrinterPresentationLUTPreferSCPRendering(opt_printer);
-    deletePrintJobs        = dvi.getSpoolerDeletePrintJobs();
-    deleteTerminateJobs    = dvi.getSpoolerAlwaysDeleteTerminateJobs();
+    deletePrintJobs             = dvi.getSpoolerDeletePrintJobs();
+    deleteTerminateJobs         = dvi.getSpoolerAlwaysDeleteTerminateJobs();
+    useTLS                      = dvi.getTargetUseTLS(opt_printer);
 
     Sint32 timeout = dvi.getTargetTimeout(opt_printer);
     if (timeout > 0) dcmConnectionTimeout.set(timeout);
+
+#ifdef WITH_OPENSSL
+    /* TLS directory */
+    const char *current = NULL;
+    const char *tlsFolder = dvi.getTLSFolder();
+    if (tlsFolder==NULL) tlsFolder = ".";
+
+    /* certificate file */
+    OFString tlsCertificateFile(tlsFolder);
+    tlsCertificateFile += PATH_SEPARATOR;
+    current = dvi.getTargetCertificate(opt_printer);
+    if (current) tlsCertificateFile += current; else tlsCertificateFile.clear();
+
+    /* private key file */
+    OFString tlsPrivateKeyFile(tlsFolder);
+    tlsPrivateKeyFile += PATH_SEPARATOR;
+    current = dvi.getTargetPrivateKey(opt_printer);
+    if (current) tlsPrivateKeyFile += current; else tlsPrivateKeyFile.clear();
+
+    /* private key password */
+    const char *tlsPrivateKeyPassword = dvi.getTargetPrivateKeyPassword(opt_printer);
+
+    /* certificate verification */
+    DcmCertificateVerification tlsCertVerification = DCV_requireCertificate;
+    switch (dvi.getTargetPeerAuthentication(opt_printer))
+    {
+      case DVPSQ_require:
+        tlsCertVerification = DCV_requireCertificate;
+        break;
+      case DVPSQ_verify:
+        tlsCertVerification = DCV_checkCertificate;
+        break;
+      case DVPSQ_ignore:
+        tlsCertVerification = DCV_ignoreCertificate;
+        break;
+    }
+
+    /* DH parameter file */
+    OFString tlsDHParametersFile;
+    current = dvi.getTargetDiffieHellmanParameters(opt_printer);
+    if (current)
+    {
+      tlsDHParametersFile = tlsFolder;
+      tlsDHParametersFile += PATH_SEPARATOR;
+      tlsDHParametersFile += current;
+    }
+
+    /* random seed file */
+    OFString tlsRandomSeedFile(tlsFolder);
+    tlsRandomSeedFile += PATH_SEPARATOR;
+    current = dvi.getTargetRandomSeed(opt_printer);
+    if (current) tlsRandomSeedFile += current; else tlsRandomSeedFile += "siteseed.bin";
+
+    /* CA certificate directory */
+    const char *tlsCACertificateFolder = dvi.getTLSCACertificateFolder();
+    if (tlsCACertificateFolder==NULL) tlsCACertificateFolder = ".";
+
+    /* key file format */
+    int keyFileFormat = SSL_FILETYPE_PEM;
+    if (! dvi.getTLSPEMFormat()) keyFileFormat = SSL_FILETYPE_ASN1;
+
+    /* ciphersuites */
+    OFString tlsCiphersuites(SSL3_TXT_RSA_DES_192_CBC3_SHA);
+    Uint32 tlsNumberOfCiphersuites = dvi.getTargetNumberOfCipherSuites(opt_printer);
+    if (tlsNumberOfCiphersuites > 0)
+    {
+      tlsCiphersuites.clear();
+      OFString currentSuite;
+      const char *currentOpenSSL;
+      for (Uint32 ui=0; ui<tlsNumberOfCiphersuites; ui++)
+      {
+        dvi.getTargetCipherSuite(opt_printer, ui, currentSuite);
+        if (NULL == (currentOpenSSL = DcmTLSTransportLayer::findOpenSSLCipherSuiteName(currentSuite.c_str())))
+        {
+          *logstream << "ciphersuite '" << currentSuite << "' is unknown. Known ciphersuites are:" << endl;
+          unsigned long numSuites = DcmTLSTransportLayer::getNumberOfCipherSuites();
+          for (unsigned long cs=0; cs < numSuites; cs++)
+          {
+            *logstream << "    " << DcmTLSTransportLayer::getTLSCipherSuiteName(cs) << endl;
+          }
+          return 1;
+        } else {
+          if (tlsCiphersuites.length() > 0) tlsCiphersuites += ":";
+          tlsCiphersuites += currentOpenSSL;
+        }
+      }
+    }
+
+    DcmTLSTransportLayer *tLayer = NULL;
+    if (useTLS)
+    {
+      tLayer = new DcmTLSTransportLayer(DICOM_APPLICATION_REQUESTOR, tlsRandomSeedFile.c_str());
+      if (tLayer == NULL)
+      {
+        app.printError("unable to create TLS transport layer");
+      }
+
+      if (tlsCACertificateFolder && (TCS_ok != tLayer->addTrustedCertificateDir(tlsCACertificateFolder, keyFileFormat)))
+      {
+        CERR << "warning unable to load certificates from directory '" << tlsCACertificateFolder << "', ignoring" << endl;
+      }
+      if ((tlsDHParametersFile.size() > 0) && ! (tLayer->setTempDHParameters(tlsDHParametersFile.c_str())))
+      {
+        CERR << "warning unable to load temporary DH parameter file '" << tlsDHParametersFile << "', ignoring" << endl;
+      }
+      tLayer->setPrivateKeyPasswd(tlsPrivateKeyPassword); // never prompt on console
+
+      if ((tlsPrivateKeyFile.length() > 0) && (tlsCertificateFile.length() > 0))
+      {
+        if (TCS_ok != tLayer->setPrivateKeyFile(tlsPrivateKeyFile.c_str(), keyFileFormat))
+        {
+          CERR << "unable to load private TLS key from '" << tlsPrivateKeyFile<< "'" << endl;
+          return 1;
+        }
+        if (TCS_ok != tLayer->setCertificateFile(tlsCertificateFile.c_str(), keyFileFormat))
+        {
+          CERR << "unable to load certificate from '" << tlsCertificateFile << "'" << endl;
+          return 1;
+        }
+        if (! tLayer->checkPrivateKeyMatchesCertificate())
+        {
+          CERR << "private key '" << tlsPrivateKeyFile << "' and certificate '" << tlsCertificateFile << "' do not match" << endl;
+          return 1;
+        }
+      }
+      if (TCS_ok != tLayer->setCipherSuites(tlsCiphersuites.c_str()))
+      {
+        CERR << "unable to set selected cipher suites" << endl;
+        return 1;
+      }
+
+      tLayer->setCertificateVerification(tlsCertVerification);
+
+      // a generated UID contains the process ID and current time.
+      // Adding it to the PRNG seed guarantees that we have different seeds for different processes.
+      char randomUID[65];
+      dcmGenerateUniqueIdentifier(randomUID);
+      tLayer->addPRNGseed(randomUID, strlen(randomUID));
+    }
+  
+#else
+    DcmTransportLayer *tLayer = NULL;
+    if (useTLS)
+    {
+        *logstream << "error: not compiled with OpenSSL, cannot use TLS." << endl;
+        closeLog();
+        return 10;
+    }
+#endif
 
     if (targetHostname == NULL)
     {
@@ -893,41 +1064,71 @@ int main(int argc, char *argv[])
     if (opt_verbose)
     {
        *logstream << "Printer parameters for '" <<  opt_printer << "':" << endl
-            << "  hostname   : " << targetHostname << endl
-            << "  port       : " << targetPort << endl
-            << "  description: ";
+            << "  hostname      : " << targetHostname << endl
+            << "  port          : " << targetPort << endl
+            << "  description   : ";
        if (targetDescription) *logstream << targetDescription; else *logstream << "(none)";
        *logstream << endl
-            << "  aetitle    : " << targetAETitle << endl
-            << "  max pdu    : " << targetMaxPDU << endl
-            << "  timeout    : " << timeout << endl
-            << "  options    : ";
+            << "  aetitle       : " << targetAETitle << endl
+            << "  max pdu       : " << targetMaxPDU << endl
+            << "  timeout       : " << timeout << endl
+            << "  options       : ";
        if (targetImplicitOnly && targetDisableNewVRs)
-         *logstream << "implicit xfer syntax only, disable post-1993 VRs";
+         *logstream << "implicit xfer syntax only, disable post-1993 VRs" << endl;
        else if (targetImplicitOnly)
-         *logstream << "implicit xfer syntax only";
+         *logstream << "implicit xfer syntax only" << endl;
        else if (targetDisableNewVRs)
-         *logstream << "disable post-1993 VRs";
+         *logstream << "disable post-1993 VRs" << endl;
        else
          *logstream << "none." << endl;
-       *logstream << "  12-bit xfer: " << (targetSupports12bit ? "supported" : "not supported") << endl
-            << "  present.lut: " << (targetSupportsPLUT ? "supported" : "not supported") << endl
-            << "  annotation : " << (targetSupportsAnnotation ? "supported" : "not supported") << endl;
+       *logstream << "  12-bit xfer   : " << (targetSupports12bit ? "supported" : "not supported") << endl
+            << "  present.lut   : " << (targetSupportsPLUT ? "supported" : "not supported") << endl
+            << "  annotation    : " << (targetSupportsAnnotation ? "supported" : "not supported") << endl;
        *logstream << endl << "Spooler parameters:" << endl
-            << "  mode       : " << (opt_spoolMode ? "spooler mode" : "printer mode") << endl;
+            << "  mode          : " << (opt_spoolMode ? "spooler mode" : "printer mode") << endl;
        if (opt_spoolMode)
        {
-         *logstream << "  sleep time : " << opt_sleep << endl;
+         *logstream << "  sleep time    : " << opt_sleep << endl;
        } else {
-         *logstream << "  copies     : " << opt_copies << endl;
-         *logstream << "  medium     : " << (opt_mediumtype ? opt_mediumtype : "printer default") << endl;
-         *logstream << "  destination: " << (opt_destination ? opt_destination : "printer default") << endl;
-         *logstream << "  label      : " << (opt_sessionlabel ? opt_sessionlabel : "printer default") << endl;
-         *logstream << "  priority   : " << (opt_priority ? opt_priority : "printer default") << endl;
-         *logstream << "  owner ID   : " << (opt_ownerID ? opt_ownerID : "printer default") << endl;
+         *logstream << "  copies        : " << opt_copies << endl;
+         *logstream << "  medium        : " << (opt_mediumtype ? opt_mediumtype : "printer default") << endl;
+         *logstream << "  destination   : " << (opt_destination ? opt_destination : "printer default") << endl;
+         *logstream << "  label         : " << (opt_sessionlabel ? opt_sessionlabel : "printer default") << endl;
+         *logstream << "  priority      : " << (opt_priority ? opt_priority : "printer default") << endl;
+         *logstream << "  owner ID      : " << (opt_ownerID ? opt_ownerID : "printer default") << endl;
        }
+       *logstream << endl << "transport layer security parameters:" << endl
+                  << "  TLS           : ";
+       if (useTLS) *logstream << "enabled" << endl; else *logstream << "disabled" << endl;
+
+#ifdef WITH_OPENSSL
+       if (useTLS)
+       {
+         *logstream << "  certificate   : " << tlsCertificateFile << endl
+              << "  key file      : " << tlsPrivateKeyFile << endl
+              << "  DH params     : " << tlsDHParametersFile << endl
+              << "  PRNG seed     : " << tlsRandomSeedFile << endl
+              << "  CA directory  : " << tlsCACertificateFolder << endl
+              << "  ciphersuites  : " << tlsCiphersuites << endl
+              << "  key format    : ";
+         if (keyFileFormat == SSL_FILETYPE_PEM) *logstream << "PEM" << endl; else *logstream << "DER" << endl;
+         *logstream << "  cert verify   : ";
+         switch (tlsCertVerification)
+         {
+             case DCV_checkCertificate:
+               *logstream << "verify" << endl;
+               break;
+             case DCV_ignoreCertificate:
+               *logstream << "ignore" << endl;
+               break;
+             default:
+               *logstream << "require" << endl;
+               break;
+         }
+       }
+#endif   
        *logstream << endl;
-   }
+    }
 
    int paramCount = cmd.getParamCount();
    const char *currentParam = NULL;
@@ -954,7 +1155,7 @@ int main(int argc, char *argv[])
           return 10;
         }
         // static OFCondition updateJobList(jobList, dvi, terminateFlag, jobNamePrefix.c_str());
-        if (EC_Normal != spoolJobList(jobList, dvi)) { /* ignore */ }
+        if (EC_Normal != spoolJobList(jobList, dvi, tLayer)) { /* ignore */ }
       } while (! terminateFlag);
       if (opt_verbose) *logstream << "spooler is terminating, goodbye!" << endl;
    } else {
@@ -979,7 +1180,7 @@ int main(int argc, char *argv[])
           }
           if (currentParam)
           {
-            if (EC_Normal != spoolStoredPrintFile(currentParam, dvi))
+            if (EC_Normal != spoolStoredPrintFile(currentParam, dvi, tLayer))
             {
               *logstream << "error: spooling of file '" << currentParam << "' failed." << endl;
             }
@@ -989,6 +1190,22 @@ int main(int argc, char *argv[])
         }
       }
    }
+
+#ifdef WITH_OPENSSL
+  if (tLayer)
+  {
+    if (tLayer->canWriteRandomSeed())
+    {
+      if (!tLayer->writeRandomSeed(tlsRandomSeedFile.c_str()))
+      {
+        CERR << "Error while writing back random seed file '" << tlsRandomSeedFile << "', ignoring." << endl;
+      }
+    } else {
+      CERR << "Warning: cannot write back random seed, ignoring." << endl;
+    }
+  }
+  delete tLayer;
+#endif
 
 #ifdef HAVE_WINSOCK_H
     WSACleanup();
@@ -1011,7 +1228,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprscu.cc,v $
- * Revision 1.17  2003-09-04 10:09:16  joergr
+ * Revision 1.18  2003-09-05 14:31:32  meichel
+ * Print SCU now supports TLS connections.
+ *
+ * Revision 1.17  2003/09/04 10:09:16  joergr
  * Fixed wrong use of OFBool/bool variable.
  *
  * Revision 1.16  2003/06/06 09:45:23  meichel
