@@ -21,10 +21,10 @@
  *
  *  Purpose: Error handling, codes and strings
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-27 16:55:47 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-06 12:18:57 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcerror.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,7 +53,8 @@ const OFConditionConst ECC_UnsupportedEncoding(        OFM_dcmdata, 15, OF_error
 const OFConditionConst ECC_PutbackFailed(              OFM_dcmdata, 17, OF_error, "Parser failure: Putback operation failed" );
 // error code 18 is reserved for file read error messages
 // error code 19 is reserved for file write error messages
-const OFConditionConst ECC_DoubleCompressionFilters(   OFM_dcmdata, 20, OF_error, "Too many compression filters"  );
+const OFConditionConst ECC_DoubleCompressionFilters(   OFM_dcmdata, 20, OF_error, "Too many compression filters"           );
+const OFConditionConst ECC_ApplicationProfileViolated( OFM_dcmdata, 21, OF_error, "Storage media application profile violated" );
 
 
 const OFCondition EC_InvalidTag(                 ECC_InvalidTag);
@@ -73,6 +74,7 @@ const OFCondition EC_CannotChangeRepresentation( ECC_CannotChangeRepresentation)
 const OFCondition EC_UnsupportedEncoding(        ECC_UnsupportedEncoding);
 const OFCondition EC_PutbackFailed(              ECC_PutbackFailed);
 const OFCondition EC_DoubleCompressionFilters(   ECC_DoubleCompressionFilters);
+const OFCondition EC_ApplicationProfileViolated( ECC_ApplicationProfileViolated);
 
 const char *dcmErrorConditionToString(OFCondition cond)
 {
@@ -83,7 +85,10 @@ const char *dcmErrorConditionToString(OFCondition cond)
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.cc,v $
-** Revision 1.13  2002-08-27 16:55:47  meichel
+** Revision 1.14  2002-12-06 12:18:57  joergr
+** Added new error status "EC_ApplicationProfileViolated".
+**
+** Revision 1.13  2002/08/27 16:55:47  meichel
 ** Initial release of new DICOM I/O stream classes that add support for stream
 **   compression (deflated little endian explicit VR transfer syntax)
 **

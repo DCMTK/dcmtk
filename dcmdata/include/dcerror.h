@@ -21,10 +21,10 @@
  *
  *  Purpose: Error handling, codes and strings
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-27 16:55:32 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-06 12:18:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcerror.h,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -79,6 +79,7 @@ extern const OFCondition EC_CannotChangeRepresentation;
 extern const OFCondition EC_UnsupportedEncoding;
 extern const OFCondition EC_PutbackFailed;
 extern const OFCondition EC_DoubleCompressionFilters;
+extern const OFCondition EC_ApplicationProfileViolated;
 
 
 #ifndef OFCONDITION_STRICT_MODE
@@ -99,7 +100,10 @@ extern const char *dcmErrorConditionToString(OFCondition cond);
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.h,v $
-** Revision 1.17  2002-08-27 16:55:32  meichel
+** Revision 1.18  2002-12-06 12:18:27  joergr
+** Added new error status "EC_ApplicationProfileViolated".
+**
+** Revision 1.17  2002/08/27 16:55:32  meichel
 ** Initial release of new DICOM I/O stream classes that add support for stream
 **   compression (deflated little endian explicit VR transfer syntax)
 **
