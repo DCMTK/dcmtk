@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSImageBoxContent
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-08 10:35:45 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-06-20 12:19:49 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,7 +44,7 @@
 
 DVPSImageBoxContent::DVPSImageBoxContent()
 : sOPInstanceUID(DCM_SOPInstanceUID)
-, imageBoxPosition(DCM_ImageBoxPosition)
+, imageBoxPosition(DCM_ImagePosition)
 , polarity(DCM_Polarity)
 , magnificationType(DCM_MagnificationType)
 , configurationInformation(DCM_ConfigurationInformation)
@@ -1040,7 +1040,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
       intoSub = OFFalse;
       const DcmTagKey& currentTag = (stack.top())->getTag();
       if (currentTag.getElement() == 0x0000) /* group length */ ;
-      else if (currentTag == DCM_ImageBoxPosition) /* OK */ ;
+      else if (currentTag == DCM_ImagePosition) /* OK */ ;
       else if (currentTag == DCM_Polarity) /* OK */ ;
       else if (currentTag == DCM_RequestedDecimateCropBehavior) /* OK */ ;
       else if (currentTag == DCM_RequestedImageSize) /* OK */ ;
@@ -1550,7 +1550,10 @@ void DVPSImageBoxContent::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgM
 
 /*
  *  $Log: dvpsib.cc,v $
- *  Revision 1.29  2002-01-08 10:35:45  joergr
+ *  Revision 1.30  2002-06-20 12:19:49  meichel
+ *  Adapted toolkit to name changes in latest data dictionary
+ *
+ *  Revision 1.29  2002/01/08 10:35:45  joergr
  *  Corrected spelling of function dcmGenerateUniqueIdentifier().
  *
  *  Revision 1.28  2001/11/28 13:56:56  joergr

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDocument
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-05-07 12:52:48 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-06-20 12:18:53 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -68,7 +68,7 @@ DSRDocument::DSRDocument(const E_DocumentType documentType)
     Modality(DCM_Modality),
     SeriesInstanceUID(DCM_SeriesInstanceUID),
     SeriesNumber(DCM_SeriesNumber),
-    ReferencedStudyComponent(DCM_ReferencedStudyComponentSequence),
+    ReferencedStudyComponent(DCM_ReferencedPerformedProcedureStepSequence),
     InstanceNumber(DCM_InstanceNumber),
     CompletionFlag(DCM_CompletionFlag),
     CompletionFlagDescription(DCM_CompletionFlagDescription),
@@ -1860,7 +1860,10 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.35  2002-05-07 12:52:48  joergr
+ *  Revision 1.36  2002-06-20 12:18:53  meichel
+ *  Adapted toolkit to name changes in latest data dictionary
+ *
+ *  Revision 1.35  2002/05/07 12:52:48  joergr
  *  Added support for the Current Requested Procedure Evidence Sequence and the
  *  Pertinent Other Evidence Sequence to the dcmsr module.
  *  Added output of SOP class name to XML document.
