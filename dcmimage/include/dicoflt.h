@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomColorFlipTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:28 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-09 16:41:15 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicoflt.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,6 +57,15 @@ class DiColorFlipTemplate
 
  public:
 
+    /** constructor
+     *
+     ** @param  pixel    pointer to intermediate pixel representation
+     *  @param  columns  number of columns
+     *  @param  rows     number of rows
+     *  @param  frames   number of frames
+     *  @param  horz     flip horizontally if true
+     *  @param  vert     flip vertically if true
+     */
     DiColorFlipTemplate(const DiColorPixel *pixel,
                         const Uint16 columns,
                         const Uint16 rows,
@@ -80,6 +89,8 @@ class DiColorFlipTemplate
         }
     }
 
+    /** destructor
+     */
     ~DiColorFlipTemplate()
     {
     }
@@ -87,7 +98,15 @@ class DiColorFlipTemplate
 
  private:
 
-    inline void flip(const T *pixel[3], const int horz, const int vert)
+    /** choose flipping algorithm depending on given parameters
+     *
+     ** @param  pixel  pointer to pixel data (3 components) which should be flipped
+     *  @param  horz   flip horizontally if true
+     *  @param  vert   flip vertically if true
+     */
+    inline void flip(const T *pixel[3],
+                     const int horz,
+                     const int vert)
     {
         if (Init(pixel))
         {
@@ -109,7 +128,11 @@ class DiColorFlipTemplate
  *
  * CVS/RCS Log:
  * $Log: dicoflt.h,v $
- * Revision 1.5  2001-06-01 15:49:28  meichel
+ * Revision 1.6  2001-11-09 16:41:15  joergr
+ * Updated/Enhanced comments.
+ * Removed 'inline' specifier from certain methods.
+ *
+ * Revision 1.5  2001/06/01 15:49:28  meichel
  * Updated copyright header
  *
  * Revision 1.4  2000/12/08 14:06:01  joergr
