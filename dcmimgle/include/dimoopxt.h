@@ -22,9 +22,9 @@
  *  Purpose: DicomMonoOutputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-05 15:13:36 $
+ *  Update Date:      $Date: 1999-02-05 16:44:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -856,10 +856,10 @@ class DiMonoOutputPixelTemplate
                                 }
                                 case EMO_BitmapShutter:  /* UNTESTED !! */
                                 {
-                                    register T3 fore = (T3)((double)maxvalue * (double)plane->getPValue() / 65535);
+                                    register T3 fore = (T3)((double)maxvalue * (double)plane->getPValue() / (double)DicomImageClass::maxval(WIDTH_OF_PVALUES));
                                     if ((disp != NULL) && (disp->isValid()))
                                     {
-                                        const DiBartenLUT *blut = disp->getBartenLUT(16);
+                                        const DiBartenLUT *blut = disp->getBartenLUT(WIDTH_OF_PVALUES);
                                         if ((blut != NULL) && (blut->isValid()))
                                             fore = (T3)blut->getValue(plane->getPValue());
                                     }
@@ -903,7 +903,10 @@ class DiMonoOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoopxt.h,v $
- * Revision 1.7  1999-02-05 15:13:36  joergr
+ * Revision 1.8  1999-02-05 16:44:52  joergr
+ * Corrected calculation of DDL value for bitmaps shutters (overlays).
+ *
+ * Revision 1.7  1999/02/05 15:13:36  joergr
  * Added conversion P-Value to DDL when display function is absent.
  *
  * Revision 1.6  1999/02/03 17:32:43  joergr
