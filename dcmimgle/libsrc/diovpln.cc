@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlayPlane (Source) - Multiframe Overlays UNTESTED !
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 16:22:13 $
+ *  Update Date:      $Date: 1998-12-14 17:41:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diovpln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,7 +40,7 @@
 #include "diovpln.h"
 #include "didocu.h"
 
-#include <string.h>
+//#include <string.h>
 
 
 /*----------------*
@@ -48,7 +48,7 @@
  *----------------*/
 
 DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
-                               const unsigned int plane,
+                               const unsigned int group,
                                const Uint16 alloc)
   : NumberOfFrames(0),
     ImageFrameOrigin(0),
@@ -64,6 +64,9 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
     Threshold(1),
     Mode(EMO_Replace),
     DefaultMode(EMO_Replace),
+    Label(),
+    Description(),
+    GroupNumber(group),
     Valid(0),
     Visible(0),
     BitPos(0),
@@ -75,10 +78,16 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
 {
     if (docu != NULL)
     {
-        DcmTagKey tag(DCM_OverlayRows.getGroup() + 2 * plane, DCM_OverlayRows.getElement());
+        DcmTagKey tag(group, DCM_OverlayRows.getElement());
         const char *str;
+        tag.setElement(DCM_OverlayLabel.getElement());
+        if (docu->getValue(tag, str) > 0)
+            Label = str;
+        tag.setElement(DCM_OverlayDescription.getElement());
+        if (docu->getValue(tag, str) > 0)
+            Description = str;
         tag.setElement(DCM_OverlayType.getElement());
-        if (docu->getValue(tag, str) && (strcmp(str, "R") == 0))
+        if ((docu->getValue(tag, str) > 0) && (strcmp(str, "R") == 0))
             DefaultMode = Mode = EMO_RegionOfInterest;
         Sint32 sl = 0;
         tag.setElement(DCM_OverlayNumberOfFrames.getElement());
@@ -129,6 +138,54 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
 }
 
 
+DiOverlayPlane::DiOverlayPlane(const unsigned int group,
+                               const unsigned long rows,
+                               const unsigned long columns,
+                               const EM_Overlay mode,
+                               const signed int left,
+                               const signed int top,
+                               const DcmOverlayData &data,
+                               const DcmLongString &label,
+                               const DcmLongString &description)
+  : NumberOfFrames(1),
+    ImageFrameOrigin(0),
+    Top(top),
+    Left(left),
+    Height(0),
+    Width(0),
+    Rows(rows),
+    Columns(columns),
+    BitsAllocated(1),
+    BitPosition(1),
+    Foreground(1),
+    Threshold(1),
+    Mode(mode),
+    DefaultMode(EMO_Replace),
+    Label(),
+    Description(),
+    GroupNumber(group),
+    Valid(0),
+    Visible(1),
+    BitPos(0),
+    StartBitPos(0),
+    EmbeddedData(0),
+    Ptr(NULL),
+    StartPtr(NULL),
+    Data(NULL)
+{
+    const char *str;
+    if ((Valid = DiDocument::getElemValue((const DcmElement *)&label, str)))
+        Label = str;
+    if ((Valid &= DiDocument::getElemValue((const DcmElement *)&Description, str)))
+        Description = str;
+    Valid &= DiDocument::getElemValue((const DcmElement *)&data, Data);
+    Top--;                                                      // overlay origin is numbered from 1
+    Left--;
+    
+    /* ... */
+}
+
+
 DiOverlayPlane::DiOverlayPlane(DiOverlayPlane *plane,
                                const unsigned int bit,
                                Uint16 *data,
@@ -153,6 +210,9 @@ DiOverlayPlane::DiOverlayPlane(DiOverlayPlane *plane,
     Threshold(plane->Threshold),
     Mode(plane->Mode),
     DefaultMode(plane->DefaultMode),
+    Label(plane->Label),
+    Description(plane->Description),
+    GroupNumber(plane->GroupNumber),
     Valid(0),
     Visible(plane->Visible),
     BitPos(0),
@@ -230,7 +290,11 @@ void DiOverlayPlane::flipOrigin(const int horz,
 **
 ** CVS/RCS Log:
 ** $Log: diovpln.cc,v $
-** Revision 1.1  1998-11-27 16:22:13  joergr
+** Revision 1.2  1998-12-14 17:41:56  joergr
+** Added methods to add and remove additional overlay planes (still untested).
+** Added methods to support overlay labels and descriptions.
+**
+** Revision 1.1  1998/11/27 16:22:13  joergr
 ** Added copyright message.
 ** Introduced global debug level for dcmimage module to control error output.
 ** Added methods and constructors for flipping and rotating, changed for
