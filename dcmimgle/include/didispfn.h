@@ -22,9 +22,9 @@
  *  Purpose: DicomDisplayFunction (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-02-12 11:35:16 $
+ *  Update Date:      $Date: 2003-03-12 14:56:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/didispfn.h,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -418,7 +418,7 @@ class DiDisplayFunction
      */
     double *convertODtoLumTable(const double *od_tab,
                                 const unsigned long count,
-                                const OFBool useAmb = OFTrue);
+                                const OFBool useAmb);
 
     /** interpolate device characteristic curve by means of a cubic spline interpolation
      */
@@ -495,7 +495,10 @@ class DiDisplayFunction
  *
  * CVS/RCS Log:
  * $Log: didispfn.h,v $
- * Revision 1.20  2003-02-12 11:35:16  joergr
+ * Revision 1.21  2003-03-12 14:56:14  joergr
+ * Removed default value from parameter "useAmb" in method convertODtoLumTable.
+ *
+ * Revision 1.20  2003/02/12 11:35:16  joergr
  * Added Dmin/max support to CIELAB calibration routines.
  *
  * Revision 1.19  2003/02/11 16:32:02  joergr
