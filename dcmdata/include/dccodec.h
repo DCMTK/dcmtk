@@ -9,9 +9,9 @@
 ** Interface of abstract class DcmCodec and the class DcmCodecStruct
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 07:54:57 $
+** Update Date:		$Date: 1997-07-24 13:07:45 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dccodec.h,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 **
 ** CVS/RCS Log at end of file
 **
@@ -69,7 +69,7 @@ public:
     // check if a change of coding pixel data is possible
     virtual OFBool canChangeCoding(
 	const E_TransferSyntax oldRepType,
-	const E_TransferSyntax newRepType);
+	const E_TransferSyntax newRepType) = 0;
 };
 
 
@@ -105,7 +105,10 @@ const DcmCodecStruct * searchGlobalCodec(const E_TransferSyntax repType);
 /*
 ** CVS/RCS Log:
 ** $Log: dccodec.h,v $
-** Revision 1.1  1997-07-21 07:54:57  andreas
+** Revision 1.2  1997-07-24 13:07:45  andreas
+** - Make DcmCodec:canChangeCoding abstract
+**
+** Revision 1.1  1997/07/21 07:54:57  andreas
 ** - New environment for encapsulated pixel representations. DcmPixelData
 **   can contain different representations and uses codecs to convert
 **   between them. Codecs are derived from the DcmCodec class. New error
