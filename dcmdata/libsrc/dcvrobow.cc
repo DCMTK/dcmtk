@@ -22,9 +22,9 @@
  *  Purpose: class DcmOtherByteOtherWord for data VR OB or OW
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-03 14:05:39 $
+ *  Update Date:      $Date: 2000-03-06 16:08:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrobow.cc,v $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -203,7 +203,7 @@ void DcmOtherByteOtherWord::printPixel(ostream & out, const OFBool showFullData,
         if (pixelCounter != NULL)
         {
             char num[20];
-            sprintf(num, "%d", (*pixelCounter)++);
+            sprintf(num, "%ld", (long)((*pixelCounter)++));
             fname += num;
         }
         fname += ".raw";
@@ -449,7 +449,10 @@ E_Condition DcmOtherByteOtherWord::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
-** Revision 1.26  2000-03-03 14:05:39  meichel
+** Revision 1.27  2000-03-06 16:08:05  meichel
+** Changed a couple of definitions that implied that Uint32 or size_t are long
+**
+** Revision 1.26  2000/03/03 14:05:39  meichel
 ** Implemented library support for redirecting error messages into memory
 **   instead of printing them to stdout/stderr for GUI applications.
 **

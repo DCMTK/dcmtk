@@ -23,8 +23,8 @@
  *    classes: DVPSReferencedImage
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-03 14:14:03 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2000-03-06 16:08:08 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -270,7 +270,7 @@ void DVPSReferencedImage::removeFrameReference(unsigned long frame, unsigned lon
     {
       if (frameCache[i] != (Sint32)frame) 
       {
-      	if (aString.size() ==0) sprintf(str, "%ld", frameCache[i]); else sprintf(str, "\\%ld", frameCache[i]);
+      	if (aString.size() ==0) sprintf(str, "%ld", (long)(frameCache[i])); else sprintf(str, "\\%ld", (long)(frameCache[i]));
       	aString += str;
       }
     }
@@ -291,7 +291,10 @@ void DVPSReferencedImage::removeFrameReference(unsigned long frame, unsigned lon
 
 /*
  *  $Log: dvpsri.cc,v $
- *  Revision 1.6  2000-03-03 14:14:03  meichel
+ *  Revision 1.7  2000-03-06 16:08:08  meichel
+ *  Changed a couple of definitions that implied that Uint32 or size_t are long
+ *
+ *  Revision 1.6  2000/03/03 14:14:03  meichel
  *  Implemented library support for redirecting error messages into memory
  *    instead of printing them to stdout/stderr for GUI applications.
  *

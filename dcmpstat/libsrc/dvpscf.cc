@@ -22,8 +22,8 @@
  *  Purpose: DVConfiguration
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-03 14:13:58 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2000-03-06 16:08:08 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -529,9 +529,9 @@ Uint32 DVConfiguration::getMaxPreviewResolutionX()
   const char *c = getConfigEntry(L2_GENERAL, L1_MONITOR, L0_PREVIEW);
   if (c)
   {
-    Uint32 result = 0;
-    Uint32 dummy = 0;
-    if (2 == sscanf(c, "%lu\\%lu", &result, &dummy)) return result;
+    unsigned long result = 0;
+    unsigned long dummy = 0;
+    if (2 == sscanf(c, "%lu\\%lu", &result, &dummy)) return (Uint32) result;
   }
   return 0;
 }
@@ -541,9 +541,9 @@ Uint32 DVConfiguration::getMaxPreviewResolutionY()
   const char *c = getConfigEntry(L2_GENERAL, L1_MONITOR, L0_PREVIEW);
   if (c)
   {
-    Uint32 result = 0;
-    Uint32 dummy = 0;
-    if (2 == sscanf(c, "%lu\\%lu", &dummy, &result)) return result;
+    unsigned long result = 0;
+    unsigned long dummy = 0;
+    if (2 == sscanf(c, "%lu\\%lu", &dummy, &result)) return (Uint32) result;
   }
   return 0;
 }
@@ -810,9 +810,9 @@ Uint32 DVConfiguration::getMinPrintResolutionX()
   const char *c = getConfigEntry(L2_GENERAL, L1_PRINT, L0_MINPRINTRESOLUTION);
   if (c)
   {
-    Uint32 result = 0;
-    Uint32 dummy = 0;
-    if (2 == sscanf(c, "%lu\\%lu", &result, &dummy)) return result;
+    unsigned long result = 0;
+    unsigned long dummy = 0;
+    if (2 == sscanf(c, "%lu\\%lu", &result, &dummy)) return (Uint32) result;
   }
   return 0;
 }
@@ -822,9 +822,9 @@ Uint32 DVConfiguration::getMinPrintResolutionY()
   const char *c = getConfigEntry(L2_GENERAL, L1_PRINT, L0_MINPRINTRESOLUTION);
   if (c)
   {
-    Uint32 result = 0;
-    Uint32 dummy = 0;
-    if (2 == sscanf(c, "%lu\\%lu", &dummy, &result)) return result;
+    unsigned long result = 0;
+    unsigned long dummy = 0;
+    if (2 == sscanf(c, "%lu\\%lu", &dummy, &result)) return (Uint32) result;
   }
   return 0;
 }
@@ -834,9 +834,9 @@ Uint32 DVConfiguration::getMaxPrintResolutionX()
   const char *c = getConfigEntry(L2_GENERAL, L1_PRINT, L0_MAXPRINTRESOLUTION);
   if (c)
   {
-    Uint32 result = 0;
-    Uint32 dummy = 0;
-    if (2 == sscanf(c, "%lu\\%lu", &result, &dummy)) return result;
+    unsigned long result = 0;
+    unsigned long dummy = 0;
+    if (2 == sscanf(c, "%lu\\%lu", &result, &dummy)) return (Uint32) result;
   }
   return 0;
 }
@@ -846,9 +846,9 @@ Uint32 DVConfiguration::getMaxPrintResolutionY()
   const char *c = getConfigEntry(L2_GENERAL, L1_PRINT, L0_MAXPRINTRESOLUTION);
   if (c)
   {
-    Uint32 result = 0;
-    Uint32 dummy = 0;
-    if (2 == sscanf(c, "%lu\\%lu", &dummy, &result)) return result;
+    unsigned long result = 0;
+    unsigned long dummy = 0;
+    if (2 == sscanf(c, "%lu\\%lu", &dummy, &result)) return (Uint32) result;
   }
   return 0;
 }
@@ -1048,7 +1048,10 @@ Uint16 DVConfiguration::getTargetPrinterAnnotationPosition(const char *targetID)
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.cc,v $
- *  Revision 1.19  2000-03-03 14:13:58  meichel
+ *  Revision 1.20  2000-03-06 16:08:08  meichel
+ *  Changed a couple of definitions that implied that Uint32 or size_t are long
+ *
+ *  Revision 1.19  2000/03/03 14:13:58  meichel
  *  Implemented library support for redirecting error messages into memory
  *    instead of printing them to stdout/stderr for GUI applications.
  *
