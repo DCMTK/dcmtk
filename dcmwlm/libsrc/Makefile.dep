@@ -45,8 +45,8 @@ wldsfs.o: wldsfs.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dcvrcs.h ../include/wlds.h ../include/wlfsim.h \
  ../../ofstd/include/ofstd.h ../include/wldsfs.h
 wlfsim.o: wlfsim.cc ../../config/include/osconfig.h \
- ../../config/include/cfunix.h ../../dcmnet/include/diutil.h \
- ../../dcmnet/include/dicom.h ../../ofstd/include/ofstdinc.h \
+ ../../config/include/cfunix.h ../../ofstd/include/ofstdinc.h \
+ ../../dcmnet/include/diutil.h ../../dcmnet/include/dicom.h \
  ../../dcmnet/include/cond.h ../../ofstd/include/ofconsol.h \
  ../../ofstd/include/ofstream.h ../../ofstd/include/ofthread.h \
  ../../ofstd/include/oftypes.h ../../dcmdata/include/dcerror.h \

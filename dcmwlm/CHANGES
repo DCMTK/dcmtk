@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2002.11.28 (eichelberg)
+
+- Adapted module dcmwlm to use of new header file ofstdinc.h
+  Affects: dcmwlm/libsrc/Makefile.dep
+           dcmwlm/libsrc/wlfsim.cc
+
 **** Changes from 2002.11.28 (riesmeier)
 
 - Removed explicit dependency from config.h.

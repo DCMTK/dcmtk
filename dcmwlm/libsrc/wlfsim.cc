@@ -21,10 +21,10 @@
 *
 *  Purpose: Class for managing file system interaction.
 *
-*  Last Update:      $Author: wilkens $
-*  Update Date:      $Date: 2002-08-22 09:14:04 $
+*  Last Update:      $Author: meichel $
+*  Update Date:      $Date: 2002-11-28 11:04:47 $
 *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlfsim.cc,v $
-*  CVS/RCS Revision: $Revision: 1.3 $
+*  CVS/RCS Revision: $Revision: 1.4 $
 *  Status:           $State: Exp $
 *
 *  CVS/RCS Log at end of file
@@ -34,6 +34,9 @@
 // ----------------------------------------------------------------------------
 
 #include "osconfig.h"
+
+#define INCLUDE_CLIMITS
+#include "ofstdinc.h"
 
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_TYPES_H
@@ -45,10 +48,8 @@ BEGIN_EXTERN_C
 #ifdef HAVE_DIRENT_H
 #include <dirent.h>    // for struct DIR, opendir()
 #endif
-#ifdef HAVE_LIMITS_H
-#include <limits.h>    // for _POSIX_PATH_MAX
-#endif
 END_EXTERN_C
+
 #include "diutil.h"
 #include "ofconsol.h"
 #include "ofstd.h"
@@ -1458,7 +1459,10 @@ void WlmFileSystemInteractionManager::ExtractValuesFromRange( const char *range,
 /*
 ** CVS Log
 ** $Log: wlfsim.cc,v $
-** Revision 1.3  2002-08-22 09:14:04  wilkens
+** Revision 1.4  2002-11-28 11:04:47  meichel
+** Adapted module dcmwlm to use of new header file ofstdinc.h
+**
+** Revision 1.3  2002/08/22 09:14:04  wilkens
 ** Adapted code to new loadFile and saveFile methods, thus removing direct
 ** use of the DICOM stream classes.
 **
