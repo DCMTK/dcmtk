@@ -22,9 +22,9 @@
  *  Purpose: Template class for bit manipulations (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-16 15:59:51 $
+ *  Update Date:      $Date: 1999-04-26 16:07:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofbmanip.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -125,19 +125,22 @@ class OFBitmanipTemplate
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: ofbmanip.h,v $
-** Revision 1.3  1998-12-16 15:59:51  joergr
-** Corrected bug in setMem routine (expected 'value' parameter for system
-** function 'memset' is implicitely casted to 'unsigned char').
-**
-** Revision 1.2  1998/12/02 12:52:05  joergr
-** Corrected bug in setMem routine (parameter 'value' was ignored).
-**
-** Revision 1.1  1998/11/27 12:29:20  joergr
-** First release of class for plaform independant memory operations.
-**
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: ofbmanip.h,v $
+ * Revision 1.4  1999-04-26 16:07:52  joergr
+ * Changed comments.
+ *
+ * Revision 1.3  1998/12/16 15:59:51  joergr
+ * Corrected bug in setMem routine (expected 'value' parameter for system
+ * function 'memset' is implicitely casted to 'unsigned char').
+ *
+ * Revision 1.2  1998/12/02 12:52:05  joergr
+ * Corrected bug in setMem routine (parameter 'value' was ignored).
+ *
+ * Revision 1.1  1998/11/27 12:29:20  joergr
+ * First release of class for plaform independant memory operations.
+ *
+ *
+ *
+ */
