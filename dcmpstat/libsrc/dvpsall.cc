@@ -23,8 +23,8 @@
  *    classes: DVPSOverlayCurveActivationLayer_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:29:02 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-05-31 13:02:36 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,16 +38,7 @@
 #include "dvpsal.h"      /* for DVPSOverlayCurveActivationLayer */
 #include "dvpsovl.h"      /* for DVPSOverlay_PList */
 #include "dvpsgll.h"      /* for DVPSGraphicLayer_PList */
-
-
-/* --------------- a few macros avoiding copy/paste --------------- */
-
-#define READ_FROM_DATASET(a_type, a_name)                           \
-stack.clear();                                                      \
-if (EC_Normal == dset.search((DcmTagKey &)a_name.getTag(), stack, ESM_fromHere, OFFalse)) \
-{                                                                   \
-  a_name = *((a_type *)(stack.top()));                              \
-}
+#include "dvpsdef.h"     /* for constants and macros */
 
 
 DVPSOverlayCurveActivationLayer_PList::DVPSOverlayCurveActivationLayer_PList()
@@ -475,7 +466,10 @@ Uint16 DVPSOverlayCurveActivationLayer_PList::getActivationGroup(const char *lay
 
 /*
  *  $Log: dvpsall.cc,v $
- *  Revision 1.4  2000-03-08 16:29:02  meichel
+ *  Revision 1.5  2000-05-31 13:02:36  meichel
+ *  Moved dcmpstat macros and constants into a common header file
+ *
+ *  Revision 1.4  2000/03/08 16:29:02  meichel
  *  Updated copyright header.
  *
  *  Revision 1.3  1998/12/22 17:57:14  meichel

@@ -21,10 +21,10 @@
  *
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-05-30 14:03:29 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-05-31 13:02:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsrcv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,6 +43,7 @@ BEGIN_EXTERN_C
 #endif
 END_EXTERN_C
 
+#include "dvpsdef.h"  /* for constants */
 #include "dviface.h"
 #include "ofbmanip.h" /* for OFBitmanipTemplate */
 #include "dcuid.h"    /* for dcmtk version name */
@@ -55,9 +56,6 @@ END_EXTERN_C
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
-
-/* default Max PDU size to be used when no different value is defined in the configuration file */
-#define DEFAULT_MAXPDU 16384
 
 enum associationType
 {
@@ -903,7 +901,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsrcv.cc,v $
- * Revision 1.18  2000-05-30 14:03:29  joergr
+ * Revision 1.19  2000-05-31 13:02:24  meichel
+ * Moved dcmpstat macros and constants into a common header file
+ *
+ * Revision 1.18  2000/05/30 14:03:29  joergr
  * Added new private SOP class (UID definition) to allow external shutdown
  * of console applications via negotiation of this special SOP class
  * (currently used for imagectn and dcmpsrcv).

@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:29:04 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2000-05-31 13:02:36 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,23 +35,7 @@
 #include "dvpsga.h"
 #include "dvpsri.h"
 #include "dvpstyp.h"
-
-/* --------------- a few macros avoiding copy/paste --------------- */
-
-#define ADD_TO_DATASET(a_type, a_name)                              \
-if (result==EC_Normal)                                              \
-{                                                                   \
-  delem = new a_type(a_name);                                       \
-  if (delem) dset.insert(delem); else result=EC_MemoryExhausted;    \
-}
-
-#define READ_FROM_DATASET(a_type, a_name)                           \
-stack.clear();                                                      \
-if (EC_Normal == dset.search((DcmTagKey &)a_name.getTag(), stack, ESM_fromHere, OFFalse)) \
-{                                                                   \
-  a_name = *((a_type *)(stack.top()));                              \
-}
-
+#include "dvpsdef.h"     /* for constants and macros */
 
 /* --------------- class DVPSGraphicAnnotation --------------- */
 
@@ -226,7 +210,10 @@ OFBool DVPSGraphicAnnotation::isApplicable(
 
 /*
  *  $Log: dvpsga.cc,v $
- *  Revision 1.5  2000-03-08 16:29:04  meichel
+ *  Revision 1.6  2000-05-31 13:02:36  meichel
+ *  Moved dcmpstat macros and constants into a common header file
+ *
+ *  Revision 1.5  2000/03/08 16:29:04  meichel
  *  Updated copyright header.
  *
  *  Revision 1.4  2000/03/03 14:13:59  meichel

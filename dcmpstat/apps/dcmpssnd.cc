@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Network Send Component (Store SCU)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-04-14 16:34:38 $
+ *  Update Date:      $Date: 2000-05-31 13:02:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpssnd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,6 +43,7 @@ BEGIN_EXTERN_C
 #endif
 END_EXTERN_C
 
+#include "dvpsdef.h"  /* for constants */
 #include "dviface.h"
 #include "ofbmanip.h" /* for OFBitmanipTemplate */
 #include "dcuid.h"    /* for dcmtk version name */
@@ -56,9 +57,6 @@ END_EXTERN_C
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
-
-/* default Max PDU size to be used when no different value is defined in the configuration file */
-#define DEFAULT_MAXPDU 16384
 
 /** sends a single DICOM instance over an association which must be already established.
  *  @param assoc DICOM network association
@@ -578,7 +576,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpssnd.cc,v $
- * Revision 1.15  2000-04-14 16:34:38  meichel
+ * Revision 1.16  2000-05-31 13:02:25  meichel
+ * Moved dcmpstat macros and constants into a common header file
+ *
+ * Revision 1.15  2000/04/14 16:34:38  meichel
  * Global VR generation flags are now derived from OFGlobal and, thus,
  *   safe for use in multi-thread applications.
  *

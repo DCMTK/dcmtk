@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Print Spooler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-05-03 14:27:27 $
+ *  Update Date:      $Date: 2000-05-31 13:02:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/Attic/dcmprtsv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -68,6 +68,7 @@ END_EXTERN_C
 
 #include <fstream.h>    /* for ofstream */
 
+#include "dvpsdef.h"    /* for constants */
 #include "dviface.h"    /* for DVInterface */
 #include "ofstring.h"   /* for OFString */
 #include "ofbmanip.h"   /* for OFBitmanipTemplate */
@@ -83,9 +84,6 @@ END_EXTERN_C
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
-
-/* default Max PDU size to be used when no different value is defined in the configuration file */
-#define DEFAULT_MAXPDU 16384
 
 /* command line options */
 static OFBool           opt_verbose         = OFFalse;             /* default: not verbose */
@@ -965,7 +963,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprtsv.cc,v $
- * Revision 1.20  2000-05-03 14:27:27  meichel
+ * Revision 1.21  2000-05-31 13:02:24  meichel
+ * Moved dcmpstat macros and constants into a common header file
+ *
+ * Revision 1.20  2000/05/03 14:27:27  meichel
  * Updated dcmpstat apps for changes in dcmimgle.
  *
  * Revision 1.19  2000/04/14 16:34:37  meichel

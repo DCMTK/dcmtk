@@ -23,8 +23,8 @@
  *    classes: DVPSOverlayCurveActivationLayer
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:29:01 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2000-05-31 13:02:35 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,26 +33,8 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dvpsal.h"
+#include "dvpsdef.h"     /* for constants and macros */
 
-/* --------------- a few macros avoiding copy/paste --------------- */
-
-#define ADD_REPEATING_ELEMENT_TO_DATASET(a_type, a_name, a_group)   \
-if (result==EC_Normal)                                              \
-{                                                                   \
-  delem = new a_type(a_name);                                       \
-  if (delem)                                                        \
-  {                                                                 \
-    delem->setGTag(a_group);                                        \
-    dset.insert(delem);                                             \
-  } else result=EC_MemoryExhausted;                                 \
-}
-
-#define READ_FROM_DATASET(a_type, a_name)                           \
-stack.clear();                                                      \
-if (EC_Normal == dset.search((DcmTagKey &)a_name.getTag(), stack, ESM_fromHere, OFFalse)) \
-{                                                                   \
-  a_name = *((a_type *)(stack.top()));                              \
-}
 
 /* --------------- class DVPSOverlayCurveActivationLayer --------------- */
 
@@ -132,7 +114,10 @@ OFBool DVPSOverlayCurveActivationLayer::isRepeatingGroup(Uint16 rGroup)
 
 /*
  *  $Log: dvpsal.cc,v $
- *  Revision 1.3  2000-03-08 16:29:01  meichel
+ *  Revision 1.4  2000-05-31 13:02:35  meichel
+ *  Moved dcmpstat macros and constants into a common header file
+ *
+ *  Revision 1.3  2000/03/08 16:29:01  meichel
  *  Updated copyright header.
  *
  *  Revision 1.2  2000/03/03 14:13:57  meichel

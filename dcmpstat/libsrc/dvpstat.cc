@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPresentationState
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-05-30 14:22:14 $
- *  CVS/RCS Revision: $Revision: 1.56 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-05-31 13:02:40 $
+ *  CVS/RCS Revision: $Revision: 1.57 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,6 +33,7 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dvpstat.h"
+#include "dvpsdef.h"     /* for constants and macros */
 #include "ofstring.h"
 #include "dcmimage.h"    /* for DicomImage */
 #include "dvpscu.h"      /* for DVPSCurve */
@@ -67,35 +68,6 @@ END_EXTERN_C
 #include <unistd.h>
 #endif
 
-/* some defaults for creating Presentation States */
-#define DEFAULT_patientName               "^^^^"
-#define DEFAULT_imageNumber               "1"
-#define DEFAULT_seriesNumber              "1"
-#define DEFAULT_presentationLabel         "UNNAMED"
-#define DEFAULT_specificCharacterSet      "ISO_IR 100"
-#define DEFAULT_shutterPresentationValue  0
-
-/* --------------- a few macros avoiding copy/paste --------------- */
-
-#define ADD_TO_DATASET(a_type, a_name)                              \
-if (result==EC_Normal)                                              \
-{                                                                   \
-  delem = new a_type(a_name);                                       \
-  if (delem) dset.insert(delem); else result=EC_MemoryExhausted;    \
-}
-
-#define SET_UID(a_name)                                             \
-if (result==EC_Normal)                                              \
-{                                                                   \
-     if (a_name.getLength()==0) result = a_name.putString(dcmGenerateUniqueIdentifer(uid)); \
-}
-
-#define READ_FROM_DATASET(a_type, a_name)                           \
-stack.clear();                                                      \
-if (EC_Normal == dset.search((DcmTagKey &)a_name.getTag(), stack, ESM_fromHere, OFFalse)) \
-{                                                                   \
-  a_name = *((a_type *)(stack.top()));                              \
-}
 
 /* --------------- class DVPresentationState --------------- */
 
@@ -3990,7 +3962,10 @@ const char *DVPresentationState::getCurrentImageModality()
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.56  2000-05-30 14:22:14  joergr
+ *  Revision 1.57  2000-05-31 13:02:40  meichel
+ *  Moved dcmpstat macros and constants into a common header file
+ *
+ *  Revision 1.56  2000/05/30 14:22:14  joergr
  *  Renamed some variables to avoid compiler warnings (reported by gcc 2.9x with
  *  additional compiler flags).
  *
