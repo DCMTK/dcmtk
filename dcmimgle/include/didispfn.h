@@ -22,9 +22,9 @@
  *  Purpose: DicomDisplayFunction (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-05 16:43:12 $
+ *  Update Date:      $Date: 1999-02-11 15:44:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/didispfn.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -36,7 +36,6 @@
 #define __DIDISPFN_H
 
 #include "osconfig.h"
-#include "dctypes.h"
 
 #include "dibarlut.h"
 
@@ -62,14 +61,12 @@ class DiDisplayFunction
 
     DiDisplayFunction(const double *lum_tab,
                       const Uint16 count,
-                      const Uint16 max = 255,
-                      const Uint16 out = 0);
+                      const Uint16 max = 255);
 
     DiDisplayFunction(const Uint16 *ddl_tab,
                       const double *lum_tab,
                       const Uint16 count,
-                      const Uint16 max = 255,
-                      const Uint16 out = 0);
+                      const Uint16 max = 255);
 
     virtual ~DiDisplayFunction();
 
@@ -78,9 +75,9 @@ class DiDisplayFunction
         return Valid;
     }
 
-    inline Uint16 getValueCount() const
+    inline Uint16 getMaxDDLValue() const
     {
-        return ValueCount;
+        return MaxDDLValue;
     }
 
     const DiBartenLUT *getBartenLUT(const int bits,
@@ -111,9 +108,8 @@ class DiDisplayFunction
 
     int Valid;
 
-    Uint16 ValueCount;
-    Uint16 MaxDDLValue;
-    Uint16 MaxOutValue;
+    Uint16 ValueCount;                  // Number of DDL/Lum values
+    Uint16 MaxDDLValue;                 // maximum DDL value (e.g. 255)
     
     double JNDMin;
     double JNDMax;
@@ -144,14 +140,16 @@ class DiDisplayFunction
  *
  * CVS/RCS Log:
  * $Log: didispfn.h,v $
- * Revision 1.2  1999-02-05 16:43:12  joergr
+ * Revision 1.3  1999-02-11 15:44:22  joergr
+ * Removed unused parameter / member variable.
+ *
+ * Revision 1.2  1999/02/05 16:43:12  joergr
  * Added optional parameter to method convertPValueToDDL to specify width
  * of output data (number of bits).
  *
  * Revision 1.1  1999/02/03 17:46:37  joergr
  * Added support for calibration according to Barten transformation (incl.
  * a DISPLAY file describing the monitor characteristic).
- *
  *
  *
  */
