@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2004, OFFIS
+ *  Copyright (C) 1996-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Utilities (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-11-29 16:52:22 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Update Date:      $Date: 2005-03-09 17:29:42 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -230,11 +230,13 @@ enum EM_Overlay
     EMO_Graphic = EMO_Replace,
     /// threshold replace
     EMO_ThresholdReplace,
-    /// complement, inverse
+    /// complement
     EMO_Complement,
-    /// region of interest (ROI)
+    /// invert the overlay bitmap
+    EMO_InvertBitmap,
+    /// region of interest (ROI) 
     EMO_RegionOfInterest,
-    /// bitmap shutter
+    /// bitmap shutter, used for GSPS objects
     EMO_BitmapShutter
 };
 
@@ -347,6 +349,16 @@ class DicomImageClass
         return tb_bits;
     }
 
+    /** calculate number of bits which are necessary to store the specified value range
+     *
+     ** @param  minvalue  minimum value to be stored
+     *  @param  maxvalue  maximum value to be stored
+     *
+     ** @return number of bits
+     */
+    static unsigned int rangeToBits(double minvalue,
+                                    double maxvalue);
+
     /** determine integer representation which is necessary to store values in the specified range
      *
      ** @param  minvalue  minimum value to be stored
@@ -413,7 +425,11 @@ class DicomImageClass
  *
  * CVS/RCS Log:
  * $Log: diutils.h,v $
- * Revision 1.29  2004-11-29 16:52:22  joergr
+ * Revision 1.30  2005-03-09 17:29:42  joergr
+ * Added support for new overlay mode "invert bitmap".
+ * Added new helper function rangeToBits().
+ *
+ * Revision 1.29  2004/11/29 16:52:22  joergr
  * Removed email address from CVS log.
  *
  * Revision 1.28  2004/11/29 11:15:16  joergr
