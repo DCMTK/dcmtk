@@ -280,7 +280,7 @@ dctagkey.o: dctagkey.cc ../../config/include/osconfig.h \
  ../../ofstd/include/oftypes.h ../../ofstd/include/ofstring.h
 dcuid.o: dcuid.cc ../../config/include/osconfig.h ../include/dcuid.h \
  ../include/dctypes.h ../../ofstd/include/oftypes.h \
- ../../ofstd/include/ofthread.h
+ ../../ofstd/include/ofthread.h ../../ofstd/include/ofcrc32.h
 dcutils.o: dcutils.cc ../../config/include/osconfig.h \
  ../../ofstd/include/ofstring.h ../../ofstd/include/oftypes.h \
  ../include/dcutils.h ../include/dctypes.h ../include/dctagkey.h \
