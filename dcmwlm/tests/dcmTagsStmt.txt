@@ -1,0 +1,42 @@
+# select-statement to get values for the specified DCMTags
+# :PA -- substitutionvariable for the PA
+# Format of this file is
+# one line for the name of the tag (max. 30 chars)
+# one line for the select-statement (max. 150 chars)
+# infinite number of line-touples
+# i.e.:
+# tag_1
+# stmt_1
+# tag_2
+# stmt_2
+#   .
+#   .
+#   .
+# tag_n
+# stmt_n
+PatientID
+select hknr from k_hk where unr = :PA
+ScheduledStationAETitle
+select decode(labor, '1', 'VISUB', labor) from k_hk_basis_daten where unr = :PA
+ScheduledProcedureStepStartDate
+select to_char(datum, 'YYYYMMDD') from k_hk_basis_daten where unr = :PA
+AccessionNumber
+select to_char(unr) from k_hk where unr = :PA
+ScheduledProcedureStepDescription
+select 'HK-Untersuchung' from dual
+Modality
+select 'XA' from dual
+InstitutionName
+select 'Klinikum Oldenburg' from dual
+ScheduledStationName
+select 'HKL ' || labor from k_hk_basis_daten where unr = :PA
+ReferringPhysiciansName
+select name from a_arzt, k_hk_basis_daten where a_arzt.arztnr = k_hk_basis_daten.ANMELDEARZT and unr = :PA
+ScheduledPerformingPhysiciansName
+select 'NETZ' from dual
+PatientsName
+select name || '^' || vorname from p_stammdaten, k_3d_therapie where p_stammdaten.pid = k_3d_therapie.pid and unr = :PA
+PatientsBirthDate
+select to_char(geboren, 'YYYYMMDD') from p_stammdaten, k_3d_therapie where p_stammdaten.pid = k_3d_therapie.pid and unr = :PA
+PatientsSex
+select decode(GESCHLECHT, 'W', 'F', 'w', 'F', 'M') from p_stammdaten, k_3d_therapie where p_stammdaten.pid = k_3d_therapie.pid and unr = :PA
