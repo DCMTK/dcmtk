@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmPersonName
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-10 15:17:38 $
+ *  Update Date:      $Date: 2002-04-25 09:56:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrpn.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,10 +56,6 @@ class DcmPersonName : public DcmCharString
     virtual OFCondition getOFString(
 	    OFString & str,
 	    const unsigned long pos,
-	    OFBool normalize = OFTrue);
-
-    virtual OFCondition getOFStringArray(
-        OFString & str,
 	    OFBool normalize = OFTrue);
 
     /** get name components from the element value.
@@ -180,7 +176,10 @@ class DcmPersonName : public DcmCharString
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrpn.h,v $
-** Revision 1.12  2001-10-10 15:17:38  joergr
+** Revision 1.13  2002-04-25 09:56:19  joergr
+** Removed getOFStringArray() implementation.
+**
+** Revision 1.12  2001/10/10 15:17:38  joergr
 ** Updated comments.
 **
 ** Revision 1.11  2001/10/01 15:01:39  joergr

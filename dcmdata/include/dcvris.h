@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmIntegerString
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:19:32 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-25 09:54:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvris.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,10 +57,6 @@ class DcmIntegerString : public DcmByteString
 	OFString & str,
 	const unsigned long pos,
 	OFBool normalize = OFTrue);
-
-    virtual OFCondition getOFStringArray(
-	OFString & str, 
-	OFBool normalize = OFTrue);
 };
 
 
@@ -69,7 +65,10 @@ class DcmIntegerString : public DcmByteString
 /*
 ** CVS/RCS Log:
 ** $Log: dcvris.h,v $
-** Revision 1.11  2001-09-25 17:19:32  meichel
+** Revision 1.12  2002-04-25 09:54:28  joergr
+** Removed getOFStringArray() implementation.
+**
+** Revision 1.11  2001/09/25 17:19:32  meichel
 ** Adapted dcmdata to class OFCondition
 **
 ** Revision 1.10  2001/06/01 15:48:50  meichel

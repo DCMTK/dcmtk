@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmTime
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-11 12:25:10 $
+ *  Update Date:      $Date: 2002-04-25 09:58:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrtm.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,10 +57,6 @@ class DcmTime : public DcmByteString
     virtual OFCondition getOFString(
         OFString & str,
         const unsigned long pos,
-        OFBool normalize = OFTrue);
-
-    virtual OFCondition getOFStringArray(
-        OFString & str,
         OFBool normalize = OFTrue);
 
     /** set the element value to the current system time.
@@ -227,7 +223,10 @@ class DcmTime : public DcmByteString
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrtm.h,v $
-** Revision 1.13  2002-04-11 12:25:10  joergr
+** Revision 1.14  2002-04-25 09:58:07  joergr
+** Removed getOFStringArray() implementation.
+**
+** Revision 1.13  2002/04/11 12:25:10  joergr
 ** Enhanced DICOM date, time and date/time classes. Added support for new
 ** standard date and time functions.
 **
