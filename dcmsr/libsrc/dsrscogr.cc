@@ -23,8 +23,8 @@
  *    classes: DSRGraphicDataList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-07-11 14:41:38 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2003-08-07 13:43:18 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +35,7 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dsrscogr.h"
+#include "ofstd.h"
 
 
 /* declared in class DSRListOfItems<T> */
@@ -70,18 +71,26 @@ OFCondition DSRGraphicDataList::print(ostream &stream,
                                       const char pairSeparator,
                                       const char itemSeparator) const
 {
-    const OFListIterator(DSRGraphicDataItem) endPos = ItemList.end();
-    OFListIterator(DSRGraphicDataItem) iterator = ItemList.begin();
+    char buffer[64];
+    const OFListConstIterator(DSRGraphicDataItem) endPos = ItemList.end();
+    OFListConstIterator(DSRGraphicDataItem) iterator = ItemList.begin();
     while (iterator != endPos)
     {
-        stream << (*iterator).Column << pairSeparator << (*iterator).Row;
+        /* need to convert float to avoid problems with decimal point ('.' or ',') */
+        OFStandard::ftoa(buffer, sizeof(buffer), (*iterator).Column);
+        stream << buffer << pairSeparator;
+        OFStandard::ftoa(buffer, sizeof(buffer), (*iterator).Row);
+        stream << buffer;
         iterator++;
-        if (flags & DSRTypes::PF_shortenLongItemValues)
+        if (iterator != endPos)
         {
-            stream << itemSeparator << "...";
-            iterator = endPos;
-        } else if (iterator != endPos)
-            stream << itemSeparator;
+            if (flags & DSRTypes::PF_shortenLongItemValues)
+            {
+                stream << itemSeparator << "...";
+                iterator = endPos;
+            } else
+                stream << itemSeparator;
+        }
     }
     return EC_Normal;
 }
@@ -102,7 +111,7 @@ OFCondition DSRGraphicDataList::read(DcmItem &dataset,
         const unsigned long count = delem.getVM();
         /* fill list with values from floating point string */
         unsigned long i = 0;
-        while ((i < count) && (result.good()))
+        while ((i < count) && result.good())
         {
             result = delem.getFloat32(column, i++);
             if (result.good())
@@ -118,15 +127,15 @@ OFCondition DSRGraphicDataList::read(DcmItem &dataset,
 
 
 OFCondition DSRGraphicDataList::write(DcmItem &dataset,
-                                      OFConsole * /* logStream */) const
+                                      OFConsole * /*logStream*/) const
 {
     OFCondition result = EC_Normal;
     /* fill string with values from list */
     DcmFloatingPointSingle delem(DCM_GraphicData);
-    const OFListIterator(DSRGraphicDataItem) endPos = ItemList.end();
-    OFListIterator(DSRGraphicDataItem) iterator = ItemList.begin();
+    const OFListConstIterator(DSRGraphicDataItem) endPos = ItemList.end();
+    OFListConstIterator(DSRGraphicDataItem) iterator = ItemList.begin();
     unsigned long i = 0;
-    while ((iterator != endPos) && (result.good()))
+    while ((iterator != endPos) && result.good())
     {
         result = delem.putFloat32((*iterator).Column, i++);
         if (result.good())
@@ -152,7 +161,7 @@ OFCondition DSRGraphicDataList::getItem(const size_t idx,
                                         Float32 &row) const
 {
     DSRGraphicDataItem item;    /* default: 0,0 */
-    OFCondition result = DSRListOfItems<DSRGraphicDataItem>::getItem(idx, item);    
+    OFCondition result = DSRListOfItems<DSRGraphicDataItem>::getItem(idx, item);
     column = item.Column;
     row = item.Row;
     return result;
@@ -166,10 +175,57 @@ void DSRGraphicDataList::addItem(const Float32 column,
 }
 
 
+OFCondition DSRGraphicDataList::putString(const char *stringValue)
+{
+    OFCondition result = EC_Normal;
+    /* clear internal list */
+    clear();
+    /* check input string */
+    if ((stringValue != NULL) && (strlen(stringValue) > 0))
+    {
+        Float32 column = 0;
+        Float32 row = 0;
+        OFBool success = OFFalse;
+        const char *ptr = stringValue;
+        /* retrieve data pairs from string */
+        while (result.good() && (ptr != NULL))
+        {
+            /* first get the 'column' value */
+            column = OFStandard::atof(ptr, &success);
+            if (success)
+            {
+                ptr = strchr(ptr, '/');
+                if (ptr != NULL)
+                {
+                    /* then get the 'row' value */
+                    row = OFStandard::atof(++ptr, &success);
+                    if (success)
+                    {
+                        addItem(column, row);
+                        /* jump to next data pair */
+                        ptr = strchr(ptr, ',');
+                        if (ptr != NULL)
+                            ptr++;
+                    } else
+                        result = EC_CorruptedData;
+                } else
+                    result = EC_CorruptedData;
+            } else
+                result = EC_CorruptedData;
+        }
+    }
+    return result;
+}
+
+
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscogr.cc,v $
- *  Revision 1.12  2003-07-11 14:41:38  joergr
+ *  Revision 1.13  2003-08-07 13:43:18  joergr
+ *  Added new putString() method.
+ *  Adapted for use of OFListConstIterator, needed for compiling with HAVE_STL.
+ *
+ *  Revision 1.12  2003/07/11 14:41:38  joergr
  *  Renamed member variable.
  *
  *  Revision 1.11  2003/06/04 14:26:54  meichel
