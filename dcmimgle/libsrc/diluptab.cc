@@ -22,9 +22,9 @@
  *  Purpose: DicomLookupTable (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-08 16:58:36 $
+ *  Update Date:      $Date: 1999-09-17 13:16:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diluptab.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -109,7 +109,8 @@ DiLookupTable::DiLookupTable(const DcmUnsignedShort &data,
             DiDocument::getElemValue((const DcmElement *)explanation, Explanation);      // explanation (free form text)
         checkTable(count, us, status);
      } else {
-        *status = EIS_MissingAttribute;
+        if (status != NULL)
+            *status = EIS_MissingAttribute;
         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
             cerr << "ERROR: lookup table descriptor is incomplete (VM < 3) !" << endl;
      }
@@ -155,7 +156,8 @@ void DiLookupTable::Init(const DiDocument *docu,
             docu->getValue(explanation, Explanation);                        // explanation (free form text)
         checkTable(count, us, status);
     } else {
-        *status = EIS_MissingAttribute;
+        if (status != NULL)
+            *status = EIS_MissingAttribute;
         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
             cerr << "ERROR: lookup table descriptor is incomplete (VM < 3) !" << endl;
     }
@@ -187,14 +189,14 @@ void DiLookupTable::checkTable(unsigned long count,
                     {
                         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
                             cerr << "INFO: local machine has big endian byte ordering ... swapping 8 bit LUT entries." << endl;
-                        for (i = 0; i < count; i++)                           // copy 8 bit entries to new 16 bit LUT (swap hi/lo byte)
+                        for (i = count; i != 0; i--)                          // copy 8 bit entries to new 16 bit LUT (swap hi/lo byte)
                         {
                             *(q++) = *(p + 1);                                // copy low byte ...
                             *(q++) = *p;                                      // ... and then high byte
                             p += 2;                                           // jump to next hi/lo byte pair
                         }
                     } else {                                                  // local machine has little endian byte ordering (or unknown)
-                        for (i = 0; i < Count; i++)
+                        for (i = Count; i != 0; i--)
                             *(q++) = *(p++);                                  // copy 8 bit entries to new 16 bit LUT
                     }
                 }
@@ -213,7 +215,7 @@ void DiLookupTable::checkTable(unsigned long count,
         register Uint16 value;
         if (DataBuffer != NULL)                                               // LUT entries have been copied 8 -> 16 bits
         {
-            for (i = 0; i < Count; i++)
+            for (i = Count; i != 0; i--)
             {
                 value = *(p++);
                 if (value < MinValue)                                         // get global minimum
@@ -224,7 +226,7 @@ void DiLookupTable::checkTable(unsigned long count,
             checkBits(bits, 8);                                               // set 'Bits'
         } else {
             int cmp = 0;
-            for (i = 0; i < Count; i++)
+            for (i = Count; i != 0; i--)
             {
                 value = *(p++);
                 if (((value >> 8) != 0) && (value & 0xff) != (value >> 8))    // lo-byte not equal to hi-byte and ...
@@ -250,16 +252,15 @@ void DiLookupTable::checkTable(unsigned long count,
             {
                 p = Data;
                 register Uint16 *q = DataBuffer;
-                for (i = 0; i < Count; i++)
+                for (i = Count; i != 0; i--)
                     *(q++) = *(p++) & mask;
             }
             Data = DataBuffer;
         }
         Valid = (Data != NULL);                                               // lookup table is valid
-    }
-    else if (status != NULL)
-    {
-        *status = EIS_InvalidValue;
+    } else {
+        if (status != NULL)
+            *status = EIS_InvalidValue;
         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
             cerr << "ERROR: empty 'LUT Data' attribute  !" << endl;
     }       
@@ -366,7 +367,11 @@ DiLookupTable *DiLookupTable::createInverseLUT() const
  *
  * CVS/RCS Log:
  * $Log: diluptab.cc,v $
- * Revision 1.10  1999-09-08 16:58:36  joergr
+ * Revision 1.11  1999-09-17 13:16:56  joergr
+ * Removed bug: check pointer variable before dereferencing it.
+ * Enhanced efficiency of some "for" loops.
+ *
+ * Revision 1.10  1999/09/08 16:58:36  joergr
  * Changed some integer types to avoid compiler warnings repoted by MSVC.
  *
  * Revision 1.9  1999/09/08 15:20:32  joergr
