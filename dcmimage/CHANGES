@@ -1,3 +1,63 @@
+**** Changes from 1999.02.11 (riesmeier)
+
+- Rebuilt Makefile dependencies.
+  Affects: dcmimage/apps/Makefile.dep
+           dcmimage/libsrc/Makefile.dep
+           dcmimgle/libsrc/Makefile.dep
+
+- Added testing routine for new isOutputValueUnused() method.
+  Affects: dcmimage/apps/dcm2pnm.cc
+
+- Added routine to check whether particular grayscale values are unused in
+  the output data.
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/include/dimoimg.h
+           dcmimgle/include/dimoopx.h
+           dcmimgle/include/dimoopxt.h
+           dcmimgle/libsrc/dimoopx.cc
+           
+- Removed unused parameter / member variable.
+  Affects: dcmimgle/include/dibarlut.h
+           dcmimgle/include/didispfn.h
+           dcmimgle/libsrc/dibarlut.cc
+           dcmimgle/libsrc/didispfn.cc
+           dcmimgle/libsrc/dimoopx.cc
+  
+- Removed unnecessary include statement.
+  Affects: dcmimgle/include/dibaslut.h
+
+- Removed inline declarations from several methods.
+  Affects: dcmimgle/include/diinpxt.h
+           dcmimgle/include/dimoipxt.h
+           dcmimgle/include/discalet.h
+
+- Corrected some typos and formatting.
+  Affects: dcmimgle/include/dimocpt.h
+           dcmimgle/include/dimoflt.h
+           dcmimgle/include/dimorot.h
+           dcmimgle/include/dimosct.h
+           dcmimgle/include/dipxrept.h
+           dcmimgle/include/ditranst.h
+
+- Renamed file to indicate the use of templates. Moved global functions for
+  cubic spline interpolation to static methods of a separate template class.
+  Removed: dcmimgle/include/displine.h
+  Added:   dcmimgle/include/displint.h
+  Affects: dcmimgle/libsrc/dibarlut.cc
+           dcmimgle/libsrc/didispfn.cc
+  
+- Removed two small memory leaks reported by dmalloc library.
+  Affects: dcmimgle/include/dimoopxt.h
+           dcmimgle/libsrc/didispfn.cc
+
+- Added mode ios::nocreate when opening file streams for reading to avoid
+  implicit creation of non-existing files.
+  Affects: dcmimgle/apps/dconvlum.cc
+           dcmimgle/libsrc/didispfn.cc
+  
+- Changed method to check suitability of display function for a certain
+  image.
+  Affects: dcmimgle/libsrc/dimoimg.cc
 
 **** Changes from 1999.02.09 (eichelberg)
 
