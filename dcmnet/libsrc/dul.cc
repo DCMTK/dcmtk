@@ -54,9 +54,9 @@
 ** Author, Date:        Stephen M. Moore, 14-Apr-93
 ** Intent:              This module contains the public entry points for the
 **                      DICOM Upper Layer (DUL) protocol package.
-** Last Update:         $Author: joergr $, $Date: 2004-02-04 15:34:29 $
+** Last Update:         $Author: meichel $, $Date: 2004-02-24 15:05:50 $
 ** Source File:         $RCSfile: dul.cc,v $
-** Revision:            $Revision: 1.60 $
+** Revision:            $Revision: 1.61 $
 ** Status:              $State: Exp $
 */
 
@@ -915,7 +915,7 @@ DUL_AbortAssociation(DUL_ASSOCIATIONKEY ** callerAssociation)
     OFBool done = OFFalse;
     while (!done)
     {
-        cond = PRV_NextPDUType(association, DUL_NOBLOCK, PRV_DEFAULTTIMEOUT, &pduType); // should return DUL_NETWORKCLOSED.
+        cond = PRV_NextPDUType(association, DUL_NOBLOCK, PRV_DEFAULTTIMEOUT, &pduType); // may return DUL_NETWORKCLOSED.
 
         if (cond == DUL_NETWORKCLOSED) event = TRANS_CONN_CLOSED;
         else if (cond == DUL_READTIMEOUT) event = ARTIM_TIMER_EXPIRED;
@@ -951,7 +951,14 @@ DUL_AbortAssociation(DUL_ASSOCIATIONKEY ** callerAssociation)
         }
 
         cond = PRV_StateMachine(NULL, association, event, (*association)->protocolState, NULL);
-        if (cond == EC_Normal) done = OFTrue;
+        if (cond.bad()) // cond may be DUL_NETWORKCLOSED.
+        {        
+          if (cond == DUL_NETWORKCLOSED) event = TRANS_CONN_CLOSED;
+          else if (cond == DUL_READTIMEOUT) event = ARTIM_TIMER_EXPIRED;
+          else event = INVALID_PDU;
+          cond = PRV_StateMachine(NULL, association, event, (*association)->protocolState, NULL);
+        }
+        if (cond.good()) done = OFTrue;
     }
     return EC_Normal;
 }
@@ -2390,7 +2397,10 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, ostream& outs
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.60  2004-02-04 15:34:29  joergr
+** Revision 1.61  2004-02-24 15:05:50  meichel
+** Fixed infinite loop in DUL_AbortAssociation that could occur on Win2K systems.
+**
+** Revision 1.60  2004/02/04 15:34:29  joergr
 ** Removed acknowledgements with e-mail addresses from CVS log.
 **
 ** Revision 1.59  2003/12/09 10:55:27  meichel
