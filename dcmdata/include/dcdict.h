@@ -37,7 +37,8 @@
 class DcmDataDictionary {
 private:
     DcmDictEntryPtrBSTSet dict;    /* dictionary of normal tags */
-    DcmDictEntryPtrBSTSet repeatingDict; /* dictionary of repeating tags */
+    DcmDictEntryPtrBSTSet repElementDict; /* dictionary of repeating element tags */
+    DcmDictEntryPtrBSTSet repGroupDict; /* dictionary of repeating group tags */
 
 protected:
     /* Load external dictionaries defined via environment variables */
@@ -58,7 +59,9 @@ public:
     ~DcmDataDictionary();
 
     /* the number of entries in the complete dictionary */
-    int numberOfEntries() { return dict.length() + repeatingDict.length(); }
+    int numberOfEntries() { 
+	return dict.length() + repElementDict.length() + 
+	    repGroupDict.length(); }
 
     /*
      * Load a particular dictionary from file.
@@ -70,7 +73,8 @@ public:
     /* 
      * Dictionary lookups are performed by looking for a key. 
      * First the normal tag dictionary is searched.  If not found
-     * then the repeating tags dictionary is searched.
+     * then the repeating element dictionary is searched, then the
+     * repeating group dictionary.
      */
     const DcmDictEntry* findEntry(const DcmTagKey& key);
 
@@ -97,13 +101,22 @@ public:
     const DcmDictEntry* contents(Pix i) { return dict(i); }
 
     /* 
-     * For stepping through the repeating tags of dictionary D use:
-     * for (Pix p = D.repeatingFirst(); p != NULL; D.repeatingNext(p)) 
-     *     WHATEVER(D.repeatingContents(p)); 
+     * For stepping through the repeating element tags of dictionary D use:
+     * for (Pix p = D.repElementFirst(); p != NULL; D.repElementNext(p)) 
+     *     WHATEVER(D.repElementContents(p)); 
      */
-    Pix repeatingFirst() { return repeatingDict.first(); }
-    void repeatingNext(Pix& i) { repeatingDict.next(i); }
-    const DcmDictEntry* repeatingContents(Pix i) { return repeatingDict(i); }
+    Pix repElementFirst() { return repElementDict.first(); }
+    void repElementNext(Pix& i) { repElementDict.next(i); }
+    const DcmDictEntry* repElementContents(Pix i) { return repElementDict(i); }
+
+    /*
+     * For stepping through the repeating group tags of dictionary D use:
+     * for (Pix p = D.repGroupFirst(); p != NULL; D.repGroupNext(p)) 
+     *     WHATEVER(D.repGroupContents(p)); 
+     */
+    Pix repGroupFirst() { return repGroupDict.first(); }
+    void repGroupNext(Pix& i) { repGroupDict.next(i); }
+    const DcmDictEntry* repGroupContents(Pix i) { return repGroupDict(i); }
 };
 
 
