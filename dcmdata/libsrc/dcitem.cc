@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-11 13:03:51 $
+** Update Date:		$Date: 1996-03-11 14:16:00 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -194,11 +194,11 @@ E_TransferSyntax DcmItem::checkTransferSyntax(DcmStream & inStream)
     } else {
 	if ( foundVR( &tagAndVR[4] ) )	{	    // explicit VR
 	    if ( taglittle.error() ) {
-		transferSyntax = EXS_BigEndianImplicit;
+		transferSyntax = EXS_BigEndianExplicit;
 	    } else if ( tagbig.error() ) {
-		transferSyntax = EXS_LittleEndianImplicit;
+		transferSyntax = EXS_LittleEndianExplicit;
 	    } else { /* if both are error-free then assume little-endian */
-		transferSyntax = EXS_LittleEndianImplicit;
+		transferSyntax = EXS_LittleEndianExplicit;
 	    }
 	} else	{				    // implicit VR
 	    if ( taglittle.error() ) {
@@ -1686,7 +1686,10 @@ E_Condition newDicomElement(DcmElement * & newElement,
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.6  1996-03-11 13:03:51  hewett
+** Revision 1.7  1996-03-11 14:16:00  hewett
+** Corrected error whereby explicit encoding was being recognised as implicit.
+**
+** Revision 1.6  1996/03/11 13:03:51  hewett
 ** Rearranged logic of DcmItem::checkTransferSyntax to make little-endian
 ** the default if both big and little endian are possible.
 **
