@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: DicomMonoOutputPixel (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 14:08:05 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoopx.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-08 18:44:05 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +31,8 @@
  */
 
 
-#ifndef __DIMOOPX_H
-#define __DIMOOPX_H
+#ifndef DIMOOPX_H
+#define DIMOOPX_H
 
 #include "osconfig.h"
 #include "diutils.h"
@@ -43,6 +42,7 @@
 #include "ofstdinc.h"
 
 #include "ofstream.h"
+
 
 /*------------------------*
  *  forward declarations  *
@@ -149,7 +149,7 @@ class DiMonoOutputPixel
     const unsigned long FrameSize;
 
     /// array of used pixel values
-    Uint8 *UsedValues;      
+    Uint8 *UsedValues;
     /// maximum output value
     const unsigned long MaxValue;
 
@@ -170,7 +170,11 @@ class DiMonoOutputPixel
  *
  * CVS/RCS Log:
  * $Log: dimoopx.h,v $
- * Revision 1.14  2002-11-27 14:08:05  meichel
+ * Revision 1.15  2003-12-08 18:44:05  joergr
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated copyright header.
+ *
+ * Revision 1.14  2002/11/27 14:08:05  meichel
  * Adapted module dcmimgle to use of new header file ofstdinc.h
  *
  * Revision 1.13  2002/04/16 13:53:11  joergr
