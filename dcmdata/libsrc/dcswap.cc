@@ -10,7 +10,7 @@
 **
 **
 ** Last Update:   $Author: andreas $
-** Revision:      $Revision: 1.5 $
+** Revision:      $Revision: 1.6 $
 ** Status:	  $State: Exp $
 **
 */
@@ -18,42 +18,86 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcswap.h"
-#include "dcdebug.h"
+
+E_Condition swapIfNecessary(const E_ByteOrder newByteOrder, 
+			    const E_ByteOrder oldByteOrder,
+			    void * value, const Uint32 byteLength,
+			    const size_t valWidth)
+{
+    if(oldByteOrder != EBO_unknown && newByteOrder != EBO_unknown )
+    {
+	if (oldByteOrder != newByteOrder && valWidth != 1)
+	{
+	    if (byteLength == valWidth)
+	    {
+		if (valWidth == 2)
+		    swap2Bytes((Uint8 *)value);
+		else if (valWidth == 4)
+		    swap4Bytes((Uint8 *)value);
+		else
+		    swapBytes(value, byteLength, valWidth);
+	    }
+	    else
+		swapBytes(value, byteLength, valWidth);
+	}
+	return EC_Normal;
+    }
+    return EC_IllegalCall;
+}
+
 
 
 void swapBytes(void * value, const Uint32 byteLength, 
 			   const size_t valWidth)
 {
-	if (valWidth > 1)
+    register Uint8 save;
+
+    if (valWidth == 2)
+    {
+	register Uint8 * first = &((Uint8*)value)[0];
+	register Uint8 * second = &((Uint8*)value)[1];
+	register Uint32 times = valWidth/2;
+	while(times--)
 	{
-		Uint8 * src = (Uint8 *)value;
-		Uint32 times = byteLength/valWidth;
-		Uint8  *last;
-		Uint8  *start;
-		Uint8  save;
-
-		for (Uint32 t = 0; t<times; t++ )
-		{
-			start = src + valWidth * t;
-
-			for (size_t i = 0; i < valWidth/2; i++ )
-			{
-				last = start + valWidth - 1 - i;
-				save = *last;
-				*last = *(start + i);
-				*(start + i) = save;
-			}
-		}
+	    save = *first;
+	    *first = *second;
+	    *second = save;
+	    first +=2;
+	    second +=2;
 	}
+    }
+    else if (valWidth > 2)
+    {
+	register size_t i; 
+	const size_t halfWidth = valWidth/2;
+	const size_t offset = valWidth-1;
+	register Uint8 *start;
+	register Uint8 *end;
+
+	Uint32 times = byteLength/valWidth;
+	Uint8  *base = (Uint8 *)value;
+
+	while (times--)
+	{
+	    i = halfWidth;
+	    start = base;
+	    end = base+offset;
+	    while (i--)
+	    {
+		save = *start;
+		*start++ = *end;
+		*end-- = save;
+	    } 
+	    base += valWidth;
+	}
+    }
 }
 
 
 const Uint16 swapShort(const Uint16 toSwap)
 {
 	Uint8 * swapped = (Uint8 *)&toSwap;
-	Uint8 tmp = swapped[0];
-	swapped[0] = swapped[1];
-	swapped[1] = tmp;
+	swap2Bytes(swapped);
 	return * ((Uint16*)swapped);
 }
 

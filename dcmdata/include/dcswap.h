@@ -10,7 +10,7 @@
 **
 **
 ** Last Update:   $Author: andreas $
-** Revision:      $Revision: 1.3 $
+** Revision:      $Revision: 1.4 $
 ** Status:	  $State: Exp $
 **
 */
@@ -24,10 +24,39 @@
 #include <stdlib.h>
 #endif
 #include "dctypes.h"
+#include "dcerror.h"
+#include "dcxfer.h"
+
+// Swap byteLength bytes, if newByteOrder != oldByteOrder. The bytes are
+// parted in valWidth bytes, each swapped separately
+E_Condition swapIfNecessary(const E_ByteOrder newByteOrder, 
+			    const E_ByteOrder oldByteOrder,
+			    void * value, const Uint32 byteLength,
+			    const size_t valWidth);
+
 
 void swapBytes(void * value, const Uint32 byteLength, 
 			   const size_t valWidth);
 
 const Uint16 swapShort(const Uint16 toSwap);
 
+inline void swap2Bytes(Uint8 * toSwap)
+{
+    Uint8 tmp = toSwap[0];
+    toSwap[0] = toSwap[1];
+    toSwap[1] = tmp;
+}
+
+inline void swap4Bytes(Uint8 * toSwap)
+{
+    Uint8 tmp = toSwap[0];
+    toSwap[0] = toSwap[3];
+    toSwap[3] = tmp;
+    tmp = toSwap[1];
+    toSwap[1] = toSwap[2];
+    toSwap[2] = tmp;
+}
+
 #endif // DCSWAP_H
+
+
