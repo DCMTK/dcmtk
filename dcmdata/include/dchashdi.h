@@ -9,10 +9,10 @@
 ** Hashtable interface for DICOM data dictionary
 ** 
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-08-26 13:41:11 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-08-29 13:11:09 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dchashdi.h,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -77,7 +77,7 @@ public:
 	{ init(NULL); }
     DcmHashDictIterator(DcmHashDict* d, OFBool atEnd = OFFalse)
 	{ init(d, atEnd); }
-    DcmHashDictIterator(DcmHashDictIterator& i) 
+    DcmHashDictIterator(const DcmHashDictIterator& i) 
 	{ dict = i.dict; index = i.index; 
 	iterating = i.iterating; iter = i.iter; }
 
@@ -159,7 +159,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dchashdi.h,v $
-** Revision 1.2  1997-08-26 13:41:11  hewett
+** Revision 1.3  1997-08-29 13:11:09  andreas
+** Corrected copy constructor for DcmHashDictIterator
+**
+** Revision 1.2  1997/08/26 13:41:11  hewett
 ** Corrected a couple of minor spelling errors.
 **
 ** Revision 1.1  1997/08/26 13:30:29  hewett
