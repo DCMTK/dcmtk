@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-07-17 14:48:21 $
- *  CVS/RCS Revision: $Revision: 1.109 $
+ *  Update Date:      $Date: 2000-07-18 16:05:08 $
+ *  CVS/RCS Revision: $Revision: 1.110 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2891,27 +2891,6 @@ E_Condition DVInterface::saveStoredPrint(OFBool writeRequestedImageSize)
   return result;
 }
 
-Sint32 DVInterface::convertODtoLum(Uint16 density, Uint16 min, Uint16 max, unsigned int bits)
-{
-  if ((pPrint != NULL) && (min < max) && ((bits == 8) || (bits == 12) || (bits == 16)))
-  {    
-    if (density >= max)
-      return 0;
-    else if (density <= min)
-      return (Sint32)DicomImageClass::maxval(bits);
-    else
-    {
-      const double l0 = (double)pPrint->getPrintIllumination();
-      const double la = (double)pPrint->getPrintReflectedAmbientLight();
-      const double lum = la + l0 * pow(10, -(double)density / 100);
-      const double lmin = la + l0 * pow(10, -(double)max / 100);
-      const double lmax = la + l0 * pow(10, -(double)min / 100);
-      return (Sint32)((lum - lmin) / (lmax - lmin) * (double)DicomImageClass::maxval(bits));
-    }
-  }
-  return -1;
-}
-
 size_t DVInterface::getNumberOfPrintPreviews()
 {
   if (pPrint != NULL)
@@ -2967,9 +2946,8 @@ E_Condition DVInterface::loadPrintPreview(size_t idx, OFBool printLUT, OFBool ch
                   plut = pPrint->getImagePresentationLUT(idx);              // ... then check for an image box specific
                 if (plut != NULL)
                 {
-                  unsigned int min = pPrint->getMinDensityValue();
-                  unsigned int max = pPrint->getMaxDensityValue();
-                  pHardcopyImage->setHardcopyParameters((min) ? min : 20, (max) ? max : 300, pPrint->getPrintReflectedAmbientLight(), pPrint->getPrintIllumination());
+                  pHardcopyImage->setHardcopyParameters(pPrint->getMinDensityValue(), pPrint->getMaxDensityValue(),
+                      pPrint->getPrintReflectedAmbientLight(), pPrint->getPrintIllumination());
                   plut->activate(pHardcopyImage, printLUT);
                 }
                 status = EC_Normal;
@@ -3851,7 +3829,13 @@ E_Condition DVInterface::checkIOD(const char *studyUID, const char *seriesUID, c
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.109  2000-07-17 14:48:21  joergr
+ *  Revision 1.110  2000-07-18 16:05:08  joergr
+ *  Moved method convertODtoLum/PValue from class DVInterface to DVPSStoredPrint
+ *  and corrected implementation.
+ *  Changed behaviour of methods getMin/MaxDensityValue (return default value if
+ *  attribute empty/absent).
+ *
+ *  Revision 1.109  2000/07/17 14:48:21  joergr
  *  Added support for presentation states referencing to hardcopy grayscale
  *  images.
  *

@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-07-07 14:14:24 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Update Date:      $Date: 2000-07-18 16:03:44 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -356,12 +356,12 @@ class DVPSStoredPrint
   const char *getMinDensity();
 
   /** gets the (optional) max density.
-   *  @return max density, may be 0.
+   *  @return max density (default: 300).
    */
   Uint16 getMaxDensityValue();
 
   /** gets the (optional) min density.
-   *  @return min density, may be 0.
+   *  @return min density (default: 20).
    */
   Uint16 getMinDensityValue();
 
@@ -548,6 +548,16 @@ class DVPSStoredPrint
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition setPresentationLookupTable(DcmItem &dset);
+
+  /** converts an optical density (OD) value to an 8/12/16-bit P-value which is linear to luminance.
+   *  The output is not calibrated according to the GSDF.  This can be done by convertPValueToDDL() in
+   *  class DVPSPresentationState.  The attributes illumination, reflected ambient light and min/max
+   *  density (default 20/300) from this stored print object are used for the calculation.
+   *  @param density in hundreds of OD (e.g. 150 corressponds to 1.5 OD)
+   *  @param bits number of bits used for the output value (8, 12, 16)
+   *  @return P-Value, 0..0xFF, 0..0xFFF, 0..0xFFFF, < 0 if an error occurred.
+   */
+  Sint32 convertODtoPValue(Uint16 density, unsigned int bits = 8);
 
   /** writes the general study and series module attributes for a grayscale hardcopy image
    *  that is related to this stored print object to a DICOM dataset.
@@ -1139,7 +1149,13 @@ class DVPSStoredPrint
 
 /*
  *  $Log: dvpssp.h,v $
- *  Revision 1.32  2000-07-07 14:14:24  joergr
+ *  Revision 1.33  2000-07-18 16:03:44  joergr
+ *  Moved method convertODtoLum/PValue from class DVInterface to DVPSStoredPrint
+ *  and corrected implementation.
+ *  Changed behaviour of methods getMin/MaxDensityValue (return default value if
+ *  attribute empty/absent).
+ *
+ *  Revision 1.32  2000/07/07 14:14:24  joergr
  *  Added support for LIN OD presentation LUT shape.
  *
  *  Revision 1.31  2000/07/05 12:33:29  joergr

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSStoredPrint
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-07-12 16:39:42 $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-07-18 16:06:27 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,7 +39,10 @@
 #include "dvpsib.h"
 #include "dvpshlp.h"
 #include "dcmimage.h"
+#include "digsdfn.h"
 #include "dvpscf.h"
+
+#include <math.h>        /* for pow() */
 
 #ifdef HAVE_TIME_H
 #include <time.h>
@@ -903,6 +906,34 @@ E_Condition DVPSStoredPrint::setPresentationLookupTable(DcmItem &dset)
   E_Condition result = globalPresentationLUT.read(dset, OFFalse);
   globalPresentationLUTValid = (result == EC_Normal);
   return result;
+}
+
+Sint32 DVPSStoredPrint::convertODtoPValue(Uint16 density, unsigned int bits)
+{
+  const Uint16 min = getMinDensityValue();
+  const Uint16 max = getMaxDensityValue();
+  if ((min < max) && ((bits == 8) || (bits == 12) || (bits == 16)))
+  {    
+    if (density >= max)
+      return 0;
+    else if (density <= min)
+      return (Sint32)DicomImageClass::maxval(bits);
+    else
+    {
+      const double l0 = (double)getPrintIllumination();
+      const double la = (double)getPrintReflectedAmbientLight();
+      const double d0 = (double)density / 100;
+      const double dmin = (double)min / 100;
+      const double dmax = (double)max / 100;
+      const double lmin = la + l0 * pow(10, -dmax);
+      const double lmax = la + l0 * pow(10, -dmin);
+      const double jmin = DiGSDFunction::getJNDIndex(lmin);
+      const double jmax = DiGSDFunction::getJNDIndex(lmax);
+      const double factor = (double)DicomImageClass::maxval(bits) / (jmax - jmin);
+      return (Sint32)((DiGSDFunction::getJNDIndex(la + l0 * pow(10, -d0)) - jmin) * factor);
+    }
+  }
+  return -1;
 }
 
 E_Condition DVPSStoredPrint::addImageBox(
@@ -1911,22 +1942,22 @@ Uint16 DVPSStoredPrint::getMaxDensityValue()
 {
   if (maxDensity.getLength() > 0)
   {
-    Uint16 density=0;
-    if (EC_Normal == maxDensity.getUint16(density,0))
+    Uint16 density = 0;
+    if (EC_Normal == maxDensity.getUint16(density, 0))
       return density;
   }
-  return 0;
+  return 300;
 }
 
 Uint16 DVPSStoredPrint::getMinDensityValue()
 {
   if (minDensity.getLength() > 0)
   {
-    Uint16 density=0;
-    if (EC_Normal == minDensity.getUint16(density,0))
+    Uint16 density = 0;
+    if (EC_Normal == minDensity.getUint16(density, 0))
       return density;
   }
-  return 0;
+  return 20;
 }
 
 E_Condition DVPSStoredPrint::setMaxDensity(const char *value)
@@ -3503,7 +3534,13 @@ void DVPSStoredPrint::overridePresentationLUTSettings(
 
 /*
  *  $Log: dvpssp.cc,v $
- *  Revision 1.37  2000-07-12 16:39:42  meichel
+ *  Revision 1.38  2000-07-18 16:06:27  joergr
+ *  Moved method convertODtoLum/PValue from class DVInterface to DVPSStoredPrint
+ *  and corrected implementation.
+ *  Changed behaviour of methods getMin/MaxDensityValue (return default value if
+ *  attribute empty/absent).
+ *
+ *  Revision 1.37  2000/07/12 16:39:42  meichel
  *  Print SCP now writes PrinterCharacteristicsSequence when saving Stored Prints.
  *
  *  Revision 1.36  2000/07/07 14:15:15  joergr
