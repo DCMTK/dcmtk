@@ -1,4 +1,4 @@
-.TH "movescu" 1 "13 Feb 2004" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "movescu" 1 "29 Mar 2004" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 movescu \- DICOM retrieve (C-MOVE) SCU
@@ -262,6 +262,7 @@ Even when using a third-party move it may be necessary to set the TCP/IP port nu
 .PP
 The \fBmovescu\fP application makes no attempt to prevent incorrect queries. In particular, the query keys of a C-MOVE request should only contain the QueryRetrieveLevel attribute and one or more of the so-called 'unique key attributes' (PatientID, StudyInstanceUID, SeriesInstanceUID and SOPInstanceUID).
 .SS "DICOM Conformance"
+.SS "SCU Conformance"
 The \fBmovescu\fP application supports the following SOP Classes as an SCU:
 .PP
 .PP
@@ -287,7 +288,7 @@ BigEndianExplicitTransferSyntax                      1.2.840.10008.1.2.2
 .fi
 .PP
 This behaviour can be changed with the \fI--propose\fP options.
-.PP
+.SS "SCP Conformance"
 The \fBmovescu\fP application supports the following SOP Classes as an SCP:
 .PP
 .PP
