@@ -22,25 +22,14 @@
  *  Purpose: DicomPixelRepresentationTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 15:45:50 $
+ *  Update Date:      $Date: 1998-12-14 17:28:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dipxrept.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
-
-
-/*********************************************************************
-** 
-**  DicomPixelRepresentationTemplate (Header)
-**
-**  author   : Joerg Riesmeier
-**  created  : 15.12.96
-**  modified : 13.01.97
-**
-*********************************************************************/
 
 
 #ifndef __DIPXREPT_H
@@ -148,7 +137,10 @@ inline int DiPixelRepresentationTemplate<Sint32>::isSigned() const
 **
 ** CVS/RCS Log:
 ** $Log: dipxrept.h,v $
-** Revision 1.1  1998-11-27 15:45:50  joergr
+** Revision 1.2  1998-12-14 17:28:53  joergr
+** Removed old source header.
+**
+** Revision 1.1  1998/11/27 15:45:50  joergr
 ** Added copyright message.
 **
 ** Revision 1.2  1998/05/11 14:53:28  joergr
