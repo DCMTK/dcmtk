@@ -90,7 +90,6 @@ AC_CHECK_HEADERS(sys/param.h)
 AC_CHECK_HEADERS(sys/resource.h)
 
 dnl Checks for typedefs, structures, and compiler characteristics.
-AC_C_INLINE
 AC_TYPE_SIZE_T
 AC_CHECK_SIZEOF(char)
 AC_CHECK_SIZEOF(short)
