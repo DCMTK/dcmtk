@@ -22,9 +22,9 @@
  *  Purpose: Sample message server for class DVPSIPCClient
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-13 14:02:08 $
+ *  Update Date:      $Date: 2004-04-21 17:15:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/tests/msgserv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,6 +66,7 @@ END_EXTERN_C
 #include "dcdebug.h"     /* for SetDebugLevel */
 #include "dcmtrans.h"    /* for class DcmTCPConnection */
 #include "dcuid.h"
+#include "dcompat.h"     /* compatability routines */
 
 #define OFFIS_CONSOLE_APPLICATION "msgserv"
 
@@ -362,7 +363,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: msgserv.cc,v $
- * Revision 1.6  2004-02-13 14:02:08  joergr
+ * Revision 1.7  2004-04-21 17:15:45  joergr
+ * Included "dcompat" header file required for definition of bzero() on IRIX 5.
+ *
+ * Revision 1.6  2004/02/13 14:02:08  joergr
  * Added "#include <sys/time.h>" to compile with gcc 2.95.x on Linux 2.2.x.
  *
  * Revision 1.5  2002/11/27 15:48:19  meichel
