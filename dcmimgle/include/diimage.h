@@ -22,9 +22,9 @@
  *  Purpose: DicomImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-14 17:17:29 $
+ *  Update Date:      $Date: 1998-12-16 16:29:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -61,6 +61,7 @@ class DcmUnsignedShort;
  class DiDocument;
 #endif
 
+class DiMonoImage;
 class DiInputPixel;
 
 
@@ -145,87 +146,12 @@ class DiImage
 
     virtual void deleteOutputData() = 0;
     
-    virtual int setNoVOITransformation()
-    {
-        return 0;
-    }
-
-    virtual int setMinMaxWindow(const int)
-    {
-        return 0;
-    }
-    
-    virtual int setHistogramWindow(const double)
-    {
-        return 0;
-    }
-        
-    virtual int setWindow(const unsigned long)
-    {
-        return 0;
-    }
-    
-    virtual int setWindow(const double, const double)
-    {
-        return 0;
-    }
-
-    virtual int getWindow(double &, double &)
-    {
-        return 0;
-    }
-
-    virtual unsigned long getWindowCount() const
-    {
-        return 0;
-    }
-    
-    virtual int setVoiLut(const DcmUnsignedShort &data,
-                          const DcmUnsignedShort &descriptor)
-    {
-        return 0;
-    }
-    
-    virtual int setVoiLut(const unsigned long)
-    {
-        return 0;
-    }
-
-    virtual unsigned long getVoiLutCount() const
-    {
-        return 0;
-    }
-    
-    virtual int setPresentationLutShape(const ES_PresentationLut)
-    {
-        return 0;
-    }
-    
-    virtual int setPresentationLut(const DcmUnsignedShort &data,
-                                   const DcmUnsignedShort &descriptor)
-    {
-        return 0;
-    }
-    
-    virtual int addOverlay(const unsigned int group,
-                           const unsigned long rows,
-                           const unsigned long columns,
-                           const EM_Overlay mode,
-                           const signed int left,
-                           const signed int top,
-                           const DcmOverlayData &data,
-                           const DcmLongString &label,
-                           const DcmLongString &description)
-    {
-        return 0;
-    }
-
-    virtual int removeOverlay(const unsigned int group)
-    {
-        return 0;
-    }
-
     virtual DiOverlay *getOverlayPtr(const unsigned int idx = 0)
+    {
+        return NULL;
+    }
+
+    virtual DiMonoImage *getMonoImagePtr()
     {
         return NULL;
     }
@@ -346,7 +272,11 @@ class DiImage
 **
 ** CVS/RCS Log:
 ** $Log: diimage.h,v $
-** Revision 1.3  1998-12-14 17:17:29  joergr
+** Revision 1.4  1998-12-16 16:29:04  joergr
+** Removed several methods used for monochrome images only in base class
+** 'DiImage'. Introduced mechanism to use the methods directly.
+**
+** Revision 1.3  1998/12/14 17:17:29  joergr
 ** Added methods to add and remove additional overlay planes (still untested).
 **
 ** Revision 1.2  1998/11/30 12:24:07  joergr
