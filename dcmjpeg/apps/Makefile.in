@@ -41,17 +41,23 @@ LOCALINCLUDES=$(dcmjpeginc) $(ofstdinc) $(dcmdatainc) $(dcmimageinc) $(dcmimglei
 LIBDIRS = -L$(top_srcdir)/libsrc $(dcmjpeglibdir) $(dcmimagelibdir) $(dcmimglelibdir) $(dcmdatalibdir) $(ofstdlibdir) -L$(libdir)
 LOCALLIBS = $(dcmjpeglib) $(dcmimagelib) $(dcmimglelib) $(dcmdatalib) $(ofstdlib)
 
-objs= dcmdjpeg.o dcmcjpeg.o
+objs= dcmdjpeg.o dcmcjpeg.o dcmj2pnm.o dcmmkdir.o
 
-progs= dcmdjpeg dcmcjpeg
+progs= dcmdjpeg dcmcjpeg dcmj2pnm dcmmkdir
 
 all: $(progs)
 
 dcmdjpeg: dcmdjpeg.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmdjpeg.o  $(LOCALLIBS) $(LIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o  $(LOCALLIBS) $(LIBS)  
 
 dcmcjpeg: dcmcjpeg.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmcjpeg.o  $(LOCALLIBS) $(LIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o  $(LOCALLIBS) $(LIBS)  
+
+dcmj2pnm: dcmj2pnm.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o  $(LOCALLIBS) $(LIBS)  
+
+dcmmkdir: dcmmkdir.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o  $(LOCALLIBS) $(LIBS)  
 
 install: all
 	$(configdir)/mkinstalldirs $(bindir)
