@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-02-08 10:52:35 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Update Date:      $Date: 1999-02-09 15:58:10 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -267,7 +267,42 @@ E_Condition DVInterface::loadPState(const char *pstName,
 
 E_Condition DVInterface::savePState()
 {
-    return EC_IllegalCall;
+  // release database lock since we are using the DB module directly
+  releaseDatabase();
+
+  if (pState==NULL) return EC_IllegalCall;
+  
+  const char *instanceUID = pState->createInstanceUID();
+  if (instanceUID==NULL) return EC_IllegalCall;
+  
+  DB_Status dbStatus;
+  dbStatus.status = STATUS_Success;
+  dbStatus.statusDetail = NULL;
+  DB_Handle *handle = NULL;
+  char imageFileName[MAXPATHLEN+1];
+  if (DB_createHandle(getDatabaseFolder(), PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &handle) != DB_NORMAL) return EC_IllegalCall;
+  
+  E_Condition result=EC_Normal;
+  if (DB_NORMAL == DB_makeNewStoreFileName(handle, UID_GrayscaleSoftcopyPresentationStateStorage, instanceUID, imageFileName))
+  {
+     // now store presentation state as filename
+     result = savePState(imageFileName);
+     if (EC_Normal==result)
+     {
+       if (DB_NORMAL != DB_storeRequest(handle, UID_GrayscaleSoftcopyPresentationStateStorage, 
+          instanceUID, imageFileName, &dbStatus))
+       {
+         result = EC_IllegalCall;
+#ifdef DEBUG
+         cerr << "unable to register presentation state '" << imageFileName << "' in database." << endl;
+         COND_DumpConditions();
+#endif         
+       }
+     }
+  }
+  DB_destroyHandle(&handle);
+  COND_PopCondition(OFTrue); // clear condition stack
+  return result;
 }
 
 
@@ -1552,7 +1587,8 @@ E_Condition DVInterface::saveDICOMImage(
   const void *pixelData,
   unsigned long width,
   unsigned long height,
-  double aspectRatio)
+  double aspectRatio,
+  const char *instanceUID)
 {
     if ((width<1)||(width > 0xFFFF)) return EC_IllegalCall;
     if ((height<1)||(height > 0xFFFF)) return EC_IllegalCall;
@@ -1585,7 +1621,7 @@ E_Condition DVInterface::saveDICOMImage(
       if (EC_Normal==status) status = putStringValue(dataset, DCM_ConversionType, "WSD");
       if (EC_Normal==status) status = putStringValue(dataset, DCM_PhotometricInterpretation, "MONOCHROME2");
       dcmGenerateUniqueIdentifer(newuid);
-      if (EC_Normal==status) status = putStringValue(dataset, DCM_SOPInstanceUID, newuid);
+      if (EC_Normal==status) status = putStringValue(dataset, DCM_SOPInstanceUID, (instanceUID ? instanceUID : newuid));
       dcmGenerateUniqueIdentifer(newuid);
       if (EC_Normal==status) status = putStringValue(dataset, DCM_SeriesInstanceUID, newuid);
       dcmGenerateUniqueIdentifer(newuid);
@@ -1626,6 +1662,48 @@ E_Condition DVInterface::saveDICOMImage(
 }
 
 
+E_Condition DVInterface::saveDICOMImage(
+  const void *pixelData,
+  unsigned long width,
+  unsigned long height,
+  double aspectRatio)
+{
+  // release database lock since we are using the DB module directly
+  releaseDatabase();
+
+  char uid[100];
+  dcmGenerateUniqueIdentifer(uid);
+    
+  DB_Status dbStatus;
+  dbStatus.status = STATUS_Success;
+  dbStatus.statusDetail = NULL;
+  DB_Handle *handle = NULL;
+  char imageFileName[MAXPATHLEN+1];
+  if (DB_createHandle(getDatabaseFolder(), PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &handle) != DB_NORMAL) return EC_IllegalCall;
+  
+  E_Condition result=EC_Normal;
+  if (DB_NORMAL == DB_makeNewStoreFileName(handle, UID_SecondaryCaptureImageStorage, uid, imageFileName))
+  {
+     // now store presentation state as filename
+     result = saveDICOMImage(imageFileName, pixelData, width, height, aspectRatio, uid);
+     if (EC_Normal==result)
+     {
+       if (DB_NORMAL != DB_storeRequest(handle, UID_SecondaryCaptureImageStorage, uid, imageFileName, &dbStatus))
+       {
+         result = EC_IllegalCall;
+#ifdef DEBUG
+         cerr << "unable to register secondary capture image '" << imageFileName << "' in database." << endl;
+         COND_DumpConditions();
+#endif         
+       }
+     }
+  }
+  DB_destroyHandle(&handle);
+  COND_PopCondition(OFTrue); // clear condition stack
+  return result;
+}
+
+
 void DVInterface::cleanChildren()
 {
 #ifdef HAVE_WAITPID
@@ -1658,10 +1736,14 @@ void DVInterface::cleanChildren()
 #endif
 }
 
+
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.28  1999-02-08 10:52:35  meichel
+ *  Revision 1.29  1999-02-09 15:58:10  meichel
+ *  Implemented methods that save images and presentation states in the DB.
+ *
+ *  Revision 1.28  1999/02/08 10:52:35  meichel
  *  Updated documentation of dviface.h in Doc++ style.
  *    Removed dummy parameter from constructor.
  *

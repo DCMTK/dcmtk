@@ -23,8 +23,8 @@
  *    classes: DVInterface
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-02-08 10:52:33 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Update Date:      $Date: 1999-02-09 15:58:07 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -119,12 +119,12 @@ class DVInterface
      */
     E_Condition loadPState(const char *pstName, const char *imgName);
     
-    /** UNIMPLEMENTED - saves the current presentation state in the same directory
+    /** saves the current presentation state in the same directory
      *  in which the database index file resides. The filename is generated automatically.
      *  A new SOP Instance UID is assigned whenever a presentation state is saved.
      *  After successfully storing the presentation state, the database index is updated
      *  to include the new object.
-     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  This method releases under any circumstances the database lock if it exists.
      *  @return EC_Normal upon success, an error code otherwise.
      */
     E_Condition savePState();
@@ -770,6 +770,7 @@ class DVInterface
      *  @param height the height of the image, must be <= 0xFFFF
      *  @aspectRatio the pixel aspect ratio as width/height. If omitted, a pixel
      *    aspect ratio of 1/1 is assumed.
+     *  @param instanceUID optional parameter containing the SOP Instance UID to be written.
      *  @return EC_Normal upon success, an error code otherwise.
      */
     E_Condition saveDICOMImage(
@@ -777,14 +778,15 @@ class DVInterface
       const void *pixelData,
       unsigned long width,
       unsigned long height,
-      double aspectRatio=1.0);
+      double aspectRatio=1.0,
+      const char *instanceUID=NULL);
 
-    /** UNIMPLEMENTED - saves a monochrome bitmap as a DICOM Secondary Capture image
-     *  in the same directory
-     *  in which the database index file resides. The filename is generated automatically.
-     *  After successfully storing the image, the database index is updated
+    /** saves a monochrome bitmap as a DICOM Secondary Capture image
+     *  in the same directory in which the database index file resides. 
+     *  The filename is generated automatically.
+     *  When the image is stored successfully, the database index is updated
      *  to include the new object.
-     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  This method releases under any circumstances the database lock if it exists.
      *  @param pixelData a pointer to the image data. Must contain at least
      *    width*height bytes of data.
      *  @param width the width of the image, must be <= 0xFFFF
@@ -967,7 +969,10 @@ private:
 
 /*
  *  $Log: dviface.h,v $
- *  Revision 1.20  1999-02-08 10:52:33  meichel
+ *  Revision 1.21  1999-02-09 15:58:07  meichel
+ *  Implemented methods that save images and presentation states in the DB.
+ *
+ *  Revision 1.20  1999/02/08 10:52:33  meichel
  *  Updated documentation of dviface.h in Doc++ style.
  *    Removed dummy parameter from constructor.
  *
