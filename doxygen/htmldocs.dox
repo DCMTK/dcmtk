@@ -8,29 +8,30 @@ implementing part of the DICOM/MEDICOM Standard.
 
 DCMTK contains the following sub-packages, each in its own sub-directory:
 
-\li \ref config - configuration utilities for dcmtk
-\li \ref dcmdata - a data encoding/decoding library and utility apps
-\li \ref dcmimage - adds support for color images to dcmimgle
-\li \ref dcmimgle - an image processing library and utility apps
-\li \ref dcmjpeg - a compression/decompression library and utility apps
-\li \ref dcmnet - a networking library and utility apps
-\li \ref dcmpstat - a presentation state library and utility apps
-\li \ref dcmsign - a digital signature library and utility apps
-\li \ref dcmsr - a structured report library and utility apps
-\li \ref dcmtls - security extensions for the network library
-\li \ref dcmwlm - a modality worklist database server
-\li \ref imagectn - an image database server
-\li \ref ofstd - a library of general purpose classes
+\li \ref mod_config
+\li \ref mod_dcmdata
+\li \ref mod_dcmimage
+\li \ref mod_dcmimgle
+\li \ref mod_dcmjpeg
+\li \ref mod_dcmnet
+\li \ref mod_dcmpstat
+\li \ref mod_dcmsign
+\li \ref mod_dcmsr
+\li \ref mod_dcmtls
+\li \ref mod_dcmwlm
+\li \ref mod_imagectn
+\li \ref mod_ofstd
 
 Each sub-directory (except config) contains further sub-directories for
 application source code (apps), library source code (libsrc), library
 include files (include), documentation (docs) and optional test programs
 (tests).
 
-To build and install the DCMTK package see the \ref install_file.  For 
-copyright information see the \ref copyright_file.  For information about 
-the history of this software see the \ref history_file.  For answers to
-some frequently asked questions see the \ref faq_file.
+To build and install the DCMTK package see the \ref file_install "INSTALL"
+file.  For copyright information see the \ref file_copyright "COPYRIGHT" file.
+For information about the history of this software see the
+\ref file_history "HISTORY" file.  For answers to some frequently asked
+questions see the \ref file_faq "FAQ" file.
 
 If you find bugs or other problems with this software we would appreciate
 hearing about them.  Please send electronic mail to \b dicom-bugs@offis.de.
@@ -40,22 +41,22 @@ fix.
 */
 
 /*!
-    \page readme_file README file
+    \page file_readme README file
     \verbinclude README
 */
 /*!
-    \page install_file INSTALL file
+    \page file_install INSTALL file
     \verbinclude INSTALL
 */
 /*!
-    \page copyright_file COPYRIGHT file
+    \page file_copyright COPYRIGHT file
     \verbinclude COPYRIGHT
 */
 /*!
-    \page history_file HISTORY file
+    \page file_history HISTORY file
     \verbinclude HISTORY
 */
 /*!
-    \page faq_file FAQ file
+    \page file_faq FAQ file
     \verbinclude FAQ
 */
