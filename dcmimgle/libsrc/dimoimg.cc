@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-14 17:37:15 $
+ *  Update Date:      $Date: 1998-12-16 16:15:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,11 +66,13 @@ DiMonoImage::DiMonoImage(const DiDocument *docu,
     WindowCount(0),
     VoiLutCount(0),
     ValidWindow(0),
+    VoiExplanation(),
     PresLutShape(ESP_Identity),
     VoiLutData(NULL),
     PresLutData(NULL),
     InterData(NULL),
-    OutputData(NULL)
+    OutputData(NULL),
+    OverlayData(NULL)
 {
     Overlays[0] = NULL;
     Overlays[1] = NULL;
@@ -92,11 +94,13 @@ DiMonoImage::DiMonoImage(const DiDocument *docu,
     WindowCount(0),
     VoiLutCount(0),
     ValidWindow(0),
+    VoiExplanation(),
     PresLutShape(ESP_Identity),
     VoiLutData(NULL),
     PresLutData(NULL),
     InterData(NULL),
-    OutputData(NULL)
+    OutputData(NULL),
+    OverlayData(NULL)
 {
     Overlays[0] = NULL;
     Overlays[1] = NULL;
@@ -111,24 +115,27 @@ DiMonoImage::DiMonoImage(const DiDocument *docu,
 DiMonoImage::DiMonoImage(const DiDocument *docu,
                          const EI_Status status,
                          const DcmUnsignedShort &data,
-                         const DcmUnsignedShort &descriptor)
+                         const DcmUnsignedShort &descriptor,
+                         const DcmLongString *explanation)
   : DiImage(docu, status, 1),
     WindowCenter(0),
     WindowWidth(0),
     WindowCount(0),
     VoiLutCount(0),
     ValidWindow(0),
+    VoiExplanation(),
     PresLutShape(ESP_Identity),
     VoiLutData(NULL),
     PresLutData(NULL),
     InterData(NULL),
-    OutputData(NULL)
+    OutputData(NULL),
+    OverlayData(NULL)
 {
     Overlays[0] = NULL;
     Overlays[1] = NULL;
     if ((Document != NULL) && (InputData != NULL) && (ImageStatus == EIS_Normal))
     {
-        DiMonoModality *modality = new DiMonoModality(Document, InputData, data, descriptor);
+        DiMonoModality *modality = new DiMonoModality(Document, InputData, data, descriptor, explanation);
         Init(modality);
     }
 }
@@ -147,11 +154,13 @@ DiMonoImage::DiMonoImage(const DiDocument *docu,
     WindowCount(0),
     VoiLutCount(0),
     ValidWindow(0),
+    VoiExplanation(),
     PresLutShape(ESP_Identity),
     VoiLutData(NULL),
     PresLutData(NULL),
     InterData(NULL),
-    OutputData(NULL)
+    OutputData(NULL),
+    OverlayData(NULL)
 {
     Overlays[0] = NULL;
     Overlays[1] = NULL;
@@ -171,11 +180,13 @@ DiMonoImage::DiMonoImage(const DiMonoImage *image,
     WindowCount(image->WindowCount),
     VoiLutCount(image->VoiLutCount),
     ValidWindow(image->ValidWindow),
+    VoiExplanation(image->VoiExplanation),
     PresLutShape(image->PresLutShape),
     VoiLutData(image->VoiLutData),
     PresLutData(image->PresLutData),
     InterData(NULL),
-    OutputData(NULL)
+    OutputData(NULL),
+    OverlayData(NULL)
 {
     Overlays[0] = image->Overlays[0];
     Overlays[1] = image->Overlays[1];
@@ -231,11 +242,13 @@ DiMonoImage::DiMonoImage(const DiColorImage *image,
     WindowCount(0),
     VoiLutCount(0),
     ValidWindow(0),
+    VoiExplanation(),
     PresLutShape(ESP_Identity),
     VoiLutData(NULL),
     PresLutData(NULL),
     InterData(NULL),
-    OutputData(NULL)
+    OutputData(NULL),
+    OverlayData(NULL)
 {
     Overlays[0] = NULL;
     Overlays[1] = NULL;
@@ -265,11 +278,13 @@ DiMonoImage::DiMonoImage(const DiMonoImage *image,
     WindowCount(image->WindowCount),
     VoiLutCount(image->VoiLutCount),
     ValidWindow(image->ValidWindow),
+    VoiExplanation(image->VoiExplanation),
     PresLutShape(image->PresLutShape),
     VoiLutData(image->VoiLutData),
     PresLutData(image->PresLutData),
     InterData(NULL),
-    OutputData(NULL)
+    OutputData(NULL),
+    OverlayData(NULL)
 {
     Overlays[0] = NULL;
     Overlays[1] = NULL;
@@ -331,11 +346,13 @@ DiMonoImage::DiMonoImage(const DiMonoImage *image,
     WindowCount(image->WindowCount),
     VoiLutCount(image->VoiLutCount),
     ValidWindow(image->ValidWindow),
+    VoiExplanation(image->VoiExplanation),
     PresLutShape(image->PresLutShape),
     VoiLutData(image->VoiLutData),
     PresLutData(image->PresLutData),
     InterData(NULL),
-    OutputData(NULL)
+    OutputData(NULL),
+    OverlayData(NULL)
 {
     Overlays[0] = NULL;
     Overlays[1] = NULL;
@@ -368,7 +385,7 @@ DiMonoImage::DiMonoImage(const DiMonoImage *image,
         for (int i = 0; i < 2; i++)
         {
             if ((image->Overlays[i] != NULL) && (image->Overlays[i]->getCount() > 0))
-                Overlays[i] = new DiOverlay(image->Overlays[i], horz, vert);
+                Overlays[i] = new DiOverlay(image->Overlays[i], horz, vert, Columns, Rows);
         }
     }
     if (VoiLutData != NULL)
@@ -390,11 +407,13 @@ DiMonoImage::DiMonoImage(const DiMonoImage *image,
     WindowCount(image->WindowCount),
     VoiLutCount(image->VoiLutCount),
     ValidWindow(image->ValidWindow),
+    VoiExplanation(image->VoiExplanation),
     PresLutShape(image->PresLutShape),
     VoiLutData(image->VoiLutData),
     PresLutData(image->PresLutData),
     InterData(NULL),
-    OutputData(NULL)
+    OutputData(NULL),
+    OverlayData(NULL)
 {
     Overlays[0] = NULL;
     Overlays[1] = NULL;
@@ -433,7 +452,7 @@ DiMonoImage::DiMonoImage(const DiMonoImage *image,
         for (int i = 0; i < 2; i++)
         {
             if ((image->Overlays[i] != NULL) && (image->Overlays[i]->getCount() > 0))
-                Overlays[i] = new DiOverlay(image->Overlays[i], degree);
+                Overlays[i] = new DiOverlay(image->Overlays[i], degree, Columns, Rows);
         }
     }
     if (VoiLutData != NULL)
@@ -454,11 +473,13 @@ DiMonoImage::DiMonoImage(const DiMonoImage &)
     WindowCount(0),
     VoiLutCount(0),
     ValidWindow(0),
+    VoiExplanation(),
     PresLutShape(ESP_Identity),
     VoiLutData(NULL),
     PresLutData(NULL),
     InterData(NULL),
-    OutputData(NULL)
+    OutputData(NULL),
+    OverlayData(NULL)
 {
     if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
         cerr << "ERROR in DiMonoImage copy-constructor !!!" << endl;
@@ -474,6 +495,7 @@ DiMonoImage::~DiMonoImage()
 {
     delete InterData;
     delete OutputData;
+    delete OverlayData;
     if (VoiLutData != NULL)
         VoiLutData->removeReference();          // only delete if object is no longer referenced
     if (PresLutData != NULL)
@@ -649,8 +671,8 @@ void DiMonoImage::Init(DiMonoModality *modality)
             if (count < WindowCount)                        // determine number of voi windows
                 WindowCount = count;
             DcmSequenceOfItems *seq = NULL;
-            VoiLutCount = Document->getSequence(DCM_VOILUTSequence, seq);
-        }        
+            VoiLutCount = Document->getSequence(DCM_VOILUTSequence, seq);            
+        }
     } else
         detachPixelData();
 }
@@ -701,14 +723,22 @@ void *DiMonoImage::getOutputPlane(const int) const
 }
 
 
+void DiMonoImage::deleteOverlayData()
+{
+    delete OverlayData;
+    OverlayData = NULL;
+}
+
+
 /*********************************************************************/
 
 
-int DiMonoImage::setNoVOITransformation()
+int DiMonoImage::setNoVoiTransformation()
 {
     int old = (VoiLutData != NULL) ? VoiLutData->isValid() : 2;
     delete VoiLutData;
     VoiLutData = NULL;
+    VoiExplanation = "";
     if (ValidWindow)
         old = 1;
     ValidWindow = 0;
@@ -723,7 +753,7 @@ int DiMonoImage::setMinMaxWindow(const int idx)
         double center;
         double width;
         if (InterData->getMinMaxWindow(idx != 0, center, width))
-            return setWindow(center, width);
+            return setWindow(center, width, "Min-Max Window");
     }
     return 0;
 }
@@ -736,7 +766,7 @@ int DiMonoImage::setHistogramWindow(const double thresh)
         double center;
         double width;
         if (InterData->getHistogramWindow(thresh, center, width))
-            return setWindow(center, width);
+            return setWindow(center, width, "Histogram Window");
     }
     return 0;
 }
@@ -753,16 +783,23 @@ int DiMonoImage::setWindow(const unsigned long pos)
         if (count < WindowCount)
             WindowCount = count;
         if (pos < WindowCount)
+        {
+            Document->getValue(DCM_WindowCenterWidthExplanation, VoiExplanation, pos);
             return setWindow(center, width);
+        }
     }
     return 0;
 }
 
 
-int DiMonoImage::setWindow(const double center, const double width)
+int DiMonoImage::setWindow(const double center,
+                           const double width,
+                           const char *explanation)
 {
     delete VoiLutData;
     VoiLutData = NULL;
+    if (explanation != NULL)
+        VoiExplanation = explanation;
     if (width <= 0)                                             // according to Cor Loef (author of suppl. 33)
         return ValidWindow = 0;
     else if (!ValidWindow || (center != WindowCenter) || (width != WindowWidth))
@@ -788,12 +825,16 @@ int DiMonoImage::getWindow(double &center, double &width)
 
 
 int DiMonoImage::setVoiLut(const DcmUnsignedShort &data,
-                           const DcmUnsignedShort &descriptor)
+                           const DcmUnsignedShort &descriptor,
+                           const DcmLongString *explanation)
 {
     delete VoiLutData;
-    VoiLutData = new DiLookupTable(data, descriptor);
+    VoiLutData = new DiLookupTable(data, descriptor, explanation);
     if (VoiLutData != NULL)
+    {
+        VoiExplanation = VoiLutData->getExplanation();
         return VoiLutData->isValid();
+    }
     return 0;
 }
 
@@ -803,9 +844,13 @@ int DiMonoImage::setVoiLut(const unsigned long pos)
     if (!(Document->getFlags() & CIF_UsePresentationState))
     {
         delete VoiLutData;
-        VoiLutData = new DiLookupTable(Document, DCM_VOILUTSequence, DCM_LUTDescriptor, DCM_LUTData, pos, &VoiLutCount);
+        VoiLutData = new DiLookupTable(Document, DCM_VOILUTSequence, DCM_LUTDescriptor, DCM_LUTData,
+            DCM_LUTExplanation, pos, &VoiLutCount);
         if (VoiLutData != NULL)
+        {
+            VoiExplanation = VoiLutData->getExplanation();
             return VoiLutData->isValid();
+        }
     }
     return 0;
 }
@@ -825,10 +870,11 @@ int DiMonoImage::setPresentationLutShape(const ES_PresentationLut shape)
 
 
 int DiMonoImage::setPresentationLut(const DcmUnsignedShort &data,
-                                    const DcmUnsignedShort &descriptor)
+                                    const DcmUnsignedShort &descriptor,
+                                    const DcmLongString *explanation)
 {
     delete PresLutData;
-    PresLutData = new DiLookupTable(data, descriptor, 0);
+    PresLutData = new DiLookupTable(data, descriptor, explanation);
     if (PresLutData != NULL)
         return PresLutData->isValid();
     return 0;
@@ -889,7 +935,7 @@ int DiMonoImage::flip(const int horz, const int vert)
         if ((Overlays[i] != NULL) && (Overlays[i]->getCount() > 0))
         {
             DiOverlay *old = Overlays[i];
-            Overlays[i] = new DiOverlay(old, horz, vert);
+            Overlays[i] = new DiOverlay(old, horz, vert, Columns, Rows);
             old->removeReference();
         }
     }
@@ -931,7 +977,7 @@ int DiMonoImage::rotate(const int degree)
         if ((Overlays[i] != NULL) && (Overlays[i]->getCount() > 0))
         {
             DiOverlay *old = Overlays[i];
-            Overlays[i] = new DiOverlay(old, degree);
+            Overlays[i] = new DiOverlay(old, degree, Columns, Rows);
             old->removeReference();
         }
     }
@@ -1042,6 +1088,33 @@ void *DiMonoImage::getData(const unsigned long frame,
         }
         else
             return OutputData->getData();           // points to beginning of output data
+    }
+    return NULL;
+}
+
+
+/*
+ *   create 8-bit (bi-level) bitmap with overlay 'plane' data
+ */
+
+const Uint8 *DiMonoImage::getOverlayData(const unsigned long frame,
+                                         const unsigned int plane,
+                                         unsigned int &width,
+                                         unsigned int &height,
+                                         unsigned int &left,
+                                         unsigned int &top)
+{
+    if (ImageStatus == EIS_Normal)
+    {
+        for (int i = 1; i >= 0; i--)                            // start searching with additional overlay planes
+        {
+            if ((Overlays[i] != NULL) && (Overlays[i]->hasPlane(plane, 1)))
+            {
+                deleteOverlayData();
+                OverlayData = Overlays[i]->getPlaneData(frame, plane, width, height, left, top, Columns, Rows);
+                return (const Uint8 *)OverlayData;
+            }
+        }
     }
     return NULL;
 }
@@ -1202,7 +1275,12 @@ int DiMonoImage::writeRawPPM(FILE *stream, const unsigned long frame, const int 
 **
 ** CVS/RCS Log:
 ** $Log: dimoimg.cc,v $
-** Revision 1.2  1998-12-14 17:37:15  joergr
+** Revision 1.3  1998-12-16 16:15:55  joergr
+** Added explanation string for VOI transformations.
+** Added method to export overlay planes (create 8-bit bitmap).
+** Renamed 'setNoVoiLutTransformation' method ('Voi' instead of 'VOI').
+**
+** Revision 1.2  1998/12/14 17:37:15  joergr
 ** Added methods to add and remove additional overlay planes (still untested).
 ** Added support for presentation shapes.
 **
