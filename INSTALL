@@ -47,7 +47,7 @@ The current DCMTK software release successfully compiles on the following
 operating system / hardware / compiler combinations using the instructions
 given below:
 
-??  FreeBSD 4.8    / Intel x86    / GNU gcc 2.95.4
+    FreeBSD 4.8    / Intel x86    / GNU gcc 2.95.4
     FreeBSD 4.9    / Intel x86    / GNU gcc 2.95.4
     IRIX 5.3       / SGI Indy     / GNU gcc 2.95.3   (see note *2)
     Linux 2.2.16   / Intel x86    / GNU gcc 2.95.2
@@ -55,20 +55,20 @@ given below:
     Linux 2.4.20   / Intel x86    / GNU gcc 2.95.4, 3.2.3 and 3.3.3
     Linux 2.4.21   / Intel x86    / GNU gcc 3.3.1
     Linux 2.6.4    / Intel x86    / GNU gcc 3.3.3
-??  MacOS X 10.1.5 / Power Mac G4 / Apple gcc-934.3  (gcc 2.95.2, see note *5)
-??  MacOS X 10.2.2 / Power Mac G4 / Apple gcc-1173   (gcc 3.1)
+    MacOS X 10.1.5 / Power Mac G4 / Apple gcc-934.3  (gcc 2.95.2, see note *5)
+??  MacOS X 10.3.3 / Power Mac G4 / Apple gcc-1640   (gcc 3.3)
     NetBSD 1.6.1   / Intel x86    / GNU gcc 2.95.3
 ??  OSF/1 4.0      / DEC Alpha    / Compaq C++ V6.3-002
 ??  OSF/1 4.0      / DEC Alpha    / GNU gcc 2.95.3
     OpenBSD 3.4    / Intel x86    / GNU gcc 2.95.3
     Solaris 2.5.1  / Sun Sparc    / GNU egcs 1.1.2   (egcs-2.91.66)
     Solaris 2.5.1  / Sun Sparc    / Sun SC 2.0.1     (SunPro C++ 3.0.1)
-??  Solaris 8      / Sun Sparc    / GNU gcc 3.2.3, 3.4
+    Solaris 8      / Sun Sparc    / GNU gcc 3.2.3, 3.4
     Windows XP     / Intel x86    / Cygwin 1.5.9     (gcc 3.3.1)
     Windows XP     / Intel x86    / MinGW 3.1.0/MSys 1.0.10 (gcc 3.2.3)
 
 Earlier releases are known to also compile on the following platforms which
-are not available to us for testing purposes:
+are not available to us for testing purposes any more:
 
     HP-UX 9.05     / HP PA 1.1       / GNU gcc 2.7.2.1
     HP-UX 10.20    / HP PA-RISC      / GNU gcc 2.95.2
@@ -91,7 +91,7 @@ Platform Notes
 (*1) The NeXT gcc 2.5.8 compiler provides only very limited support for C++
      templates and, therefore, might fail to compile the dcmimage / dcmimgle
      module ("internal compiler error").  The gcc compiler also does not
-     properly  support the "protected" derivation of classes which is used in
+     properly support the "protected" derivation of classes which is used in
      the dcmsr module.  However, modules and applications that were present in
      earlier releases of DCMTK still compile.
 (*2) The dcmimage / dcmimgle module makes intensive use of inlined templates.
@@ -112,8 +112,8 @@ Platform Notes
      On IRIX, DCMTK should be built using GNU make (gmake), not with the IRIX
      specific pmake/smake/make commands.
 (*5) MacOS X 10.1 requires DCMTK to be configured with --disable-threads
-     because certain re-entrant Posix functions such as localtime_r
-     are not available.
+     because certain re-entrant Posix functions such as localtime_r are not
+     available.
 
 Please note: Due to resource limitations it is not practical for us to ensure
 that the newest release of DCMTK is problem free under all the above
