@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001, OFFIS
+ *  Copyright (C) 2001-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Implements JPEG interface for plugable image formats
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-27 18:25:39 $
+ *  Update Date:      $Date: 2002-09-19 08:36:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/include/Attic/dipijpeg.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -97,6 +97,12 @@ class DiJPEGPlugin
      */
     void outputMessage(void *arg) const;
 
+    /** get version information of the TIFF library.
+     *  Typical output format: "IJG, Version 6b  27-Mar-1998 (modified)"
+     *  @return name and version number of the TIFF library
+     */
+    static OFString getLibraryVersionString();
+
 
  private:
 
@@ -114,7 +120,10 @@ class DiJPEGPlugin
  *
  * CVS/RCS Log:
  * $Log: dipijpeg.h,v $
- * Revision 1.1  2001-11-27 18:25:39  joergr
+ * Revision 1.2  2002-09-19 08:36:18  joergr
+ * Added static method getLibraryVersionString().
+ *
+ * Revision 1.1  2001/11/27 18:25:39  joergr
  * Added support for plugable output formats in class DicomImage. First
  * implementation is JPEG.
  *

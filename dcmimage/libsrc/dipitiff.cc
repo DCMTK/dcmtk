@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001, OFFIS
+ *  Copyright (C) 2001-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Implements TIFF interface for plugable image formats
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-29 16:00:56 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-09-19 08:34:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dipitiff.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -111,7 +111,7 @@ int DiTIFFPlugin::write(
             break;
           case E_tiffLZWPredictorHDifferencing:
             opt_predictor = 2;
-            break;          
+            break;
         }
 
         unsigned short opt_compression = COMPRESSION_NONE;
@@ -125,10 +125,10 @@ int DiTIFFPlugin::write(
             break;
           case E_tiffNoCompression:
             opt_compression = COMPRESSION_NONE;
-            break;          
+            break;
         }
 
-        long opt_rowsperstrip = (long) rowsPerStrip;        
+        long opt_rowsperstrip = (long) rowsPerStrip;
         if (opt_rowsperstrip <= 0) opt_rowsperstrip = 8192 / bytesperrow;
         if (opt_rowsperstrip == 0) opt_rowsperstrip++;
 
@@ -153,7 +153,7 @@ int DiTIFFPlugin::write(
           TIFFSetField(tif, TIFFTAG_ROWSPERSTRIP, opt_rowsperstrip);
           /* TIFFSetField(tif, TIFFTAG_STRIPBYTECOUNTS, rows / opt_rowsperstrip); */
           TIFFSetField(tif, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG);
-          
+
           /* Now write the TIFF data. */
           unsigned long offset = 0;
           for (Uint16 i=0; (i < rows) && OK; i++)
@@ -190,6 +190,16 @@ void DiTIFFPlugin::setRowsPerStrip(unsigned long rows)
   rowsPerStrip = rows;
 }
 
+OFString DiTIFFPlugin::getLibraryVersionString()
+{
+    /* use first line only, omit copyright information */
+    OFString versionStr = TIFFGetVersion();
+    const size_t pos = versionStr.find('\n');
+    if (pos != OFString_npos)
+        versionStr.erase(pos);
+    return versionStr;
+}
+
 #else /* WITH_LIBTIFF */
 
 const int dipitiff_cc_dummy_to_keep_linker_from_moaning = 0;
@@ -200,7 +210,10 @@ const int dipitiff_cc_dummy_to_keep_linker_from_moaning = 0;
  *
  * CVS/RCS Log:
  * $Log: dipitiff.cc,v $
- * Revision 1.3  2002-08-29 16:00:56  meichel
+ * Revision 1.4  2002-09-19 08:34:07  joergr
+ * Added static method getLibraryVersionString().
+ *
+ * Revision 1.3  2002/08/29 16:00:56  meichel
  * Fixed DiTIFFPlugin::write(): libtiff's TIFFFdOpen() expects a HANDLE
  *   instead of a file descriptor when compiled on WIN32.
  *
