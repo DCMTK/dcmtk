@@ -10,7 +10,7 @@
 **
 **
 ** Last Update:   $Author: hewett $
-** Revision:      $Revision: 1.5 $
+** Revision:      $Revision: 1.6 $
 ** Status:	  $State: Exp $
 **
 */
@@ -97,10 +97,10 @@ static DcmVREntry DcmVRDict[] = {
     { EVR_pixelItem, "pi_EVR_pixelItem", 0, 
       DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, 0 },
 
-    /* Unknown Value Representation - Supplement 14 */
     { EVR_UNKNOWN, "??", sizeof(Uint8), 
       DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, DCM_UndefinedLength },
 
+    /* Unknown Value Representation - Supplement 14 */
     { EVR_UN, "UN", sizeof(Uint8), DCMVR_PROP_NONE, 0, DCM_UndefinedLength },
 
 };
