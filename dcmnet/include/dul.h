@@ -44,9 +44,9 @@
 ** Intent:		This file defines the public structures and constants
 **			and the function prototypes for the DUL (DICOM Upper
 **			Layer) facility.
-** Last Update:		$Author: meichel $, $Date: 2003-06-02 16:44:11 $
+** Last Update:		$Author: meichel $, $Date: 2003-06-06 13:07:29 $
 ** Source File:		$RCSfile: dul.h,v $
-** Revision:		$Revision: 1.15 $
+** Revision:		$Revision: 1.16 $
 ** Status:		$State: Exp $
 */
 
@@ -62,19 +62,24 @@
 class DcmTransportConnection;
 class DcmTransportLayer;
 
-/* Global flag to enable/disable reverse DNS lookup when accepting
- * associations.  If disabled, the numerical IP address instead of the symbolic hostname
- * is stored in the callingPresentationAddress field of the association parameters
- * structure.  Most DICOM applications (except imagectn) don't need the symbolic
- * hostname anyway, and the reverse DNS lookup can cause a long timeout.
+/** Global flag to enable/disable reverse DNS lookup when accepting
+ *  associations.  If disabled, the numerical IP address instead of the symbolic hostname
+ *  is stored in the callingPresentationAddress field of the association parameters
+ *  structure.  Most DICOM applications (except imagectn) don't need the symbolic
+ *  hostname anyway, and the reverse DNS lookup can cause a long timeout.
  */
 extern OFGlobal<OFBool> dcmDisableGethostbyaddr; /* default OFFalse */
 
-/*
- * Global timeout (seconds) for connecting to remote hosts.
- * Default value is -1 which selects infinite timeout, i.e. blocking connect().
+/**  Global timeout (seconds) for connecting to remote hosts.
+ *   Default value is -1 which selects infinite timeout, i.e. blocking connect().
  */
 extern OFGlobal<Sint32> dcmConnectionTimeout;   /* default -1 */
+
+/** This global flag allows to set an already opened socket file descriptor
+ *  which will be used by dcmnet the next time receiveTransportConnectionTCP()
+ *  is called. Useful for use with proxy applications, but inherently thread unsafe!
+ */
+extern OFGlobal<int> dcmExternalSocketHandle;   /* default -1 */
 
 
 #ifndef DUL_KEYS
@@ -410,7 +415,11 @@ unsigned long DUL_getPeerCertificate(DUL_ASSOCIATIONKEY *dulassoc, void *buf, un
 /*
 ** CVS Log
 ** $Log: dul.h,v $
-** Revision 1.15  2003-06-02 16:44:11  meichel
+** Revision 1.16  2003-06-06 13:07:29  meichel
+** Introduced global flag dcmExternalSocketHandle which allows
+**   to pass an already opened socket file descriptor to dcmnet.
+**
+** Revision 1.15  2003/06/02 16:44:11  meichel
 ** Renamed local variables to avoid name clashes with STL
 **
 ** Revision 1.14  2002/11/28 16:57:36  meichel

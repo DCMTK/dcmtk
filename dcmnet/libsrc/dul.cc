@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: meichel $, $Date: 2003-06-02 16:44:11 $
+** Last Update:		$Author: meichel $, $Date: 2003-06-06 13:07:30 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.54 $
+** Revision:		$Revision: 1.55 $
 ** Status:		$State: Exp $
 */
 
@@ -125,6 +125,7 @@ END_EXTERN_C
 
 OFGlobal<OFBool> dcmDisableGethostbyaddr(OFFalse);
 OFGlobal<Sint32> dcmConnectionTimeout(-1);
+OFGlobal<int>    dcmExternalSocketHandle(-1);
 
 static int networkInitialized = 0;
 static OFBool debug = 0;
@@ -1432,41 +1433,35 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
     size_t len;
 #endif        
     int nfound,
-        connected,
-        sock;
-    struct sockaddr
-        from;
+        connected;
+    struct sockaddr from;
     struct hostent *remote = NULL;
-    struct linger
-        sockarg;
-    int
-        reuse = 1;
+    struct linger sockarg;
+    int reuse = 1;
 
-    if (block == DUL_NOBLOCK) {
-        connected = 0;
-        FD_ZERO(&fdset);
-        FD_SET((*network)->networkSpecific.TCP.listenSocket, &fdset);
-        timeout_val.tv_sec = timeout;
-        timeout_val.tv_usec = 0;
-#ifdef HAVE_INTP_SELECT
-        nfound = select((*network)->networkSpecific.TCP.listenSocket + 1,
-                        (int *)(&fdset), NULL, NULL, &timeout_val);
-#else
-        nfound = select((*network)->networkSpecific.TCP.listenSocket + 1,
-                        &fdset, NULL, NULL, &timeout_val);
-#endif
-        if (nfound != 0) {
-            if (FD_ISSET((*network)->networkSpecific.TCP.listenSocket, &fdset))
-                connected++;
-        }
-        if (!connected) return DUL_NOASSOCIATIONREQUEST;
-    } else {
-        connected = 0;
-        do {
+    int sock = dcmExternalSocketHandle.get();
+    if (sock > 0)
+    {
+      // use the socket file descriptor provided to us externally
+      // instead of calling accept().
+      connected = 1;        
+
+      len = sizeof(from);
+      if (getsockname(sock, &from, &len))
+      {
+          char buf3[256];
+          sprintf(buf3, "TCP Initialization Error: %s, getsockname failed on socket %d", strerror(errno), sock);
+          return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf3);
+      }
+    }
+    else
+    {
+        if (block == DUL_NOBLOCK)
+        {
+            connected = 0;
             FD_ZERO(&fdset);
             FD_SET((*network)->networkSpecific.TCP.listenSocket, &fdset);
-
-            timeout_val.tv_sec = 5;
+            timeout_val.tv_sec = timeout;
             timeout_val.tv_usec = 0;
 #ifdef HAVE_INTP_SELECT
             nfound = select((*network)->networkSpecific.TCP.listenSocket + 1,
@@ -1476,32 +1471,51 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
                             &fdset, NULL, NULL, &timeout_val);
 #endif
             if (nfound != 0) {
-                if (FD_ISSET((*network)->networkSpecific.TCP.listenSocket,
-                             &fdset))
+                if (FD_ISSET((*network)->networkSpecific.TCP.listenSocket, &fdset))
                     connected++;
             }
-        } while (!connected);
-    }
+            if (!connected) return DUL_NOASSOCIATIONREQUEST;
+        } 
+        else
+        {
+            connected = 0;
+            do {
+                FD_ZERO(&fdset);
+                FD_SET((*network)->networkSpecific.TCP.listenSocket, &fdset);
 
-    len = sizeof(from);
-    do {
-        if (debug)
-            COUT << "\n\n\n*************BEFORE ACCEPT*************\n";
-        sock = accept((*network)->networkSpecific.TCP.listenSocket, &from, &len);
-        if (debug)
-            COUT << "*************AFTER ACCEPT(sock: " << sock << "/errno: "
-            << errno << ")*************\n\n\n";
-    } while (sock == -1 && errno == EINTR);
-
-    if (sock < 0)
-    {
-        char buf3[256];
-        sprintf(buf3, "TCP Initialization Error: %s, accept failed on socket %d", strerror(errno), sock);
-        return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf3);
-    }
-#ifdef HAVE_GUSI_H
-    /* GUSI always returns an error for setsockopt(...) */
+                timeout_val.tv_sec = 5;
+                timeout_val.tv_usec = 0;
+#ifdef HAVE_INTP_SELECT
+                nfound = select((*network)->networkSpecific.TCP.listenSocket + 1,
+                                (int *)(&fdset), NULL, NULL, &timeout_val);
 #else
+                nfound = select((*network)->networkSpecific.TCP.listenSocket + 1,
+                                &fdset, NULL, NULL, &timeout_val);
+#endif
+                if (nfound != 0) {
+                    if (FD_ISSET((*network)->networkSpecific.TCP.listenSocket,
+                                 &fdset))
+                        connected++;
+                }
+            } while (!connected);
+        }
+
+        len = sizeof(from);
+        do
+        {
+            sock = accept((*network)->networkSpecific.TCP.listenSocket, &from, &len);
+        } while (sock == -1 && errno == EINTR);
+
+        if (sock < 0)
+        {
+            char buf3[256];
+            sprintf(buf3, "TCP Initialization Error: %s, accept failed on socket %d", strerror(errno), sock);
+            return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf3);
+        }
+    }
+
+#ifndef HAVE_GUSI_H
+    /* GUSI always returns an error for setsockopt() */
     sockarg.l_onoff = 0;
     if (setsockopt(sock, SOL_SOCKET, SO_LINGER, (char *) &sockarg,
                    sizeof(sockarg)) < 0)
@@ -2322,7 +2336,11 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, ostream& outs
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.54  2003-06-02 16:44:11  meichel
+** Revision 1.55  2003-06-06 13:07:30  meichel
+** Introduced global flag dcmExternalSocketHandle which allows
+**   to pass an already opened socket file descriptor to dcmnet.
+**
+** Revision 1.54  2003/06/02 16:44:11  meichel
 ** Renamed local variables to avoid name clashes with STL
 **
 ** Revision 1.53  2003/05/12 13:02:15  meichel
