@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2003, OFFIS
+ *  Copyright (C) 1999-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent_PList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-06-12 18:23:11 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Update Date:      $Date: 2004-02-04 15:57:49 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -618,9 +618,11 @@ OFBool DVPSImageBoxContent_PList::emptyPageWarning()
 
 /*
  *  $Log: dvpsibl.cc,v $
- *  Revision 1.26  2003-06-12 18:23:11  joergr
+ *  Revision 1.27  2004-02-04 15:57:49  joergr
+ *  Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ *  Revision 1.26  2003/06/12 18:23:11  joergr
  *  Modified code to use const_iterators where appropriate (required for STL).
- *  Thanks to Henning Meyer <Henning-Meyer@web.de> for the report.
  *
  *  Revision 1.25  2003/06/04 10:18:07  meichel
  *  Replaced private inheritance from template with aggregation
@@ -707,4 +709,3 @@ OFBool DVPSImageBoxContent_PList::emptyPageWarning()
  *
  *
  */
-

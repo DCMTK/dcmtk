@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2003, OFFIS
+ *  Copyright (C) 1999-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSAnnotationContent_PList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-06-12 18:23:11 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2004-02-04 15:57:49 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,7 +55,7 @@ DVPSAnnotationContent_PList::DVPSAnnotationContent_PList(const DVPSAnnotationCon
   OFListConstIterator(DVPSAnnotationContent *) first = arg.list_.begin();
   OFListConstIterator(DVPSAnnotationContent *) last = arg.list_.end();
   while (first != last)
-  {     
+  {
     list_.push_back((*first)->clone());
     ++first;
   }
@@ -71,7 +71,7 @@ void DVPSAnnotationContent_PList::clear()
   OFListIterator(DVPSAnnotationContent *) first = list_.begin();
   OFListIterator(DVPSAnnotationContent *) last = list_.end();
   while (first != last)
-  {     
+  {
     delete (*first);
     first = list_.erase(first);
   }
@@ -84,7 +84,7 @@ OFCondition DVPSAnnotationContent_PList::read(DcmItem &dset)
   DVPSAnnotationContent *newAnnotation = NULL;
   DcmSequenceOfItems *dseq=NULL;
   DcmItem *ditem=NULL;
-  
+
   if (EC_Normal == dset.search(DCM_AnnotationContentSequence, stack, ESM_fromHere, OFFalse))
   {
     dseq=(DcmSequenceOfItems *)stack.top();
@@ -103,8 +103,8 @@ OFCondition DVPSAnnotationContent_PList::read(DcmItem &dset)
         } else result = EC_MemoryExhausted;
       }
     }
-  }    
-  
+  }
+
   return result;
 }
 
@@ -115,7 +115,7 @@ OFCondition DVPSAnnotationContent_PList::write(DcmItem &dset)
   OFCondition result = EC_Normal;
   DcmSequenceOfItems *dseq=NULL;
   DcmItem *ditem=NULL;
-  
+
   dseq = new DcmSequenceOfItems(DCM_AnnotationContentSequence);
   if (dseq)
   {
@@ -149,7 +149,7 @@ OFCondition DVPSAnnotationContent_PList::addAnnotationBox(
   DVPSAnnotationContent *newAnnotation = new DVPSAnnotationContent();
   if (newAnnotation)
   {
-    newAnnotation->setLog(logstream, verboseMode, debugMode);  	
+    newAnnotation->setLog(logstream, verboseMode, debugMode);
     result = newAnnotation->setContent(instanceuid, text, position);
     if (EC_Normal == result) list_.push_back(newAnnotation); else delete newAnnotation;
   } else result = EC_MemoryExhausted;
@@ -200,21 +200,21 @@ OFCondition DVPSAnnotationContent_PList::setAnnotationSOPInstanceUID(size_t idx,
 {
   DVPSAnnotationContent *box = getAnnotationBox(idx);
   if (box) return box->setSOPInstanceUID(value);
-  return EC_IllegalCall; 
+  return EC_IllegalCall;
 }
 
 const char *DVPSAnnotationContent_PList::getSOPInstanceUID(size_t idx)
 {
   DVPSAnnotationContent *box = getAnnotationBox(idx);
   if (box) return box->getSOPInstanceUID();
-  return NULL; 
+  return NULL;
 }
 
 OFCondition DVPSAnnotationContent_PList::prepareBasicAnnotationBox(size_t idx, DcmItem &dset)
 {
   DVPSAnnotationContent *box = getAnnotationBox(idx);
   if (box) return box->prepareBasicAnnotationBox(dset);
-  return EC_IllegalCall; 
+  return EC_IllegalCall;
 }
 
 void DVPSAnnotationContent_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
@@ -228,7 +228,7 @@ void DVPSAnnotationContent_PList::setLog(OFConsole *stream, OFBool verbMode, OFB
   {
     (*first)->setLog(logstream, verbMode, dbgMode);
     ++first;
-  }	
+  }
 }
 
 void DVPSAnnotationContent_PList::clearAnnotationSOPInstanceUIDs()
@@ -239,14 +239,16 @@ void DVPSAnnotationContent_PList::clearAnnotationSOPInstanceUIDs()
   {
     (*first)->setSOPInstanceUID(NULL);
     ++first;
-  }	
+  }
 }
 
 /*
  *  $Log: dvpsabl.cc,v $
- *  Revision 1.9  2003-06-12 18:23:11  joergr
+ *  Revision 1.10  2004-02-04 15:57:49  joergr
+ *  Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ *  Revision 1.9  2003/06/12 18:23:11  joergr
  *  Modified code to use const_iterators where appropriate (required for STL).
- *  Thanks to Henning Meyer <Henning-Meyer@web.de> for the report.
  *
  *  Revision 1.8  2003/06/04 10:18:07  meichel
  *  Replaced private inheritance from template with aggregation
@@ -277,4 +279,3 @@ void DVPSAnnotationContent_PList::clearAnnotationSOPInstanceUIDs()
  *
  *
  */
-

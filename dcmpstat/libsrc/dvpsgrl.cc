@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2003, OFFIS
+ *  Copyright (C) 1998-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSGraphicObject_PList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-09-05 08:37:46 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-02-04 15:57:49 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,7 +53,7 @@ DVPSGraphicObject_PList::DVPSGraphicObject_PList(const DVPSGraphicObject_PList &
   OFListConstIterator(DVPSGraphicObject *) first = arg.list_.begin();
   OFListConstIterator(DVPSGraphicObject *) last = arg.list_.end();
   while (first != last)
-  {     
+  {
     list_.push_back((*first)->clone());
     ++first;
   }
@@ -69,7 +69,7 @@ void DVPSGraphicObject_PList::clear()
   OFListIterator(DVPSGraphicObject *) first = list_.begin();
   OFListIterator(DVPSGraphicObject *) last = list_.end();
   while (first != last)
-  {     
+  {
     delete (*first);
     first = list_.erase(first);
   }
@@ -82,7 +82,7 @@ OFCondition DVPSGraphicObject_PList::read(DcmItem &dset)
   DVPSGraphicObject *newObject = NULL;
   DcmSequenceOfItems *dseq=NULL;
   DcmItem *ditem=NULL;
-  
+
   if (EC_Normal == dset.search(DCM_GraphicObjectSequence, stack, ESM_fromHere, OFFalse))
   {
     dseq=(DcmSequenceOfItems *)stack.top();
@@ -95,21 +95,21 @@ OFCondition DVPSGraphicObject_PList::read(DcmItem &dset)
         newObject = new DVPSGraphicObject();
         if (newObject && ditem)
         {
-          newObject->setLog(logstream, verboseMode, debugMode);          
+          newObject->setLog(logstream, verboseMode, debugMode);
           result = newObject->read(*ditem);
           list_.push_back(newObject);
         } else result = EC_MemoryExhausted;
       }
     }
-  }    
-  
+  }
+
   return result;
 }
 
 OFCondition DVPSGraphicObject_PList::write(DcmItem &dset)
 {
   if (size()==0) return EC_Normal; // don't write empty Sequence
-  
+
   OFCondition result = EC_Normal;
   DcmSequenceOfItems *dseq=NULL;
   DcmItem *ditem=NULL;
@@ -162,7 +162,7 @@ DVPSGraphicObject *DVPSGraphicObject_PList::removeGraphicObject(size_t idx)
   OFListIterator(DVPSGraphicObject *) last = list_.end();
   while (first != last)
   {
-    if (idx==0) 
+    if (idx==0)
     {
       DVPSGraphicObject *result = *first;
       list_.erase(first);
@@ -190,13 +190,15 @@ void DVPSGraphicObject_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool 
 
 /*
  *  $Log: dvpsgrl.cc,v $
- *  Revision 1.10  2003-09-05 08:37:46  meichel
+ *  Revision 1.11  2004-02-04 15:57:49  joergr
+ *  Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ *  Revision 1.10  2003/09/05 08:37:46  meichel
  *  Fixed minor issue that caused certain error messages during the
  *    parse process on a GSPS object to be "swallowed".
  *
  *  Revision 1.9  2003/06/12 18:23:11  joergr
  *  Modified code to use const_iterators where appropriate (required for STL).
- *  Thanks to Henning Meyer <Henning-Meyer@web.de> for the report.
  *
  *  Revision 1.8  2003/06/04 10:18:07  meichel
  *  Replaced private inheritance from template with aggregation
@@ -226,4 +228,3 @@ void DVPSGraphicObject_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool 
  *
  *
  */
-

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2003, OFFIS
+ *  Copyright (C) 1998-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSOverlay_PList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-09-05 08:37:46 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-02-04 15:57:49 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,7 +53,7 @@ DVPSOverlay_PList::DVPSOverlay_PList(const DVPSOverlay_PList &arg)
   OFListConstIterator(DVPSOverlay *) first = arg.list_.begin();
   OFListConstIterator(DVPSOverlay *) last = arg.list_.end();
   while (first != last)
-  {     
+  {
     list_.push_back((*first)->clone());
     ++first;
   }
@@ -69,7 +69,7 @@ void DVPSOverlay_PList::clear()
   OFListIterator(DVPSOverlay *) first = list_.begin();
   OFListIterator(DVPSOverlay *) last = list_.end();
   while (first != last)
-  {     
+  {
     delete (*first);
     first = list_.erase(first);
   }
@@ -81,7 +81,7 @@ OFCondition DVPSOverlay_PList::read(DcmItem &dset)
   DcmStack stack;
   DcmTagKey key(0x6000,0x3000);
   DVPSOverlay *newOverlay = NULL;
-  
+
   for (Uint8 i=0; i<16; i+=2)
   {
     if (result==EC_Normal)
@@ -93,7 +93,7 @@ OFCondition DVPSOverlay_PList::read(DcmItem &dset)
         newOverlay = new DVPSOverlay();
         if (newOverlay)
         {
-          newOverlay->setLog(logstream, verboseMode, debugMode);          
+          newOverlay->setLog(logstream, verboseMode, debugMode);
           result = newOverlay->read(dset,i);
           list_.push_back(newOverlay);
         } else result = EC_MemoryExhausted;
@@ -153,7 +153,7 @@ OFCondition DVPSOverlay_PList::removeOverlay(size_t idx)
   OFListIterator(DVPSOverlay *) last = list_.end();
   while (first != last)
   {
-    if (idx==0) 
+    if (idx==0)
     {
       delete (*first);
       first = list_.erase(first);
@@ -189,14 +189,14 @@ OFCondition DVPSOverlay_PList::addOverlay(DcmItem& overlayIOD, Uint16 groupInIte
   DcmStack stack;
   DcmTagKey key(groupInItem,0x3000);
   DVPSOverlay *newOverlay = NULL;
-  
+
   OFCondition result = overlayIOD.search(key, stack, ESM_fromHere, OFFalse);
   if (EC_Normal == result)
   {
     newOverlay = new DVPSOverlay();
     if (newOverlay)
     {
-      newOverlay->setLog(logstream, verboseMode, debugMode);          
+      newOverlay->setLog(logstream, verboseMode, debugMode);
       result = newOverlay->read(overlayIOD,(Uint8)(groupInItem-0x6000), (Uint8)(newGroup-0x6000));
       if (EC_Normal==result) list_.push_back(newOverlay); else delete newOverlay;
     } else result = EC_MemoryExhausted;
@@ -215,18 +215,20 @@ void DVPSOverlay_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMod
   {
     (*first)->setLog(logstream, verbMode, dbgMode);
     ++first;
-  }	
+  }
 }
 
 /*
  *  $Log: dvpsovl.cc,v $
- *  Revision 1.10  2003-09-05 08:37:46  meichel
+ *  Revision 1.11  2004-02-04 15:57:49  joergr
+ *  Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ *  Revision 1.10  2003/09/05 08:37:46  meichel
  *  Fixed minor issue that caused certain error messages during the
  *    parse process on a GSPS object to be "swallowed".
  *
  *  Revision 1.9  2003/06/12 18:23:11  joergr
  *  Modified code to use const_iterators where appropriate (required for STL).
- *  Thanks to Henning Meyer <Henning-Meyer@web.de> for the report.
  *
  *  Revision 1.8  2003/06/04 10:18:07  meichel
  *  Replaced private inheritance from template with aggregation
@@ -257,4 +259,3 @@ void DVPSOverlay_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMod
  *
  *
  */
-

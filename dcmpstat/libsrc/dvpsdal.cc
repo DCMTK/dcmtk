@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2003, OFFIS
+ *  Copyright (C) 1999-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSDisplayedArea_PList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-09-05 14:30:08 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-02-04 15:57:49 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -234,7 +234,10 @@ void DVPSDisplayedArea_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool 
 
 /*
  *  $Log: dvpsdal.cc,v $
- *  Revision 1.11  2003-09-05 14:30:08  meichel
+ *  Revision 1.12  2004-02-04 15:57:49  joergr
+ *  Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ *  Revision 1.11  2003/09/05 14:30:08  meichel
  *  Introduced new API methods that allow Displayed Areas to be queried
  *    and set either relative to the image (ignoring rotation and flip) or
  *    in absolute values as defined in the standard.  Rotate and flip methods
@@ -246,7 +249,6 @@ void DVPSDisplayedArea_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool 
  *
  *  Revision 1.9  2003/06/12 18:23:11  joergr
  *  Modified code to use const_iterators where appropriate (required for STL).
- *  Thanks to Henning Meyer <Henning-Meyer@web.de> for the report.
  *
  *  Revision 1.8  2003/06/04 12:30:28  meichel
  *  Added various includes needed by MSVC5 with STL
@@ -275,4 +277,3 @@ void DVPSDisplayedArea_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool 
  *
  *
  */
-

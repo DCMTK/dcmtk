@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2003, OFFIS
+ *  Copyright (C) 1998-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DcmPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-12-18 16:37:49 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-02-04 15:57:48 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -751,7 +751,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
       else if (aString == "CIRCULAR") useShutterCircular=OFTrue;
       else if (aString == "POLYGONAL") useShutterPolygonal=OFTrue;
       else if (aString == "BITMAP") useShutterBitmap=OFTrue;
-      else 
+      else
       {
         result=EC_IllegalCall;
         if (verboseMode)
@@ -902,10 +902,10 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
   /* check that referenced series list is non-empty and that every series contains images
      and that all referenced images share the same SOP class UID.
    */
-  if (result.good() && (!referencedSeriesList.isValid())) 
+  if (result.good() && (!referencedSeriesList.isValid()))
   {
     // referencedSeriesList.isValid() has already displayed an error message in verbose mode
-    result = EC_IllegalCall; 
+    result = EC_IllegalCall;
   }
 
   /* check that there is no mask module present. We don't support Mask and therefore
@@ -1209,7 +1209,7 @@ OFCondition DcmPresentationState::createFromImage(
 
     // these three SOP classes use the X-Ray Image Module in which the meaning
     // of the Modality LUT transformation is "inversersed" and, therefore,
-    // must not be copied into the presentation state 
+    // must not be copied into the presentation state
     if ((ofsopclassUID == UID_XRayAngiographicImageStorage) ||
         (ofsopclassUID == UID_XRayFluoroscopyImageStorage) ||
         (ofsopclassUID == UID_RETIRED_XRayAngiographicBiPlaneImageStorage))
@@ -2169,7 +2169,10 @@ void DcmPresentationState::setLog(OFConsole *stream, OFBool verbMode, OFBool dbg
 
 /*
  *  $Log: dcmpstat.cc,v $
- *  Revision 1.4  2003-12-18 16:37:49  meichel
+ *  Revision 1.5  2004-02-04 15:57:48  joergr
+ *  Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ *  Revision 1.4  2003/12/18 16:37:49  meichel
  *  During creation of default presentation state from image the Modality LUT
  *    is now ignored for XA, RF and XA Biplane SOP instances
  *
@@ -2207,8 +2210,6 @@ void DcmPresentationState::setLog(OFConsole *stream, OFBool verbMode, OFBool dbg
  *
  *  Revision 1.71  2002/04/16 14:02:22  joergr
  *  Added configurable support for C++ ANSI standard includes (e.g. streams).
- *  Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- *  contribution.
  *
  *  Revision 1.70  2002/01/08 10:40:58  joergr
  *  Corrected spelling of function dcmGenerateUniqueIdentifier().

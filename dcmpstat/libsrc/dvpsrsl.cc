@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2003, OFFIS
+ *  Copyright (C) 1998-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSReferencedSeries_PList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-10-15 16:57:14 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-02-04 15:57:49 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,7 +54,7 @@ DVPSReferencedSeries_PList::DVPSReferencedSeries_PList(const DVPSReferencedSerie
   OFListConstIterator(DVPSReferencedSeries *) first = arg.list_.begin();
   OFListConstIterator(DVPSReferencedSeries *) last = arg.list_.end();
   while (first != last)
-  {     
+  {
     list_.push_back((*first)->clone());
     ++first;
   }
@@ -70,7 +70,7 @@ void DVPSReferencedSeries_PList::clear()
   OFListIterator(DVPSReferencedSeries *) first = list_.begin();
   OFListIterator(DVPSReferencedSeries *) last = list_.end();
   while (first != last)
-  {     
+  {
     delete (*first);
     first = list_.erase(first);
   }
@@ -83,7 +83,7 @@ OFCondition DVPSReferencedSeries_PList::read(DcmItem &dset)
   DVPSReferencedSeries *newSeries = NULL;
   DcmSequenceOfItems *dseq=NULL;
   DcmItem *ditem=NULL;
-  
+
   if (EC_Normal == dset.search(DCM_ReferencedSeriesSequence, stack, ESM_fromHere, OFFalse))
   {
     dseq=(DcmSequenceOfItems *)stack.top();
@@ -96,14 +96,14 @@ OFCondition DVPSReferencedSeries_PList::read(DcmItem &dset)
         newSeries = new DVPSReferencedSeries();
         if (newSeries && ditem)
         {
-          newSeries->setLog(logstream, verboseMode, debugMode);          
+          newSeries->setLog(logstream, verboseMode, debugMode);
           result = newSeries->read(*ditem);
           list_.push_back(newSeries);
         } else result = EC_MemoryExhausted;
       }
     }
-  }    
-  
+  }
+
   return result;
 }
 
@@ -138,7 +138,7 @@ OFCondition DVPSReferencedSeries_PList::write(DcmItem &dset)
 
 OFBool DVPSReferencedSeries_PList::isValid()
 {
-  if (list_.size() == 0) 
+  if (list_.size() == 0)
   {
     if (verboseMode)
     {
@@ -147,10 +147,10 @@ OFBool DVPSReferencedSeries_PList::isValid()
     }
     return OFFalse;
   }
-  
+
   OFBool result = OFTrue;
   OFString sopclassuid;
-   
+
   OFListIterator(DVPSReferencedSeries *) first = list_.begin();
   OFListIterator(DVPSReferencedSeries *) last = list_.end();
   while ((result == OFTrue) && (first != last))
@@ -163,7 +163,7 @@ OFBool DVPSReferencedSeries_PList::isValid()
 
 OFBool DVPSReferencedSeries_PList::checkSOPClass(const char *uid)
 {
-  
+
   OFBool result = OFTrue;
   OFString sopclassuid(uid);
   OFListIterator(DVPSReferencedSeries *) first = list_.begin();
@@ -210,7 +210,7 @@ void DVPSReferencedSeries_PList::removeSeriesReference(const char *seriesUID)
     if ((*first)->isSeriesUID(seriesUID))
     {
       delete (*first);
-      first = list_.erase(first);     
+      first = list_.erase(first);
     } else ++first;
   }
   return;
@@ -219,15 +219,15 @@ void DVPSReferencedSeries_PList::removeSeriesReference(const char *seriesUID)
 OFCondition DVPSReferencedSeries_PList::addImageReference(
     const char *seriesUID,
     const char *sopclassUID,
-    const char *instanceUID, 
+    const char *instanceUID,
     const char *frames,
-    const char *aetitle, 
-    const char *filesetID, 
+    const char *aetitle,
+    const char *filesetID,
     const char *filesetUID)
 
 {
   if ((seriesUID==NULL) || (sopclassUID==NULL) || (instanceUID==NULL)) return EC_IllegalCall;
-  
+
   OFCondition result = EC_Normal;
   if (checkSOPClass(sopclassUID))
   {
@@ -268,7 +268,7 @@ OFCondition DVPSReferencedSeries_PList::getImageReference(
     size_t idx,
     OFString& seriesUID,
     OFString& sopclassUID,
-    OFString& instanceUID, 
+    OFString& instanceUID,
     OFString& frames,
     OFString& aetitle,
     OFString& filesetID,
@@ -281,7 +281,7 @@ OFCondition DVPSReferencedSeries_PList::getImageReference(
   while ((!found)&&(first != last))
   {
     i=(*first)->numberOfImageReferences();
-    if (i > idx) found = OFTrue; else 
+    if (i > idx) found = OFTrue; else
     {
       idx -= i;
       ++first;
@@ -302,12 +302,15 @@ void DVPSReferencedSeries_PList::setLog(OFConsole *stream, OFBool verbMode, OFBo
   {
     (*first)->setLog(logstream, verbMode, dbgMode);
     ++first;
-  }	
+  }
 }
 
 /*
  *  $Log: dvpsrsl.cc,v $
- *  Revision 1.15  2003-10-15 16:57:14  meichel
+ *  Revision 1.16  2004-02-04 15:57:49  joergr
+ *  Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ *  Revision 1.15  2003/10/15 16:57:14  meichel
  *  Updated error messages generated while parsing presentation states
  *
  *  Revision 1.14  2003/09/05 08:37:46  meichel
@@ -316,7 +319,6 @@ void DVPSReferencedSeries_PList::setLog(OFConsole *stream, OFBool verbMode, OFBo
  *
  *  Revision 1.13  2003/06/12 18:23:11  joergr
  *  Modified code to use const_iterators where appropriate (required for STL).
- *  Thanks to Henning Meyer <Henning-Meyer@web.de> for the report.
  *
  *  Revision 1.12  2003/06/04 12:30:28  meichel
  *  Added various includes needed by MSVC5 with STL
@@ -361,4 +363,3 @@ void DVPSReferencedSeries_PList::setLog(OFConsole *stream, OFBool verbMode, OFBo
  *
  *
  */
-

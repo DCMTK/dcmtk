@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2003, OFFIS
+ *  Copyright (C) 1998-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSOverlayCurveActivationLayer_PList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-09-05 08:37:46 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-02-04 15:57:49 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,7 +59,7 @@ DVPSOverlayCurveActivationLayer_PList::DVPSOverlayCurveActivationLayer_PList(con
   OFListConstIterator(DVPSOverlayCurveActivationLayer *) first = arg.list_.begin();
   OFListConstIterator(DVPSOverlayCurveActivationLayer *) last = arg.list_.end();
   while (first != last)
-  {     
+  {
     list_.push_back((*first)->clone());
     ++first;
   }
@@ -75,7 +75,7 @@ void DVPSOverlayCurveActivationLayer_PList::clear()
   OFListIterator(DVPSOverlayCurveActivationLayer *) first = list_.begin();
   OFListIterator(DVPSOverlayCurveActivationLayer *) last = list_.end();
   while (first != last)
-  {     
+  {
     delete (*first);
     first = list_.erase(first);
   }
@@ -87,7 +87,7 @@ OFCondition DVPSOverlayCurveActivationLayer_PList::read(DcmItem &dset)
   DcmStack stack;
   DcmTagKey key(DCM_CurveActivationLayer);
   DVPSOverlayCurveActivationLayer *newLayer = NULL;
-  
+
   Uint16 i = 0x5000;
   while (i < 0x6020)
   {
@@ -100,7 +100,7 @@ OFCondition DVPSOverlayCurveActivationLayer_PList::read(DcmItem &dset)
         newLayer = new DVPSOverlayCurveActivationLayer();
         if (newLayer)
         {
-          newLayer->setLog(logstream, verboseMode, debugMode);          
+          newLayer->setLog(logstream, verboseMode, debugMode);
           result = newLayer->read(dset,i);
           list_.push_back(newLayer);
         } else result = EC_MemoryExhausted;
@@ -137,26 +137,26 @@ OFCondition DVPSOverlayCurveActivationLayer_PList::createFromImage(
   OFCondition result = EC_Normal;
   long currentLayer = 0;
   long lastOverlayLayer = 0;
-  char layerName[100]; 
-  char layerDesc[100]; 
+  char layerName[100];
+  char layerDesc[100];
   OFString aString;
   Uint16 dimensions;
-  
+
   OFBool found;
-  DcmStack stack;  
+  DcmStack stack;
   DcmTagKey overlayRows(DCM_OverlayRows);
   DcmTagKey overlayColumns(DCM_OverlayColumns);
   DcmTagKey overlayType(DCM_OverlayType);
   DcmTagKey overlayOrigin(DCM_OverlayOrigin);
   DcmTagKey overlayBitsAllocated(DCM_OverlayBitsAllocated);
   DcmTagKey overlayBitPosition(DCM_OverlayBitPosition);
-  
+
   DcmTagKey curveDimensions(DCM_CurveDimensions);
   DcmTagKey numberOfPoints(DCM_NumberOfPoints);
   DcmTagKey typeOfData(DCM_TypeOfData);
   DcmTagKey dataValueRepresentation(DCM_DataValueRepresentation);
   DcmTagKey curveData(DCM_CurveData);
-  
+
   OFBool haveOverlays = OFFalse;
   /* first we handle overlays */
   if ((overlayActivation==DVPSO_referenceOverlays) || (overlayActivation==DVPSO_copyOverlays))
@@ -166,7 +166,7 @@ OFCondition DVPSOverlayCurveActivationLayer_PList::createFromImage(
       found = OFFalse;
       /* check if we have an internal overlay with this group */
       if (overlayList.haveOverlayGroup(group)) found=OFTrue;
-      
+
       /* otherwise check if we have an external overlay with this group */
       if (!found)
       {
@@ -189,7 +189,7 @@ OFCondition DVPSOverlayCurveActivationLayer_PList::createFromImage(
         stack.clear();
         if (EC_Normal != dset.search(overlayBitPosition, stack, ESM_fromHere, OFFalse)) found = OFFalse;
       }
-          
+
       /* if found, create graphic layer if necessary. Create activation. */
       if (found)
       {
@@ -229,7 +229,7 @@ OFCondition DVPSOverlayCurveActivationLayer_PList::createFromImage(
       }
     }
   }
-  
+
   lastOverlayLayer = currentLayer;
   /* then we handle curves */
   if (curveActivation)
@@ -237,7 +237,7 @@ OFCondition DVPSOverlayCurveActivationLayer_PList::createFromImage(
     for (Uint16 group = 0x5000; ((result==EC_Normal)&&(group < 0x5020)); group += 2)
     {
       found = OFFalse;
-      
+
       /* check if we have an external curve with this group */
       curveDimensions.setGroup(group);
       numberOfPoints.setGroup(group);
@@ -254,7 +254,7 @@ OFCondition DVPSOverlayCurveActivationLayer_PList::createFromImage(
       if (EC_Normal != dset.search(dataValueRepresentation, stack, ESM_fromHere, OFFalse)) found = OFFalse;
       stack.clear();
       if (EC_Normal != dset.search(curveData, stack, ESM_fromHere, OFFalse)) found = OFFalse;
-      
+
       /* if we have found a curve, make sure that this is a type of curve we can display */
       if (found)
       {
@@ -265,18 +265,18 @@ OFCondition DVPSOverlayCurveActivationLayer_PList::createFromImage(
         typeOfDataValue.setGTag(group);
         READ_FROM_DATASET(DcmUnsignedShort, curveDimensionsValue)
         READ_FROM_DATASET(DcmCodeString, typeOfDataValue)
-        
+
         /* we can only display POLY and ROI curves */
         aString.clear();
         typeOfDataValue.getOFString(aString,0);
         if ((aString != "POLY")&&(aString != "ROI")) found=OFFalse;
-        
+
         /* we can only display 2D curves */
         dimensions=0;
         curveDimensionsValue.getUint16(dimensions,0);
         if (dimensions != 2) found=OFFalse;
       }
-      
+
       /* if found, create graphic layer if necessary. Create activation. */
       if (found)
       {
@@ -315,7 +315,7 @@ OFCondition DVPSOverlayCurveActivationLayer_PList::createFromImage(
       }
     }
   }
-  
+
   return result;
 }
 
@@ -327,7 +327,7 @@ OFCondition DVPSOverlayCurveActivationLayer_PList::setActivation(Uint16 group, c
   if ((group < 0x5020)&&(group >= 0x5000)&&((group & 1) == 0)) result = OFTrue;
   if (!result) return EC_IllegalCall;
   if (layer==NULL) return EC_IllegalCall;
-  
+
   OFListIterator(DVPSOverlayCurveActivationLayer *) first = list_.begin();
   OFListIterator(DVPSOverlayCurveActivationLayer *) last = list_.end();
   while (first != last)
@@ -379,7 +379,7 @@ const char *DVPSOverlayCurveActivationLayer_PList::getActivationLayer(Uint16 gro
 void DVPSOverlayCurveActivationLayer_PList::renameLayer(const char *oldName, const char *newName)
 {
   if ((oldName==NULL)||(newName==NULL)) return;
-  
+
   OFString aString(oldName);
   OFListIterator(DVPSOverlayCurveActivationLayer *) first = list_.begin();
   OFListIterator(DVPSOverlayCurveActivationLayer *) last = list_.end();
@@ -397,7 +397,7 @@ void DVPSOverlayCurveActivationLayer_PList::renameLayer(const char *oldName, con
 void DVPSOverlayCurveActivationLayer_PList::removeLayer(const char *name)
 {
   if (name==NULL) return;
-  
+
   OFString aString(name);
   OFListIterator(DVPSOverlayCurveActivationLayer *) first = list_.begin();
   OFListIterator(DVPSOverlayCurveActivationLayer *) last = list_.end();
@@ -415,7 +415,7 @@ void DVPSOverlayCurveActivationLayer_PList::removeLayer(const char *name)
 OFBool DVPSOverlayCurveActivationLayer_PList::usesLayerName(const char *name)
 {
   if (name==NULL) return OFFalse;
-  
+
   OFString aString(name);
   OFListIterator(DVPSOverlayCurveActivationLayer *) first = list_.begin();
   OFListIterator(DVPSOverlayCurveActivationLayer *) last = list_.end();
@@ -430,7 +430,7 @@ OFBool DVPSOverlayCurveActivationLayer_PList::usesLayerName(const char *name)
 size_t DVPSOverlayCurveActivationLayer_PList::getNumberOfActivations(const char *layer, OFBool isCurve)
 {
   if (layer==NULL) return 0;
-  
+
   size_t result = 0;
   Uint16 group;
   OFString aString(layer);
@@ -452,7 +452,7 @@ size_t DVPSOverlayCurveActivationLayer_PList::getNumberOfActivations(const char 
 Uint16 DVPSOverlayCurveActivationLayer_PList::getActivationGroup(const char *layer, size_t idx, OFBool isCurve)
 {
   if (layer==NULL) return 0;
-  
+
   Uint16 group;
   OFString aString(layer);
   OFListIterator(DVPSOverlayCurveActivationLayer *) first = list_.begin();
@@ -483,19 +483,21 @@ void DVPSOverlayCurveActivationLayer_PList::setLog(OFConsole *stream, OFBool ver
   {
     (*first)->setLog(logstream, verbMode, dbgMode);
     ++first;
-  }	
+  }
 }
 
 
 /*
  *  $Log: dvpsall.cc,v $
- *  Revision 1.12  2003-09-05 08:37:46  meichel
+ *  Revision 1.13  2004-02-04 15:57:49  joergr
+ *  Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ *  Revision 1.12  2003/09/05 08:37:46  meichel
  *  Fixed minor issue that caused certain error messages during the
  *    parse process on a GSPS object to be "swallowed".
  *
  *  Revision 1.11  2003/06/12 18:23:11  joergr
  *  Modified code to use const_iterators where appropriate (required for STL).
- *  Thanks to Henning Meyer <Henning-Meyer@web.de> for the report.
  *
  *  Revision 1.10  2003/06/04 12:30:28  meichel
  *  Added various includes needed by MSVC5 with STL
@@ -532,4 +534,3 @@ void DVPSOverlayCurveActivationLayer_PList::setLog(OFConsole *stream, OFBool ver
  *
  *
  */
-

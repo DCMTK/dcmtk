@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2003, OFFIS
+ *  Copyright (C) 1998-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSReferencedImage_PList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-10-15 16:57:14 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-02-04 15:57:49 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,7 +56,7 @@ DVPSReferencedImage_PList::DVPSReferencedImage_PList(const DVPSReferencedImage_P
   OFListConstIterator(DVPSReferencedImage *) first = arg.list_.begin();
   OFListConstIterator(DVPSReferencedImage *) last = arg.list_.end();
   while (first != last)
-  {     
+  {
     list_.push_back((*first)->clone());
     ++first;
   }
@@ -72,7 +72,7 @@ void DVPSReferencedImage_PList::clear()
   OFListIterator(DVPSReferencedImage *) first = list_.begin();
   OFListIterator(DVPSReferencedImage *) last = list_.end();
   while (first != last)
-  {     
+  {
     delete (*first);
     first = list_.erase(first);
   }
@@ -85,7 +85,7 @@ OFCondition DVPSReferencedImage_PList::read(DcmItem &dset)
   DVPSReferencedImage *newImage = NULL;
   DcmSequenceOfItems *dseq=NULL;
   DcmItem *ditem=NULL;
-  
+
   if (EC_Normal == dset.search(DCM_ReferencedImageSequence, stack, ESM_fromHere, OFFalse))
   {
     dseq=(DcmSequenceOfItems *)stack.top();
@@ -98,14 +98,14 @@ OFCondition DVPSReferencedImage_PList::read(DcmItem &dset)
         newImage = new DVPSReferencedImage();
         if (newImage && ditem)
         {
-          newImage->setLog(logstream, verboseMode, debugMode);          
+          newImage->setLog(logstream, verboseMode, debugMode);
           result = newImage->read(*ditem);
           list_.push_back(newImage);
         } else result = EC_MemoryExhausted;
       }
     }
-  }    
-  
+  }
+
   return result;
 }
 
@@ -140,7 +140,7 @@ OFCondition DVPSReferencedImage_PList::write(DcmItem &dset)
 
 OFBool DVPSReferencedImage_PList::isValid(OFString& sopclassuid)
 {
-  if (size() == 0) 
+  if (size() == 0)
   {
     if (verboseMode)
     {
@@ -201,7 +201,7 @@ void DVPSReferencedImage_PList::removeImageReference(const char *sopinstanceuid)
     if ((*first)->isSOPInstanceUID(sopinstanceuid))
     {
       delete (*first);
-      first = list_.erase(first);     
+      first = list_.erase(first);
     } else ++first;
   }
   return;
@@ -209,13 +209,13 @@ void DVPSReferencedImage_PList::removeImageReference(const char *sopinstanceuid)
 
 OFCondition DVPSReferencedImage_PList::addImageReference(
     const char *sopclassUID,
-    const char *instanceUID, 
+    const char *instanceUID,
     const char *frames)
 {
   OFCondition result = EC_Normal;
 
   /* make sure that we don't create two references to the same image */
-  if (findImageReference(instanceUID)) result = EC_IllegalCall; 
+  if (findImageReference(instanceUID)) result = EC_IllegalCall;
   else
   {
     DVPSReferencedImage *image = new DVPSReferencedImage();
@@ -232,7 +232,7 @@ OFCondition DVPSReferencedImage_PList::addImageReference(
 
 OFCondition DVPSReferencedImage_PList::addImageReference(
     const char *sopclassUID,
-    const char *instanceUID, 
+    const char *instanceUID,
     unsigned long frame,
     DVPSObjectApplicability applicability)
 {
@@ -251,7 +251,7 @@ OFCondition DVPSReferencedImage_PList::addImageReference(
 OFCondition DVPSReferencedImage_PList::getImageReference(
     size_t idx,
     OFString& sopclassUID,
-    OFString& instanceUID, 
+    OFString& instanceUID,
     OFString& frames)
 {
   if (size() <= idx) return EC_IllegalCall;
@@ -266,22 +266,22 @@ OFCondition DVPSReferencedImage_PList::getImageReference(
     }
   }
   return EC_IllegalCall;
-}  
+}
 
 void DVPSReferencedImage_PList::removeImageReference(
     DVPSReferencedSeries_PList& allReferences,
     const char *instanceUID,
-    unsigned long frame, 
-    unsigned long numberOfFrames, 
+    unsigned long frame,
+    unsigned long numberOfFrames,
     DVPSObjectApplicability applicability)
 {
-  
+
   if (applicability == DVPSB_allImages)
   {
     clear();
     return;
-  } 
-  
+  }
+
   // if list of image references is empty, add all existing references
   if (size() == 0)
   {
@@ -308,7 +308,7 @@ void DVPSReferencedImage_PList::removeImageReference(
       }
     }
   }
-  if (applicability == DVPSB_currentImage) removeImageReference(instanceUID); 
+  if (applicability == DVPSB_currentImage) removeImageReference(instanceUID);
   else removeFrameReference(instanceUID, frame, numberOfFrames);
   return;
 }
@@ -336,7 +336,7 @@ OFBool DVPSReferencedImage_PList::matchesApplicability(const char *instanceUID, 
       }
       break;
     case DVPSB_currentImage:
-      // we match if referenced image SQ contains exactly one item 
+      // we match if referenced image SQ contains exactly one item
       // referencing all frames of the current image
       if (size() == 1)
       {
@@ -347,7 +347,7 @@ OFBool DVPSReferencedImage_PList::matchesApplicability(const char *instanceUID, 
     case DVPSB_allImages:
       // applicability matches if referenced image SQ is empty
       if (size() == 0) return OFTrue;
-      break;  
+      break;
   }
   return OFFalse;
 }
@@ -364,12 +364,15 @@ void DVPSReferencedImage_PList::setLog(OFConsole *stream, OFBool verbMode, OFBoo
   {
     (*first)->setLog(logstream, verbMode, dbgMode);
     ++first;
-  }	
+  }
 }
 
 /*
  *  $Log: dvpsril.cc,v $
- *  Revision 1.17  2003-10-15 16:57:14  meichel
+ *  Revision 1.18  2004-02-04 15:57:49  joergr
+ *  Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ *  Revision 1.17  2003/10/15 16:57:14  meichel
  *  Updated error messages generated while parsing presentation states
  *
  *  Revision 1.16  2003/09/05 08:37:46  meichel
@@ -378,7 +381,6 @@ void DVPSReferencedImage_PList::setLog(OFConsole *stream, OFBool verbMode, OFBoo
  *
  *  Revision 1.15  2003/06/12 18:23:11  joergr
  *  Modified code to use const_iterators where appropriate (required for STL).
- *  Thanks to Henning Meyer <Henning-Meyer@web.de> for the report.
  *
  *  Revision 1.14  2003/06/04 12:30:28  meichel
  *  Added various includes needed by MSVC5 with STL
@@ -429,4 +431,3 @@ void DVPSReferencedImage_PList::setLog(OFConsole *stream, OFBool verbMode, OFBoo
  *
  *
  */
-

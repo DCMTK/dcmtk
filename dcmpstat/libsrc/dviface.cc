@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2003, OFFIS
+ *  Copyright (C) 1998-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-12-19 14:57:04 $
- *  CVS/RCS Revision: $Revision: 1.147 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-02-04 15:57:48 $
+ *  CVS/RCS Revision: $Revision: 1.148 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -3777,7 +3777,7 @@ OFCondition DVInterface::terminatePrintServer()
   T_ASC_Association *assoc=NULL;
   const char *target = NULL;
   OFBool useTLS = OFFalse;
-  
+
   writeLogMessage(DVPSM_informational, "DCMPSTAT", "Terminating print server process ...");
 
 #ifdef WITH_OPENSSL
@@ -3817,10 +3817,10 @@ OFCondition DVInterface::terminatePrintServer()
           tlsPrivateKeyFile += PATH_SEPARATOR;
           current = getTargetPrivateKey(target);
           if (current) tlsPrivateKeyFile += current; else tlsPrivateKeyFile += "sitekey.pem";
-          
+
           /* private key password */
           const char *tlsPrivateKeyPassword = getTargetPrivateKeyPassword(target);
-          
+
           /* DH parameter file */
           OFString tlsDHParametersFile;
           current = getTargetDiffieHellmanParameters(target);
@@ -3830,13 +3830,13 @@ OFCondition DVInterface::terminatePrintServer()
             tlsDHParametersFile += PATH_SEPARATOR;
             tlsDHParametersFile += current;
           }
-          
+
           /* random seed file */
           OFString tlsRandomSeedFile(tlsFolder);
           tlsRandomSeedFile += PATH_SEPARATOR;
           current = getTargetRandomSeed(target);
           if (current) tlsRandomSeedFile += current; else tlsRandomSeedFile += "siteseed.bin";
-         
+
           /* CA certificate directory */
           const char *tlsCACertificateFolder = getTLSCACertificateFolder();
           if (tlsCACertificateFolder==NULL) tlsCACertificateFolder = ".";
@@ -4415,7 +4415,10 @@ void DVInterface::disableImageAndPState()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.147  2003-12-19 14:57:04  meichel
+ *  Revision 1.148  2004-02-04 15:57:48  joergr
+ *  Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ *  Revision 1.147  2003/12/19 14:57:04  meichel
  *  Completed support for terminating TLS-based print server processes
  *
  *  Revision 1.146  2003/12/19 13:49:57  meichel
@@ -4451,8 +4454,6 @@ void DVInterface::disableImageAndPState()
  *
  *  Revision 1.138  2002/04/16 14:02:20  joergr
  *  Added configurable support for C++ ANSI standard includes (e.g. streams).
- *  Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- *  contribution.
  *
  *  Revision 1.137  2002/04/11 13:13:43  joergr
  *  Replaced direct call of system routines by new standard date and time

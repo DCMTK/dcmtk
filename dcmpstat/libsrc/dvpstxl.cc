@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2003, OFFIS
+ *  Copyright (C) 1998-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSTextObject_PList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-06-12 18:23:11 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2004-02-04 15:57:49 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,7 +53,7 @@ DVPSTextObject_PList::DVPSTextObject_PList(const DVPSTextObject_PList &arg)
   OFListConstIterator(DVPSTextObject *) first = arg.list_.begin();
   OFListConstIterator(DVPSTextObject *) last = arg.list_.end();
   while (first != last)
-  {     
+  {
     list_.push_back((*first)->clone());
     ++first;
   }
@@ -69,7 +69,7 @@ void DVPSTextObject_PList::clear()
   OFListIterator(DVPSTextObject *) first = list_.begin();
   OFListIterator(DVPSTextObject *) last = list_.end();
   while (first != last)
-  {     
+  {
     delete (*first);
     first = list_.erase(first);
   }
@@ -82,7 +82,7 @@ OFCondition DVPSTextObject_PList::read(DcmItem &dset)
   DVPSTextObject *newObject = NULL;
   DcmSequenceOfItems *dseq=NULL;
   DcmItem *ditem=NULL;
-  
+
   if (EC_Normal == dset.search(DCM_TextObjectSequence, stack, ESM_fromHere, OFFalse))
   {
     dseq=(DcmSequenceOfItems *)stack.top();
@@ -101,8 +101,8 @@ OFCondition DVPSTextObject_PList::read(DcmItem &dset)
         } else result = EC_MemoryExhausted;
       }
     }
-  }    
-  
+  }
+
   return result;
 }
 
@@ -162,7 +162,7 @@ DVPSTextObject *DVPSTextObject_PList::removeTextObject(size_t idx)
   OFListIterator(DVPSTextObject *) last = list_.end();
   while (first != last)
   {
-    if (idx==0) 
+    if (idx==0)
     {
       DVPSTextObject *result = *first;
       list_.erase(first);
@@ -185,15 +185,17 @@ void DVPSTextObject_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbg
   {
     (*first)->setLog(logstream, verbMode, dbgMode);
     ++first;
-  }	
+  }
 }
 
 
 /*
  *  $Log: dvpstxl.cc,v $
- *  Revision 1.9  2003-06-12 18:23:11  joergr
+ *  Revision 1.10  2004-02-04 15:57:49  joergr
+ *  Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ *  Revision 1.9  2003/06/12 18:23:11  joergr
  *  Modified code to use const_iterators where appropriate (required for STL).
- *  Thanks to Henning Meyer <Henning-Meyer@web.de> for the report.
  *
  *  Revision 1.8  2003/06/04 10:18:07  meichel
  *  Replaced private inheritance from template with aggregation
@@ -223,4 +225,3 @@ void DVPSTextObject_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbg
  *
  *
  */
-

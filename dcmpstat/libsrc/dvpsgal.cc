@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2003, OFFIS
+ *  Copyright (C) 1998-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSGraphicAnnotation_PList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-09-05 08:37:46 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-02-04 15:57:49 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,7 +56,7 @@ DVPSGraphicAnnotation_PList::DVPSGraphicAnnotation_PList(const DVPSGraphicAnnota
   OFListConstIterator(DVPSGraphicAnnotation *) first = arg.list_.begin();
   OFListConstIterator(DVPSGraphicAnnotation *) last = arg.list_.end();
   while (first != last)
-  {     
+  {
     list_.push_back((*first)->clone());
     ++first;
   }
@@ -72,7 +72,7 @@ void DVPSGraphicAnnotation_PList::clear()
   OFListIterator(DVPSGraphicAnnotation *) first = list_.begin();
   OFListIterator(DVPSGraphicAnnotation *) last = list_.end();
   while (first != last)
-  {     
+  {
     delete (*first);
     first = list_.erase(first);
   }
@@ -85,7 +85,7 @@ OFCondition DVPSGraphicAnnotation_PList::read(DcmItem &dset)
   DVPSGraphicAnnotation *newObject = NULL;
   DcmSequenceOfItems *dseq=NULL;
   DcmItem *ditem=NULL;
-  
+
   if (EC_Normal == dset.search(DCM_GraphicAnnotationSequence, stack, ESM_fromHere, OFFalse))
   {
     dseq=(DcmSequenceOfItems *)stack.top();
@@ -98,14 +98,14 @@ OFCondition DVPSGraphicAnnotation_PList::read(DcmItem &dset)
         newObject = new DVPSGraphicAnnotation();
         if (newObject && ditem)
         {
-          newObject->setLog(logstream, verboseMode, debugMode);          
+          newObject->setLog(logstream, verboseMode, debugMode);
           result = newObject->read(*ditem);
           list_.push_back(newObject);
         } else result = EC_MemoryExhausted;
       }
     }
-  }    
-  
+  }
+
   return result;
 }
 
@@ -144,7 +144,7 @@ OFCondition DVPSGraphicAnnotation_PList::write(DcmItem &dset)
 void DVPSGraphicAnnotation_PList::renameLayer(const char *oldName, const char *newName)
 {
   if ((oldName==NULL)||(newName==NULL)) return;
-  
+
   OFString aString(oldName);
   OFListIterator(DVPSGraphicAnnotation *) first = list_.begin();
   OFListIterator(DVPSGraphicAnnotation *) last = list_.end();
@@ -162,7 +162,7 @@ void DVPSGraphicAnnotation_PList::renameLayer(const char *oldName, const char *n
 void DVPSGraphicAnnotation_PList::removeLayer(const char *name)
 {
   if (name==NULL) return;
-  
+
   OFString aString(name);
   OFListIterator(DVPSGraphicAnnotation *) first = list_.begin();
   OFListIterator(DVPSGraphicAnnotation *) last = list_.end();
@@ -196,7 +196,7 @@ void DVPSGraphicAnnotation_PList::cleanupLayers()
 OFBool DVPSGraphicAnnotation_PList::usesLayerName(const char *name)
 {
   if (name==NULL) return OFFalse;
-  
+
   OFString aString(name);
   OFListIterator(DVPSGraphicAnnotation *) first = list_.begin();
   OFListIterator(DVPSGraphicAnnotation *) last = list_.end();
@@ -213,7 +213,7 @@ size_t DVPSGraphicAnnotation_PList::getNumberOfTextObjects(const char *layer, co
 {
   if (layer==NULL) return 0;
 
-  size_t result = 0;  
+  size_t result = 0;
   OFString aString(layer);
   OFListIterator(DVPSGraphicAnnotation *) first = list_.begin();
   OFListIterator(DVPSGraphicAnnotation *) last = list_.end();
@@ -232,7 +232,7 @@ DVPSTextObject *DVPSGraphicAnnotation_PList::getTextObject(const char *layer, co
 {
   if (layer==NULL) return NULL;
 
-  size_t tmp = 0;  
+  size_t tmp = 0;
   OFString aString(layer);
   OFListIterator(DVPSGraphicAnnotation *) first = list_.begin();
   OFListIterator(DVPSGraphicAnnotation *) last = list_.end();
@@ -242,7 +242,7 @@ DVPSTextObject *DVPSGraphicAnnotation_PList::getTextObject(const char *layer, co
     {
       tmp = (*first)->getNumberOfTextObjects();
       if (idx < tmp) return (*first)->getTextObject(idx); else idx -= tmp;
-    } 
+    }
     ++first;
   }
   return NULL;
@@ -250,11 +250,11 @@ DVPSTextObject *DVPSGraphicAnnotation_PList::getTextObject(const char *layer, co
 
 
 DVPSTextObject *DVPSGraphicAnnotation_PList::addTextObject(
-    const char *layer, 
-    const char *sopclassUID, 
-    const char *instanceUID, 
-    unsigned long frame, 
-    DVPSObjectApplicability applicability, 
+    const char *layer,
+    const char *sopclassUID,
+    const char *instanceUID,
+    unsigned long frame,
+    DVPSObjectApplicability applicability,
     DVPSTextObject *text)
 {
   if (layer==NULL) return NULL;
@@ -265,7 +265,7 @@ DVPSTextObject *DVPSGraphicAnnotation_PList::addTextObject(
     if (text) text->setLog(logstream, verboseMode, debugMode);
   }
   if (text==NULL) return NULL;
-  
+
   DVPSGraphicAnnotation *annotation = NULL;
   OFString aString(layer);
   OFListIterator(DVPSGraphicAnnotation *) first = list_.begin();
@@ -278,19 +278,19 @@ DVPSTextObject *DVPSGraphicAnnotation_PList::addTextObject(
       first = last;
     } else ++first;
   }
-  
+
   if (annotation==NULL)
   {
     annotation = new DVPSGraphicAnnotation();
-    if (annotation) 
+    if (annotation)
     {
       annotation->setAnnotationLayer(layer);
       if (applicability != DVPSB_allImages) annotation->addImageReference(sopclassUID, instanceUID, frame, applicability);
       list_.push_back(annotation);
     }
   }
-  
-  if (annotation) 
+
+  if (annotation)
   {
     annotation->addTextObject(text);
     return text;
@@ -305,7 +305,7 @@ OFCondition DVPSGraphicAnnotation_PList::removeTextObject(const char *layer, con
 {
   if (layer==NULL) return EC_IllegalCall;
 
-  size_t tmp = 0;  
+  size_t tmp = 0;
   OFString aString(layer);
   OFListIterator(DVPSGraphicAnnotation *) first = list_.begin();
   OFListIterator(DVPSGraphicAnnotation *) last = list_.end();
@@ -314,7 +314,7 @@ OFCondition DVPSGraphicAnnotation_PList::removeTextObject(const char *layer, con
     if ((aString == (*first)->getAnnotationLayer()) && ((*first)->isApplicable(instanceUID, frame)))
     {
       tmp = (*first)->getNumberOfTextObjects();
-      if (idx < tmp) 
+      if (idx < tmp)
       {
         DVPSTextObject *textObject = (*first)->removeTextObject(idx);
         if (textObject)
@@ -323,7 +323,7 @@ OFCondition DVPSGraphicAnnotation_PList::removeTextObject(const char *layer, con
           return EC_Normal;
         } else return EC_IllegalCall;
       } else idx -= tmp;
-    } 
+    }
     ++first;
   }
   return EC_IllegalCall;
@@ -331,18 +331,18 @@ OFCondition DVPSGraphicAnnotation_PList::removeTextObject(const char *layer, con
 
 
 OFCondition DVPSGraphicAnnotation_PList::moveTextObject(
-    const char *old_layer, 
-    const char *sopclassUID, 
+    const char *old_layer,
+    const char *sopclassUID,
     const char *instanceUID,
     unsigned long frame,
     size_t idx,
-    DVPSObjectApplicability applicability, 
+    DVPSObjectApplicability applicability,
     const char *new_layer)
 {
   if (old_layer==NULL) return EC_IllegalCall;
   if (new_layer==NULL) return EC_IllegalCall;
 
-  size_t tmp = 0;  
+  size_t tmp = 0;
   OFString aString(old_layer);
   OFListIterator(DVPSGraphicAnnotation *) first = list_.begin();
   OFListIterator(DVPSGraphicAnnotation *) last = list_.end();
@@ -351,7 +351,7 @@ OFCondition DVPSGraphicAnnotation_PList::moveTextObject(
     if ((aString == (*first)->getAnnotationLayer()) && ((*first)->isApplicable(instanceUID, frame)))
     {
       tmp = (*first)->getNumberOfTextObjects();
-      if (idx < tmp) 
+      if (idx < tmp)
       {
         DVPSTextObject *textObject = (*first)->removeTextObject(idx);
         if (textObject)
@@ -360,7 +360,7 @@ OFCondition DVPSGraphicAnnotation_PList::moveTextObject(
           if (textObject) return EC_Normal; else return EC_MemoryExhausted;
         } else return EC_IllegalCall;
       } else idx -= tmp;
-    } 
+    }
     ++first;
   }
   return EC_IllegalCall;
@@ -371,7 +371,7 @@ size_t DVPSGraphicAnnotation_PList::getNumberOfGraphicObjects(const char *layer,
 {
   if (layer==NULL) return 0;
 
-  size_t result = 0;  
+  size_t result = 0;
   OFString aString(layer);
   OFListIterator(DVPSGraphicAnnotation *) first = list_.begin();
   OFListIterator(DVPSGraphicAnnotation *) last = list_.end();
@@ -390,7 +390,7 @@ DVPSGraphicObject *DVPSGraphicAnnotation_PList::getGraphicObject(const char *lay
 {
   if (layer==NULL) return NULL;
 
-  size_t tmp = 0;  
+  size_t tmp = 0;
   OFString aString(layer);
   OFListIterator(DVPSGraphicAnnotation *) first = list_.begin();
   OFListIterator(DVPSGraphicAnnotation *) last = list_.end();
@@ -400,7 +400,7 @@ DVPSGraphicObject *DVPSGraphicAnnotation_PList::getGraphicObject(const char *lay
     {
       tmp = (*first)->getNumberOfGraphicObjects();
       if (idx < tmp) return (*first)->getGraphicObject(idx); else idx -= tmp;
-    } 
+    }
     ++first;
   }
   return NULL;
@@ -408,18 +408,18 @@ DVPSGraphicObject *DVPSGraphicAnnotation_PList::getGraphicObject(const char *lay
 
 
 DVPSGraphicObject *DVPSGraphicAnnotation_PList::addGraphicObject(
-    const char *layer, 
-    const char *sopclassUID, 
-    const char *instanceUID, 
-    unsigned long frame, 
-    DVPSObjectApplicability applicability, 
+    const char *layer,
+    const char *sopclassUID,
+    const char *instanceUID,
+    unsigned long frame,
+    DVPSObjectApplicability applicability,
     DVPSGraphicObject *graphic)
 {
   if (layer==NULL) return NULL;
 
   if (graphic==NULL) graphic = new DVPSGraphicObject();
   if (graphic==NULL) return NULL;
-  
+
   DVPSGraphicAnnotation *annotation = NULL;
   OFString aString(layer);
   OFListIterator(DVPSGraphicAnnotation *) first = list_.begin();
@@ -432,24 +432,24 @@ DVPSGraphicObject *DVPSGraphicAnnotation_PList::addGraphicObject(
       first = last;
     } else ++first;
   }
-  
+
   if (annotation==NULL)
   {
     annotation = new DVPSGraphicAnnotation();
-    if (annotation) 
+    if (annotation)
     {
       annotation->setAnnotationLayer(layer);
       if (applicability != DVPSB_allImages) annotation->addImageReference(sopclassUID, instanceUID, frame, applicability);
       list_.push_back(annotation);
     }
   }
-  
-  if (annotation) 
+
+  if (annotation)
   {
     annotation->addGraphicObject(graphic);
     return graphic;
   }
-  
+
   delete graphic;
   return NULL;
 }
@@ -459,7 +459,7 @@ OFCondition DVPSGraphicAnnotation_PList::removeGraphicObject(const char *layer, 
 {
   if (layer==NULL) return EC_IllegalCall;
 
-  size_t tmp = 0;  
+  size_t tmp = 0;
   OFString aString(layer);
   OFListIterator(DVPSGraphicAnnotation *) first = list_.begin();
   OFListIterator(DVPSGraphicAnnotation *) last = list_.end();
@@ -468,7 +468,7 @@ OFCondition DVPSGraphicAnnotation_PList::removeGraphicObject(const char *layer, 
     if ((aString == (*first)->getAnnotationLayer()) && ((*first)->isApplicable(instanceUID, frame)))
     {
       tmp = (*first)->getNumberOfGraphicObjects();
-      if (idx < tmp) 
+      if (idx < tmp)
       {
         DVPSGraphicObject *graphicObject = (*first)->removeGraphicObject(idx);
         if (graphicObject)
@@ -477,7 +477,7 @@ OFCondition DVPSGraphicAnnotation_PList::removeGraphicObject(const char *layer, 
           return EC_Normal;
         } else return EC_IllegalCall;
       } else idx -= tmp;
-    } 
+    }
     ++first;
   }
   return EC_IllegalCall;
@@ -485,18 +485,18 @@ OFCondition DVPSGraphicAnnotation_PList::removeGraphicObject(const char *layer, 
 
 
 OFCondition DVPSGraphicAnnotation_PList::moveGraphicObject(
-    const char *old_layer, 
-    const char *sopclassUID, 
+    const char *old_layer,
+    const char *sopclassUID,
     const char *instanceUID,
     unsigned long frame,
     size_t idx,
-    DVPSObjectApplicability applicability, 
+    DVPSObjectApplicability applicability,
     const char *new_layer)
 {
   if (old_layer==NULL) return EC_IllegalCall;
   if (new_layer==NULL) return EC_IllegalCall;
 
-  size_t tmp = 0;  
+  size_t tmp = 0;
   OFString aString(old_layer);
   OFListIterator(DVPSGraphicAnnotation *) first = list_.begin();
   OFListIterator(DVPSGraphicAnnotation *) last = list_.end();
@@ -505,7 +505,7 @@ OFCondition DVPSGraphicAnnotation_PList::moveGraphicObject(
     if ((aString == (*first)->getAnnotationLayer()) && ((*first)->isApplicable(instanceUID, frame)))
     {
       tmp = (*first)->getNumberOfGraphicObjects();
-      if (idx < tmp) 
+      if (idx < tmp)
       {
         DVPSGraphicObject *graphicObject = (*first)->removeGraphicObject(idx);
         if (graphicObject)
@@ -514,7 +514,7 @@ OFCondition DVPSGraphicAnnotation_PList::moveGraphicObject(
           if (graphicObject) return EC_Normal; else return EC_MemoryExhausted;
         } else return EC_IllegalCall;
       } else idx -= tmp;
-    } 
+    }
     ++first;
   }
   return EC_IllegalCall;
@@ -531,19 +531,21 @@ void DVPSGraphicAnnotation_PList::setLog(OFConsole *stream, OFBool verbMode, OFB
   {
     (*first)->setLog(logstream, verbMode, dbgMode);
     ++first;
-  }	
+  }
 }
 
 
 /*
  *  $Log: dvpsgal.cc,v $
- *  Revision 1.13  2003-09-05 08:37:46  meichel
+ *  Revision 1.14  2004-02-04 15:57:49  joergr
+ *  Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ *  Revision 1.13  2003/09/05 08:37:46  meichel
  *  Fixed minor issue that caused certain error messages during the
  *    parse process on a GSPS object to be "swallowed".
  *
  *  Revision 1.12  2003/06/12 18:23:11  joergr
  *  Modified code to use const_iterators where appropriate (required for STL).
- *  Thanks to Henning Meyer <Henning-Meyer@web.de> for the report.
  *
  *  Revision 1.11  2003/06/04 12:30:28  meichel
  *  Added various includes needed by MSVC5 with STL
@@ -582,4 +584,3 @@ void DVPSGraphicAnnotation_PList::setLog(OFConsole *stream, OFBool verbMode, OFB
  *
  *
  */
-

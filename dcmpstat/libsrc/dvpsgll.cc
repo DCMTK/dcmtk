@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2003, OFFIS
+ *  Copyright (C) 1998-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSGraphicLayer_PList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-09-05 08:37:46 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-02-04 15:57:49 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -62,7 +62,7 @@ DVPSGraphicLayer_PList::DVPSGraphicLayer_PList(const DVPSGraphicLayer_PList &arg
   OFListConstIterator(DVPSGraphicLayer *) first = arg.list_.begin();
   OFListConstIterator(DVPSGraphicLayer *) last = arg.list_.end();
   while (first != last)
-  {     
+  {
     list_.push_back((*first)->clone());
     ++first;
   }
@@ -78,7 +78,7 @@ void DVPSGraphicLayer_PList::clear()
   OFListIterator(DVPSGraphicLayer *) first = list_.begin();
   OFListIterator(DVPSGraphicLayer *) last = list_.end();
   while (first != last)
-  {     
+  {
     delete (*first);
     first = list_.erase(first);
   }
@@ -91,7 +91,7 @@ OFCondition DVPSGraphicLayer_PList::read(DcmItem &dset)
   DVPSGraphicLayer *newLayer = NULL;
   DcmSequenceOfItems *dseq=NULL;
   DcmItem *ditem=NULL;
-  
+
   if (EC_Normal == dset.search(DCM_GraphicLayerSequence, stack, ESM_fromHere, OFFalse))
   {
     dseq=(DcmSequenceOfItems *)stack.top();
@@ -104,14 +104,14 @@ OFCondition DVPSGraphicLayer_PList::read(DcmItem &dset)
         newLayer = new DVPSGraphicLayer();
         if (newLayer && ditem)
         {
-          newLayer->setLog(logstream, verboseMode, debugMode);          
+          newLayer->setLog(logstream, verboseMode, debugMode);
           result = newLayer->read(*ditem);
           list_.push_back(newLayer);
         } else result = EC_MemoryExhausted;
       }
     }
-  }    
-  
+  }
+
   return result;
 }
 
@@ -146,14 +146,14 @@ OFCondition DVPSGraphicLayer_PList::write(DcmItem &dset)
   return result;
 }
 
-OFCondition DVPSGraphicLayer_PList::addGraphicLayer(const char *gLayer, 
+OFCondition DVPSGraphicLayer_PList::addGraphicLayer(const char *gLayer,
     const Sint32 gLayerOrder,
     const char *gLayerDescription)
 {
   if (gLayer==NULL) return EC_IllegalCall;
   OFString ggLayer(gLayer);
-  
-  /* check that no graphic layer with the same name exist */  
+
+  /* check that no graphic layer with the same name exist */
   OFListIterator(DVPSGraphicLayer *) first = list_.begin();
   OFListIterator(DVPSGraphicLayer *) last = list_.end();
   while (first != last)
@@ -161,7 +161,7 @@ OFCondition DVPSGraphicLayer_PList::addGraphicLayer(const char *gLayer,
     if (ggLayer == (*first)->getGL()) return EC_IllegalCall;
     ++first;
   }
-  
+
   DVPSGraphicLayer *newLayer = new DVPSGraphicLayer;
   if (newLayer)
   {
@@ -188,7 +188,7 @@ DVPSGraphicLayer *DVPSGraphicLayer_PList::getGraphicLayer(size_t idx)
 
 
 OFCondition DVPSGraphicLayer_PList::addGraphicLayer(
-     const char *gLayer, 
+     const char *gLayer,
      const char *gLayerDescription)
 {
   sortGraphicLayers(1);
@@ -224,9 +224,9 @@ void DVPSGraphicLayer_PList::sortGraphicLayers(Sint32 lowestLayer)
       ++first;
     }
     list_.push_back(*current);
-    tempList.erase(current);    
+    tempList.erase(current);
   }
-  
+
   /* now renumber layer orders */
   first = list_.begin();
   last = list_.end();
@@ -247,7 +247,7 @@ size_t DVPSGraphicLayer_PList::getGraphicLayerIndex(const char *name)
   if (name==NULL) return DVPS_IDX_NONE;
   size_t idx =0;
   OFString aString(name);
-  
+
   OFListIterator(DVPSGraphicLayer *) first = list_.begin();
   OFListIterator(DVPSGraphicLayer *) last = list_.end();
   while (first != last)
@@ -257,7 +257,7 @@ size_t DVPSGraphicLayer_PList::getGraphicLayerIndex(const char *name)
     ++first;
   }
   return DVPS_IDX_NONE;
-} 
+}
 
 const char *DVPSGraphicLayer_PList::getGraphicLayerDescription(size_t idx)
 {
@@ -286,7 +286,7 @@ OFCondition DVPSGraphicLayer_PList::getGraphicLayerRecommendedDisplayValueRGB(si
 OFCondition DVPSGraphicLayer_PList::setGraphicLayerRecommendedDisplayValueGray(size_t idx, Uint16 gray)
 {
   DVPSGraphicLayer *layer = getGraphicLayer(idx);
-  if (layer) 
+  if (layer)
   {
     layer->setGLRecommendedDisplayValueGray(gray);
     return EC_Normal;
@@ -296,7 +296,7 @@ OFCondition DVPSGraphicLayer_PList::setGraphicLayerRecommendedDisplayValueGray(s
 OFCondition DVPSGraphicLayer_PList::setGraphicLayerRecommendedDisplayValueRGB(size_t idx, Uint16 r, Uint16 g, Uint16 b)
 {
   DVPSGraphicLayer *layer = getGraphicLayer(idx);
-  if (layer) 
+  if (layer)
   {
     layer->setGLRecommendedDisplayValueRGB(r, g, b);
     return EC_Normal;
@@ -313,9 +313,9 @@ void DVPSGraphicLayer_PList::removeGraphicLayerRecommendedDisplayValue(size_t id
 OFCondition DVPSGraphicLayer_PList::setGraphicLayerName(size_t idx, const char *name)
 {
   if (name==NULL) return EC_IllegalCall;
-  
+
   OFString aString(name);
-  /* check that no graphic layer with the same name exist */  
+  /* check that no graphic layer with the same name exist */
   OFListIterator(DVPSGraphicLayer *) first = list_.begin();
   OFListIterator(DVPSGraphicLayer *) last = list_.end();
   while (first != last)
@@ -323,25 +323,25 @@ OFCondition DVPSGraphicLayer_PList::setGraphicLayerName(size_t idx, const char *
     if (aString == (*first)->getGL()) return EC_IllegalCall;
     ++first;
   }
-  
+
   DVPSGraphicLayer *layer = getGraphicLayer(idx);
-  if (layer) 
+  if (layer)
   {
     layer->setGL(name);
     return EC_Normal;
   }
   return EC_IllegalCall;
-}  
+}
 
 
 OFCondition DVPSGraphicLayer_PList::setGraphicLayerDescription(size_t idx, const char *descr)
 {
   DVPSGraphicLayer *layer = getGraphicLayer(idx);
-  if (layer) 
+  if (layer)
   {
     layer->setGLDescription(descr);
     return EC_Normal;
-  } 
+  }
   return EC_IllegalCall;
 }
 
@@ -423,7 +423,7 @@ OFCondition DVPSGraphicLayer_PList::removeGraphicLayer(size_t idx)
 
 
 void DVPSGraphicLayer_PList::cleanupLayers(
-     DVPSOverlayCurveActivationLayer_PList& activations, 
+     DVPSOverlayCurveActivationLayer_PList& activations,
      DVPSGraphicAnnotation_PList& annotations)
 {
   OFListIterator(DVPSGraphicLayer *) first = list_.begin();
@@ -452,18 +452,20 @@ void DVPSGraphicLayer_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool d
   {
     (*first)->setLog(logstream, verbMode, dbgMode);
     ++first;
-  }	
+  }
 }
 
 /*
  *  $Log: dvpsgll.cc,v $
- *  Revision 1.15  2003-09-05 08:37:46  meichel
+ *  Revision 1.16  2004-02-04 15:57:49  joergr
+ *  Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ *  Revision 1.15  2003/09/05 08:37:46  meichel
  *  Fixed minor issue that caused certain error messages during the
  *    parse process on a GSPS object to be "swallowed".
  *
  *  Revision 1.14  2003/06/12 18:23:11  joergr
  *  Modified code to use const_iterators where appropriate (required for STL).
- *  Thanks to Henning Meyer <Henning-Meyer@web.de> for the report.
  *
  *  Revision 1.13  2003/06/04 12:30:28  meichel
  *  Added various includes needed by MSVC5 with STL
@@ -509,4 +511,3 @@ void DVPSGraphicLayer_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool d
  *
  *
  */
-

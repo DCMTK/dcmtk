@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2003, OFFIS
+ *  Copyright (C) 1998-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSVOILUT_PList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-09-05 08:37:46 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-02-04 15:57:49 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,7 +53,7 @@ DVPSVOILUT_PList::DVPSVOILUT_PList(const DVPSVOILUT_PList &arg)
   OFListConstIterator(DVPSVOILUT *) first = arg.list_.begin();
   OFListConstIterator(DVPSVOILUT *) last = arg.list_.end();
   while (first != last)
-  {     
+  {
     list_.push_back((*first)->clone());
     ++first;
   }
@@ -69,7 +69,7 @@ void DVPSVOILUT_PList::clear()
   OFListIterator(DVPSVOILUT *) first = list_.begin();
   OFListIterator(DVPSVOILUT *) last = list_.end();
   while (first != last)
-  {     
+  {
     delete (*first);
     first = list_.erase(first);
   }
@@ -82,7 +82,7 @@ OFCondition DVPSVOILUT_PList::read(DcmItem &dset)
   DVPSVOILUT *newObject = NULL;
   DcmSequenceOfItems *dseq=NULL;
   DcmItem *ditem=NULL;
-  
+
   if (EC_Normal == dset.search(DCM_VOILUTSequence, stack, ESM_fromHere, OFFalse))
   {
     dseq=(DcmSequenceOfItems *)stack.top();
@@ -95,13 +95,13 @@ OFCondition DVPSVOILUT_PList::read(DcmItem &dset)
         newObject = new DVPSVOILUT();
         if (newObject && ditem)
         {
-          newObject->setLog(logstream, verboseMode, debugMode);          
+          newObject->setLog(logstream, verboseMode, debugMode);
           if (EC_Normal == newObject->read(*ditem)) list_.push_back(newObject); else delete(newObject);
         } else result = EC_MemoryExhausted;
       }
     }
-  }    
-  
+  }
+
   return result;
 }
 
@@ -130,19 +130,21 @@ void DVPSVOILUT_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode
   {
     (*first)->setLog(logstream, verbMode, dbgMode);
     ++first;
-  }	
+  }
 }
 
 
 /*
  *  $Log: dvpsvll.cc,v $
- *  Revision 1.8  2003-09-05 08:37:46  meichel
+ *  Revision 1.9  2004-02-04 15:57:49  joergr
+ *  Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ *  Revision 1.8  2003/09/05 08:37:46  meichel
  *  Fixed minor issue that caused certain error messages during the
  *    parse process on a GSPS object to be "swallowed".
  *
  *  Revision 1.7  2003/06/12 18:23:11  joergr
  *  Modified code to use const_iterators where appropriate (required for STL).
- *  Thanks to Henning Meyer <Henning-Meyer@web.de> for the report.
  *
  *  Revision 1.6  2003/06/04 10:18:07  meichel
  *  Replaced private inheritance from template with aggregation
@@ -166,4 +168,3 @@ void DVPSVOILUT_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode
  *
  *
  */
-

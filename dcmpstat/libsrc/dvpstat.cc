@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2003, OFFIS
+ *  Copyright (C) 1998-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-09-05 14:30:08 $
- *  CVS/RCS Revision: $Revision: 1.78 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-02-04 15:57:49 $
+ *  CVS/RCS Revision: $Revision: 1.79 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2222,7 +2222,7 @@ OFCondition DVPresentationState::createFromImage(
   const char *filesetUID)
 {
   OFCondition result = DcmPresentationState::createFromImage(
-    dset, overlayActivation, voiActivation, curveActivation, shutterActivation, 
+    dset, overlayActivation, voiActivation, curveActivation, shutterActivation,
     presentationActivation, layering, aetitle, filesetID, filesetUID);
   imageInverse = presentationLUT.isInverse();
   return result;
@@ -2231,7 +2231,10 @@ OFCondition DVPresentationState::createFromImage(
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.78  2003-09-05 14:30:08  meichel
+ *  Revision 1.79  2004-02-04 15:57:49  joergr
+ *  Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ *  Revision 1.78  2003/09/05 14:30:08  meichel
  *  Introduced new API methods that allow Displayed Areas to be queried
  *    and set either relative to the image (ignoring rotation and flip) or
  *    in absolute values as defined in the standard.  Rotate and flip methods
@@ -2261,8 +2264,6 @@ OFCondition DVPresentationState::createFromImage(
  *
  *  Revision 1.71  2002/04/16 14:02:22  joergr
  *  Added configurable support for C++ ANSI standard includes (e.g. streams).
- *  Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- *  contribution.
  *
  *  Revision 1.70  2002/01/08 10:40:58  joergr
  *  Corrected spelling of function dcmGenerateUniqueIdentifier().
