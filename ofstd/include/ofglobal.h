@@ -26,9 +26,9 @@
  * 
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-04-14 15:17:48 $
+ *  Update Date:      $Date: 2000-05-30 17:03:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofglobal.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,6 +56,9 @@ public:
    */
   OFGlobal(const T &arg)
   : val(arg)
+#ifdef _REENTRANT
+  , theMutex()
+#endif
   {
   }
 
@@ -141,7 +144,10 @@ private:
  *
  * CVS/RCS Log:
  * $Log: ofglobal.h,v $
- * Revision 1.1  2000-04-14 15:17:48  meichel
+ * Revision 1.2  2000-05-30 17:03:38  meichel
+ * Added default constructor for Mutex to initializer list in OFGlobal.
+ *
+ * Revision 1.1  2000/04/14 15:17:48  meichel
  * Created new templace class OFGlobal which allows to easily implement
  *   mutex protected global flags.
  *
