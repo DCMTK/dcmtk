@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmItem
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-05-17 09:58:14 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-06-26 15:47:40 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcitem.h,v $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -146,7 +146,7 @@ public:
      *  The list of elements is always kept in ascending tag order.
      *  @param elem element to be inserted, must not be contained in this or
      *    any other item.  Will be deleted upon destruction of this item object.
-     *  @param replaceOld if true, this element replaces any other element with 
+     *  @param replaceOld if true, this element replaces any other element with
      *    the same tag which may already be contained in the item.  If false,
      *    insert fails if another element with the same tag is already present.
      *  @param checkInsertOrder if true, a warning message is sent to the console
@@ -438,7 +438,7 @@ public:
                                           const OFBool replaceOld = OFTrue);
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
-     *  Applicable to the following VRs: OB
+     *  Applicable to the following VRs: OB, ox (polymorph OB/OW)
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element (might be NULL)
      *  @param count number of values (= bytes in this case) to be copied from 'value'
@@ -462,7 +462,7 @@ public:
                                    const OFBool replaceOld = OFTrue);
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
-     *  Applicable to the following VRs: AT, OW, US
+     *  Applicable to the following VRs: AT, OW, US, ox (polymorph OB/OW)
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element (might be NULL)
      *  @param count number of values (not bytes!) to be copied from 'value'
@@ -599,7 +599,11 @@ OFCondition nextUp(DcmStack & stack);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
-** Revision 1.35  2002-05-17 09:58:14  meichel
+** Revision 1.36  2002-06-26 15:47:40  joergr
+** Added support for polymorp OB/OW value representation (e.g. pixel data) to
+** putAndInsertUint8/16Array() methods.
+**
+** Revision 1.35  2002/05/17 09:58:14  meichel
 ** fixed bug in DcmItem which caused the parser to fail if the same attribute
 **   tag appeared twice within one dataset (which is illegal in DICOM anyway).
 **   Added console warning if the attributes read are not in ascending order.

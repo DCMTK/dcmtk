@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmItem
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-05-29 09:59:37 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-06-26 15:49:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.69 $
+ *  CVS/RCS Revision: $Revision: 1.70 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -469,7 +469,7 @@ OFCondition DcmItem::writeXML(ostream &out,
         /* write content of all children */
         DcmObject *dO;
         elementList->seek(ELP_first);
-        do 
+        do
         {
             dO = elementList->get();
             dO->writeXML(out, flags);
@@ -1008,9 +1008,9 @@ OFCondition DcmItem::readSubElement(DcmStream & inStream,
         /* inserting the attribute succeeds or fails */
         l_error = subElem->read(inStream, xfer, glenc, maxReadLength);
 
-        // try to insert element into item. Note that 
-        // "elementList->insert(subElem, ELP_next)" would be faster, 
-        // but this is better since this insert-function creates a 
+        // try to insert element into item. Note that
+        // "elementList->insert(subElem, ELP_next)" would be faster,
+        // but this is better since this insert-function creates a
         // sorted element list.
         // We insert the element even if subElem->read() reported an error
         // because otherwise I/O suspension would fail.
@@ -1021,7 +1021,7 @@ OFCondition DcmItem::readSubElement(DcmStream & inStream,
           // produce diagnostics
           ofConsole.lockCerr() << "Warning: element " << newTag
              << " found twice in one dataset/item, ignoring second entry" << endl;
-          ofConsole.unlockCerr();            
+          ofConsole.unlockCerr();
           delete subElem;
         }
     }
@@ -1397,16 +1397,16 @@ OFCondition DcmItem::insert(
                 /* insert new element at the beginning of elementList */
                 elementList->insert( elem, ELP_first );
 
-                if (checkInsertOrder)                
+                if (checkInsertOrder)
                 {
                   // check if we have inserted at the end of the list
                   if (elem != (DcmElement*)(elementList->seek(ELP_last)))
                   {
                     // produce diagnostics
-                    ofConsole.lockCerr() 
+                    ofConsole.lockCerr()
                        << "Warning: dataset not in ascending tag order, at element "
                        << elem->getTag() << endl;
-                    ofConsole.unlockCerr();                              	
+                    ofConsole.unlockCerr();
                   }
                 }
 
@@ -1424,16 +1424,16 @@ OFCondition DcmItem::insert(
                 /* insert the new element after the current element */
                 elementList->insert( elem, ELP_next );
 
-                if (checkInsertOrder)                
+                if (checkInsertOrder)
                 {
                   // check if we have inserted at the end of the list
                   if (elem != (DcmElement*)(elementList->seek(ELP_last)))
                   {
                     // produce diagnostics
-                    ofConsole.lockCerr() 
+                    ofConsole.lockCerr()
                        << "Warning: dataset not in ascending tag order, at element "
                        << elem->getTag() << endl;
-                    ofConsole.unlockCerr();                              	
+                    ofConsole.unlockCerr();
                   }
                 }
 
@@ -2788,22 +2788,30 @@ DcmItem::putAndInsertUint8Array(const DcmTag& tag,
     OFCondition status = EC_IllegalCall;
     /* create new element */
     DcmElement *elem = NULL;
-    if (tag.getEVR()== EVR_OB)
+    switch(tag.getEVR())
     {
-        elem = new DcmOtherByteOtherWord(tag);
-        if (elem != NULL)
-        {
-            /* put value */
-            status = elem->putUint8Array(value, count);
-            /* insert into dataset/item */
-            if (status.good())
-                status = insert(elem, replaceOld);
-            /* could not be inserted, therefore, delete it immediately */
-            if (status.bad())
-                delete elem;
-        } else
-            status = EC_MemoryExhausted;
+        case EVR_OB:
+            elem = new DcmOtherByteOtherWord(tag);
+            break;
+        case EVR_ox:
+            elem = new DcmPolymorphOBOW(tag);
+            break;
+        default:
+            status = EC_IllegalCall;
+            break;
     }
+    if (elem != NULL)
+    {
+        /* put value */
+        status = elem->putUint8Array(value, count);
+        /* insert into dataset/item */
+        if (status.good())
+            status = insert(elem, replaceOld);
+        /* could not be inserted, therefore, delete it immediately */
+        if (status.bad())
+            delete elem;
+    } else if (status.good())
+        status = EC_MemoryExhausted;
     return status;
 }
 
@@ -2827,6 +2835,9 @@ DcmItem::putAndInsertUint16Array(const DcmTag& tag,
             break;
         case EVR_US:
             elem = new DcmUnsignedShort(tag);
+            break;
+        case EVR_ox:
+            elem = new DcmPolymorphOBOW(tag);
             break;
         default:
             status = EC_IllegalCall;
@@ -3113,7 +3124,11 @@ OFBool DcmItem::containsUnknownVR() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.69  2002-05-29 09:59:37  meichel
+** Revision 1.70  2002-06-26 15:49:59  joergr
+** Added support for polymorp OB/OW value representation (e.g. pixel data) to
+** putAndInsertUint8/16Array() methods.
+**
+** Revision 1.69  2002/05/29 09:59:37  meichel
 ** fixed follow-up problem in DcmItem caused by the modifications
 **   committed 2002-05-17.
 **
