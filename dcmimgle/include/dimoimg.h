@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-23 12:38:16 $
+ *  Update Date:      $Date: 1998-12-23 13:21:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoimg.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -142,8 +142,8 @@ class DiMonoImage
     int addOverlay(const unsigned int group,
                    const signed int left,
                    const signed int top,
-                   const unsigned long columns,
-                   const unsigned long rows,
+                   const unsigned int columns,
+                   const unsigned int rows,
                    const DcmOverlayData &data,
                    const DcmLongString &label,
                    const DcmLongString &description,
@@ -268,7 +268,10 @@ class DiMonoImage
  *
  * CVS/RCS Log:
  * $Log: dimoimg.h,v $
- * Revision 1.6  1998-12-23 12:38:16  joergr
+ * Revision 1.7  1998-12-23 13:21:28  joergr
+ * Changed parameter type (long to int) to avoid warning reported by MSVC5.
+ *
+ * Revision 1.6  1998/12/23 12:38:16  joergr
  * Corrected some typos and formatting.
  *
  * Revision 1.4  1998/12/22 14:26:19  joergr

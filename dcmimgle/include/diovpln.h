@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlayPlane (Header) - Multiframe Overlays UNTESTED !
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-23 11:37:42 $
+ *  Update Date:      $Date: 1998-12-23 13:21:29 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diovpln.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,12 +67,12 @@ class DiOverlayPlane
     DiOverlayPlane(const DiDocument *docu,
                    const unsigned int group,
                    const Uint16 alloc);
-                   
+
     DiOverlayPlane(const unsigned int group,
-                   const signed int left,
-                   const signed int top,
-                   const unsigned long columns,
-                   const unsigned long rows,
+                   const Sint16 left,
+                   const Sint16 top,
+                   const Uint16 columns,
+                   const Uint16 rows,
                    const DcmOverlayData &data,
                    const DcmLongString &label,
                    const DcmLongString &description,
@@ -86,9 +86,9 @@ class DiOverlayPlane
                    const Uint16 height,
                    const Uint16 columns,
                    const Uint16 rows);
-                   
+
     ~DiOverlayPlane();
-    
+
     inline Sint16 getLeft(const Uint16 left = 0) const
     {
         return (Sint16)((Sint32)Left - (Sint32)left);
@@ -320,7 +320,10 @@ inline void DiOverlayPlane::setStart(const Uint16 x,
  *
  * CVS/RCS Log:
  * $Log: diovpln.h,v $
- * Revision 1.5  1998-12-23 11:37:42  joergr
+ * Revision 1.6  1998-12-23 13:21:29  joergr
+ * Changed parameter type (long to int) to avoid warning reported by MSVC5.
+ *
+ * Revision 1.5  1998/12/23 11:37:42  joergr
  * Changed order of parameters for addOverlay() and getOverlayData().
  * Changed behaviour of getLabel/Description/Explanation() methods: return
  * NULL if string empty, no empty string "".

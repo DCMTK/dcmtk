@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlay (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-23 11:27:09 $
+ *  Update Date:      $Date: 1998-12-23 13:22:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diovlay.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -497,8 +497,8 @@ int DiOverlay::hasEmbeddedData() const
 int DiOverlay::addPlane(const unsigned int group,
                         const signed int left,
                         const signed int top,
-                        const unsigned long columns,
-                        const unsigned long rows,
+                        const unsigned int columns,
+                        const unsigned int rows,
                         const DcmOverlayData &data,
                         const DcmLongString &label,
                         const DcmLongString &description,
@@ -600,7 +600,10 @@ Uint8 *DiOverlay::getPlaneData(const unsigned long frame,
 F *
  * CVS/RCS Log:
  * $Log: diovlay.cc,v $
- * Revision 1.5  1998-12-23 11:27:09  joergr
+ * Revision 1.6  1998-12-23 13:22:24  joergr
+ * Changed parameter type (long to int) to avoid warning reported by MSVC5.
+ *
+ * Revision 1.5  1998/12/23 11:27:09  joergr
  * Modified (added/removed) comments. Corrected bug concerning additional
  * overlay planes.
  *

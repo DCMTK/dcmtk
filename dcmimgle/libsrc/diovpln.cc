@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlayPlane (Source) - Multiframe Overlays UNTESTED !
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-23 11:31:12 $
+ *  Update Date:      $Date: 1998-12-23 13:22:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diovpln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -140,10 +140,10 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
 
 
 DiOverlayPlane::DiOverlayPlane(const unsigned int group,
-                               const signed int left,
-                               const signed int top,
-                               const unsigned long columns,
-                               const unsigned long rows,
+                               const Sint16 left,
+                               const Sint16 top,
+                               const Uint16 columns,
+                               const Uint16 rows,
                                const DcmOverlayData &data,
                                const DcmLongString &label,
                                const DcmLongString &description,
@@ -374,7 +374,10 @@ void DiOverlayPlane::setRotation(const int degree,
  *
  * CVS/RCS Log:
  * $Log: diovpln.cc,v $
- * Revision 1.5  1998-12-23 11:31:12  joergr
+ * Revision 1.6  1998-12-23 13:22:26  joergr
+ * Changed parameter type (long to int) to avoid warning reported by MSVC5.
+ *
+ * Revision 1.5  1998/12/23 11:31:12  joergr
  * Change order of parameters for addOverlay() and getOverlayData().
  * Introduced new overlay mode item EMO_Graphic (= EMO_Replace).
  * Corrected bug concerning flipping and rotating overlay planes (same

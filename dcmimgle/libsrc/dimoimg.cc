@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-23 12:40:46 $
+ *  Update Date:      $Date: 1998-12-23 13:22:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -884,8 +884,8 @@ int DiMonoImage::setPresentationLut(const DcmUnsignedShort &data,
 int DiMonoImage::addOverlay(const unsigned int group,
                             const signed int left,
                             const signed int top,
-                            const unsigned long columns,
-                            const unsigned long rows,
+                            const unsigned int columns,
+                            const unsigned int rows,
                             const DcmOverlayData &data,
                             const DcmLongString &label,
                             const DcmLongString &description,
@@ -1007,8 +1007,8 @@ void *DiMonoImage::getData(const unsigned long frame,
         {
             low = maxval(bits);                         // inverse/negative: white to black
             high = 0;
-        } else {                                        // normal/positive: black to white
-            low = 0;
+        } else {
+            low = 0;                                    // normal/positive: black to white
             high = maxval(bits);
         }
         switch (InterData->getRepresentation())
@@ -1321,8 +1321,8 @@ int DiMonoImage::writeRawPPM(FILE *stream, const unsigned long frame, const int 
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.6  1998-12-23 12:40:46  joergr
- * Removed unused parameter (BitsPerSample).
+ * Revision 1.7  1998-12-23 13:22:22  joergr
+ * Changed parameter type (long to int) to avoid warning reported by MSVC5.
  *
  * Revision 1.3  1998/12/16 16:15:55  joergr
  * Added explanation string for VOI transformations.
