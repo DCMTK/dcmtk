@@ -22,9 +22,9 @@
  *  Purpose: Classes for caching of the image database (Header/Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-19 09:45:19 $
+ *  Update Date:      $Date: 1999-02-19 18:56:08 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/include/Attic/dvcache.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,11 +57,13 @@ class DVInstanceCache
                    const int pos,
                    const DVIFhierarchyStatus status,
                    const OFBool pstate,
+                   const int size,
                    const OFString &filename)
           : UID(uid),
             Pos(pos),
             Status(status),
             PState(pstate),
+            ImageSize(size),
             Filename(filename)
         {}
     
@@ -69,6 +71,7 @@ class DVInstanceCache
         int Pos;
         DVIFhierarchyStatus Status;
         OFBool PState;
+        int ImageSize;
         OFString Filename;
     };
 
@@ -115,6 +118,26 @@ class DVInstanceCache
                 return OFTrue;
             idx--;
             ++Iterator;
+        }
+        return OFFalse;
+    }
+    
+    inline OFBool gotoFirst()
+    {
+        Iterator = List.begin();
+        if (Iterator != List.end())
+            return OFTrue;
+        return OFFalse;
+    }
+    
+    inline OFBool gotoNext()
+    {
+        OFListIterator(ItemStruct *) last = List.end();
+        if (Iterator != last)
+        {
+            Iterator++;
+            if (Iterator != last)
+                return OFTrue;
         }
         return OFFalse;
     }
@@ -168,6 +191,14 @@ class DVInstanceCache
         return OFFalse;
     }
 
+    inline OFBool getImageSize() const
+    {
+        const ItemStruct *item = getItem();
+        if (item != NULL)
+            return item->ImageSize;
+        return OFFalse;
+    }
+
     inline const char *getFilename() const
     {
         const ItemStruct *item = getItem();
@@ -187,9 +218,10 @@ class DVInstanceCache
                         const int pos,
                         const DVIFhierarchyStatus status,
                         const OFBool pstate,
+                        const int size,
                         const OFString &filename)
     {
-        ItemStruct *item = new ItemStruct(uid, pos, status, pstate, filename);
+        ItemStruct *item = new ItemStruct(uid, pos, status, pstate, size, filename);
         List.push_back(item);
         Iterator = --List.end();                // set to new position
     }
@@ -300,6 +332,26 @@ class DVSeriesCache
                 return OFTrue;
             idx--;
             ++Iterator;
+        }
+        return OFFalse;
+    }
+    
+    inline OFBool gotoFirst()
+    {
+        Iterator = List.begin();
+        if (Iterator != List.end())
+            return OFTrue;
+        return OFFalse;
+    }
+    
+    inline OFBool gotoNext()
+    {
+        OFListIterator(ItemStruct *) last = List.end();
+        if (Iterator != last)
+        {
+            Iterator++;
+            if (Iterator != last)
+                return OFTrue;
         }
         return OFFalse;
     }
@@ -554,7 +606,11 @@ class DVStudyCache
  *
  * CVS/RCS Log:
  * $Log: dvcache.h,v $
- * Revision 1.2  1999-02-19 09:45:19  joergr
+ * Revision 1.3  1999-02-19 18:56:08  joergr
+ * Added new methods to interate through Caches (getFirst/getNext) - needed
+ * for delete routines in Interface class.
+ *
+ * Revision 1.2  1999/02/19 09:45:19  joergr
  * Changed some comments, corrected typos and formatting.
  *
  * Revision 1.1  1999/02/18 18:50:18  joergr
