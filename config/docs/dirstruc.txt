@@ -9,6 +9,7 @@ dcmtk
     module1
         apps            # application programs
         docs            # documentation
+        etc             # configuration files
         include         # include directory
         libsrc          # library sources
         tests           # test programs
