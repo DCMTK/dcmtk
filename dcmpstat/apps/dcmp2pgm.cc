@@ -25,10 +25,10 @@
  *    of the presentation state. Non-grayscale transformations are
  *    ignored. If no presentation state is loaded, a default is created.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-05-03 14:27:26 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-06-02 12:49:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmp2pgm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,14 +65,15 @@ void dumpPresentationState(DVInterface& dvi);
 int main(int argc, char *argv[])
 {
     OFString str;
-    int    opt_debugMode    = 0;                       /* default: no debug */
-    OFBool opt_dump_pstate  = OFFalse;                 /* default: do not dump presentation state */
-    OFBool opt_dicom_mode   = OFFalse;                 /* default: create PGM, not DICOM SC */
-    const char *opt_pstName = NULL;                    /* pstate read file name */
-    const char *opt_imgName = NULL;                    /* image read file name */
-    const char *opt_pgmName = NULL;                    /* pgm save file name */
-    const char *opt_savName = NULL;                    /* pstate save file name */
-    const char *opt_cfgName = NULL;                    /* config read file name */
+    int    opt_debugMode       = 0;                       /* default: no debug */
+    OFBool opt_dump_pstate     = OFFalse;                 /* default: do not dump presentation state */
+    OFBool opt_dicom_mode      = OFFalse;                 /* default: create PGM, not DICOM SC */
+    OFCmdUnsignedInt opt_frame = 1;                       /* default: first frame */
+    const char *opt_pstName    = NULL;                    /* pstate read file name */
+    const char *opt_imgName    = NULL;                    /* image read file name */
+    const char *opt_pgmName    = NULL;                    /* pgm save file name */
+    const char *opt_savName    = NULL;                    /* pstate save file name */
+    const char *opt_cfgName    = NULL;                    /* config read file name */
 
     SetDebugLevel(( 0 ));
     DicomImageClass::setDebugLevel(DicomImageClass::DL_NoMessages);
@@ -95,6 +96,9 @@ int main(int argc, char *argv[])
                                              "process using presentation state file");
      cmd.addOption("--config",      "-c", 1, "[f]ilename: string",
                                              "process using settings from configuration file");
+     cmd.addOption("--frame",       "-f", 1, "[f]rame: integer",
+                                             "process using image frame f (default: 1)");    
+
     cmd.addGroup("output format:");
      cmd.addOption("--pgm",         "-D",    "save image as PGM (default)");
      cmd.addOption("--dicom",       "+D",    "save image as DICOM secondary capture");
@@ -113,6 +117,7 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--debug"))       opt_debugMode = 3;
       if (cmd.findOption("--pstate"))      app.checkValue(cmd.getValue(opt_pstName));
       if (cmd.findOption("--config"))      app.checkValue(cmd.getValue(opt_cfgName));
+      if (cmd.findOption("--frame"))       app.checkValue(cmd.getValue(opt_frame, 1));
       if (cmd.findOption("--pgm"))         opt_dicom_mode = OFFalse;
       if (cmd.findOption("--dicom"))       opt_dicom_mode = OFTrue;
       if (cmd.findOption("--save-pstate")) app.checkValue(cmd.getValue(opt_savName));
@@ -156,6 +161,8 @@ int main(int argc, char *argv[])
             unsigned long width = 0;
             unsigned long height = 0;
             if (opt_debugMode > 0) CERR << "creating pixel data" << endl;
+            if ((opt_frame > 0) && (dvi.getCurrentPState().selectImageFrameNumber(opt_frame) != EC_Normal))
+               CERR << "cannot select frame " << opt_frame << endl;
             if ((dvi.getCurrentPState().getPixelData(pixelData, width, height) == EC_Normal) && (pixelData != NULL))
             {
               if (opt_dicom_mode)
@@ -569,7 +576,10 @@ void dumpPresentationState(DVInterface& dvi)
 /*
  * CVS/RCS Log:
  * $Log: dcmp2pgm.cc,v $
- * Revision 1.21  2000-05-03 14:27:26  meichel
+ * Revision 1.22  2000-06-02 12:49:03  joergr
+ * Added frame selection option to support multi-frame images.
+ *
+ * Revision 1.21  2000/05/03 14:27:26  meichel
  * Updated dcmpstat apps for changes in dcmimgle.
  *
  * Revision 1.20  2000/03/08 16:28:41  meichel
