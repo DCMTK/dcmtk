@@ -26,9 +26,9 @@
  *           multi-thread APIs.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-12-19 12:18:19 $
+ *  Update Date:      $Date: 2001-01-17 13:03:29 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofthread.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -82,7 +82,7 @@ extern "C" {
  */
 
 
-#ifdef WINDOWS_INTERFACE
+#ifdef HAVE_WINDOWS_H
 unsigned int __stdcall thread_stub(void *arg)
 {
   ((OFThread *)arg)->run();
@@ -895,7 +895,11 @@ void OFReadWriteLock::errorstr(OFString& description, int /* code */ )
  *
  * CVS/RCS Log:
  * $Log: ofthread.cc,v $
- * Revision 1.5  2000-12-19 12:18:19  meichel
+ * Revision 1.6  2001-01-17 13:03:29  meichel
+ * Fixed problem that leaded to compile errors if compiled on Windows without
+ *   multi-thread support.
+ *
+ * Revision 1.5  2000/12/19 12:18:19  meichel
  * thread related classes now correctly disabled when configured
  *   with --disable-threads
  *
