@@ -1,6 +1,25 @@
 DCMTK FAQ - Frequently Asked Questions
 
 ----
+1997.10.01
+
+Q: I am trying to compile DCMTK on Solaris with Sun Workshop 4.x.
+   The code compiles without problems, but when trying to link
+   applications, the linker reports unresolved externals 
+   in the DCMTK libraries and fails. 
+
+A: The Sun Workshop 4.x compilers use a new method of handling
+   C++ template classes which requires that all libraries (lib*.a)
+   containing templates must be created by the C++ compiler
+   and not by "ar". Therefore, *before* executing the configure
+   script for dcmtk, you should set environment variables as follows:
+     setenv CC cc
+     setenv CXX CC
+     setenv AR CC
+     setenv ARFLAGS "-xar -o"
+   Configure will then create the appropriate code in the Makefiles.
+
+----
 1997.09.16
 
 Q: The INSTALL file says that DCMTK can be compiled using the Cygnus 
