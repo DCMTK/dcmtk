@@ -18,7 +18,7 @@
 #   old extension (default: cc). This is useful if you want
 #   to "rename back".
 #
-# Author: Marco Eichelberg, (C) 1997-2004 Kuratorium OFFIS e.V.
+# Author: Marco Eichelberg, (C) 1997-2005 Kuratorium OFFIS e.V.
 #
  
 newext=${1-C}
@@ -53,6 +53,18 @@ if [ -f dcmmisc/apps/tcpprt_e.$newext ] ; then
   echo "updating implementation include in tcpprt_e.$newext"
   `cat dcmmisc/apps/tcpprt_e.$newext | sed -e "s/#include \"\.\.\/\.\.\/dcmprint\/apps\/tcpprt\.$oldext\"/#include \"..\/..\/dcmprint\/apps\/tcpprt.$newext\"/g" >dcmmisc/apps/tcpprt_e.new`
   `mv dcmmisc/apps/tcpprt_e.new dcmmisc/apps/tcpprt_e.$newext`
+fi
+
+if [ -f dcmmisc/apps/dcmcjp2e.$newext ] ; then
+  echo "updating implementation include in dcmcjp2e.$newext"
+  `cat dcmmisc/apps/dcmcjp2e.$newext | sed -e "s/#include \"\.\.\/\.\.\/dcmjp2k\/apps\/dcmcjp2k\.$oldext\"/#include \"..\/..\/dcmprint\/apps\/dcmcjp2k.$newext\"/g" >dcmmisc/apps/tcpprt_e.new`
+  `mv dcmmisc/apps/dcmcjp2e.new dcmmisc/apps/dcmcjp2e.$newext`
+fi
+
+if [ -f dcmmisc/apps/dcmdjp2e.$newext ] ; then
+  echo "updating implementation include in dcmdjp2e.$newext"
+  `cat dcmmisc/apps/dcmdjp2e.$newext | sed -e "s/#include \"\.\.\/\.\.\/dcmjp2k\/apps\/dcmdjp2k\.$oldext\"/#include \"..\/..\/dcmprint\/apps\/dcmdjp2k.$newext\"/g" >dcmmisc/apps/tcpprt_e.new`
+  `mv dcmmisc/apps/dcmdjp2e.new dcmmisc/apps/dcmdjp2e.$newext`
 fi
 
 echo "updating makefiles"
