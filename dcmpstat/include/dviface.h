@@ -23,8 +23,8 @@
  *    classes: DVInterface
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-05 16:21:30 $
- *  CVS/RCS Revision: $Revision: 1.66 $
+ *  Update Date:      $Date: 2000-06-07 14:15:52 $
+ *  CVS/RCS Revision: $Revision: 1.67 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -71,8 +71,10 @@ class DVInterface: public DVConfiguration
     *     really exists because the constructor cannot return an error status.
     *     If a non-existing filename (or NULL) is passed, an empty configuration file
     *     is assumed.
+    *  @param useLog (optional) flag specifying whether a general log file should be used
+    *     (config entry GENERAL\APPLICATION\LOGFILE).
     */
-    DVInterface(const char *config_file=NULL);
+    DVInterface(const char *config_file = NULL, OFBool useLog = OFFalse);
 
     /** destructor.
      */
@@ -933,7 +935,7 @@ class DVInterface: public DVConfiguration
     /** loads a Hardcopy Grayscale image registered by the stored print object and creates a preview.
      *  The preview bitmap is implicitly scaled to fit into the rectangle specified by
      *  setMaxPrintPreviewWidthHeight().
-     *  @param idx index of the image, must be < DVPSStoredPrint::getNumberOfImages()
+     *  @param idx index of the image, must be < getNumberOfPrintPreviews()
      *  @return EC_Normal if successful, an error code otherwise.
      */
     E_Condition loadPrintPreview(size_t idx);
@@ -1153,31 +1155,10 @@ class DVInterface: public DVConfiguration
      */
     const char *getDisplayPresentationLUTID();
 
-    /** NOT YET IMPLEMENTED - sets the presentation LUT shape to be applied to all printed images.
-     *  This presentation LUT shape overrides the individual settings for each image.
-     *  @param shape the new presentation LUT shape.
-     *  @return EC_Normal if successful, an error code otherwise.
-     */
-    E_Condition setPrintPresentationLUTShape(DVPSPresentationLUTType shape);
-   
-    /** NOT YET IMPLEMENTED - sets a presentation lookup table to be applied to all printed images.
-     *  This presentation LUT overrides the individual settings for each image.
-     *  @param lutDescriptor the LUT Descriptor in DICOM format (VM=3)
-     *  @param lutData the LUT Data in DICOM format
-     *  @param lutExplanation the LUT Explanation in DICOM format, may be empty.
-     *  @return EC_Normal if successful, an error code otherwise.
-     */ 
-    E_Condition setPrintPresentationLookupTable(
-      DcmUnsignedShort& lutDescriptor,
-      DcmUnsignedShort& lutData,
-      DcmLongString& lutExplanation);
-  
-    /** NOT YET IMPLEMENTED - sets a presentation lookup table to be applied to all printed images.
-     *  This presentation LUT overrides the individual settings for each image.
-     *  @param dset dataset from which the Presentation LUT SQ or Shape is read.
-     *  @return EC_Normal if successful, an error code otherwise.
-     */ 
-    E_Condition setPrintPresentationLookupTable(DcmItem &dset);
+/*
+    E_Condition setPrintPresentationLUTShape();
+    E_Condition setPrintPresentationLookupTable();
+*/
 
     /** start spooling of print job with current settings.
      *  @param deletePrintedImages if true, delete printed images from queue.
@@ -1643,7 +1624,12 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.66  2000-06-05 16:21:30  joergr
+ *  Revision 1.67  2000-06-07 14:15:52  joergr
+ *  Added configuration file entry "LogLevel" to filter log messages.
+ *  Added flag to constructor specifying whether the general log file should be
+ *  used (default: off).
+ *
+ *  Revision 1.66  2000/06/05 16:21:30  joergr
  *  Implemented log message methods.
  *  Added method allowing to specify the current presentation state to be used
  *  for resetting the pstate.
