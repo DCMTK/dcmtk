@@ -3,6 +3,7 @@
 DICOM TOOLKIT (DCMTK) INSTALLATION
 ==================================
 
+
 PRE-REQUISITES
 ==============
 
@@ -235,7 +236,7 @@ library (libwrap) which is freely available for most Unix platforms and part
 of the default installation of most recent Linux distributions.  This library
 allows to enforce host-based access control via the "/etc/hosts_deny" and
 "/etc/hosts_allow" configuration files.  See hosts_access(5) man page for
-details.  
+details.
 
 On Unix platforms, if support for TCP wrappers is desired, a compiled version
 of the libwrap library and include file <tcpd.h> must be available during
@@ -562,8 +563,8 @@ At the current time, dcmimage, dcmimgle, dcmjpeg, dcmpstat, dcmsign, dcmsr,
 dcmtls, dcmwlm and ofstd are completely documented, dcmdata and dcmnet are
 partially documented.  See FAQ entry: "Where is rest of the documentation?"
 
-DOC++ (http:/docpp.sourceforge.net/), another source code documentation system,
-is not actively supported any more.  However, it may still work.
+DOC++ (docpp.sourceforge.net), another source code documentation system, is not
+actively supported any more.  However, it may still work.
 
 On Unix platforms, man pages for all command line tools are installed during
 the "make install" step.  In order to use them, just add the directory (e.g.
@@ -591,4 +592,4 @@ Have fun.
 Marco Eichelberg, Joerg Riesmeier, Thomas Wilkens
 Kuratorium OFFIS e.V., Oldenburg, Germany.
 
-Last revised: 2004-05-26 (Eichelberg).
+Last revised: 2004-05-26 (Riesmeier).
