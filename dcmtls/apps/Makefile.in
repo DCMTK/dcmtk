@@ -47,36 +47,22 @@ LIBDIRS = -L$(top_srcdir)/libsrc $(dcmpstatlibdir) $(imagectnlibdir) $(dcmnetlib
 	$(dcmdatalibdir) $(ofstdlibdir) $(dcmimglelibdir) -L$(libdir)
 LOCALLIBS = $(dcmpstatlib) $(dcmimglelib) $(imagectnlib) $(dcmnetlib) $(dcmdatalib) $(ofstdlib) -lm
 
-objs= dcmpsmk.o
-
-progs= dcmpsmk
-
 all: 
 	echo Nothing to do for all
 
-# all: $(progs)
-
-dcmpsmk: dcmpsmk.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmpsmk.o $(LOCALLIBS) $(LIBS)  
-
-install: all
-	$(configdir)/mkinstalldirs $(bindir)
-	for prog in $(progs); do \
-		$(INSTALL_PROGRAM) $$prog $(bindir); strip $(bindir)/$$prog ;\
-	done
+install:
+	echo Nothing to do for install
 
 clean:
-	rm -f $(objs) $(progs) $(TRASH)
+	echo Nothing to do for clean
 
 distclean: 
-	rm -f $(objs) $(progs) $(DISTTRASH)
-
+	echo Nothing to do for distclean
 
 dependencies:
-	$(CXX) -MM $(defines) $(includes) $(CPPFLAGS) $(CXXFLAGS) *.cc  > $(DEP)
+	echo Nothing to do for dependencies
 
-$(objs): config.h
-
+# $(objs): config.h
 
 include $(DEP)
 
