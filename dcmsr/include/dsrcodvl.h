@@ -23,8 +23,8 @@
  *    classes: DSRCodedEntryValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-06 11:14:55 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2000-11-09 20:32:07 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -190,6 +190,7 @@ class DSRCodedEntryValue
 
     /** render code in HTML format
      ** @param  stream      output stream to which the HTML document is written
+     *  @param  flags      flag used to customize the output (see DSRTypes::HF_xxx)
      *  @param  logStream   pointer to error/warning output stream (output disabled if NULL)
      *  @param  fullCode    optional flag indicating whether to render the full code tuple
      *                      or the code value/meaning only
@@ -198,6 +199,7 @@ class DSRCodedEntryValue
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition renderHTML(ostream &stream,
+                           const size_t flags,
                            OFConsole *logStream,
                            const OFBool fullCode = OFTrue,
                            const OFBool valueFirst = OFFalse) const;
@@ -364,7 +366,10 @@ class DSRCodedEntryValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodvl.h,v $
- *  Revision 1.6  2000-11-06 11:14:55  joergr
+ *  Revision 1.7  2000-11-09 20:32:07  joergr
+ *  Added support for non-ASCII characters in HTML 3.2 (use numeric value).
+ *
+ *  Revision 1.6  2000/11/06 11:14:55  joergr
  *  Updated comments/formatting.
  *
  *  Revision 1.5  2000/11/01 16:12:55  joergr

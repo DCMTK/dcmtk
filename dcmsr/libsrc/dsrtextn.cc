@@ -23,8 +23,8 @@
  *    classes: DSRTextTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-07 18:33:32 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2000-11-09 20:34:02 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -138,9 +138,9 @@ E_Condition DSRTextTreeNode::renderHTMLContentItem(ostream &docStream,
     E_Condition result = renderHTMLConceptName(docStream, flags, logStream);
     /* render TextValue */
     if (flags & HF_renderItemInline)
-        docStream << "\"" << convertToMarkupString(getValue(), htmlString) << "\"" << endl;
+        docStream << "\"" << convertToMarkupString(getValue(), htmlString, flags & HF_convertNonASCIICharacters) << "\"" << endl;
     else
-        docStream << convertToMarkupString(getValue(), htmlString, OFTrue /* newlineAllowed */) << endl;
+        docStream << convertToMarkupString(getValue(), htmlString, flags & HF_convertNonASCIICharacters, OFTrue /* newlineAllowed */) << endl;
     return result;
 }
 
@@ -197,7 +197,10 @@ OFBool DSRTextTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtextn.cc,v $
- *  Revision 1.7  2000-11-07 18:33:32  joergr
+ *  Revision 1.8  2000-11-09 20:34:02  joergr
+ *  Added support for non-ASCII characters in HTML 3.2 (use numeric value).
+ *
+ *  Revision 1.7  2000/11/07 18:33:32  joergr
  *  Enhanced support for by-reference relationships.
  *
  *  Revision 1.6  2000/11/01 16:37:05  joergr

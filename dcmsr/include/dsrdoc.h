@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-07 18:12:25 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2000-11-09 20:32:07 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -712,8 +712,10 @@ class DSRDocument
 
     /** render patient name, sex, birthdate and ID in HTML format
      ** @param  stream  output stream to which the HTML document is written
+     *  @param  flags   flag used to customize the output (see DSRTypes::HF_xxx)
      */
-    void renderHTMLPatientData(ostream &stream);
+    void renderHTMLPatientData(ostream &stream,
+                               const size_t flags);
 
     /** check the given dataset before reading.
      *  This methods checks whether the dataset contains at least the DICOM attributes SOP class UID
@@ -854,7 +856,10 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
- *  Revision 1.8  2000-11-07 18:12:25  joergr
+ *  Revision 1.9  2000-11-09 20:32:07  joergr
+ *  Added support for non-ASCII characters in HTML 3.2 (use numeric value).
+ *
+ *  Revision 1.8  2000/11/07 18:12:25  joergr
  *  Enhanced rendered HTML output of date, time, datetime and pname.
  *
  *  Revision 1.7  2000/11/01 16:16:33  joergr

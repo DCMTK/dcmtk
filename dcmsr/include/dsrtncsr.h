@@ -23,8 +23,8 @@
  *    classes: DSRTreeNodeCursor
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-07 18:14:31 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2000-11-09 20:32:08 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -160,7 +160,9 @@ class DSRTreeNodeCursor
     size_t gotoNode(const OFString &position,
                     const char separator = '.');
 
-    /** get current node ID
+    /** get current node ID.
+     *  The node ID uniquely identifies a content item in the document tree.  Most of
+     *  the navigation methods above do return this ID too.
      ** @return ID of the current node if valid, 0 otherwise
      */
     size_t getNodeID() const;
@@ -210,7 +212,10 @@ class DSRTreeNodeCursor
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtncsr.h,v $
- *  Revision 1.6  2000-11-07 18:14:31  joergr
+ *  Revision 1.7  2000-11-09 20:32:08  joergr
+ *  Added support for non-ASCII characters in HTML 3.2 (use numeric value).
+ *
+ *  Revision 1.6  2000/11/07 18:14:31  joergr
  *  Enhanced support for by-reference relationships.
  *
  *  Revision 1.5  2000/10/26 14:20:49  joergr

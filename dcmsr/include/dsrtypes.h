@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-09 11:31:46 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2000-11-09 20:32:08 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -120,6 +120,12 @@ class DSRTypes
     /// external: copy Cascading Style Sheet (CSS) content to HTML file
     static const size_t HF_copyStyleSheetContent;
 
+    /// external: output compatible to HTML version 3.2 (default: 4.0)
+    static const size_t HF_version32Compatibility;
+
+    /// external: add explicit reference to HTML document type (DTD)
+    static const size_t HF_addDocumentTypeReference;
+
     /// internal: render items separately (for container with SEPARATE flag)
     static const size_t HF_renderItemsSeparately;
 
@@ -131,6 +137,9 @@ class DSRTypes
 
     /// internal: create footnote references
     static const size_t HF_createFootnoteReferences;
+    
+    /// internal: convert non-ASCII characters (> #127) to &#nnn;
+    static const size_t HF_convertNonASCIICharacters;
 
     /// shortcut: render all codes
     static const size_t HF_renderAllCodes;
@@ -656,16 +665,21 @@ class DSRTypes
 
     /** convert character string to HTML/XML mnenonic string.
      *  Characters with special meaning for HTML/XML (e.g. '<' and '&') are replace by the
-     *  corresponding mnenonics (e.g. "&lt;" and "&amp;").
-     ** @param  sourceString    source string to be converted
-     *  @param  markupString    reference to character string where the result should be stored
-     *  @param  newlineAllowed  optional flag indicating whether newlines are allowed or not.
-     *                          If they are allowed the text "<br>" is used, "&para;" otherwise.
-     *                          The following combinations are accepted: LF, CR, LF CR, CF LF.
+     *  corresponding mnenonics (e.g. "&lt;" and "&amp;").  If flag 'convertNonASCII' is OFTrue
+     *  all characters > #127 are also converted (useful if only HTML 3.2 is supported which does
+     *  not allow to specify the character set).
+     ** @param  sourceString     source string to be converted
+     *  @param  markupString     reference to character string where the result should be stored
+     *  @param  convertNonASCII  convert non-ASCII characters (> #127) to numeric value (&#nnn;)
+     *                           if OFTrue
+     *  @param  newlineAllowed   optional flag indicating whether newlines are allowed or not.
+     *                           If they are allowed the text "<br>" is used, "&para;" otherwise.
+     *                           The following combinations are accepted: LF, CR, LF CR, CF LF.
      ** @return reference to resulting 'markupString' (might be empty if 'sourceString' was empty)
      */
     static const OFString &convertToMarkupString(const OFString &sourceString,
                                                  OFString &markupString,
+                                                 const OFBool convertNonASCII = OFFalse,
                                                  const OFBool newlineAllowed = OFFalse);
 
     /** check string for valid UID format.
@@ -747,12 +761,14 @@ class DSRTypes
                                                      OFString &stringValue);
 
     /** get string value from element and convert to HTML/XML
-     ** @param  delem        reference to DICOM element from which the string value should be retrieved
-     *  @param  stringValue  reference to character string where the result should be stored
+     ** @param  delem            reference to DICOM element from which the string value should be retrieved
+     *  @param  stringValue      reference to character string where the result should be stored
+     *  @param  convertNonASCII  convert non-ASCII characters (> #127) to numeric value (&#nnn;) if OFTrue
      ** @return reference character string if successful, empty string otherwise
      */
     static const OFString &getMarkupStringFromElement(const DcmElement &delem,
-                                                      OFString &stringValue);
+                                                      OFString &stringValue,
+                                                      const OFBool convertNonASCII = OFFalse);
 
     /** get string value from dataset
      ** @param  dataset      reference to DICOM dataset from which the string should be retrieved.
@@ -951,7 +967,10 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
- *  Revision 1.9  2000-11-09 11:31:46  joergr
+ *  Revision 1.10  2000-11-09 20:32:08  joergr
+ *  Added support for non-ASCII characters in HTML 3.2 (use numeric value).
+ *
+ *  Revision 1.9  2000/11/09 11:31:46  joergr
  *  Reordered renderHTML flags (internal flags to the end).
  *
  *  Revision 1.8  2000/11/07 18:14:05  joergr

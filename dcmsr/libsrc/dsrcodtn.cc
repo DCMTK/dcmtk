@@ -23,8 +23,8 @@
  *    classes: DSRCodeTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-07 18:33:28 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2000-11-09 20:33:59 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -123,7 +123,7 @@ E_Condition DSRCodeTreeNode::renderHTMLContentItem(ostream &docStream,
         const OFBool fullCode = (flags & DSRTypes::HF_renderInlineCodes) || (flags & DSRTypes::HF_renderItemsSeparately);
         if (!fullCode)
             docStream << "<u>";
-        result = DSRCodedEntryValue::renderHTML(docStream, logStream, fullCode);
+        result = DSRCodedEntryValue::renderHTML(docStream, flags, logStream, fullCode);
         if (!fullCode)
             docStream << "</u>";
         docStream << endl;
@@ -199,7 +199,10 @@ OFBool DSRCodeTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodtn.cc,v $
- *  Revision 1.7  2000-11-07 18:33:28  joergr
+ *  Revision 1.8  2000-11-09 20:33:59  joergr
+ *  Added support for non-ASCII characters in HTML 3.2 (use numeric value).
+ *
+ *  Revision 1.7  2000/11/07 18:33:28  joergr
  *  Enhanced support for by-reference relationships.
  *
  *  Revision 1.6  2000/11/01 16:28:47  joergr

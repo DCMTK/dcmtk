@@ -23,8 +23,8 @@
  *    classes: DSRStringValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-01 16:37:04 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2000-11-09 20:34:01 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -119,7 +119,7 @@ E_Condition DSRStringValue::renderHTML(ostream &docStream,
     OFString htmlString;
     if (!(flags & DSRTypes::HF_renderItemsSeparately))
         docStream << "<u>";
-    docStream << DSRTypes::convertToMarkupString(Value, htmlString);
+    docStream << DSRTypes::convertToMarkupString(Value, htmlString, flags & DSRTypes::HF_convertNonASCIICharacters);
     if (!(flags & DSRTypes::HF_renderItemsSeparately))
         docStream << "</u>";
     return EC_Normal;
@@ -147,7 +147,10 @@ OFBool DSRStringValue::checkValue(const OFString &stringValue) const
 /*
  *  CVS/RCS Log:
  *  $Log: dsrstrvl.cc,v $
- *  Revision 1.5  2000-11-01 16:37:04  joergr
+ *  Revision 1.6  2000-11-09 20:34:01  joergr
+ *  Added support for non-ASCII characters in HTML 3.2 (use numeric value).
+ *
+ *  Revision 1.5  2000/11/01 16:37:04  joergr
  *  Added support for conversion to XML. Optimized HTML rendering.
  *
  *  Revision 1.4  2000/10/23 15:04:13  joergr

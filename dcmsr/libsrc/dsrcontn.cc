@@ -23,8 +23,8 @@
  *    classes: DSRContainerTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-09 11:32:12 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2000-11-09 20:34:00 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -130,7 +130,7 @@ E_Condition DSRContainerTreeNode::renderHTMLContentItem(ostream &docStream,
         {
             const size_t section = (nestingLevel > 6) ? 6 : nestingLevel;
             docStream << "<h" << section << ">";
-            getConceptName().renderHTML(docStream, logStream, (flags & HF_renderConceptNameCodes) && getConceptName().isValid() /* fullCode */);
+            getConceptName().renderHTML(docStream, flags, logStream, (flags & HF_renderConceptNameCodes) && getConceptName().isValid() /* fullCode */);
             docStream << "</h" << section << ">" << endl;
         }
     }
@@ -265,7 +265,10 @@ E_Condition DSRContainerTreeNode::setContinuityOfContent(const E_ContinuityOfCon
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcontn.cc,v $
- *  Revision 1.9  2000-11-09 11:32:12  joergr
+ *  Revision 1.10  2000-11-09 20:34:00  joergr
+ *  Added support for non-ASCII characters in HTML 3.2 (use numeric value).
+ *
+ *  Revision 1.9  2000/11/09 11:32:12  joergr
  *  Minor HTML code purifications.
  *
  *  Revision 1.8  2000/11/07 18:33:29  joergr

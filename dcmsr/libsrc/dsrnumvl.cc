@@ -23,8 +23,8 @@
  *    classes: DSRNumericMeasurementValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-07 18:33:30 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2000-11-09 20:34:01 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -225,9 +225,9 @@ E_Condition DSRNumericMeasurementValue::renderHTML(ostream &docStream,
             ((flags & DSRTypes::HF_renderInlineCodes) || (flags & DSRTypes::HF_renderItemsSeparately));
         if (!fullCode)
             docStream << "<u>";
-        docStream << DSRTypes::convertToMarkupString(NumericValue, htmlString) << " ";
+        docStream << DSRTypes::convertToMarkupString(NumericValue, htmlString, flags & DSRTypes::HF_convertNonASCIICharacters) << " ";
         /* render full code of the measurement unit (value first?) or code value only */
-        MeasurementUnit.renderHTML(docStream, logStream, fullCode, !(flags & DSRTypes::HF_useCodeMeaningAsUnit) /* valueFirst */);
+        MeasurementUnit.renderHTML(docStream, flags, logStream, fullCode, !(flags & DSRTypes::HF_useCodeMeaningAsUnit) /* valueFirst */);
         if (!fullCode)
             docStream << "</u>";
     }
@@ -309,7 +309,10 @@ OFBool DSRNumericMeasurementValue::checkMeasurementUnit(const DSRCodedEntryValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrnumvl.cc,v $
- *  Revision 1.6  2000-11-07 18:33:30  joergr
+ *  Revision 1.7  2000-11-09 20:34:01  joergr
+ *  Added support for non-ASCII characters in HTML 3.2 (use numeric value).
+ *
+ *  Revision 1.6  2000/11/07 18:33:30  joergr
  *  Enhanced support for by-reference relationships.
  *
  *  Revision 1.5  2000/11/01 16:37:01  joergr

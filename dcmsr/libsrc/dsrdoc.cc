@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-07 18:27:46 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2000-11-09 20:34:00 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -545,11 +545,13 @@ E_Condition DSRDocument::writeXML(ostream &stream,
 }
 
 
-void DSRDocument::renderHTMLPatientData(ostream &stream)
+void DSRDocument::renderHTMLPatientData(ostream &stream,
+                                        const size_t flags)
 {
     OFString string, string2;
     OFString htmlString;
-    stream << convertToMarkupString(dicomToReadablePersonName(getStringValueFromElement(PatientsName, string), string2), htmlString);
+    const OFBool convertNonASCII = flags & HF_convertNonASCIICharacters;
+    stream << convertToMarkupString(dicomToReadablePersonName(getStringValueFromElement(PatientsName, string), string2), htmlString, convertNonASCII);
     OFString patientStr;
     if (PatientsSex.getLength() > 0)
     {
@@ -561,7 +563,7 @@ void DSRDocument::renderHTMLPatientData(ostream &stream)
         else if (string == "O")
             patientStr += "other";
         else
-            patientStr += convertToMarkupString(string, htmlString);
+            patientStr += convertToMarkupString(string, htmlString, convertNonASCII);
     }
     if (PatientsBirthDate.getLength() > 0)
     {
@@ -575,7 +577,7 @@ void DSRDocument::renderHTMLPatientData(ostream &stream)
        if (patientStr.length() > 0)
            patientStr += ", ";
        patientStr += '#';
-       patientStr += convertToMarkupString(getStringValueFromElement(PatientID, string), htmlString);
+       patientStr += convertToMarkupString(getStringValueFromElement(PatientID, string), htmlString, convertNonASCII);
     }
     if (patientStr.length() > 0)
         stream << " (" << patientStr << ")";
@@ -590,6 +592,11 @@ E_Condition DSRDocument::renderHTML(ostream &stream,
     /* only render valid documents */
     if (isValid())
     {
+        size_t newFlags = flags;
+        if (flags & HF_version32Compatibility)
+            newFlags |= HF_convertNonASCIICharacters;
+        const OFBool convertNonASCII = newFlags & HF_convertNonASCIICharacters;
+
         /* used for multiple purposes */
         OFString string, string2;
         /* used for HTML string conversion */
@@ -599,60 +606,75 @@ E_Condition DSRDocument::renderHTML(ostream &stream,
 
         // --- HTML document structure (start) ---
 
+        /* optional document type definition */
+        if (newFlags & HF_addDocumentTypeReference)
+        {
+            if (newFlags & HF_version32Compatibility)
+                stream << "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2//EN\">" << endl;
+            else {
+                if (styleSheet != NULL)
+                    stream << "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">" << endl;
+                else
+                    stream << "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\">" << endl;
+            }
+        }            
         stream << "<html>" << endl;
         stream << "<head>" << endl;
-        /* document type/title */
+        /* document title */
         stream << "<title>";
-        if (flags & HF_renderPatientTitle)
-            renderHTMLPatientData(stream);
+        if (newFlags & HF_renderPatientTitle)
+            renderHTMLPatientData(stream, convertNonASCII);
         else
             stream << documentTypeToReadableName(getDocumentType()) << " Document";
         stream << "</title>" << endl;
-        /* optional cascading style sheet */
-        if (styleSheet != NULL)
+        if (!(newFlags & HF_version32Compatibility))
         {
-            if (flags & HF_copyStyleSheetContent)
+            /* optional cascading style sheet (HTML 4.0) */
+            if (styleSheet != NULL)
             {
-                /* copy content from CSS file */
-#ifdef NO_IOS_NOCREATE
-                ifstream cssFile(styleSheet, ios::in);
-#else
-                ifstream cssFile(styleSheet, ios::in|ios::nocreate);
-#endif
-                if (cssFile)
+                if (newFlags & HF_copyStyleSheetContent)
                 {
-                    char c;
-                    stream << "<style type=\"text/css\">" << endl;
-                    stream << "<!--" << endl;
-                    /* copy all characters */
-                    while (cssFile.get(c))
-                        stream << c;
-                    stream << "//-->" << endl;
-                    stream << "</style>" << endl;
+                    /* copy content from CSS file */
+#ifdef NO_IOS_NOCREATE
+                    ifstream cssFile(styleSheet, ios::in);
+#else
+                    ifstream cssFile(styleSheet, ios::in|ios::nocreate);
+#endif
+                    if (cssFile)
+                    {
+                        char c;
+                        stream << "<style type=\"text/css\">" << endl;
+                        stream << "<!--" << endl;
+                        /* copy all characters */
+                        while (cssFile.get(c))
+                            stream << c;
+                        stream << "//-->" << endl;
+                        stream << "</style>" << endl;
+                    } else {
+                        OFString message = "Could not open CSS file \"";
+                        message += styleSheet;
+                        message += "\" ... ignoring";
+                        printWarningMessage(LogStream, message.c_str());
+                    }
                 } else {
-                    OFString message = "Could not open CSS file \"";
-                    message += styleSheet;
-                    message += "\" ... ignoring";
-                    printWarningMessage(LogStream, message.c_str());
+                    /* just add a reference to the CSS file (might be an URL) */
+                    stream << "<link rel=stylesheet type=\"text/css\" href=\"" << styleSheet << "\">" << endl;
                 }
-            } else {
-                /* just add a reference to the CSS file (might be an URL) */
-                stream << "<link rel=stylesheet type=\"text/css\" href=\"" << styleSheet << "\">" << endl;
             }
-        }
-        /* optional character set (HTML 4.0) */
-        string = characterSetToHTMLName(SpecificCharacterSetEnum);
-        if (string.length() > 0)
-        {
-            stream << "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=";
-            stream << string << "\">" << endl;
+            /* optional character set (HTML 4.0) */
+            string = characterSetToHTMLName(SpecificCharacterSetEnum);
+            if (string.length() > 0)
+            {
+                stream << "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=";
+                stream << string << "\">" << endl;
+            }
         }
         stream << "</head>" << endl;
         stream << "<body>" << endl;
 
         // --- render some general document information ---
 
-        if (!(flags & HF_renderNoDocumentHeader))
+        if (!(newFlags & HF_renderNoDocumentHeader))
         {
             /* create a table for this purpose */
             stream << "<table>" << endl;
@@ -662,7 +684,7 @@ E_Condition DSRDocument::renderHTML(ostream &stream,
                 stream << "<tr>" << endl;
                 stream << "<td><b>Patient:</b></td>" << endl;
                 stream << "<td>";
-                renderHTMLPatientData(stream);
+                renderHTMLPatientData(stream, convertNonASCII);
                 stream << "</td>" << endl;
                 stream << "</tr>" << endl;
             }
@@ -671,7 +693,7 @@ E_Condition DSRDocument::renderHTML(ostream &stream,
             {
                 stream << "<tr>" << endl;
                 stream << "<td><b>Referring Physician:</b></td>" << endl;
-                stream << "<td>" << convertToMarkupString(dicomToReadablePersonName(getStringValueFromElement(ReferringPhysiciansName, string), string2), htmlString);
+                stream << "<td>" << convertToMarkupString(dicomToReadablePersonName(getStringValueFromElement(ReferringPhysiciansName, string), string2), htmlString, convertNonASCII);
                 stream << "</td>" << endl;
                 stream << "</tr>" << endl;
             }
@@ -680,7 +702,7 @@ E_Condition DSRDocument::renderHTML(ostream &stream,
             {
                 stream << "<tr>" << endl;
                 stream << "<td><b>Manufacturer:</b></td>" << endl;
-                stream << "<td>" << convertToMarkupString(getStringValueFromElement(Manufacturer, string), htmlString);
+                stream << "<td>" << convertToMarkupString(getStringValueFromElement(Manufacturer, string), htmlString, convertNonASCII);
                 stream << "</td>" << endl;
                 stream << "</tr>" << endl;
             }
@@ -694,7 +716,7 @@ E_Condition DSRDocument::renderHTML(ostream &stream,
             {
                 stream << "<tr>" << endl;
                 stream << "<td></td>" << endl;
-                stream << "<td>" << convertToMarkupString(getStringValueFromElement(CompletionFlagDescription, string), htmlString);
+                stream << "<td>" << convertToMarkupString(getStringValueFromElement(CompletionFlagDescription, string), htmlString, convertNonASCII);
                 stream << "</td>" << endl;
                 stream << "</tr>" << endl;
             }
@@ -723,21 +745,21 @@ E_Condition DSRDocument::renderHTML(ostream &stream,
                     stream << "<td></td>" << endl;
                     stream << "<td>";
                     stream << dicomToReadableDateTime(dateTime, string2) << " - ";
-                    stream << convertToMarkupString(dicomToReadablePersonName(obsName, string2), htmlString);
+                    stream << convertToMarkupString(dicomToReadablePersonName(obsName, string2), htmlString, convertNonASCII);
                     /* optional observer code */
-                    if (obsCode.isValid() && ((flags & HF_renderAllCodes) == HF_renderAllCodes))
+                    if (obsCode.isValid() && ((newFlags & HF_renderAllCodes) == HF_renderAllCodes))
                     {
                         stream << " ";
                         if (obsCode.isValid())
                         {
-                            stream << "(" << convertToMarkupString(obsCode.getCodeValue(), htmlString);
-                            stream << "," << convertToMarkupString(obsCode.getCodingSchemeDesignator(), htmlString) << ",";
+                            stream << "(" << convertToMarkupString(obsCode.getCodeValue(), htmlString, convertNonASCII);
+                            stream << "," << convertToMarkupString(obsCode.getCodingSchemeDesignator(), htmlString, convertNonASCII) << ",";
                             if (obsCode.getCodingSchemeVersion().length() > 0)
-                                stream << convertToMarkupString(obsCode.getCodingSchemeVersion(), htmlString) << ",";
-                            stream << "\"" << convertToMarkupString(obsCode.getCodeMeaning(), htmlString) << "\")";
+                                stream << convertToMarkupString(obsCode.getCodingSchemeVersion(), htmlString, convertNonASCII) << ",";
+                            stream << "\"" << convertToMarkupString(obsCode.getCodeMeaning(), htmlString, convertNonASCII) << "\")";
                         }
                     }
-                    stream << ", " << organization;
+                    stream << ", " << convertToMarkupString(organization, htmlString, convertNonASCII);
                     stream << "</td>" << endl;
                     stream << "</tr>" << endl;
                 }
@@ -759,14 +781,14 @@ E_Condition DSRDocument::renderHTML(ostream &stream,
         /* create memory output stream for the annex */
         ostrstream annexStream;
         /* render document tree two the streams */
-        result = DocumentTree.renderHTML(stream, annexStream, flags);
+        result = DocumentTree.renderHTML(stream, annexStream, newFlags);
         /* append annex (with heading) to main document */
         if (result == EC_Normal)
             result = appendStream(stream, annexStream, "<h1>Annex</h1>");
 
         // --- footnote ---
 
-        if (flags & HF_renderDcmtkFootnote)
+        if (newFlags & HF_renderDcmtkFootnote)
         {
             stream << "<hr>" << endl;
 
@@ -1498,7 +1520,10 @@ void DSRDocument::updateAttributes()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.9  2000-11-07 18:27:46  joergr
+ *  Revision 1.10  2000-11-09 20:34:00  joergr
+ *  Added support for non-ASCII characters in HTML 3.2 (use numeric value).
+ *
+ *  Revision 1.9  2000/11/07 18:27:46  joergr
  *  Enhanced rendered HTML output of date, time, datetime and pname.
  *
  *  Revision 1.8  2000/11/01 16:33:09  joergr

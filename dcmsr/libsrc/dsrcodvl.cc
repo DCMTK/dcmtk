@@ -23,8 +23,8 @@
  *    classes: DSRCodedEntryValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-01 16:29:48 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-11-09 20:33:59 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -278,25 +278,27 @@ E_Condition DSRCodedEntryValue::writeXML(ostream &stream,
 
 
 E_Condition DSRCodedEntryValue::renderHTML(ostream &stream,
+                                           const size_t flags,
                                            OFConsole * /* logStream */,
                                            const OFBool fullCode,
                                            const OFBool valueFirst) const
 {
     OFString htmlString;
+    const OFBool convertNonASCII = flags & DSRTypes::HF_convertNonASCIICharacters;
     if (valueFirst)
-        stream << DSRTypes::convertToMarkupString(CodeValue, htmlString);
+        stream << DSRTypes::convertToMarkupString(CodeValue, htmlString, convertNonASCII);
     else
-        stream << DSRTypes::convertToMarkupString(CodeMeaning, htmlString);
+        stream << DSRTypes::convertToMarkupString(CodeMeaning, htmlString, convertNonASCII);
     if (fullCode)
     {
         stream << " (";
         if (!valueFirst)
-            stream << DSRTypes::convertToMarkupString(CodeValue, htmlString) << ", ";
-        stream << DSRTypes::convertToMarkupString(CodingSchemeDesignator, htmlString); 
+            stream << DSRTypes::convertToMarkupString(CodeValue, htmlString, convertNonASCII) << ", ";
+        stream << DSRTypes::convertToMarkupString(CodingSchemeDesignator, htmlString, convertNonASCII); 
         if (CodingSchemeVersion.length() > 0)
-            stream << ", " << DSRTypes::convertToMarkupString(CodingSchemeVersion, htmlString);
+            stream << ", " << DSRTypes::convertToMarkupString(CodingSchemeVersion, htmlString, convertNonASCII);
         if (valueFirst)
-            stream << ", " << DSRTypes::convertToMarkupString(CodeMeaning, htmlString);
+            stream << ", " << DSRTypes::convertToMarkupString(CodeMeaning, htmlString, convertNonASCII);
         stream << ")";
     }
     return EC_Normal;
@@ -360,7 +362,10 @@ OFBool DSRCodedEntryValue::checkCode(const OFString &codeValue,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodvl.cc,v $
- *  Revision 1.4  2000-11-01 16:29:48  joergr
+ *  Revision 1.5  2000-11-09 20:33:59  joergr
+ *  Added support for non-ASCII characters in HTML 3.2 (use numeric value).
+ *
+ *  Revision 1.4  2000/11/01 16:29:48  joergr
  *  Added support for conversion to XML.
  *  Enhanced support for specific character sets.
  *

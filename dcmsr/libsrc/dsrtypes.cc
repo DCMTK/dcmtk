@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-09 11:36:07 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2000-11-09 20:34:02 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,26 +65,30 @@ END_EXTERN_C
  *---------------------------------*/
 
 /* renderHTML flags */
-const size_t DSRTypes::HF_neverExpandChildrenInline =    1;
-const size_t DSRTypes::HF_renderInlineCodes         =    2;
-const size_t DSRTypes::HF_renderConceptNameCodes    =    4;
-const size_t DSRTypes::HF_renderNumericUnitCodes    =    8;
-const size_t DSRTypes::HF_useCodeMeaningAsUnit      =   16;
-const size_t DSRTypes::HF_renderPatientTitle        =   32;
-const size_t DSRTypes::HF_renderNoDocumentHeader    =   64;
-const size_t DSRTypes::HF_renderDcmtkFootnote       =  128;
-const size_t DSRTypes::HF_renderFullData            =  256;
-const size_t DSRTypes::HF_copyStyleSheetContent     =  512;
+const size_t DSRTypes::HF_neverExpandChildrenInline = 1 <<  0;
+const size_t DSRTypes::HF_renderInlineCodes         = 1 <<  1;
+const size_t DSRTypes::HF_renderConceptNameCodes    = 1 <<  2;
+const size_t DSRTypes::HF_renderNumericUnitCodes    = 1 <<  3;
+const size_t DSRTypes::HF_useCodeMeaningAsUnit      = 1 <<  4;
+const size_t DSRTypes::HF_renderPatientTitle        = 1 <<  5;
+const size_t DSRTypes::HF_renderNoDocumentHeader    = 1 <<  6;
+const size_t DSRTypes::HF_renderDcmtkFootnote       = 1 <<  7;
+const size_t DSRTypes::HF_renderFullData            = 1 <<  8;
+const size_t DSRTypes::HF_copyStyleSheetContent     = 1 <<  9;
+const size_t DSRTypes::HF_version32Compatibility    = 1 << 10;
+const size_t DSRTypes::HF_addDocumentTypeReference  = 1 << 11;
 /* internal */
-const size_t DSRTypes::HF_renderItemsSeparately     = 1024;
-const size_t DSRTypes::HF_renderItemInline          = 2048;
-const size_t DSRTypes::HF_currentlyInsideAnnex      = 4096;
-const size_t DSRTypes::HF_createFootnoteReferences  = 8192;
+const size_t DSRTypes::HF_renderItemsSeparately     = 1 << 12;
+const size_t DSRTypes::HF_renderItemInline          = 1 << 13;
+const size_t DSRTypes::HF_currentlyInsideAnnex      = 1 << 14;
+const size_t DSRTypes::HF_createFootnoteReferences  = 1 << 15;
+const size_t DSRTypes::HF_convertNonASCIICharacters = 1 << 16;
 /* shortcuts */
 const size_t DSRTypes::HF_renderAllCodes            = DSRTypes::HF_renderInlineCodes | DSRTypes::HF_renderConceptNameCodes |
                                                       DSRTypes::HF_renderNumericUnitCodes;
 const size_t DSRTypes::HF_internalUseOnly           = DSRTypes::HF_renderItemsSeparately | DSRTypes::HF_renderItemInline |
-                                                      DSRTypes::HF_currentlyInsideAnnex | DSRTypes::HF_createFootnoteReferences;
+                                                      DSRTypes::HF_currentlyInsideAnnex | DSRTypes::HF_createFootnoteReferences |
+                                                      DSRTypes::HF_convertNonASCIICharacters;
 
 /* writeXML flags */
 const size_t DSRTypes::XF_writeEmptyTags            = 1;
@@ -609,10 +613,11 @@ const OFString &DSRTypes::getPrintStringFromElement(const DcmElement &delem,
 
 
 const OFString &DSRTypes::getMarkupStringFromElement(const DcmElement &delem,
-                                                     OFString &stringValue)
+                                                     OFString &stringValue,
+                                                     const OFBool convertNonASCII)
 {
     OFString tempString;
-    return convertToMarkupString(getStringValueFromElement(delem, tempString), stringValue);
+    return convertToMarkupString(getStringValueFromElement(delem, tempString), stringValue, convertNonASCII);
 }
 
 
@@ -1050,6 +1055,7 @@ const OFString &DSRTypes::convertToPrintString(const OFString &sourceString,
 
 const OFString &DSRTypes::convertToMarkupString(const OFString &sourceString,
                                                 OFString &markupString,
+                                                const OFBool convertNonASCII,
                                                 const OFBool newlineAllowed)
 {
     /* char ptr allows fastest access to the string */
@@ -1083,9 +1089,21 @@ const OFString &DSRTypes::convertToMarkupString(const OFString &sourceString,
             else
                 markupString += "&para;";
         }
-        /* other character: just append */
-        else
-            markupString += *str;
+        else {
+            /* other character: ... */
+            const size_t charValue = (size_t)(*(const unsigned char *)str);
+            if (convertNonASCII && (charValue > 127))
+            {
+                char buffer[16];
+                /* convert > #127 to Unicode (ISO Latin-1), what is about < #32 ? */
+                markupString += "&#";
+                markupString += numberToString(charValue, buffer);
+                markupString += ";";
+            } else {
+                /* just append */
+                markupString += *str;
+            }
+        }
         str++;
     }
     return markupString;
@@ -1360,7 +1378,10 @@ E_Condition DSRTypes::appendStream(ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
- *  Revision 1.8  2000-11-09 11:36:07  joergr
+ *  Revision 1.9  2000-11-09 20:34:02  joergr
+ *  Added support for non-ASCII characters in HTML 3.2 (use numeric value).
+ *
+ *  Revision 1.8  2000/11/09 11:36:07  joergr
  *  Minor HTML code purifications.
  *  Reordered renderHTML flags (internal flags to the end).
  *

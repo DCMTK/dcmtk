@@ -23,8 +23,8 @@
  *    classes: DSRPNameTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-07 18:31:13 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2000-11-09 20:34:01 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -131,7 +131,7 @@ E_Condition DSRPNameTreeNode::renderHTMLContentItem(ostream &docStream,
         OFString string, htmlString;
         if (!(flags & DSRTypes::HF_renderItemsSeparately))
             docStream << "<u>";
-        docStream << convertToMarkupString(dicomToReadablePersonName(getValue(), string), htmlString);
+        docStream << convertToMarkupString(dicomToReadablePersonName(getValue(), string), htmlString, flags & HF_convertNonASCIICharacters);
         if (!(flags & DSRTypes::HF_renderItemsSeparately))
             docStream << "</u>";
         docStream << endl;
@@ -158,7 +158,10 @@ OFBool DSRPNameTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrpnmtn.cc,v $
- *  Revision 1.7  2000-11-07 18:31:13  joergr
+ *  Revision 1.8  2000-11-09 20:34:01  joergr
+ *  Added support for non-ASCII characters in HTML 3.2 (use numeric value).
+ *
+ *  Revision 1.7  2000/11/07 18:31:13  joergr
  *  Enhanced support for by-reference relationships.
  *  Enhanced rendered HTML output of date, time, datetime and pname.
  *

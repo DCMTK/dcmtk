@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-09 11:32:45 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2000-11-09 20:34:00 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -539,7 +539,7 @@ E_Condition DSRDocumentTreeNode::renderHTMLConceptName(ostream &docStream,
         {
             docStream << "<b>";
             /* render ConceptName & Code (if valid) */
-            ConceptName.renderHTML(docStream, logStream, (flags & HF_renderConceptNameCodes) && ConceptName.isValid() /* fullCode */);
+            ConceptName.renderHTML(docStream, flags, logStream, (flags & HF_renderConceptNameCodes) && ConceptName.isValid() /* fullCode */);
             docStream << ":</b><br>" << endl;
         } else if (flags & HF_currentlyInsideAnnex)
         {
@@ -603,7 +603,7 @@ E_Condition DSRDocumentTreeNode::renderHTMLChildNodes(ostream &docStream,
                         {
                             /* render concept name/code or value type */
                             if (node->getConceptName().getCodeMeaning().length() > 0)
-                                node->getConceptName().renderHTML(docStream, logStream, (flags & HF_renderConceptNameCodes) && ConceptName.isValid() /* fullCode */);
+                                node->getConceptName().renderHTML(docStream, flags, logStream, (flags & HF_renderConceptNameCodes) && ConceptName.isValid() /* fullCode */);
                             else
                                 docStream << valueTypeToReadableName(node->getValueType());
                             docStream << " = ";
@@ -714,7 +714,10 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
- *  Revision 1.8  2000-11-09 11:32:45  joergr
+ *  Revision 1.9  2000-11-09 20:34:00  joergr
+ *  Added support for non-ASCII characters in HTML 3.2 (use numeric value).
+ *
+ *  Revision 1.8  2000/11/09 11:32:45  joergr
  *  Minor HTML code purifications.
  *
  *  Revision 1.7  2000/11/07 18:33:29  joergr
