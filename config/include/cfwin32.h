@@ -305,6 +305,9 @@
 /* Define if you have the <netinet/in.h> header file.  */
 #undef HAVE_NETINET_IN_H
 
+/* Define if you have the <netinet/in_systm.h> header file.  */
+#undef HAVE_NETINET_IN_SYSTM_H
+
 /* Define if you have the <netinet/tcp.h> header file.  */
 #undef HAVE_NETINET_TCP_H
 
