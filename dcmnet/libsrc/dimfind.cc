@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-26 18:38:46 $
+** Update Date:		$Date: 1996-04-22 10:02:59 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimfind.cc,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -140,7 +140,12 @@ DIMSE_findUser(
 
     while (cond == DIMSE_NORMAL && DICOM_PENDING_STATUS(status)) {
 
+	/* initialise the response to collect */
         bzero(&rsp, sizeof(rsp));
+	if (rspIds != NULL) {
+	    delete rspIds;
+	    rspIds = NULL;
+	}
 
 	cond = DIMSE_receiveCommand(assoc, blockMode, timeout, &presID, 
 		&rsp, statusDetail);
@@ -339,8 +344,11 @@ providerCleanup:
 /*
 ** CVS Log
 ** $Log: dimfind.cc,v $
-** Revision 1.1  1996-03-26 18:38:46  hewett
-** Initial revision
+** Revision 1.2  1996-04-22 10:02:59  hewett
+** Corrected memory leak whereby response ids where not being deleted.
+**
+** Revision 1.1.1.1  1996/03/26 18:38:46  hewett
+** Initial Release.
 **
 **
 */
