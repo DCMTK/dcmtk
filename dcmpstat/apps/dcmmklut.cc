@@ -17,7 +17,7 @@
  *
  *  Module:  dcmpstat
  *
- *  Authors: Marco Eichelberg
+ *  Authors: Marco Eichelberg, Joerg Riesmeier
  *
  *  Purpose: This application reads a DICOM image, adds a Modality LUT,
  *    a VOI LUT or a Presentation LUT to the image and writes it back.
@@ -25,9 +25,9 @@
  *    file.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-14 19:08:48 $
+ *  Update Date:      $Date: 1999-10-14 20:21:29 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmklut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -72,6 +72,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
 OFBool opt_verbose = OFFalse;
+OFBool opt_debug = OFFalse;
 
 
 // ********************************************
@@ -88,7 +89,7 @@ enum LUT_Type
 E_Condition readMapFile(const char *filename,
                         double *&inputXData,
                         double *&inputYData,
-                        unsigned long &count,
+                        unsigned long &inputEntries,
                         double &inputXMax,
                         double &inputYMax)
 {
@@ -107,14 +108,14 @@ E_Condition readMapFile(const char *filename,
                 {
                     if ((buffer[0] == 0x8a) && (buffer[1] == 0x3f) && (buffer[2] == 0x0) && (buffer[3] == 0x0))
                     {
-                        count = 256;
+                        inputEntries = 256;
                         inputXMax = 255;
                         inputYMax = 255;
-                        inputXData = new double[count];
-                        inputYData = new double[count];
+                        inputXData = new double[inputEntries];
+                        inputYData = new double[inputEntries];
                         if ((inputXData != NULL) && (inputYData != NULL))
                         {
-                            for (unsigned long i = 0; i < count; i++)
+                            for (unsigned long i = 0; i < inputEntries; i++)
                             {
                                 inputXData[i] = i;
                                 inputYData[i] = (double)buffer[i + 8];
@@ -122,14 +123,14 @@ E_Condition readMapFile(const char *filename,
                             result = EC_Normal;
                         }
                     } else
-                        cerr << "Error: magic word wrong, not a map file ... ignoring !" << endl;
+                        cerr << "Warning: magic word wrong, not a map file ... ignoring !" << endl;
                 } else
-                    cerr << "Error: file too large, not a map file ... ignoring !" << endl;
+                    cerr << "Warning: file too large, not a map file ... ignoring !" << endl;
             } else
-                cerr << "Error: read error in map file ... ignoring !" << endl;
+                cerr << "Warning: read error in map file ... ignoring !" << endl;
             fclose(inf);
         } else
-            cerr << "Error: cannot open map file ... ignoring !" << endl;
+            cerr << "Warning: cannot open map file ... ignoring !" << endl;
     }
     return result;
 }
@@ -138,7 +139,7 @@ E_Condition readMapFile(const char *filename,
 E_Condition readTextFile(const char *filename,
                          double *&inputXData,
                          double *&inputYData,
-                         unsigned long &count,
+                         unsigned long &inputEntries,
                          double &inputXMax,
                          double &inputYMax)
 {
@@ -149,9 +150,11 @@ E_Condition readTextFile(const char *filename,
         ifstream file(filename, ios::in|ios::nocreate);
         if (file)
         {
-            count = 0;
+            inputEntries = 0;
             inputXMax = 0;
             inputYMax = 0;
+            unsigned long count = 0;
+            double xmax = 0;
             double ymax = 0;
             char c;
             while (file.get(c))
@@ -163,25 +166,42 @@ E_Condition readTextFile(const char *filename,
                 else if (!isspace(c))                                       // skip whitespaces
                 {
                     file.putback(c);
-                    if (inputXMax == 0)                                     // read x maxvalue
+                    if (inputEntries == 0)                                  // read number of entries
+                    {
+                        char str[6];
+                        file.get(str, sizeof(str));
+                        if (strcmp(str, "count") == 0)                      // check for key word: count
+                        {
+                            file >> inputEntries;
+                            if (inputEntries > 0)
+                            {
+                                inputXData = new double[inputEntries];
+                                inputYData = new double[inputEntries];
+                                if ((inputXData == NULL) || (inputYData == NULL))
+                                    return EC_IllegalCall;
+                            } else {
+                                cerr << "Error: invalid or missing value for number of entries in text file ... ignoring !" << endl;
+                                return EC_IllegalCall;                      // abort
+                            }
+                        } else {
+                            cerr << "Error: missing keyword 'count' for number of entries in text file ... ignoring !" << endl;
+                            return EC_IllegalCall;                          // abort
+                        }
+                    }
+                    else if ((inputXMax == 0.0) && (c == 'x'))              // read x maxvalue (optional)
                     {
                         char str[5];
                         file.get(str, sizeof(str));
                         if (strcmp(str, "xMax") == 0)                       // check for key word: xMax
                         {
                             file >> inputXMax;
-                            if (inputXMax > 0)
+                            if (inputXMax <= 0)
                             {
-                                inputXData = new double[inputXMax + 1];
-                                inputYData = new double[inputXMax + 1];
-                                if ((inputXData == NULL) || (inputYData == NULL))
-                                    return EC_IllegalCall;
-                            } else {
-                                cerr << "Error: invalid or missing value for maximum x value in text file ... ignoring !" << endl;
-                                return EC_IllegalCall;                      // abort
+                                if (opt_debug)
+                                    cerr << "Warning: invalid value for xMax in text file ...ignoring !" << endl;
                             }
                         } else {
-                            cerr << "Error: missing keyword 'xMax' for maximum x value in text file ... ignoring !" << endl;
+                            cerr << "Error: invalid text file ... ignoring !" << endl;
                             return EC_IllegalCall;                          // abort
                         }
                     }
@@ -193,35 +213,57 @@ E_Condition readTextFile(const char *filename,
                         {
                             file >> inputYMax;
                             if (inputYMax <= 0)
-                                cerr << "Warning: invalid value for yMax in text file ...ignoring !" << endl;
+                            {
+                                if (opt_debug)
+                                    cerr << "Warning: invalid value for yMax in text file ...ignoring !" << endl;
+                            }
                         } else {
                             cerr << "Error: invalid text file ... ignoring !" << endl;
                             return EC_IllegalCall;                          // abort
                         }
                     } else {
-                        if (count <= inputXMax)
+                        if (count < inputEntries)
                         {
                             file >> inputXData[count];                      // read x value
+                            if (inputXData[count] > xmax)
+                                xmax = inputXData[count];
                             file >> inputYData[count];                      // read y value
                             if (inputYData[count] > ymax)
                                 ymax = inputYData[count];
                             if (file.fail())
-                                cerr << "Warning: missing y value in text file ... ignoring last entry !" << endl;
-                            else if (inputXData[count] > inputXMax)
                             {
-                                cerr << "Warning: x value (" << inputXData[count] << ") exceeds maximum value (";
-                                cerr << inputXMax << ") in text file ..." << endl << "         ... ignoring value !" << endl;
+                                if (opt_debug)
+                                    cerr << "Warning: missing y value in text file ... ignoring last entry !" << endl;
+                            }
+                            else if ((inputXMax != 0) && (inputXData[count] > inputXMax))
+                            {
+                                if (opt_debug)
+                                {
+                                    cerr << "Warning: x value (" << inputXData[count] << ") exceeds maximum value (";
+                                    cerr << inputXMax << ") in text file ..." << endl << "         ... ignoring value !" << endl;
+                                }
+                            }
+                            else if ((inputYMax != 0) && (inputYData[count] > inputYMax))
+                            {
+                                if (opt_debug)
+                                {
+                                    cerr << "Warning: y value (" << inputYData[count] << ") exceeds maximum value (";
+                                    cerr << inputYMax << ") in text file ..." << endl << "         ... ignoring value !" << endl;
+                                }
                             } else
                                 count++;
                         } else {
-                            cerr << "Warning: too many values in text file ... ignoring last line(s) !" << endl;
+                            if (opt_debug)
+                                cerr << "Warning: too many values in text file ... ignoring last line(s) !" << endl;
                             break;
                         }
                     }
                 }
             }
-            if (inputYMax == 0)                                             // automatic calculation
-                inputYMax = ymax ;
+            if (inputXMax == 0)                                             // automatic calculation
+                inputXMax = xmax;
+            if (inputYMax == 0)
+                inputYMax = ymax;
             if ((inputXMax > 0) && (inputYMax > 0) && (count > 0) && (inputXData != NULL) && (inputYData != NULL))
                 return EC_Normal;
             else
@@ -260,7 +302,7 @@ E_Condition writeTextOutput(const char *filename,
 }
 
 
-E_Condition convertInputLUT(const Uint16 numberOfBits,
+E_Condition convertInputLUT(const unsigned int numberOfBits,
                             const unsigned long numberOfEntries,
                             const signed long firstMapped,
                             double *inputXData,
@@ -294,7 +336,7 @@ E_Condition convertInputLUT(const Uint16 numberOfBits,
             if (opt_verbose)
             {
                 cerr.setf(ios::fixed, ios::floatfield);
-                cerr << "multiplying input values by " << factor << " ..." << endl;            
+                cerr << "multiplying input values by " << factor << " ..." << endl;
             }
             for (unsigned long i = 0; i < inputEntries; i++)
                 inputYData[i] *= factor;
@@ -306,7 +348,7 @@ E_Condition convertInputLUT(const Uint16 numberOfBits,
             result = EC_Normal;
         } else {
             if (opt_verbose)
-                cerr << "using polynomial curve fitting algorithm ..." << endl;            
+                cerr << "using polynomial curve fitting algorithm ..." << endl;
             double *coeff = new double[order + 1];
             if (DiCurveFitting<double, double>::calculateCoefficients(inputXData, inputYData, inputEntries, order, coeff))
             {
@@ -340,13 +382,13 @@ E_Condition convertInputLUT(const Uint16 numberOfBits,
             oss << ends;
             header += oss.str();
         } else
-            cerr << "Warning: can't create lookup table from text file ... ignoring !" << endl;        
+            cerr << "Warning: can't create lookup table from text file ... ignoring !" << endl;
     }
     return result;
 }
 
 
-void gammaLUT(const Uint16 numberOfBits,
+void gammaLUT(const unsigned int numberOfBits,
               const unsigned long numberOfEntries,
               const signed long firstMapped,
               const OFBool byteAlign,
@@ -398,7 +440,7 @@ void gammaLUT(const Uint16 numberOfBits,
 }
 
 
-E_Condition createLUT(const Uint16 numberOfBits,
+E_Condition createLUT(const unsigned int numberOfBits,
                       const unsigned long numberOfEntries,
                       const signed long firstMapped,
                       const OFBool byteAlign,
@@ -613,7 +655,7 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--debug"))
         {
             SetDebugLevel(3);
-            DicomImageClass::DebugLevel =  DicomImageClass::DL_Warnings | DicomImageClass::DL_Errors |  DicomImageClass::DL_Informationals;
+            opt_debug = OFTrue;
         }
 
         cmd.beginOptionBlock();
@@ -746,19 +788,19 @@ int main(int argc, char *argv[])
             double inputYMax = 0;
             if (readMapFile(opt_mapName, inputXData, inputYData, inputEntries, inputXMax, inputYMax) == EC_Normal)
             {
-                result = convertInputLUT(opt_bits, opt_entries, opt_firstMapped, inputXData, inputYData, inputEntries,
+                result = convertInputLUT((unsigned int)opt_bits, opt_entries, opt_firstMapped, inputXData, inputYData, inputEntries,
                     inputXMax, inputYMax, opt_order, outputData, headerStr, explStr);
             }
             else if (readTextFile(opt_textName, inputXData, inputYData, inputEntries, inputXMax, inputYMax) == EC_Normal)
             {
-                result = convertInputLUT(opt_bits, opt_entries, opt_firstMapped, inputXData, inputYData, inputEntries,
+                result = convertInputLUT((unsigned int)opt_bits, opt_entries, opt_firstMapped, inputXData, inputYData, inputEntries,
                     inputXMax, inputYMax, opt_order, outputData, headerStr, explStr);
             } else {
-                gammaLUT(opt_bits, opt_entries, opt_firstMapped, opt_byteAlign, opt_gammaValue, outputData, headerStr, explStr);
+                gammaLUT((unsigned int)opt_bits, opt_entries, opt_firstMapped, opt_byteAlign, opt_gammaValue, outputData, headerStr, explStr);
             }
             if (result == EC_Normal)
             {
-                result = createLUT((Uint16)opt_bits, opt_entries, opt_firstMapped, opt_byteAlign, opt_lutVR, *ditem,
+                result = createLUT((unsigned int)opt_bits, opt_entries, opt_firstMapped, opt_byteAlign, opt_lutVR, *ditem,
                     outputData, explStr);
             }
             delete[] inputXData;
@@ -880,7 +922,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmmklut.cc,v $
- * Revision 1.6  1999-10-14 19:08:48  joergr
+ * Revision 1.7  1999-10-14 20:21:29  joergr
+ * Fixed problems with MSVC.
+ *
+ * Revision 1.6  1999/10/14 19:08:48  joergr
  * Merged command line tool 'dconvmap' into 'dcmmklut' and enhanced its
  * facilities (e.g. integrated new polynomial curve fitting algorithm).
  *
