@@ -23,8 +23,8 @@
  *    classes: DSRXMLDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-04-07 12:04:48 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2004-08-04 12:12:18 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,6 +42,7 @@
 #ifdef WITH_LIBXML
 #include <libxml/xmlschemas.h>
 
+#ifdef LIBXML_SCHEMAS_ENABLED
 #ifdef HAVE_VPRINTF
 // function required to avoid issue with 'std' namespace
 static void errorFunction(void *ctx, const char *msg, ...)
@@ -56,6 +57,7 @@ static void errorFunction(void *ctx, const char *msg, ...)
     va_end(ap);
 }
 #endif
+#endif /* LIBXML_SCHEMAS_ENABLED */
 
 // 'libxml' shall be quiet in non-debug mode
 static void noErrorFunction(void * /*ctx*/, const char * /*msg*/, ...)
@@ -144,6 +146,7 @@ OFCondition DSRXMLDocument::read(const OFString &filename,
         if (flags & XF_validateSchema)
         {
             xmlGenericError(xmlGenericErrorContext, "--- libxml validating ---\n");
+#ifdef LIBXML_SCHEMAS_ENABLED
 #if 1
             /* create context for Schema validation */
             xmlSchemaParserCtxtPtr context = xmlSchemaNewParserCtxt(DCMSR_XML_XSD_FILE);
@@ -179,7 +182,7 @@ OFCondition DSRXMLDocument::read(const OFString &filename,
             } else
                 xmlGenericError(xmlGenericErrorContext, "error: failed to compile schema \"%s\"\n", DCMSR_XML_XSD_FILE);
             xmlSchemaFreeParserCtxt(context);
-#else
+#else // 0
             /* ### the following code fragment is not yet working! ### */
 
             /* create context for Schema validation */
@@ -196,6 +199,9 @@ OFCondition DSRXMLDocument::read(const OFString &filename,
                 xmlSchemaSetValidErrors(context, NULL, NULL, NULL);
             /* validate the document */
             isValid = (xmlSchemaValidateDoc(context, Document) == 0);
+#endif
+#else /* LIBXML_SCHEMAS_ENABLED */
+            xmlGenericError(xmlGenericErrorContext, "no support for XML Schema\n");
 #endif
         }
         xmlGenericError(xmlGenericErrorContext, "-------------------------\n");
@@ -741,7 +747,10 @@ void DSRXMLDocument::printGeneralNodeError(const DSRXMLCursor &cursor,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrxmld.cc,v $
- *  Revision 1.7  2004-04-07 12:04:48  joergr
+ *  Revision 1.8  2004-08-04 12:12:18  joergr
+ *  Disabled support for XML Schema if not compiled into libxml2 library.
+ *
+ *  Revision 1.7  2004/04/07 12:04:48  joergr
  *  Adapted code to avoid warnings reported by gcc when compiling without libxml
  *  support.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003, OFFIS
+ *  Copyright (C) 2003-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,9 @@
  *            reporting file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 12:06:59 $
+ *  Update Date:      $Date: 2004-08-04 12:12:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/xml2dsr.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -97,7 +97,9 @@ int main(int argc, char *argv[])
 
     cmd.addGroup("processing options:");
       cmd.addSubGroup("validation:");
+#ifdef LIBXML_SCHEMAS_ENABLED
         cmd.addOption("--validate-schema",     "+Vs",   "validate XML document against Schema");
+#endif
         cmd.addOption("--check-namespace",     "+Vn",   "check XML namespace in document root");
 
     cmd.addGroup("output options:");
@@ -139,6 +141,9 @@ int main(int argc, char *argv[])
               CERR << "- ZLIB, Version " << zlibVersion() << endl;
 #endif
               CERR << "- LIBXML, Version " << LIBXML_DOTTED_VERSION << endl;
+#ifndef LIBXML_SCHEMAS_ENABLED
+              CERR << "  without XML Schema support" << endl;
+#endif
               return 0;
            }
         }
@@ -154,8 +159,10 @@ int main(int argc, char *argv[])
 
         /* processing options */
 
+#ifdef LIBXML_SCHEMAS_ENABLED
         if (cmd.findOption("--validate-schema"))
             opt_readFlags |= DSRTypes::XF_validateSchema;
+#endif
         if (cmd.findOption("--check-namespace"))
             opt_readFlags |= DSRTypes::XF_useDcmsrNamespace;
 
@@ -267,8 +274,10 @@ int main(int argc, char *argv[])
             if (opt_verbose)
             {
                 COUT << "reading ";
+#ifdef LIBXML_SCHEMAS_ENABLED
                 if (opt_readFlags & DSRTypes::XF_validateSchema)
                     COUT << "and validating ";
+#endif
                 COUT << "XML input file: " << opt_ifname << endl;
             }
             /* read XML file and feed data into DICOM fileformat */
@@ -315,7 +324,10 @@ int main(int, char *[])
 /*
  * CVS/RCS Log:
  * $Log: xml2dsr.cc,v $
- * Revision 1.1  2003-08-07 12:06:59  joergr
+ * Revision 1.2  2004-08-04 12:12:37  joergr
+ * Disabled support for XML Schema if not compiled into libxml2 library.
+ *
+ * Revision 1.1  2003/08/07 12:06:59  joergr
  * Added new command line tool xml2dsr (convert XML document to DICOM SR file).
  *
  *
