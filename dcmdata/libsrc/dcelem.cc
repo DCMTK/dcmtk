@@ -22,9 +22,9 @@
  *  Purpose: Implementation of class DcmElement
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-03-21 13:08:04 $
+ *  Update Date:      $Date: 2003-10-15 16:55:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcelem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.45 $
+ *  CVS/RCS Revision: $Revision: 1.46 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -840,7 +840,7 @@ OFCondition DcmElement::read(DcmInputStream &inStream,
                             errorFlag = EC_InvalidStream;  // attribute larger than remaining bytes in file
                             /* Print an error message when too few bytes are available in the file in order to
                              * distinguish this problem from any other generic "InvalidStream" problem. */
-                             ofConsole.lockCerr() << "ERROR: " << Tag.getTagName() << Tag.getXTag() << " larger ("
+                             ofConsole.lockCerr() << "DcmElement: " << Tag.getTagName() << Tag.getXTag() << " larger ("
                                  << Length << ") that remaining bytes in file" << endl;
                              ofConsole.unlockCerr();
                         }
@@ -1047,7 +1047,10 @@ OFCondition DcmElement::writeXML(ostream &out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
-** Revision 1.45  2003-03-21 13:08:04  meichel
+** Revision 1.46  2003-10-15 16:55:43  meichel
+** Updated error messages for parse errors
+**
+** Revision 1.45  2003/03/21 13:08:04  meichel
 ** Minor code purifications for warnings reported by MSVC in Level 4
 **
 ** Revision 1.44  2002/12/09 09:30:50  wilkens

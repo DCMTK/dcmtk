@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmItem
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-10-08 10:25:00 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-10-15 16:55:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.86 $
+ *  CVS/RCS Revision: $Revision: 1.87 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -396,7 +396,7 @@ DcmObject* DcmItem::copyDcmObject(DcmObject *oldObj)
 
         case EVR_na :
         default :
-            ofConsole.lockCerr() << "Warning: DcmItem: unable to copy unsupported element("
+            ofConsole.lockCerr() << "DcmItem: Unable to copy unsupported element ("
                  << hex << setfill('0')
                  << setw(4) << oldObj->getGTag() << ","
                  << setw(4) << oldObj->getETag()
@@ -678,8 +678,7 @@ OFCondition DcmItem::computeGroupLengthAndPadding(const E_GrpLenEncoding glenc,
                             DcmUnsignedLong *dUL = new DcmUnsignedLong(tagUL);
                             elementList->insert(dUL, ELP_prev);
                             dO = dUL;
-                            ofConsole.lockCerr() << "Info: DcmItem::computeGroupLengthAndPadding()"
-                                " Group Length with VR other than UL found, corrected." << endl;
+                            ofConsole.lockCerr() << "DcmItem: Group Length with VR other than UL found, corrected." << endl;
                             ofConsole.unlockCerr();
                         }
                         /* if the above mentioned condition is not met but the caller specified */
@@ -866,8 +865,8 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
         if (!vr.isStandard())
         {
             ostream &localCerr = ofConsole.lockCerr();
-            localCerr << "Warning: parsing attribute: " << newTag.getXTag() <<
-                " non-standard VR encountered: '" << vrstr << "', assuming ";
+            localCerr << "DcmItem: Non-standard VR '" << vrstr 
+                      << "' encountered while parsing attribute " << newTag.getXTag() << ", assuming ";
             if (vr.usesExtendedLengthEncoding())
                 localCerr << "4 byte length field" << endl;
             else
@@ -941,7 +940,7 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
     /* if the value in length is odd, print an error message */
     if ((valueLength & 1)&&(valueLength != OFstatic_cast(Uint32, -1)))
     {
-        ofConsole.lockCerr() << "Warning: parse error in DICOM object: length of tag " << newTag << " is odd" << endl;
+        ofConsole.lockCerr() << "DcmItem: Length of attribute " << newTag << " is odd" << endl;
         ofConsole.unlockCerr();
     }
     /* assign values to out parameter */
@@ -991,7 +990,7 @@ OFCondition DcmItem::readSubElement(DcmInputStream &inStream,
         if (temp_error.bad())
         {
             // produce diagnostics
-            ofConsole.lockCerr() << "Warning: element " << newTag
+            ofConsole.lockCerr() << "DcmItem: Element " << newTag
                << " found twice in one dataset/item, ignoring second entry" << endl;
             ofConsole.unlockCerr();
             delete subElem;
@@ -1004,13 +1003,13 @@ OFCondition DcmItem::readSubElement(DcmInputStream &inStream,
         /* readTagAndLength but it is impossible that both can be executed */
         /* without setting the Mark twice. */
         inStream.putback();
-        ofConsole.lockCerr() << "Warning: DcmItem: parse error occurred: " <<  newTag << endl;
+        ofConsole.lockCerr() << "DcmItem: Parse error while parsing attribute " <<  newTag << endl;
         ofConsole.unlockCerr();
     }
     else if (l_error != EC_ItemEnd)
     {
         // inStream.UnsetPutbackMark(); // not needed anymore with new stream architecture
-        ofConsole.lockCerr() << "Error: DcmItem: cannot create SubElement: " <<  newTag << endl;
+        ofConsole.lockCerr() << "DcmItem: Parse error in sequence item, found " << newTag << " instead of an item delimiter" << endl;
         ofConsole.unlockCerr();
     } else {
         // inStream.UnsetPutbackMark(); // not needed anymore with new stream architecture
@@ -1332,7 +1331,7 @@ OFCondition DcmItem::insert(DcmElement *elem,
                   {
                     // produce diagnostics
                     ofConsole.lockCerr()
-                       << "Warning: dataset not in ascending tag order, at element "
+                       << "DcmItem: Dataset not in ascending tag order, at element "
                        << elem->getTag() << endl;
                     ofConsole.unlockCerr();
                   }
@@ -1356,7 +1355,7 @@ OFCondition DcmItem::insert(DcmElement *elem,
                   {
                     // produce diagnostics
                     ofConsole.lockCerr()
-                       << "Warning: dataset not in ascending tag order, at element "
+                       << "DcmItem: Dataset not in ascending tag order, at element "
                        << elem->getTag() << endl;
                     ofConsole.unlockCerr();
                   }
@@ -3333,7 +3332,10 @@ OFBool DcmItem::containsUnknownVR() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.86  2003-10-08 10:25:00  joergr
+** Revision 1.87  2003-10-15 16:55:43  meichel
+** Updated error messages for parse errors
+**
+** Revision 1.86  2003/10/08 10:25:00  joergr
 ** Added support for AT, OB, OF, OW, SL, SS, UL, US to putAndInsertString().
 **
 ** Revision 1.85  2003/07/16 14:33:43  joergr

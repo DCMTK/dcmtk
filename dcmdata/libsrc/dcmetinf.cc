@@ -21,10 +21,10 @@
  *
  *  Purpose: Implementation of class DcmMetaInfo
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 12:59:39 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-10-15 16:55:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcmetinf.cc,v $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -228,9 +228,7 @@ OFBool DcmMetaInfo::checkAndReadPreamble(DcmInputStream &inStream,
             newxfer = tmpxferSyn.getXfer();   // use determined xfer
             if (xferSyn.getXfer() != EXS_Unknown)
             {
-                ofConsole.lockCerr() << "Info: DcmMetaInfo::checkAndReadPreamble(): "
-                    "TransferSyntax of MetaInfo is different from "
-                    "passed parameter newxfer: ignoring newxfer!" << endl;
+                ofConsole.lockCerr() << "DcmMetaInfo: TransferSyntax of MetaInfo is other than expected." << endl;
                 ofConsole.unlockCerr();
             }
         } else
@@ -303,8 +301,7 @@ OFCondition DcmMetaInfo::readGroupLength(DcmInputStream &inStream,
                 debug(4, ("DcmMetaInfo::readGroupLength() Group Length of File Meta Header=%d", headerLen+bytesRead));
             } else {
                 l_error = EC_CorruptedData;
-                ofConsole.lockCerr() << "Warning: DcmMetaInfo::readGroupLength(): No Group"
-                    " Length available in Meta Information Header" << endl;
+                ofConsole.lockCerr() << "DcmMetaInfo: No Group Length available in Meta Information Header" << endl;
                 ofConsole.unlockCerr();
             }
         }
@@ -405,9 +402,7 @@ OFCondition DcmMetaInfo::read(DcmInputStream &inStream,
             {
                 if (Length != DCM_UndefinedLength && fTransferredBytes != Length)
                 {
-                    ofConsole.lockCerr() << "Warning: DcmMetaInfo::read(): "
-                        "Group Length of Meta"
-                        " Information Header has incorrect Value!" << endl;
+                    ofConsole.lockCerr() << "DcmMetaInfo: Group Length of MetaInformation Header has incorrect value." << endl;
                     ofConsole.unlockCerr();
                 }
                 fTransferState = ERW_ready;          // MetaInfo ist komplett
@@ -525,7 +520,10 @@ OFCondition DcmMetaInfo::write(DcmOutputStream &outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.cc,v $
-** Revision 1.31  2002-12-06 12:59:39  joergr
+** Revision 1.32  2003-10-15 16:55:43  meichel
+** Updated error messages for parse errors
+**
+** Revision 1.31  2002/12/06 12:59:39  joergr
 ** Enhanced "print()" function by re-working the implementation and replacing
 ** the boolean "showFullData" parameter by a more general integer flag.
 ** Made source code formatting more consistent with other modules/files.

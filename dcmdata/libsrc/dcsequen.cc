@@ -21,10 +21,10 @@
  *
  *  Purpose: Implementation of class DcmSequenceOfItems
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-08 13:32:18 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-10-15 16:55:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcsequen.cc,v $
- *  CVS/RCS Revision: $Revision: 1.53 $
+ *  CVS/RCS Revision: $Revision: 1.54 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -109,12 +109,12 @@ DcmSequenceOfItems::DcmSequenceOfItems(const DcmSequenceOfItems &old)
                             break;
                         default:
                             newDO = new DcmItem(oldDO->getTag());
-                            ofConsole.lockCerr() << "Error: DcmSequenceOfItems(): Element("
+                            ofConsole.lockCerr() << "DcmSequenceOfItems: Non-item element ("
                                  << hex << setfill('0')
                                  << setw(4) << oldDO->getGTag() << ","
                                  << setw(4) << oldDO->getETag()
                                  << dec << setfill(' ')
-                                 << ") found, which was not an Item" << endl;
+                                 << ") found" << endl;
                             ofConsole.unlockCerr();
                             break;
                     }
@@ -187,9 +187,9 @@ DcmSequenceOfItems &DcmSequenceOfItems::operator=(const DcmSequenceOfItems &obj)
                                 break;
                             default:
                                 newDO = new DcmItem(oldDO->getTag());
-                                ofConsole.lockCerr() << "Error: DcmSequenceOfItems(): Element("
+                                ofConsole.lockCerr() << "DcmSequenceOfItems: Non-item element ("
                                      << hex << oldDO->getGTag() << "," << oldDO->getETag()
-                                     << dec << ") found, which was not an Item" << endl;
+                                     << dec << ") found" << endl;
                                 ofConsole.unlockCerr();
                                 break;
                         }
@@ -470,7 +470,7 @@ OFCondition DcmSequenceOfItems::readTagAndLength(DcmInputStream &inStream,
         swapIfNecessary(gLocalByteOrder, iByteOrder, &valueLength, 4, 4);
         if ((valueLength & 1) && (valueLength != OFstatic_cast(Uint32, -1)))
         {
-            ofConsole.lockCerr() << "Warning: parse error in DICOM object: length of item in sequence " << Tag << " is odd" << endl;
+            ofConsole.lockCerr() << "DcmSequenceOfItems: Length of item in sequence " << Tag << " is odd" << endl;
             ofConsole.unlockCerr();
         }
         length = valueLength;
@@ -506,15 +506,14 @@ OFCondition DcmSequenceOfItems::readSubItem(DcmInputStream &inStream,
     else if (l_error == EC_InvalidTag)  // try to recover parsing
     {
         inStream.putback();
-        ofConsole.lockCerr() << "Warning: DcmSequenceOfItems::readSubItem(): parse error occured: " << newTag << endl;
+        ofConsole.lockCerr() << "DcmSequenceOfItems: Parse error in sequence, found " << newTag << " instead of item tag" << endl;
         ofConsole.unlockCerr();
         debug(1, ("Warning: DcmSequenceOfItems::readSubItem(): parse error occured:"
             " (0x%4.4hx,0x%4.4hx)", newTag.getGTag(), newTag.getETag()));
     }
     else if (l_error != EC_SequEnd)
     {
-        // inStream.UnsetPutbackMark(); // not needed anymore with new stream architecture
-        ofConsole.lockCerr() << "Error: DcmSequenceOfItems::readSubItem(): cannot create SubItem " << newTag << endl;
+        ofConsole.lockCerr() << "DcmSequenceOfItems: Parse error in sequence, found " << newTag << " instead of a sequence delimiter" << endl;
         ofConsole.unlockCerr();
         debug(1, ("Error: DcmSequenceOfItems::readSubItem(): cannot create SubItem"
             " (0x%4.4hx,0x%4.4hx)", newTag.getGTag(), newTag.getETag()));
@@ -1272,7 +1271,10 @@ OFBool DcmSequenceOfItems::containsUnknownVR() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.53  2003-08-08 13:32:18  joergr
+** Revision 1.54  2003-10-15 16:55:43  meichel
+** Updated error messages for parse errors
+**
+** Revision 1.53  2003/08/08 13:32:18  joergr
 ** Added new method insertAtCurrentPos() which allows for a much more efficient
 ** insertion (avoids re-searching for the correct position).
 ** Adapted type casts to new-style typecast operators defined in ofcast.h.

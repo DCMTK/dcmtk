@@ -22,9 +22,9 @@
  *  Purpose: loadable DICOM data dictionary
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-07-03 15:38:14 $
+ *  Update Date:      $Date: 2003-10-15 16:55:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdict.cc,v $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -290,7 +290,7 @@ parseTagPart(char *s, unsigned int& l, unsigned int& h,
             r = DcmDictRange_Unspecified;
             break;
         default:
-            ofConsole.lockCerr() << "unknown range restrictor: " << restrictor << endl;
+            ofConsole.lockCerr() << "DcmDataDictionary: Unknown range restrictor: " << restrictor << endl;
             ofConsole.unlockCerr();
             ok = OFFalse;
             break;
@@ -448,7 +448,7 @@ DcmDataDictionary::loadDictionary(const char* fileName, OFBool errorIfAbsent)
     /* first, check whether 'fileName' really points to a file (and not to a directory or the like) */
     if (!OFStandard::fileExists(fileName) || (f = fopen(fileName, "r")) == NULL) {
         if (errorIfAbsent) {
-            ofConsole.lockCerr() << "DcmDataDictionary: " << "cannot open file: " << fileName << endl;
+            ofConsole.lockCerr() << "DcmDataDictionary: Cannot open file: " << fileName << endl;
             ofConsole.unlockCerr();
         }
         return OFFalse;
@@ -484,7 +484,7 @@ DcmDataDictionary::loadDictionary(const char* fileName, OFBool errorIfAbsent)
         case 2:
             ofConsole.lockCerr() << "DcmDataDictionary: "<< fileName << ": "
                  << "too few fields (line "
-                 << lineNumber << "): " << fileName << endl;
+                 << lineNumber << ")" << endl;
             ofConsole.unlockCerr();
             errorOnThisLine = OFTrue;
             break;
@@ -821,7 +821,10 @@ void GlobalDcmDataDictionary::clear()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.cc,v $
-** Revision 1.30  2003-07-03 15:38:14  meichel
+** Revision 1.31  2003-10-15 16:55:43  meichel
+** Updated error messages for parse errors
+**
+** Revision 1.30  2003/07/03 15:38:14  meichel
 ** Introduced DcmDictEntryListConstIterator, needed for compiling with HAVE_STL.
 **
 ** Revision 1.29  2003/03/21 13:08:04  meichel
