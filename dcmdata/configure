@@ -1,6 +1,14 @@
 #! /bin/sh
 
 parentdir=`pwd`
+thisdir=$parentdir
+
+# The following test constructs relative path from the module
+# directory to the configuration directory. If you know this path
+# you can substitute this with
+# configdir=<relative_path>
+# It is very important that the configdir path is relative.
+
 configdir="configdir"
 
 while test $parentdir != "/" -a $configdir = "configdir"; do
@@ -16,8 +24,6 @@ if test $configdir = "configdir" ; then
 	exit 1
 fi
 
-src_dir=`pwd`
-
 if test $# != 0;  then
 	case $1 in
 	-a)
@@ -25,8 +31,9 @@ if test $# != 0;  then
 		cd $configdir
 		echo "running configure in config-direktory"
 		./configure $*
+		cd $thisdir
 		echo "running configure for this module"
-		sh confmod -srcdir=$src_dir --cache-file=$src_dir/config.cache $* 
+		sh $configdir/confmod --srcdir=. $* 
 		;;
 	-c)
 		shift
@@ -35,15 +42,13 @@ if test $# != 0;  then
 		./configure $*
 		;;
 	*)
-		cd $configdir
-		echo "run configure for this module"
-		sh confmod -srcdir=$src_dir --cache-file=$src_dir/config.cache $* 
+		echo "running configure for this module"
+		sh $configdir/confmod --srcdir=. $* 
 		;;
 	esac
 else
-	cd $configdir
 	echo "running configure for this module"
-	sh confmod -srcdir=$src_dir --cache-file=$src_dir/config.cache $* 
+	sh $configdir/confmod --srcdir=. $*
 fi	
 
 
