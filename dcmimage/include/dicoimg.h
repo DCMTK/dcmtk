@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2004, OFFIS
+ *  Copyright (C) 1996-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomColorImage (Header)
  *
  *  Last Update:         $Author: joergr $
- *  Update Date:         $Date: 2004-07-20 18:13:16 $
- *  CVS/RCS Revision:    $Revision: 1.21 $
+ *  Update Date:         $Date: 2005-03-09 17:45:08 $
+ *  CVS/RCS Revision:    $Revision: 1.22 $
  *  Status:              $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -287,10 +287,12 @@ class DiColorImage
     /** write current image and related attributes to DICOM dataset.
      *
      ** @param  dataset  reference to DICOM dataset where the image attributes are stored
+     *  @param  mode     dummy parameter (only used for monochrome images)
      *
      ** @return true if successful, false otherwise
      */
-    int writeImageToDataset(DcmItem &dataset);
+    int writeImageToDataset(DcmItem &dataset,
+                            const int mode);
 
     /** write pixel data to PPM file.
      *  pixel data is written in ASCII format.
@@ -455,7 +457,10 @@ class DiColorImage
  *
  * CVS/RCS Log:
  * $Log: dicoimg.h,v $
- * Revision 1.21  2004-07-20 18:13:16  joergr
+ * Revision 1.22  2005-03-09 17:45:08  joergr
+ * Added mode to writeImageToDataset() - only used for monochrome images.
+ *
+ * Revision 1.21  2004/07/20 18:13:16  joergr
  * Added API method to "officially" access the internal intermediate pixel data
  * representation (e.g. to get Hounsfield Units for CT images).
  *

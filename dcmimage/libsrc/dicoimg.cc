@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2004, OFFIS
+ *  Copyright (C) 1996-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomColorImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-10-19 12:56:17 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Update Date:      $Date: 2005-03-09 17:45:36 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -555,7 +555,8 @@ void DiColorImage::updateImagePixelModuleAttributes(DcmItem &dataset)
 
 // --- write current image to DICOM dataset
 
-int DiColorImage::writeImageToDataset(DcmItem &dataset)
+int DiColorImage::writeImageToDataset(DcmItem &dataset,
+                                      const int /*mode*/)
 {
     int result = 0;
     if ((InterData != NULL) && (InterData->getCount() > 0) && (BitsPerSample > 0))
@@ -741,7 +742,10 @@ int DiColorImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dicoimg.cc,v $
- * Revision 1.33  2004-10-19 12:56:17  joergr
+ * Revision 1.34  2005-03-09 17:45:36  joergr
+ * Added mode to writeImageToDataset() - only used for monochrome images.
+ *
+ * Revision 1.33  2004/10/19 12:56:17  joergr
  * Fixed wrong warning message about length of pixel data.
  *
  * Revision 1.32  2004/05/10 10:47:47  joergr
