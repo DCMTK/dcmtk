@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-07 14:31:11 $
+ *  Update Date:      $Date: 2000-06-07 14:54:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -96,6 +96,7 @@ DiMonoImage::DiMonoImage(const DiDocument *docu,
     VoiLutCount(0),
     ValidWindow(0),
     VoiExplanation(),
+    Polarity(EPP_Normal),
     PresLutShape(ESP_Identity),
     VoiLutData(NULL),
     PresLutData(NULL),
@@ -1635,7 +1636,10 @@ int DiMonoImage::writeRawPPM(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.35  2000-06-07 14:31:11  joergr
+ * Revision 1.36  2000-06-07 14:54:06  joergr
+ * Added missing variable to member initialization list.
+ *
+ * Revision 1.35  2000/06/07 14:31:11  joergr
  * Added method to set the image polarity (normal, reverse).
  *
  * Revision 1.34  2000/04/28 12:33:45  joergr
