@@ -243,7 +243,7 @@ environment variable.  It is an error if no data dictionary can be loaded.
 
 \section see_also SEE ALSO
 
-<b>xml2dcm</b>(1)
+<b>xml2dcm</b>(1), <b>dcmconv</b>(1)
 
 \section copyright COPYRIGHT
 
