@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-01-20 14:53:41 $
+ *  Update Date:      $Date: 1999-02-03 17:41:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,7 +44,6 @@
 #include "dimoflt.h"
 #include "dimorot.h"
 #include "dimoopxt.h"
-#include "diluptab.h"
 #include "didocu.h"
 #include "diutils.h"
 #include "diregbas.h"
@@ -71,6 +70,7 @@ DiMonoImage::DiMonoImage(const DiDocument *docu,
     VoiLutData(NULL),
     PresLutData(NULL),
     InterData(NULL),
+    DisplayFunction(NULL),
     OutputData(NULL),
     OverlayData(NULL)
 {
@@ -99,6 +99,7 @@ DiMonoImage::DiMonoImage(const DiDocument *docu,
     VoiLutData(NULL),
     PresLutData(NULL),
     InterData(NULL),
+    DisplayFunction(NULL),
     OutputData(NULL),
     OverlayData(NULL)
 {
@@ -128,6 +129,7 @@ DiMonoImage::DiMonoImage(const DiDocument *docu,
     VoiLutData(NULL),
     PresLutData(NULL),
     InterData(NULL),
+    DisplayFunction(NULL),
     OutputData(NULL),
     OverlayData(NULL)
 {
@@ -159,6 +161,7 @@ DiMonoImage::DiMonoImage(const DiDocument *docu,
     VoiLutData(NULL),
     PresLutData(NULL),
     InterData(NULL),
+    DisplayFunction(NULL),
     OutputData(NULL),
     OverlayData(NULL)
 {
@@ -185,6 +188,7 @@ DiMonoImage::DiMonoImage(const DiMonoImage *image,
     VoiLutData(image->VoiLutData),
     PresLutData(image->PresLutData),
     InterData(NULL),
+    DisplayFunction(image->DisplayFunction),
     OutputData(NULL),
     OverlayData(NULL)
 {
@@ -247,6 +251,7 @@ DiMonoImage::DiMonoImage(const DiColorImage *image,
     VoiLutData(NULL),
     PresLutData(NULL),
     InterData(NULL),
+    DisplayFunction(NULL),
     OutputData(NULL),
     OverlayData(NULL)
 {
@@ -283,6 +288,7 @@ DiMonoImage::DiMonoImage(const DiMonoImage *image,
     VoiLutData(image->VoiLutData),
     PresLutData(image->PresLutData),
     InterData(NULL),
+    DisplayFunction(image->DisplayFunction),
     OutputData(NULL),
     OverlayData(NULL)
 {
@@ -351,6 +357,7 @@ DiMonoImage::DiMonoImage(const DiMonoImage *image,
     VoiLutData(image->VoiLutData),
     PresLutData(image->PresLutData),
     InterData(NULL),
+    DisplayFunction(image->DisplayFunction),
     OutputData(NULL),
     OverlayData(NULL)
 {
@@ -412,6 +419,7 @@ DiMonoImage::DiMonoImage(const DiMonoImage *image,
     VoiLutData(image->VoiLutData),
     PresLutData(image->PresLutData),
     InterData(NULL),
+    DisplayFunction(image->DisplayFunction),
     OutputData(NULL),
     OverlayData(NULL)
 {
@@ -478,6 +486,7 @@ DiMonoImage::DiMonoImage(const DiMonoImage &)
     VoiLutData(NULL),
     PresLutData(NULL),
     InterData(NULL),
+    DisplayFunction(NULL),
     OutputData(NULL),
     OverlayData(NULL)
 {
@@ -748,6 +757,40 @@ int DiMonoImage::getMinMaxValues(double &min,
         return InterData->getMinMaxValues(min, max);
     }
     return 0; 
+}
+
+
+int DiMonoImage::setDisplayFunction(DiDisplayFunction *display)
+{
+    DisplayFunction = display;
+    return (DisplayFunction != NULL) && (DisplayFunction->isValid());
+}
+
+
+int DiMonoImage::setNoDisplayFunction()
+{
+    if (DisplayFunction != NULL)
+    {
+        DisplayFunction = NULL;
+        return 1;
+    }
+    return 2;
+}
+
+
+int DiMonoImage::convertPValueToDDL(const Uint16 pvalue,
+                                    Uint16 &ddl)
+{
+    if ((DisplayFunction != NULL) && (DisplayFunction->isValid()))
+    {
+        const DiBartenLUT *blut = DisplayFunction->getBartenLUT(bitsof(pvalue));
+        if ((blut != NULL) && (blut->isValid()))
+        {
+            ddl = blut->getValue(pvalue);
+            return 1;
+        }
+    }
+    return 0;
 }
 
 
@@ -1029,11 +1072,21 @@ void *DiMonoImage::getData(void *buffer,
             Uint32 high;
             if ((negative && (PresLutShape == ESP_Identity)) || (!negative && (PresLutShape == ESP_Inverse)))
             {
-                low = maxval(bits);                         // inverse/negative: white to black
+                low = DicomImageClass::maxval(bits);        // inverse/negative: white to black
                 high = 0;
             } else {
                 low = 0;                                    // normal/positive: black to white
-                high = maxval(bits);
+                high = DicomImageClass::maxval(bits);
+            }
+            DiDisplayFunction *disp = DisplayFunction;
+            if ((disp != NULL) && (disp->isValid()) && (disp->getValueCount() != DicomImageClass::maxval(bits, 0)))
+            {
+                if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+                {
+                   cerr << "WARNING: selected display function doesn't fit to requested output depth (" << bits << ")" << endl;
+                   cerr << "         ... ignoring Barten transformation !" << endl;
+                }
+                disp = NULL;
             }
             switch (InterData->getRepresentation())
             {
@@ -1042,105 +1095,105 @@ void *DiMonoImage::getData(void *buffer,
                     {
                         if (bits <= 8)
                             OutputData = new DiMonoOutputPixelTemplate<Uint8, Sint32, Uint8>(buffer, InterData, Overlays, VoiLutData,
-                               PresLutData, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
+                               PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
                         else if (bits <= 16)
                             OutputData = new DiMonoOutputPixelTemplate<Uint8, Sint32, Uint16>(buffer, InterData, Overlays, VoiLutData,
-                                PresLutData, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
+                                PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
                         else
                             OutputData = new DiMonoOutputPixelTemplate<Uint8, Sint32, Uint32>(buffer, InterData, Overlays, VoiLutData,
-                                PresLutData, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
+                                PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
                     } else {
                         if (bits <= 8)
                             OutputData = new DiMonoOutputPixelTemplate<Uint8, Uint32, Uint8>(buffer, InterData, Overlays, VoiLutData,
-                               PresLutData, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
+                               PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
                         else if (bits <= 16)
                             OutputData = new DiMonoOutputPixelTemplate<Uint8, Uint32, Uint16>(buffer, InterData, Overlays, VoiLutData,
-                                PresLutData, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
+                                PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
                         else
                             OutputData = new DiMonoOutputPixelTemplate<Uint8, Uint32, Uint32>(buffer, InterData, Overlays, VoiLutData,
-                                PresLutData, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
+                                PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
                     }
                     break;
                 case EPR_Sint8:
                     if (bits <= 8)
                         OutputData = new DiMonoOutputPixelTemplate<Sint8, Sint32, Uint8>(buffer, InterData, Overlays, VoiLutData,
-                            PresLutData, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
+                            PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
                     else if (bits <= 16)
                         OutputData = new DiMonoOutputPixelTemplate<Sint8, Sint32, Uint16>(buffer, InterData, Overlays, VoiLutData,
-                            PresLutData, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
+                            PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
                     else
                         OutputData = new DiMonoOutputPixelTemplate<Sint8, Sint32, Uint32>(buffer, InterData, Overlays, VoiLutData,
-                            PresLutData, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
+                            PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
                     break;
                 case EPR_Uint16:
                     if (InterData->isPotentiallySigned())
                     {
                         if (bits <= 8)
                             OutputData = new DiMonoOutputPixelTemplate<Uint16, Sint32, Uint8>(buffer, InterData, Overlays, VoiLutData,
-                                PresLutData, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
+                                PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
                         else if (bits <= 16)
                             OutputData = new DiMonoOutputPixelTemplate<Uint16, Sint32, Uint16>(buffer, InterData, Overlays, VoiLutData,
-                                PresLutData, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
+                                PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
                         else
                             OutputData = new DiMonoOutputPixelTemplate<Uint16, Sint32, Uint32>(buffer, InterData, Overlays, VoiLutData,
-                                PresLutData, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
+                                PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
                     } else {
                         if (bits <= 8)
                             OutputData = new DiMonoOutputPixelTemplate<Uint16, Uint32, Uint8>(buffer, InterData, Overlays, VoiLutData,
-                                PresLutData, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
+                                PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
                         else if (bits <= 16)
                             OutputData = new DiMonoOutputPixelTemplate<Uint16, Uint32, Uint16>(buffer, InterData, Overlays, VoiLutData,
-                                PresLutData, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
+                                PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
                         else
                             OutputData = new DiMonoOutputPixelTemplate<Uint16, Uint32, Uint32>(buffer, InterData, Overlays, VoiLutData,
-                                PresLutData, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
+                                PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
                     }
                     break;
                 case EPR_Sint16:
                     if (bits <= 8)
                         OutputData = new DiMonoOutputPixelTemplate<Sint16, Sint32, Uint8>(buffer, InterData, Overlays, VoiLutData,
-                            PresLutData, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
+                            PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
                     else if (bits <= 16)
                         OutputData = new DiMonoOutputPixelTemplate<Sint16, Sint32, Uint16>(buffer, InterData, Overlays, VoiLutData,
-                            PresLutData, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
+                            PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
                     else
                         OutputData = new DiMonoOutputPixelTemplate<Sint16, Sint32, Uint32>(buffer, InterData, Overlays, VoiLutData,
-                            PresLutData, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
+                            PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
                     break;
                 case EPR_Uint32:
                     if (InterData->isPotentiallySigned())
                     {
                         if (bits <= 8)
                             OutputData = new DiMonoOutputPixelTemplate<Uint32, Sint32, Uint8>(buffer, InterData, Overlays, VoiLutData,
-                                PresLutData, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
+                                PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
                         else if (bits <= 16)
                             OutputData = new DiMonoOutputPixelTemplate<Uint32, Sint32, Uint16>(buffer, InterData, Overlays, VoiLutData,
-                                PresLutData, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
+                                PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
                         else
                             OutputData = new DiMonoOutputPixelTemplate<Uint32, Sint32, Uint32>(buffer, InterData, Overlays, VoiLutData,
-                                PresLutData, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
+                                PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
                     } else {
                         if (bits <= 8)
                             OutputData = new DiMonoOutputPixelTemplate<Uint32, Uint32, Uint8>(buffer, InterData, Overlays, VoiLutData,
-                                PresLutData, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
+                                PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
                         else if (bits <= 16)
                             OutputData = new DiMonoOutputPixelTemplate<Uint32, Uint32, Uint16>(buffer, InterData, Overlays, VoiLutData,
-                                PresLutData, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
+                                PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
                         else
                             OutputData = new DiMonoOutputPixelTemplate<Uint32, Uint32, Uint32>(buffer, InterData, Overlays, VoiLutData,
-                                PresLutData, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
+                                PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
                     }
                     break;
                 case EPR_Sint32:
                     if (bits <= 8)
                         OutputData = new DiMonoOutputPixelTemplate<Sint32, Sint32, Uint8>(buffer, InterData, Overlays, VoiLutData,
-                            PresLutData, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
+                            PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
                     else if (bits <= 16)
                         OutputData = new DiMonoOutputPixelTemplate<Sint32, Sint32, Uint16>(buffer, InterData, Overlays, VoiLutData,
-                            PresLutData, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
+                            PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
                     else
                         OutputData = new DiMonoOutputPixelTemplate<Sint32, Sint32, Uint32>(buffer, InterData, Overlays, VoiLutData,
-                            PresLutData, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
+                            PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
                     break;
             }
             if (OutputData == NULL)
@@ -1294,7 +1347,7 @@ int DiMonoImage::writePPM(ostream &stream, const unsigned long frame, const int 
     {
         stream << "P2" << endl;
         stream << Columns << " " << Rows << endl;
-        stream << maxval(bits) << endl;
+        stream << DicomImageClass::maxval(bits) << endl;
         int ok = OutputData->writePPM(stream);
         deleteOutputData();
         return ok;
@@ -1314,7 +1367,7 @@ int DiMonoImage::writePPM(FILE *stream, const unsigned long frame, const int bit
         getOutputData(frame, bits);
         if (OutputData != NULL)
         {
-            fprintf(stream, "P2\n%u %u\n%lu\n", Columns, Rows, maxval(bits));
+            fprintf(stream, "P2\n%u %u\n%lu\n", Columns, Rows, DicomImageClass::maxval(bits));
             int ok = OutputData->writePPM(stream);
             deleteOutputData();
             return ok;
@@ -1335,7 +1388,7 @@ int DiMonoImage::writeRawPPM(FILE *stream, const unsigned long frame, const int 
         getOutputData(frame, bits);
         if ((OutputData != NULL) && (OutputData->getData() != NULL))
         {
-            fprintf(stream, "P5\n%u %u\n%lu\n", Columns, Rows, maxval(bits));
+            fprintf(stream, "P5\n%u %u\n%lu\n", Columns, Rows, DicomImageClass::maxval(bits));
             fwrite(OutputData->getData(), (size_t)OutputData->getCount(), OutputData->getItemSize(), stream);
             deleteOutputData();
             return 1;
@@ -1349,7 +1402,13 @@ int DiMonoImage::writeRawPPM(FILE *stream, const unsigned long frame, const int 
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.9  1999-01-20 14:53:41  joergr
+ * Revision 1.10  1999-02-03 17:41:01  joergr
+ * Added support for calibration according to Barten transformation (incl.
+ * a DISPLAY file describing the monitor characteristic).
+ * Moved global functions maxval() and determineRepresentation() to class
+ * DicomImageClass (as static methods).
+ *
+ * Revision 1.9  1999/01/20 14:53:41  joergr
  * Added new output method to fill external memory buffer with rendered pixel
  * data.
  *
