@@ -35,10 +35,10 @@
 **		Kuratorium OFFIS e.V., Oldenburg, Germany
 ** Created:	03/96
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-05-30 07:33:22 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-06-26 12:53:08 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.15 $
+** CVS/RCS Revision:	$Revision: 1.16 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -407,7 +407,7 @@ main(int argc, char *argv[])
 		DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
-
+#if HAVE_GETEUID
     /* if retrieve port is privileged we must be as well */
     if (retrievePort < 1024) {
         if (geteuid() != 0) {
@@ -415,6 +415,7 @@ main(int argc, char *argv[])
 	    usage();
 	}
     }
+#endif
 
     /* network for move request and responses */
     cond = ASC_initializeNetwork(NET_ACCEPTORREQUESTOR, retrievePort, 
@@ -425,12 +426,14 @@ main(int argc, char *argv[])
 	exit(1);
     }
 
+#if HAVE_SETUID && HAVE_GETUID
     /* return to normal uid so that we can't do too much damage in case
      * things go very wrong.   Only works if the program is setuid root,
      * and run by another user.  Running as root user may be
      * potentially disasterous if this program screws up badly.
      */
     setuid(getuid());
+#endif
 
     /* set up main association */
     cond = ASC_createAssociationParameters(&params, maxReceivePDULength);
@@ -919,7 +922,7 @@ moveCallback(void *callbackData, T_DIMSE_C_MoveRQ *request,
 	        request->MessageID, myCallbackData->presId);
 	}
         cond = DIMSE_sendCancelRequest(myCallbackData->assoc,
-	    request->MessageID, myCallbackData->presId);
+	    myCallbackData->presId, request->MessageID);
         if (cond != DIMSE_NORMAL) {
 	    errmsg("Cancel RQ Failed:");
 	    COND_DumpConditions();
@@ -1062,7 +1065,12 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.15  1997-05-30 07:33:22  meichel
+** Revision 1.16  1997-06-26 12:53:08  andreas
+** - Include tests for changing of user IDs and the using of fork
+**   in code since Windows NT/95 do not support this
+** - Corrected error interchanged parameters in a call
+**
+** Revision 1.15  1997/05/30 07:33:22  meichel
 ** Added space characters around comments and simplified
 ** some inlining code (needed for SunCC 2.0.1).
 **
