@@ -22,9 +22,9 @@
  *  Purpose: DicomYBR422Image (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 14:35:30 $
+ *  Update Date:      $Date: 1999-04-28 13:45:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/diyf2img.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,7 +44,8 @@
  *  constructors  *
  *----------------*/
 
-DiYBR422Image::DiYBR422Image(const DiDocument *docu, const EI_Status status)
+DiYBR422Image::DiYBR422Image(const DiDocument *docu,
+                             const EI_Status status)
   : DiColorImage(docu, status, 2)
 {
     if ((Document != NULL) && (InputData != NULL) && (ImageStatus == EIS_Normal))
@@ -86,16 +87,19 @@ DiYBR422Image::~DiYBR422Image()
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: diyf2img.cc,v $
-** Revision 1.3  1998-11-27 14:35:30  joergr
-** Added copyright message.
-** Renamed variable 'Status' to 'ImageStatus' because of possible conflicts
-** with X windows systems.
-**
-** Revision 1.2  1998/05/11 14:52:39  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: diyf2img.cc,v $
+ * Revision 1.4  1999-04-28 13:45:30  joergr
+ * Corrected some typos, comments and formatting.
+ *
+ * Revision 1.3  1998/11/27 14:35:30  joergr
+ * Added copyright message.
+ * Renamed variable 'Status' to 'ImageStatus' because of possible conflicts
+ * with X windows systems.
+ *
+ * Revision 1.2  1998/05/11 14:52:39  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */
