@@ -70,6 +70,9 @@
 /* Define if you have the bzero function.  */
 #undef HAVE_BZERO
 
+/* Define if you have the cuserid function.  */
+#undef HAVE_CUSERID
+
 /* Define if you have the getenv function.  */
 #undef HAVE_GETENV
 
@@ -78,6 +81,9 @@
 
 /* Define if you have the gethostname function.  */
 #undef HAVE_GETHOSTNAME
+
+/* Define if you have the getlogin function.  */
+#undef HAVE_GETLOGIN
 
 /* Define if you have the getpid function.  */
 #undef HAVE_GETPID
@@ -127,6 +133,9 @@
 /* Define if you have the tempnam function.  */
 #undef HAVE_TEMPNAM
 
+/* Define if you have the uname function.  */
+#undef HAVE_UNAME
+
 /* Define if you have the <fcntl.h> header file.  */
 #undef HAVE_FCNTL_H
 
@@ -165,6 +174,9 @@
 
 /* Define if you have the <sys/types.h> header file.  */
 #undef HAVE_SYS_TYPES_H
+
+/* Define if you have the <sys/utsname.h> header file.  */
+#undef HAVE_SYS_UTSNAME_H
 
 /* Define if you have the <unistd.h> header file.  */
 #undef HAVE_UNISTD_H

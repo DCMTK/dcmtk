@@ -103,7 +103,7 @@ AC_CHECK_FUNCS(getpid mktemp getenv)
 AC_CHECK_FUNCS(stat)
 AC_CHECK_FUNCS(malloc_debug)
 AC_CHECK_FUNCS(strerror strdup tempnam bzero index rindex access)
-AC_CHECK_FUNCS(uname)
+AC_CHECK_FUNCS(uname cuserid getlogin)
 
 dnl Checks for prototypes
 
