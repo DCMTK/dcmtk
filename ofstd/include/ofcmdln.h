@@ -22,9 +22,9 @@
  *  Purpose: Handle command line arguments (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-05-20 08:42:39 $
+ *  Update Date:      $Date: 2003-06-12 13:19:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofcmdln.h,v $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,91 +50,28 @@
 
 /// signed integer value
 typedef signed long OFCmdSignedInt;
-
 /// unsigned integer value
 typedef unsigned long OFCmdUnsignedInt;
-
 /// floating point value
 typedef double OFCmdFloat;
-
 /// dynamic string value
 typedef OFString OFCmdString;
 
+// necessary for MSVC5 :-/
+typedef OFListIterator(OFString) OFListIterator_OFString;
 
-typedef OFListIterator(OFString) OFListIterator_OFString;       // necessary for MSVC5
+
+/*------------------------*
+ *  forward declarations  *
+ *------------------------*/
+
+struct OFCmdOption;
+struct OFCmdParamPos;
 
 
 /*----------------------*
  *  struct declaration  *
  *----------------------*/
-
-/** Internal structure to store valid command line options.
- *  Options are command line arguments to use optional functions and to specify optional properties of a program.
- *  They are all starting with one or more special characters and can therefore be detected.
- */
-struct OFCmdOption
-{
-
-    /** constructor
-     *
-     ** @param  longOpt     long option name
-     *  @param  shortOpt    short option name
-     *  @param  valueCount  number of additional values
-     *  @param  valueDescr  description of optional values
-     *  @param  optDescr    description of command line option
-     *  @param  exclusive   exclusive option which cannot be combined with any other command
-     *                      line argument if OFTrue, e.g. "--help" or "--version"
-     */
-    OFCmdOption(const char *longOpt,
-                const char *shortOpt,
-                const int valueCount,
-                const char *valueDescr,
-                const char *optDescr,
-                const OFBool exclusive)
-      : LongOption(longOpt),
-        ShortOption(shortOpt),
-        ValueCount(valueCount),
-        ValueDescription(valueDescr),
-        OptionDescription(optDescr),
-        ExclusiveOption(exclusive),
-        Checked(OFFalse)
-    {
-    }
-
-    /** destructor
-     */
-    ~OFCmdOption()
-    {
-#ifdef DEBUG
-        if (!Checked && !ExclusiveOption && (LongOption.length() > 0))
-        {
-            ofConsole.lockCerr() << "WARNING: option " << LongOption << " has never been checked !" << endl;
-            ofConsole.unlockCerr();
-        }
-#endif
-    }
-
-    /// long option name
-    const OFString LongOption;
-    /// short option name
-    const OFString ShortOption;
-    /// number of additional values
-    const int ValueCount;
-    /// description of optional values
-    const OFString ValueDescription;
-    /// description of command line option
-    const OFString OptionDescription;
-    /// exclusive option cannot be combined with any other command line argument
-    const OFBool ExclusiveOption;
-    /// OFTrue if findOption has been applied to this option
-    OFBool Checked;
-
-private:
-    /// private undefined copy assignment operator
-    OFCmdOption& operator=(const OFCmdOption& arg);
-
-};
-
 
 /** Internal structure to store valid command line parameters.
  *  Parameters are all command line arguments which are no options (e.g. file names).
@@ -179,49 +116,9 @@ struct OFCmdParam
     const E_ParamMode ParamMode;
 
 private:
+
     /// private undefined copy assignment operator
     OFCmdParam& operator=(const OFCmdParam& arg);
-
-};
-
-
-/** Internal structure to handle position of command line parameters.
- *  Parameters are all command line arguments which are no options (e.g. file names).
- */
-struct OFCmdParamPos
-{
-
-    /** constructor
-     *
-     ** @param  parIter    iterator pointing to a specific parameter
-     *  @param  optIter    iterator pointing to first option iterator in front of the parameter
-     *  @param  optCount   number of options in front of the parameter
-     *  @param  directOpt  number of options which are direct predecessor in the argument list
-     */
-    OFCmdParamPos(const OFListIterator(OFString) &parIter,
-                  const OFListIterator(OFListIterator_OFString) &optIter,
-                  const int optCount,
-                  const int directOpt)
-      : ParamIter(parIter),
-        OptionIter(optIter),
-        OptionCount(optCount),
-        DirectOption(directOpt)
-    {
-    }
-
-    /// iterator pointing to a specific parameter
-    const OFListIterator(OFString) ParamIter;
-    /// iterator pointing to first option iterator in front of the parameter
-    const OFListIterator(OFListIterator_OFString) OptionIter;
-    /// number of options in front of the parameter
-    const int OptionCount;
-    /// number of options which are direct predecessor in the argument list
-    const int DirectOption;
-
-private:
-    /// private undefined copy assignment operator
-    OFCmdParamPos& operator=(const OFCmdParamPos& arg);
-
 };
 
 
@@ -255,7 +152,9 @@ class OFCommandLine
         /// missing parameter
         PS_MissingParameter,
         /// too many parameters
-        PS_TooManyParameters
+        PS_TooManyParameters,
+        /// cannot open command file
+        PS_CannotOpenCommandFile
     };
 
 
@@ -936,13 +835,15 @@ class OFCommandLine
 
     /// parsing flag to expand wildcard under Windows (very similar to Unix)
     static const int ExpandWildcards;
+    /// disable support for command files ("@filename") containing additional arguments
+    static const int NoCommandFiles;
 
 
  protected:
 
     /** checks whether given option is valid (starting with an option char and not followed by a number)
      */
-    OFBool checkOption(const char *option,
+    OFBool checkOption(const OFString &option,
                        const OFBool mode = OFTrue) const;
 
     /** finds specified parameter and sets given iterator to this position
@@ -952,12 +853,17 @@ class OFCommandLine
 
     /** finds specified option and returns reference to its describing structure
      */
-    const OFCmdOption *findCmdOption(const char *option) const;
+    const OFCmdOption *findCmdOption(const OFString &option) const;
 
     /** stores the specified parameter in the argument/parameter list
      */
-    void storeParameter(const char *param,
+    void storeParameter(const OFString &param,
                         const int directOption = 0);
+
+    /** check whether 'argValue' points to command file and parse content if so
+     */
+    E_ParseStatus parseCommandFile(const char *argValue,
+                                   OFList<OFString> &argList);
 
     /** packs the two 16 bit values into one 32 bit value
      */
@@ -974,7 +880,7 @@ class OFCommandLine
     /** expands wildcards in specified parameter.
      *  Very similar to Unix environments, stores each resulting parameter in the argument/parameter list
      */
-    void expandWildcards(const char *param,
+    void expandWildcards(const OFString &param,
                          int directOption = 0);
 #endif
 
@@ -1046,7 +952,11 @@ class OFCommandLine
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.h,v $
- * Revision 1.33  2003-05-20 08:42:39  joergr
+ * Revision 1.34  2003-06-12 13:19:58  joergr
+ * Added support for so-called command files ("@filename") which can be used to
+ * summarize command line options and parameter
+ *
+ * Revision 1.33  2003/05/20 08:42:39  joergr
  * Renamed parameters/variables "string" to avoid name clash with STL class.
  *
  * Revision 1.32  2002/12/09 13:04:41  joergr
