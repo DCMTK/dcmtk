@@ -353,7 +353,7 @@ listdb.o: listdb.cc ../../config/include/osconfig.h \
  ../../dcmnet/include/cond.h ../../dcmnet/include/dimse.h \
  ../../dcmnet/include/lst.h ../../dcmnet/include/dul.h \
  ../../dcmnet/include/assoc.h ../../imagectn/include/dbstore.h \
- ../include/dvcache.h
+ ../include/dvcache.h ../../dcmimgle/include/diutils.h
 runsend.o: runsend.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/cmdlnarg.h ../../ofstd/include/ofcmdln.h \
  ../../ofstd/include/oftypes.h ../../ofstd/include/oflist.h \

@@ -15,7 +15,7 @@ cond.o: cond.cc ../../config/include/osconfig.h ../include/dicom.h \
 dcompat.o: dcompat.cc ../../config/include/osconfig.h \
  ../include/dcompat.h ../include/dicom.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
- ../../dcmdata/include/dcuid.h
+ ../../dcmdata/include/dcuid.h ../../ofstd/include/ofbmanip.h
 dimcancl.o: dimcancl.cc ../../config/include/osconfig.h \
  ../include/diutil.h ../include/dicom.h ../include/dcompat.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
