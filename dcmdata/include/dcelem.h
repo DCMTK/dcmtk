@@ -10,10 +10,10 @@
 ** 	Interface of class DcmElement
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:22:55 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1996-03-12 15:31:56 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcelem.h,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -91,8 +91,7 @@ public:
 
     virtual E_Condition loadAllDataIntoMemory(void);
 
-// GET-Operations
-// Get operations do not copy, they give a reference of the value
+	// GET-Operations
 	
     // One Value an position pos
     virtual E_Condition get(Uint8 & val, const unsigned long pos);
@@ -104,9 +103,10 @@ public:
     virtual E_Condition get(Float64 & val, const unsigned long pos);
     virtual E_Condition get(DcmTag & val, const unsigned long pos);
 
-    // Values of Length bytes
-    virtual E_Condition get(Sint8 * & val);	// for strings and bytes
-    virtual E_Condition get(Uint8 * & val);	// for strings and bytes
+    // Get operations do not copy, they give a reference of the value
+	// Values of Length bytes
+    virtual E_Condition get(char * & val);	// for strings
+    virtual E_Condition get(Uint8 * & val);	// for bytes
     virtual E_Condition get(Sint16 * & val);
     virtual E_Condition get(Uint16 * & val);
     virtual E_Condition get(Sint32 * & val);
@@ -121,7 +121,6 @@ public:
 
     // One Value
     virtual E_Condition put(const char * val);
-    virtual E_Condition put(const unsigned char * val);
     virtual E_Condition put(const Sint16 val);
     virtual E_Condition put(const Uint16 val);
     virtual E_Condition put(const Sint32 val);
@@ -157,7 +156,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.h,v $
-** Revision 1.3  1996-01-05 13:22:55  andreas
+** Revision 1.4  1996-03-12 15:31:56  hewett
+** The base virtual get & put functions now support char*.
+**
+** Revision 1.3  1996/01/05 13:22:55  andreas
 ** - changed to support new streaming facilities
 ** - more cleanups
 ** - merged read / write methods for block and file transfer
