@@ -23,8 +23,8 @@
  *    classes: DSRContainerTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-14 11:18:59 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2001-01-25 15:32:17 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -87,7 +87,7 @@ E_Condition DSRContainerTreeNode::readContentItem(DcmItem &dataset,
     /* read ContinuityOfContent */
     E_Condition result = getAndCheckStringValueFromDataset(dataset, DCM_ContinuityOfContent, string, "1", "1", logStream, "CONTAINER content item");
     if (result == EC_Normal)
-        result = setContinuityOfContent(enumeratedValueToContinuityOfContent(string));
+        ContinuityOfContent = enumeratedValueToContinuityOfContent(string);
     return result;
 }
 
@@ -161,7 +161,7 @@ E_Condition DSRContainerTreeNode::renderHTML(ostream &docStream,
         /* section body: render child nodes */
         if (ContinuityOfContent == COC_Continuous)
             result = renderHTMLChildNodes(docStream, annexStream, nestingLevel, annexNumber, flags & ~HF_renderItemsSeparately, logStream);
-        else
+        else  // might be invalid
             result = renderHTMLChildNodes(docStream, annexStream, nestingLevel, annexNumber, flags | HF_renderItemsSeparately, logStream);
     } else
         printContentItemErrorMessage(logStream, "Rendering", result, this);
@@ -271,7 +271,10 @@ E_Condition DSRContainerTreeNode::setContinuityOfContent(const E_ContinuityOfCon
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcontn.cc,v $
- *  Revision 1.11  2000-11-14 11:18:59  joergr
+ *  Revision 1.12  2001-01-25 15:32:17  joergr
+ *  Allow invalid continuity of content flag when reading SR datasets.
+ *
+ *  Revision 1.11  2000/11/14 11:18:59  joergr
  *  Added output of optional observation datetime to rendered HTML page.
  *
  *  Revision 1.10  2000/11/09 20:34:00  joergr
