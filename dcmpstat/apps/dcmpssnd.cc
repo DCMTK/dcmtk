@@ -21,10 +21,10 @@
  *
  *  Purpose: Presentation State Viewer - Network Send Component (Store SCU)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-05-02 14:10:05 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-06-14 10:20:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpssnd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,10 +41,16 @@ BEGIN_EXTERN_C
 #ifdef HAVE_FCNTL_H
 #include <fcntl.h>    /* for O_RDONLY */
 #endif
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>   /* required for sys/stat.h */
+#endif
+#ifdef HAVE_SYS_STAT_H
+#include <sys/stat.h>    /* for stat, fstat */
+#endif
 END_EXTERN_C
 
 #include "dvpsdef.h"  /* for constants */
-#include "dviface.h"
+#include "dvpscf.h"   /* for class DVConfiguration */
 #include "ofbmanip.h" /* for OFBitmanipTemplate */
 #include "dcuid.h"    /* for dcmtk version name */
 #include "diutil.h"
@@ -414,7 +420,7 @@ int main(int argc, char *argv[])
         CERR << "Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
     }
     
-    DVInterface dvi(opt_cfgName);
+    DVConfiguration dvi(opt_cfgName);
 
     /* get send target from configuration file */
     const char *targetHostname    = dvi.getTargetHostname(opt_target);
@@ -979,7 +985,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpssnd.cc,v $
- * Revision 1.26  2002-05-02 14:10:05  joergr
+ * Revision 1.27  2002-06-14 10:20:53  meichel
+ * Removed dependency from class DVInterface. Significantly reduces
+ *   size of binary.
+ *
+ * Revision 1.26  2002/05/02 14:10:05  joergr
  * Added support for standard and non-standard string streams (which one is
  * supported is detected automatically via the configure mechanism).
  * Thanks again to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his

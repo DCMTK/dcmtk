@@ -21,10 +21,10 @@
  *
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-05-02 14:10:04 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-06-14 10:20:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsrcv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,10 +41,16 @@ BEGIN_EXTERN_C
 #ifdef HAVE_FCNTL_H
 #include <fcntl.h>    /* for O_RDONLY */
 #endif
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>   /* required for sys/stat.h */
+#endif
+#ifdef HAVE_SYS_STAT_H
+#include <sys/stat.h>    /* for stat, fstat */
+#endif
 END_EXTERN_C
 
 #include "dvpsdef.h"  /* for constants */
-#include "dviface.h"
+#include "dvpscf.h"   /* for class DVConfiguration */
 #include "ofbmanip.h" /* for OFBitmanipTemplate */
 #include "dcuid.h"    /* for dcmtk version name */
 #include "diutil.h"
@@ -53,6 +59,8 @@ END_EXTERN_C
 #include "imagedb.h"     /* for LOCK_IMAGE_FILES */
 #include "dvpsmsg.h"     /* for class DVPSIPCClient */
 #include "dcmlayer.h"
+#include "dcfilefo.h"
+#include "dvpstat.h"
 #ifdef WITH_OPENSSL
 #include "tlstrans.h"
 #include "tlslayer.h"
@@ -951,7 +959,7 @@ int main(int argc, char *argv[])
         CERR << "Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
     }
     
-    DVInterface dvi(opt_cfgName);
+    DVConfiguration dvi(opt_cfgName);
     if (opt_terminate)
     {
       terminateAllReceivers(dvi, opt_verbose);
@@ -1453,7 +1461,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsrcv.cc,v $
- * Revision 1.36  2002-05-02 14:10:04  joergr
+ * Revision 1.37  2002-06-14 10:20:52  meichel
+ * Removed dependency from class DVInterface. Significantly reduces
+ *   size of binary.
+ *
+ * Revision 1.36  2002/05/02 14:10:04  joergr
  * Added support for standard and non-standard string streams (which one is
  * supported is detected automatically via the configure mechanism).
  * Thanks again to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
