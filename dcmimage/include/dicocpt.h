@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: DicomColorCopyTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:40:45 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicocpt.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2003-12-23 11:18:26 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +31,8 @@
  */
 
 
-#ifndef __DICOCPT_H
-#define __DICOCPT_H
+#ifndef DICOCPT_H
+#define DICOCPT_H
 
 #include "osconfig.h"
 #include "ofbmanip.h"
@@ -51,9 +50,9 @@ template<class T>
 class DiColorCopyTemplate
   : public DiColorPixelTemplate<T>
 {
- 
+
  public:
- 
+
     /** constructor
      *
      ** @param  pixel   pointer to color intermediate representation of pixel data
@@ -70,7 +69,7 @@ class DiColorCopyTemplate
         if ((pixel != NULL) && (pixel->getCount() > 0))
         {
             if ((pixel->getCount() > fstart * fsize) && (pixel->getCount() >= (fstart + fcount) * fsize))
-                copy((const T **)pixel->getData(), fstart * fsize);
+                copy(OFstatic_cast(const T **, pixel->getData()), fstart * fsize);
         }
     }
 
@@ -80,9 +79,9 @@ class DiColorCopyTemplate
     {
     }
 
- 
+
  private:
-    
+
     /** copy specified amount of pixel data
      *
      ** @param  pixel   array of pixel data (3 color components) to be copied
@@ -107,7 +106,12 @@ class DiColorCopyTemplate
  *
  * CVS/RCS Log:
  * $Log: dicocpt.h,v $
- * Revision 1.7  2001-11-09 16:40:45  joergr
+ * Revision 1.8  2003-12-23 11:18:26  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated copyright header.
+ *
+ * Revision 1.7  2001/11/09 16:40:45  joergr
  * Updated/Enhanced comments.
  *
  * Revision 1.6  2001/06/01 15:49:27  meichel

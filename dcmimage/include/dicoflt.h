@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: DicomColorFlipTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:41:15 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicoflt.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2003-12-23 11:19:40 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +31,8 @@
  */
 
 
-#ifndef __DICOFLT_H
-#define __DICOFLT_H
+#ifndef DICOFLT_H
+#define DICOFLT_H
 
 #include "osconfig.h"
 #include "dctypes.h"
@@ -72,13 +71,13 @@ class DiColorFlipTemplate
                         const Uint32 frames,
                         const int horz,
                         const int vert)
-      : DiColorPixelTemplate<T>(pixel, (unsigned long)columns * (unsigned long)rows * frames),
+      : DiColorPixelTemplate<T>(pixel, OFstatic_cast(unsigned long, columns) * OFstatic_cast(unsigned long, rows) * frames),
         DiFlipTemplate<T>(3, columns, rows, frames)
     {
         if ((pixel != NULL) && (pixel->getCount() > 0))
         {
-            if (pixel->getCount() == (unsigned long)columns * (unsigned long)rows * frames)
-                flip((const T **)pixel->getData(), horz, vert);
+            if (pixel->getCount() == OFstatic_cast(unsigned long, columns) * OFstatic_cast(unsigned long, rows) * frames)
+                flip(OFstatic_cast(const T **, pixel->getData()), horz, vert);
             else {
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                 {
@@ -128,7 +127,12 @@ class DiColorFlipTemplate
  *
  * CVS/RCS Log:
  * $Log: dicoflt.h,v $
- * Revision 1.6  2001-11-09 16:41:15  joergr
+ * Revision 1.7  2003-12-23 11:19:40  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated copyright header.
+ *
+ * Revision 1.6  2001/11/09 16:41:15  joergr
  * Updated/Enhanced comments.
  * Removed 'inline' specifier from certain methods.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: DicomARGBPixelTemplate (Header) - UNTESTED !!!
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-06-26 16:16:07 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diargpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2003-12-23 11:15:07 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +31,8 @@
  */
 
 
-#ifndef __DIARGPXT_H
-#define __DIARGPXT_H
+#ifndef DIARGPXT_H
+#define DIARGPXT_H
 
 #include "osconfig.h"
 
@@ -72,9 +71,9 @@ class DiARGBPixelTemplate
       : DiColorPixelTemplate<T3>(docu, pixel, 4, status)
     {
         if ((pixel != NULL) && (Count > 0) && (status == EIS_Normal))
-            convert((const T1 *)pixel->getData() + pixel->getPixelStart(), palette, planeSize, bits);
+            convert(OFstatic_cast(const T1 *, pixel->getData()) + pixel->getPixelStart(), palette, planeSize, bits);
     }
-    
+
     /** destructor
      */
     virtual ~DiARGBPixelTemplate()
@@ -99,7 +98,7 @@ class DiARGBPixelTemplate
         if (Init(pixel))
         {
             register T2 value;
-            const T1 offset = (T1)DicomImageClass::maxval(bits - 1);
+            const T1 offset = OFstatic_cast(T1, DicomImageClass::maxval(bits - 1));
             // use the number of input pixels derived from the length of the 'PixelData'
             // attribute), but not more than the size of the intermediate buffer
             const unsigned long count = (InputCount < Count) ? InputCount : Count;
@@ -113,24 +112,24 @@ class DiARGBPixelTemplate
                 rgb[2] = rgb[1] + InputCount;                                   // points to blue plane
                 for (i = 0; i < count; i++)
                 {
-                    value = (T2)(*(a++));                                       // get alpha value
+                    value = OFstatic_cast(T2, *(a++));                          // get alpha value
                     if (value > 0)
                     {
                         for (int j = 0; j < 3; j++)                             // set palette color
                         {
                             if (value <= palette[j]->getFirstEntry(value))
-                                Data[j][i] = (T3)palette[j]->getFirstValue();
+                                Data[j][i] = OFstatic_cast(T3, palette[j]->getFirstValue());
                             else if (value >= palette[j]->getLastEntry(value))
-                                Data[j][i] = (T3)palette[j]->getLastValue();
+                                Data[j][i] = OFstatic_cast(T3, palette[j]->getLastValue());
                             else
-                                Data[j][i] = (T3)palette[j]->getValue(value);
+                                Data[j][i] = OFstatic_cast(T3, palette[j]->getValue(value));
                             rgb[j]++;                                           // skip RGB values
                         }
                     }
                     else
                     {
-                        for (j = 0; j < 3; j++)
-                            Data[j][i] = (T3)removeSign(*(rgb[j]++), offset);   // copy RGB values
+                        for (j = 0; j < 3; j++)                                 // copy RGB values
+                            Data[j][i] = OFstatic_cast(T3, removeSign(*(rgb[j]++), offset));
                     }
                 }
 */
@@ -146,24 +145,24 @@ class DiARGBPixelTemplate
                     /* convert a single frame */
                     for (l = planeSize; (l != 0) && (i < count); l--, i++)
                     {
-                        value = (T2)(*(a++));                                       // get alpha value
+                        value = OFstatic_cast(T2, *(a++));                          // get alpha value
                         if (value > 0)
                         {
                             for (int j = 0; j < 3; j++)                             // set palette color
                             {
                                 if (value <= palette[j]->getFirstEntry(value))
-                                    Data[j][i] = (T3)palette[j]->getFirstValue();
+                                    Data[j][i] = OFstatic_cast(T3, palette[j]->getFirstValue());
                                 else if (value >= palette[j]->getLastEntry(value))
-                                    Data[j][i] = (T3)palette[j]->getLastValue();
+                                    Data[j][i] = OFstatic_cast(T3, palette[j]->getLastValue());
                                 else
-                                    Data[j][i] = (T3)palette[j]->getValue(value);
+                                    Data[j][i] = OFstatic_cast(T3, palette[j]->getValue(value));
                                 rgb[j]++;                                           // skip RGB values
                             }
                         }
                         else
                         {
-                            for (int j = 0; j < 3; j++)
-                                Data[j][i] = (T3)removeSign(*(rgb[j]++), offset);   // copy RGB values
+                            for (int j = 0; j < 3; j++)                             // copy RGB values
+                                Data[j][i] = OFstatic_cast(T3, removeSign(*(rgb[j]++), offset));
                         }
                     }
                     /* jump to next frame start (skip 2 planes) */
@@ -171,31 +170,29 @@ class DiARGBPixelTemplate
                     for (int j = 0; j < 3; j++)
                        rgb[j] += 2 * planeSize;
                 }
-            } 
-            else
-            {
+            } else {
                 register unsigned long i;
                 register const T1 *p = pixel;
                 for (i = 0; i < count; i++)
                 {
-                    value = (T2)(*(p++));                                       // get alpha value
+                    value = OFstatic_cast(T2, *(p++));                          // get alpha value
                     if (value > 0)
                     {
                         for (int j = 0; j < 3; j++)                             // set palette color
                         {
                             if (value <= palette[j]->getFirstEntry(value))
-                                Data[j][i] = (T3)palette[j]->getFirstValue();
+                                Data[j][i] = OFstatic_cast(T3, palette[j]->getFirstValue());
                             else if (value >= palette[j]->getLastEntry(value))
-                                Data[j][i] = (T3)palette[j]->getLastValue();
+                                Data[j][i] = OFstatic_cast(T3, palette[j]->getLastValue());
                             else
-                                Data[j][i] = (T3)palette[j]->getValue(value);
+                                Data[j][i] = OFstatic_cast(T3, palette[j]->getValue(value));
                         }
                         p += 3;                                                 // skip RGB values
                     }
                     else
                     {
-                        for (int j = 0; j < 3; j++)
-                            Data[j][i] = (T3)removeSign(*(p++), offset);        // copy RGB values
+                        for (int j = 0; j < 3; j++)                             // copy RGB values
+                            Data[j][i] = OFstatic_cast(T3, removeSign(*(p++), offset));
                     }
                 }
             }
@@ -205,13 +202,18 @@ class DiARGBPixelTemplate
 
 
 #endif
-                        
+
 
 /*
  *
  * CVS/RCS Log:
  * $Log: diargpxt.h,v $
- * Revision 1.15  2002-06-26 16:16:07  joergr
+ * Revision 1.16  2003-12-23 11:15:07  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated copyright header.
+ *
+ * Revision 1.15  2002/06/26 16:16:07  joergr
  * Enhanced handling of corrupted pixel data and/or length.
  * Corrected decoding of multi-frame, planar images.
  *

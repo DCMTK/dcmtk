@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: DicomCMYKPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-06-26 16:16:38 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicmypxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2003-12-23 11:17:23 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +31,8 @@
  */
 
 
-#ifndef __DICMYPXT_H
-#define __DICMYPXT_H
+#ifndef DICMYPXT_H
+#define DICMYPXT_H
 
 #include "osconfig.h"
 
@@ -69,9 +68,9 @@ class DiCMYKPixelTemplate
       : DiColorPixelTemplate<T2>(docu, pixel, 4, status)
     {
         if ((pixel != NULL) && (Count > 0) && (status == EIS_Normal))
-            convert((const T1 *)pixel->getData() + pixel->getPixelStart(), planeSize, bits);
+            convert(OFstatic_cast(const T1 *, pixel->getData()) + pixel->getPixelStart(), planeSize, bits);
     }
-    
+
     /** destructor
      */
     virtual ~DiCMYKPixelTemplate()
@@ -96,8 +95,8 @@ class DiCMYKPixelTemplate
             // use the number of input pixels derived from the length of the 'PixelData'
             // attribute), but not more than the size of the intermediate buffer
             const unsigned long count = (InputCount < Count) ? InputCount : Count;
-            const T2 maxvalue = (T2)DicomImageClass::maxval(bits);
-            const T1 offset = (T1)DicomImageClass::maxval(bits - 1);
+            const T2 maxvalue = OFstatic_cast(T2, DicomImageClass::maxval(bits));
+            const T1 offset = OFstatic_cast(T1, DicomImageClass::maxval(bits - 1));
             register const T1 *p = pixel;
             if (PlanarConfiguration)
             {
@@ -135,7 +134,7 @@ class DiCMYKPixelTemplate
                     /* skip black plane */
                     p += planeSize;
                 }
-            } 
+            }
             else
             {
                 register T1 k;
@@ -155,13 +154,18 @@ class DiCMYKPixelTemplate
 
 
 #endif
-                        
+
 
 /*
  *
  * CVS/RCS Log:
  * $Log: dicmypxt.h,v $
- * Revision 1.14  2002-06-26 16:16:38  joergr
+ * Revision 1.15  2003-12-23 11:17:23  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated copyright header.
+ *
+ * Revision 1.14  2002/06/26 16:16:38  joergr
  * Enhanced handling of corrupted pixel data and/or length.
  * Corrected decoding of multi-frame, planar images.
  *
