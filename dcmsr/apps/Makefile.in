@@ -2,6 +2,7 @@
 #	Makefile for dcmsr/apps
 #
 
+
 @SET_MAKE@
 
 SHELL = /bin/sh
@@ -15,9 +16,8 @@ include $(configdir)/@common_makefile@
 ofstddir = $(top_srcdir)/../ofstd
 dcmdatadir = $(top_srcdir)/../dcmdata
 
-LOCALINCLUDES = -I$(ofstddir)/include -I$(dcmdatadir)/include -I$(includedir)/ofstd
-
-LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(dcmdatadir)/libsrc -L$(libdir)
+LOCALINCLUDES = -I$(ofstddir)/include -I$(dcmdatadir)/include
+LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(dcmdatadir)/libsrc
 LOCALLIBS = -ldcmsr -ldcmdata -lofstd $(XMLLIBS) $(ZLIBLIBS)
 
 objs = dsrdump.o dsr2html.o dsr2xml.o xml2dsr.o

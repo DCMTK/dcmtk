@@ -2,12 +2,13 @@
 #	Makefile for dcmpstat/tests
 #
 
+
 @SET_MAKE@
 
 SHELL = /bin/sh
 VPATH = @srcdir@:@top_srcdir@/include:@top_srcdir@/@configdir@/include
 srcdir = @srcdir@
-top_srcdir =  @top_srcdir@
+top_srcdir = @top_srcdir@
 configdir = @top_srcdir@/@configdir@
 
 include $(configdir)/@common_makefile@
@@ -21,12 +22,11 @@ dcmimgledir = $(top_srcdir)/../dcmimgle
 LOCALINCLUDES = -I$(dcmnetdir)/include -I$(dcmdatadir)/include -I$(ofstddir)/include \
 	-I$(ofstddir)/include -I$(imagectndir)/include -I$(dcmimgledir)/include
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(dcmnetdir)/libsrc -L$(ofstddir)/libsrc \
-	-L$(dcmdatadir)/libsrc -L$(dcmimgledir)/libsrc -L$(libdir) -L$(imagectndir)/libsrc
+	-L$(dcmdatadir)/libsrc -L$(dcmimgledir)/libsrc -L$(imagectndir)/libsrc
 LOCALLIBS = -ldcmpstat -ldcmimgle -limagedb -ldcmnet -ldcmdata -lofstd
 
 objs = msgserv.o
 progs = msgserv
-
 support = philips.lut
 
 

@@ -16,8 +16,8 @@ include $(configdir)/@common_makefile@
 ofstddir = $(top_srcdir)/../ofstd
 dcmdatadir = $(top_srcdir)/../dcmdata
 
-LOCALINCLUDES = -I$(ofstddir)/include -I$(includedir)/ofstd -I$(dcmdatadir)/include -I$(includedir)/dcmdata
-LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(dcmdatadir)/libsrc -L$(libdir)
+LOCALINCLUDES = -I$(ofstddir)/include -I$(dcmdatadir)/include
+LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(dcmdatadir)/libsrc
 LOCALLIBS = -ldcmdsig -ldcmdata -lofstd $(ZLIBLIBS) $(OPENSSLLIBS)
 
 objs = dcmsign.o

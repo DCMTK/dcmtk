@@ -2,6 +2,7 @@
 #	Makefile for dcmpstat/apps
 #
 
+
 @SET_MAKE@
 
 SHELL = /bin/sh
@@ -13,57 +14,57 @@ configdir = @top_srcdir@/@configdir@
 include $(configdir)/@common_makefile@
 
 ofstddir = $(top_srcdir)/../ofstd
-ofstdinc = -I$(ofstddir)/include -I$(includedir)/ofstd
+ofstdinc = -I$(ofstddir)/include
 ofstdlibdir = -L$(ofstddir)/libsrc
 ofstdlib = -lofstd
 
 dcmdatadir = $(top_srcdir)/../dcmdata
-dcmdatainc = -I$(dcmdatadir)/include -I$(includedir)/dcmdata
+dcmdatainc = -I$(dcmdatadir)/include
 dcmdatalibdir = -L$(dcmdatadir)/libsrc
 dcmdatalib = -ldcmdata
 
 dcmnetdir = $(top_srcdir)/../dcmnet
-dcmnetinc = -I$(dcmnetdir)/include -I$(includedir)/dcmnet
+dcmnetinc = -I$(dcmnetdir)/include
 dcmnetlibdir = -L$(dcmnetdir)/libsrc
 dcmnetlib = -ldcmnet
 
 dcmimgledir = $(top_srcdir)/../dcmimgle
-dcmimgleinc = -I$(dcmimgledir)/include -I$(includedir)/dcmimgle
+dcmimgleinc = -I$(dcmimgledir)/include
 dcmimglelibdir = -L$(dcmimgledir)/libsrc
 dcmimglelib = -ldcmimgle
 
 dcmpstatdir = $(top_srcdir)/../dcmpstat
-dcmpstatinc = -I$(dcmpstatdir)/include -I$(includedir)/dcmpstat
+dcmpstatinc = -I$(dcmpstatdir)/include
 dcmpstatlibdir = -L$(dcmpstatdir)/libsrc
 dcmpstatlib = -ldcmpstat
 
 imagectndir = $(top_srcdir)/../imagectn
-imagectninc = -I$(imagectndir)/include -I$(includedir)/imagectn
+imagectninc = -I$(imagectndir)/include
 imagectnlibdir = -L$(imagectndir)/libsrc
 imagectnlib = -limagedb
 
 dcmtlsdir = $(top_srcdir)/../dcmtls
-dcmtlsinc = -I$(dcmtlsdir)/include -I$(includedir)/dcmtls
+dcmtlsinc = -I$(dcmtlsdir)/include
 dcmtlslibdir = -L$(dcmtlsdir)/libsrc
 dcmtlslib = -ldcmtls
 
 dcmsigndir = $(top_srcdir)/../dcmsign
-dcmsigninc = -I$(dcmsigndir)/include -I$(includedir)/dcmsign
+dcmsigninc = -I$(dcmsigndir)/include
 dcmsignlibdir = -L$(dcmsigndir)/libsrc
 dcmsignlib = -ldcmdsig
 
 dcmsrdir = $(top_srcdir)/../dcmsr
-dcmsrinc = -I$(dcmsrdir)/include -I$(includedir)/dcmsr
+dcmsrinc = -I$(dcmsrdir)/include
 dcmsrlibdir = -L$(dcmsrdir)/libsrc
 dcmsrlib = -ldcmsr
 
-LOCALINCLUDES = $(dcmpstatinc) $(ofstdinc) $(dcmnetinc) $(dcmdatainc) $(dcmimgleinc) $(imagectninc) \
-	$(dcmtlsinc) $(dcmsigninc) $(dcmsrinc)
+LOCALINCLUDES = $(dcmpstatinc) $(ofstdinc) $(dcmnetinc) $(dcmdatainc) $(dcmimgleinc) \
+	$(imagectninc) $(dcmtlsinc) $(dcmsigninc) $(dcmsrinc)
 LIBDIRS = -L$(top_srcdir)/libsrc $(dcmpstatlibdir) $(imagectnlibdir) $(dcmnetlibdir) \
 	$(dcmtlslibdir) $(dcmsignlibdir) $(dcmsrlibdir) $(dcmdatalibdir) $(ofstdlibdir) \
-	$(dcmimglelibdir) -L$(libdir)
+	$(dcmimglelibdir)
 LOCALLIBS = $(dcmpstatlib) $(dcmsignlib) $(dcmimglelib) $(dcmsrlib) $(imagectnlib) $(dcmnetlib) \
-        $(dcmtlslib) $(dcmdatalib) $(ofstdlib) $(XMLLIBS) $(ZLIBLIBS) $(TCPWRAPPERLIBS) $(OPENSSLLIBS)
+    $(dcmtlslib) $(dcmdatalib) $(ofstdlib) $(XMLLIBS) $(ZLIBLIBS) $(TCPWRAPPERLIBS) $(OPENSSLLIBS)
 DCMPSCHK_LIBS = $(dcmpstatlib) $(dcmdatalib) $(ofstdlib) $(XMLLIBS) $(ZLIBLIBS)
 DCMPSMK_LIBS  = $(dcmpstatlib) $(dcmdatalib) $(ofstdlib) $(XMLLIBS) $(ZLIBLIBS)
 DCMPSRCV_LIBS = $(dcmpstatlib) $(dcmtlslib) $(dcmnetlib) $(imagectnlib) $(dcmdatalib) $(ofstdlib) \

@@ -2,6 +2,7 @@
 #	Makefile for dcmsr/libsrc
 #
 
+
 @SET_MAKE@
 
 SHELL = /bin/sh
@@ -15,19 +16,18 @@ include $(configdir)/@common_makefile@
 ofstddir = $(top_srcdir)/../ofstd
 dcmdatadir = $(top_srcdir)/../dcmdata
 
-LOCALINCLUDES = -I$(ofstddir)/include -I$(dcmdatadir)/include \
-    -I$(includedir)/ofstd -I$(includedir)/dcmdata
+LOCALINCLUDES = -I$(ofstddir)/include -I$(dcmdatadir)/include
 LOCALDEFS =
 
 objs = dsrdoc.o dsrtree.o dsrtncsr.o dsrdoctn.o dsrdoctr.o \
-    dsrimgfr.o dsrscogr.o dsrtcodt.o dsrtcosp.o dsrtcoto.o dsrwavch.o \
-    dsrcitem.o dsrtypes.o dsrstrvl.o dsrcodvl.o dsrnumvl.o dsrscovl.o \
-    dsrtcovl.o dsrcomvl.o dsrimgvl.o dsrwavvl.o dsrtextn.o dsrcodtn.o \
-    dsrnumtn.o dsrdtitn.o dsrdattn.o dsrtimtn.o dsruidtn.o dsrpnmtn.o \
-    dsrscotn.o dsrtcotn.o dsrcomtn.o dsrimgtn.o dsrwavtn.o dsrcontn.o \
-    dsrreftn.o dsrsoprf.o dsrcsidl.o dsrxmlc.o  dsrxmld.o  dsriodcc.o \
-    dsrbascc.o dsrenhcc.o dsrcomcc.o dsrkeycc.o dsrmamcc.o dsrchecc.o \
-    dsrprocc.o
+	dsrimgfr.o dsrscogr.o dsrtcodt.o dsrtcosp.o dsrtcoto.o dsrwavch.o \
+	dsrcitem.o dsrtypes.o dsrstrvl.o dsrcodvl.o dsrnumvl.o dsrscovl.o \
+	dsrtcovl.o dsrcomvl.o dsrimgvl.o dsrwavvl.o dsrtextn.o dsrcodtn.o \
+	dsrnumtn.o dsrdtitn.o dsrdattn.o dsrtimtn.o dsruidtn.o dsrpnmtn.o \
+	dsrscotn.o dsrtcotn.o dsrcomtn.o dsrimgtn.o dsrwavtn.o dsrcontn.o \
+	dsrreftn.o dsrsoprf.o dsrcsidl.o dsrxmlc.o  dsrxmld.o  dsriodcc.o \
+	dsrbascc.o dsrenhcc.o dsrcomcc.o dsrkeycc.o dsrmamcc.o dsrchecc.o \
+	dsrprocc.o
 library = libdcmsr.$(LIBEXT)
 
 

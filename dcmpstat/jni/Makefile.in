@@ -9,6 +9,7 @@
 # (e.g. -fPIC for gcc, -PIC for Sun CC)
 #
 
+
 @SET_MAKE@
 
 SHELL = /bin/sh
@@ -36,59 +37,58 @@ solibs = -lC
 # soflags = -shared
 
 ofstddir = $(top_srcdir)/../ofstd
-ofstdinc = -I$(ofstddir)/include -I$(includedir)/ofstd
+ofstdinc = -I$(ofstddir)/include
 ofstdlibdir = -L$(ofstddir)/libsrc
 ofstdlib = -lofstd
 
 dcmdatadir = $(top_srcdir)/../dcmdata
-dcmdatainc = -I$(dcmdatadir)/include -I$(includedir)/dcmdata
+dcmdatainc = -I$(dcmdatadir)/include
 dcmdatalibdir = -L$(dcmdatadir)/libsrc
 dcmdatalib = -ldcmdata
 
 dcmnetdir = $(top_srcdir)/../dcmnet
-dcmnetinc = -I$(dcmnetdir)/include -I$(includedir)/dcmnet
+dcmnetinc = -I$(dcmnetdir)/include
 dcmnetlibdir = -L$(dcmnetdir)/libsrc
 dcmnetlib = -ldcmnet
 
 dcmimgledir = $(top_srcdir)/../dcmimgle
-dcmimgleinc = -I$(dcmimgledir)/include -I$(includedir)/dcmimgle
+dcmimgleinc = -I$(dcmimgledir)/include
 dcmimglelibdir = -L$(dcmimgledir)/libsrc
 dcmimglelib = -ldcmimgle
 
 dcmpstatdir = $(top_srcdir)/../dcmpstat
-dcmpstatinc = -I$(dcmpstatdir)/include -I$(includedir)/dcmpstat
+dcmpstatinc = -I$(dcmpstatdir)/include
 dcmpstatlibdir = -L$(dcmpstatdir)/libsrc
 dcmpstatlib = -ldcmpstat
 
 imagectndir = $(top_srcdir)/../imagectn
-imagectninc = -I$(imagectndir)/include -I$(includedir)/imagectn
+imagectninc = -I$(imagectndir)/include
 imagectnlibdir = -L$(imagectndir)/libsrc
 imagectnlib = -limagedb
 
 dcmsigndir = $(top_srcdir)/../dcmsign
-dcmsigninc = -I$(dcmsigndir)/include -I$(includedir)/dcmsign
+dcmsigninc = -I$(dcmsigndir)/include
 dcmsignlibdir = -L$(dcmsigndir)/libsrc
 dcmsignlib = -ldcmdsig
 
 dcmsrdir = $(top_srcdir)/../dcmsr
-dcmsrinc = -I$(dcmsrdir)/include -I$(includedir)/dcmsr
+dcmsrinc = -I$(dcmsrdir)/include
 dcmsrlibdir = -L$(dcmsrdir)/libsrc
 dcmsrlib = -ldcmsr
 
 dcmjpegdir = $(top_srcdir)/../dcmjpeg
-dcmjpeginc = -I$(dcmjpegdir)/include -I$(includedir)/dcmsr
-dcmjpeglibdir = -L$(dcmjpegdir)/libsrc -L$(dcmjpegdir)/libijg8 -L$(dcmjpegdir)/libijg12 -L$(dcmjpegdir)/libijg16
+dcmjpeginc = -I$(dcmjpegdir)/include
+dcmjpeglibdir = -L$(dcmjpegdir)/libsrc -L$(dcmjpegdir)/libijg8 -L$(dcmjpegdir)/libijg12 \
+	-L$(dcmjpegdir)/libijg16
 dcmjpeglib = -ldcmjpeg -lijg8 -lijg12 -lijg16
 
-LOCALINCLUDES = $(dcmpstatinc) $(ofstdinc) $(dcmnetinc) $(dcmdatainc) \
-	$(dcmimgleinc) $(imagectninc) $(dcmsigninc) $(dcmsrinc) $(dcmjpeginc) \
-	$(javainc)
-LIBDIRS = -L$(top_srcdir)/libsrc $(dcmpstatlibdir) $(imagectnlibdir) \
-	$(dcmnetlibdir) $(dcmdatalibdir) $(ofstdlibdir) $(dcmimglelibdir) \
-	$(dcmsignlibdir) $(dcmsrlibdir) $(dcmjpeglibdir) -L$(libdir)
-LOCALLIBS = $(dcmpstatlib) $(dcmsrlib) $(dcmsignlib) $(dcmjpeglib) \
-	$(dcmimglelib) $(imagectnlib) $(dcmnetlib) $(dcmdatalib) $(ofstdlib) \
-	$(OPENSSLLIBS) $(solibs)
+LOCALINCLUDES = $(dcmpstatinc) $(ofstdinc) $(dcmnetinc) $(dcmdatainc) $(dcmimgleinc) \
+	$(imagectninc) $(dcmsigninc) $(dcmsrinc) $(dcmjpeginc) $(javainc)
+LIBDIRS = -L$(top_srcdir)/libsrc $(dcmpstatlibdir) $(imagectnlibdir) $(dcmnetlibdir) \
+	$(dcmdatalibdir) $(ofstdlibdir) $(dcmimglelibdir) $(dcmsignlibdir) $(dcmsrlibdir) \
+	$(dcmjpeglibdir)
+LOCALLIBS = $(dcmpstatlib) $(dcmsrlib) $(dcmsignlib) $(dcmjpeglib) $(dcmimglelib) \
+	$(imagectnlib) $(dcmnetlib) $(dcmdatalib) $(ofstdlib) $(OPENSSLLIBS) $(solibs)
 
 objs = DVInterface.o DVPSGraphicObject.o DVPresentationState.o DVPSCurve.o \
 	DVPSTextObject.o DVPSStoredPrint.o DSRCodeValue.o DSRCompositeValue.o \

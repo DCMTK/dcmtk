@@ -2,6 +2,7 @@
 #	Makefile for dcmwlm/wwwapps
 #
 
+
 @SET_MAKE@
 
 SHELL = /bin/sh
@@ -18,17 +19,17 @@ include $(configdir)/@common_makefile@
 LOCALDEFS = -DNODISPLAY
 
 ofstddir = $(top_srcdir)/../ofstd
-ofstdinc = -I$(ofstddir)/include -I$(includedir)/ofstd
+ofstdinc = -I$(ofstddir)/include
 ofstdlibdir = -L$(ofstddir)/libsrc
 ofstdlib = -lofstd
 
 dcmdatadir = $(top_srcdir)/../dcmdata
-dcmdatainc = -I$(dcmdatadir)/include -I$(includedir)/dcmdata
+dcmdatainc = -I$(dcmdatadir)/include
 dcmdatalibdir = -L$(dcmdatadir)/libsrc
 dcmdatalib = -ldcmdata
 
-LOCALINCLUDES = $(dcmdatainc) $(ofstdinc) -I$(includedir)ofstd -I$(includedir)/dcmdata
-LIBDIRS = $(dcmdatalibdir) $(ofstdlibdir) -L$(libdir)
+LOCALINCLUDES = $(dcmdatainc) $(ofstdinc)
+LIBDIRS = $(dcmdatalibdir) $(ofstdlibdir)
 LOCALLIBS = $(dcmdatalib) $(ofstdlib) $(ZLIBLIBS)
 
 objs = preplock.o readoviw.o readwlst.o writwlst.o

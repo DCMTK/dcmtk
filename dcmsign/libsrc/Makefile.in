@@ -16,8 +16,7 @@ include $(configdir)/@common_makefile@
 ofstddir = $(top_srcdir)/../ofstd
 dcmdatadir = $(top_srcdir)/../dcmdata
 
-LOCALINCLUDES = -I$(ofstddir)/include -I$(dcmdatadir)/include \
-	-I$(includedir)/ofstd -I$(includedir)/dcmdata
+LOCALINCLUDES = -I$(ofstddir)/include -I$(dcmdatadir)/include
 LOCALDEFS =
 
 objs = dcsignat.o sicert.o sidsa.o simd5.o siprivat.o sirsa.o sisprof.o \

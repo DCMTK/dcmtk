@@ -14,22 +14,22 @@ configdir = @top_srcdir@/@configdir@
 include $(configdir)/@common_makefile@
 
 ofstddir = $(top_srcdir)/../ofstd
-ofstdinc = -I$(ofstddir)/include -I$(includedir)/ofstd
+ofstdinc = -I$(ofstddir)/include
 ofstdlibdir = -L$(ofstddir)/libsrc
 ofstdlib = -lofstd
 
 dcmdatadir = $(top_srcdir)/../dcmdata
-dcmdatainc = -I$(dcmdatadir)/include -I$(includedir)/dcmdata
+dcmdatainc = -I$(dcmdatadir)/include
 dcmdatalibdir = -L$(dcmdatadir)/libsrc
 dcmdatalib = -ldcmdata
 
 dcmnetdir = $(top_srcdir)/../dcmnet
-dcmnetinc = -I$(dcmnetdir)/include -I$(includedir)/dcmnet
+dcmnetinc = -I$(dcmnetdir)/include
 dcmnetlibdir = -L$(dcmnetdir)/libsrc
 dcmnetlib = -ldcmnet
 
 LOCALINCLUDES = $(dcmnetinc) $(dcmdatainc) $(ofstdinc)
-LIBDIRS = -L$(top_srcdir)/libsrc $(dcmnetlibdir) $(dcmdatalibdir) $(ofstdlibdir) -L$(libdir)
+LIBDIRS = -L$(top_srcdir)/libsrc $(dcmnetlibdir) $(dcmdatalibdir) $(ofstdlibdir)
 LOCALLIBS = -ldcmwlm $(dcmnetlib) $(dcmdatalib) $(ofstdlib) $(ZLIBLIBS) $(TCPWRAPPERLIBS)
 
 objs = wlcefs.o wlmscpfs.o

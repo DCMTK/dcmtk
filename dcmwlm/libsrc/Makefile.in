@@ -17,8 +17,7 @@ ofstddir = $(top_srcdir)/../ofstd
 dcmdatadir = $(top_srcdir)/../dcmdata
 dcmnetdir = $(top_srcdir)/../dcmnet
 
-LOCALINCLUDES = -I$(dcmdatadir)/include -I$(dcmnetdir)/include -I$(ofstddir)/include \
-	-I$(includedir)/dcmdata -I$(includedir)/dcmnet -I$(includedir)/ofstd
+LOCALINCLUDES = -I$(dcmdatadir)/include -I$(dcmnetdir)/include -I$(ofstddir)/include
 LOCALDEFS =
 
 objs = wlds.o wlmactmg.o wldsfs.o wlfsim.o

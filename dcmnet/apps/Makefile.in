@@ -13,14 +13,13 @@ configdir = @top_srcdir@/@configdir@
 
 include $(configdir)/@common_makefile@
 
-dcmdatadir = $(top_srcdir)/../dcmdata
 ofstddir = $(top_srcdir)/../ofstd
+dcmdatadir = $(top_srcdir)/../dcmdata
 dcmtlsdir = $(top_srcdir)/../dcmtls
 
-LOCALINCLUDES = -I$(ofstddir)/include -I$(dcmdatadir)/include -I$(dcmtlsdir)/include \
-	-I$(includedir)/ofstd -I$(includedir)/dcmdata -I$(includedir)/dcmtls
+LOCALINCLUDES = -I$(ofstddir)/include -I$(dcmdatadir)/include -I$(dcmtlsdir)/include
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(dcmdatadir)/libsrc \
-	-L$(dcmtlsdir)/libsrc -L$(libdir)
+	-L$(dcmtlsdir)/libsrc
 LOCALLIBS = -ldcmnet -ldcmdata -lofstd $(ZLIBLIBS) $(TCPWRAPPERLIBS)
 DCMTLSLIBS = -ldcmtls
 
