@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-09-03 11:42:56 $
+** Update Date:		$Date: 1996-09-27 08:36:14 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
+** CVS/RCS Revision:	$Revision: 1.9 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -727,7 +727,7 @@ ASC_addPresentationContext(
 
     /* add the transfer syntaxes */
     for (i=0; i<transferSyntaxListCount; i++) {
-	transfer = (DUL_TRANSFERSYNTAX*)malloc(sizeof(*transfer));
+	transfer = (DUL_TRANSFERSYNTAX*)malloc(sizeof(DUL_TRANSFERSYNTAX));
 	if (transfer == NULL) {
 	    return COND_PushCondition(ASC_MALLOCERROR,
 		ASC_Message(ASC_MALLOCERROR), "ASC_addPresentationContext");
@@ -1794,7 +1794,10 @@ ASC_dropAssociation(T_ASC_Association * association)
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
-** Revision 1.8  1996-09-03 11:42:56  hewett
+** Revision 1.9  1996-09-27 08:36:14  hewett
+** Eliminated used before set warning (IBM AIX C Set++ Compiler).
+**
+** Revision 1.8  1996/09/03 11:42:56  hewett
 ** When requesting an association, added check that presentation
 ** contexts have been defined.
 **
