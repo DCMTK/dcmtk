@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003, OFFIS
+ *  Copyright (C) 2003-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Implements PNG interface for plugable image formats
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-23 12:09:24 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2004-04-07 12:06:28 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -74,7 +74,7 @@ enum DiPNGMetainfo
   E_pngNoMetainfo,
 
   /// file time, creator
-  E_pngFileMetainfo,
+  E_pngFileMetainfo
 };
 
 
@@ -141,7 +141,10 @@ class DiPNGPlugin
 /*
  * CVS/RCS Log:
  * $Log: dipipng.h,v $
- * Revision 1.3  2003-12-23 12:09:24  joergr
+ * Revision 1.4  2004-04-07 12:06:28  joergr
+ * Removed comma at end of enumerator list.
+ *
+ * Revision 1.3  2003/12/23 12:09:24  joergr
  * Updated documentation to get rid of doxygen warnings.
  *
  * Revision 1.2  2003/12/17 18:18:08  joergr
