@@ -21,10 +21,10 @@
  *
  *  Purpose: create a Dicom FileFormat or DataSet from an ASCII-dump
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-03 14:05:16 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-03-06 18:09:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dump2dcm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -726,49 +726,52 @@ int main(int argc, char *argv[])
     GUSISetup(GUSIwithInternetSockets);
 #endif
 
-  OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Convert ASCII dump to DICOM file", rcsid);
-  OFCommandLine cmd;
+    SetDebugLevel(( 0 ));
 
-  cmd.setOptionColumns(LONGCOL, SHORTCOL);
-  cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
+    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Convert ASCII dump to DICOM file", rcsid);
+    OFCommandLine cmd;
+  
+    cmd.setOptionColumns(LONGCOL, SHORTCOL);
+    cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
+  
+    cmd.addParam("dumpfile-in", "dump input filename");
+    cmd.addParam("dcmfile-out", "DICOM output filename");
+  
+    cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
+     cmd.addOption("--help",                      "-h",        "print this help text and exit");
+     cmd.addOption("--verbose",                   "-v",        "verbose mode, print processing details");
+     cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
+  
+    cmd.addGroup("input options:", LONGCOL, SHORTCOL + 2);
+      cmd.addOption("--line",                     "+l",    1,  "[m]ax-length: integer",
+                                                               "maximum line length m (default 4096)");
+  
+    cmd.addGroup("output options:");
+      cmd.addSubGroup("output file format:");
+        cmd.addOption("--write-file",             "+F",        "write file format (default)");
+        cmd.addOption("--write-dataset",          "-F",        "write data set without file meta information");
+      cmd.addSubGroup("output transfer syntax:");
+        cmd.addOption("--write-xfer-same",        "+t=",       "write with same TS as input (default)");
+        cmd.addOption("--write-xfer-little",      "+te",       "write with explicit VR little endian TS");
+        cmd.addOption("--write-xfer-big",         "+tb",       "write with explicit VR big endian TS");
+        cmd.addOption("--write-xfer-implicit",    "+ti",       "write with implicit VR little endian TS");
+      cmd.addSubGroup("post-1993 value representations:");
+        cmd.addOption("--enable-new-vr",          "+u",        "enable support for new VRs (UN/UT) (default)");
+        cmd.addOption("--disable-new-vr",         "-u",        "disable support for new VRs, convert to OB");
+      cmd.addSubGroup("group length encoding:");
+        cmd.addOption("--group-length-recalc",    "+g=",       "recalculate group lengths if present (default)");
+        cmd.addOption("--group-length-create",    "+g",        "always write with group length elements");
+        cmd.addOption("--group-length-remove",    "-g",        "always write without group length elements");
+      cmd.addSubGroup("length encoding in sequences and items:");
+        cmd.addOption("--length-explicit",        "+e",        "write with explicit lengths (default)");
+        cmd.addOption("--length-undefined",       "-e",        "write with undefined lengths");
+      cmd.addSubGroup("data set trailing padding (not with --write-dataset):");
+        cmd.addOption("--padding-retain",         "-p=",       "do not change padding\n(default if not --write-dataset)");
+        cmd.addOption("--padding-off",            "-p",        "no padding (implicit if --write-dataset)");
+        cmd.addOption("--padding-create",         "+p",    2,  "[f]ile-pad [i]tem-pad: integer",
+                                                               "align file on multiple of f bytes\nand items on multiple of i bytes");
 
-  cmd.addParam("dumpfile-in", "dump input filename");
-  cmd.addParam("dcmfile-out", "DICOM output filename");
-
-  cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-   cmd.addOption("--help",                      "-h",        "print this help text and exit");
-   cmd.addOption("--verbose",                   "-v",        "verbose mode, print processing details");
-   cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
-
-  cmd.addGroup("input options:", LONGCOL, SHORTCOL + 2);
-    cmd.addOption("--line",                     "+l",    1,  "[m]ax-length: integer",
-                                                             "maximum line length m (default 4096)");
-
-  cmd.addGroup("output options:");
-    cmd.addSubGroup("output file format:");
-      cmd.addOption("--write-file",             "+F",        "write file format (default)");
-      cmd.addOption("--write-dataset",          "-F",        "write data set without file meta information");
-    cmd.addSubGroup("output transfer syntax:");
-      cmd.addOption("--write-xfer-same",        "+t=",       "write with same TS as input (default)");
-      cmd.addOption("--write-xfer-little",      "+te",       "write with explicit VR little endian TS");
-      cmd.addOption("--write-xfer-big",         "+tb",       "write with explicit VR big endian TS");
-      cmd.addOption("--write-xfer-implicit",    "+ti",       "write with implicit VR little endian TS");
-    cmd.addSubGroup("post-1993 value representations:");
-      cmd.addOption("--enable-new-vr",          "+u",        "enable support for new VRs (UN/UT) (default)");
-      cmd.addOption("--disable-new-vr",         "-u",        "disable support for new VRs, convert to OB");
-    cmd.addSubGroup("group length encoding:");
-      cmd.addOption("--group-length-recalc",    "+g=",       "recalculate group lengths if present (default)");
-      cmd.addOption("--group-length-create",    "+g",        "always write with group length elements");
-      cmd.addOption("--group-length-remove",    "-g",        "always write without group length elements");
-    cmd.addSubGroup("length encoding in sequences and items:");
-      cmd.addOption("--length-explicit",        "+e",        "write with explicit lengths (default)");
-      cmd.addOption("--length-undefined",       "-e",        "write with undefined lengths");
-    cmd.addSubGroup("data set trailing padding (not with --write-dataset):");
-      cmd.addOption("--padding-retain",         "-p=",       "do not change padding\n(default if not --write-dataset)");
-      cmd.addOption("--padding-off",            "-p",        "no padding (implicit if --write-dataset)");
-      cmd.addOption("--padding-create",         "+p",    2,  "[f]ile-pad [i]tem-pad: integer",
-                                                             "align file on multiple of f bytes\nand items on multiple of i bytes");
-
+    int opt_debugMode = 0;
     const char* ifname = NULL;
     const char* ofname = NULL;
     E_TransferSyntax oxfer = EXS_LittleEndianExplicit;
@@ -788,8 +791,8 @@ int main(int argc, char *argv[])
       cmd.getParam(1, ifname);
       cmd.getParam(2, ofname);
 
-      if (cmd.findOption("--verbose")) verbosemode=OFTrue;
-      if (cmd.findOption("--debug")) SetDebugLevel(5);
+      if (cmd.findOption("--verbose")) verbosemode = OFTrue;
+      if (cmd.findOption("--debug")) opt_debugMode = 5;
 
       if (cmd.findOption("--line"))
       {
@@ -853,6 +856,8 @@ int main(int argc, char *argv[])
     DcmFileFormat * fileformat = NULL;
     DcmMetaInfo * metaheader = NULL;
     DcmDataset * dataset = NULL;
+
+    SetDebugLevel((opt_debugMode));
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded()) {
@@ -952,7 +957,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
-** Revision 1.31  2000-03-03 14:05:16  meichel
+** Revision 1.32  2000-03-06 18:09:38  joergr
+** Avoid empty statement in the body of if-statements (MSVC6 reports warnings).
+**
+** Revision 1.31  2000/03/03 14:05:16  meichel
 ** Implemented library support for redirecting error messages into memory
 **   instead of printing them to stdout/stderr for GUI applications.
 **

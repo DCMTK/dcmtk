@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmDicomDir
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-03 14:05:31 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-03-06 18:12:08 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdicdir.cc,v $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1254,8 +1254,6 @@ PENDING:
 E_Condition DcmDicomDir::verify( OFBool autocorrect )
 {
     errorFlag = EC_Normal;
-    if ( autocorrect == OFTrue )
-    ;
     DcmSequenceOfItems &localDirRecSeq = this->getDirRecSeq(this->getDataset());
     unsigned long maxMRDRs = localDirRecSeq.card() + 
                 this->getMRDRSequence().card();
@@ -1330,7 +1328,10 @@ Cdebug(1, refCounter[k].fileOffset==refMRDR->numberOfReferences,
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
-** Revision 1.28  2000-03-03 14:05:31  meichel
+** Revision 1.29  2000-03-06 18:12:08  joergr
+** Avoid empty statement in the body of if-statements (MSVC6 reports warnings).
+**
+** Revision 1.28  2000/03/03 14:05:31  meichel
 ** Implemented library support for redirecting error messages into memory
 **   instead of printing them to stdout/stderr for GUI applications.
 **

@@ -45,9 +45,9 @@
 ** Intent:		This file contains functions for parsing Dicom
 **			Upper Layer (DUL) Protocol Data Units (PDUs)
 **			into logical in-memory structures.
-** Last Update:		$Author: meichel $, $Date: 2000-03-03 14:11:25 $
+** Last Update:		$Author: joergr $, $Date: 2000-03-06 18:14:25 $
 ** Source File:		$RCSfile: dulparse.cc,v $
-** Revision:		$Revision: 1.12 $
+** Revision:		$Revision: 1.13 $
 ** Status:		$State: Exp $
 */
 
@@ -287,7 +287,7 @@ parseDebug(OFBool flag)
 {
     debug = flag;
 #ifndef DEBUG
-    if (debug);     /* avoid compiler warnings on Sun CC 2.0.1 */
+    OFBool dummy = debug;                // avoid compiler warnings on Sun CC 2.0.1 & MSVC6
 #endif
 }
 
@@ -828,7 +828,10 @@ trim_trailing_spaces(char *s)
 /*
 ** CVS Log
 ** $Log: dulparse.cc,v $
-** Revision 1.12  2000-03-03 14:11:25  meichel
+** Revision 1.13  2000-03-06 18:14:25  joergr
+** Avoid empty statement in the body of if-statements (MSVC6 reports warnings).
+**
+** Revision 1.12  2000/03/03 14:11:25  meichel
 ** Implemented library support for redirecting error messages into memory
 **   instead of printing them to stdout/stderr for GUI applications.
 **

@@ -21,10 +21,10 @@
  *
  *  Purpose: List the contents of a dicom file
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-03 14:05:15 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-03-06 18:09:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmdump.cc,v $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -118,6 +118,7 @@ static OFBool addPrintTagName(const char* tagName)
 
 int main(int argc, char *argv[])
 {
+    int opt_debugMode = 0;
     OFBool loadIntoMemory = OFTrue;
     OFBool showFullData = OFFalse;
     OFBool isDataset = OFFalse;
@@ -139,59 +140,59 @@ int main(int argc, char *argv[])
     GUSISetup(GUSIwithInternetSockets);
 #endif
 
-    SetDebugLevel(0);
+    SetDebugLevel(( 0 ));
 
-  OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "Dump DICOM file and data set", rcsid);
-  OFCommandLine cmd;
-  cmd.setOptionColumns(LONGCOL, SHORTCOL);
-  cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
+    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "Dump DICOM file and data set", rcsid);
+    OFCommandLine cmd;
+    cmd.setOptionColumns(LONGCOL, SHORTCOL);
+    cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
+    
+    cmd.addParam("dcmfile-in", "DICOM input filename to be dumped", OFCmdParam::PM_MultiMandatory);
+    
+    cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
+      cmd.addOption("--help",                 "-h",        "print this help text and exit");
+      cmd.addOption("--debug",                "-d",        "debug mode, print debug information");
+   
+    cmd.addGroup("input options:");
+      cmd.addSubGroup("input file format:");
+        cmd.addOption("--read-file",          "+f",        "read file format or data set (default)");
+        cmd.addOption("--read-dataset",       "-f",        "read data set without file meta information");
+      cmd.addSubGroup("input transfer syntax (only with --read-dataset):");
+        cmd.addOption("--read-xfer-auto",     "-t=",       "use TS recognition (default)");
+        cmd.addOption("--read-xfer-little",   "-te",       "read with explicit VR little endian TS");
+        cmd.addOption("--read-xfer-big",      "-tb",       "read with explicit VR big endian TS");
+        cmd.addOption("--read-xfer-implicit", "-ti",       "read with implicit VR little endian TS");
   
-  cmd.addParam("dcmfile-in", "DICOM input filename to be dumped", OFCmdParam::PM_MultiMandatory);
+    cmd.addGroup("output options:");
+      cmd.addSubGroup("printing:");
+        cmd.addOption("--load-all",           "+M",        "load very long tag values (default)");
+        cmd.addOption("--load-short",         "-M",        "do not load very long values (e.g. pixel data)");
+        cmd.addOption("--print-all",          "+L",        "print long tag values completely");
+        cmd.addOption("--print-short",        "-L",        "print long tag values shortened (default)");
   
-  cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-    cmd.addOption("--help",                     "-h",        "print this help text and exit");
-    cmd.addOption("--debug",                    "-d",        "debug mode, print debug information");
- 
-  cmd.addGroup("input options:");
-    cmd.addSubGroup("input file format:");
-      cmd.addOption("--read-file",              "+f",        "read file format or data set (default)");
-      cmd.addOption("--read-dataset",           "-f",        "read data set without file meta information");
-    cmd.addSubGroup("input transfer syntax (only with --read-dataset):");
-      cmd.addOption("--read-xfer-auto",         "-t=",       "use TS recognition (default)");
-      cmd.addOption("--read-xfer-little",       "-te",       "read with explicit VR little endian TS");
-      cmd.addOption("--read-xfer-big",          "-tb",       "read with explicit VR big endian TS");
-      cmd.addOption("--read-xfer-implicit",     "-ti",       "read with implicit VR little endian TS");
-
-  cmd.addGroup("output options:");
-    cmd.addSubGroup("printing:");
-      cmd.addOption("--load-all",               "+M",        "load very long tag values (default)");
-      cmd.addOption("--load-short",             "-M",        "do not load very long values (e.g. pixel data)");
-      cmd.addOption("--print-all",              "+L",        "print long tag values completely");
-      cmd.addOption("--print-short",            "-L",        "print long tag values shortened (default)");
-
-    cmd.addSubGroup("error handling:");
-      cmd.addOption("--stop-on-error",          "-E",        "do not print if file is damaged (default)");
-      cmd.addOption("--ignore-errors",          "+E",        "attempt to print even if file is damaged");
-
-    cmd.addSubGroup("searching:");
-      cmd.addOption("--search",                 "+P",    1,  "[t]ag: \"xxxx,xxxx\" or a data dictionary name",
-                                                             "print the value of tag t\nthis option can be specified multiple times\n(default: the complete file is printed)");
-
-      cmd.addOption("--search-all",             "+s",        "print all instances of searched tags (default)");
-      cmd.addOption("--search-first",           "-s",        "only print first instance of searched tags");
- 
-      cmd.addOption("--prepend",                "+p",        "prepend sequence hierarchy to printed tag,\ndenoted by: (xxxx,xxxx).(xxxx,xxxx).*\n(only with --search-all or --search-first)");
-      cmd.addOption("--no-prepend",             "-p",        "do not prepend hierarchy to tag (default)");
-
-    cmd.addSubGroup("writing:");
-      cmd.addOption("--write-pixel",            "+W",    1,  "[d]irectory : string",
-                                                             "write pixel data to a .raw file stored in d\n(little endian, filename created automatically)");
+      cmd.addSubGroup("error handling:");
+        cmd.addOption("--stop-on-error",      "-E",        "do not print if file is damaged (default)");
+        cmd.addOption("--ignore-errors",      "+E",        "attempt to print even if file is damaged");
+  
+      cmd.addSubGroup("searching:");
+        cmd.addOption("--search",             "+P",    1,  "[t]ag: \"xxxx,xxxx\" or a data dictionary name",
+                                                           "print the value of tag t\nthis option can be specified multiple times\n(default: the complete file is printed)");
+  
+        cmd.addOption("--search-all",         "+s",        "print all instances of searched tags (default)");
+        cmd.addOption("--search-first",       "-s",        "only print first instance of searched tags");
+   
+        cmd.addOption("--prepend",            "+p",        "prepend sequence hierarchy to printed tag,\ndenoted by: (xxxx,xxxx).(xxxx,xxxx).*\n(only with --search-all or --search-first)");
+        cmd.addOption("--no-prepend",         "-p",        "do not prepend hierarchy to tag (default)");
+  
+      cmd.addSubGroup("writing:");
+        cmd.addOption("--write-pixel",        "+W",    1,  "[d]irectory : string",
+                                                           "write pixel data to a .raw file stored in d\n(little endian, filename created automatically)");
 
     /* evaluate command line */                           
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
     {
-      if (cmd.findOption("--debug")) SetDebugLevel(5);
+      if (cmd.findOption("--debug")) opt_debugMode = 5;
       
       cmd.beginOptionBlock();
       if (cmd.findOption("--read-file")) isDataset = OFFalse;
@@ -277,6 +278,8 @@ int main(int argc, char *argv[])
         writePixelData = OFTrue;
       }
     }
+
+    SetDebugLevel((opt_debugMode));
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
@@ -423,7 +426,10 @@ static int dumpFile(ostream & out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
- * Revision 1.27  2000-03-03 14:05:15  meichel
+ * Revision 1.28  2000-03-06 18:09:37  joergr
+ * Avoid empty statement in the body of if-statements (MSVC6 reports warnings).
+ *
+ * Revision 1.27  2000/03/03 14:05:15  meichel
  * Implemented library support for redirecting error messages into memory
  *   instead of printing them to stdout/stderr for GUI applications.
  *

@@ -21,10 +21,10 @@
  *
  *  Purpose: Convert dicom file encoding
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-03 14:05:15 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-03-06 18:09:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmconv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -76,11 +76,12 @@ int main(int argc, char *argv[])
   GUSISetup(GUSIwithInternetSockets);
 #endif
 
-  SetDebugLevel(0);
+  SetDebugLevel(( 0 ));
 
   const char *opt_ifname = NULL; 
   const char *opt_ofname = NULL; 
   
+  int opt_debugMode = 0;
   OFBool opt_verbose = OFFalse;
   OFBool opt_iDataset = OFFalse;
   OFBool opt_oDataset = OFFalse;
@@ -147,8 +148,8 @@ int main(int argc, char *argv[])
       cmd.getParam(1, opt_ifname);
       cmd.getParam(2, opt_ofname);
 
-      if (cmd.findOption("--verbose")) opt_verbose=OFTrue;
-      if (cmd.findOption("--debug")) SetDebugLevel(5);
+      if (cmd.findOption("--verbose")) opt_verbose = OFTrue;
+      if (cmd.findOption("--debug")) opt_debugMode = 5;
       
       cmd.beginOptionBlock();
       if (cmd.findOption("--read-file")) opt_iDataset = OFFalse;
@@ -158,23 +159,23 @@ int main(int argc, char *argv[])
       cmd.beginOptionBlock();
       if (cmd.findOption("--read-xfer-auto"))
       {
-      	if (! opt_iDataset) app.printError("--read-xfer-auto only allowed with --read-dataset");
-      	opt_ixfer = EXS_Unknown;
+        if (! opt_iDataset) app.printError("--read-xfer-auto only allowed with --read-dataset");
+        opt_ixfer = EXS_Unknown;
       }
       if (cmd.findOption("--read-xfer-little"))
       {
-      	if (! opt_iDataset) app.printError("--read-xfer-little only allowed with --read-dataset");
-      	opt_ixfer = EXS_LittleEndianExplicit;
+        if (! opt_iDataset) app.printError("--read-xfer-little only allowed with --read-dataset");
+        opt_ixfer = EXS_LittleEndianExplicit;
       }
       if (cmd.findOption("--read-xfer-big"))
       {
-      	if (! opt_iDataset) app.printError("--read-xfer-big only allowed with --read-dataset");
-      	opt_ixfer = EXS_BigEndianExplicit;
+        if (! opt_iDataset) app.printError("--read-xfer-big only allowed with --read-dataset");
+        opt_ixfer = EXS_BigEndianExplicit;
       }
       if (cmd.findOption("--read-xfer-implicit"))
       {
-      	if (! opt_iDataset) app.printError("--read-xfer-implicit only allowed with --read-dataset");
-      	opt_ixfer = EXS_LittleEndianImplicit;
+        if (! opt_iDataset) app.printError("--read-xfer-implicit only allowed with --read-dataset");
+        opt_ixfer = EXS_LittleEndianImplicit;
       }
       cmd.endOptionBlock();
 
@@ -217,13 +218,13 @@ int main(int argc, char *argv[])
       cmd.beginOptionBlock();
       if (cmd.findOption("--padding-retain")) 
       {
-      	if (opt_oDataset) app.printError("--padding-retain not allowed with --write-dataset");
-      	opt_opadenc = EPD_noChange;
+        if (opt_oDataset) app.printError("--padding-retain not allowed with --write-dataset");
+        opt_opadenc = EPD_noChange;
       }
       if (cmd.findOption("--padding-off")) opt_opadenc = EPD_withoutPadding;
       if (cmd.findOption("--padding-create")) 
       {
-      	  if (opt_oDataset) app.printError("--padding-create not allowed with --write-dataset");
+          if (opt_oDataset) app.printError("--padding-create not allowed with --write-dataset");
           app.checkValue(cmd.getValue(opt_filepad, 0));
           app.checkValue(cmd.getValue(opt_itempad, 0));
           opt_opadenc = EPD_withPadding;
@@ -232,13 +233,16 @@ int main(int argc, char *argv[])
 
     }
     
+    SetDebugLevel((opt_debugMode));
+
     /* make sure data dictionary is loaded */
-    if (!dcmDataDict.isDictionaryLoaded()) {
-	CERR << "Warning: no data dictionary loaded, "
-	     << "check environment variable: "
-	     << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
+    if (!dcmDataDict.isDictionaryLoaded())
+    {
+        CERR << "Warning: no data dictionary loaded, "
+             << "check environment variable: "
+             << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
     }
-	
+    
     // open inputfile
     if ((opt_ifname == NULL) || (strlen(opt_ifname) == 0))
     {
@@ -247,11 +251,12 @@ int main(int argc, char *argv[])
     }
 
     if (opt_verbose) 
-	COUT << "open input file " << opt_ifname << endl;
+        COUT << "open input file " << opt_ifname << endl;
 
     DcmFileStream inf(opt_ifname, DCM_ReadMode);
-    if ( inf.Fail() ) {
-	CERR << "cannot open file: " << opt_ifname << endl;
+    if ( inf.Fail() )
+    {
+        CERR << "cannot open file: " << opt_ifname << endl;
         return 1;
     }
        
@@ -261,123 +266,119 @@ int main(int argc, char *argv[])
 
     if (opt_iDataset)
     {
-	dataset = new DcmDataset;
-	if (!dataset)
-	{
-	    CERR << "memory exhausted\n";
-	    return 1;
-	}
-	if (opt_verbose)
-	    COUT << "read and interpret DICOM dataset " << opt_ifname << endl;
-	dataset->transferInit();
-	error = dataset -> read(inf, opt_ixfer, EGL_noChange);
-	dataset->transferEnd();
+    dataset = new DcmDataset;
+    if (!dataset)
+    {
+        CERR << "memory exhausted\n";
+        return 1;
+    }
+    if (opt_verbose)
+        COUT << "read and interpret DICOM dataset " << opt_ifname << endl;
+    dataset->transferInit();
+    error = dataset -> read(inf, opt_ixfer, EGL_noChange);
+    dataset->transferEnd();
     }
     else
     {
-	fileformat = new DcmFileFormat;
-	if (!fileformat)
-	{
-	    CERR << "memory exhausted\n";
-	    return 1;
-	}
-	if (opt_verbose)
-	    COUT << "read and interpret DICOM file with metaheader " 
-		 << opt_ifname << endl;
-	fileformat->transferInit();
-	error = fileformat -> read(inf, opt_ixfer, EGL_noChange);
-	fileformat->transferEnd();
+    fileformat = new DcmFileFormat;
+    if (!fileformat)
+    {
+        CERR << "memory exhausted\n";
+        return 1;
+    }
+    if (opt_verbose)
+        COUT << "read and interpret DICOM file with metaheader " 
+             << opt_ifname << endl;
+    fileformat->transferInit();
+    error = fileformat -> read(inf, opt_ixfer, EGL_noChange);
+    fileformat->transferEnd();
     }
 
     if (error != EC_Normal) 
     {
-	CERR << "Error: "  
-	     << dcmErrorConditionToString(error)
-	     << ": reading file: " <<  opt_ifname << endl;
-	return 1;
+        CERR << "Error: "  
+             << dcmErrorConditionToString(error)
+             << ": reading file: " <<  opt_ifname << endl;
+        return 1;
     }
 
     if (fileformat)
     {
-	if (opt_oDataset && opt_verbose)
-	    COUT << "get dataset of DICOM file with metaheader\n";
-	dataset = fileformat -> getDataset();
+        if (opt_oDataset && opt_verbose)
+            COUT << "get dataset of DICOM file with metaheader\n";
+        dataset = fileformat -> getDataset();
     }
     
     if (!fileformat && !opt_oDataset)
     {
-	if (opt_verbose)
-	    COUT << "create new Metaheader for dataset\n";
-	fileformat = new DcmFileFormat(dataset);
+        if (opt_verbose)
+            COUT << "create new Metaheader for dataset\n";
+        fileformat = new DcmFileFormat(dataset);
     }
 
     if (opt_verbose)
-	COUT << "create output file " << opt_ofname << endl;
+        COUT << "create output file " << opt_ofname << endl;
  
     DcmFileStream outf( opt_ofname, DCM_WriteMode );
-    if ( outf.Fail() ) {
-	CERR << "cannot create file: " << opt_ofname << endl;
-	return 1;
+    if ( outf.Fail() )
+    {
+        CERR << "cannot create file: " << opt_ofname << endl;
+        return 1;
     }
 
     if (opt_oxfer == EXS_Unknown)
     {
-	if (opt_verbose)
-	    COUT << "set output transfer syntax to input transfer syntax\n";
-	opt_oxfer = dataset->getOriginalXfer();
+        if (opt_verbose)
+            COUT << "set output transfer syntax to input transfer syntax\n";
+        opt_oxfer = dataset->getOriginalXfer();
     }
 
-   if (opt_verbose)
-       COUT << "Check if new output transfer syntax is possible\n";
-
-   DcmXfer opt_oxferSyn(opt_oxfer);
-
-   dataset->chooseRepresentation(opt_oxfer, NULL);
-
-   if (dataset->canWriteXfer(opt_oxfer))
-   {
-       if (opt_verbose)
-	   COUT << "Output transfer syntax " << opt_oxferSyn.getXferName() 
-		<< " can be written\n";
-   }
-   else
-   {
-       CERR << "No conversion to transfer syntax " << opt_oxferSyn.getXferName()
-	    << " possible!\n";
-       return 1;
-   }
-
-   if (opt_oDataset)
-   {
-	if (opt_verbose) 
-	    COUT << "write converted DICOM dataset\n";
-	
-	dataset->transferInit();
-	error = dataset->write(outf, opt_oxfer, opt_oenctype, opt_oglenc, 
-			       EPD_withoutPadding);
-	dataset->transferEnd();
-    }
-    else
+    if (opt_verbose)
+        COUT << "Check if new output transfer syntax is possible\n";
+ 
+    DcmXfer opt_oxferSyn(opt_oxfer);
+ 
+    dataset->chooseRepresentation(opt_oxfer, NULL);
+ 
+    if (dataset->canWriteXfer(opt_oxfer))
     {
-	if (opt_verbose)
-	    COUT << "write converted DICOM file with metaheader\n";
+        if (opt_verbose)
+            COUT << "Output transfer syntax " << opt_oxferSyn.getXferName() 
+                 << " can be written\n";
+    } else {
+        CERR << "No conversion to transfer syntax " << opt_oxferSyn.getXferName()
+             << " possible!\n";
+        return 1;
+    }
 
-	fileformat->transferInit();
-	error = fileformat->write(outf, opt_oxfer, opt_oenctype, opt_oglenc,
-				  opt_opadenc, (Uint32) opt_filepad, (Uint32) opt_itempad);
-	fileformat->transferEnd();
+    if (opt_oDataset)
+    {
+        if (opt_verbose) 
+            COUT << "write converted DICOM dataset\n";
+    
+        dataset->transferInit();
+        error = dataset->write(outf, opt_oxfer, opt_oenctype, opt_oglenc, EPD_withoutPadding);
+        dataset->transferEnd();
+    } else {
+        if (opt_verbose)
+            COUT << "write converted DICOM file with metaheader\n";
+
+        fileformat->transferInit();
+        error = fileformat->write(outf, opt_oxfer, opt_oenctype, opt_oglenc,
+                  opt_opadenc, (Uint32) opt_filepad, (Uint32) opt_itempad);
+        fileformat->transferEnd();
     }
 
     if (error != EC_Normal) 
     {
-	CERR << "Error: "  
-	     << dcmErrorConditionToString(error)
-	     << ": writing file: " <<  opt_ofname << endl;
-	return 1;
+        CERR << "Error: "  
+             << dcmErrorConditionToString(error)
+             << ": writing file: " <<  opt_ofname << endl;
+        return 1;
     }
 
     if (opt_verbose) 
-	COUT << "conversion successful\n";
+        COUT << "conversion successful\n";
 
     return 0;
 }
@@ -385,7 +386,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
-** Revision 1.26  2000-03-03 14:05:15  meichel
+** Revision 1.27  2000-03-06 18:09:36  joergr
+** Avoid empty statement in the body of if-statements (MSVC6 reports warnings).
+**
+** Revision 1.26  2000/03/03 14:05:15  meichel
 ** Implemented library support for redirecting error messages into memory
 **   instead of printing them to stdout/stderr for GUI applications.
 **
