@@ -35,11 +35,11 @@ The current release successfully compiles on the following systems:
     Windows XP     / Intel x86 / Microsoft Visual C++ 6.0 (Service Pack 4)
     Windows XP     / Intel x86 / Microsoft Visual C++ .NET 2003 (VS 7.1)
 
-The dcmqrscp and wlistctn tools have been ported to Windows, but do not support 
+The dcmqrscp and wlmscpfs tools have been ported to Windows, but do not support 
 multi-processing (i.e. multiple clients concurrently) under Windows.  The 
 worklist WWW scripts require an HTTP server and a Perl interpreter and have not 
-been tested under Windows (file locking interaction with the wlistctn / wlmscpfs 
-server may or may not work).
+been tested under Windows (file locking interaction with the wlmscpfs server
+may or may not work).
 
 Unix (or lookalikes)
 --------------------
@@ -603,4 +603,4 @@ Have fun.
 Marco Eichelberg, Joerg Riesmeier, Thomas Wilkens
 Kuratorium OFFIS e.V., Oldenburg, Germany.
 
-Last revised: 2004-11-12 (Riesmeier).
+Last revised: 2005-04-04 (Riesmeier).
