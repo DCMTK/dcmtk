@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmQueryRetrieveConfig
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-04-04 13:15:13 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-04-07 14:38:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqrcnf.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -191,6 +191,8 @@ void DcmQueryRetrieveConfig::initConfigStruct()
    implementationClass_ = "1.2.3.4.5.6.7.8.9.10";
    implementationVersion_ = "CEN-DICOM-1.0";
    networkType_ = "tcp";
+   UserName_ = "";
+   GroupName_ = "";
    networkTCPPort_ = 104;
    maxPDUSize_ = 16384;
    maxAssociations_ = 16;
@@ -1030,7 +1032,10 @@ const char *DcmQueryRetrieveConfig::getGroupName() const
 /*
  * CVS Log
  * $Log: dcmqrcnf.cc,v $
- * Revision 1.2  2005-04-04 13:15:13  meichel
+ * Revision 1.3  2005-04-07 14:38:22  joergr
+ * Initialize member variables for user and group name.
+ *
+ * Revision 1.2  2005/04/04 13:15:13  meichel
  * Added username/groupname configuration option that allows to start the
  *   image database as root and let it call setuid/setgid to execute under an
  *   unprivileged account once the listen socket has been opened.
