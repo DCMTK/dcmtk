@@ -20,7 +20,7 @@ DCMTK contains the following sub-packages, each in its own sub-directory:
 \li \ref mod_dcmsr
 \li \ref mod_dcmtls
 \li \ref mod_dcmwlm
-\li \ref mod_imagectn
+\li \ref mod_dcmqrdb
 \li \ref mod_ofstd
 
 Each sub-directory (except config) contains further sub-directories for
@@ -32,12 +32,13 @@ To build and install the DCMTK package see the \ref file_install "INSTALL"
 file.  For copyright information see the \ref file_copyright "COPYRIGHT" file.
 For information about the history of this software see the
 \ref file_history "HISTORY" file.  For answers to frequently asked questions
-(FAQ) see: http://forum.dcmtk.org/faq
+(FAQ) see: \b http://forum.dcmtk.org/faq
 
 If you find bugs or other problems with this software we would appreciate
 hearing about them.  Please send electronic mail to \b dicom-bugs@offis.de.
 Please try to describe the problem in detail and if possible give a suggested
-fix.
+fix.   For general questions on how to compile, install or use the toolkit we
+recommend the public discussion forum at: \b http://forum.dcmtk.org
 
 */
 
