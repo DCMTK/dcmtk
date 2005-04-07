@@ -677,13 +677,14 @@
       <xsd:enumeration value="ISO_IR 101"/>
       <xsd:enumeration value="ISO_IR 109"/>
       <xsd:enumeration value="ISO_IR 110"/>
-      <xsd:enumeration value="ISO_IR 148"/>
       <xsd:enumeration value="ISO_IR 144"/>
       <xsd:enumeration value="ISO_IR 127"/>
       <xsd:enumeration value="ISO_IR 126"/>
       <xsd:enumeration value="ISO_IR 138"/>
-      <xsd:enumeration value="ISO_IR 166"/>
+      <xsd:enumeration value="ISO_IR 148"/>
       <xsd:enumeration value="ISO_IR 13"/>
+      <xsd:enumeration value="ISO_IR 166"/>
+      <xsd:enumeration value="ISO_IR 192"/>      
     </xsd:restriction>
   </xsd:simpleType>
 
