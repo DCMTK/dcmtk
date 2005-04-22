@@ -22,9 +22,9 @@
  *  Purpose: Image Server Central Test Node (ctn) Main Program
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-04-04 14:23:13 $
+ *  Update Date:      $Date: 2005-04-22 15:37:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/apps/dcmqrscp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -550,7 +550,7 @@ main(int argc, char *argv[])
     while (cond.good())
     {
       cond = scp.waitForAssociation(options.net_);
-      if (!options.singleProcess_) scp.cleanChildren(options.verbose_);  /* clean up any child processes */
+      if (!options.singleProcess_) scp.cleanChildren(options.verbose_ ? OFTrue : OFFalse);  /* clean up any child processes */
     }
 
     cond = ASC_dropNetwork(&options.net_);
@@ -571,7 +571,10 @@ main(int argc, char *argv[])
 /*
  * CVS Log
  * $Log: dcmqrscp.cc,v $
- * Revision 1.1  2005-04-04 14:23:13  meichel
+ * Revision 1.2  2005-04-22 15:37:34  meichel
+ * Minor update to avoid warning on Win32
+ *
+ * Revision 1.1  2005/04/04 14:23:13  meichel
  * Renamed application "dcmqrdb" into "dcmqrscp" to avoid name clash with
  *   dcmqrdb library, which confuses the MSVC build system.
  *
