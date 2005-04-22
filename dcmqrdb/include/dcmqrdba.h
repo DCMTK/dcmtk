@@ -22,9 +22,9 @@
  *  Purpose: class DcmQueryRetrieveDatabaseHandle
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-03-30 13:34:50 $
+ *  Update Date:      $Date: 2005-04-22 15:36:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/include/Attic/dcmqrdba.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -220,11 +220,13 @@ public:
   /** this method creates a new database handle instance on the heap and returns
    *  a pointer to it, along with a result that indicates if the instance was
    *  successfully initialized, i.e. connected to the database
+   *  @param callingAETitle calling aetitle
    *  @param calledAETitle called aetitle
    *  @param result result returned in this variable
    *  @return pointer to database object, must not be NULL if result is EC_Normal.
    */
   virtual DcmQueryRetrieveDatabaseHandle *createDBHandle(
+    const char *callingAETitle, 
     const char *calledAETitle,
     OFCondition& result) const = 0;
 };
@@ -234,7 +236,11 @@ public:
 /*
  * CVS Log
  * $Log: dcmqrdba.h,v $
- * Revision 1.1  2005-03-30 13:34:50  meichel
+ * Revision 1.2  2005-04-22 15:36:34  meichel
+ * Passing calling aetitle to DcmQueryRetrieveDatabaseHandleFactory::createDBHandle
+ *   to allow configuration retrieval based on calling aetitle.
+ *
+ * Revision 1.1  2005/03/30 13:34:50  meichel
  * Initial release of module dcmqrdb that will replace module imagectn.
  *   It provides a clear interface between the Q/R DICOM front-end and the
  *   database back-end. The imagectn code has been re-factored into a minimal

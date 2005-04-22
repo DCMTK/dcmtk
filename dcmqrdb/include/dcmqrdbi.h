@@ -22,9 +22,9 @@
  *  Purpose: class DcmQueryRetrieveIndexDatabaseHandle
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-04-04 10:04:45 $
+ *  Update Date:      $Date: 2005-04-22 15:36:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/include/Attic/dcmqrdbi.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -426,11 +426,13 @@ public:
   /** this method creates a new database handle instance on the heap and returns
    *  a pointer to it, along with a result that indicates if the instance was
    *  successfully initialized, i.e. connected to the database
+   *  @param callingAETitle calling aetitle
    *  @param calledAETitle called aetitle
    *  @param result result returned in this variable
    *  @return pointer to database object, must not be NULL if result is EC_Normal.
    */
   virtual DcmQueryRetrieveDatabaseHandle *createDBHandle(
+    const char *callingAETitle, 
     const char *calledAETitle,
     OFCondition& result) const;
 
@@ -445,7 +447,11 @@ private:
 /*
  * CVS Log
  * $Log: dcmqrdbi.h,v $
- * Revision 1.2  2005-04-04 10:04:45  meichel
+ * Revision 1.3  2005-04-22 15:36:34  meichel
+ * Passing calling aetitle to DcmQueryRetrieveDatabaseHandleFactory::createDBHandle
+ *   to allow configuration retrieval based on calling aetitle.
+ *
+ * Revision 1.2  2005/04/04 10:04:45  meichel
  * Added public declarations for index file functions that are
  *   used from module dcmpstat
  *

@@ -22,9 +22,9 @@
  *  Purpose: classes DcmQueryRetrieveIndexDatabaseHandle, DcmQueryRetrieveIndexDatabaseHandleFactory
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-04-04 14:23:21 $
+ *  Update Date:      $Date: 2005-04-22 15:36:32 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqrdbi.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -3444,6 +3444,7 @@ DcmQueryRetrieveIndexDatabaseHandleFactory::~DcmQueryRetrieveIndexDatabaseHandle
 }
 
 DcmQueryRetrieveDatabaseHandle *DcmQueryRetrieveIndexDatabaseHandleFactory::createDBHandle(
+    const char * /* callingAETitle */, 
     const char *calledAETitle,
     OFCondition& result) const
 {
@@ -3457,7 +3458,11 @@ DcmQueryRetrieveDatabaseHandle *DcmQueryRetrieveIndexDatabaseHandleFactory::crea
 /*
  * CVS Log
  * $Log: dcmqrdbi.cc,v $
- * Revision 1.3  2005-04-04 14:23:21  meichel
+ * Revision 1.4  2005-04-22 15:36:32  meichel
+ * Passing calling aetitle to DcmQueryRetrieveDatabaseHandleFactory::createDBHandle
+ *   to allow configuration retrieval based on calling aetitle.
+ *
+ * Revision 1.3  2005/04/04 14:23:21  meichel
  * Renamed application "dcmqrdb" into "dcmqrscp" to avoid name clash with
  *   dcmqrdb library, which confuses the MSVC build system.
  *

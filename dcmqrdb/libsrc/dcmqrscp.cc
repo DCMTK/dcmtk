@@ -22,9 +22,9 @@
  *  Purpose: class DcmQueryRetrieveSCP
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-03-30 13:34:53 $
+ *  Update Date:      $Date: 2005-04-22 15:36:32 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/Attic/dcmqrscp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -128,10 +128,20 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
 
     /* Create a database handle for this association */
     DcmQueryRetrieveDatabaseHandle *dbHandle = factory_.createDBHandle(
+	  assoc->params->DULparams.callingAPTitle,
       assoc->params->DULparams.calledAPTitle, cond);
     
-    if (cond.bad()) {
-        DcmQueryRetrieveOptions::errmsg("dispatch: cannot create DB Handle");
+    if (cond.bad())
+    {
+      DcmQueryRetrieveOptions::errmsg("dispatch: cannot create DB Handle");
+      return cond;
+    }
+
+    if (dbHandle == NULL)
+    {
+      // this should not happen, but we check it anyway
+      DcmQueryRetrieveOptions::errmsg("dispatch: cannot create DB Handle");
+      return EC_IllegalCall;
     }
 
     dbHandle->setDebugLevel(dbDebug_ ? 1 : 0);
@@ -1024,7 +1034,11 @@ void DcmQueryRetrieveSCP::setDatabaseFlags(
 /*
  * CVS Log
  * $Log: dcmqrscp.cc,v $
- * Revision 1.1  2005-03-30 13:34:53  meichel
+ * Revision 1.2  2005-04-22 15:36:32  meichel
+ * Passing calling aetitle to DcmQueryRetrieveDatabaseHandleFactory::createDBHandle
+ *   to allow configuration retrieval based on calling aetitle.
+ *
+ * Revision 1.1  2005/03/30 13:34:53  meichel
  * Initial release of module dcmqrdb that will replace module imagectn.
  *   It provides a clear interface between the Q/R DICOM front-end and the
  *   database back-end. The imagectn code has been re-factored into a minimal
