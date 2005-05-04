@@ -21,10 +21,10 @@
  *
  *  Purpose: Class for connecting to a file-based data source.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-05-26 10:36:53 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2005-05-04 11:33:17 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wldsfs.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,6 +41,7 @@ class WlmFileSystemInteractionManager;
 class DcmDataset;
 class OFCondition;
 class DcmElement;
+class DcmItem;
 
 /** This class encapsulates data structures and operations for connecting to a file-based
  *  data source in the framework of the DICOM basic worklist management service.
@@ -52,6 +53,8 @@ class WlmDataSourceFileSystem : public WlmDataSource
     WlmFileSystemInteractionManager *fileSystemInteractionManager;
     /// path to database files
     char *dfPath;
+    /// indicates if wl-files which are lacking return type 1 attributes or information in such attributes shall be rejected or not
+    OFBool enableRejectionOfIncompleteWlFiles;
     /// handle to the read lock file
     int handleToReadLockFile;
 
@@ -124,6 +127,11 @@ class WlmDataSourceFileSystem : public WlmDataSource
        */
     void SetDfPath( const char *value );
 
+      /** Set value in member variable.
+       *  @param value The value to set.
+       */
+    void SetEnableRejectionOfIncompleteWlFiles( OFBool value );
+
       /** Checks if the called application entity title is supported. This function expects
        *  that the called application entity title was made available for this instance through
        *  WlmDataSource::SetCalledApplicationEntityTitle(). If this is not the case, OFFalse
@@ -132,6 +140,37 @@ class WlmDataSourceFileSystem : public WlmDataSource
        *          OFFalse, if the called application entity title is not supported or it is not given.
        */
     OFBool IsCalledApplicationEntityTitleSupported();
+
+      /** This function performs a check on two attributes in the given dataset. At two different places
+       *  in the definition of the DICOM worklist management service, a description attribute and a code
+       *  sequence attribute with a return type of 1C are mentioned, and the condition specifies that
+       *  either the description attribute or the code sequence attribute or both shall be supported by
+       *  an SCP. (I am talking about RequestedProcedureDescription vs. RequestedProcedureCodeSequence
+       *  and ScheduledProcedureStepDescription vs. ScheduledProtocolCodeSequence.) In both cases, this
+       *  implementation actually supports both, the description _and_ the code sequence attributes.
+       *  In cases where the description attribute is actually empty or the code sequence attribute
+       *  is actually empty or contains exactly one item with an empty CodeValue and an empty
+       *  CodingSchemeDesignator, we want to remove the empty attribute from the dataset. This is what
+       *  this function does. (Please note, that this function will always only delete one of the two,
+       *  and this function will start checking the sequence attribute.
+       *  @param dataset Dataset in which the consistency of the two attributes shall be checked.
+       *  @param descriptionTagKey DcmTagKey of the description attribute which shall be checked.
+       *  @param codeSequenceTagKey DcmTagKey of the codeSequence attribute which shall be checked.
+       */
+    void HandleExistentButEmptyDescriptionAndCodeSequenceAttributes( DcmItem *dataset, const DcmTagKey &descriptionTagKey, const DcmTagKey &codeSequenceTagKey );
+
+      /** This function performs a check on a sequence attribute in the given dataset. At two different places
+       *  in the definition of the DICOM worklist management service, a sequence attribute with a return type
+       *  of 2 is mentioned containing two 1C attributes in its item; the condition of the two 1C attributes
+       *  specifies that in case a sequence item is present, then these two attributes must be existent and
+       *  must contain a value. (I am talking about ReferencedStudySequence and ReferencedPatientSequence.)
+       *  In cases where the sequence attribute contains exactly one item with an empty ReferencedSOPClass
+       *  and an empty ReferencedSOPInstance, we want to remove the item from the sequence. This is what
+       *  this function does.
+       *  @param dataset Dataset in which the consistency of the sequence attribute shall be checked.
+       *  @param sequenceTagKey DcmTagKey of the sequence attribute which shall be checked.
+       */
+    void HandleExistentButEmptyReferencedStudyOrPatientSequenceAttributes( DcmDataset *dataset, const DcmTagKey &sequenceTagKey );
 
       /** Based on the search mask which was passed, this function determines all the records in the
        *  worklist database files which match the values of matching key attributes in the search mask.
@@ -165,7 +204,21 @@ class WlmDataSourceFileSystem : public WlmDataSource
 /*
 ** CVS Log
 ** $Log: wldsfs.h,v $
-** Revision 1.13  2004-05-26 10:36:53  meichel
+** Revision 1.14  2005-05-04 11:33:17  wilkens
+** Modified handling of the attributes ScheduledProcedureStepDescription/
+** ScheduledProtocolCodeSequence and RequestedProcedureDescription/
+** RequestedProcedureCodeSequence in wlmscpfs: in case one of the two attributes
+** does not contain any information in a C-Find RSP message which is about to be
+** sent to an SCU, the empty attribute will be removed from the C-Find RSP message
+** before the message is sent, in order not to send an invalid RSP message.
+** Added two command line options --enable-file-reject (default) and
+** --disable-file-reject to wlmscpfs: these options can be used to enable or
+** disable a file rejection mechanism which makes sure only complete worklist files
+** will be used during the matching process. A worklist file is considered to be
+** complete if it contains all necessary type 1 information which the SCP might
+** have to return to an SCU in a C-Find response message.
+**
+** Revision 1.13  2004/05/26 10:36:53  meichel
 ** Fixed minor bug in worklist server regarding failed read locks.
 **
 ** Revision 1.12  2004/01/07 08:32:28  wilkens
