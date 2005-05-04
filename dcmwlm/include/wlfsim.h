@@ -22,9 +22,9 @@
 *  Purpose: Class for managing file system interaction.
 *
 *  Last Update:      $Author: wilkens $
-*  Update Date:      $Date: 2004-01-07 08:32:28 $
+*  Update Date:      $Date: 2005-05-04 11:34:31 $
 *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wlfsim.h,v $
-*  CVS/RCS Revision: $Revision: 1.7 $
+*  CVS/RCS Revision: $Revision: 1.8 $
 *  Status:           $State: Exp $
 *
 *  CVS/RCS Log at end of file
@@ -67,6 +67,8 @@ class WlmFileSystemInteractionManager
     OFConsole *logStream;
     /// path to database files
     char *dfPath;
+    /// indicates if wl-files which are lacking return type 1 attributes or information in such attributes shall be rejected or not
+    OFBool enableRejectionOfIncompleteWlFiles;
     /// called AE title
     char *calledApplicationEntityTitle;
     /// array of matching records
@@ -93,6 +95,65 @@ class WlmFileSystemInteractionManager
        *  @return OFTrue in case the given filename refers to a worklist file, OFFalse otherwise.
        */
     OFBool IsWorklistFile( const char *fname );
+
+      /** This function checks if the given dataset (which represents the information from a
+       *  worklist file) contains all necessary return type 1 information. According to the
+       *  DICOM standard part 4 annex K, the following attributes are type 1 attributes in
+       *  C-Find RSP messages:
+       *        Attribute                             Tag      Return Key Type
+       *    SpecificCharacterSet                  (0008,0005)        1C (will be checked in WlmDataSourceFileSystem::StartFindRequest(...); this attribute does not have to be checked here)
+       *    ScheduledProcedureStepSequence        (0040,0100)        1
+       *     > ScheduledStationAETitle            (0040,0001)        1
+       *     > ScheduledProcedureStepStartDate    (0040,0002)        1
+       *     > ScheduledProcedureStepStartTime    (0040,0003)        1
+       *     > Modality                           (0008,0060)        1
+       *     > ScheduledProcedureStepDescription  (0040,0007)        1C (The ScheduledProcedureStepDescription (0040,0007) or the ScheduledProtocolCodeSequence (0040,0008) or both shall be supported by the SCP; we actually support both, so we have to check if at least one of the two attributes contains valid information.)
+       *     > ScheduledProtocolCodeSequence      (0040,0008)        1C (see abobve)
+       *     > > CodeValue                        (0008,0100)        1
+       *     > > CodingSchemeDesignator           (0008,0102)        1
+       *     > ScheduledProcedureStepID           (0040,0009)        1
+       *    RequestedProcedureID                  (0040,1001)        1
+       *    RequestedProcedureDescription         (0032,1060)        1C (The RequestedProcedureDescription (0032,1060) or the RequestedProcedureCodeSequence (0032,1064) or both shall be supported by the SCP; we actually support both, so we have to check if at least one of the two attributes contains valid information.)
+       *    RequestedProcedureCodeSequence        (0032,1064)        1C (see abobve)
+       *     > > CodeValue                        (0008,0100)        1
+       *     > > CodingSchemeDesignator           (0008,0102)        1
+       *    StudyInstanceUID                      (0020,000D)        1
+       *    ReferencedStudySequence               (0008,1110)        2
+       *     > ReferencedSOPClassUID              (0008,1150)        1C (Required if a sequence item is present)
+       *     > ReferencedSOPInstanceUID           (0008,1155)        1C (Required if a sequence item is present)
+       *    ReferencedPatientSequence             (0008,1120)        2
+       *     > ReferencedSOPClassUID              (0008,1150)        1C (Required if a sequence item is present)
+       *     > ReferencedSOPInstanceUID           (0008,1155)        1C (Required if a sequence item is present)
+       *    PatientsName                          (0010,0010)        1
+       *    PatientID                             (0010,0020)        1
+       *  @param dataset - [in] The dataset of the worklist file which is currently examined.
+       *  @return OFTrue in case the given dataset contains all necessary return type 1 information,
+       *          OFFalse otherwise.
+       */
+    OFBool WlmFileSystemInteractionManager::DatasetIsComplete( DcmDataset *dataset );
+
+      /** This function checks if the specified sequence attribute is absent or existent but non-empty
+       *  and incomplete in the given dataset.
+       *  @param sequenceTagKey The sequence attribute which shall be checked.
+       *  @param dset The dataset in which the attribute is contained.
+       *  @return OFTrue in case the sequence attribute is absent or existent but non-empty and incomplete, OFFalse otherwise.
+       */
+    OFBool ReferencedStudyOrPatientSequenceIsAbsentOrExistentButNonEmptyAndIncomplete( DcmTagKey sequenceTagKey, DcmItem *dset );
+
+      /** This function checks if the specified description and code sequence attribute are both incomplete in the given dataset.
+       *  @param descriptionTagKey The description attribute which shall be checked.
+       *  @param codeSequenceTagKey The codeSequence attribute which shall be checked.
+       *  @param dset The dataset in which the attributes are contained.
+       *  @return OFTrue in case both attributes are incomplete, OFFalse otherwise.
+       */
+    OFBool DescriptionAndCodeSequenceAttributesAreIncomplete( DcmTagKey descriptionTagKey, DcmTagKey codeSequenceTagKey, DcmItem *dset );
+
+      /** This function checks if the specified attribute is absent or contains an empty value in the given dataset.
+       *  @param elemTagKey The attribute which shall be checked.
+       *  @param dset The dataset in which the attribute is contained.
+       *  @return OFTrue in case the attribute is absent or contains an empty value, OFFalse otherwise.
+       */
+    OFBool AttributeIsAbsentOrEmpty( DcmTagKey elemTagKey, DcmItem *dset );
 
       /** This function returns OFTrue, if the matching key attribute values in the
        *  dataset match the matching key attribute values in the search mask.
@@ -336,6 +397,11 @@ class WlmFileSystemInteractionManager
        */
     void SetDebug( OFBool value );
 
+      /**  Set value in member variable.
+       *  @param value The value to set.
+       */
+    void SetEnableRejectionOfIncompleteWlFiles( OFBool value );
+
       /** Connects to the worklist file system database.
        *  @param dfPathv Path to worklist file system database.
        *  @return Indicates if the connection could be established or not.
@@ -405,7 +471,15 @@ class WlmFileSystemInteractionManager
 /*
 ** CVS Log
 ** $Log: wlfsim.h,v $
-** Revision 1.7  2004-01-07 08:32:28  wilkens
+** Revision 1.8  2005-05-04 11:34:31  wilkens
+** Added two command line options --enable-file-reject (default) and
+** --disable-file-reject to wlmscpfs: these options can be used to enable or
+** disable a file rejection mechanism which makes sure only complete worklist files
+** will be used during the matching process. A worklist file is considered to be
+** complete if it contains all necessary type 1 information which the SCP might
+** have to return to an SCU in a C-Find response message.
+**
+** Revision 1.7  2004/01/07 08:32:28  wilkens
 ** Added new sequence type return key attributes to wlmscpfs. Fixed bug that for
 ** equally named attributes in sequences always the same value will be returned.
 ** Added functionality that also more than one item will be returned in sequence

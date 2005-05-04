@@ -21,10 +21,10 @@
  *
  *  Purpose: (Partially) abstract class for connecting to an arbitrary data source.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-04-06 18:19:28 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2005-05-04 11:34:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wlds.h,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -521,6 +521,10 @@ class WlmDataSource
 
       /** Set value in a member variable in a derived class.
        */
+    virtual void SetEnableRejectionOfIncompleteWlFiles( OFBool /*value*/ ) {}
+
+      /** Set value in a member variable in a derived class.
+       */
     virtual void SetCreateNullvalues( OFBool /*value*/ ) {}
 
       /** Set value in a member variable in a derived class.
@@ -545,7 +549,15 @@ class WlmDataSource
 /*
 ** CVS Log
 ** $Log: wlds.h,v $
-** Revision 1.20  2004-04-06 18:19:28  joergr
+** Revision 1.21  2005-05-04 11:34:31  wilkens
+** Added two command line options --enable-file-reject (default) and
+** --disable-file-reject to wlmscpfs: these options can be used to enable or
+** disable a file rejection mechanism which makes sure only complete worklist files
+** will be used during the matching process. A worklist file is considered to be
+** complete if it contains all necessary type 1 information which the SCP might
+** have to return to an SCU in a C-Find response message.
+**
+** Revision 1.20  2004/04/06 18:19:28  joergr
 ** Updated data dictionary, UIDs and transfer syntaxes for the latest Final Text
 ** Supplements (42 and 47) and Correction Proposals (CP 25).
 **

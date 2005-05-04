@@ -22,10 +22,10 @@
  *  Purpose: Class representing a console engine for basic worklist
  *           management service class providers based on the file system.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-02-24 14:45:47 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2005-05-04 11:33:47 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/wlcefs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,8 +80,8 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
     opt_rejectWithoutImplementationUID( OFFalse ), opt_sleepAfterFind( 0 ), opt_sleepDuringFind( 0 ),
     opt_maxPDU( ASC_DEFAULTMAXPDU ), opt_networkTransferSyntax( EXS_Unknown ),
     opt_verbose( OFFalse ), opt_debug( OFFalse ), opt_failInvalidQuery( OFTrue ), opt_singleProcess( OFTrue ),
-    opt_maxAssociations( 50 ), opt_noSequenceExpansion( OFFalse ), app( NULL ), cmd( NULL ),
-    dataSource( dataSourcev )
+    opt_maxAssociations( 50 ), opt_noSequenceExpansion( OFFalse ), opt_enableRejectionOfIncompleteWlFiles( OFTrue ),
+    app( NULL ), cmd( NULL ), dataSource( dataSourcev )
 {
   // Initialize application identification string.
   sprintf( rcsid, "$dcmtk: %s v%s %s $", applicationName, OFFIS_DCMTK_VERSION, OFFIS_DCMTK_RELEASEDATE );
@@ -113,12 +113,13 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
 #ifdef HAVE_FORK
     cmd->addOption("--single-process",            "-s",        "single process mode");
 #endif
-  cmd->addOption("--no-sq-expansion",           "-nse",        "disable expansion of empty sequences\nin C-FIND request messages");
-
-  OFString opt5 = "path to worklist data files\n(default: ";
-  opt5 += opt_dfPath;
-  opt5 += ")";
-  cmd->addOption("--data-files-path",           "-dfp",    1, "[p]ath: string", opt5.c_str() );
+    cmd->addOption("--no-sq-expansion",           "-nse",        "disable expansion of empty sequences\nin C-FIND request messages");
+    OFString opt5 = "path to worklist data files\n(default: ";
+    opt5 += opt_dfPath;
+    opt5 += ")";
+    cmd->addOption("--data-files-path",           "-dfp",    1, "[p]ath: string", opt5.c_str() );
+    cmd->addOption("--enable-file-reject",        "-efr",       "enable rejection of incomplete worklist-files\n(default)");
+    cmd->addOption("--disable-file-reject",       "-dfr",       "disable rejection of incomplete worklist-files");
 
   cmd->addGroup("returned character set options:", LONGCOL, SHORTCOL+2);
     cmd->addOption("--return-no-char-set",        "-cs0",       "return no specific character set (default)");
@@ -209,6 +210,10 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
     if( cmd->findOption("--no-sq-expansion") ) opt_noSequenceExpansion = OFTrue;
     if( cmd->findOption("--data-files-path") ) app->checkValue(cmd->getValue(opt_dfPath));
     cmd->beginOptionBlock();
+    if( cmd->findOption("--enable-file-reject") )  opt_enableRejectionOfIncompleteWlFiles = OFTrue;
+    if( cmd->findOption("--disable-file-reject") )  opt_enableRejectionOfIncompleteWlFiles = OFFalse;
+    cmd->endOptionBlock();
+    cmd->beginOptionBlock();
     if( cmd->findOption("--return-no-char-set") )  opt_returnedCharacterSet = RETURN_NO_CHARACTER_SET;
     if( cmd->findOption("--return-iso-ir-100") )  opt_returnedCharacterSet = RETURN_CHARACTER_SET_ISO_IR_100;
     cmd->endOptionBlock();
@@ -227,8 +232,8 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
     if( cmd->findOption("--max-associations") ) 
     {
         OFCmdSignedInt maxAssoc = 1;
-    	app->checkValue(cmd->getValueAndCheckMin(maxAssoc, 1));
-    	opt_maxAssociations = OFstatic_cast(int, maxAssoc);
+        app->checkValue(cmd->getValueAndCheckMin(maxAssoc, 1));
+        opt_maxAssociations = OFstatic_cast(int, maxAssoc);
     }
     if( cmd->findOption("--refuse") ) opt_refuseAssociation = OFTrue;
     if( cmd->findOption("--reject") ) opt_rejectWithoutImplementationUID = OFTrue;
@@ -264,6 +269,7 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
 
   // set specific parameters in data source object
   dataSource->SetDfPath( opt_dfPath );
+  dataSource->SetEnableRejectionOfIncompleteWlFiles( opt_enableRejectionOfIncompleteWlFiles );
 }
 
 // ----------------------------------------------------------------------------
@@ -369,7 +375,15 @@ void WlmConsoleEngineFileSystem::DumpMessage( const char *message )
 /*
 ** CVS Log
 ** $Log: wlcefs.cc,v $
-** Revision 1.7  2004-02-24 14:45:47  meichel
+** Revision 1.8  2005-05-04 11:33:47  wilkens
+** Added two command line options --enable-file-reject (default) and
+** --disable-file-reject to wlmscpfs: these options can be used to enable or
+** disable a file rejection mechanism which makes sure only complete worklist files
+** will be used during the matching process. A worklist file is considered to be
+** complete if it contains all necessary type 1 information which the SCP might
+** have to return to an SCU in a C-Find response message.
+**
+** Revision 1.7  2004/02/24 14:45:47  meichel
 ** Added max-associations command line option, changed default to 50.
 **
 ** Revision 1.6  2003/06/10 13:54:35  meichel

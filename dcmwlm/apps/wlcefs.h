@@ -23,9 +23,9 @@
  *           management service class providers based on the file system.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2003-07-02 09:17:46 $
+ *  Update Date:      $Date: 2005-05-04 11:33:47 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/wlcefs.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -79,6 +79,8 @@ class WlmConsoleEngineFileSystem
     int opt_maxAssociations;
     /// indicates if an expansion of empty sequences in C-Find RQ messages shall take place or not
     OFBool opt_noSequenceExpansion;
+    /// indicates if wl-files which are lacking return type 1 attributes or information in such attributes shall be rejected or not
+    OFBool opt_enableRejectionOfIncompleteWlFiles;
     /// instance of console application class (for handling command line arguments)
     OFConsoleApplication *app;
     /// instance of command line class (for handling command line arguments)
