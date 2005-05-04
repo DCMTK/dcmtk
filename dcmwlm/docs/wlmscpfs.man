@@ -54,6 +54,13 @@ port  tcp/ip port number to listen on
 
   -dfp  --data-files-path  [p]ath: string
           path to worklist data files (default: /home/www/wlist)
+
+  -efr    --enable-file-reject
+          enable rejection of incomplete worklist-files
+          (default)
+
+  -dfr    --disable-file-reject
+          disable rejection of incomplete worklist-files
 \endverbatim
 
 \subsection returned_character_set_options returned character set options
@@ -174,6 +181,14 @@ question if DICOM's Specific Character Set attribute (0008,0005) will be
 contained in a C-FIND response which is returned by this application is always
 determined by the returned character set option which was specified when this
 application was started.
+
+The options --enable-file-reject and --disable-file-reject can be used to
+enable or disable a file rejection mechanism which makes sure only complete
+worklist files will be used during the matching process. A worklist file is
+considered to be complete if it contains all necessary type 1 information which
+the SCP might have to return to an SCU in a C-Find response message. Table K.6-1
+in part 4 annex K of the DICOM standard lists all corresponding type 1
+attributes (see column "Return Key Type").
 
 \subsection dicom_conformance DICOM Conformance
 
