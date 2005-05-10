@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2004, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmSequenceOfItems
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2004-04-27 09:21:27 $
- *  CVS/RCS Revision: $Revision: 1.56 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-05-10 15:27:18 $
+ *  CVS/RCS Revision: $Revision: 1.57 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,14 +57,16 @@
 // ********************************
 
 
-DcmSequenceOfItems::DcmSequenceOfItems(const DcmTag &tag,
-                                       const Uint32 len)
-  : DcmElement(tag, len),
-    itemList(NULL),
-    lastItemComplete(OFTrue),
-    fStartPosition(0)
+DcmSequenceOfItems::DcmSequenceOfItems(
+  const DcmTag &tag,
+  const Uint32 len,
+  OFBool readAsUN)
+: DcmElement(tag, len),
+  itemList(new DcmList),
+  lastItemComplete(OFTrue),
+  fStartPosition(0),
+  readAsUN_(readAsUN)
 {
-    itemList = new DcmList;
 }
 
 
@@ -73,12 +75,11 @@ DcmSequenceOfItems::DcmSequenceOfItems(const DcmTag &tag,
 
 DcmSequenceOfItems::DcmSequenceOfItems(const DcmSequenceOfItems &old)
   : DcmElement(old),
-    itemList(NULL),
+    itemList(new DcmList),
     lastItemComplete(OFTrue),
-    fStartPosition(old.fStartPosition)
+    fStartPosition(old.fStartPosition),
+    readAsUN_(old.readAsUN_)
 {
-    itemList = new DcmList;
-
     switch (old.ident())
     {
         case EVR_SQ:
@@ -153,7 +154,8 @@ DcmSequenceOfItems &DcmSequenceOfItems::operator=(const DcmSequenceOfItems &obj)
     DcmElement::operator=(obj);
     lastItemComplete = obj.lastItemComplete;
     fStartPosition = obj.fStartPosition;
-
+    readAsUN_ = obj.readAsUN_;
+    
     DcmList *newList = new DcmList; // DcmList has no copy constructor. Need to copy ourselves.
     if (newList)
     {
@@ -549,6 +551,8 @@ OFCondition DcmSequenceOfItems::read(DcmInputStream &inStream,
                 fTransferState = ERW_inWork;
             }
 
+            E_TransferSyntax readxfer = readAsUN_ ? EXS_LittleEndianImplicit : xfer;
+            
             itemList->seek(ELP_last); // append data at end
             while (inStream.good() && ((fTransferredBytes < Length) || !lastItemComplete))
             {
@@ -565,15 +569,13 @@ OFCondition DcmSequenceOfItems::read(DcmInputStream &inStream,
                         fTransferredBytes += 8;
 
                     lastItemComplete = OFFalse;
-                    errorFlag = readSubItem(inStream, newTag, newValueLength,
-                                            xfer, glenc, maxReadLength);
+                    errorFlag = readSubItem(inStream, newTag, newValueLength, readxfer, glenc, maxReadLength);
                     if (errorFlag.good())
                         lastItemComplete = OFTrue;
                 }
                 else
                 {
-                    errorFlag = itemList->get()->read(inStream, xfer, glenc,
-                                                      maxReadLength);
+                    errorFlag = itemList->get()->read(inStream, readxfer, glenc, maxReadLength);
                     if (errorFlag.good())
                         lastItemComplete = OFTrue;
                 }
@@ -1280,7 +1282,13 @@ OFBool DcmSequenceOfItems::containsUnknownVR() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.56  2004-04-27 09:21:27  wilkens
+** Revision 1.57  2005-05-10 15:27:18  meichel
+** Added support for reading UN elements with undefined length according
+**   to CP 246. The global flag dcmEnableCP246Support allows to revert to the
+**   prior behaviour in which UN elements with undefined length were parsed
+**   like a normal explicit VR SQ element.
+**
+** Revision 1.56  2004/04/27 09:21:27  wilkens
 ** Fixed a bug in dcelem.cc which occurs when one is serializing a dataset
 ** (that contains an attribute whose length value is coded with 2 bytes) into
 ** a given buffer. Although the number of available bytes in the buffer was

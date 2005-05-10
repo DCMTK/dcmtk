@@ -75,6 +75,14 @@ parsing of odd-length attributes:
   +ae  --assume-even-length
          assume real length is one byte larger
 
+handling of undefined length UN elements:
+
+  +ui   --enable-cp246         
+          read undefined len UN as implicit VR (default)
+
+  -ui   --disable-cp246        
+          read undefined len UN as explicit VR
+
 automatic data correction:
 
   +dc  --enable-correction
@@ -206,7 +214,7 @@ environment variable.  It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1994-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
+Copyright (C) 1994-2005 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
 Germany.
 
 */

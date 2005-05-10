@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2004, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Convert dicom file encoding
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-04-07 12:20:27 $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-05-10 15:27:09 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -118,6 +118,9 @@ int main(int argc, char *argv[])
     cmd.addSubGroup("parsing of odd-length attributes:");
      cmd.addOption("--accept-odd-length",       "+ao",       "accept odd length attributes (default)");
      cmd.addOption("--assume-even-length",      "+ae",       "assume real length is one byte larger");
+    cmd.addSubGroup("handling of undefined length UN elements:");
+     cmd.addOption("--enable-cp246",            "+ui",       "read undefined len UN as implicit VR (default)");
+     cmd.addOption("--disable-cp246",           "-ui",       "read undefined len UN as explicit VR");
     cmd.addSubGroup("automatic data correction:");
      cmd.addOption("--enable-correction",       "+dc",       "enable automatic data correction (default)");
      cmd.addOption("--disable-correction",      "-dc",       "disable automatic data correction");
@@ -225,6 +228,17 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--assume-even-length"))
       {
         dcmAcceptOddAttributeLength.set(OFFalse);
+      }
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--enable-cp246"))
+      {
+        dcmEnableCP246Support.set(OFTrue);
+      }
+      if (cmd.findOption("--disable-cp246"))
+      {
+        dcmEnableCP246Support.set(OFFalse);
       }
       cmd.endOptionBlock();
 
@@ -407,7 +421,13 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
-** Revision 1.44  2004-04-07 12:20:27  joergr
+** Revision 1.45  2005-05-10 15:27:09  meichel
+** Added support for reading UN elements with undefined length according
+**   to CP 246. The global flag dcmEnableCP246Support allows to revert to the
+**   prior behaviour in which UN elements with undefined length were parsed
+**   like a normal explicit VR SQ element.
+**
+** Revision 1.44  2004/04/07 12:20:27  joergr
 ** Additional modifications for new-style type casts.
 **
 ** Revision 1.43  2004/01/16 10:53:53  joergr

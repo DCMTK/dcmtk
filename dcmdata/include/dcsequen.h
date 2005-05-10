@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2004, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmSequenceOfItems
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-07-01 12:28:25 $
+ *  Update Date:      $Date: 2005-05-10 15:27:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcsequen.h,v $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -81,7 +81,7 @@ protected:
 
 
 public:
-    DcmSequenceOfItems(const DcmTag &tag, const Uint32 len = 0);
+    DcmSequenceOfItems(const DcmTag &tag, const Uint32 len = 0, OFBool readAsUN = OFFalse);
     DcmSequenceOfItems(const DcmSequenceOfItems& oldSeq);
     virtual ~DcmSequenceOfItems();
 
@@ -207,6 +207,12 @@ private:
                                    const DcmTag &tag,
                                    DcmEVR vr,
                                    const E_TransferSyntax oxfer);
+
+  /** true if this element has been instantiated while reading an UN element
+   *  with undefined length
+   */
+  OFBool readAsUN_;
+
 };
 
 
@@ -216,7 +222,13 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.h,v $
-** Revision 1.30  2004-07-01 12:28:25  meichel
+** Revision 1.31  2005-05-10 15:27:14  meichel
+** Added support for reading UN elements with undefined length according
+**   to CP 246. The global flag dcmEnableCP246Support allows to revert to the
+**   prior behaviour in which UN elements with undefined length were parsed
+**   like a normal explicit VR SQ element.
+**
+** Revision 1.30  2004/07/01 12:28:25  meichel
 ** Introduced virtual clone method for DcmObject and derived classes.
 **
 ** Revision 1.29  2003/08/08 13:29:13  joergr

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2004, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-07-01 12:28:27 $
- *  CVS/RCS Revision: $Revision: 1.90 $
+ *  Update Date:      $Date: 2005-05-10 15:27:18 $
+ *  CVS/RCS Revision: $Revision: 1.91 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1855,13 +1855,13 @@ OFCondition newDicomElement(DcmElement *&newElement,
         default :
             if (length == DCM_UndefinedLength)
             {
-                // The attribute is unknown but is encoded with undefined
-                // length.  Assume it is really a sequence so that we can
-                // catch the sequence delimitation item.
-                DcmVR sqVR(EVR_SQ); // we handle this element as SQ, not UN
-                DcmTag newTag(tag.getXTag(), sqVR);
-                newElement = new DcmSequenceOfItems(newTag, length);
+              // The attribute VR is UN with undefined length. Assume it is 
+              // really a sequence so that we can catch the sequence delimitation item.
+              DcmVR sqVR(EVR_SQ); // on writing we will handle this element as SQ, not UN
+              DcmTag newTag(tag.getXTag(), sqVR);
+              newElement = new DcmSequenceOfItems(newTag, length, dcmEnableCP246Support.get());
             } else {
+                // defined length UN element, treat like OB
                 newElement = new DcmOtherByteOtherWord(tag, length);
             }
             break;
@@ -3210,7 +3210,13 @@ OFBool DcmItem::containsUnknownVR() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.90  2004-07-01 12:28:27  meichel
+** Revision 1.91  2005-05-10 15:27:18  meichel
+** Added support for reading UN elements with undefined length according
+**   to CP 246. The global flag dcmEnableCP246Support allows to revert to the
+**   prior behaviour in which UN elements with undefined length were parsed
+**   like a normal explicit VR SQ element.
+**
+** Revision 1.90  2004/07/01 12:28:27  meichel
 ** Introduced virtual clone method for DcmObject and derived classes.
 **
 ** Revision 1.89  2004/03/10 10:25:36  joergr

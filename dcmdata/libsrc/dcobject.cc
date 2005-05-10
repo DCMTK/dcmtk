@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2004, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,9 @@
  *    This file contains the interface to routines which provide
  *    DICOM object encoding/decoding, search and lookup facilities.
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2004-04-27 09:21:27 $
- *  CVS/RCS Revision: $Revision: 1.41 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-05-10 15:27:18 $
+ *  CVS/RCS Revision: $Revision: 1.42 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,24 +49,11 @@
 #include "ofstdinc.h"
 
 
-/*
-** Should automatic correction be applied to input data (e.g. stripping
-** of padding blanks, removal of blanks in UIDs, etc).
-*/
+// global flags
+
 OFGlobal<OFBool> dcmEnableAutomaticInputDataCorrection(OFTrue);
-
-/*
-** Handling of illegal odd-length attributes: If flag is true, odd lengths
-** are respected (i.e. an odd number of bytes is read from the input stream.)
-** After successful reading, padding to even number of bytes is enforced
-** by adding a zero pad byte if dcmEnableAutomaticInputDataCorrection is true.
-** Otherwise the odd number of bytes remains as read.
-**
-** If flag is false, old (pre DCMTK 3.5.2) behaviour applies: The length field
-** implicitly incremented and an even number of bytes is read from the stream.
-*/
 OFGlobal<OFBool> dcmAcceptOddAttributeLength(OFTrue);
-
+OFGlobal<OFBool> dcmEnableCP246Support(OFTrue);
 
 // ****** public methods **********************************
 
@@ -483,7 +470,13 @@ OFBool DcmObject::containsUnknownVR() const
 /*
  * CVS/RCS Log:
  * $Log: dcobject.cc,v $
- * Revision 1.41  2004-04-27 09:21:27  wilkens
+ * Revision 1.42  2005-05-10 15:27:18  meichel
+ * Added support for reading UN elements with undefined length according
+ *   to CP 246. The global flag dcmEnableCP246Support allows to revert to the
+ *   prior behaviour in which UN elements with undefined length were parsed
+ *   like a normal explicit VR SQ element.
+ *
+ * Revision 1.41  2004/04/27 09:21:27  wilkens
  * Fixed a bug in dcelem.cc which occurs when one is serializing a dataset
  * (that contains an attribute whose length value is coded with 2 bytes) into
  * a given buffer. Although the number of available bytes in the buffer was
