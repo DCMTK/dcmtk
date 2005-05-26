@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2004, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmMetaInfo
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-04 16:35:00 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-05-26 11:51:12 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -360,7 +360,16 @@ OFCondition DcmMetaInfo::read(DcmInputStream &inStream,
                         Length = DCM_UndefinedLength;
                 }
             }
+#ifdef REJECT_FILE_IF_META_GROUP_LENGTH_ABSENT
+            // this is the old behaviour up to DCMTK 3.5.3: fail with EC_CorruptedData error code
+            // if the file meta header group length (0002,0000) is absent.
             if (fTransferState == ERW_inWork && Length != 0 && errorFlag.good())
+#else
+            // new behaviour: accept file without meta header group length, determine end of
+            // meta header based on heuristic that checks for group 0002 tags.
+            if (fTransferState == ERW_inWork && Length != 0 && ( errorFlag.good() || 
+                ((errorFlag == EC_CorruptedData) && (Length == DCM_UndefinedLength))))
+#endif
             {
                 while (inStream.good() && !inStream.eos() &&
                        ((Length < DCM_UndefinedLength && fTransferredBytes < Length) ||
@@ -519,7 +528,13 @@ OFCondition DcmMetaInfo::write(DcmOutputStream &outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.cc,v $
-** Revision 1.33  2004-02-04 16:35:00  joergr
+** Revision 1.34  2005-05-26 11:51:12  meichel
+** Now reading DICOM files in which the meta header group length attribute
+**   (0002,0000) is absent, based on a heuristic that checks for group 0002
+**   attribute tags. New behaviour can be disabled by compiling with the macro
+**   REJECT_FILE_IF_META_GROUP_LENGTH_ABSENT defined.
+**
+** Revision 1.33  2004/02/04 16:35:00  joergr
 ** Adapted type casts to new-style typecast operators defined in ofcast.h.
 ** Removed acknowledgements with e-mail addresses from CVS log.
 **

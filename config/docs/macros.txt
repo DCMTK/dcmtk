@@ -167,6 +167,15 @@ PRINT_REPLACED_DICTIONARY_ENTRIES
     console if compiled with this macro. Useful for testing a new 
     dictionary version.
 
+REJECT_FILE_IF_META_GROUP_LENGTH_ABSENT
+  Affected: dcmdata
+  Type of modification: Disables feature 
+  Explanation: When reading the a file that contains an incorrect meta
+    header where meta header group length (0002,0000) is absent, DCMTK
+    since release 3.5.4 nevertheless tries to parse the file, unless this
+    macro is enabled, in which case the behaviour up to DCMTK 3.5.3 is 
+    retained.
+  
 RETAIN_ASSOCIATION
   Affected: ti
   Type of modification: Activates experimental or rarely used feature
