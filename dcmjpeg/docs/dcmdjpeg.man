@@ -58,6 +58,7 @@ input file format:
   # been stored as dataset without meta-header. Such a thing should not exist 
   # since the transfer syntax cannot be reliably determined without meta-header, 
   # but unfortunately it does.
+\endverbatim
   
 \subsection processing_options processing options
 
