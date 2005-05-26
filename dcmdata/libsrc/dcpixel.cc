@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2004, OFFIS
+ *  Copyright (C) 1997-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: class DcmPixelData
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-07-01 12:28:12 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Update Date:      $Date: 2005-05-26 09:06:55 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -91,7 +91,7 @@ DcmPixelData::DcmPixelData(
     original(),
     current(),
     existUnencapsulated(OFFalse),
-    isIconImage(OFFalse),
+    alwaysUnencapsulated(OFFalse),
     unencapsulatedVR(EVR_UNKNOWN),
     pixelSeqForWrite(NULL)
 {
@@ -110,7 +110,7 @@ DcmPixelData::DcmPixelData(
     original(),
     current(),
     existUnencapsulated(oldPixelData.existUnencapsulated),
-    isIconImage(oldPixelData.isIconImage),
+    alwaysUnencapsulated(oldPixelData.alwaysUnencapsulated),
     unencapsulatedVR(oldPixelData.unencapsulatedVR),
     pixelSeqForWrite(NULL)
 {
@@ -154,7 +154,7 @@ DcmPixelData &DcmPixelData::operator=(const DcmPixelData &obj)
   {
     DcmPolymorphOBOW::operator=(obj);
     existUnencapsulated = obj.existUnencapsulated;
-    isIconImage = obj.isIconImage;
+    alwaysUnencapsulated = obj.alwaysUnencapsulated;
     unencapsulatedVR = obj.unencapsulatedVR;
     pixelSeqForWrite = NULL;
     repList.clear();
@@ -192,7 +192,7 @@ DcmPixelData::calcElementLength(
     errorFlag = EC_Normal;
     Uint32 elementLength = 0;
 
-    if (xferSyn.isEncapsulated() && (! isIconImage))
+    if (xferSyn.isEncapsulated() && (! alwaysUnencapsulated))
     {
         DcmRepresentationListIterator found;
         errorFlag =
@@ -220,7 +220,7 @@ DcmPixelData::canChooseRepresentation(
     const DcmRepresentationEntry findEntry(repType, repParam, NULL);
     DcmRepresentationListIterator resultIt(repListEnd);
     if ((!toType.isEncapsulated() && existUnencapsulated) ||
-        (toType.isEncapsulated() && isIconImage && existUnencapsulated) ||
+        (toType.isEncapsulated() && alwaysUnencapsulated && existUnencapsulated) ||
         (toType.isEncapsulated() && findRepresentationEntry(findEntry, resultIt) == EC_Normal))
     {
         // representation found
@@ -260,7 +260,7 @@ DcmPixelData::canWriteXfer(
 {
     DcmXfer newXferSyn(newXfer);
     DcmRepresentationListIterator found;
-    OFBool result = existUnencapsulated && (!newXferSyn.isEncapsulated() || isIconImage);
+    OFBool result = existUnencapsulated && (!newXferSyn.isEncapsulated() || alwaysUnencapsulated);
 
     if (!result && newXferSyn.isEncapsulated())
         result = (findConformingEncapsulatedRepresentation(newXferSyn, NULL, found) == EC_Normal);
@@ -279,7 +279,7 @@ DcmPixelData::chooseRepresentation(
     const DcmRepresentationEntry findEntry(repType, repParam, NULL);
     DcmRepresentationListIterator result(repListEnd);
     if ((!toType.isEncapsulated() && existUnencapsulated) ||
-        (toType.isEncapsulated() && existUnencapsulated && isIconImage) ||
+        (toType.isEncapsulated() && existUnencapsulated && alwaysUnencapsulated) ||
         (toType.isEncapsulated() && findRepresentationEntry(findEntry, result) == EC_Normal))
     {
         // representation found
@@ -516,7 +516,7 @@ DcmPixelData::getLength(const E_TransferSyntax xfer,
     errorFlag = EC_Normal;
     Uint32 valueLength = 0;
 
-    if (xferSyn.isEncapsulated() && !isIconImage)
+    if (xferSyn.isEncapsulated() && !alwaysUnencapsulated)
     {
         DcmRepresentationListIterator foundEntry;
         errorFlag = findConformingEncapsulatedRepresentation(
@@ -752,7 +752,7 @@ DcmPixelData::read(
                    * although we're decoding an encapsulated transfer syntax.
                    * This is probably an icon image.
                    */
-                  isIconImage = OFTrue;
+                  alwaysUnencapsulated = OFTrue;
                 }
             }
 
@@ -934,7 +934,7 @@ OFCondition DcmPixelData::write(
   else
   {
     DcmXfer xferSyn(oxfer);
-    if (xferSyn.isEncapsulated() && (! isIconImage))
+    if (xferSyn.isEncapsulated() && (! alwaysUnencapsulated))
     {
       if (fTransferState == ERW_init)
       {
@@ -989,7 +989,7 @@ OFCondition DcmPixelData::writeSignatureFormat(
   else if (Tag.isSignable())
   {
     DcmXfer xferSyn(oxfer);
-    if (xferSyn.isEncapsulated() && (! isIconImage))
+    if (xferSyn.isEncapsulated() && (! alwaysUnencapsulated))
     {
       if (fTransferState == ERW_init)
       {
@@ -1028,10 +1028,21 @@ OFCondition DcmPixelData::loadAllDataIntoMemory(void)
         return (*current)->pixSeq->loadAllDataIntoMemory();
 }
 
+void DcmPixelData::setNonEncapsulationFlag(OFBool flag)
+{
+   alwaysUnencapsulated = flag;
+}
+
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.cc,v $
-** Revision 1.35  2004-07-01 12:28:12  meichel
+** Revision 1.36  2005-05-26 09:06:55  meichel
+** Renamed isIconImage flag to alwaysUnencapsulated to clarify meaning.
+**   Added public method DcmPixelData::setNonEncapsulationFlag() that allows
+**   DcmCodec instances to enable the flag. Improved documentation.
+**
+** Revision 1.35  2004/07/01 12:28:12  meichel
 ** Fixed copy constructor for class DcmPixelData which did not work correctly
 **   under certain circumstances due to an uninitialized attribute.
 **

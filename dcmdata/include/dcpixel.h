@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2004, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Interface of class DcmPixelData
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-07-01 12:28:25 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Update Date:      $Date: 2005-05-26 09:06:53 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -166,10 +166,15 @@ private:
     /// shows if an unecapsulated representation is stored
     OFBool existUnencapsulated;
 
-    /** true if unencapsulated (defined length) pixel data was read
-     *  in an encapsulated transfer syntax.
+    /** this flag indicates that this pixel data element will be written
+     *  in uncompressed (defined length) format even if the dataset
+     *  itself is written in a compressed syntax where pixel data is normally
+     *  written in encapsulated (undefined length) format.
+     *  By default this flag is false, unless the dataset was read in an
+     *  encapsulated transfer syntax and this pixel data element was already
+     *  present in uncompressed format.
      */
-    OFBool isIconImage;
+    OFBool alwaysUnencapsulated;
     
     /// value representation of unencapsulated data
     DcmEVR unencapsulatedVR;
@@ -441,6 +446,20 @@ public:
     OFCondition removeOriginalRepresentation(
         const E_TransferSyntax repType,
         const DcmRepresentationParameter * repParam);
+
+    /** set or clear the flag that indicates that this pixel data element will be 
+     *  written in uncompressed (defined length) format even if the dataset 
+     *  itself is written in a compressed syntax where pixel data is normally 
+     *  written in encapsulated (undefined length) format. By default this flag 
+     *  is false, unless the dataset was read in an encapsulated transfer syntax 
+     *  and this pixel data element was already present in uncompressed format.
+     *  This flag should never be enabled for pixel data elements on the main dataset
+     *  level, only for pixel data elements within the icon image sequence or some
+     *  other "private" place.
+     *  @param flag new value of flag
+     */
+    void setNonEncapsulationFlag(OFBool flag);
+
 };
 
 #endif
@@ -449,7 +468,12 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.h,v $
-** Revision 1.26  2004-07-01 12:28:25  meichel
+** Revision 1.27  2005-05-26 09:06:53  meichel
+** Renamed isIconImage flag to alwaysUnencapsulated to clarify meaning.
+**   Added public method DcmPixelData::setNonEncapsulationFlag() that allows
+**   DcmCodec instances to enable the flag. Improved documentation.
+**
+** Revision 1.26  2004/07/01 12:28:25  meichel
 ** Introduced virtual clone method for DcmObject and derived classes.
 **
 ** Revision 1.25  2004/04/07 13:55:56  meichel
@@ -548,7 +572,3 @@ public:
 **   value representation (only for ident()) for PixelData
 **
 */
-
-
-
-
