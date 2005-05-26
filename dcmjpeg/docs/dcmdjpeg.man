@@ -43,6 +43,22 @@ dcmfile-out  DICOM output filename
           debug mode, print debug information
 \endverbatim
 
+\subsection input_options input options
+
+\verbatim
+input file format:
+
+  +f    --read-file            
+          read file format or data set (default)
+
+  -f    --read-dataset         
+          read data set without file meta information
+
+  # This option allows to decompress JPEG compressed DICOM objects that have 
+  # been stored as dataset without meta-header. Such a thing should not exist 
+  # since the transfer syntax cannot be reliably determined without meta-header, 
+  # but unfortunately it does.
+  
 \subsection processing_options processing options
 
 \verbatim

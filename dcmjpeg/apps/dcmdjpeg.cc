@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2004, OFFIS
+ *  Copyright (C) 2001-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Decompress DICOM file
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-16 14:28:01 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-05-26 14:35:07 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,12 +80,14 @@ int main(int argc, char *argv[])
   int opt_debugMode = 0;
   OFBool opt_verbose = OFFalse;
   OFBool opt_oDataset = OFFalse;
+  OFBool opt_iDataset = OFFalse;
   E_TransferSyntax opt_oxfer = EXS_LittleEndianExplicit;
   E_GrpLenEncoding opt_oglenc = EGL_recalcGL;
   E_EncodingType opt_oenctype = EET_ExplicitLength;
   E_PaddingEncoding opt_opadenc = EPD_noChange;
   OFCmdUnsignedInt opt_filepad = 0;
   OFCmdUnsignedInt opt_itempad = 0;
+  E_TransferSyntax opt_ixfer = EXS_Unknown;
 
   // JPEG parameters
   E_DecompressionColorSpaceConversion opt_decompCSconversion = EDC_photometricInterpretation;
@@ -105,6 +107,11 @@ int main(int argc, char *argv[])
    cmd.addOption("--version",                                "print version information and exit", OFTrue /* exclusive */);
    cmd.addOption("--verbose",                   "-v",        "verbose mode, print processing details");
    cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
+
+   cmd.addGroup("input options:");
+    cmd.addSubGroup("input file format:");
+     cmd.addOption("--read-file",              "+f",        "read file format or data set (default)");
+     cmd.addOption("--read-dataset",           "-f",        "read data set without file meta information");
 
   cmd.addGroup("processing options:");
     cmd.addSubGroup("color space conversion options:");
@@ -195,6 +202,25 @@ int main(int argc, char *argv[])
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
+      if (cmd.findOption("--read-file"))
+      {
+        opt_iDataset = OFFalse;
+        opt_ixfer = EXS_Unknown;
+      }
+      if (cmd.findOption("--read-dataset"))
+      {
+        opt_iDataset = OFTrue;
+
+        // we don't know the real transfer syntax of the dataset, but this does 
+        // not matter. As long as the content of encapsulated pixel sequences is 
+        // some kind of JPEG bitstream supported by the underlying library, the 
+        // decompression will work. So we simply choose one of the lossless 
+        // transfer syntaxes, because these support all bit depths up to 16.
+        opt_ixfer = EXS_JPEGProcess14TransferSyntax;
+      }
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
       if (cmd.findOption("--write-file")) opt_oDataset = OFFalse;
       if (cmd.findOption("--write-dataset")) opt_oDataset = OFTrue;
       cmd.endOptionBlock();
@@ -278,7 +304,7 @@ int main(int argc, char *argv[])
     if (opt_verbose)
         COUT << "reading input file " << opt_ifname << endl;
 
-    error = fileformat.loadFile(opt_ifname);
+    error = fileformat.loadFile(opt_ifname, opt_ixfer, EGL_noChange, DCM_MaxReadLength, opt_iDataset);
     if (error.bad())
     {
         CERR << "Error: "
@@ -286,7 +312,7 @@ int main(int argc, char *argv[])
              << ": reading file: " <<  opt_ifname << endl;
         return 1;
     }
-
+    
     DcmDataset *dataset = fileformat.getDataset();
 
     if (opt_verbose)
@@ -336,7 +362,13 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmdjpeg.cc,v $
- * Revision 1.8  2004-01-16 14:28:01  joergr
+ * Revision 1.9  2005-05-26 14:35:07  meichel
+ * Added option --read-dataset to dcmdjpeg that allows to decompress JPEG
+ *   compressed DICOM objects that have been stored as dataset without meta-header.
+ *   Such a thing should not exist since the transfer syntax cannot be reliably
+ *   determined without meta-header, but unfortunately it does.
+ *
+ * Revision 1.8  2004/01/16 14:28:01  joergr
  * Updated copyright header.
  *
  * Revision 1.7  2002/11/27 15:39:56  meichel
