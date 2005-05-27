@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2004, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmPixelSequence
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-04 16:41:37 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-05-27 09:45:38 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,6 +56,7 @@ DcmPixelSequence::DcmPixelSequence(const DcmTag &tag,
     Xfer(EXS_Unknown)
 {
     Tag.setVR(EVR_OB);
+    Length = DCM_UndefinedLength; // pixel sequences always use undefined length
 }
 
 
@@ -142,10 +143,8 @@ void DcmPixelSequence::print(ostream &out,
 Uint32 DcmPixelSequence::calcElementLength(const E_TransferSyntax xfer,
                                            const E_EncodingType enctype)
 {
-    Uint32 seqlen = DcmElement::calcElementLength(xfer, enctype);
-    if (Length == DCM_UndefinedLength)
-        seqlen += 8;     // for Sequence Delimitation Tag
-    return seqlen;
+    // add 8 bytes for Sequence Delimitation Tag which always exists for Pixel Sequences
+    return DcmElement::calcElementLength(xfer, enctype) + 8;
 }
 
 
@@ -376,7 +375,11 @@ OFCondition DcmPixelSequence::storeCompressedFrame(DcmOffsetList &offsetList,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.cc,v $
-** Revision 1.33  2004-02-04 16:41:37  joergr
+** Revision 1.34  2005-05-27 09:45:38  meichel
+** Fixed bug that caused incorrect sequence and item lengths to be computed for
+**   compressed pixel data embedded in a sequence such as the IconImageSequence.
+**
+** Revision 1.33  2004/02/04 16:41:37  joergr
 ** Adapted type casts to new-style typecast operators defined in ofcast.h.
 ** Removed acknowledgements with e-mail addresses from CVS log.
 **
