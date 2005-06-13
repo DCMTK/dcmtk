@@ -1,5 +1,5 @@
-<!-- Document Type Definition for DCMTK tools dcm2xml and xml2cm.
-     Copyright (C) 2002-2004 OFFIS. See COPYRIGHT file for details. -->
+<!-- Document Type Definition for DCMTK tools dcm2xml and xml2dcm.
+     Copyright (C) 2002-2005 OFFIS. See COPYRIGHT file for details. -->
 
 <!ELEMENT file-format ( meta-header, data-set ) >
 <!ATTLIST file-format xmlns CDATA #IMPLIED >
