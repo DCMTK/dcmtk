@@ -139,9 +139,17 @@ checking:
           invent new PatientID in case of inconsistent
           PatientsName attributes
 
+  -Nec  --no-encoding-check
+          do not reject images with non-standard
+          pixel encoding (just warn)
+
   -Nrc  --no-resolution-check
           do not reject images with non-standard
           spatial resolution (just warn)
+
+  -Nxc  --no-xfer-check
+          do not reject images with non-standard
+          transfer syntax (just warn)
 
 icon images:
 

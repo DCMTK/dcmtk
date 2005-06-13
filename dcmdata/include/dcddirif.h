@@ -22,8 +22,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-03-09 17:53:34 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2005-06-13 14:36:41 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -366,13 +366,31 @@ class DicomDirInterface
         return BackupMode;
     }
 
-    /** get current status of the "resolution check" mode.
-     *  See enableResolutionCheck() for more details.
+    /** get current status of the "pixel encoding check" mode.
+     *  See disableEncodingCheck() for more details.
+     *  @return OFTrue if check is enabled, OFFalse otherwise
+     */
+    OFBool encodingCheck() const
+    {
+        return EncodingCheck;
+    }
+
+    /** get current status of the "spatial resolution check" mode.
+     *  See disableResolutionCheck() for more details.
      *  @return OFTrue if check is enabled, OFFalse otherwise
      */
     OFBool resolutionCheck() const
     {
         return ResolutionCheck;
+    }
+
+    /** get current status of the "transfer syntax check" mode.
+     *  See disableTransferSyntaxCheck() for more details.
+     *  @return OFTrue if check is enabled, OFFalse otherwise
+     */
+    OFBool transferSyntaxCheck() const
+    {
+        return TransferSyntaxCheck;
     }
 
     /** get current status of the "consistency check" mode.
@@ -451,16 +469,38 @@ class DicomDirInterface
      */
     OFBool disableBackupMode(const OFBool newMode = OFFalse);
 
-    /** disable/enable the "image resolution check".
-     *  If this mode is disabled the image resolution is not check for compliance
+    /** disable/enable the "pixel encoding check".
+     *  If this mode is disabled the pixel encoding is not check for compliance
      *  with the selected application profile.  Please use this switch with care
      *  since the resulting DICOMDIR will probably violate the rules for the
      *  selected application profile.
-     *  Default: on, check image resolution
+     *  Default: on, check pixel encoding (bits allocated/stored, high bit)
+     *  @param newMode disable check if OFFalse, enable if OFTrue
+     *  @return previously stored value
+     */
+    OFBool disableEncodingCheck(const OFBool newMode = OFFalse);
+
+    /** disable/enable the "spatial resolution check".
+     *  If this mode is disabled the spatial resolution is not check for compliance
+     *  with the selected application profile.  Please use this switch with care
+     *  since the resulting DICOMDIR will probably violate the rules for the
+     *  selected application profile.
+     *  Default: on, check spatial resolution
      *  @param newMode disable check if OFFalse, enable if OFTrue
      *  @return previously stored value
      */
     OFBool disableResolutionCheck(const OFBool newMode = OFFalse);
+
+    /** disable/enable the "transfer syntax check".
+     *  If this mode is disabled the transfer syntax is not check for compliance
+     *  with the selected application profile.  Please use this switch with care
+     *  since the resulting DICOMDIR will probably violate the rules for the
+     *  selected application profile.
+     *  Default: on, check transfer syntax
+     *  @param newMode disable check if OFFalse, enable if OFTrue
+     *  @return previously stored value
+     */
+    OFBool disableTransferSyntaxCheck(const OFBool newMode = OFFalse);
 
     /** disable/enable the "consistency check".
      *  If this mode is disabled the consistency of newly added records with
@@ -1040,12 +1080,14 @@ class DicomDirInterface
      *  @param key tag to be searched for
      *  @param value expected integer value
      *  @param filename of the file (optional, report any error if specified)
+     *  @param reject report an "Error" if OFTrue, a "Warning" if OFFalse
      *  @return OFTrue if tag exists with given string value, OFFalse otherwise
      */
     OFBool checkExistsWithIntegerValue(DcmItem *dataset,
                                        const DcmTagKey &key,
                                        const long value,
-                                       const char *filename = NULL);
+                                       const char *filename = NULL,
+                                       const OFBool reject = OFTrue);
 
     /** check whether given tag exists in the DICOM dataset and has an integer value in the expected range
      *  @param dataset DICOM dataset to be checked
@@ -1176,8 +1218,12 @@ class DicomDirInterface
     OFBool InventMode;
     /// invent missing patient ID mode
     OFBool InventPatientIDMode;
+    /// check pixel encoding
+    OFBool EncodingCheck;
     /// check image resolution
     OFBool ResolutionCheck;
+    /// check transfer syntax
+    OFBool TransferSyntaxCheck;
     /// check consistency of newly added record
     OFBool ConsistencyCheck;
     /// create icon images
@@ -1230,7 +1276,10 @@ class DicomDirInterface
  *
  * CVS/RCS Log:
  * $Log: dcddirif.h,v $
- * Revision 1.4  2005-03-09 17:53:34  joergr
+ * Revision 1.5  2005-06-13 14:36:41  joergr
+ * Added new options to disable check on pixel encoding and transfer syntax.
+ *
+ * Revision 1.4  2005/03/09 17:53:34  joergr
  * Added support for new Media Storage Application Profiles according to DICOM
  * PS 3.12-2004. Removed support for non-standard conformant "No profile".
  * Added support for UTF-8 for the contents of the fileset descriptor file.
