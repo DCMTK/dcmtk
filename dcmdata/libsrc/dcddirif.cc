@@ -22,8 +22,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-03-09 17:54:54 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2005-06-13 14:39:07 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -884,7 +884,9 @@ DicomDirInterface::DicomDirInterface()
     MapFilenamesMode(OFFalse),
     InventMode(OFFalse),
     InventPatientIDMode(OFFalse),
+    EncodingCheck(OFTrue),
     ResolutionCheck(OFTrue),
+    TransferSyntaxCheck(OFTrue),
     ConsistencyCheck(OFTrue),
     IconImageMode(OFFalse),
     BackupFilename(),
@@ -1423,9 +1425,13 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                     << ", " << xferName4 << ", " << xferName5 << " or " << xferName6
                                     << " expected: " << filename << OFStringStream_ends;
                                 OFSTRINGSTREAM_GETSTR(oss, tmpString)
-                                printErrorMessage(tmpString);
+                                if (TransferSyntaxCheck)
+                                {
+                                    printErrorMessage(tmpString);
+                                    result = EC_ApplicationProfileViolated;
+                                } else
+                                    printWarningMessage(tmpString);                               
                                 OFSTRINGSTREAM_FREESTR(tmpString)
-                                result = EC_ApplicationProfileViolated;
                             }
                             break;
                         case AP_XrayAngiographicDVD:
@@ -1443,9 +1449,13 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                     oss << xferName1 << " or " << xferName2 << " expected: "
                                          << filename << OFStringStream_ends;
                                     OFSTRINGSTREAM_GETSTR(oss, tmpString)
-                                    printErrorMessage(tmpString);
+                                    if (TransferSyntaxCheck)
+                                    {
+                                        printErrorMessage(tmpString);
+                                        result = EC_ApplicationProfileViolated;
+                                    } else
+                                        printWarningMessage(tmpString);
                                     OFSTRINGSTREAM_FREESTR(tmpString)
-                                    result = EC_ApplicationProfileViolated;
                                 }
                             }
                             break;
@@ -1462,9 +1472,13 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                 oss << xferName1 << " or " << xferName2 << " expected: "
                                      << filename << OFStringStream_ends;
                                 OFSTRINGSTREAM_GETSTR(oss, tmpString)
-                                printErrorMessage(tmpString);
+                                if (TransferSyntaxCheck)
+                                {
+                                    printErrorMessage(tmpString);
+                                    result = EC_ApplicationProfileViolated;
+                                } else
+                                    printWarningMessage(tmpString);
                                 OFSTRINGSTREAM_FREESTR(tmpString)
-                                result = EC_ApplicationProfileViolated;
                             }
                             break;
                         case AP_UltrasoundIDSF:
@@ -1487,9 +1501,13 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                 oss << xferName1 << ", " << xferName2 << " or " << xferName3
                                     << " expected: " << filename << OFStringStream_ends;
                                 OFSTRINGSTREAM_GETSTR(oss, tmpString)
-                                printErrorMessage(tmpString);
+                                if (TransferSyntaxCheck)
+                                {
+                                    printErrorMessage(tmpString);
+                                    result = EC_ApplicationProfileViolated;
+                                } else
+                                    printWarningMessage(tmpString);
                                 OFSTRINGSTREAM_FREESTR(tmpString)
-                                result = EC_ApplicationProfileViolated;
                             }
                             break;
                         case AP_GeneralPurpose:
@@ -1508,9 +1526,13 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                 OFOStringStream oss;
                                 oss << xferName << " expected: " << filename << OFStringStream_ends;
                                 OFSTRINGSTREAM_GETSTR(oss, tmpString)
-                                printErrorMessage(tmpString);
+                                if (TransferSyntaxCheck)
+                                {
+                                    printErrorMessage(tmpString);
+                                    result = EC_ApplicationProfileViolated;
+                                } else
+                                    printWarningMessage(tmpString);
                                 OFSTRINGSTREAM_FREESTR(tmpString)
-                                result = EC_ApplicationProfileViolated;
                             }
                         }
                     }
@@ -1533,9 +1555,9 @@ OFCondition DicomDirInterface::checkBasicCardiacAttributes(DcmItem *dataset,
         result = EC_ApplicationProfileViolated;
     if (!checkExistsWithMinMaxValue(dataset, DCM_Columns, 1, 512, filename, ResolutionCheck))
         result = EC_ApplicationProfileViolated;
-    if (!checkExistsWithIntegerValue(dataset, DCM_BitsAllocated, 8, filename))
+    if (!checkExistsWithIntegerValue(dataset, DCM_BitsAllocated, 8, filename, EncodingCheck))
         result = EC_ApplicationProfileViolated;
-    if (!checkExistsWithIntegerValue(dataset, DCM_BitsStored, 8, filename))
+    if (!checkExistsWithIntegerValue(dataset, DCM_BitsStored, 8, filename, EncodingCheck))
         result = EC_ApplicationProfileViolated;
     if (checkExistsWithStringValue(dataset, DCM_ImageType, "BIPLANE A", NULL /*no message*/) ||
         checkExistsWithStringValue(dataset, DCM_ImageType, "BIPLANE B", NULL /*no message*/))
@@ -1596,9 +1618,10 @@ OFCondition DicomDirInterface::checkXrayAngiographicAttributes(DcmItem *dataset,
             dataset->findAndGetLongInt(DCM_BitsStored, bs);
             if ((bs != 8) && (bs != 10) && (bs != 12))
             {
-                /* report an error */
-                printUnexpectedValueMessage(DCM_BitsStored, filename);
-                result = EC_ApplicationProfileViolated;
+                /* report an error or a warning */
+                printUnexpectedValueMessage(DCM_BitsStored, filename, EncodingCheck);
+                if (EncodingCheck)
+                    result = EC_ApplicationProfileViolated;
             }
         }
     }
@@ -1613,11 +1636,11 @@ OFCondition DicomDirInterface::checkXrayAngiographicAttributes(DcmItem *dataset,
             result = EC_ApplicationProfileViolated;
         if (!checkExistsWithStringValue(dataset, DCM_PhotometricInterpretation, "MONOCHROME2", filename))
             result = EC_ApplicationProfileViolated;
-        if (!checkExistsWithIntegerValue(dataset, DCM_BitsAllocated, 8, filename))
+        if (!checkExistsWithIntegerValue(dataset, DCM_BitsAllocated, 8, filename, EncodingCheck))
             result = EC_ApplicationProfileViolated;
-        if (!checkExistsWithIntegerValue(dataset, DCM_BitsStored, 8, filename))
+        if (!checkExistsWithIntegerValue(dataset, DCM_BitsStored, 8, filename, EncodingCheck))
             result = EC_ApplicationProfileViolated;
-        if (!checkExistsWithIntegerValue(dataset, DCM_HighBit, 7, filename))
+        if (!checkExistsWithIntegerValue(dataset, DCM_HighBit, 7, filename, EncodingCheck))
             result = EC_ApplicationProfileViolated;
         if (!checkExistsWithIntegerValue(dataset, DCM_PixelRepresentation, 0, filename))
             result = EC_ApplicationProfileViolated;
@@ -1671,17 +1694,19 @@ OFCondition DicomDirInterface::checkDentalRadiographAttributes(DcmItem *dataset,
         dataset->findAndGetLongInt(DCM_BitsStored, bs);
         if ((bs != 8) && (bs != 10) && (bs != 12) && (bs != 16))
         {
-            /* report an error */
-            printUnexpectedValueMessage(DCM_BitsStored, filename);
-            result = EC_ApplicationProfileViolated;
+            /* report an error or a warning */
+            printUnexpectedValueMessage(DCM_BitsStored, filename, EncodingCheck);
+            if (EncodingCheck)
+                result = EC_ApplicationProfileViolated;
         }
         long ba;
         dataset->findAndGetLongInt(DCM_BitsAllocated, ba);
         if (((bs == 8) && (ba != 8)) || (bs != 8) && (ba != 16))
         {
-            /* report an error */
-            printUnexpectedValueMessage(DCM_BitsAllocated, filename);
-            result = EC_ApplicationProfileViolated;
+            /* report an error or a warning */
+            printUnexpectedValueMessage(DCM_BitsAllocated, filename, EncodingCheck);
+            if (EncodingCheck)
+                result = EC_ApplicationProfileViolated;
         }
     }
     return result;
@@ -1725,17 +1750,19 @@ OFCondition DicomDirInterface::checkCTandMRAttributes(DcmItem *dataset,
             dataset->findAndGetLongInt(DCM_BitsStored, bs);
             if ((bs != 8) && (bs != 12) && (bs != 16))
             {
-                /* report an error */
-                printUnexpectedValueMessage(DCM_BitsStored, filename);
-                result = EC_ApplicationProfileViolated;
+                /* report an error or a warning */
+                printUnexpectedValueMessage(DCM_BitsStored, filename, EncodingCheck);
+                if (EncodingCheck)
+                    result = EC_ApplicationProfileViolated;
             }
             long hb;
             dataset->findAndGetLongInt(DCM_HighBit, hb);
             if (hb != bs - 1)
             {
-                /* report an error */
-                printUnexpectedValueMessage(DCM_HighBit, filename);
-                result = EC_ApplicationProfileViolated;
+                /* report an error or a warning */
+                printUnexpectedValueMessage(DCM_HighBit, filename, EncodingCheck);
+                if (EncodingCheck)
+                    result = EC_ApplicationProfileViolated;
             }
         }
     }
@@ -1760,25 +1787,28 @@ OFCondition DicomDirInterface::checkCTandMRAttributes(DcmItem *dataset,
                     dataset->findAndGetLongInt(DCM_BitsAllocated, ba);
                     if ((ba != 8) && (ba != 16))
                     {
-                        /* report an error */
-                        printUnexpectedValueMessage(DCM_BitsAllocated, filename);
-                        result = EC_ApplicationProfileViolated;
+                        /* report an error or a warning */
+                        printUnexpectedValueMessage(DCM_BitsAllocated, filename, EncodingCheck);
+                        if (EncodingCheck)
+                            result = EC_ApplicationProfileViolated;
                     }
                     long bs;
                     dataset->findAndGetLongInt(DCM_BitsStored, bs);
                     if (bs != ba)
                     {
-                        /* report an error */
-                        printUnexpectedValueMessage(DCM_BitsStored, filename);
-                        result = EC_ApplicationProfileViolated;
+                        /* report an error or a warning */
+                        printUnexpectedValueMessage(DCM_BitsStored, filename, EncodingCheck);
+                        if (EncodingCheck)
+                            result = EC_ApplicationProfileViolated;
                     }
                     long hb;
                     dataset->findAndGetLongInt(DCM_HighBit, hb);
                     if (hb != bs - 1)
                     {
-                        /* report an error */
-                        printUnexpectedValueMessage(DCM_HighBit, filename);
-                        result = EC_ApplicationProfileViolated;
+                        /* report an error or a warning */
+                        printUnexpectedValueMessage(DCM_HighBit, filename, EncodingCheck);
+                        if (EncodingCheck)
+                            result = EC_ApplicationProfileViolated;
                     }
                 }
             }
@@ -3835,7 +3865,20 @@ OFBool DicomDirInterface::disableBackupMode(const OFBool newMode)
 }
 
 
-// enable/disable resolution check, i.e. whether the image resolution is checked
+// enable/disable pixel encoding check, i.e. whether the pixel encoding is checked
+// for particular application profiles
+OFBool DicomDirInterface::disableEncodingCheck(const OFBool newMode)
+{
+    /* save current mode */
+    OFBool oldMode = EncodingCheck;
+    /* set new mode */
+    EncodingCheck = newMode;
+    /* return old mode */
+    return oldMode;
+}
+
+
+// enable/disable resolution check, i.e. whether the spatial resolution is checked
 // for particular application profiles
 OFBool DicomDirInterface::disableResolutionCheck(const OFBool newMode)
 {
@@ -3843,6 +3886,19 @@ OFBool DicomDirInterface::disableResolutionCheck(const OFBool newMode)
     OFBool oldMode = ResolutionCheck;
     /* set new mode */
     ResolutionCheck = newMode;
+    /* return old mode */
+    return oldMode;
+}
+
+
+// enable/disable transfer syntax check, i.e. whether the transfer syntax is checked
+// for particular application profiles
+OFBool DicomDirInterface::disableTransferSyntaxCheck(const OFBool newMode)
+{
+    /* save current mode */
+    OFBool oldMode = TransferSyntaxCheck;
+    /* set new mode */
+    TransferSyntaxCheck = newMode;
     /* return old mode */
     return oldMode;
 }
@@ -4275,7 +4331,8 @@ OFBool DicomDirInterface::checkExistsWithStringValue(DcmItem *dataset,
 OFBool DicomDirInterface::checkExistsWithIntegerValue(DcmItem *dataset,
                                                       const DcmTagKey &key,
                                                       const long value,
-                                                      const char *filename)
+                                                      const char *filename,
+                                                      const OFBool reject)
 {
     /* first, check whether tag exists, and report an error if not */
     OFBool result = checkExists(dataset, key, filename);
@@ -4286,10 +4343,16 @@ OFBool DicomDirInterface::checkExistsWithIntegerValue(DcmItem *dataset,
         dataset->findAndGetLongInt(key, i);
         /* compare with expected value */
         result = (i == value);
-        if (!result && (filename != NULL))
+        if (!result)
         {
-            /* report an error */
-            printUnexpectedValueMessage(key, filename);
+            if (filename != NULL)
+            {
+                /* report an error or a warning */
+                printUnexpectedValueMessage(key, filename, reject /*errorMsg*/);
+            }
+            /* do not reject invalid values */
+            if (!reject)
+                result = OFTrue;
         }
     }
     return result;
@@ -4313,10 +4376,16 @@ OFBool DicomDirInterface::checkExistsWithMinMaxValue(DcmItem *dataset,
         dataset->findAndGetLongInt(key, i);
         /* compare with expected value range */
         result = (i >= min) && (i <= max);
-        if (!result && (filename != NULL))
+        if (!result)
         {
-            /* report an error */
-            printUnexpectedValueMessage(key, filename, reject /*errorMsg*/);
+            if (filename != NULL)
+            {
+                /* report an error or a warning */
+                printUnexpectedValueMessage(key, filename, reject /*errorMsg*/);
+            }
+            /* do not reject invalid values */
+            if (!reject)
+                result = OFTrue;
         }
     }
     return result;
@@ -4541,7 +4610,12 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
- *  Revision 1.10  2005-03-09 17:54:54  joergr
+ *  Revision 1.11  2005-06-13 14:39:07  joergr
+ *  Added new options to disable check on pixel encoding and transfer syntax.
+ *  Fixed bug: Images with non-standard spatial resolution where rejected even
+ *  if "Resolution Check" was disabled.
+ *
+ *  Revision 1.10  2005/03/09 17:54:54  joergr
  *  Added support for new Media Storage Application Profiles according to DICOM
  *  PS 3.12-2004. Removed support for non-standard conformant "No profile".
  *  Added support for UTF-8 for the contents of the fileset descriptor file.
