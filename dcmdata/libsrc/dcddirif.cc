@@ -22,8 +22,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-06-13 14:39:07 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2005-06-13 14:46:05 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1430,7 +1430,7 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                     printErrorMessage(tmpString);
                                     result = EC_ApplicationProfileViolated;
                                 } else
-                                    printWarningMessage(tmpString);                               
+                                    printWarningMessage(tmpString);
                                 OFSTRINGSTREAM_FREESTR(tmpString)
                             }
                             break;
@@ -4610,9 +4610,12 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
- *  Revision 1.11  2005-06-13 14:39:07  joergr
+ *  Revision 1.12  2005-06-13 14:46:05  joergr
+ *  Fixed typo.
+ *
+ *  Revision 1.11  2005/06/13 14:39:07  joergr
  *  Added new options to disable check on pixel encoding and transfer syntax.
- *  Fixed bug: Images with non-standard spatial resolution where rejected even
+ *  Fixed bug: Images with non-standard spatial resolution were rejected even
  *  if "Resolution Check" was disabled.
  *
  *  Revision 1.10  2005/03/09 17:54:54  joergr
