@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2004, OFFIS
+ *  Copyright (C) 1996-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomFlipTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-04-21 10:00:36 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-06-15 08:25:18 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -341,6 +341,7 @@ class DiFlipTemplate
                     *p++ = *--q;
                     *q = t;
                 }
+                s += count;
             }
         }
     }
@@ -354,7 +355,11 @@ class DiFlipTemplate
  *
  * CVS/RCS Log:
  * $Log: diflipt.h,v $
- * Revision 1.16  2004-04-21 10:00:36  meichel
+ * Revision 1.17  2005-06-15 08:25:18  joergr
+ * Fixed bug which prevented flipHorzVert() from flipping multi-frame images
+ * correctly (only the first frame was actually flipped).
+ *
+ * Revision 1.16  2004/04/21 10:00:36  meichel
  * Minor modifications for compilation with gcc 3.4.0
  *
  * Revision 1.15  2004/02/06 11:07:50  joergr
