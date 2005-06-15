@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2004, OFFIS
+ *  Copyright (C) 1996-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomRotateTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-04-21 10:00:36 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-06-15 08:23:54 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -353,6 +353,7 @@ class DiRotateTemplate
                     *p++ = *--q;
                     *q = t;
                 }
+                s += count;
             }
         }
     }
@@ -366,7 +367,11 @@ class DiRotateTemplate
  *
  * CVS/RCS Log:
  * $Log: dirotat.h,v $
- * Revision 1.14  2004-04-21 10:00:36  meichel
+ * Revision 1.15  2005-06-15 08:23:54  joergr
+ * Fixed bug which prevented rotateTopDown() from rotating multi-frame images
+ * correctly (only the first frame was actually rotated).
+ *
+ * Revision 1.14  2004/04/21 10:00:36  meichel
  * Minor modifications for compilation with gcc 3.4.0
  *
  * Revision 1.13  2004/02/06 11:07:50  joergr
