@@ -22,9 +22,9 @@
  *  Purpose: class DcmQueryRetrieveOptions
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-04-04 14:23:21 $
+ *  Update Date:      $Date: 2005-06-16 08:02:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqrtis.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,7 +43,10 @@
 
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_STAT_H
-#include <sys/stat.h>
+#include <sys/stat.h>    /* needed for stat() */
+#endif
+#ifdef HAVE_FCNTL_H
+#include <fcntl.h>       /* needed on Solaris for O_RDONLY */
 #endif
 END_EXTERN_C
 
@@ -221,7 +224,7 @@ static OFBool TI_welcome()
     return OFTrue;
 }
 
-static OFBool TI_detatchDB(TI_DBEntry *db)
+static OFBool TI_detachDB(TI_DBEntry *db)
 {
     if (db == NULL) return OFTrue;
 
@@ -505,7 +508,7 @@ DcmQueryRetrieveTelnetInitiator::DcmQueryRetrieveTelnetInitiator(
   bzero(peerNames, sizeof(peerNames));
 }
 
-OFBool DcmQueryRetrieveTelnetInitiator::TI_detatchAssociation(OFBool abortFlag)
+OFBool DcmQueryRetrieveTelnetInitiator::TI_detachAssociation(OFBool abortFlag)
 {
     OFCondition cond = EC_Normal;
     DIC_NODENAME presentationAddress;
@@ -631,7 +634,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_attachAssociation()
     DIC_AE myAETitle;
 
     if (assoc != NULL) {
-        TI_detatchAssociation(OFFalse);
+        TI_detachAssociation(OFFalse);
     }
 
     if (dbEntries[currentdb]->isRemoteDB) {
@@ -742,7 +745,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_changeAssociation()
         }
     }
 
-    ok = TI_detatchAssociation(OFFalse);
+    ok = TI_detachAssociation(OFFalse);
     if (!ok) return ok;
 
     ok = TI_attachAssociation();
@@ -1090,7 +1093,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_database(int arg, const char * /*cmdb
                 dbCount - 1);
         } else {
             /* release old dbHandle */
-            TI_detatchDB(dbEntries[currentdb]);
+            TI_detachDB(dbEntries[currentdb]);
 
             currentdb = arg;
             /* check to make sure that current peer AE title is
@@ -1139,7 +1142,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_echo(int arg, const char * /*cmdbuf*/
         ok = TI_sendEcho();
     }
 
-    ok = TI_detatchAssociation(OFFalse);
+    ok = TI_detachAssociation(OFFalse);
 
     return ok;
 }
@@ -1149,7 +1152,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_quit(int arg, const char * /*cmdbuf*/
     if (verbose) {
         printf("TI_quit: arg=%d\n", arg);
     }
-    TI_detatchAssociation(OFFalse);
+    TI_detachAssociation(OFFalse);
     printf("Good Bye, Auf Wiedersehen, Au Revoir\n");
     exit(0);
     return OFTrue;
@@ -1200,7 +1203,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_study(int arg, const char * /*cmdbuf*
 
 #ifndef RETAIN_ASSOCIATION
     if (dbEntries[currentdb]->isRemoteDB) {
-        TI_detatchAssociation(OFFalse);
+        TI_detachAssociation(OFFalse);
     }
 #endif
 
@@ -1287,7 +1290,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_series(int arg, const char * /*cmdbuf
 
 #ifndef RETAIN_ASSOCIATION
     if (dbEntries[currentdb]->isRemoteDB) {
-        TI_detatchAssociation(OFFalse);
+        TI_detachAssociation(OFFalse);
     }
 #endif
 
@@ -1385,7 +1388,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_image(int arg, const char * /*cmdbuf*
 
 #ifndef RETAIN_ASSOCIATION
     if (dbEntries[currentdb]->isRemoteDB) {
-        TI_detatchAssociation(OFFalse);
+        TI_detachAssociation(OFFalse);
     }
 #endif
 
@@ -1511,7 +1514,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_sendStudy(int arg, const char * /*cmd
         }
     }
 
-    ok = TI_detatchAssociation(OFFalse);
+    ok = TI_detachAssociation(OFFalse);
 
     return ok;
 }
@@ -1594,7 +1597,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_sendSeries(int arg, const char * /*cm
         }
     }
 
-    ok = TI_detatchAssociation(OFFalse);
+    ok = TI_detachAssociation(OFFalse);
 
     return ok;
 }
@@ -1686,7 +1689,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_sendImage(int arg, const char * /*cmd
         }
     }
 
-    ok = TI_detatchAssociation(OFFalse);
+    ok = TI_detachAssociation(OFFalse);
 
     return ok;
 }
@@ -2235,7 +2238,10 @@ void DcmQueryRetrieveTelnetInitiator::createConfigEntries(
 /*
  * CVS Log
  * $Log: dcmqrtis.cc,v $
- * Revision 1.2  2005-04-04 14:23:21  meichel
+ * Revision 1.3  2005-06-16 08:02:43  meichel
+ * Added system include files needed on Solaris
+ *
+ * Revision 1.2  2005/04/04 14:23:21  meichel
  * Renamed application "dcmqrdb" into "dcmqrscp" to avoid name clash with
  *   dcmqrdb library, which confuses the MSVC build system.
  *

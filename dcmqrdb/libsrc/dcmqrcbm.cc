@@ -22,9 +22,9 @@
  *  Purpose: class DcmQueryRetrieveMoveContext
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-04-04 14:39:54 $
+ *  Update Date:      $Date: 2005-06-16 08:02:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqrcbm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,6 +41,12 @@
 #include "dcfilefo.h"
 #include "dcmqrdbs.h"
 #include "dcmqrdbi.h"
+
+BEGIN_EXTERN_C
+#ifdef HAVE_FCNTL_H
+#include <fcntl.h>       /* needed on Solaris for O_RDONLY */
+#endif
+END_EXTERN_C
 
 
 static void moveSubOpProgressCallback(void *callbackData, 
@@ -611,7 +617,10 @@ OFCondition DcmQueryRetrieveMoveContext::addAllStoragePresentationContexts(T_ASC
 /*
  * CVS Log
  * $Log: dcmqrcbm.cc,v $
- * Revision 1.2  2005-04-04 14:39:54  meichel
+ * Revision 1.3  2005-06-16 08:02:43  meichel
+ * Added system include files needed on Solaris
+ *
+ * Revision 1.2  2005/04/04 14:39:54  meichel
  * Fixed warning on Win32 platform
  *
  * Revision 1.1  2005/03/30 13:34:53  meichel

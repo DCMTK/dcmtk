@@ -22,9 +22,9 @@
  *  Purpose: class DcmQueryRetrieveGetContext
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-04-04 14:23:21 $
+ *  Update Date:      $Date: 2005-06-16 08:02:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqrcbg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,6 +41,12 @@
 #include "dcfilefo.h"
 #include "dcmqrdbs.h"
 #include "dcmqrdbi.h"
+
+BEGIN_EXTERN_C
+#ifdef HAVE_FCNTL_H
+#include <fcntl.h>       /* needed on Solaris for O_RDONLY */
+#endif
+END_EXTERN_C
 
 static void getSubOpProgressCallback(void * callbackData, 
     T_DIMSE_StoreProgress *progress,
@@ -355,7 +361,10 @@ void DcmQueryRetrieveGetContext::buildFailedInstanceList(DcmDataset ** rspIds)
 /*
  * CVS Log
  * $Log: dcmqrcbg.cc,v $
- * Revision 1.2  2005-04-04 14:23:21  meichel
+ * Revision 1.3  2005-06-16 08:02:43  meichel
+ * Added system include files needed on Solaris
+ *
+ * Revision 1.2  2005/04/04 14:23:21  meichel
  * Renamed application "dcmqrdb" into "dcmqrscp" to avoid name clash with
  *   dcmqrdb library, which confuses the MSVC build system.
  *
