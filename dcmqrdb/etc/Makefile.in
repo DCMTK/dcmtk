@@ -12,7 +12,7 @@ configdir = @top_srcdir@/@configdir@
 
 include $(configdir)/@common_makefile@
 
-files = dcmqrdb.cfg
+files = dcmqrscp.cfg
 
 
 all: 
