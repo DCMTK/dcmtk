@@ -21,10 +21,10 @@
 *
 *  Purpose: Class for managing file system interaction.
 *
-*  Last Update:      $Author: wilkens $
-*  Update Date:      $Date: 2005-05-04 11:34:31 $
+*  Last Update:      $Author: meichel $
+*  Update Date:      $Date: 2005-06-16 08:06:51 $
 *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wlfsim.h,v $
-*  CVS/RCS Revision: $Revision: 1.8 $
+*  CVS/RCS Revision: $Revision: 1.9 $
 *  Status:           $State: Exp $
 *
 *  CVS/RCS Log at end of file
@@ -130,7 +130,7 @@ class WlmFileSystemInteractionManager
        *  @return OFTrue in case the given dataset contains all necessary return type 1 information,
        *          OFFalse otherwise.
        */
-    OFBool WlmFileSystemInteractionManager::DatasetIsComplete( DcmDataset *dataset );
+    OFBool DatasetIsComplete( DcmDataset *dataset );
 
       /** This function checks if the specified sequence attribute is absent or existent but non-empty
        *  and incomplete in the given dataset.
@@ -471,7 +471,10 @@ class WlmFileSystemInteractionManager
 /*
 ** CVS Log
 ** $Log: wlfsim.h,v $
-** Revision 1.8  2005-05-04 11:34:31  wilkens
+** Revision 1.9  2005-06-16 08:06:51  meichel
+** Removed redundant class name, needed for gcc 3.4
+**
+** Revision 1.8  2005/05/04 11:34:31  wilkens
 ** Added two command line options --enable-file-reject (default) and
 ** --disable-file-reject to wlmscpfs: these options can be used to enable or
 ** disable a file rejection mechanism which makes sure only complete worklist files
