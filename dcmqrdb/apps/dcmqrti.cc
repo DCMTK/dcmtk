@@ -22,9 +22,9 @@
  *  Purpose: Telnet Initiator (ti) Main Program
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-03-30 13:34:44 $
+ *  Update Date:      $Date: 2005-06-16 08:05:48 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/apps/dcmqrti.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,20 +60,13 @@ END_EXTERN_C
 #include <zlib.h>          /* for zlibVersion() */
 #endif
 
-#define OFFIS_CONSOLE_APPLICATION "ti"
+#define OFFIS_CONSOLE_APPLICATION "dcmqrti"
 #define MAXREMOTEDBTITLES 20
 #define APPLICATIONTITLE "TELNET_INITIATOR"
 #define SHORTCOL 4
 #define LONGCOL 21
 
-char* progname = NULL;
-OFBool verbose = OFFalse;
-OFBool debug = OFFalse;
-const char *remoteDBTitles[ MAXREMOTEDBTITLES ];
-int remoteDBTitlesCount = 0;
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v" OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
-static const char *configFileName = "dcmqrdb.cfg";
-E_TransferSyntax networkTransferSyntax = EXS_Unknown;
 DcmQueryRetrieveConfig config;
 DcmQueryRetrieveTelnetInitiator conf(config);
 
@@ -88,13 +81,20 @@ extern "C" void TI_signalHandler(...)
 extern "C" void TI_signalHandler(int)
 #endif
 {
-  conf.TI_detatchAssociation(OFTrue);
+  conf.TI_detachAssociation(OFTrue);
   exit( 1 );
 }
 
-
 int main( int argc, char *argv[] )
 {
+
+  OFBool verbose = OFFalse;
+  OFBool debug = OFFalse;
+  const char *remoteDBTitles[ MAXREMOTEDBTITLES ];
+  int remoteDBTitlesCount = 0;
+  const char *configFileName = "dcmqrdb.cfg";
+  E_TransferSyntax networkTransferSyntax = EXS_Unknown;
+
   const char *currentPeer = NULL, **vendorHosts, **aeTitleList;
   OFBool noCommandLineValueForMaxReceivePDULength = OFTrue;
   int peerCount, j, n, returnValue = 0;
@@ -394,7 +394,10 @@ int main( int argc, char *argv[] )
 /*
  * CVS Log
  * $Log: dcmqrti.cc,v $
- * Revision 1.1  2005-03-30 13:34:44  meichel
+ * Revision 1.2  2005-06-16 08:05:48  meichel
+ * Fixed typo in method name
+ *
+ * Revision 1.1  2005/03/30 13:34:44  meichel
  * Initial release of module dcmqrdb that will replace module imagectn.
  *   It provides a clear interface between the Q/R DICOM front-end and the
  *   database back-end. The imagectn code has been re-factored into a minimal

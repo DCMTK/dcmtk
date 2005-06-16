@@ -22,9 +22,9 @@
  *  Purpose: TI Common Constants, Types, Globals and Functions
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-03-30 13:34:50 $
+ *  Update Date:      $Date: 2005-06-16 08:03:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/include/Attic/dcmqrtis.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -149,7 +149,7 @@ public:
     /** detach current association
      *  @param abortFlag if true, abort association instead of releasing it 
      */
-    OFBool TI_detatchAssociation(OFBool abortFlag);
+    OFBool TI_detachAssociation(OFBool abortFlag);
     
     /** set local aetitle
      *  @param ae aetitle
@@ -308,7 +308,10 @@ private:
 /*
  * CVS Log
  * $Log: dcmqrtis.h,v $
- * Revision 1.1  2005-03-30 13:34:50  meichel
+ * Revision 1.2  2005-06-16 08:03:51  meichel
+ * Fixed typo in method name
+ *
+ * Revision 1.1  2005/03/30 13:34:50  meichel
  * Initial release of module dcmqrdb that will replace module imagectn.
  *   It provides a clear interface between the Q/R DICOM front-end and the
  *   database back-end. The imagectn code has been re-factored into a minimal
