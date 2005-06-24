@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmItem
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-05-10 15:27:18 $
- *  CVS/RCS Revision: $Revision: 1.91 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-06-24 10:04:04 $
+ *  CVS/RCS Revision: $Revision: 1.92 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2822,7 +2822,7 @@ OFCondition DcmItem::putAndInsertUint8Array(const DcmTag& tag,
                                             const unsigned long count,
                                             const OFBool replaceOld)
 {
-    OFCondition status = EC_IllegalCall;
+    OFCondition status = EC_Normal;
     /* create new element */
     DcmElement *elem = NULL;
     switch(tag.getEVR())
@@ -2865,24 +2865,34 @@ OFCondition DcmItem::putAndInsertUint16(const DcmTag& tag,
                                         const unsigned long pos,
                                         const OFBool replaceOld)
 {
-    OFCondition status = EC_IllegalCall;
+    OFCondition status = EC_Normal;
+    DcmElement *elem = NULL;
     /* create new element */
-    if (tag.getEVR() == EVR_US)
+    switch(tag.getEVR())
     {
-        DcmElement *elem = new DcmUnsignedShort(tag);
-        if (elem != NULL)
-        {
-            /* put value */
-            status = elem->putUint16(value, pos);
-            /* insert into dataset/item */
-            if (status.good())
-                status = insert(elem, replaceOld);
-            /* could not be inserted, therefore, delete it immediately */
-            if (status.bad())
-                delete elem;
-        } else
-            status = EC_MemoryExhausted;
+        case EVR_US:
+            elem = new DcmUnsignedShort(tag);
+            break;
+        case EVR_xs:
+            /* special handling */
+            elem = new DcmUnsignedShort(DcmTag(tag, EVR_US));
+            break;
+        default:
+            status = EC_IllegalCall;
+            break;
     }
+    if (elem != NULL)
+    {
+        /* put value */
+        status = elem->putUint16(value, pos);
+        /* insert into dataset/item */
+        if (status.good())
+            status = insert(elem, replaceOld);
+        /* could not be inserted, therefore, delete it immediately */
+        if (status.bad())
+            delete elem;
+    } else
+        status = EC_MemoryExhausted;
     return status;
 }
 
@@ -2907,11 +2917,15 @@ OFCondition DcmItem::putAndInsertUint16Array(const DcmTag& tag,
             elem = new DcmUnsignedShort(tag);
             break;
         case EVR_ox:
-            /* special handling for Pixel Data */
+            /* special handling */
             if (tag == DCM_PixelData)
                 elem = new DcmPixelData(tag);
             else
                 elem = new DcmPolymorphOBOW(tag);
+            break;
+        case EVR_xs:
+            /* special handling */
+            elem = new DcmUnsignedShort(DcmTag(tag, EVR_US));
             break;
         default:
             status = EC_IllegalCall;
@@ -2938,24 +2952,34 @@ OFCondition DcmItem::putAndInsertSint16(const DcmTag& tag,
                                         const unsigned long pos,
                                         const OFBool replaceOld)
 {
-    OFCondition status = EC_IllegalCall;
+    OFCondition status = EC_Normal;
+    DcmElement *elem = NULL;
     /* create new element */
-    if (tag.getEVR() == EVR_SS)
+    switch(tag.getEVR())
     {
-        DcmElement *elem = new DcmSignedShort(tag);
-        if (elem != NULL)
-        {
-            /* put value */
-            status = elem->putSint16(value, pos);
-            /* insert into dataset/item */
-            if (status.good())
-                status = insert(elem, replaceOld);
-            /* could not be inserted, therefore, delete it immediately */
-            if (status.bad())
-                delete elem;
-        } else
-            status = EC_MemoryExhausted;
+        case EVR_SS:
+            elem = new DcmSignedShort(tag);
+            break;
+        case EVR_xs:
+            /* special handling */
+            elem = new DcmSignedShort(DcmTag(tag, EVR_SS));
+            break;
+        default:
+            status = EC_IllegalCall;
+            break;
     }
+    if (elem != NULL)
+    {
+        /* put value */
+        status = elem->putSint16(value, pos);
+        /* insert into dataset/item */
+        if (status.good())
+            status = insert(elem, replaceOld);
+        /* could not be inserted, therefore, delete it immediately */
+        if (status.bad())
+            delete elem;
+    } else
+        status = EC_MemoryExhausted;
     return status;
 }
 
@@ -2965,24 +2989,34 @@ OFCondition DcmItem::putAndInsertSint16Array(const DcmTag& tag,
                                              const unsigned long count,
                                              const OFBool replaceOld)
 {
-    OFCondition status = EC_IllegalCall;
+    OFCondition status = EC_Normal;
+    DcmElement *elem = NULL;
     /* create new element */
-    if (tag.getEVR() == EVR_SS)
+    switch(tag.getEVR())
     {
-        DcmElement *elem = new DcmSignedShort(tag);
-        if (elem != NULL)
-        {
-            /* put value */
-            status = elem->putSint16Array(value, count);
-            /* insert into dataset/item */
-            if (status.good())
-                status = insert(elem, replaceOld);
-            /* could not be inserted, therefore, delete it immediately */
-            if (status.bad())
-                delete elem;
-        } else
-            status = EC_MemoryExhausted;
+        case EVR_SS:
+            elem = new DcmSignedShort(tag);
+            break;
+        case EVR_xs:
+            /* special handling */
+            elem = new DcmSignedShort(DcmTag(tag, EVR_SS));
+            break;
+        default:
+            status = EC_IllegalCall;
+            break;
     }
+    if (elem != NULL)
+    {
+        /* put value */
+        status = elem->putSint16Array(value, count);
+        /* insert into dataset/item */
+        if (status.good())
+            status = insert(elem, replaceOld);
+        /* could not be inserted, therefore, delete it immediately */
+        if (status.bad())
+            delete elem;
+    } else
+        status = EC_MemoryExhausted;
     return status;
 }
 
@@ -3210,7 +3244,10 @@ OFBool DcmItem::containsUnknownVR() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.91  2005-05-10 15:27:18  meichel
+** Revision 1.92  2005-06-24 10:04:04  joergr
+** Added support for internal VR "xs" to putAndInsertXXX() helper methods.
+**
+** Revision 1.91  2005/05/10 15:27:18  meichel
 ** Added support for reading UN elements with undefined length according
 **   to CP 246. The global flag dcmEnableCP246Support allows to revert to the
 **   prior behaviour in which UN elements with undefined length were parsed

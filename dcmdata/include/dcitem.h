@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2004, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmItem
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-07-01 12:28:25 $
- *  CVS/RCS Revision: $Revision: 1.50 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-06-24 10:03:14 $
+ *  CVS/RCS Revision: $Revision: 1.51 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -655,7 +655,7 @@ class DcmItem
                                        const OFBool replaceOld = OFTrue);
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
-     *  Applicable to the following VRs: US
+     *  Applicable to the following VRs: US, xs (US or SS)
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element
      *  @param pos index of the value to be set (0..vm-1)
@@ -668,7 +668,7 @@ class DcmItem
                                    const OFBool replaceOld = OFTrue);
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
-     *  Applicable to the following VRs: AT, OW, US, ox (polymorph OB/OW or pixel data)
+     *  Applicable to the following VRs: AT, OW, US, ox (polymorph OB/OW or pixel data), xs (US or SS)
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element (might be NULL)
      *  @param count number of values (not bytes!) to be copied from 'value'
@@ -681,7 +681,7 @@ class DcmItem
                                         const OFBool replaceOld = OFTrue);
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
-     *  Applicable to the following VRs: SS
+     *  Applicable to the following VRs: SS, xs (US or SS)
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element
      *  @param pos index of the value to be set (0..vm-1)
@@ -694,7 +694,7 @@ class DcmItem
                                    const OFBool replaceOld = OFTrue);
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
-     *  Applicable to the following VRs: SS
+     *  Applicable to the following VRs: SS, xs (US or SS)
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element
      *  @param count number of values (not bytes!) to be copied from 'value'
@@ -907,7 +907,10 @@ OFCondition nextUp(DcmStack &st);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
-** Revision 1.50  2004-07-01 12:28:25  meichel
+** Revision 1.51  2005-06-24 10:03:14  joergr
+** Added support for internal VR "xs" to putAndInsertXXX() helper methods.
+**
+** Revision 1.50  2004/07/01 12:28:25  meichel
 ** Introduced virtual clone method for DcmObject and derived classes.
 **
 ** Revision 1.49  2004/02/04 16:02:08  joergr
