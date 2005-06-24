@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2004, OFFIS
+ *  Copyright (C) 2002-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Convert the contents of a DICOM file to XML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-11-29 17:02:17 $
+ *  Update Date:      $Date: 2005-06-24 10:06:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcm2xml.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -76,10 +76,10 @@ static OFBool checkForNonASCIICharacters(DcmItem& dataset)
   {
     if (stack.top()->isaString())
     {
-      if (checkForNonASCIICharacters(* OFstatic_cast(DcmElement *, stack.top()))) 
+      if (checkForNonASCIICharacters(* OFstatic_cast(DcmElement *, stack.top())))
         return OFTrue;
     }
-  }  
+  }
   return OFFalse;
 }
 
@@ -398,7 +398,10 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--write-binary-data"))
             opt_writeFlags |= DCMTypes::XF_writeBinaryData;
         if (cmd.findOption("--encode-base64"))
+        {
+            app.checkDependence("--encode-base64", "--write-binary-data", (opt_writeFlags & DCMTypes::XF_writeBinaryData) > 0);
             opt_writeFlags |= DCMTypes::XF_encodeBase64;
+        }
     }
 
     SetDebugLevel((opt_debugMode));
@@ -448,7 +451,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2xml.cc,v $
- * Revision 1.13  2004-11-29 17:02:17  joergr
+ * Revision 1.14  2005-06-24 10:06:46  joergr
+ * Check dependence between command line options --write-binary-data and
+ * --encode-base64.
+ *
+ * Revision 1.13  2004/11/29 17:02:17  joergr
  * Added warning message when character set is unknown, unsupported  or cannot
  * be mapped to the output format. Added support for UTF-8 character set.
  *
