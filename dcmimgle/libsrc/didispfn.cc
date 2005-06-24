@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2004, OFFIS
+ *  Copyright (C) 1999-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomDisplayFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-05 14:58:42 $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  Update Date:      $Date: 2005-06-24 10:02:16 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -181,16 +181,18 @@ DiDisplayFunction::DiDisplayFunction(const double val_min,
         if ((DDLValue != NULL) && (LODValue != NULL))
         {
             register Uint16 i;
-            const double val = (val_max - val_min) / OFstatic_cast(double, MaxDDLValue);
+            const double min = ((DeviceType == EDT_Printer) || (DeviceType == EDT_Scanner)) ? val_max : val_min;
+            const double max = ((DeviceType == EDT_Printer) || (DeviceType == EDT_Scanner)) ? val_min : val_max;
+            const double val = (max - min) / OFstatic_cast(double, MaxDDLValue);
             DDLValue[0] = 0;
-            LODValue[0] = val_min;
+            LODValue[0] = min;
             for (i = 1; i < MaxDDLValue; ++i)
             {
                 DDLValue[i] = i;                            // set DDL values
                 LODValue[i] = LODValue[i - 1] + val;        // compute luminance/OD value
             }
             DDLValue[MaxDDLValue] = MaxDDLValue;
-            LODValue[MaxDDLValue] = val_max;
+            LODValue[MaxDDLValue] = max;
             Valid = 1;
         }
     }
@@ -760,7 +762,10 @@ double DiDisplayFunction::convertODtoLum(const double value,
  *
  * CVS/RCS Log:
  * $Log: didispfn.cc,v $
- * Revision 1.42  2004-01-05 14:58:42  joergr
+ * Revision 1.43  2005-06-24 10:02:16  joergr
+ * Fixed problem in constructor which uses a linear chacteristic curve.
+ *
+ * Revision 1.42  2004/01/05 14:58:42  joergr
  * Removed acknowledgements with e-mail addresses from CVS log.
  *
  * Revision 1.41  2003/12/23 16:03:18  joergr
