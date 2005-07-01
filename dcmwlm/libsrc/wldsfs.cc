@@ -22,9 +22,9 @@
  *  Purpose: Class for connecting to a file-based data source.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2005-05-04 11:32:51 $
+ *  Update Date:      $Date: 2005-07-01 10:01:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wldsfs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -306,7 +306,7 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( DcmDataset &f
   {
     for( i=0 ; i<numOfMatchingDatasets ; i++ )
       delete matchingDatasets[i];
-    delete matchingDatasets;
+    delete[] matchingDatasets;
     matchingDatasets = NULL;
     numOfMatchingDatasets = 0;
   }
@@ -510,7 +510,7 @@ DcmDataset *WlmDataSourceFileSystem::NextFindResponse( WlmDataSourceStatusType &
     // If there are no more elements to return, delete the array itself.
     if( numOfMatchingDatasets == 0 )
     {
-      delete matchingDatasets;
+      delete[] matchingDatasets;
       matchingDatasets = NULL;
     }
 
@@ -572,7 +572,7 @@ void WlmDataSourceFileSystem::HandleNonSequenceElementInResultDataset( DcmElemen
       DumpMessage( "WlmDataSourceFileSystem::HandleNonSequenceElementInResultDataset: Could not set value in result element.\n" );
 
     // free memory
-    delete value;
+    delete[] value;
   }
 }
 
@@ -630,7 +630,7 @@ void WlmDataSourceFileSystem::HandleSequenceElementInResultDataset( DcmElement *
     tmp[numOfSuperiorSequences].currentItem = 0;
 
     if( superiorSequenceArray != NULL )
-      delete superiorSequenceArray;
+      delete[] superiorSequenceArray;
 
     superiorSequenceArray = tmp;
 
@@ -674,7 +674,7 @@ void WlmDataSourceFileSystem::HandleSequenceElementInResultDataset( DcmElement *
     // delete information about current sequence from superiorSequenceArray
     if( numOfSuperiorSequences == 1 )
     {
-      delete superiorSequenceArray;
+      delete[] superiorSequenceArray;
       superiorSequenceArray = NULL;
       numOfSuperiorSequences = 0;
     }
@@ -688,7 +688,7 @@ void WlmDataSourceFileSystem::HandleSequenceElementInResultDataset( DcmElement *
         tmp[i].currentItem = superiorSequenceArray[i].currentItem;
       }
 
-      delete superiorSequenceArray;
+      delete[] superiorSequenceArray;
       superiorSequenceArray = tmp;
 
       numOfSuperiorSequences--;
@@ -848,7 +848,11 @@ OFBool WlmDataSourceFileSystem::ReleaseReadlock()
 /*
 ** CVS Log
 ** $Log: wldsfs.cc,v $
-** Revision 1.16  2005-05-04 11:32:51  wilkens
+** Revision 1.17  2005-07-01 10:01:31  wilkens
+** Modified a couple of "delete" statements to "delete[]" in order to get rid of
+** valgrind's "Mismatched free() / delete / delete []" error messages.
+**
+** Revision 1.16  2005/05/04 11:32:51  wilkens
 ** Modified handling of the attributes ScheduledProcedureStepDescription/
 ** ScheduledProtocolCodeSequence and RequestedProcedureDescription/
 ** RequestedProcedureCodeSequence in wlmscpfs: in case one of the two attributes

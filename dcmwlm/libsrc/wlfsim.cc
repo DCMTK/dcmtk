@@ -22,9 +22,9 @@
 *  Purpose: Class for managing file system interaction.
 *
 *  Last Update:      $Author: wilkens $
-*  Update Date:      $Date: 2005-05-04 11:34:46 $
+*  Update Date:      $Date: 2005-07-01 10:01:31 $
 *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlfsim.cc,v $
-*  CVS/RCS Revision: $Revision: 1.13 $
+*  CVS/RCS Revision: $Revision: 1.14 $
 *  Status:           $State: Exp $
 *
 *  CVS/RCS Log at end of file
@@ -325,7 +325,7 @@ unsigned long WlmFileSystemInteractionManager::DetermineMatchingRecords( DcmData
               for( unsigned long j=0 ; j<numOfMatchingRecords ; j++ )
                 tmp[j] = matchingRecords[j];
               tmp[numOfMatchingRecords] = new DcmDataset( *dataset );
-              delete matchingRecords;
+              delete[] matchingRecords;
               matchingRecords = tmp;
             }
 
@@ -507,7 +507,7 @@ void WlmFileSystemInteractionManager::ClearMatchingRecords()
 {
   for( unsigned int i=0 ; i<numOfMatchingRecords ; i++ )
     delete matchingRecords[i];
-  delete matchingRecords;
+  delete[] matchingRecords;
   matchingRecords = NULL;
   numOfMatchingRecords = 0;
 }
@@ -2175,7 +2175,11 @@ void WlmFileSystemInteractionManager::ExtractValuesFromRange( const char *range,
 /*
 ** CVS Log
 ** $Log: wlfsim.cc,v $
-** Revision 1.13  2005-05-04 11:34:46  wilkens
+** Revision 1.14  2005-07-01 10:01:31  wilkens
+** Modified a couple of "delete" statements to "delete[]" in order to get rid of
+** valgrind's "Mismatched free() / delete / delete []" error messages.
+**
+** Revision 1.13  2005/05/04 11:34:46  wilkens
 ** Added two command line options --enable-file-reject (default) and
 ** --disable-file-reject to wlmscpfs: these options can be used to enable or
 ** disable a file rejection mechanism which makes sure only complete worklist files

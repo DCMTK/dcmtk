@@ -21,10 +21,10 @@
  *
  *  Purpose: (Partially) abstract class for connecting to an arbitrary data source.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-04-06 18:19:31 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2005-07-01 10:01:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlds.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1296,7 +1296,7 @@ WlmDataSourceStatusType WlmDataSource::CancelFindRequest()
   {
     for( unsigned long i=0 ; i<numOfMatchingDatasets ; i++ )
       delete matchingDatasets[i];
-    delete matchingDatasets;
+    delete[] matchingDatasets;
     matchingDatasets = NULL;
     numOfMatchingDatasets = 0;
   }
@@ -1614,7 +1614,11 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
 /*
 ** CVS Log
 ** $Log: wlds.cc,v $
-** Revision 1.16  2004-04-06 18:19:31  joergr
+** Revision 1.17  2005-07-01 10:01:31  wilkens
+** Modified a couple of "delete" statements to "delete[]" in order to get rid of
+** valgrind's "Mismatched free() / delete / delete []" error messages.
+**
+** Revision 1.16  2004/04/06 18:19:31  joergr
 ** Updated data dictionary, UIDs and transfer syntaxes for the latest Final Text
 ** Supplements (42 and 47) and Correction Proposals (CP 25).
 **

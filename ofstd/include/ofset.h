@@ -23,9 +23,9 @@
  *           arbitrary type.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-12-18 09:06:41 $
+ *  Update Date:      $Date: 2005-07-01 10:01:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofset.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -102,7 +102,7 @@ template <class T> class OFSet
       {
         for( unsigned int i=0 ; i<num ; i++ )
           delete items[i];
-        delete items;
+        delete[] items;
       }
 
 
@@ -119,7 +119,7 @@ template <class T> class OFSet
 
         for( i=0 ; i<num ; i++ )
           delete items[i];
-        delete items;
+        delete[] items;
 
         num = src.num;
         size = src.size;
@@ -177,7 +177,7 @@ template <class T> class OFSet
               tmp[i] = NULL;
           }
 
-          delete items;
+          delete[] items;
           items = tmp;
 
           size = newSize;
@@ -260,7 +260,11 @@ template <class T> class OFSet
 /*
 ** CVS/RCS Log:
 ** $Log: ofset.h,v $
-** Revision 1.8  2002-12-18 09:06:41  wilkens
+** Revision 1.9  2005-07-01 10:01:50  wilkens
+** Modified a couple of "delete" statements to "delete[]" in order to get rid of
+** valgrind's "Mismatched free() / delete / delete []" error messages.
+**
+** Revision 1.8  2002/12/18 09:06:41  wilkens
 ** Had forgotten to delete some superfluous code. Did it now.
 **
 ** Revision 1.7  2002/12/17 17:01:34  wilkens
