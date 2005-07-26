@@ -69,6 +69,19 @@ SOP Instance UID options:
 
   +ua  --uid-always
          always assign new UID
+
+RLE byte segment order options:
+
+  +bd   --byte-order-default   
+          most significant byte first (default)
+
+  +br   --byte-order-reverse   
+          least significant byte first
+
+  # This option allows to decompress RLE compressed DICOM files in which the
+  # order of byte segments is encoded in incorrect order. This only affects
+  # images with more than one byte per sample.
+
 \endverbatim
 
 \subsection output_options output options
@@ -174,7 +187,7 @@ environment variable.  It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2002-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
+Copyright (C) 2002-2005 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
 Germany
 
 */

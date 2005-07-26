@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2004, OFFIS
+ *  Copyright (C) 2002-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: singleton class that registers RLE decoder.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-04 16:00:22 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-07-26 17:08:33 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,10 +50,14 @@ public:
    *  @param pCreateSOPInstanceUID flag indicating whether or not
    *    a new SOP Instance UID should be assigned upon decompression.
    *  @param pVerbose verbose mode flag
+   *  @param pReverseDecompressionByteOrder flag indicating whether the byte order should
+   *    be reversed upon decompression. Needed to correctly decode some incorrectly encoded
+   *    images with more than one byte per sample.
    */   
   static void registerCodecs(
     OFBool pCreateSOPInstanceUID = OFFalse,
-    OFBool pVerbose = OFFalse);
+    OFBool pVerbose = OFFalse,
+    OFBool pReverseDecompressionByteOrder = OFFalse);
 
   /** deregisters decoder.
    *  Attention: Must not be called while other threads might still use
@@ -90,7 +94,11 @@ private:
 /*
  * CVS/RCS Log
  * $Log: dcrledrg.h,v $
- * Revision 1.4  2004-02-04 16:00:22  joergr
+ * Revision 1.5  2005-07-26 17:08:33  meichel
+ * Added option to RLE decoder that allows to correctly decode images with
+ *   incorrect byte order of byte segments (LSB instead of MSB).
+ *
+ * Revision 1.4  2004/02/04 16:00:22  joergr
  * Added CVS log entry at the end of the file.
  *
  *

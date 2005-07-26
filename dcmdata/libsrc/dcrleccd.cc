@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2004, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: decoder codec class for RLE
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-08-24 14:54:20 $
+ *  Update Date:      $Date: 2005-07-26 17:08:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcrleccd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -81,6 +81,8 @@ OFCondition DcmRLECodecDecoder::decode(
 
   // assume we can cast the codec parameter to what we need
   const DcmRLECodecParameter *djcp = OFstatic_cast(const DcmRLECodecParameter *, cp);
+
+  OFBool enableReverseByteOrder = djcp->getReverseDecompressionByteOrder();
 
   DcmStack localStack(objStack);
   (void)localStack.pop();             // pop pixel data element from stack
@@ -333,7 +335,15 @@ OFCondition DcmRLECodecDecoder::decode(
                   }
 
                   // initialize pointer to output data
-                  pixelPointer = imageData8 + sampleOffset + imageBytesAllocated - byte - 1;
+                  if (enableReverseByteOrder)
+                  {
+                    // assume incorrect LSB to MSB order of RLE segments as produced by some tools
+                    pixelPointer = imageData8 + sampleOffset + byte;
+                  }
+                  else
+                  {
+                    pixelPointer = imageData8 + sampleOffset + imageBytesAllocated - byte - 1;
+                  }
 
                   // loop through all pixels of the frame
                   for (pixel = 0; pixel < bytesPerStripe; ++pixel)
@@ -405,7 +415,11 @@ OFCondition DcmRLECodecDecoder::encode(
 /*
  * CVS/RCS Log
  * $Log: dcrleccd.cc,v $
- * Revision 1.5  2004-08-24 14:54:20  meichel
+ * Revision 1.6  2005-07-26 17:08:35  meichel
+ * Added option to RLE decoder that allows to correctly decode images with
+ *   incorrect byte order of byte segments (LSB instead of MSB).
+ *
+ * Revision 1.5  2004/08/24 14:54:20  meichel
  *  Updated compression helper methods. Image type is not set to SECONDARY
  *   any more, support for the purpose of reference code sequence added.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: codec parameter for RLE
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-06-06 14:52:41 $
+ *  Update Date:      $Date: 2005-07-26 17:08:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcrlecp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,12 +39,14 @@ DcmRLECodecParameter::DcmRLECodecParameter(
     OFBool pCreateSOPInstanceUID,
     Uint32 pFragmentSize,
     OFBool pCreateOffsetTable,
-    OFBool pConvertToSC)
+    OFBool pConvertToSC,
+    OFBool pReverseDecompressionByteOrder)
 : DcmCodecParameter()
 , fragmentSize(pFragmentSize)
 , createOffsetTable(pCreateOffsetTable)
 , convertToSC(pConvertToSC)
 , createInstanceUID(pCreateSOPInstanceUID)
+, reverseDecompressionByteOrder(pReverseDecompressionByteOrder)
 , verboseMode(pVerbose)
 {
 }
@@ -56,6 +58,7 @@ DcmRLECodecParameter::DcmRLECodecParameter(const DcmRLECodecParameter& arg)
 , createOffsetTable(arg.createOffsetTable)
 , convertToSC(arg.convertToSC)
 , createInstanceUID(arg.createInstanceUID)
+, reverseDecompressionByteOrder(arg.reverseDecompressionByteOrder)
 , verboseMode(arg.verboseMode)
 {
 }
@@ -78,7 +81,11 @@ const char *DcmRLECodecParameter::className() const
 /*
  * CVS/RCS Log
  * $Log: dcrlecp.cc,v $
- * Revision 1.1  2002-06-06 14:52:41  meichel
+ * Revision 1.2  2005-07-26 17:08:35  meichel
+ * Added option to RLE decoder that allows to correctly decode images with
+ *   incorrect byte order of byte segments (LSB instead of MSB).
+ *
+ * Revision 1.1  2002/06/06 14:52:41  meichel
  * Initial release of the new RLE codec classes
  *   and the dcmcrle/dcmdrle tools in module dcmdata
  *

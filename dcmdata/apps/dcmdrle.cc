@@ -22,8 +22,8 @@
  *  Purpose: Decompress RLE-compressed DICOM file
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-05-26 14:52:22 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2005-07-26 17:08:28 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -90,7 +90,8 @@ int main(int argc, char *argv[])
 
   // RLE parameters
   OFBool opt_uidcreation = OFFalse;
-
+  OFBool opt_reversebyteorder = OFFalse;
+  
   OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Decode RLE-compressed DICOM file", rcsid);
   OFCommandLine cmd;
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
@@ -114,8 +115,12 @@ int main(int argc, char *argv[])
   cmd.addGroup("processing options:");
 
     cmd.addSubGroup("SOP Instance UID options:");
-     cmd.addOption("--uid-default",        "+ud",     "keep same SOP Instance UID (default)");
-     cmd.addOption("--uid-always",         "+ua",     "always assign new UID");
+     cmd.addOption("--uid-default",             "+ud",     "keep same SOP Instance UID (default)");
+     cmd.addOption("--uid-always",              "+ua",     "always assign new UID");
+
+    cmd.addSubGroup("RLE byte segment order options:");
+     cmd.addOption("--byte-order-default",      "+bd",     "most significant byte first (default)");
+     cmd.addOption("--byte-order-reverse",      "+br",     "least significant byte first");
 
   cmd.addGroup("output options:");
     cmd.addSubGroup("output file format:");
@@ -173,6 +178,11 @@ int main(int argc, char *argv[])
       cmd.beginOptionBlock();
       if (cmd.findOption("--uid-default")) opt_uidcreation = OFFalse;
       if (cmd.findOption("--uid-always")) opt_uidcreation = OFTrue;
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--byte-order-default")) opt_reversebyteorder = OFFalse;
+      if (cmd.findOption("--byte-order-reverse")) opt_reversebyteorder = OFTrue;
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
@@ -244,7 +254,7 @@ int main(int argc, char *argv[])
     SetDebugLevel((opt_debugMode));
 
     // register global decompression codecs
-    DcmRLEDecoderRegistration::registerCodecs(opt_uidcreation, opt_verbose);
+    DcmRLEDecoderRegistration::registerCodecs(opt_uidcreation, opt_verbose, opt_reversebyteorder);
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
@@ -325,7 +335,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmdrle.cc,v $
- * Revision 1.8  2005-05-26 14:52:22  meichel
+ * Revision 1.9  2005-07-26 17:08:28  meichel
+ * Added option to RLE decoder that allows to correctly decode images with
+ *   incorrect byte order of byte segments (LSB instead of MSB).
+ *
+ * Revision 1.8  2005/05/26 14:52:22  meichel
  * Added option --read-dataset to dcmdrle that allows to decompress RLE
  *   compressed DICOM objects that have been stored as dataset without meta-header.
  *   Such a thing should not exist since the transfer syntax cannot be reliably

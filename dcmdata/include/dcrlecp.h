@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: codec parameter for RLE
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-06-06 14:52:35 $
+ *  Update Date:      $Date: 2005-07-26 17:08:33 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcrlecp.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,13 +51,17 @@ public:
    *  @param pCreateOffsetTable create offset table during image compression?
    *  @param pConvertToSC flag indicating whether image should be converted to 
    *    Secondary Capture upon compression
+   *  @param pReverseDecompressionByteOrder flag indicating whether the byte order should
+   *    be reversed upon decompression. Needed to correctly decode some incorrectly encoded
+   *    images with more than one byte per sample.
    */
   DcmRLECodecParameter(
     OFBool pVerbose = OFFalse,
     OFBool pCreateSOPInstanceUID = OFFalse,
     Uint32 pFragmentSize = 0,
     OFBool pCreateOffsetTable = OFTrue,
-    OFBool pConvertToSC = OFFalse);
+    OFBool pConvertToSC = OFFalse,
+    OFBool pReverseDecompressionByteOrder = OFFalse);
 
   /// copy constructor
   DcmRLECodecParameter(const DcmRLECodecParameter& arg);
@@ -116,6 +120,15 @@ public:
     return verboseMode;
   }
 
+  /** returns reverse decompression byte order mode
+   *  @return reverse decompression byte order mode
+   */
+  OFBool getReverseDecompressionByteOrder() const
+  {
+    return reverseDecompressionByteOrder;
+  }
+
+
 private:
 
   /// private undefined copy assignment operator
@@ -133,6 +146,11 @@ private:
   /// create new Instance UID during compression/decompression?
   OFBool createInstanceUID;
 
+  /** enable reverse byte order of RLE segments during decompression, needed to
+   *  decompress certain incorrectly encoded RLE images
+   */
+  OFBool reverseDecompressionByteOrder;
+  
   /// verbose mode flag. If true, warning messages are printed to console
   OFBool verboseMode;
 };
@@ -143,7 +161,11 @@ private:
 /*
  * CVS/RCS Log
  * $Log: dcrlecp.h,v $
- * Revision 1.1  2002-06-06 14:52:35  meichel
+ * Revision 1.2  2005-07-26 17:08:33  meichel
+ * Added option to RLE decoder that allows to correctly decode images with
+ *   incorrect byte order of byte segments (LSB instead of MSB).
+ *
+ * Revision 1.1  2002/06/06 14:52:35  meichel
  * Initial release of the new RLE codec classes
  *   and the dcmcrle/dcmdrle tools in module dcmdata
  *
