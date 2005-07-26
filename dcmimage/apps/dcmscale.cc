@@ -22,8 +22,8 @@
  *  Purpose: Scale DICOM images
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-03-22 13:54:10 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2005-07-26 18:29:01 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
     OFBool opt_verbose = OFFalse;
     OFBool opt_iDataset = OFFalse;
     OFBool opt_oDataset = OFFalse;
-    OFBool opt_uidcreation = OFTrue;
+    OFBool opt_uidCreation = OFTrue;
     E_TransferSyntax opt_ixfer = EXS_Unknown;
     E_TransferSyntax opt_oxfer = EXS_Unknown;
     E_GrpLenEncoding opt_oglenc = EGL_recalcGL;
@@ -112,6 +112,10 @@ int main(int argc, char *argv[])
                                                        /* 1 = X-factor, 2 = Y-factor, 3=X-size, 4=Y-size */
     OFCmdFloat opt_scale_factor = 1.0;
     OFCmdUnsignedInt opt_scale_size = 1;
+
+    OFBool           opt_useClip = OFFalse;            /* default: don't clip */
+    OFCmdSignedInt   opt_left = 0, opt_top = 0;        /* clip region (origin) */
+    OFCmdUnsignedInt opt_width = 0, opt_height = 0;    /* clip region (extension) */
 
     const char *opt_ifname = NULL;
     const char *opt_ofname = NULL;
@@ -166,6 +170,9 @@ int main(int argc, char *argv[])
                                                         "scale x axis to n pixels, auto-compute y axis");
       cmd.addOption("--scale-y-size",        "+Syv", 1, "[n]umber : integer",
                                                         "scale y axis to n pixels, auto-compute x axis");
+     cmd.addSubGroup("other transformations:");
+      cmd.addOption("--clip-region",         "+C",   4, "[l]eft [t]op [w]idth [h]eight : integer",
+                                                        "clip rectangular image region (l, t, w, h)");
      cmd.addSubGroup("SOP Instance UID options:");
       cmd.addOption("--uid-always",          "+ua",     "always assign new SOP Instance UID (default)");
       cmd.addOption("--uid-never",           "+un",     "never assign new SOP Instance UID");
@@ -303,9 +310,22 @@ int main(int argc, char *argv[])
       }
       cmd.endOptionBlock();
 
+      /* image processing options: other transformations */
+
+      if (cmd.findOption("--clip-region"))
+      {
+          app.checkValue(cmd.getValue(opt_left));
+          app.checkValue(cmd.getValue(opt_top));
+          app.checkValue(cmd.getValueAndCheckMin(opt_width, 1));
+          app.checkValue(cmd.getValueAndCheckMin(opt_height, 1));
+          opt_useClip = OFTrue;
+      }
+
+      /* image processing options: SOP Instance UID options */
+
       cmd.beginOptionBlock();
-      if (cmd.findOption("--uid-always")) opt_uidcreation = OFTrue;
-      if (cmd.findOption("--uid-never")) opt_uidcreation = OFFalse;
+      if (cmd.findOption("--uid-always")) opt_uidCreation = OFTrue;
+      if (cmd.findOption("--uid-never")) opt_uidCreation = OFFalse;
       cmd.endOptionBlock();
 
       /* output options */
@@ -443,102 +463,177 @@ int main(int argc, char *argv[])
     // image processing starts here
 
     if (opt_verbose)
-        CERR << "preparing pixel data." << endl;
+        COUT << "preparing pixel data" << endl;
 
     const int flags = (opt_scaleType > 0) ? CIF_MayDetachPixelData : 0;
     // create DicomImage object
     DicomImage *di = new DicomImage(dataset, opt_oxfer, flags);
-    if (!di)
+    if (di == NULL)
         app.printError("memory exhausted");
     if (di->getStatus() != EIS_Normal)
         app.printError(DicomImage::getString(di->getStatus()));
 
-    // create new SOP instance UID
-    if (error.good() && opt_uidcreation)
-    {
-        char new_uid[100];
-        error = dataset->putAndInsertString(DCM_SOPInstanceUID, dcmGenerateUniqueIdentifier(new_uid));
-    }
+    DicomImage *newimage = NULL;
+    OFString derivationDescription;
 
-    if (error.good())
+    if (opt_verbose && opt_useClip)
+        COUT << "clipping image to (" << opt_left << "," << opt_top
+             << "," << opt_width << "," << opt_height << ")" << endl;
+    // perform clipping (without scaling)
+    if (opt_scaleType <= 0)
     {
-        // perform scaling
-        if (opt_scaleType > 0)
+        if (opt_useClip)
         {
-            DicomImage *newimage = NULL;
-            switch (opt_scaleType)
-            {
-                case 1:
-                    if (opt_verbose)
-                        CERR << "scaling image, X factor=" << opt_scale_factor
-                             << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
-                             << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << endl;
+            newimage = di->createClippedImage(opt_left, opt_top, opt_width, opt_height);
+            derivationDescription = "Clipped rectangular image region";
+        }
+    }
+    // perform scaling (and possibly clipping)
+    else if (opt_scaleType <= 4)
+    {
+        switch (opt_scaleType)
+        {
+            case 1:
+                if (opt_verbose)
+                    COUT << "scaling image, X factor=" << opt_scale_factor
+                         << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
+                         << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << endl;
+                if (opt_useClip)
+                    newimage = di->createScaledImage(opt_left, opt_top, opt_width, opt_height, opt_scale_factor, 0.0,
+                        OFstatic_cast(int, opt_useInterpolation), opt_useAspectRatio);
+                else
                     newimage = di->createScaledImage(opt_scale_factor, 0.0, OFstatic_cast(int, opt_useInterpolation),
                         opt_useAspectRatio);
-                    break;
-                case 2:
-                    if (opt_verbose)
-                        CERR << "scaling image, Y factor=" << opt_scale_factor
-                             << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
-                             << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << endl;
+                break;
+            case 2:
+                if (opt_verbose)
+                    COUT << "scaling image, Y factor=" << opt_scale_factor
+                         << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
+                         << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << endl;
+                if (opt_useClip)
+                    newimage = di->createScaledImage(opt_left, opt_top, opt_width, opt_height, 0.0, opt_scale_factor,
+                        OFstatic_cast(int, opt_useInterpolation), opt_useAspectRatio);
+                else
                     newimage = di->createScaledImage(0.0, opt_scale_factor, OFstatic_cast(int, opt_useInterpolation),
                         opt_useAspectRatio);
-                    break;
-                case 3:
-                    if (opt_verbose)
-                        CERR << "scaling image, X size=" << opt_scale_size
-                             << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
-                             << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << endl;
+                break;
+            case 3:
+                if (opt_verbose)
+                    COUT << "scaling image, X size=" << opt_scale_size
+                         << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
+                         << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << endl;
+                if (opt_useClip)
+                    newimage = di->createScaledImage(opt_left, opt_top, opt_width, opt_height, opt_scale_size, 0,
+                        OFstatic_cast(int, opt_useInterpolation), opt_useAspectRatio);
+                else
                     newimage = di->createScaledImage(opt_scale_size, 0, OFstatic_cast(int, opt_useInterpolation),
                         opt_useAspectRatio);
-                    break;
-                case 4:
-                    if (opt_verbose)
-                        CERR << "scaling image, Y size=" << opt_scale_size
-                             << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
-                             << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << endl;
+                break;
+            case 4:
+                if (opt_verbose)
+                    COUT << "scaling image, Y size=" << opt_scale_size
+                         << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
+                         << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << endl;
+                if (opt_useClip)
+                    newimage = di->createScaledImage(opt_left, opt_top, opt_width, opt_height, 0, opt_scale_size,
+                        OFstatic_cast(int, opt_useInterpolation), opt_useAspectRatio);
+                else
                     newimage = di->createScaledImage(0, opt_scale_size, OFstatic_cast(int, opt_useInterpolation),
                         opt_useAspectRatio);
-                    break;
-                default:
-                    if (opt_verbose)
-                        CERR << "internal error: unknown scaling type" << endl;
-                    break;
-            }
-            if ((newimage == NULL) && (opt_scaleType <= 4))
-                app.printError("memory exhausted");
-            else if (newimage->getStatus() != EIS_Normal)
-                app.printError(DicomImage::getString(newimage->getStatus()));
-            /* write scaled image to dataset (update attributes of Image Pixel Module) */
-            else if (!newimage->writeImageToDataset(*dataset))
-                app.printError("cannot write scaled image to dataset");
-            delete newimage;
+                break;
+            default:
+                break;
         }
-    } else {    /* error.bad() */
-        CERR << "Error: " << error.text()
-             << ": converting image: " <<  opt_ifname << endl;
-        return 1;
+        if (opt_useClip)
+            derivationDescription = "Scaled rectangular image region";
+        else
+            derivationDescription = "Scaled image";
     }
+    if (opt_scaleType > 4)
+        CERR << "internal error: unknown scaling type" << endl;
+    else if (newimage == NULL)
+        app.printError("cannot create new image");
+    else if (newimage->getStatus() != EIS_Normal)
+        app.printError(DicomImage::getString(newimage->getStatus()));
+    /* write scaled image to dataset (update attributes of Image Pixel Module) */
+    else if (!newimage->writeImageToDataset(*dataset))
+        app.printError("cannot write new image to dataset");
+    delete newimage;
 
     /* cleanup original image */
     delete di;
 
     // ======================================================================
-    // write back output file
+    // update some header attributes
 
-    // force meta-header to refresh SOP Instance UID
-    DcmItem *metaInfo = fileformat.getMetaInfo();
-    if (metaInfo)
-        delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
+    // update Derivation Description
+    if (!derivationDescription.empty())
+    {
+        const char *oldDerivation = NULL;
+        if (dataset->findAndGetString(DCM_DerivationDescription, oldDerivation).good())
+        {
+             // append old Derivation Description, if any
+            derivationDescription += " [";
+            derivationDescription += oldDerivation;
+            derivationDescription += "]";
+            if (derivationDescription.length() > 1024)
+            {
+                // ST is limited to 1024 characters, cut off tail
+                derivationDescription.erase(1020);
+                derivationDescription += "...]";
+            }
+        }
+        dataset->putAndInsertString(DCM_DerivationDescription, derivationDescription.c_str());
+    }
+
+    // update Image Type
+    OFString imageType = "DERIVED";
+    const char *oldImageType = NULL;
+    if (dataset->findAndGetString(DCM_ImageType, oldImageType).good())
+    {
+        // append old image type information beginning with second entry
+        const char *pos = strchr(oldImageType, '\\');
+        if (pos != NULL)
+            imageType += pos;
+    }
+    dataset->putAndInsertString(DCM_ImageType, imageType.c_str());
+
+    // update SOP Instance UID
+    if (opt_uidCreation)
+    {
+        // add reference to source image
+        DcmItem *ditem = NULL;
+        const char *sopClassUID = NULL;
+        const char *sopInstanceUID = NULL;
+        if (dataset->findAndGetString(DCM_SOPClassUID, sopClassUID).good() &&
+            dataset->findAndGetString(DCM_SOPInstanceUID, sopInstanceUID).good())
+        {
+            dataset->findAndDeleteElement(DCM_SourceImageSequence);
+            if (dataset->findOrCreateSequenceItem(DCM_SourceImageSequence, ditem).good())
+            {
+                ditem->putAndInsertString(DCM_SOPClassUID, sopClassUID);
+                ditem->putAndInsertString(DCM_SOPInstanceUID, sopInstanceUID);
+            }
+        }
+        // create new SOP instance UID
+        char new_uid[100];
+        dataset->putAndInsertString(DCM_SOPInstanceUID, dcmGenerateUniqueIdentifier(new_uid));
+        // force meta-header to refresh SOP Instance UID
+        DcmItem *metaInfo = fileformat.getMetaInfo();
+        if (metaInfo != NULL)
+            delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
+    }
+
+    // ======================================================================
+    // write back output file
 
     if (opt_verbose)
         COUT << "create output file " << opt_ofname << endl;
 
     error = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc, opt_opadenc, opt_filepad, opt_itempad, opt_oDataset);
-    if (error != EC_Normal)
+    if (error.bad())
     {
-        CERR << "Error: "
-             << error.text()
+        CERR << "Error: " << error.text()
              << ": writing file: " <<  opt_ofname << endl;
         return 1;
     }
@@ -560,7 +655,13 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmscale.cc,v $
- * Revision 1.10  2005-03-22 13:54:10  joergr
+ * Revision 1.11  2005-07-26 18:29:01  joergr
+ * Added new command line option that allows to clip a rectangular image region
+ * (combination with scaling no yet fully implemented in corresponding classes).
+ * Update ImageType, add DerivationDescription and SourceImageSequence.
+ * Cleaned up use of CERR and COUT.
+ *
+ * Revision 1.10  2005/03/22 13:54:10  joergr
  * Minor code corrections, e.g. write pixel data if no scaling factor is given.
  *
  * Revision 1.9  2003/12/11 15:39:50  joergr
