@@ -77,11 +77,11 @@ parsing of odd-length attributes:
 
 handling of undefined length UN elements:
 
-  +ui   --enable-cp246         
-          read undefined len UN as implicit VR (default)
+  +ui  --enable-cp246
+         read undefined len UN as implicit VR (default)
 
-  -ui   --disable-cp246        
-          read undefined len UN as explicit VR
+  -ui  --disable-cp246
+         read undefined len UN as explicit VR
 
 automatic data correction:
 
@@ -94,7 +94,7 @@ automatic data correction:
 bitstream format of deflated input:
 
   +bd  --bitstream-deflated
-          expect deflated bitstream (default)
+         expect deflated bitstream (default)
 
   +bz  --bitstream-zlib
          expect deflated zlib bitstream
