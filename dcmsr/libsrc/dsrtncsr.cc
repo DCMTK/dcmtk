@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2003, OFFIS
+ *  Copyright (C) 2000-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRTreeNodeCursor
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 14:11:20 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2005-07-27 16:38:57 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -229,12 +229,13 @@ size_t DSRTreeNodeCursor::goDown()
 }
 
 
-size_t DSRTreeNodeCursor::iterate()
+size_t DSRTreeNodeCursor::iterate(const OFBool searchIntoSub)
 {
     size_t nodeID = 0;
     if (NodeCursor != NULL)
     {
-        if (NodeCursor->Down != NULL)
+        /* perform "deep search", if specified */
+        if (searchIntoSub && (NodeCursor->Down != NULL))
         {
             NodeCursorStack.push(NodeCursor);
             NodeCursor = NodeCursor->Down;
@@ -251,7 +252,7 @@ size_t DSRTreeNodeCursor::iterate()
             nodeID = NodeCursor->Ident;
             ++Position;
         }
-        else if (!NodeCursorStack.empty())
+        else if (searchIntoSub && !NodeCursorStack.empty())
         {
             do {
                 if (!NodeCursorStack.empty())
@@ -388,7 +389,10 @@ const OFString &DSRTreeNodeCursor::getPosition(OFString &position,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtncsr.cc,v $
- *  Revision 1.7  2003-08-07 14:11:20  joergr
+ *  Revision 1.8  2005-07-27 16:38:57  joergr
+ *  Added flag to iterate() method indicating whether to perform a "deep search".
+ *
+ *  Revision 1.7  2003/08/07 14:11:20  joergr
  *  Renamed parameters/variables "string" to avoid name clash with STL class.
  *  Adapted for use of OFListConstIterator, needed for compiling with HAVE_STL.
  *

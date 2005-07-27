@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2003, OFFIS
+ *  Copyright (C) 2000-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRTreeNodeCursor
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 12:55:46 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2005-07-27 16:36:14 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -148,10 +148,11 @@ class DSRTreeNodeCursor
     size_t goDown();
 
     /** iterate over all nodes. Starts from current position!
-     *  This method visits first the children (if any) and then the siblings ("deep search").
+     ** @param  searchIntoSub  flag indicating whether to search into sub-trees
+                               ("deep search") or on the current level only
      ** @return ID of the next node if successful, 0 otherwise
      */
-    size_t iterate();
+    size_t iterate(const OFBool searchIntoSub = OFTrue);
 
     /** set cursor to specified node. Starts from current position!
      ** @param  searchID  ID of the node to set the cursor to
@@ -228,7 +229,10 @@ class DSRTreeNodeCursor
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtncsr.h,v $
- *  Revision 1.10  2003-08-07 12:55:46  joergr
+ *  Revision 1.11  2005-07-27 16:36:14  joergr
+ *  Added flag to iterate() method indicating whether to perform a "deep search".
+ *
+ *  Revision 1.10  2003/08/07 12:55:46  joergr
  *  Updated documentation to get rid of doxygen warnings.
  *
  *  Revision 1.9  2001/12/18 09:55:06  meichel
