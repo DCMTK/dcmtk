@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003, OFFIS
+ *  Copyright (C) 2003-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSREnhancedSRConstraintChecker
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-10-09 13:00:41 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2005-07-27 16:55:46 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -99,8 +99,8 @@ OFBool DSREnhancedSRConstraintChecker::checkContentRelationship(const E_ValueTyp
                      (targetValueType == VT_UIDRef)   || (targetValueType == VT_PName) || (targetValueType == VT_Composite);
         }
         /* row 3 of the table */
-        else if ((relationshipType == RT_hasAcqContext) && ((sourceValueType == VT_Container) ||
-            (sourceValueType == VT_Image) || (sourceValueType == VT_Waveform) || (sourceValueType == VT_Composite)))
+        else if ((relationshipType == RT_hasAcqContext) && ((sourceValueType == VT_Container) || (sourceValueType == VT_Image) ||
+            (sourceValueType == VT_Waveform) || (sourceValueType == VT_Composite) || (sourceValueType == VT_Num /* see CP 571 */)))
         {
             result = (targetValueType == VT_Text)     || (targetValueType == VT_Code) || (targetValueType == VT_Num)  ||
                      (targetValueType == VT_DateTime) || (targetValueType == VT_Date) || (targetValueType == VT_Time) ||
@@ -139,7 +139,11 @@ OFBool DSREnhancedSRConstraintChecker::checkContentRelationship(const E_ValueTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrenhcc.cc,v $
- *  Revision 1.2  2003-10-09 13:00:41  joergr
+ *  Revision 1.3  2005-07-27 16:55:46  joergr
+ *  Added provisional support for CP571, i.e. allow certain relationships needed
+ *  for TID 5203 (Echo Measurement).
+ *
+ *  Revision 1.2  2003/10/09 13:00:41  joergr
  *  Added check for root template identifier when reading an SR document.
  *
  *  Revision 1.1  2003/09/15 14:16:50  joergr
