@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2004, OFFIS
+ *  Copyright (C) 2002-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,9 @@
  *    classes: DSRSOPInstanceReferenceList
  *             - InstanceStruct, SeriesStruct, StudyStruct
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-11-22 16:39:09 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-07-27 16:33:39 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -377,6 +377,15 @@ class DSRSOPInstanceReferenceList
                         const OFString &sopClassUID,
                         const OFString &instanceUID);
 
+    /** add item from specified DICOM dataset to the list of references.
+     *  Internally an item representing the given dataset is inserted into the hierarchical
+     *  structure of studies, series and instances, if not already contained in the list.
+     *  In any case the specified item is selected as the current one.
+     ** @param  dataset  reference to DICOM dataset from which the relevant UIDs are retrieved
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition addItem(DcmItem &dataset);
+
     /** remove the current item from the list of referenced SOP instances.
      *  After sucessful removal the cursor is set to the next valid position.
      ** @return status, EC_Normal if successful, an error code otherwise
@@ -562,7 +571,10 @@ class DSRSOPInstanceReferenceList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrsoprf.h,v $
- *  Revision 1.7  2004-11-22 16:39:09  meichel
+ *  Revision 1.8  2005-07-27 16:33:39  joergr
+ *  Added method that allows to add a DICOM dataset to the list of references.
+ *
+ *  Revision 1.7  2004/11/22 16:39:09  meichel
  *  Added method that checks if the SR document contains non-ASCII characters
  *    in any of the strings affected by SpecificCharacterSet.
  *

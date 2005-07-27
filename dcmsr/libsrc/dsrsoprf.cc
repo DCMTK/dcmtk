@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2004, OFFIS
+ *  Copyright (C) 2002-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,9 @@
  *    classes: DSRSOPInstanceReferenceList
  *             - InstanceStruct, SeriesStruct, StudyStruct
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-11-22 16:39:12 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-07-27 16:34:26 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1033,6 +1033,19 @@ OFCondition DSRSOPInstanceReferenceList::addItem(const OFString &studyUID,
 }
 
 
+OFCondition DSRSOPInstanceReferenceList::addItem(DcmItem &dataset)
+{
+    OFString studyUID, seriesUID, sopClassUID, instanceUID;
+    /* retrieve element values from dataset */
+    dataset.findAndGetOFString(DCM_StudyInstanceUID, studyUID);
+    dataset.findAndGetOFString(DCM_SeriesInstanceUID, seriesUID);
+    dataset.findAndGetOFString(DCM_SOPClassUID, sopClassUID);
+    dataset.findAndGetOFString(DCM_SOPInstanceUID, instanceUID);
+    /* add new item to the list of references (if valid) */
+    return addItem(studyUID, seriesUID, sopClassUID, instanceUID);
+}
+
+
 OFCondition DSRSOPInstanceReferenceList::removeItem()
 {
     OFCondition result = EC_IllegalCall;
@@ -1405,7 +1418,10 @@ OFBool DSRSOPInstanceReferenceList::containsExtendedCharacters()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrsoprf.cc,v $
- *  Revision 1.7  2004-11-22 16:39:12  meichel
+ *  Revision 1.8  2005-07-27 16:34:26  joergr
+ *  Added method that allows to add a DICOM dataset to the list of references.
+ *
+ *  Revision 1.7  2004/11/22 16:39:12  meichel
  *  Added method that checks if the SR document contains non-ASCII characters
  *    in any of the strings affected by SpecificCharacterSet.
  *
