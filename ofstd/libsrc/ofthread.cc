@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2004, OFFIS
+ *  Copyright (C) 1997-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -25,10 +25,10 @@
  *           of these classes supports the Solaris, POSIX and Win32
  *           multi-thread APIs.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-08-03 16:44:17 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-07-27 17:07:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofthread.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -180,7 +180,7 @@ int OFThread::join()
 unsigned long OFThread::threadID()
 {
 #ifdef HAVE_POINTER_TYPE_PTHREAD_T
-  // dangerous - we cast a pointer type to unsigned long and hope that it 
+  // dangerous - we cast a pointer type to unsigned long and hope that it
   // remains valid after casting back to a pointer type.
   return OFreinterpret_cast(unsigned long, theThread);
 #else
@@ -228,7 +228,11 @@ unsigned long OFThread::self()
 #ifdef WINDOWS_INTERFACE
   return OFstatic_cast(unsigned long, GetCurrentThreadId());
 #elif defined(POSIX_INTERFACE)
+#ifdef HAVE_POINTER_TYPE_PTHREAD_T
   return OFreinterpret_cast(unsigned long, pthread_self());
+#else
+  return OFstatic_cast(unsigned long, pthread_self());
+#endif
 #elif defined(SOLARIS_INTERFACE)
   return OFstatic_cast(unsigned long, thr_self());
 #else
@@ -935,7 +939,10 @@ void OFReadWriteLock::errorstr(OFString& description, int /* code */ )
  *
  * CVS/RCS Log:
  * $Log: ofthread.cc,v $
- * Revision 1.14  2004-08-03 16:44:17  meichel
+ * Revision 1.15  2005-07-27 17:07:52  joergr
+ * Fixed problem with pthread_t type cast and gcc 4.0.
+ *
+ * Revision 1.14  2004/08/03 16:44:17  meichel
  * Updated code to correctly handle pthread_t both as an integral integer type
  *   (e.g. Linux, Solaris) and as a pointer type (e.g. BSD, OSF/1).
  *
