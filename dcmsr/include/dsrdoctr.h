@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2004, OFFIS
+ *  Copyright (C) 2000-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDocumentTree
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-11-22 16:39:09 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-07-27 16:36:38 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -233,6 +233,31 @@ class DSRDocumentTree
      */
     DSRContentItem &getCurrentContentItem();
 
+    /** set internal cursor to the named node.
+     *  If more than one node exists with the given concept name the first one will
+     *  be selected.  Use gotoNextNamedNode() in order to go to the next matching node.
+     ** @param  conceptName    concept name of the node to be searched for
+     *  @param  startFromRoot  flag indicating whether to start from the root node
+     *                         or the current one
+     *  @param  searchIntoSub  flag indicating whether to search into sub-trees
+     *                         ("deep search") or on the current level only
+     ** @return ID of the new current node if successful, 0 otherwise
+     */
+    size_t gotoNamedNode(const DSRCodedEntryValue &conceptName,
+                         const OFBool startFromRoot = OFTrue,
+                         const OFBool searchIntoSub = OFTrue);
+
+    /** set internal cursor to the next named node.
+     *  Starts from "next" node, i.e. either the first children of the current node
+     *  or the first sibling following the current node.
+     ** @param  conceptName    concept name of the node to be searched for
+     *  @param  searchIntoSub  flag indicating whether to search into sub-trees
+     *                         ("deep search") or on the current level only
+     ** @return ID of the new current node if successful, 0 otherwise
+     */
+    size_t gotoNextNamedNode(const DSRCodedEntryValue &conceptName,
+                             const OFBool searchIntoSub = OFTrue);
+
     /** unmark all content items in the document tree.
      *  Use method 'setMark' on node-level to mark and unmark a single content item.
      *  Pointers to the DICOM dataset/item of marked content items are added to the optional
@@ -252,6 +277,7 @@ class DSRDocumentTree
      *  @return true if node contains non-ASCII characters, false otherwise
      */
     OFBool containsExtendedCharacters();
+
 
   protected:
 
@@ -330,7 +356,11 @@ class DSRDocumentTree
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.h,v $
- *  Revision 1.14  2004-11-22 16:39:09  meichel
+ *  Revision 1.15  2005-07-27 16:36:38  joergr
+ *  Added methods that allow to go to a named node, i.e. using a given concept
+ *  name.
+ *
+ *  Revision 1.14  2004/11/22 16:39:09  meichel
  *  Added method that checks if the SR document contains non-ASCII characters
  *    in any of the strings affected by SpecificCharacterSet.
  *

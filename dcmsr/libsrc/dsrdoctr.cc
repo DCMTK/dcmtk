@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2004, OFFIS
+ *  Copyright (C) 2000-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDocumentTree
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-11-22 16:39:12 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-07-27 16:39:16 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -454,6 +454,39 @@ DSRContentItem &DSRDocumentTree::getCurrentContentItem()
 }
 
 
+size_t DSRDocumentTree::gotoNamedNode(const DSRCodedEntryValue &conceptName,
+                                      const OFBool startFromRoot,
+                                      const OFBool searchIntoSub)
+{
+    size_t nodeID = 0;
+    if (conceptName.isValid())
+    {
+        if (startFromRoot)
+            gotoRoot();
+        DSRDocumentTreeNode *node = NULL;
+        clearNodeCursorStack();
+        /* iterate over all nodes */
+        do {
+            node = OFstatic_cast(DSRDocumentTreeNode *, getNode());
+            if ((node != NULL) && (node->getConceptName() == conceptName))
+                nodeID = node->getNodeID();
+        } while ((nodeID == 0) && iterate(searchIntoSub));
+    }
+    return nodeID;
+}
+
+
+size_t DSRDocumentTree::gotoNextNamedNode(const DSRCodedEntryValue &conceptName,
+                                          const OFBool searchIntoSub)
+{
+    /* first, goto "next" node */
+    size_t nodeID = iterate(searchIntoSub);
+    if (nodeID > 0)
+        nodeID = gotoNamedNode(conceptName, OFFalse /*startFromRoot*/, searchIntoSub);
+    return nodeID;
+}
+
+
 void DSRDocumentTree::unmarkAllContentItems()
 {
     DSRTreeNodeCursor cursor(getRoot());
@@ -626,7 +659,11 @@ OFBool DSRDocumentTree::containsExtendedCharacters()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.cc,v $
- *  Revision 1.24  2004-11-22 16:39:12  meichel
+ *  Revision 1.25  2005-07-27 16:39:16  joergr
+ *  Added methods that allow to go to a named node, i.e. using a given concept
+ *  name.
+ *
+ *  Revision 1.24  2004/11/22 16:39:12  meichel
  *  Added method that checks if the SR document contains non-ASCII characters
  *    in any of the strings affected by SpecificCharacterSet.
  *
