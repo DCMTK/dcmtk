@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2004, OFFIS
+ *  Copyright (C) 2003-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRMammographyCadSRConstraintChecker
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-11-18 13:55:52 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2005-07-27 16:55:04 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -96,11 +96,8 @@ OFBool DSRMammographyCadSRConstraintChecker::checkContentRelationship(const E_Va
     /* row 3 of the table */
     else if ((relationshipType == RT_hasAcqContext) && !byReference && (sourceValueType == VT_Image))
     {
-        /* WORKAROUND: allow NUM item since it is needed for some Mammography CAD SR templates
-         * (PS 3.16); however, this conflicts with the definitions in PS 3.3-2004
-         */
-        result = (targetValueType == VT_Text) || (targetValueType == VT_Code) || (targetValueType == VT_Num) ||
-                 (targetValueType == VT_Date) || (targetValueType == VT_Time);
+        result = (targetValueType == VT_Text) || (targetValueType == VT_Code) || (targetValueType == VT_Date) ||
+                 (targetValueType == VT_Time) || (targetValueType == VT_Num /* see CP 545 */);
     }
     /* row 4 of the table */
     else if ((relationshipType == RT_hasConceptMod) && !byReference &&
@@ -118,7 +115,7 @@ OFBool DSRMammographyCadSRConstraintChecker::checkContentRelationship(const E_Va
     else if ((relationshipType == RT_hasProperties) && byReference && (sourceValueType == VT_Code))
     {
         /* WORKAROUND: allow by-reference relationship since it is needed for some Mammography CAD
-         * SR templates (PS 3.16); however, this conflicts with the definitions in PS 3.3-2004
+         * SR templates (PS 3.16); however, this conflicts with the definitions in PS 3.3-2004.
          */
         result = (targetValueType == VT_Image);
     }
@@ -142,7 +139,11 @@ OFBool DSRMammographyCadSRConstraintChecker::checkContentRelationship(const E_Va
 /*
  *  CVS/RCS Log:
  *  $Log: dsrmamcc.cc,v $
- *  Revision 1.3  2004-11-18 13:55:52  joergr
+ *  Revision 1.4  2005-07-27 16:55:04  joergr
+ *  Added workaround to allow by-reference relationships as needed for some
+ *  Mammography CAD SR templates.
+ *
+ *  Revision 1.3  2004/11/18 13:55:52  joergr
  *  Added workaround to fix issue with inconsistent definitions in DICOM part 3
  *  and part 16 regarding Mammography CAD SR.
  *
