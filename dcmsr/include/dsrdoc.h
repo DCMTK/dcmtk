@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2004, OFFIS
+ *  Copyright (C) 2000-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDocument
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-11-22 16:39:09 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-07-27 16:41:55 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,7 +50,7 @@
 
 /** Interface class for 'dcmsr' (DICOM Structured Reporting Documents).
  *  This class supports reading, writing, creation, printing and rendering of DICOM
- *  SR documents (according to DICOM PS 3.x 2003, formerly known as Supplement 23).
+ *  SR documents (according to DICOM PS 3.x-2004, formerly known as Supplement 23).
  *  The list of supported SOP classes is available in file "dsrtypes.h".
  */
 class DSRDocument
@@ -301,7 +301,7 @@ class DSRDocument
      *  A document can have more than one (direct) predecessor document.  This is e.g. the case
      *  when two or more documents have been merged to create it.  The corresponding method
      *  createRevisedVersion() automatically adds a reference to the current document.
-     *  PS 3.3 - 2003 states: "[The Predecessor Documents Sequence] Shall refer to SR SOP Instances
+     *  PS 3.3-2004 states: "[The Predecessor Documents Sequence] Shall refer to SR SOP Instances
      *  (e.g. prior or provisional reports) whose content has been wholly or partially included in
      *  this document with or without modification." and "[...] the use of the Predecessor Document
      *  Sequence allows tracing back to the input SR Document, which in this case is the previous
@@ -317,7 +317,7 @@ class DSRDocument
      *  a revised version of the current document).  Possibly, there will be a createDuplicate()
      *  method or the like in the future which creates an identical copy of the current document in
      *  a new study/series.
-     *  PS 3.3 - 2003 states: "If identical copies of an SR Document are to be included in multiple
+     *  PS 3.3-2004 states: "If identical copies of an SR Document are to be included in multiple
      *  Studies then the entire SR Document shall be duplicated with appropriate changes for
      *  inclusion into the different Studies (i.e. Study Instance UID, Series Instance UID, SOP
      *  Instance UID, Identical Documents Sequence etc.). The Identical Documents Sequence Attribute
@@ -327,7 +327,7 @@ class DSRDocument
     DSRSOPInstanceReferenceList &getIdenticalDocuments();
 
     /** get list of referenced SOP instances (Current Requested Procedure Evidence).
-     *  PS 3.3 - 2003 states: "The intent of the Current Requested Procedure Evidence Sequence
+     *  PS 3.3-2004 states: "The intent of the Current Requested Procedure Evidence Sequence
      *  is to reference all evidence created in order to satisfy the current Requested Procedure(s)
      *  for this SR Document. This shall include, but is not limited to, all current evidence
      *  referenced in the content tree." and "In the context of the Key Object Selection, the
@@ -343,7 +343,7 @@ class DSRDocument
     DSRSOPInstanceReferenceList &getCurrentRequestedProcedureEvidence();
 
     /** get list of referenced SOP instances (Pertinent Other Evidence).
-     *  PS 3.3 - 2003 states: "The Pertinent Other Evidence Sequence attribute is used to reference
+     *  PS 3.3-2004 states: "The Pertinent Other Evidence Sequence attribute is used to reference
      *  all other evidence considered pertinent for this SR Document that is not listed in the Current
      *  Requested Procedure Evidence Sequence. This requires that the same SOP Instance shall not be
      *  referenced in both of these Sequences."
@@ -1186,7 +1186,10 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
- *  Revision 1.35  2004-11-22 16:39:09  meichel
+ *  Revision 1.36  2005-07-27 16:41:55  joergr
+ *  Updated reference to DICOM standard edition.
+ *
+ *  Revision 1.35  2004/11/22 16:39:09  meichel
  *  Added method that checks if the SR document contains non-ASCII characters
  *    in any of the strings affected by SpecificCharacterSet.
  *
