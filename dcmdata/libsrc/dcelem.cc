@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2004, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Implementation of class DcmElement
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2004-04-27 09:21:27 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-07-27 09:31:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcelem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.49 $
+ *  CVS/RCS Revision: $Revision: 1.50 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -296,23 +296,25 @@ OFCondition DcmElement::getOFStringArray(OFString &value,
     /* this is a general implementation which is only used when the derived
        VR class does not reimplement it
      */
-    OFString string;
-    unsigned long i = 0;
+    errorFlag = EC_Normal;
     const unsigned long count = getVM();
-    /* iterate over all values and convert them to a character string */
-    while ((i < count) && (errorFlag = getOFString(string, i, normalize)).good())
+    /* intialize result string */
+    value.clear();
+    if (count > 0)
     {
-        /* intialize result string */
-        if (i == 0)
+        OFString string;
+        unsigned long i = 0;
+        /* reserve number of bytes expected (heuristic) */
+        value.reserve(OFstatic_cast(unsigned int, getLength()));
+        /* iterate over all values and convert them to a character string */
+        while ((i < count) && (errorFlag = getOFString(string, i, normalize)).good())
         {
-            /* reserve number of bytes expected (heuristic) */
-            value.reserve(OFstatic_cast(unsigned int, getLength()));
-            value.clear();
-        } else
-            value += '\\';
-        /* append current value to the result string */
-        value += string;
-        i++;
+            if (i > 0)
+                value += '\\';
+            /* append current value to the result string */
+            value += string;
+            i++;
+        }
     }
     return errorFlag;
 }
@@ -937,7 +939,7 @@ OFCondition DcmElement::write(DcmOutputStream &outStream,
             /* write tag and length information to it, do something */
             if (fTransferState == ERW_init)
             {
-                /* first compare with DCM_TagInfoLength (12). If there is not enough space 
+                /* first compare with DCM_TagInfoLength (12). If there is not enough space
                  * in the buffer, check if the buffer is still sufficient for the requirements
                  * of this element, which may need only 8 instead of 12 bytes.
                  */
@@ -1067,7 +1069,11 @@ OFCondition DcmElement::writeXML(ostream &out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
-** Revision 1.49  2004-04-27 09:21:27  wilkens
+** Revision 1.50  2005-07-27 09:31:45  joergr
+** Fixed bug in getOFStringArray() which prevented the result string from being
+** cleared under certain circumstances.
+**
+** Revision 1.49  2004/04/27 09:21:27  wilkens
 ** Fixed a bug in dcelem.cc which occurs when one is serializing a dataset
 ** (that contains an attribute whose length value is coded with 2 bytes) into
 ** a given buffer. Although the number of available bytes in the buffer was
