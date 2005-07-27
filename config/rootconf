@@ -69,59 +69,59 @@ dcmtk-install-doc:
 	done
 
 install-man:
-	(cd doxygen; \$(MAKE) DESTDIR="\$(DESTDIR)" install-man)
+	(cd doxygen && \$(MAKE) DESTDIR="\$(DESTDIR)" install-man)
 
 install-html:
-	(cd doxygen; \$(MAKE) DESTDIR="\$(DESTDIR)" install-html)
+	(cd doxygen && \$(MAKE) DESTDIR="\$(DESTDIR)" install-html)
 
 man:
-	(cd doxygen; \$(MAKE) DESTDIR="\$(DESTDIR)" man)
+	(cd doxygen && \$(MAKE) DESTDIR="\$(DESTDIR)" man)
 
 html:
-	(cd doxygen; \$(MAKE) DESTDIR="\$(DESTDIR)" html)
+	(cd doxygen && \$(MAKE) DESTDIR="\$(DESTDIR)" html)
 
 EOF
 
 for module in config $modules; do
 	cat >> $output <<EOF
 ${module}-all:
-	(cd $module; \$(MAKE) ARCH="\$(ARCH)" DESTDIR="\$(DESTDIR)" all)
+	(cd $module && \$(MAKE) ARCH="\$(ARCH)" DESTDIR="\$(DESTDIR)" all)
 
 ${module}-libsrc-all:
-	(cd $module; \$(MAKE) ARCH="\$(ARCH)" DESTDIR="\$(DESTDIR)" libsrc-all)
+	(cd $module && \$(MAKE) ARCH="\$(ARCH)" DESTDIR="\$(DESTDIR)" libsrc-all)
 
 ${module}-install:
-	(cd $module; \$(MAKE) ARCH="\$(ARCH)" DESTDIR="\$(DESTDIR)" install)
+	(cd $module && \$(MAKE) ARCH="\$(ARCH)" DESTDIR="\$(DESTDIR)" install)
 
 ${module}-install-bin:
-	(cd $module; \$(MAKE) ARCH="\$(ARCH)" DESTDIR="\$(DESTDIR)" install-bin)
+	(cd $module && \$(MAKE) ARCH="\$(ARCH)" DESTDIR="\$(DESTDIR)" install-bin)
 
 ${module}-install-doc:
-	(cd $module; \$(MAKE) ARCH="\$(ARCH)" DESTDIR="\$(DESTDIR)" install-doc)
+	(cd $module && \$(MAKE) ARCH="\$(ARCH)" DESTDIR="\$(DESTDIR)" install-doc)
 
 ${module}-install-etc:
-	(cd $module; \$(MAKE) ARCH="\$(ARCH)" DESTDIR="\$(DESTDIR)" install-etc)
+	(cd $module && \$(MAKE) ARCH="\$(ARCH)" DESTDIR="\$(DESTDIR)" install-etc)
 
 ${module}-install-lib:
-	(cd $module; \$(MAKE) ARCH="\$(ARCH)" DESTDIR="\$(DESTDIR)" install-lib)
+	(cd $module && \$(MAKE) ARCH="\$(ARCH)" DESTDIR="\$(DESTDIR)" install-lib)
 
 ${module}-install-include:
-	(cd $module; \$(MAKE) ARCH="\$(ARCH)" DESTDIR="\$(DESTDIR)" install-include)
+	(cd $module && \$(MAKE) ARCH="\$(ARCH)" DESTDIR="\$(DESTDIR)" install-include)
 
 ${module}-install-support:
-	(cd $module; \$(MAKE) ARCH="\$(ARCH)" DESTDIR="\$(DESTDIR)" install-support)
+	(cd $module && \$(MAKE) ARCH="\$(ARCH)" DESTDIR="\$(DESTDIR)" install-support)
 
 EOF
 done
 for tag in dependencies clean distclean ; do
 	echo "${tag}:" >> $output
 	for module in $modules; do
-		echo "	(cd ${module}; \$(MAKE) ${tag})" >> $output
+		echo "	(cd ${module} && \$(MAKE) ${tag})" >> $output
 	done
 	if test $tag != dependencies ; then
-		echo "	(cd doxygen; \$(MAKE) ${tag})" >> $output
+		echo "	(cd doxygen && \$(MAKE) ${tag})" >> $output
 	fi
-	echo "	-(cd config; \$(MAKE) ${tag})" >> $output
+	echo "	-(cd config && \$(MAKE) ${tag})" >> $output
 	if test $tag = clean ; then
 		echo "	rm -f \$(TRASH)" >> $output
 	elif test $tag = distclean ; then
@@ -155,7 +155,7 @@ if test "x--help" = "x\$*"; then
 else
   for module in \$modules ; do
 	echo "Running configure for module \$module."
-	(cd \$module; ./configure \$* )
+	(cd \$module && ./configure \$* )
   done
 fi
 EOF
