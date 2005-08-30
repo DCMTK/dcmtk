@@ -9,7 +9,7 @@
 \section synopsis SYNOPSIS
 
 \verbatim
-storescp [options] port
+storescp [options] [port]
 \endverbatim
 
 \section description DESCRIPTION
@@ -24,7 +24,9 @@ supports the Verification Service Class as an SCP.
 \section parameters PARAMETERS
 
 \verbatim
-port  tcp/ip port number to listen on
+port  tcp/ip port number to listen on. 
+      This parameter is required unless the --inetd option 
+      is specified.
 \endverbatim
 
 \section options OPTIONS
@@ -91,6 +93,10 @@ network host access control (tcp wrapper) options:
           enforce host access control rules
 
 other network options:
+
+  -id   --inetd
+          run from inetd super server 
+          (this option is available only on Posix platforms)
 
   -aet  --aetitle  aetitle: string
           set my AE title (default: STORESCP)
@@ -495,6 +501,26 @@ this case the access control rules defined in the system's host access control
 tables for \b storescp are enforced.  The default locations of the host access
 control tables are <em>/etc/hosts.allow</em> and <em>/etc/hosts.deny</em>.
 Further details are described in <b>hosts_access</b>(5).
+
+\subsection running_from_inetd Running storescp from inetd
+
+On Posix platforms, storescp can be initiated through the inetd(8) super server. 
+This requires that storescp be configured in the /etc/inetd.conf configuration
+file. A typical configuration line could look like this:
+\verbatim
+acr-nema stream tcp nowait root /usr/sbin/storescp -id +ac -od /tmp/storescp
+\endverbatim
+where "-id" (--inetd) activates the inetd mode in which the DICOM association
+is actually accepted by inetd and passed to storescp, '+ac' (--access-control) activates
+the TCP wrapper based access control described above and '-od' (--output-directory)
+defines the directory in which storescp stores incoming DICOM objects.
+Note that the service name ("acr-nema" in this example) determines the port number
+on which DICOM associations are accepted and must be defined in /etc/services.
+When runnning from inetd, the stdout and stderr streams are redirected to 
+files in the /tmp filesystem which can be identified by the filename starting
+with the prefix "storescp_".
+Please note that when run through inetd, storescp is executed with root 
+privileges, which may be a security risk.
 
 \subsection profiles Association Negotiation Profiles and Configuration Files
 

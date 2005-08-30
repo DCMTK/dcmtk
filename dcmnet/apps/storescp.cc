@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-02-22 09:40:54 $
+ *  Update Date:      $Date: 2005-08-30 08:35:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.75 $
+ *  CVS/RCS Revision: $Revision: 1.76 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,6 +80,20 @@ END_EXTERN_C
 #include <zlib.h>          /* for zlibVersion() */
 #endif
 
+#if defined(HAVE_MKTEMP) && !defined(HAVE_PROTOTYPE_MKTEMP)
+extern "C" {
+char * mktemp(char *);
+}
+#endif
+
+// Solaris 2.5.1 has mkstemp() in libc.a but no prototype
+#if defined(HAVE_MKSTEMP) && !defined(HAVE_PROTOTYPE_MKSTEMP)
+extern "C" {
+int mkstemp(char *);
+}
+#endif
+
+
 #ifdef PRIVATE_STORESCP_DECLARATIONS
 PRIVATE_STORESCP_DECLARATIONS
 #else
@@ -105,12 +119,13 @@ static void executeOnEndOfStudy();
 static void renameOnEndOfStudy();
 static OFString replaceChars( const OFString &srcstr, const OFString &pattern, const OFString &substitute );
 static void executeCommand( const OFString &cmd );
-static void cleanChildren();
+static void cleanChildren(pid_t pid, OFBool synch);
 static OFCondition acceptUnknownContextsWithPreferredTransferSyntaxes(
          T_ASC_Parameters * params,
          const char* transferSyntaxes[],
          int transferSyntaxCount,
          T_ASC_SC_ROLE acceptedRole = ASC_SC_ROLE_DEFAULT);
+static int makeTempFile();
 
 OFBool             opt_uniqueFilenames = OFFalse;
 OFCmdUnsignedInt   opt_port = 0;
@@ -136,6 +151,7 @@ OFBool             opt_abortDuringStore = OFFalse;
 OFBool             opt_abortAfterStore = OFFalse;
 OFBool             opt_promiscuous = OFFalse;
 OFBool             opt_correctUIDPadding = OFFalse;
+OFBool             opt_inetd_mode = OFFalse;
 OFString           callingaetitle;  // calling AE title will be stored here
 OFString           calledaetitle;   // called AE title will be stored here
 const char *       opt_respondingaetitle = APPLICATIONTITLE;
@@ -193,7 +209,7 @@ int main(int argc, char *argv[])
   OFCommandLine cmd;
 
   cmd.setParamColumn(LONGCOL+SHORTCOL+4);
-  cmd.addParam("port", "tcp/ip port number to listen on");
+  cmd.addParam("port", "tcp/ip port number to listen on", OFCmdParam::PM_Optional);
 
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
   cmd.addGroup("general options:", LONGCOL, SHORTCOL+2);
@@ -232,6 +248,11 @@ int main(int argc, char *argv[])
 #endif
 
     cmd.addSubGroup("other network options:");
+#ifdef HAVE_CONFIG_H
+      // this option is only offered on Posix platforms
+      cmd.addOption("--inetd",                  "-id",       "run from inetd super server");
+#endif
+
       OFString opt1 = "set my AE title (default: ";
       opt1 += APPLICATIONTITLE;
       opt1 += ")";
@@ -376,7 +397,47 @@ int main(int argc, char *argv[])
 
     /* command line parameters */
 
-    app.checkParam(cmd.getParamAndCheckMinMax(1, opt_port, 1, 65535));
+    if (cmd.getParamCount() == 1)
+      app.checkParam(cmd.getParamAndCheckMinMax(1, opt_port, 1, 65535));
+
+#ifdef HAVE_CONFIG_H
+     if (cmd.findOption("--inetd")) 
+     {
+       opt_inetd_mode = OFTrue;
+       
+       // duplicate stdin, which is the socket passed by inetd
+       int inetd_fd = dup(0); 
+       if (inetd_fd < 0) exit(99);
+
+       close(0); // close stdin
+       close(1); // close stdout
+       close(2); // close stderr 
+
+       // open new file descriptor for stdin
+       int fd = open("/dev/null",O_RDONLY); 
+       if (fd != 0) exit(99);
+
+       // create new file descriptor for stdout
+       fd = makeTempFile();
+       if (fd != 1) exit(99);
+
+       // create new file descriptor for stderr
+       fd = makeTempFile();
+       if (fd != 2) exit(99);
+
+       dcmExternalSocketHandle.set(inetd_fd);
+
+       // the port number is not really used. Set to non-privileged port number
+       // to avoid failing the privilege test.
+       opt_port = 1024;       
+     } 
+#endif
+    
+    // omitting the port number is only allowed in inetd mode
+    if ((! opt_inetd_mode) && (cmd.getParamCount() == 0))
+    {
+          app.printError("Missing parameter port");
+    }
 
     if (cmd.findOption("--verbose")) opt_verbose=OFTrue;
     if (cmd.findOption("--debug"))
@@ -868,7 +929,7 @@ int main(int argc, char *argv[])
     cond = acceptAssociation(net, asccfg);
 
     /* remove zombie child processes */
-    cleanChildren();
+    cleanChildren(-1, OFFalse);
 #ifdef WITH_OPENSSL
     /* since storescp is usually terminated with SIGTERM or the like,
      * we write back an updated random seed after every association handled.
@@ -888,7 +949,8 @@ int main(int argc, char *argv[])
       }
     }
 #endif
-
+    // if running in inetd mode, we always terminate after one association
+    if (dcmExternalSocketHandle.get() >= 0) break;
   }
 
   /* drop the network, i.e. free memory of T_ASC_Network* structure. This call */
@@ -991,6 +1053,13 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
   {
     printf("Parameters:\n");
     ASC_dumpParameters(assoc->params, COUT);
+
+    DIC_AE callingTitle;
+    DIC_AE calledTitle;
+    ASC_getAPTitles(assoc->params, callingTitle, calledTitle, NULL);
+
+    CERR << "called AE:  " << calledTitle << endl
+         << "calling AE: " << callingTitle << endl;
   }
 
   if (opt_refuseAssociation)
@@ -1978,7 +2047,7 @@ static void executeCommand( const OFString &cmd )
   {
     /* we are the parent process */
     /* remove pending zombie child processes */
-    cleanChildren();
+    cleanChildren(pid, OFTrue);
   }
   else // in case we are the child process, execute the command etc.
   {
@@ -2008,7 +2077,7 @@ static void executeCommand( const OFString &cmd )
 #endif
 }
 
-static void cleanChildren()
+static void cleanChildren(pid_t pid, OFBool synch)
     /*
      * This function removes child processes that have terminated,
      * i.e. converted to zombies. Should be called now and then.
@@ -2028,11 +2097,11 @@ static void cleanChildren()
 
 #if defined(HAVE_WAITPID) || defined(HAVE_WAIT3)
     int child = 1;
-    int options = WNOHANG;
+    int options = synch ? 0 : WNOHANG;
     while (child > 0)
     {
 #ifdef HAVE_WAITPID
-        child = OFstatic_cast(int, waitpid(-1, &stat_loc, options));
+        child = OFstatic_cast(int, waitpid(pid, &stat_loc, options));
 #elif defined(HAVE_WAIT3)
         child = wait3(&status, options, &rusage);
 #endif
@@ -2040,6 +2109,8 @@ static void cleanChildren()
         {
            if (errno != ECHILD) CERR << "wait for child failed: " << strerror(errno) << endl;
         }
+
+        if (synch) child = -1; // break out of loop
     }
 #endif
 }
@@ -2182,11 +2253,29 @@ static OFCondition acceptUnknownContextsWithPreferredTransferSyntaxes(
     return cond;
 }
 
+#ifdef HAVE_CONFIG_H
+
+static int makeTempFile()
+{
+    char tempfile[30];
+    OFStandard::strlcpy(tempfile, "/tmp/storescp_XXXXXX", 30);
+#ifdef HAVE_MKSTEMP
+    return mkstemp(tempfile);
+#else /* ! HAVE_MKSTEMP */
+    mktemp(tempfile);
+    return open(tempfile, O_WRONLY|O_CREAT|O_APPEND,0644); 
+#endif
+}
+
+#endif
 
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.75  2005-02-22 09:40:54  meichel
+** Revision 1.76  2005-08-30 08:35:23  meichel
+** Added command line option --inetd, which allows storescp to run from inetd.
+**
+** Revision 1.75  2005/02/22 09:40:54  meichel
 ** Fixed two bugs in "bit-preserving" Store SCP code. Errors while creating or
 **   writing the DICOM file (e.g. file system full) now result in a DIMSE error
 **   response (out of resources) being sent back to the SCU.

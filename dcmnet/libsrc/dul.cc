@@ -54,9 +54,9 @@
 ** Author, Date:        Stephen M. Moore, 14-Apr-93
 ** Intent:              This module contains the public entry points for the
 **                      DICOM Upper Layer (DUL) protocol package.
-** Last Update:         $Author: meichel $, $Date: 2004-07-28 08:15:19 $
+** Last Update:         $Author: meichel $, $Date: 2005-08-30 08:35:27 $
 ** Source File:         $RCSfile: dul.cc,v $
-** Revision:            $Revision: 1.64 $
+** Revision:            $Revision: 1.65 $
 ** Status:              $State: Exp $
 */
 
@@ -1803,7 +1803,8 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
     (*key)->networkSpecific.TCP.tLayer = NULL;
     (*key)->networkSpecific.TCP.tLayerOwned = 0;
 
-    if ((*key)->applicationFunction & DICOM_APPLICATION_ACCEPTOR) {
+    if (dcmExternalSocketHandle.get() < 0 && ((*key)->applicationFunction & DICOM_APPLICATION_ACCEPTOR))
+    {
 
 #ifdef HAVE_DECLARATION_SOCKLEN_T
     socklen_t length;
@@ -2423,7 +2424,10 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, ostream& outs
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.64  2004-07-28 08:15:19  meichel
+** Revision 1.65  2005-08-30 08:35:27  meichel
+** Added command line option --inetd, which allows storescp to run from inetd.
+**
+** Revision 1.64  2004/07/28 08:15:19  meichel
 ** Fixed bug in DUL that could cause an application to block when waiting
 **   for an association if a select() was interrupted by a signal.
 **
