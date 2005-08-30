@@ -23,9 +23,9 @@
  *           class providers.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-02-24 14:45:34 $
+ *  Update Date:      $Date: 2005-08-30 08:39:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlmactmg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -440,6 +440,18 @@ OFCondition WlmActivityManager::WaitForAssociation( T_ASC_Network * net )
     cond = NegotiateAssociation( assoc );
     if( cond.bad() )
     {
+      if( !opt_singleProcess )
+      {
+        ASC_dropAssociation( assoc );
+        ASC_destroyAssociation( &assoc );
+      }
+      return( EC_Normal );
+    }
+
+    // Reject association if no presentation context was negotiated
+    if( ASC_countAcceptedPresentationContexts( assoc->params ) == 0 )
+    {
+      RefuseAssociation( &assoc, WLM_FORCED );
       if( !opt_singleProcess )
       {
         ASC_dropAssociation( assoc );
@@ -1249,7 +1261,12 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
 /*
 ** CVS Log
 ** $Log: wlmactmg.cc,v $
-** Revision 1.16  2004-02-24 14:45:34  meichel
+** Revision 1.17  2005-08-30 08:39:20  meichel
+** The worklist SCP now rejects an association when no presentation context
+**   was accepted while processing the association request. Needed for some SCUs
+**   which become confused otherwise.
+**
+** Revision 1.16  2004/02/24 14:45:34  meichel
 ** Fixed resource leak due to sockets remaining in CLOSE_WAIT state.
 **
 ** Revision 1.15  2003/08/21 09:33:52  wilkens
