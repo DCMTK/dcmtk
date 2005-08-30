@@ -22,9 +22,9 @@
  *  Purpose: class DcmQueryRetrieveMoveContext
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-06-16 08:02:43 $
+ *  Update Date:      $Date: 2005-08-30 08:37:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqrcbm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -98,7 +98,7 @@ void DcmQueryRetrieveMoveContext::callbackHandler(
         dbcond = dbHandle.startMoveRequest(
 	    request->AffectedSOPClassUID, requestIdentifiers, &dbStatus);
         if (dbcond.bad()) {
-	    DcmQueryRetrieveOptions::DcmQueryRetrieveOptions::errmsg("moveSCP: Database: startMoveRequest Failed (%s):",
+	    DcmQueryRetrieveOptions::errmsg("moveSCP: Database: startMoveRequest Failed (%s):",
 		DU_cmoveStatusString(dbStatus.status()));
         }
 
@@ -617,7 +617,10 @@ OFCondition DcmQueryRetrieveMoveContext::addAllStoragePresentationContexts(T_ASC
 /*
  * CVS Log
  * $Log: dcmqrcbm.cc,v $
- * Revision 1.3  2005-06-16 08:02:43  meichel
+ * Revision 1.4  2005-08-30 08:37:52  meichel
+ * Fixed syntax error reported by Visual Studio 2003
+ *
+ * Revision 1.3  2005/06/16 08:02:43  meichel
  * Added system include files needed on Solaris
  *
  * Revision 1.2  2005/04/04 14:39:54  meichel
