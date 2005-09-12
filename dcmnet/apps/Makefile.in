@@ -23,8 +23,8 @@ LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(dcmdatadir)/libsrc \
 LOCALLIBS = -ldcmnet -ldcmdata -lofstd $(ZLIBLIBS) $(TCPWRAPPERLIBS)
 DCMTLSLIBS = -ldcmtls
 
-objs = echoscu.o storescu.o storescp.o findscu.o movescu.o
-progs = echoscu storescu storescp findscu movescu
+objs = echoscu.o storescu.o storescp.o findscu.o movescu.o termscu.o
+progs = echoscu storescu storescp findscu movescu termscu
 
 
 all: $(progs)
@@ -42,6 +42,9 @@ findscu: findscu.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(DCMTLSLIBS) $(OPENSSLLIBS) $(MATHLIBS) $(LIBS)
 
 movescu: movescu.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
+
+termscu: termscu.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 install: all

@@ -19,6 +19,7 @@ ADD_EXECUTABLE(findscu findscu)
 ADD_EXECUTABLE(movescu movescu)
 ADD_EXECUTABLE(storescp storescp)
 ADD_EXECUTABLE(storescu storescu)
+ADD_EXECUTABLE(termscu termscu)
 
 # make sure executables are linked to the corresponding libraries
 # echoscu
@@ -82,4 +83,10 @@ ELSE(WITH_ZLIB)
   ELSE(WITH_OPENSSL)
     TARGET_LINK_LIBRARIES(storescu netapi32 wsock32 ofstd dcmdata dcmtls dcmnet)
   ENDIF(WITH_OPENSSL)
+ENDIF(WITH_ZLIB)
+# termscu
+IF(WITH_ZLIB)
+  TARGET_LINK_LIBRARIES(termscu netapi32 wsock32 ofstd dcmdata dcmnet debug zlib_d optimized zlib_o)
+ELSE(WITH_ZLIB)
+  TARGET_LINK_LIBRARIES(termscu netapi32 wsock32 ofstd dcmdata dcmnet)
 ENDIF(WITH_ZLIB)

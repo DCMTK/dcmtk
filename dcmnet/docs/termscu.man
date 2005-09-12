@@ -1,0 +1,115 @@
+/*!
+
+\if MANPAGES
+\page termscu DICOM termination SCU
+\else
+\page termscu termscu: DICOM termination SCU
+\endif
+
+\section synopsis SYNOPSIS
+
+\verbatim
+termscu [options] peer port
+\endverbatim
+
+\section description DESCRIPTION
+
+The \b termscu application implements a Service Class User (SCU) for DCMTK's
+private Shutdown SOP Class.  It tries to negotiate this private Shutdown SOP
+Class with a Service Class Provider (SCP) which (if this feature is implemen-
+nted) will immediately shutdown after refusing the association.  The appli-
+cation can be used to shutdown some of DCMTK's server applications.
+
+\section parameters PARAMETERS
+
+\verbatim
+peer  hostname of DICOM peer
+
+port  tcp/ip port number of peer
+\endverbatim
+
+\section options OPTIONS
+
+\subsection general_options general options
+\verbatim
+  -h    --help
+          print this help text and exit
+
+        --version
+          print version information and exit
+
+  -v    --verbose
+          verbose mode, print processing details
+
+  -d    --debug
+          debug mode, print debug information
+\endverbatim
+
+\subsection network_options network options
+\verbatim
+application entity titles:
+
+  -aet  --aetitle  aetitle: string
+          set my calling AE title (default: ECHOSCU)
+
+  -aec  --call  aetitle: string
+          set called AE title of peer (default: ANY-SCP)
+
+other network options:
+
+  -pdu  --max-pdu  [n]umber of bytes: integer [4096..131072]
+          set max receive pdu to n bytes (default: 16384)
+\endverbatim
+
+\section notes NOTES
+
+\subsection dicom_conformance DICOM Conformance
+
+The \b termscu application supports the following SOP Classes as an SCU:
+
+\verbatim
+PrivateShutdownSOPClass                1.2.276.0.7230010.3.4.1915765545.18030.917282194.0
+\endverbatim
+
+\section command_line COMMAND LINE
+
+All command line tools use the following notation for parameters: square
+brackets enclose optional values (0-1), three trailing dots indicate that
+multiple values are allowed (1-n), a combination of both means 0 to n values.
+
+Command line options are distinguished from parameters by a leading '+' or '-'
+sign, respectively.  Usually, order and position of command line options are
+arbitrary (i.e. they can appear anywhere).  However, if options are mutually
+exclusive the rightmost appearance is used.  This behaviour conforms to the
+standard evaluation rules of common Unix shells.
+
+In addition, one or more command files can be specified using an '@' sign as a
+prefix to the filename (e.g. <em>\@command.txt</em>).  Such a command argument
+is replaced by the content of the corresponding text file (multiple
+whitespaces are treated as a single separator) prior to any further
+evaluation.  Please note that a command file cannot contain another command
+file.  This simple but effective approach allows to summarize common
+combinations of options/parameters and avoids longish and confusing command
+lines (an example is provided in file <em>share/data/dumppat.txt</em>).
+
+\section environment ENVIRONMENT
+
+The \b termscu utility will attempt to load DICOM data dictionaries specified
+in the \e DCMDICTPATH environment variable.  By default, i.e. if the
+\e DCMDICTPATH environment variable is not set, the file
+<em>\<PREFIX\>/lib/dicom.dic</em> will be loaded unless the dictionary is built
+into the application (default for Windows).
+
+The default behaviour should be preferred and the \e DCMDICTPATH environment
+variable only used when alternative data dictionaries are required.  The
+\e DCMDICTPATH environment variable has the same format as the Unix shell
+\e PATH variable in that a colon (":") separates entries.  The data dictionary
+code will attempt to load each file specified in the \e DCMDICTPATH
+environment variable.  It is an error if no data dictionary can be loaded.
+
+\section copyright COPYRIGHT
+
+Copyright (C) 1994-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
+Germany.
+
+*/

@@ -17,6 +17,7 @@ This module contains the following command line tools:
 \li \ref movescu
 \li \ref storescp
 \li \ref storescu
+\li \ref termscu
 
 \section Examples
 
