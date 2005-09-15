@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2004, OFFIS
+ *  Copyright (C) 2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,10 +22,10 @@
  *  Purpose: Termination Service Class User (negotiates the private shutdown
  *           SOP class in order to shutdown server applications)
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2005-09-12 11:39:04 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-09-15 08:41:42 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/termscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,7 +60,7 @@
 #define APPLICATIONTITLE "TERMSCU"
 #define PEERAPPLICATIONTITLE "ANY-SCP"
 #define SHORTCOL 4
-#define LONGCOL 19
+#define LONGCOL  9
 
 // ----------------------------------------------------------------------------
 
@@ -343,7 +343,10 @@ int main( int argc, char *argv[] )
 /*
 ** CVS Log
 ** $Log: termscu.cc,v $
-** Revision 1.1  2005-09-12 11:39:04  wilkens
+** Revision 1.2  2005-09-15 08:41:42  joergr
+** Fixed wrong value for LONGCOL.
+**
+** Revision 1.1  2005/09/12 11:39:04  wilkens
 ** Added command line tool termscu in dcmnet; this tool can be used to shutdown
 ** DCMTK server applications which support negotiating the private Shutdown SOP
 ** Class in DCMTK.
