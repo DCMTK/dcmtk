@@ -1,0 +1,11 @@
+# declare project
+PROJECT(doxygen)
+
+# doxygen support
+IF(DOXYGEN_EXECUTABLE)
+  ADD_CUSTOM_TARGET(DOXYGEN ${DOXYGEN_EXECUTABLE} htmldocs.cfg)
+ENDIF(DOXYGEN_EXECUTABLE)
+
+# declare installation files
+FILE(GLOB_RECURSE HTMLDOCS_FILES htmldocs/*)
+INSTALL_FILES(${INSTALL_HTMDIR} FILES ${HTMLDOCS_FILES})

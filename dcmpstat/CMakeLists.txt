@@ -2,13 +2,7 @@
 PROJECT(dcmpstat)
 
 # declare include directories which hold for all subdirectories
-INCLUDE_DIRECTORIES(${dcmpstat_SOURCE_DIR}/include ${ofstd_SOURCE_DIR}/include ${dcmdata_SOURCE_DIR}/include ${dcmnet_SOURCE_DIR}/include ${dcmimgle_SOURCE_DIR}/include ${dcmqrdb_SOURCE_DIR}/include ${dcmsr_SOURCE_DIR}/include ${dcmsign_SOURCE_DIR}/include ${dcmtls_SOURCE_DIR}/include)
-IF(WITH_ZLIB)
-  INCLUDE_DIRECTORIES(${WITH_ZLIBINC}/include)
-ENDIF(WITH_ZLIB)
-IF(WITH_OPENSSL)
-  INCLUDE_DIRECTORIES(${WITH_OPENSSLINC}/include)
-ENDIF(WITH_OPENSSL)
+INCLUDE_DIRECTORIES(${dcmpstat_SOURCE_DIR}/include ${ofstd_SOURCE_DIR}/include ${dcmdata_SOURCE_DIR}/include ${dcmnet_SOURCE_DIR}/include ${dcmimgle_SOURCE_DIR}/include ${dcmqrdb_SOURCE_DIR}/include ${dcmsr_SOURCE_DIR}/include ${dcmsign_SOURCE_DIR}/include ${dcmtls_SOURCE_DIR}/include ${ZLIB_INCDIR} ${OPENSSL_INCDIR})
 
 # recurse into subdirectories
-SUBDIRS(libsrc apps)
+SUBDIRS(libsrc apps tests include etc)
