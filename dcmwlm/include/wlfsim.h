@@ -21,10 +21,10 @@
 *
 *  Purpose: Class for managing file system interaction.
 *
-*  Last Update:      $Author: meichel $
-*  Update Date:      $Date: 2005-06-16 08:06:51 $
+*  Last Update:      $Author: wilkens $
+*  Update Date:      $Date: 2005-09-23 12:56:40 $
 *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wlfsim.h,v $
-*  CVS/RCS Revision: $Revision: 1.9 $
+*  CVS/RCS Revision: $Revision: 1.10 $
 *  Status:           $State: Exp $
 *
 *  CVS/RCS Log at end of file
@@ -277,6 +277,14 @@ class WlmFileSystemInteractionManager
        */
     OFBool RequestedProcedurePrioritiesMatch( const char *datasetValue, const char *searchMaskValue );
 
+      /** This function returns OFTrue if the dataset's and the search mask's values in
+       *  attribute patient's birth date match; otherwise OFFalse will be returned.
+       *  @param datasetValue    Value for the corresponding attribute in the dataset; might be NULL.
+       *  @param searchMaskValue Value for the corresponding attribute in the search mask; never NULL.
+       *  @return OFTrue if the values match, OFFalse otherwise.
+       */
+    OFBool PatientsBirthDatesMatch( const char *datasetValue, const char *searchMaskValue );
+
       /** This function performs a date time range match and returns OFTrue if the dataset's
        *  and the search mask's values in the corresponding attributes match; otherwise OFFalse
        *  will be returned.
@@ -471,7 +479,11 @@ class WlmFileSystemInteractionManager
 /*
 ** CVS Log
 ** $Log: wlfsim.h,v $
-** Revision 1.9  2005-06-16 08:06:51  meichel
+** Revision 1.10  2005-09-23 12:56:40  wilkens
+** Added attribute PatientsBirthDate as a matching key attribute to wlmscpfs.
+** Thanks to Andre M. Descombes <andre@descombes.info> for the code template.
+**
+** Revision 1.9  2005/06/16 08:06:51  meichel
 ** Removed redundant class name, needed for gcc 3.4
 **
 ** Revision 1.8  2005/05/04 11:34:31  wilkens

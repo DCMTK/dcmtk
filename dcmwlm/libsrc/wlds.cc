@@ -22,9 +22,9 @@
  *  Purpose: (Partially) abstract class for connecting to an arbitrary data source.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2005-07-01 10:01:31 $
+ *  Update Date:      $Date: 2005-09-23 12:57:02 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlds.cc,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -677,6 +677,7 @@ OFBool WlmDataSource::CheckMatchingKey( DcmElement *elem )
 //                   DCM_RequestingPhysician                               (0032,1032)  PN  O  2
 //                   DCM_AdmissionID                                       (0038,0010)  LO  O  2
 //                   DCM_RequestedProcedurePriority                        (0040,1003)  SH  O  2
+//                   DCM_PatientsBirthDate                                 (0010,0030)  DA  O  2
 //                As a result, the following data types have to be supported in this function:
 //                AE, DA, TM, CS, PN, LO and SH. For the correct specification of these datatypes
 //                2003 DICOM standard, part 5, section 6.2, table 6.2-1.
@@ -1346,6 +1347,7 @@ OFBool WlmDataSource::IsSupportedMatchingKeyAttribute( DcmElement *element, DcmS
 //                   DCM_RequestingPhysician                               (0032,1032)  PN  O  2
 //                   DCM_AdmissionID                                       (0038,0010)  LO  O  2
 //                   DCM_RequestedProcedurePriority                        (0040,1003)  SH  O  2
+//                   DCM_PatientsBirthDate                                 (0010,0030)  DA  O  2
 // Parameters   : element            - [in] Pointer to the element which shall be checked.
 //                supSequenceElement - [in] Pointer to the superordinate sequence element of which
 //                                     the currently processed element is an attribute, or NULL if
@@ -1387,7 +1389,8 @@ OFBool WlmDataSource::IsSupportedMatchingKeyAttribute( DcmElement *element, DcmS
         elementKey == DCM_PatientsSex                    ||
         elementKey == DCM_RequestingPhysician            ||
         elementKey == DCM_AdmissionID                    ||
-        elementKey == DCM_RequestedProcedurePriority )
+        elementKey == DCM_RequestedProcedurePriority     ||
+        elementKey == DCM_PatientsBirthDate )
       isSupportedMatchingKeyAttribute = OFTrue;
   }
 
@@ -1614,7 +1617,11 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
 /*
 ** CVS Log
 ** $Log: wlds.cc,v $
-** Revision 1.17  2005-07-01 10:01:31  wilkens
+** Revision 1.18  2005-09-23 12:57:02  wilkens
+** Added attribute PatientsBirthDate as a matching key attribute to wlmscpfs.
+** Thanks to Andre M. Descombes <andre@descombes.info> for the code template.
+**
+** Revision 1.17  2005/07/01 10:01:31  wilkens
 ** Modified a couple of "delete" statements to "delete[]" in order to get rid of
 ** valgrind's "Mismatched free() / delete / delete []" error messages.
 **

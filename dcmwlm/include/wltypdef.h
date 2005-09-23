@@ -22,9 +22,9 @@
  *  Purpose: Type definitions and macros for dcmwlm project.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2004-01-07 08:32:28 $
+ *  Update Date:      $Date: 2005-09-23 12:56:40 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wltypdef.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -136,7 +136,7 @@ const OFCondition WLM_EC_DatabaseStatementConfigFilesNotExistent   ( WLM_ECC_Dat
 const OFCondition WLM_EC_CannotConnectToDataSource                 ( WLM_ECC_CannotConnectToDataSource );
 
   /// number of currently supported matching key attributes
-#define NUMBER_OF_SUPPORTED_MATCHING_KEY_ATTRIBUTES 14
+#define NUMBER_OF_SUPPORTED_MATCHING_KEY_ATTRIBUTES 15
 
   /// structure for handling arbitrary types of superior sequences in query result datasets
 struct WlmSuperiorSequenceInfoType
@@ -155,7 +155,11 @@ struct WlmSuperiorSequenceInfoType
 /*
 ** CVS Log
 ** $Log: wltypdef.h,v $
-** Revision 1.9  2004-01-07 08:32:28  wilkens
+** Revision 1.10  2005-09-23 12:56:40  wilkens
+** Added attribute PatientsBirthDate as a matching key attribute to wlmscpfs.
+** Thanks to Andre M. Descombes <andre@descombes.info> for the code template.
+**
+** Revision 1.9  2004/01/07 08:32:28  wilkens
 ** Added new sequence type return key attributes to wlmscpfs. Fixed bug that for
 ** equally named attributes in sequences always the same value will be returned.
 ** Added functionality that also more than one item will be returned in sequence

@@ -22,9 +22,9 @@
 *  Purpose: Class for managing file system interaction.
 *
 *  Last Update:      $Author: wilkens $
-*  Update Date:      $Date: 2005-07-01 10:01:31 $
+*  Update Date:      $Date: 2005-09-23 12:57:02 $
 *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlfsim.cc,v $
-*  CVS/RCS Revision: $Revision: 1.14 $
+*  CVS/RCS Revision: $Revision: 1.15 $
 *  Status:           $State: Exp $
 *
 *  CVS/RCS Log at end of file
@@ -941,6 +941,11 @@ OFBool WlmFileSystemInteractionManager::DatasetMatchesSearchMask( DcmDataset *da
           matchFound = RequestedProcedurePrioritiesMatch( mkaValuesDataset[13], mkaValuesSearchMask[13] );
           break;
 
+        case 14:
+          // matching key attribute is DCM_PatientsBirthDate (DA, 2)
+          matchFound = PatientsBirthDatesMatch( mkaValuesDataset[14], mkaValuesSearchMask[14] );
+          break;
+
         default:
           break;
       }
@@ -990,6 +995,7 @@ void WlmFileSystemInteractionManager::DetermineMatchingKeyAttributeValues( DcmDa
       case 11 : tag = DCM_RequestingPhysician              ; break;
       case 12 : tag = DCM_AdmissionID                      ; break;
       case 13 : tag = DCM_RequestedProcedurePriority       ; break;
+      case 14 : tag = DCM_PatientsBirthDate                ; break;
       default:                                               break;
     }
 
@@ -1440,6 +1446,38 @@ OFBool WlmFileSystemInteractionManager::RequestedProcedurePrioritiesMatch( const
     else
       return( WildcardMatch( datasetValue, searchMaskValue ) );
   }
+}
+
+// ----------------------------------------------------------------------------
+
+OFBool WlmFileSystemInteractionManager::PatientsBirthDatesMatch( const char *datasetValue, const char *searchMaskValue )
+// Date         : September 23, 2005
+// Author       : Thomas Wilkens
+// Task         : This function returns OFTrue if the dataset's and the search mask's values in
+//                attribute patient's birth date match; otherwise OFFalse will be returned.
+// Parameters   : datasetValue    - [in] Value for the corresponding attribute in the dataset; might be NULL.
+//                searchMaskValue - [in] Value for the corresponding attribute in the search mask; never NULL.
+// Return Value : OFTrue if the values match, OFFalse otherwise.
+{
+  OFBool isMatch = OFFalse;
+
+  // before matching, determine if the date value is a date range value
+  OFBool dateIsDateRange = ( strchr( searchMaskValue, '-' ) != NULL ) ? OFTrue : OFFalse;
+
+  // depending upon this information, perform different kinds of matching
+  if( dateIsDateRange )
+  {
+    // perform range matching
+    isMatch = DateRangeMatch( datasetValue, searchMaskValue );
+  }
+  else
+  {
+    // perform single value matching
+    isMatch = DateSingleValueMatch( datasetValue, searchMaskValue );
+  }
+
+  // return result
+  return( isMatch );
 }
 
 // ----------------------------------------------------------------------------
@@ -2175,7 +2213,11 @@ void WlmFileSystemInteractionManager::ExtractValuesFromRange( const char *range,
 /*
 ** CVS Log
 ** $Log: wlfsim.cc,v $
-** Revision 1.14  2005-07-01 10:01:31  wilkens
+** Revision 1.15  2005-09-23 12:57:02  wilkens
+** Added attribute PatientsBirthDate as a matching key attribute to wlmscpfs.
+** Thanks to Andre M. Descombes <andre@descombes.info> for the code template.
+**
+** Revision 1.14  2005/07/01 10:01:31  wilkens
 ** Modified a couple of "delete" statements to "delete[]" in order to get rid of
 ** valgrind's "Mismatched free() / delete / delete []" error messages.
 **

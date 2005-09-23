@@ -22,9 +22,9 @@
  *  Purpose: (Partially) abstract class for connecting to an arbitrary data source.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2005-05-04 11:34:31 $
+ *  Update Date:      $Date: 2005-09-23 12:56:40 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wlds.h,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -148,6 +148,7 @@ class WlmDataSource
        *    DCM_RequestingPhysician                               (0032,1032)  PN  O  2
        *    DCM_AdmissionID                                       (0038,0010)  LO  O  2
        *    DCM_RequestedProcedurePriority                        (0040,1003)  SH  O  2
+       *    DCM_PatientsBirthDate                                 (0010,0030)  DA  O  2
        *  @param element            Pointer to the element which shall be checked.
        *  @param supSequenceElement Pointer to the superordinate sequence element of which
        *                            the currently processed element is an attribute, or NULL if
@@ -288,6 +289,7 @@ class WlmDataSource
        *    DCM_RequestingPhysician                               (0032,1032)  PN  O  2
        *    DCM_AdmissionID                                       (0038,0010)  LO  O  2
        *    DCM_RequestedProcedurePriority                        (0040,1003)  SH  O  2
+       *    DCM_PatientsBirthDate                                 (0010,0030)  DA  O  2
        *  As a result, the following data types have to be supported in this function:
        *  AE, DA, TM, CS, PN, LO and SH. For the correct specification of these datatypes
        *  2003 DICOM standard, part 5, section 6.2, table 6.2-1.
@@ -549,7 +551,11 @@ class WlmDataSource
 /*
 ** CVS Log
 ** $Log: wlds.h,v $
-** Revision 1.21  2005-05-04 11:34:31  wilkens
+** Revision 1.22  2005-09-23 12:56:40  wilkens
+** Added attribute PatientsBirthDate as a matching key attribute to wlmscpfs.
+** Thanks to Andre M. Descombes <andre@descombes.info> for the code template.
+**
+** Revision 1.21  2005/05/04 11:34:31  wilkens
 ** Added two command line options --enable-file-reject (default) and
 ** --disable-file-reject to wlmscpfs: these options can be used to enable or
 ** disable a file rejection mechanism which makes sure only complete worklist files
