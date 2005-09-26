@@ -225,6 +225,7 @@ matching keys:
 (0008,0090) ReferringPhysiciansName
 (0010,0010) PatientsName
 (0010,0020) PatientID
+(0010,0030) PatientsBirthDate
 (0010,0040) PatientsSex
 (0032,1032) RequestingPhysician
 (0038,0010) AdmissionID
