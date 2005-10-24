@@ -1,5 +1,5 @@
 #
-#  Copyright (C) 1994-2004, OFFIS
+#  Copyright (C) 1994-2005, OFFIS
 #
 #  This software and supporting documentation were developed by
 #
@@ -22,8 +22,8 @@
 #  This is the private tag DICOM data dictionary for the dcmtk class library.
 #
 #  Last Update:      $Author: meichel $
-#  Update Date:      $Date: 2004-11-16 16:13:27 $
-#  CVS/RCS Revision: $Revision: 1.10 $
+#  Update Date:      $Date: 2005-10-24 16:56:22 $
+#  CVS/RCS Revision: $Revision: 1.11 $
 #  Status:           $State: Exp $
 #
 #
@@ -39,6 +39,7 @@
 #   - Intelerad Medical Systems Inc., Image Server
 #   - private tags for DCMTK anonymizer tool
 #   - Philips Integris H, catheterization laboratory, RIS-interface
+#   - Philips Intera Achieva Conformance Statement
 #
 # Each line represents an entry in the data dictionary.  Each line
 # has 5 fields (Tag, VR, Name, VM, Version).  Entries need not be
@@ -269,9 +270,66 @@
 (0021,"FDMS 1.0",40)	IS	ImageNoInTheSet	1
 (0021,"FDMS 1.0",50)	CS	PairProcessingInformation	1
 (0021,"FDMS 1.0",80)	OB	EquipmentTypeSpecificInformation	1
+(0023,"FDMS 1.0",10)	SQ	Unknown	1
+(0023,"FDMS 1.0",20)	SQ	Unknown	1
+(0023,"FDMS 1.0",30)	SQ	Unknown	1
 (0025,"FDMS 1.0",10)	US	RelativeLightEmissionAmountSk	1
 (0025,"FDMS 1.0",11)	US	TermOfCorrectionForEachIPTypeSt	1
 (0025,"FDMS 1.0",12)	US	ReadingGainGp	1
+(0025,"FDMS 1.0",13)	US	Unknown	1
+(0025,"FDMS 1.0",15)	CS	Unknown	1
+(0025,"FDMS 1.0",20)	US	Unknown	2
+(0025,"FDMS 1.0",21)	US	Unknown	1
+(0025,"FDMS 1.0",30)	US	Unknown	1
+(0025,"FDMS 1.0",31)	SS	Unknown	1
+(0025,"FDMS 1.0",32)	US	Unknown	1
+(0025,"FDMS 1.0",33)	SS	Unknown	1
+(0025,"FDMS 1.0",34)	SS	Unknown	1
+(0025,"FDMS 1.0",40)	US	Unknown	1
+(0025,"FDMS 1.0",41)	US	Unknown	1
+(0025,"FDMS 1.0",42)	US	Unknown	1
+(0025,"FDMS 1.0",43)	US	Unknown	1
+(0025,"FDMS 1.0",50)	US	Unknown	1
+(0025,"FDMS 1.0",51)	US	Unknown	1
+(0025,"FDMS 1.0",52)	US	Unknown	1
+(0025,"FDMS 1.0",53)	US	Unknown	1
+(0025,"FDMS 1.0",60)	US	Unknown	1
+(0025,"FDMS 1.0",61)	US	Unknown	1
+(0025,"FDMS 1.0",62)	US	Unknown	1
+(0025,"FDMS 1.0",63)	CS	Unknown	1
+(0025,"FDMS 1.0",70)	US	Unknown	1
+(0025,"FDMS 1.0",71)	US	Unknown	1
+(0025,"FDMS 1.0",72)	US	Unknown	1
+(0025,"FDMS 1.0",73)	US	Unknown	1-n
+(0025,"FDMS 1.0",74)	US	Unknown	1-n
+(0025,"FDMS 1.0",80)	US	Unknown	1
+(0025,"FDMS 1.0",81)	US	Unknown	1
+(0025,"FDMS 1.0",82)	US	Unknown	1
+(0025,"FDMS 1.0",83)	US	Unknown	1-n
+(0025,"FDMS 1.0",84)	US	Unknown	1-n
+(0025,"FDMS 1.0",90)	US	Unknown	1
+(0025,"FDMS 1.0",91)	US	Unknown	1
+(0025,"FDMS 1.0",92)	US	Unknown	1
+(0025,"FDMS 1.0",93)	US	Unknown	1
+(0025,"FDMS 1.0",94)	US	Unknown	1
+(0025,"FDMS 1.0",95)	US	Unknown	1
+(0025,"FDMS 1.0",96)	CS	Unknown	1
+(0025,"FDMS 1.0",a0)	US	Unknown	1
+(0025,"FDMS 1.0",a1)	SS	Unknown	1
+(0025,"FDMS 1.0",a2)	US	Unknown	1
+(0025,"FDMS 1.0",a3)	SS	Unknown	1
+(0027,"FDMS 1.0",10)	SQ	Unknown	1
+(0027,"FDMS 1.0",20)	SQ	Unknown	1
+(0027,"FDMS 1.0",30)	SQ	Unknown	1
+(0027,"FDMS 1.0",40)	SQ	Unknown	1
+(0027,"FDMS 1.0",50)	SQ	Unknown	1
+(0027,"FDMS 1.0",60)	SQ	Unknown	1
+(0027,"FDMS 1.0",70)	SQ	Unknown	1
+(0027,"FDMS 1.0",80)	SQ	Unknown	1
+(0027,"FDMS 1.0",a0)	IS	Unknown	1
+(0027,"FDMS 1.0",a1)	CS	Unknown	2
+(0027,"FDMS 1.0",a2)	CS	Unknown	2
+(0027,"FDMS 1.0",a3)	SS	Unknown	1-n
 (0029,"FDMS 1.0",20)	CS	ImageScanningDirection	1
 (0029,"FDMS 1.0",30)	CS	ExtendedReadingSizeValue	1
 (0029,"FDMS 1.0",34)	US	MagnificationReductionRatio	1
@@ -1039,6 +1097,52 @@
 (0041,"PAPYRUS",b1)	US	InternalFolderElementDataSetType	1-n
 (0041,"PAPYRUS",b2)	UL	InternalOffsetToDataSet	1-n
 (0041,"PAPYRUS",b3)	UL	InternalOffsetToImage	1-n
+
+(2001,"Philips Imaging DD 001",01)	FL	ChemicalShift	1
+(2001,"Philips Imaging DD 001",02)	IS	ChemicalShiftNumberMR	1
+(2001,"Philips Imaging DD 001",03)	FL	DiffusionB-Factor	1
+(2001,"Philips Imaging DD 001",04)	CS	DiffusionDirection	1
+(2001,"Philips Imaging DD 001",06)	CS	ImageEnhanced	1
+(2001,"Philips Imaging DD 001",07)	CS	ImageTypeEDES	1
+(2001,"Philips Imaging DD 001",08)	IS	PhaseNumber	1
+(2001,"Philips Imaging DD 001",0a)	IS	SliceNumberMR	1
+(2001,"Philips Imaging DD 001",0b)	CS	SliceOrientation	1
+(2001,"Philips Imaging DD 001",11)	FL	DiffusionEchoTime	1
+(2001,"Philips Imaging DD 001",12)	CS	DynamicSeries	1
+(2001,"Philips Imaging DD 001",13)	SL	EPIFactor	1
+(2001,"Philips Imaging DD 001",14)	SL	NumberOfEchoes	1
+(2001,"Philips Imaging DD 001",15)	SS	NumberOfLocations	1
+(2001,"Philips Imaging DD 001",16)	SS	NumberOfPCDirections	1
+(2001,"Philips Imaging DD 001",17)	SL	NumberOfPhasesMR	1
+(2001,"Philips Imaging DD 001",18)	SL	NumberOfSlicesMR	1
+(2001,"Philips Imaging DD 001",19)	CS	PartialMatrixScanned	1
+(2001,"Philips Imaging DD 001",1a)	FL	PCVelocity	1-n
+(2001,"Philips Imaging DD 001",1b)	FL	PrepulseDelay	1
+(2001,"Philips Imaging DD 001",1c)	CS	PrepulseType	1
+(2001,"Philips Imaging DD 001",1d)	IS	ReconstructionNumberMR	1
+(2001,"Philips Imaging DD 001",1f)	CS	RespirationSync	1
+(2001,"Philips Imaging DD 001",21)	CS	SPIR	1
+(2001,"Philips Imaging DD 001",22)	FL	WaterFatShift	1
+(2001,"Philips Imaging DD 001",23)	DS	FlipAnglePhilips	1
+(2001,"Philips Imaging DD 001",25)	SH	EchoTimeDisplayMR	1
+(2001,"Philips Imaging DD 001",2d)	SS	StackNumberOfSlices	1
+(2001,"Philips Imaging DD 001",32)	FL	StackRadialAngle	1
+(2001,"Philips Imaging DD 001",33)	CS	StackRadialAxis	1
+(2001,"Philips Imaging DD 001",35)	SS	StackSliceNumber	1
+(2001,"Philips Imaging DD 001",36)	CS	StackType	1
+(2001,"Philips Imaging DD 001",3f)	CS	ZoomMode	1
+(2001,"Philips Imaging DD 001",5f)	SQ	StackSequence	1-n
+(2001,"Philips Imaging DD 001",60)	SL	NumberOfStacks	1
+(2001,"Philips Imaging DD 001",63)	CS	ExaminationSource	1
+(2001,"Philips Imaging DD 001",7b)	IS	AcquisitionNumber	1
+(2001,"Philips Imaging DD 001",81)	IS	NumberOfDynamicScans	1
+
+(2005,"Philips MR Imaging DD 001",05)	CS	SynergyReconstructionType	1
+(2005,"Philips MR Imaging DD 001",20)	SL	NumberOfChemicalShifts	1
+(2005,"Philips MR Imaging DD 001",a1)	CS	SyncraScanType	1
+(2005,"Philips MR Imaging DD 001",83)	SQ	Unknown	1
+
+(2005,"Philips MR Imaging DD 005",02)	SQ	Unknown	1
 
 (0019,"PHILIPS MR R5.5/PART",1000)	DS	FieldOfView	1
 (0019,"PHILIPS MR R5.6/PART",1000)	DS	FieldOfView	1
