@@ -205,8 +205,8 @@ dcmodify.o: dcmodify.cc ../../config/include/osconfig.h \
   ../include/dclist.h ../include/dcstack.h ../include/dcitem.h \
   ../include/dcvrui.h ../include/dcbytstr.h ../include/dcelem.h \
   ../include/dcpcache.h ../../ofstd/include/oflist.h \
-  ../include/dcdatset.h ../include/dcvrat.h ../include/dcdebug.h \
-  ../../ofstd/include/ofconapp.h ../../ofstd/include/ofcmdln.h
+  ../include/dcdatset.h ../../ofstd/include/ofcmdln.h ../include/dcvrat.h \
+  ../../ofstd/include/ofconapp.h
 dump2dcm.o: dump2dcm.cc ../../config/include/osconfig.h \
   ../../config/include/cfunix.h ../../ofstd/include/ofstdinc.h \
   ../../ofstd/include/ofstream.h ../include/dctk.h ../include/dctypes.h \
@@ -250,25 +250,25 @@ mdfconen.o: mdfconen.cc ../../config/include/osconfig.h \
   ../include/dclist.h ../include/dcstack.h ../include/dcitem.h \
   ../include/dcvrui.h ../include/dcbytstr.h ../include/dcelem.h \
   ../include/dcpcache.h ../../ofstd/include/oflist.h \
-  ../include/dcdatset.h ../include/dcvrat.h ../include/dcdebug.h \
-  ../../ofstd/include/ofconapp.h ../../ofstd/include/ofcmdln.h \
-  ../include/dctk.h ../include/dcswap.h ../include/dcistrma.h \
-  ../include/dcostrma.h ../include/dcuid.h ../include/dcvm.h \
-  ../include/dcdefine.h ../include/dcdicent.h ../include/dchashdi.h \
-  ../include/dcdict.h ../include/dcdeftag.h ../include/dcmetinf.h \
-  ../include/dcdicdir.h ../include/dcdirrec.h ../include/dcvrulup.h \
-  ../include/dcvrul.h ../include/dcpixseq.h ../include/dcofsetl.h \
-  ../include/dcvrae.h ../include/dcvras.h ../include/dcvrcs.h \
-  ../include/dcvrda.h ../../ofstd/include/ofdate.h ../include/dcvrds.h \
-  ../include/dcvrdt.h ../../ofstd/include/ofdatime.h \
-  ../../ofstd/include/oftime.h ../include/dcvris.h ../include/dcvrtm.h \
-  ../include/dcchrstr.h ../include/dcvrlo.h ../include/dcvrlt.h \
-  ../include/dcvrpn.h ../include/dcvrsh.h ../include/dcvrst.h \
-  ../include/dcvrut.h ../include/dcvrobow.h ../include/dcpixel.h \
-  ../include/dcvrpobw.h ../include/dcovlay.h ../include/dcvrss.h \
-  ../include/dcvrus.h ../include/dcvrsl.h ../include/dcvrfl.h \
-  ../include/dcvrfd.h ../include/dcvrof.h ../include/cmdlnarg.h \
-  ../../ofstd/include/ofstd.h
+  ../include/dcdatset.h ../../ofstd/include/ofcmdln.h ../include/dcvrat.h \
+  ../../ofstd/include/ofconapp.h ../include/dctk.h ../include/dcswap.h \
+  ../include/dcistrma.h ../include/dcostrma.h ../include/dcuid.h \
+  ../include/dcvm.h ../include/dcdefine.h ../include/dcdebug.h \
+  ../include/dcdicent.h ../include/dchashdi.h ../include/dcdict.h \
+  ../include/dcdeftag.h ../include/dcmetinf.h ../include/dcdicdir.h \
+  ../include/dcdirrec.h ../include/dcvrulup.h ../include/dcvrul.h \
+  ../include/dcpixseq.h ../include/dcofsetl.h ../include/dcvrae.h \
+  ../include/dcvras.h ../include/dcvrcs.h ../include/dcvrda.h \
+  ../../ofstd/include/ofdate.h ../include/dcvrds.h ../include/dcvrdt.h \
+  ../../ofstd/include/ofdatime.h ../../ofstd/include/oftime.h \
+  ../include/dcvris.h ../include/dcvrtm.h ../include/dcchrstr.h \
+  ../include/dcvrlo.h ../include/dcvrlt.h ../include/dcvrpn.h \
+  ../include/dcvrsh.h ../include/dcvrst.h ../include/dcvrut.h \
+  ../include/dcvrobow.h ../include/dcpixel.h ../include/dcvrpobw.h \
+  ../include/dcovlay.h ../include/dcvrss.h ../include/dcvrus.h \
+  ../include/dcvrsl.h ../include/dcvrfl.h ../include/dcvrfd.h \
+  ../include/dcvrof.h ../include/cmdlnarg.h ../../ofstd/include/ofstd.h \
+  ../include/dcistrmz.h
 mdfdsman.o: mdfdsman.cc ../../config/include/osconfig.h \
   ../../config/include/cfunix.h mdfdsman.h ../include/dctagkey.h \
   ../../ofstd/include/ofstream.h ../include/dctypes.h \
@@ -282,24 +282,55 @@ mdfdsman.o: mdfdsman.cc ../../config/include/osconfig.h \
   ../include/dclist.h ../include/dcstack.h ../include/dcitem.h \
   ../include/dcvrui.h ../include/dcbytstr.h ../include/dcelem.h \
   ../include/dcpcache.h ../../ofstd/include/oflist.h \
-  ../include/dcdatset.h ../include/dcvrat.h ../include/dcdebug.h \
+  ../include/dcdatset.h ../../ofstd/include/ofcmdln.h ../include/dcvrat.h \
   ../include/dcvrsl.h ../../ofstd/include/ofstd.h ../include/dctk.h \
   ../include/dcswap.h ../include/dcistrma.h ../include/dcostrma.h \
   ../include/dcuid.h ../include/dcvm.h ../include/dcdefine.h \
-  ../include/dcdicent.h ../include/dchashdi.h ../include/dcdict.h \
-  ../include/dcdeftag.h ../include/dcmetinf.h ../include/dcdicdir.h \
-  ../include/dcdirrec.h ../include/dcvrulup.h ../include/dcvrul.h \
-  ../include/dcpixseq.h ../include/dcofsetl.h ../include/dcvrae.h \
-  ../include/dcvras.h ../include/dcvrcs.h ../include/dcvrda.h \
-  ../../ofstd/include/ofdate.h ../include/dcvrds.h ../include/dcvrdt.h \
-  ../../ofstd/include/ofdatime.h ../../ofstd/include/oftime.h \
-  ../include/dcvris.h ../include/dcvrtm.h ../include/dcchrstr.h \
-  ../include/dcvrlo.h ../include/dcvrlt.h ../include/dcvrpn.h \
-  ../include/dcvrsh.h ../include/dcvrst.h ../include/dcvrut.h \
-  ../include/dcvrobow.h ../include/dcpixel.h ../include/dcvrpobw.h \
-  ../include/dcovlay.h ../include/dcvrss.h ../include/dcvrus.h \
+  ../include/dcdebug.h ../include/dcdicent.h ../include/dchashdi.h \
+  ../include/dcdict.h ../include/dcdeftag.h ../include/dcmetinf.h \
+  ../include/dcdicdir.h ../include/dcdirrec.h ../include/dcvrulup.h \
+  ../include/dcvrul.h ../include/dcpixseq.h ../include/dcofsetl.h \
+  ../include/dcvrae.h ../include/dcvras.h ../include/dcvrcs.h \
+  ../include/dcvrda.h ../../ofstd/include/ofdate.h ../include/dcvrds.h \
+  ../include/dcvrdt.h ../../ofstd/include/ofdatime.h \
+  ../../ofstd/include/oftime.h ../include/dcvris.h ../include/dcvrtm.h \
+  ../include/dcchrstr.h ../include/dcvrlo.h ../include/dcvrlt.h \
+  ../include/dcvrpn.h ../include/dcvrsh.h ../include/dcvrst.h \
+  ../include/dcvrut.h ../include/dcvrobow.h ../include/dcpixel.h \
+  ../include/dcvrpobw.h ../include/dcovlay.h ../include/dcvrss.h \
+  ../include/dcvrus.h ../include/dcvrfl.h ../include/dcvrfd.h \
+  ../include/dcvrof.h ../include/cmdlnarg.h
+pdf2dcm.o: pdf2dcm.cc ../../config/include/osconfig.h \
+  ../../config/include/cfunix.h ../../ofstd/include/ofstdinc.h \
+  ../include/dctk.h ../include/dctypes.h ../../ofstd/include/oftypes.h \
+  ../include/dcswap.h ../include/dcerror.h ../../ofstd/include/ofcond.h \
+  ../../ofstd/include/ofstring.h ../../ofstd/include/ofcast.h \
+  ../../ofstd/include/ofstream.h ../include/dcxfer.h ../include/dcvr.h \
+  ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
+  ../include/dcistrma.h ../include/dcostrma.h ../include/dcuid.h \
+  ../include/dcvm.h ../include/dcdefine.h ../include/dcdebug.h \
+  ../include/dctagkey.h ../include/dctag.h ../include/dcdicent.h \
+  ../include/dchashdi.h ../../ofstd/include/oflist.h ../include/dcdict.h \
+  ../include/dcdeftag.h ../include/dcobject.h \
+  ../../ofstd/include/ofconsol.h ../include/dclist.h ../include/dcstack.h \
+  ../include/dcelem.h ../include/dcitem.h ../include/dcvrui.h \
+  ../include/dcbytstr.h ../include/dcpcache.h ../include/dcmetinf.h \
+  ../include/dcdatset.h ../include/dcsequen.h ../include/dcfilefo.h \
+  ../include/dcdicdir.h ../include/dcdirrec.h ../include/dcvrulup.h \
+  ../include/dcvrul.h ../include/dcpixseq.h ../include/dcofsetl.h \
+  ../include/dcvrae.h ../include/dcvras.h ../include/dcvrcs.h \
+  ../include/dcvrda.h ../../ofstd/include/ofdate.h ../include/dcvrds.h \
+  ../include/dcvrdt.h ../../ofstd/include/ofdatime.h \
+  ../../ofstd/include/oftime.h ../include/dcvris.h ../include/dcvrtm.h \
+  ../include/dcchrstr.h ../include/dcvrlo.h ../include/dcvrlt.h \
+  ../include/dcvrpn.h ../include/dcvrsh.h ../include/dcvrst.h \
+  ../include/dcvrut.h ../include/dcvrobow.h ../include/dcpixel.h \
+  ../include/dcvrpobw.h ../include/dcovlay.h ../include/dcvrat.h \
+  ../include/dcvrss.h ../include/dcvrus.h ../include/dcvrsl.h \
   ../include/dcvrfl.h ../include/dcvrfd.h ../include/dcvrof.h \
-  ../include/cmdlnarg.h
+  ../include/cmdlnarg.h ../../ofstd/include/ofconapp.h \
+  ../../ofstd/include/ofcmdln.h ../../ofstd/include/ofstd.h \
+  ../include/dccodec.h
 xml2dcm.o: xml2dcm.cc ../../config/include/osconfig.h \
   ../../config/include/cfunix.h ../include/dctk.h ../include/dctypes.h \
   ../../ofstd/include/oftypes.h ../../ofstd/include/ofstdinc.h \

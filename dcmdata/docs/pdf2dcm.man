@@ -1,0 +1,144 @@
+/*!
+
+\if MANPAGES
+\page pdf2dcm Convert PDF file to DICOM
+\else
+\page pdf2dcm pdf2dcm: Convert PDF file to DICOM
+\endif
+
+\section synopsis SYNOPSIS
+
+\verbatim
+pdf2dcm [options] pdffile-in dcmfile-out
+\endverbatim
+
+\section description DESCRIPTION
+
+The \b pdf2dcm utility reads a PDF file (\e pdffile-in), converts it
+to a DICOM Encapsulated PDF Storage SOP instance and stores the
+converted data to an output file (\e dcmfile-out).
+
+\section parameters PARAMETERS
+
+\verbatim
+pdffile-in   PDF input filename to be converted
+
+dcmfile-out  DICOM output filename
+\endverbatim
+
+\section options OPTIONS
+
+\subsection general_options general options
+\verbatim
+  -h   --help
+         print this help text and exit
+
+       --version
+         print version information and exit
+
+  -v   --verbose
+         verbose mode, print processing details
+
+  -d   --debug
+         debug mode, print debug information
+\endverbatim
+
+\subsection dicom_document_options DICOM document options
+\verbatim
+burned-in annotation:
+
+  +an   --annotation-yes
+          PDF contains patient identifying data (default)
+
+  -an   --annotation-no
+          PDF does not contain patient identifying data
+
+document title:
+
+  +t    --title  [t]itle : string (default: empty)
+          document title
+
+  +cn   --concept-name  [CSD], [CV], [CM]: string (default: empty)
+          document title as concept name code sequence
+          with coding scheme designator CSD, code value CV
+          and code meaning CM
+
+patient data:
+
+  +pn   --patient-name  [n]ame : string
+          patient's name in DICOM PN syntax
+
+  +pi   --patient-id  [i]d : string
+          patient identifier
+
+  +pb   --patient-birthdate  [d]ate : string (YYYYMMDD)
+          patient's birth date
+
+  +ps   --patient-sex  [s]ex : string (M, F or O)
+          patient's sex
+
+study and series:
+
+  +sg   --generate
+          generate new study and series UIDs (default)
+
+  +st   --study-from   [f]ilename : string
+          read patient/study data from DICOM file
+
+  +se   --series-from  [f]ilename : string
+          read patient/study/series data from DICOM file
+
+instance number:
+
+  +i1   --instance-one
+          use instance number 1 (default, not with +se)
+
+  +ii   --instance-inc
+          increment instance number (only with +se)
+
+  +is   --instance-set [i]nstance number : int
+          use instance number i
+\endverbatim
+
+\section command_line COMMAND LINE
+
+All command line tools use the following notation for parameters: square
+brackets enclose optional values (0-1), three trailing dots indicate that
+multiple values are allowed (1-n), a combination of both means 0 to n values.
+
+Command line options are distinguished from parameters by a leading '+' or '-'
+sign, respectively.  Usually, order and position of command line options are
+arbitrary (i.e. they can appear anywhere).  However, if options are mutually
+exclusive the rightmost appearance is used.  This behaviour conforms to the
+standard evaluation rules of common Unix shells.
+
+In addition, one or more command files can be specified using an '@' sign as a
+prefix to the filename (e.g. <em>\@command.txt</em>).  Such a command argument
+is replaced by the content of the corresponding text file (multiple
+whitespaces are treated as a single separator) prior to any further
+evaluation.  Please note that a command file cannot contain another command
+file.  This simple but effective approach allows to summarize common
+combinations of options/parameters and avoids longish and confusing command
+lines (an example is provided in file <em>share/data/dumppat.txt</em>).
+
+\section environment ENVIRONMENT
+
+The \b pdf2dcm utility will attempt to load DICOM data dictionaries specified
+in the \e DCMDICTPATH environment variable.  By default, i.e. if the
+\e DCMDICTPATH environment variable is not set, the file
+<em>\<PREFIX\>/lib/dicom.dic</em> will be loaded unless the dictionary is built
+into the application (default for Windows).
+
+The default behaviour should be preferred and the \e DCMDICTPATH environment
+variable only used when alternative data dictionaries are required.  The
+\e DCMDICTPATH environment variable has the same format as the Unix shell
+\e PATH variable in that a colon (":") separates entries.  The data dictionary
+code will attempt to load each file specified in the \e DCMDICTPATH
+environment variable.  It is an error if no data dictionary can be loaded.
+
+\section copyright COPYRIGHT
+
+Copyright (C) 1994-2005 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
+Germany.
+
+*/

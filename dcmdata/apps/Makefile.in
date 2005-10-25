@@ -20,9 +20,10 @@ LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc
 LOCALLIBS = -ldcmdata -lofstd $(ZLIBLIBS)
 
 objs = dcmftest.o dcmconv.o dcmdump.o dump2dcm.o dcmgpdir.o dcm2xml.o \
-	xml2dcm.o dcmcrle.o dcmdrle.o dcmodify.o mdfdsman.o mdfconen.o
+	xml2dcm.o dcmcrle.o dcmdrle.o dcmodify.o mdfdsman.o mdfconen.o \
+	pdf2dcm.o
 progs = dcmftest dcmconv dcmdump dump2dcm dcmgpdir dcm2xml xml2dcm dcmcrle \
-	dcmdrle dcmodify
+	dcmdrle dcmodify pdf2dcm
 
 support_lib = dcm2xml.dtd
 support_data = dumppat.txt
@@ -59,6 +60,9 @@ xml2dcm: xml2dcm.o
 
 dcmodify: dcmodify.o mdfconen.o mdfdsman.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o mdfconen.o mdfdsman.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
+
+pdf2dcm: pdf2dcm.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 install: install-bin install-support
 
