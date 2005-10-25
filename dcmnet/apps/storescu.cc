@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2003, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-01-21 10:18:39 $
+ *  Update Date:      $Date: 2005-10-25 08:55:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.58 $
+ *  CVS/RCS Revision: $Revision: 1.59 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1090,10 +1090,10 @@ addStoragePresentationContexts(T_ASC_Parameters *params, OFList<OFString>& sopCl
     }
 
     if (!opt_proposeOnlyRequiredPresentationContexts) {
-        // add all the known storage sop classes to the list
+        // add the (short list of) known storage sop classes to the list
         // the array of Storage SOP Class UIDs comes from dcuid.h
-        for (int i=0; i<numberOfDcmStorageSOPClassUIDs; i++) {
-            sopClasses.push_back(dcmStorageSOPClassUIDs[i]);
+        for (int i=0; i<numberOfDcmShortSCUStorageSOPClassUIDs; i++) {
+            sopClasses.push_back(dcmShortSCUStorageSOPClassUIDs[i]);
         }
     }
 
@@ -1473,7 +1473,11 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.58  2004-01-21 10:18:39  meichel
+** Revision 1.59  2005-10-25 08:55:43  meichel
+** Updated list of UIDs and added support for new transfer syntaxes
+**   and storage SOP classes.
+**
+** Revision 1.58  2004/01/21 10:18:39  meichel
 ** StoreSCU with --no-halt option now also continues if errors other than a
 **   missing presentation context occur, e.g. attempt to load non-DICOM file.
 **

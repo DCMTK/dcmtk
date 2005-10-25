@@ -22,9 +22,9 @@
  *  Purpose: classes DcmQueryRetrieveProcessSlot, DcmQueryRetrieveProcessTable
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-03-30 13:34:53 $
+ *  Update Date:      $Date: 2005-10-25 08:56:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqrptb.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -142,9 +142,9 @@ void DcmQueryRetrieveProcessTable::addProcessToTable(int pid, T_ASC_Association 
     ASC_getPresentationAddresses(assoc->params, peerName, NULL);
     ASC_getAPTitles(assoc->params, callingAETitle, calledAETitle, NULL);
 
-    for (int i=0; i<numberOfDcmStorageSOPClassUIDs; i++)
+    for (int i=0; i<numberOfAllDcmStorageSOPClassUIDs; i++)
     {
-      if (ASC_findAcceptedPresentationContextID(assoc, dcmStorageSOPClassUIDs[i]))
+      if (ASC_findAcceptedPresentationContextID(assoc, dcmAllStorageSOPClassUIDs[i]))
       {
         hasStorageAbility = OFTrue;
         break;  /* out of for loop */
@@ -244,7 +244,11 @@ void DcmQueryRetrieveProcessTable::cleanChildren(OFBool verbose)
 /*
  * CVS Log
  * $Log: dcmqrptb.cc,v $
- * Revision 1.1  2005-03-30 13:34:53  meichel
+ * Revision 1.2  2005-10-25 08:56:18  meichel
+ * Updated list of UIDs and added support for new transfer syntaxes
+ *   and storage SOP classes.
+ *
+ * Revision 1.1  2005/03/30 13:34:53  meichel
  * Initial release of module dcmqrdb that will replace module imagectn.
  *   It provides a clear interface between the Q/R DICOM front-end and the
  *   database back-end. The imagectn code has been re-factored into a minimal

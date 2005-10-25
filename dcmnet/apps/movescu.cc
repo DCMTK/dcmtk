@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2004, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-04-06 18:11:24 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-10-25 08:55:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.51 $
+ *  CVS/RCS Revision: $Revision: 1.52 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -909,7 +909,7 @@ acceptSubAssoc(T_ASC_Network * aNet, T_ASC_Association ** assoc)
             /* the array of Storage SOP Class UIDs comes from dcuid.h */
             cond = ASC_acceptContextsWithPreferredTransferSyntaxes(
                 (*assoc)->params,
-                dcmStorageSOPClassUIDs, numberOfDcmStorageSOPClassUIDs,
+                dcmAllStorageSOPClassUIDs, numberOfAllDcmStorageSOPClassUIDs,
                 transferSyntaxes, numTransferSyntaxes);
         }
     }
@@ -1337,7 +1337,11 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.51  2004-04-06 18:11:24  joergr
+** Revision 1.52  2005-10-25 08:55:43  meichel
+** Updated list of UIDs and added support for new transfer syntaxes
+**   and storage SOP classes.
+**
+** Revision 1.51  2004/04/06 18:11:24  joergr
 ** Added missing suffix "TransferSyntax" to some transfer syntax constants.
 **
 ** Revision 1.50  2003/09/04 10:08:32  joergr

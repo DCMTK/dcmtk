@@ -22,9 +22,9 @@
  *  Purpose: class DcmQueryRetrieveOptions
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-06-16 08:02:43 $
+ *  Update Date:      $Date: 2005-10-25 08:56:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqrtis.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -613,9 +613,9 @@ OFCondition DcmQueryRetrieveTelnetInitiator::addPresentationContexts(T_ASC_Param
     }
 
     /* and then for all storage SOP classes */
-    for (i=0; i<numberOfDcmStorageSOPClassUIDs && cond.good(); i++)
+    for (i=0; i<numberOfDcmLongSCUStorageSOPClassUIDs && cond.good(); i++)
     {
-      cond = ASC_addPresentationContext( params, pid, dcmStorageSOPClassUIDs[i], transferSyntaxes, numTransferSyntaxes);
+      cond = ASC_addPresentationContext( params, pid, dcmLongSCUStorageSOPClassUIDs[i], transferSyntaxes, numTransferSyntaxes);
       pid += 2;/* only odd presentation context id's */
     }
 
@@ -2238,7 +2238,11 @@ void DcmQueryRetrieveTelnetInitiator::createConfigEntries(
 /*
  * CVS Log
  * $Log: dcmqrtis.cc,v $
- * Revision 1.3  2005-06-16 08:02:43  meichel
+ * Revision 1.4  2005-10-25 08:56:18  meichel
+ * Updated list of UIDs and added support for new transfer syntaxes
+ *   and storage SOP classes.
+ *
+ * Revision 1.3  2005/06/16 08:02:43  meichel
  * Added system include files needed on Solaris
  *
  * Revision 1.2  2005/04/04 14:23:21  meichel

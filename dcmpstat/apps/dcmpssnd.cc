@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2004, OFFIS
+ *  Copyright (C) 1999-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Network Send Component (Store SCU)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-04-04 10:11:53 $
+ *  Update Date:      $Date: 2005-10-25 08:55:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpssnd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -326,9 +326,9 @@ static OFCondition addAllStoragePresentationContexts(T_ASC_Parameters *params, i
         transferSyntaxCount = 3;
     }
 
-    for (int i=0; i<numberOfDcmStorageSOPClassUIDs && cond.good(); i++) {
+    for (int i=0; i<numberOfDcmLongSCUStorageSOPClassUIDs && cond.good(); i++) {
         cond = ASC_addPresentationContext(
-            params, pid, dcmStorageSOPClassUIDs[i],
+            params, pid, dcmLongSCUStorageSOPClassUIDs[i],
             transferSyntaxes, transferSyntaxCount);
         pid += 2;       /* only odd presentation context id's */
     }
@@ -1014,7 +1014,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpssnd.cc,v $
- * Revision 1.33  2005-04-04 10:11:53  meichel
+ * Revision 1.34  2005-10-25 08:55:59  meichel
+ * Updated list of UIDs and added support for new transfer syntaxes
+ *   and storage SOP classes.
+ *
+ * Revision 1.33  2005/04/04 10:11:53  meichel
  * Module dcmpstat now uses the dcmqrdb API instead of imagectn for maintaining
  *   the index database
  *

@@ -22,9 +22,9 @@
  *  Purpose: class DcmQueryRetrieveMoveContext
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-08-30 08:37:52 $
+ *  Update Date:      $Date: 2005-10-25 08:56:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqrcbm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -604,9 +604,9 @@ OFCondition DcmQueryRetrieveMoveContext::addAllStoragePresentationContexts(T_ASC
         }
 //    }
 
-    for (i=0; i<numberOfDcmStorageSOPClassUIDs && cond.good(); i++) {
+    for (i=0; i<numberOfDcmLongSCUStorageSOPClassUIDs && cond.good(); i++) {
 	cond = ASC_addPresentationContext(
-	    params, pid, dcmStorageSOPClassUIDs[i],
+	    params, pid, dcmLongSCUStorageSOPClassUIDs[i],
 	    transferSyntaxes, transferSyntaxesCount);
 	pid += 2;	/* only odd presentation context id's */
     }
@@ -617,7 +617,11 @@ OFCondition DcmQueryRetrieveMoveContext::addAllStoragePresentationContexts(T_ASC
 /*
  * CVS Log
  * $Log: dcmqrcbm.cc,v $
- * Revision 1.4  2005-08-30 08:37:52  meichel
+ * Revision 1.5  2005-10-25 08:56:18  meichel
+ * Updated list of UIDs and added support for new transfer syntaxes
+ *   and storage SOP classes.
+ *
+ * Revision 1.4  2005/08/30 08:37:52  meichel
  * Fixed syntax error reported by Visual Studio 2003
  *
  * Revision 1.3  2005/06/16 08:02:43  meichel

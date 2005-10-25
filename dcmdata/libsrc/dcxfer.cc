@@ -21,9 +21,9 @@
  *
  *  Purpose: handling of transfer syntaxes
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-04-06 18:09:14 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-10-25 08:55:34 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -294,6 +294,22 @@ const S_XferNames XferNames[] =
       EVT_Explicit,
       EJE_Encapsulated,
       0L, 0L,
+      ESC_none },
+   { UID_JPEG2000Part2MulticomponentImageCompressionLosslessOnlyTransferSyntax,
+      "JPEG 2000 Part 2 Multicomponent Image Compression (Lossless only)",
+      EXS_JPEG2000MulticomponentLosslessOnly,
+      EBO_LittleEndian,
+      EVT_Explicit,
+      EJE_Encapsulated,
+      0L, 0L,
+      ESC_none },
+   { UID_JPEG2000Part2MulticomponentImageCompressionTransferSyntax,
+      "JPEG 2000 Part 2 Multicomponent Image Compression (Lossless or Lossy)",
+      EXS_JPEG2000Multicomponent,
+      EBO_LittleEndian,
+      EVT_Explicit,
+      EJE_Encapsulated,
+      0L, 0L,
       ESC_none }
 
     // enter further transfer syntaxes here ...
@@ -526,7 +542,11 @@ const E_ByteOrder gLocalByteOrder = FindMachineTransferSyntax();
 /*
  * CVS/RCS Log:
  * $Log: dcxfer.cc,v $
- * Revision 1.23  2004-04-06 18:09:14  joergr
+ * Revision 1.24  2005-10-25 08:55:34  meichel
+ * Updated list of UIDs and added support for new transfer syntaxes
+ *   and storage SOP classes.
+ *
+ * Revision 1.23  2004/04/06 18:09:14  joergr
  * Updated data dictionary, UIDs and transfer syntaxes for the latest Final Text
  * Supplements (42 and 47) and Correction Proposals (CP 25).
  * Added missing suffix "TransferSyntax" to some transfer syntax constants.

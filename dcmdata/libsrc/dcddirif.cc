@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-06-13 14:46:05 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-10-25 08:55:34 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1231,8 +1231,8 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                             compare(mediaSOPClassUID, UID_VideoEndoscopicImageStorage) ||
                             compare(mediaSOPClassUID, UID_VideoMicroscopicImageStorage) ||
                             compare(mediaSOPClassUID, UID_VideoPhotographicImageStorage) ||
-                            compare(mediaSOPClassUID, UID_Ophthalmic8BitPhotographyImageStorage) ||
-                            compare(mediaSOPClassUID, UID_Ophthalmic16BitPhotographyImageStorage);
+                            compare(mediaSOPClassUID, UID_OphthalmicPhotography8BitImageStorage) ||
+                            compare(mediaSOPClassUID, UID_OphthalmicPhotography16BitImageStorage);
                     break;
                 case AP_BasicCardiac:
                     if (compare(mediaSOPClassUID, UID_XRayAngiographicImageStorage))
@@ -4610,7 +4610,11 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
- *  Revision 1.12  2005-06-13 14:46:05  joergr
+ *  Revision 1.13  2005-10-25 08:55:34  meichel
+ *  Updated list of UIDs and added support for new transfer syntaxes
+ *    and storage SOP classes.
+ *
+ *  Revision 1.12  2005/06/13 14:46:05  joergr
  *  Fixed typo.
  *
  *  Revision 1.11  2005/06/13 14:39:07  joergr

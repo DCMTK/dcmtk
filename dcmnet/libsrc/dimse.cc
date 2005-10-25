@@ -57,9 +57,9 @@
 **      Module Prefix: DIMSE_
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2005-03-17 16:25:44 $
+** Update Date:         $Date: 2005-10-25 08:55:46 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimse.cc,v $
-** CVS/RCS Revision:    $Revision: 1.41 $
+** CVS/RCS Revision:    $Revision: 1.42 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -350,6 +350,8 @@ getTransferSyntax(T_ASC_Association * assoc,
         case EXS_JPEG2000LosslessOnly:
         case EXS_JPEG2000:
         case EXS_MPEG2MainProfileAtMainLevel:
+        case EXS_JPEG2000MulticomponentLosslessOnly:
+        case EXS_JPEG2000Multicomponent:        	
 #ifdef WITH_ZLIB
         case EXS_DeflatedLittleEndianExplicit:
 #endif
@@ -1766,7 +1768,11 @@ void DIMSE_warning(T_ASC_Association *assoc,
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
-** Revision 1.41  2005-03-17 16:25:44  meichel
+** Revision 1.42  2005-10-25 08:55:46  meichel
+** Updated list of UIDs and added support for new transfer syntaxes
+**   and storage SOP classes.
+**
+** Revision 1.41  2005/03/17 16:25:44  meichel
 ** Fixed bug in the network module, which refused transmission in JPEG-LS or
 **   JPEG 2000 transfer syntaxes even if an appropriate configuration file was
 **   used with storescu and storescp.

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2004, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Handling of transfer syntaxes
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-04-06 18:01:50 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-10-25 08:55:32 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcxfer.h,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,9 +73,10 @@ typedef enum {
     EXS_DeflatedLittleEndianExplicit = 25,
     EXS_JPEG2000LosslessOnly = 26,
     EXS_JPEG2000 = 27,
-    EXS_MPEG2MainProfileAtMainLevel = 28
+    EXS_MPEG2MainProfileAtMainLevel = 28,
+    EXS_JPEG2000MulticomponentLosslessOnly = 29,
+    EXS_JPEG2000Multicomponent = 30
 } E_TransferSyntax;
-
 
 typedef enum {
     EBO_unknown = 0,
@@ -170,7 +171,11 @@ extern const E_ByteOrder gLocalByteOrder;
 /*
  * CVS/RCS Log:
  * $Log: dcxfer.h,v $
- * Revision 1.16  2004-04-06 18:01:50  joergr
+ * Revision 1.17  2005-10-25 08:55:32  meichel
+ * Updated list of UIDs and added support for new transfer syntaxes
+ *   and storage SOP classes.
+ *
+ * Revision 1.16  2004/04/06 18:01:50  joergr
  * Updated data dictionary, UIDs and transfer syntaxes for the latest Final Text
  * Supplements (42 and 47) and Correction Proposals (CP 25).
  *

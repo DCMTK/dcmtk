@@ -24,9 +24,9 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-03-17 16:31:30 $
+ *  Update Date:      $Date: 2005-10-25 08:55:32 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
- *  CVS/RCS Revision: $Revision: 1.68 $
+ *  CVS/RCS Revision: $Revision: 1.69 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -62,20 +62,47 @@ const char* dcmFindNameOfUID(const char* uid);
 const char* dcmFindUIDFromName(const char * name);
 
 
-/*
-** The global variable dcmStorageSOPClassUIDs is an array of
-** string pointers containing the UIDs of all known Storage SOP
-** Classes.  The global variable numberOfDcmStorageStopClassUIDs
-** defines the size of the array.
-*/
+/** an array of const strings containing all known Storage SOP Classes
+ *  that fit into the conventional PATIENT-STUDY-SERIES-INSTANCE information
+ *  model, i.e. everything a Storage SCP might want to store in a PACS.
+ *  Special cases such as hanging protocol storage or the Storage SOP Class
+ *  are not included in this list. 
+ *  WARNING: This list contains more than 64 entries, i.e. it is not possible
+ *  to use this list to configure the association negotiation behaviour of
+ *  a Storage SCU that always proposes two presentation contexts for each
+ *  SOP class.
+ */
+extern const char* dcmAllStorageSOPClassUIDs[];
 
-extern const char* dcmStorageSOPClassUIDs[];
-extern const int numberOfDcmStorageSOPClassUIDs;
+/// number of entries in dcmAllStorageSOPClassUIDs.
+extern const int numberOfAllDcmStorageSOPClassUIDs;
+
+/** an array of const strings containing all storage SOP classes that
+ *  are proposed by default by those Storage SCU components in DCMTK
+ *  that always propose one presentation context for each SOP class,
+ *  e.g. movescu or dcmqrdb. This list is guaranteed to have at most
+ *  120 entries (to leave room for FIND/MOVE presentation contexts).
+ */
+extern const char* dcmLongSCUStorageSOPClassUIDs[];
+
+/// number of entries in dcmLongSCUStorageSOPClassUIDs.
+extern const int numberOfDcmLongSCUStorageSOPClassUIDs;
+
+/** an array of const strings containing all storage SOP classes that
+ *  are proposed by default by those Storage SCU components in DCMTK
+ *  that always propose TWO presentation context for each SOP class,
+ *  e.g. storescu. This list is guaranteed to have at most
+ *  64 entries.
+ */
+extern const char* dcmShortSCUStorageSOPClassUIDs[];
+
+/// number of entries in dcmShortSCUStorageSOPClassUIDs.
+extern const int numberOfDcmShortSCUStorageSOPClassUIDs;
 
 /*
 ** dcmIsaStorageSOPClassUID(const char* uid)
 ** Returns true if the uid is one of the Storage SOP Classes.
-** Performs a table lookup in the dcmStorageSOPClassUIDs table.
+** Performs a table lookup in the dcmAllStorageSOPClassUIDs table.
 */
 OFBool dcmIsaStorageSOPClassUID(const char* uid);
 
@@ -253,7 +280,16 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_JPEG2000TransferSyntax              "1.2.840.10008.1.2.4.91"
 /* MPEG2 Main Profile @ Main Level */
 #define UID_MPEG2MainProfileAtMainLevelTransferSyntax "1.2.840.10008.1.2.4.100"
+/* JPEG 2000 Part 2 Multi-component Image Compression (Lossless Only) */
+#define UID_JPEG2000Part2MulticomponentImageCompressionLosslessOnlyTransferSyntax "1.2.840.10008.1.2.4.92"
+/* JPEG 2000 Part 2 Multi-component Image Compression (Lossless or Lossy) */
+#define UID_JPEG2000Part2MulticomponentImageCompressionTransferSyntax "1.2.840.10008.1.2.4.93"
 
+/* MIME encapsulation (Supplement 101) is only a pseudo transfer syntax used to
+   refer to MIME encapsulated HL7 CDA documents from a DICOMDIR when stored 
+   on a DICOM storage medium. It is never used for network communication 
+   or encoding of DICOM objects. */
+#define UID_RFC2557MIMEEncapsulationTransferSyntax "1.2.840.10008.1.2.6.1"
 
 /*
 ** Defined SOP UIDs according to 2004 DICOM edition
@@ -312,9 +348,9 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_VLSlideCoordinatesMicroscopicImageStorage              "1.2.840.10008.5.1.4.1.1.77.1.3"
 #define UID_VLPhotographicImageStorage                             "1.2.840.10008.5.1.4.1.1.77.1.4"
 #define UID_VideoPhotographicImageStorage                          "1.2.840.10008.5.1.4.1.1.77.1.4.1"
-#define UID_Ophthalmic8BitPhotographyImageStorage                  "1.2.840.10008.5.1.4.1.1.77.1.5.1" 
-#define UID_Ophthalmic16BitPhotographyImageStorage                 "1.2.840.10008.5.1.4.1.1.77.1.5.2" 
-#define UID_StereometricRelationshipStorage                        "1.2.840.10008.5.1.4.1.1.77.1.5.3" 
+#define UID_OphthalmicPhotography8BitImageStorage                  "1.2.840.10008.5.1.4.1.1.77.1.5.1"
+#define UID_OphthalmicPhotography16BitImageStorage                 "1.2.840.10008.5.1.4.1.1.77.1.5.2"
+#define UID_StereometricRelationshipStorage                        "1.2.840.10008.5.1.4.1.1.77.1.5.3"
 #define UID_RETIRED_VLMultiFrameImageStorage                       "1.2.840.10008.5.1.4.1.1.77.2"
 #define UID_StandaloneOverlayStorage                               "1.2.840.10008.5.1.4.1.1.8"
 #define UID_BasicTextSR                                            "1.2.840.10008.5.1.4.1.1.88.11"
@@ -331,6 +367,14 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_HemodynamicWaveformStorage                             "1.2.840.10008.5.1.4.1.1.9.2.1"
 #define UID_CardiacElectrophysiologyWaveformStorage                "1.2.840.10008.5.1.4.1.1.9.3.1"
 #define UID_BasicVoiceAudioWaveformStorage                         "1.2.840.10008.5.1.4.1.1.9.4.1"
+
+#define UID_EnhancedXAImageStorage                                 "1.2.840.10008.5.1.4.1.1.12.1.1"
+#define UID_EnhancedXRFImageStorage                                "1.2.840.10008.5.1.4.1.1.12.2.1"
+#define UID_ColorSoftcopyPresentationStateStorage                  "1.2.840.10008.5.1.4.1.1.11.2"
+#define UID_PseudoColorSoftcopyPresentationStateStorage            "1.2.840.10008.5.1.4.1.1.11.3"
+#define UID_BlendingSoftcopyPresentationStateStorage               "1.2.840.10008.5.1.4.1.1.11.4"
+#define UID_EncapsulatedPDFStorage                                 "1.2.840.10008.5.1.4.1.1.104.1"
+#define UID_RealWorldValueMappingStorage                           "1.2.840.10008.5.1.4.1.1.67"
 
 // Worklist and Query/Retrieve
 #define UID_FINDPatientRootQueryRetrieveInformationModel           "1.2.840.10008.5.1.4.1.2.1.1"
@@ -403,8 +447,9 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_BasicStudyContentNotificationSOPClass                  "1.2.840.10008.1.9"
 #define UID_StudyComponentManagementSOPClass                       "1.2.840.10008.3.1.2.3.2"
 
-// UID for DICOM Controlled Terminology, defined in CP 324
+// Coding Schemes
 #define UID_DICOMControlledTerminologyCodingScheme                 "1.2.840.10008.2.16.4"
+#define UID_DICOMUIDRegistryCodingScheme                           "1.2.840.10008.2.6.1"
 
 // Procedure Log
 #define UID_ProceduralEventLoggingSOPClass                         "1.2.840.10008.1.40"
@@ -490,6 +535,13 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 // UTC Synchronization Frame of Reference (CP 432)
 #define UID_UniversalCoordinatedTimeSynchronizationFrameOfReference "1.2.840.10008.15.1.1" 
 
+// Hanging Protocols
+#define UID_FINDHangingProtocolInformationModel                    "1.2.840.10008.5.1.4.38.2"
+#define UID_MOVEHangingProtocolInformationModel                    "1.2.840.10008.5.1.4.38.3"
+
+/* Hanging Protocols Storage is a special case because hanging protocols use a different
+   information model, i.e. there is no patient, study or series in a hanging protocol IOD. */
+#define UID_HangingProtocolStorage                                 "1.2.840.10008.5.1.4.38.1"
 
 // Private DCMTK UIDs
 
@@ -521,7 +573,11 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.68  2005-03-17 16:31:30  meichel
+** Revision 1.69  2005-10-25 08:55:32  meichel
+** Updated list of UIDs and added support for new transfer syntaxes
+**   and storage SOP classes.
+**
+** Revision 1.68  2005/03/17 16:31:30  meichel
 ** Changed CR/LF to LF
 **
 ** Revision 1.67  2005/02/17 13:09:55  joergr

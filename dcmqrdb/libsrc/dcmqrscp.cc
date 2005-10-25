@@ -22,9 +22,9 @@
  *  Purpose: class DcmQueryRetrieveSCP
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-04-22 15:36:32 $
+ *  Update Date:      $Date: 2005-10-25 08:56:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/Attic/dcmqrscp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -448,13 +448,12 @@ void DcmQueryRetrieveSCP::refuseAnyStorageContexts(T_ASC_Association * assoc)
     int i;
     T_ASC_PresentationContextID pid;
 
-    for (i = 0; i < numberOfDcmStorageSOPClassUIDs; i++) {
-    pid = ASC_findAcceptedPresentationContextID(assoc, dcmStorageSOPClassUIDs[i]);
-    if (pid != 0) {
-        /* refuse */
-        ASC_refusePresentationContext(assoc->params,
-                      pid, ASC_P_USERREJECTION);
-      }
+    for (i = 0; i < numberOfAllDcmStorageSOPClassUIDs; i++) {
+        pid = ASC_findAcceptedPresentationContextID(assoc, dcmAllStorageSOPClassUIDs[i]);
+        if (pid != 0) {
+            /* refuse */
+            ASC_refusePresentationContext(assoc->params, pid, ASC_P_USERREJECTION);
+        }
     }
 }
 
@@ -696,7 +695,7 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
       /* accept storage syntaxes with default role only */
       cond = ASC_acceptContextsWithPreferredTransferSyntaxes(
         assoc->params,
-        dcmStorageSOPClassUIDs, numberOfDcmStorageSOPClassUIDs,
+        dcmAllStorageSOPClassUIDs, numberOfAllDcmStorageSOPClassUIDs,
         (const char**)transferSyntaxes, DIM_OF(transferSyntaxes));
       if (cond.bad()) {
         DcmQueryRetrieveOptions::errmsg("Cannot accept presentation contexts:");
@@ -1034,7 +1033,11 @@ void DcmQueryRetrieveSCP::setDatabaseFlags(
 /*
  * CVS Log
  * $Log: dcmqrscp.cc,v $
- * Revision 1.2  2005-04-22 15:36:32  meichel
+ * Revision 1.3  2005-10-25 08:56:18  meichel
+ * Updated list of UIDs and added support for new transfer syntaxes
+ *   and storage SOP classes.
+ *
+ * Revision 1.2  2005/04/22 15:36:32  meichel
  * Passing calling aetitle to DcmQueryRetrieveDatabaseHandleFactory::createDBHandle
  *   to allow configuration retrieval based on calling aetitle.
  *

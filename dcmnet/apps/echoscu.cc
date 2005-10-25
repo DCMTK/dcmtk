@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2004, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Verification Service Class User (C-ECHO operation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-04-06 18:12:26 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-10-25 08:55:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/echoscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -110,7 +110,9 @@ static const char* transferSyntaxes[] = {
       UID_DeflatedExplicitVRLittleEndianTransferSyntax,
       UID_JPEG2000LosslessOnlyTransferSyntax,
       UID_JPEG2000TransferSyntax,
-      UID_MPEG2MainProfileAtMainLevelTransferSyntax
+      UID_MPEG2MainProfileAtMainLevelTransferSyntax,
+      UID_JPEG2000Part2MulticomponentImageCompressionLosslessOnlyTransferSyntax,
+      UID_JPEG2000Part2MulticomponentImageCompressionTransferSyntax
 };
 
 // ********************************************
@@ -768,7 +770,11 @@ cecho(T_ASC_Association * assoc, unsigned long num_repeat)
 /*
 ** CVS Log
 ** $Log: echoscu.cc,v $
-** Revision 1.34  2004-04-06 18:12:26  joergr
+** Revision 1.35  2005-10-25 08:55:43  meichel
+** Updated list of UIDs and added support for new transfer syntaxes
+**   and storage SOP classes.
+**
+** Revision 1.34  2004/04/06 18:12:26  joergr
 ** Added missing suffix "TransferSyntax" to some transfer syntax constants.
 ** Added six more transfer syntaxes to the --propose-ts option.
 **
