@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2005, OFFIS
+ *  Copyright (C) 2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Convert PDF file to DICOM format
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-10-25 13:01:02 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/pdf2dcm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-10-26 13:33:49 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -83,22 +82,22 @@ OFCondition createHeader(
   const char *opt_documentTitle,
   const char *opt_conceptCSD,
   const char *opt_conceptCV,
-  const char *opt_conceptCM,  
+  const char *opt_conceptCM,
   Sint32 opt_instanceNumber)
-{  
+{
     OFCondition result = EC_Normal;
     char buf[80];
-        
+
     // insert empty type 2 attributes
-    if (result.good()) result = dataset->putAndInsertString(DCM_StudyDate, NULL);
-    if (result.good()) result = dataset->putAndInsertString(DCM_StudyTime, NULL);
-    if (result.good()) result = dataset->putAndInsertString(DCM_AccessionNumber, NULL);
-    if (result.good()) result = dataset->putAndInsertString(DCM_Manufacturer, NULL);
-    if (result.good()) result = dataset->putAndInsertString(DCM_ReferringPhysiciansName, NULL);
-    if (result.good()) result = dataset->putAndInsertString(DCM_StudyID, NULL);
-    if (result.good()) result = dataset->putAndInsertString(DCM_ContentDate, NULL);
-    if (result.good()) result = dataset->putAndInsertString(DCM_ContentTime, NULL);
-    if (result.good()) result = dataset->putAndInsertString(DCM_AcquisitionDatetime, NULL);
+    if (result.good()) result = dataset->insertEmptyElement(DCM_StudyDate);
+    if (result.good()) result = dataset->insertEmptyElement(DCM_StudyTime);
+    if (result.good()) result = dataset->insertEmptyElement(DCM_AccessionNumber);
+    if (result.good()) result = dataset->insertEmptyElement(DCM_Manufacturer);
+    if (result.good()) result = dataset->insertEmptyElement(DCM_ReferringPhysiciansName);
+    if (result.good()) result = dataset->insertEmptyElement(DCM_StudyID);
+    if (result.good()) result = dataset->insertEmptyElement(DCM_ContentDate);
+    if (result.good()) result = dataset->insertEmptyElement(DCM_ContentTime);
+    if (result.good()) result = dataset->insertEmptyElement(DCM_AcquisitionDatetime);
 
     if (result.good() && opt_conceptCSD && opt_conceptCV && opt_conceptCM)
     {
@@ -106,48 +105,44 @@ OFCondition createHeader(
     }
     else
     {
-      DcmSequenceOfItems *dseq = new DcmSequenceOfItems(DCM_ConceptNameCodeSequence);
-      if (dseq && result.good()) dataset->insert(dseq); else result = EC_MemoryExhausted;
+      result = dataset->insertEmptyElement(DCM_ConceptNameCodeSequence);
     }
 
     // insert const value attributes
-    if (result.good()) result = dataset->putAndInsertString(DCM_SpecificCharacterSet,   "ISO_IR 100");
-    if (result.good()) result = dataset->putAndInsertString(DCM_SOPClassUID,            UID_EncapsulatedPDFStorage);
-    if (result.good()) result = dataset->putAndInsertString(DCM_Modality,               "OT");
-    if (result.good()) result = dataset->putAndInsertString(DCM_ConversionType,         "WSD");
+    if (result.good()) result = dataset->putAndInsertString(DCM_SpecificCharacterSet, "ISO_IR 100");
+    if (result.good()) result = dataset->putAndInsertString(DCM_SOPClassUID,          UID_EncapsulatedPDFStorage);
+    if (result.good()) result = dataset->putAndInsertString(DCM_Modality,             "OT");
+    if (result.good()) result = dataset->putAndInsertString(DCM_ConversionType,       "WSD");
     if (result.good()) result = dataset->putAndInsertString(DCM_MIMETypeOfEncapsulatedDocument, "application/pdf");
 
     // there is no way we could determine a meaningful series number, so we just use a constant.
-    if (result.good()) result = dataset->putAndInsertString(DCM_SeriesNumber,           "1");
+    if (result.good()) result = dataset->putAndInsertString(DCM_SeriesNumber,         "1");
 
     // insert variable value attributes
-    if (result.good()) result = dataset->putAndInsertString(DCM_DocumentTitle,          opt_documentTitle);
-    if (result.good()) result = dataset->putAndInsertString(DCM_PatientsName,           opt_patientsName);
-    if (result.good()) result = dataset->putAndInsertString(DCM_PatientID,              opt_patientID);
-    if (result.good()) result = dataset->putAndInsertString(DCM_PatientsBirthDate,      opt_patientsBirthdate);
-    if (result.good()) result = dataset->putAndInsertString(DCM_PatientsSex,            opt_patientsSex);
-    if (result.good()) result = dataset->putAndInsertString(DCM_BurnedInAnnotation,     opt_burnedInAnnotation ? "YES" : "NO" );
-                                                                                        
-    sprintf(buf, "%ld", OFstatic_cast(long, opt_instanceNumber));                       
-    if (result.good()) result = dataset->putAndInsertString(DCM_InstanceNumber,         buf);
-                                                                                        
-    dcmGenerateUniqueIdentifier(buf);                                                   
-    if (result.good()) result = dataset->putAndInsertString(DCM_StudyInstanceUID,       opt_studyUID);
-    if (result.good()) result = dataset->putAndInsertString(DCM_SeriesInstanceUID,      opt_seriesUID);
-    if (result.good()) result = dataset->putAndInsertString(DCM_SOPInstanceUID,         buf);
+    if (result.good()) result = dataset->putAndInsertString(DCM_DocumentTitle,        opt_documentTitle);
+    if (result.good()) result = dataset->putAndInsertString(DCM_PatientsName,         opt_patientsName);
+    if (result.good()) result = dataset->putAndInsertString(DCM_PatientID,            opt_patientID);
+    if (result.good()) result = dataset->putAndInsertString(DCM_PatientsBirthDate,    opt_patientsBirthdate);
+    if (result.good()) result = dataset->putAndInsertString(DCM_PatientsSex,          opt_patientsSex);
+    if (result.good()) result = dataset->putAndInsertString(DCM_BurnedInAnnotation,   opt_burnedInAnnotation ? "YES" : "NO");
+
+    sprintf(buf, "%ld", OFstatic_cast(long, opt_instanceNumber));
+    if (result.good()) result = dataset->putAndInsertString(DCM_InstanceNumber,       buf);
+
+    dcmGenerateUniqueIdentifier(buf);
+    if (result.good()) result = dataset->putAndInsertString(DCM_StudyInstanceUID,     opt_studyUID);
+    if (result.good()) result = dataset->putAndInsertString(DCM_SeriesInstanceUID,    opt_seriesUID);
+    if (result.good()) result = dataset->putAndInsertString(DCM_SOPInstanceUID,       buf);
 
     // set instance creation date and time
-    OFDateTime now;
     OFString s;
-    now.setCurrentDateTime(); // time stamp for instance creation
-    now.getDate().getISOFormattedDate(s, OFFalse); // copy DICOM formatted date into s
-    if (result.good()) result = dataset->putAndInsertString(DCM_InstanceCreationDate, s.c_str());
-    s.clear();
-    now.getTime().getISOFormattedTime(s, OFTrue, OFFalse, OFFalse, OFFalse); // copy DICOM formatted time into s
-    if (result.good()) result = dataset->putAndInsertString(DCM_InstanceCreationTime, s.c_str());
+    if (result.good()) result = DcmDate::getCurrentDate(s);
+    if (result.good()) result = dataset->putAndInsertOFStringArray(DCM_InstanceCreationDate, s);
+    if (result.good()) result = DcmTime::getCurrentTime(s);
+    if (result.good()) result = dataset->putAndInsertOFStringArray(DCM_InstanceCreationTime, s);
 
     return result;
-}    
+}
 
 OFCondition insertPDFFile(
   DcmItem *dataset,
@@ -225,7 +220,7 @@ OFCondition insertPDFFile(
     {
       ofConsole.lockCout() << "file " << filename << ": PDF " << version << ", " << (fileSize+1023)/1024 << "kB" << endl;
       ofConsole.unlockCout();
-    }    
+    }
 
     if (0 != fseek(pdffile, 0, SEEK_SET))
     {
@@ -253,7 +248,7 @@ OFCondition insertPDFFile(
         {
           ofConsole.lockCerr() << "read error in file " << filename << endl;
           ofConsole.unlockCerr();
-          result = EC_IllegalCall;    	
+          result = EC_IllegalCall;
         }
       }
     } else result = EC_MemoryExhausted;
@@ -263,7 +258,7 @@ OFCondition insertPDFFile(
 
     // close file
     fclose(pdffile);
-  
+
     return result;
 }
 
@@ -332,8 +327,8 @@ void createIdentifiers(
 }
 
 
-#define SHORTCOL 4
-#define LONGCOL 20
+#define SHORTCOL 3
+#define LONGCOL 19
 
 int main(int argc, char *argv[])
 {
@@ -358,21 +353,21 @@ int main(int argc, char *argv[])
   OFCmdUnsignedInt opt_itempad = 0;
 
   // document specific options
-  const char *        opt_seriesFile = NULL;
-  const char *        opt_patientsName = NULL;
-  const char *        opt_patientID = NULL;
-  const char *        opt_patientsBirthdate = NULL;
-  const char *        opt_documentTitle = NULL;
-  const char *        opt_conceptCSD = NULL;
-  const char *        opt_conceptCV = NULL;
-  const char *        opt_conceptCM = NULL;
+  const char *   opt_seriesFile = NULL;
+  const char *   opt_patientsName = NULL;
+  const char *   opt_patientID = NULL;
+  const char *   opt_patientsBirthdate = NULL;
+  const char *   opt_documentTitle = NULL;
+  const char *   opt_conceptCSD = NULL;
+  const char *   opt_conceptCV = NULL;
+  const char *   opt_conceptCM = NULL;
 
-  OFBool              opt_readSeriesInfo = OFFalse;
-  const char *        opt_patientsSex = NULL;
-  OFBool              opt_annotation = OFTrue;
-  OFCmdSignedInt      opt_instance = 1;
-  OFBool              opt_increment = OFFalse;
-  
+  OFBool         opt_readSeriesInfo = OFFalse;
+  const char *   opt_patientsSex = NULL;
+  OFBool         opt_annotation = OFTrue;
+  OFCmdSignedInt opt_instance = 1;
+  OFBool         opt_increment = OFFalse;
+
   OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Convert PDF file to DICOM", rcsid);
   OFCommandLine cmd;
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
@@ -382,43 +377,43 @@ int main(int argc, char *argv[])
   cmd.addParam("dcmfile-out", "DICOM output filename");
 
   cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-   cmd.addOption("--help",                  "-h",     "print this help text and exit");
-   cmd.addOption("--version",                         "print version information and exit", OFTrue /* exclusive */);
-   cmd.addOption("--verbose",               "-v",     "verbose mode, print processing details");
-   cmd.addOption("--debug",                 "-d",     "debug mode, print debug information");
+   cmd.addOption("--help",                 "-h",     "print this help text and exit");
+   cmd.addOption("--version",                        "print version information and exit", OFTrue /* exclusive */);
+   cmd.addOption("--verbose",              "-v",     "verbose mode, print processing details");
+   cmd.addOption("--debug",                "-d",     "debug mode, print debug information");
 
    cmd.addGroup("DICOM document options:");
     cmd.addSubGroup("burned-in annotation:");
-      cmd.addOption("--annotation-yes",     "+an",    "PDF contains patient identifying data (default)");
-      cmd.addOption("--annotation-no",      "-an",    "PDF does not contain patient identifying data");
+      cmd.addOption("--annotation-yes",    "+an",    "PDF contains patient identifying data (default)");
+      cmd.addOption("--annotation-no",     "-an",    "PDF does not contain patient identifying data");
 
     cmd.addSubGroup("document title:");
-      cmd.addOption("--title",              "+t",  1, "[t]itle : string (default: empty)",
-                                                      "document title");
-      cmd.addOption("--concept-name",       "+cn", 3, "[CSD], [CV], [CM]: string (default: empty)",
-                                                      "document title as concept name code sequence\n"
-                                                      "with coding scheme designator CSD, code value CV\n"
-                                                      "and code meaning CM");
+      cmd.addOption("--title",             "+t",  1, "[t]itle : string (default: empty)",
+                                                     "document title");
+      cmd.addOption("--concept-name",      "+cn", 3, "[CSD], [CV], [CM]: string (default: empty)",
+                                                     "document title as concept name code sequence\n"
+                                                     "with coding scheme designator CSD, code value CV\n"
+                                                     "and code meaning CM");
     cmd.addSubGroup("patient data:");
-      cmd.addOption("--patient-name",       "+pn", 1, "[n]ame : string",
-                                                      "patient's name in DICOM PN syntax");
-      cmd.addOption("--patient-id",         "+pi", 1, "[i]d : string",
-                                                      "patient identifier");
-      cmd.addOption("--patient-birthdate",  "+pb", 1, "[d]ate : string (YYYYMMDD)",
-                                                      "patient's birth date");
-      cmd.addOption("--patient-sex",        "+ps", 1, "[s]ex : string (M, F or O)",
-                                                      "patient's sex");
+      cmd.addOption("--patient-name",      "+pn", 1, "[n]ame : string",
+                                                     "patient's name in DICOM PN syntax");
+      cmd.addOption("--patient-id",        "+pi", 1, "[i]d : string",
+                                                     "patient identifier");
+      cmd.addOption("--patient-birthdate", "+pb", 1, "[d]ate : string (YYYYMMDD)",
+                                                     "patient's birth date");
+      cmd.addOption("--patient-sex",       "+ps", 1, "[s]ex : string (M, F or O)",
+                                                     "patient's sex");
 
     cmd.addSubGroup("study and series:");
-      cmd.addOption("--generate"       ,    "+sg",    "generate new study and series UIDs (default)");
-      cmd.addOption("--study-from",         "+st", 1, "[f]ilename : string",
-                                                      "read patient/study data from DICOM file");
-      cmd.addOption("--series-from",        "+se", 1, "[f]ilename : string",
-                                                      "read patient/study/series data from DICOM file");
+      cmd.addOption("--generate"       ,   "+sg",    "generate new study and series UIDs (default)");
+      cmd.addOption("--study-from",        "+st", 1, "[f]ilename : string",
+                                                     "read patient/study data from DICOM file");
+      cmd.addOption("--series-from",       "+se", 1, "[f]ilename : string",
+                                                     "read patient/study/series data from DICOM file");
     cmd.addSubGroup("instance number:");
-      cmd.addOption("--instance-one",       "+i1",    "use instance number 1 (default, not with +se)");
-      cmd.addOption("--instance-inc",       "+ii",    "increment instance number (only with +se)");
-      cmd.addOption("--instance-set",       "+is", 1, "[i]nstance number : int", "use instance number i");
+      cmd.addOption("--instance-one",      "+i1",    "use instance number 1 (default, not with +se)");
+      cmd.addOption("--instance-inc",      "+ii",    "increment instance number (only with +se)");
+      cmd.addOption("--instance-set",      "+is", 1, "[i]nstance number : int", "use instance number i");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -517,7 +512,7 @@ int main(int argc, char *argv[])
 
       // initialize default for --series-from
       if (opt_seriesFile && opt_readSeriesInfo) opt_increment = OFTrue;
-      
+
       cmd.beginOptionBlock();
       if (cmd.findOption("--instance-one"))
       {
@@ -564,7 +559,7 @@ int main(int argc, char *argv[])
     OFString patientsBirthDate;
     OFString patientsSex;
     Sint32 incrementedInstance = 0;
-    
+
     if (opt_patientsName) patientsName = opt_patientsName;
     if (opt_patientID) patientID = opt_patientID;
     if (opt_patientsBirthdate) patientsBirthDate = opt_patientsBirthdate;
@@ -573,11 +568,11 @@ int main(int argc, char *argv[])
     createIdentifiers(opt_readSeriesInfo, opt_seriesFile, studyUID, seriesUID, patientsName, patientID, patientsBirthDate, patientsSex, incrementedInstance);
     if (opt_increment) opt_instance = incrementedInstance;
 
-    if (opt_verbose) 
+    if (opt_verbose)
     {
       ofConsole.lockCout() << "creating encapsulated PDF object" << endl;
       ofConsole.unlockCout();
-    }    
+    }
 
     DcmFileFormat fileformat;
 
@@ -592,22 +587,23 @@ int main(int argc, char *argv[])
 
     // now we need to generate an instance number that is guaranteed to be unique within a series.
 
-    result = createHeader(fileformat.getDataset(), patientsName.c_str(), patientID.c_str(), 
-      patientsBirthDate.c_str(), patientsSex.c_str(), opt_annotation, studyUID.c_str(), 
+    result = createHeader(fileformat.getDataset(), patientsName.c_str(), patientID.c_str(),
+      patientsBirthDate.c_str(), patientsSex.c_str(), opt_annotation, studyUID.c_str(),
       seriesUID.c_str(), opt_documentTitle, opt_conceptCSD, opt_conceptCV, opt_conceptCM, OFstatic_cast(Sint32, opt_instance));
 
     if (result.bad())
     {
-         ofConsole.lockCerr() << "unable to create DICOM header" << endl;
+         ofConsole.lockCerr() << "unable to create DICOM header" << endl
+             << "Error: " << result.text() << endl;
          ofConsole.unlockCerr();
     	 return 10;
     }
 
-    if (opt_verbose) 
+    if (opt_verbose)
     {
       ofConsole.lockCout() << "writing encapsulated PDF object as file " << opt_ofname << endl;
       ofConsole.unlockCout();
-    }    
+    }
 
     OFCondition error = EC_Normal;
 
@@ -615,7 +611,7 @@ int main(int argc, char *argv[])
     {
       ofConsole.lockCout() << "Check if new output transfer syntax is possible\n";
       ofConsole.unlockCout();
-    }    
+    }
 
     DcmXfer opt_oxferSyn(opt_oxfer);
 
@@ -639,16 +635,15 @@ int main(int argc, char *argv[])
     {
       ofConsole.lockCout() << "write converted DICOM file with metaheader\n";
       ofConsole.unlockCout();
-    }    
+    }
 
     error = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc,
               opt_opadenc, (Uint32) opt_filepad, (Uint32) opt_itempad);
 
     if (error.bad())
     {
-        ofConsole.lockCerr() << "Error: "
-             << error.text()
-             << ": writing file: " <<  opt_ofname << endl;
+        ofConsole.lockCerr() << "Error: " << error.text()
+             << ": writing file: " << opt_ofname << endl;
         ofConsole.unlockCerr();
         return 1;
     }
@@ -658,17 +653,19 @@ int main(int argc, char *argv[])
         ofConsole.lockCout() << "conversion successful\n";
         ofConsole.unlockCout();
     }
-    
+
     return 0;
 }
+
 
 /*
 ** CVS/RCS Log:
 ** $Log: pdf2dcm.cc,v $
-** Revision 1.1  2005-10-25 13:01:02  meichel
+** Revision 1.2  2005-10-26 13:33:49  joergr
+** Slightly modified code to use more of the "new" helper functions.
+**
+** Revision 1.1  2005/10/25 13:01:02  meichel
 ** Added new tool pdf2dcm that allows to convert PDF files to DICOM
 **   Encapsulated PDF Storage SOP instances.
 **
-**
 */
-
