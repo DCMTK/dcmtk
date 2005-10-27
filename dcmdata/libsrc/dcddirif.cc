@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-10-25 08:55:34 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-10-27 13:40:06 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -592,6 +592,15 @@ static OFString recordTypeToName(const E_DirRecType recordType)
         case ERT_Spectroscopy:
             recordName = "Spectroscopy";
             break;
+        case ERT_EncapDoc:
+            recordName = "EncapDoc";
+            break;
+        case ERT_ValueMap:
+            recordName = "ValueMap";
+            break;
+        case ERT_HangingProtocol:
+            recordName = "HangingProtocol";
+            break;
         default:
             recordName = "(unknown-directory-record-type)";
             break;
@@ -626,8 +635,13 @@ static E_DirRecType sopClassToRecordType(const OFString &sopClass)
     {
         result = ERT_StructReport;
     }
-    else if (compare(sopClass, UID_GrayscaleSoftcopyPresentationStateStorage))
+    else if (compare(sopClass, UID_GrayscaleSoftcopyPresentationStateStorage) ||
+             compare(sopClass, UID_ColorSoftcopyPresentationStateStorage) ||
+             compare(sopClass, UID_PseudoColorSoftcopyPresentationStateStorage) ||
+             compare(sopClass, UID_BlendingSoftcopyPresentationStateStorage))
+    {
         result = ERT_Presentation;
+    }
     else if (compare(sopClass, UID_TwelveLeadECGWaveformStorage) ||
              compare(sopClass, UID_GeneralECGWaveformStorage) ||
              compare(sopClass, UID_AmbulatoryECGWaveformStorage) ||
@@ -661,6 +675,12 @@ static E_DirRecType sopClassToRecordType(const OFString &sopClass)
         result = ERT_RawData;
     else if (compare(sopClass, UID_MRSpectroscopyStorage))
         result = ERT_Spectroscopy;
+    else if (compare(sopClass, UID_EncapsulatedPDFStorage))
+        result = ERT_EncapDoc;
+    else if (compare(sopClass, UID_RealWorldValueMappingStorage))
+        result = ERT_ValueMap;
+    else if (compare(sopClass, UID_HangingProtocolStorage))
+        result = ERT_HangingProtocol;
     return result;
 }
 
@@ -802,6 +822,8 @@ static OFCondition insertSortedUnder(DcmDirectoryRecord *parent,
             case ERT_Fiducial:
             case ERT_RawData:
             case ERT_Spectroscopy:
+            case ERT_EncapDoc:
+            case ERT_ValueMap:
                 /* try to insert based on InstanceNumber */
                 result = insertWithISCriterion(parent, child, DCM_InstanceNumber);
                 break;
@@ -826,11 +848,11 @@ static OFString &alternativeStudyDate(DcmItem *dataset,
     if (dataset != NULL)
     {
         /* use another date if present */
-        if (dataset->findAndGetOFStringArray(DCM_SeriesDate, result).bad())
+        if (dataset->findAndGetOFStringArray(DCM_SeriesDate, result).bad() || result.empty())
         {
-            if (dataset->findAndGetOFStringArray(DCM_AcquisitionDate, result).bad())
+            if (dataset->findAndGetOFStringArray(DCM_AcquisitionDate, result).bad() || result.empty())
             {
-                if (dataset->findAndGetOFStringArray(DCM_ContentDate, result).bad())
+                if (dataset->findAndGetOFStringArray(DCM_ContentDate, result).bad() || result.empty())
                 {
                     /* use current date, "19000101" in case of error */
                     DcmDate::getCurrentDate(result);
@@ -850,11 +872,11 @@ static OFString &alternativeStudyTime(DcmItem *dataset,
     if (dataset != NULL)
     {
         /* use another time if present */
-        if (dataset->findAndGetOFStringArray(DCM_SeriesTime, result).bad())
+        if (dataset->findAndGetOFStringArray(DCM_SeriesTime, result).bad() || result.empty())
         {
-            if (dataset->findAndGetOFStringArray(DCM_AcquisitionTime, result).bad())
+            if (dataset->findAndGetOFStringArray(DCM_AcquisitionTime, result).bad() || result.empty())
             {
-                if (dataset->findAndGetOFStringArray(DCM_ContentTime, result).bad())
+                if (dataset->findAndGetOFStringArray(DCM_ContentTime, result).bad() || result.empty())
                 {
                     /* use current time, "0000" in case of error */
                     DcmTime::getCurrentTime(result);
@@ -1312,8 +1334,6 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                     found = found || compare(mediaSOPClassUID, UID_StandaloneModalityLUTStorage);
                     found = found || compare(mediaSOPClassUID, UID_StandaloneVOILUTStorage);
                     found = found || compare(mediaSOPClassUID, UID_PETCurveStorage);
-                    found = found || compare(mediaSOPClassUID, UID_GrayscaleSoftcopyPresentationStateStorage);
-                    found = found || compare(mediaSOPClassUID, UID_StoredPrintStorage);
                     /* is it one of the RT SOP Classes? */
                     found = found || compare(mediaSOPClassUID, UID_RTDoseStorage);
                     found = found || compare(mediaSOPClassUID, UID_RTStructureSetStorage);
@@ -1339,6 +1359,16 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                     /* is it one of the spatial registration SOP Classes? */
                     found = found || compare(mediaSOPClassUID, UID_SpatialRegistrationStorage);
                     found = found || compare(mediaSOPClassUID, UID_SpatialFiducialsStorage);
+                    /* is it any other SOP class? */
+                    found = found || compare(mediaSOPClassUID, UID_GrayscaleSoftcopyPresentationStateStorage);
+                    found = found || compare(mediaSOPClassUID, UID_ColorSoftcopyPresentationStateStorage);
+                    found = found || compare(mediaSOPClassUID, UID_PseudoColorSoftcopyPresentationStateStorage);
+                    found = found || compare(mediaSOPClassUID, UID_BlendingSoftcopyPresentationStateStorage);
+                    found = found || compare(mediaSOPClassUID, UID_StoredPrintStorage);
+                    found = found || compare(mediaSOPClassUID, UID_RawDataStorage);
+                    found = found || compare(mediaSOPClassUID, UID_MRSpectroscopyStorage);
+                    found = found || compare(mediaSOPClassUID, UID_EncapsulatedPDFStorage);
+                    found = found || compare(mediaSOPClassUID, UID_HangingProtocolStorage);
                     if (ApplicationProfile == AP_GeneralPurpose)
                     {
                         /* a detached patient mgmt sop class is also ok */
@@ -1959,261 +1989,284 @@ OFCondition DicomDirInterface::checkMandatoryAttributes(DcmMetaInfo *metainfo,
         OFString mediaSOPClassUID;
         metainfo->findAndGetOFStringArray(DCM_TransferSyntaxUID, transferSyntax);
         metainfo->findAndGetOFStringArray(DCM_MediaStorageSOPClassUID, mediaSOPClassUID);
-        /* PatientID is type 1 in DICOMDIR and type 2 in images. */
-        if (!InventMode)
+        E_DirRecType recordType = sopClassToRecordType(mediaSOPClassUID);
+        /* hanging protocol files are checked separately */
+        if (recordType == ERT_HangingProtocol)        
         {
-            if (!checkExistsWithValue(dataset, DCM_PatientID, filename))
+            /* nothing to check since all type 1 and 2 attributes are identical */
+        } else {
+            /* PatientID is type 1 in DICOMDIR and type 2 in images. */
+            if (!InventMode)
+            {
+                if (!checkExistsWithValue(dataset, DCM_PatientID, filename))
+                    result = EC_InvalidTag;
+            }
+            /* PatientsName is type 2 in DICOMDIR and images */
+            if (!checkExists(dataset, DCM_PatientsName, filename))
+                result = EC_TagNotFound;
+            /* StudyDate is type 1 in DICOMDIR and type 2 in images */
+            if (!InventMode)
+            {
+                if (!checkExistsWithValue(dataset, DCM_StudyDate, filename))
+                    result = EC_InvalidTag;
+            }
+            /* StudyTime is type 1 in DICOMDIR and type 2 in images */
+            if (!InventMode)
+            {
+                if (!checkExistsWithValue(dataset, DCM_StudyTime, filename))
+                    result = EC_InvalidTag;
+            }
+            /* StudyDescription is type 2 in DICOMDIR and type 3 in images.
+               We can create an empty attribute in the directory
+             */
+            /* StudyInstanceUID is type 1 in DICOMDIR and images */
+            if (!checkExistsWithValue(dataset, DCM_StudyInstanceUID, filename))
                 result = EC_InvalidTag;
-        }
-        /* PatientsName is type 2 in DICOMDIR and images */
-        if (!checkExists(dataset, DCM_PatientsName, filename))
-            result = EC_TagNotFound;
-        /* StudyDate is type 1 in DICOMDIR and type 2 in images */
-        if (!InventMode)
-        {
-            if (!checkExistsWithValue(dataset, DCM_StudyDate, filename))
+            /* StudyID is type 1 in DICOMDIR and type 2 in images */
+            if (!InventMode)
+            {
+                if (!checkExistsWithValue(dataset, DCM_StudyID, filename))
+                    result = EC_InvalidTag;
+            }
+            /* AccessionNumber is type 2 in DICOMDIR and type 3 in images
+               We can create an empty attribute in the directory
+            */
+            /* Modality is type 1 in DICOMDIR and type 1 in images */
+            if (!checkExistsWithValue(dataset, DCM_Modality, filename))
                 result = EC_InvalidTag;
-        }
-        /* StudyTime is type 1 in DICOMDIR and type 2 in images */
-        if (!InventMode)
-        {
-            if (!checkExistsWithValue(dataset, DCM_StudyTime, filename))
+            /* SeriesInstanceUID is type 1 in DICOMDIR and type 1 in images */
+            if (!checkExistsWithValue(dataset, DCM_SeriesInstanceUID, filename))
                 result = EC_InvalidTag;
-        }
-        /* StudyDescription is type 2 in DICOMDIR and type 3 in images.
-           We can create an empty attribute in the directory
-         */
-        /* StudyInstanceUID is type 1 in DICOMDIR and images */
-        if (!checkExistsWithValue(dataset, DCM_StudyInstanceUID, filename))
-            result = EC_InvalidTag;
-        /* StudyID is type 1 in DICOMDIR and type 2 in images */
-        if (!InventMode)
-        {
-            if (!checkExistsWithValue(dataset, DCM_StudyID, filename))
-                result = EC_InvalidTag;
-        }
-        /* AccessionNumber is type 2 in DICOMDIR and type 3 in images
-           We can create an empty attribute in the directory
-        */
-        /* Modality is type 1 in DICOMDIR and type 1 in images */
-        if (!checkExistsWithValue(dataset, DCM_Modality, filename))
-            result = EC_InvalidTag;
-        /* SeriesInstanceUID is type 1 in DICOMDIR and type 1 in images */
-        if (!checkExistsWithValue(dataset, DCM_SeriesInstanceUID, filename))
-            result = EC_InvalidTag;
-        /* SeriesNumber is type 1 in DICOMDIR and type 2 in images */
-        if (!InventMode)
-        {
-            if (!checkExistsWithValue(dataset, DCM_SeriesNumber, filename))
-                result = EC_InvalidTag;
-        }
-        /* image and other numbers are type 1 in DICOMDIR but type 2 in images */
-        switch (sopClassToRecordType(mediaSOPClassUID))
-        {
-            case ERT_Overlay:
-                if (!InventMode)
-                {
-                    if (!checkExistsWithValue(dataset, DCM_OverlayNumber, filename))
-                        result = EC_InvalidTag;
-                }
-                break;
-            case ERT_ModalityLut:
-                if (!InventMode)
-                {
-                    if (!checkExistsWithValue(dataset, DCM_LookupTableNumber, filename))
-                        result = EC_InvalidTag;
-                }
-                break;
-            case ERT_VoiLut:
-                if (!InventMode)
-                {
-                    if (!checkExistsWithValue(dataset, DCM_LookupTableNumber, filename))
-                        result = EC_InvalidTag;
-                }
-                break;
-            case ERT_Curve:
-                if (!InventMode)
-                {
-                    if (!checkExistsWithValue(dataset, DCM_CurveNumber, filename))
-                        result = EC_InvalidTag;
-                }
-                break;
-            case ERT_StructReport:
-                if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
+            /* SeriesNumber is type 1 in DICOMDIR and type 2 in images */
+            if (!InventMode)
+            {
+                if (!checkExistsWithValue(dataset, DCM_SeriesNumber, filename))
                     result = EC_InvalidTag;
-                if (!checkExistsWithValue(dataset, DCM_CompletionFlag, filename))
-                    result = EC_InvalidTag;
-                if (!checkExistsWithValue(dataset, DCM_VerificationFlag, filename))
-                    result = EC_InvalidTag;
-                if (!checkExistsWithValue(dataset, DCM_ContentDate, filename))
-                    result = EC_InvalidTag;
-                if (!checkExistsWithValue(dataset, DCM_ContentTime, filename))
-                    result = EC_InvalidTag;
-                if (!checkExistsWithValue(dataset, DCM_ConceptNameCodeSequence, filename))
-                    result = EC_InvalidTag;
-                {
-                    OFString tmpString;
-                    if (compare(getStringFromDataset(dataset, DCM_VerificationFlag, tmpString), "VERIFIED"))
+            }
+            /* image and other numbers are type 1 in DICOMDIR but type 2 in images */
+            switch (recordType)
+            {
+                case ERT_Overlay:
+                    if (!InventMode)
                     {
-                        /* VerificationDateTime is required if verification flag is VERIFIED,
-                           retrieve most recent (= last) entry from VerifyingObserverSequence */
-                        DcmItem *ditem = NULL;
-                        result = dataset->findAndGetSequenceItem(DCM_VerifyingObserverSequence, ditem, -1 /*last*/);
-                        if (result.good())
+                        if (!checkExistsWithValue(dataset, DCM_OverlayNumber, filename))
+                            result = EC_InvalidTag;
+                    }
+                    break;
+                case ERT_ModalityLut:
+                    if (!InventMode)
+                    {
+                        if (!checkExistsWithValue(dataset, DCM_LookupTableNumber, filename))
+                            result = EC_InvalidTag;
+                    }
+                    break;
+                case ERT_VoiLut:
+                    if (!InventMode)
+                    {
+                        if (!checkExistsWithValue(dataset, DCM_LookupTableNumber, filename))
+                            result = EC_InvalidTag;
+                    }
+                    break;
+                case ERT_Curve:
+                    if (!InventMode)
+                    {
+                        if (!checkExistsWithValue(dataset, DCM_CurveNumber, filename))
+                            result = EC_InvalidTag;
+                    }
+                    break;
+                case ERT_StructReport:
+                    if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
+                        result = EC_InvalidTag;
+                    if (!checkExistsWithValue(dataset, DCM_CompletionFlag, filename))
+                        result = EC_InvalidTag;
+                    if (!checkExistsWithValue(dataset, DCM_VerificationFlag, filename))
+                        result = EC_InvalidTag;
+                    if (!checkExistsWithValue(dataset, DCM_ContentDate, filename))
+                        result = EC_InvalidTag;
+                    if (!checkExistsWithValue(dataset, DCM_ContentTime, filename))
+                        result = EC_InvalidTag;
+                    if (!checkExistsWithValue(dataset, DCM_ConceptNameCodeSequence, filename))
+                        result = EC_InvalidTag;
+                    {
+                        OFString tmpString;
+                        if (compare(getStringFromDataset(dataset, DCM_VerificationFlag, tmpString), "VERIFIED"))
                         {
-                            if (!checkExistsWithValue(ditem, DCM_VerificationDateTime, filename))
-                                result = EC_InvalidTag;
+                            /* VerificationDateTime is required if verification flag is VERIFIED,
+                               retrieve most recent (= last) entry from VerifyingObserverSequence */
+                            DcmItem *ditem = NULL;
+                            result = dataset->findAndGetSequenceItem(DCM_VerifyingObserverSequence, ditem, -1 /*last*/);
+                            if (result.good())
+                            {
+                                if (!checkExistsWithValue(ditem, DCM_VerificationDateTime, filename))
+                                    result = EC_InvalidTag;
+                            }
                         }
                     }
-                }
-                break;
-            case ERT_Presentation:
-                if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
-                    result = EC_InvalidTag;
-                if (!checkExistsWithValue(dataset, DCM_ContentLabel, filename))
-                    result = EC_InvalidTag;
-                if (!checkExistsWithValue(dataset, DCM_PresentationCreationDate, filename))
-                    result = EC_InvalidTag;
-                if (!checkExistsWithValue(dataset, DCM_PresentationCreationTime, filename))
-                    result = EC_InvalidTag;
-                if (!checkExistsWithValue(dataset, DCM_ReferencedSeriesSequence, filename))
-                    result = EC_InvalidTag;
-                break;
-            case ERT_Waveform:
-                if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
-                    result = EC_InvalidTag;
-                if (!checkExistsWithValue(dataset, DCM_ContentDate, filename))
-                    result = EC_InvalidTag;
-                if (!checkExistsWithValue(dataset, DCM_ContentTime, filename))
-                    result = EC_InvalidTag;
-                break;
-            case ERT_RTDose:
-                if (!InventMode)
-                {
+                    break;
+                case ERT_Presentation:
                     if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
                         result = EC_InvalidTag;
-                }
-                if (!checkExistsWithValue(dataset, DCM_DoseSummationType, filename))
-                    result = EC_InvalidTag;
-                break;
-            case ERT_RTStructureSet:
-                if (!InventMode)
-                {
+                    if (!checkExistsWithValue(dataset, DCM_ContentLabel, filename))
+                        result = EC_InvalidTag;
+                    if (!checkExistsWithValue(dataset, DCM_PresentationCreationDate, filename))
+                        result = EC_InvalidTag;
+                    if (!checkExistsWithValue(dataset, DCM_PresentationCreationTime, filename))
+                        result = EC_InvalidTag;
+                    if (!checkExistsWithValue(dataset, DCM_ReferencedSeriesSequence, filename))
+                        result = EC_InvalidTag;
+                    break;
+                case ERT_Waveform:
                     if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
                         result = EC_InvalidTag;
-                }
-                if (!checkExistsWithValue(dataset, DCM_StructureSetLabel, filename))
-                    result = EC_InvalidTag;
-                break;
-            case ERT_RTPlan:
-                if (!InventMode)
-                {
-                    if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
+                    if (!checkExistsWithValue(dataset, DCM_ContentDate, filename))
                         result = EC_InvalidTag;
-                }
-                if (!checkExistsWithValue(dataset, DCM_RTPlanLabel, filename))
-                    result = EC_InvalidTag;
-                break;
-            case ERT_RTTreatRecord:
-                if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
-                    result = EC_InvalidTag;
-                break;
-            case ERT_StoredPrint:
-                /* (nothing to do) */
-                break;
-            case ERT_KeyObjectDoc:
-                if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
-                    result = EC_InvalidTag;
-                if (!checkExistsWithValue(dataset, DCM_ContentDate, filename))
-                    result = EC_InvalidTag;
-                if (!checkExistsWithValue(dataset, DCM_ContentTime, filename))
-                    result = EC_InvalidTag;
-                if (!checkExistsWithValue(dataset, DCM_ConceptNameCodeSequence, filename))
-                    result = EC_InvalidTag;
-                break;
-            case ERT_Registration:
-                if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
-                    result = EC_InvalidTag;
-                if (!checkExistsWithValue(dataset, DCM_ContentDate, filename))
-                    result = EC_InvalidTag;
-                if (!checkExistsWithValue(dataset, DCM_ContentTime, filename))
-                    result = EC_InvalidTag;
-                if (!checkExistsWithValue(dataset, DCM_ContentLabel, filename))
-                    result = EC_InvalidTag;
-                break;
-            case ERT_Fiducial:
-                if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
-                    result = EC_InvalidTag;
-                if (!checkExistsWithValue(dataset, DCM_ContentDate, filename))
-                    result = EC_InvalidTag;
-                if (!checkExistsWithValue(dataset, DCM_ContentTime, filename))
-                    result = EC_InvalidTag;
-                if (!checkExistsWithValue(dataset, DCM_ContentLabel, filename))
-                    result = EC_InvalidTag;
-                break;
-            case ERT_RawData:
-                if (!checkExistsWithValue(dataset, DCM_ContentDate, filename))
-                    result = EC_InvalidTag;
-                if (!checkExistsWithValue(dataset, DCM_ContentTime, filename))
-                    result = EC_InvalidTag;
-                /* InstanceNumber is type 2 in IOD and directory record! */
-                break;
-            case ERT_Spectroscopy:
-                if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
-                    result = EC_InvalidTag;
-                if (!checkExistsWithValue(dataset, DCM_ImageType, filename))
-                    result = EC_InvalidTag;
-                if (!checkExistsWithValue(dataset, DCM_ContentDate, filename))
-                    result = EC_InvalidTag;
-                if (!checkExistsWithValue(dataset, DCM_ContentTime, filename))
-                    result = EC_InvalidTag;
-                if (!checkExistsWithValue(dataset, DCM_NumberOfFrames, filename))
-                    result = EC_InvalidTag;
-                if (!checkExistsWithValue(dataset, DCM_Rows, filename))
-                    result = EC_InvalidTag;
-                if (!checkExistsWithValue(dataset, DCM_Columns, filename))
-                    result = EC_InvalidTag;
-                if (!checkExistsWithValue(dataset, DCM_DataPointRows, filename))
-                    result = EC_InvalidTag;
-                if (!checkExistsWithValue(dataset, DCM_DataPointColumns, filename))
-                    result = EC_InvalidTag;
-                break;
-            default:
-                /* it can only be an image */
-                if (!InventMode)
-                {
-                    if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
+                    if (!checkExistsWithValue(dataset, DCM_ContentTime, filename))
                         result = EC_InvalidTag;
-                }
-                /* check profile specific requirements */
-                if ((ApplicationProfile == AP_GeneralPurposeDVD) ||
-                    (ApplicationProfile == AP_USBandFlash) ||
-                    (ApplicationProfile == AP_MPEG2MPatML))
-                {
-                    /* check presence of type 1 elements */
-                    if (!checkExistsWithValue(dataset, DCM_Rows, filename) ||
-                        !checkExistsWithValue(dataset, DCM_Columns, filename))
+                    break;
+                case ERT_RTDose:
+                    if (!InventMode)
                     {
-                        result = EC_InvalidTag;
+                        if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
+                            result = EC_InvalidTag;
                     }
-                }
-                else if (ApplicationProfile == AP_BasicCardiac)
-                    result = checkBasicCardiacAttributes(dataset, filename);
-                else if ((ApplicationProfile == AP_XrayAngiographic) || (ApplicationProfile == AP_XrayAngiographicDVD))
-                    result = checkXrayAngiographicAttributes(dataset, mediaSOPClassUID, filename);
-                else if (ApplicationProfile == AP_DentalRadiograph)
-                    result = checkDentalRadiographAttributes(dataset, mediaSOPClassUID, filename);
-                else if (ApplicationProfile == AP_CTandMR)
-                    result = checkCTandMRAttributes(dataset, mediaSOPClassUID, filename);
-                else if ((ApplicationProfile == AP_UltrasoundIDSF) ||
-                         (ApplicationProfile == AP_UltrasoundSCSF) ||
-                         (ApplicationProfile == AP_UltrasoundCCSF) ||
-                         (ApplicationProfile == AP_UltrasoundIDMF) ||
-                         (ApplicationProfile == AP_UltrasoundSCMF) ||
-                         (ApplicationProfile == AP_UltrasoundCCMF))
-                {
-                    result = checkUltrasoundAttributes(dataset, transferSyntax, filename);
-                }
+                    if (!checkExistsWithValue(dataset, DCM_DoseSummationType, filename))
+                        result = EC_InvalidTag;
+                    break;
+                case ERT_RTStructureSet:
+                    if (!InventMode)
+                    {
+                        if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
+                            result = EC_InvalidTag;
+                    }
+                    if (!checkExistsWithValue(dataset, DCM_StructureSetLabel, filename))
+                        result = EC_InvalidTag;
+                    break;
+                case ERT_RTPlan:
+                    if (!InventMode)
+                    {
+                        if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
+                            result = EC_InvalidTag;
+                    }
+                    if (!checkExistsWithValue(dataset, DCM_RTPlanLabel, filename))
+                        result = EC_InvalidTag;
+                    break;
+                case ERT_RTTreatRecord:
+                    if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
+                        result = EC_InvalidTag;
+                    break;
+                case ERT_StoredPrint:
+                    /* (nothing to do) */
+                    break;
+                case ERT_KeyObjectDoc:
+                    if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
+                        result = EC_InvalidTag;
+                    if (!checkExistsWithValue(dataset, DCM_ContentDate, filename))
+                        result = EC_InvalidTag;
+                    if (!checkExistsWithValue(dataset, DCM_ContentTime, filename))
+                        result = EC_InvalidTag;
+                    if (!checkExistsWithValue(dataset, DCM_ConceptNameCodeSequence, filename))
+                        result = EC_InvalidTag;
+                    break;
+                case ERT_Registration:
+                    if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
+                        result = EC_InvalidTag;
+                    if (!checkExistsWithValue(dataset, DCM_ContentDate, filename))
+                        result = EC_InvalidTag;
+                    if (!checkExistsWithValue(dataset, DCM_ContentTime, filename))
+                        result = EC_InvalidTag;
+                    if (!checkExistsWithValue(dataset, DCM_ContentLabel, filename))
+                        result = EC_InvalidTag;
+                    break;
+                case ERT_Fiducial:
+                    if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
+                        result = EC_InvalidTag;
+                    if (!checkExistsWithValue(dataset, DCM_ContentDate, filename))
+                        result = EC_InvalidTag;
+                    if (!checkExistsWithValue(dataset, DCM_ContentTime, filename))
+                        result = EC_InvalidTag;
+                    if (!checkExistsWithValue(dataset, DCM_ContentLabel, filename))
+                        result = EC_InvalidTag;
+                    break;
+                case ERT_RawData:
+                    if (!checkExistsWithValue(dataset, DCM_ContentDate, filename))
+                        result = EC_InvalidTag;
+                    if (!checkExistsWithValue(dataset, DCM_ContentTime, filename))
+                        result = EC_InvalidTag;
+                    /* InstanceNumber is type 2 in IOD and directory record! */
+                    break;
+                case ERT_Spectroscopy:
+                    if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
+                        result = EC_InvalidTag;
+                    if (!checkExistsWithValue(dataset, DCM_ImageType, filename))
+                        result = EC_InvalidTag;
+                    if (!checkExistsWithValue(dataset, DCM_ContentDate, filename))
+                        result = EC_InvalidTag;
+                    if (!checkExistsWithValue(dataset, DCM_ContentTime, filename))
+                        result = EC_InvalidTag;
+                    if (!checkExistsWithValue(dataset, DCM_NumberOfFrames, filename))
+                        result = EC_InvalidTag;
+                    if (!checkExistsWithValue(dataset, DCM_Rows, filename))
+                        result = EC_InvalidTag;
+                    if (!checkExistsWithValue(dataset, DCM_Columns, filename))
+                        result = EC_InvalidTag;
+                    if (!checkExistsWithValue(dataset, DCM_DataPointRows, filename))
+                        result = EC_InvalidTag;
+                    if (!checkExistsWithValue(dataset, DCM_DataPointColumns, filename))
+                        result = EC_InvalidTag;
+                    break;
+                case ERT_EncapDoc:
+                    if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
+                        result = EC_InvalidTag;
+                    if (!checkExistsWithValue(dataset, DCM_MIMETypeOfEncapsulatedDocument, filename))
+                        result = EC_InvalidTag;
+                    break;
+                case ERT_ValueMap:
+                    if (!checkExistsWithValue(dataset, DCM_ContentDate, filename))
+                        result = EC_InvalidTag;
+                    if (!checkExistsWithValue(dataset, DCM_ContentTime, filename))
+                        result = EC_InvalidTag;
+                    if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
+                        result = EC_InvalidTag;
+                    if (!checkExistsWithValue(dataset, DCM_ContentLabel, filename))
+                        result = EC_InvalidTag;
+                    break;
+                default:
+                    /* it can only be an image */
+                    if (!InventMode)
+                    {
+                        if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
+                            result = EC_InvalidTag;
+                    }
+                    /* check profile specific requirements */
+                    if ((ApplicationProfile == AP_GeneralPurposeDVD) ||
+                        (ApplicationProfile == AP_USBandFlash) ||
+                        (ApplicationProfile == AP_MPEG2MPatML))
+                    {
+                        /* check presence of type 1 elements */
+                        if (!checkExistsWithValue(dataset, DCM_Rows, filename) ||
+                            !checkExistsWithValue(dataset, DCM_Columns, filename))
+                        {
+                            result = EC_InvalidTag;
+                        }
+                    }
+                    else if (ApplicationProfile == AP_BasicCardiac)
+                        result = checkBasicCardiacAttributes(dataset, filename);
+                    else if ((ApplicationProfile == AP_XrayAngiographic) || (ApplicationProfile == AP_XrayAngiographicDVD))
+                        result = checkXrayAngiographicAttributes(dataset, mediaSOPClassUID, filename);
+                    else if (ApplicationProfile == AP_DentalRadiograph)
+                        result = checkDentalRadiographAttributes(dataset, mediaSOPClassUID, filename);
+                    else if (ApplicationProfile == AP_CTandMR)
+                        result = checkCTandMRAttributes(dataset, mediaSOPClassUID, filename);
+                    else if ((ApplicationProfile == AP_UltrasoundIDSF) ||
+                             (ApplicationProfile == AP_UltrasoundSCSF) ||
+                             (ApplicationProfile == AP_UltrasoundCCSF) ||
+                             (ApplicationProfile == AP_UltrasoundIDMF) ||
+                             (ApplicationProfile == AP_UltrasoundSCMF) ||
+                             (ApplicationProfile == AP_UltrasoundCCMF))
+                    {
+                        result = checkUltrasoundAttributes(dataset, transferSyntax, filename);
+                    }
+            }
         }
     }
     return result;
@@ -2381,6 +2434,9 @@ OFBool DicomDirInterface::recordMatchesDataset(DcmDirectoryRecord *record,
             case ERT_Fiducial:
             case ERT_RawData:
             case ERT_Spectroscopy:
+            case ERT_EncapDoc:
+            case ERT_ValueMap:
+            case ERT_HangingProtocol:
                 /* The attribute ReferencedSOPInstanceUID is automatically
                  * put into a Directory Record when a filename is present.
                 */
@@ -2702,11 +2758,11 @@ DcmDirectoryRecord *DicomDirInterface::buildPresentationRecord(DcmItem *dataset,
             copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
             copyElement(dataset, DCM_InstanceNumber, record);
             copyElement(dataset, DCM_ContentLabel, record);
-            copyElement(dataset, DCM_ContentDescription, record);
             copyElement(dataset, DCM_PresentationCreationDate, record);
             copyElement(dataset, DCM_PresentationCreationTime, record);
             copyElement(dataset, DCM_ContentCreatorsName, record);
             copyElement(dataset, DCM_ReferencedSeriesSequence, record);
+            copyStringWithDefault(dataset, DCM_ContentDescription, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_Presentation, "create");
             /* free memory */
@@ -2944,8 +3000,8 @@ DcmDirectoryRecord *DicomDirInterface::buildRegistrationRecord(DcmItem *dataset,
             copyElement(dataset, DCM_ContentTime, record);
             copyElement(dataset, DCM_InstanceNumber, record);
             copyElement(dataset, DCM_ContentLabel, record);
-            copyElement(dataset, DCM_ContentDescription, record, OFTrue /*optional*/);
-            copyElement(dataset, DCM_ContentCreatorsName, record, OFTrue /*optional*/);
+            copyStringWithDefault(dataset, DCM_ContentDescription, record);
+            copyStringWithDefault(dataset, DCM_ContentCreatorsName, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_Registration, "create");
             /* free memory */
@@ -2976,8 +3032,8 @@ DcmDirectoryRecord *DicomDirInterface::buildFiducialRecord(DcmItem *dataset,
             copyElement(dataset, DCM_ContentTime, record);
             copyElement(dataset, DCM_InstanceNumber, record);
             copyElement(dataset, DCM_ContentLabel, record);
-            copyElement(dataset, DCM_ContentDescription, record, OFTrue /*optional*/);
-            copyElement(dataset, DCM_ContentCreatorsName, record, OFTrue /*optional*/);
+            copyStringWithDefault(dataset, DCM_ContentDescription, record);
+            copyStringWithDefault(dataset, DCM_ContentCreatorsName, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_Fiducial, "create");
             /* free memory */
@@ -2995,7 +3051,7 @@ DcmDirectoryRecord *DicomDirInterface::buildRawDataRecord(DcmItem *dataset,
                                                           const OFString &referencedFileID,
                                                           const OFString &sourceFilename)
 {
-    /* create new fiducial record */
+    /* create new raw data record */
     DcmDirectoryRecord *record = new DcmDirectoryRecord(ERT_RawData, referencedFileID.c_str(), sourceFilename.c_str());
     if (record != NULL)
     {
@@ -3007,7 +3063,7 @@ DcmDirectoryRecord *DicomDirInterface::buildRawDataRecord(DcmItem *dataset,
             copyElement(dataset, DCM_ContentDate, record);
             copyElement(dataset, DCM_ContentTime, record);
             /* InstanceNumber is type 2 in IOD and directory record! */
-            copyElement(dataset, DCM_InstanceNumber, record, OFTrue /*optional*/);
+            copyStringWithDefault(dataset, DCM_InstanceNumber, record);
             /* IconImageSequence (type 3) not supported */
         } else {
             printRecordErrorMessage(record->error(), ERT_RawData, "create");
@@ -3026,7 +3082,7 @@ DcmDirectoryRecord *DicomDirInterface::buildSpectroscopyRecord(DcmItem *dataset,
                                                                const OFString &referencedFileID,
                                                                const OFString &sourceFilename)
 {
-    /* create new fiducial record */
+    /* create new spectroscopy record */
     DcmDirectoryRecord *record = new DcmDirectoryRecord(ERT_Spectroscopy, referencedFileID.c_str(), sourceFilename.c_str());
     if (record != NULL)
     {
@@ -3078,12 +3134,76 @@ DcmDirectoryRecord *DicomDirInterface::buildSpectroscopyRecord(DcmItem *dataset,
 }
 
 
+// create new encap doc record and copy required values from dataset
+DcmDirectoryRecord *DicomDirInterface::buildEncapDocRecord(DcmItem *dataset,
+                                                           const OFString &referencedFileID,
+                                                           const OFString &sourceFilename)
+{
+    /* create new encap doc record */
+    DcmDirectoryRecord *record = new DcmDirectoryRecord(ERT_EncapDoc, referencedFileID.c_str(), sourceFilename.c_str());
+    if (record != NULL)
+    {
+        /* check whether new record is ok */
+        if (record->error().good())
+        {
+            /* copy attribute values from dataset to presentation record */
+            copyElement(dataset, DCM_InstanceNumber, record);
+            copyElement(dataset, DCM_MIMETypeOfEncapsulatedDocument, record);
+            copyStringWithDefault(dataset, DCM_ContentDate, record);
+            copyStringWithDefault(dataset, DCM_ContentTime, record);
+            copyStringWithDefault(dataset, DCM_DocumentTitle, record);
+            /* baseline context group 7020 is not checked */
+            copyElement(dataset, DCM_ConceptNameCodeSequence, record, OFTrue /*optional*/);
+        } else {
+            printRecordErrorMessage(record->error(), ERT_EncapDoc, "create");
+            /* free memory */
+            delete record;
+            record = NULL;
+        }
+    } else
+        printRecordErrorMessage(EC_MemoryExhausted, ERT_RawData, "create");
+    return record;
+}
+
+
+// create new value map record and copy required values from dataset
+DcmDirectoryRecord *DicomDirInterface::buildValueMapRecord(DcmItem *dataset,
+                                                           const OFString &referencedFileID,
+                                                           const OFString &sourceFilename)
+{
+    /* create new value map record */
+    DcmDirectoryRecord *record = new DcmDirectoryRecord(ERT_ValueMap, referencedFileID.c_str(), sourceFilename.c_str());
+    if (record != NULL)
+    {
+        /* check whether new record is ok */
+        if (record->error().good())
+        {
+            /* copy attribute values from dataset to presentation record */
+            copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
+            copyElement(dataset, DCM_ContentDate, record);
+            copyElement(dataset, DCM_ContentTime, record);
+            copyElement(dataset, DCM_InstanceNumber, record);
+            copyElement(dataset, DCM_ContentLabel, record);
+            copyStringWithDefault(dataset, DCM_ContentDescription, record);
+            copyStringWithDefault(dataset, DCM_ContentCreatorsName, record);
+        } else {
+            printRecordErrorMessage(record->error(), ERT_ValueMap, "create");
+            /* free memory */
+            delete record;
+            record = NULL;
+        }
+    } else
+        printRecordErrorMessage(EC_MemoryExhausted, ERT_ValueMap, "create");
+    return record;
+}
+
+
 // create new image record and copy required values from dataset
 DcmDirectoryRecord *DicomDirInterface::buildImageRecord(DcmItem *dataset,
                                                         const OFString &referencedFileID,
                                                         const OFString &sourceFilename)
 {
-    /* create new series record */
+    /* create new image record */
     DcmDirectoryRecord *record = new DcmDirectoryRecord(ERT_Image, referencedFileID.c_str(), sourceFilename.c_str());
     if (record != NULL)
     {
@@ -3193,6 +3313,39 @@ DcmDirectoryRecord *DicomDirInterface::buildImageRecord(DcmItem *dataset,
         }
     } else
         printErrorMessage("out of memory (creating image record)");
+    return record;
+}
+
+
+// create new hanging protocol record and copy required values from dataset
+DcmDirectoryRecord *DicomDirInterface::buildHangingProtocolRecord(DcmItem *dataset,
+                                                                  const OFString &referencedFileID,
+                                                                  const OFString &sourceFilename)
+{
+    /* create new hanging protocol record */
+    DcmDirectoryRecord *record = new DcmDirectoryRecord(ERT_HangingProtocol, referencedFileID.c_str(), sourceFilename.c_str());
+    if (record != NULL)
+    {
+        /* check whether new record is ok */
+        if (record->error().good())
+        {
+            copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
+            copyElement(dataset, DCM_HangingProtocolName, record);
+            copyElement(dataset, DCM_HangingProtocolDescription, record);
+            copyElement(dataset, DCM_HangingProtocolLevel, record);
+            copyElement(dataset, DCM_HangingProtocolCreator, record);
+            copyElement(dataset, DCM_HangingProtocolCreationDatetime, record);
+            copyElement(dataset, DCM_HangingProtocolDefinitionSequence, record);
+            copyElement(dataset, DCM_NumberOfPriorsReferenced, record);
+            copyElement(dataset, DCM_HangingProtocolUserIdentificationCodeSequence, record, OFTrue /*optional*/);
+        } else {
+            printRecordErrorMessage(record->error(), ERT_HangingProtocol, "create");
+            /* free memory */
+            delete record;
+            record = NULL;
+        }
+    } else
+        printErrorMessage("out of memory (creating patient record)");
     return record;
 }
 
@@ -3492,6 +3645,15 @@ DcmDirectoryRecord *DicomDirInterface::addRecord(DcmDirectoryRecord *parent,
                 case ERT_Spectroscopy:
                     record = buildSpectroscopyRecord(dataset, referencedFileID, sourceFilename);
                     break;
+                case ERT_EncapDoc:
+                    record = buildEncapDocRecord(dataset, referencedFileID, sourceFilename);
+                    break;
+                case ERT_ValueMap:
+                    record = buildValueMapRecord(dataset, referencedFileID, sourceFilename);
+                    break;
+                case ERT_HangingProtocol:
+                    record = buildHangingProtocolRecord(dataset, referencedFileID, sourceFilename);
+                    break;
                 default:
                     /* it can only be an image */
                     record = buildImageRecord(dataset, referencedFileID, sourceFilename);
@@ -3539,10 +3701,14 @@ void DicomDirInterface::inventMissingAttributes(DcmDirectoryRecord *parent,
         /* iterate over all child records */
         while ((record = parent->nextSub(record)) != NULL)
         {
-            if (!record->tagExistsWithValue(DCM_PatientID))
-                setDefaultValue(record, DCM_PatientID, AutoPatientNumber++, AUTO_PATIENTID_PREFIX);
-            if (recurse)
-                inventMissingStudyLevelAttributes(record);
+            /* only check patient records */
+            if (record->getRecordType() == ERT_Patient)
+            {
+                if (!record->tagExistsWithValue(DCM_PatientID))
+                    setDefaultValue(record, DCM_PatientID, AutoPatientNumber++, AUTO_PATIENTID_PREFIX);
+                if (recurse)
+                    inventMissingStudyLevelAttributes(record);
+            }
         }
     }
 }
@@ -3662,39 +3828,48 @@ OFCondition DicomDirInterface::addDicomFile(const char *filename,
             /* what kind of object (SOP Class) is stored in the file */
             OFString sopClass;
             metainfo->findAndGetOFString(DCM_MediaStorageSOPClassUID, sopClass);
-            /* add a patient record below the root */
-            DcmDirectoryRecord *patientRecord = addRecord(rootRecord, ERT_Patient, dataset, fileID, pathname);
-            if (patientRecord != NULL)
+            /* if hanging protocol file then attach it to the root record and stop */
+            if (compare(sopClass, UID_HangingProtocolStorage))
             {
-                /* if patient management file then attach it to patient record and stop */
-                if (compare(sopClass, UID_DetachedPatientManagementMetaSOPClass))
+                /* add a patient record below the root */
+                DcmDirectoryRecord *hangingRecord = addRecord(rootRecord, ERT_HangingProtocol, dataset, fileID, pathname);
+                if (hangingRecord == NULL)
+                    result = EC_CorruptedData;
+            } else {
+                /* add a patient record below the root */
+                DcmDirectoryRecord *patientRecord = addRecord(rootRecord, ERT_Patient, dataset, fileID, pathname);
+                if (patientRecord != NULL)
                 {
-                    result = patientRecord->assignToSOPFile(fileID.c_str(), pathname.c_str());
-                    printFileErrorMessage(result, "cannot assign patient record to", pathname.c_str());
-                } else {
-                    /* add a study record below the current patient record */
-                    DcmDirectoryRecord *studyRecord = addRecord(patientRecord, ERT_Study, dataset, fileID, pathname);;
-                    if (studyRecord != NULL)
+                    /* if patient management file then attach it to patient record and stop */
+                    if (compare(sopClass, UID_DetachedPatientManagementMetaSOPClass))
                     {
-                        /* add a series record below the current study record */
-                        DcmDirectoryRecord *seriesRecord = addRecord(studyRecord, ERT_Series, dataset, fileID, pathname);;
-                        if (seriesRecord != NULL)
+                        result = patientRecord->assignToSOPFile(fileID.c_str(), pathname.c_str());
+                        printFileErrorMessage(result, "cannot assign patient record to", pathname.c_str());
+                    } else {
+                        /* add a study record below the current patient record */
+                        DcmDirectoryRecord *studyRecord = addRecord(patientRecord, ERT_Study, dataset, fileID, pathname);;
+                        if (studyRecord != NULL)
                         {
-                            /* add one of the instance record below the current series record */
-                            if (addRecord(seriesRecord, sopClassToRecordType(sopClass), dataset, fileID, pathname) == NULL)
+                            /* add a series record below the current study record */
+                            DcmDirectoryRecord *seriesRecord = addRecord(studyRecord, ERT_Series, dataset, fileID, pathname);;
+                            if (seriesRecord != NULL)
+                            {
+                                /* add one of the instance record below the current series record */
+                                if (addRecord(seriesRecord, sopClassToRecordType(sopClass), dataset, fileID, pathname) == NULL)
+                                    result = EC_CorruptedData;
+                            } else
                                 result = EC_CorruptedData;
                         } else
                             result = EC_CorruptedData;
-                    } else
-                        result = EC_CorruptedData;
-                }
-            } else
-                result = EC_CorruptedData;
-            /* invent missing attributes on all levels or PatientID only */
-            if (InventMode)
-                inventMissingAttributes(rootRecord);
-            else if (InventPatientIDMode)
-                inventMissingAttributes(rootRecord, OFFalse /*recurse*/);
+                    }
+                } else
+                    result = EC_CorruptedData;
+                /* invent missing attributes on all levels or PatientID only */
+                if (InventMode)
+                    inventMissingAttributes(rootRecord);
+                else if (InventPatientIDMode)
+                    inventMissingAttributes(rootRecord, OFFalse /*recurse*/);
+            }
         }
     }
     return result;
@@ -4610,7 +4785,13 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
- *  Revision 1.13  2005-10-25 08:55:34  meichel
+ *  Revision 1.14  2005-10-27 13:40:06  joergr
+ *  Added support for Encapsulated Document, Real World Value Mapping and
+ *  Hanging Protocol objects to DICOMDIR tools.
+ *  Added support for new Color Presentation State objects to DICOMDIR tools.
+ *  Minor code changes, e.g. reworked handling of type 2 attributes.
+ *
+ *  Revision 1.13  2005/10/25 08:55:34  meichel
  *  Updated list of UIDs and added support for new transfer syntaxes
  *    and storage SOP classes.
  *
