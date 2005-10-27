@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2004, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmDirectoryRecord
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-08-03 11:41:09 $
- *  CVS/RCS Revision: $Revision: 1.50 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-10-27 13:33:08 $
+ *  CVS/RCS Revision: $Revision: 1.51 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -99,7 +99,10 @@ static const char *DRTypeNames[] =
     "REGISTRATION",
     "FIDUCIAL",
     "RAW DATA",
-    "SPECTROSCOPY"
+    "SPECTROSCOPY",
+    "ENCAP DOC",
+    "VALUE MAP",
+    "HANGING PROTOCOL",
 };
 
 static const short DIM_OF_DRTypeNames = (sizeof(DRTypeNames) / sizeof(DRTypeNames[0]));
@@ -322,6 +325,7 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
                 case ERT_PrintQueue:
                 case ERT_Private:
                 case ERT_Topic:
+                case ERT_HangingProtocol:
                     l_error = EC_Normal;
                     break;
                 default:
@@ -411,6 +415,8 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
                 case ERT_Fiducial:
                 case ERT_RawData:
                 case ERT_Spectroscopy:
+                case ERT_EncapDoc:
+                case ERT_ValueMap:
                     l_error = EC_Normal;
                     break;
                 default:
@@ -459,6 +465,8 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
                 case ERT_Fiducial:
                 case ERT_RawData:
                 case ERT_Spectroscopy:
+                case ERT_EncapDoc:
+                case ERT_ValueMap:
                     l_error = EC_Normal;
                     break;
                 default:
@@ -492,6 +500,9 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
         case ERT_Fiducial:
         case ERT_RawData:
         case ERT_Spectroscopy:
+        case ERT_EncapDoc:
+        case ERT_ValueMap:
+        case ERT_HangingProtocol:
             switch (lowerRecord)
             {
                 case ERT_Private:
@@ -1451,7 +1462,11 @@ const char* DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
- * Revision 1.50  2004-08-03 11:41:09  meichel
+ * Revision 1.51  2005-10-27 13:33:08  joergr
+ * Added support for Encapsulated Document, Real World Value Mapping and
+ * Hanging Protocol objects to DICOMDIR tools.
+ *
+ * Revision 1.50  2004/08/03 11:41:09  meichel
  * Headers libc.h and unistd.h are now included via ofstdinc.h
  *
  * Revision 1.49  2004/02/13 17:36:54  joergr

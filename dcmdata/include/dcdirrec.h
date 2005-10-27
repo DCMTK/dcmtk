@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2004, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmDirectoryRecord
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-07-01 12:28:25 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-10-27 13:30:20 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -76,7 +76,10 @@ typedef enum {
     ERT_Registration = 29,
     ERT_Fiducial = 30,
     ERT_RawData = 31,
-    ERT_Spectroscopy = 32
+    ERT_Spectroscopy = 32,
+    ERT_EncapDoc = 33,
+    ERT_ValueMap = 34,
+    ERT_HangingProtocol = 35
 } E_DirRecType;
 
 
@@ -227,7 +230,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdirrec.h,v $
-** Revision 1.27  2004-07-01 12:28:25  meichel
+** Revision 1.28  2005-10-27 13:30:20  joergr
+** Added support for Encapsulated Document, Real World Value Mapping and
+** Hanging Protocol objects to DICOMDIR tools.
+**
+** Revision 1.27  2004/07/01 12:28:25  meichel
 ** Introduced virtual clone method for DcmObject and derived classes.
 **
 ** Revision 1.26  2004/02/13 17:36:46  joergr

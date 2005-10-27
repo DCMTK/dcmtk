@@ -22,8 +22,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-06-13 14:36:41 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2005-10-27 13:31:21 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -837,6 +837,26 @@ class DicomDirInterface
                                                 const OFString &referencedFileID,
                                                 const OFString &sourceFilename);
 
+    /** create new encap doc record and copy required values from dataset
+     *  @param dataset DICOM dataset of the current file
+     *  @param referencedFileID value of the Referenced File ID attribute
+     *  @param sourceFilename name of the source DICOM file
+     *  @return pointer to new record, NULL if an error occurred
+     */
+    DcmDirectoryRecord *buildEncapDocRecord(DcmItem *dataset,
+                                            const OFString &referencedFileID,
+                                            const OFString &sourceFilename);
+
+    /** create new value map record and copy required values from dataset
+     *  @param dataset DICOM dataset of the current file
+     *  @param referencedFileID value of the Referenced File ID attribute
+     *  @param sourceFilename name of the source DICOM file
+     *  @return pointer to new record, NULL if an error occurred
+     */
+    DcmDirectoryRecord *buildValueMapRecord(DcmItem *dataset,
+                                            const OFString &referencedFileID,
+                                            const OFString &sourceFilename);
+
     /** create new image record and copy required values from dataset
      *  @param dataset DICOM dataset of the current file
      *  @param referencedFileID value of the Referenced File ID attribute
@@ -846,6 +866,16 @@ class DicomDirInterface
     DcmDirectoryRecord *buildImageRecord(DcmItem *dataset,
                                          const OFString &referencedFileID,
                                          const OFString &sourceFilename);
+
+    /** create new hanging protocol record and copy required values from dataset
+     *  @param dataset DICOM dataset of the current file
+     *  @param referencedFileID value of the Referenced File ID attribute
+     *  @param sourceFilename name of the source DICOM file
+     *  @return pointer to new record, NULL if an error occurred
+     */
+    DcmDirectoryRecord *buildHangingProtocolRecord(DcmItem *dataset,
+                                                   const OFString &referencedFileID,
+                                                   const OFString &sourceFilename);
 
     /** create icon image from given PGM (portable gray map) file.
      *  Please note that only grayscale images in binary format are currently
@@ -1276,7 +1306,11 @@ class DicomDirInterface
  *
  * CVS/RCS Log:
  * $Log: dcddirif.h,v $
- * Revision 1.5  2005-06-13 14:36:41  joergr
+ * Revision 1.6  2005-10-27 13:31:21  joergr
+ * Added support for Encapsulated Document, Real World Value Mapping and
+ * Hanging Protocol objects to DICOMDIR tools.
+ *
+ * Revision 1.5  2005/06/13 14:36:41  joergr
  * Added new options to disable check on pixel encoding and transfer syntax.
  *
  * Revision 1.4  2005/03/09 17:53:34  joergr
