@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2004, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Query/Retrieve Service Class User (C-FIND operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-02-27 12:51:51 $
+ *  Update Date:      $Date: 2005-11-03 17:39:41 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/findscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.41 $
+ *  CVS/RCS Revision: $Revision: 1.42 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -88,6 +88,7 @@ static OFBool           opt_extractResponsesToFile = OFFalse;
 static const char *     opt_abstractSyntax = UID_FINDModalityWorklistInformationModel;
 static OFCmdSignedInt   opt_cancelAfterNResponses = -1;
 static DcmDataset *     overrideKeys = NULL;
+static E_TransferSyntax opt_networkTransferSyntax = EXS_Unknown;
 
 typedef struct {
     T_ASC_Association *assoc;
@@ -170,8 +171,7 @@ addOverrideKey(OFConsoleApplication& app, const char* s)
     }
 }
 
-static OFCondition
-addPresentationContexts(T_ASC_Parameters *params);
+static OFCondition addPresentationContext(T_ASC_Parameters *params);
 
 static OFCondition
 cfind(T_ASC_Association *assoc, const char* fname);
@@ -261,6 +261,11 @@ main(int argc, char *argv[])
     cmd.addSubGroup("post-1993 value representations:");
       cmd.addOption("--enable-new-vr",          "+u",        "enable support for new VRs (UN/UT) (default)");
       cmd.addOption("--disable-new-vr",         "-u",        "disable support for new VRs, convert to OB");
+    cmd.addSubGroup("proposed transmission transfer syntaxes:");
+      cmd.addOption("--propose-uncompr",        "-x=",       "propose all uncompressed TS, explicit VR\nwith local byte ordering first (default)");
+      cmd.addOption("--propose-little",         "-xe",       "propose all uncompressed TS, explicit VR\nlittle endian first");
+      cmd.addOption("--propose-big",            "-xb",       "propose all uncompressed TS, explicit VR\nbig endian first");
+      cmd.addOption("--propose-implicit",       "-xi",       "propose implicit VR little endian TS only");
     cmd.addSubGroup("other network options:");
       OFString opt3 = "set max receive pdu to n bytes (default: ";
       sprintf(tempstr, "%ld", (long)ASC_DEFAULTMAXPDU);
@@ -367,6 +372,13 @@ main(int argc, char *argv[])
           addOverrideKey(app, ovKey);
         } while (cmd.findOption("--key", 0, OFCommandLine::FOM_Next));
       }
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--propose-uncompr"))  opt_networkTransferSyntax = EXS_Unknown;
+      if (cmd.findOption("--propose-little"))   opt_networkTransferSyntax = EXS_LittleEndianExplicit;
+      if (cmd.findOption("--propose-big"))      opt_networkTransferSyntax = EXS_BigEndianExplicit;
+      if (cmd.findOption("--propose-implicit")) opt_networkTransferSyntax = EXS_LittleEndianImplicit;
+      cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--worklist")) opt_abstractSyntax = UID_FINDModalityWorklistInformationModel;
@@ -650,7 +662,7 @@ main(int argc, char *argv[])
 
     /* Set the presentation contexts which will be negotiated */
     /* when the network connection will be established */
-    cond = addPresentationContexts(params);
+    cond = addPresentationContext(params);
     if (cond.bad()) {
         DimseCondition::dump(cond);
         exit(1);
@@ -813,40 +825,68 @@ main(int argc, char *argv[])
     return 0;
 }
 
-static OFCondition
-addPresentationContexts(T_ASC_Parameters *params)
-{
-    OFCondition cond = EC_Normal;
 
+static OFCondition
+addPresentationContext(T_ASC_Parameters *params)
+{
     /*
-    ** We prefer to accept Explicitly encoded transfer syntaxes.
+    ** We prefer to use Explicitly encoded transfer syntaxes.
     ** If we are running on a Little Endian machine we prefer
     ** LittleEndianExplicitTransferSyntax to BigEndianTransferSyntax.
     ** Some SCP implementations will just select the first transfer
     ** syntax they support (this is not part of the standard) so
     ** organise the proposed transfer syntaxes to take advantage
     ** of such behaviour.
+    **
+    ** The presentation contexts proposed here are only used for
+    ** C-FIND and C-MOVE, so there is no need to support compressed
+    ** transmission.
     */
 
-    const char* transferSyntaxes[] = {
-        NULL, NULL, UID_LittleEndianImplicitTransferSyntax };
+    const char* transferSyntaxes[] = { NULL, NULL, NULL };
+    int numTransferSyntaxes = 0;
 
-    /* gLocalByteOrder is defined in dcxfer.h */
-    if (gLocalByteOrder == EBO_LittleEndian) {
-        /* we are on a little endian machine */
+    switch (opt_networkTransferSyntax) {
+    case EXS_LittleEndianImplicit:
+        /* we only support Little Endian Implicit */
+        transferSyntaxes[0]  = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 1;
+        break;
+    case EXS_LittleEndianExplicit:
+        /* we prefer Little Endian Explicit */
         transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
         transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
-    } else {
-        /* we are on a big endian machine */
+        transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 3;
+        break;
+    case EXS_BigEndianExplicit:
+        /* we prefer Big Endian Explicit */
         transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
         transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 3;
+        break;
+    default:
+        /* We prefer explicit transfer syntaxes.
+         * If we are running on a Little Endian machine we prefer
+         * LittleEndianExplicitTransferSyntax to BigEndianTransferSyntax.
+         */
+        if (gLocalByteOrder == EBO_LittleEndian)  /* defined in dcxfer.h */
+        {
+            transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
+            transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
+        } else {
+            transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
+            transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+        }
+        transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 3;
+        break;
     }
 
-    cond = ASC_addPresentationContext(
+    return ASC_addPresentationContext(
         params, 1, opt_abstractSyntax,
-        transferSyntaxes, DIM_OF(transferSyntaxes));
-
-    return cond;
+        transferSyntaxes, numTransferSyntaxes);
 }
 
 static void
@@ -1082,7 +1122,10 @@ cfind(T_ASC_Association * assoc, const char *fname)
 /*
 ** CVS Log
 ** $Log: findscu.cc,v $
-** Revision 1.41  2004-02-27 12:51:51  meichel
+** Revision 1.42  2005-11-03 17:39:41  meichel
+** Added transfer syntax selection options to findscu.
+**
+** Revision 1.41  2004/02/27 12:51:51  meichel
 ** Added --cancel option to findscu, similar to the option available in movescu.
 **
 ** Revision 1.40  2004/02/26 17:17:43  meichel

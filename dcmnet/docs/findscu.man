@@ -84,6 +84,23 @@ post-1993 value representations:
   -u    --disable-new-vr
           disable support for new VRs, convert to OB
 
+proposed transmission transfer syntaxes:
+
+  -x=   --propose-uncompr
+          propose all uncompressed TS, explicit VR
+          with local byte ordering first (default)
+
+  -xe   --propose-little
+          propose all uncompressed TS, explicit VR
+          little endian first
+
+  -xb   --propose-big
+          propose all uncompressed TS, explicit VR
+          big endian first
+
+  -xi   --propose-implicit
+          propose implicit VR little endian TS only
+
 other network options:
 
   -to   --timeout  [s]econds: integer (default: unlimited)
@@ -276,7 +293,7 @@ environment variable.  It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1994-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
+Copyright (C) 1994-2005 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
 Germany.
 
 */
