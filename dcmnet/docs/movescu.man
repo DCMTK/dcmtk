@@ -132,13 +132,16 @@ network host access control (tcp wrapper) options:
   +ac   --access-control
           enforce host access control rules
 
+port for incoming network associations:
+  -P    --no-port              
+          No port for incoming associations (default)
+  +P    --port  [n]umber: integer
+          port number for incoming associations
+
 other network options:
 
   -to   --timeout  [s]econds: integer (default: unlimited)
           timeout for connection requests
-
-  +P    --port  [n]umber: integer (default: 104)
-          port number for incoming associations
 
   -pdu  --max-pdu  [n]umber of bytes: integer [4096..131072]
           set max receive pdu to n bytes (default: 16384)
@@ -251,7 +254,7 @@ Individual attributes of each file sent can be modified or supplemented
 using the "-k key" option.  For example the command:
 
 \verbatim
-movescu -k '0010,0020=PAT002' caesar 5678 patqry.dcm
+movescu -k 0010,0020=PAT002 caesar 5678 patqry.dcm
 \endverbatim
 
 will, when sent to the SCP caesar at TCP/IP port 5678, cause any PatientID

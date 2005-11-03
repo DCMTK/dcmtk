@@ -22,9 +22,9 @@
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-10-25 08:55:43 $
+ *  Update Date:      $Date: 2005-11-03 17:27:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.52 $
+ *  CVS/RCS Revision: $Revision: 1.53 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -104,7 +104,7 @@ OFBool            opt_abortDuringStore = OFFalse;
 OFBool            opt_abortAfterStore = OFFalse;
 OFBool            opt_correctUIDPadding = OFFalse;
 OFCmdUnsignedInt  opt_repeatCount = 1;
-OFCmdUnsignedInt  opt_retrievePort = 104;
+OFCmdUnsignedInt  opt_retrievePort = 0;
 E_TransferSyntax  opt_in_networkTransferSyntax = EXS_Unknown;
 E_TransferSyntax  opt_out_networkTransferSyntax = EXS_Unknown;
 OFBool            opt_abortAssociation = OFFalse;
@@ -292,15 +292,13 @@ main(int argc, char *argv[])
       cmd.addOption("--access-full",            "-ac",       "accept connections from any host (default)");
       cmd.addOption("--access-control",         "+ac",       "enforce host access control rules");
 #endif
+    cmd.addSubGroup("port for incoming network associations:");
+      cmd.addOption("--no-port",                "-P",        "No port for incoming associations (default)");
+      cmd.addOption("--port",                   "+P",    1,  "[n]umber: integer",
+                                                             "port number for incoming associations");
+
     cmd.addSubGroup("other network options:");
       cmd.addOption("--timeout",                "-to", 1,    "[s]econds: integer (default: unlimited)", "timeout for connection requests");
-
-      OFString opt6 = "[n]umber: integer (default: ";
-      sprintf(tempstr, "%ld", (long)opt_retrievePort);
-      opt6 += tempstr;
-      opt6 += ")";
-      cmd.addOption("--port",                   "+P",    1,  opt6.c_str(),
-                                                             "port number for incoming associations");
       OFString opt3 = "set max receive pdu to n bytes (default: ";
       sprintf(tempstr, "%ld", (long)ASC_DEFAULTMAXPDU);
       opt3 += tempstr;
@@ -568,7 +566,7 @@ main(int argc, char *argv[])
 
 #ifdef HAVE_GETEUID
     /* if retrieve port is privileged we must be as well */
-    if (opt_retrievePort < 1024) {
+    if ((opt_retrievePort > 0) && (opt_retrievePort < 1024)) {
         if (geteuid() != 0) {
             errmsg("cannot listen on port %d, insufficient privileges", opt_retrievePort);
             return 1;
@@ -577,8 +575,8 @@ main(int argc, char *argv[])
 #endif
 
     /* network for move request and responses */
-    OFCondition cond = ASC_initializeNetwork(NET_ACCEPTORREQUESTOR, (int)opt_retrievePort,
-                                 1000, &net);
+    T_ASC_NetworkRole role = (opt_retrievePort > 0) ? NET_ACCEPTORREQUESTOR : NET_REQUESTOR;
+    OFCondition cond = ASC_initializeNetwork(role, OFstatic_cast(int, opt_retrievePort), 1000, &net);
     if (cond.bad())
     {
         errmsg("cannot create network:");
@@ -1337,7 +1335,10 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.52  2005-10-25 08:55:43  meichel
+** Revision 1.53  2005-11-03 17:27:10  meichel
+** The movescu tool does not open any listen port by default anymore.
+**
+** Revision 1.52  2005/10/25 08:55:43  meichel
 ** Updated list of UIDs and added support for new transfer syntaxes
 **   and storage SOP classes.
 **
