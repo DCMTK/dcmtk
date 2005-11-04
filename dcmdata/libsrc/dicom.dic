@@ -22,9 +22,9 @@
 #  This is the global DICOM data dictionary for the dcmtk class library.
 #
 #  Last Update:      $Author: meichel $
-#  Update Date:      $Date: 2005-10-24 16:56:46 $
+#  Update Date:      $Date: 2005-11-04 09:52:56 $
 #  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dicom.dic,v $
-#  CVS/RCS Revision: $Revision: 1.53 $
+#  CVS/RCS Revision: $Revision: 1.54 $
 #  Status:           $State: Exp $
 #
 #  This dictionary contains
@@ -32,7 +32,7 @@
 #     supplements 1-42 (except 16, 21 and 34 which are cancelled),
 #     44-55 (46 is cancelled), 57-62, 64-73, 75-77, 79-88 
 #     (81 is cancelled), 90-93, 99-101 and 103-105 as well as the
-#     CP packages 1-32 (final text)
+#     CP packages 1-33 (final text)
 # 
 # Each line represents an entry in the data dictionary.  Each line
 # has 5 fields (Tag, VR, Name, VM, Version).  Entries need not be
@@ -297,6 +297,9 @@
 (0012,0050)	LO	ClinicalTrialTimePointID	1	dicom2003
 (0012,0051)	ST	ClinicalTrialTimePointDescription	1	dicom2003
 (0012,0060)	LO	ClinicalTrialCoordinatingCenterName	1	dicom2003
+(0012,0062)	CS	PatientIdentifyRemoved	1	dicom2005
+(0012,0063)	LO	DeIdentificationMethod	1-n	dicom2005
+(0012,0064)	SQ	DeIdentificationMethodCodeSequence	1	dicom2005
 (0018,0000)	UL	AcquisitionGroupLength	1	dicom98
 (0018,0010)	LO	ContrastBolusAgent	1	dicom98
 (0018,0012)	SQ	ContrastBolusAgentSequence	1	dicom98
@@ -1040,6 +1043,7 @@
 (0028,1350)	CS	PartialView	1	dicom2000
 (0028,1351)	ST	PartialViewDescription	1	dicom2000
 (0028,1352)	SQ	PartialViewCodeSequence	1	dicom2005
+(0028,135A)	CS	SpatialLocationsPreserved	1	dicom2005
 (0028,2000)	OB	ICCProfile	1	dicom2005
 (0028,2110)	CS	LossyImageCompression	1	dicom98
 (0028,2112)	DS	LossyImageCompressionRatio	1-n	dicom99
@@ -1969,7 +1973,8 @@
 (300A,0006)	DA	RTPlanDate	1	dicom98
 (300A,0007)	TM	RTPlanTime	1	dicom98
 (300A,0009)	LO	TreatmentProtocols	1-n	dicom98
-(300A,000A)	CS	TreatmentIntent	1	dicom98
+# Name was TreatmentIntent (dicom98) changed in CPack 33 (dicom2005)
+(300A,000A)	CS	PlanIntent	1	dicom2005
 (300A,000B)	LO	TreatmentSites	1-n	dicom98
 (300A,000C)	CS	RTPlanGeometry	1	dicom98
 (300A,000E)	ST	PrescriptionDescription	1	dicom98
@@ -2202,6 +2207,8 @@
 (300A,02E0)	CS	CompensatorDivergence	1	dicom2003
 (300A,02E1)	CS	CompensatorMountingPosition	1	dicom2003
 (300A,02E2)	DS	SourceToCompensatorDistance	1-n	dicom2003
+(300A,0401)	SQ	ReferencedSetupImageSequence	1	dicom2005
+(300A,0402)	ST	SetupImageComment	1	dicom2005
 (300C,0000)	UL	RTRelationshipGroupLength	1	dicom98
 (300C,0002)	SQ	ReferencedRTPlanSequence	1	dicom98
 (300C,0004)	SQ	ReferencedBeamSequence	1	dicom98

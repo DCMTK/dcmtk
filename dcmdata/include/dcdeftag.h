@@ -4,11 +4,11 @@
 **
 **   User: meichel
 **   Host: caesar
-**   Date: 2005-10-2416:04:41
-**   Prog: mkdeftag
+**   Date: 2005-11-0410:50:17
+**   Prog: /home/meichel/dicom/dcmtk/dcmdata/libsrc/mkdeftag
 **
-** From: dicom.dic
-**       private.dic
+** From: /home/meichel/dicom/dcmtk/dcmdata/libsrc/dicom.dic
+**       /home/meichel/dicom/dcmtk/dcmdata/libsrc/private.dic
 **
 */
 
@@ -17,12 +17,12 @@
 
 #include "dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2005-10-2416:04:41"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2005-11-0410:50:17"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 2326
+** Number of entries: 2332
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -297,6 +297,9 @@
 #define DCM_ClinicalTrialTimePointID             DcmTagKey(0x0012, 0x0050)
 #define DCM_ClinicalTrialTimePointDescription    DcmTagKey(0x0012, 0x0051)
 #define DCM_ClinicalTrialCoordinatingCenterName  DcmTagKey(0x0012, 0x0060)
+#define DCM_PatientIdentifyRemoved               DcmTagKey(0x0012, 0x0062)
+#define DCM_DeIdentificationMethod               DcmTagKey(0x0012, 0x0063)
+#define DCM_DeIdentificationMethodCodeSequence   DcmTagKey(0x0012, 0x0064)
 #define DCM_AcquisitionGroupLength               DcmTagKey(0x0018, 0x0000)
 #define DCM_ContrastBolusAgent                   DcmTagKey(0x0018, 0x0010)
 #define DCM_ContrastBolusAgentSequence           DcmTagKey(0x0018, 0x0012)
@@ -1097,6 +1100,7 @@
 #define DCM_PartialView                          DcmTagKey(0x0028, 0x1350)
 #define DCM_PartialViewDescription               DcmTagKey(0x0028, 0x1351)
 #define DCM_PartialViewCodeSequence              DcmTagKey(0x0028, 0x1352)
+#define DCM_SpatialLocationsPreserved            DcmTagKey(0x0028, 0x135a)
 #define DCM_ICCProfile                           DcmTagKey(0x0028, 0x2000)
 #define DCM_LossyImageCompression                DcmTagKey(0x0028, 0x2110)
 #define DCM_LossyImageCompressionRatio           DcmTagKey(0x0028, 0x2112)
@@ -2030,7 +2034,7 @@
 #define DCM_RTPlanDate                           DcmTagKey(0x300a, 0x0006)
 #define DCM_RTPlanTime                           DcmTagKey(0x300a, 0x0007)
 #define DCM_TreatmentProtocols                   DcmTagKey(0x300a, 0x0009)
-#define DCM_TreatmentIntent                      DcmTagKey(0x300a, 0x000a)
+#define DCM_PlanIntent                           DcmTagKey(0x300a, 0x000a)
 #define DCM_TreatmentSites                       DcmTagKey(0x300a, 0x000b)
 #define DCM_RTPlanGeometry                       DcmTagKey(0x300a, 0x000c)
 #define DCM_PrescriptionDescription              DcmTagKey(0x300a, 0x000e)
@@ -2262,6 +2266,8 @@
 #define DCM_CompensatorDivergence                DcmTagKey(0x300a, 0x02e0)
 #define DCM_CompensatorMountingPosition          DcmTagKey(0x300a, 0x02e1)
 #define DCM_SourceToCompensatorDistance          DcmTagKey(0x300a, 0x02e2)
+#define DCM_ReferencedSetupImageSequence         DcmTagKey(0x300a, 0x0401)
+#define DCM_SetupImageComment                    DcmTagKey(0x300a, 0x0402)
 #define DCM_RTRelationshipGroupLength            DcmTagKey(0x300c, 0x0000)
 #define DCM_ReferencedRTPlanSequence             DcmTagKey(0x300c, 0x0002)
 #define DCM_ReferencedBeamSequence               DcmTagKey(0x300c, 0x0004)

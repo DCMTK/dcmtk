@@ -4,7 +4,7 @@
 **
 **   User: meichel
 **   Host: caesar
-**   Date: 2005-10-2418:55:44
+**   Date: 2005-11-0410:49:54
 **   Prog: /home/meichel/dicom/dcmtk/dcmdata/libsrc/mkdictbi
 **
 ** From: /home/meichel/dicom/dcmtk/dcmdata/libsrc/dicom.dic
@@ -15,7 +15,7 @@
 #include "dcdict.h"
 #include "dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2005-10-2418:55:44";
+const char* dcmBuiltinDictBuildDate = "2005-11-0410:49:54";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -2387,6 +2387,18 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0012, 0x0060, 0x0012, 0x0060,
       EVR_LO, "ClinicalTrialCoordinatingCenterName", 1, 1, "dicom2003",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0012, 0x0062, 0x0012, 0x0062,
+      EVR_CS, "PatientIdentifyRemoved", 1, 1, "dicom2005",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0012, 0x0063, 0x0012, 0x0063,
+      EVR_LO, "DeIdentificationMethod", 1, -1, "dicom2005",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0012, 0x0064, 0x0012, 0x0064,
+      EVR_SQ, "DeIdentificationMethodCodeSequence", 1, 1, "dicom2005",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
 #ifdef WITH_PRIVATE_TAGS
@@ -11689,6 +11701,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SQ, "PartialViewCodeSequence", 1, 1, "dicom2005",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x0028, 0x135a, 0x0028, 0x135a,
+      EVR_CS, "SpatialLocationsPreserved", 1, 1, "dicom2005",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x0028, 0x2000, 0x0028, 0x2000,
       EVR_OB, "ICCProfile", 1, 1, "dicom2005",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -18062,7 +18078,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x000a, 0x300a, 0x000a,
-      EVR_CS, "TreatmentIntent", 1, 1, "dicom98",
+      EVR_CS, "PlanIntent", 1, 1, "dicom2005",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x000b, 0x300a, 0x000b,
@@ -18987,6 +19003,14 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x300a, 0x02e2, 0x300a, 0x02e2,
       EVR_DS, "SourceToCompensatorDistance", 1, -1, "dicom2003",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x0401, 0x300a, 0x0401,
+      EVR_SQ, "ReferencedSetupImageSequence", 1, 1, "dicom2005",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x0402, 0x300a, 0x0402,
+      EVR_ST, "SetupImageComment", 1, 1, "dicom2005",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300c, 0x0000, 0x300c, 0x0000,
