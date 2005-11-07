@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2004, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmMetaInfo
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-07-01 12:28:25 $
+ *  Update Date:      $Date: 2005-11-07 16:59:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcmetinf.h,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -64,6 +64,9 @@ class DcmMetaInfo
      *  @param old item to be copied
      */
     DcmMetaInfo(const DcmMetaInfo &old);
+
+    /// copy assignment operator
+    DcmMetaInfo& operator=(const DcmMetaInfo&);
 
     /** destructor
      */
@@ -129,9 +132,6 @@ class DcmMetaInfo
 
   private:
 
-    /// private undefined copy assignment operator
-    DcmMetaInfo& operator=(const DcmMetaInfo&);
-
     void setPreamble();
 
     OFBool checkAndReadPreamble(DcmInputStream &inStream,
@@ -161,7 +161,10 @@ class DcmMetaInfo
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.h,v $
-** Revision 1.20  2004-07-01 12:28:25  meichel
+** Revision 1.21  2005-11-07 16:59:24  meichel
+** Cleaned up some copy constructors in the DcmObject hierarchy.
+**
+** Revision 1.20  2004/07/01 12:28:25  meichel
 ** Introduced virtual clone method for DcmObject and derived classes.
 **
 ** Revision 1.19  2003/03/21 13:06:46  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2004, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmDicomDir
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-09-24 08:45:55 $
- *  CVS/RCS Revision: $Revision: 1.45 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-11-07 16:59:26 $
+ *  CVS/RCS Revision: $Revision: 1.46 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -146,21 +146,19 @@ DcmDicomDir::DcmDicomDir(const char *fileName, const char *fileSetID)
 // ********************************
 
 
-DcmDicomDir::DcmDicomDir( const DcmDicomDir & /*newDir*/ )
-  : errorFlag(EC_IllegalCall),
+/* This copy constructor implementation is untested 
+ */
+DcmDicomDir::DcmDicomDir( const DcmDicomDir & old )
+  : errorFlag(old.errorFlag),
     dicomDirFileName(NULL),
-    modified(OFFalse),
-    mustCreateNewDir(OFTrue),
-    DirFile(NULL),
-    RootRec(NULL),
-    MRDRSeq(NULL)
+    modified(old.modified),
+    mustCreateNewDir(old.mustCreateNewDir),
+    DirFile(new DcmFileFormat(*old.DirFile)),
+    RootRec(new DcmDirectoryRecord(*old.RootRec)),
+    MRDRSeq(new DcmSequenceOfItems(*old.MRDRSeq))
 {
-    DirFile = new DcmFileFormat();
-    RootRec = new DcmDirectoryRecord( ERT_root, NULL, NULL );
-    DcmTag mrdrSeqTag( DCM_DirectoryRecordSequence );
-    MRDRSeq = new DcmSequenceOfItems( mrdrSeqTag );
-    ofConsole.lockCerr() << "Warning: DcmDicomDir: wrong use of Copy-Constructor" << endl;
-    ofConsole.unlockCerr();
+    dicomDirFileName = new char[ strlen( old.dicomDirFileName ) + 1 ];
+    strcpy( dicomDirFileName, old.dicomDirFileName );
 }
 
 
@@ -1327,7 +1325,10 @@ Cdebug(1, refCounter[k].fileOffset==refMRDR->numberOfReferences,
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
-** Revision 1.45  2004-09-24 08:45:55  joergr
+** Revision 1.46  2005-11-07 16:59:26  meichel
+** Cleaned up some copy constructors in the DcmObject hierarchy.
+**
+** Revision 1.45  2004/09/24 08:45:55  joergr
 ** Replaced "delete" statement by "delete[]" (object created with "new[]").
 **
 ** Revision 1.44  2004/08/03 11:41:09  meichel

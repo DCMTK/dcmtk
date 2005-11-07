@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmDirectoryRecord
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-10-27 13:33:08 $
- *  CVS/RCS Revision: $Revision: 1.51 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-11-07 16:59:26 $
+ *  CVS/RCS Revision: $Revision: 1.52 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -114,14 +114,12 @@ static const short DIM_OF_DRTypeNames = (sizeof(DRTypeNames) / sizeof(DRTypeName
 DcmDirectoryRecord::DcmDirectoryRecord()
   : DcmItem(ItemTag),
     recordsOriginFile(NULL),
-    lowerLevelList(NULL),
+    lowerLevelList(new DcmSequenceOfItems(DCM_DirectoryRecordSequence)),
     DirRecordType(ERT_Private),
     referencedMRDR(NULL),
     numberOfReferences(0),
     offsetInFile(0)
 {
-    DcmTag sequTag(DCM_DirectoryRecordSequence);
-    lowerLevelList = new DcmSequenceOfItems(sequTag);
 }
 
 
@@ -132,14 +130,12 @@ DcmDirectoryRecord::DcmDirectoryRecord(const DcmTag &tag,
                                        const Uint32 len)
   : DcmItem(tag, len),
     recordsOriginFile(NULL),
-    lowerLevelList(NULL),
+    lowerLevelList(new DcmSequenceOfItems(DCM_DirectoryRecordSequence)),
     DirRecordType(ERT_Private),
     referencedMRDR(NULL),
     numberOfReferences(0),
     offsetInFile(0)
 {
-    DcmTag sequTag(DCM_DirectoryRecordSequence);
-    lowerLevelList = new DcmSequenceOfItems(sequTag);
 }
 
 
@@ -151,14 +147,12 @@ DcmDirectoryRecord::DcmDirectoryRecord(const E_DirRecType recordType,
                                        const char *sourceFilename)
   : DcmItem(ItemTag),
     recordsOriginFile(NULL),
-    lowerLevelList(NULL),
+    lowerLevelList(new DcmSequenceOfItems(DCM_DirectoryRecordSequence)),
     DirRecordType(recordType),
     referencedMRDR(NULL),
     numberOfReferences(0),
     offsetInFile(0)
 {
-    DcmTag sequTag(DCM_DirectoryRecordSequence);
-    lowerLevelList = new DcmSequenceOfItems(sequTag);
     setRecordsOriginFile(sourceFilename);
 
     if (DirRecordType != ERT_root)
@@ -174,14 +168,12 @@ DcmDirectoryRecord::DcmDirectoryRecord(const char *recordTypeName,
                                        const char *sourceFilename)
   : DcmItem(ItemTag),
     recordsOriginFile(NULL),
-    lowerLevelList(NULL),
+    lowerLevelList(new DcmSequenceOfItems(DCM_DirectoryRecordSequence)),
     DirRecordType(ERT_Private),
     referencedMRDR(NULL),
     numberOfReferences(0),
     offsetInFile(0)
 {
-    DcmTag sequTag(DCM_DirectoryRecordSequence);
-    lowerLevelList = new DcmSequenceOfItems(sequTag);
     DirRecordType = recordNameToType(recordTypeName);
     setRecordsOriginFile(sourceFilename);
 
@@ -195,38 +187,13 @@ DcmDirectoryRecord::DcmDirectoryRecord(const char *recordTypeName,
 
 DcmDirectoryRecord::DcmDirectoryRecord(const DcmDirectoryRecord &old)
   : DcmItem(old),
-    recordsOriginFile(NULL),
-    lowerLevelList(NULL),
-    DirRecordType(ERT_Private),
-    referencedMRDR(NULL),
-    numberOfReferences(0),
-    offsetInFile(0)
+    recordsOriginFile(old.recordsOriginFile),
+    lowerLevelList(new DcmSequenceOfItems(*old.lowerLevelList)),
+    DirRecordType(old.DirRecordType),
+    referencedMRDR(old.referencedMRDR),
+    numberOfReferences(old.numberOfReferences),
+    offsetInFile(old.offsetInFile)
 {
-    DcmTag sequTag(DCM_DirectoryRecordSequence);
-    if (old.ident() == EVR_dirRecord)
-    {
-        DcmSequenceOfItems const *ll = old.lowerLevelList;
-        lowerLevelList = new DcmSequenceOfItems(*ll); // copy constructor
-
-        DirRecordType = old.DirRecordType;
-        referencedMRDR = old.referencedMRDR;
-        numberOfReferences = old.numberOfReferences;
-        offsetInFile = old.offsetInFile;
-        setRecordsOriginFile(old.recordsOriginFile);
-    } else {
-        lowerLevelList = new DcmSequenceOfItems(sequTag);
-        if (old.ident() != EVR_item)
-        {
-          ofConsole.lockCerr() << "Warning: DcmDirectoryRecord: wrong use of Copy Constructor" << endl;
-          ofConsole.unlockCerr();
-        }
-    }
-    if (old.ident() == EVR_item)
-    {
-        // determine some internal variables
-        referencedMRDR = lookForReferencedMRDR();
-        DirRecordType = lookForRecordType();
-    }
 }
 
 
@@ -538,6 +505,7 @@ OFCondition DcmDirectoryRecord::setRecordType(E_DirRecType newType)
 
 
 // ********************************
+
 
 
 E_DirRecType DcmDirectoryRecord::lookForRecordType()
@@ -1462,7 +1430,10 @@ const char* DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
- * Revision 1.51  2005-10-27 13:33:08  joergr
+ * Revision 1.52  2005-11-07 16:59:26  meichel
+ * Cleaned up some copy constructors in the DcmObject hierarchy.
+ *
+ * Revision 1.51  2005/10/27 13:33:08  joergr
  * Added support for Encapsulated Document, Real World Value Mapping and
  * Hanging Protocol objects to DICOMDIR tools.
  *

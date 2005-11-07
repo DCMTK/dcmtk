@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmMetaInfo
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-05-26 11:51:12 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Update Date:      $Date: 2005-11-07 16:59:26 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -69,19 +69,11 @@ DcmMetaInfo::DcmMetaInfo()
 
 DcmMetaInfo::DcmMetaInfo(const DcmMetaInfo &old)
   : DcmItem(old),
-    preambleUsed(OFFalse),
+    preambleUsed(old.preambleUsed),
     fPreambleTransferState(ERW_init),
-    Xfer(META_HEADER_DEFAULT_TRANSFERSYNTAX)
+    Xfer(old.Xfer)
 {
-    if (old.ident() == EVR_metainfo)
-    {
-        Xfer = old.Xfer;
-        preambleUsed = old.preambleUsed;
-        memcpy(filePreamble, old.filePreamble, 128);
-    } else {
-        // wrong use of copy constructor
-        setPreamble();
-    }
+    memcpy(filePreamble, old.filePreamble, 128);
 }
 
 
@@ -528,7 +520,10 @@ OFCondition DcmMetaInfo::write(DcmOutputStream &outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.cc,v $
-** Revision 1.34  2005-05-26 11:51:12  meichel
+** Revision 1.35  2005-11-07 16:59:26  meichel
+** Cleaned up some copy constructors in the DcmObject hierarchy.
+**
+** Revision 1.34  2005/05/26 11:51:12  meichel
 ** Now reading DICOM files in which the meta header group length attribute
 **   (0002,0000) is absent, based on a heuristic that checks for group 0002
 **   attribute tags. New behaviour can be disabled by compiling with the macro

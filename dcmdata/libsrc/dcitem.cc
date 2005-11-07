@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmItem
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-06-24 10:04:04 $
- *  CVS/RCS Revision: $Revision: 1.92 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-11-07 16:59:26 $
+ *  CVS/RCS Revision: $Revision: 1.93 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -110,33 +110,19 @@ DcmItem::DcmItem(const DcmTag &tag,
 
 DcmItem::DcmItem(const DcmItem &old)
   : DcmObject(old),
-    elementList(NULL),
-    lastElementComplete(OFTrue),
+    elementList(new DcmList),
+    lastElementComplete(old.lastElementComplete),
     fStartPosition(old.fStartPosition),
     privateCreatorCache()
 {
-    elementList = new DcmList;
-    switch (old.ident())
+    if (!old.elementList->empty())
     {
-        case EVR_item:
-        case EVR_dirRecord:
-        case EVR_dataset:
-        case EVR_metainfo:
-            if (!old.elementList->empty())
-            {
-                DcmObject *oldDO;
-                DcmObject *newDO;
-                elementList->seek(ELP_first);
-                old.elementList->seek(ELP_first);
-                do {
-                    oldDO = old.elementList->get();
-                    newDO = oldDO->clone();
-                    elementList->insert(newDO, ELP_next);
-                } while (old.elementList->seek(ELP_next));
-            }
-            break;
-        default: // should never happen
-            break;
+        elementList->seek(ELP_first);
+        old.elementList->seek(ELP_first);
+        do 
+        {
+            elementList->insert(old.elementList->get()->clone(), ELP_next);
+        } while (old.elementList->seek(ELP_next));
     }
 }
 
@@ -3244,7 +3230,10 @@ OFBool DcmItem::containsUnknownVR() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.92  2005-06-24 10:04:04  joergr
+** Revision 1.93  2005-11-07 16:59:26  meichel
+** Cleaned up some copy constructors in the DcmObject hierarchy.
+**
+** Revision 1.92  2005/06/24 10:04:04  joergr
 ** Added support for internal VR "xs" to putAndInsertXXX() helper methods.
 **
 ** Revision 1.91  2005/05/10 15:27:18  meichel

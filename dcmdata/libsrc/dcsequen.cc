@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmSequenceOfItems
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-05-10 15:27:18 $
- *  CVS/RCS Revision: $Revision: 1.57 $
+ *  Update Date:      $Date: 2005-11-07 16:59:26 $
+ *  CVS/RCS Revision: $Revision: 1.58 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -76,56 +76,18 @@ DcmSequenceOfItems::DcmSequenceOfItems(
 DcmSequenceOfItems::DcmSequenceOfItems(const DcmSequenceOfItems &old)
   : DcmElement(old),
     itemList(new DcmList),
-    lastItemComplete(OFTrue),
+    lastItemComplete(old.lastItemComplete),
     fStartPosition(old.fStartPosition),
     readAsUN_(old.readAsUN_)
 {
-    switch (old.ident())
+    if (!old.itemList->empty())
     {
-        case EVR_SQ:
-        case EVR_pixelSQ:
-        case EVR_fileFormat:
-            if (!old.itemList->empty())
-            {
-                DcmObject *oldDO;
-                DcmObject *newDO;
-                itemList->seek(ELP_first);
-                old.itemList->seek(ELP_first);
-                do {
-                    oldDO = old.itemList->get();
-                    switch (oldDO->ident())
-                    {
-                        case EVR_item:
-                            newDO = new DcmItem(*OFstatic_cast(DcmItem *, oldDO));
-                            break;
-                        case EVR_pixelItem:
-                            newDO = new DcmPixelItem(*OFstatic_cast(DcmPixelItem*, oldDO));
-                            break;
-                        case EVR_metainfo:
-                            newDO = new DcmMetaInfo(*OFstatic_cast(DcmMetaInfo*, oldDO));
-                            break;
-                        case EVR_dataset:
-                            newDO = new DcmDataset(*OFstatic_cast(DcmDataset *, oldDO));
-                            break;
-                        default:
-                            newDO = new DcmItem(oldDO->getTag());
-                            ofConsole.lockCerr() << "DcmSequenceOfItems: Non-item element ("
-                                 << hex << setfill('0')
-                                 << setw(4) << oldDO->getGTag() << ","
-                                 << setw(4) << oldDO->getETag()
-                                 << dec << setfill(' ')
-                                 << ") found" << endl;
-                            ofConsole.unlockCerr();
-                            break;
-                    }
-
-                    itemList->insert(newDO, ELP_next);
-                } while (old.itemList->seek(ELP_next));
-            }
-            break;
-        default:
-            // wrong use of copy constructor, should never happen
-            break;
+        itemList->seek(ELP_first);
+        old.itemList->seek(ELP_first);
+        do 
+        {
+            itemList->insert(old.itemList->get()->clone(), ELP_next);
+        } while (old.itemList->seek(ELP_next));
     }
 }
 
@@ -1282,7 +1244,10 @@ OFBool DcmSequenceOfItems::containsUnknownVR() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.57  2005-05-10 15:27:18  meichel
+** Revision 1.58  2005-11-07 16:59:26  meichel
+** Cleaned up some copy constructors in the DcmObject hierarchy.
+**
+** Revision 1.57  2005/05/10 15:27:18  meichel
 ** Added support for reading UN elements with undefined length according
 **   to CP 246. The global flag dcmEnableCP246Support allows to revert to the
 **   prior behaviour in which UN elements with undefined length were parsed
