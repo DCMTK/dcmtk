@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2004, OFFIS
+ *  Copyright (C) 2002-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Compress DICOM file with RLE Transfer Syntax
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-02-25 13:34:41 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2005-11-07 17:10:19 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -348,6 +348,7 @@ int main(int argc, char *argv[])
     if (opt_verbose)
         COUT << "create output file " << opt_ofname << endl;
 
+    fileformat.loadAllDataIntoMemory();
     error = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc, opt_opadenc,
         OFstatic_cast(Uint32, opt_filepad), OFstatic_cast(Uint32, opt_itempad));
 
@@ -372,7 +373,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmcrle.cc,v $
- * Revision 1.8  2004-02-25 13:34:41  meichel
+ * Revision 1.9  2005-11-07 17:10:19  meichel
+ * All tools that both read and write a DICOM file now call loadAllDataIntoMemory()
+ *   to make sure they do not destroy a file when output = input.
+ *
+ * Revision 1.8  2004/02/25 13:34:41  meichel
  * Marked option --fragment-size as non-standard since it violates a rule defined
  *   in DICOM Part 5 A.4.2: "Each frame shall be encoded in one and only one fragment".
  *

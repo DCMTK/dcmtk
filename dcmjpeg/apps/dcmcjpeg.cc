@@ -21,9 +21,9 @@
  *
  *  Purpose: Compress DICOM file
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-16 14:28:01 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-11-07 17:10:21 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -642,6 +642,7 @@ int main(int argc, char *argv[])
     if (opt_verbose)
         COUT << "creating output file " << opt_ofname << endl;
 
+    fileformat.loadAllDataIntoMemory();
     error = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc,
               opt_opadenc, (Uint32) opt_filepad, (Uint32) opt_itempad);
 
@@ -666,7 +667,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmcjpeg.cc,v $
- * Revision 1.9  2004-01-16 14:28:01  joergr
+ * Revision 1.10  2005-11-07 17:10:21  meichel
+ * All tools that both read and write a DICOM file now call loadAllDataIntoMemory()
+ *   to make sure they do not destroy a file when output = input.
+ *
+ * Revision 1.9  2004/01/16 14:28:01  joergr
  * Updated copyright header.
  *
  * Revision 1.8  2002/11/27 15:39:56  meichel

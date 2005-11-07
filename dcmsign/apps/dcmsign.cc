@@ -21,9 +21,9 @@
  *
  *  Purpose: Create and Verify DICOM Digital Signatures
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-10 17:01:02 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-11-07 17:10:24 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1093,6 +1093,7 @@ int main(int argc, char *argv[])
       return 1;
     }
 
+    fileformat->loadAllDataIntoMemory();
     sicond = fileformat->saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc, opt_opadenc, (Uint32) opt_filepad, (Uint32) opt_itempad, opt_oDataset);
     if (sicond.bad())
     {
@@ -1122,7 +1123,11 @@ int main(int, char *[])
 
 /*
  *  $Log: dcmsign.cc,v $
- *  Revision 1.17  2004-02-10 17:01:02  joergr
+ *  Revision 1.18  2005-11-07 17:10:24  meichel
+ *  All tools that both read and write a DICOM file now call loadAllDataIntoMemory()
+ *    to make sure they do not destroy a file when output = input.
+ *
+ *  Revision 1.17  2004/02/10 17:01:02  joergr
  *  Updated copyright header.
  *
  *  Revision 1.16  2002/12/20 14:54:09  wilkens

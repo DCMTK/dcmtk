@@ -22,8 +22,8 @@
  *  Purpose: Decompress DICOM file
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-05-26 14:35:07 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2005-11-07 17:10:21 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -339,6 +339,7 @@ int main(int argc, char *argv[])
     if (opt_verbose)
         COUT << "creating output file " << opt_ofname << endl;
 
+    fileformat.loadAllDataIntoMemory();
     error = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc,
               opt_opadenc, (Uint32) opt_filepad, (Uint32) opt_itempad, opt_oDataset);
     if (error != EC_Normal)
@@ -362,7 +363,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmdjpeg.cc,v $
- * Revision 1.9  2005-05-26 14:35:07  meichel
+ * Revision 1.10  2005-11-07 17:10:21  meichel
+ * All tools that both read and write a DICOM file now call loadAllDataIntoMemory()
+ *   to make sure they do not destroy a file when output = input.
+ *
+ * Revision 1.9  2005/05/26 14:35:07  meichel
  * Added option --read-dataset to dcmdjpeg that allows to decompress JPEG
  *   compressed DICOM objects that have been stored as dataset without meta-header.
  *   Such a thing should not exist since the transfer syntax cannot be reliably
