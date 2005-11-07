@@ -3940,6 +3940,11 @@ fi
 done
 
 
+
+
+
+
+
 echo "$as_me:$LINENO: checking for uchar" >&5
 echo $ECHO_N "checking for uchar... $ECHO_C" >&6
 if test "${ac_cv_type_uchar+set}" = set; then
@@ -3991,12 +3996,17 @@ echo "${ECHO_T}$ac_cv_type_uchar" >&6
 if test $ac_cv_type_uchar = yes; then
   :
 else
-
-cat >>confdefs.h <<_ACEOF
-#define uchar unsigned char
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_NO_TYPEDEF_UCHAR 1
 _ACEOF
 
 fi
+
+
+
+
+
+
 
 echo "$as_me:$LINENO: checking for ushort" >&5
 echo $ECHO_N "checking for ushort... $ECHO_C" >&6
@@ -4049,12 +4059,17 @@ echo "${ECHO_T}$ac_cv_type_ushort" >&6
 if test $ac_cv_type_ushort = yes; then
   :
 else
-
-cat >>confdefs.h <<_ACEOF
-#define ushort unsigned short
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_NO_TYPEDEF_USHORT 1
 _ACEOF
 
 fi
+
+
+
+
+
+
 
 echo "$as_me:$LINENO: checking for uint" >&5
 echo $ECHO_N "checking for uint... $ECHO_C" >&6
@@ -4107,12 +4122,17 @@ echo "${ECHO_T}$ac_cv_type_uint" >&6
 if test $ac_cv_type_uint = yes; then
   :
 else
-
-cat >>confdefs.h <<_ACEOF
-#define uint unsigned int
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_NO_TYPEDEF_UINT 1
 _ACEOF
 
 fi
+
+
+
+
+
+
 
 echo "$as_me:$LINENO: checking for ulong" >&5
 echo $ECHO_N "checking for ulong... $ECHO_C" >&6
@@ -4165,12 +4185,17 @@ echo "${ECHO_T}$ac_cv_type_ulong" >&6
 if test $ac_cv_type_ulong = yes; then
   :
 else
-
-cat >>confdefs.h <<_ACEOF
-#define ulong unsigned long
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_NO_TYPEDEF_ULONG 1
 _ACEOF
 
 fi
+
+
+
+
+
+
 
 echo "$as_me:$LINENO: checking for longlong" >&5
 echo $ECHO_N "checking for longlong... $ECHO_C" >&6
@@ -4223,12 +4248,17 @@ echo "${ECHO_T}$ac_cv_type_longlong" >&6
 if test $ac_cv_type_longlong = yes; then
   :
 else
-
-cat >>confdefs.h <<_ACEOF
-#define longlong long long
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_NO_TYPEDEF_LONGLONG 1
 _ACEOF
 
 fi
+
+
+
+
+
+
 
 echo "$as_me:$LINENO: checking for ulonglong" >&5
 echo $ECHO_N "checking for ulonglong... $ECHO_C" >&6
@@ -4281,12 +4311,12 @@ echo "${ECHO_T}$ac_cv_type_ulonglong" >&6
 if test $ac_cv_type_ulonglong = yes; then
   :
 else
-
-cat >>confdefs.h <<_ACEOF
-#define ulonglong unsigned long long
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_NO_TYPEDEF_ULONGLONG 1
 _ACEOF
 
 fi
+
 
 echo "$as_me:$LINENO: checking whether variable-length arrays are supported" >&5
 echo $ECHO_N "checking whether variable-length arrays are supported... $ECHO_C" >&6
@@ -15466,6 +15496,11 @@ echo "${ECHO_T}none" >&6
 esac
 
 
+
+
+
+
+
 echo "$as_me:$LINENO: checking for size_t" >&5
 echo $ECHO_N "checking for size_t... $ECHO_C" >&6
 if test "${ac_cv_type_size_t+set}" = set; then
@@ -15517,12 +15552,17 @@ echo "${ECHO_T}$ac_cv_type_size_t" >&6
 if test $ac_cv_type_size_t = yes; then
   :
 else
-
-cat >>confdefs.h <<_ACEOF
-#define size_t unsigned
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_NO_TYPEDEF_SIZE_T 1
 _ACEOF
 
 fi
+
+
+
+
+
+
 
 echo "$as_me:$LINENO: checking for ssize_t" >&5
 echo $ECHO_N "checking for ssize_t... $ECHO_C" >&6
@@ -15575,12 +15615,75 @@ echo "${ECHO_T}$ac_cv_type_ssize_t" >&6
 if test $ac_cv_type_ssize_t = yes; then
   :
 else
-
-cat >>confdefs.h <<_ACEOF
-#define ssize_t long
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_NO_TYPEDEF_SSIZE_T 1
 _ACEOF
 
 fi
+
+
+
+
+
+
+
+echo "$as_me:$LINENO: checking for pid_t" >&5
+echo $ECHO_N "checking for pid_t... $ECHO_C" >&6
+if test "${ac_cv_type_pid_t+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+#include "confdefs.h"
+$ac_includes_default
+#ifdef F77_DUMMY_MAIN
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+#endif
+int
+main ()
+{
+if ((pid_t *) 0)
+  return 0;
+if (sizeof (pid_t))
+  return 0;
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+  (eval $ac_compile) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest.$ac_objext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_type_pid_t=yes
+else
+  echo "$as_me: failed program was:" >&5
+cat conftest.$ac_ext >&5
+ac_cv_type_pid_t=no
+fi
+rm -f conftest.$ac_objext conftest.$ac_ext
+fi
+echo "$as_me:$LINENO: result: $ac_cv_type_pid_t" >&5
+echo "${ECHO_T}$ac_cv_type_pid_t" >&6
+if test $ac_cv_type_pid_t = yes; then
+  :
+else
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_NO_TYPEDEF_PID_T 1
+_ACEOF
+
+fi
+
 
 
 echo "$as_me:$LINENO: checking whether char is unsigned" >&5
@@ -18170,64 +18273,6 @@ cat >>confdefs.h <<_ACEOF
 #define SIZEOF_VOID_P $ac_cv_sizeof_void_p
 _ACEOF
 
-
-echo "$as_me:$LINENO: checking for pid_t" >&5
-echo $ECHO_N "checking for pid_t... $ECHO_C" >&6
-if test "${ac_cv_type_pid_t+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  cat >conftest.$ac_ext <<_ACEOF
-#line $LINENO "configure"
-#include "confdefs.h"
-$ac_includes_default
-#ifdef F77_DUMMY_MAIN
-#  ifdef __cplusplus
-     extern "C"
-#  endif
-   int F77_DUMMY_MAIN() { return 1; }
-#endif
-int
-main ()
-{
-if ((pid_t *) 0)
-  return 0;
-if (sizeof (pid_t))
-  return 0;
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext
-if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
-  (eval $ac_compile) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } &&
-         { ac_try='test -s conftest.$ac_objext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  ac_cv_type_pid_t=yes
-else
-  echo "$as_me: failed program was:" >&5
-cat conftest.$ac_ext >&5
-ac_cv_type_pid_t=no
-fi
-rm -f conftest.$ac_objext conftest.$ac_ext
-fi
-echo "$as_me:$LINENO: result: $ac_cv_type_pid_t" >&5
-echo "${ECHO_T}$ac_cv_type_pid_t" >&6
-if test $ac_cv_type_pid_t = yes; then
-  :
-else
-
-cat >>confdefs.h <<_ACEOF
-#define pid_t int
-_ACEOF
-
-fi
 
 echo "$as_me:$LINENO: checking whether struct tm is in sys/time.h or time.h" >&5
 echo $ECHO_N "checking whether struct tm is in sys/time.h or time.h... $ECHO_C" >&6
@@ -21790,7 +21835,7 @@ if test "${ac_cv_check_std_namespace+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 21793 "configure"
+#line 21838 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -22319,7 +22364,7 @@ if test "${ac_cv_check_class_template+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 22322 "configure"
+#line 22367 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -22392,7 +22437,7 @@ if test "${ac_cv_check_static_template_method+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 22395 "configure"
+#line 22440 "configure"
 #include "confdefs.h"
 
 void additive(int & i)
@@ -22465,7 +22510,7 @@ if test "${ac_cv_check_function_template+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 22468 "configure"
+#line 22513 "configure"
 #include "confdefs.h"
 
 template <class T>

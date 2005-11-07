@@ -318,6 +318,60 @@
 /* Define to 1 if you have the <new.h> header file. */
 #undef HAVE_NEW_H
 
+/* Define `longlong' to `long long' if <sys/types.h> does not define. */
+#undef HAVE_NO_TYPEDEF_LONGLONG
+#ifdef HAVE_NO_TYPEDEF_LONGLONG
+typedef long long longlong;
+#endif
+
+/* Define `pid_t' to `int' if <sys/types.h> does not define. */
+#undef HAVE_NO_TYPEDEF_PID_T
+#ifdef HAVE_NO_TYPEDEF_PID_T
+typedef int pid_t;
+#endif
+
+/* Define `size_t' to `unsigned' if <sys/types.h> does not define. */
+#undef HAVE_NO_TYPEDEF_SIZE_T
+#ifdef HAVE_NO_TYPEDEF_SIZE_T
+typedef unsigned size_t;
+#endif
+
+/* Define `ssize_t' to `long' if <sys/types.h> does not define. */
+#undef HAVE_NO_TYPEDEF_SSIZE_T
+#ifdef HAVE_NO_TYPEDEF_SSIZE_T
+typedef long ssize_t;
+#endif
+
+/* Define `uchar' to `unsigned char' if <sys/types.h> does not define. */
+#undef HAVE_NO_TYPEDEF_UCHAR
+#ifdef HAVE_NO_TYPEDEF_UCHAR
+typedef unsigned char uchar;
+#endif
+
+/* Define `uint' to `unsigned int' if <sys/types.h> does not define. */
+#undef HAVE_NO_TYPEDEF_UINT
+#ifdef HAVE_NO_TYPEDEF_UINT
+typedef unsigned int uint;
+#endif
+
+/* Define `ulong' to `unsigned long' if <sys/types.h> does not define. */
+#undef HAVE_NO_TYPEDEF_ULONG
+#ifdef HAVE_NO_TYPEDEF_ULONG
+typedef unsigned long ulong;
+#endif
+
+/* Define `ulonglong' to `unsigned long long' if <sys/types.h> does not define. */
+#undef HAVE_NO_TYPEDEF_ULONGLONG
+#ifdef HAVE_NO_TYPEDEF_ULONGLONG
+typedef unsigned long long ulonglong;
+#endif
+
+/* Define `ushort' to `unsigned short' if <sys/types.h> does not define. */
+#undef HAVE_NO_TYPEDEF_USHORT
+#ifdef HAVE_NO_TYPEDEF_USHORT
+typedef unsigned short ushort;
+#endif
+
 /* Define if your system supports readdir_r with the obsolete Posix 1.c draft
    6 declaration (2 arguments) instead of the Posix 1.c declaration with 3
    arguments. */
@@ -738,32 +792,5 @@
 #ifndef __CHAR_UNSIGNED__
 # undef __CHAR_UNSIGNED__
 #endif
-
-/* Define to `long long' if <sys/types.h> does not define. */
-#undef longlong
-
-/* Define to `int' if <sys/types.h> does not define. */
-#undef pid_t
-
-/* Define to `unsigned' if <sys/types.h> does not define. */
-#undef size_t
-
-/* Define to `long' if <sys/types.h> does not define. */
-#undef ssize_t
-
-/* Define to `unsigned char' if <sys/types.h> does not define. */
-#undef uchar
-
-/* Define to `unsigned int' if <sys/types.h> does not define. */
-#undef uint
-
-/* Define to `unsigned long' if <sys/types.h> does not define. */
-#undef ulong
-
-/* Define to `unsigned long long' if <sys/types.h> does not define. */
-#undef ulonglong
-
-/* Define to `unsigned short' if <sys/types.h> does not define. */
-#undef ushort
 
 #endif /* CFUNIX_H */

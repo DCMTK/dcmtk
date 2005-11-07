@@ -6,7 +6,7 @@ dnl
 dnl Authors: Andreas Barth, Marco Eichelberg
 dnl
 dnl Last Update:  $Author: meichel $
-dnl Revision:     $Revision: 1.35 $
+dnl Revision:     $Revision: 1.36 $
 dnl Status:       $State: Exp $
 dnl
 
@@ -568,12 +568,6 @@ else
   fi
 fi
 ])
-
-dnl AC_TYPE_SSIZE_T
-dnl checks for the presence of type ssize_t
-AC_DEFUN(AC_TYPE_SSIZE_T,
-[AC_CHECK_TYPE(ssize_t, long)])
-
 
 dnl AC_CHECK_INTP_ACCEPT checks if the prototype for accept()
 dnl   specifies arguments 2-4 to be int* instead of size_t *.
@@ -1443,9 +1437,51 @@ AC_LANG_RESTORE
 ])
 
 
+#    AC_TYPEDEF_HELPER(TYPE,
+#                  [ACTION-IF-FOUND], [ACTION-IF-NOT-FOUND],
+#                  [INCLUDES])
+
+m4_define([AC_TYPEDEF_HELPER],
+[AS_VAR_PUSHDEF([ac_Type], [ac_cv_type_$1])dnl
+AC_CACHE_CHECK([for $1], ac_Type,
+[AC_COMPILE_IFELSE([AC_LANG_PROGRAM([AC_INCLUDES_DEFAULT([$4])],
+[if (($1 *) 0)
+  return 0;
+if (sizeof ($1))
+  return 0;])],
+                   [AS_VAR_SET(ac_Type, yes)],
+                   [AS_VAR_SET(ac_Type, no)])])
+AS_IF([test AS_VAR_GET(ac_Type) = yes], [$2], [$3])[]dnl
+AS_VAR_POPDEF([ac_Type])dnl
+])# AC_TYPEDEF_HELPER
+
+AC_DEFUN(AC_TYPEDEF_HELPER2,[
+AH_VERBATIM([$3], [/* Define `$1' to `$2' if <sys/types.h> does not define. */
+#undef $3
+#ifdef $3
+typedef $2 $1;
+#endif])])# AC_TYPEDEF_HELPER2
+
+#
+#  AC_TYPEDEF(type, default)
+#
+#  This macro works similar to the old (deprecated, pre-2.13) AC_CHECK_TYPE
+#  macro, but instead of creating a #define for the type if absent, it
+#  creates a clean typedef.
+#
+AC_DEFUN(AC_TYPEDEF,[
+m4_define(AC_TYPEDEF_TEMP,[AS_TR_CPP(HAVE_NO_TYPEDEF_$1)])
+AC_TYPEDEF_HELPER2([$1],[$2],AC_TYPEDEF_TEMP)
+AC_TYPEDEF_HELPER([$1],[],[AC_DEFINE_UNQUOTED(AC_TYPEDEF_TEMP)])
+])# AC_TYPEDEF
+
 dnl
 dnl $Log: aclocal.m4,v $
-dnl Revision 1.35  2004-10-20 15:54:01  meichel
+dnl Revision 1.36  2005-11-07 11:23:34  meichel
+dnl Replaced old AC_CHECK_TYPE macros by newly developed AC_TYPDEF macro.
+dnl   Missing types are now declared by type definition and not as macros anymore.
+dnl
+dnl Revision 1.35  2004/10/20 15:54:01  meichel
 dnl Added configure tests for <stdbool.h> and a number of C typedefs,
 dnl   needed for JasPer support.
 dnl

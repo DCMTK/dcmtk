@@ -338,6 +338,60 @@
 /* Define to 1 if you have the <new.h> header file. */
 #define HAVE_NEW_H 1
 
+/* Define `longlong' to `long long' if <sys/types.h> does not define. */
+#define HAVE_NO_TYPEDEF_LONGLONG 1
+#ifdef HAVE_NO_TYPEDEF_LONGLONG
+typedef long long longlong;
+#endif
+
+/* Define `pid_t' to `int' if <sys/types.h> does not define. */
+#define HAVE_NO_TYPEDEF_PID_T 1
+#ifdef HAVE_NO_TYPEDEF_PID_T
+typedef int pid_t;
+#endif
+
+/* Define `size_t' to `unsigned' if <sys/types.h> does not define. */
+/* #undef HAVE_NO_TYPEDEF_SIZE_T */
+#ifdef HAVE_NO_TYPEDEF_SIZE_T
+typedef unsigned size_t;
+#endif
+
+/* Define `ssize_t' to `long' if <sys/types.h> does not define. */
+#define HAVE_NO_TYPEDEF_SSIZE_T 1
+#ifdef HAVE_NO_TYPEDEF_SSIZE_T
+typedef long ssize_t;
+#endif
+
+/* Define `uchar' to `unsigned char' if <sys/types.h> does not define. */
+#define HAVE_NO_TYPEDEF_UCHAR 1
+#ifdef HAVE_NO_TYPEDEF_UCHAR
+typedef unsigned char uchar;
+#endif
+
+/* Define `uint' to `unsigned int' if <sys/types.h> does not define. */
+#define HAVE_NO_TYPEDEF_UINT 1
+#ifdef HAVE_NO_TYPEDEF_UINT
+typedef unsigned int uint;
+#endif
+
+/* Define `ulong' to `unsigned long' if <sys/types.h> does not define. */
+#define HAVE_NO_TYPEDEF_ULONG 1
+#ifdef HAVE_NO_TYPEDEF_ULONG
+typedef unsigned long ulong;
+#endif
+
+/* Define `ulonglong' to `unsigned long long' if <sys/types.h> does not define. */
+#define HAVE_NO_TYPEDEF_ULONGLONG 1
+#ifdef HAVE_NO_TYPEDEF_ULONGLONG
+typedef unsigned long long ulonglong;
+#endif
+
+/* Define `ushort' to `unsigned short' if <sys/types.h> does not define. */
+#define HAVE_NO_TYPEDEF_USHORT 1
+#ifdef HAVE_NO_TYPEDEF_USHORT
+typedef unsigned short ushort;
+#endif
+
 /* Define if your system supports readdir_r with the obsolete Posix 1.c draft
    6 declaration (2 arguments) instead of the Posix 1.c declaration with 3
    arguments. */
@@ -758,33 +812,6 @@
 #ifndef __CHAR_UNSIGNED__
 /* #undef __CHAR_UNSIGNED__ */
 #endif
-
-/* Define to `long long' if <sys/types.h> does not define. */
-#define longlong long long
-
-/* Define to `int' if <sys/types.h> does not define. */
-/* #undef  pid_t */
-
-/* Define to `unsigned' if <sys/types.h> does not define. */
-/* #undef  size_t */
-
-/* Define to `long' if <sys/types.h> does not define. */
-#define ssize_t long
-
-/* Define to `unsigned char' if <sys/types.h> does not define. */
-#define	uchar unsigned char
-
-/* Define to `unsigned int' if <sys/types.h> does not define. */
-#define uint unsigned int
-
-/* Define to `unsigned long' if <sys/types.h> does not define. */
-#define ulong unsigned long
-
-/* Define to `unsigned long long' if <sys/types.h> does not define. */
-#define ulonglong unsigned long long
-
-/* Define to `unsigned short' if <sys/types.h> does not define. */
-#define	ushort unsigned short
 
 /* Platform specific settings for Visual C++
  * By default, enable ANSI standard C++ includes on Visual C++ 6 and newer 
