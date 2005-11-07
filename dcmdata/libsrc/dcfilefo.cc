@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2004, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: class DcmFileFormat
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-08-03 11:41:09 $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  Update Date:      $Date: 2005-11-07 17:22:33 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -712,10 +712,15 @@ OFCondition DcmFileFormat::loadFile(const char *fileName,
         l_error = fileStream.status();
         if (l_error.good())
         {
-            /* read data from file */
-            transferInit();
-            l_error = read(fileStream, readXfer, groupLength, maxReadLength);
-            transferEnd();
+            /* clear this object */
+            l_error = clear();
+            if (l_error.good())
+            {            
+                /* read data from file */
+                transferInit();
+                l_error = read(fileStream, readXfer, groupLength, maxReadLength);
+                transferEnd();
+            }
         }
     }
     return l_error;
@@ -799,10 +804,8 @@ DcmItem *DcmFileFormat::remove(DcmItem* /*item*/)
 
 OFCondition DcmFileFormat::clear()
 {
-    ofConsole.lockCerr() << "Warning: illegal call of DcmFileFormat::clear()" << endl;
-    ofConsole.unlockCerr();
-    errorFlag = EC_IllegalCall;
-    return errorFlag;
+  getMetaInfo()->clear();
+  return getDataset()->clear();
 }
 
 
@@ -858,7 +861,12 @@ DcmDataset *DcmFileFormat::getAndRemoveDataset()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
-** Revision 1.37  2004-08-03 11:41:09  meichel
+** Revision 1.38  2005-11-07 17:22:33  meichel
+** Implemented DcmFileFormat::clear(). Now the loadFile methods in class
+**   DcmFileFormat and class DcmDataset both make sure that clear() is called
+**   before new data is read, allowing for a re-use of the object.
+**
+** Revision 1.37  2004/08/03 11:41:09  meichel
 ** Headers libc.h and unistd.h are now included via ofstdinc.h
 **
 ** Revision 1.36  2004/02/04 16:32:01  joergr

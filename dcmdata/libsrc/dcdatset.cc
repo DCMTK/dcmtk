@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2004, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmDataset
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-04 16:19:15 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-11-07 17:22:33 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -421,10 +421,15 @@ OFCondition DcmDataset::loadFile(const char *filename,
 
         if (l_error.good())
         {
-            /* read data from file */
-            transferInit();
-            l_error = read(fileStream, readXfer, groupLength, maxReadLength);
-            transferEnd();
+            /* clear this object */
+            l_error = clear();
+            if (l_error.good())
+            {            
+                /* read data from file */
+                transferInit();
+                l_error = read(fileStream, readXfer, groupLength, maxReadLength);
+                transferEnd();
+            }
         }
     }
     return l_error;
@@ -559,7 +564,12 @@ void DcmDataset::removeAllButOriginalRepresentations()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.cc,v $
-** Revision 1.34  2004-02-04 16:19:15  joergr
+** Revision 1.35  2005-11-07 17:22:33  meichel
+** Implemented DcmFileFormat::clear(). Now the loadFile methods in class
+**   DcmFileFormat and class DcmDataset both make sure that clear() is called
+**   before new data is read, allowing for a re-use of the object.
+**
+** Revision 1.34  2004/02/04 16:19:15  joergr
 ** Adapted type casts to new-style typecast operators defined in ofcast.h.
 ** Removed acknowledgements with e-mail addresses from CVS log.
 **
