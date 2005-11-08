@@ -22,9 +22,9 @@
  *  Purpose: Class for connecting to a file-based data source.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2005-07-01 10:01:31 $
+ *  Update Date:      $Date: 2005-11-08 12:59:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wldsfs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -336,7 +336,8 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( DcmDataset &f
   }
 
   // Set a read lock on the worklist files which shall be read from.
-  if (! SetReadlock()) return WLM_REFUSED_OUT_OF_RESOURCES;
+  if( !SetReadlock() )
+    return( WLM_REFUSED_OUT_OF_RESOURCES );
 
   // dump some information if required
   if( verbose )
@@ -848,7 +849,11 @@ OFBool WlmDataSourceFileSystem::ReleaseReadlock()
 /*
 ** CVS Log
 ** $Log: wldsfs.cc,v $
-** Revision 1.17  2005-07-01 10:01:31  wilkens
+** Revision 1.18  2005-11-08 12:59:25  wilkens
+** Updated class WlmDataSourceFileSystem: function StartFindRequest will return
+** an error in case SetReadlock returns an error.
+**
+** Revision 1.17  2005/07/01 10:01:31  wilkens
 ** Modified a couple of "delete" statements to "delete[]" in order to get rid of
 ** valgrind's "Mismatched free() / delete / delete []" error messages.
 **
