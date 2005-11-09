@@ -37,7 +37,7 @@ if [ -f dcmjpeg/apps/dcmj2pnm.$newext ] ; then
   `mv dcmjpeg/apps/dcmj2pnm.new dcmjpeg/apps/dcmj2pnm.$newext`
 fi
 
-if [ -f dcmjpeg/apps/dcmj2pnm.$newext ] ; then
+if [ -f dcmjpeg/apps/dcmmkdir.$newext ] ; then
   echo "updating implementation include in dcmmkdir.$newext"
   `cat dcmjpeg/apps/dcmmkdir.$newext | sed -e "s/#include \"\.\.\/\.\.\/dcmdata\/apps\/dcmgpdir\.$oldext\"/#include \"..\/..\/dcmdata\/apps\/dcmgpdir.$newext\"/g" >dcmjpeg/apps/dcmmkdir.new`
   `mv dcmjpeg/apps/dcmmkdir.new dcmjpeg/apps/dcmmkdir.$newext`
@@ -65,6 +65,12 @@ if [ -f dcmmisc/apps/dcmdjp2e.$newext ] ; then
   echo "updating implementation include in dcmdjp2e.$newext"
   `cat dcmmisc/apps/dcmdjp2e.$newext | sed -e "s/#include \"\.\.\/\.\.\/dcmjp2k\/apps\/dcmdjp2k\.$oldext\"/#include \"..\/..\/dcmjp2k\/apps\/dcmdjp2k.$newext\"/g" >dcmmisc/apps/dcmdjp2e.new`
   `mv dcmmisc/apps/dcmdjp2e.new dcmmisc/apps/dcmdjp2e.$newext`
+fi
+
+if [ -f dcmqrdbx/apps/dcmqrscq.$newext ] ; then
+  echo "updating implementation include in dcmqrscq.$newext"
+  `cat dcmqrdbx/apps/dcmqrscq.$newext | sed -e "s/#include \"\.\.\/\.\.\/dcmqrdb\/apps\/dcmqrscp\.$oldext\"/#include \"..\/..\/dcmqrdb\/apps\/dcmqrscp.$newext\"/g" >dcmqrdbx/apps/dcmqrscq.new`
+  `mv dcmqrdbx/apps/dcmqrscq.new dcmqrdbx/apps/dcmqrscq.$newext`
 fi
 
 echo "updating makefiles"
