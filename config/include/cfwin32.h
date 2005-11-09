@@ -341,7 +341,7 @@
 /* Define `longlong' to `long long' if <sys/types.h> does not define. */
 #define HAVE_NO_TYPEDEF_LONGLONG 1
 #ifdef HAVE_NO_TYPEDEF_LONGLONG
-typedef long long longlong;
+typedef __int64 longlong;
 #endif
 
 /* Define `pid_t' to `int' if <sys/types.h> does not define. */
@@ -383,7 +383,7 @@ typedef unsigned long ulong;
 /* Define `ulonglong' to `unsigned long long' if <sys/types.h> does not define. */
 #define HAVE_NO_TYPEDEF_ULONGLONG 1
 #ifdef HAVE_NO_TYPEDEF_ULONGLONG
-typedef unsigned long long ulonglong;
+typedef unsigned __int64 ulonglong;
 #endif
 
 /* Define `ushort' to `unsigned short' if <sys/types.h> does not define. */
