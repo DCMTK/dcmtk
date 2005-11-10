@@ -21,10 +21,10 @@
  *
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-10-25 08:55:43 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2005-11-10 09:13:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.77 $
+ *  CVS/RCS Revision: $Revision: 1.78 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -128,6 +128,9 @@ static OFCondition acceptUnknownContextsWithPreferredTransferSyntaxes(
 static int makeTempFile();
 
 OFBool             opt_uniqueFilenames = OFFalse;
+OFString           opt_fileNameExtension;
+OFBool             opt_timeNames = OFFalse;
+int            timeNameCounter = -1; // "serial number" to differentiate between files with same timestamp
 OFCmdUnsignedInt   opt_port = 0;
 OFBool             opt_refuseAssociation = OFFalse;
 OFBool             opt_rejectWithoutImplementationUID = OFFalse;
@@ -322,6 +325,9 @@ int main(int argc, char *argv[])
     cmd.addSubGroup("filename generation:");
       cmd.addOption("--default-filenames",      "-uf",       "generate filename from instance UID (default)");
       cmd.addOption("--unique-filenames",       "+uf",       "generate unique filenames");
+      cmd.addOption("--timenames",              "-tn",       "generate filename from creation time");
+      cmd.addOption("--filename-extension",     "-fe",   1,  "[e]xtension: string",
+                                                             "append e to all filenames");
 
   cmd.addGroup("event options:", LONGCOL, SHORTCOL+2);
     cmd.addOption(  "--exec-on-reception",      "-xcr",  1,  "[c]ommand: string",
@@ -401,20 +407,20 @@ int main(int argc, char *argv[])
       app.checkParam(cmd.getParamAndCheckMinMax(1, opt_port, 1, 65535));
 
 #ifdef HAVE_CONFIG_H
-     if (cmd.findOption("--inetd")) 
+     if (cmd.findOption("--inetd"))
      {
        opt_inetd_mode = OFTrue;
-       
+
        // duplicate stdin, which is the socket passed by inetd
-       int inetd_fd = dup(0); 
+       int inetd_fd = dup(0);
        if (inetd_fd < 0) exit(99);
 
        close(0); // close stdin
        close(1); // close stdout
-       close(2); // close stderr 
+       close(2); // close stderr
 
        // open new file descriptor for stdin
-       int fd = open("/dev/null",O_RDONLY); 
+       int fd = open("/dev/null",O_RDONLY);
        if (fd != 0) exit(99);
 
        // create new file descriptor for stdout
@@ -429,10 +435,10 @@ int main(int argc, char *argv[])
 
        // the port number is not really used. Set to non-privileged port number
        // to avoid failing the privilege test.
-       opt_port = 1024;       
-     } 
+       opt_port = 1024;
+     }
 #endif
-    
+
     // omitting the port number is only allowed in inetd mode
     if ((! opt_inetd_mode) && (cmd.getParamCount() == 0))
     {
@@ -669,6 +675,19 @@ int main(int argc, char *argv[])
     if (cmd.findOption("--default-filenames")) opt_uniqueFilenames = OFFalse;
     if (cmd.findOption("--unique-filenames")) opt_uniqueFilenames = OFTrue;
     cmd.endOptionBlock();
+
+    if (cmd.findOption("--timenames")) opt_timeNames = OFTrue;
+    if (cmd.findOption("--filename-extension"))
+        app.checkValue(cmd.getValue(opt_fileNameExtension));
+    if (cmd.findOption("--timenames"))
+        app.checkConflict("--timenames", "--unique-filenames", opt_uniqueFilenames);
+
+    if (cmd.findOption("--sort-conc-studies"))
+    {
+      app.checkConflict("--sort-conc-studies", "--bit-preserving", opt_bitPreserving);
+      app.checkValue(cmd.getValue(opt_sortConcerningStudies));
+    }
+
 
     if (cmd.findOption("--exec-on-reception")) app.checkValue(cmd.getValue(opt_execOnReception));
 
@@ -1595,7 +1614,7 @@ storeSCPCallback(
           // so that we know that executeOnEndOfStudy() might have to be executed later. In detail, this indicator
           // variable will contain the path and name of the last study's subdirectory, so that we can still remember
           // this directory, when we execute executeOnEndOfStudy(). The memory that is allocated for this variable
-          // here will be freed after the execution of executeOnEndOfStudy(). 
+          // here will be freed after the execution of executeOnEndOfStudy().
           if( ! lastStudyInstanceUID.empty() )
           {
             lastStudySubdirectoryPathAndName = subdirectoryPathAndName;
@@ -1609,9 +1628,9 @@ storeSCPCallback(
           dateTime.setCurrentDateTime();
           // create a name for the new subdirectory. pattern: "[opt_sortConcerningStudies]_[YYYYMMDD]_[HHMMSSMMM]" (use current datetime)
           char buf[32];
-          sprintf(buf, "_%04u%02u%02u_%02u%02u%02u%03u", 
+          sprintf(buf, "_%04u%02u%02u_%02u%02u%02u%03u",
             dateTime.getDate().getYear(), dateTime.getDate().getMonth(), dateTime.getDate().getDay(),
-            dateTime.getTime().getHour(), dateTime.getTime().getMinute(), dateTime.getTime().getIntSecond(), dateTime.getTime().getMilliSecond());          
+            dateTime.getTime().getHour(), dateTime.getTime().getMinute(), dateTime.getTime().getIntSecond(), dateTime.getTime().getMilliSecond());
           OFString subdirectoryName = opt_sortConcerningStudies;
           subdirectoryName += buf;
 
@@ -1639,6 +1658,11 @@ storeSCPCallback(
             rsp->DimseStatus = STATUS_STORE_Error_CannotUnderstand;
             return;
           }
+          // all objects of a study have been received, so a new subdirectory is started.
+          // ->timename counter can be reset, because the next filename can't cause a duplicate.
+          // if no reset would be done, files of a new study (->new directory) would start with a counter in filename
+          if (opt_timeNames)
+            timeNameCounter = -1;
         }
 
         // integrate subdirectory name into file name (note that cbdata->imageFileName currently contains both
@@ -1647,7 +1671,7 @@ storeSCPCallback(
         fileName = subdirectoryPathAndName;
         fileName += tmpstr5;
 
-        // update global variable outputFileNameArray 
+        // update global variable outputFileNameArray
         // (might be used in executeOnReception() and renameOnEndOfStudy)
         outputFileNameArray.push_back(++tmpstr5);
       }
@@ -1656,7 +1680,7 @@ storeSCPCallback(
       {
         fileName = cbdata->imageFileName;
 
-        // update global variables outputFileNameArray 
+        // update global variables outputFileNameArray
         // (might be used in executeOnReception() and renameOnEndOfStudy)
         const char *tmpstr6 = strrchr( fileName.c_str(), PATH_SEPARATOR );
         outputFileNameArray.push_back(++tmpstr6);
@@ -1713,7 +1737,6 @@ storeSCPCallback(
 }
 
 
-
 static OFCondition storeSCP(
   T_ASC_Association *assoc,
   T_DIMSE_Message *msg,
@@ -1750,16 +1773,64 @@ static OFCondition storeSCP(
   }
   else
   {
+    //3 possibilities: create unique filenames (fn), create timestamp fn, create fn from SOP Instance UIDs
     if (opt_uniqueFilenames)
     {
       // create unique filename by generating a temporary UID and using ".X." as an infix
       char buf[70];
       dcmGenerateUniqueIdentifier(buf);
-      sprintf(imageFileName, "%s%c%s.X.%s", opt_outputDirectory.c_str(), PATH_SEPARATOR, dcmSOPClassUIDToModality(req->AffectedSOPClassUID), buf);
+      sprintf(imageFileName, "%s%c%s.X.%s%s", opt_outputDirectory.c_str(), PATH_SEPARATOR, dcmSOPClassUIDToModality(req->AffectedSOPClassUID), buf, opt_fileNameExtension.c_str());
+    }
+    else if (opt_timeNames)
+    {
+      // create a name for the new file. pattern: "[YYYYMMDDHHMMSSMMM]_[NUMBER].MODALITY[EXTENSION]" (use current datetime)
+      // get the current time (needed for file name)
+      OFDateTime dateTime;
+      dateTime.setCurrentDateTime();
+      // used to hold prospective filename
+      char cmpFileName[2048];
+      // next if/else block generates prospective filename, that is compared to last written filename
+      if (timeNameCounter == -1)
+      {
+        // timeNameCounter not set -> last written filename has to be without "serial number"
+        sprintf(cmpFileName, "%04u%02u%02u%02u%02u%02u%03u.%s%s",
+          dateTime.getDate().getYear(), dateTime.getDate().getMonth(), dateTime.getDate().getDay(),
+          dateTime.getTime().getHour(), dateTime.getTime().getMinute(), dateTime.getTime().getIntSecond(), dateTime.getTime().getMilliSecond(),
+          dcmSOPClassUIDToModality(req->AffectedSOPClassUID), opt_fileNameExtension.c_str());
+      }
+      else
+      {
+        // counter was active before, so generate filename with "serial number" for comparison
+        sprintf(cmpFileName, "%04u%02u%02u%02u%02u%02u%03u_%04u.%s%s", //millisecond version
+          dateTime.getDate().getYear(), dateTime.getDate().getMonth(), dateTime.getDate().getDay(),
+          dateTime.getTime().getHour(), dateTime.getTime().getMinute(), dateTime.getTime().getIntSecond(), dateTime.getTime().getMilliSecond(),
+          timeNameCounter, dcmSOPClassUIDToModality(req->AffectedSOPClassUID), opt_fileNameExtension.c_str());
+      }
+      if ( (outputFileNameArray.size()!=0) && (outputFileNameArray.back() == cmpFileName) )
+      {
+        // if this is not the first run and the prospective filename is equal to the last written filename
+        // generate one with a serial number (incremented by 1)
+        timeNameCounter++;
+        sprintf(imageFileName, "%s%c%04u%02u%02u%02u%02u%02u%03u_%04u.%s%s", opt_outputDirectory.c_str(), PATH_SEPARATOR, //millisecond version
+        dateTime.getDate().getYear(), dateTime.getDate().getMonth(), dateTime.getDate().getDay(),
+        dateTime.getTime().getHour(), dateTime.getTime().getMinute(), dateTime.getTime().getIntSecond(), dateTime.getTime().getMilliSecond(),
+        timeNameCounter, dcmSOPClassUIDToModality(req->AffectedSOPClassUID), opt_fileNameExtension.c_str());
+      }
+      else
+      {
+        //first run or filenames are different: create filename without serial number
+        sprintf(imageFileName, "%s%c%04u%02u%02u%02u%02u%02u%03u.%s%s", opt_outputDirectory.c_str(), PATH_SEPARATOR, //millisecond version
+        dateTime.getDate().getYear(), dateTime.getDate().getMonth(), dateTime.getDate().getDay(),
+        dateTime.getTime().getHour(), dateTime.getTime().getMinute(),dateTime.getTime().getIntSecond(), dateTime.getTime().getMilliSecond(),
+        dcmSOPClassUIDToModality(req->AffectedSOPClassUID), opt_fileNameExtension.c_str());
+        // reset counter, because timestamp and therefore filename has changed
+        timeNameCounter = -1;
+      }
     }
     else
     {
-      sprintf(imageFileName, "%s%c%s.%s", opt_outputDirectory.c_str(), PATH_SEPARATOR, dcmSOPClassUIDToModality(req->AffectedSOPClassUID), req->AffectedSOPInstanceUID);
+      // don't create new UID, use the study instance UID as found in object
+      sprintf(imageFileName, "%s%c%s.%s%s", opt_outputDirectory.c_str(), PATH_SEPARATOR, dcmSOPClassUIDToModality(req->AffectedSOPClassUID), req->AffectedSOPInstanceUID, opt_fileNameExtension.c_str());
     }
   }
 
@@ -1785,13 +1856,13 @@ static OFCondition storeSCP(
   // DIMSE_storeProvider must be called with certain parameters.
   if (opt_bitPreserving)
   {
-      cond = DIMSE_storeProvider(assoc, presID, req, imageFileName, opt_useMetaheader, NULL,
-          storeSCPCallback, &callbackData, DIMSE_BLOCKING, 0);
+    cond = DIMSE_storeProvider(assoc, presID, req, imageFileName, opt_useMetaheader, NULL,
+      storeSCPCallback, &callbackData, DIMSE_BLOCKING, 0);
   }
   else
   {
     cond = DIMSE_storeProvider(assoc, presID, req, NULL, opt_useMetaheader, &dset,
-        storeSCPCallback, &callbackData, DIMSE_BLOCKING, 0);
+      storeSCPCallback, &callbackData, DIMSE_BLOCKING, 0);
   }
 
   // if some error occured, dump corresponding information and remove the outfile if necessary
@@ -1912,7 +1983,7 @@ static void renameOnEndOfStudy()
      * current filenames will be changed to a filename that corresponds to the pattern [modality-
      * prefix][consecutive-numbering]. The current filenames of all files that belong to the study
      * are captured in outputFileNameArray. The new filenames will be calculated whithin this
-     * function: The [modality-prefix] will be taken from the old filename (first two characters),
+     * function: The [modality-prefix] will be taken from the old filename,
      * [consecutive-numbering] is a consecutively numbered, 6 digit number which will be calculated
      * starting from 000001.
      *
@@ -1924,12 +1995,12 @@ static void renameOnEndOfStudy()
 
   OFListIterator(OFString) first = outputFileNameArray.begin();
   OFListIterator(OFString) last = outputFileNameArray.end();
-  
+
   // before we deal with all the filenames which are included in the array, we need to distinguish
   // two different cases: If endOfStudyThroughTimeoutEvent is not true, the last filename in the array
   // refers to a file that belongs to a new study of which the first object was just received. (In this
   // case there are at least two filenames in the array). Then, this last filename is - at the end of the
-  // foolowing loop - not supposed to be deleted from the array. If endOfStudyThroughTimeoutEvent is true,
+  // following loop - not supposed to be deleted from the array. If endOfStudyThroughTimeoutEvent is true,
   // all filenames that are captured in the array, refer to files that belong to the same study. Hence,
   // all of these files shall be renamed and all of the filenames within the array shall be deleted.
   if( ! endOfStudyThroughTimeoutEvent ) --last;
@@ -1941,7 +2012,25 @@ static void renameOnEndOfStudy()
     // The value for [consecutive-numbering] will be determined using the counter variable.
     char modalityId[3];
     char newFileName[9];
-    OFStandard::strlcpy( modalityId, (*first).c_str(), 3 );
+    if (opt_timeNames)
+    {
+      // modality prefix are the first 2 characters after serial number (if present)
+      uint serialPos = (*first).find("_");
+      if (serialPos != string::npos)
+      {
+        //serial present: copy modality prefix (skip serial: 1 digit "_" + 4 digits serial + 1 digit ".")
+        OFStandard::strlcpy( modalityId, (*first).substr(serialPos+1+4+1, 2).c_str(), 3 );
+      }
+      else
+      {
+        //serial not present, copy starts directly after first "." (skip 17 for timestamp, one for ".")
+        OFStandard::strlcpy( modalityId, (*first).substr(17+1, 2).c_str(), 3 );
+      }
+    }
+    else
+    {
+      OFStandard::strlcpy( modalityId, (*first).c_str(), 3 );
+    }
     sprintf( newFileName, "%s%06d", modalityId, counter );
 
     // create two strings containing path and file name for
@@ -1955,7 +2044,7 @@ static void renameOnEndOfStudy()
     newPathAndFileName = lastStudySubdirectoryPathAndName;
     newPathAndFileName += PATH_SEPARATOR;
     newPathAndFileName += newFileName;
-    
+
     // rename file
     if( rename( oldPathAndFileName.c_str(), newPathAndFileName.c_str() ) != 0 )
       fprintf( stderr, "storescp: Cannot rename file '%s' to '%s'.\n", oldPathAndFileName.c_str(), newPathAndFileName.c_str() );
@@ -1987,7 +2076,7 @@ static void executeOnEndOfStudy()
 
   // perform substitution for placeholder #p; #p will be substituted by lastStudySubdirectoryPathAndName
   cmd = replaceChars( cmd, OFString(PATH_PLACEHOLDER), lastStudySubdirectoryPathAndName );
-  
+
   // perform substitution for placeholder #a
   cmd = replaceChars( cmd, OFString(CALLING_AETITLE_PLACEHOLDER), callingaetitle );
 
@@ -2263,7 +2352,7 @@ static int makeTempFile()
     return mkstemp(tempfile);
 #else /* ! HAVE_MKSTEMP */
     mktemp(tempfile);
-    return open(tempfile, O_WRONLY|O_CREAT|O_APPEND,0644); 
+    return open(tempfile, O_WRONLY|O_CREAT|O_APPEND,0644);
 #endif
 }
 
@@ -2272,7 +2361,12 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.77  2005-10-25 08:55:43  meichel
+** Revision 1.78  2005-11-10 09:13:21  onken
+** - Added option "--timenames" to support filenames based on timestamps.
+** - Added option "--file-extension", that allows to append a suffix
+**   to each filename.
+**
+** Revision 1.77  2005/10/25 08:55:43  meichel
 ** Updated list of UIDs and added support for new transfer syntaxes
 **   and storage SOP classes.
 **

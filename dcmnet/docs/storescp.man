@@ -24,8 +24,8 @@ supports the Verification Service Class as an SCP.
 \section parameters PARAMETERS
 
 \verbatim
-port  tcp/ip port number to listen on. 
-      This parameter is required unless the --inetd option 
+port  tcp/ip port number to listen on.
+      This parameter is required unless the --inetd option
       is specified.
 \endverbatim
 
@@ -95,7 +95,7 @@ network host access control (tcp wrapper) options:
 other network options:
 
   -id   --inetd
-          run from inetd super server 
+          run from inetd super server
           (this option is available only on Posix platforms)
 
   -aet  --aetitle  aetitle: string
@@ -228,6 +228,13 @@ filename generation:
 
   +uf   --unique-filenames
           generate unique filenames
+
+  -tn   --timenames
+          generate filename from creation time
+
+  -fe   --filename-extension  [e]xtension: string
+          append e to all filenames
+
 \endverbatim
 
 \subsection event_options event options
@@ -344,6 +351,25 @@ where YYYY refers to year (4 digits), MM to month (01-12), DD to day (01-31),
 HH to hour (00-23), MM to minute (00-59), SS to second (00-59) and PPP to
 milliseconds (000-999).
 
+Option \e --timenames creates filenames from timestamps corresponding to the
+time, \b storescp writes a file to disk. The format is
+
+\verbatim
+  [YYYYMMDDHHMMSSPPP]_[SERIALNO].[MD]
+ \endverbatim
+
+where YYYY, MM, DD, HH, MM, SS, PPP are interpreted as described above.
+If more files are created at the same time, SERIALNO is inserted. It
+consists of a 4-digit, consecutive number (0000 to 9999). For the first file,
+that exists for a specific time, no number (and no "_") is inserted at all. MD
+represents an identification code (2 letters) for the kind of object stored
+in the file (see notes on \e --rename-on-eostudy).
+
+Option \e --filename-extension appends a specified suffix to each filename
+(a dot "." is not added automatically). This suffix is not appended to
+the filenames created by \e --rename-on-eostudy to maintain the length
+of 8 characters.
+
 Option \e --exec-on-reception allows to execute a certain command line
 after having received and processed one DICOM object (through a
 C-STORE-Request message). The command line to be executed is passed to
@@ -366,7 +392,7 @@ DICOM objects that belong to one study have been received by \b storescp.
 The same placeholders as with \e --exec-on-reception may be used, except for
 #f, which is not supported.  A study is considered complete by \b storescp
 when an object belonging to a different study is received or the timeout
-specified with \e --eostudy-timeout takes place.  If option
+specified with \e --eostudy-timeout takes place. If option
 \e --rename-on-eostudy is in force, the renaming takes place before the
 external command is executed.
 
@@ -504,7 +530,7 @@ Further details are described in <b>hosts_access</b>(5).
 
 \subsection running_from_inetd Running storescp from inetd
 
-On Posix platforms, storescp can be initiated through the inetd(8) super server. 
+On Posix platforms, storescp can be initiated through the inetd(8) super server.
 This requires that storescp be configured in the /etc/inetd.conf configuration
 file. A typical configuration line could look like this:
 \verbatim
@@ -516,10 +542,10 @@ the TCP wrapper based access control described above and '-od' (--output-directo
 defines the directory in which storescp stores incoming DICOM objects.
 Note that the service name ("acr-nema" in this example) determines the port number
 on which DICOM associations are accepted and must be defined in /etc/services.
-When runnning from inetd, the stdout and stderr streams are redirected to 
+When runnning from inetd, the stdout and stderr streams are redirected to
 files in the /tmp filesystem which can be identified by the filename starting
 with the prefix "storescp_".
-Please note that when run through inetd, storescp is executed with root 
+Please note that when run through inetd, storescp is executed with root
 privileges, which may be a security risk.
 
 \subsection profiles Association Negotiation Profiles and Configuration Files
