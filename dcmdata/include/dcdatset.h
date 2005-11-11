@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2004, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Interface of the class DcmDataset
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-07-01 12:28:25 $
+ *  Update Date:      $Date: 2005-11-11 10:31:57 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdatset.h,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -189,6 +189,8 @@ class DcmDataset
     virtual OFCondition writeXML(ostream &out,
                                  const size_t flags = 0);
 
+    virtual OFCondition clear();
+
     /** load object from a DICOM file.
      *  This method only supports DICOM objects stored as a dataset, i.e. without meta header.
      *  Use DcmFileFormat::loadFile() to load files with meta header.
@@ -266,7 +268,10 @@ class DcmDataset
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.h,v $
-** Revision 1.23  2004-07-01 12:28:25  meichel
+** Revision 1.24  2005-11-11 10:31:57  meichel
+** Added explicit DcmDataset::clear() implementation.
+**
+** Revision 1.23  2004/07/01 12:28:25  meichel
 ** Introduced virtual clone method for DcmObject and derived classes.
 **
 ** Revision 1.22  2003/03/21 13:06:46  meichel

@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmDataset
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-07 17:22:33 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Update Date:      $Date: 2005-11-11 10:31:58 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -75,9 +75,14 @@ DcmDataset::~DcmDataset()
 {
 }
 
-
 // ********************************
 
+OFCondition DcmDataset::clear()
+{
+    OFCondition result = DcmItem::clear();
+    Length = DCM_UndefinedLength;
+    return result;
+}
 
 DcmEVR DcmDataset::ident() const
 {
@@ -564,7 +569,10 @@ void DcmDataset::removeAllButOriginalRepresentations()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.cc,v $
-** Revision 1.35  2005-11-07 17:22:33  meichel
+** Revision 1.36  2005-11-11 10:31:58  meichel
+** Added explicit DcmDataset::clear() implementation.
+**
+** Revision 1.35  2005/11/07 17:22:33  meichel
 ** Implemented DcmFileFormat::clear(). Now the loadFile methods in class
 **   DcmFileFormat and class DcmDataset both make sure that clear() is called
 **   before new data is read, allowing for a re-use of the object.
