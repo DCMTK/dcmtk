@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2002, OFFIS
+ *  Copyright (C) 1998-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: SiCertificate
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-12-16 12:57:49 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2005-11-11 17:50:04 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -167,7 +167,8 @@ OFCondition SiCertificate::read(DcmItem& item)
           {
             if (data)
             {
-              x509 = d2i_X509(NULL, &data, cert->getLength());
+              const Uint8 *cdata = data;
+              x509 = d2i_X509(NULL, &cdata, cert->getLength());
               if (x509 == NULL) result = EC_IllegalCall;              
             } else result = EC_IllegalCall;            
           }      
@@ -310,7 +311,10 @@ int sicert_cc_dummy_to_keep_linker_from_moaning = 0;
 
 /*
  *  $Log: sicert.cc,v $
- *  Revision 1.7  2002-12-16 12:57:49  meichel
+ *  Revision 1.8  2005-11-11 17:50:04  meichel
+ *  Changed parameter to const to allow compilation with OpenSSL 0.9.8
+ *
+ *  Revision 1.7  2002/12/16 12:57:49  meichel
  *  Minor modification to shut up linker on MacOS X when compiling
  *    without OpenSSL support
  *
