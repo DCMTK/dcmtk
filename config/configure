@@ -6729,6 +6729,126 @@ fi
 
 fi
 
+OPENSSLLIBS=""
+echo "$as_me:$LINENO: checking for main in -ldl" >&5
+echo $ECHO_N "checking for main in -ldl... $ECHO_C" >&6
+if test "${ac_cv_lib_dl_main+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-ldl  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+#include "confdefs.h"
+
+
+#ifdef F77_DUMMY_MAIN
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+#endif
+int
+main ()
+{
+main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_lib_dl_main=yes
+else
+  echo "$as_me: failed program was:" >&5
+cat conftest.$ac_ext >&5
+ac_cv_lib_dl_main=no
+fi
+rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+echo "$as_me:$LINENO: result: $ac_cv_lib_dl_main" >&5
+echo "${ECHO_T}$ac_cv_lib_dl_main" >&6
+if test $ac_cv_lib_dl_main = yes; then
+
+OPENSSLLIBS="-ldl"
+
+fi
+
+if test $ac_cv_lib_dl_main = no ; then
+echo "$as_me:$LINENO: checking for dlopen in -ldl" >&5
+echo $ECHO_N "checking for dlopen in -ldl... $ECHO_C" >&6
+if test "${ac_cv_lib_dl_dlopen+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-ldl  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+#include "confdefs.h"
+
+/* Override any gcc2 internal prototype to avoid an error.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+/* We use char because int might match the return type of a gcc2
+   builtin and then its argument prototype would still apply.  */
+char dlopen ();
+#ifdef F77_DUMMY_MAIN
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+#endif
+int
+main ()
+{
+dlopen ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_lib_dl_dlopen=yes
+else
+  echo "$as_me: failed program was:" >&5
+cat conftest.$ac_ext >&5
+ac_cv_lib_dl_dlopen=no
+fi
+rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+echo "$as_me:$LINENO: result: $ac_cv_lib_dl_dlopen" >&5
+echo "${ECHO_T}$ac_cv_lib_dl_dlopen" >&6
+if test $ac_cv_lib_dl_dlopen = yes; then
+
+OPENSSLLIBS="-ldl"
+
+fi
+
+fi
+
 MATHLIBS=""
 echo "$as_me:$LINENO: checking for main in -lm" >&5
 echo $ECHO_N "checking for main in -lm... $ECHO_C" >&6
@@ -21835,7 +21955,7 @@ if test "${ac_cv_check_std_namespace+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 21838 "configure"
+#line 21958 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -22364,7 +22484,7 @@ if test "${ac_cv_check_class_template+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 22367 "configure"
+#line 22487 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -22437,7 +22557,7 @@ if test "${ac_cv_check_static_template_method+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 22440 "configure"
+#line 22560 "configure"
 #include "confdefs.h"
 
 void additive(int & i)
@@ -22510,7 +22630,7 @@ if test "${ac_cv_check_function_template+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 22513 "configure"
+#line 22633 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -22887,7 +23007,6 @@ if test "${with_opensslinc+set}" = set; then
 
 fi
 
-OPENSSLLIBS=""
 echo "$as_me:$LINENO: checking whether to include OpenSSL support" >&5
 echo $ECHO_N "checking whether to include OpenSSL support... $ECHO_C" >&6
 
@@ -22903,7 +23022,7 @@ cat >>confdefs.h <<\_ACEOF
 #define WITH_OPENSSL
 _ACEOF
 
-    OPENSSLLIBS="-lssl -lcrypto"
+    OPENSSLLIBS="-lssl -lcrypto $OPENSSLLIBS"
     ;;
   *)
     echo "$as_me:$LINENO: result: no" >&5
@@ -22950,7 +23069,7 @@ cat >>confdefs.h <<\_ACEOF
 #define WITH_OPENSSL
 _ACEOF
 
-      OPENSSLLIBS="-lssl -lcrypto"
+      OPENSSLLIBS="-lssl -lcrypto $OPENSSLLIBS"
 else
   echo "$as_me: failed program was:" >&5
 cat conftest.$ac_ext >&5
