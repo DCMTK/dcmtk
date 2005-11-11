@@ -75,6 +75,12 @@ preferred network transfer syntaxes (not with --config-file):
   +xx   --prefer-jpeg12
           prefer default JPEG lossy TS for 12 bit data
 
+  +xv   --prefer-j2k-lossless
+          prefer JPEG 2000 lossless TS
+
+  +xw   --prefer-j2k-lossy
+          prefer JPEG 2000 lossy TS
+
   +xr   --prefer-rle
           prefer RLE lossless TS
 
@@ -356,7 +362,7 @@ time, \b storescp writes a file to disk. The format is
 
 \verbatim
   [YYYYMMDDHHMMSSPPP]_[SERIALNO].[MD]
- \endverbatim
+\endverbatim
 
 where YYYY, MM, DD, HH, MM, SS, PPP are interpreted as described above.
 If more files are created at the same time, SERIALNO is inserted. It

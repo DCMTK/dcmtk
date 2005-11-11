@@ -93,6 +93,14 @@ proposed transmission transfer syntaxes (not with --config-file):
           propose default JPEG lossy TS for 12 bit data
           and all uncompressed transfer syntaxes
 
+  -xv   --propose-j2k-lossless
+          propose default JPEG 2000 lossless TS
+          and all uncompressed transfer syntaxes
+
+  -xw   --propose-j2k-lossy
+          propose default JPEG 2000 lossy TS
+          and all uncompressed transfer syntaxes
+
   -xr   --propose-rle
           propose RLE lossless TS
           and all uncompressed transfer syntaxes

@@ -21,10 +21,10 @@
  *
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-03 17:27:10 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2005-11-11 16:09:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.53 $
+ *  CVS/RCS Revision: $Revision: 1.54 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -280,6 +280,8 @@ main(int argc, char *argv[])
       cmd.addOption("--prefer-lossless",        "+xs",       "prefer default JPEG lossless TS");
       cmd.addOption("--prefer-jpeg8",           "+xy",       "prefer default JPEG lossy TS for 8 bit data");
       cmd.addOption("--prefer-jpeg12",          "+xx",       "prefer default JPEG lossy TS for 12 bit data");
+      cmd.addOption("--prefer-j2k-lossless",    "+xv",       "prefer JPEG 2000 lossless TS");
+      cmd.addOption("--prefer-j2k-lossy",       "+xw",       "prefer JPEG 2000 lossy TS");
       cmd.addOption("--prefer-rle",             "+xr",       "prefer RLE lossless TS");
       cmd.addOption("--implicit",               "+xi",       "accept implicit VR little endian TS only");
     cmd.addSubGroup("proposed transmission transfer syntaxes (outgoing associations):");
@@ -403,8 +405,10 @@ main(int argc, char *argv[])
       if (cmd.findOption("--prefer-lossless")) opt_in_networkTransferSyntax = EXS_JPEGProcess14SV1TransferSyntax;
       if (cmd.findOption("--prefer-jpeg8"))    opt_in_networkTransferSyntax = EXS_JPEGProcess1TransferSyntax;
       if (cmd.findOption("--prefer-jpeg12"))   opt_in_networkTransferSyntax = EXS_JPEGProcess2_4TransferSyntax;
-      if (cmd.findOption("--prefer-rle"))      opt_in_networkTransferSyntax = EXS_RLELossless;
-      if (cmd.findOption("--implicit"))        opt_in_networkTransferSyntax = EXS_LittleEndianImplicit;
+      if (cmd.findOption("--prefer-j2k-lossless")) opt_in_networkTransferSyntax = EXS_JPEG2000LosslessOnly;
+      if (cmd.findOption("--prefer-j2k-lossy"))    opt_in_networkTransferSyntax = EXS_JPEG2000;
+      if (cmd.findOption("--prefer-rle"))          opt_in_networkTransferSyntax = EXS_RLELossless;
+      if (cmd.findOption("--implicit"))            opt_in_networkTransferSyntax = EXS_LittleEndianImplicit;
       cmd.endOptionBlock();
       cmd.beginOptionBlock();
       if (cmd.findOption("--propose-uncompr"))  opt_out_networkTransferSyntax = EXS_Unknown;
@@ -453,6 +457,8 @@ main(int argc, char *argv[])
         app.checkConflict("--write-xfer-little", "--prefer-lossless", opt_networkTransferSyntax==EXS_JPEGProcess14SV1TransferSyntax);
         app.checkConflict("--write-xfer-little", "--prefer-jpeg8", opt_networkTransferSyntax==EXS_JPEGProcess1TransferSyntax);
         app.checkConflict("--write-xfer-little", "--prefer-jpeg12", opt_networkTransferSyntax==EXS_JPEGProcess2_4TransferSyntax);
+        app.checkConflict("--write-xfer-little", "--prefer-j2k-lossy", opt_networkTransferSyntax==EXS_JPEG2000);
+        app.checkConflict("--write-xfer-little", "--prefer-j2k-lossless", opt_networkTransferSyntax==EXS_JPEG2000LosslessOnly);
         app.checkConflict("--write-xfer-little", "--prefer-rle", opt_networkTransferSyntax==EXS_RLELossless);
         opt_writeTransferSyntax = EXS_LittleEndianExplicit;
       }
@@ -462,6 +468,8 @@ main(int argc, char *argv[])
         app.checkConflict("--write-xfer-big", "--prefer-lossless", opt_networkTransferSyntax==EXS_JPEGProcess14SV1TransferSyntax);
         app.checkConflict("--write-xfer-big", "--prefer-jpeg8", opt_networkTransferSyntax==EXS_JPEGProcess1TransferSyntax);
         app.checkConflict("--write-xfer-big", "--prefer-jpeg12", opt_networkTransferSyntax==EXS_JPEGProcess2_4TransferSyntax);
+        app.checkConflict("--write-xfer-big", "--prefer-j2k-lossy", opt_networkTransferSyntax==EXS_JPEG2000);
+        app.checkConflict("--write-xfer-big", "--prefer-j2k-lossless", opt_networkTransferSyntax==EXS_JPEG2000LosslessOnly);
         app.checkConflict("--write-xfer-big", "--prefer-rle", opt_networkTransferSyntax==EXS_RLELossless);
         opt_writeTransferSyntax = EXS_BigEndianExplicit;
       }
@@ -864,6 +872,22 @@ acceptSubAssoc(T_ASC_Network * aNet, T_ASC_Association ** assoc)
         case EXS_JPEGProcess2_4TransferSyntax:
           /* we prefer JPEGExtended (default lossy for 12 bit images) */
           transferSyntaxes[0] = UID_JPEGProcess2_4TransferSyntax;
+          transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+          transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+          transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+          numTransferSyntaxes = 4;
+          break;
+        case EXS_JPEG2000:
+          /* we prefer JPEG2000 Lossy */
+          transferSyntaxes[0] = UID_JPEG2000TransferSyntax;
+          transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+          transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+          transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+          numTransferSyntaxes = 4;
+          break;
+        case EXS_JPEG2000LosslessOnly:
+          /* we prefer JPEG2000 Lossless */
+          transferSyntaxes[0] = UID_JPEG2000LosslessOnlyTransferSyntax;
           transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
           transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
           transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
@@ -1335,7 +1359,10 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.53  2005-11-03 17:27:10  meichel
+** Revision 1.54  2005-11-11 16:09:01  onken
+** Added options for JPEG2000 support (lossy and lossless)
+**
+** Revision 1.53  2005/11/03 17:27:10  meichel
 ** The movescu tool does not open any listen port by default anymore.
 **
 ** Revision 1.52  2005/10/25 08:55:43  meichel

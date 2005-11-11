@@ -101,6 +101,12 @@ preferred network transfer syntaxes (incoming associations):
   +xx   --prefer-jpeg12
           prefer default JPEG lossy TS for 12 bit data
 
+  +xv   --prefer-j2k-lossless
+          prefer JPEG 2000 lossless TS
+
+  +xw   --prefer-j2k-lossy
+          prefer JPEG 2000 lossy TS
+
   +xr   --prefer-rle
           prefer RLE lossless TS
 
@@ -133,7 +139,7 @@ network host access control (tcp wrapper) options:
           enforce host access control rules
 
 port for incoming network associations:
-  -P    --no-port              
+  -P    --no-port
           No port for incoming associations (default)
   +P    --port  [n]umber: integer
           port number for incoming associations

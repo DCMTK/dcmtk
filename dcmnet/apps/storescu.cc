@@ -21,10 +21,10 @@
  *
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-10-25 08:55:43 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2005-11-11 16:09:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.59 $
+ *  CVS/RCS Revision: $Revision: 1.60 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -172,7 +172,7 @@ main(int argc, char *argv[])
     const char *opt_ourTitle = APPLICATIONTITLE;
 
     OFList<OFString> fileNameList;       // list of files to transfer to SCP
-    OFList<OFString> sopClassUIDList; // the list of sop classes
+    OFList<OFString> sopClassUIDList;    // the list of sop classes
     OFList<OFString> sopInstanceUIDList; // the list of sop instances
 
     T_ASC_Network *net;
@@ -232,6 +232,8 @@ main(int argc, char *argv[])
       cmd.addOption("--propose-lossless",       "-xs",       "propose default JPEG lossless TS\nand all uncompressed transfer syntaxes");
       cmd.addOption("--propose-jpeg8",          "-xy",       "propose default JPEG lossy TS for 8 bit data\nand all uncompressed transfer syntaxes");
       cmd.addOption("--propose-jpeg12",         "-xx",       "propose default JPEG lossy TS for 12 bit data\nand all uncompressed transfer syntaxes");
+      cmd.addOption("--propose-j2k-lossless",   "-xv",       "propose default JPEG 2000 lossless TS\nand all uncompressed transfer syntaxes");
+      cmd.addOption("--propose-j2k-lossy",      "-xw",       "propose default JPEG 2000 lossy TS\nand all uncompressed transfer syntaxes");
       cmd.addOption("--propose-rle",            "-xr",       "propose RLE lossless TS\nand all uncompressed transfer syntaxes");
 #ifdef WITH_ZLIB
       cmd.addOption("--propose-deflated",       "-xd",       "propose deflated expl. VR little endian TS\nand all uncompressed transfer syntaxes");
@@ -371,16 +373,18 @@ main(int argc, char *argv[])
       if (cmd.findOption("--call")) app.checkValue(cmd.getValue(opt_peerTitle));
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--propose-uncompr"))  opt_networkTransferSyntax = EXS_Unknown;
-      if (cmd.findOption("--propose-little"))   opt_networkTransferSyntax = EXS_LittleEndianExplicit;
-      if (cmd.findOption("--propose-big"))      opt_networkTransferSyntax = EXS_BigEndianExplicit;
-      if (cmd.findOption("--propose-implicit")) opt_networkTransferSyntax = EXS_LittleEndianImplicit;
-      if (cmd.findOption("--propose-lossless")) opt_networkTransferSyntax = EXS_JPEGProcess14SV1TransferSyntax;
-      if (cmd.findOption("--propose-jpeg8"))    opt_networkTransferSyntax = EXS_JPEGProcess1TransferSyntax;
-      if (cmd.findOption("--propose-jpeg12"))   opt_networkTransferSyntax = EXS_JPEGProcess2_4TransferSyntax;
-      if (cmd.findOption("--propose-rle"))      opt_networkTransferSyntax = EXS_RLELossless;
+      if (cmd.findOption("--propose-uncompr"))      opt_networkTransferSyntax = EXS_Unknown;
+      if (cmd.findOption("--propose-little"))       opt_networkTransferSyntax = EXS_LittleEndianExplicit;
+      if (cmd.findOption("--propose-big"))          opt_networkTransferSyntax = EXS_BigEndianExplicit;
+      if (cmd.findOption("--propose-implicit"))     opt_networkTransferSyntax = EXS_LittleEndianImplicit;
+      if (cmd.findOption("--propose-lossless"))     opt_networkTransferSyntax = EXS_JPEGProcess14SV1TransferSyntax;
+      if (cmd.findOption("--propose-jpeg8"))        opt_networkTransferSyntax = EXS_JPEGProcess1TransferSyntax;
+      if (cmd.findOption("--propose-jpeg12"))       opt_networkTransferSyntax = EXS_JPEGProcess2_4TransferSyntax;
+      if (cmd.findOption("--propose-j2k-lossless")) opt_networkTransferSyntax = EXS_JPEG2000LosslessOnly;
+      if (cmd.findOption("--propose-j2k-lossy"))    opt_networkTransferSyntax = EXS_JPEG2000;
+      if (cmd.findOption("--propose-rle"))          opt_networkTransferSyntax = EXS_RLELossless;
 #ifdef WITH_ZLIB
-      if (cmd.findOption("--propose-deflated")) opt_networkTransferSyntax = EXS_DeflatedLittleEndianExplicit;
+      if (cmd.findOption("--propose-deflated"))     opt_networkTransferSyntax = EXS_DeflatedLittleEndianExplicit;
 #endif
       cmd.endOptionBlock();
 
@@ -390,16 +394,18 @@ main(int argc, char *argv[])
       if (cmd.findOption("--config-file"))
       {
         app.checkValue(cmd.getValue(opt_configFile));
-        app.checkValue(cmd.getValue(opt_profileName));        
+        app.checkValue(cmd.getValue(opt_profileName));
 
         // check conflicts with other command line options
-        app.checkConflict("--config-file", "--propose-little", (opt_networkTransferSyntax == EXS_LittleEndianExplicit));
-        app.checkConflict("--config-file", "--propose-big", (opt_networkTransferSyntax == EXS_BigEndianExplicit));
-        app.checkConflict("--config-file", "--propose-implicit", (opt_networkTransferSyntax == EXS_LittleEndianImplicit));
-        app.checkConflict("--config-file", "--propose-lossless", (opt_networkTransferSyntax == EXS_JPEGProcess14SV1TransferSyntax));
-        app.checkConflict("--config-file", "--propose-jpeg8", (opt_networkTransferSyntax == EXS_JPEGProcess1TransferSyntax));
-        app.checkConflict("--config-file", "--propose-jpeg12", (opt_networkTransferSyntax == EXS_JPEGProcess2_4TransferSyntax));
-        app.checkConflict("--config-file", "--propose-rle", (opt_networkTransferSyntax == EXS_RLELossless));
+        app.checkConflict("--config-file", "--propose-little",       (opt_networkTransferSyntax == EXS_LittleEndianExplicit));
+        app.checkConflict("--config-file", "--propose-big",          (opt_networkTransferSyntax == EXS_BigEndianExplicit));
+        app.checkConflict("--config-file", "--propose-implicit",     (opt_networkTransferSyntax == EXS_LittleEndianImplicit));
+        app.checkConflict("--config-file", "--propose-lossless",     (opt_networkTransferSyntax == EXS_JPEGProcess14SV1TransferSyntax));
+        app.checkConflict("--config-file", "--propose-jpeg8",        (opt_networkTransferSyntax == EXS_JPEGProcess1TransferSyntax));
+        app.checkConflict("--config-file", "--propose-jpeg12",       (opt_networkTransferSyntax == EXS_JPEGProcess2_4TransferSyntax));
+        app.checkConflict("--config-file", "--propose-j2k-lossless", (opt_networkTransferSyntax == EXS_JPEG2000LosslessOnly));
+        app.checkConflict("--config-file", "--propose-j2k-lossy",    (opt_networkTransferSyntax == EXS_JPEG2000));
+        app.checkConflict("--config-file", "--propose-rle",          (opt_networkTransferSyntax == EXS_RLELossless));
 #ifdef WITH_ZLIB
         app.checkConflict("--config-file", "--propose-deflated", (opt_networkTransferSyntax == EXS_DeflatedLittleEndianExplicit));
 #endif
@@ -419,7 +425,7 @@ main(int argc, char *argv[])
       cmd.beginOptionBlock();
       if (cmd.findOption("--compression-level"))
       {
-          if ((opt_networkTransferSyntax != EXS_DeflatedLittleEndianExplicit) 
+          if ((opt_networkTransferSyntax != EXS_DeflatedLittleEndianExplicit)
             && (opt_configFile == NULL))
           {
              app.printError("--compression-level only allowed with --propose-deflated or --config-file");
@@ -443,7 +449,7 @@ main(int argc, char *argv[])
       }
       cmd.endOptionBlock();
 
-      if (cmd.findOption("--timeout")) 
+      if (cmd.findOption("--timeout"))
       {
         OFCmdSignedInt opt_timeout = 0;
         app.checkValue(cmd.getValueAndCheckMin(opt_timeout, 1));
@@ -589,11 +595,11 @@ main(int argc, char *argv[])
       char sopClassUID[128];
       char sopInstanceUID[128];
       OFBool ignoreName;
-      
+
       for (int i=3; i <= paramCount; i++)
       {
         ignoreName = OFFalse;
-        
+
         cmd.getParam(i, currentFilename);
         if (access(currentFilename, R_OK) < 0)
         {
@@ -1473,7 +1479,10 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.59  2005-10-25 08:55:43  meichel
+** Revision 1.60  2005-11-11 16:09:01  onken
+** Added options for JPEG2000 support (lossy and lossless)
+**
+** Revision 1.59  2005/10/25 08:55:43  meichel
 ** Updated list of UIDs and added support for new transfer syntaxes
 **   and storage SOP classes.
 **
