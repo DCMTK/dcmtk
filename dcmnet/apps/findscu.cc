@@ -21,10 +21,10 @@
  *
  *  Purpose: Query/Retrieve Service Class User (C-FIND operation)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-03 17:39:41 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2005-11-14 09:06:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/findscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,6 +59,7 @@ END_EXTERN_C
 #include "cmdlnarg.h"
 #include "ofconapp.h"
 #include "dcuid.h"    /* for dcmtk version name */
+#include "dcdicent.h"
 
 #ifdef WITH_ZLIB
 #include <zlib.h>     /* for zlibVersion() */
@@ -119,14 +120,28 @@ addOverrideKey(OFConsoleApplication& app, const char* s)
     char msg2[200];
 
     val[0] = '\0';
+    // try to parse group and element number
     n = sscanf(s, "%x,%x=%s", &g, &e, val);
 
-    if (n < 2) {
-      msg = "bad key format: ";
-      msg += s;
-      app.printError(msg.c_str());
+    if (n != 2) {
+      // not a group-element pair, try to lookup in dictionary
+      DcmTagKey key(0xffff,0xffff);
+      const DcmDataDictionary& globalDataDict = dcmDataDict.rdlock();
+      const DcmDictEntry *dicent = globalDataDict.findEntry(s);
+      dcmDataDict.unlock();
+      if (dicent!=NULL) {
+        // found dictionary name, copy group and element number
+        key = dicent->getKey();
+        g = key.getGroup();
+        e = key.getElement();
+      }
+      else {
+        // not found in dictionary
+        msg = "bad key format or dictionary name not found in dictionary: ";
+        msg += s;
+        app.printError(msg.c_str());
+      }
     }
-
     const char* spos = s;
     char ccc;
     do
@@ -243,7 +258,10 @@ main(int argc, char *argv[])
    cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
   cmd.addGroup("network options:");
     cmd.addSubGroup("override matching keys:");
-      cmd.addOption("--key",                    "-k",    1,  "key: gggg,eeee=\"string\"", "override matching key");
+      cmd.addOption("--key",                    "-k",    1,  "key: gggg,eeee=\"str\" or data dictionary name=\"str\"",
+                                                             "override matching key");
+
+
     cmd.addSubGroup("query information model:");
       cmd.addOption("--worklist",               "-W",        "use modality worklist information model (default)");
       cmd.addOption("--patient",                "-P",        "use patient root information model");
@@ -401,7 +419,7 @@ main(int argc, char *argv[])
       }
       cmd.endOptionBlock();
 
-      if (cmd.findOption("--timeout")) 
+      if (cmd.findOption("--timeout"))
       {
         OFCmdSignedInt opt_timeout = 0;
         app.checkValue(cmd.getValueAndCheckMin(opt_timeout, 1));
@@ -821,7 +839,7 @@ main(int argc, char *argv[])
     delete tLayer;
 #endif
 
-    delete overrideKeys;    
+    delete overrideKeys;
     return 0;
 }
 
@@ -1122,7 +1140,10 @@ cfind(T_ASC_Association * assoc, const char *fname)
 /*
 ** CVS Log
 ** $Log: findscu.cc,v $
-** Revision 1.42  2005-11-03 17:39:41  meichel
+** Revision 1.43  2005-11-14 09:06:50  onken
+** Added data dictionary name support for "--key" option
+**
+** Revision 1.42  2005/11/03 17:39:41  meichel
 ** Added transfer syntax selection options to findscu.
 **
 ** Revision 1.41  2004/02/27 12:51:51  meichel

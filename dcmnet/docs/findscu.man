@@ -51,7 +51,7 @@ dcmfile_in  DICOM query file(s)
 \verbatim
 override matching keys:
 
-  -k    --key  key: gggg,eeee="string"
+  -k    --key  key: gggg,eeee="str" or data dictionary name="str"
           override matching key
 
 query information model:

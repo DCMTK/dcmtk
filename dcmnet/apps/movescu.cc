@@ -22,9 +22,9 @@
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2005-11-11 16:09:01 $
+ *  Update Date:      $Date: 2005-11-14 09:06:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.54 $
+ *  CVS/RCS Revision: $Revision: 1.55 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,6 +55,7 @@
 #include "ofconapp.h"
 #include "dcuid.h"    /* for dcmtk version name */
 #include "ofstd.h"
+#include "dcdicent.h"
 
 #ifdef WITH_ZLIB
 #include <zlib.h>     /* for zlibVersion() */
@@ -149,12 +150,25 @@ addOverrideKey(OFConsoleApplication& app, const char* s)
     val[0] = '\0';
     n = sscanf(s, "%x,%x=%s", &g, &e, val);
 
-    if (n < 2) {
-      msg = "bad key format: ";
-      msg += s;
-      app.printError(msg.c_str());
+    if (n != 2) {
+      // not a group-element pair, try to lookup in dictionary
+      DcmTagKey key(0xffff,0xffff);
+      const DcmDataDictionary& globalDataDict = dcmDataDict.rdlock();
+      const DcmDictEntry *dicent = globalDataDict.findEntry(s);
+      dcmDataDict.unlock();
+      if (dicent!=NULL) {
+        // found dictionary name, copy group and element number
+        key = dicent->getKey();
+        g = key.getGroup();
+        e = key.getElement();
+      }
+      else {
+        // not found in dictionary
+        msg = "bad key format or key not found in dictionary: ";
+        msg += s;
+        app.printError(msg.c_str());
+      }
     }
-
     const char* spos = s;
     char ccc;
     do
@@ -254,7 +268,7 @@ main(int argc, char *argv[])
    cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
   cmd.addGroup("network options:");
     cmd.addSubGroup("override matching keys:");
-      cmd.addOption("--key",                    "-k",    1,  "key: gggg,eeee=\"string\"",
+      cmd.addOption("--key",                    "-k",    1,  "key: gggg,eeee=\"str\" or data dict. name=\"str\"",
                                                              "override matching key");
     cmd.addSubGroup("query information model:");
       cmd.addOption("--patient",                "-P",        "use patient root information model (default)");
@@ -1359,7 +1373,10 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.54  2005-11-11 16:09:01  onken
+** Revision 1.55  2005-11-14 09:06:50  onken
+** Added data dictionary name support for "--key" option
+**
+** Revision 1.54  2005/11/11 16:09:01  onken
 ** Added options for JPEG2000 support (lossy and lossless)
 **
 ** Revision 1.53  2005/11/03 17:27:10  meichel
