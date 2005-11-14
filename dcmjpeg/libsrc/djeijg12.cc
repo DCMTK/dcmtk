@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2001, OFFIS
+ *  Copyright (C) 1997-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: compression routines of the IJG JPEG library configured for 12 bits/sample. 
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-10-13 13:25:49 $
+ *  Update Date:      $Date: 2005-11-14 17:09:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djeijg12.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -82,7 +82,7 @@ struct DJEIJG12ErrorStruct
 void DJEIJG12ErrorExit(j_common_ptr);
 void DJEIJG12OutputMessage(j_common_ptr cinfo);
 void DJEIJG12initDestination(j_compress_ptr cinfo);
-int DJEIJG12emptyOutputBuffer(j_compress_ptr cinfo);
+ijg_boolean DJEIJG12emptyOutputBuffer(j_compress_ptr cinfo);
 void DJEIJG12termDestination(j_compress_ptr cinfo);
 
 END_EXTERN_C
@@ -111,7 +111,7 @@ void DJEIJG12initDestination(j_compress_ptr cinfo)
   encoder->initDestination(cinfo);
 }
 
-int DJEIJG12emptyOutputBuffer(j_compress_ptr cinfo)
+ijg_boolean DJEIJG12emptyOutputBuffer(j_compress_ptr cinfo)
 {
   DJCompressIJG12Bit *encoder = (DJCompressIJG12Bit *)cinfo->client_data;
   return encoder->emptyOutputBuffer(cinfo);
@@ -548,7 +548,11 @@ void DJCompressIJG12Bit::outputMessage(void *arg) const
 /*
  * CVS/RCS Log
  * $Log: djeijg12.cc,v $
- * Revision 1.5  2003-10-13 13:25:49  meichel
+ * Revision 1.6  2005-11-14 17:09:39  meichel
+ * Changed some function return types from int to ijg_boolean, to avoid
+ *   compilation errors if the ijg_boolean type is ever changed.
+ *
+ * Revision 1.5  2003/10/13 13:25:49  meichel
  * Added workaround for name clash of typedef "boolean" in the IJG header files
  *   and the standard headers for Borland C++.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2004, OFFIS
+ *  Copyright (C) 2001-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: decompression routines of the IJG JPEG library configured for 8 bits/sample. 
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-05-07 12:18:45 $
+ *  Update Date:      $Date: 2005-11-14 17:09:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djdijg8.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -94,7 +94,7 @@ struct DJDIJG8SourceManagerStruct
 void DJDIJG8ErrorExit(j_common_ptr);
 void DJDIJG8OutputMessage(j_common_ptr cinfo);
 void DJDIJG8initSource(j_decompress_ptr);
-int DJDIJG8fillInputBuffer(j_decompress_ptr);
+ijg_boolean DJDIJG8fillInputBuffer(j_decompress_ptr);
 void DJDIJG8skipInputData(j_decompress_ptr, long);
 void DJDIJG8termSource(j_decompress_ptr);
 
@@ -122,7 +122,7 @@ void DJDIJG8initSource(j_decompress_ptr /* cinfo */)
 {
 }
 
-int DJDIJG8fillInputBuffer(j_decompress_ptr cinfo)
+ijg_boolean DJDIJG8fillInputBuffer(j_decompress_ptr cinfo)
 {
   DJDIJG8SourceManagerStruct *src = (DJDIJG8SourceManagerStruct *)(cinfo->src);
 
@@ -440,7 +440,11 @@ void DJDecompressIJG8Bit::outputMessage() const
 /*
  * CVS/RCS Log
  * $Log: djdijg8.cc,v $
- * Revision 1.9  2004-05-07 12:18:45  meichel
+ * Revision 1.10  2005-11-14 17:09:39  meichel
+ * Changed some function return types from int to ijg_boolean, to avoid
+ *   compilation errors if the ijg_boolean type is ever changed.
+ *
+ * Revision 1.9  2004/05/07 12:18:45  meichel
  * Added explicit typecast to volatile variables, needed for MSVC
  *
  * Revision 1.8  2004/05/07 10:45:13  meichel
