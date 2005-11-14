@@ -21,10 +21,10 @@
  *
  *  Purpose: Sample message server for class DVPSIPCClient
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-04-21 17:15:45 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-11-14 18:07:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/tests/msgserv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,7 @@
 #include <GUSI.h>
 #endif
 
+#define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
 #define INCLUDE_CERRNO
 #define INCLUDE_CTIME
@@ -48,6 +49,9 @@ BEGIN_EXTERN_C
 #endif
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
+#endif
+#ifdef HAVE_SYS_SELECT_H
+#include <sys/select.h>
 #endif
 #ifdef HAVE_SYS_SOCKET_H
 #include <sys/socket.h>
@@ -217,6 +221,8 @@ int main(int argc, char *argv[])
 #else
       nfound = select(s + 1, &fdset, NULL, NULL, &t);
 #endif
+
+
       if (nfound > 0)
       {
         // incoming connection detected
@@ -363,7 +369,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: msgserv.cc,v $
- * Revision 1.7  2004-04-21 17:15:45  joergr
+ * Revision 1.8  2005-11-14 18:07:38  meichel
+ * Included cstdlib, needed on HP/UX 10.
+ *
+ * Revision 1.7  2004/04/21 17:15:45  joergr
  * Included "dcompat" header file required for definition of bzero() on IRIX 5.
  *
  * Revision 1.6  2004/02/13 14:02:08  joergr
