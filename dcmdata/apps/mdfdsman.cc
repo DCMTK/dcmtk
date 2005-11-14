@@ -21,9 +21,9 @@
  *
  *  Purpose: Class for modifying DICOM files
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2004-11-05 17:17:24 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-11-14 15:00:14 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -807,7 +807,7 @@ DcmFileFormat* MdfDatasetManager::getFileFormat()
     return dfile;
 }
 
-OFString MdfDatasetManager::getFilename()
+OFString MdfDatasetManager::getFilename() const
 // Date         : December, 17st, 2003
 // Author       : Michael Onken
 // Task         : Returns filename of the file, that's loaded currently.
@@ -973,7 +973,10 @@ MdfDatasetManager::~MdfDatasetManager()
 /*
 ** CVS/RCS Log:
 ** $Log: mdfdsman.cc,v $
-** Revision 1.15  2004-11-05 17:17:24  onken
+** Revision 1.16  2005-11-14 15:00:14  joergr
+** Made method getFilename() const.
+**
+** Revision 1.15  2004/11/05 17:17:24  onken
 ** Added input and output options for dcmodify. minor code enhancements.
 **
 ** Revision 1.14  2004/10/22 16:53:26  onken

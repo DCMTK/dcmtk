@@ -21,10 +21,10 @@
  *
  *  Purpose: Class for modifying DICOM files
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2004-11-05 17:17:24 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-11-14 15:00:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/mdfdsman.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -168,7 +168,7 @@ public:
     /** Returns filename of the file, that's loaded currently.
      *  @return returns filename and "" if no file is loaded.
      */
-    OFString getFilename();
+    OFString getFilename() const;
 
 
 protected:
@@ -280,7 +280,10 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: mdfdsman.h,v $
-** Revision 1.12  2004-11-05 17:17:24  onken
+** Revision 1.13  2005-11-14 15:00:14  joergr
+** Made method getFilename() const.
+**
+** Revision 1.12  2004/11/05 17:17:24  onken
 ** Added input and output options for dcmodify. minor code enhancements.
 **
 ** Revision 1.11  2004/10/22 16:53:26  onken
