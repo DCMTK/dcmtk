@@ -212,6 +212,9 @@
 /* Define to 1 if you have the `index' function. */
 /* #undef  HAVE_INDEX */
 
+/* Define to 1 if the system has the type `int64_t'. */
+/* #undef HAVE_INT64_T */
+
 /* Define if your system declares argument 3 of accept() as int * instead of
    size_t * or socklen_t * */
 #define HAVE_INTP_ACCEPT 1
@@ -273,7 +276,7 @@
 /* #undef  HAVE_LIBSOCKET */
 
 /* Define if libtiff supports LZW compression */
-/* #undef HAVE_LIBTIFF_LZW_COMPRESSION */
+#define HAVE_LIBTIFF_LZW_COMPRESSION 1
 
 /* Define to 1 if you have the <limits.h> header file. */
 /* #undef  HAVE_LIMITS_H */
@@ -286,6 +289,9 @@
 
 /* Define to 1 if you have the `lockf' function. */
 /* #undef  HAVE_LOCKF */
+
+/* Define to 1 if the system has the type `longlong'. */
+/* #undef HAVE_LONGLONG */
 
 /* Define to 1 if you support file names longer than 14 characters. */
 #define HAVE_LONG_FILE_NAMES 1
@@ -338,16 +344,6 @@
 /* Define to 1 if you have the <new.h> header file. */
 #define HAVE_NEW_H 1
 
-/* Define `longlong' to `long long' if <sys/types.h> does not define. */
-#define HAVE_NO_TYPEDEF_LONGLONG 1
-#ifdef HAVE_NO_TYPEDEF_LONGLONG
-#ifdef _WIN32
-typedef __int64 longlong;
-#else
-typedef long long longlong;
-#endif
-#endif
-
 /* Define `pid_t' to `int' if <sys/types.h> does not define. */
 #define HAVE_NO_TYPEDEF_PID_T 1
 #ifdef HAVE_NO_TYPEDEF_PID_T
@@ -382,16 +378,6 @@ typedef unsigned int uint;
 #define HAVE_NO_TYPEDEF_ULONG 1
 #ifdef HAVE_NO_TYPEDEF_ULONG
 typedef unsigned long ulong;
-#endif
-
-/* Define `ulonglong' to `unsigned long long' if <sys/types.h> does not define. */
-#define HAVE_NO_TYPEDEF_ULONGLONG 1
-#ifdef HAVE_NO_TYPEDEF_ULONGLONG
-#ifdef _WIN32
-typedef unsigned __int64 ulonglong;
-#else
-typedef unsigned long long ulonglong;
-#endif
 #endif
 
 /* Define `ushort' to `unsigned short' if <sys/types.h> does not define. */
@@ -693,6 +679,12 @@ typedef unsigned short ushort;
 
 /* define if the compiler recognizes typename */
 #define HAVE_TYPENAME 1
+
+/* Define to 1 if the system has the type `uint64_t'. */
+/* #undef HAVE_UINT64_T */
+
+/* Define to 1 if the system has the type `ulonglong'. */
+/* #undef HAVE_ULONGLONG */
 
 /* Define to 1 if you have the `uname' function. */
 /* #undef  HAVE_UNAME */

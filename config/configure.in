@@ -166,12 +166,16 @@ AC_TYPEDEF(uchar, unsigned char)
 AC_TYPEDEF(ushort, unsigned short)
 AC_TYPEDEF(uint, unsigned int)
 AC_TYPEDEF(ulong, unsigned long)
-AC_TYPEDEF(longlong, long long)
-AC_TYPEDEF(ulonglong, unsigned long long)
+AC_CHECK_TYPES(longlong)
+AC_CHECK_TYPES(ulonglong)
 CHECK_VLA
 
-dnl stdbool.h is only defined in ANSI C, not in C++
+dnl stdbool.h and stdint.h are only defined in ANSI C, not in C++
 AC_CHECK_HEADERS(stdbool.h)
+AC_CHECK_HEADERS(stdint.h)
+
+AC_CHECK_TYPES(int64_t)
+AC_CHECK_TYPES(uint64_t)
 
 dnl -------------------------------------------------------
 dnl Checks for libc library functions.
@@ -366,6 +370,7 @@ AC_CHECK_HEADERS(stat.h)
 AC_CHECK_HEADERS(stdarg.h)
 AC_CHECK_HEADERS(stddef.h)
 AC_CHECK_HEADERS(stdio.h)
+AC_CHECK_HEADERS(stdint.h)
 AC_CHECK_HEADERS(stdlib.h)
 AC_CHECK_HEADERS(string.h)
 AC_CHECK_HEADERS(strings.h)

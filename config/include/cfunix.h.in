@@ -192,6 +192,9 @@
 /* Define to 1 if you have the `index' function. */
 #undef HAVE_INDEX
 
+/* Define to 1 if the system has the type `int64_t'. */
+#undef HAVE_INT64_T
+
 /* Define if your system declares argument 3 of accept() as int * instead of
    size_t * or socklen_t * */
 #undef HAVE_INTP_ACCEPT
@@ -267,6 +270,9 @@
 /* Define to 1 if you have the `lockf' function. */
 #undef HAVE_LOCKF
 
+/* Define to 1 if the system has the type `longlong'. */
+#undef HAVE_LONGLONG
+
 /* Define to 1 if you support file names longer than 14 characters. */
 #undef HAVE_LONG_FILE_NAMES
 
@@ -318,12 +324,6 @@
 /* Define to 1 if you have the <new.h> header file. */
 #undef HAVE_NEW_H
 
-/* Define `longlong' to `long long' if <sys/types.h> does not define. */
-#undef HAVE_NO_TYPEDEF_LONGLONG
-#ifdef HAVE_NO_TYPEDEF_LONGLONG
-typedef long long longlong;
-#endif
-
 /* Define `pid_t' to `int' if <sys/types.h> does not define. */
 #undef HAVE_NO_TYPEDEF_PID_T
 #ifdef HAVE_NO_TYPEDEF_PID_T
@@ -358,12 +358,6 @@ typedef unsigned int uint;
 #undef HAVE_NO_TYPEDEF_ULONG
 #ifdef HAVE_NO_TYPEDEF_ULONG
 typedef unsigned long ulong;
-#endif
-
-/* Define `ulonglong' to `unsigned long long' if <sys/types.h> does not define. */
-#undef HAVE_NO_TYPEDEF_ULONGLONG
-#ifdef HAVE_NO_TYPEDEF_ULONGLONG
-typedef unsigned long long ulonglong;
 #endif
 
 /* Define `ushort' to `unsigned short' if <sys/types.h> does not define. */
@@ -662,6 +656,12 @@ typedef unsigned short ushort;
 
 /* define if the compiler recognizes typename */
 #undef HAVE_TYPENAME
+
+/* Define to 1 if the system has the type `uint64_t'. */
+#undef HAVE_UINT64_T
+
+/* Define to 1 if the system has the type `ulonglong'. */
+#undef HAVE_ULONGLONG
 
 /* Define to 1 if you have the `uname' function. */
 #undef HAVE_UNAME
