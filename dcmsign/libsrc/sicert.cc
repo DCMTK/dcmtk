@@ -23,8 +23,8 @@
  *    classes: SiCertificate
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-11 17:50:04 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2005-11-14 16:42:21 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -167,8 +167,13 @@ OFCondition SiCertificate::read(DcmItem& item)
           {
             if (data)
             {
+#if OPENSSL_VERSION_NUMBER >= 0x00908000L
+              // incompatible API change in OpenSSL 0.9.8
               const Uint8 *cdata = data;
               x509 = d2i_X509(NULL, &cdata, cert->getLength());
+#else
+              x509 = d2i_X509(NULL, &data, cert->getLength());
+#endif
               if (x509 == NULL) result = EC_IllegalCall;              
             } else result = EC_IllegalCall;            
           }      
@@ -311,7 +316,11 @@ int sicert_cc_dummy_to_keep_linker_from_moaning = 0;
 
 /*
  *  $Log: sicert.cc,v $
- *  Revision 1.8  2005-11-11 17:50:04  meichel
+ *  Revision 1.9  2005-11-14 16:42:21  meichel
+ *  Now checking OpenSSL version number to allow compilation both with
+ *    old and new versions due to incompatible API change in OpenSSL 0.9.8.
+ *
+ *  Revision 1.8  2005/11/11 17:50:04  meichel
  *  Changed parameter to const to allow compilation with OpenSSL 0.9.8
  *
  *  Revision 1.7  2002/12/16 12:57:49  meichel
