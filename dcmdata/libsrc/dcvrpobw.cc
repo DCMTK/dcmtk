@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2004, OFFIS
+ *  Copyright (C) 1997-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -24,9 +24,9 @@
  *  between OB and OW (e.g. Tag PixelData, OverlayData). This class shall
  *  not be used directly in applications. No identification exists.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-04 16:08:14 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-11-15 16:59:25 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,7 +44,7 @@ DcmPolymorphOBOW::DcmPolymorphOBOW(
     changeVR(OFFalse),
     currentVR(EVR_OW)
 {
-    if (Tag.getEVR() == EVR_ox) Tag.setVR(EVR_OW);
+    if (Tag.getEVR() == EVR_ox || Tag.getEVR() == EVR_lt) Tag.setVR(EVR_OW);
 }
 
 DcmPolymorphOBOW::DcmPolymorphOBOW(const DcmPolymorphOBOW & oldObj)
@@ -310,7 +310,11 @@ OFCondition DcmPolymorphOBOW::writeSignatureFormat(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrpobw.cc,v $
-** Revision 1.15  2004-02-04 16:08:14  joergr
+** Revision 1.16  2005-11-15 16:59:25  meichel
+** Added new pseudo VR type EVR_lt that is used for LUT Data when read in
+**   implicit VR, which may be US, SS or OW. DCMTK always treats EVR_lt like OW.
+**
+** Revision 1.15  2004/02/04 16:08:14  joergr
 ** Adapted type casts to new-style typecast operators defined in ofcast.h.
 **
 ** Revision 1.14  2002/09/12 14:08:28  joergr

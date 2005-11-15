@@ -22,8 +22,8 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-07 16:59:26 $
- *  CVS/RCS Revision: $Revision: 1.93 $
+ *  Update Date:      $Date: 2005-11-15 16:59:25 $
+ *  CVS/RCS Revision: $Revision: 1.94 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1817,6 +1817,10 @@ OFCondition newDicomElement(DcmElement *&newElement,
                 newElement = new DcmOtherByteOtherWord(tag, length);
             break;
 
+        case EVR_lt :
+            newElement = new DcmOtherByteOtherWord(tag, length);
+            break;
+
         case EVR_OB :
         case EVR_OW :
             if (tag == DCM_PixelData)
@@ -2291,6 +2295,7 @@ OFCondition DcmItem::findAndGetLongInt(const DcmTagKey& tagKey,
                 break;
             case EVR_US:
             case EVR_xs:
+            case EVR_lt:
                 Uint16 us;
                 status = elem->getUint16(us, pos);
                 value = OFstatic_cast(long int, us);
@@ -2859,6 +2864,7 @@ OFCondition DcmItem::putAndInsertUint16(const DcmTag& tag,
         case EVR_US:
             elem = new DcmUnsignedShort(tag);
             break;
+        case EVR_lt:
         case EVR_xs:
             /* special handling */
             elem = new DcmUnsignedShort(DcmTag(tag, EVR_US));
@@ -2896,6 +2902,7 @@ OFCondition DcmItem::putAndInsertUint16Array(const DcmTag& tag,
         case EVR_AT:
             elem = new DcmAttributeTag(tag);
             break;
+        case EVR_lt:
         case EVR_OW:
             elem = new DcmOtherByteOtherWord(tag);
             break;
@@ -2946,6 +2953,7 @@ OFCondition DcmItem::putAndInsertSint16(const DcmTag& tag,
         case EVR_SS:
             elem = new DcmSignedShort(tag);
             break;
+        case EVR_lt:
         case EVR_xs:
             /* special handling */
             elem = new DcmSignedShort(DcmTag(tag, EVR_SS));
@@ -2983,6 +2991,7 @@ OFCondition DcmItem::putAndInsertSint16Array(const DcmTag& tag,
         case EVR_SS:
             elem = new DcmSignedShort(tag);
             break;
+        case EVR_lt:
         case EVR_xs:
             /* special handling */
             elem = new DcmSignedShort(DcmTag(tag, EVR_SS));
@@ -3230,7 +3239,11 @@ OFBool DcmItem::containsUnknownVR() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.93  2005-11-07 16:59:26  meichel
+** Revision 1.94  2005-11-15 16:59:25  meichel
+** Added new pseudo VR type EVR_lt that is used for LUT Data when read in
+**   implicit VR, which may be US, SS or OW. DCMTK always treats EVR_lt like OW.
+**
+** Revision 1.93  2005/11/07 16:59:26  meichel
 ** Cleaned up some copy constructors in the DcmObject hierarchy.
 **
 ** Revision 1.92  2005/06/24 10:04:04  joergr

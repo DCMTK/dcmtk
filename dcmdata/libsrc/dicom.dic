@@ -22,16 +22,18 @@
 #  This is the global DICOM data dictionary for the dcmtk class library.
 #
 #  Last Update:      $Author: meichel $
-#  Update Date:      $Date: 2005-11-04 09:52:56 $
+#  Update Date:      $Date: 2005-11-15 16:59:25 $
 #  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dicom.dic,v $
-#  CVS/RCS Revision: $Revision: 1.54 $
+#  CVS/RCS Revision: $Revision: 1.55 $
 #  Status:           $State: Exp $
 #
 #  This dictionary contains
-#   - the complete dictionary from the 2004 DICOM publication which includes
+#   - the complete dictionary from the 2004 DICOM publication 
+#   - all final text supplements and CPs as of the last CVS commit date
+#  This includes:
 #     supplements 1-42 (except 16, 21 and 34 which are cancelled),
-#     44-55 (46 is cancelled), 57-62, 64-73, 75-77, 79-88 
-#     (81 is cancelled), 90-93, 99-101 and 103-105 as well as the
+#     44-55 (46 is cancelled), 57-62, 64-73, 75-77, 79-94 
+#     (81 is cancelled), 97, 99-101 and 103-105 as well as the
 #     CP packages 1-33 (final text)
 # 
 # Each line represents an entry in the data dictionary.  Each line
@@ -1054,8 +1056,8 @@
 (0028,3004)	LO	ModalityLUTType	1	dicom98
 # VM of (0028,3006) LUTData was US/SS in dicom93. Because US/SS does not allow to encode
 # LUTs with 64K entries in explicit VR, this was changed in dicom2000 (Supplement 33)
-# to US/SS/OW. We default to OW, because this always works whereas US/SS does not.
-(0028,3006)	OW	LUTData	1-n	dicom2000
+# to US/SS/OW. We use a specific pseudo-VR for this case.
+(0028,3006)	lt	LUTData	1-n	dicom2000
 (0028,3010)	SQ	VOILUTSequence	1	dicom98
 (0028,3110)	SQ	SoftcopyVOILUTSequence	1	dicom2000
 (0028,5000)	SQ	BiPlaneAcquisitionSequence	1	dicom98

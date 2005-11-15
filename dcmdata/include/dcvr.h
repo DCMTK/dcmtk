@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2003, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Definition of the DcmVR class for Value Representation
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-06-12 13:31:46 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-11-15 16:59:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvr.h,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -87,6 +87,7 @@ enum DcmEVR
 
     EVR_ox,  /* OB or OW depending on context */
     EVR_xs,  /* SS or US depending on context */
+    EVR_lt,  /* US, SS or OW depending on context, used for LUT Data (thus the name) */
     EVR_na,  /* na="not applicable", for data which has no VR */
     EVR_up,  /* up="unsigned pointer", used internally for DICOMDIR support */
 
@@ -258,7 +259,11 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dcvr.h,v $
- * Revision 1.21  2003-06-12 13:31:46  joergr
+ * Revision 1.22  2005-11-15 16:59:24  meichel
+ * Added new pseudo VR type EVR_lt that is used for LUT Data when read in
+ *   implicit VR, which may be US, SS or OW. DCMTK always treats EVR_lt like OW.
+ *
+ * Revision 1.21  2003/06/12 13:31:46  joergr
  * Fixed inconsistent API documentation reported by Doxygen.
  *
  * Revision 1.20  2003/03/21 13:06:46  meichel

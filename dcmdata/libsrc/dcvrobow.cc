@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2004, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmOtherByteOtherWord
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-04 16:49:49 $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-11-15 16:59:25 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -111,7 +111,7 @@ void DcmOtherByteOtherWord::print(ostream &out,
         Uint16 *wordValues = NULL;
         Uint8 *byteValues = NULL;
         /* get 8 or 16 bit data respectively */
-        if (evr == EVR_OW)
+        if (evr == EVR_OW || evr == EVR_lt)
             errorFlag = getUint16Array(wordValues);
         else
             errorFlag = getUint8Array(byteValues);
@@ -119,8 +119,8 @@ void DcmOtherByteOtherWord::print(ostream &out,
         if ((wordValues != NULL) || (byteValues != NULL))
         {
             /* determine number of values to be printed */
-            const unsigned int vrSize = (evr == EVR_OW) ? 4 : 2;
-            const unsigned long count = (evr == EVR_OW) ? (Length / 2) : Length;
+            const unsigned int vrSize = (evr == EVR_OW || evr == EVR_lt) ? 4 : 2;
+            const unsigned long count = (evr == EVR_OW || evr == EVR_lt) ? (Length / 2) : Length;
             unsigned long expectedLength = count * (vrSize + 1) - 1;
             const unsigned long printCount =
                 ((expectedLength > DCM_OptPrintLineLength) && (flags & DCMTypes::PF_shortenLongTagValues)) ?
@@ -132,7 +132,7 @@ void DcmOtherByteOtherWord::print(ostream &out,
             if (printCount > 0)
             {
                 out << hex << setfill('0');
-                if (evr == EVR_OW)
+                if (evr == EVR_OW || evr == EVR_lt)
                 {
                     /* print word values in hex mode */
                     out << setw(vrSize) << (*(wordValues++));
@@ -191,7 +191,7 @@ void DcmOtherByteOtherWord::printPixel(ostream &out,
             FILE *file = fopen(fname.c_str(), "wb");
             if (file != NULL)
             {
-                if (Tag.getEVR() == EVR_OW)
+                if (Tag.getEVR() == EVR_OW || Tag.getEVR() == EVR_lt)
                 {
                     /* write 16 bit data in little endian byte-order */
                     Uint16 *data = NULL;
@@ -229,7 +229,7 @@ OFCondition DcmOtherByteOtherWord::alignValue()
 {
     errorFlag = EC_Normal;
     /* add padding byte in case of 8 bit data */
-    if ((Tag.getEVR() != EVR_OW) && (Length > 0))
+    if ((Tag.getEVR() != EVR_OW && Tag.getEVR() != EVR_lt) && (Length > 0))
     {
         Uint8 *bytes = NULL;
         bytes = OFstatic_cast(Uint8 *, getValue(fByteOrder));
@@ -261,7 +261,7 @@ OFCondition DcmOtherByteOtherWord::putUint8Array(const Uint8 *byteValue,
     if (numBytes > 0)
     {
         /* check for valid 8 bit data */
-        if ((byteValue != NULL) && (Tag.getEVR() != EVR_OW))
+        if ((byteValue != NULL) && (Tag.getEVR() != EVR_OW && Tag.getEVR() != EVR_lt))
         {
             errorFlag = putValue(byteValue, sizeof(Uint8) * OFstatic_cast(Uint32, numBytes));
             alignValue();
@@ -280,7 +280,7 @@ OFCondition DcmOtherByteOtherWord::putUint16Array(const Uint16 *wordValue,
     if (numWords > 0)
     {
         /* check for valid 16 bit data */
-        if ((wordValue != NULL) && (Tag.getEVR() == EVR_OW))
+        if ((wordValue != NULL) && (Tag.getEVR() == EVR_OW || Tag.getEVR() == EVR_lt))
             errorFlag = putValue(wordValue, sizeof(Uint16) * OFstatic_cast(Uint32, numWords));
         else
             errorFlag = EC_CorruptedData;
@@ -307,7 +307,7 @@ OFCondition DcmOtherByteOtherWord::putString(const char *stringVal)
             Uint8 *byteField = NULL;
             Uint16 *wordField = NULL;
             /* create new value field */
-            if (evr == EVR_OW)
+            if (evr == EVR_OW || evr == EVR_lt)
                 wordField = new Uint16[vm];
             else
                 byteField = new Uint8[vm];
@@ -324,7 +324,7 @@ OFCondition DcmOtherByteOtherWord::putString(const char *stringVal)
                     /* integer overflow is currently not checked! */
                     if (sscanf(value, "%hx", &intVal) != 1)
                         errorFlag = EC_CorruptedData;
-                    else if (evr == EVR_OW)
+                    else if (evr == EVR_OW || evr == EVR_lt)
                         wordField[i] = OFstatic_cast(Uint16, intVal);
                     else
                         byteField[i] = OFstatic_cast(Uint8, intVal);
@@ -335,7 +335,7 @@ OFCondition DcmOtherByteOtherWord::putString(const char *stringVal)
             /* set binary data as the element value */
             if (errorFlag.good())
             {
-                if (evr == EVR_OW)
+                if (evr == EVR_OW || evr == EVR_lt)
                     errorFlag = putUint16Array(wordField, vm);
                 else
                     errorFlag = putUint8Array(byteField, vm);
@@ -380,7 +380,7 @@ OFCondition DcmOtherByteOtherWord::getUint8(Uint8 &byteVal,
 OFCondition DcmOtherByteOtherWord::getUint8Array(Uint8 *&byteVals)
 {
     errorFlag = EC_Normal;
-    if (Tag.getEVR() != EVR_OW)
+    if (Tag.getEVR() != EVR_OW && Tag.getEVR() != EVR_lt)
         byteVals = OFstatic_cast(Uint8 *, getValue());
     else
         errorFlag = EC_IllegalCall;
@@ -416,7 +416,7 @@ OFCondition DcmOtherByteOtherWord::getUint16(Uint16 &wordVal,
 OFCondition DcmOtherByteOtherWord::getUint16Array(Uint16 *&wordVals)
 {
     errorFlag = EC_Normal;
-    if (Tag.getEVR() == EVR_OW)
+    if (Tag.getEVR() == EVR_OW || Tag.getEVR() == EVR_lt)
         wordVals = OFstatic_cast(Uint16 *, getValue());
     else
         errorFlag = EC_IllegalCall;
@@ -431,7 +431,7 @@ OFCondition DcmOtherByteOtherWord::getOFString(OFString &stringVal,
                                                const unsigned long pos,
                                                OFBool /*normalize*/)
 {
-    if (Tag.getEVR() == EVR_OW)
+    if (Tag.getEVR() == EVR_OW || Tag.getEVR() == EVR_lt)
     {
         Uint16 uint16Val;
         /* get the specified numeric value (16 bit) */
@@ -464,7 +464,7 @@ OFCondition DcmOtherByteOtherWord::getOFString(OFString &stringVal,
 OFCondition DcmOtherByteOtherWord::getOFStringArray(OFString &stringVal,
                                                     OFBool /*normalize*/)
 {
-    if (Tag.getEVR() == EVR_OW)
+    if (Tag.getEVR() == EVR_OW || Tag.getEVR() == EVR_lt)
     {
         /* get array of 16 bit values */
         Uint16 *uint16Vals = OFstatic_cast(Uint16 *, getValue());
@@ -591,7 +591,7 @@ OFCondition DcmOtherByteOtherWord::writeXML(ostream &out,
         if (flags & DCMTypes::XF_encodeBase64)
         {
             Uint8 *byteValues = OFstatic_cast(Uint8 *, getValue());
-            if (Tag.getEVR() == EVR_OW)
+            if (Tag.getEVR() == EVR_OW || Tag.getEVR() == EVR_lt)
             {
                 /* Base64 encoder requires big endian input data */
                 swapIfNecessary(gLocalByteOrder, EBO_BigEndian, byteValues, Length, sizeof(Uint16));
@@ -613,7 +613,11 @@ OFCondition DcmOtherByteOtherWord::writeXML(ostream &out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
-** Revision 1.43  2004-02-04 16:49:49  joergr
+** Revision 1.44  2005-11-15 16:59:25  meichel
+** Added new pseudo VR type EVR_lt that is used for LUT Data when read in
+**   implicit VR, which may be US, SS or OW. DCMTK always treats EVR_lt like OW.
+**
+** Revision 1.43  2004/02/04 16:49:49  joergr
 ** Adapted type casts to new-style typecast operators defined in ofcast.h.
 ** Removed acknowledgements with e-mail addresses from CVS log.
 **

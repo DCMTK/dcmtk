@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2004, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmVR: Value Representation
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-04 16:47:59 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-11-15 16:59:25 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -99,9 +99,9 @@ static const DcmVREntry DcmVRDict[] = {
     { EVR_UL, "UL", sizeof(Uint32), DCMVR_PROP_NONE, 4, 4 },
     { EVR_US, "US", sizeof(Uint16), DCMVR_PROP_NONE, 2, 2 },
     { EVR_UT, "UT", sizeof(char), DCMVR_PROP_ISASTRING|DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
-
     { EVR_ox, "ox", sizeof(Uint8), DCMVR_PROP_NONSTANDARD | DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
     { EVR_xs, "xs", sizeof(Uint16), DCMVR_PROP_NONSTANDARD, 2, 2 },
+    { EVR_lt, "lt", sizeof(Uint16), DCMVR_PROP_NONSTANDARD | DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
     { EVR_na, "na", 0, DCMVR_PROP_NONSTANDARD, 0, 0 },
     { EVR_up, "up", sizeof(Uint32), DCMVR_PROP_NONSTANDARD, 4, 4 },
 
@@ -238,6 +238,9 @@ DcmVR::getValidEVR() const
         case EVR_xs:
             evr = EVR_US;
             break;
+        case EVR_lt:
+            evr = EVR_OW;
+            break;
         case EVR_ox:
         case EVR_pixelSQ:
             evr = EVR_OB;
@@ -339,9 +342,14 @@ OFBool DcmVR::isEquivalent(const DcmVR& avr) const
       case EVR_ox:
           result = (evr == EVR_OB || evr == EVR_OW);
           break;
+      case EVR_lt:
+          result = (evr == EVR_OW || evr == EVR_US || evr == EVR_SS);
+          break;
       case EVR_OB:
-      case EVR_OW:
           result = (evr == EVR_ox);
+          break;
+      case EVR_OW:
+          result = (evr == EVR_ox || evr == EVR_lt);
           break;
       case EVR_up:
           result = (evr == EVR_UL);
@@ -354,7 +362,7 @@ OFBool DcmVR::isEquivalent(const DcmVR& avr) const
           break;
       case EVR_SS:
       case EVR_US:
-          result = (evr == EVR_xs);
+          result = (evr == EVR_xs || evr == EVR_lt);
           break;
       default:
           break;
@@ -366,7 +374,11 @@ OFBool DcmVR::isEquivalent(const DcmVR& avr) const
 /*
  * CVS/RCS Log:
  * $Log: dcvr.cc,v $
- * Revision 1.30  2004-02-04 16:47:59  joergr
+ * Revision 1.31  2005-11-15 16:59:25  meichel
+ * Added new pseudo VR type EVR_lt that is used for LUT Data when read in
+ *   implicit VR, which may be US, SS or OW. DCMTK always treats EVR_lt like OW.
+ *
+ * Revision 1.30  2004/02/04 16:47:59  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  * Removed acknowledgements with e-mail addresses from CVS log.
  *
