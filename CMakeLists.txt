@@ -35,19 +35,19 @@ FIND_PROGRAM(DOXYGEN_EXECUTABLE "doxygen")
 
 # libxml support
 OPTION(WITH_LIBXML "Build with libxml support." OFF)
-FIND_PATH(WITH_LIBXMLINC "include/libxml/parser.h" "${dcmtk_SOURCE_DIR}/../libxml2-2.5.7")
+FIND_PATH(WITH_LIBXMLINC "include/libxml/parser.h" "${dcmtk_SOURCE_DIR}/../libxml2-2.6.26")
 # libpng support
 OPTION(WITH_LIBPNG "Build with libpng support." ON)
-FIND_PATH(WITH_LIBPNGINC "include/png.h" "${dcmtk_SOURCE_DIR}/../libpng-1.2.5")
+FIND_PATH(WITH_LIBPNGINC "include/png.h" "${dcmtk_SOURCE_DIR}/../libpng-1.2.8")
 # libtiff support
 OPTION(WITH_LIBTIFF "Build with libtiff support." ON)
-FIND_PATH(WITH_LIBTIFFINC "include/tiff.h" "${dcmtk_SOURCE_DIR}/../tiff-3.6.1")
+FIND_PATH(WITH_LIBTIFFINC "include/tiff.h" "${dcmtk_SOURCE_DIR}/../tiff-3.7.4")
 # openssl support
 OPTION(WITH_OPENSSL "Build with openssl support." OFF)
-FIND_PATH(WITH_OPENSSLINC "include/openssl/ssl.h" "${dcmtk_SOURCE_DIR}/../openssl-0.9.7d")
+FIND_PATH(WITH_OPENSSLINC "include/openssl/ssl.h" "${dcmtk_SOURCE_DIR}/../openssl-0.9.8a")
 # zlib support
 OPTION(WITH_ZLIB "Build with zlib support." ON)
-FIND_PATH(WITH_ZLIBINC "include/zlib.h" "${dcmtk_SOURCE_DIR}/../zlib-1.2.1")
+FIND_PATH(WITH_ZLIBINC "include/zlib.h" "${dcmtk_SOURCE_DIR}/../zlib-1.2.3")
 
 # set project wide flags for compiler and linker
 
