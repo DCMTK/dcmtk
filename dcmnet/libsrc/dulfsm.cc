@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: meichel $, $Date: 2004-08-03 11:42:47 $
+** Last Update:		$Author: meichel $, $Date: 2005-11-15 16:04:54 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.55 $
+** Revision:		$Revision: 1.56 $
 ** Status:		$State: Exp $
 */
 
@@ -3642,9 +3642,9 @@ dump_pdu(const char *type, void *buffer, unsigned long length)
     int
         position = 0;
 
-    DEBUG_DEVICE << "PDU Type: " << type << " PDU Length: " << length << endl;
+    DEBUG_DEVICE << "PDU Type: " << type << ", PDU Length: " << length-6 << " + 6 bytes PDU header" << endl;
     if (length > 512) {
-            DEBUG_DEVICE << "Only dumping 512 bytes" << endl;
+            DEBUG_DEVICE << "Only dumping 512 bytes." << endl;
             length = 512;
     }
     p = (unsigned char*)buffer;
@@ -3916,7 +3916,10 @@ destroyUserInformationLists(DUL_USERINFO * userInfo)
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.55  2004-08-03 11:42:47  meichel
+** Revision 1.56  2005-11-15 16:04:54  meichel
+** Clarified description of PDU size reported by dump_pdu().
+**
+** Revision 1.55  2004/08/03 11:42:47  meichel
 ** Headers libc.h and unistd.h are now included via ofstdinc.h
 **
 ** Revision 1.54  2004/02/25 12:31:17  meichel
