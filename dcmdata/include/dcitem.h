@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmItem
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-06-24 10:03:14 $
- *  CVS/RCS Revision: $Revision: 1.51 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-11-15 18:28:02 $
+ *  CVS/RCS Revision: $Revision: 1.52 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -885,10 +885,14 @@ class DcmItem
 //   EC_ItemEnd:    tag describes an item delmitation element
 //   other: an error
 OFCondition newDicomElement(DcmElement *&newElement,
+                            DcmTag &tag,
+                            const Uint32 length,
+                            DcmPrivateTagCache *privateCreatorCache,
+                            OFBool& readAsUN);
+
+OFCondition newDicomElement(DcmElement *&newElement,
                             const DcmTag &tag,
                             const Uint32 length = 0);
-
-
 
 // Functions: newDicomElement
 // creates a new DicomElement from a Tag. They differ from the above functions
@@ -907,7 +911,13 @@ OFCondition nextUp(DcmStack &st);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
-** Revision 1.51  2005-06-24 10:03:14  joergr
+** Revision 1.52  2005-11-15 18:28:02  meichel
+** Added new global flag dcmEnableUnknownVRConversion that enables the automatic
+**   re-conversion of defined length UN elements read in an explicit VR transfer
+**   syntax, if the real VR is defined in the data dictionary. Default is OFFalse,
+**   i.e. to retain the previous behavior.
+**
+** Revision 1.51  2005/06/24 10:03:14  joergr
 ** Added support for internal VR "xs" to putAndInsertXXX() helper methods.
 **
 ** Revision 1.50  2004/07/01 12:28:25  meichel

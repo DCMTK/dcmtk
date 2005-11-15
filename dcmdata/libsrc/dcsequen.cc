@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmSequenceOfItems
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-07 16:59:26 $
- *  CVS/RCS Revision: $Revision: 1.58 $
+ *  Update Date:      $Date: 2005-11-15 18:28:04 $
+ *  CVS/RCS Revision: $Revision: 1.59 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -523,7 +523,7 @@ OFCondition DcmSequenceOfItems::read(DcmInputStream &inStream,
 
                 if (lastItemComplete)
                 {
-                    errorFlag = readTagAndLength(inStream, xfer, newTag, newValueLength);
+                    errorFlag = readTagAndLength(inStream, readxfer, newTag, newValueLength);
 
                     if (errorFlag.bad())
                         break;                  // finish while loop
@@ -1244,7 +1244,13 @@ OFBool DcmSequenceOfItems::containsUnknownVR() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.58  2005-11-07 16:59:26  meichel
+** Revision 1.59  2005-11-15 18:28:04  meichel
+** Added new global flag dcmEnableUnknownVRConversion that enables the automatic
+**   re-conversion of defined length UN elements read in an explicit VR transfer
+**   syntax, if the real VR is defined in the data dictionary. Default is OFFalse,
+**   i.e. to retain the previous behavior.
+**
+** Revision 1.58  2005/11/07 16:59:26  meichel
 ** Cleaned up some copy constructors in the DcmObject hierarchy.
 **
 ** Revision 1.57  2005/05/10 15:27:18  meichel

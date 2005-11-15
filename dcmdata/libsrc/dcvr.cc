@@ -22,8 +22,8 @@
  *  Purpose: class DcmVR: Value Representation
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-15 16:59:25 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Update Date:      $Date: 2005-11-15 18:28:04 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,16 +39,12 @@
 #define INCLUDE_CSTRING
 #include "ofstdinc.h"
 
-
 /*
-** Global flag to enable/disable the generation of VR=UN
-*/
+ * global flags
+ */
 OFGlobal<OFBool> dcmEnableUnknownVRGeneration(OFTrue);
-
-/*
-** Global flag to enable/disable the generation of VR=UT
-*/
 OFGlobal<OFBool> dcmEnableUnlimitedTextVRGeneration(OFTrue);
+OFGlobal<OFBool> dcmEnableUnknownVRConversion(OFFalse);
 
 /*
 ** VR property table
@@ -374,7 +370,13 @@ OFBool DcmVR::isEquivalent(const DcmVR& avr) const
 /*
  * CVS/RCS Log:
  * $Log: dcvr.cc,v $
- * Revision 1.31  2005-11-15 16:59:25  meichel
+ * Revision 1.32  2005-11-15 18:28:04  meichel
+ * Added new global flag dcmEnableUnknownVRConversion that enables the automatic
+ *   re-conversion of defined length UN elements read in an explicit VR transfer
+ *   syntax, if the real VR is defined in the data dictionary. Default is OFFalse,
+ *   i.e. to retain the previous behavior.
+ *
+ * Revision 1.31  2005/11/15 16:59:25  meichel
  * Added new pseudo VR type EVR_lt that is used for LUT Data when read in
  *   implicit VR, which may be US, SS or OW. DCMTK always treats EVR_lt like OW.
  *

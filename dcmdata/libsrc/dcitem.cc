@@ -22,8 +22,8 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-15 16:59:25 $
- *  CVS/RCS Revision: $Revision: 1.94 $
+ *  Update Date:      $Date: 2005-11-15 18:28:04 $
+ *  CVS/RCS Revision: $Revision: 1.95 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -824,7 +824,8 @@ OFCondition DcmItem::readSubElement(DcmInputStream &inStream,
 
     /* create a new DcmElement* object with corresponding tag and */
     /* length; the object will be accessible through subElem */
-    OFCondition l_error = newDicomElement(subElem, newTag, newLength);
+    OFBool readAsUN = OFFalse;
+    OFCondition l_error = newDicomElement(subElem, newTag, newLength, &privateCreatorCache, readAsUN);
 
     /* if no error occured and subElem does not equal NULL, go ahead */
     if (l_error.good() && subElem != NULL)
@@ -836,7 +837,7 @@ OFCondition DcmItem::readSubElement(DcmInputStream &inStream,
         subElem->transferInit();
         /* we need to read the content of the attribute, no matter if */
         /* inserting the attribute succeeds or fails */
-        l_error = subElem->read(inStream, xfer, glenc, maxReadLength);
+        l_error = subElem->read(inStream, (readAsUN ? EXS_LittleEndianImplicit : xfer), glenc, maxReadLength);
         // try to insert element into item. Note that
         // "elementList->insert(subElem, ELP_next)" would be faster,
         // but this is better since this insert-function creates a
@@ -1675,6 +1676,15 @@ OFCondition DcmItem::loadAllDataIntoMemory()
 //
 // Support functions
 
+OFCondition newDicomElement(DcmElement *&newElement,
+                            const DcmTag &tag,
+                            const Uint32 length)
+{
+    DcmTag newTag(tag);
+    OFBool readAsUN = OFFalse;
+    return newDicomElement(newElement, newTag, length, NULL, readAsUN);
+}
+                            
 DcmElement *newDicomElement(const DcmTag &tag,
                             const Uint32 length)
 {
@@ -1687,15 +1697,48 @@ DcmElement *newDicomElement(const DcmTag &tag,
 // ********************************
 
 OFCondition newDicomElement(DcmElement *&newElement,
-                            const DcmTag &tag,
-                            const Uint32 length)
+                            DcmTag &tag,
+                            const Uint32 length,
+                            DcmPrivateTagCache *privateCreatorCache,
+                            OFBool& readAsUN)
 {
     /* initialize variables */
     OFCondition l_error = EC_Normal;
     newElement = NULL;
+    DcmEVR evr = tag.getEVR();
+    readAsUN = OFFalse;
+    
+    /* revert UN elements with finite length back to known VR if possible */
+    if ((evr == EVR_UN) && (length != DCM_UndefinedLength) && dcmEnableUnknownVRConversion.get())
+    {
+      /* look up VR in data dictionary */
+      DcmTag newTag(tag.getGroup(), tag.getElement());
+
+      /* special handling for private elements */
+      if (privateCreatorCache && (newTag.getGroup() & 1) && (newTag.getElement() >= 0x1000))
+      {
+        const char *pc = privateCreatorCache->findPrivateCreator(newTag);
+        if (pc)
+        {
+            // we have a private creator for this element
+            newTag.setPrivateCreator(pc);
+            newTag.lookupVRinDictionary();
+        }
+      }
+
+      /* update VR for tag, set "readAsUN" flag that makes sure the attribute value
+       * is read in Little Endian Implicit VR (i.e. the UN encoding)
+       */
+      if (newTag.getEVR() != EVR_UNKNOWN)
+      {
+        tag.setVR(newTag.getVR());
+        evr = tag.getEVR();
+        readAsUN = OFTrue;
+      }
+    }
 
     /* depending on the VR of the tag which was passed, create the new object */
-    switch (tag.getEVR())
+    switch (evr)
     {
         // byte strings:
         case EVR_AE :
@@ -1796,13 +1839,9 @@ OFCondition newDicomElement(DcmElement *&newElement,
                 l_error = EC_InvalidTag;
             break;
 
-        // pixel sequence not yet supported
-/*
-        case EVR_pixelSQ:
-            if (tag == DCM_PixelData)
-                newElement = DcmPixelSequence(DcmTag(DCM_PixelData, EVR_OB));
-            break;
-*/
+        // pixel sequences (EVR_pixelSQ) are handled through class DcmPixelData 
+        // and should never appear here.
+
         // unclear 8 or 16 bit:
         case EVR_ox :
             if (tag == DCM_PixelData)
@@ -3239,7 +3278,13 @@ OFBool DcmItem::containsUnknownVR() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.94  2005-11-15 16:59:25  meichel
+** Revision 1.95  2005-11-15 18:28:04  meichel
+** Added new global flag dcmEnableUnknownVRConversion that enables the automatic
+**   re-conversion of defined length UN elements read in an explicit VR transfer
+**   syntax, if the real VR is defined in the data dictionary. Default is OFFalse,
+**   i.e. to retain the previous behavior.
+**
+** Revision 1.94  2005/11/15 16:59:25  meichel
 ** Added new pseudo VR type EVR_lt that is used for LUT Data when read in
 **   implicit VR, which may be US, SS or OW. DCMTK always treats EVR_lt like OW.
 **
