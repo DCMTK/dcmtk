@@ -6,7 +6,7 @@ dnl
 dnl Authors: Andreas Barth, Marco Eichelberg
 dnl
 dnl Last Update:  $Author: meichel $
-dnl Revision:     $Revision: 1.36 $
+dnl Revision:     $Revision: 1.37 $
 dnl Status:       $State: Exp $
 dnl
 
@@ -187,8 +187,11 @@ ifelse([$1], , [ac_includes=""
 [ac_includes=""
 for ac_header in $1
 do
-  ac_includes="$ac_includes
+  ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
+  if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
+    ac_includes="$ac_includes 
 #include<$ac_header>"
+  fi
 done])
 AC_CACHE_VAL(ac_cv_prototype_intp_select,
 [AC_TRY_COMPILE(
@@ -1477,7 +1480,11 @@ AC_TYPEDEF_HELPER([$1],[],[AC_DEFINE_UNQUOTED(AC_TYPEDEF_TEMP)])
 
 dnl
 dnl $Log: aclocal.m4,v $
-dnl Revision 1.36  2005-11-07 11:23:34  meichel
+dnl Revision 1.37  2005-11-15 16:05:51  meichel
+dnl Configure test AC_CHECK_INTP_SELECT now only includes header files
+dnl   that have been successfully tested for presence before.
+dnl
+dnl Revision 1.36  2005/11/07 11:23:34  meichel
 dnl Replaced old AC_CHECK_TYPE macros by newly developed AC_TYPDEF macro.
 dnl   Missing types are now declared by type definition and not as macros anymore.
 dnl

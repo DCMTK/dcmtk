@@ -21014,8 +21014,11 @@ echo $ECHO_N "checking if select() needs int* parameters (in sys/select.h sys/ty
 ac_includes=""
 for ac_header in sys/select.h sys/types.h sys/socket.h sys/time.h
 do
-  ac_includes="$ac_includes
+  ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
+  if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
+    ac_includes="$ac_includes
 #include<$ac_header>"
+  fi
 done
 if test "${ac_cv_prototype_intp_select+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -22286,7 +22289,7 @@ if test "${ac_cv_check_std_namespace+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 22289 "configure"
+#line 22292 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -22815,7 +22818,7 @@ if test "${ac_cv_check_class_template+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 22818 "configure"
+#line 22821 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -22888,7 +22891,7 @@ if test "${ac_cv_check_static_template_method+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 22891 "configure"
+#line 22894 "configure"
 #include "confdefs.h"
 
 void additive(int & i)
@@ -22961,7 +22964,7 @@ if test "${ac_cv_check_function_template+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 22964 "configure"
+#line 22967 "configure"
 #include "confdefs.h"
 
 template <class T>
