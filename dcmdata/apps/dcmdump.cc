@@ -21,9 +21,9 @@
  *
  *  Purpose: List the contents of a dicom file
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-16 10:52:42 $
- *  CVS/RCS Revision: $Revision: 1.47 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-11-15 18:33:20 $
+ *  CVS/RCS Revision: $Revision: 1.48 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -166,6 +166,12 @@ int main(int argc, char *argv[])
       cmd.addSubGroup("parsing of odd-length attributes:");
         cmd.addOption("--accept-odd-length",  "+ao",       "accept odd length attributes (default)");
         cmd.addOption("--assume-even-length", "+ae",       "assume real length is one byte larger");
+      cmd.addSubGroup("handling of undefined length UN elements:");
+       cmd.addOption("--enable-cp246",            "+ui",       "read undefined len UN as implicit VR (default)");
+       cmd.addOption("--disable-cp246",           "-ui",       "read undefined len UN as explicit VR");
+      cmd.addSubGroup("handling of defined length UN elements:");
+       cmd.addOption("--retain-un",               "-uc",       "retain elements as UN (default)");
+       cmd.addOption("--convert-un",              "+uc",       "convert to real VR if known");
       cmd.addSubGroup("automatic data correction:");
         cmd.addOption("--enable-correction",  "+dc",       "enable automatic data correction (default)");
         cmd.addOption("--disable-correction", "-dc",       "disable automatic data correction");
@@ -262,6 +268,28 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--assume-even-length"))
       {
         dcmAcceptOddAttributeLength.set(OFFalse);
+      }
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--enable-cp246"))
+      {
+        dcmEnableCP246Support.set(OFTrue);
+      }
+      if (cmd.findOption("--disable-cp246"))
+      {
+        dcmEnableCP246Support.set(OFFalse);
+      }
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--retain-un"))
+      {
+        dcmEnableUnknownVRConversion.set(OFFalse);
+      }
+      if (cmd.findOption("--convert-un"))
+      {
+        dcmEnableUnknownVRConversion.set(OFTrue);
       }
       cmd.endOptionBlock();
 
@@ -496,7 +524,11 @@ static int dumpFile(ostream & out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
- * Revision 1.47  2004-01-16 10:52:42  joergr
+ * Revision 1.48  2005-11-15 18:33:20  meichel
+ * Added new command line option --convert-un that enables the re-conversion of
+ *   defined length UN elements.
+ *
+ * Revision 1.47  2004/01/16 10:52:42  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  * Removed acknowledgements with e-mail addresses from CVS log.
  *

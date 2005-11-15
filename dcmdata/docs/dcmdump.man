@@ -72,6 +72,45 @@ input transfer syntax (only with --read-dataset):
 
   -ti  --read-xfer-implicit
          read with implicit VR little endian TS
+
+parsing of odd-length attributes:
+
+  +ao  --accept-odd-length
+         accept odd length attributes (default)
+
+  +ae  --assume-even-length
+         assume real length is one byte larger
+
+handling of undefined length UN elements:
+
+  +ui  --enable-cp246
+         read undefined len UN as implicit VR (default)
+
+  -ui  --disable-cp246
+         read undefined len UN as explicit VR
+
+handling of defined length UN elements:
+  -uc   --retain-un            
+          retain elements as UN (default)
+
+  +uc   --convert-un           
+          convert to real VR if known
+
+automatic data correction:
+
+  +dc  --enable-correction
+         enable automatic data correction (default)
+
+  -dc  --disable-correction
+         disable automatic data correction
+
+bitstream format of deflated input:
+
+  +bd  --bitstream-deflated
+         expect deflated bitstream (default)
+
+  +bz  --bitstream-zlib
+         expect deflated zlib bitstream
 \endverbatim
 
 \subsection output_options output options
@@ -170,7 +209,7 @@ environment variable.  It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1994-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
+Copyright (C) 1994-2005 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
 Germany.
 
 */

@@ -22,8 +22,8 @@
  *  Purpose: Convert dicom file encoding
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-05-10 15:27:09 $
- *  CVS/RCS Revision: $Revision: 1.45 $
+ *  Update Date:      $Date: 2005-11-15 18:33:20 $
+ *  CVS/RCS Revision: $Revision: 1.46 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -121,6 +121,9 @@ int main(int argc, char *argv[])
     cmd.addSubGroup("handling of undefined length UN elements:");
      cmd.addOption("--enable-cp246",            "+ui",       "read undefined len UN as implicit VR (default)");
      cmd.addOption("--disable-cp246",           "-ui",       "read undefined len UN as explicit VR");
+    cmd.addSubGroup("handling of defined length UN elements:");
+     cmd.addOption("--retain-un",               "-uc",       "retain elements as UN (default)");
+     cmd.addOption("--convert-un",              "+uc",       "convert to real VR if known");
     cmd.addSubGroup("automatic data correction:");
      cmd.addOption("--enable-correction",       "+dc",       "enable automatic data correction (default)");
      cmd.addOption("--disable-correction",      "-dc",       "disable automatic data correction");
@@ -239,6 +242,17 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--disable-cp246"))
       {
         dcmEnableCP246Support.set(OFFalse);
+      }
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--retain-un"))
+      {
+        dcmEnableUnknownVRConversion.set(OFFalse);
+      }
+      if (cmd.findOption("--convert-un"))
+      {
+        dcmEnableUnknownVRConversion.set(OFTrue);
       }
       cmd.endOptionBlock();
 
@@ -421,7 +435,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
-** Revision 1.45  2005-05-10 15:27:09  meichel
+** Revision 1.46  2005-11-15 18:33:20  meichel
+** Added new command line option --convert-un that enables the re-conversion of
+**   defined length UN elements.
+**
+** Revision 1.45  2005/05/10 15:27:09  meichel
 ** Added support for reading UN elements with undefined length according
 **   to CP 246. The global flag dcmEnableCP246Support allows to revert to the
 **   prior behaviour in which UN elements with undefined length were parsed
