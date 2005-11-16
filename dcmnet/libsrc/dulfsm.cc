@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: meichel $, $Date: 2005-11-15 16:04:54 $
+** Last Update:		$Author: meichel $, $Date: 2005-11-16 15:11:46 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.56 $
+** Revision:		$Revision: 1.57 $
 ** Status:		$State: Exp $
 */
 
@@ -2353,6 +2353,20 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
         }
 #endif
     }
+    else
+    {
+        // The connect() returned without using the select(), reset the socket if needed
+        if (connectTimeout >= 0)
+        {
+            // reset socket to blocking mode
+#ifdef HAVE_WINSOCK_H
+            arg = FALSE;
+            ioctlsocket(s, FIONBIO, (u_long FAR *) &arg);
+#else
+            fcntl(s, F_SETFL, flags);
+#endif
+        }
+    }
 
     if (rc < 0)
     {
@@ -3916,7 +3930,13 @@ destroyUserInformationLists(DUL_USERINFO * userInfo)
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.56  2005-11-15 16:04:54  meichel
+** Revision 1.57  2005-11-16 15:11:46  meichel
+** Fixed bug in requestAssociationTCP that could result in association request
+**   failures on systems with high CPU load if an association timout was specified
+**   in dcmConnectionTimeout, because in this case the socket was not always
+**   correctly reset to blocking mode.
+**
+** Revision 1.56  2005/11/15 16:04:54  meichel
 ** Clarified description of PDU size reported by dump_pdu().
 **
 ** Revision 1.55  2004/08/03 11:42:47  meichel
