@@ -598,6 +598,7 @@
       <xsd:enumeration value="Key Object Selection Document"/>
       <xsd:enumeration value="Mammography CAD SR"/>
       <xsd:enumeration value="Chest CAD SR"/>
+      <xsd:enumeration value="Procedure Log"/>
     </xsd:restriction>
   </xsd:simpleType>
 
