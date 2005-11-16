@@ -68,7 +68,7 @@ other network options:
 The \b termscu application supports the following SOP Classes as an SCU:
 
 \verbatim
-PrivateShutdownSOPClass                1.2.276.0.7230010.3.4.1915765545.18030.917282194.0
+PrivateShutdownSOPClass  1.2.276.0.7230010.3.4.1915765545.18030.917282194.0
 \endverbatim
 
 \section command_line COMMAND LINE
@@ -109,7 +109,7 @@ environment variable.  It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1994-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
+Copyright (C) 2005 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
 Germany.
 
 */
