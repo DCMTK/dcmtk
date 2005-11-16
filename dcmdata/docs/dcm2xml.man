@@ -79,6 +79,10 @@ long tag values:
 
   -M   --load-short
          do not load very long values (default)
+
+  +R   --max-read-length  [k]ilo-bytes: integer (64 <= k <= 4194302)
+         set threshold for long values to k kilo-bytes
+
 \endverbatim
 
 \subsection processing_options processing options

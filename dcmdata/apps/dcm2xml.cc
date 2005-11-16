@@ -21,10 +21,10 @@
  *
  *  Purpose: Convert the contents of a DICOM file to XML format
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-06-24 10:06:46 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2005-11-16 14:55:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcm2xml.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,7 +51,6 @@
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
-
 
 // ********************************************
 
@@ -88,6 +87,7 @@ static OFCondition writeFile(ostream &out,
                              const OFBool isDataset,
                              const E_TransferSyntax xfer,
                              const OFBool loadIntoMemory,
+                             const Uint32 maxReadLength,
                              const char *defaultCharset,
                              const size_t writeFlags)
 {
@@ -101,7 +101,7 @@ static OFCondition writeFile(ostream &out,
 
     /* read DICOM file or data set */
     DcmFileFormat dfile;
-    result = dfile.loadFile(ifname, xfer, EGL_noChange, DCM_MaxReadLength, isDataset);
+    result = dfile.loadFile(ifname, xfer, EGL_noChange, maxReadLength, isDataset);
 
     if (result.bad())
     {
@@ -289,6 +289,8 @@ int main(int argc, char *argv[])
       cmd.addSubGroup("long tag values:");
         cmd.addOption("--load-all",            "+M",     "load very long tag values (e.g. pixel data)");
         cmd.addOption("--load-short",          "-M",     "do not load very long values (default)");
+        cmd.addOption("--max-read-length",     "+R",  1, "[k]ilo-bytes: integer (64 <= k <= 4194302)",
+                                                         "set threshold for long values to k kilo-bytes");
     cmd.addGroup("processing options:");
       cmd.addSubGroup("character set:");
         cmd.addOption("--charset-require",     "+Cr",    "require declaration of extended charset (default)");
@@ -305,6 +307,7 @@ int main(int argc, char *argv[])
         cmd.addOption("--encode-base64",       "+Eb",    "encode binary data as Base64 (RFC 2045, MIME)");
 
     /* evaluate command line */
+    Uint32 maxReadLength = DCM_MaxReadLength; //set to default of DCMTK (4096 Bytes)
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
     {
@@ -360,6 +363,16 @@ int main(int argc, char *argv[])
         }
         cmd.endOptionBlock();
 
+        if (cmd.findOption("--max-read-length"))
+        {
+            OFString str;
+            cmd.getValue(str);
+            int parsed = sscanf(str.c_str(), "%lu", &maxReadLength);
+            if ( (parsed != 1) || (maxReadLength < 64) || (maxReadLength > 4194302) )
+                  app.printError("Invalid value for --max-read-length");
+            else
+              maxReadLength *= 1024; //convert kilo-byte to byte
+        }
         cmd.beginOptionBlock();
         if (cmd.findOption("--load-all"))
             loadIntoMemory = OFTrue;
@@ -435,12 +448,12 @@ int main(int argc, char *argv[])
         ofstream stream(ofname);
         if (stream.good())
         {
-            if (writeFile(stream, ifname, isDataset, xfer, loadIntoMemory, opt_defaultCharset, opt_writeFlags).bad())
+            if (writeFile(stream, ifname, isDataset, xfer, loadIntoMemory, maxReadLength, opt_defaultCharset, opt_writeFlags).bad())
                 result = 2;
         } else
             result = 1;
     } else {
-        if (writeFile(COUT, ifname, isDataset, xfer, loadIntoMemory, opt_defaultCharset, opt_writeFlags).bad())
+        if (writeFile(COUT, ifname, isDataset, xfer, loadIntoMemory, maxReadLength, opt_defaultCharset, opt_writeFlags).bad())
             result = 3;
     }
 
@@ -451,7 +464,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2xml.cc,v $
- * Revision 1.14  2005-06-24 10:06:46  joergr
+ * Revision 1.15  2005-11-16 14:55:56  onken
+ * Added "--max-read-length" option to dcmdump and dcm2xml to override
+ * DCMTK-internal threshold (4096K) for long attribute values.
+ *
+ * Revision 1.14  2005/06/24 10:06:46  joergr
  * Check dependence between command line options --write-binary-data and
  * --encode-base64.
  *

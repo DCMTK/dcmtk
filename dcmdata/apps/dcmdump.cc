@@ -21,9 +21,9 @@
  *
  *  Purpose: List the contents of a dicom file
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-15 18:33:20 $
- *  CVS/RCS Revision: $Revision: 1.48 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2005-11-16 14:55:56 $
+ *  CVS/RCS Revision: $Revision: 1.49 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -76,6 +76,7 @@ static int printTagCount = 0;
 static const int MAX_PRINT_TAG_NAMES = 1024;
 static const char* printTagNames[MAX_PRINT_TAG_NAMES];
 static const DcmTagKey* printTagKeys[MAX_PRINT_TAG_NAMES];
+static Uint32 maxReadLength = DCM_MaxReadLength; //set default to global setting
 
 static OFBool addPrintTagName(const char* tagName)
 {
@@ -156,16 +157,16 @@ int main(int argc, char *argv[])
 
     cmd.addGroup("input options:");
       cmd.addSubGroup("input file format:");
-        cmd.addOption("--read-file",          "+f",        "read file format or data set (default)");
-        cmd.addOption("--read-dataset",       "-f",        "read data set without file meta information");
+        cmd.addOption("--read-file",              "+f",        "read file format or data set (default)");
+        cmd.addOption("--read-dataset",           "-f",        "read data set without file meta information");
       cmd.addSubGroup("input transfer syntax (only with --read-dataset):");
-        cmd.addOption("--read-xfer-auto",     "-t=",       "use TS recognition (default)");
-        cmd.addOption("--read-xfer-little",   "-te",       "read with explicit VR little endian TS");
-        cmd.addOption("--read-xfer-big",      "-tb",       "read with explicit VR big endian TS");
-        cmd.addOption("--read-xfer-implicit", "-ti",       "read with implicit VR little endian TS");
+        cmd.addOption("--read-xfer-auto",         "-t=",       "use TS recognition (default)");
+        cmd.addOption("--read-xfer-little",       "-te",       "read with explicit VR little endian TS");
+        cmd.addOption("--read-xfer-big",          "-tb",       "read with explicit VR big endian TS");
+        cmd.addOption("--read-xfer-implicit",     "-ti",       "read with implicit VR little endian TS");
       cmd.addSubGroup("parsing of odd-length attributes:");
-        cmd.addOption("--accept-odd-length",  "+ao",       "accept odd length attributes (default)");
-        cmd.addOption("--assume-even-length", "+ae",       "assume real length is one byte larger");
+        cmd.addOption("--accept-odd-length",      "+ao",       "accept odd length attributes (default)");
+        cmd.addOption("--assume-even-length",     "+ae",       "assume real length is one byte larger");
       cmd.addSubGroup("handling of undefined length UN elements:");
        cmd.addOption("--enable-cp246",            "+ui",       "read undefined len UN as implicit VR (default)");
        cmd.addOption("--disable-cp246",           "-ui",       "read undefined len UN as explicit VR");
@@ -173,18 +174,20 @@ int main(int argc, char *argv[])
        cmd.addOption("--retain-un",               "-uc",       "retain elements as UN (default)");
        cmd.addOption("--convert-un",              "+uc",       "convert to real VR if known");
       cmd.addSubGroup("automatic data correction:");
-        cmd.addOption("--enable-correction",  "+dc",       "enable automatic data correction (default)");
-        cmd.addOption("--disable-correction", "-dc",       "disable automatic data correction");
+        cmd.addOption("--enable-correction",      "+dc",       "enable automatic data correction (default)");
+        cmd.addOption("--disable-correction",     "-dc",       "disable automatic data correction");
 #ifdef WITH_ZLIB
     cmd.addSubGroup("bitstream format of deflated input:");
-     cmd.addOption("--bitstream-deflated",      "+bd",       "expect deflated bitstream (default)");
-     cmd.addOption("--bitstream-zlib",          "+bz",       "expect deflated zlib bitstream");
+     cmd.addOption("--bitstream-deflated",        "+bd",       "expect deflated bitstream (default)");
+     cmd.addOption("--bitstream-zlib",            "+bz",       "expect deflated zlib bitstream");
 #endif
 
     cmd.addGroup("output options:");
       cmd.addSubGroup("printing:");
         cmd.addOption("--load-all",           "+M",        "load very long tag values (default)");
         cmd.addOption("--load-short",         "-M",        "do not load very long values (e.g. pixel data)");
+        cmd.addOption("--max-read-length",    "+R",    1,  "[k]ilo-bytes: integer (64 <= k <= 4194302)",
+                                                           "set threshold for long values to k kilo-bytes");
         cmd.addOption("--print-all",          "+L",        "print long tag values completely");
         cmd.addOption("--print-short",        "-L",        "print long tag values shortened (default)");
         cmd.addOption("--print-filename",     "+F",        "print header with filename for each input file");
@@ -317,6 +320,16 @@ int main(int argc, char *argv[])
       cmd.endOptionBlock();
 #endif
 
+      if (cmd.findOption("--max-read-length"))
+      {
+          OFString str;
+          cmd.getValue(str);
+          int parsed = sscanf(str.c_str(), "%lu", &maxReadLength);
+          if ( (parsed != 1) || (maxReadLength < 64) || (maxReadLength > 4194302) )
+                app.printError("Invalid value for --max-read-length");
+          else
+            maxReadLength *= 1024; //convert kilo-byte to byte
+      }
       cmd.beginOptionBlock();
       if (cmd.findOption("--load-all")) loadIntoMemory = OFTrue;
       if (cmd.findOption("--load-short")) loadIntoMemory = OFFalse;
@@ -457,8 +470,7 @@ static int dumpFile(ostream & out,
     DcmFileFormat dfile;
     DcmObject *dset = &dfile;
     if (isDataset) dset = dfile.getDataset();
-
-    OFCondition cond = dfile.loadFile(ifname, xfer, EGL_noChange, DCM_MaxReadLength, isDataset);
+    OFCondition cond = dfile.loadFile(ifname, xfer, EGL_noChange, maxReadLength, isDataset);
     if (! cond.good())
     {
         CERR << OFFIS_CONSOLE_APPLICATION << ": error: " << dfile.error().text()
@@ -524,7 +536,11 @@ static int dumpFile(ostream & out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
- * Revision 1.48  2005-11-15 18:33:20  meichel
+ * Revision 1.49  2005-11-16 14:55:56  onken
+ * Added "--max-read-length" option to dcmdump and dcm2xml to override
+ * DCMTK-internal threshold (4096K) for long attribute values.
+ *
+ * Revision 1.48  2005/11/15 18:33:20  meichel
  * Added new command line option --convert-un that enables the re-conversion of
  *   defined length UN elements.
  *
