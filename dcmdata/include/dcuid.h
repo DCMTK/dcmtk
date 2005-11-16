@@ -23,10 +23,10 @@
  *  Definitions of "well known" DICOM Unique Indentifiers,
  *  routines for finding and creating UIDs.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-10-25 08:55:32 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-11-16 18:31:42 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
- *  CVS/RCS Revision: $Revision: 1.69 $
+ *  CVS/RCS Revision: $Revision: 1.70 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -375,6 +375,7 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_BlendingSoftcopyPresentationStateStorage               "1.2.840.10008.5.1.4.1.1.11.4"
 #define UID_EncapsulatedPDFStorage                                 "1.2.840.10008.5.1.4.1.1.104.1"
 #define UID_RealWorldValueMappingStorage                           "1.2.840.10008.5.1.4.1.1.67"
+#define UID_XRayRadiationDoseSR                                    "1.2.840.10008.5.1.4.1.1.88.67"
 
 // Worklist and Query/Retrieve
 #define UID_FINDPatientRootQueryRetrieveInformationModel           "1.2.840.10008.5.1.4.1.2.1.1"
@@ -573,7 +574,10 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.69  2005-10-25 08:55:32  meichel
+** Revision 1.70  2005-11-16 18:31:42  joergr
+** Added support for X-Ray Radiation Dose SR SOP class.
+**
+** Revision 1.69  2005/10/25 08:55:32  meichel
 ** Updated list of UIDs and added support for new transfer syntaxes
 **   and storage SOP classes.
 **
