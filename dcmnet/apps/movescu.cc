@@ -21,10 +21,10 @@
  *
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2005-11-14 09:06:50 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-11-16 14:58:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.55 $
+ *  CVS/RCS Revision: $Revision: 1.56 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -598,7 +598,7 @@ main(int argc, char *argv[])
 
     /* network for move request and responses */
     T_ASC_NetworkRole role = (opt_retrievePort > 0) ? NET_ACCEPTORREQUESTOR : NET_REQUESTOR;
-    OFCondition cond = ASC_initializeNetwork(role, OFstatic_cast(int, opt_retrievePort), 1000, &net);
+    OFCondition cond = ASC_initializeNetwork(role, OFstatic_cast(int, opt_retrievePort), 30, &net);
     if (cond.bad())
     {
         errmsg("cannot create network:");
@@ -1373,7 +1373,11 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.55  2005-11-14 09:06:50  onken
+** Revision 1.56  2005-11-16 14:58:07  meichel
+** Set association timeout in ASC_initializeNetwork to 30 seconds. This improves
+**   the responsiveness of the tools if the peer blocks during assoc negotiation.
+**
+** Revision 1.55  2005/11/14 09:06:50  onken
 ** Added data dictionary name support for "--key" option
 **
 ** Revision 1.54  2005/11/11 16:09:01  onken

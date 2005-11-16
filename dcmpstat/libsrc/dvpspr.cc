@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2003, OFFIS
+ *  Copyright (C) 1998-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSPrintMessageHandler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-09-05 14:31:33 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2005-11-16 14:58:24 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -503,7 +503,7 @@ OFCondition DVPSPrintMessageHandler::negotiateAssociation(
   DIC_NODENAME dnlocalHost;
   DIC_NODENAME dnpeerHost;
 
-  OFCondition cond = ASC_initializeNetwork(NET_REQUESTOR, 0, 1000, &net);
+  OFCondition cond = ASC_initializeNetwork(NET_REQUESTOR, 0, 30, &net);
   if (cond.good()) cond = ASC_createAssociationParameters(&params, peerMaxPDU);
 
   if (tlayer && cond.good())
@@ -641,7 +641,11 @@ void DVPSPrintMessageHandler::setLog(OFConsole *stream, OFBool verbMode, OFBool 
 
 /*
  *  $Log: dvpspr.cc,v $
- *  Revision 1.18  2003-09-05 14:31:33  meichel
+ *  Revision 1.19  2005-11-16 14:58:24  meichel
+ *  Set association timeout in ASC_initializeNetwork to 30 seconds. This improves
+ *    the responsiveness of the tools if the peer blocks during assoc negotiation.
+ *
+ *  Revision 1.18  2003/09/05 14:31:33  meichel
  *  Print SCU now supports TLS connections.
  *
  *  Revision 1.17  2002/09/17 12:53:54  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,9 @@
  *           class providers.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-08-30 08:39:20 $
+ *  Update Date:      $Date: 2005-11-16 14:59:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlmactmg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -200,7 +200,7 @@ OFCondition WlmActivityManager::StartProvidingService()
 #endif
 
   // Initialize network, i.e. create an instance of T_ASC_Network*.
-  cond = ASC_initializeNetwork( NET_ACCEPTOR, (int)opt_port, 1000, &net );
+  cond = ASC_initializeNetwork( NET_ACCEPTOR, (int)opt_port, 30, &net );
   if( cond.bad() ) return( WLM_EC_InitializationOfNetworkConnectionFailed );
 
 #if defined(HAVE_SETUID) && defined(HAVE_GETUID)
@@ -1261,7 +1261,11 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
 /*
 ** CVS Log
 ** $Log: wlmactmg.cc,v $
-** Revision 1.17  2005-08-30 08:39:20  meichel
+** Revision 1.18  2005-11-16 14:59:09  meichel
+** Set association timeout in ASC_initializeNetwork to 30 seconds. This improves
+**   the responsiveness of the tools if the peer blocks during assoc negotiation.
+**
+** Revision 1.17  2005/08/30 08:39:20  meichel
 ** The worklist SCP now rejects an association when no presentation context
 **   was accepted while processing the association request. Needed for some SCUs
 **   which become confused otherwise.

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2004, OFFIS
+ *  Copyright (C) 2000-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Print Server
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-04-04 10:11:53 $
+ *  Update Date:      $Date: 2005-11-16 14:58:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmprscp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -474,7 +474,7 @@ int main(int argc, char *argv[])
 #endif
 
     /* open listen socket */
-    OFCondition cond = ASC_initializeNetwork(NET_ACCEPTOR, targetPort, 10, &net);
+    OFCondition cond = ASC_initializeNetwork(NET_ACCEPTOR, targetPort, 30, &net);
     if (errorCond(cond, "Error initialising network:")) return 1;
 
 #ifdef WITH_OPENSSL
@@ -582,7 +582,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprscp.cc,v $
- * Revision 1.16  2005-04-04 10:11:53  meichel
+ * Revision 1.17  2005-11-16 14:58:23  meichel
+ * Set association timeout in ASC_initializeNetwork to 30 seconds. This improves
+ *   the responsiveness of the tools if the peer blocks during assoc negotiation.
+ *
+ * Revision 1.16  2005/04/04 10:11:53  meichel
  * Module dcmpstat now uses the dcmqrdb API instead of imagectn for maintaining
  *   the index database
  *

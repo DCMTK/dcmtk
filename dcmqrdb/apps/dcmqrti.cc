@@ -22,9 +22,9 @@
  *  Purpose: Telnet Initiator (ti) Main Program
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-06-16 08:05:48 $
+ *  Update Date:      $Date: 2005-11-16 14:59:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/apps/dcmqrti.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -326,7 +326,7 @@ int main( int argc, char *argv[] )
           CERR << "Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
 
         // if starting up network is successful
-        cond = ASC_initializeNetwork( NET_REQUESTOR, 0, 200, conf.accessNet() );
+        cond = ASC_initializeNetwork( NET_REQUESTOR, 0, 30, conf.accessNet() );
         if( cond.good() )
         {
           // set interrupts for signal handling
@@ -394,7 +394,11 @@ int main( int argc, char *argv[] )
 /*
  * CVS Log
  * $Log: dcmqrti.cc,v $
- * Revision 1.2  2005-06-16 08:05:48  meichel
+ * Revision 1.3  2005-11-16 14:59:00  meichel
+ * Set association timeout in ASC_initializeNetwork to 30 seconds. This improves
+ *   the responsiveness of the tools if the peer blocks during assoc negotiation.
+ *
+ * Revision 1.2  2005/06/16 08:05:48  meichel
  * Fixed typo in method name
  *
  * Revision 1.1  2005/03/30 13:34:44  meichel

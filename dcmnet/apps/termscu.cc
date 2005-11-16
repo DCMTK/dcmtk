@@ -22,10 +22,10 @@
  *  Purpose: Termination Service Class User (negotiates the private shutdown
  *           SOP class in order to shutdown server applications)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-09-15 08:41:42 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-11-16 14:58:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/termscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -199,7 +199,7 @@ int main( int argc, char *argv[] )
     fprintf( stderr, "Warning: no data dictionary loaded, check environment variable: %s\n", DCM_DICT_ENVIRONMENT_VARIABLE );
 
   // initialize network
-  OFCondition cond = ASC_initializeNetwork( NET_REQUESTOR, 0, 1000, &net );
+  OFCondition cond = ASC_initializeNetwork( NET_REQUESTOR, 0, 30, &net );
   if( cond.bad() )
   {
     DimseCondition::dump(cond);
@@ -343,7 +343,11 @@ int main( int argc, char *argv[] )
 /*
 ** CVS Log
 ** $Log: termscu.cc,v $
-** Revision 1.2  2005-09-15 08:41:42  joergr
+** Revision 1.3  2005-11-16 14:58:07  meichel
+** Set association timeout in ASC_initializeNetwork to 30 seconds. This improves
+**   the responsiveness of the tools if the peer blocks during assoc negotiation.
+**
+** Revision 1.2  2005/09/15 08:41:42  joergr
 ** Fixed wrong value for LONGCOL.
 **
 ** Revision 1.1  2005/09/12 11:39:04  wilkens

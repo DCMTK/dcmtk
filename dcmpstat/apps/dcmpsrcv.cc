@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-10-25 08:55:59 $
+ *  Update Date:      $Date: 2005-11-16 14:58:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsrcv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.47 $
+ *  CVS/RCS Revision: $Revision: 1.48 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -751,7 +751,7 @@ static void terminateAllReceivers(DVConfiguration& dvi, OFBool opt_verbose)
   if (! dvi.getTLSPEMFormat()) keyFileFormat = SSL_FILETYPE_ASN1;
 #endif
 
-  if ((ASC_initializeNetwork(NET_REQUESTOR, 0, 1000, &net).bad())) return;
+  if ((ASC_initializeNetwork(NET_REQUESTOR, 0, 30, &net).bad())) return;
 
   Uint32 numReceivers = dvi.getNumberOfTargets(DVPSE_receiver);
   for (Uint32 i=0; i<numReceivers; i++)
@@ -1262,7 +1262,7 @@ int main(int argc, char *argv[])
     while (!finished1)
     {
       /* open listen socket */
-      cond = ASC_initializeNetwork(NET_ACCEPTOR, networkPort, 10, &net);
+      cond = ASC_initializeNetwork(NET_ACCEPTOR, networkPort, 30, &net);
       if (errorCond(cond, "Error initialising network:"))
       {
       	return 1;
@@ -1485,7 +1485,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsrcv.cc,v $
- * Revision 1.47  2005-10-25 08:55:59  meichel
+ * Revision 1.48  2005-11-16 14:58:23  meichel
+ * Set association timeout in ASC_initializeNetwork to 30 seconds. This improves
+ *   the responsiveness of the tools if the peer blocks during assoc negotiation.
+ *
+ * Revision 1.47  2005/10/25 08:55:59  meichel
  * Updated list of UIDs and added support for new transfer syntaxes
  *   and storage SOP classes.
  *

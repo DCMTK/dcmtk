@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2004, OFFIS
+ *  Copyright (C) 1998-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-04-04 10:11:59 $
- *  CVS/RCS Revision: $Revision: 1.151 $
+ *  Update Date:      $Date: 2005-11-16 14:58:24 $
+ *  CVS/RCS Revision: $Revision: 1.152 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2544,7 +2544,7 @@ OFCondition DVInterface::terminateQueryRetrieveServer()
 
   writeLogMessage(DVPSM_informational, "DCMPSTAT", "Terminating query/retrieve server process ...");
 
-  OFCondition cond = ASC_initializeNetwork(NET_REQUESTOR, 0, 1000, &net);
+  OFCondition cond = ASC_initializeNetwork(NET_REQUESTOR, 0, 30, &net);
   if (cond.good())
   {
     cond = ASC_createAssociationParameters(&params, DEFAULT_MAXPDU);
@@ -3766,7 +3766,7 @@ OFCondition DVInterface::terminatePrintServer()
     target = getTargetID(i, DVPSE_printLocal);
     useTLS = getTargetUseTLS(target);
 
-    OFCondition cond = ASC_initializeNetwork(NET_REQUESTOR, 0, 1000, &net);
+    OFCondition cond = ASC_initializeNetwork(NET_REQUESTOR, 0, 30, &net);
     if (cond.good())
     {
       cond = ASC_createAssociationParameters(&params, DEFAULT_MAXPDU);
@@ -4384,7 +4384,11 @@ void DVInterface::disableImageAndPState()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.151  2005-04-04 10:11:59  meichel
+ *  Revision 1.152  2005-11-16 14:58:24  meichel
+ *  Set association timeout in ASC_initializeNetwork to 30 seconds. This improves
+ *    the responsiveness of the tools if the peer blocks during assoc negotiation.
+ *
+ *  Revision 1.151  2005/04/04 10:11:59  meichel
  *  Module dcmpstat now uses the dcmqrdb API instead of imagectn for maintaining
  *    the index database
  *

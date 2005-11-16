@@ -21,10 +21,10 @@
  *
  *  Purpose: Query/Retrieve Service Class User (C-FIND operation)
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2005-11-14 09:06:50 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-11-16 14:58:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/findscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -564,7 +564,7 @@ main(int argc, char *argv[])
     }
 
     /* initialize network, i.e. create an instance of T_ASC_Network*. */
-    OFCondition cond = ASC_initializeNetwork(NET_REQUESTOR, 0, 1000, &net);
+    OFCondition cond = ASC_initializeNetwork(NET_REQUESTOR, 0, 30, &net);
     if (cond.bad()) {
         DimseCondition::dump(cond);
         exit(1);
@@ -1140,7 +1140,11 @@ cfind(T_ASC_Association * assoc, const char *fname)
 /*
 ** CVS Log
 ** $Log: findscu.cc,v $
-** Revision 1.43  2005-11-14 09:06:50  onken
+** Revision 1.44  2005-11-16 14:58:07  meichel
+** Set association timeout in ASC_initializeNetwork to 30 seconds. This improves
+**   the responsiveness of the tools if the peer blocks during assoc negotiation.
+**
+** Revision 1.43  2005/11/14 09:06:50  onken
 ** Added data dictionary name support for "--key" option
 **
 ** Revision 1.42  2005/11/03 17:39:41  meichel

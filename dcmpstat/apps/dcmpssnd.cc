@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Network Send Component (Store SCU)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-10-25 08:55:59 $
+ *  Update Date:      $Date: 2005-11-16 14:58:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpssnd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -721,7 +721,7 @@ int main(int argc, char *argv[])
     DIC_NODENAME peerHost;
     T_ASC_Association *assoc=NULL;
 
-    OFCondition cond = ASC_initializeNetwork(NET_REQUESTOR, 0, 1000, &net);
+    OFCondition cond = ASC_initializeNetwork(NET_REQUESTOR, 0, 30, &net);
     if (cond.bad())
     {
       DimseCondition::dump(cond);
@@ -1014,7 +1014,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpssnd.cc,v $
- * Revision 1.34  2005-10-25 08:55:59  meichel
+ * Revision 1.35  2005-11-16 14:58:23  meichel
+ * Set association timeout in ASC_initializeNetwork to 30 seconds. This improves
+ *   the responsiveness of the tools if the peer blocks during assoc negotiation.
+ *
+ * Revision 1.34  2005/10/25 08:55:59  meichel
  * Updated list of UIDs and added support for new transfer syntaxes
  *   and storage SOP classes.
  *

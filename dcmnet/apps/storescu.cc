@@ -21,10 +21,10 @@
  *
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2005-11-11 16:09:01 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-11-16 14:58:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.60 $
+ *  CVS/RCS Revision: $Revision: 1.61 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -666,7 +666,7 @@ main(int argc, char *argv[])
     }
 
     /* initialize network, i.e. create an instance of T_ASC_Network*. */
-    OFCondition cond = ASC_initializeNetwork(NET_REQUESTOR, 0, 1000, &net);
+    OFCondition cond = ASC_initializeNetwork(NET_REQUESTOR, 0, 30, &net);
     if (cond.bad()) {
         DimseCondition::dump(cond);
         return 1;
@@ -1479,7 +1479,11 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.60  2005-11-11 16:09:01  onken
+** Revision 1.61  2005-11-16 14:58:07  meichel
+** Set association timeout in ASC_initializeNetwork to 30 seconds. This improves
+**   the responsiveness of the tools if the peer blocks during assoc negotiation.
+**
+** Revision 1.60  2005/11/11 16:09:01  onken
 ** Added options for JPEG2000 support (lossy and lossless)
 **
 ** Revision 1.59  2005/10/25 08:55:43  meichel

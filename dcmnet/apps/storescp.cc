@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2004, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2005-11-11 16:09:00 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-11-16 14:58:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.79 $
+ *  CVS/RCS Revision: $Revision: 1.80 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -860,7 +860,7 @@ int main(int argc, char *argv[])
   }
 
   /* initialize network, i.e. create an instance of T_ASC_Network*. */
-  OFCondition cond = ASC_initializeNetwork(NET_ACCEPTOR, OFstatic_cast(int, opt_port), 1000, &net);
+  OFCondition cond = ASC_initializeNetwork(NET_ACCEPTOR, OFstatic_cast(int, opt_port), 30, &net);
   if (cond.bad())
   {
     DimseCondition::dump(cond);
@@ -2389,7 +2389,11 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.79  2005-11-11 16:09:00  onken
+** Revision 1.80  2005-11-16 14:58:07  meichel
+** Set association timeout in ASC_initializeNetwork to 30 seconds. This improves
+**   the responsiveness of the tools if the peer blocks during assoc negotiation.
+**
+** Revision 1.79  2005/11/11 16:09:00  onken
 ** Added options for JPEG2000 support (lossy and lossless)
 **
 ** Revision 1.78  2005/11/10 09:13:21  onken
