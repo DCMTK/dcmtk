@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: meichel $, $Date: 2005-11-16 15:11:46 $
+** Last Update:		$Author: meichel $, $Date: 2005-11-16 16:19:16 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.57 $
+** Revision:		$Revision: 1.58 $
 ** Status:		$State: Exp $
 */
 
@@ -3584,34 +3584,43 @@ defragmentTCP(DcmTransportConnection *connection, DUL_BLOCKOPTIONS block, time_t
     /* if there is no network connection, return an error */
     if (connection == NULL) return DUL_NULLKEY;
 
-    /* if DUL_NOBLOCK is specified as a blocking option, we only want to wait a certain */
-    /* time for receiving data over the network. If no data was received during that time, */
-    /* DUL_READTIMEOUT shall be returned. Note that if DUL_BLOCK is specified the application */
-    /* will not stop waiting until data is actually received over the network. */
-    if (block == DUL_NOBLOCK) {
+    int timeToWait = 0;
+    if (block == DUL_NOBLOCK) 
+    {       
         /* figure out how long we want to wait: if timerStart equals 0 we want to wait exactly */
         /* timeout seconds starting from the call to select(...) within the below called function; */
         /* if timerStart does not equal 0 we want to substract the time which has already passed */
         /* after the timer was started from timeout and wait the resulting amount of seconds */
         /* starting from the call to select(...) within the below called function. */
-        int timeToWait;
-        if (timerStart == 0)
-            timeToWait = timeout;
-        else
-            timeToWait = timeout - (int) (time(NULL) - timerStart);
-
-        /* go ahead and see if within timeout seconds data will be received over the network. */
-        /* if not, return DUL_READTIMEOUT, if yes, stay in this function. */
-        if (!connection->networkDataAvailable(timeToWait)) return DUL_READTIMEOUT;
+        if (timerStart == 0) timerStart = time(NULL);
     }
 
     /* start a loop: since we want to receive l bytes of data over the network, */
     /* we won't stop waiting for data until we actually did receive l bytes. */
-    while (l > 0) {
+    while (l > 0) 
+    {
         /* receive data from the network connection; wait until */
         /* we actually did receive data or an error occured */
-        do {
-          bytesRead = connection->read((char*)b, size_t(l));
+        do 
+        {
+            /* if DUL_NOBLOCK is specified as a blocking option, we only want to wait a certain 
+             * time for receiving data over the network. If no data was received during that time, 
+             * DUL_READTIMEOUT shall be returned. Note that if DUL_BLOCK is specified the application 
+             * will not stop waiting until data is actually received over the network. 
+             */
+            if (block == DUL_NOBLOCK) 
+            {
+                /* determine remaining time to wait */
+                timeToWait = timeout - (int) (time(NULL) - timerStart);
+            
+                /* go ahead and see if within timeout seconds data will be received over the network. */
+                /* if not, return DUL_READTIMEOUT, if yes, stay in this function. */
+                if (!connection->networkDataAvailable(timeToWait)) return DUL_READTIMEOUT;
+            }
+  
+            /* data has become available, now call read(). */
+            bytesRead = connection->read((char*)b, size_t(l));
+
         } while (bytesRead == -1 && errno == EINTR);
 
         /* if we actually received data, move the buffer pointer to its own end, update the variable */
@@ -3622,7 +3631,7 @@ defragmentTCP(DcmTransportConnection *connection, DUL_BLOCKOPTIONS block, time_t
             if (rtnLen != NULL)
                 *rtnLen += (unsigned long) bytesRead;
         } else {
-            /* in case we did not receive data, an error must have occured; return a corresponding result value */
+            /* in case we did not receive any data, an error must have occured; return a corresponding result value */
             return DUL_NETWORKCLOSED;
         }
     }
@@ -3930,7 +3939,12 @@ destroyUserInformationLists(DUL_USERINFO * userInfo)
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.57  2005-11-16 15:11:46  meichel
+** Revision 1.58  2005-11-16 16:19:16  meichel
+** Fixed bug in defragmentTCP that could cause the read function to hang
+**   in non-blocking mode (DUL_NOBLOCK) if only a partial PDU is available
+**   for read on the socket.
+**
+** Revision 1.57  2005/11/16 15:11:46  meichel
 ** Fixed bug in requestAssociationTCP that could result in association request
 **   failures on systems with high CPU load if an association timout was specified
 **   in dcmConnectionTimeout, because in this case the socket was not always
