@@ -22,9 +22,9 @@
  *  Purpose: Convert the contents of a DICOM file to XML format
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2005-11-16 14:59:11 $
+ *  Update Date:      $Date: 2005-11-17 11:26:11 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcm2xml.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -366,12 +366,8 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--max-read-length"))
         {
             OFString str;
-            cmd.getValue(str);
-            int parsed = sscanf(str.c_str(), "%lu", &maxReadLength);
-            if ( (parsed != 1) || (maxReadLength < 64) || (maxReadLength > 4194302) )
-                app.printError("Invalid value for --max-read-length");
-            else
-                maxReadLength *= 1024; //convert kilo-byte to byte
+            app.checkValue(cmd.getValueAndCheckMinMax(maxReadLength, 64, 4194302));
+            maxReadLength *= 1024; //convert kilo-byte to byte
         }
         cmd.beginOptionBlock();
         if (cmd.findOption("--load-all"))
@@ -464,7 +460,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2xml.cc,v $
- * Revision 1.16  2005-11-16 14:59:11  onken
+ * Revision 1.17  2005-11-17 11:26:11  onken
+ * Option --max-read-length now uses OFCommandLine to check, whether option
+ * value is in range
+ *
+ * Revision 1.16  2005/11/16 14:59:11  onken
  * *** empty log message ***
  *
  * Revision 1.15  2005/11/16 14:55:56  onken

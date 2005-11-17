@@ -22,8 +22,8 @@
  *  Purpose: List the contents of a dicom file
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2005-11-16 14:59:11 $
- *  CVS/RCS Revision: $Revision: 1.50 $
+ *  Update Date:      $Date: 2005-11-17 11:26:11 $
+ *  CVS/RCS Revision: $Revision: 1.51 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -323,12 +323,8 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--max-read-length"))
       {
           OFString str;
-          cmd.getValue(str);
-          int parsed = sscanf(str.c_str(), "%lu", &maxReadLength);
-          if ( (parsed != 1) || (maxReadLength < 64) || (maxReadLength > 4194302) )
-              app.printError("Invalid value for --max-read-length");
-          else
-              maxReadLength *= 1024; //convert kilo-byte to byte
+          app.checkValue(cmd.getValueAndCheckMinMax(maxReadLength, 64, 4194302));
+          maxReadLength *= 1024; //convert kilo-byte to byte
       }
       cmd.beginOptionBlock();
       if (cmd.findOption("--load-all")) loadIntoMemory = OFTrue;
@@ -536,7 +532,11 @@ static int dumpFile(ostream & out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
- * Revision 1.50  2005-11-16 14:59:11  onken
+ * Revision 1.51  2005-11-17 11:26:11  onken
+ * Option --max-read-length now uses OFCommandLine to check, whether option
+ * value is in range
+ *
+ * Revision 1.50  2005/11/16 14:59:11  onken
  * *** empty log message ***
  *
  * Revision 1.49  2005/11/16 14:55:56  onken
