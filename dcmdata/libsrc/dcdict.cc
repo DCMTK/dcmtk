@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2004, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: loadable DICOM data dictionary
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-08-03 16:45:58 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Update Date:      $Date: 2005-11-17 13:33:11 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -740,6 +740,7 @@ const DcmDictEntry*
 DcmDataDictionary::findEntry(const char *name) const
 {
     const DcmDictEntry* e = NULL;
+    const DcmDictEntry* ePrivate = NULL;
 
     /* search first in the normal tags dictionary and if not found
      * then search in the repeating tags list.
@@ -748,8 +749,15 @@ DcmDataDictionary::findEntry(const char *name) const
     for (iter=hashDict.begin(); (e==NULL) && (iter!=hashDict.end()); ++iter) {
         if ((*iter)->contains(name)) {
             e = *iter;
+            if (e->getGroup() % 2) 
+            {
+                /* tag is a private tag - continue search to be sure to find non-private keys first */
+                if (!ePrivate) ePrivate = e;
+                e = NULL;
+            }
         }
     }
+
     if (e == NULL) {
         /* search in the repeating tags dictionary */
         OFBool found = OFFalse;
@@ -762,6 +770,12 @@ DcmDataDictionary::findEntry(const char *name) const
             }
         }
     }
+
+    if (e == NULL && ePrivate != NULL) {
+        /* no standard key found - use the first private key found */
+        e = ePrivate;
+    }
+
     return e;
 }
 
@@ -820,7 +834,11 @@ void GlobalDcmDataDictionary::clear()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.cc,v $
-** Revision 1.33  2004-08-03 16:45:58  meichel
+** Revision 1.34  2005-11-17 13:33:11  meichel
+** When locating DICOM tags by name in DcmDataDictionary::findEntry,
+**   public tags are now preferred over private tags of the same name.
+**
+** Revision 1.33  2004/08/03 16:45:58  meichel
 ** Minor changes for platforms on which strchr/strrchr return a const pointer.
 **
 ** Revision 1.32  2004/02/04 16:27:12  joergr
