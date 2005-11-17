@@ -23,9 +23,9 @@
  *  Definitions of "well known" DICOM Unique Indentifiers,
  *  routines for finding and creating UIDs.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-11-16 18:36:10 $
- *  CVS/RCS Revision: $Revision: 1.60 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-11-17 14:25:12 $
+ *  CVS/RCS Revision: $Revision: 1.61 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1382,7 +1382,7 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
     sprintf(buf, ".%lu", forcePositive(getpid()));
     addUIDComponent(uid, buf);
 
-    sprintf(buf, ".%lu", forcePositive(time(NULL)));
+    sprintf(buf, ".%lu", forcePositive(OFstatic_cast(long, time(NULL))));
     addUIDComponent(uid, buf);
 
     sprintf(buf, ".%u", counter);
@@ -1396,7 +1396,10 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.60  2005-11-16 18:36:10  joergr
+** Revision 1.61  2005-11-17 14:25:12  meichel
+** Fixed warnings reported by VS2005
+**
+** Revision 1.60  2005/11/16 18:36:10  joergr
 ** Added support for X-Ray Radiation Dose SR SOP class.
 ** Synchronized list of supported SOP classes in source code and documentation.
 **
