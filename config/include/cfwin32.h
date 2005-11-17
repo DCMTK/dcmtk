@@ -877,6 +877,14 @@ typedef unsigned short ushort;
 #define HAVE_UTIME_H
 #endif /* __BORLANDC__ */
 
+/* Additional settings for Visual Studio 2005 */
+#ifdef _MSC_VER
+#if _MSC_VER >= 1400
+/* disable warnings about "deprecated" C runtime functions  */
+#pragma warning( disable : 4996 )
+#endif
+#endif
+
 #endif /* _WIN32 */
 
 #endif /* CFWIN32_H */
