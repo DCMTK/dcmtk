@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,10 +22,10 @@
  *  Purpose: Class representing a console engine for basic worklist
  *           management service class providers based on the file system.
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2005-05-04 11:33:47 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-11-17 13:45:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/wlcefs.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,7 @@
 #define WlmConsoleEngineFileSystem_h
 
 #include "osconfig.h"
+#include "dimse.h"
 
 class WlmDataSource;
 class OFConsoleApplication;
@@ -81,6 +82,12 @@ class WlmConsoleEngineFileSystem
     OFBool opt_noSequenceExpansion;
     /// indicates if wl-files which are lacking return type 1 attributes or information in such attributes shall be rejected or not
     OFBool opt_enableRejectionOfIncompleteWlFiles;
+    /// blocking mode for DIMSE operations
+    T_DIMSE_BlockingMode opt_blockMode;
+    /// timeout for DIMSE operations
+    int opt_dimse_timeout;
+    /// timeout for ACSE operations
+    int opt_acse_timeout;
     /// instance of console application class (for handling command line arguments)
     OFConsoleApplication *app;
     /// instance of command line class (for handling command line arguments)

@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-16 14:58:07 $
+ *  Update Date:      $Date: 2005-11-17 13:45:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.80 $
+ *  CVS/RCS Revision: $Revision: 1.81 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -172,6 +172,9 @@ static long        opt_endOfStudyTimeout = -1;        // default: no end of stud
 static OFBool      endOfStudyThroughTimeoutEvent = OFFalse;
 static const char *opt_configFile = NULL;
 static const char *opt_profileName = NULL;
+T_DIMSE_BlockingMode opt_blockMode = DIMSE_BLOCKING;
+int                opt_dimse_timeout = 0;
+int                opt_acse_timeout = 30;
 
 #ifdef WITH_OPENSSL
 static int         opt_keyFileFormat = SSL_FILETYPE_PEM;
@@ -257,6 +260,9 @@ int main(int argc, char *argv[])
       // this option is only offered on Posix platforms
       cmd.addOption("--inetd",                  "-id",       "run from inetd super server");
 #endif
+
+      cmd.addOption("--acse-timeout",           "-ta", 1, "[s]econds: integer (default: 30)", "timeout for ACSE messages");
+      cmd.addOption("--dimse-timeout",          "-td", 1, "[s]econds: integer (default: unlimited)", "timeout for DIMSE messages");
 
       OFString opt1 = "set my AE title (default: ";
       opt1 += APPLICATIONTITLE;
@@ -440,6 +446,21 @@ int main(int argc, char *argv[])
        opt_port = 1024;
      }
 #endif
+
+      if (cmd.findOption("--acse-timeout"))
+      {
+        OFCmdSignedInt opt_timeout = 0;
+        app.checkValue(cmd.getValueAndCheckMin(opt_timeout, 1));
+        opt_acse_timeout = OFstatic_cast(int, opt_timeout);
+      }
+
+      if (cmd.findOption("--dimse-timeout"))
+      {
+        OFCmdSignedInt opt_timeout = 0;
+        app.checkValue(cmd.getValueAndCheckMin(opt_timeout, 1));
+        opt_dimse_timeout = OFstatic_cast(int, opt_timeout);
+        opt_blockMode = DIMSE_NONBLOCKING;
+      }
 
     // omitting the port number is only allowed in inetd mode
     if ((! opt_inetd_mode) && (cmd.getParamCount() == 0))
@@ -860,7 +881,7 @@ int main(int argc, char *argv[])
   }
 
   /* initialize network, i.e. create an instance of T_ASC_Network*. */
-  OFCondition cond = ASC_initializeNetwork(NET_ACCEPTOR, OFstatic_cast(int, opt_port), 30, &net);
+  OFCondition cond = ASC_initializeNetwork(NET_ACCEPTOR, OFstatic_cast(int, opt_port), opt_acse_timeout, &net);
   if (cond.bad())
   {
     DimseCondition::dump(cond);
@@ -1885,12 +1906,12 @@ static OFCondition storeSCP(
   if (opt_bitPreserving)
   {
     cond = DIMSE_storeProvider(assoc, presID, req, imageFileName, opt_useMetaheader, NULL,
-      storeSCPCallback, &callbackData, DIMSE_BLOCKING, 0);
+      storeSCPCallback, &callbackData, opt_blockMode, opt_dimse_timeout);
   }
   else
   {
     cond = DIMSE_storeProvider(assoc, presID, req, NULL, opt_useMetaheader, &dset,
-      storeSCPCallback, &callbackData, DIMSE_BLOCKING, 0);
+      storeSCPCallback, &callbackData, opt_blockMode, opt_dimse_timeout);
   }
 
   // if some error occured, dump corresponding information and remove the outfile if necessary
@@ -2389,7 +2410,10 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.80  2005-11-16 14:58:07  meichel
+** Revision 1.81  2005-11-17 13:45:16  meichel
+** Added command line options for DIMSE and ACSE timeouts
+**
+** Revision 1.80  2005/11/16 14:58:07  meichel
 ** Set association timeout in ASC_initializeNetwork to 30 seconds. This improves
 **   the responsiveness of the tools if the peer blocks during assoc negotiation.
 **

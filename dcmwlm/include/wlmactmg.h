@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,10 +22,10 @@
  *  Purpose: Activity manager class for basic worklist management service
  *           class provider engines.
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2003-07-02 09:17:55 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-11-17 13:45:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wlmactmg.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,6 +73,12 @@ class WlmActivityManager
     OFBool opt_singleProcess;
     /// maximum number of association for non-single process mode
     int opt_maxAssociations;
+    /// blocking mode for DIMSE operations
+    T_DIMSE_BlockingMode opt_blockMode;
+    /// timeout for DIMSE operations
+    int opt_dimse_timeout;
+    /// timeout for ACSE operations
+    int opt_acse_timeout;
     /// array of supported abstract syntaxes
     char **supportedAbstractSyntaxes;
     /// number of array fields
@@ -191,9 +197,29 @@ class WlmActivityManager
        *  @param opt_failInvalidQueryv               Specifies if the application shall fail on an invalid query.
        *  @param opt_singleProcessv                  Specifies if the application shall run in a single process.
        *  @param opt_maxAssociationsv                Specifies many concurrent associations the application shall be able to handle.
+       *  @param opt_blockModev                      Specifies the blocking mode for DIMSE operations
+       *  @param opt_dimse_timeoutv                  Specifies the timeout for DIMSE operations
+       *  @param opt_acse_timeoutv                   Specifies the timeout for ACSE operations
        *  @param logStreamv                          A stream information can be dumped to.
        */
-    WlmActivityManager( WlmDataSource *dataSourcev, OFCmdUnsignedInt opt_portv, OFBool opt_refuseAssociationv, OFBool opt_rejectWithoutImplementationUIDv, OFCmdUnsignedInt opt_sleepAfterFindv, OFCmdUnsignedInt opt_sleepDuringFindv, OFCmdUnsignedInt opt_maxPDUv, E_TransferSyntax opt_networkTransferSyntaxv, OFBool opt_verbosev, OFBool opt_debugv, OFBool opt_failInvalidQueryv, OFBool opt_singleProcessv, int opt_maxAssociationsv, OFConsole *logStreamv );
+    WlmActivityManager(
+        WlmDataSource *dataSourcev, 
+        OFCmdUnsignedInt opt_portv, 
+        OFBool opt_refuseAssociationv, 
+        OFBool opt_rejectWithoutImplementationUIDv, 
+        OFCmdUnsignedInt opt_sleepAfterFindv, 
+        OFCmdUnsignedInt opt_sleepDuringFindv, 
+        OFCmdUnsignedInt opt_maxPDUv, 
+        E_TransferSyntax opt_networkTransferSyntaxv, 
+        OFBool opt_verbosev, 
+        OFBool opt_debugv, 
+        OFBool opt_failInvalidQueryv, 
+        OFBool opt_singleProcessv, 
+        int opt_maxAssociationsv, 
+        T_DIMSE_BlockingMode opt_blockModev,
+        int opt_dimse_timeoutv,
+        int opt_acse_timeoutv,
+        OFConsole *logStreamv );
 
       /** destructor
        */
@@ -212,7 +238,10 @@ class WlmActivityManager
 /*
 ** CVS Log
 ** $Log: wlmactmg.h,v $
-** Revision 1.11  2003-07-02 09:17:55  wilkens
+** Revision 1.12  2005-11-17 13:45:39  meichel
+** Added command line options for DIMSE and ACSE timeouts
+**
+** Revision 1.11  2003/07/02 09:17:55  wilkens
 ** Updated documentation to get rid of doxygen warnings.
 **
 ** Revision 1.10  2002/12/16 11:08:36  wilkens

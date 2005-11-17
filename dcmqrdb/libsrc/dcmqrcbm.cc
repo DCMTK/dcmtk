@@ -22,9 +22,9 @@
  *  Purpose: class DcmQueryRetrieveMoveContext
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-10-25 08:56:18 $
+ *  Update Date:      $Date: 2005-11-17 13:44:40 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqrcbm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -262,7 +262,7 @@ OFCondition DcmQueryRetrieveMoveContext::performMoveSubOp(DIC_UI sopClass, DIC_U
 
     cond = DIMSE_storeUser(subAssoc, presId, &req,
         fname, NULL, moveSubOpProgressCallback, this, 
-	DIMSE_BLOCKING, 0, 
+	options_.blockMode_, options_.dimse_timeout_, 
 	&rsp, &stDetail);
 	
 #ifdef LOCK_IMAGE_FILES
@@ -617,7 +617,10 @@ OFCondition DcmQueryRetrieveMoveContext::addAllStoragePresentationContexts(T_ASC
 /*
  * CVS Log
  * $Log: dcmqrcbm.cc,v $
- * Revision 1.5  2005-10-25 08:56:18  meichel
+ * Revision 1.6  2005-11-17 13:44:40  meichel
+ * Added command line options for DIMSE and ACSE timeouts
+ *
+ * Revision 1.5  2005/10/25 08:56:18  meichel
  * Updated list of UIDs and added support for new transfer syntaxes
  *   and storage SOP classes.
  *

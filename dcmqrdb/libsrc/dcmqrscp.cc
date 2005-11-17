@@ -22,9 +22,9 @@
  *  Purpose: class DcmQueryRetrieveSCP
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-10-25 08:56:18 $
+ *  Update Date:      $Date: 2005-11-17 13:44:40 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/Attic/dcmqrscp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -290,7 +290,7 @@ OFCondition DcmQueryRetrieveSCP::findSCP(T_ASC_Association * assoc, T_DIMSE_C_Fi
     }
 
     cond = DIMSE_findProvider(assoc, presID, request, 
-    	findCallback, &context, DIMSE_BLOCKING, 0);
+    	findCallback, &context, options_.blockMode_, options_.dimse_timeout_);
     if (cond.bad()) {
         DcmQueryRetrieveOptions::errmsg("Find SCP Failed:");
 	DimseCondition::dump(cond);
@@ -316,7 +316,7 @@ OFCondition DcmQueryRetrieveSCP::getSCP(T_ASC_Association * assoc, T_DIMSE_C_Get
     }
 
     cond = DIMSE_getProvider(assoc, presID, request, 
-    	getCallback, &context, DIMSE_BLOCKING, 0);
+    	getCallback, &context, options_.blockMode_, options_.dimse_timeout_);
     if (cond.bad()) {
         DcmQueryRetrieveOptions::errmsg("Get SCP Failed:");
 	DimseCondition::dump(cond);
@@ -342,7 +342,7 @@ OFCondition DcmQueryRetrieveSCP::moveSCP(T_ASC_Association * assoc, T_DIMSE_C_Mo
     }
 
     cond = DIMSE_moveProvider(assoc, presID, request, 
-    	moveCallback, &context, DIMSE_BLOCKING, 0);
+    	moveCallback, &context, options_.blockMode_, options_.dimse_timeout_);
     if (cond.bad()) {
         DcmQueryRetrieveOptions::errmsg("Move SCP Failed:");
 	DimseCondition::dump(cond);
@@ -408,13 +408,12 @@ OFCondition DcmQueryRetrieveSCP::storeSCP(T_ASC_Association * assoc, T_DIMSE_C_S
     if (options_.bitPreserving_) { /* the bypass option can be set on the command line */
         cond = DIMSE_storeProvider(assoc, presId, request, imageFileName, (int)options_.useMetaheader_,
                                    NULL, storeCallback, 
-                                   (void*)&context, DIMSE_BLOCKING, 0);
+                                   (void*)&context, options_.blockMode_, options_.dimse_timeout_);
     } else {
         cond = DIMSE_storeProvider(assoc, presId, request, (char *)NULL, (int)options_.useMetaheader_,
                                    &dset, storeCallback, 
-                                   (void*)&context, DIMSE_BLOCKING, 0);
+                                   (void*)&context, options_.blockMode_, options_.dimse_timeout_);
     }
-
 
     if (cond.bad()) {
         DcmQueryRetrieveOptions::errmsg("Store SCP Failed:");
@@ -1033,7 +1032,10 @@ void DcmQueryRetrieveSCP::setDatabaseFlags(
 /*
  * CVS Log
  * $Log: dcmqrscp.cc,v $
- * Revision 1.3  2005-10-25 08:56:18  meichel
+ * Revision 1.4  2005-11-17 13:44:40  meichel
+ * Added command line options for DIMSE and ACSE timeouts
+ *
+ * Revision 1.3  2005/10/25 08:56:18  meichel
  * Updated list of UIDs and added support for new transfer syntaxes
  *   and storage SOP classes.
  *

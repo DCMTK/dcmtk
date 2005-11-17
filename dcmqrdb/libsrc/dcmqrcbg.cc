@@ -22,9 +22,9 @@
  *  Purpose: class DcmQueryRetrieveGetContext
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-06-16 08:02:43 $
+ *  Update Date:      $Date: 2005-11-17 13:44:40 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqrcbg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -245,7 +245,7 @@ OFCondition DcmQueryRetrieveGetContext::performGetSubOp(DIC_UI sopClass, DIC_UI 
     T_DIMSE_DetectedCancelParameters cancelParameters;
 
     cond = DIMSE_storeUser(origAssoc, presId, &req,
-        fname, NULL, getSubOpProgressCallback, this, DIMSE_BLOCKING, 0, 
+        fname, NULL, getSubOpProgressCallback, this, options_.blockMode_, options_.dimse_timeout_, 
 	&rsp, &stDetail, &cancelParameters);
 
 #ifdef LOCK_IMAGE_FILES
@@ -361,7 +361,10 @@ void DcmQueryRetrieveGetContext::buildFailedInstanceList(DcmDataset ** rspIds)
 /*
  * CVS Log
  * $Log: dcmqrcbg.cc,v $
- * Revision 1.3  2005-06-16 08:02:43  meichel
+ * Revision 1.4  2005-11-17 13:44:40  meichel
+ * Added command line options for DIMSE and ACSE timeouts
+ *
+ * Revision 1.3  2005/06/16 08:02:43  meichel
  * Added system include files needed on Solaris
  *
  * Revision 1.2  2005/04/04 14:23:21  meichel

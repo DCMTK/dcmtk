@@ -23,9 +23,9 @@
  *           class providers.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-16 14:59:09 $
+ *  Update Date:      $Date: 2005-11-17 13:45:41 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlmactmg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -93,7 +93,24 @@ static void AddStatusDetail( DcmDataset **statusDetail, const DcmElement *elem, 
 
 // ----------------------------------------------------------------------------
 
-WlmActivityManager::WlmActivityManager( WlmDataSource *dataSourcev, OFCmdUnsignedInt opt_portv, OFBool opt_refuseAssociationv, OFBool opt_rejectWithoutImplementationUIDv, OFCmdUnsignedInt opt_sleepAfterFindv, OFCmdUnsignedInt opt_sleepDuringFindv, OFCmdUnsignedInt opt_maxPDUv, E_TransferSyntax opt_networkTransferSyntaxv, OFBool opt_verbosev, OFBool opt_debugv, OFBool opt_failInvalidQueryv, OFBool opt_singleProcessv, int opt_maxAssociationsv, OFConsole *logStreamv )
+WlmActivityManager::WlmActivityManager( 
+    WlmDataSource *dataSourcev, 
+    OFCmdUnsignedInt opt_portv, 
+    OFBool opt_refuseAssociationv, 
+    OFBool opt_rejectWithoutImplementationUIDv, 
+    OFCmdUnsignedInt opt_sleepAfterFindv, 
+    OFCmdUnsignedInt opt_sleepDuringFindv, 
+    OFCmdUnsignedInt opt_maxPDUv, 
+    E_TransferSyntax opt_networkTransferSyntaxv, 
+    OFBool opt_verbosev, 
+    OFBool opt_debugv, 
+    OFBool opt_failInvalidQueryv, 
+    OFBool opt_singleProcessv, 
+    int opt_maxAssociationsv, 
+    T_DIMSE_BlockingMode opt_blockModev,
+    int opt_dimse_timeoutv,
+    int opt_acse_timeoutv,
+    OFConsole *logStreamv )
 // Date         : December 10, 2001
 // Author       : Thomas Wilkens
 // Task         : Constructor.
@@ -118,6 +135,7 @@ WlmActivityManager::WlmActivityManager( WlmDataSource *dataSourcev, OFCmdUnsigne
     opt_maxPDU( opt_maxPDUv ), opt_networkTransferSyntax( opt_networkTransferSyntaxv ),
     opt_verbose( opt_verbosev ), opt_debug( opt_debugv ), opt_failInvalidQuery( opt_failInvalidQueryv ),
     opt_singleProcess( opt_singleProcessv ), opt_maxAssociations( opt_maxAssociationsv ),
+    opt_blockMode(opt_blockModev), opt_dimse_timeout(opt_dimse_timeoutv), opt_acse_timeout(opt_acse_timeoutv),
     supportedAbstractSyntaxes( NULL ), numberOfSupportedAbstractSyntaxes( 0 ),
     logStream( logStreamv ), processTable( processTable )
 {
@@ -200,7 +218,7 @@ OFCondition WlmActivityManager::StartProvidingService()
 #endif
 
   // Initialize network, i.e. create an instance of T_ASC_Network*.
-  cond = ASC_initializeNetwork( NET_ACCEPTOR, (int)opt_port, 30, &net );
+  cond = ASC_initializeNetwork( NET_ACCEPTOR, (int)opt_port, opt_acse_timeout, &net );
   if( cond.bad() ) return( WLM_EC_InitializationOfNetworkConnectionFailed );
 
 #if defined(HAVE_SETUID) && defined(HAVE_GETUID)
@@ -783,7 +801,7 @@ OFCondition WlmActivityManager::HandleFindSCP( T_ASC_Association *assoc, T_DIMSE
   // (this is done whithin the callback function FindCallback() that will be passed) and send corresponding
   // C-FIND-RSP messages to the other DICOM application this application is connected with. In the end,
   // also send the C-FIND-RSP message that indicates that there are no more search results.
-  OFCondition cond = DIMSE_findProvider( assoc, presID, request, FindCallback, &context, DIMSE_BLOCKING, 0 );
+  OFCondition cond = DIMSE_findProvider( assoc, presID, request, FindCallback, &context, opt_blockMode, opt_dimse_timeout );
   if( cond.bad() ) DumpMessage( "Find SCP Failed." );
 
   // If option "--sleep-after" is set we need to sleep opt_sleepAfterFind
@@ -1261,7 +1279,10 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
 /*
 ** CVS Log
 ** $Log: wlmactmg.cc,v $
-** Revision 1.18  2005-11-16 14:59:09  meichel
+** Revision 1.19  2005-11-17 13:45:41  meichel
+** Added command line options for DIMSE and ACSE timeouts
+**
+** Revision 1.18  2005/11/16 14:59:09  meichel
 ** Set association timeout in ASC_initializeNetwork to 30 seconds. This improves
 **   the responsiveness of the tools if the peer blocks during assoc negotiation.
 **

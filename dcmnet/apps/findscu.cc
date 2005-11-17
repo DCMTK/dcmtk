@@ -22,9 +22,9 @@
  *  Purpose: Query/Retrieve Service Class User (C-FIND operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-16 14:58:07 $
+ *  Update Date:      $Date: 2005-11-17 13:45:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/findscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -90,6 +90,9 @@ static const char *     opt_abstractSyntax = UID_FINDModalityWorklistInformation
 static OFCmdSignedInt   opt_cancelAfterNResponses = -1;
 static DcmDataset *     overrideKeys = NULL;
 static E_TransferSyntax opt_networkTransferSyntax = EXS_Unknown;
+T_DIMSE_BlockingMode    opt_blockMode = DIMSE_BLOCKING;
+int                     opt_dimse_timeout = 0;
+int                     opt_acse_timeout = 30;
 
 typedef struct {
     T_ASC_Association *assoc;
@@ -297,6 +300,8 @@ main(int argc, char *argv[])
       opt4 += tempstr;
       opt4 += "]";
       cmd.addOption("--timeout",                "-to",   1, "[s]econds: integer (default: unlimited)", "timeout for connection requests");
+      cmd.addOption("--acse-timeout",           "-ta",   1, "[s]econds: integer (default: 30)", "timeout for ACSE messages");
+      cmd.addOption("--dimse-timeout",          "-td",   1, "[s]econds: integer (default: unlimited)", "timeout for DIMSE messages");
       cmd.addOption("--max-pdu",                "-pdu",  1,  opt4.c_str(), opt3.c_str());
       cmd.addOption("--repeat",                          1,  "[n]umber: integer", "repeat n times");
       cmd.addOption("--abort",                               "abort association instead of releasing it");
@@ -424,6 +429,21 @@ main(int argc, char *argv[])
         OFCmdSignedInt opt_timeout = 0;
         app.checkValue(cmd.getValueAndCheckMin(opt_timeout, 1));
         dcmConnectionTimeout.set((Sint32) opt_timeout);
+      }
+
+      if (cmd.findOption("--acse-timeout"))
+      {
+        OFCmdSignedInt opt_timeout = 0;
+        app.checkValue(cmd.getValueAndCheckMin(opt_timeout, 1));
+        opt_acse_timeout = OFstatic_cast(int, opt_timeout);
+      }
+
+      if (cmd.findOption("--dimse-timeout"))
+      {
+        OFCmdSignedInt opt_timeout = 0;
+        app.checkValue(cmd.getValueAndCheckMin(opt_timeout, 1));
+        opt_dimse_timeout = OFstatic_cast(int, opt_timeout);
+        opt_blockMode = DIMSE_NONBLOCKING;
       }
 
       if (cmd.findOption("--max-pdu")) app.checkValue(cmd.getValueAndCheckMinMax(opt_maxReceivePDULength, ASC_MINIMUMPDUSIZE, ASC_MAXIMUMPDUSIZE));
@@ -564,7 +584,7 @@ main(int argc, char *argv[])
     }
 
     /* initialize network, i.e. create an instance of T_ASC_Network*. */
-    OFCondition cond = ASC_initializeNetwork(NET_REQUESTOR, 0, 30, &net);
+    OFCondition cond = ASC_initializeNetwork(NET_REQUESTOR, 0, opt_acse_timeout, &net);
     if (cond.bad()) {
         DimseCondition::dump(cond);
         exit(1);
@@ -1076,7 +1096,7 @@ findSCU(T_ASC_Association * assoc, const char *fname)
     /* finally conduct transmission of data */
     OFCondition cond = DIMSE_findUser(assoc, presId, &req, dcmff.getDataset(),
                           progressCallback, &callbackData,
-                          DIMSE_BLOCKING, 0,
+                          opt_blockMode, opt_dimse_timeout,
                           &rsp, &statusDetail);
 
 
@@ -1140,7 +1160,10 @@ cfind(T_ASC_Association * assoc, const char *fname)
 /*
 ** CVS Log
 ** $Log: findscu.cc,v $
-** Revision 1.44  2005-11-16 14:58:07  meichel
+** Revision 1.45  2005-11-17 13:45:16  meichel
+** Added command line options for DIMSE and ACSE timeouts
+**
+** Revision 1.44  2005/11/16 14:58:07  meichel
 ** Set association timeout in ASC_initializeNetwork to 30 seconds. This improves
 **   the responsiveness of the tools if the peer blocks during assoc negotiation.
 **

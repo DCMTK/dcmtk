@@ -58,6 +58,15 @@ peer  peer host name or symbolic name from cfg file
 
 \subsection network_options network options
 \verbatim
+  -to   --timeout  [s]econds: integer (default: unlimited)
+          timeout for connection requests
+
+  -ta   --acse-timeout  [s]econds: integer (default: 30)
+          timeout for ACSE messages
+
+  -td   --dimse-timeout  [s]econds: integer (default: unlimited)
+          timeout for DIMSE messages
+
   -xi   --propose-implicit
           propose implicit VR little endian TS only
 
@@ -67,9 +76,6 @@ peer  peer host name or symbolic name from cfg file
   -pdu  --max-pdu  [n]umber of bytes: integer [4096..131072]
           set max receive pdu to n bytes
           (default: use value from configuration file)
-
-  -to   --timeout  [s]econds: integer (default: unlimited)
-          timeout for connection requests
 \endverbatim
 
 \subsection other_options other options

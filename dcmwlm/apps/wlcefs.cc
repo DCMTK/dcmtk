@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,10 +22,10 @@
  *  Purpose: Class representing a console engine for basic worklist
  *           management service class providers based on the file system.
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2005-05-04 11:33:47 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-11-17 13:45:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/wlcefs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,6 +50,7 @@
 #include "dcsequen.h"
 #include "wldsfs.h"
 #include "wlmactmg.h"
+#include "dimse.h"
 
 #include "wlcefs.h"
 
@@ -81,6 +82,7 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
     opt_maxPDU( ASC_DEFAULTMAXPDU ), opt_networkTransferSyntax( EXS_Unknown ),
     opt_verbose( OFFalse ), opt_debug( OFFalse ), opt_failInvalidQuery( OFTrue ), opt_singleProcess( OFTrue ),
     opt_maxAssociations( 50 ), opt_noSequenceExpansion( OFFalse ), opt_enableRejectionOfIncompleteWlFiles( OFTrue ),
+    opt_blockMode(DIMSE_BLOCKING), opt_dimse_timeout(0), opt_acse_timeout(30),
     app( NULL ), cmd( NULL ), dataSource( dataSourcev )
 {
   // Initialize application identification string.
@@ -139,6 +141,9 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
 #endif
 
     cmd->addSubGroup("other network options:");
+      cmd->addOption("--acse-timeout",           "-ta", 1, "[s]econds: integer (default: 30)", "timeout for ACSE messages");
+      cmd->addOption("--dimse-timeout",          "-td", 1, "[s]econds: integer (default: unlimited)", "timeout for DIMSE messages");
+
       OFString opt6 = "[a]ssocs: integer (default: ";
       sprintf(tempstr, "%ld", (long)opt_maxAssociations);
       opt6 += tempstr;
@@ -229,6 +234,22 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
     if (cmd->findOption("--access-control")) dcmTCPWrapperDaemonName.set(applicationName);
     cmd->endOptionBlock();
 #endif
+
+    if (cmd->findOption("--acse-timeout"))
+    {
+      OFCmdSignedInt opt_timeout = 0;
+      app->checkValue(cmd->getValueAndCheckMin(opt_timeout, 1));
+      opt_acse_timeout = OFstatic_cast(int, opt_timeout);
+    }
+
+    if (cmd->findOption("--dimse-timeout"))
+    {
+      OFCmdSignedInt opt_timeout = 0;
+      app->checkValue(cmd->getValueAndCheckMin(opt_timeout, 1));
+      opt_dimse_timeout = OFstatic_cast(int, opt_timeout);
+      opt_blockMode = DIMSE_NONBLOCKING;
+    }
+
     if( cmd->findOption("--max-associations") ) 
     {
         OFCmdSignedInt maxAssoc = 1;
@@ -310,14 +331,16 @@ int WlmConsoleEngineFileSystem::StartProvidingService()
   }
 
   // start providing the basic worklist management service
-  WlmActivityManager *activityManager = new WlmActivityManager( dataSource, opt_port,
-                                                                opt_refuseAssociation,
-                                                                opt_rejectWithoutImplementationUID,
-                                                                opt_sleepAfterFind, opt_sleepDuringFind,
-                                                                opt_maxPDU, opt_networkTransferSyntax,
-                                                                opt_verbose, opt_debug, opt_failInvalidQuery,
-                                                                opt_singleProcess, opt_maxAssociations,
-                                                                &ofConsole );
+  WlmActivityManager *activityManager = new WlmActivityManager( 
+      dataSource, opt_port,
+      opt_refuseAssociation,
+      opt_rejectWithoutImplementationUID,
+      opt_sleepAfterFind, opt_sleepDuringFind,
+      opt_maxPDU, opt_networkTransferSyntax,
+      opt_verbose, opt_debug, opt_failInvalidQuery,
+      opt_singleProcess, opt_maxAssociations,
+      opt_blockMode, opt_dimse_timeout, opt_acse_timeout,
+      &ofConsole );
   cond = activityManager->StartProvidingService();
   if( cond.bad() )
   {
@@ -375,7 +398,10 @@ void WlmConsoleEngineFileSystem::DumpMessage( const char *message )
 /*
 ** CVS Log
 ** $Log: wlcefs.cc,v $
-** Revision 1.8  2005-05-04 11:33:47  wilkens
+** Revision 1.9  2005-11-17 13:45:34  meichel
+** Added command line options for DIMSE and ACSE timeouts
+**
+** Revision 1.8  2005/05/04 11:33:47  wilkens
 ** Added two command line options --enable-file-reject (default) and
 ** --disable-file-reject to wlmscpfs: these options can be used to enable or
 ** disable a file rejection mechanism which makes sure only complete worklist files

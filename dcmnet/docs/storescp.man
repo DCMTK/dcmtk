@@ -104,6 +104,12 @@ other network options:
           run from inetd super server
           (this option is available only on Posix platforms)
 
+  -ta   --acse-timeout  [s]econds: integer (default: 30)
+          timeout for ACSE messages
+
+  -td   --dimse-timeout  [s]econds: integer (default: unlimited)
+          timeout for DIMSE messages
+
   -aet  --aetitle  aetitle: string
           set my AE title (default: STORESCP)
 

@@ -22,9 +22,9 @@
  *  Purpose: class DcmQueryRetrieveOptions
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-03-30 13:34:50 $
+ *  Update Date:      $Date: 2005-11-17 13:44:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/include/Attic/dcmqropt.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,7 +42,7 @@
 #include "assoc.h"
 #include "dcmqrcnf.h"
 #include "ofconapp.h"
-
+#include "dimse.h"
 
 /// invalid peer for move operation
 extern const OFCondition APP_INVALIDPEER;
@@ -152,6 +152,16 @@ public:
 
   /// transfer syntax for writing
   E_TransferSyntax  	writeTransferSyntax_;
+  
+  /// blocking mode for DIMSE operations
+  T_DIMSE_BlockingMode blockMode_;
+
+  /// timeout for DIMSE operations
+  int dimse_timeout_;
+
+  /// timeout for ACSE operations
+  int acse_timeout_;
+  
 };            		
 
 
@@ -160,7 +170,10 @@ public:
 /*
  * CVS Log
  * $Log: dcmqropt.h,v $
- * Revision 1.1  2005-03-30 13:34:50  meichel
+ * Revision 1.2  2005-11-17 13:44:37  meichel
+ * Added command line options for DIMSE and ACSE timeouts
+ *
+ * Revision 1.1  2005/03/30 13:34:50  meichel
  * Initial release of module dcmqrdb that will replace module imagectn.
  *   It provides a clear interface between the Q/R DICOM front-end and the
  *   database back-end. The imagectn code has been re-factored into a minimal

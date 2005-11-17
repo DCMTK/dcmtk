@@ -22,9 +22,9 @@
  *  Purpose: Image Server Central Test Node (ctn) Main Program
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-16 14:59:00 $
+ *  Update Date:      $Date: 2005-11-17 13:44:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/apps/dcmqrscp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -210,6 +210,8 @@ main(int argc, char *argv[])
 
     cmd.addSubGroup("other network options:");
       cmd.addOption("--timeout",                "-to",    1, "[s]econds: integer (default: unlimited)", "timeout for connection requests");
+      cmd.addOption("--acse-timeout",           "-ta", 1, "[s]econds: integer (default: 30)", "timeout for ACSE messages");
+      cmd.addOption("--dimse-timeout",          "-td", 1, "[s]econds: integer (default: unlimited)", "timeout for DIMSE messages");
       OFString opt3 = "set max receive pdu to n bytes (default: ";
       sprintf(tempstr, "%ld", (long)ASC_DEFAULTMAXPDU);
       opt3 += tempstr;
@@ -346,6 +348,21 @@ main(int argc, char *argv[])
         OFCmdSignedInt opt_timeout = 0;
         app.checkValue(cmd.getValueAndCheckMin(opt_timeout, 1));
         dcmConnectionTimeout.set((Sint32) opt_timeout);
+      }
+
+      if (cmd.findOption("--acse-timeout"))
+      {
+        OFCmdSignedInt opt_timeout = 0;
+        app.checkValue(cmd.getValueAndCheckMin(opt_timeout, 1));
+        options.acse_timeout_ = OFstatic_cast(int, opt_timeout);
+      }
+
+      if (cmd.findOption("--dimse-timeout"))
+      {
+        OFCmdSignedInt opt_timeout = 0;
+        app.checkValue(cmd.getValueAndCheckMin(opt_timeout, 1));
+        options.dimse_timeout_ = OFstatic_cast(int, opt_timeout);
+        options.blockMode_ = DIMSE_NONBLOCKING;
       }
 
       if (cmd.findOption("--max-pdu")) app.checkValue(cmd.getValueAndCheckMinMax(overrideMaxPDU, ASC_MINIMUMPDUSIZE, ASC_MAXIMUMPDUSIZE));
@@ -485,7 +502,7 @@ main(int argc, char *argv[])
     }
 #endif
 
-    cond = ASC_initializeNetwork(NET_ACCEPTORREQUESTOR, (int)opt_port, 30, &options.net_);
+    cond = ASC_initializeNetwork(NET_ACCEPTORREQUESTOR, (int)opt_port, options.acse_timeout_, &options.net_);
     if (cond.bad()) {
     errmsg("Error initialising network:");
     DimseCondition::dump(cond);
@@ -571,7 +588,10 @@ main(int argc, char *argv[])
 /*
  * CVS Log
  * $Log: dcmqrscp.cc,v $
- * Revision 1.3  2005-11-16 14:59:00  meichel
+ * Revision 1.4  2005-11-17 13:44:59  meichel
+ * Added command line options for DIMSE and ACSE timeouts
+ *
+ * Revision 1.3  2005/11/16 14:59:00  meichel
  * Set association timeout in ASC_initializeNetwork to 30 seconds. This improves
  *   the responsiveness of the tools if the peer blocks during assoc negotiation.
  *

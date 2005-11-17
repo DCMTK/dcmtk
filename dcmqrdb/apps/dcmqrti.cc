@@ -22,9 +22,9 @@
  *  Purpose: Telnet Initiator (ti) Main Program
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-16 14:59:00 $
+ *  Update Date:      $Date: 2005-11-17 13:44:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/apps/dcmqrti.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -94,6 +94,7 @@ int main( int argc, char *argv[] )
   int remoteDBTitlesCount = 0;
   const char *configFileName = "dcmqrdb.cfg";
   E_TransferSyntax networkTransferSyntax = EXS_Unknown;
+  int opt_acse_timeout = 30;
 
   const char *currentPeer = NULL, **vendorHosts, **aeTitleList;
   OFBool noCommandLineValueForMaxReceivePDULength = OFTrue;
@@ -136,6 +137,10 @@ int main( int argc, char *argv[] )
     cmd.addOption( "--config",                    "-c",   1, "[f]ilename: string", opt0.c_str() );
 
   cmd.addGroup( "network options:" );
+    cmd.addOption( "--timeout",                   "-to",  1, "[s]econds: integer (default: unlimited)", "timeout for connection requests");
+      cmd.addOption("--acse-timeout",  "-ta", 1, "[s]econds: integer (default: 30)", "timeout for ACSE messages");
+      cmd.addOption("--dimse-timeout", "-td", 1, "[s]econds: integer (default: unlimited)", "timeout for DIMSE messages");
+
     cmd.addOption( "--propose-implicit",          "-xi",     "propose implicit VR little endian TS only" );
     OFString opt1 = "set my AE title (default: ";
     opt1 += APPLICATIONTITLE;
@@ -149,7 +154,6 @@ int main( int argc, char *argv[] )
     opt2 += tempstr;
     opt2 += "]";
     cmd.addOption( "--max-pdu",                   "-pdu", 1,  opt2.c_str(), "set max receive pdu to n bytes\n(default: use value from configuration file)" );
-    cmd.addOption( "--timeout",                   "-to",  1, "[s]econds: integer (default: unlimited)", "timeout for connection requests");
 
   cmd.addGroup( "other options:" );
     cmd.addOption( "--disable-new-vr",            "-u",       "disable support for new VRs, convert to OB" );
@@ -213,6 +217,20 @@ int main( int argc, char *argv[] )
       OFCmdSignedInt opt_timeout = 0;
       app.checkValue(cmd.getValueAndCheckMin(opt_timeout, 1));
       dcmConnectionTimeout.set((Sint32) opt_timeout);
+    }
+
+    if (cmd.findOption("--acse-timeout"))
+    {
+      OFCmdSignedInt opt_timeout = 0;
+      app.checkValue(cmd.getValueAndCheckMin(opt_timeout, 1));
+      opt_acse_timeout = OFstatic_cast(int, opt_timeout);
+    }
+
+    if (cmd.findOption("--dimse-timeout"))
+    {
+      OFCmdSignedInt opt_timeout = 0;
+      app.checkValue(cmd.getValueAndCheckMin(opt_timeout, 1));
+      conf.setBlockMode(DIMSE_NONBLOCKING, OFstatic_cast(int, opt_timeout));
     }
 
     if( cmd.findOption("--disable-new-vr") )
@@ -326,7 +344,7 @@ int main( int argc, char *argv[] )
           CERR << "Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
 
         // if starting up network is successful
-        cond = ASC_initializeNetwork( NET_REQUESTOR, 0, 30, conf.accessNet() );
+        cond = ASC_initializeNetwork( NET_REQUESTOR, 0, opt_acse_timeout, conf.accessNet() );
         if( cond.good() )
         {
           // set interrupts for signal handling
@@ -394,7 +412,10 @@ int main( int argc, char *argv[] )
 /*
  * CVS Log
  * $Log: dcmqrti.cc,v $
- * Revision 1.3  2005-11-16 14:59:00  meichel
+ * Revision 1.4  2005-11-17 13:44:59  meichel
+ * Added command line options for DIMSE and ACSE timeouts
+ *
+ * Revision 1.3  2005/11/16 14:59:00  meichel
  * Set association timeout in ASC_initializeNetwork to 30 seconds. This improves
  *   the responsiveness of the tools if the peer blocks during assoc negotiation.
  *

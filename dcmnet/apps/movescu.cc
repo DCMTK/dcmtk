@@ -22,9 +22,9 @@
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-16 14:58:07 $
+ *  Update Date:      $Date: 2005-11-17 13:45:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.56 $
+ *  CVS/RCS Revision: $Revision: 1.57 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -112,6 +112,9 @@ OFBool            opt_abortAssociation = OFFalse;
 const char *      opt_moveDestination = NULL;
 OFCmdSignedInt    opt_cancelAfterNResponses = -1;
 QueryModel        opt_queryModel = QMPatientRoot;
+T_DIMSE_BlockingMode opt_blockMode = DIMSE_BLOCKING;
+int               opt_dimse_timeout = 0;
+int               opt_acse_timeout = 30;
 
 static T_ASC_Network *net = NULL; /* the global DICOM network */
 static DcmDataset *overrideKeys = NULL;
@@ -315,6 +318,9 @@ main(int argc, char *argv[])
 
     cmd.addSubGroup("other network options:");
       cmd.addOption("--timeout",                "-to", 1,    "[s]econds: integer (default: unlimited)", "timeout for connection requests");
+      cmd.addOption("--acse-timeout",           "-ta", 1,    "[s]econds: integer (default: 30)", "timeout for ACSE messages");
+      cmd.addOption("--dimse-timeout",          "-td", 1,    "[s]econds: integer (default: unlimited)", "timeout for DIMSE messages");
+
       OFString opt3 = "set max receive pdu to n bytes (default: ";
       sprintf(tempstr, "%ld", (long)ASC_DEFAULTMAXPDU);
       opt3 += tempstr;
@@ -442,6 +448,21 @@ main(int argc, char *argv[])
         OFCmdSignedInt opt_timeout = 0;
         app.checkValue(cmd.getValueAndCheckMin(opt_timeout, 1));
         dcmConnectionTimeout.set((Sint32) opt_timeout);
+      }
+
+      if (cmd.findOption("--acse-timeout"))
+      {
+        OFCmdSignedInt opt_timeout = 0;
+        app.checkValue(cmd.getValueAndCheckMin(opt_timeout, 1));
+        opt_acse_timeout = OFstatic_cast(int, opt_timeout);
+      }
+
+      if (cmd.findOption("--dimse-timeout"))
+      {
+        OFCmdSignedInt opt_timeout = 0;
+        app.checkValue(cmd.getValueAndCheckMin(opt_timeout, 1));
+        opt_dimse_timeout = OFstatic_cast(int, opt_timeout);
+        opt_blockMode = DIMSE_NONBLOCKING;
       }
 
       if (cmd.findOption("--port"))    app.checkValue(cmd.getValueAndCheckMinMax(opt_retrievePort, 1, 65535));
@@ -598,7 +619,7 @@ main(int argc, char *argv[])
 
     /* network for move request and responses */
     T_ASC_NetworkRole role = (opt_retrievePort > 0) ? NET_ACCEPTORREQUESTOR : NET_REQUESTOR;
-    OFCondition cond = ASC_initializeNetwork(role, OFstatic_cast(int, opt_retrievePort), 30, &net);
+    OFCondition cond = ASC_initializeNetwork(role, OFstatic_cast(int, opt_retrievePort), opt_acse_timeout, &net);
     if (cond.bad())
     {
         errmsg("cannot create network:");
@@ -1126,10 +1147,10 @@ static OFCondition storeSCP(
     if (opt_bitPreserving)
     {
       cond = DIMSE_storeProvider(assoc, presID, req, imageFileName, opt_useMetaheader,
-        NULL, storeSCPCallback, (void*)&callbackData, DIMSE_BLOCKING, 0);
+        NULL, storeSCPCallback, (void*)&callbackData, opt_blockMode, opt_dimse_timeout);
     } else {
       cond = DIMSE_storeProvider(assoc, presID, req, (char *)NULL, opt_useMetaheader,
-        &dset, storeSCPCallback, (void*)&callbackData, DIMSE_BLOCKING, 0);
+        &dset, storeSCPCallback, (void*)&callbackData, opt_blockMode, opt_dimse_timeout);
     }
 
     if (cond.bad())
@@ -1163,7 +1184,7 @@ subOpSCP(T_ASC_Association **subAssoc)
     if (!ASC_dataWaiting(*subAssoc, 0)) /* just in case */
         return DIMSE_NODATAAVAILABLE;
 
-    OFCondition cond = DIMSE_receiveCommand(*subAssoc, DIMSE_BLOCKING, 0, &presID,
+    OFCondition cond = DIMSE_receiveCommand(*subAssoc, opt_blockMode, opt_dimse_timeout, &presID,
             &msg, NULL);
 
     if (cond == EC_Normal) {
@@ -1328,7 +1349,7 @@ moveSCU(T_ASC_Association * assoc, const char *fname)
     }
 
     OFCondition cond = DIMSE_moveUser(assoc, presId, &req, dcmff.getDataset(),
-        moveCallback, &callbackData, DIMSE_BLOCKING, 0,
+        moveCallback, &callbackData, opt_blockMode, opt_dimse_timeout,
         net, subOpCallback, NULL,
         &rsp, &statusDetail, &rspIds);
 
@@ -1373,7 +1394,10 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.56  2005-11-16 14:58:07  meichel
+** Revision 1.57  2005-11-17 13:45:16  meichel
+** Added command line options for DIMSE and ACSE timeouts
+**
+** Revision 1.56  2005/11/16 14:58:07  meichel
 ** Set association timeout in ASC_initializeNetwork to 30 seconds. This improves
 **   the responsiveness of the tools if the peer blocks during assoc negotiation.
 **
