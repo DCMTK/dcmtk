@@ -22,9 +22,9 @@
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-17 13:45:16 $
+ *  Update Date:      $Date: 2005-11-22 16:44:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.57 $
+ *  CVS/RCS Revision: $Revision: 1.58 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -115,6 +115,7 @@ QueryModel        opt_queryModel = QMPatientRoot;
 T_DIMSE_BlockingMode opt_blockMode = DIMSE_BLOCKING;
 int               opt_dimse_timeout = 0;
 int               opt_acse_timeout = 30;
+OFBool            opt_ignorePendingDatasets = OFTrue;
 
 static T_ASC_Network *net = NULL; /* the global DICOM network */
 static DcmDataset *overrideKeys = NULL;
@@ -315,6 +316,9 @@ main(int argc, char *argv[])
       cmd.addOption("--no-port",                "-P",        "No port for incoming associations (default)");
       cmd.addOption("--port",                   "+P",    1,  "[n]umber: integer",
                                                              "port number for incoming associations");
+    cmd.addSubGroup("handling of illegal datasets following 'pending' move responses:");
+      cmd.addOption("--pending-ignore",         "-pi",        "Assume no dataset present (default)");
+      cmd.addOption("--pending-read",           "-pr",        "Read and ignore dataset");
 
     cmd.addSubGroup("other network options:");
       cmd.addOption("--timeout",                "-to", 1,    "[s]econds: integer (default: unlimited)", "timeout for connection requests");
@@ -465,7 +469,16 @@ main(int argc, char *argv[])
         opt_blockMode = DIMSE_NONBLOCKING;
       }
 
+      cmd.beginOptionBlock();
       if (cmd.findOption("--port"))    app.checkValue(cmd.getValueAndCheckMinMax(opt_retrievePort, 1, 65535));
+      if (cmd.findOption("--no-port")) { /* do nothing */ }
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--pending-ignore")) opt_ignorePendingDatasets = OFTrue;
+      if (cmd.findOption("--pending-read")) opt_ignorePendingDatasets = OFFalse;
+      cmd.endOptionBlock();
+
       if (cmd.findOption("--max-pdu")) app.checkValue(cmd.getValueAndCheckMinMax(opt_maxPDU, ASC_MINIMUMPDUSIZE, ASC_MAXIMUMPDUSIZE));
       if (cmd.findOption("--disable-host-lookup")) dcmDisableGethostbyaddr.set(OFTrue);
       if (cmd.findOption("--repeat"))  app.checkValue(cmd.getValueAndCheckMin(opt_repeatCount, 1));
@@ -1351,7 +1364,7 @@ moveSCU(T_ASC_Association * assoc, const char *fname)
     OFCondition cond = DIMSE_moveUser(assoc, presId, &req, dcmff.getDataset(),
         moveCallback, &callbackData, opt_blockMode, opt_dimse_timeout,
         net, subOpCallback, NULL,
-        &rsp, &statusDetail, &rspIds);
+        &rsp, &statusDetail, &rspIds, opt_ignorePendingDatasets);
 
     if (cond == EC_Normal) {
         if (opt_verbose) {
@@ -1394,7 +1407,11 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.57  2005-11-17 13:45:16  meichel
+** Revision 1.58  2005-11-22 16:44:35  meichel
+** Added option to movescu that allows graceful handling of Move SCPs
+**   that send illegal datasets following pending C-MOVE-RSP messages.
+**
+** Revision 1.57  2005/11/17 13:45:16  meichel
 ** Added command line options for DIMSE and ACSE timeouts
 **
 ** Revision 1.56  2005/11/16 14:58:07  meichel

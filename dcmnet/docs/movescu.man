@@ -139,10 +139,20 @@ network host access control (tcp wrapper) options:
           enforce host access control rules
 
 port for incoming network associations:
+
   -P    --no-port
           No port for incoming associations (default)
+
   +P    --port  [n]umber: integer
           port number for incoming associations
+
+handling of illegal datasets following 'pending' move responses:
+
+  -pi   --pending-ignore
+          Assume no dataset present (default)
+
+  -pr   --pending-read
+          Read and ignore dataset
 
 other network options:
 

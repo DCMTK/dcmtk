@@ -57,9 +57,9 @@
 **      Module Prefix: DIMSE_
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2002-11-27 13:04:41 $
+** Update Date:         $Date: 2005-11-22 16:44:47 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimmove.cc,v $
-** CVS/RCS Revision:    $Revision: 1.10 $
+** CVS/RCS Revision:    $Revision: 1.11 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -145,7 +145,8 @@ DIMSE_moveUser(
         DIMSE_SubOpProviderCallback subOpCallback, void *subOpCallbackData,
         /* out */
         T_DIMSE_C_MoveRSP *response, DcmDataset **statusDetail,
-        DcmDataset **rspIds)
+        DcmDataset **rspIds,
+        OFBool ignorePendingDatasets)
 {
     T_DIMSE_Message req, rsp;
     DIC_US msgId;
@@ -233,11 +234,29 @@ DIMSE_moveUser(
                 delete *statusDetail;
                 *statusDetail = NULL;
             }
-            if (response->DataSetType != DIMSE_DATASET_NULL) {
-                DIMSE_warning(assoc, 
-                    "moveUser: Status Pending, but DataSetType!=NULL");
-                DIMSE_warning(assoc, 
-                    "  Assuming NO response identifiers are present");
+            if (response->DataSetType != DIMSE_DATASET_NULL) 
+            {
+                DIMSE_warning(assoc, "moveUser: Status Pending, but DataSetType!=NULL");
+                if (! ignorePendingDatasets)
+                {
+                    // Some systems send an (illegal) dataset following C-MOVE-RSP messages
+                    // with pending status, which is a protocol violation, but we need to
+                    // handle this nevertheless. The MV300 has been reported to exhibit
+                    // this behavior.
+                    DIMSE_warning(assoc, "  Reading but ignoring response identifier set");
+                    DcmDataset *tempset = NULL;
+                    cond = DIMSE_receiveDataSetInMemory(assoc, blockMode, timeout, &presID, &tempset, NULL, NULL);
+                    delete tempset;                
+                    if (cond != EC_Normal) {
+                        return cond;
+                    }
+                }
+                else
+                {
+                    // The alternative is to assume that the command set is wrong
+                    // and not to read a dataset from the network association.
+                    DIMSE_warning(assoc, "  Assuming NO response identifiers are present");
+                }
             }
 
             /* execute callback */
@@ -428,7 +447,11 @@ DIMSE_moveProvider(
 /*
 ** CVS Log
 ** $Log: dimmove.cc,v $
-** Revision 1.10  2002-11-27 13:04:41  meichel
+** Revision 1.11  2005-11-22 16:44:47  meichel
+** Added option to movescu that allows graceful handling of Move SCPs
+**   that send illegal datasets following pending C-MOVE-RSP messages.
+**
+** Revision 1.10  2002/11/27 13:04:41  meichel
 ** Adapted module dcmnet to use of new header file ofstdinc.h
 **
 ** Revision 1.9  2001/10/12 10:18:35  meichel

@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2005-02-22 09:40:55 $
+** Update Date:		$Date: 2005-11-22 16:44:44 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/dimse.h,v $
-** CVS/RCS Revision:	$Revision: 1.15 $
+** CVS/RCS Revision:	$Revision: 1.16 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -816,7 +816,8 @@ DIMSE_moveUser(
 	DIMSE_SubOpProviderCallback subOpCallback, void *subOpCallbackData,
 	/* out */
 	T_DIMSE_C_MoveRSP *response, DcmDataset **statusDetail,
-        DcmDataset **responseIdentifers);
+        DcmDataset **responseIdentifers,
+        OFBool ignorePendingDatasets = OFFalse);
 	
 typedef void (*DIMSE_MoveProviderCallback)(
 	/* in */ 
@@ -1032,7 +1033,11 @@ void DIMSE_printMessage(ostream& outstream, T_DIMSE_Message &msg, DcmItem *datas
 /*
 ** CVS Log
 ** $Log: dimse.h,v $
-** Revision 1.15  2005-02-22 09:40:55  meichel
+** Revision 1.16  2005-11-22 16:44:44  meichel
+** Added option to movescu that allows graceful handling of Move SCPs
+**   that send illegal datasets following pending C-MOVE-RSP messages.
+**
+** Revision 1.15  2005/02/22 09:40:55  meichel
 ** Fixed two bugs in "bit-preserving" Store SCP code. Errors while creating or
 **   writing the DICOM file (e.g. file system full) now result in a DIMSE error
 **   response (out of resources) being sent back to the SCU.
