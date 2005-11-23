@@ -144,7 +144,7 @@ IF(WITH_OPENSSL AND WITH_OPENSSLINC)
   SET(OPENSSL_BINDIR ${WITH_OPENSSLINC}/bin)
   SET(OPENSSL_INCDIR ${WITH_OPENSSLINC}/include)
   SET(OPENSSL_LIBDIR ${WITH_OPENSSLINC}/lib)
-  SET(OPENSSL_LIBS debug ssleay32_d.lib optimized ssleay32_o.lib debug libeay32_d.lib optimized libeay32_o.lib)
+  SET(OPENSSL_LIBS debug dcmtkssl_d.lib optimized dcmtkssl_o.lib debug dcmtkeay_d.lib optimized dcmtkeay_o.lib)
 ENDIF(WITH_OPENSSL AND WITH_OPENSSLINC)
 # zlib support
 IF(WITH_ZLIB AND WITH_ZLIBINC)

@@ -14,7 +14,7 @@ FOREACH(PROGRAM echoscu findscu movescu storescp storescu termscu)
   INSTALL_TARGETS(${INSTALL_BINDIR} ${PROGRAM})
 ENDFOREACH(PROGRAM)
 IF(WITH_OPENSSL)
-  INSTALL_FILES(${INSTALL_BINDIR} FILES ${OPENSSL_BINDIR}/libeay32.dll ${OPENSSL_BINDIR}/ssleay32.dll)
+  INSTALL_FILES(${INSTALL_BINDIR} FILES ${OPENSSL_BINDIR}/dcmtkeay.dll ${OPENSSL_BINDIR}/dcmtkssl.dll)
 ENDIF(WITH_OPENSSL)
 
 # make sure executables are linked to the corresponding libraries
