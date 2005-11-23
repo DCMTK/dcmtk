@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-16 14:58:24 $
- *  CVS/RCS Revision: $Revision: 1.152 $
+ *  Update Date:      $Date: 2005-11-23 16:10:34 $
+ *  CVS/RCS Revision: $Revision: 1.153 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -3811,7 +3811,11 @@ OFCondition DVInterface::terminatePrintServer()
           if (tlsCACertificateFolder==NULL) tlsCACertificateFolder = ".";
 
           /* ciphersuites */
+#if OPENSSL_VERSION_NUMBER >= 0x0090700fL
+          OFString tlsCiphersuites(TLS1_TXT_RSA_WITH_AES_128_SHA ":" SSL3_TXT_RSA_DES_192_CBC3_SHA);
+#else
           OFString tlsCiphersuites(SSL3_TXT_RSA_DES_192_CBC3_SHA);
+#endif
           Uint32 tlsNumberOfCiphersuites = getTargetNumberOfCipherSuites(target);
           if (tlsNumberOfCiphersuites > 0)
           {
@@ -4384,7 +4388,11 @@ void DVInterface::disableImageAndPState()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.152  2005-11-16 14:58:24  meichel
+ *  Revision 1.153  2005-11-23 16:10:34  meichel
+ *  Added support for AES ciphersuites in TLS module. All TLS-enabled
+ *    tools now support the "AES TLS Secure Transport Connection Profile".
+ *
+ *  Revision 1.152  2005/11/16 14:58:24  meichel
  *  Set association timeout in ASC_initializeNetwork to 30 seconds. This improves
  *    the responsiveness of the tools if the peer blocks during assoc negotiation.
  *

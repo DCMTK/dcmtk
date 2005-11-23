@@ -22,9 +22,9 @@
  *  Purpose: Query/Retrieve Service Class User (C-FIND operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-17 13:45:16 $
+ *  Update Date:      $Date: 2005-11-23 16:10:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/findscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.45 $
+ *  CVS/RCS Revision: $Revision: 1.46 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -218,7 +218,11 @@ main(int argc, char *argv[])
     const char *opt_privateKeyFile = NULL;
     const char *opt_certificateFile = NULL;
     const char *opt_passwd = NULL;
+#if OPENSSL_VERSION_NUMBER >= 0x0090700fL
+    OFString    opt_ciphersuites(TLS1_TXT_RSA_WITH_AES_128_SHA ":" SSL3_TXT_RSA_DES_192_CBC3_SHA);
+#else
     OFString    opt_ciphersuites(SSL3_TXT_RSA_DES_192_CBC3_SHA);
+#endif
     const char *opt_readSeedFile = NULL;
     const char *opt_writeSeedFile = NULL;
     DcmCertificateVerification opt_certVerification = DCV_requireCertificate;
@@ -1160,7 +1164,11 @@ cfind(T_ASC_Association * assoc, const char *fname)
 /*
 ** CVS Log
 ** $Log: findscu.cc,v $
-** Revision 1.45  2005-11-17 13:45:16  meichel
+** Revision 1.46  2005-11-23 16:10:23  meichel
+** Added support for AES ciphersuites in TLS module. All TLS-enabled
+**   tools now support the "AES TLS Secure Transport Connection Profile".
+**
+** Revision 1.45  2005/11/17 13:45:16  meichel
 ** Added command line options for DIMSE and ACSE timeouts
 **
 ** Revision 1.44  2005/11/16 14:58:07  meichel

@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-16 14:58:23 $
+ *  Update Date:      $Date: 2005-11-23 16:10:32 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsrcv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.48 $
+ *  CVS/RCS Revision: $Revision: 1.49 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -806,7 +806,11 @@ static void terminateAllReceivers(DVConfiguration& dvi, OFBool opt_verbose)
       if (tlsCACertificateFolder==NULL) tlsCACertificateFolder = ".";
 
       /* ciphersuites */
+#if OPENSSL_VERSION_NUMBER >= 0x0090700fL
+      OFString tlsCiphersuites(TLS1_TXT_RSA_WITH_AES_128_SHA ":" SSL3_TXT_RSA_DES_192_CBC3_SHA);
+#else
       OFString tlsCiphersuites(SSL3_TXT_RSA_DES_192_CBC3_SHA);
+#endif
       Uint32 tlsNumberOfCiphersuites = dvi.getTargetNumberOfCipherSuites(recID);
       if (tlsNumberOfCiphersuites > 0)
       {
@@ -1060,7 +1064,11 @@ int main(int argc, char *argv[])
     if (! dvi.getTLSPEMFormat()) keyFileFormat = SSL_FILETYPE_ASN1;
 
     /* ciphersuites */
+#if OPENSSL_VERSION_NUMBER >= 0x0090700fL
+    OFString tlsCiphersuites(TLS1_TXT_RSA_WITH_AES_128_SHA ":" SSL3_TXT_RSA_DES_192_CBC3_SHA);
+#else
     OFString tlsCiphersuites(SSL3_TXT_RSA_DES_192_CBC3_SHA);
+#endif
     Uint32 tlsNumberOfCiphersuites = dvi.getTargetNumberOfCipherSuites(opt_cfgID);
     if (tlsNumberOfCiphersuites > 0)
     {
@@ -1485,7 +1493,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsrcv.cc,v $
- * Revision 1.48  2005-11-16 14:58:23  meichel
+ * Revision 1.49  2005-11-23 16:10:32  meichel
+ * Added support for AES ciphersuites in TLS module. All TLS-enabled
+ *   tools now support the "AES TLS Secure Transport Connection Profile".
+ *
+ * Revision 1.48  2005/11/16 14:58:23  meichel
  * Set association timeout in ASC_initializeNetwork to 30 seconds. This improves
  *   the responsiveness of the tools if the peer blocks during assoc negotiation.
  *

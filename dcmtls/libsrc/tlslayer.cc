@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DcmTLSTransportLayer
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-12-18 17:16:05 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2005-11-23 16:10:28 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,6 +44,7 @@ BEGIN_EXTERN_C
 #include <winbase.h>
 #endif
 #include <openssl/rand.h>
+#include <openssl/err.h>
 END_EXTERN_C
 
 #include "tlslayer.h"
@@ -89,21 +90,21 @@ struct DcmCipherSuiteList
 
 static const DcmCipherSuiteList cipherSuiteList[] =
 {
-    {"TLS_RSA_WITH_NULL_MD5", 			SSL3_TXT_RSA_NULL_MD5},
-    {"TLS_RSA_WITH_NULL_SHA", 			SSL3_TXT_RSA_NULL_SHA},
-    {"TLS_RSA_EXPORT_WITH_RC4_40_MD5", 		SSL3_TXT_RSA_RC4_40_MD5},
-    {"TLS_RSA_WITH_RC4_128_MD5", 		SSL3_TXT_RSA_RC4_128_MD5},
-    {"TLS_RSA_WITH_RC4_128_SHA", 		SSL3_TXT_RSA_RC4_128_SHA},
-    {"TLS_RSA_EXPORT_WITH_RC2_CBC_40_MD5", 	SSL3_TXT_RSA_RC2_40_MD5},
-    {"TLS_RSA_WITH_IDEA_CBC_SHA", 		SSL3_TXT_RSA_IDEA_128_SHA},
-    {"TLS_RSA_EXPORT_WITH_DES40_CBC_SHA", 	SSL3_TXT_RSA_DES_40_CBC_SHA},
-    {"TLS_RSA_WITH_DES_CBC_SHA", 		SSL3_TXT_RSA_DES_64_CBC_SHA},
-    {"TLS_RSA_WITH_3DES_EDE_CBC_SHA", 		SSL3_TXT_RSA_DES_192_CBC3_SHA},
-    {"TLS_DH_DSS_EXPORT_WITH_DES40_CBC_SHA", 	SSL3_TXT_DH_DSS_DES_40_CBC_SHA},
-    {"TLS_DH_DSS_WITH_DES_CBC_SHA", 		SSL3_TXT_DH_DSS_DES_64_CBC_SHA},
-    {"TLS_DH_DSS_WITH_3DES_EDE_CBC_SHA", 	SSL3_TXT_DH_DSS_DES_192_CBC3_SHA},
-    {"TLS_DH_RSA_EXPORT_WITH_DES40_CBC_SHA", 	SSL3_TXT_DH_RSA_DES_40_CBC_SHA},
-    {"TLS_DH_RSA_WITH_DES_CBC_SHA", 		SSL3_TXT_DH_RSA_DES_64_CBC_SHA},
+    {"TLS_RSA_WITH_NULL_MD5",                   SSL3_TXT_RSA_NULL_MD5},
+    {"TLS_RSA_WITH_NULL_SHA",                   SSL3_TXT_RSA_NULL_SHA},
+    {"TLS_RSA_EXPORT_WITH_RC4_40_MD5",          SSL3_TXT_RSA_RC4_40_MD5},
+    {"TLS_RSA_WITH_RC4_128_MD5",                SSL3_TXT_RSA_RC4_128_MD5},
+    {"TLS_RSA_WITH_RC4_128_SHA",                SSL3_TXT_RSA_RC4_128_SHA},
+    {"TLS_RSA_EXPORT_WITH_RC2_CBC_40_MD5",      SSL3_TXT_RSA_RC2_40_MD5},
+    {"TLS_RSA_WITH_IDEA_CBC_SHA",               SSL3_TXT_RSA_IDEA_128_SHA},
+    {"TLS_RSA_EXPORT_WITH_DES40_CBC_SHA",       SSL3_TXT_RSA_DES_40_CBC_SHA},
+    {"TLS_RSA_WITH_DES_CBC_SHA",                SSL3_TXT_RSA_DES_64_CBC_SHA},
+    {"TLS_RSA_WITH_3DES_EDE_CBC_SHA",           SSL3_TXT_RSA_DES_192_CBC3_SHA},
+    {"TLS_DH_DSS_EXPORT_WITH_DES40_CBC_SHA",    SSL3_TXT_DH_DSS_DES_40_CBC_SHA},
+    {"TLS_DH_DSS_WITH_DES_CBC_SHA",             SSL3_TXT_DH_DSS_DES_64_CBC_SHA},
+    {"TLS_DH_DSS_WITH_3DES_EDE_CBC_SHA",        SSL3_TXT_DH_DSS_DES_192_CBC3_SHA},
+    {"TLS_DH_RSA_EXPORT_WITH_DES40_CBC_SHA",    SSL3_TXT_DH_RSA_DES_40_CBC_SHA},
+    {"TLS_DH_RSA_WITH_DES_CBC_SHA",             SSL3_TXT_DH_RSA_DES_64_CBC_SHA},
     {"TLS_DH_RSA_WITH_3DES_EDE_CBC_SHA",        SSL3_TXT_DH_RSA_DES_192_CBC3_SHA},
     {"TLS_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA",   SSL3_TXT_EDH_DSS_DES_40_CBC_SHA},
     {"TLS_DHE_DSS_WITH_DES_CBC_SHA",            SSL3_TXT_EDH_DSS_DES_64_CBC_SHA},
@@ -120,7 +121,29 @@ static const DcmCipherSuiteList cipherSuiteList[] =
     {"TLS_RSA_EXPORT1024_WITH_RC4_56_SHA",      TLS1_TXT_RSA_EXPORT1024_WITH_RC4_56_SHA},
     {"TLS_DHE_DSS_EXPORT1024_WITH_DES_CBC_SHA", TLS1_TXT_DHE_DSS_EXPORT1024_WITH_DES_CBC_SHA},
     {"TLS_DHE_DSS_EXPORT1024_WITH_RC4_56_SHA",  TLS1_TXT_DHE_DSS_EXPORT1024_WITH_RC4_56_SHA},
-    {"TLS_DHE_DSS_WITH_RC4_128_SHA",            TLS1_TXT_DHE_DSS_WITH_RC4_128_SHA},
+    {"TLS_DHE_DSS_WITH_RC4_128_SHA",            TLS1_TXT_DHE_DSS_WITH_RC4_128_SHA}
+
+#if OPENSSL_VERSION_NUMBER >= 0x0090700fL
+    // cipersuites added in OpenSSL 0.9.7
+    ,
+    {"TLS_RSA_EXPORT_WITH_RC4_56_MD5",          TLS1_TXT_RSA_EXPORT1024_WITH_RC4_56_MD5},
+    {"TLS_RSA_EXPORT_WITH_RC2_CBC_56_MD5",      TLS1_TXT_RSA_EXPORT1024_WITH_RC2_CBC_56_MD5},
+
+    /* AES ciphersuites from RFC3268 */
+    {"TLS_RSA_WITH_AES_128_CBC_SHA",            TLS1_TXT_RSA_WITH_AES_128_SHA},
+    {"TLS_DH_DSS_WITH_AES_128_CBC_SHA",         TLS1_TXT_DH_DSS_WITH_AES_128_SHA},
+    {"TLS_DH_RSA_WITH_AES_128_CBC_SHA",         TLS1_TXT_DH_RSA_WITH_AES_128_SHA},
+    {"TLS_DHE_DSS_WITH_AES_128_CBC_SHA",        TLS1_TXT_DHE_DSS_WITH_AES_128_SHA},
+    {"TLS_DHE_RSA_WITH_AES_128_CBC_SHA",        TLS1_TXT_DHE_RSA_WITH_AES_128_SHA},
+    {"TLS_DH_anon_WITH_AES_128_CBC_SHA",        TLS1_TXT_ADH_WITH_AES_128_SHA},
+    {"TLS_RSA_WITH_AES_256_CBC_SHA",            TLS1_TXT_RSA_WITH_AES_256_SHA},
+    {"TLS_DH_DSS_WITH_AES_256_CBC_SHA",         TLS1_TXT_DH_DSS_WITH_AES_256_SHA},
+    {"TLS_DH_RSA_WITH_AES_256_CBC_SHA",         TLS1_TXT_DH_RSA_WITH_AES_256_SHA},
+    {"TLS_DHE_DSS_WITH_AES_256_CBC_SHA",        TLS1_TXT_DHE_DSS_WITH_AES_256_SHA},
+    {"TLS_DHE_RSA_WITH_AES_256_CBC_SHA",        TLS1_TXT_DHE_RSA_WITH_AES_256_SHA},
+    {"TLS_DH_anon_WITH_AES_256_CBC_SHA",        TLS1_TXT_ADH_WITH_AES_256_SHA}
+#endif
+
 };
 
 unsigned long DcmTLSTransportLayer::getNumberOfCipherSuites()
@@ -158,6 +181,9 @@ DcmTLSTransportLayer::DcmTLSTransportLayer(int networkRole, const char *randFile
 , canWriteRandseed(OFFalse)
 , privateKeyPasswd()
 {
+   // the call to SSL_library_init was not needed in OpenSSL versions prior to 0.9.8,
+   // but the API has been available at least since 0.9.5.
+   SSL_library_init();
    SSL_load_error_strings();
    SSLeay_add_all_algorithms();
    seedPRNG(randFile);
@@ -176,6 +202,17 @@ DcmTLSTransportLayer::DcmTLSTransportLayer(int networkRole, const char *randFile
        break;
    }
    transportLayerContext = SSL_CTX_new(method);
+
+#ifdef DEBUG
+   if (transportLayerContext == NULL)
+   {
+      const char *result = ERR_reason_error_string(ERR_peek_error());
+      if (result == NULL) result = "unknown error in SSL_CTX_new()";
+      ofConsole.lockCerr() << "error: unable to create TLS transport layer: " << result << endl;
+      ofConsole.unlockCerr();      
+   }
+#endif
+
    setCertificateVerification(DCV_requireCertificate); /* default */
 }
 
@@ -450,7 +487,11 @@ void tlslayer_dummy_function()
 
 /*
  *  $Log: tlslayer.cc,v $
- *  Revision 1.9  2003-12-18 17:16:05  meichel
+ *  Revision 1.10  2005-11-23 16:10:28  meichel
+ *  Added support for AES ciphersuites in TLS module. All TLS-enabled
+ *    tools now support the "AES TLS Secure Transport Connection Profile".
+ *
+ *  Revision 1.9  2003/12/18 17:16:05  meichel
  *  Added standard includes needed by Borland Builder
  *
  *  Revision 1.8  2001/06/05 10:32:55  joergr

@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-17 13:45:16 $
+ *  Update Date:      $Date: 2005-11-23 16:10:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.62 $
+ *  CVS/RCS Revision: $Revision: 1.63 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -136,7 +136,11 @@ static OFBool      opt_doAuthenticate = OFFalse;
 static const char *opt_privateKeyFile = NULL;
 static const char *opt_certificateFile = NULL;
 static const char *opt_passwd = NULL;
+#if OPENSSL_VERSION_NUMBER >= 0x0090700fL
+static OFString    opt_ciphersuites(TLS1_TXT_RSA_WITH_AES_128_SHA ":" SSL3_TXT_RSA_DES_192_CBC3_SHA);
+#else
 static OFString    opt_ciphersuites(SSL3_TXT_RSA_DES_192_CBC3_SHA);
+#endif
 static const char *opt_readSeedFile = NULL;
 static const char *opt_writeSeedFile = NULL;
 static DcmCertificateVerification opt_certVerification = DCV_requireCertificate;
@@ -852,6 +856,14 @@ main(int argc, char *argv[])
         }
     }
 
+    /* dump the connection parameters if in debug mode*/
+    if (opt_debug)
+    {
+        ostream& out = ofConsole.lockCout();     
+        ASC_dumpConnectionParameters(assoc, out);
+        ofConsole.unlockCout();
+    }
+
     /* dump the presentation contexts which have been accepted/refused */
     if (opt_showPresentationContexts || opt_debug) {
         printf("Association Parameters Negotiated:\n");
@@ -1500,7 +1512,11 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.62  2005-11-17 13:45:16  meichel
+** Revision 1.63  2005-11-23 16:10:23  meichel
+** Added support for AES ciphersuites in TLS module. All TLS-enabled
+**   tools now support the "AES TLS Secure Transport Connection Profile".
+**
+** Revision 1.62  2005/11/17 13:45:16  meichel
 ** Added command line options for DIMSE and ACSE timeouts
 **
 ** Revision 1.61  2005/11/16 14:58:07  meichel
