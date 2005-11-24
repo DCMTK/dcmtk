@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2004, OFFIS
+ *  Copyright (C) 2000-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Create and Verify DICOM Digital Signatures
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-07 17:10:24 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2005-11-24 12:53:39 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -356,11 +356,13 @@ static int do_sign(
   SiMAC *opt_mac,
   SiSecurityProfile *opt_profile,
   DcmAttributeTag *opt_tagList,
-  E_TransferSyntax opt_signatureXfer)
+  E_TransferSyntax opt_signatureXfer,
+  FILE *dumpFile)
 {
   OFCondition sicond = EC_Normal;
   DcmSignature signer;
   signer.attach(dataset);
+  signer.setDumpFile(dumpFile);
   sicond = signer.createSignature(key, cert, *opt_mac, *opt_profile, opt_signatureXfer, opt_tagList);
   if (sicond != EC_Normal)
   {
@@ -447,7 +449,8 @@ static int do_sign_item(
   SiSecurityProfile *opt_profile,
   DcmAttributeTag *opt_tagList,
   const char *opt_location,
-  E_TransferSyntax opt_signatureXfer)
+  E_TransferSyntax opt_signatureXfer,
+  FILE *dumpFile)
 {
   OFCondition sicond = EC_Normal;
   DcmSignature signer;
@@ -456,6 +459,7 @@ static int do_sign_item(
 
   signer.detach();
   signer.attach(sigItem);
+  signer.setDumpFile(dumpFile);
   sicond = signer.createSignature(key, cert, *opt_mac, *opt_profile, opt_signatureXfer, opt_tagList);
   if (sicond != EC_Normal)
   {
@@ -718,6 +722,7 @@ int main(int argc, char *argv[])
   DcmAttributeTag *             opt_tagList = NULL; // list of attribute tags
   OFBool                        opt_verbose = OFFalse;
   E_TransferSyntax              opt_signatureXfer = EXS_Unknown;
+  FILE *                        opt_dumpFile = NULL;
   int result = 0;
 
   OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , APPLICATION_ABSTRACT, rcsid);
@@ -733,7 +738,9 @@ int main(int argc, char *argv[])
       cmd.addOption("--version",                                "print version information and exit", OFTrue /* exclusive */);
       cmd.addOption("--verbose",                   "-v",        "verbose mode, print processing details");
       cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
-
+      cmd.addOption("--dump",                      "+d",     1, "[f]ilename: string",
+                                                                "dump byte stream fed into the MAC codec to file\n"
+                                                                "(only with --sign or --sign-item)");
   cmd.addGroup("input options:");
     cmd.addSubGroup("input file format:");
       cmd.addOption("--read-file",                 "+f",        "read file format or data set (default)");
@@ -774,6 +781,11 @@ int main(int argc, char *argv[])
     cmd.addSubGroup("tag selection options:");
       cmd.addOption("--tag",                      "-t",      1, "tag: \"xxxx,xxxx\" or a data dictionary name", "sign only specified tag\nthis option can be specified multiple times");
       cmd.addOption("--tag-file",                 "-tf",     1, "filename: string", "read list of tags from text file");
+    cmd.addSubGroup("signature format options:");
+      cmd.addOption("--format-new",               "-fn",        "use correct DICOM signature format (default)");
+      cmd.addOption("--format-old",               "-fo",        "use old (pre-3.5.4) DCMTK signature format,\n"
+                                                                "non-conformant if signature includes\n"
+                                                                "compressed pixel data");
   cmd.addGroup("output options:");
     cmd.addSubGroup("output transfer syntax:");
       cmd.addOption("--write-xfer-same",          "+t=",        "write with same TS as input (default)");
@@ -987,6 +999,24 @@ int main(int argc, char *argv[])
     if (cmd.findOption("--length-undefined")) opt_oenctype = EET_UndefinedLength;
     cmd.endOptionBlock();
 
+    if (cmd.findOption("--dump"))
+    {
+      if ((opt_operation != DSO_sign)&&(opt_operation != DSO_signItem)) app.printError("--dump only with --sign or --sign-item");
+      const char *fileName = NULL;
+      app.checkValue(cmd.getValue(fileName));
+      opt_dumpFile = fopen(fileName, "wb");
+      if (opt_dumpFile == NULL) 
+      {
+        CERR << "error: unable to create dump file '" << fileName << "'" << endl;
+        return 10;
+      }
+    }
+
+    cmd.beginOptionBlock();
+    if (cmd.findOption("--format-new")) dcmEnableOldSignatureFormat.set(OFFalse);
+    if (cmd.findOption("--format-old")) dcmEnableOldSignatureFormat.set(OFTrue);
+    cmd.endOptionBlock();
+
   }
 
   SetDebugLevel((opt_debugMode));
@@ -1060,12 +1090,12 @@ int main(int argc, char *argv[])
       break;
     case DSO_sign:
       if (opt_verbose) COUT << "create signature in main object." << endl;
-      result = do_sign(dataset, key, cert, opt_mac, opt_profile, opt_tagList, opt_signatureXfer);
+      result = do_sign(dataset, key, cert, opt_mac, opt_profile, opt_tagList, opt_signatureXfer, opt_dumpFile);
       if (result != 0) return result;
       break;
     case DSO_signItem:
       if (opt_verbose) COUT << "create signature in sequence item." << endl;
-      result = do_sign_item(dataset, key, cert, opt_mac, opt_profile, opt_tagList, opt_location, opt_signatureXfer);
+      result = do_sign_item(dataset, key, cert, opt_mac, opt_profile, opt_tagList, opt_location, opt_signatureXfer, opt_dumpFile);
       if (result != 0) return result;
       break;
     case DSO_remove:
@@ -1078,6 +1108,15 @@ int main(int argc, char *argv[])
       result = do_remove_all(dataset, opt_verbose);
       if (result != 0) return result;
       break;
+  }
+
+  if (opt_dumpFile) 
+  {
+    if (0 != fclose(opt_dumpFile))
+    {
+      CERR << "Warning: error while closing dump file, content may be incomplete." << endl;
+    }
+    opt_dumpFile = NULL;
   }
 
   if (opt_ofname)
@@ -1123,7 +1162,22 @@ int main(int, char *[])
 
 /*
  *  $Log: dcmsign.cc,v $
- *  Revision 1.18  2005-11-07 17:10:24  meichel
+ *  Revision 1.19  2005-11-24 12:53:39  meichel
+ *  Fixed bug in code that prepares a byte stream that is fed into the MAC
+ *    algorithm when creating or verifying a digital signature. The previous
+ *    implementation was non-conformant when signatures included compressed
+ *    (encapsulated) pixel data because the item length was included in the byte
+ *    stream, while it should not. The global variable dcmEnableOldSignatureFormat
+ *    and a corresponding command line option in dcmsign allow to re-enable the old
+ *    implementation.Fixed bug in code that prepares a byte stream that is fed into the MAC
+ *    algorithm when creating or verifying a digital signature. The previous
+ *    implementation was non-conformant when signatures included compressed
+ *    (encapsulated) pixel data because the item length was included in the byte
+ *    stream, while it should not. The global variable dcmEnableOldSignatureFormat
+ *    and a corresponding command line option in dcmsign allow to re-enable the old
+ *    implementation.
+ *
+ *  Revision 1.18  2005/11/07 17:10:24  meichel
  *  All tools that both read and write a DICOM file now call loadAllDataIntoMemory()
  *    to make sure they do not destroy a file when output = input.
  *
