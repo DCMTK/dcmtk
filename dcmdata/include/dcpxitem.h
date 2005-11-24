@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2004, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmPixelItem
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-07-01 12:28:25 $
+ *  Update Date:      $Date: 2005-11-24 12:50:57 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpxitem.h,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -91,6 +91,13 @@ class DcmPixelItem : public DcmOtherByteOtherWord
     virtual OFCondition writeXML(ostream &out,
                                  const size_t flags = 0);
 
+    /** special write method for creation of digital signatures
+     */
+    virtual OFCondition writeSignatureFormat(DcmOutputStream & outStream,
+					 const E_TransferSyntax oxfer,
+					 const E_EncodingType enctype
+					 = EET_UndefinedLength);
+
 };
 
 
@@ -99,7 +106,16 @@ class DcmPixelItem : public DcmOtherByteOtherWord
 /*
 ** CVS/RCS Log:
 ** $Log: dcpxitem.h,v $
-** Revision 1.19  2004-07-01 12:28:25  meichel
+** Revision 1.20  2005-11-24 12:50:57  meichel
+** Fixed bug in code that prepares a byte stream that is fed into the MAC
+**   algorithm when creating or verifying a digital signature. The previous
+**   implementation was non-conformant when signatures included compressed
+**   (encapsulated) pixel data because the item length was included in the byte
+**   stream, while it should not. The global variable dcmEnableOldSignatureFormat
+**   and a corresponding command line option in dcmsign allow to re-enable the old
+**   implementation.
+**
+** Revision 1.19  2004/07/01 12:28:25  meichel
 ** Introduced virtual clone method for DcmObject and derived classes.
 **
 ** Revision 1.18  2002/12/06 12:49:12  joergr

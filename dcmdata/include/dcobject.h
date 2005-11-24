@@ -24,9 +24,9 @@
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-05-10 15:27:14 $
+ *  Update Date:      $Date: 2005-11-24 12:50:57 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcobject.h,v $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -100,6 +100,15 @@ extern OFGlobal<OFBool> dcmAcceptOddAttributeLength; /* default OFTrue */
  */
 extern OFGlobal<OFBool> dcmEnableCP246Support; /* default OFTrue */
 
+/** DCMTK releases up to 3.5.3 created a non-conforming byte stream
+ *  as input to the MAC algorithm when creating or verifying digital signatures
+ *  including compressed pixel data (i.e. signatures including attribute
+ *  (7FE0,0010) in an encapsulated transfer syntax). This has been fixed
+ *  in DCMTK 3.5.4, but this flag allows to revert to the old behavior
+ *  in order to create or verify signatures that are compatible with older
+ *  releases. Default is "off" (OFFalse).
+ */
+extern OFGlobal<OFBool> dcmEnableOldSignatureFormat; /* default OFFalse */
 
 /** base class for all DICOM objects defined in 'dcmdata'
  */
@@ -336,7 +345,16 @@ class DcmObject
 /*
  * CVS/RCS Log:
  * $Log: dcobject.h,v $
- * Revision 1.38  2005-05-10 15:27:14  meichel
+ * Revision 1.39  2005-11-24 12:50:57  meichel
+ * Fixed bug in code that prepares a byte stream that is fed into the MAC
+ *   algorithm when creating or verifying a digital signature. The previous
+ *   implementation was non-conformant when signatures included compressed
+ *   (encapsulated) pixel data because the item length was included in the byte
+ *   stream, while it should not. The global variable dcmEnableOldSignatureFormat
+ *   and a corresponding command line option in dcmsign allow to re-enable the old
+ *   implementation.
+ *
+ * Revision 1.38  2005/05/10 15:27:14  meichel
  * Added support for reading UN elements with undefined length according
  *   to CP 246. The global flag dcmEnableCP246Support allows to revert to the
  *   prior behaviour in which UN elements with undefined length were parsed

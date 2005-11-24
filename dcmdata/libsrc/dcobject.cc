@@ -24,8 +24,8 @@
  *    DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-05-10 15:27:18 $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  Update Date:      $Date: 2005-11-24 12:50:59 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,6 +54,7 @@
 OFGlobal<OFBool> dcmEnableAutomaticInputDataCorrection(OFTrue);
 OFGlobal<OFBool> dcmAcceptOddAttributeLength(OFTrue);
 OFGlobal<OFBool> dcmEnableCP246Support(OFTrue);
+OFGlobal<OFBool> dcmEnableOldSignatureFormat(OFFalse);
 
 // ****** public methods **********************************
 
@@ -470,7 +471,16 @@ OFBool DcmObject::containsUnknownVR() const
 /*
  * CVS/RCS Log:
  * $Log: dcobject.cc,v $
- * Revision 1.42  2005-05-10 15:27:18  meichel
+ * Revision 1.43  2005-11-24 12:50:59  meichel
+ * Fixed bug in code that prepares a byte stream that is fed into the MAC
+ *   algorithm when creating or verifying a digital signature. The previous
+ *   implementation was non-conformant when signatures included compressed
+ *   (encapsulated) pixel data because the item length was included in the byte
+ *   stream, while it should not. The global variable dcmEnableOldSignatureFormat
+ *   and a corresponding command line option in dcmsign allow to re-enable the old
+ *   implementation.
+ *
+ * Revision 1.42  2005/05/10 15:27:18  meichel
  * Added support for reading UN elements with undefined length according
  *   to CP 246. The global flag dcmEnableCP246Support allows to revert to the
  *   prior behaviour in which UN elements with undefined length were parsed

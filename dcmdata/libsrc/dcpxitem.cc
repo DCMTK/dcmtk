@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2004, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmPixelItem
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-04 16:42:42 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-11-24 12:50:59 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -183,11 +183,107 @@ OFCondition DcmPixelItem::writeXML(ostream &out,
     return EC_Normal;
 }
 
+OFCondition DcmPixelItem::writeSignatureFormat(
+    DcmOutputStream & outStream,
+    const E_TransferSyntax oxfer,
+    const E_EncodingType enctype)
+{
+  if (dcmEnableOldSignatureFormat.get())
+  {
+      /* Old signature format as created by DCMTK releases previous to 3.5.4.
+       * This is non-conformant because it includes the item length in pixel items.
+       */
+      return DcmOtherByteOtherWord::writeSignatureFormat(outStream, oxfer, enctype);
+  }
+  else
+  {
+      /* In case the transfer state is not initialized, this is an illegal call */
+      if (fTransferState == ERW_notInitialized)
+          errorFlag = EC_IllegalCall;
+      else
+      {
+          /* if this is not an illegal call, we need to do something. First */
+          /* of all, check the error state of the stream that was passed */
+          /* only do something if the error state of the stream is ok */
+          errorFlag = outStream.status();
+          if (errorFlag.good())
+          {
+              /* create an object that represents the transfer syntax */
+              DcmXfer outXfer(oxfer);
+              /* get this element's value. Mind the byte ordering (little */
+              /* or big endian) of the transfer syntax which shall be used */
+              Uint8 *value = OFstatic_cast(Uint8 *, getValue(outXfer.getByteOrder()));
+              /* if this element's transfer state is ERW_init (i.e. it has not yet been written to */
+              /* the stream) and if the outstream provides enough space for tag and length information */
+              /* write tag and length information to it, do something */
+              if (fTransferState == ERW_init)
+              {
+                  /* first compare with DCM_TagInfoLength (12). If there is not enough space
+                   * in the buffer, check if the buffer is still sufficient for the requirements
+                   * of this element, which may need only 8 instead of 12 bytes.
+                   */
+                  if (outStream.avail() >= 4)
+                  {
+                      /* if there is no value, Length (member variable) shall be set to 0 */
+                      if (!value) Length = 0;
+      
+                      /* write tag and length information (and possibly also data type information) to the stream, */
+                      /* mind the transfer syntax and remember the amount of bytes that have been written */
+                      errorFlag = writeTag(outStream, Tag, oxfer); 
+      
+                      /* if the writing was successful, set this element's transfer */
+                      /* state to ERW_inWork and the amount of transferred bytes to 0 */
+                      if (errorFlag.good())
+                      {
+                          fTransferState = ERW_inWork;
+                          fTransferredBytes = 0;
+                      }
+                  } else
+                      errorFlag = EC_StreamNotifyClient;
+              }
+              /* if there is a value that has to be written to the stream */
+              /* and if this element's transfer state is ERW_inWork */
+              if (value && fTransferState == ERW_inWork)
+              {
+                  /* write as many bytes as possible to the stream starting at value[fTransferredBytes] */
+                  /* (note that the bytes value[0] to value[fTransferredBytes-1] have already been */
+                  /* written to the stream) */
+                  Uint32 len = outStream.write(&value[fTransferredBytes], Length - fTransferredBytes);
+                  /* increase the amount of bytes which have been transfered correspondingly */
+                  fTransferredBytes += len;
+                  /* see if there is something fishy with the stream */
+                  errorFlag = outStream.status();
+                  /* if the amount of transferred bytes equals the length of the element's value, the */
+                  /* entire value has been written to the stream. Thus, this element's transfer state */
+                  /* has to be set to ERW_ready. If this is not the case but the error flag still shows */
+                  /* an ok value, there was no more space in the stream and a corresponding return value */
+                  /* has to be set. (Isn't the "else if" part superfluous?!?) */
+                  if (fTransferredBytes == Length)
+                      fTransferState = ERW_ready;
+                  else if (errorFlag.good())
+                      errorFlag = EC_StreamNotifyClient;
+              }
+          }
+      }
+  }
+
+  /* return result value */
+  return errorFlag;
+}
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcpxitem.cc,v $
-** Revision 1.27  2004-02-04 16:42:42  joergr
+** Revision 1.28  2005-11-24 12:50:59  meichel
+** Fixed bug in code that prepares a byte stream that is fed into the MAC
+**   algorithm when creating or verifying a digital signature. The previous
+**   implementation was non-conformant when signatures included compressed
+**   (encapsulated) pixel data because the item length was included in the byte
+**   stream, while it should not. The global variable dcmEnableOldSignatureFormat
+**   and a corresponding command line option in dcmsign allow to re-enable the old
+**   implementation.
+**
+** Revision 1.27  2004/02/04 16:42:42  joergr
 ** Adapted type casts to new-style typecast operators defined in ofcast.h.
 ** Removed acknowledgements with e-mail addresses from CVS log.
 **
