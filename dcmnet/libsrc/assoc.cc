@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2004-07-15 08:10:46 $
+** Update Date:         $Date: 2005-11-25 11:31:14 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:    $Revision: 1.44 $
+** CVS/RCS Revision:    $Revision: 1.45 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1559,6 +1559,8 @@ ASC_receiveAssociation(T_ASC_Network * network,
     cond = DUL_ReceiveAssociationRQ(&network->network, block, timeout,
                                     &(params->DULparams), &DULassociation, retrieveRawPDU);
 
+    if (cond.code() == DULC_FORKEDCHILD) return cond;
+
     (*assoc)->DULassociation = DULassociation;
 
     if (retrieveRawPDU && DULassociation)
@@ -1978,7 +1980,11 @@ void ASC_activateCallback(T_ASC_Parameters *params, DUL_ModeCallback *cb)
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
-** Revision 1.44  2004-07-15 08:10:46  meichel
+** Revision 1.45  2005-11-25 11:31:14  meichel
+** StoreSCP now supports multi-process mode both on Posix and Win32 platforms
+**   where a separate client process is forked for each incoming association.
+**
+** Revision 1.44  2004/07/15 08:10:46  meichel
 ** Added optional timeout parameter to ASC_dropSCPAssociation().
 **
 ** Revision 1.43  2004/04/07 10:22:10  meichel

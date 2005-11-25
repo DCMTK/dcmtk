@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-23 16:10:23 $
+ *  Update Date:      $Date: 2005-11-25 11:31:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.82 $
+ *  CVS/RCS Revision: $Revision: 1.83 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +38,10 @@
 #define INCLUDE_CSTDARG
 #define INCLUDE_CCTYPE
 #include "ofstdinc.h"
+
+#ifdef _WIN32
+#include <process.h>     /* needed for declaration of getpid() */
+#endif
 
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_STAT_H
@@ -176,6 +180,14 @@ T_DIMSE_BlockingMode opt_blockMode = DIMSE_BLOCKING;
 int                opt_dimse_timeout = 0;
 int                opt_acse_timeout = 30;
 
+#if defined(HAVE_FORK) || defined(_WIN32)
+OFBool             opt_forkMode = OFFalse;
+#endif
+
+#ifdef _WIN32
+OFBool             opt_forkedChild = OFFalse;
+#endif
+
 #ifdef WITH_OPENSSL
 static int         opt_keyFileFormat = SSL_FILETYPE_PEM;
 static const char *opt_privateKeyFile = NULL;
@@ -190,6 +202,23 @@ static const char *opt_readSeedFile = NULL;
 static const char *opt_writeSeedFile = NULL;
 static DcmCertificateVerification opt_certVerification = DCV_requireCertificate;
 static const char *opt_dhparam = NULL;
+#endif
+
+
+#ifdef HAVE_WAITPID
+/** signal handler for SIGCHLD signals that immediately cleans up
+ *  terminated children.
+ */
+#ifdef SIGNAL_HANDLER_WITH_ELLIPSE
+extern "C" void sigChildHandler(...)
+#else
+extern "C" void sigChildHandler(int)
+#endif
+{
+  int status = 0;
+  waitpid( -1, &status, WNOHANG );
+  signal(SIGCHLD, sigChildHandler);
+}
 #endif
 
 
@@ -230,8 +259,15 @@ int main(int argc, char *argv[])
     OFString opt0 = "write output-files to (existing) directory p\n(default: ";
     opt0 += opt_outputDirectory;
     opt0 += ")";
-    cmd.addOption("--output-directory",          "-od",   1, "[p]ath: string",
-                                                             opt0.c_str());
+    cmd.addOption("--output-directory",          "-od",   1, "[p]ath: string", opt0.c_str());
+
+#if defined(HAVE_FORK) || defined(_WIN32)
+  cmd.addGroup("multi-process options:", LONGCOL, SHORTCOL+2);
+    cmd.addOption("--fork",                                  "fork child process for each association");
+#ifdef _WIN32
+    cmd.addOption("--forked-child",                          "process is forked child, internal use only");
+#endif
+#endif
 
   cmd.addGroup("network options:");
     cmd.addSubGroup("association negotiation profile from configuration file:");
@@ -262,7 +298,7 @@ int main(int argc, char *argv[])
     cmd.addSubGroup("other network options:");
 #ifdef HAVE_CONFIG_H
       // this option is only offered on Posix platforms
-      cmd.addOption("--inetd",                  "-id",       "run from inetd super server");
+      cmd.addOption("--inetd",                  "-id",       "run from inetd super server (not with --fork)");
 #endif
 
       cmd.addOption("--acse-timeout",           "-ta", 1, "[s]econds: integer (default: 30)", "timeout for ACSE messages");
@@ -449,6 +485,20 @@ int main(int argc, char *argv[])
        // to avoid failing the privilege test.
        opt_port = 1024;
      }
+#endif
+
+#if defined(HAVE_FORK) || defined(_WIN32)
+      if (cmd.findOption("--fork"))
+      {
+        app.checkConflict("--inetd", "--fork", opt_inetd_mode);
+        opt_forkMode = OFTrue;
+      }
+#ifdef _WIN32
+      if (cmd.findOption("--forked-child"))
+      {
+        opt_forkedChild = OFTrue;
+      }
+#endif
 #endif
 
       if (cmd.findOption("--acse-timeout"))
@@ -884,6 +934,41 @@ int main(int argc, char *argv[])
     }
   }
 
+#ifdef HAVE_FORK
+    if (opt_forkMode)
+      DUL_requestForkOnTransportConnectionReceipt(argc, argv);
+#elif defined(_WIN32)
+  if (opt_forkedChild) 
+  {
+    // child process
+    DUL_markProcessAsForkedChild();
+
+    char buf[256];
+    DWORD bytesRead = 0;
+    HANDLE hStdIn = GetStdHandle(STD_INPUT_HANDLE);
+
+    // read socket handle number from stdin, i.e. the anonymous pipe
+	// to which our parent process has written the handle number.
+    if (ReadFile(hStdIn, buf, sizeof(buf), &bytesRead, NULL)) 
+	{
+        // make sure buffer is zero terminated
+		buf[bytesRead] = '\0';
+        dcmExternalSocketHandle.set(atoi(buf));
+    }
+    else 
+	{
+      CERR << "Error while reading socket handle: " << GetLastError() << endl;
+      return 1;
+    }
+  }
+  else
+  {
+    // parent process
+    if (opt_forkMode)
+      DUL_requestForkOnTransportConnectionReceipt(argc, argv);
+  }
+#endif
+
   /* initialize network, i.e. create an instance of T_ASC_Network*. */
   OFCondition cond = ASC_initializeNetwork(NET_ACCEPTOR, OFstatic_cast(int, opt_port), opt_acse_timeout, &net);
   if (cond.bad())
@@ -978,6 +1063,11 @@ int main(int argc, char *argv[])
 
 #endif
 
+#ifdef HAVE_WAITPID
+  // register signal handler
+  signal(SIGCHLD, sigChildHandler);
+#endif
+
   while (cond.good())
   {
     /* receive an association and acknowledge or reject it. If the association was */
@@ -1007,6 +1097,10 @@ int main(int argc, char *argv[])
 #endif
     // if running in inetd mode, we always terminate after one association
     if (dcmExternalSocketHandle.get() >= 0) break;
+
+    // if running in multi-process mode, always terminate child after one association
+    if (DUL_processIsForkedChild()) break;
+
   }
 
   /* drop the network, i.e. free memory of T_ASC_Network* structure. This call */
@@ -1056,6 +1150,12 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
   else
     cond = ASC_receiveAssociation(net, &assoc, opt_maxPDU, NULL, NULL, opt_secureConnection, DUL_NOBLOCK, OFstatic_cast(int, opt_endOfStudyTimeout));
 
+  if (cond.code() == DULC_FORKEDCHILD)
+  {
+      // if (opt_verbose) DimseCondition::dump(cond);
+      goto cleanup;
+  }
+
   // if some kind of error occured, take care of it
   if (cond.bad())
   {
@@ -1103,7 +1203,18 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
     goto cleanup;
   }
 
-  if (opt_verbose) printf("Association Received\n");
+  if (opt_verbose) 
+  {
+#if defined(HAVE_FORK) || defined(_WIN32)
+      if (opt_forkMode)
+      {
+        printf("Association Received in %s process (pid: %i)\n", (DUL_processIsForkedChild() ? "child" : "parent") , getpid());
+      }
+      else printf("Association Received\n");
+#else
+      printf("Association Received\n");
+#endif
+  }
 
   if (opt_debug)
   {
@@ -1405,6 +1516,9 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
   }
 
 cleanup:
+
+  if (cond.code() == DULC_FORKEDCHILD) return cond;
+
   cond = ASC_dropSCPAssociation(assoc);
   if (cond.bad())
   {
@@ -2414,7 +2528,11 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.82  2005-11-23 16:10:23  meichel
+** Revision 1.83  2005-11-25 11:31:03  meichel
+** StoreSCP now supports multi-process mode both on Posix and Win32 platforms
+**   where a separate client process is forked for each incoming association.
+**
+** Revision 1.82  2005/11/23 16:10:23  meichel
 ** Added support for AES ciphersuites in TLS module. All TLS-enabled
 **   tools now support the "AES TLS Secure Transport Connection Profile".
 **

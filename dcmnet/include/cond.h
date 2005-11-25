@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: network conditions and helper class
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-10 13:37:36 $
+ *  Update Date:      $Date: 2005-11-25 11:31:11 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/cond.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -160,6 +160,8 @@ const unsigned short DULC_UNRECOGNIZEDPDUTYPE              = 0x321;
 const unsigned short DULC_UNSUPPORTEDPEERPROTOCOL          = 0x322;
 const unsigned short DULC_WRONGDATATYPE                    = 0x323;
 const unsigned short DULC_TCPWRAPPER                       = 0x324;
+const unsigned short DULC_FORKEDCHILD                      = 0x325;
+const unsigned short DULC_CANNOTFORK                       = 0x326;
 
 // condition constants used in the DUL module
 extern const OFCondition DUL_ASSOCIATIONREJECTED;       /* DUL Association Rejected */
@@ -269,7 +271,11 @@ typedef OFCondition CONDITION;
 /*
  * CVS Log
  * $Log: cond.h,v $
- * Revision 1.8  2003-06-10 13:37:36  meichel
+ * Revision 1.9  2005-11-25 11:31:11  meichel
+ * StoreSCP now supports multi-process mode both on Posix and Win32 platforms
+ *   where a separate client process is forked for each incoming association.
+ *
+ * Revision 1.8  2003/06/10 13:37:36  meichel
  * Added support for TCP wrappers in DICOM network layer
  *
  * Revision 1.7  2002/12/10 11:00:57  meichel

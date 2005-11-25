@@ -54,9 +54,9 @@
 ** Author, Date:        Stephen M. Moore, 14-Apr-93
 ** Intent:              This module contains the public entry points for the
 **                      DICOM Upper Layer (DUL) protocol package.
-** Last Update:         $Author: meichel $, $Date: 2005-11-03 17:27:14 $
+** Last Update:         $Author: meichel $, $Date: 2005-11-25 11:31:14 $
 ** Source File:         $RCSfile: dul.cc,v $
-** Revision:            $Revision: 1.66 $
+** Revision:            $Revision: 1.67 $
 ** Status:              $State: Exp $
 */
 
@@ -190,6 +190,27 @@ static void clearPresentationContext(LST_HEAD ** l);
 #define MIN_PDU_LENGTH  4*1024
 #define MAX_PDU_LENGTH  128*1024
 
+static OFBool processIsForkedChild = OFFalse;
+static OFBool shouldFork = OFFalse;
+static char **command_argv = NULL;
+static int command_argc = 0;
+
+OFBool DUL_processIsForkedChild() 
+{
+  return processIsForkedChild;
+}
+
+void DUL_markProcessAsForkedChild()
+{
+  processIsForkedChild = OFTrue;
+}
+
+void DUL_requestForkOnTransportConnectionReceipt(int argc, char *argv[])
+{
+  shouldFork = OFTrue;
+  command_argc = argc;
+  command_argv = argv;
+}
 
 void DUL_activateAssociatePDUStorage(DUL_ASSOCIATIONKEY *dulassoc)
 {
@@ -569,7 +590,8 @@ DUL_ReceiveAssociationRQ(
     clearRequestorsParams(params);
 
     cond = receiveTransportConnection(network, block, timeout, params, association);
-    if (cond.bad())
+
+    if (cond.bad() || (cond.code() == DULC_FORKEDCHILD))
         return cond;
 
     cond = PRV_StateMachine(network, association,
@@ -1481,6 +1503,10 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
     struct hostent *remote = NULL;
     struct linger sockarg;
 
+#ifdef HAVE_FORK
+    pid_t pid = -1;
+#endif
+
     (void) memset(&sockarg, 0, sizeof(sockarg));
 
     int reuse = 1;
@@ -1570,6 +1596,139 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
             return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf3);
         }
     }
+
+#ifdef HAVE_FORK
+    if (shouldFork)
+    {
+        // fork for unix
+        pid = fork();
+        if (pid > 0)
+        {   
+            // we're the parent process, close accepted socket and return
+            char buf4[256];
+            close(sock);
+            sprintf(buf4, "new child process started with pid %i", OFstatic_cast(int, pid));
+            return makeDcmnetCondition (DULC_FORKEDCHILD, OF_ok, buf4);
+        }
+        else if (pid < 0)
+        {
+            // fork failed, return error code
+            char buf5[256];
+            close(sock);
+            sprintf(buf5, "Error: %s, fork failed", strerror(errno));
+            return makeDcmnetCondition (DULC_CANNOTFORK, OF_error, buf5);
+        }
+        else 
+        {
+          // we're the child process, continue normally
+          processIsForkedChild = OFTrue;
+        }
+    }
+#elif defined(_WIN32)
+    if (shouldFork && (command_argc > 0) && command_argv)
+    {
+        // win32 code to create new child process
+        HANDLE childSocketHandle;
+        HANDLE hChildStdInRead;
+        HANDLE hChildStdInWrite;
+        HANDLE hChildStdInWriteDup;
+
+        SECURITY_ATTRIBUTES sa;
+        sa.nLength = sizeof(SECURITY_ATTRIBUTES);
+        sa.bInheritHandle = TRUE;
+        sa.lpSecurityDescriptor = NULL;
+
+        // prepare the command line
+        OFString cmdLine = command_argv[0];
+        cmdLine += " --forked-child";
+        for (int i=1; i < command_argc; ++i)
+        {
+            cmdLine += " ";
+            cmdLine += command_argv[i];
+        }
+
+		// create anonymous pipe
+        if (!CreatePipe(&hChildStdInRead, &hChildStdInWrite, &sa,0)) 
+        {
+            char buf4[256];
+            sprintf(buf4, "Error %i while creating anonymous pipe",GetLastError());
+            return makeDcmnetCondition(DULC_CANNOTFORK, OF_error, buf4);
+        }
+
+		// create duplicate of write end handle of pipe
+        if (!DuplicateHandle(GetCurrentProcess(),hChildStdInWrite,
+                           GetCurrentProcess(),&hChildStdInWriteDup,0,
+                           FALSE,DUPLICATE_SAME_ACCESS)) 
+        {
+            return makeDcmnetCondition(DULC_CANNOTFORK, OF_error, "Error while duplicating handle");
+        }
+
+		// destroy original write end handle of pipe
+        CloseHandle(hChildStdInWrite);
+
+		// we need a STARTUPINFO and a PROCESS_INFORMATION structure for CreateProcess.
+        STARTUPINFO si;
+        PROCESS_INFORMATION pi;
+        memset(&pi,0,sizeof(pi));
+        memset(&si,0,sizeof(si));
+
+		// prepare startup info for child process:
+		// the child uses the same stdout and stderr as the parent, but
+		// stdin is the read end of our anonymous pipe.
+        si.cb = sizeof(si);
+        si.dwFlags |= STARTF_USESTDHANDLES;
+        si.hStdOutput = GetStdHandle(STD_OUTPUT_HANDLE);
+        si.hStdError = GetStdHandle(STD_ERROR_HANDLE);
+        si.hStdInput = hChildStdInRead;
+
+		// create child process. 
+        if (!CreateProcess(NULL,OFconst_cast(char *,cmdLine.c_str()),NULL,NULL,TRUE,0,NULL,NULL,&si,&pi))
+        {
+            char buf4[256];
+            sprintf(buf4, "CreateProcess failed: (%i)",(int)GetLastError());
+            return makeDcmnetCondition(DULC_CANNOTFORK, OF_error, buf4);
+        }
+        else 
+        {
+            // PROCESS_INFORMATION pi now contains various handles for the new process.
+			// Now that we have a handle to the new process, we can duplicate the
+			// socket handle into the new child process.
+			if (DuplicateHandle(GetCurrentProcess(), (HANDLE)sock, pi.hProcess, 
+                &childSocketHandle, 0, TRUE, DUPLICATE_CLOSE_SOURCE)) 
+            {
+                // close handles in PROCESS_INFORMATION structure
+				// and our local copy of the socket handle.
+                CloseHandle(pi.hProcess);
+                CloseHandle(pi.hThread);
+                CloseHandle((HANDLE)sock);
+
+				// send number of socket handle in child process over anonymous pipe
+                DWORD bytesWritten;
+                char buf5[20];
+                sprintf(buf5,"%i",childSocketHandle);
+                if (!WriteFile(hChildStdInWriteDup, buf5, strlen(buf5)+1, &bytesWritten, NULL)) 
+				{
+                    CloseHandle(hChildStdInWriteDup);
+                    return makeDcmnetCondition (DULC_CANNOTFORK, OF_error, "error while writing to anonymous pipe");
+                }
+
+				// return OF_ok status code DULC_FORKEDCHILD with descriptive text
+                char buf4[256];
+                sprintf(buf4, "new child process started with pid %i, socketHandle %i", pi.dwProcessId, childSocketHandle);
+                return makeDcmnetCondition (DULC_FORKEDCHILD, OF_ok, buf4);
+            }
+            else 
+            {
+                // unable to duplicate handle. Close handles nevertheless
+				// to avoid resource leak.
+                CloseHandle(pi.hProcess);
+                CloseHandle(pi.hThread);
+                CloseHandle((HANDLE)sock);
+                return makeDcmnetCondition (DULC_CANNOTFORK, OF_error, "error while duplicating socket handle");
+            }
+        }
+    }
+#endif
 
 #ifndef HAVE_GUSI_H
     /* GUSI always returns an error for setsockopt() */
@@ -1805,7 +1964,13 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
     (*key)->networkSpecific.TCP.port = -1;
     (*key)->networkSpecific.TCP.listenSocket = -1;
 
-    if (dcmExternalSocketHandle.get() < 0 && ((*key)->applicationFunction & DICOM_APPLICATION_ACCEPTOR))
+    // Create listen socket if we're an application acceptor,
+    // unless the socket handle has already been passed to us or
+    // we are a forked child of an application acceptor, in which
+    // case the socket also already exists.
+    if ((dcmExternalSocketHandle.get() < 0) && 
+    	((*key)->applicationFunction & DICOM_APPLICATION_ACCEPTOR) &&
+    	(! processIsForkedChild))
     {
 
 #ifdef HAVE_DECLARATION_SOCKLEN_T
@@ -2426,7 +2591,11 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, ostream& outs
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.66  2005-11-03 17:27:14  meichel
+** Revision 1.67  2005-11-25 11:31:14  meichel
+** StoreSCP now supports multi-process mode both on Posix and Win32 platforms
+**   where a separate client process is forked for each incoming association.
+**
+** Revision 1.66  2005/11/03 17:27:14  meichel
 ** The movescu tool does not open any listen port by default anymore.
 **
 ** Revision 1.65  2005/08/30 08:35:27  meichel

@@ -44,9 +44,9 @@
 ** Intent:		This file defines the public structures and constants
 **			and the function prototypes for the DUL (DICOM Upper
 **			Layer) facility.
-** Last Update:		$Author: meichel $, $Date: 2004-02-25 12:31:15 $
+** Last Update:		$Author: meichel $, $Date: 2005-11-25 11:31:11 $
 ** Source File:		$RCSfile: dul.h,v $
-** Revision:		$Revision: 1.19 $
+** Revision:		$Revision: 1.20 $
 ** Status:		$State: Exp $
 */
 
@@ -442,16 +442,46 @@ unsigned long DUL_getPeerCertificateLength(DUL_ASSOCIATIONKEY *dulassoc);
 unsigned long DUL_getPeerCertificate(DUL_ASSOCIATIONKEY *dulassoc, void *buf, unsigned long bufLen);
 
 /*
-** END extra functions
-*/
+ * functions for multi-process servers
+ */
 
+/** this function returns true if the current process was created by the
+ *  DICOM network layer during receipt of a TCP transport connection, i.e.
+ *  in receiveTransportConnectionTCP().
+ *  @return true if current process is a forked child of a multi-process server
+ */
+OFBool DUL_processIsForkedChild();
+
+/** this function marks the current process as a child created by the
+ *  DICOM network layer during receipt of a TCP transport connection, i.e.
+ *  in receiveTransportConnectionTCP(). The call is not reversible - use with care.
+ */
+void DUL_markProcessAsForkedChild();
+
+/** this function marks the current process as a multi-process server and enables
+ *  the creation of child processes for each incoming TCP transport connection
+ *  in receiveTransportConnectionTCP().
+ *  @param argc argc command line argument counter variable passed to main().
+ *     The content of this parameter is ignored on Posix platforms but required
+ *     on Win32, where the child process is created with CreateProcess and the
+ *     command line parameters have to be passed from parent to child.
+ *  @param argv argv command line argument value array passed to main().
+ *     The content of this parameter is ignored on Posix platforms but required
+ *     on Win32, where the child process is created with CreateProcess and the
+ *     command line parameters have to be passed from parent to child.
+ */
+void DUL_requestForkOnTransportConnectionReceipt(int argc, char *argv[]);
 
 #endif
 
 /*
 ** CVS Log
 ** $Log: dul.h,v $
-** Revision 1.19  2004-02-25 12:31:15  meichel
+** Revision 1.20  2005-11-25 11:31:11  meichel
+** StoreSCP now supports multi-process mode both on Posix and Win32 platforms
+**   where a separate client process is forked for each incoming association.
+**
+** Revision 1.19  2004/02/25 12:31:15  meichel
 ** Added global option flag for compatibility with very old DCMTK releases in the
 **   DICOM upper layer and ACSE code. Default is automatic handling, which should
 **   work in most cases.

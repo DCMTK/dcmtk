@@ -48,6 +48,20 @@ port  tcp/ip port number to listen on.
           write output-files to (existing) directory p (default: .)
 \endverbatim
 
+\subsection multi_process_options multi-process options
+\verbatim
+
+  --fork                 
+    fork child process for each association
+
+  --forked-child         
+    process is forked child, internal use only.
+    This option only exists on the Win32 platform and should never 
+    be directly called by the user.
+
+\endverbatim
+
+          
 \subsection network_options network options
 \verbatim
 association negotiation profile from configuration file:
