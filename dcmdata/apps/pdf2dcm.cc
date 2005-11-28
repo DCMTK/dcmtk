@@ -21,9 +21,9 @@
  *
  *  Purpose: Convert PDF file to DICOM format
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-10-26 13:33:49 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-11-28 15:28:54 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,6 +60,7 @@ END_EXTERN_C
 #include "ofstd.h"
 #include "ofdatime.h"
 #include "dccodec.h"
+#include "dcdebug.h"
 
 #ifdef WITH_ZLIB
 #include <zlib.h>        /* for zlibVersion() */
@@ -661,7 +662,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: pdf2dcm.cc,v $
-** Revision 1.2  2005-10-26 13:33:49  joergr
+** Revision 1.3  2005-11-28 15:28:54  meichel
+** File dcdebug.h is not included by any other header file in the toolkit
+**   anymore, to minimize the risk of name clashes of macro debug().
+**
+** Revision 1.2  2005/10/26 13:33:49  joergr
 ** Slightly modified code to use more of the "new" helper functions.
 **
 ** Revision 1.1  2005/10/25 13:01:02  meichel

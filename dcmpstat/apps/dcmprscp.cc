@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Print Server
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-23 16:10:32 $
+ *  Update Date:      $Date: 2005-11-28 15:29:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmprscp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,6 +54,7 @@ END_EXTERN_C
 #include "ofconapp.h"
 #include "dvpsprt.h"
 #include "dvpshlp.h"
+#include "dcdebug.h"
 
 #ifdef WITH_OPENSSL
 #include "tlstrans.h"
@@ -586,7 +587,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprscp.cc,v $
- * Revision 1.18  2005-11-23 16:10:32  meichel
+ * Revision 1.19  2005-11-28 15:29:05  meichel
+ * File dcdebug.h is not included by any other header file in the toolkit
+ *   anymore, to minimize the risk of name clashes of macro debug().
+ *
+ * Revision 1.18  2005/11/23 16:10:32  meichel
  * Added support for AES ciphersuites in TLS module. All TLS-enabled
  *   tools now support the "AES TLS Secure Transport Connection Profile".
  *

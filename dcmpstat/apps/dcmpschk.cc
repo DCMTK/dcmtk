@@ -23,9 +23,9 @@
  *    VR and IOD checker for Presentation States
  *
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-03-09 18:07:53 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-11-28 15:29:05 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,6 +53,7 @@
 #include "vrscan.h"
 #include "ofconapp.h"    /* for OFConsoleApplication */
 #include "dcmpstat.h"    /* for DcmPresentationState */
+#include "dcdebug.h"
 
 #ifdef WITH_ZLIB
 #include <zlib.h>        /* for zlibVersion() */
@@ -1086,7 +1087,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpschk.cc,v $
- * Revision 1.17  2005-03-09 18:07:53  joergr
+ * Revision 1.18  2005-11-28 15:29:05  meichel
+ * File dcdebug.h is not included by any other header file in the toolkit
+ *   anymore, to minimize the risk of name clashes of macro debug().
+ *
+ * Revision 1.17  2005/03/09 18:07:53  joergr
  * Fixed spelling error.
  *
  * Revision 1.16  2004/02/04 15:44:38  joergr

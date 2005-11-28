@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2004, OFFIS
+ *  Copyright (C) 1998-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -24,10 +24,10 @@
  *    The LUT has a gamma curve shape or can be imported from an external
  *    file.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-04 15:44:38 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-11-28 15:29:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmklut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,6 +52,7 @@
 #include "diutils.h"
 #include "ofstream.h"
 #include "ofstd.h"
+#include "dcdebug.h"
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
@@ -1092,7 +1093,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmmklut.cc,v $
- * Revision 1.37  2004-02-04 15:44:38  joergr
+ * Revision 1.38  2005-11-28 15:29:05  meichel
+ * File dcdebug.h is not included by any other header file in the toolkit
+ *   anymore, to minimize the risk of name clashes of macro debug().
+ *
+ * Revision 1.37  2004/02/04 15:44:38  joergr
  * Removed acknowledgements with e-mail addresses from CVS log.
  *
  * Revision 1.36  2003/09/03 16:01:01  meichel

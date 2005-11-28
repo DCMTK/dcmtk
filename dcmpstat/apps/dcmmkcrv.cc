@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2004, OFFIS
+ *  Copyright (C) 1998-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: This application reads a DICOM image, adds a Curve and writes it back.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-04 15:44:38 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-11-28 15:29:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmkcrv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,6 +44,7 @@
 #include "ofconapp.h"
 #include "ofcast.h"
 #include "dcuid.h"       /* for dcmtk version name */
+#include "dcdebug.h"
 
 #ifdef WITH_ZLIB
 #include <zlib.h>        /* for zlibVersion() */
@@ -420,7 +421,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmmkcrv.cc,v $
-** Revision 1.17  2004-02-04 15:44:38  joergr
+** Revision 1.18  2005-11-28 15:29:05  meichel
+** File dcdebug.h is not included by any other header file in the toolkit
+**   anymore, to minimize the risk of name clashes of macro debug().
+**
+** Revision 1.17  2004/02/04 15:44:38  joergr
 ** Removed acknowledgements with e-mail addresses from CVS log.
 **
 ** Revision 1.16  2003/08/29 08:41:17  joergr

@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Network Send Component (Store SCU)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-23 16:10:32 $
+ *  Update Date:      $Date: 2005-11-28 15:29:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpssnd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,6 +60,7 @@ END_EXTERN_C
 #include "dcmqrdbi.h"    /* for LOCK_IMAGE_FILES */
 #include "dcmqrdbs.h"    /* for DcmQueryRetrieveDatabaseStatus */
 #include "dvpsmsg.h"
+#include "dcdebug.h"
 
 #ifdef WITH_OPENSSL
 #include "tlstrans.h"
@@ -1018,7 +1019,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpssnd.cc,v $
- * Revision 1.36  2005-11-23 16:10:32  meichel
+ * Revision 1.37  2005-11-28 15:29:05  meichel
+ * File dcdebug.h is not included by any other header file in the toolkit
+ *   anymore, to minimize the risk of name clashes of macro debug().
+ *
+ * Revision 1.36  2005/11/23 16:10:32  meichel
  * Added support for AES ciphersuites in TLS module. All TLS-enabled
  *   tools now support the "AES TLS Secure Transport Connection Profile".
  *

@@ -45,9 +45,9 @@
  *  There should be no need to set this compiler flag manually, just compile
  *  dcmjpeg/apps/dcmmkdir.cc.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-06-13 14:36:07 $
- *  CVS/RCS Revision: $Revision: 1.79 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-11-28 15:28:54 $
+ *  CVS/RCS Revision: $Revision: 1.80 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -63,6 +63,7 @@
 #include "ofstd.h"        /* for class OFStandard */
 #include "ofconapp.h"     /* for class OFConsoleApplication */
 #include "ofcond.h"       /* for class OFCondition */
+#include "dcdebug.h"
 
 #ifdef BUILD_DCMGPDIR_AS_DCMMKDIR
 #include "diregist.h"     /* include to support color images */
@@ -580,7 +581,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmgpdir.cc,v $
- * Revision 1.79  2005-06-13 14:36:07  joergr
+ * Revision 1.80  2005-11-28 15:28:54  meichel
+ * File dcdebug.h is not included by any other header file in the toolkit
+ *   anymore, to minimize the risk of name clashes of macro debug().
+ *
+ * Revision 1.79  2005/06/13 14:36:07  joergr
  * Added new options to disable check on pixel encoding and transfer syntax.
  *
  * Revision 1.78  2005/03/09 17:56:20  joergr

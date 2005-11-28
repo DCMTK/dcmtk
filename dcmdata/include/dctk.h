@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: include most dcmdata files that are usually required
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 12:19:30 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-11-28 15:28:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dctk.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,7 +46,6 @@
 #include "dcuid.h"
 #include "dcvm.h"
 #include "dcdefine.h"
-#include "dcdebug.h"
 
 // tags and dictionary
 #include "dctagkey.h"
@@ -114,7 +113,11 @@
 /*
  * CVS/RCS Log:
  * $Log: dctk.h,v $
- * Revision 1.13  2002-12-06 12:19:30  joergr
+ * Revision 1.14  2005-11-28 15:28:56  meichel
+ * File dcdebug.h is not included by any other header file in the toolkit
+ *   anymore, to minimize the risk of name clashes of macro debug().
+ *
+ * Revision 1.13  2002/12/06 12:19:30  joergr
  * Added support for new value representation Other Float String (OF).
  *
  * Revision 1.12  2002/08/27 16:55:40  meichel
