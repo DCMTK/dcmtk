@@ -9,93 +9,6 @@ dcmmkcrv.o: dcmmkcrv.cc ../../config/include/osconfig.h \
   ../../ofstd/include/ofthread.h ../../dcmdata/include/dcistrma.h \
   ../../dcmdata/include/dcostrma.h ../../dcmdata/include/dcuid.h \
   ../../dcmdata/include/dcvm.h ../../dcmdata/include/dcdefine.h \
-  ../../dcmdata/include/dcdebug.h ../../dcmdata/include/dctagkey.h \
-  ../../dcmdata/include/dctag.h ../../dcmdata/include/dcdicent.h \
-  ../../dcmdata/include/dchashdi.h ../../ofstd/include/oflist.h \
-  ../../dcmdata/include/dcdict.h ../../dcmdata/include/dcdeftag.h \
-  ../../dcmdata/include/dcobject.h ../../ofstd/include/ofconsol.h \
-  ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
-  ../../dcmdata/include/dcelem.h ../../dcmdata/include/dcitem.h \
-  ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
-  ../../dcmdata/include/dcpcache.h ../../dcmdata/include/dcmetinf.h \
-  ../../dcmdata/include/dcdatset.h ../../dcmdata/include/dcsequen.h \
-  ../../dcmdata/include/dcfilefo.h ../../dcmdata/include/dcdicdir.h \
-  ../../dcmdata/include/dcdirrec.h ../../dcmdata/include/dcvrulup.h \
-  ../../dcmdata/include/dcvrul.h ../../dcmdata/include/dcpixseq.h \
-  ../../dcmdata/include/dcofsetl.h ../../dcmdata/include/dcvrae.h \
-  ../../dcmdata/include/dcvras.h ../../dcmdata/include/dcvrcs.h \
-  ../../dcmdata/include/dcvrda.h ../../ofstd/include/ofdate.h \
-  ../../dcmdata/include/dcvrds.h ../../dcmdata/include/dcvrdt.h \
-  ../../ofstd/include/ofdatime.h ../../ofstd/include/oftime.h \
-  ../../dcmdata/include/dcvris.h ../../dcmdata/include/dcvrtm.h \
-  ../../dcmdata/include/dcchrstr.h ../../dcmdata/include/dcvrlo.h \
-  ../../dcmdata/include/dcvrlt.h ../../dcmdata/include/dcvrpn.h \
-  ../../dcmdata/include/dcvrsh.h ../../dcmdata/include/dcvrst.h \
-  ../../dcmdata/include/dcvrut.h ../../dcmdata/include/dcvrobow.h \
-  ../../dcmdata/include/dcpixel.h ../../dcmdata/include/dcvrpobw.h \
-  ../../dcmdata/include/dcovlay.h ../../dcmdata/include/dcvrat.h \
-  ../../dcmdata/include/dcvrss.h ../../dcmdata/include/dcvrus.h \
-  ../../dcmdata/include/dcvrsl.h ../../dcmdata/include/dcvrfl.h \
-  ../../dcmdata/include/dcvrfd.h ../../dcmdata/include/dcvrof.h \
-  ../../dcmdata/include/cmdlnarg.h ../../ofstd/include/ofconapp.h \
-  ../../ofstd/include/ofcmdln.h
-dcmmklut.o: dcmmklut.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h ../../ofstd/include/ofstream.h \
-  ../../dcmdata/include/dctk.h ../../dcmdata/include/dctypes.h \
-  ../../ofstd/include/oftypes.h ../../ofstd/include/ofstdinc.h \
-  ../../dcmdata/include/dcswap.h ../../dcmdata/include/dcerror.h \
-  ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
-  ../../ofstd/include/ofcast.h ../../dcmdata/include/dcxfer.h \
-  ../../dcmdata/include/dcvr.h ../../ofstd/include/ofglobal.h \
-  ../../ofstd/include/ofthread.h ../../dcmdata/include/dcistrma.h \
-  ../../dcmdata/include/dcostrma.h ../../dcmdata/include/dcuid.h \
-  ../../dcmdata/include/dcvm.h ../../dcmdata/include/dcdefine.h \
-  ../../dcmdata/include/dcdebug.h ../../dcmdata/include/dctagkey.h \
-  ../../dcmdata/include/dctag.h ../../dcmdata/include/dcdicent.h \
-  ../../dcmdata/include/dchashdi.h ../../ofstd/include/oflist.h \
-  ../../dcmdata/include/dcdict.h ../../dcmdata/include/dcdeftag.h \
-  ../../dcmdata/include/dcobject.h ../../ofstd/include/ofconsol.h \
-  ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
-  ../../dcmdata/include/dcelem.h ../../dcmdata/include/dcitem.h \
-  ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
-  ../../dcmdata/include/dcpcache.h ../../dcmdata/include/dcmetinf.h \
-  ../../dcmdata/include/dcdatset.h ../../dcmdata/include/dcsequen.h \
-  ../../dcmdata/include/dcfilefo.h ../../dcmdata/include/dcdicdir.h \
-  ../../dcmdata/include/dcdirrec.h ../../dcmdata/include/dcvrulup.h \
-  ../../dcmdata/include/dcvrul.h ../../dcmdata/include/dcpixseq.h \
-  ../../dcmdata/include/dcofsetl.h ../../dcmdata/include/dcvrae.h \
-  ../../dcmdata/include/dcvras.h ../../dcmdata/include/dcvrcs.h \
-  ../../dcmdata/include/dcvrda.h ../../ofstd/include/ofdate.h \
-  ../../dcmdata/include/dcvrds.h ../../dcmdata/include/dcvrdt.h \
-  ../../ofstd/include/ofdatime.h ../../ofstd/include/oftime.h \
-  ../../dcmdata/include/dcvris.h ../../dcmdata/include/dcvrtm.h \
-  ../../dcmdata/include/dcchrstr.h ../../dcmdata/include/dcvrlo.h \
-  ../../dcmdata/include/dcvrlt.h ../../dcmdata/include/dcvrpn.h \
-  ../../dcmdata/include/dcvrsh.h ../../dcmdata/include/dcvrst.h \
-  ../../dcmdata/include/dcvrut.h ../../dcmdata/include/dcvrobow.h \
-  ../../dcmdata/include/dcpixel.h ../../dcmdata/include/dcvrpobw.h \
-  ../../dcmdata/include/dcovlay.h ../../dcmdata/include/dcvrat.h \
-  ../../dcmdata/include/dcvrss.h ../../dcmdata/include/dcvrus.h \
-  ../../dcmdata/include/dcvrsl.h ../../dcmdata/include/dcvrfl.h \
-  ../../dcmdata/include/dcvrfd.h ../../dcmdata/include/dcvrof.h \
-  ../../dcmdata/include/cmdlnarg.h ../../ofstd/include/ofconapp.h \
-  ../../ofstd/include/ofcmdln.h ../../dcmimgle/include/dicrvfit.h \
-  ../../dcmimgle/include/digsdfn.h ../../dcmimgle/include/didispfn.h \
-  ../../dcmimgle/include/didislut.h ../../dcmimgle/include/dibaslut.h \
-  ../../dcmimgle/include/diutils.h ../../dcmimgle/include/digsdlut.h \
-  ../../ofstd/include/ofstd.h
-dcmp2pgm.o: dcmp2pgm.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h ../../ofstd/include/ofstream.h \
-  ../include/dviface.h ../../dcmdata/include/dctk.h \
-  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
-  ../../ofstd/include/ofstdinc.h ../../dcmdata/include/dcswap.h \
-  ../../dcmdata/include/dcerror.h ../../ofstd/include/ofcond.h \
-  ../../ofstd/include/ofstring.h ../../ofstd/include/ofcast.h \
-  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
-  ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
-  ../../dcmdata/include/dcistrma.h ../../dcmdata/include/dcostrma.h \
-  ../../dcmdata/include/dcuid.h ../../dcmdata/include/dcvm.h \
-  ../../dcmdata/include/dcdefine.h ../../dcmdata/include/dcdebug.h \
   ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dctag.h \
   ../../dcmdata/include/dcdicent.h ../../dcmdata/include/dchashdi.h \
   ../../ofstd/include/oflist.h ../../dcmdata/include/dcdict.h \
@@ -124,11 +37,98 @@ dcmp2pgm.o: dcmp2pgm.cc ../../config/include/osconfig.h \
   ../../dcmdata/include/dcvrus.h ../../dcmdata/include/dcvrsl.h \
   ../../dcmdata/include/dcvrfl.h ../../dcmdata/include/dcvrfd.h \
   ../../dcmdata/include/dcvrof.h ../../dcmdata/include/cmdlnarg.h \
-  ../include/dvpscf.h ../include/dvpstyp.h ../include/dvpstat.h \
-  ../include/dcmpstat.h ../include/dvpsovl.h ../include/dvpsgll.h \
-  ../include/dvpsrsl.h ../include/dvpsall.h ../include/dvpsgal.h \
-  ../include/dvpscul.h ../include/dvpsvll.h ../include/dvpsvwl.h \
-  ../include/dvpsdal.h ../include/dvpssvl.h ../include/dvpspl.h \
+  ../../ofstd/include/ofconapp.h ../../ofstd/include/ofcmdln.h \
+  ../../dcmdata/include/dcdebug.h
+dcmmklut.o: dcmmklut.cc ../../config/include/osconfig.h \
+  ../../config/include/cfunix.h ../../ofstd/include/ofstream.h \
+  ../../dcmdata/include/dctk.h ../../dcmdata/include/dctypes.h \
+  ../../ofstd/include/oftypes.h ../../ofstd/include/ofstdinc.h \
+  ../../dcmdata/include/dcswap.h ../../dcmdata/include/dcerror.h \
+  ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
+  ../../ofstd/include/ofcast.h ../../dcmdata/include/dcxfer.h \
+  ../../dcmdata/include/dcvr.h ../../ofstd/include/ofglobal.h \
+  ../../ofstd/include/ofthread.h ../../dcmdata/include/dcistrma.h \
+  ../../dcmdata/include/dcostrma.h ../../dcmdata/include/dcuid.h \
+  ../../dcmdata/include/dcvm.h ../../dcmdata/include/dcdefine.h \
+  ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dctag.h \
+  ../../dcmdata/include/dcdicent.h ../../dcmdata/include/dchashdi.h \
+  ../../ofstd/include/oflist.h ../../dcmdata/include/dcdict.h \
+  ../../dcmdata/include/dcdeftag.h ../../dcmdata/include/dcobject.h \
+  ../../ofstd/include/ofconsol.h ../../dcmdata/include/dclist.h \
+  ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcelem.h \
+  ../../dcmdata/include/dcitem.h ../../dcmdata/include/dcvrui.h \
+  ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcpcache.h \
+  ../../dcmdata/include/dcmetinf.h ../../dcmdata/include/dcdatset.h \
+  ../../dcmdata/include/dcsequen.h ../../dcmdata/include/dcfilefo.h \
+  ../../dcmdata/include/dcdicdir.h ../../dcmdata/include/dcdirrec.h \
+  ../../dcmdata/include/dcvrulup.h ../../dcmdata/include/dcvrul.h \
+  ../../dcmdata/include/dcpixseq.h ../../dcmdata/include/dcofsetl.h \
+  ../../dcmdata/include/dcvrae.h ../../dcmdata/include/dcvras.h \
+  ../../dcmdata/include/dcvrcs.h ../../dcmdata/include/dcvrda.h \
+  ../../ofstd/include/ofdate.h ../../dcmdata/include/dcvrds.h \
+  ../../dcmdata/include/dcvrdt.h ../../ofstd/include/ofdatime.h \
+  ../../ofstd/include/oftime.h ../../dcmdata/include/dcvris.h \
+  ../../dcmdata/include/dcvrtm.h ../../dcmdata/include/dcchrstr.h \
+  ../../dcmdata/include/dcvrlo.h ../../dcmdata/include/dcvrlt.h \
+  ../../dcmdata/include/dcvrpn.h ../../dcmdata/include/dcvrsh.h \
+  ../../dcmdata/include/dcvrst.h ../../dcmdata/include/dcvrut.h \
+  ../../dcmdata/include/dcvrobow.h ../../dcmdata/include/dcpixel.h \
+  ../../dcmdata/include/dcvrpobw.h ../../dcmdata/include/dcovlay.h \
+  ../../dcmdata/include/dcvrat.h ../../dcmdata/include/dcvrss.h \
+  ../../dcmdata/include/dcvrus.h ../../dcmdata/include/dcvrsl.h \
+  ../../dcmdata/include/dcvrfl.h ../../dcmdata/include/dcvrfd.h \
+  ../../dcmdata/include/dcvrof.h ../../dcmdata/include/cmdlnarg.h \
+  ../../ofstd/include/ofconapp.h ../../ofstd/include/ofcmdln.h \
+  ../../dcmimgle/include/dicrvfit.h ../../dcmimgle/include/digsdfn.h \
+  ../../dcmimgle/include/didispfn.h ../../dcmimgle/include/didislut.h \
+  ../../dcmimgle/include/dibaslut.h ../../dcmimgle/include/diutils.h \
+  ../../dcmimgle/include/digsdlut.h ../../ofstd/include/ofstd.h \
+  ../../dcmdata/include/dcdebug.h
+dcmp2pgm.o: dcmp2pgm.cc ../../config/include/osconfig.h \
+  ../../config/include/cfunix.h ../../ofstd/include/ofstream.h \
+  ../include/dviface.h ../../dcmdata/include/dctk.h \
+  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
+  ../../ofstd/include/ofstdinc.h ../../dcmdata/include/dcswap.h \
+  ../../dcmdata/include/dcerror.h ../../ofstd/include/ofcond.h \
+  ../../ofstd/include/ofstring.h ../../ofstd/include/ofcast.h \
+  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
+  ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
+  ../../dcmdata/include/dcistrma.h ../../dcmdata/include/dcostrma.h \
+  ../../dcmdata/include/dcuid.h ../../dcmdata/include/dcvm.h \
+  ../../dcmdata/include/dcdefine.h ../../dcmdata/include/dctagkey.h \
+  ../../dcmdata/include/dctag.h ../../dcmdata/include/dcdicent.h \
+  ../../dcmdata/include/dchashdi.h ../../ofstd/include/oflist.h \
+  ../../dcmdata/include/dcdict.h ../../dcmdata/include/dcdeftag.h \
+  ../../dcmdata/include/dcobject.h ../../ofstd/include/ofconsol.h \
+  ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
+  ../../dcmdata/include/dcelem.h ../../dcmdata/include/dcitem.h \
+  ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
+  ../../dcmdata/include/dcpcache.h ../../dcmdata/include/dcmetinf.h \
+  ../../dcmdata/include/dcdatset.h ../../dcmdata/include/dcsequen.h \
+  ../../dcmdata/include/dcfilefo.h ../../dcmdata/include/dcdicdir.h \
+  ../../dcmdata/include/dcdirrec.h ../../dcmdata/include/dcvrulup.h \
+  ../../dcmdata/include/dcvrul.h ../../dcmdata/include/dcpixseq.h \
+  ../../dcmdata/include/dcofsetl.h ../../dcmdata/include/dcvrae.h \
+  ../../dcmdata/include/dcvras.h ../../dcmdata/include/dcvrcs.h \
+  ../../dcmdata/include/dcvrda.h ../../ofstd/include/ofdate.h \
+  ../../dcmdata/include/dcvrds.h ../../dcmdata/include/dcvrdt.h \
+  ../../ofstd/include/ofdatime.h ../../ofstd/include/oftime.h \
+  ../../dcmdata/include/dcvris.h ../../dcmdata/include/dcvrtm.h \
+  ../../dcmdata/include/dcchrstr.h ../../dcmdata/include/dcvrlo.h \
+  ../../dcmdata/include/dcvrlt.h ../../dcmdata/include/dcvrpn.h \
+  ../../dcmdata/include/dcvrsh.h ../../dcmdata/include/dcvrst.h \
+  ../../dcmdata/include/dcvrut.h ../../dcmdata/include/dcvrobow.h \
+  ../../dcmdata/include/dcpixel.h ../../dcmdata/include/dcvrpobw.h \
+  ../../dcmdata/include/dcovlay.h ../../dcmdata/include/dcvrat.h \
+  ../../dcmdata/include/dcvrss.h ../../dcmdata/include/dcvrus.h \
+  ../../dcmdata/include/dcvrsl.h ../../dcmdata/include/dcvrfl.h \
+  ../../dcmdata/include/dcvrfd.h ../../dcmdata/include/dcvrof.h \
+  ../../dcmdata/include/cmdlnarg.h ../include/dvpscf.h \
+  ../include/dvpstyp.h ../include/dvpstat.h ../include/dcmpstat.h \
+  ../include/dvpsovl.h ../include/dvpsgll.h ../include/dvpsrsl.h \
+  ../include/dvpsall.h ../include/dvpsgal.h ../include/dvpscul.h \
+  ../include/dvpsvll.h ../include/dvpsvwl.h ../include/dvpsdal.h \
+  ../include/dvpssvl.h ../include/dvpspl.h \
   ../../dcmqrdb/include/dcmqridx.h ../../dcmnet/include/dicom.h \
   ../../dcmnet/include/cond.h ../../dcmnet/include/dcompat.h \
   ../../ofstd/include/ofbmanip.h ../../dcmqrdb/include/dcmqrdbi.h \
@@ -145,7 +145,8 @@ dcmp2pgm.o: dcmp2pgm.cc ../../config/include/osconfig.h \
   ../../dcmimgle/include/dimomod.h ../../dcmimgle/include/diluptab.h \
   ../../dcmimgle/include/dibaslut.h ../../dcmimgle/include/dimoopx.h \
   ../../dcmimgle/include/didispfn.h ../../dcmimgle/include/didislut.h \
-  ../../ofstd/include/ofcmdln.h ../../ofstd/include/ofconapp.h
+  ../../ofstd/include/ofcmdln.h ../../ofstd/include/ofconapp.h \
+  ../../dcmdata/include/dcdebug.h
 dcmprscp.o: dcmprscp.cc ../../config/include/osconfig.h \
   ../../config/include/cfunix.h ../../ofstd/include/ofstream.h \
   ../include/dvpsdef.h ../include/dviface.h ../../dcmdata/include/dctk.h \
@@ -157,40 +158,40 @@ dcmprscp.o: dcmprscp.cc ../../config/include/osconfig.h \
   ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
   ../../dcmdata/include/dcistrma.h ../../dcmdata/include/dcostrma.h \
   ../../dcmdata/include/dcuid.h ../../dcmdata/include/dcvm.h \
-  ../../dcmdata/include/dcdefine.h ../../dcmdata/include/dcdebug.h \
-  ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dctag.h \
-  ../../dcmdata/include/dcdicent.h ../../dcmdata/include/dchashdi.h \
-  ../../ofstd/include/oflist.h ../../dcmdata/include/dcdict.h \
-  ../../dcmdata/include/dcdeftag.h ../../dcmdata/include/dcobject.h \
-  ../../ofstd/include/ofconsol.h ../../dcmdata/include/dclist.h \
-  ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcelem.h \
-  ../../dcmdata/include/dcitem.h ../../dcmdata/include/dcvrui.h \
-  ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcpcache.h \
-  ../../dcmdata/include/dcmetinf.h ../../dcmdata/include/dcdatset.h \
-  ../../dcmdata/include/dcsequen.h ../../dcmdata/include/dcfilefo.h \
-  ../../dcmdata/include/dcdicdir.h ../../dcmdata/include/dcdirrec.h \
-  ../../dcmdata/include/dcvrulup.h ../../dcmdata/include/dcvrul.h \
-  ../../dcmdata/include/dcpixseq.h ../../dcmdata/include/dcofsetl.h \
-  ../../dcmdata/include/dcvrae.h ../../dcmdata/include/dcvras.h \
-  ../../dcmdata/include/dcvrcs.h ../../dcmdata/include/dcvrda.h \
-  ../../ofstd/include/ofdate.h ../../dcmdata/include/dcvrds.h \
-  ../../dcmdata/include/dcvrdt.h ../../ofstd/include/ofdatime.h \
-  ../../ofstd/include/oftime.h ../../dcmdata/include/dcvris.h \
-  ../../dcmdata/include/dcvrtm.h ../../dcmdata/include/dcchrstr.h \
-  ../../dcmdata/include/dcvrlo.h ../../dcmdata/include/dcvrlt.h \
-  ../../dcmdata/include/dcvrpn.h ../../dcmdata/include/dcvrsh.h \
-  ../../dcmdata/include/dcvrst.h ../../dcmdata/include/dcvrut.h \
-  ../../dcmdata/include/dcvrobow.h ../../dcmdata/include/dcpixel.h \
-  ../../dcmdata/include/dcvrpobw.h ../../dcmdata/include/dcovlay.h \
-  ../../dcmdata/include/dcvrat.h ../../dcmdata/include/dcvrss.h \
-  ../../dcmdata/include/dcvrus.h ../../dcmdata/include/dcvrsl.h \
-  ../../dcmdata/include/dcvrfl.h ../../dcmdata/include/dcvrfd.h \
-  ../../dcmdata/include/dcvrof.h ../../dcmdata/include/cmdlnarg.h \
-  ../include/dvpscf.h ../include/dvpstyp.h ../include/dvpstat.h \
-  ../include/dcmpstat.h ../include/dvpsovl.h ../include/dvpsgll.h \
-  ../include/dvpsrsl.h ../include/dvpsall.h ../include/dvpsgal.h \
-  ../include/dvpscul.h ../include/dvpsvll.h ../include/dvpsvwl.h \
-  ../include/dvpsdal.h ../include/dvpssvl.h ../include/dvpspl.h \
+  ../../dcmdata/include/dcdefine.h ../../dcmdata/include/dctagkey.h \
+  ../../dcmdata/include/dctag.h ../../dcmdata/include/dcdicent.h \
+  ../../dcmdata/include/dchashdi.h ../../ofstd/include/oflist.h \
+  ../../dcmdata/include/dcdict.h ../../dcmdata/include/dcdeftag.h \
+  ../../dcmdata/include/dcobject.h ../../ofstd/include/ofconsol.h \
+  ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
+  ../../dcmdata/include/dcelem.h ../../dcmdata/include/dcitem.h \
+  ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
+  ../../dcmdata/include/dcpcache.h ../../dcmdata/include/dcmetinf.h \
+  ../../dcmdata/include/dcdatset.h ../../dcmdata/include/dcsequen.h \
+  ../../dcmdata/include/dcfilefo.h ../../dcmdata/include/dcdicdir.h \
+  ../../dcmdata/include/dcdirrec.h ../../dcmdata/include/dcvrulup.h \
+  ../../dcmdata/include/dcvrul.h ../../dcmdata/include/dcpixseq.h \
+  ../../dcmdata/include/dcofsetl.h ../../dcmdata/include/dcvrae.h \
+  ../../dcmdata/include/dcvras.h ../../dcmdata/include/dcvrcs.h \
+  ../../dcmdata/include/dcvrda.h ../../ofstd/include/ofdate.h \
+  ../../dcmdata/include/dcvrds.h ../../dcmdata/include/dcvrdt.h \
+  ../../ofstd/include/ofdatime.h ../../ofstd/include/oftime.h \
+  ../../dcmdata/include/dcvris.h ../../dcmdata/include/dcvrtm.h \
+  ../../dcmdata/include/dcchrstr.h ../../dcmdata/include/dcvrlo.h \
+  ../../dcmdata/include/dcvrlt.h ../../dcmdata/include/dcvrpn.h \
+  ../../dcmdata/include/dcvrsh.h ../../dcmdata/include/dcvrst.h \
+  ../../dcmdata/include/dcvrut.h ../../dcmdata/include/dcvrobow.h \
+  ../../dcmdata/include/dcpixel.h ../../dcmdata/include/dcvrpobw.h \
+  ../../dcmdata/include/dcovlay.h ../../dcmdata/include/dcvrat.h \
+  ../../dcmdata/include/dcvrss.h ../../dcmdata/include/dcvrus.h \
+  ../../dcmdata/include/dcvrsl.h ../../dcmdata/include/dcvrfl.h \
+  ../../dcmdata/include/dcvrfd.h ../../dcmdata/include/dcvrof.h \
+  ../../dcmdata/include/cmdlnarg.h ../include/dvpscf.h \
+  ../include/dvpstyp.h ../include/dvpstat.h ../include/dcmpstat.h \
+  ../include/dvpsovl.h ../include/dvpsgll.h ../include/dvpsrsl.h \
+  ../include/dvpsall.h ../include/dvpsgal.h ../include/dvpscul.h \
+  ../include/dvpsvll.h ../include/dvpsvwl.h ../include/dvpsdal.h \
+  ../include/dvpssvl.h ../include/dvpspl.h \
   ../../dcmqrdb/include/dcmqridx.h ../../dcmnet/include/dicom.h \
   ../../dcmnet/include/cond.h ../../dcmnet/include/dcompat.h \
   ../../ofstd/include/ofbmanip.h ../../dcmqrdb/include/dcmqrdbi.h \
@@ -201,8 +202,47 @@ dcmprscp.o: dcmprscp.cc ../../config/include/osconfig.h \
   ../../dcmnet/include/diutil.h ../../ofstd/include/ofconapp.h \
   ../../ofstd/include/ofcmdln.h ../include/dvpsprt.h ../include/dvpspll.h \
   ../include/dvpsspl.h ../include/dvpshlp.h \
-  ../../dcmtls/include/tlstrans.h ../../dcmnet/include/dcmtrans.h \
-  ../../dcmnet/include/dcmlayer.h ../../dcmtls/include/tlslayer.h
+  ../../dcmdata/include/dcdebug.h ../../dcmtls/include/tlstrans.h \
+  ../../dcmnet/include/dcmtrans.h ../../dcmnet/include/dcmlayer.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/ssl.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/e_os2.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/opensslconf.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/comp.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/crypto.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/stack.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/safestack.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/opensslv.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/ossl_typ.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/symhacks.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/bio.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/x509.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/buffer.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/evp.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/objects.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/obj_mac.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/asn1.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/bn.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/ec.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/ecdsa.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/ecdh.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/rsa.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/dsa.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/dh.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/sha.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/x509_vfy.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/lhash.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/pkcs7.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/pem.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/pem2.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/kssl.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/ssl2.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/ssl3.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/pq_compat.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/tls1.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/dtls1.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/pqueue.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/ssl23.h \
+  ../../dcmtls/include/tlslayer.h
 dcmprscu.o: dcmprscu.cc ../../config/include/osconfig.h \
   ../../config/include/cfunix.h ../../dcmnet/include/dcompat.h \
   ../../ofstd/include/ofbmanip.h ../../ofstd/include/ofcast.h \
@@ -215,40 +255,40 @@ dcmprscu.o: dcmprscu.cc ../../config/include/osconfig.h \
   ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
   ../../dcmdata/include/dcistrma.h ../../dcmdata/include/dcostrma.h \
   ../../dcmdata/include/dcuid.h ../../dcmdata/include/dcvm.h \
-  ../../dcmdata/include/dcdefine.h ../../dcmdata/include/dcdebug.h \
-  ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dctag.h \
-  ../../dcmdata/include/dcdicent.h ../../dcmdata/include/dchashdi.h \
-  ../../ofstd/include/oflist.h ../../dcmdata/include/dcdict.h \
-  ../../dcmdata/include/dcdeftag.h ../../dcmdata/include/dcobject.h \
-  ../../ofstd/include/ofconsol.h ../../dcmdata/include/dclist.h \
-  ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcelem.h \
-  ../../dcmdata/include/dcitem.h ../../dcmdata/include/dcvrui.h \
-  ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcpcache.h \
-  ../../dcmdata/include/dcmetinf.h ../../dcmdata/include/dcdatset.h \
-  ../../dcmdata/include/dcsequen.h ../../dcmdata/include/dcfilefo.h \
-  ../../dcmdata/include/dcdicdir.h ../../dcmdata/include/dcdirrec.h \
-  ../../dcmdata/include/dcvrulup.h ../../dcmdata/include/dcvrul.h \
-  ../../dcmdata/include/dcpixseq.h ../../dcmdata/include/dcofsetl.h \
-  ../../dcmdata/include/dcvrae.h ../../dcmdata/include/dcvras.h \
-  ../../dcmdata/include/dcvrcs.h ../../dcmdata/include/dcvrda.h \
-  ../../ofstd/include/ofdate.h ../../dcmdata/include/dcvrds.h \
-  ../../dcmdata/include/dcvrdt.h ../../ofstd/include/ofdatime.h \
-  ../../ofstd/include/oftime.h ../../dcmdata/include/dcvris.h \
-  ../../dcmdata/include/dcvrtm.h ../../dcmdata/include/dcchrstr.h \
-  ../../dcmdata/include/dcvrlo.h ../../dcmdata/include/dcvrlt.h \
-  ../../dcmdata/include/dcvrpn.h ../../dcmdata/include/dcvrsh.h \
-  ../../dcmdata/include/dcvrst.h ../../dcmdata/include/dcvrut.h \
-  ../../dcmdata/include/dcvrobow.h ../../dcmdata/include/dcpixel.h \
-  ../../dcmdata/include/dcvrpobw.h ../../dcmdata/include/dcovlay.h \
-  ../../dcmdata/include/dcvrat.h ../../dcmdata/include/dcvrss.h \
-  ../../dcmdata/include/dcvrus.h ../../dcmdata/include/dcvrsl.h \
-  ../../dcmdata/include/dcvrfl.h ../../dcmdata/include/dcvrfd.h \
-  ../../dcmdata/include/dcvrof.h ../../dcmdata/include/cmdlnarg.h \
-  ../include/dvpscf.h ../include/dvpstyp.h ../include/dvpstat.h \
-  ../include/dcmpstat.h ../include/dvpsovl.h ../include/dvpsgll.h \
-  ../include/dvpsrsl.h ../include/dvpsall.h ../include/dvpsgal.h \
-  ../include/dvpscul.h ../include/dvpsvll.h ../include/dvpsvwl.h \
-  ../include/dvpsdal.h ../include/dvpssvl.h ../include/dvpspl.h \
+  ../../dcmdata/include/dcdefine.h ../../dcmdata/include/dctagkey.h \
+  ../../dcmdata/include/dctag.h ../../dcmdata/include/dcdicent.h \
+  ../../dcmdata/include/dchashdi.h ../../ofstd/include/oflist.h \
+  ../../dcmdata/include/dcdict.h ../../dcmdata/include/dcdeftag.h \
+  ../../dcmdata/include/dcobject.h ../../ofstd/include/ofconsol.h \
+  ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
+  ../../dcmdata/include/dcelem.h ../../dcmdata/include/dcitem.h \
+  ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
+  ../../dcmdata/include/dcpcache.h ../../dcmdata/include/dcmetinf.h \
+  ../../dcmdata/include/dcdatset.h ../../dcmdata/include/dcsequen.h \
+  ../../dcmdata/include/dcfilefo.h ../../dcmdata/include/dcdicdir.h \
+  ../../dcmdata/include/dcdirrec.h ../../dcmdata/include/dcvrulup.h \
+  ../../dcmdata/include/dcvrul.h ../../dcmdata/include/dcpixseq.h \
+  ../../dcmdata/include/dcofsetl.h ../../dcmdata/include/dcvrae.h \
+  ../../dcmdata/include/dcvras.h ../../dcmdata/include/dcvrcs.h \
+  ../../dcmdata/include/dcvrda.h ../../ofstd/include/ofdate.h \
+  ../../dcmdata/include/dcvrds.h ../../dcmdata/include/dcvrdt.h \
+  ../../ofstd/include/ofdatime.h ../../ofstd/include/oftime.h \
+  ../../dcmdata/include/dcvris.h ../../dcmdata/include/dcvrtm.h \
+  ../../dcmdata/include/dcchrstr.h ../../dcmdata/include/dcvrlo.h \
+  ../../dcmdata/include/dcvrlt.h ../../dcmdata/include/dcvrpn.h \
+  ../../dcmdata/include/dcvrsh.h ../../dcmdata/include/dcvrst.h \
+  ../../dcmdata/include/dcvrut.h ../../dcmdata/include/dcvrobow.h \
+  ../../dcmdata/include/dcpixel.h ../../dcmdata/include/dcvrpobw.h \
+  ../../dcmdata/include/dcovlay.h ../../dcmdata/include/dcvrat.h \
+  ../../dcmdata/include/dcvrss.h ../../dcmdata/include/dcvrus.h \
+  ../../dcmdata/include/dcvrsl.h ../../dcmdata/include/dcvrfl.h \
+  ../../dcmdata/include/dcvrfd.h ../../dcmdata/include/dcvrof.h \
+  ../../dcmdata/include/cmdlnarg.h ../include/dvpscf.h \
+  ../include/dvpstyp.h ../include/dvpstat.h ../include/dcmpstat.h \
+  ../include/dvpsovl.h ../include/dvpsgll.h ../include/dvpsrsl.h \
+  ../include/dvpsall.h ../include/dvpsgal.h ../include/dvpscul.h \
+  ../include/dvpsvll.h ../include/dvpsvwl.h ../include/dvpsdal.h \
+  ../include/dvpssvl.h ../include/dvpspl.h \
   ../../dcmqrdb/include/dcmqridx.h ../../dcmnet/include/dicom.h \
   ../../dcmnet/include/cond.h ../../dcmqrdb/include/dcmqrdbi.h \
   ../../dcmqrdb/include/dcmqrdba.h ../../dcmnet/include/dimse.h \
@@ -266,8 +306,47 @@ dcmprscu.o: dcmprscu.cc ../../config/include/osconfig.h \
   ../../dcmimgle/include/didispfn.h ../../dcmimgle/include/didislut.h \
   ../include/dvpspr.h ../include/dvpssp.h ../include/dvpspll.h \
   ../include/dvpsibl.h ../include/dvpsabl.h ../include/dvpshlp.h \
-  ../../ofstd/include/ofstd.h ../../dcmtls/include/tlstrans.h \
-  ../../dcmnet/include/dcmtrans.h ../../dcmnet/include/dcmlayer.h \
+  ../../ofstd/include/ofstd.h ../../dcmdata/include/dcdebug.h \
+  ../../dcmtls/include/tlstrans.h ../../dcmnet/include/dcmtrans.h \
+  ../../dcmnet/include/dcmlayer.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/ssl.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/e_os2.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/opensslconf.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/comp.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/crypto.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/stack.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/safestack.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/opensslv.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/ossl_typ.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/symhacks.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/bio.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/x509.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/buffer.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/evp.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/objects.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/obj_mac.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/asn1.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/bn.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/ec.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/ecdsa.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/ecdh.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/rsa.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/dsa.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/dh.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/sha.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/x509_vfy.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/lhash.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/pkcs7.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/pem.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/pem2.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/kssl.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/ssl2.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/ssl3.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/pq_compat.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/tls1.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/dtls1.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/pqueue.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/ssl23.h \
   ../../dcmtls/include/tlslayer.h
 dcmpschk.o: dcmpschk.cc ../../config/include/osconfig.h \
   ../../config/include/cfunix.h ../../ofstd/include/ofstdinc.h \
@@ -280,99 +359,6 @@ dcmpschk.o: dcmpschk.cc ../../config/include/osconfig.h \
   ../../ofstd/include/ofthread.h ../../dcmdata/include/dcistrma.h \
   ../../dcmdata/include/dcostrma.h ../../dcmdata/include/dcuid.h \
   ../../dcmdata/include/dcvm.h ../../dcmdata/include/dcdefine.h \
-  ../../dcmdata/include/dcdebug.h ../../dcmdata/include/dctagkey.h \
-  ../../dcmdata/include/dctag.h ../../dcmdata/include/dcdicent.h \
-  ../../dcmdata/include/dchashdi.h ../../ofstd/include/oflist.h \
-  ../../dcmdata/include/dcdict.h ../../dcmdata/include/dcdeftag.h \
-  ../../dcmdata/include/dcobject.h ../../ofstd/include/ofconsol.h \
-  ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
-  ../../dcmdata/include/dcelem.h ../../dcmdata/include/dcitem.h \
-  ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
-  ../../dcmdata/include/dcpcache.h ../../dcmdata/include/dcmetinf.h \
-  ../../dcmdata/include/dcdatset.h ../../dcmdata/include/dcsequen.h \
-  ../../dcmdata/include/dcfilefo.h ../../dcmdata/include/dcdicdir.h \
-  ../../dcmdata/include/dcdirrec.h ../../dcmdata/include/dcvrulup.h \
-  ../../dcmdata/include/dcvrul.h ../../dcmdata/include/dcpixseq.h \
-  ../../dcmdata/include/dcofsetl.h ../../dcmdata/include/dcvrae.h \
-  ../../dcmdata/include/dcvras.h ../../dcmdata/include/dcvrcs.h \
-  ../../dcmdata/include/dcvrda.h ../../ofstd/include/ofdate.h \
-  ../../dcmdata/include/dcvrds.h ../../dcmdata/include/dcvrdt.h \
-  ../../ofstd/include/ofdatime.h ../../ofstd/include/oftime.h \
-  ../../dcmdata/include/dcvris.h ../../dcmdata/include/dcvrtm.h \
-  ../../dcmdata/include/dcchrstr.h ../../dcmdata/include/dcvrlo.h \
-  ../../dcmdata/include/dcvrlt.h ../../dcmdata/include/dcvrpn.h \
-  ../../dcmdata/include/dcvrsh.h ../../dcmdata/include/dcvrst.h \
-  ../../dcmdata/include/dcvrut.h ../../dcmdata/include/dcvrobow.h \
-  ../../dcmdata/include/dcpixel.h ../../dcmdata/include/dcvrpobw.h \
-  ../../dcmdata/include/dcovlay.h ../../dcmdata/include/dcvrat.h \
-  ../../dcmdata/include/dcvrss.h ../../dcmdata/include/dcvrus.h \
-  ../../dcmdata/include/dcvrsl.h ../../dcmdata/include/dcvrfl.h \
-  ../../dcmdata/include/dcvrfd.h ../../dcmdata/include/dcvrof.h \
-  ../../dcmdata/include/cmdlnarg.h vrscan.h \
-  ../../ofstd/include/ofconapp.h ../../ofstd/include/ofcmdln.h \
-  ../include/dcmpstat.h ../include/dvpstyp.h ../include/dvpsovl.h \
-  ../include/dvpsgll.h ../include/dvpsrsl.h ../include/dvpsall.h \
-  ../include/dvpsgal.h ../include/dvpscul.h ../include/dvpsvll.h \
-  ../include/dvpsvwl.h ../include/dvpsdal.h ../include/dvpssvl.h \
-  ../include/dvpspl.h
-dcmpsmk.o: dcmpsmk.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h ../../ofstd/include/ofstdinc.h \
-  ../../dcmdata/include/dctk.h ../../dcmdata/include/dctypes.h \
-  ../../ofstd/include/oftypes.h ../../dcmdata/include/dcswap.h \
-  ../../dcmdata/include/dcerror.h ../../ofstd/include/ofcond.h \
-  ../../ofstd/include/ofstring.h ../../ofstd/include/ofcast.h \
-  ../../ofstd/include/ofstream.h ../../dcmdata/include/dcxfer.h \
-  ../../dcmdata/include/dcvr.h ../../ofstd/include/ofglobal.h \
-  ../../ofstd/include/ofthread.h ../../dcmdata/include/dcistrma.h \
-  ../../dcmdata/include/dcostrma.h ../../dcmdata/include/dcuid.h \
-  ../../dcmdata/include/dcvm.h ../../dcmdata/include/dcdefine.h \
-  ../../dcmdata/include/dcdebug.h ../../dcmdata/include/dctagkey.h \
-  ../../dcmdata/include/dctag.h ../../dcmdata/include/dcdicent.h \
-  ../../dcmdata/include/dchashdi.h ../../ofstd/include/oflist.h \
-  ../../dcmdata/include/dcdict.h ../../dcmdata/include/dcdeftag.h \
-  ../../dcmdata/include/dcobject.h ../../ofstd/include/ofconsol.h \
-  ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
-  ../../dcmdata/include/dcelem.h ../../dcmdata/include/dcitem.h \
-  ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
-  ../../dcmdata/include/dcpcache.h ../../dcmdata/include/dcmetinf.h \
-  ../../dcmdata/include/dcdatset.h ../../dcmdata/include/dcsequen.h \
-  ../../dcmdata/include/dcfilefo.h ../../dcmdata/include/dcdicdir.h \
-  ../../dcmdata/include/dcdirrec.h ../../dcmdata/include/dcvrulup.h \
-  ../../dcmdata/include/dcvrul.h ../../dcmdata/include/dcpixseq.h \
-  ../../dcmdata/include/dcofsetl.h ../../dcmdata/include/dcvrae.h \
-  ../../dcmdata/include/dcvras.h ../../dcmdata/include/dcvrcs.h \
-  ../../dcmdata/include/dcvrda.h ../../ofstd/include/ofdate.h \
-  ../../dcmdata/include/dcvrds.h ../../dcmdata/include/dcvrdt.h \
-  ../../ofstd/include/ofdatime.h ../../ofstd/include/oftime.h \
-  ../../dcmdata/include/dcvris.h ../../dcmdata/include/dcvrtm.h \
-  ../../dcmdata/include/dcchrstr.h ../../dcmdata/include/dcvrlo.h \
-  ../../dcmdata/include/dcvrlt.h ../../dcmdata/include/dcvrpn.h \
-  ../../dcmdata/include/dcvrsh.h ../../dcmdata/include/dcvrst.h \
-  ../../dcmdata/include/dcvrut.h ../../dcmdata/include/dcvrobow.h \
-  ../../dcmdata/include/dcpixel.h ../../dcmdata/include/dcvrpobw.h \
-  ../../dcmdata/include/dcovlay.h ../../dcmdata/include/dcvrat.h \
-  ../../dcmdata/include/dcvrss.h ../../dcmdata/include/dcvrus.h \
-  ../../dcmdata/include/dcvrsl.h ../../dcmdata/include/dcvrfl.h \
-  ../../dcmdata/include/dcvrfd.h ../../dcmdata/include/dcvrof.h \
-  ../../dcmdata/include/cmdlnarg.h ../include/dcmpstat.h \
-  ../include/dvpstyp.h ../include/dvpsovl.h ../include/dvpsgll.h \
-  ../include/dvpsrsl.h ../include/dvpsall.h ../include/dvpsgal.h \
-  ../include/dvpscul.h ../include/dvpsvll.h ../include/dvpsvwl.h \
-  ../include/dvpsdal.h ../include/dvpssvl.h ../include/dvpspl.h \
-  ../include/dvpshlp.h ../../ofstd/include/ofconapp.h \
-  ../../ofstd/include/ofcmdln.h
-dcmpsprt.o: dcmpsprt.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h ../../ofstd/include/ofstdinc.h \
-  ../../ofstd/include/ofstream.h ../include/dviface.h \
-  ../../dcmdata/include/dctk.h ../../dcmdata/include/dctypes.h \
-  ../../ofstd/include/oftypes.h ../../dcmdata/include/dcswap.h \
-  ../../dcmdata/include/dcerror.h ../../ofstd/include/ofcond.h \
-  ../../ofstd/include/ofstring.h ../../ofstd/include/ofcast.h \
-  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
-  ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
-  ../../dcmdata/include/dcistrma.h ../../dcmdata/include/dcostrma.h \
-  ../../dcmdata/include/dcuid.h ../../dcmdata/include/dcvm.h \
-  ../../dcmdata/include/dcdefine.h ../../dcmdata/include/dcdebug.h \
   ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dctag.h \
   ../../dcmdata/include/dcdicent.h ../../dcmdata/include/dchashdi.h \
   ../../ofstd/include/oflist.h ../../dcmdata/include/dcdict.h \
@@ -401,11 +387,103 @@ dcmpsprt.o: dcmpsprt.cc ../../config/include/osconfig.h \
   ../../dcmdata/include/dcvrus.h ../../dcmdata/include/dcvrsl.h \
   ../../dcmdata/include/dcvrfl.h ../../dcmdata/include/dcvrfd.h \
   ../../dcmdata/include/dcvrof.h ../../dcmdata/include/cmdlnarg.h \
-  ../include/dvpscf.h ../include/dvpstyp.h ../include/dvpstat.h \
-  ../include/dcmpstat.h ../include/dvpsovl.h ../include/dvpsgll.h \
+  vrscan.h ../../ofstd/include/ofconapp.h ../../ofstd/include/ofcmdln.h \
+  ../include/dcmpstat.h ../include/dvpstyp.h ../include/dvpsovl.h \
+  ../include/dvpsgll.h ../include/dvpsrsl.h ../include/dvpsall.h \
+  ../include/dvpsgal.h ../include/dvpscul.h ../include/dvpsvll.h \
+  ../include/dvpsvwl.h ../include/dvpsdal.h ../include/dvpssvl.h \
+  ../include/dvpspl.h ../../dcmdata/include/dcdebug.h
+dcmpsmk.o: dcmpsmk.cc ../../config/include/osconfig.h \
+  ../../config/include/cfunix.h ../../ofstd/include/ofstdinc.h \
+  ../../dcmdata/include/dctk.h ../../dcmdata/include/dctypes.h \
+  ../../ofstd/include/oftypes.h ../../dcmdata/include/dcswap.h \
+  ../../dcmdata/include/dcerror.h ../../ofstd/include/ofcond.h \
+  ../../ofstd/include/ofstring.h ../../ofstd/include/ofcast.h \
+  ../../ofstd/include/ofstream.h ../../dcmdata/include/dcxfer.h \
+  ../../dcmdata/include/dcvr.h ../../ofstd/include/ofglobal.h \
+  ../../ofstd/include/ofthread.h ../../dcmdata/include/dcistrma.h \
+  ../../dcmdata/include/dcostrma.h ../../dcmdata/include/dcuid.h \
+  ../../dcmdata/include/dcvm.h ../../dcmdata/include/dcdefine.h \
+  ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dctag.h \
+  ../../dcmdata/include/dcdicent.h ../../dcmdata/include/dchashdi.h \
+  ../../ofstd/include/oflist.h ../../dcmdata/include/dcdict.h \
+  ../../dcmdata/include/dcdeftag.h ../../dcmdata/include/dcobject.h \
+  ../../ofstd/include/ofconsol.h ../../dcmdata/include/dclist.h \
+  ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcelem.h \
+  ../../dcmdata/include/dcitem.h ../../dcmdata/include/dcvrui.h \
+  ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcpcache.h \
+  ../../dcmdata/include/dcmetinf.h ../../dcmdata/include/dcdatset.h \
+  ../../dcmdata/include/dcsequen.h ../../dcmdata/include/dcfilefo.h \
+  ../../dcmdata/include/dcdicdir.h ../../dcmdata/include/dcdirrec.h \
+  ../../dcmdata/include/dcvrulup.h ../../dcmdata/include/dcvrul.h \
+  ../../dcmdata/include/dcpixseq.h ../../dcmdata/include/dcofsetl.h \
+  ../../dcmdata/include/dcvrae.h ../../dcmdata/include/dcvras.h \
+  ../../dcmdata/include/dcvrcs.h ../../dcmdata/include/dcvrda.h \
+  ../../ofstd/include/ofdate.h ../../dcmdata/include/dcvrds.h \
+  ../../dcmdata/include/dcvrdt.h ../../ofstd/include/ofdatime.h \
+  ../../ofstd/include/oftime.h ../../dcmdata/include/dcvris.h \
+  ../../dcmdata/include/dcvrtm.h ../../dcmdata/include/dcchrstr.h \
+  ../../dcmdata/include/dcvrlo.h ../../dcmdata/include/dcvrlt.h \
+  ../../dcmdata/include/dcvrpn.h ../../dcmdata/include/dcvrsh.h \
+  ../../dcmdata/include/dcvrst.h ../../dcmdata/include/dcvrut.h \
+  ../../dcmdata/include/dcvrobow.h ../../dcmdata/include/dcpixel.h \
+  ../../dcmdata/include/dcvrpobw.h ../../dcmdata/include/dcovlay.h \
+  ../../dcmdata/include/dcvrat.h ../../dcmdata/include/dcvrss.h \
+  ../../dcmdata/include/dcvrus.h ../../dcmdata/include/dcvrsl.h \
+  ../../dcmdata/include/dcvrfl.h ../../dcmdata/include/dcvrfd.h \
+  ../../dcmdata/include/dcvrof.h ../../dcmdata/include/cmdlnarg.h \
+  ../../dcmdata/include/dcdebug.h ../include/dcmpstat.h \
+  ../include/dvpstyp.h ../include/dvpsovl.h ../include/dvpsgll.h \
   ../include/dvpsrsl.h ../include/dvpsall.h ../include/dvpsgal.h \
   ../include/dvpscul.h ../include/dvpsvll.h ../include/dvpsvwl.h \
   ../include/dvpsdal.h ../include/dvpssvl.h ../include/dvpspl.h \
+  ../include/dvpshlp.h ../../ofstd/include/ofconapp.h \
+  ../../ofstd/include/ofcmdln.h
+dcmpsprt.o: dcmpsprt.cc ../../config/include/osconfig.h \
+  ../../config/include/cfunix.h ../../ofstd/include/ofstdinc.h \
+  ../../ofstd/include/ofstream.h ../include/dviface.h \
+  ../../dcmdata/include/dctk.h ../../dcmdata/include/dctypes.h \
+  ../../ofstd/include/oftypes.h ../../dcmdata/include/dcswap.h \
+  ../../dcmdata/include/dcerror.h ../../ofstd/include/ofcond.h \
+  ../../ofstd/include/ofstring.h ../../ofstd/include/ofcast.h \
+  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
+  ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
+  ../../dcmdata/include/dcistrma.h ../../dcmdata/include/dcostrma.h \
+  ../../dcmdata/include/dcuid.h ../../dcmdata/include/dcvm.h \
+  ../../dcmdata/include/dcdefine.h ../../dcmdata/include/dctagkey.h \
+  ../../dcmdata/include/dctag.h ../../dcmdata/include/dcdicent.h \
+  ../../dcmdata/include/dchashdi.h ../../ofstd/include/oflist.h \
+  ../../dcmdata/include/dcdict.h ../../dcmdata/include/dcdeftag.h \
+  ../../dcmdata/include/dcobject.h ../../ofstd/include/ofconsol.h \
+  ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
+  ../../dcmdata/include/dcelem.h ../../dcmdata/include/dcitem.h \
+  ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
+  ../../dcmdata/include/dcpcache.h ../../dcmdata/include/dcmetinf.h \
+  ../../dcmdata/include/dcdatset.h ../../dcmdata/include/dcsequen.h \
+  ../../dcmdata/include/dcfilefo.h ../../dcmdata/include/dcdicdir.h \
+  ../../dcmdata/include/dcdirrec.h ../../dcmdata/include/dcvrulup.h \
+  ../../dcmdata/include/dcvrul.h ../../dcmdata/include/dcpixseq.h \
+  ../../dcmdata/include/dcofsetl.h ../../dcmdata/include/dcvrae.h \
+  ../../dcmdata/include/dcvras.h ../../dcmdata/include/dcvrcs.h \
+  ../../dcmdata/include/dcvrda.h ../../ofstd/include/ofdate.h \
+  ../../dcmdata/include/dcvrds.h ../../dcmdata/include/dcvrdt.h \
+  ../../ofstd/include/ofdatime.h ../../ofstd/include/oftime.h \
+  ../../dcmdata/include/dcvris.h ../../dcmdata/include/dcvrtm.h \
+  ../../dcmdata/include/dcchrstr.h ../../dcmdata/include/dcvrlo.h \
+  ../../dcmdata/include/dcvrlt.h ../../dcmdata/include/dcvrpn.h \
+  ../../dcmdata/include/dcvrsh.h ../../dcmdata/include/dcvrst.h \
+  ../../dcmdata/include/dcvrut.h ../../dcmdata/include/dcvrobow.h \
+  ../../dcmdata/include/dcpixel.h ../../dcmdata/include/dcvrpobw.h \
+  ../../dcmdata/include/dcovlay.h ../../dcmdata/include/dcvrat.h \
+  ../../dcmdata/include/dcvrss.h ../../dcmdata/include/dcvrus.h \
+  ../../dcmdata/include/dcvrsl.h ../../dcmdata/include/dcvrfl.h \
+  ../../dcmdata/include/dcvrfd.h ../../dcmdata/include/dcvrof.h \
+  ../../dcmdata/include/cmdlnarg.h ../include/dvpscf.h \
+  ../include/dvpstyp.h ../include/dvpstat.h ../include/dcmpstat.h \
+  ../include/dvpsovl.h ../include/dvpsgll.h ../include/dvpsrsl.h \
+  ../include/dvpsall.h ../include/dvpsgal.h ../include/dvpscul.h \
+  ../include/dvpsvll.h ../include/dvpsvwl.h ../include/dvpsdal.h \
+  ../include/dvpssvl.h ../include/dvpspl.h \
   ../../dcmqrdb/include/dcmqridx.h ../../dcmnet/include/dicom.h \
   ../../dcmnet/include/cond.h ../../dcmnet/include/dcompat.h \
   ../../ofstd/include/ofbmanip.h ../../dcmqrdb/include/dcmqrdbi.h \
@@ -423,7 +501,7 @@ dcmpsprt.o: dcmpsprt.cc ../../config/include/osconfig.h \
   ../../dcmimgle/include/diluptab.h ../../dcmimgle/include/dibaslut.h \
   ../../dcmimgle/include/dimoopx.h ../../dcmimgle/include/didispfn.h \
   ../../dcmimgle/include/didislut.h ../../ofstd/include/ofcmdln.h \
-  ../../ofstd/include/ofconapp.h
+  ../../ofstd/include/ofconapp.h ../../dcmdata/include/dcdebug.h
 dcmpsrcv.o: dcmpsrcv.cc ../../config/include/osconfig.h \
   ../../config/include/cfunix.h ../include/dvpsdef.h ../include/dvpscf.h \
   ../../ofstd/include/ofstring.h ../../ofstd/include/oftypes.h \
@@ -453,32 +531,70 @@ dcmpsrcv.o: dcmpsrcv.cc ../../config/include/osconfig.h \
   ../include/dcmpstat.h ../../dcmdata/include/dctk.h \
   ../../dcmdata/include/dcswap.h ../../dcmdata/include/dcistrma.h \
   ../../dcmdata/include/dcostrma.h ../../dcmdata/include/dcvm.h \
-  ../../dcmdata/include/dcdefine.h ../../dcmdata/include/dcdebug.h \
-  ../../dcmdata/include/dcdicent.h ../../dcmdata/include/dchashdi.h \
-  ../../dcmdata/include/dcdict.h ../../dcmdata/include/dcdeftag.h \
-  ../../dcmdata/include/dcmetinf.h ../../dcmdata/include/dcdicdir.h \
-  ../../dcmdata/include/dcdirrec.h ../../dcmdata/include/dcvrulup.h \
-  ../../dcmdata/include/dcvrul.h ../../dcmdata/include/dcpixseq.h \
-  ../../dcmdata/include/dcofsetl.h ../../dcmdata/include/dcvrae.h \
-  ../../dcmdata/include/dcvras.h ../../dcmdata/include/dcvrcs.h \
-  ../../dcmdata/include/dcvrda.h ../../ofstd/include/ofdate.h \
-  ../../dcmdata/include/dcvrds.h ../../dcmdata/include/dcvrdt.h \
-  ../../ofstd/include/ofdatime.h ../../ofstd/include/oftime.h \
-  ../../dcmdata/include/dcvris.h ../../dcmdata/include/dcvrtm.h \
-  ../../dcmdata/include/dcchrstr.h ../../dcmdata/include/dcvrlo.h \
-  ../../dcmdata/include/dcvrlt.h ../../dcmdata/include/dcvrpn.h \
-  ../../dcmdata/include/dcvrsh.h ../../dcmdata/include/dcvrst.h \
-  ../../dcmdata/include/dcvrut.h ../../dcmdata/include/dcvrobow.h \
-  ../../dcmdata/include/dcpixel.h ../../dcmdata/include/dcvrpobw.h \
-  ../../dcmdata/include/dcovlay.h ../../dcmdata/include/dcvrat.h \
-  ../../dcmdata/include/dcvrss.h ../../dcmdata/include/dcvrus.h \
-  ../../dcmdata/include/dcvrsl.h ../../dcmdata/include/dcvrfl.h \
-  ../../dcmdata/include/dcvrfd.h ../../dcmdata/include/dcvrof.h \
-  ../include/dvpsovl.h ../include/dvpsgll.h ../include/dvpsrsl.h \
-  ../include/dvpsall.h ../include/dvpsgal.h ../include/dvpscul.h \
-  ../include/dvpsvll.h ../include/dvpsvwl.h ../include/dvpsdal.h \
-  ../include/dvpssvl.h ../include/dvpspl.h \
+  ../../dcmdata/include/dcdefine.h ../../dcmdata/include/dcdicent.h \
+  ../../dcmdata/include/dchashdi.h ../../dcmdata/include/dcdict.h \
+  ../../dcmdata/include/dcdeftag.h ../../dcmdata/include/dcmetinf.h \
+  ../../dcmdata/include/dcdicdir.h ../../dcmdata/include/dcdirrec.h \
+  ../../dcmdata/include/dcvrulup.h ../../dcmdata/include/dcvrul.h \
+  ../../dcmdata/include/dcpixseq.h ../../dcmdata/include/dcofsetl.h \
+  ../../dcmdata/include/dcvrae.h ../../dcmdata/include/dcvras.h \
+  ../../dcmdata/include/dcvrcs.h ../../dcmdata/include/dcvrda.h \
+  ../../ofstd/include/ofdate.h ../../dcmdata/include/dcvrds.h \
+  ../../dcmdata/include/dcvrdt.h ../../ofstd/include/ofdatime.h \
+  ../../ofstd/include/oftime.h ../../dcmdata/include/dcvris.h \
+  ../../dcmdata/include/dcvrtm.h ../../dcmdata/include/dcchrstr.h \
+  ../../dcmdata/include/dcvrlo.h ../../dcmdata/include/dcvrlt.h \
+  ../../dcmdata/include/dcvrpn.h ../../dcmdata/include/dcvrsh.h \
+  ../../dcmdata/include/dcvrst.h ../../dcmdata/include/dcvrut.h \
+  ../../dcmdata/include/dcvrobow.h ../../dcmdata/include/dcpixel.h \
+  ../../dcmdata/include/dcvrpobw.h ../../dcmdata/include/dcovlay.h \
+  ../../dcmdata/include/dcvrat.h ../../dcmdata/include/dcvrss.h \
+  ../../dcmdata/include/dcvrus.h ../../dcmdata/include/dcvrsl.h \
+  ../../dcmdata/include/dcvrfl.h ../../dcmdata/include/dcvrfd.h \
+  ../../dcmdata/include/dcvrof.h ../include/dvpsovl.h \
+  ../include/dvpsgll.h ../include/dvpsrsl.h ../include/dvpsall.h \
+  ../include/dvpsgal.h ../include/dvpscul.h ../include/dvpsvll.h \
+  ../include/dvpsvwl.h ../include/dvpsdal.h ../include/dvpssvl.h \
+  ../include/dvpspl.h ../../dcmdata/include/dcdebug.h \
   ../../dcmtls/include/tlstrans.h ../../dcmnet/include/dcmtrans.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/ssl.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/e_os2.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/opensslconf.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/comp.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/crypto.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/stack.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/safestack.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/opensslv.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/ossl_typ.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/symhacks.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/bio.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/x509.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/buffer.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/evp.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/objects.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/obj_mac.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/asn1.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/bn.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/ec.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/ecdsa.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/ecdh.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/rsa.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/dsa.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/dh.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/sha.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/x509_vfy.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/lhash.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/pkcs7.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/pem.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/pem2.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/kssl.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/ssl2.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/ssl3.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/pq_compat.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/tls1.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/dtls1.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/pqueue.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/ssl23.h \
   ../../dcmtls/include/tlslayer.h
 dcmpssnd.o: dcmpssnd.cc ../../config/include/osconfig.h \
   ../../config/include/cfunix.h ../include/dvpsdef.h ../include/dvpscf.h \
@@ -505,32 +621,70 @@ dcmpssnd.o: dcmpssnd.cc ../../config/include/osconfig.h \
   ../include/dvpshlp.h ../../dcmdata/include/dctk.h \
   ../../dcmdata/include/dcswap.h ../../dcmdata/include/dcistrma.h \
   ../../dcmdata/include/dcostrma.h ../../dcmdata/include/dcvm.h \
-  ../../dcmdata/include/dcdefine.h ../../dcmdata/include/dcdebug.h \
-  ../../dcmdata/include/dcdicent.h ../../dcmdata/include/dchashdi.h \
-  ../../dcmdata/include/dcdict.h ../../dcmdata/include/dcdeftag.h \
-  ../../dcmdata/include/dcmetinf.h ../../dcmdata/include/dcsequen.h \
-  ../../dcmdata/include/dcfilefo.h ../../dcmdata/include/dcdicdir.h \
-  ../../dcmdata/include/dcdirrec.h ../../dcmdata/include/dcvrulup.h \
-  ../../dcmdata/include/dcvrul.h ../../dcmdata/include/dcpixseq.h \
-  ../../dcmdata/include/dcofsetl.h ../../dcmdata/include/dcvrae.h \
-  ../../dcmdata/include/dcvras.h ../../dcmdata/include/dcvrcs.h \
-  ../../dcmdata/include/dcvrda.h ../../ofstd/include/ofdate.h \
-  ../../dcmdata/include/dcvrds.h ../../dcmdata/include/dcvrdt.h \
-  ../../ofstd/include/ofdatime.h ../../ofstd/include/oftime.h \
-  ../../dcmdata/include/dcvris.h ../../dcmdata/include/dcvrtm.h \
-  ../../dcmdata/include/dcchrstr.h ../../dcmdata/include/dcvrlo.h \
-  ../../dcmdata/include/dcvrlt.h ../../dcmdata/include/dcvrpn.h \
-  ../../dcmdata/include/dcvrsh.h ../../dcmdata/include/dcvrst.h \
-  ../../dcmdata/include/dcvrut.h ../../dcmdata/include/dcvrobow.h \
-  ../../dcmdata/include/dcpixel.h ../../dcmdata/include/dcvrpobw.h \
-  ../../dcmdata/include/dcovlay.h ../../dcmdata/include/dcvrat.h \
-  ../../dcmdata/include/dcvrss.h ../../dcmdata/include/dcvrus.h \
-  ../../dcmdata/include/dcvrsl.h ../../dcmdata/include/dcvrfl.h \
-  ../../dcmdata/include/dcvrfd.h ../../dcmdata/include/dcvrof.h \
-  ../../dcmqrdb/include/dcmqrdbi.h ../../dcmqrdb/include/dcmqrdba.h \
-  ../../ofstd/include/offname.h ../../dcmqrdb/include/dcmqrdbs.h \
-  ../include/dvpsmsg.h ../../dcmtls/include/tlstrans.h \
+  ../../dcmdata/include/dcdefine.h ../../dcmdata/include/dcdicent.h \
+  ../../dcmdata/include/dchashdi.h ../../dcmdata/include/dcdict.h \
+  ../../dcmdata/include/dcdeftag.h ../../dcmdata/include/dcmetinf.h \
+  ../../dcmdata/include/dcsequen.h ../../dcmdata/include/dcfilefo.h \
+  ../../dcmdata/include/dcdicdir.h ../../dcmdata/include/dcdirrec.h \
+  ../../dcmdata/include/dcvrulup.h ../../dcmdata/include/dcvrul.h \
+  ../../dcmdata/include/dcpixseq.h ../../dcmdata/include/dcofsetl.h \
+  ../../dcmdata/include/dcvrae.h ../../dcmdata/include/dcvras.h \
+  ../../dcmdata/include/dcvrcs.h ../../dcmdata/include/dcvrda.h \
+  ../../ofstd/include/ofdate.h ../../dcmdata/include/dcvrds.h \
+  ../../dcmdata/include/dcvrdt.h ../../ofstd/include/ofdatime.h \
+  ../../ofstd/include/oftime.h ../../dcmdata/include/dcvris.h \
+  ../../dcmdata/include/dcvrtm.h ../../dcmdata/include/dcchrstr.h \
+  ../../dcmdata/include/dcvrlo.h ../../dcmdata/include/dcvrlt.h \
+  ../../dcmdata/include/dcvrpn.h ../../dcmdata/include/dcvrsh.h \
+  ../../dcmdata/include/dcvrst.h ../../dcmdata/include/dcvrut.h \
+  ../../dcmdata/include/dcvrobow.h ../../dcmdata/include/dcpixel.h \
+  ../../dcmdata/include/dcvrpobw.h ../../dcmdata/include/dcovlay.h \
+  ../../dcmdata/include/dcvrat.h ../../dcmdata/include/dcvrss.h \
+  ../../dcmdata/include/dcvrus.h ../../dcmdata/include/dcvrsl.h \
+  ../../dcmdata/include/dcvrfl.h ../../dcmdata/include/dcvrfd.h \
+  ../../dcmdata/include/dcvrof.h ../../dcmqrdb/include/dcmqrdbi.h \
+  ../../dcmqrdb/include/dcmqrdba.h ../../ofstd/include/offname.h \
+  ../../dcmqrdb/include/dcmqrdbs.h ../include/dvpsmsg.h \
+  ../../dcmdata/include/dcdebug.h ../../dcmtls/include/tlstrans.h \
   ../../dcmnet/include/dcmtrans.h ../../dcmnet/include/dcmlayer.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/ssl.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/e_os2.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/opensslconf.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/comp.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/crypto.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/stack.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/safestack.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/opensslv.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/ossl_typ.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/symhacks.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/bio.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/x509.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/buffer.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/evp.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/objects.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/obj_mac.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/asn1.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/bn.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/ec.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/ecdsa.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/ecdh.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/rsa.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/dsa.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/dh.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/sha.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/x509_vfy.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/lhash.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/pkcs7.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/pem.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/pem2.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/kssl.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/ssl2.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/ssl3.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/pq_compat.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/tls1.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/dtls1.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/pqueue.h \
+  /usr/local/apps/openssl-0.9.8a/include/openssl/ssl23.h \
   ../../dcmtls/include/tlslayer.h
 vrscan.o: vrscan.cc ../../ofstd/include/ofstdinc.h \
   ../../config/include/osconfig.h ../../config/include/cfunix.h \

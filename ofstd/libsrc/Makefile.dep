@@ -35,6 +35,15 @@ offname.o: offname.cc ../../config/include/osconfig.h \
   ../../config/include/cfunix.h ../include/offname.h ../include/oftypes.h \
   ../include/ofstring.h ../include/ofcast.h ../include/ofstdinc.h \
   ../include/ofstream.h
+ofipcerr.o: ofipcerr.cc ../../config/include/osconfig.h \
+  ../../config/include/cfunix.h ../include/ofipcerr.h ../include/ofcond.h \
+  ../include/oftypes.h ../include/ofstring.h ../include/ofcast.h \
+  ../include/ofstdinc.h ../include/ofstream.h
+ofipcmsg.o: ofipcmsg.cc ../../config/include/osconfig.h \
+  ../../config/include/cfunix.h ../include/ofipcmsg.h \
+  ../include/ofipcabs.h ../include/ofcond.h ../include/oftypes.h \
+  ../include/ofstring.h ../include/ofcast.h ../include/ofstdinc.h \
+  ../include/ofstream.h ../include/ofipcerr.h
 oflist.o: oflist.cc ../../config/include/osconfig.h \
   ../../config/include/cfunix.h ../include/oflist.h ../include/oftypes.h \
   ../include/ofcast.h ../include/ofstdinc.h

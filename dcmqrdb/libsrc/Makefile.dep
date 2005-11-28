@@ -163,7 +163,13 @@ dcmqropt.o: dcmqropt.cc ../../config/include/osconfig.h \
   ../../dcmnet/include/assoc.h ../../dcmnet/include/lst.h \
   ../../ofstd/include/oflist.h ../../dcmnet/include/dul.h \
   ../../dcmnet/include/extneg.h ../include/dcmqrcnf.h \
-  ../../ofstd/include/ofcmdln.h ../../ofstd/include/ofconapp.h
+  ../../ofstd/include/ofcmdln.h ../../ofstd/include/ofconapp.h \
+  ../../dcmnet/include/dimse.h ../../dcmdata/include/dcdatset.h \
+  ../../dcmdata/include/dcitem.h ../../dcmdata/include/dcobject.h \
+  ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
+  ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
+  ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
+  ../../dcmdata/include/dcelem.h ../../dcmdata/include/dcpcache.h
 dcmqrptb.o: dcmqrptb.cc ../../config/include/osconfig.h \
   ../../config/include/cfunix.h ../include/dcmqrptb.h \
   ../../ofstd/include/oftypes.h ../../ofstd/include/ofstring.h \
