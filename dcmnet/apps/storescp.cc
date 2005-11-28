@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-25 11:31:03 $
+ *  Update Date:      $Date: 2005-11-28 16:28:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.83 $
+ *  CVS/RCS Revision: $Revision: 1.84 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -170,6 +170,7 @@ OFString           subdirectoryPathAndName;
 OFList<OFString>   outputFileNameArray;
 static const char *opt_execOnReception = NULL;        // default: don't execute anything on reception
 static const char *opt_execOnEndOfStudy = NULL;       // default: don't execute anything on end of study
+
 OFString           lastStudySubdirectoryPathAndName;
 static OFBool      opt_renameOnEndOfStudy = OFFalse;  // default: don't rename any files on end of study
 static long        opt_endOfStudyTimeout = -1;        // default: no end of study timeout
@@ -186,6 +187,7 @@ OFBool             opt_forkMode = OFFalse;
 
 #ifdef _WIN32
 OFBool             opt_forkedChild = OFFalse;
+OFBool             opt_execSync = OFFalse;            // default: execute in background 
 #endif
 
 #ifdef WITH_OPENSSL
@@ -385,6 +387,9 @@ int main(int argc, char *argv[])
     cmd.addOption(  "--rename-on-eostudy",      "-rns",      "(only w/ -ss) Having received and processed\nall C-STORE-Request messages that belong to\none study, rename output files according to\na certain pattern" );
     cmd.addOption(  "--eostudy-timeout",        "-tos",  1,  "[t]imeout: integer (only w/ -ss, -xcs or -rns)",
                                                              "specifies a timeout of t seconds for\nend-of-study determination" );
+#ifdef _WIN32
+    cmd.addOption(  "--exec-sync",              "-xs",       "execute command synchronously in foreground" );
+#endif
 
 #ifdef WITH_OPENSSL
   cmd.addGroup("transport layer security (TLS) options:");
@@ -796,6 +801,11 @@ int main(int argc, char *argv[])
         app.printError("--eostudy-timeout only in combination with --sort-conc-studies, --exec-on-eostudy or --rename-on-eostudy");
       app.checkValue(cmd.getValueAndCheckMin(opt_endOfStudyTimeout, 0));
     }
+
+#ifdef _WIN32
+    if (cmd.findOption("--exec-sync")) opt_execSync = OFTrue; 
+#endif
+
   }
 
 #ifdef WITH_OPENSSL
@@ -2288,8 +2298,9 @@ static OFString replaceChars( const OFString &srcstr, const OFString &pattern, c
 
 static void executeCommand( const OFString &cmd )
     /*
-     * This function executes the given command line. Note that the execution will be
-     * performed in a new process so that it does not slow down the execution of storescp.
+     * This function executes the given command line. The execution will be
+     * performed in a new process which can be run in the background
+     * so that it does not slow down the execution of storescp.
      *
      * Parameters:
      *   cmd - [in] The command which shall be executed.
@@ -2330,6 +2341,15 @@ static void executeCommand( const OFString &cmd )
   if( !CreateProcess(NULL, OFconst_cast(char *, cmd.c_str()), NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo) )
     fprintf( stderr, "storescp: Error while executing command '%s'.\n" , cmd.c_str() );
 
+  if (opt_execSync) 
+  {
+      // Wait until child process exits (makes execution synchronous).
+      WaitForSingleObject(procinfo.hProcess, INFINITE);
+  }
+
+  // Close process and thread handles to avoid resource leak
+  CloseHandle(procinfo.hProcess);
+  CloseHandle(procinfo.hThread);
 #endif
 }
 
@@ -2528,7 +2548,11 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.83  2005-11-25 11:31:03  meichel
+** Revision 1.84  2005-11-28 16:28:53  meichel
+** Fixed resource leak in Win32 command execution.
+**   Added option --exec-sync that causes synchronous command execution on Windows.
+**
+** Revision 1.83  2005/11/25 11:31:03  meichel
 ** StoreSCP now supports multi-process mode both on Posix and Win32 platforms
 **   where a separate client process is forked for each incoming association.
 **

@@ -48,20 +48,6 @@ port  tcp/ip port number to listen on.
           write output-files to (existing) directory p (default: .)
 \endverbatim
 
-\subsection multi_process_options multi-process options
-\verbatim
-
-  --fork                 
-    fork child process for each association
-
-  --forked-child         
-    process is forked child, internal use only.
-    This option only exists on the Win32 platform and should never 
-    be directly called by the user.
-
-\endverbatim
-
-          
 \subsection network_options network options
 \verbatim
 association negotiation profile from configuration file:
@@ -281,6 +267,11 @@ filename generation:
   -tos  --eostudy-timeout  [t]imeout: integer
           specifies a timeout of t seconds for end-of-study
           determination (only w/ -ss, -xcs or -rns)
+
+  -xs   --exec-sync
+          execute command synchronously in foreground.
+          This option is available on Windows only.
+
 \endverbatim
 
 \subsection tls_options transport layer security (TLS) options
