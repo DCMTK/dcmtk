@@ -7,10 +7,11 @@ DcmDataDictionary class instance dcmDataDict.  This approach has the
 advantage that application programs need not be recompiled if additions
 or corrections are made to the data dictionary.
 
-By default (on a Unix system) the global data dictionary will attempt
+By default (on a Posix system) the global data dictionary will attempt
 to load the file /usr/local/dicom/lib/dicom.dic (or an alternative
-default data dictionary file specified in the configure system 
-file config/acconfig.h).
+default data dictionary file specified as DCM_DICT_DEFAULT_PATH
+in file config/include/cfunix.h, which is created by autoconf during
+the execution of the configure script).
 
 The default behaviour can be overridden by defining an environment 
 variable DCMDICTPATH to contain the file system path to an alternative 
@@ -40,8 +41,9 @@ config/acconfig.h).  The format of the data dictionary file is described
 in the example.  
 
 The example data dictionary is relatively complete and includes all
-standard DICOM tags (including those found in supplements 1, 2, 3, 4, 5,
-6, 7, 8, 9, 10), obsolete ACR/NEMA version 2 tags, obsolete SPI tags, and
+standard DICOM tags (see the header of the file, where the implemented
+version of the standard plus all supplements and CPs are listed), 
+obsolete ACR/NEMA version 2 tags, obsolete SPI tags, and
 the tags used by Papyrus version 3.  An early version of this data 
 dictionary was based on a data dictionary put together by David Clunie.
 
@@ -96,8 +98,7 @@ The same is true of the DCMDICTPATH environment variable.  However, this
 can be a useful technique if you want to override built-in data dictionary 
 values.
 
-
 ------------
 
 March 1996, Andrew Hewett, Kuratorium OFFIS e.V., Oldenburg, Germany
-- Updated September 1997, Andrew Hewett
+- Updated November 2005, Marco Eichelberg
