@@ -871,10 +871,12 @@ typedef unsigned short ushort;
 #pragma warn -8012          // disable Warning W8012 "comparing signed and unsigned values"
 #ifdef WITH_THREADS
 #define __MT__              // required for _beginthreadex() API in <process.h>
+#define _MT                 // required for _errno on BCB6
 #endif
 #define HAVE_PROTOTYPE_MKTEMP
 #undef HAVE_SYS_UTIME_H 1
 #define HAVE_UTIME_H
+
 #endif /* __BORLANDC__ */
 
 /* Additional settings for Visual Studio 2005 */

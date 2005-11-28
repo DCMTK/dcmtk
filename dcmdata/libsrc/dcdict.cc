@@ -22,8 +22,8 @@
  *  Purpose: loadable DICOM data dictionary
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-17 13:33:11 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Update Date:      $Date: 2005-11-28 16:13:57 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -249,7 +249,12 @@ splitFields(const char* line, char* fields[], int maxFields, char splitChar)
     int len;
 
     do {
+#ifdef __BORLANDC__
+        // Borland Builder expects a non-const argument
+        p = strchr(OFconst_cast(char *, line), splitChar);
+#else
         p = strchr(line, splitChar);
+#endif
         if (p == NULL) {
             len = strlen(line);
         } else {
@@ -834,7 +839,10 @@ void GlobalDcmDataDictionary::clear()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.cc,v $
-** Revision 1.34  2005-11-17 13:33:11  meichel
+** Revision 1.35  2005-11-28 16:13:57  meichel
+** Minor adaptations needed for Borland Builder 6
+**
+** Revision 1.34  2005/11/17 13:33:11  meichel
 ** When locating DICOM tags by name in DcmDataDictionary::findEntry,
 **   public tags are now preferred over private tags of the same name.
 **
