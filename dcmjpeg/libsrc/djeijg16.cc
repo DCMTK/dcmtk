@@ -22,9 +22,9 @@
  *  Purpose: compression routines of the IJG JPEG library configured for 16 bits/sample. 
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-14 17:09:39 $
+ *  Update Date:      $Date: 2005-11-28 17:09:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djeijg16.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -224,7 +224,7 @@ OFCondition DJCompressIJG16Bit::encode(
     jpeg_set_colorspace (&cinfo, cinfo.in_color_space);
   }
 
-  cinfo.optimize_coding = cparam->getOptimizeHuffmanCoding();
+  cinfo.optimize_coding = OFTrue; // must always be true for 16 bit compression
 
   switch (modeofOperation)
   {
@@ -387,7 +387,11 @@ void DJCompressIJG16Bit::outputMessage(void *arg) const
 /*
  * CVS/RCS Log
  * $Log: djeijg16.cc,v $
- * Revision 1.6  2005-11-14 17:09:39  meichel
+ * Revision 1.7  2005-11-28 17:09:52  meichel
+ * Fixed bug affecting JPEG compression with 12 or 16 bits/pixel,
+ *   where Huffman table optimization is required but was not always enabled.
+ *
+ * Revision 1.6  2005/11/14 17:09:39  meichel
  * Changed some function return types from int to ijg_boolean, to avoid
  *   compilation errors if the ijg_boolean type is ever changed.
  *
