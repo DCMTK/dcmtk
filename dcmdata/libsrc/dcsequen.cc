@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmSequenceOfItems
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-15 18:28:04 $
- *  CVS/RCS Revision: $Revision: 1.59 $
+ *  Update Date:      $Date: 2005-11-28 15:53:13 $
+ *  CVS/RCS Revision: $Revision: 1.60 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -440,7 +440,7 @@ OFCondition DcmSequenceOfItems::readTagAndLength(DcmInputStream &inStream,
         tag = newTag; // return value: assignment-operator
     }
 
-    debug(4, ("in Sequ.readTag errorFlag = %s", l_error.text()));
+    DCM_dcmdataDebug(4, ("in Sequ.readTag errorFlag = %s", l_error.text()));
     return l_error;
 }
 
@@ -471,14 +471,14 @@ OFCondition DcmSequenceOfItems::readSubItem(DcmInputStream &inStream,
         inStream.putback();
         ofConsole.lockCerr() << "DcmSequenceOfItems: Parse error in sequence, found " << newTag << " instead of item tag" << endl;
         ofConsole.unlockCerr();
-        debug(1, ("Warning: DcmSequenceOfItems::readSubItem(): parse error occured:"
+        DCM_dcmdataDebug(1, ("Warning: DcmSequenceOfItems::readSubItem(): parse error occured:"
             " (0x%4.4hx,0x%4.4hx)", newTag.getGTag(), newTag.getETag()));
     }
     else if (l_error != EC_SequEnd)
     {
         ofConsole.lockCerr() << "DcmSequenceOfItems: Parse error in sequence, found " << newTag << " instead of a sequence delimiter" << endl;
         ofConsole.unlockCerr();
-        debug(1, ("Error: DcmSequenceOfItems::readSubItem(): cannot create SubItem"
+        DCM_dcmdataDebug(1, ("Error: DcmSequenceOfItems::readSubItem(): cannot create SubItem"
             " (0x%4.4hx,0x%4.4hx)", newTag.getGTag(), newTag.getETag()));
     } else {
         // inStream.UnsetPutbackMark(); // not needed anymore with new stream architecture
@@ -828,9 +828,9 @@ OFCondition DcmSequenceOfItems::insert(DcmItem *item,
         itemList->insert(item, whichSide);
         if (before)
         {
-            debug(3, ("DcmSequenceOfItems::insert() item inserted before position %d", where));
+            DCM_dcmdataDebug(3, ("DcmSequenceOfItems::insert() item inserted before position %d", where));
         } else {
-            debug(3, ("DcmSequenceOfItems::insert() item inserted after position %d", where));
+            DCM_dcmdataDebug(3, ("DcmSequenceOfItems::insert() item inserted after position %d", where));
         }
     } else
         errorFlag = EC_IllegalCall;
@@ -1244,7 +1244,10 @@ OFBool DcmSequenceOfItems::containsUnknownVR() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.59  2005-11-15 18:28:04  meichel
+** Revision 1.60  2005-11-28 15:53:13  meichel
+** Renamed macros in dcdebug.h
+**
+** Revision 1.59  2005/11/15 18:28:04  meichel
 ** Added new global flag dcmEnableUnknownVRConversion that enables the automatic
 **   re-conversion of defined length UN elements read in an explicit VR transfer
 **   syntax, if the real VR is defined in the data dictionary. Default is OFFalse,

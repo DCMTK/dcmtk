@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmPixelSequence
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-05-27 09:45:38 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Update Date:      $Date: 2005-11-28 15:53:13 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -193,8 +193,8 @@ OFCondition DcmPixelSequence::insert(DcmPixelItem *item,
     {
         itemList->seek_to(where);
         itemList->insert(item);
-        Cdebug(3, where< itemList->card(), ("DcmPixelSequence::insert() item at position %d inserted", where));
-        Cdebug(3, where>=itemList->card(), ("DcmPixelSequence::insert() item at last position inserted"));
+        DCM_dcmdataCDebug(3, where< itemList->card(), ("DcmPixelSequence::insert() item at position %d inserted", where));
+        DCM_dcmdataCDebug(3, where>=itemList->card(), ("DcmPixelSequence::insert() item at last position inserted"));
     } else
         errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -375,7 +375,10 @@ OFCondition DcmPixelSequence::storeCompressedFrame(DcmOffsetList &offsetList,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.cc,v $
-** Revision 1.34  2005-05-27 09:45:38  meichel
+** Revision 1.35  2005-11-28 15:53:13  meichel
+** Renamed macros in dcdebug.h
+**
+** Revision 1.34  2005/05/27 09:45:38  meichel
 ** Fixed bug that caused incorrect sequence and item lengths to be computed for
 **   compressed pixel data embedded in a sequence such as the IconImageSequence.
 **

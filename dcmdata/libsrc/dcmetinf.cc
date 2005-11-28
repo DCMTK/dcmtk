@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmMetaInfo
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-07 16:59:26 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Update Date:      $Date: 2005-11-28 15:53:13 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -184,7 +184,7 @@ OFBool DcmMetaInfo::checkAndReadPreamble(DcmInputStream &inStream,
         if (inStream.eos() && fTransferredBytes != preambleLen)
         {   // file too short, no preamble
             inStream.putback();
-            debug(4, ("DcmMetaInfo::checkAndReadPreamble() No Preamble available: File too short (%d) < %d bytes",
+            DCM_dcmdataDebug(4, ("DcmMetaInfo::checkAndReadPreamble() No Preamble available: File too short (%d) < %d bytes",
                 preambleLen, DCM_PreambleLen + DCM_MagicLen));
             retval = OFFalse;
             this -> setPreamble();
@@ -225,9 +225,9 @@ OFBool DcmMetaInfo::checkAndReadPreamble(DcmInputStream &inStream,
         } else
             newxfer = xferSyn.getXfer();
     }
-    Cdebug(4, retval==OFTrue, ("DcmMetaInfo::checkAndReadPreamble() found Preamble=[0x%8.8x]", (Uint32)(*filePreamble)));
-    Cdebug(4, retval==OFFalse, ("DcmMetaInfo::checkAndReadPreamble() No Preambel found!"));
-    debug(4, ("DcmMetaInfo::checkAndReadPreamble() TransferSyntax = %s", DcmXfer(newxfer).getXferName()));
+    DCM_dcmdataCDebug(4, retval==OFTrue, ("DcmMetaInfo::checkAndReadPreamble() found Preamble=[0x%8.8x]", (Uint32)(*filePreamble)));
+    DCM_dcmdataCDebug(4, retval==OFFalse, ("DcmMetaInfo::checkAndReadPreamble() No Preambel found!"));
+    DCM_dcmdataDebug(4, ("DcmMetaInfo::checkAndReadPreamble() TransferSyntax = %s", DcmXfer(newxfer).getXferName()));
     return retval;
 } // DcmMetaInfo::checkAndReadPreamble
 
@@ -289,7 +289,7 @@ OFCondition DcmMetaInfo::readGroupLength(DcmInputStream &inStream,
             if (l_error.good() && newTag.getXTag() == xtag && elementList->get() != NULL && newValueLength > 0)
             {
                 l_error = (OFstatic_cast(DcmUnsignedLong *, elementList->get()))->getUint32(headerLen);
-                debug(4, ("DcmMetaInfo::readGroupLength() Group Length of File Meta Header=%d", headerLen+bytesRead));
+                DCM_dcmdataDebug(4, ("DcmMetaInfo::readGroupLength() Group Length of File Meta Header=%d", headerLen+bytesRead));
             } else {
                 l_error = EC_CorruptedData;
                 ofConsole.lockCerr() << "DcmMetaInfo: No Group Length available in Meta Information Header" << endl;
@@ -297,7 +297,7 @@ OFCondition DcmMetaInfo::readGroupLength(DcmInputStream &inStream,
             }
         }
     }
-    debug(4, ("DcmMetaInfo::readGroupLength() returns error = %s", l_error.text()));
+    DCM_dcmdataDebug(4, ("DcmMetaInfo::readGroupLength() returns error = %s", l_error.text()));
     return l_error;
 }
 
@@ -520,7 +520,10 @@ OFCondition DcmMetaInfo::write(DcmOutputStream &outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.cc,v $
-** Revision 1.35  2005-11-07 16:59:26  meichel
+** Revision 1.36  2005-11-28 15:53:13  meichel
+** Renamed macros in dcdebug.h
+**
+** Revision 1.35  2005/11/07 16:59:26  meichel
 ** Cleaned up some copy constructors in the DcmObject hierarchy.
 **
 ** Revision 1.34  2005/05/26 11:51:12  meichel

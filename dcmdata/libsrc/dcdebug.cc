@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Print debug information
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 12:06:43 $
+ *  Update Date:      $Date: 2005-11-28 15:53:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dcdebug.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,7 +44,7 @@ OFGlobal<int> DcmDebugLevel(0);
 
 #ifdef DEBUG
 
-void debug_print(const char* text, ... )
+void DCM_dcmdata_debug_print(const char* text, ... )
 {
 #ifdef HAVE_VPRINTF
     char buf[4096]; // we hope that debug messages are never larger than 4K.
@@ -65,7 +65,10 @@ void debug_print(const char* text, ... )
 /*
 ** CVS/RCS Log:
 ** $Log: dcdebug.cc,v $
-** Revision 1.10  2002-11-27 12:06:43  meichel
+** Revision 1.11  2005-11-28 15:53:13  meichel
+** Renamed macros in dcdebug.h
+**
+** Revision 1.10  2002/11/27 12:06:43  meichel
 ** Adapted module dcmdata to use of new header file ofstdinc.h
 **
 ** Revision 1.9  2001/06/01 15:49:00  meichel

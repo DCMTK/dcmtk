@@ -22,8 +22,8 @@
  *  Purpose: class DcmFileFormat
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-07 17:22:33 $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  Update Date:      $Date: 2005-11-28 15:53:13 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -239,7 +239,7 @@ OFCondition DcmFileFormat::checkValue(DcmMetaInfo *metainfo,
             if (((currVers[0] & version[0] & 0xff) == version[0]) &&
                 ((currVers[1] & version[1] & 0xff) == version[1]))
             {
-                debug(2, ("DcmFileFormat::checkValue() Version of MetaHeader is ok: 0x%2.2x%2.2x",
+                DCM_dcmdataDebug(2, ("DcmFileFormat::checkValue() Version of MetaHeader is ok: 0x%2.2x%2.2x",
                         currVers[1], currVers[0]));
             } else {
                 currVers[0] = OFstatic_cast(Uint8, currVers[0] | version[0]); // direct manipulation
@@ -268,11 +268,11 @@ OFCondition DcmFileFormat::checkValue(DcmMetaInfo *metainfo,
                     char *uid = NULL;
                     l_error = OFstatic_cast(DcmUniqueIdentifier *, stack.top())->getString(uid);
                     OFstatic_cast(DcmUniqueIdentifier *, elem)->putString(uid);
-                    debug(2, ("DcmFileFormat::checkValue() use SOPClassUID [%s]", uid));
+                    DCM_dcmdataDebug(2, ("DcmFileFormat::checkValue() use SOPClassUID [%s]", uid));
 
                 } else {
                     OFstatic_cast(DcmUniqueIdentifier *, elem)->putString(UID_PrivateGenericFileSOPClass);
-                    debug(2, ("DcmFileFormat::checkValue() No SOP Class UID in Dataset, using PrivateGenericFileSOPClass"));
+                    DCM_dcmdataDebug(2, ("DcmFileFormat::checkValue() No SOP Class UID in Dataset, using PrivateGenericFileSOPClass"));
                 }
             }
         }
@@ -290,12 +290,12 @@ OFCondition DcmFileFormat::checkValue(DcmMetaInfo *metainfo,
                     char* uid = NULL;
                     l_error =OFstatic_cast(DcmUniqueIdentifier *, stack.top())->getString(uid);
                     OFstatic_cast(DcmUniqueIdentifier *, elem)->putString(uid);
-                    debug(2, ("DcmFileFormat::checkValue() use SOPInstanceUID [%s] from Dataset", uid));
+                    DCM_dcmdataDebug(2, ("DcmFileFormat::checkValue() use SOPInstanceUID [%s] from Dataset", uid));
                 } else {
                     char uid[128];
                     dcmGenerateUniqueIdentifier(uid);       // from dcuid.h
                     OFstatic_cast(DcmUniqueIdentifier *, elem)->putString(uid);
-                    debug(2, ("DcmFileFormat::checkValue() use new generated SOPInstanceUID [%s]", uid));
+                    DCM_dcmdataDebug(2, ("DcmFileFormat::checkValue() use new generated SOPInstanceUID [%s]", uid));
                 }
             }
         }
@@ -311,13 +311,13 @@ OFCondition DcmFileFormat::checkValue(DcmMetaInfo *metainfo,
 #ifdef DEBUG
 char * uidtmp = NULL;
 OFstatic_cast(DcmUniqueIdentifier *, elem)->getString(uidtmp);
-Cdebug(2,  uidtmp != NULL,
+DCM_dcmdataCDebug(2,  uidtmp != NULL,
        ("DcmFileFormat::checkValue() found old transfer-syntax: [%s]",uidtmp));
 #endif
                 DcmXfer dcXfer(oxfer);
                 const char *uid = dcXfer.getXferID();
                 elem->putString(uid);
-                debug(2,("DcmFileFormat::checkValue() use new transfer-syntax [%s] on writing following Dataset",
+                DCM_dcmdataDebug(2,("DcmFileFormat::checkValue() use new transfer-syntax [%s] on writing following Dataset",
                         dcXfer.getXferName()));
 
             }
@@ -451,7 +451,7 @@ OFCondition DcmFileFormat::validateMetaInfo(E_TransferSyntax oxfer)
         checkValue(metinf, datset, DCM_ImplementationVersionName, stack.top(), oxfer);
 
         /* dump some information if reuqired */
-        debug(2, ("DcmFileFormat: found %ld Elements in DcmMetaInfo metinf.",
+        DCM_dcmdataDebug(2, ("DcmFileFormat: found %ld Elements in DcmMetaInfo metinf.",
                 metinf->card()));
 
         /* calculate new GroupLength for meta header */
@@ -488,7 +488,7 @@ E_TransferSyntax DcmFileFormat::lookForXfer(DcmMetaInfo *metainfo)
             xferUI->getString(xferid);     // auslesen der ID
             DcmXfer localXfer(xferid);      // dekodieren in E_TransferSyntax
             newxfer = localXfer.getXfer();
-            debug(4, ("DcmFileFormat::lookForXfer() detected xfer=%d=[%s] in MetaInfo",
+            DCM_dcmdataDebug(4, ("DcmFileFormat::lookForXfer() detected xfer=%d=[%s] in MetaInfo",
                 newxfer, localXfer.getXferName()));
         }
     }
@@ -861,7 +861,10 @@ DcmDataset *DcmFileFormat::getAndRemoveDataset()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
-** Revision 1.38  2005-11-07 17:22:33  meichel
+** Revision 1.39  2005-11-28 15:53:13  meichel
+** Renamed macros in dcdebug.h
+**
+** Revision 1.38  2005/11/07 17:22:33  meichel
 ** Implemented DcmFileFormat::clear(). Now the loadFile methods in class
 **   DcmFileFormat and class DcmDataset both make sure that clear() is called
 **   before new data is read, allowing for a re-use of the object.

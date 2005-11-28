@@ -22,8 +22,8 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-15 18:28:04 $
- *  CVS/RCS Revision: $Revision: 1.95 $
+ *  Update Date:      $Date: 2005-11-28 15:53:13 $
+ *  CVS/RCS Revision: $Revision: 1.96 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -260,7 +260,7 @@ E_TransferSyntax DcmItem::checkTransferSyntax(DcmInputStream & inStream)
         }
     }
     /* dump information on a certain debug level */
-    debug(3, ("found TransferSyntax=(%s)", DcmXfer(transferSyntax).getXferName()));
+    DCM_dcmdataDebug(3, ("found TransferSyntax=(%s)", DcmXfer(transferSyntax).getXferName()));
 
     /* return determined transfer syntax */
     return transferSyntax;
@@ -563,7 +563,7 @@ OFCondition DcmItem::computeGroupLengthAndPadding(const E_GrpLenEncoding glenc,
                         if (actGLElem != NULL)
                         {
                             actGLElem->putUint32(grplen);
-                            debug(2, ("DcmItem::computeGroupLengthAndPadding() Length of Group 0x%4.4x len=%lu", actGLElem->getGTag(), grplen));
+                            DCM_dcmdataDebug(2, ("DcmItem::computeGroupLengthAndPadding() Length of Group 0x%4.4x len=%lu", actGLElem->getGTag(), grplen));
                         }
 
                         /* set the group length value to 0 since it is the beginning of the new group */
@@ -677,7 +677,7 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
     DcmXfer xferSyn(xfer);
 
     /* dump some information if required */
-    debug(4, ("DcmItem::readTagAndLength() read transfer syntax %s", xferSyn.getXferName()));
+    DCM_dcmdataDebug(4, ("DcmItem::readTagAndLength() read transfer syntax %s", xferSyn.getXferName()));
 
     /* bail out if at end of stream */
     if (inStream.eos())
@@ -1196,7 +1196,7 @@ OFCondition DcmItem::insert(DcmElement *elem,
                   }
                 }
                 /* dump some information if required */
-                debug(3, ("DcmItem::Insert() element (0x%4.4x,0x%4.4x) / VR=\"%s\" at beginning inserted",
+                DCM_dcmdataDebug(3, ("DcmItem::Insert() element (0x%4.4x,0x%4.4x) / VR=\"%s\" at beginning inserted",
                         elem->getGTag(), elem->getETag(), DcmVR(elem->getVR()).getVRName()));
                 /* terminate do-while-loop */
                 break;
@@ -1220,7 +1220,7 @@ OFCondition DcmItem::insert(DcmElement *elem,
                   }
                 }
                 /* dump some information if required */
-                debug(3, ("DcmItem::Insert() element (0x%4.4x,0x%4.4x) / VR=\"%s\" inserted",
+                DCM_dcmdataDebug(3, ("DcmItem::Insert() element (0x%4.4x,0x%4.4x) / VR=\"%s\" inserted",
                         elem->getGTag(), elem->getETag(),
                         DcmVR(elem->getVR()).getVRName()));
                 /* terminate do-while-loop */
@@ -1242,7 +1242,7 @@ OFCondition DcmItem::insert(DcmElement *elem,
                         /* points to the element after the former current element. */
 
                         /* dump some information if required */
-                        debug(3, ("DcmItem::insert:element (0x%4.4x,0x%4.4x) VR=\"%s\" p=%p removed",
+                        DCM_dcmdataDebug(3, ("DcmItem::insert:element (0x%4.4x,0x%4.4x) VR=\"%s\" p=%p removed",
                                 remObj->getGTag(), remObj->getETag(),
                                 DcmVR(remObj->getVR()).getVRName(), remObj));
 
@@ -1252,12 +1252,12 @@ OFCondition DcmItem::insert(DcmElement *elem,
                         if (remObj != NULL)
                         {
                             delete remObj;
-                            debug(3, ("DcmItem::insert:element p=%p deleted", remObj));
+                            DCM_dcmdataDebug(3, ("DcmItem::insert:element p=%p deleted", remObj));
                         }
                         /* insert the new element before the current element */
                         elementList->insert(elem, ELP_prev);
                         /* dump some information if required */
-                        debug(3, ("DcmItem::insert() element (0x%4.4x,0x%4.4x) VR=\"%s\" p=%p replaced older one",
+                        DCM_dcmdataDebug(3, ("DcmItem::insert() element (0x%4.4x,0x%4.4x) VR=\"%s\" p=%p replaced older one",
                                 elem->getGTag(), elem->getETag(),
                                 DcmVR(elem->getVR()).getVRName(), elem));
 
@@ -1464,7 +1464,7 @@ OFCondition DcmItem::clear()
 
 OFCondition DcmItem::verify(const OFBool autocorrect)
 {
-    debug(3, ("DcmItem::verify() Tag=(0x%4.4x,0x%4.4x) \"%s\" \"%s\"",
+    DCM_dcmdataDebug(3, ("DcmItem::verify() Tag=(0x%4.4x,0x%4.4x) \"%s\" \"%s\"",
             getGTag(), getETag(), DcmVR(getVR()).getVRName(), Tag.getTagName()));
 
     errorFlag = EC_Normal;
@@ -1522,7 +1522,7 @@ OFCondition DcmItem::searchSubFromHere(const DcmTagKey &tag,
                 }
             }
         } while (l_error.bad() && elementList->seek(ELP_next));
-        Cdebug(4, l_error==EC_Normal && dO->getTag()==tag,
+        DCM_dcmdataCDebug(4, l_error==EC_Normal && dO->getTag()==tag,
                ("DcmItem::searchSubFromHere() Search-Tag=(%4.4x,%4.4x)"
                 " found!", tag.getGroup(), tag.getElement()));
     }
@@ -3278,7 +3278,10 @@ OFBool DcmItem::containsUnknownVR() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.95  2005-11-15 18:28:04  meichel
+** Revision 1.96  2005-11-28 15:53:13  meichel
+** Renamed macros in dcdebug.h
+**
+** Revision 1.95  2005/11/15 18:28:04  meichel
 ** Added new global flag dcmEnableUnknownVRConversion that enables the automatic
 **   re-conversion of defined length UN elements read in an explicit VR transfer
 **   syntax, if the real VR is defined in the data dictionary. Default is OFFalse,

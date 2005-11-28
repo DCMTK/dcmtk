@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2004, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmByteString
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-04 16:10:49 $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-11-28 15:53:13 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -474,7 +474,7 @@ OFCondition DcmByteString::verify(const OFBool autocorrect)
         delete[] tempstr;
     }
     /* report a debug message if an error occurred */
-    Cdebug(3, errorFlag.bad(),
+    DCM_dcmdataCDebug(3, errorFlag.bad(),
             ("DcmByteString::verify: Illegal values in Tag=(0x%4.4x,0x%4.4x) VM=%d",
             getGTag(), getETag(), getVM() ));
     return errorFlag;
@@ -583,7 +583,10 @@ void normalizeString(OFString &string,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
-** Revision 1.38  2004-02-04 16:10:49  joergr
+** Revision 1.39  2005-11-28 15:53:13  meichel
+** Renamed macros in dcdebug.h
+**
+** Revision 1.38  2004/02/04 16:10:49  joergr
 ** Adapted type casts to new-style typecast operators defined in ofcast.h.
 ** Removed acknowledgements with e-mail addresses from CVS log.
 **

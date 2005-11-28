@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2004, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Print debug information
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-16 14:06:32 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-11-28 15:53:16 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,30 +41,30 @@ extern OFGlobal<int> DcmDebugLevel; /* default 0 */
 
 #ifdef DEBUG
 
-void debug_print(const char* text, ... );
+void DCM_dcmdata_debug_print(const char* text, ... );
 
 // Set the debug level
 #define SetDebugLevel(level) DcmDebugLevel.set(level);
 
 // debug prints a debug message in param if lev <= DcmDebugLevel. param has the
 // format of the printf parameters (with round brackets)!
-#define debug(lev, param) \
+#define DCM_dcmdataDebug(lev, param) \
   { \
     if ((lev) <= DcmDebugLevel.get()) \
     { \
       ofConsole.lockCerr() << __FILE__ << ", LINE " << __LINE__ << ":"; \
-      debug_print param ; \
+      DCM_dcmdata_debug_print param ; \
       ofConsole.unlockCerr(); \
     } \
   }
 
 // Cdebug does the same as debug but only if a condition cond is OFTrue
-#define Cdebug(lev, cond, param) \
+#define DCM_dcmdataCDebug(lev, cond, param) \
   { \
     if ((lev) <= DcmDebugLevel.get() && (cond)) \
     { \
       ofConsole.lockCerr() << __FILE__ << ", LINE " << __LINE__ << ":"; \
-      debug_print param ; \
+      DCM_dcmdata_debug_print param ; \
       ofConsole.unlockCerr(); \
     } \
   }
@@ -72,8 +72,8 @@ void debug_print(const char* text, ... );
 #else  // DEBUG
 
 #define SetDebugLevel(param)
-#define debug(lev, param)
-#define Cdebug(lev, cond, param)
+#define DCM_dcmdataDebug(lev, param)
+#define DCM_dcmdataCDebug(lev, cond, param)
 
 #endif // DEBUG
 
@@ -83,7 +83,10 @@ void debug_print(const char* text, ... );
 /*
  * CVS/RCS Log:
  * $Log: dcdebug.h,v $
- * Revision 1.11  2004-01-16 14:06:32  joergr
+ * Revision 1.12  2005-11-28 15:53:16  meichel
+ * Renamed macros in dcdebug.h
+ *
+ * Revision 1.11  2004/01/16 14:06:32  joergr
  * Removed acknowledgements with e-mail addresses from CVS log.
  *
  * Revision 1.10  2002/04/16 13:41:43  joergr

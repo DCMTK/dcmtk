@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmDirectoryRecord
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-07 16:59:26 $
- *  CVS/RCS Revision: $Revision: 1.52 $
+ *  Update Date:      $Date: 2005-11-28 15:53:13 $
+ *  CVS/RCS Revision: $Revision: 1.53 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -223,7 +223,7 @@ E_DirRecType DcmDirectoryRecord::recordNameToType(const char *recordTypeName)
             recType = OFstatic_cast(E_DirRecType, i);
         else if (strcmp(recordTypeName,"STRUCT REPORT") == 0)
             recType = ERT_StructReport; // we recognise the old name as well
-        debug(4, ("DcmDirectoryRecord::recordNameToType() input char*=\"%s\" output enum=%d", recordTypeName, recType));
+        DCM_dcmdataDebug(4, ("DcmDirectoryRecord::recordNameToType() input char*=\"%s\" output enum=%d", recordTypeName, recType));
     }
     return recType;
 }
@@ -524,7 +524,7 @@ E_DirRecType DcmDirectoryRecord::lookForRecordType()
               recType->getString(recName);
               localType = recordNameToType(recName);
 
-              debug(4, ("DcmDirectoryRecord::lookForRecordType() RecordType Element(0x%4.4hx,0x%4.4hx) Type=[%s]",
+              DCM_dcmdataDebug(4, ("DcmDirectoryRecord::lookForRecordType() RecordType Element(0x%4.4hx,0x%4.4hx) Type=[%s]",
                 recType->getGTag(), recType->getETag(), DRTypeNames[DirRecordType]));
             }
         }
@@ -601,7 +601,7 @@ const char *DcmDirectoryRecord::lookForReferencedFileID()
             }
         }
     }
-    debug(4, ("DcmDirectoryRecord::lookForReferencedFileID() ReferencedFileID = [%s]", ((localFile)?(localFile):(""))));
+    DCM_dcmdataDebug(4, ("DcmDirectoryRecord::lookForReferencedFileID() ReferencedFileID = [%s]", ((localFile)?(localFile):(""))));
 
     return localFile;
 }
@@ -626,13 +626,13 @@ DcmDirectoryRecord *DcmDirectoryRecord::lookForReferencedMRDR()
 #ifdef DEBUG
                 Uint32 l_uint = 0;
                 offElem->getUint32(l_uint);
-                debug(4, ("DcmDirectoryRecord::lookForReferencedMRDR() MRDR Offset Element(0x%4.4hx,0x%4.4hx) offs=0x%8.8lx p=%p n=%p",
+                DCM_dcmdataDebug(4, ("DcmDirectoryRecord::lookForReferencedMRDR() MRDR Offset Element(0x%4.4hx,0x%4.4hx) offs=0x%8.8lx p=%p n=%p",
                   offElem->getGTag(), offElem->getETag(), l_uint, offElem, localMRDR));
 #endif
             }
         }
     }
-    Cdebug(4, localMRDR==NULL, ("DcmDirectoryRecord::lookForReferencedMRDR() no ReferencedMRDR found"));
+    DCM_dcmdataCDebug(4, localMRDR==NULL, ("DcmDirectoryRecord::lookForReferencedMRDR() no ReferencedMRDR found"));
 
     return localMRDR;
 }
@@ -1007,7 +1007,7 @@ OFCondition DcmDirectoryRecord::purgeReferencedFile()
             setReferencedFileID(NULL);
         }
 
-        debug(2, ("DcmDirectoryRecord::purgeReferencedFile() trying to purge file %s from file system", localFileName));
+        DCM_dcmdataDebug(2, ("DcmDirectoryRecord::purgeReferencedFile() trying to purge file %s from file system", localFileName));
 
         if (localFileName != NULL)
         {                                 // filename exists
@@ -1207,8 +1207,8 @@ OFCondition DcmDirectoryRecord::assignToSOPFile(const char *referencedFileID,
 
     if (DirRecordType != ERT_root)
     {
-        debug(2, ("DcmDirectoryRecord::assignToSOPFile() old Referenced File ID was %s", getReferencedFileName()));
-        debug(2, ("new Referenced File ID is  %s", referencedFileID));
+        DCM_dcmdataDebug(2, ("DcmDirectoryRecord::assignToSOPFile() old Referenced File ID was %s", getReferencedFileName()));
+        DCM_dcmdataDebug(2, ("new Referenced File ID is  %s", referencedFileID));
 
         // update against the old reference counter
         if (referencedMRDR != NULL)
@@ -1233,8 +1233,8 @@ OFCondition DcmDirectoryRecord::assignToMRDR(DcmDirectoryRecord *mrdr)
         && mrdr != referencedMRDR              // old MRDR != new MRDR
       )
     {
-        debug(2, ("DcmDirectoryRecord::assignToMRDR() old Referenced File ID was %s", getReferencedFileName()));
-        debug(2, ("new Referenced File ID is  %s", mrdr->lookForReferencedFileID()));
+        DCM_dcmdataDebug(2, ("DcmDirectoryRecord::assignToMRDR() old Referenced File ID was %s", getReferencedFileName()));
+        DCM_dcmdataDebug(2, ("new Referenced File ID is  %s", mrdr->lookForReferencedFileID()));
 
         // set internal pointer to mrdr and update against the old value
         if (referencedMRDR != NULL)
@@ -1276,7 +1276,7 @@ OFCondition DcmDirectoryRecord::insertSub(DcmDirectoryRecord *dirRec,
         else
         {
             errorFlag = EC_IllegalCall;
-            debug(1, ("DcmDirectoryRecord::insertSub() dcdirrec: (%s -> %s) hierarchy not allowed.",
+            DCM_dcmdataDebug(1, ("DcmDirectoryRecord::insertSub() dcdirrec: (%s -> %s) hierarchy not allowed.",
                 DRTypeNames[getRecordType()], DRTypeNames[dirRec->getRecordType()]));
         }
     }
@@ -1296,7 +1296,7 @@ OFCondition DcmDirectoryRecord::insertSubAtCurrentPos(DcmDirectoryRecord *dirRec
             errorFlag = lowerLevelList->insertAtCurrentPos(dirRec, before);
         else {
             errorFlag = EC_IllegalCall;
-            debug(1, ("DcmDirectoryRecord::insertSubAtCurrentPos() dcdirrec: (%s -> %s) hierarchy not allowed.",
+            DCM_dcmdataDebug(1, ("DcmDirectoryRecord::insertSubAtCurrentPos() dcdirrec: (%s -> %s) hierarchy not allowed.",
                 DRTypeNames[getRecordType()], DRTypeNames[dirRec->getRecordType()]));
         }
     }
@@ -1365,7 +1365,7 @@ OFCondition DcmDirectoryRecord::deleteSubAndPurgeFile(const unsigned long num)
         } else                              // remove file directly
             errorFlag = subDirRec->purgeReferencedFile();
 
-        debug(2, ("DcmDirectoryRecord::deleteSubAndPurgeFile() now purging lower records:"));
+        DCM_dcmdataDebug(2, ("DcmDirectoryRecord::deleteSubAndPurgeFile() now purging lower records:"));
 
         while (subDirRec->cardSub() > 0)    // remove all sub sub records
             subDirRec->deleteSubAndPurgeFile(OFstatic_cast(unsigned long, 0));
@@ -1392,7 +1392,7 @@ OFCondition DcmDirectoryRecord::deleteSubAndPurgeFile(DcmDirectoryRecord *dirRec
         } else                              // remove file directly
             errorFlag = subDirRec->purgeReferencedFile();
 
-        debug(2, ("DcmDirectoryRecord::deleteSubAndPurgeFile() now purging lower records:"));
+        DCM_dcmdataDebug(2, ("DcmDirectoryRecord::deleteSubAndPurgeFile() now purging lower records:"));
 
         while (subDirRec->cardSub() > 0)    // remove all sub sub records
             subDirRec->deleteSubAndPurgeFile(OFstatic_cast(unsigned long, 0));
@@ -1430,7 +1430,10 @@ const char* DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
- * Revision 1.52  2005-11-07 16:59:26  meichel
+ * Revision 1.53  2005-11-28 15:53:13  meichel
+ * Renamed macros in dcdebug.h
+ *
+ * Revision 1.52  2005/11/07 16:59:26  meichel
  * Cleaned up some copy constructors in the DcmObject hierarchy.
  *
  * Revision 1.51  2005/10/27 13:33:08  joergr

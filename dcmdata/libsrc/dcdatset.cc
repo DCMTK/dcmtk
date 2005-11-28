@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmDataset
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-11 10:31:58 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Update Date:      $Date: 2005-11-28 15:53:13 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -254,7 +254,7 @@ OFCondition DcmDataset::read(DcmInputStream &inStream,
     }
 
     /* dump information if required */
-    debug(3, ("DcmDataset::read: At End: errorFlag = %s", errorFlag.text()));
+    DCM_dcmdataDebug(3, ("DcmDataset::read: At End: errorFlag = %s", errorFlag.text()));
 
     /* return result flag */
     return errorFlag;
@@ -569,7 +569,10 @@ void DcmDataset::removeAllButOriginalRepresentations()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.cc,v $
-** Revision 1.36  2005-11-11 10:31:58  meichel
+** Revision 1.37  2005-11-28 15:53:13  meichel
+** Renamed macros in dcdebug.h
+**
+** Revision 1.36  2005/11/11 10:31:58  meichel
 ** Added explicit DcmDataset::clear() implementation.
 **
 ** Revision 1.35  2005/11/07 17:22:33  meichel
