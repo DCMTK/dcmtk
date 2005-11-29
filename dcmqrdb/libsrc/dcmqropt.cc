@@ -22,9 +22,9 @@
  *  Purpose: class DcmQueryRetrieveOptions
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-17 13:44:40 $
+ *  Update Date:      $Date: 2005-11-29 10:54:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqropt.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,6 +54,9 @@ DcmQueryRetrieveOptions::DcmQueryRetrieveOptions()
 , maxPDU_(ASC_DEFAULTMAXPDU)
 , net_(NULL)
 , networkTransferSyntax_(EXS_Unknown)
+#ifndef DISABLE_COMPRESSION_EXTENSION
+,  networkTransferSyntaxOut_(EXS_Unknown)
+#endif
 , paddingType_(EPD_withoutPadding)
 , refuseMultipleStorageAssociations_(OFFalse)
 , refuse_(OFFalse)
@@ -102,7 +105,12 @@ void DcmQueryRetrieveOptions::errmsg(const char* msg, ...)
 /*
  * CVS Log
  * $Log: dcmqropt.cc,v $
- * Revision 1.2  2005-11-17 13:44:40  meichel
+ * Revision 1.3  2005-11-29 10:54:52  meichel
+ * Added minimal support for compressed transfer syntaxes to dcmqrscp.
+ *   No on-the-fly decompression is performed, but compressed images can
+ *   be stored and retrieved.
+ *
+ * Revision 1.2  2005/11/17 13:44:40  meichel
  * Added command line options for DIMSE and ACSE timeouts
  *
  * Revision 1.1  2005/03/30 13:34:53  meichel

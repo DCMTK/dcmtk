@@ -22,9 +22,9 @@
  *  Purpose: class DcmQueryRetrieveSCP
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-17 13:44:40 $
+ *  Update Date:      $Date: 2005-11-29 10:54:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/Attic/dcmqrscp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -570,7 +570,7 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
     DIC_AE calledAETitle;
     ASC_getAPTitles(assoc->params, NULL, calledAETitle, NULL);
 
-    const char* transferSyntaxes[] = { NULL, NULL, NULL };
+    const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL };
     int numTransferSyntaxes = 0;
 
     switch (options_.networkTransferSyntax_)
@@ -594,6 +594,66 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
         transferSyntaxes[2]  = UID_LittleEndianImplicitTransferSyntax;
         numTransferSyntaxes = 3;
         break;
+#ifndef DISABLE_COMPRESSION_EXTENSION
+      case EXS_JPEGProcess14SV1TransferSyntax:
+        /* we prefer JPEGLossless:Hierarchical-1stOrderPrediction (default lossless) */
+        transferSyntaxes[0] = UID_JPEGProcess14SV1TransferSyntax;
+        transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+        transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 4;
+        break;
+      case EXS_JPEGProcess1TransferSyntax:
+        /* we prefer JPEGBaseline (default lossy for 8 bit images) */
+        transferSyntaxes[0] = UID_JPEGProcess1TransferSyntax;
+        transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+        transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 4;
+        break;
+      case EXS_JPEGProcess2_4TransferSyntax:
+        /* we prefer JPEGExtended (default lossy for 12 bit images) */
+        transferSyntaxes[0] = UID_JPEGProcess2_4TransferSyntax;
+        transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+        transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 4;
+        break;
+      case EXS_JPEG2000LosslessOnly:
+        /* we prefer JPEG 2000 lossless */
+        transferSyntaxes[0] = UID_JPEG2000LosslessOnlyTransferSyntax;
+        transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+        transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 4;
+        break;
+      case EXS_JPEG2000:
+        /* we prefer JPEG 2000 lossy or lossless */
+        transferSyntaxes[0] = UID_JPEG2000TransferSyntax;
+        transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+        transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 4;
+        break;
+#ifdef WITH_ZLIB
+      case EXS_DeflatedLittleEndianExplicit:
+        /* we prefer deflated transmission */
+        transferSyntaxes[0] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
+        transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+        transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 4;
+        break;
+#endif
+      case EXS_RLELossless:
+        /* we prefer RLE Lossless */
+        transferSyntaxes[0] = UID_RLELosslessTransferSyntax;
+        transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+        transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 4;
+        break;
+#endif
       default:
         /* We prefer explicit transfer syntaxes.
          * If we are running on a Little Endian machine we prefer
@@ -1032,7 +1092,12 @@ void DcmQueryRetrieveSCP::setDatabaseFlags(
 /*
  * CVS Log
  * $Log: dcmqrscp.cc,v $
- * Revision 1.4  2005-11-17 13:44:40  meichel
+ * Revision 1.5  2005-11-29 10:54:52  meichel
+ * Added minimal support for compressed transfer syntaxes to dcmqrscp.
+ *   No on-the-fly decompression is performed, but compressed images can
+ *   be stored and retrieved.
+ *
+ * Revision 1.4  2005/11/17 13:44:40  meichel
  * Added command line options for DIMSE and ACSE timeouts
  *
  * Revision 1.3  2005/10/25 08:56:18  meichel

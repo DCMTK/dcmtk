@@ -22,9 +22,9 @@
  *  Purpose: classes DcmQueryRetrieveProcessSlot, DcmQueryRetrieveProcessTable
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-10-25 08:56:18 $
+ *  Update Date:      $Date: 2005-11-29 10:54:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqrptb.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -166,7 +166,8 @@ void DcmQueryRetrieveProcessTable::removeProcessFromTable(int pid)
   {
     if ((*first)->matchesPID(pid))
     {
-      delete *table_.erase(first);
+      delete (*first);
+      table_.erase(first);
       return;
     }
     ++first;
@@ -244,7 +245,12 @@ void DcmQueryRetrieveProcessTable::cleanChildren(OFBool verbose)
 /*
  * CVS Log
  * $Log: dcmqrptb.cc,v $
- * Revision 1.2  2005-10-25 08:56:18  meichel
+ * Revision 1.3  2005-11-29 10:54:52  meichel
+ * Added minimal support for compressed transfer syntaxes to dcmqrscp.
+ *   No on-the-fly decompression is performed, but compressed images can
+ *   be stored and retrieved.
+ *
+ * Revision 1.2  2005/10/25 08:56:18  meichel
  * Updated list of UIDs and added support for new transfer syntaxes
  *   and storage SOP classes.
  *

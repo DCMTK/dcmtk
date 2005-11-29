@@ -22,9 +22,9 @@
  *  Purpose: class DcmQueryRetrieveOptions
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-17 13:44:37 $
+ *  Update Date:      $Date: 2005-11-29 10:54:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/include/Attic/dcmqropt.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -100,8 +100,13 @@ public:
   /// pointer to network structure used for requesting C-STORE sub-associations
   T_ASC_Network *	net_;
 
-  /// preferred transfer syntax
+  /// preferred transfer syntax for incoming associations
   E_TransferSyntax  	networkTransferSyntax_;
+
+#ifndef DISABLE_COMPRESSION_EXTENSION
+  /// preferred transfer syntax for outgoing associations
+  E_TransferSyntax      networkTransferSyntaxOut_;
+#endif
 
   /// padding algorithm for writing DICOM files
   E_PaddingEncoding 	paddingType_;
@@ -170,7 +175,12 @@ public:
 /*
  * CVS Log
  * $Log: dcmqropt.h,v $
- * Revision 1.2  2005-11-17 13:44:37  meichel
+ * Revision 1.3  2005-11-29 10:54:54  meichel
+ * Added minimal support for compressed transfer syntaxes to dcmqrscp.
+ *   No on-the-fly decompression is performed, but compressed images can
+ *   be stored and retrieved.
+ *
+ * Revision 1.2  2005/11/17 13:44:37  meichel
  * Added command line options for DIMSE and ACSE timeouts
  *
  * Revision 1.1  2005/03/30 13:34:50  meichel

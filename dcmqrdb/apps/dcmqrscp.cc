@@ -22,9 +22,9 @@
  *  Purpose: Image Server Central Test Node (ctn) Main Program
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-17 13:44:59 $
+ *  Update Date:      $Date: 2005-11-29 10:55:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/apps/dcmqrscp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -196,11 +196,39 @@ main(int argc, char *argv[])
 #endif
 
   cmd.addGroup("network options:");
-    cmd.addSubGroup("preferred network transfer syntaxes for uncompressed transfer:");
+    cmd.addSubGroup("preferred network transfer syntaxes (incoming associations):");
       cmd.addOption("--prefer-uncompr",         "+x=",       "prefer explicit VR local byte order (default)");
       cmd.addOption("--prefer-little",          "+xe",       "prefer explicit VR little endian TS");
       cmd.addOption("--prefer-big",             "+xb",       "prefer explicit VR big endian TS");
+#ifndef DISABLE_COMPRESSION_EXTENSION
+      cmd.addOption("--prefer-lossless",        "+xs",       "prefer default JPEG lossless TS");
+      cmd.addOption("--prefer-jpeg8",           "+xy",       "prefer default JPEG lossy TS for 8 bit data");
+      cmd.addOption("--prefer-jpeg12",          "+xx",       "prefer default JPEG lossy TS for 12 bit data");
+      cmd.addOption("--prefer-rle",             "+xr",       "prefer RLE lossless TS");
+      cmd.addOption("--prefer-j2k-lossless",    "+xv",       "prefer JPEG 2000 lossless TS");
+      cmd.addOption("--prefer-j2k-lossy",       "+xw",       "prefer JPEG 2000 lossy TS");
+#ifdef WITH_ZLIB
+      cmd.addOption("--prefer-deflated",        "+xd",       "prefer deflated expl. VR little endian TS");
+#endif
+#endif
       cmd.addOption("--implicit",               "+xi",       "accept implicit VR little endian TS only");
+
+#ifndef DISABLE_COMPRESSION_EXTENSION
+    cmd.addSubGroup("proposed transmission transfer syntaxes (outgoing associations):");
+      cmd.addOption("--propose-uncompr",        "-x=",       "propose all uncompressed TS, explicit VR\nwith local byte ordering first (default)");
+      cmd.addOption("--propose-little",         "-xe",       "propose all uncompressed TS, explicit VR\nlittle endian first");
+      cmd.addOption("--propose-big",            "-xb",       "propose all uncompressed TS, explicit VR\nbig endian first");
+      cmd.addOption("--propose-lossless",       "-xs",       "propose default JPEG lossless TS");
+      cmd.addOption("--propose-jpeg8",          "-xy",       "propose default JPEG lossy TS for 8 bit data");
+      cmd.addOption("--propose-jpeg12",         "-xx",       "propose default JPEG lossy TS for 12 bit data");
+      cmd.addOption("--propose-j2k-lossless",   "-xv",       "propose default JPEG 2000 lossless TS");
+      cmd.addOption("--propose-j2k-lossy",      "-xw",       "propose default JPEG 2000 lossy TS");
+      cmd.addOption("--propose-rle",            "-xr",       "propose RLE lossless TS");
+#ifdef WITH_ZLIB
+      cmd.addOption("--propose-deflated",       "-xd",       "propose deflated expl. VR little endian TS");
+#endif
+      cmd.addOption("--propose-implicit",       "-xi",       "propose implicit VR little endian TS only");
+#endif
 
 #ifdef WITH_TCPWRAPPER
     cmd.addSubGroup("network host access control (tcp wrapper) options:");
@@ -330,11 +358,40 @@ main(int argc, char *argv[])
       }
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--prefer-uncompr"))  options.networkTransferSyntax_ = EXS_Unknown;
-      if (cmd.findOption("--prefer-little"))   options.networkTransferSyntax_ = EXS_LittleEndianExplicit;
-      if (cmd.findOption("--prefer-big"))      options.networkTransferSyntax_ = EXS_BigEndianExplicit;
-      if (cmd.findOption("--implicit"))        options.networkTransferSyntax_ = EXS_LittleEndianImplicit;
+      if (cmd.findOption("--prefer-uncompr"))  options.networkTransferSyntax_     = EXS_Unknown;
+      if (cmd.findOption("--prefer-little"))   options.networkTransferSyntax_     = EXS_LittleEndianExplicit;
+      if (cmd.findOption("--prefer-big"))      options.networkTransferSyntax_     = EXS_BigEndianExplicit;
+      if (cmd.findOption("--implicit"))        options.networkTransferSyntax_     = EXS_LittleEndianImplicit;
+#ifndef DISABLE_COMPRESSION_EXTENSION
+      if (cmd.findOption("--prefer-lossless")) options.networkTransferSyntax_     = EXS_JPEGProcess14SV1TransferSyntax;
+      if (cmd.findOption("--prefer-jpeg8"))    options.networkTransferSyntax_     = EXS_JPEGProcess1TransferSyntax;
+      if (cmd.findOption("--prefer-jpeg12"))   options.networkTransferSyntax_     = EXS_JPEGProcess2_4TransferSyntax;
+      if (cmd.findOption("--prefer-j2k-lossless")) options.networkTransferSyntax_ = EXS_JPEG2000LosslessOnly;
+      if (cmd.findOption("--prefer-j2k-lossy"))    options.networkTransferSyntax_ = EXS_JPEG2000;
+      if (cmd.findOption("--prefer-rle"))      options.networkTransferSyntax_     = EXS_RLELossless;
+#ifdef WITH_ZLIB
+      if (cmd.findOption("--prefer-deflated"))     options.networkTransferSyntax_ = EXS_DeflatedLittleEndianExplicit;
+#endif
+#endif
       cmd.endOptionBlock();
+
+#ifndef DISABLE_COMPRESSION_EXTENSION
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--propose-uncompr"))  options.networkTransferSyntaxOut_ = EXS_Unknown;
+      if (cmd.findOption("--propose-little"))   options.networkTransferSyntaxOut_ = EXS_LittleEndianExplicit;
+      if (cmd.findOption("--propose-big"))      options.networkTransferSyntaxOut_ = EXS_BigEndianExplicit;
+      if (cmd.findOption("--propose-lossless")) options.networkTransferSyntaxOut_ = EXS_JPEGProcess14SV1TransferSyntax;
+      if (cmd.findOption("--propose-jpeg8"))    options.networkTransferSyntaxOut_ = EXS_JPEGProcess1TransferSyntax;
+      if (cmd.findOption("--propose-jpeg12"))   options.networkTransferSyntaxOut_ = EXS_JPEGProcess2_4TransferSyntax;
+      if (cmd.findOption("--propose-j2k-lossless")) options.networkTransferSyntaxOut_ = EXS_JPEG2000LosslessOnly;
+      if (cmd.findOption("--propose-j2k-lossy")) options.networkTransferSyntaxOut_ = EXS_JPEG2000;
+      if (cmd.findOption("--propose-rle"))      options.networkTransferSyntaxOut_ = EXS_RLELossless;
+#ifdef WITH_ZLIB
+      if (cmd.findOption("--propose-deflated")) options.networkTransferSyntaxOut_ = EXS_DeflatedLittleEndianExplicit;
+#endif
+      if (cmd.findOption("--propose-implicit")) options.networkTransferSyntaxOut_ = EXS_LittleEndianImplicit;
+      cmd.endOptionBlock();
+#endif
 
 #ifdef WITH_TCPWRAPPER
       cmd.beginOptionBlock();
@@ -400,20 +457,46 @@ main(int argc, char *argv[])
       if (cmd.findOption("--write-xfer-little"))
       {
         app.checkConflict("--write-xfer-little", "--bit-preserving", options.bitPreserving_);
+#ifndef DISABLE_COMPRESSION_EXTENSION
+	app.checkConflict("--write-xfer-little", "--prefer-lossless", options.networkTransferSyntax_==EXS_JPEGProcess14SV1TransferSyntax);
+	app.checkConflict("--write-xfer-little", "--prefer-jpeg8", options.networkTransferSyntax_==EXS_JPEGProcess1TransferSyntax);
+	app.checkConflict("--write-xfer-little", "--prefer-jpeg12", options.networkTransferSyntax_==EXS_JPEGProcess2_4TransferSyntax);
+	app.checkConflict("--write-xfer-little", "--prefer-j2k-lossless", options.networkTransferSyntax_==EXS_JPEG2000LosslessOnly);
+	app.checkConflict("--write-xfer-little", "--prefer-j2k-lossy", options.networkTransferSyntax_==EXS_JPEG2000);
+	app.checkConflict("--write-xfer-little", "--prefer-rle", options.networkTransferSyntax_==EXS_RLELossless);
+        // we don't have to check a conflict for --prefer-deflated because we can always convert that to uncompressed.
+#endif
         options.writeTransferSyntax_ = EXS_LittleEndianExplicit;
       }
       if (cmd.findOption("--write-xfer-big"))
       {
         app.checkConflict("--write-xfer-big", "--bit-preserving", options.bitPreserving_);
+#ifndef DISABLE_COMPRESSION_EXTENSION
+	app.checkConflict("--write-xfer-big", "--prefer-lossless", options.networkTransferSyntax_==EXS_JPEGProcess14SV1TransferSyntax);
+	app.checkConflict("--write-xfer-big", "--prefer-jpeg8", options.networkTransferSyntax_==EXS_JPEGProcess1TransferSyntax);
+	app.checkConflict("--write-xfer-big", "--prefer-jpeg12", options.networkTransferSyntax_==EXS_JPEGProcess2_4TransferSyntax);
+	app.checkConflict("--write-xfer-big", "--prefer-j2k-lossless", options.networkTransferSyntax_==EXS_JPEG2000LosslessOnly);
+	app.checkConflict("--write-xfer-big", "--prefer-j2k-lossy", options.networkTransferSyntax_==EXS_JPEG2000);
+	app.checkConflict("--write-xfer-big", "--prefer-rle", options.networkTransferSyntax_==EXS_RLELossless);
+        // we don't have to check a conflict for --prefer-deflated because we can always convert that to uncompressed.
+#endif
         options.writeTransferSyntax_ = EXS_BigEndianExplicit;
       }
       if (cmd.findOption("--write-xfer-implicit"))
       {
         app.checkConflict("--write-xfer-implicit", "--bit-preserving", options.bitPreserving_);
+#ifndef DISABLE_COMPRESSION_EXTENSION
+	app.checkConflict("--write-xfer-implicit", "--prefer-lossless", options.networkTransferSyntax_==EXS_JPEGProcess14SV1TransferSyntax);
+	app.checkConflict("--write-xfer-implicit", "--prefer-jpeg8", options.networkTransferSyntax_==EXS_JPEGProcess1TransferSyntax);
+	app.checkConflict("--write-xfer-implicit", "--prefer-jpeg12", options.networkTransferSyntax_==EXS_JPEGProcess2_4TransferSyntax);
+	app.checkConflict("--write-xfer-implicit", "--prefer-j2k-lossless", options.networkTransferSyntax_==EXS_JPEG2000LosslessOnly);
+	app.checkConflict("--write-xfer-implicit", "--prefer-j2k-lossy", options.networkTransferSyntax_==EXS_JPEG2000);
+	app.checkConflict("--write-xfer-implicit", "--prefer-rle", options.networkTransferSyntax_==EXS_RLELossless);
+        // we don't have to check a conflict for --prefer-deflated because we can always convert that to uncompressed.
+#endif
         options.writeTransferSyntax_ = EXS_LittleEndianImplicit;
       }
       cmd.endOptionBlock();
-
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--group-length-recalc"))
@@ -588,7 +671,12 @@ main(int argc, char *argv[])
 /*
  * CVS Log
  * $Log: dcmqrscp.cc,v $
- * Revision 1.4  2005-11-17 13:44:59  meichel
+ * Revision 1.5  2005-11-29 10:55:07  meichel
+ * Added minimal support for compressed transfer syntaxes to dcmqrscp.
+ *   No on-the-fly decompression is performed, but compressed images can
+ *   be stored and retrieved.
+ *
+ * Revision 1.4  2005/11/17 13:44:59  meichel
  * Added command line options for DIMSE and ACSE timeouts
  *
  * Revision 1.3  2005/11/16 14:59:00  meichel
