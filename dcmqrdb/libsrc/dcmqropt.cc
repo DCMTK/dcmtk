@@ -22,9 +22,9 @@
  *  Purpose: class DcmQueryRetrieveOptions
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-29 10:54:52 $
+ *  Update Date:      $Date: 2005-11-29 11:27:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqropt.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -79,6 +79,7 @@ DcmQueryRetrieveOptions::DcmQueryRetrieveOptions()
 #endif
 , supportStudyRoot_(OFTrue)
 , useMetaheader_(OFTrue)
+, keepDBHandleDuringAssociation_(OFTrue)
 , verbose_(0)
 , writeTransferSyntax_(EXS_Unknown)
 , blockMode_(DIMSE_BLOCKING)
@@ -105,7 +106,12 @@ void DcmQueryRetrieveOptions::errmsg(const char* msg, ...)
 /*
  * CVS Log
  * $Log: dcmqropt.cc,v $
- * Revision 1.3  2005-11-29 10:54:52  meichel
+ * Revision 1.4  2005-11-29 11:27:20  meichel
+ * Added new flag keepDBHandleDuringAssociation_ which allows to determine
+ *   whether a DB handle is kept open for a complete association or a single
+ *   DIMSE message only. Also improved error handling of file locking.
+ *
+ * Revision 1.3  2005/11/29 10:54:52  meichel
  * Added minimal support for compressed transfer syntaxes to dcmqrscp.
  *   No on-the-fly decompression is performed, but compressed images can
  *   be stored and retrieved.

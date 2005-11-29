@@ -22,9 +22,9 @@
  *  Purpose: class DcmQueryRetrieveOptions
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-29 10:54:54 $
+ *  Update Date:      $Date: 2005-11-29 11:27:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/include/Attic/dcmqropt.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -152,6 +152,12 @@ public:
   /// write DICOM files with DICOM metaheader
   OFBool      		useMetaheader_;
 
+  /** keep DB handle open for the complete lifetime of an association.
+   *  If false, the DB handle is created and released for each incoming
+   *  DIMSE message that is processed.
+   */
+  OFBool                keepDBHandleDuringAssociation_;
+
   /// verbose mode
   int         		verbose_;
 
@@ -175,7 +181,12 @@ public:
 /*
  * CVS Log
  * $Log: dcmqropt.h,v $
- * Revision 1.3  2005-11-29 10:54:54  meichel
+ * Revision 1.4  2005-11-29 11:27:18  meichel
+ * Added new flag keepDBHandleDuringAssociation_ which allows to determine
+ *   whether a DB handle is kept open for a complete association or a single
+ *   DIMSE message only. Also improved error handling of file locking.
+ *
+ * Revision 1.3  2005/11/29 10:54:54  meichel
  * Added minimal support for compressed transfer syntaxes to dcmqrscp.
  *   No on-the-fly decompression is performed, but compressed images can
  *   be stored and retrieved.

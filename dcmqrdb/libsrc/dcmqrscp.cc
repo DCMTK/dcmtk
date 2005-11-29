@@ -22,9 +22,9 @@
  *  Purpose: class DcmQueryRetrieveSCP
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-29 10:54:52 $
+ *  Update Date:      $Date: 2005-11-29 11:27:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/Attic/dcmqrscp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,14 +43,14 @@
 
 
 static void findCallback(
-	/* in */ 
-	void *callbackData,  
-	OFBool cancelled, T_DIMSE_C_FindRQ *request, 
-	DcmDataset *requestIdentifiers, int responseCount,
-	/* out */
-	T_DIMSE_C_FindRSP *response,
-	DcmDataset **responseIdentifiers,
-	DcmDataset **stDetail)
+        /* in */ 
+        void *callbackData,  
+        OFBool cancelled, T_DIMSE_C_FindRQ *request, 
+        DcmDataset *requestIdentifiers, int responseCount,
+        /* out */
+        T_DIMSE_C_FindRSP *response,
+        DcmDataset **responseIdentifiers,
+        DcmDataset **stDetail)
 {
   DcmQueryRetrieveFindContext *context = OFstatic_cast(DcmQueryRetrieveFindContext *, callbackData);
   context->callbackHandler(cancelled, request, requestIdentifiers, responseCount, response, responseIdentifiers, stDetail);
@@ -58,13 +58,13 @@ static void findCallback(
 
 
 static void getCallback(
-	/* in */ 
-	void *callbackData,  
-	OFBool cancelled, T_DIMSE_C_GetRQ *request, 
-	DcmDataset *requestIdentifiers, int responseCount,
-	/* out */
-	T_DIMSE_C_GetRSP *response, DcmDataset **stDetail,	
-	DcmDataset **responseIdentifiers)
+        /* in */ 
+        void *callbackData,  
+        OFBool cancelled, T_DIMSE_C_GetRQ *request, 
+        DcmDataset *requestIdentifiers, int responseCount,
+        /* out */
+        T_DIMSE_C_GetRSP *response, DcmDataset **stDetail,      
+        DcmDataset **responseIdentifiers)
 {
   DcmQueryRetrieveGetContext *context = OFstatic_cast(DcmQueryRetrieveGetContext *, callbackData);
   context->callbackHandler(cancelled, request, requestIdentifiers, responseCount, response, stDetail, responseIdentifiers);
@@ -72,13 +72,13 @@ static void getCallback(
 
 
 static void moveCallback(
-	/* in */ 
-	void *callbackData,  
-	OFBool cancelled, T_DIMSE_C_MoveRQ *request, 
-	DcmDataset *requestIdentifiers, int responseCount,
-	/* out */
-	T_DIMSE_C_MoveRSP *response, DcmDataset **stDetail,	
-	DcmDataset **responseIdentifiers)
+        /* in */ 
+        void *callbackData,  
+        OFBool cancelled, T_DIMSE_C_MoveRQ *request, 
+        DcmDataset *requestIdentifiers, int responseCount,
+        /* out */
+        T_DIMSE_C_MoveRSP *response, DcmDataset **stDetail,     
+        DcmDataset **responseIdentifiers)
 {
   DcmQueryRetrieveMoveContext *context = OFstatic_cast(DcmQueryRetrieveMoveContext *, callbackData);
   context->callbackHandler(cancelled, request, requestIdentifiers, responseCount, response, stDetail, responseIdentifiers);
@@ -125,83 +125,93 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
     OFCondition cond = EC_Normal;
     T_DIMSE_Message msg;
     T_ASC_PresentationContextID presID;
+    OFBool firstLoop = OFTrue;
 
-    /* Create a database handle for this association */
-    DcmQueryRetrieveDatabaseHandle *dbHandle = factory_.createDBHandle(
-	  assoc->params->DULparams.callingAPTitle,
-      assoc->params->DULparams.calledAPTitle, cond);
-    
-    if (cond.bad())
-    {
-      DcmQueryRetrieveOptions::errmsg("dispatch: cannot create DB Handle");
-      return cond;
-    }
-
-    if (dbHandle == NULL)
-    {
-      // this should not happen, but we check it anyway
-      DcmQueryRetrieveOptions::errmsg("dispatch: cannot create DB Handle");
-      return EC_IllegalCall;
-    }
-
-    dbHandle->setDebugLevel(dbDebug_ ? 1 : 0);
-    dbHandle->setIdentifierChecking(dbCheckFindIdentifier_, dbCheckMoveIdentifier_);
-
+    // this while loop is executed exactly once unless the "keepDBHandleDuringAssociation_"
+    // flag is not set, in which case the inner loop is executed only once and this loop
+    // repeats for each incoming DIMSE command. In this case, the DB handle is created
+    // and released for each DIMSE command.
     while (cond.good())
     {
-	cond = DIMSE_receiveCommand(assoc, DIMSE_BLOCKING, 0, &presID, &msg, NULL);
-
-	/* did peer release, abort, or do we have a valid message ? */
-	if (cond.good())
-	{
-	    /* process command */
-	    switch (msg.CommandField) {
-	    case DIMSE_C_ECHO_RQ:
-		cond = echoSCP(assoc, &msg.msg.CEchoRQ, presID);
-		break;
-	    case DIMSE_C_STORE_RQ:
-		cond = storeSCP(assoc, &msg.msg.CStoreRQ, presID, *dbHandle, correctUIDPadding);
-		break;
-	    case DIMSE_C_FIND_RQ:
-		cond = findSCP(assoc, &msg.msg.CFindRQ, presID, *dbHandle);
-		break;
-	    case DIMSE_C_MOVE_RQ:
-		cond = moveSCP(assoc, &msg.msg.CMoveRQ, presID, *dbHandle);
-		break;
-	    case DIMSE_C_GET_RQ:
-		cond = getSCP(assoc, &msg.msg.CGetRQ, presID, *dbHandle);
-		break;
-	    case DIMSE_C_CANCEL_RQ:
-		/* This is a late cancel request, just ignore it */
-		if (options_.verbose_) {
-		    printf("dispatch: late C-CANCEL-RQ, ignoring\n");
-		}
-		break;
-	    default:
-		/* we cannot handle this kind of message */
-		cond = DIMSE_BADCOMMANDTYPE;
-		DcmQueryRetrieveOptions::errmsg("Cannot handle command: 0x%x\n", 
-			(unsigned)msg.CommandField);
-	        /* the condition will be returned, the caller
-	         * will abort the assosiation.
-	         */
-	    }
-	}
-	else if ((cond == DUL_PEERREQUESTEDRELEASE)||(cond == DUL_PEERABORTEDASSOCIATION))
-	{
-	    /* association gone */
+        /* Create a database handle for this association */
+        DcmQueryRetrieveDatabaseHandle *dbHandle = factory_.createDBHandle(
+              assoc->params->DULparams.callingAPTitle,
+          assoc->params->DULparams.calledAPTitle, cond);
+        
+        if (cond.bad())
+        {
+          DcmQueryRetrieveOptions::errmsg("dispatch: cannot create DB Handle");
+          return cond;
         }
-        else
-	{
-	    /* the condition will be returned, the caller
-	     * will abort the assosiation.
-	     */
+        
+        if (dbHandle == NULL)
+        {
+          // this should not happen, but we check it anyway
+          DcmQueryRetrieveOptions::errmsg("dispatch: cannot create DB Handle");
+          return EC_IllegalCall;
+        }
+        
+        dbHandle->setDebugLevel(dbDebug_ ? 1 : 0);
+        dbHandle->setIdentifierChecking(dbCheckFindIdentifier_, dbCheckMoveIdentifier_);
+        firstLoop = OFTrue;
+                
+        // this while loop is executed exactly once unless the "keepDBHandleDuringAssociation_"
+        // flag is set, in which case the DB handle remains open until something goes wrong
+        // or the remote peer closes the association
+        while (cond.good() && (firstLoop || options_.keepDBHandleDuringAssociation_) )
+        {
+            firstLoop = OFFalse;
+            cond = DIMSE_receiveCommand(assoc, DIMSE_BLOCKING, 0, &presID, &msg, NULL);
+        
+            /* did peer release, abort, or do we have a valid message ? */
+            if (cond.good())
+            {
+                /* process command */
+                switch (msg.CommandField) {
+                case DIMSE_C_ECHO_RQ:
+                    cond = echoSCP(assoc, &msg.msg.CEchoRQ, presID);
+                    break;
+                case DIMSE_C_STORE_RQ:
+                    cond = storeSCP(assoc, &msg.msg.CStoreRQ, presID, *dbHandle, correctUIDPadding);
+                    break;
+                case DIMSE_C_FIND_RQ:
+                    cond = findSCP(assoc, &msg.msg.CFindRQ, presID, *dbHandle);
+                    break;
+                case DIMSE_C_MOVE_RQ:
+                    cond = moveSCP(assoc, &msg.msg.CMoveRQ, presID, *dbHandle);
+                    break;
+                case DIMSE_C_GET_RQ:
+                    cond = getSCP(assoc, &msg.msg.CGetRQ, presID, *dbHandle);
+                    break;
+                case DIMSE_C_CANCEL_RQ:
+                    /* This is a late cancel request, just ignore it */
+                    if (options_.verbose_) {
+                        printf("dispatch: late C-CANCEL-RQ, ignoring\n");
+                    }
+                    break;
+                default:
+                    /* we cannot handle this kind of message */
+                    cond = DIMSE_BADCOMMANDTYPE;
+                    DcmQueryRetrieveOptions::errmsg("Cannot handle command: 0x%x\n", 
+                            (unsigned)msg.CommandField);
+                    /* the condition will be returned, the caller will abort the association. */
+                }
+            }
+            else if ((cond == DUL_PEERREQUESTEDRELEASE)||(cond == DUL_PEERABORTEDASSOCIATION))
+            {
+                // association gone
+            }
+            else
+            {
+                // the condition will be returned, the caller will abort the assosiation.
+            }        
         }
 
+        // release DB handle        
+        delete dbHandle;
     }
 
-    /* Association done */
-    delete dbHandle;
+    // Association done 
     return cond;
 }
 
@@ -209,9 +219,9 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
 OFCondition DcmQueryRetrieveSCP::handleAssociation(T_ASC_Association * assoc, OFBool correctUIDPadding)
 {
     OFCondition           cond = EC_Normal;
-    DIC_NODENAME	peerHostName;
-    DIC_AE		peerAETitle;
-    DIC_AE		myAETitle;
+    DIC_NODENAME        peerHostName;
+    DIC_AE              peerAETitle;
+    DIC_AE              myAETitle;
 
     ASC_getPresentationAddresses(assoc->params, peerHostName, NULL);
     ASC_getAPTitles(assoc->params, peerAETitle, myAETitle, NULL);
@@ -221,29 +231,29 @@ OFCondition DcmQueryRetrieveSCP::handleAssociation(T_ASC_Association * assoc, OF
 
  /* clean up on association termination */
     if (cond == DUL_PEERREQUESTEDRELEASE) {
-	if (options_.verbose_)
-	    printf("Association Release\n");
-	cond = ASC_acknowledgeRelease(assoc);
-	ASC_dropSCPAssociation(assoc);
+        if (options_.verbose_)
+            printf("Association Release\n");
+        cond = ASC_acknowledgeRelease(assoc);
+        ASC_dropSCPAssociation(assoc);
     } else if (cond == DUL_PEERABORTEDASSOCIATION) {
-	if (options_.verbose_)
-	    printf("Association Aborted\n");
+        if (options_.verbose_)
+            printf("Association Aborted\n");
     } else {
-	DcmQueryRetrieveOptions::errmsg("DIMSE Failure (aborting association):\n");
-	DimseCondition::dump(cond);
+        DcmQueryRetrieveOptions::errmsg("DIMSE Failure (aborting association):\n");
+        DimseCondition::dump(cond);
     /* some kind of error so abort the association */
-	cond = ASC_abortAssociation(assoc);
+        cond = ASC_abortAssociation(assoc);
     }
 
     cond = ASC_dropAssociation(assoc);
     if (cond.bad()) {
-	fprintf(stderr, "Cannot Drop Association:\n");
-	DimseCondition::dump(cond);
+        fprintf(stderr, "Cannot Drop Association:\n");
+        DimseCondition::dump(cond);
     }
     cond = ASC_destroyAssociation(&assoc);
     if (cond.bad()) {
-	fprintf(stderr, "Cannot Destroy Association:\n");
-	DimseCondition::dump(cond);
+        fprintf(stderr, "Cannot Destroy Association:\n");
+        DimseCondition::dump(cond);
     }
 
     return cond;
@@ -251,29 +261,29 @@ OFCondition DcmQueryRetrieveSCP::handleAssociation(T_ASC_Association * assoc, OF
 
 
 OFCondition DcmQueryRetrieveSCP::echoSCP(T_ASC_Association * assoc, T_DIMSE_C_EchoRQ * req,
-	T_ASC_PresentationContextID presId)
+        T_ASC_PresentationContextID presId)
 {
     OFCondition cond = EC_Normal;
 
     if (options_.verbose_) {
-	printf("Received Echo SCP RQ: MsgID %d\n", 
-		req->MessageID);
+        printf("Received Echo SCP RQ: MsgID %d\n", 
+                req->MessageID);
     }
     /* we send an echo response back */
     cond = DIMSE_sendEchoResponse(assoc, presId, 
         req, STATUS_Success, NULL);
     
     if (cond.bad()) {
-	DcmQueryRetrieveOptions::errmsg("echoSCP: Echo Response Failed:");
-	DimseCondition::dump(cond);
+        DcmQueryRetrieveOptions::errmsg("echoSCP: Echo Response Failed:");
+        DimseCondition::dump(cond);
     }
     return cond;
 }
 
 
 OFCondition DcmQueryRetrieveSCP::findSCP(T_ASC_Association * assoc, T_DIMSE_C_FindRQ * request,
-	T_ASC_PresentationContextID presID,
-	DcmQueryRetrieveDatabaseHandle& dbHandle)
+        T_ASC_PresentationContextID presID,
+        DcmQueryRetrieveDatabaseHandle& dbHandle)
 
 {
     OFCondition cond = EC_Normal;
@@ -285,22 +295,22 @@ OFCondition DcmQueryRetrieveSCP::findSCP(T_ASC_Association * assoc, T_DIMSE_C_Fi
     context.setOurAETitle(aeTitle);
     
     if (options_.verbose_) {
-	printf("Received Find SCP: ");
-	DIMSE_printCFindRQ(stdout, request);
+        printf("Received Find SCP: ");
+        DIMSE_printCFindRQ(stdout, request);
     }
 
     cond = DIMSE_findProvider(assoc, presID, request, 
-    	findCallback, &context, options_.blockMode_, options_.dimse_timeout_);
+        findCallback, &context, options_.blockMode_, options_.dimse_timeout_);
     if (cond.bad()) {
         DcmQueryRetrieveOptions::errmsg("Find SCP Failed:");
-	DimseCondition::dump(cond);
+        DimseCondition::dump(cond);
     }
     return cond; 
 }
 
 
 OFCondition DcmQueryRetrieveSCP::getSCP(T_ASC_Association * assoc, T_DIMSE_C_GetRQ * request,
-	T_ASC_PresentationContextID presID, DcmQueryRetrieveDatabaseHandle& dbHandle)
+        T_ASC_PresentationContextID presID, DcmQueryRetrieveDatabaseHandle& dbHandle)
 {
     OFCondition cond = EC_Normal;
     DcmQueryRetrieveGetContext context(dbHandle, options_, STATUS_Pending, assoc, request->MessageID, request->Priority, presID);
@@ -311,22 +321,22 @@ OFCondition DcmQueryRetrieveSCP::getSCP(T_ASC_Association * assoc, T_DIMSE_C_Get
     context.setOurAETitle(aeTitle);
 
     if (options_.verbose_) {
-	printf("Received Get SCP: ");
-	DIMSE_printCGetRQ(stdout, request);
+        printf("Received Get SCP: ");
+        DIMSE_printCGetRQ(stdout, request);
     }
 
     cond = DIMSE_getProvider(assoc, presID, request, 
-    	getCallback, &context, options_.blockMode_, options_.dimse_timeout_);
+        getCallback, &context, options_.blockMode_, options_.dimse_timeout_);
     if (cond.bad()) {
         DcmQueryRetrieveOptions::errmsg("Get SCP Failed:");
-	DimseCondition::dump(cond);
+        DimseCondition::dump(cond);
     }
     return cond; 
 }
 
 
 OFCondition DcmQueryRetrieveSCP::moveSCP(T_ASC_Association * assoc, T_DIMSE_C_MoveRQ * request,
-	T_ASC_PresentationContextID presID, DcmQueryRetrieveDatabaseHandle& dbHandle)
+        T_ASC_PresentationContextID presID, DcmQueryRetrieveDatabaseHandle& dbHandle)
 {
     OFCondition cond = EC_Normal;
     DcmQueryRetrieveMoveContext context(dbHandle, options_, config_, STATUS_Pending, assoc, request->MessageID, request->Priority);
@@ -337,15 +347,15 @@ OFCondition DcmQueryRetrieveSCP::moveSCP(T_ASC_Association * assoc, T_DIMSE_C_Mo
     context.setOurAETitle(aeTitle);
     
     if (options_.verbose_) {
-	printf("Received Move SCP: ");
-	DIMSE_printCMoveRQ(stdout, request);
+        printf("Received Move SCP: ");
+        DIMSE_printCMoveRQ(stdout, request);
     }
 
     cond = DIMSE_moveProvider(assoc, presID, request, 
-    	moveCallback, &context, options_.blockMode_, options_.dimse_timeout_);
+        moveCallback, &context, options_.blockMode_, options_.dimse_timeout_);
     if (cond.bad()) {
         DcmQueryRetrieveOptions::errmsg("Move SCP Failed:");
-	DimseCondition::dump(cond);
+        DimseCondition::dump(cond);
     }
     return cond; 
 }
@@ -396,7 +406,18 @@ OFCondition DcmQueryRetrieveSCP::storeSCP(T_ASC_Association * assoc, T_DIMSE_C_S
 #else
     int lockfd = open(imageFileName, (O_WRONLY | O_CREAT | O_TRUNC), 0666);
 #endif
-    dcmtk_flock(lockfd, LOCK_EX);
+    if (lockfd < 0)
+    {
+        DcmQueryRetrieveOptions::errmsg("storeSCP: file locking failed, cannot create file");
+
+        /* must still receive data */
+        strcpy(imageFileName, NULL_DEVICE_NAME); 
+
+        /* callback will send back out of resources status */ 
+        context.setStatus(STATUS_STORE_Refused_OutOfResources);
+    }
+    else 
+      dcmtk_flock(lockfd, LOCK_EX);
 #endif
 
     context.setFileName(imageFileName);
@@ -432,8 +453,11 @@ OFCondition DcmQueryRetrieveSCP::storeSCP(T_ASC_Association * assoc, T_DIMSE_C_S
 
 #ifdef LOCK_IMAGE_FILES
     /* unlock image file */
-    dcmtk_flock(lockfd, LOCK_UN);
-    close(lockfd);
+    if (lockfd >= 0)
+    {
+      dcmtk_flock(lockfd, LOCK_UN);
+      close(lockfd);
+    }
 #endif
     
     return cond;
@@ -1092,7 +1116,12 @@ void DcmQueryRetrieveSCP::setDatabaseFlags(
 /*
  * CVS Log
  * $Log: dcmqrscp.cc,v $
- * Revision 1.5  2005-11-29 10:54:52  meichel
+ * Revision 1.6  2005-11-29 11:27:20  meichel
+ * Added new flag keepDBHandleDuringAssociation_ which allows to determine
+ *   whether a DB handle is kept open for a complete association or a single
+ *   DIMSE message only. Also improved error handling of file locking.
+ *
+ * Revision 1.5  2005/11/29 10:54:52  meichel
  * Added minimal support for compressed transfer syntaxes to dcmqrscp.
  *   No on-the-fly decompression is performed, but compressed images can
  *   be stored and retrieved.
