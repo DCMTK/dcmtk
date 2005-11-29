@@ -21,9 +21,9 @@
  *
  *  Purpose: Compress DICOM file
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-07 17:10:21 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2005-11-29 08:48:38 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -113,7 +113,7 @@ int main(int argc, char *argv[])
   OFCmdUnsignedInt opt_roiLeft = 0, opt_roiTop = 0, opt_roiWidth = 0, opt_roiHeight = 0;
   OFBool           opt_usePixelValues = OFTrue;
   OFBool           opt_useModalityRescale = OFFalse;
-
+  OFBool           opt_trueLossless = OFTrue;
 
   OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Encode DICOM file to JPEG transfer syntax", rcsid);
   OFCommandLine cmd;
@@ -148,6 +148,10 @@ int main(int argc, char *argv[])
      cmd.addOption("--encode-spectral",         "+es",       "encode spectral selection");
      cmd.addOption("--encode-progressive",      "+ep",       "encode progressive");
 
+    cmd.addSubGroup("lossless JPEG codec selection:");
+     cmd.addOption("--true-lossless",           "+tl",       "true lossless codec (default)");
+     cmd.addOption("--pseudo-lossless",         "+pl",       "old pseudo-lossless codec");
+
     cmd.addSubGroup("lossless JPEG representation options:");
      cmd.addOption("--selection-value",         "+sv",    1, "[sv]: integer (1..7, default: 6)",
                                                              "use selection value sv\nonly with --encode-lossless");
@@ -157,35 +161,34 @@ int main(int argc, char *argv[])
     cmd.addSubGroup("lossy JPEG representation options:");
      cmd.addOption("--quality",                 "+q",     1, "[q]: integer (0..100, default: 90)",
                                                              "use quality factor q");
-
+     cmd.addOption("--smooth",                  "+sm",    1, "[s]: integer (0..100, default: 0)",
+                                                             "use smoothing factor s");
     cmd.addSubGroup("other JPEG options:");
      cmd.addOption("--huffman-optimize",        "+ho",       "optimize huffman tables (default)");
      cmd.addOption("--huffman-standard",        "-ho",       "use standard huffman tables if 8 bits/sample");
-     cmd.addOption("--smooth",                  "+sm",     1, "[s]: integer (0..100, default: 0)",
-                                                             "use smoothing factor s");
 
-    cmd.addSubGroup("compressed bits per sample options:");
+    cmd.addSubGroup("compressed bits per sample options (always +ba with +tl):");
      cmd.addOption("--bits-auto",               "+ba",       "choose bits/sample automatically (default)");
      cmd.addOption("--bits-force-8",            "+be",       "force 8 bits/sample");
      cmd.addOption("--bits-force-12",           "+bt",       "force 12 bits/sample (not with baseline)");
      cmd.addOption("--bits-force-16",           "+bs",       "force 16 bits/sample (lossless only)");
 
-    cmd.addSubGroup("compression color space conversion options:");
+    cmd.addSubGroup("compression color space conversion options (overriden by +tl):");
       cmd.addOption("--color-ybr",              "+cy",       "use YCbCr for color images if lossy (default)");
       cmd.addOption("--color-rgb",              "+cr",       "use RGB for color images if lossy");
       cmd.addOption("--monochrome",             "+cm",       "convert color images to monochrome");
 
-    cmd.addSubGroup("decompression color space conversion (if input is compressed):");
+    cmd.addSubGroup("decompr. color space conversion (if input is compressed; always +cn with +tl):");
       cmd.addOption("--conv-photometric",       "+cp",       "convert if YCbCr photom. interpr. (default)");
       cmd.addOption("--conv-lossy",             "+cl",       "convert YCbCr to RGB if lossy JPEG");
       cmd.addOption("--conv-always",            "+ca",       "always convert YCbCr to RGB");
       cmd.addOption("--conv-never",             "+cn",       "never convert color space");
 
-    cmd.addSubGroup("standard YCbCr component subsampling options:");
+    cmd.addSubGroup("standard YCbCr component subsampling options (not with +tl):");
       cmd.addOption("--sample-444",             "+s4",       "4:4:4 sampling with YBR_FULL (default)");
       cmd.addOption("--sample-422",             "+s2",       "4:2:2 subsampling with YBR_FULL_422");
 
-    cmd.addSubGroup("non-standard YCbCr component subsampling options:");
+    cmd.addSubGroup("non-standard YCbCr component subsampling options (not with +tl):");
       cmd.addOption("--nonstd-422-full",        "+n2",       "4:2:2 subsampling with YBR_FULL");
       cmd.addOption("--nonstd-411-full",        "+n1",       "4:1:1 subsampling with YBR_FULL");
       cmd.addOption("--nonstd-411",             "+np",       "4:1:1 subsampling with YBR_FULL_422");
@@ -199,7 +202,7 @@ int main(int argc, char *argv[])
      cmd.addOption("--offset-table-create",     "+ot",       "create offset table (default)");
      cmd.addOption("--offset-table-empty",      "-ot",       "leave offset table empty");
 
-    cmd.addSubGroup("VOI windowing options for monochrome images:");
+    cmd.addSubGroup("VOI windowing options for monochrome images (not with +tl):");
      cmd.addOption("--no-windowing",       "-W",      "no VOI windowing (default)");
      cmd.addOption("--use-window",         "+Wi",  1, "[n]umber : integer",
                                                       "use the n-th VOI window from image file");
@@ -214,11 +217,11 @@ int main(int argc, char *argv[])
      cmd.addOption("--set-window",         "+Ww",  2, "[c]enter [w]idth : float",
                                                       "compute VOI window using center c and width w");
 
-    cmd.addSubGroup("pixel scaling for monochrome images (--no-windowing):");
+    cmd.addSubGroup("pixel scaling for monochrome images (-W; ignored by +tl):");
      cmd.addOption("--scaling-pixel",      "+sp",     "scale using min/max pixel value (default)");
      cmd.addOption("--scaling-range",      "+sr",     "scale using min/max range");
 
-    cmd.addSubGroup("rescale slope/intercept encoding for monochrome (--no-windowing):");
+    cmd.addSubGroup("rescale slope/intercept encoding for monochrome (-W; ignored by +tl):");
      cmd.addOption("--rescale-identity",   "+ri",     "encode identity modality rescale (default)\nNever used for CT images");
      cmd.addOption("--rescale-map",        "+rm",     "use modality rescale to scale pixel range\nNever used for XA/RF/XA Biplane images");
 
@@ -317,6 +320,11 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--encode-progressive")) opt_oxfer = EXS_JPEGProcess10_12TransferSyntax;
       cmd.endOptionBlock();
 
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--true-lossless")) opt_trueLossless = OFTrue;
+      if (cmd.findOption("--pseudo-lossless")) opt_trueLossless = OFFalse;
+      cmd.endOptionBlock();
+
       if (cmd.findOption("--selection-value"))
       {
           app.checkValue(cmd.getValueAndCheckMinMax(opt_selection_value, (OFCmdUnsignedInt)1, (OFCmdUnsignedInt)7));
@@ -345,14 +353,23 @@ int main(int argc, char *argv[])
 
       if (cmd.findOption("--smooth"))
       {
+          app.checkConflict("--smooth", "--true-lossless", opt_trueLossless);
           app.checkValue(cmd.getValueAndCheckMinMax(opt_smoothing, (OFCmdUnsignedInt)0, (OFCmdUnsignedInt)100));
       }
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--bits-auto"))     opt_compressedBits = 0;
-      if (cmd.findOption("--bits-force-8"))  opt_compressedBits = 8;
+      if (cmd.findOption("--bits-auto"))
+      {
+        opt_compressedBits = 0;
+      }
+      if (cmd.findOption("--bits-force-8"))
+      {
+        app.checkConflict("--bits-force-8", "--true-lossless",  opt_trueLossless);
+        opt_compressedBits = 8;
+      }
       if (cmd.findOption("--bits-force-12"))
       {
+        app.checkConflict("--bits-force-12", "--true-lossless",  opt_trueLossless);
         opt_compressedBits = 12;
         if (opt_oxfer == EXS_JPEGProcess1TransferSyntax)
         {
@@ -361,6 +378,7 @@ int main(int argc, char *argv[])
       }
       if (cmd.findOption("--bits-force-16"))
       {
+        app.checkConflict("--bits-force-16", "--true-lossless",  opt_trueLossless);
         opt_compressedBits = 16;
         switch (opt_oxfer)
         {
@@ -388,6 +406,8 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--color-rgb"))  opt_compCSconversion = ECC_lossyRGB;
       if (cmd.findOption("--monochrome")) opt_compCSconversion = ECC_monochrome;
       cmd.endOptionBlock();
+      app.checkConflict("--color-rgb",  "--true-lossless",  opt_trueLossless && (opt_compCSconversion == ECC_lossyRGB));
+      app.checkConflict("--monochrome", "--true-lossless",  opt_trueLossless && (opt_compCSconversion == ECC_monochrome));
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--conv-photometric"))  opt_decompCSconversion = EDC_photometricInterpretation;
@@ -395,32 +415,40 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--conv-always"))       opt_decompCSconversion = EDC_always;
       if (cmd.findOption("--conv-never"))        opt_decompCSconversion = EDC_never;
       cmd.endOptionBlock();
+      app.checkConflict("--conv-lossy",       "--true-lossless",  opt_trueLossless && (opt_decompCSconversion == EDC_lossyOnly));
+      app.checkConflict("--conv-always",      "--true-lossless",  opt_trueLossless && (opt_decompCSconversion == EDC_always));
+      if (opt_trueLossless) opt_decompCSconversion = EDC_never;
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--sample-444"))
       {
         opt_sampleFactors = ESS_444;
         opt_useYBR422 = OFFalse;
+        app.checkConflict("--sample-444", "--true-lossless", opt_trueLossless);
       }
       if (cmd.findOption("--sample-422"))
       {
         opt_sampleFactors = ESS_422;
         opt_useYBR422 = OFTrue;
+        app.checkConflict("--sample-422", "--true-lossless", opt_trueLossless);
       }
       if (cmd.findOption("--nonstd-422-full"))
       {
         opt_sampleFactors = ESS_422;
         opt_useYBR422 = OFFalse;
+        app.checkConflict("--nonstd-422-full", "--true-lossless", opt_trueLossless);
       }
       if (cmd.findOption("--nonstd-411-full"))
       {
         opt_sampleFactors = ESS_411;
         opt_useYBR422 = OFFalse;
+        app.checkConflict("--nonstd-411-full", "--true-lossless", opt_trueLossless);
       }
       if (cmd.findOption("--nonstd-411"))
       {
         opt_sampleFactors = ESS_411;
         opt_useYBR422 = OFTrue;
+        app.checkConflict("--nonstd-411", "--true-lossless", opt_trueLossless);
       }
       cmd.endOptionBlock();
 
@@ -441,18 +469,29 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--no-windowing")) opt_windowType = 0;
       if (cmd.findOption("--use-window"))
       {
+          app.checkConflict("--use-window", "--true-lossless", opt_trueLossless);
           opt_windowType = 1;
           app.checkValue(cmd.getValueAndCheckMin(opt_windowParameter, 1));
       }
       if (cmd.findOption("--use-voi-lut"))
       {
+          app.checkConflict("--use-voi-lut", "--true-lossless", opt_trueLossless);
           opt_windowType = 2;
           app.checkValue(cmd.getValueAndCheckMin(opt_windowParameter, 1));
       }
-      if (cmd.findOption("--min-max-window")) opt_windowType = 3;
-      if (cmd.findOption("--min-max-window-n")) opt_windowType = 6;
+      if (cmd.findOption("--min-max-window"))
+      {
+        app.checkConflict("--min-max-window", "--true-lossless", opt_trueLossless);
+        opt_windowType = 3;
+      }
+      if (cmd.findOption("--min-max-window-n"))
+      {
+        app.checkConflict("--min-max-window-n", "--true-lossless", opt_trueLossless);
+        opt_windowType = 6;
+      }
       if (cmd.findOption("--roi-min-max-window"))
       {
+          app.checkConflict("--roi-min-max-window", "--true-lossless", opt_trueLossless);
           opt_windowType = 7;
           app.checkValue(cmd.getValue(opt_roiLeft));
           app.checkValue(cmd.getValue(opt_roiTop));
@@ -461,11 +500,13 @@ int main(int argc, char *argv[])
       }
       if (cmd.findOption("--histogram-window"))
       {
+          app.checkConflict("--histogram-window", "--true-lossless", opt_trueLossless);
           opt_windowType = 4;
           app.checkValue(cmd.getValueAndCheckMinMax(opt_windowParameter, 0, 100));
       }
       if (cmd.findOption("--set-window"))
       {
+          app.checkConflict("--set-window", "--true-lossless", opt_trueLossless);
           opt_windowType = 5;
           app.checkValue(cmd.getValue(opt_windowCenter));
           app.checkValue(cmd.getValueAndCheckMin(opt_windowWidth, 1.0));
@@ -561,7 +602,8 @@ int main(int argc, char *argv[])
       opt_roiWidth,
       opt_roiHeight,
       opt_usePixelValues,
-      opt_useModalityRescale);
+      opt_useModalityRescale,
+      opt_trueLossless);
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
@@ -667,7 +709,15 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmcjpeg.cc,v $
- * Revision 1.10  2005-11-07 17:10:21  meichel
+ * Revision 1.11  2005-11-29 08:48:38  onken
+ * - Added support for "true" lossless compression in dcmjpeg, that doesn't
+ *   use dcmimage classes, but compresses raw pixel data (8 and 16 bit) to
+ *   avoid losses in quality caused by color space conversions or modality
+ *   transformations etc.
+ *
+ * - Corresponding commandline option in dcmcjpeg (new default)
+ *
+ * Revision 1.10  2005/11/07 17:10:21  meichel
  * All tools that both read and write a DICOM file now call loadAllDataIntoMemory()
  *   to make sure they do not destroy a file when output = input.
  *
@@ -706,4 +756,7 @@ int main(int argc, char *argv[])
  *
  *
  */
+
+
+
 

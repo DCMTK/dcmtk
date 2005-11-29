@@ -21,10 +21,10 @@
  *
  *  Purpose: codec parameter class for dcmjpeg codecs
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-12-18 10:26:28 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2005-11-29 08:48:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djcparam.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,7 +57,8 @@ DJCodecParameter::DJCodecParameter(
     unsigned long pRoiWidth,
     unsigned long pRoiHeight,
     OFBool pUsePixelValues,
-    OFBool pUseModalityRescale)
+    OFBool pUseModalityRescale,
+    OFBool pTrueLosslessMode)
 : DcmCodecParameter()
 , compressionCSConversion(pCompressionCSConversion)
 , decompressionCSConversion(pDecompressionCSConversion)
@@ -81,6 +82,7 @@ DJCodecParameter::DJCodecParameter(
 , roiHeight(pRoiHeight)
 , usePixelValues(pUsePixelValues)
 , useModalityRescale(pUseModalityRescale)
+, trueLosslessMode(pTrueLosslessMode)
 , verboseMode(pVerbose)
 {
 }
@@ -110,6 +112,7 @@ DJCodecParameter::DJCodecParameter(const DJCodecParameter& arg)
 , roiHeight(arg.roiHeight)
 , usePixelValues(arg.usePixelValues)
 , useModalityRescale(arg.useModalityRescale)
+, trueLosslessMode(arg.trueLosslessMode)
 , verboseMode(arg.verboseMode)
 {
 }
@@ -117,11 +120,11 @@ DJCodecParameter::DJCodecParameter(const DJCodecParameter& arg)
 DJCodecParameter::~DJCodecParameter()
 {
 }
-  
+
 DcmCodecParameter *DJCodecParameter::clone() const
 {
   return new DJCodecParameter(*this);
-} 
+}
 
 const char *DJCodecParameter::className() const
 {
@@ -132,7 +135,15 @@ const char *DJCodecParameter::className() const
 /*
  * CVS/RCS Log
  * $Log: djcparam.cc,v $
- * Revision 1.3  2001-12-18 10:26:28  meichel
+ * Revision 1.4  2005-11-29 08:48:45  onken
+ * - Added support for "true" lossless compression in dcmjpeg, that doesn't
+ *   use dcmimage classes, but compresses raw pixel data (8 and 16 bit) to
+ *   avoid losses in quality caused by color space conversions or modality
+ *   transformations etc.
+ *
+ * - Corresponding commandline option in dcmcjpeg (new default)
+ *
+ * Revision 1.3  2001/12/18 10:26:28  meichel
  * Added missing initialization in copy constructor
  *
  * Revision 1.2  2001/11/19 15:13:30  meichel

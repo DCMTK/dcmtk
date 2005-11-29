@@ -21,10 +21,10 @@
  *
  *  Purpose: codec parameter class for dcmjpeg codecs
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-09 13:51:26 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2005-11-29 08:50:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/include/Attic/djcparam.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -72,6 +72,7 @@ public:
    *  @param pUsePixelValues Check smallest and largest pixel value and optimize compression, mode 0 only
    *  @param pUseModalityRescale Create Rescale Slope/Intercept to scale back
    *     to original pixel range, mode 0 only
+   *  @param pTrueLosslessMode Enables true lossless compression (replaces old "pseudo" lossless encoders)
    */
   DJCodecParameter(
     E_CompressionColorSpaceConversion pCompressionCSConversion,
@@ -96,7 +97,8 @@ public:
     unsigned long pRoiWidth = 0,
     unsigned long pRoiHeight = 0,
     OFBool pUsePixelValues = OFTrue,
-    OFBool pUseModalityRescale = OFFalse);
+    OFBool pUseModalityRescale = OFFalse,
+    OFBool pTrueLosslessMode = OFTrue);
 
   /// copy constructor
   DJCodecParameter(const DJCodecParameter& arg);
@@ -272,6 +274,14 @@ public:
     return useModalityRescale;
   }
 
+  /** returns flag indicating if real lossless mode is enabled
+   *  @return flag indicating if real lossless mode is enabled
+   */
+  OFBool getTrueLosslessMode() const
+  {
+    return trueLosslessMode;
+  }
+
   /** returns verbose mode flag
    *  @return verbose mode flag
    */
@@ -353,6 +363,9 @@ private:
   /// Create Rescale Slope/Intercept to scale back to original pixel range, mode 0 only
   OFBool useModalityRescale;
 
+  /// True losless mode, replaces old "pseudo" lossless encoders, when true (default)
+  OFBool trueLosslessMode;
+
   /// verbose mode flag. If true, warning messages are printed to console
   OFBool verboseMode;
 };
@@ -363,7 +376,15 @@ private:
 /*
  * CVS/RCS Log
  * $Log: djcparam.h,v $
- * Revision 1.3  2002-12-09 13:51:26  joergr
+ * Revision 1.4  2005-11-29 08:50:34  onken
+ * - Added support for "true" lossless compression in dcmjpeg, that doesn't
+ *   use dcmimage classes, but compresses raw pixel data (8 and 16 bit) to
+ *   avoid losses in quality caused by color space conversions or modality
+ *   transformations etc.
+ *
+ * - Corresponding commandline option in dcmcjpeg (new default)
+ *
+ * Revision 1.3  2002/12/09 13:51:26  joergr
  * Renamed parameter/local variable to avoid name clashes with global
  * declaration left and/or right (used for as iostream manipulators).
  *

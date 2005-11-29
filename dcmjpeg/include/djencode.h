@@ -21,10 +21,10 @@
  *
  *  Purpose: singleton class that registers encoders for all supported JPEG processes.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-19 15:13:29 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2005-11-29 08:50:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/include/Attic/djencode.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,9 +49,9 @@ class DJEncoderSpectralSelection;
 
 /** singleton class that registers encoders for all supported JPEG processes.
  */
-class DJEncoderRegistration 
+class DJEncoderRegistration
 {
-public: 
+public:
 
   /** registers encoders for all supported JPEG processes.
    *  If already registered, call is ignored unless cleanup() has
@@ -65,9 +65,9 @@ public:
    *  @param pFragmentSize maximum fragment size (in kbytes) for compression, 0 for unlimited.
    *  @param pCreateOffsetTable create offset table during image compression?
    *  @param pSampleFactors subsampling mode for color image compression
-   *  @param pWriteYBR422 flag indicating whether a compressed YBR color stream should 
+   *  @param pWriteYBR422 flag indicating whether a compressed YBR color stream should
    *    be marked as YBR_FULL or YBR_FULL_422 on DICOM level
-   *  @param pConvertToSC flag indicating whether image should be converted to 
+   *  @param pConvertToSC flag indicating whether image should be converted to
    *    Secondary Capture upon compression
    *  @param pWindowType mode for VOI transformation of monochrome images
    *  @param pWindowParameter parameter for VOI transform of monochrome images, used in modes 1, 2, 4, 6
@@ -78,8 +78,9 @@ public:
    *  @param pRoiWidth  Region of Interest width for for VOI transform of monochrome images, mode 7
    *  @param pRoiHeight Region of Interest height for for VOI transform of monochrome images, mode 7
    *  @param pUsePixelValues Check smallest and largest pixel value and optimize compression, mode 0 only
-   *  @param pUseModalityRescale Create Rescale Slope/Intercept to scale back 
+   *  @param pUseModalityRescale Create Rescale Slope/Intercept to scale back
    *     to original pixel range, mode 0 only
+   *  @param pRealLossless Enables true lossless compression (replaces old "pseudo" lossless encoders)
    */
   static void registerCodecs(
     E_CompressionColorSpaceConversion pCompressionCSConversion = ECC_lossyYCbCr,
@@ -102,13 +103,14 @@ public:
     unsigned long pRoiWidth = 0,
     unsigned long pRoiHeight = 0,
     OFBool pUsePixelValues = OFTrue,
-    OFBool pUseModalityRescale = OFFalse);
+    OFBool pUseModalityRescale = OFFalse,
+    OFBool pRealLossless = OFFalse);
 
   /** deregisters encoders.
    *  Attention: Must not be called while other threads might still use
    *  the registered codecs, e.g. because they are currently encoding
    *  DICOM data sets through dcmdata.
-   */  
+   */
   static void cleanup();
 
 private:
@@ -118,7 +120,7 @@ private:
 
   /// pointer to codec parameter shared by all encoders
   static DJCodecParameter *cp;
-  
+
   /// pointer to encoder for baseline JPEG
   static DJEncoderBaseline *encbas;
 
@@ -136,7 +138,7 @@ private:
 
   /// pointer to encoder for lossless JPEG
   static DJEncoderLossless *enclol;
-  
+
 };
 
 #endif
@@ -144,7 +146,15 @@ private:
 /*
  * CVS/RCS Log
  * $Log: djencode.h,v $
- * Revision 1.2  2001-11-19 15:13:29  meichel
+ * Revision 1.3  2005-11-29 08:50:34  onken
+ * - Added support for "true" lossless compression in dcmjpeg, that doesn't
+ *   use dcmimage classes, but compresses raw pixel data (8 and 16 bit) to
+ *   avoid losses in quality caused by color space conversions or modality
+ *   transformations etc.
+ *
+ * - Corresponding commandline option in dcmcjpeg (new default)
+ *
+ * Revision 1.2  2001/11/19 15:13:29  meichel
  * Introduced verbose mode in module dcmjpeg. If enabled, warning
  *   messages from the IJG library are printed on ofConsole, otherwise
  *   the library remains quiet.
