@@ -22,8 +22,8 @@
  *  Purpose: Compress DICOM file
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2005-11-29 08:48:38 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2005-11-29 11:00:38 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -709,13 +709,15 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmcjpeg.cc,v $
- * Revision 1.11  2005-11-29 08:48:38  onken
- * - Added support for "true" lossless compression in dcmjpeg, that doesn't
+ * Revision 1.12  2005-11-29 11:00:38  onken
+ * *** empty log message ***
+ *
+ * Revision 1.11  2005/11/29 08:48:38  onken
+ * Added support for "true" lossless compression in dcmjpeg, that doesn't
  *   use dcmimage classes, but compresses raw pixel data (8 and 16 bit) to
  *   avoid losses in quality caused by color space conversions or modality
  *   transformations etc.
- *
- * - Corresponding commandline option in dcmcjpeg (new default)
+ * Corresponding commandline option in dcmcjpeg (new default)
  *
  * Revision 1.10  2005/11/07 17:10:21  meichel
  * All tools that both read and write a DICOM file now call loadAllDataIntoMemory()

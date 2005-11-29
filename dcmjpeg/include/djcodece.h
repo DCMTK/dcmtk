@@ -22,9 +22,9 @@
  *  Purpose: abstract codec class for JPEG encoders.
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2005-11-29 08:50:34 $
+ *  Update Date:      $Date: 2005-11-29 11:00:40 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/include/Attic/djcodece.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,15 +54,15 @@ class DcmTagKey;
 
 /** abstract codec class for JPEG encoders.
  *  This abstract class contains most of the application logic
- *  needed for a dcmdata codec object that implements a JPEG encoder 
+ *  needed for a dcmdata codec object that implements a JPEG encoder
  *  using the DJEncoder interface to the underlying JPEG implementation.
  *  This class only supports compression, it neither implements
  *  decoding nor transcoding.
  */
 class DJCodecEncoder : public DcmCodec
 {
-public:  
- 
+public:
+
   /// default constructor
   DJCodecEncoder();
 
@@ -94,7 +94,7 @@ public:
    *  @param toRepParam representation parameter describing the desired
    *    compressed representation (e.g. JPEG quality)
    *  @param pixSeq compressed pixel sequence (pointer to new DcmPixelSequence object
-   *    allocated on heap) returned in this parameter upon success.   
+   *    allocated on heap) returned in this parameter upon success.
    *  @param cp codec parameters for this codec
    *  @param objStack stack pointing to the location of the pixel data
    *    element in the current dataset.
@@ -116,7 +116,7 @@ public:
    *  @param toRepParam representation parameter describing the desired
    *    new compressed representation (e.g. JPEG quality)
    *  @param toPixSeq compressed pixel sequence (pointer to new DcmPixelSequence object
-   *    allocated on heap) returned in this parameter upon success.   
+   *    allocated on heap) returned in this parameter upon success.
    *  @param cp codec parameters for this codec
    *  @param objStack stack pointing to the location of the pixel data
    *    element in the current dataset.
@@ -131,19 +131,19 @@ public:
     const DcmCodecParameter * cp,
     DcmStack & objStack) const;
 
-	/** compresses the given uncompressed DICOM image and stores
-   *  the result in the given pixSeq element. No colorspace 
+  /** compresses the given uncompressed DICOM image and stores
+   *  the result in the given pixSeq element. No colorspace
    *  conversions, modality or windowing transformations are applied
    *  to guarantee, that the quality of the source image is fully preserved.
    *  @param toRepParam - [in] representation parameter describing the desired
    *  @param pixSeq - [out] compressed pixel sequence (pointer to new DcmPixelSequence
-   *    object allocated on heap) returned in this parameter upon success   
+   *    object allocated on heap) returned in this parameter upon success
    *  @param cp - [in] codec parameters for this codec
    *  @param objStack - [in/out] stack pointing to the location of the pixel data
    *    element in the current dataset.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-	virtual OFCondition encodeTrueLossless(
+  virtual OFCondition encodeTrueLossless(
     const DcmRepresentationParameter * toRepParam,
     DcmPixelSequence * & pixSeq,
     const DcmCodecParameter *cp,
@@ -178,7 +178,7 @@ private:
 
   /** compresses the given uncompressed DICOM color image and stores
    *  the result in the given pixSeq element.
-   *  @param YBRmode true if the source image has YBR_FULL or YBR_FULL_422 
+   *  @param YBRmode true if the source image has YBR_FULL or YBR_FULL_422
    *    photometric interpretation and can thus be compressed without color
    *    space conversion.
    *  @param dataset DICOM dataset containing the pixel data as well as
@@ -186,7 +186,7 @@ private:
    *  @param toRepParam representation parameter describing the desired
    *    compressed representation (e.g. JPEG quality)
    *  @param pixSeq compressed pixel sequence (pointer to new DcmPixelSequence object
-   *    allocated on heap) returned in this parameter upon success.   
+   *    allocated on heap) returned in this parameter upon success.
    *  @param cp codec parameters for this codec
    *  @param compressionRatio compression ratio returned in this parameter
    *    if successful.
@@ -207,7 +207,7 @@ private:
    *  @param toRepParam representation parameter describing the desired
    *    compressed representation (e.g. JPEG quality)
    *  @param pixSeq compressed pixel sequence (pointer to new DcmPixelSequence object
-   *    allocated on heap) returned in this parameter upon success.   
+   *    allocated on heap) returned in this parameter upon success.
    *  @param cp codec parameters for this codec
    *  @param compressionRatio compression ratio returned in this parameter
    *    if successful.
@@ -258,7 +258,7 @@ private:
    *  @return lossless flag
    */
   virtual OFBool isLosslessProcess() const = 0;
-  
+
   /** creates 'derivation description' string after encoding.
    *  @param toRepParam representation parameter passed to encode()
    *  @param cp codec parameter passed to encode()
@@ -288,39 +288,39 @@ private:
     const DJCodecParameter *cp,
     Uint8 bitsPerSample) const = 0;
 
-  /** toggles Planar Configuration of 8-bit pixel data from "by pixel" to 
-	 *  "by plane" and vice versa.
-	 *  @param pixelData - [in/out] Original pixel data (input), contains
-	 *  									 pixel data with toggled Planar configuration after
-	 *                     returning (output).
-	 *  @param numValues - [in] The number of 8 bit values in pixelData
-	 *  @param samplesPerPixel - [in] Number of components for one pixel
-	 *  @param oldPlanarConfig - [in] The old Planar Configuration, that should
-	 *													 be toggled. 0 means "by pixel", 1 "by color"
-	 *  @return EC_Normal, if conversion was successful; error else
-	 */
+  /** toggles Planar Configuration of 8-bit pixel data from "by pixel" to
+   *  "by plane" and vice versa.
+   *  @param pixelData - [in/out] Original pixel data (input), contains
+   *                     pixel data with toggled Planar configuration after
+   *                     returning (output).
+   *  @param numValues - [in] The number of 8 bit values in pixelData
+   *  @param samplesPerPixel - [in] Number of components for one pixel
+   *  @param oldPlanarConfig - [in] The old Planar Configuration, that should
+   *                           be toggled. 0 means "by pixel", 1 "by color"
+   *  @return EC_Normal, if conversion was successful; error else
+   */
   static OFCondition togglePlanarConfiguration(
     Uint8 *&pixelData,
     const unsigned long length,
     const Uint16 samplesPerPixel,
     const Uint16 oldPlanarConfig);
- 
-	/** toggles Planar Configuration of 16-bit pixel data from "by pixel" to 
-	 *  "by plane" and vice versa.
-	 *  @param pixelData - [in/out] Original pixel data (input), contains
-	 *  									 pixel data with toggled Planar configuration after
-	 *                     returning (output).
-	 *  @param numValues - [in] The number of 16 bit values in pixelData
-	 *  @param samplesPerPixel - [in] Number of components for one pixel
-	 *  @param oldPlanarConfig - [in] The old Planar Configuration, that should
-	 *													 be toggled. 0 means "by pixel", 1 "by color"
-	 *  @return EC_Normal, if conversion was successful; error else
-	 */
+
+  /** toggles Planar Configuration of 16-bit pixel data from "by pixel" to
+   *  "by plane" and vice versa.
+   *  @param pixelData - [in/out] Original pixel data (input), contains
+   *                     pixel data with toggled Planar configuration after
+   *                     returning (output).
+   *  @param numValues - [in] The number of 16 bit values in pixelData
+   *  @param samplesPerPixel - [in] Number of components for one pixel
+   *  @param oldPlanarConfig - [in] The old Planar Configuration, that should
+   *                           be toggled. 0 means "by pixel", 1 "by color"
+   *  @return EC_Normal, if conversion was successful; error else
+   */
   static OFCondition togglePlanarConfiguration(
     Uint16 *&pixelData,
     const unsigned long length,
-		const Uint16 samplesPerPixel,
-		const Uint16 oldPlanarConfig);
+    const Uint16 samplesPerPixel,
+    const Uint16 oldPlanarConfig);
 
   /** modifies all VOI window center/width settings in the image.
    *  Modifications are based on the pixel value mapping
@@ -329,12 +329,12 @@ private:
    *  @param voiOffset offset to be added to each pixel
    *  @param voiFactor factor to be multiplied
    *  @return EC_Normal if successful, an error code otherwise
-   */   
+   */
   static OFCondition correctVOIWindows(DcmItem *dataset, double voiOffset, double voiFactor);
 
-	OFCondition updatePlanarConfiguration(
-		DcmItem *item, 
-		const Uint16 newPlanConf) const;
+  OFCondition updatePlanarConfiguration(
+    DcmItem *item,
+    const Uint16 newPlanConf) const;
 };
 
 #endif
@@ -342,13 +342,15 @@ private:
 /*
  * CVS/RCS Log
  * $Log: djcodece.h,v $
- * Revision 1.4  2005-11-29 08:50:34  onken
- * - Added support for "true" lossless compression in dcmjpeg, that doesn't
+ * Revision 1.5  2005-11-29 11:00:40  onken
+ * *** empty log message ***
+ *
+ * Revision 1.4  2005/11/29 08:50:34  onken
+ * Added support for "true" lossless compression in dcmjpeg, that doesn't
  *   use dcmimage classes, but compresses raw pixel data (8 and 16 bit) to
  *   avoid losses in quality caused by color space conversions or modality
  *   transformations etc.
- *
- * - Corresponding commandline option in dcmcjpeg (new default)
+ * Corresponding commandline option in dcmcjpeg (new default)
  *
  * Revision 1.3  2003/07/04 13:26:22  meichel
  * Replaced forward declarations for OFString with explicit includes,

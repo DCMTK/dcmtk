@@ -22,9 +22,9 @@
  *  Purpose: codec parameter class for dcmjpeg codecs
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2005-11-29 08:50:34 $
+ *  Update Date:      $Date: 2005-11-29 11:00:40 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/include/Attic/djcparam.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -376,13 +376,15 @@ private:
 /*
  * CVS/RCS Log
  * $Log: djcparam.h,v $
- * Revision 1.4  2005-11-29 08:50:34  onken
- * - Added support for "true" lossless compression in dcmjpeg, that doesn't
+ * Revision 1.5  2005-11-29 11:00:40  onken
+ * *** empty log message ***
+ *
+ * Revision 1.4  2005/11/29 08:50:34  onken
+ * Added support for "true" lossless compression in dcmjpeg, that doesn't
  *   use dcmimage classes, but compresses raw pixel data (8 and 16 bit) to
  *   avoid losses in quality caused by color space conversions or modality
  *   transformations etc.
- *
- * - Corresponding commandline option in dcmcjpeg (new default)
+ * Corresponding commandline option in dcmcjpeg (new default)
  *
  * Revision 1.3  2002/12/09 13:51:26  joergr
  * Renamed parameter/local variable to avoid name clashes with global

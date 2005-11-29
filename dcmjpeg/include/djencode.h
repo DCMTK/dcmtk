@@ -22,9 +22,9 @@
  *  Purpose: singleton class that registers encoders for all supported JPEG processes.
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2005-11-29 08:50:34 $
+ *  Update Date:      $Date: 2005-11-29 11:00:40 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/include/Attic/djencode.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -146,13 +146,15 @@ private:
 /*
  * CVS/RCS Log
  * $Log: djencode.h,v $
- * Revision 1.3  2005-11-29 08:50:34  onken
- * - Added support for "true" lossless compression in dcmjpeg, that doesn't
+ * Revision 1.4  2005-11-29 11:00:40  onken
+ * *** empty log message ***
+ *
+ * Revision 1.3  2005/11/29 08:50:34  onken
+ * Added support for "true" lossless compression in dcmjpeg, that doesn't
  *   use dcmimage classes, but compresses raw pixel data (8 and 16 bit) to
  *   avoid losses in quality caused by color space conversions or modality
  *   transformations etc.
- *
- * - Corresponding commandline option in dcmcjpeg (new default)
+ * Corresponding commandline option in dcmcjpeg (new default)
  *
  * Revision 1.2  2001/11/19 15:13:29  meichel
  * Introduced verbose mode in module dcmjpeg. If enabled, warning

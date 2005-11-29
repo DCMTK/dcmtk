@@ -22,9 +22,9 @@
  *  Purpose: abstract codec class for JPEG encoders.
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2005-11-29 08:48:45 $
+ *  Update Date:      $Date: 2005-11-29 11:00:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djcodece.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1424,13 +1424,15 @@ OFCondition DJCodecEncoder::updatePlanarConfiguration(
 /*
  * CVS/RCS Log
  * $Log: djcodece.cc,v $
- * Revision 1.15  2005-11-29 08:48:45  onken
- * - Added support for "true" lossless compression in dcmjpeg, that doesn't
+ * Revision 1.16  2005-11-29 11:00:52  onken
+ * *** empty log message ***
+ *
+ * Revision 1.15  2005/11/29 08:48:45  onken
+ * Added support for "true" lossless compression in dcmjpeg, that doesn't
  *   use dcmimage classes, but compresses raw pixel data (8 and 16 bit) to
  *   avoid losses in quality caused by color space conversions or modality
  *   transformations etc.
- *
- * - Corresponding commandline option in dcmcjpeg (new default)
+ * Corresponding commandline option in dcmcjpeg (new default)
  *
  * Revision 1.14  2004/11/10 13:17:23  meichel
  * Added support for the LossyImageCompressionMethod attribute introduced in DICOM 2004.

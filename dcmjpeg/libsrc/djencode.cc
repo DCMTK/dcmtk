@@ -22,9 +22,9 @@
  *  Purpose: singleton class that registers encoders for all supported JPEG processes.
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2005-11-29 08:48:45 $
+ *  Update Date:      $Date: 2005-11-29 11:00:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djencode.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,7 +35,7 @@
 #include "djencode.h"
 
 #include "dccodec.h"  /* for DcmCodecStruct */
-#include "djencbas.h" 
+#include "djencbas.h"
 #include "djencext.h"
 #include "djencsps.h"
 #include "djencpro.h"
@@ -171,13 +171,15 @@ void DJEncoderRegistration::cleanup()
 /*
  * CVS/RCS Log
  * $Log: djencode.cc,v $
- * Revision 1.4  2005-11-29 08:48:45  onken
- * - Added support for "true" lossless compression in dcmjpeg, that doesn't
+ * Revision 1.5  2005-11-29 11:00:52  onken
+ * *** empty log message ***
+ *
+ * Revision 1.4  2005/11/29 08:48:45  onken
+ * Added support for "true" lossless compression in dcmjpeg, that doesn't
  *   use dcmimage classes, but compresses raw pixel data (8 and 16 bit) to
  *   avoid losses in quality caused by color space conversions or modality
  *   transformations etc.
- *
- * - Corresponding commandline option in dcmcjpeg (new default)
+ * Corresponding commandline option in dcmcjpeg (new default)
  *
  * Revision 1.3  2001/12/04 17:10:20  meichel
  * Fixed codec registration: flag registered was never set to true
