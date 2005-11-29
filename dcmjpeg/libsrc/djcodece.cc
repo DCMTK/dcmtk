@@ -22,9 +22,9 @@
  *  Purpose: abstract codec class for JPEG encoders.
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2005-11-29 11:00:52 $
+ *  Update Date:      $Date: 2005-11-29 15:56:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djcodece.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -235,7 +235,7 @@ OFCondition DJCodecEncoder::encodeColorImage(
 
   // initialize settings with defaults for RGB mode
   OFBool monochromeMode = OFFalse;
-  unsigned long flags = 0;
+  unsigned long flags = 0; // flags for initialization of DicomImage
   EP_Interpretation interpr = EPI_RGB;
   Uint16 samplesPerPixel = 3;
   const char *photometricInterpretation = "RGB";
@@ -262,6 +262,12 @@ OFCondition DJCodecEncoder::encodeColorImage(
     if (cp->getWriteYBR422()) photometricInterpretation = "YBR_FULL_422";
     else photometricInterpretation = "YBR_FULL";
   }
+
+  // integrate DicomImage flags transported by DJCodecParameter into "flags"-variable
+  if (cp->getAcceptWrongPaletteTags())
+    flags |= CIF_WrongPaletteAttributeTags;
+  if (cp->getAcrNemaCompatibility())
+    flags |= CIF_AcrNemaCompatibility;
 
   // create dcmimage object. Will fail if dcmimage has not been activated in main().
   // transfer syntax can be any uncompressed one.
@@ -837,6 +843,7 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
   compressionRatio = 0.0; // initialize if something goes wrong
   unsigned long compressedSize = 0;
   double uncompressedSize = 0.0;
+  unsigned long flags = 0; // flags for initialization of DicomImage
 
   // variables needed if VOI mode is 0
   double minRange = 0.0;
@@ -857,9 +864,15 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
   OFBool mode_usePixelValues = cp->getUsePixelValues();
   OFBool mode_useModalityRescale = cp->getUseModalityRescale();
 
-  // create dcmimage object. Will fail if dcmimage has not been activated in main().
+  //create flags for DicomImage corresponding to DJCodecParameter options
+  if (cp->getAcceptWrongPaletteTags())
+    flags |= CIF_WrongPaletteAttributeTags;
+  if (cp->getAcrNemaCompatibility())
+    flags |= CIF_AcrNemaCompatibility;
+
+  // create DicomImage object. Will fail if dcmimage has not been activated in main().
   // transfer syntax can be any uncompressed one.
-  DicomImage dimage(dataset, EXS_LittleEndianImplicit, 0); // read all frames
+  DicomImage dimage(dataset, EXS_LittleEndianImplicit, flags); // read all frames
   if (dimage.getStatus() != EIS_Normal) result = EC_IllegalCall; // should return dimage.getStatus()
 
   // don't render overlays
@@ -1424,8 +1437,10 @@ OFCondition DJCodecEncoder::updatePlanarConfiguration(
 /*
  * CVS/RCS Log
  * $Log: djcodece.cc,v $
- * Revision 1.16  2005-11-29 11:00:52  onken
- * *** empty log message ***
+ * Revision 1.17  2005-11-29 15:56:55  onken
+ * Added commandline options --accept-acr-nema and --accept-palettes
+ * (same as in dcm2pnm) to dcmcjpeg and extended dcmjpeg to support
+ * these options. Thanks to Gilles Mevel for suggestion.
  *
  * Revision 1.15  2005/11/29 08:48:45  onken
  * Added support for "true" lossless compression in dcmjpeg, that doesn't

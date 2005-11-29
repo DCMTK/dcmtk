@@ -22,9 +22,9 @@
  *  Purpose: singleton class that registers encoders for all supported JPEG processes.
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2005-11-29 11:00:40 $
+ *  Update Date:      $Date: 2005-11-29 15:57:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/include/Attic/djencode.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,6 +80,8 @@ public:
    *  @param pUsePixelValues Check smallest and largest pixel value and optimize compression, mode 0 only
    *  @param pUseModalityRescale Create Rescale Slope/Intercept to scale back
    *     to original pixel range, mode 0 only
+   *  @param pAcceptWrongPaletteTags Accept wrong palette attribute tags (only "pseudo lossless" encoder)
+   *  @param pAcrNemaCompatibility Accept old ACR-NEMA images without photometric interpretation (only "pseudo lossless" encoder)
    *  @param pRealLossless Enables true lossless compression (replaces old "pseudo" lossless encoders)
    */
   static void registerCodecs(
@@ -104,6 +106,8 @@ public:
     unsigned long pRoiHeight = 0,
     OFBool pUsePixelValues = OFTrue,
     OFBool pUseModalityRescale = OFFalse,
+    OFBool pAcceptWrongPaletteTags = OFFalse,
+    OFBool pAcrNemaCompatibility = OFFalse,
     OFBool pRealLossless = OFFalse);
 
   /** deregisters encoders.
@@ -146,8 +150,10 @@ private:
 /*
  * CVS/RCS Log
  * $Log: djencode.h,v $
- * Revision 1.4  2005-11-29 11:00:40  onken
- * *** empty log message ***
+ * Revision 1.5  2005-11-29 15:57:05  onken
+ * Added commandline options --accept-acr-nema and --accept-palettes
+ * (same as in dcm2pnm) to dcmcjpeg and extended dcmjpeg to support
+ * these options. Thanks to Gilles Mevel for suggestion.
  *
  * Revision 1.3  2005/11/29 08:50:34  onken
  * Added support for "true" lossless compression in dcmjpeg, that doesn't

@@ -22,8 +22,8 @@
  *  Purpose: Compress DICOM file
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2005-11-29 11:00:38 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2005-11-29 15:57:15 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -90,6 +90,9 @@ int main(int argc, char *argv[])
   E_PaddingEncoding opt_opadenc = EPD_noChange;
   OFCmdUnsignedInt opt_filepad = 0;
   OFCmdUnsignedInt opt_itempad = 0;
+  OFBool opt_acceptWrongPaletteTags = OFFalse;
+  OFBool opt_acrNemaCompatibility = OFFalse;
+
 
   // JPEG options
   E_TransferSyntax opt_oxfer = EXS_JPEGProcess14SV1TransferSyntax;
@@ -138,6 +141,9 @@ int main(int argc, char *argv[])
      cmd.addOption("--read-xfer-little",        "-te",       "read with explicit VR little endian TS");
      cmd.addOption("--read-xfer-big",           "-tb",       "read with explicit VR big endian TS");
      cmd.addOption("--read-xfer-implicit",      "-ti",       "read with implicit VR little endian TS");
+    cmd.addSubGroup("compatibility options (ignored by +tl):");
+      cmd.addOption("--accept-acr-nema",    "+Ma",     "accept ACR-NEMA images without photometric\ninterpretation");
+      cmd.addOption("--accept-palettes",    "+Mp",     "accept incorrect palette attribute tags\n(0028,111x) and (0028,121x)");
 
   cmd.addGroup("JPEG encoding options:");
     cmd.addSubGroup("JPEG process options:");
@@ -308,6 +314,11 @@ int main(int argc, char *argv[])
         opt_ixfer = EXS_LittleEndianImplicit;
       }
       cmd.endOptionBlock();
+
+      if (cmd.findOption("--accept-acr-nema"))
+        opt_acrNemaCompatibility = OFTrue;
+      if (cmd.findOption("--accept-palettes"))
+        opt_acceptWrongPaletteTags = OFTrue;
 
       // JPEG options
 
@@ -603,6 +614,8 @@ int main(int argc, char *argv[])
       opt_roiHeight,
       opt_usePixelValues,
       opt_useModalityRescale,
+      opt_acceptWrongPaletteTags,
+      opt_acrNemaCompatibility,
       opt_trueLossless);
 
     /* make sure data dictionary is loaded */
@@ -709,8 +722,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmcjpeg.cc,v $
- * Revision 1.12  2005-11-29 11:00:38  onken
- * *** empty log message ***
+ * Revision 1.13  2005-11-29 15:57:15  onken
+ * Added commandline options --accept-acr-nema and --accept-palettes
+ * (same as in dcm2pnm) to dcmcjpeg and extended dcmjpeg to support
+ * these options. Thanks to Gilles Mevel for suggestion.
  *
  * Revision 1.11  2005/11/29 08:48:38  onken
  * Added support for "true" lossless compression in dcmjpeg, that doesn't

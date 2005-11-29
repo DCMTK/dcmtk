@@ -22,9 +22,9 @@
  *  Purpose: codec parameter class for dcmjpeg codecs
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2005-11-29 11:00:52 $
+ *  Update Date:      $Date: 2005-11-29 15:56:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djcparam.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,6 +58,8 @@ DJCodecParameter::DJCodecParameter(
     unsigned long pRoiHeight,
     OFBool pUsePixelValues,
     OFBool pUseModalityRescale,
+    OFBool pAcceptWrongPaletteTags,
+    OFBool pAcrNemaCompatibility,
     OFBool pTrueLosslessMode)
 : DcmCodecParameter()
 , compressionCSConversion(pCompressionCSConversion)
@@ -82,6 +84,8 @@ DJCodecParameter::DJCodecParameter(
 , roiHeight(pRoiHeight)
 , usePixelValues(pUsePixelValues)
 , useModalityRescale(pUseModalityRescale)
+, acceptWrongPaletteTags(pAcceptWrongPaletteTags)
+, acrNemaCompatibility(pAcrNemaCompatibility)
 , trueLosslessMode(pTrueLosslessMode)
 , verboseMode(pVerbose)
 {
@@ -135,8 +139,10 @@ const char *DJCodecParameter::className() const
 /*
  * CVS/RCS Log
  * $Log: djcparam.cc,v $
- * Revision 1.5  2005-11-29 11:00:52  onken
- * *** empty log message ***
+ * Revision 1.6  2005-11-29 15:56:55  onken
+ * Added commandline options --accept-acr-nema and --accept-palettes
+ * (same as in dcm2pnm) to dcmcjpeg and extended dcmjpeg to support
+ * these options. Thanks to Gilles Mevel for suggestion.
  *
  * Revision 1.4  2005/11/29 08:48:45  onken
  * Added support for "true" lossless compression in dcmjpeg, that doesn't

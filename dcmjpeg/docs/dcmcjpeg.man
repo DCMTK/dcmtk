@@ -66,6 +66,20 @@ input transfer syntax (only with --read-dataset):
 
   -ti   --read-xfer-implicit
           read with implicit VR little endian TS
+
+compatibility options (ignored by +tl):
+
+  +Ma   --accept-acr-nema
+          accept ACR-NEMA images without photometric interpretation
+
+  # Enables compatibility for old ACR-NEMA images without photometric
+  # information (only pseudo lossless encoder)
+
+  +Mp   --accept-palettes
+          accept incorrect palette attribute tags (0028,111x) and (0028,121x)
+
+  # If enabled, incorrect palette atribute tags are accepted
+  # (only pseudo lossless encoder)
 \endverbatim
 
 \subsection JPEG_encoding_options JPEG enconding options
@@ -122,7 +136,7 @@ lossless JPEG codec selection:
 
   # Old encoder, that uses lossless compression algorithms, but can
   # cause lossy images because of internal color space transformations
-  # etc. Better compression ratio than --true-lossless in most cases.
+  # etc. Higher compression ratio than --true-lossless in most cases.
 
 lossless JPEG representation options:
 
@@ -511,7 +525,7 @@ windowing etc., there are a some issues to consider:
     YBR_ICT, YBR_RCT are not supported
 \li The encoder changes automatically Planar Configuration from 1 to 0 if
     necessary
-\li The compression ratio is not as good as in --pseudo-lossless mode
+\li The compression ratio can be lower than in --pseudo-lossless mode
 
 However, when using the new encoder (default), you can be sure, that compression
 does not affect image quality.
