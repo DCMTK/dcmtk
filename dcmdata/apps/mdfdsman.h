@@ -21,10 +21,10 @@
  *
  *  Purpose: Class for modifying DICOM files
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-11-14 15:00:14 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2005-11-30 16:41:41 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/mdfdsman.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -134,13 +134,13 @@ public:
      *  @return returns EC_normal if everything is ok, else an error
      */
     OFCondition saveFile(const char *file_name,
-                         E_TransferSyntax opt_xfer,
-                         E_EncodingType opt_enctype,
-                         E_GrpLenEncoding opt_glenc,
-                         E_PaddingEncoding opt_padenc,
-                         OFCmdUnsignedInt opt_filepad,
-                         OFCmdUnsignedInt opt_itempad,
-                         OFBool opt_dataset);
+                         E_TransferSyntax opt_xfer = EXS_Unknown,
+                         E_EncodingType opt_enctype = EET_UndefinedLength,
+                         E_GrpLenEncoding opt_glenc = EGL_recalcGL,
+                         E_PaddingEncoding opt_padenc = EPD_noChange,
+                         OFCmdUnsignedInt opt_filepad = 0,
+                         OFCmdUnsignedInt opt_itempad = 0,
+                         OFBool opt_dataset = OFFalse);
 
     /** Saves current dataset back to file using original filename and original
      *  parameters like transfer syntax, padding etc.
@@ -280,7 +280,10 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: mdfdsman.h,v $
-** Revision 1.13  2005-11-14 15:00:14  joergr
+** Revision 1.14  2005-11-30 16:41:41  onken
+** Added standard parameter values for saveFile()
+**
+** Revision 1.13  2005/11/14 15:00:14  joergr
 ** Made method getFilename() const.
 **
 ** Revision 1.12  2004/11/05 17:17:24  onken
